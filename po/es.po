@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: es\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-08-21 10:38+0200\n"
-"PO-Revision-Date: 2004-08-21 11:13+0200\n"
+"POT-Creation-Date: 2004-08-22 23:19+0200\n"
+"PO-Revision-Date: 2004-08-22 23:29+0200\n"
 "Last-Translator: Francisco Javier F. Serrador <serrador@cvs.gnome.org>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -1753,7 +1753,9 @@ msgstr "Mostrar"
 
 #: gap/gap_morph_dialog.c:3019
 msgid "Click: show warp pick koordinates in the source window"
-msgstr "Pulsación: muestra las coordenadas escogidas para warping en la ventana origen"
+msgstr ""
+"Pulsación: muestra las coordenadas escogidas para warping en la ventana "
+"origen"
 
 #: gap/gap_morph_dialog.c:3050
 msgid "Render Mode:"
@@ -1824,7 +1826,9 @@ msgstr "Ajustar ampliación"
 
 #: gap/gap_morph_dialog.c:3248
 msgid "Show the whole layer. (by adjusting zoom to fit into preview)."
-msgstr "Mostrar la capa completa. (ajustando la ampliación para que entre en la vista preliminar)"
+msgstr ""
+"Mostrar la capa completa. (ajustando la ampliación para que entre en la "
+"vista preliminar)"
 
 #. there is just one total_points display (always in the dst frame)
 #. the current Point label
@@ -1877,7 +1881,10 @@ msgid ""
 "Create N workpoints following the outline shape of the layer.(the shape "
 "detection is looking for non-transparent pixels).SHIFT-click: adds the new "
 "points and keeps the old points"
-msgstr "Crear N puntos de trabajo siguiento la forma del contorno de la capa. (la detección de la forma busca píxeles no transparentes) Ayús-clich: añade los puntos nuevos y mantiene los antiguos"
+msgstr ""
+"Crear N puntos de trabajo siguiento la forma del contorno de la capa. (la "
+"detección de la forma busca píxeles no transparentes) Ayús-clich: añade los "
+"puntos nuevos y mantiene los antiguos"
 
 #. the show lines checkbutton
 #: gap/gap_morph_dialog.c:3600
@@ -1906,7 +1913,9 @@ msgstr "Radio:"
 msgid ""
 "Deform radius in pixels. Each workpoint causes a move-deform operation "
 "within this affect radius."
-msgstr "Radio de deformación en píxeles. Cada punto de trabajo causa una operación de mover-deformar dentro de este radio de efecto."
+msgstr ""
+"Radio de deformación en píxeles. Cada punto de trabajo causa una operación "
+"de mover-deformar dentro de este radio de efecto."
 
 #. the deform intensity label
 #: gap/gap_morph_dialog.c:3661
@@ -1927,6 +1936,8 @@ msgid ""
 "ON: Descending deform action from workpoint (full) to radius (zero). Descend "
 "by power of intensity.OFF: Linear deform action inside the radius"
 msgstr ""
+"ON: Acción de deformación descendiente desde el punto de trabajo (completo) hasta el radio (cero). Descender por potencia de intensidad. "
+"OFF Acción de deformación lineal dentre del radio"
 
 #. the use_quality_wp_selection checkbutton
 #: gap/gap_morph_dialog.c:3707
@@ -1937,7 +1948,7 @@ msgstr "Calidad"
 msgid ""
 "ON: Use quality workpoint selection algorithm.OFF: Use fast workpoint "
 "selection algorithm."
-msgstr ""
+msgstr "ON: Usar el algoritmo de calidad de selección del punto de trabajo. OFF: Usar el algortimo rápido de selección del punto de trabajo"
 
 #: gap/gap_morph_dialog.c:3727
 msgid "Load morph workpoints from file. SHIFT-click: define filename of Pointset B"
@@ -2058,11 +2069,11 @@ msgstr "Quemar"
 
 #: gap/gap_mov_dialog.c:419
 msgid "Hard Light"
-msgstr ""
+msgstr "Luz dura"
 
 #: gap/gap_mov_dialog.c:420
 msgid "Soft Light"
-msgstr ""
+msgstr "Luz ligera"
 
 #: gap/gap_mov_dialog.c:421
 msgid "Grain Extract"
@@ -2070,7 +2081,7 @@ msgstr "Extracción de grano"
 
 #: gap/gap_mov_dialog.c:422
 msgid "Grain Merge"
-msgstr ""
+msgstr "Combinación de grano"
 
 #: gap/gap_mov_dialog.c:424
 msgid "Difference"
@@ -3710,6 +3721,11 @@ msgid ""
 " bilinear double: +1,-1,+2,-2,+3,-3\n"
 " (stepsize is set by frame reference parameter)"
 msgstr ""
+"Los modos de referencia determinan la secuencia de paso:\n"
+" normal: +1,+2,+3,+4,+5,+6\n"
+" bilinear individual: +1,-2,+3,-4,+5,-6\n"
+" bilinear doble: +1,-1,+2,-2,+3,-3\n"
+" (tamaño de paso establecido por el parámetro de referencia de fotograma)"
 
 #: gap/gap_onion_dialog.c:985
 msgid "Bidiriectional (single)"
@@ -4092,14 +4108,14 @@ msgstr "Creando índice"
 msgid ""
 "Creation of videoindex canceled by user.Access is limited to (slow) "
 "sequential read on file: %s"
-msgstr ""
+msgstr "La creación del indice de vídeo se canceló por el usuario. El acceso está limitado a lectura secuencial (lenta) en el archivo: %s"
 
 #: gap/gap_player_dialog.c:1879
 #, c-format
 msgid ""
 "No videoindex available. Access is limited to (slow) sequential read on "
 "file: %s"
-msgstr ""
+msgstr "No hay un índice de vído disponible. El acceso está limitado a la lectura secuencial del archivo(lento): %s"
 
 #: gap/gap_player_dialog.c:1954 gap/gap_story_dialog.c:3458
 msgid "Videoseek"
@@ -4305,8 +4321,8 @@ msgstr ""
 #: gap/gap_player_dialog.c:5057
 msgid "Ctrl-Click: set range start 'From Frame', Alt-Click: set 'To Frame'"
 msgstr ""
-"Ctrl-Pulsar: Establecer rango de inicio 'Desde el fotograma', Alt-"
-"Pulsar: Establecer 'Hasta el fotograma'"
+"Ctrl-Pulsar: Establecer rango de inicio 'Desde el fotograma', Alt-Pulsar: "
+"Establecer 'Hasta el fotograma'"
 
 #. the time position
 #: gap/gap_player_dialog.c:5078
@@ -5081,6 +5097,8 @@ msgid ""
 "** ERROR: Storyboard parser reported:\n"
 "%s\n"
 msgstr ""
+"** ERROR: El parser del Storyboard informó:\n"
+"%s\n"
 
 #: gap/gap_story_dialog.c:1454
 msgid "Load Storyboard"
@@ -5098,7 +5116,7 @@ msgstr "Guardar archivo de storyboard"
 msgid ""
 "GIMP-GAP is compiled without videoapi support. Therfore thumbnails for "
 "videoframes can not be displayed."
-msgstr ""
+msgstr "GIMP-GAP está compilado son soporte videoap. Debido a esto las miniaturas para los fotogramas de vídeo no pueden mostrarse."
 
 #: gap/gap_story_dialog.c:2553
 #, c-format
@@ -5296,7 +5314,7 @@ msgstr "el mismo parámetro usado más de una vez"
 
 #: gap/gap_story_file.c:1352
 msgid "conflict: positional parameter shadows named parameter"
-msgstr ""
+msgstr "conflicto: el parámetro posicional oculta un parámetro con nombre"
 
 #: gap/gap_story_file.c:1400
 #, c-format
@@ -5304,6 +5322,8 @@ msgid ""
 "Header not found!\n"
 "(line 1 must start with:  %s or %s"
 msgstr ""
+"Cabecera no encontrada\n"
+"(línea 1 debe empezar con:  %s o %s"
 
 #. unsupported lines raise an error for files without correct Header
 #.
@@ -5339,7 +5359,7 @@ msgstr ""
 msgid ""
 "Scene detection for cliptype FRAMES depends on thumbnails. Please create "
 "thumbnails for your frames and then try again."
-msgstr ""
+msgstr "La detección de la escena para el tipo de clip FRAMES depende de las miniaturas. Por favor, cree las miniaturas para sus fotogramas y después intente de nuevo."
 
 #: gap/gap_story_properties.c:1205
 msgid "Set Image or Frame Filename"
@@ -5392,7 +5412,7 @@ msgstr "Buscar final de escena"
 
 #: gap/gap_story_properties.c:1633 gap/gap_story_properties.c:1644
 msgid "Aoto Scene Split"
-msgstr ""
+msgstr "Auto-división de escena"
 
 #. the cliptype label
 #: gap/gap_story_properties.c:1676
@@ -5690,8 +5710,8 @@ msgstr "Salida"
 #: gap/gap_vex_dialog.c:2111
 msgid "Basename for extracted frames (framenr and extension is added)"
 msgstr ""
-"Nombre base de los fotogramas extraídos (Se añade nº de fotograma "
-"y extensión)"
+"Nombre base de los fotogramas extraídos (Se añade nº de fotograma y "
+"extensión)"
 
 #: gap/gap_vex_dialog.c:2112
 msgid "frame_"
