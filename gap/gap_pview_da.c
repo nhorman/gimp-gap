@@ -23,6 +23,7 @@
  */
 
 /* revision history:
+ * version 2.0.1b;  2004/05/01  hof: dont attempt to render negative (invalid) image_id's
  * version 1.3.26a; 2004/01/30  hof: added gap_pview_drop_repaint_buffers 
  * version 1.3.25a; 2004/01/22  hof: added gap_pview_render_from_pixbuf 
  * version 1.3.24a; 2004/01/17  hof: speed up gap_pview_render_from_buf 
@@ -261,8 +262,11 @@ gap_pview_render_from_buf (GapPView *pv_ptr
   if(pv_ptr == NULL) { return FALSE; }
   if(pv_ptr->da_widget == NULL) { return FALSE; }
   if(pv_ptr->da_widget->window == NULL)
-  { 
-    printf("gap_pview_render_from_buf: drawing_area window pointer is NULL, cant render\n");
+  {
+    if(gap_debug)
+    {
+      printf("gap_pview_render_from_buf: drawing_area window pointer is NULL, cant render\n");
+    }
     return FALSE;
   }
 
@@ -503,6 +507,16 @@ gap_pview_render_from_image (GapPView *pv_ptr, gint32 image_id)
   GimpPixelRgn pixel_rgn;
   GimpDrawable *drawable;
   
+  if(image_id < 0)
+  {
+    if(gap_debug)
+    {
+      printf("gap_pview_render_from_image: have no image, cant render image_id:%d\n"
+            ,(int)image_id
+	    );
+    }
+    return;
+  }
 
   gimp_image_scale(image_id, pv_ptr->pv_width, pv_ptr->pv_height);
 
@@ -705,13 +719,19 @@ gap_pview_render_from_pixbuf (GapPView *pv_ptr, GdkPixbuf *src_pixbuf)
   if(pv_ptr->da_widget == NULL) { return; }
   if(pv_ptr->da_widget->window == NULL)
   { 
-    printf("gap_pview_render_from_pixbuf: drawing_area window pointer is NULL, cant render\n");
+    if(gap_debug)
+    {
+      printf("gap_pview_render_from_pixbuf: drawing_area window pointer is NULL, cant render\n");
+    }
     return ;
   }
 
   if(src_pixbuf == NULL)
   {
-    printf("gap_pview_render_from_pixbuf: src_pixbuf is NULL, cant render\n");
+    if(gap_debug)
+    {
+      printf("gap_pview_render_from_pixbuf: src_pixbuf is NULL, cant render\n");
+    }
     return ;
   }
 
@@ -809,7 +829,10 @@ gap_pview_render_from_pixbuf (GapPView *pv_ptr, GdkPixbuf *src_pixbuf)
 
   if(src_pixbuf == NULL)
   {
-    printf("gap_pview_render_from_pixbuf: src_pixbuf is NULL, cant render\n");
+    if(gap_debug)
+    {
+      printf("gap_pview_render_from_pixbuf: src_pixbuf is NULL, cant render\n");
+    }
     return ;
   }
   else

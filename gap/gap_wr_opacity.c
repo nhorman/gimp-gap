@@ -44,15 +44,10 @@
 /* Defines */
 #define PLUG_IN_NAME        "plug_in_wr_set_opacity"
 #define PLUG_IN_PRINT_NAME  "Name to Layer"
-#define PLUG_IN_VERSION     "v1.3.24 (2004/01/15)"
+#define PLUG_IN_VERSION     "v2.0.2 (2004/05/06)"
 #define PLUG_IN_IMAGE_TYPES "RGB*, INDEXED*, GRAY*"
 #define PLUG_IN_AUTHOR      "Wolfgang Hofer (hof@gimp.org)"
 #define PLUG_IN_COPYRIGHT   "Wolfgang Hofer"
-
-
-gint global_number_in_args = 5;
-gint global_number_out_args = 0;
-
 
 int gap_debug = 0;  /* 1 == print debug infos , 0 dont print debug infos */
 
@@ -95,6 +90,18 @@ GimpPlugInInfo PLUG_IN_INFO =
   run     /* run_proc   */
 };
 
+static GimpParamDef in_args[] = {
+                  { GIMP_PDB_INT32,    "run_mode", "Interactive, non-interactive"},
+                  { GIMP_PDB_IMAGE,    "image", "Input image" },
+                  { GIMP_PDB_DRAWABLE, "drawable", "Input drawable ()"},
+                  { GIMP_PDB_FLOAT,    "opacity", "0.0 (full transparent) upto 100.0 (full opaque)"},
+                  { GIMP_PDB_INT32,    "mode", "0..set opacity, 1..ADD opacity to old opacity value, 2..subtract opacity from old opacity value, 3..multiply"},
+  };
+
+
+static gint global_number_in_args = G_N_ELEMENTS (in_args);
+static gint global_number_out_args = 0;
+
 
 /* Functions */
 
@@ -108,21 +115,9 @@ static void query (void)
     GIMP_LASTVALDEF_GINT32          (GIMP_ITER_FALSE,  glob_vals.mode,     "mode"),
   };
 
-  static GimpParamDef in_args[] = {
-                  { GIMP_PDB_INT32,    "run_mode", "Interactive, non-interactive"},
-                  { GIMP_PDB_IMAGE,    "image", "Input image" },
-                  { GIMP_PDB_DRAWABLE, "drawable", "Input drawable ()"},
-                  { GIMP_PDB_FLOAT,    "opacity", "0.0 (full transparent) upto 100.0 (full opaque)"},
-                  { GIMP_PDB_INT32,    "mode", "0..set opacity, 1..ADD opacity to old opacity value, 2..subtract opacity from old opacity value, 3..multiply"},
-  };
-
 
 
   gimp_plugin_domain_register (GETTEXT_PACKAGE, LOCALEDIR);
-
-
-  global_number_in_args = G_N_ELEMENTS (in_args);
-  global_number_out_args = 0;
 
   /* registration for last values buffer structure (useful for animated filter apply) */
   gimp_lastval_desc_register(PLUG_IN_NAME,
@@ -149,7 +144,7 @@ static void query (void)
                           in_args,
                           NULL);
 
-}
+}  /* end query */
 
 static void
 run (const gchar *name,          /* name of plugin */

@@ -47,14 +47,10 @@
 /* Defines */
 #define PLUG_IN_NAME        "plug_in_name2layer"
 #define PLUG_IN_PRINT_NAME  "Name to Layer"
-#define PLUG_IN_VERSION     "v1.3.17 (2003/07/29)"
+#define PLUG_IN_VERSION     "v2.0.2 (2004/05/06)"
 #define PLUG_IN_IMAGE_TYPES "RGB*, INDEXED*, GRAY*"
 #define PLUG_IN_AUTHOR      "Wolfgang Hofer (hof@gimp.org)"
 #define PLUG_IN_COPYRIGHT   "Wolfgang Hofer"
-
-
-gint global_number_in_args = 10;
-gint global_number_out_args = 0;
 
 
 int gap_debug = 0;  /* 1 == print debug infos , 0 dont print debug infos */
@@ -108,6 +104,27 @@ GimpPlugInInfo PLUG_IN_INFO =
   run     /* run_proc   */
 };
 
+static GimpParamDef in_args[] = {
+                  { GIMP_PDB_INT32,    "run_mode", "Interactive, non-interactive"},
+                  { GIMP_PDB_IMAGE,    "image", "Input image" },
+                  { GIMP_PDB_DRAWABLE, "drawable", "Input drawable ()"},
+                  { GIMP_PDB_INT32,    "mode", "0 ... number only, 1 .. filename  2 .. filename with path"},
+                  { GIMP_PDB_INT32,    "fontsize", "fontsize in pixel"},
+                  { GIMP_PDB_STRING,   "font", "fontname "},
+                  { GIMP_PDB_INT32,    "posx", "x offset in pixel"},
+                  { GIMP_PDB_INT32,    "posy", "y offset in pixel"},
+                  { GIMP_PDB_INT32,    "antialias", "0 .. OFF, 1 .. antialias on"},
+                  { GIMP_PDB_INT32,    "create_new_layer", "0 .. render on input drawable, 1 .. create new layer"},
+  };
+
+static GimpParamDef out_args[] = {
+    { GIMP_PDB_DRAWABLE, "affected_drawable", "the drawable where the name/number was rendered." }
+  };
+
+
+static gint global_number_in_args = G_N_ELEMENTS (in_args);
+static gint global_number_out_args = G_N_ELEMENTS(out_args);
+
 
 /* Functions */
 
@@ -127,29 +144,9 @@ static void query (void)
     GIMP_LASTVALDEF_GINT            (GIMP_ITER_FALSE,  glob_namlvals.create_new_layer, "create_new_layer"),
   };
 
-  static GimpParamDef in_args[] = {
-                  { GIMP_PDB_INT32,    "run_mode", "Interactive, non-interactive"},
-                  { GIMP_PDB_IMAGE,    "image", "Input image" },
-                  { GIMP_PDB_DRAWABLE, "drawable", "Input drawable ()"},
-                  { GIMP_PDB_INT32,    "mode", "0 ... number only, 1 .. filename  2 .. filename with path"},
-                  { GIMP_PDB_INT32,    "fontsize", "fontsize in pixel"},
-                  { GIMP_PDB_STRING,   "font", "fontname "},
-                  { GIMP_PDB_INT32,    "posx", "x offset in pixel"},
-                  { GIMP_PDB_INT32,    "posy", "y offset in pixel"},
-                  { GIMP_PDB_INT32,    "antialias", "0 .. OFF, 1 .. antialias on"},
-                  { GIMP_PDB_INT32,    "create_new_layer", "0 .. render on input drawable, 1 .. create new layer"},
-  };
-
-  static GimpParamDef out_args[] = {
-    { GIMP_PDB_DRAWABLE, "affected_drawable", "the drawable where the name/number was rendered." }
-  };
 
 
   gimp_plugin_domain_register (GETTEXT_PACKAGE, LOCALEDIR);
-
-
-  global_number_in_args = G_N_ELEMENTS (in_args);
-  global_number_out_args = G_N_ELEMENTS(out_args);
 
   /* registration for last values buffer structure (useful for animated filter apply) */
   gimp_lastval_desc_register(PLUG_IN_NAME,
@@ -176,7 +173,7 @@ static void query (void)
                           in_args,
                           out_args);
 
-}
+}  /* end query */
 
 static void
 run (const gchar *name,          /* name of plugin */

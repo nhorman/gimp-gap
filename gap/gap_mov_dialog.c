@@ -26,6 +26,9 @@
  */
 
 /* revision history:
+ * gimp    2.0.1a;  2004/05/01  hof: proc: mov_dialog init mgp->drawable with temporary image (pvals->tmp_image_id)
+ *                                   this shows a valid copy of the dest frames at startup
+ *                                   (from where the move path  plug-in was invoked)
  * gimp    2.1.0a;  2004/04/18  hof: gtk_window_present(GTK_WINDOW(filesel)) on attempt
  *                                   to open an already open filesel dialog window
  * gimp    1.3.21d; 2003/10/29  hof: removed deprecated calls to gtk_window_set_policy
@@ -795,6 +798,17 @@ mov_dialog ( GimpDrawable *drawable, t_mov_gui_stuff *mgp,
                   , mgp->pheight
                   , GAP_MOV_CHECK_SIZE
                   );
+
+   /* init drawable for preview rendering
+    * (at startup this is a copy of the frame from where we were invoked)
+    */
+   if(pvals->tmp_image_id >= 0)
+   {
+     mgp->drawable = p_get_flattened_drawable(pvals->tmp_image_id);
+   }
+
+
+
   mov_path_prevw_preview_init(mgp);
   mov_show_path_or_cursor(mgp);
 
@@ -4122,6 +4136,11 @@ mov_path_prevw_preview_init ( t_mov_gui_stuff *mgp )
                           " before gap_pview_render_from_image drawable_id:%d\n"
 			  , (int)mgp->drawable->drawable_id);
     image_id = gimp_drawable_get_image(mgp->drawable->drawable_id);
+    if(gap_debug) printf ("mov_path_prevw_preview_init:"
+                          " after gap_pview_render_from_image drawable_id:%d image_id:%d\n"
+			  , (int)mgp->drawable->drawable_id
+			  , (int)image_id
+			  );
     gap_pview_render_from_image(mgp->pv_ptr, image_id);
   }
 }
@@ -5154,7 +5173,7 @@ mov_pview_size_allocate_callback(GtkWidget *widget
 
   if(ignore_inital_cnt > 0)
   {
-    if(gap_debug) printf("\n\n === conutdown: %d\n\n", (int)ignore_inital_cnt );
+    if(gap_debug) printf("\n\n === countdown: %d\n\n", (int)ignore_inital_cnt );
     ignore_inital_cnt--;
     return;
   }

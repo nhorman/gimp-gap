@@ -38,7 +38,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-static char *gap_main_version_fmt =  "%d.%d.%da; 2004/01/17";
+static char *gap_main_version_fmt =  "%d.%d.%d; 2004/05/06";
 
 /* revision history:
  * gimp    2.1.0a;  2004/04/05  hof: - Move Path added option to keep the original paintmode of the src_layer
