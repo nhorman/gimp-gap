@@ -1,3 +1,8 @@
+2003-06-30  Sven Neumann  <sven@gimp.org>
+
+	* gap/gap_decode_mpeg_main.c
+	* gap/resize.c: removed these unused files from CVS.
+
 2003-06-29 Wolfgang Hofer <hof@gimp.org>
         - VCR Navigator Redesign
           - replaced all the scrolled_window stuff by a gtk_table

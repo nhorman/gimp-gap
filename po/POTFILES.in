@@ -4,7 +4,6 @@
 gap/gap_arr_dialog.c
 gap/gap_base_ops.c
 gap/gap_dbbrowser_utils.c
-gap/gap_decode_mpeg_main.c
 gap/gap_decode_xanim.c
 gap/gap_filter_foreach.c
 gap/gap_filter_main.c
@@ -27,4 +26,3 @@ gap/gap_range_ops.c
 gap/gap_resi_dialog.c
 gap/gap_split.c
 gap/gap_stock.c
-gap/resize.c
