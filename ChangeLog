@@ -1,3 +1,7 @@
+2003-08-19  Abel Cheung  <maddog@linux.org.hk>
+
+	* configure.in: Removed "ga" "gl" "ro" from ALL_LINGUAS.
+
 2003-07-31  Wolfgang Hofer <hof@gimp.org>
         message text fixes for translators (# 118392)
 	* gap/gap_arr_dialog.c

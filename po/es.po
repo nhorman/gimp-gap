@@ -271,7 +271,7 @@ msgid "Framesequence shift"
 msgstr "Desplazamiento de secuencia de fotogramas"
 
 #: gap/gap_base_ops.c:1667
-#, c-format
+#, fuzzy, c-format
 msgid "Renumber Frames (%ld)"
 msgstr "Renumerar fotogramas (%ld/%ld)"
 
