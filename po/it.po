@@ -16,8 +16,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gimp 2.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-02-06 12:48+0100\n"
-"PO-Revision-Date: 2005-02-06 14:17+0100\n"
+"POT-Creation-Date: 2005-02-28 22:27+0100\n"
+"PO-Revision-Date: 2005-02-28 22:28+0100\n"
 "Last-Translator: Marco Ciampa <ciampix@libero.it>\n"
 "Language-Team: gimp.linux.it\n"
 "MIME-Version: 1.0\n"
@@ -1390,7 +1390,7 @@ msgstr "Applica variabile"
 
 #: ../gap/gap_filter_main.c:126
 msgid "<Image>/Filters/Filter all Layers..."
-msgstr "<Image>/Filtri/Animazioni/Filtra tutti i livelli..."
+msgstr "<Image>/Filtri/Filtra tutti i livelli..."
 
 #: ../gap/gap_fmac_main.c:211
 msgid "<Image>/Filters/Filtermacro..."
@@ -6023,7 +6023,8 @@ msgstr ""
 
 #: ../gap/gap_story_dialog.c:5914
 msgid "Master audio samplerate for the resulting video in samples/sec."
-msgstr "Velocità campionamento principale del video risultante in campioni/sec."
+msgstr ""
+"Velocità campionamento principale del video risultante in campioni/sec."
 
 #: ../gap/gap_story_dialog.c:5930
 msgid "Master audio volume, where 1.0 keeps original volume"
@@ -6090,11 +6091,11 @@ msgstr ""
 #. accept unsupported lines (with just a warning)
 #. * because the file has correct Header
 #.
-#: ../gap/gap_story_file.c:2168 ../gap/gap_story_file.c:2175
+#: ../gap/gap_story_file.c:2171 ../gap/gap_story_file.c:2178
 msgid "Unsupported line was igonored"
 msgstr "La linea non supportata è stata ignorata"
 
-#: ../gap/gap_story_file.c:2346
+#: ../gap/gap_story_file.c:2349
 #, c-format
 msgid ""
 "the passed filename %s has irrelevant content or could not be opened by the "
@@ -6473,7 +6474,9 @@ msgstr "Posizionamento esatto"
 msgid ""
 "ON: emulate seek operations by seqeuntial reads, even when videoindex is "
 "available"
-msgstr "ACCESO: emula il posizionamento assoluto con letture sequenziali, anche quando è disponibile l'indice video"
+msgstr ""
+"ACCESO: emula il posizionamento assoluto con letture sequenziali, anche "
+"quando è disponibile l'indice video"
 
 #. the Aspect Ratio Label(s)
 #: ../gap/gap_vex_dialog.c:2224
@@ -6812,85 +6815,85 @@ msgstr ""
 msgid "encoding_video_frame_%06d"
 msgstr "codifica_video_frame_%06d"
 
-#: ../libgapvidutil/gap_gve_story.c:1232
+#: ../libgapvidutil/gap_gve_story.c:1251
 #, c-format
 msgid "cant load:  %s to memory"
 msgstr "impossibile caricare:  %s in memoria"
 
-#: ../libgapvidutil/gap_gve_story.c:1536
+#: ../libgapvidutil/gap_gve_story.c:1555
 msgid "checking audio peaks"
 msgstr "controllo picchi audio"
 
-#: ../libgapvidutil/gap_gve_story.c:1558
+#: ../libgapvidutil/gap_gve_story.c:1577
 msgid "writing composite audiofile"
 msgstr "scrittura file audio composito"
 
-#: ../libgapvidutil/gap_gve_story.c:1571
+#: ../libgapvidutil/gap_gve_story.c:1590
 #, c-format
 msgid "cant write audio to file: %s "
 msgstr "impossibile scrivere l'audio su file: %s"
 
-#: ../libgapvidutil/gap_gve_story.c:1578 ../vid_common/gap_cme_gui.c:1247
+#: ../libgapvidutil/gap_gve_story.c:1597 ../vid_common/gap_cme_gui.c:1247
 #: ../vid_common/gap_cme_gui.c:1413
 msgid "ready"
 msgstr "pronto"
 
-#: ../libgapvidutil/gap_gve_story.c:2002
+#: ../libgapvidutil/gap_gve_story.c:2021
 msgid "extracting audio to tmp audiofile"
 msgstr "estrazione audio in file audio tmp"
 
-#: ../libgapvidutil/gap_gve_story.c:2007
+#: ../libgapvidutil/gap_gve_story.c:2026
 msgid "seeking audio"
 msgstr "posizionamento audio"
 
-#: ../libgapvidutil/gap_gve_story.c:2218
+#: ../libgapvidutil/gap_gve_story.c:2237
 #, c-format
 msgid "file not found:  %s for audioinput"
 msgstr "file non trovato:  %s per l'input audio"
 
-#: ../libgapvidutil/gap_gve_story.c:2333 ../libgapvidutil/gap_gve_story.c:2471
+#: ../libgapvidutil/gap_gve_story.c:2352 ../libgapvidutil/gap_gve_story.c:2490
 msgid "converting audio (via external programm)"
 msgstr "conversione audio (tramite programma esterno)"
 
-#: ../libgapvidutil/gap_gve_story.c:2392 ../libgapvidutil/gap_gve_story.c:2520
+#: ../libgapvidutil/gap_gve_story.c:2411 ../libgapvidutil/gap_gve_story.c:2539
 #, c-format
 msgid "cant use file:  %s as audioinput"
 msgstr "impossibile usare il file:  %s come file input audio"
 
-#: ../libgapvidutil/gap_gve_story.c:2409 ../libgapvidutil/gap_gve_story.c:2822
+#: ../libgapvidutil/gap_gve_story.c:2428 ../libgapvidutil/gap_gve_story.c:2841
 #, c-format
 msgid "ERROR file: %s is not a supported videoformat"
 msgstr "ERRORE file: %s non è un formato video supportato"
 
-#: ../libgapvidutil/gap_gve_story.c:2847
+#: ../libgapvidutil/gap_gve_story.c:2866
 #, c-format
 msgid "loading error on animimage:  %s"
 msgstr "errore nel caricare immagine animata: %s"
 
-#: ../libgapvidutil/gap_gve_story.c:2865
+#: ../libgapvidutil/gap_gve_story.c:2884
 #, c-format
 msgid "imagefile not found:  %s"
 msgstr "file immagine non trovato:  %s"
 
-#: ../libgapvidutil/gap_gve_story.c:2976
+#: ../libgapvidutil/gap_gve_story.c:2995
 #, c-format
 msgid "no framefile(s) found at:  %s"
 msgstr "nessun file frame trovato su:  %s"
 
-#: ../libgapvidutil/gap_gve_story.c:3585
+#: ../libgapvidutil/gap_gve_story.c:3604
 #, c-format
 msgid "analyze line %d (out of %d)"
 msgstr "analizza linea %d (di %d)"
 
-#: ../libgapvidutil/gap_gve_story.c:3702
+#: ../libgapvidutil/gap_gve_story.c:3721
 msgid "No Frames or Images found ...."
 msgstr "Non è stata trovata nessuna immagine o frame..."
 
-#: ../libgapvidutil/gap_gve_story.c:4763
+#: ../libgapvidutil/gap_gve_story.c:4782
 msgid "Seek Inputvideoframe..."
 msgstr "Avanzamento frame video input..."
 
-#: ../libgapvidutil/gap_gve_story.c:4768
+#: ../libgapvidutil/gap_gve_story.c:4787
 msgid "Continue Encoding..."
 msgstr "Continua la codifica..."
 
