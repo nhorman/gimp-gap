@@ -1,3 +1,13 @@
+2003-09-13  Sven Neumann  <sven@gimp.org>
+
+	* libwavplayclient/client.[ch]
+	* libwavplayclient/msg.c
+	* libwavplayclient/procterm.c
+	* libwavplayclient/wavfile.c
+	* libwavplayclient/wavfile.[ch]: removed $Log keyword from there
+	files together with the cvs log that was inserted when I did my
+	last commit. It broke the build :(
+
 2003-09-08  Sven Neumann  <sven@gimp.org>
 
 	* gap/gap_player_main.c

@@ -7,73 +7,17 @@
  *	it under the terms of the GNU General Public License as published by
  *	the Free Software Foundation; either version 2, or (at your option)
  *	any later version.
- *	
+ *
  *	This program is distributed in the hope that it will be useful,
  *	but WITHOUT ANY WARRANTY; without even the implied warranty of
  *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *	GNU General Public License for more details.
- *	
+ *
  *	This code was originally written to manipulate Windoze .WAV files
- *	under i386 Linux. Please send any bug reports or requests for 
+ *	under i386 Linux. Please send any bug reports or requests for
  *	enhancements to : erikd@zip.com.au
  *
  * 2003/09/07 (hof) changed sys_errlist[errno] to g_strerror(errno)
- *	
- * $Log$
- * Revision 1.1  2003/09/08 08:23:25  neo
- * 2003-09-08  Sven Neumann  <sven@gimp.org>
- *
- * 	* gap/gap_player_main.c
- * 	* gap/gap_name2layer_main.c: fixed harmless but annoying compiler
- * 	warnings.
- *
- * 	* libwavplayclient/client.c
- * 	* libwavplayclient/wavfile.c: include <glib.h> for g_strerror(),
- * 	removed redefinition of TRUE/FALSE.
- *
- * 2003-09-07  Wolfgang Hofer <hof@gimp.org>
- *
- * 	Playback Module:
- *  	  added ctrl/alt modifiers for callback on_go_button_clicked
- *  	  added optional audiosupport based on wavplay (Linux only)
- *  	    (Dont know how to make/install libwavplayclient as library
- *  	     the gap/wpc_* files are just a workaround to compile without
- * 	     libwavplayclient)
- *
- *  	VCR-Navigator:
- *  	 bugfix: show waiting cursor at long running ops
- *  		 to set range begin/end frame
- *  	 bugfix: frame timing labels did always show time at 24.0 fps
- *  		 now use the current framerate as it should be.
- *  	* configure.in	      new parameter: --disable-audiosupport
- *  	* gap/Makefile.am     variable GAP_AUDIOSUPPORT (for conditional audiosupport)
- *  	* gap/gap_player_dialog.c
- *  	* gap/gap_vin.c (force timezoom value >= 1 in case .vin has 0 value)
- *  	* gap/gap_navigator_dialog.c
- *  	* gap/gap_mpege.c	     (bugfix for #121145 translation text)
- *  	* gap/gap_lib.c [.h]
- *  	* gap/gap_timeconv.c [.h]
- *  	new files ()
- *  	* gap/wpc_client.c
- *  	* gap/wpc_lib.h
- *  	* gap/wpc_msg.c
- *  	* gap/wpc_procterm.c
- *  	* gap/wpc_wavfile.c
- *  	* libwavplayclient/wpc_client.c
- *  	* libwavplayclient/wpc_lib.h
- *  	* libwavplayclient/wpc_msg.c
- *  	* libwavplayclient/wpc_procterm.c
- *  	* libwavplayclient/wpc_wavfile.c
- *  	* libwavplayclient/COPYING
- *  	* libwavplayclient/Makefile.am       /* Not finished and currently not OK */
- *  	* libwavplayclient/README
- *  	* libwavplayclient/client.c
- *  	* libwavplayclient/client.h
- *  	* libwavplayclient/msg.c
- *  	* libwavplayclient/procterm.c
- *  	* libwavplayclient/wavfile.c
- *  	* libwavplayclient/wavfile.h
- *  	* libwavplayclient/wavplay.h
  *
  * Revision 1.1.1.1  1999/11/21 19:50:56  wwg
  * Import wavplay-1.3 into CVS
@@ -87,10 +31,10 @@
  * Initial revision
  *
  *	change log:
- *	16.02.97 -	Erik de Castro Lopo		
+ *	16.02.97 -	Erik de Castro Lopo
  *	Ported from MS-Windows to Linux for Warren W. Gay's
  *	wavplay project.
- */	
+ */
 static const char rcsid[] = "@(#)wavfile.c $Revision$";
 
 #include  	<stdio.h>
@@ -265,7 +209,7 @@ int  WaveReadHeader  (int wavefile, int* channels, u_long* samplerate, int* samp
 	*samplerate = waveformat.dwSamplesPerSec ;
 	*samplebits = waveformat.wBitsPerSample ;
 	*samples    = databytes / waveformat.wBlockAlign ;
-	
+
 	*datastart  = ((u_long) (ptr + 4)) - ((u_long) (&(buffer[0]))) ;
 
 	if (waveformat.dwSamplesPerSec != waveformat.dwAvgBytesPerSec / waveformat.wBlockAlign) {
@@ -288,7 +232,7 @@ char*  WaveFileError (int  errno)
 {	switch (errno)
 	{	case	WW_BADOUTPUTFILE	: return "Bad output file.\n" ;
 		case	WW_BADWRITEHEADER 	: return "Not able to write WAV header.\n" ;
-		
+
 		case	WR_BADALLOC			: return "Not able to allocate memory.\n" ;
 		case	WR_BADSEEK        	: return "fseek failed.\n" ;
 		case	WR_BADRIFF        	: return "Not able to find 'RIFF' file marker.\n" ;
@@ -300,7 +244,7 @@ char*  WaveFileError (int  errno)
 		case	WR_BADFORMATDATA	: return "Format data questionable.\n" ;
 		default           			:  return "No error\n" ;
 	} ;
-	return	NULL ;	
+	return	NULL ;
 } ; /* WaveFileError*/
 #endif
 /*===========================================================================================*/
