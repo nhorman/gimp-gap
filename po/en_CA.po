@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: gimp-gap\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-03-15 19:26-0500\n"
-"PO-Revision-Date: 2005-03-15 20:40-0400\n"
+"PO-Revision-Date: 2005-03-17 20:40-0400\n"
 "Last-Translator: Adam Weinberger <adamw@gnome.org>\n"
 "Language-Team: Canadian English <adamw@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -6815,7 +6815,7 @@ msgstr "no framefile(s) found at:  %s"
 #: ../libgapvidutil/gap_gve_story.c:3604
 #, c-format
 msgid "analyze line %d (out of %d)"
-msgstr "analyze line %d (out of %d)"
+msgstr "analyse line %d (out of %d)"
 
 #: ../libgapvidutil/gap_gve_story.c:3720
 msgid "No Frames or Images found ...."
