@@ -8,8 +8,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gimp-gap\n"
-"POT-Creation-Date: 2003-09-24 11:08+0200\n"
-"PO-Revision-Date: 2003-09-24 11:10+0200\n"
+"POT-Creation-Date: 2003-10-02 02:48+0200\n"
+"PO-Revision-Date: 2003-10-02 02:50+0200\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -17,31 +17,62 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Button  to invoke fontbrowser
-#: gap/gap_arr_dialog.c:427
+#: gap/gap_arr_dialog.c:428
 msgid "Font Browser"
 msgstr "Typsnittsbläddrare"
 
 #. Button  to invoke filebrowser
-#: gap/gap_arr_dialog.c:508 gap/gap_player_dialog.c:3408
+#: gap/gap_arr_dialog.c:509 gap/gap_player_dialog.c:3353
 msgid "File Browser"
 msgstr "Filbläddrare"
 
 #. parameter settings
-#: gap/gap_arr_dialog.c:1105
+#: gap/gap_arr_dialog.c:1106
 msgid "Enter Values"
 msgstr "Ange värden"
 
-#: gap/gap_arr_dialog.c:1125 gap/gap_arr_dialog.c:1242
+#: gap/gap_arr_dialog.c:1126 gap/gap_arr_dialog.c:1243
 msgid "Value:"
 msgstr "Värde:"
 
-#: gap/gap_arr_dialog.c:1425
+#: gap/gap_arr_dialog.c:1426
 msgid "Press Button"
 msgstr "Tryck på knapp"
 
-#: gap/gap_arr_dialog.c:1426
+#: gap/gap_arr_dialog.c:1427
 msgid "Select"
 msgstr "Markera"
+
+#: gap/gap_arr_dialog.c:1562
+#, c-format
+msgid ""
+"Directory '%s'\n"
+"already exists"
+msgstr ""
+"Katalogen \"%s\"\n"
+"finns redan"
+
+#: gap/gap_arr_dialog.c:1567
+#, c-format
+msgid ""
+"File '%s'\n"
+"already exists"
+msgstr ""
+"Filen \"%s\"\n"
+"finns redan"
+
+#: gap/gap_arr_dialog.c:1568
+msgid "Overwrite"
+msgstr "Skriv över"
+
+#: gap/gap_arr_dialog.c:1579 gap/gap_decode_xanim.c:363 gap/gap_lib.c:1325
+#: gap/gap_range_ops.c:1292
+msgid "GAP Question"
+msgstr "GAP-fråga"
+
+#: gap/gap_arr_dialog.c:1580
+msgid "File Overwrite Warning"
+msgstr "Varning för filöverskrivning"
 
 #: gap/gap_base_ops.c:84
 msgid "Decreasing Density by deleting Frames..."
@@ -152,9 +183,10 @@ msgstr "Ändra bildrutedensitet"
 #. the start frame scale_entry
 #. table col, row
 #: gap/gap_base_ops.c:1210 gap/gap_base_ops.c:1362 gap/gap_base_ops.c:1560
-#: gap/gap_decode_xanim.c:240 gap/gap_mod_layer.c:167 gap/gap_mov_dialog.c:567
-#: gap/gap_mpege.c:285 gap/gap_onion_dialog.c:899 gap/gap_player_dialog.c:3848
-#: gap/gap_range_ops.c:281 gap/gap_range_ops.c:471 gap/gap_range_ops.c:630
+#: gap/gap_decode_xanim.c:240 gap/gap_mod_layer.c:167
+#: gap/gap_mov_dialog.c:2625 gap/gap_mpege.c:285 gap/gap_onion_dialog.c:899
+#: gap/gap_player_dialog.c:3793 gap/gap_range_ops.c:281
+#: gap/gap_range_ops.c:471 gap/gap_range_ops.c:630
 msgid "From Frame:"
 msgstr "Från bildruta:"
 
@@ -165,9 +197,10 @@ msgstr "Det påverkade intervallet börjar vid detta bildrutenumret"
 #. the end frame scale_entry
 #. table col, row
 #: gap/gap_base_ops.c:1218 gap/gap_base_ops.c:1370 gap/gap_base_ops.c:1568
-#: gap/gap_decode_xanim.c:250 gap/gap_mod_layer.c:175 gap/gap_mov_dialog.c:582
-#: gap/gap_mpege.c:295 gap/gap_onion_dialog.c:906 gap/gap_player_dialog.c:3855
-#: gap/gap_range_ops.c:288 gap/gap_range_ops.c:479 gap/gap_range_ops.c:638
+#: gap/gap_decode_xanim.c:250 gap/gap_mod_layer.c:175
+#: gap/gap_mov_dialog.c:2643 gap/gap_mpege.c:295 gap/gap_onion_dialog.c:906
+#: gap/gap_player_dialog.c:3800 gap/gap_range_ops.c:288
+#: gap/gap_range_ops.c:479 gap/gap_range_ops.c:638
 msgid "To Frame:"
 msgstr "Till bildruta:"
 
@@ -556,11 +589,6 @@ msgstr "Skriv över bildrutor"
 msgid "Overwrite All"
 msgstr "Skriv över allt"
 
-#: gap/gap_decode_xanim.c:363 gap/gap_lib.c:1325 gap/gap_player_dialog.c:314
-#: gap/gap_range_ops.c:1292
-msgid "GAP Question"
-msgstr "GAP-fråga"
-
 #: gap/gap_decode_xanim.c:364
 msgid "File already exists"
 msgstr "Filen finns redan"
@@ -777,87 +805,87 @@ msgstr ""
 "på samma AnimFrame-bild åt gången\n"
 "Låser IMAGE_ID:%d\n"
 
-#: gap/gap_main.c:543
+#: gap/gap_main.c:544
 msgid "<Image>/Video/Go To/Next Frame"
 msgstr "<Image>/Video/Gå till/Nästa bildruta"
 
-#: gap/gap_main.c:555
+#: gap/gap_main.c:556
 msgid "<Image>/Video/Go To/Previous Frame"
 msgstr "<Image>/Video/Gå till/Föregående bildruta"
 
-#: gap/gap_main.c:567
+#: gap/gap_main.c:568
 msgid "<Image>/Video/Go To/First Frame"
 msgstr "<Image>/Video/Gå till/Första bildrutan"
 
-#: gap/gap_main.c:579
+#: gap/gap_main.c:580
 msgid "<Image>/Video/Go To/Last Frame"
 msgstr "<Image>/Video/Gå till/Sista bildrutan"
 
-#: gap/gap_main.c:591
+#: gap/gap_main.c:592
 msgid "<Image>/Video/Go To/Any Frame..."
 msgstr "<Image>/Video/Gå till/Någon bildruta..."
 
-#: gap/gap_main.c:603
+#: gap/gap_main.c:604
 msgid "<Image>/Video/Delete Frames..."
 msgstr "<Image>/Video/Ta bort bildrutor..."
 
-#: gap/gap_main.c:615
+#: gap/gap_main.c:616
 msgid "<Image>/Video/Duplicate Frames..."
 msgstr "<Image>/Video/Duplicera bildrutor..."
 
-#: gap/gap_main.c:632
+#: gap/gap_main.c:633
 msgid "<Image>/Video/Frames Density..."
 msgstr "<Image>/Video/Bildrutedensitet..."
 
-#: gap/gap_main.c:644
+#: gap/gap_main.c:645
 msgid "<Image>/Video/Exchange Frame..."
 msgstr "<Image>/Video/Byt ut bildruta..."
 
-#: gap/gap_main.c:656
+#: gap/gap_main.c:657
 msgid "<Image>/Video/Move Path..."
 msgstr "<Image>/Video/Flyttslinga..."
 
-#: gap/gap_main.c:727
+#: gap/gap_main.c:728
 msgid "<Image>/Video/Frames to Image..."
 msgstr "<Image>/Video/Bildrutor till bild..."
 
-#: gap/gap_main.c:739
+#: gap/gap_main.c:740
 msgid "<Image>/Video/Frames Flatten..."
 msgstr "<Image>/Video/Utplattning av bildrutor..."
 
-#: gap/gap_main.c:751
+#: gap/gap_main.c:752
 msgid "<Image>/Video/Frames LayerDel..."
 msgstr "<Image>/Video/Lagerborttagning för bildrutor..."
 
-#: gap/gap_main.c:775
+#: gap/gap_main.c:776
 msgid "<Image>/Video/Frames Convert..."
 msgstr "<Image>/Video/Bildrutekonvertering..."
 
-#: gap/gap_main.c:787
+#: gap/gap_main.c:788
 msgid "<Image>/Video/Frames Resize..."
 msgstr "<Image>/Video/Storleksändring av bildrutor..."
 
-#: gap/gap_main.c:799
+#: gap/gap_main.c:800
 msgid "<Image>/Video/Frames Crop..."
 msgstr "<Image>/Video/Bildrutebeskärning..."
 
-#: gap/gap_main.c:811
+#: gap/gap_main.c:812
 msgid "<Image>/Video/Frames Scale..."
 msgstr "<Image>/Video/Bildruteskalning..."
 
-#: gap/gap_main.c:823
+#: gap/gap_main.c:824
 msgid "<Image>/Video/Split Image to Frames..."
 msgstr "<Image>/Video/Dela bild till bildrutor..."
 
-#: gap/gap_main.c:836
+#: gap/gap_main.c:837
 msgid "<Image>/Video/Frame Sequence Shift..."
 msgstr "<Image>/Video/Bildrutesekvensskifte..."
 
-#: gap/gap_main.c:848
+#: gap/gap_main.c:849
 msgid "<Image>/Video/Frames Renumber..."
 msgstr "<Image>/Video/Bildruteomnumrering..."
 
-#: gap/gap_main.c:860
+#: gap/gap_main.c:861
 msgid "<Image>/Video/Frames Modify..."
 msgstr "<Image>/Video/Bildrutemodifiering..."
 
@@ -1065,7 +1093,7 @@ msgstr ""
 msgid "Frames Modify"
 msgstr "Bildrutemodifiering"
 
-#: gap/gap_mod_layer.c:232 gap/gap_player_dialog.c:397
+#: gap/gap_mod_layer.c:232 gap/gap_player_dialog.c:342
 msgid "Settings"
 msgstr "Inställningar"
 
@@ -1096,176 +1124,551 @@ msgstr "Modifierar bildrutor/lager..."
 msgid "No selected Layer in start frame"
 msgstr "Inget markerat lager i startbildruta"
 
-#: gap/gap_mov_dialog.c:271
+#: gap/gap_mov_dialog.c:370
 msgid "Normal"
 msgstr "Normal"
 
-#: gap/gap_mov_dialog.c:272
+#: gap/gap_mov_dialog.c:371
 msgid "Dissolve"
 msgstr "Lös upp"
 
-#: gap/gap_mov_dialog.c:273
+#: gap/gap_mov_dialog.c:372
 msgid "Multiply"
 msgstr "Multiplicera"
 
-#: gap/gap_mov_dialog.c:274
+#: gap/gap_mov_dialog.c:373
 msgid "Screen"
 msgstr "Skärm"
 
-#: gap/gap_mov_dialog.c:275
+#: gap/gap_mov_dialog.c:374
 msgid "Overlay"
 msgstr "Överlagring"
 
-#: gap/gap_mov_dialog.c:276
+#: gap/gap_mov_dialog.c:375
 msgid "Difference"
 msgstr "Skillnad"
 
-#: gap/gap_mov_dialog.c:277
+#: gap/gap_mov_dialog.c:376
 msgid "Addition"
 msgstr "Addition"
 
-#: gap/gap_mov_dialog.c:278
+#: gap/gap_mov_dialog.c:377
 msgid "Subtract"
 msgstr "Subtrahera"
 
-#: gap/gap_mov_dialog.c:279
+#: gap/gap_mov_dialog.c:378
 msgid "Darken Only"
 msgstr "Gör endast mörkare"
 
-#: gap/gap_mov_dialog.c:280
+#: gap/gap_mov_dialog.c:379
 msgid "Lighten Only"
 msgstr "Gör endast ljusare"
 
-#: gap/gap_mov_dialog.c:281
+#: gap/gap_mov_dialog.c:380
 msgid "Hue"
 msgstr "Nyans"
 
-#: gap/gap_mov_dialog.c:282
+#: gap/gap_mov_dialog.c:381
 msgid "Saturation"
 msgstr "Mättnad"
 
-#: gap/gap_mov_dialog.c:283
+#: gap/gap_mov_dialog.c:382
 msgid "Color"
 msgstr "Färg"
 
-#: gap/gap_mov_dialog.c:284
+#: gap/gap_mov_dialog.c:383
 msgid "Value"
 msgstr "Värde"
 
-#: gap/gap_mov_dialog.c:291
+#: gap/gap_mov_dialog.c:390
 msgid "Left  Top"
 msgstr "Vänster överkant"
 
-#: gap/gap_mov_dialog.c:292
+#: gap/gap_mov_dialog.c:391
 msgid "Left  Bottom"
 msgstr "Vänster nederkant"
 
-#: gap/gap_mov_dialog.c:293
+#: gap/gap_mov_dialog.c:392
 msgid "Right Top"
 msgstr "Höger överkant"
 
-#: gap/gap_mov_dialog.c:294
+#: gap/gap_mov_dialog.c:393
 msgid "Right Bottom"
 msgstr "Höger nederkant"
 
-#: gap/gap_mov_dialog.c:295
+#: gap/gap_mov_dialog.c:394
 msgid "Center"
 msgstr "Mittpunkt"
 
 #. the playback mode checkbuttons
-#: gap/gap_mov_dialog.c:303 gap/gap_player_dialog.c:4048
+#: gap/gap_mov_dialog.c:402 gap/gap_player_dialog.c:3993
 msgid "Loop"
 msgstr "Slinga"
 
-#: gap/gap_mov_dialog.c:304
+#: gap/gap_mov_dialog.c:403
 msgid "Loop Reverse"
 msgstr "Baklänges slinga"
 
-#: gap/gap_mov_dialog.c:305
+#: gap/gap_mov_dialog.c:404
 msgid "Once"
 msgstr "En gång"
 
-#: gap/gap_mov_dialog.c:306
+#: gap/gap_mov_dialog.c:405
 msgid "OnceReverse"
 msgstr "En gång baklänges"
 
-#: gap/gap_mov_dialog.c:307 gap/gap_player_dialog.c:4076
+#: gap/gap_mov_dialog.c:406 gap/gap_player_dialog.c:4021
 msgid "PingPong"
 msgstr "Ping-pong"
 
-#: gap/gap_mov_dialog.c:308
+#: gap/gap_mov_dialog.c:407
 msgid "None"
 msgstr "Ingen"
 
-#: gap/gap_mov_dialog.c:309
+#: gap/gap_mov_dialog.c:408
 msgid "Frame Loop"
 msgstr "Bildruteslinga"
 
-#: gap/gap_mov_dialog.c:310
+#: gap/gap_mov_dialog.c:409
 msgid "Frame Loop Reverse"
 msgstr "Bildruteslinga baklänges"
 
-#: gap/gap_mov_dialog.c:311
+#: gap/gap_mov_dialog.c:410
 msgid "Frame Once"
 msgstr "Bildruta en gång"
 
-#: gap/gap_mov_dialog.c:312
+#: gap/gap_mov_dialog.c:411
 msgid "Frame OnceReverse"
 msgstr "Bildruta en gång baklänges"
 
-#: gap/gap_mov_dialog.c:313
+#: gap/gap_mov_dialog.c:412
 msgid "Frame PingPong"
 msgstr "Bildrutepingpong"
 
-#: gap/gap_mov_dialog.c:314
+#: gap/gap_mov_dialog.c:413
 msgid "Frame None"
 msgstr "Bildruta ingen"
 
-#: gap/gap_mov_dialog.c:472
+#: gap/gap_mov_dialog.c:590
 msgid "Move Path"
 msgstr "Flyttslinga"
 
-#: gap/gap_mov_dialog.c:501
+#: gap/gap_mov_dialog.c:619
 msgid "Show PreviewFrame with Selected SrcLayer at current Controlpoint"
 msgstr ""
 "Visa förhandsgranskningsbildruta med valt källager vid aktuell kontrollpunkt"
 
-#: gap/gap_mov_dialog.c:512
+#: gap/gap_mov_dialog.c:630
 msgid "Generate Animated Preview as multilayer image"
 msgstr "Generera animerad förhandsgranskning som flerlagerbild"
 
 #. parameter settings
-#: gap/gap_mov_dialog.c:530
+#: gap/gap_mov_dialog.c:648
 msgid "Copy moving source-layer(s) into frames"
 msgstr "Kopiera flyttande källager till bildrutor"
 
+#. the frame
+#: gap/gap_mov_dialog.c:675 gap/gap_mov_dialog.c:2000
+msgid "Source Select"
+msgstr "Källval"
+
+#. the frame
+#: gap/gap_mov_dialog.c:683 gap/gap_mov_dialog.c:2176
+msgid "Advanced Settings"
+msgstr "Avancerade inställningar"
+
+#: gap/gap_mov_dialog.c:754
+msgid ""
+"No Source Image was selected\n"
+"(Please open a 2nd Image of the same type before opening Move Path)"
+msgstr ""
+"Ingen källbild valdes\n"
+"(Öppna en andra bild av samma typ innan flyttslinga öppnas)"
+
+#: gap/gap_mov_dialog.c:849
+msgid "Object on empty frames"
+msgstr "Objekt på tomma bildrutor"
+
+#: gap/gap_mov_dialog.c:850
+msgid "Object on one frame"
+msgstr "Objekt på en bildruta"
+
+#: gap/gap_mov_dialog.c:851
+msgid "Exact Object on frames"
+msgstr "Extrahera objekt på bildrutor"
+
+#: gap/gap_mov_dialog.c:881
+msgid "Anim Preview Mode"
+msgstr "Animerat förhandsgranskningsläge"
+
+#: gap/gap_mov_dialog.c:889
+msgid "Scale Preview"
+msgstr "Skala förhandsgranskning"
+
+#: gap/gap_mov_dialog.c:890
+msgid "Scale down size of the generated animated preview (in %)"
+msgstr ""
+"Skala ned storleken på den genererade animerade förhandsgranskningen (i %)"
+
+#: gap/gap_mov_dialog.c:898
+msgid "Framerate"
+msgstr "Bildrutehastighet"
+
+#: gap/gap_mov_dialog.c:899
+msgid "Framerate to use in the animated preview in frames/sec"
+msgstr ""
+"Bildrutehastighet att använda i den animerade förhandsgranskningen i "
+"bildrutor/sek"
+
+#: gap/gap_mov_dialog.c:913
+msgid "Copy to Video Buffer"
+msgstr "Kopiera till videobuffert"
+
+#: gap/gap_mov_dialog.c:914
+msgid ""
+"Save all single frames of animated preview to video buffer\n"
+"(configured in gimprc by video-paste-dir and video-paste-basename)"
+msgstr ""
+"Spara alla enstaka bildrutor i animerad förhandsgranskning till "
+"videobuffert\n"
+"(konfigurerad i gimprc av video-paste-dir och video-paste-basename)"
+
+#: gap/gap_mov_dialog.c:918
+msgid "Move Path Animated Preview"
+msgstr "Animerad förhandsgranskning av flyttslinga"
+
+# src/menus.c:311
+#: gap/gap_mov_dialog.c:919
+msgid "Options"
+msgstr "Alternativ"
+
+#: gap/gap_mov_dialog.c:964
+msgid "Generate Animated Preview failed\n"
+msgstr "Generering av animerad förhandsgranskning misslyckades\n"
+
+#. filesel is already open
+#: gap/gap_mov_dialog.c:1254
+msgid "Load Path Points from file"
+msgstr "Läs in slingpunkter från fil"
+
+#. filesel is already open
+#: gap/gap_mov_dialog.c:1291
+msgid "Save Path Points to file"
+msgstr "Spara slingpunkter till fil"
+
+#: gap/gap_mov_dialog.c:1862
+#, c-format
+msgid "Current Point: [ %3d ] of [ %3d ]"
+msgstr "Aktuell punkt: [ %3d ] av [ %3d ]"
+
+#: gap/gap_mov_dialog.c:1940
+#, c-format
+msgid ""
+"ERROR: Could not open Controlpoints\n"
+"filename: '%s'\n"
+"%s"
+msgstr ""
+"FEL: Kunde inte öppna kontrollpunkter\n"
+"filnamn: \"%s\"\n"
+"%s"
+
+#: gap/gap_mov_dialog.c:1946
+#, c-format
+msgid ""
+"ERROR: Could not read Controlpoints\n"
+"filename: '%s'\n"
+"(Is not a valid Controlpoint File)"
+msgstr ""
+"FEL: Kunde inte läsa kontrollpunkter\n"
+"filnamn: \"%s\"\n"
+"(Är inte en giltig kontrollpunktsfil)"
+
+#: gap/gap_mov_dialog.c:1971
+#, c-format
+msgid ""
+"Failed to write Controlpointfile\n"
+"filename: '%s':\n"
+"%s"
+msgstr ""
+"Misslyckades med att skriva kontrollpunktsfil\n"
+"filnamn: \"%s\":\n"
+"%s"
+
+#. Source Layer menu
+#: gap/gap_mov_dialog.c:2010
+msgid "Source Image/Layer:"
+msgstr "Källbild/lager:"
+
+#: gap/gap_mov_dialog.c:2020
+msgid "Source Object to insert into Frame Range"
+msgstr "Källobjekt att infoga i bildruteintervall"
+
+#. Paintmode menu
+#: gap/gap_mov_dialog.c:2035
+msgid "Mode:"
+msgstr "Läge:"
+
+#: gap/gap_mov_dialog.c:2044
+msgid "Paintmode"
+msgstr "Ritläge"
+
+#. Loop Stepmode menu (Label)
+#: gap/gap_mov_dialog.c:2061
+msgid "Stepmode:"
+msgstr "Stegläge:"
+
+#: gap/gap_mov_dialog.c:2092
+msgid "How to fetch the next SrcLayer at the next handled frame"
+msgstr "Hur nästa källager ska hämtas vid nästa hanterade bildruta"
+
+#. StepSpeedFactor
+#. table col, row
+#: gap/gap_mov_dialog.c:2098
+msgid "SpeedFactor:"
+msgstr "Hastighetsfaktor:"
+
 #. label text
 #. scalesize spinsize
-#. value
+#. initial value
 #. lower, upper
 #. step, page
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: gap/gap_mov_dialog.c:575 gap/gap_onion_dialog.c:924
+#: gap/gap_mov_dialog.c:2106
+msgid ""
+"Step Speed Factor\n"
+"Source and Targetframes step synchron at value 1.0\n"
+"A Value of 0.5 will step the Source half time slower\n"
+"(1 Sourcestep only at every 2.nd Targetframe)"
+msgstr ""
+"Steghastighetsfaktor\n"
+"Käll- och målbildrutor stegar synkront vid värdet 1,0\n"
+"Ett värde på 0,5 kommer att stega källan hälften så\n"
+"långsamt (1 källsteg endast varannan målbildruta)"
+
+#. Source Image Handle menu
+#: gap/gap_mov_dialog.c:2119
+msgid "Handle:"
+msgstr "Handtag:"
+
+#: gap/gap_mov_dialog.c:2137
+msgid "How to place the SrcLayer at Controlpoint Coordinates"
+msgstr "Hur källagret ska placeras vid kontrollpunktskoordinater"
+
+#. toggle Tracelayer
+#: gap/gap_mov_dialog.c:2187
+msgid "Tracelayer"
+msgstr "Spårningslager"
+
+#: gap/gap_mov_dialog.c:2191
+msgid "Create an additional Trace Layer in all handled Frames"
+msgstr "Skapa ett ytterligare spårningslager i alla hanterade bildrutor"
+
+#. TraceOpacityInitial
+#. table col, row
+#: gap/gap_mov_dialog.c:2203
+msgid "TraceOpacity1:"
+msgstr "Spårningsopacitet1:"
+
+#. label text
+#. scalesize spinsize
+#. initial value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:2211
+msgid "Initial Opacity of the Tracelayer"
+msgstr "Ursprunglig opacitet för spårningslagret"
+
+#. TraceOpacityDescending
+#. table col, row
+#: gap/gap_mov_dialog.c:2221
+msgid "TraceOpacity2:"
+msgstr "Spårningsopacitet2:"
+
+#. label text
+#. scalesize spinsize
+#. initial value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:2229
+msgid "Descending Opacity of the Tracelayer"
+msgstr "Avtagande opacitet för spårningslagret"
+
+#. TweenSteps
+#. table col, row
+#: gap/gap_mov_dialog.c:2239
+msgid "TweenSteps:"
+msgstr "Tvillingssteg:"
+
+#. label text
+#. scalesize spinsize
+#. initial value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:2247
+msgid ""
+"Calculate n Steps between 2 Frames\n"
+"The Rendered Tweensteps are collected in a Tweenlayer\n"
+"that will be added to the handeld destination frames\n"
+"If Value is 0, No tweens are calculated\n"
+"and no Tweenlayers are created"
+msgstr ""
+"Beräkna n steg mellan två bildrutor\n"
+"De renderade mellanstegen samlas i ett mellanlager\n"
+"som kommer att läggas till de hanterade målbildrutorna\n"
+"Om värdet är 0 beräknas inga mellanbildrutor\n"
+"och inga mellanlager skapas"
+
+#. TweenOpacityInitial
+#. table col, row
+#: gap/gap_mov_dialog.c:2262
+msgid "TweenOpacity1:"
+msgstr "Mellanopacitet:"
+
+#. label text
+#. scalesize spinsize
+#. initial value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:2270
+msgid "Initial Opacity of the Tweenlayer"
+msgstr "Ursprunglig opacitet för mellanlagret"
+
+#. TweenOpacityDescending
+#. table col, row
+#: gap/gap_mov_dialog.c:2279
+msgid "TweenOpacity2:"
+msgstr "Mellanopacitet2:"
+
+#. label text
+#. scalesize spinsize
+#. initial value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:2287
+msgid "Descending Opacity of the Tweenlayer"
+msgstr "Avtagande opacitet för mellanlagret"
+
+#. the frame
+#: gap/gap_mov_dialog.c:2329
+msgid "Edit Controlpoints"
+msgstr "Redigera kontrollpunkter"
+
+#: gap/gap_mov_dialog.c:2348
+msgid ""
+"Add Controlpoint at end\n"
+"(the last Point is duplicated)"
+msgstr ""
+"Lägg till kontrollpunkt på slutet\n"
+"(den sista punkten dupliceras)"
+
+#: gap/gap_mov_dialog.c:2367
+msgid ""
+"Insert Controlpoint\n"
+"(the current Point is duplicated)"
+msgstr ""
+"Infoga kontrollpunkt\n"
+"(den aktuella punkten dupliceras)"
+
+#: gap/gap_mov_dialog.c:2380
+msgid "Delete current Controlpoint"
+msgstr "Ta bort aktuell kontrollpunkt"
+
+#: gap/gap_mov_dialog.c:2395
+msgid "Show Previous Controlpoint"
+msgstr "Visa föregående kontrollpunkt"
+
+#: gap/gap_mov_dialog.c:2408
+msgid "Show Next Controlpoint"
+msgstr "Visa nästa kontrollpunkt"
+
+#: gap/gap_mov_dialog.c:2423
+msgid "Show First Controlpoint"
+msgstr "Visa första kontrollpunkt"
+
+#: gap/gap_mov_dialog.c:2436
+msgid "Show Last Controlpoint"
+msgstr "Visa sista kontrollpunkt"
+
+#: gap/gap_mov_dialog.c:2451
+msgid "Reset the current Controlpoint to default Values"
+msgstr "Återställ den aktuella kontrollpunkten till standardvärden"
+
+#: gap/gap_mov_dialog.c:2464
+msgid ""
+"Reset all Controlpoints to default Values but dont change the path (X/Y "
+"Values)"
+msgstr ""
+"Återställ alla kontrollpunkter till standardvärden men ändra inte slingan (X/"
+"Y-värden)"
+
+#: gap/gap_mov_dialog.c:2480
+msgid ""
+"Set Rotation for all Controlpoints to follow the shape of the path.\n"
+"(Shift: use Rotation of contolpoint 1 as offset)"
+msgstr ""
+"Ställ in rotation för alla kontrollpunkter att följa slingans kurva.\n"
+"(Skift: använd rotation för kontrollpunkt 1 som avstånd)"
+
+#: gap/gap_mov_dialog.c:2495
+msgid "Delete all Controlpoints"
+msgstr "Ta bort alla kontrollpunkter"
+
+#: gap/gap_mov_dialog.c:2511
+msgid "Load Controlpoints from file"
+msgstr "Läs in kontrollpunkter från fil"
+
+#: gap/gap_mov_dialog.c:2524
+msgid "Save Controlpoints to file"
+msgstr "Spara kontrollpunkter till fil"
+
+#. label text
+#. scalesize spinsize
+#. value
+#. lower
+#. upper
+#. step, page
+#. digits
+#. constrain
+#. lower, (unconstrained)
+#. upper (unconstrained)
+#: gap/gap_mov_dialog.c:2635 gap/gap_onion_dialog.c:924
 msgid "First handled frame"
 msgstr "Första hanterade bildruta"
 
 #. label text
 #. scalesize spinsize
 #. value
-#. lower, upper
+#. lower
+#. upper
 #. step, page
 #. digits
 #. constrain
-#. lower, upper (unconstrained)
-#: gap/gap_mov_dialog.c:590 gap/gap_onion_dialog.c:942
+#. lower, (unconstrained)
+#. upper (unconstrained)
+#: gap/gap_mov_dialog.c:2653 gap/gap_onion_dialog.c:942
 msgid "Last handled frame"
 msgstr "Senast hanterade bildruta"
 
 #. the Layerstack scale_entry
 #. table col, row
-#: gap/gap_mov_dialog.c:597 gap/gap_range_ops.c:295
+#: gap/gap_mov_dialog.c:2661 gap/gap_range_ops.c:295
 msgid "Layerstack:"
 msgstr "Lagerstack:"
 
@@ -1277,7 +1680,7 @@ msgstr "Lagerstack:"
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: gap/gap_mov_dialog.c:605
+#: gap/gap_mov_dialog.c:2669
 msgid ""
 "How to insert SrcLayer into the Dst. Frame's Layerstack\n"
 "0 means on top i.e. in front"
@@ -1286,179 +1689,31 @@ msgstr ""
 "0 betyder överst dvs. främst"
 
 #. toggle force visibility
-#: gap/gap_mov_dialog.c:617
+#: gap/gap_mov_dialog.c:2682
 msgid "Force visibility"
 msgstr "Tvinga synlighet"
 
-#: gap/gap_mov_dialog.c:621
+#: gap/gap_mov_dialog.c:2686
 msgid "Force visibility for all copied Src-Layers"
 msgstr "Tvinga synlighet för alla kopierade källager"
 
 #. toggle clip_to_image
-#: gap/gap_mov_dialog.c:630
+#: gap/gap_mov_dialog.c:2696
 msgid "Clip To Frame"
 msgstr "Klipp till bildruta"
 
-#: gap/gap_mov_dialog.c:634
+#: gap/gap_mov_dialog.c:2700
 msgid "Clip all copied Src-Layers at Frame Boundaries"
 msgstr "Klipp alla kopierade källager vid bildrutekanter"
 
-#: gap/gap_mov_dialog.c:692
-msgid ""
-"No Source Image was selected\n"
-"(Please open a 2nd Image of the same type before opening Move Path)"
-msgstr ""
-"Ingen källbild valdes\n"
-"(Öppna en andra bild av samma typ innan flyttslinga öppnas)"
-
-#: gap/gap_mov_dialog.c:790
-msgid "Object on empty frames"
-msgstr "Objekt på tomma bildrutor"
-
-#: gap/gap_mov_dialog.c:791
-msgid "Object on one frame"
-msgstr "Objekt på en bildruta"
-
-#: gap/gap_mov_dialog.c:792
-msgid "Exact Object on frames"
-msgstr "Extrahera objekt på bildrutor"
-
-#: gap/gap_mov_dialog.c:822
-msgid "Anim Preview Mode"
-msgstr "Animerat förhandsgranskningsläge"
-
-#: gap/gap_mov_dialog.c:830
-msgid "Scale Preview"
-msgstr "Skala förhandsgranskning"
-
-#: gap/gap_mov_dialog.c:831
-msgid "Scale down size of the generated animated preview (in %)"
-msgstr ""
-"Skala ned storleken på den genererade animerade förhandsgranskningen (i %)"
-
-#: gap/gap_mov_dialog.c:839
-msgid "Framerate"
-msgstr "Bildrutehastighet"
-
-#: gap/gap_mov_dialog.c:840
-msgid "Framerate to use in the animated preview in frames/sec"
-msgstr ""
-"Bildrutehastighet att använda i den animerade förhandsgranskningen i "
-"bildrutor/sek"
-
-#: gap/gap_mov_dialog.c:854
-msgid "Copy to Video Buffer"
-msgstr "Kopiera till videobuffert"
-
-#: gap/gap_mov_dialog.c:855
-msgid ""
-"Save all single frames of animated preview to video buffer\n"
-"(configured in gimprc by video-paste-dir and video-paste-basename)"
-msgstr ""
-"Spara alla enstaka bildrutor i animerad förhandsgranskning till "
-"videobuffert\n"
-"(konfigurerad i gimprc av video-paste-dir och video-paste-basename)"
-
-#: gap/gap_mov_dialog.c:859
-msgid "Move Path Animated Preview"
-msgstr "Animerad förhandsgranskning av flyttslinga"
-
-# src/menus.c:311
-#: gap/gap_mov_dialog.c:860
-msgid "Options"
-msgstr "Alternativ"
-
-#: gap/gap_mov_dialog.c:905
-msgid "Generate Animated Preview failed\n"
-msgstr "Generering av animerad förhandsgranskning misslyckades\n"
-
-#. filesel is already open
-#: gap/gap_mov_dialog.c:1178
-msgid "Load Path Points from file"
-msgstr "Läs in slingpunkter från fil"
-
-#. filesel is already open
-#: gap/gap_mov_dialog.c:1215
-msgid "Save Path Points to file"
-msgstr "Spara slingpunkter till fil"
-
-#: gap/gap_mov_dialog.c:1562
-#, c-format
-msgid "Current Point: [ %3d ] of [ %3d ]"
-msgstr "Aktuell punkt: [ %3d ] av [ %3d ]"
-
-#: gap/gap_mov_dialog.c:1648
-msgid "Source Select"
-msgstr "Källval"
-
-#. Source Layer menu
-#: gap/gap_mov_dialog.c:1664
-msgid "Source Image/Layer:"
-msgstr "Källbild/lager:"
-
-#: gap/gap_mov_dialog.c:1674
-msgid "Source Object to insert into Frame Range"
-msgstr "Källobjekt att infoga i bildruteintervall"
-
-#. Paintmode menu
-#: gap/gap_mov_dialog.c:1689
-msgid "Mode:"
-msgstr "Läge:"
-
-#: gap/gap_mov_dialog.c:1698
-msgid "Paintmode"
-msgstr "Ritläge"
-
-#. Loop Stepmode menu
-#: gap/gap_mov_dialog.c:1713
-msgid "Stepmode:"
-msgstr "Stegläge:"
-
-#: gap/gap_mov_dialog.c:1731
-msgid "How to fetch the next SrcLayer at the next handled frame"
-msgstr "Hur nästa källager ska hämtas vid nästa hanterade bildruta"
-
-#. Source Image Handle menu
-#: gap/gap_mov_dialog.c:1737
-msgid "Handle:"
-msgstr "Handtag:"
-
-#: gap/gap_mov_dialog.c:1755
-msgid "How to place the SrcLayer at Controlpoint Coordinates"
-msgstr "Hur källagret ska placeras vid kontrollpunktskoordinater"
-
-#. to avoid side effects while initialization
 #. the frame
-#: gap/gap_mov_dialog.c:1807
-msgid "Move Path Preview"
-msgstr "Förhandsgranskning av flyttslinga"
+#: gap/gap_mov_dialog.c:2734
+msgid "Modify Size Opacity and Rotation"
+msgstr "Ändra storleksopacitet och rotation"
 
-#. X
+#. Width Scale
 #. table col, row
-#: gap/gap_mov_dialog.c:1835 gap/gap_resi_dialog.c:819
-msgid "X:"
-msgstr "X:"
-
-#. lower, upper (unconstrained)
-#: gap/gap_mov_dialog.c:1844
-msgid "X Coordinate"
-msgstr "X-koordinat"
-
-#. Y
-#. table col, row
-#: gap/gap_mov_dialog.c:1853 gap/gap_resi_dialog.c:728
-#: gap/gap_resi_dialog.c:825
-msgid "Y:"
-msgstr "Y:"
-
-#. lower, upper (unconstrained)
-#: gap/gap_mov_dialog.c:1862
-msgid "Y Coordinate"
-msgstr "Y-koordinat"
-
-#. Widht Scale
-#. table col, row
-#: gap/gap_mov_dialog.c:1871
+#: gap/gap_mov_dialog.c:2751
 msgid "Width:"
 msgstr "Bredd:"
 
@@ -1470,13 +1725,13 @@ msgstr "Bredd:"
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: gap/gap_mov_dialog.c:1879
+#: gap/gap_mov_dialog.c:2759
 msgid "Scale Source Layer's Width in percent"
 msgstr "Skala källagrets bredd i procent"
 
 #. Height Scale
 #. table col, row
-#: gap/gap_mov_dialog.c:1888 gap/gap_resi_dialog.c:646
+#: gap/gap_mov_dialog.c:2769 gap/gap_resi_dialog.c:646
 #: gap/gap_resi_dialog.c:674
 msgid "Height:"
 msgstr "Höjd:"
@@ -1489,13 +1744,20 @@ msgstr "Höjd:"
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: gap/gap_mov_dialog.c:1896
+#: gap/gap_mov_dialog.c:2777
 msgid "Scale SrcLayer's Height in percent"
 msgstr "Skala källagrets höjd i procent"
 
+#: gap/gap_mov_dialog.c:2794 gap/gap_resi_dialog.c:784
+msgid "Constrain aspect ratio"
+msgstr "Bevara förhållande"
+
+#. the state of the contrain ratio chainbutton is checked in other callbacks (where needed)
+#. * there is no need for the chainbutton to have its own callback procedure
+#.
 #. Opacity
 #. table col, row
-#: gap/gap_mov_dialog.c:1905 gap/gap_onion_dialog.c:1067
+#: gap/gap_mov_dialog.c:2803 gap/gap_onion_dialog.c:1067
 msgid "Opacity:"
 msgstr "Opacitet:"
 
@@ -1507,13 +1769,13 @@ msgstr "Opacitet:"
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: gap/gap_mov_dialog.c:1913
+#: gap/gap_mov_dialog.c:2811
 msgid "SrcLayer's Opacity in percent"
 msgstr "Källagrets opacitet i procent"
 
 #. Rotation
 #. table col, row
-#: gap/gap_mov_dialog.c:1922
+#: gap/gap_mov_dialog.c:2821
 msgid "Rotate:"
 msgstr "Rotera:"
 
@@ -1525,13 +1787,179 @@ msgstr "Rotera:"
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: gap/gap_mov_dialog.c:1930
+#: gap/gap_mov_dialog.c:2829
 msgid "Rotate SrcLayer (in degree)"
 msgstr "Rotera källager (i grader)"
 
+#. the frame
+#: gap/gap_mov_dialog.c:2870
+msgid "Transformfactors X/Y for the 4 corners"
+msgstr "Tranformeringsfaktorer X/Y för de fyra hörnen"
+
+#. ttlx transformfactor
+#. table col, row
+#: gap/gap_mov_dialog.c:2889
+msgid "x1:"
+msgstr "x1:"
+
+#. label text
+#. scalesize spinsize
+#. initial value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:2897
+msgid "Transformfactor for upper left corner X coordinate"
+msgstr "Transformeringsfaktor för X-koordinaten i övre vänstra hörnet"
+
+#. ttly transformfactor
+#. table col, row
+#: gap/gap_mov_dialog.c:2908
+msgid "y1:"
+msgstr "y1:"
+
+#. label text
+#. scalesize spinsize
+#. initial value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:2916
+msgid "Transformfactor for upper left corner Y coordinate"
+msgstr "Transformeringsfaktor för Y-koordinaten i övre vänstra hörnet"
+
+#. ttrx transformfactor
+#. table col, row
+#: gap/gap_mov_dialog.c:2927
+msgid "x2:"
+msgstr "x2:"
+
+#. label text
+#. scalesize spinsize
+#. initial value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:2935
+msgid "Transformfactor for upper right corner X coordinate"
+msgstr "Transformeringsfaktor för X-koordinaten i övre högra hörnet"
+
+#. ttry transformfactor
+#. table col, row
+#: gap/gap_mov_dialog.c:2945
+msgid "y2:"
+msgstr "y2:"
+
+#. label text
+#. scalesize spinsize
+#. initial value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:2953
+msgid "Transformfactor for upper right corner Y coordinate"
+msgstr "Transformeringsfaktor för Y-koordinaten i övra högra hörnet"
+
+#. tblx transformfactor
+#. table col, row
+#: gap/gap_mov_dialog.c:2963
+msgid "x3:"
+msgstr "x3:"
+
+#. label text
+#. scalesize spinsize
+#. initial value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:2971
+msgid "Transformfactor for lower left corner X coordinate"
+msgstr "Transformeringsfaktor för X-koordinaten i nedre vänstra hörnet"
+
+#. tbly transformfactor
+#. table col, row
+#: gap/gap_mov_dialog.c:2981 gap/gap_mov_dialog.c:3017
+msgid "y3:"
+msgstr "y3:"
+
+#. label text
+#. scalesize spinsize
+#. initial value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:2989
+msgid "Transformfactor for lower left corner Y coordinate"
+msgstr "Transformeringsfaktor för Y-koordinaten i nedre vänstra hörnet"
+
+#. tbrx transformfactor
+#. table col, row
+#: gap/gap_mov_dialog.c:2999
+msgid "x4:"
+msgstr "x4:"
+
+#. label text
+#. scalesize spinsize
+#. initial value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:3007
+msgid "Transformfactor for lower right corner X coordinate"
+msgstr "Transformeringsfaktor för X-koordinaten i nedre högra hörnet"
+
+#. label text
+#. scalesize spinsize
+#. initial value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:3025
+msgid "Transformfactor for lower right corner Y coordinate"
+msgstr "Transformeringsfaktor för Y-koordinaten i nedre högra hörnet"
+
+#. X
+#. table col, row
+#: gap/gap_mov_dialog.c:3124 gap/gap_resi_dialog.c:819
+msgid "X:"
+msgstr "X:"
+
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:3133
+msgid "X Coordinate"
+msgstr "X-koordinat"
+
+#. Y
+#. table col, row
+#: gap/gap_mov_dialog.c:3142 gap/gap_resi_dialog.c:728
+#: gap/gap_resi_dialog.c:825
+msgid "Y:"
+msgstr "Y:"
+
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:3151
+msgid "Y Coordinate"
+msgstr "Y-koordinat"
+
 #. Keyframe
 #. table col, row
-#: gap/gap_mov_dialog.c:1940
+#: gap/gap_mov_dialog.c:3160
 msgid "Keyframe:"
 msgstr "Nyckelbildruta:"
 
@@ -1543,7 +1971,7 @@ msgstr "Nyckelbildruta:"
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: gap/gap_mov_dialog.c:1948
+#: gap/gap_mov_dialog.c:3168
 msgid ""
 "Fix Controlpoint to Keyframe number\n"
 "(0 == No Keyframe)"
@@ -1551,11 +1979,68 @@ msgstr ""
 "Fixera kontrollpunkt till nyckelbildrutenummer\n"
 "(0 == Ingen nyckelbildruta)"
 
-#. the Preview Frame scale_entry
+#: gap/gap_mov_dialog.c:3190
+msgid "Scale and Modify"
+msgstr "Skala och modifiera"
+
+#: gap/gap_mov_dialog.c:3196
+msgid "Perspective"
+msgstr "Perspektiv"
+
+#. the preview frame
+#: gap/gap_mov_dialog.c:3217
+msgid "Preview"
+msgstr "Förhandsgranskning"
+
+#: gap/gap_mov_dialog.c:3263
+msgid "Show"
+msgstr "Visa"
+
+#. toggle Show path
+#: gap/gap_mov_dialog.c:3270
+msgid "Path"
+msgstr "Slinga"
+
+#: gap/gap_mov_dialog.c:3274
+msgid ""
+"Show Path Lines and enable pick/drag with left button or move with right "
+"button"
+msgstr ""
+"Visa slinglinjer och aktivera fasttagande/dragande med vänsterknappen eller "
+"flytt med högerknappen"
+
+#. toggle Show cursor
+#: gap/gap_mov_dialog.c:3286
+msgid "Cursor"
+msgstr "Markör"
+
+#: gap/gap_mov_dialog.c:3290
+msgid "Show Cursor Crosslines"
+msgstr "Visa markörkorshår"
+
+#. toggle Show Grid
+#: gap/gap_mov_dialog.c:3301
+msgid "Grid"
+msgstr "Rutnät"
+
+#: gap/gap_mov_dialog.c:3305
+msgid "Show Source Layer as Gridlines"
+msgstr "Visa källagret som rutnätslinjer"
+
+#. toggle Instant Apply
+#: gap/gap_mov_dialog.c:3315
+msgid "Instant Apply"
+msgstr "Verkställ omedelbart"
+
+#: gap/gap_mov_dialog.c:3319
+msgid "Update the Preview automatically"
+msgstr "Uppdatera förhandsgranskningen automatiskt"
+
+#. the Preview Frame Number
 #. table col, row
-#: gap/gap_mov_dialog.c:2002
-msgid "Preview Frame:"
-msgstr "Förhandsgranskningsbildruta:"
+#: gap/gap_mov_dialog.c:3344
+msgid "Frame:"
+msgstr "Bildruta:"
 
 #. label text
 #. scalesize spinsize
@@ -1567,105 +2052,11 @@ msgstr "Förhandsgranskningsbildruta:"
 #. constrain
 #. lower (unconstrained)
 #. upper (unconstrained)
-#: gap/gap_mov_dialog.c:2012
+#: gap/gap_mov_dialog.c:3354
 msgid "Frame to show when UpdPreview button is pressed"
 msgstr "Bildruta att visa då knappen uppdatera förhandsgranskning trycks"
 
-#: gap/gap_mov_dialog.c:2071
-msgid ""
-"Add Controlpoint at end\n"
-"(the last Point is duplicated)"
-msgstr ""
-"Lägg till kontrollpunkt på slutet\n"
-"(den sista punkten dupliceras)"
-
-#: gap/gap_mov_dialog.c:2083
-msgid "Show"
-msgstr "Visa"
-
-#. toggle Show path
-#: gap/gap_mov_dialog.c:2092
-msgid "Path"
-msgstr "Slinga"
-
-#: gap/gap_mov_dialog.c:2096
-msgid ""
-"Show Path Lines and enable pick/drag with left button or move with right "
-"button"
-msgstr ""
-"Visa slinglinjer och aktivera fasttagande/dragande med vänsterknappen eller "
-"flytt med högerknappen"
-
-#. toggle Show cursor
-#: gap/gap_mov_dialog.c:2108
-msgid "Cursor"
-msgstr "Markör"
-
-#: gap/gap_mov_dialog.c:2112
-msgid "Show Cursor Crosslines"
-msgstr "Visa markörkorshår"
-
-#: gap/gap_mov_dialog.c:2131
-msgid ""
-"Insert Controlpoint\n"
-"(the current Point is duplicated)"
-msgstr ""
-"Infoga kontrollpunkt\n"
-"(den aktuella punkten dupliceras)"
-
-#: gap/gap_mov_dialog.c:2143
-msgid "Delete current Controlpoint"
-msgstr "Ta bort aktuell kontrollpunkt"
-
-#: gap/gap_mov_dialog.c:2157
-msgid "Show Previous Controlpoint"
-msgstr "Visa föregående kontrollpunkt"
-
-#: gap/gap_mov_dialog.c:2169
-msgid "Show Next Controlpoint"
-msgstr "Visa nästa kontrollpunkt"
-
-#: gap/gap_mov_dialog.c:2183
-msgid "Show First Controlpoint"
-msgstr "Visa första kontrollpunkt"
-
-#: gap/gap_mov_dialog.c:2195
-msgid "Show Last Controlpoint"
-msgstr "Visa sista kontrollpunkt"
-
-#: gap/gap_mov_dialog.c:2209
-msgid "Reset the current Controlpoint to default Values"
-msgstr "Återställ den aktuella kontrollpunkten till standardvärden"
-
-#: gap/gap_mov_dialog.c:2221
-msgid ""
-"Reset all Controlpoints to default Values but dont change the path (X/Y "
-"Values)"
-msgstr ""
-"Återställ alla kontrollpunkter till standardvärden men ändra inte slingan (X/"
-"Y-värden)"
-
-#: gap/gap_mov_dialog.c:2236
-msgid ""
-"Set Rotation for all Controlpoints to follow the shape of the path.\n"
-"(Shift: use Rotation of contolpoint 1 as offset)"
-msgstr ""
-"Ställ in rotation för alla kontrollpunkter att följa slingans kurva.\n"
-"(Skift: använd rotation för kontrollpunkt 1 som avstånd)"
-
-#: gap/gap_mov_dialog.c:2250
-msgid "Delete all Controlpoints"
-msgstr "Ta bort alla kontrollpunkter"
-
-#: gap/gap_mov_dialog.c:2266
-msgid "Load Controlpoints from file"
-msgstr "Läs in kontrollpunkter från fil"
-
-#: gap/gap_mov_dialog.c:2279
-msgid "Save Controlpoints to file"
-msgstr "Spara kontrollpunkter till fil"
-
-#: gap/gap_mov_dialog.c:2679
+#: gap/gap_mov_dialog.c:3896
 msgid ""
 "Can't operate with current Controlpoint\n"
 "or Keyframe settings"
@@ -1673,19 +2064,19 @@ msgstr ""
 "Kan inte operera med aktuell kontrollpunkts-\n"
 "eller nyckelbildruteinställningar"
 
-#: gap/gap_mov_dialog.c:2684
+#: gap/gap_mov_dialog.c:3901
 msgid "Reset Keyframes"
 msgstr "Återställ nyckelbildrutor"
 
-#: gap/gap_mov_dialog.c:2689
+#: gap/gap_mov_dialog.c:3906
 msgid "Move Path Controlpointcheck"
 msgstr "Kontrollpunktskontroll av flyttslinga"
 
-#: gap/gap_mov_dialog.c:2690
+#: gap/gap_mov_dialog.c:3907
 msgid "Errors:"
 msgstr "Fel:"
 
-#: gap/gap_mov_exec.c:450
+#: gap/gap_mov_exec.c:487
 msgid ""
 "No Source Image was selected.\n"
 "Please open a 2nd Image of the same type before opening Move Path."
@@ -1693,15 +2084,15 @@ msgstr ""
 "Ingen källbild har valts.\n"
 "Öppna en andra bild av samma typ innan flyttslinga öppnas."
 
-#: gap/gap_mov_exec.c:461
+#: gap/gap_mov_exec.c:498
 msgid "Copying Layers into Frames..."
 msgstr "Kopierar lager till bildrutor..."
 
-#: gap/gap_mov_exec.c:465
+#: gap/gap_mov_exec.c:502
 msgid "Generating Animated Preview..."
 msgstr "Genererar animerad förhandsgranskning..."
 
-#: gap/gap_mov_exec.c:1370
+#: gap/gap_mov_exec.c:1572
 #, c-format
 msgid ""
 "\n"
@@ -1711,7 +2102,7 @@ msgstr ""
 "Fel: Nyckelbildruta %d vid punkt [%d] högre än eller lika med senast "
 "hanterade bildruta"
 
-#: gap/gap_mov_exec.c:1378
+#: gap/gap_mov_exec.c:1580
 #, c-format
 msgid ""
 "\n"
@@ -1722,7 +2113,7 @@ msgstr ""
 "Fel: Nyckelbildruta %d vid punkt [%d] lämnar inte tillräckligt mycket\n"
 "utrymme (bildrutor) för de föregående kontrollpunkterna"
 
-#: gap/gap_mov_exec.c:1388
+#: gap/gap_mov_exec.c:1590
 #, c-format
 msgid ""
 "\n"
@@ -1731,7 +2122,7 @@ msgstr ""
 "\n"
 "Fel: Nyckelbildruta %d är inte i sekvens vid punkt [%d]"
 
-#: gap/gap_mov_exec.c:1406
+#: gap/gap_mov_exec.c:1608
 #, c-format
 msgid ""
 "\n"
@@ -1740,7 +2131,7 @@ msgstr ""
 "\n"
 "Fel: kontrollpunkt [%d] är utanför det hanterade bildruteintervallet"
 
-#: gap/gap_mov_exec.c:1420
+#: gap/gap_mov_exec.c:1622
 #, c-format
 msgid ""
 "\n"
@@ -2261,7 +2652,7 @@ msgid "Select None"
 msgstr "Markera ingen"
 
 #. Video Length (frames)
-#: gap/gap_navigator_dialog.c:3783 gap/gap_player_dialog.c:3647
+#: gap/gap_navigator_dialog.c:3783 gap/gap_player_dialog.c:3592
 msgid "Videoframes:"
 msgstr "Videobildrutor:"
 
@@ -2558,7 +2949,7 @@ msgid "Removing Onionskin Layers..."
 msgstr "Tar bort lökskalslager..."
 
 #. Format the message
-#: gap/gap_player_dialog.c:269
+#: gap/gap_player_dialog.c:270
 #, c-format
 msgid ""
 "Problem with audioplayback\n"
@@ -2569,49 +2960,23 @@ msgstr ""
 "audiolib rapporterade:\n"
 "%s"
 
-#: gap/gap_player_dialog.c:297
-#, c-format
-msgid ""
-"Directory '%s'\n"
-"already exists"
-msgstr ""
-"Katalogen \"%s\"\n"
-"finns redan"
-
-#: gap/gap_player_dialog.c:302
-#, c-format
-msgid ""
-"File '%s'\n"
-"already exists"
-msgstr ""
-"Filen \"%s\"\n"
-"finns redan"
-
-#: gap/gap_player_dialog.c:303
-msgid "Overwrite"
-msgstr "Skriv över"
-
-#: gap/gap_player_dialog.c:315
-msgid "File Overwrite Warning"
-msgstr "Varning för filöverskrivning"
-
-#: gap/gap_player_dialog.c:346
+#: gap/gap_player_dialog.c:291
 msgid "Audiosource:"
 msgstr "Ljudkälla:"
 
-#: gap/gap_player_dialog.c:357
+#: gap/gap_player_dialog.c:302
 msgid "Wavefile:"
 msgstr "Wave-fil:"
 
-#: gap/gap_player_dialog.c:359
+#: gap/gap_player_dialog.c:304
 msgid "Name of Wavefile to create as copy in RIFF WAVE Format"
 msgstr "Namn på Wave-fil att skapa som kopia i RIFF WAVE-format"
 
-#: gap/gap_player_dialog.c:366
+#: gap/gap_player_dialog.c:311
 msgid "Resample:"
 msgstr "Omsampla:"
 
-#: gap/gap_player_dialog.c:367
+#: gap/gap_player_dialog.c:312
 msgid ""
 "ON: Resample the copy at specified Samplerate, OFF: use original Samplerate"
 msgstr ""
@@ -2619,11 +2984,11 @@ msgstr ""
 "samplingshastighet"
 
 #. Samplerate
-#: gap/gap_player_dialog.c:374 gap/gap_player_dialog.c:3589
+#: gap/gap_player_dialog.c:319 gap/gap_player_dialog.c:3534
 msgid "Samplerate:"
 msgstr "Samplingshastighet:"
 
-#: gap/gap_player_dialog.c:375
+#: gap/gap_player_dialog.c:320
 msgid ""
 "Target Audio Samperate in Samples/sec\n"
 "(ignored if Resample is OFF)"
@@ -2631,11 +2996,11 @@ msgstr ""
 "Målljudsamplingshastighet i samplingar/sek\n"
 "(ignoreras om Omsampla är AV)"
 
-#: gap/gap_player_dialog.c:396
+#: gap/gap_player_dialog.c:341
 msgid "Copy Audiofile as Wavefile"
 msgstr "Kopiera ljudfil som Wave-fil"
 
-#: gap/gap_player_dialog.c:481
+#: gap/gap_player_dialog.c:426
 msgid ""
 "Failure to start the wavplay server is fatal.\n"
 "Please check the executability of the 'wavplay' command.\n"
@@ -2647,29 +3012,29 @@ msgstr ""
 "Om du har installerat wavplay-binärfilen någonstans\n"
 "kan du ange miljövariabeln WAVPLAYPATH innan gimp startas\n"
 
-#: gap/gap_player_dialog.c:544
+#: gap/gap_player_dialog.c:489
 msgid "Audio Delay"
 msgstr "Ljudfördröjning"
 
-#: gap/gap_player_dialog.c:556
+#: gap/gap_player_dialog.c:501
 msgid "Syncron"
 msgstr "Synkron"
 
-#: gap/gap_player_dialog.c:560
+#: gap/gap_player_dialog.c:505
 msgid "Audio Skipped"
 msgstr "Ljud överhoppat"
 
-#: gap/gap_player_dialog.c:572
+#: gap/gap_player_dialog.c:517
 #, c-format
 msgid "%d (at %.4f frames/sec)"
 msgstr "%d (vid %.4f bildrutor/sek)"
 
-#: gap/gap_player_dialog.c:666
+#: gap/gap_player_dialog.c:611
 #, c-format
 msgid "Error at reading WAV header from file '%s'"
 msgstr "Fel vid läsning av WAV-huvud från filen \"%s\""
 
-#: gap/gap_player_dialog.c:799
+#: gap/gap_player_dialog.c:744
 #, c-format
 msgid ""
 "WARNING: your gimprc file configuration for the wavplay audio server\n"
@@ -2680,7 +3045,7 @@ msgstr ""
 "till ett körbart program\n"
 "det konfigurerade värdet för %s är: %s\n"
 
-#: gap/gap_player_dialog.c:820 gap/gap_player_dialog.c:3122
+#: gap/gap_player_dialog.c:765 gap/gap_player_dialog.c:3067
 #, c-format
 msgid ""
 "WARNING: the environment variable %s\n"
@@ -2691,7 +3056,7 @@ msgstr ""
 "pekar inte till ett körbart program\n"
 "det aktuella värdet är: %s\n"
 
-#: gap/gap_player_dialog.c:856
+#: gap/gap_player_dialog.c:801
 #, c-format
 msgid ""
 "NO Audiosupport available\n"
@@ -2709,25 +3074,25 @@ msgstr ""
 "innan du startar GIMP"
 
 #. pending timer_go_job gets useless, since we start playback now
-#: gap/gap_player_dialog.c:1278 gap/gap_player_dialog.c:1745
+#: gap/gap_player_dialog.c:1223 gap/gap_player_dialog.c:1690
 msgid "Playing"
 msgstr "Spelar"
 
 #. the status value label
-#: gap/gap_player_dialog.c:1315 gap/gap_player_dialog.c:4129
+#: gap/gap_player_dialog.c:1260 gap/gap_player_dialog.c:4074
 msgid "Ready"
 msgstr "Redo"
 
-#: gap/gap_player_dialog.c:1728
+#: gap/gap_player_dialog.c:1673
 msgid "SKIP"
 msgstr "HOPPA ÖVER"
 
-#: gap/gap_player_dialog.c:1757
+#: gap/gap_player_dialog.c:1702
 #, c-format
 msgid "Delay %.2f"
 msgstr "Fördröj %.2f"
 
-#: gap/gap_player_dialog.c:3100
+#: gap/gap_player_dialog.c:3045
 #, c-format
 msgid ""
 "WARNING: your gimprc file configuration for the audioconverter Script\n"
@@ -2738,7 +3103,7 @@ msgstr ""
 "till ett körbart program\n"
 "det konfigurerade värdet för %s är: %s\n"
 
-#: gap/gap_player_dialog.c:3141
+#: gap/gap_player_dialog.c:3086
 #, c-format
 msgid ""
 "ERROR: external program for audioconversion not executable\n"
@@ -2747,51 +3112,51 @@ msgstr ""
 "FEL: externt program för ljudkonvertering inte körbart\n"
 "filnamn: \"%s\"\n"
 
-#: gap/gap_player_dialog.c:3161
+#: gap/gap_player_dialog.c:3106
 msgid "Creating Audiofile - Please Wait"
 msgstr "Skapar ljudfil - Var vänlig vänta"
 
-#: gap/gap_player_dialog.c:3312
+#: gap/gap_player_dialog.c:3257
 msgid "Select Audiofile"
 msgstr "Välj ljudfil"
 
 #. audiofile label
-#: gap/gap_player_dialog.c:3384
+#: gap/gap_player_dialog.c:3329
 msgid "Audiofile:"
 msgstr "Ljudfil:"
 
-#: gap/gap_player_dialog.c:3396
+#: gap/gap_player_dialog.c:3341
 msgid "Enter an Audiofile. (the file must be in RIFF WAVE Fileformat)"
 msgstr "Ange en ljudfil (filen måste vara i RIFF WAVE-filformat)."
 
-#: gap/gap_player_dialog.c:3410
+#: gap/gap_player_dialog.c:3355
 msgid "Open Audiofile selection Browserdialog"
 msgstr "Öppna bläddrardialogen för ljudfilsval"
 
 #. Volume
-#: gap/gap_player_dialog.c:3422
+#: gap/gap_player_dialog.c:3367
 msgid "Volume:"
 msgstr "Volym:"
 
-#: gap/gap_player_dialog.c:3442
+#: gap/gap_player_dialog.c:3387
 msgid "Audio Volume"
 msgstr "Ljudvolym"
 
 #. check button
-#: gap/gap_player_dialog.c:3448
+#: gap/gap_player_dialog.c:3393
 msgid "Enable"
 msgstr "Aktivera"
 
-#: gap/gap_player_dialog.c:3452
+#: gap/gap_player_dialog.c:3397
 msgid "ON: Play Button plays Video + Audio, OFF: Play silent"
 msgstr "PÅ: Spelaknappen spelar video + ljud, AV: Spela tyst"
 
 #. Sample Offset
-#: gap/gap_player_dialog.c:3461
+#: gap/gap_player_dialog.c:3406
 msgid "Offset:"
 msgstr "Avstånd:"
 
-#: gap/gap_player_dialog.c:3481
+#: gap/gap_player_dialog.c:3426
 msgid ""
 "Audio Offset in frames at Original Videoplayback speed\n"
 "(a value of 0 starts audio and video at synchron time\n"
@@ -2811,16 +3176,16 @@ msgstr ""
 "med varaktigheten för 10 bildrutor\n"
 "(vid ursprunglig videouppspelningshastighet)"
 
-#: gap/gap_player_dialog.c:3497
+#: gap/gap_player_dialog.c:3442
 msgid "Reset Offset and Volume"
 msgstr "Återställ avstånd och volym"
 
 #. create wavfile button
-#: gap/gap_player_dialog.c:3508
+#: gap/gap_player_dialog.c:3453
 msgid "Copy As Wavfile"
 msgstr "Kopiera som Wav-fil"
 
-#: gap/gap_player_dialog.c:3510
+#: gap/gap_player_dialog.c:3455
 msgid ""
 "Create a copy from Audiofile as RIFF WAVE Audiofile\n"
 "and use the copy for Audio Playback"
@@ -2829,156 +3194,156 @@ msgstr ""
 "och använd kopian för ljuduppspelning"
 
 #. Audio Offset Length (mm:ss:msec)
-#: gap/gap_player_dialog.c:3530
+#: gap/gap_player_dialog.c:3475
 msgid "Offsettime:"
 msgstr "Avståndstid:"
 
 #. Total Audio Length (mm:ss:msec)
-#: gap/gap_player_dialog.c:3544
+#: gap/gap_player_dialog.c:3489
 msgid "Audiotime:"
 msgstr "Ljudtid:"
 
 #. Length (frames)
-#: gap/gap_player_dialog.c:3559
+#: gap/gap_player_dialog.c:3504
 msgid "Audioframes:"
 msgstr "Ljudrutor:"
 
 #. Length (Samples)
-#: gap/gap_player_dialog.c:3574
+#: gap/gap_player_dialog.c:3519
 msgid "Samples:"
 msgstr "Samplingar:"
 
 #. Cannels
-#: gap/gap_player_dialog.c:3603
+#: gap/gap_player_dialog.c:3548
 msgid "Cannels:"
 msgstr "Kanaler:"
 
 #. Bits
-#: gap/gap_player_dialog.c:3617
+#: gap/gap_player_dialog.c:3562
 msgid "Bits/Sample:"
 msgstr "Bitar/sampling:"
 
 #. Total Video Length (mm:ss:msec)
-#: gap/gap_player_dialog.c:3632
+#: gap/gap_player_dialog.c:3577
 msgid "Videotime:"
 msgstr "Videotid:"
 
-#: gap/gap_player_dialog.c:3728
+#: gap/gap_player_dialog.c:3673
 msgid "Videoframe Playback"
 msgstr "Uppspelning av videobildrutor"
 
-#: gap/gap_player_dialog.c:3746
+#: gap/gap_player_dialog.c:3691
 msgid "Video Options"
 msgstr "Videoalternativ"
 
-#: gap/gap_player_dialog.c:3747
+#: gap/gap_player_dialog.c:3692
 msgid "Audio Options"
 msgstr "Ljudalternativ"
 
-#: gap/gap_player_dialog.c:3804
+#: gap/gap_player_dialog.c:3749
 msgid "Click: go to frame, Ctrl-Click: set From Frame, Alt-Click: set To Frame"
 msgstr ""
 "Klick: gå till bildruta, Ctrl-Klick: ställ in från bildruta, Alt-Klick: "
 "ställ in till bildruta"
 
-#: gap/gap_player_dialog.c:3873
+#: gap/gap_player_dialog.c:3818
 msgid "Start Framenumber of Selection Range"
 msgstr "Startbildrutenummer i markeringsintervall"
 
-#: gap/gap_player_dialog.c:3889
+#: gap/gap_player_dialog.c:3834
 msgid "End Framenumber of Selection Range"
 msgstr "Slutbildrutenummer i markeringsintervall"
 
 #. the framenr button
-#: gap/gap_player_dialog.c:3902
+#: gap/gap_player_dialog.c:3847
 msgid "FrameNr"
 msgstr "Bildrutenummer"
 
-#: gap/gap_player_dialog.c:3907
+#: gap/gap_player_dialog.c:3852
 msgid "Load this Frame into the calling image"
 msgstr "Läs in denna bildruta i den anropande bilden"
 
-#: gap/gap_player_dialog.c:3925
+#: gap/gap_player_dialog.c:3870
 msgid "Displayed Frame Nr"
 msgstr "Visat bildrutenummer"
 
 #. the time position
-#: gap/gap_player_dialog.c:3932
+#: gap/gap_player_dialog.c:3877
 msgid "Timepos:"
 msgstr "Tidspos:"
 
 #. the origspeed_button
-#: gap/gap_player_dialog.c:3961
+#: gap/gap_player_dialog.c:3906
 msgid "Speed"
 msgstr "Hastighet"
 
-#: gap/gap_player_dialog.c:3966
+#: gap/gap_player_dialog.c:3911
 msgid "Reset Playback Speed to original (or previous) Value"
 msgstr ""
 "Återställ uppspelningshastighet till ursprungligt (eller föregående) värde"
 
-#: gap/gap_player_dialog.c:3986
+#: gap/gap_player_dialog.c:3931
 msgid "Current Playbackspeed (frames/sec)"
 msgstr "Aktuell uppspelningshastighet (bildrutor/sek)"
 
 #. the size button
-#: gap/gap_player_dialog.c:3999
+#: gap/gap_player_dialog.c:3944
 msgid "Size"
 msgstr "Storlek"
 
-#: gap/gap_player_dialog.c:4005
+#: gap/gap_player_dialog.c:3950
 msgid "Toggle Size 128/256, SHIFT: Set 1:1 full image Size"
 msgstr "Växla storleken 128/256, SKIFT: Ställ in 1:1 full bildstorlek"
 
-#: gap/gap_player_dialog.c:4023
+#: gap/gap_player_dialog.c:3968
 msgid "Video Preview Size (pixels)"
 msgstr "Videoförhandsgranskningsstorlek (bildpunkter)"
 
-#: gap/gap_player_dialog.c:4053
+#: gap/gap_player_dialog.c:3998
 msgid "ON: Play in endless Loop, OFF: Play only once"
 msgstr "PÅ: Spela i oändlig slinga, AV: Spela endast en gång"
 
-#: gap/gap_player_dialog.c:4062
+#: gap/gap_player_dialog.c:4007
 msgid "Play Selection only"
 msgstr "Spela endast markering"
 
-#: gap/gap_player_dialog.c:4067
+#: gap/gap_player_dialog.c:4012
 msgid "ON: Play Selection only, OFF: Play all frames"
 msgstr "PÅ: Spela endast markering, AV: Spela alla bildrutor"
 
-#: gap/gap_player_dialog.c:4081
+#: gap/gap_player_dialog.c:4026
 msgid "ON: Play alternating forward/backward"
 msgstr "PÅ: Spela alternerande framåt/bakåt"
 
-#: gap/gap_player_dialog.c:4090
+#: gap/gap_player_dialog.c:4035
 msgid "Use Thumbnails"
 msgstr "Använd miniatyrbilder"
 
-#: gap/gap_player_dialog.c:4095
+#: gap/gap_player_dialog.c:4040
 msgid "ON: use thumbnails when available, OFF: read full sized frames"
 msgstr ""
 "PÅ: använd miniatyrbilder om tillgängliga, AV: läs bildrutor i full storlek"
 
-#: gap/gap_player_dialog.c:4105
+#: gap/gap_player_dialog.c:4050
 msgid "Exact Timing"
 msgstr "Exakt tidtagning"
 
-#: gap/gap_player_dialog.c:4110
+#: gap/gap_player_dialog.c:4055
 msgid "ON: skip frames to hold exact timing, OFF: disable frame skipping"
 msgstr ""
 "PÅ: hoppa över bildrutor för att hålla exakt tidtagning, AV: inaktivera "
 "överhoppning av bildrutor"
 
 #. the status label
-#: gap/gap_player_dialog.c:4121
+#: gap/gap_player_dialog.c:4066
 msgid "Status:"
 msgstr "Status:"
 
-#: gap/gap_player_dialog.c:4154
+#: gap/gap_player_dialog.c:4099
 msgid "Start Playback"
 msgstr "Starta uppspelning"
 
-#: gap/gap_player_dialog.c:4164
+#: gap/gap_player_dialog.c:4109
 msgid ""
 "Pause if playing (Any Mouseboutton)\n"
 "Goto Selection Start/Active/End (Left/Middle/Right Button) if not playing"
@@ -2987,11 +3352,11 @@ msgstr ""
 "Gå till markeringens start/aktiv/slut (vänstra/mittersta/högra knappen) om "
 "inte spelandes"
 
-#: gap/gap_player_dialog.c:4174
+#: gap/gap_player_dialog.c:4119
 msgid "Start Reverse Playback"
 msgstr "Starta baklängesuppspelning"
 
-#: gap/gap_player_dialog.c:4183
+#: gap/gap_player_dialog.c:4128
 msgid "Close Window"
 msgstr "Stäng fönster"
 
@@ -3426,10 +3791,6 @@ msgstr "Ursprunglig bredd:"
 msgid "Ratio X:"
 msgstr "X-förhållande:"
 
-#: gap/gap_resi_dialog.c:784
-msgid "Constrain aspect ratio"
-msgstr "Bevara förhållande"
-
 #. the offset frame
 #: gap/gap_resi_dialog.c:800
 msgid "Offset"
@@ -3581,6 +3942,33 @@ msgstr "Återställ punkt"
 #: gap/gap_stock.c:56
 msgid "Rotate Follow"
 msgstr "Rotera följ"
+
+#~ msgid "Speed Factor:"
+#~ msgstr "Hastighetsfaktor:"
+
+#~ msgid "Speed Factor"
+#~ msgstr "Hastighetsfaktor"
+
+#~ msgid "TraceOpacity:"
+#~ msgstr "Spårningsopacitet:"
+
+#~ msgid "Trace Opacity:"
+#~ msgstr "Spårningsopacitet:"
+
+#~ msgid "Trace Opacity"
+#~ msgstr "Spårningsopacitet"
+
+#~ msgid "TweenOpacity:"
+#~ msgstr "Mellanopacitet:"
+
+#~ msgid "Tween Opacity:"
+#~ msgstr "Mellanopacitet:"
+
+#~ msgid "Move Path Preview"
+#~ msgstr "Förhandsgranskning av flyttslinga"
+
+#~ msgid "Preview Frame:"
+#~ msgstr "Förhandsgranskningsbildruta:"
 
 #~ msgid "Search:"
 #~ msgstr "Sök:"
@@ -3793,9 +4181,6 @@ msgstr "Rotera följ"
 
 #~ msgid "Video"
 #~ msgstr "Video"
-
-#~ msgid "Update Preview"
-#~ msgstr "Uppdatera förhandsgranskning"
 
 #~ msgid "Scale"
 #~ msgstr "Skala"
