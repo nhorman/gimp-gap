@@ -9,126 +9,126 @@ msgstr ""
 "Last-Translator: Young-Boo Park <DIRBOO@hitel.net>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=euc-kr\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Button  to invoke filebrowser
 #: gap/gap_arr_dialog.c:293
 msgid "File-Browser"
-msgstr "ÆÄÀÏÃ£¾Æº¸±â"
+msgstr "íŒŒì¼ì°¾ì•„ë³´ê¸°"
 
 #. parameter settings
 #: gap/gap_arr_dialog.c:793
 msgid "Enter Values"
-msgstr "°ª ³Ö±â"
+msgstr "ê°’ ë„£ê¸°"
 
 #: gap/gap_arr_dialog.c:812
 msgid "Value:"
-msgstr "°ª:"
+msgstr "ê°’:"
 
 #: gap/gap_arr_dialog.c:878
 msgid "Value: "
-msgstr "°ª: "
+msgstr "ê°’: "
 
 #: gap/gap_arr_dialog.c:1040
 msgid "Press Button"
-msgstr "¹öÆ° ´©¸§"
+msgstr "ë²„íŠ¼ ëˆ„ë¦„"
 
 #: gap/gap_arr_dialog.c:1041
 msgid "Select"
-msgstr "¼±ÅÃ"
+msgstr "ì„ íƒ"
 
 #: gap/gap_dbbrowser_utils.c:76
 msgid "GAP Animated Filter apply"
-msgstr "GAP ¿òÁ÷ÀÌ´Â(Animate) ÇÊÅÍ Àû¿ë"
+msgstr "GAP ì›€ì§ì´ëŠ”(Animate) í•„í„° ì ìš©"
 
 #: gap/gap_dbbrowser_utils.c:97
 msgid "Animated Filter apply (init)"
-msgstr "¿òÁ÷ÀÌ´Â(Animate) ÇÊÅÍ Àû¿ë (ÃÊ±âÈ­)"
+msgstr "ì›€ì§ì´ëŠ”(Animate) í•„í„° ì ìš© (ì´ˆê¸°í™”)"
 
 #: gap/gap_dbbrowser_utils.c:148
 #, fuzzy
 msgid "Search:"
-msgstr "Ã£±â :"
+msgstr "ì°¾ê¸° :"
 
 #: gap/gap_dbbrowser_utils.c:176
 msgid "Gen Code by name"
-msgstr "ÀÌ¸§¿¡ ÀÇÇÑ Á¨ ÄÚµå(Gen Code)"
+msgstr "ì´ë¦„ì— ì˜í•œ ì   ì½”ë“œ(Gen Code)"
 
 #: gap/gap_dbbrowser_utils.c:185
 #, fuzzy
 msgid "Search by Name"
-msgstr "ÀÌ¸§À¸·Î Ã£±â"
+msgstr "ì´ë¦„ìœ¼ë¡œ ì°¾ê¸°"
 
 #: gap/gap_dbbrowser_utils.c:193
 #, fuzzy
 msgid "Search by Blurb"
-msgstr "Ä¿¹ö¼³¸íÀ¸·Î Ã£±â"
+msgstr "ì»¤ë²„ì„¤ëª…ìœ¼ë¡œ ì°¾ê¸°"
 
 #. show the name
 #: gap/gap_dbbrowser_utils.c:335
 #, fuzzy
 msgid "Name:"
-msgstr "ÀÌ¸§ :"
+msgstr "ì´ë¦„ :"
 
 #. show the description
 #: gap/gap_dbbrowser_utils.c:352
 #, fuzzy
 msgid "Blurb:"
-msgstr "Ä¿¹ö¼³¸í :"
+msgstr "ì»¤ë²„ì„¤ëª… :"
 
 #: gap/gap_dbbrowser_utils.c:374
 #, fuzzy
 msgid "In:"
-msgstr "¾È :"
+msgstr "ì•ˆ :"
 
 #: gap/gap_dbbrowser_utils.c:420
 #, fuzzy
 msgid "Out:"
-msgstr "¹Ù±ù :"
+msgstr "ë°”ê¹¥ :"
 
 #: gap/gap_dbbrowser_utils.c:469
 #, fuzzy
 msgid "Help:"
-msgstr "µµ¿ò¸» :"
+msgstr "ë„ì›€ë§ :"
 
 #. show the author & the copyright
 #: gap/gap_dbbrowser_utils.c:507
 #, fuzzy
 msgid "Author:"
-msgstr "ÀúÀÚ :"
+msgstr "ì €ì :"
 
 #: gap/gap_dbbrowser_utils.c:522
 #, fuzzy
 msgid "Date:"
-msgstr "³¯Â¥ :"
+msgstr "ë‚ ì§œ :"
 
 #: gap/gap_dbbrowser_utils.c:537
 #, fuzzy
 msgid "Copyright:"
-msgstr "ÀúÀÛ±Ç :"
+msgstr "ì €ì‘ê¶Œ :"
 
 #: gap/gap_dbbrowser_utils.c:676
 msgid "Animated Filter apply (by name - please wait)"
-msgstr "¿òÁ÷ÀÌ´Â(Animate) ÇÊÅÍ Àû¿ë (ÀÌ¸§À¸·Î - ±â´Ù¸®¼¼¿ä)"
+msgstr "ì›€ì§ì´ëŠ”(Animate) í•„í„° ì ìš© (ì´ë¦„ìœ¼ë¡œ - ê¸°ë‹¤ë¦¬ì„¸ìš”)"
 
 #: gap/gap_dbbrowser_utils.c:700
 msgid "Animated Filter apply (by blurb - please wait)"
-msgstr "¿òÁ÷ÀÌ´Â(Animate) ÇÊÅÍ Àû¿ë (Ä¿¹ö¼³¸íÀ¸·Î - ±â´Ù¸®¼¼¿ä)"
+msgstr "ì›€ì§ì´ëŠ”(Animate) í•„í„° ì ìš© (ì»¤ë²„ì„¤ëª…ìœ¼ë¡œ - ê¸°ë‹¤ë¦¬ì„¸ìš”)"
 
 #: gap/gap_dbbrowser_utils.c:708
 msgid "Animated Filter apply (please wait)"
-msgstr "¿òÁ÷ÀÌ´Â(Animate) ÇÊÅÍ Àû¿ë (±â´Ù¸®¼¼¿ä)"
+msgstr "ì›€ì§ì´ëŠ”(Animate) í•„í„° ì ìš© (ê¸°ë‹¤ë¦¬ì„¸ìš”)"
 
 #: gap/gap_dbbrowser_utils.c:755 gap/gap_filter_foreach.c:163
 #: gap/gap_mod_layer.c:287
 msgid "Animated Filter apply"
-msgstr "¿òÁ÷ÀÌ´Â(Animate) ÇÊÅÍ Àû¿ë"
+msgstr "ì›€ì§ì´ëŠ”(Animate) í•„í„° ì ìš©"
 
 #: gap/gap_decode_mpeg_main.c:102
 #, fuzzy
 msgid "<Image>/Video/Split Video to Frames"
-msgstr "<Image>/¿òÁ÷ÀÌ´Â ÇÁ·¹ÀÓ/ÀÌ¹ÌÁö¸¦ ÇÁ·¹ÀÓÀ¸·Î ºĞÇÒ"
+msgstr "<Image>/ì›€ì§ì´ëŠ” í”„ë ˆì„/ì´ë¯¸ì§€ë¥¼ í”„ë ˆì„ìœ¼ë¡œ ë¶„í• "
 
 #: gap/gap_decode_mpeg_main.c:103
 msgid "<Toolbox>/Xtns/Split Video to Frames"
@@ -137,7 +137,7 @@ msgstr ""
 #: gap/gap_decode_mpeg_main.c:176
 #, fuzzy
 msgid "<Image>/Video/Split Video to Frames/MPEG1"
-msgstr "<Image>/¿òÁ÷ÀÌ´Â ÇÁ·¹ÀÓ/ÀÌ¹ÌÁö¸¦ ÇÁ·¹ÀÓÀ¸·Î ºĞÇÒ"
+msgstr "<Image>/ì›€ì§ì´ëŠ” í”„ë ˆì„/ì´ë¯¸ì§€ë¥¼ í”„ë ˆì„ìœ¼ë¡œ ë¶„í• "
 
 #: gap/gap_decode_mpeg_main.c:189
 msgid "<Toolbox>/Xtns/Split Video to Frames/MPEG1"
@@ -147,7 +147,7 @@ msgstr ""
 #: gap/gap_range_ops.c:1240
 #, fuzzy
 msgid "Overwrite Frame"
-msgstr "ÇÁ·¹ÀÓ ¹Ì¸®º¸±â:"
+msgstr "í”„ë ˆì„ ë¯¸ë¦¬ë³´ê¸°:"
 
 #: gap/gap_decode_mpeg_main.c:334 gap/gap_decode_xanim.c:339
 #: gap/gap_range_ops.c:1242
@@ -157,12 +157,12 @@ msgstr ""
 #: gap/gap_decode_mpeg_main.c:342 gap/gap_decode_xanim.c:347
 #: gap/gap_lib.c:1036 gap/gap_range_ops.c:1247
 msgid "GAP Question"
-msgstr "GAP ÁúÀÇ"
+msgstr "GAP ì§ˆì˜"
 
 #: gap/gap_decode_mpeg_main.c:343 gap/gap_decode_xanim.c:348
 #, fuzzy
 msgid "File already exists"
-msgstr "Å¸ÀÏ ³ôÀÌ:"
+msgstr "íƒ€ì¼ ë†’ì´:"
 
 #: gap/gap_decode_mpeg_main.c:437
 msgid "Decoding MPEG Movie..."
@@ -171,7 +171,7 @@ msgstr ""
 #: gap/gap_decode_mpeg_main.c:642
 #, fuzzy
 msgid "Video"
-msgstr "ºñµğ¿ÀÇü½Ä"
+msgstr "ë¹„ë””ì˜¤í˜•ì‹"
 
 #: gap/gap_decode_mpeg_main.c:643
 msgid ""
@@ -186,7 +186,7 @@ msgstr ""
 #: gap/gap_range_ops.c:602
 #, fuzzy
 msgid "From:"
-msgstr "¾îµğ¿¡¼­ :"
+msgstr "ì–´ë””ì—ì„œ :"
 
 #: gap/gap_decode_mpeg_main.c:653 gap/gap_decode_xanim.c:225
 msgid "Framenumber of 1st frame to extract"
@@ -197,7 +197,7 @@ msgstr ""
 #: gap/gap_range_ops.c:610
 #, fuzzy
 msgid "To:"
-msgstr "¾îµğ·Î :"
+msgstr "ì–´ë””ë¡œ :"
 
 #: gap/gap_decode_mpeg_main.c:663 gap/gap_decode_xanim.c:235
 msgid "Framenumber of last frame to extract"
@@ -206,7 +206,7 @@ msgstr ""
 #: gap/gap_decode_mpeg_main.c:672 gap/gap_decode_xanim.c:244
 #, fuzzy
 msgid "Framenames:"
-msgstr "ÇÁ·¹ÀÓ À² :"
+msgstr "í”„ë ˆì„ ìœ¨ :"
 
 #: gap/gap_decode_mpeg_main.c:673
 msgid ""
@@ -232,12 +232,12 @@ msgstr ""
 #: gap/gap_decode_mpeg_main.c:688
 #, fuzzy
 msgid "Split MPEG1 Video to Frames"
-msgstr "ÇÁ·¹ÀÓ¾È¿¡¼­ ÀÌ¹ÌÁö ºĞÇÒ"
+msgstr "í”„ë ˆì„ì•ˆì—ì„œ ì´ë¯¸ì§€ ë¶„í• "
 
 #: gap/gap_decode_mpeg_main.c:689 gap/gap_decode_xanim.c:298
 #: gap/gap_range_ops.c:1462
 msgid "Select Frame Range"
-msgstr "ÇÁ·¹ÀÓ ¹üÀ§ ¼±ÅÃ"
+msgstr "í”„ë ˆì„ ë²”ìœ„ ì„ íƒ"
 
 #: gap/gap_decode_xanim.c:114
 msgid "Conditions to run the xanim based video split"
@@ -254,7 +254,7 @@ msgstr ""
 #: gap/gap_decode_xanim.c:130
 #, fuzzy
 msgid "    you can get xanim exporting edition at"
-msgstr "    ´ç½ÅÀº ´ÙÀ½¿¡¼­ mpeg_encode¸¦ ¾òÀ»¼ö ÀÖ½À´Ï´Ù."
+msgstr "    ë‹¹ì‹ ì€ ë‹¤ìŒì—ì„œ mpeg_encodeë¥¼ ì–»ì„ìˆ˜ ìˆìŠµë‹ˆë‹¤."
 
 #: gap/gap_decode_xanim.c:146
 msgid ""
@@ -276,12 +276,12 @@ msgstr ""
 #: gap/gap_decode_xanim.c:181
 #, fuzzy
 msgid "XANIM Information"
-msgstr "MPEG_ENCODE Á¤º¸"
+msgstr "MPEG_ENCODE ì •ë³´"
 
 #: gap/gap_decode_xanim.c:214
 #, fuzzy
 msgid "Video:"
-msgstr "ºñµğ¿ÀÇü½Ä :"
+msgstr "ë¹„ë””ì˜¤í˜•ì‹ :"
 
 #: gap/gap_decode_xanim.c:215
 msgid ""
@@ -300,7 +300,7 @@ msgstr ""
 #: gap/gap_decode_xanim.c:252
 #, fuzzy
 msgid "Format"
-msgstr "º¸Åë"
+msgstr "ë³´í†µ"
 
 #: gap/gap_decode_xanim.c:253
 msgid ""
@@ -311,7 +311,7 @@ msgstr ""
 #: gap/gap_decode_xanim.c:260
 #, fuzzy
 msgid "Extract Frames"
-msgstr "Ã¤³Î ÃßÃâ"
+msgstr "ì±„ë„ ì¶”ì¶œ"
 
 #: gap/gap_decode_xanim.c:261
 msgid "Enable extraction of Frames"
@@ -330,7 +330,7 @@ msgstr ""
 #: gap/gap_decode_xanim.c:271
 #, fuzzy
 msgid "Jpeg Quality:"
-msgstr "Æ¯¼º"
+msgstr "íŠ¹ì„±"
 
 #: gap/gap_decode_xanim.c:272
 msgid ""
@@ -358,7 +358,7 @@ msgstr ""
 #: gap/gap_decode_xanim.c:297
 #, fuzzy
 msgid "Split any Xanim readable Video to Frames"
-msgstr "ÇÁ·¹ÀÓ¾È¿¡¼­ ÀÌ¹ÌÁö ºĞÇÒ"
+msgstr "í”„ë ˆì„ì•ˆì—ì„œ ì´ë¯¸ì§€ ë¶„í• "
 
 #: gap/gap_decode_xanim.c:540
 #, c-format
@@ -422,7 +422,7 @@ msgstr ""
 #: gap/gap_decode_xanim.c:1089
 #, fuzzy
 msgid "extracting frames..."
-msgstr "ÇÁ·¹ÀÓÀ» ¹Ù²Ù´Â Áß .."
+msgstr "í”„ë ˆì„ì„ ë°”ê¾¸ëŠ” ì¤‘ .."
 
 #: gap/gap_decode_xanim.c:1114
 #, c-format
@@ -440,25 +440,25 @@ msgstr ""
 #: gap/gap_decode_xanim.c:1154
 #, fuzzy
 msgid "renaming frames..."
-msgstr "ÇÁ·¹ÀÓ ÇÃ·¡Æ° Áß .."
+msgstr "í”„ë ˆì„ í”Œë˜íŠ¼ ì¤‘ .."
 
 #: gap/gap_decode_xanim.c:1159
 #, fuzzy
 msgid "converting frames..."
-msgstr "ÇÁ·¹ÀÓÀ» ¹Ù²Ù´Â Áß .."
+msgstr "í”„ë ˆì„ì„ ë°”ê¾¸ëŠ” ì¤‘ .."
 
 #: gap/gap_filter_foreach.c:126
 msgid "backup to file"
-msgstr "ÆÄÀÏ·Î ¹é¾÷"
+msgstr "íŒŒì¼ë¡œ ë°±ì—…"
 
 #. pixel
 #: gap/gap_filter_foreach.c:128
 msgid "Make backup of the image after each step"
-msgstr "°¢ ´Ü°èÈÄ¿¡ ÀÌ¹ÌÁö ¹é¾÷ ¸¸µé±â"
+msgstr "ê° ë‹¨ê³„í›„ì— ì´ë¯¸ì§€ ë°±ì—… ë§Œë“¤ê¸°"
 
 #: gap/gap_filter_foreach.c:132 gap/gap_mod_layer.c:262
 msgid "Continue"
-msgstr "°è¼Ó"
+msgstr "ê³„ì†"
 
 #: gap/gap_filter_foreach.c:136
 #, c-format
@@ -471,8 +471,8 @@ msgid ""
 "2nd call of %s\n"
 "(define end-settings)"
 msgstr ""
-"%sÀÇ µÎ¹øÂ° È£Ãâ\n"
-"(¸¶Áö¸·-»õÆÃ Á¤ÀÇ)"
+"%sì˜ ë‘ë²ˆì§¸ í˜¸ì¶œ\n"
+"(ë§ˆì§€ë§‰-ìƒˆíŒ… ì •ì˜)"
 
 #: gap/gap_filter_foreach.c:159
 #, fuzzy, c-format
@@ -480,30 +480,30 @@ msgid ""
 "Non-Interactive call of %s\n"
 "(for all layers in between)"
 msgstr ""
-"³Í-ÀÎÅÍ·¢Æ¼ºê %sÀÇ È£Ãâ\n"
-"(¸ğµç °èÃş Áß°èÀÚ¸¦ À§ÇØ)"
+"ë„Œ-ì¸í„°ë™í‹°ë¸Œ %sì˜ í˜¸ì¶œ\n"
+"(ëª¨ë“  ê³„ì¸µ ì¤‘ê³„ìë¥¼ ìœ„í•´)"
 
 #: gap/gap_filter_foreach.c:278
 #, fuzzy
 msgid "Applying Filter to all Layers..."
-msgstr "¸ğµç °èÃş¿¡ ÇÊÅÍ Àû¿ëÁß .."
+msgstr "ëª¨ë“  ê³„ì¸µì— í•„í„° ì ìš©ì¤‘ .."
 
 #: gap/gap_filter_foreach.c:552
 msgid "Select Filter for Animated apply"
-msgstr "¿òÁ÷ÀÓ(animated) Àû¿ëÀ» À§ÇÑ ÇÊÅÍ ¼±ÅÃ"
+msgstr "ì›€ì§ì„(animated) ì ìš©ì„ ìœ„í•œ í•„í„° ì„ íƒ"
 
 #: gap/gap_filter_foreach.c:553 gap/gap_mod_layer.c:664
 msgid "Apply Constant"
-msgstr "»ó¼ö Àû¿ë"
+msgstr "ìƒìˆ˜ ì ìš©"
 
 #: gap/gap_filter_foreach.c:554 gap/gap_mod_layer.c:665
 msgid "Apply Varying"
-msgstr "¼öÁ¤µÈ°Í Àû¿ë"
+msgstr "ìˆ˜ì •ëœê²ƒ ì ìš©"
 
 #: gap/gap_filter_main.c:105
 #, fuzzy
 msgid "<Image>/Filters/Filter all Layers..."
-msgstr "<Image>/ÇÊÅÍ/¿¡´Ï¸ŞÀÌ¼Ç/¸ğµç °èÃş ÇÊÅÍ¸µ"
+msgstr "<Image>/í•„í„°/ì—ë‹ˆë©”ì´ì…˜/ëª¨ë“  ê³„ì¸µ í•„í„°ë§"
 
 #: gap/gap_frontends_main.c:125
 msgid "<Image>/Video/Split Video to Frames/Any XANIM readable..."
@@ -546,135 +546,135 @@ msgid ""
 "Save Operations may result\n"
 "in loss of layer information."
 msgstr ""
-"´ç½ÅÀº xcf°¡ ¾Æ´Ñ ÆÄÀÏÇü½ÄÀ» »ç¿ëÇÏ°í ÀÖ½À´Ï´Ù\n"
-"µ¿ÀÛ ÀúÀåÀº °èÃşÁ¤º¸ÀÇ ¼Õ½Ç·Î ³ª¿Ã°ÍÀÔ´Ï´Ù."
+"ë‹¹ì‹ ì€ xcfê°€ ì•„ë‹Œ íŒŒì¼í˜•ì‹ì„ ì‚¬ìš©í•˜ê³  ìˆìŠµë‹ˆë‹¤\n"
+"ë™ì‘ ì €ì¥ì€ ê³„ì¸µì •ë³´ì˜ ì†ì‹¤ë¡œ ë‚˜ì˜¬ê²ƒì…ë‹ˆë‹¤."
 
 #: gap/gap_lib.c:1030
 #, fuzzy
 msgid "Save Flattened"
-msgstr "ÇÃ·¡Æ° ÀúÀå"
+msgstr "í”Œë˜íŠ¼ ì €ì¥"
 
 #: gap/gap_lib.c:1032
 #, fuzzy
 msgid "Save As Is"
-msgstr "GIF ·Î ÀúÀå"
+msgstr "GIF ë¡œ ì €ì¥"
 
 #: gap/gap_lib.c:1507 gap/gap_lib.c:1631 gap/gap_lib.c:1710 gap/gap_lib.c:1717
 #: gap/gap_lib.c:1724 gap/gap_lib.c:1807 gap/gap_lib.c:1829 gap/gap_lib.c:2734
 #, fuzzy, c-format
 msgid "Error: could not rename frame %ld to %ld"
-msgstr "¾Ö·¯: \"%s\"¸¦ ¿­¼ö ¾ø½À´Ï´Ù."
+msgstr "ì• ëŸ¬: \"%s\"ë¥¼ ì—´ìˆ˜ ì—†ìŠµë‹ˆë‹¤."
 
 #: gap/gap_lib.c:1570
 #, fuzzy, c-format
 msgid "Error: could not save frame %s"
-msgstr "¾Ö·¯: \"%s\"¸¦ ¿­¼ö ¾ø½À´Ï´Ù."
+msgstr "ì• ëŸ¬: \"%s\"ë¥¼ ì—´ìˆ˜ ì—†ìŠµë‹ˆë‹¤."
 
 #: gap/gap_lib.c:1619
 #, fuzzy
 msgid "Duplicating frames..."
-msgstr "ÇÁ·¹ÀÓ º¹»çÁß .."
+msgstr "í”„ë ˆì„ ë³µì‚¬ì¤‘ .."
 
 #: gap/gap_lib.c:1795
 #, fuzzy
 msgid "Renumber Framesequence..."
-msgstr "ÇÁ·¹ÀÓÂ÷·Ê ¹øÈ£¸¦ ´Ù½Ã ¸Ş±â´Â Áß .."
+msgstr "í”„ë ˆì„ì°¨ë¡€ ë²ˆí˜¸ë¥¼ ë‹¤ì‹œ ë©”ê¸°ëŠ” ì¤‘ .."
 
 #: gap/gap_lib.c:1981
 #, c-format
 msgid "Goto Frame (%ld/%ld)"
-msgstr "ÇÁ·¹ÀÓÀ¸·Î °¡±â (%ld/%ld)"
+msgstr "í”„ë ˆì„ìœ¼ë¡œ ê°€ê¸° (%ld/%ld)"
 
 #: gap/gap_lib.c:1984
 #, c-format
 msgid "Destination Frame Number (%ld  - %ld)"
-msgstr "´ë»ó ÇÁ·¹ÀÓ ¹øÈ£ (%ld  - %ld)"
+msgstr "ëŒ€ìƒ í”„ë ˆì„ ë²ˆí˜¸ (%ld  - %ld)"
 
 #: gap/gap_lib.c:1988 gap/gap_lib.c:2065 gap/gap_lib.c:2269
 #, fuzzy
 msgid "Number:"
-msgstr "¹øÈ£ :"
+msgstr "ë²ˆí˜¸ :"
 
 #: gap/gap_lib.c:2049
 #, c-format
 msgid "Delete Frames (%ld/%ld)"
-msgstr "ÇÁ·¹ÀÓ Áö¿ì±â (%ld/%ld)"
+msgstr "í”„ë ˆì„ ì§€ìš°ê¸° (%ld/%ld)"
 
 #: gap/gap_lib.c:2052
 #, fuzzy, c-format
 msgid "Delete Frames from %ld to (number)"
-msgstr "%ld¸¦ (¹øÈ£)·Î ÇÁ·¹ÀÓ Áö¿ì±â"
+msgstr "%ldë¥¼ (ë²ˆí˜¸)ë¡œ í”„ë ˆì„ ì§€ìš°ê¸°"
 
 #: gap/gap_lib.c:2115
 #, c-format
 msgid "Duplicate Frames (%ld/%ld)"
-msgstr "ÇÁ·¹ÀÓ º¹»ç (%ld/%ld)"
+msgstr "í”„ë ˆì„ ë³µì‚¬ (%ld/%ld)"
 
 #: gap/gap_lib.c:2125
 msgid "Source Range starts at this framenumber"
-msgstr "¼Ò½º ¹üÀ§°¡ ÀÌ ÇÁ·¹ÀÓ¹øÈ£¿¡¼­ ½ÃÀÛÇÑ´Ù"
+msgstr "ì†ŒìŠ¤ ë²”ìœ„ê°€ ì´ í”„ë ˆì„ë²ˆí˜¸ì—ì„œ ì‹œì‘í•œë‹¤"
 
 #: gap/gap_lib.c:2133
 msgid "Source Range ends at this framenumber"
-msgstr "¼Ò½º ¹üÀ§°¡ ÀÌ ÇÁ·¹ÀÓ¹øÈ£·Î ³¡³­´Ù."
+msgstr "ì†ŒìŠ¤ ë²”ìœ„ê°€ ì´ í”„ë ˆì„ë²ˆí˜¸ë¡œ ëë‚œë‹¤."
 
 #: gap/gap_lib.c:2136
 #, fuzzy
 msgid "N times:"
-msgstr "N-¹ø :"
+msgstr "N-ë²ˆ :"
 
 #: gap/gap_lib.c:2143
 msgid ""
 "Copy selected Range n-times  \n"
 "(you may type in Values > 99)"
 msgstr ""
-"¼±ÅÃµÈ ¹üÀ§ n-¹ø º¹»ç  \n"
-"(´ç½ÅÀº 99º¸´Ù Å©°Ô ³Ö¾î¾ßÇÒ °ÍÀÔ´Ï´Ù)"
+"ì„ íƒëœ ë²”ìœ„ n-ë²ˆ ë³µì‚¬  \n"
+"(ë‹¹ì‹ ì€ 99ë³´ë‹¤ í¬ê²Œ ë„£ì–´ì•¼í•  ê²ƒì…ë‹ˆë‹¤)"
 
 #: gap/gap_lib.c:2146
 #, fuzzy
 msgid "Duplicate Frame Range"
-msgstr "ÇÁ·¹ÀÓ¹üÀ§ º¹»ç"
+msgstr "í”„ë ˆì„ë²”ìœ„ ë³µì‚¬"
 
 #: gap/gap_lib.c:2264
 #, c-format
 msgid "Exchange current Frame (%ld)"
-msgstr "ÇöÀç ÇÁ·¹ÀÓ (%ld) ±³È¯"
+msgstr "í˜„ì¬ í”„ë ˆì„ (%ld) êµí™˜"
 
 #: gap/gap_lib.c:2268
 #, fuzzy
 msgid "With Frame (number)"
-msgstr "ÇÁ·¹ÀÓÀ» °¡Áö°í (¹øÈ£)"
+msgstr "í”„ë ˆì„ì„ ê°€ì§€ê³  (ë²ˆí˜¸)"
 
 #: gap/gap_lib.c:2310
 #, c-format
 msgid "Framesequence Shift (%ld/%ld)"
-msgstr "ÇÁ·¹ÀÓÂ÷·¹ ÀÌµ¿ (%ld/%ld)"
+msgstr "í”„ë ˆì„ì°¨ë ˆ ì´ë™ (%ld/%ld)"
 
 #: gap/gap_lib.c:2320
 msgid "Affected Range starts at this framenumber"
-msgstr "¿µÇâÀ» ¹ÌÄ£ ¹üÀ§´Â ÀÌ ÇÁ·¹ÀÓ¹øÈ£¿¡¼­ ½ÃÀÛµË´Ï´Ù"
+msgstr "ì˜í–¥ì„ ë¯¸ì¹œ ë²”ìœ„ëŠ” ì´ í”„ë ˆì„ë²ˆí˜¸ì—ì„œ ì‹œì‘ë©ë‹ˆë‹¤"
 
 #: gap/gap_lib.c:2328
 msgid "Affected Range ends at this framenumber"
-msgstr "¿µÇâÀ» ¹ÌÄ£ ¹üÀ§´Â ÀÌ ÇÁ·¹ÀÓ¹øÈ£¿¡¼­ ³¡³³´Ï´Ù."
+msgstr "ì˜í–¥ì„ ë¯¸ì¹œ ë²”ìœ„ëŠ” ì´ í”„ë ˆì„ë²ˆí˜¸ì—ì„œ ëë‚©ë‹ˆë‹¤."
 
 #: gap/gap_lib.c:2331
 #, fuzzy
 msgid "N-Shift:"
-msgstr "N-¹ø ÀÌµ¿ :"
+msgstr "N-ë²ˆ ì´ë™ :"
 
 #: gap/gap_lib.c:2336
 msgid ""
 "Renumber the affected framesequence     \n"
 "(numbers are shifted in circle by N)"
 msgstr ""
-"¿µÇâÀ» ¹ÌÄ£ ÇÁ·¹ÀÓÂ÷·¹ ¹øÈ£¸¦ ´Ù½Ã ¸Ş±è    \n"
-"(¹øÈ£´Â N¿¡ ÀÇÇØ ¿ø¿¡¼­ ÀÌµ¿µÈ´Ù.)"
+"ì˜í–¥ì„ ë¯¸ì¹œ í”„ë ˆì„ì°¨ë ˆ ë²ˆí˜¸ë¥¼ ë‹¤ì‹œ ë©”ê¹€    \n"
+"(ë²ˆí˜¸ëŠ” Nì— ì˜í•´ ì›ì—ì„œ ì´ë™ëœë‹¤.)"
 
 #: gap/gap_lib.c:2338
 msgid "Framesequence shift"
-msgstr "ÇÁ·¹ÀÓÂ÷·Ê ÀÌµ¿"
+msgstr "í”„ë ˆì„ì°¨ë¡€ ì´ë™"
 
 #: gap/gap_lib.c:2946
 #, c-format
@@ -687,146 +687,146 @@ msgstr ""
 #: gap/gap_main.c:476
 #, fuzzy
 msgid "<Image>/Video/Goto/Next Frame"
-msgstr "<Image>/¿òÁ÷ÀÌ´Â ÇÁ·¹ÀÓ/´ÙÀ½À¸·Î"
+msgstr "<Image>/ì›€ì§ì´ëŠ” í”„ë ˆì„/ë‹¤ìŒìœ¼ë¡œ"
 
 #: gap/gap_main.c:488
 #, fuzzy
 msgid "<Image>/Video/Goto/Previous Frame"
-msgstr "<Image>/¿òÁ÷ÀÌ´Â ÇÁ·¹ÀÓ/¾ÕÀ¸·Î"
+msgstr "<Image>/ì›€ì§ì´ëŠ” í”„ë ˆì„/ì•ìœ¼ë¡œ"
 
 #: gap/gap_main.c:500
 #, fuzzy
 msgid "<Image>/Video/Goto/First Frame"
-msgstr "<Image>/¿òÁ÷ÀÌ´Â ÇÁ·¹ÀÓ/Ã³À½À¸·Î"
+msgstr "<Image>/ì›€ì§ì´ëŠ” í”„ë ˆì„/ì²˜ìŒìœ¼ë¡œ"
 
 #: gap/gap_main.c:512
 #, fuzzy
 msgid "<Image>/Video/Goto/Last Frame"
-msgstr "<Image>/¿òÁ÷ÀÌ´Â ÇÁ·¹ÀÓ/¸¶Áö¸·À¸·Î"
+msgstr "<Image>/ì›€ì§ì´ëŠ” í”„ë ˆì„/ë§ˆì§€ë§‰ìœ¼ë¡œ"
 
 #: gap/gap_main.c:524
 #, fuzzy
 msgid "<Image>/Video/Goto/Any Frame..."
-msgstr "<Image>/¿òÁ÷ÀÌ´Â ÇÁ·¹ÀÓ/¾Æ¹«µ¥³ª"
+msgstr "<Image>/ì›€ì§ì´ëŠ” í”„ë ˆì„/ì•„ë¬´ë°ë‚˜"
 
 #: gap/gap_main.c:536
 #, fuzzy
 msgid "<Image>/Video/Delete Frames..."
-msgstr "<Image>/¿òÁ÷ÀÌ´Â ÇÁ·¹ÀÓ/ÇÁ·¹ÀÓ Áö¿ì±â"
+msgstr "<Image>/ì›€ì§ì´ëŠ” í”„ë ˆì„/í”„ë ˆì„ ì§€ìš°ê¸°"
 
 #: gap/gap_main.c:548
 #, fuzzy
 msgid "<Image>/Video/Duplicate Frames..."
-msgstr "<Image>/¿òÁ÷ÀÌ´Â ÇÁ·¹ÀÓ/ÇÁ·¹ÀÓ º¹»ç"
+msgstr "<Image>/ì›€ì§ì´ëŠ” í”„ë ˆì„/í”„ë ˆì„ ë³µì‚¬"
 
 #: gap/gap_main.c:560
 #, fuzzy
 msgid "<Image>/Video/Exchange Frame..."
-msgstr "<Image>/¿òÁ÷ÀÌ´Â ÇÁ·¹ÀÓ/ÇÁ·¹ÀÓ ±³È¯"
+msgstr "<Image>/ì›€ì§ì´ëŠ” í”„ë ˆì„/í”„ë ˆì„ êµí™˜"
 
 #: gap/gap_main.c:572
 #, fuzzy
 msgid "<Image>/Video/Move Path..."
-msgstr "<Image>/¿òÁ÷ÀÌ´Â ÇÁ·¹ÀÓ/°æ·Î ÀÌµ¿"
+msgstr "<Image>/ì›€ì§ì´ëŠ” í”„ë ˆì„/ê²½ë¡œ ì´ë™"
 
 #: gap/gap_main.c:643
 #, fuzzy
 msgid "<Image>/Video/Frames to Image..."
-msgstr "<Image>/¿òÁ÷ÀÌ´Â ÇÁ·¹ÀÓ/ÀÌ¹ÌÁö·Î ÇÁ·¹ÀÓ"
+msgstr "<Image>/ì›€ì§ì´ëŠ” í”„ë ˆì„/ì´ë¯¸ì§€ë¡œ í”„ë ˆì„"
 
 #: gap/gap_main.c:655
 #, fuzzy
 msgid "<Image>/Video/Frames Flatten..."
-msgstr "<Image>/¿òÁ÷ÀÌ´Â ÇÁ·¹ÀÓ/ÇÁ·¹ÀÓ ÇÃ·¡Æ°"
+msgstr "<Image>/ì›€ì§ì´ëŠ” í”„ë ˆì„/í”„ë ˆì„ í”Œë˜íŠ¼"
 
 #: gap/gap_main.c:667
 #, fuzzy
 msgid "<Image>/Video/Frames LayerDel..."
-msgstr "<Image>/¿òÁ÷ÀÌ´Â ÇÁ·¹ÀÓ/ÇÁ·¹ÀÓ °èÃş Áö¿ì±â"
+msgstr "<Image>/ì›€ì§ì´ëŠ” í”„ë ˆì„/í”„ë ˆì„ ê³„ì¸µ ì§€ìš°ê¸°"
 
 #: gap/gap_main.c:691
 #, fuzzy
 msgid "<Image>/Video/Frames Convert..."
-msgstr "<Image>/¿òÁ÷ÀÌ´Â ÇÁ·¹ÀÓ/ÇÁ·¹ÀÓ ¹Ù²Ù±â"
+msgstr "<Image>/ì›€ì§ì´ëŠ” í”„ë ˆì„/í”„ë ˆì„ ë°”ê¾¸ê¸°"
 
 #: gap/gap_main.c:703
 #, fuzzy
 msgid "<Image>/Video/Frames Resize..."
-msgstr "<Image>/¿òÁ÷ÀÌ´Â ÇÁ·¹ÀÓ/ÇÁ·¹ÀÓ Å©±âÁ¶Á¤"
+msgstr "<Image>/ì›€ì§ì´ëŠ” í”„ë ˆì„/í”„ë ˆì„ í¬ê¸°ì¡°ì •"
 
 #: gap/gap_main.c:715
 #, fuzzy
 msgid "<Image>/Video/Frames Crop..."
-msgstr "<Image>/¿òÁ÷ÀÌ´Â ÇÁ·¹ÀÓ/ÇÁ·¹ÀÓ Àß¶ó³»±â"
+msgstr "<Image>/ì›€ì§ì´ëŠ” í”„ë ˆì„/í”„ë ˆì„ ì˜ë¼ë‚´ê¸°"
 
 #: gap/gap_main.c:727
 #, fuzzy
 msgid "<Image>/Video/Frames Scale..."
-msgstr "<Image>/¿òÁ÷ÀÌ´Â ÇÁ·¹ÀÓ/ÇÁ·¹ÀÓ ½ºÄÉÀÏ"
+msgstr "<Image>/ì›€ì§ì´ëŠ” í”„ë ˆì„/í”„ë ˆì„ ìŠ¤ì¼€ì¼"
 
 #: gap/gap_main.c:739
 #, fuzzy
 msgid "<Image>/Video/Split Image to Frames..."
-msgstr "<Image>/¿òÁ÷ÀÌ´Â ÇÁ·¹ÀÓ/ÀÌ¹ÌÁö¸¦ ÇÁ·¹ÀÓÀ¸·Î ºĞÇÒ"
+msgstr "<Image>/ì›€ì§ì´ëŠ” í”„ë ˆì„/ì´ë¯¸ì§€ë¥¼ í”„ë ˆì„ìœ¼ë¡œ ë¶„í• "
 
 #: gap/gap_main.c:752
 #, fuzzy
 msgid "<Image>/Video/Framesequence Shift..."
-msgstr "<Image>/¿òÁ÷ÀÌ´Â ÇÁ·¹ÀÓ/ÇÁ·¹ÀÓÂ÷·Ê ÀÌµ¿"
+msgstr "<Image>/ì›€ì§ì´ëŠ” í”„ë ˆì„/í”„ë ˆì„ì°¨ë¡€ ì´ë™"
 
 #: gap/gap_main.c:764
 #, fuzzy
 msgid "<Image>/Video/Frames Modify..."
-msgstr "<Image>/¿òÁ÷ÀÌ´Â ÇÁ·¹ÀÓ/ÇÁ·¹ÀÓ ¼öÁ¤"
+msgstr "<Image>/ì›€ì§ì´ëŠ” í”„ë ˆì„/í”„ë ˆì„ ìˆ˜ì •"
 
 #. Layer select modes
 #: gap/gap_mod_layer.c:84 gap/gap_range_ops.c:574
 msgid "Pattern is equal to LayerName"
-msgstr "ÆĞÅÏÀº °èÃşÀÌ¸§°ú °°´Ù"
+msgstr "íŒ¨í„´ì€ ê³„ì¸µì´ë¦„ê³¼ ê°™ë‹¤"
 
 #: gap/gap_mod_layer.c:85 gap/gap_range_ops.c:575
 msgid "Pattern is Start of LayerName"
-msgstr "ÆĞÅÏÀº °èÃşÀÌ¸§ÀÇ ½ÃÀÛÀÌ´Ù"
+msgstr "íŒ¨í„´ì€ ê³„ì¸µì´ë¦„ì˜ ì‹œì‘ì´ë‹¤"
 
 #: gap/gap_mod_layer.c:86 gap/gap_range_ops.c:576
 msgid "Pattern is End of Layername"
-msgstr "ÆĞÅÏÀº °èÃşÀÌ¸§ÀÇ ³¡ÀÌ´Ù"
+msgstr "íŒ¨í„´ì€ ê³„ì¸µì´ë¦„ì˜ ëì´ë‹¤"
 
 #: gap/gap_mod_layer.c:87 gap/gap_range_ops.c:577
 msgid "Pattern is a Part of LayerName"
-msgstr "ÆĞÅÏÀº °èÃşÀÌ¸§ÀÇ ºÎºĞÀÌ´Ù"
+msgstr "íŒ¨í„´ì€ ê³„ì¸µì´ë¦„ì˜ ë¶€ë¶„ì´ë‹¤"
 
 #: gap/gap_mod_layer.c:88 gap/gap_range_ops.c:578
 msgid "Pattern is LayerstackNumber List"
-msgstr "ÆĞÅÏÀº °èÃş½ºÅÃ¹øÈ£ ¸ñ·ÏÀÔ´Ï´Ù"
+msgstr "íŒ¨í„´ì€ ê³„ì¸µìŠ¤íƒë²ˆí˜¸ ëª©ë¡ì…ë‹ˆë‹¤"
 
 #: gap/gap_mod_layer.c:89 gap/gap_range_ops.c:579
 msgid "Pattern is REVERSE-stack List"
-msgstr "ÆĞÅÏÀº ¹İ´ë-½ºÅÃ ¸ñ·Ï ÀÔ´Ï´Ù"
+msgstr "íŒ¨í„´ì€ ë°˜ëŒ€-ìŠ¤íƒ ëª©ë¡ ì…ë‹ˆë‹¤"
 
 #: gap/gap_mod_layer.c:90 gap/gap_range_ops.c:580
 msgid "All Visible (ignore Pattern)"
-msgstr "¸ğµç º¸ÀÌ´Â °Í (ÆĞÅÏ ¹«½Ã)"
+msgstr "ëª¨ë“  ë³´ì´ëŠ” ê²ƒ (íŒ¨í„´ ë¬´ì‹œ)"
 
 #: gap/gap_mod_layer.c:92
 #, fuzzy
 msgid "Select all Layers where Layername is equal to Pattern"
-msgstr "°èÃşÀÌ¸§°ú °°Àº ÆĞÅÏÀÌ ÀÖ´Â °÷¿¡ ¸ğµç °èÃşÀ» ¼±ÅÃÇÕ´Ï´Ù"
+msgstr "ê³„ì¸µì´ë¦„ê³¼ ê°™ì€ íŒ¨í„´ì´ ìˆëŠ” ê³³ì— ëª¨ë“  ê³„ì¸µì„ ì„ íƒí•©ë‹ˆë‹¤"
 
 #: gap/gap_mod_layer.c:93
 #, fuzzy
 msgid "Select all Layers where Layername starts with Pattern"
-msgstr "°ÂÃşÀÌ¸§°ú ÆĞÅÏÀÌ ½ÃÀÛµÇ´Â °÷¿¡ ¸ğµç °èÃşÀ» ¼±ÅÃÇÕ´Ï´Ù."
+msgstr "ê±”ì¸µì´ë¦„ê³¼ íŒ¨í„´ì´ ì‹œì‘ë˜ëŠ” ê³³ì— ëª¨ë“  ê³„ì¸µì„ ì„ íƒí•©ë‹ˆë‹¤."
 
 #: gap/gap_mod_layer.c:94
 #, fuzzy
 msgid "Select all Layers where Layername ends up with Pattern"
-msgstr "°ÂÃşÀÌ¸§°ú ÆĞÅÏÀÌ ³¡³ª´Â °÷¿¡ ¸ğµç °èÃşÀ» ¼±ÅÃÇÕ´Ï´Ù."
+msgstr "ê±”ì¸µì´ë¦„ê³¼ íŒ¨í„´ì´ ëë‚˜ëŠ” ê³³ì— ëª¨ë“  ê³„ì¸µì„ ì„ íƒí•©ë‹ˆë‹¤."
 
 #: gap/gap_mod_layer.c:95
 #, fuzzy
 msgid "Select all Layers where Layername contains Pattern"
-msgstr "°èÃşÀÌ¸§ÀÌ ÆĞÅÏÀ» Æ÷ÇÔÇÏ´Â °÷¿¡ ¸ğµç °èÃşÀ» ¼±ÅÃÇÕ´Ï´Ù."
+msgstr "ê³„ì¸µì´ë¦„ì´ íŒ¨í„´ì„ í¬í•¨í•˜ëŠ” ê³³ì— ëª¨ë“  ê³„ì¸µì„ ì„ íƒí•©ë‹ˆë‹¤."
 
 #: gap/gap_mod_layer.c:96
 #, fuzzy
@@ -835,9 +835,9 @@ msgid ""
 "0, 4-5, 8\n"
 "where 0 == Top-layer"
 msgstr ""
-"°èÃş½ºÅÃ À§Ä¡ ¼±ÅÃ.\n"
+"ê³„ì¸µìŠ¤íƒ ìœ„ì¹˜ ì„ íƒ.\n"
 "0, 4-5, 8\n"
-"0 == »óÀ§-°èÃş"
+"0 == ìƒìœ„-ê³„ì¸µ"
 
 #: gap/gap_mod_layer.c:97
 #, fuzzy
@@ -846,80 +846,80 @@ msgid ""
 "0, 4-5, 8\n"
 "where 0 == BG-layer"
 msgstr ""
-"°èÃş½ºÅÃ À§Ä¡ ¼±ÅÃ.\n"
+"ê³„ì¸µìŠ¤íƒ ìœ„ì¹˜ ì„ íƒ.\n"
 "0, 4-5, 8\n"
-"0 == ¹è°æ-°èÃş"
+"0 == ë°°ê²½-ê³„ì¸µ"
 
 #: gap/gap_mod_layer.c:98
 #, fuzzy
 msgid "Select all visible Layers"
-msgstr "¸ğµç ³ªÅ¸³­ °èÃş ¼±ÅÃ"
+msgstr "ëª¨ë“  ë‚˜íƒ€ë‚œ ê³„ì¸µ ì„ íƒ"
 
 #. action items what to do with the selected layer(s)
 #: gap/gap_mod_layer.c:102
 #, fuzzy
 msgid "Set Layer(s) visible"
-msgstr "°èÃşÀ» º¸ÀÌ°Ô ¼³Á¤"
+msgstr "ê³„ì¸µì„ ë³´ì´ê²Œ ì„¤ì •"
 
 #: gap/gap_mod_layer.c:103
 #, fuzzy
 msgid "Set Layer(s) invisible"
-msgstr "°èÃşÀ» º¸ÀÌÁö ¾Ê°Ô ¼³Á¤"
+msgstr "ê³„ì¸µì„ ë³´ì´ì§€ ì•Šê²Œ ì„¤ì •"
 
 #: gap/gap_mod_layer.c:104
 #, fuzzy
 msgid "Set Layer(s) linked"
-msgstr "°èÃşÀ» ¿¬°áµÇ°Ô ¼³Á¤"
+msgstr "ê³„ì¸µì„ ì—°ê²°ë˜ê²Œ ì„¤ì •"
 
 #: gap/gap_mod_layer.c:105
 #, fuzzy
 msgid "Set Layer(s) unlinked"
-msgstr "°èÃşÀ» ´Ü°áµÇ°Ô ¼³Á¤"
+msgstr "ê³„ì¸µì„ ë‹¨ê²°ë˜ê²Œ ì„¤ì •"
 
 #: gap/gap_mod_layer.c:106
 #, fuzzy
 msgid "Raise Layer(s)"
-msgstr "°èÃş ¿Ã¸®±â"
+msgstr "ê³„ì¸µ ì˜¬ë¦¬ê¸°"
 
 #: gap/gap_mod_layer.c:107
 #, fuzzy
 msgid "Lower Layer(s)"
-msgstr "°èÃş ³»¸®±â"
+msgstr "ê³„ì¸µ ë‚´ë¦¬ê¸°"
 
 #: gap/gap_mod_layer.c:108
 #, fuzzy
 msgid "Merge Layer(s) expand as necessary"
-msgstr "ÇÊ¿ä¿¡ µû¶ó ¸ÓÁö °èÃş È®Àå"
+msgstr "í•„ìš”ì— ë”°ë¼ ë¨¸ì§€ ê³„ì¸µ í™•ì¥"
 
 #: gap/gap_mod_layer.c:109
 #, fuzzy
 msgid "Merge Layer(s) clipped to image"
-msgstr "ÀÌ¹ÌÁö¿¡¼­ ¸ÓÁö °èÃş Àß¶ó³»±â"
+msgstr "ì´ë¯¸ì§€ì—ì„œ ë¨¸ì§€ ê³„ì¸µ ì˜ë¼ë‚´ê¸°"
 
 #: gap/gap_mod_layer.c:110
 #, fuzzy
 msgid "Merge Layer(s) clipped to bg-layer"
-msgstr "¹è°æ-°èÃşÀ¸·Î ¸ÓÁö °èÃş Àß¶ó³»±â"
+msgstr "ë°°ê²½-ê³„ì¸µìœ¼ë¡œ ë¨¸ì§€ ê³„ì¸µ ì˜ë¼ë‚´ê¸°"
 
 #: gap/gap_mod_layer.c:111
 #, fuzzy
 msgid "Apply filter on Layer(s)"
-msgstr "°èÃş¿¡¼­ ÇÊÅÍ Àû¿ë"
+msgstr "ê³„ì¸µì—ì„œ í•„í„° ì ìš©"
 
 #: gap/gap_mod_layer.c:112
 #, fuzzy
 msgid "Duplicate Layer(s)"
-msgstr "°èÃş º¹»ç"
+msgstr "ê³„ì¸µ ë³µì‚¬"
 
 #: gap/gap_mod_layer.c:113
 #, fuzzy
 msgid "Delete Layer(s)"
-msgstr "°èÃş »èÁ¦"
+msgstr "ê³„ì¸µ ì‚­ì œ"
 
 #: gap/gap_mod_layer.c:114
 #, fuzzy
 msgid "Rename Layer(s)"
-msgstr "°èÃş ÀÌ¸§¹Ù²Ù±â"
+msgstr "ê³„ì¸µ ì´ë¦„ë°”ê¾¸ê¸°"
 
 #: gap/gap_mod_layer.c:153
 #, fuzzy
@@ -927,35 +927,35 @@ msgid ""
 "Perform function on one or more Layer(s)\n"
 "in all frames of the selected frame range\n"
 msgstr ""
-"¼±ÅÃµÈ ÇÁ·¹ÀÓ¹üÀ§ÀÇ ¸ğµç ÇÁ·¹ÀÓ ¾È¿¡¼­ ÇÏ³ª È¤Àº\n"
-"¿©·¯°³ÀÇ °èÃşÀ§¿¡¼­ ÇÔ¼ö ¼öÇàÇÏ±â\n"
+"ì„ íƒëœ í”„ë ˆì„ë²”ìœ„ì˜ ëª¨ë“  í”„ë ˆì„ ì•ˆì—ì„œ í•˜ë‚˜ í˜¹ì€\n"
+"ì—¬ëŸ¬ê°œì˜ ê³„ì¸µìœ„ì—ì„œ í•¨ìˆ˜ ìˆ˜í–‰í•˜ê¸°\n"
 
 #: gap/gap_mod_layer.c:157 gap/gap_mpege.c:258 gap/gap_range_ops.c:443
 msgid "From Frame:"
-msgstr "ÇÁ·¹ÀÓ¿¡¼­:"
+msgstr "í”„ë ˆì„ì—ì„œ:"
 
 #: gap/gap_mod_layer.c:158 gap/gap_mpege.c:259 gap/gap_range_ops.c:444
 #: gap/gap_range_ops.c:603
 msgid "first handled frame"
-msgstr "Ã¹¹øÂ° Á¶ÀıµÈ ÇÁ·¹ÀÓ"
+msgstr "ì²«ë²ˆì§¸ ì¡°ì ˆëœ í”„ë ˆì„"
 
 #: gap/gap_mod_layer.c:165 gap/gap_range_ops.c:451
 #, fuzzy
 msgid "To Frame:"
-msgstr "ÇÁ·¹ÀÓÀ¸·Î:"
+msgstr "í”„ë ˆì„ìœ¼ë¡œ:"
 
 #: gap/gap_mod_layer.c:166 gap/gap_mpege.c:267 gap/gap_range_ops.c:452
 #: gap/gap_range_ops.c:611
 msgid "last handled frame"
-msgstr "¸¶Áö¸· Á¶ÀıµÈ ÇÁ·¹ÀÓ"
+msgstr "ë§ˆì§€ë§‰ ì¡°ì ˆëœ í”„ë ˆì„"
 
 #: gap/gap_mod_layer.c:174 gap/gap_range_ops.c:650
 msgid "Select Layer(s):"
-msgstr "°èÃş ¼±ÅÃ:"
+msgstr "ê³„ì¸µ ì„ íƒ:"
 
 #: gap/gap_mod_layer.c:184 gap/gap_range_ops.c:659
 msgid "Select Pattern:"
-msgstr "ÆĞÅÏ ¼±ÅÃ:"
+msgstr "íŒ¨í„´ ì„ íƒ:"
 
 #. pixel
 #: gap/gap_mod_layer.c:186 gap/gap_range_ops.c:661
@@ -964,39 +964,39 @@ msgid ""
 "or layerstack position numbers\n"
 "0,3-5"
 msgstr ""
-"°èÃşÀÌ¸§ È¤Àº °èÃş½ºÅÃ À§Ä¡ ¹øÈ£   \n"
-"0,3-5¸¦ È®ÀÎÇÏ´Â\n"
-"½ºÆ®¸µ."
+"ê³„ì¸µì´ë¦„ í˜¹ì€ ê³„ì¸µìŠ¤íƒ ìœ„ì¹˜ ë²ˆí˜¸   \n"
+"0,3-5ë¥¼ í™•ì¸í•˜ëŠ”\n"
+"ìŠ¤íŠ¸ë§."
 
 #: gap/gap_mod_layer.c:192 gap/gap_range_ops.c:667
 msgid "Case sensitive"
-msgstr "»ç°Ç ¹Î°¨µµ"
+msgstr "ì‚¬ê±´ ë¯¼ê°ë„"
 
 #: gap/gap_mod_layer.c:193 gap/gap_range_ops.c:668
 msgid "Lowercase and UPPERCASE letters are considered as different"
-msgstr "´ë¹®ÀÚ¿Í ¼Ò¹®ÀÚ´Â ´Ù¸¥°ÍÀ¸·Î Ãë±ŞÇÕ´Ï´Ù."
+msgstr "ëŒ€ë¬¸ìì™€ ì†Œë¬¸ìëŠ” ë‹¤ë¥¸ê²ƒìœ¼ë¡œ ì·¨ê¸‰í•©ë‹ˆë‹¤."
 
 #: gap/gap_mod_layer.c:198 gap/gap_range_ops.c:673
 msgid "Invert Selection"
-msgstr "¼¿·º¼ÇÀ» ¹İ´ë·Î(Invert)"
+msgstr "ì…€ë ‰ì…˜ì„ ë°˜ëŒ€ë¡œ(Invert)"
 
 #: gap/gap_mod_layer.c:199
 msgid "Perform actions on all unselected Layers"
-msgstr "¸ğµç ¼±ÅÃµÇÁö ¾ÊÀº °èÃş¿¡ ÀÛ¿ëÀ» ¼öÇà"
+msgstr "ëª¨ë“  ì„ íƒë˜ì§€ ì•Šì€ ê³„ì¸µì— ì‘ìš©ì„ ìˆ˜í–‰"
 
 #: gap/gap_mod_layer.c:204
 #, fuzzy
 msgid "Function:"
-msgstr "ÇÔ¼ö :"
+msgstr "í•¨ìˆ˜ :"
 
 #. argv[7].radio_help_argv = action_help
 #: gap/gap_mod_layer.c:208
 msgid "Function to be performed on all selected layers"
-msgstr "¸ğµç ¼±ÅÃµÈ °èÃş¿¡ ¼öÇàµÇ¾îÁø ÇÔ¼ö"
+msgstr "ëª¨ë“  ì„ íƒëœ ê³„ì¸µì— ìˆ˜í–‰ë˜ì–´ì§„ í•¨ìˆ˜"
 
 #: gap/gap_mod_layer.c:214
 msgid "New Layername:"
-msgstr "»õ·Î¿î °èÃşÀÌ¸§:"
+msgstr "ìƒˆë¡œìš´ ê³„ì¸µì´ë¦„:"
 
 #. pixel
 #: gap/gap_mod_layer.c:216
@@ -1005,17 +1005,17 @@ msgid ""
 "[####] is replaced by frame number\n"
 "(is used on function rename only)"
 msgstr ""
-"¸ğµç Á¶ÀıµÈ °èÃş [####]À» À§ÇÑ »õ·Î¿î \n"
-"°èÃşÀÌ¸§Àº ÇÁ·¹ÀÓ ¹üÈ£¿¡ ÀÇÇØ º¯°æµÇ¾îÁı´Ï´Ù.\n"
-"(¿ÀÁ÷ ÇÔ¼ö ÀÌ¸§ ¹Ù²Ù±â¿¡¼­ »ç¿ëµË´Ï´Ù.)"
+"ëª¨ë“  ì¡°ì ˆëœ ê³„ì¸µ [####]ì„ ìœ„í•œ ìƒˆë¡œìš´ \n"
+"ê³„ì¸µì´ë¦„ì€ í”„ë ˆì„ ë²”í˜¸ì— ì˜í•´ ë³€ê²½ë˜ì–´ì§‘ë‹ˆë‹¤.\n"
+"(ì˜¤ì§ í•¨ìˆ˜ ì´ë¦„ ë°”ê¾¸ê¸°ì—ì„œ ì‚¬ìš©ë©ë‹ˆë‹¤.)"
 
 #: gap/gap_mod_layer.c:221
 msgid "Frames Modify"
-msgstr "ÇÁ·¹ÀÓ º¯°æ"
+msgstr "í”„ë ˆì„ ë³€ê²½"
 
 #: gap/gap_mod_layer.c:222
 msgid "Settings"
-msgstr "¼³Á¤"
+msgstr "ì„¤ì •"
 
 #: gap/gap_mod_layer.c:285
 #, c-format
@@ -1023,196 +1023,196 @@ msgid ""
 "Non-Interactive call of %s\n"
 "(for all selected layers)"
 msgstr ""
-"%sÀÇ È£ÃâÀº »óÈ£ ÀÛ¿ëÀ» ÇÏÁö ¾Ê½À´Ï´Ù.\n"
-"(¸ğµç ¼±ÅÃµÈ °èÃş¿¡¼­)"
+"%sì˜ í˜¸ì¶œì€ ìƒí˜¸ ì‘ìš©ì„ í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.\n"
+"(ëª¨ë“  ì„ íƒëœ ê³„ì¸µì—ì„œ)"
 
 #. GAP-PDB-Browser Dialog
 #. ----------------------
 #: gap/gap_mod_layer.c:663
 msgid "Select Filter for Animated frames-apply"
-msgstr "¿òÁ÷ÀÌ´Â(animate) ÇÁ·¹ÀÓ-Àû¿ëÀ» À§ÇÑ ÇÊÅÍ ¼±ÅÃ"
+msgstr "ì›€ì§ì´ëŠ”(animate) í”„ë ˆì„-ì ìš©ì„ ìœ„í•œ í•„í„° ì„ íƒ"
 
 #: gap/gap_mod_layer.c:805
 #, fuzzy
 msgid "GAP Modify: No layer selected in last handled frame"
-msgstr "GAP º¯°æ: ¸¶Áö¸· Á¶ÀıµÈ ÇÁ·¹ÀÎ¿¡ ¼±ÅÃµÈ °èÃşÀÌ ¾øÀ½\n"
+msgstr "GAP ë³€ê²½: ë§ˆì§€ë§‰ ì¡°ì ˆëœ í”„ë ˆì¸ì— ì„ íƒëœ ê³„ì¸µì´ ì—†ìŒ\n"
 
 #: gap/gap_mod_layer.c:891
 #, fuzzy
 msgid "Modifying Frames/Layer(s)..."
-msgstr "ÇÁ·¹ÀÓ/°èÃş º¯°æÁß .."
+msgstr "í”„ë ˆì„/ê³„ì¸µ ë³€ê²½ì¤‘ .."
 
 #: gap/gap_mod_layer.c:972
 #, fuzzy
 msgid "No selected Layer in start frame"
-msgstr "½ÃÀÛ ÇÁ·¹ÀÓ¿¡¼­ ¼±ÅÃµÈ °èÃşÀÌ ¾ø½À´Ï´Ù.\n"
+msgstr "ì‹œì‘ í”„ë ˆì„ì—ì„œ ì„ íƒëœ ê³„ì¸µì´ ì—†ìŠµë‹ˆë‹¤.\n"
 
 #: gap/gap_mov_dialog.c:262
 msgid "Normal"
-msgstr "º¸Åë"
+msgstr "ë³´í†µ"
 
 #: gap/gap_mov_dialog.c:263
 msgid "Dissolve"
-msgstr "ºĞÇØ"
+msgstr "ë¶„í•´"
 
 #: gap/gap_mov_dialog.c:264
 msgid "Multiply"
-msgstr "¹è·Î Áõ°¡"
+msgstr "ë°°ë¡œ ì¦ê°€"
 
 #: gap/gap_mov_dialog.c:265
 msgid "Screen"
-msgstr "½ºÅ©¸°"
+msgstr "ìŠ¤í¬ë¦°"
 
 #: gap/gap_mov_dialog.c:266
 msgid "Overlay"
-msgstr "°ãÄ¡±â"
+msgstr "ê²¹ì¹˜ê¸°"
 
 #: gap/gap_mov_dialog.c:267
 msgid "Difference"
-msgstr "Â÷ÀÌÁ¡"
+msgstr "ì°¨ì´ì "
 
 #: gap/gap_mov_dialog.c:268
 msgid "Addition"
-msgstr "Ãß°¡"
+msgstr "ì¶”ê°€"
 
 #: gap/gap_mov_dialog.c:269
 msgid "Subtract"
-msgstr "»©±â"
+msgstr "ë¹¼ê¸°"
 
 #: gap/gap_mov_dialog.c:270
 msgid "Darken Only"
-msgstr "¿ÀÁ÷ ¾îµÓ°Ô"
+msgstr "ì˜¤ì§ ì–´ë‘¡ê²Œ"
 
 #: gap/gap_mov_dialog.c:271
 msgid "Lighten Only"
-msgstr "¿ÀÁ÷ ¶óÀÌÆ®¸¸"
+msgstr "ì˜¤ì§ ë¼ì´íŠ¸ë§Œ"
 
 #: gap/gap_mov_dialog.c:272
 msgid "Hue"
-msgstr "»öµµ"
+msgstr "ìƒ‰ë„"
 
 #: gap/gap_mov_dialog.c:273
 msgid "Saturation"
-msgstr "Ã¤µµ"
+msgstr "ì±„ë„"
 
 #: gap/gap_mov_dialog.c:274
 msgid "Color"
-msgstr "»ö»ó"
+msgstr "ìƒ‰ìƒ"
 
 #: gap/gap_mov_dialog.c:275
 msgid "Value"
-msgstr "°ª"
+msgstr "ê°’"
 
 #: gap/gap_mov_dialog.c:282
 msgid "Left  Top"
-msgstr "¿ŞÂÊ  À§"
+msgstr "ì™¼ìª½  ìœ„"
 
 #: gap/gap_mov_dialog.c:283
 msgid "Left  Bottom"
-msgstr "¿ŞÂÊ  ¾Æ·¡"
+msgstr "ì™¼ìª½  ì•„ë˜"
 
 #: gap/gap_mov_dialog.c:284
 msgid "Right Top"
-msgstr "¿À¸¥ÂÊ À§"
+msgstr "ì˜¤ë¥¸ìª½ ìœ„"
 
 #: gap/gap_mov_dialog.c:285
 msgid "Right Bottom"
-msgstr "¿À¸¥ÂÊ ¾Æ·¡"
+msgstr "ì˜¤ë¥¸ìª½ ì•„ë˜"
 
 #: gap/gap_mov_dialog.c:286
 msgid "Center"
-msgstr "Áß°£"
+msgstr "ì¤‘ê°„"
 
 #: gap/gap_mov_dialog.c:294
 msgid "Loop"
-msgstr "·çÇÁ"
+msgstr "ë£¨í”„"
 
 #: gap/gap_mov_dialog.c:295
 msgid "Loop Reverse"
-msgstr "¿ª ·çÇÁ"
+msgstr "ì—­ ë£¨í”„"
 
 #: gap/gap_mov_dialog.c:296
 msgid "Once"
-msgstr "ÇÑ ¹ø"
+msgstr "í•œ ë²ˆ"
 
 #: gap/gap_mov_dialog.c:297
 msgid "OnceReverse"
-msgstr "°Å²Ù·Î ÇÑ¹ø"
+msgstr "ê±°ê¾¸ë¡œ í•œë²ˆ"
 
 #: gap/gap_mov_dialog.c:298
 msgid "PingPong"
-msgstr "ÇÎÆş"
+msgstr "í•‘í"
 
 #: gap/gap_mov_dialog.c:299
 msgid "None"
-msgstr "¾øÀ½"
+msgstr "ì—†ìŒ"
 
 #: gap/gap_mov_dialog.c:300
 #, fuzzy
 msgid "Frame Loop"
-msgstr "ÇÁ·¹ÀÓ %d"
+msgstr "í”„ë ˆì„ %d"
 
 #: gap/gap_mov_dialog.c:301
 #, fuzzy
 msgid "Frame Loop Reverse"
-msgstr "¿ª ·çÇÁ"
+msgstr "ì—­ ë£¨í”„"
 
 #: gap/gap_mov_dialog.c:302
 #, fuzzy
 msgid "Frame Once"
-msgstr "ÇÁ·¹ÀÓ À² :"
+msgstr "í”„ë ˆì„ ìœ¨ :"
 
 #: gap/gap_mov_dialog.c:303
 #, fuzzy
 msgid "Frame OnceReverse"
-msgstr "°Å²Ù·Î ÇÑ¹ø"
+msgstr "ê±°ê¾¸ë¡œ í•œë²ˆ"
 
 #: gap/gap_mov_dialog.c:304
 #, fuzzy
 msgid "Frame PingPong"
-msgstr "ÇÎÆş"
+msgstr "í•‘í"
 
 #: gap/gap_mov_dialog.c:305
 #, fuzzy
 msgid "Frame None"
-msgstr "ÇÁ·¹ÀÓ À² :"
+msgstr "í”„ë ˆì„ ìœ¨ :"
 
 #: gap/gap_mov_dialog.c:468
 msgid "Move Path"
-msgstr "°æ·Î ÀÌµ¿"
+msgstr "ê²½ë¡œ ì´ë™"
 
 #: gap/gap_mov_dialog.c:492
 #, fuzzy
 msgid "Update Preview"
-msgstr "°æ·Î ÀÌµ¿ ¹Ì¸®º¸±â"
+msgstr "ê²½ë¡œ ì´ë™ ë¯¸ë¦¬ë³´ê¸°"
 
 #: gap/gap_mov_dialog.c:499
 #, fuzzy
 msgid "Show PreviewFrame with Selected SrcLayer at current Controlpoint"
 msgstr ""
-"ÇöÀç ÄÁÆ®·Ñ Æ÷ÀÎÆ®¿¡¼­ ¼±ÅÃµÈ       \n"
-"¿ø·¡ °èÃşÀ» °¡Áö°í ¹Ì¸®º¸±â º¸¿©ÁÖ±â"
+"í˜„ì¬ ì»¨íŠ¸ë¡¤ í¬ì¸íŠ¸ì—ì„œ ì„ íƒëœ       \n"
+"ì›ë˜ ê³„ì¸µì„ ê°€ì§€ê³  ë¯¸ë¦¬ë³´ê¸° ë³´ì—¬ì£¼ê¸°"
 
 #: gap/gap_mov_dialog.c:503
 #, fuzzy
 msgid "Anim Preview"
-msgstr "¹Ì¸®º¸±â"
+msgstr "ë¯¸ë¦¬ë³´ê¸°"
 
 #: gap/gap_mov_dialog.c:510
 #, fuzzy
 msgid "Generate Animated Preview as multilayer image"
-msgstr "°èÃş-¿òÁ÷ÀÓ(animate) ÀÌ¹ÌÁö »ı¼º Áß .."
+msgstr "ê³„ì¸µ-ì›€ì§ì„(animate) ì´ë¯¸ì§€ ìƒì„± ì¤‘ .."
 
 #. parameter settings
 #: gap/gap_mov_dialog.c:523
 msgid "Copy moving source-layer(s) into frames"
-msgstr "ÇÁ·¹ÀÓ¿¡¼­ ÀÌµ¿ÁßÀÎ ¿ø·¡ °èÃş º¹»ç"
+msgstr "í”„ë ˆì„ì—ì„œ ì´ë™ì¤‘ì¸ ì›ë˜ ê³„ì¸µ ë³µì‚¬"
 
 #. the start frame scale_entry
 #. table col, row
 #: gap/gap_mov_dialog.c:556
 msgid "Start Frame:"
-msgstr "½ÃÀÛ ÇÁ·¹ÀÓ:"
+msgstr "ì‹œì‘ í”„ë ˆì„:"
 
 #. label text
 #. scalesize spinsize
@@ -1225,13 +1225,13 @@ msgstr "½ÃÀÛ ÇÁ·¹ÀÓ:"
 #: gap/gap_mov_dialog.c:564
 #, fuzzy
 msgid "First handled frame"
-msgstr "Ã¹¹øÂ° Á¶ÀıµÈ ÇÁ·¹ÀÓ"
+msgstr "ì²«ë²ˆì§¸ ì¡°ì ˆëœ í”„ë ˆì„"
 
 #. the end frame scale_entry
 #. table col, row
 #: gap/gap_mov_dialog.c:571
 msgid "End Frame:"
-msgstr "¸¶Áö¸· ÇÁ·¹ÀÓ:"
+msgstr "ë§ˆì§€ë§‰ í”„ë ˆì„:"
 
 #. label text
 #. scalesize spinsize
@@ -1244,13 +1244,13 @@ msgstr "¸¶Áö¸· ÇÁ·¹ÀÓ:"
 #: gap/gap_mov_dialog.c:579
 #, fuzzy
 msgid "Last handled frame"
-msgstr "¸¶Áö¸· Á¶ÀıµÈ ÇÁ·¹ÀÓ"
+msgstr "ë§ˆì§€ë§‰ ì¡°ì ˆëœ í”„ë ˆì„"
 
 #. the Preview Frame scale_entry
 #. table col, row
 #: gap/gap_mov_dialog.c:586
 msgid "Preview Frame:"
-msgstr "ÇÁ·¹ÀÓ ¹Ì¸®º¸±â:"
+msgstr "í”„ë ˆì„ ë¯¸ë¦¬ë³´ê¸°:"
 
 #. label text
 #. scalesize spinsize
@@ -1264,14 +1264,14 @@ msgstr "ÇÁ·¹ÀÓ ¹Ì¸®º¸±â:"
 #, fuzzy
 msgid "Frame to show when UpdPreview button is pressed"
 msgstr ""
-"Upd¹Ì¸®º¸±â ¹öÆ°À» ´©¸£¸é ÇÁ·¹ÀÓÀ»\n"
-"º¸¿©Áİ´Ï´Ù."
+"Updë¯¸ë¦¬ë³´ê¸° ë²„íŠ¼ì„ ëˆ„ë¥´ë©´ í”„ë ˆì„ì„\n"
+"ë³´ì—¬ì¤ë‹ˆë‹¤."
 
 #. the Layerstack scale_entry
 #. table col, row
 #: gap/gap_mov_dialog.c:602 gap/gap_range_ops.c:267
 msgid "Layerstack:"
-msgstr "°èÃş½ºÅÃ:"
+msgstr "ê³„ì¸µìŠ¤íƒ:"
 
 #. label text
 #. scalesize spinsize
@@ -1287,9 +1287,9 @@ msgid ""
 "How to insert SrcLayer into the Dst. Frame's Layerstack\n"
 "0 means on top i.e. in front"
 msgstr ""
-"´ë»ó ÇÁ·¹ÀÓÀÇ °èÃş½ºÅÃ 0À» ÀÇ¹ÌÇÏ´Â\n"
-"Å¾¿¡ ¿ø·¡ °èÃşÀ» »ğÀÔÇÏ´Â\n"
-"¹æ¹ı"
+"ëŒ€ìƒ í”„ë ˆì„ì˜ ê³„ì¸µìŠ¤íƒ 0ì„ ì˜ë¯¸í•˜ëŠ”\n"
+"íƒ‘ì— ì›ë˜ ê³„ì¸µì„ ì‚½ì…í•˜ëŠ”\n"
+"ë°©ë²•"
 
 #. toggle force visibility
 #: gap/gap_mov_dialog.c:622
@@ -1303,27 +1303,27 @@ msgstr ""
 #. toggle clip_to_image
 #: gap/gap_mov_dialog.c:635
 msgid "Clip To Frame"
-msgstr "ÇÁ·¹ÀÓ Àß¶ó³»±â"
+msgstr "í”„ë ˆì„ ì˜ë¼ë‚´ê¸°"
 
 #: gap/gap_mov_dialog.c:642
 #, fuzzy
 msgid "Clip all copied Src-Layers at Frame Boundaries"
 msgstr ""
-"ÇÁ·¹ÀÓ °æ°è¼±¿¡ ¸ğµç º¹»çµÈ\n"
-"¿ø·¡°èÃşÀ» Àß¶ó³»±â"
+"í”„ë ˆì„ ê²½ê³„ì„ ì— ëª¨ë“  ë³µì‚¬ëœ\n"
+"ì›ë˜ê³„ì¸µì„ ì˜ë¼ë‚´ê¸°"
 
 #: gap/gap_mov_dialog.c:690
 msgid ""
 "No Source Image was selected\n"
 "(Please open a 2nd Image of the same type before opening Move Path)"
 msgstr ""
-"¼±ÅÃµÇ¾îÁø ¿øº» ÀÌ¹ÌÁö ¾øÀ½\n"
-"(°æ·Î ÀÌµ¿À» ÇÏ±â Àü¿¡ °°Àº À¯ÇüÀÇ µÎ¹øÂ° ÀÌ¹ÌÁö¸¦ ¿­¾îÁÖ¼¼¿ä)"
+"ì„ íƒë˜ì–´ì§„ ì›ë³¸ ì´ë¯¸ì§€ ì—†ìŒ\n"
+"(ê²½ë¡œ ì´ë™ì„ í•˜ê¸° ì „ì— ê°™ì€ ìœ í˜•ì˜ ë‘ë²ˆì§¸ ì´ë¯¸ì§€ë¥¼ ì—´ì–´ì£¼ì„¸ìš”)"
 
 #: gap/gap_mov_dialog.c:786
 #, fuzzy
 msgid "Object on empty frames"
-msgstr "±íÀÌ(depth):"
+msgstr "ê¹Šì´(depth):"
 
 #: gap/gap_mov_dialog.c:787
 msgid "Object on one frame"
@@ -1332,17 +1332,17 @@ msgstr ""
 #: gap/gap_mov_dialog.c:788
 #, fuzzy
 msgid "Exact Object on frames"
-msgstr "Ã¤³Î ÃßÃâ"
+msgstr "ì±„ë„ ì¶”ì¶œ"
 
 #: gap/gap_mov_dialog.c:818
 #, fuzzy
 msgid "Anim Preview Mode"
-msgstr "¹Ì¸®º¸±â Å©±â"
+msgstr "ë¯¸ë¦¬ë³´ê¸° í¬ê¸°"
 
 #: gap/gap_mov_dialog.c:826
 #, fuzzy
 msgid "Scale Preview"
-msgstr "ÀÌ¹ÌÁö ¹Ì¸®º¸±â"
+msgstr "ì´ë¯¸ì§€ ë¯¸ë¦¬ë³´ê¸°"
 
 #: gap/gap_mov_dialog.c:827
 msgid "Scale down size of the generated animated preview (in %)"
@@ -1351,7 +1351,7 @@ msgstr ""
 #: gap/gap_mov_dialog.c:835
 #, fuzzy
 msgid "Framerate"
-msgstr "ÇÁ·¹ÀÓ À² :"
+msgstr "í”„ë ˆì„ ìœ¨ :"
 
 #: gap/gap_mov_dialog.c:836
 msgid "Framerate to use in the animated preview in frames/sec"
@@ -1370,26 +1370,26 @@ msgstr ""
 #: gap/gap_mov_dialog.c:856
 #, fuzzy
 msgid "Move Path Animated Preview"
-msgstr "°æ·Î ÀÌµ¿ ¹Ì¸®º¸±â"
+msgstr "ê²½ë¡œ ì´ë™ ë¯¸ë¦¬ë³´ê¸°"
 
 #: gap/gap_mov_dialog.c:857
 msgid "Options"
-msgstr "¿É¼Ç"
+msgstr "ì˜µì…˜"
 
 #: gap/gap_mov_dialog.c:902
 #, fuzzy
 msgid "Generate Animated Preview failed\n"
-msgstr "°èÃş-¿òÁ÷ÀÓ(animate) ÀÌ¹ÌÁö »ı¼º Áß .."
+msgstr "ê³„ì¸µ-ì›€ì§ì„(animate) ì´ë¯¸ì§€ ìƒì„± ì¤‘ .."
 
 #. filesel is already open
 #: gap/gap_mov_dialog.c:1187
 msgid "Load Path Points from file"
-msgstr "ÆÄÀÏ¿¡¼­ Æ÷ÀÎÆ® °æ·Î ÀĞ±â"
+msgstr "íŒŒì¼ì—ì„œ í¬ì¸íŠ¸ ê²½ë¡œ ì½ê¸°"
 
 #. filesel is already open
 #: gap/gap_mov_dialog.c:1223
 msgid "Save Path Points to file"
-msgstr "ÆÄÀÏ¿¡¼­ Æ÷ÀÎÆ® °æ·Î ÀúÀå"
+msgstr "íŒŒì¼ì—ì„œ í¬ì¸íŠ¸ ê²½ë¡œ ì €ì¥"
 
 #: gap/gap_mov_dialog.c:1552
 #, c-format
@@ -1398,57 +1398,57 @@ msgstr ""
 
 #: gap/gap_mov_dialog.c:1638
 msgid "Source Select"
-msgstr "¼Ò½º ¼±ÅÃ"
+msgstr "ì†ŒìŠ¤ ì„ íƒ"
 
 #. Source Layer menu
 #: gap/gap_mov_dialog.c:1654
 #, fuzzy
 msgid "Source Image/Layer:"
-msgstr "¼Ò½ºÀÌ¹ÌÁö/°èÃş:"
+msgstr "ì†ŒìŠ¤ì´ë¯¸ì§€/ê³„ì¸µ:"
 
 #: gap/gap_mov_dialog.c:1664
 #, fuzzy
 msgid "Source Object to insert into Frame Range"
-msgstr "ÇÁ·¹ÀÓ¹üÀ§¾È¿¡ »ğÀÔÇÏ±â À§ÇÑ ¿øº» °³Ã¼"
+msgstr "í”„ë ˆì„ë²”ìœ„ì•ˆì— ì‚½ì…í•˜ê¸° ìœ„í•œ ì›ë³¸ ê°œì²´"
 
 #. Paintmode menu
 #: gap/gap_mov_dialog.c:1679
 msgid "Mode:"
-msgstr "¸ğµå:"
+msgstr "ëª¨ë“œ:"
 
 #: gap/gap_mov_dialog.c:1688
 msgid "Paintmode"
-msgstr "ÆäÀÎÆ®¸ğµå"
+msgstr "í˜ì¸íŠ¸ëª¨ë“œ"
 
 #. Loop Stepmode menu
 #: gap/gap_mov_dialog.c:1703
 msgid "Stepmode:"
-msgstr "´Ü°è¸ğµå:"
+msgstr "ë‹¨ê³„ëª¨ë“œ:"
 
 #: gap/gap_mov_dialog.c:1721
 #, fuzzy
 msgid "How to fetch the next SrcLayer at the next handled frame"
 msgstr ""
-"´ÙÀ½ Á¶ÀıµÈ ÇÁ·¹ÀÓ¿¡¼­ ´ÙÀ½    \n"
-"¿øº» °èÃşÀ» ºÎ¸£´Â ¹æ¹ı"
+"ë‹¤ìŒ ì¡°ì ˆëœ í”„ë ˆì„ì—ì„œ ë‹¤ìŒ    \n"
+"ì›ë³¸ ê³„ì¸µì„ ë¶€ë¥´ëŠ” ë°©ë²•"
 
 #. Source Image Handle menu
 #: gap/gap_mov_dialog.c:1727
 msgid "Handle:"
-msgstr "Á¶Àı:"
+msgstr "ì¡°ì ˆ:"
 
 #: gap/gap_mov_dialog.c:1745
 #, fuzzy
 msgid "How to place the SrcLayer at Controlpoint Coordinates"
 msgstr ""
-"´ëµîÇÑ ÄÁÆ®·ÑÆ÷ÀÎÆ®¿¡¼­ ¿øº»   \n"
-"°èÃşÀ» À§Ä¡ÇÏ´Â ¹æ¹ı"
+"ëŒ€ë“±í•œ ì»¨íŠ¸ë¡¤í¬ì¸íŠ¸ì—ì„œ ì›ë³¸   \n"
+"ê³„ì¸µì„ ìœ„ì¹˜í•˜ëŠ” ë°©ë²•"
 
 #. to avoid side effects while initialization
 #. the frame
 #: gap/gap_mov_dialog.c:1799
 msgid "Move Path Preview"
-msgstr "°æ·Î ÀÌµ¿ ¹Ì¸®º¸±â"
+msgstr "ê²½ë¡œ ì´ë™ ë¯¸ë¦¬ë³´ê¸°"
 
 #. X
 #. table col, row
@@ -1460,7 +1460,7 @@ msgstr "X:"
 #: gap/gap_mov_dialog.c:1831
 #, fuzzy
 msgid "X Coordinate"
-msgstr "ÄÃ·¯¸µ"
+msgstr "ì»¬ëŸ¬ë§"
 
 #. Y
 #. table col, row
@@ -1472,13 +1472,13 @@ msgstr "Y:"
 #: gap/gap_mov_dialog.c:1849
 #, fuzzy
 msgid "Y Coordinate"
-msgstr "ÄÃ·¯¸µ"
+msgstr "ì»¬ëŸ¬ë§"
 
 #. Widht Scale
 #. table col, row
 #: gap/gap_mov_dialog.c:1858
 msgid "Width:"
-msgstr "³ĞÀÌ:"
+msgstr "ë„“ì´:"
 
 #. label text
 #. scalesize spinsize
@@ -1492,14 +1492,14 @@ msgstr "³ĞÀÌ:"
 #, fuzzy
 msgid "Scale Source Layer's Width in percent"
 msgstr ""
-"ÆÛ¼¾Æ®·Î ¿øº» °èÃşÀÇ\n"
-"³ĞÀÌ ½ºÄÉÀÏ"
+"í¼ì„¼íŠ¸ë¡œ ì›ë³¸ ê³„ì¸µì˜\n"
+"ë„“ì´ ìŠ¤ì¼€ì¼"
 
 #. Height Scale
 #. table col, row
 #: gap/gap_mov_dialog.c:1875
 msgid "Height:"
-msgstr "³ôÀÌ:"
+msgstr "ë†’ì´:"
 
 #. label text
 #. scalesize spinsize
@@ -1513,15 +1513,15 @@ msgstr "³ôÀÌ:"
 #, fuzzy
 msgid "Scale SrcLayer's Height in percent"
 msgstr ""
-"ÆÛ¼¾Æ®·Î ¿øº» °èÃşÀÇ\n"
-"³ôÀÌ ½ºÄÉÀÏ"
+"í¼ì„¼íŠ¸ë¡œ ì›ë³¸ ê³„ì¸µì˜\n"
+"ë†’ì´ ìŠ¤ì¼€ì¼"
 
 #. Opacity
 #. table col, row
 #: gap/gap_mov_dialog.c:1892
 #, fuzzy
 msgid "Opacity:"
-msgstr "ºÒÅõ¸íµµ [%d]: "
+msgstr "ë¶ˆíˆ¬ëª…ë„ [%d]: "
 
 #. label text
 #. scalesize spinsize
@@ -1535,15 +1535,15 @@ msgstr "ºÒÅõ¸íµµ [%d]: "
 #, fuzzy
 msgid "SrcLayer's Opacity in percent"
 msgstr ""
-"ÆÛ¼¾Æ® ¿øº»°èÃşÀÇ \n"
-"ºÒÅõ¸íµµ"
+"í¼ì„¼íŠ¸ ì›ë³¸ê³„ì¸µì˜ \n"
+"ë¶ˆíˆ¬ëª…ë„"
 
 #. Rotation
 #. table col, row
 #: gap/gap_mov_dialog.c:1909
 #, fuzzy
 msgid "Rotate:"
-msgstr "È¸ÀüÇÏ±â"
+msgstr "íšŒì „í•˜ê¸°"
 
 #. label text
 #. scalesize spinsize
@@ -1555,14 +1555,14 @@ msgstr "È¸ÀüÇÏ±â"
 #. lower, upper (unconstrained)
 #: gap/gap_mov_dialog.c:1917
 msgid "Rotate SrcLayer (in degree)"
-msgstr "¿øº»°èÃş È¸Àü (°¢µµ·Î)"
+msgstr "ì›ë³¸ê³„ì¸µ íšŒì „ (ê°ë„ë¡œ)"
 
 #. Keyframe
 #. table col, row
 #: gap/gap_mov_dialog.c:1927
 #, fuzzy
 msgid "Keyframe:"
-msgstr "ºñµğ¿ÀÇü½Ä :"
+msgstr "ë¹„ë””ì˜¤í˜•ì‹ :"
 
 #. label text
 #. scalesize spinsize
@@ -1580,7 +1580,7 @@ msgstr ""
 
 #: gap/gap_mov_dialog.c:2010
 msgid "Add Point"
-msgstr "Æ÷ÀÎÆ® Ãß°¡"
+msgstr "í¬ì¸íŠ¸ ì¶”ê°€"
 
 #: gap/gap_mov_dialog.c:2018
 #, fuzzy
@@ -1588,14 +1588,14 @@ msgid ""
 "Add Controlpoint at end\n"
 "(the last Point is duplicated)"
 msgstr ""
-"³¡¿¡ ÄÁÆ®·ÑÆ÷ÀÎÆ® Ãß°¡        \n"
-"(¸¶Áö¸· Æ÷ÀÎÆ®°¡ º¹»çµÇ¾îÁü)"
+"ëì— ì»¨íŠ¸ë¡¤í¬ì¸íŠ¸ ì¶”ê°€        \n"
+"(ë§ˆì§€ë§‰ í¬ì¸íŠ¸ê°€ ë³µì‚¬ë˜ì–´ì§)"
 
 #. toggle clip_to_image
 #: gap/gap_mov_dialog.c:2023
 #, fuzzy
 msgid "Show Path"
-msgstr "°æ·Î ÀÌµ¿"
+msgstr "ê²½ë¡œ ì´ë™"
 
 #: gap/gap_mov_dialog.c:2030
 msgid ""
@@ -1606,7 +1606,7 @@ msgstr ""
 #: gap/gap_mov_dialog.c:2040
 #, fuzzy
 msgid "Insert Point"
-msgstr "Æ÷ÀÎÆ® Àç¼³Á¤"
+msgstr "í¬ì¸íŠ¸ ì¬ì„¤ì •"
 
 #: gap/gap_mov_dialog.c:2048
 #, fuzzy
@@ -1614,69 +1614,69 @@ msgid ""
 "Insert Controlpoint\n"
 "(the current Point is duplicated)"
 msgstr ""
-"³¡¿¡ ÄÁÆ®·ÑÆ÷ÀÎÆ® Ãß°¡        \n"
-"(¸¶Áö¸· Æ÷ÀÎÆ®°¡ º¹»çµÇ¾îÁü)"
+"ëì— ì»¨íŠ¸ë¡¤í¬ì¸íŠ¸ ì¶”ê°€        \n"
+"(ë§ˆì§€ë§‰ í¬ì¸íŠ¸ê°€ ë³µì‚¬ë˜ì–´ì§)"
 
 #: gap/gap_mov_dialog.c:2052
 #, fuzzy
 msgid "Delete Point"
-msgstr "Æ÷ÀÎÆ® Àç¼³Á¤"
+msgstr "í¬ì¸íŠ¸ ì¬ì„¤ì •"
 
 #: gap/gap_mov_dialog.c:2060
 #, fuzzy
 msgid "Delete current Controlpoint"
-msgstr "´ÙÀ½ ÄÁÆ®·ÑÆ÷ÀÎÆ® º¸¿©ÁÖ±â"
+msgstr "ë‹¤ìŒ ì»¨íŠ¸ë¡¤í¬ì¸íŠ¸ ë³´ì—¬ì£¼ê¸°"
 
 #: gap/gap_mov_dialog.c:2066
 msgid "Prev Point"
-msgstr "¾Õ Æ÷ÀÎÆ®"
+msgstr "ì• í¬ì¸íŠ¸"
 
 #: gap/gap_mov_dialog.c:2074
 msgid "Show Previous Controlpoint"
-msgstr "¾Õ ÄÁÆ®·ÑÆ÷ÀÎÆ® º¸¿©ÁÖ±â"
+msgstr "ì• ì»¨íŠ¸ë¡¤í¬ì¸íŠ¸ ë³´ì—¬ì£¼ê¸°"
 
 #: gap/gap_mov_dialog.c:2078
 msgid "Next Point"
-msgstr "´ÙÀ½ Æ÷ÀÎÆ®"
+msgstr "ë‹¤ìŒ í¬ì¸íŠ¸"
 
 #: gap/gap_mov_dialog.c:2086
 msgid "Show Next Controlpoint"
-msgstr "´ÙÀ½ ÄÁÆ®·ÑÆ÷ÀÎÆ® º¸¿©ÁÖ±â"
+msgstr "ë‹¤ìŒ ì»¨íŠ¸ë¡¤í¬ì¸íŠ¸ ë³´ì—¬ì£¼ê¸°"
 
 #: gap/gap_mov_dialog.c:2092
 #, fuzzy
 msgid "First Point"
-msgstr "Æ÷ÀÎÆ® Àç¼³Á¤"
+msgstr "í¬ì¸íŠ¸ ì¬ì„¤ì •"
 
 #: gap/gap_mov_dialog.c:2100
 #, fuzzy
 msgid "Show First Controlpoint"
-msgstr "´ÙÀ½ ÄÁÆ®·ÑÆ÷ÀÎÆ® º¸¿©ÁÖ±â"
+msgstr "ë‹¤ìŒ ì»¨íŠ¸ë¡¤í¬ì¸íŠ¸ ë³´ì—¬ì£¼ê¸°"
 
 #: gap/gap_mov_dialog.c:2104
 #, fuzzy
 msgid "Last Point"
-msgstr "Æ÷ÀÎÆ® ÀĞ±â"
+msgstr "í¬ì¸íŠ¸ ì½ê¸°"
 
 #: gap/gap_mov_dialog.c:2112
 #, fuzzy
 msgid "Show Last Controlpoint"
-msgstr "´ÙÀ½ ÄÁÆ®·ÑÆ÷ÀÎÆ® º¸¿©ÁÖ±â"
+msgstr "ë‹¤ìŒ ì»¨íŠ¸ë¡¤í¬ì¸íŠ¸ ë³´ì—¬ì£¼ê¸°"
 
 #: gap/gap_mov_dialog.c:2118
 #, fuzzy
 msgid "Clear Point"
-msgstr "Æ÷ÀÎÆ® Àç¼³Á¤"
+msgstr "í¬ì¸íŠ¸ ì¬ì„¤ì •"
 
 #: gap/gap_mov_dialog.c:2126
 #, fuzzy
 msgid "Reset the current Controlpoint to default Values"
-msgstr " ÃÊ±â°ªÀ¸·Î Àç¼³Á¤"
+msgstr " ì´ˆê¸°ê°’ìœ¼ë¡œ ì¬ì„¤ì •"
 
 #: gap/gap_mov_dialog.c:2130
 #, fuzzy
 msgid "Clear All Points"
-msgstr "Æ÷ÀÎÆ® Àç¼³Á¤"
+msgstr "í¬ì¸íŠ¸ ì¬ì„¤ì •"
 
 #: gap/gap_mov_dialog.c:2138
 msgid ""
@@ -1687,7 +1687,7 @@ msgstr ""
 #: gap/gap_mov_dialog.c:2145
 #, fuzzy
 msgid "Rotate Follow"
-msgstr "È¸ÀüÇÏ±â"
+msgstr "íšŒì „í•˜ê¸°"
 
 #: gap/gap_mov_dialog.c:2156
 msgid ""
@@ -1698,45 +1698,45 @@ msgstr ""
 #: gap/gap_mov_dialog.c:2163
 #, fuzzy
 msgid "Delete All Points"
-msgstr "Æ÷ÀÎÆ® Àç¼³Á¤"
+msgstr "í¬ì¸íŠ¸ ì¬ì„¤ì •"
 
 #: gap/gap_mov_dialog.c:2171
 #, fuzzy
 msgid "Delete all Controlpoints"
-msgstr "´ÙÀ½ ÄÁÆ®·ÑÆ÷ÀÎÆ® º¸¿©ÁÖ±â"
+msgstr "ë‹¤ìŒ ì»¨íŠ¸ë¡¤í¬ì¸íŠ¸ ë³´ì—¬ì£¼ê¸°"
 
 #: gap/gap_mov_dialog.c:2178
 msgid "Load Points"
-msgstr "Æ÷ÀÎÆ® ÀĞ±â"
+msgstr "í¬ì¸íŠ¸ ì½ê¸°"
 
 #: gap/gap_mov_dialog.c:2186
 msgid "Load Controlpoints from file"
-msgstr "ÆÄÀÏ¿¡¼­ ÄÁÆ®·Ñ Æ÷ÀÎÆ® ÀĞ±â"
+msgstr "íŒŒì¼ì—ì„œ ì»¨íŠ¸ë¡¤ í¬ì¸íŠ¸ ì½ê¸°"
 
 #: gap/gap_mov_dialog.c:2190
 msgid "Save Points"
-msgstr "Æ÷ÀÎÆ® ÀúÀå"
+msgstr "í¬ì¸íŠ¸ ì €ì¥"
 
 #: gap/gap_mov_dialog.c:2198
 msgid "Save Controlpoints to file"
-msgstr "ÆÄÀÏ¿¡ ÄÁÆ®·ÑÆ÷ÀÎÆ® ÀúÀå"
+msgstr "íŒŒì¼ì— ì»¨íŠ¸ë¡¤í¬ì¸íŠ¸ ì €ì¥"
 
 #: gap/gap_mov_dialog.c:2658
 #, fuzzy
 msgid ""
 "Can't operate with current Controlpoint\n"
 "or Keyframe settings"
-msgstr " ÃÊ±â°ªÀ¸·Î Àç¼³Á¤"
+msgstr " ì´ˆê¸°ê°’ìœ¼ë¡œ ì¬ì„¤ì •"
 
 #: gap/gap_mov_dialog.c:2665
 #, fuzzy
 msgid "Reset Keyframes"
-msgstr " ÃÊ±â°ªÀ¸·Î Àç¼³Á¤"
+msgstr " ì´ˆê¸°ê°’ìœ¼ë¡œ ì¬ì„¤ì •"
 
 #: gap/gap_mov_dialog.c:2670
 #, fuzzy
 msgid "Move Path Controlpointcheck"
-msgstr "´ÙÀ½ ÄÁÆ®·ÑÆ÷ÀÎÆ® º¸¿©ÁÖ±â"
+msgstr "ë‹¤ìŒ ì»¨íŠ¸ë¡¤í¬ì¸íŠ¸ ë³´ì—¬ì£¼ê¸°"
 
 #: gap/gap_mov_dialog.c:2671
 msgid "Errors:"
@@ -1748,18 +1748,18 @@ msgid ""
 "No Source Image was selected.\n"
 "Please open a 2nd Image of the same type before opening Move Path."
 msgstr ""
-"¼±ÅÃµÇ¾îÁø ¿øº» ÀÌ¹ÌÁö ¾øÀ½\n"
-"(°æ·Î ÀÌµ¿À» ÇÏ±â Àü¿¡ °°Àº À¯ÇüÀÇ µÎ¹øÂ° ÀÌ¹ÌÁö¸¦ ¿­¾îÁÖ¼¼¿ä)"
+"ì„ íƒë˜ì–´ì§„ ì›ë³¸ ì´ë¯¸ì§€ ì—†ìŒ\n"
+"(ê²½ë¡œ ì´ë™ì„ í•˜ê¸° ì „ì— ê°™ì€ ìœ í˜•ì˜ ë‘ë²ˆì§¸ ì´ë¯¸ì§€ë¥¼ ì—´ì–´ì£¼ì„¸ìš”)"
 
 #: gap/gap_mov_exec.c:455
 #, fuzzy
 msgid "Copying Layers into Frames..."
-msgstr "ÇÁ·¹ÀÓ¾È¿¡¼­ °èÃş º¹»çÁß .."
+msgstr "í”„ë ˆì„ì•ˆì—ì„œ ê³„ì¸µ ë³µì‚¬ì¤‘ .."
 
 #: gap/gap_mov_exec.c:459
 #, fuzzy
 msgid "Generating Animated Preview..."
-msgstr "°èÃş-¿òÁ÷ÀÓ(animate) ÀÌ¹ÌÁö »ı¼º Áß .."
+msgstr "ê³„ì¸µ-ì›€ì§ì„(animate) ì´ë¯¸ì§€ ìƒì„± ì¤‘ .."
 
 #: gap/gap_mov_exec.c:1376
 #, c-format
@@ -1800,27 +1800,27 @@ msgstr ""
 
 #: gap/gap_mpege.c:111
 msgid "Conditions to run mpeg_encode 1.5:"
-msgstr "mpeg_encode 1.5 ÀÛµ¿ »óÅÂ:"
+msgstr "mpeg_encode 1.5 ì‘ë™ ìƒíƒœ:"
 
 #: gap/gap_mpege.c:114
 msgid "Conditions to run mpeg2encode 1.2:"
-msgstr "mpeg2encode 1.2 ÀÛµ¿ »óÅÂ:"
+msgstr "mpeg2encode 1.2 ì‘ë™ ìƒíƒœ:"
 
 #: gap/gap_mpege.c:124
 msgid "1.) mpeg_encode 1.5 must be installed"
-msgstr "1.) mpeg_encode 1.5 °¡ ¼³Ä¡µÇ¾îÁ®¾ß¸¸ ÇÕ´Ï´Ù."
+msgstr "1.) mpeg_encode 1.5 ê°€ ì„¤ì¹˜ë˜ì–´ì ¸ì•¼ë§Œ í•©ë‹ˆë‹¤."
 
 #: gap/gap_mpege.c:127
 msgid "1.) mpeg2encode 1.2 must be installed"
-msgstr "1.) mpeg2encode 1.2 °¡ ¼³Ä¡µÇ¾îÁ®¾ß¸¸ ÇÕ´Ï´Ù."
+msgstr "1.) mpeg2encode 1.2 ê°€ ì„¤ì¹˜ë˜ì–´ì ¸ì•¼ë§Œ í•©ë‹ˆë‹¤."
 
 #: gap/gap_mpege.c:132
 msgid "    you can get mpeg_encode at"
-msgstr "    ´ç½ÅÀº ´ÙÀ½¿¡¼­ mpeg_encode¸¦ ¾òÀ»¼ö ÀÖ½À´Ï´Ù."
+msgstr "    ë‹¹ì‹ ì€ ë‹¤ìŒì—ì„œ mpeg_encodeë¥¼ ì–»ì„ìˆ˜ ìˆìŠµë‹ˆë‹¤."
 
 #: gap/gap_mpege.c:135
 msgid "    you can get mpeg2encode at http://www.mpeg.org/MSSG"
-msgstr "    ´ç½ÅÀº http://www.mpeg.org/MSSG¿¡¼­ mpeg2encode¸¦ ¾òÀ»¼ö ÀÖ½À´Ï´Ù."
+msgstr "    ë‹¹ì‹ ì€ http://www.mpeg.org/MSSGì—ì„œ mpeg2encodeë¥¼ ì–»ì„ìˆ˜ ìˆìŠµë‹ˆë‹¤."
 
 #: gap/gap_mpege.c:140
 msgid "    ftp://mm-ftp.cs.berkeley.edu/pub/multimedia/mpeg/bmt1r1.tar.gz"
@@ -1828,59 +1828,59 @@ msgstr "    ftp://mm-ftp.cs.berkeley.edu/pub/multimedia/mpeg/bmt1r1.tar.gz"
 
 #: gap/gap_mpege.c:143
 msgid "   or at ftp://ftp.mpeg.org/pub/mpeg/mssg "
-msgstr "   ¶Ç´Â ftp://ftp.mpeg.org/pub/mpeg/mssg ¿¡¼­ ¾òÀ¸½Ç¼ö ÀÖ½À´Ï´Ù."
+msgstr "   ë˜ëŠ” ftp://ftp.mpeg.org/pub/mpeg/mssg ì—ì„œ ì–»ìœ¼ì‹¤ìˆ˜ ìˆìŠµë‹ˆë‹¤."
 
 #: gap/gap_mpege.c:148
 msgid "2.) You need a series of single Images on disk (AnimFrames)"
 msgstr ""
-"2.) ´ç½ÅÀº µğ½ºÅ©¿¡¼­ (¿òÁ÷ÀÌ´Â ÇÁ·¹ÀÓ) ½Ì±Û ÀÌ¹ÌÁöÀÇ ½Ã¸®Áî°¡ ÇÊ¿äÇÕ´Ï´Ù."
+"2.) ë‹¹ì‹ ì€ ë””ìŠ¤í¬ì—ì„œ (ì›€ì§ì´ëŠ” í”„ë ˆì„) ì‹±ê¸€ ì´ë¯¸ì§€ì˜ ì‹œë¦¬ì¦ˆê°€ í•„ìš”í•©ë‹ˆë‹¤."
 
 #: gap/gap_mpege.c:152
 msgid "    all with fileformat JPEG (or YUV or PNM or PPM)"
-msgstr "     ¸ğµÎ JPEG (È¤Àº YUV È¤Àº PNM È¤Àº PPM) ÆÄÀÏÇü½ÄÀ» ´Ù·ë"
+msgstr "     ëª¨ë‘ JPEG (í˜¹ì€ YUV í˜¹ì€ PNM í˜¹ì€ PPM) íŒŒì¼í˜•ì‹ì„ ë‹¤ë£¸"
 
 #: gap/gap_mpege.c:155
 msgid "   all with fileformat PPM (or YUV)"
-msgstr "     ¸ğµÎ PPM(È¤Àº YUV) ÆÄÀÏÇü½ÄÀ» ´Ù·ë"
+msgstr "     ëª¨ë‘ PPM(í˜¹ì€ YUV) íŒŒì¼í˜•ì‹ì„ ë‹¤ë£¸"
 
 #: gap/gap_mpege.c:160
 #, fuzzy
 msgid "    (use 'Frames Convert' from the Video Menu"
-msgstr "    (¿òÁ÷ÀÌ´Â ÇÁ·¹ÀÓ ¸Ş´º¿¡¼­ 'ÇÁ·¹ÀÓ ¹Ù²Ù±â' »ç¿ë"
+msgstr "    (ì›€ì§ì´ëŠ” í”„ë ˆì„ ë©”ë‰´ì—ì„œ 'í”„ë ˆì„ ë°”ê¾¸ê¸°' ì‚¬ìš©"
 
 #: gap/gap_mpege.c:164
 #, fuzzy
 msgid "    or 'Split Image to Frames' from the Video Menu)"
-msgstr "    È¤Àº ¿òÁ÷ÀÌ´Â ÇÁ·¹ÀÓ ¸Ş´º¿¡¼­ 'ÀÌ¹ÌÁö¸¦ ÇÁ·¹ÀÓÀ¸·Î ºĞÇÒ'"
+msgstr "    í˜¹ì€ ì›€ì§ì´ëŠ” í”„ë ˆì„ ë©”ë‰´ì—ì„œ 'ì´ë¯¸ì§€ë¥¼ í”„ë ˆì„ìœ¼ë¡œ ë¶„í• '"
 
 #: gap/gap_mpege.c:168
 msgid "3.) All Images must have the same size,"
-msgstr "4.) ¸ğµç ÀÌ¹ÌÁöµéÀº °°Àº Å©±â¸¦ »ç¿ëÇÏ¿©¾ß¸¸ ÇÕ´Ï´Ù."
+msgstr "4.) ëª¨ë“  ì´ë¯¸ì§€ë“¤ì€ ê°™ì€ í¬ê¸°ë¥¼ ì‚¬ìš©í•˜ì—¬ì•¼ë§Œ í•©ë‹ˆë‹¤."
 
 #: gap/gap_mpege.c:175
 msgid "    width and height must be a multiple of 16"
-msgstr "    ³ĞÀÌ¿Í ³ôÀÌ´Â 16ÀÇ ¹è¿ìÀÌ¾î¾ß¸¸ ÇÕ´Ï´Ù."
+msgstr "    ë„“ì´ì™€ ë†’ì´ëŠ” 16ì˜ ë°°ìš°ì´ì–´ì•¼ë§Œ í•©ë‹ˆë‹¤."
 
 #: gap/gap_mpege.c:179
 #, fuzzy
 msgid "    (use Scale or Crop from the Video Menu)"
-msgstr "    (¿òÁ÷ÀÌ´Â ÇÁ·¹ÀÓ ¸Ş´º¿¡¼­ ½ºÄÉÀÏ È¤Àº Àß¶ó³»±â »ç¿ë)"
+msgstr "    (ì›€ì§ì´ëŠ” í”„ë ˆì„ ë©”ë‰´ì—ì„œ ìŠ¤ì¼€ì¼ í˜¹ì€ ì˜ë¼ë‚´ê¸° ì‚¬ìš©)"
 
 #: gap/gap_mpege.c:194
 msgid "MPEG_ENCODE Information"
-msgstr "MPEG_ENCODE Á¤º¸"
+msgstr "MPEG_ENCODE ì •ë³´"
 
 #: gap/gap_mpege.c:231
 msgid "generate MPEG1 (ISO/IEC 11172-2) stream"
-msgstr "MPEG (ISO/IEC 11172-2) ½ºÆ®¸² »ı¼º"
+msgstr "MPEG (ISO/IEC 11172-2) ìŠ¤íŠ¸ë¦¼ ìƒì„±"
 
 #: gap/gap_mpege.c:232
 msgid "generate MPEG2 (ISO/IEC DIS 13818-2) stream"
-msgstr "MPEG2 (ISO/IEC DIS 13818-2) ½ºÆ®¸² »ı¼º"
+msgstr "MPEG2 (ISO/IEC DIS 13818-2) ìŠ¤íŠ¸ë¦¼ ìƒì„±"
 
 #: gap/gap_mpege.c:242
 msgid "GenParams"
-msgstr "Á¨(gen)ÆÄ¶ó¹ÌÅÍ"
+msgstr "ì  (gen)íŒŒë¼ë¯¸í„°"
 
 #: gap/gap_mpege.c:244
 msgid "Gen + Encode"
@@ -1888,40 +1888,40 @@ msgstr ""
 
 #: gap/gap_mpege.c:266
 msgid "To   Frame:"
-msgstr "ÇÁ·¹ÀÓÀ¸·Î:"
+msgstr "í”„ë ˆì„ìœ¼ë¡œ:"
 
 #: gap/gap_mpege.c:273
 msgid "Framerate :"
-msgstr "ÇÁ·¹ÀÓ À² :"
+msgstr "í”„ë ˆì„ ìœ¨ :"
 
 #: gap/gap_mpege.c:274
 msgid "framerate in frames/second"
-msgstr "frames/second·Î ÇÁ·¹ÀÓ À²À» ³ªÅ¸³¿"
+msgstr "frames/secondë¡œ í”„ë ˆì„ ìœ¨ì„ ë‚˜íƒ€ëƒ„"
 
 #: gap/gap_mpege.c:281
 msgid "Bitrate:"
-msgstr "ºñÆ® À²:"
+msgstr "ë¹„íŠ¸ ìœ¨:"
 
 #: gap/gap_mpege.c:282
 msgid ""
 "used for constant bitrates (bit/sec)                  \n"
 "(low rate gives good compression + bad quality)"
 msgstr ""
-"»ó¼ö ºñÆ®À² (bit/sec)À» »ç¿ë                    \n"
-"(³·À» ºñÀ²Àº ÁÁÀº ¾ĞÃà°ú ³ª»Û Ç°ÁúÀ» °¡Áü)"
+"ìƒìˆ˜ ë¹„íŠ¸ìœ¨ (bit/sec)ì„ ì‚¬ìš©                    \n"
+"(ë‚®ì„ ë¹„ìœ¨ì€ ì¢‹ì€ ì••ì¶•ê³¼ ë‚˜ìœ í’ˆì§ˆì„ ê°€ì§)"
 
 #: gap/gap_mpege.c:296
 msgid "Outputfile:"
-msgstr "Ãâ·ÂÆÄÀÏ:"
+msgstr "ì¶œë ¥íŒŒì¼:"
 
 #. pixel
 #: gap/gap_mpege.c:298
 msgid "Name of the resulting MPEG outputfile"
-msgstr "MPEG Ãâ·ÂÆÄÀÏ °á°úÀÇ ÀÌ¸§"
+msgstr "MPEG ì¶œë ¥íŒŒì¼ ê²°ê³¼ì˜ ì´ë¦„"
 
 #: gap/gap_mpege.c:304
 msgid "Paramfile:"
-msgstr "ÆÄ¶ó¹ÌÅÍÆÄÀÏ:"
+msgstr "íŒŒë¼ë¯¸í„°íŒŒì¼:"
 
 #. pixel
 #: gap/gap_mpege.c:306
@@ -1929,12 +1929,12 @@ msgid ""
 "Name of the Encoder-Parameterfile\n"
 "(is generated)"
 msgstr ""
-"ÀÎÄÚ´õ-ÆÄ¶ó¹ÌÅÍÆÄÀÏÀÇ ÀÌ¸§\n"
-"(»ı¼ºµÇ¾îÁü)"
+"ì¸ì½”ë”-íŒŒë¼ë¯¸í„°íŒŒì¼ì˜ ì´ë¦„\n"
+"(ìƒì„±ë˜ì–´ì§)"
 
 #: gap/gap_mpege.c:312
 msgid "Startscript:"
-msgstr "½ÃÀÛ ½ºÅ©¸³Æ®:"
+msgstr "ì‹œì‘ ìŠ¤í¬ë¦½íŠ¸:"
 
 #. pixel
 #: gap/gap_mpege.c:314
@@ -1942,33 +1942,33 @@ msgid ""
 "Name of the Startscript           \n"
 "(is generated/executed)"
 msgstr ""
-"½ÃÀÛ ½ºÅ©¸³Æ®ÀÇ ÀÌ¸§            \n"
-"(»ı¼º/½ÇÇàµÇ¾îÁü)"
+"ì‹œì‘ ìŠ¤í¬ë¦½íŠ¸ì˜ ì´ë¦„            \n"
+"(ìƒì„±/ì‹¤í–‰ë˜ì–´ì§)"
 
 #: gap/gap_mpege.c:320
 msgid ""
 "Generate parameterfile for mpeg_encode 1.5\n"
 "(the freely distributed Berkeley MPEG-1 Video  Encoder.)\n"
 msgstr ""
-"mpeg_encode 1.5¸¦ À§ÇÑ ÆÄ¶ó¹ÌÅÍÆÄÀÏ »ı¼º\n"
-"(°øÂ¥·Î ¹èÆ÷µÇ´Â ¹öÅ¬¸® MPEG-1 ºñµğ¿À ÀÎÄÚ´õ)\n"
+"mpeg_encode 1.5ë¥¼ ìœ„í•œ íŒŒë¼ë¯¸í„°íŒŒì¼ ìƒì„±\n"
+"(ê³µì§œë¡œ ë°°í¬ë˜ëŠ” ë²„í´ë¦¬ MPEG-1 ë¹„ë””ì˜¤ ì¸ì½”ë”)\n"
 
 #: gap/gap_mpege.c:324
 msgid "Constant Bitrate :"
-msgstr "»ó¼ö ºñÆ® À² :"
+msgstr "ìƒìˆ˜ ë¹„íŠ¸ ìœ¨ :"
 
 #: gap/gap_mpege.c:325
 msgid "Iqnore I/P/QSCALE values and use constant bit-rate)"
-msgstr "I/P/QSCALE °ªÀ» ¹«½ÃÇÏ°í »ó¼ö ºñÆ®À² »ç¿ë)"
+msgstr "I/P/QSCALE ê°’ì„ ë¬´ì‹œí•˜ê³  ìƒìˆ˜ ë¹„íŠ¸ìœ¨ ì‚¬ìš©)"
 
 #: gap/gap_mpege.c:330
 msgid "Pattern:"
-msgstr "ÆĞÅÏ:"
+msgstr "íŒ¨í„´:"
 
 #. pixel
 #: gap/gap_mpege.c:332
 msgid "How to encode MPEG framesequence (I/P/B frames)"
-msgstr "MPEG ÇÁ·¹ÀÓ½ÃÄı½º (I/P/B ÇÁ·¹ÀÓ) ÀÎÄÚµå ¹æ¹ı"
+msgstr "MPEG í”„ë ˆì„ì‹œí€¸ìŠ¤ (I/P/B í”„ë ˆì„) ì¸ì½”ë“œ ë°©ë²•"
 
 #: gap/gap_mpege.c:338
 msgid "IQSCALE:"
@@ -1979,8 +1979,8 @@ msgid ""
 "Quality scale for I-Frames                       \n"
 "(1 = best quality, 31 = best comression)"
 msgstr ""
-"I-ÇÁ·¹ÀÓÀ» À§ÇÑ ½ºÄÉÀÏÀÇ Áú                        \n"
-"(1 = ÃÖ»óÀÇ Áú, 31 = ÃÖ»óÀÇ ¾ĞÃà)"
+"I-í”„ë ˆì„ì„ ìœ„í•œ ìŠ¤ì¼€ì¼ì˜ ì§ˆ                        \n"
+"(1 = ìµœìƒì˜ ì§ˆ, 31 = ìµœìƒì˜ ì••ì¶•)"
 
 #: gap/gap_mpege.c:346
 msgid "PQSCALE:"
@@ -1991,8 +1991,8 @@ msgid ""
 "Quality scale for P-Frames                  \n"
 "(1 = best quality, 31 = best comression)"
 msgstr ""
-"P-ÇÁ·¹ÀÓÀ» À§ÇÑ ½ºÄÉÀÏÀÇ Áú                        \n"
-"(1 = ÃÖ»óÀÇ Áú, 31 = ÃÖ»óÀÇ ¾ĞÃà)"
+"P-í”„ë ˆì„ì„ ìœ„í•œ ìŠ¤ì¼€ì¼ì˜ ì§ˆ                        \n"
+"(1 = ìµœìƒì˜ ì§ˆ, 31 = ìµœìƒì˜ ì••ì¶•)"
 
 #: gap/gap_mpege.c:354
 msgid "BQSCALE:"
@@ -2003,57 +2003,57 @@ msgid ""
 "Quality scale for B-Frames                  \n"
 "(1 = best quality, 31 = best comression)"
 msgstr ""
-"B-ÇÁ·¹ÀÓÀ» À§ÇÑ ½ºÄÉÀÏÀÇ Áú                        \n"
-"(1 = ÃÖ»óÀÇ Áú, 31 = ÃÖ»óÀÇ ¾ĞÃà)"
+"B-í”„ë ˆì„ì„ ìœ„í•œ ìŠ¤ì¼€ì¼ì˜ ì§ˆ                        \n"
+"(1 = ìµœìƒì˜ ì§ˆ, 31 = ìµœìƒì˜ ì••ì¶•)"
 
 #: gap/gap_mpege.c:362
 msgid "P-Search :"
-msgstr "P-Å½»ö :"
+msgstr "P-íƒìƒ‰ :"
 
 #: gap/gap_mpege.c:363
 msgid "Search Algorithmus used for P-frames"
-msgstr "P-ÇÁ·¹ÀÓ¿¡¼­ »ç¿ëÇÏ´Â ¾Ë°í¸®Áò Å½»ö"
+msgstr "P-í”„ë ˆì„ì—ì„œ ì‚¬ìš©í•˜ëŠ” ì•Œê³ ë¦¬ì¦˜ íƒìƒ‰"
 
 #: gap/gap_mpege.c:369
 msgid "B-Search :"
-msgstr "B-Å½»ö :"
+msgstr "B-íƒìƒ‰ :"
 
 #: gap/gap_mpege.c:370
 msgid "Search Algorithmus used for B-frames"
-msgstr "B-ÇÁ·¹ÀÓ¿¡¼­ »ç¿ëÇÏ´Â ¾Ë°í¸®Áò Å½»ö"
+msgstr "B-í”„ë ˆì„ì—ì„œ ì‚¬ìš©í•˜ëŠ” ì•Œê³ ë¦¬ì¦˜ íƒìƒ‰"
 
 #: gap/gap_mpege.c:375
 msgid "Gen MPEG_ENCODE Parameters"
-msgstr "Á¨(gen) MPEG_ENCODE ÆÄ¶ó¹ÌÅÍ"
+msgstr "ì  (gen) MPEG_ENCODE íŒŒë¼ë¯¸í„°"
 
 #: gap/gap_mpege.c:376 gap/gap_mpege.c:414
 msgid "Encode Values"
-msgstr "ÀÎÄÚµå °ª"
+msgstr "ì¸ì½”ë“œ ê°’"
 
 #: gap/gap_mpege.c:392
 msgid ""
 "Generate parameterfile for mpeg2encode 1.2\n"
 "(MPEG-2 Video  Encoder.)\n"
 msgstr ""
-"mpeg2encode 1.2¸¦ À§ÇÑ ÆÄ¶ó¹ÌÅÍÆÄÀÏ »ı¼º\n"
-"(MPEG-2 ºñµğ¿À ÀÎÄÚ´õ.)\n"
+"mpeg2encode 1.2ë¥¼ ìœ„í•œ íŒŒë¼ë¯¸í„°íŒŒì¼ ìƒì„±\n"
+"(MPEG-2 ë¹„ë””ì˜¤ ì¸ì½”ë”.)\n"
 
 #: gap/gap_mpege.c:395
 msgid "MPEG-type :"
-msgstr "MPEG-À¯Çü :"
+msgstr "MPEG-ìœ í˜• :"
 
 #: gap/gap_mpege.c:404
 msgid "Videoformat :"
-msgstr "ºñµğ¿ÀÇü½Ä :"
+msgstr "ë¹„ë””ì˜¤í˜•ì‹ :"
 
 #: gap/gap_mpege.c:405
 msgid "Videoformat"
-msgstr "ºñµğ¿ÀÇü½Ä"
+msgstr "ë¹„ë””ì˜¤í˜•ì‹"
 
 #. framerates above 30 ar not allowed in mpeg2encode
 #: gap/gap_mpege.c:413
 msgid "Gen MPEG2ENCODE Parameters"
-msgstr "Á¨(gen) MPEG2ENCODE ÆÄ¶ó¹ÌÅÍ"
+msgstr "ì  (gen) MPEG2ENCODE íŒŒë¼ë¯¸í„°"
 
 #: gap/gap_mpege.c:978
 msgid ""
@@ -2061,7 +2061,7 @@ msgid ""
 "WARNING: mpeg_encode does not support Fileformat "
 msgstr ""
 "\n"
-"°æ°í: mpeg_encode´Â ÆÄÀÏÇü½ÄÀÌ Áö¿øµÇÁö ¾Ê½À´Ï´Ù. "
+"ê²½ê³ : mpeg_encodeëŠ” íŒŒì¼í˜•ì‹ì´ ì§€ì›ë˜ì§€ ì•ŠìŠµë‹ˆë‹¤. "
 
 #: gap/gap_mpege.c:981
 msgid ""
@@ -2069,7 +2069,7 @@ msgid ""
 "ERROR: width not a multiple of 16"
 msgstr ""
 "\n"
-"¾Ö·¯: ³ĞÀÌ°¡ 16ÀÇ ¹è¼ö°¡ ¾Æ´Õ´Ï´Ù."
+"ì• ëŸ¬: ë„“ì´ê°€ 16ì˜ ë°°ìˆ˜ê°€ ì•„ë‹™ë‹ˆë‹¤."
 
 #: gap/gap_mpege.c:982
 msgid ""
@@ -2077,7 +2077,7 @@ msgid ""
 "ERROR: height not a multiple of 16"
 msgstr ""
 "\n"
-"¾Ö·¯: ³ôÀÌ°¡ 16ÀÇ ¹è¼ö°¡ ¾Æ´Õ´Ï´Ù."
+"ì• ëŸ¬: ë†’ì´ê°€ 16ì˜ ë°°ìˆ˜ê°€ ì•„ë‹™ë‹ˆë‹¤."
 
 #: gap/gap_mpege.c:988
 msgid ""
@@ -2085,7 +2085,7 @@ msgid ""
 "WARNING: mpeg2encode does not support Fileformat "
 msgstr ""
 "\n"
-"°æ°í: mpeg2encode´Â ÆÄÀÏÇü½ÄÀÌ Áö¿øµÇÁö ¾Ê½À´Ï´Ù. "
+"ê²½ê³ : mpeg2encodeëŠ” íŒŒì¼í˜•ì‹ì´ ì§€ì›ë˜ì§€ ì•ŠìŠµë‹ˆë‹¤. "
 
 #: gap/gap_mpege.c:993
 msgid ""
@@ -2093,7 +2093,7 @@ msgid ""
 "ERROR: invoked from a single image, animframe required"
 msgstr ""
 "\n"
-"¾Ö·¯: ½Ì±Û ÀÌ¹ÌÁö¿¡¼­ ¹ß»ıµÇ¾î¼­, ¿òÁ÷ÀÌ´Â ÇÁ·¹ÀÓÀÌ ¿ä±¸Çß½À´Ï´Ù."
+"ì• ëŸ¬: ì‹±ê¸€ ì´ë¯¸ì§€ì—ì„œ ë°œìƒë˜ì–´ì„œ, ì›€ì§ì´ëŠ” í”„ë ˆì„ì´ ìš”êµ¬í–ˆìŠµë‹ˆë‹¤."
 
 #: gap/gap_navigator_dialog.c:366
 msgid ""
@@ -2110,17 +2110,17 @@ msgstr ""
 #: gap/gap_navigator_dialog.c:376
 #, fuzzy
 msgid "Duplicate selected Frames"
-msgstr "ÇÁ·¹ÀÓ¹üÀ§ º¹»ç"
+msgstr "í”„ë ˆì„ë²”ìœ„ ë³µì‚¬"
 
 #: gap/gap_navigator_dialog.c:380
 #, fuzzy
 msgid "Delete selected Frames"
-msgstr "¼±ÅÃµÈ SM¹éÅÍ »èÁ¦"
+msgstr "ì„ íƒëœ SMë°±í„° ì‚­ì œ"
 
 #: gap/gap_navigator_dialog.c:389
 #, fuzzy
 msgid "Goto 1st Frame"
-msgstr "ÇÁ·¹ÀÓÀ¸·Î:"
+msgstr "í”„ë ˆì„ìœ¼ë¡œ:"
 
 #: gap/gap_navigator_dialog.c:393
 msgid ""
@@ -2137,7 +2137,7 @@ msgstr ""
 #: gap/gap_navigator_dialog.c:403
 #, fuzzy
 msgid "Goto last Frame"
-msgstr "½ÃÀÛ ÇÁ·¹ÀÓ:"
+msgstr "ì‹œì‘ í”„ë ˆì„:"
 
 #: gap/gap_navigator_dialog.c:460
 msgid "<Image>/Video/VCR Navigator..."
@@ -2151,7 +2151,7 @@ msgstr ""
 #: gap/gap_navigator_dialog.c:2877
 #, fuzzy
 msgid "Copy"
-msgstr "Àß¶ó³»±â"
+msgstr "ì˜ë¼ë‚´ê¸°"
 
 #. menu_item cut
 #: gap/gap_navigator_dialog.c:2887
@@ -2167,13 +2167,13 @@ msgstr ""
 #: gap/gap_navigator_dialog.c:2907
 #, fuzzy
 msgid "Paste after"
-msgstr "ÆĞÅÏ:"
+msgstr "íŒ¨í„´:"
 
 #. menu_item copy
 #: gap/gap_navigator_dialog.c:2917
 #, fuzzy
 msgid "Paste replace"
-msgstr "ÀÎÅÍ·¹ÀÌ½º"
+msgstr "ì¸í„°ë ˆì´ìŠ¤"
 
 #. menu_item copy
 #: gap/gap_navigator_dialog.c:2927
@@ -2183,12 +2183,12 @@ msgstr ""
 #: gap/gap_navigator_dialog.c:2952
 #, fuzzy
 msgid "Videoframes:"
-msgstr "ºñµğ¿ÀÇü½Ä :"
+msgstr "ë¹„ë””ì˜¤í˜•ì‹ :"
 
 #: gap/gap_navigator_dialog.c:2967
 #, fuzzy
 msgid "Framerate:"
-msgstr "ÇÁ·¹ÀÓ À² :"
+msgstr "í”„ë ˆì„ ìœ¨ :"
 
 #: gap/gap_navigator_dialog.c:2990
 msgid "Timezoom:"
@@ -2202,49 +2202,49 @@ msgstr ""
 #: gap/gap_range_ops.c:120
 #, fuzzy
 msgid "New Width:"
-msgstr "»õ·Î¿î ³ĞÀÌ :"
+msgstr "ìƒˆë¡œìš´ ë„“ì´ :"
 
 #: gap/gap_range_ops.c:129
 #, fuzzy
 msgid "New Height:"
-msgstr "»õ·Î¿î ³ôÀÌ :"
+msgstr "ìƒˆë¡œìš´ ë†’ì´ :"
 
 #: gap/gap_range_ops.c:138
 #, fuzzy
 msgid "Offset X:"
-msgstr "¿É¼Â"
+msgstr "ì˜µì…‹"
 
 #: gap/gap_range_ops.c:147
 #, fuzzy
 msgid "Offset Y:"
-msgstr "¿É¼Â"
+msgstr "ì˜µì…‹"
 
 #: gap/gap_range_ops.c:158
 msgid "Crop AnimFrames (all)"
-msgstr "¿òÁ÷ÀÌ´Â ÇÁ·¹ÀÓ Àß¶ó³»±â (¸ğµÎ)"
+msgstr "ì›€ì§ì´ëŠ” í”„ë ˆì„ ì˜ë¼ë‚´ê¸° (ëª¨ë‘)"
 
 #: gap/gap_range_ops.c:159
 #, c-format
 msgid "Crop (original %dx%d)"
-msgstr "Àß¶ó³»±â (¿ø·¡ %dx%d)"
+msgstr "ì˜ë¼ë‚´ê¸° (ì›ë˜ %dx%d)"
 
 #: gap/gap_range_ops.c:169
 msgid "Resize AnimFrames (all)"
-msgstr "¿òÁ÷ÀÌ´Â ÇÁ·¹ÀÓ Å©±âÁ¶Àı (¸ğµÎ)"
+msgstr "ì›€ì§ì´ëŠ” í”„ë ˆì„ í¬ê¸°ì¡°ì ˆ (ëª¨ë‘)"
 
 #: gap/gap_range_ops.c:170
 #, c-format
 msgid "Resize (original %dx%d)"
-msgstr "Å©±âÁ¶Àı (¿ø·¡ %dx%d)"
+msgstr "í¬ê¸°ì¡°ì ˆ (ì›ë˜ %dx%d)"
 
 #: gap/gap_range_ops.c:176
 msgid "Scale AnimFrames (all)"
-msgstr "¿òÁ÷ÀÌ´Â ÇÁ·¹ÀÓ ½ºÄÉÀÏ (¸ğµÎ)"
+msgstr "ì›€ì§ì´ëŠ” í”„ë ˆì„ ìŠ¤ì¼€ì¼ (ëª¨ë‘)"
 
 #: gap/gap_range_ops.c:177
 #, c-format
 msgid "Scale (original %dx%d)"
-msgstr "½ºÄÉÀÏ (¿ø·¡ %dx%d)"
+msgstr "ìŠ¤ì¼€ì¼ (ì›ë˜ %dx%d)"
 
 #: gap/gap_range_ops.c:308
 msgid "Generate Optimal Palette"
@@ -2277,7 +2277,7 @@ msgstr ""
 #: gap/gap_range_ops.c:316
 #, fuzzy
 msgid "No Color Dithering"
-msgstr "»ö»ó Æò±Õ³»±â"
+msgstr "ìƒ‰ìƒ í‰ê· ë‚´ê¸°"
 
 #: gap/gap_range_ops.c:327
 msgid "Palette Type"
@@ -2306,7 +2306,7 @@ msgstr ""
 #: gap/gap_range_ops.c:346
 #, fuzzy
 msgid "Number of Colors"
-msgstr "»ö»ó °³¼ö"
+msgstr "ìƒ‰ìƒ ê°œìˆ˜"
 
 #: gap/gap_range_ops.c:347
 #, fuzzy
@@ -2314,18 +2314,18 @@ msgid ""
 "Number of resulting Colors\t\t \n"
 "(ignored if Palette Type is not Generate optimal palette)"
 msgstr ""
-"´Ù¼öÀÇ °á°ú »ö»ó               \n"
-"(¸¸¾à ÀÎµ¦½ºµÊ(indexed)À¸·Î º¯È¯µÇÁö ¾ÊÀ¸¸é ¹«½ÃµÈ´Ù.)"
+"ë‹¤ìˆ˜ì˜ ê²°ê³¼ ìƒ‰ìƒ               \n"
+"(ë§Œì•½ ì¸ë±ìŠ¤ë¨(indexed)ìœ¼ë¡œ ë³€í™˜ë˜ì§€ ì•Šìœ¼ë©´ ë¬´ì‹œëœë‹¤.)"
 
 #: gap/gap_range_ops.c:354
 #, fuzzy
 msgid "Dither Options"
-msgstr "´Ù¸¥ ¿É¼Ç"
+msgstr "ë‹¤ë¥¸ ì˜µì…˜"
 
 #: gap/gap_range_ops.c:361
 #, fuzzy
 msgid "Enable transparency"
-msgstr "Åõ¸íÇÔ"
+msgstr "íˆ¬ëª…í•¨"
 
 #: gap/gap_range_ops.c:362
 msgid "Enable dithering of transparency"
@@ -2334,32 +2334,32 @@ msgstr ""
 #: gap/gap_range_ops.c:365
 #, fuzzy
 msgid "Convert Frames to Indexed"
-msgstr "ÇÁ·¹ÀÓÀ» ´Ù¸§ Çü½ÄÀ¸·Î ¹Ù²Ù±â"
+msgstr "í”„ë ˆì„ì„ ë‹¤ë¦„ í˜•ì‹ìœ¼ë¡œ ë°”ê¾¸ê¸°"
 
 #: gap/gap_range_ops.c:366
 #, fuzzy
 msgid "Palette and Dither Settings"
-msgstr "¼³Á¤È¯°æ ±×·¡ÇÁ ÀÛ¼ºÇã±â"
+msgstr "ì„¤ì •í™˜ê²½ ê·¸ë˜í”„ ì‘ì„±í—ˆê¸°"
 
 #: gap/gap_range_ops.c:431
 #, fuzzy
 msgid "Keep Type"
-msgstr "¹Ìµğ¾î À¯Çü:"
+msgstr "ë¯¸ë””ì–´ ìœ í˜•:"
 
 #: gap/gap_range_ops.c:432
 #, fuzzy
 msgid "Convert to RGB"
-msgstr "RGB·Î ¹Ù²Ş"
+msgstr "RGBë¡œ ë°”ê¿ˆ"
 
 #: gap/gap_range_ops.c:433
 #, fuzzy
 msgid "Convert to Gray"
-msgstr "RGB·Î ¹Ù²Ş"
+msgstr "RGBë¡œ ë°”ê¿ˆ"
 
 #: gap/gap_range_ops.c:434
 #, fuzzy
 msgid "Convert to Indexed"
-msgstr "ÇÁ·¹ÀÓÀ» ´Ù¸§ Çü½ÄÀ¸·Î ¹Ù²Ù±â"
+msgstr "í”„ë ˆì„ì„ ë‹¤ë¦„ í˜•ì‹ìœ¼ë¡œ ë°”ê¾¸ê¸°"
 
 #: gap/gap_range_ops.c:458
 msgid ""
@@ -2368,37 +2368,37 @@ msgid ""
 "optionally convert imagetype\n"
 msgstr ""
 "\n"
-"È®ÀåÀÚ¿¡ ÀÇÇØ ´ë»ó ÆÄÀÏÇü½ÄÀ» ¼±ÅÃÀº ¸¶À½´ë·Î\n"
-"ÀÌ¹ÌÁöÀ¯ÇüÀ» ¹Ù²ß´Ï´Ù.\n"
+"í™•ì¥ìì— ì˜í•´ ëŒ€ìƒ íŒŒì¼í˜•ì‹ì„ ì„ íƒì€ ë§ˆìŒëŒ€ë¡œ\n"
+"ì´ë¯¸ì§€ìœ í˜•ì„ ë°”ê¿‰ë‹ˆë‹¤.\n"
 
 #: gap/gap_range_ops.c:461
 msgid "Basename:"
-msgstr "±âº»ÀÌ¸§:"
+msgstr "ê¸°ë³¸ì´ë¦„:"
 
 #: gap/gap_range_ops.c:462
 msgid ""
 "basename of the resulting frames       \n"
 "(0001.ext is added)"
 msgstr ""
-"°á°ú ÇÁ·¹ÀÓÀÇ ±âº»ÀÌ¸§          \n"
-"(0001.ext°¡ Ãß°¡µÇ¾îÁı´Ï´Ù)"
+"ê²°ê³¼ í”„ë ˆì„ì˜ ê¸°ë³¸ì´ë¦„          \n"
+"(0001.extê°€ ì¶”ê°€ë˜ì–´ì§‘ë‹ˆë‹¤)"
 
 #: gap/gap_range_ops.c:467 gap/gap_split.c:235
 msgid "Extension:"
-msgstr "È®Àå:"
+msgstr "í™•ì¥:"
 
 #: gap/gap_range_ops.c:468
 msgid ""
 "extension of resulting frames       \n"
 "(is also used to define Fileformat)"
 msgstr ""
-"°á°ú ÇÁ·¹ÀÓÀÇ È®Àå       \n"
-"(Àº ¶ÇÇÑ ÆÄÀÏÇü½ÄÀ» Á¤ÀÇ ÇÑ´Ù)"
+"ê²°ê³¼ í”„ë ˆì„ì˜ í™•ì¥       \n"
+"(ì€ ë˜í•œ íŒŒì¼í˜•ì‹ì„ ì •ì˜ í•œë‹¤)"
 
 #: gap/gap_range_ops.c:474
 #, fuzzy
 msgid "Imagetype:"
-msgstr "ÀÌ¹ÌÁöÀ¯Çü :"
+msgstr "ì´ë¯¸ì§€ìœ í˜• :"
 
 #: gap/gap_range_ops.c:475
 #, fuzzy
@@ -2406,90 +2406,90 @@ msgid ""
 "Convert to, or keep imagetype           \n"
 "(most fileformats can't handle all types)"
 msgstr ""
-"¹Ù²Ù°Å³ª, ÀÌ¹ÌÁöÀ¯Çü À¯Áö           \n"
-"(´ëºÎºĞÀÇ ÆÄÀÏÇü½ÄÀº ¸ğµç À¯ÇüÀ» Á¶ÀıÇÏÁö ¸øÇÕ´Ï´Ù)"
+"ë°”ê¾¸ê±°ë‚˜, ì´ë¯¸ì§€ìœ í˜• ìœ ì§€           \n"
+"(ëŒ€ë¶€ë¶„ì˜ íŒŒì¼í˜•ì‹ì€ ëª¨ë“  ìœ í˜•ì„ ì¡°ì ˆí•˜ì§€ ëª»í•©ë‹ˆë‹¤)"
 
 #: gap/gap_range_ops.c:481 gap/gap_split.c:246
 #, fuzzy
 msgid "Flatten:"
-msgstr "ÇÃ·¡Æ° :"
+msgstr "í”Œë˜íŠ¼ :"
 
 #: gap/gap_range_ops.c:482
 msgid ""
 "Flatten all resulting frames               \n"
 "(most fileformats need flattened frames)"
 msgstr ""
-"¸ğµç °á°ú ÇÁ·¹ÀÓ ÇÃ·¡Æ°              \n"
-"(´ëºÎºĞÀÇ ÆÄÀÏÇü½ÄÀº ÇÃ·¡Æ°µÈ ÇÁ·¹ÀÓÀÌ ÇÊ¿äÇÕ´Ï´Ù)"
+"ëª¨ë“  ê²°ê³¼ í”„ë ˆì„ í”Œë˜íŠ¼              \n"
+"(ëŒ€ë¶€ë¶„ì˜ íŒŒì¼í˜•ì‹ì€ í”Œë˜íŠ¼ëœ í”„ë ˆì„ì´ í•„ìš”í•©ë‹ˆë‹¤)"
 
 #: gap/gap_range_ops.c:487
 msgid "Convert Frames to other Formats"
-msgstr "ÇÁ·¹ÀÓÀ» ´Ù¸§ Çü½ÄÀ¸·Î ¹Ù²Ù±â"
+msgstr "í”„ë ˆì„ì„ ë‹¤ë¦„ í˜•ì‹ìœ¼ë¡œ ë°”ê¾¸ê¸°"
 
 #: gap/gap_range_ops.c:488
 #, fuzzy
 msgid "Convert Settings"
-msgstr "¹Ù²Ù±â ¼³Á¤ :"
+msgstr "ë°”ê¾¸ê¸° ì„¤ì • :"
 
 #: gap/gap_range_ops.c:565
 msgid "Expand as necessary"
-msgstr "ÇÊ¿äÇÒ¶§ È®Àå"
+msgstr "í•„ìš”í• ë•Œ í™•ì¥"
 
 #: gap/gap_range_ops.c:566
 msgid "Clipped to image"
-msgstr "ÀÌ¹ÌÁö ÀÚ¸£±â"
+msgstr "ì´ë¯¸ì§€ ìë¥´ê¸°"
 
 #: gap/gap_range_ops.c:567
 msgid "Clipped to bottom layer"
-msgstr "ÇÏÀ§ °èÃş ÀÚ¸£±â"
+msgstr "í•˜ìœ„ ê³„ì¸µ ìë¥´ê¸°"
 
 #: gap/gap_range_ops.c:568
 msgid "Flattened image"
-msgstr "ÇÃ·¡Æ°µÈ ÀÌ¹ÌÁö"
+msgstr "í”Œë˜íŠ¼ëœ ì´ë¯¸ì§€"
 
 #: gap/gap_range_ops.c:569
 msgid ""
 "Resulting Layer Size is made of the outline-rectangle \n"
 "of all visible layers (may differ from frame to frame)"
 msgstr ""
-"°á°ú °èÃş Å©±â´Â ¸ğµç º¸ÀÌ´Â °èÃşÀÇ ¾Æ¿ô¶óÀÎ-Á÷»ç°¢ÇüÀ¸·Î\n"
-"¸¸µé¾îÁı´Ï´Ù (ÇÁ·¹ÀÓ¿¡¼­ ÇÁ·¹ÀÓÀ¸·Î ´Ù¸¦ °ÍÀÔ´Ï´Ù)"
+"ê²°ê³¼ ê³„ì¸µ í¬ê¸°ëŠ” ëª¨ë“  ë³´ì´ëŠ” ê³„ì¸µì˜ ì•„ì›ƒë¼ì¸-ì§ì‚¬ê°í˜•ìœ¼ë¡œ\n"
+"ë§Œë“¤ì–´ì§‘ë‹ˆë‹¤ (í”„ë ˆì„ì—ì„œ í”„ë ˆì„ìœ¼ë¡œ ë‹¤ë¥¼ ê²ƒì…ë‹ˆë‹¤)"
 
 #: gap/gap_range_ops.c:570
 msgid "Resulting Layer Size is the frame size"
-msgstr "°á°ú °èÃş Å©±â´Â ÇÁ·¹ÀÓ Å©±âÀÔ´Ï´Ù"
+msgstr "ê²°ê³¼ ê³„ì¸µ í¬ê¸°ëŠ” í”„ë ˆì„ í¬ê¸°ì…ë‹ˆë‹¤"
 
 #: gap/gap_range_ops.c:571
 msgid ""
 "Resulting Layer Size is the size of the bottom layer\n"
 "(may differ from frame to frame)"
 msgstr ""
-"°á°ú °èÃş Å©±â´Â ÇÏÀ§ °èÃşÀÇ Å©±âÀÔ´Ï´Ù.\n"
-"(ÇÁ·¹ÀÓ¿¡¼­ ÇÁ·¹ÀÓÀ¸·Î ´Ù¸¦ °ÍÀÔ´Ï´Ù.)"
+"ê²°ê³¼ ê³„ì¸µ í¬ê¸°ëŠ” í•˜ìœ„ ê³„ì¸µì˜ í¬ê¸°ì…ë‹ˆë‹¤.\n"
+"(í”„ë ˆì„ì—ì„œ í”„ë ˆì„ìœ¼ë¡œ ë‹¤ë¥¼ ê²ƒì…ë‹ˆë‹¤.)"
 
 #: gap/gap_range_ops.c:572
 msgid ""
 "Resulting Layer Size is the frame size     \n"
 "transparent parts are filled with BG color"
 msgstr ""
-"°á°ú °èÃş Å©±â´Â ÇÁ·¹ÀÓ Å©±âÀÔ´Ï´Ù     \n"
-"Åõ¸íÇÑ ºÎºĞµéÀº ¹è°æ »ö»óÀ¸·Î Ã¤¿öÁı´Ï´Ù."
+"ê²°ê³¼ ê³„ì¸µ í¬ê¸°ëŠ” í”„ë ˆì„ í¬ê¸°ì…ë‹ˆë‹¤     \n"
+"íˆ¬ëª…í•œ ë¶€ë¶„ë“¤ì€ ë°°ê²½ ìƒ‰ìƒìœ¼ë¡œ ì±„ì›Œì§‘ë‹ˆë‹¤."
 
 #: gap/gap_range_ops.c:582
 msgid "select all Layers where Layername is equal to Pattern"
-msgstr "°èÃşÀÌ¸§°ú °°Àº ÆĞÅÏÀÌ ÀÖ´Â °÷¿¡ ¸ğµç °èÃşÀ» ¼±ÅÃÇÕ´Ï´Ù"
+msgstr "ê³„ì¸µì´ë¦„ê³¼ ê°™ì€ íŒ¨í„´ì´ ìˆëŠ” ê³³ì— ëª¨ë“  ê³„ì¸µì„ ì„ íƒí•©ë‹ˆë‹¤"
 
 #: gap/gap_range_ops.c:583
 msgid "select all Layers where Layername starts with Pattern"
-msgstr "°ÂÃşÀÌ¸§°ú ÆĞÅÏÀÌ ½ÃÀÛµÇ´Â °÷¿¡ ¸ğµç °èÃşÀ» ¼±ÅÃÇÕ´Ï´Ù."
+msgstr "ê±”ì¸µì´ë¦„ê³¼ íŒ¨í„´ì´ ì‹œì‘ë˜ëŠ” ê³³ì— ëª¨ë“  ê³„ì¸µì„ ì„ íƒí•©ë‹ˆë‹¤."
 
 #: gap/gap_range_ops.c:584
 msgid "select all Layers where Layername ends up with Pattern"
-msgstr "°ÂÃşÀÌ¸§°ú ÆĞÅÏÀÌ ³¡³ª´Â °÷¿¡ ¸ğµç °èÃşÀ» ¼±ÅÃÇÕ´Ï´Ù."
+msgstr "ê±”ì¸µì´ë¦„ê³¼ íŒ¨í„´ì´ ëë‚˜ëŠ” ê³³ì— ëª¨ë“  ê³„ì¸µì„ ì„ íƒí•©ë‹ˆë‹¤."
 
 #: gap/gap_range_ops.c:585
 msgid "select all Layers where Layername contains Pattern"
-msgstr "°èÃşÀÌ¸§ÀÌ ÆĞÅÏÀ» Æ÷ÇÔÇÏ´Â °÷¿¡ ¸ğµç °èÃşÀ» ¼±ÅÃÇÕ´Ï´Ù."
+msgstr "ê³„ì¸µì´ë¦„ì´ íŒ¨í„´ì„ í¬í•¨í•˜ëŠ” ê³³ì— ëª¨ë“  ê³„ì¸µì„ ì„ íƒí•©ë‹ˆë‹¤."
 
 #: gap/gap_range_ops.c:586
 msgid ""
@@ -2497,9 +2497,9 @@ msgid ""
 "0, 4-5, 8\n"
 "where 0 == Top-layer"
 msgstr ""
-"°èÃş½ºÅÃ À§Ä¡ ¼±ÅÃ.\n"
+"ê³„ì¸µìŠ¤íƒ ìœ„ì¹˜ ì„ íƒ.\n"
 "0, 4-5, 8\n"
-"0 == »óÀ§-°èÃş"
+"0 == ìƒìœ„-ê³„ì¸µ"
 
 #: gap/gap_range_ops.c:587
 msgid ""
@@ -2507,34 +2507,34 @@ msgid ""
 "0, 4-5, 8\n"
 "where 0 == BG-layer"
 msgstr ""
-"°èÃş½ºÅÃ À§Ä¡ ¼±ÅÃ.\n"
+"ê³„ì¸µìŠ¤íƒ ìœ„ì¹˜ ì„ íƒ.\n"
 "0, 4-5, 8\n"
-"0 == ¹è°æ-°èÃş"
+"0 == ë°°ê²½-ê³„ì¸µ"
 
 #: gap/gap_range_ops.c:588
 msgid "select all visible Layers"
-msgstr "¸ğµç ³ªÅ¸³­ °èÃş ¼±ÅÃ"
+msgstr "ëª¨ë“  ë‚˜íƒ€ë‚œ ê³„ì¸µ ì„ íƒ"
 
 #: gap/gap_range_ops.c:617
 msgid "Layer Basename:"
-msgstr "°èÃş ±âº»ÀÌ¸§:"
+msgstr "ê³„ì¸µ ê¸°ë³¸ì´ë¦„:"
 
 #: gap/gap_range_ops.c:618
 msgid ""
 "Basename for all Layers    \n"
 "[####] is replaced by frame number"
 msgstr ""
-"¸ğµç °èÃşµéÀ» À§ÇÑ ±âº»ÀÌ¸§   \n"
-"[####]Àº ÇÁ·¹ÀÓ ¹øÈ£¿¡ ÀÇÇØ ¹Ù²î¾îÁı´Ï´Ù"
+"ëª¨ë“  ê³„ì¸µë“¤ì„ ìœ„í•œ ê¸°ë³¸ì´ë¦„   \n"
+"[####]ì€ í”„ë ˆì„ ë²ˆí˜¸ì— ì˜í•´ ë°”ë€Œì–´ì§‘ë‹ˆë‹¤"
 
 #: gap/gap_range_ops.c:636
 #, fuzzy
 msgid "Layer Mergemode:"
-msgstr "°èÃş ¸ÓÁö¸ğµå :"
+msgstr "ê³„ì¸µ ë¨¸ì§€ëª¨ë“œ :"
 
 #: gap/gap_range_ops.c:643
 msgid "Exclude BG-Layer"
-msgstr "¹è°æ-°èÃş Á¦"
+msgstr "ë°°ê²½-ê³„ì¸µ ì œ"
 
 #: gap/gap_range_ops.c:644
 msgid ""
@@ -2542,36 +2542,36 @@ msgid ""
 "in all handled frames\n"
 "regardless to selection"
 msgstr ""
-"¸ğµç ´ëÃæ Á¶ÀıµÈ ÇÁ·¹ÀÓÀº    \n"
-"¼¿·º¼Ç¿¡¼­\n"
-" Á¦¿ÜµË´Ï´Ù."
+"ëª¨ë“  ëŒ€ì¶© ì¡°ì ˆëœ í”„ë ˆì„ì€    \n"
+"ì…€ë ‰ì…˜ì—ì„œ\n"
+" ì œì™¸ë©ë‹ˆë‹¤."
 
 #: gap/gap_range_ops.c:674
 msgid "Use all unselected Layers"
-msgstr "¸ğµç ¼±ÅÃµÇÁö ¾ÊÀº °èÃş »ç¿ë"
+msgstr "ëª¨ë“  ì„ íƒë˜ì§€ ì•Šì€ ê³„ì¸µ ì‚¬ìš©"
 
 #: gap/gap_range_ops.c:748
 #, fuzzy
 msgid "Creating Layer-Animated Image..."
-msgstr "°èÃş-¿òÁ÷ÀÓ(animate) ÀÌ¹ÌÁö »ı¼º Áß .."
+msgstr "ê³„ì¸µ-ì›€ì§ì„(animate) ì´ë¯¸ì§€ ìƒì„± ì¤‘ .."
 
 #: gap/gap_range_ops.c:970
 msgid "Frames to Image"
-msgstr "ÀÌ¹ÌÁö¿¡ ÇÁ·¹ÀÓ"
+msgstr "ì´ë¯¸ì§€ì— í”„ë ˆì„"
 
 #: gap/gap_range_ops.c:971
 msgid "Create Multilayer-Image from Frames"
-msgstr "ÇÁ·¹ÀÓ¿¡¼­ ´ÙÁß °èÃş-ÀÌ¹ÌÁö »ı¼º"
+msgstr "í”„ë ˆì„ì—ì„œ ë‹¤ì¤‘ ê³„ì¸µ-ì´ë¯¸ì§€ ìƒì„±"
 
 #: gap/gap_range_ops.c:1112
 #, fuzzy
 msgid "Flattening Frames..."
-msgstr "ÇÁ·¹ÀÓ ÇÃ·¡Æ° Áß .."
+msgstr "í”„ë ˆì„ í”Œë˜íŠ¼ ì¤‘ .."
 
 #: gap/gap_range_ops.c:1113
 #, fuzzy
 msgid "Converting Frames..."
-msgstr "ÇÁ·¹ÀÓÀ» ¹Ù²Ù´Â Áß .."
+msgstr "í”„ë ˆì„ì„ ë°”ê¾¸ëŠ” ì¤‘ .."
 
 #: gap/gap_range_ops.c:1261
 #, fuzzy
@@ -2580,46 +2580,46 @@ msgid ""
 "Desired save plugin can't handle type\n"
 "or desired save plugin not available."
 msgstr ""
-"ÇÁ·¹ÀÓ ¹Ù²Ù±â: ÀúÀå µ¿ÀÛ ½ÇÆĞ\n"
-"- ¿ÇÀº ÀúÀå ÇÃ·¯±×ÀÎÀº À¯ÇüÀ» Á¶ÀıÇÒ ¼ö ¾ø°Å³ª\n"
-"- È¤Àº ¿ÇÀº ÀúÀå ÇÃ·¯±×ÀÎÀÌ °¡´ÉÇÏÁö ¾ÊÀ» °ÍÀÔ´Ï´Ù\n"
+"í”„ë ˆì„ ë°”ê¾¸ê¸°: ì €ì¥ ë™ì‘ ì‹¤íŒ¨\n"
+"- ì˜³ì€ ì €ì¥ í”ŒëŸ¬ê·¸ì¸ì€ ìœ í˜•ì„ ì¡°ì ˆí•  ìˆ˜ ì—†ê±°ë‚˜\n"
+"- í˜¹ì€ ì˜³ì€ ì €ì¥ í”ŒëŸ¬ê·¸ì¸ì´ ê°€ëŠ¥í•˜ì§€ ì•Šì„ ê²ƒì…ë‹ˆë‹¤\n"
 
 #: gap/gap_range_ops.c:1369
 #, fuzzy
 msgid "Cropping all Animation Frames..."
-msgstr "¸ğµç ¿òÁ÷ÀÌ´Â(animate) ÇÁ·¹ÀÓ Àß¶ó³»±â .."
+msgstr "ëª¨ë“  ì›€ì§ì´ëŠ”(animate) í”„ë ˆì„ ì˜ë¼ë‚´ê¸° .."
 
 #: gap/gap_range_ops.c:1372
 #, fuzzy
 msgid "Resizing all Animation Frames..."
-msgstr "¸ğµç ¿òÁ÷ÀÌ´Â(animate) ÇÁ·¹ÀÓ Å©±âÁ¶Á¤ .."
+msgstr "ëª¨ë“  ì›€ì§ì´ëŠ”(animate) í”„ë ˆì„ í¬ê¸°ì¡°ì • .."
 
 #: gap/gap_range_ops.c:1375
 #, fuzzy
 msgid "Scaling all Animation Frames..."
-msgstr "¸ğµç ¿òÁ÷ÀÌ´Â(animate) ÇÁ·¹ÀÓ ½ºÄÉÀÏ¸µ .."
+msgstr "ëª¨ë“  ì›€ì§ì´ëŠ”(animate) í”„ë ˆì„ ìŠ¤ì¼€ì¼ë§ .."
 
 #: gap/gap_range_ops.c:1461
 msgid "Flatten Frames"
-msgstr "ÇÃ·¡Æ° ÇÁ·¹ÀÓ"
+msgstr "í”Œë˜íŠ¼ í”„ë ˆì„"
 
 #: gap/gap_range_ops.c:1517
 #, fuzzy, c-format
 msgid "Removing Layer (pos:%ld) from Frames..."
-msgstr "ÇÁ·¹ÀÓ¿¡¼­ °èÃş (pos:%ld) Á¦°Å Áß .."
+msgstr "í”„ë ˆì„ì—ì„œ ê³„ì¸µ (pos:%ld) ì œê±° ì¤‘ .."
 
 #: gap/gap_range_ops.c:1634
 msgid "Delete Layers in Frames"
-msgstr "ÇÁ·¹ÀÓ¿¡¼­ °èÃş »èÁ¦"
+msgstr "í”„ë ˆì„ì—ì„œ ê³„ì¸µ ì‚­ì œ"
 
 #: gap/gap_range_ops.c:1635
 msgid "Select Frame Range & Position"
-msgstr "ÇÁ·¹ÀÓ ¹üÀ§¿Í À§Ä¡ ¼±ÅÃ"
+msgstr "í”„ë ˆì„ ë²”ìœ„ì™€ ìœ„ì¹˜ ì„ íƒ"
 
 #: gap/gap_split.c:101
 #, fuzzy
 msgid "Splitting into Frames..."
-msgstr "ÇÁ·¹ÀÓ¿¡¼­ ºĞÇÒ Áß .."
+msgstr "í”„ë ˆì„ì—ì„œ ë¶„í•  ì¤‘ .."
 
 #: gap/gap_split.c:176
 #, fuzzy
@@ -2628,9 +2628,9 @@ msgid ""
 "desired save plugin can't handle type\n"
 "or desired save plugin not available."
 msgstr ""
-"ÇÁ·¹ÀÓ ºĞÇÒ: ÀúÀå µ¿ÀÛ ½ÇÆĞ\n"
-"- ¿ÇÀº ÀúÀå ÇÃ·¯±×ÀÎÀº À¯ÇüÀ» Á¶ÀıÇÒ ¼ö ¾ø°Å³ª\n"
-"- È¤Àº ¿ÇÀº ÀúÀå ÇÃ·¯±×ÀÎÀÌ °¡´ÉÇÏÁö ¾ÊÀ» °ÍÀÔ´Ï´Ù\n"
+"í”„ë ˆì„ ë¶„í• : ì €ì¥ ë™ì‘ ì‹¤íŒ¨\n"
+"- ì˜³ì€ ì €ì¥ í”ŒëŸ¬ê·¸ì¸ì€ ìœ í˜•ì„ ì¡°ì ˆí•  ìˆ˜ ì—†ê±°ë‚˜\n"
+"- í˜¹ì€ ì˜³ì€ ì €ì¥ í”ŒëŸ¬ê·¸ì¸ì´ ê°€ëŠ¥í•˜ì§€ ì•Šì„ ê²ƒì…ë‹ˆë‹¤\n"
 
 #: gap/gap_split.c:226
 #, c-format
@@ -2642,27 +2642,27 @@ msgstr ""
 
 #: gap/gap_split.c:227
 msgid "Make a frame (diskfile) from each Layer"
-msgstr "°¢ °èÃş¿¡¼­ ÇÁ·¹ÀÓ (µğ½ºÅ©ÆÄÀÏ) ¸¸µé±â"
+msgstr "ê° ê³„ì¸µì—ì„œ í”„ë ˆì„ (ë””ìŠ¤í¬íŒŒì¼) ë§Œë“¤ê¸°"
 
 #: gap/gap_split.c:228
 msgid "frames are named: base_nr.extension"
-msgstr "ÇÁ·¹ÀÓÀº ¸í¸íµÇ¾îÁ³´Ù: base_nr.extension"
+msgstr "í”„ë ˆì„ì€ ëª…ëª…ë˜ì–´ì¡Œë‹¤: base_nr.extension"
 
 #: gap/gap_split.c:236
 #, fuzzy
 msgid "extension of resulting frames (is also used to define Fileformat)"
 msgstr ""
-"°á°ú ÇÁ·¹ÀÓÀÇ È®Àå       \n"
-"(Àº ¶ÇÇÑ ÆÄÀÏÇü½ÄÀ» Á¤ÀÇ ÇÑ´Ù)"
+"ê²°ê³¼ í”„ë ˆì„ì˜ í™•ì¥       \n"
+"(ì€ ë˜í•œ íŒŒì¼í˜•ì‹ì„ ì •ì˜ í•œë‹¤)"
 
 #: gap/gap_split.c:241
 #, fuzzy
 msgid "Inverse Order:"
-msgstr "¿ª ¼ø¼­ :"
+msgstr "ì—­ ìˆœì„œ :"
 
 #: gap/gap_split.c:242
 msgid "Start frame 0001 at Top Layer"
-msgstr "»óÀ§ °èÃş¿¡ ÇÁ·¹ÀÓ 0001·Î ½ÃÀÛ"
+msgstr "ìƒìœ„ ê³„ì¸µì— í”„ë ˆì„ 0001ë¡œ ì‹œì‘"
 
 #: gap/gap_split.c:247
 #, fuzzy
@@ -2670,17 +2670,17 @@ msgid ""
 "Remove Alpha Channel in resulting Frames. Transparent parts are filled with "
 "BG color."
 msgstr ""
-"°á°ú ÇÁ·¹ÀÓ¾È¿¡ ¾ËÆÄ Ã¤³Î Á¦°Å µÇ¾î¼­,   \n"
-"Åõ¸íÇÑ ºÎºĞÀº ¹è°æ »ö»óÀ¸·Î Ã¤¿öÁı´Ï´Ù."
+"ê²°ê³¼ í”„ë ˆì„ì•ˆì— ì•ŒíŒŒ ì±„ë„ ì œê±° ë˜ì–´ì„œ,   \n"
+"íˆ¬ëª…í•œ ë¶€ë¶„ì€ ë°°ê²½ ìƒ‰ìƒìœ¼ë¡œ ì±„ì›Œì§‘ë‹ˆë‹¤."
 
 #: gap/gap_split.c:250
 msgid "Split Image into Frames"
-msgstr "ÇÁ·¹ÀÓ¾È¿¡¼­ ÀÌ¹ÌÁö ºĞÇÒ"
+msgstr "í”„ë ˆì„ì•ˆì—ì„œ ì´ë¯¸ì§€ ë¶„í• "
 
 #: gap/gap_split.c:251
 #, fuzzy
 msgid "Split Settings"
-msgstr "ºĞÇÒÇÏ±â ¼³Á¤ :"
+msgstr "ë¶„í• í•˜ê¸° ì„¤ì • :"
 
 #: gap/gap_split.c:298
 #, fuzzy
@@ -2689,44 +2689,44 @@ msgid ""
 "This image is already an AnimFrame.\n"
 "Try again on a Duplicate (Image/Duplicate)."
 msgstr ""
-"µ¿ÀÛ Ãë¼ÒµÊ\n"
-"ÀÌ ÀÌ¹ÌÁö´Â ¹ú½á ¿òÁ÷ÀÌ´Â ÇÁ·¹ÀÓÀÔ´Ï´Ù\n"
-"º¹»çÇØ¼­ ´Ù½Ã ½ÃµµÇØ ÁÖ¼¼¿ä\n"
-"(ÀÌ¹ÌÁö/Ã¤³Î µ¿ÀÛ/º¹»ç)"
+"ë™ì‘ ì·¨ì†Œë¨\n"
+"ì´ ì´ë¯¸ì§€ëŠ” ë²Œì¨ ì›€ì§ì´ëŠ” í”„ë ˆì„ì…ë‹ˆë‹¤\n"
+"ë³µì‚¬í•´ì„œ ë‹¤ì‹œ ì‹œë„í•´ ì£¼ì„¸ìš”\n"
+"(ì´ë¯¸ì§€/ì±„ë„ ë™ì‘/ë³µì‚¬)"
 
 #: gap/resize.c:107
 msgid "Scale"
-msgstr "½ºÄÉÀÏ"
+msgstr "ìŠ¤ì¼€ì¼"
 
 #: gap/resize.c:111
 msgid "Resize"
-msgstr "Å©±âÁ¶Á¤"
+msgstr "í¬ê¸°ì¡°ì •"
 
 #: gap/resize.c:127
 msgid "New width:"
-msgstr "»õ·Î¿î ³ĞÀÌ:"
+msgstr "ìƒˆë¡œìš´ ë„“ì´:"
 
 #: gap/resize.c:144
 msgid "New height:"
-msgstr "»õ·Î¿î ³ôÀÌ:"
+msgstr "ìƒˆë¡œìš´ ë†’ì´:"
 
 #: gap/resize.c:161
 msgid "X ratio:"
-msgstr "X ºñÀ²:"
+msgstr "X ë¹„ìœ¨:"
 
 #: gap/resize.c:178
 msgid "Y ratio:"
-msgstr "Y ºñÀ²:"
+msgstr "Y ë¹„ìœ¨:"
 
 #: gap/resize.c:197
 msgid "X Offset:"
-msgstr "X ¿É¼Â:"
+msgstr "X ì˜µì…‹:"
 
 #: gap/resize.c:214
 msgid "Y Offset:"
-msgstr "Y ¿É¼Â:"
+msgstr "Y ì˜µì…‹:"
 
 #. the constrain toggle button
 #: gap/resize.c:231
 msgid "Constrain Ratio"
-msgstr "¾ïÁ¦ ºñÀ²"
+msgstr "ì–µì œ ë¹„ìœ¨"

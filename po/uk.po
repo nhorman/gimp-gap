@@ -10,30 +10,30 @@ msgstr ""
 "Last-Translator: Yuri Syrota <rasta@renome.rovno.ua>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=koi8-u\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8-bit\n"
 
 #. Button  to invoke filebrowser
 #: gap/gap_arr_dialog.c:293
 msgid "File-Browser"
-msgstr "Перегляд..."
+msgstr "п÷п╣я─п╣пЁп╩я▐п╢..."
 
 #. parameter settings
 #: gap/gap_arr_dialog.c:793
 msgid "Enter Values"
-msgstr "Вв╕д значень"
+msgstr "п▓п╡я√п╢ п╥п╫п╟я┤п╣п╫я▄"
 
 #: gap/gap_arr_dialog.c:812
 msgid "Value:"
-msgstr "Яскрав╕сть:"
+msgstr "п╞я│п╨я─п╟п╡я√я│я┌я▄:"
 
 #: gap/gap_arr_dialog.c:878
 msgid "Value: "
-msgstr "Значення: "
+msgstr "п≈п╫п╟я┤п╣п╫п╫я▐: "
 
 #: gap/gap_arr_dialog.c:1040
 msgid "Press Button"
-msgstr "Натисн╕ть кнопку"
+msgstr "п²п╟я┌п╦я│п╫я√я┌я▄ п╨п╫п╬п©п╨я┐"
 
 #: gap/gap_arr_dialog.c:1041
 msgid "Select"
@@ -49,7 +49,7 @@ msgstr ""
 
 #: gap/gap_dbbrowser_utils.c:148
 msgid "Search:"
-msgstr "Пошук:"
+msgstr "п÷п╬я┬я┐п╨:"
 
 #: gap/gap_dbbrowser_utils.c:176
 msgid "Gen Code by name"
@@ -57,46 +57,46 @@ msgstr ""
 
 #: gap/gap_dbbrowser_utils.c:185
 msgid "Search by Name"
-msgstr "Пошук за назвою"
+msgstr "п÷п╬я┬я┐п╨ п╥п╟ п╫п╟п╥п╡п╬я▌"
 
 #: gap/gap_dbbrowser_utils.c:193
 msgid "Search by Blurb"
-msgstr "Пошук за анотац╕╓ю"
+msgstr "п÷п╬я┬я┐п╨ п╥п╟ п╟п╫п╬я┌п╟я├я√я■я▌"
 
 #. show the name
 #: gap/gap_dbbrowser_utils.c:335
 msgid "Name:"
-msgstr "Назва:"
+msgstr "п²п╟п╥п╡п╟:"
 
 #. show the description
 #: gap/gap_dbbrowser_utils.c:352
 msgid "Blurb:"
-msgstr "Анотац╕я:"
+msgstr "п░п╫п╬я┌п╟я├я√я▐:"
 
 #: gap/gap_dbbrowser_utils.c:374
 msgid "In:"
-msgstr "Вх╕д:"
+msgstr "п▓я┘я√п╢:"
 
 #: gap/gap_dbbrowser_utils.c:420
 msgid "Out:"
-msgstr "Вих╕д:"
+msgstr "п▓п╦я┘я√п╢:"
 
 #: gap/gap_dbbrowser_utils.c:469
 msgid "Help:"
-msgstr "Дов╕дка:"
+msgstr "п■п╬п╡я√п╢п╨п╟:"
 
 #. show the author & the copyright
 #: gap/gap_dbbrowser_utils.c:507
 msgid "Author:"
-msgstr "Автор:"
+msgstr "п░п╡я┌п╬я─:"
 
 #: gap/gap_dbbrowser_utils.c:522
 msgid "Date:"
-msgstr "Дата:"
+msgstr "п■п╟я┌п╟:"
 
 #: gap/gap_dbbrowser_utils.c:537
 msgid "Copyright:"
-msgstr "Авторськ╕ права:"
+msgstr "п░п╡я┌п╬я─я│я▄п╨я√ п©я─п╟п╡п╟:"
 
 #: gap/gap_dbbrowser_utils.c:676
 msgid "Animated Filter apply (by name - please wait)"
@@ -117,46 +117,46 @@ msgstr ""
 
 #: gap/gap_decode_mpeg_main.c:102
 msgid "<Image>/Video/Split Video to Frames"
-msgstr "<Image>/В╕део/Розбити в╕део на кадри"
+msgstr "<Image>/п▓я√п╢п╣п╬/п═п╬п╥п╠п╦я┌п╦ п╡я√п╢п╣п╬ п╫п╟ п╨п╟п╢я─п╦"
 
 #: gap/gap_decode_mpeg_main.c:103
 msgid "<Toolbox>/Xtns/Split Video to Frames"
-msgstr "<Toolbox>/Розш./Розбити в╕део на кадри"
+msgstr "<Toolbox>/п═п╬п╥я┬./п═п╬п╥п╠п╦я┌п╦ п╡я√п╢п╣п╬ п╫п╟ п╨п╟п╢я─п╦"
 
 #: gap/gap_decode_mpeg_main.c:176
 msgid "<Image>/Video/Split Video to Frames/MPEG1"
-msgstr "<Image>/В╕део/Розбити в╕део на кадри/MPEG1"
+msgstr "<Image>/п▓я√п╢п╣п╬/п═п╬п╥п╠п╦я┌п╦ п╡я√п╢п╣п╬ п╫п╟ п╨п╟п╢я─п╦/MPEG1"
 
 #: gap/gap_decode_mpeg_main.c:189
 msgid "<Toolbox>/Xtns/Split Video to Frames/MPEG1"
-msgstr "<Toolbox>/Розш./Розбити в╕део на кадри/MPEG1"
+msgstr "<Toolbox>/п═п╬п╥я┬./п═п╬п╥п╠п╦я┌п╦ п╡я√п╢п╣п╬ п╫п╟ п╨п╟п╢я─п╦/MPEG1"
 
 #: gap/gap_decode_mpeg_main.c:332 gap/gap_decode_xanim.c:337
 #: gap/gap_range_ops.c:1240
 msgid "Overwrite Frame"
-msgstr "Переписати кадр"
+msgstr "п÷п╣я─п╣п©п╦я│п╟я┌п╦ п╨п╟п╢я─"
 
 #: gap/gap_decode_mpeg_main.c:334 gap/gap_decode_xanim.c:339
 #: gap/gap_range_ops.c:1242
 msgid "Overwrite All"
-msgstr "Переписати все"
+msgstr "п÷п╣я─п╣п©п╦я│п╟я┌п╦ п╡я│п╣"
 
 #: gap/gap_decode_mpeg_main.c:342 gap/gap_decode_xanim.c:347
 #: gap/gap_lib.c:1036 gap/gap_range_ops.c:1247
 msgid "GAP Question"
-msgstr "Запитання GAP"
+msgstr "п≈п╟п©п╦я┌п╟п╫п╫я▐ GAP"
 
 #: gap/gap_decode_mpeg_main.c:343 gap/gap_decode_xanim.c:348
 msgid "File already exists"
-msgstr "Файл вже ╕сну╓"
+msgstr "п╓п╟п╧п╩ п╡п╤п╣ я√я│п╫я┐я■"
 
 #: gap/gap_decode_mpeg_main.c:437
 msgid "Decoding MPEG Movie..."
-msgstr "Декодування MPEG-в╕део..."
+msgstr "п■п╣п╨п╬п╢я┐п╡п╟п╫п╫я▐ MPEG-п╡я√п╢п╣п╬..."
 
 #: gap/gap_decode_mpeg_main.c:642
 msgid "Video"
-msgstr "В╕део"
+msgstr "п▓я√п╢п╣п╬"
 
 #: gap/gap_decode_mpeg_main.c:643
 msgid ""
@@ -170,7 +170,7 @@ msgstr ""
 #: gap/gap_lib.c:2120 gap/gap_lib.c:2315 gap/gap_range_ops.c:253
 #: gap/gap_range_ops.c:602
 msgid "From:"
-msgstr "З:"
+msgstr "п≈:"
 
 #: gap/gap_decode_mpeg_main.c:653 gap/gap_decode_xanim.c:225
 msgid "Framenumber of 1st frame to extract"
@@ -180,7 +180,7 @@ msgstr ""
 #: gap/gap_lib.c:2128 gap/gap_lib.c:2323 gap/gap_range_ops.c:260
 #: gap/gap_range_ops.c:610
 msgid "To:"
-msgstr "До:"
+msgstr "п■п╬:"
 
 #: gap/gap_decode_mpeg_main.c:663 gap/gap_decode_xanim.c:235
 msgid "Framenumber of last frame to extract"
@@ -188,7 +188,7 @@ msgstr ""
 
 #: gap/gap_decode_mpeg_main.c:672 gap/gap_decode_xanim.c:244
 msgid "Framenames:"
-msgstr "Назви кадр╕в:"
+msgstr "п²п╟п╥п╡п╦ п╨п╟п╢я─я√п╡:"
 
 #: gap/gap_decode_mpeg_main.c:673
 msgid ""
@@ -198,7 +198,7 @@ msgstr ""
 
 #: gap/gap_decode_mpeg_main.c:680 gap/gap_decode_xanim.c:283
 msgid "Open"
-msgstr "В╕дкрити"
+msgstr "п▓я√п╢п╨я─п╦я┌п╦"
 
 #: gap/gap_decode_mpeg_main.c:681 gap/gap_decode_xanim.c:284
 msgid "Open the 1st one of the extracted frames"
@@ -213,54 +213,54 @@ msgstr ""
 
 #: gap/gap_decode_mpeg_main.c:688
 msgid "Split MPEG1 Video to Frames"
-msgstr "Розбити MPEG1-в╕део на кадри"
+msgstr "п═п╬п╥п╠п╦я┌п╦ MPEG1-п╡я√п╢п╣п╬ п╫п╟ п╨п╟п╢я─п╦"
 
 #: gap/gap_decode_mpeg_main.c:689 gap/gap_decode_xanim.c:298
 #: gap/gap_range_ops.c:1462
 msgid "Select Frame Range"
-msgstr "Виб╕р д╕апазону кадр╕в"
+msgstr "п▓п╦п╠я√я─ п╢я√п╟п©п╟п╥п╬п╫я┐ п╨п╟п╢я─я√п╡"
 
 #: gap/gap_decode_xanim.c:114
 msgid "Conditions to run the xanim based video split"
-msgstr "Умови для запуску разкладання кадр╕в основаного на XANIM"
+msgstr "пёп╪п╬п╡п╦ п╢п╩я▐ п╥п╟п©я┐я│п╨я┐ я─п╟п╥п╨п╩п╟п╢п╟п╫п╫я▐ п╨п╟п╢я─я√п╡ п╬я│п╫п╬п╡п╟п╫п╬пЁп╬ п╫п╟ XANIM"
 
 #: gap/gap_decode_xanim.c:122
 msgid "1.) xanim 2.80.0 exporting edition (the loki version)"
-msgstr "1) xanim 2.80.0 exporting edition (верс╕я loki)"
+msgstr "1) xanim 2.80.0 exporting edition (п╡п╣я─я│я√я▐ loki)"
 
 #: gap/gap_decode_xanim.c:126
 msgid "    must be installed somewhere in your PATH"
-msgstr "   мусить бути прописаним десь у ваш╕й зм╕нн╕й PATH"
+msgstr "   п╪я┐я│п╦я┌я▄ п╠я┐я┌п╦ п©я─п╬п©п╦я│п╟п╫п╦п╪ п╢п╣я│я▄ я┐ п╡п╟я┬я√п╧ п╥п╪я√п╫п╫я√п╧ PATH"
 
 #: gap/gap_decode_xanim.c:130
 msgid "    you can get xanim exporting edition at"
-msgstr "   ви можете отримати xanim exporting edition за адресою"
+msgstr "   п╡п╦ п╪п╬п╤п╣я┌п╣ п╬я┌я─п╦п╪п╟я┌п╦ xanim exporting edition п╥п╟ п╟п╢я─п╣я│п╬я▌"
 
 #: gap/gap_decode_xanim.c:146
 msgid ""
 "2.) if your xanim exporting edition is not in your PATH or is not named xanim"
 msgstr ""
-"2) якщо ваш xanim exporting edition в╕дсутн╕й в PATH чи назива╓ться не xanim"
+"2) я▐п╨я┴п╬ п╡п╟я┬ xanim exporting edition п╡я√п╢я│я┐я┌п╫я√п╧ п╡ PATH я┤п╦ п╫п╟п╥п╦п╡п╟я■я┌я▄я│я▐ п╫п╣ xanim"
 
 #: gap/gap_decode_xanim.c:150
 msgid "    you have to set Environment variable GAP_XANIM_PROG "
-msgstr "   ви мусите встановити зм╕нну середовища GAP_XANIM_PROG "
+msgstr "   п╡п╦ п╪я┐я│п╦я┌п╣ п╡я│я┌п╟п╫п╬п╡п╦я┌п╦ п╥п╪я√п╫п╫я┐ я│п╣я─п╣п╢п╬п╡п╦я┴п╟ GAP_XANIM_PROG "
 
 #: gap/gap_decode_xanim.c:154
 msgid "    to your xanim exporting program and restart gimp"
-msgstr "   на вашу програму xanim ╕ перезапустити GIMP"
+msgstr "   п╫п╟ п╡п╟я┬я┐ п©я─п╬пЁя─п╟п╪я┐ xanim я√ п©п╣я─п╣п╥п╟п©я┐я│я┌п╦я┌п╦ GIMP"
 
 #: gap/gap_decode_xanim.c:162
 msgid "An ERROR occured while trying to call xanim:"
-msgstr "На спроб╕ виклику xanim виникла ПОМИЛКА:"
+msgstr "п²п╟ я│п©я─п╬п╠я√ п╡п╦п╨п╩п╦п╨я┐ xanim п╡п╦п╫п╦п╨п╩п╟ п÷п·п°п≤п⌡п п░:"
 
 #: gap/gap_decode_xanim.c:181
 msgid "XANIM Information"
-msgstr "╤нформац╕я XANIM"
+msgstr "п├п╫я└п╬я─п╪п╟я├я√я▐ XANIM"
 
 #: gap/gap_decode_xanim.c:214
 msgid "Video:"
-msgstr "В╕део:"
+msgstr "п▓я√п╢п╣п╬:"
 
 #: gap/gap_decode_xanim.c:215
 msgid ""
@@ -278,7 +278,7 @@ msgstr ""
 
 #: gap/gap_decode_xanim.c:252
 msgid "Format"
-msgstr "Формат"
+msgstr "п╓п╬я─п╪п╟я┌"
 
 #: gap/gap_decode_xanim.c:253
 msgid ""
@@ -288,15 +288,15 @@ msgstr ""
 
 #: gap/gap_decode_xanim.c:260
 msgid "Extract Frames"
-msgstr "Д╕стати кадри"
+msgstr "п■я√я│я┌п╟я┌п╦ п╨п╟п╢я─п╦"
 
 #: gap/gap_decode_xanim.c:261
 msgid "Enable extraction of Frames"
-msgstr "Дозвилити д╕ставання кадр╕в"
+msgstr "п■п╬п╥п╡п╦п╩п╦я┌п╦ п╢я√я│я┌п╟п╡п╟п╫п╫я▐ п╨п╟п╢я─я√п╡"
 
 #: gap/gap_decode_xanim.c:265
 msgid "Extract Audio"
-msgstr "Д╕стат╕ ауд╕одан╕"
+msgstr "п■я√я│я┌п╟я┌я√ п╟я┐п╢я√п╬п╢п╟п╫я√"
 
 #: gap/gap_decode_xanim.c:266
 msgid ""
@@ -306,7 +306,7 @@ msgstr ""
 
 #: gap/gap_decode_xanim.c:271
 msgid "Jpeg Quality:"
-msgstr "Як╕сть JPEG:"
+msgstr "п╞п╨я√я│я┌я▄ JPEG:"
 
 #: gap/gap_decode_xanim.c:272
 msgid ""
@@ -316,7 +316,7 @@ msgstr ""
 
 #: gap/gap_decode_xanim.c:288
 msgid "Run asynchronously"
-msgstr "Запускати асинхронно"
+msgstr "п≈п╟п©я┐я│п╨п╟я┌п╦ п╟я│п╦п╫я┘я─п╬п╫п╫п╬"
 
 #: gap/gap_decode_xanim.c:289
 msgid ""
@@ -333,7 +333,7 @@ msgstr ""
 
 #: gap/gap_decode_xanim.c:297
 msgid "Split any Xanim readable Video to Frames"
-msgstr "Розбити будь-яке зчитуване Xanim в╕део на кадри"
+msgstr "п═п╬п╥п╠п╦я┌п╦ п╠я┐п╢я▄-я▐п╨п╣ п╥я┤п╦я┌я┐п╡п╟п╫п╣ Xanim п╡я√п╢п╣п╬ п╫п╟ п╨п╟п╢я─п╦"
 
 #: gap/gap_decode_xanim.c:540
 #, c-format
@@ -381,13 +381,13 @@ msgid ""
 "The xanim program on your system \"%s\"\n"
 "does not support exporting of single frames"
 msgstr ""
-"Програма xanim у ваш╕й систем╕ \"%s\"\n"
-"не п╕дтриму╓ експорту окремих кадр╕в"
+"п÷я─п╬пЁя─п╟п╪п╟ xanim я┐ п╡п╟я┬я√п╧ я│п╦я│я┌п╣п╪я√ \"%s\"\n"
+"п╫п╣ п©я√п╢я┌я─п╦п╪я┐я■ п╣п╨я│п©п╬я─я┌я┐ п╬п╨я─п╣п╪п╦я┘ п╨п╟п╢я─я√п╡"
 
 #: gap/gap_decode_xanim.c:1025
 #, c-format
 msgid "videofile %s not existent or empty\n"
-msgstr "в╕деофайлу %s не мну╓ чи в╕н порожн╕й\n"
+msgstr "п╡я√п╢п╣п╬я└п╟п╧п╩я┐ %s п╫п╣ п╪п╫я┐я■ я┤п╦ п╡я√п╫ п©п╬я─п╬п╤п╫я√п╧\n"
 
 #: gap/gap_decode_xanim.c:1078
 #, c-format
@@ -395,8 +395,8 @@ msgid ""
 "could not create %s directory\n"
 "(that is required for xanim frame export)"
 msgstr ""
-"не вдалось створити каталог %s\n"
-"(який необх╕дно для експорту кадр╕в xanim)"
+"п╫п╣ п╡п╢п╟п╩п╬я│я▄ я│я┌п╡п╬я─п╦я┌п╦ п╨п╟я┌п╟п╩п╬пЁ %s\n"
+"(я▐п╨п╦п╧ п╫п╣п╬п╠я┘я√п╢п╫п╬ п╢п╩я▐ п╣п╨я│п©п╬я─я┌я┐ п╨п╟п╢я─я√п╡ xanim)"
 
 #: gap/gap_decode_xanim.c:1089
 msgid "extracting frames..."
@@ -417,24 +417,24 @@ msgstr ""
 
 #: gap/gap_decode_xanim.c:1154
 msgid "renaming frames..."
-msgstr "перейменування кадр╕в..."
+msgstr "п©п╣я─п╣п╧п╪п╣п╫я┐п╡п╟п╫п╫я▐ п╨п╟п╢я─я√п╡..."
 
 #: gap/gap_decode_xanim.c:1159
 msgid "converting frames..."
-msgstr "перетворення кадр╕в..."
+msgstr "п©п╣я─п╣я┌п╡п╬я─п╣п╫п╫я▐ п╨п╟п╢я─я√п╡..."
 
 #: gap/gap_filter_foreach.c:126
 msgid "backup to file"
-msgstr "резервування у файл"
+msgstr "я─п╣п╥п╣я─п╡я┐п╡п╟п╫п╫я▐ я┐ я└п╟п╧п╩"
 
 #. pixel
 #: gap/gap_filter_foreach.c:128
 msgid "Make backup of the image after each step"
-msgstr "Робити резервування зображення п╕сля кожного кроку"
+msgstr "п═п╬п╠п╦я┌п╦ я─п╣п╥п╣я─п╡я┐п╡п╟п╫п╫я▐ п╥п╬п╠я─п╟п╤п╣п╫п╫я▐ п©я√я│п╩я▐ п╨п╬п╤п╫п╬пЁп╬ п╨я─п╬п╨я┐"
 
 #: gap/gap_filter_foreach.c:132 gap/gap_mod_layer.c:262
 msgid "Continue"
-msgstr "Продовжити"
+msgstr "п÷я─п╬п╢п╬п╡п╤п╦я┌п╦"
 
 #: gap/gap_filter_foreach.c:136
 #, c-format
@@ -457,7 +457,7 @@ msgstr ""
 
 #: gap/gap_filter_foreach.c:278
 msgid "Applying Filter to all Layers..."
-msgstr "Застосування ф╕льтру до вс╕х шар╕в..."
+msgstr "п≈п╟я│я┌п╬я│я┐п╡п╟п╫п╫я▐ я└я√п╩я▄я┌я─я┐ п╢п╬ п╡я│я√я┘ я┬п╟я─я√п╡..."
 
 #: gap/gap_filter_foreach.c:552
 msgid "Select Filter for Animated apply"
@@ -465,35 +465,35 @@ msgstr ""
 
 #: gap/gap_filter_foreach.c:553 gap/gap_mod_layer.c:664
 msgid "Apply Constant"
-msgstr "Застосувати однаковий"
+msgstr "п≈п╟я│я┌п╬я│я┐п╡п╟я┌п╦ п╬п╢п╫п╟п╨п╬п╡п╦п╧"
 
 #: gap/gap_filter_foreach.c:554 gap/gap_mod_layer.c:665
 msgid "Apply Varying"
-msgstr "Застосувати р╕зн╕"
+msgstr "п≈п╟я│я┌п╬я│я┐п╡п╟я┌п╦ я─я√п╥п╫я√"
 
 #: gap/gap_filter_main.c:105
 msgid "<Image>/Filters/Filter all Layers..."
-msgstr "<Image>/Ф╕льтри/Ф╕льтрувати вс╕ шари..."
+msgstr "<Image>/п╓я√п╩я▄я┌я─п╦/п╓я√п╩я▄я┌я─я┐п╡п╟я┌п╦ п╡я│я√ я┬п╟я─п╦..."
 
 #: gap/gap_frontends_main.c:125
 msgid "<Image>/Video/Split Video to Frames/Any XANIM readable..."
-msgstr "<Image>/В╕део/Розбити в╕део на кадри/Будь-яке зчитуване XANIM..."
+msgstr "<Image>/п▓я√п╢п╣п╬/п═п╬п╥п╠п╦я┌п╦ п╡я√п╢п╣п╬ п╫п╟ п╨п╟п╢я─п╦/п▒я┐п╢я▄-я▐п╨п╣ п╥я┤п╦я┌я┐п╡п╟п╫п╣ XANIM..."
 
 #: gap/gap_frontends_main.c:137
 msgid "<Toolbox>/Xtns/Split Video to Frames/Any XANIM readable..."
-msgstr "<Toolbox>/Розш./Розбити в╕део на кадри/Будь-яке зчитуване XANIM..."
+msgstr "<Toolbox>/п═п╬п╥я┬./п═п╬п╥п╠п╦я┌п╦ п╡я√п╢п╣п╬ п╫п╟ п╨п╟п╢я─п╦/п▒я┐п╢я▄-я▐п╨п╣ п╥я┤п╦я┌я┐п╡п╟п╫п╣ XANIM..."
 
 #: gap/gap_frontends_main.c:149
 msgid "<Image>/Video/Encode/MPEG1..."
-msgstr "<Image>/В╕део/Кодування/MPEG1..."
+msgstr "<Image>/п▓я√п╢п╣п╬/п п╬п╢я┐п╡п╟п╫п╫я▐/MPEG1..."
 
 #: gap/gap_frontends_main.c:162
 msgid "<Image>/Video/Encode/MPEG2..."
-msgstr "<Image>/В╕део/Кодування/MPEG2..."
+msgstr "<Image>/п▓я√п╢п╣п╬/п п╬п╢я┐п╡п╟п╫п╫я▐/MPEG2..."
 
 #: gap/gap_lib.c:243
 msgid "GAP Message"
-msgstr "Пов╕домлення GAP"
+msgstr "п÷п╬п╡я√п╢п╬п╪п╩п╣п╫п╫я▐ GAP"
 
 #: gap/gap_lib.c:905
 msgid ""
@@ -518,59 +518,59 @@ msgstr ""
 
 #: gap/gap_lib.c:1030
 msgid "Save Flattened"
-msgstr "Зберегти зведене"
+msgstr "п≈п╠п╣я─п╣пЁя┌п╦ п╥п╡п╣п╢п╣п╫п╣"
 
 #: gap/gap_lib.c:1032
 msgid "Save As Is"
-msgstr "Зберегти як ╓"
+msgstr "п≈п╠п╣я─п╣пЁя┌п╦ я▐п╨ я■"
 
 #: gap/gap_lib.c:1507 gap/gap_lib.c:1631 gap/gap_lib.c:1710 gap/gap_lib.c:1717
 #: gap/gap_lib.c:1724 gap/gap_lib.c:1807 gap/gap_lib.c:1829 gap/gap_lib.c:2734
 #, c-format
 msgid "Error: could not rename frame %ld to %ld"
-msgstr "Помилка неможливо перейменувати кадр %ld у %ld"
+msgstr "п÷п╬п╪п╦п╩п╨п╟ п╫п╣п╪п╬п╤п╩п╦п╡п╬ п©п╣я─п╣п╧п╪п╣п╫я┐п╡п╟я┌п╦ п╨п╟п╢я─ %ld я┐ %ld"
 
 #: gap/gap_lib.c:1570
 #, fuzzy, c-format
 msgid "Error: could not save frame %s"
-msgstr "Помилка неможливо перейменувати кадр %ld у %ld"
+msgstr "п÷п╬п╪п╦п╩п╨п╟ п╫п╣п╪п╬п╤п╩п╦п╡п╬ п©п╣я─п╣п╧п╪п╣п╫я┐п╡п╟я┌п╦ п╨п╟п╢я─ %ld я┐ %ld"
 
 #: gap/gap_lib.c:1619
 msgid "Duplicating frames..."
-msgstr "Дублювання кадр╕в..."
+msgstr "п■я┐п╠п╩я▌п╡п╟п╫п╫я▐ п╨п╟п╢я─я√п╡..."
 
 #: gap/gap_lib.c:1795
 msgid "Renumber Framesequence..."
-msgstr "Перенумерування посл╕довност╕ кадр╕в..."
+msgstr "п÷п╣я─п╣п╫я┐п╪п╣я─я┐п╡п╟п╫п╫я▐ п©п╬я│п╩я√п╢п╬п╡п╫п╬я│я┌я√ п╨п╟п╢я─я√п╡..."
 
 #: gap/gap_lib.c:1981
 #, c-format
 msgid "Goto Frame (%ld/%ld)"
-msgstr "Перейти до кадру (%ld/%ld)"
+msgstr "п÷п╣я─п╣п╧я┌п╦ п╢п╬ п╨п╟п╢я─я┐ (%ld/%ld)"
 
 #: gap/gap_lib.c:1984
 #, c-format
 msgid "Destination Frame Number (%ld  - %ld)"
-msgstr "Номер кадру призначення (%ld  - %ld)"
+msgstr "п²п╬п╪п╣я─ п╨п╟п╢я─я┐ п©я─п╦п╥п╫п╟я┤п╣п╫п╫я▐ (%ld  - %ld)"
 
 #: gap/gap_lib.c:1988 gap/gap_lib.c:2065 gap/gap_lib.c:2269
 msgid "Number:"
-msgstr "Номер:"
+msgstr "п²п╬п╪п╣я─:"
 
 #: gap/gap_lib.c:2049
 #, c-format
 msgid "Delete Frames (%ld/%ld)"
-msgstr "Стерти кадри (%ld/%ld)"
+msgstr "п║я┌п╣я─я┌п╦ п╨п╟п╢я─п╦ (%ld/%ld)"
 
 #: gap/gap_lib.c:2052
 #, c-format
 msgid "Delete Frames from %ld to (number)"
-msgstr "Стерти кадри з %ld до (число)"
+msgstr "п║я┌п╣я─я┌п╦ п╨п╟п╢я─п╦ п╥ %ld п╢п╬ (я┤п╦я│п╩п╬)"
 
 #: gap/gap_lib.c:2115
 #, c-format
 msgid "Duplicate Frames (%ld/%ld)"
-msgstr "Дублювати кадри (%ld/%ld)"
+msgstr "п■я┐п╠п╩я▌п╡п╟я┌п╦ п╨п╟п╢я─п╦ (%ld/%ld)"
 
 #: gap/gap_lib.c:2125
 msgid "Source Range starts at this framenumber"
@@ -582,7 +582,7 @@ msgstr ""
 
 #: gap/gap_lib.c:2136
 msgid "N times:"
-msgstr "Раз╕в:"
+msgstr "п═п╟п╥я√п╡:"
 
 #: gap/gap_lib.c:2143
 msgid ""
@@ -592,21 +592,21 @@ msgstr ""
 
 #: gap/gap_lib.c:2146
 msgid "Duplicate Frame Range"
-msgstr "Дублювати д╕апазон кадр╕в"
+msgstr "п■я┐п╠п╩я▌п╡п╟я┌п╦ п╢я√п╟п©п╟п╥п╬п╫ п╨п╟п╢я─я√п╡"
 
 #: gap/gap_lib.c:2264
 #, c-format
 msgid "Exchange current Frame (%ld)"
-msgstr "Зм╕нити поточний кадр (%ld)"
+msgstr "п≈п╪я√п╫п╦я┌п╦ п©п╬я┌п╬я┤п╫п╦п╧ п╨п╟п╢я─ (%ld)"
 
 #: gap/gap_lib.c:2268
 msgid "With Frame (number)"
-msgstr "З кадру (число)"
+msgstr "п≈ п╨п╟п╢я─я┐ (я┤п╦я│п╩п╬)"
 
 #: gap/gap_lib.c:2310
 #, c-format
 msgid "Framesequence Shift (%ld/%ld)"
-msgstr "Зсув посл╕довност╕ кадр╕в (%ld/%ld)"
+msgstr "п≈я│я┐п╡ п©п╬я│п╩я√п╢п╬п╡п╫п╬я│я┌я√ п╨п╟п╢я─я√п╡ (%ld/%ld)"
 
 #: gap/gap_lib.c:2320
 msgid "Affected Range starts at this framenumber"
@@ -628,7 +628,7 @@ msgstr ""
 
 #: gap/gap_lib.c:2338
 msgid "Framesequence shift"
-msgstr "Зсув посл╕довност╕ кадр╕в"
+msgstr "п≈я│я┐п╡ п©п╬я│п╩я√п╢п╬п╡п╫п╬я│я┌я√ п╨п╟п╢я─я√п╡"
 
 #: gap/gap_lib.c:2946
 #, c-format
@@ -640,124 +640,124 @@ msgstr ""
 
 #: gap/gap_main.c:476
 msgid "<Image>/Video/Goto/Next Frame"
-msgstr "<Image>/В╕део/Перех╕д/Наступний кадр"
+msgstr "<Image>/п▓я√п╢п╣п╬/п÷п╣я─п╣я┘я√п╢/п²п╟я│я┌я┐п©п╫п╦п╧ п╨п╟п╢я─"
 
 #: gap/gap_main.c:488
 msgid "<Image>/Video/Goto/Previous Frame"
-msgstr "<Image>/В╕део/Перех╕д/Попередн╕й кадр"
+msgstr "<Image>/п▓я√п╢п╣п╬/п÷п╣я─п╣я┘я√п╢/п÷п╬п©п╣я─п╣п╢п╫я√п╧ п╨п╟п╢я─"
 
 #: gap/gap_main.c:500
 msgid "<Image>/Video/Goto/First Frame"
-msgstr "<Image>/В╕део/Перех╕д/Перший кадр"
+msgstr "<Image>/п▓я√п╢п╣п╬/п÷п╣я─п╣я┘я√п╢/п÷п╣я─я┬п╦п╧ п╨п╟п╢я─"
 
 #: gap/gap_main.c:512
 msgid "<Image>/Video/Goto/Last Frame"
-msgstr "<Image>/В╕део/Перех╕д/Останн╕й кадр"
+msgstr "<Image>/п▓я√п╢п╣п╬/п÷п╣я─п╣я┘я√п╢/п·я│я┌п╟п╫п╫я√п╧ п╨п╟п╢я─"
 
 #: gap/gap_main.c:524
 msgid "<Image>/Video/Goto/Any Frame..."
-msgstr "<Image>/В╕део/Перех╕д/Будь-який кадр..."
+msgstr "<Image>/п▓я√п╢п╣п╬/п÷п╣я─п╣я┘я√п╢/п▒я┐п╢я▄-я▐п╨п╦п╧ п╨п╟п╢я─..."
 
 #: gap/gap_main.c:536
 msgid "<Image>/Video/Delete Frames..."
-msgstr "<Image>/В╕део/Стерти кадри..."
+msgstr "<Image>/п▓я√п╢п╣п╬/п║я┌п╣я─я┌п╦ п╨п╟п╢я─п╦..."
 
 #: gap/gap_main.c:548
 msgid "<Image>/Video/Duplicate Frames..."
-msgstr "<Image>/В╕део/Дублювати кадри..."
+msgstr "<Image>/п▓я√п╢п╣п╬/п■я┐п╠п╩я▌п╡п╟я┌п╦ п╨п╟п╢я─п╦..."
 
 #: gap/gap_main.c:560
 msgid "<Image>/Video/Exchange Frame..."
-msgstr "<Image>/В╕део/Обм╕няти кадр..."
+msgstr "<Image>/п▓я√п╢п╣п╬/п·п╠п╪я√п╫я▐я┌п╦ п╨п╟п╢я─..."
 
 #: gap/gap_main.c:572
 msgid "<Image>/Video/Move Path..."
-msgstr "<Image>/В╕део/Перем╕стити шлях..."
+msgstr "<Image>/п▓я√п╢п╣п╬/п÷п╣я─п╣п╪я√я│я┌п╦я┌п╦ я┬п╩я▐я┘..."
 
 #: gap/gap_main.c:643
 msgid "<Image>/Video/Frames to Image..."
-msgstr "<Image>/В╕део/Кадри в зображення..."
+msgstr "<Image>/п▓я√п╢п╣п╬/п п╟п╢я─п╦ п╡ п╥п╬п╠я─п╟п╤п╣п╫п╫я▐..."
 
 #: gap/gap_main.c:655
 msgid "<Image>/Video/Frames Flatten..."
-msgstr "<Image>/В╕део/Звести кадри..."
+msgstr "<Image>/п▓я√п╢п╣п╬/п≈п╡п╣я│я┌п╦ п╨п╟п╢я─п╦..."
 
 #: gap/gap_main.c:667
 msgid "<Image>/Video/Frames LayerDel..."
-msgstr "<Image>/В╕део/Стерти шар кадр╕в..."
+msgstr "<Image>/п▓я√п╢п╣п╬/п║я┌п╣я─я┌п╦ я┬п╟я─ п╨п╟п╢я─я√п╡..."
 
 #: gap/gap_main.c:691
 msgid "<Image>/Video/Frames Convert..."
-msgstr "<Image>/В╕део/Перетворити кадри..."
+msgstr "<Image>/п▓я√п╢п╣п╬/п÷п╣я─п╣я┌п╡п╬я─п╦я┌п╦ п╨п╟п╢я─п╦..."
 
 #: gap/gap_main.c:703
 msgid "<Image>/Video/Frames Resize..."
-msgstr "<Image>/В╕део/Зм╕нити розм╕р кадр╕в..."
+msgstr "<Image>/п▓я√п╢п╣п╬/п≈п╪я√п╫п╦я┌п╦ я─п╬п╥п╪я√я─ п╨п╟п╢я─я√п╡..."
 
 #: gap/gap_main.c:715
 msgid "<Image>/Video/Frames Crop..."
-msgstr "<Image>/В╕део/Кадрувати кадри..."
+msgstr "<Image>/п▓я√п╢п╣п╬/п п╟п╢я─я┐п╡п╟я┌п╦ п╨п╟п╢я─п╦..."
 
 #: gap/gap_main.c:727
 msgid "<Image>/Video/Frames Scale..."
-msgstr "<Image>/В╕део/Масштаб кадр╕в..."
+msgstr "<Image>/п▓я√п╢п╣п╬/п°п╟я│я┬я┌п╟п╠ п╨п╟п╢я─я√п╡..."
 
 #: gap/gap_main.c:739
 msgid "<Image>/Video/Split Image to Frames..."
-msgstr "<Image>/В╕део/Розбити зображення на кадри..."
+msgstr "<Image>/п▓я√п╢п╣п╬/п═п╬п╥п╠п╦я┌п╦ п╥п╬п╠я─п╟п╤п╣п╫п╫я▐ п╫п╟ п╨п╟п╢я─п╦..."
 
 #: gap/gap_main.c:752
 msgid "<Image>/Video/Framesequence Shift..."
-msgstr "<Image>/В╕део/Зсув посл╕довност╕ кадр╕в..."
+msgstr "<Image>/п▓я√п╢п╣п╬/п≈я│я┐п╡ п©п╬я│п╩я√п╢п╬п╡п╫п╬я│я┌я√ п╨п╟п╢я─я√п╡..."
 
 #: gap/gap_main.c:764
 msgid "<Image>/Video/Frames Modify..."
-msgstr "<Image>/В╕део/Зм╕нити кадри..."
+msgstr "<Image>/п▓я√п╢п╣п╬/п≈п╪я√п╫п╦я┌п╦ п╨п╟п╢я─п╦..."
 
 #. Layer select modes
 #: gap/gap_mod_layer.c:84 gap/gap_range_ops.c:574
 msgid "Pattern is equal to LayerName"
-msgstr "Шаблон сп╕впада╓ з назвою шару"
+msgstr "п╗п╟п╠п╩п╬п╫ я│п©я√п╡п©п╟п╢п╟я■ п╥ п╫п╟п╥п╡п╬я▌ я┬п╟я─я┐"
 
 #: gap/gap_mod_layer.c:85 gap/gap_range_ops.c:575
 msgid "Pattern is Start of LayerName"
-msgstr "Шаблон сп╕впада╓ з початком назви шару"
+msgstr "п╗п╟п╠п╩п╬п╫ я│п©я√п╡п©п╟п╢п╟я■ п╥ п©п╬я┤п╟я┌п╨п╬п╪ п╫п╟п╥п╡п╦ я┬п╟я─я┐"
 
 #: gap/gap_mod_layer.c:86 gap/gap_range_ops.c:576
 msgid "Pattern is End of Layername"
-msgstr "Шаблон сп╕впада╓ з зак╕нченням назви шару"
+msgstr "п╗п╟п╠п╩п╬п╫ я│п©я√п╡п©п╟п╢п╟я■ п╥ п╥п╟п╨я√п╫я┤п╣п╫п╫я▐п╪ п╫п╟п╥п╡п╦ я┬п╟я─я┐"
 
 #: gap/gap_mod_layer.c:87 gap/gap_range_ops.c:577
 msgid "Pattern is a Part of LayerName"
-msgstr "Шаблон сп╕впада╓ з частиною назви шару"
+msgstr "п╗п╟п╠п╩п╬п╫ я│п©я√п╡п©п╟п╢п╟я■ п╥ я┤п╟я│я┌п╦п╫п╬я▌ п╫п╟п╥п╡п╦ я┬п╟я─я┐"
 
 #: gap/gap_mod_layer.c:88 gap/gap_range_ops.c:578
 msgid "Pattern is LayerstackNumber List"
-msgstr "Шаблон в списку номер╕в стосу шар╕в"
+msgstr "п╗п╟п╠п╩п╬п╫ п╡ я│п©п╦я│п╨я┐ п╫п╬п╪п╣я─я√п╡ я│я┌п╬я│я┐ я┬п╟я─я√п╡"
 
 #: gap/gap_mod_layer.c:89 gap/gap_range_ops.c:579
 msgid "Pattern is REVERSE-stack List"
-msgstr "Шаблон в списку оберненого стосу"
+msgstr "п╗п╟п╠п╩п╬п╫ п╡ я│п©п╦я│п╨я┐ п╬п╠п╣я─п╫п╣п╫п╬пЁп╬ я│я┌п╬я│я┐"
 
 #: gap/gap_mod_layer.c:90 gap/gap_range_ops.c:580
 msgid "All Visible (ignore Pattern)"
-msgstr "Вс╕ видим╕ (╕╜норувати шаблон)"
+msgstr "п▓я│я√ п╡п╦п╢п╦п╪я√ (я√р▒п╫п╬я─я┐п╡п╟я┌п╦ я┬п╟п╠п╩п╬п╫)"
 
 #: gap/gap_mod_layer.c:92
 msgid "Select all Layers where Layername is equal to Pattern"
-msgstr "Вибрати вс╕ шари назва яких сп╕впада╓ з шаблоном"
+msgstr "п▓п╦п╠я─п╟я┌п╦ п╡я│я√ я┬п╟я─п╦ п╫п╟п╥п╡п╟ я▐п╨п╦я┘ я│п©я√п╡п©п╟п╢п╟я■ п╥ я┬п╟п╠п╩п╬п╫п╬п╪"
 
 #: gap/gap_mod_layer.c:93
 msgid "Select all Layers where Layername starts with Pattern"
-msgstr "Вибрати вс╕ шари початок назви яких сп╕впада╓ з шаблоном"
+msgstr "п▓п╦п╠я─п╟я┌п╦ п╡я│я√ я┬п╟я─п╦ п©п╬я┤п╟я┌п╬п╨ п╫п╟п╥п╡п╦ я▐п╨п╦я┘ я│п©я√п╡п©п╟п╢п╟я■ п╥ я┬п╟п╠п╩п╬п╫п╬п╪"
 
 #: gap/gap_mod_layer.c:94
 msgid "Select all Layers where Layername ends up with Pattern"
-msgstr "Вибрати вс╕ шари зак╕нчення назви яких сп╕впада╓ з шаблоном"
+msgstr "п▓п╦п╠я─п╟я┌п╦ п╡я│я√ я┬п╟я─п╦ п╥п╟п╨я√п╫я┤п╣п╫п╫я▐ п╫п╟п╥п╡п╦ я▐п╨п╦я┘ я│п©я√п╡п©п╟п╢п╟я■ п╥ я┬п╟п╠п╩п╬п╫п╬п╪"
 
 #: gap/gap_mod_layer.c:95
 msgid "Select all Layers where Layername contains Pattern"
-msgstr "Вибрати вс╕ шари назва яких м╕стить шаблон"
+msgstr "п▓п╦п╠я─п╟я┌п╦ п╡я│я√ я┬п╟я─п╦ п╫п╟п╥п╡п╟ я▐п╨п╦я┘ п╪я√я│я┌п╦я┌я▄ я┬п╟п╠п╩п╬п╫"
 
 #: gap/gap_mod_layer.c:96
 msgid ""
@@ -775,7 +775,7 @@ msgstr ""
 
 #: gap/gap_mod_layer.c:98
 msgid "Select all visible Layers"
-msgstr "Вибрати вс╕ видим╕ шари"
+msgstr "п▓п╦п╠я─п╟я┌п╦ п╡я│я√ п╡п╦п╢п╦п╪я√ я┬п╟я─п╦"
 
 #. action items what to do with the selected layer(s)
 #: gap/gap_mod_layer.c:102
@@ -796,11 +796,11 @@ msgstr ""
 
 #: gap/gap_mod_layer.c:106
 msgid "Raise Layer(s)"
-msgstr "П╕дняти шари"
+msgstr "п÷я√п╢п╫я▐я┌п╦ я┬п╟я─п╦"
 
 #: gap/gap_mod_layer.c:107
 msgid "Lower Layer(s)"
-msgstr "Опустити шари"
+msgstr "п·п©я┐я│я┌п╦я┌п╦ я┬п╟я─п╦"
 
 #: gap/gap_mod_layer.c:108
 msgid "Merge Layer(s) expand as necessary"
@@ -816,19 +816,19 @@ msgstr ""
 
 #: gap/gap_mod_layer.c:111
 msgid "Apply filter on Layer(s)"
-msgstr "Застосувати ф╕льтр до шар╕в"
+msgstr "п≈п╟я│я┌п╬я│я┐п╡п╟я┌п╦ я└я√п╩я▄я┌я─ п╢п╬ я┬п╟я─я√п╡"
 
 #: gap/gap_mod_layer.c:112
 msgid "Duplicate Layer(s)"
-msgstr "Дублювати шари"
+msgstr "п■я┐п╠п╩я▌п╡п╟я┌п╦ я┬п╟я─п╦"
 
 #: gap/gap_mod_layer.c:113
 msgid "Delete Layer(s)"
-msgstr "Старти шари"
+msgstr "п║я┌п╟я─я┌п╦ я┬п╟я─п╦"
 
 #: gap/gap_mod_layer.c:114
 msgid "Rename Layer(s)"
-msgstr "Перейменувати шари"
+msgstr "п÷п╣я─п╣п╧п╪п╣п╫я┐п╡п╟я┌п╦ я┬п╟я─п╦"
 
 #: gap/gap_mod_layer.c:153
 msgid ""
@@ -838,29 +838,29 @@ msgstr ""
 
 #: gap/gap_mod_layer.c:157 gap/gap_mpege.c:258 gap/gap_range_ops.c:443
 msgid "From Frame:"
-msgstr "В╕д кадру:"
+msgstr "п▓я√п╢ п╨п╟п╢я─я┐:"
 
 #: gap/gap_mod_layer.c:158 gap/gap_mpege.c:259 gap/gap_range_ops.c:444
 #: gap/gap_range_ops.c:603
 msgid "first handled frame"
-msgstr "перший оброблений шар"
+msgstr "п©п╣я─я┬п╦п╧ п╬п╠я─п╬п╠п╩п╣п╫п╦п╧ я┬п╟я─"
 
 #: gap/gap_mod_layer.c:165 gap/gap_range_ops.c:451
 msgid "To Frame:"
-msgstr "До кадру:"
+msgstr "п■п╬ п╨п╟п╢я─я┐:"
 
 #: gap/gap_mod_layer.c:166 gap/gap_mpege.c:267 gap/gap_range_ops.c:452
 #: gap/gap_range_ops.c:611
 msgid "last handled frame"
-msgstr "останн╕й оброблений шар"
+msgstr "п╬я│я┌п╟п╫п╫я√п╧ п╬п╠я─п╬п╠п╩п╣п╫п╦п╧ я┬п╟я─"
 
 #: gap/gap_mod_layer.c:174 gap/gap_range_ops.c:650
 msgid "Select Layer(s):"
-msgstr "Шари:"
+msgstr "п╗п╟я─п╦:"
 
 #: gap/gap_mod_layer.c:184 gap/gap_range_ops.c:659
 msgid "Select Pattern:"
-msgstr "Шаблон:"
+msgstr "п╗п╟п╠п╩п╬п╫:"
 
 #. pixel
 #: gap/gap_mod_layer.c:186 gap/gap_range_ops.c:661
@@ -872,7 +872,7 @@ msgstr ""
 
 #: gap/gap_mod_layer.c:192 gap/gap_range_ops.c:667
 msgid "Case sensitive"
-msgstr "Рег╕строва чутлив╕сть"
+msgstr "п═п╣пЁя√я│я┌я─п╬п╡п╟ я┤я┐я┌п╩п╦п╡я√я│я┌я▄"
 
 #: gap/gap_mod_layer.c:193 gap/gap_range_ops.c:668
 msgid "Lowercase and UPPERCASE letters are considered as different"
@@ -888,16 +888,16 @@ msgstr ""
 
 #: gap/gap_mod_layer.c:204
 msgid "Function:"
-msgstr "Функц╕я:"
+msgstr "п╓я┐п╫п╨я├я√я▐:"
 
 #. argv[7].radio_help_argv = action_help
 #: gap/gap_mod_layer.c:208
 msgid "Function to be performed on all selected layers"
-msgstr "Функц╕я, яку биде виконано для вс╕х вибраних шар╕в"
+msgstr "п╓я┐п╫п╨я├я√я▐, я▐п╨я┐ п╠п╦п╢п╣ п╡п╦п╨п╬п╫п╟п╫п╬ п╢п╩я▐ п╡я│я√я┘ п╡п╦п╠я─п╟п╫п╦я┘ я┬п╟я─я√п╡"
 
 #: gap/gap_mod_layer.c:214
 msgid "New Layername:"
-msgstr "Нова назва шару:"
+msgstr "п²п╬п╡п╟ п╫п╟п╥п╡п╟ я┬п╟я─я┐:"
 
 #. pixel
 #: gap/gap_mod_layer.c:216
@@ -909,11 +909,11 @@ msgstr ""
 
 #: gap/gap_mod_layer.c:221
 msgid "Frames Modify"
-msgstr "Модиф╕кування кадр╕в"
+msgstr "п°п╬п╢п╦я└я√п╨я┐п╡п╟п╫п╫я▐ п╨п╟п╢я─я√п╡"
 
 #: gap/gap_mod_layer.c:222
 msgid "Settings"
-msgstr "Установки"
+msgstr "пёя│я┌п╟п╫п╬п╡п╨п╦"
 
 #: gap/gap_mod_layer.c:285
 #, c-format
@@ -926,27 +926,27 @@ msgstr ""
 #. ----------------------
 #: gap/gap_mod_layer.c:663
 msgid "Select Filter for Animated frames-apply"
-msgstr "Вибрати ф╕льтр для застосування до ан╕мованих кадр╕в."
+msgstr "п▓п╦п╠я─п╟я┌п╦ я└я√п╩я▄я┌я─ п╢п╩я▐ п╥п╟я│я┌п╬я│я┐п╡п╟п╫п╫я▐ п╢п╬ п╟п╫я√п╪п╬п╡п╟п╫п╦я┘ п╨п╟п╢я─я√п╡."
 
 #: gap/gap_mod_layer.c:805
 msgid "GAP Modify: No layer selected in last handled frame"
-msgstr "Зм╕на GAP: В останньому обробленому калр╕ нема╓ вибраного шару"
+msgstr "п≈п╪я√п╫п╟ GAP: п▓ п╬я│я┌п╟п╫п╫я▄п╬п╪я┐ п╬п╠я─п╬п╠п╩п╣п╫п╬п╪я┐ п╨п╟п╩я─я√ п╫п╣п╪п╟я■ п╡п╦п╠я─п╟п╫п╬пЁп╬ я┬п╟я─я┐"
 
 #: gap/gap_mod_layer.c:891
 msgid "Modifying Frames/Layer(s)..."
-msgstr "Модиф╕кування кадр╕в/шар╕в..."
+msgstr "п°п╬п╢п╦я└я√п╨я┐п╡п╟п╫п╫я▐ п╨п╟п╢я─я√п╡/я┬п╟я─я√п╡..."
 
 #: gap/gap_mod_layer.c:972
 msgid "No selected Layer in start frame"
-msgstr "В початковому кадр╕ нема╓ вибраного шару"
+msgstr "п▓ п©п╬я┤п╟я┌п╨п╬п╡п╬п╪я┐ п╨п╟п╢я─я√ п╫п╣п╪п╟я■ п╡п╦п╠я─п╟п╫п╬пЁп╬ я┬п╟я─я┐"
 
 #: gap/gap_mov_dialog.c:262
 msgid "Normal"
-msgstr "Звичайний"
+msgstr "п≈п╡п╦я┤п╟п╧п╫п╦п╧"
 
 #: gap/gap_mov_dialog.c:263
 msgid "Dissolve"
-msgstr "Розчинення"
+msgstr "п═п╬п╥я┤п╦п╫п╣п╫п╫я▐"
 
 #: gap/gap_mov_dialog.c:264
 msgid "Multiply"
@@ -954,7 +954,7 @@ msgstr ""
 
 #: gap/gap_mov_dialog.c:265
 msgid "Screen"
-msgstr "Екран"
+msgstr "п∙п╨я─п╟п╫"
 
 #: gap/gap_mov_dialog.c:266
 msgid "Overlay"
@@ -982,19 +982,19 @@ msgstr ""
 
 #: gap/gap_mov_dialog.c:272
 msgid "Hue"
-msgstr "В╕дт╕нок"
+msgstr "п▓я√п╢я┌я√п╫п╬п╨"
 
 #: gap/gap_mov_dialog.c:273
 msgid "Saturation"
-msgstr "Насичен╕сть"
+msgstr "п²п╟я│п╦я┤п╣п╫я√я│я┌я▄"
 
 #: gap/gap_mov_dialog.c:274
 msgid "Color"
-msgstr "Кол╕р"
+msgstr "п п╬п╩я√я─"
 
 #: gap/gap_mov_dialog.c:275
 msgid "Value"
-msgstr "Значення"
+msgstr "п≈п╫п╟я┤п╣п╫п╫я▐"
 
 #: gap/gap_mov_dialog.c:282
 msgid "Left  Top"
@@ -1014,63 +1014,63 @@ msgstr ""
 
 #: gap/gap_mov_dialog.c:286
 msgid "Center"
-msgstr "Центр"
+msgstr "п╕п╣п╫я┌я─"
 
 #: gap/gap_mov_dialog.c:294
 msgid "Loop"
-msgstr "Цикл"
+msgstr "п╕п╦п╨п╩"
 
 #: gap/gap_mov_dialog.c:295
 msgid "Loop Reverse"
-msgstr "Зворотний цикл"
+msgstr "п≈п╡п╬я─п╬я┌п╫п╦п╧ я├п╦п╨п╩"
 
 #: gap/gap_mov_dialog.c:296
 msgid "Once"
-msgstr "Одиноразово"
+msgstr "п·п╢п╦п╫п╬я─п╟п╥п╬п╡п╬"
 
 #: gap/gap_mov_dialog.c:297
 msgid "OnceReverse"
-msgstr "Одиноразово назад"
+msgstr "п·п╢п╦п╫п╬я─п╟п╥п╬п╡п╬ п╫п╟п╥п╟п╢"
 
 #: gap/gap_mov_dialog.c:298
 msgid "PingPong"
-msgstr "П╕н╜-пон╜"
+msgstr "п÷я√п╫р▒-п©п╬п╫р▒"
 
 #: gap/gap_mov_dialog.c:299
 msgid "None"
-msgstr "Нема╓"
+msgstr "п²п╣п╪п╟я■"
 
 #: gap/gap_mov_dialog.c:300
 msgid "Frame Loop"
-msgstr "Цикл кадру"
+msgstr "п╕п╦п╨п╩ п╨п╟п╢я─я┐"
 
 #: gap/gap_mov_dialog.c:301
 msgid "Frame Loop Reverse"
-msgstr "Зворотний цикл кадру"
+msgstr "п≈п╡п╬я─п╬я┌п╫п╦п╧ я├п╦п╨п╩ п╨п╟п╢я─я┐"
 
 #: gap/gap_mov_dialog.c:302
 msgid "Frame Once"
-msgstr "╢диний кадр"
+msgstr "п└п╢п╦п╫п╦п╧ п╨п╟п╢я─"
 
 #: gap/gap_mov_dialog.c:303
 msgid "Frame OnceReverse"
-msgstr "╢диний кадр назад"
+msgstr "п└п╢п╦п╫п╦п╧ п╨п╟п╢я─ п╫п╟п╥п╟п╢"
 
 #: gap/gap_mov_dialog.c:304
 msgid "Frame PingPong"
-msgstr "П╕н╜-пон╜ кадр╕в"
+msgstr "п÷я√п╫р▒-п©п╬п╫р▒ п╨п╟п╢я─я√п╡"
 
 #: gap/gap_mov_dialog.c:305
 msgid "Frame None"
-msgstr "Нема╓ кадру"
+msgstr "п²п╣п╪п╟я■ п╨п╟п╢я─я┐"
 
 #: gap/gap_mov_dialog.c:468
 msgid "Move Path"
-msgstr "Перем╕стити шлях"
+msgstr "п÷п╣я─п╣п╪я√я│я┌п╦я┌п╦ я┬п╩я▐я┘"
 
 #: gap/gap_mov_dialog.c:492
 msgid "Update Preview"
-msgstr "Оновити перегляд"
+msgstr "п·п╫п╬п╡п╦я┌п╦ п©п╣я─п╣пЁп╩я▐п╢"
 
 #: gap/gap_mov_dialog.c:499
 msgid "Show PreviewFrame with Selected SrcLayer at current Controlpoint"
@@ -1078,7 +1078,7 @@ msgstr ""
 
 #: gap/gap_mov_dialog.c:503
 msgid "Anim Preview"
-msgstr "Перегляд ан╕мац╕╖"
+msgstr "п÷п╣я─п╣пЁп╩я▐п╢ п╟п╫я√п╪п╟я├я√я≈"
 
 #: gap/gap_mov_dialog.c:510
 msgid "Generate Animated Preview as multilayer image"
@@ -1189,7 +1189,7 @@ msgstr ""
 
 #: gap/gap_mov_dialog.c:786
 msgid "Object on empty frames"
-msgstr "Об'╓кт в порожн╕х кадрах"
+msgstr "п·п╠'я■п╨я┌ п╡ п©п╬я─п╬п╤п╫я√я┘ п╨п╟п╢я─п╟я┘"
 
 #: gap/gap_mov_dialog.c:787
 msgid "Object on one frame"
@@ -1213,7 +1213,7 @@ msgstr ""
 
 #: gap/gap_mov_dialog.c:835
 msgid "Framerate"
-msgstr "Частота кадр╕в"
+msgstr "п╖п╟я│я┌п╬я┌п╟ п╨п╟п╢я─я√п╡"
 
 #: gap/gap_mov_dialog.c:836
 msgid "Framerate to use in the animated preview in frames/sec"
@@ -1235,7 +1235,7 @@ msgstr ""
 
 #: gap/gap_mov_dialog.c:857
 msgid "Options"
-msgstr "Параметри"
+msgstr "п÷п╟я─п╟п╪п╣я┌я─п╦"
 
 #: gap/gap_mov_dialog.c:902
 msgid "Generate Animated Preview failed\n"
@@ -1311,7 +1311,7 @@ msgstr "X:"
 #. lower, upper (unconstrained)
 #: gap/gap_mov_dialog.c:1831
 msgid "X Coordinate"
-msgstr "X-координата"
+msgstr "X-п╨п╬п╬я─п╢п╦п╫п╟я┌п╟"
 
 #. Y
 #. table col, row
@@ -1322,13 +1322,13 @@ msgstr "Y:"
 #. lower, upper (unconstrained)
 #: gap/gap_mov_dialog.c:1849
 msgid "Y Coordinate"
-msgstr "Y-координата"
+msgstr "Y-п╨п╬п╬я─п╢п╦п╫п╟я┌п╟"
 
 #. Widht Scale
 #. table col, row
 #: gap/gap_mov_dialog.c:1858
 msgid "Width:"
-msgstr "Ширина:"
+msgstr "п╗п╦я─п╦п╫п╟:"
 
 #. label text
 #. scalesize spinsize
@@ -1346,7 +1346,7 @@ msgstr ""
 #. table col, row
 #: gap/gap_mov_dialog.c:1875
 msgid "Height:"
-msgstr "Висота:"
+msgstr "п▓п╦я│п╬я┌п╟:"
 
 #. label text
 #. scalesize spinsize
@@ -1364,7 +1364,7 @@ msgstr ""
 #. table col, row
 #: gap/gap_mov_dialog.c:1892
 msgid "Opacity:"
-msgstr "Непрозор╕сть:"
+msgstr "п²п╣п©я─п╬п╥п╬я─я√я│я┌я▄:"
 
 #. label text
 #. scalesize spinsize
@@ -1382,7 +1382,7 @@ msgstr ""
 #. table col, row
 #: gap/gap_mov_dialog.c:1909
 msgid "Rotate:"
-msgstr "Обернути:"
+msgstr "п·п╠п╣я─п╫я┐я┌п╦:"
 
 #. label text
 #. scalesize spinsize
@@ -1418,7 +1418,7 @@ msgstr ""
 
 #: gap/gap_mov_dialog.c:2010
 msgid "Add Point"
-msgstr "Додати точку"
+msgstr "п■п╬п╢п╟я┌п╦ я┌п╬я┤п╨я┐"
 
 #: gap/gap_mov_dialog.c:2018
 msgid ""
@@ -1439,7 +1439,7 @@ msgstr ""
 
 #: gap/gap_mov_dialog.c:2040
 msgid "Insert Point"
-msgstr "Вставити точку"
+msgstr "п▓я│я┌п╟п╡п╦я┌п╦ я┌п╬я┤п╨я┐"
 
 #: gap/gap_mov_dialog.c:2048
 msgid ""
@@ -1449,55 +1449,55 @@ msgstr ""
 
 #: gap/gap_mov_dialog.c:2052
 msgid "Delete Point"
-msgstr "Стерти точку"
+msgstr "п║я┌п╣я─я┌п╦ я┌п╬я┤п╨я┐"
 
 #: gap/gap_mov_dialog.c:2060
 msgid "Delete current Controlpoint"
-msgstr "Стерти поточну контрольну точку"
+msgstr "п║я┌п╣я─я┌п╦ п©п╬я┌п╬я┤п╫я┐ п╨п╬п╫я┌я─п╬п╩я▄п╫я┐ я┌п╬я┤п╨я┐"
 
 #: gap/gap_mov_dialog.c:2066
 msgid "Prev Point"
-msgstr "Попередня точка"
+msgstr "п÷п╬п©п╣я─п╣п╢п╫я▐ я┌п╬я┤п╨п╟"
 
 #: gap/gap_mov_dialog.c:2074
 msgid "Show Previous Controlpoint"
-msgstr "Показати попередню контрольну точку"
+msgstr "п÷п╬п╨п╟п╥п╟я┌п╦ п©п╬п©п╣я─п╣п╢п╫я▌ п╨п╬п╫я┌я─п╬п╩я▄п╫я┐ я┌п╬я┤п╨я┐"
 
 #: gap/gap_mov_dialog.c:2078
 msgid "Next Point"
-msgstr "Наступна точка"
+msgstr "п²п╟я│я┌я┐п©п╫п╟ я┌п╬я┤п╨п╟"
 
 #: gap/gap_mov_dialog.c:2086
 msgid "Show Next Controlpoint"
-msgstr "Показати наступну контрольну точку"
+msgstr "п÷п╬п╨п╟п╥п╟я┌п╦ п╫п╟я│я┌я┐п©п╫я┐ п╨п╬п╫я┌я─п╬п╩я▄п╫я┐ я┌п╬я┤п╨я┐"
 
 #: gap/gap_mov_dialog.c:2092
 msgid "First Point"
-msgstr "Перша точка"
+msgstr "п÷п╣я─я┬п╟ я┌п╬я┤п╨п╟"
 
 #: gap/gap_mov_dialog.c:2100
 msgid "Show First Controlpoint"
-msgstr "Показати першу контрольну точку"
+msgstr "п÷п╬п╨п╟п╥п╟я┌п╦ п©п╣я─я┬я┐ п╨п╬п╫я┌я─п╬п╩я▄п╫я┐ я┌п╬я┤п╨я┐"
 
 #: gap/gap_mov_dialog.c:2104
 msgid "Last Point"
-msgstr "Остання точка"
+msgstr "п·я│я┌п╟п╫п╫я▐ я┌п╬я┤п╨п╟"
 
 #: gap/gap_mov_dialog.c:2112
 msgid "Show Last Controlpoint"
-msgstr "Показати останню контрольну точку"
+msgstr "п÷п╬п╨п╟п╥п╟я┌п╦ п╬я│я┌п╟п╫п╫я▌ п╨п╬п╫я┌я─п╬п╩я▄п╫я┐ я┌п╬я┤п╨я┐"
 
 #: gap/gap_mov_dialog.c:2118
 msgid "Clear Point"
-msgstr "Очистити точку"
+msgstr "п·я┤п╦я│я┌п╦я┌п╦ я┌п╬я┤п╨я┐"
 
 #: gap/gap_mov_dialog.c:2126
 msgid "Reset the current Controlpoint to default Values"
-msgstr "Перевстановити поточну контрольну точку в початкове значення"
+msgstr "п÷п╣я─п╣п╡я│я┌п╟п╫п╬п╡п╦я┌п╦ п©п╬я┌п╬я┤п╫я┐ п╨п╬п╫я┌я─п╬п╩я▄п╫я┐ я┌п╬я┤п╨я┐ п╡ п©п╬я┤п╟я┌п╨п╬п╡п╣ п╥п╫п╟я┤п╣п╫п╫я▐"
 
 #: gap/gap_mov_dialog.c:2130
 msgid "Clear All Points"
-msgstr "Очистити вс╕ точки"
+msgstr "п·я┤п╦я│я┌п╦я┌п╦ п╡я│я√ я┌п╬я┤п╨п╦"
 
 #: gap/gap_mov_dialog.c:2138
 msgid ""
@@ -1517,19 +1517,19 @@ msgstr ""
 
 #: gap/gap_mov_dialog.c:2163
 msgid "Delete All Points"
-msgstr "Стерти вс╕ точки"
+msgstr "п║я┌п╣я─я┌п╦ п╡я│я√ я┌п╬я┤п╨п╦"
 
 #: gap/gap_mov_dialog.c:2171
 msgid "Delete all Controlpoints"
-msgstr "Стерти вс╕ контрольн╕ точки"
+msgstr "п║я┌п╣я─я┌п╦ п╡я│я√ п╨п╬п╫я┌я─п╬п╩я▄п╫я√ я┌п╬я┤п╨п╦"
 
 #: gap/gap_mov_dialog.c:2178
 msgid "Load Points"
-msgstr "Завантажити точки"
+msgstr "п≈п╟п╡п╟п╫я┌п╟п╤п╦я┌п╦ я┌п╬я┤п╨п╦"
 
 #: gap/gap_mov_dialog.c:2186
 msgid "Load Controlpoints from file"
-msgstr "Завантажити контрольн╕ точки з файлу"
+msgstr "п≈п╟п╡п╟п╫я┌п╟п╤п╦я┌п╦ п╨п╬п╫я┌я─п╬п╩я▄п╫я√ я┌п╬я┤п╨п╦ п╥ я└п╟п╧п╩я┐"
 
 #: gap/gap_mov_dialog.c:2190
 msgid "Save Points"
@@ -1555,7 +1555,7 @@ msgstr ""
 
 #: gap/gap_mov_dialog.c:2671
 msgid "Errors:"
-msgstr "Помилки:"
+msgstr "п÷п╬п╪п╦п╩п╨п╦:"
 
 #: gap/gap_mov_exec.c:444
 msgid ""
@@ -1716,7 +1716,7 @@ msgstr ""
 
 #: gap/gap_mpege.c:296
 msgid "Outputfile:"
-msgstr "Вих╕дний файл:"
+msgstr "п▓п╦я┘я√п╢п╫п╦п╧ я└п╟п╧п╩:"
 
 #. pixel
 #: gap/gap_mpege.c:298
@@ -1725,7 +1725,7 @@ msgstr ""
 
 #: gap/gap_mpege.c:304
 msgid "Paramfile:"
-msgstr "Файл параметр╕в:"
+msgstr "п╓п╟п╧п╩ п©п╟я─п╟п╪п╣я┌я─я√п╡:"
 
 #. pixel
 #: gap/gap_mpege.c:306
@@ -1761,7 +1761,7 @@ msgstr ""
 
 #: gap/gap_mpege.c:330
 msgid "Pattern:"
-msgstr "Шаблон:"
+msgstr "п╗п╟п╠п╩п╬п╫:"
 
 #. pixel
 #: gap/gap_mpege.c:332
@@ -1830,15 +1830,15 @@ msgstr ""
 
 #: gap/gap_mpege.c:395
 msgid "MPEG-type :"
-msgstr "Тип MPEG: "
+msgstr "п╒п╦п© MPEG: "
 
 #: gap/gap_mpege.c:404
 msgid "Videoformat :"
-msgstr "В╕деоформат: "
+msgstr "п▓я√п╢п╣п╬я└п╬я─п╪п╟я┌: "
 
 #: gap/gap_mpege.c:405
 msgid "Videoformat"
-msgstr "В╕деоформат"
+msgstr "п▓я√п╢п╣п╬я└п╬я─п╪п╟я┌"
 
 #. framerates above 30 ar not allowed in mpeg2encode
 #: gap/gap_mpege.c:413
@@ -1889,15 +1889,15 @@ msgstr ""
 
 #: gap/gap_navigator_dialog.c:376
 msgid "Duplicate selected Frames"
-msgstr "Дублювати вибран╕ кадри"
+msgstr "п■я┐п╠п╩я▌п╡п╟я┌п╦ п╡п╦п╠я─п╟п╫я√ п╨п╟п╢я─п╦"
 
 #: gap/gap_navigator_dialog.c:380
 msgid "Delete selected Frames"
-msgstr "Стерти вибран╕ кадри"
+msgstr "п║я┌п╣я─я┌п╦ п╡п╦п╠я─п╟п╫я√ п╨п╟п╢я─п╦"
 
 #: gap/gap_navigator_dialog.c:389
 msgid "Goto 1st Frame"
-msgstr "Перейти на перший кадр"
+msgstr "п÷п╣я─п╣п╧я┌п╦ п╫п╟ п©п╣я─я┬п╦п╧ п╨п╟п╢я─"
 
 #: gap/gap_navigator_dialog.c:393
 msgid ""
@@ -1913,53 +1913,53 @@ msgstr ""
 
 #: gap/gap_navigator_dialog.c:403
 msgid "Goto last Frame"
-msgstr "Перейти на останн╕й кадр"
+msgstr "п÷п╣я─п╣п╧я┌п╦ п╫п╟ п╬я│я┌п╟п╫п╫я√п╧ п╨п╟п╢я─"
 
 #: gap/gap_navigator_dialog.c:460
 msgid "<Image>/Video/VCR Navigator..."
-msgstr "<Image>/В╕део/Нав╕╜атор VCR..."
+msgstr "<Image>/п▓я√п╢п╣п╬/п²п╟п╡я√р▒п╟я┌п╬я─ VCR..."
 
 #: gap/gap_navigator_dialog.c:523
 msgid "Cant open two or more Video Navigator Windows."
-msgstr "Неможливо в╕дкрити два чи б╕льше в╕кон нав╕╜атора."
+msgstr "п²п╣п╪п╬п╤п╩п╦п╡п╬ п╡я√п╢п╨я─п╦я┌п╦ п╢п╡п╟ я┤п╦ п╠я√п╩я▄я┬п╣ п╡я√п╨п╬п╫ п╫п╟п╡я√р▒п╟я┌п╬я─п╟."
 
 #. menu_item copy
 #: gap/gap_navigator_dialog.c:2877
 msgid "Copy"
-msgstr "Скоп╕ювати"
+msgstr "п║п╨п╬п©я√я▌п╡п╟я┌п╦"
 
 #. menu_item cut
 #: gap/gap_navigator_dialog.c:2887
 msgid "Cut"
-msgstr "Вир╕зати"
+msgstr "п▓п╦я─я√п╥п╟я┌п╦"
 
 #. menu_item paste before
 #: gap/gap_navigator_dialog.c:2897
 msgid "Paste before"
-msgstr "Вставити перед"
+msgstr "п▓я│я┌п╟п╡п╦я┌п╦ п©п╣я─п╣п╢"
 
 #. menu_item copy
 #: gap/gap_navigator_dialog.c:2907
 msgid "Paste after"
-msgstr "Вставити п╕сля"
+msgstr "п▓я│я┌п╟п╡п╦я┌п╦ п©я√я│п╩я▐"
 
 #. menu_item copy
 #: gap/gap_navigator_dialog.c:2917
 msgid "Paste replace"
-msgstr "Вставити зам╕сть"
+msgstr "п▓я│я┌п╟п╡п╦я┌п╦ п╥п╟п╪я√я│я┌я▄"
 
 #. menu_item copy
 #: gap/gap_navigator_dialog.c:2927
 msgid "Clear Video Buffer"
-msgstr "Очистити в╕деобуфер"
+msgstr "п·я┤п╦я│я┌п╦я┌п╦ п╡я√п╢п╣п╬п╠я┐я└п╣я─"
 
 #: gap/gap_navigator_dialog.c:2952
 msgid "Videoframes:"
-msgstr "В╕деокадри:"
+msgstr "п▓я√п╢п╣п╬п╨п╟п╢я─п╦:"
 
 #: gap/gap_navigator_dialog.c:2967
 msgid "Framerate:"
-msgstr "Частота кадр╕в:"
+msgstr "п╖п╟я│я┌п╬я┌п╟ п╨п╟п╢я─я√п╡:"
 
 #: gap/gap_navigator_dialog.c:2990
 msgid "Timezoom:"
@@ -1968,15 +1968,15 @@ msgstr ""
 #. The main shell
 #: gap/gap_navigator_dialog.c:3074
 msgid "Video Navigator"
-msgstr "В╕деонав╕╜атор"
+msgstr "п▓я√п╢п╣п╬п╫п╟п╡я√р▒п╟я┌п╬я─"
 
 #: gap/gap_range_ops.c:120
 msgid "New Width:"
-msgstr "Нова ширина:"
+msgstr "п²п╬п╡п╟ я┬п╦я─п╦п╫п╟:"
 
 #: gap/gap_range_ops.c:129
 msgid "New Height:"
-msgstr "Нова висота:"
+msgstr "п²п╬п╡п╟ п╡п╦я│п╬я┌п╟:"
 
 #: gap/gap_range_ops.c:138
 msgid "Offset X:"
@@ -2019,7 +2019,7 @@ msgstr ""
 
 #: gap/gap_range_ops.c:309
 msgid "WEB Palette"
-msgstr "Пал╕тра WWW"
+msgstr "п÷п╟п╩я√я┌я─п╟ WWW"
 
 #: gap/gap_range_ops.c:310
 msgid "Use Custom Palette"
@@ -2047,11 +2047,11 @@ msgstr ""
 
 #: gap/gap_range_ops.c:327
 msgid "Palette Type"
-msgstr "Тип пал╕три"
+msgstr "п╒п╦п© п©п╟п╩я√я┌я─п╦"
 
 #: gap/gap_range_ops.c:334
 msgid "Custom Palette"
-msgstr "Нетипова пал╕тра"
+msgstr "п²п╣я┌п╦п©п╬п╡п╟ п©п╟п╩я√я┌я─п╟"
 
 #: gap/gap_range_ops.c:335
 msgid ""
@@ -2071,7 +2071,7 @@ msgstr ""
 
 #: gap/gap_range_ops.c:346
 msgid "Number of Colors"
-msgstr "К╕льк╕сть кольор╕в"
+msgstr "п я√п╩я▄п╨я√я│я┌я▄ п╨п╬п╩я▄п╬я─я√п╡"
 
 #: gap/gap_range_ops.c:347
 msgid ""
@@ -2105,15 +2105,15 @@ msgstr ""
 
 #: gap/gap_range_ops.c:432
 msgid "Convert to RGB"
-msgstr "Перетворити в RGB"
+msgstr "п÷п╣я─п╣я┌п╡п╬я─п╦я┌п╦ п╡ RGB"
 
 #: gap/gap_range_ops.c:433
 msgid "Convert to Gray"
-msgstr "Перетворити в градац╕╖ с╕рого"
+msgstr "п÷п╣я─п╣я┌п╡п╬я─п╦я┌п╦ п╡ пЁя─п╟п╢п╟я├я√я≈ я│я√я─п╬пЁп╬"
 
 #: gap/gap_range_ops.c:434
 msgid "Convert to Indexed"
-msgstr "Перетворити в ╕ндексоване"
+msgstr "п÷п╣я─п╣я┌п╡п╬я─п╦я┌п╦ п╡ я√п╫п╢п╣п╨я│п╬п╡п╟п╫п╣"
 
 #: gap/gap_range_ops.c:458
 msgid ""
@@ -2134,7 +2134,7 @@ msgstr ""
 
 #: gap/gap_range_ops.c:467 gap/gap_split.c:235
 msgid "Extension:"
-msgstr "Розширення:"
+msgstr "п═п╬п╥я┬п╦я─п╣п╫п╫я▐:"
 
 #: gap/gap_range_ops.c:468
 msgid ""
@@ -2144,7 +2144,7 @@ msgstr ""
 
 #: gap/gap_range_ops.c:474
 msgid "Imagetype:"
-msgstr "Тип зображення:"
+msgstr "п╒п╦п© п╥п╬п╠я─п╟п╤п╣п╫п╫я▐:"
 
 #: gap/gap_range_ops.c:475
 msgid ""
@@ -2168,7 +2168,7 @@ msgstr ""
 
 #: gap/gap_range_ops.c:488
 msgid "Convert Settings"
-msgstr "Параметри перетворення"
+msgstr "п÷п╟я─п╟п╪п╣я┌я─п╦ п©п╣я─п╣я┌п╡п╬я─п╣п╫п╫я▐"
 
 #: gap/gap_range_ops.c:565
 msgid "Expand as necessary"
@@ -2184,7 +2184,7 @@ msgstr ""
 
 #: gap/gap_range_ops.c:568
 msgid "Flattened image"
-msgstr "Зведене зображення"
+msgstr "п≈п╡п╣п╢п╣п╫п╣ п╥п╬п╠я─п╟п╤п╣п╫п╫я▐"
 
 #: gap/gap_range_ops.c:569
 msgid ""
@@ -2210,19 +2210,19 @@ msgstr ""
 
 #: gap/gap_range_ops.c:582
 msgid "select all Layers where Layername is equal to Pattern"
-msgstr "вибрати вс╕ шари назва яких сп╕впада╓ з шаблоном"
+msgstr "п╡п╦п╠я─п╟я┌п╦ п╡я│я√ я┬п╟я─п╦ п╫п╟п╥п╡п╟ я▐п╨п╦я┘ я│п©я√п╡п©п╟п╢п╟я■ п╥ я┬п╟п╠п╩п╬п╫п╬п╪"
 
 #: gap/gap_range_ops.c:583
 msgid "select all Layers where Layername starts with Pattern"
-msgstr "вибрати вс╕ шари початок назви яких сп╕впада╓ з шаблоном"
+msgstr "п╡п╦п╠я─п╟я┌п╦ п╡я│я√ я┬п╟я─п╦ п©п╬я┤п╟я┌п╬п╨ п╫п╟п╥п╡п╦ я▐п╨п╦я┘ я│п©я√п╡п©п╟п╢п╟я■ п╥ я┬п╟п╠п╩п╬п╫п╬п╪"
 
 #: gap/gap_range_ops.c:584
 msgid "select all Layers where Layername ends up with Pattern"
-msgstr "вибрати вс╕ шари зак╕нчення назви яких сп╕впада╓ з шаблоном"
+msgstr "п╡п╦п╠я─п╟я┌п╦ п╡я│я√ я┬п╟я─п╦ п╥п╟п╨я√п╫я┤п╣п╫п╫я▐ п╫п╟п╥п╡п╦ я▐п╨п╦я┘ я│п©я√п╡п©п╟п╢п╟я■ п╥ я┬п╟п╠п╩п╬п╫п╬п╪"
 
 #: gap/gap_range_ops.c:585
 msgid "select all Layers where Layername contains Pattern"
-msgstr "вибрати вс╕ шари назва яких м╕стить шаблон"
+msgstr "п╡п╦п╠я─п╟я┌п╦ п╡я│я√ я┬п╟я─п╦ п╫п╟п╥п╡п╟ я▐п╨п╦я┘ п╪я√я│я┌п╦я┌я▄ я┬п╟п╠п╩п╬п╫"
 
 #: gap/gap_range_ops.c:586
 msgid ""
@@ -2240,19 +2240,19 @@ msgstr ""
 
 #: gap/gap_range_ops.c:588
 msgid "select all visible Layers"
-msgstr "вибрати вс╕ видим╕ шари"
+msgstr "п╡п╦п╠я─п╟я┌п╦ п╡я│я√ п╡п╦п╢п╦п╪я√ я┬п╟я─п╦"
 
 #: gap/gap_range_ops.c:617
 msgid "Layer Basename:"
-msgstr "Базова назва шар╕в:"
+msgstr "п▒п╟п╥п╬п╡п╟ п╫п╟п╥п╡п╟ я┬п╟я─я√п╡:"
 
 #: gap/gap_range_ops.c:618
 msgid ""
 "Basename for all Layers    \n"
 "[####] is replaced by frame number"
 msgstr ""
-"Базова назва для вс╕х шар╕в\n"
-"[####] буде зам╕нено номером кадру"
+"п▒п╟п╥п╬п╡п╟ п╫п╟п╥п╡п╟ п╢п╩я▐ п╡я│я√я┘ я┬п╟я─я√п╡\n"
+"[####] п╠я┐п╢п╣ п╥п╟п╪я√п╫п╣п╫п╬ п╫п╬п╪п╣я─п╬п╪ п╨п╟п╢я─я┐"
 
 #: gap/gap_range_ops.c:636
 msgid "Layer Mergemode:"
@@ -2260,7 +2260,7 @@ msgstr ""
 
 #: gap/gap_range_ops.c:643
 msgid "Exclude BG-Layer"
-msgstr "Виключаючи шар тла"
+msgstr "п▓п╦п╨п╩я▌я┤п╟я▌я┤п╦ я┬п╟я─ я┌п╩п╟"
 
 #: gap/gap_range_ops.c:644
 msgid ""
@@ -2279,19 +2279,19 @@ msgstr ""
 
 #: gap/gap_range_ops.c:970
 msgid "Frames to Image"
-msgstr "Кадри у зображення"
+msgstr "п п╟п╢я─п╦ я┐ п╥п╬п╠я─п╟п╤п╣п╫п╫я▐"
 
 #: gap/gap_range_ops.c:971
 msgid "Create Multilayer-Image from Frames"
-msgstr "Створити багатошарове зображення з кадр╕в"
+msgstr "п║я┌п╡п╬я─п╦я┌п╦ п╠п╟пЁп╟я┌п╬я┬п╟я─п╬п╡п╣ п╥п╬п╠я─п╟п╤п╣п╫п╫я▐ п╥ п╨п╟п╢я─я√п╡"
 
 #: gap/gap_range_ops.c:1112
 msgid "Flattening Frames..."
-msgstr "Зведення кадр╕в..."
+msgstr "п≈п╡п╣п╢п╣п╫п╫я▐ п╨п╟п╢я─я√п╡..."
 
 #: gap/gap_range_ops.c:1113
 msgid "Converting Frames..."
-msgstr "Перетворення кадр╕в..."
+msgstr "п÷п╣я─п╣я┌п╡п╬я─п╣п╫п╫я▐ п╨п╟п╢я─я√п╡..."
 
 #: gap/gap_range_ops.c:1261
 msgid ""
@@ -2314,7 +2314,7 @@ msgstr ""
 
 #: gap/gap_range_ops.c:1461
 msgid "Flatten Frames"
-msgstr "Звести кадри"
+msgstr "п≈п╡п╣я│я┌п╦ п╨п╟п╢я─п╦"
 
 #: gap/gap_range_ops.c:1517
 #, c-format
@@ -2398,15 +2398,15 @@ msgstr ""
 
 #: gap/resize.c:111
 msgid "Resize"
-msgstr "Зм╕на ром╕ру"
+msgstr "п≈п╪я√п╫п╟ я─п╬п╪я√я─я┐"
 
 #: gap/resize.c:127
 msgid "New width:"
-msgstr "Нова ширина:"
+msgstr "п²п╬п╡п╟ я┬п╦я─п╦п╫п╟:"
 
 #: gap/resize.c:144
 msgid "New height:"
-msgstr "Нова висота:"
+msgstr "п²п╬п╡п╟ п╡п╦я│п╬я┌п╟:"
 
 #: gap/resize.c:161
 msgid "X ratio:"
@@ -2418,11 +2418,11 @@ msgstr ""
 
 #: gap/resize.c:197
 msgid "X Offset:"
-msgstr "Зм╕щення по X:"
+msgstr "п≈п╪я√я┴п╣п╫п╫я▐ п©п╬ X:"
 
 #: gap/resize.c:214
 msgid "Y Offset:"
-msgstr "Зм╕щення по Y:"
+msgstr "п≈п╪я√я┴п╣п╫п╫я▐ п©п╬ Y:"
 
 #. the constrain toggle button
 #: gap/resize.c:231

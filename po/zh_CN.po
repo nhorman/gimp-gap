@@ -10,7 +10,7 @@ msgstr ""
 "Last-Translator: Xie Yuheng <phycommusyee@263.net>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=gb2312\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Button  to invoke filebrowser
@@ -30,7 +30,7 @@ msgstr ""
 #: gap/gap_arr_dialog.c:878
 #, fuzzy
 msgid "Value: "
-msgstr "À¶£º"
+msgstr "è“ï¼š"
 
 #: gap/gap_arr_dialog.c:1040
 msgid "Press Button"
@@ -190,7 +190,7 @@ msgstr ""
 #: gap/gap_decode_mpeg_main.c:672 gap/gap_decode_xanim.c:244
 #, fuzzy
 msgid "Framenames:"
-msgstr "·ÖĞÎÃû×Ö£º"
+msgstr "åˆ†å½¢åå­—ï¼š"
 
 #: gap/gap_decode_mpeg_main.c:673
 msgid ""
@@ -290,7 +290,7 @@ msgstr ""
 #: gap/gap_decode_xanim.c:260
 #, fuzzy
 msgid "Extract Frames"
-msgstr "±à¼­·ÖĞÎÃû×Ö"
+msgstr "ç¼–è¾‘åˆ†å½¢åå­—"
 
 #: gap/gap_decode_xanim.c:261
 msgid "Enable extraction of Frames"
@@ -433,7 +433,7 @@ msgstr ""
 #: gap/gap_filter_foreach.c:132 gap/gap_mod_layer.c:262
 #, fuzzy
 msgid "Continue"
-msgstr "ÓàÏÒ"
+msgstr "ä½™å¼¦"
 
 #: gap/gap_filter_foreach.c:136
 #, c-format
@@ -473,7 +473,7 @@ msgstr ""
 #: gap/gap_filter_main.c:105
 #, fuzzy
 msgid "<Image>/Filters/Filter all Layers..."
-msgstr "<Image>/ÂË¾µ/»æÖÆ/Í¼°¸/·ÖĞÎÌ½Ë÷Æ÷..."
+msgstr "<Image>/æ»¤é•œ/ç»˜åˆ¶/å›¾æ¡ˆ/åˆ†å½¢æ¢ç´¢å™¨..."
 
 #: gap/gap_frontends_main.c:125
 msgid "<Image>/Video/Split Video to Frames/Any XANIM readable..."
@@ -881,7 +881,7 @@ msgstr ""
 #: gap/gap_mod_layer.c:198 gap/gap_range_ops.c:673
 #, fuzzy
 msgid "Invert Selection"
-msgstr "·´×ª"
+msgstr "åè½¬"
 
 #: gap/gap_mod_layer.c:199
 msgid "Perform actions on all unselected Layers"
@@ -890,7 +890,7 @@ msgstr ""
 #: gap/gap_mod_layer.c:204
 #, fuzzy
 msgid "Function:"
-msgstr "ÑÕÉ«º¯Êı"
+msgstr "é¢œè‰²å‡½æ•°"
 
 #. argv[7].radio_help_argv = action_help
 #: gap/gap_mod_layer.c:208
@@ -1040,7 +1040,7 @@ msgstr ""
 
 #: gap/gap_mov_dialog.c:299
 msgid "None"
-msgstr "Ã»ÓĞ"
+msgstr "æ²¡æœ‰"
 
 #: gap/gap_mov_dialog.c:300
 msgid "Frame Loop"
@@ -1081,7 +1081,7 @@ msgstr ""
 #: gap/gap_mov_dialog.c:503
 #, fuzzy
 msgid "Anim Preview"
-msgstr "Ô¤ÀÀ"
+msgstr "é¢„è§ˆ"
 
 #: gap/gap_mov_dialog.c:510
 msgid "Generate Animated Preview as multilayer image"
@@ -1133,7 +1133,7 @@ msgstr ""
 #: gap/gap_mov_dialog.c:586
 #, fuzzy
 msgid "Preview Frame:"
-msgstr "Ô¤ÀÀ"
+msgstr "é¢„è§ˆ"
 
 #. label text
 #. scalesize spinsize
@@ -1206,12 +1206,12 @@ msgstr ""
 #: gap/gap_mov_dialog.c:818
 #, fuzzy
 msgid "Anim Preview Mode"
-msgstr "ÊµÊ±Ô¤ÀÀ"
+msgstr "å®æ—¶é¢„è§ˆ"
 
 #: gap/gap_mov_dialog.c:826
 #, fuzzy
 msgid "Scale Preview"
-msgstr "ÊµÊ±Ô¤ÀÀ"
+msgstr "å®æ—¶é¢„è§ˆ"
 
 #: gap/gap_mov_dialog.c:827
 msgid "Scale down size of the generated animated preview (in %)"
@@ -1220,7 +1220,7 @@ msgstr ""
 #: gap/gap_mov_dialog.c:835
 #, fuzzy
 msgid "Framerate"
-msgstr "²ÎÊı"
+msgstr "å‚æ•°"
 
 #: gap/gap_mov_dialog.c:836
 msgid "Framerate to use in the animated preview in frames/sec"
@@ -1239,7 +1239,7 @@ msgstr ""
 #: gap/gap_mov_dialog.c:856
 #, fuzzy
 msgid "Move Path Animated Preview"
-msgstr "ÊµÊ±Ô¤ÀÀ"
+msgstr "å®æ—¶é¢„è§ˆ"
 
 #: gap/gap_mov_dialog.c:857
 msgid "Options"
@@ -1253,13 +1253,13 @@ msgstr ""
 #: gap/gap_mov_dialog.c:1187
 #, fuzzy
 msgid "Load Path Points from file"
-msgstr "´ÓÎÄ¼ş¼ÓÔØÒ»¸ö·ÖĞÎ"
+msgstr "ä»æ–‡ä»¶åŠ è½½ä¸€ä¸ªåˆ†å½¢"
 
 #. filesel is already open
 #: gap/gap_mov_dialog.c:1223
 #, fuzzy
 msgid "Save Path Points to file"
-msgstr "±£´æ·ÖĞÎµ½ÎÄ¼ş"
+msgstr "ä¿å­˜åˆ†å½¢åˆ°æ–‡ä»¶"
 
 #: gap/gap_mov_dialog.c:1552
 #, c-format
@@ -1311,7 +1311,7 @@ msgstr ""
 #: gap/gap_mov_dialog.c:1799
 #, fuzzy
 msgid "Move Path Preview"
-msgstr "ÊµÊ±Ô¤ÀÀ"
+msgstr "å®æ—¶é¢„è§ˆ"
 
 #. X
 #. table col, row
@@ -1505,7 +1505,7 @@ msgstr ""
 #: gap/gap_mov_dialog.c:2126
 #, fuzzy
 msgid "Reset the current Controlpoint to default Values"
-msgstr "²ÎÊı¸´Î»µ½È±Ê¡Öµ"
+msgstr "å‚æ•°å¤ä½åˆ°ç¼ºçœå€¼"
 
 #: gap/gap_mov_dialog.c:2130
 msgid "Clear All Points"
@@ -1542,7 +1542,7 @@ msgstr ""
 #: gap/gap_mov_dialog.c:2186
 #, fuzzy
 msgid "Load Controlpoints from file"
-msgstr "´ÓÎÄ¼ş¼ÓÔØÒ»¸ö·ÖĞÎ"
+msgstr "ä»æ–‡ä»¶åŠ è½½ä¸€ä¸ªåˆ†å½¢"
 
 #: gap/gap_mov_dialog.c:2190
 msgid "Save Points"
@@ -1551,7 +1551,7 @@ msgstr ""
 #: gap/gap_mov_dialog.c:2198
 #, fuzzy
 msgid "Save Controlpoints to file"
-msgstr "±£´æ·ÖĞÎµ½ÎÄ¼ş"
+msgstr "ä¿å­˜åˆ†å½¢åˆ°æ–‡ä»¶"
 
 #: gap/gap_mov_dialog.c:2658
 msgid ""
@@ -1584,7 +1584,7 @@ msgstr ""
 #: gap/gap_mov_exec.c:459
 #, fuzzy
 msgid "Generating Animated Preview..."
-msgstr "ÊµÊ±Ô¤ÀÀ"
+msgstr "å®æ—¶é¢„è§ˆ"
 
 #: gap/gap_mov_exec.c:1376
 #, c-format
@@ -1702,7 +1702,7 @@ msgstr ""
 #: gap/gap_mpege.c:242
 #, fuzzy
 msgid "GenParams"
-msgstr "²ÎÊı"
+msgstr "å‚æ•°"
 
 #: gap/gap_mpege.c:244
 msgid "Gen + Encode"
@@ -1910,7 +1910,7 @@ msgstr ""
 #: gap/gap_navigator_dialog.c:380
 #, fuzzy
 msgid "Delete selected Frames"
-msgstr "É¾³ıµ±Ç°Ñ¡ÖĞµÄ·ÖĞÎ"
+msgstr "åˆ é™¤å½“å‰é€‰ä¸­çš„åˆ†å½¢"
 
 #: gap/gap_navigator_dialog.c:389
 msgid "Goto 1st Frame"
@@ -2088,7 +2088,7 @@ msgstr ""
 
 #: gap/gap_range_ops.c:346
 msgid "Number of Colors"
-msgstr "ÑÕÉ«ÊıÁ¿"
+msgstr "é¢œè‰²æ•°é‡"
 
 #: gap/gap_range_ops.c:347
 msgid ""
@@ -2099,7 +2099,7 @@ msgstr ""
 #: gap/gap_range_ops.c:354
 #, fuzzy
 msgid "Dither Options"
-msgstr "Ëõ·ÅÑ¡Ïî"
+msgstr "ç¼©æ”¾é€‰é¡¹"
 
 #: gap/gap_range_ops.c:361
 msgid "Enable transparency"
@@ -2308,7 +2308,7 @@ msgstr ""
 #: gap/gap_range_ops.c:1113
 #, fuzzy
 msgid "Converting Frames..."
-msgstr "»æÖÆ·ÖĞÎ..."
+msgstr "ç»˜åˆ¶åˆ†å½¢..."
 
 #: gap/gap_range_ops.c:1261
 msgid ""
@@ -2409,12 +2409,12 @@ msgstr ""
 #: gap/resize.c:107
 #, fuzzy
 msgid "Scale"
-msgstr "±£´æ"
+msgstr "ä¿å­˜"
 
 #: gap/resize.c:111
 #, fuzzy
 msgid "Resize"
-msgstr "¸´Î»"
+msgstr "å¤ä½"
 
 #: gap/resize.c:127
 msgid "New width:"

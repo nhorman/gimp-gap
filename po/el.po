@@ -10,7 +10,7 @@ msgstr ""
 "Last-Translator: Simos Xenitellis <simos@hellug.gr>\n"
 "Language-Team: Greek <nls@tux.hellug.gr>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-7\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #
@@ -18,34 +18,34 @@ msgstr ""
 #: gap/gap_arr_dialog.c:293
 #, fuzzy
 msgid "File-Browser"
-msgstr "Εξερεύνηση"
+msgstr "Ξ•ΞΎΞµΟΞµΟΞ½Ξ·ΟƒΞ·"
 
 #. parameter settings
 #: gap/gap_arr_dialog.c:793
 #, fuzzy
 msgid "Enter Values"
-msgstr "Εισάγετε τιμή"
+msgstr "Ξ•ΞΉΟƒΞ¬Ξ³ΞµΟ„Ξµ Ο„ΞΉΞΌΞ®"
 
 #
 #: gap/gap_arr_dialog.c:812
 msgid "Value:"
-msgstr "Τιμή:"
+msgstr "Ξ¤ΞΉΞΌΞ®:"
 
 #
 #: gap/gap_arr_dialog.c:878
 #, fuzzy
 msgid "Value: "
-msgstr "Τιμή:"
+msgstr "Ξ¤ΞΉΞΌΞ®:"
 
 #: gap/gap_arr_dialog.c:1040
 #, fuzzy
 msgid "Press Button"
-msgstr "Κουμπί"
+msgstr "ΞΞΏΟ…ΞΌΟ€Ξ―"
 
 #
 #: gap/gap_arr_dialog.c:1041
 msgid "Select"
-msgstr "Επιλογή"
+msgstr "Ξ•Ο€ΞΉΞ»ΞΏΞ³Ξ®"
 
 #: gap/gap_dbbrowser_utils.c:76
 msgid "GAP Animated Filter apply"
@@ -55,73 +55,73 @@ msgstr ""
 #: gap/gap_dbbrowser_utils.c:97
 #, fuzzy
 msgid "Animated Filter apply (init)"
-msgstr "Γραμματοσειρά: (Φιλτραρισμένη)"
+msgstr "Ξ“ΟΞ±ΞΌΞΌΞ±Ο„ΞΏΟƒΞµΞΉΟΞ¬: (Ξ¦ΞΉΞ»Ο„ΟΞ±ΟΞΉΟƒΞΌΞ­Ξ½Ξ·)"
 
 #: gap/gap_dbbrowser_utils.c:148
 #, fuzzy
 msgid "Search:"
-msgstr "Αναζήτηση: "
+msgstr "Ξ‘Ξ½Ξ±Ξ¶Ξ®Ο„Ξ·ΟƒΞ·: "
 
 #: gap/gap_dbbrowser_utils.c:176
 #, fuzzy
 msgid "Gen Code by name"
-msgstr "Εκκαθαρισμός βάση Ονόματος"
+msgstr "Ξ•ΞΊΞΊΞ±ΞΈΞ±ΟΞΉΟƒΞΌΟΟ‚ Ξ²Ξ¬ΟƒΞ· ΞΞ½ΟΞΌΞ±Ο„ΞΏΟ‚"
 
 #: gap/gap_dbbrowser_utils.c:185
 #, fuzzy
 msgid "Search by Name"
-msgstr "Βάση αναζήτησης:"
+msgstr "Ξ’Ξ¬ΟƒΞ· Ξ±Ξ½Ξ±Ξ¶Ξ®Ο„Ξ·ΟƒΞ·Ο‚:"
 
 #: gap/gap_dbbrowser_utils.c:193
 #, fuzzy
 msgid "Search by Blurb"
-msgstr "Εύρεση στη Μνήμη.."
+msgstr "Ξ•ΟΟΞµΟƒΞ· ΟƒΟ„Ξ· ΞΞ½Ξ®ΞΌΞ·.."
 
 #
 #. show the name
 #: gap/gap_dbbrowser_utils.c:335
 msgid "Name:"
-msgstr "Όνομα:"
+msgstr "ΞΞ½ΞΏΞΌΞ±:"
 
 #
 #. show the description
 #: gap/gap_dbbrowser_utils.c:352
 #, fuzzy
 msgid "Blurb:"
-msgstr "Μπλέ:"
+msgstr "ΞΟ€Ξ»Ξ­:"
 
 #
 #: gap/gap_dbbrowser_utils.c:374
 msgid "In:"
-msgstr "Μέσα:"
+msgstr "ΞΞ­ΟƒΞ±:"
 
 #
 #: gap/gap_dbbrowser_utils.c:420
 #, fuzzy
 msgid "Out:"
-msgstr "Έξω"
+msgstr "ΞΞΎΟ‰"
 
 #
 #: gap/gap_dbbrowser_utils.c:469
 #, fuzzy
 msgid "Help:"
-msgstr "Βοήθεια"
+msgstr "Ξ’ΞΏΞ®ΞΈΞµΞΉΞ±"
 
 #
 #. show the author & the copyright
 #: gap/gap_dbbrowser_utils.c:507
 msgid "Author:"
-msgstr "Συγγραφέας:"
+msgstr "Ξ£Ο…Ξ³Ξ³ΟΞ±Ο†Ξ­Ξ±Ο‚:"
 
 #
 #: gap/gap_dbbrowser_utils.c:522
 msgid "Date:"
-msgstr "Ημ/νία:"
+msgstr "Ξ—ΞΌ/Ξ½Ξ―Ξ±:"
 
 #: gap/gap_dbbrowser_utils.c:537
 #, fuzzy
 msgid "Copyright:"
-msgstr "Πνευματικά Δικαιώματα"
+msgstr "Ξ Ξ½ΞµΟ…ΞΌΞ±Ο„ΞΉΞΊΞ¬ Ξ”ΞΉΞΊΞ±ΞΉΟΞΌΞ±Ο„Ξ±"
 
 #: gap/gap_dbbrowser_utils.c:676
 msgid "Animated Filter apply (by name - please wait)"
@@ -139,7 +139,7 @@ msgstr ""
 #: gap/gap_mod_layer.c:287
 #, fuzzy
 msgid "Animated Filter apply"
-msgstr "Προσθήκη Κανόνα Φίλτρου"
+msgstr "Ξ ΟΞΏΟƒΞΈΞ®ΞΊΞ· ΞΞ±Ξ½ΟΞ½Ξ± Ξ¦Ξ―Ξ»Ο„ΟΞΏΟ…"
 
 #: gap/gap_decode_mpeg_main.c:102
 msgid "<Image>/Video/Split Video to Frames"
@@ -161,33 +161,33 @@ msgstr ""
 #: gap/gap_range_ops.c:1240
 #, fuzzy
 msgid "Overwrite Frame"
-msgstr "Επικάλυψη"
+msgstr "Ξ•Ο€ΞΉΞΊΞ¬Ξ»Ο…ΟΞ·"
 
 #: gap/gap_decode_mpeg_main.c:334 gap/gap_decode_xanim.c:339
 #: gap/gap_range_ops.c:1242
 #, fuzzy
 msgid "Overwrite All"
-msgstr "Επικάλυψη"
+msgstr "Ξ•Ο€ΞΉΞΊΞ¬Ξ»Ο…ΟΞ·"
 
 #
 #: gap/gap_decode_mpeg_main.c:342 gap/gap_decode_xanim.c:347
 #: gap/gap_lib.c:1036 gap/gap_range_ops.c:1247
 #, fuzzy
 msgid "GAP Question"
-msgstr "Ερώτηση"
+msgstr "Ξ•ΟΟΟ„Ξ·ΟƒΞ·"
 
 #: gap/gap_decode_mpeg_main.c:343 gap/gap_decode_xanim.c:348
 msgid "File already exists"
-msgstr "Το αρχείο ήδη υπάρχει"
+msgstr "Ξ¤ΞΏ Ξ±ΟΟ‡ΞµΞ―ΞΏ Ξ®Ξ΄Ξ· Ο…Ο€Ξ¬ΟΟ‡ΞµΞΉ"
 
 #: gap/gap_decode_mpeg_main.c:437
 #, fuzzy
 msgid "Decoding MPEG Movie..."
-msgstr "Αποσυμπίεση Ενημέρωσης..."
+msgstr "Ξ‘Ο€ΞΏΟƒΟ…ΞΌΟ€Ξ―ΞµΟƒΞ· Ξ•Ξ½Ξ·ΞΌΞ­ΟΟ‰ΟƒΞ·Ο‚..."
 
 #: gap/gap_decode_mpeg_main.c:642
 msgid "Video"
-msgstr "Βίντεο"
+msgstr "Ξ’Ξ―Ξ½Ο„ΞµΞΏ"
 
 #: gap/gap_decode_mpeg_main.c:643
 msgid ""
@@ -202,19 +202,19 @@ msgstr ""
 #: gap/gap_lib.c:2120 gap/gap_lib.c:2315 gap/gap_range_ops.c:253
 #: gap/gap_range_ops.c:602
 msgid "From:"
-msgstr "Από:"
+msgstr "Ξ‘Ο€Ο:"
 
 #: gap/gap_decode_mpeg_main.c:653 gap/gap_decode_xanim.c:225
 #, fuzzy
 msgid "Framenumber of 1st frame to extract"
-msgstr "Αριθμός φράκταλ προς δημιουργία."
+msgstr "Ξ‘ΟΞΉΞΈΞΌΟΟ‚ Ο†ΟΞ¬ΞΊΟ„Ξ±Ξ» Ο€ΟΞΏΟ‚ Ξ΄Ξ·ΞΌΞΉΞΏΟ…ΟΞ³Ξ―Ξ±."
 
 #
 #: gap/gap_decode_mpeg_main.c:662 gap/gap_decode_xanim.c:234
 #: gap/gap_lib.c:2128 gap/gap_lib.c:2323 gap/gap_range_ops.c:260
 #: gap/gap_range_ops.c:610
 msgid "To:"
-msgstr "Προς:"
+msgstr "Ξ ΟΞΏΟ‚:"
 
 #: gap/gap_decode_mpeg_main.c:663 gap/gap_decode_xanim.c:235
 msgid "Framenumber of last frame to extract"
@@ -223,7 +223,7 @@ msgstr ""
 #: gap/gap_decode_mpeg_main.c:672 gap/gap_decode_xanim.c:244
 #, fuzzy
 msgid "Framenames:"
-msgstr "Όνομα πλαισίου"
+msgstr "ΞΞ½ΞΏΞΌΞ± Ο€Ξ»Ξ±ΞΉΟƒΞ―ΞΏΟ…"
 
 #: gap/gap_decode_mpeg_main.c:673
 msgid ""
@@ -234,12 +234,12 @@ msgstr ""
 #
 #: gap/gap_decode_mpeg_main.c:680 gap/gap_decode_xanim.c:283
 msgid "Open"
-msgstr "¶νοιγμα"
+msgstr "Ξ†Ξ½ΞΏΞΉΞ³ΞΌΞ±"
 
 #: gap/gap_decode_mpeg_main.c:681 gap/gap_decode_xanim.c:284
 #, fuzzy
 msgid "Open the 1st one of the extracted frames"
-msgstr "Διακόπτει τη λήψη των επιλεγμένων αρχείων"
+msgstr "Ξ”ΞΉΞ±ΞΊΟΟ€Ο„ΞµΞΉ Ο„Ξ· Ξ»Ξ®ΟΞ· Ο„Ο‰Ξ½ ΞµΟ€ΞΉΞ»ΞµΞ³ΞΌΞ­Ξ½Ο‰Ξ½ Ξ±ΟΟ‡ΞµΞ―Ο‰Ξ½"
 
 #: gap/gap_decode_mpeg_main.c:685
 msgid ""
@@ -256,7 +256,7 @@ msgstr ""
 #: gap/gap_range_ops.c:1462
 #, fuzzy
 msgid "Select Frame Range"
-msgstr "Επιλογή Εικόνας"
+msgstr "Ξ•Ο€ΞΉΞ»ΞΏΞ³Ξ® Ξ•ΞΉΞΊΟΞ½Ξ±Ο‚"
 
 #: gap/gap_decode_xanim.c:114
 msgid "Conditions to run the xanim based video split"
@@ -294,12 +294,12 @@ msgstr ""
 #: gap/gap_decode_xanim.c:181
 #, fuzzy
 msgid "XANIM Information"
-msgstr "Χωρίς Πληροφόρηση"
+msgstr "Ξ§Ο‰ΟΞ―Ο‚ Ξ Ξ»Ξ·ΟΞΏΟ†ΟΟΞ·ΟƒΞ·"
 
 #: gap/gap_decode_xanim.c:214
 #, fuzzy
 msgid "Video:"
-msgstr "Βίντεο"
+msgstr "Ξ’Ξ―Ξ½Ο„ΞµΞΏ"
 
 #: gap/gap_decode_xanim.c:215
 msgid ""
@@ -317,7 +317,7 @@ msgstr ""
 
 #: gap/gap_decode_xanim.c:252
 msgid "Format"
-msgstr "Μορφή"
+msgstr "ΞΞΏΟΟ†Ξ®"
 
 #: gap/gap_decode_xanim.c:253
 msgid ""
@@ -328,17 +328,17 @@ msgstr ""
 #: gap/gap_decode_xanim.c:260
 #, fuzzy
 msgid "Extract Frames"
-msgstr "Εξαγωγή"
+msgstr "Ξ•ΞΎΞ±Ξ³Ο‰Ξ³Ξ®"
 
 #: gap/gap_decode_xanim.c:261
 #, fuzzy
 msgid "Enable extraction of Frames"
-msgstr "Ενεργοποίηση λεπτομερούς πρόγνωσης"
+msgstr "Ξ•Ξ½ΞµΟΞ³ΞΏΟ€ΞΏΞ―Ξ·ΟƒΞ· Ξ»ΞµΟ€Ο„ΞΏΞΌΞµΟΞΏΟΟ‚ Ο€ΟΟΞ³Ξ½Ο‰ΟƒΞ·Ο‚"
 
 #: gap/gap_decode_xanim.c:265
 #, fuzzy
 msgid "Extract Audio"
-msgstr "Εξαγωγή"
+msgstr "Ξ•ΞΎΞ±Ξ³Ο‰Ξ³Ξ®"
 
 #: gap/gap_decode_xanim.c:266
 msgid ""
@@ -359,7 +359,7 @@ msgstr ""
 #: gap/gap_decode_xanim.c:288
 #, fuzzy
 msgid "Run asynchronously"
-msgstr "Ασύγχρονο"
+msgstr "Ξ‘ΟƒΟΞ³Ο‡ΟΞΏΞ½ΞΏ"
 
 #: gap/gap_decode_xanim.c:289
 msgid ""
@@ -399,17 +399,17 @@ msgstr ""
 #: gap/gap_decode_xanim.c:597
 #, fuzzy, c-format
 msgid "failed to write %s (check permissions ?)"
-msgstr "Δικαιώματα πρόσβασης"
+msgstr "Ξ”ΞΉΞΊΞ±ΞΉΟΞΌΞ±Ο„Ξ± Ο€ΟΟΟƒΞ²Ξ±ΟƒΞ·Ο‚"
 
 #: gap/gap_decode_xanim.c:723
 #, fuzzy, c-format
 msgid "could not execute %s (check if xanim is installed)"
-msgstr "Δεν είναι δυνατό να εκτελεστεί το %s: το μήνυμα δεν στάλθηκε."
+msgstr "Ξ”ΞµΞ½ ΞµΞ―Ξ½Ξ±ΞΉ Ξ΄Ο…Ξ½Ξ±Ο„Ο Ξ½Ξ± ΞµΞΊΟ„ΞµΞ»ΞµΟƒΟ„ΞµΞ― Ο„ΞΏ %s: Ο„ΞΏ ΞΌΞ®Ξ½Ο…ΞΌΞ± Ξ΄ΞµΞ½ ΟƒΟ„Ξ¬Ξ»ΞΈΞ·ΞΊΞµ."
 
 #: gap/gap_decode_xanim.c:731
 #, fuzzy, c-format
 msgid "%s does not look like xanim"
-msgstr "Το '%s' δε μοιάζει με αρχείου κειμένου."
+msgstr "Ξ¤ΞΏ '%s' Ξ΄Ξµ ΞΌΞΏΞΉΞ¬Ξ¶ΞµΞΉ ΞΌΞµ Ξ±ΟΟ‡ΞµΞ―ΞΏΟ… ΞΊΞµΞΉΞΌΞ­Ξ½ΞΏΟ…."
 
 #: gap/gap_decode_xanim.c:755
 #, c-format
@@ -440,7 +440,7 @@ msgstr ""
 #: gap/gap_decode_xanim.c:1089
 #, fuzzy
 msgid "extracting frames..."
-msgstr "Μοίρασμα..."
+msgstr "ΞΞΏΞ―ΟΞ±ΟƒΞΌΞ±..."
 
 #: gap/gap_decode_xanim.c:1114
 #, c-format
@@ -458,17 +458,17 @@ msgstr ""
 #: gap/gap_decode_xanim.c:1154
 #, fuzzy
 msgid "renaming frames..."
-msgstr "Μοίρασμα..."
+msgstr "ΞΞΏΞ―ΟΞ±ΟƒΞΌΞ±..."
 
 #: gap/gap_decode_xanim.c:1159
 #, fuzzy
 msgid "converting frames..."
-msgstr "Μετατροπή αρχείου..."
+msgstr "ΞΞµΟ„Ξ±Ο„ΟΞΏΟ€Ξ® Ξ±ΟΟ‡ΞµΞ―ΞΏΟ…..."
 
 #: gap/gap_filter_foreach.c:126
 #, fuzzy
 msgid "backup to file"
-msgstr "αρχείο ασφαλείας"
+msgstr "Ξ±ΟΟ‡ΞµΞ―ΞΏ Ξ±ΟƒΟ†Ξ±Ξ»ΞµΞ―Ξ±Ο‚"
 
 #. pixel
 #: gap/gap_filter_foreach.c:128
@@ -478,13 +478,13 @@ msgstr ""
 #
 #: gap/gap_filter_foreach.c:132 gap/gap_mod_layer.c:262
 msgid "Continue"
-msgstr "Συνέχεια"
+msgstr "Ξ£Ο…Ξ½Ξ­Ο‡ΞµΞΉΞ±"
 
 #
 #: gap/gap_filter_foreach.c:136
 #, fuzzy, c-format
 msgid "Skip %d"
-msgstr "Παράκαμψη"
+msgstr "Ξ Ξ±ΟΞ¬ΞΊΞ±ΞΌΟΞ·"
 
 #: gap/gap_filter_foreach.c:155 gap/gap_mod_layer.c:281
 #, c-format
@@ -507,22 +507,22 @@ msgstr ""
 #: gap/gap_filter_foreach.c:552
 #, fuzzy
 msgid "Select Filter for Animated apply"
-msgstr "Επιλέξτε Αρχείο Ημερολογίου Φίλτρου"
+msgstr "Ξ•Ο€ΞΉΞ»Ξ­ΞΎΟ„Ξµ Ξ‘ΟΟ‡ΞµΞ―ΞΏ Ξ—ΞΌΞµΟΞΏΞ»ΞΏΞ³Ξ―ΞΏΟ… Ξ¦Ξ―Ξ»Ο„ΟΞΏΟ…"
 
 #: gap/gap_filter_foreach.c:553 gap/gap_mod_layer.c:664
 #, fuzzy
 msgid "Apply Constant"
-msgstr "Νέος Περιορισμός"
+msgstr "ΞΞ­ΞΏΟ‚ Ξ ΞµΟΞΉΞΏΟΞΉΟƒΞΌΟΟ‚"
 
 #: gap/gap_filter_foreach.c:554 gap/gap_mod_layer.c:665
 #, fuzzy
 msgid "Apply Varying"
-msgstr "Παύση αναπαραγωγής"
+msgstr "Ξ Ξ±ΟΟƒΞ· Ξ±Ξ½Ξ±Ο€Ξ±ΟΞ±Ξ³Ο‰Ξ³Ξ®Ο‚"
 
 #: gap/gap_filter_main.c:105
 #, fuzzy
 msgid "<Image>/Filters/Filter all Layers..."
-msgstr "<Image>/Φίλτρα/Κείμενο/FreeType..."
+msgstr "<Image>/Ξ¦Ξ―Ξ»Ο„ΟΞ±/ΞΞµΞ―ΞΌΞµΞ½ΞΏ/FreeType..."
 
 #: gap/gap_frontends_main.c:125
 msgid "<Image>/Video/Split Video to Frames/Any XANIM readable..."
@@ -543,7 +543,7 @@ msgstr ""
 #: gap/gap_lib.c:243
 #, fuzzy
 msgid "GAP Message"
-msgstr "Μήνυμα PGP"
+msgstr "ΞΞ®Ξ½Ο…ΞΌΞ± PGP"
 
 #: gap/gap_lib.c:905
 msgid ""
@@ -569,29 +569,29 @@ msgstr ""
 #: gap/gap_lib.c:1030
 #, fuzzy
 msgid "Save Flattened"
-msgstr "Αποθήκευση αρχείου"
+msgstr "Ξ‘Ο€ΞΏΞΈΞ®ΞΊΞµΟ…ΟƒΞ· Ξ±ΟΟ‡ΞµΞ―ΞΏΟ…"
 
 #: gap/gap_lib.c:1032
 #, fuzzy
 msgid "Save As Is"
-msgstr " Αποθήκευση ως "
+msgstr " Ξ‘Ο€ΞΏΞΈΞ®ΞΊΞµΟ…ΟƒΞ· Ο‰Ο‚ "
 
 #: gap/gap_lib.c:1507 gap/gap_lib.c:1631 gap/gap_lib.c:1710 gap/gap_lib.c:1717
 #: gap/gap_lib.c:1724 gap/gap_lib.c:1807 gap/gap_lib.c:1829 gap/gap_lib.c:2734
 #, fuzzy, c-format
 msgid "Error: could not rename frame %ld to %ld"
-msgstr "Δεν ήταν δυνατή η μετονομασία του φακέλου %s στο %s: %s"
+msgstr "Ξ”ΞµΞ½ Ξ®Ο„Ξ±Ξ½ Ξ΄Ο…Ξ½Ξ±Ο„Ξ® Ξ· ΞΌΞµΟ„ΞΏΞ½ΞΏΞΌΞ±ΟƒΞ―Ξ± Ο„ΞΏΟ… Ο†Ξ±ΞΊΞ­Ξ»ΞΏΟ… %s ΟƒΟ„ΞΏ %s: %s"
 
 #
 #: gap/gap_lib.c:1570
 #, fuzzy, c-format
 msgid "Error: could not save frame %s"
-msgstr "Αδύνατη η αποθήκευση του %s"
+msgstr "Ξ‘Ξ΄ΟΞ½Ξ±Ο„Ξ· Ξ· Ξ±Ο€ΞΏΞΈΞ®ΞΊΞµΟ…ΟƒΞ· Ο„ΞΏΟ… %s"
 
 #: gap/gap_lib.c:1619
 #, fuzzy
 msgid "Duplicating frames..."
-msgstr "Μοίρασμα..."
+msgstr "ΞΞΏΞ―ΟΞ±ΟƒΞΌΞ±..."
 
 #: gap/gap_lib.c:1795
 msgid "Renumber Framesequence..."
@@ -609,7 +609,7 @@ msgstr ""
 
 #: gap/gap_lib.c:1988 gap/gap_lib.c:2065 gap/gap_lib.c:2269
 msgid "Number:"
-msgstr "Αριθμός:"
+msgstr "Ξ‘ΟΞΉΞΈΞΌΟΟ‚:"
 
 #: gap/gap_lib.c:2049
 #, c-format
@@ -637,7 +637,7 @@ msgstr ""
 #: gap/gap_lib.c:2136
 #, fuzzy
 msgid "N times:"
-msgstr "Αριθμός φορών:"
+msgstr "Ξ‘ΟΞΉΞΈΞΌΟΟ‚ Ο†ΞΏΟΟΞ½:"
 
 #: gap/gap_lib.c:2143
 msgid ""
@@ -648,17 +648,17 @@ msgstr ""
 #: gap/gap_lib.c:2146
 #, fuzzy
 msgid "Duplicate Frame Range"
-msgstr "Απεικονιζόμενο εύρος τιμών"
+msgstr "Ξ‘Ο€ΞµΞΉΞΊΞΏΞ½ΞΉΞ¶ΟΞΌΞµΞ½ΞΏ ΞµΟΟΞΏΟ‚ Ο„ΞΉΞΌΟΞ½"
 
 #: gap/gap_lib.c:2264
 #, fuzzy, c-format
 msgid "Exchange current Frame (%ld)"
-msgstr "Τροποποίηση παρούσας καρτέλας"
+msgstr "Ξ¤ΟΞΏΟ€ΞΏΟ€ΞΏΞ―Ξ·ΟƒΞ· Ο€Ξ±ΟΞΏΟΟƒΞ±Ο‚ ΞΊΞ±ΟΟ„Ξ­Ξ»Ξ±Ο‚"
 
 #: gap/gap_lib.c:2268
 #, fuzzy
 msgid "With Frame (number)"
-msgstr "Αρ. π_ρώτης σελίδας:"
+msgstr "Ξ‘Ο. Ο€_ΟΟΟ„Ξ·Ο‚ ΟƒΞµΞ»Ξ―Ξ΄Ξ±Ο‚:"
 
 #: gap/gap_lib.c:2310
 #, c-format
@@ -715,12 +715,12 @@ msgstr ""
 #: gap/gap_main.c:524
 #, fuzzy
 msgid "<Image>/Video/Goto/Any Frame..."
-msgstr "<Image>/Φίλτρα/Κείμενο/FreeType..."
+msgstr "<Image>/Ξ¦Ξ―Ξ»Ο„ΟΞ±/ΞΞµΞ―ΞΌΞµΞ½ΞΏ/FreeType..."
 
 #: gap/gap_main.c:536
 #, fuzzy
 msgid "<Image>/Video/Delete Frames..."
-msgstr "<Image>/Φίλτρα/Κείμενο/FreeType..."
+msgstr "<Image>/Ξ¦Ξ―Ξ»Ο„ΟΞ±/ΞΞµΞ―ΞΌΞµΞ½ΞΏ/FreeType..."
 
 #: gap/gap_main.c:548
 msgid "<Image>/Video/Duplicate Frames..."
@@ -753,12 +753,12 @@ msgstr ""
 #: gap/gap_main.c:703
 #, fuzzy
 msgid "<Image>/Video/Frames Resize..."
-msgstr "<Image>/Φίλτρα/Κείμενο/FreeType..."
+msgstr "<Image>/Ξ¦Ξ―Ξ»Ο„ΟΞ±/ΞΞµΞ―ΞΌΞµΞ½ΞΏ/FreeType..."
 
 #: gap/gap_main.c:715
 #, fuzzy
 msgid "<Image>/Video/Frames Crop..."
-msgstr "<Image>/Φίλτρα/Κείμενο/FreeType..."
+msgstr "<Image>/Ξ¦Ξ―Ξ»Ο„ΟΞ±/ΞΞµΞ―ΞΌΞµΞ½ΞΏ/FreeType..."
 
 #: gap/gap_main.c:727
 msgid "<Image>/Video/Frames Scale..."
@@ -838,42 +838,42 @@ msgstr ""
 #: gap/gap_mod_layer.c:98
 #, fuzzy
 msgid "Select all visible Layers"
-msgstr "Επιλογή όλων των μηνυμάτων που εμφανίζονται"
+msgstr "Ξ•Ο€ΞΉΞ»ΞΏΞ³Ξ® ΟΞ»Ο‰Ξ½ Ο„Ο‰Ξ½ ΞΌΞ·Ξ½Ο…ΞΌΞ¬Ο„Ο‰Ξ½ Ο€ΞΏΟ… ΞµΞΌΟ†Ξ±Ξ½Ξ―Ξ¶ΞΏΞ½Ο„Ξ±ΞΉ"
 
 #
 #. action items what to do with the selected layer(s)
 #: gap/gap_mod_layer.c:102
 #, fuzzy
 msgid "Set Layer(s) visible"
-msgstr "Καθορισμός Στρώματος"
+msgstr "ΞΞ±ΞΈΞΏΟΞΉΟƒΞΌΟΟ‚ Ξ£Ο„ΟΟΞΌΞ±Ο„ΞΏΟ‚"
 
 #: gap/gap_mod_layer.c:103
 #, fuzzy
 msgid "Set Layer(s) invisible"
-msgstr "  Αόρατος"
+msgstr "  Ξ‘ΟΟΞ±Ο„ΞΏΟ‚"
 
 #
 #: gap/gap_mod_layer.c:104
 #, fuzzy
 msgid "Set Layer(s) linked"
-msgstr "Καθορισμός Στρώματος"
+msgstr "ΞΞ±ΞΈΞΏΟΞΉΟƒΞΌΟΟ‚ Ξ£Ο„ΟΟΞΌΞ±Ο„ΞΏΟ‚"
 
 #
 #: gap/gap_mod_layer.c:105
 #, fuzzy
 msgid "Set Layer(s) unlinked"
-msgstr "Καθορισμός Στρώματος"
+msgstr "ΞΞ±ΞΈΞΏΟΞΉΟƒΞΌΟΟ‚ Ξ£Ο„ΟΟΞΌΞ±Ο„ΞΏΟ‚"
 
 #: gap/gap_mod_layer.c:106
 #, fuzzy
 msgid "Raise Layer(s)"
-msgstr "Ανύψωση Στρώματος"
+msgstr "Ξ‘Ξ½ΟΟΟ‰ΟƒΞ· Ξ£Ο„ΟΟΞΌΞ±Ο„ΞΏΟ‚"
 
 # # FIX?  see above for "send to back"
 #: gap/gap_mod_layer.c:107
 #, fuzzy
 msgid "Lower Layer(s)"
-msgstr "Βύθιση Στρώματος"
+msgstr "Ξ’ΟΞΈΞΉΟƒΞ· Ξ£Ο„ΟΟΞΌΞ±Ο„ΞΏΟ‚"
 
 #: gap/gap_mod_layer.c:108
 msgid "Merge Layer(s) expand as necessary"
@@ -890,22 +890,22 @@ msgstr ""
 #: gap/gap_mod_layer.c:111
 #, fuzzy
 msgid "Apply filter on Layer(s)"
-msgstr "Εφαρμογή Φίλτρων"
+msgstr "Ξ•Ο†Ξ±ΟΞΌΞΏΞ³Ξ® Ξ¦Ξ―Ξ»Ο„ΟΟ‰Ξ½"
 
 #: gap/gap_mod_layer.c:112
 #, fuzzy
 msgid "Duplicate Layer(s)"
-msgstr "Διαγραφή Στρώματος"
+msgstr "Ξ”ΞΉΞ±Ξ³ΟΞ±Ο†Ξ® Ξ£Ο„ΟΟΞΌΞ±Ο„ΞΏΟ‚"
 
 #: gap/gap_mod_layer.c:113
 #, fuzzy
 msgid "Delete Layer(s)"
-msgstr "Διαγραφή Στρώματος"
+msgstr "Ξ”ΞΉΞ±Ξ³ΟΞ±Ο†Ξ® Ξ£Ο„ΟΟΞΌΞ±Ο„ΞΏΟ‚"
 
 #: gap/gap_mod_layer.c:114
 #, fuzzy
 msgid "Rename Layer(s)"
-msgstr "Ανύψωση Στρώματος"
+msgstr "Ξ‘Ξ½ΟΟΟ‰ΟƒΞ· Ξ£Ο„ΟΟΞΌΞ±Ο„ΞΏΟ‚"
 
 #: gap/gap_mod_layer.c:153
 msgid ""
@@ -916,36 +916,36 @@ msgstr ""
 #: gap/gap_mod_layer.c:157 gap/gap_mpege.c:258 gap/gap_range_ops.c:443
 #, fuzzy
 msgid "From Frame:"
-msgstr "Όνομα Προγράμματος:"
+msgstr "ΞΞ½ΞΏΞΌΞ± Ξ ΟΞΏΞ³ΟΞ¬ΞΌΞΌΞ±Ο„ΞΏΟ‚:"
 
 #: gap/gap_mod_layer.c:158 gap/gap_mpege.c:259 gap/gap_range_ops.c:444
 #: gap/gap_range_ops.c:603
 #, fuzzy
 msgid "first handled frame"
-msgstr "Αριστερόχειρας"
+msgstr "Ξ‘ΟΞΉΟƒΟ„ΞµΟΟΟ‡ΞµΞΉΟΞ±Ο‚"
 
 #: gap/gap_mod_layer.c:165 gap/gap_range_ops.c:451
 #, fuzzy
 msgid "To Frame:"
-msgstr "Πλαίσιο"
+msgstr "Ξ Ξ»Ξ±Ξ―ΟƒΞΉΞΏ"
 
 #: gap/gap_mod_layer.c:166 gap/gap_mpege.c:267 gap/gap_range_ops.c:452
 #: gap/gap_range_ops.c:611
 #, fuzzy
 msgid "last handled frame"
-msgstr "Απεικόνιση μπάρας χειρισμού"
+msgstr "Ξ‘Ο€ΞµΞΉΞΊΟΞ½ΞΉΟƒΞ· ΞΌΟ€Ξ¬ΟΞ±Ο‚ Ο‡ΞµΞΉΟΞΉΟƒΞΌΞΏΟ"
 
 #
 #: gap/gap_mod_layer.c:174 gap/gap_range_ops.c:650
 #, fuzzy
 msgid "Select Layer(s):"
-msgstr "Επιλεγμένες επικεφαλίδες:"
+msgstr "Ξ•Ο€ΞΉΞ»ΞµΞ³ΞΌΞ­Ξ½ΞµΟ‚ ΞµΟ€ΞΉΞΊΞµΟ†Ξ±Ξ»Ξ―Ξ΄ΞµΟ‚:"
 
 #
 #: gap/gap_mod_layer.c:184 gap/gap_range_ops.c:659
 #, fuzzy
 msgid "Select Pattern:"
-msgstr "Επιλογή εκτυπωτή"
+msgstr "Ξ•Ο€ΞΉΞ»ΞΏΞ³Ξ® ΞµΞΊΟ„Ο…Ο€Ο‰Ο„Ξ®"
 
 #. pixel
 #: gap/gap_mod_layer.c:186 gap/gap_range_ops.c:661
@@ -957,7 +957,7 @@ msgstr ""
 
 #: gap/gap_mod_layer.c:192 gap/gap_range_ops.c:667
 msgid "Case sensitive"
-msgstr "Πεζά/κεφαλαία διαφέρουν"
+msgstr "Ξ ΞµΞ¶Ξ¬/ΞΊΞµΟ†Ξ±Ξ»Ξ±Ξ―Ξ± Ξ΄ΞΉΞ±Ο†Ξ­ΟΞΏΟ…Ξ½"
 
 #: gap/gap_mod_layer.c:193 gap/gap_range_ops.c:668
 msgid "Lowercase and UPPERCASE letters are considered as different"
@@ -965,17 +965,17 @@ msgstr ""
 
 #: gap/gap_mod_layer.c:198 gap/gap_range_ops.c:673
 msgid "Invert Selection"
-msgstr "Αντιστροφή Επιλογής"
+msgstr "Ξ‘Ξ½Ο„ΞΉΟƒΟ„ΟΞΏΟ†Ξ® Ξ•Ο€ΞΉΞ»ΞΏΞ³Ξ®Ο‚"
 
 #: gap/gap_mod_layer.c:199
 #, fuzzy
 msgid "Perform actions on all unselected Layers"
-msgstr "Πληροφορίες για τα επιλεγμένα πακέτα"
+msgstr "Ξ Ξ»Ξ·ΟΞΏΟ†ΞΏΟΞ―ΞµΟ‚ Ξ³ΞΉΞ± Ο„Ξ± ΞµΟ€ΞΉΞ»ΞµΞ³ΞΌΞ­Ξ½Ξ± Ο€Ξ±ΞΊΞ­Ο„Ξ±"
 
 #: gap/gap_mod_layer.c:204
 #, fuzzy
 msgid "Function:"
-msgstr "Συνάρτηση"
+msgstr "Ξ£Ο…Ξ½Ξ¬ΟΟ„Ξ·ΟƒΞ·"
 
 #. argv[7].radio_help_argv = action_help
 #: gap/gap_mod_layer.c:208
@@ -985,7 +985,7 @@ msgstr ""
 #: gap/gap_mod_layer.c:214
 #, fuzzy
 msgid "New Layername:"
-msgstr "Όνομα στρώματος:"
+msgstr "ΞΞ½ΞΏΞΌΞ± ΟƒΟ„ΟΟΞΌΞ±Ο„ΞΏΟ‚:"
 
 #. pixel
 #: gap/gap_mod_layer.c:216
@@ -999,12 +999,12 @@ msgstr ""
 #: gap/gap_mod_layer.c:221
 #, fuzzy
 msgid "Frames Modify"
-msgstr "Τροποποίηση"
+msgstr "Ξ¤ΟΞΏΟ€ΞΏΟ€ΞΏΞ―Ξ·ΟƒΞ·"
 
 #
 #: gap/gap_mod_layer.c:222
 msgid "Settings"
-msgstr "Ρυθμίσεις"
+msgstr "Ξ΅Ο…ΞΈΞΌΞ―ΟƒΞµΞΉΟ‚"
 
 #: gap/gap_mod_layer.c:285
 #, c-format
@@ -1034,131 +1034,131 @@ msgstr ""
 #
 #: gap/gap_mov_dialog.c:262
 msgid "Normal"
-msgstr "Κανονικό"
+msgstr "ΞΞ±Ξ½ΞΏΞ½ΞΉΞΊΟ"
 
 #: gap/gap_mov_dialog.c:263
 #, fuzzy
 msgid "Dissolve"
-msgstr "Απενεργοποίηση"
+msgstr "Ξ‘Ο€ΞµΞ½ΞµΟΞ³ΞΏΟ€ΞΏΞ―Ξ·ΟƒΞ·"
 
 #: gap/gap_mov_dialog.c:264
 msgid "Multiply"
-msgstr "Πολ/μος"
+msgstr "Ξ ΞΏΞ»/ΞΌΞΏΟ‚"
 
 #
 #: gap/gap_mov_dialog.c:265
 msgid "Screen"
-msgstr "Οθόνη"
+msgstr "ΞΞΈΟΞ½Ξ·"
 
 #: gap/gap_mov_dialog.c:266
 #, fuzzy
 msgid "Overlay"
-msgstr "Επιγράμμηση"
+msgstr "Ξ•Ο€ΞΉΞ³ΟΞ¬ΞΌΞΌΞ·ΟƒΞ·"
 
 #: gap/gap_mov_dialog.c:267
 #, fuzzy
 msgid "Difference"
-msgstr "Αναφορά:"
+msgstr "Ξ‘Ξ½Ξ±Ο†ΞΏΟΞ¬:"
 
 #: gap/gap_mov_dialog.c:268
 msgid "Addition"
-msgstr "Πρόσθεση"
+msgstr "Ξ ΟΟΟƒΞΈΞµΟƒΞ·"
 
 #: gap/gap_mov_dialog.c:269
 msgid "Subtract"
-msgstr "Αφαίρεση"
+msgstr "Ξ‘Ο†Ξ±Ξ―ΟΞµΟƒΞ·"
 
 #: gap/gap_mov_dialog.c:270
 #, fuzzy
 msgid "Darken Only"
-msgstr "Μόνο Εικόνες"
+msgstr "ΞΟΞ½ΞΏ Ξ•ΞΉΞΊΟΞ½ΞµΟ‚"
 
 #: gap/gap_mov_dialog.c:271
 #, fuzzy
 msgid "Lighten Only"
-msgstr "Μόνο λευκό"
+msgstr "ΞΟΞ½ΞΏ Ξ»ΞµΟ…ΞΊΟ"
 
 #
 #: gap/gap_mov_dialog.c:272
 #, fuzzy
 msgid "Hue"
-msgstr "Απόχρωση:"
+msgstr "Ξ‘Ο€ΟΟ‡ΟΟ‰ΟƒΞ·:"
 
 #: gap/gap_mov_dialog.c:273
 msgid "Saturation"
-msgstr "Κορεσμός"
+msgstr "ΞΞΏΟΞµΟƒΞΌΟΟ‚"
 
 #
 #: gap/gap_mov_dialog.c:274
 msgid "Color"
-msgstr "Χρώμα"
+msgstr "Ξ§ΟΟΞΌΞ±"
 
 #
 #: gap/gap_mov_dialog.c:275
 msgid "Value"
-msgstr "Τιμή"
+msgstr "Ξ¤ΞΉΞΌΞ®"
 
 #
 #: gap/gap_mov_dialog.c:282
 #, fuzzy
 msgid "Left  Top"
-msgstr "Αριστερά"
+msgstr "Ξ‘ΟΞΉΟƒΟ„ΞµΟΞ¬"
 
 #
 #: gap/gap_mov_dialog.c:283
 #, fuzzy
 msgid "Left  Bottom"
-msgstr "Κάτω"
+msgstr "ΞΞ¬Ο„Ο‰"
 
 #
 #: gap/gap_mov_dialog.c:284
 #, fuzzy
 msgid "Right Top"
-msgstr "Δεξιά"
+msgstr "Ξ”ΞµΞΎΞΉΞ¬"
 
 #
 #: gap/gap_mov_dialog.c:285
 #, fuzzy
 msgid "Right Bottom"
-msgstr "Κάτω"
+msgstr "ΞΞ¬Ο„Ο‰"
 
 #: gap/gap_mov_dialog.c:286
 msgid "Center"
-msgstr "Κέντρο"
+msgstr "ΞΞ­Ξ½Ο„ΟΞΏ"
 
 #: gap/gap_mov_dialog.c:294
 msgid "Loop"
-msgstr "Βρόχος"
+msgstr "Ξ’ΟΟΟ‡ΞΏΟ‚"
 
 #: gap/gap_mov_dialog.c:295
 #, fuzzy
 msgid "Loop Reverse"
-msgstr "Αντιστροφή"
+msgstr "Ξ‘Ξ½Ο„ΞΉΟƒΟ„ΟΞΏΟ†Ξ®"
 
 #: gap/gap_mov_dialog.c:296
 #, fuzzy
 msgid "Once"
-msgstr "Ένα"
+msgstr "ΞΞ½Ξ±"
 
 #: gap/gap_mov_dialog.c:297
 #, fuzzy
 msgid "OnceReverse"
-msgstr "Αντιστροφή"
+msgstr "Ξ‘Ξ½Ο„ΞΉΟƒΟ„ΟΞΏΟ†Ξ®"
 
 #: gap/gap_mov_dialog.c:298
 #, fuzzy
 msgid "PingPong"
-msgstr "εισερχόμενα"
+msgstr "ΞµΞΉΟƒΞµΟΟ‡ΟΞΌΞµΞ½Ξ±"
 
 #
 #: gap/gap_mov_dialog.c:299
 msgid "None"
-msgstr "Κανένα"
+msgstr "ΞΞ±Ξ½Ξ­Ξ½Ξ±"
 
 #: gap/gap_mov_dialog.c:300
 #, fuzzy
 msgid "Frame Loop"
-msgstr "Τύπος πλαισίου"
+msgstr "Ξ¤ΟΟ€ΞΏΟ‚ Ο€Ξ»Ξ±ΞΉΟƒΞ―ΞΏΟ…"
 
 #: gap/gap_mov_dialog.c:301
 msgid "Frame Loop Reverse"
@@ -1167,7 +1167,7 @@ msgstr ""
 #: gap/gap_mov_dialog.c:302
 #, fuzzy
 msgid "Frame Once"
-msgstr "Όνομα πλαισίου"
+msgstr "ΞΞ½ΞΏΞΌΞ± Ο€Ξ»Ξ±ΞΉΟƒΞ―ΞΏΟ…"
 
 #: gap/gap_mov_dialog.c:303
 msgid "Frame OnceReverse"
@@ -1176,21 +1176,21 @@ msgstr ""
 #: gap/gap_mov_dialog.c:304
 #, fuzzy
 msgid "Frame PingPong"
-msgstr "Παγωμένη ομίχλη"
+msgstr "Ξ Ξ±Ξ³Ο‰ΞΌΞ­Ξ½Ξ· ΞΏΞΌΞ―Ο‡Ξ»Ξ·"
 
 #: gap/gap_mov_dialog.c:305
 #, fuzzy
 msgid "Frame None"
-msgstr "Όνομα πλαισίου"
+msgstr "ΞΞ½ΞΏΞΌΞ± Ο€Ξ»Ξ±ΞΉΟƒΞ―ΞΏΟ…"
 
 #: gap/gap_mov_dialog.c:468
 #, fuzzy
 msgid "Move Path"
-msgstr "Διαδρομή man"
+msgstr "Ξ”ΞΉΞ±Ξ΄ΟΞΏΞΌΞ® man"
 
 #: gap/gap_mov_dialog.c:492
 msgid "Update Preview"
-msgstr "Ανανέωση Προεπισκόπησης"
+msgstr "Ξ‘Ξ½Ξ±Ξ½Ξ­Ο‰ΟƒΞ· Ξ ΟΞΏΞµΟ€ΞΉΟƒΞΊΟΟ€Ξ·ΟƒΞ·Ο‚"
 
 #: gap/gap_mov_dialog.c:499
 msgid "Show PreviewFrame with Selected SrcLayer at current Controlpoint"
@@ -1200,7 +1200,7 @@ msgstr ""
 #: gap/gap_mov_dialog.c:503
 #, fuzzy
 msgid "Anim Preview"
-msgstr "Προεπισκόπηση"
+msgstr "Ξ ΟΞΏΞµΟ€ΞΉΟƒΞΊΟΟ€Ξ·ΟƒΞ·"
 
 #: gap/gap_mov_dialog.c:510
 msgid "Generate Animated Preview as multilayer image"
@@ -1216,7 +1216,7 @@ msgstr ""
 #: gap/gap_mov_dialog.c:556
 #, fuzzy
 msgid "Start Frame:"
-msgstr "Αρχική σπηλιά:"
+msgstr "Ξ‘ΟΟ‡ΞΉΞΊΞ® ΟƒΟ€Ξ·Ξ»ΞΉΞ¬:"
 
 #. label text
 #. scalesize spinsize
@@ -1229,7 +1229,7 @@ msgstr "Αρχική σπηλιά:"
 #: gap/gap_mov_dialog.c:564
 #, fuzzy
 msgid "First handled frame"
-msgstr "Όνομα"
+msgstr "ΞΞ½ΞΏΞΌΞ±"
 
 #
 #. the end frame scale_entry
@@ -1237,7 +1237,7 @@ msgstr "Όνομα"
 #: gap/gap_mov_dialog.c:571
 #, fuzzy
 msgid "End Frame:"
-msgstr "_Τέλος παιχνιδιού"
+msgstr "_Ξ¤Ξ­Ξ»ΞΏΟ‚ Ο€Ξ±ΞΉΟ‡Ξ½ΞΉΞ΄ΞΉΞΏΟ"
 
 #. label text
 #. scalesize spinsize
@@ -1250,7 +1250,7 @@ msgstr "_Τέλος παιχνιδιού"
 #: gap/gap_mov_dialog.c:579
 #, fuzzy
 msgid "Last handled frame"
-msgstr "Τελευταία Αλλαγή:"
+msgstr "Ξ¤ΞµΞ»ΞµΟ…Ο„Ξ±Ξ―Ξ± Ξ‘Ξ»Ξ»Ξ±Ξ³Ξ®:"
 
 #
 #. the Preview Frame scale_entry
@@ -1258,7 +1258,7 @@ msgstr "Τελευταία Αλλαγή:"
 #: gap/gap_mov_dialog.c:586
 #, fuzzy
 msgid "Preview Frame:"
-msgstr "Φύλλο προεπισκόπισης"
+msgstr "Ξ¦ΟΞ»Ξ»ΞΏ Ο€ΟΞΏΞµΟ€ΞΉΟƒΞΊΟΟ€ΞΉΟƒΞ·Ο‚"
 
 #. label text
 #. scalesize spinsize
@@ -1277,7 +1277,7 @@ msgstr ""
 #: gap/gap_mov_dialog.c:602 gap/gap_range_ops.c:267
 #, fuzzy
 msgid "Layerstack:"
-msgstr "Στρώματα"
+msgstr "Ξ£Ο„ΟΟΞΌΞ±Ο„Ξ±"
 
 #. label text
 #. scalesize spinsize
@@ -1297,7 +1297,7 @@ msgstr ""
 #: gap/gap_mov_dialog.c:622
 #, fuzzy
 msgid "Force visibility"
-msgstr "Ορατότητα"
+msgstr "ΞΟΞ±Ο„ΟΟ„Ξ·Ο„Ξ±"
 
 #: gap/gap_mov_dialog.c:629
 msgid "Force visibility for all copied Src-Layers"
@@ -1322,30 +1322,30 @@ msgstr ""
 #: gap/gap_mov_dialog.c:786
 #, fuzzy
 msgid "Object on empty frames"
-msgstr "Ιδιότητες αντικειμένου"
+msgstr "Ξ™Ξ΄ΞΉΟΟ„Ξ·Ο„ΞµΟ‚ Ξ±Ξ½Ο„ΞΉΞΊΞµΞΉΞΌΞ­Ξ½ΞΏΟ…"
 
 #
 #: gap/gap_mov_dialog.c:787
 #, fuzzy
 msgid "Object on one frame"
-msgstr "Όνομα Αντικειμένου"
+msgstr "ΞΞ½ΞΏΞΌΞ± Ξ‘Ξ½Ο„ΞΉΞΊΞµΞΉΞΌΞ­Ξ½ΞΏΟ…"
 
 #
 #: gap/gap_mov_dialog.c:788
 #, fuzzy
 msgid "Exact Object on frames"
-msgstr "Εξαγωγή αντικειμένου με όνομα '%s'"
+msgstr "Ξ•ΞΎΞ±Ξ³Ο‰Ξ³Ξ® Ξ±Ξ½Ο„ΞΉΞΊΞµΞΉΞΌΞ­Ξ½ΞΏΟ… ΞΌΞµ ΟΞ½ΞΏΞΌΞ± '%s'"
 
 #
 #: gap/gap_mov_dialog.c:818
 #, fuzzy
 msgid "Anim Preview Mode"
-msgstr "Φύλλο προεπισκόπισης"
+msgstr "Ξ¦ΟΞ»Ξ»ΞΏ Ο€ΟΞΏΞµΟ€ΞΉΟƒΞΊΟΟ€ΞΉΟƒΞ·Ο‚"
 
 #: gap/gap_mov_dialog.c:826
 #, fuzzy
 msgid "Scale Preview"
-msgstr "Ανανέωση Προεπισκόπησης"
+msgstr "Ξ‘Ξ½Ξ±Ξ½Ξ­Ο‰ΟƒΞ· Ξ ΟΞΏΞµΟ€ΞΉΟƒΞΊΟΟ€Ξ·ΟƒΞ·Ο‚"
 
 #: gap/gap_mov_dialog.c:827
 msgid "Scale down size of the generated animated preview (in %)"
@@ -1354,7 +1354,7 @@ msgstr ""
 #: gap/gap_mov_dialog.c:835
 #, fuzzy
 msgid "Framerate"
-msgstr "Όνομα πλαισίου"
+msgstr "ΞΞ½ΞΏΞΌΞ± Ο€Ξ»Ξ±ΞΉΟƒΞ―ΞΏΟ…"
 
 #: gap/gap_mov_dialog.c:836
 msgid "Framerate to use in the animated preview in frames/sec"
@@ -1363,7 +1363,7 @@ msgstr ""
 #: gap/gap_mov_dialog.c:850
 #, fuzzy
 msgid "Copy to Video Buffer"
-msgstr "Αντιγραφή σε Φάκελο"
+msgstr "Ξ‘Ξ½Ο„ΞΉΞ³ΟΞ±Ο†Ξ® ΟƒΞµ Ξ¦Ξ¬ΞΊΞµΞ»ΞΏ"
 
 #: gap/gap_mov_dialog.c:851
 msgid ""
@@ -1378,25 +1378,25 @@ msgstr ""
 #
 #: gap/gap_mov_dialog.c:857
 msgid "Options"
-msgstr "Επιλογές"
+msgstr "Ξ•Ο€ΞΉΞ»ΞΏΞ³Ξ­Ο‚"
 
 #: gap/gap_mov_dialog.c:902
 #, fuzzy
 msgid "Generate Animated Preview failed\n"
-msgstr "Δημιουργία _Κατατόμησης"
+msgstr "Ξ”Ξ·ΞΌΞΉΞΏΟ…ΟΞ³Ξ―Ξ± _ΞΞ±Ο„Ξ±Ο„ΟΞΌΞ·ΟƒΞ·Ο‚"
 
 #. filesel is already open
 #: gap/gap_mov_dialog.c:1187
 #, fuzzy
 msgid "Load Path Points from file"
-msgstr "Λήψη πληροφοριών πακέτου από το αρχείο %s"
+msgstr "Ξ›Ξ®ΟΞ· Ο€Ξ»Ξ·ΟΞΏΟ†ΞΏΟΞΉΟΞ½ Ο€Ξ±ΞΊΞ­Ο„ΞΏΟ… Ξ±Ο€Ο Ο„ΞΏ Ξ±ΟΟ‡ΞµΞ―ΞΏ %s"
 
 #
 #. filesel is already open
 #: gap/gap_mov_dialog.c:1223
 #, fuzzy
 msgid "Save Path Points to file"
-msgstr "Αποθήκευση περιεχομένων widget σε αρχείο"
+msgstr "Ξ‘Ο€ΞΏΞΈΞ®ΞΊΞµΟ…ΟƒΞ· Ο€ΞµΟΞΉΞµΟ‡ΞΏΞΌΞ­Ξ½Ο‰Ξ½ widget ΟƒΞµ Ξ±ΟΟ‡ΞµΞ―ΞΏ"
 
 #: gap/gap_mov_dialog.c:1552
 #, c-format
@@ -1406,13 +1406,13 @@ msgstr ""
 #: gap/gap_mov_dialog.c:1638
 #, fuzzy
 msgid "Source Select"
-msgstr "Επιλογή Χρώματος"
+msgstr "Ξ•Ο€ΞΉΞ»ΞΏΞ³Ξ® Ξ§ΟΟΞΌΞ±Ο„ΞΏΟ‚"
 
 #. Source Layer menu
 #: gap/gap_mov_dialog.c:1654
 #, fuzzy
 msgid "Source Image/Layer:"
-msgstr "Ηλίασμα Εικόνας"
+msgstr "Ξ—Ξ»Ξ―Ξ±ΟƒΞΌΞ± Ξ•ΞΉΞΊΟΞ½Ξ±Ο‚"
 
 #: gap/gap_mov_dialog.c:1664
 msgid "Source Object to insert into Frame Range"
@@ -1421,18 +1421,18 @@ msgstr ""
 #. Paintmode menu
 #: gap/gap_mov_dialog.c:1679
 msgid "Mode:"
-msgstr "Κατάσταση:"
+msgstr "ΞΞ±Ο„Ξ¬ΟƒΟ„Ξ±ΟƒΞ·:"
 
 #: gap/gap_mov_dialog.c:1688
 #, fuzzy
 msgid "Paintmode"
-msgstr "Κατάσταση ζωγραφίσματος με βρούτσα."
+msgstr "ΞΞ±Ο„Ξ¬ΟƒΟ„Ξ±ΟƒΞ· Ξ¶Ο‰Ξ³ΟΞ±Ο†Ξ―ΟƒΞΌΞ±Ο„ΞΏΟ‚ ΞΌΞµ Ξ²ΟΞΏΟΟ„ΟƒΞ±."
 
 #. Loop Stepmode menu
 #: gap/gap_mov_dialog.c:1703
 #, fuzzy
 msgid "Stepmode:"
-msgstr "Οδός:"
+msgstr "ΞΞ΄ΟΟ‚:"
 
 #: gap/gap_mov_dialog.c:1721
 msgid "How to fetch the next SrcLayer at the next handled frame"
@@ -1442,7 +1442,7 @@ msgstr ""
 #: gap/gap_mov_dialog.c:1727
 #, fuzzy
 msgid "Handle:"
-msgstr "Χειριστής:"
+msgstr "Ξ§ΞµΞΉΟΞΉΟƒΟ„Ξ®Ο‚:"
 
 #: gap/gap_mov_dialog.c:1745
 msgid "How to place the SrcLayer at Controlpoint Coordinates"
@@ -1453,36 +1453,36 @@ msgstr ""
 #: gap/gap_mov_dialog.c:1799
 #, fuzzy
 msgid "Move Path Preview"
-msgstr "Προεπισκόπηση Εκτύπωσης"
+msgstr "Ξ ΟΞΏΞµΟ€ΞΉΟƒΞΊΟΟ€Ξ·ΟƒΞ· Ξ•ΞΊΟ„ΟΟ€Ο‰ΟƒΞ·Ο‚"
 
 #. X
 #. table col, row
 #: gap/gap_mov_dialog.c:1822
 msgid "X:"
-msgstr "Χ:"
+msgstr "Ξ§:"
 
 #. lower, upper (unconstrained)
 #: gap/gap_mov_dialog.c:1831
 msgid "X Coordinate"
-msgstr "Συντεταγμένη Χ"
+msgstr "Ξ£Ο…Ξ½Ο„ΞµΟ„Ξ±Ξ³ΞΌΞ­Ξ½Ξ· Ξ§"
 
 #. Y
 #. table col, row
 #: gap/gap_mov_dialog.c:1840
 msgid "Y:"
-msgstr "Ψ:"
+msgstr "Ξ¨:"
 
 #. lower, upper (unconstrained)
 #: gap/gap_mov_dialog.c:1849
 #, fuzzy
 msgid "Y Coordinate"
-msgstr "Συντεταγμένη Χ"
+msgstr "Ξ£Ο…Ξ½Ο„ΞµΟ„Ξ±Ξ³ΞΌΞ­Ξ½Ξ· Ξ§"
 
 #. Widht Scale
 #. table col, row
 #: gap/gap_mov_dialog.c:1858
 msgid "Width:"
-msgstr "Πλάτος:"
+msgstr "Ξ Ξ»Ξ¬Ο„ΞΏΟ‚:"
 
 #. label text
 #. scalesize spinsize
@@ -1500,7 +1500,7 @@ msgstr ""
 #. table col, row
 #: gap/gap_mov_dialog.c:1875
 msgid "Height:"
-msgstr "Ύψος:"
+msgstr "ΞΟΞΏΟ‚:"
 
 #. label text
 #. scalesize spinsize
@@ -1519,7 +1519,7 @@ msgstr ""
 #. table col, row
 #: gap/gap_mov_dialog.c:1892
 msgid "Opacity:"
-msgstr "Διαφάνεια:"
+msgstr "Ξ”ΞΉΞ±Ο†Ξ¬Ξ½ΞµΞΉΞ±:"
 
 #. label text
 #. scalesize spinsize
@@ -1538,7 +1538,7 @@ msgstr ""
 #: gap/gap_mov_dialog.c:1909
 #, fuzzy
 msgid "Rotate:"
-msgstr "Περιστροφή"
+msgstr "Ξ ΞµΟΞΉΟƒΟ„ΟΞΏΟ†Ξ®"
 
 #. label text
 #. scalesize spinsize
@@ -1557,7 +1557,7 @@ msgstr ""
 #: gap/gap_mov_dialog.c:1927
 #, fuzzy
 msgid "Keyframe:"
-msgstr "Όνομα χρήστη:"
+msgstr "ΞΞ½ΞΏΞΌΞ± Ο‡ΟΞ®ΟƒΟ„Ξ·:"
 
 #. label text
 #. scalesize spinsize
@@ -1576,7 +1576,7 @@ msgstr ""
 #: gap/gap_mov_dialog.c:2010
 #, fuzzy
 msgid "Add Point"
-msgstr "Σημείο"
+msgstr "Ξ£Ξ·ΞΌΞµΞ―ΞΏ"
 
 #: gap/gap_mov_dialog.c:2018
 msgid ""
@@ -1588,7 +1588,7 @@ msgstr ""
 #: gap/gap_mov_dialog.c:2023
 #, fuzzy
 msgid "Show Path"
-msgstr "Εμφάνιση ημερομηνίας"
+msgstr "Ξ•ΞΌΟ†Ξ¬Ξ½ΞΉΟƒΞ· Ξ·ΞΌΞµΟΞΏΞΌΞ·Ξ½Ξ―Ξ±Ο‚"
 
 #: gap/gap_mov_dialog.c:2030
 msgid ""
@@ -1599,7 +1599,7 @@ msgstr ""
 #: gap/gap_mov_dialog.c:2040
 #, fuzzy
 msgid "Insert Point"
-msgstr "Σημείο εισαγωγής"
+msgstr "Ξ£Ξ·ΞΌΞµΞ―ΞΏ ΞµΞΉΟƒΞ±Ξ³Ο‰Ξ³Ξ®Ο‚"
 
 #: gap/gap_mov_dialog.c:2048
 msgid ""
@@ -1610,70 +1610,70 @@ msgstr ""
 #: gap/gap_mov_dialog.c:2052
 #, fuzzy
 msgid "Delete Point"
-msgstr "Διαγραφή σημειώματος"
+msgstr "Ξ”ΞΉΞ±Ξ³ΟΞ±Ο†Ξ® ΟƒΞ·ΞΌΞµΞΉΟΞΌΞ±Ο„ΞΏΟ‚"
 
 #: gap/gap_mov_dialog.c:2060
 #, fuzzy
 msgid "Delete current Controlpoint"
-msgstr "Διαγραφή σημείου σύνδεσης"
+msgstr "Ξ”ΞΉΞ±Ξ³ΟΞ±Ο†Ξ® ΟƒΞ·ΞΌΞµΞ―ΞΏΟ… ΟƒΟΞ½Ξ΄ΞµΟƒΞ·Ο‚"
 
 #
 #: gap/gap_mov_dialog.c:2066
 #, fuzzy
 msgid "Prev Point"
-msgstr "Εκτύπωση"
+msgstr "Ξ•ΞΊΟ„ΟΟ€Ο‰ΟƒΞ·"
 
 #: gap/gap_mov_dialog.c:2074
 #, fuzzy
 msgid "Show Previous Controlpoint"
-msgstr "Εμφάνιση σημείων προσάρτησης δίσκων"
+msgstr "Ξ•ΞΌΟ†Ξ¬Ξ½ΞΉΟƒΞ· ΟƒΞ·ΞΌΞµΞ―Ο‰Ξ½ Ο€ΟΞΏΟƒΞ¬ΟΟ„Ξ·ΟƒΞ·Ο‚ Ξ΄Ξ―ΟƒΞΊΟ‰Ξ½"
 
 #
 #: gap/gap_mov_dialog.c:2078
 #, fuzzy
 msgid "Next Point"
-msgstr "Επόμενο Τμήμα"
+msgstr "Ξ•Ο€ΟΞΌΞµΞ½ΞΏ Ξ¤ΞΌΞ®ΞΌΞ±"
 
 #: gap/gap_mov_dialog.c:2086
 #, fuzzy
 msgid "Show Next Controlpoint"
-msgstr "Εμφάνιση σημείων προσάρτησης δίσκων"
+msgstr "Ξ•ΞΌΟ†Ξ¬Ξ½ΞΉΟƒΞ· ΟƒΞ·ΞΌΞµΞ―Ο‰Ξ½ Ο€ΟΞΏΟƒΞ¬ΟΟ„Ξ·ΟƒΞ·Ο‚ Ξ΄Ξ―ΟƒΞΊΟ‰Ξ½"
 
 #: gap/gap_mov_dialog.c:2092
 #, fuzzy
 msgid "First Point"
-msgstr "Πρώτη γραμμή"
+msgstr "Ξ ΟΟΟ„Ξ· Ξ³ΟΞ±ΞΌΞΌΞ®"
 
 #: gap/gap_mov_dialog.c:2100
 #, fuzzy
 msgid "Show First Controlpoint"
-msgstr "Εμφάνιση σημείων προσάρτησης δίσκων"
+msgstr "Ξ•ΞΌΟ†Ξ¬Ξ½ΞΉΟƒΞ· ΟƒΞ·ΞΌΞµΞ―Ο‰Ξ½ Ο€ΟΞΏΟƒΞ¬ΟΟ„Ξ·ΟƒΞ·Ο‚ Ξ΄Ξ―ΟƒΞΊΟ‰Ξ½"
 
 #: gap/gap_mov_dialog.c:2104
 #, fuzzy
 msgid "Last Point"
-msgstr "Σημείο"
+msgstr "Ξ£Ξ·ΞΌΞµΞ―ΞΏ"
 
 #: gap/gap_mov_dialog.c:2112
 #, fuzzy
 msgid "Show Last Controlpoint"
-msgstr "Εμφάνιση Ση_μείων Σύνδεσης"
+msgstr "Ξ•ΞΌΟ†Ξ¬Ξ½ΞΉΟƒΞ· Ξ£Ξ·_ΞΌΞµΞ―Ο‰Ξ½ Ξ£ΟΞ½Ξ΄ΞµΟƒΞ·Ο‚"
 
 #: gap/gap_mov_dialog.c:2118
 #, fuzzy
 msgid "Clear Point"
-msgstr "Τηλέφωνο Αυτοκινήτου"
+msgstr "Ξ¤Ξ·Ξ»Ξ­Ο†Ο‰Ξ½ΞΏ Ξ‘Ο…Ο„ΞΏΞΊΞΉΞ½Ξ®Ο„ΞΏΟ…"
 
 #: gap/gap_mov_dialog.c:2126
 #, fuzzy
 msgid "Reset the current Controlpoint to default Values"
-msgstr "Εισαγωγή τρέχουσας ημ/νίας και ώρας"
+msgstr "Ξ•ΞΉΟƒΞ±Ξ³Ο‰Ξ³Ξ® Ο„ΟΞ­Ο‡ΞΏΟ…ΟƒΞ±Ο‚ Ξ·ΞΌ/Ξ½Ξ―Ξ±Ο‚ ΞΊΞ±ΞΉ ΟΟΞ±Ο‚"
 
 #
 #: gap/gap_mov_dialog.c:2130
 #, fuzzy
 msgid "Clear All Points"
-msgstr "Καθαρισμός των widgets"
+msgstr "ΞΞ±ΞΈΞ±ΟΞΉΟƒΞΌΟΟ‚ Ο„Ο‰Ξ½ widgets"
 
 #: gap/gap_mov_dialog.c:2138
 msgid ""
@@ -1684,7 +1684,7 @@ msgstr ""
 #: gap/gap_mov_dialog.c:2145
 #, fuzzy
 msgid "Rotate Follow"
-msgstr "Περιστροφή"
+msgstr "Ξ ΞµΟΞΉΟƒΟ„ΟΞΏΟ†Ξ®"
 
 #: gap/gap_mov_dialog.c:2156
 msgid ""
@@ -1695,18 +1695,18 @@ msgstr ""
 #: gap/gap_mov_dialog.c:2163
 #, fuzzy
 msgid "Delete All Points"
-msgstr "Διαγραφή κελιών"
+msgstr "Ξ”ΞΉΞ±Ξ³ΟΞ±Ο†Ξ® ΞΊΞµΞ»ΞΉΟΞ½"
 
 #: gap/gap_mov_dialog.c:2171
 #, fuzzy
 msgid "Delete all Controlpoints"
-msgstr "Διαγραφή Περιεχομένων Απορριμμάτων;"
+msgstr "Ξ”ΞΉΞ±Ξ³ΟΞ±Ο†Ξ® Ξ ΞµΟΞΉΞµΟ‡ΞΏΞΌΞ­Ξ½Ο‰Ξ½ Ξ‘Ο€ΞΏΟΟΞΉΞΌΞΌΞ¬Ο„Ο‰Ξ½;"
 
 #
 #: gap/gap_mov_dialog.c:2178
 #, fuzzy
 msgid "Load Points"
-msgstr "Στιγμές"
+msgstr "Ξ£Ο„ΞΉΞ³ΞΌΞ­Ο‚"
 
 #: gap/gap_mov_dialog.c:2186
 msgid "Load Controlpoints from file"
@@ -1716,13 +1716,13 @@ msgstr ""
 #: gap/gap_mov_dialog.c:2190
 #, fuzzy
 msgid "Save Points"
-msgstr "Στιγμές"
+msgstr "Ξ£Ο„ΞΉΞ³ΞΌΞ­Ο‚"
 
 #
 #: gap/gap_mov_dialog.c:2198
 #, fuzzy
 msgid "Save Controlpoints to file"
-msgstr "Αποθήκευση της αναφοράς σε αρχείο"
+msgstr "Ξ‘Ο€ΞΏΞΈΞ®ΞΊΞµΟ…ΟƒΞ· Ο„Ξ·Ο‚ Ξ±Ξ½Ξ±Ο†ΞΏΟΞ¬Ο‚ ΟƒΞµ Ξ±ΟΟ‡ΞµΞ―ΞΏ"
 
 #: gap/gap_mov_dialog.c:2658
 msgid ""
@@ -1733,7 +1733,7 @@ msgstr ""
 #: gap/gap_mov_dialog.c:2665
 #, fuzzy
 msgid "Reset Keyframes"
-msgstr "Ρυθμός επανάληψης"
+msgstr "Ξ΅Ο…ΞΈΞΌΟΟ‚ ΞµΟ€Ξ±Ξ½Ξ¬Ξ»Ξ·ΟΞ·Ο‚"
 
 #: gap/gap_mov_dialog.c:2670
 msgid "Move Path Controlpointcheck"
@@ -1742,7 +1742,7 @@ msgstr ""
 #: gap/gap_mov_dialog.c:2671
 #, fuzzy
 msgid "Errors:"
-msgstr "Σφάλμα:"
+msgstr "Ξ£Ο†Ξ¬Ξ»ΞΌΞ±:"
 
 #: gap/gap_mov_exec.c:444
 msgid ""
@@ -1753,12 +1753,12 @@ msgstr ""
 #: gap/gap_mov_exec.c:455
 #, fuzzy
 msgid "Copying Layers into Frames..."
-msgstr "Αντιγραφή μηνυμάτων στο %s"
+msgstr "Ξ‘Ξ½Ο„ΞΉΞ³ΟΞ±Ο†Ξ® ΞΌΞ·Ξ½Ο…ΞΌΞ¬Ο„Ο‰Ξ½ ΟƒΟ„ΞΏ %s"
 
 #: gap/gap_mov_exec.c:459
 #, fuzzy
 msgid "Generating Animated Preview..."
-msgstr "_Προεπισκόπηση Εκτύπωσης..."
+msgstr "_Ξ ΟΞΏΞµΟ€ΞΉΟƒΞΊΟΟ€Ξ·ΟƒΞ· Ξ•ΞΊΟ„ΟΟ€Ο‰ΟƒΞ·Ο‚..."
 
 #: gap/gap_mov_exec.c:1376
 #, c-format
@@ -1864,7 +1864,7 @@ msgstr ""
 #: gap/gap_mpege.c:194
 #, fuzzy
 msgid "MPEG_ENCODE Information"
-msgstr "Χωρίς Πληροφόρηση"
+msgstr "Ξ§Ο‰ΟΞ―Ο‚ Ξ Ξ»Ξ·ΟΞΏΟ†ΟΟΞ·ΟƒΞ·"
 
 #: gap/gap_mpege.c:231
 msgid "generate MPEG1 (ISO/IEC 11172-2) stream"
@@ -1877,7 +1877,7 @@ msgstr ""
 #: gap/gap_mpege.c:242
 #, fuzzy
 msgid "GenParams"
-msgstr "Παράμετροι"
+msgstr "Ξ Ξ±ΟΞ¬ΞΌΞµΟ„ΟΞΏΞΉ"
 
 #: gap/gap_mpege.c:244
 msgid "Gen + Encode"
@@ -1886,12 +1886,12 @@ msgstr ""
 #: gap/gap_mpege.c:266
 #, fuzzy
 msgid "To   Frame:"
-msgstr "Πλαίσιο"
+msgstr "Ξ Ξ»Ξ±Ξ―ΟƒΞΉΞΏ"
 
 #: gap/gap_mpege.c:273
 #, fuzzy
 msgid "Framerate :"
-msgstr "Δειγματοληψία:"
+msgstr "Ξ”ΞµΞΉΞ³ΞΌΞ±Ο„ΞΏΞ»Ξ·ΟΞ―Ξ±:"
 
 #: gap/gap_mpege.c:274
 msgid "framerate in frames/second"
@@ -1900,7 +1900,7 @@ msgstr ""
 #: gap/gap_mpege.c:281
 #, fuzzy
 msgid "Bitrate:"
-msgstr "Ημερομηνία Γέννησης:"
+msgstr "Ξ—ΞΌΞµΟΞΏΞΌΞ·Ξ½Ξ―Ξ± Ξ“Ξ­Ξ½Ξ½Ξ·ΟƒΞ·Ο‚:"
 
 #: gap/gap_mpege.c:282
 msgid ""
@@ -1911,7 +1911,7 @@ msgstr ""
 #: gap/gap_mpege.c:296
 #, fuzzy
 msgid "Outputfile:"
-msgstr "Εξαγωγή Αρχείου"
+msgstr "Ξ•ΞΎΞ±Ξ³Ο‰Ξ³Ξ® Ξ‘ΟΟ‡ΞµΞ―ΞΏΟ…"
 
 #. pixel
 #: gap/gap_mpege.c:298
@@ -1921,7 +1921,7 @@ msgstr ""
 #: gap/gap_mpege.c:304
 #, fuzzy
 msgid "Paramfile:"
-msgstr "Κατατομή"
+msgstr "ΞΞ±Ο„Ξ±Ο„ΞΏΞΌΞ®"
 
 #. pixel
 #: gap/gap_mpege.c:306
@@ -1933,7 +1933,7 @@ msgstr ""
 #: gap/gap_mpege.c:312
 #, fuzzy
 msgid "Startscript:"
-msgstr "Πρόγραμμα εντολών:"
+msgstr "Ξ ΟΟΞ³ΟΞ±ΞΌΞΌΞ± ΞµΞ½Ο„ΞΏΞ»ΟΞ½:"
 
 #. pixel
 #: gap/gap_mpege.c:314
@@ -1951,7 +1951,7 @@ msgstr ""
 #: gap/gap_mpege.c:324
 #, fuzzy
 msgid "Constant Bitrate :"
-msgstr "Είδος περιεχομένου:"
+msgstr "Ξ•Ξ―Ξ΄ΞΏΟ‚ Ο€ΞµΟΞΉΞµΟ‡ΞΏΞΌΞ­Ξ½ΞΏΟ…:"
 
 #: gap/gap_mpege.c:325
 msgid "Iqnore I/P/QSCALE values and use constant bit-rate)"
@@ -1959,7 +1959,7 @@ msgstr ""
 
 #: gap/gap_mpege.c:330
 msgid "Pattern:"
-msgstr "Υπόδειγμα:"
+msgstr "Ξ¥Ο€ΟΞ΄ΞµΞΉΞ³ΞΌΞ±:"
 
 #. pixel
 #: gap/gap_mpege.c:332
@@ -1999,22 +1999,22 @@ msgstr ""
 #: gap/gap_mpege.c:362
 #, fuzzy
 msgid "P-Search :"
-msgstr "Αναζήτηση: "
+msgstr "Ξ‘Ξ½Ξ±Ξ¶Ξ®Ο„Ξ·ΟƒΞ·: "
 
 #: gap/gap_mpege.c:363
 #, fuzzy
 msgid "Search Algorithmus used for P-frames"
-msgstr "Αναζήτηση σε αυτόν τον υπολογιστή για αρχεία"
+msgstr "Ξ‘Ξ½Ξ±Ξ¶Ξ®Ο„Ξ·ΟƒΞ· ΟƒΞµ Ξ±Ο…Ο„ΟΞ½ Ο„ΞΏΞ½ Ο…Ο€ΞΏΞ»ΞΏΞ³ΞΉΟƒΟ„Ξ® Ξ³ΞΉΞ± Ξ±ΟΟ‡ΞµΞ―Ξ±"
 
 #: gap/gap_mpege.c:369
 #, fuzzy
 msgid "B-Search :"
-msgstr "Αναζήτηση: "
+msgstr "Ξ‘Ξ½Ξ±Ξ¶Ξ®Ο„Ξ·ΟƒΞ·: "
 
 #: gap/gap_mpege.c:370
 #, fuzzy
 msgid "Search Algorithmus used for B-frames"
-msgstr "Αναζήτηση σε αυτόν τον υπολογιστή για αρχεία"
+msgstr "Ξ‘Ξ½Ξ±Ξ¶Ξ®Ο„Ξ·ΟƒΞ· ΟƒΞµ Ξ±Ο…Ο„ΟΞ½ Ο„ΞΏΞ½ Ο…Ο€ΞΏΞ»ΞΏΞ³ΞΉΟƒΟ„Ξ® Ξ³ΞΉΞ± Ξ±ΟΟ‡ΞµΞ―Ξ±"
 
 #: gap/gap_mpege.c:375
 msgid "Gen MPEG_ENCODE Parameters"
@@ -2023,7 +2023,7 @@ msgstr ""
 #: gap/gap_mpege.c:376 gap/gap_mpege.c:414
 #, fuzzy
 msgid "Encode Values"
-msgstr "Τιμές"
+msgstr "Ξ¤ΞΉΞΌΞ­Ο‚"
 
 #: gap/gap_mpege.c:392
 msgid ""
@@ -2033,18 +2033,18 @@ msgstr ""
 
 #: gap/gap_mpege.c:395
 msgid "MPEG-type :"
-msgstr "Τύπος-MIME :"
+msgstr "Ξ¤ΟΟ€ΞΏΟ‚-MIME :"
 
 #
 #: gap/gap_mpege.c:404
 #, fuzzy
 msgid "Videoformat :"
-msgstr "Μορφή αρχείου:"
+msgstr "ΞΞΏΟΟ†Ξ® Ξ±ΟΟ‡ΞµΞ―ΞΏΟ…:"
 
 #: gap/gap_mpege.c:405
 #, fuzzy
 msgid "Videoformat"
-msgstr "Μορφή ώρας"
+msgstr "ΞΞΏΟΟ†Ξ® ΟΟΞ±Ο‚"
 
 #. framerates above 30 ar not allowed in mpeg2encode
 #: gap/gap_mpege.c:413
@@ -2096,17 +2096,17 @@ msgstr ""
 #: gap/gap_navigator_dialog.c:376
 #, fuzzy
 msgid "Duplicate selected Frames"
-msgstr "Δημιουργία αντιγράφου για κάθε επιλεγμένο αντικείμενο"
+msgstr "Ξ”Ξ·ΞΌΞΉΞΏΟ…ΟΞ³Ξ―Ξ± Ξ±Ξ½Ο„ΞΉΞ³ΟΞ¬Ο†ΞΏΟ… Ξ³ΞΉΞ± ΞΊΞ¬ΞΈΞµ ΞµΟ€ΞΉΞ»ΞµΞ³ΞΌΞ­Ξ½ΞΏ Ξ±Ξ½Ο„ΞΉΞΊΞµΞ―ΞΌΞµΞ½ΞΏ"
 
 #: gap/gap_navigator_dialog.c:380
 #, fuzzy
 msgid "Delete selected Frames"
-msgstr "Διαγραφή επιλεγμένων εργασιών"
+msgstr "Ξ”ΞΉΞ±Ξ³ΟΞ±Ο†Ξ® ΞµΟ€ΞΉΞ»ΞµΞ³ΞΌΞ­Ξ½Ο‰Ξ½ ΞµΟΞ³Ξ±ΟƒΞΉΟΞ½"
 
 #: gap/gap_navigator_dialog.c:389
 #, fuzzy
 msgid "Goto 1st Frame"
-msgstr "Μετακίνηση στο παρόν"
+msgstr "ΞΞµΟ„Ξ±ΞΊΞ―Ξ½Ξ·ΟƒΞ· ΟƒΟ„ΞΏ Ο€Ξ±ΟΟΞ½"
 
 #: gap/gap_navigator_dialog.c:393
 msgid ""
@@ -2123,7 +2123,7 @@ msgstr ""
 #: gap/gap_navigator_dialog.c:403
 #, fuzzy
 msgid "Goto last Frame"
-msgstr "πήγαινε στην τελευταία σελίδα"
+msgstr "Ο€Ξ®Ξ³Ξ±ΞΉΞ½Ξµ ΟƒΟ„Ξ·Ξ½ Ο„ΞµΞ»ΞµΟ…Ο„Ξ±Ξ―Ξ± ΟƒΞµΞ»Ξ―Ξ΄Ξ±"
 
 #: gap/gap_navigator_dialog.c:460
 msgid "<Image>/Video/VCR Navigator..."
@@ -2137,79 +2137,79 @@ msgstr ""
 #. menu_item copy
 #: gap/gap_navigator_dialog.c:2877
 msgid "Copy"
-msgstr "Αντιγραφή"
+msgstr "Ξ‘Ξ½Ο„ΞΉΞ³ΟΞ±Ο†Ξ®"
 
 #
 #. menu_item cut
 #: gap/gap_navigator_dialog.c:2887
 msgid "Cut"
-msgstr "Αποκοπή"
+msgstr "Ξ‘Ο€ΞΏΞΊΞΏΟ€Ξ®"
 
 #. menu_item paste before
 #: gap/gap_navigator_dialog.c:2897
 #, fuzzy
 msgid "Paste before"
-msgstr "ήταν πριν"
+msgstr "Ξ®Ο„Ξ±Ξ½ Ο€ΟΞΉΞ½"
 
 #. menu_item copy
 #: gap/gap_navigator_dialog.c:2907
 #, fuzzy
 msgid "Paste after"
-msgstr "ήταν μετά"
+msgstr "Ξ®Ο„Ξ±Ξ½ ΞΌΞµΟ„Ξ¬"
 
 #. menu_item copy
 #: gap/gap_navigator_dialog.c:2917
 #, fuzzy
 msgid "Paste replace"
-msgstr "Τύπος επικόλλησης"
+msgstr "Ξ¤ΟΟ€ΞΏΟ‚ ΞµΟ€ΞΉΞΊΟΞ»Ξ»Ξ·ΟƒΞ·Ο‚"
 
 #. menu_item copy
 #: gap/gap_navigator_dialog.c:2927
 #, fuzzy
 msgid "Clear Video Buffer"
-msgstr "Εύρεση στη Μνήμη.."
+msgstr "Ξ•ΟΟΞµΟƒΞ· ΟƒΟ„Ξ· ΞΞ½Ξ®ΞΌΞ·.."
 
 #: gap/gap_navigator_dialog.c:2952
 #, fuzzy
 msgid "Videoframes:"
-msgstr "Πλέγμα"
+msgstr "Ξ Ξ»Ξ­Ξ³ΞΌΞ±"
 
 #: gap/gap_navigator_dialog.c:2967
 #, fuzzy
 msgid "Framerate:"
-msgstr "Δειγματοληψία:"
+msgstr "Ξ”ΞµΞΉΞ³ΞΌΞ±Ο„ΞΏΞ»Ξ·ΟΞ―Ξ±:"
 
 #: gap/gap_navigator_dialog.c:2990
 #, fuzzy
 msgid "Timezoom:"
-msgstr "Χρόνος:"
+msgstr "Ξ§ΟΟΞ½ΞΏΟ‚:"
 
 #. The main shell
 #: gap/gap_navigator_dialog.c:3074
 #, fuzzy
 msgid "Video Navigator"
-msgstr "Περιήγηση"
+msgstr "Ξ ΞµΟΞΉΞ®Ξ³Ξ·ΟƒΞ·"
 
 #
 #: gap/gap_range_ops.c:120
 #, fuzzy
 msgid "New Width:"
-msgstr "Καθορισμός Πλάτους:"
+msgstr "ΞΞ±ΞΈΞΏΟΞΉΟƒΞΌΟΟ‚ Ξ Ξ»Ξ¬Ο„ΞΏΟ…Ο‚:"
 
 #: gap/gap_range_ops.c:129
 #, fuzzy
 msgid "New Height:"
-msgstr "Ύψος:"
+msgstr "ΞΟΞΏΟ‚:"
 
 #: gap/gap_range_ops.c:138
 #, fuzzy
 msgid "Offset X:"
-msgstr "Μετατόπιση"
+msgstr "ΞΞµΟ„Ξ±Ο„ΟΟ€ΞΉΟƒΞ·"
 
 #: gap/gap_range_ops.c:147
 #, fuzzy
 msgid "Offset Y:"
-msgstr "Μετατόπιση"
+msgstr "ΞΞµΟ„Ξ±Ο„ΟΟ€ΞΉΟƒΞ·"
 
 #: gap/gap_range_ops.c:158
 msgid "Crop AnimFrames (all)"
@@ -2245,13 +2245,13 @@ msgstr ""
 #: gap/gap_range_ops.c:309
 #, fuzzy
 msgid "WEB Palette"
-msgstr "Παλέττα"
+msgstr "Ξ Ξ±Ξ»Ξ­Ο„Ο„Ξ±"
 
 # TODO
 #: gap/gap_range_ops.c:310
 #, fuzzy
 msgid "Use Custom Palette"
-msgstr "Χρήση ειδικής γραμματοσειράς."
+msgstr "Ξ§ΟΞ®ΟƒΞ· ΞµΞΉΞ΄ΞΉΞΊΞ®Ο‚ Ξ³ΟΞ±ΞΌΞΌΞ±Ο„ΞΏΟƒΞµΞΉΟΞ¬Ο‚."
 
 #: gap/gap_range_ops.c:311
 msgid "Use Black/White (1-Bit) Palette"
@@ -2272,17 +2272,17 @@ msgstr ""
 #: gap/gap_range_ops.c:316
 #, fuzzy
 msgid "No Color Dithering"
-msgstr "_Χωρίς ελλάτωση χρωμάτων"
+msgstr "_Ξ§Ο‰ΟΞ―Ο‚ ΞµΞ»Ξ»Ξ¬Ο„Ο‰ΟƒΞ· Ο‡ΟΟ‰ΞΌΞ¬Ο„Ο‰Ξ½"
 
 #: gap/gap_range_ops.c:327
 #, fuzzy
 msgid "Palette Type"
-msgstr "Παλέττα"
+msgstr "Ξ Ξ±Ξ»Ξ­Ο„Ο„Ξ±"
 
 #: gap/gap_range_ops.c:334
 #, fuzzy
 msgid "Custom Palette"
-msgstr "Εμφάνιση Παλέττας"
+msgstr "Ξ•ΞΌΟ†Ξ¬Ξ½ΞΉΟƒΞ· Ξ Ξ±Ξ»Ξ­Ο„Ο„Ξ±Ο‚"
 
 #: gap/gap_range_ops.c:335
 msgid ""
@@ -2293,7 +2293,7 @@ msgstr ""
 #: gap/gap_range_ops.c:340
 #, fuzzy
 msgid "Remove Unused"
-msgstr "Διαγρ. Χρήστη"
+msgstr "Ξ”ΞΉΞ±Ξ³Ο. Ξ§ΟΞ®ΟƒΟ„Ξ·"
 
 #: gap/gap_range_ops.c:341
 msgid ""
@@ -2303,7 +2303,7 @@ msgstr ""
 
 #: gap/gap_range_ops.c:346
 msgid "Number of Colors"
-msgstr "Αριθμός Χρωμάτων"
+msgstr "Ξ‘ΟΞΉΞΈΞΌΟΟ‚ Ξ§ΟΟ‰ΞΌΞ¬Ο„Ο‰Ξ½"
 
 #: gap/gap_range_ops.c:347
 msgid ""
@@ -2314,12 +2314,12 @@ msgstr ""
 #: gap/gap_range_ops.c:354
 #, fuzzy
 msgid "Dither Options"
-msgstr "Λοιπές Επιλογές"
+msgstr "Ξ›ΞΏΞΉΟ€Ξ­Ο‚ Ξ•Ο€ΞΉΞ»ΞΏΞ³Ξ­Ο‚"
 
 #: gap/gap_range_ops.c:361
 #, fuzzy
 msgid "Enable transparency"
-msgstr "Έχει Διαφάνεια:"
+msgstr "ΞΟ‡ΞµΞΉ Ξ”ΞΉΞ±Ο†Ξ¬Ξ½ΞµΞΉΞ±:"
 
 #: gap/gap_range_ops.c:362
 msgid "Enable dithering of transparency"
@@ -2328,33 +2328,33 @@ msgstr ""
 #: gap/gap_range_ops.c:365
 #, fuzzy
 msgid "Convert Frames to Indexed"
-msgstr "Μετατροπή διαστημάτων σε υπογραμμίσεις"
+msgstr "ΞΞµΟ„Ξ±Ο„ΟΞΏΟ€Ξ® Ξ΄ΞΉΞ±ΟƒΟ„Ξ·ΞΌΞ¬Ο„Ο‰Ξ½ ΟƒΞµ Ο…Ο€ΞΏΞ³ΟΞ±ΞΌΞΌΞ―ΟƒΞµΞΉΟ‚"
 
 #: gap/gap_range_ops.c:366
 #, fuzzy
 msgid "Palette and Dither Settings"
-msgstr "Ρυθμίσεις παρακολούθησης μπαταρίας"
+msgstr "Ξ΅Ο…ΞΈΞΌΞ―ΟƒΞµΞΉΟ‚ Ο€Ξ±ΟΞ±ΞΊΞΏΞ»ΞΏΟΞΈΞ·ΟƒΞ·Ο‚ ΞΌΟ€Ξ±Ο„Ξ±ΟΞ―Ξ±Ο‚"
 
 #: gap/gap_range_ops.c:431
 #, fuzzy
 msgid "Keep Type"
-msgstr "Είδος MIME"
+msgstr "Ξ•Ξ―Ξ΄ΞΏΟ‚ MIME"
 
 #: gap/gap_range_ops.c:432
 #, fuzzy
 msgid "Convert to RGB"
-msgstr "Μετατροπή"
+msgstr "ΞΞµΟ„Ξ±Ο„ΟΞΏΟ€Ξ®"
 
 #
 #: gap/gap_range_ops.c:433
 #, fuzzy
 msgid "Convert to Gray"
-msgstr "Μετατροπή σε αυτό το είδος:"
+msgstr "ΞΞµΟ„Ξ±Ο„ΟΞΏΟ€Ξ® ΟƒΞµ Ξ±Ο…Ο„Ο Ο„ΞΏ ΞµΞ―Ξ΄ΞΏΟ‚:"
 
 #: gap/gap_range_ops.c:434
 #, fuzzy
 msgid "Convert to Indexed"
-msgstr "Μετακίνηση στην επόμενη σελίδα"
+msgstr "ΞΞµΟ„Ξ±ΞΊΞ―Ξ½Ξ·ΟƒΞ· ΟƒΟ„Ξ·Ξ½ ΞµΟ€ΟΞΌΞµΞ½Ξ· ΟƒΞµΞ»Ξ―Ξ΄Ξ±"
 
 #: gap/gap_range_ops.c:458
 msgid ""
@@ -2366,7 +2366,7 @@ msgstr ""
 #: gap/gap_range_ops.c:461
 #, fuzzy
 msgid "Basename:"
-msgstr "Όνομα χρήστη:"
+msgstr "ΞΞ½ΞΏΞΌΞ± Ο‡ΟΞ®ΟƒΟ„Ξ·:"
 
 #: gap/gap_range_ops.c:462
 msgid ""
@@ -2376,7 +2376,7 @@ msgstr ""
 
 #: gap/gap_range_ops.c:467 gap/gap_split.c:235
 msgid "Extension:"
-msgstr "Επέκταση:"
+msgstr "Ξ•Ο€Ξ­ΞΊΟ„Ξ±ΟƒΞ·:"
 
 #: gap/gap_range_ops.c:468
 msgid ""
@@ -2388,7 +2388,7 @@ msgstr ""
 #: gap/gap_range_ops.c:474
 #, fuzzy
 msgid "Imagetype:"
-msgstr "Εικόνα:"
+msgstr "Ξ•ΞΉΞΊΟΞ½Ξ±:"
 
 #: gap/gap_range_ops.c:475
 msgid ""
@@ -2399,7 +2399,7 @@ msgstr ""
 #: gap/gap_range_ops.c:481 gap/gap_split.c:246
 #, fuzzy
 msgid "Flatten:"
-msgstr "Υπόδειγμα:"
+msgstr "Ξ¥Ο€ΟΞ΄ΞµΞΉΞ³ΞΌΞ±:"
 
 #: gap/gap_range_ops.c:482
 msgid ""
@@ -2410,12 +2410,12 @@ msgstr ""
 #: gap/gap_range_ops.c:487
 #, fuzzy
 msgid "Convert Frames to other Formats"
-msgstr "Μετατροπή διαστημάτων σε υπογραμμίσεις"
+msgstr "ΞΞµΟ„Ξ±Ο„ΟΞΏΟ€Ξ® Ξ΄ΞΉΞ±ΟƒΟ„Ξ·ΞΌΞ¬Ο„Ο‰Ξ½ ΟƒΞµ Ο…Ο€ΞΏΞ³ΟΞ±ΞΌΞΌΞ―ΟƒΞµΞΉΟ‚"
 
 #: gap/gap_range_ops.c:488
 #, fuzzy
 msgid "Convert Settings"
-msgstr "Ρυθμίσεις Χρώματος"
+msgstr "Ξ΅Ο…ΞΈΞΌΞ―ΟƒΞµΞΉΟ‚ Ξ§ΟΟΞΌΞ±Ο„ΞΏΟ‚"
 
 #: gap/gap_range_ops.c:565
 msgid "Expand as necessary"
@@ -2424,7 +2424,7 @@ msgstr ""
 #: gap/gap_range_ops.c:566
 #, fuzzy
 msgid "Clipped to image"
-msgstr "Πεπιεσμένο πλακάκι"
+msgstr "Ξ ΞµΟ€ΞΉΞµΟƒΞΌΞ­Ξ½ΞΏ Ο€Ξ»Ξ±ΞΊΞ¬ΞΊΞΉ"
 
 #: gap/gap_range_ops.c:567
 msgid "Clipped to bottom layer"
@@ -2433,7 +2433,7 @@ msgstr ""
 #: gap/gap_range_ops.c:568
 #, fuzzy
 msgid "Flattened image"
-msgstr "Περιστροφή εικόνας"
+msgstr "Ξ ΞµΟΞΉΟƒΟ„ΟΞΏΟ†Ξ® ΞµΞΉΞΊΟΞ½Ξ±Ο‚"
 
 #: gap/gap_range_ops.c:569
 msgid ""
@@ -2490,12 +2490,12 @@ msgstr ""
 #: gap/gap_range_ops.c:588
 #, fuzzy
 msgid "select all visible Layers"
-msgstr "Επιλογή όλων των μηνυμάτων που εμφανίζονται"
+msgstr "Ξ•Ο€ΞΉΞ»ΞΏΞ³Ξ® ΟΞ»Ο‰Ξ½ Ο„Ο‰Ξ½ ΞΌΞ·Ξ½Ο…ΞΌΞ¬Ο„Ο‰Ξ½ Ο€ΞΏΟ… ΞµΞΌΟ†Ξ±Ξ½Ξ―Ξ¶ΞΏΞ½Ο„Ξ±ΞΉ"
 
 #: gap/gap_range_ops.c:617
 #, fuzzy
 msgid "Layer Basename:"
-msgstr "Όνομα στρώματος:"
+msgstr "ΞΞ½ΞΏΞΌΞ± ΟƒΟ„ΟΟΞΌΞ±Ο„ΞΏΟ‚:"
 
 #: gap/gap_range_ops.c:618
 msgid ""
@@ -2506,7 +2506,7 @@ msgstr ""
 #: gap/gap_range_ops.c:636
 #, fuzzy
 msgid "Layer Mergemode:"
-msgstr "Όνομα στρώματος:"
+msgstr "ΞΞ½ΞΏΞΌΞ± ΟƒΟ„ΟΟΞΌΞ±Ο„ΞΏΟ‚:"
 
 #: gap/gap_range_ops.c:643
 msgid "Exclude BG-Layer"
@@ -2523,7 +2523,7 @@ msgstr ""
 #: gap/gap_range_ops.c:674
 #, fuzzy
 msgid "Use all unselected Layers"
-msgstr "Καθαρισμός όλων των επιλεγμένων γραμμών"
+msgstr "ΞΞ±ΞΈΞ±ΟΞΉΟƒΞΌΟΟ‚ ΟΞ»Ο‰Ξ½ Ο„Ο‰Ξ½ ΞµΟ€ΞΉΞ»ΞµΞ³ΞΌΞ­Ξ½Ο‰Ξ½ Ξ³ΟΞ±ΞΌΞΌΟΞ½"
 
 #: gap/gap_range_ops.c:748
 msgid "Creating Layer-Animated Image..."
@@ -2532,7 +2532,7 @@ msgstr ""
 #: gap/gap_range_ops.c:970
 #, fuzzy
 msgid "Frames to Image"
-msgstr "Πρώτη Εικόνα"
+msgstr "Ξ ΟΟΟ„Ξ· Ξ•ΞΉΞΊΟΞ½Ξ±"
 
 #: gap/gap_range_ops.c:971
 msgid "Create Multilayer-Image from Frames"
@@ -2541,12 +2541,12 @@ msgstr ""
 #: gap/gap_range_ops.c:1112
 #, fuzzy
 msgid "Flattening Frames..."
-msgstr "Λήψη χώρων ονομάτων..."
+msgstr "Ξ›Ξ®ΟΞ· Ο‡ΟΟΟ‰Ξ½ ΞΏΞ½ΞΏΞΌΞ¬Ο„Ο‰Ξ½..."
 
 #: gap/gap_range_ops.c:1113
 #, fuzzy
 msgid "Converting Frames..."
-msgstr "Μετατροπή αρχείου..."
+msgstr "ΞΞµΟ„Ξ±Ο„ΟΞΏΟ€Ξ® Ξ±ΟΟ‡ΞµΞ―ΞΏΟ…..."
 
 #: gap/gap_range_ops.c:1261
 msgid ""
@@ -2571,27 +2571,27 @@ msgstr ""
 #: gap/gap_range_ops.c:1461
 #, fuzzy
 msgid "Flatten Frames"
-msgstr "Όνομα αρχείου"
+msgstr "ΞΞ½ΞΏΞΌΞ± Ξ±ΟΟ‡ΞµΞ―ΞΏΟ…"
 
 #: gap/gap_range_ops.c:1517
 #, fuzzy, c-format
 msgid "Removing Layer (pos:%ld) from Frames..."
-msgstr "Αφαίρεση κάρτας από τον διακομιστή LDAP..."
+msgstr "Ξ‘Ο†Ξ±Ξ―ΟΞµΟƒΞ· ΞΊΞ¬ΟΟ„Ξ±Ο‚ Ξ±Ο€Ο Ο„ΞΏΞ½ Ξ΄ΞΉΞ±ΞΊΞΏΞΌΞΉΟƒΟ„Ξ® LDAP..."
 
 #: gap/gap_range_ops.c:1634
 #, fuzzy
 msgid "Delete Layers in Frames"
-msgstr "Διαγραφή Στρώματος"
+msgstr "Ξ”ΞΉΞ±Ξ³ΟΞ±Ο†Ξ® Ξ£Ο„ΟΟΞΌΞ±Ο„ΞΏΟ‚"
 
 #: gap/gap_range_ops.c:1635
 #, fuzzy
 msgid "Select Frame Range & Position"
-msgstr "Επιλογή διαφορετικού παιγνιδιού"
+msgstr "Ξ•Ο€ΞΉΞ»ΞΏΞ³Ξ® Ξ΄ΞΉΞ±Ο†ΞΏΟΞµΟ„ΞΉΞΊΞΏΟ Ο€Ξ±ΞΉΞ³Ξ½ΞΉΞ΄ΞΉΞΏΟ"
 
 #: gap/gap_split.c:101
 #, fuzzy
 msgid "Splitting into Frames..."
-msgstr "Λήψη χώρων ονομάτων..."
+msgstr "Ξ›Ξ®ΟΞ· Ο‡ΟΟΟ‰Ξ½ ΞΏΞ½ΞΏΞΌΞ¬Ο„Ο‰Ξ½..."
 
 #: gap/gap_split.c:176
 msgid ""
@@ -2626,7 +2626,7 @@ msgstr ""
 #: gap/gap_split.c:241
 #, fuzzy
 msgid "Inverse Order:"
-msgstr "Αντίστροφη Σειρά"
+msgstr "Ξ‘Ξ½Ο„Ξ―ΟƒΟ„ΟΞΏΟ†Ξ· Ξ£ΞµΞΉΟΞ¬"
 
 #: gap/gap_split.c:242
 msgid "Start frame 0001 at Top Layer"
@@ -2646,7 +2646,7 @@ msgstr ""
 #: gap/gap_split.c:251
 #, fuzzy
 msgid "Split Settings"
-msgstr "Ρυθμίσεις Ενναλαγής"
+msgstr "Ξ΅Ο…ΞΈΞΌΞ―ΟƒΞµΞΉΟ‚ Ξ•Ξ½Ξ½Ξ±Ξ»Ξ±Ξ³Ξ®Ο‚"
 
 #: gap/gap_split.c:298
 msgid ""
@@ -2658,44 +2658,44 @@ msgstr ""
 #
 #: gap/resize.c:107
 msgid "Scale"
-msgstr "Κλιμάκωση"
+msgstr "ΞΞ»ΞΉΞΌΞ¬ΞΊΟ‰ΟƒΞ·"
 
 #: gap/resize.c:111
 #, fuzzy
 msgid "Resize"
-msgstr "μέγεθος"
+msgstr "ΞΌΞ­Ξ³ΞµΞΈΞΏΟ‚"
 
 #: gap/resize.c:127
 #, fuzzy
 msgid "New width:"
-msgstr "Νέο παράθυρο:"
+msgstr "ΞΞ­ΞΏ Ο€Ξ±ΟΞ¬ΞΈΟ…ΟΞΏ:"
 
 #: gap/resize.c:144
 #, fuzzy
 msgid "New height:"
-msgstr "Ύψος εφαρμογιδίου:"
+msgstr "ΞΟΞΏΟ‚ ΞµΟ†Ξ±ΟΞΌΞΏΞ³ΞΉΞ΄Ξ―ΞΏΟ…:"
 
 #: gap/resize.c:161
 #, fuzzy
 msgid "X ratio:"
-msgstr "Αναλογία:"
+msgstr "Ξ‘Ξ½Ξ±Ξ»ΞΏΞ³Ξ―Ξ±:"
 
 #: gap/resize.c:178
 #, fuzzy
 msgid "Y ratio:"
-msgstr "Αναλογία:"
+msgstr "Ξ‘Ξ½Ξ±Ξ»ΞΏΞ³Ξ―Ξ±:"
 
 #: gap/resize.c:197
 msgid "X Offset:"
-msgstr "Μετατόπιση Χ:"
+msgstr "ΞΞµΟ„Ξ±Ο„ΟΟ€ΞΉΟƒΞ· Ξ§:"
 
 #: gap/resize.c:214
 #, fuzzy
 msgid "Y Offset:"
-msgstr "Μετατόπιση"
+msgstr "ΞΞµΟ„Ξ±Ο„ΟΟ€ΞΉΟƒΞ·"
 
 #. the constrain toggle button
 #: gap/resize.c:231
 #, fuzzy
 msgid "Constrain Ratio"
-msgstr "Περιορισμός"
+msgstr "Ξ ΞµΟΞΉΞΏΟΞΉΟƒΞΌΟΟ‚"

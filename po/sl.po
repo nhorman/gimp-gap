@@ -1,17 +1,17 @@
 # Slovenian translations of GIMP plug-in messages.
 # Copyright (C) 2000-2002 Free Software Foundation, Inc.
-# Miha Tom¹iè <miha.tomsic@guest.arnes.si>, 2000-2002.
+# Miha TomÅ¡iÄ <miha.tomsic@guest.arnes.si>, 2000-2002.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: 1.1.23\n"
 "POT-Creation-Date: 2003-03-25 02:00+0100\n"
 "PO-Revision-Date: 2002-04-01 17:42+0200\n"
-"Last-Translator: Miha Tom¹iè <miha.tomsic@guest.arnes.si>\n"
+"Last-Translator: Miha TomÅ¡iÄ <miha.tomsic@guest.arnes.si>\n"
 "Language-Team: Language-Team: Slovenian <translation-team-sl@lists."
 "sourceforge.net>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-2\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Button  to invoke filebrowser
@@ -118,19 +118,19 @@ msgstr ""
 
 #: gap/gap_decode_mpeg_main.c:102
 msgid "<Image>/Video/Split Video to Frames"
-msgstr "<Image>/Video/Razbij video na slièice"
+msgstr "<Image>/Video/Razbij video na sliÄice"
 
 #: gap/gap_decode_mpeg_main.c:103
 msgid "<Toolbox>/Xtns/Split Video to Frames"
-msgstr "<Toolbox>/Veè/Razbij video na slièice"
+msgstr "<Toolbox>/VeÄ/Razbij video na sliÄice"
 
 #: gap/gap_decode_mpeg_main.c:176
 msgid "<Image>/Video/Split Video to Frames/MPEG1"
-msgstr "<Image>/Video/Razbij video na slièice/MPEG1"
+msgstr "<Image>/Video/Razbij video na sliÄice/MPEG1"
 
 #: gap/gap_decode_mpeg_main.c:189
 msgid "<Toolbox>/Xtns/Split Video to Frames/MPEG1"
-msgstr "<Toolbox>/Veè/Razbij video na slièice/MPEG1"
+msgstr "<Toolbox>/VeÄ/Razbij video na sliÄice/MPEG1"
 
 #: gap/gap_decode_mpeg_main.c:332 gap/gap_decode_xanim.c:337
 #: gap/gap_range_ops.c:1240
@@ -473,11 +473,11 @@ msgstr "<Image>/Filtri/Filtriraj vse sloje..."
 
 #: gap/gap_frontends_main.c:125
 msgid "<Image>/Video/Split Video to Frames/Any XANIM readable..."
-msgstr "<Image>/Video/Razbij video na slièice/Kar je berljivo z XANIM-om..."
+msgstr "<Image>/Video/Razbij video na sliÄice/Kar je berljivo z XANIM-om..."
 
 #: gap/gap_frontends_main.c:137
 msgid "<Toolbox>/Xtns/Split Video to Frames/Any XANIM readable..."
-msgstr "<Toolbox>/Veè/Razbij video na slièice/Kar je berljivo z XANIM-om..."
+msgstr "<Toolbox>/VeÄ/Razbij video na sliÄice/Kar je berljivo z XANIM-om..."
 
 #: gap/gap_frontends_main.c:149
 msgid "<Image>/Video/Encode/MPEG1..."
@@ -982,7 +982,7 @@ msgstr "Odtenek"
 
 #: gap/gap_mov_dialog.c:273
 msgid "Saturation"
-msgstr "Nasièenost"
+msgstr "NasiÄenost"
 
 #: gap/gap_mov_dialog.c:274
 msgid "Color"
@@ -1034,7 +1034,7 @@ msgstr ""
 
 #: gap/gap_mov_dialog.c:299
 msgid "None"
-msgstr "Niè"
+msgstr "NiÄ"
 
 #: gap/gap_mov_dialog.c:300
 msgid "Frame Loop"
@@ -2067,7 +2067,7 @@ msgstr ""
 
 #: gap/gap_range_ops.c:346
 msgid "Number of Colors"
-msgstr "©tevilo barv"
+msgstr "Å tevilo barv"
 
 #: gap/gap_range_ops.c:347
 msgid ""

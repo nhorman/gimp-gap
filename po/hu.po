@@ -10,26 +10,26 @@ msgstr ""
 "Last-Translator: Emese Kovacs <emese@gnome.hu>\n"
 "Language-Team: Hungarian <hu@gnome.hu>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-2\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Button  to invoke filebrowser
 #: gap/gap_arr_dialog.c:293
 msgid "File-Browser"
-msgstr "Fájlböngészõ"
+msgstr "FÃ¡jlbÃ¶ngÃ©szÅ‘"
 
 #. parameter settings
 #: gap/gap_arr_dialog.c:793
 msgid "Enter Values"
-msgstr "Add meg az értékeket"
+msgstr "Add meg az Ã©rtÃ©keket"
 
 #: gap/gap_arr_dialog.c:812
 msgid "Value:"
-msgstr "Érték:"
+msgstr "Ã‰rtÃ©k:"
 
 #: gap/gap_arr_dialog.c:878
 msgid "Value: "
-msgstr "Érték:"
+msgstr "Ã‰rtÃ©k:"
 
 #: gap/gap_arr_dialog.c:1040
 msgid "Press Button"
@@ -49,7 +49,7 @@ msgstr ""
 
 #: gap/gap_dbbrowser_utils.c:148
 msgid "Search:"
-msgstr "Keresés:"
+msgstr "KeresÃ©s:"
 
 #: gap/gap_dbbrowser_utils.c:176
 msgid "Gen Code by name"
@@ -57,7 +57,7 @@ msgstr ""
 
 #: gap/gap_dbbrowser_utils.c:185
 msgid "Search by Name"
-msgstr "Keresés név alapján"
+msgstr "KeresÃ©s nÃ©v alapjÃ¡n"
 
 #: gap/gap_dbbrowser_utils.c:193
 msgid "Search by Blurb"
@@ -66,7 +66,7 @@ msgstr ""
 #. show the name
 #: gap/gap_dbbrowser_utils.c:335
 msgid "Name:"
-msgstr "Név:"
+msgstr "NÃ©v:"
 
 #. show the description
 #: gap/gap_dbbrowser_utils.c:352
@@ -83,16 +83,16 @@ msgstr ""
 
 #: gap/gap_dbbrowser_utils.c:469
 msgid "Help:"
-msgstr "Súgó:"
+msgstr "SÃºgÃ³:"
 
 #. show the author & the copyright
 #: gap/gap_dbbrowser_utils.c:507
 msgid "Author:"
-msgstr "Szerzõ:"
+msgstr "SzerzÅ‘:"
 
 #: gap/gap_dbbrowser_utils.c:522
 msgid "Date:"
-msgstr "Dátum:"
+msgstr "DÃ¡tum:"
 
 #: gap/gap_dbbrowser_utils.c:537
 msgid "Copyright:"
@@ -117,29 +117,29 @@ msgstr ""
 
 #: gap/gap_decode_mpeg_main.c:102
 msgid "<Image>/Video/Split Video to Frames"
-msgstr "<Image>/Mozgókép/Mozgókép felbontása kockákra"
+msgstr "<Image>/MozgÃ³kÃ©p/MozgÃ³kÃ©p felbontÃ¡sa kockÃ¡kra"
 
 #: gap/gap_decode_mpeg_main.c:103
 msgid "<Toolbox>/Xtns/Split Video to Frames"
-msgstr "<Toolbox>/Kit./Mozgókép felbontása kockákra"
+msgstr "<Toolbox>/Kit./MozgÃ³kÃ©p felbontÃ¡sa kockÃ¡kra"
 
 #: gap/gap_decode_mpeg_main.c:176
 msgid "<Image>/Video/Split Video to Frames/MPEG1"
-msgstr "<Image>/Mozgókép/Mozgókép felbontása képkockákra/MPEG1"
+msgstr "<Image>/MozgÃ³kÃ©p/MozgÃ³kÃ©p felbontÃ¡sa kÃ©pkockÃ¡kra/MPEG1"
 
 #: gap/gap_decode_mpeg_main.c:189
 msgid "<Toolbox>/Xtns/Split Video to Frames/MPEG1"
-msgstr "<Toolbox>/Kit./Mozgókép felbontása kockákra/MPEG1"
+msgstr "<Toolbox>/Kit./MozgÃ³kÃ©p felbontÃ¡sa kockÃ¡kra/MPEG1"
 
 #: gap/gap_decode_mpeg_main.c:332 gap/gap_decode_xanim.c:337
 #: gap/gap_range_ops.c:1240
 msgid "Overwrite Frame"
-msgstr "kocka felülírása"
+msgstr "kocka felÃ¼lÃ­rÃ¡sa"
 
 #: gap/gap_decode_mpeg_main.c:334 gap/gap_decode_xanim.c:339
 #: gap/gap_range_ops.c:1242
 msgid "Overwrite All"
-msgstr "mindet felülírja"
+msgstr "mindet felÃ¼lÃ­rja"
 
 #: gap/gap_decode_mpeg_main.c:342 gap/gap_decode_xanim.c:347
 #: gap/gap_lib.c:1036 gap/gap_range_ops.c:1247
@@ -148,15 +148,15 @@ msgstr ""
 
 #: gap/gap_decode_mpeg_main.c:343 gap/gap_decode_xanim.c:348
 msgid "File already exists"
-msgstr "A fájl már létezik"
+msgstr "A fÃ¡jl mÃ¡r lÃ©tezik"
 
 #: gap/gap_decode_mpeg_main.c:437
 msgid "Decoding MPEG Movie..."
-msgstr "MPEG mozgókép dekódolása"
+msgstr "MPEG mozgÃ³kÃ©p dekÃ³dolÃ¡sa"
 
 #: gap/gap_decode_mpeg_main.c:642
 msgid "Video"
-msgstr "Videó"
+msgstr "VideÃ³"
 
 #: gap/gap_decode_mpeg_main.c:643
 msgid ""
@@ -170,7 +170,7 @@ msgstr ""
 #: gap/gap_lib.c:2120 gap/gap_lib.c:2315 gap/gap_range_ops.c:253
 #: gap/gap_range_ops.c:602
 msgid "From:"
-msgstr "Ebbõl:"
+msgstr "EbbÅ‘l:"
 
 #: gap/gap_decode_mpeg_main.c:653 gap/gap_decode_xanim.c:225
 msgid "Framenumber of 1st frame to extract"
@@ -198,7 +198,7 @@ msgstr ""
 
 #: gap/gap_decode_mpeg_main.c:680 gap/gap_decode_xanim.c:283
 msgid "Open"
-msgstr "Megnyitás"
+msgstr "MegnyitÃ¡s"
 
 #: gap/gap_decode_mpeg_main.c:681 gap/gap_decode_xanim.c:284
 msgid "Open the 1st one of the extracted frames"
@@ -213,7 +213,7 @@ msgstr ""
 
 #: gap/gap_decode_mpeg_main.c:688
 msgid "Split MPEG1 Video to Frames"
-msgstr "MPEG1 mozgókép képkockákra bontása"
+msgstr "MPEG1 mozgÃ³kÃ©p kÃ©pkockÃ¡kra bontÃ¡sa"
 
 #: gap/gap_decode_mpeg_main.c:689 gap/gap_decode_xanim.c:298
 #: gap/gap_range_ops.c:1462
@@ -277,7 +277,7 @@ msgstr ""
 
 #: gap/gap_decode_xanim.c:252
 msgid "Format"
-msgstr "Formátum"
+msgstr "FormÃ¡tum"
 
 #: gap/gap_decode_xanim.c:253
 msgid ""
@@ -305,7 +305,7 @@ msgstr ""
 
 #: gap/gap_decode_xanim.c:271
 msgid "Jpeg Quality:"
-msgstr "JPEG minõség:"
+msgstr "JPEG minÅ‘sÃ©g:"
 
 #: gap/gap_decode_xanim.c:272
 msgid ""
@@ -315,7 +315,7 @@ msgstr ""
 
 #: gap/gap_decode_xanim.c:288
 msgid "Run asynchronously"
-msgstr "Aszinkron futás"
+msgstr "Aszinkron futÃ¡s"
 
 #: gap/gap_decode_xanim.c:289
 msgid ""
@@ -412,15 +412,15 @@ msgstr ""
 
 #: gap/gap_decode_xanim.c:1154
 msgid "renaming frames..."
-msgstr "Képkockák átnevezése..."
+msgstr "KÃ©pkockÃ¡k Ã¡tnevezÃ©se..."
 
 #: gap/gap_decode_xanim.c:1159
 msgid "converting frames..."
-msgstr "Képkockák konvertálása"
+msgstr "KÃ©pkockÃ¡k konvertÃ¡lÃ¡sa"
 
 #: gap/gap_filter_foreach.c:126
 msgid "backup to file"
-msgstr "mentés fájlba"
+msgstr "mentÃ©s fÃ¡jlba"
 
 #. pixel
 #: gap/gap_filter_foreach.c:128
@@ -429,7 +429,7 @@ msgstr ""
 
 #: gap/gap_filter_foreach.c:132 gap/gap_mod_layer.c:262
 msgid "Continue"
-msgstr "Folytatás"
+msgstr "FolytatÃ¡s"
 
 #: gap/gap_filter_foreach.c:136
 #, c-format
@@ -468,27 +468,27 @@ msgstr ""
 
 #: gap/gap_filter_main.c:105
 msgid "<Image>/Filters/Filter all Layers..."
-msgstr "<Image>/Szûrõk/Minden réteg szûrése..."
+msgstr "<Image>/SzÅ±rÅ‘k/Minden rÃ©teg szÅ±rÃ©se..."
 
 #: gap/gap_frontends_main.c:125
 msgid "<Image>/Video/Split Video to Frames/Any XANIM readable..."
 msgstr ""
-"<Image>/Mozgókép/Mozgókép felbontása kockákra/Bármilyen XANIM által "
-"olvasható..."
+"<Image>/MozgÃ³kÃ©p/MozgÃ³kÃ©p felbontÃ¡sa kockÃ¡kra/BÃ¡rmilyen XANIM Ã¡ltal "
+"olvashatÃ³..."
 
 #: gap/gap_frontends_main.c:137
 msgid "<Toolbox>/Xtns/Split Video to Frames/Any XANIM readable..."
 msgstr ""
-"<Toolbox>/Kit./Mozgókép felbontása kockákra/Bármilyen XANIM által "
-"olvasható..."
+"<Toolbox>/Kit./MozgÃ³kÃ©p felbontÃ¡sa kockÃ¡kra/BÃ¡rmilyen XANIM Ã¡ltal "
+"olvashatÃ³..."
 
 #: gap/gap_frontends_main.c:149
 msgid "<Image>/Video/Encode/MPEG1..."
-msgstr "<Image>/Mozgókép/Kódolás/MPEG1..."
+msgstr "<Image>/MozgÃ³kÃ©p/KÃ³dolÃ¡s/MPEG1..."
 
 #: gap/gap_frontends_main.c:162
 msgid "<Image>/Video/Encode/MPEG2..."
-msgstr "<Image>/Mozgókép/Kódolás/MPEG2..."
+msgstr "<Image>/MozgÃ³kÃ©p/KÃ³dolÃ¡s/MPEG2..."
 
 #: gap/gap_lib.c:243
 msgid "GAP Message"
@@ -532,15 +532,15 @@ msgstr ""
 #: gap/gap_lib.c:1570
 #, fuzzy, c-format
 msgid "Error: could not save frame %s"
-msgstr "Hiba: '%s' megnyitása sikertelen"
+msgstr "Hiba: '%s' megnyitÃ¡sa sikertelen"
 
 #: gap/gap_lib.c:1619
 msgid "Duplicating frames..."
-msgstr "Képkockák másolása..."
+msgstr "KÃ©pkockÃ¡k mÃ¡solÃ¡sa..."
 
 #: gap/gap_lib.c:1795
 msgid "Renumber Framesequence..."
-msgstr "Képszekvencia újraszámozása..."
+msgstr "KÃ©pszekvencia ÃºjraszÃ¡mozÃ¡sa..."
 
 #: gap/gap_lib.c:1981
 #, c-format
@@ -639,79 +639,79 @@ msgstr ""
 
 #: gap/gap_main.c:476
 msgid "<Image>/Video/Goto/Next Frame"
-msgstr "<Image>/Mozgókép/Ugrás/Következõ kocka"
+msgstr "<Image>/MozgÃ³kÃ©p/UgrÃ¡s/KÃ¶vetkezÅ‘ kocka"
 
 #: gap/gap_main.c:488
 msgid "<Image>/Video/Goto/Previous Frame"
-msgstr "<Image>/Mozgókép/Ugrás/Elõzõ kocka"
+msgstr "<Image>/MozgÃ³kÃ©p/UgrÃ¡s/ElÅ‘zÅ‘ kocka"
 
 #: gap/gap_main.c:500
 msgid "<Image>/Video/Goto/First Frame"
-msgstr "<Image>/Mozgókép/Ugrás/Elsõ kocka"
+msgstr "<Image>/MozgÃ³kÃ©p/UgrÃ¡s/ElsÅ‘ kocka"
 
 #: gap/gap_main.c:512
 msgid "<Image>/Video/Goto/Last Frame"
-msgstr "<Image>/Mozgókép/Ugrás/Utolsó kocka"
+msgstr "<Image>/MozgÃ³kÃ©p/UgrÃ¡s/UtolsÃ³ kocka"
 
 #: gap/gap_main.c:524
 msgid "<Image>/Video/Goto/Any Frame..."
-msgstr "<Image>/Mozgókép/Ugrás/Bármelyik kocka..."
+msgstr "<Image>/MozgÃ³kÃ©p/UgrÃ¡s/BÃ¡rmelyik kocka..."
 
 #: gap/gap_main.c:536
 msgid "<Image>/Video/Delete Frames..."
-msgstr "<Image>/Mozgókép/Kocka törlése..."
+msgstr "<Image>/MozgÃ³kÃ©p/Kocka tÃ¶rlÃ©se..."
 
 #: gap/gap_main.c:548
 msgid "<Image>/Video/Duplicate Frames..."
-msgstr "<Image>/Mozgókép/Kocka másolása..."
+msgstr "<Image>/MozgÃ³kÃ©p/Kocka mÃ¡solÃ¡sa..."
 
 #: gap/gap_main.c:560
 msgid "<Image>/Video/Exchange Frame..."
-msgstr "<Image>/Mozgókép/Kocka kicserélése..."
+msgstr "<Image>/MozgÃ³kÃ©p/Kocka kicserÃ©lÃ©se..."
 
 #: gap/gap_main.c:572
 msgid "<Image>/Video/Move Path..."
-msgstr "<Image>/Mozgókép/Move Path..."
+msgstr "<Image>/MozgÃ³kÃ©p/Move Path..."
 
 #: gap/gap_main.c:643
 msgid "<Image>/Video/Frames to Image..."
-msgstr "<Image>/Mozgókép/Kockából kép..."
+msgstr "<Image>/MozgÃ³kÃ©p/KockÃ¡bÃ³l kÃ©p..."
 
 #: gap/gap_main.c:655
 msgid "<Image>/Video/Frames Flatten..."
-msgstr "<Image>/Mozgókép/Frames Flatten..."
+msgstr "<Image>/MozgÃ³kÃ©p/Frames Flatten..."
 
 #: gap/gap_main.c:667
 msgid "<Image>/Video/Frames LayerDel..."
-msgstr "<Image>/Mozgókép/Frames LayerDel..."
+msgstr "<Image>/MozgÃ³kÃ©p/Frames LayerDel..."
 
 #: gap/gap_main.c:691
 msgid "<Image>/Video/Frames Convert..."
-msgstr "<Image>/Mozgókép/Kocka konvertálása..."
+msgstr "<Image>/MozgÃ³kÃ©p/Kocka konvertÃ¡lÃ¡sa..."
 
 #: gap/gap_main.c:703
 msgid "<Image>/Video/Frames Resize..."
-msgstr "<Image>/Mozgókép/Kocka átméretezése (resize)..."
+msgstr "<Image>/MozgÃ³kÃ©p/Kocka Ã¡tmÃ©retezÃ©se (resize)..."
 
 #: gap/gap_main.c:715
 msgid "<Image>/Video/Frames Crop..."
-msgstr "<Image>/Mozgókép/Kocka levágása..."
+msgstr "<Image>/MozgÃ³kÃ©p/Kocka levÃ¡gÃ¡sa..."
 
 #: gap/gap_main.c:727
 msgid "<Image>/Video/Frames Scale..."
-msgstr "<Image>/Mozgókép/Kocka átméretezése (scale)..."
+msgstr "<Image>/MozgÃ³kÃ©p/Kocka Ã¡tmÃ©retezÃ©se (scale)..."
 
 #: gap/gap_main.c:739
 msgid "<Image>/Video/Split Image to Frames..."
-msgstr "<Image>/Mozgókép/Kép felbontása képkockára..."
+msgstr "<Image>/MozgÃ³kÃ©p/KÃ©p felbontÃ¡sa kÃ©pkockÃ¡ra..."
 
 #: gap/gap_main.c:752
 msgid "<Image>/Video/Framesequence Shift..."
-msgstr "<Image>/Mozgókép/Képszekvencia eltolása..."
+msgstr "<Image>/MozgÃ³kÃ©p/KÃ©pszekvencia eltolÃ¡sa..."
 
 #: gap/gap_main.c:764
 msgid "<Image>/Video/Frames Modify..."
-msgstr "<Image>/Mozgókép/Kocka módosítása..."
+msgstr "<Image>/MozgÃ³kÃ©p/Kocka mÃ³dosÃ­tÃ¡sa..."
 
 #. Layer select modes
 #: gap/gap_mod_layer.c:84 gap/gap_range_ops.c:574
@@ -912,7 +912,7 @@ msgstr ""
 
 #: gap/gap_mod_layer.c:222
 msgid "Settings"
-msgstr "Beállítások"
+msgstr "BeÃ¡llÃ­tÃ¡sok"
 
 #: gap/gap_mod_layer.c:285
 #, c-format
@@ -953,7 +953,7 @@ msgstr ""
 
 #: gap/gap_mov_dialog.c:265
 msgid "Screen"
-msgstr "Képernyõ"
+msgstr "KÃ©pernyÅ‘"
 
 #: gap/gap_mov_dialog.c:266
 msgid "Overlay"
@@ -981,19 +981,19 @@ msgstr ""
 
 #: gap/gap_mov_dialog.c:272
 msgid "Hue"
-msgstr "Színezet"
+msgstr "SzÃ­nezet"
 
 #: gap/gap_mov_dialog.c:273
 msgid "Saturation"
-msgstr "Telítettség"
+msgstr "TelÃ­tettsÃ©g"
 
 #: gap/gap_mov_dialog.c:274
 msgid "Color"
-msgstr "Szín"
+msgstr "SzÃ­n"
 
 #: gap/gap_mov_dialog.c:275
 msgid "Value"
-msgstr "Érték"
+msgstr "Ã‰rtÃ©k"
 
 #: gap/gap_mov_dialog.c:282
 msgid "Left  Top"
@@ -1013,7 +1013,7 @@ msgstr ""
 
 #: gap/gap_mov_dialog.c:286
 msgid "Center"
-msgstr "Közép"
+msgstr "KÃ¶zÃ©p"
 
 #: gap/gap_mov_dialog.c:294
 msgid "Loop"
@@ -1069,7 +1069,7 @@ msgstr ""
 
 #: gap/gap_mov_dialog.c:492
 msgid "Update Preview"
-msgstr "Elõnézet frissítése"
+msgstr "ElÅ‘nÃ©zet frissÃ­tÃ©se"
 
 #: gap/gap_mov_dialog.c:499
 msgid "Show PreviewFrame with Selected SrcLayer at current Controlpoint"
@@ -1234,7 +1234,7 @@ msgstr ""
 
 #: gap/gap_mov_dialog.c:857
 msgid "Options"
-msgstr "Beállítások"
+msgstr "BeÃ¡llÃ­tÃ¡sok"
 
 #: gap/gap_mov_dialog.c:902
 msgid "Generate Animated Preview failed\n"
@@ -1327,7 +1327,7 @@ msgstr ""
 #. table col, row
 #: gap/gap_mov_dialog.c:1858
 msgid "Width:"
-msgstr "Szélesség:"
+msgstr "SzÃ©lessÃ©g:"
 
 #. label text
 #. scalesize spinsize
@@ -1345,7 +1345,7 @@ msgstr ""
 #. table col, row
 #: gap/gap_mov_dialog.c:1875
 msgid "Height:"
-msgstr "Magasság:"
+msgstr "MagassÃ¡g:"
 
 #. label text
 #. scalesize spinsize
@@ -1912,11 +1912,11 @@ msgstr ""
 
 #: gap/gap_navigator_dialog.c:403
 msgid "Goto last Frame"
-msgstr "Utolsó kockára ugrás"
+msgstr "UtolsÃ³ kockÃ¡ra ugrÃ¡s"
 
 #: gap/gap_navigator_dialog.c:460
 msgid "<Image>/Video/VCR Navigator..."
-msgstr "<Image>/Mozgókép/VCR Navigator..."
+msgstr "<Image>/MozgÃ³kÃ©p/VCR Navigator..."
 
 #: gap/gap_navigator_dialog.c:523
 msgid "Cant open two or more Video Navigator Windows."
@@ -1925,32 +1925,32 @@ msgstr ""
 #. menu_item copy
 #: gap/gap_navigator_dialog.c:2877
 msgid "Copy"
-msgstr "Másolás"
+msgstr "MÃ¡solÃ¡s"
 
 #. menu_item cut
 #: gap/gap_navigator_dialog.c:2887
 msgid "Cut"
-msgstr "Kivágás"
+msgstr "KivÃ¡gÃ¡s"
 
 #. menu_item paste before
 #: gap/gap_navigator_dialog.c:2897
 msgid "Paste before"
-msgstr "Beillesztés elé"
+msgstr "BeillesztÃ©s elÃ©"
 
 #. menu_item copy
 #: gap/gap_navigator_dialog.c:2907
 msgid "Paste after"
-msgstr "Beillesztés utána"
+msgstr "BeillesztÃ©s utÃ¡na"
 
 #. menu_item copy
 #: gap/gap_navigator_dialog.c:2917
 msgid "Paste replace"
-msgstr "Beillesztés helyette"
+msgstr "BeillesztÃ©s helyette"
 
 #. menu_item copy
 #: gap/gap_navigator_dialog.c:2927
 msgid "Clear Video Buffer"
-msgstr "Videóbuffer törlése"
+msgstr "VideÃ³buffer tÃ¶rlÃ©se"
 
 #: gap/gap_navigator_dialog.c:2952
 msgid "Videoframes:"
@@ -2070,7 +2070,7 @@ msgstr ""
 
 #: gap/gap_range_ops.c:346
 msgid "Number of Colors"
-msgstr "Színek száma"
+msgstr "SzÃ­nek szÃ¡ma"
 
 #: gap/gap_range_ops.c:347
 msgid ""
@@ -2412,11 +2412,11 @@ msgstr ""
 
 #: gap/resize.c:197
 msgid "X Offset:"
-msgstr "X eltolás:"
+msgstr "X eltolÃ¡s:"
 
 #: gap/resize.c:214
 msgid "Y Offset:"
-msgstr "Y eltolás:"
+msgstr "Y eltolÃ¡s:"
 
 #. the constrain toggle button
 #: gap/resize.c:231

@@ -9,7 +9,7 @@ msgstr ""
 "Last-Translator: Branko Collin <collin@xs4all.nl>\n"
 "Language-Team: Dutch <vertaling@nl.linux.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Button  to invoke filebrowser
@@ -324,7 +324,7 @@ msgid ""
 "Enable extraction of audio to raw audiofile\n"
 "(frame range limits are ignored for audio)"
 msgstr ""
-"Schakel het kopiëren van geluid naar een onbewerkt geluidsbestand\n"
+"Schakel het kopiÃ«ren van geluid naar een onbewerkt geluidsbestand\n"
 "in (framebereiklimieten worden genegeerd voor geluid)"
 
 #: gap/gap_decode_xanim.c:271
@@ -396,7 +396,7 @@ msgstr "%s schrijven niet gelukt (controleer permissies?)"
 #: gap/gap_decode_xanim.c:723
 #, c-format
 msgid "could not execute %s (check if xanim is installed)"
-msgstr "kon %s niet uitvoeren (is xanim geïnstalleerd?)"
+msgstr "kon %s niet uitvoeren (is xanim geÃ¯nstalleerd?)"
 
 #: gap/gap_decode_xanim.c:731
 #, c-format
@@ -668,11 +668,11 @@ msgstr "Framereeks verschuiven (%ld/%ld)"
 
 #: gap/gap_lib.c:2320
 msgid "Affected Range starts at this framenumber"
-msgstr "Beïnvloed bereik begint op dit framenummer"
+msgstr "BeÃ¯nvloed bereik begint op dit framenummer"
 
 #: gap/gap_lib.c:2328
 msgid "Affected Range ends at this framenumber"
-msgstr "Beïnvloed bereik eindigt op dit framenummer"
+msgstr "BeÃ¯nvloed bereik eindigt op dit framenummer"
 
 #: gap/gap_lib.c:2331
 msgid "N-Shift:"
@@ -683,7 +683,7 @@ msgid ""
 "Renumber the affected framesequence     \n"
 "(numbers are shifted in circle by N)"
 msgstr ""
-"Hernummer de beïnvloedde framereeks        \n"
+"Hernummer de beÃ¯nvloedde framereeks        \n"
 "(nummers worden in cirkel verschoven met N)"
 
 #: gap/gap_lib.c:2338
@@ -697,7 +697,7 @@ msgid ""
 "on the same AnimFrame Image at the same time\n"
 "LOCK ID:%s\n"
 msgstr ""
-"Kan niet meer dan één videofunctie op dezelfde\n"
+"Kan niet meer dan Ã©Ã©n videofunctie op dezelfde\n"
 "AnimFrame-afbeelding tegelijkertijd uitvoeren\n"
 "LOCK ID:%s\n"
 
@@ -1282,7 +1282,7 @@ msgstr "Object op lege frames"
 
 #: gap/gap_mov_dialog.c:787
 msgid "Object on one frame"
-msgstr "Object op één frame"
+msgstr "Object op Ã©Ã©n frame"
 
 #: gap/gap_mov_dialog.c:788
 msgid "Exact Object on frames"
@@ -1386,7 +1386,7 @@ msgstr "Handvat:"
 
 #: gap/gap_mov_dialog.c:1745
 msgid "How to place the SrcLayer at Controlpoint Coordinates"
-msgstr "Hoe de bronlaag te plaatsen op de controlepuntcoördinaten"
+msgstr "Hoe de bronlaag te plaatsen op de controlepuntcoÃ¶rdinaten"
 
 #. to avoid side effects while initialization
 #. the frame
@@ -1403,7 +1403,7 @@ msgstr "X:"
 #. lower, upper (unconstrained)
 #: gap/gap_mov_dialog.c:1831
 msgid "X Coordinate"
-msgstr "X-coördinaat"
+msgstr "X-coÃ¶rdinaat"
 
 #. Y
 #. table col, row
@@ -1414,7 +1414,7 @@ msgstr "Y:"
 #. lower, upper (unconstrained)
 #: gap/gap_mov_dialog.c:1849
 msgid "Y Coordinate"
-msgstr "Y-coördinaat"
+msgstr "Y-coÃ¶rdinaat"
 
 #. Widht Scale
 #. table col, row
@@ -1673,7 +1673,7 @@ msgstr ""
 
 #: gap/gap_mov_exec.c:455
 msgid "Copying Layers into Frames..."
-msgstr "Lagen naar frames kopiëren"
+msgstr "Lagen naar frames kopiÃ«ren"
 
 #: gap/gap_mov_exec.c:459
 msgid "Generating Animated Preview..."
@@ -1739,11 +1739,11 @@ msgstr "Voorwaarden om mpeg2encode 1.2 uit te voeren:"
 
 #: gap/gap_mpege.c:124
 msgid "1.) mpeg_encode 1.5 must be installed"
-msgstr "1) mpeg_encode 1.5 moet geïnstalleerd zijn"
+msgstr "1) mpeg_encode 1.5 moet geÃ¯nstalleerd zijn"
 
 #: gap/gap_mpege.c:127
 msgid "1.) mpeg2encode 1.2 must be installed"
-msgstr "1) mpeg2encode 1.2 moet geïnstalleerd zijn"
+msgstr "1) mpeg2encode 1.2 moet geÃ¯nstalleerd zijn"
 
 #: gap/gap_mpege.c:132
 msgid "    you can get mpeg_encode at"
@@ -2079,7 +2079,7 @@ msgstr "Kan niet twee of meer videonavigatorvensters openen."
 #. menu_item copy
 #: gap/gap_navigator_dialog.c:2877
 msgid "Copy"
-msgstr "Kopiëren"
+msgstr "KopiÃ«ren"
 
 #. menu_item cut
 #: gap/gap_navigator_dialog.c:2887
@@ -2257,7 +2257,7 @@ msgstr "Dithering of transparantie inschakelen"
 
 #: gap/gap_range_ops.c:365
 msgid "Convert Frames to Indexed"
-msgstr "Frames naar geïndexeerd omzetten"
+msgstr "Frames naar geÃ¯ndexeerd omzetten"
 
 # What is the Dutch translation of the term 'dithering'?
 #: gap/gap_range_ops.c:366
@@ -2278,7 +2278,7 @@ msgstr "Omzetten naar Grijswaarden"
 
 #: gap/gap_range_ops.c:434
 msgid "Convert to Indexed"
-msgstr "Omzetten naar geïndexeerd"
+msgstr "Omzetten naar geÃ¯ndexeerd"
 
 #: gap/gap_range_ops.c:458
 msgid ""
