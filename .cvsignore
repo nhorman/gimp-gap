@@ -16,6 +16,7 @@ intltool-merge
 intltool-merge.in
 intltool-update
 intltool-update.in
+mkinstalldirs
 stamp-h
 stamp-h1
 stamp-h.in

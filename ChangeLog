@@ -1,3 +1,8 @@
+2004-09-07  Sven Neumann  <sven@gimp.org>
+
+	* configure.in
+	* libgapvidapi/Makefile.am: fixed some build conditionals.
+
 2004-08-28  Wolfgang Hofer <hof@gimp.org>
 	fixed compile errors when configured with  --disable-libxvidcore option
 	(undefined reference to `gap_gve_xvid_algorithm_preset'  # reported by sven)

@@ -19,12 +19,12 @@ INCLUDES = \
 libgapvidapi_a_SOURCES = 	\
 	gap_vid_api.c		\
 	gap_vid_api.h
-	
 
 # the current implementation includes this
 # .c sourcefiles in gap_vid_api.c (except example.c)
 EXTRA_DIST = \
 	gap_vid_api_gimp.c	\
+	gap_vid_api_ffmpeg.c	\
 	gap_vid_api_mpeg3.c	\
 	gap_vid_api_mpeg3toc.c	\
 	gap_vid_api_quicktime.c	\
