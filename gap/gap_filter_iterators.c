@@ -1336,7 +1336,7 @@ static t_iter_ALT_tab   g_iter_ALT_tab[] =
   , { "plug_in_neon",  p_plug_in_neon_iter_ALT }
   , { "plug_in_newsprint",  p_plug_in_newsprint_iter_ALT }
   , { "plug_in_nlfilt",  p_plug_in_nlfilt_iter_ALT }
-  , { "plug_in_noisify",  p_plug_in_noisify_iter_ALT }
+  , { "plug_in_scatter_rgb",  p_plug_in_noisify_iter_ALT }
 /*, { "plug_in_normalize",  p_plug_in_normalize_iter_ALT }                        */
   , { "plug_in_nova",  p_plug_in_nova_iter_ALT }
   , { "plug_in_oilify",  p_plug_in_oilify_iter_ALT }

@@ -774,15 +774,18 @@ p_wrapper_ffmpeg_get_next_frame(t_GVA_Handle *gvahand)
       }
     }
 
-if( (gvahand->vindex) 
-    && (handle->capture_offset)
-    )
-{    
-  printf("KeyFrame: %d  works:%d\n"
-    ,(int)handle->big_picture_yuv.key_frame
-    ,(int)handle->key_frame_detection_works
-    );
-}
+    if(gap_debug)
+    {
+      if( (gvahand->vindex) 
+	  && (handle->capture_offset)
+	  )
+      {    
+	printf("KeyFrame: %d  works:%d\n"
+	  ,(int)handle->big_picture_yuv.key_frame
+	  ,(int)handle->key_frame_detection_works
+	  );
+      }
+    }
 
     if((gvahand->vindex) 
     && (handle->capture_offset)

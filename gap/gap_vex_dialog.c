@@ -179,7 +179,7 @@ gap_vex_dlg_init_gpp (GapVexMainGlobalParams *gpp)
  gpp->val.preferred_decoder[0] = '\0';
  gpp->val.deinterlace = 0;
  gpp->val.delace_threshold = 1.0;
- gpp->val.exact_seek = 1;
+ gpp->val.exact_seek = 0;
 
  gpp->val.begin_frame = 1.0;
  gpp->val.end_frame = 1.0;
@@ -2202,6 +2202,21 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
   gtk_misc_set_alignment (GTK_MISC (mw__label_active_decoder), 0.0, 0.0);
 
 
+  /* exact_seek option to disable fast videoindex based positioning.
+   * (the videoapi delivers exact frame positions on most videos
+   *  but sometimes is not exact when libmepg3 is used)
+   */
+  mw__checkbutton_exact_seek = gtk_check_button_new_with_label (_("Exact Seek"));
+  gtk_widget_show (mw__checkbutton_exact_seek);
+  gimp_help_set_help_data (mw__checkbutton_exact_seek
+                          , _("ON: emulate seek operations by seqeuntial reads, "
+			      "even when videoindex is available")
+			  , NULL);
+  gtk_table_attach (GTK_TABLE (mw__table_in), mw__checkbutton_exact_seek, 2, 3, in_row, in_row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+
   in_row++;
 
   /* the Aspect Ratio Label(s) */
@@ -2223,14 +2238,6 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_padding (GTK_MISC (mw__label_aspect_ratio), 4, 0);
   gtk_misc_set_alignment (GTK_MISC (mw__label_aspect_ratio), 0.0, 0.0);
-
-
-  /* OLD percentage based seek is no longer supported
-   * and the videoapi always should deliver exact frame positions now
-   * (therefore the mw__checkbutton_exact_seek widget is not needed any longer)
-   */
-  mw__checkbutton_exact_seek = gtk_check_button_new_with_label (_("Exact"));
-  gtk_widget_hide (mw__checkbutton_exact_seek);
 
 
 

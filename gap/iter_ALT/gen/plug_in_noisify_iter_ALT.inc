@@ -1,17 +1,23 @@
 /* ----------------------------------------------------------------------
  * p_plug_in_noisify_iter_ALT 
  * ----------------------------------------------------------------------
+ * this plug-in registers 2 procedures named
+ *   plug_in_scatter_rgb  and
+ *   plug_in_noisify
+ *
+ * the Last values Buffer is always stored with the name "plug_in_scatter_rgb"
+ * therefore the iterator must use the plug_in_scatter_rgb based names.
+ * (there is no iterator support possible for the other API named plug_in_noisify)
  */
 gint p_plug_in_noisify_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble current_step, gint32 len_struct) 
 {
     typedef struct t_plug_in_noisify_Vals 
     {
-      long      independent;
-      gdouble   noise_1;
-      gdouble   noise_2;
-      gdouble   noise_3;
-      gdouble   noise_4;
-    } t_plug_in_noisify_Vals; 
+      gboolean  independent;
+      gboolean  correlated ;
+      gdouble   noise[4];
+    } t_plug_in_noisify_Vals;
+    gint ii;
 
     t_plug_in_noisify_Vals  buf, *buf_from, *buf_to; 
 
@@ -22,20 +28,19 @@ gint p_plug_in_noisify_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdoubl
       return -1;  /* ERROR */ 
     }
 
-    gimp_get_data("plug_in_noisify_ITER_FROM", g_plugin_data_from); 
-    gimp_get_data("plug_in_noisify_ITER_TO",   g_plugin_data_to); 
+    gimp_get_data("plug_in_scatter_rgb_ITER_FROM", g_plugin_data_from); 
+    gimp_get_data("plug_in_scatter_rgb_ITER_TO",   g_plugin_data_to); 
 
     buf_from = (t_plug_in_noisify_Vals *)&g_plugin_data_from[0]; 
     buf_to   = (t_plug_in_noisify_Vals *)&g_plugin_data_to[0]; 
     memcpy(&buf, buf_from, sizeof(buf));
 
-    p_delta_long(&buf.independent, buf_from->independent, buf_to->independent, total_steps, current_step);
-    p_delta_gdouble(&buf.noise_1, buf_from->noise_1, buf_to->noise_1, total_steps, current_step);
-    p_delta_gdouble(&buf.noise_2, buf_from->noise_2, buf_to->noise_2, total_steps, current_step);
-    p_delta_gdouble(&buf.noise_3, buf_from->noise_3, buf_to->noise_3, total_steps, current_step);
-    p_delta_gdouble(&buf.noise_4, buf_from->noise_4, buf_to->noise_4, total_steps, current_step);
+    for(ii=0;ii<4;ii++)
+    {
+      p_delta_gdouble(&buf.noise[ii], buf_from->noise[ii], buf_to->noise[ii], total_steps, current_step);
+    }
 
-    gimp_set_data("plug_in_noisify", &buf, sizeof(buf)); 
+    gimp_set_data("plug_in_scatter_rgb", &buf, sizeof(buf)); 
 
     return 0; /* OK */
 }

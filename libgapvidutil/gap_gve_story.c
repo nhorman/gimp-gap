@@ -3329,7 +3329,7 @@ p_storyboard_analyze(GapStoryBoard *stb
                                              , frn_known_list
                                              , sterr
                                              , 1              /* seltrack */
-                                             , 1              /* exact_seek*/
+                                             , 0              /* exact_seek*/
                                              , 0.0            /* delace */
 					     , 1.0            /* step_density */
                                              );
@@ -3359,7 +3359,7 @@ p_storyboard_analyze(GapStoryBoard *stb
                                              , frn_known_list
                                              , sterr
                                              , 1              /* seltrack */
-                                             , 1              /* exact_seek*/
+                                             , 0              /* exact_seek*/
                                              , 0.0            /* delace */
 					     , 1.0            /* step_density */
                                              );
@@ -3391,7 +3391,7 @@ p_storyboard_analyze(GapStoryBoard *stb
                                              , frn_known_list
                                              , sterr
                                              , 1              /* seltrack */
-                                             , 1              /* exact_seek*/
+                                             , 0              /* exact_seek*/
                                              , 0.0            /* delace */
 					     , 1.0            /* step_density */
                                              );
@@ -3878,7 +3878,7 @@ p_open_video_handle_private(    gboolean ignore_audio
                                          , NULL       /* frn_list */
                                          , vidhand->sterr
                                          , 1          /* seltrack */
-                                         , 1              /* exact_seek*/
+                                         , 0              /* exact_seek*/
                                          , 0.0            /* delace */
 					 , 1.0            /* step_density */
                                          );
@@ -3913,7 +3913,7 @@ p_open_video_handle_private(    gboolean ignore_audio
                                          , NULL       /* frn_list */
                                          , vidhand->sterr
                                          , 1          /* seltrack */
-                                         , 1              /* exact_seek*/
+                                         , 0              /* exact_seek*/
                                          , 0.0            /* delace */
 					 , 1.0            /* step_density */
                                          );
@@ -3934,7 +3934,7 @@ p_open_video_handle_private(    gboolean ignore_audio
                                          , NULL            /* frn_list */
                                          , vidhand->sterr
                                          , 1               /* seltrack */
-                                         , 1              /* exact_seek*/
+                                         , 0              /* exact_seek*/
                                          , 0.0            /* delace */
 					 , 1.0            /* step_density */
                                          );
@@ -4704,11 +4704,6 @@ gap_gve_story_fetch_composite_image(GapGveStoryVidHandle *vidhand
                         /* configure the GVA Procedures for exact (but slow) seek emulaion */
                         l_frn_elem->gvahand->emulate_seek = TRUE;
                       }
-                      else
-                      {
-                        /* alow faster (but not not exact) seek ops */
-                        l_frn_elem->gvahand->emulate_seek = FALSE;
-                      }
                     }
                   }
 
@@ -5253,11 +5248,6 @@ gap_gve_story_fetch_composite_image_or_chunk(GapGveStoryVidHandle *vidhand
              {
                /* configure the GVA Procedures for exact (but slow) seek emulaion */
                l_frn_elem->gvahand->emulate_seek = TRUE;
-             }
-             else
-             {
-               /* alow faster (but not not exact) seek ops */
-               l_frn_elem->gvahand->emulate_seek = FALSE;
              }
            }
          }

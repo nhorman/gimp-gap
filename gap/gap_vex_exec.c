@@ -83,7 +83,7 @@ p_extract_audio(GapVexMainGlobalParams *gpp,  t_GVA_Handle   *gvahand, gdouble s
    l_sample_rate    = gvahand->samplerate;
    l_audio_samples  = gvahand->total_aud_samples;
 
-   /*if(gap_debug) */
+   if(gap_debug)
    {
      printf("Channels:%d samplerate:%d samples:%d  samples_to_read: %.0f\n"
           , (int)l_audio_channels
@@ -401,7 +401,7 @@ gap_vex_exe_extract_videorange(GapVexMainGlobalParams *gpp)
 
       if(1==1)
       {
-        gvahand->emulate_seek = TRUE;
+        gvahand->emulate_seek = TRUE;  /* force seq. reads even if we have a video index */
         l_rc = GVA_seek_frame(gvahand, l_pos, l_pos_unit);
       }
       else
@@ -435,7 +435,6 @@ gap_vex_exe_extract_videorange(GapVexMainGlobalParams *gpp)
     }
     else
     {
-      gvahand->emulate_seek = FALSE;
       l_rc = GVA_seek_frame(gvahand, l_pos, l_pos_unit);
     }
 

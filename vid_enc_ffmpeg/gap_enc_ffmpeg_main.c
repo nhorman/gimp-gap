@@ -786,11 +786,11 @@ gap_enc_ffmpeg_main_init_preset_params(GapGveFFMpegValues *epp, gint preset_idx)
   static gint32 tab_pass[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]              =  {     1,      1,      1,      1,      1,      1,      1 };
   static gint32 tab_audio_bitrate[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]     =  {   160,    192,     96,    128,    192,    160,     96 };
   static gint32 tab_video_bitrate[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]     =  {  5000,   5000,   1500,   3000,   6000,   6000,   1200 };
-  static gint32 tab_gop_size[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]          =  {    12,     12,     96,     24,     12,     24,     12 };
+  static gint32 tab_gop_size[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]          =  {    12,     12,     96,     24,     12,     24,     48 };
   static gint32 tab_intra[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]             =  {     0,      0,      0,      0,      0,      0,      0 };
-  static gint32 tab_qscale[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]            =  {     0,      0,      0,      0,      0,      1,      0 };
-  static gint32 tab_qmin[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]              =  {     2,      1,     10,      0,      1,      2,     10 };
-  static gint32 tab_qmax[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]              =  {    31,      4,     31,      0,      4,      8,     31 };
+  static gint32 tab_qscale[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]            =  {     2,      1,      6,      0,      1,      1,      6 };
+  static gint32 tab_qmin[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]              =  {     2,      1,     10,      2,      1,      2,     10 };
+  static gint32 tab_qmax[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]              =  {    31,      4,     31,     31,      4,      8,     31 };
   static gint32 tab_qdiff[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]             =  {     3,      2,      9,      3,      2,      2,     10 };
 
   static float  tab_qblur[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]             =  {   0.5,     0.5,    0.5,   0.5,    0.5,    0.5,    0.5 };
@@ -801,21 +801,21 @@ gap_enc_ffmpeg_main_init_preset_params(GapGveFFMpegValues *epp, gint preset_idx)
   static float  tab_b_qoffset[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]         =  {  1.25,    1.25,   1.25,  1.25,   1.25,   1.25,   1.25 };
   static float  tab_i_qoffset[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]         =  {   0.0,     0.0,    0.0,   0.0,    0.0,    0.0,    0.0 };
 
-  static gint32 tab_bitrate_tol[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  {  4000,   1000,   6000,      0,   1000,   2000,   5000 };
+  static gint32 tab_bitrate_tol[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  {  4000,   6000,   1000,      0,   1000,   2000,   5000 };
   static gint32 tab_maxrate_tol[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  {     0,      0,      0,      0,      0,      0,      0 };
   static gint32 tab_minrate_tol[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  {     0,      0,      0,      0,      0,      0,      0 };
   static gint32 tab_bufsize[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]           =  {     0,      0,      0,      0,      0,      0,      0 };
-  static gint32 tab_motion_estimation[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS] =  {     5,      2,      1,      5,      2,      2,      1 };
+  static gint32 tab_motion_estimation[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS] =  {     5,      5,      1,      5,      5,      5,      1 };
   static gint32 tab_dct_algo[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]          =  {     0,      0,      0,      0,      0,      0,      0 };
   static gint32 tab_idct_algo[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]         =  {     0,      0,      0,      0,      0,      0,      0 };
   static gint32 tab_strict[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]            =  {     0,      0,      0,      0,      0,      0,      0 };
-  static gint32 tab_mb_qmin[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]           =  {     2,      2,      2,      2,      2,      2,      2 };
-  static gint32 tab_mb_qmax[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]           =  {    31,     31,     31,     31,     31,     31,     31 };
-  static gint32 tab_mb_decision[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  {     0,      1,      0,      0,      1,      1,      0 };
+  static gint32 tab_mb_qmin[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]           =  {     2,      2,      8,      2,      2,      2,      2 };
+  static gint32 tab_mb_qmax[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]           =  {    31,     18,     31,     31,     18,     31,     31 };
+  static gint32 tab_mb_decision[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  {     0,      0,      0,      0,      0,      0,      0 };
   static gint32 tab_aic[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]               =  {     0,      0,      0,      0,      0,      0,      0 };
   static gint32 tab_umv[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]               =  {     0,      0,      0,      0,      0,      0,      0 };
 
-  static gint32 tab_b_frames[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]          =  {     2,      0,      4,      0,      0,      2,      0 };
+  static gint32 tab_b_frames[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]          =  {     2,      2,      4,      0,      0,      2,      0 };
   static gint32 tab_mv4[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]               =  {     0,      0,      0,      0,      0,      0,      0 };
   static gint32 tab_partitioning[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]      =  {     0,      0,      0,      0,      0,      0,      0 };
   static gint32 tab_packet_size[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  {     0,      0,      0,      0,      0,      0,      0 };
@@ -824,7 +824,7 @@ gap_enc_ffmpeg_main_init_preset_params(GapGveFFMpegValues *epp, gint preset_idx)
   static gint32 tab_aspect_fact[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  {   0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0 };
 
   static char*  tab_format_name[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  { "avi",  "avi", "avi",  "vcd", "mpeg", "vob", "rm" };
-  static char*  tab_vcodec_name[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  { "mpeg4", "msmpeg4", "mpeg4",  "mpeg1video", "mpeg1video", "mpeg2video", "rv10" };
+  static char*  tab_vcodec_name[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  { "mpeg4", "mpeg4", "mpeg4",  "mpeg1video", "mpeg1video", "mpeg2video", "rv10" };
   static char*  tab_acodec_name[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  { "mp2",  "mp2", "mp2",  "mp2", "mp2", "mp2", "ac3" };
 
 

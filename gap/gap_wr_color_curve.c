@@ -3,8 +3,6 @@
  *
  *  Wrapper Plugin for GIMP Curves tool
  *
- *  INSTALL: gimptool-1.3 --install wr_color_curve.c
- *
  * Warning: This is just a QUICK HACK to enable
  *          Animated Filterapply in conjunction with the
  *          GIMP Curve Tool.
@@ -39,6 +37,7 @@
  */
 
 /* Revision history
+ *  (2005/01/29)  v2.1   hof: added Help
  *  (2004/01/15)  v1.3   hof: integrated into GIMP-GAP
  *  (2003/10/30)  v1.3   hof: adapted for gimp-1.3.x and gtk+2.2 API
  *  (2002/10/27)  v1.03  hof: appear in menu (enable filtermacro use)
@@ -74,6 +73,7 @@
 #define PLUG_IN_DATA_ITER_FROM  "plug_in_wr_curves_ITER_FROM"
 #define PLUG_IN_DATA_ITER_TO    "plug_in_wr_curves_ITER_TO"
 
+#define PLUG_IN_HELP_ID         "plug-in-wr-curves"
 
 /* pointval_t
  *  wanted to use gdouble to store plugin data
@@ -775,12 +775,14 @@ p_filesel_ok_callback (GtkWidget *widget,
 
 static void
 wr_curve_load_callback (GtkWidget *w,
-		      gpointer   data)
+		      WrCurveDialog *wcd)
 {
-  WrCurveDialog *wcd;
   GtkWidget *filesel;
 
-  wcd = (WrCurveDialog *) data;
+  if(wcd == NULL)
+  {
+    return;
+  }
   if(wcd->filesel != NULL)
   {
      gtk_window_present(GTK_WINDOW(wcd->filesel));
@@ -872,16 +874,18 @@ do_dialog (wr_curves_val_t *cuvals)
 
   /* Init UI  */
   gimp_ui_init ("wr_curves", FALSE);
+  gap_stock_init();
 
 
   /*  The curve_bend dialog  */
   wcd = g_malloc (sizeof (WrCurveDialog));
   wcd->run = FALSE;
+  wcd->filesel = NULL;
 
   /*  The dialog and main vbox  */
   dialog = gimp_dialog_new (_("CurvesFile"), "curves_wrapper",
                                NULL, 0,
-			       gimp_standard_help_func, NULL, /* "filters/color/wrapper.html" */
+			       gimp_standard_help_func, PLUG_IN_HELP_ID,
 
                                GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
                                GTK_STOCK_OK,     GTK_RESPONSE_OK,

@@ -11,10 +11,10 @@ Here is a result List of the "Animated Filtercall" Tests.
 ---------------------------------------------------
 Testresults
 --------------------------------------------------
-2004.11.19
+2005.01.30
 
    Test with PDB-Procedures (Plugins) that came with
-   gimp release 2.2pre1
+   gimp release 2.2.3
    Test also includes PDB-Procedures provided by GIMP-GAP itself
 
 
@@ -72,7 +72,7 @@ State Procedure/Iterator_ALT ame               Testnotes
 +     plug_in_diffraction_iter_ALT
 #     plug_in_dilate                            (?) noninteractive variante of plug_in_vpropagate
 +     plug_in_displace_iter_ALT
-+(?)  plug_in_dog                               call works but produces strange results and warnings: (gimp-2.2:23057): Gimp-Core-CRITICAL **: file gimpdrawable.c: line 1221 (gimp_drawable_mask_bounds): assertion `gimp_item_is_attached (item)' failed
++     plug_in_dog
 :     plug_in_drawable_compose
 +     plug_in_edge_iter_ALT
 +     plug_in_emboss_iter_ALT
@@ -118,7 +118,8 @@ State Procedure/Iterator_ALT ame               Testnotes
 +     plug_in_neon
 +     plug_in_newsprint_iter_ALT
 +     plug_in_nlfilt_iter_ALT	               (?) runs, but did not see any effect
-+     plug_in_noisify_iter_ALT
+-     plug_in_noisify_iter_ALT                 noisify has 2 names and uses the 2.nd name "plug_in_scatter_rgb" to store is values.
++     plug_in_scatter_rgb
 #     plug_in_normalize                        has no dialog, constant apply makes sense
 +     plug_in_nova_iter_ALT
 +     plug_in_oilify_iter_ALT

@@ -1,3 +1,53 @@
+2005-01-30  Wolfgang Hofer <hof@gimp.org>
+
+	Help Buttons for storyboard pop-up dialogs 
+	"master properties" and "generate original tone audio"
+	
+	Videoaccess parameter exactseek now defaults to value 0.
+	(allow videoindex based fast seek operations)
+	value 1 forces the (very slow) sequential reads.
+	
+	- disabled some further debug printfs
+	- tested filter all layers with gimp-2.2.3
+	   plug_in_noisify_iter_ALT
+	   plug_in_wr_curves
+	- bugfix: gap/gap_wr_color_curve.c calling gimp_dialog_new
+	  with help_function but help_id == NULL resulted in
+	  errors and crash of the plug-in
+	  
+	  (wr_curves:4630): Gdk-CRITICAL **: file gdkscreen-x11.c: line 232 (gdk_screen_get_root_window): assertion `GDK_IS_SCREEN (screen)' failed
+
+        - ffmpeg (0.4.8) encoder presets:
+	  dont use motion_estimation algorithm "Full" any longer in the presets
+	  and replaced those settings with "EPZS"
+	  (it makes encoding much slower, and seems not to deliver better
+	  quality, even worse it has problems on fast moving dark objects
+	  that are sometimes encoded fully black, resulting
+	  in visible annoying black blocks.)
+	
+	* gap/gap_story_main.h
+	* gap/gap_story_dialog.c
+	* gap/gap_story_file.c
+	* gap/gap_vex_dialog.c
+	* gap/gap_vex_exec.c
+	* gap/gap_fmac_main.c
+	* gap/gap_wr_color_curve.c
+	* gap/gap_wr_color_huesat.c
+	* 
+	* gap/TESTPROT_iter_ALT
+	* libgapvidutil/gap_gve_story.c
+	* libgapvidapi/gap_vid_api_ffmpeg.c
+	* vid_enc_ffmpeg/gap_enc_ffmpeg_main.c
+	* gap/gap_filter_iterators.c
+	* gap/iter_ALT/gen/plug_in_noisify_iter_ALT.inc
+	* docs/reference/txt/STORYBOARD_FILE_DOC.txt
+	* docs/reference/txt/plug-in-gap-storyboard-gen-otone.txt    # NEW file
+	* docs/reference/txt/plug-in-gap-storyboard-master-prop.txt  # NEW file
+	* docs/reference/txt/plug-in-wr-curves.txt                   # NEW file
+	* docs/reference/txt/plug-in-wr-color-levels.txt             # NEW file
+	* docs/reference/txt/plug-in-wr-huesat.txt                   # NEW file
+	
+	
 2005-01-22  Wolfgang Hofer <hof@gimp.org>
 	- Storyboard dialog: added key support for crtl-c,ctrl-x,ctrl-v (copy/cut/paste)
 	

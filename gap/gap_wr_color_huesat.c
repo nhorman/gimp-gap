@@ -64,6 +64,7 @@
 #define PLUG_IN_ITER_NAME       "plug_in_wr_huesat_Iterator"
 #define PLUG_IN_DATA_ITER_FROM  "plug_in_wr_huesat_ITER_FROM"
 #define PLUG_IN_DATA_ITER_TO    "plug_in_wr_huesat_ITER_TO"
+#define PLUG_IN_HELP_ID         "plug-in-wr-huesat"
 
 
 
@@ -569,7 +570,7 @@ do_dialog (wr_huesat_val_t *cuvals)
   /*  The dialog1 and main vbox  */
   dialog1 = gimp_dialog_new (_("Hue-Saturation"), "hue_saturation_wrapper",
                                NULL, 0,
-			       gimp_standard_help_func, NULL, /* "filters/color/wrapper.html" */
+			       gimp_standard_help_func, PLUG_IN_HELP_ID,
 
                                GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
                                GTK_STOCK_OK,     GTK_RESPONSE_OK,

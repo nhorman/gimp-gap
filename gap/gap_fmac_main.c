@@ -671,7 +671,7 @@ gap_fmac_dialog(GimpRunMode run_mode, gint32 image_id, gint32 drawable_id)
 
     if(gpp->run_flag)
     {
-      /* if(gap_debug) */ printf("gap_fmac_dialog: RUN image_id:%d drawable_id:%d, filtermacro_file:%s\n"
+      if(gap_debug) printf("gap_fmac_dialog: RUN image_id:%d drawable_id:%d, filtermacro_file:%s\n"
                               ,(int)image_id
 			      ,(int)drawable_id
 			      ,gpp->filtermacro_file

@@ -1,26 +1,4 @@
-STORYBOARD_FILES           2004.10.27:
-
-
-WARNING:
---------
-This STORYBOARD_FILE specification is still under development.
-Expect there will be changes until the first stable release.
-
-// TODO: this docfile is not up to date with the currrent development state:
-//
-// - mark features that are only available in level2 STORYBOARD syntax
-//      the storyboard dialog does not support editing of all the features
-//      that are available at STORYBOARD based encoding.
-//      But you can edit storyboard files using a texteditor to use those
-//      "level2" features
-//      the current STORYBOARD dialog implementation has restrictions:
-//          - none of the audio features (AUD_xx)
-//          - video is limited to one track
-//          - no video attributes (effects) VID_OPACITY, VID_ZOOM, VID_MOVE)
-//
-// - the exactseek parameter should be removed (both in implementation
-//   and documentation) NOW GAP videoaccess should always work exact.
-//   for both fast and exact access create a videoindex before!
+STORYBOARD_FILES           2005.01.26:
 
 
 General
@@ -100,7 +78,7 @@ AUD_MASTER_SAMPLERATE  samples_per_sec:44100
 VID_PLAY_MOVIE     track:1  file:"movie_filename"     from:0001  to:0099 mode:{pingpong|normal}\
                              nloops:1 \
 	                     seltrack:1 \
-                             exactseek.0 \
+                             exactseek:0 \
                              deinterlace:1.0 \
 			     stepsize:1.0 \
                              macro:"macro_filename"
@@ -194,10 +172,12 @@ VID_PLAY_MOVIE
   [8] seltrack          ... Select input videotrack (for videos with more viedeotracks.
                             use 1 for the first track, or if the video has only one videotrack)
                             DEFAULT: 1
-  [9] exactseek         ... 0 .. use faster seek ops for Videoframe reads (positioning may not be exact)
-                            1 .. force sequential reads for exact positioning (in the Video Read API (GVA))
-                            that will be execute on each imported input_layer
-                            DEFAULT: 1
+  [9] exactseek         ... 0 .. use faster videoindex based seek ops for Videoframe reads
+                                 when available.
+                            1 .. force sequential reads for exact positioning 
+			         in the Video Read API (GVA) even if videoindex is available.
+                                 In larger videos this will be very very slow.
+                            DEFAULT: 0
  [10] deinterlace       ... 0.0 (upto 0.99)  read videoframes 1:1 without deinterlacing
                             1.0 upto 1.99  deinterlace videoframes keeping odd rows
                                 where 1.0 does not interpolate the even rows (hard) 

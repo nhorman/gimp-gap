@@ -2513,6 +2513,39 @@ gap_story_save(GapStoryBoard *stb, const char *filename)
            );
     }
 
+    /* print MASTER_SAMPLERATE */
+    if(stb->master_samplerate > 0.0)
+    {
+       gap_stb_syntax_get_parname_tab(GAP_STBKEY_AUD_MASTER_SAMPLERATE
+                                    ,&l_parnam_tab
+				    );
+       fprintf(fp, "%s   %s:%d\n"
+           , GAP_STBKEY_AUD_MASTER_SAMPLERATE
+	   , l_parnam_tab.parname[1]
+           , (int)stb->master_samplerate
+           );
+    }
+
+    /* print MASTER_VOLUME */
+    if(stb->master_volume >= 0.0)
+    {
+       gchar l_dbl_str[G_ASCII_DTOSTR_BUF_SIZE];
+
+       /* setlocale independent float string */
+       g_ascii_dtostr(&l_dbl_str[0]
+                     ,G_ASCII_DTOSTR_BUF_SIZE
+                     ,stb->master_volume
+                     );
+       gap_stb_syntax_get_parname_tab(GAP_STBKEY_AUD_MASTER_VOLUME
+                                    ,&l_parnam_tab
+				    );
+       fprintf(fp, "%s       %s:%s\n"
+           , GAP_STBKEY_AUD_MASTER_VOLUME
+	   , l_parnam_tab.parname[1]
+           , l_dbl_str
+           );
+    }
+
     if((stb->layout_cols > 0) || (stb->layout_rows > 0) || (stb->layout_thumbsize > 0))
     {
       /* print LAYOUT_SIZE */

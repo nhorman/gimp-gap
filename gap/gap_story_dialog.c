@@ -63,6 +63,8 @@
 #include "gap-intl.h"
 
 #define GAP_STB_PLAYER_HELP_ID    "plug-in-gap-storyboard-player"
+#define GAP_STB_MASTER_PROP_DLG_HELP_ID  "plug-in-gap-storyboard-master-prop"
+#define GAP_STB_GEN_OTONE_DLG_HELP_ID    "plug-in-gap-storyboard-gen-otone"
 
 
 extern int gap_debug;  /* 1 == print debug infos , 0 dont print debug infos */
@@ -959,7 +961,7 @@ p_story_set_range_cb(GapPlayerAddClip *plac_ptr)
 	    {
 	      stb_elem->record_type = GAP_STBREC_VID_MOVIE;
 	      stb_elem->seltrack    = plac_ptr->ainfo_ptr->seltrack;
-	      stb_elem->exact_seek  = 1;
+	      stb_elem->exact_seek  = 0;
 	      stb_elem->delace      = plac_ptr->ainfo_ptr->delace;
 	      //stb_elem->density   = plac_ptr->ainfo_ptr->density;
 	      
@@ -5626,6 +5628,7 @@ gap_storyboard_dialog(GapStbMainGlobalParams *sgpp)
 }  /* end gap_storyboard_dialog */
 
 
+
 /* -----------------------------------
  * p_tabw_gen_otone_dialog
  * ------------------------------------
@@ -5633,7 +5636,7 @@ gap_storyboard_dialog(GapStbMainGlobalParams *sgpp)
 static void
 p_tabw_gen_otone_dialog(GapStbTabWidgets *tabw)
 {
-  GapArrArg  argv[6];
+  GapArrArg  argv[7];
   gint   l_ii;
   gint   l_ii_aud_seltrack;
   gint   l_ii_aud_track;
@@ -5653,14 +5656,14 @@ p_tabw_gen_otone_dialog(GapStbTabWidgets *tabw)
   gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_LABEL_LEFT);
   argv[l_ii].label_txt = _("Generate original tone audio track "
                            "for all video clips in the storyboard");
-  
+
   l_ii++; l_ii_aud_seltrack = l_ii;
   gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_INT);
   argv[l_ii].constraint = TRUE;
   argv[l_ii].label_txt = _("Input Audiotrack:");
   argv[l_ii].help_txt  = _("select input audiotrack in the videofile(s)."
                            "(if your input videos have multiple audiotracks "
-			   "values > 1 usually refer to non-default language)");
+                           "values > 1 usually refer to non-default language)");
   argv[l_ii].int_min   = (gint)1;
   argv[l_ii].int_max   = (gint)99;
   argv[l_ii].int_ret   = (gint)1;
@@ -5674,8 +5677,8 @@ p_tabw_gen_otone_dialog(GapStbTabWidgets *tabw)
   argv[l_ii].label_txt = _("Output Audiotrack:");
   argv[l_ii].help_txt  = _("output audiotrack to be generated in the storyboard file. "
                            "The generated storyboard audiotrack will be a list of references "
-			   "to the audioparts in the input videos, corresponding to all "
-			   "used video clip references.");
+                           "to the audioparts in the input videos, corresponding to all "
+                           "used video clip references.");
   argv[l_ii].int_min   = (gint)1;
   argv[l_ii].int_max   = (gint)GAP_STB_MAX_AUD_TRACKS;
   argv[l_ii].int_ret   = (gint)1;
@@ -5695,23 +5698,27 @@ p_tabw_gen_otone_dialog(GapStbTabWidgets *tabw)
   l_ii++;
   gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_DEFAULT_BUTTON);
   argv[l_ii].label_txt =  _("Reset");
-  argv[l_ii].help_txt  = _("Reset parameters to default size");
+  argv[l_ii].help_txt  = _("Reset parameters to default values");
+
+  l_ii++;
+  gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_HELP_BUTTON);
+  argv[l_ii].help_id = GAP_STB_GEN_OTONE_DLG_HELP_ID;
 
   l_ii++;
 
   l_rc = gap_arr_ok_cancel_dialog( _("Generate Original Tone Audio")
                                  , _("Settings")
                                  , l_ii
-				 , argv);
+                                 , argv);
 
-  if(l_rc)                       
+  if((l_rc) && (sgpp->shell_window))
   {
      gint     aud_seltrack;
      gint     aud_track;
      gint     vid_track;
      gboolean replace_existing_aud_track;
      gboolean l_ok;
-     
+
      aud_seltrack = (gint32)(argv[l_ii_aud_seltrack].int_ret);
      aud_track    = (gint32)(argv[l_ii_aud_track].int_ret);
      vid_track    = 1;
@@ -5727,20 +5734,20 @@ p_tabw_gen_otone_dialog(GapStbTabWidgets *tabw)
      if(!l_ok)
      {
        g_message(_("Original tone track was not created.\n"
-		   "The storyboard %s\n"
-		   "has already audio clip references at track %d.\n"
-		   "Use another track number or allow replace at next try.")
+                   "The storyboard %s\n"
+                   "has already audio clip references at track %d.\n"
+                   "Use another track number or allow replace at next try.")
                 ,tabw->filename_refptr
-		,(int)aud_track
+                ,(int)aud_track
                 );
      }
-     
+
      /* update to reflect the modified status */
      p_tabw_update_frame_label (tabw, sgpp);
 
   }
   tabw->otone_dlg_open  = FALSE;
-  
+
 }  /* end p_tabw_gen_otone_dialog */
 
 
@@ -5751,14 +5758,16 @@ p_tabw_gen_otone_dialog(GapStbTabWidgets *tabw)
 static void
 p_tabw_master_prop_dialog(GapStbTabWidgets *tabw, gboolean new_flag)
 {
-  GapArrArg  argv[6];
+  GapArrArg  argv[9];
   static char *radio_args[4]  = { N_("automatic"), "libmpeg3", "libavformat", "quicktime4linux" };
   gint   l_ii;
   gint   l_decoder_idx;
   gint   l_ii_width;
   gint   l_ii_height;
-  gint   l_ii_rate;
+  gint   l_ii_framerate;
   gint   l_ii_preferred_decoder;
+  gint   l_ii_samplerate;
+  gint   l_ii_volume;
   GapStbMainGlobalParams *sgpp;
   GapStoryBoard *stb_dst;
   gint32   l_master_width;
@@ -5768,18 +5777,18 @@ p_tabw_master_prop_dialog(GapStbTabWidgets *tabw, gboolean new_flag)
   gboolean l_rc;
 
   stb_dst = p_tabw_get_stb_ptr (tabw);
-  if(stb_dst == NULL) 
-  { 
+  if(stb_dst == NULL)
+  {
     return;
   }
-  if(tabw->master_dlg_open)  
+  if(tabw->master_dlg_open)
   {
-    return; 
+    return;
   }
   sgpp = (GapStbMainGlobalParams *)tabw->sgpp;
 
   tabw->master_dlg_open  = TRUE;
-  
+
   gap_story_get_master_size(stb_dst, &l_master_width, &l_master_height);
 
   label_txt = NULL;
@@ -5839,13 +5848,15 @@ p_tabw_master_prop_dialog(GapStbTabWidgets *tabw, gboolean new_flag)
   argv[l_ii].int_default = (gint)l_master_height;
 
 
-  l_ii++; l_ii_rate = l_ii;
+  l_ii++; l_ii_framerate = l_ii;
   gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_FLT_PAIR);
   argv[l_ii].constraint = TRUE;
   argv[l_ii].label_txt = _("Framerate:");
   argv[l_ii].help_txt  = _("Framerate in frames/sec.");
-  argv[l_ii].flt_min   = -1.0;
+  argv[l_ii].flt_min   = 0.0;
   argv[l_ii].flt_max   = 999;
+  argv[l_ii].flt_step  = 0.1;
+  argv[l_ii].pagestep  = 1.0;
   argv[l_ii].flt_ret   = GAP_STORY_DEFAULT_FRAMERATE;
   if(stb_dst->master_framerate > 0)
   {
@@ -5862,31 +5873,31 @@ p_tabw_master_prop_dialog(GapStbTabWidgets *tabw, gboolean new_flag)
     if(*stb_dst->preferred_decoder != '\0')
     {
       guint jj;
-      
+
       g_snprintf(buf_preferred_decoder
-	       , sizeof(buf_preferred_decoder)
-	       , "%s"
-	       , stb_dst->preferred_decoder
-	       );
+               , sizeof(buf_preferred_decoder)
+               , "%s"
+               , stb_dst->preferred_decoder
+               );
       for(jj=0; jj < G_N_ELEMENTS(radio_args);jj++)
       {
-	if(strcmp(radio_args[jj], buf_preferred_decoder) == 0)
-	{
-	  l_decoder_idx = jj;
-	  break;
-	}
+        if(strcmp(radio_args[jj], buf_preferred_decoder) == 0)
+        {
+          l_decoder_idx = jj;
+          break;
+        }
       }
-	       
+
     }
-    
+
   }
   gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_OPT_ENTRY);
   argv[l_ii].label_txt = _("Decoder:");
   argv[l_ii].help_txt  = _("Select preferred video decoder library, "
-        	       "or leave empty for automatic selection."
-		       "The decoder setting is only relevant if "
-		       "videoclips are used (but not for frames "
-		       "that are imagefiles)");
+                       "or leave empty for automatic selection."
+                       "The decoder setting is only relevant if "
+                       "videoclips are used (but not for frames "
+                       "that are imagefiles)");
   argv[l_ii].radio_argc  = G_N_ELEMENTS(radio_args);
   argv[l_ii].radio_argv = radio_args;
   argv[l_ii].radio_ret  = l_decoder_idx;
@@ -5896,43 +5907,86 @@ p_tabw_master_prop_dialog(GapStbTabWidgets *tabw, gboolean new_flag)
   argv[l_ii].text_buf_len = sizeof(buf_preferred_decoder);
   argv[l_ii].text_buf_default = g_strdup(buf_preferred_decoder);
 
+  l_ii++; l_ii_samplerate = l_ii;
+  gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_INT_PAIR);
+  argv[l_ii].constraint = TRUE;
+  argv[l_ii].label_txt = _("Samplerate:");
+  argv[l_ii].help_txt  = _("Master audio samplerate for the resulting video in samples/sec.");
+
+  argv[l_ii].int_min   = 0;
+  argv[l_ii].int_max   = 48000;
+  argv[l_ii].int_ret   = GAP_STORY_DEFAULT_SAMPLERATE;
+  if(stb_dst->master_samplerate > 0)
+  {
+    argv[l_ii].int_ret   = stb_dst->master_samplerate;
+  }
+  argv[l_ii].has_default = TRUE;
+  argv[l_ii].int_default = argv[l_ii].int_ret;
+
+  l_ii++; l_ii_volume = l_ii;
+  gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_FLT_PAIR);
+  argv[l_ii].constraint = TRUE;
+  argv[l_ii].label_txt = _("Volume:");
+  argv[l_ii].help_txt  = _("Master audio volume, where 1.0 keeps original volume");
+  argv[l_ii].flt_min   = 0.0;
+  argv[l_ii].flt_max   = 5.0;
+  argv[l_ii].flt_step  = 0.1;
+  argv[l_ii].pagestep  = 1.0;
+  argv[l_ii].flt_ret   = stb_dst->master_volume;
+  if(stb_dst->master_volume < 0.0)
+  {
+    argv[l_ii].flt_ret = 1.0;
+  }
+  argv[l_ii].has_default = TRUE;
+  argv[l_ii].flt_default = argv[l_ii].flt_ret;
 
   l_ii++;
   gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_DEFAULT_BUTTON);
   argv[l_ii].label_txt =  _("Reset");                /* should use GIMP_STOCK_RESET if possible */
-  argv[l_ii].help_txt  = _("Reset parameters to default size");
+  argv[l_ii].help_txt  = _("Reset parameters to inital values");
 
+
+  l_ii++;
+  gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_HELP_BUTTON);
+  argv[l_ii].help_id = GAP_STB_MASTER_PROP_DLG_HELP_ID;
+
+
+
+  l_ii++;
+  
   l_rc = gap_arr_ok_cancel_dialog( _("Master Properties"),
-                                 _("Settings"), 
+                                 _("Settings"),
                                   G_N_ELEMENTS(argv), argv);
   if(label_txt)
   {
     g_free(label_txt);
   }
-  if(l_rc)			 
+  if((l_rc) && (sgpp->shell_window))
   {
      stb_dst->master_width = (gint32)(argv[l_ii_width].int_ret);
      stb_dst->master_height = (gint32)(argv[l_ii_height].int_ret);
-     stb_dst->master_framerate = (gint32)(argv[l_ii_rate].flt_ret);
+     stb_dst->master_framerate = (gint32)(argv[l_ii_framerate].flt_ret);
+     stb_dst->master_samplerate = (gint32)(argv[l_ii_samplerate].int_ret);
+     stb_dst->master_volume = (gint32)(argv[l_ii_volume].flt_ret);
      if(*buf_preferred_decoder)
      {
        if(stb_dst->preferred_decoder)
        {
          if(strcmp(stb_dst->preferred_decoder, buf_preferred_decoder) != 0)
-	 {
+         {
            g_free(stb_dst->preferred_decoder);
-	   stb_dst->preferred_decoder = g_strdup(buf_preferred_decoder);
-	   
-	   /* close the videohandle (if open)
-	    * this ensures that the newly selected decoder
-	    * can be used at the next videofile access attempt
-	    */
+           stb_dst->preferred_decoder = g_strdup(buf_preferred_decoder);
+
+           /* close the videohandle (if open)
+            * this ensures that the newly selected decoder
+            * can be used at the next videofile access attempt
+            */
            p_close_videofile(sgpp);
-	 }
+         }
        }
        else
        {
-	   stb_dst->preferred_decoder = g_strdup(buf_preferred_decoder);
+           stb_dst->preferred_decoder = g_strdup(buf_preferred_decoder);
            p_close_videofile(sgpp);
        }
      }
@@ -5944,20 +5998,20 @@ p_tabw_master_prop_dialog(GapStbTabWidgets *tabw, gboolean new_flag)
        }
        stb_dst->preferred_decoder = NULL;
      }
-    
+
      /* refresh storyboard layout and thumbnail list widgets */
      p_recreate_tab_widgets( stb_dst
-                        	 ,tabw
-				 ,tabw->mount_col
-				 ,tabw->mount_row
-				 ,sgpp
-				 );
+                                 ,tabw
+                                 ,tabw->mount_col
+                                 ,tabw->mount_row
+                                 ,sgpp
+                                 );
      p_render_all_frame_widgets(tabw);
      p_widget_sensibility(sgpp);
 
   }
   tabw->master_dlg_open  = FALSE;
-  
+
 }  /* end p_tabw_master_prop_dialog */
 
 
