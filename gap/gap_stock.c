@@ -112,4 +112,6 @@ gap_stock_init (void)
   gtk_icon_factory_add_default (gap_icon_factory);
 
   gtk_stock_add_static (gap_stock_items, G_N_ELEMENTS (gap_stock_items));
+
+  initialized = TRUE;
 }
