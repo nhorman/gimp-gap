@@ -39,5 +39,5 @@ EXTRA_DIST = \
 	procterm.c	\
 	wavfile.c	\
 	wavfile.h	\
-	wavplay.h
-
+	wavplay.h	\
+	$(libexec_SCRIPTS)

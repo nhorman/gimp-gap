@@ -1,5 +1,15 @@
 2003-11-28  Sven Neumann  <sven@gimp.org>
 
+	* configure.in: added missing AC_PROG_INTLTOOL.
+
+	* Makefile.am (EXTRA_DIST): added missing intltool files.
+
+	* gap/Makefile.am: respect $(DESTDIR).
+
+	* libwavplayclient/Makefile.am (EXTRA_DIST): added $(libexec_SCRIPTS).
+
+2003-11-28  Sven Neumann  <sven@gimp.org>
+
 	* gap/gap_navigator_dialog.c (gap_navigator): simplified the
 	dialog code by using the convenient gimp_dialog_run().
 

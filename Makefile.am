@@ -12,5 +12,8 @@ EXTRA_DIST = \
 	INSTALL			\
 	README			\
 	ChangeLog		\
-	ChangeLog.pre-1-2
+	ChangeLog.pre-1-2	\
+	intltool-extract.in	\
+	intltool-merge.in	\
+	intltool-update.in
 
