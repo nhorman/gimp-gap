@@ -16,8 +16,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gimp 2.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-01-17 23:11+0100\n"
-"PO-Revision-Date: 2005-01-19 23:51+0100\n"
+"POT-Creation-Date: 2005-01-20 10:13+0100\n"
+"PO-Revision-Date: 2005-01-20 12:11+0100\n"
 "Last-Translator: Marco Ciampa <ciampix@libero.it>\n"
 "Language-Team: gimp.linux.it\n"
 "MIME-Version: 1.0\n"
@@ -439,15 +439,11 @@ msgstr "Tolleranza alfa:"
 #. constrain
 #. lower/upper unconstrained
 #: gap/gap_bluebox.c:324
-#, fuzzy
 msgid ""
 "Sharp pixel selection by color with 0.0. Greater values than 0 makes "
 "selection with more or less variable alpha value depending on difference to "
 "the keycolor"
-msgstr ""
-"Affina la selezione punti per colore con 0.0. Valori maggiori di 0 fanno la "
-"selezione con più o meno valore alfa variabile a seconda delle differenze "
-"dal colorechiave"
+msgstr "Affina la selezione punti per colore con 0.0. Valori maggiori di 0 fanno la selezione con più o meno valore alfa variabile a seconda delle differenze dal colorechiave"
 
 #: gap/gap_bluebox.c:336
 msgid "Source Alpha:"
@@ -803,51 +799,40 @@ msgid "Requirements to run the mplayer based video split"
 msgstr "Prerequisiti per l'esecuzione dello split video basato su mplayer"
 
 #: gap/gap_decode_mplayer.c:210
-#, fuzzy
 msgid ""
 "mplayer 1.0 must be installed somewhere in your PATH\n"
 "you can get mplayer exporting edition at:\n"
 msgstr ""
-"Il PATH deve trovare l'installazione della versione\n"
-"di esportazione di xanim 2.80.0 (edizione loki).\n"
-"Trovare la versione di esportazione di xanim su:\n"
+"mplayer 1.0 deve essere installato da qualche parte nel PATH\n"
+"Puoi trovare la versione di esportazione di mplayer su:\n"
 
 #: gap/gap_decode_mplayer.c:229
-#, fuzzy
 msgid ""
 "if your mplayer is not in your PATH or is not named mplayer\n"
 "you have to set environment variable GAP_MPLAYER_PROG\n"
 "to your mplayer program and restart gimp"
 msgstr ""
-"Se l'edizione di esportazione di xanim non è presente nel PATH o non si\n"
-"chiama xanim, è necessario impostare la variabile di ambiente "
-"GAP_XANIM_PROG\n"
-"nel programma di esportazione xanim e riavviare gimp"
+"se mplayer non è presente nel PATH o non si chiama mplayer,\n"
+"è necessario impostare la variabile di ambiente GAP_MPLAYER_PROG\n"
+"al programma mplayer e riavviare gimp"
 
 #: gap/gap_decode_mplayer.c:240
-#, fuzzy
 msgid "An error occured while trying to call mplayer:"
-msgstr "Errore durante la chiamata di xanim:"
+msgstr "Errore durante la chiamata di mplayer:"
 
 #: gap/gap_decode_mplayer.c:260
-#, fuzzy
 msgid "mplayer Information"
-msgstr "Informazioni XANIM"
+msgstr "Informazioni su mplayer"
 
 #: gap/gap_decode_mplayer.c:400
-#, fuzzy
 msgid "Input Video:"
-msgstr "Selezione video in ingresso"
+msgstr "Video in ingresso:"
 
 #: gap/gap_decode_mplayer.c:401
-#, fuzzy
 msgid ""
 "Name of a videofile to read by mplayer. Frames are extracted from the "
 "videofile and written to separate diskfiles. mplayer 1.0 is required."
-msgstr ""
-"Nome di un file video da leggere con xanim. I frame sono estratti dal file "
-"video e scritti in file su disco separati. È necessaria l'edizione di "
-"esportazione di xanim."
+msgstr "Nome di un file video da leggere con mplayer. I frame sono estratti dal file video e scritti in file su disco separati. È necessaria la versione 1.0 di mplayer."
 
 #: gap/gap_decode_mplayer.c:418
 msgid "Start Time:"
@@ -881,21 +866,18 @@ msgid "Audiotrack:"
 msgstr "Traccia audio:"
 
 #: gap/gap_decode_mplayer.c:453
-#, fuzzy
 msgid "Number of audiotrack to extract. (0 == ignore audio)"
-msgstr "Numero traccia audio (0 == non estrarre audio)"
+msgstr "Numero tracce audio da estrarre (0 == ignora l'audio)."
 
 #: gap/gap_decode_mplayer.c:465
-#, fuzzy
 msgid "Output Audio:"
-msgstr "File di uscita"
+msgstr "Audio di uscita:"
 
 #: gap/gap_decode_mplayer.c:466
-#, fuzzy
 msgid ""
 "Filename for the extracted audiodata. Audiodata is written in RIFF WAV "
 "fileformat (but only if audiotrack >= 1)"
-msgstr "Nome dell'audio estratto (l'audio viene scritto in formato RIFF WAV)"
+msgstr "Nome file dei dati audio estratti. I dati audio verranno scritti in formato RIFF WAV (ma solo se le tracce audio sono >= 1)"
 
 #: gap/gap_decode_mplayer.c:475 gap/gap_decode_xanim.c:266
 msgid "Framenames:"
@@ -910,9 +892,8 @@ msgstr ""
 "aggiunta l'estensione ed il numero di frame."
 
 #: gap/gap_decode_mplayer.c:485
-#, fuzzy
 msgid "Format:"
-msgstr "Formato"
+msgstr "Formato:"
 
 #: gap/gap_decode_mplayer.c:486
 msgid ""
@@ -1045,15 +1026,15 @@ msgid "File already exists"
 msgstr "File esistente"
 
 #: gap/gap_decode_mplayer.c:935
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "can't find any extracted frames,\n"
 "%s\n"
 "maybe mplayer has failed or was cancelled"
 msgstr ""
-"impossibile trovare nessun frame estratto,\n"
+"impossibile trovare alcun frame estratto,\n"
 "%s\n"
-"forse xanim ha fallito o è stato interrotto"
+"forse mplayer ha fallito o è stato interrotto"
 
 #: gap/gap_decode_mplayer.c:960 gap/gap_decode_xanim.c:601
 #, c-format
@@ -1071,13 +1052,13 @@ msgid "failed to write %s (check permissions ?)"
 msgstr "fallita la scrittura di %s (controllati i permessi?)"
 
 #: gap/gap_decode_mplayer.c:1036
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "WARNING: your gimprc file configuration for the mediaplayer\n"
 "does not point to an executable program\n"
 "the configured value for %s is: %s\n"
 msgstr ""
-"ATTENZIONE: il file di configurazione gimprc per il server audio wavplay\n"
+"ATTENZIONE: il file di configurazione gimprc per il mediaplayer\n"
 "non punta ad un file eseguibile\n"
 "il valore configurato per %s è: %s\n"
 
@@ -1120,22 +1101,21 @@ msgid "Extracting audio..."
 msgstr "Estrazione audio..."
 
 #: gap/gap_decode_mplayer.c:1512
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "could not start mplayer process\n"
 "(program=%s)"
 msgstr ""
-"non è possibile avviare il processo xanim\n"
+"non è possibile avviare il processo mplayer\n"
 "(programma=%s)"
 
 #: gap/gap_decode_mplayer.c:1540
-#, fuzzy
 msgid ""
 "can't find any extracted frames,\n"
 "mplayer has failed or was cancelled"
 msgstr ""
 "non è possibile trovare nessun frame estratto,\n"
-"xanim ha fallito o è stato interrotto"
+"mplayer ha fallito o è stato interrotto"
 
 #: gap/gap_decode_mplayer.c:1559 gap/gap_decode_xanim.c:1197
 msgid "Renaming frames..."
@@ -1249,7 +1229,6 @@ msgstr ""
 "campo specificato) mentre xanim è ancora in esecuzione"
 
 #: gap/gap_decode_xanim.c:316
-#, fuzzy
 msgid ""
 "\n"
 "Warning: xanim 2.80 is old unmaintained software\n"
@@ -1257,7 +1236,8 @@ msgid ""
 "Most of the frames (type P and B) will be skipped."
 msgstr ""
 "\n"
-"Attenzione: xanim 2.80 possiede solo un supporto MPEG limitato.\n"
+"Attenzione: xanim 2.80 è software vecchio e non mantenuto\n"
+"e possiede solo un supporto MPEG limitato.\n"
 "Molti frame (tipo P e B) verranno saltati."
 
 #: gap/gap_decode_xanim.c:324
@@ -1526,24 +1506,20 @@ msgstr ""
 "nome plug-in: '%s'"
 
 #: gap/gap_frontends_main.c:145
-#, fuzzy
 msgid "<Image>/Video/Split Video to Frames/MPlayer based extract..."
-msgstr "<Image>/Video/Dividi il video in frame/leggibile da XANIM..."
+msgstr "<Image>/Video/Dividi il video in frame/Estrazione con mplayer..."
 
 #: gap/gap_frontends_main.c:158
-#, fuzzy
 msgid "<Toolbox>/Xtns/Split Video to Frames/MPlayer based extract..."
-msgstr "<Toolbox>/Xtns/Dividi il video in frame/leggibile da XANIM..."
+msgstr "<Toolbox>/Xtns/Dividi il video in frame/Estrazione con mplayer..."
 
 #: gap/gap_frontends_main.c:172
-#, fuzzy
 msgid "<Image>/Video/Split Video to Frames/XANIM based extract..."
-msgstr "<Image>/Video/Dividi il video in frame/leggibile da XANIM..."
+msgstr "<Image>/Video/Dividi il video in frame/Estrazione con XANIM..."
 
 #: gap/gap_frontends_main.c:185
-#, fuzzy
 msgid "<Toolbox>/Xtns/Split Video to Frames/XANIM based extract..."
-msgstr "<Toolbox>/Xtns/Dividi il video in frame/leggibile da XANIM..."
+msgstr "<Toolbox>/Xtns/Dividi il video in frame/Estrazione con XANIM..."
 
 #: gap/gap_frontends_main.c:197
 msgid "<Image>/Video/Encode/MPEG1..."
@@ -1715,19 +1691,16 @@ msgid "No selected layer in start frame"
 msgstr "Nessun livello selezionato nel frame di partenza"
 
 #: gap/gap_mod_layer_dialog.c:156
-#, fuzzy
 msgid "New Layer Name"
-msgstr "Nome base del Livello:"
+msgstr "Nome nuovo livello"
 
 #: gap/gap_mod_layer_dialog.c:162
-#, fuzzy
 msgid "Merged Layer Name"
-msgstr "Elimina livelli nei frame"
+msgstr "Nome livello fuso"
 
 #: gap/gap_mod_layer_dialog.c:169
-#, fuzzy
 msgid "Channel Name"
-msgstr "Canali:"
+msgstr "Nome Canale"
 
 #: gap/gap_mod_layer_dialog.c:419
 msgid "Frames Modify"
@@ -1737,9 +1710,8 @@ msgstr "Modifica frame"
 #. the function        frame
 #. +++++++++++++++++++++++++
 #: gap/gap_mod_layer_dialog.c:442
-#, fuzzy
 msgid "Function"
-msgstr "Funzione:"
+msgstr "Funzione"
 
 #. the Fuction label
 #. the toplevel menu_item (will be replaced on any selection)
@@ -1749,102 +1721,90 @@ msgstr "Funzione:"
 
 #. the Layer Attributes sub menu
 #: gap/gap_mod_layer_dialog.c:501
-#, fuzzy
 msgid "Layer Attributes"
-msgstr "Motivo di livello:"
+msgstr "Attributi di livello"
 
 #: gap/gap_mod_layer_dialog.c:508
 msgid "Set layer(s) visible"
 msgstr "Rendi i livelli visibili"
 
 #: gap/gap_mod_layer_dialog.c:509
-#, fuzzy
 msgid "set all selected layers visible"
-msgstr "Usa tutti i livelli non selezionati"
+msgstr "imposta tutti i livelli selezionati come visibili"
 
 #: gap/gap_mod_layer_dialog.c:514
 msgid "Set layer(s) invisible"
 msgstr "Rendi i livelli invisibili"
 
 #: gap/gap_mod_layer_dialog.c:515
-#, fuzzy
 msgid "set all selected layers invisible"
-msgstr "Usa tutti i livelli non selezionati"
+msgstr "imposta tutti i livelli selezionati come invisibili"
 
 #: gap/gap_mod_layer_dialog.c:520
 msgid "Set layer(s) linked"
 msgstr "Rendi i livelli collegati"
 
 #: gap/gap_mod_layer_dialog.c:521
-#, fuzzy
 msgid "set all selected layers linked"
-msgstr "Usa tutti i livelli non selezionati"
+msgstr "imposta tutti i livelli selezionati come collegati"
 
 #: gap/gap_mod_layer_dialog.c:526
 msgid "Set layer(s) unlinked"
 msgstr "Rendi i livelli non collegati"
 
 #: gap/gap_mod_layer_dialog.c:527
-#, fuzzy
 msgid "set all selected layers unlinked"
-msgstr "Usa tutti i livelli non selezionati"
+msgstr "imposta tutti i livelli selezionati come non collegati"
 
 #. the Layer Stackposition sub menu
 #: gap/gap_mod_layer_dialog.c:536
-#, fuzzy
 msgid "Layer Stackposition"
-msgstr "Posizione nella pila:"
+msgstr "Posizione livelli nella pila "
 
 #: gap/gap_mod_layer_dialog.c:543
 msgid "Raise layer(s)"
 msgstr "Alza livello"
 
 #: gap/gap_mod_layer_dialog.c:544
-#, fuzzy
 msgid "raise all selected layers"
-msgstr "Usa tutti i livelli non selezionati"
+msgstr "alza tutti i livelli selezionati"
 
 #: gap/gap_mod_layer_dialog.c:549
 msgid "Lower layer(s)"
 msgstr "Abbassa livelli"
 
 #: gap/gap_mod_layer_dialog.c:550
-#, fuzzy
 msgid "lower all selected layers"
-msgstr "Usa tutti i livelli non selezionati"
+msgstr "abbassa tutti i livelli selezionati"
 
 #. the Merge Layers sub menu
 #: gap/gap_mod_layer_dialog.c:558
-#, fuzzy
 msgid "Merge Layers"
-msgstr "Crea livelli"
+msgstr "Fondi assieme i livelli"
 
 #: gap/gap_mod_layer_dialog.c:565
 msgid "Merge layer(s) expand as necessary"
 msgstr "Fondi livelli ed espandi se necessario"
 
 #: gap/gap_mod_layer_dialog.c:566
-#, fuzzy
 msgid "merge selected layers and expand as necessary"
-msgstr "Fondi livelli ed espandi se necessario"
+msgstr "fonde i livelli selezionati e li espande se necessario"
 
 #: gap/gap_mod_layer_dialog.c:571
 msgid "Merge layer(s) clipped to image"
 msgstr "Fondi i livelli attaccati all'immagine"
 
 #: gap/gap_mod_layer_dialog.c:572
-#, fuzzy
 msgid "merge selected layers and clip to image"
-msgstr "Fondi i livelli attaccati all'immagine"
+msgstr "fonde i livelli selezionati e li aggiunge all'immagine"
 
 #: gap/gap_mod_layer_dialog.c:577
 msgid "Merge layer(s) clipped to bg-layer"
 msgstr "Fondi i livelli aggiungendo al livello di sfondo"
 
 #: gap/gap_mod_layer_dialog.c:578
-#, fuzzy
 msgid "merge selected layers and clip to bg-layer"
-msgstr "Fondi i livelli aggiungendo al livello di sfondo"
+msgstr "fonde i livelli selezionati e li aggiunge al livello di sfondo"
 
 #. the Selection sub menu
 #: gap/gap_mod_layer_dialog.c:585
@@ -1853,24 +1813,23 @@ msgstr "Selezione"
 
 #: gap/gap_mod_layer_dialog.c:592
 msgid "Replace selection (source is the active frame)"
-msgstr "Rimpiazza la selezione (l'origine è la frame attiva)"
+msgstr "Rimpiazza la selezione (l'origine è il frame attivo)"
 
 #: gap/gap_mod_layer_dialog.c:593
 msgid "Replace Selection by Selection of the invoking Frame Image"
-msgstr "Rimpiazza la selezione con la selezione della frame immagine invocante"
+msgstr "Rimpiazza la selezione con la selezione del frame immagine invocante"
 
 #: gap/gap_mod_layer_dialog.c:598
 msgid "Add selection (source is the active frame)"
-msgstr "Aggiungi la selezione (l'origine è la frame attiva)"
+msgstr "Aggiungi la selezione (l'origine è il frame attivo)"
 
 #: gap/gap_mod_layer_dialog.c:604
 msgid "Subtract selection (source is the active frame)"
-msgstr "Sottrai la selezione (l'origine è la frame attiva)"
+msgstr "Sottrai la selezione (l'origine è il frame attivo)"
 
 #: gap/gap_mod_layer_dialog.c:610
-#, fuzzy
 msgid "Intersect selection (source is the active frame)"
-msgstr "Ignora selezione (in tutte le immagini sorgenti)"
+msgstr "Interseca selezione (la sorgente è il frame attivo)"
 
 #: gap/gap_mod_layer_dialog.c:616
 msgid "Selection none"
@@ -1885,14 +1844,12 @@ msgid "Selection invert"
 msgstr "Selezione invertita"
 
 #: gap/gap_mod_layer_dialog.c:635
-#, fuzzy
 msgid "Save selection to channel (individual per frame)"
-msgstr "Salva selezione su canale"
+msgstr "Salva selezione su canale (individuale per frame)"
 
 #: gap/gap_mod_layer_dialog.c:641
-#, fuzzy
 msgid "Load selection from channel (individual per frame)"
-msgstr "Carica selezione dal canale"
+msgstr "Carica selezione dal canale (individuale per frame)"
 
 #: gap/gap_mod_layer_dialog.c:647
 msgid "Delete channel (by name)"
@@ -1900,9 +1857,8 @@ msgstr "Cancella canale (per nome)"
 
 #. the LayerMask sub menu
 #: gap/gap_mod_layer_dialog.c:655
-#, fuzzy
 msgid "Layer Mask"
-msgstr "Livello"
+msgstr "Maschera di livello"
 
 #: gap/gap_mod_layer_dialog.c:662
 msgid "Add white layermask (opaque)"
@@ -1951,9 +1907,8 @@ msgid "Apply filter on layer(s)"
 msgstr "Applica filtri ai livelli"
 
 #: gap/gap_mod_layer_dialog.c:727
-#, fuzzy
 msgid "apply filter to all selected layers"
-msgstr "Applicazione filtri su tutti i livelli..."
+msgstr "applica filtri su tutti i livelli selezionati"
 
 #: gap/gap_mod_layer_dialog.c:732
 msgid "Duplicate layer(s)"
@@ -1973,18 +1928,16 @@ msgstr "Aggiungi canale alfa"
 
 #. the LayerName (or channel Name) label
 #: gap/gap_mod_layer_dialog.c:764
-#, fuzzy
 msgid "Layer Name:"
-msgstr "Nome base del Livello:"
+msgstr "Nome livello:"
 
 #: gap/gap_mod_layer_dialog.c:782
-#, fuzzy
 msgid ""
 "Name for all handled layers (or channels),\n"
 "where the string '[######]' is replaced by the frame number."
 msgstr ""
-"Nome base per tutti i livelli dove la stringa '[######]' è rimpiazzata dal "
-"numero di frame"
+"Nome base per tutti i livelli (o canali),\n"
+"gestiti dove la stringa '[######]' è rimpiazzata dal numero di frame."
 
 #. +++++++++++++++++++++++++
 #. the layer selection frame
@@ -4090,11 +4043,8 @@ msgstr ""
 "Questa operazione non potrà essere annullata\n"
 
 #: gap/gap_navigator_dialog.c:730
-#, fuzzy
 msgid "Error while positioning to frame. Video paste operation failed"
-msgstr ""
-"Errore durante il posizionamento al frame. L'operazione di incollamento "
-"video è fallita"
+msgstr "Errore durante il posizionamento al frame. L'operazione di incolla video è fallita"
 
 #: gap/gap_navigator_dialog.c:752
 msgid "Video paste operaton failed"
@@ -4577,21 +4527,18 @@ msgstr ""
 
 #. shortname prefix to indicate that displayed filename is from type storyboard file
 #: gap/gap_player_dialog.c:1664
-#, fuzzy
 msgid "STB:"
-msgstr "STB: %s"
+msgstr "STB:"
 
 #. shortname prefix to indicate that displayed filename is a single videofile
 #: gap/gap_player_dialog.c:1677
-#, fuzzy
 msgid "VIDEO:"
-msgstr "VIDEO: %s"
+msgstr "VIDEO:"
 
 #. shortname prefix to indicate that displayed filename is basename of the frames
 #: gap/gap_player_dialog.c:1689
-#, fuzzy
 msgid "FRAMES:"
-msgstr "FRAME: %s"
+msgstr "FRAME:"
 
 #. pending timer_go_job gets useless, since we start playback now
 #: gap/gap_player_dialog.c:1788 gap/gap_player_dialog.c:2898
@@ -4816,20 +4763,16 @@ msgid "Frame"
 msgstr "Frame:"
 
 #: gap/gap_player_dialog.c:5321
-#, fuzzy
 msgid ""
 "Click: Set current framenr as selection range start 'From Frame',\n"
 "SHIFT-Click: load this frame into the calling image"
 msgstr ""
-"Clic: imposta il numero frame corrente come inizio campo di selezione 'Da "
-"frame',\n"
+"Clic: imposta il numero frame corrente come inizio campo di selezione 'Da frame',\n"
 "Maiusc-Clic: carica il frame nell'immagine chiamante"
 
 #: gap/gap_player_dialog.c:5332
-#, fuzzy
 msgid "Set current framenr as selection range start 'From Frame'"
-msgstr ""
-"Imposta il numero frame corrente come inizio campo di selezione 'Da frame'"
+msgstr "Imposta il numero frame corrente come inizio campo di selezione \"Da frame\""
 
 #. the framenr 2 button (does set End of range)
 #: gap/gap_player_dialog.c:5337
@@ -4837,20 +4780,16 @@ msgid "Nr:"
 msgstr "Nr:"
 
 #: gap/gap_player_dialog.c:5348
-#, fuzzy
 msgid ""
 "Click: Set current framenr as selection range end 'To Frame',\n"
 "SHIFT-Click: load this frame into the calling image"
 msgstr ""
-"Clic: imposta il numero frame corrente come fine campo di selezione 'A "
-"frame',\n"
+"Clic: imposta il numero frame corrente come fine campo di selezione \"A frame\",\n"
 "Maiusc-Clic: carica il frame nell'immagine chiamante"
 
 #: gap/gap_player_dialog.c:5359
-#, fuzzy
 msgid "Set current framenr as selection range end 'To Frame'"
-msgstr ""
-"Imposta il numero frame corrente come fine campo di selezione 'A frame'"
+msgstr "Imposta il numero frame corrente come fine campo di selezione \"A frame\""
 
 #. the time position
 #: gap/gap_player_dialog.c:5380
@@ -5717,9 +5656,8 @@ msgid "Rows:"
 msgstr "Righe:"
 
 #: gap/gap_story_dialog.c:2813
-#, fuzzy
 msgid "rows in the cliplist"
-msgstr "Aggiungi campo all'elenco clip"
+msgstr "righe nell'elenco clip"
 
 #: gap/gap_story_dialog.c:2825
 msgid "Storyboard Layout:"
@@ -5734,18 +5672,16 @@ msgid "columns in the storyboard list"
 msgstr "Colonne nell'elenco storyboard"
 
 #: gap/gap_story_dialog.c:2853
-#, fuzzy
 msgid "rows in the storyboard list"
-msgstr "Esegui un controllo del file storyboard"
+msgstr "righe nell'elenco storyboard"
 
 #: gap/gap_story_dialog.c:2865
 msgid "Use the standard built in layout settings"
 msgstr "Usa lo standard nelle impostazione di disposizione"
 
 #: gap/gap_story_dialog.c:2867
-#, fuzzy
 msgid "Global Layout Properties"
-msgstr "Proprietà master"
+msgstr "Proprietà della disposizione globale"
 
 #: gap/gap_story_dialog.c:2967
 msgid ""
@@ -5792,9 +5728,8 @@ msgid "Videothumbnails"
 msgstr "Miniature video"
 
 #: gap/gap_story_dialog.c:3514
-#, fuzzy
 msgid "Help"
-msgstr "Aiuto:"
+msgstr "Aiuto"
 
 #. XXXXXXXXXXX Start of the CLIPLIST widgets  XXXXXXXXXXXX
 #. the clp_frame
@@ -5818,14 +5753,12 @@ msgid "Toggle Unit"
 msgstr "Commuta unità"
 
 #: gap/gap_story_dialog.c:3576 gap/gap_story_dialog.c:3651
-#, fuzzy
 msgid "Add Audio Otone"
-msgstr "Opzioni audio"
+msgstr "Aggiungi tono audio"
 
 #: gap/gap_story_dialog.c:3582 gap/gap_story_dialog.c:3657
-#, fuzzy
 msgid "Encode"
-msgstr "Codificatore:"
+msgstr "Codifica"
 
 #: gap/gap_story_dialog.c:3604
 msgid "_Storyboard"
@@ -5850,18 +5783,16 @@ msgid "Storyboard unsaved changes"
 msgstr "Cambiamenti nello storyboard non salvati"
 
 #: gap/gap_story_dialog.c:3789
-#, fuzzy
 msgid "Storyboard:"
-msgstr "Storyboard"
+msgstr "Storyboard:"
 
 #: gap/gap_story_dialog.c:3804 gap/gap_story_dialog.c:3833
 msgid "(modified)"
 msgstr "(modificato)"
 
 #: gap/gap_story_dialog.c:3810
-#, fuzzy
 msgid "Cliplist:"
-msgstr "Elenco clip"
+msgstr "Elenco clip:"
 
 #: gap/gap_story_dialog.c:4026
 #, c-format
@@ -5874,9 +5805,8 @@ msgid "Videoseek (decoder: %s)"
 msgstr "Ricerca video (decodificatore: %s)"
 
 #: gap/gap_story_dialog.c:4496
-#, fuzzy
 msgid "videothumbnail cancelled"
-msgstr "Miniature video"
+msgstr "miniature video eliminate"
 
 #: gap/gap_story_dialog.c:4511
 #, c-format
@@ -5967,7 +5897,10 @@ msgstr "Traccia audio in ingresso:"
 msgid ""
 "select input audiotrack in the videofile(s).(if your input videos have "
 "multiple audiotracks values > 1 usually refer to non-default language)"
-msgstr "seleziona le tracce audio in ingresso nei file video (se i video in ingresso possiedono tracce audio multiple, valori > 1 normalmente si riferiscono a una lingua non predefinita)."
+msgstr ""
+"seleziona le tracce audio in ingresso nei file video (se i video in ingresso "
+"possiedono tracce audio multiple, valori > 1 normalmente si riferiscono a "
+"una lingua non predefinita)."
 
 #: gap/gap_story_dialog.c:5463
 msgid "Output Audiotrack:"
@@ -5978,7 +5911,11 @@ msgid ""
 "output audiotrack to be generated in the storyboard file. The generated "
 "storyboard audiotrack will be a list of references to the audioparts in the "
 "input videos, corresponding to all used video clip references."
-msgstr "traccia audio in uscita generata nel file storyboard. La traccia audio dello storyboard generata, sarà un'elenco di riferimenti alle parti audio nei file video in ingresso, corrispondenti a tutti i riferimenti alle clip video usate."
+msgstr ""
+"traccia audio in uscita generata nel file storyboard. La traccia audio dello "
+"storyboard generata, sarà un'elenco di riferimenti alle parti audio nei file "
+"video in ingresso, corrispondenti a tutti i riferimenti alle clip video "
+"usate."
 
 #: gap/gap_story_dialog.c:5476
 msgid "Replace Audiotrack:"
@@ -5988,7 +5925,8 @@ msgstr "Rimpiazza traccia audio:"
 msgid ""
 "ON: Allow replacing of already existing audio clip references  in the "
 "storyboard"
-msgstr "ACCESO: permette il rimpiazzo dei riferimenti all'audio clip nello storyboard"
+msgstr ""
+"ACCESO: permette il rimpiazzo dei riferimenti all'audio clip nello storyboard"
 
 #. should use GIMP_STOCK_RESET if possible
 #: gap/gap_story_dialog.c:5487 gap/gap_story_dialog.c:5692
@@ -6010,7 +5948,8 @@ msgstr ""
 "Traccia tono originale non creata.\n"
 "Lo storyboard %s\n"
 "ha già riferimenti a una clip audio alla traccia %d.\n"
-"Usare un'altro numero di traccia o permettere il rimpiazzo al prossimo tentativo."
+"Usare un'altro numero di traccia o permettere il rimpiazzo al prossimo "
+"tentativo."
 
 #: gap/gap_story_dialog.c:5544
 msgid "automatic"
@@ -6556,7 +6495,9 @@ msgstr "Frame nr 1:"
 #: gap/gap_vex_dialog.c:2404
 msgid ""
 "Framenumber for 1st extracted frame (use 0 for keeping original framenumbers)"
-msgstr "Numero del primo frame estratto (usare 0 per mantenere i numeri di frame originali)"
+msgstr ""
+"Numero del primo frame estratto (usare 0 per mantenere i numeri di frame "
+"originali)"
 
 #: gap/gap_vex_dialog.c:2435
 msgid "0.0 .. no interpolation, 1.0 smooth interpolation at deinterlacing"
@@ -6923,7 +6864,6 @@ msgid "no description available"
 msgstr "descrizione non disponibile"
 
 #: vid_common/gap_cme_gui.c:746
-#, fuzzy
 msgid ""
 "Storyboardfiles are textfiles that are used to\n"
 "assemble a video from a list of single images,\n"
@@ -7101,7 +7041,6 @@ msgid "Storyboardfile Check"
 msgstr "Controllo file storyboard"
 
 #: vid_common/gap_cme_gui.c:1813
-#, fuzzy
 msgid "Encoder specific parameter window is still open"
 msgstr "La finestra dei parametri specifici del codificatore è ancora aperta"
 
@@ -7203,9 +7142,8 @@ msgid "  "
 msgstr "  "
 
 #: vid_common/gap_cme_gui.c:2249
-#, fuzzy
 msgid "Input Mode:"
-msgstr "Modo tonalità:"
+msgstr "Modalità in ingresso:"
 
 #. radio button Frames input_mode
 #: vid_common/gap_cme_gui.c:2259
@@ -7303,21 +7241,22 @@ msgstr "scegli il file storyboard con la finestra di selezione"
 
 #. the Storyboard Audio
 #: vid_common/gap_cme_gui.c:2642
-#, fuzzy
 msgid "Storyboard Audio:"
-msgstr "File storyboard:"
+msgstr "Storyboard audio:"
 
 #. the Storyboard filebrowser button
 #: vid_common/gap_cme_gui.c:2650
-#, fuzzy
 msgid "Create Composite Audiofile"
-msgstr "scrittura file audio composito"
+msgstr "Crea file audio composito"
 
 #: vid_common/gap_cme_gui.c:2657
 msgid ""
 "create a composite audiofile as mixdown of all audio tracks in the "
 "storyboard file and use the created composite audiofile as input for encoding"
-msgstr "crea un file audio composito come risultato del missaggio di tutte le tracce audio del file storyboard e usa il file audio creato come ingresso per la codifica "
+msgstr ""
+"crea un file audio composito come risultato del missaggio di tutte le tracce "
+"audio del file storyboard e usa il file audio creato come ingresso per la "
+"codifica "
 
 #. the  storyboard helptext & parsing report label
 #: vid_common/gap_cme_gui.c:2669
@@ -7374,13 +7313,10 @@ msgstr ""
 "File multilivello:"
 
 #: vid_common/gap_cme_gui.c:2743
-#, fuzzy
 msgid ""
 "optional save each composite multilayer frame to XCF file, before flattening "
 "and executing macro"
-msgstr ""
-"opzionalmente salva ogni frame composito multilivello su file XJT prima di "
-"appiattirlo ed eseguire la macro"
+msgstr "opzionalmente salva ogni frame composito multilivello su file XCF prima di appiattirlo ed eseguire la macro"
 
 #: vid_common/gap_cme_gui.c:2769
 msgid "Configuration of external audiotool program"
@@ -7539,7 +7475,6 @@ msgstr "Converti file audio in filetmp"
 
 #. the resample general information label
 #: vid_common/gap_cme_gui.c:3077
-#, fuzzy
 msgid ""
 "\n"
 "Note:\n"
@@ -8141,7 +8076,6 @@ msgid "Audio bitrate in kBit/sec"
 msgstr "Velocità bit audio in kbit/sec"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1097
-#, fuzzy
 msgid "Common used audio bitrates"
 msgstr "Velocità bit audio di uso comune"
 
@@ -8160,9 +8094,8 @@ msgid "qscale:"
 msgstr "qscale:"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1161
-#, fuzzy
 msgid "Use fixed video quantiser scale (VBR) (0=const bitrate)"
-msgstr "usa scala fissa quantizzatore video (VBR) (0=velocità bit costante)"
+msgstr "Usa scala quantizzatore video fissa (VBR) (0=velocità bit costante)"
 
 #. the qmin label
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1172
@@ -8321,7 +8254,6 @@ msgid "bits (the one which needs fewest bits)"
 msgstr "bits (quella che necessita di meno bit)"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1422
-#, fuzzy
 msgid "rate distortion"
 msgstr "distorsione di velocità"
 
@@ -8340,14 +8272,12 @@ msgstr "Ampiezza di gruppi di immagini"
 
 #. the B_frames label
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1470
-#, fuzzy
 msgid "B-Frames:"
-msgstr "Frame:"
+msgstr "Frame-B:"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1486
-#, fuzzy
 msgid "Max number of B-frames in sequence"
-msgstr "Rinumerazione sequenza frame..."
+msgstr "Numero massimo di frame-B nella sequenza"
 
 #. Flags label
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1496
@@ -8418,9 +8348,8 @@ msgid "auto from pixelsize"
 msgstr "auto dall'ampiezza pixel"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1627
-#, fuzzy
 msgid "3:2"
-msgstr "y3:"
+msgstr "3:2"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1628
 msgid "4:3"
@@ -8456,9 +8385,8 @@ msgstr "Opzioni avanzate codifica FFMpeg"
 
 #. the qblur label
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1708
-#, fuzzy
 msgid "qblur:"
-msgstr "Blurb:"
+msgstr "blur q:"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1724
 msgid "video quantiser scale blur (VBR)"
@@ -8596,7 +8524,6 @@ msgstr "Attiva la codifica a due passi se selezionata"
 
 #. the pass_logfile label
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2131
-#, fuzzy
 msgid "Pass Logfile:"
 msgstr "File log passo:"
 
@@ -8616,13 +8543,11 @@ msgstr "Impostazioni commenti file FFMpeg"
 
 #. the title lable
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2194
-#, fuzzy
 msgid "Title:"
-msgstr "File:"
+msgstr "Titolo:"
 
 #. the filecomment_label lable
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2280
-#, fuzzy
 msgid ""
 "\n"
 "Text tags will be inserted in the\n"
@@ -8630,7 +8555,7 @@ msgid ""
 msgstr ""
 "\n"
 "Le etichette di testo saranno inserite\n"
-"nel video risultante per tutti i campi non vuoti della finestra.  "
+"nel video risultante per tutti i campi non vuoti."
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2377
 msgid "FFMPEG Video Encode Parameters"
@@ -8641,39 +8566,36 @@ msgid "Parameter Presets"
 msgstr "Preselezione parametri"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2417
-#, fuzzy
 msgid "** OOPS do not change any parameter **"
-msgstr "OOPS non cambiate i parametri"
+msgstr "** OOPS non cambiate nessun parametro **"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2418
-#, fuzzy
 msgid "use DivX VBR, default presets"
-msgstr "Predefinito DivX VBR"
+msgstr "usa VBR DivX con impostazioni predefinite"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2419
-#, fuzzy
 msgid "use DivX VBR, best quality presets"
-msgstr "DivX VBR, migliore qualità"
+msgstr "usa VBR DivX con impostazioni per la migliore qualità"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2420
 msgid "use DivX VBR, low quality presets"
-msgstr "usa preimpostazioni DivX VBR a bassa qualità"
+msgstr "usa VBR DivX con impostazioni per la bassa qualità"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2421
 msgid "use MPEG1 fixed rate (VCD) presets"
-msgstr "usa preimpostazioni MPEG1 a tasso fisso (VCD)"
+msgstr "usa preimpostazioni per MPEG1 a tasso fisso (VCD)"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2422
 msgid "use MPEG1 VBR, best quality presets"
-msgstr "usa preimpostazioni MPEG1 VBR alla migliore qualità"
+msgstr "usa preimpostazioni per MPEG1 VBR alla migliore qualità"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2423
 msgid "use MPEG2 VBR (DVD) presets"
-msgstr "usa preimpostazioni MPEG2 VBR (DVD)"
+msgstr "usa preimpostazioni per MPEG2 VBR (DVD)"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2424
 msgid "use REAL video presets"
-msgstr "usa preimpostazioni video REAL"
+msgstr "usa preimpostazioni per video REAL"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2448
 msgid "Predefined encoder parameter settings"
