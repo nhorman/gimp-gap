@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gimp 2.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-10-09 16:25+0200\n"
-"PO-Revision-Date: 2004-10-11 00:50+0200\n"
+"POT-Creation-Date: 2004-10-12 08:35+0200\n"
+"PO-Revision-Date: 2004-10-12 08:34+0200\n"
 "Last-Translator: Marco Ciampa <ciampix@libero.it>\n"
 "Language-Team: gimp.linux.it\n"
 "MIME-Version: 1.0\n"
@@ -276,8 +276,10 @@ msgid ""
 "ON: Duplicate frames to get a target rate that is density * originalrate.\n"
 "OFF: Delete frames to get a target rate that is originalrate/density."
 msgstr ""
-"Acceso: duplica frame per ottenere un rapporto che sia densità * rapporto_originale.\n"
-"Spento: cancella frame per ottenere un rapporto che sia rapporto_originale/densità."
+"Acceso: duplica frame per ottenere un rapporto che sia densità * "
+"rapporto_originale.\n"
+"Spento: cancella frame per ottenere un rapporto che sia rapporto_originale/"
+"densità."
 
 #: gap/gap_base_ops.c:1257
 msgid "Change Frames Density"
@@ -872,7 +874,7 @@ msgstr "Qualità Jpeg:"
 msgid ""
 "Quality for resulting jpeg frames. (is ignored when other formats are used)"
 msgstr ""
-"Qualità per le frame risultanti. (viene ignorato se vengono usati altri "
+"Qualità per i frame risultanti. (viene ignorato se vengono usati altri "
 "formati)"
 
 #: gap/gap_decode_xanim.c:308
@@ -978,7 +980,7 @@ msgid ""
 "does not support exporting of single frames"
 msgstr ""
 "Il programma xanim sul sistema \"%s\"\n"
-"non supporta l'esportazione del frame singolo"
+"non supporta l'esportazione del singolo frame"
 
 #: gap/gap_decode_xanim.c:1085
 #, c-format
@@ -1219,11 +1221,11 @@ msgstr "<Toolbox>/Xtns/Dividi il video in frame/leggibile da XANIM..."
 
 #: gap/gap_frontends_main.c:154
 msgid "<Image>/Video/Encode/MPEG1..."
-msgstr "<Image>/Video/Encode/MPEG1..."
+msgstr "<Image>/Video/Codifica/MPEG1..."
 
 #: gap/gap_frontends_main.c:167
 msgid "<Image>/Video/Encode/MPEG2..."
-msgstr "<Image>/Video/Encode/MPEG2..."
+msgstr "<Image>/Video/Codifica/MPEG2..."
 
 #: gap/gap_lib.c:1230
 msgid ""
@@ -1598,7 +1600,7 @@ msgstr ""
 
 #: gap/gap_mod_layer.c:242 gap/gap_onion_dialog.c:1293
 msgid "Case sensitive"
-msgstr "Maiuscolo significativo"
+msgstr "Differenzia maiuscolo/minuscolo"
 
 #: gap/gap_mod_layer.c:243 gap/gap_range_ops.c:741
 msgid "Lowercase and uppercase letters are considered as different"
@@ -2001,7 +2003,11 @@ msgid ""
 "Number of layers to create or modify. Steps refers to N layers under the "
 "destination layer. Steps is ignored if render mode is warp and source and "
 "destination are different layers of the same image"
-msgstr "Numero di livelli da creare o modificare. Passi si riferisce a N livelli sotto il livello di destinazione. Passi è ignorato se la modalità di render è warp e se sorgente e destinazione sono livelli differenti della stessa immagine"
+msgstr ""
+"Numero di livelli da creare o modificare. Passi si riferisce a N livelli "
+"sotto il livello di destinazione. Passi è ignorato se la modalità di render "
+"è warp e se sorgente e destinazione sono livelli differenti della stessa "
+"immagine"
 
 #. the pointcolor colorbutton
 #: gap/gap_morph_dialog.c:3783
@@ -2030,7 +2036,9 @@ msgstr "Crea livelli"
 msgid ""
 "ON: Create specified number of tween layers. OFF: Operate on existing layers "
 "below the destination layer"
-msgstr "ACCESO: crea il numero specificato di livelli intermedi. SPENTO: opera sui livelli esistenti sotto il livello di destinazione"
+msgstr ""
+"ACCESO: crea il numero specificato di livelli intermedi. SPENTO: opera sui "
+"livelli esistenti sotto il livello di destinazione"
 
 #. the multiple pointsets checkbutton
 #: gap/gap_morph_dialog.c:3846
@@ -2414,7 +2422,7 @@ msgstr "Immagine sorgente/livello:"
 #: gap/gap_mov_dialog.c:2546
 msgid "Source object to insert into destination frames of the specified range"
 msgstr ""
-"Oggetto sorgente da inserire dentro alle frame destinazione del campo "
+"Oggetto sorgente da inserire dentro ai frame destinazione del campo "
 "specificato"
 
 #. Paintmode menu
@@ -2628,25 +2636,25 @@ msgid ""
 "Show previous controlpoint. Hold down the shift key to follow keyframes."
 msgstr ""
 "Mostra il punto di controllo precedente. Tenere premuto il tasto Maiusc per "
-"seguire le frame chiave."
+"seguire i frame chiave."
 
 #: gap/gap_mov_dialog.c:3009
 msgid "Show next controlpoint. Hold down the shift key to follow keyframes."
 msgstr ""
 "Mostra il punto di controllo successivo. Tenere premuto il tasto Maiusc per "
-"seguire le frame chiave."
+"seguire i frame chiave."
 
 #: gap/gap_mov_dialog.c:3024
 msgid "Show first controlpoint. Hold down the shift key to follow keyframes."
 msgstr ""
 "Mostra il primo punto di controllo. Tenere premuto il tasto Maiusc per "
-"seguire le frame chiave."
+"seguire i frame chiave."
 
 #: gap/gap_mov_dialog.c:3037
 msgid "Show last controlpoint. Hold down the shift key to follow keyframes."
 msgstr ""
 "Mostra l'ultimo punto di controllo. Tenere premuto il tasto Maiusc per "
-"seguire le frame chiave."
+"seguire i frame chiave."
 
 #: gap/gap_mov_dialog.c:3052
 msgid "Reset the current controlpoint to default values"
@@ -2771,7 +2779,7 @@ msgstr "Larghezza:"
 #. lower, upper (unconstrained)
 #: gap/gap_mov_dialog.c:3362
 msgid "Scale source layer's width in percent"
-msgstr "Scala laghezza livello sorgente in percentuale"
+msgstr "Scala larghezza livello sorgente in percentuale"
 
 #. Height Scale
 #. table col, row
@@ -2835,7 +2843,7 @@ msgstr "Ruota:"
 #. lower, upper (unconstrained)
 #: gap/gap_mov_dialog.c:3432
 msgid "Rotate source layer (in degree)"
-msgstr "Ruota i livello sorgente (in gradi)"
+msgstr "Ruota il livello sorgente (in gradi)"
 
 #. the frame
 #: gap/gap_mov_dialog.c:3466
@@ -2859,7 +2867,7 @@ msgstr "x1:"
 #: gap/gap_mov_dialog.c:3493
 msgid "Transformfactor for upper left corner X coordinate"
 msgstr ""
-"Fattore di trasformazione per la coordinata X dell'angolo in altro a sinistra"
+"Fattore di trasformazione per la coordinata X dell'angolo in alto a sinistra"
 
 #. ttly transformfactor
 #. table col, row
@@ -3232,7 +3240,7 @@ msgid ""
 "Error: controlpoint [%d] is out of handled framerange"
 msgstr ""
 "\n"
-"Errore: il controlpoint [%d] è fuori dal campo frame gestito"
+"Errore: il punto di controllo [%d] è fuori dal campo frame gestito"
 
 #: gap/gap_mov_exec.c:1907
 #, c-format
@@ -3333,7 +3341,7 @@ msgstr "Genera parametri"
 
 #: gap/gap_mpege.c:271
 msgid "Gen + Encode"
-msgstr "Gen + Encode"
+msgstr "Gen + codifica"
 
 #: gap/gap_mpege.c:305
 msgid "Framerate in frames/second"
@@ -3353,7 +3361,7 @@ msgstr ""
 
 #: gap/gap_mpege.c:331
 msgid "Outputfile:"
-msgstr "File di Uscita"
+msgstr "File di uscita"
 
 #. pixel
 #: gap/gap_mpege.c:333
@@ -3367,7 +3375,7 @@ msgstr "File parametri:"
 #. pixel
 #: gap/gap_mpege.c:341
 msgid "Name of the encoder-parameterfile (to be generated)"
-msgstr "Nome del file parametri encoder (da generare)"
+msgstr "Nome del file parametri codificatore (da generare)"
 
 #: gap/gap_mpege.c:347
 msgid "Startscript:"
@@ -3384,7 +3392,7 @@ msgid ""
 "(the freely distributed Berkeley MPEG-1 video encoder.)\n"
 msgstr ""
 "Genera il file parametri per mpeg_encode 1.5\n"
-"(l'encoder video MPEG-1 liberamente distribuito).\n"
+"(il codificatore video MPEG-1 liberamente distribuito).\n"
 
 #: gap/gap_mpege.c:365
 msgid "Constant Bitrate:"
@@ -3401,7 +3409,7 @@ msgstr "Pattern:"
 #. pixel
 #: gap/gap_mpege.c:375
 msgid "How to encode MPEG frame sequence (I/P/B frames)"
-msgstr "Come fare un'encode di una sequenza MPEG (frame I/P/B)"
+msgstr "Come codificare una sequenza MPEG (frame I/P/B)"
 
 #: gap/gap_mpege.c:383
 msgid "IQSCALE:"
@@ -3445,7 +3453,7 @@ msgstr "Ricerca-P:"
 
 #: gap/gap_mpege.c:414
 msgid "Search algorithmus used for P-frames"
-msgstr "Cerca algoritmo usato per le frame-P"
+msgstr "Cerca algoritmo usato per i frame-P"
 
 #: gap/gap_mpege.c:422
 msgid "B-Search:"
@@ -3453,7 +3461,7 @@ msgstr "Ricerca-B:"
 
 #: gap/gap_mpege.c:423
 msgid "Search algorithmus used for B-frames"
-msgstr "Cerca algoritmo usato per le frame B"
+msgstr "Cerca algoritmo usato per i frame-B"
 
 #: gap/gap_mpege.c:430
 msgid "Gen MPEG_ENCODE Parameters"
@@ -3461,7 +3469,7 @@ msgstr "Genera parametri MPEG_ENCODE"
 
 #: gap/gap_mpege.c:431 gap/gap_mpege.c:473
 msgid "Encode Values"
-msgstr "Fa l'encode dei valori"
+msgstr "Codifica i valori"
 
 #: gap/gap_mpege.c:447
 msgid ""
@@ -3469,7 +3477,7 @@ msgid ""
 "(MPEG-2 video encoder.)\n"
 msgstr ""
 "Genera file parametri per mpeg2encode 1.2\n"
-"(encoder video MPEG-2).\n"
+"(codificatore video MPEG-2).\n"
 
 #: gap/gap_mpege.c:450
 msgid "MPEG-type:"
@@ -3596,7 +3604,7 @@ msgid ""
 "layeranimation playback on the temporary image"
 msgstr ""
 "Esecuzione\n"
-"<Maiusc> converte le frame selezionate in immagini temporanee ed esegue "
+"<Maiusc> converte i frame selezionati in immagini temporanee ed esegue "
 "l'animazione livelli su di esse"
 
 #: gap/gap_navigator_dialog.c:425
@@ -3605,7 +3613,7 @@ msgid ""
 "<Shift> forced thumbnail update for all frames"
 msgstr ""
 "Aggiornamento intelligente miniature\n"
-"<Maiusc> forza l'aggiornamento delle miniature per tutte le frame"
+"<Maiusc> forza l'aggiornamento delle miniature per tutti i frame"
 
 #: gap/gap_navigator_dialog.c:430
 msgid "Duplicate selected frames"
@@ -3653,12 +3661,14 @@ msgid ""
 "The selected %d frame(s) will be deleted.\n"
 "There will be no undo for this operation\n"
 msgstr ""
-"Le frame selezionate %d saranno eliminate.\n"
+"I frame selezionati %d saranno eliminati.\n"
 "Questa operazione non potrà essere annullata\n"
 
 #: gap/gap_navigator_dialog.c:728
 msgid "Error while positioning to frame. Video paste operaton failed"
-msgstr "Errore durante il posizionamento al frame. L'operazione di incollamento video è fallita"
+msgstr ""
+"Errore durante il posizionamento al frame. L'operazione di incollamento "
+"video è fallita"
 
 #: gap/gap_navigator_dialog.c:750
 msgid "Video paste operaton failed"
@@ -3863,7 +3873,7 @@ msgstr "Ignora i livelli di sfondo:"
 msgid ""
 "Exclude N background layers. Use 0 if you dont want to exclude any layer."
 msgstr ""
-"Escudi N livelli di sfondo. Usare 0 se non si vuole escudere nessun livello."
+"Escludi N livelli di sfondo. Usare 0 se non si vuole escudere nessun livello."
 
 #: gap/gap_onion_dialog.c:1204
 msgid "Select Mode:"
@@ -3871,7 +3881,7 @@ msgstr "Modalità selezione:"
 
 #: gap/gap_onion_dialog.c:1217
 msgid "Modes how to use select pattern"
-msgstr "Modalità di uso la selezione a modelli"
+msgstr "Modalità di uso dei modelli di selezione"
 
 #: gap/gap_onion_dialog.c:1221
 msgid "Pattern is equal to layername"
@@ -3898,8 +3908,8 @@ msgid ""
 "ON: Case sensitive pattern.\n"
 "OFF: Ignore case."
 msgstr ""
-"ACCESO: maiuscole/minuscole rilevanti.\n"
-"SPENTO: ignora maiuscole/minuscole."
+"ACCESO: differenzia maiuscolo/minuscolo.\n"
+"SPENTO: ignora maiuscolo/minuscolo."
 
 #: gap/gap_onion_dialog.c:1301
 msgid "Invert Selection"
@@ -4480,7 +4490,9 @@ msgstr "Temporizzazione esatta"
 msgid ""
 "ON: Skip frames to hold exact timing.\n"
 "OFF: Disable frame skipping"
-msgstr "ACCESA: "
+msgstr ""
+"ACCESO: salta i frame per mentenere l'esatta temporizzazione.\n"
+"SPENTO: disabilita il salto dei frame"
 
 #. the status label
 #: gap/gap_player_dialog.c:5449
@@ -4500,7 +4512,7 @@ msgid ""
 msgstr ""
 "Annulla la creazione dell'indice video. La creazione dell'indice video "
 "richiede la scansione di tutto il video ma permette successivamente un "
-"rapido accesso casuale alle frame. Senza un indice video l'accesso casuale "
+"rapido accesso casuale ai frame. Senza un indice video l'accesso casuale "
 "sarà effettuato molto lentamente tramite letture sequenziali"
 
 #: gap/gap_player_dialog.c:5518
@@ -4508,9 +4520,9 @@ msgid ""
 "Start playback. SHIFT: snapshot frames  in a multilayer image at original "
 "size CTRL: snapshot at preview size ALT: force creation of new snapshot image"
 msgstr ""
-"Inizia l'esecuzione. Maiusc: cattura le frame in un'immagine multilivello "
-"con dimensioni originali. Ctrl: cattura le frame con la dimensione "
-"precedente Alt: forza la cattura di una nuova immagine"
+"Inizia l'esecuzione. Maiusc: cattura i frame in un'immagine multilivello con "
+"dimensioni originali. Ctrl: cattura i frame con la dimensione precedente "
+"Alt: forza la cattura di una nuova immagine"
 
 #: gap/gap_player_dialog.c:5531
 msgid ""
@@ -4527,7 +4539,7 @@ msgid ""
 "original size CTRL: snapshot at preview size ALT: force creation of new "
 "snapshot image"
 msgstr ""
-"Inizia l'esecuzione al contrario. Maiusc cattura le frame in un'immagine "
+"Inizia l'esecuzione al contrario. Maiusc cattura i frame in un'immagine "
 "multilivello di ampiezza originale Ctrl: cattura all'ampiezza precedente "
 "Alt: forza la cattura di una nuova immagine"
 
@@ -4706,8 +4718,8 @@ msgid ""
 "basename of the resulting frames. The number part and extension (000001.ext) "
 "is added automatically to all converted frames."
 msgstr ""
-"nomebase dei frame risultanti. La parte numerica e l'estensione (000001.ext) "
-"viene aggiunta automaticamente a tutti i frame convertiti."
+"nome base dei frame risultanti. La parte numerica e l'estensione (000001."
+"ext) viene aggiunta automaticamente a tutti i frame convertiti."
 
 #. the extension label
 #: gap/gap_range_ops.c:507 gap/gap_split.c:253 gap/gap_vex_dialog.c:2175
@@ -4812,11 +4824,11 @@ msgstr ""
 
 #: gap/gap_range_ops.c:632
 msgid "Select all layers where layername is equal to pattern"
-msgstr "Seleziona tutti i livelli dove i nome-livello sono uguali al modello"
+msgstr "Seleziona tutti i livelli dove il nome-livello è uguale al modello"
 
 #: gap/gap_range_ops.c:633
 msgid "Select all layers where layername starts with pattern"
-msgstr "Seleziona tutti i livelli dove i nome-livello iniziano con il modello"
+msgstr "Seleziona tutti i livelli dove il nome-livello inizia con il modello"
 
 #: gap/gap_range_ops.c:634
 msgid "Select all layers where layername ends up with pattern"
@@ -4858,7 +4870,7 @@ msgid ""
 "Pick only the selected pixels. Use the individual selection as it is in each "
 "handled frame."
 msgstr ""
-"Prendi sili i punti selezionati. Usa la selezione individuale così com'è per "
+"Prendi soli i punti selezionati. Usa la selezione individuale così com'è per "
 "ogni frame gestito."
 
 #: gap/gap_range_ops.c:688
@@ -4870,7 +4882,7 @@ msgid ""
 "Basename for all layers where the string '[######]' is replaced by the frame "
 "number"
 msgstr ""
-"Nomebase per tutti i livelli dove la stringa '[######]' è rimpiazzata dal "
+"Nome base per tutti i livelli dove la stringa '[######]' è rimpiazzata dal "
 "numero di frame"
 
 #: gap/gap_range_ops.c:707
@@ -4900,7 +4912,7 @@ msgstr ""
 
 #: gap/gap_range_ops.c:740
 msgid "Case sensitive:"
-msgstr "Differenzia maiuscole/minuscole"
+msgstr "Differenzia maiuscolo/minuscolo"
 
 #: gap/gap_range_ops.c:746
 msgid "Invert Layer Selection:"
@@ -4924,7 +4936,7 @@ msgstr "Frame ad immagine"
 
 #: gap/gap_range_ops.c:1119
 msgid "Create Multilayer-Image from Frames"
-msgstr "Create una immagine multi-livello da frame"
+msgstr "Crea una immagine multi-livello da frame"
 
 #: gap/gap_range_ops.c:1273
 msgid "Flattening frames..."
@@ -4963,7 +4975,7 @@ msgstr "Rimuovi livello (pos:%ld) dai frame..."
 
 #: gap/gap_range_ops.c:1843
 msgid "Delete Layers in Frames"
-msgstr "Elimina Livelli nei Frame"
+msgstr "Elimina livelli nei frame"
 
 #: gap/gap_range_ops.c:1844
 msgid "Select Frame Range & Stack Position"
@@ -5032,7 +5044,7 @@ msgid ""
 msgstr ""
 "Crea un frame (file su disco) per ogni livello.\n"
 "I frame vengono etichettati in questo modo:\n"
-"<nomebase><numeroframe>.<estensione>\n"
+"<nome base><numero frame>.<estensione>\n"
 "Il primo frame, nel caso attuale, avrà nome\n"
 "\n"
 "%s000001.%s\n"
@@ -5065,7 +5077,7 @@ msgid ""
 msgstr ""
 "ACCESO: rimuovi il canale alfa nei frame risultanti. Le parti trasparenti "
 "sono riempite con il colore di sfondo.\n"
-"SPENTO: il livelli nei frame risultanti sono mantenuti con i canali alfa."
+"SPENTO: i livelli nei frame risultanti sono mantenuti con i canali alfa."
 
 #: gap/gap_split.c:277
 msgid "Only Visible:"
@@ -5085,7 +5097,7 @@ msgstr "Quante cifre usare per il numero frame nel nome del file"
 
 #: gap/gap_split.c:299
 msgid "Split Image into Frames"
-msgstr "Dividi Immagine in Frame"
+msgstr "Dividi immagine in frame"
 
 #: gap/gap_split.c:300
 msgid "Split Settings"
@@ -5103,7 +5115,7 @@ msgstr ""
 
 #: gap/gap_stock.c:43
 msgid "Add Point"
-msgstr "Aggiunti Punti"
+msgstr "Aggiunti punti"
 
 #: gap/gap_stock.c:44
 msgid "Anim Preview"
@@ -5135,11 +5147,11 @@ msgstr "Ultimo punto"
 
 #: gap/gap_stock.c:51
 msgid "Next Point"
-msgstr "Punto Successivo"
+msgstr "Punto successivo"
 
 #: gap/gap_stock.c:55
 msgid "Prev Point"
-msgstr "Punto Precedente"
+msgstr "Punto precedente"
 
 #: gap/gap_stock.c:56
 msgid "Reset All Points"
@@ -5179,7 +5191,7 @@ msgid ""
 "GIMP-GAP is compiled without videoapi support. Therfore thumbnails for "
 "videoframes can not be displayed."
 msgstr ""
-"GIMP-GAP è stato compilato senza supporto videoapi: le miniature delle frame "
+"GIMP-GAP è stato compilato senza supporto videoapi: le miniature dei frame "
 "non potranno essere visualizzate."
 
 #: gap/gap_story_dialog.c:2573
@@ -5367,7 +5379,7 @@ msgstr "Ripristina i parametri alla dimensione predefinita"
 
 #: gap/gap_story_dialog.c:4766
 msgid "Master Properties"
-msgstr "Proprietà Master"
+msgstr "Proprietà master"
 
 #: gap/gap_story_file.c:352 gap/gap_story_file.c:386
 msgid "internal error"
@@ -5457,8 +5469,8 @@ msgid ""
 "Scene detection for cliptype FRAMES depends on thumbnails. Please create "
 "thumbnails for your frames and then try again."
 msgstr ""
-"Il rilevamento delle frame di tipo clip dipende dalle miniature. Creare le "
-"miniature per le frame e riprovare."
+"Il rilevamento dei frame di tipo clip dipende dalle miniature. Creare le "
+"miniature per i frame e riprovare."
 
 #: gap/gap_story_properties.c:1205
 msgid "Set Image or Frame Filename"
@@ -5636,8 +5648,8 @@ msgid ""
 "input frame"
 msgstr ""
 "Densità dell'ampiezza dei passi. Usate 1.0 per i passi frame per frame 1:1 "
-"normali. Un valore di 0.5 mostra le frame in ingresso due volte. Un valore "
-"di 2.0 mostra solo una frame in input ogni due."
+"normali. Un valore di 0.5 mostra i frame in ingresso due volte. Un valore di "
+"2.0 mostra solo un frame in input ogni due."
 
 #. the duration label
 #: gap/gap_story_properties.c:1958
@@ -5812,7 +5824,7 @@ msgid ""
 "ON is slow but exact, OFF does seek faster but may not give exact "
 "framenumbers"
 msgstr ""
-"ACCESO è lento ma esatto, SPENTO è più veloce nello spostamento ma non da la "
+"ACCESO è lento ma esatto, SPENTO è più veloce nello spostamento ma non dà la "
 "numerazione dei frame esatta"
 
 #: gap/gap_vex_dialog.c:2083 vid_common/gap_cme_gui.c:2994
@@ -5822,7 +5834,7 @@ msgstr "Uscita"
 #: gap/gap_vex_dialog.c:2111
 msgid "Basename for extracted frames (framenr and extension is added)"
 msgstr ""
-"Nome base dei file per le frame estratte. (viene aggiunta l'estensione ed il "
+"Nome base dei file per i frame estratti. (viene aggiunta l'estensione ed il "
 "numero di frame)"
 
 #: gap/gap_vex_dialog.c:2112
@@ -6208,7 +6220,7 @@ msgstr ""
 "I file storyboard sono file di testo che vengono\n"
 "usati per assemblare i video da un'elenco di singole\n"
 "immagini, insiemi di frame, videoclip, animazioni\n"
-"gif o file audio. Le frame sono organizzate in tracce\n"
+"gif o file audio. I frame sono organizzati in tracce\n"
 "e permettono dissolvenze, scalature e operazioni di\n"
 "spostamento tra le tracce.\n"
 "(vedere il file STORYBOARD_FILE_DOC.txt per i dettagli)"
@@ -6640,7 +6652,7 @@ msgstr "non definito"
 
 #: vid_common/gap_cme_gui.c:2587
 msgid "Encoder:"
-msgstr "Codifica:"
+msgstr "Codificatore:"
 
 #: vid_common/gap_cme_gui.c:2599
 msgid "Select video encoder plugin"
@@ -6874,7 +6886,7 @@ msgstr "Monitor"
 
 #: vid_common/gap_cme_gui.c:2972
 msgid "Monitor Frames while Encoding"
-msgstr "Monitorizza le frame mentre codifica"
+msgstr "Monitorizza i frame mentre codifica"
 
 #: vid_common/gap_cme_gui.c:2977
 msgid "Show each frame before passed to encoder"
@@ -7007,7 +7019,9 @@ msgstr "Marcatore APPO:"
 msgid ""
 "Write APP0 Marker for each encoded frame. (The APP0 marker is evaluated by "
 "some windows programs for AVIs"
-msgstr "Scrivi marcatore APP0 per ogni frame codificato. (Il marcatore APP0 per gli AVI viene gestito da alcuni programmi windows)"
+msgstr ""
+"Scrivi marcatore APP0 per ogni frame codificato. (Il marcatore APP0 per gli "
+"AVI viene gestito da alcuni programmi windows)"
 
 #. the notebook page for JPEG Codec options
 #. -----------------------------------------
@@ -7031,7 +7045,7 @@ msgid ""
 "pictures with matching size and YUV 4:2:2 encoding. This option may produce "
 "an unuasable video when other frames are provided as input."
 msgstr ""
-"Non ricodificare le frame JPEG in ingresso. Quest'opzione viene ignorata se "
+"Non ricodificare i frame JPEG in ingresso. Quest'opzione viene ignorata se "
 "l'ingresso viene letto dallo storyboard. ATTENZIONE: lavora solo se tutti i "
 "frame in ingresso sono immagini JPEG di ampiezza corrispondente e codifica "
 "YUV 4:2:2. Quest'opzione può produrre video inutilizzabili se si forniscono "
@@ -7056,7 +7070,7 @@ msgid ""
 "Check if you want the odd frames to be coded first (only for interlaced "
 "JPEGs)"
 msgstr ""
-"Ipostare se si vuole che le frame dispari siano codificate per prime (solo "
+"Ipostare se si vuole che i frame dispari siano codificati per primi (solo "
 "per JPEG interlacciati)"
 
 #. the jpeg quality label
@@ -7068,8 +7082,7 @@ msgstr "Qualità:"
 #: vid_enc_avi/gap_enc_avi_gui.c:659
 msgid "The quality setting of the encoded JPEG frames (100=best quality)"
 msgstr ""
-"L'impostazione della qualità delle frame codificate JPEG (100=migliore "
-"qualità)"
+"L'impostazione della qualità dei frami codificati JPEG (100=migliore qualità)"
 
 #. the notebook page for RAW Codec options
 #. -----------------------------------------
@@ -7089,7 +7102,7 @@ msgid ""
 "uncompressed."
 msgstr ""
 "Il codificatore RAW non ha opzioni di codifica.\n"
-"Le frame risultanti saranno non compresse."
+"I frami risultanti saranno non compressi."
 
 #. the notebook page for XVID Codec options
 #. -----------------------------------------
@@ -7174,7 +7187,7 @@ msgstr ""
 
 #: vid_enc_avi/gap_enc_avi_main.c:214
 msgid "avi video encoding for anim frames. Menu: @AVI@"
-msgstr "cidifica video avi per le frame animate. Menu: @AVI@"
+msgstr "cidifica video avi per i frame animati. Menu: @AVI@"
 
 #: vid_enc_avi/gap_enc_avi_main.c:215
 msgid ""
@@ -7183,11 +7196,10 @@ msgid ""
 "mono (1) or stereo (2channels) audiodata must be 16bit uncompressed. "
 "IMPORTANT:  you should first call \""
 msgstr ""
-"Questo plugin esegue una falsa codifica video delle frame animate. i dati "
-"audio (opzionali) devono essere dei dati grezzi (raw) o file .wav (formato "
-"RIFF). I file .wav possono essere mono(1) o stereo(2 canali) ma i dati "
-"devono essere non compressi a 16bit. IMPORTANTE: è necessario prima chiamare "
-"\""
+"Questo plugin esegue una falsa codifica video i frame animati. i dati audio "
+"(opzionali) devono essere dei dati grezzi (raw) o file .wav (formato RIFF). "
+"I file .wav possono essere mono(1) o stereo(2 canali) ma i dati devono "
+"essere non compressi a 16bit. IMPORTANTE: è necessario prima chiamare \""
 
 #: vid_enc_avi/gap_enc_avi_main.c:219 vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:364
 msgid ""
@@ -7263,7 +7275,7 @@ msgstr "Qualità JPEG:"
 
 #: vid_enc_avi/gap_enc_avi_main.c:638
 msgid "The quality setting of the generated JPEG frames (100=best)"
-msgstr "Impostazione della qualità delle frame JPEG generate (100=migliore)"
+msgstr "Impostazione della qualità dei frame JPEG generati (100=migliore)"
 
 #: vid_enc_avi/gap_enc_avi_main.c:647
 msgid "options for the XVID CODEC"
@@ -7334,7 +7346,9 @@ msgstr "Marcatore APP0 per ogni frame"
 msgid ""
 "Write APP0 Marker for each encoded frame. (The APP0 marker is evaluated by "
 "some Windows programs for AVIs"
-msgstr "Scrivi marcatore APP0 per ogni frame codificato (Il marcatore APP0 viene valutato da alcuni programmi windows per AVI)."
+msgstr ""
+"Scrivi marcatore APP0 per ogni frame codificato (Il marcatore APP0 viene "
+"valutato da alcuni programmi windows per AVI)."
 
 #: vid_enc_avi/gap_enc_avi_main.c:875
 msgid "AVI Video Encoding .."
@@ -7807,7 +7821,11 @@ msgid ""
 "Bypass the FFMPEG Vidoencoder where inputframes can be copied 1:1 from an "
 "input MPEG videofile.This experimental feature provides lossless MPEG video "
 "cut, but works only for the MPEG Fileformats."
-msgstr "Salta il codificatore video FFMPEG quando le frame in infresso possono essere copiate 1:1 dal file video MPEG in ingresso. Questa caratteristica sperimentale prevede tagli video MPEG senza perdite ma funziona solo per formati di file video MPEG."
+msgstr ""
+"Salta il codificatore video FFMPEG quando i frame in ingresso possono essere "
+"copiati 1:1 da un file video MPEG in ingresso. Questa caratteristica "
+"sperimentale prevede tagli video MPEG senza perdite ma funziona solo per "
+"formati di file video MPEG."
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1950
 msgid "FFMpeg Expert Encoder Options"
@@ -7995,7 +8013,12 @@ msgid ""
 "wav) file. .wav files can be mono (1) or stereo (2channels) audiodata and "
 "must be 16bit uncompressed. IMPORTANT:  Non-interactive callers should first "
 "call \""
-msgstr "Questo plugin esegue la codifica video di frame animate usando libavformat (conosciuto anche come codificatore FFMPEG). I dati audio (opzionali) devono essere in formato RIFF WAVE (.wav) a 16 bit non compressi e possono essere mono(1) o stereo (2 canali). IMPORTANTE: chiamate non interattive devono prima chiamare \""
+msgstr ""
+"Questo plugin esegue la codifica video di frame animate usando libavformat "
+"(conosciuto anche come codificatore FFMPEG). I dati audio (opzionali) devono "
+"essere in formato RIFF WAVE (.wav) a 16 bit non compressi e possono essere "
+"mono(1) o stereo (2 canali). IMPORTANTE: chiamate non interattive devono "
+"prima chiamare \""
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:378
 msgid "Set Parameters for GAP ffmpeg video encoder Plugin"
@@ -8003,7 +8026,8 @@ msgstr "Imposta i parametri per il plugin codificatore video ffmpeg GAP"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:379
 msgid "This plugin sets ffmpeg specific video encoding parameters."
-msgstr "Questo plugin imposta i parametri specifici per la codifica video ffmpeg."
+msgstr ""
+"Questo plugin imposta i parametri specifici per la codifica video ffmpeg."
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:392
 msgid "Get GUI Parameters for GAP ffmpeg video encoder"
@@ -8011,7 +8035,8 @@ msgstr "Ottieni parametri GUI per il codificatore video GAP ffmpeg"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:393
 msgid "This plugin returns ffmpeg encoder specific parameters."
-msgstr "Questo plugin restituisce i parametri specifici per la codifica ffmpeg."
+msgstr ""
+"Questo plugin restituisce i parametri specifici per la codifica ffmpeg."
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:482
 msgid ""
@@ -8044,13 +8069,23 @@ msgid ""
 "\". the names of the output frame(s) are same as the parameter \"videofile\" "
 "but the framenumber part is replaced by the current framenumber (or added "
 "automatic if videofile has no number part) audiodata is ignored. A  call of\""
-msgstr "Questo plugin ha un'API da codificatore video ma scrive una serie di singole frame invece che un unico file video. Il tipo di file delle frame di uscita è derivato dall'estensione. L'estensione è la parte suffisso del parametro \"file video\". I nomi delle frame in uscita sono gli stessi del parametro \"file video\" ma in numero di frame viene rimpiazzato dal numero di frame corrente (o aggiunto automaticamente se il file video non ha una parte numerica) i dati audio sono ignorati. Una chiamata di \""
+msgstr ""
+"Questo plugin ha un'API da codificatore video ma scrive una serie di singoli "
+"frame invece che un unico file video. Il tipo di file di frame di uscita è "
+"derivato dall'estensione. L'estensione è la parte suffisso del parametro "
+"\"file video\". I nomi dei frame in uscita sono gli stessi del parametro "
+"\"file video\" ma in numero di frame viene rimpiazzato dal numero di frame "
+"corrente (o aggiunto automaticamente se il file video non ha una parte "
+"numerica) i dati audio sono ignorati. Una chiamata di \""
 
 #: vid_enc_single/gap_enc_singleframes_main.c:190
 msgid ""
 "\" to set encoder specific paramters, is not required because this release "
 "of the singleframe encoder has NO encoder specific paramters"
-msgstr "\" per impostare i parametri specifici del codificatore non sono richiesti dato che questa versione del codificatore del frame singolo NON ha parametri specifici"
+msgstr ""
+"\" per impostare i parametri specifici del codificatore non sono richiesti "
+"dato che questa versione del codificatore del frame singolo NON ha parametri "
+"specifici"
 
 #: vid_enc_single/gap_enc_singleframes_main.c:205
 msgid "Set Parameters for GAP singleframes video encoder Plugins"
@@ -8058,7 +8093,9 @@ msgstr "Imposta i parametri per il plugin codificatore video a singolo frame"
 
 #: vid_enc_single/gap_enc_singleframes_main.c:206
 msgid "This plugin sets singleframes specific video encoding parameters."
-msgstr "Questo plugin imposta i parametri specifici per la codifica video a frame singola."
+msgstr ""
+"Questo plugin imposta i parametri specifici per la codifica video a frame "
+"singola."
 
 #: vid_enc_single/gap_enc_singleframes_main.c:219
 msgid "Get GUI Parameters for GAP singleframes video encoder"
@@ -8066,7 +8103,9 @@ msgstr "Imposta i parametri GUI per il codificatore a frame singola GAP"
 
 #: vid_enc_single/gap_enc_singleframes_main.c:220
 msgid "This plugin returns singleframes encoder specific parameters."
-msgstr "Questo plugin restituisce i parametri specifici per il codificatore a frame singola."
+msgstr ""
+"Questo plugin restituisce i parametri specifici per il codificatore a frame "
+"singola."
 
 #: vid_enc_single/gap_enc_singleframes_main.c:301
 msgid ""
@@ -8078,8 +8117,8 @@ msgid ""
 msgstr ""
 "Questo codificatore a frame singola\n"
 "scrive i frame singoli invece di un file video.\n"
-"Il formato video delle frame è derivato\n"
-"dall'estensione del nome del video; le frame\n"
+"Il formato video dei frame è derivato\n"
+"dall'estensione del nome del video; i frame\n"
 "prendono il nome dal nome del video + un numero\n"
 "a 6 cifre + estensione."
 
@@ -8089,4 +8128,4 @@ msgstr "il codificatore a frame singola non ha parametri specifici"
 
 #: vid_enc_single/gap_enc_singleframes_main.c:680
 msgid "Singleframes Video Encoding .."
-msgstr "Codifica video a frame singola .."
+msgstr "Codifica video a frame singolo .."
