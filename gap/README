@@ -1806,25 +1806,13 @@ If you edit gimprc files by hand, you must do this before you startup GIMP.
 # (default is "yes")
 (video-confirm-frame-delete "yes")
 
-# videoindexes are files that store seekoffsets for keyframes
-# and enable fast and frame exact random access to frames in a videofile.
-# if gimp-gap should create such files automatically when needed
-# you should configure the value "yes".
-# if you want gimp-gap to ask each time before creating videoindex file
-# then configure value "ask"
-# (ask is the default when nothing is configured)
-# if gimp-gap should not create such videoindex files at all
-# configure value "no"
-(video-index-creation "ask")
-
-
 # optional external audioconverter program
 # must be able to handle the same parameters as the
 # standard converter script audioconvert_to_wav.sh
 # There is NO need for the audioconvert_program gimprc configuration
 # if you use the standard converter script.
 (audioconvert_program "/usr/local/bin/my_private_audioconverter")
-
+ 
 
 # NON-XCF frame save behaviour:
 # -----------------------------

@@ -83,9 +83,6 @@ void
 on_ff_presets_optionmenu  (GtkWidget     *wgt_item,
                            GapGveFFMpegGlobalParams *gpp);
 
-void
-on_ff_aspect_optionmenu  (GtkWidget     *wgt_item,
-                           GapGveFFMpegGlobalParams *gpp);
 
 void
 on_ff_aud_bitrate_spinbutton_changed   (GtkEditable     *editable,

@@ -112,13 +112,6 @@ gap_story_debug_print_elem(GapStoryElem *stb_elem)
     printf("delace: %f\n", (float)stb_elem->delace);
     printf("nframes: %d\n", (int)stb_elem->nframes);
     printf("step_density: %f\n", (float)stb_elem->step_density);
-    printf("aud_play_from_sec: %f\n", (float)stb_elem->aud_play_from_sec);
-    printf("aud_play_to_sec: %f\n", (float)stb_elem->aud_play_to_sec);
-    printf("aud_volume: %f\n", (float)stb_elem->aud_volume);
-    printf("aud_volume_start: %f\n", (float)stb_elem->aud_volume_start);
-    printf("aud_fade_in_sec: %f\n", (float)stb_elem->aud_fade_in_sec);
-    printf("aud_volume_end: %f\n", (float)stb_elem->aud_volume_end);
-    printf("aud_fade_out_sec: %f\n", (float)stb_elem->aud_fade_out_sec);
     printf("file_line_nr: %d\n", (int)stb_elem->file_line_nr);
     if(stb_elem->orig_filename)
     {
@@ -410,8 +403,6 @@ gap_story_new_story_board(const char *filename)
     stb->master_width = -1;
     stb->master_height = -1;
     stb->master_framerate = -1.0;
-    stb->master_volume = -1.0;
-    stb->master_samplerate = -1;
     
     stb->layout_cols = -1;
     stb->layout_rows = -1;
@@ -1365,10 +1356,10 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
     gchar *l_value;
     gint   l_key_idx;
 
-// printf("\n%s   ii:%d\n", l_record_key, (int)ii);
+printf("\n%s   ii:%d\n", l_record_key, (int)ii);
     l_parname = NULL;
     l_value = p_fetch_string(&l_scan_ptr, &l_parname);
-// printf("%s   ii:%d (after SCANN)\n", l_record_key, (int)ii);
+printf("%s   ii:%d (after SCANN)\n", l_record_key, (int)ii);
     if(l_value)
     {
       if(*l_value != '\0')
@@ -1380,7 +1371,7 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
                                                     ,l_parname
                                                     );
 
-// printf("%s   parname:%s: key_idx:%d\n", l_record_key, l_parname, (int)l_key_idx);
+printf("%s   parname:%s: key_idx:%d\n", l_record_key, l_parname, (int)l_key_idx);
 
           g_free(l_parname);
           l_parname = NULL;
@@ -1412,7 +1403,7 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
       }
       g_free(l_value);
     }
-// printf("%s   ii:%d (END)\n", l_record_key, (int)ii);
+printf("%s   ii:%d (END)\n", l_record_key, (int)ii);
   }
  
   /*if(gap_debug) */
@@ -1994,7 +1985,6 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
     {
       stb_elem->file_line_nr = longlinenr;
       stb_elem->orig_src_line = g_strdup(multi_lines);
-      stb_elem->aud_play_to_sec = 9999.9;  /* 9999.9 is default for end of audiofile */
       if(*l_track_ptr)        { stb_elem->track      = p_scan_gint32(l_track_ptr,   1, GAP_STB_MAX_AUD_TRACKS,    stb); }
       if(*l_filename_ptr)     { p_flip_dir_seperators(l_filename_ptr); 
                                 stb_elem->aud_filename = g_strdup(l_filename_ptr);
@@ -2008,9 +1998,6 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
       if(*l_vol_end_ptr)      { stb_elem->aud_volume_end    = p_scan_gdouble(l_vol_end_ptr,      0.0, 10.0,   stb); }
       if(*l_fade_out_sec_ptr) { stb_elem->aud_fade_out_sec  = p_scan_gdouble(l_fade_out_sec_ptr, 0.0, 9999.9, stb); }
       if(*l_nloops_ptr)       { stb_elem->nloop             = p_scan_gint32(l_nloops_ptr,  1, 999999, stb); }
-
-//printf("\n##++ GAP_STBREC_AUD_SOUND\n");
-//gap_story_debug_print_elem(stb_elem);
 
       gap_story_list_append_elem(stb, stb_elem);
     }
@@ -2039,7 +2026,6 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
     {
       stb_elem->file_line_nr = longlinenr;
       stb_elem->orig_src_line = g_strdup(multi_lines);
-      stb_elem->aud_play_to_sec = 9999.9;  /* 9999.9 is default for end of audiofile */
       if(*l_track_ptr)        { stb_elem->track      = p_scan_gint32(l_track_ptr,   1, GAP_STB_MAX_AUD_TRACKS,    stb); }
       if(*l_filename_ptr)     { p_flip_dir_seperators(l_filename_ptr); 
                                 stb_elem->aud_filename = g_strdup(l_filename_ptr);

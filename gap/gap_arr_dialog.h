@@ -40,7 +40,6 @@
  */
 
 /* revision history:
- * gimp    2.1.0a;  2004/09/25  hof: gap_arr_create_vindex_permission
  * gimp    1.3.20a; 2003/09/29  hof: gap_arr_overwrite_file_dialog
  * gimp    1.3.16b; 2003/07/04  hof: new gap_arr_confirm_dialog
  * gimp    1.3.14a; 2003/05/15  hof: new GAP_ARR_WGT_FONTSEL
@@ -198,7 +197,5 @@ gboolean gap_arr_confirm_dialog(const char *msg_txt, const char *title_txt, cons
 gboolean gap_arr_overwrite_file_dialog(const char *filename);
 
 void gap_arr_msg_win(GimpRunMode run_mode, const char *msg);
-
-gboolean gap_arr_create_vindex_permission(const char *videofile, const char *vindex_file);
 
 #endif

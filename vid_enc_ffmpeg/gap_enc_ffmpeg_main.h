@@ -96,10 +96,6 @@
 #define GAP_GVE_FFMPEG_MB_DECISION_02_RD        2
 #define GAP_GVE_FFMPEG_MB_DECISION_MAX_ELEMENTS    3
 
-#define GAP_GVE_FFMPEG_ASPECT_00_AUTO    0
-#define GAP_GVE_FFMPEG_ASPECT_01_4_3     1
-#define GAP_GVE_FFMPEG_ASPECT_02_16_9    2
-#define GAP_GVE_FFMPEG_ASPECT_MAX_ELEMENTS    3
 
 /* ffmpeg specific encoder params */
 typedef struct {
@@ -156,7 +152,6 @@ typedef struct {
   gint32  vstats;
   gint32  bitexact;
   gint32  set_aspect_ratio;
-  gdouble factor_aspect_ratio;  /* 0.0 == auto detect from pixelsizes */
   /* extras */
   gboolean dont_recode_flag;
 
@@ -175,7 +170,6 @@ typedef struct GapGveFFMpegGlobalParams {   /* nick: gpp */
   GtkWidget *shell_window;
   GtkWidget *fsb__fileselection;
 
-  GtkWidget *ff_aspect_optionmenu;
   GtkWidget *ff_aud_bitrate_optionmenu;
   GtkWidget *ff_aud_bitrate_spinbutton;
   GtkWidget *ff_aud_codec_optionmenu;

@@ -281,17 +281,13 @@ static void   on_audio_filesel_button_clicked      (GtkButton       *button,
 static void   on_audio_filename_entry_changed     (GtkWidget     *widget,
                                                    GapPlayerMainGlobalParams *gpp);
 
-static void   on_cancel_vindex_button_clicked     (GtkObject       *object,
-                                                   GapPlayerMainGlobalParams *gpp);
+static void    p_update_position_widgets(GapPlayerMainGlobalParams *gpp);
+static void    p_stop_playback(GapPlayerMainGlobalParams *gpp);
+static void    p_connect_resize_handler(GapPlayerMainGlobalParams *gpp);
+static void    p_disconnect_resize_handler(GapPlayerMainGlobalParams *gpp);
 
-
-static void     p_update_position_widgets(GapPlayerMainGlobalParams *gpp);
-static void     p_stop_playback(GapPlayerMainGlobalParams *gpp);
-static void     p_connect_resize_handler(GapPlayerMainGlobalParams *gpp);
-static void     p_disconnect_resize_handler(GapPlayerMainGlobalParams *gpp);
-
-static void     p_close_videofile(GapPlayerMainGlobalParams *gpp);
-static void     p_open_videofile(GapPlayerMainGlobalParams *gpp
+static void    p_close_videofile(GapPlayerMainGlobalParams *gpp);
+static void    p_open_videofile(GapPlayerMainGlobalParams *gpp
                 , char *filename
 		, gint32 seltrack
 		, gdouble delace
@@ -1723,7 +1719,7 @@ p_stop_playback(GapPlayerMainGlobalParams *gpp)
   /* if(gap_debug) printf("p_stop_playback\n"); */
   p_remove_play_timer(gpp);
   gpp->mtrace_mode = GAP_PLAYER_MTRACE_OFF;
-  gpp->request_cancel_video_api = TRUE;
+  gpp->cancel_video_api = TRUE;
   gpp->play_is_active = FALSE;
   gpp->pingpong_count = 0;
 
@@ -1735,26 +1731,9 @@ p_stop_playback(GapPlayerMainGlobalParams *gpp)
 }  /* end p_stop_playback */
 
 
-/* ---------------------------------
- * on_cancel_vindex_button_clicked
- * ---------------------------------
- */
-static void   
-on_cancel_vindex_button_clicked  (GtkObject       *object,
-                          GapPlayerMainGlobalParams *gpp)
-{
-  if(gpp)
-  {
-    gpp->cancel_video_api = TRUE;
-    gpp->request_cancel_video_api = FALSE;
-  }
-}  /* end on_cancel_vindex_button_clicked */			  
-
-
 /* --------------------------------
  * p_vid_progress_callback
  * --------------------------------
- * this callback is used while searching videoframes
  * return: TRUE: cancel videoapi immediate
  *         FALSE: continue
  */
@@ -1785,20 +1764,6 @@ p_vid_progress_callback(gdouble progress
    */
   while(g_main_context_iteration(NULL, FALSE));
 
-  /* if vthe long running videoindex creation is running
-   * cancel is done only explicite when the cancel_vindex_button is clicked.
-   */
-  if(!gpp->vindex_creation_is_running)
-  {
-    /* no videoindex creation is running
-     * (in most cases we are in a seek to frame operation at this point)
-     * in this case we do cancel immedate on request.
-     * request_cancel_video_api is set on most user actions
-     * on the player widgets when he wants positioning or start/stop playing
-     */
-    gpp->cancel_video_api = gpp->request_cancel_video_api;
-  }
-  
   if(gpp->cancel_video_api)
   {
     printf("PLAYER: p_vid_progress_callback CANCEL == TRUE\n");
@@ -1828,7 +1793,6 @@ p_close_videofile(GapPlayerMainGlobalParams *gpp)
 #endif
 }  /* end p_close_videofile */
 
-
 /* --------------------------------
  * p_open_videofile
  * --------------------------------
@@ -1841,10 +1805,7 @@ p_open_videofile(GapPlayerMainGlobalParams *gpp
 		)
 {
 #ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
-  char *vindex_file;
-  
   p_close_videofile(gpp);
-  vindex_file = NULL;
 
 printf("PLAYER: open START\n");
   gpp->gvahand =  GVA_open_read_pref(filename
@@ -1868,6 +1829,7 @@ printf("PLAYER: open fptr_progress_callback FPTR:%d\n", (int)gpp->gvahand->fptr_
     /* set decoder name as progress idle text */
     {
       t_GVA_DecoderElem *dec_elem;
+      
       if(gpp->progress_bar_idle_txt)
       {
         g_free(gpp->progress_bar_idle_txt);
@@ -1877,10 +1839,6 @@ printf("PLAYER: open fptr_progress_callback FPTR:%d\n", (int)gpp->gvahand->fptr_
       if(dec_elem->decoder_name)
       {
         gpp->progress_bar_idle_txt = g_strdup(dec_elem->decoder_name);
-        vindex_file = GVA_build_videoindex_filename(gpp->gva_videofile
-                                             ,1  /* track */
-					     ,dec_elem->decoder_name
-					     );
       }
       else
       {
@@ -1891,58 +1849,44 @@ printf("PLAYER: open fptr_progress_callback FPTR:%d\n", (int)gpp->gvahand->fptr_
     if((gpp->gvahand->vindex == NULL)
     &&(gpp->startup == FALSE))
     {
-      gboolean vindex_permission;
-      
-      /* check for permission to create a videoindex file */
-      vindex_permission = gap_arr_create_vindex_permission(gpp->gva_videofile, vindex_file);
-      
-      if(vindex_permission)
+      /* create video index
+       * (dont do that while we are in startup
+       * because the shell window and progress_bar widget and many other things
+       * are not set up yet and this long running operation
+       * would be done without any visible sign)
+       */
+      gpp->cancel_video_api = FALSE;
+      if(gpp->progress_bar)
       {
-	/* create video index
-	 * (dont do that while we are in startup
-	 * because the shell window and progress_bar widget and many other things
-	 * are not set up yet and this long running operation
-	 * would be done without any visible sign)
-	 */
-	gpp->cancel_video_api = FALSE;
-	gpp->request_cancel_video_api = FALSE;
-	if(gpp->progress_bar)
+	 gtk_progress_bar_set_text(GTK_PROGRESS_BAR(gpp->progress_bar), _("Creating Index"));
+      }
+      gpp->gvahand->create_vindex = TRUE;
+printf("PLAYER: open before GVA_count_frames\n");
+      GVA_count_frames(gpp->gvahand);
+printf("PLAYER: open after GVA_count_frames\n");
+      if(gpp->cancel_video_api)
+      {
+          g_message(_("Creation of videoindex canceled by user."
+	              "Access is limited to (slow) sequential read "
+		      "on file: %s")
+	           , gpp->gvahand->filename
+		   );
+      }
+      else
+      {
+	if(gpp->gvahand->vindex == NULL)
 	{
-	   gtk_progress_bar_set_text(GTK_PROGRESS_BAR(gpp->progress_bar), _("Creating Index"));
-	}
-	gpp->gvahand->create_vindex = TRUE;
-
-	/* while videoindex creation show cancel button and hide play/stop buttons */
-	gtk_widget_hide (gpp->play_n_stop_hbox);
-	gtk_widget_show (gpp->cancel_vindex_button);
-  printf("PLAYER: open before GVA_count_frames\n");
-	gpp->vindex_creation_is_running = TRUE;
-	GVA_count_frames(gpp->gvahand);
-	gpp->vindex_creation_is_running = FALSE;
-  printf("PLAYER: open after GVA_count_frames\n");
-	gtk_widget_hide (gpp->cancel_vindex_button);
-	gtk_widget_show (gpp->play_n_stop_hbox);
-
-	if(!gpp->cancel_video_api)
-	{
-	  if(gpp->gvahand->vindex == NULL)
-	  {
-            g_message(_("No videoindex available. "
-	        	"Access is limited to (slow) sequential read "
-			"on file: %s")
-	             , gpp->gvahand->filename
-		     );
-	  }
+          g_message(_("No videoindex available. "
+	              "Access is limited to (slow) sequential read "
+		      "on file: %s")
+	           , gpp->gvahand->filename
+		   );
 	}
       }
     }
     
     /* GVA_debug_print_videoindex(gpp->gvahand); */
 
-    if(vindex_file)
-    {
-      g_free(vindex_file);
-    }
 
   }
 printf("PLAYER: open END\n");
@@ -2057,7 +2001,6 @@ p_fetch_videoframe(GapPlayerMainGlobalParams *gpp
      l_threshold = delace - (gdouble)l_deinterlace;
 
      gpp->cancel_video_api = FALSE;
-     gpp->request_cancel_video_api = FALSE;
 
 //printf(" VIDFETCH (6) current_seek_nr:%d current_frame_nr:%d\n", (int)gpp->gvahand->current_seek_nr  ,(int)gpp->gvahand->current_frame_nr );
      /* fetch the wanted framenr  */
@@ -2855,7 +2798,7 @@ on_play_button_clicked(GtkButton *button
   }
 
   gpp->play_backward = FALSE;
-  gpp->request_cancel_video_api = TRUE;
+  gpp->cancel_video_api = TRUE;
   
   if(bevent)
   {
@@ -2971,7 +2914,7 @@ on_back_button_clicked(GtkButton       *button
   }
 
   gpp->play_backward = TRUE;
-  gpp->request_cancel_video_api = TRUE;
+  gpp->cancel_video_api = TRUE;
   
   if(bevent)
   {
@@ -3361,7 +3304,7 @@ on_framenr_button_clicked             (GtkButton       *button,
       return;
     }
 
-    if (!(bevent->state & GDK_SHIFT_MASK))
+    if (!bevent->state & GDK_SHIFT_MASK)
     {
       /* for normal click and other modifiers other than SHIFT (GDK_CONTROL_MASK) */
       gpp->begin_frame = gpp->play_current_framenr;
@@ -3914,7 +3857,7 @@ on_close_button_clicked                (GtkButton       *button,
   p_stop_playback(gpp);
   if(gpp->gva_lock)
   {
-    gpp->request_cancel_video_api = TRUE;
+    gpp->cancel_video_api = TRUE;
     return;
   }
 
@@ -4833,7 +4776,6 @@ p_create_player_window (GapPlayerMainGlobalParams *gpp)
   GtkWidget *vbox1;
 
   GtkWidget *hbox1;
-  GtkWidget *play_n_stop_hbox;
   GtkWidget *gobutton_hbox;
 
   GtkWidget *table1;
@@ -4861,7 +4803,6 @@ p_create_player_window (GapPlayerMainGlobalParams *gpp)
   GtkWidget *size_spinbutton;
 
 
-  GtkWidget *cancel_vindex_button;
   GtkWidget *play_button;
   GtkWidget *pause_button;
   GtkWidget *back_button;
@@ -5103,20 +5044,17 @@ p_create_player_window (GapPlayerMainGlobalParams *gpp)
   && (gpp->docking_container == NULL))
   {
     gimp_help_set_help_data (framenr_button
-                            , _("Ctrl-Click: set range start 'From Frame',\n"
-			        "Alt-Click: set 'To Frame',\n"
+                            , _("Ctrl-Click: set range start 'From Frame', Alt-Click: set 'To Frame', "
 			        "SHIFT-Click: load this frame into the calling image")
 			    , NULL);
   }
   else
   {
     /* there is no "calling image" if we are invoked from storyboard
-     * or from the video extract plug-in
-     * in this case there is no special SHIFT-click function available
+     * in this case the FrameNr is not a button but just a Label
      */
     gimp_help_set_help_data (framenr_button
-                            , _("Ctrl-Click: set range start 'From Frame',\n"
-			        "Alt-Click: set 'To Frame'")
+                            , _("Ctrl-Click: set range start 'From Frame', Alt-Click: set 'To Frame'")
 			    , NULL);
   }
 
@@ -5485,36 +5423,15 @@ p_create_player_window (GapPlayerMainGlobalParams *gpp)
 
 
 
-  /* the hbox */
+  /* the playback stock button box */
   hbox1 = gtk_hbox_new (TRUE, 0);
   gtk_widget_show (hbox1);
   gtk_box_pack_start (GTK_BOX (vbox0), hbox1, FALSE, FALSE, 0);
 
-
-  /* the playback/pause button box (hidden while videoindex creation is running) */
-  play_n_stop_hbox = gtk_hbox_new (TRUE, 0);
-  gpp->play_n_stop_hbox = play_n_stop_hbox;
-  gtk_widget_show (play_n_stop_hbox);
-  gtk_box_pack_start (GTK_BOX (hbox1), play_n_stop_hbox, FALSE, TRUE, 0);
-
-  /* the Cancel Videoindex Creation button (only visible while creating vindex) */
-  cancel_vindex_button = gtk_button_new_with_label ( _("Cancel Videoindex creation"));
-  gpp->cancel_vindex_button = cancel_vindex_button;
-  gtk_widget_hide (cancel_vindex_button);
-  gtk_box_pack_start (GTK_BOX (hbox1), cancel_vindex_button, FALSE, TRUE, 0);
-  gimp_help_set_help_data (cancel_vindex_button, _("Cancel videoindex creation. "
-                                          "Videoindex creation requires full scann of the video "
-					  "but allows fast random access to frames afterwards. "
-					  "Without a videoindex, access is done by very slow sequential read"), NULL);
-  g_signal_connect (G_OBJECT (cancel_vindex_button), "clicked",
-                    G_CALLBACK (on_cancel_vindex_button_clicked),
-                    gpp);
-
-
   /* the PLAY button */
   play_button = gtk_button_new_from_stock (GAP_STOCK_PLAY);
   gtk_widget_show (play_button);
-  gtk_box_pack_start (GTK_BOX (play_n_stop_hbox), play_button, FALSE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (hbox1), play_button, FALSE, TRUE, 0);
   gimp_help_set_help_data (play_button, _("Start playback. "
                                           "SHIFT: snapshot frames  in a multilayer image at original size "
 					  "CTRL: snapshot at preview size "
@@ -5527,7 +5444,7 @@ p_create_player_window (GapPlayerMainGlobalParams *gpp)
   pause_button = gtk_button_new_from_stock (GAP_STOCK_PAUSE);
   gtk_widget_show (pause_button);
   gtk_widget_set_events(pause_button, GDK_BUTTON_PRESS_MASK);
-  gtk_box_pack_start (GTK_BOX (play_n_stop_hbox), pause_button, FALSE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (hbox1), pause_button, FALSE, TRUE, 0);
   gimp_help_set_help_data (pause_button, _("Pause if playing (any mouseboutton). "
                                            "Go to selection start/active/end (left/middle/right mousebutton) if not playing"), NULL);
   g_signal_connect (G_OBJECT (pause_button), "button_press_event",
@@ -5537,7 +5454,7 @@ p_create_player_window (GapPlayerMainGlobalParams *gpp)
   /* the PLAY_REVERSE button */
   back_button = gtk_button_new_from_stock (GAP_STOCK_PLAY_REVERSE);
   gtk_widget_show (back_button);
-  gtk_box_pack_start (GTK_BOX (play_n_stop_hbox), back_button, FALSE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (hbox1), back_button, FALSE, TRUE, 0);
   gimp_help_set_help_data (back_button, _("Start reverse playback. "
                                           "SHIFT: snapshot frames  in a multilayer image at original size "
 					  "CTRL: snapshot at preview size "
@@ -5551,7 +5468,7 @@ p_create_player_window (GapPlayerMainGlobalParams *gpp)
     /* the CLOSE button */
     close_button = gtk_button_new_from_stock (GTK_STOCK_CLOSE);
     gtk_widget_show (close_button);
-    gtk_box_pack_start (GTK_BOX (play_n_stop_hbox), close_button, FALSE, TRUE, 0);
+    gtk_box_pack_start (GTK_BOX (hbox1), close_button, FALSE, TRUE, 0);
     gimp_help_set_help_data (close_button, _("Close window"), NULL);
     g_signal_connect (G_OBJECT (close_button), "clicked",
                 	G_CALLBACK (on_close_button_clicked),
@@ -5929,9 +5846,6 @@ gap_player_dlg_create(GapPlayerMainGlobalParams *gpp)
   gpp->mtrace_image_id = -1;
   gpp->mtrace_mode = GAP_PLAYER_MTRACE_OFF;
  
-  gpp->vindex_creation_is_running = FALSE;
-  gpp->request_cancel_video_api = FALSE;
-  gpp->cancel_video_api = FALSE;
   gpp->gvahand = NULL;
   gpp->gva_videofile = NULL;
   gpp->seltrack = 1;

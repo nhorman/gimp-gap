@@ -11,7 +11,6 @@
  * This API (GAP Video Api) provides basic READ functions to access
  * Videoframes of some sopported Videoformats.
  *
- * 2004.09.25     (hof)  added GVA_util_check_mpg_frame_type
  * 2004.04.25     (hof)  integration into gimp-gap
  * 2004.03.06     (hof)  videoindex
  * 2004.02.28     (hof)  added procedures GVA_frame_to_buffer, GVA_delace_frame
@@ -22,14 +21,6 @@
 
 #include <gtk/gtk.h>
 #include <libgimp/gimp.h>
-
-
-#define GVA_MPGFRAME_UNKNOWN -1
-#define GVA_MPGFRAME_I_TYPE 1
-#define GVA_MPGFRAME_P_TYPE 2
-#define GVA_MPGFRAME_B_TYPE 3
-
-#define GVA_MPGHDR_PICTURE_START_CODE    0x00000100
 
 
 /* -----------------------
@@ -226,7 +217,6 @@ typedef struct t_GVA_Handle  /* nickname: gvahand */
   gdouble reread_sample_pos;    /* last audioread pos (used in avlib ffmpeg only) */
   gint32  width;                /* width of the videoframes */
   gint32  height;               /* height of the videoframes */
-  gdouble aspect_ratio;         /* 0 for unknown, or aspect_ratio width/heigth  */
   gint32  vtracks;              /* number of videotracks in the videofile */
   gint32  atracks;              /* number of audiotracks in the videofile */
   gdouble audio_playtime_sec;   /* 0 if no audio */
@@ -408,6 +398,5 @@ t_GVA_RetCode   GVA_get_video_chunk(t_GVA_Handle  *gvahand
                    , unsigned char *chunk
                    , gint32 *size
                    , gint32 max_size);
-gint           GVA_util_check_mpg_frame_type(unsigned char *buffer, gint32 buf_size);
 
 #endif

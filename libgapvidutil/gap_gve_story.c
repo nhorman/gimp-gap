@@ -5,8 +5,6 @@
  */
 
 /*
- * 2004.09.25  hof  - bugfix: made gap_gve_story_fetch_composite_image_or_chunk
- *                    basically work when dont_recode_flag is set (for lossles MPEG cut)
  * 2004.09.12  hof  - replaced parser by the newer one from libgapstory.a
  *                    (the new parser supports named parameters)
  * 2004.07.24  hof  - added step_density parameter
@@ -2039,7 +2037,7 @@ p_new_audiorange_element(GapGveStoryAudioType  aud_type
   GapGveStoryAudioRangeElem *aud_known;
   gboolean l_audscan_required;
 
-  //if(gap_debug)
+  if(/* 1==1 */ gap_debug)
   {
      printf("\np_new_audiorange_element: START aud_type:%d\n", (int)aud_type);
      printf("  track:%d:\n", (int)track);
@@ -3061,29 +3059,17 @@ p_storyboard_analyze(GapStoryBoard *stb
   storyboard_file = stb->storyboardfile;
 
   /* copy Master informations: */
-  if(stb->master_width > 0)
-  {
-    vidhand->master_width     = stb->master_width;
-    vidhand->master_height    = stb->master_height;
-  }
-  if(stb->master_framerate > 0)
-  {
-    vidhand->master_framerate = stb->master_framerate;
-  }
+  vidhand->master_width     = stb->master_width;
+  vidhand->master_height    = stb->master_height;
+  vidhand->master_framerate = stb->master_framerate;
   vidhand->preferred_decoder = NULL;
   if(stb->preferred_decoder)
   {
     vidhand->preferred_decoder = g_strdup(stb->preferred_decoder);
   }
+  vidhand->master_volume = stb->master_volume;
+  vidhand->master_samplerate = stb->master_samplerate;
 
-  if(stb->master_volume >= 0)
-  {
-    vidhand->master_volume = stb->master_volume;
-  }
-  if(stb->master_samplerate > 0)
-  {
-    vidhand->master_samplerate = stb->master_samplerate;
-  }
 
   /* Loop foreach Element in the STB */
   for(stb_elem = stb->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
@@ -3617,7 +3603,7 @@ p_open_video_handle_private(    gboolean ignore_audio
   vidhand->do_gimp_progress = do_gimp_progress;
   *vidhand->progress = 0.0;
   vidhand->sterr = p_new_stb_error();
-  vidhand->master_framerate = 25.0;
+  vidhand->master_framerate = 0.0;
   vidhand->master_width = 0;
   vidhand->master_height = 0;
   vidhand->master_samplerate = 44100;    /* 44.1 kHZ CD standard Quality */
@@ -3724,7 +3710,7 @@ p_open_video_handle_private(    gboolean ignore_audio
 
   /* p_free_stb_error(vidhand->sterr); */
 
-  if(gap_debug) gap_gve_story_debug_print_framerange_list(vidhand->frn_list, -1);
+  /*if(gap_debug)*/ gap_gve_story_debug_print_framerange_list(vidhand->frn_list, -1);
   return(vidhand);
 
 } /* end p_open_video_handle_private */
@@ -4743,7 +4729,7 @@ gap_gve_story_fetch_composite_image(GapGveStoryVidHandle *vidhand
  * fetch composite VIDEO Image at a given master_frame_nr
  * within a storyboard framerange list
  *
- * if desired (and possible) try directly fetch the (already compressed) Frame chunk from
+ * if desired and possible try directly fetch the (already compressed) Frame chunk from
  * an input videofile for the master_frame_nr.
  *
  * the compressed fetch depends on following conditions:
@@ -4782,11 +4768,7 @@ gap_gve_story_fetch_composite_image_or_chunk(GapGveStoryVidHandle *vidhand
                     , gint32 video_frame_chunk_maxsize           /* IN: */
                  )
 {
-  static gint32     last_video_frame_nr = -1;
-  static char      *last_videofile = NULL;
-  static gboolean   last_fetch_was_compressed_chunk = FALSE;
-  static gboolean   last_intra_frame_fetched = FALSE;
-
+  static gint32 last_video_frame_nr = -1;
   gint    l_track;
   gint32    l_track_min;
   gint32    l_track_max;
@@ -4820,7 +4802,7 @@ gap_gve_story_fetch_composite_image_or_chunk(GapGveStoryVidHandle *vidhand
   l_frn_elem        = NULL;
   *video_frame_chunk_size = 0;
 
-  if(gap_debug)printf("gap_gve_story_fetch_composite_image_or_chunk START  master_frame_nr:%d  %dx%d dont_recode:%d\n"
+  /*if(gap_debug)*/printf("gap_gve_story_fetch_composite_image_or_chunk START  master_frame_nr:%d  %dx%d dont_recode:%d\n"
                        , (int)master_frame_nr
                        , (int)vid_width
                        , (int)vid_height
@@ -4841,8 +4823,9 @@ gap_gve_story_fetch_composite_image_or_chunk(GapGveStoryVidHandle *vidhand
   }
 
   /* first check if recode is forced by the calling program */
-  if (dont_recode_flag)
+  if(dont_recode_flag)
   {
+
     p_find_min_max_vid_tracknumbers(vidhand->frn_list, &l_track_min, &l_track_max);
 
     /* findout if there is just one input track from type videofile
@@ -4937,7 +4920,7 @@ gap_gve_story_fetch_composite_image_or_chunk(GapGveStoryVidHandle *vidhand
 
     if((l_videofile) && (l_frn_elem))
     {
-       if(gap_debug) printf("gap_gve_story_fetch_composite_image_or_chunk: ATTEMPT access l_videofile :%s \n", l_videofile);
+       /*if(gap_debug)*/ printf("gap_gve_story_fetch_composite_image_or_chunk: ATTEMPT access l_videofile :%s \n", l_videofile);
 
        /* check if we can FETCH compressed video chunk */
       if(l_frn_elem->gvahand == NULL)
@@ -4994,8 +4977,6 @@ gap_gve_story_fetch_composite_image_or_chunk(GapGveStoryVidHandle *vidhand
         /* check if framesize matches 1:1 to output video size
          * and if the videodecoder does support a read procedure for compressed vodeo chunks
          * TODO: should also check for compatible vcodec_name
-	 *       (cannot check that, because libmpeg3 does not deliver vcodec_name information
-	 *        and there is no implementation to fetch uncompressed chunks in other decoders)
          */
         if((l_frn_elem->gvahand->width != vid_width)
         || (l_frn_elem->gvahand->height != vid_height)
@@ -5005,151 +4986,81 @@ gap_gve_story_fetch_composite_image_or_chunk(GapGveStoryVidHandle *vidhand
         }
         else
         {
-          t_GVA_RetCode  l_fcr;
+           if(l_video_frame_nr > 1)
+           {
+             if(l_video_frame_nr != last_video_frame_nr +1)
+             {
+               /* fetch out of sequence, tell the encoder to force
+                * encoding of a keyframe
+                */
+               *force_keyframe = TRUE;
+             }
+           }
 
-          if(gap_debug) printf("gap_gve_story_fetch_composite_image_or_chunk:  performing CHUNK fetch\n");
+           last_video_frame_nr = l_video_frame_nr;
 
-          /* FETCH compressed video chunk */
-          l_fcr = GVA_get_video_chunk(l_frn_elem->gvahand
-                                  , l_video_frame_nr
-                                  , video_frame_chunk_data
-                                  , video_frame_chunk_size
-                                  , video_frame_chunk_maxsize
-                                  );
+           if(*force_keyframe == TRUE)
+           {
+             /* for 1.st keyframe in sequence we must deliver an uncompressed frame
+              * the calling encoder encodes that frame as I-frame.
+              * all following fetch calls in sequence will deliver compressed video_frame_chunks
+              */
+             l_videofile = NULL;
+           }
+           else
+           {
+             t_GVA_RetCode  l_fcr;
 
-          if(gap_debug) printf("gap_gve_story_fetch_composite_image_or_chunk:  AFTER CHUNK fetch max:%d chunk_data:%d  chunk_size:%d\n"
-                        ,(int)video_frame_chunk_maxsize
-                        ,(int)video_frame_chunk_data
-                        ,(int)*video_frame_chunk_size
-                        );
-          if(l_videofile_name)
-          {
-            g_free(l_videofile_name);
-	    l_videofile_name = NULL;
-          }
+             /*if(gap_debug)*/ printf("gap_gve_story_fetch_composite_image_or_chunk:  performing CHUNK fetch\n");
 
-          if(l_fcr == GVA_RET_OK)
-          {
-	    gint l_frame_type;
+             /* FETCH compressed video chunk */
+             l_fcr = GVA_get_video_chunk(l_frn_elem->gvahand
+                                     , l_video_frame_nr
+                                     , video_frame_chunk_data
+                                     , video_frame_chunk_size
+                                     , video_frame_chunk_maxsize
+                                     );
 
-	    l_frame_type = GVA_util_check_mpg_frame_type(video_frame_chunk_data
-	                                                ,*video_frame_chunk_size
-							);
-            if ((1==0)
-	    &&  (master_frame_nr < 10))  /* debug code: dump fist 9 video chunks to file(s) */
-            {
-               FILE *fp;
-               char *fname;
+             /*if(gap_debug)*/ printf("gap_gve_story_fetch_composite_image_or_chunk:  AFTER CHUNK fetch max:%d chunk_data:%d  chunk_size:%d\n"
+                           ,(int)video_frame_chunk_maxsize
+                           ,(int)video_frame_chunk_data
+                           ,(int)*video_frame_chunk_size
+                           );
+             if(l_videofile_name)
+             {
+               g_free(l_videofile_name);
+             }
 
-               fname = g_strdup_printf("zz_chunk_data_%06d.dmp", (int)l_video_frame_nr);
-               fp = fopen(fname, "wb");
-               if(fp)
+             if(l_fcr == GVA_RET_OK)
+             {
+               if(1==0)  /* debug code: dump video chunk to file */
                {
-                  fwrite(video_frame_chunk_data, *video_frame_chunk_size, 1, fp);
-                  fclose(fp);
+                  FILE *fp;
+                  char *fname;
+
+                  fname = g_strdup_printf("zz_chunk_data_%06d.dmp", (int)l_video_frame_nr);
+                  fp = fopen(fname, "wb");
+                  if(fp)
+                  {
+                     fwrite(video_frame_chunk_data, *video_frame_chunk_size, 1, fp);
+                     fclose(fp);
+                  }
+
+                  g_free(fname);
                }
 
-               g_free(fname);
-            }
 
-	    if (l_frame_type == GVA_MPGFRAME_I_TYPE)
-	    {
-	      /* intra frame has no dependencies to other frames
-	       * can use that frame type at any place in the stram 
-	       */
-              last_video_frame_nr = l_video_frame_nr;
-              last_intra_frame_fetched = TRUE;
-	      if(last_videofile)
-	      {
-		g_free(last_videofile);
-	      }
-	      last_videofile = g_strdup(l_videofile);
-	      last_fetch_was_compressed_chunk = TRUE;
-	      
-	      /*if(gap_debug)*/
-	      {
-	        printf(" Reuse I-FRAME Chunk  at %06d\n", (int)master_frame_nr);
-	      }
-              return(TRUE);
-	    }
-
-	    if (l_frame_type == GVA_MPGFRAME_P_TYPE)
-	    {
-	      /* predicted frame has dependencies to the previous intra frame
-	       * can use that frame if fetch sequence contains previous i frame
-	       */
-	      if(last_videofile)
-	      {
-		if((strcmp(l_videofile, last_videofile) == 0)
-		&& (l_video_frame_nr = last_video_frame_nr +1))
-		{
-                  last_video_frame_nr = l_video_frame_nr;
-		  last_fetch_was_compressed_chunk = TRUE;
-		  /*if(gap_debug)*/
-		  {
-	            printf(" Reuse P-FRAME Chunk  at %06d\n", (int)master_frame_nr);
-		  }
-                  return(TRUE);
-		}
-	      }
-	    }
-
-	    if (l_frame_type == GVA_MPGFRAME_B_TYPE)
-	    {
-	      /* bi-directional predicted frame has dependencies both to 
-	       * the previous intra frame or p-frame and to the following i or p-frame.
-	       *
-	       * can use that frame if fetch sequence contains previous i frame
-	       * and fetch will continue until the next i or p frame.
-	       *
-	       * currently we do not check for next frames in (storyboard) sequence.
-	       *
-	       * (TODO: we should at least check
-	       *  if the next few (say 6) frames in storyboard sequence
-	       *  will fetch the next (6) frames in videofile sequence from the same videofile.
-	       *  this would be just a guess, but maybe sufficient in most cases)
-	       */
-	      if(last_videofile)
-	      {
-		if((strcmp(l_videofile, last_videofile) == 0)
-		&& (l_video_frame_nr = last_video_frame_nr +1))
-		{
-                  last_video_frame_nr = l_video_frame_nr;
-		  last_fetch_was_compressed_chunk = TRUE;
-		  /*if(gap_debug)*/
-		  {
-	            printf(" Reuse B-FRAME Chunk  at %06d\n", (int)master_frame_nr);
-		  }
-                  return(TRUE);
-		}
-	      }
-	    }
-    
-            if(gap_debug) printf("gap_gve_story_fetch_composite_image_or_chunk:  sorry, cant use the fetched CHUNK\n");
-	   
-	    last_fetch_was_compressed_chunk = FALSE;
-	    last_intra_frame_fetched = FALSE;
-            l_videofile = NULL;
-
-          }
-	  else
-	  {
-	    last_fetch_was_compressed_chunk = FALSE;
-	    last_intra_frame_fetched = FALSE;
-            *video_frame_chunk_size = 0;
-            return(FALSE);
-	  }
+               return(TRUE);
+             }
+             *video_frame_chunk_size = 0;
+             return(FALSE);
+           }
         }
       }
     }
 
   }   /* end IF dont_recode_flag */
 
-  if(last_fetch_was_compressed_chunk)
-  {
-    *force_keyframe = TRUE;
-  }
-  
   if(l_videofile_name)
   {
     g_free(l_videofile_name);
@@ -5157,17 +5068,7 @@ gap_gve_story_fetch_composite_image_or_chunk(GapGveStoryVidHandle *vidhand
 
   if(l_videofile == NULL)
   {
-    last_video_frame_nr = -1;
-    last_intra_frame_fetched = FALSE;
-    last_fetch_was_compressed_chunk = FALSE;
-    if(last_videofile)
-    {
-      g_free(last_videofile);
-    }
-    last_videofile = l_videofile;
-
-
-    if(gap_debug) printf("gap_gve_story_fetch_composite_image_or_chunk:  CHUNKfetch not possible (doing frame fetch instead)\n");
+    /*if(gap_debug)*/ printf("gap_gve_story_fetch_composite_image_or_chunk:  CHUNKfetch not possible (doing frame fetch instead)\n");
 
     *video_frame_chunk_size = 0;
     *image_id = gap_gve_story_fetch_composite_image(vidhand

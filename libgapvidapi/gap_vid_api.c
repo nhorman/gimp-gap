@@ -1140,7 +1140,6 @@ p_gva_worker_open_read(const char *filename, gint32 vid_track, gint32 aud_track
   gvahand->decoder_handle = NULL;
   gvahand->vid_track = MAX(vid_track -1, 0);
   gvahand->aud_track = MAX(aud_track -1, 0);
-  gvahand->aspect_ratio = 0.0;
   gvahand->vtracks = 0;
   gvahand->atracks = 0;
   gvahand->progress_cb_user_data = NULL;

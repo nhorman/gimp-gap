@@ -77,7 +77,6 @@ static GapStbMainGlobalParams global_params =
 , FALSE       /*  gboolean           gva_lock */
 , FALSE       /*  gboolean           cancel_video_api */
 , FALSE       /*  gboolean           auto_vthumb */
-, FALSE       /*  gboolean           auto_vthumb_refresh_canceled */
 , FALSE       /*  gboolean           in_player_call */
 , NULL        /*  GtkWidget *shell_window */
 
