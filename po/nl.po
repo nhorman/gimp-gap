@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gimp 1.2.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-04-30 20:46+0200\n"
-"PO-Revision-Date: 2004-04-08 17:58+0200\n"
+"POT-Creation-Date: 2004-05-01 19:32+0200\n"
+"PO-Revision-Date: 2004-05-02 00:27+0200\n"
 "Last-Translator: Tino Meinen <a.t.meinen@chello.nl>\n"
 "Language-Team: Dutch <vertaling@nl.linux.org>\n"
 "MIME-Version: 1.0\n"
@@ -1712,7 +1712,7 @@ msgstr "Vermenigvuldigen"
 
 #: gap/gap_mov_dialog.c:409
 msgid "Divide"
-msgstr ""
+msgstr "Delen"
 
 #: gap/gap_mov_dialog.c:410
 msgid "Screen"
@@ -1723,30 +1723,28 @@ msgid "Overlay"
 msgstr "Op elkaar"
 
 #: gap/gap_mov_dialog.c:413
-#, fuzzy
 msgid "Dodge"
-msgstr "Modus:"
+msgstr "Lichter maken"
 
 #: gap/gap_mov_dialog.c:414
-#, fuzzy
 msgid "Burn"
-msgstr "Omschrijving:"
+msgstr "Donker maken"
 
 #: gap/gap_mov_dialog.c:415
 msgid "Hard Light"
-msgstr ""
+msgstr "Hard licht"
 
 #: gap/gap_mov_dialog.c:416
 msgid "Soft Light"
-msgstr ""
+msgstr "Zacht licht"
 
 #: gap/gap_mov_dialog.c:417
 msgid "Grain Extract"
-msgstr ""
+msgstr "Korrelig extraheren"
 
 #: gap/gap_mov_dialog.c:418
 msgid "Grain Merge"
-msgstr ""
+msgstr "Korrelig samenvoegen"
 
 #: gap/gap_mov_dialog.c:420
 msgid "Difference"
@@ -1788,9 +1786,8 @@ msgid "Value"
 msgstr "Value"
 
 #: gap/gap_mov_dialog.c:431
-#, fuzzy
 msgid "Keep Paintmode"
-msgstr "Schildermodus"
+msgstr "Schildermodus behouden"
 
 #: gap/gap_mov_dialog.c:438
 msgid "Left  Top"
