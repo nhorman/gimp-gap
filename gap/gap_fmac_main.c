@@ -59,6 +59,7 @@
 static char *gap_fmac_version = "1.3.22c; 2003/11/12";
 
 /* revision history:
+ * gimp   1.3.26b;  2004/02/29  hof: bugfix NONINTERACTIVE call did crash
  * gimp   1.3.22c;  2003/11/12  hof: button sensitivity
  * gimp   1.3.22b;  2003/11/09  hof: created (based on old unpublished patches for gimp-1.2)
  */
@@ -261,7 +262,11 @@ run(const gchar *name
 	{
 	  if(n_params == 4)
 	  {
-	    filtermacro_file = param[4].data.d_string;
+	    filtermacro_file = param[3].data.d_string;
+	    if(filtermacro_file == NULL)
+	    {
+              status = GIMP_PDB_CALLING_ERROR;
+	    }
 	  }
 	  else
 	  {
