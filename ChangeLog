@@ -1,3 +1,16 @@
+2003-08-23  Wolfgang Hofer <hof@gimp.org>
+
+        increased entry_width for framenumbers from 45 to 80 (45 is too
+	small for 6 digits)
+	bugfix: do not attempt to write thumbnails for internal save op with
+	temp filenames
+	bugfix: onionskin automatic sometimes goes crazy when vin_ptr struct
+	is not properly initialized
+	* gap/gap_arr_dialog.c
+	* gap/gap_vin.c (p_get_video_info must clear (g_malloc0) vin_ptr
+	struct at creation)
+	* gap/gap_lib.c (dont mix gap_debug messages to stdout/stderr)
+
 2003-08-19  Abel Cheung  <maddog@linux.org.hk>
 
 	* configure.in: Removed "ga" "gl" "ro" from ALL_LINGUAS.

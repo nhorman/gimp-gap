@@ -211,7 +211,11 @@ p_gimp_file_save_thumbnail(gint32 image_id, char* filename)
    {
       return (TRUE);
    }
-   printf("GAP: Error: PDB call of %s failed\n", l_called_proc);
+   printf("GAP: Error: PDB call of %s failed on file: %s (image_id:%d)\n"
+          , l_called_proc
+	  , filename
+	  , (int)image_id
+	  );
    return(FALSE);
 }	/* end p_gimp_file_save_thumbnail */
 

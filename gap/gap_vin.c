@@ -23,6 +23,7 @@
  */
 
 /* revision history:
+ * version 1.3.18a; 2003/08/23  hof: bugfix: p_get_video_info must clear (g_malloc0) vin_ptr struct at creation
  * version 1.3.16c; 2003/07/12  hof: support onionskin settings in video_info files
  *                                   key/value/datatype is now managed by t_keylist
  * version 1.3.14b; 2003/06/03  hof: using setlocale independent float conversion procedures
@@ -664,7 +665,7 @@ p_get_video_info(char *basename)
   t_keylist    *keylist;
 
   keylist = p_new_keylist();
-  vin_ptr = g_malloc(sizeof(t_video_info));
+  vin_ptr = g_malloc0(sizeof(t_video_info));
   p_set_master_keywords(keylist, vin_ptr);
   p_set_onion_keywords(keylist, vin_ptr);
   

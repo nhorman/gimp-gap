@@ -26,6 +26,9 @@
  */
 
 /* revision history:
+ * 1.3.18a  2003/08/23   hof: - all gap_debug messages to stdout (do not mix with stderr)
+ *                            - do not save thumbnails in p_decide_save_as because it saves
+ *                              to a temp filename that is renamed later after successful save
  * 1.3.16c  2003/07/12   hof: - triggers for automatic onionskinlayer create and remove
  *                              bugfix gap_vid_edit_paste
  * 1.3.14a  2003/05/27   hof: - moved basic gap operations to new module gap_base_ops
@@ -136,6 +139,7 @@ extern      int gap_debug; /* ==0  ... dont print debug infos */
 
 static int          p_save_old_frame(t_anim_info *ainfo_ptr, t_video_info *vin_ptr);
 static int          p_decide_save_as(gint32 image_id, char *sav_name);
+static gint32       p_save_named_image2(gint32 image_id, char *sav_name, GimpRunMode run_mode, gboolean enable_thumbnailsave);
 
 
 /* ============================================================================
@@ -346,7 +350,7 @@ p_delete_frame(t_anim_info *ainfo_ptr, long nr)
    l_fname = p_alloc_fname(ainfo_ptr->basename, nr, ainfo_ptr->extension);
    if(l_fname == NULL) { return(1); }
 
-   if(gap_debug) fprintf(stderr, "\nDEBUG p_delete_frame: %s\n", l_fname);
+   if(gap_debug) printf("\nDEBUG p_delete_frame: %s\n", l_fname);
    l_rc = remove(l_fname);
    
    p_gimp_file_delete_thumbnail(l_fname);
@@ -375,7 +379,7 @@ p_rename_frame(t_anim_info *ainfo_ptr, long from_nr, long to_nr)
    if(l_to_fname == NULL) { g_free(l_from_fname); return(1); }
    
      
-   if(gap_debug) fprintf(stderr, "\nDEBUG p_rename_frame: %s ..to.. %s\n", l_from_fname, l_to_fname);
+   if(gap_debug) printf("\nDEBUG p_rename_frame: %s ..to.. %s\n", l_from_fname, l_to_fname);
    l_rc = rename(l_from_fname, l_to_fname);
 
    p_gimp_file_rename_thumbnail(l_from_fname, l_to_fname);
@@ -412,7 +416,7 @@ p_alloc_basename(const char *imagename, long *number)
   /* copy from imagename */
   l_fname = g_strdup(imagename);
 
-  if(gap_debug) fprintf(stderr, "DEBUG p_alloc_basename  source: '%s'\n", l_fname);
+  if(gap_debug) printf("DEBUG p_alloc_basename  source: '%s'\n", l_fname);
   /* cut off extension */
   l_ptr = &l_fname[strlen(l_fname)];
   while(l_ptr != l_fname)
@@ -421,7 +425,7 @@ p_alloc_basename(const char *imagename, long *number)
     if(*l_ptr == '.')                                        { *l_ptr = '\0'; break; }
     l_ptr--;
   }
-  if(gap_debug) fprintf(stderr, "DEBUG p_alloc_basename (ext_off): '%s'\n", l_fname);
+  if(gap_debug) printf("DEBUG p_alloc_basename (ext_off): '%s'\n", l_fname);
 
   /* cut off trailing digits (0000) */
   l_ptr = &l_fname[strlen(l_fname)];
@@ -449,7 +453,7 @@ p_alloc_basename(const char *imagename, long *number)
     }
   }
   
-  if(gap_debug) fprintf(stderr, "DEBUG p_alloc_basename  result:'%s'\n", l_fname);
+  if(gap_debug) printf("DEBUG p_alloc_basename  result:'%s'\n", l_fname);
 
   return(l_fname);
    
@@ -911,13 +915,13 @@ p_dir_ainfo(t_anim_info *ainfo_ptr)
       l_ptr--;
    }
 
-   if(gap_debug) fprintf(stderr, "DEBUG p_dir_ainfo: BASENAME:%s\n", l_ptr);
+   if(gap_debug) printf("DEBUG p_dir_ainfo: BASENAME:%s\n", l_ptr);
    
    if      (l_ptr == l_dirname)   { l_dirname_ptr = ".";  l_dirflag = 0; }
    else if (*l_dirname == '\0')   { l_dirname_ptr = G_DIR_SEPARATOR_S ; l_dirflag = 1; }
    else                           { l_dirname_ptr = l_dirname; l_dirflag = 2; }
 
-   if(gap_debug) fprintf(stderr, "DEBUG p_dir_ainfo: DIRNAME:%s\n", l_dirname_ptr);
+   if(gap_debug) printf("DEBUG p_dir_ainfo: DIRNAME:%s\n", l_dirname_ptr);
    l_dirp = g_dir_open( l_dirname_ptr, 0, NULL );  
    
    if(!l_dirp) fprintf(stderr, "ERROR p_dir_ainfo: can't read directory %s\n", l_dirname_ptr);
@@ -926,7 +930,7 @@ p_dir_ainfo(t_anim_info *ainfo_ptr)
      while ( (l_entry = g_dir_read_name( l_dirp )) != NULL )
      {
 
-       /* if(gap_debug) fprintf(stderr, "DEBUG p_dir_ainfo: l_entry:%s\n", l_entry); */
+       /* if(gap_debug) printf("DEBUG p_dir_ainfo: l_entry:%s\n", l_entry); */
        
        
        /* findout extension of the directory entry name */
@@ -974,7 +978,7 @@ p_dir_ainfo(t_anim_info *ainfo_ptr)
                  ainfo_ptr->frame_cnt++;
 
 
-                 if(gap_debug) fprintf(stderr, "DEBUG p_dir_ainfo:  %s NR=%ld\n", l_entry, l_nr);
+                 if(gap_debug) printf("DEBUG p_dir_ainfo:  %s NR=%ld\n", l_entry, l_nr);
 
                  if (l_nr > l_maxnr)
                     l_maxnr = l_nr;
@@ -1176,7 +1180,7 @@ p_gzip (char *orig_name, char *new_name, char *zip)
     l_cmd = g_strdup_printf("gzip -cf  <\"%s\"  >\"%s\"", orig_name, l_tmpname);
   }
 
-  if(gap_debug) fprintf(stderr, "system: %s\n", l_cmd);
+  if(gap_debug) printf("system: %s\n", l_cmd);
   
   l_rc = system(l_cmd);
   if(l_rc != 0)
@@ -1241,7 +1245,7 @@ p_decide_save_as(gint32 image_id, char *sav_name)
 
     l_save_as_mode =  p_buttons_dialog  (_("GAP Question"), l_msg, l_argc, l_argv, -1);
     
-    if(gap_debug) fprintf(stderr, "DEBUG: decide SAVE_AS_MODE %d\n", (int)l_save_as_mode);
+    if(gap_debug) printf("DEBUG: decide SAVE_AS_MODE %d\n", (int)l_save_as_mode);
     
     if(l_save_as_mode < 0) return -1;
     l_run_mode = GIMP_RUN_INTERACTIVE;
@@ -1259,7 +1263,11 @@ p_decide_save_as(gint32 image_id, char *sav_name)
       gimp_image_flatten (image_id);
   }
 
-  return(p_save_named_image(image_id, sav_name, l_run_mode));
+  return(p_save_named_image2(image_id
+                           , sav_name
+			   , l_run_mode
+			   , FALSE      /* do not enable_thumbnailsave */
+			   ));
 }	/* end p_decide_save_as */
 
 /* ============================================================================
@@ -1298,18 +1306,18 @@ p_gap_check_save_needed(gint32 image_id)
 
 
 /* ============================================================================
- * p_save_named_image
+ * p_save_named_image / 2
  * ============================================================================
  */
 gint32
-p_save_named_image(gint32 image_id, char *sav_name, GimpRunMode run_mode)
+p_save_named_image2(gint32 image_id, char *sav_name, GimpRunMode run_mode, gboolean enable_thumbnailsave)
 {
   GimpDrawable  *l_drawable;
   gint        l_nlayers;
   gint32     *l_layers_list;
   gboolean    l_rc;
 
-  if(gap_debug) fprintf(stderr, "DEBUG: before   p_save_named_image: '%s'\n", sav_name);
+  if(gap_debug) printf("DEBUG: before   p_save_named_image2: '%s'\n", sav_name);
 
   l_layers_list = gimp_image_get_layers(image_id, &l_nlayers);
   if(l_layers_list == NULL)
@@ -1318,7 +1326,7 @@ p_save_named_image(gint32 image_id, char *sav_name, GimpRunMode run_mode)
   l_drawable =  gimp_drawable_get(l_layers_list[l_nlayers -1]);  /* use the background layer */
   if(l_drawable == NULL)
   {
-     fprintf(stderr, "ERROR: p_save_named_image gimp_drawable_get failed '%s' nlayers=%d\n",
+     fprintf(stderr, "ERROR: p_save_named_image2 gimp_drawable_get failed '%s' nlayers=%d\n",
                      sav_name, (int)l_nlayers);
      g_free (l_layers_list);
      return -1;
@@ -1331,9 +1339,15 @@ p_save_named_image(gint32 image_id, char *sav_name, GimpRunMode run_mode)
 		 sav_name /* raw name ? */
 		 );
 
-  if(gap_debug) fprintf(stderr, "DEBUG: after    p_save_named_image: '%s' nlayers=%d image=%d drw=%d run_mode=%d\n", sav_name, (int)l_nlayers, (int)image_id, (int)l_drawable->drawable_id, (int)run_mode);
+  
+  if(gap_debug) printf("DEBUG: after    p_save_named_image2: '%s' nlayers=%d image=%d drw=%d run_mode=%d\n", sav_name, (int)l_nlayers, (int)image_id, (int)l_drawable->drawable_id, (int)run_mode);
 
-  p_cond_gimp_file_save_thumbnail(image_id, sav_name);
+  if(enable_thumbnailsave)
+  {
+    p_cond_gimp_file_save_thumbnail(image_id, sav_name);
+  }
+
+  if(gap_debug) printf("DEBUG: after thumbmail save\n");
 
   g_free (l_layers_list);
   g_free (l_drawable);
@@ -1341,13 +1355,22 @@ p_save_named_image(gint32 image_id, char *sav_name, GimpRunMode run_mode)
 
   if (l_rc != TRUE)
   {
-    fprintf(stderr, "ERROR: p_save_named_image  gimp_file_save failed '%s'\n", sav_name);
+    fprintf(stderr, "ERROR: p_save_named_image2  gimp_file_save failed '%s'\n", sav_name);
     return -1;
   }
   return image_id;
 
-}	/* end p_save_named_image */
+}	/* end p_save_named_image2 */
 
+gint32
+p_save_named_image(gint32 image_id, char *sav_name, GimpRunMode run_mode)
+{
+  return(p_save_named_image2(image_id
+                            , sav_name
+			    , run_mode
+			    , TRUE      /* enable_thumbnailsave */
+			    ));
+}
 
 
 /* ============================================================================
@@ -1417,7 +1440,7 @@ p_save_named_frame(gint32 image_id, char *sav_name)
      }
    }
 
-  if(gap_debug) fprintf(stderr, "DEBUG: before   p_save_named_frame: '%s'\n", l_tmpname);
+  if(gap_debug) printf("DEBUG: before   p_save_named_frame: '%s'\n", l_tmpname);
 
   if(l_xcf != 0)
   {
@@ -1433,7 +1456,7 @@ p_save_named_frame(gint32 image_id, char *sav_name)
 			         GIMP_PDB_STRING, l_tmpname,
 			         GIMP_PDB_STRING, l_tmpname, /* raw name ? */
 			         GIMP_PDB_END);
-    if(gap_debug) fprintf(stderr, "DEBUG: after   xcf  p_save_named_frame: '%s'\n", l_tmpname);
+    if(gap_debug) printf("DEBUG: after   xcf  p_save_named_frame: '%s'\n", l_tmpname);
 
     if (l_params[0].data.d_status == GIMP_PDB_SUCCESS)
     {
@@ -1471,7 +1494,7 @@ p_save_named_frame(gint32 image_id, char *sav_name)
          * rename will not work.
          * so lets try a  copy ; remove sequence
          */
-         if(gap_debug) fprintf(stderr, "DEBUG: p_save_named_frame: RENAME 2nd try\n");
+         if(gap_debug) printf("DEBUG: p_save_named_frame: RENAME 2nd try\n");
          if(0 == p_file_copy(l_tmpname, sav_name))
 	 {
 	    remove(l_tmpname);
@@ -1569,14 +1592,14 @@ p_load_image (char *lod_name)
   }
 
 
-  if(gap_debug) fprintf(stderr, "DEBUG: before   p_load_image: '%s'\n", l_tmpname);
+  if(gap_debug) printf("DEBUG: before   p_load_image: '%s'\n", l_tmpname);
 
   l_tmp_image_id = gimp_file_load(GIMP_RUN_NONINTERACTIVE,
 		l_tmpname,
 		l_tmpname  /* raw name ? */
 		);
   
-  if(gap_debug) fprintf(stderr, "DEBUG: after    p_load_image: '%s' id=%d\n\n",
+  if(gap_debug) printf("DEBUG: after    p_load_image: '%s' id=%d\n\n",
                                l_tmpname, (int)l_tmp_image_id);
 
   if(l_tmpname != lod_name)
@@ -1607,7 +1630,7 @@ p_load_named_frame (gint32 old_image_id, char *lod_name)
 
   l_new_image_id = p_load_image(lod_name);
   
-  if(gap_debug) fprintf(stderr, "DEBUG: after    p_load_named_frame: '%s' old_id=%d  new_id=%d\n\n",
+  if(gap_debug) printf("DEBUG: after    p_load_named_frame: '%s' old_id=%d  new_id=%d\n\n",
                                lod_name, (int)old_image_id, (int)l_new_image_id);
 
   if(l_new_image_id < 0)

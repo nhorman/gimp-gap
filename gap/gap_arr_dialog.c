@@ -38,6 +38,7 @@
  */
 
 /* revision history:
+ * gimp    1.3.18a; 2003/08/23  hof: p_slider_dialog increased entry_width from 45 to 80 (to show 6 digits)
  * gimp    1.3.17b; 2003/07/31  hof: message text fixes for translators (# 118392)
  * gimp    1.3.17a; 2003/07/28  hof: gimp_interactive_selection_font was renamed to:  gimp_font_select_new
  * gimp    1.3.16c; 2003/07/12  hof: new p_confirm_dialog
@@ -1259,7 +1260,7 @@ void     p_init_arr_arg  (t_arr_arg *arr_ptr,
    arr_ptr->label_txt   = NULL;
    arr_ptr->help_txt    = NULL;
    arr_ptr->togg_label  = NULL;
-   arr_ptr->entry_width = 60;
+   arr_ptr->entry_width = 80;
    arr_ptr->scale_width = 200;
    arr_ptr->constraint  = TRUE;
    arr_ptr->has_default = FALSE;
@@ -1427,7 +1428,7 @@ long p_slider_dialog(char *title, char *frame, char *label, char *tooltip,
   argv[0].label_txt = label;
   argv[0].help_txt = tooltip;
   argv[0].constraint = constraint;
-  argv[0].entry_width = 45;
+  argv[0].entry_width = 80;
   argv[0].scale_width = 130;
   argv[0].int_min    = (gint)min;
   argv[0].int_max    = (gint)max;
