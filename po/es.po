@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: es\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-07-25 11:23+0200\n"
-"PO-Revision-Date: 2004-07-25 11:57+0200\n"
+"POT-Creation-Date: 2004-07-31 17:32+0200\n"
+"PO-Revision-Date: 2004-07-31 17:54+0200\n"
 "Last-Translator: Francisco Javier F. Serrador <serrador@cvs.gnome.org>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -1714,7 +1714,10 @@ msgstr "Establecer"
 msgid ""
 "Click: pick and drag point at cursor or create new point SHIFT-Click: force "
 "create new point Alt-Click: disable drag Right-Click: delete point at cursor"
-msgstr "Pulsación: Pulse y arrastre un punto con el cursor o cree un punto nuevo Mayús-pulsación: fuerza a crear un punto nuevo. Alt-Pulsación: desactiva el arrastre. Pulsación derecha: borra el punto bajo el cursor"
+msgstr ""
+"Pulsación: Pulse y arrastre un punto con el cursor o cree un punto nuevo "
+"Mayús-pulsación: fuerza a crear un punto nuevo. Alt-Pulsación: desactiva el "
+"arrastre. Pulsación derecha: borra el punto bajo el cursor"
 
 #. radio button MOVE
 #: gap/gap_morph_dialog.c:2938
@@ -1725,20 +1728,20 @@ msgstr "Mover"
 msgid ""
 "Click: drag next point SHIFT-Click: force create new point Alt-Click: "
 "disable drag Right-Click: delete point at cursor"
-msgstr ""
+msgstr "Pulsación: arrastra el siguiente punto Mayús-pulsación: fuerza a crear un punto nuevo Alt-Pulsación desactiva arrastre Pulsación-derecha: borra el punto en el cursor"
 
 #: gap/gap_morph_dialog.c:2973
 msgid "Click: delete next point"
-msgstr ""
+msgstr "Pulsación: borra el siguiente punto"
 
 #. radio button ZOOM
 #: gap/gap_morph_dialog.c:2986
 msgid "Zoom"
-msgstr ""
+msgstr "Ampliación"
 
 #: gap/gap_morph_dialog.c:2995
 msgid "Click: zoom in, CTRL-click: zoom out"
-msgstr ""
+msgstr "Pulsación: Ampliar, Ctrl-pulsación: Reducir"
 
 #. radio button SHOW
 #: gap/gap_morph_dialog.c:3009
@@ -1756,7 +1759,7 @@ msgstr "Modo de renderizado:"
 #. radio button MORPH
 #: gap/gap_morph_dialog.c:3062
 msgid "Morph"
-msgstr ""
+msgstr "Morph"
 
 #: gap/gap_morph_dialog.c:3071
 msgid "Render morph transition (warp forward, warp backward and cross fade)"
@@ -1765,7 +1768,7 @@ msgstr ""
 #. radio button WARP
 #: gap/gap_morph_dialog.c:3084
 msgid "Warp"
-msgstr ""
+msgstr "Warp"
 
 #: gap/gap_morph_dialog.c:3093
 msgid "Render forward warp transitions only"
@@ -1833,16 +1836,16 @@ msgstr "Número del punto actual"
 #. the number_of_points label
 #: gap/gap_morph_dialog.c:3300
 msgid "of total:"
-msgstr ""
+msgstr "del total:"
 
 #. the number_of_points label
 #: gap/gap_morph_dialog.c:3308
 msgid "001"
-msgstr ""
+msgstr "001"
 
 #: gap/gap_morph_dialog.c:3446
 msgid "Morph / Warp"
-msgstr ""
+msgstr "Morph / Warp"
 
 #: gap/gap_morph_dialog.c:3529
 msgid "Source"
@@ -1850,7 +1853,7 @@ msgstr "Origen"
 
 #: gap/gap_morph_dialog.c:3544
 msgid "Destination"
-msgstr ""
+msgstr "Destino"
 
 #. the nubner of ShapePoints label
 #: gap/gap_morph_dialog.c:3563
@@ -2043,9 +2046,8 @@ msgid "Overlay"
 msgstr "Solapar"
 
 #: gap/gap_mov_dialog.c:417
-#, fuzzy
 msgid "Dodge"
-msgstr "Modo"
+msgstr ""
 
 #: gap/gap_mov_dialog.c:418
 msgid "Burn"
@@ -5338,41 +5340,40 @@ msgid ""
 msgstr ""
 
 #: gap/gap_story_properties.c:1203
-#, fuzzy
 msgid "Set Image or Frame Filename"
-msgstr "Partir imagen en fotogramas"
+msgstr "Establecer imagen o nombre del fotograma"
 
 #: gap/gap_story_properties.c:1281
 msgid "EMPTY"
-msgstr ""
+msgstr "VACÍO"
 
 #: gap/gap_story_properties.c:1284
 msgid "COLOR"
-msgstr ""
+msgstr "COLOR"
 
 #: gap/gap_story_properties.c:1287
 msgid "SINGLE-IMAGE"
-msgstr ""
+msgstr "IMAGEN ÚNICA"
 
 #: gap/gap_story_properties.c:1291
 msgid "ANIM-IMAGE"
-msgstr ""
+msgstr "IMAGEN ANIMADA"
 
 #: gap/gap_story_properties.c:1295
 msgid "FRAME-IMAGES"
-msgstr ""
+msgstr "IMÁGENES-FOTOGRAMA"
 
 #: gap/gap_story_properties.c:1300
 msgid "MOVIE"
-msgstr ""
+msgstr "PELÍCULA"
 
 #: gap/gap_story_properties.c:1303
 msgid "COMMENT"
-msgstr ""
+msgstr "COMENTARIO"
 
 #: gap/gap_story_properties.c:1306
 msgid "** UNKNOWN **"
-msgstr ""
+msgstr "** DESCONOCIDO **"
 
 #: gap/gap_story_properties.c:1344
 #, c-format
@@ -5381,11 +5382,11 @@ msgstr "%d (fotogramas)"
 
 #: gap/gap_story_properties.c:1589 gap/gap_story_properties.c:1601
 msgid "Clip Properties"
-msgstr ""
+msgstr "Propiedades del clip"
 
 #: gap/gap_story_properties.c:1594 gap/gap_story_properties.c:1605
 msgid "Find Scene End"
-msgstr ""
+msgstr "Buscar final de escena"
 
 #: gap/gap_story_properties.c:1595 gap/gap_story_properties.c:1606
 msgid "Aoto Scene Split"
@@ -5567,22 +5568,22 @@ msgstr "Nombre del archivo de script de macros de filtro"
 #: vid_common/gap_cme_gui.c:2910 vid_common/gap_cme_gui.c:2932
 #: vid_common/gap_cme_gui.c:3016 vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2123
 msgid "..."
-msgstr ""
+msgstr "..."
 
 #: gap/gap_vex_dialog.c:1817
 msgid "Select video using file browser"
-msgstr ""
+msgstr "Seleccione el vídeo usando el examinador de archivos"
 
 #. MMX sometimes gives unusable results, and therefore is always OFF
 #. * checkbox is not needed
 #.
 #: gap/gap_vex_dialog.c:1824
 msgid "Disable MMX"
-msgstr ""
+msgstr "Desactivar MMX"
 
 #: gap/gap_vex_dialog.c:1830
 msgid "Turn off MMX (MMX is faster but lossy on low bitrate streams)"
-msgstr ""
+msgstr "Apaga MMX (MMX es más rápido paro tiene pérdida en streams de bajo bitrate)"
 
 #: gap/gap_vex_dialog.c:1854
 #, fuzzy
@@ -5590,9 +5591,8 @@ msgid "Frame number of 1.st frame to extract"
 msgstr "Número del primer fotograma a extraer"
 
 #: gap/gap_vex_dialog.c:1885
-#, fuzzy
 msgid "Frame number of last frame to extract (0 == use last frame)"
-msgstr "Número del último fotograma a extraer"
+msgstr "Número del último fotograma a extraer (0 == usar el último fotograma)"
 
 #. the videorange button (that invokes the player for video range selection)
 #. the videorange button (that invokes the player for video range selection in docked mode)
@@ -5619,7 +5619,7 @@ msgstr "Pista de sonido:"
 
 #: gap/gap_vex_dialog.c:1972
 msgid "Audiotrack number (0 == extract no audio)"
-msgstr ""
+msgstr "Número de pista de sonido (0 == no extraer sonido)"
 
 #. the (preferred) Decoder label
 #: gap/gap_vex_dialog.c:1984
@@ -5634,15 +5634,15 @@ msgstr ""
 
 #: gap/gap_vex_dialog.c:2011
 msgid "(none, automatic)"
-msgstr ""
+msgstr "(ninguno, automático)"
 
 #: gap/gap_vex_dialog.c:2018
 msgid "libmpeg3"
-msgstr ""
+msgstr "libmpeg3"
 
 #: gap/gap_vex_dialog.c:2025
 msgid "quicktime4linux"
-msgstr ""
+msgstr "quicktime4linux"
 
 #: gap/gap_vex_dialog.c:2032
 msgid "libavformat"
@@ -5688,13 +5688,15 @@ msgstr "fotograma_"
 
 #: gap/gap_vex_dialog.c:2121
 msgid "Use filebrowser to select basename for extracted frames"
-msgstr "Abrir una ventana de examinador de archivos para seleccionar el nombre base para los archivos extraídos"
+msgstr ""
+"Abrir una ventana de examinador de archivos para seleccionar el nombre base "
+"para los archivos extraídos"
 
 #: gap/gap_vex_dialog.c:2152
 msgid ""
 "Digits to use for framenumber part in filenames (use 1 if you dont want "
 "leading zeroes)"
-msgstr ""
+msgstr "Dígitos a usar para la parte del número de fotograma en los nombres de archivo (use 1 si no quiere completar con ceros)"
 
 #: gap/gap_vex_dialog.c:2169
 msgid "Famenumber for 1st extracted frame (use 0 for original framenumbers)"
@@ -5702,11 +5704,11 @@ msgstr ""
 
 #: gap/gap_vex_dialog.c:2194
 msgid "Extension of extracted frames (.xcf, .jpg, .ppm)"
-msgstr ""
+msgstr "Extensión de los fotogramas extraídos (.xcf, .jpg, .ppm)"
 
 #: gap/gap_vex_dialog.c:2195
 msgid ".xcf"
-msgstr ""
+msgstr ".xcf"
 
 #. the multilayer checkbox (decide if extract writes to frames on disc or to one image)
 #: gap/gap_vex_dialog.c:2222
@@ -5729,11 +5731,11 @@ msgstr "normal"
 
 #: gap/gap_vex_dialog.c:2247
 msgid "deinterlace (odd lines only)"
-msgstr ""
+msgstr "desentrelazar (líneas impares sólo)"
 
 #: gap/gap_vex_dialog.c:2255
 msgid "deinterlace (even lines only)"
-msgstr ""
+msgstr "desentrelazar (líneas pares sólo)"
 
 #: gap/gap_vex_dialog.c:2263
 msgid "deinterlace framesx2 (odd 1st)"
@@ -5754,21 +5756,19 @@ msgstr "Nombre del archivo onda para crear como copia en formato RIFF WAVE"
 
 #: gap/gap_vex_dialog.c:2308
 msgid "frame.wav"
-msgstr ""
+msgstr "fotograma.wav"
 
 #: gap/gap_vex_dialog.c:2317
-#, fuzzy
 msgid "Use filebrowser to select audiofilename"
-msgstr "Abrir una ventana de examinador de archivos para seleccionar un archivo"
+msgstr "Usar el examinador de archivos para seleccionar un archivo de sonido"
 
 #: gap/gap_vex_dialog.c:2323
 msgid "Start extraction"
 msgstr "Iniciar extracción"
 
 #: gap/gap_vex_exec.c:392
-#, fuzzy
 msgid "Seek Frame Position..."
-msgstr "Seleccionar rango y posición en la pila de fotogramas"
+msgstr "Ir a la posición del fotograma..."
 
 #: gap/gap_vex_exec.c:445
 msgid "Extracting Frames..."
@@ -5776,7 +5776,7 @@ msgstr "Extrayendo fotogramas..."
 
 #: gap/gap_vex_exec.c:601
 msgid "Seek Audio Position..."
-msgstr ""
+msgstr "Ir a la posición de sonido..."
 
 #: gap/gap_vex_exec.c:636
 msgid "Extracting Audio..."
@@ -6127,9 +6127,8 @@ msgid "UNKNOWN (using sox)"
 msgstr ""
 
 #: vid_common/gap_cme_gui.c:1025
-#, fuzzy
 msgid "Storyframe"
-msgstr "Fotograma inicial:"
+msgstr "Storyframe"
 
 #: vid_common/gap_cme_gui.c:1028
 msgid "Layer"
@@ -6269,8 +6268,7 @@ msgid ""
 msgstr ""
 "Error:\n"
 "para MPEG la anchura y altura deben ser múltiplo de 16\n"
-"establezca la anchura a %d "
-"establezca la altura a %d"
+"establezca la anchura a %d establezca la altura a %d"
 
 #: vid_common/gap_cme_gui.c:1739
 #, c-format
@@ -6392,9 +6390,8 @@ msgstr "Tasa de fotogramas (en fotogramas/seg.) a usar en la vista previa animad
 
 # //R Mejorar
 #: vid_common/gap_cme_gui.c:2367
-#, fuzzy
 msgid "Set framerate"
-msgstr "Tasa de fotogramas"
+msgstr "Establecer tasa de fotogramas"
 
 #: vid_common/gap_cme_gui.c:2369
 msgid "unchanged"
@@ -6503,9 +6500,8 @@ msgid "Encoder:"
 msgstr "Codificador:"
 
 #: vid_common/gap_cme_gui.c:2603
-#, fuzzy
 msgid "Select video encoder plugin"
-msgstr "Manejo de la selección"
+msgstr "Seleccione el complemento de codificación de vídeo"
 
 # //R Mejorar
 #: vid_common/gap_cme_gui.c:2615
@@ -6514,11 +6510,11 @@ msgstr "Parámetros"
 
 #: vid_common/gap_cme_gui.c:2620
 msgid "Edit encoder specific parameters"
-msgstr ""
+msgstr "Editar parámetros específicos del codificador"
 
 #: vid_common/gap_cme_gui.c:2634
 msgid "Audio Input"
-msgstr "Entrada de sonido:"
+msgstr "Entrada de sonido"
 
 #: vid_common/gap_cme_gui.c:2656
 msgid "Name of audiofile (.wav 16 bit mono or stereo samples preferred)"
@@ -6529,49 +6525,48 @@ msgid "WAV, 16 Bit stereo, rate: 44100"
 msgstr ""
 
 #: vid_common/gap_cme_gui.c:2683
-#, fuzzy
 msgid "Output samplerate in samples/sec"
-msgstr "Establecer tasa de fotogramas en fotogramas/segundo"
+msgstr "Tasa de muestreo de salida en fotogramas/segundo"
 
 #: vid_common/gap_cme_gui.c:2690
 msgid "Select a common used samplerate"
-msgstr ""
+msgstr "Seleccione una tasa de muestreo comúnmente usada"
 
 #: vid_common/gap_cme_gui.c:2692
 msgid " 8k Phone"
-msgstr ""
+msgstr " 8k Teléfono"
 
 #: vid_common/gap_cme_gui.c:2700
 msgid "11.025k"
-msgstr ""
+msgstr "11.025k"
 
 #: vid_common/gap_cme_gui.c:2708
 msgid "12k Voice"
-msgstr ""
+msgstr "12k Voz"
 
 #: vid_common/gap_cme_gui.c:2716
 msgid "16k FM"
-msgstr ""
+msgstr "16k FM"
 
 #: vid_common/gap_cme_gui.c:2724
 msgid "22.05k"
-msgstr ""
+msgstr "22.05k"
 
 #: vid_common/gap_cme_gui.c:2732
 msgid "24k Tape"
-msgstr ""
+msgstr "24k Cinta"
 
 #: vid_common/gap_cme_gui.c:2740
 msgid "32k HiFi"
-msgstr ""
+msgstr "32k HiFi"
 
 #: vid_common/gap_cme_gui.c:2748
 msgid "44.1k CD"
-msgstr ""
+msgstr "44.1k CD"
 
 #: vid_common/gap_cme_gui.c:2756
 msgid "48 k Studio"
-msgstr ""
+msgstr "48 k Estudio"
 
 #: vid_common/gap_cme_gui.c:2767
 msgid ""
@@ -6584,33 +6579,28 @@ msgid ""
 msgstr ""
 
 #: vid_common/gap_cme_gui.c:2780
-#, fuzzy
 msgid "Tmpfile:"
-msgstr "Fichero de parámetros:"
+msgstr "Archivo tmp:"
 
 #: vid_common/gap_cme_gui.c:2798
 msgid "Audioconvert"
-msgstr ""
+msgstr "Audioconvert"
 
 #: vid_common/gap_cme_gui.c:2803
-#, fuzzy
 msgid "Convert audiofile to tmpfile"
-msgstr "Copiar archivo de sonido como archivo de ondas"
+msgstr "Convertir archivo de sonido a tmpfile"
 
 #: vid_common/gap_cme_gui.c:2811
-#, fuzzy
 msgid "Select input audiofile via browser"
-msgstr "Seleccionar archivo de sonido"
+msgstr "Seleccionar archivo de sonido de entrada con el examinador"
 
 #: vid_common/gap_cme_gui.c:2826
-#, fuzzy
 msgid "Audiotool:"
-msgstr "Tiempo de sonido:"
+msgstr "Herraienta de sonido:"
 
 #: vid_common/gap_cme_gui.c:2832
-#, fuzzy
 msgid "Options:"
-msgstr "Opciones"
+msgstr "Opciones:"
 
 #: vid_common/gap_cme_gui.c:2844
 msgid "Save"
@@ -6773,14 +6763,13 @@ msgid ""
 msgstr ""
 
 #: vid_common/gap_cme_main.c:161
-#, fuzzy
 msgid "<Image>/Video/Encode/Master Videoencoder"
-msgstr "<Image>/Vídeo/Codificar/MPEG2..."
+msgstr "<Image>/Vídeo/Codificar/Codificador de vídeo maestro"
 
 #: vid_common/gap_cme_main.c:244
 #, c-format
 msgid "Required Plugin %s not available"
-msgstr ""
+msgstr "El complemento requerido %s no está disponible"
 
 #: vid_common/gap_cme_main.c:287
 #, c-format
@@ -6793,14 +6782,12 @@ msgstr ""
 
 #. the Video CODEC label
 #: vid_enc_avi/gap_enc_avi_gui.c:422 vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1142
-#, fuzzy
 msgid "Video CODEC:"
-msgstr "Vídeo:"
+msgstr "CODEC de vídeo:"
 
 #: vid_enc_avi/gap_enc_avi_gui.c:437
-#, fuzzy
 msgid "Select video codec"
-msgstr "Ninguna selección"
+msgstr "Seleccione el códec de vídeo"
 
 #: vid_enc_avi/gap_enc_avi_gui.c:441
 msgid "JPEG"
@@ -6865,7 +6852,7 @@ msgstr "Entrelazar:"
 
 #: vid_enc_avi/gap_enc_avi_gui.c:598 vid_enc_avi/gap_enc_avi_main.c:618
 msgid "Generate interlaced JPEGs (two frames for odd/even lines)"
-msgstr ""
+msgstr "Generar JPEGs entrelazados (dos fotogramas para las líneas pares/impares)"
 
 #. the odd frames first label
 #: vid_enc_avi/gap_enc_avi_gui.c:605
@@ -6886,14 +6873,13 @@ msgstr "Calidad:"
 
 #: vid_enc_avi/gap_enc_avi_gui.c:656
 msgid "The quality setting of the encoded JPEG frames (100=best quality)"
-msgstr ""
+msgstr "El ajuste de calidad de los fotogramas JPEG codificados (100 = mejor calidad)"
 
 #. the notebook page for RAW Codec options
 #. -----------------------------------------
 #: vid_enc_avi/gap_enc_avi_gui.c:663
-#, fuzzy
 msgid "RAW Codec Options"
-msgstr "Opciones de sonido"
+msgstr "Opciones del códec RAW"
 
 #: vid_enc_avi/gap_enc_avi_gui.c:668
 msgid "RAW Options"
@@ -6910,9 +6896,8 @@ msgstr ""
 #. the notebook page for XVID Codec options
 #. -----------------------------------------
 #: vid_enc_avi/gap_enc_avi_gui.c:694
-#, fuzzy
 msgid "XVID Codec Options"
-msgstr "Opciones de vídeo"
+msgstr "Opciones del códec vídeo XVID"
 
 #: vid_enc_avi/gap_enc_avi_gui.c:699
 msgid "XVID Options"
@@ -6920,18 +6905,17 @@ msgstr "Opciones XVID"
 
 #. the xvid KBitrate label
 #: vid_enc_avi/gap_enc_avi_gui.c:715 vid_enc_avi/gap_enc_avi_main.c:646
-#, fuzzy
 msgid "KBitrate:"
-msgstr "Tasa de bits:"
+msgstr "Tasa de Kbits:"
 
 #: vid_enc_avi/gap_enc_avi_gui.c:739 vid_enc_avi/gap_enc_avi_main.c:647
 msgid "Kilobitrate for XVID Codec (1 = 1000 Bit/sec) -1 for default"
-msgstr ""
+msgstr "Tasa de kilobits para el Códec XVID (1 = 1000 Bit/sec) -1 para predeterminado"
 
 #. the xvid Reaction Delay label
 #: vid_enc_avi/gap_enc_avi_gui.c:746
 msgid "Reaction Delay:"
-msgstr "Retardo de reacción"
+msgstr "Retardo de reacción:"
 
 #: vid_enc_avi/gap_enc_avi_gui.c:770
 msgid "reaction delay factor (-1 for default)"
@@ -6948,9 +6932,8 @@ msgstr ""
 
 #. the xvid Buffer label
 #: vid_enc_avi/gap_enc_avi_gui.c:808
-#, fuzzy
 msgid "Buffer:"
-msgstr "Anuncio efusivo:"
+msgstr "Búfer:"
 
 #: vid_enc_avi/gap_enc_avi_gui.c:832
 msgid "Buffersize (-1 for default)"
