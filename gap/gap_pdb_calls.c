@@ -152,8 +152,10 @@ gap_pdb_gimp_displays_reconnect(gint32 old_image_id, gint32 new_image_id)
 
    if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
    {
+      gimp_destroy_params(return_vals, nreturn_vals);
       return (TRUE);   /* OK */
    }
+   gimp_destroy_params(return_vals, nreturn_vals);
    printf("GAP: Error: PDB call of %s failed\n", l_called_proc);
    return(FALSE);
 }	/* end gap_pdb_gimp_displays_reconnect */
@@ -170,8 +172,9 @@ gint32
 gap_pdb_gimp_layer_new_from_drawable(gint32 drawable_id, gint32 dst_image_id)
 {
    static char     *l_called_proc = "gimp_layer_new_from_drawable";
-   GimpParam          *return_vals;
+   GimpParam       *return_vals;
    int              nreturn_vals;
+   gint32           layer_id;
 
    return_vals = gimp_run_procedure (l_called_proc,
                                  &nreturn_vals,
@@ -181,9 +184,14 @@ gap_pdb_gimp_layer_new_from_drawable(gint32 drawable_id, gint32 dst_image_id)
 
    if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
    {
-      return (return_vals[1].data.d_int32);   /* return the resulting layer_id */
+      layer_id = return_vals[1].data.d_int32;
+      gimp_destroy_params(return_vals, nreturn_vals);
+
+      return(layer_id);   /* return the resulting layer_id */
    }
+   gimp_destroy_params(return_vals, nreturn_vals);
    printf("GAP: Error: PDB call of %s failed\n", l_called_proc);
+
    return(-1);
 }	/* end gap_pdb_gimp_layer_new_from_drawable */
 
@@ -210,8 +218,11 @@ gap_pdb_gimp_file_save_thumbnail(gint32 image_id, char* filename)
 
    if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
    {
+      gimp_destroy_params(return_vals, nreturn_vals);
       return (TRUE);
    }
+
+   gimp_destroy_params(return_vals, nreturn_vals);
    printf("GAP: Error: PDB call of %s failed on file: %s (image_id:%d)\n"
           , l_called_proc
 	  , filename
@@ -259,6 +270,11 @@ workaround:
 
    if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
    {
+      /* in case of success dont gimp_destroy_params
+       * because thumbnail data is returned without copying
+       * for performance reasons
+       */
+
       *th_width  = return_vals[1].data.d_int32;
       *th_height = return_vals[2].data.d_int32;
       *th_bpp    = return_vals[3].data.d_int32;
@@ -294,6 +310,7 @@ workaround:
       }
       return(TRUE); /* OK */
    }
+   gimp_destroy_params(return_vals, nreturn_vals);
    printf("GAP: Error: PDB call of %s failed\n", l_called_proc);
    return(FALSE);
 }	/* end gap_pdb_gimp_image_thumbnail */

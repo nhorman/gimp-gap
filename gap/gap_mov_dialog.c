@@ -1143,6 +1143,7 @@ mov_apv_callback (GtkWidget *widget,
 				 GIMP_PDB_IMAGE,    l_new_image_id,
 				 GIMP_PDB_DRAWABLE, -1,  /* dummy */
                                  GIMP_PDB_END);
+	gimp_destroy_params(return_vals, nreturn_vals);
       }
       pvals->apv_mlayer_image = -1;
       mov_set_active_cursor(mgp);

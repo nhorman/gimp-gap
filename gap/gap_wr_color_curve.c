@@ -452,8 +452,10 @@ p_gimp_curves_explicit (gint32 drawable_id,
 
    if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
    {
+      gimp_destroy_params(return_vals, nreturn_vals);
       return (0);
    }
+   gimp_destroy_params(return_vals, nreturn_vals);
    printf("Error: PDB call of %s failed status:%d\n", l_procname, (int)return_vals[0].data.d_status);
    return(-1);
 }	/* end p_gimp_curves_explicit */

@@ -2238,7 +2238,7 @@ on_framenr_button_clicked            (GtkButton       *button,
 
   p_stop_playback(gpp);
 
-   return_vals = gimp_run_procedure ("plug_in_gap_goto",
+  return_vals = gimp_run_procedure ("plug_in_gap_goto",
                                     &nreturn_vals,
 	                            GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
 				    GIMP_PDB_IMAGE,    gpp->image_id,
@@ -2255,7 +2255,7 @@ on_framenr_button_clicked            (GtkButton       *button,
        gimp_displays_flush();
     }
 
-    g_free(return_vals);
+    gimp_destroy_params(return_vals, nreturn_vals);
   }
 
 

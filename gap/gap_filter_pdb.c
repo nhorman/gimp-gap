@@ -73,7 +73,8 @@ extern int gap_debug;
 
 static char *global_plugin_data = NULL;
 
-gint gap_filt_pdb_call_plugin(char *plugin_name, gint32 image_id, gint32 layer_id, GimpRunMode run_mode)
+gint 
+gap_filt_pdb_call_plugin(char *plugin_name, gint32 image_id, gint32 layer_id, GimpRunMode run_mode)
 {
   GimpDrawable    *l_drawable;
   GimpParam       *l_ret_params;
@@ -90,6 +91,7 @@ gint gap_filt_pdb_call_plugin(char *plugin_name, gint32 image_id, gint32 layer_i
   gchar           *l_proc_date;
   GimpParamDef    *l_params;
   GimpParamDef    *l_return_vals;
+  gint             l_rc;
 
   l_drawable =  gimp_drawable_get(layer_id);  /* use the background layer */
 
@@ -170,19 +172,18 @@ gint gap_filt_pdb_call_plugin(char *plugin_name, gint32 image_id, gint32 layer_i
   g_free (l_return_vals);
 
 
-
+  l_rc = -1;
   if (l_ret_params[0].data.d_status != GIMP_PDB_SUCCESS)
   {
-    fprintf(stderr, "ERROR: gap_filt_pdb_call_plugin %s failed.\n", plugin_name);
-    g_free(l_ret_params);
-    return -1;
+    printf("ERROR: gap_filt_pdb_call_plugin %s failed.\n", plugin_name);
   }
   else
   {
-    if(gap_debug) fprintf(stderr, "DEBUG: gap_filt_pdb_call_plugin: %s successful.\n", plugin_name);
-    g_free(l_ret_params);
-    return 0;
+    if(gap_debug) printf("DEBUG: gap_filt_pdb_call_plugin: %s successful.\n", plugin_name);
+    l_rc = 0;  /* OK */
   }
+  gimp_destroy_params(l_ret_params, l_retvals);
+  return(l_rc);
 }
 
 
@@ -191,6 +192,7 @@ gap_filt_pdb_save_xcf(gint32 image_id, char *sav_name)
 {
   GimpParam* l_params;
   gint   l_retvals;
+  gint   l_rc;
 
     /* save current image as xcf file
      * xcf_save does operate on the complete image,
@@ -204,10 +206,14 @@ gap_filt_pdb_save_xcf(gint32 image_id, char *sav_name)
 			         GIMP_PDB_STRING, sav_name,
 			         GIMP_PDB_STRING, sav_name, /* raw name ? */
 			         GIMP_PDB_END);
-
-    if (l_params[0].data.d_status != GIMP_PDB_SUCCESS) return(-1);
+    l_rc = -1;
+    if (l_params[0].data.d_status == GIMP_PDB_SUCCESS) 
+    {
+      l_rc = 0;  /* OK */
+    }
+    gimp_destroy_params (l_params, l_retvals);
     
-    return 0;
+    return (l_rc);
 }
 
 

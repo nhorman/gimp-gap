@@ -722,7 +722,7 @@ p_edit_paste_call(gint32 paste_mode)
                                GIMP_PDB_END);
   if (return_vals[0].data.d_status != GIMP_PDB_SUCCESS)
   {
-    g_free(return_vals);
+    gimp_destroy_params(return_vals, nreturn_vals);
     gap_arr_msg_win(GIMP_RUN_INTERACTIVE
              ,_("Error while positioning to frame. Video paste operaton failed")
              );
@@ -730,7 +730,7 @@ p_edit_paste_call(gint32 paste_mode)
   }
 
   naviD->active_imageid = return_vals[1].data.d_image;
-  g_free(return_vals);
+  gimp_destroy_params(return_vals, nreturn_vals);
 
 
   return_vals = gimp_run_procedure ("plug_in_gap_video_edit_paste",
@@ -749,7 +749,7 @@ p_edit_paste_call(gint32 paste_mode)
     gap_arr_msg_win(GIMP_RUN_INTERACTIVE, _("Video paste operaton failed"));
   }
 
-  g_free(return_vals);
+  gimp_destroy_params(return_vals, nreturn_vals);
   navi_update_after_goto();
 
 }  /* end p_edit_paste_call */
@@ -784,6 +784,7 @@ edit_clrpaste_callback (GtkWidget *w,  gpointer   client_data)
                                       GIMP_PDB_IMAGE,    naviD->active_imageid,
                                       GIMP_PDB_DRAWABLE, -1,  /* dummy */
                                       GIMP_PDB_END);
+  gimp_destroy_params(return_vals, nreturn_vals);
 }
 
 static void
@@ -853,7 +854,7 @@ navi_vid_copy_and_cut(gint cut_flag)
        {
          vid_copy_ok = FALSE;
        }
-       g_free(return_vals);
+       gimp_destroy_params(return_vals, nreturn_vals);
 
        if(!vid_copy_ok)
        {
@@ -888,7 +889,7 @@ navi_vid_copy_and_cut(gint cut_flag)
          if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
          {
             naviD->active_imageid = return_vals[1].data.d_image;
-            g_free(return_vals);
+            gimp_destroy_params(return_vals, nreturn_vals);
             return_vals = gimp_run_procedure ("plug_in_gap_del",
                                      &nreturn_vals,
                                      GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
@@ -900,10 +901,11 @@ navi_vid_copy_and_cut(gint cut_flag)
             {
               naviD->active_imageid = return_vals[1].data.d_image;
             }
-            g_free(return_vals);
+            gimp_destroy_params(return_vals, nreturn_vals);
          }
          else
          {
+            gimp_destroy_params(return_vals, nreturn_vals);
             gap_arr_msg_win(GIMP_RUN_INTERACTIVE, _("Video cut operation failed"));
          }
 
@@ -1759,6 +1761,7 @@ navi_playback(gboolean use_gimp_layeranimplayer)
                                     GIMP_PDB_INT32,    0,     /* audio_frame_offset */
                                     GIMP_PDB_FLOAT,    1.0,   /* audio_volume */
                                     GIMP_PDB_END);
+     gimp_destroy_params(return_vals, nreturn_vals);
      navi_set_active_cursor();
      return;
   }
@@ -1785,6 +1788,7 @@ navi_playback(gboolean use_gimp_layeranimplayer)
   if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
   {
      l_new_image_id = return_vals[1].data.d_image;
+     gimp_destroy_params(return_vals, nreturn_vals);
 
      /* TODO: here we should start a thread for the playback,
       * so the navigator is not blocked until playback exits
@@ -1795,6 +1799,11 @@ navi_playback(gboolean use_gimp_layeranimplayer)
                                     GIMP_PDB_IMAGE,    l_new_image_id,
                                     GIMP_PDB_DRAWABLE, -1,  /* dummy */
                                    GIMP_PDB_END);
+      gimp_destroy_params(return_vals, nreturn_vals);
+  }
+  else
+  {
+     gimp_destroy_params(return_vals, nreturn_vals);
   }
   navi_set_active_cursor();
 }  /* end navi_playback */
@@ -1853,7 +1862,7 @@ navi_dialog_frames_duplicate_frame_callback(GtkWidget *w, gpointer   data)
        if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
        {
           naviD->active_imageid = return_vals[1].data.d_image;
-          g_free(return_vals);
+          gimp_destroy_params(return_vals, nreturn_vals);
           return_vals = gimp_run_procedure ("plug_in_gap_dup",
                                    &nreturn_vals,
                                    GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
@@ -1868,7 +1877,7 @@ navi_dialog_frames_duplicate_frame_callback(GtkWidget *w, gpointer   data)
            naviD->active_imageid = return_vals[1].data.d_image;
          }
        }
-       g_free(return_vals);
+       gimp_destroy_params(return_vals, nreturn_vals);
        range_list = range_list->prev;
     }
     navi_drop_sel_range_list();
@@ -1928,7 +1937,7 @@ navi_dialog_frames_delete_frame_callback(GtkWidget *w, gpointer   data)
        if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
        {
           naviD->active_imageid = return_vals[1].data.d_image;
-          g_free(return_vals);
+          gimp_destroy_params(return_vals, nreturn_vals);
           return_vals = gimp_run_procedure ("plug_in_gap_del",
                                    &nreturn_vals,
                                    GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
@@ -1941,7 +1950,7 @@ navi_dialog_frames_delete_frame_callback(GtkWidget *w, gpointer   data)
             naviD->active_imageid = return_vals[1].data.d_image;
           }
        }
-       g_free(return_vals);
+       gimp_destroy_params(return_vals, nreturn_vals);
        range_list = range_list->prev;
     }
     navi_drop_sel_range_list();
@@ -1973,7 +1982,7 @@ navi_dialog_goto_callback(gint32 dst_framenr)
    {
       naviD->active_imageid = return_vals[1].data.d_image;
    }
-   g_free(return_vals);
+   gimp_destroy_params(return_vals, nreturn_vals);
 
    navi_update_after_goto();
 }  /* end navi_dialog_goto_callback */
@@ -2001,7 +2010,7 @@ navi_dialog_vcr_goto_first_callback(GtkWidget *w, gpointer   data)
    {
       naviD->active_imageid = return_vals[1].data.d_image;
    }
-   g_free(return_vals);
+   gimp_destroy_params(return_vals, nreturn_vals);
    navi_update_after_goto();
 }  /* end navi_dialog_vcr_goto_first_callback */
 
@@ -2028,7 +2037,7 @@ navi_dialog_vcr_goto_prev_callback(GtkWidget *w, gpointer   data)
    {
       naviD->active_imageid = return_vals[1].data.d_image;
    }
-   g_free(return_vals);
+   gimp_destroy_params(return_vals, nreturn_vals);
    navi_update_after_goto();
 }  /* end navi_dialog_vcr_goto_prev_callback */
 
@@ -2069,6 +2078,7 @@ navi_dialog_vcr_goto_next_callback(GtkWidget *w, gpointer   data)
                                     GIMP_PDB_IMAGE,    naviD->active_imageid,
                                     GIMP_PDB_DRAWABLE, -1,  /* dummy */
                                     GIMP_PDB_END);
+   gimp_destroy_params(return_vals, nreturn_vals);
    navi_update_after_goto();
 }  /* end navi_dialog_vcr_goto_next_callback */
 
@@ -2110,6 +2120,7 @@ navi_dialog_vcr_goto_last_callback(GtkWidget *w, gpointer   data)
                                     GIMP_PDB_IMAGE,    naviD->active_imageid,
                                     GIMP_PDB_DRAWABLE, -1,  /* dummy */
                                     GIMP_PDB_END);
+   gimp_destroy_params(return_vals, nreturn_vals);
    navi_update_after_goto();
 } /* end navi_dialog_vcr_goto_last_callback */
 

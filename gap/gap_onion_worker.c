@@ -181,9 +181,7 @@ gap_onion_worker_plug_in_gap_get_animinfo(gint32 image_ID, GapOnionMainAinfo *ai
    static char     *l_called_proc = "plug_in_gap_get_animinfo";
    GimpParam       *return_vals;
    int              nreturn_vals;
-   gint32           l_gap_feature_level;
 
-   l_gap_feature_level = 0;
    return_vals = gimp_run_procedure (l_called_proc,
                                  &nreturn_vals,
                                  GIMP_PDB_INT32, GIMP_RUN_NONINTERACTIVE,
@@ -201,11 +199,13 @@ gap_onion_worker_plug_in_gap_get_animinfo(gint32 image_ID, GapOnionMainAinfo *ai
       g_snprintf(ainfo->extension, sizeof(ainfo->extension), "%s", return_vals[6].data.d_string);
       ainfo->framerate = return_vals[7].data.d_float;
 
-      return;
    }
-
-   printf("Error: PDB call of %s failed, image_ID: %d\n", l_called_proc, (int)image_ID);
-
+   else
+   {
+     printf("Error: PDB call of %s failed, image_ID: %d\n", l_called_proc, (int)image_ID);
+   }
+   gimp_destroy_params(return_vals, nreturn_vals);
+   
 }       /* end gap_onion_worker_plug_in_gap_get_animinfo */
 
 

@@ -881,6 +881,9 @@ gap_lib_exists_frame_nr(GapAnimInfo *ainfo_ptr, long nr, long *l_has_digits)
  * (use this to get anim informations if none of the frame is not loaded
  *  as image into the gimp
  *  and no image_id is available)
+ * The ainfo_type is just a first guess. 
+ *  (check for videofiles GAP_AINFO_MOVIE is not supported here,
+ *   because this would require an video-api open attempt that would slow down)
  * ============================================================================
  */
 GapAnimInfo *
@@ -910,6 +913,11 @@ gap_lib_alloc_ainfo_from_name(const char *imagename, GimpRunMode run_mode)
        return(NULL);
    }
 
+   l_ainfo_ptr->ainfo_type = GAP_AINFO_IMAGE;
+   if(l_ainfo_ptr->frame_nr > 0)
+   {
+     l_ainfo_ptr->ainfo_type = GAP_AINFO_FRAMES;
+   }
    l_ainfo_ptr->extension = gap_lib_alloc_extension(l_ainfo_ptr->old_filename);
 
    l_ainfo_ptr->curr_frame_nr = l_ainfo_ptr->frame_nr;
@@ -961,6 +969,11 @@ gap_lib_alloc_ainfo(gint32 image_id, GimpRunMode run_mode)
        return(NULL);
    }
 
+   l_ainfo_ptr->ainfo_type = GAP_AINFO_IMAGE;
+   if(l_ainfo_ptr->frame_nr > 0)
+   {
+     l_ainfo_ptr->ainfo_type = GAP_AINFO_FRAMES;
+   }
    l_ainfo_ptr->extension = gap_lib_alloc_extension(l_ainfo_ptr->old_filename);
 
    l_ainfo_ptr->curr_frame_nr = l_ainfo_ptr->frame_nr;
@@ -1643,7 +1656,7 @@ gap_lib_save_named_frame(gint32 image_id, char *sav_name)
     {
        l_rc = image_id;
     }
-    g_free(l_params);
+    gimp_destroy_params (l_params, l_retvals);
   }
   else
   {

@@ -25,6 +25,7 @@
  */
 
 /* revision history:
+ * 1.3.26a  2004/02/29   hof: ainfo.type changed from long to GapLibAinfoType
  * 1.3.26a  2004/02/01   hof: added: gap_lib_alloc_ainfo_from_name
  * 1.3.19a  2003/09/06   hof: added gap_lib_searchpath_for_exefile
  * 1.3.16c  2003/07/07   hof: extend ainfo  onion_triggers
@@ -69,6 +70,22 @@
 
 #endif /* !G_OS_WIN32 */
 
+/* GapLibAinfoType enum values are subset of GapStoryVideoType
+ * from the sourcefile gap_story_file.h
+ */
+typedef enum
+{
+     GAP_AINFO_UNUSED_1
+    ,GAP_AINFO_UNUSED_2
+    ,GAP_AINFO_IMAGE
+    ,GAP_AINFO_ANIMIMAGE    
+    ,GAP_AINFO_FRAMES
+    ,GAP_AINFO_MOVIE
+    ,GAP_AINFO_UNUSED_3
+    ,GAP_AINFO_UNKNOWN
+} GapLibAinfoType;
+
+
 typedef struct GapAnimInfo {
    gint32      image_id;
    char        *basename;    /* may include path */
@@ -79,11 +96,15 @@ typedef struct GapAnimInfo {
    GimpRunMode run_mode;
    long         width;       
    long         height;      
-   long         type;    
    long         frame_cnt;   
    long         curr_frame_nr; 
    long         first_frame_nr; 
    long         last_frame_nr;
+   
+   GapLibAinfoType  ainfo_type;
+   gint32           seltrack;    /* input videotrack (used only for GAP_AINFO_MOVIE) */
+   gdouble          delace;      /* deinterlace params (used only for GAP_AINFO_MOVIE) */
+   gdouble          density;     
 } GapAnimInfo;
 
 /* procedures used in other gap*.c files */

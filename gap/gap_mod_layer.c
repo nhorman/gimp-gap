@@ -1321,7 +1321,7 @@ p_frames_modify(GapAnimInfo *ainfo_ptr,
          l_rc = -1;
        }
 
-       g_free(l_params);
+       gimp_destroy_params(l_params, l_retvals);
     }
 
 

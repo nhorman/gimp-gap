@@ -28,6 +28,7 @@
  */
 
 /* revision history:
+ * gimp   1.3.26c;  2004/03/09  hof: bugfix (gimp_destroy_params)
  * gimp   1.3.20b;  2003/09/20  hof: gap_db_browser_dialog new param image_id
  * gimp   1.3.12a;  2003/05/02  hof: merge into CVS-gimp-gap project
  * gimp   1.3.8a;   2002/09/21  hof: gap_lastvaldesc
@@ -84,28 +85,7 @@ extern int gap_debug;
 
 void p_gdisplays_update_full(gint32 image_id)
 {
-  GimpParam* l_params;
-  gint   l_retvals;
-
-  if(gap_filt_pdb_procedure_available("gimp_image_update_full", GAP_PTYP_ANY) >= 0)
-  {
-
-    l_params = gimp_run_procedure ("gimp_image_update_full",
-			         &l_retvals,
-			         GIMP_PDB_IMAGE,  image_id,
-			         GIMP_PDB_END);
-
-     /* Note: gimp_displays_update_full is not available in the official release gimp 0.99.16
-      *       (dont care if procedure is not there,
-      *        --> the user may not see the current layer, because
-      *            gimp_displays_flush() does not update on changes
-      *            of the visibility.
-      */
-
-     g_free(l_params);
-   }
    gimp_displays_flush();
-
 }
 
 /* pitstop dialog
@@ -507,7 +487,7 @@ int p_foreach_multilayer(GimpRunMode run_mode, gint32 image_id,
                l_rc = -1;
              }
 
-             g_free(l_params);
+             gimp_destroy_params(l_params, l_retvals);
           }
 
           if(l_rc < 0) break;
