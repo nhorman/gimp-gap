@@ -17,6 +17,7 @@ gap/gap_mov_exec.c
 gap/gap_mpege.c
 gap/gap_name2layer_main.c
 gap/gap_navigator_dialog.c
+gap/gap_onion_base.c
 gap/gap_onion_dialog.c
 gap/gap_onion_main.c
 gap/gap_onion_worker.c

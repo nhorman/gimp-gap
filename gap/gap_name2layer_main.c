@@ -55,7 +55,7 @@ gint global_number_in_args = 10;
 gint global_number_out_args = 0;
 
 
-int gap_debug = 0;  /* 1 == print debug infos , 0 dont print debug infos */ 
+int gap_debug = 0;  /* 1 == print debug infos , 0 dont print debug infos */
 
 
 typedef struct {
@@ -148,7 +148,7 @@ static void query (void)
   global_number_in_args = G_N_ELEMENTS (in_args);
   global_number_out_args = G_N_ELEMENTS(out_args);
 
-  /* registration for last values buffer structure (useful for animated filter apply) */  
+  /* registration for last values buffer structure (useful for animated filter apply) */
   gimp_lastval_desc_register(PLUG_IN_NAME,
                              &g_namlvals,
                              sizeof(g_namlvals),
@@ -172,7 +172,7 @@ static void query (void)
                           global_number_out_args,
                           in_args,
                           out_args);
- 
+
 }
 
 static void
@@ -235,7 +235,7 @@ run (char *name,                /* name of plugin */
       {
           g_namlvals.mode        = (gint) param[3].data.d_int32;
           g_namlvals.fontsize    = (gint) param[4].data.d_int32;
-          
+
           if(param[5].data.d_string != NULL)
           {
             g_snprintf(g_namlvals.fontname, sizeof(g_namlvals.fontname), "%s", param[5].data.d_string);
@@ -300,7 +300,7 @@ p_Naml (gint32 image_id, gint32 drawable_id)
   gchar *l_text;
 
   if(gap_debug) printf("p_Naml START\n");
-  
+
   l_imagename = g_strdup(gimp_image_get_filename(image_id) );
   if(l_imagename == NULL)
   {
@@ -309,14 +309,14 @@ p_Naml (gint32 image_id, gint32 drawable_id)
   l_text = l_imagename;
 
   if(gap_debug) printf("p_Naml (1) l_imagename:%s\n", l_imagename);
-  
+
   l_drawable_id = -1;
   if(g_namlvals.create_new_layer == 0)
   {
     l_drawable_id = drawable_id;
   }
 
-  
+
   if (g_namlvals.mode == 0)
   {
     gchar *l_ext;
@@ -348,7 +348,7 @@ p_Naml (gint32 image_id, gint32 drawable_id)
 
     while(l_ptr != l_imagename)
     {
-      
+
       if((*l_ptr >= '0') && (*l_ptr <= '9'))
       {
         l_ptr--;
@@ -387,10 +387,10 @@ p_Naml (gint32 image_id, gint32 drawable_id)
   }
 
   gimp_undo_push_group_start(image_id);
-  
+
   gimp_selection_none(image_id);
 
-  l_new_layer_id = gimp_text_fontname( image_id 
+  l_new_layer_id = gimp_text_fontname( image_id
                                    , l_drawable_id          /* drawable -1 force create of new layer */
                                    , (float)g_namlvals.posx           /* X */
                                    , (float)g_namlvals.posy           /* Y */
@@ -418,7 +418,7 @@ p_Naml (gint32 image_id, gint32 drawable_id)
 /* ------------------
  * Naml_dialog
  * ------------------
- *   return  0 .. OK 
+ *   return  0 .. OK
  *          -1 .. in case of Error or cancel
  */
 static gint
@@ -437,8 +437,8 @@ Naml_dialog(void)
   static char *radio_modes[VR_MODELIST_SIZE]  = {"Number Only", "Filename", "Path/Filename" };
 
   ii=0; p_init_arr_arg(&argv[ii], WGT_OPTIONMENU); ii_mode = ii;
-  argv[ii].label_txt = _("Decoder :");
-  argv[ii].help_txt  = _("Mode");  
+  argv[ii].label_txt = _("Decoder:");
+  argv[ii].help_txt  = _("Mode");
   argv[ii].radio_argc  = VR_MODELIST_SIZE;
   argv[ii].radio_argv = radio_modes;
   argv[ii].radio_ret  = 0;
@@ -447,7 +447,7 @@ Naml_dialog(void)
   argv[ii].text_buf_default = g_strdup("\0");
 
   ii++; p_init_arr_arg(&argv[ii], WGT_FONTSEL);
-  argv[ii].label_txt = _("Fontname :");
+  argv[ii].label_txt = _("Fontname:");
   argv[ii].entry_width = 350;       /* pixel */
   argv[ii].help_txt  = _("Select Fontname)");
   argv[ii].text_buf_len = sizeof(g_namlvals.fontname);
@@ -457,7 +457,7 @@ Naml_dialog(void)
 
   ii++; p_init_arr_arg(&argv[ii], WGT_INT); ii_fontsize = ii;
   argv[ii].constraint = TRUE;
-  argv[ii].label_txt = _("Fontsize :");
+  argv[ii].label_txt = _("Fontsize:");
   argv[ii].help_txt  = _("Fontsize in pixels");
   argv[ii].int_min   = (gint)1;
   argv[ii].int_max   = (gint)1000;
@@ -508,7 +508,7 @@ Naml_dialog(void)
   argv[ii].help_txt  = _("Reset all Parameters to Default Values");
 
   if(TRUE == p_array_dialog(_("Render Filename to Layer"),
-                            _("Settings :"), 
+                            _("Settings :"),
                             VR_NAME2LAYER_DIALOG_ARGC, argv))
   {
       g_namlvals.mode             = (gint)(argv[ii_mode].radio_ret);

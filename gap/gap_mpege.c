@@ -7,9 +7,9 @@
  * - gap_mpeg_encode
  *        GIMP/GAP-frontend interfaces for 2 MPEG encoder Programs
  *
- *        1) mpeg_encode 1.5 
+ *        1) mpeg_encode 1.5
  *             the free Berkeley MPEG-1 encoder
- *        2) mpeg2encode 
+ *        2) mpeg2encode
  *             MPEG-2 and MPEG-1 Encoder / Decoder, Version 1.2
  *             (MPEG Software Simulation Group)
  *                 Web:      http://www.mpeg.org/MSSG/
@@ -39,14 +39,14 @@
  * 1.3.16a; 2003/06/25   hof: no textsplitting across multiple lables (for translation)
  * 1.3.15a; 2003/06/21   hof: textspacing
  * 1.3.12a; 2003/05/02   hof: merge into CVS-gimp-gap project, 6digit framenumbers
- * 1.3.11a; 2003/01/18   hof: Default Value button for GUI dialog 
+ * 1.3.11a; 2003/01/18   hof: Default Value button for GUI dialog
  * 1.1.11b; 1999/11/20   hof: Changed menunames AnimFrames to Video in menu hints
  * 1.1.8a;  1999/08/31   hof: accept anim framenames without underscore '_'
  * 0.99.00; 1999/03/15   hof: prepared for win/dos filename conventions
  * 0.96.00; 1998/07/08   hof: first release
  */
- 
-/* SYTEM (UNIX) includes */ 
+
+/* SYTEM (UNIX) includes */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -78,7 +78,7 @@ typedef struct t_mpg_par
   char      *parfile;
   char      *startscript;
   char      *ext;
-  
+
   /* members used in mpeg_encode only: */
   gint      const_bitrate;
   gint      iqscale;
@@ -108,7 +108,7 @@ int p_mpege_info(t_anim_info *ainfo_ptr, char *errlist, t_gap_mpeg_encoder encod
 
   int        l_idx;
   int        l_rc;
-  
+
 
   l_idx = 0;
   p_init_arr_arg(&argv[l_idx], WGT_LABEL_LEFT);
@@ -120,7 +120,7 @@ int p_mpege_info(t_anim_info *ainfo_ptr, char *errlist, t_gap_mpeg_encoder encod
   {
     argv[l_idx].label_txt = _("Conditions to run mpeg_encode 1.5:");
   }
-  
+
 
   l_idx++;
   p_init_arr_arg(&argv[l_idx], WGT_LABEL_LEFT);
@@ -206,14 +206,14 @@ int p_mpege_info(t_anim_info *ainfo_ptr, char *errlist, t_gap_mpeg_encoder encod
     b_argv[0].but_val  = -1;
     b_argv[1].but_txt  = GTK_STOCK_OK;
     b_argv[1].but_val  = 0;
-  
+
   l_rc = p_array_std_dialog(_("MPEG_ENCODE Information"),
                              "",
                               l_idx,   argv,      /* widget array */
                               2,       b_argv,    /* button array */
                               -1);
 
-  return (l_rc); 
+  return (l_rc);
 }	/* end p_mpege_info */
 
 
@@ -251,7 +251,7 @@ int p_mpege_dialog(t_anim_info *ainfo_ptr, t_mpg_par *mp_ptr, t_gap_mpeg_encoder
     mpeg_help[gettextize_loop] = gettext(mpeg_help[gettextize_loop]);
 
   l_rc = -1;
-  
+
   /* the 3 Action Buttons */
     b_argv[0].but_txt  = GTK_STOCK_CANCEL;
     b_argv[0].but_val  = -1;
@@ -314,7 +314,7 @@ int p_mpege_dialog(t_anim_info *ainfo_ptr, t_mpg_par *mp_ptr, t_gap_mpeg_encoder
 
   if(encoder == MPEG_ENCODE) l_idx = 12;
   else                       l_idx = 7;
-  
+
 
   p_init_arr_arg(&argv[l_idx], WGT_FILESEL);
   argv[l_idx].label_txt = _("Outputfile:");
@@ -351,7 +351,7 @@ int p_mpege_dialog(t_anim_info *ainfo_ptr, t_mpg_par *mp_ptr, t_gap_mpeg_encoder
 
 
      p_init_arr_arg(&argv[5], WGT_TOGGLE);
-     argv[5].label_txt = _("Constant Bitrate :");
+     argv[5].label_txt = _("Constant Bitrate:");
      argv[5].help_txt  = _("Iqnore I/P/QSCALE values and use constant bit-rate)");
      argv[5].int_ret   = 1;
      argv[5].has_default = TRUE;
@@ -399,7 +399,7 @@ int p_mpege_dialog(t_anim_info *ainfo_ptr, t_mpg_par *mp_ptr, t_gap_mpeg_encoder
 
 
      p_init_arr_arg(&argv[10], WGT_OPTIONMENU);
-     argv[10].label_txt = _("P-Search :");
+     argv[10].label_txt = _("P-Search:");
      argv[10].help_txt  = _("Search Algorithmus used for P-frames");
      argv[10].radio_argc = 3;
      argv[10].radio_argv = psearch_args;
@@ -408,7 +408,7 @@ int p_mpege_dialog(t_anim_info *ainfo_ptr, t_mpg_par *mp_ptr, t_gap_mpeg_encoder
      argv[10].radio_default  = 1;
 
      p_init_arr_arg(&argv[11], WGT_OPTIONMENU);
-     argv[11].label_txt = _("B-Search :");
+     argv[11].label_txt = _("B-Search:");
      argv[11].help_txt  = _("Search Algorithmus used for B-frames");
      argv[11].radio_argc = 3;
      argv[11].radio_argv = bsearch_args;
@@ -429,14 +429,14 @@ int p_mpege_dialog(t_anim_info *ainfo_ptr, t_mpg_par *mp_ptr, t_gap_mpeg_encoder
      mp_ptr->psearch       = psearch_args[argv[10].radio_ret];
      mp_ptr->bsearch       = bsearch_args[argv[11].radio_ret];
   }
-  
-  
+
+
   if(encoder == MPEG2ENCODE)
   {
      argv[0].label_txt = _("Generate parameterfile for mpeg2encode 1.2\n(MPEG-2 Video Encoder.)\n");
 
      p_init_arr_arg(&argv[5], WGT_RADIO);
-     argv[5].label_txt = _("MPEG-type :");
+     argv[5].label_txt = _("MPEG-type:");
      argv[5].radio_argc = 2;
      argv[5].radio_argv = mpeg_args;
      argv[5].radio_help_argv = mpeg_help;
@@ -447,7 +447,7 @@ int p_mpege_dialog(t_anim_info *ainfo_ptr, t_mpg_par *mp_ptr, t_gap_mpeg_encoder
 
 
      p_init_arr_arg(&argv[6], WGT_OPTIONMENU);
-     argv[6].label_txt = _("Videoformat :");
+     argv[6].label_txt = _("Videoformat:");
      argv[6].help_txt  = _("Videoformat");
      argv[6].radio_argc = 5;
      argv[6].radio_argv = video_args;
@@ -478,7 +478,7 @@ int p_mpege_dialog(t_anim_info *ainfo_ptr, t_mpg_par *mp_ptr, t_gap_mpeg_encoder
     mp_ptr->from          = argv[2].int_ret;
     mp_ptr->to            = argv[1].int_ret;
   }
-  
+
   mp_ptr->frate         = argv[3].radio_ret +1;
   mp_ptr->framerate     = frate_args[argv[3].radio_ret];
   mp_ptr->bitrate       = argv[4].int_ret;
@@ -488,8 +488,8 @@ int p_mpege_dialog(t_anim_info *ainfo_ptr, t_mpg_par *mp_ptr, t_gap_mpeg_encoder
   mp_ptr->outfile       = &l_outfile[0];
   mp_ptr->parfile       = &l_parfile[0];
   mp_ptr->startscript   = &l_startscript[0];
-  
-  return (l_rc);   
+
+  return (l_rc);
 }	/* end p_mpege_dialog */
 
 /* ============================================================================
@@ -539,7 +539,7 @@ int p_mpeg2_extension_check(t_anim_info *ainfo_ptr)
      if ( strcmp(ainfo_ptr->extension, ".yuv" ) == 0)  l_ffidx = 1;
      if ( strcmp(ainfo_ptr->extension, ".YUV" ) == 0)  l_ffidx = 1;
   }
-  
+
   return(l_ffidx);
 }	/* end p_mpege_extension_check */
 
@@ -559,7 +559,7 @@ int p_mpeg2encode_gen_parfile(t_anim_info *ainfo_ptr, t_mpg_par *mp_ptr)
   char  *l_dirname_ptr;
   char  *l_basename_ptr;
   char   l_basename_buff[1024];
-  
+
   l_fp = fopen(mp_ptr->parfile, "w");
   if(l_fp == NULL)
   {
@@ -573,7 +573,7 @@ int p_mpeg2encode_gen_parfile(t_anim_info *ainfo_ptr, t_mpg_par *mp_ptr)
   strcpy(l_basename_buff, ainfo_ptr->basename);
   l_dirname_ptr = ".";
   l_basename_ptr = &l_basename_buff[0];
-  
+
   for(l_idx = strlen(l_basename_buff) -1; l_idx >= 0; l_idx--)
   {
     if(l_basename_buff[l_idx] == G_DIR_SEPARATOR)
@@ -597,7 +597,7 @@ int p_mpeg2encode_gen_parfile(t_anim_info *ainfo_ptr, t_mpg_par *mp_ptr)
   {
     fprintf(l_fp, "MPEG-2 stream %s frames/sec\n", mp_ptr->framerate);
   }
-  
+
   fprintf(l_fp, "%s%%06d   /* name of source files */\n", ainfo_ptr->basename);
 
   fprintf(l_fp, "-         /* name of reconstructed images (\"-\": don't store) */\n");
@@ -675,21 +675,21 @@ int p_mpeg2encode_gen_parfile(t_anim_info *ainfo_ptr, t_mpg_par *mp_ptr)
   fclose(l_fp);
 
   /* generate a startscript */
-  
+
   l_fp = fopen(mp_ptr->startscript, "w");
   if(l_fp == NULL)
   {
      fprintf(stderr, "cant open Startscript %s for write\n", mp_ptr->startscript);
      return -1;
   }
-  
+
   fprintf(l_fp, "#!/bin/sh\n");
   fprintf(l_fp, "mpeg2encode %s %s\n", mp_ptr->parfile, mp_ptr->outfile);
   fprintf(l_fp, "echo 'mpeg2encode done.'\n");
   fprintf(l_fp, "read DUMMY\n");
   fclose(l_fp);
-  
-  return 0;  
+
+  return 0;
 }
 
 /* ============================================================================
@@ -708,7 +708,7 @@ int p_mpeg_encode_gen_parfile(t_anim_info *ainfo_ptr, t_mpg_par *mp_ptr)
   char  *l_basename_ptr;
   char   l_basename_buff[1024];
   char  *l_base_file_format;
-  
+
   l_fp = fopen(mp_ptr->parfile, "w");
   if(l_fp == NULL)
   {
@@ -722,7 +722,7 @@ int p_mpeg_encode_gen_parfile(t_anim_info *ainfo_ptr, t_mpg_par *mp_ptr)
   strcpy(l_basename_buff, ainfo_ptr->basename);
   l_dirname_ptr = ".";
   l_basename_ptr = &l_basename_buff[0];
-  
+
   for(l_idx = strlen(l_basename_buff) -1; l_idx >= 0; l_idx--)
   {
     if(l_basename_buff[l_idx] == G_DIR_SEPARATOR)
@@ -759,7 +759,7 @@ int p_mpeg_encode_gen_parfile(t_anim_info *ainfo_ptr, t_mpg_par *mp_ptr)
   fprintf(l_fp, "#\n");
   fprintf(l_fp, "# <option> MUST be in UPPER CASE\n");
   fprintf(l_fp, "#\n");
-  
+
   fprintf(l_fp, "PATTERN    %s\n", mp_ptr->pattern);
   fprintf(l_fp, "OUTPUT     %s\n\n", mp_ptr->outfile);
 
@@ -928,21 +928,21 @@ int p_mpeg_encode_gen_parfile(t_anim_info *ainfo_ptr, t_mpg_par *mp_ptr)
   fclose(l_fp);
 
   /* generate a startscript */
-  
+
   l_fp = fopen(mp_ptr->startscript, "w");
   if(l_fp == NULL)
   {
      fprintf(stderr, "cant open Startscript %s for write\n", mp_ptr->startscript);
      return -1;
   }
-  
+
   fprintf(l_fp, "#!/bin/sh\n");
   fprintf(l_fp, "mpeg_encode %s\n", mp_ptr->parfile);
   fprintf(l_fp, "echo 'mpeg_encode done.'\n");
   fprintf(l_fp, "read DUMMY\n");
   fclose(l_fp);
-  
-  return 0;  
+
+  return 0;
 }      /* end p_mpege_gen_parfile */
 
 
@@ -955,7 +955,7 @@ int p_mpege_gen_parfile(t_anim_info *ainfo_ptr, t_mpg_par *mp_ptr, t_gap_mpeg_en
 {
   int    l_rc;
   gchar *l_cmd;
-  
+
   l_rc = -1;
   switch(encoder)
   {
@@ -966,7 +966,7 @@ int p_mpege_gen_parfile(t_anim_info *ainfo_ptr, t_mpg_par *mp_ptr, t_gap_mpeg_en
         l_rc = p_mpeg2encode_gen_parfile(ainfo_ptr, mp_ptr);
         break;
   }
-  
+
   if(l_rc >= 0)
   {
       /* make startscript executable */
@@ -998,7 +998,7 @@ int gap_mpeg_encode(GimpRunMode run_mode,
   char   l_errlist[512];
   char  *l_cmd;
   gint   l_base_ffidx;
-  
+
   l_rc = 0;
   l_genmode = 0;
   ainfo_ptr = p_alloc_ainfo(image_id, run_mode);
@@ -1010,7 +1010,7 @@ int gap_mpeg_encode(GimpRunMode run_mode,
       l_base_ffidx = p_mpeg2_extension_check(ainfo_ptr);
       l_width  = gimp_image_width(ainfo_ptr->image_id);
       l_height = gimp_image_height(ainfo_ptr->image_id);
-      
+
       l_errlist[0] = '\0';
       mp_par.ext = "\0";
       if(ainfo_ptr->extension != NULL)
@@ -1018,7 +1018,7 @@ int gap_mpeg_encode(GimpRunMode run_mode,
         if(*ainfo_ptr->extension == '.' ) mp_par.ext = &ainfo_ptr->extension[1];
         else                              mp_par.ext = ainfo_ptr->extension;
       }
-      
+
       if(encoder == MPEG_ENCODE)
       {
         if(*l_base_file_format == '\0')
@@ -1039,13 +1039,13 @@ int gap_mpeg_encode(GimpRunMode run_mode,
       }
 
       if(ainfo_ptr->frame_cnt == 0)   { strcat(l_errlist, _("\nERROR: invoked from a single image, animframe required")); }
-      
+
       if((l_rc == 0) && (l_errlist[0] != '\0'))
       {
          /* show warnings and errors (the user can decide to cancel or to continue) */
          l_rc = p_mpege_info(ainfo_ptr, l_errlist, encoder);
       }
-      
+
       if(l_rc == 0)
       {
          if(run_mode == GIMP_RUN_INTERACTIVE)
@@ -1082,7 +1082,7 @@ int gap_mpeg_encode(GimpRunMode run_mode,
     }
     p_free_ainfo(&ainfo_ptr);
   }
-  
 
-  return(l_rc);    
+
+  return(l_rc);
 }	/* end gap_mpeg_encode */

@@ -28,11 +28,11 @@
  * version 1.3.16b; 2003.07.06   hof: bugfixes, added parameter asc_opacity
  *                                    minor tooltip Helptexts changes
  * version 1.3.14a; 2003.05.24   hof: created
- */ 
+ */
 
 #include "config.h"
- 
-/* SYTEM (UNIX) includes */ 
+
+/* SYTEM (UNIX) includes */
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -60,7 +60,7 @@ extern int gap_debug;
 gint  gtab_select_modes[MAX_SELECT_MODE_ARRAY_ELEMENTS] =  { 0, 1, 2, 3, 4, 5, 6 };
 
 
-static void 
+static void
 p_init_main_dialog_widgets(t_global_params *gpp);
 
 
@@ -170,7 +170,7 @@ on_oni__checkbutton_auto_delete_toggled  (GtkToggleButton *togglebutton,
 
 
 /* ------------------------------------------------------
- * CALLBACK Procedures Implementation 
+ * CALLBACK Procedures Implementation
  * ------------------------------------------------------
  */
 
@@ -594,7 +594,7 @@ on_oni__button_set_clicked             (GtkButton       *button,
  if(gpp)
  {
    if(gap_debug) printf("  opacity:%f dlta:%f\n", (float)gpp->vin.opacity, (float)gpp->vin.opacity_delta );
-   
+
    /* set does not close the dialog and is processed immediate now */
    p_set_data_onion_cfg(gpp, GAP_PLUGIN_NAME_ONION_CFG);
  }
@@ -847,7 +847,7 @@ create_oni__dialog (t_global_params *gpp)
   GtkWidget *glade_menuitem;
   GtkWidget *oni__optionmenu_select_mode;
   GtkWidget *oni__optionmenu_select_mode_menu;
-  
+
   GtkWidget *oni__spinbutton_range_from;
   GtkWidget *oni__spinbutton_range_to;
   GtkWidget *oni__spinbutton_num_olayers;
@@ -896,14 +896,14 @@ create_oni__dialog (t_global_params *gpp)
   gtk_table_set_row_spacings (GTK_TABLE (table3), 2);
   gtk_table_set_col_spacings (GTK_TABLE (table3), 2);
 
-  label9 = gtk_label_new (_("From Frame : "));
+  label9 = gtk_label_new (_("From Frame:"));
   gtk_widget_show (label9);
   gtk_table_attach (GTK_TABLE (table3), label9, 0, 1, 0, 1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label9), 0, 0.5);
 
-  label10 = gtk_label_new (_("To Frame :"));
+  label10 = gtk_label_new (_("To Frame:"));
   gtk_widget_show (label10);
   gtk_table_attach (GTK_TABLE (table3), label10, 0, 1, 1, 2,
                     (GtkAttachOptions) (GTK_FILL),
@@ -958,7 +958,7 @@ create_oni__dialog (t_global_params *gpp)
   gtk_table_set_row_spacings (GTK_TABLE (table1), 2);
   gtk_table_set_col_spacings (GTK_TABLE (table1), 2);
 
-  label1 = gtk_label_new (_("Onionskin Layers :"));
+  label1 = gtk_label_new (_("Onionskin Layers:"));
   gtk_widget_show (label1);
   gtk_table_attach (GTK_TABLE (table1), label1, 0, 1, 0, 1,
                     (GtkAttachOptions) (GTK_FILL),
@@ -996,7 +996,7 @@ create_oni__dialog (t_global_params *gpp)
                          , _("Number of Onionskin Layers to create in the handled Frame.")
                          , NULL);
 
-  label2 = gtk_label_new (_("Frame Reference :"));
+  label2 = gtk_label_new (_("Frame Reference:"));
   gtk_widget_show (label2);
   gtk_table_attach (GTK_TABLE (table1), label2, 0, 1, 1, 2,
                     (GtkAttachOptions) (GTK_FILL),
@@ -1030,7 +1030,7 @@ create_oni__dialog (t_global_params *gpp)
                          , _("ON: foldback next Frame of last is first")
                          , NULL);
 
-  label3 = gtk_label_new (_("Stackposition :"));
+  label3 = gtk_label_new (_("Stackposition:"));
   gtk_widget_show (label3);
   gtk_table_attach (GTK_TABLE (table1), label3, 0, 1, 2, 3,
                     (GtkAttachOptions) (GTK_FILL),
@@ -1064,7 +1064,7 @@ create_oni__dialog (t_global_params *gpp)
                          , _("ON: 0 is on Top, OFF: 0 is on Bottom")
                          , NULL);
 
-  label4 = gtk_label_new (_("Opacity :"));
+  label4 = gtk_label_new (_("Opacity:"));
   gtk_widget_show (label4);
   gtk_table_attach (GTK_TABLE (table1), label4, 0, 1, 3, 4,
                     (GtkAttachOptions) (GTK_FILL),
@@ -1107,7 +1107,7 @@ create_oni__dialog (t_global_params *gpp)
                          , _("Descending Opacity for 2.nd Onionskin Layer")
                          , NULL);
 
-  frame2 = gtk_frame_new (_("Layer Selection "));
+  frame2 = gtk_frame_new (_("Layer Selection"));
   gtk_widget_show (frame2);
   gtk_table_attach (GTK_TABLE (table1), frame2, 0, 3, 4, 5,
                     (GtkAttachOptions) (GTK_FILL),
@@ -1119,7 +1119,7 @@ create_oni__dialog (t_global_params *gpp)
   gtk_container_add (GTK_CONTAINER (frame2), table2);
   gtk_container_set_border_width (GTK_CONTAINER (table2), 4);
 
-  label5 = gtk_label_new (_("Ignore BG-layer(s) : "));
+  label5 = gtk_label_new (_("Ignore BG-layer(s):"));
   gtk_widget_show (label5);
   gtk_table_attach (GTK_TABLE (table2), label5, 0, 1, 0, 1,
                     (GtkAttachOptions) (GTK_FILL),
@@ -1144,7 +1144,7 @@ create_oni__dialog (t_global_params *gpp)
                          , _("exclude N BG-Layers (use 0 if you dont want to exclude any Layer)")
                          , NULL);
 
-  label7 = gtk_label_new (_("Select Mode :"));
+  label7 = gtk_label_new (_("Select Mode:"));
   gtk_widget_show (label7);
   gtk_table_attach (GTK_TABLE (table2), label7, 0, 1, 2, 3,
                     (GtkAttachOptions) (GTK_FILL),
@@ -1219,7 +1219,7 @@ create_oni__dialog (t_global_params *gpp)
   gtk_option_menu_set_menu (GTK_OPTION_MENU (oni__optionmenu_select_mode), oni__optionmenu_select_mode_menu);
   gtk_option_menu_set_history (GTK_OPTION_MENU (oni__optionmenu_select_mode), 6);
 
-  label8 = gtk_label_new (_("Select Options :"));
+  label8 = gtk_label_new (_("Select Options:"));
   gtk_widget_show (label8);
   gtk_table_attach (GTK_TABLE (table2), label8, 0, 1, 3, 4,
                     (GtkAttachOptions) (GTK_FILL),
@@ -1232,7 +1232,7 @@ create_oni__dialog (t_global_params *gpp)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (GTK_FILL), 0, 0);
 
-  oni__checkbutton_select_case = gtk_check_button_new_with_label (_("Case sensitve"));
+  oni__checkbutton_select_case = gtk_check_button_new_with_label (_("Case sensitive"));
   gtk_widget_show (oni__checkbutton_select_case);
   gtk_box_pack_start (GTK_BOX (hbox2), oni__checkbutton_select_case, FALSE, TRUE, 0);
   gimp_help_set_help_data(oni__checkbutton_select_case
@@ -1246,7 +1246,7 @@ create_oni__dialog (t_global_params *gpp)
                          , _("ON: Select NON-matching Layers, OFF: Select matching Layers")
                          , NULL);
 
-  label6 = gtk_label_new (_("Select Pattern :"));
+  label6 = gtk_label_new (_("Select Pattern:"));
   gtk_widget_show (label6);
   gtk_table_attach (GTK_TABLE (table2), label6, 0, 1, 4, 5,
                     (GtkAttachOptions) (GTK_FILL),
@@ -1281,13 +1281,13 @@ create_oni__dialog (t_global_params *gpp)
 
   {
      GtkWidget *auto_table;
-     
+
      auto_table = gtk_table_new (1, 2, TRUE);
      gtk_widget_show (auto_table);
      gtk_table_attach (GTK_TABLE (table1), auto_table, 0, 3, 6, 7,
                       (GtkAttachOptions) (GTK_FILL),
                       (GtkAttachOptions) (0), 2, 0);
-     
+
      oni__checkbutton_auto_replace = gtk_check_button_new_with_label (_("Auto Create after Load"));
      gtk_widget_show (oni__checkbutton_auto_replace);
      gimp_help_set_help_data(oni__checkbutton_auto_replace
@@ -1299,7 +1299,7 @@ create_oni__dialog (t_global_params *gpp)
                        0, 1, 0, 1,
                        (GtkAttachOptions) (GTK_FILL),
                        (GtkAttachOptions) (GTK_FILL), 0, 0);
-  
+
      oni__checkbutton_auto_delete = gtk_check_button_new_with_label (_("Auto Delete before Save"));
      gtk_widget_show (oni__checkbutton_auto_delete);
      gimp_help_set_help_data(oni__checkbutton_auto_delete

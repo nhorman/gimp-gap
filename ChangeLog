@@ -1,3 +1,13 @@
+2003-07-14  Sven Neumann  <sven@gimp.org>
+
+	* gap/gap_mpege.c
+	* gap/gap_name2layer_main.c
+	* gap/gap_onion_base.c
+	* gap/gap_onion_dialog.c	
+	* gap/gap_split.c: removed whitespace from messages (bugs #117205
+	and #117206) and fixed a typo (bug #117207). Removed trailing
+	whitespaces from the code.
+
 2003-07-12 Wolfgang Hofer <hof@gimp.org>
      Onionskin Configuration Dialog:
      added Close Button, Auto Create after Load, Auto Delete before Save

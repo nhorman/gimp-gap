@@ -3,7 +3,7 @@
  *
  * GAP ... Gimp Animation Plugins
  *
- * This Module contains 
+ * This Module contains
  * - gap_split_image
  *
  */
@@ -32,17 +32,17 @@
  * 1.1.9a;  1999/09/21   hof: bugfix GIMP_RUN_NONINTERACTIVE mode did not work
  * 1.1.8a;  1999/08/31   hof: accept anim framenames without underscore '_'
  * 1.1.5a;  1999/05/08   hof: bugix (dont mix GimpImageType with GimpImageBaseType)
- * 0.96.00; 1998/07/01   hof: - added scale, resize and crop 
+ * 0.96.00; 1998/07/01   hof: - added scale, resize and crop
  *                              (affects full range == all anim frames)
  *                            - now using gap_arr_dialog.h
  * 0.94.01; 1998/04/28   hof: added flatten_mode to plugin: gap_range_to_multilayer
  * 0.92.00  1998.01.10   hof: bugfix in p_frames_to_multilayer
- *                            layers need alpha (to be raise/lower able) 
+ *                            layers need alpha (to be raise/lower able)
  * 0.90.00               first development release
  */
 #include "config.h"
- 
-/* SYTEM (UNIX) includes */ 
+
+/* SYTEM (UNIX) includes */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -68,7 +68,7 @@ extern      int gap_debug; /* ==0  ... dont print debug infos */
 /* ============================================================================
  * p_split_image
  *
- * returns   value >= 0 if all is ok  return the image_id of 
+ * returns   value >= 0 if all is ok  return the image_id of
  *                      the new created image (the last handled anim frame)
  *           (or -1 on error)
  * ============================================================================
@@ -100,10 +100,10 @@ p_split_image(t_anim_info *ainfo_ptr,
   l_percentage = 0.0;
   l_run_mode  = ainfo_ptr->run_mode;
   if(ainfo_ptr->run_mode == GIMP_RUN_INTERACTIVE)
-  { 
+  {
     gimp_progress_init( _("Splitting into Frames..."));
   }
- 
+
   l_new_image_id = -1;
   /* get info about the image  */
   l_width  = gimp_image_width(ainfo_ptr->image_id);
@@ -123,12 +123,12 @@ p_split_image(t_anim_info *ainfo_ptr,
           /* destroy the tmp image (it was saved to disk before) */
           gimp_image_delete(l_new_image_id);
        }
-       
+
        if(invers == TRUE) l_layer_idx = l_idx;
        else               l_layer_idx = (l_nlayers - 1 ) - l_idx;
 
        l_src_layer_id = l_layers_list[l_layer_idx];
-       
+
        if(only_visible)
        {
           if (! gimp_layer_get_visible(l_src_layer_id))
@@ -157,7 +157,7 @@ p_split_image(t_anim_info *ainfo_ptr,
         gimp_image_add_layer(l_new_image_id, l_cp_layer_id, 0);
         gimp_layer_set_offsets(l_cp_layer_id, l_src_offset_x, l_src_offset_y);
         gimp_layer_set_visible(l_cp_layer_id, TRUE);
-     
+
        /* delete alpha channel ? */
        if (no_alpha == TRUE)
        {
@@ -165,14 +165,14 @@ p_split_image(t_anim_info *ainfo_ptr,
            l_cp_layer_id = gimp_layer_new(l_new_image_id, "dummy",
                                           4, 4,         /* width, height */
                                           ((l_type * 2 ) + 1),  /* convert from GimpImageBaseType to GimpImageType, and add alpha */
-                                          0.0,          /* Opacity full transparent */     
+                                          0.0,          /* Opacity full transparent */
                                           0);           /* NORMAL */
            gimp_image_add_layer(l_new_image_id, l_cp_layer_id, 0);
            gimp_image_flatten (l_new_image_id);
-         
+
        }
-       
-       
+
+
        /* build the name for output image */
        l_str = p_strdup_add_underscore(ainfo_ptr->basename);
        l_sav_name = p_alloc_fname6(l_str,
@@ -199,37 +199,37 @@ p_split_image(t_anim_info *ainfo_ptr,
 
           /* set image name */
           gimp_image_set_filename (l_new_image_id, l_sav_name);
-          
+
           /* prepare return value */
           l_rc = l_new_image_id;
 
           g_free(l_sav_name);
        }
-       
+
        /* save as frame */
-       
- 
+
+
        /* show progress bar */
        if(ainfo_ptr->run_mode == GIMP_RUN_INTERACTIVE)
-       { 
+       {
          l_percentage += l_percentage_step;
          gimp_progress_update (l_percentage);
        }
 
-      
+
     }
     g_free (l_layers_list);
   }
-  
 
-  return l_rc;  
+
+  return l_rc;
 }	/* end p_split_image */
 
 
 /* ============================================================================
  * p_split_dialog
  *
- *   return  0 (OK) 
+ *   return  0 (OK)
  *          or  -1 in case of Error or cancel
  * ============================================================================
  */
@@ -238,12 +238,12 @@ p_split_dialog(t_anim_info *ainfo_ptr, gint *inverse_order, gint *no_alpha, char
 {
   static t_arr_arg  argv[7];
   gchar   *buf;
-  
+
   buf = g_strdup_printf (_("%s\n%s\n(%s_0001.%s)\n"),
 			 _("Make a frame (diskfile) from each Layer"),
 			 _("frames are named: base_nr.extension"),
 			 ainfo_ptr->basename, extension);
-  
+
   p_init_arr_arg(&argv[0], WGT_LABEL);
   argv[0].label_txt = &buf[0];
 
@@ -278,7 +278,7 @@ p_split_dialog(t_anim_info *ainfo_ptr, gint *inverse_order, gint *no_alpha, char
 
   p_init_arr_arg(&argv[5], WGT_INT);
   argv[5].constraint = TRUE;
-  argv[5].label_txt = _("Digits :");
+  argv[5].label_txt = _("Digits:");
   argv[5].help_txt  = _("How many digits to use for the framenumber filenamwpart");
   argv[5].int_min   = (gint)1;
   argv[5].int_max   = (gint)6;
@@ -292,7 +292,7 @@ p_split_dialog(t_anim_info *ainfo_ptr, gint *inverse_order, gint *no_alpha, char
   argv[6].help_txt  = _("Reset all Parameters to Default Values");
 
   if(TRUE == p_array_dialog( _("Split Image into Frames"),
-			     _("Split Settings"), 
+			     _("Split Settings"),
 			     7, argv))
   {
     g_free (buf);
@@ -332,21 +332,21 @@ int gap_split_image(GimpRunMode run_mode,
   gint32  l_only_visible;
   gint32  l_digits;
   char   *l_imagename;
-  
+
   t_anim_info *ainfo_ptr;
   char l_extension[32];
 
   strcpy(l_extension, ".xcf");
 
   l_rc = -1;
-  
+
   /* force a default name without framenumber part for unnamed images */
   l_imagename = gimp_image_get_filename(image_id);
   if(l_imagename == NULL)
   {
     gimp_image_set_filename(image_id, "frame_.xcf");
   }
-  
+
   ainfo_ptr = p_alloc_ainfo(image_id, run_mode);
   if(ainfo_ptr != NULL)
   {
@@ -395,11 +395,11 @@ int gap_split_image(GimpRunMode run_mode,
                                l_only_visible,
                                l_digits
                                );
-           
+
            /* create a display for the new created image
-            * (it is the first or the last frame of the 
+            * (it is the first or the last frame of the
             *  new created animation sequence)
-            */                    
+            */
            gimp_display_new(l_new_image_id);
            l_rc = l_new_image_id;
         }
@@ -407,6 +407,6 @@ int gap_split_image(GimpRunMode run_mode,
     }
     p_free_ainfo(&ainfo_ptr);
   }
-  
-  return(l_rc);    
+
+  return(l_rc);
 }	/* end   gap_split_image */

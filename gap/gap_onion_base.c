@@ -298,7 +298,7 @@ p_onionskin_delete(gint32 image_id)
  *       but we can steal layer from the tmp_image.
  *       (faster than copy when processing a single frame only)
  *
- * The functionpointers 
+ * The functionpointers
  *     fptr_add_img_to_cache
  *     fptr_find_frame_in_img_cache
  *
@@ -354,13 +354,13 @@ p_onionskin_apply(gpointer gpp
      printf("  image_ID: %d\n",      (int)image_id);
      printf("  use_cache: %d\n",     (int)use_cache);
      printf("  asc_opacity: %d\n",   (int)vin_ptr->asc_opacity);
-     
+
      printf("  ainfo_curr_frame_nr: %d\n",     (int)ainfo_curr_frame_nr);
      printf("  ainfo_first_frame_nr: %d\n",     (int)ainfo_first_frame_nr);
      printf("  ainfo_last_frame_nr: %d\n",     (int)ainfo_last_frame_nr);
      printf("  ainfo_basename: %s\n",     ainfo_basename);
      printf("  ainfo_extension: %s\n",    ainfo_extension);
-     
+
   }
 
   /* delete onion layers (if there are old ones) */
@@ -387,17 +387,17 @@ p_onionskin_apply(gpointer gpp
     if(vin_ptr->asc_opacity)
     {
        /* process far neigbours first to give them the highest configured opacity value */
-       l_frame_nr = ainfo_curr_frame_nr 
+       l_frame_nr = ainfo_curr_frame_nr
                   + (vin_ptr->ref_delta * ((1+ vin_ptr->num_olayers) - l_onr));
     }
     else
     {
        /* process near neigbours first to give them the highest configured opacity value */
-       l_frame_nr = ainfo_curr_frame_nr 
+       l_frame_nr = ainfo_curr_frame_nr
                   + (vin_ptr->ref_delta * l_onr);
     }
-    
-    
+
+
     if(!vin_ptr->ref_cycle)
     {
       if((l_frame_nr < ainfo_first_frame_nr)
@@ -431,7 +431,7 @@ p_onionskin_apply(gpointer gpp
       {
          (*fptr_find_frame_in_img_cache)(gpp, l_frame_nr, &l_tmp_image_id, &l_layer_id);
       }
-      
+
       if (l_tmp_image_id == image_id)
       {
         /* never use the same image as source and destination,
