@@ -1,3 +1,4 @@
+# translation of gimp-gap.HEAD.po to Spanish
 # translation of gimp-gap.HEAD.es.po to Spanish
 # This is the Spanish locale definition for the standard GIMP Plugins.
 #
@@ -7,97 +8,97 @@
 #
 # Copyright (C) 1998-2002,2003 Free Software Foundation, Inc.
 # Rodrigo Sancho Senosiain <daisuke@wanadoo.es>
-# Francisco Javier F. Serrador <serrador@arrakis.es>, 2003
+# Francisco Javier F. Serrador <serrador@arrakis.es>, 2003.
 msgid ""
 msgstr ""
-"Project-Id-Version: gimp-gap.HEAD.es\n"
+"Project-Id-Version: gimp-gap.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-08-12 19:45+0200\n"
-"PO-Revision-Date: 2003-08-13 01:29+0200\n"
+"POT-Creation-Date: 2003-08-27 03:48+0200\n"
+"PO-Revision-Date: 2003-08-27 06:15+0200\n"
 "Last-Translator: Francisco Javier F. Serrador <serrador@arrakis.es>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "\n"
-"X-Generator: KBabel 1.0.1\n"
+"X-Generator: KBabel 1.0.2\n"
 
 #. Button  to invoke fontbrowser
-#: gap/gap_arr_dialog.c:399
-msgid "Font-Browser"
-msgstr "Explorador de tipografías"
+#: gap/gap_arr_dialog.c:401
+msgid "Font Browser"
+msgstr "Visualizador de tipografías"
 
 #. Button  to invoke filebrowser
-#: gap/gap_arr_dialog.c:480
-msgid "File-Browser"
-msgstr "Explorador de archivos"
+#: gap/gap_arr_dialog.c:482
+msgid "File Browser"
+msgstr "Visualizador de archivos"
 
 #. parameter settings
-#: gap/gap_arr_dialog.c:1077
+#: gap/gap_arr_dialog.c:1079
 msgid "Enter Values"
 msgstr "Introducir valores"
 
-#: gap/gap_arr_dialog.c:1097 gap/gap_arr_dialog.c:1214
+#: gap/gap_arr_dialog.c:1099 gap/gap_arr_dialog.c:1216
 msgid "Value:"
 msgstr "Valor:"
 
-#: gap/gap_arr_dialog.c:1394
+#: gap/gap_arr_dialog.c:1396
 msgid "Press Button"
 msgstr "Pulse el botón"
 
-#: gap/gap_arr_dialog.c:1395
+#: gap/gap_arr_dialog.c:1397
 msgid "Select"
 msgstr "Seleccionar"
 
-#: gap/gap_base_ops.c:83
-msgid "Density-Deleting frames..."
-msgstr "Borrando fotogramas por densidad..."
+#: gap/gap_base_ops.c:84
+msgid "Decreasing Density by deleting Frames..."
+msgstr "Decrementando la densidad mediante borrados de totogramas..."
 
-#: gap/gap_base_ops.c:122 gap/gap_base_ops.c:152 gap/gap_base_ops.c:226
-#: gap/gap_base_ops.c:281
+#: gap/gap_base_ops.c:123 gap/gap_base_ops.c:153 gap/gap_base_ops.c:227
+#: gap/gap_base_ops.c:282
 #, c-format
 msgid "Error: could not rename frame %d to %d"
 msgstr "Error: No puedo renombrar el fotograma %d a %d"
 
-#: gap/gap_base_ops.c:203
+#: gap/gap_base_ops.c:204
 msgid "Density-Duplicating frames..."
 msgstr "Duplicando fotogramas por densidad..."
 
-#: gap/gap_base_ops.c:358 gap/gap_base_ops.c:532
+#: gap/gap_base_ops.c:359 gap/gap_base_ops.c:533
 #, c-format
 msgid "Error: could not save frame %s"
 msgstr "Error: No puedo guardar el fotograma %s"
 
-#: gap/gap_base_ops.c:462 gap/gap_base_ops.c:594 gap/gap_base_ops.c:679
-#: gap/gap_base_ops.c:686 gap/gap_base_ops.c:693 gap/gap_base_ops.c:781
-#: gap/gap_base_ops.c:803 gap/gap_lib.c:2069
+#: gap/gap_base_ops.c:463 gap/gap_base_ops.c:595 gap/gap_base_ops.c:680
+#: gap/gap_base_ops.c:687 gap/gap_base_ops.c:694 gap/gap_base_ops.c:782
+#: gap/gap_base_ops.c:804 gap/gap_lib.c:2092
 #, c-format
 msgid "Error: could not rename frame %ld to %ld"
 msgstr "Error: No puedo renombrar el fotograma %ld a %ld"
 
-#: gap/gap_base_ops.c:582
+#: gap/gap_base_ops.c:583
 msgid "Duplicating frames..."
 msgstr "Duplicando fotogramas..."
 
-#: gap/gap_base_ops.c:769
-msgid "Renumber Framesequence..."
+#: gap/gap_base_ops.c:770
+msgid "Renumber Frame Sequence..."
 msgstr "Renumerar secuencia de fotogramas..."
 
-#: gap/gap_base_ops.c:961
+#: gap/gap_base_ops.c:962
 #, c-format
-msgid "Goto Frame (%ld/%ld)"
+msgid "Go To Frame (%ld/%ld)"
 msgstr "Ir a fotograma (%ld/%ld)"
 
-#: gap/gap_base_ops.c:964
+#: gap/gap_base_ops.c:965
 #, c-format
 msgid "Destination Frame Number (%ld - %ld)"
 msgstr "Número de fotograma destino (%ld  - %ld)"
 
-#: gap/gap_base_ops.c:968 gap/gap_base_ops.c:1073 gap/gap_base_ops.c:1512
+#: gap/gap_base_ops.c:969 gap/gap_base_ops.c:1074 gap/gap_base_ops.c:1513
 msgid "Number:"
 msgstr "Número:"
 
-#: gap/gap_base_ops.c:1016
+#: gap/gap_base_ops.c:1017
 #, c-format
 msgid ""
 "Frames %d - %d will be deleted\n"
@@ -107,22 +108,22 @@ msgstr ""
 "No habrá posibilidad de DESHACER esta operación\n"
 
 #. title_txt
-#: gap/gap_base_ops.c:1022 gap/gap_base_ops.c:1023
+#: gap/gap_base_ops.c:1023 gap/gap_base_ops.c:1024
 #: gap/gap_navigator_dialog.c:632 gap/gap_navigator_dialog.c:633
 msgid "Confirm Frame Delete"
 msgstr "Confirmar borrado de fotograma"
 
-#: gap/gap_base_ops.c:1057
+#: gap/gap_base_ops.c:1058
 #, c-format
 msgid "Delete Frames (%ld/%ld)"
 msgstr "Borrar fotogramas (%ld/%ld)"
 
-#: gap/gap_base_ops.c:1060
+#: gap/gap_base_ops.c:1061
 #, c-format
 msgid "Delete Frames from %ld to (number)"
 msgstr "Borrar fotogramas desde %ld hasta (nº)"
 
-#: gap/gap_base_ops.c:1152
+#: gap/gap_base_ops.c:1153
 #, c-format
 msgid ""
 "Frames in the Range: %d - %d will be duplicated %.4f times\n"
@@ -133,7 +134,7 @@ msgstr ""
 "Esto incrementará el número total de fotogramas desde %d hasta %d\n"
 "No habrá operación de DESHACER\n"
 
-#: gap/gap_base_ops.c:1170
+#: gap/gap_base_ops.c:1171
 #, c-format
 msgid ""
 "%.04f Percent of the Frames in the Range: %d - %d\n"
@@ -147,47 +148,57 @@ msgstr ""
 "No será posible DESHACER esta operación\n"
 
 #. title_txt
-#: gap/gap_base_ops.c:1183 gap/gap_base_ops.c:1184
-msgid "Confirm Framedensity Change"
+#: gap/gap_base_ops.c:1184 gap/gap_base_ops.c:1185
+msgid "Confirm Frame Density Change"
 msgstr "Confirmar cambio de densidad de fotogramas"
 
-#: gap/gap_base_ops.c:1206 gap/gap_base_ops.c:1244
-msgid "Change Frames Density"
+#: gap/gap_base_ops.c:1207
+msgid "Change Frame Density"
 msgstr "Cambiar la densidad de los fotogramas"
 
-#: gap/gap_base_ops.c:1209 gap/gap_base_ops.c:1361 gap/gap_base_ops.c:1559
-#: gap/gap_decode_xanim.c:228 gap/gap_player_dialog.c:2268
-#: gap/gap_range_ops.c:280 gap/gap_range_ops.c:629
-msgid "From:"
-msgstr "Desde:"
+#. the start frame scale_entry
+#. table col, row
+#: gap/gap_base_ops.c:1210 gap/gap_base_ops.c:1362 gap/gap_base_ops.c:1560
+#: gap/gap_decode_xanim.c:229 gap/gap_mod_layer.c:165 gap/gap_mov_dialog.c:567
+#: gap/gap_mpege.c:275 gap/gap_onion_dialog.c:899 gap/gap_player_dialog.c:2269
+#: gap/gap_range_ops.c:281 gap/gap_range_ops.c:471 gap/gap_range_ops.c:630
+msgid "From Frame:"
+msgstr "Desde fotograma:"
 
-#: gap/gap_base_ops.c:1214 gap/gap_base_ops.c:1564
+#: gap/gap_base_ops.c:1215 gap/gap_base_ops.c:1565
 msgid "Affected Range starts at this framenumber"
 msgstr "Rango afectado comienza en este nº de fotograma"
 
-#: gap/gap_base_ops.c:1217 gap/gap_base_ops.c:1369 gap/gap_base_ops.c:1567
-#: gap/gap_decode_xanim.c:238 gap/gap_player_dialog.c:2275
-#: gap/gap_range_ops.c:287 gap/gap_range_ops.c:637
-msgid "To:"
-msgstr "A:"
+#. the end frame scale_entry
+#. table col, row
+#: gap/gap_base_ops.c:1218 gap/gap_base_ops.c:1370 gap/gap_base_ops.c:1568
+#: gap/gap_decode_xanim.c:239 gap/gap_mod_layer.c:173 gap/gap_mov_dialog.c:582
+#: gap/gap_mpege.c:285 gap/gap_onion_dialog.c:906 gap/gap_player_dialog.c:2276
+#: gap/gap_range_ops.c:288 gap/gap_range_ops.c:479 gap/gap_range_ops.c:638
+msgid "To Frame:"
+msgstr "Hasta fotograma:"
 
-#: gap/gap_base_ops.c:1222 gap/gap_base_ops.c:1572
+#: gap/gap_base_ops.c:1223 gap/gap_base_ops.c:1573
 msgid "Affected Range ends at this framenumber"
 msgstr "Rango afectado termina en este nº de fotograma"
 
-#: gap/gap_base_ops.c:1225
+#: gap/gap_base_ops.c:1226
 msgid "Density:"
 msgstr "Densidad:"
 
-#: gap/gap_base_ops.c:1235
-msgid "Density Factor for Density grow (or Divisor for shrink)"
-msgstr "Factor de densidad para el crecimiento de densidad (o divisor para reducción)"
-
-#: gap/gap_base_ops.c:1238
-msgid "Density Grow"
-msgstr "Crecimiento de densidad"
+#: gap/gap_base_ops.c:1236
+msgid ""
+"Factor to Increase the Frame Density (acts as Divisor if checkbutton "
+"Increase Density is OFF)"
+msgstr ""
+"Factor de incremento de la densidad de fotogramas (actúa como divisor si el "
+"botón «Incrementar Densidad» no está marcado)"
 
 #: gap/gap_base_ops.c:1239
+msgid "Increase Density"
+msgstr "Incrementar la densidad"
+
+#: gap/gap_base_ops.c:1240
 msgid ""
 "ON: Duplicate Frames to get a target rate that is Density * Originalrate\n"
 "OFF: Delete Frames to get a target rate that is Originalrate/Density"
@@ -197,7 +208,11 @@ msgstr ""
 "Desactivado: Borrar fotogramas para obtener una tasa objetivo que es "
 "TasaOriginal/Densidad"
 
-#: gap/gap_base_ops.c:1307 gap/gap_base_ops.c:1434 gap/gap_lib.c:1131
+#: gap/gap_base_ops.c:1245
+msgid "Change Frames Density"
+msgstr "Cambiar la densidad de los fotogramas"
+
+#: gap/gap_base_ops.c:1308 gap/gap_base_ops.c:1435 gap/gap_lib.c:1135
 msgid ""
 "OPERATION CANCELLED.\n"
 "GAP plug-ins only work with filenames\n"
@@ -209,24 +224,24 @@ msgstr ""
 "de archivo que acaben en números _0001.xcf .\n"
 "==> Renombre su imagen e inténtelo de nuevo."
 
-#: gap/gap_base_ops.c:1356
+#: gap/gap_base_ops.c:1357
 #, c-format
 msgid "Duplicate Frames (%ld/%ld)"
 msgstr "Duplicar fotogramas (%ld/%ld)"
 
-#: gap/gap_base_ops.c:1366
+#: gap/gap_base_ops.c:1367
 msgid "Source Range starts at this framenumber"
 msgstr "El rango de origen comienza en este nº de fotograma"
 
-#: gap/gap_base_ops.c:1374
+#: gap/gap_base_ops.c:1375
 msgid "Source Range ends at this framenumber"
 msgstr "El rango de origen termina en este nº de fotograma"
 
-#: gap/gap_base_ops.c:1377
+#: gap/gap_base_ops.c:1378
 msgid "N times:"
 msgstr "N veces:"
 
-#: gap/gap_base_ops.c:1384
+#: gap/gap_base_ops.c:1385
 msgid ""
 "Copy selected Range n-times\n"
 "(you may type in Values > 99)"
@@ -234,76 +249,72 @@ msgstr ""
 "Copiar rango seleccionado n veces  \n"
 "(puede teclear valores > 99)"
 
-#: gap/gap_base_ops.c:1387
-msgid "Duplicate Frame Range"
-msgstr "Duplicar rango de fotogramas"
+#: gap/gap_base_ops.c:1388
+msgid "Make Duplicates of Frame Range"
+msgstr "Hacer duplicados del rango de fotogramas"
 
-#: gap/gap_base_ops.c:1507
+#: gap/gap_base_ops.c:1508
 #, c-format
 msgid "Exchange current Frame (%ld)"
 msgstr "Intercambiar fotograma actual (%ld)"
 
-#: gap/gap_base_ops.c:1511
+#: gap/gap_base_ops.c:1512
 msgid "With Frame (number)"
 msgstr "Con fotograma (nº)"
 
 # //R Revisar lo de desplazamiento
-#: gap/gap_base_ops.c:1554
+#: gap/gap_base_ops.c:1555
 #, c-format
-msgid "Framesequence Shift (%ld/%ld)"
+msgid "Frame Sequence Shift (%ld/%ld)"
 msgstr "Desplazamiento de la secuencia de fotogramas (%ld/%ld)"
 
 # //R Huy huy
-#: gap/gap_base_ops.c:1575
+#: gap/gap_base_ops.c:1576
 msgid "N-Shift:"
 msgstr "Desplazar N:"
 
-#: gap/gap_base_ops.c:1580
+#: gap/gap_base_ops.c:1581
 msgid ""
-"Renumber the affected framesequence\n"
+"Renumber the affected Frame Sequence\n"
 "(numbers are shifted in circle by N)"
 msgstr ""
 "Renumerar la secuencia de fotogramas afectada\n"
 "(se desplaza circularmente los nºs por N)"
 
-#: gap/gap_base_ops.c:1582
-msgid "Framesequence shift"
-msgstr "Desplazamiento de secuencia de fotogramas"
+#: gap/gap_base_ops.c:1583
+msgid "Frame Sequence shift"
+msgstr "Desplazamiento de la secuencia de fotogramas"
 
-#: gap/gap_base_ops.c:1667
-#, fuzzy, c-format
+#: gap/gap_base_ops.c:1668
+#, c-format
 msgid "Renumber Frames (%ld)"
-msgstr "Renumerar fotogramas (%ld/%ld)"
+msgstr "Renumerar fotogramas (%ld)"
 
-#: gap/gap_base_ops.c:1671
-msgid "Start Frame Number:"
+#: gap/gap_base_ops.c:1672
+msgid "First Frame Number:"
 msgstr "Número de fotograma de inicio:"
 
-#: gap/gap_base_ops.c:1676
-msgid "New Framenumber for the 1.st frame"
+#: gap/gap_base_ops.c:1677
+msgid "New Framenumber for the first Frame"
 msgstr "Número de fotograma nuevo para el primer fotograma"
 
-#: gap/gap_base_ops.c:1679 gap/gap_split.c:281
+#: gap/gap_base_ops.c:1680 gap/gap_split.c:281
 msgid "Digits:"
 msgstr "Dígitos:"
 
-#: gap/gap_base_ops.c:1684
-msgid "How many digits to use for the framenumber filenamepart"
+#: gap/gap_base_ops.c:1685
+msgid "How many digits to use for the Framenumber in the File Name"
 msgstr ""
-"Cuántos dígitos a usar para la parte del número de fotograma del nombre del "
+"Cuántos dígitos a usar para el número de fotograma en el nombre del "
 "archivo"
 
-#: gap/gap_base_ops.c:1688
+#: gap/gap_base_ops.c:1689 gap/gap_base_ops.c:1798
 msgid "Renumber Frames"
 msgstr "Renumerar fotogramas..."
 
-#: gap/gap_base_ops.c:1797
-msgid "renumber frames"
-msgstr "renumerar fotogramas"
-
-#: gap/gap_base_ops.c:1837
-msgid "renumber frames 2nd pass"
-msgstr "renumerar fotogramas en la segunda pasada"
+#: gap/gap_base_ops.c:1838
+msgid "Renumber Frames 2nd Pass"
+msgstr "Renumerar fotogramas en la segunda pasada"
 
 #: gap/gap_dbbrowser_utils.c:88
 msgid "Animated Filter apply (init)"
@@ -378,11 +389,11 @@ msgstr "Aplicar filtro en animación (por favor, espere)"
 msgid "Animated Filter apply"
 msgstr "Aplicar filtro en animación"
 
-#: gap/gap_decode_xanim.c:120
-msgid "Conditions to run the xanim based video split"
+#: gap/gap_decode_xanim.c:121
+msgid "Requirements to run the xanim based video split"
 msgstr "Requisitos para ejecutar la partición de vídeos basada en XAnim"
 
-#: gap/gap_decode_xanim.c:132
+#: gap/gap_decode_xanim.c:133
 msgid ""
 "xanim 2.80.0 exporting edition (the loki version)\n"
 "must be installed somewhere in your PATH\n"
@@ -392,7 +403,7 @@ msgstr ""
 "debe ser instalada en algún lugar de su PATH\n"
 "puede obtener «xanim exporting edition» en:\n"
 
-#: gap/gap_decode_xanim.c:155
+#: gap/gap_decode_xanim.c:156
 msgid ""
 "if your xanim exporting edition is not in your PATH or is not named xanim\n"
 "you have to set Environment variable GAP_XANIM_PROG\n"
@@ -402,19 +413,19 @@ msgstr ""
 "tiene que establecer la variable de entorno GAP_XANIM_PROG\n"
 "a su programa de exportación xanim y reiniciar El Gimp"
 
-#: gap/gap_decode_xanim.c:166
+#: gap/gap_decode_xanim.c:167
 msgid "An ERROR occured while trying to call xanim:"
 msgstr "Ocurrió un ERROR mientras se intentaba llamar a xanim:"
 
-#: gap/gap_decode_xanim.c:185
+#: gap/gap_decode_xanim.c:186
 msgid "XANIM Information"
 msgstr "Información XANIM"
 
-#: gap/gap_decode_xanim.c:218
+#: gap/gap_decode_xanim.c:219
 msgid "Video:"
 msgstr "Vídeo:"
 
-#: gap/gap_decode_xanim.c:219
+#: gap/gap_decode_xanim.c:220
 msgid ""
 "Name of a videofile to READ by xanim.\n"
 "Frames are extracted from the videofile\n"
@@ -428,19 +439,19 @@ msgstr ""
 "requiere la versión para exportar de\n"
 "XAnim."
 
-#: gap/gap_decode_xanim.c:229
+#: gap/gap_decode_xanim.c:230
 msgid "Framenumber of 1st frame to extract"
 msgstr "Número del primer fotograma a extraer"
 
-#: gap/gap_decode_xanim.c:239
+#: gap/gap_decode_xanim.c:240
 msgid "Framenumber of last frame to extract"
 msgstr "Número del último fotograma a extraer"
 
-#: gap/gap_decode_xanim.c:248
+#: gap/gap_decode_xanim.c:249
 msgid "Framenames:"
 msgstr "Nombres de fotogramas:"
 
-#: gap/gap_decode_xanim.c:249
+#: gap/gap_decode_xanim.c:250
 msgid ""
 "Basename for the AnimFrames to write on disk\n"
 "(framenumber and extension is added)"
@@ -448,11 +459,11 @@ msgstr ""
 "Nombre base de los fotogramas a escribir en disco\n"
 "(Se añade nº de cuadro y añadido)"
 
-#: gap/gap_decode_xanim.c:256
+#: gap/gap_decode_xanim.c:257
 msgid "Format"
 msgstr "Formato"
 
-#: gap/gap_decode_xanim.c:257
+#: gap/gap_decode_xanim.c:258
 msgid ""
 "Fileformat for the extracted AnimFrames\n"
 "(xcf is extracted as ppm and converted to xcf)"
@@ -460,19 +471,19 @@ msgstr ""
 "Formato de archivo para los fotogramas extraídos\n"
 "(xcf es extraído como ppm y convertido a xcf)"
 
-#: gap/gap_decode_xanim.c:264
+#: gap/gap_decode_xanim.c:265
 msgid "Extract Frames"
 msgstr "Extraer fotogramas"
 
-#: gap/gap_decode_xanim.c:265
+#: gap/gap_decode_xanim.c:266
 msgid "Enable extraction of Frames"
 msgstr "Activar extracción de fotogramas"
 
-#: gap/gap_decode_xanim.c:269
+#: gap/gap_decode_xanim.c:270
 msgid "Extract Audio"
 msgstr "Extraer audio"
 
-#: gap/gap_decode_xanim.c:270
+#: gap/gap_decode_xanim.c:271
 msgid ""
 "Enable extraction of audio to raw audiofile\n"
 "(frame range limits are ignored for audio)"
@@ -482,11 +493,11 @@ msgstr ""
 "límites en el rango de fotogramas al\n"
 " extraer audio)"
 
-#: gap/gap_decode_xanim.c:275
+#: gap/gap_decode_xanim.c:276
 msgid "Jpeg Quality:"
 msgstr "Calidad Jpeg:"
 
-#: gap/gap_decode_xanim.c:276
+#: gap/gap_decode_xanim.c:277
 msgid ""
 "Quality for resulting Jpeg frames\n"
 "(is ignored when other formats are used)"
@@ -494,19 +505,19 @@ msgstr ""
 "Calidad para los fotogramas Jpeg resultantes\n"
 "(no se considera cuando se usan otros formatos)"
 
-#: gap/gap_decode_xanim.c:287
+#: gap/gap_decode_xanim.c:288
 msgid "Open"
 msgstr "Abrir"
 
-#: gap/gap_decode_xanim.c:288
+#: gap/gap_decode_xanim.c:289
 msgid "Open the 1st one of the extracted frames"
 msgstr "Abrir el primero de los fotogramas extraídos"
 
-#: gap/gap_decode_xanim.c:292
+#: gap/gap_decode_xanim.c:293
 msgid "Run asynchronously"
 msgstr "Funcionar asíncronamente"
 
-#: gap/gap_decode_xanim.c:293
+#: gap/gap_decode_xanim.c:294
 msgid ""
 "Run xanim asynchronously and delete unwanted frames\n"
 "(out of the specified range) while xanim is still running"
@@ -515,7 +526,7 @@ msgstr ""
 "no deseados (fuera del rango especificado) mientras\n"
 "xanim sigue ejecutándose"
 
-#: gap/gap_decode_xanim.c:298
+#: gap/gap_decode_xanim.c:299
 msgid ""
 "\n"
 "Warning: xanim 2.80 has only limited MPEG support.\n"
@@ -526,31 +537,31 @@ msgstr ""
 "La mayoría de los fotogramas (tipos P y B) serán \n"
 "saltados."
 
-#: gap/gap_decode_xanim.c:301
+#: gap/gap_decode_xanim.c:302
 msgid "Split any Xanim readable Video to Frames"
 msgstr "Partir cualquier vídeo legible por XAnim en fotogramas"
 
-#: gap/gap_decode_xanim.c:302 gap/gap_range_ops.c:1540
+#: gap/gap_decode_xanim.c:303 gap/gap_range_ops.c:1541
 msgid "Select Frame Range"
 msgstr "Seleccione rango de fotogramas"
 
-#: gap/gap_decode_xanim.c:341 gap/gap_range_ops.c:1284
+#: gap/gap_decode_xanim.c:342 gap/gap_range_ops.c:1285
 msgid "Overwrite Frame"
 msgstr "Sobreescribir fotograma"
 
-#: gap/gap_decode_xanim.c:343 gap/gap_range_ops.c:1286
+#: gap/gap_decode_xanim.c:344 gap/gap_range_ops.c:1287
 msgid "Overwrite All"
 msgstr "Sobreescribir todo"
 
-#: gap/gap_decode_xanim.c:351 gap/gap_lib.c:1242 gap/gap_range_ops.c:1291
+#: gap/gap_decode_xanim.c:352 gap/gap_lib.c:1246 gap/gap_range_ops.c:1292
 msgid "GAP Question"
 msgstr "Pregunta de GAP"
 
-#: gap/gap_decode_xanim.c:352
+#: gap/gap_decode_xanim.c:353
 msgid "File already exists"
 msgstr "El archivo ya existe"
 
-#: gap/gap_decode_xanim.c:568
+#: gap/gap_decode_xanim.c:569
 #, c-format
 msgid ""
 "can't find any extracted frames,\n"
@@ -561,32 +572,32 @@ msgstr ""
 "%s\n"
 "quizás xanim ha fallado o fue cancelado"
 
-#: gap/gap_decode_xanim.c:593
+#: gap/gap_decode_xanim.c:594
 #, c-format
 msgid "frames are not extracted, because overwrite of %s was cancelled"
 msgstr "no se extrajeron fotogramas, porque se canceló la sobreescritura de %s"
 
-#: gap/gap_decode_xanim.c:603
+#: gap/gap_decode_xanim.c:604
 #, c-format
 msgid "failed to overwrite %s (check permissions ?)"
 msgstr "fallo al sobreescribir %s (compruebe los permisos)"
 
-#: gap/gap_decode_xanim.c:625
+#: gap/gap_decode_xanim.c:626
 #, c-format
 msgid "failed to write %s (check permissions ?)"
 msgstr "fallo al escribir %s (compruebe permisos)"
 
-#: gap/gap_decode_xanim.c:752
+#: gap/gap_decode_xanim.c:753
 #, c-format
 msgid "could not execute %s (check if xanim is installed)"
 msgstr "no puedo ejecutar %s (compruebe si xanim está instalado)"
 
-#: gap/gap_decode_xanim.c:760
+#: gap/gap_decode_xanim.c:761
 #, c-format
 msgid "%s does not look like xanim"
 msgstr "%s no parece xanim"
 
-#: gap/gap_decode_xanim.c:785
+#: gap/gap_decode_xanim.c:786
 #, c-format
 msgid ""
 "The xanim program on your system \"%s\"\n"
@@ -596,7 +607,7 @@ msgstr ""
 "no soporta las opciones de exportación Ea, Ee, Eq"
 
 # //R ¿Concretos? ¿Aislados?
-#: gap/gap_decode_xanim.c:792
+#: gap/gap_decode_xanim.c:793
 #, c-format
 msgid ""
 "The xanim program on your system \"%s\"\n"
@@ -605,12 +616,12 @@ msgstr ""
 "El programa xanim de su sistema, \"%s\",\n"
 "no soporta la exportación de fotogramas concretos"
 
-#: gap/gap_decode_xanim.c:1060
+#: gap/gap_decode_xanim.c:1061
 #, c-format
 msgid "videofile %s not existent or empty\n"
 msgstr "archivo de vídeo %s no existe o está vacío\n"
 
-#: gap/gap_decode_xanim.c:1113
+#: gap/gap_decode_xanim.c:1114
 #, c-format
 msgid ""
 "could not create %s directory\n"
@@ -619,11 +630,11 @@ msgstr ""
 "no pude crear directorio %s\n"
 "(requerido para la exportación de fotogramas de xanim)"
 
-#: gap/gap_decode_xanim.c:1124
+#: gap/gap_decode_xanim.c:1125
 msgid "extracting frames..."
 msgstr "extrayendo fotogramas..."
 
-#: gap/gap_decode_xanim.c:1149
+#: gap/gap_decode_xanim.c:1150
 #, c-format
 msgid ""
 "could not start xanim process\n"
@@ -632,7 +643,7 @@ msgstr ""
 "no puedo iniciar proceso xanim\n"
 "(programa=%s)"
 
-#: gap/gap_decode_xanim.c:1170
+#: gap/gap_decode_xanim.c:1171
 msgid ""
 "can't find any extracted frames,\n"
 "xanim has failed or was cancelled"
@@ -640,11 +651,11 @@ msgstr ""
 "no puedo encontrar ningún fotograma extraído,\n"
 "xanim falló o fue cancelado"
 
-#: gap/gap_decode_xanim.c:1189
+#: gap/gap_decode_xanim.c:1190
 msgid "renaming frames..."
 msgstr "renombrando fotogramas..."
 
-#: gap/gap_decode_xanim.c:1194
+#: gap/gap_decode_xanim.c:1195
 msgid "converting frames..."
 msgstr "convirtiendo fotogramas..."
 
@@ -721,11 +732,11 @@ msgstr "<Image>/Vídeo/Codificar/MPEG1..."
 msgid "<Image>/Video/Encode/MPEG2..."
 msgstr "<Image>/Vídeo/Codificar/MPEG2..."
 
-#: gap/gap_lib.c:219
+#: gap/gap_lib.c:223
 msgid "GAP Message"
 msgstr "Mensaje de GAP"
 
-#: gap/gap_lib.c:1108
+#: gap/gap_lib.c:1112
 msgid ""
 "OPERATION CANCELLED.\n"
 "Current frame changed while dialog was open."
@@ -733,7 +744,7 @@ msgstr ""
 "OPERACIÓN CANCELADA.\n"
 "El fotograma actual cambió mientras el diálogo estaba abierto."
 
-#: gap/gap_lib.c:1220
+#: gap/gap_lib.c:1224
 msgid ""
 "You are using a file format != xcf\n"
 "Save Operations may result\n"
@@ -743,11 +754,11 @@ msgstr ""
 "distinto de XCF. Al guardar puede\n"
 "perder información de las capas."
 
-#: gap/gap_lib.c:1236
+#: gap/gap_lib.c:1240
 msgid "Save Flattened"
 msgstr "Guardar aplanada"
 
-#: gap/gap_lib.c:1238
+#: gap/gap_lib.c:1242
 msgid "Save As Is"
 msgstr "Guardar tal cual"
 
@@ -763,116 +774,116 @@ msgstr ""
 "en el mismo fotograma de animación al mismo tiempo\n"
 "Bloqueando IMAGE_ID:%d\n"
 
-#: gap/gap_main.c:541
-msgid "<Image>/Video/Goto/Next Frame"
+#: gap/gap_main.c:542
+msgid "<Image>/Video/Go To/Next Frame"
 msgstr "<Image>/Vídeo/Ir a/Siguiente fotograma"
 
-#: gap/gap_main.c:553
-msgid "<Image>/Video/Goto/Previous Frame"
+#: gap/gap_main.c:554
+msgid "<Image>/Video/Go To/Previous Frame"
 msgstr "<Image>/Vídeo/Ir a/Anterior fotograma"
 
-#: gap/gap_main.c:565
-msgid "<Image>/Video/Goto/First Frame"
-msgstr "<Image>/Vídeo/Ir a/Anterior/Primer fotograma"
+#: gap/gap_main.c:566
+msgid "<Image>/Video/Go To/First Frame"
+msgstr "<Image>/Vídeo/Ir a/Primer fotograma"
 
-#: gap/gap_main.c:577
-msgid "<Image>/Video/Goto/Last Frame"
+#: gap/gap_main.c:578
+msgid "<Image>/Video/Go To/Last Frame"
 msgstr "<Image>/Vídeo/Ir a/Último fotograma"
 
-#: gap/gap_main.c:589
-msgid "<Image>/Video/Goto/Any Frame..."
+#: gap/gap_main.c:590
+msgid "<Image>/Video/Go To/Any Frame..."
 msgstr "<Image>/Vídeo/Ir a/Cualquier fotograma..."
 
-#: gap/gap_main.c:601
+#: gap/gap_main.c:602
 msgid "<Image>/Video/Delete Frames..."
 msgstr "<Image>/Vídeo/Borrar fotogramas..."
 
-#: gap/gap_main.c:613
+#: gap/gap_main.c:614
 msgid "<Image>/Video/Duplicate Frames..."
 msgstr "<Image>/Vídeo/Duplicar fotogramas..."
 
-#: gap/gap_main.c:630
+#: gap/gap_main.c:631
 msgid "<Image>/Video/Frames Density..."
 msgstr "<Image>/Vídeo/Densidad de fotogramas..."
 
-#: gap/gap_main.c:642
+#: gap/gap_main.c:643
 msgid "<Image>/Video/Exchange Frame..."
 msgstr "<Image>/Vídeo/Intercambiar fotograma..."
 
-#: gap/gap_main.c:654
+#: gap/gap_main.c:655
 msgid "<Image>/Video/Move Path..."
 msgstr "<Image>/Vídeo/Mover ruta..."
 
-#: gap/gap_main.c:725
+#: gap/gap_main.c:726
 msgid "<Image>/Video/Frames to Image..."
 msgstr "<Image>/Vídeo/Fotogramas a imagen..."
 
-#: gap/gap_main.c:737
+#: gap/gap_main.c:738
 msgid "<Image>/Video/Frames Flatten..."
 msgstr "<Image>/Vídeo/Aplanar fotogramas..."
 
-#: gap/gap_main.c:749
+#: gap/gap_main.c:750
 msgid "<Image>/Video/Frames LayerDel..."
 msgstr "<Image>/Vídeo/Borrar capas de fotogramas..."
 
-#: gap/gap_main.c:773
+#: gap/gap_main.c:774
 msgid "<Image>/Video/Frames Convert..."
 msgstr "<Image>/Vídeo/Convertir fotogramas"
 
-#: gap/gap_main.c:785
+#: gap/gap_main.c:786
 msgid "<Image>/Video/Frames Resize..."
 msgstr "<Image>/Vídeo/Redimensionar fotogramas..."
 
-#: gap/gap_main.c:797
+#: gap/gap_main.c:798
 msgid "<Image>/Video/Frames Crop..."
 msgstr "<Image>/Vídeo/Recortar fotogramas..."
 
-#: gap/gap_main.c:809
+#: gap/gap_main.c:810
 msgid "<Image>/Video/Frames Scale..."
 msgstr "<Image>/Vídeo/Escalar fotogramas..."
 
-#: gap/gap_main.c:821
+#: gap/gap_main.c:822
 msgid "<Image>/Video/Split Image to Frames..."
 msgstr "<Image>/Vídeo/Partir imagen en fotogramas..."
 
-#: gap/gap_main.c:834
-msgid "<Image>/Video/Framesequence Shift..."
+#: gap/gap_main.c:835
+msgid "<Image>/Video/Frame Sequence Shift..."
 msgstr "<Image>/Vídeo/Desplazar secuencia de fotogramas..."
 
-#: gap/gap_main.c:846
+#: gap/gap_main.c:847
 msgid "<Image>/Video/Frames Renumber..."
 msgstr "<Image>/Vídeo/Renumerar fotogramas..."
 
-#: gap/gap_main.c:858
+#: gap/gap_main.c:859
 msgid "<Image>/Video/Frames Modify..."
 msgstr "<Image>/Vídeo/Modificar fotogramas..."
 
 #. Layer select modes
-#: gap/gap_mod_layer.c:92 gap/gap_onion_dialog.c:1163 gap/gap_range_ops.c:601
+#: gap/gap_mod_layer.c:92 gap/gap_onion_dialog.c:1163 gap/gap_range_ops.c:602
 msgid "Pattern is equal to LayerName"
 msgstr "El patrón es igual a nombre de capa"
 
-#: gap/gap_mod_layer.c:93 gap/gap_onion_dialog.c:1171 gap/gap_range_ops.c:602
+#: gap/gap_mod_layer.c:93 gap/gap_onion_dialog.c:1171 gap/gap_range_ops.c:603
 msgid "Pattern is Start of LayerName"
 msgstr "El patrón comienza como el nombre de capa"
 
-#: gap/gap_mod_layer.c:94 gap/gap_onion_dialog.c:1179 gap/gap_range_ops.c:603
+#: gap/gap_mod_layer.c:94 gap/gap_onion_dialog.c:1179 gap/gap_range_ops.c:604
 msgid "Pattern is End of Layername"
 msgstr "El patrón acaba como el nombre de capa"
 
-#: gap/gap_mod_layer.c:95 gap/gap_onion_dialog.c:1187 gap/gap_range_ops.c:604
+#: gap/gap_mod_layer.c:95 gap/gap_onion_dialog.c:1187 gap/gap_range_ops.c:605
 msgid "Pattern is a Part of LayerName"
 msgstr "El patrón es parte del nombre de capa"
 
-#: gap/gap_mod_layer.c:96 gap/gap_onion_dialog.c:1195 gap/gap_range_ops.c:605
+#: gap/gap_mod_layer.c:96 gap/gap_onion_dialog.c:1195 gap/gap_range_ops.c:606
 msgid "Pattern is LayerstackNumber List"
 msgstr "El patrón es una lista de números de la pila de capas"
 
-#: gap/gap_mod_layer.c:97 gap/gap_onion_dialog.c:1203 gap/gap_range_ops.c:606
+#: gap/gap_mod_layer.c:97 gap/gap_onion_dialog.c:1203 gap/gap_range_ops.c:607
 msgid "Pattern is REVERSE-stack List"
 msgstr "El patrón es una lista de pila invertida"
 
-#: gap/gap_mod_layer.c:98 gap/gap_onion_dialog.c:1211 gap/gap_range_ops.c:607
+#: gap/gap_mod_layer.c:98 gap/gap_onion_dialog.c:1211 gap/gap_range_ops.c:608
 msgid "All Visible (ignore Pattern)"
 msgstr "Todas las visibles (no considerar el patrón)"
 
@@ -975,38 +986,28 @@ msgstr ""
 "Realiza la función en una o más capas\n"
 "en todos los fotogramas del rango seleccionado\n"
 
-#: gap/gap_mod_layer.c:165 gap/gap_mpege.c:274 gap/gap_onion_dialog.c:899
-#: gap/gap_range_ops.c:470
-msgid "From Frame:"
-msgstr "Desde fotograma:"
-
 # //R Humm
-#: gap/gap_mod_layer.c:166 gap/gap_mpege.c:275 gap/gap_range_ops.c:471
-#: gap/gap_range_ops.c:630
+#: gap/gap_mod_layer.c:166 gap/gap_mpege.c:276 gap/gap_range_ops.c:472
+#: gap/gap_range_ops.c:631
 msgid "first handled frame"
 msgstr "primer fotograma manejado"
 
-#: gap/gap_mod_layer.c:173 gap/gap_mpege.c:284 gap/gap_onion_dialog.c:906
-#: gap/gap_range_ops.c:478
-msgid "To Frame:"
-msgstr "Hasta fotograma:"
-
 # //R Hum de nuevo
-#: gap/gap_mod_layer.c:174 gap/gap_mpege.c:285 gap/gap_range_ops.c:479
-#: gap/gap_range_ops.c:638
+#: gap/gap_mod_layer.c:174 gap/gap_mpege.c:286 gap/gap_range_ops.c:480
+#: gap/gap_range_ops.c:639
 msgid "last handled frame"
 msgstr "último fotograma manejado"
 
-#: gap/gap_mod_layer.c:182 gap/gap_range_ops.c:677
+#: gap/gap_mod_layer.c:182 gap/gap_range_ops.c:678
 msgid "Select Layer(s):"
 msgstr "Selección de capa(s):"
 
-#: gap/gap_mod_layer.c:192 gap/gap_onion_dialog.c:1249 gap/gap_range_ops.c:686
+#: gap/gap_mod_layer.c:192 gap/gap_onion_dialog.c:1249 gap/gap_range_ops.c:687
 msgid "Select Pattern:"
 msgstr "Seleccione patrón:"
 
 #. pixel
-#: gap/gap_mod_layer.c:194 gap/gap_range_ops.c:688
+#: gap/gap_mod_layer.c:194 gap/gap_range_ops.c:689
 msgid ""
 "String to identify layer names\n"
 "or layerstack position numbers\n"
@@ -1016,15 +1017,15 @@ msgstr ""
 "o los números de posición en la pila de capas\n"
 "0,3-5"
 
-#: gap/gap_mod_layer.c:200 gap/gap_onion_dialog.c:1235 gap/gap_range_ops.c:694
+#: gap/gap_mod_layer.c:200 gap/gap_onion_dialog.c:1235 gap/gap_range_ops.c:695
 msgid "Case sensitive"
 msgstr "Sensible a capitalización"
 
-#: gap/gap_mod_layer.c:201 gap/gap_range_ops.c:695
+#: gap/gap_mod_layer.c:201 gap/gap_range_ops.c:696
 msgid "Lowercase and UPPERCASE letters are considered as different"
 msgstr "Se consideran distintas las letras minúsculas y MAYÚSCULAS"
 
-#: gap/gap_mod_layer.c:206 gap/gap_onion_dialog.c:1242 gap/gap_range_ops.c:700
+#: gap/gap_mod_layer.c:206 gap/gap_onion_dialog.c:1242 gap/gap_range_ops.c:701
 msgid "Invert Selection"
 msgstr "Invertir selección"
 
@@ -1094,155 +1095,149 @@ msgstr "Modificando fotogramas/capa(s)..."
 msgid "No selected Layer in start frame"
 msgstr "No hay capa seleccionada en el fotograma inicial"
 
-#: gap/gap_mov_dialog.c:270
+#: gap/gap_mov_dialog.c:271
 msgid "Normal"
 msgstr "Normal"
 
-#: gap/gap_mov_dialog.c:271
+#: gap/gap_mov_dialog.c:272
 msgid "Dissolve"
 msgstr "Disolver"
 
-#: gap/gap_mov_dialog.c:272
+#: gap/gap_mov_dialog.c:273
 msgid "Multiply"
 msgstr "Multiplicar"
 
-#: gap/gap_mov_dialog.c:273
+#: gap/gap_mov_dialog.c:274
 msgid "Screen"
 msgstr "Pantalla"
 
-#: gap/gap_mov_dialog.c:274
+#: gap/gap_mov_dialog.c:275
 msgid "Overlay"
 msgstr "Solapar"
 
-#: gap/gap_mov_dialog.c:275
+#: gap/gap_mov_dialog.c:276
 msgid "Difference"
 msgstr "Diferencia"
 
-#: gap/gap_mov_dialog.c:276
+#: gap/gap_mov_dialog.c:277
 msgid "Addition"
 msgstr "Suma"
 
-#: gap/gap_mov_dialog.c:277
+#: gap/gap_mov_dialog.c:278
 msgid "Subtract"
 msgstr "Sustraer"
 
-#: gap/gap_mov_dialog.c:278
+#: gap/gap_mov_dialog.c:279
 msgid "Darken Only"
 msgstr "Oscurecer sólo"
 
-#: gap/gap_mov_dialog.c:279
+#: gap/gap_mov_dialog.c:280
 msgid "Lighten Only"
 msgstr "Iluminar sólo"
 
-#: gap/gap_mov_dialog.c:280
+#: gap/gap_mov_dialog.c:281
 msgid "Hue"
 msgstr "Tono"
 
-#: gap/gap_mov_dialog.c:281
+#: gap/gap_mov_dialog.c:282
 msgid "Saturation"
 msgstr "Saturación"
 
-#: gap/gap_mov_dialog.c:282
+#: gap/gap_mov_dialog.c:283
 msgid "Color"
 msgstr "Color"
 
-#: gap/gap_mov_dialog.c:283
+#: gap/gap_mov_dialog.c:284
 msgid "Value"
 msgstr "Valor"
 
-#: gap/gap_mov_dialog.c:290
+#: gap/gap_mov_dialog.c:291
 msgid "Left  Top"
 msgstr "Superior izquierda"
 
-#: gap/gap_mov_dialog.c:291
+#: gap/gap_mov_dialog.c:292
 msgid "Left  Bottom"
 msgstr "Inferior izquierda"
 
-#: gap/gap_mov_dialog.c:292
+#: gap/gap_mov_dialog.c:293
 msgid "Right Top"
 msgstr "Superior derecha"
 
-#: gap/gap_mov_dialog.c:293
+#: gap/gap_mov_dialog.c:294
 msgid "Right Bottom"
 msgstr "Inferior derecha"
 
-#: gap/gap_mov_dialog.c:294
+#: gap/gap_mov_dialog.c:295
 msgid "Center"
 msgstr "Centro"
 
 #. the playback mode checkbuttons
-#: gap/gap_mov_dialog.c:302 gap/gap_player_dialog.c:2468
+#: gap/gap_mov_dialog.c:303 gap/gap_player_dialog.c:2469
 msgid "Loop"
 msgstr "Bucle"
 
-#: gap/gap_mov_dialog.c:303
+#: gap/gap_mov_dialog.c:304
 msgid "Loop Reverse"
 msgstr "Bucle invertido"
 
-#: gap/gap_mov_dialog.c:304
+#: gap/gap_mov_dialog.c:305
 msgid "Once"
 msgstr "Una vez"
 
-#: gap/gap_mov_dialog.c:305
+#: gap/gap_mov_dialog.c:306
 msgid "OnceReverse"
 msgstr "Una vez-Invertido"
 
-#: gap/gap_mov_dialog.c:306 gap/gap_player_dialog.c:2496
+#: gap/gap_mov_dialog.c:307 gap/gap_player_dialog.c:2497
 msgid "PingPong"
 msgstr "Ping-Pong"
 
-#: gap/gap_mov_dialog.c:307
+#: gap/gap_mov_dialog.c:308
 msgid "None"
 msgstr "Ninguno"
 
-#: gap/gap_mov_dialog.c:308
+#: gap/gap_mov_dialog.c:309
 msgid "Frame Loop"
 msgstr "Bucle de fotogramas"
 
-#: gap/gap_mov_dialog.c:309
+#: gap/gap_mov_dialog.c:310
 msgid "Frame Loop Reverse"
 msgstr "Bucle de fotogramas invertido"
 
-#: gap/gap_mov_dialog.c:310
+#: gap/gap_mov_dialog.c:311
 msgid "Frame Once"
 msgstr "Fotograma una vez"
 
-#: gap/gap_mov_dialog.c:311
+#: gap/gap_mov_dialog.c:312
 msgid "Frame OnceReverse"
 msgstr "Fotograma una vez-invertido"
 
-#: gap/gap_mov_dialog.c:312
+#: gap/gap_mov_dialog.c:313
 msgid "Frame PingPong"
 msgstr "Fotogramas en Ping-Pong"
 
-#: gap/gap_mov_dialog.c:313
+#: gap/gap_mov_dialog.c:314
 msgid "Frame None"
 msgstr "Ningún fotograma"
 
-#: gap/gap_mov_dialog.c:471
+#: gap/gap_mov_dialog.c:472
 msgid "Move Path"
 msgstr "Camino de movimiento"
 
-#: gap/gap_mov_dialog.c:500
+#: gap/gap_mov_dialog.c:501
 msgid "Show PreviewFrame with Selected SrcLayer at current Controlpoint"
 msgstr ""
 "Mostrar fotograma de vista previa con la capa origen seleccionada en el "
 "punto de control actual"
 
-#: gap/gap_mov_dialog.c:511
+#: gap/gap_mov_dialog.c:512
 msgid "Generate Animated Preview as multilayer image"
 msgstr "Generar vista previa animada como imagen multicapa"
 
 #. parameter settings
-#: gap/gap_mov_dialog.c:529
+#: gap/gap_mov_dialog.c:530
 msgid "Copy moving source-layer(s) into frames"
 msgstr "Copiar y mover capa(s) origen en fotogramas"
-
-#. the start frame scale_entry
-#. table col, row
-#: gap/gap_mov_dialog.c:566
-msgid "Start Frame:"
-msgstr "Fotograma inicial:"
 
 # //R Humm
 #. label text
@@ -1253,15 +1248,9 @@ msgstr "Fotograma inicial:"
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: gap/gap_mov_dialog.c:574 gap/gap_onion_dialog.c:924
+#: gap/gap_mov_dialog.c:575 gap/gap_onion_dialog.c:924
 msgid "First handled frame"
 msgstr "Primer fotograma manejado"
-
-#. the end frame scale_entry
-#. table col, row
-#: gap/gap_mov_dialog.c:581
-msgid "End Frame:"
-msgstr "Fotograma final:"
 
 #. label text
 #. scalesize spinsize
@@ -1271,13 +1260,13 @@ msgstr "Fotograma final:"
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: gap/gap_mov_dialog.c:589 gap/gap_onion_dialog.c:942
+#: gap/gap_mov_dialog.c:590 gap/gap_onion_dialog.c:942
 msgid "Last handled frame"
 msgstr "Último fotograma manejado"
 
 #. the Layerstack scale_entry
 #. table col, row
-#: gap/gap_mov_dialog.c:596 gap/gap_range_ops.c:294
+#: gap/gap_mov_dialog.c:597 gap/gap_range_ops.c:295
 msgid "Layerstack:"
 msgstr "Pila de capas:"
 
@@ -1289,7 +1278,7 @@ msgstr "Pila de capas:"
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: gap/gap_mov_dialog.c:604
+#: gap/gap_mov_dialog.c:605
 msgid ""
 "How to insert SrcLayer into the Dst. Frame's Layerstack\n"
 "0 means on top i.e. in front"
@@ -1298,25 +1287,25 @@ msgstr ""
 "0 significa en la cima, es decir, en el frente"
 
 #. toggle force visibility
-#: gap/gap_mov_dialog.c:616
+#: gap/gap_mov_dialog.c:617
 msgid "Force visibility"
 msgstr "Forzar visibilidad"
 
 # //R Esto está en chino
-#: gap/gap_mov_dialog.c:620
+#: gap/gap_mov_dialog.c:621
 msgid "Force visibility for all copied Src-Layers"
 msgstr "Forzar visibilidad para todas las capas origen copiadas"
 
 #. toggle clip_to_image
-#: gap/gap_mov_dialog.c:629
+#: gap/gap_mov_dialog.c:630
 msgid "Clip To Frame"
 msgstr "Recortar a fotograma"
 
-#: gap/gap_mov_dialog.c:633
+#: gap/gap_mov_dialog.c:634
 msgid "Clip all copied Src-Layers at Frame Boundaries"
 msgstr "Recorta todas las capas origen copiadas a los bordes del fotograma"
 
-#: gap/gap_mov_dialog.c:691
+#: gap/gap_mov_dialog.c:692
 msgid ""
 "No Source Image was selected\n"
 "(Please open a 2nd Image of the same type before opening Move Path)"
@@ -1325,44 +1314,44 @@ msgstr ""
 "(Por favor, abra una 2ª imagen del mismo tipo antes de abrir Camino de "
 "movimiento)"
 
-#: gap/gap_mov_dialog.c:789
+#: gap/gap_mov_dialog.c:790
 msgid "Object on empty frames"
 msgstr "Objeto en fotogramas vacíos"
 
-#: gap/gap_mov_dialog.c:790
+#: gap/gap_mov_dialog.c:791
 msgid "Object on one frame"
 msgstr "Objeto en un fotograma"
 
-#: gap/gap_mov_dialog.c:791
+#: gap/gap_mov_dialog.c:792
 msgid "Exact Object on frames"
 msgstr "Objeto exacto en fotogramas"
 
-#: gap/gap_mov_dialog.c:821
+#: gap/gap_mov_dialog.c:822
 msgid "Anim Preview Mode"
 msgstr "Modo de vista previa de animación"
 
-#: gap/gap_mov_dialog.c:829
+#: gap/gap_mov_dialog.c:830
 msgid "Scale Preview"
 msgstr "Escala de vista previa"
 
-#: gap/gap_mov_dialog.c:830
+#: gap/gap_mov_dialog.c:831
 msgid "Scale down size of the generated animated preview (in %)"
 msgstr "Cambia el tamaño de la vista previa animada (en %)"
 
 # //R Mejorar
-#: gap/gap_mov_dialog.c:838
+#: gap/gap_mov_dialog.c:839
 msgid "Framerate"
 msgstr "Tasa de fotogramas"
 
-#: gap/gap_mov_dialog.c:839
+#: gap/gap_mov_dialog.c:840
 msgid "Framerate to use in the animated preview in frames/sec"
 msgstr "Tasa de fotogramas (en fotogramas/seg.) a usar en la vista previa animada"
 
-#: gap/gap_mov_dialog.c:853
+#: gap/gap_mov_dialog.c:854
 msgid "Copy to Video Buffer"
 msgstr "Copiar a búfer de vídeo"
 
-#: gap/gap_mov_dialog.c:854
+#: gap/gap_mov_dialog.c:855
 msgid ""
 "Save all single frames of animated preview to video buffer\n"
 "(configured in gimprc by video-paste-dir and video-paste-basename)"
@@ -1370,105 +1359,105 @@ msgstr ""
 "Guardar todos los fotogramas de la vista previa animada al búfer de vídeo\n"
 "(se configura en gimprc con video-paste-dir y video-paste-basename)"
 
-#: gap/gap_mov_dialog.c:858
+#: gap/gap_mov_dialog.c:859
 msgid "Move Path Animated Preview"
 msgstr "Vista previa animada de Camino de movimiento"
 
-#: gap/gap_mov_dialog.c:859
+#: gap/gap_mov_dialog.c:860
 msgid "Options"
 msgstr "Opciones"
 
-#: gap/gap_mov_dialog.c:904
+#: gap/gap_mov_dialog.c:905
 msgid "Generate Animated Preview failed\n"
 msgstr "Falló la generación de vista previa animada\n"
 
 #. filesel is already open
-#: gap/gap_mov_dialog.c:1177
+#: gap/gap_mov_dialog.c:1178
 msgid "Load Path Points from file"
 msgstr "Cargar puntos del camino desde un archivo"
 
 #. filesel is already open
-#: gap/gap_mov_dialog.c:1214
+#: gap/gap_mov_dialog.c:1215
 msgid "Save Path Points to file"
 msgstr "Guardar puntos del camino en un archivo"
 
-#: gap/gap_mov_dialog.c:1561
+#: gap/gap_mov_dialog.c:1562
 #, c-format
 msgid "Current Point: [ %3d ] of [ %3d ]"
 msgstr "Punto actual: [ %3d< ] de [ %3d ]"
 
-#: gap/gap_mov_dialog.c:1647
+#: gap/gap_mov_dialog.c:1648
 msgid "Source Select"
 msgstr "Selección de origen"
 
 #. Source Layer menu
-#: gap/gap_mov_dialog.c:1663
+#: gap/gap_mov_dialog.c:1664
 msgid "Source Image/Layer:"
 msgstr "Imagen/capa origen"
 
-#: gap/gap_mov_dialog.c:1673
+#: gap/gap_mov_dialog.c:1674
 msgid "Source Object to insert into Frame Range"
 msgstr "Objeto origen a insertar en el rango de fotogramas"
 
 #. Paintmode menu
-#: gap/gap_mov_dialog.c:1688
+#: gap/gap_mov_dialog.c:1689
 msgid "Mode:"
 msgstr "Modo:"
 
-#: gap/gap_mov_dialog.c:1697
+#: gap/gap_mov_dialog.c:1698
 msgid "Paintmode"
 msgstr "Modo pintura"
 
 #. Loop Stepmode menu
-#: gap/gap_mov_dialog.c:1712
+#: gap/gap_mov_dialog.c:1713
 msgid "Stepmode:"
 msgstr "Modo de paso:"
 
-#: gap/gap_mov_dialog.c:1730
+#: gap/gap_mov_dialog.c:1731
 msgid "How to fetch the next SrcLayer at the next handled frame"
 msgstr "Cómo obtener la siguiente capa origen en el siguiente fotograma manejado"
 
 #. Source Image Handle menu
-#: gap/gap_mov_dialog.c:1736
+#: gap/gap_mov_dialog.c:1737
 msgid "Handle:"
 msgstr "Manejar:"
 
-#: gap/gap_mov_dialog.c:1754
+#: gap/gap_mov_dialog.c:1755
 msgid "How to place the SrcLayer at Controlpoint Coordinates"
 msgstr "Cómo colocar la capa origen en las coordenadas del punto de control"
 
 #. to avoid side effects while initialization
 #. the frame
-#: gap/gap_mov_dialog.c:1806
+#: gap/gap_mov_dialog.c:1807
 msgid "Move Path Preview"
 msgstr "Vista previa de Camino de movimiento"
 
 #. X
 #. table col, row
-#: gap/gap_mov_dialog.c:1834 gap/gap_resi_dialog.c:819
+#: gap/gap_mov_dialog.c:1835 gap/gap_resi_dialog.c:819
 msgid "X:"
 msgstr "X:"
 
 #. lower, upper (unconstrained)
-#: gap/gap_mov_dialog.c:1843
+#: gap/gap_mov_dialog.c:1844
 msgid "X Coordinate"
 msgstr "Coordenada X"
 
 #. Y
 #. table col, row
-#: gap/gap_mov_dialog.c:1852 gap/gap_resi_dialog.c:728
+#: gap/gap_mov_dialog.c:1853 gap/gap_resi_dialog.c:728
 #: gap/gap_resi_dialog.c:825
 msgid "Y:"
 msgstr "Y:"
 
 #. lower, upper (unconstrained)
-#: gap/gap_mov_dialog.c:1861
+#: gap/gap_mov_dialog.c:1862
 msgid "Y Coordinate"
 msgstr "Coordenada Y"
 
 #. Widht Scale
 #. table col, row
-#: gap/gap_mov_dialog.c:1870
+#: gap/gap_mov_dialog.c:1871
 msgid "Width:"
 msgstr "Anchura:"
 
@@ -1480,13 +1469,13 @@ msgstr "Anchura:"
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: gap/gap_mov_dialog.c:1878
+#: gap/gap_mov_dialog.c:1879
 msgid "Scale Source Layer's Width in percent"
 msgstr "Redimensionar anchura de capa origen (en %)"
 
 #. Height Scale
 #. table col, row
-#: gap/gap_mov_dialog.c:1887 gap/gap_resi_dialog.c:646
+#: gap/gap_mov_dialog.c:1888 gap/gap_resi_dialog.c:646
 #: gap/gap_resi_dialog.c:674
 msgid "Height:"
 msgstr "Altura:"
@@ -1499,13 +1488,13 @@ msgstr "Altura:"
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: gap/gap_mov_dialog.c:1895
+#: gap/gap_mov_dialog.c:1896
 msgid "Scale SrcLayer's Height in percent"
 msgstr "Redimensionar altura de capa origen (en %)"
 
 #. Opacity
 #. table col, row
-#: gap/gap_mov_dialog.c:1904 gap/gap_onion_dialog.c:1067
+#: gap/gap_mov_dialog.c:1905 gap/gap_onion_dialog.c:1067
 msgid "Opacity:"
 msgstr "Opacidad:"
 
@@ -1517,13 +1506,13 @@ msgstr "Opacidad:"
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: gap/gap_mov_dialog.c:1912
+#: gap/gap_mov_dialog.c:1913
 msgid "SrcLayer's Opacity in percent"
 msgstr "Opacidad de la capa origen en porcentaje:"
 
 #. Rotation
 #. table col, row
-#: gap/gap_mov_dialog.c:1921
+#: gap/gap_mov_dialog.c:1922
 msgid "Rotate:"
 msgstr "Rotar:"
 
@@ -1535,14 +1524,14 @@ msgstr "Rotar:"
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: gap/gap_mov_dialog.c:1929
+#: gap/gap_mov_dialog.c:1930
 msgid "Rotate SrcLayer (in degree)"
 msgstr "Rotar capa origen (en grados)"
 
 # //R Muy literal...
 #. Keyframe
 #. table col, row
-#: gap/gap_mov_dialog.c:1939
+#: gap/gap_mov_dialog.c:1940
 msgid "Keyframe:"
 msgstr "Fotograma llave:"
 
@@ -1554,7 +1543,7 @@ msgstr "Fotograma llave:"
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: gap/gap_mov_dialog.c:1947
+#: gap/gap_mov_dialog.c:1948
 msgid ""
 "Fix Controlpoint to Keyframe number\n"
 "(0 == No Keyframe)"
@@ -1564,7 +1553,7 @@ msgstr ""
 
 #. the Preview Frame scale_entry
 #. table col, row
-#: gap/gap_mov_dialog.c:2001
+#: gap/gap_mov_dialog.c:2002
 msgid "Preview Frame:"
 msgstr "Vista previa del fotograma:"
 
@@ -1578,11 +1567,11 @@ msgstr "Vista previa del fotograma:"
 #. constrain
 #. lower (unconstrained)
 #. upper (unconstrained)
-#: gap/gap_mov_dialog.c:2011
+#: gap/gap_mov_dialog.c:2012
 msgid "Frame to show when UpdPreview button is pressed"
 msgstr "Fotograma a mostrar cuando se pulse el botón Actualizar vista previa."
 
-#: gap/gap_mov_dialog.c:2070
+#: gap/gap_mov_dialog.c:2071
 msgid ""
 "Add Controlpoint at end\n"
 "(the last Point is duplicated)"
@@ -1590,16 +1579,16 @@ msgstr ""
 "Añadir punto de control al final\n"
 "(el último punto es duplicado)"
 
-#: gap/gap_mov_dialog.c:2082
+#: gap/gap_mov_dialog.c:2083
 msgid "Show"
 msgstr "Mostrar"
 
 #. toggle Show path
-#: gap/gap_mov_dialog.c:2091
+#: gap/gap_mov_dialog.c:2092
 msgid "Path"
 msgstr "Camino"
 
-#: gap/gap_mov_dialog.c:2095
+#: gap/gap_mov_dialog.c:2096
 msgid ""
 "Show Path Lines and enable pick/drag with left button or move with right "
 "button"
@@ -1608,15 +1597,15 @@ msgstr ""
 "izquierdo, o mover con el derecho"
 
 #. toggle Show cursor
-#: gap/gap_mov_dialog.c:2107
+#: gap/gap_mov_dialog.c:2108
 msgid "Cursor"
 msgstr "Cursor"
 
-#: gap/gap_mov_dialog.c:2111
+#: gap/gap_mov_dialog.c:2112
 msgid "Show Cursor Crosslines"
 msgstr "Mostrar líneas de cruce del cursor"
 
-#: gap/gap_mov_dialog.c:2130
+#: gap/gap_mov_dialog.c:2131
 msgid ""
 "Insert Controlpoint\n"
 "(the current Point is duplicated)"
@@ -1624,31 +1613,31 @@ msgstr ""
 "Insertar punto de control\n"
 "(se duplica el punto actual)"
 
-#: gap/gap_mov_dialog.c:2142
+#: gap/gap_mov_dialog.c:2143
 msgid "Delete current Controlpoint"
 msgstr "Borrar punto de control actual"
 
-#: gap/gap_mov_dialog.c:2156
+#: gap/gap_mov_dialog.c:2157
 msgid "Show Previous Controlpoint"
 msgstr "Mostrar punto de control anterior"
 
-#: gap/gap_mov_dialog.c:2168
+#: gap/gap_mov_dialog.c:2169
 msgid "Show Next Controlpoint"
 msgstr "Mostrar siguiente punto de control"
 
-#: gap/gap_mov_dialog.c:2182
+#: gap/gap_mov_dialog.c:2183
 msgid "Show First Controlpoint"
 msgstr "Mostrar primer punto de control"
 
-#: gap/gap_mov_dialog.c:2194
+#: gap/gap_mov_dialog.c:2195
 msgid "Show Last Controlpoint"
 msgstr "Mostrar el último punto de control"
 
-#: gap/gap_mov_dialog.c:2208
+#: gap/gap_mov_dialog.c:2209
 msgid "Reset the current Controlpoint to default Values"
 msgstr "Restaurar todos los puntos de control actuales a valores predefinidos"
 
-#: gap/gap_mov_dialog.c:2220
+#: gap/gap_mov_dialog.c:2221
 msgid ""
 "Reset all Controlpoints to default Values but dont change the path (X/Y "
 "Values)"
@@ -1656,7 +1645,7 @@ msgstr ""
 "Restaura todos los puntos de control a sus valores predefinidos pero no "
 "cambiar el camino (Valores X/Y)"
 
-#: gap/gap_mov_dialog.c:2235
+#: gap/gap_mov_dialog.c:2236
 msgid ""
 "Set Rotation for all Controlpoints to follow the shape of the path.\n"
 "(Shift: use Rotation of contolpoint 1 as offset)"
@@ -1666,19 +1655,19 @@ msgstr ""
 "(Con Mayúsculas: utilizar la rotación del primer punto de control para "
 "desfasar todas las rotaciones)"
 
-#: gap/gap_mov_dialog.c:2249
+#: gap/gap_mov_dialog.c:2250
 msgid "Delete all Controlpoints"
 msgstr "Borrar todos los puntos de control"
 
-#: gap/gap_mov_dialog.c:2265
+#: gap/gap_mov_dialog.c:2266
 msgid "Load Controlpoints from file"
 msgstr "Cargar puntos de control desde un archivo"
 
-#: gap/gap_mov_dialog.c:2278
+#: gap/gap_mov_dialog.c:2279
 msgid "Save Controlpoints to file"
 msgstr "Guardar puntos de control en un archivo"
 
-#: gap/gap_mov_dialog.c:2678
+#: gap/gap_mov_dialog.c:2679
 msgid ""
 "Can't operate with current Controlpoint\n"
 "or Keyframe settings"
@@ -1686,15 +1675,15 @@ msgstr ""
 "No puedo operar con los actuales puntos de\n"
 "control o ajustes de fotogramas llave."
 
-#: gap/gap_mov_dialog.c:2683
+#: gap/gap_mov_dialog.c:2684
 msgid "Reset Keyframes"
 msgstr "Restaurar fotogramas llave"
 
-#: gap/gap_mov_dialog.c:2688
+#: gap/gap_mov_dialog.c:2689
 msgid "Move Path Controlpointcheck"
 msgstr "Chequeo de puntos de control de Camino de movimiento"
 
-#: gap/gap_mov_dialog.c:2689
+#: gap/gap_mov_dialog.c:2690
 msgid "Errors:"
 msgstr "Errores:"
 
@@ -1765,15 +1754,15 @@ msgstr ""
 "Error: Hay más puntos de control (%d) que fotogramas manejados (%d)\n"
 "Por favor, reduzca los puntos de control o seleccione más fotogramas"
 
-#: gap/gap_mpege.c:117
-msgid "Conditions to run mpeg2encode 1.2:"
-msgstr "Condiciones para ejecutar mpeg2encode 1.2:"
+#: gap/gap_mpege.c:118
+msgid "Requirements to run mpeg2encode 1.2:"
+msgstr "Requisitos para ejecutar mpeg2encode 1.2:"
 
-#: gap/gap_mpege.c:121
-msgid "Conditions to run mpeg_encode 1.5:"
-msgstr "Condiciones para ejecutar mpeg_encode 1.5:"
+#: gap/gap_mpege.c:122
+msgid "Requirements to run mpeg_encode 1.5:"
+msgstr "Requisitos para ejecutar mpeg_encode 1.5:"
 
-#: gap/gap_mpege.c:137
+#: gap/gap_mpege.c:138
 msgid ""
 "mpeg2encode 1.2 must be installed\n"
 "you can get mpeg2encode at\n"
@@ -1787,7 +1776,7 @@ msgstr ""
 "o en\n"
 "ftp://ftp.mpeg.org/pub/mpeg/mssg"
 
-#: gap/gap_mpege.c:146
+#: gap/gap_mpege.c:147
 msgid ""
 "mpeg_encode 1.5 must be installed}\n"
 "you can get mpeg_encode at\n"
@@ -1797,7 +1786,7 @@ msgstr ""
 "puede obtener mpeg_encode en\n"
 "ftp://mm-ftp.cs.berkeley.edu/pub/multimedia/mpeg/bmt1r1.tar.gz"
 
-#: gap/gap_mpege.c:162
+#: gap/gap_mpege.c:163
 msgid ""
 "You need a series of single Images on disk (AnimFrames)\n"
 "all with fileformat JPEG (or YUV or PNM or PPM)\n"
@@ -1811,7 +1800,7 @@ msgstr ""
 "(use «Convertir fotograma» del menú Vídeo\n"
 "o «Dividir imagen en fotogramas» del menú Vídeo)"
 
-#: gap/gap_mpege.c:171
+#: gap/gap_mpege.c:172
 msgid ""
 "You need a series of single Images on disk (AnimFrames)\n"
 "all with fileformat JPEG (or YUV or PNM or PPM)\n"
@@ -1823,7 +1812,7 @@ msgstr ""
 "(use «Convertir fotogramas» desde el menú de Vídeo\n"
 "o «Dividir imagen en fotogramas» desde el menú de Vídeo)"
 
-#: gap/gap_mpege.c:188
+#: gap/gap_mpege.c:189
 msgid ""
 "All Images must have the same size,\n"
 "width and height must be a multiple of 16\n"
@@ -1833,44 +1822,44 @@ msgstr ""
 "la anchura y altura deben ser múltiplos de 16\n"
 "(use Escalar o Recortar desde el menú Vídeo)"
 
-#: gap/gap_mpege.c:195
+#: gap/gap_mpege.c:196
 msgid "All Images must have the same size,"
 msgstr "Todas las imágenes deben tener el mismo tamaño,"
 
-#: gap/gap_mpege.c:210
+#: gap/gap_mpege.c:211
 msgid "MPEG_ENCODE Information"
 msgstr "Información MPEG_ENCODE"
 
-#: gap/gap_mpege.c:247
+#: gap/gap_mpege.c:248
 msgid "generate MPEG1 (ISO/IEC 11172-2) stream"
 msgstr "genera flujo MPEG1 (ISO/IEC 11172-2)"
 
-#: gap/gap_mpege.c:248
+#: gap/gap_mpege.c:249
 msgid "generate MPEG2 (ISO/IEC DIS 13818-2) stream"
 msgstr "genera flujo MPEG2 (ISO/IEC DIS 13818-2)"
 
 # //R ¿Será esto?
-#: gap/gap_mpege.c:258
+#: gap/gap_mpege.c:259
 msgid "GenParams"
 msgstr "Generar parámetros"
 
-#: gap/gap_mpege.c:260
+#: gap/gap_mpege.c:261
 msgid "Gen + Encode"
 msgstr "Generar y codificar"
 
-#: gap/gap_mpege.c:293 gap/gap_navigator_dialog.c:3796
+#: gap/gap_mpege.c:294 gap/gap_navigator_dialog.c:3796
 msgid "Framerate:"
 msgstr "Tasa de fotogramas:"
 
-#: gap/gap_mpege.c:294
+#: gap/gap_mpege.c:295
 msgid "framerate in frames/second"
 msgstr "Tasa de fotogramas en fotogramas/segundo"
 
-#: gap/gap_mpege.c:303
+#: gap/gap_mpege.c:304
 msgid "Bitrate:"
 msgstr "Tasa de bits:"
 
-#: gap/gap_mpege.c:304
+#: gap/gap_mpege.c:305
 msgid ""
 "used for constant bitrates (bit/sec)\n"
 "(low rate gives good compression + bad quality)"
@@ -1878,21 +1867,21 @@ msgstr ""
 "usado para tasas de bit constantes (bits/segundo)\n"
 "(Tasas bajas dan buena compresión y mala calidad)"
 
-#: gap/gap_mpege.c:320
+#: gap/gap_mpege.c:321
 msgid "Outputfile:"
 msgstr "Fichero salida:"
 
 #. pixel
-#: gap/gap_mpege.c:322
+#: gap/gap_mpege.c:323
 msgid "Name of the resulting MPEG outputfile"
 msgstr "Nombre del archivo de salida MPEG resultante"
 
-#: gap/gap_mpege.c:328
+#: gap/gap_mpege.c:329
 msgid "Paramfile:"
 msgstr "Fichero de parámetros:"
 
 #. pixel
-#: gap/gap_mpege.c:330
+#: gap/gap_mpege.c:331
 msgid ""
 "Name of the Encoder-Parameterfile\n"
 "(is generated)"
@@ -1901,12 +1890,12 @@ msgstr ""
 "(se genera)"
 
 # //R NI IDEA DE QUÉ ES ÉSTO
-#: gap/gap_mpege.c:336
+#: gap/gap_mpege.c:337
 msgid "Startscript:"
 msgstr "Guión de comienzo:"
 
 #. pixel
-#: gap/gap_mpege.c:338
+#: gap/gap_mpege.c:339
 msgid ""
 "Name of the Startscript\n"
 "(is generated/executed)"
@@ -1914,16 +1903,16 @@ msgstr ""
 "Nombre del script de comienzo\n"
 "(se genera/ejecuta)"
 
-#: gap/gap_mpege.c:345 gap/gap_name2layer_main.c:509 gap/gap_split.c:291
+#: gap/gap_mpege.c:346 gap/gap_name2layer_main.c:509 gap/gap_split.c:291
 msgid "Default"
 msgstr "Predeterminado"
 
-#: gap/gap_mpege.c:346 gap/gap_name2layer_main.c:510 gap/gap_split.c:292
+#: gap/gap_mpege.c:347 gap/gap_name2layer_main.c:510 gap/gap_split.c:292
 msgid "Reset all Parameters to Default Values"
 msgstr "Restaurar todos los parámetros a los valores predefinidos"
 
 # //R ¿Libre? ¿Gratis?
-#: gap/gap_mpege.c:350
+#: gap/gap_mpege.c:351
 msgid ""
 "Generate parameterfile for mpeg_encode 1.5\n"
 "(the freely distributed Berkeley MPEG-1 Video Encoder.)\n"
@@ -1931,28 +1920,28 @@ msgstr ""
 "Generar archivo de parámetros para mpeg_encode 1.5\n"
 "(El codificador de Vídeo MPEG-1 de Berkeley libremente distribuido)\n"
 
-#: gap/gap_mpege.c:354
+#: gap/gap_mpege.c:355
 msgid "Constant Bitrate:"
 msgstr "Tasa de bits constante:"
 
-#: gap/gap_mpege.c:355
+#: gap/gap_mpege.c:356
 msgid "Iqnore I/P/QSCALE values and use constant bit-rate)"
 msgstr "Pasar por alto valores I/P/QSCALE y usar tasa de bits constante)"
 
-#: gap/gap_mpege.c:362
+#: gap/gap_mpege.c:363
 msgid "Pattern:"
 msgstr "Patrón:"
 
 #. pixel
-#: gap/gap_mpege.c:364
-msgid "How to encode MPEG framesequence (I/P/B frames)"
+#: gap/gap_mpege.c:365
+msgid "How to encode MPEG Frame Sequence (I/P/B frames)"
 msgstr "Cómo codificar secuencia de fotogramas MPEG (Fotogramas I/P/B)"
 
-#: gap/gap_mpege.c:372
+#: gap/gap_mpege.c:373
 msgid "IQSCALE:"
 msgstr "IQSCALE:"
 
-#: gap/gap_mpege.c:373
+#: gap/gap_mpege.c:374
 msgid ""
 "Quality scale for I-Frames\n"
 "(1 = best quality, 31 = best comression)"
@@ -1960,11 +1949,11 @@ msgstr ""
 "Escala de calidad para I-Frames\n"
 "(1 = la mejor calidad, 31 = la mejor compresión)"
 
-#: gap/gap_mpege.c:382
+#: gap/gap_mpege.c:383
 msgid "PQSCALE:"
 msgstr "PQSCALE:"
 
-#: gap/gap_mpege.c:383
+#: gap/gap_mpege.c:384
 msgid ""
 "Quality scale for P-Frames\n"
 "(1 = best quality, 31 = best comression)"
@@ -1972,11 +1961,11 @@ msgstr ""
 "Escala de calidad para P-Frames\n"
 "(1 = la mejor calidad, 31 = la mejor compresión)"
 
-#: gap/gap_mpege.c:392
+#: gap/gap_mpege.c:393
 msgid "BQSCALE:"
 msgstr "BQSCALE:"
 
-#: gap/gap_mpege.c:393
+#: gap/gap_mpege.c:394
 msgid ""
 "Quality scale for B-Frames\n"
 "(1 = best quality, 31 = best comression)"
@@ -1984,31 +1973,31 @@ msgstr ""
 "Escala de calidad para B-Frames\n"
 "(1 = la mejor calidad, 31 = la mejor compresión)"
 
-#: gap/gap_mpege.c:402
+#: gap/gap_mpege.c:403
 msgid "P-Search:"
 msgstr "Búsqueda P:"
 
-#: gap/gap_mpege.c:403
+#: gap/gap_mpege.c:404
 msgid "Search Algorithmus used for P-frames"
 msgstr "Algoritmos de búsqueda de fotogramas P"
 
-#: gap/gap_mpege.c:411
+#: gap/gap_mpege.c:412
 msgid "B-Search:"
 msgstr "Búsqueda B:"
 
-#: gap/gap_mpege.c:412
+#: gap/gap_mpege.c:413
 msgid "Search Algorithmus used for B-frames"
 msgstr "Algoritmos de búsqueda de fotogramas B"
 
-#: gap/gap_mpege.c:419
+#: gap/gap_mpege.c:420
 msgid "Gen MPEG_ENCODE Parameters"
 msgstr "Generar parámetros MPEG_ENCODE"
 
-#: gap/gap_mpege.c:420 gap/gap_mpege.c:462
+#: gap/gap_mpege.c:421 gap/gap_mpege.c:463
 msgid "Encode Values"
 msgstr "Codificar valores"
 
-#: gap/gap_mpege.c:436
+#: gap/gap_mpege.c:437
 msgid ""
 "Generate parameterfile for mpeg2encode 1.2\n"
 "(MPEG-2 Video Encoder.)\n"
@@ -2016,24 +2005,24 @@ msgstr ""
 "Generar archivo de parámetros para mpeg2encode 1.2\n"
 "(Codificador de Vídeo MPEG-2)\n"
 
-#: gap/gap_mpege.c:439
+#: gap/gap_mpege.c:440
 msgid "MPEG-type:"
 msgstr "Tipo MPEG:"
 
-#: gap/gap_mpege.c:450
+#: gap/gap_mpege.c:451
 msgid "Videoformat:"
 msgstr "Formato de vídeo:"
 
-#: gap/gap_mpege.c:451
+#: gap/gap_mpege.c:452
 msgid "Videoformat"
 msgstr "Formato de vídeo"
 
 #. framerates above 30 ar not allowed in mpeg2encode
-#: gap/gap_mpege.c:461
+#: gap/gap_mpege.c:462
 msgid "Gen MPEG2ENCODE Parameters"
 msgstr "Generar parámetros MPEG2ENCODE"
 
-#: gap/gap_mpege.c:1026
+#: gap/gap_mpege.c:1027
 msgid ""
 "\n"
 "WARNING: mpeg_encode does not support Fileformat "
@@ -2041,7 +2030,7 @@ msgstr ""
 "\n"
 "AVISO: mpeg_encode no entiende el formato de archivo "
 
-#: gap/gap_mpege.c:1029
+#: gap/gap_mpege.c:1030
 msgid ""
 "\n"
 "ERROR: width not a multiple of 16"
@@ -2049,7 +2038,7 @@ msgstr ""
 "\n"
 "ERROR: La anchura no es múltiplo de 16"
 
-#: gap/gap_mpege.c:1030
+#: gap/gap_mpege.c:1031
 msgid ""
 "\n"
 "ERROR: height not a multiple of 16"
@@ -2057,7 +2046,7 @@ msgstr ""
 "\n"
 "ERROR: La altura no es múltiplo de 16"
 
-#: gap/gap_mpege.c:1036
+#: gap/gap_mpege.c:1037
 msgid ""
 "\n"
 "WARNING: mpeg2encode does not support Fileformat "
@@ -2065,7 +2054,7 @@ msgstr ""
 "\n"
 "AVISO: mpeg2encode no entiende el formato de archivo "
 
-#: gap/gap_mpege.c:1041
+#: gap/gap_mpege.c:1042
 msgid ""
 "\n"
 "ERROR: invoked from a single image, animframe required"
@@ -2319,7 +2308,9 @@ msgstr "Opacidad ascendente"
 msgid ""
 "ON: Far Neighbour Frames have the higher Opacity, OFF: Near Neighbour Frames "
 "have the higher Opacity"
-msgstr "Activado: Los fotogramas vecinos lejanos tienen mayor opacidad, Desactivado: Los fotogramas vecinos cercanos tienen la mayor opacidad"
+msgstr ""
+"Activado: Los fotogramas vecinos lejanos tienen mayor opacidad, Desactivado: "
+"Los fotogramas vecinos cercanos tienen la mayor opacidad"
 
 #: gap/gap_onion_dialog.c:996
 msgid "Number of Onionskin Layers to create in the handled Frame."
@@ -2489,10 +2480,12 @@ msgid ""
 "delete them manually using the menu Video/OnionSkin/make or Video/OnionSkin/"
 "delete or call the Procedures "
 msgstr ""
-"Este complemento es el IGU de configuración para las capas de papel cebolla. Las capas de papel "
-"cebolla normalmente muestran fotogramas previos (o siguientes) del vídeo en el fotograma actual. "
-"Las capas de papel cebolla no se crean automáticamente. tiene que crearlas o borrarlas manualmente "
-"usando el menú Vídeo/Papel cebolla/realizar o Vídeo/Papel cebolla/borrar o llamar a los procedimientos"
+"Este complemento es el IGU de configuración para las capas de papel cebolla. "
+"Las capas de papel cebolla normalmente muestran fotogramas previos (o "
+"siguientes) del vídeo en el fotograma actual. Las capas de papel cebolla no "
+"se crean automáticamente. tiene que crearlas o borrarlas manualmente usando "
+"el menú Vídeo/Papel cebolla/realizar o Vídeo/Papel cebolla/borrar o llamar a "
+"los procedimientos"
 
 #: gap/gap_onion_main.c:149
 msgid " "
@@ -2575,118 +2568,118 @@ msgid "Removing Onionskin Layers..."
 msgstr "Eliminando capas de papel cebolla..."
 
 #. pending timer_go_job gets useless, since we start playback now
-#: gap/gap_player_dialog.c:585 gap/gap_player_dialog.c:992
+#: gap/gap_player_dialog.c:586 gap/gap_player_dialog.c:993
 msgid "Playing"
 msgstr "Reproduciendo"
 
 #. the status value label
-#: gap/gap_player_dialog.c:622 gap/gap_player_dialog.c:2549
+#: gap/gap_player_dialog.c:623 gap/gap_player_dialog.c:2550
 msgid "Ready"
 msgstr "Preparado"
 
-#: gap/gap_player_dialog.c:975
+#: gap/gap_player_dialog.c:976
 msgid "SKIP"
 msgstr "SALTAR"
 
-#: gap/gap_player_dialog.c:1004
+#: gap/gap_player_dialog.c:1005
 #, c-format
 msgid "Delay %.2f"
 msgstr "Retardo %.2f"
 
-#: gap/gap_player_dialog.c:2181
+#: gap/gap_player_dialog.c:2182
 msgid "Videoframe Playback"
 msgstr "Reproducir fotogramas de vídeo"
 
-#: gap/gap_player_dialog.c:2293
+#: gap/gap_player_dialog.c:2294
 msgid "Start Framenumber of Selection Range"
 msgstr "Número de fotograma de inicio del rango de selección"
 
-#: gap/gap_player_dialog.c:2309
+#: gap/gap_player_dialog.c:2310
 msgid "End Framenumber of Selection Range"
 msgstr "Número de fotograma de fin del rango de selección"
 
 # //R Mejorar
 #. the framenr button
-#: gap/gap_player_dialog.c:2322
+#: gap/gap_player_dialog.c:2323
 msgid "FrameNr"
 msgstr "Número de fotograma"
 
-#: gap/gap_player_dialog.c:2327
+#: gap/gap_player_dialog.c:2328
 msgid "Load this Frame into the calling image"
 msgstr "Cargar este fotograma en la imagen llamada"
 
-#: gap/gap_player_dialog.c:2345
+#: gap/gap_player_dialog.c:2346
 msgid "Displayed Frame Nr"
 msgstr "Número de fotograma mostrado"
 
 #. the time position
-#: gap/gap_player_dialog.c:2352
+#: gap/gap_player_dialog.c:2353
 msgid "Timepos:"
 msgstr "Posición de tiempo:"
 
 #. the origspeed_button
-#: gap/gap_player_dialog.c:2381
+#: gap/gap_player_dialog.c:2382
 msgid "Speed"
 msgstr "Velocidad"
 
-#: gap/gap_player_dialog.c:2386
+#: gap/gap_player_dialog.c:2387
 msgid "Reset Playback Speed to original (or previous) Value"
 msgstr "Restablecer velocidad de reproducción al valor original (o anterior)"
 
-#: gap/gap_player_dialog.c:2406
+#: gap/gap_player_dialog.c:2407
 msgid "Current Playbackspeed (frames/sec)"
 msgstr "Velocidad de reproducción actual (fotogramas/segundo)"
 
 #. the size button
-#: gap/gap_player_dialog.c:2419
+#: gap/gap_player_dialog.c:2420
 msgid "Size"
 msgstr "Tamaño"
 
-#: gap/gap_player_dialog.c:2425
+#: gap/gap_player_dialog.c:2426
 msgid "Toggle Size 128/256, SHIFT: Set 1:1 full image Size"
 msgstr ""
 "Cambiar tamaño 128/256, DESPLAZAMIENTO: Establecer tamaño de imagen completo "
 "1:1"
 
-#: gap/gap_player_dialog.c:2443
+#: gap/gap_player_dialog.c:2444
 msgid "Video Preview Size (pixels)"
 msgstr "Tamaño de previsualización del vídeo (píxeles)"
 
-#: gap/gap_player_dialog.c:2473
+#: gap/gap_player_dialog.c:2474
 msgid "ON: Play in endless Loop, OFF: Play only once"
 msgstr ""
 "Activado: Reproducir en un bucle sin fin, Desactivado: Reproducir sólo una "
 "vez"
 
-#: gap/gap_player_dialog.c:2482
+#: gap/gap_player_dialog.c:2483
 msgid "Play Selection only"
 msgstr "Reproducir sólo la selección"
 
-#: gap/gap_player_dialog.c:2487
+#: gap/gap_player_dialog.c:2488
 msgid "ON: Play Selection only, OFF: Play all frames"
 msgstr ""
 "Activado: Reproducir sólo la selección, Desactivado: reproducir todos los "
 "fotogramas"
 
-#: gap/gap_player_dialog.c:2501
+#: gap/gap_player_dialog.c:2502
 msgid "ON: Play alternating forward/backward"
 msgstr "Activado: Reproducir alternando adelante/atrás"
 
-#: gap/gap_player_dialog.c:2510
+#: gap/gap_player_dialog.c:2511
 msgid "Use Thumbnails"
 msgstr "Usar miniaturas"
 
-#: gap/gap_player_dialog.c:2515
+#: gap/gap_player_dialog.c:2516
 msgid "ON: use thumbnails when available, OFF: read full sized frames"
 msgstr ""
 "Activado: Usar miniaturas cuando estén disponibles, Desactivado: leer "
 "fotogramas a tamaño completo"
 
-#: gap/gap_player_dialog.c:2525
+#: gap/gap_player_dialog.c:2526
 msgid "Exact Timing"
 msgstr "Temporización exacta"
 
-#: gap/gap_player_dialog.c:2530
+#: gap/gap_player_dialog.c:2531
 msgid "ON: skip frames to hold exact timing, OFF: disable frame skipping"
 msgstr ""
 "Activado: Saltar fotogramas para mantener un tiempo exacto, Desactivado: "
@@ -2694,23 +2687,23 @@ msgstr ""
 
 # //R NI IDEA DE QUÉ ES ÉSTO
 #. the status label
-#: gap/gap_player_dialog.c:2541
+#: gap/gap_player_dialog.c:2542
 msgid "Status:"
 msgstr "Estado:"
 
-#: gap/gap_player_dialog.c:2574
+#: gap/gap_player_dialog.c:2575
 msgid "Start Playback"
 msgstr "Iniciar reproducción"
 
-#: gap/gap_player_dialog.c:2584
+#: gap/gap_player_dialog.c:2585
 msgid "Pause (Goto Selection Start/Active/End if not playing)"
 msgstr "Pausa (Ir a Selección Iniciar/Activar/Terminar si no se está reproduciendo)"
 
-#: gap/gap_player_dialog.c:2593
+#: gap/gap_player_dialog.c:2594
 msgid "Start Reverse Playback"
 msgstr "Iniciar reproducción inversa"
 
-#: gap/gap_player_dialog.c:2602
+#: gap/gap_player_dialog.c:2603
 msgid "Close Window"
 msgstr "Cerrar ventana"
 
@@ -2719,99 +2712,99 @@ msgid "<Image>/Video/Playback..."
 msgstr "<Image>/Vídeo/Reproducir..."
 
 #. the new size labels
-#: gap/gap_range_ops.c:129 gap/gap_resi_dialog.c:668
+#: gap/gap_range_ops.c:130 gap/gap_resi_dialog.c:668
 msgid "New Width:"
 msgstr "Nueva anchura:"
 
-#: gap/gap_range_ops.c:140
+#: gap/gap_range_ops.c:141
 msgid "New Height:"
 msgstr "Nueva altura:"
 
-#: gap/gap_range_ops.c:151
+#: gap/gap_range_ops.c:152
 msgid "Offset X:"
 msgstr "Desplazamiento X:"
 
-#: gap/gap_range_ops.c:162
+#: gap/gap_range_ops.c:163
 msgid "Offset Y:"
 msgstr "Desplazamiento Y:"
 
-#: gap/gap_range_ops.c:176
+#: gap/gap_range_ops.c:177
 msgid "Crop AnimFrames (all)"
 msgstr "Recortar fotogramas (todos)"
 
-#: gap/gap_range_ops.c:177
+#: gap/gap_range_ops.c:178
 #, c-format
 msgid "Crop (original %dx%d)"
 msgstr "Recortar (original %dx%d)"
 
-#: gap/gap_range_ops.c:187
+#: gap/gap_range_ops.c:188
 msgid "Resize AnimFrames (all)"
 msgstr "Redimensionar fotogramas (todos)"
 
-#: gap/gap_range_ops.c:188
+#: gap/gap_range_ops.c:189
 #, c-format
 msgid "Resize (original %dx%d)"
 msgstr "Redimensionar (original %dx%d)"
 
-#: gap/gap_range_ops.c:194
+#: gap/gap_range_ops.c:195
 msgid "Scale AnimFrames (all)"
 msgstr "Escalar fotogramas (todos)"
 
-#: gap/gap_range_ops.c:195
+#: gap/gap_range_ops.c:196
 #, c-format
 msgid "Scale (original %dx%d)"
 msgstr "Escalar (original %dx%d)"
 
-#: gap/gap_range_ops.c:201
+#: gap/gap_range_ops.c:202
 msgid "Reset"
 msgstr "Restablecer"
 
 #. should use GIMP_STOCK_RESET if possible
-#: gap/gap_range_ops.c:202
+#: gap/gap_range_ops.c:203
 msgid "Reset Parameters to Original Size"
 msgstr "Restablecer parámetros al tamaño original"
 
-#: gap/gap_range_ops.c:335
+#: gap/gap_range_ops.c:336
 msgid "Generate Optimal Palette"
 msgstr "Generar paleta óptima"
 
-#: gap/gap_range_ops.c:336
+#: gap/gap_range_ops.c:337
 msgid "WEB Palette"
 msgstr "Paleta WEB"
 
-#: gap/gap_range_ops.c:337
+#: gap/gap_range_ops.c:338
 msgid "Use Custom Palette"
 msgstr "Usar paleta personalizada"
 
-#: gap/gap_range_ops.c:338
+#: gap/gap_range_ops.c:339
 msgid "Use Black/White (1-Bit) Palette"
 msgstr "Usar paleta en blanco/negro (1-bit)"
 
-#: gap/gap_range_ops.c:340
+#: gap/gap_range_ops.c:341
 msgid "Floyd-Steinberg Color Dithering (Normal)"
 msgstr "Tramado de color de Floyd-Steinberg (normal)"
 
-#: gap/gap_range_ops.c:341
+#: gap/gap_range_ops.c:342
 msgid "Floyd-Steinberg Color Dithering (Reduced Color Bleeding)"
 msgstr "Tramado de color de Floyd-Steinberg (Sangrado de color reducido)"
 
-#: gap/gap_range_ops.c:342
+#: gap/gap_range_ops.c:343
 msgid "Positioned Color Dithering"
 msgstr "Tramado de color posicionado"
 
-#: gap/gap_range_ops.c:343
+#: gap/gap_range_ops.c:344
 msgid "No Color Dithering"
 msgstr "Sin tramado de color"
 
-#: gap/gap_range_ops.c:354
+#: gap/gap_range_ops.c:355
 msgid "Palette Type"
 msgstr "Tipo de paleta"
 
-#: gap/gap_range_ops.c:361
+#: gap/gap_range_ops.c:362
 msgid "Custom Palette"
 msgstr "Paleta personalizada"
 
-#: gap/gap_range_ops.c:362
+#: gap/gap_range_ops.c:363
 msgid ""
 "Name of a cutom palette\n"
 "(is ignored if Palette Type is not custom)"
@@ -2819,11 +2812,11 @@ msgstr ""
 "Nombre de la paleta personalizada\n"
 "(no se considera si Tipo de Paleta no es personalizado)"
 
-#: gap/gap_range_ops.c:367
+#: gap/gap_range_ops.c:368
 msgid "Remove Unused"
 msgstr "Quitar no usados"
 
-#: gap/gap_range_ops.c:368
+#: gap/gap_range_ops.c:369
 msgid ""
 "Remove unused or double colors\n"
 "(is ignored if Palette Type is not custom)"
@@ -2831,11 +2824,11 @@ msgstr ""
 "Quitar colores no usados o duplicados\n"
 "(no se considera si Tipo de Paleta no es personalizado)"
 
-#: gap/gap_range_ops.c:373
+#: gap/gap_range_ops.c:374
 msgid "Number of Colors"
 msgstr "Número de colores"
 
-#: gap/gap_range_ops.c:374
+#: gap/gap_range_ops.c:375
 msgid ""
 "Number of resulting Colors\n"
 "(ignored if Palette Type is not Generate optimal palette)"
@@ -2843,43 +2836,43 @@ msgstr ""
 "Número de colores resultantes\n"
 "(no se considera si el tipo de paleta no es «generar paleta óptima»)"
 
-#: gap/gap_range_ops.c:381
+#: gap/gap_range_ops.c:382
 msgid "Dither Options"
 msgstr "Opciones de tramado"
 
-#: gap/gap_range_ops.c:388
+#: gap/gap_range_ops.c:389
 msgid "Enable transparency"
 msgstr "Activar transparencia"
 
-#: gap/gap_range_ops.c:389
+#: gap/gap_range_ops.c:390
 msgid "Enable dithering of transparency"
 msgstr "Activar tramado de transparencia"
 
-#: gap/gap_range_ops.c:392
+#: gap/gap_range_ops.c:393
 msgid "Convert Frames to Indexed"
 msgstr "Convertir Fotogramas a Indexados"
 
-#: gap/gap_range_ops.c:393
+#: gap/gap_range_ops.c:394
 msgid "Palette and Dither Settings"
 msgstr "Ajustes de Paleta y Tramado"
 
-#: gap/gap_range_ops.c:458
+#: gap/gap_range_ops.c:459
 msgid "Keep Type"
 msgstr "Fijar tipo"
 
-#: gap/gap_range_ops.c:459
+#: gap/gap_range_ops.c:460
 msgid "Convert to RGB"
 msgstr "Convertir a RGB"
 
-#: gap/gap_range_ops.c:460
+#: gap/gap_range_ops.c:461
 msgid "Convert to Gray"
 msgstr "Convertir a tonos de gris"
 
-#: gap/gap_range_ops.c:461
+#: gap/gap_range_ops.c:462
 msgid "Convert to Indexed"
 msgstr "Convertir a Indexada"
 
-#: gap/gap_range_ops.c:485
+#: gap/gap_range_ops.c:486
 msgid ""
 "\n"
 "Select destination fileformat by extension\n"
@@ -2889,11 +2882,11 @@ msgstr ""
 "Seleccione formato de archivo destino mediante la añadido.\n"
 "Opcionalmente convierta el tipo de imagen\n"
 
-#: gap/gap_range_ops.c:488
+#: gap/gap_range_ops.c:489
 msgid "Basename:"
 msgstr "Nombre base"
 
-#: gap/gap_range_ops.c:489
+#: gap/gap_range_ops.c:490
 msgid ""
 "basename of the resulting frames\n"
 "(0001.ext is added)"
@@ -2901,11 +2894,11 @@ msgstr ""
 "Nombre base de los fotogramas resultantes\n"
 "(se añade 0001.ext)"
 
-#: gap/gap_range_ops.c:494 gap/gap_split.c:251
+#: gap/gap_range_ops.c:495 gap/gap_split.c:251
 msgid "Extension:"
 msgstr "Extensión:"
 
-#: gap/gap_range_ops.c:495
+#: gap/gap_range_ops.c:496
 msgid ""
 "extension of resulting frames\n"
 "(is also used to define Fileformat)"
@@ -2913,11 +2906,11 @@ msgstr ""
 "añadido de los fotogramas resultantes\n"
 "(también se usa para definir el formato de archivo)"
 
-#: gap/gap_range_ops.c:501
+#: gap/gap_range_ops.c:502
 msgid "Imagetype:"
 msgstr "Tipo de Imagen:"
 
-#: gap/gap_range_ops.c:502
+#: gap/gap_range_ops.c:503
 msgid ""
 "Convert to, or keep imagetype\n"
 "(most fileformats can't handle all types)"
@@ -2925,11 +2918,11 @@ msgstr ""
 "Convertir a, o mantener tipo de imagen\n"
 "(la mayoría de los formatos no admiten todos los tipos)"
 
-#: gap/gap_range_ops.c:508 gap/gap_split.c:266
+#: gap/gap_range_ops.c:509 gap/gap_split.c:266
 msgid "Flatten:"
 msgstr "Aplanar:"
 
-#: gap/gap_range_ops.c:509
+#: gap/gap_range_ops.c:510
 msgid ""
 "Flatten all resulting frames\n"
 "(most fileformats need flattened frames)"
@@ -2937,31 +2930,31 @@ msgstr ""
 "Aplanar todos los fotogramas resultantes\n"
 "(la mayoría de los formatos necesitan fotogramas planos)"
 
-#: gap/gap_range_ops.c:514
+#: gap/gap_range_ops.c:515
 msgid "Convert Frames to other Formats"
 msgstr "Convertir Fotogramas a otros formatos"
 
-#: gap/gap_range_ops.c:515
+#: gap/gap_range_ops.c:516
 msgid "Convert Settings"
 msgstr "Ajustes de conversión"
 
-#: gap/gap_range_ops.c:592
+#: gap/gap_range_ops.c:593
 msgid "Expand as necessary"
 msgstr "Expandir lo necesario"
 
-#: gap/gap_range_ops.c:593
+#: gap/gap_range_ops.c:594
 msgid "Clipped to image"
 msgstr "Recortar según la imagen"
 
-#: gap/gap_range_ops.c:594
+#: gap/gap_range_ops.c:595
 msgid "Clipped to bottom layer"
 msgstr "Recortar según la capa del fondo"
 
-#: gap/gap_range_ops.c:595
+#: gap/gap_range_ops.c:596
 msgid "Flattened image"
 msgstr "Imagen aplanada"
 
-#: gap/gap_range_ops.c:596
+#: gap/gap_range_ops.c:597
 msgid ""
 "Resulting Layer Size is made of the outline-rectangle\n"
 "of all visible layers (may differ from frame to frame)"
@@ -2969,11 +2962,11 @@ msgstr ""
 "El tamaño de la capa resultante se saca del contorno rectangular\n"
 "de todas las capas visibles (puede diferir de fotograma a fotograma)"
 
-#: gap/gap_range_ops.c:597
+#: gap/gap_range_ops.c:598
 msgid "Resulting Layer Size is the frame size"
 msgstr "Tamaño de capa resultante es el tamaño del fotograma"
 
-#: gap/gap_range_ops.c:598
+#: gap/gap_range_ops.c:599
 msgid ""
 "Resulting Layer Size is the size of the bottom layer\n"
 "(may differ from frame to frame)"
@@ -2981,7 +2974,7 @@ msgstr ""
 "El tamaño de la capa resultante es el tamaño de la capa del fondo (puede "
 "diferir de fotograma a fotograma)"
 
-#: gap/gap_range_ops.c:599
+#: gap/gap_range_ops.c:600
 msgid ""
 "Resulting Layer Size is the frame size\n"
 "transparent parts are filled with BG color"
@@ -2989,23 +2982,23 @@ msgstr ""
 "El tamaño de la capa resultante es el tamaño del fotograma.\n"
 "Las partes transparentes de rellenan con color de fondo"
 
-#: gap/gap_range_ops.c:609
+#: gap/gap_range_ops.c:610
 msgid "select all Layers where Layername is equal to Pattern"
 msgstr "Seleccionar todas las capas donde el nombre de capa sea igual al patrón"
 
-#: gap/gap_range_ops.c:610
+#: gap/gap_range_ops.c:611
 msgid "select all Layers where Layername starts with Pattern"
 msgstr "Seleccionar todas las capas donde el nombre de cada comience con el patrón"
 
-#: gap/gap_range_ops.c:611
+#: gap/gap_range_ops.c:612
 msgid "select all Layers where Layername ends up with Pattern"
 msgstr "Seleccionar todas las capas donde el nombre de capa termine con el patrón"
 
-#: gap/gap_range_ops.c:612
+#: gap/gap_range_ops.c:613
 msgid "select all Layers where Layername contains Pattern"
 msgstr "Seleccionar todas las capas donde el nombre de capa contenga al patrón"
 
-#: gap/gap_range_ops.c:613
+#: gap/gap_range_ops.c:614
 msgid ""
 "select Layerstack positions.\n"
 "0, 4-5, 8\n"
@@ -3014,7 +3007,7 @@ msgstr ""
 "Seleccione posiciones de pila de capas. \n"
 "0, 4-5, 8  (Donde 0 == Capa en la cima)"
 
-#: gap/gap_range_ops.c:614
+#: gap/gap_range_ops.c:615
 msgid ""
 "select Layerstack positions.\n"
 "0, 4-5, 8\n"
@@ -3023,15 +3016,15 @@ msgstr ""
 "Seleccione posiciones de pila de capas\n"
 "0, 4-5, 8 (Donde 0 == Capa de Fondo)"
 
-#: gap/gap_range_ops.c:615
+#: gap/gap_range_ops.c:616
 msgid "select all visible Layers"
 msgstr "Seleccionar todas las Capas visibles"
 
-#: gap/gap_range_ops.c:644
+#: gap/gap_range_ops.c:645
 msgid "Layer Basename:"
 msgstr "Nombre base para Capas:"
 
-#: gap/gap_range_ops.c:645
+#: gap/gap_range_ops.c:646
 msgid ""
 "Basename for all Layers\n"
 "[######] is replaced by frame number"
@@ -3039,15 +3032,15 @@ msgstr ""
 "Nombre base para todas las capas.\n"
 "Se sustituye [####] por el nº de fotograma"
 
-#: gap/gap_range_ops.c:663
+#: gap/gap_range_ops.c:664
 msgid "Layer Mergemode:"
 msgstr "Modo de mezcla de capa:"
 
-#: gap/gap_range_ops.c:670
+#: gap/gap_range_ops.c:671
 msgid "Exclude BG-Layer"
 msgstr "Excluir capa de fondo"
 
-#: gap/gap_range_ops.c:671
+#: gap/gap_range_ops.c:672
 msgid ""
 "Exclude the BG-Layers\n"
 "in all handled frames\n"
@@ -3057,31 +3050,31 @@ msgstr ""
 "en todos los fotogramas manejados\n"
 "a pesar de la selección"
 
-#: gap/gap_range_ops.c:701
+#: gap/gap_range_ops.c:702
 msgid "Use all unselected Layers"
 msgstr "Usar las capas no seleccionadas"
 
-#: gap/gap_range_ops.c:775
+#: gap/gap_range_ops.c:776
 msgid "Creating Layer-Animated Image..."
 msgstr "Creando imagen animada mediante capas..."
 
-#: gap/gap_range_ops.c:997
+#: gap/gap_range_ops.c:998
 msgid "Frames to Image"
 msgstr "Fotogramas a imagen"
 
-#: gap/gap_range_ops.c:998
+#: gap/gap_range_ops.c:999
 msgid "Create Multilayer-Image from Frames"
 msgstr "Crear imagen multicapa desde fotogramas"
 
-#: gap/gap_range_ops.c:1156
+#: gap/gap_range_ops.c:1157
 msgid "Flattening Frames..."
 msgstr "Aplanando fotogramas..."
 
-#: gap/gap_range_ops.c:1157
+#: gap/gap_range_ops.c:1158
 msgid "Converting Frames..."
 msgstr "Convirtiendo fotogramas..."
 
-#: gap/gap_range_ops.c:1312
+#: gap/gap_range_ops.c:1313
 msgid ""
 "Convert Frames: SAVE operation FAILED.\n"
 "Desired save plugin can't handle type\n"
@@ -3092,32 +3085,32 @@ msgstr ""
 "ese tipo de imagen, o bien dicho añadido no \n"
 "está disponible."
 
-#: gap/gap_range_ops.c:1443
+#: gap/gap_range_ops.c:1444
 msgid "Cropping all Animation Frames..."
 msgstr "Recortando todos los fotogramas de animación..."
 
-#: gap/gap_range_ops.c:1446
+#: gap/gap_range_ops.c:1447
 msgid "Resizing all Animation Frames..."
 msgstr "Cambiando tamaño de todos los fotogramas de animación..."
 
-#: gap/gap_range_ops.c:1449
+#: gap/gap_range_ops.c:1450
 msgid "Scaling all Animation Frames..."
 msgstr "Escalando todos los fotogramas de animación..."
 
-#: gap/gap_range_ops.c:1539
+#: gap/gap_range_ops.c:1540
 msgid "Flatten Frames"
 msgstr "Aplanar fotogramas"
 
-#: gap/gap_range_ops.c:1605
+#: gap/gap_range_ops.c:1606
 #, c-format
 msgid "Removing Layer (pos:%ld) from Frames..."
 msgstr "Quitando capa (pos:%ld) de fotogramas..."
 
-#: gap/gap_range_ops.c:1726
+#: gap/gap_range_ops.c:1727
 msgid "Delete Layers in Frames"
 msgstr "Borrar capas en fotogramas"
 
-#: gap/gap_range_ops.c:1727
+#: gap/gap_range_ops.c:1728
 msgid "Select Frame Range & Position"
 msgstr "Seleccionar rango y posición de fotogramas"
 
@@ -3224,7 +3217,9 @@ msgstr "Sólo visible:"
 
 #: gap/gap_split.c:274
 msgid "ON: Handle only visible Layers, OFF: handle all Layers and force visibiblity"
-msgstr "Activado: Administrar sólo las capas visibles: Desactivado: Administrar todas las capas y forzar visibilidad"
+msgstr ""
+"Activado: Administrar sólo las capas visibles: Desactivado: Administrar "
+"todas las capas y forzar visibilidad"
 
 #: gap/gap_split.c:282
 msgid "How many digits to use for the framenumber filenamwpart"
@@ -3297,6 +3292,29 @@ msgstr "Restablecer punto"
 #: gap/gap_stock.c:56
 msgid "Rotate Follow"
 msgstr "Rotación de seguimiento"
+
+#~ msgid "From:"
+#~ msgstr "Desde:"
+
+#~ msgid "To:"
+#~ msgstr "A:"
+
+#~ msgid "Density Factor for Density grow (or Divisor for shrink)"
+#~ msgstr ""
+#~ "Factor de densidad para el crecimiento de densidad (o divisor para "
+#~ "reducción)"
+
+#~ msgid "Density Grow"
+#~ msgstr "Crecimiento de densidad"
+
+#~ msgid "renumber frames"
+#~ msgstr "renumerar fotogramas"
+
+#~ msgid "Start Frame:"
+#~ msgstr "Fotograma inicial:"
+
+#~ msgid "End Frame:"
+#~ msgstr "Fotograma final:"
 
 #~ msgid "From Frame : "
 #~ msgstr "Desde fotograma : "
