@@ -38,7 +38,7 @@
 typedef struct {
    char selected_proc_name[256];
    int  button_nr;               /* -1 on cancel, 0 .. n */
-} t_gap_db_browse_result;
+} GapDbBrowserResult;
 
 /* proc to check if to add or not to add the procedure to the browsers listbox
  * retcode:
@@ -54,7 +54,7 @@ gap_db_browser_dialog (char *title_txt,
                        t_constraint_func        constraint_func,
                        t_constraint_func        constraint_func_sel1,
                        t_constraint_func        constraint_func_sel2,
-                       t_gap_db_browse_result  *result,
+                       GapDbBrowserResult  *result,
 		       gint32                   image_id);
 
 

@@ -53,11 +53,11 @@ void gap_query_iterators_ALT();
  * ------------------------
  */
  
-void p_remove_codegen_files();
-gint p_gen_code_iter_ALT   (char  *proc_name);
-gint p_gen_forward_iter_ALT(char  *proc_name);
-gint p_gen_tab_iter_ALT    (char  *proc_name);
-gint p_gen_code_iter       (char  *proc_name);
+void gap_codegen_remove_codegen_files();
+gint gap_codegen_gen_code_iter_ALT   (char  *proc_name);
+gint gap_codegen_gen_forward_iter_ALT(char  *proc_name);
+gint gap_codegen_gen_tab_iter_ALT    (char  *proc_name);
+gint gap_codegen_gen_code_iterator       (char  *proc_name);
 
 
 

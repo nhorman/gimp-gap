@@ -1,3 +1,11 @@
+/* gap_libgimpgap.h
+ * 1997.11.01 hof (Wolfgang Hofer)
+ *
+ * GAP ... Gimp Animation Plugins
+ *
+ * Master includefile for the library libgimpgap
+ *
+ */
 /* The GIMP -- an image manipulation program
  * Copyright (C) 1995 Spencer Kimball and Peter Mattis
  *
@@ -15,37 +23,31 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-#ifndef __RESIZE_H__
-#define __RESIZE_H__
 
-typedef enum
-{
-  ScaleWidget,
-  ResizeWidget
-} ResizeType;
+/* revision history:
+ * 1.3.20d  2003/10/09   hof: created
+ */
 
-typedef struct _Resize Resize;
+#ifndef _LIBGIMPGAP_H
+#define _LIBGIMPGAP_H
 
-struct _Resize
-{
-  /*  The calling procedure is respondible for showing this widget  */
-  GtkWidget *resize_widget;
+#include "libgimp/gimp.h"
 
-  ResizeType type;
-  int        width;
-  int        height;
-  double     ratio_x;
-  double     ratio_y;
-  int        off_x;
-  int        off_y;
 
-  /*  Don't touch this :)  */
-  void *     private_part;
-};
+#include "gap-intl.h"
+#include "gap_arr_dialog.h"
+#include "gap_image.h"
+#include "gap_layer_copy.h"
+#include "gap_lib.h"
+#include "gap_lock.h"
+#include "gap_navi_activtable.h"
+#include "gap_match.h"
+#include "gap_onion_base.h"
+#include "gap_pdb_calls.h"
+#include "gap_pview_da.h"
+#include "gap_thumbnail.h"
+#include "gap_timeconv.h"
+#include "gap_stock.h"
+#include "gap_vin.h"
 
-Resize * resize_widget_new    (ResizeType  type,
-			       int         width,
-			       int         height);
-void     resize_widget_free   (Resize *    resize);
-
-#endif  /*  __RESIZE_H__  */
+#endif

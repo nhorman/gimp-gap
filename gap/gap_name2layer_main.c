@@ -23,6 +23,7 @@
  */
 
 /* Revision history
+ *  (2003/10/10)  v1.3.20d   hof: sourcecode cleanup
  *  (2003/06/21)  v1.3.17a   hof: types in GimpPlugInInfo.run procedure
  *  (2003/06/21)  v1.3.15a   hof: bugfix: MenuPath is language dependent string
  *  (2003/05/15)  v1.0       hof: created
@@ -75,7 +76,7 @@ typedef struct {
 
 
 
-static NamlValues g_namlvals =
+static NamlValues glob_namlvals =
 {
     0    /* 0 .. mode number only, 1 ..filename, 2..filename with path */
  , 48   /* 24 default fontsize (?? is ignored size form fontname is used ) */
@@ -116,14 +117,14 @@ static void query (void)
 {
   static GimpLastvalDef lastvals[] =
   {
-    GIMP_LASTVALDEF_GINT            (GIMP_ITER_FALSE,  g_namlvals.mode,  "mode"),
-    GIMP_LASTVALDEF_GINT            (GIMP_ITER_TRUE,   g_namlvals.fontsize,  "fontsize"),
-    GIMP_LASTVALDEF_ARRAY           (GIMP_ITER_FALSE,  g_namlvals.fontname, "fontname"),
-    GIMP_LASTVALDEF_GCHAR           (GIMP_ITER_FALSE,  g_namlvals.fontname[0], "fontname"),
-    GIMP_LASTVALDEF_GINT            (GIMP_ITER_TRUE,   g_namlvals.posx, "posx"),
-    GIMP_LASTVALDEF_GINT            (GIMP_ITER_TRUE,   g_namlvals.posy, "posy"),
-    GIMP_LASTVALDEF_GINT            (GIMP_ITER_FALSE,  g_namlvals.antialias, "antialias"),
-    GIMP_LASTVALDEF_GINT            (GIMP_ITER_FALSE,  g_namlvals.create_new_layer, "create_new_layer"),
+    GIMP_LASTVALDEF_GINT            (GIMP_ITER_FALSE,  glob_namlvals.mode,  "mode"),
+    GIMP_LASTVALDEF_GINT            (GIMP_ITER_TRUE,   glob_namlvals.fontsize,  "fontsize"),
+    GIMP_LASTVALDEF_ARRAY           (GIMP_ITER_FALSE,  glob_namlvals.fontname, "fontname"),
+    GIMP_LASTVALDEF_GCHAR           (GIMP_ITER_FALSE,  glob_namlvals.fontname[0], "fontname"),
+    GIMP_LASTVALDEF_GINT            (GIMP_ITER_TRUE,   glob_namlvals.posx, "posx"),
+    GIMP_LASTVALDEF_GINT            (GIMP_ITER_TRUE,   glob_namlvals.posy, "posy"),
+    GIMP_LASTVALDEF_GINT            (GIMP_ITER_FALSE,  glob_namlvals.antialias, "antialias"),
+    GIMP_LASTVALDEF_GINT            (GIMP_ITER_FALSE,  glob_namlvals.create_new_layer, "create_new_layer"),
   };
 
   static GimpParamDef in_args[] = {
@@ -146,13 +147,14 @@ static void query (void)
 
   gimp_plugin_domain_register (GETTEXT_PACKAGE, LOCALEDIR);
 
+
   global_number_in_args = G_N_ELEMENTS (in_args);
   global_number_out_args = G_N_ELEMENTS(out_args);
 
   /* registration for last values buffer structure (useful for animated filter apply) */
   gimp_lastval_desc_register(PLUG_IN_NAME,
-                             &g_namlvals,
-                             sizeof(g_namlvals),
+                             &glob_namlvals,
+                             sizeof(glob_namlvals),
                              G_N_ELEMENTS (lastvals),
                              lastvals);
 
@@ -223,7 +225,7 @@ run (const gchar *name,          /* name of plugin */
   {
     case GIMP_RUN_INTERACTIVE:
       /* Possibly retrieve data from a previous run */
-      gimp_get_data (PLUG_IN_NAME, &g_namlvals);
+      gimp_get_data (PLUG_IN_NAME, &glob_namlvals);
 
       /* Get information from the dialog */
       if (Naml_dialog() != 0)
@@ -234,17 +236,17 @@ run (const gchar *name,          /* name of plugin */
       /* check to see if invoked with the correct number of parameters */
       if (nparams == global_number_in_args)
       {
-          g_namlvals.mode        = (gint) param[3].data.d_int32;
-          g_namlvals.fontsize    = (gint) param[4].data.d_int32;
+          glob_namlvals.mode        = (gint) param[3].data.d_int32;
+          glob_namlvals.fontsize    = (gint) param[4].data.d_int32;
 
           if(param[5].data.d_string != NULL)
           {
-            g_snprintf(g_namlvals.fontname, sizeof(g_namlvals.fontname), "%s", param[5].data.d_string);
+            g_snprintf(glob_namlvals.fontname, sizeof(glob_namlvals.fontname), "%s", param[5].data.d_string);
           }
-          g_namlvals.posx        = (gint) param[6].data.d_int32;
-          g_namlvals.posy        = (gint) param[7].data.d_int32;
-          g_namlvals.antialias   = (gint) param[8].data.d_int32;
-          g_namlvals.create_new_layer = (gint) param[9].data.d_int32;
+          glob_namlvals.posx        = (gint) param[6].data.d_int32;
+          glob_namlvals.posy        = (gint) param[7].data.d_int32;
+          glob_namlvals.antialias   = (gint) param[8].data.d_int32;
+          glob_namlvals.create_new_layer = (gint) param[9].data.d_int32;
       }
       else
       {
@@ -255,7 +257,7 @@ run (const gchar *name,          /* name of plugin */
 
     case GIMP_RUN_WITH_LAST_VALS:
       /* Possibly retrieve data from a previous run */
-      gimp_get_data (PLUG_IN_NAME, &g_namlvals);
+      gimp_get_data (PLUG_IN_NAME, &glob_namlvals);
 
       break;
 
@@ -279,7 +281,7 @@ run (const gchar *name,          /* name of plugin */
 
     /* Store variable states for next run */
     if (run_mode == GIMP_RUN_INTERACTIVE)
-      gimp_set_data (PLUG_IN_NAME, &g_namlvals, sizeof (NamlValues));
+      gimp_set_data (PLUG_IN_NAME, &glob_namlvals, sizeof (NamlValues));
   }
   values[0].data.d_status = status;
 }	/* end run */
@@ -312,13 +314,13 @@ p_Naml (gint32 image_id, gint32 drawable_id)
   if(gap_debug) printf("p_Naml (1) l_imagename:%s\n", l_imagename);
 
   l_drawable_id = -1;
-  if(g_namlvals.create_new_layer == 0)
+  if(glob_namlvals.create_new_layer == 0)
   {
     l_drawable_id = drawable_id;
   }
 
 
-  if (g_namlvals.mode == 0)
+  if (glob_namlvals.mode == 0)
   {
     gchar *l_ext;
     gchar *l_ptr;
@@ -372,7 +374,7 @@ p_Naml (gint32 image_id, gint32 drawable_id)
   }
   else
   {
-    if (g_namlvals.mode == 1)
+    if (glob_namlvals.mode == 1)
     {
       l_text = &l_imagename[strlen(l_imagename)-1];
       while(l_text != l_imagename)
@@ -393,14 +395,14 @@ p_Naml (gint32 image_id, gint32 drawable_id)
 
   l_new_layer_id = gimp_text_fontname( image_id
                                    , l_drawable_id          /* drawable -1 force create of new layer */
-                                   , (float)g_namlvals.posx           /* X */
-                                   , (float)g_namlvals.posy           /* Y */
+                                   , (float)glob_namlvals.posx           /* X */
+                                   , (float)glob_namlvals.posy           /* Y */
                                    , l_text
                                    , 0             /* -1 <= border */
-                                   , g_namlvals.antialias
-                                   , (float)g_namlvals.fontsize
+                                   , glob_namlvals.antialias
+                                   , (float)glob_namlvals.fontsize
                                    , 0    /* 0 size in pixels, 1: in points */
-                                   , g_namlvals.fontname
+                                   , glob_namlvals.fontname
                                    );
 
   if(l_drawable_id >= 0)
@@ -427,7 +429,7 @@ Naml_dialog(void)
 {
 #define VR_NAME2LAYER_DIALOG_ARGC 8
 #define VR_MODELIST_SIZE 3
-  static t_arr_arg  argv[VR_NAME2LAYER_DIALOG_ARGC];
+  static GapArrArg  argv[VR_NAME2LAYER_DIALOG_ARGC];
   gint ii;
   gint ii_mode;
   gint ii_fontsize;
@@ -437,7 +439,7 @@ Naml_dialog(void)
   gint ii_create_new_layer;
   static char *radio_modes[VR_MODELIST_SIZE]  = {"Number Only", "Filename", "Path/Filename" };
 
-  ii=0; p_init_arr_arg(&argv[ii], WGT_OPTIONMENU); ii_mode = ii;
+  ii=0; gap_arr_arg_init(&argv[ii], GAP_ARR_WGT_OPTIONMENU); ii_mode = ii;
   argv[ii].label_txt = _("Decoder:");
   argv[ii].help_txt  = _("Mode");
   argv[ii].radio_argc  = VR_MODELIST_SIZE;
@@ -447,77 +449,77 @@ Naml_dialog(void)
   argv[ii].has_default = TRUE;
   argv[ii].text_buf_default = g_strdup("\0");
 
-  ii++; p_init_arr_arg(&argv[ii], WGT_FONTSEL);
+  ii++; gap_arr_arg_init(&argv[ii], GAP_ARR_WGT_FONTSEL);
   argv[ii].label_txt = _("Fontname:");
   argv[ii].entry_width = 350;       /* pixel */
   argv[ii].help_txt  = _("Select Fontname)");
-  argv[ii].text_buf_len = sizeof(g_namlvals.fontname);
-  argv[ii].text_buf_ret = &g_namlvals.fontname[0];
+  argv[ii].text_buf_len = sizeof(glob_namlvals.fontname);
+  argv[ii].text_buf_ret = &glob_namlvals.fontname[0];
   argv[ii].has_default = TRUE;
   argv[ii].text_buf_default = g_strdup("-*-Charter-*-r-*-*-24-*-*-*-p-*-*-*");
 
-  ii++; p_init_arr_arg(&argv[ii], WGT_INT); ii_fontsize = ii;
+  ii++; gap_arr_arg_init(&argv[ii], GAP_ARR_WGT_INT); ii_fontsize = ii;
   argv[ii].constraint = TRUE;
   argv[ii].label_txt = _("Fontsize:");
   argv[ii].help_txt  = _("Fontsize in pixels");
   argv[ii].int_min   = (gint)1;
   argv[ii].int_max   = (gint)1000;
-  argv[ii].int_ret   = (gint)g_namlvals.fontsize;
+  argv[ii].int_ret   = (gint)glob_namlvals.fontsize;
   argv[ii].entry_width = 60;
   argv[ii].has_default = TRUE;
   argv[ii].int_default = 24;
 
-  ii++; p_init_arr_arg(&argv[ii], WGT_INT); ii_posx = ii;
+  ii++; gap_arr_arg_init(&argv[ii], GAP_ARR_WGT_INT); ii_posx = ii;
   argv[ii].constraint = TRUE;
   argv[ii].label_txt = _("PosX:");
   argv[ii].help_txt  = _("Position X-Offset in pixels");
   argv[ii].int_min   = (gint)-1000;
   argv[ii].int_max   = (gint)10000;
-  argv[ii].int_ret   = (gint)g_namlvals.posx;
+  argv[ii].int_ret   = (gint)glob_namlvals.posx;
   argv[ii].entry_width = 60;
   argv[ii].has_default = TRUE;
   argv[ii].int_default = 15;
 
-  ii++; p_init_arr_arg(&argv[ii], WGT_INT); ii_posy = ii;
+  ii++; gap_arr_arg_init(&argv[ii], GAP_ARR_WGT_INT); ii_posy = ii;
   argv[ii].constraint = TRUE;
   argv[ii].label_txt = _("PosY:");
   argv[ii].help_txt  = _("Position Y-Offset in pixels");
   argv[ii].int_min   = (gint)-1000;
   argv[ii].int_max   = (gint)10000;
-  argv[ii].int_ret   = (gint)g_namlvals.posy;
+  argv[ii].int_ret   = (gint)glob_namlvals.posy;
   argv[ii].entry_width = 60;
   argv[ii].has_default = TRUE;
   argv[ii].int_default = 15;
 
-  ii++; p_init_arr_arg(&argv[ii], WGT_TOGGLE); ii_antialias = ii;
+  ii++; gap_arr_arg_init(&argv[ii], GAP_ARR_WGT_TOGGLE); ii_antialias = ii;
   argv[ii].label_txt = _("Antialias:");
   argv[ii].help_txt  = _("Use Antialias");
-  argv[ii].int_ret   = (gint)g_namlvals.antialias;
+  argv[ii].int_ret   = (gint)glob_namlvals.antialias;
   argv[ii].has_default = TRUE;
   argv[ii].int_default = 0;
 
-  ii++; p_init_arr_arg(&argv[ii], WGT_TOGGLE); ii_create_new_layer = ii;
+  ii++; gap_arr_arg_init(&argv[ii], GAP_ARR_WGT_TOGGLE); ii_create_new_layer = ii;
   argv[ii].label_txt = _("Create Layer:");
   argv[ii].help_txt  = _("ON: Create a new layer, OFF: Render on active Drawable");
-  argv[ii].int_ret   = (gint)g_namlvals.antialias;
+  argv[ii].int_ret   = (gint)glob_namlvals.antialias;
   argv[ii].has_default = TRUE;
   argv[ii].int_default = 0;
 
 
-  ii++; p_init_arr_arg(&argv[ii], WGT_DEFAULT_BUTTON);
+  ii++; gap_arr_arg_init(&argv[ii], GAP_ARR_WGT_DEFAULT_BUTTON);
   argv[ii].label_txt = _("Default");
   argv[ii].help_txt  = _("Reset all Parameters to Default Values");
 
-  if(TRUE == p_array_dialog(_("Render Filename to Layer"),
+  if(TRUE == gap_arr_ok_cancel_dialog(_("Render Filename to Layer"),
                             _("Settings :"),
                             VR_NAME2LAYER_DIALOG_ARGC, argv))
   {
-      g_namlvals.mode             = (gint)(argv[ii_mode].radio_ret);
-      g_namlvals.fontsize         = (gint)(argv[ii_fontsize].int_ret);
-      g_namlvals.posx             = (gint)(argv[ii_posx].int_ret);
-      g_namlvals.posy             = (gint)(argv[ii_posy].int_ret);
-      g_namlvals.antialias        = (gint)(argv[ii_antialias].int_ret);
-      g_namlvals.create_new_layer = (gint)(argv[ii_create_new_layer].int_ret);
+      glob_namlvals.mode             = (gint)(argv[ii_mode].radio_ret);
+      glob_namlvals.fontsize         = (gint)(argv[ii_fontsize].int_ret);
+      glob_namlvals.posx             = (gint)(argv[ii_posx].int_ret);
+      glob_namlvals.posy             = (gint)(argv[ii_posy].int_ret);
+      glob_namlvals.antialias        = (gint)(argv[ii_antialias].int_ret);
+      glob_namlvals.create_new_layer = (gint)(argv[ii_create_new_layer].int_ret);
       return 0;
   }
   else

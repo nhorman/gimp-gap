@@ -36,18 +36,18 @@
 
 /* Video menu basic fuctions */
 
-gint32 gap_next(GimpRunMode run_mode, gint32 image_id);
-gint32 gap_prev(GimpRunMode run_mode, gint32 image_id);
-gint32 gap_first(GimpRunMode run_mode, gint32 image_id);
-gint32 gap_last(GimpRunMode run_mode, gint32 image_id);
-gint32 gap_goto(GimpRunMode run_mode, gint32 image_id, int nr);
+gint32 gap_base_next(GimpRunMode run_mode, gint32 image_id);
+gint32 gap_base_prev(GimpRunMode run_mode, gint32 image_id);
+gint32 gap_base_first(GimpRunMode run_mode, gint32 image_id);
+gint32 gap_base_last(GimpRunMode run_mode, gint32 image_id);
+gint32 gap_base_goto(GimpRunMode run_mode, gint32 image_id, int nr);
 
-gint32 gap_density(GimpRunMode run_mode, gint32 image_id, long range_from, long range_to, gdouble density_factor, gboolean density_grow);
-gint32 gap_dup(GimpRunMode run_mode, gint32 image_id, int nr, long range_from, long range_to);
-gint32 gap_del(GimpRunMode run_mode, gint32 image_id, int nr);
-gint32 gap_exchg(GimpRunMode run_mode, gint32 image_id, int nr);
-gint32 gap_shift(GimpRunMode run_mode, gint32 image_id, int nr, long range_from, long range_to);
-gint32 gap_renumber(GimpRunMode run_mode, gint32 image_id,
+gint32 gap_base_density(GimpRunMode run_mode, gint32 image_id, long range_from, long range_to, gdouble density_factor, gboolean density_grow);
+gint32 gap_base_dup(GimpRunMode run_mode, gint32 image_id, int nr, long range_from, long range_to);
+gint32 gap_base_del(GimpRunMode run_mode, gint32 image_id, int nr);
+gint32 gap_base_exchg(GimpRunMode run_mode, gint32 image_id, int nr);
+gint32 gap_base_shift(GimpRunMode run_mode, gint32 image_id, int nr, long range_from, long range_to);
+gint32 gap_base_renumber(GimpRunMode run_mode, gint32 image_id,
             long start_frame_nr, long digits);
 
 #endif

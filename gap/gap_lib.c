@@ -36,24 +36,24 @@
  *                            - conditional save now depends on
  *                               GIMP standard gimprc keyword "trust-dirty-flag"
  *                               (removed support for old GAP private keyword "video-unconditional-frame-save")
- * 1.3.12a; 2003/05/03   hof: merge into CVS-gimp-gap project, added gap_renumber, p_alloc_fname 6 digit support
+ * 1.3.12a; 2003/05/03   hof: merge into CVS-gimp-gap project, added gap_renumber, gap_lib_alloc_fname 6 digit support
  * 1.3.11a; 2003/01/19   hof: conditional SAVE  (based on gimp_image_is_dirty), use gimp_directory
  * 1.3.9a;  2002/10/28   hof: minor cleanup (replace strcpy by g_strdup)
  * 1.3.5a;  2002/04/21   hof: gimp_palette_refresh changed name to: gimp_palettes_refresh
  *                            gap_locking (now moved to gap_lock.c)
- * 1.3.4b;  2002/03/15   hof: p_load_named_frame now uses gimp_displays_reconnect (removed gap_exchange_image.h)
+ * 1.3.4b;  2002/03/15   hof: gap_lib_load_named_frame now uses gimp_displays_reconnect (removed gap_exchange_image.h)
  * 1.3.4a;  2002/03/11   hof: port to gimp-1.3.4
  * 1.2.2a;  2001/10/21   hof: bufix # 61677 (error in duplicate frames GUI) 
  *                            and disable duplicate for Unsaved/untitled Images.
  *                            (creating frames from such images with a default name may cause problems
  *                             as unexpected overwriting frames or mixing animations with different sized frames)
- * 1.2.1a;  2001/07/07   hof: p_file_copy use binary modes in fopen (hope that fixes bug #52890 in video/duplicate)
+ * 1.2.1a;  2001/07/07   hof: gap_lib_file_copy use binary modes in fopen (hope that fixes bug #52890 in video/duplicate)
  * 1.1.29a; 2000/11/23   hof: gap locking (changed to procedures and placed here)
  * 1.1.28a; 2000/11/05   hof: check for GIMP_PDB_SUCCESS (not for FALSE)
- * 1.1.20a; 2000/04/25   hof: new: p_get_video_paste_name p_vid_edit_clear
+ * 1.1.20a; 2000/04/25   hof: new: gap_lib_get_video_paste_name gap_vid_edit_clear
  * 1.1.17b; 2000/02/27   hof: bug/style fixes
  * 1.1.14a; 1999/12/18   hof: handle .xvpics on fileops (copy, rename and delete)
- *                            new: p_get_frame_nr,
+ *                            new: gap_lib_get_frame_nr,
  * 1.1.9a;  1999/09/14   hof: handle frame filenames with framenumbers
  *                            that are not the 4digit style. (like frame1.xcf)
  * 1.1.8a;  1999/08/31   hof: for AnimFrame Filtypes != XCF:
@@ -137,9 +137,10 @@ extern      int gap_debug; /* ==0  ... dont print debug infos */
 /* forward  working procedures */
 /* ------------------------------------------ */
 
-static int          p_save_old_frame(t_anim_info *ainfo_ptr, t_video_info *vin_ptr);
+static int          p_save_old_frame(GapAnimInfo *ainfo_ptr, GapVinVideoInfo *vin_ptr);
 static int          p_decide_save_as(gint32 image_id, char *sav_name);
-static gint32       p_save_named_image2(gint32 image_id, char *sav_name, GimpRunMode run_mode, gboolean enable_thumbnailsave);
+static gint32       gap_lib_save_named_image2(gint32 image_id, char *sav_name, GimpRunMode run_mode, gboolean enable_thumbnailsave);
+static char*        p_gzip (char *orig_name, char *new_name, char *zip);
 
 
 /* ============================================================================
@@ -149,7 +150,7 @@ static gint32       p_save_named_image2(gint32 image_id, char *sav_name, GimpRun
  * ============================================================================
  */
 char *
-p_strdup_add_underscore(char *name)
+gap_lib_strdup_add_underscore(char *name)
 {
   int   l_len;
   char *l_str;
@@ -174,7 +175,7 @@ p_strdup_add_underscore(char *name)
 }
 
 char *
-p_strdup_del_underscore(char *name)
+gap_lib_strdup_del_underscore(char *name)
 {
   int   l_len;
   char *l_str;
@@ -196,37 +197,9 @@ p_strdup_del_underscore(char *name)
   return(l_str);
 }
 
-/* ============================================================================
- * p_msg_win
- *   print a message both to stderr
- *   and to a gimp info window with OK button (only when run INTERACTIVE)
- * ============================================================================
- */
-
-void
-p_msg_win(GimpRunMode run_mode, char *msg)
-{
-  static t_but_arg  l_argv[1];
-  int               l_argc;  
-  
-  l_argv[0].but_txt  = GTK_STOCK_OK;
-  l_argv[0].but_val  = 0;
-  l_argc             = 1;
-
-  if(msg)
-  {
-    if(*msg)
-    {
-       fwrite(msg, 1, strlen(msg), stderr);
-       fputc('\n', stderr);
-
-       if(run_mode == GIMP_RUN_INTERACTIVE) p_buttons_dialog  (_("GAP Message"), msg, l_argc, l_argv, -1);
-    }
-  }
-}    /* end  p_msg_win */
 
 /* ============================================================================
- * p_file_exists
+ * gap_lib_file_exists
  *
  * return 0  ... file does not exist, or is not accessable by user,
  *               or is empty,
@@ -235,7 +208,7 @@ p_msg_win(GimpRunMode run_mode, char *msg)
  * ============================================================================
  */
 int
-p_file_exists(char *fname)
+gap_lib_file_exists(char *fname)
 {
   struct stat  l_stat_buf;
   long         l_len;
@@ -260,10 +233,10 @@ p_file_exists(char *fname)
   }
   
   return(1);
-}	/* end p_file_exists */
+}	/* end gap_lib_file_exists */
 
 /* ============================================================================
- * p_searchpath_for_exefile
+ * gap_lib_searchpath_for_exefile
  * -----------------------------
  * search for executable file with given exefile name in given PATH
  * return NULL if not found,
@@ -272,7 +245,7 @@ p_file_exists(char *fname)
  * ============================================================================
  */
 char *
-p_searchpath_for_exefile(const char *exefile, const char *path)
+gap_lib_searchpath_for_exefile(const char *exefile, const char *path)
 {
   char *exe_fullname;
   char *path_copy;
@@ -324,51 +297,51 @@ p_searchpath_for_exefile(const char *exefile, const char *path)
   
   if (gap_debug)
   {
-    printf("p_searchpath_for_exefile: path: %s\n", path);
-    printf("p_searchpath_for_exefile: exe: %s\n", exefile);
+    printf("gap_lib_searchpath_for_exefile: path: %s\n", path);
+    printf("gap_lib_searchpath_for_exefile: exe: %s\n", exefile);
     if(exe_fullname)
     {
-      printf("p_searchpath_for_exefile: RET: %s\n", exe_fullname);
+      printf("gap_lib_searchpath_for_exefile: RET: %s\n", exe_fullname);
     }
     else
     {
-      printf("p_searchpath_for_exefile: RET: NULL (not found)\n");
+      printf("gap_lib_searchpath_for_exefile: RET: NULL (not found)\n");
     }
   }
 
   return(exe_fullname);
   
-}  /* end p_searchpath_for_exefile */
+}  /* end gap_lib_searchpath_for_exefile */
 
 
 /* ============================================================================
- * p_image_file_copy
+ * gap_lib_image_file_copy
  *    (copy the imagefile and its thumbnail)
  * ============================================================================
  */
 int
-p_image_file_copy(char *fname, char *fname_copy)
+gap_lib_image_file_copy(char *fname, char *fname_copy)
 {
    int            l_rc;
 
-   l_rc = p_file_copy(fname, fname_copy);  
-   p_gimp_file_copy_thumbnail(fname, fname_copy);
+   l_rc = gap_lib_file_copy(fname, fname_copy);  
+   gap_thumb_file_copy_thumbnail(fname, fname_copy);
    return(l_rc);
 }
 
 /* ============================================================================
- * p_file_copy
+ * gap_lib_file_copy
  * ============================================================================
  */
 int
-p_file_copy(char *fname, char *fname_copy)
+gap_lib_file_copy(char *fname, char *fname_copy)
 {
   FILE	      *l_fp;
   char                     *l_buffer;
   struct stat               l_stat_buf;
   long	       l_len;
 
-  if(gap_debug) printf("p_file_copy src:%s dst:%s\n", fname, fname_copy);
+  if(gap_debug) printf("gap_lib_file_copy src:%s dst:%s\n", fname, fname_copy);
 
   /* File Laenge ermitteln */
   if (0 != stat(fname, &l_stat_buf))
@@ -413,55 +386,55 @@ p_file_copy(char *fname, char *fname_copy)
   fclose(l_fp);
   g_free(l_buffer);
   return 0;           /* all done OK */
-}	/* end p_file_copy */
+}	/* end gap_lib_file_copy */
 
 
 /* ============================================================================
- * p_delete_frame
+ * gap_lib_delete_frame
  * ============================================================================
  */
 int
-p_delete_frame(t_anim_info *ainfo_ptr, long nr)
+gap_lib_delete_frame(GapAnimInfo *ainfo_ptr, long nr)
 {
    char          *l_fname;
    int            l_rc;
    
-   l_fname = p_alloc_fname(ainfo_ptr->basename, nr, ainfo_ptr->extension);
+   l_fname = gap_lib_alloc_fname(ainfo_ptr->basename, nr, ainfo_ptr->extension);
    if(l_fname == NULL) { return(1); }
 
-   if(gap_debug) printf("\nDEBUG p_delete_frame: %s\n", l_fname);
+   if(gap_debug) printf("\nDEBUG gap_lib_delete_frame: %s\n", l_fname);
    l_rc = remove(l_fname);
    
-   p_gimp_file_delete_thumbnail(l_fname);
+   gap_thumb_gimp_file_delete_thumbnail(l_fname);
    
    g_free(l_fname);
    
    return(l_rc);
    
-}    /* end p_delete_frame */
+}    /* end gap_lib_delete_frame */
 
 /* ============================================================================
- * p_rename_frame
+ * gap_lib_rename_frame
  * ============================================================================
  */
 int
-p_rename_frame(t_anim_info *ainfo_ptr, long from_nr, long to_nr)
+gap_lib_rename_frame(GapAnimInfo *ainfo_ptr, long from_nr, long to_nr)
 {
    char          *l_from_fname;
    char          *l_to_fname;
    int            l_rc;
    
-   l_from_fname = p_alloc_fname(ainfo_ptr->basename, from_nr, ainfo_ptr->extension);
+   l_from_fname = gap_lib_alloc_fname(ainfo_ptr->basename, from_nr, ainfo_ptr->extension);
    if(l_from_fname == NULL) { return(1); }
    
-   l_to_fname = p_alloc_fname(ainfo_ptr->basename, to_nr, ainfo_ptr->extension);
+   l_to_fname = gap_lib_alloc_fname(ainfo_ptr->basename, to_nr, ainfo_ptr->extension);
    if(l_to_fname == NULL) { g_free(l_from_fname); return(1); }
    
      
-   if(gap_debug) printf("\nDEBUG p_rename_frame: %s ..to.. %s\n", l_from_fname, l_to_fname);
+   if(gap_debug) printf("\nDEBUG gap_lib_rename_frame: %s ..to.. %s\n", l_from_fname, l_to_fname);
    l_rc = rename(l_from_fname, l_to_fname);
 
-   p_gimp_file_rename_thumbnail(l_from_fname, l_to_fname);
+   gap_thumb_gimp_file_rename_thumbnail(l_from_fname, l_to_fname);
 
    
    g_free(l_from_fname);
@@ -469,11 +442,11 @@ p_rename_frame(t_anim_info *ainfo_ptr, long from_nr, long to_nr)
    
    return(l_rc);
    
-}    /* end p_rename_frame */
+}    /* end gap_lib_rename_frame */
 
 
 /* ============================================================================
- * p_alloc_basename
+ * gap_lib_alloc_basename
  *
  * build the basename from an images name
  * Extension and trailing digits ("0000.xcf") are cut off.
@@ -483,7 +456,7 @@ p_rename_frame(t_anim_info *ainfo_ptr, long from_nr, long to_nr)
  * ============================================================================
  */
 char *
-p_alloc_basename(const char *imagename, long *number)
+gap_lib_alloc_basename(const char *imagename, long *number)
 {
   char *l_fname;
   char *l_ptr;
@@ -495,7 +468,7 @@ p_alloc_basename(const char *imagename, long *number)
   /* copy from imagename */
   l_fname = g_strdup(imagename);
 
-  if(gap_debug) printf("DEBUG p_alloc_basename  source: '%s'\n", l_fname);
+  if(gap_debug) printf("DEBUG gap_lib_alloc_basename  source: '%s'\n", l_fname);
   /* cut off extension */
   l_ptr = &l_fname[strlen(l_fname)];
   while(l_ptr != l_fname)
@@ -504,7 +477,7 @@ p_alloc_basename(const char *imagename, long *number)
     if(*l_ptr == '.')                                        { *l_ptr = '\0'; break; }
     l_ptr--;
   }
-  if(gap_debug) printf("DEBUG p_alloc_basename (ext_off): '%s'\n", l_fname);
+  if(gap_debug) printf("DEBUG gap_lib_alloc_basename (ext_off): '%s'\n", l_fname);
 
   /* cut off trailing digits (0000) */
   l_ptr = &l_fname[strlen(l_fname)];
@@ -532,16 +505,16 @@ p_alloc_basename(const char *imagename, long *number)
     }
   }
   
-  if(gap_debug) printf("DEBUG p_alloc_basename  result:'%s'\n", l_fname);
+  if(gap_debug) printf("DEBUG gap_lib_alloc_basename  result:'%s'\n", l_fname);
 
   return(l_fname);
    
-}    /* end p_alloc_basename */
+}    /* end gap_lib_alloc_basename */
 
 
 
 /* ============================================================================
- * p_alloc_extension
+ * gap_lib_alloc_extension
  *
  * input: a filename
  * returns: a copy of the filename extension (incl "." )
@@ -551,7 +524,7 @@ p_alloc_basename(const char *imagename, long *number)
  * ============================================================================
  */
 char *
-p_alloc_extension(char *imagename)
+gap_lib_alloc_extension(char *imagename)
 {
   int   l_exlen;
   char *l_ext;
@@ -580,14 +553,14 @@ p_alloc_extension(char *imagename)
 
 
 /* ----------------------------------
- * p_alloc_fname_fixed_digits
+ * gap_lib_alloc_fname_fixed_digits
  * ----------------------------------
  * build the framname by concatenating basename, nr and extension.
  * the Number part has leading zeroes, depending
  * on the number of digits specified.
  */
 char*  
-p_alloc_fname_fixed_digits(char *basename, long nr, char *extension, long digits)
+gap_lib_alloc_fname_fixed_digits(char *basename, long nr, char *extension, long digits)
 {
   gchar *l_fname;
   gint   l_len;
@@ -612,18 +585,18 @@ p_alloc_fname_fixed_digits(char *basename, long nr, char *extension, long digits
              break;
   }
   return(l_fname);
-}    /* end p_alloc_fname_fixed_digits */
+}    /* end gap_lib_alloc_fname_fixed_digits */
 
 
 /* ============================================================================
- * p_alloc_fname
+ * gap_lib_alloc_fname
  * ============================================================================
  * at 1st call check environment
  * to findout how many digits (leading zeroes) to use in framename numbers
  * per default.
  */
 char*  
-p_alloc_fname(char *basename, long nr, char *extension)
+gap_lib_alloc_fname(char *basename, long nr, char *extension)
 {
   static long default_digits = -1;
   
@@ -641,11 +614,11 @@ p_alloc_fname(char *basename, long nr, char *extension)
     }
   }
 
-  return (p_alloc_fname6(basename, nr, extension, default_digits));
-}    /* end p_alloc_fname */
+  return (gap_lib_alloc_fname6(basename, nr, extension, default_digits));
+}    /* end gap_lib_alloc_fname */
 
 /* ----------------------------------
- * p_alloc_fname6
+ * gap_lib_alloc_fname6
  * ----------------------------------
  * build the framname by concatenating basename, nr and extension.
  * the Number part has leading zeroes, depending
@@ -669,7 +642,7 @@ p_alloc_fname(char *basename, long nr, char *extension)
  *    after use)
  */
 char*  
-p_alloc_fname6(char *basename, long nr, char *extension, long default_digits)
+gap_lib_alloc_fname6(char *basename, long nr, char *extension, long default_digits)
 {
   gchar *l_fname;
   gint   l_digits_used;
@@ -694,7 +667,7 @@ p_alloc_fname6(char *basename, long nr, char *extension, long default_digits)
        {
          /* check if frame is on disk with 6-digit style framenumber */
          g_snprintf(l_fname, l_len, "%s%06ld%s", basename, l_nr_chk, extension);
-         if (p_file_exists(l_fname))
+         if (gap_lib_file_exists(l_fname))
          {
             l_digits_used = 6;
             break;
@@ -702,7 +675,7 @@ p_alloc_fname6(char *basename, long nr, char *extension, long default_digits)
 
          /* check if frame is on disk with 4-digit style framenumber */
          g_snprintf(l_fname, l_len, "%s%04ld%s", basename, l_nr_chk, extension);
-         if (p_file_exists(l_fname))
+         if (gap_lib_file_exists(l_fname))
          {
             l_digits_used = 4;
             break;
@@ -710,7 +683,7 @@ p_alloc_fname6(char *basename, long nr, char *extension, long default_digits)
 
          /* check if frame is on disk with 5-digit style framenumber */
          g_snprintf(l_fname, l_len, "%s%05ld%s", basename, l_nr_chk, extension);
-         if (p_file_exists(l_fname))
+         if (gap_lib_file_exists(l_fname))
          {
             l_digits_used = 5;
             break;
@@ -718,7 +691,7 @@ p_alloc_fname6(char *basename, long nr, char *extension, long default_digits)
 
          /* check if frame is on disk with 3-digit style framenumber */
          g_snprintf(l_fname, l_len, "%s%03ld%s", basename, l_nr_chk, extension);
-         if (p_file_exists(l_fname))
+         if (gap_lib_file_exists(l_fname))
          {
             l_digits_used = 3;
             break;
@@ -726,7 +699,7 @@ p_alloc_fname6(char *basename, long nr, char *extension, long default_digits)
 
          /* check if frame is on disk with 2-digit style framenumber */
          g_snprintf(l_fname, l_len, "%s%02ld%s", basename, l_nr_chk, extension);
-         if (p_file_exists(l_fname))
+         if (gap_lib_file_exists(l_fname))
          {
             l_digits_used = 2;
             break;
@@ -736,7 +709,7 @@ p_alloc_fname6(char *basename, long nr, char *extension, long default_digits)
 
          /* now check for filename without leading zeroes in the framenumber */
          g_snprintf(l_fname, l_len, "%s%ld%s", basename, l_nr_chk, extension);
-         if (p_file_exists(l_fname))
+         if (gap_lib_file_exists(l_fname))
          {
             l_digits_used = 1;
             break;
@@ -777,17 +750,17 @@ p_alloc_fname6(char *basename, long nr, char *extension, long default_digits)
              break;
   }
   return(l_fname);
-}    /* end p_alloc_fname6 */
+}    /* end gap_lib_alloc_fname6 */
 
 
 /* ----------------------------------
- * p_exists_frame_nr
+ * gap_lib_exists_frame_nr
  * ----------------------------------
  * check if frame with nr does exist
  * and find out how much digits are used for the number part
  */
 gboolean  
-p_exists_frame_nr(t_anim_info *ainfo_ptr, long nr, long *l_has_digits)
+gap_lib_exists_frame_nr(GapAnimInfo *ainfo_ptr, long nr, long *l_has_digits)
 {
   gchar *l_fname;
   gint   l_digits_used;
@@ -808,7 +781,7 @@ p_exists_frame_nr(t_anim_info *ainfo_ptr, long nr, long *l_has_digits)
   {
      /* check if frame is on disk with 6-digit style framenumber */
      g_snprintf(l_fname, l_len, "%s%06ld%s", ainfo_ptr->basename, l_nr_chk, ainfo_ptr->extension);
-     if (p_file_exists(l_fname))
+     if (gap_lib_file_exists(l_fname))
      {
         l_digits_used = 6;
         if(l_nr_chk == nr)
@@ -820,7 +793,7 @@ p_exists_frame_nr(t_anim_info *ainfo_ptr, long nr, long *l_has_digits)
 
      /* check if frame is on disk with 4-digit style framenumber */
      g_snprintf(l_fname, l_len, "%s%04ld%s", ainfo_ptr->basename, l_nr_chk, ainfo_ptr->extension);
-     if (p_file_exists(l_fname))
+     if (gap_lib_file_exists(l_fname))
      {
         l_digits_used = 4;
         if(l_nr_chk == nr)
@@ -832,7 +805,7 @@ p_exists_frame_nr(t_anim_info *ainfo_ptr, long nr, long *l_has_digits)
 
      /* check if frame is on disk with 5-digit style framenumber */
      g_snprintf(l_fname, l_len, "%s%05ld%s", ainfo_ptr->basename, l_nr_chk, ainfo_ptr->extension);
-     if (p_file_exists(l_fname))
+     if (gap_lib_file_exists(l_fname))
      {
         l_digits_used = 5;
         if(l_nr_chk == nr)
@@ -844,7 +817,7 @@ p_exists_frame_nr(t_anim_info *ainfo_ptr, long nr, long *l_has_digits)
 
      /* check if frame is on disk with 3-digit style framenumber */
      g_snprintf(l_fname, l_len, "%s%03ld%s", ainfo_ptr->basename, l_nr_chk, ainfo_ptr->extension);
-     if (p_file_exists(l_fname))
+     if (gap_lib_file_exists(l_fname))
      {
         l_digits_used = 3;
         if(l_nr_chk == nr)
@@ -856,7 +829,7 @@ p_exists_frame_nr(t_anim_info *ainfo_ptr, long nr, long *l_has_digits)
 
      /* check if frame is on disk with 2-digit style framenumber */
      g_snprintf(l_fname, l_len, "%s%02ld%s", ainfo_ptr->basename, l_nr_chk, ainfo_ptr->extension);
-     if (p_file_exists(l_fname))
+     if (gap_lib_file_exists(l_fname))
      {
         l_digits_used = 2;
         if(l_nr_chk == nr)
@@ -869,7 +842,7 @@ p_exists_frame_nr(t_anim_info *ainfo_ptr, long nr, long *l_has_digits)
 
      /* now check for filename without leading zeroes in the framenumber */
      g_snprintf(l_fname, l_len, "%s%ld%s", ainfo_ptr->basename, l_nr_chk, ainfo_ptr->extension);
-     if (p_file_exists(l_fname))
+     if (gap_lib_file_exists(l_fname))
      {
         l_digits_used = 1;
         if(l_nr_chk == nr)
@@ -895,21 +868,21 @@ p_exists_frame_nr(t_anim_info *ainfo_ptr, long nr, long *l_has_digits)
   *l_has_digits = l_digits_used;
 
   return(l_exists);
-}    /* end p_exists_frame_nr */
+}    /* end gap_lib_exists_frame_nr */
 
 
 /* ============================================================================
- * p_alloc_ainfo
+ * gap_lib_alloc_ainfo
  *
  * allocate and init an ainfo structure from the given image.
  * ============================================================================
  */
-t_anim_info *
-p_alloc_ainfo(gint32 image_id, GimpRunMode run_mode)
+GapAnimInfo *
+gap_lib_alloc_ainfo(gint32 image_id, GimpRunMode run_mode)
 {
-   t_anim_info   *l_ainfo_ptr;
+   GapAnimInfo   *l_ainfo_ptr;
 
-   l_ainfo_ptr = (t_anim_info*)g_malloc(sizeof(t_anim_info));
+   l_ainfo_ptr = (GapAnimInfo*)g_malloc(sizeof(GapAnimInfo));
    if(l_ainfo_ptr == NULL) return(NULL);
    
    l_ainfo_ptr->basename = NULL;
@@ -924,18 +897,18 @@ p_alloc_ainfo(gint32 image_id, GimpRunMode run_mode)
      /* note: some gimp versions > 1.2  and < 1.3.x had default filenames for new created images
       * gimp-1.3.14 delivers NULL for unnamed images again
       */
-     l_ainfo_ptr->old_filename = p_alloc_fname("frame_", 1, ".xcf");    /* assign a defaultname */
+     l_ainfo_ptr->old_filename = gap_lib_alloc_fname("frame_", 1, ".xcf");    /* assign a defaultname */
      gimp_image_set_filename (image_id, l_ainfo_ptr->old_filename);
    }
 
-   l_ainfo_ptr->basename = p_alloc_basename(l_ainfo_ptr->old_filename, &l_ainfo_ptr->frame_nr);
+   l_ainfo_ptr->basename = gap_lib_alloc_basename(l_ainfo_ptr->old_filename, &l_ainfo_ptr->frame_nr);
    if(NULL == l_ainfo_ptr->basename)
    {
-       p_free_ainfo(&l_ainfo_ptr);
+       gap_lib_free_ainfo(&l_ainfo_ptr);
        return(NULL);
    }
 
-   l_ainfo_ptr->extension = p_alloc_extension(l_ainfo_ptr->old_filename);
+   l_ainfo_ptr->extension = gap_lib_alloc_extension(l_ainfo_ptr->old_filename);
 
    l_ainfo_ptr->curr_frame_nr = l_ainfo_ptr->frame_nr;
    l_ainfo_ptr->first_frame_nr = -1;
@@ -945,12 +918,11 @@ p_alloc_ainfo(gint32 image_id, GimpRunMode run_mode)
 
 
    return(l_ainfo_ptr);
- 
-
-}    /* end p_init_ainfo */
+   
+}    /* end gap_lib_alloc_ainfo */
 
 /* ============================================================================
- * p_dir_ainfo
+ * gap_lib_dir_ainfo
  *
  * fill in more items into the given ainfo structure.
  * - first_frame_nr
@@ -961,7 +933,7 @@ p_alloc_ainfo(gint32 image_id, GimpRunMode run_mode)
  * ============================================================================
  */
 int
-p_dir_ainfo(t_anim_info *ainfo_ptr)
+gap_lib_dir_ainfo(GapAnimInfo *ainfo_ptr)
 {
    char          *l_dirname;
    char          *l_dirname_ptr;
@@ -994,22 +966,22 @@ p_dir_ainfo(t_anim_info *ainfo_ptr)
       l_ptr--;
    }
 
-   if(gap_debug) printf("DEBUG p_dir_ainfo: BASENAME:%s\n", l_ptr);
+   if(gap_debug) printf("DEBUG gap_lib_dir_ainfo: BASENAME:%s\n", l_ptr);
    
    if      (l_ptr == l_dirname)   { l_dirname_ptr = ".";  l_dirflag = 0; }
    else if (*l_dirname == '\0')   { l_dirname_ptr = G_DIR_SEPARATOR_S ; l_dirflag = 1; }
    else                           { l_dirname_ptr = l_dirname; l_dirflag = 2; }
 
-   if(gap_debug) printf("DEBUG p_dir_ainfo: DIRNAME:%s\n", l_dirname_ptr);
+   if(gap_debug) printf("DEBUG gap_lib_dir_ainfo: DIRNAME:%s\n", l_dirname_ptr);
    l_dirp = g_dir_open( l_dirname_ptr, 0, NULL );  
    
-   if(!l_dirp) fprintf(stderr, "ERROR p_dir_ainfo: can't read directory %s\n", l_dirname_ptr);
+   if(!l_dirp) fprintf(stderr, "ERROR gap_lib_dir_ainfo: can't read directory %s\n", l_dirname_ptr);
    else
    {
      while ( (l_entry = g_dir_read_name( l_dirp )) != NULL )
      {
 
-       /* if(gap_debug) printf("DEBUG p_dir_ainfo: l_entry:%s\n", l_entry); */
+       /* if(gap_debug) printf("DEBUG gap_lib_dir_ainfo: l_entry:%s\n", l_entry); */
        
        
        /* findout extension of the directory entry name */
@@ -1041,10 +1013,10 @@ p_dir_ainfo(t_anim_info *ainfo_ptr)
             break;
          }
          
-         if(1 == p_file_exists(dirname_buff)) /* check for regular file */
+         if(1 == gap_lib_file_exists(dirname_buff)) /* check for regular file */
          {
            /* get basename and frame number of the directory entry */
-           l_dummy = p_alloc_basename(l_entry, &l_nr);
+           l_dummy = gap_lib_alloc_basename(l_entry, &l_nr);
            if(l_dummy != NULL)
            { 
                /* check for files, with equal basename (frames)
@@ -1057,7 +1029,7 @@ p_dir_ainfo(t_anim_info *ainfo_ptr)
                  ainfo_ptr->frame_cnt++;
 
 
-                 if(gap_debug) printf("DEBUG p_dir_ainfo:  %s NR=%ld\n", l_entry, l_nr);
+                 if(gap_debug) printf("DEBUG gap_lib_dir_ainfo:  %s NR=%ld\n", l_entry, l_nr);
 
                  if (l_nr > l_maxnr)
                     l_maxnr = l_nr;
@@ -1080,20 +1052,20 @@ p_dir_ainfo(t_anim_info *ainfo_ptr)
   ainfo_ptr->first_frame_nr = MIN(l_minnr, l_maxnr);
 
   return 0;           /* OK */
-}	/* end p_dir_ainfo */
+}	/* end gap_lib_dir_ainfo */
  
 
 /* ============================================================================
- * p_free_ainfo
+ * gap_lib_free_ainfo
  *
  * free ainfo and its allocated stuff
  * ============================================================================
  */
 
 void
-p_free_ainfo(t_anim_info **ainfo)
+gap_lib_free_ainfo(GapAnimInfo **ainfo)
 {
-  t_anim_info *aptr;
+  GapAnimInfo *aptr;
   
   if((aptr = *ainfo) == NULL)
      return;
@@ -1115,18 +1087,18 @@ p_free_ainfo(t_anim_info **ainfo)
 
 
 /* ============================================================================
- * p_get_frame_nr
+ * gap_lib_get_frame_nr
  * ============================================================================
  */
 long
-p_get_frame_nr_from_name(char *fname)
+gap_lib_get_frame_nr_from_name(char *fname)
 {
   long number;
   int  len;
   char *basename;
   if(fname == NULL) return(-1);
   
-  basename = p_alloc_basename(fname, &number);
+  basename = gap_lib_alloc_basename(fname, &number);
   if(basename == NULL) return(-1);
   
   len = strlen(basename);
@@ -1145,7 +1117,7 @@ p_get_frame_nr_from_name(char *fname)
 }
 
 long
-p_get_frame_nr(gint32 image_id)
+gap_lib_get_frame_nr(gint32 image_id)
 {
   char *fname;
   long  number;
@@ -1154,14 +1126,14 @@ p_get_frame_nr(gint32 image_id)
   fname = gimp_image_get_filename(image_id);
   if(fname)
   {
-     number = p_get_frame_nr_from_name(fname);
+     number = gap_lib_get_frame_nr_from_name(fname);
      g_free(fname);
   }
   return (number);
 }
 
 /* ============================================================================
- * p_chk_framechange
+ * gap_lib_chk_framechange
  *
  * check if the current frame nr has changed. 
  * useful after dialogs, because the user may have renamed the current image
@@ -1172,13 +1144,13 @@ p_get_frame_nr(gint32 image_id)
  * ============================================================================
  */
 int 
-p_chk_framechange(t_anim_info *ainfo_ptr)
+gap_lib_chk_framechange(GapAnimInfo *ainfo_ptr)
 {
   int l_rc;
-  t_anim_info *l_ainfo_ptr;
+  GapAnimInfo *l_ainfo_ptr;
  
   l_rc = -1;
-  l_ainfo_ptr = p_alloc_ainfo(ainfo_ptr->image_id, ainfo_ptr->run_mode);
+  l_ainfo_ptr = gap_lib_alloc_ainfo(ainfo_ptr->image_id, ainfo_ptr->run_mode);
   if(l_ainfo_ptr != NULL)
   {
     if(ainfo_ptr->curr_frame_nr == l_ainfo_ptr->curr_frame_nr )
@@ -1187,18 +1159,18 @@ p_chk_framechange(t_anim_info *ainfo_ptr)
     }
     else
     {
-       p_msg_win(ainfo_ptr->run_mode,
+       gap_arr_msg_win(ainfo_ptr->run_mode,
          _("OPERATION CANCELLED.\n"
 	   "Current frame changed while dialog was open."));
     }
-    p_free_ainfo(&l_ainfo_ptr);
+    gap_lib_free_ainfo(&l_ainfo_ptr);
   }
 
   return l_rc;   
-}	/* end p_chk_framechange */
+}	/* end gap_lib_chk_framechange */
 
 /* ============================================================================
- * p_chk_framerange
+ * gap_lib_chk_framerange
  *
  * check ainfo struct if there is a framerange (of at least one frame)
  * return: 0 .. OK
@@ -1206,11 +1178,11 @@ p_chk_framechange(t_anim_info *ainfo_ptr)
  * ============================================================================
  */
 int 
-p_chk_framerange(t_anim_info *ainfo_ptr)
+gap_lib_chk_framerange(GapAnimInfo *ainfo_ptr)
 {
   if(ainfo_ptr->frame_cnt == 0)
   {
-     p_msg_win(ainfo_ptr->run_mode,
+     gap_arr_msg_win(ainfo_ptr->run_mode,
 	       _("OPERATION CANCELLED.\n"
                  "GAP plug-ins only work with filenames\n"
                  "that end in numbers like _000001.xcf.\n"
@@ -1218,7 +1190,7 @@ p_chk_framerange(t_anim_info *ainfo_ptr)
      return -1;
   }
   return 0;
-}	/* end p_chk_framerange */
+}	/* end gap_lib_chk_framerange */
 
 /* ============================================================================
  * p_gzip
@@ -1295,7 +1267,7 @@ p_decide_save_as(gint32 image_id, char *sav_name)
 
   static char l_save_as_name[80];
   
-  static t_but_arg  l_argv[3];
+  static GapArrButtonArg  l_argv[3];
   int               l_argc;  
   int               l_save_as_mode;
   GimpRunMode      l_run_mode;  
@@ -1322,7 +1294,7 @@ p_decide_save_as(gint32 image_id, char *sav_name)
     l_argv[2].but_val  = 0;
     l_argc             = 3;
 
-    l_save_as_mode =  p_buttons_dialog  (_("GAP Question"), l_msg, l_argc, l_argv, -1);
+    l_save_as_mode =  gap_arr_buttons_dialog  (_("GAP Question"), l_msg, l_argc, l_argv, -1);
     
     if(gap_debug) printf("DEBUG: decide SAVE_AS_MODE %d\n", (int)l_save_as_mode);
     
@@ -1342,7 +1314,7 @@ p_decide_save_as(gint32 image_id, char *sav_name)
       gimp_image_flatten (image_id);
   }
 
-  return(p_save_named_image2(image_id
+  return(gap_lib_save_named_image2(image_id
                            , sav_name
 			   , l_run_mode
 			   , FALSE      /* do not enable_thumbnailsave */
@@ -1350,17 +1322,17 @@ p_decide_save_as(gint32 image_id, char *sav_name)
 }	/* end p_decide_save_as */
 
 /* ============================================================================
- * p_gap_check_save_needed
+ * gap_lib_gap_check_save_needed
  * ============================================================================
  */
 gint32
-p_gap_check_save_needed(gint32 image_id)
+gap_lib_gap_check_save_needed(gint32 image_id)
 {
   const char *value_string;
 
   if (gimp_image_is_dirty(image_id))
   {
-    if(gap_debug) printf("p_gap_check_save_needed: GAP need save, caused by dirty image id: %d\n", (int)image_id);
+    if(gap_debug) printf("gap_lib_gap_check_save_needed: GAP need save, caused by dirty image id: %d\n", (int)image_id);
     return(TRUE);
   }
   else 
@@ -1368,35 +1340,35 @@ p_gap_check_save_needed(gint32 image_id)
     value_string = gimp_gimprc_query("trust-dirty-flag");
     if(value_string != NULL)
     {
-      if(gap_debug) printf("p_gap_check_save_needed:GAP gimprc FOUND relevant LINE: trust-dirty-flag  %s\n", value_string);
+      if(gap_debug) printf("gap_lib_gap_check_save_needed:GAP gimprc FOUND relevant LINE: trust-dirty-flag  %s\n", value_string);
       {
         if((*value_string != 'y') && (*value_string != 'Y'))
         {
-           if(gap_debug) printf("p_gap_check_save_needed: GAP need save, forced by gimprc trust-dirty-flag %s\n", value_string);
+           if(gap_debug) printf("gap_lib_gap_check_save_needed: GAP need save, forced by gimprc trust-dirty-flag %s\n", value_string);
            return(TRUE);
         }
       }
     }
   }
 
-  if(gap_debug) printf("p_gap_check_save_needed: GAP can SKIP save\n");
+  if(gap_debug) printf("gap_lib_gap_check_save_needed: GAP can SKIP save\n");
   return(FALSE);
-}  /* end p_gap_check_save_needed */
+}  /* end gap_lib_gap_check_save_needed */
 
 
 /* ============================================================================
- * p_save_named_image / 2
+ * gap_lib_save_named_image / 2
  * ============================================================================
  */
 gint32
-p_save_named_image2(gint32 image_id, char *sav_name, GimpRunMode run_mode, gboolean enable_thumbnailsave)
+gap_lib_save_named_image2(gint32 image_id, char *sav_name, GimpRunMode run_mode, gboolean enable_thumbnailsave)
 {
   GimpDrawable  *l_drawable;
   gint        l_nlayers;
   gint32     *l_layers_list;
   gboolean    l_rc;
 
-  if(gap_debug) printf("DEBUG: before   p_save_named_image2: '%s'\n", sav_name);
+  if(gap_debug) printf("DEBUG: before   gap_lib_save_named_image2: '%s'\n", sav_name);
 
   l_layers_list = gimp_image_get_layers(image_id, &l_nlayers);
   if(l_layers_list == NULL)
@@ -1405,7 +1377,7 @@ p_save_named_image2(gint32 image_id, char *sav_name, GimpRunMode run_mode, gbool
   l_drawable =  gimp_drawable_get(l_layers_list[l_nlayers -1]);  /* use the background layer */
   if(l_drawable == NULL)
   {
-     fprintf(stderr, "ERROR: p_save_named_image2 gimp_drawable_get failed '%s' nlayers=%d\n",
+     fprintf(stderr, "ERROR: gap_lib_save_named_image2 gimp_drawable_get failed '%s' nlayers=%d\n",
                      sav_name, (int)l_nlayers);
      g_free (l_layers_list);
      return -1;
@@ -1419,11 +1391,11 @@ p_save_named_image2(gint32 image_id, char *sav_name, GimpRunMode run_mode, gbool
 		 );
 
   
-  if(gap_debug) printf("DEBUG: after    p_save_named_image2: '%s' nlayers=%d image=%d drw=%d run_mode=%d\n", sav_name, (int)l_nlayers, (int)image_id, (int)l_drawable->drawable_id, (int)run_mode);
+  if(gap_debug) printf("DEBUG: after    gap_lib_save_named_image2: '%s' nlayers=%d image=%d drw=%d run_mode=%d\n", sav_name, (int)l_nlayers, (int)image_id, (int)l_drawable->drawable_id, (int)run_mode);
 
   if(enable_thumbnailsave)
   {
-    p_cond_gimp_file_save_thumbnail(image_id, sav_name);
+    gap_thumb_cond_gimp_file_save_thumbnail(image_id, sav_name);
   }
 
   if(gap_debug) printf("DEBUG: after thumbmail save\n");
@@ -1434,17 +1406,17 @@ p_save_named_image2(gint32 image_id, char *sav_name, GimpRunMode run_mode, gbool
 
   if (l_rc != TRUE)
   {
-    fprintf(stderr, "ERROR: p_save_named_image2  gimp_file_save failed '%s'\n", sav_name);
+    fprintf(stderr, "ERROR: gap_lib_save_named_image2  gimp_file_save failed '%s'\n", sav_name);
     return -1;
   }
   return image_id;
 
-}	/* end p_save_named_image2 */
+}	/* end gap_lib_save_named_image2 */
 
 gint32
-p_save_named_image(gint32 image_id, char *sav_name, GimpRunMode run_mode)
+gap_lib_save_named_image(gint32 image_id, char *sav_name, GimpRunMode run_mode)
 {
-  return(p_save_named_image2(image_id
+  return(gap_lib_save_named_image2(image_id
                             , sav_name
 			    , run_mode
 			    , TRUE      /* enable_thumbnailsave */
@@ -1453,7 +1425,7 @@ p_save_named_image(gint32 image_id, char *sav_name, GimpRunMode run_mode)
 
 
 /* ============================================================================
- * p_save_named_frame
+ * gap_lib_save_named_frame
  *  save frame into temporary image,
  *  on success rename it to desired framename.
  *  (this is done, to avoid corrupted frames on disk in case of
@@ -1461,7 +1433,7 @@ p_save_named_image(gint32 image_id, char *sav_name, GimpRunMode run_mode)
  * ============================================================================
  */
 int
-p_save_named_frame(gint32 image_id, char *sav_name)
+gap_lib_save_named_frame(gint32 image_id, char *sav_name)
 {
   GimpParam *l_params;
   gchar     *l_ext;
@@ -1477,7 +1449,7 @@ p_save_named_frame(gint32 image_id, char *sav_name)
   l_xcf  = 0;          /* assume no xcf format */
   
   /* check extension to decide if savd file will be zipped */      
-  l_ext = p_alloc_extension(sav_name);
+  l_ext = gap_lib_alloc_extension(sav_name);
   if(l_ext == NULL)  return -1;
   
   if(0 == strcmp(l_ext, ".xcf"))
@@ -1499,7 +1471,7 @@ p_save_named_frame(gint32 image_id, char *sav_name)
    * and has the same extension as the original sav_name 
    */
   l_tmpname = g_strdup_printf("%s.gtmp%s", sav_name, l_ext);
-  if(1 == p_file_exists(l_tmpname))
+  if(1 == gap_lib_file_exists(l_tmpname))
   {
       /* FILE exists: let gimp find another temp name */
       l_tmpname = gimp_temp_name(&l_ext[1]);
@@ -1519,7 +1491,7 @@ p_save_named_frame(gint32 image_id, char *sav_name)
      }
    }
 
-  if(gap_debug) printf("DEBUG: before   p_save_named_frame: '%s'\n", l_tmpname);
+  if(gap_debug) printf("DEBUG: before   gap_lib_save_named_frame: '%s'\n", l_tmpname);
 
   if(l_xcf != 0)
   {
@@ -1535,7 +1507,7 @@ p_save_named_frame(gint32 image_id, char *sav_name)
 			         GIMP_PDB_STRING, l_tmpname,
 			         GIMP_PDB_STRING, l_tmpname, /* raw name ? */
 			         GIMP_PDB_END);
-    if(gap_debug) printf("DEBUG: after   xcf  p_save_named_frame: '%s'\n", l_tmpname);
+    if(gap_debug) printf("DEBUG: after   xcf  gap_lib_save_named_frame: '%s'\n", l_tmpname);
 
     if (l_params[0].data.d_status == GIMP_PDB_SUCCESS)
     {
@@ -1573,14 +1545,14 @@ p_save_named_frame(gint32 image_id, char *sav_name)
          * rename will not work.
          * so lets try a  copy ; remove sequence
          */
-         if(gap_debug) printf("DEBUG: p_save_named_frame: RENAME 2nd try\n");
-         if(0 == p_file_copy(l_tmpname, sav_name))
+         if(gap_debug) printf("DEBUG: gap_lib_save_named_frame: RENAME 2nd try\n");
+         if(0 == gap_lib_file_copy(l_tmpname, sav_name))
 	 {
 	    remove(l_tmpname);
 	 }
          else
          {
-            fprintf(stderr, "ERROR in p_save_named_frame: can't rename %s to %s\n",
+            fprintf(stderr, "ERROR in gap_lib_save_named_frame: can't rename %s to %s\n",
                             l_tmpname, sav_name);
             return -1;
          }
@@ -1598,13 +1570,13 @@ p_save_named_frame(gint32 image_id, char *sav_name)
     }
   }
 
-  p_cond_gimp_file_save_thumbnail(image_id, sav_name);
+  gap_thumb_cond_gimp_file_save_thumbnail(image_id, sav_name);
 
   g_free(l_tmpname);  /* free temporary name */
 
   return l_rc;
    
-}	/* end p_save_named_frame */
+}	/* end gap_lib_save_named_frame */
 
 
 /* ============================================================================
@@ -1612,22 +1584,22 @@ p_save_named_frame(gint32 image_id, char *sav_name)
  * ============================================================================
  */
 int
-p_save_old_frame(t_anim_info *ainfo_ptr, t_video_info *vin_ptr)
+p_save_old_frame(GapAnimInfo *ainfo_ptr, GapVinVideoInfo *vin_ptr)
 {
   /* SAVE of old image image if it has unsaved changes
    * (or if Unconditional frame save is forced by gimprc setting)
    */ 
-  if(p_gap_check_save_needed(ainfo_ptr->image_id))
+  if(gap_lib_gap_check_save_needed(ainfo_ptr->image_id))
   {
     /* check and peroform automatic onionskinlayer remove */
     if(vin_ptr)
     {
       if((vin_ptr->auto_delete_before_save) && (vin_ptr->onionskin_auto_enable))
       {
-        p_onionskin_delete(ainfo_ptr->image_id);
+        gap_onion_base_onionskin_delete(ainfo_ptr->image_id);
       }
     }
-    return (p_save_named_frame(ainfo_ptr->image_id, ainfo_ptr->old_filename));
+    return (gap_lib_save_named_frame(ainfo_ptr->image_id, ainfo_ptr->old_filename));
   }
   return 0;
 }	/* end p_save_old_frame */
@@ -1635,13 +1607,13 @@ p_save_old_frame(t_anim_info *ainfo_ptr, t_video_info *vin_ptr)
 
 
 /* ============================================================================
- * p_load_image
+ * gap_lib_load_image
  * load image of any type by filename, and return its image id
  * (or -1 in case of errors)
  * ============================================================================
  */
 gint32
-p_load_image (char *lod_name)
+gap_lib_load_image (char *lod_name)
 {
   char  *l_ext;
   char  *l_tmpname;
@@ -1650,7 +1622,7 @@ p_load_image (char *lod_name)
   
   l_rc = 0;
   l_tmpname = NULL;
-  l_ext = p_alloc_extension(lod_name);
+  l_ext = gap_lib_alloc_extension(lod_name);
   if(l_ext != NULL)
   {
     if((0 == strcmp(l_ext, ".xcfgz"))
@@ -1671,14 +1643,14 @@ p_load_image (char *lod_name)
   }
 
 
-  if(gap_debug) printf("DEBUG: before   p_load_image: '%s'\n", l_tmpname);
+  if(gap_debug) printf("DEBUG: before   gap_lib_load_image: '%s'\n", l_tmpname);
 
   l_tmp_image_id = gimp_file_load(GIMP_RUN_NONINTERACTIVE,
 		l_tmpname,
 		l_tmpname  /* raw name ? */
 		);
   
-  if(gap_debug) printf("DEBUG: after    p_load_image: '%s' id=%d\n\n",
+  if(gap_debug) printf("DEBUG: after    gap_lib_load_image: '%s' id=%d\n\n",
                                l_tmpname, (int)l_tmp_image_id);
 
   if(l_tmpname != lod_name)
@@ -1690,12 +1662,12 @@ p_load_image (char *lod_name)
 
   return l_tmp_image_id;
 
-}	/* end p_load_image */
+}	/* end gap_lib_load_image */
 
 
 
 /* ============================================================================
- * p_load_named_frame
+ * gap_lib_load_named_frame
  *   load new frame,
  *   reconnect displays from old existing image to the new loaded frame
  *   and delete the old image.
@@ -1703,19 +1675,19 @@ p_load_image (char *lod_name)
  * ============================================================================
  */
 gint32 
-p_load_named_frame (gint32 old_image_id, char *lod_name)
+gap_lib_load_named_frame (gint32 old_image_id, char *lod_name)
 {
   gint32 l_new_image_id;
 
-  l_new_image_id = p_load_image(lod_name);
+  l_new_image_id = gap_lib_load_image(lod_name);
   
-  if(gap_debug) printf("DEBUG: after    p_load_named_frame: '%s' old_id=%d  new_id=%d\n\n",
+  if(gap_debug) printf("DEBUG: after    gap_lib_load_named_frame: '%s' old_id=%d  new_id=%d\n\n",
                                lod_name, (int)old_image_id, (int)l_new_image_id);
 
   if(l_new_image_id < 0)
       return -1;
 
-  if (p_gimp_displays_reconnect(old_image_id, l_new_image_id))
+  if (gap_pdb_gimp_displays_reconnect(old_image_id, l_new_image_id))
   {
       /* delete the old image */
       gimp_image_delete(old_image_id);
@@ -1729,7 +1701,7 @@ p_load_named_frame (gint32 old_image_id, char *lod_name)
       /* Update the active_image table for the Navigator Dialog
        * (TODO: replace the active-image table by real Event handling)
        */
-      p_update_active_image(old_image_id, l_new_image_id);
+      gap_navat_update_active_image(old_image_id, l_new_image_id);
 
 
       return l_new_image_id;
@@ -1737,12 +1709,12 @@ p_load_named_frame (gint32 old_image_id, char *lod_name)
 
    printf("GAP: Error: PDB call of gimp_displays_reconnect failed\n");
    return (-1);
-}	/* end p_load_named_frame */
+}	/* end gap_lib_load_named_frame */
 
 
 
 /* ============================================================================
- * p_replace_image
+ * gap_lib_replace_image
  *
  * make new_filename of next file to load, check if that file does exist on disk
  * then save current image and replace it, by loading the new_filename
@@ -1752,24 +1724,24 @@ p_load_named_frame (gint32 old_image_id, char *lod_name)
  * ============================================================================
  */
 gint32
-p_replace_image(t_anim_info *ainfo_ptr)
+gap_lib_replace_image(GapAnimInfo *ainfo_ptr)
 {
   gint32 image_id;
-  t_video_info *vin_ptr;
+  GapVinVideoInfo *vin_ptr;
   gboolean  do_onionskin_crate;
   
   do_onionskin_crate  = FALSE;
   if(ainfo_ptr->new_filename != NULL) g_free(ainfo_ptr->new_filename);
-  ainfo_ptr->new_filename = p_alloc_fname(ainfo_ptr->basename,
+  ainfo_ptr->new_filename = gap_lib_alloc_fname(ainfo_ptr->basename,
                                       ainfo_ptr->frame_nr,
                                       ainfo_ptr->extension);
   if(ainfo_ptr->new_filename == NULL)
      return -1;
 
-  if(0 == p_file_exists(ainfo_ptr->new_filename ))
+  if(0 == gap_lib_file_exists(ainfo_ptr->new_filename ))
      return -1;
 
-  vin_ptr = p_get_video_info(ainfo_ptr->basename);
+  vin_ptr = gap_vin_get_all(ainfo_ptr->basename);
   if(p_save_old_frame(ainfo_ptr, vin_ptr) < 0)
   {
     if(vin_ptr)
@@ -1790,11 +1762,11 @@ p_replace_image(t_anim_info *ainfo_ptr)
        /* perform directoryscan to findout first_frame_nr and last_frame_nr
         * that is needed for onionskin creation
         */
-       p_dir_ainfo(ainfo_ptr);
+       gap_lib_dir_ainfo(ainfo_ptr);
     }
   }
  
-  image_id = p_load_named_frame(ainfo_ptr->image_id, ainfo_ptr->new_filename);
+  image_id = gap_lib_load_named_frame(ainfo_ptr->image_id, ainfo_ptr->new_filename);
 
   /* check and peroform automatic onionskinlayer creation */
   if(vin_ptr)
@@ -1804,7 +1776,7 @@ p_replace_image(t_anim_info *ainfo_ptr)
        /* create onionskinlayers without keeping the handled images cached
         * (passing NULL pointers for the chaching structures and functions)
         */
-       p_onionskin_apply(NULL         /* dummy pointer gpp */
+       gap_onion_base_onionskin_apply(NULL         /* dummy pointer gpp */
              , image_id               /* apply on the newly loaded image_id */
              , vin_ptr
              , ainfo_ptr->frame_nr        /* the new current frame_nr */
@@ -1821,7 +1793,7 @@ p_replace_image(t_anim_info *ainfo_ptr)
   }
 
   return(image_id);
-}	/* end p_replace_image */
+}	/* end gap_lib_replace_image */
 
 
 /* XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX */ 
@@ -1833,7 +1805,7 @@ p_replace_image(t_anim_info *ainfo_ptr)
  * ============================================================================
  */
 
-gchar *
+static gchar *
 p_get_video_paste_basename(void)
 {
   gchar *l_basename;
@@ -1846,7 +1818,7 @@ p_get_video_paste_basename(void)
   return(l_basename);
 }
 
-gchar *
+static gchar *
 p_get_video_paste_dir(void)
 {
   gchar *l_dir;
@@ -1870,7 +1842,7 @@ p_get_video_paste_dir(void)
 }
 
 gchar *
-p_get_video_paste_name(void)
+gap_lib_get_video_paste_name(void)
 {
   gchar *l_dir;
   gchar *l_basename;
@@ -1888,7 +1860,7 @@ p_get_video_paste_name(void)
   g_free(l_basename);
   g_free(l_dir_thumb);
 
-  if(gap_debug) printf("p_get_video_paste_name: %s\n", l_video_name);
+  if(gap_debug) printf("gap_lib_get_video_paste_name: %s\n", l_video_name);
   return(l_video_name); 
 }
 
@@ -1909,7 +1881,7 @@ p_clear_or_count_video_paste(gint delete_flag)
   
   if(!l_dirp)
   {
-    printf("ERROR p_vid_edit_clear: can't read directory %s\n", l_dir);
+    printf("ERROR gap_vid_edit_clear: can't read directory %s\n", l_dir);
     l_framecount = -1;
   }
   else
@@ -1922,7 +1894,7 @@ p_clear_or_count_video_paste(gint delete_flag)
        if(strncmp(l_basename, l_entry, l_len) == 0)
        {
           l_filename = g_strdup_printf("%s%s%s", l_dir, G_DIR_SEPARATOR_S, l_entry);
-          if(1 == p_file_exists(l_filename)) /* check for regular file */
+          if(1 == gap_lib_file_exists(l_filename)) /* check for regular file */
           {
              /* delete all files in the video paste directory
               * with names matching the basename part
@@ -1930,11 +1902,11 @@ p_clear_or_count_video_paste(gint delete_flag)
              l_framecount++;
              if(delete_flag)
              {
-                if(gap_debug) printf("p_vid_edit_clear: remove file %s\n", l_filename);
+                if(gap_debug) printf("gap_vid_edit_clear: remove file %s\n", l_filename);
                 remove(l_filename);
 
                 /* also delete thumbnail */
-                p_gimp_file_delete_thumbnail(l_filename);
+                gap_thumb_gimp_file_delete_thumbnail(l_filename);
              }
           }
           g_free(l_filename);
@@ -1948,13 +1920,13 @@ p_clear_or_count_video_paste(gint delete_flag)
 }
 
 gint32
-p_vid_edit_clear(void)
+gap_vid_edit_clear(void)
 {
   return(p_clear_or_count_video_paste(TRUE)); /* delete frames */
 }
 
 gint32
-p_vid_edit_framecount()
+gap_vid_edit_framecount()
 {
   return (p_clear_or_count_video_paste(FALSE)); /* delete_flag is off, just count frames */
 }
@@ -1970,7 +1942,7 @@ gint
 gap_vid_edit_copy(GimpRunMode run_mode, gint32 image_id, long range_from, long range_to)
 {
   int rc;
-  t_anim_info *ainfo_ptr;
+  GapAnimInfo *ainfo_ptr;
   
   gchar *l_curr_name;
   gchar *l_fname ;
@@ -1982,7 +1954,7 @@ gap_vid_edit_copy(GimpRunMode run_mode, gint32 image_id, long range_from, long r
   gint32 l_idx;
   gint32 l_tmp_image_id;
 
-  ainfo_ptr = p_alloc_ainfo(image_id, run_mode);
+  ainfo_ptr = gap_lib_alloc_ainfo(image_id, run_mode);
   if(ainfo_ptr == NULL)
   {
      return (-1);
@@ -1995,13 +1967,13 @@ gap_vid_edit_copy(GimpRunMode run_mode, gint32 image_id, long range_from, long r
     /* current frame is in the affected range
      * so we have to save current frame to file
      */   
-    l_curr_name = p_alloc_fname(ainfo_ptr->basename, ainfo_ptr->curr_frame_nr, ainfo_ptr->extension);
-    p_save_named_frame(ainfo_ptr->image_id, l_curr_name);
+    l_curr_name = gap_lib_alloc_fname(ainfo_ptr->basename, ainfo_ptr->curr_frame_nr, ainfo_ptr->extension);
+    gap_lib_save_named_frame(ainfo_ptr->image_id, l_curr_name);
     g_free(l_curr_name);
   }
   
-  l_basename = p_get_video_paste_name();
-  l_cnt2 = p_vid_edit_framecount();  /* count frames in the video paste buffer */
+  l_basename = gap_lib_get_video_paste_name();
+  l_cnt2 = gap_vid_edit_framecount();  /* count frames in the video paste buffer */
   l_frame_nr = 1 + l_cnt2;           /* start at one, or continue (append) at end +1 */
   
   l_cnt_range = 1 + MAX(range_to, range_from) - MIN(range_to, range_from);
@@ -2011,27 +1983,27 @@ gap_vid_edit_copy(GimpRunMode run_mode, gint32 image_id, long range_from, long r
      {
        break;
      }
-     l_fname = p_alloc_fname(ainfo_ptr->basename,
+     l_fname = gap_lib_alloc_fname(ainfo_ptr->basename,
                              MIN(range_to, range_from) + l_idx,
                              ainfo_ptr->extension);
      l_fname_copy = g_strdup_printf("%s%06ld.xcf", l_basename, (long)l_frame_nr);
      
      if(strcmp(ainfo_ptr->extension, ".xcf") == 0)
      {
-        rc = p_image_file_copy(l_fname, l_fname_copy);
+        rc = gap_lib_image_file_copy(l_fname, l_fname_copy);
      }
      else
      {
         /* convert other fileformats to xcf before saving to video paste buffer */
-        l_tmp_image_id = p_load_image(l_fname);
-        rc = p_save_named_frame(l_tmp_image_id, l_fname_copy);
+        l_tmp_image_id = gap_lib_load_image(l_fname);
+        rc = gap_lib_save_named_frame(l_tmp_image_id, l_fname_copy);
         gimp_image_delete(l_tmp_image_id);
      }
      g_free(l_fname);
      g_free(l_fname_copy);
      l_frame_nr++;
   }
-  p_free_ainfo(&ainfo_ptr);
+  gap_lib_free_ainfo(&ainfo_ptr);
   return(rc);
 }       /* end gap_vid_edit_copy */
 
@@ -2082,7 +2054,7 @@ gap_vid_edit_paste(GimpRunMode run_mode, gint32 image_id, long paste_mode)
 {
 #define CUSTOM_PALETTE_NAME "gap_cmap"
   gint32 rc;
-  t_anim_info *ainfo_ptr;
+  GapAnimInfo *ainfo_ptr;
   
   gchar *l_curr_name;
   gchar *l_fname ;
@@ -2097,7 +2069,7 @@ gap_vid_edit_paste(GimpRunMode run_mode, gint32 image_id, long paste_mode)
   gint       l_rc;
   GimpImageBaseType  l_orig_basetype;
 
-  l_cnt2 = p_vid_edit_framecount();
+  l_cnt2 = gap_vid_edit_framecount();
   if(gap_debug)
   {
     printf("gap_vid_edit_paste: paste_mode %d found %d frames to paste, image_id: %d\n"
@@ -2112,12 +2084,12 @@ gap_vid_edit_paste(GimpRunMode run_mode, gint32 image_id, long paste_mode)
   }
 
 
-  ainfo_ptr = p_alloc_ainfo(image_id, run_mode);
+  ainfo_ptr = gap_lib_alloc_ainfo(image_id, run_mode);
   if(ainfo_ptr == NULL)
   {
      return (-1);
   }
-  if (0 != p_dir_ainfo(ainfo_ptr))
+  if (0 != gap_lib_dir_ainfo(ainfo_ptr))
   {
      return (-1);
   }
@@ -2137,17 +2109,17 @@ gap_vid_edit_paste(GimpRunMode run_mode, gint32 image_id, long paste_mode)
 
   l_insert_frame_nr = ainfo_ptr->curr_frame_nr;
 
-  if(paste_mode != VID_PASTE_INSERT_AFTER)
+  if(paste_mode != GAP_VID_PASTE_INSERT_AFTER)
   {
     /* we have to save current frame to file */   
-    l_curr_name = p_alloc_fname(ainfo_ptr->basename, ainfo_ptr->curr_frame_nr, ainfo_ptr->extension);
-    p_save_named_frame(ainfo_ptr->image_id, l_curr_name);
+    l_curr_name = gap_lib_alloc_fname(ainfo_ptr->basename, ainfo_ptr->curr_frame_nr, ainfo_ptr->extension);
+    gap_lib_save_named_frame(ainfo_ptr->image_id, l_curr_name);
     g_free(l_curr_name);
   }
   
-  if(paste_mode != VID_PASTE_REPLACE)
+  if(paste_mode != GAP_VID_PASTE_REPLACE)
   {
-     if(paste_mode == VID_PASTE_INSERT_AFTER)
+     if(paste_mode == GAP_VID_PASTE_INSERT_AFTER)
      {
        l_insert_frame_nr = ainfo_ptr->curr_frame_nr +1;
      }
@@ -2165,11 +2137,11 @@ gap_vid_edit_paste(GimpRunMode run_mode, gint32 image_id, long paste_mode)
      
      while(l_lo >= l_insert_frame_nr)
      {     
-       if(0 != p_rename_frame(ainfo_ptr, l_lo, l_hi))
+       if(0 != gap_lib_rename_frame(ainfo_ptr, l_lo, l_hi))
        {
           gchar *tmp_errtxt;
           tmp_errtxt = g_strdup_printf(_("Error: could not rename frame %ld to %ld"), (long int)l_lo, (long int)l_hi);
-          p_msg_win(ainfo_ptr->run_mode, tmp_errtxt);
+          gap_arr_msg_win(ainfo_ptr->run_mode, tmp_errtxt);
           g_free(tmp_errtxt);
           return -1;
        }
@@ -2178,19 +2150,19 @@ gap_vid_edit_paste(GimpRunMode run_mode, gint32 image_id, long paste_mode)
      }
   }
 
-  l_basename = p_get_video_paste_name();
+  l_basename = gap_lib_get_video_paste_name();
   l_dst_frame_nr = l_insert_frame_nr;
   for(l_frame_nr = 1; l_frame_nr <= l_cnt2; l_frame_nr++)
   {
-     l_fname = p_alloc_fname(ainfo_ptr->basename,
+     l_fname = gap_lib_alloc_fname(ainfo_ptr->basename,
                              l_dst_frame_nr,
                              ainfo_ptr->extension);
      l_fname_copy = g_strdup_printf("%s%06ld.xcf", l_basename, (long)l_frame_nr);
 
-     l_tmp_image_id = p_load_image(l_fname_copy);
+     l_tmp_image_id = gap_lib_load_image(l_fname_copy);
      
      /* delete onionskin layers (if there are any) before paste */
-     p_onionskin_delete(l_tmp_image_id);
+     gap_onion_base_onionskin_delete(l_tmp_image_id);
      
      /* check size and resize if needed */
      if((gimp_image_width(l_tmp_image_id) != gimp_image_width(image_id))
@@ -2261,12 +2233,12 @@ gap_vid_edit_paste(GimpRunMode run_mode, gint32 image_id, long paste_mode)
         }
      }
 
-     if(gap_debug) printf("DEBUG: before p_save_named_frame l_fname:%s l_tmp_image_id:%d'\n"
+     if(gap_debug) printf("DEBUG: before gap_lib_save_named_frame l_fname:%s l_tmp_image_id:%d'\n"
                       , l_fname
                       , (int) l_tmp_image_id);
 
      gimp_image_set_filename (l_tmp_image_id, l_fname);
-     rc = p_save_named_frame(l_tmp_image_id, l_fname);
+     rc = gap_lib_save_named_frame(l_tmp_image_id, l_fname);
 
      gimp_image_delete(l_tmp_image_id);
 
@@ -2276,7 +2248,7 @@ gap_vid_edit_paste(GimpRunMode run_mode, gint32 image_id, long paste_mode)
      l_dst_frame_nr++;
   }
   
-  if(paste_mode == VID_PASTE_INSERT_AFTER)
+  if(paste_mode == GAP_VID_PASTE_INSERT_AFTER)
   {
     /* we pasted successful after the current image,
      * keep the calling image_id as active image_id return value
@@ -2293,7 +2265,7 @@ gap_vid_edit_paste(GimpRunMode run_mode, gint32 image_id, long paste_mode)
       /* load from the "new" current frame */   
       if(ainfo_ptr->new_filename != NULL) g_free(ainfo_ptr->new_filename);
 
-      ainfo_ptr->new_filename = p_alloc_fname(ainfo_ptr->basename,
+      ainfo_ptr->new_filename = gap_lib_alloc_fname(ainfo_ptr->basename,
                                       ainfo_ptr->curr_frame_nr,
                                       ainfo_ptr->extension);
 
@@ -2306,7 +2278,7 @@ gap_vid_edit_paste(GimpRunMode run_mode, gint32 image_id, long paste_mode)
            , (int) ainfo_ptr->last_frame_nr
            );
 
-      rc = p_load_named_frame(ainfo_ptr->image_id, ainfo_ptr->new_filename);
+      rc = gap_lib_load_named_frame(ainfo_ptr->image_id, ainfo_ptr->new_filename);
     }
   }
 
@@ -2317,7 +2289,7 @@ gap_vid_edit_paste(GimpRunMode run_mode, gint32 image_id, long paste_mode)
 
   if(gap_debug)  printf("gap_vid_edit_paste: rc: %d\n", (int)rc);
 
-  p_free_ainfo(&ainfo_ptr);
+  gap_lib_free_ainfo(&ainfo_ptr);
   
   return(rc);
 }       /* end gap_vid_edit_paste */

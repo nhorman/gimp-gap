@@ -31,9 +31,9 @@
 
 #include "libgimp/gimp.h"
 
-gboolean  p_gap_lock_is_locked(gint32 image_id, GimpRunMode run_mode);
-void      p_gap_lock_set(gint32 image_id);
-void      p_gap_lock_remove(gint32 image_id);
+gboolean  gap_lock_check_for_lock(gint32 image_id, GimpRunMode run_mode);
+void      gap_lock_set_lock(gint32 image_id);
+void      gap_lock_remove_lock(gint32 image_id);
 
 
 #endif

@@ -1,6 +1,6 @@
-/* my_layer_copy.h
+/* gap_layer_copy.h
  * 1997.11.06 hof (Wolfgang Hofer)
- *      p_my_layer_copy 
+ *      gap_layer_copy_to_dest_image 
  *        can copy layers from a drawable in another image.
  *
  * returns the id of the new layer
@@ -42,11 +42,16 @@
 #include "gtk/gtk.h"
 #include "libgimp/gimp.h"
 
-gint32 p_my_layer_copy (gint32 dst_image_id,
+gint32 gap_layer_copy_to_dest_image (gint32 dst_image_id,
                         gint32 src_layer_id,
                         gdouble    opacity, /* 0.0 upto 100.0 */
                         GimpLayerModeEffects mode,
                         gint *src_offset_x,
                         gint *src_offset_y );
+
+gboolean gap_layer_copy_content (gint32 dst_drawable_id, gint32 src_drawable_id);
+gboolean gap_layer_copy_picked_channel (gint32 dst_drawable_id,  guint dst_channel_pick
+                              , gint32 src_drawable_id, guint src_channel_pick
+			      , gboolean shadow);
 
 #endif

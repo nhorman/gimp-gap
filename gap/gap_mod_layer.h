@@ -38,34 +38,44 @@
 #define MAX_LAYERNAME 128
 
 /* action_mode values */
-#define	 ACM_SET_VISIBLE    0
-#define	 ACM_SET_INVISIBLE  1
-#define	 ACM_SET_LINKED	    2
-#define	 ACM_SET_UNLINKED   3
-#define	 ACM_RAISE          4
-#define	 ACM_LOWER          5
-#define	 ACM_MERGE_EXPAND   6
-#define	 ACM_MERGE_IMG      7
-#define	 ACM_MERGE_BG       8
-#define	 ACM_APPLY_FILTER   9
-#define	 ACM_DUPLICATE     10
-#define	 ACM_DELETE        11
-#define	 ACM_RENAME        12
+#define	 GAP_MOD_ACM_SET_VISIBLE    0
+#define	 GAP_MOD_ACM_SET_INVISIBLE  1
+#define	 GAP_MOD_ACM_SET_LINKED	    2
+#define	 GAP_MOD_ACM_SET_UNLINKED   3
+#define	 GAP_MOD_ACM_RAISE          4
+#define	 GAP_MOD_ACM_LOWER          5
+#define	 GAP_MOD_ACM_MERGE_EXPAND   6
+#define	 GAP_MOD_ACM_MERGE_IMG      7
+#define	 GAP_MOD_ACM_MERGE_BG       8
+#define	 GAP_MOD_ACM_APPLY_FILTER   9
+#define	 GAP_MOD_ACM_DUPLICATE     10
+#define	 GAP_MOD_ACM_DELETE        11
+#define	 GAP_MOD_ACM_RENAME        12
+
+#define	 GAP_MOD_ACM_SEL_REPLACE   13
+#define	 GAP_MOD_ACM_SEL_ADD       14
+#define	 GAP_MOD_ACM_SEL_SUTRACT   15
+#define	 GAP_MOD_ACM_SEL_INTERSECT 16
+#define	 GAP_MOD_ACM_SEL_NONE      17
+#define	 GAP_MOD_ACM_SEL_ALL       18
+#define	 GAP_MOD_ACM_SEL_INVERT    19
+#define	 GAP_MOD_ACM_SEL_SAVE      20
+#define	 GAP_MOD_ACM_SEL_LOAD      21
+#define	 GAP_MOD_ACM_SEL_DELETE    22
 
 typedef struct
 {
   gint32 layer_id;
   gint   visible;
   gint   selected;
-}  t_LayliElem;
+}  GapModLayliElem;
 
-t_LayliElem *p_alloc_layli(gint32 image_id, gint32 *l_sel_cnt, gint *nlayers,
+GapModLayliElem *gap_mod_alloc_layli(gint32 image_id, gint32 *l_sel_cnt, gint *nlayers,
         		   gint32 sel_mode,
         		   gint32 sel_case,
 			   gint32 sel_invert,
         		   char *sel_pattern );
-int  p_get_1st_selected (t_LayliElem * layli_ptr, gint nlayers);
-void p_prevent_empty_image(gint32 image_id);
+int  gap_mod_get_1st_selected (GapModLayliElem * layli_ptr, gint nlayers);
 
 gint gap_mod_layer(GimpRunMode run_mode, gint32 image_id,
                    gint32 range_from,  gint32 range_to,

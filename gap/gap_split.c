@@ -74,7 +74,7 @@ extern      int gap_debug; /* ==0  ... dont print debug infos */
  * ============================================================================
  */
 static int
-p_split_image(t_anim_info *ainfo_ptr,
+p_split_image(GapAnimInfo *ainfo_ptr,
               char *new_extension,
               gint invers, gint no_alpha, gint only_visible, gint digits)
 {
@@ -147,7 +147,7 @@ p_split_image(t_anim_info *ainfo_ptr,
        }
 
        /* copy the layer */
-       l_cp_layer_id = p_my_layer_copy(l_new_image_id,
+       l_cp_layer_id = gap_layer_copy_to_dest_image(l_new_image_id,
                                      l_src_layer_id,
                                      100.0,   /* Opacity */
                                      0,       /* NORMAL */
@@ -174,8 +174,8 @@ p_split_image(t_anim_info *ainfo_ptr,
 
 
        /* build the name for output image */
-       l_str = p_strdup_add_underscore(ainfo_ptr->basename);
-       l_sav_name = p_alloc_fname6(l_str,
+       l_str = gap_lib_strdup_add_underscore(ainfo_ptr->basename);
+       l_sav_name = gap_lib_alloc_fname6(l_str,
                                   l_framenumber,       /* start at 1 (not at 0) */
                                   new_extension,
                                   digits);
@@ -186,10 +186,10 @@ p_split_image(t_anim_info *ainfo_ptr,
          /* save with selected save procedure
           * (regardless if image was flattened or not)
           */
-          l_rc = p_save_named_image(l_new_image_id, l_sav_name, l_run_mode);
+          l_rc = gap_lib_save_named_image(l_new_image_id, l_sav_name, l_run_mode);
           if(l_rc < 0)
           {
-            p_msg_win(ainfo_ptr->run_mode, _("Split Frames: SAVE operation FAILED.\n"
+            gap_arr_msg_win(ainfo_ptr->run_mode, _("Split Frames: SAVE operation FAILED.\n"
 					     "desired save plugin can't handle type\n"
 					     "or desired save plugin not available."));
             break;
@@ -234,9 +234,9 @@ p_split_image(t_anim_info *ainfo_ptr,
  * ============================================================================
  */
 static long
-p_split_dialog(t_anim_info *ainfo_ptr, gint *inverse_order, gint *no_alpha, char *extension, gint len_ext, gint *only_visible, gint *digits)
+p_split_dialog(GapAnimInfo *ainfo_ptr, gint *inverse_order, gint *no_alpha, char *extension, gint len_ext, gint *only_visible, gint *digits)
 {
-  static t_arr_arg  argv[7];
+  static GapArrArg  argv[7];
   gchar   *buf;
 
   buf = g_strdup_printf (_("%s\n%s\n(%s_0001.%s)\n"),
@@ -244,10 +244,10 @@ p_split_dialog(t_anim_info *ainfo_ptr, gint *inverse_order, gint *no_alpha, char
 			 _("frames are named: base_nr.extension"),
 			 ainfo_ptr->basename, extension);
 
-  p_init_arr_arg(&argv[0], WGT_LABEL);
+  gap_arr_arg_init(&argv[0], GAP_ARR_WGT_LABEL);
   argv[0].label_txt = &buf[0];
 
-  p_init_arr_arg(&argv[1], WGT_TEXT);
+  gap_arr_arg_init(&argv[1], GAP_ARR_WGT_TEXT);
   argv[1].label_txt = _("Extension:");
   argv[1].help_txt  = _("extension of resulting frames (is also used to define Fileformat)");
   argv[1].text_buf_len = len_ext;
@@ -255,28 +255,28 @@ p_split_dialog(t_anim_info *ainfo_ptr, gint *inverse_order, gint *no_alpha, char
   argv[1].has_default = TRUE;
   argv[1].text_buf_default = ".xcf";
 
-  p_init_arr_arg(&argv[2], WGT_TOGGLE);
+  gap_arr_arg_init(&argv[2], GAP_ARR_WGT_TOGGLE);
   argv[2].label_txt = _("Inverse Order:");
   argv[2].help_txt  = _("Start frame 0001 at Top Layer");
   argv[2].int_ret   = 0;
   argv[2].has_default = TRUE;
   argv[2].int_default = 0;
 
-  p_init_arr_arg(&argv[3], WGT_TOGGLE);
+  gap_arr_arg_init(&argv[3], GAP_ARR_WGT_TOGGLE);
   argv[3].label_txt = _("Flatten:");
   argv[3].help_txt  = _("Remove Alpha Channel in resulting Frames. Transparent parts are filled with BG color.");
   argv[3].int_ret   = 0;
   argv[3].has_default = TRUE;
   argv[3].int_default = 0;
 
-  p_init_arr_arg(&argv[4], WGT_TOGGLE);
+  gap_arr_arg_init(&argv[4], GAP_ARR_WGT_TOGGLE);
   argv[4].label_txt = _("Only Visible:");
   argv[4].help_txt  = _("ON: Handle only visible Layers, OFF: handle all Layers and force visibiblity");
   argv[4].int_ret   = 0;
   argv[4].has_default = TRUE;
   argv[4].int_default = 0;
 
-  p_init_arr_arg(&argv[5], WGT_INT);
+  gap_arr_arg_init(&argv[5], GAP_ARR_WGT_INT);
   argv[5].constraint = TRUE;
   argv[5].label_txt = _("Digits:");
   argv[5].help_txt  = _("How many digits to use for the framenumber filenamwpart");
@@ -287,11 +287,11 @@ p_split_dialog(t_anim_info *ainfo_ptr, gint *inverse_order, gint *no_alpha, char
   argv[5].has_default = TRUE;
   argv[5].int_default = 6;
 
-  p_init_arr_arg(&argv[6], WGT_DEFAULT_BUTTON);
+  gap_arr_arg_init(&argv[6], GAP_ARR_WGT_DEFAULT_BUTTON);
   argv[6].label_txt = _("Default");
   argv[6].help_txt  = _("Reset all Parameters to Default Values");
 
-  if(TRUE == p_array_dialog( _("Split Image into Frames"),
+  if(TRUE == gap_arr_ok_cancel_dialog( _("Split Image into Frames"),
 			     _("Split Settings"),
 			     7, argv))
   {
@@ -333,7 +333,7 @@ int gap_split_image(GimpRunMode run_mode,
   gint32  l_digits;
   char   *l_imagename;
 
-  t_anim_info *ainfo_ptr;
+  GapAnimInfo *ainfo_ptr;
   char l_extension[32];
 
   strcpy(l_extension, ".xcf");
@@ -347,15 +347,15 @@ int gap_split_image(GimpRunMode run_mode,
     gimp_image_set_filename(image_id, "frame_.xcf");
   }
 
-  ainfo_ptr = p_alloc_ainfo(image_id, run_mode);
+  ainfo_ptr = gap_lib_alloc_ainfo(image_id, run_mode);
   if(ainfo_ptr != NULL)
   {
-    if (0 == p_dir_ainfo(ainfo_ptr))
+    if (0 == gap_lib_dir_ainfo(ainfo_ptr))
     {
       if((ainfo_ptr->frame_cnt != 0)
       && (l_imagename != NULL))
       {
-         p_msg_win(run_mode,
+         gap_arr_msg_win(run_mode,
            _("OPERATION CANCELLED.\n"
 	     "This image is already an AnimFrame.\n"
 	     "Try again on a Duplicate (Image/Duplicate)."));
@@ -405,7 +405,7 @@ int gap_split_image(GimpRunMode run_mode,
         }
       }
     }
-    p_free_ainfo(&ainfo_ptr);
+    gap_lib_free_ainfo(&ainfo_ptr);
   }
 
   return(l_rc);

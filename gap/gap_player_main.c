@@ -22,6 +22,7 @@
  */
 
 /* Revision history
+ * version 1.3.20d; 2003/10/06  hof: new gpp struct members for resize behaviour
  * version 1.3.19a; 2003/09/06  hof: audiosupport (based on wavplay, for UNIX only),
  * version 1.3.16a; 2003/06/26  hof: param types GimpPlugInInfo.run procedure
  * version 1.3.16a; 2003/06/26  hof: param types GimpPlugInInfo.run procedure
@@ -56,11 +57,11 @@
 
 int gap_debug = 0;  /* 1 == print debug infos , 0 dont print debug infos */ 
 
-static t_global_params global_params =
+static GapPlayerMainGlobalParams global_params =
 {
   GIMP_RUN_INTERACTIVE
 , -1          /* gint32  image_id */
-, NULL        /* t_anim_info *ainfo_ptr */
+, NULL        /* GapAnimInfo *ainfo_ptr */
   
 , FALSE       /*  gboolean   autostart */
 , TRUE        /*  gboolean   use_thumbnails */
@@ -94,7 +95,7 @@ static t_global_params global_params =
 , -1          /*  gint32  go_base */
 , 0           /*  gint32  pingpong_count */
   
-, NULL        /*  t_pview   *pv_ptr */
+, NULL        /*  GapPView   *pv_ptr */
 , NULL        /*  GtkWidget *shell_window */
 , NULL        /*  GtkObject *from_spinbutton_adj */
 , NULL        /*  GtkObject *to_spinbutton_adj */
@@ -104,7 +105,7 @@ static t_global_params global_params =
    
 , NULL        /*  GtkWidget *status_label */
 , NULL        /*  GtkWidget *timepos_label */
-, NULL        /*  GtkWidget *table11 */
+, NULL        /*  GtkWidget *resize_box */
 , NULL        /*  GtkWidget *size_spinbutton */
 
 , NULL        /*  Gtimer    *gtimer */
@@ -112,9 +113,12 @@ static t_global_params global_params =
 , 0.0         /*  gdouble   rest_secs  */
 , 0.0         /*  gdouble   delay_secs  */
 , 0.0         /*  gdouble   framecnt  */
-, 0           /*  gint32    resize_count */
+, 0           /*  gint32    resize_handler_id */
 , 0           /*  gint32    old_resize_width */
 , 0           /*  gint32    old_resize_height */
+, TRUE        /*  gboolean  gpp_startup */
+, -1          /*  gint32    gpp_shell_initial_width */
+, -1          /*  gint32    gpp_shell_initial_height */
 
 , FALSE       /* audio_enable */
 , 0           /* audio_resync */
@@ -224,7 +228,7 @@ run (const gchar *name,          /* name of plugin */
 {
   const gchar *l_env;
   gint32       image_id = -1;
-  t_global_params  *gpp = &global_params;
+  GapPlayerMainGlobalParams  *gpp = &global_params;
 
   /* Get the runmode from the in-parameters */
   GimpRunMode run_mode = param[0].data.d_int32;
@@ -258,10 +262,13 @@ run (const gchar *name,          /* name of plugin */
 
   switch (run_mode)
   {
-    case GIMP_RUN_INTERACTIVE:
+   case GIMP_RUN_INTERACTIVE:
       /* Possibly retrieve data from a previous run */
       gimp_get_data (PLUG_IN_NAME, gpp);
       gpp->autostart = FALSE;
+      gpp->pv_pixelsize = 256;
+      gpp->pv_width = 256;
+      gpp->pv_height = 256;
       break;
 
     case GIMP_RUN_NONINTERACTIVE:
@@ -323,11 +330,11 @@ run (const gchar *name,          /* name of plugin */
     
     gpp->image_id = image_id;
     gpp->run_mode = run_mode;
-    p_playback_dialog(gpp);
+    gap_player_dlg_playback_dialog(gpp);
   
     /* Store variable states for next run */
     if (run_mode == GIMP_RUN_INTERACTIVE)
-      gimp_set_data (PLUG_IN_NAME, gpp, sizeof (t_global_params));
+      gimp_set_data (PLUG_IN_NAME, gpp, sizeof (GapPlayerMainGlobalParams));
   }
   values[0].data.d_status = status;
 }	/* end run */

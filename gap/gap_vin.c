@@ -23,8 +23,8 @@
  */
 
 /* revision history:
- * version 1.3.18b; 2003/08/23  hof: p_get_video_info: force timezoom value >= 1 (0 results in divison by zero)
- * version 1.3.18a; 2003/08/23  hof: bugfix: p_get_video_info must clear (g_malloc0) vin_ptr struct at creation
+ * version 1.3.18b; 2003/08/23  hof: gap_vin_get_all: force timezoom value >= 1 (0 results in divison by zero)
+ * version 1.3.18a; 2003/08/23  hof: bugfix: gap_vin_get_all must clear (g_malloc0) vin_ptr struct at creation
  * version 1.3.16c; 2003/07/12  hof: support onionskin settings in video_info files
  *                                   key/value/datatype is now managed by t_keylist
  * version 1.3.14b; 2003/06/03  hof: using setlocale independent float conversion procedures
@@ -178,7 +178,7 @@ p_set_keyword(t_keylist *keylist
  * --------------------------
  */
 static void
-p_set_master_keywords(t_keylist *keylist, t_video_info *vin_ptr)
+p_set_master_keywords(t_keylist *keylist, GapVinVideoInfo *vin_ptr)
 {
    p_set_keyword(keylist, "(framerate ", &vin_ptr->framerate, GAP_VIN_GDOUBLE, 0, "# 1.0 upto 100.0 frames per sec");
    p_set_keyword(keylist, "(timezoom ", &vin_ptr->timezoom,   GAP_VIN_GINT32, 0, "# 1 upto 100 frames");
@@ -189,7 +189,7 @@ p_set_master_keywords(t_keylist *keylist, t_video_info *vin_ptr)
  * --------------------------
  */
 static void
-p_set_onion_keywords(t_keylist *keylist, t_video_info *vin_ptr)
+p_set_onion_keywords(t_keylist *keylist, GapVinVideoInfo *vin_ptr)
 {
    p_set_keyword(keylist, "(onion_auto_enable ", &vin_ptr->onionskin_auto_enable, GAP_VIN_GBOOLEAN, 0, "\0");
    p_set_keyword(keylist, "(onion_auto_replace_after_load ", &vin_ptr->auto_replace_after_load, GAP_VIN_GBOOLEAN, 0, "\0");
@@ -211,13 +211,13 @@ p_set_onion_keywords(t_keylist *keylist, t_video_info *vin_ptr)
 
 
 /* --------------------------
- * p_alloc_video_info_name
+ * gap_vin_alloc_name
  * --------------------------
  * to get the name of the the video_info_file
  * (the caller should g_free the returned name after use)
  */
 char *
-p_alloc_video_info_name(char *basename)
+gap_vin_alloc_name(char *basename)
 {
   char *l_str;
 
@@ -228,45 +228,45 @@ p_alloc_video_info_name(char *basename)
 
   l_str = g_strdup_printf("%svin.gap", basename);
   return(l_str);
-}  /* end p_alloc_video_info_name */
+}  /* end gap_vin_alloc_name */
 
 
-/* --------------------------
- * p_free_textfile_lines
- * --------------------------
+/* ---------------------------
+ * gap_vin_free_textfile_lines
+ * ---------------------------
  */
 void
-p_free_textfile_lines(t_textfile_lines *txf_ptr_root)
+gap_vin_free_textfile_lines(GapVinTextFileLines *txf_ptr_root)
 {
-  t_textfile_lines *txf_ptr;
-  t_textfile_lines *txf_ptr_next;
+  GapVinTextFileLines *txf_ptr;
+  GapVinTextFileLines *txf_ptr_next;
 
 
   txf_ptr_next = NULL;
   for(txf_ptr = txf_ptr_root; txf_ptr != NULL; txf_ptr = txf_ptr_next)
   {
-     txf_ptr_next = (t_textfile_lines *) txf_ptr->next;
+     txf_ptr_next = (GapVinTextFileLines *) txf_ptr->next;
      g_free(txf_ptr->line);
      g_free(txf_ptr);
   }
-}  /* end p_free_textfile_lines */
+}  /* end gap_vin_free_textfile_lines */
 
 
 /* --------------------------
- * p_load_textfile
+ * gap_vin_load_textfile
  * --------------------------
  * load all lines from a textfile
- * into a t_textfile_lines list structure 
+ * into a GapVinTextFileLines list structure 
  * and return root pointer of this list.
  * return NULL if file not found or empty.
  */
-t_textfile_lines *
-p_load_textfile(char *filename)
+GapVinTextFileLines *
+gap_vin_load_textfile(char *filename)
 {
   FILE *l_fp;
-  t_textfile_lines *txf_ptr;
-  t_textfile_lines *txf_ptr_prev;
-  t_textfile_lines *txf_ptr_root;
+  GapVinTextFileLines *txf_ptr;
+  GapVinTextFileLines *txf_ptr_prev;
+  GapVinTextFileLines *txf_ptr_root;
   char         l_buf[4000];
   int   l_len;
   int   line_nr;
@@ -281,7 +281,7 @@ p_load_textfile(char *filename)
     {
       line_nr++;
       l_len = strlen("(framerate ");
-      txf_ptr = g_malloc0(sizeof(t_textfile_lines));
+      txf_ptr = g_malloc0(sizeof(GapVinTextFileLines));
       txf_ptr->line = g_strdup(l_buf);
       txf_ptr->line_nr++;
       txf_ptr->next = NULL;
@@ -300,7 +300,7 @@ p_load_textfile(char *filename)
   }
 
   return(txf_ptr_root);
-}  /* end p_load_textfile */
+}  /* end gap_vin_load_textfile */
 
 
 
@@ -411,7 +411,7 @@ p_write_keylist_value(FILE *fp, t_keylist *keyptr)
 
 
 /* --------------------------
- * p_set_video_info_keylist
+ * gap_vin_set_common_keylist
  * --------------------------
  * (re)write the current video info to .vin file
  * only the values for the keywords in the passed keylist
@@ -420,11 +420,11 @@ p_write_keylist_value(FILE *fp, t_keylist *keyptr)
  * if the file is empty a header is added.
  */
 static int
-p_set_video_info_keylist(t_keylist *keylist, t_video_info *vin_ptr, char *basename)
+gap_vin_set_common_keylist(t_keylist *keylist, GapVinVideoInfo *vin_ptr, char *basename)
 {
   FILE *l_fp;
-  t_textfile_lines *txf_ptr_root;
-  t_textfile_lines *txf_ptr;
+  GapVinTextFileLines *txf_ptr_root;
+  GapVinTextFileLines *txf_ptr;
   t_keylist *keyptr;
   char  *l_vin_filename;
   int   l_rc;
@@ -435,16 +435,16 @@ p_set_video_info_keylist(t_keylist *keylist, t_video_info *vin_ptr, char *basena
   l_rc = -1;
   l_cnt_framerate = 0;
   l_cnt_timezoom = 0;
-  l_vin_filename = p_alloc_video_info_name(basename);
+  l_vin_filename = gap_vin_alloc_name(basename);
 
   if(l_vin_filename)
   {
-      txf_ptr_root = p_load_textfile(l_vin_filename);
+      txf_ptr_root = gap_vin_load_textfile(l_vin_filename);
   
       l_fp = fopen(l_vin_filename, "w");
       if(l_fp)
       {
-         for(txf_ptr = txf_ptr_root; txf_ptr != NULL; txf_ptr = (t_textfile_lines *) txf_ptr->next)
+         for(txf_ptr = txf_ptr_root; txf_ptr != NULL; txf_ptr = (GapVinTextFileLines *) txf_ptr->next)
          {
            gboolean line_done;
            
@@ -484,7 +484,7 @@ p_set_video_info_keylist(t_keylist *keylist, t_video_info *vin_ptr, char *basena
          
          if(txf_ptr_root)
          {
-           p_free_textfile_lines(txf_ptr_root);
+           gap_vin_free_textfile_lines(txf_ptr_root);
          }
          else
          {
@@ -509,26 +509,26 @@ p_set_video_info_keylist(t_keylist *keylist, t_video_info *vin_ptr, char *basena
   }
 
   return(l_rc);
-}  /* end p_set_video_info_keylist */
+}  /* end gap_vin_set_common_keylist */
 
 
 
 /* --------------------------
- * p_get_video_info_keylist
+ * gap_vin_get_all_keylist
  * --------------------------
  * get video info from .vin file
  */
 static void
-p_get_video_info_keylist(t_keylist *keylist, t_video_info *vin_ptr, char *basename)
+gap_vin_get_all_keylist(t_keylist *keylist, GapVinVideoInfo *vin_ptr, char *basename)
 {
   char  *l_vin_filename;
   t_keylist *keyptr;
-  t_textfile_lines *txf_ptr_root;
-  t_textfile_lines *txf_ptr;
-  t_video_info *l_vin_ptr;
+  GapVinTextFileLines *txf_ptr_root;
+  GapVinTextFileLines *txf_ptr;
+  GapVinVideoInfo *l_vin_ptr;
   int   l_len;
   
-  l_vin_ptr = g_malloc(sizeof(t_video_info));
+  l_vin_ptr = g_malloc(sizeof(GapVinVideoInfo));
   /* init wit defaults (for the case where no video_info file available) */
   l_vin_ptr->timezoom = 1;
   l_vin_ptr->framerate = 24.0;
@@ -546,17 +546,17 @@ p_get_video_info_keylist(t_keylist *keylist, t_video_info *vin_ptr, char *basena
   l_vin_ptr->opacity            = 80.0;
   l_vin_ptr->opacity_delta      = 80.0;
   l_vin_ptr->ignore_botlayers   = 1;
-  l_vin_ptr->select_mode        = 6;     /* MTCH_ALL_VISIBLE */
+  l_vin_ptr->select_mode        = 6;     /* GAP_MTCH_ALL_VISIBLE */
   l_vin_ptr->select_case        = 0;     /* 0 .. ignore case, 1..case sensitve */
   l_vin_ptr->select_invert      = 0;     /* 0 .. no invert, 1 ..invert */
   l_vin_ptr->select_string[0] = '\0';
   
-  l_vin_filename = p_alloc_video_info_name(basename);
+  l_vin_filename = gap_vin_alloc_name(basename);
   if(l_vin_filename)
   {
-      txf_ptr_root = p_load_textfile(l_vin_filename);
+      txf_ptr_root = gap_vin_load_textfile(l_vin_filename);
 
-      for(txf_ptr = txf_ptr_root; txf_ptr != NULL; txf_ptr = (t_textfile_lines *) txf_ptr->next)
+      for(txf_ptr = txf_ptr_root; txf_ptr != NULL; txf_ptr = (GapVinTextFileLines *) txf_ptr->next)
       {
           for(keyptr=keylist; keyptr != NULL; keyptr = (t_keylist*)keyptr->next)
           {
@@ -645,33 +645,33 @@ p_get_video_info_keylist(t_keylist *keylist, t_video_info *vin_ptr, char *basena
       } /* end for text lines scann loop */
       if(txf_ptr_root)
       {
-        p_free_textfile_lines(txf_ptr_root);
+        gap_vin_free_textfile_lines(txf_ptr_root);
       }
 
       g_free(l_vin_filename);
   }
-}  /* end p_get_video_info_keylist */
+}  /* end gap_vin_get_all_keylist */
 
 
 /* --------------------------
- * p_get_video_info
+ * gap_vin_get_all
  * --------------------------
  * get video info from .vin file
  * get does always fetch all values for all known keywords
  */
-t_video_info *
-p_get_video_info(char *basename)
+GapVinVideoInfo *
+gap_vin_get_all(char *basename)
 {
-  t_video_info *vin_ptr;
+  GapVinVideoInfo *vin_ptr;
   t_keylist    *keylist;
 
   keylist = p_new_keylist();
-  vin_ptr = g_new0 (t_video_info, 1);
+  vin_ptr = g_new0 (GapVinVideoInfo, 1);
   vin_ptr->timezoom = 1;
   p_set_master_keywords(keylist, vin_ptr);
   p_set_onion_keywords(keylist, vin_ptr);
   
-  p_get_video_info_keylist(keylist, vin_ptr, basename);
+  gap_vin_get_all_keylist(keylist, vin_ptr, basename);
 
   vin_ptr->timezoom = MAX(1,vin_ptr->timezoom);
   
@@ -679,7 +679,7 @@ p_get_video_info(char *basename)
 
   if(gap_debug)
   {
-     printf("p_get_video_info: RETURN with vin_ptr content:\n");
+     printf("gap_vin_get_all: RETURN with vin_ptr content:\n");
      printf("  num_olayers: %d\n",   (int)vin_ptr->num_olayers);
      printf("  ref_delta: %d\n",     (int)vin_ptr->ref_delta);
      printf("  ref_cycle: %d\n",     (int)vin_ptr->ref_cycle);
@@ -694,11 +694,11 @@ p_get_video_info(char *basename)
      printf("  auto_delete_before_save: %d\n",   (int)vin_ptr->auto_delete_before_save);
   }
   return(vin_ptr);
-}  /* end p_get_video_info */
+}  /* end gap_vin_get_all */
 
 
 /* --------------------------
- * p_set_video_info
+ * gap_vin_set_common
  * --------------------------
  * (re)write the current video info file  (_vin.gap file)
  * IMPORTANT: this Procedure affects only
@@ -707,7 +707,7 @@ p_get_video_info(char *basename)
  *  are left unchanged)
  */
 int
-p_set_video_info(t_video_info *vin_ptr, char *basename)
+gap_vin_set_common(GapVinVideoInfo *vin_ptr, char *basename)
 {
   t_keylist    *keylist;
   int          l_rc;
@@ -715,22 +715,22 @@ p_set_video_info(t_video_info *vin_ptr, char *basename)
   keylist = p_new_keylist();
 
   p_set_master_keywords(keylist, vin_ptr);
-  l_rc = p_set_video_info_keylist(keylist, vin_ptr, basename);
+  l_rc = gap_vin_set_common_keylist(keylist, vin_ptr, basename);
   
   p_free_keylist(keylist);
 
   return(l_rc);
-}  /* end p_set_video_info */
+}  /* end gap_vin_set_common */
 
 
 /* --------------------------
- * p_set_video_info_onion
+ * gap_vin_set_common_onion
  * --------------------------
  * (re)write the onionskin specific values
  * to the video info file
  */
 int
-p_set_video_info_onion(t_video_info *vin_ptr, char *basename)
+gap_vin_set_common_onion(GapVinVideoInfo *vin_ptr, char *basename)
 {
   t_keylist    *keylist;
   int          l_rc;
@@ -738,9 +738,9 @@ p_set_video_info_onion(t_video_info *vin_ptr, char *basename)
   keylist = p_new_keylist();
 
   p_set_onion_keywords(keylist, vin_ptr);
-  l_rc = p_set_video_info_keylist(keylist, vin_ptr, basename);
+  l_rc = gap_vin_set_common_keylist(keylist, vin_ptr, basename);
   
   p_free_keylist(keylist);
 
   return(l_rc);
-}  /* end p_set_video_info_onion */
+}  /* end gap_vin_set_common_onion */

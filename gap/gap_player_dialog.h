@@ -31,7 +31,7 @@
 #include "libgimp/gimp.h"
 #include "gap_player_main.h"
 
-void    p_playback_dialog(t_global_params *gpp);
+void    gap_player_dlg_playback_dialog(GapPlayerMainGlobalParams *gpp);
 
 
 

@@ -1,4 +1,4 @@
-/* gap_lib.h
+/* gap_split.h
  * 1997.11.01 hof (Wolfgang Hofer)
  *
  * GAP ... Gimp Animation Plugins

@@ -20,7 +20,7 @@ extern      int gap_debug; /* ==0  ... dont print debug infos */
 #define GAP_NAVID_ACTIVE_IMAGE "plug_in_gap_navid_ACTIVE_IMAGETABLE"
 
 /* ============================================================================
- * p_update_active_image
+ * gap_navat_update_active_image
  *   update activ_image table.
  *   - is usually called in gap_lib at change of the current frame.
  *   - The activ_image table contains all the active_images for all
@@ -33,7 +33,7 @@ extern      int gap_debug; /* ==0  ... dont print debug infos */
  */
  
 void
-p_update_active_image(gint32 old_image_id, gint32 new_image_id)
+gap_navat_update_active_image(gint32 old_image_id, gint32 new_image_id)
 {
   gint32           l_idx;
   gint32           l_activsize;
@@ -58,15 +58,15 @@ p_update_active_image(gint32 old_image_id, gint32 new_image_id)
     }
     g_free(l_activtab);
   }
-}	/* end p_update_active_image */
+}	/* end gap_navat_update_active_image */
 
 /* ============================================================================
- * p_set_active_image
+ * gap_navat_set_active_image
  *   set active image for one (Navigator) Process in the activ_image table.
  * ============================================================================
  */
 void
-p_set_active_image(gint32 image_id, gint32 pid)
+gap_navat_set_active_image(gint32 image_id, gint32 pid)
 {
   gint32           l_idx;
   gint32           l_activsize;
@@ -107,13 +107,13 @@ p_set_active_image(gint32 image_id, gint32 pid)
   gimp_set_data(GAP_NAVID_ACTIVE_IMAGE, l_activtab, l_nactivs * sizeof(t_gap_activdata));
 
   g_free(l_activtab);
-}	/* end p_set_active_image */
+}	/* end gap_navat_set_active_image */
 
 
 
 
 /* ============================================================================
- * p_get_active_image
+ * gap_navat_get_active_image
  *   get new_image_id for the active image (image_id)
  *    for one (Navigator) Process in the activ_image table.
  *   - If the table has information about a change of the old active image_id,
@@ -125,7 +125,7 @@ p_set_active_image(gint32 image_id, gint32 pid)
  * ============================================================================
  */
 gint32
-p_get_active_image(gint32 image_id, gint32 pid)
+gap_navat_get_active_image(gint32 image_id, gint32 pid)
 {
   gint32           l_idx;
   gint32           l_activsize;
@@ -164,5 +164,5 @@ p_get_active_image(gint32 image_id, gint32 pid)
 
   return (l_new_image_id);
   
-}	/* end p_get_active_image */
+}	/* end gap_navat_get_active_image */
 

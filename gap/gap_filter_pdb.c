@@ -29,7 +29,7 @@
 /* revision history:
  * gimp   1.3.12a; 2003/05/02   hof: merge into CVS-gimp-gap project, re-added support of iter_ALT procedures
  * gimp   1.3.8a;  2002/09/21   hof: gap_lastvaldesc
- * gimp   1.3.4b;  2002/03/24   hof: p_get_iterator_proc supports COMMON_ITERATOR, removed support of iter_ALT procedures
+ * gimp   1.3.4b;  2002/03/24   hof: gap_filt_pdb_get_iterator_proc supports COMMON_ITERATOR, removed support of iter_ALT procedures
  * gimp   1.1.28a; 2000/11/05   hof: check for GIMP_PDB_SUCCESS (not for FALSE)
  * version gimp 1.1.17b  2000.02.22  hof: - removed limit PLUGIN_DATA_SIZE
  *                                        - removed support for old gimp 1.0.x PDB-interface.
@@ -73,7 +73,7 @@ extern int gap_debug;
 
 static char *global_plugin_data = NULL;
 
-gint p_call_plugin(char *plugin_name, gint32 image_id, gint32 layer_id, GimpRunMode run_mode)
+gint gap_filt_pdb_call_plugin(char *plugin_name, gint32 image_id, gint32 layer_id, GimpRunMode run_mode)
 {
   GimpDrawable    *l_drawable;
   GimpParam       *l_ret_params;
@@ -173,13 +173,13 @@ gint p_call_plugin(char *plugin_name, gint32 image_id, gint32 layer_id, GimpRunM
 
   if (l_ret_params[0].data.d_status != GIMP_PDB_SUCCESS)
   {
-    fprintf(stderr, "ERROR: p_call_plugin %s failed.\n", plugin_name);
+    fprintf(stderr, "ERROR: gap_filt_pdb_call_plugin %s failed.\n", plugin_name);
     g_free(l_ret_params);
     return -1;
   }
   else
   {
-    if(gap_debug) fprintf(stderr, "DEBUG: p_call_plugin: %s successful.\n", plugin_name);
+    if(gap_debug) fprintf(stderr, "DEBUG: gap_filt_pdb_call_plugin: %s successful.\n", plugin_name);
     g_free(l_ret_params);
     return 0;
   }
@@ -187,7 +187,7 @@ gint p_call_plugin(char *plugin_name, gint32 image_id, gint32 layer_id, GimpRunM
 
 
 int
-p_save_xcf(gint32 image_id, char *sav_name)
+gap_filt_pdb_save_xcf(gint32 image_id, char *sav_name)
 {
   GimpParam* l_params;
   gint   l_retvals;
@@ -212,14 +212,15 @@ p_save_xcf(gint32 image_id, char *sav_name)
 
 
 /* ============================================================================
- * p_get_data
+ * gap_filt_pdb_get_data
  *    try to get the plugin's data (key is usually the name of the plugin)
  *    and check for the length of the retrieved data.
  * if all done OK return the length of the retrieved data,
  * return -1 in case of errors.
  * ============================================================================
  */
-gint p_get_data(char *key)
+gint
+gap_filt_pdb_get_data(char *key)
 {
    int l_len;
 
@@ -236,17 +237,18 @@ gint p_get_data(char *key)
    global_plugin_data = g_malloc0(l_len+1);
    gimp_get_data(key, global_plugin_data);
 
-   if(gap_debug) printf("DEBUG p_get_data Key:%s  retrieved bytes %d\n", key, (int)l_len);
+   if(gap_debug) printf("DEBUG gap_filt_pdb_get_data Key:%s  retrieved bytes %d\n", key, (int)l_len);
    return (l_len);
 }
 
 /* ============================================================================
- * p_set_data
+ * gap_filt_pdb_set_data
  *
  *    set global_plugin_data
  * ============================================================================
  */
-void p_set_data(char *key, gint plugin_data_len)
+void 
+gap_filt_pdb_set_data(char *key, gint plugin_data_len)
 {
   if(global_plugin_data)
   {
@@ -255,18 +257,18 @@ void p_set_data(char *key, gint plugin_data_len)
 }
 
 /* ============================================================================
- * p_procedure_available
+ * gap_filt_pdb_procedure_available
  * ============================================================================
  * return 0 if available, -1 if not available
  *
- * if ptype is PTYP_ITERATOR then check for typical iterator procedure PDB parameters
+ * if ptype is GAP_PTYP_ITERATOR then check for typical iterator procedure PDB parameters
  *          and return -1 if the procedure is available but has no typical parameters.
  *
- * if ptype is PTYP_CAN_OPERATE_ON_DRAWABLE:
+ * if ptype is GAP_PTYP_CAN_OPERATE_ON_DRAWABLE:
  *           return -1 if procedure has not the 3 typical parameters INT32, IMAGE, DRAWABLE
  */
 
-gint p_procedure_available(char  *proc_name, t_proc_type ptype)
+gint gap_filt_pdb_procedure_available(char  *proc_name, GapFiltPdbProcType ptype)
 {
   gint             l_nparams;
   gint             l_nreturn_vals;
@@ -302,7 +304,7 @@ gint p_procedure_available(char  *proc_name, t_proc_type ptype)
 
      switch(ptype)
      {
-        case PTYP_ITERATOR:
+        case GAP_PTYP_ITERATOR:
            /* check exactly for Input Parametertypes (common to all Iterators) */
            if (l_proc_type != GIMP_PLUGIN )     { l_rc = -1; break; }
            if (l_nparams  != 4)                    { l_rc = -1; break; }
@@ -311,7 +313,7 @@ gint p_procedure_available(char  *proc_name, t_proc_type ptype)
            if (l_params[2].type != GIMP_PDB_FLOAT)    { l_rc = -1; break; }
            if (l_params[3].type != GIMP_PDB_INT32)    { l_rc = -1; break; }
            break;
-        case PTYP_CAN_OPERATE_ON_DRAWABLE:
+        case GAP_PTYP_CAN_OPERATE_ON_DRAWABLE:
            /* check if plugin can be a typical one, that works on one drawable */
            if (l_proc_type != GIMP_PLUGIN)         { l_rc = -1; break; }
            if (l_nparams  < 3)                      { l_rc = -1; break; }
@@ -339,7 +341,7 @@ gint p_procedure_available(char  *proc_name, t_proc_type ptype)
   
 
   return l_rc;
-}	/* end p_procedure_available */
+}	/* end gap_filt_pdb_procedure_available */
 
 
 /* ============================================================================
@@ -372,12 +374,14 @@ p_count_iterable_params(gchar *key_description, gint   desc_size)
       l_count++;
     }
   }
-  /* if (gap_debug) */ printf("p_count_iterable_params: %s COUNT: %d\n", key_description, (int)l_count);
+
+  if (gap_debug) printf("p_count_iterable_params: %s COUNT: %d\n", key_description, (int)l_count);
+
   return (l_count);
 }
 
 /* ============================================================================
- * p_get_iterator_proc
+ * gap_filt_pdb_get_iterator_proc
  *   check the PDB for Iterator Procedures in the following order:
  *   1.) a PDB procedurename with suffix "_Iterator"  or
  *   2.) search for a description of LAST_VALUES buffer in file
@@ -393,7 +397,7 @@ p_count_iterable_params(gchar *key_description, gint   desc_size)
  * and there is no individual Iterator Procedure.
  * ============================================================================
  */
-char * p_get_iterator_proc(char *plugin_name, gint *count)
+char * gap_filt_pdb_get_iterator_proc(char *plugin_name, gint *count)
 {
   char      *l_plugin_iterator;
 
@@ -401,7 +405,7 @@ char * p_get_iterator_proc(char *plugin_name, gint *count)
   l_plugin_iterator = g_strdup_printf("%s_Iterator", plugin_name);
      
   /* check if iterator is available in PDB */
-  if(p_procedure_available(l_plugin_iterator, PTYP_ITERATOR) < 0)
+  if(gap_filt_pdb_procedure_available(l_plugin_iterator, GAP_PTYP_ITERATOR) < 0)
   {
      g_free(l_plugin_iterator);
      l_plugin_iterator = NULL;
@@ -436,7 +440,7 @@ char * p_get_iterator_proc(char *plugin_name, gint *count)
            * to be used instead of my Hacked versions without name conflicts.
            *  _Iterator_ALT procedures should be replaced by common iterator in future gimp releases
            */
-          if(p_procedure_available(l_plugin_iterator, PTYP_ITERATOR) < 0)
+          if(gap_filt_pdb_procedure_available(l_plugin_iterator, GAP_PTYP_ITERATOR) < 0)
           {
              /* no iterator available */
              g_free(l_plugin_iterator);
@@ -454,10 +458,10 @@ char * p_get_iterator_proc(char *plugin_name, gint *count)
     *count = 1;
   }
 
- if(gap_debug) printf("p_get_iterator_proc: END  %s %s\n", plugin_name, l_plugin_iterator);
+ if(gap_debug) printf("gap_filt_pdb_get_iterator_proc: END  %s %s\n", plugin_name, l_plugin_iterator);
   
   return (l_plugin_iterator);
-}	/* end p_get_iterator_proc */
+}	/* end gap_filt_pdb_get_iterator_proc */
 
 
 /* ============================================================================
@@ -469,7 +473,7 @@ char * p_get_iterator_proc(char *plugin_name, gint *count)
  * ============================================================================
  */
 
-int p_constraint_proc_sel1(gchar *proc_name, gint32 image_id)
+int gap_filt_pdb_constraint_proc_sel1(gchar *proc_name, gint32 image_id)
 {
   /* here we should check, if proc_name
    * can operate on the current Imagetype (RGB, INDEXED, GRAY)
@@ -498,16 +502,16 @@ int p_constraint_proc_sel1(gchar *proc_name, gint32 image_id)
 #endif  
 }
 
-int p_constraint_proc_sel2(gchar *proc_name, gint32 image_id)
+int gap_filt_pdb_constraint_proc_sel2(gchar *proc_name, gint32 image_id)
 {
   char *l_plugin_iterator;
   int   l_rc;
   gint  l_count;
   
-  l_rc = p_constraint_proc_sel1(proc_name, image_id);
+  l_rc = gap_filt_pdb_constraint_proc_sel1(proc_name, image_id);
   if(l_rc != 0)
   {
-    l_plugin_iterator =  p_get_iterator_proc(proc_name, &l_count);
+    l_plugin_iterator =  gap_filt_pdb_get_iterator_proc(proc_name, &l_count);
     if(l_plugin_iterator != NULL)
     {
        g_free(l_plugin_iterator);
@@ -522,7 +526,7 @@ int p_constraint_proc_sel2(gchar *proc_name, gint32 image_id)
   return 0;         /* 0 .. set "Apply Varying" Button in_sensitive */
 }
 
-int p_constraint_proc(gchar *proc_name, gint32 image_id)
+int gap_filt_pdb_constraint_proc(gchar *proc_name, gint32 image_id)
 {
   int l_rc;
   char *l_plugin_iterator;
@@ -540,7 +544,7 @@ int p_constraint_proc(gchar *proc_name, gint32 image_id)
      return 0;
   }
   
-  l_rc = p_procedure_available(proc_name, PTYP_CAN_OPERATE_ON_DRAWABLE);
+  l_rc = gap_filt_pdb_procedure_available(proc_name, GAP_PTYP_CAN_OPERATE_ON_DRAWABLE);
 
   if(l_rc < 0)
   {
@@ -556,7 +560,7 @@ int p_constraint_proc(gchar *proc_name, gint32 image_id)
     return 1;    /* 1 add the plugin procedure */
   }
 
-  l_plugin_iterator =  p_get_iterator_proc(proc_name, &l_count);
+  l_plugin_iterator =  gap_filt_pdb_get_iterator_proc(proc_name, &l_count);
   if(l_plugin_iterator == NULL)
   {
      /* do not add Plug-In without Iterator or Common Iterator */

@@ -31,9 +31,9 @@
 
 #include "libgimp/gimp.h"
 
-void           p_update_active_image(gint32 old_image_id, gint32 new_image_id);
-void           p_set_active_image(gint32 image_id, gint32 pid);
-gint32         p_get_active_image(gint32 image_id, gint32 pid);
+void           gap_navat_update_active_image(gint32 old_image_id, gint32 new_image_id);
+void           gap_navat_set_active_image(gint32 image_id, gint32 pid);
+gint32         gap_navat_get_active_image(gint32 image_id, gint32 pid);
 
 #endif
 

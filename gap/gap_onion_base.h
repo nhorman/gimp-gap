@@ -61,40 +61,38 @@
 #define GAP_ONION_VISI_TOGGLE  2
 
 
-typedef struct t_onion_parasite_data {
+typedef struct GapOnionBaseParasite_data {
    long         timestamp;      /* UTC timecode of creation time */
    gint32       tattoo;         /* unique tattoo */
-} t_onion_parasite_data;
+} GapOnionBaseParasite_data;
 
 
 /* Function Typedefs */
-typedef  void    (*t_fptr_add_img_to_cache)(void *gpp_void
+typedef  void    (*GapOnionBaseFptrAddImageToCache)(void *gpp_void
                                            , gint32 framenr
                                            , gint32 image_id
                                            , gint32 layer_id);
-typedef  gint32  (*t_fptr_find_frame_in_img_cache)(void *gpp_void
+typedef  gint32  (*GapOnionBaseFptrFindFrameInImageCache)(void *gpp_void
                                                   , gint32 framenr
                                                   , gint32 *image_id
                                                   , gint32 *layer_id);
 
 
 /* onion_base procedures */
-void    p_mark_as_onionlayer(gint32 layer_id);
-gint32  p_check_is_onion_layer(gint32 layer_id);
-void    p_delete_image_immediate (gint32 image_id);
-gint32  p_get_merged_layer(gint32 image_id, GimpMergeType mergemode);
-gint    p_onionskin_visibility(gint32 image_id, gint visi_mode);
-gint    p_onionskin_delete(gint32 image_id);
-gint    p_onionskin_apply(gpointer gpp
+void    gap_onion_base_mark_as_onionlayer(gint32 layer_id);
+gint32  gap_onion_base_check_is_onion_layer(gint32 layer_id);
+gint    gap_onion_base_onionskin_visibility(gint32 image_id, gint visi_mode);
+gint    gap_onion_base_onionskin_delete(gint32 image_id);
+gint    gap_onion_base_onionskin_apply(gpointer gpp
              , gint32 image_id
-             , t_video_info *vin_ptr
+             , GapVinVideoInfo *vin_ptr
              , long   ainfo_curr_frame_nr
              , long   ainfo_first_frame_nr
              , long   ainfo_last_frame_nr
              , char  *ainfo_basename
              , char  *ainfo_extension
-             , t_fptr_add_img_to_cache        fptr_add_img_to_cache
-             , t_fptr_find_frame_in_img_cache fptr_find_frame_in_img_cache
+             , GapOnionBaseFptrAddImageToCache        fptr_add_img_to_cache
+             , GapOnionBaseFptrFindFrameInImageCache fptr_find_frame_in_img_cache
              , gboolean use_cache
              );
 

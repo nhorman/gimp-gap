@@ -26,6 +26,7 @@
  */
 
 /* revision history:
+ * gimp    1.3.20d; 2003/10/18  hof: sourcecode cleanup, remove close button
  * gimp    1.3.19a; 2003/09/06  hof: call plug_in_gap_videoframes_player with dummy audioparameters
  * gimp    1.3.18b; 2003/08/27  hof: fixed waiting cursor for long running ops
  * gimp    1.3.17a; 2003/07/29  hof: param types GimpPlugInInfo.run procedure
@@ -72,7 +73,7 @@
  *        - Selections are handled completely by this module in the SelectedRange List
  *             this list is sorted ascending by "from" numbers (framenumber).
  *      
- * gimp    1.3.15a; 2003/06/21  hof: p_conv_framenr_to_timestr, use plug_in_gap_videoframes_player for playback
+ * gimp    1.3.15a; 2003/06/21  hof: gap_timeconv_framenr_to_timestr, use plug_in_gap_videoframes_player for playback
  *                                   ops_button_pressed_callback must have returnvalue FALSE
  *                                   (this enables other handlers -- ops_button_extended_callback -- to run afterwards
  * gimp    1.3.14b; 2003/06/03  hof: added gap_stock_init
@@ -185,7 +186,6 @@ GtkWidget * ops_button_box_new (GtkWidget     *parent,
 
 /*  some definitions used in all dialogs  */
 
-#define MAX_HEIGHT_GTK_SCROLLED_WIN 32767
 #define LIST_WIDTH  200
 #define LIST_HEIGHT 150
 #define PREVIEW_BPP 3
@@ -228,7 +228,7 @@ typedef struct FrameWidget
   GtkWidget *hbox;
   GtkWidget *number_label;      /* for the 6-digit framenumber */
   GtkWidget *time_label;
-  t_pview   *pv_ptr;            /* for gap preview rendering based on drawing_area */
+  GapPView   *pv_ptr;            /* for gap preview rendering based on drawing_area */
 
   gint32    image_id;
   gint32    frame_nr;
@@ -293,8 +293,8 @@ typedef struct NaviDialog
   /* state information  */
   gint32        active_imageid;
   gint32        any_imageid;
-  t_anim_info  *ainfo_ptr;
-  t_video_info *vin_ptr;
+  GapAnimInfo  *ainfo_ptr;
+  GapVinVideoInfo *vin_ptr;
   
   int           timer;
   int           cycle_time;
@@ -505,8 +505,9 @@ query ()
 
   static GimpParamDef *return_vals = NULL;
   static int nreturn_vals = 0;
-
+  
   gimp_plugin_domain_register (GETTEXT_PACKAGE, LOCALEDIR);
+
 
   gimp_install_procedure(PLUGIN_NAME,
                          "GAP video navigator dialog",
@@ -577,7 +578,7 @@ run(const gchar *name
         */
       if (0 == kill(l_navid_pid, 0))
       {
-         p_msg_win(GIMP_RUN_INTERACTIVE, _("Cant open two or more Video Navigator Windows."));
+         gap_arr_msg_win(GIMP_RUN_INTERACTIVE, _("Cant open two or more Video Navigator Windows."));
          l_rc = -1;    
       }
     }
@@ -632,7 +633,7 @@ navi_delete_confirm_dialog(gint32 del_cnt)
                     "There will be no UNDO for this Operation\n")
                     ,(int)del_cnt
                  );
-  l_rc = p_confirm_dialog(msg_txt
+  l_rc = gap_arr_confirm_dialog(msg_txt
                          , _("Confirm Frame Delete")   /* title_txt */
                          , _("Confirm Frame Delete")   /* frame_txt */
                          );
@@ -716,7 +717,7 @@ p_edit_paste_call(gint32 paste_mode)
   if (return_vals[0].data.d_status != GIMP_PDB_SUCCESS)
   {
     g_free(return_vals);
-    p_msg_win(GIMP_RUN_INTERACTIVE
+    gap_arr_msg_win(GIMP_RUN_INTERACTIVE
              ,_("Error while positioning to Frame. Video Paste Operaton Failed")
              );
     return;
@@ -739,7 +740,7 @@ p_edit_paste_call(gint32 paste_mode)
   }
   else
   {
-    p_msg_win(GIMP_RUN_INTERACTIVE, _("Video Paste Operaton Failed"));
+    gap_arr_msg_win(GIMP_RUN_INTERACTIVE, _("Video Paste Operaton Failed"));
   }
   
   g_free(return_vals);
@@ -751,17 +752,17 @@ p_edit_paste_call(gint32 paste_mode)
 static void
 edit_pasteb_callback (GtkWidget *w,  gpointer   client_data)
 {
-  p_edit_paste_call(VID_PASTE_INSERT_BEFORE);
+  p_edit_paste_call(GAP_VID_PASTE_INSERT_BEFORE);
 }
 static void
 edit_pastea_callback (GtkWidget *w,  gpointer   client_data)
 {
-  p_edit_paste_call(VID_PASTE_INSERT_AFTER);
+  p_edit_paste_call(GAP_VID_PASTE_INSERT_AFTER);
 }
 static void
 edit_paster_callback (GtkWidget *w,  gpointer   client_data)
 {
-  p_edit_paste_call(VID_PASTE_REPLACE);
+  p_edit_paste_call(GAP_VID_PASTE_REPLACE);
 }
 
 static void
@@ -820,7 +821,7 @@ navi_vid_copy_and_cut(gint cut_flag)
   if(naviD->sel_range_list)
   {
     navi_set_waiting_cursor();    
-    p_vid_edit_clear();
+    gap_vid_edit_clear();
     
     
     range_list = naviD->sel_range_list;
@@ -850,7 +851,7 @@ navi_vid_copy_and_cut(gint cut_flag)
        
        if(!vid_copy_ok)
        {
-         p_msg_win(GIMP_RUN_INTERACTIVE, _("Video Copy (or Cut) Operation failed"));
+         gap_arr_msg_win(GIMP_RUN_INTERACTIVE, _("Video Copy (or Cut) Operation failed"));
          break;
        }
        
@@ -897,7 +898,7 @@ navi_vid_copy_and_cut(gint cut_flag)
          }
          else
          {
-            p_msg_win(GIMP_RUN_INTERACTIVE, _("Video Cut Operation failed"));
+            gap_arr_msg_win(GIMP_RUN_INTERACTIVE, _("Video Cut Operation failed"));
          }
 
         range_list2 = range_list2->prev;
@@ -971,44 +972,44 @@ navi_get_preview_size(void)
  * ---------------------------------
  */
 static gint
-navi_check_exist_first_and_last(t_anim_info *ainfo_ptr)
+navi_check_exist_first_and_last(GapAnimInfo *ainfo_ptr)
 {
   char *l_fname;
 
-  l_fname = p_alloc_fname(ainfo_ptr->basename,
+  l_fname = gap_lib_alloc_fname(ainfo_ptr->basename,
                           ainfo_ptr->last_frame_nr, 
                           ainfo_ptr->extension);
-  if (!p_file_exists(l_fname))
+  if (!gap_lib_file_exists(l_fname))
   { 
      g_free(l_fname);
      return(FALSE);
   }
   g_free(l_fname);
   
-  l_fname = p_alloc_fname(ainfo_ptr->basename,
+  l_fname = gap_lib_alloc_fname(ainfo_ptr->basename,
                           ainfo_ptr->first_frame_nr, 
                           ainfo_ptr->extension);
-  if (!p_file_exists(l_fname))
+  if (!gap_lib_file_exists(l_fname))
   { 
      g_free(l_fname);
      return(FALSE);
   }
   g_free(l_fname);
 
-  l_fname = p_alloc_fname(ainfo_ptr->basename,
+  l_fname = gap_lib_alloc_fname(ainfo_ptr->basename,
                           ainfo_ptr->last_frame_nr+1, 
                           ainfo_ptr->extension);
-  if (p_file_exists(l_fname))
+  if (gap_lib_file_exists(l_fname))
   { 
      g_free(l_fname);
      return(FALSE);
   }
   g_free(l_fname);
   
-  l_fname = p_alloc_fname(ainfo_ptr->basename,
+  l_fname = gap_lib_alloc_fname(ainfo_ptr->basename,
                           ainfo_ptr->first_frame_nr-1, 
                           ainfo_ptr->extension);
-  if (p_file_exists(l_fname))
+  if (gap_lib_file_exists(l_fname))
   { 
      g_free(l_fname);
      return(FALSE);
@@ -1023,11 +1024,11 @@ navi_check_exist_first_and_last(t_anim_info *ainfo_ptr)
  * navi_get_ainfo
  * ---------------------------------
  */
-t_anim_info *
-navi_get_ainfo(gint32 image_id, t_anim_info *old_ainfo_ptr)
+static GapAnimInfo *
+navi_get_ainfo(gint32 image_id, GapAnimInfo *old_ainfo_ptr)
 {
-  t_anim_info *ainfo_ptr;
-  ainfo_ptr = p_alloc_ainfo(image_id, GIMP_RUN_NONINTERACTIVE);
+  GapAnimInfo *ainfo_ptr;
+  ainfo_ptr = gap_lib_alloc_ainfo(image_id, GIMP_RUN_NONINTERACTIVE);
   if(ainfo_ptr)
   {
      if(old_ainfo_ptr)
@@ -1050,7 +1051,7 @@ navi_get_ainfo(gint32 image_id, t_anim_info *old_ainfo_ptr)
            }
         }
      }
-     p_dir_ainfo(ainfo_ptr);
+     gap_lib_dir_ainfo(ainfo_ptr);
   }
   navi_dyn_adj_set_limits();
   return(ainfo_ptr);
@@ -1064,7 +1065,7 @@ navi_get_ainfo(gint32 image_id, t_anim_info *old_ainfo_ptr)
 void 
 navi_reload_ainfo_force(gint32 image_id)
 {
-  t_anim_info *old_ainfo_ptr;
+  GapAnimInfo *old_ainfo_ptr;
   char frame_nr_to_char[20];
   
   if(gap_debug) printf("navi_reload_ainfo_force image_id:%d\n", (int)image_id);
@@ -1082,7 +1083,7 @@ navi_reload_ainfo_force(gint32 image_id)
       * when the save dialog pops up from the double-click callback in the frames listbox
       */
      suspend_gimage_notify++;
-     p_save_named_frame(image_id, naviD->ainfo_ptr->old_filename);
+     gap_lib_save_named_frame(image_id, naviD->ainfo_ptr->old_filename);
      suspend_gimage_notify--;
   }
   global_old_active_imageid = image_id;
@@ -1098,7 +1099,7 @@ navi_reload_ainfo_force(gint32 image_id)
 
   navi_dyn_adj_set_limits();
 
-  if(old_ainfo_ptr) p_free_ainfo(&old_ainfo_ptr);
+  if(old_ainfo_ptr) gap_lib_free_ainfo(&old_ainfo_ptr);
   
 }  /* end navi_reload_ainfo_force */
 
@@ -1127,10 +1128,10 @@ navi_reload_ainfo(gint32 image_id)
      *  to inform the navigator dialog about changes of the active image_id)
      */
     l_pid = getpid();
-    l_new_image_id = p_get_active_image(image_id, l_pid);
+    l_new_image_id = gap_navat_get_active_image(image_id, l_pid);
     if(l_new_image_id >= 0)
     {
-      p_set_active_image(l_new_image_id, l_pid);
+      gap_navat_set_active_image(l_new_image_id, l_pid);
       image_id = l_new_image_id;
       global_old_active_imageid = l_new_image_id;
     }
@@ -1140,7 +1141,7 @@ navi_reload_ainfo(gint32 image_id)
   if(naviD->ainfo_ptr)
   {
     if(naviD->vin_ptr) g_free(naviD->vin_ptr);
-    naviD->vin_ptr = p_get_video_info(naviD->ainfo_ptr->basename);
+    naviD->vin_ptr = gap_vin_get_all(naviD->ainfo_ptr->basename);
     gtk_adjustment_set_value(GTK_ADJUSTMENT(naviD->framerate_adj), (gfloat)naviD->vin_ptr->framerate);
     gtk_adjustment_set_value(GTK_ADJUSTMENT(naviD->timezoom_adj), (gfloat)naviD->vin_ptr->timezoom);
 
@@ -1158,7 +1159,7 @@ navi_images_menu_constrain(gint32 image_id, gint32 drawable_id, gpointer data)
 {
   if(gap_debug) printf("navi_images_menu_constrain PROCEDURE imageID:%d\n", (int)image_id);
 
-  if(p_get_frame_nr(image_id) < 0)
+  if(gap_lib_get_frame_nr(image_id) < 0)
   {
       return(FALSE);  /* reject images without frame number */
   }
@@ -1371,7 +1372,7 @@ navi_check_image_menu_changes()
   images = gimp_image_list (&nimages);
   for (i = 0; i < nimages; i++)
   {
-     frame_nr = p_get_frame_nr(images[i]);  /* check for anim frame */
+     frame_nr = gap_lib_get_frame_nr(images[i]);  /* check for anim frame */
      if(frame_nr >= 0)
      {
         item_count++;
@@ -1472,7 +1473,7 @@ navi_ops_menu_set_sensitive(void)
   {
     return;
   }
-  if(p_vid_edit_framecount() > 0)
+  if(gap_vid_edit_framecount() > 0)
   {
      gtk_widget_set_sensitive(naviD->pastea_menu_item, TRUE);
      gtk_widget_set_sensitive(naviD->pasteb_menu_item, TRUE);
@@ -1574,10 +1575,10 @@ navi_thumb_update(gboolean update_all)
   }
   
   
-  if(!p_thumbnailsave_is_on())
+  if(!gap_thumb_thumbnailsave_is_on())
   {
     l_msg_win_alrady_open = TRUE;
-    p_msg_win(GIMP_RUN_INTERACTIVE
+    gap_arr_msg_win(GIMP_RUN_INTERACTIVE
              , _("For the Thumbnail update you have to select\n"
                  "a Thumbnail Filesze other than 'No Thumbnails'\n"
                  "in the Environment Section of the Preferences Dialog")
@@ -1594,7 +1595,7 @@ navi_thumb_update(gboolean update_all)
       l_frame_nr++)
   {
      l_upd_flag = TRUE;
-     l_image_filename = p_alloc_fname(naviD->ainfo_ptr->basename, l_frame_nr, naviD->ainfo_ptr->extension);
+     l_image_filename = gap_lib_alloc_fname(naviD->ainfo_ptr->basename, l_frame_nr, naviD->ainfo_ptr->extension);
      
      if(!update_all)
      {
@@ -1604,7 +1605,7 @@ navi_thumb_update(gboolean update_all)
        guchar *l_raw_thumb;
 
        l_raw_thumb = NULL;
-       if(TRUE == p_gimp_file_load_thumbnail(l_image_filename
+       if(TRUE == gap_pdb_gimp_file_load_thumbnail(l_image_filename
                                   , &l_th_width
                                   , &l_th_height
                                   , &l_th_data_count
@@ -1629,8 +1630,8 @@ navi_thumb_update(gboolean update_all)
      {
         l_any_upd_flag = TRUE;
         if(gap_debug) printf("navi_thumb_update frame_nr:%d\n", (int)l_frame_nr);
-        l_image_id = p_load_image(l_image_filename);
-        p_gimp_file_save_thumbnail(l_image_id, l_image_filename);
+        l_image_id = gap_lib_load_image(l_image_filename);
+        gap_pdb_gimp_file_save_thumbnail(l_image_id, l_image_filename);
         gimp_image_delete(l_image_id);
      }
      
@@ -2188,7 +2189,7 @@ navi_framerate_spinbutton_update(GtkAdjustment *adjustment,
      if(naviD->ainfo_ptr)
      {
        /* write new framerate to video info file */
-       p_set_video_info(naviD->vin_ptr, naviD->ainfo_ptr->basename);
+       gap_vin_set_common(naviD->vin_ptr, naviD->ainfo_ptr->basename);
      }
      navi_frames_timing_update();
   }
@@ -2216,7 +2217,7 @@ navi_timezoom_spinbutton_update(GtkAdjustment *adjustment,
     if(naviD->ainfo_ptr)
     {
        /* write new timezoom to video info file */
-       p_set_video_info(naviD->vin_ptr, naviD->ainfo_ptr->basename);
+       gap_vin_set_common(naviD->vin_ptr, naviD->ainfo_ptr->basename);
     }
     frames_dialog_flush();
   }
@@ -2300,7 +2301,7 @@ navi_render_preview (FrameWidget *fw)
    if((fw->pv_ptr->pv_width != naviD->image_width)
    || (fw->pv_ptr->pv_height != naviD->image_height))
    {
-      p_pview_set_size(fw->pv_ptr, naviD->image_width, naviD->image_height, NAVI_CHECK_SIZE);
+      gap_pview_set_size(fw->pv_ptr, naviD->image_width, naviD->image_height, NAVI_CHECK_SIZE);
    }
 
    if(naviD->ainfo_ptr->curr_frame_nr == fw->frame_nr)
@@ -2310,9 +2311,9 @@ navi_render_preview (FrameWidget *fw)
       * rather than reading from thumbnail file
       * to get an actual version.
       */
-     if(gap_debug) printf("navi_render_preview ACTUAL image BEFORE p_gimp_image_thumbnail w:%d h:%d,\n"
+     if(gap_debug) printf("navi_render_preview ACTUAL image BEFORE gap_pdb_gimp_image_thumbnail w:%d h:%d,\n"
                          ,(int)fw->pv_ptr->pv_width, (int)fw->pv_ptr->pv_height);
-     p_gimp_image_thumbnail(naviD->active_imageid
+     gap_pdb_gimp_image_thumbnail(naviD->active_imageid
                            , fw->pv_ptr->pv_width
                            , fw->pv_ptr->pv_height
                            , &l_th_width
@@ -2321,7 +2322,7 @@ navi_render_preview (FrameWidget *fw)
                            , &l_thumbdata_count
                            , &l_th_data
                            );
-     if(gap_debug) printf("navi_render_preview AFTER p_gimp_image_thumbnail th_w:%d th_h:%d, th_bpp:%d, count:%d\n"
+     if(gap_debug) printf("navi_render_preview AFTER gap_pdb_gimp_image_thumbnail th_w:%d th_h:%d, th_bpp:%d, count:%d\n"
                          ,(int)l_th_width, (int)l_th_height, (int)l_th_bpp, (int)l_thumbdata_count);
    }
    else
@@ -2331,7 +2332,7 @@ navi_render_preview (FrameWidget *fw)
      gboolean     l_can_use_cached_thumbnail;
      
      l_can_use_cached_thumbnail = FALSE;
-     l_frame_filename = p_alloc_fname(naviD->ainfo_ptr->basename, fw->frame_nr, naviD->ainfo_ptr->extension);
+     l_frame_filename = gap_lib_alloc_fname(naviD->ainfo_ptr->basename, fw->frame_nr, naviD->ainfo_ptr->extension);
      if(l_frame_filename)
      {
        if (0 == stat(l_frame_filename, &l_stat))
@@ -2394,7 +2395,7 @@ navi_render_preview (FrameWidget *fw)
      if(l_can_use_cached_thumbnail)
      {
         if(gap_debug) printf("navi_render_preview: USING CACHED THUMBNAIL\n");
-        p_pview_repaint(fw->pv_ptr);
+        gap_pview_repaint(fw->pv_ptr);
         return;
      }
      else
@@ -2403,7 +2404,7 @@ navi_render_preview (FrameWidget *fw)
        if(gap_debug) printf("navi_render_preview: fetching THUMBNAILFILE for: %s\n", l_frame_filename);
        if(l_frame_filename)
        {
-         p_gimp_file_load_thumbnail(l_frame_filename
+         gap_pdb_gimp_file_load_thumbnail(l_frame_filename
                                    , &l_th_width
                                    , &l_th_height
                                    , &l_th_data_count
@@ -2418,7 +2419,7 @@ navi_render_preview (FrameWidget *fw)
      gboolean l_th_data_was_grabbed;
      
      /* fetch was successful, we can call the render procedure */
-     l_th_data_was_grabbed = p_pview_render_from_buf (fw->pv_ptr
+     l_th_data_was_grabbed = gap_pview_render_from_buf (fw->pv_ptr
                  , l_th_data
                  , l_th_width
                  , l_th_height
@@ -2435,7 +2436,7 @@ navi_render_preview (FrameWidget *fw)
    {
      /* fetch failed, render a default icon */
      if(gap_debug) printf("navi_render_preview: fetch failed, using DEFAULT_ICON\n");
-     p_pview_render_default_icon(fw->pv_ptr);
+     gap_pview_render_default_icon(fw->pv_ptr);
    }
 
   
@@ -2458,7 +2459,7 @@ frame_widget_preview_redraw (FrameWidget *fw)
   if(fw == NULL) { return;}
   if(fw->pv_ptr == NULL) { return;}
   
-  p_pview_repaint(fw->pv_ptr);
+  gap_pview_repaint(fw->pv_ptr);
 
   /*  make sure the image has been transfered completely to the pixmap before
    *  we use it again...
@@ -2620,7 +2621,7 @@ navi_dialog_poll(GtkWidget *w, gpointer   data)
          /* check and enable/disable tooltips */      
          navi_dialog_tooltips ();
 
-         frame_nr = p_get_frame_nr(naviD->active_imageid);
+         frame_nr = gap_lib_get_frame_nr(naviD->active_imageid);
          if(frame_nr < 0 )
          {
             /* no valid frame number, maybe frame was closed
@@ -2771,7 +2772,7 @@ navi_preview_extents (void)
         if(gap_debug) printf("navi_preview_extents pv_w: %d pv_h:%d\n", (int)fw->pv_ptr->pv_width, (int)fw->pv_ptr->pv_height);
 
 
-        p_pview_set_size(fw->pv_ptr
+        gap_pview_set_size(fw->pv_ptr
                        , naviD->image_width
                        , naviD->image_height
                        , NAVI_CHECK_SIZE
@@ -2808,7 +2809,7 @@ navi_calc_frametiming(gint32 frame_nr, char *buf, gint32 sizeof_buf)
     framerate = naviD->vin_ptr->framerate;
   }
 
-  p_conv_framenr_to_timestr( (frame_nr - first)
+  gap_timeconv_framenr_to_timestr( (frame_nr - first)
                            , framerate
                            , buf
                            , sizeof_buf
@@ -3194,7 +3195,7 @@ navi_frame_widget_replace2(FrameWidget *fw)
 
   if(fw->pv_ptr == NULL)
   {
-    fw->pv_ptr = p_pview_new( naviD->image_width    /* width */
+    fw->pv_ptr = gap_pview_new( naviD->image_width    /* width */
                             , naviD->image_height   /* height */
                             , NAVI_CHECK_SIZE
                             , NULL   /* preview without aspect_frame */
@@ -3205,7 +3206,7 @@ navi_frame_widget_replace2(FrameWidget *fw)
     if((naviD->image_width != fw->pv_ptr->pv_width)
     || (naviD->image_height != fw->pv_ptr->pv_height))
     {
-       p_pview_set_size(fw->pv_ptr
+       gap_pview_set_size(fw->pv_ptr
                        , naviD->image_width
                        , naviD->image_height
                        , NAVI_CHECK_SIZE
@@ -3225,7 +3226,7 @@ navi_frame_widget_replace2(FrameWidget *fw)
     gtk_widget_hide(fw->pv_ptr->da_widget);
     return;
 
-    p_pview_render_from_buf (fw->pv_ptr
+    gap_pview_render_from_buf (fw->pv_ptr
                  , NULL   /* render black frame */
                  , naviD->image_width
                  , naviD->image_height
@@ -3240,7 +3241,7 @@ navi_frame_widget_replace2(FrameWidget *fw)
     gtk_widget_show(fw->pv_ptr->da_widget);
     if(naviD->preview_size <= 0)
     {
-      p_pview_render_default_icon(fw->pv_ptr);
+      gap_pview_render_default_icon(fw->pv_ptr);
     }
     else
     {
@@ -3285,7 +3286,7 @@ navi_frame_widget_replace(gint32 image_id, gint32 frame_nr, gint32 dyn_rowindex)
     l_frame_filename = NULL;
     if(frame_nr >= 0)
     {
-      l_frame_filename = p_alloc_fname(naviD->ainfo_ptr->basename, frame_nr, naviD->ainfo_ptr->extension);
+      l_frame_filename = gap_lib_alloc_fname(naviD->ainfo_ptr->basename, frame_nr, naviD->ainfo_ptr->extension);
       if(l_frame_filename)
       {
         if(strcmp(l_frame_filename, fw->frame_filename) == 0)
@@ -3485,7 +3486,7 @@ navi_frame_widget_init_empty (FrameWidget *fw)
   gtk_widget_show (alignment);
 
 
-  fw->pv_ptr = p_pview_new( naviD->image_width + 4
+  fw->pv_ptr = gap_pview_new( naviD->image_width + 4
                                     , naviD->image_height + 4
                                     , NAVI_CHECK_SIZE
                                     , NULL   /* no aspect_frame is used */
@@ -3553,7 +3554,7 @@ navi_dyn_table_set_size(gint win_height)
 
        fw = &naviD->frame_widget_tab[l_row];
   
-       p_pview_reset(fw->pv_ptr);
+       gap_pview_reset(fw->pv_ptr);
        if(fw->frame_filename) g_free(fw->frame_filename);
      
        gtk_widget_destroy(fw->vbox);
@@ -3666,7 +3667,7 @@ navi_dialog_create (GtkWidget* shell, gint32 image_id)
             , (int)naviD->ainfo_ptr->last_frame_nr);
     l_basename = naviD->ainfo_ptr->basename;
   }
-  naviD->vin_ptr  = p_get_video_info(l_basename);
+  naviD->vin_ptr  = gap_vin_get_all(l_basename);
   naviD->image_width = 0;
   naviD->image_height = 0;
   naviD->preview_size = navi_get_preview_size();
@@ -3981,10 +3982,13 @@ int  gap_navigator(gint32 image_id)
   g_signal_connect_swapped (G_OBJECT (button), "clicked",
                             G_CALLBACK (gtk_widget_destroy),
                             shell);
-  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (shell)->action_area),
-                      button, TRUE, TRUE, 0);
-  gtk_widget_show (button);
 
+  /*
+   *gtk_box_pack_start (GTK_BOX (GTK_DIALOG (shell)->action_area),
+   *                   button, TRUE, TRUE, 0);
+   *gtk_widget_show (button);
+   */
+   
   gtk_widget_show (subshell); 
   gtk_widget_show (shell);
   

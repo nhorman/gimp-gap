@@ -680,7 +680,7 @@ gap_common_iterator(const char *c_keyname, GimpRunMode run_mode, gint32 total_st
    int desc_size;
 
    keyname = g_strdup(c_keyname);
-   /* if(gap_debug) */ printf("\ngap_common_iterator START: keyname: %s  total_steps: %d,  curent_step: %f\n", keyname, (int)total_steps, (float)current_step );
+   if(gap_debug) printf("\ngap_common_iterator START: keyname: %s  total_steps: %d,  curent_step: %f\n", keyname, (int)total_steps, (float)current_step );
 
    key_description = gimp_lastval_desc_keyname (keyname);
    key_from = g_strdup_printf("%s_ITER_FROM", keyname);
@@ -714,7 +714,7 @@ gap_common_iterator(const char *c_keyname, GimpRunMode run_mode, gint32 total_st
       gimp_get_data(key_from, buffer_from);
       gimp_get_data(key_to,   buffer_to);
 
-      if(1==1 /*gap_debug*/)
+      if(gap_debug)
       {
          p_debug_print_iter_desc(lastval_desc_arr, arg_cnt);
       }

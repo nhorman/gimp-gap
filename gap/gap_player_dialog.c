@@ -28,7 +28,9 @@
  */
 
 /* Revision history
- *  (2003/09/29)  v1.3.20c   hof: moved p_overwrite_file_dialog to module gap_arr_dialog.c
+ *  (2003/10/14)  v1.3.20d   hof: sourcecode cleanup
+ *  (2003/10/06)  v1.3.20d   hof: bugfix: changed shell_window resize handling
+ *  (2003/09/29)  v1.3.20c   hof: moved gap_arr_overwrite_file_dialog to module gap_arr_dialog.c
  *  (2003/09/23)  v1.3.20b   hof: use GAPLIBDIR to locate audioconvert_to_wav.sh
  *  (2003/09/14)  v1.3.20a   hof: bugfix: added p_create_wav_dialog 
  *                                now can create and resample WAVFILE from other audiofiles (MP3 and others)
@@ -72,6 +74,7 @@
 #include "gap_pview_da.h"
 #include "gap_stock.h"
 #include "gap_lib.h"
+#include "gap_image.h"
 #include "gap_vin.h"
 #include "gap_timeconv.h"
 #include "gap_thumbnail.h"
@@ -99,7 +102,9 @@ unsigned long env_AUDIOLCK = 0;			/* Default compiled in locking semaphore */
 #endif
 
 #define GAP_PLAYER_MIN_SIZE 64
-#define GAP_PLAYER_MAX_SIZE 1024
+#define GAP_PLAYER_MAX_SIZE 800
+#define GAP_STANDARD_PREVIEW_SIZE 256
+#define GAP_SMALL_PREVIEW_SIZE 128
 
 #define GAP_PLAYER_CHECK_SIZE 6
 #define GAP_PLAY_MAX_GOBUTTONS 51
@@ -107,7 +112,7 @@ unsigned long env_AUDIOLCK = 0;			/* Default compiled in locking semaphore */
 
 typedef struct t_gobutton
 {
-  t_global_params *gpp;
+  GapPlayerMainGlobalParams *gpp;
   gint             go_number;
 } t_gobutton;
 
@@ -133,6 +138,9 @@ static gboolean on_vid_preview_expose_event          (GtkWidget       *widget,
 static void   on_vid_preview_size_allocate           (GtkWidget       *widget,
                                                       GtkAllocation   *allocation,
                                                       gpointer         user_data);
+static void   on_shell_window_size_allocate           (GtkWidget       *widget,
+                                                      GtkAllocation   *allocation,
+                                                      gpointer         user_data);
 
 static void   on_framenr_button_clicked              (GtkButton       *button,
                                                        gpointer         user_data);
@@ -145,6 +153,8 @@ static void   on_origspeed_button_clicked            (GtkButton       *button,
                                                       gpointer         user_data);
 static void   on_speed_spinbutton_changed            (GtkEditable     *editable,
                                                       gpointer         user_data);
+static void   p_fit_initial_shell_window             (GapPlayerMainGlobalParams *gpp);
+static void   p_fit_shell_window                     (GapPlayerMainGlobalParams *gpp);
 
 
 static gboolean   on_size_button_button_press_event  (GtkWidget       *widget,
@@ -158,7 +168,7 @@ static void   on_size_spinbutton_changed             (GtkEditable     *editable,
 static gboolean   on_size_spinbutton_enter           (GtkWidget        *widget,
                                                       GdkEvent         *event,
                                                       gpointer         user_data);
-static gboolean   on_size_spinbutton_leave           (GtkWidget        *widget,
+static gboolean   on_shell_window_leave              (GtkWidget        *widget,
                                                       GdkEvent         *event,
                                                       gpointer         user_data);
 
@@ -223,8 +233,10 @@ static void   on_audio_filesel_button_clicked      (GtkButton       *button,
 static void   on_audio_filename_entry_changed     (GtkWidget     *widget,
                                                    gpointer         user_data);
 
-static void    p_update_position_widgets(t_global_params *gpp);
-static void    p_stop_playback(t_global_params *gpp);
+static void    p_update_position_widgets(GapPlayerMainGlobalParams *gpp);
+static void    p_stop_playback(GapPlayerMainGlobalParams *gpp);
+static void    p_connect_resize_handler(GapPlayerMainGlobalParams *gpp);
+static void    p_disconnect_resize_handler(GapPlayerMainGlobalParams *gpp);
 
 
 /* -----------------------------
@@ -279,15 +291,15 @@ p_audio_errfunc(const char *format,va_list ap)
  *        FALSE: user has cancelled, dont create wavefile
  */
 static gboolean
-p_create_wav_dialog(t_global_params *gpp)
+p_create_wav_dialog(GapPlayerMainGlobalParams *gpp)
 {
-  static t_arr_arg  argv[4];
+  static GapArrArg  argv[4];
   gint   l_ii;
   gint   l_ii_resample;
   gint   l_ii_samplerate;
 
   l_ii = 0;
-  p_init_arr_arg(&argv[l_ii], WGT_LABEL_LEFT);
+  gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_LABEL_LEFT);
   argv[l_ii].label_txt = _("Audiosource:");
   argv[l_ii].text_buf_ret = gpp->audio_filename;
 
@@ -298,7 +310,7 @@ p_create_wav_dialog(t_global_params *gpp)
             );
 
   l_ii++;
-  p_init_arr_arg(&argv[l_ii], WGT_FILESEL);
+  gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_FILESEL);
   argv[l_ii].label_txt = _("Wavefile:");
   argv[l_ii].entry_width = 400;
   argv[l_ii].help_txt  = _("Name of Wavefile to create as copy in RIFF WAVE Format");
@@ -307,19 +319,19 @@ p_create_wav_dialog(t_global_params *gpp)
   
   l_ii++;
   l_ii_resample = l_ii;
-  p_init_arr_arg(&argv[l_ii], WGT_TOGGLE);
+  gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_TOGGLE);
   argv[l_ii].label_txt = _("Resample:");
   argv[l_ii].help_txt  = _("ON: Resample the copy at specified Samplerate, OFF: use original Samplerate");
   argv[l_ii].int_ret   = 1;
 
   l_ii++;
   l_ii_samplerate = l_ii;
-  p_init_arr_arg(&argv[l_ii], WGT_INT_PAIR);
+  gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_INT_PAIR);
   argv[l_ii].constraint = TRUE;
   argv[l_ii].label_txt = _("Samplerate:");
   argv[l_ii].help_txt  = _("Target Audio Samperate in Samples/sec\n(ignored if Resample is OFF)");
-  argv[l_ii].int_min   = (gint)MIN_SAMPLERATE;
-  argv[l_ii].int_max   = (gint)MAX_SAMPLERATE;
+  argv[l_ii].int_min   = (gint)GAP_PLAYER_MAIN_MIN_SAMPLERATE;
+  argv[l_ii].int_max   = (gint)GAP_PLAYER_MAIN_MAX_SAMPLERATE;
   argv[l_ii].int_ret   = (gint)22050;
 
   if(gpp->audio_samples > 0)
@@ -332,20 +344,20 @@ p_create_wav_dialog(t_global_params *gpp)
      *  that makes it possible for the audioserver to follow fast videoplayback
      *  by switching from the original to the copy)
      */
-    argv[l_ii].int_min   = (gint)MIN_SAMPLERATE;
-    argv[l_ii].int_max   = (gint)MIN(gpp->audio_samplerate, MAX_SAMPLERATE);
-    argv[l_ii].int_ret   = (gint)MIN((gpp->audio_samplerate / 2), MAX_SAMPLERATE);
+    argv[l_ii].int_min   = (gint)GAP_PLAYER_MAIN_MIN_SAMPLERATE;
+    argv[l_ii].int_max   = (gint)MIN(gpp->audio_samplerate, GAP_PLAYER_MAIN_MAX_SAMPLERATE);
+    argv[l_ii].int_ret   = (gint)MIN((gpp->audio_samplerate / 2), GAP_PLAYER_MAIN_MAX_SAMPLERATE);
   }
 
 
-  if(TRUE == p_array_dialog( _("Copy Audiofile as Wavefile"),
+  if(TRUE == gap_arr_ok_cancel_dialog( _("Copy Audiofile as Wavefile"),
                                  _("Settings"), 
                                   G_N_ELEMENTS(argv), argv))
   {
      gpp->audio_tmp_resample   = (gboolean)(argv[l_ii_resample].int_ret);
      gpp->audio_tmp_samplerate = (gint32)(argv[l_ii_samplerate].int_ret);
     
-     return (p_overwrite_file_dialog(gpp->audio_wavfile_tmp));
+     return (gap_arr_overwrite_file_dialog(gpp->audio_wavfile_tmp));
   }
 
   return (FALSE);
@@ -359,15 +371,15 @@ p_create_wav_dialog(t_global_params *gpp)
  * -----------------------------
  */
 static void
-p_audio_shut_server(t_global_params *gpp)
+p_audio_shut_server(GapPlayerMainGlobalParams *gpp)
 {
 #ifdef GAP_ENABLE_AUDIO_SUPPORT
   /* if (gap_debug) printf("p_audio_shut_server\n"); */
-  if(gpp->audio_status > AUSTAT_NONE)
+  if(gpp->audio_status > GAP_PLAYER_MAIN_AUSTAT_NONE)
   {
     apcl_bye(0, p_audio_errfunc);
   }
-  gpp->audio_status = AUSTAT_NONE;
+  gpp->audio_status = GAP_PLAYER_MAIN_AUSTAT_NONE;
 #endif
   return; 
 }  /* end p_audio_shut_server */
@@ -378,7 +390,7 @@ p_audio_shut_server(t_global_params *gpp)
  * -----------------------------
  */
 static void
-p_audio_resync(t_global_params *gpp)
+p_audio_resync(GapPlayerMainGlobalParams *gpp)
 {
 #ifdef GAP_ENABLE_AUDIO_SUPPORT
   if(gpp->audio_resync < 1)
@@ -395,14 +407,14 @@ p_audio_resync(t_global_params *gpp)
  * -----------------------------
  */
 static void
-p_audio_stop(t_global_params *gpp)
+p_audio_stop(GapPlayerMainGlobalParams *gpp)
 {
 #ifdef GAP_ENABLE_AUDIO_SUPPORT
   /* if (gap_debug) printf("p_audio_stop\n"); */
-  if(gpp->audio_status > AUSTAT_NONE)
+  if(gpp->audio_status > GAP_PLAYER_MAIN_AUSTAT_NONE)
   {
     apcl_stop(0,p_audio_errfunc);  /* Tell the server to stop */
-    gpp->audio_status = MIN(gpp->audio_status, AUSTAT_FILENAME_SET);
+    gpp->audio_status = MIN(gpp->audio_status, GAP_PLAYER_MAIN_AUSTAT_FILENAME_SET);
   }
 #endif
   return; 
@@ -413,13 +425,13 @@ p_audio_stop(t_global_params *gpp)
  * -----------------------------
  */
 static void
-p_audio_init(t_global_params *gpp)
+p_audio_init(GapPlayerMainGlobalParams *gpp)
 {
 #ifdef GAP_ENABLE_AUDIO_SUPPORT
   /* if (gap_debug) printf("p_audio_init\n"); */
   if(gpp->audio_samples > 0)       /* audiofile has samples (seems to be a valid audiofile) */
   {
-    if(gpp->audio_status <= AUSTAT_NONE)
+    if(gpp->audio_status <= GAP_PLAYER_MAIN_AUSTAT_NONE)
     {
       if ( apcl_start(p_audio_errfunc) < 0 )
       {
@@ -430,7 +442,7 @@ p_audio_init(t_global_params *gpp)
       }
       else
       {
-        gpp->audio_status = AUSTAT_SERVER_STARTED;
+        gpp->audio_status = GAP_PLAYER_MAIN_AUSTAT_SERVER_STARTED;
       }
       /* apcl_semreset(0,p_audio_errfunc); */  /* Tell server to reset semaphores */
     }
@@ -439,10 +451,10 @@ p_audio_init(t_global_params *gpp)
       p_audio_stop(gpp);
     }
     
-    if(gpp->audio_status < AUSTAT_FILENAME_SET)
+    if(gpp->audio_status < GAP_PLAYER_MAIN_AUSTAT_FILENAME_SET)
     {
       apcl_path(gpp->audio_filename,0,p_audio_errfunc);	 /* Tell server the new path */
-      gpp->audio_status = AUSTAT_FILENAME_SET;
+      gpp->audio_status = GAP_PLAYER_MAIN_AUSTAT_FILENAME_SET;
     }
   }
 #endif
@@ -455,7 +467,7 @@ p_audio_init(t_global_params *gpp)
  * -----------------------------
  */
 static void
-p_audio_print_labels(t_global_params *gpp)
+p_audio_print_labels(GapPlayerMainGlobalParams *gpp)
 {
   char  txt_buf[100];
   gint  len;
@@ -480,7 +492,7 @@ p_audio_print_labels(t_global_params *gpp)
   }
   if(gpp->audio_frame_offset < 0)
   {
-    p_conv_framenr_to_timestr( (gint32)(0 - gpp->audio_frame_offset)
+    gap_timeconv_framenr_to_timestr( (gint32)(0 - gpp->audio_frame_offset)
                            , (gdouble)gpp->original_speed
                            , txt_buf
                            , sizeof(txt_buf)
@@ -490,7 +502,7 @@ p_audio_print_labels(t_global_params *gpp)
   }
   else
   {
-    p_conv_framenr_to_timestr( (gint32)(gpp->audio_frame_offset)
+    gap_timeconv_framenr_to_timestr( (gint32)(gpp->audio_frame_offset)
                            , (gdouble)gpp->original_speed
                            , txt_buf
                            , sizeof(txt_buf)
@@ -507,7 +519,7 @@ p_audio_print_labels(t_global_params *gpp)
   }			   
   gtk_label_set_text ( GTK_LABEL(gpp->audio_offset_time_label), txt_buf);
 
-  p_conv_samples_to_timestr( l_samples
+  gap_timeconv_samples_to_timestr( l_samples
                            , (gdouble)l_samplerate
                            , txt_buf
                            , sizeof(txt_buf)
@@ -515,7 +527,7 @@ p_audio_print_labels(t_global_params *gpp)
   gtk_label_set_text ( GTK_LABEL(gpp->audio_total_time_label), txt_buf);
 
   g_snprintf(txt_buf, sizeof(txt_buf), _("%d (at %.4f frames/sec)")
-             , (int)p_conv_samples_to_frames(l_samples
+             , (int)gap_timeconv_samples_to_frames(l_samples
 	                                    ,(gdouble)l_samplerate
 					    ,(gdouble)gpp->original_speed    /* framerate */
 					    )
@@ -540,7 +552,7 @@ p_audio_print_labels(t_global_params *gpp)
   {
     l_videoframes = 1+ (gpp->ainfo_ptr->last_frame_nr - gpp->ainfo_ptr->first_frame_nr);
   }
-  p_conv_framenr_to_timestr( l_videoframes
+  gap_timeconv_framenr_to_timestr( l_videoframes
                          , gpp->original_speed
                          , txt_buf
                          , sizeof(txt_buf)
@@ -558,7 +570,7 @@ p_audio_print_labels(t_global_params *gpp)
  * -----------------------------
  */
 static void
-p_print_and_clear_audiolabels(t_global_params *gpp)
+p_print_and_clear_audiolabels(GapPlayerMainGlobalParams *gpp)
 {
   gpp->audio_samplerate = 0;
   gpp->audio_bits       = 0;
@@ -575,7 +587,7 @@ p_print_and_clear_audiolabels(t_global_params *gpp)
  * (but dont start to play, just keep audioserver stand by)
  */
 static void
-p_audio_filename_changed(t_global_params *gpp)
+p_audio_filename_changed(GapPlayerMainGlobalParams *gpp)
 {
 #ifdef GAP_ENABLE_AUDIO_SUPPORT
   int fd;
@@ -586,9 +598,9 @@ p_audio_filename_changed(t_global_params *gpp)
   u_long samples;			/* The number of samples in this file */
   u_long datastart;			/* The offset to the wav data */
   
-  /*if (gap_debug)*/ printf("p_audio_filename_changed to:%s:\n", gpp->audio_filename);
+  if (gap_debug) printf("p_audio_filename_changed to:%s:\n", gpp->audio_filename);
   p_audio_stop(gpp);
-  gpp->audio_status = MIN(gpp->audio_status, AUSTAT_SERVER_STARTED);
+  gpp->audio_status = MIN(gpp->audio_status, GAP_PLAYER_MAIN_AUSTAT_SERVER_STARTED);
 
   /* Open the file for reading: */
   if ( (fd = open(gpp->audio_filename,O_RDONLY)) < 0 ) 
@@ -637,7 +649,7 @@ p_audio_filename_changed(t_global_params *gpp)
  *        before you start another one)
  */
 static void
-p_audio_start_play(t_global_params *gpp)
+p_audio_start_play(GapPlayerMainGlobalParams *gpp)
 {
 #ifdef GAP_ENABLE_AUDIO_SUPPORT
   gdouble offset_start_sec;
@@ -654,7 +666,7 @@ p_audio_start_play(t_global_params *gpp)
    * (reverse audio is not supported by the wavplay server)
    */
   if(!gpp->audio_enable)                        { return; }
-  if(gpp->audio_status >= AUSTAT_PLAYING)       { return; }
+  if(gpp->audio_status >= GAP_PLAYER_MAIN_AUSTAT_PLAYING)       { return; }
   if(gpp->play_backward)                        { return; }
   if(gpp->ainfo_ptr == NULL)                    { return; }
   
@@ -681,16 +693,16 @@ p_audio_start_play(t_global_params *gpp)
   /* check if offset and rate is within playable limits */
   if((offset_start_samples >= 0)
   && ((gdouble)offset_start_samples < ((gdouble)l_samples - 1024.0))
-  && (flt_samplerate >= MIN_SAMPLERATE)
+  && (flt_samplerate >= GAP_PLAYER_MAIN_MIN_SAMPLERATE)
   )
   {
     UInt32  lu_samplerate;
     
     p_audio_init(gpp);  /* tell ausioserver to go standby for this audiofile */
     gpp->audio_required_samplerate = (guint32)flt_samplerate;
-    if(flt_samplerate > MAX_SAMPLERATE)
+    if(flt_samplerate > GAP_PLAYER_MAIN_MAX_SAMPLERATE)
     {
-      lu_samplerate = (UInt32)MAX_SAMPLERATE;
+      lu_samplerate = (UInt32)GAP_PLAYER_MAIN_MAX_SAMPLERATE;
       /* required samplerate is faster than highest possible audioplayback speed
        * (the audioplayback will be played but runs out of sync and cant follow)
        */
@@ -704,7 +716,7 @@ p_audio_start_play(t_global_params *gpp)
     apcl_play(0,p_audio_errfunc);  /* Tell server to play */
     apcl_volume(gpp->audio_volume, 0, p_audio_errfunc);
    
-    gpp->audio_status = AUSTAT_PLAYING;
+    gpp->audio_status = GAP_PLAYER_MAIN_AUSTAT_PLAYING;
     gpp->audio_resync = 0;
   }
 #endif
@@ -717,7 +729,7 @@ p_audio_start_play(t_global_params *gpp)
  * -----------------------------
  */
 static void
-p_audio_startup_server(t_global_params *gpp)
+p_audio_startup_server(GapPlayerMainGlobalParams *gpp)
 {
 #ifdef GAP_ENABLE_AUDIO_SUPPORT
   const char *cp;
@@ -776,7 +788,7 @@ p_audio_startup_server(t_global_params *gpp)
   {
     if ( (cp = g_getenv("PATH")) != NULL )
     {
-      env_WAVPLAYPATH = p_searchpath_for_exefile("wavplay", cp);
+      env_WAVPLAYPATH = gap_lib_searchpath_for_exefile("wavplay", cp);
       if(env_WAVPLAYPATH)
       {
         wavplay_server_found = TRUE;
@@ -821,7 +833,7 @@ p_audio_startup_server(t_global_params *gpp)
  * (Line Formated for STORYBOARD_FILE processing)
  */
 static void 
-p_printout_range(t_global_params *gpp)
+p_printout_range(GapPlayerMainGlobalParams *gpp)
 {
   if(gpp->ainfo_ptr == NULL) { return; }
   if(gpp->ainfo_ptr->basename == NULL) { return; }
@@ -841,23 +853,23 @@ p_printout_range(t_global_params *gpp)
  * -----------------------------
  */
 static void
-p_reload_ainfo_ptr(t_global_params *gpp, gint32 image_id)
+p_reload_ainfo_ptr(GapPlayerMainGlobalParams *gpp, gint32 image_id)
 {
   gpp->image_id = image_id;
   
-  if(gpp->ainfo_ptr)  { p_free_ainfo(&gpp->ainfo_ptr); }
+  if(gpp->ainfo_ptr)  { gap_lib_free_ainfo(&gpp->ainfo_ptr); }
 
-  gpp->ainfo_ptr = p_alloc_ainfo(gpp->image_id, gpp->run_mode);
+  gpp->ainfo_ptr = gap_lib_alloc_ainfo(gpp->image_id, gpp->run_mode);
   if(gpp->ainfo_ptr == NULL)
   {
     return;
   }
-  if (0 == p_dir_ainfo(gpp->ainfo_ptr))
+  if (0 == gap_lib_dir_ainfo(gpp->ainfo_ptr))
   {
-    if(0 == p_chk_framerange(gpp->ainfo_ptr))
+    if(0 == gap_lib_chk_framerange(gpp->ainfo_ptr))
     {
-      t_video_info *vin_ptr;
-      vin_ptr = p_get_video_info(gpp->ainfo_ptr->basename);
+      GapVinVideoInfo *vin_ptr;
+      vin_ptr = gap_vin_get_all(gpp->ainfo_ptr->basename);
 
       gpp->ainfo_ptr->width  = gimp_image_width(gpp->image_id);
       gpp->ainfo_ptr->height = gimp_image_height(gpp->image_id);
@@ -880,7 +892,7 @@ p_reload_ainfo_ptr(t_global_params *gpp, gint32 image_id)
  * -----------------------------
  */
 static void
-p_update_ainfo_dependent_widgets(t_global_params *gpp)
+p_update_ainfo_dependent_widgets(GapPlayerMainGlobalParams *gpp)
 {
   gdouble l_lower;
   gdouble l_upper;
@@ -908,53 +920,6 @@ p_update_ainfo_dependent_widgets(t_global_params *gpp)
   
 }  /* end p_update_ainfo_dependent_widgets */
 
- 
-/* ------------------------------------
- * p_check_image_is_alive
- * ------------------------------------
- * TODO: gimp 1.3.14 keeps a copy of closed images
- *       therefore this proceedure may tell only half the truth
- *
- * return TRUE  if OK (image is still valid)
- * return FALSE if image is NOT valid
- */
-static gboolean
-p_check_image_is_alive(gint32 image_id)
-{
-  gint32 *images;
-  gint    nimages;
-  gint    l_idi;
-  gint    l_found;
-
-  /*if(gap_debug) printf("p_check_image_is_alive: image_id %d START\n", (int)image_id); */
-
-  if(image_id < 0)
-  {
-     return FALSE;
-  }
-
-  images = gimp_image_list(&nimages);
-  l_idi = nimages -1;
-  l_found = FALSE;
-  while((l_idi >= 0) && images)
-  {
-    if(image_id == images[l_idi])
-    {
-          l_found = TRUE;
-          break;
-    }
-    l_idi--;
-  }
-  if(images) g_free(images);
-  if(l_found)
-  {
-    return TRUE;  /* OK */
-  }
-
-  if(gap_debug) printf("p_check_image_is_alive: image_id %d is not VALID\n", (int)image_id);
- 
-  return FALSE ;   /* INVALID image id */
-}  /* end p_check_image_is_alive */
 
 /* ------------------------------------
  * p_find_master_image_id
@@ -966,7 +931,7 @@ p_check_image_is_alive(gint32 image_id)
  * return -1 if nothing found
  */
 static gint32
-p_find_master_image_id(t_global_params *gpp)
+p_find_master_image_id(GapPlayerMainGlobalParams *gpp)
 {
   gint32 *images;
   gint    nimages;
@@ -1031,7 +996,7 @@ p_find_master_image_id(t_global_params *gpp)
  * ------------------------------------
  */
 static void
-p_keep_track_of_active_master_image(t_global_params *gpp)
+p_keep_track_of_active_master_image(GapPlayerMainGlobalParams *gpp)
 {
   p_stop_playback(gpp);
   
@@ -1065,10 +1030,10 @@ p_keep_track_of_active_master_image(t_global_params *gpp)
  *  changes the master image_id outside ...)
  */
 gboolean
-p_check_for_active_image(t_global_params *gpp, gint32 framenr)
+p_check_for_active_image(GapPlayerMainGlobalParams *gpp, gint32 framenr)
 {
   
-  if (p_check_image_is_alive(gpp->image_id))
+  if (gap_image_is_alive(gpp->image_id))
   {
     if(framenr == gpp->ainfo_ptr->curr_frame_nr)
     {
@@ -1097,7 +1062,7 @@ p_check_for_active_image(t_global_params *gpp, gint32 framenr)
  * set preview size nd size spinbutton
  */
 static void
-p_update_pviewsize(t_global_params *gpp)
+p_update_pviewsize(GapPlayerMainGlobalParams *gpp)
 {
   /*
    * Resize the greater one of dwidth and dheight to PREVIEW_SIZE
@@ -1124,7 +1089,7 @@ p_update_pviewsize(t_global_params *gpp)
                                                        
   gpp->pv_pixelsize = (gint32)GTK_ADJUSTMENT(gpp->size_spinbutton_adj)->value;
 
-  p_pview_set_size(gpp->pv_ptr
+  gap_pview_set_size(gpp->pv_ptr
                   , gpp->pv_width
                   , gpp->pv_height
                   , MAX(GAP_PLAYER_CHECK_SIZE, (gpp->pv_pixelsize / 16))
@@ -1139,7 +1104,7 @@ p_update_pviewsize(t_global_params *gpp)
  * set position spinbutton and time entry
  */
 static void
-p_update_position_widgets(t_global_params *gpp)
+p_update_position_widgets(GapPlayerMainGlobalParams *gpp)
 {
   static gchar time_txt[12];
 
@@ -1149,7 +1114,7 @@ p_update_position_widgets(t_global_params *gpp)
                             , (gfloat)gpp->play_current_framenr
                             );                            
   }
-  p_conv_framenr_to_timestr( (gpp->play_current_framenr - gpp->ainfo_ptr->first_frame_nr)
+  gap_timeconv_framenr_to_timestr( (gpp->play_current_framenr - gpp->ainfo_ptr->first_frame_nr)
                            , gpp->original_speed
                            , time_txt
                            , sizeof(time_txt)
@@ -1166,7 +1131,7 @@ p_update_position_widgets(t_global_params *gpp)
  * until next timercall.
  */
 static void
-p_start_playback_timer(t_global_params *gpp)
+p_start_playback_timer(GapPlayerMainGlobalParams *gpp)
 {
   gint32 delay_until_next_timercall_millisec;
   gdouble cycle_time_secs;
@@ -1210,7 +1175,7 @@ p_start_playback_timer(t_global_params *gpp)
  * -----------------------------
  */
 static void
-p_initial_start_playback_timer(t_global_params *gpp)
+p_initial_start_playback_timer(GapPlayerMainGlobalParams *gpp)
 {
   p_audio_stop(gpp);    /* stop old playback if there is any */
   gpp->audio_resync = 0;
@@ -1233,7 +1198,7 @@ p_initial_start_playback_timer(t_global_params *gpp)
  * -----------------------------
  */
 static void
-p_remove_play_timer(t_global_params *gpp)
+p_remove_play_timer(GapPlayerMainGlobalParams *gpp)
 {
   /*if(gap_debug) printf("p_remove_play_timer\n");*/
 
@@ -1250,7 +1215,7 @@ p_remove_play_timer(t_global_params *gpp)
  * -----------------------------
  */
 static void
-p_stop_playback(t_global_params *gpp)
+p_stop_playback(GapPlayerMainGlobalParams *gpp)
 {
   /* if(gap_debug) printf("p_stop_playback\n"); */
   p_remove_play_timer(gpp);
@@ -1276,7 +1241,7 @@ p_stop_playback(t_global_params *gpp)
  * is not read from discfile to reflect actual changes.
  */
 static void
-p_display_frame(t_global_params *gpp, gint32 framenr)
+p_display_frame(GapPlayerMainGlobalParams *gpp, gint32 framenr)
 {
   char *l_filename;
    gint32  l_th_width;
@@ -1291,7 +1256,7 @@ p_display_frame(t_global_params *gpp, gint32 framenr)
   l_th_data = NULL;
   l_th_bpp = 3;
   
-  l_filename = p_alloc_fname(gpp->ainfo_ptr->basename, framenr, gpp->ainfo_ptr->extension);
+  l_filename = gap_lib_alloc_fname(gpp->ainfo_ptr->basename, framenr, gpp->ainfo_ptr->extension);
 
   framenr_is_the_active_image = p_check_for_active_image(gpp, framenr);
 
@@ -1299,7 +1264,7 @@ p_display_frame(t_global_params *gpp, gint32 framenr)
   {
     if(framenr_is_the_active_image)
     {
-       p_gimp_image_thumbnail(gpp->image_id
+       gap_pdb_gimp_image_thumbnail(gpp->image_id
                           , gpp->pv_width
                           , gpp->pv_height
                           , &l_th_width
@@ -1311,7 +1276,7 @@ p_display_frame(t_global_params *gpp, gint32 framenr)
     }
     else
     {
-      p_gimp_file_load_thumbnail(l_filename
+      gap_pdb_gimp_file_load_thumbnail(l_filename
                                 , &l_th_width, &l_th_height
                                 , &l_th_data_count, &l_th_data);
     }
@@ -1321,7 +1286,7 @@ p_display_frame(t_global_params *gpp, gint32 framenr)
   {
     gboolean l_th_data_was_grabbed;
 
-    l_th_data_was_grabbed = p_pview_render_from_buf (gpp->pv_ptr
+    l_th_data_was_grabbed = gap_pview_render_from_buf (gpp->pv_ptr
                  , l_th_data
                  , l_th_width
                  , l_th_height
@@ -1330,7 +1295,7 @@ p_display_frame(t_global_params *gpp, gint32 framenr)
                  );
     if(l_th_data_was_grabbed)
     {
-      /* the p_pview_render_from_buf procedure can grab the l_th_data
+      /* the gap_pview_render_from_buf procedure can grab the l_th_data
        * instead of making a ptivate copy for later use on repaint demands.
        * if such a grab happened it returns TRUE.
        * (this is done for optimal performance reasons)
@@ -1351,7 +1316,7 @@ p_display_frame(t_global_params *gpp, gint32 framenr)
     }
     else
     {
-      l_image_id = p_load_image(l_filename);
+      l_image_id = gap_lib_load_image(l_filename);
 
       if (l_image_id < 0)
       {
@@ -1370,10 +1335,10 @@ p_display_frame(t_global_params *gpp, gint32 framenr)
      */
     gimp_image_undo_disable (l_image_id);
     
-    p_pview_render_from_image (gpp->pv_ptr, l_image_id);
+    gap_pview_render_from_image (gpp->pv_ptr, l_image_id);
     if(gpp->use_thumbnails)
     {
-      p_cond_gimp_file_save_thumbnail(l_image_id, l_filename);
+      gap_thumb_cond_gimp_file_save_thumbnail(l_image_id, l_filename);
     }
     gimp_image_delete(l_image_id);
   }
@@ -1396,7 +1361,7 @@ p_display_frame(t_global_params *gpp, gint32 framenr)
  * ------------------------------
  */
 gint32
-p_get_next_framenr_in_sequence2(t_global_params *gpp)
+p_get_next_framenr_in_sequence2(GapPlayerMainGlobalParams *gpp)
 {
   gint32 l_first;
   gint32 l_last;
@@ -1492,7 +1457,7 @@ p_get_next_framenr_in_sequence2(t_global_params *gpp)
 }  /* end p_get_next_framenr_in_sequence2 */
 
 gint32
-p_get_next_framenr_in_sequence(t_global_params *gpp)
+p_get_next_framenr_in_sequence(GapPlayerMainGlobalParams *gpp)
 {
   gint32 framenr;
   framenr = p_get_next_framenr_in_sequence2(gpp);
@@ -1527,7 +1492,7 @@ p_get_next_framenr_in_sequence(t_global_params *gpp)
      * (asynchron audio that will not be able to follow up the videospeed
      *  will be the result in that case)
      */
-    if (gpp->audio_required_samplerate > MAX_SAMPLERATE)
+    if (gpp->audio_required_samplerate > GAP_PLAYER_MAIN_MAX_SAMPLERATE)
     {
       gint32 nframes;
       /* required samplerate is faster than highest possible audioplayback speed
@@ -1553,7 +1518,7 @@ p_get_next_framenr_in_sequence(t_global_params *gpp)
  * ------------------------------
  */
 gint32
-p_framenr_from_go_number(t_global_params *gpp, gint32 go_number)
+p_framenr_from_go_number(GapPlayerMainGlobalParams *gpp, gint32 go_number)
 {
   /*
   if(gap_debug) printf("p_framenr_from_go_number go_base_framenr: %d  go_base:%d go_number:%d curr_frame:%d\n"
@@ -1587,13 +1552,13 @@ p_framenr_from_go_number(t_global_params *gpp, gint32 go_number)
 static void
 on_timer_playback(gpointer   user_data)
 {
-  t_global_params *gpp;
+  GapPlayerMainGlobalParams *gpp;
   gulong elapsed_microsecs;
   gdouble elapsed_secs;
   static char  status_txt[30];
 
   /*if(gap_debug) printf("\non_timer_playback: START\n");*/
-  gpp = (t_global_params*)user_data;
+  gpp = (GapPlayerMainGlobalParams*)user_data;
   if(gpp)
   {
     p_remove_play_timer(gpp);
@@ -1754,10 +1719,10 @@ on_timer_playback(gpointer   user_data)
 static void
 on_timer_go_job(gpointer   user_data)
 {
-  t_global_params *gpp;
+  GapPlayerMainGlobalParams *gpp;
 
   if(gap_debug) printf("\non_timer_go_job: START\n");
-  gpp = (t_global_params*)user_data;
+  gpp = (GapPlayerMainGlobalParams*)user_data;
   if(gpp)
   {
     if(gpp->go_job_framenr >= 0)
@@ -1781,9 +1746,9 @@ on_timer_go_job(gpointer   user_data)
 static void
 on_play_button_clicked(GtkButton *button, gpointer user_data)
 {
-  t_global_params *gpp;
+  GapPlayerMainGlobalParams *gpp;
 
-  gpp = (t_global_params*)user_data;
+  gpp = (GapPlayerMainGlobalParams*)user_data;
   if(gpp == NULL)
   {
     return;
@@ -1793,7 +1758,7 @@ on_play_button_clicked(GtkButton *button, gpointer user_data)
 
   if(gpp->play_is_active)
   {
-    if (gpp->audio_required_samplerate > MAX_SAMPLERATE)
+    if (gpp->audio_required_samplerate > GAP_PLAYER_MAIN_MAX_SAMPLERATE)
     {
       p_audio_resync(gpp);
     }
@@ -1831,10 +1796,10 @@ on_pause_button_press_event        (GtkButton       *button,
                                     GdkEventButton  *bevent,
                                     gpointer         user_data)
 {
-  t_global_params *gpp;
+  GapPlayerMainGlobalParams *gpp;
   gboolean         play_was_active;
 
-  gpp = (t_global_params*)user_data;
+  gpp = (GapPlayerMainGlobalParams*)user_data;
   if(gpp == NULL)
   {
     return FALSE;
@@ -1884,9 +1849,9 @@ static void
 on_back_button_clicked                 (GtkButton       *button,
                                         gpointer         user_data)
 {
-  t_global_params *gpp;
+  GapPlayerMainGlobalParams *gpp;
 
-  gpp = (t_global_params*)user_data;
+  gpp = (GapPlayerMainGlobalParams*)user_data;
   if(gpp == NULL)
   {
     return;
@@ -1929,9 +1894,9 @@ static void
 on_from_spinbutton_changed             (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  t_global_params *gpp;
+  GapPlayerMainGlobalParams *gpp;
 
-  gpp = (t_global_params*)user_data;
+  gpp = (GapPlayerMainGlobalParams*)user_data;
   if(gpp == NULL)
   {
     return;
@@ -1957,9 +1922,9 @@ static void
 on_to_spinbutton_changed               (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  t_global_params *gpp;
+  GapPlayerMainGlobalParams *gpp;
 
-  gpp = (t_global_params*)user_data;
+  gpp = (GapPlayerMainGlobalParams*)user_data;
   if(gpp == NULL)
   {
     return;
@@ -2004,12 +1969,12 @@ on_vid_preview_expose_event      (GtkWidget       *widget,
                                   GdkEventExpose  *eevent,
                                   gpointer         user_data)
 {
-  t_global_params *gpp;
+  GapPlayerMainGlobalParams *gpp;
 
 
   /*if(gap_debug) printf(" xxxxxxxx on_vid_preview_expose_event: START\n");*/
 
-  gpp = (t_global_params*)user_data;
+  gpp = (GapPlayerMainGlobalParams*)user_data;
   if(gpp == NULL)
   {
     return FALSE;
@@ -2024,24 +1989,59 @@ on_vid_preview_expose_event      (GtkWidget       *widget,
      */
     return FALSE;
   }
-  p_pview_repaint(gpp->pv_ptr);
+  gap_pview_repaint(gpp->pv_ptr);
   
   return FALSE;
 
 }  /* end on_vid_preview_expose_event */
 
+/* -----------------------------
+ * on_shell_window_size_allocate
+ * -----------------------------
+ */
+static void
+on_shell_window_size_allocate            (GtkWidget       *widget,
+                                         GtkAllocation   *allocation,
+                                        gpointer         user_data)
+{
+   GapPlayerMainGlobalParams *gpp;
+   gpp = (GapPlayerMainGlobalParams*)user_data;
+   if((gpp == NULL) || (allocation == NULL))
+   {
+     return;
+   }
+   
+   if(gap_debug) printf("on_shell_window_size_allocate: START  shell_alloc: w:%d h:%d \n"
+                           , (int)allocation->width
+                           , (int)allocation->height
+                           );
+
+   if(gpp->shell_initial_width < 0)
+   {
+     gpp->shell_initial_width = allocation->width;
+     gpp->shell_initial_height = allocation->height;
+     p_fit_initial_shell_window(gpp);  /* for setting window default size */
+   }
+   else
+   {
+     if((allocation->width < gpp->shell_initial_width)
+     || (allocation->height < gpp->shell_initial_height))
+     {
+       /* dont allow shrink below initial size */
+       p_fit_initial_shell_window(gpp);
+     }
+   }  			   
+}  /* end on_shell_window_size_allocate */ 
 
 /* -----------------------------
  * on_vid_preview_size_allocate
  * -----------------------------
  * this procedure handles automatic
- * resize of the preview when the user resizes the window,
- * but is also called on other size changes
- * This handlerprocedure acts on the table11 widget.
- *   the table11 is of size 3x3 where the center holds
- *   aspect_frame wiget. (aspect_frame is the container for the drawing_area)
- *   (all othe table11 elements are empty dummy labels)
- * Size changes of table11 are propagated to
+ * resize of the preview when the user resizes the window.
+ * While sizechanges via the Size spinbutton this handler is usually
+ * disconnected, and will be reconnected when the mouse leaves the shell window.
+ * This handlerprocedure acts on the drawing_area widget of the preview.
+ * Size changes of drawing_area are propagated to
  * the preview (aspect_frame and drawing_area) by calls to p_update_pviewsize.
  */
 static void
@@ -2049,9 +2049,14 @@ on_vid_preview_size_allocate            (GtkWidget       *widget,
                                          GtkAllocation   *allocation,
                                         gpointer         user_data)
 {
-   t_global_params *gpp;
+   GapPlayerMainGlobalParams *gpp;
+   gint32 allo_width;
+   gint32 allo_height;
 
-   gpp = (t_global_params*)user_data;
+#define PV_BORDER_X 10
+#define PV_BORDER_Y 10
+
+   gpp = (GapPlayerMainGlobalParams*)user_data;
    if((gpp == NULL) || (allocation == NULL))
    {
      return;
@@ -2067,45 +2072,29 @@ on_vid_preview_size_allocate            (GtkWidget       *widget,
    if(gpp->pv_ptr->da_widget == NULL) { return; }
    if(gpp->pv_ptr->da_widget->window == NULL) { return; }
 
-   if(gap_debug) printf("  on_vid_preview_size_allocate: ORIGINAL pv_w:%d pv_h:%d count:%d\n"
+   if(gap_debug) printf("  on_vid_preview_size_allocate: ORIGINAL pv_w:%d pv_h:%d handler_id:%d\n"
                            , (int)gpp->pv_ptr->pv_width
                            , (int)gpp->pv_ptr->pv_height
-                           , (int)gpp->resize_count
+                           , (int)gpp->resize_handler_id
                            );
 
-   if(gpp->in_resize)
-   {
-     if(gap_debug) printf("  on_vid_preview_size_allocate: IN_RESIZE (TERMINATED)\n");
-     gpp->old_resize_width = allocation->width;
-     gpp->old_resize_height = allocation->height;
-     return;
-   }
 
-   /* check and perform size update only for new size
-    * (allocation of same size will fire a new size_allocate event
-    *  after return from this handler and leads to an endless loop)
-    */ 
+   allo_width = allocation->width;
+   allo_height = allocation->height;
 
-   if(gpp->resize_count > 1)
-   {
-     if(gap_debug) printf("gpp->resize_count: %d is > 1\n", (int)gpp->resize_count);
-     gpp->resize_count = 0;
-     gpp->old_resize_width = allocation->width;
-     gpp->old_resize_height = allocation->height;
-
-     return;
-   }
-   
-   if((gpp->old_resize_width != allocation->width)
-   || (gpp->old_resize_height != allocation->height))
+   /* react on significant changes (min 6 pixels) only) */
+   if(((gpp->old_resize_width / 6) != (allo_width / 6))
+   || ((gpp->old_resize_height / 6) != (allo_height / 6)))
    {
      gint32  pv_pixelsize;
      gboolean blocked;
      gdouble  img_ratio;
      gdouble  alloc_ratio;
      
+     
+     
      blocked = FALSE;
-     alloc_ratio = (gdouble)allocation->width / (gdouble)allocation->height;
+     alloc_ratio = (gdouble)allo_width / (gdouble)allo_height;
      img_ratio   = (gdouble)gpp->ainfo_ptr->width / (gdouble)gpp->ainfo_ptr->height;
      if(gpp->ainfo_ptr == NULL)
      {
@@ -2119,13 +2108,13 @@ on_vid_preview_size_allocate            (GtkWidget       *widget,
            /* imageorientation is landscape */
            if(alloc_ratio <= img_ratio)
            {
-             pv_pixelsize = CLAMP( (allocation->width -10)
+             pv_pixelsize = CLAMP( (allo_width - PV_BORDER_X)
                        , GAP_PLAYER_MIN_SIZE
                        , GAP_PLAYER_MAX_SIZE);
            }
            else
            {
-             pv_pixelsize = CLAMP( (((allocation->height -10) * gpp->ainfo_ptr->width) / gpp->ainfo_ptr->height)
+             pv_pixelsize = CLAMP( (((allo_height - PV_BORDER_Y) * gpp->ainfo_ptr->width) / gpp->ainfo_ptr->height)
                        , GAP_PLAYER_MIN_SIZE
                        , GAP_PLAYER_MAX_SIZE);
            }
@@ -2135,13 +2124,13 @@ on_vid_preview_size_allocate            (GtkWidget       *widget,
            /* imageorientation is portrait */
            if(alloc_ratio <= img_ratio)
            {
-             pv_pixelsize = CLAMP( (((allocation->width -10) * gpp->ainfo_ptr->height) / gpp->ainfo_ptr->width)
+             pv_pixelsize = CLAMP( (((allo_width - PV_BORDER_X) * gpp->ainfo_ptr->height) / gpp->ainfo_ptr->width)
                        , GAP_PLAYER_MIN_SIZE
                        , GAP_PLAYER_MAX_SIZE);
            }
            else
            {
-             pv_pixelsize = CLAMP( (allocation->height -10)
+             pv_pixelsize = CLAMP( (allo_height - PV_BORDER_Y)
                        , GAP_PLAYER_MIN_SIZE
                        , GAP_PLAYER_MAX_SIZE);
            }
@@ -2158,13 +2147,13 @@ on_vid_preview_size_allocate            (GtkWidget       *widget,
      if(pv_pixelsize > gpp->pv_pixelsize)
      {
        if ((alloc_ratio > 1.0) /* landscape */
-       && (allocation->width < gpp->old_resize_width))
+       && (allo_width < gpp->old_resize_width))
        {
          if(gap_debug) printf(" BLOCK preview grow on  width shrink\n");
          blocked = TRUE;
        }
        if ((alloc_ratio <= 1.0) /* portrait */
-       && (allocation->height < gpp->old_resize_height))
+       && (allo_height < gpp->old_resize_height))
        {
          if(gap_debug) printf(" BLOCK preview grow on  height shrink\n");
          blocked = TRUE;
@@ -2184,7 +2173,6 @@ on_vid_preview_size_allocate            (GtkWidget       *widget,
             * (if play_is_active we can skip this, because the next update is on the way)
             */
            p_display_frame(gpp, gpp->play_current_framenr);
-           gpp->resize_count++;
          }
      }
 
@@ -2193,13 +2181,9 @@ on_vid_preview_size_allocate            (GtkWidget       *widget,
                            , (int)gpp->pv_ptr->pv_height
                            );
    }
-   else
-   {
-     gpp->resize_count = 0;
-   }
 
-   gpp->old_resize_width = allocation->width;
-   gpp->old_resize_height = allocation->height;
+   gpp->old_resize_width = allo_width;
+   gpp->old_resize_height = allo_height;
 
    if(gap_debug) printf("  on_vid_preview_size_allocate: END\n");
    
@@ -2214,13 +2198,13 @@ static void
 on_framenr_button_clicked            (GtkButton       *button,
                                         gpointer         user_data)
 {
-  t_global_params *gpp;
+  GapPlayerMainGlobalParams *gpp;
    GimpParam          *return_vals;
    int              nreturn_vals;
  
   /*if(gap_debug) printf("on_framenr_button_clicked: START\n"); */
 
-  gpp = (t_global_params*)user_data;
+  gpp = (GapPlayerMainGlobalParams*)user_data;
   if(gpp == NULL)
   {
     return;
@@ -2261,10 +2245,10 @@ static void
 on_framenr_spinbutton_changed          (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  t_global_params *gpp;
+  GapPlayerMainGlobalParams *gpp;
   gint32           framenr;
 
-  gpp = (t_global_params*)user_data;
+  gpp = (GapPlayerMainGlobalParams*)user_data;
   if(gpp == NULL)
   {
     return;
@@ -2287,9 +2271,9 @@ static void
 on_origspeed_button_clicked            (GtkButton       *button,
                                         gpointer         user_data)
 {
-  t_global_params *gpp;
+  GapPlayerMainGlobalParams *gpp;
 
-  gpp = (t_global_params*)user_data;
+  gpp = (GapPlayerMainGlobalParams*)user_data;
   if(gpp == NULL)
   {
     return;
@@ -2326,9 +2310,9 @@ static void
 on_speed_spinbutton_changed            (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  t_global_params *gpp;
+  GapPlayerMainGlobalParams *gpp;
 
-  gpp = (t_global_params*)user_data;
+  gpp = (GapPlayerMainGlobalParams*)user_data;
   if(gpp == NULL)
   {
     return;
@@ -2344,32 +2328,56 @@ on_speed_spinbutton_changed            (GtkEditable     *editable,
 }  /* end on_speed_spinbutton_changed */
 
  
+/* --------------------------
+ * p_fit_initial_shell_window
+ * --------------------------
+ */
+static void 
+p_fit_initial_shell_window(GapPlayerMainGlobalParams *gpp)
+{
+  gint width;
+  gint height;
+
+  if(gpp == NULL)                   { return; }
+  if(gpp->shell_initial_width < 0)  { return; }
+
+  width = gpp->shell_initial_width;
+  height = gpp->shell_initial_height;
+
+  gtk_widget_set_size_request (gpp->shell_window, width, height);  /* shrink shell window */
+  gtk_window_set_default_size(GTK_WINDOW(gpp->shell_window), width, height);  /* shrink shell window */
+  gtk_window_resize (GTK_WINDOW(gpp->shell_window), width, height);  /* shrink shell window */
+}  /* end p_fit_initial_shell_window */
+ 
 /* ---------------------
  * p_fit_shell_window
  * ---------------------
  */
 static void 
-p_fit_shell_window(t_global_params *gpp)
+p_fit_shell_window(GapPlayerMainGlobalParams *gpp)
 {
   gint width;
   gint height;
 
-
-  /* gtk_window_get_default_size(GTK_WINDOW(gpp->shell_window), &width, &height); */
-  /* if(gap_debug) printf("window default size (%dx%d)\n", (int)width, (int)height ); */
+  if((gpp->pv_ptr->pv_width <= GAP_STANDARD_PREVIEW_SIZE)
+  && (gpp->pv_ptr->pv_height <= GAP_STANDARD_PREVIEW_SIZE))
+  {
+    p_fit_initial_shell_window(gpp);
+    return;
+  }
 
   /* FIXME: use preview size plus fix offsets (the offsets are just a guess
    * and may be too small for other languages and/or fonts
    */
-  width =  MAX(gpp->pv_ptr->pv_width, 256) + 272;
+  width =  MAX(gpp->pv_ptr->pv_width, GAP_STANDARD_PREVIEW_SIZE) + 272;
 #ifdef GAP_ENABLE_AUDIO_SUPPORT
-  height = MAX(gpp->pv_ptr->pv_height, 256) + 178;
+  height = MAX(gpp->pv_ptr->pv_height, GAP_STANDARD_PREVIEW_SIZE) + 178;
 #else
-  height = MAX(gpp->pv_ptr->pv_height, 256) + 128;
+  height = MAX(gpp->pv_ptr->pv_height, GAP_STANDARD_PREVIEW_SIZE) + 128;
 #endif
 
-  gtk_widget_set_size_request (gpp->shell_window, width, height);  /* shrink shell window */
-  gtk_window_resize (GTK_WINDOW(gpp->shell_window), width, height);  /* shrink shell window */
+  gtk_window_set_default_size(GTK_WINDOW(gpp->shell_window), width, height);  /* shrink shell window */
+  gtk_window_resize (GTK_WINDOW(gpp->shell_window), width, height);  /* resize shell window */
 }  /* end p_fit_shell_window */
 
 /* -----------------------------
@@ -2381,18 +2389,17 @@ on_size_button_button_press_event  (GtkWidget       *widget,
                                     GdkEventButton  *bevent,
                                     gpointer         user_data)
 {
-  t_global_params *gpp;
+  GapPlayerMainGlobalParams *gpp;
 
 
   if(gap_debug) printf("\nON_SIZE_BUTTON_BUTTON_PRESS_EVENT START\n");
 
-  gpp = (t_global_params*)user_data;
+  gpp = (GapPlayerMainGlobalParams*)user_data;
   if(gpp == NULL)
   {
     return FALSE;
   }
-  gpp->resize_count = 1;
-  gpp->in_resize = TRUE;              /* blocks resize chain reaction on initil size allocation event */
+  p_disconnect_resize_handler(gpp);
 
   if ((bevent->state & GDK_SHIFT_MASK)
   &&  (bevent->type == GDK_BUTTON_PRESS)
@@ -2406,13 +2413,13 @@ on_size_button_button_press_event  (GtkWidget       *widget,
   else
   {
     /* toggle between normal and large thumbnail size */
-    if(gpp->pv_pixelsize == 256)
+    if(gpp->pv_pixelsize == GAP_STANDARD_PREVIEW_SIZE)
     {
-      gpp->pv_pixelsize = 128;
+      gpp->pv_pixelsize = GAP_SMALL_PREVIEW_SIZE;
     }
     else
     {
-      gpp->pv_pixelsize = 256;
+      gpp->pv_pixelsize = GAP_STANDARD_PREVIEW_SIZE;
     }
   }
   
@@ -2429,13 +2436,10 @@ on_size_button_button_press_event  (GtkWidget       *widget,
                             );                            
   
 
-  p_fit_shell_window(gpp);
+  p_fit_initial_shell_window(gpp);
+  p_connect_resize_handler(gpp);
 
-  gpp->in_resize = FALSE;
-  gpp->resize_count = 2;
-  
   return FALSE;
-
 }  /* end on_size_button_button_press_event */
 
 
@@ -2447,30 +2451,25 @@ static void
 on_size_spinbutton_changed             (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  t_global_params *gpp;
+  GapPlayerMainGlobalParams *gpp;
 
-  gpp = (t_global_params*)user_data;
+  gpp = (GapPlayerMainGlobalParams*)user_data;
   if(gpp == NULL)
   {
     return;
   }
-
-  gpp->resize_count = 1;
-
+  
+  if(gap_debug)
+  {
+     printf("on_size_spinbutton_changed: value: %d  pv_pixelsize: %d\n"
+           , (int)GTK_ADJUSTMENT(gpp->size_spinbutton_adj)->value
+           ,(int)gpp->pv_pixelsize
+           );
+  }
+  
   if(gpp->pv_pixelsize != (gint32)GTK_ADJUSTMENT(gpp->size_spinbutton_adj)->value)
   {
     gpp->pv_pixelsize = (gint32)GTK_ADJUSTMENT(gpp->size_spinbutton_adj)->value;
-
-    if((gpp->in_resize) && (gpp->pv_pixelsize > 256))
-    {
-       /* disable bigger sizes than 256 when entered by spinbutton
-        */
-       gpp->pv_pixelsize = 256;
-       gtk_adjustment_set_value( GTK_ADJUSTMENT(gpp->size_spinbutton_adj)
-                            , (gfloat)gpp->pv_pixelsize
-                            );                            
-      
-    }
 
     p_update_pviewsize(gpp);
 
@@ -2478,16 +2477,9 @@ on_size_spinbutton_changed             (GtkEditable     *editable,
     {
       p_display_frame(gpp, gpp->play_current_framenr);
     }
-    if(gpp->in_resize)
-    {
-       /* the resize was caused by click to size_spinbutton
-        * or we are in startup, 
-        * we should resize shell window to fit.
-        */
-       p_fit_shell_window(gpp);
-    }
-  }
 
+    p_fit_shell_window(gpp);
+  }
 }  /* end on_size_spinbutton_changed */
 
 
@@ -2499,38 +2491,38 @@ static gboolean   on_size_spinbutton_enter               (GtkWidget        *widg
                                                       GdkEvent         *event,
                                                       gpointer         user_data)
 {
-  t_global_params *gpp;
+  GapPlayerMainGlobalParams *gpp;
 
   /*if(gap_debug) printf("\n on_size_spinbutton_enter START\n");*/
 
-  gpp = (t_global_params *)user_data;
+  gpp = (GapPlayerMainGlobalParams *)user_data;
   if(gpp)
-  { 
-    gpp->in_resize = TRUE;
+  {
+    p_disconnect_resize_handler(gpp);
   }
   return FALSE;
 }  /* end on_size_spinbutton_enter */
                                                       
 
 /* -----------------------------
- * on_size_spinbutton_leave
+ * on_shell_window_leave
  * -----------------------------
  */
-static gboolean   on_size_spinbutton_leave               (GtkWidget        *widget,
+static gboolean   on_shell_window_leave               (GtkWidget        *widget,
                                                       GdkEvent         *event,
                                                       gpointer         user_data)
 {
-  t_global_params *gpp;
+  GapPlayerMainGlobalParams *gpp;
 
-  /*if(gap_debug) printf("\n on_size_spinbutton_leave START\n");*/
+  /*if(gap_debug) printf("\n on_shell_window_leave START\n");*/
 
-  gpp = (t_global_params *)user_data;
+  gpp = (GapPlayerMainGlobalParams *)user_data;
   if(gpp)
-  { 
-    gpp->in_resize = FALSE;
+  {
+    p_connect_resize_handler(gpp);
   }
   return FALSE;
-}  /* end on_size_spinbutton_leave */
+}  /* end on_shell_window_leave */
 
 
 
@@ -2543,9 +2535,9 @@ static void
 on_exact_timing_checkbutton_toggled       (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-  t_global_params *gpp;
+  GapPlayerMainGlobalParams *gpp;
 
-  gpp = (t_global_params*)user_data;
+  gpp = (GapPlayerMainGlobalParams*)user_data;
   if(gpp == NULL)
   {
     return;
@@ -2571,9 +2563,9 @@ static void
 on_use_thumb_checkbutton_toggled       (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-  t_global_params *gpp;
+  GapPlayerMainGlobalParams *gpp;
 
-  gpp = (t_global_params*)user_data;
+  gpp = (GapPlayerMainGlobalParams*)user_data;
   if(gpp == NULL)
   {
     return;
@@ -2598,9 +2590,9 @@ static void
 on_pinpong_checkbutton_toggled         (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-  t_global_params *gpp;
+  GapPlayerMainGlobalParams *gpp;
 
-  gpp = (t_global_params*)user_data;
+  gpp = (GapPlayerMainGlobalParams*)user_data;
   if(gpp == NULL)
   {
     return;
@@ -2626,9 +2618,9 @@ static void
 on_selonly_checkbutton_toggled         (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-  t_global_params *gpp;
+  GapPlayerMainGlobalParams *gpp;
 
-  gpp = (t_global_params*)user_data;
+  gpp = (GapPlayerMainGlobalParams*)user_data;
   if(gpp == NULL)
   {
     return;
@@ -2654,9 +2646,9 @@ static void
 on_loop_checkbutton_toggled            (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-  t_global_params *gpp;
+  GapPlayerMainGlobalParams *gpp;
 
-  gpp = (t_global_params*)user_data;
+  gpp = (GapPlayerMainGlobalParams*)user_data;
   if(gpp == NULL)
   {
     return;
@@ -2684,9 +2676,9 @@ static void
 on_close_button_clicked                (GtkButton       *button,
                                         gpointer         user_data)
 {
-  t_global_params *gpp;
+  GapPlayerMainGlobalParams *gpp;
 
-  gpp = (t_global_params*)user_data;
+  gpp = (GapPlayerMainGlobalParams*)user_data;
   if(gpp == NULL)
   {
     return;
@@ -2713,9 +2705,9 @@ static void
 on_shell_window_destroy                     (GtkObject       *object,
                                         gpointer         user_data)
 {
-  t_global_params *gpp;
+  GapPlayerMainGlobalParams *gpp;
 
-  gpp = (t_global_params*)user_data;
+  gpp = (GapPlayerMainGlobalParams*)user_data;
   if(gpp)
   {
     p_stop_playback(gpp);
@@ -2736,7 +2728,7 @@ on_go_button_clicked                   (GtkButton       *button,
                                         gpointer         user_data)
 {
    t_gobutton *gob;
-   t_global_params *gpp;
+   GapPlayerMainGlobalParams *gpp;
    gint32  framenr;
 
    gob = (t_gobutton *)user_data;
@@ -2806,7 +2798,7 @@ on_go_button_enter                   (GtkButton       *button,
                                         gpointer       user_data)
 {
    t_gobutton *gob;
-   t_global_params *gpp;
+   GapPlayerMainGlobalParams *gpp;
    gint32  framenr;
    
    gob = (t_gobutton *)user_data;
@@ -2862,11 +2854,11 @@ on_gobutton_hbox_leave                 (GtkWidget        *widget,
                                         GdkEvent         *event,
                                         gpointer          user_data)
 {
-  t_global_params *gpp;
+  GapPlayerMainGlobalParams *gpp;
 
   /*if (gap_debug) printf("ON_GOBUTTON_HBOX_LEAVE\n");*/
 
-  gpp = (t_global_params*)user_data;
+  gpp = (GapPlayerMainGlobalParams*)user_data;
   if(gpp == NULL)
   {
     return;
@@ -2889,9 +2881,9 @@ static void
 on_audio_enable_checkbutton_toggled       (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-  t_global_params *gpp;
+  GapPlayerMainGlobalParams *gpp;
 
-  gpp = (t_global_params*)user_data;
+  gpp = (GapPlayerMainGlobalParams*)user_data;
   if(gpp == NULL)
   {
     return;
@@ -2920,9 +2912,9 @@ static void
 on_audio_volume_spinbutton_changed             (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  t_global_params *gpp;
+  GapPlayerMainGlobalParams *gpp;
 
-  gpp = (t_global_params*)user_data;
+  gpp = (GapPlayerMainGlobalParams*)user_data;
   if(gpp == NULL)
   {
     return;
@@ -2933,7 +2925,7 @@ on_audio_volume_spinbutton_changed             (GtkEditable     *editable,
     gpp->audio_volume = (gdouble)GTK_ADJUSTMENT(gpp->audio_volume_spinbutton_adj)->value;
 
 #ifdef GAP_ENABLE_AUDIO_SUPPORT
-    if(gpp->audio_status >= AUSTAT_PLAYING)
+    if(gpp->audio_status >= GAP_PLAYER_MAIN_AUSTAT_PLAYING)
     {
       apcl_volume(gpp->audio_volume, 0, p_audio_errfunc);
     }
@@ -2951,9 +2943,9 @@ static void
 on_audio_frame_offset_spinbutton_changed (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-  t_global_params *gpp;
+  GapPlayerMainGlobalParams *gpp;
 
-  gpp = (t_global_params*)user_data;
+  gpp = (GapPlayerMainGlobalParams*)user_data;
   if(gpp == NULL)
   {
     return;
@@ -2978,9 +2970,9 @@ static void
 on_audio_reset_button_clicked (GtkButton       *button,
                                gpointer         user_data)
 {
-  t_global_params *gpp;
+  GapPlayerMainGlobalParams *gpp;
 
-  gpp = (t_global_params*)user_data;
+  gpp = (GapPlayerMainGlobalParams*)user_data;
   if(gpp == NULL)
   {
     return;
@@ -3012,13 +3004,13 @@ on_audio_create_copy_button_clicked (GtkButton       *button,
                                gpointer         user_data)
 {
 #ifdef GAP_ENABLE_AUDIO_SUPPORT
-  t_global_params *gpp;
+  GapPlayerMainGlobalParams *gpp;
   const char *cp;
   char  *envAUDIOCONVERT_TO_WAV;
   gboolean script_found;
   gboolean use_newly_created_wavfile;
 
-  gpp = (t_global_params*)user_data;
+  gpp = (GapPlayerMainGlobalParams*)user_data;
   if(gpp == NULL)
   {
     return;
@@ -3165,9 +3157,9 @@ static void
 on_audio_filename_entry_changed (GtkWidget     *widget,
                                  gpointer         user_data)
 {
-  t_global_params *gpp;
+  GapPlayerMainGlobalParams *gpp;
 
-  gpp = (t_global_params*)user_data;
+  gpp = (GapPlayerMainGlobalParams*)user_data;
   if(gpp == NULL)
   {
     return;
@@ -3188,9 +3180,9 @@ on_audio_filename_entry_changed (GtkWidget     *widget,
 static void
 on_audio_filesel_close_cb(GtkWidget *widget, gpointer user_data)
 {
-  t_global_params *gpp;
+  GapPlayerMainGlobalParams *gpp;
 
-  gpp = (t_global_params*)user_data;
+  gpp = (GapPlayerMainGlobalParams*)user_data;
   if(gpp == NULL)
   {
     return;
@@ -3208,9 +3200,9 @@ static void
 on_audio_filesel_ok_cb(GtkWidget *widget, gpointer user_data)
 {
   const gchar *filename;
-  t_global_params *gpp;
+  GapPlayerMainGlobalParams *gpp;
 
-  gpp = (t_global_params*)user_data;
+  gpp = (GapPlayerMainGlobalParams*)user_data;
   if(gpp == NULL)
   {
     return;
@@ -3242,9 +3234,9 @@ static void
 on_audio_filesel_button_clicked (GtkButton       *button,
                                gpointer         user_data)
 {
-  t_global_params *gpp;
+  GapPlayerMainGlobalParams *gpp;
 
-  gpp = (t_global_params*)user_data;
+  gpp = (GapPlayerMainGlobalParams*)user_data;
   if(gpp == NULL)
   {
     return;
@@ -3285,7 +3277,7 @@ on_audio_filesel_button_clicked (GtkButton       *button,
  * create widgets for the audio options
  */
 static GtkWidget *
-p_new_audioframe(t_global_params *gpp)
+p_new_audioframe(GapPlayerMainGlobalParams *gpp)
 {
   GtkWidget *frame0a;
   GtkWidget *hseparator;
@@ -3467,7 +3459,8 @@ p_new_audioframe(t_global_params *gpp)
   gtk_widget_show (hseparator);
   gtk_table_attach(GTK_TABLE(table1), hseparator, 0, 3, row, row + 1,
                     (GtkAttachOptions) GTK_FILL, 
-		    (GtkAttachOptions) GTK_FILL, 4, 0);
+		    (GtkAttachOptions) GTK_FILL,
+		     0, 0);
 
   row++;
 
@@ -3611,7 +3604,7 @@ p_new_audioframe(t_global_params *gpp)
  * -----------------------------
  */
 GtkWidget*
-p_create_player_window (t_global_params *gpp)
+p_create_player_window (GapPlayerMainGlobalParams *gpp)
 {
   GtkWidget *shell_window;
   GtkWidget *event_box;
@@ -3670,8 +3663,13 @@ p_create_player_window (t_global_params *gpp)
 
 
   shell_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+  gpp->shell_window = shell_window;
   gtk_window_set_title (GTK_WINDOW (shell_window), _("Videoframe Playback"));
-  gtk_window_set_policy (GTK_WINDOW (shell_window), FALSE, TRUE, TRUE);
+  gtk_window_set_policy (GTK_WINDOW (shell_window)
+                        , FALSE   /* do not allow shrink */
+			, TRUE
+			, TRUE
+			);
   g_signal_connect (G_OBJECT (shell_window), "destroy",
                       G_CALLBACK (on_shell_window_destroy),
                       gpp);
@@ -3680,6 +3678,8 @@ p_create_player_window (t_global_params *gpp)
   vbox0 = gtk_vbox_new (FALSE, 0);
   gtk_widget_show (vbox0);
   gtk_container_add (GTK_CONTAINER (shell_window), vbox0);
+
+ 
 
   frame0 = gtk_frame_new (gpp->ainfo_ptr->basename);
   gtk_widget_show (frame0);
@@ -3781,9 +3781,10 @@ p_create_player_window (t_global_params *gpp)
   /* the frame2 for range and playback mode control widgets */
   frame2 = gtk_frame_new (NULL);
   gtk_widget_show (frame2);
-  gtk_table_attach (GTK_TABLE (table1), frame2, 1, 2, 0, 1,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
+  gtk_table_attach (GTK_TABLE (table1), frame2, 1, 2, 0, 1
+                   , (GtkAttachOptions) (0)
+                   , (GtkAttachOptions) (0)
+		   , 0, 0);
 
   /* table2 for range and playback mode control widgets */
   table2 = gtk_table_new (17, 2, FALSE);
@@ -3792,16 +3793,18 @@ p_create_player_window (t_global_params *gpp)
 
   label = gtk_label_new (_("From Frame:"));
   gtk_widget_show (label);
-  gtk_table_attach (GTK_TABLE (table2), label, 0, 1, 0, 1,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
+  gtk_table_attach (GTK_TABLE (table2), label, 0, 1, 0, 1
+                   , (GtkAttachOptions) (GTK_FILL)
+                   , (GtkAttachOptions) (0)
+		   , 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 
   label = gtk_label_new (_("To Frame:"));
   gtk_widget_show (label);
-  gtk_table_attach (GTK_TABLE (table2), label, 0, 1, 1, 2,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
+  gtk_table_attach (GTK_TABLE (table2), label, 0, 1, 1, 2
+                   , (GtkAttachOptions) (GTK_FILL)
+                   , (GtkAttachOptions) (0)
+		   , 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 
   /* the FROM spinbutton (start of rangeselection)  */
@@ -3813,7 +3816,8 @@ p_create_player_window (t_global_params *gpp)
   gtk_widget_show (from_spinbutton);
   gtk_table_attach (GTK_TABLE (table2), from_spinbutton, 1, 2, 0, 1,
                     (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
+                    (GtkAttachOptions) (0),
+		     0, 0);
   gtk_widget_set_size_request (from_spinbutton, 80, -1);
   gimp_help_set_help_data (from_spinbutton, _("Start Framenumber of Selection Range"), NULL);
   g_signal_connect (G_OBJECT (from_spinbutton), "changed",
@@ -3829,7 +3833,8 @@ p_create_player_window (t_global_params *gpp)
   gtk_widget_show (to_spinbutton);
   gtk_table_attach (GTK_TABLE (table2), to_spinbutton, 1, 2, 1, 2,
                     (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
+                    (GtkAttachOptions) (0),
+		     0, 0);
   gtk_widget_set_size_request (to_spinbutton, 80, -1);
   gimp_help_set_help_data (to_spinbutton, _("End Framenumber of Selection Range"), NULL);
   g_signal_connect (G_OBJECT (to_spinbutton), "changed",
@@ -3840,7 +3845,8 @@ p_create_player_window (t_global_params *gpp)
   gtk_widget_show (hseparator);
   gtk_table_attach (GTK_TABLE (table2), hseparator, 0, 2, 2, 3,
                     (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
+                    (GtkAttachOptions) (GTK_FILL),
+		     0, 0);
 
 
   /* the framenr button */
@@ -3888,8 +3894,9 @@ p_create_player_window (t_global_params *gpp)
   timepos_label = gtk_label_new ("00:00:000");
   gtk_widget_show (timepos_label);
   gtk_table_attach (GTK_TABLE (table2), timepos_label, 1, 2, 4, 5,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0),
+		     0, 0);
 
 
 
@@ -3898,7 +3905,8 @@ p_create_player_window (t_global_params *gpp)
   gtk_widget_show (hseparator);
   gtk_table_attach (GTK_TABLE (table2), hseparator, 0, 2, 5, 6,
                     (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
+                    (GtkAttachOptions) (GTK_FILL),
+		    0, 0);
 
 
 
@@ -3934,7 +3942,8 @@ p_create_player_window (t_global_params *gpp)
   gtk_widget_show (hseparator);
   gtk_table_attach (GTK_TABLE (table2), hseparator, 0, 2, 7, 8,
                     (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
+                    (GtkAttachOptions) (GTK_FILL),
+		    0, 0);
   g_signal_connect (G_OBJECT (speed_spinbutton), "changed",
                       G_CALLBACK (on_speed_spinbutton_changed),
                       gpp);
@@ -3946,7 +3955,8 @@ p_create_player_window (t_global_params *gpp)
   gtk_widget_set_events(size_button, GDK_BUTTON_PRESS_MASK);
   gtk_table_attach (GTK_TABLE (table2), size_button, 0, 1, 8, 9,
                     (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
+                    (GtkAttachOptions) (0),
+		    0, 0);
   gimp_help_set_help_data (size_button, _("Toggle Size 128/256, SHIFT: Set 1:1 full image Size"), NULL);
   g_signal_connect (G_OBJECT (size_button), "button_press_event",
                       G_CALLBACK (on_size_button_button_press_event),
@@ -3963,30 +3973,28 @@ p_create_player_window (t_global_params *gpp)
   gtk_widget_show (size_spinbutton);
   gtk_table_attach (GTK_TABLE (table2), size_spinbutton, 1, 2, 8, 9,
                     (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
+                    (GtkAttachOptions) (0),
+		    0, 0);
   gtk_widget_set_size_request (size_spinbutton, 80, -1);
   gimp_help_set_help_data (size_spinbutton, _("Video Preview Size (pixels)"), NULL);
 
-  g_signal_connect (G_OBJECT (size_spinbutton), "changed",
+  g_signal_connect (G_OBJECT (size_spinbutton), "value_changed",
                       G_CALLBACK (on_size_spinbutton_changed),
                       gpp);
   gtk_widget_set_events(size_spinbutton
-                       ,  GDK_ENTER_NOTIFY_MASK | GDK_LEAVE_NOTIFY_MASK
+                       ,  GDK_ENTER_NOTIFY_MASK
                        );
   g_signal_connect (G_OBJECT (size_spinbutton), "enter_notify_event",
                       G_CALLBACK (on_size_spinbutton_enter),
                       gpp);
-  g_signal_connect (G_OBJECT (size_spinbutton), "leave_notify_event",
-                      G_CALLBACK (on_size_spinbutton_leave),
-                      gpp);
-  
 
 
   hseparator = gtk_hseparator_new ();
   gtk_widget_show (hseparator);
   gtk_table_attach (GTK_TABLE (table2), hseparator, 0, 2, 9, 10,
                     (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
+                    (GtkAttachOptions) (GTK_FILL),
+		     0, 0);
 
   /* the playback mode checkbuttons */
 
@@ -4143,9 +4151,6 @@ p_create_player_window (t_global_params *gpp)
   /* table11 is used to center aspect_frame */
   table11 = gtk_table_new (3, 3, FALSE);
   gtk_widget_show (table11);
-  gtk_table_attach (GTK_TABLE (table1), table11, 0, 1, 0, 2,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_SHRINK | GTK_FILL),
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_SHRINK | GTK_FILL), 0, 0);
   {
     gint ix;
     gint iy;
@@ -4157,8 +4162,8 @@ p_create_player_window (t_global_params *gpp)
         if((ix == 1) && (iy == 1))
         {
            gtk_table_attach (GTK_TABLE (table11), aspect_frame, ix, ix+1, iy, iy+1,
-                             (GtkAttachOptions) (0 ),
-                             (GtkAttachOptions) (0 ), 0, 0);
+                             (GtkAttachOptions) (0),
+                             (GtkAttachOptions) (0), 0, 0);
         }
         else
         {
@@ -4173,12 +4178,25 @@ p_create_player_window (t_global_params *gpp)
     }    
   
   }
+  
+  {
+    GtkWidget *wrap_frame;
+    
+    wrap_frame= gtk_frame_new(NULL);
+    gtk_container_set_border_width (GTK_CONTAINER (wrap_frame), 0);
+    gpp->resize_box = wrap_frame;
+    gtk_widget_show(wrap_frame);
+    gtk_container_add (GTK_CONTAINER (wrap_frame), table11);
+    gtk_table_attach (GTK_TABLE (table1), wrap_frame, 0, 1, 0, 2,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_SHRINK | GTK_FILL),
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_SHRINK | GTK_FILL), 0, 0);
+  }
 
   gtk_widget_realize (shell_window);
 
   /* the preview drawing_area_widget */
   /* ############################### */
-  gpp->pv_ptr = p_pview_new(128, 128, GAP_PLAYER_CHECK_SIZE, aspect_frame);
+  gpp->pv_ptr = gap_pview_new(GAP_SMALL_PREVIEW_SIZE, GAP_SMALL_PREVIEW_SIZE, GAP_PLAYER_CHECK_SIZE, aspect_frame);
   vid_preview = gpp->pv_ptr->da_widget;
   gtk_container_add (GTK_CONTAINER (aspect_frame), vid_preview);
   gtk_widget_show (vid_preview);
@@ -4202,30 +4220,58 @@ p_create_player_window (t_global_params *gpp)
                       G_CALLBACK (on_vid_preview_expose_event),
                       gpp);
 
-  gpp->table11 = table11;
-  g_signal_connect (G_OBJECT (table11), "size_allocate",
-                      G_CALLBACK (on_vid_preview_size_allocate),
-                      gpp);
-
 
   gpp->status_label = status_label;
   gpp->timepos_label = timepos_label;
 
   return shell_window;
-
 }  /* end p_create_player_window */
 
+/* -----------------------------
+ * p_connect_resize_handler
+ * -----------------------------
+ */
+
+static void
+p_connect_resize_handler(GapPlayerMainGlobalParams *gpp)
+{
+  if(gpp->resize_handler_id < 0)
+  {
+    gpp->resize_handler_id = g_signal_connect (G_OBJECT (gpp->resize_box), "size_allocate",
+                      G_CALLBACK (on_vid_preview_size_allocate),
+                      gpp);
+  }
+}  /* end p_connect_resize_handler */
 
 /* -----------------------------
- * p_playback_dialog
+ * p_disconnect_resize_handler
+ * -----------------------------
+ */
+
+static void
+p_disconnect_resize_handler(GapPlayerMainGlobalParams *gpp)
+{
+  if(gpp->resize_handler_id >= 0)
+  {
+    g_signal_handler_disconnect(gpp->resize_box, gpp->resize_handler_id); 
+    gpp->resize_handler_id = -1;
+  }
+}  /* end p_disconnect_resize_handler */
+
+/* -----------------------------
+ * gap_player_dlg_playback_dialog
  * -----------------------------
  */
 void
-p_playback_dialog(t_global_params *gpp)
+gap_player_dlg_playback_dialog(GapPlayerMainGlobalParams *gpp)
 {
   gimp_ui_init ("gap_player_dialog", FALSE);
   gap_stock_init();
   p_check_tooltips();
+
+  gpp->startup = TRUE;
+  gpp->shell_initial_width = -1;
+  gpp->shell_initial_height = -1;
  
   gpp->ainfo_ptr = NULL;
   gpp->original_speed = 24.0;   /* default if framerate is unknown */
@@ -4237,8 +4283,9 @@ p_playback_dialog(t_global_params *gpp)
     return;
   }
 
-  if(0 == p_chk_framerange(gpp->ainfo_ptr))
+  if(0 == gap_lib_chk_framerange(gpp->ainfo_ptr))
   {
+    gpp->resize_handler_id = -1;
     gpp->play_is_active = FALSE;
     gpp->exact_timing = TRUE;
     gpp->play_timertag = -1;
@@ -4283,27 +4330,25 @@ p_playback_dialog(t_global_params *gpp)
     
     if((gpp->pv_pixelsize < GAP_PLAYER_MIN_SIZE) || (gpp->pv_pixelsize > GAP_PLAYER_MAX_SIZE))
     {
-      gpp->pv_pixelsize = 256;
+      gpp->pv_pixelsize = GAP_STANDARD_PREVIEW_SIZE;
     }
     if ((gpp->pv_width < GAP_PLAYER_MIN_SIZE) || (gpp->pv_width > GAP_PLAYER_MAX_SIZE))
     {
-      gpp->pv_width = 256;
+      gpp->pv_width = GAP_STANDARD_PREVIEW_SIZE;
     }
     if ((gpp->pv_height < GAP_PLAYER_MIN_SIZE) || (gpp->pv_height > GAP_PLAYER_MAX_SIZE))
     {
-      gpp->pv_height = 256;
+      gpp->pv_height = GAP_STANDARD_PREVIEW_SIZE;
     }
 
     gpp->in_feedback = FALSE;
     gpp->in_timer_playback = FALSE;
-    gpp->in_resize = TRUE;              /* blocks resize chain reaction on initil size allocation event */
-    gpp->resize_count = 0;              /* enable one-shot of size allocation event */
     gpp->old_resize_width = 0;
     gpp->old_resize_height = 0;
-    gpp->shell_window = p_create_player_window(gpp);
+    p_create_player_window(gpp);
 
     p_display_frame(gpp, gpp->play_current_framenr);
-    p_pview_repaint(gpp->pv_ptr);
+    gap_pview_repaint(gpp->pv_ptr);
     p_check_tooltips();
     
     p_audio_startup_server(gpp);
@@ -4313,8 +4358,17 @@ p_playback_dialog(t_global_params *gpp)
        on_play_button_clicked(NULL, gpp);
     }
     gtk_widget_show (gpp->shell_window);
-    gpp->in_resize = FALSE;
+    
+    g_signal_connect (G_OBJECT (gpp->shell_window), "size_allocate",
+                      G_CALLBACK (on_shell_window_size_allocate),
+                      gpp);
         
+    g_signal_connect (G_OBJECT (gpp->shell_window), "leave_notify_event",
+                      G_CALLBACK (on_shell_window_leave),
+                      gpp);
+    gpp->startup = FALSE;
+    p_connect_resize_handler(gpp);
+    
     gtk_main ();
     p_audio_shut_server(gpp);
     
@@ -4327,6 +4381,6 @@ p_playback_dialog(t_global_params *gpp)
   }
 
 
-  p_free_ainfo(&gpp->ainfo_ptr);
+  gap_lib_free_ainfo(&gpp->ainfo_ptr);
 
-}  /* end p_playback_dialog */
+}  /* end gap_player_dlg_playback_dialog */

@@ -106,6 +106,14 @@ gchar global_xanim_prog[500];
 gchar *global_errlist = NULL;
 
 gint32  global_delete_number;
+/* fileformats supported by gap_decode_xanim */
+
+typedef enum
+{ 
+   XAENC_XCF     /* no direct support by xanim, have to convert */
+ , XAENC_PPMRAW
+ , XAENC_JPEG
+} GapXAnimFormats;
 
 #ifdef G_OS_WIN32
 #define MKDIR_MODE 0  /* not relevant for WIN mkdir */
@@ -120,70 +128,70 @@ gint32  global_delete_number;
 static int
 p_xanim_info(char *errlist)
 {
-  t_arr_arg  argv[22];
-  t_but_arg  b_argv[2];
+  GapArrArg  argv[22];
+  GapArrButtonArg  b_argv[2];
 
   int        l_idx;
   int        l_rc;
   
 
   l_idx = 0;
-  p_init_arr_arg(&argv[l_idx], WGT_LABEL_LEFT);
+  gap_arr_arg_init(&argv[l_idx], GAP_ARR_WGT_LABEL_LEFT);
   argv[l_idx].label_txt = _("Requirements to run the xanim based video split");
 
   l_idx++;
-  p_init_arr_arg(&argv[l_idx], WGT_LABEL_LEFT);
+  gap_arr_arg_init(&argv[l_idx], GAP_ARR_WGT_LABEL_LEFT);
   argv[l_idx].label_txt = "";
 
   l_idx++;
-  p_init_arr_arg(&argv[l_idx], WGT_LABEL_LEFT);
+  gap_arr_arg_init(&argv[l_idx], GAP_ARR_WGT_LABEL_LEFT);
   argv[l_idx].label_txt = "1.)";
 
   l_idx++;
-  p_init_arr_arg(&argv[l_idx], WGT_LABEL_LEFT);
+  gap_arr_arg_init(&argv[l_idx], GAP_ARR_WGT_LABEL_LEFT);
   argv[l_idx].label_txt = _("xanim 2.80.0 exporting edition (the loki version)\n"
                             "must be installed somewhere in your PATH\n"
                             "you can get xanim exporting edition at:\n"
                            );
 
   l_idx++;
-  p_init_arr_arg(&argv[l_idx], WGT_LABEL_LEFT);
+  gap_arr_arg_init(&argv[l_idx], GAP_ARR_WGT_LABEL_LEFT);
   argv[l_idx].label_txt = "http://heroine.linuxbox.com/toys.html";
 
   l_idx++;
-  p_init_arr_arg(&argv[l_idx], WGT_LABEL_LEFT);
+  gap_arr_arg_init(&argv[l_idx], GAP_ARR_WGT_LABEL_LEFT);
   argv[l_idx].label_txt = "http://www.lokigames.com/development/download/smjpeg/xanim2801-loki090899.tar.gz";
 
   l_idx++;
-  p_init_arr_arg(&argv[l_idx], WGT_LABEL_LEFT);
+  gap_arr_arg_init(&argv[l_idx], GAP_ARR_WGT_LABEL_LEFT);
   argv[l_idx].label_txt = "";
 
   l_idx++;
-  p_init_arr_arg(&argv[l_idx], WGT_LABEL_LEFT);
+  gap_arr_arg_init(&argv[l_idx], GAP_ARR_WGT_LABEL_LEFT);
   argv[l_idx].label_txt = "2.)";
 
   l_idx++;
-  p_init_arr_arg(&argv[l_idx], WGT_LABEL_LEFT);
+  gap_arr_arg_init(&argv[l_idx], GAP_ARR_WGT_LABEL_LEFT);
   argv[l_idx].label_txt = _("if your xanim exporting edition is not in your PATH or is not named xanim\n"
                             "you have to set Environment variable GAP_XANIM_PROG\n"
                             "to your xanim exporting program and restart gimp"
                            );
 
   l_idx++;
-  p_init_arr_arg(&argv[l_idx], WGT_LABEL_LEFT);
+  gap_arr_arg_init(&argv[l_idx], GAP_ARR_WGT_LABEL_LEFT);
   argv[l_idx].label_txt = "";
 
   l_idx++;
-  p_init_arr_arg(&argv[l_idx], WGT_LABEL_LEFT);
+  gap_arr_arg_init(&argv[l_idx], GAP_ARR_WGT_LABEL_LEFT);
   argv[l_idx].label_txt = _("An ERROR occured while trying to call xanim:");  
 
   l_idx++;
-  p_init_arr_arg(&argv[l_idx], WGT_LABEL_LEFT);
+  gap_arr_arg_init(&argv[l_idx], GAP_ARR_WGT_LABEL_LEFT);
   argv[l_idx].label_txt = "--------------------------------------------";  
 
 
   l_idx++;
-  p_init_arr_arg(&argv[l_idx], WGT_LABEL_LEFT);
+  gap_arr_arg_init(&argv[l_idx], GAP_ARR_WGT_LABEL_LEFT);
   argv[l_idx].label_txt = errlist;
 
   l_idx++;
@@ -194,7 +202,7 @@ p_xanim_info(char *errlist)
     b_argv[1].but_txt  = GTK_STOCK_OK;
     b_argv[1].but_val  = 0;
   
-  l_rc = p_array_std_dialog(_("XANIM Information"),
+  l_rc = gap_arr_std_dialog(_("XANIM Information"),
                              "",
                               l_idx,   argv,      /* widget array */
                               1,       b_argv,    /* button array */
@@ -215,7 +223,7 @@ p_xanim_dialog   (gint32 *first_frame,
 		  gint32 len_filename,
 		  char   *basename,
 		  gint32 len_basename,
-		  t_gap_xa_formats *Format,
+		  GapXAnimFormats *Format,
 		  gint32  *extract_video,
 		  gint32  *extract_audio,
 		  gint32  *jpeg_quality,
@@ -223,10 +231,10 @@ p_xanim_dialog   (gint32 *first_frame,
 		  gint32  *run_xanim_asynchron)
 {
 #define XADIALOG_NUM_ARGS 12
-  static t_arr_arg  argv[XADIALOG_NUM_ARGS];
+  static GapArrArg  argv[XADIALOG_NUM_ARGS];
   static char *radio_args[3]  = { "XCF", "PPM", "JPEG" };
 
-  p_init_arr_arg(&argv[0], WGT_FILESEL);
+  gap_arr_arg_init(&argv[0], GAP_ARR_WGT_FILESEL);
   argv[0].label_txt = _("Video:");
   argv[0].help_txt  = _("Name of a videofile to READ by xanim.\n"
                         "Frames are extracted from the videofile\n"
@@ -236,7 +244,7 @@ p_xanim_dialog   (gint32 *first_frame,
   argv[0].text_buf_ret = filename;
   argv[0].entry_width = 250;
 
-  p_init_arr_arg(&argv[1], WGT_INT_PAIR);
+  gap_arr_arg_init(&argv[1], GAP_ARR_WGT_INT_PAIR);
   argv[1].label_txt = _("From Frame:");
   argv[1].help_txt  = _("Framenumber of 1st frame to extract");
   argv[1].constraint = FALSE;
@@ -246,7 +254,7 @@ p_xanim_dialog   (gint32 *first_frame,
   argv[1].umin       = 0;
   argv[1].entry_width = 80;
   
-  p_init_arr_arg(&argv[2], WGT_INT_PAIR);
+  gap_arr_arg_init(&argv[2], GAP_ARR_WGT_INT_PAIR);
   argv[2].label_txt = _("To Frame:");
   argv[2].help_txt  = _("Framenumber of last frame to extract");
   argv[2].constraint = FALSE;
@@ -256,7 +264,7 @@ p_xanim_dialog   (gint32 *first_frame,
   argv[2].umin       = 0;
   argv[2].entry_width = 80;
   
-  p_init_arr_arg(&argv[3], WGT_FILESEL);
+  gap_arr_arg_init(&argv[3], GAP_ARR_WGT_FILESEL);
   argv[3].label_txt = _("Framenames:");
   argv[3].help_txt  = _("Basename for the AnimFrames to write on disk\n"
                         "(framenumber and extension is added)");
@@ -264,7 +272,7 @@ p_xanim_dialog   (gint32 *first_frame,
   argv[3].text_buf_ret = basename;
   argv[3].entry_width = 250;
   
-  p_init_arr_arg(&argv[4], WGT_OPTIONMENU);
+  gap_arr_arg_init(&argv[4], GAP_ARR_WGT_OPTIONMENU);
   argv[4].label_txt = _("Format");
   argv[4].help_txt  = _("Fileformat for the extracted AnimFrames\n"
         	       "(xcf is extracted as ppm and converted to xcf)");
@@ -272,18 +280,18 @@ p_xanim_dialog   (gint32 *first_frame,
   argv[4].radio_argv = radio_args;
   argv[4].radio_ret  = 0;
 
-  p_init_arr_arg(&argv[5], WGT_TOGGLE);
+  gap_arr_arg_init(&argv[5], GAP_ARR_WGT_TOGGLE);
   argv[5].label_txt = _("Extract Frames");
   argv[5].help_txt  = _("Enable extraction of Frames");
   argv[5].int_ret   = 1;
 
-  p_init_arr_arg(&argv[6], WGT_TOGGLE);
+  gap_arr_arg_init(&argv[6], GAP_ARR_WGT_TOGGLE);
   argv[6].label_txt = _("Extract Audio");
   argv[6].help_txt  = _("Enable extraction of audio to raw audiofile\n"
                         "(frame range limits are ignored for audio)");
   argv[6].int_ret   = 0;
   
-  p_init_arr_arg(&argv[7], WGT_INT_PAIR);
+  gap_arr_arg_init(&argv[7], GAP_ARR_WGT_INT_PAIR);
   argv[7].label_txt = _("Jpeg Quality:");
   argv[7].help_txt  = _("Quality for resulting Jpeg frames\n"
                         "(is ignored when other formats are used)");
@@ -292,25 +300,25 @@ p_xanim_dialog   (gint32 *first_frame,
   argv[7].int_max    = 100;
   argv[7].int_ret    = 90;
 
-  p_init_arr_arg(&argv[8], WGT_LABEL);
+  gap_arr_arg_init(&argv[8], GAP_ARR_WGT_LABEL);
   argv[8].label_txt = "";
 
-  p_init_arr_arg(&argv[9], WGT_TOGGLE);
+  gap_arr_arg_init(&argv[9], GAP_ARR_WGT_TOGGLE);
   argv[9].label_txt = _("Open");
   argv[9].help_txt  = _("Open the 1st one of the extracted frames");
   argv[9].int_ret   = 1;
 
-  p_init_arr_arg(&argv[10], WGT_TOGGLE);
+  gap_arr_arg_init(&argv[10], GAP_ARR_WGT_TOGGLE);
   argv[10].label_txt = _("Run asynchronously");
   argv[10].help_txt  = _("Run xanim asynchronously and delete unwanted frames\n"
                         "(out of the specified range) while xanim is still running");
   argv[10].int_ret   = 1;
 
-  p_init_arr_arg(&argv[11], WGT_LABEL_LEFT);
+  gap_arr_arg_init(&argv[11], GAP_ARR_WGT_LABEL_LEFT);
   argv[11].label_txt = _("\nWarning: xanim 2.80 has only limited MPEG support.\n"
 			 "Most of the frames (type P and B) will be skipped.");
    
-  if(TRUE == p_array_dialog(_("Split any Xanim readable Video to Frames"), 
+  if(TRUE == gap_arr_ok_cancel_dialog(_("Split any Xanim readable Video to Frames"), 
 			    _("Select Frame Range"), XADIALOG_NUM_ARGS, argv))
   {
      if(argv[1].int_ret < argv[2].int_ret )
@@ -323,7 +331,7 @@ p_xanim_dialog   (gint32 *first_frame,
        *first_frame = (long)(argv[2].int_ret);
        *last_frame  = (long)(argv[1].int_ret);
      }
-     *Format = (t_gap_xa_formats)(argv[4].int_ret);
+     *Format = (GapXAnimFormats)(argv[4].int_ret);
      *extract_video  = (long)(argv[5].int_ret);
      *extract_audio  = (long)(argv[6].int_ret);
      *jpeg_quality   = (long)(argv[7].int_ret);
@@ -343,10 +351,10 @@ p_xanim_dialog   (gint32 *first_frame,
 static gint
 p_overwrite_dialog(char *filename, gint overwrite_mode)
 {
-  static  t_but_arg  l_argv[3];
-  static  t_arr_arg  argv[1];
+  static  GapArrButtonArg  l_argv[3];
+  static  GapArrArg  argv[1];
 
-  if(p_file_exists(filename))
+  if(gap_lib_file_exists(filename))
   {
     if (overwrite_mode < 1)
     {
@@ -357,10 +365,10 @@ p_overwrite_dialog(char *filename, gint overwrite_mode)
        l_argv[2].but_txt  = GTK_STOCK_CANCEL;
        l_argv[2].but_val  = -1;
 
-       p_init_arr_arg(&argv[0], WGT_LABEL);
+       gap_arr_arg_init(&argv[0], GAP_ARR_WGT_LABEL);
        argv[0].label_txt = filename;
     
-       return(p_array_std_dialog ( _("GAP Question"),
+       return(gap_arr_std_dialog ( _("GAP Question"),
                                    _("File already exists"),
 				   1, argv,
 				   3, l_argv, -1));
@@ -474,7 +482,7 @@ p_convert_frames(gint32 frame_from, gint32 frame_to, char *basename, char *ext, 
 
   /* load 1st one of those frames generated by xanim  */
    p_build_xanim_framename(l_first_xa_frame, sizeof(l_first_xa_frame), frame_from, ext);
-   l_tmp_image_id = p_load_image(l_first_xa_frame);
+   l_tmp_image_id = gap_lib_load_image(l_first_xa_frame);
 
    /* convert the xanim frames (from ppm) to xcf fileformat
     * (the gap module for range convert is not linked to the frontends
@@ -530,7 +538,7 @@ p_find_max_xanim_frame(gint32 from_nr, char *ext)
 
      if(gap_debug) printf("DEBUG find_MAX :%s\n", l_frame);
      
-     if(p_file_exists(l_frame))
+     if(gap_lib_file_exists(l_frame))
      {
         l_max_found = l_nr;
         l_delta = (l_high - l_nr) / 2;
@@ -558,7 +566,7 @@ p_find_max_xanim_frame(gint32 from_nr, char *ext)
 }	/* end p_find_max_xanim_frame */
 
 static int
-p_rename_frames(gint32 frame_from, gint32 frame_to, char *basename, char *ext)
+gap_lib_rename_frames(gint32 frame_from, gint32 frame_to, char *basename, char *ext)
 {
   gint32 l_use_mv;
   gint32 l_frame_nr;
@@ -568,7 +576,7 @@ p_rename_frames(gint32 frame_from, gint32 frame_to, char *basename, char *ext)
   gint    l_overwrite_mode;
 
 
-  if(gap_debug) printf("p_rename_frames:\n");
+  if(gap_debug) printf("gap_lib_rename_frames:\n");
   l_use_mv = TRUE;
   l_overwrite_mode = 0;
 
@@ -590,7 +598,7 @@ p_rename_frames(gint32 frame_from, gint32 frame_to, char *basename, char *ext)
      p_build_xanim_framename(l_src_frame, sizeof(l_src_frame), l_frame_nr, ext);
      p_build_gap_framename(l_dst_frame, sizeof(l_dst_frame), l_frame_nr, basename, ext);
      
-     if(!p_file_exists(l_src_frame))
+     if(!gap_lib_file_exists(l_src_frame))
      {
         break;  /* srcfile not found, stop */
      }
@@ -609,7 +617,7 @@ p_rename_frames(gint32 frame_from, gint32 frame_to, char *basename, char *ext)
 	else
 	{
 	   remove(l_dst_frame);
-	   if (p_file_exists(l_dst_frame))
+	   if (gap_lib_file_exists(l_dst_frame))
            {
 	     global_errlist = g_strdup_printf(
 	             _("failed to overwrite %s (check permissions ?)"),
@@ -623,10 +631,10 @@ p_rename_frames(gint32 frame_from, gint32 frame_to, char *basename, char *ext)
            rename(l_src_frame, l_dst_frame);
 	}
 	
-	if (!p_file_exists(l_dst_frame)) 
+	if (!gap_lib_file_exists(l_dst_frame)) 
 	{
-	   p_file_copy(l_src_frame, l_dst_frame);
-	   if (p_file_exists(l_dst_frame))
+	   gap_lib_file_copy(l_src_frame, l_dst_frame);
+	   if (gap_lib_file_exists(l_dst_frame))
 	   {
               l_use_mv = FALSE; /* if destination is on another device use copy-remove strategy */
 	      remove(l_src_frame);
@@ -644,10 +652,10 @@ p_rename_frames(gint32 frame_from, gint32 frame_to, char *basename, char *ext)
      if(l_max_found > 0) gimp_progress_update ((gdouble)l_frame_nr / (gdouble)l_max_found);
   }
   return(0);
-}	/* end p_rename_frames */
+}	/* end gap_lib_rename_frames */
 
 static void
-p_delete_frames(gint32 max_tries, gint32 frame_from, gint32 frame_to, char *ext)
+gap_lib_delete_frames(gint32 max_tries, gint32 frame_from, gint32 frame_to, char *ext)
 {
   /* this procedure is performed repeatedly while polling the xanim process
    * and after xanim process has (or was) terminated to clean up unwanted frames.
@@ -656,7 +664,7 @@ p_delete_frames(gint32 max_tries, gint32 frame_from, gint32 frame_to, char *ext)
   gint32 l_next_number;
   char   l_framename[500];
   
-  if(gap_debug) printf("p_delete_frames: cleaning up unwanted frames (max=%d)\n", (int)max_tries);
+  if(gap_debug) printf("gap_lib_delete_frames: cleaning up unwanted frames (max=%d)\n", (int)max_tries);
   
   l_tries = 0;
 
@@ -665,7 +673,7 @@ p_delete_frames(gint32 max_tries, gint32 frame_from, gint32 frame_to, char *ext)
      l_next_number = global_delete_number + 1;
      p_build_xanim_framename(l_framename, sizeof(l_framename), l_next_number, ext);
      
-     if (p_file_exists(l_framename))
+     if (gap_lib_file_exists(l_framename))
      {
         /* if xanim has already written the next frame
 	 * we can delete the previous (unwanted) frame now
@@ -678,7 +686,7 @@ p_delete_frames(gint32 max_tries, gint32 frame_from, gint32 frame_to, char *ext)
      }
      l_tries++;
   }
-}	/* end p_delete_frames */
+}	/* end gap_lib_delete_frames */
 
 
 static void
@@ -695,7 +703,7 @@ p_poll(pid_t xanim_pid, char *one_past_last_frame, gint32 frame_from, gint32 fra
   while (0 == kill(xanim_pid, 0))
   {
     usleep(100000);  /* sleep 1 second, and let xanim write some frames */
-    if (p_file_exists(one_past_last_frame))
+    if (gap_lib_file_exists(one_past_last_frame))
     {
        /* if the last desired frame is written
         * we can stop (kill with signal 9) the xanim process.
@@ -705,7 +713,7 @@ p_poll(pid_t xanim_pid, char *one_past_last_frame, gint32 frame_from, gint32 fra
     }
 
     /* check for max unwanted frames and delete (upto 20 of them) */
-    p_delete_frames(20, frame_from, frame_to, ext);
+    gap_lib_delete_frames(20, frame_from, frame_to, ext);
   }   
               
   if(gap_debug) printf("poll ended on xanim pid: %d\n", (int)xanim_pid);
@@ -766,7 +774,7 @@ p_check_xanim()
         return(10);
   }
 
-  if(!p_file_exists(l_xanim_help_output)) 
+  if(!gap_lib_file_exists(l_xanim_help_output)) 
   {
     global_errlist = g_strdup_printf(
             _("%s does not look like xanim"),
@@ -811,7 +819,7 @@ p_check_xanim()
 static pid_t
 p_start_xanim_process(gint32 first_frame, gint32 last_frame,
                   char   *filename,
-		  t_gap_xa_formats Format,
+		  GapXAnimFormats Format,
 		  gint32  extract_video,
 		  gint32  extract_audio,
 		  gint32  jpeg_quality , 
@@ -935,7 +943,7 @@ p_start_xanim_process(gint32 first_frame, gint32 last_frame,
 static pid_t
 p_start_xanim_process_exec(gint32 first_frame, gint32 last_frame,
                   char   *filename,
-		  t_gap_xa_formats Format,
+		  GapXAnimFormats Format,
 		  gint32  extract_video,
 		  gint32  extract_audio,
 		  gint32  jpeg_quality
@@ -1028,7 +1036,7 @@ gap_xanim_decode(GimpRunMode run_mode)
   char   basename[200];
   char   extension[20];
   char   extension2[20];
-  t_gap_xa_formats Format;
+  GapXAnimFormats Format;
   gint32 extract_audio;
   gint32 extract_video; 
   gint32 jpeg_quality;
@@ -1066,7 +1074,7 @@ gap_xanim_decode(GimpRunMode run_mode)
     return(l_rc);
   }
   
-  if(!p_file_exists(filename))
+  if(!gap_lib_file_exists(filename))
   {
      global_errlist = g_strdup_printf(
             _("videofile %s not existent or empty\n"),
@@ -1171,7 +1179,7 @@ gap_xanim_decode(GimpRunMode run_mode)
        p_poll(l_xanim_pid, l_one_past_last_frame, first_frame, last_frame, extension);
      }
      
-     p_delete_frames(99999, first_frame, last_frame, extension);
+     gap_lib_delete_frames(99999, first_frame, last_frame, extension);
      remove(l_one_past_last_frame);
 
      gimp_progress_update (1.0);
@@ -1199,7 +1207,7 @@ gap_xanim_decode(GimpRunMode run_mode)
        if(strcmp(extension, &extension2[1]) == 0)
        {
           gimp_progress_init (_("renaming frames..."));
-          l_rc = p_rename_frames(first_frame, last_frame, basename, extension);
+          l_rc = gap_lib_rename_frames(first_frame, last_frame, basename, extension);
        }
        else
        {
@@ -1240,7 +1248,7 @@ gap_xanim_decode(GimpRunMode run_mode)
      {
         /* load first frame and add a display */
         p_build_gap_framename(l_first_to_laod, sizeof(l_first_to_laod), first_frame, basename, &extension2[1]);
-        l_rc = p_load_image(l_first_to_laod);
+        l_rc = gap_lib_load_image(l_first_to_laod);
 
 	if(l_rc >= 0) gimp_display_new(l_rc);
      }

@@ -3,7 +3,7 @@
  *
  * GAP ... Gimp Animation Plugins (Standard array dialog)
  *
- * - p_array_dialog   Dialog Window with one or more rows
+ * - gap_arr_ok_cancel_dialog   Dialog Window with one or more rows
  *                    each row can contain one of the following GAP widgets:
  *                       - float pair widget
  *                         (horizontal slidebar combined with a float input field)
@@ -13,10 +13,10 @@
  *                       - Textentry widget
  *                       - Float entry widget
  *                       - Int entry widget
- * - p_slider_dialog
+ * - gap_arr_slider_dialog
  *                         simplified call of p_pair_array_dialog,
- *                         using an array with one WGT_INT_PAIR.
- * - p_buttons_dialog
+ *                         using an array with one GAP_ARR_WGT_INT_PAIR.
+ * - gap_arr_buttons_dialog
  *
  *
  *
@@ -40,12 +40,12 @@
  */
 
 /* revision history:
- * gimp    1.3.20a; 2003/09/29  hof: p_overwrite_file_dialog
- * gimp    1.3.16b; 2003/07/04  hof: new p_confirm_dialog
- * gimp    1.3.14a; 2003/05/15  hof: new WGT_FONTSEL
+ * gimp    1.3.20a; 2003/09/29  hof: gap_arr_overwrite_file_dialog
+ * gimp    1.3.16b; 2003/07/04  hof: new gap_arr_confirm_dialog
+ * gimp    1.3.14a; 2003/05/15  hof: new GAP_ARR_WGT_FONTSEL
  * gimp    1.3.12a; 2003/05/01  hof: merge into CVS-gimp-gap project
  * gimp    1.3.11a; 2003/01/18  hof: merged in changes of the gap_vid_enc project
- *                                   - added WGT_OPT_ENTRY (entry comined with Optionmenu) and WGT_DEFAULT_BUTTON
+ *                                   - added GAP_ARR_WGT_OPT_ENTRY (entry comined with Optionmenu) and GAP_ARR_WGT_DEFAULT_BUTTON
  * gimp    1.3.4a;  2002/03/12  hof: ported to gtk+-2.0.0
  * gimp    1.1.17b; 2000/01/26  hof: 
  * version 0.96.03; 1998/08/15  hof: p_arr_gtk_init 
@@ -62,23 +62,23 @@
 
 typedef enum
 {
-   WGT_LABEL        
-  ,WGT_TEXT       
-  ,WGT_INT        
-  ,WGT_FLT        
-  ,WGT_TOGGLE     
-  ,WGT_RADIO      
-  ,WGT_OPTIONMENU      
-  ,WGT_FLT_PAIR   
-  ,WGT_INT_PAIR   
-  ,WGT_ACT_BUTTON 
-  ,WGT_FILESEL
-  ,WGT_LABEL_LEFT
-  ,WGT_LABEL_RIGHT
-  ,WGT_OPT_ENTRY
-  ,WGT_DEFAULT_BUTTON
-  ,WGT_FONTSEL       
-} t_gap_widget;
+   GAP_ARR_WGT_LABEL        
+  ,GAP_ARR_WGT_TEXT       
+  ,GAP_ARR_WGT_INT        
+  ,GAP_ARR_WGT_FLT        
+  ,GAP_ARR_WGT_TOGGLE     
+  ,GAP_ARR_WGT_RADIO      
+  ,GAP_ARR_WGT_OPTIONMENU      
+  ,GAP_ARR_WGT_FLT_PAIR   
+  ,GAP_ARR_WGT_INT_PAIR   
+  ,GAP_ARR_WGT_ACT_BUTTON 
+  ,GAP_ARR_WGT_FILESEL
+  ,GAP_ARR_WGT_LABEL_LEFT
+  ,GAP_ARR_WGT_LABEL_RIGHT
+  ,GAP_ARR_WGT_OPT_ENTRY
+  ,GAP_ARR_WGT_DEFAULT_BUTTON
+  ,GAP_ARR_WGT_FONTSEL       
+} GapArrWidget;
 
 typedef int (*t_action_func) ( gpointer action_data);
 /*
@@ -88,7 +88,7 @@ typedef int (*t_action_func) ( gpointer action_data);
  */
 
 typedef struct {
-  t_gap_widget widget_type;
+  GapArrWidget widget_type;
 
   /* common fields for all widget types */
   char    *label_txt;
@@ -98,7 +98,7 @@ typedef struct {
   gint     constraint;   /* TRUE: check for min/max values */
   gint     has_default;  /* TRUE: default value available */
   
-  /* flt_ fileds are used for WGT_FLT and WGT_FLT_PAIR */
+  /* flt_ fileds are used for GAP_ARR_WGT_FLT and GAP_ARR_WGT_FLT_PAIR */
   gint     flt_digits;    /* digits behind comma */
   gdouble  flt_min;
   gdouble  flt_max;
@@ -106,7 +106,7 @@ typedef struct {
   gdouble  flt_default;
   gdouble  flt_ret;
   
-  /* int_ fileds are used for WGT_INT and WGT_INT_PAIR WGT_TOGGLE */
+  /* int_ fileds are used for GAP_ARR_WGT_INT and GAP_ARR_WGT_INT_PAIR GAP_ARR_WGT_TOGGLE */
   gint     int_min;
   gint     int_max;
   gint     int_step;
@@ -114,23 +114,23 @@ typedef struct {
   gint     int_ret;
   gint     int_ret_lim;  /* for private (arr_dialog.c) use only */
 
-  /* unconstraint lower /upper limit for WGT_FLT_PAIR and WGT_INT_PAIR */
+  /* unconstraint lower /upper limit for GAP_ARR_WGT_FLT_PAIR and GAP_ARR_WGT_INT_PAIR */
   gfloat   umin;
   gfloat   umax;
   gfloat   pagestep;
 
 
-  /* togg_ field are used for WGT_TOGGLE */
+  /* togg_ field are used for GAP_ARR_WGT_TOGGLE */
   char    *togg_label;    /* extra label attached right to toggle button */
    
-  /* radio_ fileds are used for WGT_RADIO and WGT_OPTIONMENU */
+  /* radio_ fileds are used for GAP_ARR_WGT_RADIO and GAP_ARR_WGT_OPTIONMENU */
   gint     radio_argc;
   gint     radio_default;
   gint     radio_ret;
   char   **radio_argv;
   char   **radio_help_argv;
   
-  /* text_ fileds are used for WGT_TEXT */
+  /* text_ fileds are used for GAP_ARR_WGT_TEXT */
   gint     text_buf_len;         /* common length for init, default and ret text_buffers */
   char    *text_buf_default;
   char    *text_buf_ret;
@@ -140,10 +140,12 @@ typedef struct {
   GtkWidget  *check_button;   /* for private (arr_dialog.c) use only */
   GtkWidget  *option_menu;    /* for private (arr_dialog.c) use only */
   GtkWidget  *adjustment;     /* for private (arr_dialog.c) use only */
+  gpointer    radiogroup;     /* for private (arr_dialog.c) use only */
 
-  /* action_ fileds are used for WGT_ACT_BUTTON */
+  /* action_ fileds are used for GAP_ARR_WGT_ACT_BUTTON */
   t_action_func action_functon;  
   gpointer      action_data;  
+
   
   /* flag is FALSE while the dialog is built
    * and goes to TRUE if all widgets are there and ready for user interaction
@@ -151,23 +153,23 @@ typedef struct {
    */
   gboolean  widget_locked;
 
-} t_arr_arg;
+} GapArrArg;
 
 
 typedef struct {
   char      *but_txt;
   gint       but_val;
-} t_but_arg;
+} GapArrButtonArg;
 
-void     p_init_arr_arg  (t_arr_arg *arr_ptr,
+void     gap_arr_arg_init  (GapArrArg *arr_ptr,
                           gint       widget_type);
  
-gint     p_array_dialog  (char     *title_txt,
+gint     gap_arr_ok_cancel_dialog  (char     *title_txt,
                           char     *frame_txt,
                           int       argc,
-                          t_arr_arg argv[]);
+                          GapArrArg argv[]);
 
-long     p_slider_dialog(char *title_txt,
+long     gap_arr_slider_dialog(char *title_txt,
                          char *frame_txt,
                          char *label_txt,
                          char *tooltip_txt,
@@ -175,23 +177,25 @@ long     p_slider_dialog(char *title_txt,
 
 
 
-gint     p_buttons_dialog (char *title_txt,
+gint     gap_arr_buttons_dialog (char *title_txt,
                          char *frame_txt,
                          int        b_argc,
-                         t_but_arg  b_argv[],
+                         GapArrButtonArg  b_argv[],
                          gint       b_def_val);
 
 
-gint     p_array_std_dialog  (char     *title_txt,
+gint     gap_arr_std_dialog  (char     *title_txt,
                           char     *frame_txt,
                           int       argc,
-                          t_arr_arg argv[],
+                          GapArrArg argv[],
                           int       b_argc,
-                          t_but_arg b_argv[],
+                          GapArrButtonArg b_argv[],
                           gint      b_def_val);
 
-gboolean p_confirm_dialog(char *msg_txt, char *title_txt, char *frame_txt);
+gboolean gap_arr_confirm_dialog(char *msg_txt, char *title_txt, char *frame_txt);
 
-gboolean p_overwrite_file_dialog(char *filename);
+gboolean gap_arr_overwrite_file_dialog(char *filename);
+
+void gap_arr_msg_win(GimpRunMode run_mode, char *msg);
 
 #endif

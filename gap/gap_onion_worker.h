@@ -37,15 +37,15 @@
 #include <gap_onion_main.h>
 
 /* onion_worker procedures */
-gint    p_set_data_onion_cfg(t_global_params *gpp, char *key);
-gint    p_get_data_onion_cfg(t_global_params *gpp);
-gint    p_onion_visibility(t_global_params *gpp, gint visi_mode);
-gint    p_onion_delete(t_global_params *gpp);
-gint    p_onion_apply(t_global_params *gpp, gboolean use_cache);
+gint    gap_onion_worker_set_data_onion_cfg(GapOnionMainGlobalParams *gpp, char *key);
+gint    gap_onion_worker_get_data_onion_cfg(GapOnionMainGlobalParams *gpp);
+gint    gap_onion_worker_onion_visibility(GapOnionMainGlobalParams *gpp, gint visi_mode);
+gint    gap_onion_worker_onion_delete(GapOnionMainGlobalParams *gpp);
+gint    gap_onion_worker_onion_apply(GapOnionMainGlobalParams *gpp, gboolean use_cache);
 
 
-gint    p_onion_range(t_global_params *gpp);
-void    p_plug_in_gap_get_animinfo(gint32 image_ID, t_ainfo *ainfo);
+gint    gap_onion_worker_onion_range(GapOnionMainGlobalParams *gpp);
+void    gap_onion_worker_plug_in_gap_get_animinfo(gint32 image_ID, GapOnionMainAinfo *ainfo);
 
 #endif
 

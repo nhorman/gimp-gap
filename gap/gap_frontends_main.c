@@ -65,6 +65,7 @@ static char *gap_main_version =  "1.1.29b; 2000/11/25";
 #include "gap_mpege.h"
 #include "gap_decode_xanim.h"
 #include "gap_arr_dialog.h"
+#include "gap_lock.h"
 
 /* ------------------------
  * global gap DEBUG switch
@@ -217,7 +218,7 @@ static void run(const gchar *name
     lock_image_id = image_id;
 
     /* check for locks */
-    if(p_gap_lock_is_locked(lock_image_id, run_mode))
+    if(gap_lock_check_for_lock(lock_image_id, run_mode))
     {
          status = GIMP_PDB_EXECUTION_ERROR;
          values[0].type = GIMP_PDB_STATUS;
@@ -227,7 +228,7 @@ static void run(const gchar *name
 
 
     /* set LOCK on current image (for all gap_plugins) */
-    p_gap_lock_set(lock_image_id);
+    gap_lock_set_lock(lock_image_id);
   }
   
   if ((strcmp (name, "plug_in_gap_xanim_decode") == 0)
@@ -268,7 +269,7 @@ static void run(const gchar *name
         image_id    = param[1].data.d_image;
         /* planed: define non interactive PARAMS */
 
-        l_rc = gap_mpeg_encode(run_mode, image_id, MPEG_ENCODE /* more PARAMS */);
+        l_rc = gap_mpeg_encode(run_mode, image_id, GAP_MPEGE_MPEG_ENCODE /* more PARAMS */);
 
       }
   }
@@ -293,7 +294,7 @@ static void run(const gchar *name
         image_id    = param[1].data.d_image;
         /* planed: define non interactive PARAMS */
 
-        l_rc = gap_mpeg_encode(run_mode, image_id, MPEG2ENCODE /* more PARAMS */);
+        l_rc = gap_mpeg_encode(run_mode, image_id, GAP_MPEGE_MPEG2ENCODE /* more PARAMS */);
 
       }
   }
@@ -315,6 +316,6 @@ static void run(const gchar *name
   if (strcmp (name, "plug_in_gap_xanim_decode_toolbox") != 0)
   {
     /* remove LOCK on this image for all gap_plugins */
-     p_gap_lock_remove(lock_image_id);
+     gap_lock_remove_lock(lock_image_id);
   }
 }

@@ -28,6 +28,7 @@
 #define GAP_STOCK_DELETE_ALL_POINTS  "gap-delete-all-points"
 #define GAP_STOCK_DELETE_POINT       "gap-delete-point"
 #define GAP_STOCK_FIRST_POINT        "gap-first-point"
+#define GAP_STOCK_GRAB_POINTS        "gap-grab-points"
 #define GAP_STOCK_INSERT_POINT       "gap-insert-point"
 #define GAP_STOCK_LAST_POINT         "gap-last-point"
 #define GAP_STOCK_NEXT_POINT         "gap-next-point"

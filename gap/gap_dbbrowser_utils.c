@@ -101,7 +101,7 @@ typedef struct
   t_constraint_func      constraint_func;
   t_constraint_func      constraint_func_sel1;
   t_constraint_func      constraint_func_sel2;
-  t_gap_db_browse_result *result;
+  GapDbBrowserResult *result;
   
   gint                   codegen_flag;
   gint32                 current_image_id;
@@ -144,7 +144,7 @@ gap_db_browser_dialog(char *title_txt,
                       t_constraint_func        constraint_func,
                       t_constraint_func        constraint_func_sel1,
                       t_constraint_func        constraint_func_sel2,
-                      t_gap_db_browse_result  *result,
+                      GapDbBrowserResult  *result,
 		      gint32                   image_id)
 {
   dbbrowser_t     *dbbrowser;
@@ -755,7 +755,7 @@ dialog_button_2_callback (GtkWidget *widget, dbbrowser_t* dbbrowser)
 static void 
 dialog_button_3_callback (GtkWidget *widget, dbbrowser_t* dbbrowser)
 {
-  p_remove_codegen_files();      /* remove old versions of generated CODE */
+  gap_codegen_remove_codegen_files();      /* remove old versions of generated CODE */
   dbbrowser->codegen_flag = 1;   /* let dialog_search_callback generate */
   dialog_search_callback(dbbrowser->name_button, (gpointer)dbbrowser );
   dbbrowser->codegen_flag = 0;
@@ -855,9 +855,9 @@ dialog_search_callback (GtkWidget   *widget,
 	    {
 	      if(pattern)
 	        {
-	          if(p_match_name(menu_path
+	          if(gap_match_name(menu_path
 		                 , pattern
-		                 , MTCH_ANYWHERE  /* gint32 mode */
+		                 , GAP_MTCH_ANYWHERE  /* gint32 mode */
 			         , FALSE          /* NOT case_sensitive */
 	            ))
 		    {
@@ -891,9 +891,9 @@ dialog_search_callback (GtkWidget   *widget,
 	      
 	      if((dbbrowser->codegen_flag != 0) && (gap_debug))
 	        {
-                  p_gen_forward_iter_ALT(proc_list[i]);
-                  p_gen_tab_iter_ALT(proc_list[i]);
-                  p_gen_code_iter_ALT(proc_list[i]);
+                  gap_codegen_gen_forward_iter_ALT(proc_list[i]);
+                  gap_codegen_gen_tab_iter_ALT(proc_list[i]);
+                  gap_codegen_gen_code_iter_ALT(proc_list[i]);
 		}
               label = g_strdup (proc_list[i]);
               convert_string (label);

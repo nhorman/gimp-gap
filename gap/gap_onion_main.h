@@ -86,7 +86,7 @@
  * that is the reason why MAKE and DEL names do not contain "gap"
  */
 
-typedef struct t_ainfo {
+typedef struct GapOnionMainAinfo {
    long         first_frame_nr;
    long         last_frame_nr;
    long         curr_frame_nr;
@@ -94,23 +94,23 @@ typedef struct t_ainfo {
    char         basename[1024];    /* may include path */
    char         extension[50];
    gdouble      framerate;
-} t_ainfo;
+} GapOnionMainAinfo;
 
-typedef struct t_img_cache {
+typedef struct GapOnionMainImageCache {
    gint32       count;
    gint32       framenr[GAP_ONION_CACHE_SIZE];
    gint32       image_id[GAP_ONION_CACHE_SIZE];
    gint32       layer_id[GAP_ONION_CACHE_SIZE];
-} t_img_cache;
+} GapOnionMainImageCache;
 
 
 
 typedef struct {
-  t_video_info  vin;
+  GapVinVideoInfo  vin;
   gint    run;
 
-  t_ainfo     ainfo;
-  t_img_cache cache;
+  GapOnionMainAinfo     ainfo;
+  GapOnionMainImageCache cache;
   gint32  range_from;
   gint32  range_to;
   gint32  image_ID;        /* -1 if there is no valid current image */
@@ -144,9 +144,9 @@ typedef struct {
   GtkObject  *oni__spinbutton_range_to_adj;
   GtkObject  *oni__spinbutton_ref_delta_adj;
   GtkObject  *oni__spinbutton_stack_pos_adj;
-} t_global_params;
+} GapOnionMainGlobalParams;
 
-extern t_global_params global_params;
+extern GapOnionMainGlobalParams global_params;
 
 
 #endif

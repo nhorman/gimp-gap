@@ -31,10 +31,10 @@
 
 #include "libgimp/gimp.h"
 
-void    p_conv_msecs_to_timestr(gint32 tmsec, gchar *txt, gint txt_size);
-void    p_conv_framenr_to_timestr( gint32 framenr, gdouble framerate, gchar *txt, gint txt_size);
-void    p_conv_samples_to_timestr( gint32 samples, gdouble samplerate, gchar *txt, gint txt_size);
-gdouble p_conv_samples_to_frames( gint32 samples, gdouble samplerate, gdouble framerate);
+void    gap_timeconv_msecs_to_timestr(gint32 tmsec, gchar *txt, gint txt_size);
+void    gap_timeconv_framenr_to_timestr( gint32 framenr, gdouble framerate, gchar *txt, gint txt_size);
+void    gap_timeconv_samples_to_timestr( gint32 samples, gdouble samplerate, gchar *txt, gint txt_size);
+gdouble gap_timeconv_samples_to_frames( gint32 samples, gdouble samplerate, gdouble framerate);
 
 
 #endif

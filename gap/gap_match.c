@@ -26,7 +26,7 @@
  */
 
 /* revision history:
- * gimp   1.3.20a;   2003/09/14  hof: p_match_name increased limit of 256 bytes to 2048
+ * gimp   1.3.20a;   2003/09/14  hof: gap_match_name increased limit of 256 bytes to 2048
  * gimp   1.1.29b;   2000/11/30  hof: used g_snprintf
  * version 0.97.00  1998.10.14  hof: - created module
  */
@@ -46,7 +46,7 @@
 #include "gap_match.h"
 
 int
-p_is_empty (const char *str)
+gap_match_string_is_empty (const char *str)
 {
   if(str == NULL)  return(TRUE);
   if(*str == '\0') return(TRUE);
@@ -61,13 +61,13 @@ p_is_empty (const char *str)
 }
 
 /* ============================================================================
- * p_substitute_framenr
+ * gap_match_substitute_framenr
  *    copy new_layername to buffer
  *    and substitute [####] by curr frame number
  * ============================================================================
  */
 void
-p_substitute_framenr (char *buffer, int buff_len, char *new_layername, long curr)
+gap_match_substitute_framenr (char *buffer, int buff_len, char *new_layername, long curr)
 {
   int l_idx;
   int l_digits;
@@ -127,10 +127,11 @@ p_substitute_framenr (char *buffer, int buff_len, char *new_layername, long curr
   }
 
   buffer[l_idx] = '\0';
-}	/* end p_substitute_framenr */
+}	/* end gap_match_substitute_framenr */
 
 
-void str_toupper(char *str)
+static void
+str_toupper(char *str)
 {
   if(str != NULL)
   {
@@ -147,7 +148,7 @@ void str_toupper(char *str)
  * pattern contains a list like that:
  *  "0, 3-4, 7, 10"
  */
-int p_match_number(gint32 layer_idx, const char *pattern)
+int gap_match_number(gint32 layer_idx, const char *pattern)
 {
    char        l_digit_buff[128];
    const char *l_ptr;
@@ -215,11 +216,11 @@ int p_match_number(gint32 layer_idx, const char *pattern)
    }   /* end for */
 
    return(FALSE);
-}	/* end p_match_number */
+}	/* end gap_match_number */
 
 
 /* simple stringmatching without wildcards */
-int p_match_name(const char *layername, const char *pattern, gint32 mode, gint32 case_sensitive)
+int gap_match_name(const char *layername, const char *pattern, gint32 mode, gint32 case_sensitive)
 {
    int l_idx;
    int l_llen;
@@ -253,20 +254,20 @@ int p_match_name(const char *layername, const char *pattern, gint32 mode, gint32
 
    switch (mode)
    {
-      case MTCH_EQUAL:
+      case GAP_MTCH_EQUAL:
            if (0 == strcmp(l_name_ptr, l_patt_ptr))
            {
              return(TRUE);
            }
            break;
-      case MTCH_START:
+      case GAP_MTCH_START:
            l_plen = strlen(l_patt_ptr);
            if (0 == strncmp(l_name_ptr, l_patt_ptr, l_plen))
            {
              return(TRUE);
            }
            break;
-      case MTCH_END:
+      case GAP_MTCH_END:
            l_llen = strlen(l_name_ptr);
            l_plen = strlen(l_patt_ptr);
            if(l_llen > l_plen)
@@ -277,7 +278,7 @@ int p_match_name(const char *layername, const char *pattern, gint32 mode, gint32
              }
            }
            break;
-      case MTCH_ANYWHERE:
+      case GAP_MTCH_ANYWHERE:
            l_llen = strlen(l_name_ptr);
            l_plen = strlen(l_patt_ptr);
            for(l_idx = 0; l_idx <= (l_llen - l_plen); l_idx++)
@@ -297,24 +298,24 @@ int p_match_name(const char *layername, const char *pattern, gint32 mode, gint32
 
 }
 
-int p_match_layer(gint32 layer_idx, const char *layername, const char *pattern,
+int gap_match_layer(gint32 layer_idx, const char *layername, const char *pattern,
                   gint32 mode, gint32 case_sensitive, gint32 invert,
                   gint nlayers, gint32 layer_id)
 {
    int l_rc;
    switch(mode)
    {
-     case MTCH_NUMBERLIST:
-          l_rc = p_match_number(layer_idx, pattern);
+     case GAP_MTCH_NUMBERLIST:
+          l_rc = gap_match_number(layer_idx, pattern);
           break;
-     case MTCH_INV_NUMBERLIST:
-          l_rc = p_match_number((nlayers -1) - layer_idx, pattern);
+     case GAP_MTCH_INV_NUMBERLIST:
+          l_rc = gap_match_number((nlayers -1) - layer_idx, pattern);
           break;
-     case MTCH_ALL_VISIBLE:
+     case GAP_MTCH_ALL_VISIBLE:
           l_rc = gimp_layer_get_visible(layer_id);
           break;
      default:
-          l_rc = p_match_name(layername, pattern, mode, case_sensitive);
+          l_rc = gap_match_name(layername, pattern, mode, case_sensitive);
           break;
    }
 

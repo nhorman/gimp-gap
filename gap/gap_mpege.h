@@ -35,14 +35,14 @@
 /* Animation sizechange modes */
 typedef enum
 {
-   MPEG_ENCODE  
- , MPEG2ENCODE 
-} t_gap_mpeg_encoder;
+   GAP_MPEGE_MPEG_ENCODE  
+ , GAP_MPEGE_MPEG2ENCODE 
+} GapMpegEncoderType;
 
 
 int gap_mpeg_encode(GimpRunMode run_mode,
                              gint32 image_id,
-                             t_gap_mpeg_encoder encoder
+                             GapMpegEncoderType encoder
                           /* ,
                              char   *output,
                              gint    bitrate,

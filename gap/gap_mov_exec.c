@@ -26,10 +26,11 @@
  */
 
 /* revision history:
+ * gimp    1.3.20d; 2003/10/14  hof: new: implemented missing parts for trace and tween_layer processing
  * gimp    1.3.20c; 2003/09/29  hof: new features: perspective transformation, step_speed_factor,
  *                                   tween_layer and trace_layer (not finshed yet)
  *                                   changed opacity, rotation and resize from int to gdouble
- * gimp    1.3.14a; 2003/05/24  hof: rename p_fetch_src_frame to p_mov_fetch_src_frame
+ * gimp    1.3.14a; 2003/05/24  hof: rename p_fetch_src_frame to gap_mov_render_fetch_src_frame
  * gimp    1.3.12a; 2003/05/01  hof: merge into CVS-gimp-gap project
  * gimp    1.3.11a; 2003/01/18  hof: Conditional framesave
  * gimp    1.3.5a;  2002/04/20  hof: api cleanup (dont use gimp_drawable_set_image)
@@ -62,6 +63,7 @@
 /* GAP includes */
 #include "gap_layer_copy.h"
 #include "gap_lib.h"
+#include "gap_image.h"
 #include "gap_mov_dialog.h"
 #include "gap_mov_exec.h"
 #include "gap_mov_render.h"
@@ -69,26 +71,121 @@
 
 extern      int gap_debug; /* ==0  ... dont print debug infos */
 
-static gint p_mov_call_render(t_mov_data *mov_ptr, t_mov_current *cur_ptr, gint apv_layerstack);
-static void p_mov_advance_src_layer(t_mov_current *cur_ptr, t_mov_values  *pvals);
-static void p_mov_advance_src_frame(t_mov_current *cur_ptr, t_mov_values  *pvals);
-static long   p_mov_execute(t_mov_data *mov_ptr);
+static void p_add_tween_and_trace(gint32 dest_image_id, GapMovData *mov_ptr, GapMovCurrent *cur_ptr);
+static gint p_mov_call_render(GapMovData *mov_ptr, GapMovCurrent *cur_ptr, gint apv_layerstack);
+static void p_mov_advance_src_layer(GapMovCurrent *cur_ptr, GapMovValues  *pvals);
+static void p_mov_advance_src_frame(GapMovCurrent *cur_ptr, GapMovValues  *pvals);
+static long   p_mov_execute(GapMovData *mov_ptr);
 static gdouble  p_calc_angle(gint p1x, gint p1y, gint p2x, gint p2y);
 static gdouble  p_rotatate_less_than_180(gdouble angle, gdouble angle_new, gint *turns);
 static void     p_fprintf_gdouble(FILE *fp, gdouble value, gint digits, gint precision_digits, const char *pfx);
 
 
 /* ============================================================================
- * p_mov_call_render
- *  load current frame, render and save back to disk
- *  for animted_preview
+ * p_add_tween_and_trace
  * ============================================================================
+ * if there are tween_layers add them to the dest_image
+ * and remove them from the tween_image.
+ *
+ * copy the trace_layer to the dest_image (if there is one)
+ */
+ 
+void
+p_add_tween_and_trace(gint32 dest_image_id, GapMovData *mov_ptr, GapMovCurrent *cur_ptr)
+{
+  GimpMergeType l_mergemode;
+  gint32  l_new_layer_id;
+  gint    l_src_offset_x, l_src_offset_y;
+  gint32  l_layer_id;
+
+  l_mergemode = GIMP_EXPAND_AS_NECESSARY;
+  if(mov_ptr->val_ptr->clip_to_img)
+  {
+    l_mergemode = GIMP_CLIP_TO_IMAGE;
+  }
+
+  /* add Trace_layer */
+  if((mov_ptr->val_ptr->trace_image_id >= 0)
+  && (mov_ptr->val_ptr->trace_layer_id >= 0))
+  {
+    /* copy the layer from the temp image to the anim preview multilayer image */
+    l_new_layer_id = gap_layer_copy_to_dest_image(dest_image_id,
+                                   mov_ptr->val_ptr->trace_layer_id,
+                                   100.0,       /* opacity full */
+                                   0,           /* NORMAL */
+                                   &l_src_offset_x,
+                                   &l_src_offset_y
+                                   );
+
+    /* add the layer to the destination image */
+    gimp_image_add_layer (dest_image_id, l_new_layer_id, mov_ptr->val_ptr->dst_layerstack +1);
+    
+    /* keep the trace_layer for all further move path processing steps */
+  }
+  
+  /* add Tween_Layer(s) */
+  if(mov_ptr->val_ptr->tween_image_id >= 0)
+  {
+    gint32 l_new_tween_image_id;
+ 
+    /* for DEBUG only: show tween image before flatten */
+    if(1==0)
+    {
+      gint32  tw_image_id;
+      
+      tw_image_id = gimp_image_duplicate(mov_ptr->val_ptr->tween_image_id);
+      gimp_display_new(tw_image_id);
+    }
+     
+    l_layer_id = gap_image_merge_visible_layers(mov_ptr->val_ptr->tween_image_id, l_mergemode);
+    
+    /* copy the layer from the temp image to the anim preview multilayer image */
+    l_new_layer_id = gap_layer_copy_to_dest_image(dest_image_id,
+                                   l_layer_id,
+                                   100.0,       /* opacity full */
+                                   0,           /* NORMAL */
+                                   &l_src_offset_x,
+                                   &l_src_offset_y
+                                   );
+
+    /* add the layer to the destination image */
+    gimp_image_add_layer (dest_image_id, l_new_layer_id, mov_ptr->val_ptr->dst_layerstack +1);
+    
+    /* remove tween layers from the tween_image after usage */
+    l_new_tween_image_id = gap_image_new_of_samesize(mov_ptr->val_ptr->tween_image_id);
+    gimp_image_undo_disable (l_new_tween_image_id);
+    
+    gimp_image_delete(mov_ptr->val_ptr->tween_image_id);
+    mov_ptr->val_ptr->tween_image_id = l_new_tween_image_id;
+  }
+  
+}  /* end p_add_tween_and_trace */
+
+
+/* ============================================================================
+ * p_mov_call_render
+ * ============================================================================
+ * The render call behaves different, depending on the calling conditions
+ * a) when called to render a tween
+ *      create an empty temp frame, render, 
+ *      and add the result as new layer to the tween_image.
+ * b) when called to render the animted_preview in a multilayer image
+ *      depending on mode 
+ *          EXACT: load current frame
+ *          ONE:   use one prescaled initial frame
+ *      render, add tween and tracelayers (if there any)
+ *      [ optional save to video paste buffer ], and 
+ *      add the layer to the anim preview multilayer image
+ * c) when called to render a real Frame
+ *      load current frame,
+ *      render, add tween and tracelayers (if there any)
+ *      save back to disk
  */
 
 gint
-p_mov_call_render(t_mov_data *mov_ptr, t_mov_current *cur_ptr, gint apv_layerstack)
+p_mov_call_render(GapMovData *mov_ptr, GapMovCurrent *cur_ptr, gint apv_layerstack)
 {
-  t_anim_info *ainfo_ptr;
+  GapAnimInfo *ainfo_ptr;
   gint32  l_tmp_image_id;
   gint32  l_layer_id;
   int     l_rc;
@@ -98,119 +195,206 @@ p_mov_call_render(t_mov_data *mov_ptr, t_mov_current *cur_ptr, gint apv_layersta
   l_rc = 0;
   ainfo_ptr = mov_ptr->dst_ainfo_ptr;
 
-
-  if(mov_ptr->val_ptr->apv_mlayer_image < 0)
+  if(mov_ptr->val_ptr->twix > 0)
   {
-    /* We are generating the Animation on the ORIGINAL FRAMES */
-    if(ainfo_ptr->new_filename != NULL) g_free(ainfo_ptr->new_filename);
-    ainfo_ptr->new_filename = p_alloc_fname(ainfo_ptr->basename,
-                                	cur_ptr->dst_frame_nr,
-                                	ainfo_ptr->extension);
-    if(ainfo_ptr->new_filename == NULL)
-       return -1;
+    /* We are rendering a virtual frame (a tween) */
+    /* ------------------------------------------ */
+    
+    /* all tween_layers will be added later to the next real Frame,
+     * or to the animated Preview Image.
+     * (this will happen in one of the next calls when tween index goes down to 0)
+     */
+    l_tmp_image_id = gap_image_new_of_samesize(mov_ptr->val_ptr->tween_image_id);
+    gimp_image_undo_disable (l_tmp_image_id);
 
-    /* load next frame to render */
-    l_tmp_image_id = p_load_image(ainfo_ptr->new_filename);
-    if(l_tmp_image_id < 0)
-      return -1;
-
-    /* call render procedure for current image */
-    if(0 == p_mov_render(l_tmp_image_id, mov_ptr->val_ptr, cur_ptr))
+    /* call render procedure for the tween image */
+    if(0 == gap_mov_render_render(l_tmp_image_id, mov_ptr->val_ptr, cur_ptr))
     {
-      /* if OK: save the rendered frame back to disk */
-      if(p_save_named_frame(l_tmp_image_id, ainfo_ptr->new_filename) < 0)
-	l_rc = -1;
+      GimpMergeType l_mergemode;
+      
+      l_mergemode = GIMP_EXPAND_AS_NECESSARY;
+      if(mov_ptr->val_ptr->clip_to_img)
+      {
+        l_mergemode = GIMP_CLIP_TO_IMAGE;
+      }
+      
+      /* get the_rendered_object Layer */
+      l_layer_id = gap_image_merge_visible_layers(l_tmp_image_id, l_mergemode);
+
+      gimp_layer_set_name(l_layer_id, _("Tweenlayer"));
+      {
+        gint32  l_new_layer_id;
+        gint    l_src_offset_x, l_src_offset_y;
+        gdouble l_tween_opacity;
+        gdouble l_fadefactor;
+
+        l_tween_opacity = mov_ptr->val_ptr->tween_opacity_initial;
+        
+        l_fadefactor = mov_ptr->val_ptr->tween_opacity_desc / 100.0;
+        if(l_fadefactor < 1.0)
+        {
+          gint    l_ii;
+          
+          for(l_ii=1; l_ii < mov_ptr->val_ptr->twix; l_ii++)
+          {
+            /* the higher the tween index, the more we fade out
+             * we do not fade out for tween index 1 that is the nearest tween to the
+             * real frame
+             */
+            l_tween_opacity *= l_fadefactor;
+          }
+        }
+        
+        l_tween_opacity = CLAMP(l_tween_opacity, 0.0, 100.0);
+        
+        /* copy the layer from the temp image to the tween multilayer image */
+        l_new_layer_id = gap_layer_copy_to_dest_image(mov_ptr->val_ptr->tween_image_id,
+                                         l_layer_id,
+                                         l_tween_opacity,
+                                         0,           /* NORMAL */
+                                         &l_src_offset_x,
+                                         &l_src_offset_y
+                                         );
+
+        /* add the layer to the anim preview multilayer image */
+        gimp_image_add_layer (mov_ptr->val_ptr->tween_image_id, l_new_layer_id, 0 /* top of layerstack */ );
+      }
     }
     else l_rc = -1;
+
   }
   else
   {
-    /* We are generating an ANIMATED PREVIEW multilayer image */
-    if(mov_ptr->val_ptr->apv_src_frame >= 0)
+    if(mov_ptr->val_ptr->apv_mlayer_image < 0)
     {
-       /* anim preview uses one constant (prescaled) frame */
-       l_tmp_image_id = gimp_image_duplicate(mov_ptr->val_ptr->apv_src_frame);
+      /* We are generating the Animation on the ORIGINAL FRAMES */
+      /* ------------------------------------------------------ */
+      if(ainfo_ptr->new_filename != NULL) g_free(ainfo_ptr->new_filename);
+      ainfo_ptr->new_filename = gap_lib_alloc_fname(ainfo_ptr->basename,
+                                  	cur_ptr->dst_frame_nr,
+                                	ainfo_ptr->extension);
+      if(ainfo_ptr->new_filename == NULL)
+         return -1;
+
+      /* load next frame to render */
+      l_tmp_image_id = gap_lib_load_image(ainfo_ptr->new_filename);
+      if(l_tmp_image_id < 0)
+        return -1;
+
+      gimp_image_undo_disable (l_tmp_image_id);
+
+
+      /* call render procedure for current image */
+      if(0 == gap_mov_render_render(l_tmp_image_id, mov_ptr->val_ptr, cur_ptr))
+      {
+        /* check if we have tween_layer and/or trace_layer
+         * and add them to the temp image
+         */
+        p_add_tween_and_trace(l_tmp_image_id, mov_ptr, cur_ptr);
+        
+        /* if OK: save the rendered frame back to disk */
+        if(gap_lib_save_named_frame(l_tmp_image_id, ainfo_ptr->new_filename) < 0)
+  	  l_rc = -1;
+      }
+      else l_rc = -1;
     }
     else
     {
-       /* anim preview exact mode uses original frames */
-       if(ainfo_ptr->new_filename != NULL) g_free(ainfo_ptr->new_filename);
-       ainfo_ptr->new_filename = p_alloc_fname(ainfo_ptr->basename,
-                                	   cur_ptr->dst_frame_nr,
-                                	   ainfo_ptr->extension);
-       l_tmp_image_id = p_load_image(ainfo_ptr->new_filename);
-       if(l_tmp_image_id < 0)
-	 return -1;
-
-       if((mov_ptr->val_ptr->apv_scalex != 100.0) || (mov_ptr->val_ptr->apv_scaley != 100.0))
-       {
-	 gint32      l_size_x, l_size_y;
-       
-         l_size_x = (gimp_image_width(l_tmp_image_id) * mov_ptr->val_ptr->apv_scalex) / 100;
-         l_size_y = (gimp_image_height(l_tmp_image_id) * mov_ptr->val_ptr->apv_scaley) / 100;
-       
-         gimp_image_scale (l_tmp_image_id, l_size_x, l_size_y);
-       }
-    }
-    
-    /* call render procedure for current image */
-    if(0 == p_mov_render(l_tmp_image_id, mov_ptr->val_ptr, cur_ptr))
-    {
-      /* if OK and optional save to gap_paste-buffer */
-      if(mov_ptr->val_ptr->apv_gap_paste_buff != NULL)
+      /* We are generating an ANIMATED PREVIEW multilayer image */
+      /* ------------------------------------------------------ */
+      if(mov_ptr->val_ptr->apv_src_frame >= 0)
       {
-         l_fname = p_alloc_fname(mov_ptr->val_ptr->apv_gap_paste_buff,
-                                 cur_ptr->dst_frame_nr,
-                                 ".xcf");
-         p_save_named_frame(l_tmp_image_id, l_fname);
+         /* anim preview uses one constant (prescaled) frame */
+         l_tmp_image_id = gimp_image_duplicate(mov_ptr->val_ptr->apv_src_frame);
+         gimp_image_undo_disable (l_tmp_image_id);
       }
-      
-      /* flatten the rendered frame */
-      l_layer_id = gimp_image_flatten(l_tmp_image_id);
-      if(l_layer_id < 0)
+      else
       {
-        if(gap_debug) printf("p_mov_call_render: flattened layer_id:%d\n", (int)l_layer_id);
-        /* hof:
-	 * if invisible layers are flattened on an empty image
-	 * we do not get a resulting layer (returned l_layer_id == -1)
-	 *
-	 *  I'm not sure if is this a bug, but here is a workaround:
-	 *
-	 * In that case I add a dummy layer 1x1 pixel (at offest -1,-1)
-	 * and flatten again, and it works (tested with gimp-1.1.19)
-	 */
-        l_layer_id = gimp_layer_new(l_tmp_image_id, "dummy",
+         /* anim preview exact mode uses original frames */
+         if(ainfo_ptr->new_filename != NULL) g_free(ainfo_ptr->new_filename);
+         ainfo_ptr->new_filename = gap_lib_alloc_fname(ainfo_ptr->basename,
+                                  	   cur_ptr->dst_frame_nr,
+                                	   ainfo_ptr->extension);
+         l_tmp_image_id = gap_lib_load_image(ainfo_ptr->new_filename);
+         if(l_tmp_image_id < 0)
+  	   return -1;
+
+         gimp_image_undo_disable (l_tmp_image_id);
+
+         if((mov_ptr->val_ptr->apv_scalex != 100.0) || (mov_ptr->val_ptr->apv_scaley != 100.0))
+         {
+	   gint32      l_size_x, l_size_y;
+       
+           l_size_x = (gimp_image_width(l_tmp_image_id) * mov_ptr->val_ptr->apv_scalex) / 100;
+           l_size_y = (gimp_image_height(l_tmp_image_id) * mov_ptr->val_ptr->apv_scaley) / 100;
+       
+           gimp_image_scale (l_tmp_image_id, l_size_x, l_size_y);
+         }
+      }
+    
+      /* call render procedure for current image */
+      if(0 == gap_mov_render_render(l_tmp_image_id, mov_ptr->val_ptr, cur_ptr))
+      {
+        /* if OK and optional save to gap_paste-buffer */
+        if(mov_ptr->val_ptr->apv_gap_paste_buff != NULL)
+        {
+           l_fname = gap_lib_alloc_fname(mov_ptr->val_ptr->apv_gap_paste_buff,
+                                   cur_ptr->dst_frame_nr,
+                                   ".xcf");
+           gap_lib_save_named_frame(l_tmp_image_id, l_fname);
+        }
+
+        /* check if we have tween_layer and/or trace_layer
+         * and add them to the temp image
+         */
+        p_add_tween_and_trace(l_tmp_image_id, mov_ptr, cur_ptr);
+      
+        /* flatten the rendered frame */
+        l_layer_id = gimp_image_flatten(l_tmp_image_id);
+        if(l_layer_id < 0)
+        {
+          if(gap_debug) printf("p_mov_call_render: flattened layer_id:%d\n", (int)l_layer_id);
+          /* hof:
+	   * if invisible layers are flattened on an empty image
+	   * we do not get a resulting layer (returned l_layer_id == -1)
+	   *
+	   *  I'm not sure if is this a bug, but here is a workaround:
+	   *
+	   * In that case I add a dummy layer 1x1 pixel (at offest -1,-1)
+	   * and flatten again, and it works (tested with gimp-1.1.19)
+	   */
+          l_layer_id = gimp_layer_new(l_tmp_image_id, "dummy",
                                  1, 
 				 1,
 				 ((gint)(gimp_image_base_type(l_tmp_image_id)) * 2),
                                  100.0,     /* Opacity full opaque */     
                                  0);        /* NORMAL */
-        gimp_image_add_layer(l_tmp_image_id, l_layer_id, 0);
-        gimp_layer_set_offsets(l_layer_id, -1, -1);
-        l_layer_id = gimp_image_flatten(l_tmp_image_id);	
-      }
-      gimp_layer_add_alpha(l_layer_id);
+          gimp_image_add_layer(l_tmp_image_id, l_layer_id, 0);
+          gimp_layer_set_offsets(l_layer_id, -1, -1);
+          l_layer_id = gimp_image_flatten(l_tmp_image_id);	
+        }
+        gimp_layer_add_alpha(l_layer_id);
       
-      if(gap_debug)
-      {
-        printf("p_mov_call_render: flattened layer_id:%d\n", (int)l_layer_id);
-        printf("p_mov_call_render: tmp_image_id:%d  apv_mlayer_image:%d\n",
-	        (int)l_tmp_image_id, (int)mov_ptr->val_ptr->apv_mlayer_image);
-      }
+        if(gap_debug)
+        {
+          printf("p_mov_call_render: flattened layer_id:%d\n", (int)l_layer_id);
+          printf("p_mov_call_render: tmp_image_id:%d  apv_mlayer_image:%d\n",
+	          (int)l_tmp_image_id, (int)mov_ptr->val_ptr->apv_mlayer_image);
+        }
 
-      /* set layername (including delay for the framerate) */
-      l_name = g_strdup_printf("frame_%06d (%dms)"
+        /* set layername (including delay for the framerate) */
+        l_name = g_strdup_printf("frame_%06d (%dms)"
                               , (int) cur_ptr->dst_frame_nr
                               , (int)(1000/mov_ptr->val_ptr->apv_framerate));
-      gimp_layer_set_name(l_layer_id, l_name);
-      g_free(l_name);
+        gimp_layer_set_name(l_layer_id, l_name);
+        g_free(l_name);
       
-      {
-        gint32  l_new_layer_id;
-        gint    l_src_offset_x, l_src_offset_y;
+        {
+          gint32  l_new_layer_id;
+          gint    l_src_offset_x, l_src_offset_y;
 
-        /* copy the layer from the temp image to the anim preview multilayer image */
-        l_new_layer_id = p_my_layer_copy(mov_ptr->val_ptr->apv_mlayer_image,
+          /* copy the layer from the temp image to the anim preview multilayer image */
+          l_new_layer_id = gap_layer_copy_to_dest_image(mov_ptr->val_ptr->apv_mlayer_image,
                                          l_layer_id,
                                          100.0,       /* opacity full */
                                          0,           /* NORMAL */
@@ -218,19 +402,22 @@ p_mov_call_render(t_mov_data *mov_ptr, t_mov_current *cur_ptr, gint apv_layersta
                                          &l_src_offset_y
                                          );
 
-        /* add the layer to the anim preview multilayer image */
-        gimp_image_add_layer (mov_ptr->val_ptr->apv_mlayer_image, l_new_layer_id, apv_layerstack);
+          /* add the layer to the anim preview multilayer image */
+          gimp_image_add_layer (mov_ptr->val_ptr->apv_mlayer_image, l_new_layer_id, apv_layerstack);
+        }
       }
+      else l_rc = -1;
     }
-    else l_rc = -1;
   }
-    
+
 
   /* destroy the tmp image */
   gimp_image_delete(l_tmp_image_id);
 
   return l_rc;
 }	/* end p_mov_call_render */
+
+
  
 
 /* ============================================================================
@@ -239,7 +426,7 @@ p_mov_call_render(t_mov_data *mov_ptr, t_mov_current *cur_ptr, gint apv_layersta
  * ============================================================================
  */
 static void 
-p_mov_advance_src_layer(t_mov_current *cur_ptr, t_mov_values  *pvals)
+p_mov_advance_src_layer(GapMovCurrent *cur_ptr, GapMovValues  *pvals)
 {
   static gdouble l_ping = -1;
   gdouble l_step_speed_factor;
@@ -254,7 +441,7 @@ p_mov_advance_src_layer(t_mov_current *cur_ptr, t_mov_values  *pvals)
   }
   l_round = 0.0;
   
-  /*if(gap_debug)*/ printf("p_mov_advance_src_layer: stepmode=%d last_layer=%d idx=%d (%.4f) speed_factor: %.4f\n",
+  if(gap_debug) printf("p_mov_advance_src_layer: stepmode=%d last_layer=%d idx=%d (%.4f) speed_factor: %.4f\n",
                        (int)pvals->src_stepmode,
                        (int)cur_ptr->src_last_layer,
                        (int)cur_ptr->src_layer_idx,
@@ -334,7 +521,7 @@ p_mov_advance_src_layer(t_mov_current *cur_ptr, t_mov_values  *pvals)
  * ============================================================================
  */
 static void
-p_mov_advance_src_frame(t_mov_current *cur_ptr, t_mov_values  *pvals)
+p_mov_advance_src_frame(GapMovCurrent *cur_ptr, GapMovValues  *pvals)
 {
   static gdouble l_ping = 1;
   gdouble l_step_speed_factor;
@@ -353,12 +540,12 @@ p_mov_advance_src_frame(t_mov_current *cur_ptr, t_mov_values  *pvals)
   {
     if(pvals->cache_ainfo_ptr == NULL )
     {
-      pvals->cache_ainfo_ptr =  p_alloc_ainfo(pvals->src_image_id, GIMP_RUN_NONINTERACTIVE);
+      pvals->cache_ainfo_ptr =  gap_lib_alloc_ainfo(pvals->src_image_id, GIMP_RUN_NONINTERACTIVE);
     }
 
     if(pvals->cache_ainfo_ptr->first_frame_nr < 0)
     {
-       p_dir_ainfo(pvals->cache_ainfo_ptr);
+       gap_lib_dir_ainfo(pvals->cache_ainfo_ptr);
     }
   }
 
@@ -432,7 +619,7 @@ p_mov_advance_src_frame(t_mov_current *cur_ptr, t_mov_values  *pvals)
                                   ,pvals->cache_ainfo_ptr->first_frame_nr
 				  ,pvals->cache_ainfo_ptr->last_frame_nr
 				  );
-    p_mov_fetch_src_frame(pvals, cur_ptr->src_frame_idx);
+    gap_mov_render_fetch_src_frame(pvals, cur_ptr->src_frame_idx);
   }
 }	/* end  p_advance_src_frame */
 
@@ -449,7 +636,7 @@ p_mov_advance_src_frame(t_mov_current *cur_ptr, t_mov_values  *pvals)
  * ============================================================================
  */
 long
-p_mov_execute(t_mov_data *mov_ptr)
+p_mov_execute(GapMovData *mov_ptr)
 {
 /* MIX_VALUE  0.0 <= factor <= 1.0
  *  result is a  for factor 0.0
@@ -458,9 +645,9 @@ p_mov_execute(t_mov_data *mov_ptr)
  */
 #define MIX_VALUE(factor, a, b) ((a * (1.0 - factor)) +  (b * factor))
   gint l_idx;
-   t_mov_current l_current_data;
-   t_mov_current *cur_ptr;
-   t_mov_values  *val_ptr;
+   GapMovCurrent l_current_data;
+   GapMovCurrent *cur_ptr;
+   GapMovValues  *val_ptr;
 
    gdouble  l_percentage;  
    gdouble  l_fpl;             /* frames_per_line */
@@ -483,7 +670,7 @@ p_mov_execute(t_mov_data *mov_ptr)
    
    if(mov_ptr->val_ptr->src_image_id < 0)
    {
-      p_msg_win(mov_ptr->dst_ainfo_ptr->run_mode,
+      gap_arr_msg_win(mov_ptr->dst_ainfo_ptr->run_mode,
         _("No Source Image was selected.\n"
 	  "Please open a 2nd Image of the same type before opening Move Path."));
       return -1;
@@ -552,9 +739,17 @@ p_mov_execute(t_mov_data *mov_ptr)
    l_rc    = 0;
    cur_ptr = &l_current_data;
    val_ptr = mov_ptr->val_ptr;
+ 
+   if(gap_image_is_alive(val_ptr->tmpsel_image_id))
+   {
+     gimp_image_delete(val_ptr->tmpsel_image_id);
+   }
+
+   val_ptr->tmpsel_image_id = -1;
+   val_ptr->tmpsel_channel_id = -1;
 
    /* set offsets (in cur_ptr)  according to handle mode and src_img dimension */
-   p_set_handle_offsets(val_ptr, cur_ptr);
+   gap_mov_exec_set_handle_offsets(val_ptr, cur_ptr);
     
    
    /* test for invers range */
@@ -600,6 +795,7 @@ p_mov_execute(t_mov_data *mov_ptr)
       val_ptr->point[1].tbly = val_ptr->point[0].tbly;
       val_ptr->point[1].tbrx = val_ptr->point[0].tbrx;
       val_ptr->point[1].tbry = val_ptr->point[0].tbry;
+      val_ptr->point[1].sel_feather_radius = val_ptr->point[0].sel_feather_radius;
 
       l_points = 2;
    }
@@ -610,6 +806,18 @@ p_mov_execute(t_mov_data *mov_ptr)
 
    if(mov_ptr->val_ptr->src_stepmode < GAP_STEP_FRAME)
    {   
+     gint32        l_sel_channel_id;
+ 
+     if(val_ptr->src_selmode != GAP_MOV_SEL_IGNORE)
+     {
+       if(gimp_selection_is_empty(val_ptr->src_image_id))
+       {
+         gimp_selection_all(val_ptr->src_image_id);
+       }
+       l_sel_channel_id = gimp_image_get_selection(val_ptr->src_image_id);
+       gap_mov_render_create_or_replace_tempsel_image(l_sel_channel_id, val_ptr);
+     }
+    
      cur_ptr->src_layers = gimp_image_get_layers (val_ptr->src_image_id, &l_nlayers);
      if(cur_ptr->src_layers == NULL)
      {
@@ -641,18 +849,18 @@ p_mov_execute(t_mov_data *mov_ptr)
      /* for FRAME stepmodes we use flattened Sorce frames
       * (instead of one multilayer source image )
       */
-     p_mov_fetch_src_frame (val_ptr, -1);  /* negative value fetches the selected frame number */
+     gap_mov_render_fetch_src_frame (val_ptr, -1);  /* negative value fetches the selected frame number */
      cur_ptr->src_frame_idx = val_ptr->cache_ainfo_ptr->curr_frame_nr;
      cur_ptr->src_frame_idx_dbl = (gdouble)cur_ptr->src_frame_idx;
      
      if((val_ptr->cache_ainfo_ptr->first_frame_nr < 0)
      && (val_ptr->src_stepmode != GAP_STEP_FRAME_NONE))
      {
-        p_dir_ainfo(val_ptr->cache_ainfo_ptr);
+        gap_lib_dir_ainfo(val_ptr->cache_ainfo_ptr);
      }
 
      /* set offsets (in cur_ptr)  according to handle mode and cache_tmp_img dimension */
-     p_set_handle_offsets(val_ptr, cur_ptr);
+     gap_mov_exec_set_handle_offsets(val_ptr, cur_ptr);
    }
    
    cur_ptr->currX   = (gdouble)val_ptr->point[0].p_x;
@@ -669,11 +877,54 @@ p_mov_execute(t_mov_data *mov_ptr)
    cur_ptr->currTBLY = (gdouble)val_ptr->point[0].tbly;
    cur_ptr->currTBRX = (gdouble)val_ptr->point[0].tbrx;
    cur_ptr->currTBRY = (gdouble)val_ptr->point[0].tbry;
+   cur_ptr->currSelFeatherRadius = (gdouble)val_ptr->point[0].sel_feather_radius;
 
-   /* RENDER add current src_layer to current frame */
-   l_rc = p_mov_call_render(mov_ptr, cur_ptr, l_apv_layerstack);
+   val_ptr->tween_image_id = -1;
+   val_ptr->tween_layer_id = -1;
+   val_ptr->trace_image_id = -1;
+   val_ptr->trace_layer_id = -1;
 
-   if(gap_debug) printf("p_mov_execute: l_points=%d\n", (int)l_points);
+   /* create temp images for tween processing and object tracing */
+   {
+     gint32 master_image_id;
+     
+     if(mov_ptr->val_ptr->apv_mlayer_image < 0)
+     {
+       /* use original frame size for tween and trace images */
+       master_image_id = mov_ptr->dst_ainfo_ptr->image_id;
+     }
+     else
+     {
+       /* use the (eventually downscaled) animation preview image size 
+        * for tween and trace images
+        */
+       master_image_id = mov_ptr->val_ptr->apv_mlayer_image;
+     }
+
+     /* optional create trace image */
+     if (val_ptr->tracelayer_enable)
+     {
+       /* image of same size with one full transparent layer */
+       val_ptr->trace_image_id = gap_image_new_with_layer_of_samesize(master_image_id
+                                 , &val_ptr->trace_layer_id
+                                 );
+       gimp_image_undo_disable (val_ptr->trace_image_id);
+     }
+
+     /* RENDER the 1.st frame outside the frameindex loop,
+      * ------     ----
+      * without care about tweens
+      */
+     l_rc = p_mov_call_render(mov_ptr, cur_ptr, l_apv_layerstack);
+     
+     /* optional create tween image */
+     if (val_ptr->tween_steps > 0)
+     {
+       val_ptr->tween_image_id = gap_image_new_of_samesize(master_image_id);
+       gimp_image_undo_disable (val_ptr->tween_image_id);
+     }
+   }
+
    
    /* how many frames are affected from one line of the moving path */   
    l_fpl = ((gdouble)l_frames - 1.0) / ((gdouble)(l_points -1));
@@ -740,8 +991,11 @@ p_mov_execute(t_mov_data *mov_ptr)
   /* loop for each frame within the range (may step up or down) */
   l_ptidx = 1;
   cur_ptr->dst_frame_nr = val_ptr->dst_range_start;
+  
+  /* frameindex loop */
   for(l_fridx = 1; l_fridx < l_cnt; l_fridx++)
   {
+     gdouble  l_tw_cnt;   /* number of tweens (including the real frame) 1 if no tweens present */
      
      if(gap_debug) printf("\np_mov_execute: l_fridx=%ld, l_flt_timing[l_ptidx]=%f, l_rc=%d l_ptidx=%d, l_prev_keyptidx=%d\n",
                            l_fridx, (float)l_flt_timing[l_ptidx], (int)l_rc, (int)l_ptidx, (int)l_prev_keyptidx);
@@ -770,78 +1024,114 @@ p_mov_execute(t_mov_data *mov_ptr)
       }
       
       l_fpl = (l_flt_timing[l_ptidx] - l_flt_timing[l_ptidx -1]); /* float frames per line */
-      if(l_fpl != 0.0)
+      
+      l_tw_cnt = (gdouble)(val_ptr->tween_steps +1);
+
+      /* loop for the tweens 
+       * (tweens are virtual frames between the previous and the current frame)
+       * when val_ptr->twix is down to 0, the current real frame is reached
+       */
+      for (val_ptr->twix = val_ptr->tween_steps; val_ptr->twix >= 0; val_ptr->twix--)
       {
-        l_flt_posfactor  = ((gdouble)l_fridx - l_flt_timing[l_ptidx -1]) / l_fpl;
-      }
-      else
-      {
-         l_flt_posfactor = 1.0;
-         if(gap_debug) printf("p_mov_execute: ** ERROR l_fpl is 0.0 frames per line\n");
-      }
+        if(l_fpl != 0.0)
+        {
+          l_flt_posfactor  = (   (((gdouble)l_fridx * l_tw_cnt) - (gdouble)val_ptr->twix)
+                               - (l_flt_timing[l_ptidx -1] * l_tw_cnt)
+                             ) / (l_fpl * l_tw_cnt);
+        }
+        else
+        {
+           l_flt_posfactor = 1.0;
+           if(gap_debug) printf("p_mov_execute: ** ERROR l_fpl is 0.0 frames per line\n");
+        }
       
  
-      if(gap_debug) printf("p_mov_execute: l_fpl=%f, l_flt_posfactor=%f\n", (float)l_fpl, (float)l_flt_posfactor);
+        if(gap_debug) printf("p_mov_execute: l_fpl=%f, l_flt_posfactor=%f\n", (float)l_fpl, (float)l_flt_posfactor);
 
-      l_flt_posfactor = CLAMP (l_flt_posfactor, 0.0, 1.0);
+        l_flt_posfactor = CLAMP (l_flt_posfactor, 0.0, 1.0);
      
-      cur_ptr->currX  =       MIX_VALUE(l_flt_posfactor, (gdouble)val_ptr->point[l_ptidx -1].p_x,      (gdouble)val_ptr->point[l_ptidx].p_x);
-      cur_ptr->currY  =       MIX_VALUE(l_flt_posfactor, (gdouble)val_ptr->point[l_ptidx -1].p_y,      (gdouble)val_ptr->point[l_ptidx].p_y);
-      cur_ptr->currOpacity =  MIX_VALUE(l_flt_posfactor, (gdouble)val_ptr->point[l_ptidx -1].opacity,  (gdouble)val_ptr->point[l_ptidx].opacity);
-      cur_ptr->currWidth =    MIX_VALUE(l_flt_posfactor, (gdouble)val_ptr->point[l_ptidx -1].w_resize, (gdouble)val_ptr->point[l_ptidx].w_resize);
-      cur_ptr->currHeight =   MIX_VALUE(l_flt_posfactor, (gdouble)val_ptr->point[l_ptidx -1].h_resize, (gdouble)val_ptr->point[l_ptidx].h_resize);
-      cur_ptr->currRotation = MIX_VALUE(l_flt_posfactor, (gdouble)val_ptr->point[l_ptidx -1].rotation, (gdouble)val_ptr->point[l_ptidx].rotation);
-      cur_ptr->currTTLX     = MIX_VALUE(l_flt_posfactor, (gdouble)val_ptr->point[l_ptidx -1].ttlx,     (gdouble)val_ptr->point[l_ptidx].ttlx);
-      cur_ptr->currTTLY     = MIX_VALUE(l_flt_posfactor, (gdouble)val_ptr->point[l_ptidx -1].ttly,     (gdouble)val_ptr->point[l_ptidx].ttly);
-      cur_ptr->currTTRX     = MIX_VALUE(l_flt_posfactor, (gdouble)val_ptr->point[l_ptidx -1].ttrx,     (gdouble)val_ptr->point[l_ptidx].ttrx);
-      cur_ptr->currTTRY     = MIX_VALUE(l_flt_posfactor, (gdouble)val_ptr->point[l_ptidx -1].ttry,     (gdouble)val_ptr->point[l_ptidx].ttry);
-      cur_ptr->currTBLX     = MIX_VALUE(l_flt_posfactor, (gdouble)val_ptr->point[l_ptidx -1].tblx,     (gdouble)val_ptr->point[l_ptidx].tblx);
-      cur_ptr->currTBLY     = MIX_VALUE(l_flt_posfactor, (gdouble)val_ptr->point[l_ptidx -1].tbly,     (gdouble)val_ptr->point[l_ptidx].tbly);
-      cur_ptr->currTBRX     = MIX_VALUE(l_flt_posfactor, (gdouble)val_ptr->point[l_ptidx -1].tbrx,     (gdouble)val_ptr->point[l_ptidx].tbrx);
-      cur_ptr->currTBRY     = MIX_VALUE(l_flt_posfactor, (gdouble)val_ptr->point[l_ptidx -1].tbry,     (gdouble)val_ptr->point[l_ptidx].tbry);
+        cur_ptr->currX  =       MIX_VALUE(l_flt_posfactor, (gdouble)val_ptr->point[l_ptidx -1].p_x,      (gdouble)val_ptr->point[l_ptidx].p_x);
+        cur_ptr->currY  =       MIX_VALUE(l_flt_posfactor, (gdouble)val_ptr->point[l_ptidx -1].p_y,      (gdouble)val_ptr->point[l_ptidx].p_y);
+        cur_ptr->currOpacity  = MIX_VALUE(l_flt_posfactor, (gdouble)val_ptr->point[l_ptidx -1].opacity,  (gdouble)val_ptr->point[l_ptidx].opacity);
+        cur_ptr->currWidth    = MIX_VALUE(l_flt_posfactor, (gdouble)val_ptr->point[l_ptidx -1].w_resize, (gdouble)val_ptr->point[l_ptidx].w_resize);
+        cur_ptr->currHeight   = MIX_VALUE(l_flt_posfactor, (gdouble)val_ptr->point[l_ptidx -1].h_resize, (gdouble)val_ptr->point[l_ptidx].h_resize);
+        cur_ptr->currRotation = MIX_VALUE(l_flt_posfactor, (gdouble)val_ptr->point[l_ptidx -1].rotation, (gdouble)val_ptr->point[l_ptidx].rotation);
+        cur_ptr->currTTLX     = MIX_VALUE(l_flt_posfactor, (gdouble)val_ptr->point[l_ptidx -1].ttlx,     (gdouble)val_ptr->point[l_ptidx].ttlx);
+        cur_ptr->currTTLY     = MIX_VALUE(l_flt_posfactor, (gdouble)val_ptr->point[l_ptidx -1].ttly,     (gdouble)val_ptr->point[l_ptidx].ttly);
+        cur_ptr->currTTRX     = MIX_VALUE(l_flt_posfactor, (gdouble)val_ptr->point[l_ptidx -1].ttrx,     (gdouble)val_ptr->point[l_ptidx].ttrx);
+        cur_ptr->currTTRY     = MIX_VALUE(l_flt_posfactor, (gdouble)val_ptr->point[l_ptidx -1].ttry,     (gdouble)val_ptr->point[l_ptidx].ttry);
+        cur_ptr->currTBLX     = MIX_VALUE(l_flt_posfactor, (gdouble)val_ptr->point[l_ptidx -1].tblx,     (gdouble)val_ptr->point[l_ptidx].tblx);
+        cur_ptr->currTBLY     = MIX_VALUE(l_flt_posfactor, (gdouble)val_ptr->point[l_ptidx -1].tbly,     (gdouble)val_ptr->point[l_ptidx].tbly);
+        cur_ptr->currTBRX     = MIX_VALUE(l_flt_posfactor, (gdouble)val_ptr->point[l_ptidx -1].tbrx,     (gdouble)val_ptr->point[l_ptidx].tbrx);
+        cur_ptr->currTBRY     = MIX_VALUE(l_flt_posfactor, (gdouble)val_ptr->point[l_ptidx -1].tbry,     (gdouble)val_ptr->point[l_ptidx].tbry);
+        cur_ptr->currSelFeatherRadius = MIX_VALUE(l_flt_posfactor, (gdouble)val_ptr->point[l_ptidx -1].sel_feather_radius,     (gdouble)val_ptr->point[l_ptidx].sel_feather_radius);
 
 
-      if(gap_debug)
-      {
+        if(gap_debug)
+        {
           printf("ROTATE [%02d] %f    [%02d] %f       MIX: %f\n"
           , (int)l_ptidx-1,  (float)val_ptr->point[l_ptidx -1].rotation
           , (int)l_ptidx,    (float)val_ptr->point[l_ptidx].rotation
 	  , (float)cur_ptr->currRotation);
+        }
+
+        if(val_ptr->src_stepmode < GAP_STEP_FRAME )
+        {
+           /* advance settings for next src layer */
+           p_mov_advance_src_layer(cur_ptr, val_ptr);
+        }
+        else
+        {
+          /* advance settings for next source frame */
+          p_mov_advance_src_frame(cur_ptr, val_ptr);
+        }
+
+        if(l_frame_step < 0)
+        {
+          /* if we step down, we have to insert the layer
+ 	   * as lowest layer in the existing layerstack
+	   * of the animated preview multilayer image.
+	   * (if we step up, we always use 0 as l_apv_layerstack,
+	   *  that means always insert on top of the layerstack)
+	   */
+          l_apv_layerstack++;
+        }
+        /* RENDER add current src_layer to current frame */
+        l_rc = p_mov_call_render(mov_ptr, cur_ptr, l_apv_layerstack);
+
+      }  /* end tweenindex subloop */
+
+      /* show progress */
+      if(mov_ptr->dst_ainfo_ptr->run_mode == GIMP_RUN_INTERACTIVE)
+      { 
+        l_percentage = (gdouble)l_fridx / (gdouble)(l_cnt -1);
+        gimp_progress_update (l_percentage);
       }
-
-       if(val_ptr->src_stepmode < GAP_STEP_FRAME )
-       {
-         /* advance settings for next src layer */
-         p_mov_advance_src_layer(cur_ptr, val_ptr);
-       }
-
-       else
-       {
-         /* advance settings for next source frame */
-         p_mov_advance_src_frame(cur_ptr, val_ptr);
-       }
-
-       if(l_frame_step < 0)
-       {
-         /* if we step down, we have to insert the layer
-	  * as lowest layer in the existing layerstack
-	  * of the animated preview multilayer image.
-	  * (if we step up, we always use 0 as l_apv_layerstack,
-	  *  that means always insert on top of the layerstack)
-	  */
-         l_apv_layerstack++;
-       }
-       /* RENDER add current src_layer to current frame */
-       l_rc = p_mov_call_render(mov_ptr, cur_ptr, l_apv_layerstack);
-
-       /* show progress */
-       if(mov_ptr->dst_ainfo_ptr->run_mode == GIMP_RUN_INTERACTIVE)
-       { 
-         l_percentage = (gdouble)l_fridx / (gdouble)(l_cnt -1);
-         gimp_progress_update (l_percentage);
-       }
            
+   }  /* end frameindex loop */
+
+   /* delete the tween image */
+   if(val_ptr->tween_image_id >= 0)
+   {
+     gimp_image_delete(val_ptr->tween_image_id);
+     val_ptr->tween_image_id = -1;
    }
+
+   /* delete the trace image */
+   if(val_ptr->trace_image_id >= 0)
+   {
+     gimp_image_delete(val_ptr->trace_image_id);
+     val_ptr->trace_image_id = -1;
+   }
+
+   /* delete the temp selection image */
+   if(gap_image_is_alive(val_ptr->tmpsel_image_id))
+   {
+     gimp_image_delete(val_ptr->tmpsel_image_id);
+   }
+
+   val_ptr->tmpsel_image_id = -1;
+   val_ptr->tmpsel_channel_id = -1;
 
    if(cur_ptr->src_layers != NULL) g_free(cur_ptr->src_layers);
    
@@ -854,17 +1144,17 @@ p_mov_execute(t_mov_data *mov_ptr)
 
 
 /* ============================================================================
- * p_mov_anim_preview
- *   Generate an animate preview for the move path
+ * gap_mov_exec_anim_preview
+ *   Generate an animated preview for the move path
  * ============================================================================
  */
 gint32 
-p_mov_anim_preview(t_mov_values *pvals_orig, t_anim_info *ainfo_ptr, gint preview_frame_nr)
+gap_mov_exec_anim_preview(GapMovValues *pvals_orig, GapAnimInfo *ainfo_ptr, gint preview_frame_nr)
 {
-  t_mov_data    apv_mov_data;
-  t_mov_values  apv_mov_vals;
-  t_mov_data    *l_mov_ptr;
-  t_mov_values  *l_pvals;
+  GapMovData    apv_mov_data;
+  GapMovValues  apv_mov_vals;
+  GapMovData    *l_mov_ptr;
+  GapMovValues  *l_pvals;
   gint        l_idx;
   gint32      l_size_x, l_size_y;
   gint32      l_tmp_image_id;
@@ -881,7 +1171,7 @@ p_mov_anim_preview(t_mov_values *pvals_orig, t_anim_info *ainfo_ptr, gint previe
   l_pvals = &apv_mov_vals;
   
   /* copy settings */
-  memcpy(l_pvals, pvals_orig, sizeof(t_mov_values));
+  memcpy(l_pvals, pvals_orig, sizeof(GapMovValues));
   l_mov_ptr->val_ptr = l_pvals;
   l_mov_ptr->dst_ainfo_ptr = ainfo_ptr;
   
@@ -916,6 +1206,7 @@ p_mov_anim_preview(t_mov_values *pvals_orig, t_anim_info *ainfo_ptr, gint previe
     {
       /* copy and scale the source object image */
       l_tmp_image_id = gimp_image_duplicate(pvals_orig->src_image_id);
+      gimp_image_undo_disable (l_tmp_image_id);
       l_pvals->src_image_id = l_tmp_image_id;
 
       l_size_x = MAX(1, (gimp_image_width(l_tmp_image_id) * l_pvals->apv_scalex) / 100);
@@ -927,7 +1218,7 @@ p_mov_anim_preview(t_mov_values *pvals_orig, t_anim_info *ainfo_ptr, gint previe
        l_src_layers = gimp_image_get_layers (pvals_orig->src_image_id, &l_nlayers);
        if(l_src_layers == NULL)
        {
-	 printf("ERROR: p_mov_anim_preview GOT no src_layers (original image_id %d)\n",
+	 printf("ERROR: gap_mov_exec_anim_preview GOT no src_layers (original image_id %d)\n",
         	 (int)pvals_orig->src_image_id);
        }
        else
@@ -944,7 +1235,7 @@ p_mov_anim_preview(t_mov_values *pvals_orig, t_anim_info *ainfo_ptr, gint previe
 	 l_src_layers = gimp_image_get_layers (l_tmp_image_id, &l_nlayers);
 	 if(l_src_layers == NULL)
 	 {
-           printf("ERROR: p_mov_anim_preview GOT no src_layers (scaled copy image_id %d)\n",
+           printf("ERROR: gap_mov_exec_anim_preview GOT no src_layers (scaled copy image_id %d)\n",
         	  (int)l_tmp_image_id);
 	 }
 	 else
@@ -957,7 +1248,7 @@ p_mov_anim_preview(t_mov_values *pvals_orig, t_anim_info *ainfo_ptr, gint previe
 
       if(gap_debug)
       {
-	printf("p_mov_anim_preview: orig  src_image_id:%d src_layer:%d, stackpos:%d\n"
+	printf("gap_mov_exec_anim_preview: orig  src_image_id:%d src_layer:%d, stackpos:%d\n"
                ,(int)pvals_orig->src_image_id
 	       ,(int)pvals_orig->src_layer_id
 	       ,(int)l_stackpos);
@@ -966,14 +1257,12 @@ p_mov_anim_preview(t_mov_values *pvals_orig, t_anim_info *ainfo_ptr, gint previe
 	       ,(int)l_pvals->src_layer_id );
       }
     }
-
-    
-  }
+  }  /* end if Scaledown needed */
 
 
   if(gap_debug)
   {
-    printf("p_mov_anim_preview: src_image_id %d (orig:%d)\n"
+    printf("gap_mov_exec_anim_preview: src_image_id %d (orig:%d)\n"
            , (int) l_pvals->src_image_id
 	   , (int) pvals_orig->src_image_id);
   }
@@ -984,11 +1273,13 @@ p_mov_anim_preview(t_mov_values *pvals_orig, t_anim_info *ainfo_ptr, gint previe
   l_type   = gimp_image_base_type(ainfo_ptr->image_id);
   
   l_mlayer_image_id = gimp_image_new(l_width, l_height,l_type);
+  gimp_image_undo_disable (l_mlayer_image_id);
+
   l_pvals->apv_mlayer_image = l_mlayer_image_id;
 
   if(gap_debug)
   {
-    printf("p_mov_anim_preview: apv_mlayer_image %d\n"
+    printf("gap_mov_exec_anim_preview: apv_mlayer_image %d\n"
            , (int) l_pvals->apv_mlayer_image);
   }
   
@@ -1000,13 +1291,15 @@ p_mov_anim_preview(t_mov_values *pvals_orig, t_anim_info *ainfo_ptr, gint previe
     case GAP_APV_QUICK:
       /* use an empty dummy frame for all frames */    
       l_tmp_frame_id = gimp_image_new(l_width, l_height,l_type);
+      gimp_image_undo_disable (l_tmp_frame_id);
       break;
     case GAP_APV_ONE_FRAME:
       /* use only one frame in the preview */    
-      l_filename = p_alloc_fname(ainfo_ptr->basename,
+      l_filename = gap_lib_alloc_fname(ainfo_ptr->basename,
                                  preview_frame_nr,
                                  ainfo_ptr->extension);
-      l_tmp_frame_id =  p_load_image(l_filename);
+      l_tmp_frame_id =  gap_lib_load_image(l_filename);
+      gimp_image_undo_disable (l_tmp_frame_id);
       if((l_pvals->apv_scalex != 100.0) || (l_pvals->apv_scaley != 100.0))
       {
 	l_size_x = (gimp_image_width(l_tmp_frame_id) * l_pvals->apv_scalex) / 100;
@@ -1024,7 +1317,7 @@ p_mov_anim_preview(t_mov_values *pvals_orig, t_anim_info *ainfo_ptr, gint previe
 
   if(gap_debug)
   {
-    printf("p_mov_anim_preview: apv_src_frame %d\n"
+    printf("gap_mov_exec_anim_preview: apv_src_frame %d\n"
            , (int) l_pvals->apv_src_frame);
   }
 
@@ -1037,7 +1330,7 @@ p_mov_anim_preview(t_mov_values *pvals_orig, t_anim_info *ainfo_ptr, gint previe
   {
      if(gap_debug)
      {
-	printf("p_mov_anim_preview: DELETE cache_tmp_image_id:%d\n",
+	printf("gap_mov_exec_anim_preview: DELETE cache_tmp_image_id:%d\n",
 	         (int)l_pvals->cache_tmp_image_id);
      }
      /* destroy the cached frame image */
@@ -1065,7 +1358,7 @@ p_mov_anim_preview(t_mov_values *pvals_orig, t_anim_info *ainfo_ptr, gint previe
   }
 
   return(l_mlayer_image_id);
-}	/* end p_mov_anim_preview */
+}	/* end gap_mov_exec_anim_preview */
 
 /* ============================================================================
  * p_con_keyframe
@@ -1073,7 +1366,7 @@ p_mov_anim_preview(t_mov_values *pvals_orig, t_anim_info *ainfo_ptr, gint previe
  */
 
 gint
-p_conv_keyframe_to_rel(gint abs_keyframe, t_mov_values *pvals)
+gap_mov_exec_conv_keyframe_to_rel(gint abs_keyframe, GapMovValues *pvals)
 {
     if(pvals->dst_range_start <= pvals->dst_range_end)
     {
@@ -1083,7 +1376,7 @@ p_conv_keyframe_to_rel(gint abs_keyframe, t_mov_values *pvals)
 }
 
 gint
-p_conv_keyframe_to_abs(gint rel_keyframe, t_mov_values *pvals)
+gap_mov_exec_conv_keyframe_to_abs(gint rel_keyframe, GapMovValues *pvals)
 {
     if(pvals->dst_range_start <= pvals->dst_range_end)
     {
@@ -1123,11 +1416,11 @@ p_fprintf_gdouble(FILE *fp, gdouble value, gint digits, gint precision_digits, c
 
 
 /* ============================================================================
- * p_gap_save_pointfile
+ * gap_mov_exec_gap_save_pointfile
  * ============================================================================
  */
 gint
-p_gap_save_pointfile(char *filename, t_mov_values *pvals)
+gap_mov_exec_gap_save_pointfile(char *filename, GapMovValues *pvals)
 {
   FILE *l_fp;
   gint l_idx;
@@ -1141,9 +1434,11 @@ p_gap_save_pointfile(char *filename, t_mov_values *pvals)
     fprintf(l_fp, "%d  %d  # current_point  points\n",
                   (int)pvals->point_idx,
                   (int)pvals->point_idx_max + 1);
-    fprintf(l_fp, "# x  y   width height opacity rotation [8 perspective transform factors] [rel_keyframe]\n");
+    fprintf(l_fp, "# x  y   width height opacity rotation feather_radius number_of_optional_params [8 perspective transform factors] [rel_keyframe]\n");
     for(l_idx = 0; l_idx <= pvals->point_idx_max; l_idx++)
     {
+      gint num_optional_params;
+      
       fprintf(l_fp, "%04d %04d "
                     , (int)pvals->point[l_idx].p_x
                     , (int)pvals->point[l_idx].p_y
@@ -1152,7 +1447,10 @@ p_gap_save_pointfile(char *filename, t_mov_values *pvals)
       p_fprintf_gdouble(l_fp, pvals->point[l_idx].h_resize, 3, 3, " ");
       p_fprintf_gdouble(l_fp, pvals->point[l_idx].opacity,  3, 3, " ");
       p_fprintf_gdouble(l_fp, pvals->point[l_idx].rotation, 3, 3, " ");
+      p_fprintf_gdouble(l_fp, pvals->point[l_idx].sel_feather_radius, 3, 3, " ");
 
+      num_optional_params = 0;
+      
       /* conditional write transformation (only if there is any) */
       if(pvals->point[l_idx].ttlx != 1.0
       || pvals->point[l_idx].ttly != 1.0
@@ -1163,6 +1461,19 @@ p_gap_save_pointfile(char *filename, t_mov_values *pvals)
       || pvals->point[l_idx].tbrx != 1.0
       || pvals->point[l_idx].tbry != 1.0
       )
+      {
+        num_optional_params = 8;
+      }
+      if((l_idx > 0) 
+      && (l_idx < pvals->point_idx_max)
+      && ((int)pvals->point[l_idx].keyframe > 0))
+      {
+	num_optional_params++;
+      }
+      
+      fprintf(l_fp, "   %02d ", (int)num_optional_params);
+      
+      if(num_optional_params >= 8)
       {
         fprintf(l_fp, " ");
         p_fprintf_gdouble(l_fp, pvals->point[l_idx].ttlx, 2, 3, " ");
@@ -1184,7 +1495,7 @@ p_gap_save_pointfile(char *filename, t_mov_values *pvals)
       && ((int)pvals->point[l_idx].keyframe > 0))
       {
 	fprintf(l_fp, " %d"
-                     , (int)p_conv_keyframe_to_rel(pvals->point[l_idx].keyframe_abs, pvals)
+                     , (int)gap_mov_exec_conv_keyframe_to_rel(pvals->point[l_idx].keyframe_abs, pvals)
                      );
       }
       fprintf(l_fp, "\n");   /* terminate the output line */
@@ -1227,23 +1538,23 @@ p_sscan_flt_numbers(gchar   *buf
 
     l_cnt++;  /* count successful scans */
   }
-  
+
   return (l_cnt);			
 }  /* end p_sscan_flt_numbers */
 
 
 /* ============================================================================
- * p_gap_load_pointfile
+ * gap_mov_exec_gap_load_pointfile
  * ============================================================================
  * return 0 if Load was OK,
  * return -2 when load has read inconsistent pointfile
  *           and the pointtable needs to be reset (dialog has to call p_reset_points)
  */
 gint
-p_gap_load_pointfile(char *filename, t_mov_values *pvals)
+gap_mov_exec_gap_load_pointfile(char *filename, GapMovValues *pvals)
 {
 #define POINT_REC_MAX 512
-#define MAX_NUMVALUES_PER_LINE 15
+#define MAX_NUMVALUES_PER_LINE 17
   FILE   *l_fp;
   gint    l_idx;
   char    l_buff[POINT_REC_MAX +1 ];
@@ -1285,17 +1596,21 @@ p_gap_load_pointfile(char *filename, t_mov_values *pvals)
          }
          else
          {
+	   gdouble num_optional_params;
+	   gint    key_idx;
            /* the older format used in GAP.1.2 has 6 or 7 integer numbers per line 
             * and should be compatible and readable by this code.
             *
             * the new format has 2 integer values (p_x, p_y) 
-            * and 4 float values (w_resize, h_resize, opacity, rotation)
+            * and 5 float values (w_resize, h_resize, opacity, rotation, feather_radius)
+	    * and 1 int value num_optional_params (telling how much will follow)
             * the rest of the line is optional
             *  8  additional float values (transformation factors) 7th upto 14th parameter
             *  1  integer values (keyframe) as 7th parameter 
             *         or as 15th parameter (if transformation factors are present too)
             */
-           if((l_cnt != 6) && (l_cnt != 7) && (l_cnt != 14) && (l_cnt != 15))
+           if((l_cnt != 6) && (l_cnt != 7)   /* for compatibility to old format */
+	   && (l_cnt != 8) && (l_cnt != 9) && (l_cnt != 16) && (l_cnt != 17))
            {
              /* invalid pointline format detected */
              l_rc = -2;  /* have to call p_reset_points() when called from dialog window */
@@ -1317,26 +1632,43 @@ p_gap_load_pointfile(char *filename, t_mov_values *pvals)
            pvals->point[l_idx].h_resize = l_farr[3];
            pvals->point[l_idx].opacity  = l_farr[4];
            pvals->point[l_idx].rotation = l_farr[5];
-           if(l_cnt >= 14)
+           pvals->point[l_idx].sel_feather_radius = 0.0;
+           if(l_cnt >= 8)
 	   {
-             pvals->point[l_idx].ttlx = l_farr[6];
-             pvals->point[l_idx].ttly = l_farr[7];
-             pvals->point[l_idx].ttrx = l_farr[8];
-             pvals->point[l_idx].ttry = l_farr[9];
-             pvals->point[l_idx].tblx = l_farr[10];
-             pvals->point[l_idx].tbly = l_farr[11];
-             pvals->point[l_idx].tbrx = l_farr[12];
-             pvals->point[l_idx].tbry = l_farr[13];
+             pvals->point[l_idx].sel_feather_radius = l_farr[6];
+	     num_optional_params = l_farr[7];
 	   }
-           if((l_cnt == 7) && (l_idx > 0))
+           if(l_cnt >= 16)
 	   {
-             pvals->point[l_idx].keyframe = (gint)l_farr[6];
-             pvals->point[l_idx].keyframe_abs = p_conv_keyframe_to_abs((gint)l_farr[6], pvals);
+             pvals->point[l_idx].ttlx = l_farr[8];
+             pvals->point[l_idx].ttly = l_farr[9];
+             pvals->point[l_idx].ttrx = l_farr[10];
+             pvals->point[l_idx].ttry = l_farr[11];
+             pvals->point[l_idx].tblx = l_farr[12];
+             pvals->point[l_idx].tbly = l_farr[13];
+             pvals->point[l_idx].tbrx = l_farr[14];
+             pvals->point[l_idx].tbry = l_farr[15];
 	   }
-           if((l_cnt == 15) && (l_idx > 0))
+	   key_idx = -1;
+	   if(l_idx > 0)
 	   {
-             pvals->point[l_idx].keyframe = l_farr[14];
-             pvals->point[l_idx].keyframe_abs = p_conv_keyframe_to_abs(l_farr[14], pvals);
+	     switch(l_cnt)
+	     {
+	       case 7: 
+	           key_idx = 6; /* for compatibilty with old format */
+	           break;
+	       case 9:  
+	           key_idx = 8;
+	           break;
+	       case 17: 
+	           key_idx = 16;
+	           break;
+	     }
+	   }
+	   if(key_idx > 0)
+	   {
+             pvals->point[l_idx].keyframe = l_farr[key_idx];
+             pvals->point[l_idx].keyframe_abs = gap_mov_exec_conv_keyframe_to_abs(l_farr[key_idx], pvals);
 	   }
            l_idx ++;
          }
@@ -1450,11 +1782,11 @@ p_rotatate_less_than_180(gdouble angle, gdouble angle_new, gint *turns)
 
 
 /* ============================================================================
- * p_calculate_rotate_follow
+ * gap_mov_exec_calculate_rotate_follow
  * ============================================================================
  */
 void
-p_calculate_rotate_follow(t_mov_values *pvals, gdouble startangle)
+gap_mov_exec_calculate_rotate_follow(GapMovValues *pvals, gdouble startangle)
 {
   gint l_idx;
   gdouble l_startangle;
@@ -1533,17 +1865,17 @@ p_calculate_rotate_follow(t_mov_values *pvals, gdouble startangle)
       pvals->point[l_idx].rotation = l_startangle + l_angle;
     }
   }
-}	/* end p_calculate_rotate_follow */
+}	/* end gap_mov_exec_calculate_rotate_follow */
 
 
 /* ============================================================================
- * p_gap_chk_keyframes
+ * gap_mov_exec_chk_keyframes
  *   check if controlpoints and keyframe settings are OK
  *   return pointer to errormessage on Errors
  *      contains "\0" if no errors are found
  * ============================================================================
  */
-gchar *p_gap_chk_keyframes(t_mov_values *pvals)
+gchar *gap_mov_exec_chk_keyframes(GapMovValues *pvals)
 {
   gint   l_affected_frames;
   gint   l_idx;
@@ -1565,7 +1897,7 @@ gchar *p_gap_chk_keyframes(t_mov_values *pvals)
   {
      if(pvals->point[l_idx].keyframe_abs != 0)
      {
-         pvals->point[l_idx].keyframe = p_conv_keyframe_to_rel(pvals->point[l_idx].keyframe_abs, pvals);
+         pvals->point[l_idx].keyframe = gap_mov_exec_conv_keyframe_to_rel(pvals->point[l_idx].keyframe_abs, pvals);
 
          if(pvals->point[l_idx].keyframe > l_affected_frames - 2)
 	 {
@@ -1627,7 +1959,7 @@ gchar *p_gap_chk_keyframes(t_mov_values *pvals)
   }
 
   return(l_err_lbltext);
-}	/* end p_gap_chk_keyframes */
+}	/* end gap_mov_exec_chk_keyframes */
 
 
 /* ============================================================================
@@ -1637,7 +1969,7 @@ gchar *p_gap_chk_keyframes(t_mov_values *pvals)
  * ============================================================================
  */
 static gint
-p_check_move_path_params(t_mov_data *mov_data)
+p_check_move_path_params(GapMovData *mov_data)
 {
   gchar *l_err_lbltext;
   gint   l_rc;
@@ -1680,7 +2012,7 @@ p_check_move_path_params(t_mov_data *mov_data)
   }
   
   /* keyframes OK ? */
-  l_err_lbltext = p_gap_chk_keyframes(mov_data->val_ptr);
+  l_err_lbltext = gap_mov_exec_chk_keyframes(mov_data->val_ptr);
   if (*l_err_lbltext != '\0')
   {
      printf("Error in Keyframe settings: %s\n", l_err_lbltext);
@@ -1693,30 +2025,30 @@ p_check_move_path_params(t_mov_data *mov_data)
 
 
 /* ============================================================================
- * gap_move_path
+ * gap_mov_exec_move_path
  *
  * return image_id (of the new loaded current frame) on success
  *        or -1 on errors
  * ============================================================================
  */
 gint32
-gap_move_path(GimpRunMode run_mode, gint32 image_id, t_mov_values *pvals, gchar *pointfile
+gap_mov_exec_move_path(GimpRunMode run_mode, gint32 image_id, GapMovValues *pvals, gchar *pointfile
              , gint rotation_follow , gdouble startangle)
 {
   int l_rc;
-  t_anim_info *ainfo_ptr;
-  t_mov_data  l_mov_data;
+  GapAnimInfo *ainfo_ptr;
+  GapMovData  l_mov_data;
 
   l_rc = -1;
-  ainfo_ptr = p_alloc_ainfo(image_id, run_mode);
+  ainfo_ptr = gap_lib_alloc_ainfo(image_id, run_mode);
   if(ainfo_ptr != NULL)
   {
     l_mov_data.val_ptr = pvals;
     if(NULL != l_mov_data.val_ptr)
     {
-      if (0 == p_dir_ainfo(ainfo_ptr))
+      if (0 == gap_lib_dir_ainfo(ainfo_ptr))
       {
-        if(0 != p_chk_framerange(ainfo_ptr))   return -1;
+        if(0 != gap_lib_chk_framerange(ainfo_ptr))   return -1;
 
         l_mov_data.val_ptr->cache_src_image_id = -1;
         l_mov_data.dst_ainfo_ptr = ainfo_ptr;
@@ -1727,7 +2059,7 @@ gap_move_path(GimpRunMode run_mode, gint32 image_id, t_mov_values *pvals, gchar 
 	   /* get controlpoints from pointfile */
 	   if (pointfile != NULL)
 	   {
-	     l_rc = p_gap_load_pointfile(pointfile, pvals);
+	     l_rc = gap_mov_exec_gap_load_pointfile(pointfile, pvals);
 	     if (l_rc < 0)
 	     {
 	       printf("Execution Error: could not load MovePath controlpoints from file: %s\n",
@@ -1743,7 +2075,7 @@ gap_move_path(GimpRunMode run_mode, gint32 image_id, t_mov_values *pvals, gchar 
 	   /* Automatic calculation of rotation values */
 	   if((rotation_follow > 0) && (l_rc == 0))
 	   {
-              p_calculate_rotate_follow(pvals, startangle);
+              gap_mov_exec_calculate_rotate_follow(pvals, startangle);
 	   }
         }
         else
@@ -1751,8 +2083,8 @@ gap_move_path(GimpRunMode run_mode, gint32 image_id, t_mov_values *pvals, gchar 
 	   /* Dialog for GIMP_RUN_INTERACTIVE 
 	    * (and for GIMP_RUN_WITH_LAST_VALS that is not really supported here)
 	    */
-           l_rc = p_move_dialog (&l_mov_data);
-           if(0 != p_chk_framechange(ainfo_ptr))
+           l_rc = gap_mov_dlg_move_dialog (&l_mov_data);
+           if(0 != gap_lib_chk_framechange(ainfo_ptr))
            {
               l_rc = -1;
            }
@@ -1760,9 +2092,9 @@ gap_move_path(GimpRunMode run_mode, gint32 image_id, t_mov_values *pvals, gchar 
 
         if(l_rc >= 0)
         {
-           if(p_gap_check_save_needed(ainfo_ptr->image_id))
+           if(gap_lib_gap_check_save_needed(ainfo_ptr->image_id))
            {
-             l_rc = p_save_named_frame(ainfo_ptr->image_id, ainfo_ptr->old_filename);
+             l_rc = gap_lib_save_named_frame(ainfo_ptr->image_id, ainfo_ptr->old_filename);
            }
            if(l_rc >= 0)
            {
@@ -1770,7 +2102,7 @@ gap_move_path(GimpRunMode run_mode, gint32 image_id, t_mov_values *pvals, gchar 
               if (l_rc >= 0)
               {
                 /* go back to the frame_nr where move operation was started from */
-                l_rc = p_load_named_frame(ainfo_ptr->image_id, ainfo_ptr->old_filename);
+                l_rc = gap_lib_load_named_frame(ainfo_ptr->image_id, ainfo_ptr->old_filename);
               }
            }
         }
@@ -1789,7 +2121,7 @@ gap_move_path(GimpRunMode run_mode, gint32 image_id, t_mov_values *pvals, gchar 
 
     }
 
-    p_free_ainfo(&ainfo_ptr);
+    gap_lib_free_ainfo(&ainfo_ptr);
   }
 
   if (l_rc < 0)
@@ -1798,4 +2130,53 @@ gap_move_path(GimpRunMode run_mode, gint32 image_id, t_mov_values *pvals, gchar 
   }
   
   return(l_rc);    
-}	/* end gap_move_path */
+}	/* end gap_mov_exec_move_path */
+
+
+/* ============================================================================
+ * gap_mov_exec_set_handle_offsets
+ *  set handle offsets according to handle mode and src image dimensions
+ * ============================================================================
+ */
+void gap_mov_exec_set_handle_offsets(GapMovValues *val_ptr, GapMovCurrent *cur_ptr)
+{
+  guint    l_src_width, l_src_height;         /* dimensions of the source image */
+
+   /* get dimensions of source image */
+   if((val_ptr->src_stepmode < GAP_STEP_FRAME)
+   || (val_ptr->cache_tmp_image_id < 0))
+   {
+     l_src_width  = gimp_image_width(val_ptr->src_image_id);
+     l_src_height = gimp_image_height(val_ptr->src_image_id);
+   }
+   else
+   {
+     /* for Frame Based Modes use the cached tmp image */
+     l_src_width  = gimp_image_width(val_ptr->cache_tmp_image_id);
+     l_src_height = gimp_image_height(val_ptr->cache_tmp_image_id);
+   }
+
+   cur_ptr->l_handleX = 0.0;
+   cur_ptr->l_handleY = 0.0;
+   switch(val_ptr->src_handle)
+   {
+      case GAP_HANDLE_LEFT_BOT:
+         cur_ptr->l_handleY += l_src_height;
+         break;
+      case GAP_HANDLE_RIGHT_TOP:
+         cur_ptr->l_handleX += l_src_width;
+         break;
+      case GAP_HANDLE_RIGHT_BOT:
+         cur_ptr->l_handleX += l_src_width;
+         cur_ptr->l_handleY += l_src_height;
+         break;
+      case GAP_HANDLE_CENTER:
+         cur_ptr->l_handleX += (l_src_width  / 2);
+         cur_ptr->l_handleY += (l_src_height / 2);
+         break;
+      case GAP_HANDLE_LEFT_TOP:
+      default:
+         break;
+   }
+}	/* end gap_mov_exec_set_handle_offsets */
+

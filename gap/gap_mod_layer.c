@@ -28,6 +28,8 @@
  */
 
 /* revision history:
+ * gimp   1.3.20d;   2003/09/20  hof: sourcecode cleanup,
+ *                                    added new Actionmodes for Selction handling
  * gimp   1.3.20b;   2003/09/20  hof: gap_db_browser_dialog new param image_id
  * gimp   1.3.15a;   2003/06/21  hof: textspacing
  * gimp   1.3.14a;   2003/05/17  hof: placed OK button right.
@@ -65,6 +67,8 @@
 #include "gap_pdb_calls.h"
 #include "gap_match.h"
 #include "gap_lib.h"
+#include "gap_layer_copy.h"
+#include "gap_image.h"
 #include "gap_range_ops.h"
 #include "gap_mod_layer.h"
 
@@ -80,14 +84,14 @@ extern      int gap_debug; /* ==0  ... dont print debug infos */
  * ============================================================================
  */
 static
-int p_layer_modify_dialog(t_anim_info *ainfo_ptr,
+int p_layer_modify_dialog(GapAnimInfo *ainfo_ptr,
                    gint32 *range_from,  gint32 *range_to,
                    gint32 *action_mode, gint32 *sel_mode,
                    gint32 *sel_case,    gint32 *sel_invert,
                    char *sel_pattern,   char   *new_layername)
 {
-  static t_arr_arg  argv[9];
-  static t_but_arg  b_argv[2];
+  static GapArrArg  argv[9];
+  static GapArrButtonArg  b_argv[2];
   gint   l_rc;
 
   /* Layer select modes */
@@ -109,8 +113,8 @@ int p_layer_modify_dialog(t_anim_info *ainfo_ptr,
                                   };
 
   /* action items what to do with the selected layer(s) */
-  static char *action_args[13]  = { N_("Set Layer(s) visible"),
-                                    N_("Set Layer(s) invisible"),
+  static char *action_args[23] = { N_("Set Layer(s) visible"),
+                                  N_("Set Layer(s) invisible"),
                                   N_("Set Layer(s) linked"),
                                   N_("Set Layer(s) unlinked"),
                                   N_("Raise Layer(s)"),
@@ -121,12 +125,22 @@ int p_layer_modify_dialog(t_anim_info *ainfo_ptr,
                                   N_("Apply filter on Layer(s)"),
                                   N_("Duplicate Layer(s)"),
                                   N_("Delete Layer(s)"),
-                                  N_("Rename Layer(s)")
+                                  N_("Rename Layer(s)"),
+                                  N_("Replace Selection"),
+                                  N_("Add Selection"),
+                                  N_("Subtract Selection"),
+                                  N_("Intersect Selection"),
+                                  N_("Selection None"),
+                                  N_("Selection All"),
+                                  N_("Selection Invert"),
+                                  N_("Save Selection to Channel"),
+				  N_("Load Selection from Channel"),
+                                  N_("Delete Channel (by Name)")
                                   };
                                   
 
 /*                                                                   
-  static char *action_help[13]  = {"set all selected layers visible",
+  static char *action_help[23]  = {"set all selected layers visible",
                                   "set all selected layers  invisible",
                                   "set all selected layers  linked",
                                   "set all selected layers  unlinked",
@@ -138,17 +152,28 @@ int p_layer_modify_dialog(t_anim_info *ainfo_ptr,
                                   "APPLY FILTER to all selected layers",
                                   "duplicate all selected layers",
                                   "delete REMOVES all selected layers",
-                                  "rename all selected layers\nto NewLayername."
+                                  "rename all selected layers\nto NewLayername.",
+				  
+				  "Replace Selection by Selection of the invoking Frame Image",
+				  "Add Selection",
+				  "Subtract Selection",
+				  "Intersect Selection",
+				  "Clear Selection in all handled Frames",
+				  "Select All in all handled Frames",
+				  "Invert Selection in all handled Frames",
+				  "Save Selection as Channel",
+				  "Load Selection from Channel",
+				  "Delete Channel by Name"
                                   };
 */
 
-  int get_textize_loop;
+  guint get_textize_loop;
 
-  for (get_textize_loop = 0; get_textize_loop < 7; get_textize_loop++) {
+  for (get_textize_loop = 0; get_textize_loop < G_N_ELEMENTS (sel_args) ; get_textize_loop++) {
     sel_args[get_textize_loop] = gettext(sel_args[get_textize_loop]);
     sel_help[get_textize_loop] = gettext(sel_help[get_textize_loop]);
   }
-  for (get_textize_loop = 0; get_textize_loop < 13; get_textize_loop++)
+  for (get_textize_loop = 0; get_textize_loop < G_N_ELEMENTS (action_args); get_textize_loop++)
     action_args[get_textize_loop] = gettext(action_args[get_textize_loop]);
 
   l_rc = -1;
@@ -159,10 +184,11 @@ int p_layer_modify_dialog(t_anim_info *ainfo_ptr,
     b_argv[1].but_txt  = GTK_STOCK_OK;
     b_argv[1].but_val  = 0;
   
-  p_init_arr_arg(&argv[0], WGT_LABEL);
-  argv[0].label_txt = _("Perform function on one or more Layer(s)\nin all frames of the selected frame range\n");
+  gap_arr_arg_init(&argv[0], GAP_ARR_WGT_LABEL);
+  argv[0].label_txt = _("Perform Function on one or more Layer(s)\n"
+                        "in all Frames of the selected Frame Range\n");
 
-  p_init_arr_arg(&argv[1], WGT_INT_PAIR);
+  gap_arr_arg_init(&argv[1], GAP_ARR_WGT_INT_PAIR);
   argv[1].constraint = TRUE;
   argv[1].label_txt = _("From Frame:");
   argv[1].help_txt  = _("first handled frame");
@@ -170,7 +196,7 @@ int p_layer_modify_dialog(t_anim_info *ainfo_ptr,
   argv[1].int_max   = (gint)ainfo_ptr->last_frame_nr;
   argv[1].int_ret   = (gint)ainfo_ptr->curr_frame_nr;
 
-  p_init_arr_arg(&argv[2], WGT_INT_PAIR);
+  gap_arr_arg_init(&argv[2], GAP_ARR_WGT_INT_PAIR);
   argv[2].constraint = TRUE;
   argv[2].label_txt = _("To Frame:");
   argv[2].help_txt  = _("last handled frame");
@@ -180,9 +206,9 @@ int p_layer_modify_dialog(t_anim_info *ainfo_ptr,
 
 
   /* Layer select mode RADIO buttons */
-  p_init_arr_arg(&argv[3], WGT_RADIO);
-  argv[3].label_txt = _("Select Layer(s):");
-  argv[3].radio_argc = 7;
+  gap_arr_arg_init(&argv[3], GAP_ARR_WGT_RADIO);
+  argv[3].label_txt = _("Layer Selection:");
+  argv[3].radio_argc = G_N_ELEMENTS (sel_args);
   argv[3].radio_argv = sel_args;
   argv[3].radio_help_argv = sel_help;
   argv[3].radio_ret  = 4;
@@ -190,45 +216,53 @@ int p_layer_modify_dialog(t_anim_info *ainfo_ptr,
   /* Layer select pattern string */
   sel_pattern[0] = '0';
   sel_pattern[1] = '\0';
-  p_init_arr_arg(&argv[4], WGT_TEXT);
-  argv[4].label_txt = _("Select Pattern:");
+  gap_arr_arg_init(&argv[4], GAP_ARR_WGT_TEXT);
+  argv[4].label_txt = _("Layer Pattern:");
   argv[4].entry_width = 140;       /* pixel */
-  argv[4].help_txt  = _("String to identify layer names\nor layerstack position numbers\n0,3-5");
+  argv[4].help_txt  = _("String to identify Layer names\nor Layerstack Position Numbers\n0,3-5");
   argv[4].text_buf_len = MAX_LAYERNAME;
   argv[4].text_buf_ret = sel_pattern;
 
   /* case sensitive checkbutton */
-  p_init_arr_arg(&argv[5], WGT_TOGGLE);
+  gap_arr_arg_init(&argv[5], GAP_ARR_WGT_TOGGLE);
   argv[5].label_txt = _("Case sensitive");
   argv[5].help_txt  = _("Lowercase and UPPERCASE letters are considered as different");
   argv[5].int_ret   = 1;
 
   /* invert selection checkbutton */
-  p_init_arr_arg(&argv[6], WGT_TOGGLE);
-  argv[6].label_txt = _("Invert Selection");
+  gap_arr_arg_init(&argv[6], GAP_ARR_WGT_TOGGLE);
+  argv[6].label_txt = _("Invert Layer Selection");
   argv[6].help_txt  = _("Perform actions on all unselected Layers");
   argv[6].int_ret   = 0;
 
   /* desired action to perform OPTIONMENU  */
-  p_init_arr_arg(&argv[7], WGT_OPTIONMENU);
+  gap_arr_arg_init(&argv[7], GAP_ARR_WGT_OPTIONMENU);
   argv[7].label_txt = _("Function:");
-  argv[7].radio_argc = 13;
+  argv[7].radio_argc = G_N_ELEMENTS (action_args);
   argv[7].radio_argv = action_args;
   /* argv[7].radio_help_argv = action_help */
-  argv[7].help_txt = _("Function to be performed on all selected layers");
+  argv[7].help_txt = _("Function to be performed on all selected Layers");
   argv[7].radio_ret  = 0;
 
   /* a new name for the handled Layer(s) */
   *new_layername = '\0';
-  p_init_arr_arg(&argv[8], WGT_TEXT);
-  argv[8].label_txt = _("New Layername:");
+  gap_arr_arg_init(&argv[8], GAP_ARR_WGT_TEXT);
+  argv[8].label_txt = _("New Layer\n or Channel Name:");
   argv[8].entry_width = 140;       /* pixel */
-  argv[8].help_txt  = _("New Layername for all handled layers \n[####] is replaced by frame number\n(is used on function rename only)");
+  argv[8].help_txt  = _("Layer (or Channel) Name for all handled Layers (or Channels)\n"
+                        "[####] is replaced by Framenumber\n"
+			"This Name is only relevant for the Functions:\n"
+			" Duplicate Layer(s)\n"
+			" Rename Layer(s)\n"
+			" Save Selection to Channel\n"
+			" Load Selection from Channel\n"
+			" Delete Channel (by Name)"
+			);
   argv[8].text_buf_len = MAX_LAYERNAME;
   argv[8].text_buf_ret = new_layername;
 
 
-  l_rc =  p_array_std_dialog( _("Frames Modify"),
+  l_rc =  gap_arr_std_dialog( _("Frames Modify"),
                                 _("Settings"),
                                  9,   argv,      /* widget array */
                                  2,   b_argv,    /* button array */
@@ -260,10 +294,10 @@ p_pitstop_dialog(gint text_flag, char *filter_procname)
 {
   const gchar      *l_env;
   gchar            *l_msg;
-  static t_but_arg  l_but_argv[2];
+  static GapArrButtonArg  l_but_argv[2];
   gint              l_but_argc;
   gint              l_argc;
-  static t_arr_arg  l_argv[1];
+  static GapArrArg  l_argv[1];
   gint              l_continue;
   
     
@@ -294,7 +328,7 @@ p_pitstop_dialog(gint text_flag, char *filter_procname)
   {
      l_msg = g_strdup_printf ( _("Non-Interactive call of %s\n(for all selected layers)"), filter_procname);
   }
-  l_continue = p_array_std_dialog ( _("Animated Filter apply"), l_msg,
+  l_continue = gap_arr_std_dialog ( _("Animated Filter apply"), l_msg,
   				   l_argc,     l_argv, 
   				   l_but_argc, l_but_argv, 0);
   g_free (l_msg);
@@ -305,13 +339,13 @@ p_pitstop_dialog(gint text_flag, char *filter_procname)
 
 
 /* ============================================================================
- * p_get_1st_selected
+ * gap_mod_get_1st_selected
  *   return index of the 1.st selected layer
  *   or -1 if no selection was found
  * ============================================================================
  */
 int
-p_get_1st_selected (t_LayliElem * layli_ptr, gint nlayers)
+gap_mod_get_1st_selected (GapModLayliElem * layli_ptr, gint nlayers)
 {
   int  l_idx;
 
@@ -323,18 +357,18 @@ p_get_1st_selected (t_LayliElem * layli_ptr, gint nlayers)
     }
   }
   return(-1);
-}	/* end p_get_1st_selected */
+}	/* end gap_mod_get_1st_selected */
 
 
 /* ============================================================================
- * p_alloc_layli
+ * gap_mod_alloc_layli
  * returns   pointer to a new allocated image_id of the new created multilayer image
  *           (or NULL on error)
  * ============================================================================
  */
 
-t_LayliElem *
-p_alloc_layli(gint32 image_id, gint32 *l_sel_cnt, gint *nlayers,
+GapModLayliElem *
+gap_mod_alloc_layli(gint32 image_id, gint32 *l_sel_cnt, gint *nlayers,
               gint32 sel_mode,
               gint32 sel_case,
 	      gint32 sel_invert,
@@ -343,7 +377,7 @@ p_alloc_layli(gint32 image_id, gint32 *l_sel_cnt, gint *nlayers,
   gint32 *l_layers_list;
   gint32  l_layer_id;
   gint32  l_idx;
-  t_LayliElem *l_layli_ptr;
+  GapModLayliElem *l_layli_ptr;
   char      *l_layername;
 
   *l_sel_cnt = 0;
@@ -354,7 +388,7 @@ p_alloc_layli(gint32 image_id, gint32 *l_sel_cnt, gint *nlayers,
     return(NULL);
   }
   
-  l_layli_ptr = g_new0(t_LayliElem, (*nlayers));
+  l_layli_ptr = g_new0(GapModLayliElem, (*nlayers));
   if(l_layli_ptr == NULL)
   {
      g_free (l_layers_list);
@@ -367,7 +401,7 @@ p_alloc_layli(gint32 image_id, gint32 *l_sel_cnt, gint *nlayers,
     l_layername = gimp_layer_get_name(l_layer_id); 
     l_layli_ptr[l_idx].layer_id  = l_layer_id;
     l_layli_ptr[l_idx].visible   = gimp_layer_get_visible(l_layer_id);
-    l_layli_ptr[l_idx].selected  = p_match_layer(l_idx,
+    l_layli_ptr[l_idx].selected  = gap_match_layer(l_idx,
                                                  l_layername,
                                                  sel_pattern,
 						 sel_mode,
@@ -378,7 +412,7 @@ p_alloc_layli(gint32 image_id, gint32 *l_sel_cnt, gint *nlayers,
     {
       (*l_sel_cnt)++;  /* count all selected layers */
     }
-    if(gap_debug) printf("gap: p_alloc_layli [%d] id:%d, sel:%d %s\n",
+    if(gap_debug) printf("gap: gap_mod_alloc_layli [%d] id:%d, sel:%d %s\n",
                          (int)l_idx, (int)l_layer_id,
 			 (int)l_layli_ptr[l_idx].selected, l_layername);
     g_free (l_layername);
@@ -387,50 +421,7 @@ p_alloc_layli(gint32 image_id, gint32 *l_sel_cnt, gint *nlayers,
   g_free (l_layers_list);
 
   return( l_layli_ptr );
-}		/* end p_alloc_layli */
-
-/* ============================================================================
- * p_prevent_empty_image
- *    check if the resulting image has at least one layer
- *    (gimp 1.0.0 tends to crash on layerless images)
- * ============================================================================
- */
-
-void p_prevent_empty_image(gint32 image_id)
-{
-  GimpImageBaseType l_type;
-  guint   l_width, l_height;
-  gint32  l_layer_id;
-  gint    l_nlayers;
-  gint32 *l_layers_list;
-
-  l_layers_list = gimp_image_get_layers(image_id, &l_nlayers);
-  if(l_layers_list != NULL)
-  {
-     g_free (l_layers_list);
-  }
-  else l_nlayers = 0;
-  
-  if(l_nlayers == 0)
-  {
-     /* the resulting image has no layer, add a transparent dummy layer */
-
-     /* get info about the image */
-     l_width  = gimp_image_width(image_id);
-     l_height = gimp_image_height(image_id);
-     l_type   = gimp_image_base_type(image_id);
-
-     l_type   = (l_type * 2); /* convert from GimpImageBaseType to GimpImageType */
-
-     /* add a transparent dummy layer */
-     l_layer_id = gimp_layer_new(image_id, "dummy",
-                                    l_width, l_height,  l_type,
-                                    0.0,       /* Opacity full transparent */     
-                                    0);        /* NORMAL */
-     gimp_image_add_layer(image_id, l_layer_id, 0);
-  }
-
-}	/* end p_prevent_empty_image */
+}		/* end gap_mod_alloc_layli */
 
 
 /* ============================================================================
@@ -440,7 +431,7 @@ void p_prevent_empty_image(gint32 image_id)
  * ============================================================================
  */
 static void
-p_raise_layer (gint32 image_id, gint32 layer_id, t_LayliElem * layli_ptr, gint nlayers)
+p_raise_layer (gint32 image_id, gint32 layer_id, GapModLayliElem * layli_ptr, gint nlayers)
 {
   if(! gimp_drawable_has_alpha (layer_id)) return; /* has no alpha channel */
 
@@ -450,7 +441,7 @@ p_raise_layer (gint32 image_id, gint32 layer_id, t_LayliElem * layli_ptr, gint n
 }	/* end p_raise_layer */
 
 static void
-p_lower_layer (gint32 image_id, gint32 layer_id, t_LayliElem * layli_ptr, gint nlayers)
+p_lower_layer (gint32 image_id, gint32 layer_id, GapModLayliElem * layli_ptr, gint nlayers)
 {
   if(! gimp_drawable_has_alpha (layer_id)) return; /* has no alpha channel */
 
@@ -469,6 +460,41 @@ p_lower_layer (gint32 image_id, gint32 layer_id, t_LayliElem * layli_ptr, gint n
   gimp_image_lower_layer(image_id, layer_id);
 }	/* end p_lower_layer */
 
+
+/* ============================================================================
+ * p_selection_combine
+ *
+ *    combine selections
+ * ============================================================================
+ */
+static void
+p_selection_combine(gint32 image_id
+                   ,gint32 master_channel_id
+		   ,GimpChannelOps  operation
+		   )
+{
+  gint32   l_new_channel_id;
+  gint32   l_sel_channel_id;
+ 
+  l_sel_channel_id = gimp_image_get_selection(image_id);
+  l_new_channel_id = gimp_channel_copy(l_sel_channel_id);
+
+  /* copy the initial selection master_channel_id
+   * to the newly create image 
+   */
+  gap_layer_copy_content( l_new_channel_id      /* dst_drawable_id  */
+                        , master_channel_id   /* src_drawable_id  */
+			);
+  gimp_channel_combine_masks(l_sel_channel_id
+                            ,l_new_channel_id
+			    ,operation
+			    , 0
+			    , 0
+			    );
+  gimp_channel_delete(l_new_channel_id);
+  
+}  /* end p_selection_combine */
+
 /* ============================================================================
  * p_apply_action
  *
@@ -483,7 +509,7 @@ p_lower_layer (gint32 image_id, gint32 layer_id, t_LayliElem * layli_ptr, gint n
 static int 
 p_apply_action(gint32 image_id,
 	      gint32 action_mode,
-	      t_LayliElem *layli_ptr,
+	      GapModLayliElem *layli_ptr,
 	      gint nlayers,
 	      gint32 sel_cnt,
 	      
@@ -491,7 +517,8 @@ p_apply_action(gint32 image_id,
 	      long  to,
 	      long  curr,
 	      char *new_layername,
-	      char *filter_procname
+	      char *filter_procname,
+	      gint32 master_image_id
 	      )
 {
   int   l_idx;
@@ -501,15 +528,19 @@ p_apply_action(gint32 image_id,
   gint    l_merge_mode;
   gint    l_vis_result;
   char    l_name_buff[MAX_LAYERNAME];
+  gint32  l_master_channel_id;
   
   if(gap_debug) fprintf(stderr, "gap: p_apply_action START\n");      
 
   l_rc = 0; 
   l_merge_mode = -44; /* none of the flatten modes */
 
-  if(action_mode == ACM_MERGE_EXPAND) l_merge_mode = FLAM_MERG_EXPAND;
-  if(action_mode == ACM_MERGE_IMG)    l_merge_mode = FLAM_MERG_CLIP_IMG;
-  if(action_mode == ACM_MERGE_BG)     l_merge_mode = FLAM_MERG_CLIP_BG;
+  if(action_mode == GAP_MOD_ACM_MERGE_EXPAND) l_merge_mode = GAP_RANGE_OPS_FLAM_MERG_EXPAND;
+  if(action_mode == GAP_MOD_ACM_MERGE_IMG)    l_merge_mode = GAP_RANGE_OPS_FLAM_MERG_CLIP_IMG;
+  if(action_mode == GAP_MOD_ACM_MERGE_BG)     l_merge_mode = GAP_RANGE_OPS_FLAM_MERG_CLIP_BG;
+
+  l_master_channel_id = gimp_image_get_selection(master_image_id);
+
 
   /* merge actions require one call per image */  
   if(l_merge_mode != (-44))
@@ -551,9 +582,9 @@ p_apply_action(gint32 image_id,
      /* if new_layername is available use that name
       * for the new merged layer
       */
-     if (!p_is_empty (new_layername))
+     if (!gap_match_string_is_empty (new_layername))
      {
-	 p_substitute_framenr(&l_name_buff[0], sizeof(l_name_buff),
+	 gap_match_substitute_framenr(&l_name_buff[0], sizeof(l_name_buff),
 	                      new_layername, curr);
 	 gimp_layer_set_name(l_layer_id, &l_name_buff[0]);
      }
@@ -584,49 +615,159 @@ p_apply_action(gint32 image_id,
                            (int)l_layer_id, (int)l_idx);      
       switch(action_mode)
       {
-        case ACM_SET_VISIBLE:
+        case GAP_MOD_ACM_SET_VISIBLE:
           gimp_layer_set_visible(l_layer_id, TRUE);
 	  break;
-        case ACM_SET_INVISIBLE:
+        case GAP_MOD_ACM_SET_INVISIBLE:
           gimp_layer_set_visible(l_layer_id, FALSE);
 	  break;
-        case ACM_SET_LINKED:
+        case GAP_MOD_ACM_SET_LINKED:
           gimp_layer_set_linked(l_layer_id, TRUE);
 	  break;
-        case ACM_SET_UNLINKED:
+        case GAP_MOD_ACM_SET_UNLINKED:
           gimp_layer_set_linked(l_layer_id, FALSE);
 	  break;
-        case ACM_RAISE:
+        case GAP_MOD_ACM_RAISE:
 	  p_raise_layer(image_id, l_layer_id, layli_ptr, nlayers);
 	  break;
-        case ACM_LOWER:
+        case GAP_MOD_ACM_LOWER:
 	  p_lower_layer(image_id, l_layer_id, layli_ptr, nlayers);
 	  break;
-        case ACM_APPLY_FILTER:
-	  l_rc = p_call_plugin(filter_procname,
+        case GAP_MOD_ACM_APPLY_FILTER:
+	  l_rc = gap_filt_pdb_call_plugin(filter_procname,
 	                       image_id,
 			       l_layer_id,
 			       GIMP_RUN_WITH_LAST_VALS);
           if(gap_debug) fprintf(stderr, "gap: p_apply_action FILTER:%s rc =%d\n",
                                 filter_procname, (int)l_rc);      
 	  break;
-        case ACM_DUPLICATE:
+        case GAP_MOD_ACM_DUPLICATE:
 	  l_new_layer_id = gimp_layer_copy(l_layer_id);
 	  gimp_image_add_layer (image_id, l_new_layer_id, -1); 
-	  if (!p_is_empty (new_layername))
+	  if (!gap_match_string_is_empty (new_layername))
 	  {
-	      p_substitute_framenr(&l_name_buff[0], sizeof(l_name_buff),
+	      gap_match_substitute_framenr(&l_name_buff[0], sizeof(l_name_buff),
 	                           new_layername, curr);
 	      gimp_layer_set_name(l_new_layer_id, &l_name_buff[0]);
 	  }
 	  break;
-        case ACM_DELETE:
+        case GAP_MOD_ACM_DELETE:
 	  gimp_image_remove_layer(image_id, l_layer_id);
 	  break;
-        case ACM_RENAME:
-	  p_substitute_framenr(&l_name_buff[0], sizeof(l_name_buff),
+        case GAP_MOD_ACM_RENAME:
+	  gap_match_substitute_framenr(&l_name_buff[0], sizeof(l_name_buff),
 	                        new_layername, curr);
 	  gimp_layer_set_name(l_layer_id, &l_name_buff[0]);
+	  break;
+        case GAP_MOD_ACM_SEL_REPLACE:
+	  {
+            gint32 l_sel_channel_id;
+
+	    gimp_selection_all(image_id);
+            l_sel_channel_id = gimp_image_get_selection(image_id);
+            /* copy the initial selection l_master_channel_id
+	     * to the newly create image 
+	     */
+            gap_layer_copy_content( l_sel_channel_id      /* dst_drawable_id  */
+                                  , l_master_channel_id   /* src_drawable_id  */
+			          );
+	  }
+	  break;
+        case GAP_MOD_ACM_SEL_ADD:
+	  p_selection_combine(image_id, l_master_channel_id, GIMP_CHANNEL_OP_ADD);
+	  break;
+        case GAP_MOD_ACM_SEL_SUTRACT:
+	  p_selection_combine(image_id, l_master_channel_id, GIMP_CHANNEL_OP_SUBTRACT);
+	  break;
+        case GAP_MOD_ACM_SEL_INTERSECT:
+	  p_selection_combine(image_id, l_master_channel_id, GIMP_CHANNEL_OP_INTERSECT);
+	  break;
+        case GAP_MOD_ACM_SEL_NONE:
+	  gimp_selection_none(image_id);
+	  break;
+        case GAP_MOD_ACM_SEL_ALL:
+	  gimp_selection_all(image_id);
+	  break;
+        case GAP_MOD_ACM_SEL_INVERT:
+	  gimp_selection_invert(image_id);
+	  break;
+        case GAP_MOD_ACM_SEL_SAVE:
+          {
+	    gint32 l_sel_channel_id;
+	    l_sel_channel_id = gimp_selection_save(image_id);
+            if(*new_layername != '\0')
+	    {
+	      gap_match_substitute_framenr(&l_name_buff[0], sizeof(l_name_buff),
+	                                   new_layername, curr);
+	      gimp_channel_set_name(l_sel_channel_id, &l_name_buff[0]);
+	    }
+	  }
+	  break;
+        case GAP_MOD_ACM_SEL_LOAD:
+          {
+            if(*new_layername != '\0')
+	    {
+	      gint   *l_channels;
+	      gint    n_channels;
+	      gint    l_ii;
+	      gchar  *l_channelname;
+
+	      gap_match_substitute_framenr(&l_name_buff[0], sizeof(l_name_buff),
+	                                   new_layername, curr);
+					   
+	      l_channels = gimp_image_get_channels(image_id, &n_channels);	
+	      for(l_ii=0; l_ii < n_channels; l_ii++)
+	      {
+	        l_channelname = gimp_channel_get_name(l_channels[l_ii]);
+		if(l_channelname)
+		{
+		  if(strcmp(l_channelname,&l_name_buff[0] ) == 0)
+		  {
+                    gimp_selection_load(l_channels[l_ii]);
+		    g_free(l_channelname);
+		    break;
+		  }
+		  g_free(l_channelname);
+		}
+	      }
+	      if(l_channels)
+	      {
+	        g_free(l_channels);
+	      }
+	    }
+	  }
+	  break;
+        case GAP_MOD_ACM_SEL_DELETE:
+          {
+            if(*new_layername != '\0')
+	    {
+	      gint   *l_channels;
+	      gint    n_channels;
+	      gint    l_ii;
+	      gchar  *l_channelname;
+
+	      gap_match_substitute_framenr(&l_name_buff[0], sizeof(l_name_buff),
+	                                   new_layername, curr);
+					   
+	      l_channels = gimp_image_get_channels(image_id, &n_channels);	
+	      for(l_ii=0; l_ii < n_channels; l_ii++)
+	      {
+	        l_channelname = gimp_channel_get_name(l_channels[l_ii]);
+		if(l_channelname)
+		{
+		  if(strcmp(l_channelname,&l_name_buff[0] ) == 0)
+		  {
+                    gimp_image_remove_channel(image_id, l_channels[l_ii]);
+		  }
+		  g_free(l_channelname);
+		}
+	      }
+	      if(l_channels)
+	      {
+	        g_free(l_channels);
+	      }
+	    }
+	  }
 	  break;
         default:
 	  break;
@@ -647,15 +788,15 @@ p_apply_action(gint32 image_id,
  * ============================================================================
  */
 static int
-p_do_filter_dialogs(t_anim_info *ainfo_ptr, 
+p_do_filter_dialogs(GapAnimInfo *ainfo_ptr, 
                     gint32 image_id, gint32 *dpy_id, 
-                    t_LayliElem * layli_ptr, gint nlayers ,
+                    GapModLayliElem * layli_ptr, gint nlayers ,
                     char *filter_procname, int filt_len,
 		    gint *plugin_data_len,
-		    t_apply_mode *apply_mode
+		    GapFiltPdbApplyMode *apply_mode
 		    )
 {
-  t_gap_db_browse_result  l_browser_result;
+  GapDbBrowserResult  l_browser_result;
   gint32   l_layer_id;
   int      l_rc;
   int      l_idx;
@@ -666,9 +807,9 @@ p_do_filter_dialogs(t_anim_info *ainfo_ptr,
   if(gap_db_browser_dialog( _("Select Filter for Animated frames-apply"),
                             _("Apply Constant"),
                             _("Apply Varying"),
-                            p_constraint_proc,
-                            p_constraint_proc_sel1,
-                            p_constraint_proc_sel2,
+                            gap_filt_pdb_constraint_proc,
+                            gap_filt_pdb_constraint_proc_sel1,
+                            gap_filt_pdb_constraint_proc_sel2,
                             &l_browser_result,
 			    image_id) < 0)
   {
@@ -678,14 +819,14 @@ p_do_filter_dialogs(t_anim_info *ainfo_ptr,
 
   strncpy(filter_procname, l_browser_result.selected_proc_name, filt_len-1);
   filter_procname[filt_len-1] = '\0';
-  if(l_browser_result.button_nr == 1) *apply_mode = PTYP_VARYING_LINEAR;
-  else                                *apply_mode = PAPP_CONSTANT;
+  if(l_browser_result.button_nr == 1) *apply_mode = GAP_PAPP_VARYING_LINEAR;
+  else                                *apply_mode = GAP_PAPP_CONSTANT;
 
   /* 1.st INTERACTIV Filtercall dialog */
   /* --------------------------------- */
   /* check for the Plugin */
 
-  l_rc = p_procedure_available(filter_procname, PTYP_CAN_OPERATE_ON_DRAWABLE);
+  l_rc = gap_filt_pdb_procedure_available(filter_procname, GAP_PTYP_CAN_OPERATE_ON_DRAWABLE);
   if(l_rc < 0)
   {
      fprintf(stderr, "ERROR: Plugin not available or wrong type %s\n", filter_procname);
@@ -693,7 +834,7 @@ p_do_filter_dialogs(t_anim_info *ainfo_ptr,
   }
 
   /* get 1.st selected layer (of 1.st handled frame in range ) */
-  l_idx = p_get_1st_selected(layli_ptr, nlayers);
+  l_idx = gap_mod_get_1st_selected(layli_ptr, nlayers);
   if(l_idx < 0)
   {
      fprintf(stderr, "ERROR: No layer selected in 1.st handled frame\n");
@@ -704,7 +845,7 @@ p_do_filter_dialogs(t_anim_info *ainfo_ptr,
   /* open a view for the 1.st handled frame */
   *dpy_id = gimp_display_new (image_id);
 
-  l_rc = p_call_plugin(filter_procname, image_id, l_layer_id, GIMP_RUN_INTERACTIVE);
+  l_rc = gap_filt_pdb_call_plugin(filter_procname, image_id, l_layer_id, GIMP_RUN_INTERACTIVE);
 
   /* OOPS: cant delete the display here, because
    *       closing the last display seems to free up
@@ -715,18 +856,18 @@ p_do_filter_dialogs(t_anim_info *ainfo_ptr,
   /* gimp_display_delete(*dpy_id); */
 
   /* get values, then store with suffix "_ITER_FROM" */
-  *plugin_data_len = p_get_data(filter_procname);
+  *plugin_data_len = gap_filt_pdb_get_data(filter_procname);
   if(*plugin_data_len > 0)
   {
      g_snprintf(l_key_from, sizeof(l_key_from), "%s_ITER_FROM", filter_procname);
-     p_set_data(l_key_from, *plugin_data_len);
+     gap_filt_pdb_set_data(l_key_from, *plugin_data_len);
   }
   else
   {
     return (-1);
   }
 
-  if(*apply_mode != PTYP_VARYING_LINEAR)
+  if(*apply_mode != GAP_PAPP_VARYING_LINEAR)
   {
     return (p_pitstop_dialog(1, filter_procname));
   }
@@ -750,7 +891,7 @@ p_do_filter_dialogs(t_anim_info *ainfo_ptr,
  */
 static gint
 p_do_2nd_filter_dialogs(char *filter_procname,
-                        t_apply_mode  l_apply_mode,
+                        GapFiltPdbApplyMode  l_apply_mode,
 			char *last_frame_filename,
 			gint32 sel_mode, gint32 sel_case,
 			gint32 sel_invert, char *sel_pattern
@@ -763,7 +904,7 @@ p_do_2nd_filter_dialogs(char *filter_procname,
   static char l_key_to[512];
   static char l_key_from[512];
   gint32  l_last_image_id;
-  t_LayliElem *l_layli_ptr;
+  GapModLayliElem *l_layli_ptr;
   gint       l_nlayers;
   gint32     l_sel_cnt;
   gint       l_plugin_data_len;
@@ -784,22 +925,22 @@ p_do_2nd_filter_dialogs(char *filter_procname,
      goto cleanup;
 
   /* load last frame into temporary image */
-  l_last_image_id = p_load_image(last_frame_filename);
+  l_last_image_id = gap_lib_load_image(last_frame_filename);
   if (l_last_image_id < 0)
      goto cleanup;
 
   /* get informations (id, visible, selected) about all layers */
-  l_layli_ptr = p_alloc_layli(l_last_image_id, &l_sel_cnt, &l_nlayers,
+  l_layli_ptr = gap_mod_alloc_layli(l_last_image_id, &l_sel_cnt, &l_nlayers,
                                sel_mode, sel_case, sel_invert, sel_pattern);
 
   if (l_layli_ptr == NULL)
      goto cleanup;
 
   /* get 1.st selected layer (of last handled frame in range ) */
-  l_idx = p_get_1st_selected(l_layli_ptr, l_nlayers);
+  l_idx = gap_mod_get_1st_selected(l_layli_ptr, l_nlayers);
   if(l_idx < 0)
   {
-     p_msg_win (GIMP_RUN_INTERACTIVE, _("GAP Modify: No layer selected in last handled frame"));
+     gap_arr_msg_win (GIMP_RUN_INTERACTIVE, _("GAP Modify: No layer selected in last handled frame"));
      goto cleanup;
   }
   l_layer_id = l_layli_ptr[l_idx].layer_id;
@@ -809,20 +950,20 @@ p_do_2nd_filter_dialogs(char *filter_procname,
 
   /* 2.nd INTERACTIV Filtercall dialog */
   /* --------------------------------- */
-  l_rc = p_call_plugin(filter_procname, l_last_image_id, l_layer_id, GIMP_RUN_INTERACTIVE);
+  l_rc = gap_filt_pdb_call_plugin(filter_procname, l_last_image_id, l_layer_id, GIMP_RUN_INTERACTIVE);
 
   /* get values, then store with suffix "_ITER_TO" */
-  l_plugin_data_len = p_get_data(filter_procname);
+  l_plugin_data_len = gap_filt_pdb_get_data(filter_procname);
   if(l_plugin_data_len <= 0)
      goto cleanup;
 
    g_snprintf(l_key_to, sizeof(l_key_to), "%s_ITER_TO", filter_procname);
-   p_set_data(l_key_to, l_plugin_data_len);
+   gap_filt_pdb_set_data(l_key_to, l_plugin_data_len);
 
    /* get FROM values */
    g_snprintf(l_key_from, sizeof(l_key_from), "%s_ITER_FROM", filter_procname);
-   l_plugin_data_len = p_get_data(l_key_from);
-   p_set_data(filter_procname, l_plugin_data_len);
+   l_plugin_data_len = gap_filt_pdb_get_data(l_key_from);
+   gap_filt_pdb_set_data(filter_procname, l_plugin_data_len);
 
   l_rc = p_pitstop_dialog(1, filter_procname);
   
@@ -849,7 +990,7 @@ cleanup:
  * ============================================================================
  */
 static gint32
-p_frames_modify(t_anim_info *ainfo_ptr,
+p_frames_modify(GapAnimInfo *ainfo_ptr,
                    long range_from, long range_to,
                    gint32 action_mode, gint32 sel_mode,
                    gint32 sel_case, gint32 sel_invert,
@@ -864,7 +1005,7 @@ p_frames_modify(t_anim_info *ainfo_ptr,
   int        l_rc;
   int        l_idx;
   gint32     l_sel_cnt;
-  t_LayliElem *l_layli_ptr;
+  GapModLayliElem *l_layli_ptr;
 
   GimpParam     *l_params;
   gint        l_retvals;
@@ -873,7 +1014,7 @@ p_frames_modify(t_anim_info *ainfo_ptr,
   char      *l_plugin_iterator;
   gdouble    l_cur_step;
   gint       l_total_steps;
-  t_apply_mode  l_apply_mode;
+  GapFiltPdbApplyMode  l_apply_mode;
   char         *l_last_frame_filename;
   gint          l_count;
 
@@ -897,7 +1038,7 @@ p_frames_modify(t_anim_info *ainfo_ptr,
   l_rc = 0;
   l_plugin_iterator = NULL;
   l_plugin_data_len = 0;
-  l_apply_mode = PAPP_CONSTANT;
+  l_apply_mode = GAP_PAPP_CONSTANT;
   l_dpy_id = -1;
   l_last_frame_filename = NULL;
 
@@ -940,19 +1081,19 @@ p_frames_modify(t_anim_info *ainfo_ptr,
 
     /* build the frame name */
     if(ainfo_ptr->new_filename != NULL) g_free(ainfo_ptr->new_filename);
-    ainfo_ptr->new_filename = p_alloc_fname(ainfo_ptr->basename,
+    ainfo_ptr->new_filename = gap_lib_alloc_fname(ainfo_ptr->basename,
                                         l_cur_frame_nr,
                                         ainfo_ptr->extension);
     if(ainfo_ptr->new_filename == NULL)
        goto error;
 
     /* load current frame into temporary image */
-    l_tmp_image_id = p_load_image(ainfo_ptr->new_filename);
+    l_tmp_image_id = gap_lib_load_image(ainfo_ptr->new_filename);
     if(l_tmp_image_id < 0)
        goto error;
 
     /* get informations (id, visible, selected) about all layers */
-    l_layli_ptr = p_alloc_layli(l_tmp_image_id, &l_sel_cnt, &l_nlayers,
+    l_layli_ptr = gap_mod_alloc_layli(l_tmp_image_id, &l_sel_cnt, &l_nlayers,
                                 sel_mode, sel_case, sel_invert, sel_pattern);
 
     if(l_layli_ptr == NULL)
@@ -961,19 +1102,19 @@ p_frames_modify(t_anim_info *ainfo_ptr,
        goto error;
     }
 
-    if((l_cur_frame_nr == l_begin) && (action_mode == ACM_APPLY_FILTER))
+    if((l_cur_frame_nr == l_begin) && (action_mode == GAP_MOD_ACM_APPLY_FILTER))
     {
       /* ------------- 1.st frame: extra dialogs for APPLY_FILTER ---------- */
 
       if(l_sel_cnt < 1)
       {
-         p_msg_win(GIMP_RUN_INTERACTIVE, _("No selected Layer in start frame"));
+         gap_arr_msg_win(GIMP_RUN_INTERACTIVE, _("No selected Layer in start frame"));
          goto error;
       }
       
       if(l_begin != l_end)
       {
-        l_last_frame_filename = p_alloc_fname(ainfo_ptr->basename,
+        l_last_frame_filename = gap_lib_alloc_fname(ainfo_ptr->basename,
                                         l_end,
                                         ainfo_ptr->extension);
       }
@@ -995,7 +1136,7 @@ p_frames_modify(t_anim_info *ainfo_ptr,
 
       if(l_last_frame_filename != NULL)
       {
-        if((l_rc == 0) && (l_apply_mode == PTYP_VARYING_LINEAR))
+        if((l_rc == 0) && (l_apply_mode == GAP_PAPP_VARYING_LINEAR))
 	{
           l_rc = p_do_2nd_filter_dialogs(&l_filter_procname[0],
 				   l_apply_mode,
@@ -1013,7 +1154,7 @@ p_frames_modify(t_anim_info *ainfo_ptr,
        * therefore we unselect this layer, to avoid
        * a 2nd processing
        */
-      l_idx = p_get_1st_selected(l_layli_ptr, l_nlayers);
+      l_idx = gap_mod_get_1st_selected(l_layli_ptr, l_nlayers);
       if(l_idx >= 0)
       {
         l_layli_ptr[l_idx].selected = FALSE;
@@ -1021,9 +1162,9 @@ p_frames_modify(t_anim_info *ainfo_ptr,
       }
 
       /* check for matching Iterator PluginProcedures */
-      if(l_apply_mode == PTYP_VARYING_LINEAR )
+      if(l_apply_mode == GAP_PAPP_VARYING_LINEAR )
       {
-        l_plugin_iterator =  p_get_iterator_proc(&l_filter_procname[0], &l_count);
+        l_plugin_iterator =  gap_filt_pdb_get_iterator_proc(&l_filter_procname[0], &l_count);
       }
     }
 
@@ -1038,7 +1179,8 @@ p_frames_modify(t_anim_info *ainfo_ptr,
 		   l_sel_cnt,
 		   l_begin, l_end, l_cur_frame_nr,
 		   new_layername,
-		   &l_filter_procname[0]
+		   &l_filter_procname[0],
+		   ainfo_ptr->image_id     /* MASTER_image_id */
 		   );
     if(l_rc != 0)
     {
@@ -1054,10 +1196,10 @@ p_frames_modify(t_anim_info *ainfo_ptr,
     }
 
     /* check if the resulting image has at least one layer */
-    p_prevent_empty_image(l_tmp_image_id);
+    gap_image_prevent_empty_image(l_tmp_image_id);
   
     /* save current frame with same name */
-    l_rc = p_save_named_frame(l_tmp_image_id, ainfo_ptr->new_filename);
+    l_rc = gap_lib_save_named_frame(l_tmp_image_id, ainfo_ptr->new_filename);
     if(l_rc < 0)
     {
       printf("gap: p_frames_modify save frame %d failed.\n", (int)l_cur_frame_nr);
@@ -1066,8 +1208,8 @@ p_frames_modify(t_anim_info *ainfo_ptr,
     else l_rc = 0;
 
     /* iterator call (for filter apply with varying values) */
-    if((action_mode == ACM_APPLY_FILTER)
-    && (l_plugin_iterator != NULL) && (l_apply_mode == PTYP_VARYING_LINEAR ))
+    if((action_mode == GAP_MOD_ACM_APPLY_FILTER)
+    && (l_plugin_iterator != NULL) && (l_apply_mode == GAP_PAPP_VARYING_LINEAR ))
     {
        l_cur_step -= 1.0;
         /* call plugin-specific iterator, to modify
@@ -1166,7 +1308,7 @@ gint gap_mod_layer(GimpRunMode run_mode, gint32 image_id,
                    char *sel_pattern, char *new_layername)
 {
   int    l_rc;
-  t_anim_info *ainfo_ptr;
+  GapAnimInfo *ainfo_ptr;
   gint32    l_from;
   gint32    l_to;
   gint32    l_action_mode;
@@ -1180,11 +1322,11 @@ gint gap_mod_layer(GimpRunMode run_mode, gint32 image_id,
   l_rc = 0;
   
   
-  ainfo_ptr = p_alloc_ainfo(image_id, run_mode);
+  ainfo_ptr = gap_lib_alloc_ainfo(image_id, run_mode);
   if(ainfo_ptr != NULL)
   {
 
-    if (0 == p_dir_ainfo(ainfo_ptr))
+    if (0 == gap_lib_dir_ainfo(ainfo_ptr))
     {
       if(run_mode == GIMP_RUN_INTERACTIVE)
       {
@@ -1211,9 +1353,9 @@ gint gap_mod_layer(GimpRunMode run_mode, gint32 image_id,
 
       if(l_rc >= 0)
       {
-         if(p_gap_check_save_needed(ainfo_ptr->image_id))
+         if(gap_lib_gap_check_save_needed(ainfo_ptr->image_id))
          {
-           l_rc = p_save_named_frame(ainfo_ptr->image_id, ainfo_ptr->old_filename);
+           l_rc = gap_lib_save_named_frame(ainfo_ptr->image_id, ainfo_ptr->old_filename);
          }
          if(l_rc >= 0)
          {
@@ -1222,13 +1364,13 @@ gint gap_mod_layer(GimpRunMode run_mode, gint32 image_id,
 				  l_sel_mode, sel_case, sel_invert,
 				  &l_sel_pattern[0], &l_new_layername[0]
 				 );
-           p_load_named_frame(ainfo_ptr->image_id, ainfo_ptr->old_filename);
+           gap_lib_load_named_frame(ainfo_ptr->image_id, ainfo_ptr->old_filename);
          }
       }
 
 
     }
-    p_free_ainfo(&ainfo_ptr);
+    gap_lib_free_ainfo(&ainfo_ptr);
   }
   
 

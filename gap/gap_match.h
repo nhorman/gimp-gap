@@ -31,22 +31,20 @@
 
 #include "libgimp/gimp.h"
 
-#define MTCH_EQUAL       0
-#define MTCH_START       1
-#define MTCH_END         2
-#define MTCH_ANYWHERE    3
-#define MTCH_NUMBERLIST  4
-#define MTCH_INV_NUMBERLIST  5
-#define MTCH_ALL_VISIBLE  6
+#define GAP_MTCH_EQUAL       0
+#define GAP_MTCH_START       1
+#define GAP_MTCH_END         2
+#define GAP_MTCH_ANYWHERE    3
+#define GAP_MTCH_NUMBERLIST  4
+#define GAP_MTCH_INV_NUMBERLIST  5
+#define GAP_MTCH_ALL_VISIBLE  6
 
-int  p_is_empty (const char *str);
-void p_substitute_framenr (char *buffer, int buff_len, char *new_layername, long curr);
+int  gap_match_string_is_empty (const char *str);
+void gap_match_substitute_framenr (char *buffer, int buff_len, char *new_layername, long curr);
 
-void str_toupper(char *str);
-
-int  p_match_number(gint32 layer_id, const char *pattern);
-int  p_match_name(const char *layername, const char *pattern, gint32 mode, gint32 case_sensitive);
-int  p_match_layer(gint32 layer_idx, const char *layername, const char *pattern,
+int  gap_match_number(gint32 layer_id, const char *pattern);
+int  gap_match_name(const char *layername, const char *pattern, gint32 mode, gint32 case_sensitive);
+int  gap_match_layer(gint32 layer_idx, const char *layername, const char *pattern,
                   gint32 mode, gint32 case_sensitive, gint32 invert,
                   gint nlayers, gint32 layer_id);
 

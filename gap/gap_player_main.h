@@ -22,6 +22,7 @@
  */
 
 /* revision history:
+ * version 1.3.20d; 2003/10/06  hof: new gpp struct members for resize behaviour
  * version 1.3.19a; 2003/09/07  hof: audiosupport (based on wavplay, for UNIX only),
  * version 1.3.15a; 2003/06/21  hof: created
  */
@@ -38,11 +39,11 @@
 
 #define MAX_AUDIOFILE_LEN 1024
 
-typedef struct t_global_params {
+typedef struct GapPlayerMainGlobalParams {
   GimpRunMode  run_mode;
   gint32       image_id;
 
-  t_anim_info *ainfo_ptr;
+  GapAnimInfo *ainfo_ptr;
   
   gboolean   autostart;
   gboolean   use_thumbnails;
@@ -78,7 +79,7 @@ typedef struct t_global_params {
   gint32   pingpong_count;
   
   /* GUI widget pointers */
-  t_pview   *pv_ptr;
+  GapPView   *pv_ptr;
   GtkWidget *shell_window;  
   GtkObject *from_spinbutton_adj;
   GtkObject *to_spinbutton_adj;
@@ -88,7 +89,7 @@ typedef struct t_global_params {
 
   GtkWidget *status_label;
   GtkWidget *timepos_label;
-  GtkWidget *table11;
+  GtkWidget *resize_box;
   GtkWidget *size_spinbutton;
 
   GTimer    *gtimer;
@@ -97,9 +98,12 @@ typedef struct t_global_params {
   gdouble   delay_secs;
   gdouble   framecnt;
   
-  gint32    resize_count;
+  gint32    resize_handler_id;
   gint32    old_resize_width;
   gint32    old_resize_height;
+  gboolean  startup;
+  gint32    shell_initial_width;
+  gint32    shell_initial_height;
   
   /* audio stuff */
   gboolean  audio_enable;
@@ -135,14 +139,14 @@ typedef struct t_global_params {
   GtkWidget *video_total_time_label;
   GtkWidget *video_total_frames_label;
  
-} t_global_params;
+} GapPlayerMainGlobalParams;
 
-#define AUSTAT_NONE             0
-#define AUSTAT_SERVER_STARTED   1
-#define AUSTAT_FILENAME_SET     2
-#define AUSTAT_PLAYING          3
+#define GAP_PLAYER_MAIN_AUSTAT_NONE             0
+#define GAP_PLAYER_MAIN_AUSTAT_SERVER_STARTED   1
+#define GAP_PLAYER_MAIN_AUSTAT_FILENAME_SET     2
+#define GAP_PLAYER_MAIN_AUSTAT_PLAYING          3
 
-#define MIN_SAMPLERATE   1000 
-#define MAX_SAMPLERATE   48000
+#define GAP_PLAYER_MAIN_MIN_SAMPLERATE   1000 
+#define GAP_PLAYER_MAIN_MAX_SAMPLERATE   48000
 
 #endif

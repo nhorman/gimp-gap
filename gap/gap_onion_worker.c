@@ -31,6 +31,7 @@
  */
 
 #include <gap_onion_main.h>
+#include <gap_image.h>
 extern int gap_debug;
 
 
@@ -44,12 +45,12 @@ gint32
 p_find_frame_in_img_cache(void *gpp_void
                          , gint32 framenr, gint32 *image_id, gint32 *layer_id)
 {
-  t_global_params *gpp;
+  GapOnionMainGlobalParams *gpp;
   gint32 l_idx;
   *image_id = -1;
   *layer_id = -1;
   
-  gpp = (t_global_params *)gpp_void;
+  gpp = (GapOnionMainGlobalParams *)gpp_void;
 
   for(l_idx = 0; l_idx < MIN(gpp->cache.count, GAP_ONION_CACHE_SIZE); l_idx++)
   {
@@ -81,10 +82,10 @@ p_find_frame_in_img_cache(void *gpp_void
 void
 p_add_img_to_cache (void *gpp_void, gint32 framenr, gint32 image_id, gint32 layer_id)
 {
-  t_global_params *gpp;
+  GapOnionMainGlobalParams *gpp;
   gint32 l_idx;
 
-  gpp = (t_global_params *)gpp_void;
+  gpp = (GapOnionMainGlobalParams *)gpp_void;
 
   if(gap_debug)
   {
@@ -127,7 +128,7 @@ p_add_img_to_cache (void *gpp_void, gint32 framenr, gint32 image_id, gint32 laye
       printf("p_add_img_to_cache: FULL CACHE delete oldest entry\n");
     }
     /* cache is full, so delete 1.st (oldest) entry */
-    p_delete_image_immediate(gpp->cache.image_id[0]);
+    gap_image_delete_immediate(gpp->cache.image_id[0]);
 
     /* shift all entries down one index step */
     for(l_idx = 0; l_idx <  GAP_ONION_CACHE_SIZE -1; l_idx++)
@@ -156,26 +157,26 @@ p_add_img_to_cache (void *gpp_void, gint32 framenr, gint32 image_id, gint32 laye
  * ============================================================================
  */
 static void
-p_delete_img_cache (t_global_params *gpp)
+p_delete_img_cache (GapOnionMainGlobalParams *gpp)
 {
   gint32 l_idx;
 
-  if(gap_debug) printf("p_delete_image_immediate: cache.count: %d)\n", (int)gpp->cache.count);
+  if(gap_debug) printf("gap_image_delete_immediate: cache.count: %d)\n", (int)gpp->cache.count);
   for(l_idx = 0; l_idx < MIN(gpp->cache.count, GAP_ONION_CACHE_SIZE); l_idx++)
   {
-    p_delete_image_immediate(gpp->cache.image_id[l_idx]);
+    gap_image_delete_immediate(gpp->cache.image_id[l_idx]);
   }
   gpp->cache.count = 0;
 }       /* end p_delete_img_cache */
 
 
 /* ============================================================================
- * p_plug_in_gap_get_animinfo
+ * gap_onion_worker_plug_in_gap_get_animinfo
  *      get informations about the animation
  * ============================================================================
  */
 void
-p_plug_in_gap_get_animinfo(gint32 image_ID, t_ainfo *ainfo)
+gap_onion_worker_plug_in_gap_get_animinfo(gint32 image_ID, GapOnionMainAinfo *ainfo)
 {
    static char     *l_called_proc = "plug_in_gap_get_animinfo";
    GimpParam       *return_vals;
@@ -205,32 +206,32 @@ p_plug_in_gap_get_animinfo(gint32 image_ID, t_ainfo *ainfo)
 
    printf("Error: PDB call of %s failed, image_ID: %d\n", l_called_proc, (int)image_ID);
 
-}       /* end p_plug_in_gap_get_animinfo */
+}       /* end gap_onion_worker_plug_in_gap_get_animinfo */
 
 
 /* wrappers for gap_onoin_base procedures */
 
 gint
-p_set_data_onion_cfg(t_global_params *gpp, char *key)
+gap_onion_worker_set_data_onion_cfg(GapOnionMainGlobalParams *gpp, char *key)
 {
-  if(gap_debug) printf("p_set_data_onion_cfg: START\n");
+  if(gap_debug) printf("gap_onion_worker_set_data_onion_cfg: START\n");
   
-  return (p_set_video_info_onion(&gpp->vin, &gpp->ainfo.basename[0]));
+  return (gap_vin_set_common_onion(&gpp->vin, &gpp->ainfo.basename[0]));
 }
 
 gint
-p_get_data_onion_cfg(t_global_params *gpp)
+gap_onion_worker_get_data_onion_cfg(GapOnionMainGlobalParams *gpp)
 {
-  t_video_info *l_vin;
+  GapVinVideoInfo *l_vin;
   
   
-  if(gap_debug) printf("p_get_data_onion_cfg: START\n");
+  if(gap_debug) printf("gap_onion_worker_get_data_onion_cfg: START\n");
 
   /* try to read configuration params */
-  l_vin = p_get_video_info(&gpp->ainfo.basename[0]);
+  l_vin = gap_vin_get_all(&gpp->ainfo.basename[0]);
   if(l_vin)
   {
-    memcpy(&gpp->vin, l_vin, sizeof(t_video_info));
+    memcpy(&gpp->vin, l_vin, sizeof(GapVinVideoInfo));
     g_free(l_vin);
     return 0;
   }
@@ -239,36 +240,36 @@ p_get_data_onion_cfg(t_global_params *gpp)
 }
 
 gint
-p_onion_visibility(t_global_params *gpp, gint visi_mode)
+gap_onion_worker_onion_visibility(GapOnionMainGlobalParams *gpp, gint visi_mode)
 {
-  return (p_onionskin_visibility(gpp->image_ID, visi_mode));
+  return (gap_onion_base_onionskin_visibility(gpp->image_ID, visi_mode));
 }
 
 
 /* ============================================================================
- * p_onion_delete
+ * gap_onion_worker_onion_delete
  *    remove onion layer(s) from the current image.
  * ============================================================================
  */
 gint
-p_onion_delete(t_global_params *gpp)
+gap_onion_worker_onion_delete(GapOnionMainGlobalParams *gpp)
 {
   if(gap_debug)
   {
-     printf("p_onion_delete: START\n");
+     printf("gap_onion_worker_onion_delete: START\n");
      printf("  image_ID: %d\n", (int)gpp->image_ID);
   }
 
-  p_onionskin_delete(gpp->image_ID);
+  gap_onion_base_onionskin_delete(gpp->image_ID);
 
 
-  if(gap_debug) printf("p_onion_delete: END\n");
+  if(gap_debug) printf("gap_onion_worker_onion_delete: END\n");
   return 0;
-}       /* end p_onion_delete */
+}       /* end gap_onion_worker_onion_delete */
 
 
 /* ============================================================================
- * p_onion_apply
+ * gap_onion_worker_onion_apply
  *    create or replace onion layer(s) in the current image.
  *    Onion layers do show one (or more) merged copies of previos (or next)
  *    videoframe(s).
@@ -292,16 +293,16 @@ p_onion_delete(t_global_params *gpp)
  * ============================================================================
  */
 gint
-p_onion_apply(t_global_params *gpp, gboolean use_cache)
+gap_onion_worker_onion_apply(GapOnionMainGlobalParams *gpp, gboolean use_cache)
 {
   gint    l_rc;
 
 
   if(gap_debug)
   {
-     printf("p_onion_apply: START\n");
+     printf("gap_onion_worker_onion_apply: START\n");
   }
-  l_rc = p_onionskin_apply(gpp
+  l_rc = gap_onion_base_onionskin_apply(gpp
              , gpp->image_ID
              , &gpp->vin
              , gpp->ainfo.curr_frame_nr
@@ -313,20 +314,20 @@ p_onion_apply(t_global_params *gpp, gboolean use_cache)
              , p_find_frame_in_img_cache
              , use_cache
              );
-  if(gap_debug) printf("p_onion_apply: END\n\n");
+  if(gap_debug) printf("gap_onion_worker_onion_apply: END\n\n");
 
   return 0;
-}       /* end p_onion_apply */
+}       /* end gap_onion_worker_onion_apply */
 
 
 
 /* ============================================================================
- * p_onion_range
+ * gap_onion_worker_onion_range
  *    Apply or delete onionskin layers in selected framerange
  * ============================================================================
  */
 gint
-p_onion_range(t_global_params *gpp)
+gap_onion_worker_onion_range(GapOnionMainGlobalParams *gpp)
 {
   int    l_rc;
   gint32 l_frame_nr;
@@ -371,7 +372,7 @@ p_onion_range(t_global_params *gpp)
 
   /* save current image */
   l_new_filename = gimp_image_get_filename(l_current_image_id);
-  l_rc = p_save_named_frame(gpp->image_ID, l_new_filename);
+  l_rc = gap_lib_save_named_frame(gpp->image_ID, l_new_filename);
   if(l_rc < 0)
      return -1;
 
@@ -379,7 +380,7 @@ p_onion_range(t_global_params *gpp)
   l_frame_nr = l_begin;
   while(1)
   {
-    if(gap_debug) printf("p_onion_range processing frame %d\n", (int)l_frame_nr);
+    if(gap_debug) printf("gap_onion_worker_onion_range processing frame %d\n", (int)l_frame_nr);
     gpp->ainfo.curr_frame_nr = l_frame_nr;
     if(l_new_filename != NULL) { g_free(l_new_filename); l_new_filename = NULL; }
     if (l_curr_frame_nr == l_frame_nr)
@@ -394,11 +395,11 @@ p_onion_range(t_global_params *gpp)
     else
     {
       /* build the frame name */
-      l_new_filename = p_alloc_fname(gpp->ainfo.basename,
+      l_new_filename = gap_lib_alloc_fname(gpp->ainfo.basename,
                                           l_frame_nr,
                                           gpp->ainfo.extension);
       /* load frame */
-      gpp->image_ID =  p_load_image(l_new_filename);
+      gpp->image_ID =  gap_lib_load_image(l_new_filename);
       if(gpp->image_ID < 0)
          return -1;
 
@@ -408,18 +409,18 @@ p_onion_range(t_global_params *gpp)
 
     if(gpp->run == GAP_ONION_RUN_APPLY)
     {
-      p_onion_apply(gpp, TRUE /* use_cache */);
+      gap_onion_worker_onion_apply(gpp, TRUE /* use_cache */);
     }
     else if(gpp->run == GAP_ONION_RUN_DELETE)
     {
-      p_onion_delete(gpp);
+      gap_onion_worker_onion_delete(gpp);
     }
     else
     {
       printf("operation not implemented\n");
     }
 
-    l_rc = p_save_named_frame(gpp->image_ID, l_new_filename);
+    l_rc = gap_lib_save_named_frame(gpp->image_ID, l_new_filename);
     if(l_rc < 0)
        return -1;
 
@@ -440,4 +441,4 @@ p_onion_range(t_global_params *gpp)
   p_delete_img_cache(gpp);
 
   return 0; /* OK */
-}       /* end p_onion_range */
+}       /* end gap_onion_worker_onion_range */

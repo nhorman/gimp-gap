@@ -31,7 +31,7 @@
 
 #include "libgimp/gimp.h"
 
-typedef struct t_video_info {
+typedef struct GapVinVideoInfo {
   gdouble     framerate;    /* playback rate in frames per second */
   gint32      timezoom;
 
@@ -65,19 +65,22 @@ typedef struct t_video_info {
   gboolean asc_opacity;    /* TRUE: the far neighbour frames have higher opacity
                             * FALSE: near neighbour frames have higher opacity (DEFAULT)
                             */
-} t_video_info;
+} GapVinVideoInfo;
 
 
-typedef struct t_textfile_lines {
+typedef struct GapVinTextFileLines {
    char    *line;
    gint32   line_nr;
    void    *next;
-} t_textfile_lines;
+} GapVinTextFileLines;
 
 
-char *p_alloc_video_info_name(char *basename);
-int   p_set_video_info(t_video_info *vin_ptr, char *basename);
-int   p_set_video_info_onion(t_video_info *vin_ptr, char *basename);
-t_video_info *p_get_video_info(char *basename);
+char *gap_vin_alloc_name(char *basename);
+int   gap_vin_set_common(GapVinVideoInfo *vin_ptr, char *basename);
+int   gap_vin_set_common_onion(GapVinVideoInfo *vin_ptr, char *basename);
+GapVinVideoInfo *gap_vin_get_all(char *basename);
+GapVinTextFileLines * gap_vin_load_textfile(char *filename);
+void  gap_vin_free_textfile_lines(GapVinTextFileLines *txf_ptr_root);
+
 
 #endif

@@ -24,7 +24,7 @@
 
 /* revision history:
  * version 1.3.16a; 2003/06/26  hof: use aspect_frame instead of simple frame
- *                                   added p_pview_render_default_icon
+ *                                   added gap_pview_render_default_icon
  * version 1.3.14c; 2003/06/19  hof: created
  */
 
@@ -48,12 +48,12 @@ extern int gap_debug;  /* 1 == print debug infos , 0 dont print debug infos */
 #define PREVIEW_BG_GRAY2 180
 
 /* ------------------------------
- * p_pview_reset
+ * gap_pview_reset
  * ------------------------------
  * reset/free precalculated stuff
  */
 void
-p_pview_reset(t_pview *pv_ptr)
+gap_pview_reset(GapPView *pv_ptr)
 {
   if(pv_ptr->src_col) g_free(pv_ptr->src_col);
   if(pv_ptr->pv_area_data)  g_free(pv_ptr->pv_area_data);
@@ -65,28 +65,28 @@ p_pview_reset(t_pview *pv_ptr)
   pv_ptr->src_bpp = 0;
   pv_ptr->src_rowstride = 0;
   pv_ptr->use_pixmap_repaint = FALSE;
-} /* end p_pview_reset */
+} /* end gap_pview_reset */
 
 
 /* ------------------------------
- * p_pview_set_size
+ * gap_pview_set_size
  * ------------------------------
  * set new preview size
  * and allocate buffers for src columns and row at previesize
  */
 void
-p_pview_set_size(t_pview *pv_ptr, gint pv_width, gint pv_height, gint pv_check_size)
+gap_pview_set_size(GapPView *pv_ptr, gint pv_width, gint pv_height, gint pv_check_size)
 {
   if(pv_ptr->da_widget == NULL) { return; }
 
-  p_pview_reset(pv_ptr);
+  gap_pview_reset(pv_ptr);
 
   gtk_widget_set_size_request (pv_ptr->da_widget, pv_width, pv_height);
   if(pv_ptr->aspect_frame)
   { 
     gtk_aspect_frame_set (GTK_ASPECT_FRAME(pv_ptr->aspect_frame)
-                         ,0.5
-                         ,0.5
+                         ,0.5   /* align x centered */
+                         ,0.5   /* align y centered */
                          , pv_width / pv_height
                          , TRUE  /* obey_child */
                          );
@@ -103,39 +103,39 @@ p_pview_set_size(t_pview *pv_ptr, gint pv_width, gint pv_height, gint pv_check_s
                                     , pv_ptr->pv_height * pv_ptr->pv_width * pv_ptr->pv_bpp );
   pv_ptr->src_col = g_new ( gint, pv_ptr->pv_width );                   /* column fetch indexes foreach preview col */
   
-}  /* end p_pview_set_size */
+}  /* end gap_pview_set_size */
 
 
 /* ------------------------------
- * p_pview_new
+ * gap_pview_new
  * ------------------------------
  * pv_check_size is checkboard size in pixels
  * (for transparent pixels)
  */
-t_pview *
-p_pview_new(gint pv_width, gint pv_height, gint pv_check_size, GtkWidget *aspect_frame)
+GapPView *
+gap_pview_new(gint pv_width, gint pv_height, gint pv_check_size, GtkWidget *aspect_frame)
 {
-  t_pview *pv_ptr;
+  GapPView *pv_ptr;
  
-  pv_ptr = g_malloc0(sizeof(t_pview));
+  pv_ptr = g_malloc0(sizeof(GapPView));
   pv_ptr->pv_bpp = 3;
  
   pv_ptr->da_widget = gtk_drawing_area_new ();
   pv_ptr->aspect_frame = aspect_frame;
-  p_pview_set_size(pv_ptr, pv_width, pv_height, pv_check_size);
+  gap_pview_set_size(pv_ptr, pv_width, pv_height, pv_check_size);
   pv_ptr->use_pixmap_repaint = FALSE;
   pv_ptr->pixmap = NULL;
 
   return(pv_ptr);
-}  /* end p_pview_new */
+}  /* end gap_pview_new */
 
 
 /* ------------------------------
- * p_pview_repaint
+ * gap_pview_repaint
  * ------------------------------
  */
 void
-p_pview_repaint(t_pview *pv_ptr)
+gap_pview_repaint(GapPView *pv_ptr)
 {
   if(pv_ptr == NULL) { return; }
   if(pv_ptr->da_widget == NULL) { return; }
@@ -168,16 +168,16 @@ p_pview_repaint(t_pview *pv_ptr)
                    ,pv_ptr->pv_height
                    );
   }
-}  /* end p_pview_repaint */
+}  /* end gap_pview_repaint */
 
 
 /* ------------------------------
- * p_pview_render_from_buf
+ * gap_pview_render_from_buf
  * ------------------------------
  * render drawing_area widget from src_data buffer
  * quick scaling without any interpolation
  * is done to fit into preview size. 
- * the t_pview structure holds
+ * the GapPView structure holds
  * precalculations to allow faster scaling
  * in multiple calls when the src_data dimensions
  * do not change.
@@ -195,7 +195,7 @@ p_pview_repaint(t_pview *pv_ptr)
  *            
  */
 gboolean
-p_pview_render_from_buf (t_pview *pv_ptr
+gap_pview_render_from_buf (GapPView *pv_ptr
                  , guchar *src_data
                  , gint    src_width
                  , gint    src_height
@@ -212,11 +212,11 @@ p_pview_render_from_buf (t_pview *pv_ptr
   if(pv_ptr->da_widget == NULL) { return FALSE; }
   if(pv_ptr->da_widget->window == NULL)
   { 
-    printf("p_pview_render_from_buf: drawing_area window pointer is NULL, cant render\n");
+    printf("gap_pview_render_from_buf: drawing_area window pointer is NULL, cant render\n");
     return FALSE;
   }
 
-  /* clear flag to let p_pview_repaint procedure know
+  /* clear flag to let gap_pview_repaint procedure know
    * to use the pv_area_data rather than the pixmap for refresh
    */
   pv_ptr->use_pixmap_repaint = FALSE;
@@ -231,7 +231,7 @@ p_pview_render_from_buf (t_pview *pv_ptr
      pv_height = pv_ptr->pv_height;
      pv_check_size = pv_ptr->pv_check_size;
      
-     p_pview_set_size(pv_ptr, pv_width, pv_height, pv_check_size);
+     gap_pview_set_size(pv_ptr, pv_width, pv_height, pv_check_size);
   }
   
   /* init column fetch indexes array (only needed on src size changes) */
@@ -400,11 +400,11 @@ p_pview_render_from_buf (t_pview *pv_ptr
 
   return FALSE;
 
-}       /* end p_pview_render_from_buf */
+}       /* end gap_pview_render_from_buf */
 
 
 /* ------------------------------
- * p_pview_render_from_image
+ * gap_pview_render_from_image
  * ------------------------------
  * render preview widget from image.
  * IMPORTANT: the image is scaled to preview size
@@ -414,7 +414,7 @@ p_pview_render_from_buf (t_pview *pv_ptr
  * after this procedure to make the changes appear on screen.
  */
 void
-p_pview_render_from_image (t_pview *pv_ptr, gint32 image_id)
+gap_pview_render_from_image (GapPView *pv_ptr, gint32 image_id)
 {
   gint32 layer_id;
   guchar *frame_data;
@@ -472,7 +472,7 @@ p_pview_render_from_image (t_pview *pv_ptr, gint32 image_id)
  
  {
     gboolean frame_data_was_grabbed;
-    frame_data_was_grabbed = p_pview_render_from_buf (pv_ptr
+    frame_data_was_grabbed = gap_pview_render_from_buf (pv_ptr
                    , frame_data
                    , drawable->width
                    , drawable->height
@@ -483,15 +483,15 @@ p_pview_render_from_image (t_pview *pv_ptr, gint32 image_id)
     if(!frame_data_was_grabbed) g_free(frame_data);
   }
   
-}  /* end p_pview_render_from_image */
+}  /* end gap_pview_render_from_image */
 
 
 /* ------------------------------
- * p_pview_render_default_icon
+ * gap_pview_render_default_icon
  * ------------------------------
  */
 void
-p_pview_render_default_icon(t_pview   *pv_ptr)
+gap_pview_render_default_icon(GapPView   *pv_ptr)
 {
   GtkWidget *widget;
   int w, h;
@@ -506,7 +506,7 @@ p_pview_render_default_icon(t_pview   *pv_ptr)
 
   widget = pv_ptr->da_widget;  /* the drawing area */
 
-  /* set flag to let p_pview_repaint procedure know
+  /* set flag to let gap_pview_repaint procedure know
    * to use the pixmap rather than pv_area_data for refresh
    */
   pv_ptr->use_pixmap_repaint = TRUE;
@@ -590,7 +590,7 @@ p_pview_render_default_icon(t_pview   *pv_ptr)
                    );
 
   
-}  /* end p_pview_render_default_icon */
+}  /* end gap_pview_render_default_icon */
 
 
 

@@ -1,4 +1,4 @@
-Project gap "Gimp Animation Package"   14. Sept 2003  (pre)release 1.3.20a
+Project gap "Gimp Animation Package"   29. Sept 2003  (pre)release 1.3.20c
 
 --------------------------------------------------------------------
 Introduction
@@ -21,16 +21,18 @@ Idea:
 	GIMP can operate on a series of images as if they were
 	a single one.
 	Each frame of an Animation can have multiple Layers.
-	The user can step from frame to frame by pressing an Accelerator Key.
+	The user can step from frame to frame by pressing an Accelerator Key
+	or can do Image manipulations that are propagated automatically
+	to a selected range of frames.
 
-	Layeranimated Images can be combined with frames (multiple images)
+	Layeranimated Images can be combined with Frames (multiple Images)
 	as you can see in the "Move Path" Plug-In
         or converted to frames and vice-versa. 
 	
 Concept:
 	An animation consists of a series of Images of the same Size & Type
 	(Frames).
-	In my Concept each Frame is stored seperate on Disk, using a filename
+	The Concept of GAP is to store each Frame seperate on Disk, using a filename
 	convention that includes the frame Number and extension.
 
 	Example: film_000001.xcf, 
@@ -40,10 +42,12 @@ Concept:
 	
 	gimp's xcf Fileformat should be used to store the frames,
 	so that each frame can have more Layers.
-	(Notes: 
-	Sound is not supported in this Concept, but can be added
-	by some of the supported Video Encoders.
-	Playbackrates (framerate) is also set at video encoding)
+
+	Sound is not supported in this Concept, but will be handled
+	as sperate audiofiles at encoding time or in the Playback Module.
+	The Playback Framerate and other common Information about the Animation
+	are stored in an extra Videoinfo Textfile
+	         film_vin.gap
 	
 	This requires a lot of Diskspace but offers much more flexibility
 	while working on the animation.
@@ -53,6 +57,8 @@ Concept:
 	(gzip has to be installed on your system to do that)
 	If you can accept lossy compression you may also use 
 	the xjt fileformat to store your frames on jpeg based compression.
+	(the curent implementation of the xjt fileformat
+	 is resticted to UNIX Operating Systems)
 	
 	The final Product can be encoded as videofile
 	or converted to one multilayerd Image
@@ -60,11 +66,18 @@ Concept:
 	(or, in the future in other Animation Formats 
 	when other Load/Save Modules were added to the gimp)
 	
-	GAP provides frontend dialog interfaces for
-	software MPEG video encoder programs.
+	GAP provides automated Fileformat Conversions for
+	the Frames of an Animation. 
+	This Conversions offer a way to use external
+	Video encoder Programs.
+	All GIMP-supported Imagefileformats may be used.
+	
+	On UNIX Platforms GAP provides frontend dialog interfaces for
+	software MPEG Video encoder Programs.
 	(mpeg_encode and mpeg2encode)
 	
-	GAP also provides an XANIM frontend to load AnimFrames from multimedia fileformats
+	On UNIX Platforms GAP also provides an XANIM frontend to load AnimFrames
+	from multimedia fileformats
 	(avi, quicktime, ....) based on the famous xanim multimedia player.
 	see the file README_xanim_hack for more details.
 	
@@ -76,7 +89,7 @@ Onionskin Layers
 Installation
 --------------------------------------------------------------------
 
-This version of GAP is a seprated Package since GIMP-1.3.x
+This version of GAP is a seperated Package since GIMP-1.3.x
 and DOES NOT compile/run with GIMP-1.2.x
 
   ./autogen.sh   # includes the ./configure call
@@ -539,10 +552,10 @@ How to use
 	  
 	  The preferred way is to edit your gimprc file and add a line
 	  like this on:
-	  (audioconvert_program "/usr/local/bin/audioconvert_to_wav.sh")
+	  (audioconvert_program "/usr/local/bin/my_private_audioconverter")
 
           The 2nd way is to set an Environmentvariable:
-	  export AUDIOCONVERT_TO_WAV=/usr/local/bin/audioconvert_to_wav.sh
+	  export AUDIOCONVERT_TO_WAV=/usr/local/bin/my_private_audioconverter
 	  
  
     Playback Alternatives:
@@ -566,8 +579,10 @@ How to use
           (<Image>/Video/Move Path)
 
 
-      For this Plug-In you need a series of frames
-      and one single image (that may have more layers).
+      For this Plug-In you need a series of frames as destination
+      and a source object.
+      The source object can be one single image
+      that may have one or more layers or another series of frames.
 
       - The Source Image must be opened in the gimp
       - The Source Image must be another Image than the destination frame
@@ -608,22 +623,70 @@ How to use
 	for the FrameBased Stepmodes it acts like an Animation with 
 	only one frame.
         
+      The Step Speed Factor
+        decides how fast to Step Through the Source Object,
+        in relation to the Target Frames. 
+        With Factor 1.0 Source and Target will step synchron.
+        Factor 0.5 slows down the Source Steps to half Speed.
+        The Same SourceLayer is copied into 2 Frames,
+        before the advance to the next SourceLayer is done.
+        
+        The StepSpeedFactor is not relevant for the 
+        Stepmodes "None" and "FrameNone".
+      
       
       The copies of the SourceLayer(s) were modified by transitions
         with varying Parameters.
         Parameters:
+       - SourceLayer (depends on Stepmode)
         - Position (X/Y)
-        - Size     (Width/Height)
+        - Size Scaling (Width/Height)
         - Opacity
         - Rotation (angle from -360 to +360 degrees)
-       - SourceLayer (depends on Stepmode)
+        - Perspective Transformation (transformation factors for X/Y of the 4 Corner Points)
+
+
+           Perspective Transformation Factors are Scalingfactors
+           that are applied to the Coordinates of the 4 Corners.
+           If all 8 Coordinates have the Value 1.0 no Scaling is done
+           and the result is the same as the original.
+           Scaling with Factor 0 moves the affected (X or Y) Coordinate to the Middle.
+           Factor 2.0 applied to Coorinate moves it outwards by half of the
+           original width (for X Coordinates)
+           or hlaf height (for Y Coordinates).
+
+                 1/1                       1/1
+                  +------------+------------+
+                  |            |            |
+                  |  x1/y1     |    x2/y2   |
+                  | 0.5/0.5    |   0.5/0.5  |
+                  |    o...............o    |
+                  |   .        |        .   |
+                  |  .         |         .  |
+                  | .          |0.0       . |
+                  +------------+------------+
+                 .|            |            |.
+                . |            |            | .
+               .  |            |            |  .
+              .   |            |            |   .
+             .    |            |            |    .
+            .     |            |            |     .
+           .      |            |            |      .
+          .       +------------+------------+       .
+         .       1/1                       1/1       .
+        .                                             .
+       o...............................................o
+     1.5/1.5                                          1.5/1.5
+      x3/y3                                            x4/y4
+
+
 
       The Parameters were changed linear from one starting point to
       the next point. Per default the move Path has only only 1 Point.
       (So the Src-Layers(s) are copied to all frames of the framerange
        at constant Position, Size and Opacity)
       If you want your Source_layers to move, grow, rotate or to fade (in or out)
-      you have to add one more points (limited to 256) to define a Path.
+      you have to add one more points (limited to 1024) to define a Path.
 
       The affected range is selected by  Start Frame - End Frame.
       Each affected frame recieves exactly one copy of the (current)
@@ -654,7 +717,7 @@ How to use
        (without picking other controlpoints)
        
 
-       There are Buttons to
+       There are Controlpoint Edit Buttons to
           "Add Point"
 	  "Insert Point"  "Delete Point"
 
@@ -664,10 +727,11 @@ How to use
           you can step from point to point,
 	  and make other points to the curremt point.
 	  
-       "Clear Point"  "Clear All Points"
+       "Reset Point"  "Reset All Points"
           does reset Width, Height and Opacity of the point to 100%
-	  and Rotation to 0 degree, and leaves the path (X/Y Values)
-	  unchanged.
+          , Perspective Factors to 1.0 (no Perspective tansformation)
+	  and Rotation to 0 degree, 
+	  but leaves the path (X/Y Values) unchanged.
 	
        "Delete All Points"
           removes all controlpoints.
@@ -700,10 +764,16 @@ How to use
           loads controlpoints from file
          
 
-
+      The Instant Apply Checkbox
+         does automatic update of the preview when checked.
+         The automatic update needs much CPU and IO power
+         especially when big Images are used as Source and/or Destination
+         or those Images have many Layers.
+         (dont use the Instant_apply on slow Machines.)
       
       Tips:
-         - with the UpdPreview Button you can blend in the
+         - with the UpdPreview Button (or Instant_apply checkbox)
+           you can blend in the
            selected Layer of the Source Image.
            If you want to adjust position it may be useful to see
            the background.
@@ -713,10 +783,26 @@ How to use
            (set the Layerstack to higher value)
            Then pres UpdPreview Button again.
          
-         - If you let your objects (source layers) rotatate or
+         - Whats wrong if the UpdPreview was pressed, 
+           but the Preview does not show the SourceObject ?
+           - maybe the SourceObject is an invisible Layer.
+             (if the "Force Visibility" checkbox is turned ON
+              invisible Layers should become visible).
+           - maybe the current Opacity Setting is 0% (or nearly 0%)
+           - maybe the current X and/or Y Position are outside
+             the image
+           - maybe the current Scaling Factors are 0% (or nearly 0%)
+             and the Result is only 1x1 Pixel or smaller
+           - maybe the Source Object has only fully transparent pixels
+
+         
+         - If you let your objects (source layers) rotatate,
+           perform perspective transformations or
            change their size, set Handle mode to 'Center'.
-           (If you use another Handle mode you may get unwanted
-           moves of your object, caused by resizing)
+           
+           If you use another Handle mode you may get unwanted
+           moves of your object, caused by resizing.
+           
          
          - Speed:
 	   If no Keyframes are set,
@@ -733,11 +819,14 @@ How to use
             +---+----+-----+------+-------+
 
            The affected range has 25 frames, and you have set 6 points
-           with growing distances in one straight line.
+           with growing distances in one straight line and without
+           specifiying keyframes for those points.
            That gives 5 frames (== equal time) for each part of the path,
            but each part has another length. This results in different
            (growing) speeds for each part of the path.
- 	  
+           
+           
+           
     - Keyframes
         
 	Keyframes can be used optional, to fix a controlpoint
@@ -807,6 +896,41 @@ How to use
     - Force visibility
          If this checkbutton is set, all Source Layerobjects
 	 are set visible when they are copied into frames.
+
+
+    MovePath Advanced Settings
+    
+    - Tracelayer
+         a Tracelayer shows all Positions of the moving Object
+	 from begin until the Position of the previous Frame.
+	 Positions in virtual Frames (tweens) are also included
+	 in the Tracelayer.
+	 If descending Opacity is used, the Trace is fading out
+	 at the older (previous) Positions of the moving Object.
+    
+    -Tweensteps
+        This feature is for rendering fast moving Objects.
+
+        MovePath can calculate the moving Object for virtual Frames (tweens)
+        beetween real Frames. You can control this by setting tween_steps
+        to a value greater than 0.
+        In that case the MovePath Tool creates an additional Layer
+        (the Tweenlayer) and inserts that Tween_Layer below the
+        Stackpostion of the Current Moving Object in the next real Frame.
+        The Tween_Layer shows the moving Object at the Positions of
+        all virtual Frames beetween two real Frames.
+        
+        Example: The selected Framerange is 10 Frames and
+        the Tweensteps value is 2. In this case 28 steps
+        are processed internal. 10 real Frames + 18 virtual Frames
+        (2 virtual beetween each real frame)
+        Use Descending Opacity to fade out Tweens.
+        The Tween nearest to the real Frame is drawn with the initial
+	Opacity Value, the other Tweens are reduced more and more
+	if descending Opacity is less than 100%.
+	With Tweens and Opacity Settings you can produce Motion-Blur Effects
+	for fast moving Objects.
+
     
 - Convert frames to one multilayered Image.
 - -----------------------------------------
@@ -1306,6 +1430,13 @@ If you edit gimprc files by hand, you must do this before you startup gimp.
 # tries to delete animation frames of the video.
 # (default is "yes")
 (video-confirm-frame-delete "yes")
+
+# optional external audioconverter program
+# must be able to handle the same parameters as the
+# standard converter script audioconvert_to_wav.sh
+# There is NO need for the audioconvert_program gimprc configuration
+# if you use the standard converter script.
+(audioconvert_program "/usr/local/bin/my_private_audioconverter")
  
 
 =============================================

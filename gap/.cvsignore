@@ -3,6 +3,7 @@ Makefile
 .deps
 _libs
 .libs
+gap_bluebox
 gap_decode_mpeg
 gap_filter
 gap_frontends

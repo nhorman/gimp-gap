@@ -1,5 +1,9 @@
-/*  gap_exchange_image.h
+/* gap_image.h
+ * 2003.10.09 hof (Wolfgang Hofer)
  *
+ * GAP ... Gimp Animation Plugins
+ *
+ * This Module contains Image specific Procedures
  *
  */
 /* The GIMP -- an image manipulation program
@@ -21,16 +25,30 @@
  */
 
 /* revision history:
- * version 0.98.00; 1998/11/26  hof: 1.st release 
- *                             (substitute for the procedure "gimp_duplicate_into"
- *                              that was never part of the GIMP core)
+ * version 1.3.20d; 2003.10.14   hof: created
  */
 
-#ifndef _GAP_EXCHANGE_IMAGE_H
-#define _GAP_EXCHANGE_IMAGE_H
+#ifndef _GAP_IMAGE_H
+#define _GAP_IMAGE_H
 
+
+#include "config.h"
+
+/* SYTEM (UNIX) includes */ 
+#include <stdio.h>
+#include <stdlib.h>
+
+/* GIMP includes */
+#include "gtk/gtk.h"
 #include "libgimp/gimp.h"
 
-int p_exchange_image(gint32 dst_image_id, gint32 src_image_id);
+void      gap_image_delete_immediate (gint32 image_id);
+gint32    gap_image_merge_visible_layers(gint32 image_id, GimpMergeType mergemode);
+void      gap_image_prevent_empty_image(gint32 image_id);
+gint32    gap_image_new_with_layer_of_samesize(gint32 old_image_id, gint32 *layer_id);
+gint32    gap_image_new_of_samesize(gint32 old_image_id);
+gboolean  gap_image_is_alive(gint32 image_id);
+
 
 #endif
+

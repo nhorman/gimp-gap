@@ -55,14 +55,14 @@
 #endif /* !G_OS_WIN32 */
 
 
-char *            p_gimprc_query_thumbnailsave(void);
-gboolean          p_thumbnailsave_is_on(void);
-gboolean          p_cond_gimp_file_save_thumbnail(gint32 image_id, char* filename);
+char *            gap_thumb_gimprc_query_thumbnailsave(void);
+gboolean          gap_thumb_thumbnailsave_is_on(void);
+gboolean          gap_thumb_cond_gimp_file_save_thumbnail(gint32 image_id, char* filename);
 
 
-void              p_gimp_file_delete_thumbnail(char *filename);
-void              p_gimp_file_copy_thumbnail(char *filename_src, char *filename_dst);
-void              p_gimp_file_rename_thumbnail(char *filename_src, char *filename_dst);
+void              gap_thumb_gimp_file_delete_thumbnail(char *filename);
+void              gap_thumb_file_copy_thumbnail(char *filename_src, char *filename_dst);
+void              gap_thumb_gimp_file_rename_thumbnail(char *filename_src, char *filename_dst);
 
 
 #endif

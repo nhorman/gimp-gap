@@ -27,16 +27,16 @@
 #include "libgimp/gimp.h"
 
 typedef enum
-{  PTYP_ANY                     = 0,
-   PTYP_ITERATOR                = 1,
-   PTYP_CAN_OPERATE_ON_DRAWABLE = 2 
-} t_proc_type;
+{  GAP_PTYP_ANY                     = 0,
+   GAP_PTYP_ITERATOR                = 1,
+   GAP_PTYP_CAN_OPERATE_ON_DRAWABLE = 2 
+} GapFiltPdbProcType;
 
 
 typedef enum
-{  PAPP_CONSTANT                = 0,
-   PTYP_VARYING_LINEAR          = 1
-} t_apply_mode;
+{  GAP_PAPP_CONSTANT                = 0,
+   GAP_PAPP_VARYING_LINEAR          = 1
+} GapFiltPdbApplyMode;
 
 
 /* ------------------------
@@ -44,16 +44,16 @@ typedef enum
  * ------------------------
  */
 
-gint p_call_plugin(char *plugin_name, gint32 image_id, gint32 layer_id, GimpRunMode run_mode);
-int  p_save_xcf(gint32 image_id, char *sav_name);
-gint p_get_data(char *key);
-void p_set_data(char *key, gint plugin_data_len);
-gint p_procedure_available(char  *proc_name, t_proc_type ptype);
-char * p_get_iterator_proc(char *plugin_name, gint *count);
+gint gap_filt_pdb_call_plugin(char *plugin_name, gint32 image_id, gint32 layer_id, GimpRunMode run_mode);
+int  gap_filt_pdb_save_xcf(gint32 image_id, char *sav_name);
+gint gap_filt_pdb_get_data(char *key);
+void gap_filt_pdb_set_data(char *key, gint plugin_data_len);
+gint gap_filt_pdb_procedure_available(char  *proc_name, GapFiltPdbProcType ptype);
+char * gap_filt_pdb_get_iterator_proc(char *plugin_name, gint *count);
 
-int p_constraint_proc_sel1(gchar *proc_name, gint32 image_id);
-int p_constraint_proc_sel2(gchar *proc_name, gint32 image_id);
-int p_constraint_proc(gchar *proc_name, gint32 image_id);
+int gap_filt_pdb_constraint_proc_sel1(gchar *proc_name, gint32 image_id);
+int gap_filt_pdb_constraint_proc_sel2(gchar *proc_name, gint32 image_id);
+int gap_filt_pdb_constraint_proc(gchar *proc_name, gint32 image_id);
 
 
 #endif

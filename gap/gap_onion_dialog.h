@@ -32,7 +32,7 @@
 
 #include "gap_onion_main.h"
 
-void   p_init_default_values(t_global_params *gpp);
-gint   p_onion_cfg_dialog(t_global_params *gpp);
+void   gap_onion_dlg_init_default_values(GapOnionMainGlobalParams *gpp);
+gint   gap_onion_dlg_onion_cfg_dialog(GapOnionMainGlobalParams *gpp);
 
 #endif

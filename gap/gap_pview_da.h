@@ -22,7 +22,7 @@
  */
 
 /* revision history:
- * version 1.3.16a; 2003/06/27  hof: use aspect_frame instead of simple frame, added p_pview_render_default_icon
+ * version 1.3.16a; 2003/06/27  hof: use aspect_frame instead of simple frame, added gap_pview_render_default_icon
  * version 1.3.14c; 2003/06/12  hof: created
  */
 
@@ -34,7 +34,7 @@
 #include <libgimp/gimpui.h>
 
 
-typedef struct t_pview
+typedef struct GapPView
 {
   GtkWidget *da_widget;       /* the preview drawing_area */
   GtkWidget *aspect_frame;
@@ -49,23 +49,23 @@ typedef struct t_pview
   gboolean use_pixmap_repaint;
   guchar *pv_area_data;       /* buffer to hold RGB image in preview size */
   GdkPixmap *pixmap;          /* alternative pixmap buffer */
-} t_pview;
+} GapPView;
 
 
-gboolean   p_pview_render_from_buf (t_pview *pv_ptr
+gboolean   gap_pview_render_from_buf (GapPView *pv_ptr
                  , guchar *src_data
                  , gint    src_width
                  , gint    src_height
                  , gint    src_bpp
                  , gboolean allow_grab_src_data
                  );
-void       p_pview_render_from_image (t_pview *pv_ptr, gint32 image_id);
-void       p_pview_repaint(t_pview *pv_ptr);
+void       gap_pview_render_from_image (GapPView *pv_ptr, gint32 image_id);
+void       gap_pview_repaint(GapPView *pv_ptr);
 
-t_pview   *p_pview_new(gint pv_width, gint pv_height, gint pv_check_size, GtkWidget *frame);
-void       p_pview_set_size(t_pview *pv_ptr, gint pv_width, gint pv_height, gint pv_check_size);
-void       p_pview_reset(t_pview *pv_ptr);
+GapPView   *gap_pview_new(gint pv_width, gint pv_height, gint pv_check_size, GtkWidget *frame);
+void       gap_pview_set_size(GapPView *pv_ptr, gint pv_width, gint pv_height, gint pv_check_size);
+void       gap_pview_reset(GapPView *pv_ptr);
 
-void       p_pview_render_default_icon(t_pview   *pv_ptr);
+void       gap_pview_render_default_icon(GapPView   *pv_ptr);
 
 #endif

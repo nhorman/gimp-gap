@@ -26,7 +26,7 @@
  * version 1.3.14c; 2003/06/15  hof: take care of gimp_image_thumbnail 128x128 sizelimit
  * version 1.3.14b; 2003/06/03  hof: gboolean retcode for thumbnail procedures
  * version 1.3.14a; 2003/05/24  hof: moved vin Procedures to gap_vin module
- * version 1.3.5a;  2002/04/20  hof: p_gimp_layer_new_from_drawable. (removed set_drabale)
+ * version 1.3.5a;  2002/04/20  hof: gap_pdb_gimp_layer_new_from_drawable. (removed set_drabale)
  * version 1.3.4a;  2002/03/12  hof: removed duplicate wrappers that are available in libgimp too.
  * version 1.2.2b;  2001/12/09  hof: wrappers for tattoo procedures
  * version 1.1.16a; 2000/02/05  hof: path lockedstaus
@@ -50,7 +50,7 @@
 extern int gap_debug;
 
 /* ============================================================================
- * p_pdb_procedure_available
+ * gap_pdb_procedure_available
  *   if requested procedure is available in the PDB return the number of args
  *      (0 upto n) that are needed to call the procedure.
  *   if not available return -1
@@ -58,7 +58,7 @@ extern int gap_debug;
  */
 
 gint 
-p_pdb_procedure_available(char *proc_name)
+gap_pdb_procedure_available(char *proc_name)
 {
    /* Note: It would be nice to call "gimp_layer_get_linked" direct,
     *       but there is not such an Interface in gimp 0.99.16
@@ -103,7 +103,7 @@ p_pdb_procedure_available(char *proc_name)
 
   printf("Warning: Procedure %s not found.\n", proc_name);
   return -1;
-}	/* end p_pdb_procedure_available */
+}	/* end gap_pdb_procedure_available */
 
 /* ---------------------- PDB procedure calls  -------------------------- */
 
@@ -113,31 +113,31 @@ p_pdb_procedure_available(char *proc_name)
 
 
 /* ============================================================================
- * p_gimp_rotate_degree
+ * gap_pdb_gimp_rotate_degree
  *  PDB call of 'gimp_rotate'
  * ============================================================================
  */
 
 gint32
-p_gimp_rotate_degree(gint32 drawable_id, gboolean interpolation, gdouble angle_deg)
+gap_pdb_gimp_rotate_degree(gint32 drawable_id, gboolean interpolation, gdouble angle_deg)
 {
    gdouble          l_angle_rad;
 
    l_angle_rad = (angle_deg * 3.14159) / 180.0;
    return(gimp_rotate(drawable_id, interpolation, l_angle_rad));
    
-}  /* end p_gimp_rotate_degree */
+}  /* end gap_pdb_gimp_rotate_degree */
 
 
 
 /* ============================================================================
- * p_gimp_displays_reconnect
+ * gap_pdb_gimp_displays_reconnect
  *   
  * ============================================================================
  */
 
 gboolean
-p_gimp_displays_reconnect(gint32 old_image_id, gint32 new_image_id)
+gap_pdb_gimp_displays_reconnect(gint32 old_image_id, gint32 new_image_id)
 {
    static char     *l_called_proc = "gimp_displays_reconnect";
    GimpParam          *return_vals;
@@ -155,18 +155,18 @@ p_gimp_displays_reconnect(gint32 old_image_id, gint32 new_image_id)
    }
    printf("GAP: Error: PDB call of %s failed\n", l_called_proc);
    return(FALSE);
-}	/* end p_gimp_displays_reconnect */
+}	/* end gap_pdb_gimp_displays_reconnect */
 
 
 
 /* ============================================================================
- * p_gimp_layer_new_from_drawable
+ * gap_pdb_gimp_layer_new_from_drawable
  *   
  * ============================================================================
  */
 
 gint32
-p_gimp_layer_new_from_drawable(gint32 drawable_id, gint32 dst_image_id)
+gap_pdb_gimp_layer_new_from_drawable(gint32 drawable_id, gint32 dst_image_id)
 {
    static char     *l_called_proc = "gimp_layer_new_from_drawable";
    GimpParam          *return_vals;
@@ -184,22 +184,22 @@ p_gimp_layer_new_from_drawable(gint32 drawable_id, gint32 dst_image_id)
    }
    printf("GAP: Error: PDB call of %s failed\n", l_called_proc);
    return(-1);
-}	/* end p_gimp_layer_new_from_drawable */
+}	/* end gap_pdb_gimp_layer_new_from_drawable */
 
 /* ============================================================================
- * p_gimp_file_save_thumbnail
+ * gap_pdb_gimp_file_save_thumbnail
  *   
  * ============================================================================
  */
 
 gboolean
-p_gimp_file_save_thumbnail(gint32 image_id, char* filename)
+gap_pdb_gimp_file_save_thumbnail(gint32 image_id, char* filename)
 {
    static char     *l_called_proc = "gimp_file_save_thumbnail";
    GimpParam          *return_vals;
    int              nreturn_vals;
 
-   /*if(gap_debug) printf("p_gimp_file_save_thumbnail: image_id:%d  %s\n", (int)image_id, filename);*/
+   /*if(gap_debug) printf("gap_pdb_gimp_file_save_thumbnail: image_id:%d  %s\n", (int)image_id, filename);*/
 
    return_vals = gimp_run_procedure (l_called_proc,
                                  &nreturn_vals,
@@ -217,23 +217,23 @@ p_gimp_file_save_thumbnail(gint32 image_id, char* filename)
 	  , (int)image_id
 	  );
    return(FALSE);
-}	/* end p_gimp_file_save_thumbnail */
+}	/* end gap_pdb_gimp_file_save_thumbnail */
 
 /* ============================================================================
- * p_gimp_file_load_thumbnail
+ * gap_pdb_gimp_file_load_thumbnail
  *   
  * ============================================================================
  */
 
 gboolean
-p_gimp_file_load_thumbnail(char* filename, gint32 *th_width, gint32 *th_height,
+gap_pdb_gimp_file_load_thumbnail(char* filename, gint32 *th_width, gint32 *th_height,
                            gint32 *th_data_count,  unsigned char **th_data)
 {
    static char     *l_called_proc = "gimp_file_load_thumbnail";
    GimpParam          *return_vals;
    int              nreturn_vals;
 
-   if(gap_debug) printf("p_gimp_file_load_thumbnail:  %s\n", filename);
+   if(gap_debug) printf("gap_pdb_gimp_file_load_thumbnail:  %s\n", filename);
 
    *th_data = NULL;
    return_vals = gimp_run_procedure (l_called_proc,
@@ -251,12 +251,12 @@ p_gimp_file_load_thumbnail(char* filename, gint32 *th_width, gint32 *th_height,
    }
    if(gap_debug) printf("GAP: Error: PDB call of %s failed\n", l_called_proc);
    return(FALSE);
-}	/* end p_gimp_file_load_thumbnail */
+}	/* end gap_pdb_gimp_file_load_thumbnail */
 
 
 
 gboolean
-p_gimp_image_thumbnail(gint32 image_id, gint32 width, gint32 height,
+gap_pdb_gimp_image_thumbnail(gint32 image_id, gint32 width, gint32 height,
                               gint32 *th_width, gint32 *th_height, gint32 *th_bpp,
 			      gint32 *th_data_count, unsigned char **th_data)
 {
@@ -325,4 +325,4 @@ workaround:
    }
    printf("GAP: Error: PDB call of %s failed\n", l_called_proc);
    return(FALSE);
-}	/* end p_gimp_image_thumbnail */
+}	/* end gap_pdb_gimp_image_thumbnail */

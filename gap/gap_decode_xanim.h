@@ -36,15 +36,6 @@
 
 #include "libgimp/gimp.h"
 
-/* fileformats supported by gap_decode_xanim */
-typedef enum
-{ 
-   XAENC_XCF     /* no direct support by xanim, have to convert */
- , XAENC_PPMRAW
- , XAENC_JPEG
-} t_gap_xa_formats;
-
-
 int gap_xanim_decode(GimpRunMode run_mode
                              );
 

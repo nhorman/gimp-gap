@@ -25,16 +25,16 @@
  */
 
 /* revision history:
- * 1.3.19a  2003/09/06   hof: added p_searchpath_for_exefile
+ * 1.3.19a  2003/09/06   hof: added gap_lib_searchpath_for_exefile
  * 1.3.16c  2003/07/07   hof: extend ainfo  onion_triggers
  * 1.3.14a  2003/05/27   hof: moved basic gap operations to new module gap_base_ops
  * 1.3.12a  2003/05/02   hof: merge into CVS-gimp-gap project, added gap_renumber, upto 6digit framenumber support
- * 1.3.11a  2003/01/18   hof: added p_gap_check_save_needed
+ * 1.3.11a  2003/01/18   hof: added gap_lib_gap_check_save_needed
  * 1.1.35a; 2002/04/21   hof: gap locking (moved to gap_lock.h)
  * 1.1.29a; 2000/11/23   hof: gap locking (changed to procedures and placed here)
- * 1.1.20a; 2000/04/25   hof: new: p_get_video_paste_name p_clear_video_paste
- * 1.1.14a; 2000/01/02   hof: new: p_get_frame_nr
- * 1.1.8a;  1999/08/31   hof: new: p_strdup_del_underscore and p_strdup_add_underscore
+ * 1.1.20a; 2000/04/25   hof: new: gap_lib_get_video_paste_name p_clear_video_paste
+ * 1.1.14a; 2000/01/02   hof: new: gap_lib_get_frame_nr
+ * 1.1.8a;  1999/08/31   hof: new: gap_lib_strdup_del_underscore and gap_lib_strdup_add_underscore
  * 0.99.00; 1999/03/15   hof: prepared for win/dos filename conventions
  * 0.96.02; 1998/08/05   hof: extended gap_dup (duplicate range instead of singele frame)
  *                            added gap_shift (framesequence shift)
@@ -68,7 +68,7 @@
 
 #endif /* !G_OS_WIN32 */
 
-typedef struct t_anim_info {
+typedef struct GapAnimInfo {
    gint32      image_id;
    char        *basename;    /* may include path */
    long         frame_nr; 
@@ -83,60 +83,55 @@ typedef struct t_anim_info {
    long         curr_frame_nr; 
    long         first_frame_nr; 
    long         last_frame_nr;
-} t_anim_info;
+} GapAnimInfo;
 
 /* procedures used in other gap*.c files */
-int          p_file_exists(char *fname);
-char*        p_searchpath_for_exefile(const char *exefile, const char *path);
-int          p_file_copy(char *fname, char *fname_copy);
-void         p_free_ainfo(t_anim_info **ainfo);
-char*        p_alloc_basename(const char *imagename, long *number);
-char*        p_alloc_extension(char *imagename);
-t_anim_info* p_alloc_ainfo(gint32 image_id, GimpRunMode run_mode);
-int          p_dir_ainfo(t_anim_info *ainfo_ptr);
-int          p_chk_framerange(t_anim_info *ainfo_ptr);
-int          p_chk_framechange(t_anim_info *ainfo_ptr);
+int          gap_lib_file_exists(char *fname);
+char*        gap_lib_searchpath_for_exefile(const char *exefile, const char *path);
+int          gap_lib_file_copy(char *fname, char *fname_copy);
+void         gap_lib_free_ainfo(GapAnimInfo **ainfo);
+char*        gap_lib_alloc_basename(const char *imagename, long *number);
+char*        gap_lib_alloc_extension(char *imagename);
+GapAnimInfo* gap_lib_alloc_ainfo(gint32 image_id, GimpRunMode run_mode);
+int          gap_lib_dir_ainfo(GapAnimInfo *ainfo_ptr);
+int          gap_lib_chk_framerange(GapAnimInfo *ainfo_ptr);
+int          gap_lib_chk_framechange(GapAnimInfo *ainfo_ptr);
 
-int    p_save_named_frame (gint32 image_id, char *sav_name);
-int    p_load_named_frame (gint32 image_id, char *lod_name);
-gint32 p_load_image (char *lod_name);
-gint32 p_save_named_image(gint32 image_id, char *sav_name, GimpRunMode run_mode);
-char*  p_alloc_fname_fixed_digits(char *basename, long nr, char *extension, long digits);
-char*  p_alloc_fname(char *basename, long nr, char *extension);
-char*  p_alloc_fname6(char *basename, long nr, char *extension, long default_digits);
-gboolean p_exists_frame_nr(t_anim_info *ainfo_ptr, long nr, long *l_has_digits);
-char*  p_gzip (char *orig_name, char *new_name, char *zip);
-char*  p_strdup_add_underscore(char *name);
-char*  p_strdup_del_underscore(char *name);
+int    gap_lib_save_named_frame (gint32 image_id, char *sav_name);
+int    gap_lib_load_named_frame (gint32 image_id, char *lod_name);
+gint32 gap_lib_load_image (char *lod_name);
+gint32 gap_lib_save_named_image(gint32 image_id, char *sav_name, GimpRunMode run_mode);
+char*  gap_lib_alloc_fname_fixed_digits(char *basename, long nr, char *extension, long digits);
+char*  gap_lib_alloc_fname(char *basename, long nr, char *extension);
+char*  gap_lib_alloc_fname6(char *basename, long nr, char *extension, long default_digits);
+gboolean gap_lib_exists_frame_nr(GapAnimInfo *ainfo_ptr, long nr, long *l_has_digits);
+char*  gap_lib_strdup_add_underscore(char *name);
+char*  gap_lib_strdup_del_underscore(char *name);
 
-long  p_get_frame_nr(gint32 image_id);
-long  p_get_frame_nr_from_name(char *fname);
-int   p_image_file_copy(char *fname, char *fname_copy);
+long  gap_lib_get_frame_nr(gint32 image_id);
+long  gap_lib_get_frame_nr_from_name(char *fname);
+int   gap_lib_image_file_copy(char *fname, char *fname_copy);
 
 
-void p_msg_win(GimpRunMode run_mode, char *msg);
-gchar *p_get_video_paste_name(void);
-gint32 p_vid_edit_clear(void);
-gint32 p_vid_edit_framecount(void);
+void gap_arr_msg_win(GimpRunMode run_mode, char *msg);
+gchar *gap_lib_get_video_paste_name(void);
+gint32 gap_vid_edit_clear(void);
+gint32 gap_vid_edit_framecount(void);
 gint   gap_vid_edit_copy(GimpRunMode run_mode, gint32 image_id, long range_from, long range_to);
 gint32 gap_vid_edit_paste(GimpRunMode run_mode, gint32 image_id, long paste_mode);
-gint32 p_getpid(void);
-gint   p_pid_is_alive(gint32 pid);
+gint32 gap_lib_getpid(void);
+gint   gap_lib_pid_is_alive(gint32 pid);
 
-gboolean p_gap_lock_is_locked(gint32 image_id, GimpRunMode run_mode);
-void     p_gap_lock_set(gint32 image_id);
-void     p_gap_lock_remove(gint32 image_id);
+gboolean gap_lib_gap_check_save_needed(gint32 image_id);
 
-gboolean p_gap_check_save_needed(gint32 image_id);
-
-int      p_rename_frame(t_anim_info *ainfo_ptr, long from_nr, long to_nr);
-int      p_delete_frame(t_anim_info *ainfo_ptr, long nr);
-gint32   p_replace_image(t_anim_info *ainfo_ptr);
+int      gap_lib_rename_frame(GapAnimInfo *ainfo_ptr, long from_nr, long to_nr);
+int      gap_lib_delete_frame(GapAnimInfo *ainfo_ptr, long nr);
+gint32   gap_lib_replace_image(GapAnimInfo *ainfo_ptr);
 
 
-#define  VID_PASTE_REPLACE         0
-#define  VID_PASTE_INSERT_BEFORE   1
-#define  VID_PASTE_INSERT_AFTER    2
+#define  GAP_VID_PASTE_REPLACE         0
+#define  GAP_VID_PASTE_INSERT_BEFORE   1
+#define  GAP_VID_PASTE_INSERT_AFTER    2
 
 #endif
 

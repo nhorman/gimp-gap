@@ -39,8 +39,8 @@
 /* GAP includes */
 #include "gap_range_ops.h"
 
-gint p_resi_dialog (gint32 image_id, 
-                    t_gap_asiz asiz_mode,
+gint gap_resi_dialog (gint32 image_id, 
+                    GapRangeOpsAsiz asiz_mode,
                     char *title_text,
                     long *size_x, long *size_y, 
                     long *offs_x, long *offs_y);

@@ -21,6 +21,7 @@
  */
 
 /* revision history:
+ * gimp    1.3.20d; 2003/10/06  hof: added new icon gap_grab_points
  * gimp    1.3.14c; 2003/06/09  hof: bugfix: gap_stock_init must set initialized = TRUE; to avoid double init problems
  *                                   GAP_STOCK_PLAY_REVERSE, GAP_STOCK_PAUSE
  */
@@ -44,6 +45,7 @@ static GtkStockItem gap_stock_items[] =
   {  GAP_STOCK_DELETE_ALL_POINTS  , N_("Delete All Points"), 0, 0, NULL },
   {  GAP_STOCK_DELETE_POINT       , N_("Delete Point"),      0, 0, NULL },
   {  GAP_STOCK_FIRST_POINT        , N_("First Point"),       0, 0, NULL },
+  {  GAP_STOCK_GRAB_POINTS        , N_("Grab Path"),         0, 0, NULL },
   {  GAP_STOCK_INSERT_POINT       , N_("Insert Point"),      0, 0, NULL },
   {  GAP_STOCK_LAST_POINT         , N_("Last Point"),        0, 0, NULL },
   {  GAP_STOCK_NEXT_POINT         , N_("Next Point"),        0, 0, NULL },
@@ -104,6 +106,7 @@ gap_stock_init (void)
   add_stock_icon (GAP_STOCK_DELETE_ALL_POINTS  , GTK_ICON_SIZE_BUTTON, gap_delete_all_points);
   add_stock_icon (GAP_STOCK_DELETE_POINT       , GTK_ICON_SIZE_BUTTON, gap_delete_point);
   add_stock_icon (GAP_STOCK_FIRST_POINT        , GTK_ICON_SIZE_BUTTON, gap_first_point);
+  add_stock_icon (GAP_STOCK_GRAB_POINTS        , GTK_ICON_SIZE_BUTTON, gap_grab_points);
   add_stock_icon (GAP_STOCK_INSERT_POINT       , GTK_ICON_SIZE_BUTTON, gap_insert_point);
   add_stock_icon (GAP_STOCK_LAST_POINT         , GTK_ICON_SIZE_BUTTON, gap_last_point);
   add_stock_icon (GAP_STOCK_NEXT_POINT         , GTK_ICON_SIZE_BUTTON, gap_next_point);

@@ -6,6 +6,7 @@ STOCK_IMAGES = \
 	gap-delete-all-points.png	\
 	gap-delete-point.png		\
 	gap-first-point.png		\
+	gap-grab-points.png		\
 	gap-insert-point.png		\
 	gap-last-point.png		\
 	gap-next-point.png		\

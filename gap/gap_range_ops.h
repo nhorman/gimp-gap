@@ -40,18 +40,23 @@
 #include "libgimp/gimp.h"
 
 /* flatten mode bits used in gap_range_to_multilayer */
-#define FLAM_MERG_EXPAND    0
-#define FLAM_MERG_CLIP_IMG  1
-#define FLAM_MERG_CLIP_BG   2
-#define FLAM_MERG_FLAT      3
+#define GAP_RANGE_OPS_FLAM_MERG_EXPAND    0
+#define GAP_RANGE_OPS_FLAM_MERG_CLIP_IMG  1
+#define GAP_RANGE_OPS_FLAM_MERG_CLIP_BG   2
+#define GAP_RANGE_OPS_FLAM_MERG_FLAT      3
+
+/* region selection modes used in gap_range_to_multilayer */
+#define GAP_RANGE_OPS_SEL_IGNORE          0
+#define GAP_RANGE_OPS_SEL_INITIAL         1
+#define GAP_RANGE_OPS_SEL_FRAME_SPECIFIC  2
 
 /* Animation sizechange modes */
 typedef enum
 {
-   ASIZ_SCALE  
- , ASIZ_RESIZE 
- , ASIZ_CROP   
-} t_gap_asiz;
+   GAP_ASIZ_SCALE  
+ , GAP_ASIZ_RESIZE 
+ , GAP_ASIZ_CROP   
+} GapRangeOpsAsiz;
 
 
 
@@ -62,7 +67,8 @@ gint32 gap_range_to_multilayer(GimpRunMode run_mode,
                              long flatten_mode, long bg_visible,
                              long   framerate, char  *frame_basename, int frame_basename_len,
 			     gint32 sel_mode, gint32 sel_case,
-			     gint32 sel_invert, char *sel_pattern
+			     gint32 sel_invert, char *sel_pattern,
+			     gint32 selection_mode
 			     );
 
 gint32 gap_range_flatten(GimpRunMode run_mode,
@@ -87,8 +93,8 @@ gint32 gap_range_conv(GimpRunMode run_mode,
                              char   *palette
 			     );
 
-int gap_anim_sizechange(GimpRunMode run_mode,
-                             t_gap_asiz asiz_mode,
+int gap_range_anim_sizechange(GimpRunMode run_mode,
+                             GapRangeOpsAsiz asiz_mode,
                              gint32 image_id,
                              long size_x,
                              long size_y,

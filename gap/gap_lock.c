@@ -64,7 +64,7 @@ typedef struct t_gap_lockdata
 } t_gap_lockdata;
 
 static gint32
-p_getpid(void)
+gap_lib_getpid(void)
 {
 #ifndef G_OS_WIN32
   /* for UNIX */
@@ -76,7 +76,7 @@ p_getpid(void)
 }
 
 static gint 
-p_pid_is_alive(gint32 pid)
+gap_lib_pid_is_alive(gint32 pid)
 {
 #ifndef G_OS_WIN32
   /* for UNIX */
@@ -101,7 +101,7 @@ p_pid_is_alive(gint32 pid)
 
 
 /* ============================================================================
- * p_gap_lock_is_locked
+ * gap_lock_check_for_lock
  *   check if image_id is in the LOCKTABLE and if the locking Process is still
  *   alive. return TRUE if both is TRUE
  *   return FALSE if no valid lock is found.
@@ -109,7 +109,7 @@ p_pid_is_alive(gint32 pid)
  */
 
 gboolean
-p_gap_lock_is_locked(gint32 image_id, GimpRunMode run_mode)
+gap_lock_check_for_lock(gint32 image_id, GimpRunMode run_mode)
 {
   gint32           l_idx;
   gint32           l_locksize;
@@ -128,7 +128,7 @@ p_gap_lock_is_locked(gint32 image_id, GimpRunMode run_mode)
     {
       if(l_locktab[l_idx].image_id == image_id)
       {
-         if(p_pid_is_alive(l_locktab[l_idx].pid))
+         if(gap_lib_pid_is_alive(l_locktab[l_idx].pid))
          {
            if(run_mode == GIMP_RUN_INTERACTIVE)
            {
@@ -153,18 +153,18 @@ p_gap_lock_is_locked(gint32 image_id, GimpRunMode run_mode)
     g_free(l_locktab);
   }
   return(FALSE);
-}	/* end p_gap_lock_is_locked */
+}	/* end gap_lock_check_for_lock */
 
 
 /* ============================================================================
- * p_gap_lock_set
+ * gap_lock_set_lock
  *   add a lock for image_id and current Process to the LOCKTABLE.
  *   (overwrite empty record or add a new record if no empty one is found)
  * ============================================================================
  */
 
 void
-p_gap_lock_set(gint32 image_id)
+gap_lock_set_lock(gint32 image_id)
 {
   gint32           l_idx;
   gint32           l_locksize;
@@ -187,7 +187,7 @@ p_gap_lock_set(gint32 image_id)
     for(l_idx=0; l_idx < l_nlocks_old; l_idx++)
     {
       if((l_locktab[l_idx].image_id < 0)
-      || (!p_pid_is_alive(l_locktab[l_idx].pid)))
+      || (!gap_lib_pid_is_alive(l_locktab[l_idx].pid)))
       {
          l_nlocks--;      /* empty record found, dont need the extra record */
          break; 
@@ -203,7 +203,7 @@ p_gap_lock_set(gint32 image_id)
   }
 
   l_locktab[l_idx].image_id = image_id;
-  l_locktab[l_idx].pid      = p_getpid();
+  l_locktab[l_idx].pid      = gap_lib_getpid();
 
   gimp_set_data(GAP_LOCKTABLE_KEY, l_locktab, l_nlocks * sizeof(t_gap_lockdata));
 
@@ -211,7 +211,7 @@ p_gap_lock_set(gint32 image_id)
   {
     for(l_idx=0; l_idx < l_nlocks; l_idx++)
     {
-      printf("p_gap_lock_set: LOCKTAB[%d] IMAGE_ID:%d PID:%d\n",
+      printf("gap_lock_set_lock: LOCKTAB[%d] IMAGE_ID:%d PID:%d\n",
               (int)l_idx,
               (int)l_locktab[l_idx].image_id,
               (int)l_locktab[l_idx].pid );
@@ -219,18 +219,18 @@ p_gap_lock_set(gint32 image_id)
   }
   g_free(l_locktab);
   
-}	/* end p_gap_lock_set */
+}	/* end gap_lock_set_lock */
 
 
 /* ============================================================================
- * p_gap_lock_remove
+ * gap_lock_remove_lock
  *   remove lock for image_id from the LOCKTABLE.
  *   (by setting the corresponding record empty)
  * ============================================================================
  */
  
 void
-p_gap_lock_remove(gint32 image_id)
+gap_lock_remove_lock(gint32 image_id)
 {
   gint32           l_idx;
   gint32           l_locksize;
@@ -258,4 +258,4 @@ p_gap_lock_remove(gint32 image_id)
     }
     g_free(l_locktab);
   }
-}	/* end p_gap_lock_remove */
+}	/* end gap_lock_remove_lock */

@@ -21,6 +21,7 @@
  */
 
 /* revision history:
+ * version 1.3.20d 2003.10.14   hof: sourcecode cleanup, new: gap_layer_copy_content, gap_layer_copy_picked_channel
  * version 1.3.5a  2002.04.20   hof: use gimp_layer_new_from_drawable (API cleanup, requries gimp.1.3.6)
  *                                   removed channel_copy
  * version 0.99.00 1999.03.03   hof: use the regular gimp_layer_copy and gimp_channel_copy
@@ -35,6 +36,7 @@
  */
  
 /* SYTEM (UNIX) includes */ 
+#include "string.h"
 /* GIMP includes */
 /* GAP includes */
 #include "gap_layer_copy.h"
@@ -42,15 +44,16 @@
 
 extern      int gap_debug; /* ==0  ... dont print debug infos */
 
+
 /* ============================================================================
- * p_my_layer_copy
+ * gap_layer_copy_to_dest_image
  *    copy src_layer to the dst_image,
  *    return the id of the new created layer (the copy)
  * NOTE: source layer MUST have same type (bpp) for now
  *       it would be fine to extend the code to convert between any type
  * ============================================================================
  */
-gint32 p_my_layer_copy (gint32 dst_image_id,
+gint32 gap_layer_copy_to_dest_image (gint32 dst_image_id,
                         gint32 src_layer_id,
                         gdouble    opacity, /* 0.0 upto 100.0 */
                         GimpLayerModeEffects mode,
@@ -61,18 +64,17 @@ gint32 p_my_layer_copy (gint32 dst_image_id,
   gint32 l_ret_id;     
   char  *l_name;
 
-  if(gap_debug) printf("GAP p_my_layer_copy: START\n");
+  if(gap_debug) printf("GAP gap_layer_copy_to_dest_image: START\n");
 
   l_ret_id = -1;       /* prepare error retcode -1 */
   l_name = NULL;
   
-  if(opacity > 99.99) opacity = 100.0;
-  if(opacity < 0.0)   opacity = 0.0;
+  opacity = CLAMP(opacity, 0.0, 100.0);
   
   l_name = gimp_layer_get_name(src_layer_id);
 
   /* copy the layer */  
-  l_new_layer_id = p_gimp_layer_new_from_drawable(src_layer_id, dst_image_id);
+  l_new_layer_id = gap_pdb_gimp_layer_new_from_drawable(src_layer_id, dst_image_id);
 
   if(l_new_layer_id >= 0)
   {
@@ -95,7 +97,241 @@ gint32 p_my_layer_copy (gint32 dst_image_id,
     
   if(l_name != NULL) { g_free (l_name); }
 
-  if(gap_debug) printf("GAP p_my_layer_copy: ret %d\n", (int)l_ret_id);
+  if(gap_debug) printf("GAP gap_layer_copy_to_dest_image: ret %d\n", (int)l_ret_id);
 
   return l_ret_id;
-}	/* end p_my_layer_copy */
+}	/* end gap_layer_copy_to_dest_image */
+
+
+
+/* ---------------------------------
+ * p_copy_rgn_render_region
+ * ---------------------------------
+ */
+static void
+p_copy_rgn_render_region (const GimpPixelRgn *srcPR
+		    ,const GimpPixelRgn *dstPR)
+{
+  guint    row;
+  guchar* src  = srcPR->data;
+  guchar* dest = dstPR->data;
+  
+  
+  for (row = 0; row < dstPR->h; row++)
+  {
+      memcpy(dest, src, dstPR->w * dstPR->bpp);
+
+      src  += srcPR->rowstride;
+      dest += dstPR->rowstride;
+  }
+}  /* end p_copy_rgn_render_region */
+
+
+/* ============================================================================
+ * gap_layer_copy_content
+ * - source and dest must be the same size and type
+ * - selections are ignored 
+ *   (the full drawable content is copied without use of the shadow buffer)
+ * ============================================================================
+ */
+gboolean
+gap_layer_copy_content (gint32 dst_drawable_id, gint32 src_drawable_id)
+{
+  GimpPixelRgn srcPR, dstPR;
+  GimpDrawable *src_drawable;
+  GimpDrawable *dst_drawable;
+  guint   row;
+  gpointer  pr;
+ 
+  src_drawable = gimp_drawable_get (src_drawable_id);
+  dst_drawable = gimp_drawable_get (dst_drawable_id);
+  
+  if((src_drawable->width  != dst_drawable->width)
+  || (src_drawable->height != dst_drawable->height)
+  || (src_drawable->bpp    != dst_drawable->bpp))
+  {
+    printf("gap_layer_copy_content: calling ERROR src_drawable and dst_drawable do not match in size or bpp\n");
+    printf("src: w:%d h:%d bpp:%d\n"
+           ,(int)src_drawable->width
+           ,(int)src_drawable->height
+           ,(int)src_drawable->bpp
+	   );
+    printf("dst: w:%d h:%d bpp:%d\n"
+           ,(int)dst_drawable->width
+           ,(int)dst_drawable->height
+           ,(int)dst_drawable->bpp
+	   );
+    return FALSE;
+  }
+  
+  gimp_pixel_rgn_init (&srcPR, src_drawable, 0, 0
+                      , src_drawable->width, src_drawable->height
+		      , FALSE     /* dirty */
+		      , FALSE     /* shadow */
+		       );
+  gimp_pixel_rgn_init (&dstPR, dst_drawable, 0, 0
+                      , dst_drawable->width, dst_drawable->height
+		      , TRUE      /* dirty */
+		      , FALSE     /* shadow */
+		       );
+  
+
+  for (pr = gimp_pixel_rgns_register (2, &srcPR, &dstPR);
+       pr != NULL;
+       pr = gimp_pixel_rgns_process (pr))
+  {
+      p_copy_rgn_render_region (&srcPR, &dstPR);
+  }
+  
+  gimp_drawable_flush (dst_drawable);
+  return TRUE;
+}  /* end gap_layer_copy_content */
+
+
+
+
+/* ---------------------------------
+ * p_pick_rgn_render_region
+ * ---------------------------------
+ */
+static void
+p_pick_rgn_render_region (const GimpPixelRgn *srcPR
+		    ,const GimpPixelRgn *dstPR
+		    ,guint src_channel_pick
+		    ,guint dst_channel_pick)
+{
+  guint    row;
+  guchar* src  = srcPR->data;
+  guchar* dest = dstPR->data;
+  
+  for (row = 0; row < dstPR->h; row++)
+    {
+	guchar* l_src  = src;
+	guchar* l_dest = dest;
+	guint   col = dstPR->w;
+
+	while (col--)
+	  {
+            l_dest[dst_channel_pick] = l_src[src_channel_pick];
+	    l_src += srcPR->bpp;
+	    l_dest += dstPR->bpp;
+	  }
+
+      src  += srcPR->rowstride;
+      dest += dstPR->rowstride;
+    }
+}  /* end p_pick_rgn_render_region */
+
+
+/* ============================================================================
+ * gap_layer_copy_picked_channel
+ * copy channelbytes for the picked channel from src_drawable to dst_drawable
+ * examples:
+ *   to copy the alpha channel from a GRAY_ALPHA (bpp=2) src_drawable into a RGBA (bpp=4) dst_drawable
+ *   you can call this procedure with src_channel_pick = 1, dst_channel_pick = 3
+ *
+ *   to copy a Selection Mask (bpp=1) src_drawable into a GRAY_ALPHA (bpp=2) dst_drawable
+ *   you can call this procedure with src_channel_pick = 0, dst_channel_pick = 1
+ 
+ * - source and dest must be the same size
+ * - src_channel_pick selects the src channel and must be less than src bpp
+ * - dst_channel_pick selects the src channel and must be less than src bpp
+ * ============================================================================
+ */
+gboolean
+gap_layer_copy_picked_channel (gint32 dst_drawable_id,  guint dst_channel_pick
+                              , gint32 src_drawable_id, guint src_channel_pick
+			      , gboolean shadow)
+{
+  GimpPixelRgn srcPR, dstPR;
+  GimpDrawable *src_drawable;
+  GimpDrawable *dst_drawable;
+  gint    x1, y1, x2, y2;
+  gpointer  pr;
+ 
+  src_drawable = gimp_drawable_get (src_drawable_id);
+  dst_drawable = gimp_drawable_get (dst_drawable_id);
+  
+  if((src_drawable->width  != dst_drawable->width)
+  || (src_drawable->height != dst_drawable->height)
+  || (src_channel_pick     >= src_drawable->bpp)
+  || (dst_channel_pick     >= dst_drawable->bpp))
+  {
+    printf("gap_layer_copy_content: calling ERROR src_drawable and dst_drawable do not match in size or bpp\n");
+    printf("src: w:%d h:%d bpp:%d\n"
+           ,(int)src_drawable->width
+           ,(int)src_drawable->height
+           ,(int)src_drawable->bpp
+	   );
+    printf("dst: w:%d h:%d bpp:%d\n"
+           ,(int)dst_drawable->width
+           ,(int)dst_drawable->height
+           ,(int)dst_drawable->bpp
+	   );
+    return FALSE;
+  }
+
+  gimp_drawable_mask_bounds (dst_drawable_id, &x1, &y1, &x2, &y2);
+
+
+  
+  gimp_pixel_rgn_init (&srcPR, src_drawable, x1, y1
+                      , (x2 - x1), (y2 - y1)
+		      , FALSE     /* dirty */
+		      , FALSE     /* shadow */
+		       );
+  gimp_pixel_rgn_init (&dstPR, dst_drawable, x1, y1
+                      ,  (x2 - x1), (y2 - y1)
+		      , TRUE      /* dirty */
+		      , shadow    /* shadow */
+		       );
+
+  if(shadow)
+  {
+     GimpPixelRgn origPR;
+     GimpPixelRgn shadowPR;
+
+     /* since we are operating on the shadow buffer
+      * we must copy the original channelbytes to the shadow buffer
+      * (because the un-picked channelbytes would be uninitialized
+      *  otherwise)
+      */
+     
+     gimp_pixel_rgn_init (&origPR, dst_drawable, x1, y1
+                      ,  (x2 - x1), (y2 - y1)
+		      , FALSE    /* dirty */
+		      , FALSE    /* shadow */
+		       );
+     gimp_pixel_rgn_init (&shadowPR, dst_drawable, x1, y1
+                      ,  (x2 - x1), (y2 - y1)
+		      , TRUE    /* dirty */
+		      , TRUE    /* shadow */
+		       );
+     for (pr = gimp_pixel_rgns_register (2, &origPR, &shadowPR);
+	  pr != NULL;
+	  pr = gimp_pixel_rgns_process (pr))
+     {
+	 p_copy_rgn_render_region (&origPR, &shadowPR);
+     } 
+  }
+
+  for (pr = gimp_pixel_rgns_register (2, &srcPR, &dstPR);
+       pr != NULL;
+       pr = gimp_pixel_rgns_process (pr))
+  {
+      p_pick_rgn_render_region (&srcPR, &dstPR, src_channel_pick, dst_channel_pick);
+  }
+ 
+  /*  update the processed region  */
+  gimp_drawable_flush (dst_drawable);
+  
+  if(shadow)
+  {
+    gimp_drawable_merge_shadow (dst_drawable_id, TRUE);
+  }
+  gimp_drawable_update (dst_drawable_id, x1, y1, (x2 - x1), (y2 - y1));
+ 
+ 
+  return TRUE;
+}  /* end gap_layer_copy_picked_channel */
+

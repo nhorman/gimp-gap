@@ -45,6 +45,7 @@
 #include <gap_match.h>
 #include <gap_lib.h>
 #include <gap_layer_copy.h>
+#include <gap_image.h>
 
 #include <gap_onion_base.h>
 
@@ -52,39 +53,39 @@ extern int gap_debug;
 
 
 /* ============================================================================
- * p_mark_as_onionlayer
+ * gap_onion_base_mark_as_onionlayer
  *   set onion layer parasite (store timestamp and tattoo)
  *   tattoos are unique identifiers within an image
  *   and remain unique over sessions -- if saved in xcf format.
  * ============================================================================
  */
 void
-p_mark_as_onionlayer(gint32 layer_id)
+gap_onion_base_mark_as_onionlayer(gint32 layer_id)
 {
-  t_onion_parasite_data *l_parasite_data;
+  GapOnionBaseParasite_data *l_parasite_data;
   GimpParasite          *l_parasite;
 
-  if(gap_debug) printf("p_mark_as_onionlayer: START\n");
+  if(gap_debug) printf("gap_onion_base_mark_as_onionlayer: START\n");
 
-  l_parasite_data = g_malloc(sizeof(t_onion_parasite_data));
+  l_parasite_data = g_malloc(sizeof(GapOnionBaseParasite_data));
   l_parasite_data->timestamp = time(0);
   l_parasite_data->tattoo = gimp_layer_get_tattoo(layer_id);
-  if(gap_debug) printf("p_mark_as_onionlayer: tattoo is: %d\n", (int)l_parasite_data->tattoo);
+  if(gap_debug) printf("gap_onion_base_mark_as_onionlayer: tattoo is: %d\n", (int)l_parasite_data->tattoo);
 
   l_parasite = gimp_parasite_new(GAP_ONION_PARASITE_NAME,
                                  GIMP_PARASITE_PERSISTENT,
-                                 sizeof(t_onion_parasite_data),
+                                 sizeof(GapOnionBaseParasite_data),
                                  l_parasite_data);
   if(l_parasite)
   {
     gimp_drawable_parasite_attach(layer_id, l_parasite);
     gimp_parasite_free(l_parasite);
   }
-}       /* end p_mark_as_onionlayer */
+}       /* end gap_onion_base_mark_as_onionlayer */
 
 
 /* ============================================================================
- * p_check_is_onion_layer
+ * gap_onion_base_check_is_onion_layer
  *   check for onion layer parasite and tattoo.
  *   (if the user made a copy of an onion layer, the copy has an onionparasite
  *    but the originals parasitedata.tattoo will not match with the layers tattoo.
@@ -93,99 +94,40 @@ p_mark_as_onionlayer(gint32 layer_id)
  * ============================================================================
  */
 gint32
-p_check_is_onion_layer(gint32 layer_id)
+gap_onion_base_check_is_onion_layer(gint32 layer_id)
 {
    gint           l_found;
-   t_onion_parasite_data *l_parasite_data;
+   GapOnionBaseParasite_data *l_parasite_data;
    GimpParasite  *l_parasite;
 
-   if(gap_debug) printf("p_check_is_onion_layer: START layer_id %d\n", (int)layer_id);
+   if(gap_debug) printf("gap_onion_base_check_is_onion_layer: START layer_id %d\n", (int)layer_id);
 
    l_found = FALSE;
    l_parasite = gimp_drawable_parasite_find(layer_id, GAP_ONION_PARASITE_NAME);
    if (l_parasite)
    {
-      l_parasite_data = (t_onion_parasite_data *)l_parasite->data;
-      if(gap_debug) printf("p_check_is_onion_layer: tattoo is: %d\n", (int)l_parasite_data->tattoo);
+      l_parasite_data = (GapOnionBaseParasite_data *)l_parasite->data;
+      if(gap_debug) printf("gap_onion_base_check_is_onion_layer: tattoo is: %d\n", (int)l_parasite_data->tattoo);
 
       if (l_parasite_data->tattoo == gimp_layer_get_tattoo(layer_id))
       {
         l_found = TRUE;
-        if(gap_debug) printf("p_check_is_onion_layer: ONION_LAYER_FOUND layer_id %d\n", (int)layer_id);
+        if(gap_debug) printf("gap_onion_base_check_is_onion_layer: ONION_LAYER_FOUND layer_id %d\n", (int)layer_id);
       }
       gimp_parasite_free(l_parasite);
    }
 
    return l_found;
-}       /* end p_check_is_onion_layer */
-
-
-
-/* ============================================================================
- * p_delete_image_immediate
- *    delete image (with workaround to ensure that most of the
- *    allocatd memory is freed)
- * ============================================================================
- */
-void
-p_delete_image_immediate (gint32 image_id)
-{
-    if(gap_debug) printf("p_delete_image_immediate: SCALED down to 2x2 id = %d (workaround for gimp_image-delete problem)\n", (int)image_id);
-
-    gimp_image_scale(image_id, 2, 2);
-
-    gimp_image_undo_enable(image_id); /* clear undo stack */
-    gimp_image_delete(image_id);
-}       /* end  p_delete_image_immediate */
+}       /* end gap_onion_base_check_is_onion_layer */
 
 
 /* ============================================================================
- * p_get_merged_layer
- *    merge visible layer an return layer_id of the resulting merged layer.
- *    (with workaround, for empty images return transparent layer)
- * ============================================================================
- */
-gint32
-p_get_merged_layer(gint32 image_id, GimpMergeType mergemode)
-{
-  GimpImageBaseType l_type;
-  guint   l_width, l_height;
-  gint32  l_layer_id;
-
-  /* get info about the image */
-  l_width  = gimp_image_width(image_id);
-  l_height = gimp_image_height(image_id);
-  l_type   = gimp_image_base_type(image_id);
-
-  l_type   = (l_type * 2); /* convert from GimpImageBaseType to GimpImageType */
-
-  /* add 2 full transparent dummy layers at top
-   * (because gimp_image_merge_visible_layers complains
-   * if there are less than 2 visible layers)
-   */
-  l_layer_id = gimp_layer_new(image_id, "dummy",
-                                 l_width, l_height,  l_type,
-                                 0.0,       /* Opacity full transparent */
-                                 0);        /* NORMAL */
-  gimp_image_add_layer(image_id, l_layer_id, 0);
-
-  l_layer_id = gimp_layer_new(image_id, "dummy",
-                                 10, 10,  l_type,
-                                 0.0,       /* Opacity full transparent */
-                                 0);        /* NORMAL */
-  gimp_image_add_layer(image_id, l_layer_id, 0);
-
-  return gimp_image_merge_visible_layers (image_id, mergemode);
-}       /* end p_get_merged_layer */
-
-
-/* ============================================================================
- * p_onionskin_visibility
+ * gap_onion_base_onionskin_visibility
  *    set visibility of all onion layer(s) in the current image.
  * ============================================================================
  */
 gint
-p_onionskin_visibility(gint32 image_id, gint visi_mode)
+gap_onion_base_onionskin_visibility(gint32 image_id, gint visi_mode)
 {
 #define VISIBILTY_UNSET  -4444
   gint32     *l_layers_list;
@@ -197,7 +139,7 @@ p_onionskin_visibility(gint32 image_id, gint visi_mode)
 
   if(gap_debug)
   {
-     printf("p_onionskin_visibility: START visi_mode: %d\n", (int)visi_mode);
+     printf("gap_onion_base_onionskin_visibility: START visi_mode: %d\n", (int)visi_mode);
      printf("  image_ID: %d\n", (int)image_id);
   }
 
@@ -217,7 +159,7 @@ p_onionskin_visibility(gint32 image_id, gint visi_mode)
     for(l_idx=0;l_idx < l_nlayers;l_idx++)
     {
       l_layer_id = l_layers_list[l_idx];
-      l_is_onion = p_check_is_onion_layer(l_layer_id);
+      l_is_onion = gap_onion_base_check_is_onion_layer(l_layer_id);
 
       if(l_is_onion)
       {
@@ -235,17 +177,17 @@ p_onionskin_visibility(gint32 image_id, gint visi_mode)
     g_free(l_layers_list);
   }
   return 0;
-}       /* end p_onionskin_visibility */
+}       /* end gap_onion_base_onionskin_visibility */
 
 
 
 /* ============================================================================
- * p_onionskin_delete
+ * gap_onion_base_onionskin_delete
  *    remove onion layer(s) from the current image.
  * ============================================================================
  */
 gint
-p_onionskin_delete(gint32 image_id)
+gap_onion_base_onionskin_delete(gint32 image_id)
 {
   gint32     *l_layers_list;
   gint        l_nlayers;
@@ -254,18 +196,18 @@ p_onionskin_delete(gint32 image_id)
 
   if(gap_debug)
   {
-     printf("p_onionskin_delete: START\n");
+     printf("gap_onion_base_onionskin_delete: START\n");
      printf("  image_ID: %d\n", (int)image_id);
   }
 
   l_layers_list = gimp_image_get_layers(image_id, &l_nlayers);
-  if(gap_debug) printf("p_onionskin_delete: l_nlayers = %d\n", (int)l_nlayers);
+  if(gap_debug) printf("gap_onion_base_onionskin_delete: l_nlayers = %d\n", (int)l_nlayers);
   if(l_layers_list)
   {
     for(l_idx=0;l_idx < l_nlayers;l_idx++)
     {
-      if(gap_debug) printf("p_onionskin_delete: l_idx = %d\n", (int)l_idx);
-      l_is_onion = p_check_is_onion_layer(l_layers_list[l_idx]);
+      if(gap_debug) printf("gap_onion_base_onionskin_delete: l_idx = %d\n", (int)l_idx);
+      l_is_onion = gap_onion_base_check_is_onion_layer(l_layers_list[l_idx]);
 
       if(l_is_onion)
       {
@@ -275,13 +217,13 @@ p_onionskin_delete(gint32 image_id)
     }
     g_free(l_layers_list);
   }
-  if(gap_debug) printf("p_onionskin_delete: END\n");
+  if(gap_debug) printf("gap_onion_base_onionskin_delete: END\n");
   return 0;
-}       /* end p_onionskin_delete */
+}       /* end gap_onion_base_onionskin_delete */
 
 
 /* ============================================================================
- * p_onionskin_apply
+ * gap_onion_base_onionskin_apply
  *    create or replace onion layer(s) in the current image.
  *    Onion layers do show one (or more) merged copies of previos (or next)
  *    videoframe(s).
@@ -312,16 +254,16 @@ p_onionskin_delete(gint32 image_id)
  * ============================================================================
  */
 gint
-p_onionskin_apply(gpointer gpp
+gap_onion_base_onionskin_apply(gpointer gpp
              , gint32 image_id
-             , t_video_info *vin_ptr
+             , GapVinVideoInfo *vin_ptr
              , long   ainfo_curr_frame_nr
              , long   ainfo_first_frame_nr
              , long   ainfo_last_frame_nr
              , char  *ainfo_basename
              , char  *ainfo_extension
-             , t_fptr_add_img_to_cache        fptr_add_img_to_cache
-             , t_fptr_find_frame_in_img_cache fptr_find_frame_in_img_cache
+             , GapOnionBaseFptrAddImageToCache        fptr_add_img_to_cache
+             , GapOnionBaseFptrFindFrameInImageCache fptr_find_frame_in_img_cache
              , gboolean use_cache)
 {
   gint32        l_onr;
@@ -343,7 +285,7 @@ p_onionskin_apply(gpointer gpp
 
   if(gap_debug)
   {
-     printf("p_onionskin_apply: START\n");
+     printf("gap_onion_base_onionskin_apply: START\n");
      printf("  num_olayers: %d\n",   (int)vin_ptr->num_olayers);
      printf("  ref_delta: %d\n",     (int)vin_ptr->ref_delta);
      printf("  ref_cycle: %d\n",     (int)vin_ptr->ref_cycle);
@@ -365,7 +307,7 @@ p_onionskin_apply(gpointer gpp
   }
 
   /* delete onion layers (if there are old ones) */
-  p_onionskin_delete(image_id);
+  gap_onion_base_onionskin_delete(image_id);
 
   l_layers_list = gimp_image_get_layers(image_id, &l_nlayers);
   if(vin_ptr->stack_top)
@@ -446,14 +388,14 @@ p_onionskin_apply(gpointer gpp
     if(l_tmp_image_id < 0)
     {
       /* frame is not available in the cache */
-      if(gap_debug) printf("p_onionskin_apply: frame is NOT available in the CACHE\n");
+      if(gap_debug) printf("gap_onion_base_onionskin_apply: frame is NOT available in the CACHE\n");
       /* build the frame name */
       if(l_new_filename != NULL) g_free(l_new_filename);
-      l_new_filename = p_alloc_fname(ainfo_basename,
+      l_new_filename = gap_lib_alloc_fname(ainfo_basename,
                                           l_frame_nr,
                                           ainfo_extension);
       /* load referenced frame */
-      l_tmp_image_id = p_load_image(l_new_filename);
+      l_tmp_image_id = gap_lib_load_image(l_new_filename);
       if(l_tmp_image_id < 0)
          return -1;
 
@@ -465,7 +407,7 @@ p_onionskin_apply(gpointer gpp
     }
     else
     {
-      if(gap_debug) printf("p_onionskin_apply: frame is AVAILABLE in the CACHE l_tmp_image_id: %d\n", (int)l_tmp_image_id);
+      if(gap_debug) printf("gap_onion_base_onionskin_apply: frame is AVAILABLE in the CACHE l_tmp_image_id: %d\n", (int)l_tmp_image_id);
     }
 
 
@@ -474,7 +416,7 @@ p_onionskin_apply(gpointer gpp
       /* there was no merged layer in the cache, so we must
        * merge layers now
        */
-      if(gap_debug) printf("p_onionskin_apply: layer is NOT available in the CACHE\n");
+      if(gap_debug) printf("gap_onion_base_onionskin_apply: layer is NOT available in the CACHE\n");
 
       /* set some layers invisible
        * a) ignored bottomlayer(s)
@@ -488,10 +430,10 @@ p_onionskin_apply(gpointer gpp
         l_layername = gimp_layer_get_name(l_layer_id);
 
 
-        l_is_onion = p_check_is_onion_layer(l_layer_id);
+        l_is_onion = gap_onion_base_check_is_onion_layer(l_layer_id);
 
         if((l_ign <  vin_ptr->ignore_botlayers)
-        || (FALSE == p_match_layer( l_idx
+        || (FALSE == gap_match_layer( l_idx
                                   , l_layername
                                   , &vin_ptr->select_string[0]
                                   , vin_ptr->select_mode
@@ -516,11 +458,11 @@ p_onionskin_apply(gpointer gpp
       }
 
       /* merge visible layers (clip at image size) */
-      l_layer_id = p_get_merged_layer(l_tmp_image_id, GIMP_CLIP_TO_IMAGE);
+      l_layer_id = gap_image_merge_visible_layers(l_tmp_image_id, GIMP_CLIP_TO_IMAGE);
     }
     else
     {
-      if(gap_debug) printf("p_onionskin_apply: layer is AVAILABLE in the CACHE l_layer_id: %d\n", (int)l_layer_id);
+      if(gap_debug) printf("gap_onion_base_onionskin_apply: layer is AVAILABLE in the CACHE l_layer_id: %d\n", (int)l_layer_id);
     }
 
     /* COPY or MOVE the resulting merged layer to current image image_id */
@@ -542,7 +484,7 @@ p_onionskin_apply(gpointer gpp
       gint         l_src_offset_y;
 
       /* copy the layer to dest image image_id */
-      l_new_layer_id = p_my_layer_copy (image_id
+      l_new_layer_id = gap_layer_copy_to_dest_image (image_id
                                      ,l_layer_id
                                      ,CLAMP(l_opacity, 0.0, 100.0)
                                      ,0           /* NORMAL GimpLayerModeEffects */
@@ -558,7 +500,7 @@ p_onionskin_apply(gpointer gpp
 
 
 
-       if(gap_debug) printf("ONL:p_onionskin_apply  l_onr:%d, framenr:%d, layerstack:%d opacity:%f\n"
+       if(gap_debug) printf("ONL:gap_onion_base_onionskin_apply  l_onr:%d, framenr:%d, layerstack:%d opacity:%f\n"
        , (int)l_onr
        , (int)l_frame_nr
        , (int)l_layerstack
@@ -577,7 +519,7 @@ p_onionskin_apply(gpointer gpp
 
 
       /* Set parasite or tattoo */
-      p_mark_as_onionlayer(l_new_layer_id);
+      gap_onion_base_mark_as_onionlayer(l_new_layer_id);
       /* gimp_layer_set_opacity(l_new_layer_id, l_opacity); */
     }
 
@@ -587,7 +529,7 @@ p_onionskin_apply(gpointer gpp
     if(!use_cache)
     {
       /* destroy the tmp image */
-      p_delete_image_immediate(l_tmp_image_id);
+      gap_image_delete_immediate(l_tmp_image_id);
     }
 
     /* opacitiy for next onion layer (reduced by delta percentage) */
@@ -599,7 +541,7 @@ p_onionskin_apply(gpointer gpp
     if(l_new_filename) { g_free(l_new_filename); l_new_filename = NULL; };
 
   }
-  if(gap_debug) printf("p_onionskin_apply: END\n\n");
+  if(gap_debug) printf("gap_onion_base_onionskin_apply: END\n\n");
 
   return 0;
-}       /* end p_onionskin_apply */
+}       /* end gap_onion_base_onionskin_apply */

@@ -14,7 +14,43 @@ if GAP_AUDIO_SUPPORT
 WAVPLAYCLIENT = $(top_builddir)/libwavplayclient/libwavplayclient.a
 endif
 
+LIBGIMPGAP = libgimpgap.a
+
+noinst_LIBRARIES = $(LIBGIMPGAP)
+
+libgimpgap_a_SOURCES = \
+	gap-intl.h		\
+	gap_arr_dialog.c	\
+	gap_arr_dialog.h	\
+	gap_image.c		\
+	gap_image.h		\
+	gap_layer_copy.c	\
+	gap_layer_copy.h 	\
+	gap_lib.c		\
+	gap_lib.h		\
+	gap_lock.c		\
+	gap_lock.h		\
+	gap_navi_activtable.c	\
+	gap_navi_activtable.h	\
+	gap_match.c		\
+	gap_match.h		\
+	gap_onion_base.c	\
+	gap_onion_base.h	\
+	gap_pdb_calls.c		\
+	gap_pdb_calls.h		\
+	gap_pview_da.c		\
+	gap_pview_da.h		\
+	gap_thumbnail.c		\
+	gap_thumbnail.h		\
+	gap_timeconv.c		\
+	gap_timeconv.h		\
+	gap_stock.c		\
+	gap_stock.h		\
+	gap_vin.c		\
+	gap_vin.h
+
 libexec_PROGRAMS = \
+	gap_bluebox		\
 	gap_plugins		\
 	gap_filter		\
 	$(GAP_FRONTENDS)	\
@@ -23,28 +59,28 @@ libexec_PROGRAMS = \
 	gap_player		\
         gap_onion
 
+gap_bluebox_SOURCES = \
+	gap_lastvaldesc.c	\
+	gap_lastvaldesc.h	\
+	gap_bluebox_main.c	\
+	gap_bluebox.c		\
+	gap_bluebox.h		\
+	gap_libgimpgap.h	
+
+
 gap_plugins_SOURCES = \
-	gap-intl.h		\
-	gap_arr_dialog.c	\
-	gap_arr_dialog.h	\
-	gap_base_ops.c	\
-	gap_base_ops.h	\
+	gap_base_ops.c		\
+	gap_base_ops.h		\
+	gap_bluebox.c		\
+	gap_bluebox.h		\
 	gap_dbbrowser_utils.c	\
 	gap_dbbrowser_utils.h	\
 	gap_filter_codegen.c	\
 	gap_filter_pdb.c	\
 	gap_filter_pdb.h	\
-	gap_layer_copy.c	\
-	gap_layer_copy.h 	\
 	gap_lastvaldesc.c	\
 	gap_lastvaldesc.h	\
-	gap_lib.c		\
-	gap_lib.h		\
-	gap_lock.c		\
-	gap_lock.h		\
 	gap_main.c		\
-	gap_match.c		\
-	gap_match.h		\
 	gap_mod_layer.c		\
 	gap_mod_layer.h		\
 	gap_mov_dialog.c	\
@@ -55,28 +91,15 @@ gap_plugins_SOURCES = \
 	gap_mov_render.h	\
 	gap_navi_activtable.c	\
 	gap_navi_activtable.h	\
-	gap_onion_base.c	\
-	gap_onion_base.h	\
-	gap_pdb_calls.c		\
-	gap_pdb_calls.h		\
-	gap_pview_da.c		\
-	gap_pview_da.h		\
 	gap_range_ops.c		\
 	gap_range_ops.h		\
 	gap_resi_dialog.c	\
 	gap_resi_dialog.h	\
 	gap_split.c		\
 	gap_split.h		\
-	gap_stock.c		\
-	gap_stock.h		\
-	gap_thumbnail.c		\
-	gap_thumbnail.h		\
-	gap_vin.c		\
-	gap_vin.h
+	gap_libgimpgap.h	
 
 gap_filter_SOURCES = \
-	gap_arr_dialog.c	\
-	gap_arr_dialog.h	\
 	gap_dbbrowser_utils.c	\
 	gap_dbbrowser_utils.h	\
 	gap_filter.h		\
@@ -89,139 +112,43 @@ gap_filter_SOURCES = \
 	gap_filter_pdb.h	\
 	gap_lastvaldesc.c	\
 	gap_lastvaldesc.h	\
-	gap_match.c		\
-	gap_match.h		\
-	gap_pdb_calls.c		\
-	gap_pdb_calls.h		\
-	gap_stock.c		\
-	gap_stock.h		\
-	gap_vin.c		\
-	gap_vin.h
+	gap_libgimpgap.h	
 
 gap_frontends_SOURCES = \
-	gap_arr_dialog.c	\
-	gap_arr_dialog.h	\
 	gap_decode_xanim.c	\
 	gap_decode_xanim.h	\
 	gap_frontends_main.c	\
-	gap_layer_copy.c	\
-	gap_layer_copy.h 	\
-	gap_lib.c		\
-	gap_lib.h		\
-	gap_lock.c		\
-	gap_lock.h		\
-	gap_match.c		\
-	gap_match.h		\
 	gap_mpege.c		\
 	gap_mpege.h		\
-	gap_navi_activtable.c	\
-	gap_navi_activtable.h	\
-	gap_onion_base.c	\
-	gap_onion_base.h	\
-	gap_pdb_calls.c		\
-	gap_pdb_calls.h		\
-	gap_thumbnail.c		\
-	gap_thumbnail.h		\
-	gap_stock.c		\
-	gap_stock.h		\
-	gap_vin.c		\
-	gap_vin.h
+	gap_libgimpgap.h	
 
 gap_name2layer_SOURCES = \
-	gap_arr_dialog.c	\
-	gap_arr_dialog.h	\
 	gap_lastvaldesc.c	\
 	gap_lastvaldesc.h	\
-	gap_stock.c		\
-	gap_stock.h		\
-	gap_name2layer_main.c
+	gap_name2layer_main.c	\
+	gap_libgimpgap.h	
 
 gap_navigator_dialog_SOURCES = \
-	gap_arr_dialog.c	\
-	gap_arr_dialog.h	\
-	gap_layer_copy.c        \
-	gap_layer_copy.h        \
-	gap_lib.c		\
-	gap_lib.h		\
-	gap_match.c		\
-	gap_match.h		\
 	gap_navi_activtable.c	\
 	gap_navi_activtable.h	\
 	gap_navigator_dialog.c	\
-	gap_onion_base.c	\
-	gap_onion_base.h	\
-	gap_pdb_calls.c		\
-	gap_pdb_calls.h		\
-	gap_pview_da.c		\
-	gap_pview_da.h		\
-	gap_stock.c		\
-	gap_stock.h		\
-	gap_thumbnail.c		\
-	gap_thumbnail.h		\
-	gap_timeconv.c		\
-	gap_timeconv.h		\
-	gap_vin.c		\
-	gap_vin.h
+	gap_libgimpgap.h	
 
 gap_player_SOURCES = \
-	gap_arr_dialog.c	\
-	gap_arr_dialog.h	\
-	gap_layer_copy.c        \
-	gap_layer_copy.h        \
-	gap_lib.c		\
-	gap_lib.h		\
-	gap_match.c		\
-	gap_match.h		\
-	gap_navi_activtable.c	\
-	gap_navi_activtable.h	\
-	gap_onion_base.c	\
-	gap_onion_base.h	\
 	gap_player_main.c	\
 	gap_player_main.h	\
 	gap_player_dialog.c	\
 	gap_player_dialog.h	\
-	gap_pdb_calls.c		\
-	gap_pdb_calls.h		\
-	gap_pview_da.c		\
-	gap_pview_da.h		\
-	gap_stock.c		\
-	gap_stock.h		\
-	gap_thumbnail.c		\
-	gap_thumbnail.h		\
-	gap_timeconv.c		\
-	gap_timeconv.h		\
-	gap_vin.c		\
-	gap_vin.h
+	gap_libgimpgap.h	
 
 gap_onion_SOURCES = \
-	gap_arr_dialog.c	\
-	gap_arr_dialog.h	\
 	gap_onion_main.c	\
 	gap_onion_main.h	\
 	gap_onion_dialog.c	\
 	gap_onion_dialog.h	\
 	gap_onion_worker.c	\
 	gap_onion_worker.h	\
-	gap_onion_base.c	\
-	gap_onion_base.h	\
-	gap_layer_copy.c        \
-	gap_layer_copy.h        \
-	gap_lib.c		\
-	gap_lib.h		\
-	gap_lock.c		\
-	gap_lock.h		\
-	gap_navi_activtable.c	\
-	gap_navi_activtable.h	\
-	gap_match.c		\
-	gap_match.h		\
-	gap_pdb_calls.c		\
-	gap_pdb_calls.h		\
-	gap_thumbnail.c		\
-	gap_thumbnail.h		\
-	gap_stock.c		\
-	gap_stock.h		\
-	gap_vin.c		\
-	gap_vin.h
+	gap_libgimpgap.h	
 
 AM_CPPFLAGS = \
 	-DGAPLIBDIR=\""$(GAPLIBDIR)"\"	\
@@ -237,9 +164,39 @@ LDADD = \
 	$(GIMP_LIBS)
 
 
+gap_bluebox_LDADD = \
+	$(LIBGIMPGAP)\
+	$(GIMP_LIBS)
+
+gap_plugins_LDADD = \
+	$(LIBGIMPGAP)\
+	$(GIMP_LIBS)
+
+gap_filter_LDADD = \
+	$(LIBGIMPGAP)\
+	$(GIMP_LIBS)
+
+gap_frontends_LDADD = \
+	$(LIBGIMPGAP)\
+	$(GIMP_LIBS)
+
+gap_name2layer_LDADD = \
+	$(LIBGIMPGAP)\
+	$(GIMP_LIBS)
+
+gap_navigator_dialog_LDADD = \
+	$(LIBGIMPGAP)\
+	$(GIMP_LIBS)
+
 gap_player_LDADD = \
+	$(LIBGIMPGAP)\
 	$(WAVPLAYCLIENT)\
 	$(GIMP_LIBS)
+
+gap_onion_LDADD = \
+	$(LIBGIMPGAP)\
+	$(GIMP_LIBS)
+
 
 EXTRA_DIST = \
 	README							\

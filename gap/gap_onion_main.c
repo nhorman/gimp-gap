@@ -60,7 +60,7 @@ static char *gap_onion_version = "1.3.17a; 2003/07/29";
 /* int gap_debug = 0; */    /* 0: dont print debug infos */
 
 int gap_debug = 0;
-t_global_params global_params;
+GapOnionMainGlobalParams global_params;
 
 
 static void query(void);
@@ -221,7 +221,7 @@ run(const gchar *name
    , gint *nreturn_vals
    , GimpParam **return_vals)
 {
-  t_global_params *gpp;
+  GapOnionMainGlobalParams *gpp;
 
   static GimpParam values[1];
   gint32     l_rc;
@@ -248,7 +248,8 @@ run(const gchar *name
 
   INIT_I18N();
 
-  p_init_default_values(gpp); /* init with default values */
+
+  gap_onion_dlg_init_default_values(gpp); /* init with default values */
 
 
   /* get image_ID */
@@ -259,19 +260,19 @@ run(const gchar *name
    * check for LOCKS
    * ---------------------------
    */
-  if(p_gap_lock_is_locked(l_lock_image_id, gpp->run_mode))
+  if(gap_lock_check_for_lock(l_lock_image_id, gpp->run_mode))
   {
        values[0].data.d_status = GIMP_PDB_EXECUTION_ERROR;
        return ;
   }
 
   /* set LOCK on current image (for all gap_plugins) */
-  p_gap_lock_set(l_lock_image_id);
+  gap_lock_set_lock(l_lock_image_id);
 
 
   /* get animinfo */
-  p_plug_in_gap_get_animinfo(gpp->image_ID, &gpp->ainfo);
-  p_get_data_onion_cfg(gpp);  /* get current params (if there are any) */
+  gap_onion_worker_plug_in_gap_get_animinfo(gpp->image_ID, &gpp->ainfo);
+  gap_onion_worker_get_data_onion_cfg(gpp);  /* get current params (if there are any) */
 
   gpp->vin.onionskin_auto_enable = TRUE;
   gpp->cache.count = 0;    /* start with empty image cache */
@@ -330,8 +331,8 @@ run(const gchar *name
       {
          if(gpp->run_mode == GIMP_RUN_INTERACTIVE)
          {
-            l_rc = p_onion_cfg_dialog (gpp);
-            if(gap_debug) printf("MAIN after p_onion_cfg_dialog ------------------\n");
+            l_rc = gap_onion_dlg_onion_cfg_dialog (gpp);
+            if(gap_debug) printf("MAIN after gap_onion_dlg_onion_cfg_dialog ------------------\n");
          }
          if (l_rc >= 0)
          {
@@ -346,16 +347,16 @@ run(const gchar *name
               *  in the processed range)
               */
              gpp->vin.onionskin_auto_enable   = FALSE;
-             l_rc = p_set_data_onion_cfg(gpp, GAP_PLUGIN_NAME_ONION_CFG);
+             l_rc = gap_onion_worker_set_data_onion_cfg(gpp, GAP_PLUGIN_NAME_ONION_CFG);
            }
            if((gpp->run == GAP_ONION_RUN_APPLY)
            || (gpp->run == GAP_ONION_RUN_DELETE))
            {
              /* do ONIONSKIN processing for all the frames in selected Range */
-             l_rc = p_onion_range(gpp);
+             l_rc = gap_onion_worker_onion_range(gpp);
              
              gpp->vin.onionskin_auto_enable   = TRUE;
-             l_rc = p_set_data_onion_cfg(gpp, GAP_PLUGIN_NAME_ONION_CFG);
+             l_rc = gap_onion_worker_set_data_onion_cfg(gpp, GAP_PLUGIN_NAME_ONION_CFG);
            }
          }
       }
@@ -370,8 +371,8 @@ run(const gchar *name
      * for a selected range of frames.
      * (using plug_in_gap_modify  and selecting plug_in_onionskin_make as filter)
      */
-     p_set_data_onion_cfg(gpp, GAP_PLUGIN_NAME_ONION_APPLY);
-     l_rc = p_onion_apply(gpp, FALSE /* do not use_cache */ );
+     gap_onion_worker_set_data_onion_cfg(gpp, GAP_PLUGIN_NAME_ONION_APPLY);
+     l_rc = gap_onion_worker_onion_apply(gpp, FALSE /* do not use_cache */ );
   }
   else if (strcmp (name, GAP_PLUGIN_NAME_ONION_DEL) == 0)
   {
@@ -379,8 +380,8 @@ run(const gchar *name
      * DEL
      * -----------------------
      */
-     p_set_data_onion_cfg(gpp, GAP_PLUGIN_NAME_ONION_DEL);
-     l_rc = p_onion_delete(gpp);
+     gap_onion_worker_set_data_onion_cfg(gpp, GAP_PLUGIN_NAME_ONION_DEL);
+     l_rc = gap_onion_worker_onion_delete(gpp);
   }
   else if (strcmp (name, GAP_PLUGIN_NAME_ONION_VISI) == 0)
   {
@@ -406,8 +407,8 @@ run(const gchar *name
 
      if (values[0].data.d_status == GIMP_PDB_SUCCESS)
      {
-        p_set_data_onion_cfg(gpp, GAP_PLUGIN_NAME_ONION_VISI);
-        l_rc = p_onion_visibility(gpp, l_visi_mode);
+        gap_onion_worker_set_data_onion_cfg(gpp, GAP_PLUGIN_NAME_ONION_VISI);
+        l_rc = gap_onion_worker_onion_visibility(gpp, l_visi_mode);
      }
   }
   else
@@ -426,5 +427,5 @@ run(const gchar *name
   }
 
   /* remove LOCK on this image for all gap_plugins */
-  p_gap_lock_remove(l_lock_image_id);
+  gap_lock_remove_lock(l_lock_image_id);
 }       /* end run */

@@ -226,7 +226,7 @@ p_gap_filename_to_png_thumb_name (const gchar *filename)
 
 
 /* -------------------------------
- * p_gimprc_query_thumbnailsave
+ * gap_thumb_gimprc_query_thumbnailsave
  * -------------------------------
  * return the gimprc value_string
  * responsible for video thumbnail configuration
@@ -236,7 +236,7 @@ p_gap_filename_to_png_thumb_name (const gchar *filename)
  *
  */
 char *   
-p_gimprc_query_thumbnailsave(void)
+gap_thumb_gimprc_query_thumbnailsave(void)
 {
   if(global_thumbnail_mode)
   {
@@ -249,18 +249,18 @@ p_gimprc_query_thumbnailsave(void)
     return g_strdup(global_thumbnail_mode);
   }
   return(NULL);
-}  /* end p_gimprc_query_thumbnailsave */
+}  /* end gap_thumb_gimprc_query_thumbnailsave */
 
 
 /* -------------------------------
- * p_thumbnailsave_is_on
+ * gap_thumb_thumbnailsave_is_on
  * -------------------------------
  * checking gimprc if thumnail saving is enabled.
  * keyword "thumbnail-size" values:  "none"
  * is checked.
  */
 gboolean   
-p_thumbnailsave_is_on(void)
+gap_thumb_thumbnailsave_is_on(void)
 {
   if(global_thumbnail_mode == NULL)
   {
@@ -269,7 +269,7 @@ p_thumbnailsave_is_on(void)
 
   if(global_thumbnail_mode)
   {
-     if(gap_debug) printf("p_thumbnailsave_is_on: global_thumbnail_mode = %s\n", global_thumbnail_mode);
+     if(gap_debug) printf("gap_thumb_thumbnailsave_is_on: global_thumbnail_mode = %s\n", global_thumbnail_mode);
      if (strcmp(global_thumbnail_mode, "none") == 0)
      {
        /* Thumbnails are turned off via (gimprc) Preferences
@@ -280,23 +280,23 @@ p_thumbnailsave_is_on(void)
   }
   else
   {
-    if(gap_debug) printf("p_thumbnailsave_is_on: global_thumbnail_mode = <NULL>\n");
+    if(gap_debug) printf("gap_thumb_thumbnailsave_is_on: global_thumbnail_mode = <NULL>\n");
   }
 
   return TRUE;
-}  /* end p_thumbnailsave_is_on */
+}  /* end gap_thumb_thumbnailsave_is_on */
 
 
 /* -------------------------------
- * p_cond_gimp_file_save_thumbnail
+ * gap_thumb_cond_gimp_file_save_thumbnail
  * -------------------------------
  *
  * Conditional Thubnail save Procedure
  */
 gboolean   
-p_cond_gimp_file_save_thumbnail(gint32 image_id, char* filename)
+gap_thumb_cond_gimp_file_save_thumbnail(gint32 image_id, char* filename)
 {
-  if (!p_thumbnailsave_is_on())
+  if (!gap_thumb_thumbnailsave_is_on())
   {
     /* Thumbnails are turned off via (gimprc) Preferences
      * return without saving any thumbnails
@@ -304,8 +304,8 @@ p_cond_gimp_file_save_thumbnail(gint32 image_id, char* filename)
     return TRUE;  /* OK */
   }
 
-  return (p_gimp_file_save_thumbnail(image_id, filename));
-}  /* end p_cond_gimp_file_save_thumbnail */
+  return (gap_pdb_gimp_file_save_thumbnail(image_id, filename));
+}  /* end gap_thumb_cond_gimp_file_save_thumbnail */
 
  
 /* ------------------------
@@ -403,7 +403,7 @@ p_copy_png_thumb(char *filename_src, char *filename_dst)
     {
       if(gap_debug) printf("p_copy_png_thumb: SRC: %s\n", src_png_thumb_full);
 
-      if(p_file_exists(src_png_thumb_full) == 1 )
+      if(gap_lib_file_exists(src_png_thumb_full) == 1 )
       {
         dst_png_thumb_full = g_build_filename (thumb_subdirs[ii], dst_png_thumb, NULL);
         if(dst_png_thumb_full)
@@ -457,7 +457,7 @@ p_copy_png_thumb(char *filename_src, char *filename_dst)
 
 
 /* ------------------------------
- * p_gimp_file_delete_thumbnail
+ * gap_thumb_gimp_file_delete_thumbnail
  * ------------------------------
  * this procedure is usual called immediate after
  * an imagefile was deleted on disc.
@@ -465,22 +465,22 @@ p_copy_png_thumb(char *filename_src, char *filename_dst)
  * both in the old .xvpics standard and in the new PNG standard.
  */
 void
-p_gimp_file_delete_thumbnail(char *filename)
+gap_thumb_gimp_file_delete_thumbnail(char *filename)
 {
   char        *xvpics_thumb;
   guint ii;
   gchar       *png_thumb;
   gchar       *png_thumb_full;
 
-  if(gap_debug) printf("p_gimp_file_delete_thumbnail: START :%s\n",filename);
+  if(gap_debug) printf("gap_thumb_gimp_file_delete_thumbnail: START :%s\n",filename);
 
   /* check and remove thumbnail file for old .xvpics standard */  
   xvpics_thumb = p_alloc_xvpics_thumbname(filename);
   if(xvpics_thumb)
   {
-    if(p_file_exists(xvpics_thumb) == 1) 
+    if(gap_lib_file_exists(xvpics_thumb) == 1) 
     {  
-       if(gap_debug) fprintf(stderr, "\nDEBUG p_delete_frame: %s\n", xvpics_thumb);
+       if(gap_debug) fprintf(stderr, "\nDEBUG gap_lib_delete_frame: %s\n", xvpics_thumb);
        remove(xvpics_thumb);
     }
     g_free(xvpics_thumb);
@@ -506,7 +506,7 @@ p_gimp_file_delete_thumbnail(char *filename)
        png_thumb_full = g_build_filename (thumb_subdirs[ii], png_thumb, NULL);
        if(png_thumb_full)
        {
-         if(p_file_exists(png_thumb_full) == 1) 
+         if(gap_lib_file_exists(png_thumb_full) == 1) 
          {  
            remove(png_thumb_full);
          }
@@ -515,11 +515,11 @@ p_gimp_file_delete_thumbnail(char *filename)
     }
     g_free(png_thumb);
   }
-}  /* end p_gimp_file_delete_thumbnail */
+}  /* end gap_thumb_gimp_file_delete_thumbnail */
 
 
 /* ------------------------------
- * p_gimp_file_copy_thumbnail
+ * gap_thumb_file_copy_thumbnail
  * ------------------------------
  * this procedure is usual called immediate after
  * an imagefile was copied on disc.
@@ -530,12 +530,12 @@ p_gimp_file_delete_thumbnail(char *filename)
  *
  */
 void
-p_gimp_file_copy_thumbnail(char *filename_src, char *filename_dst)
+gap_thumb_file_copy_thumbnail(char *filename_src, char *filename_dst)
 {
   char          *l_src_xvpics_thumb;
   char          *l_dst_xvpics_thumb;
 
-  if (!p_thumbnailsave_is_on())
+  if (!gap_thumb_thumbnailsave_is_on())
   {
     return;
   }
@@ -544,13 +544,13 @@ p_gimp_file_copy_thumbnail(char *filename_src, char *filename_dst)
   l_src_xvpics_thumb = p_alloc_xvpics_thumbname(filename_src);
   if(l_src_xvpics_thumb)
   {
-    if(p_file_exists(l_src_xvpics_thumb) == 1) 
+    if(gap_lib_file_exists(l_src_xvpics_thumb) == 1) 
     {  
        l_dst_xvpics_thumb = p_alloc_xvpics_thumbname(filename_dst);
        if(l_dst_xvpics_thumb)
        {
          /* copy the .xvpics thumbnail file */
-         p_file_copy(l_src_xvpics_thumb, l_dst_xvpics_thumb);
+         gap_lib_file_copy(l_src_xvpics_thumb, l_dst_xvpics_thumb);
          g_free(l_dst_xvpics_thumb);
        }
     }
@@ -560,11 +560,11 @@ p_gimp_file_copy_thumbnail(char *filename_src, char *filename_dst)
  /* copy (and update) the PNG thumbnail file(s) */
   p_copy_png_thumb(filename_src, filename_dst);
       
-}  /* end p_gimp_file_copy_thumbnail */
+}  /* end gap_thumb_file_copy_thumbnail */
 
 
 /* ------------------------------
- * p_gimp_file_rename_thumbnail
+ * gap_thumb_gimp_file_rename_thumbnail
  * ------------------------------
  * this procedure is usual called immediate after
  * an imagefile was renamed on disc.
@@ -576,18 +576,18 @@ p_gimp_file_copy_thumbnail(char *filename_src, char *filename_dst)
  * The Old Thumnail(s) are deleted (unconditional)
  */
 void
-p_gimp_file_rename_thumbnail(char *filename_src, char *filename_dst)
+gap_thumb_gimp_file_rename_thumbnail(char *filename_src, char *filename_dst)
 {
   char          *l_src_xvpics_thumb;
   char          *l_dst_xvpics_thumb;
 
-  if (p_thumbnailsave_is_on())
+  if (gap_thumb_thumbnailsave_is_on())
   {
     /* check for thumbnail file for old .xvpics standard */  
     l_src_xvpics_thumb = p_alloc_xvpics_thumbname(filename_src);
     if(l_src_xvpics_thumb)
     {
-      if(p_file_exists(l_src_xvpics_thumb) == 1) 
+      if(gap_lib_file_exists(l_src_xvpics_thumb) == 1) 
       {  
          l_dst_xvpics_thumb = p_alloc_xvpics_thumbname(filename_dst);
          if(l_dst_xvpics_thumb)
@@ -604,6 +604,6 @@ p_gimp_file_rename_thumbnail(char *filename_src, char *filename_dst)
     p_copy_png_thumb(filename_src, filename_dst);
   }
 
-  p_gimp_file_delete_thumbnail(filename_src);
+  gap_thumb_gimp_file_delete_thumbnail(filename_src);
   
-}  /* end p_gimp_file_rename_thumbnail */
+}  /* end gap_thumb_gimp_file_rename_thumbnail */

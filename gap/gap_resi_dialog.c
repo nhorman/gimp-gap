@@ -56,7 +56,7 @@
 
 typedef struct
 {
-  t_gap_asiz asiz_mode;    /* GAP specific resize mode ASIZ_SCALE, ASIZ_RESIZE, ASIZ_CROP */
+  GapRangeOpsAsiz asiz_mode;    /* GAP specific resize mode GAP_ASIZ_SCALE, GAP_ASIZ_RESIZE, GAP_ASIZ_CROP */
   gint32 image_id;
   gint32 orig_width;
   gint32 orig_height;
@@ -230,7 +230,7 @@ p_res_reset_callback (GtkWidget *widget,
   res_private->height = res_private->orig_height;
   p_set_size_spinbuttons(res_private);
 
-  if((res_private->asiz_mode != ASIZ_SCALE)
+  if((res_private->asiz_mode != GAP_ASIZ_SCALE)
   && (res_private->offset_area))
   {
     res_private->offset_x = 0;
@@ -505,14 +505,14 @@ p_orig_labels_update (GtkWidget *widget,
 
 
 /* --------------------------
- * p_resi_dialog
+ * gap_resi_dialog
  * --------------------------
  * Resize dialog used for resize and cropping frames
  * based on the GimpOffsetArea widget
  */
  
 gint
-p_resi_dialog (gint32 image_id, t_gap_asiz asiz_mode, char *title_text,
+gap_resi_dialog (gint32 image_id, GapRangeOpsAsiz asiz_mode, char *title_text,
                long *size_x, long *size_y, 
                long *offs_x, long *offs_y)
 {
@@ -566,7 +566,7 @@ p_resi_dialog (gint32 image_id, t_gap_asiz asiz_mode, char *title_text,
   l_max_ratio_y = (gdouble) GIMP_MAX_IMAGE_SIZE / (double) res_private->height;
   
   /* for CROP mode only: set sizelimit to original width/height */
-  if(res_private->asiz_mode == ASIZ_CROP)
+  if(res_private->asiz_mode == GAP_ASIZ_CROP)
   {
     l_max_image_width = res_private->orig_width;
     l_max_image_height = res_private->orig_height;
@@ -590,13 +590,13 @@ p_resi_dialog (gint32 image_id, t_gap_asiz asiz_mode, char *title_text,
 
   switch(res_private->asiz_mode)
   {
-    case ASIZ_SCALE:
+    case GAP_ASIZ_SCALE:
       frame        = gtk_frame_new (_("Scale Frames"));
       break;
-    case ASIZ_RESIZE:
+    case GAP_ASIZ_RESIZE:
       frame        = gtk_frame_new (_("Resize Frames"));
       break;
-    case ASIZ_CROP:
+    case GAP_ASIZ_CROP:
       frame        = gtk_frame_new (_("Crop Frames"));
       break;
   }
@@ -793,8 +793,8 @@ p_resi_dialog (gint32 image_id, t_gap_asiz asiz_mode, char *title_text,
   gtk_widget_show (vbox);
 
 
-  /* code for ASIZ_RESIZE ASIZ_CROP using offsets, ASIZ_SCALE does not */
-  if(res_private->asiz_mode != ASIZ_SCALE)
+  /* code for GAP_ASIZ_RESIZE GAP_ASIZ_CROP using offsets, GAP_ASIZ_SCALE does not */
+  if(res_private->asiz_mode != GAP_ASIZ_SCALE)
   {
     /*  the offset frame  */
     frame = gtk_frame_new (_("Offset"));
@@ -952,7 +952,7 @@ p_resi_dialog (gint32 image_id, t_gap_asiz asiz_mode, char *title_text,
   *offs_x  = res_private->offset_x;
   *offs_y  = res_private->offset_y;
 
-  if(res_private->asiz_mode == ASIZ_CROP)
+  if(res_private->asiz_mode == GAP_ASIZ_CROP)
   {
      /* the widgets deliver negative offsets when new size is smaller
       * than original (as needed for gimp_image_resize calls)
@@ -967,4 +967,4 @@ p_resi_dialog (gint32 image_id, t_gap_asiz asiz_mode, char *title_text,
   g_free(res_private);
   return (l_run);
 
-}  /* end p_resi_dialog */
+}  /* end gap_resi_dialog */

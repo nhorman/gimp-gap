@@ -41,16 +41,16 @@
 #include "libgimp/gimp.h"
 #include "gap_mov_dialog.h"
 
-gint32  gap_move_path(GimpRunMode run_mode, gint32 image_id, t_mov_values *pvals, gchar *pointfile, gint rotation_follow, gdouble startangle);
-gint32  p_mov_anim_preview(t_mov_values *pvals_orig, t_anim_info *ainfo_ptr, gint preview_frame_nr);
+gint32  gap_mov_exec_move_path(GimpRunMode run_mode, gint32 image_id, GapMovValues *pvals, gchar *pointfile, gint rotation_follow, gdouble startangle);
+gint32  gap_mov_exec_anim_preview(GapMovValues *pvals_orig, GapAnimInfo *ainfo_ptr, gint preview_frame_nr);
 
-gchar  *p_gap_chk_keyframes(t_mov_values *pvals);
-gint    p_conv_keyframe_to_rel(gint abs_keyframe, t_mov_values *pvals);
-gint    p_conv_keyframe_to_abs(gint rel_keyframe, t_mov_values *pvals);
-gint    p_gap_save_pointfile(char *filename, t_mov_values *pvals);
-gint    p_gap_load_pointfile(char *filename, t_mov_values *pvals);
-void    p_calculate_rotate_follow(t_mov_values *pvals, gdouble startangle);
-
+gchar  *gap_mov_exec_chk_keyframes(GapMovValues *pvals);
+gint    gap_mov_exec_conv_keyframe_to_rel(gint abs_keyframe, GapMovValues *pvals);
+gint    gap_mov_exec_conv_keyframe_to_abs(gint rel_keyframe, GapMovValues *pvals);
+gint    gap_mov_exec_gap_save_pointfile(char *filename, GapMovValues *pvals);
+gint    gap_mov_exec_gap_load_pointfile(char *filename, GapMovValues *pvals);
+void    gap_mov_exec_calculate_rotate_follow(GapMovValues *pvals, gdouble startangle);
+void    gap_mov_exec_set_handle_offsets(GapMovValues *val_ptr, GapMovCurrent *cur_ptr);
 
 #endif
 

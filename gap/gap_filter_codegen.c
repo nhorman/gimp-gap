@@ -40,12 +40,12 @@
 /* int gap_debug = 0; */    /* 0: dont print debug infos */
 
 extern int gap_debug;
-gint p_gen_code_iter(char  *proc_name);
+gint gap_codegen_gen_code_iterator(char  *proc_name);
 
 #define GEN_FORWARDFILE_NAME     "gen_filter_iter_forward.c"
 #define GEN_TABFILE_NAME         "gen_filter_iter_tab.c"
 
-void p_remove_codegen_files()
+void gap_codegen_remove_codegen_files()
 {
    remove(GEN_FORWARDFILE_NAME);
    remove(GEN_TABFILE_NAME);
@@ -148,7 +148,7 @@ p_clean_name(char *name, char *clean_name)
   *l_ptr = '\0';
 }
 
-gint p_gen_code_iter_ALT(char  *proc_name)
+gint gap_codegen_gen_code_iter_ALT(char  *proc_name)
 {
   FILE             *l_fp;
   gint              l_idx;
@@ -299,12 +299,12 @@ gint p_gen_code_iter_ALT(char  *proc_name)
      return -1;
   }
   
-  p_gen_code_iter(proc_name);
+  gap_codegen_gen_code_iterator(proc_name);
 
   return l_rc;
-}	/* p_gen_code_iter_ALT */
+}	/* gap_codegen_gen_code_iter_ALT */
 
-gint p_gen_forward_iter_ALT(char  *proc_name)
+gint gap_codegen_gen_forward_iter_ALT(char  *proc_name)
 {
   FILE           *l_fp;
   char             l_clean_proc_name[256];
@@ -320,7 +320,7 @@ gint p_gen_forward_iter_ALT(char  *proc_name)
   return 0;
 }
 
-gint p_gen_tab_iter_ALT(char  *proc_name)
+gint gap_codegen_gen_tab_iter_ALT(char  *proc_name)
 {
   FILE           *l_fp;
   char             l_clean_proc_name[256];
@@ -341,7 +341,7 @@ gint p_gen_tab_iter_ALT(char  *proc_name)
 /* Generate _Itrerator Procedure all in one .c file,
  * ready to compile
  */
-gint p_gen_code_iter(char  *proc_name)
+gint gap_codegen_gen_code_iterator(char  *proc_name)
 {
   FILE             *l_fp;
   gint              l_idx;
@@ -748,4 +748,4 @@ gint p_gen_code_iter(char  *proc_name)
   
 
   return l_rc;
-}	/* p_gen_code_iter */
+}	/* gap_codegen_gen_code_iterator */

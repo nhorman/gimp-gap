@@ -6,7 +6,7 @@
  * This is the common GTK Dialog for most of the GAP Functions.
  * (it replaces the older gap_sld_dialog module)
  *
- * - p_array_dialog   Dialog Window with one or more rows
+ * - gap_arr_ok_cancel_dialog   Dialog Window with one or more rows
  *                    each row can contain one of the following GAP widgets:
  *                       - float pair widget
  *                         (horizontal slidebar combined with a float input field)
@@ -38,35 +38,36 @@
  */
 
 /* revision history:
- * gimp    1.3.20a; 2003/09/29  hof: p_overwrite_file_dialog
- * gimp    1.3.20a; 2003/09/14  hof: extended function of WGT_LABEL WGT_LABEL_LEFT WGT_LABEL_RIGHT
+ * gimp    1.3.20d; 2003/10/04  hof: bugfix: added missing implementation for GAP_ARR_WGT_RADIO defaults
+ * gimp    1.3.20a; 2003/09/29  hof: gap_arr_overwrite_file_dialog
+ * gimp    1.3.20a; 2003/09/14  hof: extended function of GAP_ARR_WGT_LABEL GAP_ARR_WGT_LABEL_LEFT GAP_ARR_WGT_LABEL_RIGHT
  *                                   (caller can provide additional Text via text_buf_ret,
  *                                    to create 2 Labels)
- * gimp    1.3.18a; 2003/08/23  hof: p_slider_dialog increased entry_width from 45 to 80 (to show 6 digits)
+ * gimp    1.3.18a; 2003/08/23  hof: gap_arr_slider_dialog increased entry_width from 45 to 80 (to show 6 digits)
  * gimp    1.3.17b; 2003/07/31  hof: message text fixes for translators (# 118392)
  * gimp    1.3.17a; 2003/07/28  hof: gimp_interactive_selection_font was renamed to:  gimp_font_select_new
- * gimp    1.3.16c; 2003/07/12  hof: new p_confirm_dialog
+ * gimp    1.3.16c; 2003/07/12  hof: new gap_arr_confirm_dialog
  * gimp    1.3.15a; 2003/06/21  hof: textspacing
  * gimp    1.3.14b; 2003/06/03  hof: added gap_stock_init
  * gimp    1.3.14a; 2003/05/19  hof: GUI standard (OK ist rightmost button)
- *                                   changed WGT_INT, and WGT_FLT from entry to spinbutton
- *                                   added WGT_FONTSEL
+ *                                   changed GAP_ARR_WGT_INT, and GAP_ARR_WGT_FLT from entry to spinbutton
+ *                                   added GAP_ARR_WGT_FONTSEL
  * gimp    1.3.12a; 2003/05/03  hof: merge into CVS-gimp-gap project, replace gimp_help_init by _gimp_help_init
  * gimp    1.3.11a; 2003/01/18  hof: merged in changes of the gap_vid_enc project
- *                                   - added WGT_OPT_ENTRY (entry comined with Optionmenu) and WGT_DEFAULT_BUTTON
+ *                                   - added GAP_ARR_WGT_OPT_ENTRY (entry comined with Optionmenu) and GAP_ARR_WGT_DEFAULT_BUTTON
  * gimp    1.3.4a;  2002/03/12  hof: ported to gtk+-2.0.0
  *                                   radio_create_value (prevent fire callback to early, needed in new gtk)
  *                                   bugfix: optionmenu_create_value active menu entry now can have any position
  *                                   (dont change menuorder any longer, where active item was placed 1st)
  * gimp    1.1.17b; 2000/01/26  hof: bugfix gimp_help_init
- *                                   use gimp_scale_entry_new for WGT_FLT_PAIR, WGT_INT_PAIR
+ *                                   use gimp_scale_entry_new for GAP_ARR_WGT_FLT_PAIR, GAP_ARR_WGT_INT_PAIR
  * gimp    1.1.17a; 2000/02/20  hof: use gimp_help_set_help_data for tooltips
  * gimp    1.1.13b; 1999/12/04  hof: some cosmetic gtk fixes
  *                                   changed border_width spacing and Buttons in action area
  *                                   to same style as used in dialogs of the gimp 1.1.13 main dialogs
  * gimp    1.1.11b; 1999/11/20  hof: some cosmetic gtk fixes:
  *                                   - allow X-expansion (useful for the scale widgets)
- *                                   - use a hbox on WGT_INT_PAIR and WGT_FLT_PAIR
+ *                                   - use a hbox on GAP_ARR_WGT_INT_PAIR and GAP_ARR_WGT_FLT_PAIR
  *                                     (reduces the waste of horizontal space
  *                                      when used together with other widget types in the table)
  * gimp    1.1.5.1; 1999/05/08  hof: call fileselect in gtk+1.2 style 
@@ -94,13 +95,17 @@
 #include "gap_stock.h"
 #include "gap-intl.h"
 
-typedef void (*t_entry_cb_func) (GtkWidget *widget, t_arr_arg *arr_ptr);
+typedef void (*t_entry_cb_func) (GtkWidget *widget, GapArrArg *arr_ptr);
 
 typedef struct
 {
-  t_arr_arg *arr_ptr;
+  GapArrArg *arr_ptr;
   gint       radio_index;
+  GtkWidget *radio_button;
+  void      *first;
+  void      *next;
 } t_radio_arg;
+
 
 typedef struct {
   GtkWidget *dlg;
@@ -109,7 +114,7 @@ typedef struct {
 
 typedef struct
 {
-  t_arr_arg *argv;
+  GapArrArg *argv;
   gint       argc;
 }   t_all_arr_args;
 
@@ -128,32 +133,32 @@ extern      int gap_debug; /* ==0  ... dont print debug infos */
 static void   arr_close_callback        (GtkWidget *widget, gpointer data);
 static void   but_array_callback           (GtkWidget *widget, gpointer data);
 
-static void   entry_create_value        (char *title, GtkTable *table, int row, t_arr_arg *arr_ptr,
+static void   entry_create_value        (char *title, GtkTable *table, int row, GapArrArg *arr_ptr,
                                          t_entry_cb_func entry_update_cb, char *init_txt);
-static void   label_create_value         (char *title, GtkTable *table, int row, t_arr_arg *arr_ptr,
+static void   label_create_value         (char *title, GtkTable *table, int row, GapArrArg *arr_ptr,
                                           gfloat align);
-static void   text_entry_update_cb       (GtkWidget *widget, t_arr_arg *arr_ptr);
-static void   text_create_value          (char *title, GtkTable *table, int row, t_arr_arg *arr_ptr);
-static void   filesel_close_cb           (GtkWidget *widget, t_arr_arg *arr_ptr);
-static void   filesel_ok_cb              (GtkWidget *widget, t_arr_arg *arr_ptr);
-static void   filesel_open_cb            (GtkWidget *widget, t_arr_arg *arr_ptr);
-static void   filesel_create_value       (char *title, GtkTable *table, int row, t_arr_arg *arr_ptr);
+static void   text_entry_update_cb       (GtkWidget *widget, GapArrArg *arr_ptr);
+static void   text_create_value          (char *title, GtkTable *table, int row, GapArrArg *arr_ptr);
+static void   filesel_close_cb           (GtkWidget *widget, GapArrArg *arr_ptr);
+static void   filesel_ok_cb              (GtkWidget *widget, GapArrArg *arr_ptr);
+static void   filesel_open_cb            (GtkWidget *widget, GapArrArg *arr_ptr);
+static void   filesel_create_value       (char *title, GtkTable *table, int row, GapArrArg *arr_ptr);
 
-static void   int_create_value           (char *title, GtkTable *table, int row, t_arr_arg *arr_ptr);
-static void   flt_create_value           (char *title, GtkTable *table, int row, t_arr_arg *arr_ptr);
+static void   int_create_value           (char *title, GtkTable *table, int row, GapArrArg *arr_ptr);
+static void   flt_create_value           (char *title, GtkTable *table, int row, GapArrArg *arr_ptr);
 
-static void   toggle_update_cb           (GtkWidget *widget, t_arr_arg *arr_ptr);
-static void   toggle_create_value        (char *title, GtkTable *table, int row, t_arr_arg *arr_ptr);
+static void   toggle_update_cb           (GtkWidget *widget, GapArrArg *arr_ptr);
+static void   toggle_create_value        (char *title, GtkTable *table, int row, GapArrArg *arr_ptr);
 
 static void   radio_update_cb            (GtkWidget *widget, t_radio_arg *radio_ptr);
-static void   radio_create_value         (char *title, GtkTable *table, int row, t_arr_arg *arr_ptr);
-static void   optionmenu_create_value    (char *title, GtkTable *table, int row, t_arr_arg *arr_ptr);
+static void   radio_create_value         (char *title, GtkTable *table, int row, GapArrArg *arr_ptr);
+static void   optionmenu_create_value    (char *title, GtkTable *table, int row, GapArrArg *arr_ptr);
 
-static void   pair_int_create_value     (gchar *title, GtkTable *table, gint row, t_arr_arg *arr_ptr);
-static void   pair_flt_create_value     (gchar *title, GtkTable *table, gint row, t_arr_arg *arr_ptr);
+static void   pair_int_create_value     (gchar *title, GtkTable *table, gint row, GapArrArg *arr_ptr);
+static void   pair_flt_create_value     (gchar *title, GtkTable *table, gint row, GapArrArg *arr_ptr);
 
 static void   default_button_cb           (GtkWidget *widget, t_all_arr_args *arr_all);
-static void   default_button_create_value (char *title, GtkWidget *hbox, t_arr_arg *arr_ptr, t_all_arr_args *arr_all);
+static void   default_button_create_value (char *title, GtkWidget *hbox, GapArrArg *arr_ptr, t_all_arr_args *arr_all);
 
 
 
@@ -171,12 +176,13 @@ but_array_callback (GtkWidget *widget,
 {
   g_arrint.run = *((gint *)data);                  /* set returnvalue according to button */
   gtk_widget_destroy (GTK_WIDGET (g_arrint.dlg));  /* close & destroy dialog window */
-  gtk_main_quit ();
+
+  /* gtk_main_quit (); */ /* is called implicite in the "desstroy" handler */
 }
 
 
 static void
-entry_create_value(char *title, GtkTable *table, int row, t_arr_arg *arr_ptr,
+entry_create_value(char *title, GtkTable *table, int row, GapArrArg *arr_ptr,
                    t_entry_cb_func entry_update_cb, char *init_txt)
 {
     GtkWidget *entry;
@@ -210,7 +216,7 @@ entry_create_value(char *title, GtkTable *table, int row, t_arr_arg *arr_ptr,
  */
 
 static void
-label_create_value(char *title, GtkTable *table, int row, t_arr_arg *arr_ptr, gfloat align)
+label_create_value(char *title, GtkTable *table, int row, GapArrArg *arr_ptr, gfloat align)
 {
     GtkWidget *label;
     GtkWidget *hbox;
@@ -262,7 +268,7 @@ label_create_value(char *title, GtkTable *table, int row, t_arr_arg *arr_ptr, gf
  */
 
 static void
-default_button_create_value(char *title, GtkWidget *hbox, t_arr_arg *arr_ptr, t_all_arr_args *arr_all)
+default_button_create_value(char *title, GtkWidget *hbox, GapArrArg *arr_ptr, t_all_arr_args *arr_all)
 {
     GtkWidget *button;
 
@@ -286,7 +292,7 @@ static void
 default_button_cb(GtkWidget *widget,  t_all_arr_args *arr_all)
 {
   gint l_idx;
-  t_arr_arg  *arr_ptr;
+  GapArrArg  *arr_ptr;
   char       *buf;
   char       *fmt;
 
@@ -307,22 +313,22 @@ default_button_cb(GtkWidget *widget,  t_all_arr_args *arr_all)
      
      switch(arr_ptr->widget_type)
      {
-        case WGT_TEXT:
-        case WGT_FONTSEL:
-        case WGT_OPT_ENTRY:
+        case GAP_ARR_WGT_TEXT:
+        case GAP_ARR_WGT_FONTSEL:
+        case GAP_ARR_WGT_OPT_ENTRY:
           if((arr_ptr->text_buf_ret != NULL) && (arr_ptr->text_buf_default))
           {
              strncpy(arr_ptr->text_buf_ret, arr_ptr->text_buf_default, arr_ptr->text_buf_len -1);
              buf = g_strdup(arr_ptr->text_buf_default);
           }
-	  if(arr_ptr->widget_type == WGT_OPT_ENTRY)
+	  if(arr_ptr->widget_type == GAP_ARR_WGT_OPT_ENTRY)
 	  {
             arr_ptr->radio_ret = arr_ptr->radio_default;
             gtk_option_menu_set_history (GTK_OPTION_MENU (arr_ptr->option_menu), arr_ptr->radio_ret);
 	  }
 	  break;
-        case WGT_FLT_PAIR:
-        case WGT_FLT:  
+        case GAP_ARR_WGT_FLT_PAIR:
+        case GAP_ARR_WGT_FLT:  
           arr_ptr->flt_ret = arr_ptr->flt_default;
 	  fmt = g_strdup_printf("%%.%df", arr_ptr->flt_digits);
           buf = g_strdup_printf(fmt, arr_ptr->flt_ret);
@@ -332,8 +338,8 @@ default_button_cb(GtkWidget *widget,  t_all_arr_args *arr_all)
             gtk_adjustment_set_value (GTK_ADJUSTMENT (arr_ptr->adjustment), (gfloat)arr_ptr->flt_default);
           }
 	  break;
-        case WGT_INT_PAIR:
-        case WGT_INT:
+        case GAP_ARR_WGT_INT_PAIR:
+        case GAP_ARR_WGT_INT:
           arr_ptr->int_ret = arr_ptr->int_default;
           buf = g_strdup_printf("%d", arr_ptr->int_ret);
           if(arr_ptr->adjustment)
@@ -341,16 +347,31 @@ default_button_cb(GtkWidget *widget,  t_all_arr_args *arr_all)
             gtk_adjustment_set_value (GTK_ADJUSTMENT (arr_ptr->adjustment), (gfloat)arr_ptr->int_default);
           }
  	  break;
-        case WGT_TOGGLE:
+        case GAP_ARR_WGT_TOGGLE:
           arr_ptr->int_ret = arr_ptr->int_default;
 	  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (arr_ptr->check_button),
 				arr_ptr->int_default);
  	  break;
-        case WGT_RADIO:
+        case GAP_ARR_WGT_RADIO:
           arr_ptr->radio_ret = arr_ptr->radio_default;
-	  if (gap_debug) printf("ERROR: default for WGT_RADIO not impemented\n");
+
+	  {
+	    t_radio_arg *rgp_list;
+	    
+	    for(rgp_list = (t_radio_arg *)arr_ptr->radiogroup
+	       ;rgp_list != NULL
+	       ;rgp_list = (t_radio_arg *)rgp_list->next)
+	    {
+	      if(rgp_list->radio_index == arr_ptr->radio_ret)
+	      {
+                gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (rgp_list->radio_button) 
+				             , TRUE);
+	        break;
+	      }
+	    }
+	  }
  	  break;
-        case WGT_OPTIONMENU:
+        case GAP_ARR_WGT_OPTIONMENU:
          arr_ptr->radio_ret = arr_ptr->radio_default;
          gtk_option_menu_set_history (GTK_OPTION_MENU (arr_ptr->option_menu), arr_ptr->radio_ret);
          break;
@@ -380,11 +401,11 @@ p_font_callback   (gchar    *name
 		  ,gboolean  dialog_closing
 		  ,gpointer  user_data)
 {
-  t_arr_arg *arr_ptr;
+  GapArrArg *arr_ptr;
   
   if(gap_debug) printf("p_font_callback: %s  closing:%d\n", name, (int)dialog_closing);
 
-  arr_ptr = (t_arr_arg *)user_data;
+  arr_ptr = (GapArrArg *)user_data;
   if(arr_ptr)
   {
     g_snprintf(arr_ptr->text_buf_ret, arr_ptr->text_buf_len, "%s", name);
@@ -399,7 +420,7 @@ p_font_callback   (gchar    *name
                   
 
 static void
-fontsel_open_cb(GtkWidget *widget, t_arr_arg *arr_ptr)
+fontsel_open_cb(GtkWidget *widget, GapArrArg *arr_ptr)
 {
   const gchar *fontsel;
 
@@ -416,7 +437,7 @@ fontsel_open_cb(GtkWidget *widget, t_arr_arg *arr_ptr)
 
 
 static void
-fontsel_create_value(char *title, GtkTable *table, int row, t_arr_arg *arr_ptr)
+fontsel_create_value(char *title, GtkTable *table, int row, GapArrArg *arr_ptr)
 {
   GtkWidget *button;
 
@@ -444,7 +465,7 @@ fontsel_create_value(char *title, GtkTable *table, int row, t_arr_arg *arr_ptr)
  * --------------------------
  */
 static void
-filesel_close_cb(GtkWidget *widget, t_arr_arg *arr_ptr)
+filesel_close_cb(GtkWidget *widget, GapArrArg *arr_ptr)
 {
   if(arr_ptr->text_filesel == NULL) return;  /* filesel is already closed */
 
@@ -452,7 +473,7 @@ filesel_close_cb(GtkWidget *widget, t_arr_arg *arr_ptr)
   arr_ptr->text_filesel = NULL;
 }
 static void
-filesel_ok_cb(GtkWidget *widget, t_arr_arg *arr_ptr)
+filesel_ok_cb(GtkWidget *widget, GapArrArg *arr_ptr)
 {
   const gchar *filename;
 
@@ -467,7 +488,7 @@ filesel_ok_cb(GtkWidget *widget, t_arr_arg *arr_ptr)
 }
 
 static void
-filesel_open_cb(GtkWidget *widget, t_arr_arg *arr_ptr)
+filesel_open_cb(GtkWidget *widget, GapArrArg *arr_ptr)
 {
   GtkWidget *filesel;
 
@@ -498,7 +519,7 @@ filesel_open_cb(GtkWidget *widget, t_arr_arg *arr_ptr)
 
 
 static void
-filesel_create_value(char *title, GtkTable *table, int row, t_arr_arg *arr_ptr)
+filesel_create_value(char *title, GtkTable *table, int row, GapArrArg *arr_ptr)
 {
   GtkWidget *button;
 
@@ -521,11 +542,11 @@ filesel_create_value(char *title, GtkTable *table, int row, t_arr_arg *arr_ptr)
  * --------------------------
  */
 static void
-text_entry_update_cb(GtkWidget *widget, t_arr_arg *arr_ptr)
+text_entry_update_cb(GtkWidget *widget, GapArrArg *arr_ptr)
 {
-  if((arr_ptr->widget_type != WGT_TEXT)
-  && (arr_ptr->widget_type != WGT_FONTSEL)
-  && (arr_ptr->widget_type != WGT_FILESEL))
+  if((arr_ptr->widget_type != GAP_ARR_WGT_TEXT)
+  && (arr_ptr->widget_type != GAP_ARR_WGT_FONTSEL)
+  && (arr_ptr->widget_type != GAP_ARR_WGT_FILESEL))
   {
     return;
   }
@@ -537,7 +558,7 @@ text_entry_update_cb(GtkWidget *widget, t_arr_arg *arr_ptr)
 }
 
 static void
-text_create_value(char *title, GtkTable *table, int row, t_arr_arg *arr_ptr)
+text_create_value(char *title, GtkTable *table, int row, GapArrArg *arr_ptr)
 {
     entry_create_value(title, table, row, arr_ptr, text_entry_update_cb, arr_ptr->text_buf_ret);
 }
@@ -549,7 +570,7 @@ text_create_value(char *title, GtkTable *table, int row, t_arr_arg *arr_ptr)
  */
 
 static void
-spin_create_value(char *title, GtkTable *table, int row, t_arr_arg *arr_ptr
+spin_create_value(char *title, GtkTable *table, int row, GapArrArg *arr_ptr
                 , gboolean int_flag
                 , gdouble un_min
                 , gdouble un_max
@@ -650,7 +671,7 @@ spin_create_value(char *title, GtkTable *table, int row, t_arr_arg *arr_ptr
  * --------------------------
  */
 static void
-int_create_value(char *title, GtkTable *table, int row, t_arr_arg *arr_ptr)
+int_create_value(char *title, GtkTable *table, int row, GapArrArg *arr_ptr)
 {
   spin_create_value(title, table, row, arr_ptr
                    , TRUE  /* int_flag */
@@ -664,7 +685,7 @@ int_create_value(char *title, GtkTable *table, int row, t_arr_arg *arr_ptr)
  */
 
 static void
-flt_create_value(char *title, GtkTable *table, int row, t_arr_arg *arr_ptr)
+flt_create_value(char *title, GtkTable *table, int row, GapArrArg *arr_ptr)
 {
   spin_create_value(title, table, row, arr_ptr
                    , FALSE  /* int_flag */
@@ -680,9 +701,9 @@ flt_create_value(char *title, GtkTable *table, int row, t_arr_arg *arr_ptr)
  */
 
 static void
-toggle_update_cb (GtkWidget *widget, t_arr_arg *arr_ptr)
+toggle_update_cb (GtkWidget *widget, GapArrArg *arr_ptr)
 {
-  if(arr_ptr->widget_type !=WGT_TOGGLE) return;
+  if(arr_ptr->widget_type !=GAP_ARR_WGT_TOGGLE) return;
 
   if (GTK_TOGGLE_BUTTON (widget)->active)
   {
@@ -695,7 +716,7 @@ toggle_update_cb (GtkWidget *widget, t_arr_arg *arr_ptr)
 }
 
 static void
-toggle_create_value(char *title, GtkTable *table, int row, t_arr_arg *arr_ptr)
+toggle_create_value(char *title, GtkTable *table, int row, GapArrArg *arr_ptr)
 {
   GtkWidget *check_button;
   GtkWidget *label;
@@ -741,9 +762,9 @@ radio_update_cb (GtkWidget *widget, t_radio_arg *radio_ptr)
 {
   if(radio_ptr->arr_ptr == NULL) return;
   if(radio_ptr->arr_ptr->widget_locked) return;
-  if((radio_ptr->arr_ptr->widget_type != WGT_RADIO)
-  && (radio_ptr->arr_ptr->widget_type != WGT_OPTIONMENU)
-  && (radio_ptr->arr_ptr->widget_type != WGT_OPT_ENTRY))
+  if((radio_ptr->arr_ptr->widget_type != GAP_ARR_WGT_RADIO)
+  && (radio_ptr->arr_ptr->widget_type != GAP_ARR_WGT_OPTIONMENU)
+  && (radio_ptr->arr_ptr->widget_type != GAP_ARR_WGT_OPT_ENTRY))
   {
     return;
   }
@@ -752,7 +773,7 @@ radio_update_cb (GtkWidget *widget, t_radio_arg *radio_ptr)
   radio_ptr->arr_ptr->radio_ret = radio_ptr->radio_index;
   if(gap_debug) printf("radio_update_cb: radio_ret %d\n", (int)radio_ptr->arr_ptr->radio_ret );
 
-  if((radio_ptr->arr_ptr->widget_type == WGT_OPT_ENTRY)
+  if((radio_ptr->arr_ptr->widget_type == GAP_ARR_WGT_OPT_ENTRY)
   && (radio_ptr->arr_ptr->radio_argv != NULL))
   {
     gtk_entry_set_text(GTK_ENTRY(radio_ptr->arr_ptr->text_entry), radio_ptr->arr_ptr->radio_argv[radio_ptr->radio_index]);
@@ -766,7 +787,7 @@ radio_update_cb (GtkWidget *widget, t_radio_arg *radio_ptr)
 }
 
 static void
-radio_create_value(char *title, GtkTable *table, int row, t_arr_arg *arr_ptr)
+radio_create_value(char *title, GtkTable *table, int row, GapArrArg *arr_ptr)
 {
   GtkWidget *label;
   GtkWidget *radio_table;
@@ -780,6 +801,8 @@ radio_create_value(char *title, GtkTable *table, int row, t_arr_arg *arr_ptr)
 
 
   t_radio_arg   *radio_ptr;
+  t_radio_arg   *radio_list_root;
+  t_radio_arg   *radio_list_prev;
 
   l_int_ret_initial_value = arr_ptr->radio_ret;
   
@@ -791,11 +814,25 @@ radio_create_value(char *title, GtkTable *table, int row, t_arr_arg *arr_ptr)
   /* radio_table */
   radio_table = gtk_table_new (arr_ptr->radio_argc, 2, FALSE);
 
+  radio_list_root = NULL;
+  radio_list_prev = NULL;
   for(l_idy=0; l_idy < arr_ptr->radio_argc; l_idy++)
   {
      radio_ptr          = g_malloc0(sizeof(t_radio_arg));
      radio_ptr->arr_ptr = arr_ptr;
      radio_ptr->radio_index = l_idy;
+     radio_ptr->next = NULL;
+     if(l_idy==0)
+     {
+       radio_list_root = radio_ptr;
+     }
+     if(radio_list_prev)
+     {
+       radio_list_prev->next = radio_ptr;
+     }
+     radio_list_prev = radio_ptr;
+     radio_ptr->first = radio_list_root;
+     arr_ptr->radiogroup = (gpointer)radio_list_root;
      
      if(arr_ptr->radio_ret == l_idy) l_radio_pressed  = TRUE;
      else                            l_radio_pressed  = FALSE;
@@ -827,6 +864,7 @@ radio_create_value(char *title, GtkTable *table, int row, t_arr_arg *arr_ptr)
        gimp_help_set_help_data(radio_button, l_radio_help_txt, NULL);
      }
      gtk_widget_show (radio_button);
+     radio_ptr->radio_button = radio_button;
 
      g_signal_connect ( G_OBJECT (radio_button), "toggled",
 		        G_CALLBACK (radio_update_cb),
@@ -855,9 +893,9 @@ radio_create_value(char *title, GtkTable *table, int row, t_arr_arg *arr_ptr)
  * --------------------------
  */
 
-/* optionmenus share callback and data structure with WGT_RADIO */
+/* optionmenus share callback and data structure with GAP_ARR_WGT_RADIO */
 static void
-optionmenu_create_value(char *title, GtkTable *table, int row, t_arr_arg *arr_ptr)
+optionmenu_create_value(char *title, GtkTable *table, int row, GapArrArg *arr_ptr)
 {
   GtkWidget *label;
   GtkWidget *entry;
@@ -879,7 +917,7 @@ optionmenu_create_value(char *title, GtkTable *table, int row, t_arr_arg *arr_pt
   gtk_widget_show(label);
 
   /* entry */
-  if(arr_ptr->widget_type == WGT_OPT_ENTRY)
+  if(arr_ptr->widget_type == GAP_ARR_WGT_OPT_ENTRY)
   {
     l_col++;
     entry = gtk_entry_new();
@@ -957,7 +995,7 @@ optionmenu_create_value(char *title, GtkTable *table, int row, t_arr_arg *arr_pt
  */
 
 static void
-pair_flt_create_value(gchar *title, GtkTable *table, gint row, t_arr_arg *arr_ptr)
+pair_flt_create_value(gchar *title, GtkTable *table, gint row, GapArrArg *arr_ptr)
 {
   GtkObject *adj;
   gfloat     umin, umax;
@@ -1002,7 +1040,7 @@ pair_flt_create_value(gchar *title, GtkTable *table, gint row, t_arr_arg *arr_pt
  */
 
 static void
-pair_int_create_value(gchar *title, GtkTable *table, gint row, t_arr_arg *arr_ptr)
+pair_int_create_value(gchar *title, GtkTable *table, gint row, GapArrArg *arr_ptr)
 {
   GtkObject *adj;
   gfloat     umin, umax;
@@ -1043,7 +1081,7 @@ pair_int_create_value(gchar *title, GtkTable *table, gint row, t_arr_arg *arr_pt
 
 
 /* ============================================================================
- * p_array_std_dialog
+ * gap_arr_std_dialog
  *
  *   GTK dialog window that has argc rows.
  *   each row contains the widget(s) as defined in argv[row]
@@ -1051,12 +1089,12 @@ pair_int_create_value(gchar *title, GtkTable *table, gint row, t_arr_arg *arr_pt
  *   The Dialog has an Action Area with OK and CANCEL Buttons.
  * ============================================================================
  */
-gint p_array_std_dialog(char *title_txt,
+gint gap_arr_std_dialog(char *title_txt,
                         char *frame_txt,
                         int        argc,
-                        t_arr_arg  argv[],
+                        GapArrArg  argv[],
                         int        b_argc,
-                        t_but_arg  b_argv[],
+                        GapArrButtonArg  b_argv[],
                         gint       b_def_val)
 {
   GtkWidget *hbbox;
@@ -1066,7 +1104,7 @@ gint p_array_std_dialog(char *title_txt,
   gint    l_idx;
   gint    l_ok_value;
   char   *l_label_txt;
-  t_arr_arg  *arr_ptr;
+  GapArrArg  *arr_ptr;
     
   g_arrint.run = b_def_val;           /* prepare default retcode (if window is closed without button) */
   l_ok_value = 0;
@@ -1074,12 +1112,12 @@ gint p_array_std_dialog(char *title_txt,
   
   if((argc > 0) && (argv == NULL))
   {
-    printf("p_array_std_dialog: calling error (widget array == NULL)\n");
+    printf("gap_arr_std_dialog: calling error (widget array == NULL)\n");
     return (g_arrint.run);
   }
   if((b_argc > 0) && (b_argv == NULL))
   {
-    printf("p_array_std_dialog: calling error (button array == NULL)\n");
+    printf("gap_arr_std_dialog: calling error (button array == NULL)\n");
     return (g_arrint.run);
   }
 
@@ -1128,50 +1166,50 @@ gint p_array_std_dialog(char *title_txt,
 
        switch(arr_ptr->widget_type)
        {
-         case WGT_FLT_PAIR:
+         case GAP_ARR_WGT_FLT_PAIR:
             pair_flt_create_value(l_label_txt, GTK_TABLE(table), (l_idx + 1), arr_ptr);
             break;
-         case WGT_INT_PAIR:
+         case GAP_ARR_WGT_INT_PAIR:
             pair_int_create_value(l_label_txt, GTK_TABLE(table), (l_idx + 1), arr_ptr);
             break;
-         case WGT_TOGGLE:
+         case GAP_ARR_WGT_TOGGLE:
             toggle_create_value(l_label_txt, GTK_TABLE(table), (l_idx + 1),  arr_ptr);
             break;
-         case WGT_RADIO:
+         case GAP_ARR_WGT_RADIO:
             radio_create_value(l_label_txt, GTK_TABLE(table), (l_idx + 1),  arr_ptr);
             break;
-         case WGT_OPTIONMENU:
-         case WGT_OPT_ENTRY:
+         case GAP_ARR_WGT_OPTIONMENU:
+         case GAP_ARR_WGT_OPT_ENTRY:
             optionmenu_create_value(l_label_txt, GTK_TABLE(table), (l_idx + 1),  arr_ptr);
             break;
-         case WGT_FILESEL:
+         case GAP_ARR_WGT_FILESEL:
             filesel_create_value(l_label_txt, GTK_TABLE(table), (l_idx + 1),  arr_ptr);
             break;
-         case WGT_FONTSEL:
+         case GAP_ARR_WGT_FONTSEL:
             fontsel_create_value(l_label_txt, GTK_TABLE(table), (l_idx + 1),  arr_ptr);
             break;
-         case WGT_TEXT:
+         case GAP_ARR_WGT_TEXT:
             text_create_value(l_label_txt, GTK_TABLE(table), (l_idx + 1),  arr_ptr);
             break;
-         case WGT_INT:
+         case GAP_ARR_WGT_INT:
             int_create_value(l_label_txt, GTK_TABLE(table), (l_idx + 1),  arr_ptr);
             break;
-         case WGT_FLT:
+         case GAP_ARR_WGT_FLT:
             flt_create_value(l_label_txt, GTK_TABLE(table), (l_idx + 1),  arr_ptr);
             break;
-         case WGT_LABEL:
+         case GAP_ARR_WGT_LABEL:
             label_create_value(l_label_txt, GTK_TABLE(table), (l_idx + 1),  arr_ptr, 0.5);
             break;
-         case WGT_LABEL_LEFT:
+         case GAP_ARR_WGT_LABEL_LEFT:
             label_create_value(l_label_txt, GTK_TABLE(table), (l_idx + 1),  arr_ptr, 0.0);
             break;
-         case WGT_LABEL_RIGHT:
+         case GAP_ARR_WGT_LABEL_RIGHT:
             label_create_value(l_label_txt, GTK_TABLE(table), (l_idx + 1),  arr_ptr, 1.0);
             break;
-         case WGT_ACT_BUTTON:
-            printf ("WGT_ACT_BUTTON not implemented yet, widget type ignored\n");
+         case GAP_ARR_WGT_ACT_BUTTON:
+            printf ("GAP_ARR_WGT_ACT_BUTTON not implemented yet, widget type ignored\n");
             break;
-         case WGT_DEFAULT_BUTTON:
+         case GAP_ARR_WGT_DEFAULT_BUTTON:
 	    {
 	      t_all_arr_args arr_all;
 	    
@@ -1248,23 +1286,23 @@ gint p_array_std_dialog(char *title_txt,
 
         switch(arr_ptr->widget_type)
         {
-          case WGT_FLT_PAIR:
-          case WGT_FLT:
+          case GAP_ARR_WGT_FLT_PAIR:
+          case GAP_ARR_WGT_FLT:
              printf("FLT  %s : %f\n",  l_label_txt, arr_ptr->flt_ret);
              break;
-          case WGT_INT_PAIR:
-          case WGT_INT:
-          case WGT_TOGGLE:
+          case GAP_ARR_WGT_INT_PAIR:
+          case GAP_ARR_WGT_INT:
+          case GAP_ARR_WGT_TOGGLE:
              printf("INT  %s : %d\n",  l_label_txt, arr_ptr->int_ret);
              break;
-          case WGT_TEXT:
-          case WGT_OPT_ENTRY:
-          case WGT_FILESEL:
-          case WGT_FONTSEL:
+          case GAP_ARR_WGT_TEXT:
+          case GAP_ARR_WGT_OPT_ENTRY:
+          case GAP_ARR_WGT_FILESEL:
+          case GAP_ARR_WGT_FONTSEL:
              printf("TEXT  %s : %s\n",  l_label_txt, arr_ptr->text_buf_ret);
              break;
-          case WGT_RADIO:
-          case WGT_OPTIONMENU:
+          case GAP_ARR_WGT_RADIO:
+          case GAP_ARR_WGT_OPTIONMENU:
              printf("RADIO/OPTIONMENU  %s : %d\n",  l_label_txt, arr_ptr->radio_ret);
              break;
           default:
@@ -1277,11 +1315,11 @@ gint p_array_std_dialog(char *title_txt,
   }
   
   return (g_arrint.run);
-}	/* end p_array_std_dialog */
+}	/* end gap_arr_std_dialog */
 
 
 
-void     p_init_arr_arg  (t_arr_arg *arr_ptr,
+void     gap_arr_arg_init  (GapArrArg *arr_ptr,
                           gint       widget_type)
 {
    arr_ptr->label_txt   = NULL;
@@ -1302,19 +1340,20 @@ void     p_init_arr_arg  (t_arr_arg *arr_ptr,
    arr_ptr->check_button = NULL;
    arr_ptr->option_menu = NULL;
    arr_ptr->adjustment = NULL;
+   arr_ptr->radiogroup = NULL;
 
    switch(widget_type)
    {
-     case WGT_LABEL:
-     case WGT_LABEL_LEFT:
-     case WGT_LABEL_RIGHT:
+     case GAP_ARR_WGT_LABEL:
+     case GAP_ARR_WGT_LABEL_LEFT:
+     case GAP_ARR_WGT_LABEL_RIGHT:
         arr_ptr->text_buf_len     = 0;
         arr_ptr->text_buf_default = NULL;
         arr_ptr->text_buf_ret     = NULL;
         arr_ptr->widget_type = widget_type;
         break;
-     case WGT_INT_PAIR:
-     case WGT_INT:
+     case GAP_ARR_WGT_INT_PAIR:
+     case GAP_ARR_WGT_INT:
         arr_ptr->widget_type = widget_type;
         arr_ptr->umin        = (gfloat)G_MININT;
         arr_ptr->umax        = (gfloat)G_MAXINT;
@@ -1325,8 +1364,8 @@ void     p_init_arr_arg  (t_arr_arg *arr_ptr,
         arr_ptr->int_default = 0;
         arr_ptr->int_ret     = 0;
         break;
-     case WGT_FLT_PAIR:
-     case WGT_FLT:
+     case GAP_ARR_WGT_FLT_PAIR:
+     case GAP_ARR_WGT_FLT:
         arr_ptr->widget_type = widget_type;
         arr_ptr->flt_digits  = 2;
         arr_ptr->umin        = G_MINFLOAT;
@@ -1338,14 +1377,14 @@ void     p_init_arr_arg  (t_arr_arg *arr_ptr,
         arr_ptr->flt_default = 0.0;
         arr_ptr->flt_ret     = 0.0;
         break;
-     case WGT_TOGGLE:
+     case GAP_ARR_WGT_TOGGLE:
         arr_ptr->widget_type = widget_type;
         arr_ptr->int_default = 0;
         arr_ptr->int_ret     = 0;
         break;
-     case WGT_RADIO:
-     case WGT_OPTIONMENU:
-     case WGT_OPT_ENTRY:
+     case GAP_ARR_WGT_RADIO:
+     case GAP_ARR_WGT_OPTIONMENU:
+     case GAP_ARR_WGT_OPT_ENTRY:
         arr_ptr->widget_type = widget_type;
         arr_ptr->radio_argc    = 0;
         arr_ptr->radio_default = 0;
@@ -1353,9 +1392,9 @@ void     p_init_arr_arg  (t_arr_arg *arr_ptr,
         arr_ptr->radio_argv    = NULL;
         arr_ptr->radio_help_argv = NULL;
         break;
-     case WGT_TEXT:
-     case WGT_FONTSEL:
-     case WGT_FILESEL:
+     case GAP_ARR_WGT_TEXT:
+     case GAP_ARR_WGT_FONTSEL:
+     case GAP_ARR_WGT_FILESEL:
         arr_ptr->widget_type = widget_type;
         arr_ptr->text_buf_len     = 0;
         arr_ptr->text_buf_default = NULL;
@@ -1363,41 +1402,41 @@ void     p_init_arr_arg  (t_arr_arg *arr_ptr,
         arr_ptr->text_fontsel     = NULL;
         arr_ptr->text_filesel     = NULL;
         break;
-     case WGT_ACT_BUTTON:
+     case GAP_ARR_WGT_ACT_BUTTON:
         arr_ptr->widget_type = widget_type;
         arr_ptr->action_functon = NULL;
         arr_ptr->action_data    = NULL;
         break;
-     case WGT_DEFAULT_BUTTON:
+     case GAP_ARR_WGT_DEFAULT_BUTTON:
         arr_ptr->widget_type = widget_type;
         break;
      default:     /* Calling error: undefined widget type */
-        arr_ptr->widget_type = WGT_LABEL;
+        arr_ptr->widget_type = GAP_ARR_WGT_LABEL;
         break;
 
    }
   
-}	/* end p_init_arr_arg */
+}	/* end gap_arr_arg_init */
 
 /* ============================================================================
- *   simplified calls of p_array_std_dialog
+ *   simplified calls of gap_arr_std_dialog
  * ============================================================================
  */
 
 
-gint p_array_dialog(char *title_txt,
+gint gap_arr_ok_cancel_dialog(char *title_txt,
                     char *frame_txt,
                     int        argc,
-                    t_arr_arg  argv[])
+                    GapArrArg  argv[])
 {
-    static t_but_arg  b_argv[2];
+    static GapArrButtonArg  b_argv[2];
 
     b_argv[1].but_txt  = GTK_STOCK_OK;
     b_argv[1].but_val  = TRUE;
     b_argv[0].but_txt  = GTK_STOCK_CANCEL;
     b_argv[0].but_val  = FALSE;
   
-    return( p_array_std_dialog(title_txt,
+    return( gap_arr_std_dialog(title_txt,
                        frame_txt,
                        argc, argv,      /* widget array */
                        2,    b_argv,    /* button array */
@@ -1406,7 +1445,7 @@ gint p_array_dialog(char *title_txt,
 }
 
 /* ============================================================================
- * p_buttons_dialog
+ * gap_arr_buttons_dialog
  *   dialog window wit 1 upto n buttons
  *   return: the value aassigned with the pressed button.
  *           (If window closed by windowmanager return b_def_val)
@@ -1414,47 +1453,47 @@ gint p_array_dialog(char *title_txt,
  */
 
 
-gint p_buttons_dialog(char *title_txt,
+gint gap_arr_buttons_dialog(char *title_txt,
                          char   *msg_txt,
                          int        b_argc,
-                         t_but_arg  b_argv[],
+                         GapArrButtonArg  b_argv[],
                          gint       b_def_val)
 {
-  static t_arr_arg  argv[1];
+  static GapArrArg  argv[1];
   char   *frame_txt;
 
   if(b_argc == 1) frame_txt = _("Press Button");
   else            frame_txt = _("Select");
   
-  p_init_arr_arg(&argv[0], WGT_LABEL);
+  gap_arr_arg_init(&argv[0], GAP_ARR_WGT_LABEL);
   argv[0].label_txt = msg_txt;
 
-  return( p_array_std_dialog(title_txt,
+  return( gap_arr_std_dialog(title_txt,
                      frame_txt,
                      1, argv,
                      b_argc, b_argv,
                      b_def_val)
            );          /* ret value for window close */
                        
-}	/* end p_buttons_dialog */
+}	/* end gap_arr_buttons_dialog */
 
 
 
 /* ============================================================================
- * p_slider_dialog
- *   simplified call of p_array_dialog, using an array with one value.
+ * gap_arr_slider_dialog
+ *   simplified call of gap_arr_ok_cancel_dialog, using an array with one value.
  *
  *   return  the value of the (only) entryfield 
  *          or  -1 in case of Error or cancel
  * ============================================================================
  */
 
-long p_slider_dialog(char *title, char *frame, char *label, char *tooltip,
+long gap_arr_slider_dialog(char *title, char *frame, char *label, char *tooltip,
                      long min, long max, long curr, long constraint)
 {
-  static t_arr_arg  argv[1];
+  static GapArrArg  argv[1];
   
-  p_init_arr_arg(&argv[0], WGT_INT_PAIR);
+  gap_arr_arg_init(&argv[0], GAP_ARR_WGT_INT_PAIR);
   argv[0].label_txt = label;
   argv[0].help_txt = tooltip;
   argv[0].constraint = constraint;
@@ -1465,22 +1504,22 @@ long p_slider_dialog(char *title, char *frame, char *label, char *tooltip,
   argv[0].int_step   = 1;
   argv[0].int_ret    = (gint)curr;
   
-  if(TRUE == p_array_dialog(title, frame, 1, argv))
+  if(TRUE == gap_arr_ok_cancel_dialog(title, frame, 1, argv))
   {    return (long)(argv[0].int_ret);
   }
   else return -1;
-}	/* end p_slider_dialog */
+}	/* end gap_arr_slider_dialog */
 
 
 /* ------------------------
- * p_confirm_dialog
+ * gap_arr_confirm_dialog
  * ------------------------
  */
 gboolean
-p_confirm_dialog(char *msg_txt, char *title_txt, char *frame_txt)
+gap_arr_confirm_dialog(char *msg_txt, char *title_txt, char *frame_txt)
 {
-  static t_but_arg  l_but_argv[2];
-  static t_arr_arg  l_argv[1];
+  static GapArrButtonArg  l_but_argv[2];
+  static GapArrArg  l_argv[1];
   gboolean          l_continue;
   gboolean          l_confirm;
   char *value_string;
@@ -1517,10 +1556,10 @@ p_confirm_dialog(char *msg_txt, char *title_txt, char *frame_txt)
   l_but_argv[1].but_val  = 0;
 
 
-  p_init_arr_arg(&l_argv[0], WGT_LABEL);
+  gap_arr_arg_init(&l_argv[0], GAP_ARR_WGT_LABEL);
   l_argv[0].label_txt = msg_txt;
 
-  l_continue = p_array_std_dialog (title_txt
+  l_continue = gap_arr_std_dialog (title_txt
                                   ,frame_txt
                                   ,G_N_ELEMENTS(l_argv),     l_argv
                                   ,G_N_ELEMENTS(l_but_argv), l_but_argv
@@ -1534,21 +1573,21 @@ p_confirm_dialog(char *msg_txt, char *title_txt, char *frame_txt)
   
   return FALSE;
 
-}  /* end p_confirm_dialog */
+}  /* end gap_arr_confirm_dialog */
 
 
 /* -----------------------------
- * p_overwrite_file_dialog
+ * gap_arr_overwrite_file_dialog
  * -----------------------------
  * if file exists ask for overwrite permission
  * return TRUE : caller may (over)write the file
  *        FALSE: do not write the file
  */
 gboolean
-p_overwrite_file_dialog(char *filename)
+gap_arr_overwrite_file_dialog(char *filename)
 {
-  static  t_but_arg  l_argv[2];
-  static  t_arr_arg  argv[1];
+  static  GapArrButtonArg  l_argv[2];
+  static  GapArrArg  argv[1];
 
   if(g_file_test(filename, G_FILE_TEST_EXISTS))
   {
@@ -1573,10 +1612,10 @@ p_overwrite_file_dialog(char *filename)
     l_argv[l_ii].but_txt  = GTK_STOCK_CANCEL;
     l_argv[l_ii].but_val  = -1;
 
-    p_init_arr_arg(&argv[0], WGT_LABEL);
+    gap_arr_arg_init(&argv[0], GAP_ARR_WGT_LABEL);
     argv[0].label_txt = l_msg;
     
-    l_rc =p_array_std_dialog ( _("GAP Question"),
+    l_rc =gap_arr_std_dialog ( _("GAP Question"),
                                   _("File Overwrite Warning"),
 				   1, argv,
 				   2, l_argv, -1);
@@ -1588,4 +1627,35 @@ p_overwrite_file_dialog(char *filename)
   }
   return (TRUE);
   
-}  /* end p_overwrite_file_dialog */
+}  /* end gap_arr_overwrite_file_dialog */
+
+
+/* ============================================================================
+ * gap_arr_msg_win
+ *   print a message both to stderr
+ *   and to a gimp info window with OK button (only when run INTERACTIVE)
+ * ============================================================================
+ */
+
+void
+gap_arr_msg_win(GimpRunMode run_mode, char *msg)
+{
+  static GapArrButtonArg  l_argv[1];
+  int               l_argc;  
+  
+  l_argv[0].but_txt  = GTK_STOCK_OK;
+  l_argv[0].but_val  = 0;
+  l_argc             = 1;
+
+  if(msg)
+  {
+    if(*msg)
+    {
+       fwrite(msg, 1, strlen(msg), stderr);
+       fputc('\n', stderr);
+
+       if(run_mode == GIMP_RUN_INTERACTIVE) gap_arr_buttons_dialog  (_("GAP Message"), msg, l_argc, l_argv, -1);
+    }
+  }
+}    /* end  gap_arr_msg_win */
+
