@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 2.4\n"
 "Report-Msgid-Bugs-To: Duarte Loreto <happyguy_pt@hotmail.com>\n"
-"POT-Creation-Date: 2003-09-09 16:59+0100\n"
-"PO-Revision-Date: 2003-09-09 17:10+0000\n"
+"POT-Creation-Date: 2003-09-21 02:59+0100\n"
+"PO-Revision-Date: 2003-09-21 03:10+0000\n"
 "Last-Translator: Duarte Loreto <happyguy_pt@hotmail.com>\n"
 "Language-Team: Portuguese <gnome_pt@yahoogroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -20,29 +20,29 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Button  to invoke fontbrowser
-#: gap/gap_arr_dialog.c:401
+#: gap/gap_arr_dialog.c:427
 msgid "Font Browser"
 msgstr "Browser Fontes"
 
 #. Button  to invoke filebrowser
-#: gap/gap_arr_dialog.c:482 gap/gap_player_dialog.c:3013
+#: gap/gap_arr_dialog.c:508 gap/gap_player_dialog.c:3404
 msgid "File Browser"
 msgstr "Browser Ficheiros"
 
 #. parameter settings
-#: gap/gap_arr_dialog.c:1079
+#: gap/gap_arr_dialog.c:1105
 msgid "Enter Values"
 msgstr "Introduza Valores"
 
-#: gap/gap_arr_dialog.c:1099 gap/gap_arr_dialog.c:1216
+#: gap/gap_arr_dialog.c:1125 gap/gap_arr_dialog.c:1242
 msgid "Value:"
 msgstr "Valor:"
 
-#: gap/gap_arr_dialog.c:1396
+#: gap/gap_arr_dialog.c:1425
 msgid "Press Button"
 msgstr "Prima Botão"
 
-#: gap/gap_arr_dialog.c:1397
+#: gap/gap_arr_dialog.c:1426
 msgid "Select"
 msgstr "Seleccionar"
 
@@ -155,8 +155,8 @@ msgstr "Alterar Densidade Frames"
 #. the start frame scale_entry
 #. table col, row
 #: gap/gap_base_ops.c:1210 gap/gap_base_ops.c:1362 gap/gap_base_ops.c:1560
-#: gap/gap_decode_xanim.c:229 gap/gap_mod_layer.c:165 gap/gap_mov_dialog.c:567
-#: gap/gap_mpege.c:285 gap/gap_onion_dialog.c:899 gap/gap_player_dialog.c:3410
+#: gap/gap_decode_xanim.c:240 gap/gap_mod_layer.c:165 gap/gap_mov_dialog.c:567
+#: gap/gap_mpege.c:285 gap/gap_onion_dialog.c:899 gap/gap_player_dialog.c:3844
 #: gap/gap_range_ops.c:281 gap/gap_range_ops.c:471 gap/gap_range_ops.c:630
 msgid "From Frame:"
 msgstr "Da Frame:"
@@ -168,8 +168,8 @@ msgstr "Intervalo Afectado começa neste número de frame"
 #. the end frame scale_entry
 #. table col, row
 #: gap/gap_base_ops.c:1218 gap/gap_base_ops.c:1370 gap/gap_base_ops.c:1568
-#: gap/gap_decode_xanim.c:239 gap/gap_mod_layer.c:173 gap/gap_mov_dialog.c:582
-#: gap/gap_mpege.c:295 gap/gap_onion_dialog.c:906 gap/gap_player_dialog.c:3417
+#: gap/gap_decode_xanim.c:250 gap/gap_mod_layer.c:173 gap/gap_mov_dialog.c:582
+#: gap/gap_mpege.c:295 gap/gap_onion_dialog.c:906 gap/gap_player_dialog.c:3851
 #: gap/gap_range_ops.c:288 gap/gap_range_ops.c:479 gap/gap_range_ops.c:638
 msgid "To Frame:"
 msgstr "Até Frame:"
@@ -187,8 +187,8 @@ msgid ""
 "Factor to Increase the Frame Density (acts as Divisor if checkbutton "
 "Increase Density is OFF)"
 msgstr ""
-"Factor de Incremento da Densidade Frames (funciona como um Divisor se "
-"o botão de seleccção Aumentar Densidade estiver DESLIGADO)"
+"Factor de Incremento da Densidade Frames (funciona como um Divisor se o "
+"botão de seleccção Aumentar Densidade estiver DESLIGADO)"
 
 #: gap/gap_base_ops.c:1239
 msgid "Increase Density"
@@ -298,8 +298,7 @@ msgstr "Dígitos:"
 
 #: gap/gap_base_ops.c:1685
 msgid "How many digits to use for the Framenumber in the File Name"
-msgstr ""
-"Quantos dígitos utilizar para o Número de Frame no Nome de Ficheiro"
+msgstr "Quantos dígitos utilizar para o Número de Frame no Nome de Ficheiro"
 
 #: gap/gap_base_ops.c:1689 gap/gap_base_ops.c:1798
 msgid "Renumber Frames"
@@ -309,83 +308,99 @@ msgstr "Renumerar Frames"
 msgid "Renumber Frames 2nd Pass"
 msgstr "Renumerar Frames 2ª Passagem"
 
-#: gap/gap_dbbrowser_utils.c:88
-msgid "Animated Filter apply (init)"
-msgstr "Aplicar Filtro Animado (init)"
-
-#: gap/gap_dbbrowser_utils.c:139
-msgid "Search:"
-msgstr "Procurar:"
-
-#: gap/gap_dbbrowser_utils.c:167
-msgid "Gen Code by name"
-msgstr "Código Genérico por nome"
-
-#: gap/gap_dbbrowser_utils.c:176
-msgid "Search by Name"
-msgstr "Procurar por Nome"
-
-#: gap/gap_dbbrowser_utils.c:184
-msgid "Search by Blurb"
-msgstr "Procurar por Descrição"
-
-#. show the name
-#: gap/gap_dbbrowser_utils.c:326
-msgid "Name:"
-msgstr "Nome:"
-
-#. show the description
-#: gap/gap_dbbrowser_utils.c:343
-msgid "Blurb:"
-msgstr "Descrição:"
-
-#: gap/gap_dbbrowser_utils.c:365
-msgid "In:"
-msgstr "Dentro:"
-
-#: gap/gap_dbbrowser_utils.c:411
-msgid "Out:"
-msgstr "Fora:"
-
-#: gap/gap_dbbrowser_utils.c:460
-msgid "Help:"
-msgstr "Ajuda:"
-
-#. show the author & the copyright
-#: gap/gap_dbbrowser_utils.c:498
-msgid "Author:"
-msgstr "Autor:"
-
-#: gap/gap_dbbrowser_utils.c:513
-msgid "Date:"
-msgstr "Data:"
-
-#: gap/gap_dbbrowser_utils.c:528
-msgid "Copyright:"
-msgstr "Copyright:"
-
-#: gap/gap_dbbrowser_utils.c:668
-msgid "Animated Filter apply (by name - please wait)"
-msgstr "Aplicar Filtros Animados (por nome - aguarde)"
-
-#: gap/gap_dbbrowser_utils.c:692
-msgid "Animated Filter apply (by blurb - please wait)"
-msgstr "Aplicar Filtros Animados (por descrição - aguarde)"
-
-#: gap/gap_dbbrowser_utils.c:700
-msgid "Animated Filter apply (please wait)"
-msgstr "Aplicar Filtros Animados (aguarde)"
-
-#: gap/gap_dbbrowser_utils.c:747 gap/gap_filter_foreach.c:167
+#: gap/gap_dbbrowser_utils.c:170 gap/gap_filter_foreach.c:167
 #: gap/gap_mod_layer.c:295
 msgid "Animated Filter apply"
 msgstr "Aplicar Filtros Animados"
 
-#: gap/gap_decode_xanim.c:121
+#: gap/gap_dbbrowser_utils.c:227
+msgid "_Search:"
+msgstr "_Procurar:"
+
+#: gap/gap_dbbrowser_utils.c:322
+msgid "Gen Code by name"
+msgstr "Código Genérico por nome"
+
+#. Button Search by Name
+#: gap/gap_dbbrowser_utils.c:334
+msgid "Search by Name"
+msgstr "Procurar por Nome"
+
+#. Button Search by Blurb
+#: gap/gap_dbbrowser_utils.c:343
+msgid "Search by Blurb"
+msgstr "Procurar por Descrição"
+
+#. Button Search by Menupath
+#: gap/gap_dbbrowser_utils.c:352
+msgid "Search by Menu Path"
+msgstr "Procurar por Caminho Menu"
+
+#: gap/gap_dbbrowser_utils.c:447
+msgid "** not available **"
+msgstr "** indisponível **"
+
+#: gap/gap_dbbrowser_utils.c:480
+msgid "Name:"
+msgstr "Nome:"
+
+#: gap/gap_dbbrowser_utils.c:488
+msgid "Blurb:"
+msgstr "Descrição:"
+
+#: gap/gap_dbbrowser_utils.c:499
+msgid "Menu Path:"
+msgstr "Caminho Menu:"
+
+#: gap/gap_dbbrowser_utils.c:513
+msgid "In:"
+msgstr "Dentro:"
+
+#: gap/gap_dbbrowser_utils.c:561
+msgid "Out:"
+msgstr "Fora:"
+
+#: gap/gap_dbbrowser_utils.c:615
+msgid "Help:"
+msgstr "Ajuda:"
+
+#: gap/gap_dbbrowser_utils.c:633
+msgid "Author:"
+msgstr "Autor:"
+
+#: gap/gap_dbbrowser_utils.c:641
+msgid "Date:"
+msgstr "Data:"
+
+#: gap/gap_dbbrowser_utils.c:649
+msgid "Copyright:"
+msgstr "Copyright:"
+
+#: gap/gap_dbbrowser_utils.c:782
+msgid "Searching by name - please wait"
+msgstr "A procurar por nome - aguarde"
+
+#: gap/gap_dbbrowser_utils.c:805
+msgid "Searching by blurb - please wait"
+msgstr "A procurar por descrição - aguarde"
+
+#: gap/gap_dbbrowser_utils.c:817
+msgid "Searching by menupath - please wait"
+msgstr "A procurar por caminho de menu - aguarde"
+
+#: gap/gap_dbbrowser_utils.c:821
+msgid "Searching - please wait"
+msgstr "A procurar - aguarde"
+
+#: gap/gap_dbbrowser_utils.c:913
+msgid "No matches"
+msgstr "Nenhuma coincidência"
+
+#: gap/gap_decode_xanim.c:132
 msgid "Requirements to run the xanim based video split"
 msgstr "Condições para executar a divisão vídeo baseada no xanim"
 
-#: gap/gap_decode_xanim.c:133
+#: gap/gap_decode_xanim.c:144
 msgid ""
 "xanim 2.80.0 exporting edition (the loki version)\n"
 "must be installed somewhere in your PATH\n"
@@ -395,7 +410,7 @@ msgstr ""
 "tem de estar instalada algures no seu PATH\n"
 "pode obter o xanim exporting edition em:\n"
 
-#: gap/gap_decode_xanim.c:156
+#: gap/gap_decode_xanim.c:167
 msgid ""
 "if your xanim exporting edition is not in your PATH or is not named xanim\n"
 "you have to set Environment variable GAP_XANIM_PROG\n"
@@ -405,19 +420,19 @@ msgstr ""
 "tem de definir a variável de ambiente GAP_XANIM_PROG\n"
 "apontando para o seu xanim exporting e reiniciar o gimp"
 
-#: gap/gap_decode_xanim.c:167
+#: gap/gap_decode_xanim.c:178
 msgid "An ERROR occured while trying to call xanim:"
 msgstr "Ocorreu um ERRO ao tentar invocar o xanim:"
 
-#: gap/gap_decode_xanim.c:186
+#: gap/gap_decode_xanim.c:197
 msgid "XANIM Information"
 msgstr "Informação XANIM"
 
-#: gap/gap_decode_xanim.c:219
+#: gap/gap_decode_xanim.c:230
 msgid "Video:"
 msgstr "Vídeo:"
 
-#: gap/gap_decode_xanim.c:220
+#: gap/gap_decode_xanim.c:231
 msgid ""
 "Name of a videofile to READ by xanim.\n"
 "Frames are extracted from the videofile\n"
@@ -429,19 +444,19 @@ msgstr ""
 "e gravados em ficheiros de discos separados.\n"
 "É necessária xanim exporting edition."
 
-#: gap/gap_decode_xanim.c:230
+#: gap/gap_decode_xanim.c:241
 msgid "Framenumber of 1st frame to extract"
 msgstr "Número de frame da 1ª frame a ser extraída"
 
-#: gap/gap_decode_xanim.c:240
+#: gap/gap_decode_xanim.c:251
 msgid "Framenumber of last frame to extract"
 msgstr "Número de frame da última frame a ser extraída"
 
-#: gap/gap_decode_xanim.c:249
+#: gap/gap_decode_xanim.c:260
 msgid "Framenames:"
 msgstr "Nomes de frames:"
 
-#: gap/gap_decode_xanim.c:250
+#: gap/gap_decode_xanim.c:261
 msgid ""
 "Basename for the AnimFrames to write on disk\n"
 "(framenumber and extension is added)"
@@ -449,11 +464,11 @@ msgstr ""
 "Nome base para as AnimFrames a serem gravadas no disco\n"
 "(número de frames e extensão são adicionados)"
 
-#: gap/gap_decode_xanim.c:257
+#: gap/gap_decode_xanim.c:268
 msgid "Format"
 msgstr "Formato"
 
-#: gap/gap_decode_xanim.c:258
+#: gap/gap_decode_xanim.c:269
 msgid ""
 "Fileformat for the extracted AnimFrames\n"
 "(xcf is extracted as ppm and converted to xcf)"
@@ -461,19 +476,19 @@ msgstr ""
 "Formato de ficheiro para as AnimFrames extraídas\n"
 "(xcf é extraído como ppm e convertido para xcf)"
 
-#: gap/gap_decode_xanim.c:265
+#: gap/gap_decode_xanim.c:276
 msgid "Extract Frames"
 msgstr "Extrair Frames"
 
-#: gap/gap_decode_xanim.c:266
+#: gap/gap_decode_xanim.c:277
 msgid "Enable extraction of Frames"
 msgstr "Activar extracção de Frames"
 
-#: gap/gap_decode_xanim.c:270
+#: gap/gap_decode_xanim.c:281
 msgid "Extract Audio"
 msgstr "Extrair Audio"
 
-#: gap/gap_decode_xanim.c:271
+#: gap/gap_decode_xanim.c:282
 msgid ""
 "Enable extraction of audio to raw audiofile\n"
 "(frame range limits are ignored for audio)"
@@ -481,11 +496,11 @@ msgstr ""
 "Activar extracção de áudio para ficheiros de áudio brutos\n"
 "(os limites de frame são ignorados para audio)"
 
-#: gap/gap_decode_xanim.c:276
+#: gap/gap_decode_xanim.c:287
 msgid "Jpeg Quality:"
 msgstr "Qualidade Jpeg:"
 
-#: gap/gap_decode_xanim.c:277
+#: gap/gap_decode_xanim.c:288
 msgid ""
 "Quality for resulting Jpeg frames\n"
 "(is ignored when other formats are used)"
@@ -493,19 +508,19 @@ msgstr ""
 "Qualidade para frames Jpeg resultantes\n"
 "(é ignorada ao utilizar outros formatos)"
 
-#: gap/gap_decode_xanim.c:288
+#: gap/gap_decode_xanim.c:299
 msgid "Open"
 msgstr "Abrir"
 
-#: gap/gap_decode_xanim.c:289
+#: gap/gap_decode_xanim.c:300
 msgid "Open the 1st one of the extracted frames"
 msgstr "Abrir a 1ª frame das extraídas"
 
-#: gap/gap_decode_xanim.c:293
+#: gap/gap_decode_xanim.c:304
 msgid "Run asynchronously"
 msgstr "Executar assincronamente"
 
-#: gap/gap_decode_xanim.c:294
+#: gap/gap_decode_xanim.c:305
 msgid ""
 "Run xanim asynchronously and delete unwanted frames\n"
 "(out of the specified range) while xanim is still running"
@@ -513,7 +528,7 @@ msgstr ""
 "Executar xanim assincronamente e eliminar frames indesejadas\n"
 "(fora do intervalo especificado) durante execução do xanim"
 
-#: gap/gap_decode_xanim.c:299
+#: gap/gap_decode_xanim.c:310
 msgid ""
 "\n"
 "Warning: xanim 2.80 has only limited MPEG support.\n"
@@ -523,31 +538,32 @@ msgstr ""
 "Aviso: xanim 2.80 apenas tem suporte MPEG limitado.\n"
 "A maioria das frames (tipo P e B) serão omitidas."
 
-#: gap/gap_decode_xanim.c:302
+#: gap/gap_decode_xanim.c:313
 msgid "Split any Xanim readable Video to Frames"
 msgstr "Dividir e Xanim Vídeo legível em Frames"
 
-#: gap/gap_decode_xanim.c:303 gap/gap_range_ops.c:1541
+#: gap/gap_decode_xanim.c:314 gap/gap_range_ops.c:1541
 msgid "Select Frame Range"
 msgstr "Seleccionar Intervalo Frames"
 
-#: gap/gap_decode_xanim.c:342 gap/gap_range_ops.c:1285
+#: gap/gap_decode_xanim.c:353 gap/gap_range_ops.c:1285
 msgid "Overwrite Frame"
 msgstr "Sobrepor Frame"
 
-#: gap/gap_decode_xanim.c:344 gap/gap_range_ops.c:1287
+#: gap/gap_decode_xanim.c:355 gap/gap_range_ops.c:1287
 msgid "Overwrite All"
 msgstr "Sobrepor Todas"
 
-#: gap/gap_decode_xanim.c:352 gap/gap_lib.c:1325 gap/gap_range_ops.c:1292
+#: gap/gap_decode_xanim.c:363 gap/gap_lib.c:1325 gap/gap_player_dialog.c:312
+#: gap/gap_range_ops.c:1292
 msgid "GAP Question"
 msgstr "Questão GAP"
 
-#: gap/gap_decode_xanim.c:353
+#: gap/gap_decode_xanim.c:364
 msgid "File already exists"
 msgstr "Ficheiro já existe"
 
-#: gap/gap_decode_xanim.c:569
+#: gap/gap_decode_xanim.c:580
 #, c-format
 msgid ""
 "can't find any extracted frames,\n"
@@ -558,32 +574,32 @@ msgstr ""
 "%s\n"
 "talvez o xanim tenha falhado ou sido cancelado"
 
-#: gap/gap_decode_xanim.c:594
+#: gap/gap_decode_xanim.c:605
 #, c-format
 msgid "frames are not extracted, because overwrite of %s was cancelled"
 msgstr "frames não foram extraídos, pois a sobreposição de %s foi cancelada"
 
-#: gap/gap_decode_xanim.c:604
+#: gap/gap_decode_xanim.c:615
 #, c-format
 msgid "failed to overwrite %s (check permissions ?)"
 msgstr "falha ao sobrepor %s (verifique permissões ?)"
 
-#: gap/gap_decode_xanim.c:626
+#: gap/gap_decode_xanim.c:637
 #, c-format
 msgid "failed to write %s (check permissions ?)"
 msgstr "falha ao gravar %s (verifique permissões ?)"
 
-#: gap/gap_decode_xanim.c:753
+#: gap/gap_decode_xanim.c:764
 #, c-format
 msgid "could not execute %s (check if xanim is installed)"
 msgstr "incapaz de executar %s (verifique se xanim está instalado)"
 
-#: gap/gap_decode_xanim.c:761
+#: gap/gap_decode_xanim.c:772
 #, c-format
 msgid "%s does not look like xanim"
 msgstr "%s não se parece ser o xanim"
 
-#: gap/gap_decode_xanim.c:786
+#: gap/gap_decode_xanim.c:797
 #, c-format
 msgid ""
 "The xanim program on your system \"%s\"\n"
@@ -592,7 +608,7 @@ msgstr ""
 "A aplicação xanim no seu sistema \"%s\"\n"
 "não suporta as opções de exportação Ea, Ee, Eq"
 
-#: gap/gap_decode_xanim.c:793
+#: gap/gap_decode_xanim.c:804
 #, c-format
 msgid ""
 "The xanim program on your system \"%s\"\n"
@@ -601,12 +617,12 @@ msgstr ""
 "A aplicação xanim no seu sistema \"%s\"\n"
 "não suporta a exportação de frames únicas"
 
-#: gap/gap_decode_xanim.c:1061
+#: gap/gap_decode_xanim.c:1072
 #, c-format
 msgid "videofile %s not existent or empty\n"
 msgstr "ficheiro de vídeo %s inexistente ou vazio\n"
 
-#: gap/gap_decode_xanim.c:1114
+#: gap/gap_decode_xanim.c:1125
 #, c-format
 msgid ""
 "could not create %s directory\n"
@@ -615,11 +631,11 @@ msgstr ""
 "incapaz de criar directório %s\n"
 "(que é necessário para exportação de frame xanim)"
 
-#: gap/gap_decode_xanim.c:1125
+#: gap/gap_decode_xanim.c:1136
 msgid "extracting frames..."
 msgstr "a extrair frames..."
 
-#: gap/gap_decode_xanim.c:1150
+#: gap/gap_decode_xanim.c:1161
 #, c-format
 msgid ""
 "could not start xanim process\n"
@@ -628,7 +644,7 @@ msgstr ""
 "incapaz de iniciar processo xanim\n"
 "(aplicação=%s)"
 
-#: gap/gap_decode_xanim.c:1171
+#: gap/gap_decode_xanim.c:1182
 msgid ""
 "can't find any extracted frames,\n"
 "xanim has failed or was cancelled"
@@ -636,11 +652,11 @@ msgstr ""
 "incapaz de encontrar frames extraídas,\n"
 "xanim falhou ou foi cancelado"
 
-#: gap/gap_decode_xanim.c:1190
+#: gap/gap_decode_xanim.c:1201
 msgid "renaming frames..."
 msgstr "a renomear frames..."
 
-#: gap/gap_decode_xanim.c:1195
+#: gap/gap_decode_xanim.c:1206
 msgid "converting frames..."
 msgstr "a converter frames..."
 
@@ -1044,7 +1060,7 @@ msgstr ""
 msgid "Frames Modify"
 msgstr "Modificar Frames"
 
-#: gap/gap_mod_layer.c:230
+#: gap/gap_mod_layer.c:230 gap/gap_player_dialog.c:395
 msgid "Settings"
 msgstr "Configurações"
 
@@ -1152,7 +1168,7 @@ msgid "Center"
 msgstr "Centro"
 
 #. the playback mode checkbuttons
-#: gap/gap_mov_dialog.c:303 gap/gap_player_dialog.c:3610
+#: gap/gap_mov_dialog.c:303 gap/gap_player_dialog.c:4044
 msgid "Loop"
 msgstr "Ciclo"
 
@@ -1168,7 +1184,7 @@ msgstr "Uma Vez"
 msgid "OnceReverse"
 msgstr "Uma Vez Inversa"
 
-#: gap/gap_mov_dialog.c:307 gap/gap_player_dialog.c:3638
+#: gap/gap_mov_dialog.c:307 gap/gap_player_dialog.c:4072
 msgid "PingPong"
 msgstr "Pingue-Pongue"
 
@@ -2233,7 +2249,8 @@ msgstr "Seleccionar Todas"
 msgid "Select None"
 msgstr "Não Seleccionar Nenhuma"
 
-#: gap/gap_navigator_dialog.c:3780
+#. Video Length (frames)
+#: gap/gap_navigator_dialog.c:3780 gap/gap_player_dialog.c:3643
 msgid "Videoframes:"
 msgstr "Frames vídeo:"
 
@@ -2533,7 +2550,7 @@ msgid "Removing Onionskin Layers..."
 msgstr "A Remover Camadas Onionskin..."
 
 #. Format the message
-#: gap/gap_player_dialog.c:258
+#: gap/gap_player_dialog.c:267
 #, c-format
 msgid ""
 "Problem with audioplayback\n"
@@ -2544,7 +2561,73 @@ msgstr ""
 "audiolib relatou:\n"
 "%s"
 
-#: gap/gap_player_dialog.c:314
+#: gap/gap_player_dialog.c:295
+#, c-format
+msgid ""
+"Directory '%s'\n"
+"already exists"
+msgstr ""
+"Directório '%s'\n"
+"já existe"
+
+#: gap/gap_player_dialog.c:300
+#, c-format
+msgid ""
+"File '%s'\n"
+"already exists"
+msgstr ""
+"Ficheiro '%s'\n"
+"já existe"
+
+#: gap/gap_player_dialog.c:301
+msgid "Overwrite"
+msgstr "Sobrepor"
+
+#: gap/gap_player_dialog.c:313
+msgid "File Overwrite Warning"
+msgstr "Aviso de Sobreposição Ficheiro"
+
+#: gap/gap_player_dialog.c:344
+msgid "Audiosource:"
+msgstr "Fonte audio:"
+
+#: gap/gap_player_dialog.c:355
+msgid "Wavefile:"
+msgstr "Ficheiro wave:"
+
+#: gap/gap_player_dialog.c:357
+msgid "Name of Wavefile to create as copy in RIFF WAVE Format"
+msgstr "Nome de ficheiro Wave a criar como cópia no Formato RIFF WAVE"
+
+#: gap/gap_player_dialog.c:364
+msgid "Resample:"
+msgstr "Reamostrar:"
+
+#: gap/gap_player_dialog.c:365
+msgid ""
+"ON: Resample the copy at specified Samplerate, OFF: use original Samplerate"
+msgstr ""
+"ACTIVO: Reamostrar a cópia ao rácio de Amostragem especificado, INACTIVO: "
+"utilizar rácio de Amostragem original"
+
+#. Samplerate
+#: gap/gap_player_dialog.c:372 gap/gap_player_dialog.c:3585
+msgid "Samplerate:"
+msgstr "Taxa amostra:"
+
+#: gap/gap_player_dialog.c:373
+msgid ""
+"Target Audio Samperate in Samples/sec\n"
+"(ignored if Resample is OFF)"
+msgstr ""
+"Rácio de Amostragem Audio do Destino em Amostras/seg\n"
+"(ignorado se Reamostrar estiver INACTIVO)"
+
+#: gap/gap_player_dialog.c:394
+msgid "Copy Audiofile as Wavefile"
+msgstr "Copiar ficheiro Audio como ficheiro Wave"
+
+#: gap/gap_player_dialog.c:479
 msgid ""
 "Failure to start the wavplay server is fatal.\n"
 "Please check the executability of the 'wavplay' command.\n"
@@ -2556,29 +2639,29 @@ msgstr ""
 "Caso tenha instalado o executável wavplay algures\n"
 "pode definir a variável de ambiente WAVPLAYPATH antes de iniciar o gimp\n"
 
-#: gap/gap_player_dialog.c:371
+#: gap/gap_player_dialog.c:542
 msgid "Audio Delay"
 msgstr "Atraso Audio"
 
-#: gap/gap_player_dialog.c:383
+#: gap/gap_player_dialog.c:554
 msgid "Syncron"
 msgstr "Sincron"
 
-#: gap/gap_player_dialog.c:387
+#: gap/gap_player_dialog.c:558
 msgid "Audio Skipped"
 msgstr "Audio Ignorado"
 
-#: gap/gap_player_dialog.c:399
+#: gap/gap_player_dialog.c:570
 #, c-format
 msgid "%d (at %.4f frames/sec)"
 msgstr "%d (a %.4f frames/seg)"
 
-#: gap/gap_player_dialog.c:476
+#: gap/gap_player_dialog.c:664
 #, c-format
 msgid "Error at reading WAV header from file '%s'"
 msgstr "Erro ao ler cabeçalho WAV do ficheiro '%s'"
 
-#: gap/gap_player_dialog.c:605
+#: gap/gap_player_dialog.c:797
 #, c-format
 msgid ""
 "WARNING: your gimprc file configuration for the wavplay audio server\n"
@@ -2589,7 +2672,7 @@ msgstr ""
 "não aponta para uma aplicação executável\n"
 "o valor configurado para %s é: %s\n"
 
-#: gap/gap_player_dialog.c:626
+#: gap/gap_player_dialog.c:818 gap/gap_player_dialog.c:3118
 #, c-format
 msgid ""
 "WARNING: the environment variable %s\n"
@@ -2600,7 +2683,7 @@ msgstr ""
 "não aponta para uma aplicação executável\n"
 "o valor actual é: %s\n"
 
-#: gap/gap_player_dialog.c:662
+#: gap/gap_player_dialog.c:854
 #, c-format
 msgid ""
 "NO Audiosupport available\n"
@@ -2618,69 +2701,93 @@ msgstr ""
 "antes de iniciar o GIMP"
 
 #. pending timer_go_job gets useless, since we start playback now
-#: gap/gap_player_dialog.c:1083 gap/gap_player_dialog.c:1528
+#: gap/gap_player_dialog.c:1276 gap/gap_player_dialog.c:1743
 msgid "Playing"
 msgstr "A Reproduzir"
 
 #. the status value label
-#: gap/gap_player_dialog.c:1120 gap/gap_player_dialog.c:3691
+#: gap/gap_player_dialog.c:1313 gap/gap_player_dialog.c:4125
 msgid "Ready"
 msgstr "Preparado"
 
-#: gap/gap_player_dialog.c:1511
+#: gap/gap_player_dialog.c:1726
 msgid "SKIP"
 msgstr "SALTAR"
 
-#: gap/gap_player_dialog.c:1540
+#: gap/gap_player_dialog.c:1755
 #, c-format
 msgid "Delay %.2f"
 msgstr "Atraso %.2f"
 
-#: gap/gap_player_dialog.c:2925
+#: gap/gap_player_dialog.c:3096
+#, c-format
+msgid ""
+"WARNING: your gimprc file configuration for the audioconverter Script\n"
+"does not point to an executable program\n"
+"the configured value for %s is: %s\n"
+msgstr ""
+"AVISO: a configuração do seu ficheiro gimprc para o Script audioconverter\n"
+"não aponta para uma aplicação executável\n"
+"o valor configurado para %s é: %s\n"
+
+#: gap/gap_player_dialog.c:3136
+#, c-format
+msgid ""
+"ERROR: external program for audioconversion not available\n"
+"you should install: '%s'\n"
+msgstr ""
+"ERRO: aplicação externa para conversão audio indisponível\n"
+"deverá instalar: '%s'\n"
+
+#: gap/gap_player_dialog.c:3157
+msgid "Creating Audiofile - Please Wait"
+msgstr "A Criar Ficheiro Audio - Aguarde"
+
+#: gap/gap_player_dialog.c:3308
 msgid "Select Audiofile"
 msgstr "Seleccionar Ficheiro Audio"
 
 #. audiofile label
-#: gap/gap_player_dialog.c:2989
+#: gap/gap_player_dialog.c:3380
 msgid "Audiofile:"
 msgstr "Ficheiro Audio:"
 
-#: gap/gap_player_dialog.c:3001
+#: gap/gap_player_dialog.c:3392
 msgid "Enter an Audiofile. (the file must be in RIFF WAVE Fileformat)"
 msgstr ""
-"Introduza um Ficheiro Audio. (o ficheiro tem de estar no Formato de "
-"Ficheiro RIFF WAVE)"
+"Introduza um Ficheiro Audio. (o ficheiro tem de estar no Formato de Ficheiro "
+"RIFF WAVE)"
 
-#: gap/gap_player_dialog.c:3015
+#: gap/gap_player_dialog.c:3406
 msgid "Open Audiofile selection Browserdialog"
 msgstr "Abrir Diálogo de Browse de selecção de Ficheiro Audio"
 
 #. Volume
-#: gap/gap_player_dialog.c:3027
+#: gap/gap_player_dialog.c:3418
 msgid "Volume:"
 msgstr "Volume:"
 
-#: gap/gap_player_dialog.c:3047
+#: gap/gap_player_dialog.c:3438
 msgid "Audio Volume"
 msgstr "Volume Audio"
 
 #. check button
-#: gap/gap_player_dialog.c:3053
+#: gap/gap_player_dialog.c:3444
 msgid "Enable"
 msgstr "Activar"
 
-#: gap/gap_player_dialog.c:3057
+#: gap/gap_player_dialog.c:3448
 msgid "ON: Play Button plays Video + Audio, OFF: Play silent"
 msgstr ""
-"ACTIVO: Botão Reproduzir reproduz Vídeo + Audio, INACTIVO: "
-"Reproduzir silenciosamente"
+"ACTIVO: Botão Reproduzir reproduz Vídeo + Audio, INACTIVO: Reproduzir "
+"silenciosamente"
 
 #. Sample Offset
-#: gap/gap_player_dialog.c:3066
+#: gap/gap_player_dialog.c:3457
 msgid "Offset:"
 msgstr "Deslocamento:"
 
-#: gap/gap_player_dialog.c:3086
+#: gap/gap_player_dialog.c:3477
 msgid ""
 "Audio Offset in frames at Original Videoplayback speed\n"
 "(a value of 0 starts audio and video at synchron time\n"
@@ -2700,176 +2807,191 @@ msgstr ""
 "equivalente à duração de 10 frames\n"
 "(à velocidade original de reprodução vídeo)"
 
-#: gap/gap_player_dialog.c:3102
+#: gap/gap_player_dialog.c:3493
 msgid "Reset Offset and Volume"
 msgstr "Repor Deslocamento e Volume"
 
+#. create wavfile button
+#: gap/gap_player_dialog.c:3504
+msgid "Copy As Wavfile"
+msgstr "Copiar Como Ficheiro Wave"
+
+#: gap/gap_player_dialog.c:3506
+msgid ""
+"Create a copy from Audiofile as RIFF WAVE Audiofile\n"
+"and use the copy for Audio Playback"
+msgstr ""
+"Criar uma cópia de ficheiro Audio como ficheiro RIFF WAVE\n"
+"e utilizar a cópia para Reprodução Audio"
+
 #. Audio Offset Length (mm:ss:msec)
-#: gap/gap_player_dialog.c:3121
+#: gap/gap_player_dialog.c:3526
 msgid "Offsettime:"
 msgstr "Tempo Deslocamento:"
 
 #. Total Audio Length (mm:ss:msec)
-#: gap/gap_player_dialog.c:3135
+#: gap/gap_player_dialog.c:3540
 msgid "Audiotime:"
 msgstr "Tempo Audio:"
 
 #. Length (frames)
-#: gap/gap_player_dialog.c:3150
+#: gap/gap_player_dialog.c:3555
 msgid "Audioframes:"
 msgstr "Frames audio:"
 
 #. Length (Samples)
-#: gap/gap_player_dialog.c:3165
+#: gap/gap_player_dialog.c:3570
 msgid "Samples:"
 msgstr "Amostras:"
 
-#. Samplerate
-#: gap/gap_player_dialog.c:3180
-msgid "Samplerate:"
-msgstr "Taxa amostra:"
-
 #. Cannels
-#: gap/gap_player_dialog.c:3194
+#: gap/gap_player_dialog.c:3599
 msgid "Cannels:"
 msgstr "Canais:"
 
 #. Bits
-#: gap/gap_player_dialog.c:3208
+#: gap/gap_player_dialog.c:3613
 msgid "Bits/Sample:"
 msgstr "Bits/Amostra:"
 
-#: gap/gap_player_dialog.c:3290
+#. Total Video Length (mm:ss:msec)
+#: gap/gap_player_dialog.c:3628
+msgid "Videotime:"
+msgstr "Tempo Vídeo:"
+
+#: gap/gap_player_dialog.c:3724
 msgid "Videoframe Playback"
 msgstr "Reprodução Frames Vídeo"
 
-#: gap/gap_player_dialog.c:3308
+#: gap/gap_player_dialog.c:3742
 msgid "Video Options"
 msgstr "Opções Vídeo"
 
-#: gap/gap_player_dialog.c:3309
+#: gap/gap_player_dialog.c:3743
 msgid "Audio Options"
 msgstr "Opções Audio"
 
-#: gap/gap_player_dialog.c:3366
+#: gap/gap_player_dialog.c:3800
 msgid "Click: go to frame, Ctrl-Click: set From Frame, Alt-Click: set To Frame"
 msgstr ""
-"Clique: ir para frame, Ctrl-Clique: definir De Frame, Alt-Clique: definir Até Frame"
+"Clique: ir para frame, Ctrl-Clique: definir De Frame, Alt-Clique: definir "
+"Até Frame"
 
-#: gap/gap_player_dialog.c:3435
+#: gap/gap_player_dialog.c:3869
 msgid "Start Framenumber of Selection Range"
 msgstr "Número Frame Inicial do Intervalo Selecção"
 
-#: gap/gap_player_dialog.c:3451
+#: gap/gap_player_dialog.c:3885
 msgid "End Framenumber of Selection Range"
 msgstr "Número Frame Final do Intervalo Selecção"
 
 #. the framenr button
-#: gap/gap_player_dialog.c:3464
+#: gap/gap_player_dialog.c:3898
 msgid "FrameNr"
 msgstr "Nº Frame"
 
-#: gap/gap_player_dialog.c:3469
+#: gap/gap_player_dialog.c:3903
 msgid "Load this Frame into the calling image"
 msgstr "Ler esta Frame na imagem de chamada"
 
-#: gap/gap_player_dialog.c:3487
+#: gap/gap_player_dialog.c:3921
 msgid "Displayed Frame Nr"
 msgstr "Nº Frame Apresentada"
 
 #. the time position
-#: gap/gap_player_dialog.c:3494
+#: gap/gap_player_dialog.c:3928
 msgid "Timepos:"
 msgstr "Pos. Temporal:"
 
 #. the origspeed_button
-#: gap/gap_player_dialog.c:3523
+#: gap/gap_player_dialog.c:3957
 msgid "Speed"
 msgstr "Velocidade"
 
-#: gap/gap_player_dialog.c:3528
+#: gap/gap_player_dialog.c:3962
 msgid "Reset Playback Speed to original (or previous) Value"
 msgstr "Repor Velocidade Reprodução no Valor original (ou anterior)"
 
-#: gap/gap_player_dialog.c:3548
+#: gap/gap_player_dialog.c:3982
 msgid "Current Playbackspeed (frames/sec)"
 msgstr "Velocidade Reprodução Actual (frames/seg)"
 
 #. the size button
-#: gap/gap_player_dialog.c:3561
+#: gap/gap_player_dialog.c:3995
 msgid "Size"
 msgstr "Tamanho"
 
-#: gap/gap_player_dialog.c:3567
+#: gap/gap_player_dialog.c:4001
 msgid "Toggle Size 128/256, SHIFT: Set 1:1 full image Size"
 msgstr "Alternar Tamanho 128/256, SHIFT: Define Tamanho imagem 1:1"
 
-#: gap/gap_player_dialog.c:3585
+#: gap/gap_player_dialog.c:4019
 msgid "Video Preview Size (pixels)"
 msgstr "Tamanho Antevisão Vídeo (pixels)"
 
-#: gap/gap_player_dialog.c:3615
+#: gap/gap_player_dialog.c:4049
 msgid "ON: Play in endless Loop, OFF: Play only once"
 msgstr ""
 "ACTIVO: Reproduz em Cíclo infinito, INACTIVO: Reproduzir apenas uma vez"
 
-#: gap/gap_player_dialog.c:3624
+#: gap/gap_player_dialog.c:4058
 msgid "Play Selection only"
 msgstr "Reproduzir apenas Selecção"
 
-#: gap/gap_player_dialog.c:3629
+#: gap/gap_player_dialog.c:4063
 msgid "ON: Play Selection only, OFF: Play all frames"
 msgstr "ACTIVO: Reproduzir apenas Selecção, INACTIVO: Reproduzir todas frames"
 
-#: gap/gap_player_dialog.c:3643
+#: gap/gap_player_dialog.c:4077
 msgid "ON: Play alternating forward/backward"
 msgstr "ACTIVO: Reproduzir alternadamente frente/trás"
 
-#: gap/gap_player_dialog.c:3652
+#: gap/gap_player_dialog.c:4086
 msgid "Use Thumbnails"
 msgstr "Utilizar Amostras"
 
-#: gap/gap_player_dialog.c:3657
+#: gap/gap_player_dialog.c:4091
 msgid "ON: use thumbnails when available, OFF: read full sized frames"
 msgstr ""
 "ACTIVO: utilizar amostras quando disponíveis, INACTIVO: ler tamanho completo "
 "frames"
 
-#: gap/gap_player_dialog.c:3667
+#: gap/gap_player_dialog.c:4101
 msgid "Exact Timing"
 msgstr "Tempo Exacto"
 
-#: gap/gap_player_dialog.c:3672
+#: gap/gap_player_dialog.c:4106
 msgid "ON: skip frames to hold exact timing, OFF: disable frame skipping"
 msgstr ""
 "ACTIVO: saltar frames para manter tempo exacto, INACTIVO: não saltar frames"
 
 #. the status label
-#: gap/gap_player_dialog.c:3683
+#: gap/gap_player_dialog.c:4117
 msgid "Status:"
 msgstr "Estado:"
 
-#: gap/gap_player_dialog.c:3716
+#: gap/gap_player_dialog.c:4150
 msgid "Start Playback"
 msgstr "Iniciar Reprodução"
 
-#: gap/gap_player_dialog.c:3726
+#: gap/gap_player_dialog.c:4160
 msgid ""
 "Pause if playing (Any Mouseboutton)\n"
 "Goto Selection Start/Active/End (Left/Middle/Right Button) if not playing"
 msgstr ""
 "Pausa se a reproduzir (Qualquer Botão Rato)\n"
-"Ir Para Início Selecção/Activa/Final (Botão Esquerdo/Meio/Direito) se a não reproduzir"
+"Ir Para Início Selecção/Activa/Final (Botão Esquerdo/Meio/Direito) se a não "
+"reproduzir"
 
-#: gap/gap_player_dialog.c:3736
+#: gap/gap_player_dialog.c:4170
 msgid "Start Reverse Playback"
 msgstr "Iniciar Reprodução em Inverso"
 
-#: gap/gap_player_dialog.c:3745
+#: gap/gap_player_dialog.c:4179
 msgid "Close Window"
 msgstr "Fechar Janela"
 
-#: gap/gap_player_main.c:197
+#: gap/gap_player_main.c:207
 msgid "<Image>/Video/Playback..."
 msgstr "<Image>/Vídeo/Reproduzir..."
 
@@ -3454,6 +3576,12 @@ msgstr "Repor Ponto"
 #: gap/gap_stock.c:56
 msgid "Rotate Follow"
 msgstr "Rodar Acompanhado"
+
+#~ msgid "Animated Filter apply (init)"
+#~ msgstr "Aplicar Filtro Animado (init)"
+
+#~ msgid "Animated Filter apply (please wait)"
+#~ msgstr "Aplicar Filtros Animados (aguarde)"
 
 #~ msgid "From:"
 #~ msgstr "De:"
