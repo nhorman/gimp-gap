@@ -991,7 +991,7 @@ static void p_delta_LightSettings(t_LightSettings *val, t_LightSettings *val_fro
 }
 
 
-/* for p_plug_in_CML_explorer_iter_ALT */
+/* for p_plug_in_cml_explorer_iter_ALT */
 static void p_delta_CML_PARAM(t_CML_PARAM *val, t_CML_PARAM *val_from, t_CML_PARAM *val_to, gint32 total_steps, gdouble current_step)
 {
     p_delta_gint(&val->function, val_from->function, val_to->function, total_steps, current_step);
@@ -1142,7 +1142,7 @@ static t_iter_ALT_tab   g_iter_ALT_tab[] =
 /*, { "perl_fu_xach_blocks",  p_perl_fu_xach_blocks_iter_ALT }                    */
 /*, { "perl_fu_xach_shadows",  p_perl_fu_xach_shadows_iter_ALT }                  */
 /*, { "perl_fu_xachvision",  p_perl_fu_xachvision_iter_ALT }                      */
-    { "plug_in_CML_explorer",  p_plug_in_CML_explorer_iter_ALT }
+    { "plug_in_cml_explorer",  p_plug_in_cml_explorer_iter_ALT }
   , { "plug_in_CentralReflection",  p_plug_in_CentralReflection_iter_ALT }
   , { "plug_in_Twist",  p_plug_in_Twist_iter_ALT }
   , { "plug_in_alienmap",  p_plug_in_alienmap_iter_ALT }

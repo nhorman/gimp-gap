@@ -1,7 +1,19 @@
+2004-04-06  Wolfgang Hofer <hof@gimp.org>
+
+	- prepared for gimp-gap-2.0.0 release
+	- bugfix #139051 DESTDIR is used twice (screws up packaging gimp-gap)
+	- bugfixes: changed iterator Procedures to follow up
+		    changes in gimp-2.0.0 that are done since my last
+		    Filter All Layers Test (that was done with gimp-2.0pre3)
+	* configure.in
+	* gap/Makefile.am
+	* gap/gap_filter_iterators.c
+	* gap/iter_ALT/gen/plug_in_CML_explorer_iter_ALT.inc
+	
 2004-03-10  Wolfgang Hofer <hof@gimp.org>
 
 	- bugfixes: calls to gimp_run_procedure now use gimp_destroy_params
- 	  (some calls useg g_free, others did not free at all)
+ 	  (some calls used g_free, others did not free at all)
 	* gap/gap_decode_xanim.c
 	* gap/gap_filter_foreach.c
 	* gap/gap_filter_pdb.c
