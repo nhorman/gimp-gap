@@ -21,6 +21,7 @@
  */
 
 /* revision history:
+ * version 2.1.0a  2004.04.11   hof: added gap_layer_clear_to_color
  * version 1.3.26a 2004.01.28   hof: added gap_layer_copy_from_buffer
  * version 1.3.21c 2003.11.02   hof: added gap_layer_copy_to_image
  * version 1.3.20d 2003.10.14   hof: sourcecode cleanup, new: gap_layer_copy_content, gap_layer_copy_picked_channel
@@ -460,13 +461,7 @@ gap_layer_new_from_buffer(gint32 image_id
 
   if(layer_id >= 0)
   {
-    guchar *buf_ptr;
-    gint    row;
-    gint    rowstride;
-    
     dst_drawable = gimp_drawable_get (layer_id);
-    buf_ptr = data;
-    rowstride = bpp * width;
 
     gimp_pixel_rgn_init (&dstPR, dst_drawable
                       , 0, 0     /* x1, y1 */
@@ -476,16 +471,13 @@ gap_layer_new_from_buffer(gint32 image_id
 		      , FALSE    /* shadow */
 		       );
     
-    for(row=0; row < height; row++)
-    {
-      gimp_pixel_rgn_set_row(&dstPR
-                            ,buf_ptr
-			    ,0
-			    ,row
-			    , width
-			    );
-      buf_ptr += rowstride;
-    }
+    gimp_pixel_rgn_set_rect(&dstPR
+                           ,data
+                           ,0
+                           ,0
+                           ,width
+			   ,height
+                           );
 
     /*  update the processed region  */
     gimp_drawable_flush (dst_drawable);
@@ -494,3 +486,41 @@ gap_layer_new_from_buffer(gint32 image_id
   return(layer_id);
 }  /* end gap_layer_new_from_buffer */
 
+
+/* ----------------------------------------------------
+ * gap_layer_clear_to_color
+ * ----------------------------------------------------
+ * set layer to unique color
+ */
+void
+gap_layer_clear_to_color(gint32 layer_id
+                             ,guchar red
+                             ,guchar green
+                             ,guchar blue
+                             ,guchar alpha
+                             )
+{
+  gint32 image_id;
+  
+  image_id = gimp_drawable_get_image(layer_id);
+
+  if(alpha==0)
+  {
+    gimp_selection_none(image_id);
+    gimp_edit_clear(layer_id);
+  }
+  else
+  {
+    GimpRGB  color;
+    
+    color.r = red;
+    color.g = green;
+    color.b = blue;
+    color.a = alpha;
+    gimp_selection_all(image_id);
+    gimp_palette_set_background(&color);
+    gimp_drawable_fill(layer_id, GIMP_BACKGROUND_FILL);
+    gimp_selection_none(image_id);
+  }
+ 
+}  /* end gap_layer_clear_to_color */

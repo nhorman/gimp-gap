@@ -26,7 +26,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/* revision history:
+/* revision history: 
+ * 2.0.0a   2004/04/19   hof: bugfix p_gap_filename_to_uri
  * 1.3.25a  2004/01/21   hof: removed xvpics support (GIMP-2.0 has no more xvpics support too)
  *                            added gap_thumb_file_load_pixbuf_thumbnail,
  *                            gap_thumb_file_load_thumbnail: removed flattening
@@ -141,7 +142,7 @@ p_gap_filename_to_uri(const char *filename)
       absolute = g_strdup (filename);
   }
 
-  uri = g_filename_to_uri (filename, NULL, NULL);
+  uri = g_filename_to_uri (absolute, NULL, NULL);
 
   g_free (absolute);
 

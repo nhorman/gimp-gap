@@ -41,6 +41,7 @@
 static char *gap_main_version_fmt =  "%d.%d.%da; 2004/01/17";
 
 /* revision history:
+ * gimp    2.1.0a;  2004/04/05  hof: - Move Path added option to keep the original paintmode of the src_layer
  * gimp    1.3.24a; 2004/01/17  hof: - get main version from config.h, fixed PDB docs for plug_in_gap_modify
  * gimp    1.3.23b; 2003/12/06  hof: - updated main version
  * gimp    1.3.22a; 2003/10/09  hof: - updated main version
@@ -252,7 +253,7 @@ GimpPlugInInfo PLUG_IN_INFO =
     { GIMP_PDB_INT32,      "src_handle",        "0: handle left top   1: handle left bottom \n"
                                                 "2: handle right top  3: handle right bottom \n"
 						"4: handle center"},
-    { GIMP_PDB_INT32,      "src_paintmode",     "0: GIMP_NORMAL_MODE (see GimpLayerModeEffects -- libgimp/gimpenums.h -- for more information)"},
+    { GIMP_PDB_INT32,      "src_paintmode",     "4444: keep original paintmode of src_layer 0: GIMP_NORMAL_MODE (see GimpLayerModeEffects -- libgimp/gimpenums.h -- for more information)"},
     { GIMP_PDB_INT32,      "src_force_visible", "1: Set inserted layres visible, 0: insert layers as is"},
     { GIMP_PDB_INT32,      "clip_to_img",       "1: Clip inserted layers to Image size of the destination video frame, 0: dont clip"},
     /* extras */
@@ -332,7 +333,7 @@ GimpPlugInInfo PLUG_IN_INFO =
     { GIMP_PDB_INT32,      "src_handle",        "0: handle left top   1: handle left bottom \n"
                                                 "2: handle right top  3: handle right bottom \n"
 						"4: handle center"},
-    { GIMP_PDB_INT32,      "src_paintmode",     "0: GIMP_NORMAL_MODE (see GimpLayerModeEffects -- libgimp/gimpenums.h -- for more information)"},
+    { GIMP_PDB_INT32,      "src_paintmode",     "4444: keep original paintmode of src_layer 0: GIMP_NORMAL_MODE (see GimpLayerModeEffects -- libgimp/gimpenums.h -- for more information)"},
     { GIMP_PDB_INT32,      "src_force_visible", "1: Set inserted layres visible, 0: insert layers as is"},
     { GIMP_PDB_INT32,      "clip_to_img",       "1: Clip inserted layers to Image size of the destination video frame, 0: dont clip"},
     /* extras */

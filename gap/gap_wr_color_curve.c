@@ -782,8 +782,11 @@ wr_curve_load_callback (GtkWidget *w,
 
   wcd = (WrCurveDialog *) data;
   if(wcd->filesel != NULL)
+  {
+     gtk_window_present(GTK_WINDOW(wcd->filesel));
      return;   /* filesel is already open */
-
+  }
+  
   filesel = gtk_file_selection_new ( _("Load color curve from file"));
   wcd->filesel = filesel;
 

@@ -1140,7 +1140,11 @@ p_filebrowser_button_callback (GtkWidget *widget, fmac_globalparams_t *gpp)
 {
   GtkWidget *filesel;
 
-  if(gpp->filesel != NULL) return;  /* filesel is already open */
+  if(gpp->filesel != NULL)
+  {
+    gtk_window_present(GTK_WINDOW(gpp->filesel));
+    return;  /* filesel is already open */
+  }
 
   filesel = gtk_file_selection_new ( _("Select Filtermacro Scriptfile"));
   gpp->filesel = filesel;

@@ -25,6 +25,7 @@
  */
 
 /* revision history:
+ * version 2.1.0a  2004.04.11   hof: added gap_layer_clear_to_color
  * version 1.3.26a 2004.01.28   hof: added gap_layer_copy_from_buffer
  * version 1.3.21c 2003.11.02   hof: added gap_layer_copy_to_image
  * version 1.3.5a  2002.04.20   hof: use gimp_layer_new_from_drawable (API cleanup, requries gimp.1.3.6)
@@ -64,4 +65,10 @@ gint32 gap_layer_new_from_buffer(gint32 dst_image_id
 				, gint32 bpp
 				, guchar *data
 				);
+void   gap_layer_clear_to_color(gint32 layer_id
+                             ,guchar red
+                             ,guchar green
+                             ,guchar blue
+                             ,guchar alpha
+                             );
 #endif

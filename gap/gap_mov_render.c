@@ -82,6 +82,23 @@ static void  p_mov_transform_perspective(gint32 layer_id
 
 #define BOUNDS(a,x,y)  ((a < x) ? x : ((a > y) ? y : a))
 
+/* -------------------------
+ * p_get_paintmode
+ * -------------------------
+ *
+ */
+static GimpLayerModeEffects
+p_get_paintmode(int mode, gint32 src_layer_id)
+{
+  if(mode == GAP_MOV_KEEP_SRC_PAINTMODE)
+  {
+    GimpLayerModeEffects l_mode;
+    
+    l_mode = gimp_layer_get_mode(src_layer_id);
+    return (l_mode);
+  }
+  return (GimpLayerModeEffects)mode;
+}  /* end p_get_paintmode */
 
 /* ============================================================================
  * p_mov_selection_handling
@@ -349,6 +366,7 @@ gap_mov_render_render(gint32 image_id, GapMovValues *val_ptr, GapMovCurrent *cur
   gint         lx1, ly1, lx2, ly2;
   guint        l_image_width;
   guint        l_image_height;
+  GimpLayerModeEffects l_mode;
 
   if(gap_debug) printf("gap_mov_render_render: frame/layer: %ld/%ld  X=%f, Y=%f\n"
                 "       Width=%f Height=%f\n"
@@ -371,13 +389,16 @@ gap_mov_render_render(gint32 image_id, GapMovValues *val_ptr, GapMovCurrent *cur
       printf("gap_mov_render_render: Before gap_layer_copy_to_dest_image image_id:%d src_layer_id:%d\n"
               ,(int)image_id, (int)cur_ptr->src_layers[cur_ptr->src_layer_idx]);
     }
+    l_mode = p_get_paintmode(val_ptr->src_paintmode
+                            ,cur_ptr->src_layers[cur_ptr->src_layer_idx]
+			    );
     /* make a copy of the current source layer
      * (using current opacity  & paintmode values)
      */
      l_cp_layer_id = gap_layer_copy_to_dest_image(image_id,
                                    cur_ptr->src_layers[cur_ptr->src_layer_idx],
                                    cur_ptr->currOpacity,
-                                   val_ptr->src_paintmode,
+                                   l_mode,
                                    &l_src_offset_x,
                                    &l_src_offset_y);
   }
@@ -388,11 +409,14 @@ gap_mov_render_render(gint32 image_id, GapMovValues *val_ptr, GapMovCurrent *cur
       printf("gap_mov_render_render: Before gap_layer_copy_to_dest_image image_id:%d cache_tmp_layer_id:%d\n"
               ,(int)image_id, (int)val_ptr->cache_tmp_layer_id);
     }
+    l_mode = p_get_paintmode(val_ptr->src_paintmode
+                            ,val_ptr->cache_tmp_layer_id
+			    );
      /* for FRAME based stepmodes use the flattened layer in the cahed frame image */
      l_cp_layer_id = gap_layer_copy_to_dest_image(image_id,
                                    val_ptr->cache_tmp_layer_id,
                                    cur_ptr->currOpacity,
-                                   val_ptr->src_paintmode,
+                                   l_mode,
                                    &l_src_offset_x,
                                    &l_src_offset_y);
   }

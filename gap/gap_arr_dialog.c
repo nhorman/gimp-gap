@@ -498,7 +498,11 @@ filesel_open_cb(GtkWidget *widget, GapArrArg *arr_ptr)
 {
   GtkWidget *filesel;
 
-  if(arr_ptr->text_filesel != NULL) return;  /* filesel is already open */
+  if(arr_ptr->text_filesel != NULL)
+  {
+    gtk_window_present(GTK_WINDOW(arr_ptr->text_filesel));
+    return;  /* filesel is already open */
+  }
 
   filesel = gtk_file_selection_new (arr_ptr->label_txt);
   arr_ptr->text_filesel = filesel;
@@ -1590,7 +1594,7 @@ gap_arr_confirm_dialog(char *msg_txt, char *title_txt, char *frame_txt)
  *        FALSE: do not write the file
  */
 gboolean
-gap_arr_overwrite_file_dialog(char *filename)
+gap_arr_overwrite_file_dialog(const char *filename)
 {
   static  GapArrButtonArg  l_argv[2];
   static  GapArrArg  argv[1];

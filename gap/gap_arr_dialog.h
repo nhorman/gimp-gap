@@ -194,7 +194,7 @@ gint     gap_arr_std_dialog  (char     *title_txt,
 
 gboolean gap_arr_confirm_dialog(char *msg_txt, char *title_txt, char *frame_txt);
 
-gboolean gap_arr_overwrite_file_dialog(char *filename);
+gboolean gap_arr_overwrite_file_dialog(const char *filename);
 
 void gap_arr_msg_win(GimpRunMode run_mode, char *msg);
 

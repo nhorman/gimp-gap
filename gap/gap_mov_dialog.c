@@ -26,6 +26,8 @@
  */
 
 /* revision history:
+ * gimp    2.1.0a;  2004/04/18  hof: gtk_window_present(GTK_WINDOW(filesel)) on attempt
+ *                                   to open an already open filesel dialog window
  * gimp    1.3.21d; 2003/10/29  hof: removed deprecated calls to gtk_window_set_policy
  * gimp    1.3.20d; 2003/10/14  hof: added bluebox filter effect
  * gimp    1.3.20d; 2003/10/05  hof: use gimp_image_undo_disable for internal temporary images
@@ -402,18 +404,31 @@ static MenuItem option_paint_items[] =
 {
   { N_("Normal"), 0, 0, mov_paintmode_menu_callback, (gpointer) GIMP_NORMAL_MODE, NULL, NULL },
   { N_("Dissolve"), 0, 0, mov_paintmode_menu_callback, (gpointer) GIMP_DISSOLVE_MODE, NULL, NULL },
+
   { N_("Multiply"), 0, 0, mov_paintmode_menu_callback, (gpointer) GIMP_MULTIPLY_MODE, NULL, NULL },
+  { N_("Divide"), 0, 0, mov_paintmode_menu_callback, (gpointer) GIMP_DIVIDE_MODE, NULL, NULL },
   { N_("Screen"), 0, 0, mov_paintmode_menu_callback, (gpointer) GIMP_SCREEN_MODE, NULL, NULL },
   { N_("Overlay"), 0, 0, mov_paintmode_menu_callback, (gpointer) GIMP_OVERLAY_MODE, NULL, NULL },
+
+  { N_("Dodge"), 0, 0, mov_paintmode_menu_callback, (gpointer) GIMP_DODGE_MODE, NULL, NULL },
+  { N_("Burn"), 0, 0, mov_paintmode_menu_callback, (gpointer) GIMP_BURN_MODE, NULL, NULL },
+  { N_("Hard Light"), 0, 0, mov_paintmode_menu_callback, (gpointer) GIMP_HARDLIGHT_MODE, NULL, NULL },
+  { N_("Soft Light"), 0, 0, mov_paintmode_menu_callback, (gpointer) GIMP_SOFTLIGHT_MODE, NULL, NULL },
+  { N_("Grain Extract"), 0, 0, mov_paintmode_menu_callback, (gpointer) GIMP_GRAIN_EXTRACT_MODE, NULL, NULL },
+  { N_("Grain Merge"), 0, 0, mov_paintmode_menu_callback, (gpointer) GIMP_GRAIN_MERGE_MODE, NULL, NULL },
+
   { N_("Difference"), 0, 0, mov_paintmode_menu_callback, (gpointer) GIMP_DIFFERENCE_MODE, NULL, NULL },
   { N_("Addition"), 0, 0, mov_paintmode_menu_callback, (gpointer) GIMP_ADDITION_MODE, NULL, NULL },
   { N_("Subtract"), 0, 0, mov_paintmode_menu_callback, (gpointer) GIMP_SUBTRACT_MODE, NULL, NULL },
   { N_("Darken Only"), 0, 0, mov_paintmode_menu_callback, (gpointer) GIMP_DARKEN_ONLY_MODE, NULL, NULL },
   { N_("Lighten Only"), 0, 0, mov_paintmode_menu_callback, (gpointer) GIMP_LIGHTEN_ONLY_MODE, NULL, NULL },
+
   { N_("Hue"), 0, 0, mov_paintmode_menu_callback, (gpointer) GIMP_HUE_MODE, NULL, NULL },
   { N_("Saturation"), 0, 0, mov_paintmode_menu_callback, (gpointer) GIMP_SATURATION_MODE, NULL, NULL },
   { N_("Color"), 0, 0, mov_paintmode_menu_callback, (gpointer) GIMP_COLOR_MODE, NULL, NULL },
   { N_("Value"), 0, 0, mov_paintmode_menu_callback, (gpointer) GIMP_VALUE_MODE, NULL, NULL },
+
+  { N_("Keep Paintmode"), 0, 0, mov_paintmode_menu_callback, (gpointer) GAP_MOV_KEEP_SRC_PAINTMODE, NULL, NULL },
   { NULL, 0, 0, NULL, NULL, NULL, NULL }
 };
 
@@ -1580,7 +1595,11 @@ mov_pload_callback (GtkWidget *widget,
   GtkWidget *filesel;
   t_mov_gui_stuff *mgp = data;
 
-  if(mgp->filesel != NULL) return;  /* filesel is already open */
+  if(mgp->filesel != NULL)
+  {
+    gtk_window_present(GTK_WINDOW(mgp->filesel));
+    return;  /* filesel is already open */
+  }
 
   filesel = gtk_file_selection_new ( _("Load Path Points from File"));
   mgp->filesel = filesel;
@@ -1617,7 +1636,11 @@ mov_psave_callback (GtkWidget *widget,
   GtkWidget *filesel;
   t_mov_gui_stuff *mgp = data;
 
-  if(mgp->filesel != NULL) return;  /* filesel is already open */
+  if(mgp->filesel != NULL)
+  {
+    gtk_window_present(GTK_WINDOW(mgp->filesel));
+    return;  /* filesel is already open */
+  }
 
   filesel = gtk_file_selection_new ( _("Save Path Points to File"));
   mgp->filesel = filesel;
@@ -1654,7 +1677,11 @@ p_points_load_from_file (GtkWidget *widget,
   const gchar        *filename;
 
   if(gap_debug) printf("p_points_load_from_file\n");
-  if(mgp->filesel == NULL) return;
+  if(mgp->filesel != NULL)
+  {
+    gtk_window_present(GTK_WINDOW(mgp->filesel));
+    return;  /* filesel is already open */
+  }
 
   filename = gtk_file_selection_get_filename (GTK_FILE_SELECTION (mgp->filesel));
   g_free(mgp->pointfile_name);
@@ -1678,7 +1705,11 @@ p_points_save_to_file (GtkWidget *widget,
   const gchar        *filename;
 
   if(gap_debug) printf("p_points_save_to_file\n");
-  if(mgp->filesel == NULL) return;
+  if(mgp->filesel != NULL)
+  {
+    gtk_window_present(GTK_WINDOW(mgp->filesel));
+    return;  /* filesel is already open */
+  }
 
   filename = gtk_file_selection_get_filename (GTK_FILE_SELECTION (mgp->filesel));
   g_free(mgp->pointfile_name);

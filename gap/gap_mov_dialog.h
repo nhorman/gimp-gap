@@ -39,7 +39,9 @@
  */
 
 #include "gap_bluebox.h"
- 
+
+#define GAP_MOV_KEEP_SRC_PAINTMODE 4444
+
 typedef enum
 {
   GAP_STEP_LOOP      = 0,

@@ -1,3 +1,44 @@
+2004-04-19  Wolfgang Hofer <hof@gimp.org>
+
+ 	- process pixel region rectangle at once is faster
+ 	  than row by row.
+ 	  (procedure: gap_layer_new_from_buffer)
+ 	* gap/gap_layer_copy.c  
+
+2004-04-18  Wolfgang Hofer <hof@gimp.org>
+
+	- window to front on attempt to open an already open window
+ 	  using gtk_window_present(GTK_WINDOW(filesel))
+ 	* gap/gap_arr_dialog.c [.h]
+ 	* gap/gap_fmac_main.c
+ 	* gap/gap_mov_dialog.c
+ 	* gap/gap_wr_color_curve.c
+
+2004-04-11  Wolfgang Hofer <hof@gimp.org>
+
+	- bugfix p_gap_filename_to_uri
+ 	* gap/gap_thumbnail.c 
+
+2004-04-10  Wolfgang Hofer <hof@gimp.org>
+
+	- Onionskin CFG: replaced deprecated gtk_object_set_data by
+	g_object_set_data
+ 	- new procedure gap_layer_clear_to_color
+ 	* gap/gap_onion_dialog.c	   
+ 	* gap/gap_layer_copy.c	[.h]   
+ 
+2004-04-07  Wolfgang Hofer <hof@gimp.org>
+
+	- Move Path plug-in: added option to keep the original
+ 	  paintmode of the handled src layer(s)
+ 	  also added some missing paintmode options:
+ 	  Divide, Dodge, Burn, Hard Light, Soft Light,
+ 	  Grain Extract, Grain Merge
+ 	  (suggestion by Sam Jones)
+ 	* gap/gap_main.c
+ 	* gap/gap_mov_dialog.c [.h]
+ 	* gap/gap_mov_render.c
+
 2004-04-10  Sven Neumann  <sven@gimp.org>
 
 	* Made 2.0.0 release.
