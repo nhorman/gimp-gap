@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: gimp-gap.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2003-12-15 11:42+0100\n"
-"PO-Revision-Date: 2003-12-16 12:50+0100\n"
+"PO-Revision-Date: 2003-12-16 23:46+0100\n"
 "Last-Translator: Francisco Javier F. Serrador <serrador@arrakis.es>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -2643,7 +2643,7 @@ msgstr ""
 "Error: El punto de control [%d] está fuera del rango de fotogramas manejados"
 
 #: gap/gap_mov_exec.c:1970
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\n"
 "Error: More controlpoints (%d) than handled frames (%d).\n"
@@ -2688,33 +2688,30 @@ msgstr ""
 "%s"
 
 #: gap/gap_mpege.c:172
-#, fuzzy
 msgid ""
 "You need a series of single images on disk (video frames),\n"
 "all with fileformat PPM (or YUV)\n"
 "(use 'Frames Convert' from the video menu\n"
 "or 'Split Image to Frames' from the video menu)"
 msgstr ""
-"Necesita una serie de Imágenes sencillas en disco (AnimFrames)\n"
-"todos con formato JPEG (o YUV o PNM o PPM)\n"
+"Necesita una serie de imágenes sencillas en disco (fotogramas de vídeo)\n"
+"todos con formato PPM (o YUV)\n"
 "(use «Convertir fotogramas» desde el menú de Vídeo\n"
 "o «Dividir imagen en fotogramas» desde el menú de Vídeo)"
 
 #: gap/gap_mpege.c:180
-#, fuzzy
 msgid ""
 "You need a series of single images on disk (video frames)\n"
 "all with fileformat JPEG (or YUV or PNM or PPM)\n"
 "(use 'Frames Convert' from the video menu\n"
 "or 'Split Image to Frames' from the video menu)"
 msgstr ""
-"Necesita una serie de Imágenes sencillas en disco (AnimFrames)\n"
+"Necesita una serie de Imágenes sencillas en disco (fotogramas de vídeo)\n"
 "todos con formato JPEG (o YUV o PNM o PPM)\n"
 "(use «Convertir fotogramas» desde el menú de Vídeo\n"
 "o «Dividir imagen en fotogramas» desde el menú de Vídeo)"
 
 #: gap/gap_mpege.c:197
-#, fuzzy
 msgid ""
 "All images must have the same size,\n"
 "width and height must be a multiple of 16\n"
@@ -2725,7 +2722,6 @@ msgstr ""
 "(use Escalar o Recortar desde el menú Vídeo)"
 
 #: gap/gap_mpege.c:204
-#, fuzzy
 msgid "All images must have the same size,"
 msgstr "Todas las imágenes deben tener el mismo tamaño,"
 
@@ -2751,7 +2747,6 @@ msgid "Gen + Encode"
 msgstr "Generar y codificar"
 
 #: gap/gap_mpege.c:304
-#, fuzzy
 msgid "Framerate in frames/second"
 msgstr "Tasa de fotogramas en fotogramas/segundo"
 
@@ -2760,13 +2755,10 @@ msgid "Bitrate:"
 msgstr "Tasa de bits:"
 
 #: gap/gap_mpege.c:314
-#, fuzzy
 msgid ""
 "Used for constant bitrates (bit/sec). low rate gives good compression + bad "
 "quality"
-msgstr ""
-"usado para tasas de bit constantes (bits/segundo)\n"
-"(Tasas bajas dan buena compresión y mala calidad)"
+msgstr "Usado para tasas de bit constantes (bits/segundo). Tasas bajas dan buena compresión y mala calidad"
 
 #: gap/gap_mpege.c:330
 msgid "Outputfile:"
@@ -2783,28 +2775,21 @@ msgstr "Fichero de parámetros:"
 
 #. pixel
 #: gap/gap_mpege.c:340
-#, fuzzy
 msgid "Name of the encoder-parameterfile (to be generated)"
-msgstr ""
-"Nombre del archivo de parámetros del codificador\n"
-"(se genera)"
+msgstr "Nombre del archivo de parámetros del codificador (para ser generado)"
 
 # //R NI IDEA DE QUÉ ES ÉSTO
 #: gap/gap_mpege.c:346
 msgid "Startscript:"
-msgstr "Guión de comienzo:"
+msgstr "Script de comienzo:"
 
 #. pixel
 #: gap/gap_mpege.c:348
-#, fuzzy
 msgid "Name of the startscript (to be generated/executed)"
-msgstr ""
-"Nombre del script de comienzo\n"
-"(se genera/ejecuta)"
+msgstr "Nombre del script de comienzo (se genera/ejecuta)"
 
 # //R ¿Libre? ¿Gratis?
 #: gap/gap_mpege.c:360
-#, fuzzy
 msgid ""
 "Generate parameterfile for mpeg_encode 1.5\n"
 "(the freely distributed Berkeley MPEG-1 video encoder.)\n"
@@ -2826,7 +2811,6 @@ msgstr "Patrón:"
 
 #. pixel
 #: gap/gap_mpege.c:374
-#, fuzzy
 msgid "How to encode MPEG frame sequence (I/P/B frames)"
 msgstr "Cómo codificar secuencia de fotogramas MPEG (Fotogramas I/P/B)"
 
@@ -2835,7 +2819,6 @@ msgid "IQSCALE:"
 msgstr "IQSCALE:"
 
 #: gap/gap_mpege.c:383
-#, fuzzy
 msgid ""
 "Quality scale for I-frames\n"
 "(1 = best quality, 31 = best comression)"
@@ -2848,7 +2831,6 @@ msgid "PQSCALE:"
 msgstr "PQSCALE:"
 
 #: gap/gap_mpege.c:393
-#, fuzzy
 msgid ""
 "Quality scale for P-frames\n"
 "(1 = best quality, 31 = best comression)"
@@ -2861,7 +2843,6 @@ msgid "BQSCALE:"
 msgstr "BQSCALE:"
 
 #: gap/gap_mpege.c:403
-#, fuzzy
 msgid ""
 "Quality scale for B-frames\n"
 "(1 = best quality, 31 = best comression)"
@@ -2874,18 +2855,16 @@ msgid "P-Search:"
 msgstr "Búsqueda P:"
 
 #: gap/gap_mpege.c:413
-#, fuzzy
 msgid "Search algorithmus used for P-frames"
-msgstr "Algoritmos de búsqueda de fotogramas P"
+msgstr "Algoritmos de búsqueda de P-frames"
 
 #: gap/gap_mpege.c:421
 msgid "B-Search:"
 msgstr "Búsqueda B:"
 
 #: gap/gap_mpege.c:422
-#, fuzzy
 msgid "Search algorithmus used for B-frames"
-msgstr "Algoritmos de búsqueda de fotogramas B"
+msgstr "Algoritmos de búsqueda de B-frames"
 
 #: gap/gap_mpege.c:429
 msgid "Gen MPEG_ENCODE Parameters"
@@ -2896,7 +2875,6 @@ msgid "Encode Values"
 msgstr "Codificar valores"
 
 #: gap/gap_mpege.c:446
-#, fuzzy
 msgid ""
 "Generate parameterfile for mpeg2encode 1.2\n"
 "(MPEG-2 video encoder.)\n"
@@ -2922,7 +2900,6 @@ msgid "Gen MPEG2ENCODE Parameters"
 msgstr "Generar parámetros MPEG2ENCODE"
 
 #: gap/gap_mpege.c:1036
-#, fuzzy
 msgid ""
 "\n"
 "WARNING: mpeg_encode does not support fileformat "
@@ -2947,7 +2924,6 @@ msgstr ""
 "ERROR: La altura no es múltiplo de 16"
 
 #: gap/gap_mpege.c:1046
-#, fuzzy
 msgid ""
 "\n"
 "WARNING: mpeg2encode does not support fileformat "
@@ -2956,7 +2932,6 @@ msgstr ""
 "AVISO: mpeg2encode no entiende el formato de archivo "
 
 #: gap/gap_mpege.c:1051
-#, fuzzy
 msgid ""
 "\n"
 "ERROR: invoked from a single image, but video frame is required"
@@ -2970,7 +2945,7 @@ msgstr "<Image>/Vídeo/Nombre de  archivo a capa..."
 
 #: gap/gap_name2layer_main.c:446
 msgid "Modes to choose entire filename or just parts of the filename"
-msgstr ""
+msgstr "Modos para elegir el nombre de archivo nuevo o sólo partes del nombre del archivo"
 
 #: gap/gap_name2layer_main.c:455
 msgid "Fontname:"
@@ -2990,12 +2965,10 @@ msgid "Fontsize in pixels"
 msgstr "Tamaño de tipografía en píxeles"
 
 #: gap/gap_name2layer_main.c:477
-#, fuzzy
 msgid "Position X-offset in pixels"
 msgstr "Posición del desplazamiento-X en píxeles"
 
 #: gap/gap_name2layer_main.c:488
-#, fuzzy
 msgid "Position Y-offset in pixels"
 msgstr "Posición del desplazamiento-Y en píxeles"
 
@@ -3004,7 +2977,6 @@ msgid "Antialias:"
 msgstr "Antialias:"
 
 #: gap/gap_name2layer_main.c:498
-#, fuzzy
 msgid "Use antialias"
 msgstr "Usar antialias"
 
@@ -3013,12 +2985,12 @@ msgid "Create Layer:"
 msgstr "Crear capa:"
 
 #: gap/gap_name2layer_main.c:505
-#, fuzzy
 msgid ""
 "ON: Create a new layer.\n"
 "OFF: Render on active drawable."
 msgstr ""
-"Activado: Crea una capa nueva, Desactivado: Renderiza en la Dibujable activa"
+"Activado: Crea una capa nueva.\n"
+"Desactivado: Renderiza en la Dibujable activa"
 
 #: gap/gap_name2layer_main.c:516
 msgid "Render Filename to Layer"
@@ -3029,59 +3001,51 @@ msgid "Settings :"
 msgstr "Configuración :"
 
 #: gap/gap_navigator_dialog.c:413
-#, fuzzy
 msgid ""
 "Playback\n"
 "<Shift> converts the selected frames to temporary image and do "
 "layeranimation playback on the temporary image"
 msgstr ""
 "Reproducción\n"
-"<Shift> Hacer Imagen temporal y reproducir capa de animación"
+"<Mayúsculas> conviete los fotogramas seleccionados en una imagen temporal y reproducir capa de animación en la imagen temporal"
 
 #: gap/gap_navigator_dialog.c:419
-#, fuzzy
 msgid ""
 "Smart update thumbnails\n"
 "<Shift> forced thumbnail update for all frames"
 msgstr ""
 "Actualización inteligente de miniaturas\n"
-"<Shift> act forzada"
+"<Mayúsculas> fuerza la actualización para todos los fotogramas"
 
 #: gap/gap_navigator_dialog.c:424
-#, fuzzy
 msgid "Duplicate selected frames"
 msgstr "Duplicar fotogramas seleccionados"
 
 #: gap/gap_navigator_dialog.c:428
-#, fuzzy
 msgid "Delete selected frames"
 msgstr "Borrar fotogramas seleccionados"
 
 #: gap/gap_navigator_dialog.c:437
-#, fuzzy
 msgid "Goto first frame"
 msgstr "Ir al primer fotograma"
 
 #: gap/gap_navigator_dialog.c:441
-#, fuzzy
 msgid ""
 "Goto prev frame\n"
 "<Shift> use timezoom stepsize"
 msgstr ""
 "Ir al fotograma anterior\n"
-"<Mays> Usar tamaño de paso como zoom de tiempo"
+"<Mayúsculas> Usar tamaño de paso como zoom de tiempo"
 
 #: gap/gap_navigator_dialog.c:446
-#, fuzzy
 msgid ""
 "Goto next frame\n"
 "<Shift> use timezoom stepsize"
 msgstr ""
 "Ir al fotograma siguiente\n"
-"<Mays> Usar tamaño de paso como zoom de tiempo"
+"<Mayúsculas> Usar tamaño de paso como zoom de tiempo"
 
 #: gap/gap_navigator_dialog.c:451
-#, fuzzy
 msgid "Goto last frame"
 msgstr "Ir al último fotograma"
 
@@ -3090,43 +3054,37 @@ msgid "<Image>/Video/VCR Navigator..."
 msgstr "<Image>/Vídeo/Navegador VCR..."
 
 #: gap/gap_navigator_dialog.c:582
-#, fuzzy
 msgid "Cant open two or more video navigator windows."
 msgstr "No puedo abrir dos o más Ventanas de Navegador de Vídeo."
 
 #: gap/gap_navigator_dialog.c:633
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The selected %d frame(s) will be deleted.\n"
 "There will be no undo for this operation\n"
 msgstr ""
 "Los %d fotogramas seleccionados se borrarán\n"
-"No habrá posibilidad de DESHACER esta acción\n"
+"No habrá posibilidad de deshacer esta acción\n"
 
 #: gap/gap_navigator_dialog.c:722
-#, fuzzy
 msgid "Error while positioning to frame. Video paste operaton failed"
 msgstr ""
 "Error al posicionarse en el fotograma. La operación de pegado de vídeo ha "
 "fallado"
 
 #: gap/gap_navigator_dialog.c:744
-#, fuzzy
 msgid "Video paste operaton failed"
 msgstr "La operación de pegado de vídeo ha fallado"
 
 #: gap/gap_navigator_dialog.c:855
-#, fuzzy
 msgid "Video copy (or cut) operation failed"
 msgstr "La operación de copiado (o cortado) de vídeo falló"
 
 #: gap/gap_navigator_dialog.c:902
-#, fuzzy
 msgid "Video cut operation failed"
 msgstr "La operación de cortado de vídeo falló"
 
 #: gap/gap_navigator_dialog.c:1583
-#, fuzzy
 msgid ""
 "For the thumbnail update you have to select\n"
 "a thumbnail filesize other than 'No Thumbnails'\n"
@@ -3149,19 +3107,16 @@ msgstr "Cortar"
 
 #. menu_item paste before
 #: gap/gap_navigator_dialog.c:3688
-#, fuzzy
 msgid "Paste Before"
 msgstr "Pegar antes"
 
 #. menu_item copy
 #: gap/gap_navigator_dialog.c:3697
-#, fuzzy
 msgid "Paste After"
 msgstr "Pegar después"
 
 #. menu_item copy
 #: gap/gap_navigator_dialog.c:3706
-#, fuzzy
 msgid "Paste Replace"
 msgstr "Pegar reemplazando"
 
@@ -3186,7 +3141,6 @@ msgid "Videoframes:"
 msgstr "Fotogramas de vídeo:"
 
 #: gap/gap_navigator_dialog.c:3794
-#, fuzzy
 msgid "Set framerate in frames/sec"
 msgstr "Establecer tasa de fotogramas en fotogramas/segundo"
 
@@ -3222,25 +3176,22 @@ msgid "Ascending Opacity"
 msgstr "Opacidad ascendente"
 
 #: gap/gap_onion_dialog.c:976
-#, fuzzy
 msgid ""
 "ON: Far neighbour frames have the higher opacity.\n"
 "OFF: Near neighbour frames have the higher opacity."
 msgstr ""
-"Activado: Los fotogramas vecinos lejanos tienen mayor opacidad, Desactivado: "
-"Los fotogramas vecinos cercanos tienen la mayor opacidad"
+"Activado: Los fotogramas vecinos lejanos tienen mayor opacidad.\n"
+"Desactivado: Los fotogramas vecinos cercanos tienen la mayor opacidad."
 
 #: gap/gap_onion_dialog.c:997
-#, fuzzy
 msgid "Number of onionskin layers to create in the handled frame."
-msgstr "Número de capas de papel cebolla para crear en el fotograma manipulado"
+msgstr "Número de capas de papel cebolla para crear en el fotograma manipulado."
 
 #: gap/gap_onion_dialog.c:1000
 msgid "Frame Reference:"
 msgstr "Referencia de fotograma:"
 
 #: gap/gap_onion_dialog.c:1022
-#, fuzzy
 msgid "-1 is previous frame, +1 is next frame"
 msgstr "-1 es el fotograma anterior, +1 es el fotograma siguiente"
 
@@ -3249,17 +3200,14 @@ msgid "Cyclic"
 msgstr "Cíclico"
 
 #: gap/gap_onion_dialog.c:1031
-#, fuzzy
 msgid "ON: Next frame of last is first and vice versa."
-msgstr ""
-"Activado: plegar atrás el siguiente fotograma de los últimos como primero"
+msgstr "Activado: El siguiente fotograma del último es el primero y viceversa."
 
 #: gap/gap_onion_dialog.c:1034
 msgid "Stackposition:"
 msgstr "Posición en la pila:"
 
 #: gap/gap_onion_dialog.c:1056
-#, fuzzy
 msgid "Stackposition where to place onionskin layer(s)"
 msgstr "Posición en la pila donde colocar la(s) capas de papel cebolla"
 
@@ -3274,14 +3222,10 @@ msgid ""
 msgstr ""
 
 #: gap/gap_onion_dialog.c:1091
-#, fuzzy
 msgid "Opacity of first onionskin layer (0 is transparent, 100 full opaque)"
-msgstr ""
-"Opacidad de la primera capa de papel cebolla (0 es transparente,100 es "
-"completamente opaco)"
+msgstr "Opacidad de la primera capa de papel cebolla (0 es transparente, 100 es completamente opaco)"
 
 #: gap/gap_onion_dialog.c:1109
-#, fuzzy
 msgid "Descending opacity for 2.nd onionskin layer"
 msgstr "Opacidad descendiente para la 2ª capa de papel cebolla"
 
@@ -3294,7 +3238,6 @@ msgid "Ignore BG-layer(s):"
 msgstr "Ignorar capa(s) de fondo:"
 
 #: gap/gap_onion_dialog.c:1146
-#, fuzzy
 msgid ""
 "Exclude N background layers. Use 0 if you dont want to exclude any layer."
 msgstr "Excluir n capas de fondo (usar 0 si no quiere excluir ninguna capa)"
@@ -3304,27 +3247,22 @@ msgid "Select Mode:"
 msgstr "Modo de selección:"
 
 #: gap/gap_onion_dialog.c:1162
-#, fuzzy
 msgid "Modes how to use select pattern"
-msgstr "Modos en cómo usar la selección de patrón"
+msgstr "Modos en cómo usar el patrón de selección"
 
 #: gap/gap_onion_dialog.c:1165
-#, fuzzy
 msgid "Pattern is equal to layername"
 msgstr "El patrón es igual a nombre de capa"
 
 #: gap/gap_onion_dialog.c:1173
-#, fuzzy
 msgid "Pattern is start of layername"
 msgstr "El patrón comienza como el nombre de capa"
 
 #: gap/gap_onion_dialog.c:1181
-#, fuzzy
 msgid "Pattern is end of layername"
 msgstr "El patrón acaba como el nombre de capa"
 
 #: gap/gap_onion_dialog.c:1189
-#, fuzzy
 msgid "Pattern is a part of layername"
 msgstr "El patrón es parte del nombre de capa"
 
@@ -3338,28 +3276,26 @@ msgid ""
 "ON: Case sensitive pattern.\n"
 "OFF: Ignore case."
 msgstr ""
-"Activado: Patrón sensible a capitalización, Desactivado: ignorar "
-"capitalización"
+"Activado: Patrón sensible a capitalización.\n"
+"Desactivado: ignorar capitalización."
 
 #: gap/gap_onion_dialog.c:1245
 msgid "Invert Selection"
 msgstr "Invertir selección"
 
 #: gap/gap_onion_dialog.c:1249
-#, fuzzy
 msgid ""
 "ON: Select non-matching layers.\n"
 "OFF: Select matching layers"
 msgstr ""
-"Activado: Seleccionar capas no coincidentes, Desactivado: Seleccionar capas "
-"coincidentes"
+"Activado: Seleccionar capas no coincidentes.\n"
+"Desactivado: Seleccionar capas coincidentes."
 
 #: gap/gap_onion_dialog.c:1253
 msgid "Select Pattern:"
 msgstr "Seleccione patrón:"
 
 #: gap/gap_onion_dialog.c:1266
-#, fuzzy
 msgid "Select layernames by pattern (depends on mode and options)"
 msgstr "Seleccione nombres de patrón por patrón (depende de Modo y Opciones)"
 
@@ -3369,12 +3305,10 @@ msgid "Set for: %s"
 msgstr "Establecer para: %s"
 
 #: gap/gap_onion_dialog.c:1283
-#, fuzzy
 msgid "Set onionskin parameters for the current video"
 msgstr "Establecer parámetros de papel cebolla para el vídeo actual"
 
 #: gap/gap_onion_dialog.c:1295
-#, fuzzy
 msgid "Auto create after load"
 msgstr "Auto-creación después de carga"
 
@@ -3384,13 +3318,9 @@ msgid ""
 "ON: Automatic creation/replacement of onionskin layer(s). Works on frame "
 "changes via 'VCR Navigator' and go to operations in the video menu -- but "
 "not on explicite load from the file menu."
-msgstr ""
-"Activado: Creación/Reemplazo automático de capas de papel cebolla\n"
-"(funciona en cambios de fotograma vía Navegador VCR y operaciones ir a en el "
-"menú vídeo -- pero no en Carga explícita desde el menú de archivo"
+msgstr "Activado: Creación/Reemplazo automático de capas de papel cebolla. (funciona en cambios de fotograma vía Navegador VCR y operaciones ir a en el menú vídeo -- pero no en Carga explícita desde el menú de archivo"
 
 #: gap/gap_onion_dialog.c:1307
-#, fuzzy
 msgid "Auto delete before save"
 msgstr "Auto-borrado antes de guardar"
 
