@@ -8,8 +8,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gimp-gap\n"
-"POT-Creation-Date: 2003-08-22 02:57+0200\n"
-"PO-Revision-Date: 2003-08-22 02:58+0200\n"
+"POT-Creation-Date: 2003-08-30 03:07+0200\n"
+"PO-Revision-Date: 2003-08-30 03:08+0200\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -17,29 +17,29 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Button  to invoke fontbrowser
-#: gap/gap_arr_dialog.c:400
+#: gap/gap_arr_dialog.c:401
 msgid "Font Browser"
 msgstr "Typsnittsbläddrare"
 
 #. Button  to invoke filebrowser
-#: gap/gap_arr_dialog.c:481
+#: gap/gap_arr_dialog.c:482
 msgid "File Browser"
 msgstr "Filbläddrare"
 
 #. parameter settings
-#: gap/gap_arr_dialog.c:1078
+#: gap/gap_arr_dialog.c:1079
 msgid "Enter Values"
 msgstr "Ange värden"
 
-#: gap/gap_arr_dialog.c:1098 gap/gap_arr_dialog.c:1215
+#: gap/gap_arr_dialog.c:1099 gap/gap_arr_dialog.c:1216
 msgid "Value:"
 msgstr "Värde:"
 
-#: gap/gap_arr_dialog.c:1395
+#: gap/gap_arr_dialog.c:1396
 msgid "Press Button"
 msgstr "Tryck på knapp"
 
-#: gap/gap_arr_dialog.c:1396
+#: gap/gap_arr_dialog.c:1397
 msgid "Select"
 msgstr "Markera"
 
@@ -64,7 +64,7 @@ msgstr "Fel: kunde inte spara bildrutan %s"
 
 #: gap/gap_base_ops.c:463 gap/gap_base_ops.c:595 gap/gap_base_ops.c:680
 #: gap/gap_base_ops.c:687 gap/gap_base_ops.c:694 gap/gap_base_ops.c:782
-#: gap/gap_base_ops.c:804 gap/gap_lib.c:2069
+#: gap/gap_base_ops.c:804 gap/gap_lib.c:2092
 #, c-format
 msgid "Error: could not rename frame %ld to %ld"
 msgstr "Fel: Kunde inte byta namn på bildruta %ld till %ld"
@@ -123,6 +123,9 @@ msgid ""
 "This will increase the total number of frames from %d up to %d\n"
 "There will be no UNDO for this Operation\n"
 msgstr ""
+"Bildrutor i intervallet %d - %d kommer att dupliceras %.4f gånger\n"
+"Detta kommer att öka det totala antalet bildrutor från %d till %d\n"
+"Denna åtgärd kommer inte att kunna ångras\n"
 
 #: gap/gap_base_ops.c:1171
 #, c-format
@@ -132,6 +135,10 @@ msgid ""
 "This will decrease the total number of frames from %d down to %d\n"
 "There will be no UNDO for this Operation\n"
 msgstr ""
+"%.04f procent av bildrutorna i intervallet %d - %d\n"
+"kommer att TAS BORT\n"
+"Detta kommer att minska det totala antalet bildrutor från %d till %d\n"
+"Denna åtgärd kommer inte att kunna ångras\n"
 
 #. title_txt
 #: gap/gap_base_ops.c:1184 gap/gap_base_ops.c:1185
@@ -177,6 +184,8 @@ msgid ""
 "Factor to Increase the Frame Density (acts as Divisor if checkbutton "
 "Increase Density is OFF)"
 msgstr ""
+"Faktor att öka bildrutedensiteten (fungerar som nämnare om kryssrutan öka "
+"densitet är AV)"
 
 # src/dialogs.c:485
 #: gap/gap_base_ops.c:1239
@@ -188,18 +197,26 @@ msgid ""
 "ON: Duplicate Frames to get a target rate that is Density * Originalrate\n"
 "OFF: Delete Frames to get a target rate that is Originalrate/Density"
 msgstr ""
+"PÅ: Dubblerade bildrutor får en målhastighet som är densitet × "
+"originalhastighet\n"
+"AV: Ta bort bildrutor för att få en målhastighet som är originalhastighet/"
+"densitet"
 
 #: gap/gap_base_ops.c:1245
 msgid "Change Frames Density"
 msgstr "Ändra bildrutedensitet"
 
-#: gap/gap_base_ops.c:1308 gap/gap_base_ops.c:1435 gap/gap_lib.c:1131
+#: gap/gap_base_ops.c:1308 gap/gap_base_ops.c:1435 gap/gap_lib.c:1135
 msgid ""
 "OPERATION CANCELLED.\n"
 "GAP plug-ins only work with filenames\n"
 "that end in numbers like _000001.xcf.\n"
 "==> Rename your image, then try again."
 msgstr ""
+"ÅTGÄRD AVBRUTEN.\n"
+"GAP-insticksmoduler fungerar endast med filnamn\n"
+"som slutar med tal som exempelvis _000001.xcf.\n"
+"==> Byt namn på din bild och försök sedan igen."
 
 #: gap/gap_base_ops.c:1357
 #, c-format
@@ -223,6 +240,8 @@ msgid ""
 "Copy selected Range n-times\n"
 "(you may type in Values > 99)"
 msgstr ""
+"Kopiera markerat intervall n gånger\n"
+"(du kan ange värden > 99)"
 
 #: gap/gap_base_ops.c:1388
 msgid "Make Duplicates of Frame Range"
@@ -251,6 +270,8 @@ msgid ""
 "Renumber the affected Frame Sequence\n"
 "(numbers are shifted in circle by N)"
 msgstr ""
+"Numrera om den berörda bildrutesekvensen\n"
+"(tal skiftas i cirkel med N)"
 
 #: gap/gap_base_ops.c:1583
 msgid "Frame Sequence shift"
@@ -267,7 +288,7 @@ msgstr "Nummer på första bildrutan:"
 
 #: gap/gap_base_ops.c:1677
 msgid "New Framenumber for the first Frame"
-msgstr "Nytt bldrutenummer för den första bildrutan"
+msgstr "Nytt bildrutenummer för den första bildrutan"
 
 #: gap/gap_base_ops.c:1680 gap/gap_split.c:281
 msgid "Digits:"
@@ -367,6 +388,9 @@ msgid ""
 "must be installed somewhere in your PATH\n"
 "you can get xanim exporting edition at:\n"
 msgstr ""
+"xanim 2.80.0-exportversionen (loki-versionen)\n"
+"måste vara installerad någonstans i din sökväg (PATH)\n"
+"du kan hämta xanim-exportversionen på:\n"
 
 #: gap/gap_decode_xanim.c:156
 msgid ""
@@ -374,6 +398,9 @@ msgid ""
 "you have to set Environment variable GAP_XANIM_PROG\n"
 "to your xanim exporting program and restart gimp"
 msgstr ""
+"om din xanim-exportversion inte är i din sökväg (PATH) eller inte har\n"
+"namnet xanim måste du ställa in miljövariabeln GAP_XANIM_PROG\n"
+"till din xanim-exportversionsprogram och starta om gimp"
 
 #: gap/gap_decode_xanim.c:167
 msgid "An ERROR occured while trying to call xanim:"
@@ -394,6 +421,10 @@ msgid ""
 "and written to separate diskfiles.\n"
 "xanim exporting edition is required."
 msgstr ""
+"Namnet på videofilen som xanim ska LÄSA.\n"
+"Bildrutor extraheras från videofilen\n"
+"och skrivs till separata diskfiler.\n"
+"xanim-exportversion krävs."
 
 #: gap/gap_decode_xanim.c:230
 msgid "Framenumber of 1st frame to extract"
@@ -412,6 +443,8 @@ msgid ""
 "Basename for the AnimFrames to write on disk\n"
 "(framenumber and extension is added)"
 msgstr ""
+"Basnamn för animationsbildrutorna som ska skrivas till disk\n"
+"(bildrutenamn och ändelse läggs till)"
 
 # src/sidebar.c:115
 #: gap/gap_decode_xanim.c:257
@@ -441,6 +474,8 @@ msgid ""
 "Enable extraction of audio to raw audiofile\n"
 "(frame range limits are ignored for audio)"
 msgstr ""
+"Aktivera extrahering av ljud till rå ljudfil\n"
+"(bildruteintervallsgränser ignoreras för ljud)"
 
 #: gap/gap_decode_xanim.c:276
 msgid "Jpeg Quality:"
@@ -451,6 +486,8 @@ msgid ""
 "Quality for resulting Jpeg frames\n"
 "(is ignored when other formats are used)"
 msgstr ""
+"Kvalitet för resulterande Jpeg-bildrutor\n"
+"(ignoreras då andra format används)"
 
 # data/ui/nautilus-gtranslator-view-ui.xml.h:1 src/dialogs.c:732
 # src/menus.c:276
@@ -495,7 +532,7 @@ msgstr "Skriv över bildrutor"
 msgid "Overwrite All"
 msgstr "Skriv över allt"
 
-#: gap/gap_decode_xanim.c:352 gap/gap_lib.c:1242 gap/gap_range_ops.c:1292
+#: gap/gap_decode_xanim.c:352 gap/gap_lib.c:1246 gap/gap_range_ops.c:1292
 msgid "GAP Question"
 msgstr "GAP-fråga"
 
@@ -573,6 +610,8 @@ msgid ""
 "could not start xanim process\n"
 "(program=%s)"
 msgstr ""
+"kunde inte starta xanim-process\n"
+"(program=%s)"
 
 #: gap/gap_decode_xanim.c:1171
 msgid ""
@@ -612,6 +651,8 @@ msgid ""
 "2nd call of %s\n"
 "(define end-settings)"
 msgstr ""
+"andra anropet av %s\n"
+"(definiera slutinställningar)"
 
 #: gap/gap_filter_foreach.c:163
 #, c-format
@@ -619,6 +660,8 @@ msgid ""
 "Non-Interactive call of %s\n"
 "(for all layers in between)"
 msgstr ""
+"Icke-interaktivt anrop av %s\n"
+"(för alla lager därimellan)"
 
 #: gap/gap_filter_foreach.c:283
 msgid "Applying Filter to all Layers..."
@@ -656,11 +699,11 @@ msgstr "<Image>/Video/Koda/MPEG1..."
 msgid "<Image>/Video/Encode/MPEG2..."
 msgstr "<Image>/Video/Koda/MPEG2..."
 
-#: gap/gap_lib.c:219
+#: gap/gap_lib.c:223
 msgid "GAP Message"
 msgstr "GAP-meddelande"
 
-#: gap/gap_lib.c:1108
+#: gap/gap_lib.c:1112
 msgid ""
 "OPERATION CANCELLED.\n"
 "Current frame changed while dialog was open."
@@ -668,18 +711,18 @@ msgstr ""
 "ÅTGÄRDEN AVBRÖTS.\n"
 "Aktuell bildruta ändrades då dialogfönstret öppnades."
 
-#: gap/gap_lib.c:1220
+#: gap/gap_lib.c:1224
 msgid ""
 "You are using a file format != xcf\n"
 "Save Operations may result\n"
 "in loss of layer information."
 msgstr ""
 
-#: gap/gap_lib.c:1236
+#: gap/gap_lib.c:1240
 msgid "Save Flattened"
 msgstr "Spara tillplattad"
 
-#: gap/gap_lib.c:1238
+#: gap/gap_lib.c:1242
 msgid "Save As Is"
 msgstr "Spara som den är"
 
@@ -928,6 +971,9 @@ msgid ""
 "or layerstack position numbers\n"
 "0,3-5"
 msgstr ""
+"Sträng att identifiera lagernamn\n"
+"eller lagerstackspositionsnummer\n"
+"0,3-5"
 
 # src/dialogs.c:485
 #: gap/gap_mod_layer.c:200 gap/gap_onion_dialog.c:1235 gap/gap_range_ops.c:695
@@ -981,6 +1027,8 @@ msgid ""
 "Non-Interactive call of %s\n"
 "(for all selected layers)"
 msgstr ""
+"Icke-interaktivt anrop av %s\n"
+"(för alla markerade lager)"
 
 #. GAP-PDB-Browser Dialog
 #. ----------------------
