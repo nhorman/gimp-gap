@@ -8,8 +8,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gimp-gap\n"
-"POT-Creation-Date: 2003-08-21 15:02+0200\n"
-"PO-Revision-Date: 2003-08-21 15:04+0200\n"
+"POT-Creation-Date: 2003-08-21 19:16+0200\n"
+"PO-Revision-Date: 2003-08-21 19:17+0200\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -638,23 +638,23 @@ msgstr "Tillämpa varierande"
 
 #: gap/gap_filter_main.c:124
 msgid "<Image>/Filters/Filter all Layers..."
-msgstr ""
+msgstr "<Image>/Filter/Filtrera alla lager..."
 
 #: gap/gap_frontends_main.c:128
 msgid "<Image>/Video/Split Video to Frames/Any XANIM readable..."
-msgstr ""
+msgstr "<Image>/Video/Dela video till bildrutor/Någon XANIM-läsbar..."
 
 #: gap/gap_frontends_main.c:140
 msgid "<Toolbox>/Xtns/Split Video to Frames/Any XANIM readable..."
-msgstr ""
+msgstr "<Toolbox>/Utökningar/Dela video till bildrutor/Någon XANIM-läsbar..."
 
 #: gap/gap_frontends_main.c:152
 msgid "<Image>/Video/Encode/MPEG1..."
-msgstr ""
+msgstr "<Image>/Video/Koda/MPEG1..."
 
 #: gap/gap_frontends_main.c:165
 msgid "<Image>/Video/Encode/MPEG2..."
-msgstr ""
+msgstr "<Image>/Video/Koda/MPEG2..."
 
 #: gap/gap_lib.c:219
 msgid "GAP Message"
@@ -665,6 +665,8 @@ msgid ""
 "OPERATION CANCELLED.\n"
 "Current frame changed while dialog was open."
 msgstr ""
+"ÅTGÄRDEN AVBRÖTS.\n"
+"Aktuell bildruta ändrades då dialogfönstret öppnades."
 
 #: gap/gap_lib.c:1220
 msgid ""
@@ -691,87 +693,87 @@ msgstr ""
 
 #: gap/gap_main.c:542
 msgid "<Image>/Video/Go To/Next Frame"
-msgstr ""
+msgstr "<Image>/Video/Gå till/Nästa bildruta"
 
 #: gap/gap_main.c:554
 msgid "<Image>/Video/Go To/Previous Frame"
-msgstr ""
+msgstr "<Image>/Video/Gå till/Föregående bildruta"
 
 #: gap/gap_main.c:566
 msgid "<Image>/Video/Go To/First Frame"
-msgstr ""
+msgstr "<Image>/Video/Gå till/Första bildrutan"
 
 #: gap/gap_main.c:578
 msgid "<Image>/Video/Go To/Last Frame"
-msgstr ""
+msgstr "<Image>/Video/Gå till/Sista bildrutan"
 
 #: gap/gap_main.c:590
 msgid "<Image>/Video/Go To/Any Frame..."
-msgstr ""
+msgstr "<Image>/Video/Gå till/Någon bildruta..."
 
 #: gap/gap_main.c:602
 msgid "<Image>/Video/Delete Frames..."
-msgstr ""
+msgstr "<Image>/Video/Ta bort bildrutor..."
 
 #: gap/gap_main.c:614
 msgid "<Image>/Video/Duplicate Frames..."
-msgstr ""
+msgstr "<Image>/Video/Duplicera bildrutor..."
 
 #: gap/gap_main.c:631
 msgid "<Image>/Video/Frames Density..."
-msgstr ""
+msgstr "<Image>/Video/Bildrutedensitet..."
 
 #: gap/gap_main.c:643
 msgid "<Image>/Video/Exchange Frame..."
-msgstr ""
+msgstr "<Image>/Video/Byt ut bildruta..."
 
 #: gap/gap_main.c:655
 msgid "<Image>/Video/Move Path..."
-msgstr ""
+msgstr "<Image>/Video/Flyttslinga..."
 
 #: gap/gap_main.c:726
 msgid "<Image>/Video/Frames to Image..."
-msgstr ""
+msgstr "<Image>/Video/Bildrutor till bild..."
 
 #: gap/gap_main.c:738
 msgid "<Image>/Video/Frames Flatten..."
-msgstr ""
+msgstr "<Image>/Video/Utplattning av bildrutor..."
 
 #: gap/gap_main.c:750
 msgid "<Image>/Video/Frames LayerDel..."
-msgstr ""
+msgstr "<Image>/Video/Lagerborttagning för bildrutor..."
 
 #: gap/gap_main.c:774
 msgid "<Image>/Video/Frames Convert..."
-msgstr ""
+msgstr "<Image>/Video/Bildrutekonvertering..."
 
 #: gap/gap_main.c:786
 msgid "<Image>/Video/Frames Resize..."
-msgstr ""
+msgstr "<Image>/Video/Storleksändring av bildrutor..."
 
 #: gap/gap_main.c:798
 msgid "<Image>/Video/Frames Crop..."
-msgstr ""
+msgstr "<Image>/Video/Bildrutebeskärning..."
 
 #: gap/gap_main.c:810
 msgid "<Image>/Video/Frames Scale..."
-msgstr ""
+msgstr "<Image>/Video/Bildruteskalning..."
 
 #: gap/gap_main.c:822
 msgid "<Image>/Video/Split Image to Frames..."
-msgstr ""
+msgstr "<Image>/Video/Dela bild till bildrutor..."
 
 #: gap/gap_main.c:835
 msgid "<Image>/Video/Frame Sequence Shift..."
-msgstr ""
+msgstr "<Image>/Video/Bildrutesekvensskifte..."
 
 #: gap/gap_main.c:847
 msgid "<Image>/Video/Frames Renumber..."
-msgstr ""
+msgstr "<Image>/Video/Bildruteomnumrering..."
 
 #: gap/gap_main.c:859
 msgid "<Image>/Video/Frames Modify..."
-msgstr ""
+msgstr "<Image>/Video/Bildrutemodifiering..."
 
 #. Layer select modes
 #: gap/gap_mod_layer.c:92 gap/gap_onion_dialog.c:1163 gap/gap_range_ops.c:602
@@ -824,6 +826,9 @@ msgid ""
 "0, 4-5, 8\n"
 "where 0 == Top-layer"
 msgstr ""
+"Välj lagerstackpositioner.\n"
+"0, 4-5, 8\n"
+"där 0 == topplager"
 
 #: gap/gap_mod_layer.c:105
 msgid ""
@@ -831,6 +836,9 @@ msgid ""
 "0, 4-5, 8\n"
 "where 0 == BG-layer"
 msgstr ""
+"Välj lagerstackpositioner.\n"
+"0, 4-5, 8\n"
+"där 0 == bakgrundslager"
 
 #: gap/gap_mod_layer.c:106
 msgid "Select all visible Layers"
@@ -978,11 +986,11 @@ msgstr ""
 #. ----------------------
 #: gap/gap_mod_layer.c:664
 msgid "Select Filter for Animated frames-apply"
-msgstr ""
+msgstr "Välj filter för tillämpning av animerade bildrutor"
 
 #: gap/gap_mod_layer.c:799
 msgid "GAP Modify: No layer selected in last handled frame"
-msgstr ""
+msgstr "GAP-modifiering: Inget lager valt i den senast hanterade bildrutan"
 
 #: gap/gap_mod_layer.c:886
 msgid "Modifying Frames/Layer(s)..."
@@ -1119,20 +1127,21 @@ msgstr "Bildruta ingen"
 
 #: gap/gap_mov_dialog.c:472
 msgid "Move Path"
-msgstr "Flytta slinga"
+msgstr "Flyttslinga"
 
 #: gap/gap_mov_dialog.c:501
 msgid "Show PreviewFrame with Selected SrcLayer at current Controlpoint"
 msgstr ""
+"Visa förhandsgranskningsbildruta med valt källager vid aktuell kontrollpunkt"
 
 #: gap/gap_mov_dialog.c:512
 msgid "Generate Animated Preview as multilayer image"
-msgstr ""
+msgstr "Generera animerad förhandsgranskning som flerlagerbild"
 
 #. parameter settings
 #: gap/gap_mov_dialog.c:530
 msgid "Copy moving source-layer(s) into frames"
-msgstr ""
+msgstr "Kopiera flyttande källager till bildrutor"
 
 #. label text
 #. scalesize spinsize
@@ -1194,7 +1203,7 @@ msgstr "Klipp till bildruta"
 
 #: gap/gap_mov_dialog.c:634
 msgid "Clip all copied Src-Layers at Frame Boundaries"
-msgstr ""
+msgstr "Klipp alla kopierade källager vid bildrutekanter"
 
 #: gap/gap_mov_dialog.c:692
 msgid ""
@@ -1225,6 +1234,7 @@ msgstr "Skala förhandsgranskning"
 #: gap/gap_mov_dialog.c:831
 msgid "Scale down size of the generated animated preview (in %)"
 msgstr ""
+"Skala ned storleken på den genererade animerade förhandsgranskningen (i %)"
 
 #: gap/gap_mov_dialog.c:839
 msgid "Framerate"
@@ -1233,10 +1243,12 @@ msgstr "Bildrutehastighet"
 #: gap/gap_mov_dialog.c:840
 msgid "Framerate to use in the animated preview in frames/sec"
 msgstr ""
+"Bildrutehastighet att använda i den animerade förhandsgranskningen i "
+"bildrutor/sek"
 
 #: gap/gap_mov_dialog.c:854
 msgid "Copy to Video Buffer"
-msgstr ""
+msgstr "Kopiera till videobuffert"
 
 #: gap/gap_mov_dialog.c:855
 msgid ""
@@ -1246,7 +1258,7 @@ msgstr ""
 
 #: gap/gap_mov_dialog.c:859
 msgid "Move Path Animated Preview"
-msgstr ""
+msgstr "Animerad förhandsgranskning av flyttslinga"
 
 # src/menus.c:311
 #: gap/gap_mov_dialog.c:860
@@ -1270,7 +1282,7 @@ msgstr "Spara slingpunkter till fil"
 #: gap/gap_mov_dialog.c:1562
 #, c-format
 msgid "Current Point: [ %3d ] of [ %3d ]"
-msgstr ""
+msgstr "Aktuell punkt: [ %3d ] av [ %3d ]"
 
 #: gap/gap_mov_dialog.c:1648
 msgid "Source Select"
@@ -1283,7 +1295,7 @@ msgstr "Källbild/lager:"
 
 #: gap/gap_mov_dialog.c:1674
 msgid "Source Object to insert into Frame Range"
-msgstr ""
+msgstr "Källobjekt att infoga i bildruteintervall"
 
 #. Paintmode menu
 #: gap/gap_mov_dialog.c:1689
@@ -1301,7 +1313,7 @@ msgstr "Stegläge:"
 
 #: gap/gap_mov_dialog.c:1731
 msgid "How to fetch the next SrcLayer at the next handled frame"
-msgstr ""
+msgstr "Hur nästa källager ska hämtas vid nästa hanterade bildruta"
 
 #. Source Image Handle menu
 #: gap/gap_mov_dialog.c:1737
@@ -1310,13 +1322,13 @@ msgstr "Handtag:"
 
 #: gap/gap_mov_dialog.c:1755
 msgid "How to place the SrcLayer at Controlpoint Coordinates"
-msgstr ""
+msgstr "Hur källagret ska placeras vid kontrollpunktskoordinater"
 
 #. to avoid side effects while initialization
 #. the frame
 #: gap/gap_mov_dialog.c:1807
 msgid "Move Path Preview"
-msgstr ""
+msgstr "Förhandsgranskning av flyttslinga"
 
 #. X
 #. table col, row
@@ -1550,7 +1562,7 @@ msgstr "Återställ nyckelbildrutor"
 
 #: gap/gap_mov_dialog.c:2689
 msgid "Move Path Controlpointcheck"
-msgstr ""
+msgstr "Kontrollpunktskontroll av flyttslinga"
 
 #: gap/gap_mov_dialog.c:2690
 msgid "Errors:"
@@ -1661,7 +1673,7 @@ msgstr "Alla bilder måste ha samma storlek,"
 
 #: gap/gap_mpege.c:211
 msgid "MPEG_ENCODE Information"
-msgstr ""
+msgstr "MPEG_ENCODE-information"
 
 #: gap/gap_mpege.c:248
 msgid "generate MPEG1 (ISO/IEC 11172-2) stream"
@@ -1673,11 +1685,11 @@ msgstr ""
 
 #: gap/gap_mpege.c:259
 msgid "GenParams"
-msgstr ""
+msgstr "Genereringsparametrar"
 
 #: gap/gap_mpege.c:261
 msgid "Gen + Encode"
-msgstr ""
+msgstr "Generera + koda"
 
 #: gap/gap_mpege.c:294 gap/gap_navigator_dialog.c:3796
 msgid "Framerate:"
@@ -1744,7 +1756,7 @@ msgstr ""
 
 #: gap/gap_mpege.c:355
 msgid "Constant Bitrate:"
-msgstr ""
+msgstr "Konstant bithastighet:"
 
 #: gap/gap_mpege.c:356
 msgid "Iqnore I/P/QSCALE values and use constant bit-rate)"
@@ -1761,7 +1773,7 @@ msgstr ""
 
 #: gap/gap_mpege.c:373
 msgid "IQSCALE:"
-msgstr ""
+msgstr "IQSKALA:"
 
 #: gap/gap_mpege.c:374
 msgid ""
@@ -1771,7 +1783,7 @@ msgstr ""
 
 #: gap/gap_mpege.c:383
 msgid "PQSCALE:"
-msgstr ""
+msgstr "PQSKALA:"
 
 #: gap/gap_mpege.c:384
 msgid ""
@@ -1781,7 +1793,7 @@ msgstr ""
 
 #: gap/gap_mpege.c:393
 msgid "BQSCALE:"
-msgstr ""
+msgstr "BQSKALA:"
 
 #: gap/gap_mpege.c:394
 msgid ""
@@ -1795,7 +1807,7 @@ msgstr "P-sökning:"
 
 #: gap/gap_mpege.c:404
 msgid "Search Algorithmus used for P-frames"
-msgstr ""
+msgstr "Sökalgoritm som används för P-bildrutor"
 
 #: gap/gap_mpege.c:412
 msgid "B-Search:"
@@ -1803,11 +1815,11 @@ msgstr "B-sökning:"
 
 #: gap/gap_mpege.c:413
 msgid "Search Algorithmus used for B-frames"
-msgstr ""
+msgstr "Sökalgoritm som används för B-bildrutor"
 
 #: gap/gap_mpege.c:420
 msgid "Gen MPEG_ENCODE Parameters"
-msgstr ""
+msgstr "Allmänna MPEG_ENCODE-parametrar"
 
 #: gap/gap_mpege.c:421 gap/gap_mpege.c:463
 msgid "Encode Values"
@@ -1834,7 +1846,7 @@ msgstr "Videoformat"
 #. framerates above 30 ar not allowed in mpeg2encode
 #: gap/gap_mpege.c:462
 msgid "Gen MPEG2ENCODE Parameters"
-msgstr ""
+msgstr "Allmänna MPEG2ENCODE-parametrar"
 
 #: gap/gap_mpege.c:1027
 msgid ""
@@ -1868,7 +1880,7 @@ msgstr ""
 
 #: gap/gap_name2layer_main.c:170
 msgid "<Image>/Video/Filename to Layer..."
-msgstr ""
+msgstr "<Image>/Video/Filnamn till lager..."
 
 #: gap/gap_name2layer_main.c:442
 msgid "Decoder:"
@@ -1901,7 +1913,7 @@ msgstr "PosX:"
 
 #: gap/gap_name2layer_main.c:474
 msgid "Position X-Offset in pixels"
-msgstr ""
+msgstr "Positionens X-avstånd i bildpunkter"
 
 #: gap/gap_name2layer_main.c:484
 msgid "PosY:"
@@ -1909,7 +1921,7 @@ msgstr "PosY:"
 
 #: gap/gap_name2layer_main.c:485
 msgid "Position Y-Offset in pixels"
-msgstr ""
+msgstr "Positionens Y-avstånd i bildpunkter"
 
 #: gap/gap_name2layer_main.c:494
 msgid "Antialias:"
@@ -1929,7 +1941,7 @@ msgstr ""
 
 #: gap/gap_name2layer_main.c:512
 msgid "Render Filename to Layer"
-msgstr ""
+msgstr "Rendera filnamnet till lager"
 
 #: gap/gap_name2layer_main.c:513
 msgid "Settings :"
@@ -1977,11 +1989,11 @@ msgstr "Gå till sista bildrutan"
 
 #: gap/gap_navigator_dialog.c:516
 msgid "<Image>/Video/VCR Navigator..."
-msgstr ""
+msgstr "<Image>/Video/VCR-navigatör..."
 
 #: gap/gap_navigator_dialog.c:577
 msgid "Cant open two or more Video Navigator Windows."
-msgstr ""
+msgstr "Kan inte öppna två eller fler videonavigatörsfönster."
 
 #: gap/gap_navigator_dialog.c:627
 #, c-format
@@ -1993,18 +2005,19 @@ msgstr ""
 #: gap/gap_navigator_dialog.c:716
 msgid "Error while positioning to Frame. Video Paste Operaton Failed"
 msgstr ""
+"Fel vid positionering till bildruta. Videoinklistringsåtgärd misslyckades"
 
 #: gap/gap_navigator_dialog.c:738
 msgid "Video Paste Operaton Failed"
-msgstr ""
+msgstr "Videoinklistringsåtgärd misslyckades"
 
 #: gap/gap_navigator_dialog.c:849
 msgid "Video Copy (or Cut) Operation failed"
-msgstr ""
+msgstr "Videokopierings- eller utklippsåtgärd misslyckades"
 
 #: gap/gap_navigator_dialog.c:896
 msgid "Video Cut Operation failed"
-msgstr ""
+msgstr "Videoutklippsåtgärd misslyckades"
 
 #: gap/gap_navigator_dialog.c:1591
 msgid ""
@@ -2059,38 +2072,38 @@ msgstr "Videobildrutor:"
 
 #: gap/gap_navigator_dialog.c:3818
 msgid "Set Framerate in Frames/sec"
-msgstr ""
+msgstr "Ställ in bildrutehastighet i bildrutor/sek"
 
 #: gap/gap_navigator_dialog.c:3826
 msgid "Timezoom:"
-msgstr ""
+msgstr "Tidszoom:"
 
 #: gap/gap_navigator_dialog.c:3848
 msgid "Show only every N.th frame"
-msgstr ""
+msgstr "Visa endast var N:te bildruta"
 
 #. The main shell
 #: gap/gap_navigator_dialog.c:3945
 msgid "Video Navigator"
-msgstr ""
+msgstr "Videonavigatör"
 
 #. set layername
 #: gap/gap_onion_base.c:573
 #, c-format
 msgid "onionskin_%06d"
-msgstr ""
+msgstr "lökskal_%06d"
 
 #: gap/gap_onion_dialog.c:882
 msgid "Onionskin Configuration"
-msgstr ""
+msgstr "Lökskalskonfiguration"
 
 #: gap/gap_onion_dialog.c:961
 msgid "Onionskin Layers:"
-msgstr ""
+msgstr "Lökskalslager:"
 
 #: gap/gap_onion_dialog.c:970
 msgid "Ascending Opacity"
-msgstr ""
+msgstr "Avtagande opacitet"
 
 #: gap/gap_onion_dialog.c:976
 msgid ""
@@ -2108,7 +2121,7 @@ msgstr "Bildrutereferens:"
 
 #: gap/gap_onion_dialog.c:1021
 msgid "-1 is previous Frame, +1 is next Frame"
-msgstr ""
+msgstr "-1 är föregående bildruta, +1 är nästa bildruta"
 
 #: gap/gap_onion_dialog.c:1024
 msgid "Cyclic"
@@ -2124,7 +2137,7 @@ msgstr "Stackposition:"
 
 #: gap/gap_onion_dialog.c:1055
 msgid "Stackposition where to place Onionskin Layer(s)"
-msgstr ""
+msgstr "Stackposition där lökskalslager ska placeras"
 
 #: gap/gap_onion_dialog.c:1058
 msgid "From Top"
@@ -2140,7 +2153,7 @@ msgstr ""
 
 #: gap/gap_onion_dialog.c:1107
 msgid "Descending Opacity for 2.nd Onionskin Layer"
-msgstr ""
+msgstr "Avtagande opacitet för andra lökskalslagret"
 
 #: gap/gap_onion_dialog.c:1110
 msgid "Layer Selection"
@@ -2148,7 +2161,7 @@ msgstr "Lagermarkering"
 
 #: gap/gap_onion_dialog.c:1122
 msgid "Ignore BG-layer(s):"
-msgstr ""
+msgstr "Ignorera bakgrundslager:"
 
 #: gap/gap_onion_dialog.c:1144
 msgid "exclude N BG-Layers (use 0 if you dont want to exclude any Layer)"
@@ -2160,7 +2173,7 @@ msgstr "Markeringsläge:"
 
 #: gap/gap_onion_dialog.c:1160
 msgid "Modes how to use Select Pattern"
-msgstr ""
+msgstr "Lägen för hur mönsterval ska användas"
 
 # src/menus.c:311
 #: gap/gap_onion_dialog.c:1222
@@ -2182,15 +2195,15 @@ msgstr ""
 #: gap/gap_onion_dialog.c:1269
 #, c-format
 msgid "Set for: %s"
-msgstr ""
+msgstr "Ställ in för: %s"
 
 #: gap/gap_onion_dialog.c:1279
 msgid "Set Onionskin Parameters for the current Video"
-msgstr ""
+msgstr "Ställ in lökskalsparametrar för den aktuella videon"
 
 #: gap/gap_onion_dialog.c:1291
 msgid "Auto Create after Load"
-msgstr ""
+msgstr "Skapa automatiskt efter inläsning"
 
 #: gap/gap_onion_dialog.c:1294
 msgid ""
@@ -2201,7 +2214,7 @@ msgstr ""
 
 #: gap/gap_onion_dialog.c:1303
 msgid "Auto Delete before Save"
-msgstr ""
+msgstr "Ta bort automatiskt före sparande"
 
 #: gap/gap_onion_dialog.c:1306
 msgid ""
@@ -2215,29 +2228,36 @@ msgstr ""
 msgid ""
 "Create or replace Onionskin Layer in all Frames of the selected Framerange"
 msgstr ""
+"Skapa eller ersätt lökskalslager i alla bildrutor i det valda "
+"bildruteintervallet"
 
 #: gap/gap_onion_dialog.c:1339
 msgid ""
 "Remove all Onionskin Layers in all Frames of the the selected Framerange"
 msgstr ""
+"Ta bort alla lökskalslager i alla bildrutor i det valda bildruteintervallet"
 
 #: gap/gap_onion_dialog.c:1346
 msgid ""
 "Close Window without creating or deleting any Onionskin Layers\n"
 "but store current Settings"
 msgstr ""
+"Stäng fönster utan att skapa eller ta bort några lökskalslager\n"
+"men lagra aktuella inställningar"
 
 #: gap/gap_onion_dialog.c:1354
 msgid "Exit without any Action"
-msgstr ""
+msgstr "Avsluta utan någon åtgärd"
 
 #: gap/gap_onion_dialog.c:1361
 msgid "Reset to Default Settings"
-msgstr ""
+msgstr "Återställ till standardinställningar"
 
 #: gap/gap_onion_main.c:143
 msgid "This plugin sets Configuration for Onion Layers in Videofames"
 msgstr ""
+"Denna insticksmodul ställer in konfiguration för lökskalslager i "
+"videobildrutor"
 
 #: gap/gap_onion_main.c:144
 msgid ""
@@ -2250,11 +2270,11 @@ msgstr ""
 
 #: gap/gap_onion_main.c:149
 msgid " "
-msgstr ""
+msgstr " "
 
 #: gap/gap_onion_main.c:150
 msgid "  The configuration can be saved in the gimprc parameter file."
-msgstr ""
+msgstr "  Konfigurationen kan sparas i gimprc-parameterfilen."
 
 #: gap/gap_onion_main.c:155
 msgid "<Image>/Video/Onionskin/Configuration..."
@@ -2262,7 +2282,7 @@ msgstr ""
 
 #: gap/gap_onion_main.c:162
 msgid "This plugin creates or replaces Onionskin Layer(s)"
-msgstr ""
+msgstr "Denna insticksmodul skapar eller ersätter lökskalslager"
 
 #: gap/gap_onion_main.c:163
 msgid ""
@@ -2275,15 +2295,15 @@ msgstr ""
 
 #: gap/gap_onion_main.c:168
 msgid "  if no configuration is found, default settings are used"
-msgstr ""
+msgstr "  om ingen konfiguration hittas används standardinställningar"
 
 #: gap/gap_onion_main.c:173
 msgid "<Image>/Video/Onionskin/Create or Replace"
-msgstr ""
+msgstr "<Image>/Video/Lökskal/Skapa eller ersätt"
 
 #: gap/gap_onion_main.c:181
 msgid "This plugin removes OnionSkin Layer(s)"
-msgstr ""
+msgstr "Denna insticksmodul tar bort lökskalslager"
 
 #: gap/gap_onion_main.c:182
 msgid ""
@@ -2293,11 +2313,11 @@ msgstr ""
 
 #: gap/gap_onion_main.c:188
 msgid "<Image>/Video/Onionskin/Delete"
-msgstr ""
+msgstr "<Image>/Video/Lökskal/Ta bort"
 
 #: gap/gap_onion_main.c:196
 msgid "This plugin toggles visibility of OnionSkin Layer(s)"
-msgstr ""
+msgstr "Denna insticksmodul växlar synligheten för lökskalslager"
 
 #: gap/gap_onion_main.c:197
 msgid ""
@@ -2307,15 +2327,15 @@ msgstr ""
 
 #: gap/gap_onion_main.c:201
 msgid "<Image>/Video/Onionskin/Toggle Visibility"
-msgstr ""
+msgstr "<Image>/Video/Lökskal/Växla synlighet"
 
 #: gap/gap_onion_worker.c:364
 msgid "Creating Onionskin Layers..."
-msgstr ""
+msgstr "Skapar lökskalslager..."
 
 #: gap/gap_onion_worker.c:368
 msgid "Removing Onionskin Layers..."
-msgstr ""
+msgstr "Tar bort lökskalslager..."
 
 #. pending timer_go_job gets useless, since we start playback now
 #: gap/gap_player_dialog.c:586 gap/gap_player_dialog.c:993
@@ -2334,19 +2354,19 @@ msgstr "HOPPA ÖVER"
 #: gap/gap_player_dialog.c:1005
 #, c-format
 msgid "Delay %.2f"
-msgstr ""
+msgstr "Fördröj %.2f"
 
 #: gap/gap_player_dialog.c:2182
 msgid "Videoframe Playback"
-msgstr ""
+msgstr "Uppspelning av videobildrutor"
 
 #: gap/gap_player_dialog.c:2294
 msgid "Start Framenumber of Selection Range"
-msgstr ""
+msgstr "Startbildrutenummer i markeringsintervall"
 
 #: gap/gap_player_dialog.c:2310
 msgid "End Framenumber of Selection Range"
-msgstr ""
+msgstr "Slutbildrutenummer i markeringsintervall"
 
 #. the framenr button
 #: gap/gap_player_dialog.c:2323
@@ -2355,11 +2375,11 @@ msgstr "Bildrutenummer"
 
 #: gap/gap_player_dialog.c:2328
 msgid "Load this Frame into the calling image"
-msgstr ""
+msgstr "Läs in denna bildruta i den anropande bilden"
 
 #: gap/gap_player_dialog.c:2346
 msgid "Displayed Frame Nr"
-msgstr ""
+msgstr "Visat bildrutenummer"
 
 #. the time position
 #: gap/gap_player_dialog.c:2353
@@ -2374,10 +2394,11 @@ msgstr "Hastighet"
 #: gap/gap_player_dialog.c:2387
 msgid "Reset Playback Speed to original (or previous) Value"
 msgstr ""
+"Återställ uppspelningshastighet till ursprungligt (eller föregående) värde"
 
 #: gap/gap_player_dialog.c:2407
 msgid "Current Playbackspeed (frames/sec)"
-msgstr ""
+msgstr "Aktuell uppspelningshastighet (bildrutor/sek)"
 
 #. the size button
 #: gap/gap_player_dialog.c:2420
@@ -2390,7 +2411,7 @@ msgstr ""
 
 #: gap/gap_player_dialog.c:2444
 msgid "Video Preview Size (pixels)"
-msgstr ""
+msgstr "Videoförhandsgranskningsstorlek (bildpunkter)"
 
 #: gap/gap_player_dialog.c:2474
 msgid "ON: Play in endless Loop, OFF: Play only once"
@@ -2398,7 +2419,7 @@ msgstr ""
 
 #: gap/gap_player_dialog.c:2483
 msgid "Play Selection only"
-msgstr ""
+msgstr "Spela endast markering"
 
 #: gap/gap_player_dialog.c:2488
 msgid "ON: Play Selection only, OFF: Play all frames"
@@ -2410,7 +2431,7 @@ msgstr ""
 
 #: gap/gap_player_dialog.c:2511
 msgid "Use Thumbnails"
-msgstr ""
+msgstr "Använd miniatyrbilder"
 
 #: gap/gap_player_dialog.c:2516
 msgid "ON: use thumbnails when available, OFF: read full sized frames"
@@ -2418,7 +2439,7 @@ msgstr ""
 
 #: gap/gap_player_dialog.c:2526
 msgid "Exact Timing"
-msgstr ""
+msgstr "Exakt tidtagning"
 
 #: gap/gap_player_dialog.c:2531
 msgid "ON: skip frames to hold exact timing, OFF: disable frame skipping"
@@ -2439,7 +2460,7 @@ msgstr ""
 
 #: gap/gap_player_dialog.c:2594
 msgid "Start Reverse Playback"
-msgstr ""
+msgstr "Starta baklängesuppspelning"
 
 #: gap/gap_player_dialog.c:2603
 msgid "Close Window"
@@ -2447,7 +2468,7 @@ msgstr "Stäng fönster"
 
 #: gap/gap_player_main.c:169
 msgid "<Image>/Video/Playback..."
-msgstr ""
+msgstr "<Image>/Video/Uppspelning..."
 
 #. the new size labels
 #: gap/gap_range_ops.c:130 gap/gap_resi_dialog.c:668
@@ -2464,34 +2485,34 @@ msgstr "X-offset:"
 
 #: gap/gap_range_ops.c:163
 msgid "Offset Y:"
-msgstr ""
+msgstr "Y-offset:"
 
 #: gap/gap_range_ops.c:177
 msgid "Crop AnimFrames (all)"
-msgstr ""
+msgstr "Beskär animerade bildrutor (alla)"
 
 #: gap/gap_range_ops.c:178
 #, c-format
 msgid "Crop (original %dx%d)"
-msgstr ""
+msgstr "Beskär (original %d×%d)"
 
 #: gap/gap_range_ops.c:188
 msgid "Resize AnimFrames (all)"
-msgstr ""
+msgstr "Ändra storlek på animerade bildrutor (alla)"
 
 #: gap/gap_range_ops.c:189
 #, c-format
 msgid "Resize (original %dx%d)"
-msgstr ""
+msgstr "Ändra storlek (original %d×%d)"
 
 #: gap/gap_range_ops.c:195
 msgid "Scale AnimFrames (all)"
-msgstr ""
+msgstr "Skala animerade bildrutor (alla)"
 
 #: gap/gap_range_ops.c:196
 #, c-format
 msgid "Scale (original %dx%d)"
-msgstr ""
+msgstr "Skala (original %d×%d)"
 
 #: gap/gap_range_ops.c:202
 msgid "Reset"
@@ -2500,11 +2521,11 @@ msgstr "Återställ"
 #. should use GIMP_STOCK_RESET if possible
 #: gap/gap_range_ops.c:203
 msgid "Reset Parameters to Original Size"
-msgstr ""
+msgstr "Återställ parametrar till ursprunglig storlek"
 
 #: gap/gap_range_ops.c:336
 msgid "Generate Optimal Palette"
-msgstr ""
+msgstr "Generera optimal palett"
 
 #: gap/gap_range_ops.c:337
 msgid "WEB Palette"
@@ -2512,19 +2533,19 @@ msgstr "Webbpalett"
 
 #: gap/gap_range_ops.c:338
 msgid "Use Custom Palette"
-msgstr ""
+msgstr "Använd anpassad palett"
 
 #: gap/gap_range_ops.c:339
 msgid "Use Black/White (1-Bit) Palette"
-msgstr "Använd svart/vit (1-bit) palett"
+msgstr "Använd svartvit (1-bit) palett"
 
 #: gap/gap_range_ops.c:341
 msgid "Floyd-Steinberg Color Dithering (Normal)"
-msgstr "Floyd-Steinberg färgdithering (normal)"
+msgstr "Floyd-Steinberg-färgdithering (normal)"
 
 #: gap/gap_range_ops.c:342
 msgid "Floyd-Steinberg Color Dithering (Reduced Color Bleeding)"
-msgstr "Floyd-Steinberg färgdithering (minskad färgblödning)"
+msgstr "Floyd-Steinberg-färgdithering (minskad färgblödning)"
 
 #: gap/gap_range_ops.c:343
 msgid "Positioned Color Dithering"
@@ -2540,7 +2561,7 @@ msgstr "Typ av palett"
 
 #: gap/gap_range_ops.c:362
 msgid "Custom Palette"
-msgstr ""
+msgstr "Anpassad palett"
 
 #: gap/gap_range_ops.c:363
 msgid ""
@@ -2550,7 +2571,7 @@ msgstr ""
 
 #: gap/gap_range_ops.c:368
 msgid "Remove Unused"
-msgstr ""
+msgstr "Ta bort oanvända"
 
 #: gap/gap_range_ops.c:369
 msgid ""
@@ -2570,7 +2591,7 @@ msgstr ""
 
 #: gap/gap_range_ops.c:382
 msgid "Dither Options"
-msgstr "Gitteralternativ"
+msgstr "Ditheringalternativ"
 
 #: gap/gap_range_ops.c:389
 msgid "Enable transparency"
@@ -2578,11 +2599,11 @@ msgstr "Använd transparens"
 
 #: gap/gap_range_ops.c:390
 msgid "Enable dithering of transparency"
-msgstr ""
+msgstr "Använd dithering av transparens"
 
 #: gap/gap_range_ops.c:393
 msgid "Convert Frames to Indexed"
-msgstr ""
+msgstr "Konvertera bildrutor till indexerad"
 
 #: gap/gap_range_ops.c:394
 msgid "Palette and Dither Settings"
@@ -2598,11 +2619,11 @@ msgstr "Konvertera till RGB"
 
 #: gap/gap_range_ops.c:461
 msgid "Convert to Gray"
-msgstr ""
+msgstr "Konvertera till grå"
 
 #: gap/gap_range_ops.c:462
 msgid "Convert to Indexed"
-msgstr ""
+msgstr "Konvertera till indexerad"
 
 #: gap/gap_range_ops.c:486
 msgid ""
@@ -2653,7 +2674,7 @@ msgstr ""
 
 #: gap/gap_range_ops.c:515
 msgid "Convert Frames to other Formats"
-msgstr ""
+msgstr "Konvertera bildrutor till andra format"
 
 #: gap/gap_range_ops.c:516
 msgid "Convert Settings"
@@ -2661,7 +2682,7 @@ msgstr "Konvertera inställningar"
 
 #: gap/gap_range_ops.c:593
 msgid "Expand as necessary"
-msgstr ""
+msgstr "Expandera vid behov"
 
 #: gap/gap_range_ops.c:594
 msgid "Clipped to image"
@@ -2673,7 +2694,7 @@ msgstr "Klippt efter understa lagret"
 
 #: gap/gap_range_ops.c:596
 msgid "Flattened image"
-msgstr ""
+msgstr "Utplattad bild"
 
 #: gap/gap_range_ops.c:597
 msgid ""
@@ -2683,7 +2704,7 @@ msgstr ""
 
 #: gap/gap_range_ops.c:598
 msgid "Resulting Layer Size is the frame size"
-msgstr ""
+msgstr "Resulterande lagerstorleken är bildrutestorleken"
 
 #: gap/gap_range_ops.c:599
 msgid ""
@@ -2977,6 +2998,24 @@ msgstr "Återställ punkt"
 #: gap/gap_stock.c:56
 msgid "Rotate Follow"
 msgstr "Rotera följ"
+
+#~ msgid "Setting"
+#~ msgstr "Inställning"
+
+#~ msgid "Error while positioning to Frame. Video Paste Operation Failed"
+#~ msgstr ""
+#~ "Fel vid positionering till bildruta. Videoinklistringsåtgärd misslyckades"
+
+#~ msgid "Video Paste Operation Failed"
+#~ msgstr "Videoinklistringsåtgärd misslyckades"
+
+#~ msgid "This plugin sets Configuration for Onion Layers in Videoframes"
+#~ msgstr ""
+#~ "Denna insticksmodul ställer in konfiguration för lökskalslager i "
+#~ "videobildrutor"
+
+#~ msgid "The configuration can be saved in the gimprc parameter file."
+#~ msgstr "Konfigurationen kan sparas i gimprc-parameterfilen."
 
 #~ msgid "failed to overwrite %s (check permissions?)"
 #~ msgstr "misslyckades med att skriva över %s (kontrollera rättigheter?)"
