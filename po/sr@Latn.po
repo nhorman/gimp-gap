@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gimp-gap\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-01-26 01:56+0100\n"
+"POT-Creation-Date: 2004-02-14 14:35+0100\n"
 "PO-Revision-Date: 2004-01-20 11:42+0100\n"
 "Last-Translator: Danilo Šegan <danilo@prevod.org>\n"
 "Language-Team: Serbian (sr) <serbiangnome-lista@nongnu.org>\n"
@@ -90,7 +90,7 @@ msgstr "Greška: ne mogu da sačuvam kadar %s"
 
 #: gap/gap_base_ops.c:463 gap/gap_base_ops.c:595 gap/gap_base_ops.c:680
 #: gap/gap_base_ops.c:687 gap/gap_base_ops.c:694 gap/gap_base_ops.c:782
-#: gap/gap_base_ops.c:804 gap/gap_lib.c:2217
+#: gap/gap_base_ops.c:804 gap/gap_lib.c:2268
 #, c-format
 msgid "Error: could not rename frame %ld to %ld"
 msgstr "Greška: ne mogu da preimenujem kadar %ld u %ld"
@@ -129,7 +129,7 @@ msgstr "Kadrovi %d–%d će biti obrisani. Ova operacija se ne može opozvati."
 
 #. title_txt
 #: gap/gap_base_ops.c:1025 gap/gap_base_ops.c:1026
-#: gap/gap_navigator_dialog.c:642 gap/gap_navigator_dialog.c:643
+#: gap/gap_navigator_dialog.c:643 gap/gap_navigator_dialog.c:644
 msgid "Confirm Frame Delete"
 msgstr "Potvrdi brisanje kadra"
 
@@ -189,7 +189,7 @@ msgstr "Izmeni gustinu kadrova"
 #: gap/gap_base_ops.c:1214 gap/gap_base_ops.c:1366 gap/gap_base_ops.c:1569
 #: gap/gap_decode_xanim.c:248 gap/gap_mod_layer.c:204
 #: gap/gap_mov_dialog.c:3122 gap/gap_mpege.c:285 gap/gap_onion_dialog.c:899
-#: gap/gap_player_dialog.c:3829 gap/gap_range_ops.c:285
+#: gap/gap_player_dialog.c:3832 gap/gap_range_ops.c:285
 #: gap/gap_range_ops.c:478 gap/gap_range_ops.c:669
 msgid "From Frame:"
 msgstr "Iz kadra:"
@@ -203,7 +203,7 @@ msgstr "Dotični opseg počinje sa kadrom ovog broja"
 #: gap/gap_base_ops.c:1222 gap/gap_base_ops.c:1374 gap/gap_base_ops.c:1577
 #: gap/gap_decode_xanim.c:258 gap/gap_mod_layer.c:212
 #: gap/gap_mov_dialog.c:3140 gap/gap_mpege.c:295 gap/gap_onion_dialog.c:906
-#: gap/gap_player_dialog.c:3837 gap/gap_range_ops.c:293
+#: gap/gap_player_dialog.c:3840 gap/gap_range_ops.c:293
 #: gap/gap_range_ops.c:486 gap/gap_range_ops.c:677
 msgid "To Frame:"
 msgstr "U kadar:"
@@ -242,7 +242,7 @@ msgstr ""
 msgid "Change Frames Density"
 msgstr "Izmeni gustinu kadrova"
 
-#: gap/gap_base_ops.c:1312 gap/gap_base_ops.c:1439 gap/gap_lib.c:1188
+#: gap/gap_base_ops.c:1312 gap/gap_base_ops.c:1439 gap/gap_lib.c:1239
 msgid ""
 "Operation cancelled.\n"
 "GAP video plug-ins only work with filenames\n"
@@ -1150,7 +1150,7 @@ msgstr ""
 "seansi i koji su postavili unutrašnji bafer sa podešavanjima parametara "
 "poslednjeg poziva"
 
-#: gap/gap_fmac_main.c:915 gap/gap_player_dialog.c:4175
+#: gap/gap_fmac_main.c:915 gap/gap_player_dialog.c:4178
 msgid "Close window"
 msgstr "Zatvori prozor"
 
@@ -1200,7 +1200,7 @@ msgstr "<Image>/Video/Kodiranje/MPEG1..."
 msgid "<Image>/Video/Encode/MPEG2..."
 msgstr "<Image>/Video/Kodiranje/MPEG2..."
 
-#: gap/gap_lib.c:1165
+#: gap/gap_lib.c:1216
 msgid ""
 "Operation cancelled.\n"
 "Current frame was changed while dialog was open."
@@ -1208,15 +1208,15 @@ msgstr ""
 "Operacija obustavljena.\n"
 "Tekući kadar je izmenjen dok je prozorče bilo otvoreno."
 
-#: gap/gap_lib.c:1344
+#: gap/gap_lib.c:1395
 msgid "Save Flattened"
 msgstr "Sačuvaj uravnjen"
 
-#: gap/gap_lib.c:1346
+#: gap/gap_lib.c:1397
 msgid "Save As Is"
 msgstr "Sačuvaj kakav jeste"
 
-#: gap/gap_lib.c:1350
+#: gap/gap_lib.c:1401
 #, c-format
 msgid ""
 "You are using another file format than xcf.\n"
@@ -1235,7 +1235,7 @@ msgstr ""
 "(%s %s)\n"
 "u vašu datoteku gimprc."
 
-#: gap/gap_lib.c:1359
+#: gap/gap_lib.c:1410
 msgid "Fileformat Warning"
 msgstr "Upozorenje o formatu datoteke"
 
@@ -1730,7 +1730,7 @@ msgid "Center"
 msgstr "Sredina"
 
 #. the playback mode checkbuttons
-#: gap/gap_mov_dialog.c:435 gap/gap_player_dialog.c:4036
+#: gap/gap_mov_dialog.c:435 gap/gap_player_dialog.c:4039
 msgid "Loop"
 msgstr "Kružno"
 
@@ -1839,7 +1839,7 @@ msgid "Scale down size of the generated animated preview (in %)"
 msgstr "Umanji veličinu obrazovanog pregleda animacije (u postotcima)"
 
 #: gap/gap_mov_dialog.c:1054 gap/gap_mpege.c:304
-#: gap/gap_navigator_dialog.c:3795
+#: gap/gap_navigator_dialog.c:3792
 msgid "Framerate:"
 msgstr "Brzina kadrova:"
 
@@ -3152,7 +3152,7 @@ msgstr "Iscrtaj datoteku na sloj"
 msgid "Settings :"
 msgstr "Podešavanja:"
 
-#: gap/gap_navigator_dialog.c:417
+#: gap/gap_navigator_dialog.c:418
 msgid ""
 "Playback\n"
 "<Shift> converts the selected frames to temporary image and do "
@@ -3161,7 +3161,7 @@ msgstr ""
 "Puštanje\n"
 "<Shift> čini sliku privremenom i pušta animaciju slojeva privremene slike"
 
-#: gap/gap_navigator_dialog.c:423
+#: gap/gap_navigator_dialog.c:424
 msgid ""
 "Smart update thumbnails\n"
 "<Shift> forced thumbnail update for all frames"
@@ -3169,19 +3169,19 @@ msgstr ""
 "Mudro osvežavanje sličica\n"
 "<Shift> prisilno osvežavanje za sve kadrove"
 
-#: gap/gap_navigator_dialog.c:428
+#: gap/gap_navigator_dialog.c:429
 msgid "Duplicate selected frames"
 msgstr "Udvostruči izabrane kadrove"
 
-#: gap/gap_navigator_dialog.c:432
+#: gap/gap_navigator_dialog.c:433
 msgid "Delete selected frames"
 msgstr "Izbriši izabrane kadrove"
 
-#: gap/gap_navigator_dialog.c:441
+#: gap/gap_navigator_dialog.c:442
 msgid "Goto first frame"
 msgstr "Idi na prvi kadar"
 
-#: gap/gap_navigator_dialog.c:445
+#: gap/gap_navigator_dialog.c:446
 msgid ""
 "Goto prev frame\n"
 "<Shift> use timezoom stepsize"
@@ -3189,7 +3189,7 @@ msgstr ""
 "Idi na prethodni kadar\n"
 "<Shift> koristi korak uvećanja vremena"
 
-#: gap/gap_navigator_dialog.c:450
+#: gap/gap_navigator_dialog.c:451
 msgid ""
 "Goto next frame\n"
 "<Shift> use timezoom stepsize"
@@ -3197,21 +3197,21 @@ msgstr ""
 "Idi na sledeći kadar\n"
 "<Shift> koristi korak uvećanja vremena"
 
-#: gap/gap_navigator_dialog.c:455
+#: gap/gap_navigator_dialog.c:456
 msgid "Goto last frame"
 msgstr "Idi na poslednji kadar"
 
-#: gap/gap_navigator_dialog.c:523
+#: gap/gap_navigator_dialog.c:524
 msgid "<Image>/Video/VCR Navigator..."
 msgstr "<Image>/Video/VCR upravljač..."
 
 # bug: Cant -> Can't
-#: gap/gap_navigator_dialog.c:586
+#: gap/gap_navigator_dialog.c:587
 msgid "Cant open two or more video navigator windows."
 msgstr "Ne mogu da otvorim dva ili više prozora video upravljača."
 
 # bug: plural-forms
-#: gap/gap_navigator_dialog.c:637
+#: gap/gap_navigator_dialog.c:638
 #, c-format
 msgid ""
 "The selected %d frame(s) will be deleted.\n"
@@ -3220,24 +3220,24 @@ msgstr ""
 "Biće obrisano %d izabranih kadrova.\n"
 "Ova operacija se ne može opozvati\n"
 
-#: gap/gap_navigator_dialog.c:726
+#: gap/gap_navigator_dialog.c:727
 msgid "Error while positioning to frame. Video paste operaton failed"
 msgstr ""
 "Greška pri postavljanju u kadar. Operacija ubacivanja videa nije uspela"
 
-#: gap/gap_navigator_dialog.c:748
+#: gap/gap_navigator_dialog.c:749
 msgid "Video paste operaton failed"
 msgstr "Operacija ubacivanja videa nije uspela"
 
-#: gap/gap_navigator_dialog.c:859
+#: gap/gap_navigator_dialog.c:860
 msgid "Video copy (or cut) operation failed"
 msgstr "Operacija umnožavanja (ili isecanja) videa nije uspela"
 
-#: gap/gap_navigator_dialog.c:906
+#: gap/gap_navigator_dialog.c:907
 msgid "Video cut operation failed"
 msgstr "Operacija isecanja videa nije uspela"
 
-#: gap/gap_navigator_dialog.c:1587
+#: gap/gap_navigator_dialog.c:1584
 msgid ""
 "For the thumbnail update you have to select\n"
 "a thumbnail filesize other than 'No Thumbnails'\n"
@@ -3248,66 +3248,66 @@ msgstr ""
 "u odeljku okruženja prozorčeta sa postavkama"
 
 #. menu_item copy
-#: gap/gap_navigator_dialog.c:3692
+#: gap/gap_navigator_dialog.c:3689
 msgid "Copy"
 msgstr "Umnoži"
 
 #. menu_item cut
-#: gap/gap_navigator_dialog.c:3702
+#: gap/gap_navigator_dialog.c:3699
 msgid "Cut"
 msgstr "Iseci"
 
 #. menu_item paste before
-#: gap/gap_navigator_dialog.c:3711
+#: gap/gap_navigator_dialog.c:3708
 msgid "Paste Before"
 msgstr "Ubaci ispred"
 
 #
 #. menu_item copy
-#: gap/gap_navigator_dialog.c:3720
+#: gap/gap_navigator_dialog.c:3717
 msgid "Paste After"
 msgstr "Ubaci iza"
 
 #. menu_item copy
-#: gap/gap_navigator_dialog.c:3729
+#: gap/gap_navigator_dialog.c:3726
 msgid "Paste Replace"
 msgstr "Ubaci i zameni"
 
 #. menu_item copy
-#: gap/gap_navigator_dialog.c:3738
+#: gap/gap_navigator_dialog.c:3735
 msgid "Clear Video Buffer"
 msgstr "Očisti video spremnik"
 
 #. menu_item Select All
-#: gap/gap_navigator_dialog.c:3748
+#: gap/gap_navigator_dialog.c:3745
 msgid "Select All"
 msgstr "Izaberi sve"
 
 #. menu_item Select None
-#: gap/gap_navigator_dialog.c:3757
+#: gap/gap_navigator_dialog.c:3754
 msgid "Select None"
 msgstr "Izaberi ništa"
 
 #
 #. Video Length (frames)
-#: gap/gap_navigator_dialog.c:3780 gap/gap_player_dialog.c:3624
+#: gap/gap_navigator_dialog.c:3777 gap/gap_player_dialog.c:3624
 msgid "Videoframes:"
 msgstr "Video kadrova:"
 
-#: gap/gap_navigator_dialog.c:3817
+#: gap/gap_navigator_dialog.c:3814
 msgid "Set framerate in frames/sec"
 msgstr "Postavi brzinu kadrova u kadrovima po sekundi"
 
-#: gap/gap_navigator_dialog.c:3825
+#: gap/gap_navigator_dialog.c:3822
 msgid "Timezoom:"
 msgstr "Vremensko uvećanje:"
 
-#: gap/gap_navigator_dialog.c:3847
+#: gap/gap_navigator_dialog.c:3844
 msgid "Show only every N.th frame"
 msgstr "Prikaži samo svaki N-ti kadar"
 
 #. The main shell
-#: gap/gap_navigator_dialog.c:3943
+#: gap/gap_navigator_dialog.c:3940
 msgid "Video Navigator"
 msgstr "Video upravljač"
 
@@ -3678,7 +3678,7 @@ msgid "Playing"
 msgstr "Pušta"
 
 #. the status value label
-#: gap/gap_player_dialog.c:1231 gap/gap_player_dialog.c:4121
+#: gap/gap_player_dialog.c:1231 gap/gap_player_dialog.c:4124
 msgid "Ready"
 msgstr "Spreman"
 
@@ -3842,77 +3842,77 @@ msgid "Videotime:"
 msgstr "Trajanje videa:"
 
 #
-#: gap/gap_player_dialog.c:3706
+#: gap/gap_player_dialog.c:3709
 msgid "Videoframe Playback"
 msgstr "Puštanje video kadrova"
 
-#: gap/gap_player_dialog.c:3726
+#: gap/gap_player_dialog.c:3729
 msgid "Video Options"
 msgstr "Opcije videa"
 
-#: gap/gap_player_dialog.c:3727
+#: gap/gap_player_dialog.c:3730
 msgid "Audio Options"
 msgstr "Opcije zvuka"
 
-#: gap/gap_player_dialog.c:3784
+#: gap/gap_player_dialog.c:3787
 msgid ""
 "Click: go to frame, Ctrl-Click: set 'From Frame', Alt-Click: set 'To Frame'"
 msgstr ""
 "Klik: idi na kadar, Ctrl+Klik: postavi iz kadra, Alt+Klik: postavi na kadar"
 
-#: gap/gap_player_dialog.c:3857
+#: gap/gap_player_dialog.c:3860
 msgid "Start framenumber of selection range"
 msgstr "Broj početnog kadra izabranog opsega"
 
-#: gap/gap_player_dialog.c:3874
+#: gap/gap_player_dialog.c:3877
 msgid "End framenumber of selection range"
 msgstr "Broj završnog kadra izabranog opsega"
 
 #. the framenr button
-#: gap/gap_player_dialog.c:3888
+#: gap/gap_player_dialog.c:3891
 msgid "FrameNr"
 msgstr "Broj kadra"
 
-#: gap/gap_player_dialog.c:3893
+#: gap/gap_player_dialog.c:3896
 msgid "Load this frame into the calling image"
 msgstr "Učitaj ovaj kadar u pozivajuću sliku"
 
-#: gap/gap_player_dialog.c:3911
+#: gap/gap_player_dialog.c:3914
 msgid "The currently displayed frame number"
 msgstr "Broj trenutno prikazanog kadra"
 
 #. the time position
-#: gap/gap_player_dialog.c:3918
+#: gap/gap_player_dialog.c:3921
 msgid "Timepos:"
 msgstr "Tekuće vreme:"
 
 #. the origspeed_button
-#: gap/gap_player_dialog.c:3949
+#: gap/gap_player_dialog.c:3952
 msgid "Speed"
 msgstr "Brzina"
 
-#: gap/gap_player_dialog.c:3954
+#: gap/gap_player_dialog.c:3957
 msgid "Reset playback speed to original (or previous) value"
 msgstr "Vrati brzinu puštanja na izvornu (ili prethodnu) vrednost"
 
-#: gap/gap_player_dialog.c:3974
+#: gap/gap_player_dialog.c:3977
 msgid "Current playback speed (frames/sec)"
 msgstr "Tekuća brzina puštanja (kadrova po sekundi)"
 
 #. the size button
-#: gap/gap_player_dialog.c:3988
+#: gap/gap_player_dialog.c:3991
 msgid "Size"
 msgstr "Veličina"
 
-#: gap/gap_player_dialog.c:3995
+#: gap/gap_player_dialog.c:3998
 msgid "Toggle size 128/256. <Shift> Set 1:1 full image size"
 msgstr "Izmeni veličinu 128/256, Shift: postavi punu veličinu slike (1:1)"
 
-#: gap/gap_player_dialog.c:4014
+#: gap/gap_player_dialog.c:4017
 msgid "Video preview size (pixels)"
 msgstr "Veličina pregleda videa (tačaka)"
 
-#: gap/gap_player_dialog.c:4041
+#: gap/gap_player_dialog.c:4044
 msgid ""
 "ON: Play in endless loop.\n"
 "OFF: Play only once"
@@ -3920,11 +3920,11 @@ msgstr ""
 "Uključeno: pusti u beskonačnoj petlji.\n"
 "Isključeno: pusti samo jednom."
 
-#: gap/gap_player_dialog.c:4051
+#: gap/gap_player_dialog.c:4054
 msgid "Play selection only"
 msgstr "Pusti samo izbor"
 
-#: gap/gap_player_dialog.c:4056
+#: gap/gap_player_dialog.c:4059
 msgid ""
 "ON: Play selection only.\n"
 "OFF: Play all frames"
@@ -3932,19 +3932,19 @@ msgstr ""
 "Uključeno: pusti samo izbor.\n"
 "Isključeno: pusti sve kadrove."
 
-#: gap/gap_player_dialog.c:4066
+#: gap/gap_player_dialog.c:4069
 msgid "Ping pong"
 msgstr "Ping-pong"
 
-#: gap/gap_player_dialog.c:4071
+#: gap/gap_player_dialog.c:4074
 msgid "ON: Play alternating forward/backward"
 msgstr "Uključeno: Pusti naizmenično napred/nazad"
 
-#: gap/gap_player_dialog.c:4080
+#: gap/gap_player_dialog.c:4083
 msgid "Use thumbnails"
 msgstr "Koristi sličice"
 
-#: gap/gap_player_dialog.c:4085
+#: gap/gap_player_dialog.c:4088
 msgid ""
 "ON: Use thumbnails when available.\n"
 "OFF: Read full sized frames"
@@ -3952,11 +3952,11 @@ msgstr ""
 "Uključeno: koristi sličice ako su dostupne.\n"
 "Isključeno: učitaj kadrove pune veličine."
 
-#: gap/gap_player_dialog.c:4096
+#: gap/gap_player_dialog.c:4099
 msgid "Exact timing"
 msgstr "Tačno vreme"
 
-#: gap/gap_player_dialog.c:4101
+#: gap/gap_player_dialog.c:4104
 msgid ""
 "ON: Skip frames to hold exact timing.\n"
 "OFF: Disable frame skipping"
@@ -3965,15 +3965,15 @@ msgstr ""
 "Isključeno: ne preskači kadrove."
 
 #. the status label
-#: gap/gap_player_dialog.c:4113
+#: gap/gap_player_dialog.c:4116
 msgid "Status:"
 msgstr "Stanje:"
 
-#: gap/gap_player_dialog.c:4146
+#: gap/gap_player_dialog.c:4149
 msgid "Start playback"
 msgstr "Pusti"
 
-#: gap/gap_player_dialog.c:4156
+#: gap/gap_player_dialog.c:4159
 msgid ""
 "Pause if playing (any mouseboutton). Go to selection start/active/end (left/"
 "middle/right mousebutton) if not playing"
@@ -3981,7 +3981,7 @@ msgstr ""
 "Pauziraj ako je pušteno (bilo koje dugme miša). Idi na početak/aktivan/kraj "
 "izbora (levo/srednje/desno dugme) ako nije pušteno"
 
-#: gap/gap_player_dialog.c:4166
+#: gap/gap_player_dialog.c:4169
 msgid "Start reverse playback"
 msgstr "Pusti unazad"
 

@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gimp-gap\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-01-26 01:56+0100\n"
+"POT-Creation-Date: 2004-02-14 14:35+0100\n"
 "PO-Revision-Date: 2003-10-24 21:24+0200\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -92,7 +92,7 @@ msgstr "Fel: kunde inte spara bildrutan %s"
 
 #: gap/gap_base_ops.c:463 gap/gap_base_ops.c:595 gap/gap_base_ops.c:680
 #: gap/gap_base_ops.c:687 gap/gap_base_ops.c:694 gap/gap_base_ops.c:782
-#: gap/gap_base_ops.c:804 gap/gap_lib.c:2217
+#: gap/gap_base_ops.c:804 gap/gap_lib.c:2268
 #, c-format
 msgid "Error: could not rename frame %ld to %ld"
 msgstr "Fel: Kunde inte byta namn på bildruta %ld till %ld"
@@ -135,7 +135,7 @@ msgstr ""
 
 #. title_txt
 #: gap/gap_base_ops.c:1025 gap/gap_base_ops.c:1026
-#: gap/gap_navigator_dialog.c:642 gap/gap_navigator_dialog.c:643
+#: gap/gap_navigator_dialog.c:643 gap/gap_navigator_dialog.c:644
 msgid "Confirm Frame Delete"
 msgstr "Bekräfta bildruteborttagning"
 
@@ -193,7 +193,7 @@ msgstr "Ändra bildrutedensitet"
 #: gap/gap_base_ops.c:1214 gap/gap_base_ops.c:1366 gap/gap_base_ops.c:1569
 #: gap/gap_decode_xanim.c:248 gap/gap_mod_layer.c:204
 #: gap/gap_mov_dialog.c:3122 gap/gap_mpege.c:285 gap/gap_onion_dialog.c:899
-#: gap/gap_player_dialog.c:3829 gap/gap_range_ops.c:285
+#: gap/gap_player_dialog.c:3832 gap/gap_range_ops.c:285
 #: gap/gap_range_ops.c:478 gap/gap_range_ops.c:669
 msgid "From Frame:"
 msgstr "Från bildruta:"
@@ -208,7 +208,7 @@ msgstr "Det påverkade intervallet börjar vid detta bildrutenumret"
 #: gap/gap_base_ops.c:1222 gap/gap_base_ops.c:1374 gap/gap_base_ops.c:1577
 #: gap/gap_decode_xanim.c:258 gap/gap_mod_layer.c:212
 #: gap/gap_mov_dialog.c:3140 gap/gap_mpege.c:295 gap/gap_onion_dialog.c:906
-#: gap/gap_player_dialog.c:3837 gap/gap_range_ops.c:293
+#: gap/gap_player_dialog.c:3840 gap/gap_range_ops.c:293
 #: gap/gap_range_ops.c:486 gap/gap_range_ops.c:677
 msgid "To Frame:"
 msgstr "Till bildruta:"
@@ -251,7 +251,7 @@ msgstr ""
 msgid "Change Frames Density"
 msgstr "Ändra bildrutedensitet"
 
-#: gap/gap_base_ops.c:1312 gap/gap_base_ops.c:1439 gap/gap_lib.c:1188
+#: gap/gap_base_ops.c:1312 gap/gap_base_ops.c:1439 gap/gap_lib.c:1239
 #, fuzzy
 msgid ""
 "Operation cancelled.\n"
@@ -1185,7 +1185,7 @@ msgid ""
 "settings of the last call"
 msgstr ""
 
-#: gap/gap_fmac_main.c:915 gap/gap_player_dialog.c:4175
+#: gap/gap_fmac_main.c:915 gap/gap_player_dialog.c:4178
 #, fuzzy
 msgid "Close window"
 msgstr "Stäng fönster"
@@ -1233,7 +1233,7 @@ msgstr "<Image>/Video/Koda/MPEG1..."
 msgid "<Image>/Video/Encode/MPEG2..."
 msgstr "<Image>/Video/Koda/MPEG2..."
 
-#: gap/gap_lib.c:1165
+#: gap/gap_lib.c:1216
 #, fuzzy
 msgid ""
 "Operation cancelled.\n"
@@ -1242,15 +1242,15 @@ msgstr ""
 "ÅTGÄRDEN AVBRÖTS.\n"
 "Aktuell bildruta ändrades då dialogfönstret öppnades."
 
-#: gap/gap_lib.c:1344
+#: gap/gap_lib.c:1395
 msgid "Save Flattened"
 msgstr "Spara tillplattad"
 
-#: gap/gap_lib.c:1346
+#: gap/gap_lib.c:1397
 msgid "Save As Is"
 msgstr "Spara som den är"
 
-#: gap/gap_lib.c:1350
+#: gap/gap_lib.c:1401
 #, c-format
 msgid ""
 "You are using another file format than xcf.\n"
@@ -1262,7 +1262,7 @@ msgid ""
 "to your gimprc file."
 msgstr ""
 
-#: gap/gap_lib.c:1359
+#: gap/gap_lib.c:1410
 #, fuzzy
 msgid "Fileformat Warning"
 msgstr "Varning för filöverskrivning"
@@ -1811,7 +1811,7 @@ msgid "Center"
 msgstr "Mittpunkt"
 
 #. the playback mode checkbuttons
-#: gap/gap_mov_dialog.c:435 gap/gap_player_dialog.c:4036
+#: gap/gap_mov_dialog.c:435 gap/gap_player_dialog.c:4039
 msgid "Loop"
 msgstr "Slinga"
 
@@ -1931,7 +1931,7 @@ msgstr ""
 "Skala ned storleken på den genererade animerade förhandsgranskningen (i %)"
 
 #: gap/gap_mov_dialog.c:1054 gap/gap_mpege.c:304
-#: gap/gap_navigator_dialog.c:3795
+#: gap/gap_navigator_dialog.c:3792
 msgid "Framerate:"
 msgstr "Bildrutehastighet:"
 
@@ -3300,7 +3300,7 @@ msgstr "Rendera filnamnet till lager"
 msgid "Settings :"
 msgstr "Inställningar:"
 
-#: gap/gap_navigator_dialog.c:417
+#: gap/gap_navigator_dialog.c:418
 #, fuzzy
 msgid ""
 "Playback\n"
@@ -3310,7 +3310,7 @@ msgstr ""
 "Uppspelning\n"
 "<Skift> Skapa temporär bild och utför lageranimationsuppspelning"
 
-#: gap/gap_navigator_dialog.c:423
+#: gap/gap_navigator_dialog.c:424
 #, fuzzy
 msgid ""
 "Smart update thumbnails\n"
@@ -3319,22 +3319,22 @@ msgstr ""
 "Smart uppdatering av miniatyrbilder\n"
 "<Skift> tvingad uppdatering"
 
-#: gap/gap_navigator_dialog.c:428
+#: gap/gap_navigator_dialog.c:429
 #, fuzzy
 msgid "Duplicate selected frames"
 msgstr "Duplicera markerade bildrutor"
 
-#: gap/gap_navigator_dialog.c:432
+#: gap/gap_navigator_dialog.c:433
 #, fuzzy
 msgid "Delete selected frames"
 msgstr "Ta bort markerade bildrutor"
 
-#: gap/gap_navigator_dialog.c:441
+#: gap/gap_navigator_dialog.c:442
 #, fuzzy
 msgid "Goto first frame"
 msgstr "Gå till första bildrutan"
 
-#: gap/gap_navigator_dialog.c:445
+#: gap/gap_navigator_dialog.c:446
 #, fuzzy
 msgid ""
 "Goto prev frame\n"
@@ -3343,7 +3343,7 @@ msgstr ""
 "Gå till föregående bildruta\n"
 "<Skift> använd tidszoomsstegstorlek"
 
-#: gap/gap_navigator_dialog.c:450
+#: gap/gap_navigator_dialog.c:451
 #, fuzzy
 msgid ""
 "Goto next frame\n"
@@ -3352,21 +3352,21 @@ msgstr ""
 "Gå till nästa bildruta\n"
 "<Skift> använd tidszoomsstegstorlek"
 
-#: gap/gap_navigator_dialog.c:455
+#: gap/gap_navigator_dialog.c:456
 #, fuzzy
 msgid "Goto last frame"
 msgstr "Gå till sista bildrutan"
 
-#: gap/gap_navigator_dialog.c:523
+#: gap/gap_navigator_dialog.c:524
 msgid "<Image>/Video/VCR Navigator..."
 msgstr "<Image>/Video/VCR-navigatör..."
 
-#: gap/gap_navigator_dialog.c:586
+#: gap/gap_navigator_dialog.c:587
 #, fuzzy
 msgid "Cant open two or more video navigator windows."
 msgstr "Kan inte öppna två eller fler videonavigatörsfönster."
 
-#: gap/gap_navigator_dialog.c:637
+#: gap/gap_navigator_dialog.c:638
 #, fuzzy, c-format
 msgid ""
 "The selected %d frame(s) will be deleted.\n"
@@ -3375,28 +3375,28 @@ msgstr ""
 "De markerade %d bildrutorna kommer att tas bort\n"
 "Dessa åtgärder kommer inte att kunna ångras\n"
 
-#: gap/gap_navigator_dialog.c:726
+#: gap/gap_navigator_dialog.c:727
 #, fuzzy
 msgid "Error while positioning to frame. Video paste operaton failed"
 msgstr ""
 "Fel vid positionering till bildruta. Videoinklistringsåtgärd misslyckades"
 
-#: gap/gap_navigator_dialog.c:748
+#: gap/gap_navigator_dialog.c:749
 #, fuzzy
 msgid "Video paste operaton failed"
 msgstr "Videoinklistringsåtgärd misslyckades"
 
-#: gap/gap_navigator_dialog.c:859
+#: gap/gap_navigator_dialog.c:860
 #, fuzzy
 msgid "Video copy (or cut) operation failed"
 msgstr "Videokopierings- eller utklippsåtgärd misslyckades"
 
-#: gap/gap_navigator_dialog.c:906
+#: gap/gap_navigator_dialog.c:907
 #, fuzzy
 msgid "Video cut operation failed"
 msgstr "Videoutklippsåtgärd misslyckades"
 
-#: gap/gap_navigator_dialog.c:1587
+#: gap/gap_navigator_dialog.c:1584
 #, fuzzy
 msgid ""
 "For the thumbnail update you have to select\n"
@@ -3409,68 +3409,68 @@ msgstr ""
 "miljösektion"
 
 #. menu_item copy
-#: gap/gap_navigator_dialog.c:3692
+#: gap/gap_navigator_dialog.c:3689
 msgid "Copy"
 msgstr "Kopiera"
 
 #. menu_item cut
-#: gap/gap_navigator_dialog.c:3702
+#: gap/gap_navigator_dialog.c:3699
 msgid "Cut"
 msgstr "Klipp ut"
 
 #. menu_item paste before
-#: gap/gap_navigator_dialog.c:3711
+#: gap/gap_navigator_dialog.c:3708
 #, fuzzy
 msgid "Paste Before"
 msgstr "Klistra in före"
 
 #. menu_item copy
-#: gap/gap_navigator_dialog.c:3720
+#: gap/gap_navigator_dialog.c:3717
 #, fuzzy
 msgid "Paste After"
 msgstr "Klistra in efter"
 
 #. menu_item copy
-#: gap/gap_navigator_dialog.c:3729
+#: gap/gap_navigator_dialog.c:3726
 #, fuzzy
 msgid "Paste Replace"
 msgstr "Ersätt klistra in"
 
 #. menu_item copy
-#: gap/gap_navigator_dialog.c:3738
+#: gap/gap_navigator_dialog.c:3735
 msgid "Clear Video Buffer"
 msgstr "Töm videobuffert"
 
 #. menu_item Select All
-#: gap/gap_navigator_dialog.c:3748
+#: gap/gap_navigator_dialog.c:3745
 msgid "Select All"
 msgstr "Markera allt"
 
 #. menu_item Select None
-#: gap/gap_navigator_dialog.c:3757
+#: gap/gap_navigator_dialog.c:3754
 msgid "Select None"
 msgstr "Markera ingen"
 
 #. Video Length (frames)
-#: gap/gap_navigator_dialog.c:3780 gap/gap_player_dialog.c:3624
+#: gap/gap_navigator_dialog.c:3777 gap/gap_player_dialog.c:3624
 msgid "Videoframes:"
 msgstr "Videobildrutor:"
 
-#: gap/gap_navigator_dialog.c:3817
+#: gap/gap_navigator_dialog.c:3814
 #, fuzzy
 msgid "Set framerate in frames/sec"
 msgstr "Ställ in bildrutehastighet i bildrutor/sek"
 
-#: gap/gap_navigator_dialog.c:3825
+#: gap/gap_navigator_dialog.c:3822
 msgid "Timezoom:"
 msgstr "Tidszoom:"
 
-#: gap/gap_navigator_dialog.c:3847
+#: gap/gap_navigator_dialog.c:3844
 msgid "Show only every N.th frame"
 msgstr "Visa endast var N:te bildruta"
 
 #. The main shell
-#: gap/gap_navigator_dialog.c:3943
+#: gap/gap_navigator_dialog.c:3940
 msgid "Video Navigator"
 msgstr "Videonavigatör"
 
@@ -3866,7 +3866,7 @@ msgid "Playing"
 msgstr "Spelar"
 
 #. the status value label
-#: gap/gap_player_dialog.c:1231 gap/gap_player_dialog.c:4121
+#: gap/gap_player_dialog.c:1231 gap/gap_player_dialog.c:4124
 msgid "Ready"
 msgstr "Redo"
 
@@ -4033,19 +4033,19 @@ msgstr "Bitar/sampling:"
 msgid "Videotime:"
 msgstr "Videotid:"
 
-#: gap/gap_player_dialog.c:3706
+#: gap/gap_player_dialog.c:3709
 msgid "Videoframe Playback"
 msgstr "Uppspelning av videobildrutor"
 
-#: gap/gap_player_dialog.c:3726
+#: gap/gap_player_dialog.c:3729
 msgid "Video Options"
 msgstr "Videoalternativ"
 
-#: gap/gap_player_dialog.c:3727
+#: gap/gap_player_dialog.c:3730
 msgid "Audio Options"
 msgstr "Ljudalternativ"
 
-#: gap/gap_player_dialog.c:3784
+#: gap/gap_player_dialog.c:3787
 #, fuzzy
 msgid ""
 "Click: go to frame, Ctrl-Click: set 'From Frame', Alt-Click: set 'To Frame'"
@@ -4053,100 +4053,100 @@ msgstr ""
 "Klick: gå till bildruta, Ctrl-Klick: ställ in från bildruta, Alt-Klick: "
 "ställ in till bildruta"
 
-#: gap/gap_player_dialog.c:3857
+#: gap/gap_player_dialog.c:3860
 #, fuzzy
 msgid "Start framenumber of selection range"
 msgstr "Startbildrutenummer i markeringsintervall"
 
-#: gap/gap_player_dialog.c:3874
+#: gap/gap_player_dialog.c:3877
 #, fuzzy
 msgid "End framenumber of selection range"
 msgstr "Slutbildrutenummer i markeringsintervall"
 
 #. the framenr button
-#: gap/gap_player_dialog.c:3888
+#: gap/gap_player_dialog.c:3891
 msgid "FrameNr"
 msgstr "Bildrutenummer"
 
-#: gap/gap_player_dialog.c:3893
+#: gap/gap_player_dialog.c:3896
 #, fuzzy
 msgid "Load this frame into the calling image"
 msgstr "Läs in denna bildruta i den anropande bilden"
 
-#: gap/gap_player_dialog.c:3911
+#: gap/gap_player_dialog.c:3914
 msgid "The currently displayed frame number"
 msgstr ""
 
 #. the time position
-#: gap/gap_player_dialog.c:3918
+#: gap/gap_player_dialog.c:3921
 msgid "Timepos:"
 msgstr "Tidspos:"
 
 #. the origspeed_button
-#: gap/gap_player_dialog.c:3949
+#: gap/gap_player_dialog.c:3952
 msgid "Speed"
 msgstr "Hastighet"
 
-#: gap/gap_player_dialog.c:3954
+#: gap/gap_player_dialog.c:3957
 #, fuzzy
 msgid "Reset playback speed to original (or previous) value"
 msgstr ""
 "Återställ uppspelningshastighet till ursprungligt (eller föregående) värde"
 
-#: gap/gap_player_dialog.c:3974
+#: gap/gap_player_dialog.c:3977
 #, fuzzy
 msgid "Current playback speed (frames/sec)"
 msgstr "Aktuell uppspelningshastighet (bildrutor/sek)"
 
 #. the size button
-#: gap/gap_player_dialog.c:3988
+#: gap/gap_player_dialog.c:3991
 msgid "Size"
 msgstr "Storlek"
 
-#: gap/gap_player_dialog.c:3995
+#: gap/gap_player_dialog.c:3998
 #, fuzzy
 msgid "Toggle size 128/256. <Shift> Set 1:1 full image size"
 msgstr "Växla storleken 128/256, SKIFT: Ställ in 1:1 full bildstorlek"
 
-#: gap/gap_player_dialog.c:4014
+#: gap/gap_player_dialog.c:4017
 #, fuzzy
 msgid "Video preview size (pixels)"
 msgstr "Videoförhandsgranskningsstorlek (bildpunkter)"
 
-#: gap/gap_player_dialog.c:4041
+#: gap/gap_player_dialog.c:4044
 #, fuzzy
 msgid ""
 "ON: Play in endless loop.\n"
 "OFF: Play only once"
 msgstr "PÅ: Spela i oändlig slinga, AV: Spela endast en gång"
 
-#: gap/gap_player_dialog.c:4051
+#: gap/gap_player_dialog.c:4054
 #, fuzzy
 msgid "Play selection only"
 msgstr "Spela endast markering"
 
-#: gap/gap_player_dialog.c:4056
+#: gap/gap_player_dialog.c:4059
 #, fuzzy
 msgid ""
 "ON: Play selection only.\n"
 "OFF: Play all frames"
 msgstr "PÅ: Spela endast markering, AV: Spela alla bildrutor"
 
-#: gap/gap_player_dialog.c:4066
+#: gap/gap_player_dialog.c:4069
 #, fuzzy
 msgid "Ping pong"
 msgstr "Ping-pong"
 
-#: gap/gap_player_dialog.c:4071
+#: gap/gap_player_dialog.c:4074
 msgid "ON: Play alternating forward/backward"
 msgstr "PÅ: Spela alternerande framåt/bakåt"
 
-#: gap/gap_player_dialog.c:4080
+#: gap/gap_player_dialog.c:4083
 #, fuzzy
 msgid "Use thumbnails"
 msgstr "Använd miniatyrbilder"
 
-#: gap/gap_player_dialog.c:4085
+#: gap/gap_player_dialog.c:4088
 #, fuzzy
 msgid ""
 "ON: Use thumbnails when available.\n"
@@ -4154,12 +4154,12 @@ msgid ""
 msgstr ""
 "PÅ: använd miniatyrbilder om tillgängliga, AV: läs bildrutor i full storlek"
 
-#: gap/gap_player_dialog.c:4096
+#: gap/gap_player_dialog.c:4099
 #, fuzzy
 msgid "Exact timing"
 msgstr "Exakt tidtagning"
 
-#: gap/gap_player_dialog.c:4101
+#: gap/gap_player_dialog.c:4104
 #, fuzzy
 msgid ""
 "ON: Skip frames to hold exact timing.\n"
@@ -4169,16 +4169,16 @@ msgstr ""
 "överhoppning av bildrutor"
 
 #. the status label
-#: gap/gap_player_dialog.c:4113
+#: gap/gap_player_dialog.c:4116
 msgid "Status:"
 msgstr "Status:"
 
-#: gap/gap_player_dialog.c:4146
+#: gap/gap_player_dialog.c:4149
 #, fuzzy
 msgid "Start playback"
 msgstr "Starta uppspelning"
 
-#: gap/gap_player_dialog.c:4156
+#: gap/gap_player_dialog.c:4159
 #, fuzzy
 msgid ""
 "Pause if playing (any mouseboutton). Go to selection start/active/end (left/"
@@ -4188,7 +4188,7 @@ msgstr ""
 "Gå till markeringens start/aktiv/slut (vänstra/mittersta/högra knappen) om "
 "inte spelandes"
 
-#: gap/gap_player_dialog.c:4166
+#: gap/gap_player_dialog.c:4169
 #, fuzzy
 msgid "Start reverse playback"
 msgstr "Starta baklängesuppspelning"

@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: es\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-02-10 22:40+0100\n"
+"POT-Creation-Date: 2004-02-14 14:35+0100\n"
 "PO-Revision-Date: 2004-02-10 22:46+0100\n"
 "Last-Translator: Francisco Javier F. Serrador <serrador@cvs.gnome.org>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
@@ -128,7 +128,8 @@ msgstr "Ir al fotograma nº"
 
 #: gap/gap_base_ops.c:1019
 #, c-format
-msgid "Frames %d - %d will be deleted. There will be no undo for this operation."
+msgid ""
+"Frames %d - %d will be deleted. There will be no undo for this operation."
 msgstr ""
 "Los fotogramas %d - %d se borrarán.No habrá posibilidad de DESHACER esta "
 "operación"
@@ -151,7 +152,8 @@ msgstr "Borrar fotogramas desde %ld hasta (nº)"
 
 #: gap/gap_base_ops.c:1077
 #, c-format
-msgid "Delete frames starting at current number %d up to this number (inclusive)"
+msgid ""
+"Delete frames starting at current number %d up to this number (inclusive)"
 msgstr ""
 "Borrar fotogramas comenzando en el número actual %d hasta este número "
 "(incluido)"
@@ -194,7 +196,7 @@ msgstr "Cambiar la densidad de los fotogramas"
 #: gap/gap_base_ops.c:1214 gap/gap_base_ops.c:1366 gap/gap_base_ops.c:1569
 #: gap/gap_decode_xanim.c:248 gap/gap_mod_layer.c:204
 #: gap/gap_mov_dialog.c:3122 gap/gap_mpege.c:285 gap/gap_onion_dialog.c:899
-#: gap/gap_player_dialog.c:3829 gap/gap_range_ops.c:285
+#: gap/gap_player_dialog.c:3832 gap/gap_range_ops.c:285
 #: gap/gap_range_ops.c:478 gap/gap_range_ops.c:669
 msgid "From Frame:"
 msgstr "Desde fotograma:"
@@ -208,7 +210,7 @@ msgstr "El rango afectado comienza en este nº de fotograma"
 #: gap/gap_base_ops.c:1222 gap/gap_base_ops.c:1374 gap/gap_base_ops.c:1577
 #: gap/gap_decode_xanim.c:258 gap/gap_mod_layer.c:212
 #: gap/gap_mov_dialog.c:3140 gap/gap_mpege.c:295 gap/gap_onion_dialog.c:906
-#: gap/gap_player_dialog.c:3837 gap/gap_range_ops.c:293
+#: gap/gap_player_dialog.c:3840 gap/gap_range_ops.c:293
 #: gap/gap_range_ops.c:486 gap/gap_range_ops.c:677
 msgid "To Frame:"
 msgstr "Hasta fotograma:"
@@ -291,7 +293,8 @@ msgstr "Intercambiar fotograma actual (%ld)"
 
 #: gap/gap_base_ops.c:1515
 #, c-format
-msgid "Exchange the current frame %d with the frame that has the number entered here"
+msgid ""
+"Exchange the current frame %d with the frame that has the number entered here"
 msgstr ""
 "Intercambiar el fotograma actual %d con el fotograma que tiene el número "
 "introducido aquí"
@@ -342,7 +345,8 @@ msgstr "Dígitos:"
 
 #: gap/gap_base_ops.c:1694
 msgid "How many digits to use for the framenumber in the filename"
-msgstr "Cuántos dígitos usar para el número de fotograma en el nombre del archivo"
+msgstr ""
+"Cuántos dígitos usar para el número de fotograma en el nombre del archivo"
 
 #: gap/gap_base_ops.c:1698 gap/gap_base_ops.c:1807
 msgid "Renumber Frames"
@@ -417,7 +421,8 @@ msgstr "Alfa del destino:"
 #. constrain
 #. lowr/upper unconstrained
 #: gap/gap_bluebox.c:358
-msgid "Set alpha of affected pixel to target alpha where 0.0 is full transparent"
+msgid ""
+"Set alpha of affected pixel to target alpha where 0.0 is full transparent"
 msgstr ""
 "Establecer alfa del píxel afectado para alfa destino donde 0.0 es "
 "completamente transparente"
@@ -485,7 +490,8 @@ msgstr "Tamaño de la vista previa:"
 #. lowr/upper unconstrained
 #: gap/gap_bluebox.c:460
 msgid "Size of the preview image in percent of the original"
-msgstr "Tamaño de la imagen de vista previa en porcentaje respecto del original"
+msgstr ""
+"Tamaño de la imagen de vista previa en porcentaje respecto del original"
 
 #: gap/gap_bluebox.c:850
 msgid "Threshold Mode:"
@@ -837,7 +843,8 @@ msgid "Jpeg Quality:"
 msgstr "Calidad Jpeg:"
 
 #: gap/gap_decode_xanim.c:296
-msgid "Quality for resulting jpeg frames. (is ignored when other formats are used)"
+msgid ""
+"Quality for resulting jpeg frames. (is ignored when other formats are used)"
 msgstr ""
 "Calidad para los fotogramas Jpeg resultantes (no se considera cuando se usan "
 "otros formatos)"
@@ -1080,7 +1087,8 @@ msgstr "Nombre del archivo de script de macros de filtro"
 
 #: gap/gap_fmac_main.c:591
 msgid "Open filebrowser window to select a filename"
-msgstr "Abrir una ventana de examinador de archivos para seleccionar un archivo"
+msgstr ""
+"Abrir una ventana de examinador de archivos para seleccionar un archivo"
 
 #: gap/gap_fmac_main.c:618
 msgid "Nr"
@@ -1143,7 +1151,7 @@ msgstr ""
 "sesión actual y han configurado el búfer interno con los ajustes de "
 "parámetros de la última llamada"
 
-#: gap/gap_fmac_main.c:915 gap/gap_player_dialog.c:4175
+#: gap/gap_fmac_main.c:915 gap/gap_player_dialog.c:4178
 msgid "Close window"
 msgstr "Cerrar ventana"
 
@@ -1551,7 +1559,8 @@ msgstr "Patrón de capa:"
 
 #. pixel
 #: gap/gap_mod_layer.c:233
-msgid "String to identify layer names or layerstack position numbers. Example: 0,3-5"
+msgid ""
+"String to identify layer names or layerstack position numbers. Example: 0,3-5"
 msgstr ""
 "Cadena para identificar los nombres de las capas o los números de posición "
 "en la pila de capas. Ejemplo: 0,3-5"
@@ -1635,7 +1644,8 @@ msgstr "Seleccione filtro para aplicar animación en fotogramas"
 
 #: gap/gap_mod_layer.c:1020
 msgid "GAP Modify: No layer selected in last handled frame"
-msgstr "Modificador GAP: No hay capa seleccionada en el último fotograma manejado"
+msgstr ""
+"Modificador GAP: No hay capa seleccionada en el último fotograma manejado"
 
 #: gap/gap_mod_layer.c:1107
 msgid "Modifying frames/layer(s)..."
@@ -1722,7 +1732,7 @@ msgid "Center"
 msgstr "Centro"
 
 #. the playback mode checkbuttons
-#: gap/gap_mov_dialog.c:435 gap/gap_player_dialog.c:4036
+#: gap/gap_mov_dialog.c:435 gap/gap_player_dialog.c:4039
 msgid "Loop"
 msgstr "Bucle"
 
@@ -1838,7 +1848,8 @@ msgstr "Tasa de fotogramas:"
 
 #: gap/gap_mov_dialog.c:1055
 msgid "Framerate to use in the animated preview in frames/sec"
-msgstr "Tasa de fotogramas (en fotogramas/seg.) a usar en la vista previa animada"
+msgstr ""
+"Tasa de fotogramas (en fotogramas/seg.) a usar en la vista previa animada"
 
 #: gap/gap_mov_dialog.c:1071
 msgid "Copy to Video Buffer:"
@@ -1951,7 +1962,8 @@ msgstr "Imagen/capa origen"
 
 #: gap/gap_mov_dialog.c:2442
 msgid "Source object to insert into destination frames of the specified range"
-msgstr "Objeto origen a insertar en los fotogramas de destino del rango especificado"
+msgstr ""
+"Objeto origen a insertar en los fotogramas de destino del rango especificado"
 
 #. Paintmode menu
 #: gap/gap_mov_dialog.c:2453 gap/gap_name2layer_main.c:445
@@ -1970,7 +1982,8 @@ msgstr "Modo de paso:"
 
 #: gap/gap_mov_dialog.c:2514
 msgid "How to fetch the next source layer at the next handled frame"
-msgstr "Cómo obtener la siguiente capa origen en el siguiente fotograma manejado"
+msgstr ""
+"Cómo obtener la siguiente capa origen en el siguiente fotograma manejado"
 
 #. StepSpeedFactor
 #. table col, row
@@ -2019,7 +2032,8 @@ msgid "Move Path Bluebox Keycolor"
 msgstr "Ruta de movimiento del color clave Bluebox"
 
 #: gap/gap_mov_dialog.c:2659
-msgid "Open dialog window to set parameters and keycolor for the bluebox filter"
+msgid ""
+"Open dialog window to set parameters and keycolor for the bluebox filter"
 msgstr ""
 "Abrir la ventana de diálogo para establecer parámetros y clave de color para "
 "el filtro bluebox"
@@ -2090,9 +2104,10 @@ msgid ""
 "the tween steps value is 0, no tweens are calculated and no tween layers are "
 "created"
 msgstr ""
-"Calcular n  pasos entre 2 fotogramas. El renderizado entre pasos se recoge en una "
-"capa tween que se añadirá a los fotogramas de destinos manipulados. Si el valor de "
-"los pasos tween es 0, no se calculan tweens y no se crean capas tween"
+"Calcular n  pasos entre 2 fotogramas. El renderizado entre pasos se recoge "
+"en una capa tween que se añadirá a los fotogramas de destinos manipulados. "
+"Si el valor de los pasos tween es 0, no se calculan tweens y no se crean "
+"capas tween"
 
 #. TweenOpacityInitial
 #. table col, row
@@ -2382,7 +2397,8 @@ msgstr "x1:"
 #. lower, upper (unconstrained)
 #: gap/gap_mov_dialog.c:3389
 msgid "Transformfactor for upper left corner X coordinate"
-msgstr "Factor de transformación para la esquina superior izquierda coordenada X"
+msgstr ""
+"Factor de transformación para la esquina superior izquierda coordenada X"
 
 #. ttly transformfactor
 #. table col, row
@@ -2400,7 +2416,8 @@ msgstr "y1:"
 #. lower, upper (unconstrained)
 #: gap/gap_mov_dialog.c:3408
 msgid "Transformfactor for upper left corner Y coordinate"
-msgstr "Factor de transformación para la esquina superior izquierda coordenada Y"
+msgstr ""
+"Factor de transformación para la esquina superior izquierda coordenada Y"
 
 #. ttrx transformfactor
 #. table col, row
@@ -2454,7 +2471,8 @@ msgstr "x3:"
 #. lower, upper (unconstrained)
 #: gap/gap_mov_dialog.c:3463
 msgid "Transformfactor for lower left corner X coordinate"
-msgstr "Factor de transformación para la coordenada X esquina inferior izquierda"
+msgstr ""
+"Factor de transformación para la coordenada X esquina inferior izquierda"
 
 #. tbly transformfactor
 #. table col, row
@@ -2474,7 +2492,8 @@ msgstr "y3:"
 #. lower, upper (unconstrained)
 #: gap/gap_mov_dialog.c:3481
 msgid "Transformfactor for lower left corner Y coordinate"
-msgstr "Factor de transformación para la coordenada Y esquina inferior izquierda"
+msgstr ""
+"Factor de transformación para la coordenada Y esquina inferior izquierda"
 
 #. tbrx transformfactor
 #. table col, row
@@ -2504,7 +2523,8 @@ msgstr "Factor de transformación para la coordenada X esquina inferior derecha"
 #. lower, upper (unconstrained)
 #: gap/gap_mov_dialog.c:3517
 msgid "Transformfactor for lower right corner Y coordinate"
-msgstr "Factor de transformación para la coordenada Y de la esquina inferior derecha"
+msgstr ""
+"Factor de transformación para la coordenada Y de la esquina inferior derecha"
 
 #: gap/gap_mov_dialog.c:3549
 msgid "Ignore selection (in all source images)"
@@ -3316,7 +3336,8 @@ msgstr ""
 
 #: gap/gap_onion_dialog.c:997
 msgid "Number of onionskin layers to create in the handled frame."
-msgstr "Número de capas de papel cebolla para crear en el fotograma manipulado."
+msgstr ""
+"Número de capas de papel cebolla para crear en el fotograma manipulado."
 
 #: gap/gap_onion_dialog.c:1000
 msgid "Frame Reference:"
@@ -3373,7 +3394,8 @@ msgid "Ignore BG-layer(s):"
 msgstr "Ignorar capa(s) de fondo:"
 
 #: gap/gap_onion_dialog.c:1146
-msgid "Exclude N background layers. Use 0 if you dont want to exclude any layer."
+msgid ""
+"Exclude N background layers. Use 0 if you dont want to exclude any layer."
 msgstr "Excluir n capas de fondo (usar 0 si no quiere excluir ninguna capa)"
 
 #: gap/gap_onion_dialog.c:1149
@@ -3480,7 +3502,8 @@ msgstr ""
 "del rango seleccionado"
 
 #: gap/gap_onion_dialog.c:1343
-msgid "Remove all onionskin layers in all frames of the the selected frame range"
+msgid ""
+"Remove all onionskin layers in all frames of the the selected frame range"
 msgstr ""
 "Quitar todas las capas de papel cebolla en todos los fotogramas del rango "
 "seleccionado"
@@ -3655,7 +3678,7 @@ msgid "Playing"
 msgstr "Reproduciendo"
 
 #. the status value label
-#: gap/gap_player_dialog.c:1231 gap/gap_player_dialog.c:4121
+#: gap/gap_player_dialog.c:1231 gap/gap_player_dialog.c:4124
 msgid "Ready"
 msgstr "Preparado"
 
@@ -3715,7 +3738,8 @@ msgstr "Archivo de sonido:"
 
 #: gap/gap_player_dialog.c:3371
 msgid "Enter an audiofile. The file must be in RIFF WAVE fileformat."
-msgstr "Introduzca un archivo de sonido. El archivo debe estar en formato RIFF WAVE."
+msgstr ""
+"Introduzca un archivo de sonido. El archivo debe estar en formato RIFF WAVE."
 
 #: gap/gap_player_dialog.c:3385
 msgid "Open audiofile selection browser dialog window"
@@ -3815,80 +3839,81 @@ msgstr "Bits/Muestra:"
 msgid "Videotime:"
 msgstr "Tiempo de vídeo:"
 
-#: gap/gap_player_dialog.c:3706
+#: gap/gap_player_dialog.c:3709
 msgid "Videoframe Playback"
 msgstr "Reproducir fotogramas de vídeo"
 
-#: gap/gap_player_dialog.c:3726
+#: gap/gap_player_dialog.c:3729
 msgid "Video Options"
 msgstr "Opciones de vídeo"
 
-#: gap/gap_player_dialog.c:3727
+#: gap/gap_player_dialog.c:3730
 msgid "Audio Options"
 msgstr "Opciones de sonido"
 
-#: gap/gap_player_dialog.c:3784
-msgid "Click: go to frame, Ctrl-Click: set 'From Frame', Alt-Click: set 'To Frame'"
+#: gap/gap_player_dialog.c:3787
+msgid ""
+"Click: go to frame, Ctrl-Click: set 'From Frame', Alt-Click: set 'To Frame'"
 msgstr ""
 "Pulsar: ir al fotograma, Ctrl-pulsar: Establecer fotograma de inicial, Alt-"
 "Pulsar: Establecer fotograma final"
 
-#: gap/gap_player_dialog.c:3857
+#: gap/gap_player_dialog.c:3860
 msgid "Start framenumber of selection range"
 msgstr "Iniciar número de fotogramas del rango de selección"
 
-#: gap/gap_player_dialog.c:3874
+#: gap/gap_player_dialog.c:3877
 msgid "End framenumber of selection range"
 msgstr "Número de fotograma de fin del rango de selección"
 
 # //R Mejorar
 #. the framenr button
-#: gap/gap_player_dialog.c:3888
+#: gap/gap_player_dialog.c:3891
 msgid "FrameNr"
 msgstr "Nº de fotograma"
 
-#: gap/gap_player_dialog.c:3893
+#: gap/gap_player_dialog.c:3896
 msgid "Load this frame into the calling image"
 msgstr "Carga este fotograma en la imagen llamada"
 
-#: gap/gap_player_dialog.c:3911
+#: gap/gap_player_dialog.c:3914
 msgid "The currently displayed frame number"
 msgstr "El número de fotograma actualmente mostrado"
 
 #. the time position
-#: gap/gap_player_dialog.c:3918
+#: gap/gap_player_dialog.c:3921
 msgid "Timepos:"
 msgstr "Posición de tiempo:"
 
 #. the origspeed_button
-#: gap/gap_player_dialog.c:3949
+#: gap/gap_player_dialog.c:3952
 msgid "Speed"
 msgstr "Velocidad"
 
-#: gap/gap_player_dialog.c:3954
+#: gap/gap_player_dialog.c:3957
 msgid "Reset playback speed to original (or previous) value"
 msgstr "Restablecer velocidad de reproducción al valor original (o anterior)"
 
-#: gap/gap_player_dialog.c:3974
+#: gap/gap_player_dialog.c:3977
 msgid "Current playback speed (frames/sec)"
 msgstr "Velocidad de reproducción actual (fotogramas/segundo)"
 
 #. the size button
-#: gap/gap_player_dialog.c:3988
+#: gap/gap_player_dialog.c:3991
 msgid "Size"
 msgstr "Tamaño"
 
-#: gap/gap_player_dialog.c:3995
+#: gap/gap_player_dialog.c:3998
 msgid "Toggle size 128/256. <Shift> Set 1:1 full image size"
 msgstr ""
 "Cambiar tamaño 128/256, <Mayúsculas>: Establecer tamaño de imagen completo "
 "1:1"
 
-#: gap/gap_player_dialog.c:4014
+#: gap/gap_player_dialog.c:4017
 msgid "Video preview size (pixels)"
 msgstr "Tamaño de previsualización del vídeo (píxeles)"
 
-#: gap/gap_player_dialog.c:4041
+#: gap/gap_player_dialog.c:4044
 msgid ""
 "ON: Play in endless loop.\n"
 "OFF: Play only once"
@@ -3896,11 +3921,11 @@ msgstr ""
 "Activado: Reproducir en un bucle sin fin.\n"
 "Desactivado: Reproducir sólo una vez"
 
-#: gap/gap_player_dialog.c:4051
+#: gap/gap_player_dialog.c:4054
 msgid "Play selection only"
 msgstr "Reproducir sólo la selección"
 
-#: gap/gap_player_dialog.c:4056
+#: gap/gap_player_dialog.c:4059
 msgid ""
 "ON: Play selection only.\n"
 "OFF: Play all frames"
@@ -3908,19 +3933,19 @@ msgstr ""
 "Activado: Reproducir sólo la selección.\n"
 "Desactivado: Reproducir todos los fotogramas"
 
-#: gap/gap_player_dialog.c:4066
+#: gap/gap_player_dialog.c:4069
 msgid "Ping pong"
 msgstr "Ping-Pong"
 
-#: gap/gap_player_dialog.c:4071
+#: gap/gap_player_dialog.c:4074
 msgid "ON: Play alternating forward/backward"
 msgstr "Activado: Reproducir alternando adelante/atrás"
 
-#: gap/gap_player_dialog.c:4080
+#: gap/gap_player_dialog.c:4083
 msgid "Use thumbnails"
 msgstr "Usar miniaturas"
 
-#: gap/gap_player_dialog.c:4085
+#: gap/gap_player_dialog.c:4088
 msgid ""
 "ON: Use thumbnails when available.\n"
 "OFF: Read full sized frames"
@@ -3928,11 +3953,11 @@ msgstr ""
 "Activado: Usar miniaturas cuando estén disponibles.\n"
 "Desactivado: Leer fotogramas a tamaño completo"
 
-#: gap/gap_player_dialog.c:4096
+#: gap/gap_player_dialog.c:4099
 msgid "Exact timing"
 msgstr "Temporización exacta"
 
-#: gap/gap_player_dialog.c:4101
+#: gap/gap_player_dialog.c:4104
 msgid ""
 "ON: Skip frames to hold exact timing.\n"
 "OFF: Disable frame skipping"
@@ -3941,15 +3966,15 @@ msgstr ""
 "Desactivado: desactivar salto de fotogramas"
 
 #. the status label
-#: gap/gap_player_dialog.c:4113
+#: gap/gap_player_dialog.c:4116
 msgid "Status:"
 msgstr "Estado:"
 
-#: gap/gap_player_dialog.c:4146
+#: gap/gap_player_dialog.c:4149
 msgid "Start playback"
 msgstr "Iniciar reproducción"
 
-#: gap/gap_player_dialog.c:4156
+#: gap/gap_player_dialog.c:4159
 msgid ""
 "Pause if playing (any mouseboutton). Go to selection start/active/end (left/"
 "middle/right mousebutton) if not playing"
@@ -3958,7 +3983,7 @@ msgstr ""
 "Inicio/Activa/Final (botón izquierdo/central/derecho) si no se está "
 "reproduciendo"
 
-#: gap/gap_player_dialog.c:4166
+#: gap/gap_player_dialog.c:4169
 msgid "Start reverse playback"
 msgstr "Iniciar reproducción inversa"
 
@@ -4599,7 +4624,9 @@ msgstr "Valor nuevo de opacidad donde 0 es transparente y 100.0 es opaco"
 msgid ""
 "Modes set opacity or change the old opacity value by adding, subtracting or "
 "multiply by the supplied new value"
-msgstr "Los modos establecen la opcidad o cambian el valor antiguo de la opacidad añadiendo, sustrayendo o multiplicando por el valor nuevo suministrado."
+msgstr ""
+"Los modos establecen la opcidad o cambian el valor antiguo de la opacidad "
+"añadiendo, sustrayendo o multiplicando por el valor nuevo suministrado."
 
 #: gap/gap_wr_opacity.c:350
 msgid "Reset all Parameters to Default Values"
@@ -5210,4 +5237,3 @@ msgstr "Saturación:"
 
 #~ msgid "Y Offset:"
 #~ msgstr "Desplazamiento Y:"
-

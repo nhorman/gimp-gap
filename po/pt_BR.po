@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gimp plugins\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-01-26 01:56+0100\n"
+"POT-Creation-Date: 2004-02-14 14:35+0100\n"
 "PO-Revision-Date: 2000-10-24 10:20-0300\n"
 "Last-Translator: Marcia Norie Nakaza <norie@conectiva.com.br>\n"
 "Language-Team: Brazilian Portuguese <ldp-br@bazar.conectiva.com.br>\n"
@@ -90,7 +90,7 @@ msgstr "Erro: não foi possível renomear quadro %ld para %ld"
 
 #: gap/gap_base_ops.c:463 gap/gap_base_ops.c:595 gap/gap_base_ops.c:680
 #: gap/gap_base_ops.c:687 gap/gap_base_ops.c:694 gap/gap_base_ops.c:782
-#: gap/gap_base_ops.c:804 gap/gap_lib.c:2217
+#: gap/gap_base_ops.c:804 gap/gap_lib.c:2268
 #, c-format
 msgid "Error: could not rename frame %ld to %ld"
 msgstr "Erro: não foi possível renomear quadro %ld para %ld"
@@ -131,7 +131,7 @@ msgstr ""
 
 #. title_txt
 #: gap/gap_base_ops.c:1025 gap/gap_base_ops.c:1026
-#: gap/gap_navigator_dialog.c:642 gap/gap_navigator_dialog.c:643
+#: gap/gap_navigator_dialog.c:643 gap/gap_navigator_dialog.c:644
 msgid "Confirm Frame Delete"
 msgstr ""
 
@@ -182,7 +182,7 @@ msgstr ""
 #: gap/gap_base_ops.c:1214 gap/gap_base_ops.c:1366 gap/gap_base_ops.c:1569
 #: gap/gap_decode_xanim.c:248 gap/gap_mod_layer.c:204
 #: gap/gap_mov_dialog.c:3122 gap/gap_mpege.c:285 gap/gap_onion_dialog.c:899
-#: gap/gap_player_dialog.c:3829 gap/gap_range_ops.c:285
+#: gap/gap_player_dialog.c:3832 gap/gap_range_ops.c:285
 #: gap/gap_range_ops.c:478 gap/gap_range_ops.c:669
 msgid "From Frame:"
 msgstr "A partir do quadro:"
@@ -197,7 +197,7 @@ msgstr "Alcance afetado começa neste número de quadro"
 #: gap/gap_base_ops.c:1222 gap/gap_base_ops.c:1374 gap/gap_base_ops.c:1577
 #: gap/gap_decode_xanim.c:258 gap/gap_mod_layer.c:212
 #: gap/gap_mov_dialog.c:3140 gap/gap_mpege.c:295 gap/gap_onion_dialog.c:906
-#: gap/gap_player_dialog.c:3837 gap/gap_range_ops.c:293
+#: gap/gap_player_dialog.c:3840 gap/gap_range_ops.c:293
 #: gap/gap_range_ops.c:486 gap/gap_range_ops.c:677
 msgid "To Frame:"
 msgstr "Para o quadro:"
@@ -232,7 +232,7 @@ msgstr ""
 msgid "Change Frames Density"
 msgstr ""
 
-#: gap/gap_base_ops.c:1312 gap/gap_base_ops.c:1439 gap/gap_lib.c:1188
+#: gap/gap_base_ops.c:1312 gap/gap_base_ops.c:1439 gap/gap_lib.c:1239
 #, fuzzy
 msgid ""
 "Operation cancelled.\n"
@@ -1157,7 +1157,7 @@ msgid ""
 "settings of the last call"
 msgstr ""
 
-#: gap/gap_fmac_main.c:915 gap/gap_player_dialog.c:4175
+#: gap/gap_fmac_main.c:915 gap/gap_player_dialog.c:4178
 msgid "Close window"
 msgstr ""
 
@@ -1201,7 +1201,7 @@ msgstr "<Image>/Vídeo/Codificar/MPEG1..."
 msgid "<Image>/Video/Encode/MPEG2..."
 msgstr "<Image>/Vídeo/Codificar/MPEG2..."
 
-#: gap/gap_lib.c:1165
+#: gap/gap_lib.c:1216
 #, fuzzy
 msgid ""
 "Operation cancelled.\n"
@@ -1210,15 +1210,15 @@ msgstr ""
 "OPERAÇÃO CANCELADA.\n"
 "O quadro atual alterado enquanto o diálogo foi aberto."
 
-#: gap/gap_lib.c:1344
+#: gap/gap_lib.c:1395
 msgid "Save Flattened"
 msgstr "Salvar comprimido"
 
-#: gap/gap_lib.c:1346
+#: gap/gap_lib.c:1397
 msgid "Save As Is"
 msgstr "Salvar como é"
 
-#: gap/gap_lib.c:1350
+#: gap/gap_lib.c:1401
 #, c-format
 msgid ""
 "You are using another file format than xcf.\n"
@@ -1230,7 +1230,7 @@ msgid ""
 "to your gimprc file."
 msgstr ""
 
-#: gap/gap_lib.c:1359
+#: gap/gap_lib.c:1410
 msgid "Fileformat Warning"
 msgstr ""
 
@@ -1769,7 +1769,7 @@ msgid "Center"
 msgstr "Centro"
 
 #. the playback mode checkbuttons
-#: gap/gap_mov_dialog.c:435 gap/gap_player_dialog.c:4036
+#: gap/gap_mov_dialog.c:435 gap/gap_player_dialog.c:4039
 msgid "Loop"
 msgstr "Laço"
 
@@ -1894,7 +1894,7 @@ msgid "Scale down size of the generated animated preview (in %)"
 msgstr "Diminui a escala da pré-visualização animada gerada (em %)"
 
 #: gap/gap_mov_dialog.c:1054 gap/gap_mpege.c:304
-#: gap/gap_navigator_dialog.c:3795
+#: gap/gap_navigator_dialog.c:3792
 msgid "Framerate:"
 msgstr "Taxa de quadro:"
 
@@ -3220,14 +3220,14 @@ msgstr "Renomear camada(s)"
 msgid "Settings :"
 msgstr "Configurações"
 
-#: gap/gap_navigator_dialog.c:417
+#: gap/gap_navigator_dialog.c:418
 msgid ""
 "Playback\n"
 "<Shift> converts the selected frames to temporary image and do "
 "layeranimation playback on the temporary image"
 msgstr ""
 
-#: gap/gap_navigator_dialog.c:423
+#: gap/gap_navigator_dialog.c:424
 #, fuzzy
 msgid ""
 "Smart update thumbnails\n"
@@ -3236,22 +3236,22 @@ msgstr ""
 "Atualização inteligente .xvpics\n"
 "<Shift> atualização forçada"
 
-#: gap/gap_navigator_dialog.c:428
+#: gap/gap_navigator_dialog.c:429
 #, fuzzy
 msgid "Duplicate selected frames"
 msgstr "Duplicar Quadros selecionados"
 
-#: gap/gap_navigator_dialog.c:432
+#: gap/gap_navigator_dialog.c:433
 #, fuzzy
 msgid "Delete selected frames"
 msgstr "Excluir Quadros selecionados"
 
-#: gap/gap_navigator_dialog.c:441
+#: gap/gap_navigator_dialog.c:442
 #, fuzzy
 msgid "Goto first frame"
 msgstr "Ir para o 1o. quadro"
 
-#: gap/gap_navigator_dialog.c:445
+#: gap/gap_navigator_dialog.c:446
 #, fuzzy
 msgid ""
 "Goto prev frame\n"
@@ -3260,7 +3260,7 @@ msgstr ""
 "Ir para o quadro anterior\n"
 "<Shift> usar visualizador de tempo tamanho etapa"
 
-#: gap/gap_navigator_dialog.c:450
+#: gap/gap_navigator_dialog.c:451
 #, fuzzy
 msgid ""
 "Goto next frame\n"
@@ -3269,44 +3269,44 @@ msgstr ""
 "Ir para o próximo Quadro\n"
 "<Shift> usar visualizador de tempo tamanho etapa"
 
-#: gap/gap_navigator_dialog.c:455
+#: gap/gap_navigator_dialog.c:456
 #, fuzzy
 msgid "Goto last frame"
 msgstr "Ir para último quadro"
 
-#: gap/gap_navigator_dialog.c:523
+#: gap/gap_navigator_dialog.c:524
 msgid "<Image>/Video/VCR Navigator..."
 msgstr "<Image>/Vídeo/Navegador VCR..."
 
-#: gap/gap_navigator_dialog.c:586
+#: gap/gap_navigator_dialog.c:587
 #, fuzzy
 msgid "Cant open two or more video navigator windows."
 msgstr "Não é possível abrir duas ou mais janelas do navegador de vídeo."
 
-#: gap/gap_navigator_dialog.c:637
+#: gap/gap_navigator_dialog.c:638
 #, c-format
 msgid ""
 "The selected %d frame(s) will be deleted.\n"
 "There will be no undo for this operation\n"
 msgstr ""
 
-#: gap/gap_navigator_dialog.c:726
+#: gap/gap_navigator_dialog.c:727
 msgid "Error while positioning to frame. Video paste operaton failed"
 msgstr ""
 
-#: gap/gap_navigator_dialog.c:748
+#: gap/gap_navigator_dialog.c:749
 msgid "Video paste operaton failed"
 msgstr ""
 
-#: gap/gap_navigator_dialog.c:859
+#: gap/gap_navigator_dialog.c:860
 msgid "Video copy (or cut) operation failed"
 msgstr ""
 
-#: gap/gap_navigator_dialog.c:906
+#: gap/gap_navigator_dialog.c:907
 msgid "Video cut operation failed"
 msgstr ""
 
-#: gap/gap_navigator_dialog.c:1587
+#: gap/gap_navigator_dialog.c:1584
 msgid ""
 "For the thumbnail update you have to select\n"
 "a thumbnail filesize other than 'No Thumbnails'\n"
@@ -3314,70 +3314,70 @@ msgid ""
 msgstr ""
 
 #. menu_item copy
-#: gap/gap_navigator_dialog.c:3692
+#: gap/gap_navigator_dialog.c:3689
 msgid "Copy"
 msgstr "Copiar"
 
 #. menu_item cut
-#: gap/gap_navigator_dialog.c:3702
+#: gap/gap_navigator_dialog.c:3699
 msgid "Cut"
 msgstr "Cortar"
 
 #. menu_item paste before
-#: gap/gap_navigator_dialog.c:3711
+#: gap/gap_navigator_dialog.c:3708
 #, fuzzy
 msgid "Paste Before"
 msgstr "Colar antes"
 
 #. menu_item copy
-#: gap/gap_navigator_dialog.c:3720
+#: gap/gap_navigator_dialog.c:3717
 #, fuzzy
 msgid "Paste After"
 msgstr "Padrão"
 
 #. menu_item copy
-#: gap/gap_navigator_dialog.c:3729
+#: gap/gap_navigator_dialog.c:3726
 #, fuzzy
 msgid "Paste Replace"
 msgstr "Entrelace"
 
 #. menu_item copy
-#: gap/gap_navigator_dialog.c:3738
+#: gap/gap_navigator_dialog.c:3735
 msgid "Clear Video Buffer"
 msgstr "Limpar buffer de vídeo"
 
 #. menu_item Select All
-#: gap/gap_navigator_dialog.c:3748
+#: gap/gap_navigator_dialog.c:3745
 #, fuzzy
 msgid "Select All"
 msgstr "Selecionar"
 
 #. menu_item Select None
-#: gap/gap_navigator_dialog.c:3757
+#: gap/gap_navigator_dialog.c:3754
 #, fuzzy
 msgid "Select None"
 msgstr "Selecionar"
 
 #. Video Length (frames)
-#: gap/gap_navigator_dialog.c:3780 gap/gap_player_dialog.c:3624
+#: gap/gap_navigator_dialog.c:3777 gap/gap_player_dialog.c:3624
 msgid "Videoframes:"
 msgstr "Quadros de vídeo:"
 
-#: gap/gap_navigator_dialog.c:3817
+#: gap/gap_navigator_dialog.c:3814
 #, fuzzy
 msgid "Set framerate in frames/sec"
 msgstr "taxa de quadro em quadros/segundo"
 
-#: gap/gap_navigator_dialog.c:3825
+#: gap/gap_navigator_dialog.c:3822
 msgid "Timezoom:"
 msgstr "Zoom de tempo:"
 
-#: gap/gap_navigator_dialog.c:3847
+#: gap/gap_navigator_dialog.c:3844
 msgid "Show only every N.th frame"
 msgstr ""
 
 #. The main shell
-#: gap/gap_navigator_dialog.c:3943
+#: gap/gap_navigator_dialog.c:3940
 msgid "Video Navigator"
 msgstr "Navegador de vídeo"
 
@@ -3728,7 +3728,7 @@ msgid "Playing"
 msgstr "Aplicar variação"
 
 #. the status value label
-#: gap/gap_player_dialog.c:1231 gap/gap_player_dialog.c:4121
+#: gap/gap_player_dialog.c:1231 gap/gap_player_dialog.c:4124
 msgid "Ready"
 msgstr ""
 
@@ -3876,144 +3876,144 @@ msgstr "Taxa de bits:"
 msgid "Videotime:"
 msgstr "Vídeo:"
 
-#: gap/gap_player_dialog.c:3706
+#: gap/gap_player_dialog.c:3709
 #, fuzzy
 msgid "Videoframe Playback"
 msgstr "Quadros de vídeo:"
 
-#: gap/gap_player_dialog.c:3726
+#: gap/gap_player_dialog.c:3729
 #, fuzzy
 msgid "Video Options"
 msgstr "Opções de mistura"
 
-#: gap/gap_player_dialog.c:3727
+#: gap/gap_player_dialog.c:3730
 #, fuzzy
 msgid "Audio Options"
 msgstr "Opções"
 
-#: gap/gap_player_dialog.c:3784
+#: gap/gap_player_dialog.c:3787
 msgid ""
 "Click: go to frame, Ctrl-Click: set 'From Frame', Alt-Click: set 'To Frame'"
 msgstr ""
 
-#: gap/gap_player_dialog.c:3857
+#: gap/gap_player_dialog.c:3860
 msgid "Start framenumber of selection range"
 msgstr ""
 
-#: gap/gap_player_dialog.c:3874
+#: gap/gap_player_dialog.c:3877
 #, fuzzy
 msgid "End framenumber of selection range"
 msgstr "Número de quadro do 1o. quadro a ser extraído"
 
 #. the framenr button
-#: gap/gap_player_dialog.c:3888
+#: gap/gap_player_dialog.c:3891
 #, fuzzy
 msgid "FrameNr"
 msgstr "Taxa de quadro:"
 
-#: gap/gap_player_dialog.c:3893
+#: gap/gap_player_dialog.c:3896
 msgid "Load this frame into the calling image"
 msgstr ""
 
-#: gap/gap_player_dialog.c:3911
+#: gap/gap_player_dialog.c:3914
 msgid "The currently displayed frame number"
 msgstr ""
 
 #. the time position
-#: gap/gap_player_dialog.c:3918
+#: gap/gap_player_dialog.c:3921
 #, fuzzy
 msgid "Timepos:"
 msgstr "Zoom de tempo:"
 
 #. the origspeed_button
-#: gap/gap_player_dialog.c:3949
+#: gap/gap_player_dialog.c:3952
 msgid "Speed"
 msgstr ""
 
-#: gap/gap_player_dialog.c:3954
+#: gap/gap_player_dialog.c:3957
 msgid "Reset playback speed to original (or previous) value"
 msgstr ""
 
-#: gap/gap_player_dialog.c:3974
+#: gap/gap_player_dialog.c:3977
 msgid "Current playback speed (frames/sec)"
 msgstr ""
 
 #. the size button
-#: gap/gap_player_dialog.c:3988
+#: gap/gap_player_dialog.c:3991
 #, fuzzy
 msgid "Size"
 msgstr "Redimensionar"
 
-#: gap/gap_player_dialog.c:3995
+#: gap/gap_player_dialog.c:3998
 msgid "Toggle size 128/256. <Shift> Set 1:1 full image size"
 msgstr ""
 
-#: gap/gap_player_dialog.c:4014
+#: gap/gap_player_dialog.c:4017
 msgid "Video preview size (pixels)"
 msgstr ""
 
-#: gap/gap_player_dialog.c:4041
+#: gap/gap_player_dialog.c:4044
 msgid ""
 "ON: Play in endless loop.\n"
 "OFF: Play only once"
 msgstr ""
 
-#: gap/gap_player_dialog.c:4051
+#: gap/gap_player_dialog.c:4054
 msgid "Play selection only"
 msgstr ""
 
-#: gap/gap_player_dialog.c:4056
+#: gap/gap_player_dialog.c:4059
 msgid ""
 "ON: Play selection only.\n"
 "OFF: Play all frames"
 msgstr ""
 
-#: gap/gap_player_dialog.c:4066
+#: gap/gap_player_dialog.c:4069
 #, fuzzy
 msgid "Ping pong"
 msgstr "Pingue-pongue"
 
-#: gap/gap_player_dialog.c:4071
+#: gap/gap_player_dialog.c:4074
 msgid "ON: Play alternating forward/backward"
 msgstr ""
 
-#: gap/gap_player_dialog.c:4080
+#: gap/gap_player_dialog.c:4083
 msgid "Use thumbnails"
 msgstr ""
 
-#: gap/gap_player_dialog.c:4085
+#: gap/gap_player_dialog.c:4088
 msgid ""
 "ON: Use thumbnails when available.\n"
 "OFF: Read full sized frames"
 msgstr ""
 
-#: gap/gap_player_dialog.c:4096
+#: gap/gap_player_dialog.c:4099
 msgid "Exact timing"
 msgstr ""
 
-#: gap/gap_player_dialog.c:4101
+#: gap/gap_player_dialog.c:4104
 msgid ""
 "ON: Skip frames to hold exact timing.\n"
 "OFF: Disable frame skipping"
 msgstr ""
 
 #. the status label
-#: gap/gap_player_dialog.c:4113
+#: gap/gap_player_dialog.c:4116
 #, fuzzy
 msgid "Status:"
 msgstr "Startscript:"
 
-#: gap/gap_player_dialog.c:4146
+#: gap/gap_player_dialog.c:4149
 msgid "Start playback"
 msgstr ""
 
-#: gap/gap_player_dialog.c:4156
+#: gap/gap_player_dialog.c:4159
 msgid ""
 "Pause if playing (any mouseboutton). Go to selection start/active/end (left/"
 "middle/right mousebutton) if not playing"
 msgstr ""
 
-#: gap/gap_player_dialog.c:4166
+#: gap/gap_player_dialog.c:4169
 msgid "Start reverse playback"
 msgstr ""
 
