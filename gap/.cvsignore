@@ -6,6 +6,7 @@ _libs
 gap_bluebox
 gap_decode_mpeg
 gap_filter
+gap_fmac
 gap_frontends
 gap_name2layer
 gap_navigator_dialog
