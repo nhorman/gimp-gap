@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: gimp 2.0.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2004-10-09 16:25+0200\n"
-"PO-Revision-Date: 2004-10-09 20:37+0200\n"
+"PO-Revision-Date: 2004-10-09 22:55+0200\n"
 "Last-Translator: Marco Ciampa <ciampix@libero.it>\n"
 "Language-Team: gimp.linux.it\n"
 "MIME-Version: 1.0\n"
@@ -7374,7 +7374,7 @@ msgstr "Seleziona file"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1027
 msgid "FFMPEG Video Encode Parameters"
-msgstr ""
+msgstr "Parametri codificatore video FFMPEG"
 
 #. ==================
 #. the preset frame
@@ -7441,7 +7441,7 @@ msgstr "Formato file:"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1210
 msgid "The output multimedia fileformat"
-msgstr ""
+msgstr "Il formato del file multimediale in uscita"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1214
 msgid "avi"
@@ -7548,47 +7548,47 @@ msgstr "qscale:"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1424
 msgid "use fixed video quantiser scale (VBR) (0=const Bitrate)"
-msgstr ""
+msgstr "usa scala fissa quantizzatore video (VBR) (0=velocità bit costante)"
 
 #. the qmin label
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1429
 msgid "qmin:"
-msgstr ""
+msgstr "qmin:"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1443
 msgid "min video quantiser scale (VBR)"
-msgstr ""
+msgstr "scala quantizzatore video minima (VBR)"
 
 #. the qmax label
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1446
 msgid "qmax:"
-msgstr ""
+msgstr "qmax:"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1460
 msgid "max video quantiser scale (VBR)"
-msgstr ""
+msgstr "scala quantizzatore video massima (VBR)"
 
 #. the qdiff label
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1464
 msgid "qdiff:"
-msgstr ""
+msgstr "qdiff:"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1478
 msgid "max difference between the quantiser scale (VBR)"
-msgstr ""
+msgstr "massima differenza tra scale del quantizzatore (VBR)"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1483
 msgid "FFMpeg Expert Encoder Algorithms and Flags"
-msgstr ""
+msgstr "Flag e algoritmi codificatore avanzato FFMpeg"
 
 #. the notebook page label for expert algorithms
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1489
 msgid "Expert Algorithms"
-msgstr ""
+msgstr "Algoritmi avanzati"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1500
 msgid "Motion Estimation:"
-msgstr ""
+msgstr "Stima del moto:"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1507
 msgid "DCT algorithm:"
@@ -7600,7 +7600,7 @@ msgstr "Algoritmo IDCT:"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1527
 msgid "Select algorithm for motion estimation"
-msgstr ""
+msgstr "Selezione algoritmo per la stima del moto"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1530
 msgid "1 zero (fastest)"
@@ -7694,23 +7694,23 @@ msgstr "8 altivec"
 #. the MB_DECISION label
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1728
 msgid "MB Decision:"
-msgstr ""
+msgstr "Decisione MB:"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1742
 msgid "Select algorithm for macroblock decision"
-msgstr ""
+msgstr "Seleziona algoritmo per la decisione macroblocchi"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1746
 msgid "simple (use mb_cmp)"
-msgstr ""
+msgstr "semplice (usa mb_cmp)"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1754
 msgid "bits (the one which needs fewest bits)"
-msgstr ""
+msgstr "bits (quella che necessita di meno bit)"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1762
 msgid "rate distoration"
-msgstr ""
+msgstr "distorsione di velocità"
 
 #. the GOP label
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1774
@@ -7798,7 +7798,7 @@ msgstr "Imposta rapporto dimensioni"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1904
 msgid "auto from pixelsize"
-msgstr ""
+msgstr "auto dall'ampiezza pixel"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1912
 msgid "4:3"
@@ -7817,7 +7817,7 @@ msgid ""
 "Bypass the FFMPEG Vidoencoder where inputframes can be copied 1:1 from an "
 "input MPEG videofile.This experimental feature provides lossless MPEG video "
 "cut, but works only for the MPEG Fileformats."
-msgstr ""
+msgstr "Salta il codificatore video FFMPEG quando le frame in infresso possono essere copiate 1:1 dal file video MPEG in ingresso. Questa caratteristica sperimentale prevede tagli video MPEG senza perdite ma funziona solo per formati di file video MPEG."
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1950
 msgid "FFMpeg Expert Encoder Options"
@@ -7926,23 +7926,23 @@ msgstr "quanto essere aderenti agli standard"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2150
 msgid "mb-qmin:"
-msgstr ""
+msgstr "mb-qmin:"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2157
 msgid "mb-qmax:"
-msgstr ""
+msgstr "mb-qmax:"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2170
 msgid "min macroblock quantiser scale (VBR)"
-msgstr ""
+msgstr "scala minima quantizzatore macroblocchi (VBR)"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2178
 msgid "max macroblock quantiser scale (VBR)"
-msgstr ""
+msgstr "scala massima quantizzatore macroblocchi (VBR)"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2181
 msgid "FFMpeg 2 Pass Expert settings"
-msgstr ""
+msgstr "Impostazioni avanzate passo 2 FFMpeg"
 
 #. the notebook page label for 2 Pass Expert settings
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2187
@@ -7973,7 +7973,7 @@ msgstr "Attiva la codifica a due passi se selezionata"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2237
 msgid "FFMpeg File Comment settings"
-msgstr ""
+msgstr "Impostazioni commenti file FFMpeg"
 
 #. the notebook page label for file comment settings
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2243
@@ -7996,7 +7996,7 @@ msgstr ""
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:358
 msgid "ffmpeg video encoding for anim frames. Menu: @FFMPEG@"
-msgstr ""
+msgstr "codifica video ffmpeg per frame animate. Menu: @FFMPEG@"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:359
 msgid ""
@@ -8009,11 +8009,11 @@ msgstr ""
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:378
 msgid "Set Parameters for GAP ffmpeg video encoder Plugin"
-msgstr ""
+msgstr "Imposta i parametri per il plugin codificatore video ffmpeg GAP"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:379
 msgid "This plugin sets ffmpeg specific video encoding parameters."
-msgstr ""
+msgstr "Questo plugin imposta i parametri specifici per la codifica video ffmpeg."
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:392
 msgid "Get GUI Parameters for GAP ffmpeg video encoder"
@@ -8021,7 +8021,7 @@ msgstr "Ottieni parametri GUI per il codificatore video GAP ffmpeg"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:393
 msgid "This plugin returns ffmpeg encoder specific parameters."
-msgstr ""
+msgstr "Questo plugin restituisce i parametri specifici per la codifica ffmpeg."
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:482
 msgid ""
@@ -8029,15 +8029,18 @@ msgid ""
 "writes AVI/DivX or MPEG1, MPEG2 (DVD) or MPEG4 encoded videos\n"
 "based on FFMPEG by Fabrice Bellard"
 msgstr ""
+"Codificatore FFMPEG\n"
+"scrive video codificati AVI/DivX, MPEG1, MPEG3 (DVD) o MPEG4\n"
+"basato su FFMPEG di Fabrice Bellard"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:918
 #, c-format
 msgid "Frame width and height must be a multiple of 2\n"
-msgstr ""
+msgstr "L'ampiezza e l'altezza frame devono essere multipli di 2\n"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:1815
 msgid "FFMPEG Video Encoding .."
-msgstr ""
+msgstr "Codifica video FFMPEG .."
 
 #: vid_enc_single/gap_enc_singleframes_main.c:180
 msgid "singleframes video encoding for anim frames. Menu: @SINGLEFRAMES@"
