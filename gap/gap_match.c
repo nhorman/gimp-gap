@@ -28,11 +28,11 @@
 /* revision history:
  * gimp   1.3.20a;   2003/09/14  hof: p_match_name increased limit of 256 bytes to 2048
  * gimp   1.1.29b;   2000/11/30  hof: used g_snprintf
- * version 0.97.00  1998.10.14  hof: - created module 
+ * version 0.97.00  1998.10.14  hof: - created module
  */
 #include "config.h"
- 
-/* SYSTEM (UNIX) includes */ 
+
+/* SYSTEM (UNIX) includes */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -50,13 +50,13 @@ p_is_empty (const char *str)
 {
   if(str == NULL)  return(TRUE);
   if(*str == '\0') return(TRUE);
-  
+
   while(*str != '\0')
   {
     if(*str != ' ') return(FALSE);
     str++;
   }
-  
+
   return(TRUE);
 }
 
@@ -73,7 +73,7 @@ p_substitute_framenr (char *buffer, int buff_len, char *new_layername, long curr
   int l_digits;
   int l_cpy;
   char  l_fmt_str[21];
-  
+
   l_fmt_str[0] = '%';
   l_fmt_str[1] = '0';
   l_digits = 0;
@@ -106,7 +106,7 @@ p_substitute_framenr (char *buffer, int buff_len, char *new_layername, long curr
 	    l_digits--;
 	    g_snprintf(&l_fmt_str[2], sizeof(l_fmt_str) -2,  "%dd", l_digits);
 	    g_snprintf(&buffer[l_idx], buff_len - l_idx, l_fmt_str, (int)curr);
-	    l_idx += l_digits; 
+	    l_idx += l_digits;
             l_digits = 0;
 	    l_cpy    = 0;
 	  }
@@ -120,12 +120,12 @@ p_substitute_framenr (char *buffer, int buff_len, char *new_layername, long curr
         buffer[l_idx] = (*new_layername);
         l_idx++;
       }
-     
+
       new_layername++;
 
     }
   }
-  
+
   buffer[l_idx] = '\0';
 }	/* end p_substitute_framenr */
 
@@ -141,7 +141,7 @@ void str_toupper(char *str)
      }
   }
 }
-  
+
 
 /* match layer_idx (int) with pattern
  * pattern contains a list like that:
@@ -153,7 +153,7 @@ int p_match_number(gint32 layer_idx, const char *pattern)
    const char *l_ptr;
    int         l_idx;
    gint32      l_num, l_range_start;
-   
+
    l_idx = 0;
    l_num = -1; l_range_start = -1;
    for(l_ptr = pattern; 1 == 1; l_ptr++)
@@ -170,12 +170,12 @@ int p_match_number(gint32 layer_idx, const char *pattern)
             /* now we are one character past a number */
             l_digit_buff[l_idx] = '\0';
             l_num = atol(l_digit_buff);  /* scann the number */
-            
+
             if(l_num == layer_idx)
             {
                return(TRUE);             /* matches number exactly */
             }
-            
+
             if((l_range_start >= 0)
             && (layer_idx >= l_range_start) && (layer_idx <= l_num ))
             {
@@ -205,10 +205,10 @@ int p_match_number(gint32 layer_idx, const char *pattern)
                  break;
             default:
                /* found illegal characters */
-               /* return (FALSE); */  
+               /* return (FALSE); */
                l_num = -1;             /* disable number for opening a range */
                l_range_start = -1;     /* disable number for opening a range */
-               
+
                break;
           }
       }
@@ -216,7 +216,7 @@ int p_match_number(gint32 layer_idx, const char *pattern)
 
    return(FALSE);
 }	/* end p_match_number */
-  
+
 
 /* simple stringmatching without wildcards */
 int p_match_name(const char *layername, const char *pattern, gint32 mode, gint32 case_sensitive)
@@ -231,7 +231,7 @@ int p_match_name(const char *layername, const char *pattern, gint32 mode, gint32
 
    if(pattern == NULL)   return (FALSE);
    if(layername == NULL) return (FALSE);
- 
+
    if(case_sensitive)
    {
      /* case sensitive can compare on the originals */
@@ -243,10 +243,10 @@ int p_match_name(const char *layername, const char *pattern, gint32 mode, gint32
      /* ignore case by converting everything to UPPER before compare */
      g_snprintf(l_name_buff, sizeof(l_name_buff), "%s", layername);
      g_snprintf(l_patt_buff, sizeof(l_patt_buff), "%s", pattern);
- 
+
      str_toupper (l_name_buff);
      str_toupper (l_patt_buff);
-      
+
      l_name_ptr = l_name_buff;
      l_patt_ptr = l_patt_buff;
    }
@@ -290,7 +290,7 @@ int p_match_name(const char *layername, const char *pattern, gint32 mode, gint32
            break;
       default:
            break;
-   
+
    }
 
    return (FALSE);
@@ -317,7 +317,7 @@ int p_match_layer(gint32 layer_idx, const char *layername, const char *pattern,
           l_rc = p_match_name(layername, pattern, mode, case_sensitive);
           break;
    }
-   
+
    if(invert == TRUE)
    {
       if(l_rc == FALSE)  { return(TRUE); }
