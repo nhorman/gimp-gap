@@ -26,6 +26,8 @@
  */
 
 /* revision history:
+ * gimp    1.3.24a; 2004/01/17  hof: bugfix: call of plug_in_gap_range_to_multilayer needs regionselect_mode
+ *                                   use faster procedure gap_thumb_file_load_thumbnail to load thumbnaildata
  * gimp    1.3.23a; 2003/11/26  hof: follow API changes for gimp_dialog_new
  * gimp    1.3.20d; 2003/10/18  hof: sourcecode cleanup, remove close button
  * gimp    1.3.19a; 2003/09/06  hof: call plug_in_gap_videoframes_player with dummy audioparameters
@@ -1603,13 +1605,24 @@ navi_thumb_update(gboolean update_all)
        gint32  l_th_width;
        gint32  l_th_height;
        gint32  l_th_data_count;
+       gint32  l_th_bpp;
        guchar *l_raw_thumb;
 
+       /* init preferred width and height
+        * (as hint for the thumbnail loader to decide
+        *  if thumbnail is to fetch from normal or large thumbnail directory
+        *  just for the case when both sizes are available)
+        */
+       l_th_width = naviD->preview_size;
+       l_th_height = naviD->preview_size;
+       l_th_bpp = 3;   /* force flatten th_data from RGBA to RBG */
+      
        l_raw_thumb = NULL;
-       if(TRUE == gap_pdb_gimp_file_load_thumbnail(l_image_filename
+       if(TRUE == gap_thumb_file_load_thumbnail(l_image_filename
                                   , &l_th_width
                                   , &l_th_height
                                   , &l_th_data_count
+				  , &l_th_bpp
                                   , &l_raw_thumb
                                   ))
 
@@ -1768,6 +1781,7 @@ navi_playback(gboolean use_gimp_layeranimplayer)
                                     GIMP_PDB_INT32,    0,     /* ignore case */
                                     GIMP_PDB_INT32,    0,     /* normal selection (no invert) */
                                     GIMP_PDB_STRING,   "0",   /* select string (ignored) */
+                                    GIMP_PDB_INT32,    0,     /* use full layersize, ignore selection */
                                    GIMP_PDB_END);
 
   if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
@@ -2258,7 +2272,7 @@ navi_render_preview (FrameWidget *fw)
    gint32  l_th_width;
    gint32  l_th_height;
    gint32  l_th_data_count;
-   gint    l_th_bpp;
+   gint32  l_th_bpp;
    guchar *l_th_data;
    gint32  l_thumbdata_count;
 
@@ -2378,10 +2392,19 @@ navi_render_preview (FrameWidget *fw)
        if(gap_debug) printf("navi_render_preview: fetching THUMBNAILFILE for: %s\n", l_frame_filename);
        if(l_frame_filename)
        {
-         gap_pdb_gimp_file_load_thumbnail(l_frame_filename
+	 /* init preferred width and height
+	  * (as hint for the thumbnail loader to decide
+	  *  if thumbnail is to fetch from normal or large thumbnail directory
+	  *  just for the case when both sizes are available)
+	  */
+	 l_th_width = naviD->preview_size;
+	 l_th_height = naviD->preview_size;
+	 l_th_bpp = 3;   /* force flatten th_data from RGBA to RBG */
+         gap_thumb_file_load_thumbnail(l_frame_filename
                                    , &l_th_width
                                    , &l_th_height
                                    , &l_th_data_count
+				   , &l_th_bpp
                                    , &l_th_data
                                    );
        }

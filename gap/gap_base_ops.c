@@ -1736,7 +1736,7 @@ gap_lib_rename_frame_digits(GapAnimInfo *ainfo_ptr, long from_nr, long to_nr, lo
    if(gap_debug) printf("DEBUG gap_lib_rename_frame_digits: %s ..to.. %s\n", l_from_fname, l_to_fname);
    l_rc = rename(l_from_fname, l_to_fname);
 
-   gap_thumb_gimp_file_rename_thumbnail(l_from_fname, l_to_fname);
+   gap_thumb_file_rename_thumbnail(l_from_fname, l_to_fname);
 
 
    if (from_nr == ainfo_ptr->curr_frame_nr)

@@ -1,4 +1,4 @@
-Project gap "GIMP Animation Package"   06. Dec. 2003  (pre)release 1.3.23b
+Project gap "GIMP Animation Package"   17. Jan. 2004  (pre)release 1.3.24a
 
 --------------------------------------------------------------------
 Introduction
@@ -1182,7 +1182,16 @@ How to use
        "Save Selection to Channel",
        "Load Selection from Channel",
        "Delete Channel (by Name)"
-    
+       "Add alpha channel",
+       "Add white layermask (opaque)",
+       "Add black layermask (transparent)",
+       "Add layermask from alpha",
+       "Add layermask transfer from alpha",
+       "Add layermask from selection",
+       "Add layermask from bw copy",
+       "Delete layermask",
+       "Apply layermask"
+
 
     The Functions 
        "Replace Selection",

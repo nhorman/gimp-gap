@@ -406,7 +406,7 @@ gap_lib_delete_frame(GapAnimInfo *ainfo_ptr, long nr)
    if(gap_debug) printf("\nDEBUG gap_lib_delete_frame: %s\n", l_fname);
    l_rc = remove(l_fname);
 
-   gap_thumb_gimp_file_delete_thumbnail(l_fname);
+   gap_thumb_file_delete_thumbnail(l_fname);
 
    g_free(l_fname);
 
@@ -435,7 +435,7 @@ gap_lib_rename_frame(GapAnimInfo *ainfo_ptr, long from_nr, long to_nr)
    if(gap_debug) printf("\nDEBUG gap_lib_rename_frame: %s ..to.. %s\n", l_from_fname, l_to_fname);
    l_rc = rename(l_from_fname, l_to_fname);
 
-   gap_thumb_gimp_file_rename_thumbnail(l_from_fname, l_to_fname);
+   gap_thumb_file_rename_thumbnail(l_from_fname, l_to_fname);
 
 
    g_free(l_from_fname);
@@ -1984,7 +1984,7 @@ p_clear_or_count_video_paste(gint delete_flag)
                 remove(l_filename);
 
                 /* also delete thumbnail */
-                gap_thumb_gimp_file_delete_thumbnail(l_filename);
+                gap_thumb_file_delete_thumbnail(l_filename);
              }
           }
           g_free(l_filename);

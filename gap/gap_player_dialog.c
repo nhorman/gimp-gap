@@ -28,6 +28,7 @@
  */
 
 /* Revision history
+ *  (2004/01/16)  v1.3.22c   hof: use gap_thumb_file_load_thumbnail (for faster thumb loading) 
  *  (2003/11/15)  v1.3.22c   hof: bugfix: SHIFT size button
  *  (2003/11/01)  v1.3.21d   hof: cleanup messages
  *  (2003/10/14)  v1.3.20d   hof: sourcecode cleanup
@@ -1279,9 +1280,20 @@ p_display_frame(GapPlayerMainGlobalParams *gpp, gint32 framenr)
     }
     else
     {
-      gap_pdb_gimp_file_load_thumbnail(l_filename
+      /* init preferred width and height
+       * (as hint for the thumbnail loader to decide
+       *  if thumbnail is to fetch from normal or large thumbnail director
+       *  just for the case when both sizes are available)
+       */
+      l_th_width = gpp->pv_width;
+      l_th_height = gpp->pv_height;
+      l_th_bpp = 3;   /* force flatten th_data from RGBA to RBG */
+      
+      gap_thumb_file_load_thumbnail(l_filename
                                 , &l_th_width, &l_th_height
-                                , &l_th_data_count, &l_th_data);
+                                , &l_th_data_count
+				, &l_th_bpp
+				, &l_th_data);
     }
   }
 

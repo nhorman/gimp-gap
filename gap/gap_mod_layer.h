@@ -28,6 +28,7 @@
  */
 
 /* revision history:
+ * gimp   1.3.24a;   2004/01/17  hof: added Layermask Handling (the GAP_MOD_ACM_LMASK_xxx modes)
  * version 0.98.00   1998.11.27  hof: - use new module gap_pdb_calls.h
  * version 0.97.00              hof: - created module (as extract gap_fileter_foreach)
  */
@@ -62,6 +63,16 @@
 #define	 GAP_MOD_ACM_SEL_SAVE      20
 #define	 GAP_MOD_ACM_SEL_LOAD      21
 #define	 GAP_MOD_ACM_SEL_DELETE    22
+
+#define	 GAP_MOD_ACM_ADD_ALPHA        23
+#define	 GAP_MOD_ACM_LMASK_WHITE      24
+#define	 GAP_MOD_ACM_LMASK_BLACK      25
+#define	 GAP_MOD_ACM_LMASK_ALPHA      26
+#define	 GAP_MOD_ACM_LMASK_TALPHA     27
+#define	 GAP_MOD_ACM_LMASK_SEL        28
+#define	 GAP_MOD_ACM_LMASK_BWCOPY     29
+#define	 GAP_MOD_ACM_LMASK_DELETE     30
+#define	 GAP_MOD_ACM_LMASK_APPLY      31
 
 typedef struct
 {

@@ -58,7 +58,11 @@ libexec_PROGRAMS = \
 	gap_name2layer		\
 	gap_navigator_dialog	\
 	gap_player		\
-        gap_onion
+        gap_onion		\
+	gap_wr_color_curve	\
+	gap_wr_color_levels	\
+	gap_wr_color_huesat	\
+	gap_wr_opacity
 
 gap_bluebox_SOURCES = \
 	gap_lastvaldesc.c	\
@@ -167,6 +171,24 @@ gap_onion_SOURCES = \
 	gap_onion_worker.h	\
 	gap_libgimpgap.h	
 
+gap_wr_opacity_SOURCES = \
+	gap_lastvaldesc.c	\
+	gap_lastvaldesc.h	\
+	gap_wr_opacity.c	\
+	gap_libgimpgap.h	
+
+gap_wr_color_curve_SOURCES = \
+	gap_wr_color_curve.c	\
+	gap_libgimpgap.h	
+
+gap_wr_color_levels_SOURCES = \
+	gap_wr_color_levels.c	\
+	gap_libgimpgap.h	
+
+gap_wr_color_huesat_SOURCES = \
+	gap_wr_color_huesat.c	\
+	gap_libgimpgap.h	
+
 AM_CPPFLAGS = \
 	-DGAPLIBDIR=\""$(GAPLIBDIR)"\"	\
 	-DLOCALEDIR=\""$(LOCALEDIR)"\"
@@ -177,47 +199,67 @@ INCLUDES = \
 	$(GIMP_CFLAGS)	\
 	-I$(includedir)
 
+
 LDADD = \
 	$(GIMP_LIBS)
 
 
+# workaround: -lgimpthumb-1.3 should be included in $(GIMP_LIBS)
+#             but is missing (bug in gimptool-1.3)   -lgimpthumb-1.3
+
+
 gap_bluebox_LDADD = \
 	$(LIBGIMPGAP)\
-	$(GIMP_LIBS)
+	$(GIMP_LIBS)   -lgimpthumb-1.3
 
 gap_plugins_LDADD = \
 	$(LIBGIMPGAP)\
-	$(GIMP_LIBS)
+	$(GIMP_LIBS)   -lgimpthumb-1.3
 
 gap_filter_LDADD = \
 	$(LIBGIMPGAP)\
-	$(GIMP_LIBS)
+	$(GIMP_LIBS)   -lgimpthumb-1.3
 
 gap_fmac_LDADD = \
 	$(LIBGIMPGAP)\
-	$(GIMP_LIBS)
+	$(GIMP_LIBS)   -lgimpthumb-1.3
 
 gap_frontends_LDADD = \
 	$(LIBGIMPGAP)\
-	$(GIMP_LIBS)
+	$(GIMP_LIBS)   -lgimpthumb-1.3
 
 gap_name2layer_LDADD = \
 	$(LIBGIMPGAP)\
-	$(GIMP_LIBS)
+	$(GIMP_LIBS)   -lgimpthumb-1.3
 
 gap_navigator_dialog_LDADD = \
 	$(LIBGIMPGAP)\
-	$(GIMP_LIBS)
+	$(GIMP_LIBS)   -lgimpthumb-1.3
 
 gap_player_LDADD = \
 	$(LIBGIMPGAP)\
 	$(WAVPLAYCLIENT)\
-	$(GIMP_LIBS)
+	$(GIMP_LIBS)   -lgimpthumb-1.3
 
 gap_onion_LDADD = \
 	$(LIBGIMPGAP)\
-	$(GIMP_LIBS)
+	$(GIMP_LIBS)   -lgimpthumb-1.3
 
+gap_wr_opacity_LDADD = \
+	$(LIBGIMPGAP)\
+	$(GIMP_LIBS)   -lgimpthumb-1.3
+
+gap_wr_color_curve_LDADD = \
+	$(LIBGIMPGAP)\
+	$(GIMP_LIBS)   -lgimpthumb-1.3
+
+gap_wr_color_levels_LDADD = \
+	$(LIBGIMPGAP)\
+	$(GIMP_LIBS)   -lgimpthumb-1.3
+
+gap_wr_color_huesat_LDADD = \
+	$(LIBGIMPGAP)\
+	$(GIMP_LIBS)   -lgimpthumb-1.3
 
 EXTRA_DIST = \
 	README							\

@@ -28,6 +28,7 @@
  */
 
 /* revision history:
+ * gimp   1.3.24a;   2004/01/17  hof: added Layermask Handling
  * gimp   1.3.20d;   2003/09/20  hof: sourcecode cleanup,
  *                                    added new Actionmodes for Selction handling
  * gimp   1.3.20b;   2003/09/20  hof: gap_db_browser_dialog new param image_id
@@ -113,7 +114,7 @@ int p_layer_modify_dialog(GapAnimInfo *ainfo_ptr,
                                   };
 
   /* action items what to do with the selected layer(s) */
-  static char *action_args[23]= { N_("Set layer(s) visible"),
+  static char *action_args[32]= { N_("Set layer(s) visible"),
                                   N_("Set layer(s) invisible"),
                                   N_("Set layer(s) linked"),
                                   N_("Set layer(s) unlinked"),
@@ -135,12 +136,21 @@ int p_layer_modify_dialog(GapAnimInfo *ainfo_ptr,
                                   N_("Selection invert"),
                                   N_("Save selection to channel"),
 				  N_("Load selection from channel"),
-                                  N_("Delete channel (by name)")
+                                  N_("Delete channel (by name)"),
+				  N_("Add alpha channel"),
+				  N_("Add white layermask (opaque)"),
+				  N_("Add black layermask (transparent)"),
+				  N_("Add layermask from alpha"),
+				  N_("Add layermask transfer from alpha"),
+				  N_("Add layermask from selection"),
+				  N_("Add layermask from bw copy"),
+				  N_("Delete layermask"),
+				  N_("Apply layermask")
                                   };
 
 
 /*
-  static char *action_help[23]  = {"set all selected layers visible",
+  static char *action_help[32]  = {"set all selected layers visible",
                                   "set all selected layers  invisible",
                                   "set all selected layers  linked",
                                   "set all selected layers  unlinked",
@@ -412,7 +422,7 @@ gap_mod_alloc_layli(gint32 image_id, gint32 *l_sel_cnt, gint *nlayers,
     {
       (*l_sel_cnt)++;  /* count all selected layers */
     }
-    if(gap_debug) printf("gap: gap_mod_alloc_layli [%d] id:%d, sel:%d %s\n",
+    if(gap_debug) printf("gap: gap_mod_alloc_layli [%d] id:%d, sel:%d name:%s:\n",
                          (int)l_idx, (int)l_layer_id,
 			 (int)l_layli_ptr[l_idx].selected, l_layername);
     g_free (l_layername);
@@ -524,6 +534,7 @@ p_apply_action(gint32 image_id,
   int   l_idx;
   int   l_rc;
   gint32  l_layer_id;
+  gint32  l_layermask_id;
   gint32  l_new_layer_id;
   gint    l_merge_mode;
   gint    l_vis_result;
@@ -767,6 +778,71 @@ p_apply_action(gint32 image_id,
 	        g_free(l_channels);
 	      }
 	    }
+	  }
+	  break;
+        case GAP_MOD_ACM_ADD_ALPHA:
+	  if(!gimp_drawable_has_alpha(l_layer_id))
+	  {
+	    gimp_layer_add_alpha(l_layer_id);
+	  }
+	  break;
+        case GAP_MOD_ACM_LMASK_WHITE:
+	  if(gimp_layer_get_mask(l_layer_id) >= 0)
+	  {
+	    gimp_layer_remove_mask (l_layer_id, GIMP_MASK_APPLY);
+	  }
+	  l_layermask_id = gimp_layer_create_mask(l_layer_id, GIMP_ADD_WHITE_MASK);
+	  gimp_layer_add_mask(l_layer_id, l_layermask_id);
+	  break;
+        case GAP_MOD_ACM_LMASK_BLACK:
+	  if(gimp_layer_get_mask(l_layer_id) >= 0)
+	  {
+	    gimp_layer_remove_mask (l_layer_id, GIMP_MASK_APPLY);
+	  }
+	  l_layermask_id = gimp_layer_create_mask(l_layer_id, GIMP_ADD_BLACK_MASK);
+	  gimp_layer_add_mask(l_layer_id, l_layermask_id);
+	  break;
+        case GAP_MOD_ACM_LMASK_ALPHA:
+	  if(gimp_layer_get_mask(l_layer_id) >= 0)
+	  {
+	    gimp_layer_remove_mask (l_layer_id, GIMP_MASK_APPLY);
+	  }
+	  l_layermask_id = gimp_layer_create_mask(l_layer_id, GIMP_ADD_ALPHA_MASK);
+	  gimp_layer_add_mask(l_layer_id, l_layermask_id);
+	  break;
+        case GAP_MOD_ACM_LMASK_TALPHA:
+	  if(gimp_layer_get_mask(l_layer_id) >= 0)
+	  {
+	    gimp_layer_remove_mask (l_layer_id, GIMP_MASK_APPLY);
+	  }
+	  l_layermask_id = gimp_layer_create_mask(l_layer_id, GIMP_ADD_ALPHA_TRANSFER_MASK);
+	  gimp_layer_add_mask(l_layer_id, l_layermask_id);
+	  break;
+        case GAP_MOD_ACM_LMASK_SEL:
+	  if(gimp_layer_get_mask(l_layer_id) >= 0)
+	  {
+	    gimp_layer_remove_mask (l_layer_id, GIMP_MASK_APPLY);
+	  }
+	  l_layermask_id = gimp_layer_create_mask(l_layer_id, GIMP_ADD_SELECTION_MASK);
+	  break;
+        case GAP_MOD_ACM_LMASK_BWCOPY:
+	  if(gimp_layer_get_mask(l_layer_id) >= 0)
+	  {
+	    gimp_layer_remove_mask (l_layer_id, GIMP_MASK_APPLY);
+	  }
+	  l_layermask_id = gimp_layer_create_mask(l_layer_id, GIMP_ADD_COPY_MASK);
+	  gimp_layer_add_mask(l_layer_id, l_layermask_id);
+	  break;
+        case GAP_MOD_ACM_LMASK_DELETE:
+	  if(gimp_layer_get_mask(l_layer_id) >= 0)
+	  {
+	    gimp_layer_remove_mask (l_layer_id, GIMP_MASK_DISCARD);
+	  }
+	  break;
+        case GAP_MOD_ACM_LMASK_APPLY:
+	  if(gimp_layer_get_mask(l_layer_id) >= 0)
+	  {
+	    gimp_layer_remove_mask (l_layer_id, GIMP_MASK_APPLY);
 	  }
 	  break;
         default:

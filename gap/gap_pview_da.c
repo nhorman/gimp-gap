@@ -23,6 +23,9 @@
  */
 
 /* revision history:
+ * version 1.3.24a; 2004/01/17  hof: speed up gap_pview_render_from_buf 
+ *                                   faster rendering of fully opaque pixels
+ *                                   for buffers with alpha channel
  * version 1.3.16a; 2003/06/26  hof: use aspect_frame instead of simple frame
  *                                   added gap_pview_render_default_icon
  * version 1.3.14c; 2003/06/19  hof: created
@@ -369,8 +372,16 @@ gap_pview_render_from_buf (GapPView *pv_ptr
                                   * pv_ptr->src_rowstride];
         for ( col = 0; col < pv_ptr->pv_width; col++ )
         {
-            src = &src_row[ pv_ptr->src_col[col] ];
-            alpha = src[ofs_alpha];
+          src = &src_row[ pv_ptr->src_col[col] ];
+          alpha = src[ofs_alpha];
+	  if(alpha == 255)
+	  {
+            *(dest++) = src[0];
+            *(dest++) = src[ofs_green];
+            *(dest++) = src[ofs_blue];
+	  }
+	  else
+	  {
             if(((col+ii) / pv_ptr->pv_check_size) & 1)
             {
               *(dest++) = MIX_CHANNEL (PREVIEW_BG_GRAY1, src[0], alpha);
@@ -383,6 +394,7 @@ gap_pview_render_from_buf (GapPView *pv_ptr
               *(dest++) = MIX_CHANNEL (PREVIEW_BG_GRAY2, src[ofs_green], alpha);
               *(dest++) = MIX_CHANNEL (PREVIEW_BG_GRAY2, src[ofs_blue], alpha);
             }
+	  }
         }
     }
   }

@@ -6,7 +6,7 @@ AM_CONFIG_HEADER(config.h)
 
 GAP_MAJOR_VERSION=1
 GAP_MINOR_VERSION=3
-GAP_MICRO_VERSION=23
+GAP_MICRO_VERSION=24
 GAP_VERSION=$GAP_MAJOR_VERSION.$GAP_MINOR_VERSION.$GAP_MICRO_VERSION
 
 VERSION=$GAP_VERSION
@@ -17,6 +17,11 @@ AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE",
                    [The gettext translation domain.])
 
 AM_INIT_AUTOMAKE(gimp-gap, $VERSION)
+
+dnl used hardcoded versions because $GAP_MAJOR_VERSION does not expand at config.h generation
+AC_DEFINE(GAP_MAJOR_VERSION, 1, [gimp-gap major release number])
+AC_DEFINE(GAP_MINOR_VERSION, 3, [gimp-gap major release number])
+AC_DEFINE(GAP_MICRO_VERSION, 24, [gimp-gap major release number])
 
 AC_PROG_CC
 AC_ISC_POSIX
@@ -32,6 +37,19 @@ AC_CHECK_FUNCS(bind_textdomain_codeset)
 
 AM_MAINTAINER_MODE
 
+dnl AM_PATH_GIMP_2_0(1.3.24, , AC_MSG_ERROR(Cannot find GIMP-2.0.))
+dnl hof: hof: workaround (removed error message and continue 
+dnl hof:      -- gimp-2.0 is installed on my system (only once), and LD_LIBRARY_PATH is set correct
+dnl hof:      but there are other problems i could not fix yet, resulting in following messages:
+dnl hof: *** The test program compiled, but did not run. This usually means
+dnl hof: *** that the run-time linker is not finding GIMP or finding the wrong
+dnl hof: *** version of GIMP. If it is not finding GIMP, you'll need to set your
+dnl hof: *** LD_LIBRARY_PATH environment variable, or edit /etc/ld.so.conf to point
+dnl hof: *** to the installed location  Also, make sure you have run ldconfig if that
+dnl hof: *** is required on your system
+dnl hof: ***
+dnl hof: *** If you have an old version installed, it is best to remove it, although
+dnl hof: *** you may also be able to get things to work by modifying LD_LIBRARY_PATH
 AM_PATH_GIMP_2_0(1.3.24, , AC_MSG_ERROR(Cannot find GIMP-2.0.))
 
 

@@ -26,6 +26,7 @@
  */
 
 /* revision history:
+ * 1.3.24a  2004/01/16   hof: added gap_thumb_file_load_thumbnail
  * 1.3.14b  2003/06/03   hof: removed p_gimp_file_has_valid_thumbnail
  * 1.3.14a  2003/05/27   hof: created
  */
@@ -60,9 +61,14 @@ gboolean          gap_thumb_thumbnailsave_is_on(void);
 gboolean          gap_thumb_cond_gimp_file_save_thumbnail(gint32 image_id, char* filename);
 
 
-void              gap_thumb_gimp_file_delete_thumbnail(char *filename);
+void              gap_thumb_file_delete_thumbnail(char *filename);
 void              gap_thumb_file_copy_thumbnail(char *filename_src, char *filename_dst);
-void              gap_thumb_gimp_file_rename_thumbnail(char *filename_src, char *filename_dst);
+void              gap_thumb_file_rename_thumbnail(char *filename_src, char *filename_dst);
+gboolean          gap_thumb_file_load_thumbnail(char* filename
+                                               , gint32 *th_width, gint32 *th_height
+                                               , gint32 *th_data_count
+					       , gint32 *th_bpp
+					       , unsigned char **th_data);
 
 
 #endif

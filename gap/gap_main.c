@@ -38,9 +38,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-static char *gap_main_version =  "1.3.23b; 2003/12/06";
+static char *gap_main_version_fmt =  "%d.%d.%da; 2004/01/17";
 
 /* revision history:
+ * gimp    1.3.24a; 2004/01/17  hof: - get main version from config.h, fixed PDB docs for plug_in_gap_modify
  * gimp    1.3.23b; 2003/12/06  hof: - updated main version
  * gimp    1.3.22a; 2003/10/09  hof: - updated main version
  * gimp    1.3.21a; 2003/10/09  hof: - updated main version
@@ -521,7 +522,39 @@ GimpPlugInInfo PLUG_IN_INFO =
     {GIMP_PDB_DRAWABLE, "drawable", "Input drawable (unused)"},
     {GIMP_PDB_INT32, "range_from", "frame nr to start"},
     {GIMP_PDB_INT32, "range_to", "frame nr to stop"},
-    {GIMP_PDB_INT32, "action_mode", "0:set_visible, 1:set_invisible, 2:set_linked, 3:set_unlinked, 4:raise, 5:lower, 6:merge_expand, 7:merge_img, 8:merge_bg, 9:apply_filter, 10:duplicate, 11:delete, 12:rename"},
+    {GIMP_PDB_INT32, "action_mode", "0:set_visible"
+                                    ", 1:set_invisible"
+				    ", 2:set_linked"
+				    ", 3:set_unlinked"
+				    ", 4:raise"
+				    ", 5:lower"
+				    ", 6:merge_expand"
+				    ", 7:merge_img"
+				    ", 8:merge_bg"
+				    ", 9:apply_filter"
+				    ", 10:duplicate"
+				    ", 11:delete"
+				    ", 12:rename"
+				    ", 13:replace selection"
+				    ", 14:add selection"
+				    ", 15:sbtract selection"
+				    ", 16:intersect selection"
+				    ", 17:selection none"
+				    ", 18:selection all"
+				    ", 19:selection invert"
+				    ", 20:save selection to channel"
+				    ", 21:load selection from channel"
+				    ", 22:delete channel (by name)"
+				    ", 23:add alpha channel"
+				    ", 24:add white layermask (opaque)"
+				    ", 25:add black layermask (transparent)"
+				    ", 26:add alpha layermask"
+				    ", 27:add alpha transfer layermask"
+				    ", 28:add selection as layermask"
+				    ", 29:add bw copy as layermask"
+				    ", 30:delete layermask"
+				    ", 31:apply layermask"
+				    },
     {GIMP_PDB_INT32, "select_mode", "Mode how to identify a layer: 0-3 by layername 0=equal, 1=prefix, 2=suffix, 3=contains, 4=layerstack_numberslist, 5=inv_layerstack, 6=all_visible"},
     {GIMP_PDB_INT32, "select_case", "0: ignore case 1: select_string is case sensitive"},
     {GIMP_PDB_INT32, "select_invert", "0: select normal 1: invert (select all unselected layers)"},
@@ -588,6 +621,14 @@ static void
 query ()
 {
   gchar *l_help_str;
+  char  *gap_main_version;
+
+  /* get version numbers from config.h (that is derived from ../configure.in) */
+  gap_main_version = g_strdup_printf(gap_main_version_fmt
+                                    ,GAP_MAJOR_VERSION
+				    ,GAP_MINOR_VERSION
+				    ,GAP_MICRO_VERSION
+				    );
 
   gimp_plugin_domain_register (GETTEXT_PACKAGE, LOCALEDIR);
 

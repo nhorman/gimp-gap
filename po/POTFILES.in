@@ -29,3 +29,7 @@ gap/gap_range_ops.c
 gap/gap_resi_dialog.c
 gap/gap_split.c
 gap/gap_stock.c
+gap/gap_wr_opacity.c
+gap/gap_wr_color_curve.c
+gap/gap_wr_color_levels.c
+gap/gap_wr_color_huesat.c
