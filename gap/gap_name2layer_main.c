@@ -473,8 +473,8 @@ Naml_dialog(void)
 
   ii++; gap_arr_arg_init(&argv[ii], GAP_ARR_WGT_INT); ii_posx = ii;
   argv[ii].constraint = TRUE;
-  argv[ii].label_txt = _("PosX:");
-  argv[ii].help_txt  = _("Position X-Offset in pixels");
+  argv[ii].label_txt = _("X:");
+  argv[ii].help_txt  = _("Position X-offset in pixels");
   argv[ii].int_min   = (gint)-1000;
   argv[ii].int_max   = (gint)10000;
   argv[ii].int_ret   = (gint)glob_namlvals.posx;
@@ -484,8 +484,8 @@ Naml_dialog(void)
 
   ii++; gap_arr_arg_init(&argv[ii], GAP_ARR_WGT_INT); ii_posy = ii;
   argv[ii].constraint = TRUE;
-  argv[ii].label_txt = _("PosY:");
-  argv[ii].help_txt  = _("Position Y-Offset in pixels");
+  argv[ii].label_txt = _("Y:");
+  argv[ii].help_txt  = _("Position Y-offset in pixels");
   argv[ii].int_min   = (gint)-1000;
   argv[ii].int_max   = (gint)10000;
   argv[ii].int_ret   = (gint)glob_namlvals.posy;
@@ -495,14 +495,15 @@ Naml_dialog(void)
 
   ii++; gap_arr_arg_init(&argv[ii], GAP_ARR_WGT_TOGGLE); ii_antialias = ii;
   argv[ii].label_txt = _("Antialias:");
-  argv[ii].help_txt  = _("Use Antialias");
+  argv[ii].help_txt  = _("Use antialias");
   argv[ii].int_ret   = (gint)glob_namlvals.antialias;
   argv[ii].has_default = TRUE;
   argv[ii].int_default = 0;
 
   ii++; gap_arr_arg_init(&argv[ii], GAP_ARR_WGT_TOGGLE); ii_create_new_layer = ii;
   argv[ii].label_txt = _("Create Layer:");
-  argv[ii].help_txt  = _("ON: Create a new layer, OFF: Render on active Drawable");
+  argv[ii].help_txt  = _("ON: Create a new layer.\n"
+                         "OFF: Render on active drawable.");
   argv[ii].int_ret   = (gint)glob_namlvals.antialias;
   argv[ii].has_default = TRUE;
   argv[ii].int_default = 0;
@@ -510,7 +511,7 @@ Naml_dialog(void)
 
   ii++; gap_arr_arg_init(&argv[ii], GAP_ARR_WGT_DEFAULT_BUTTON);
   argv[ii].label_txt = _("Default");
-  argv[ii].help_txt  = _("Reset all Parameters to Default Values");
+  argv[ii].help_txt  = _("Reset all parameters to default values");
 
   if(TRUE == gap_arr_ok_cancel_dialog(_("Render Filename to Layer"),
                             _("Settings :"),

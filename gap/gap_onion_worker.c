@@ -362,11 +362,11 @@ gap_onion_worker_onion_range(GapOnionMainGlobalParams *gpp)
   {
     if(gpp->run == GAP_ONION_RUN_APPLY)
     {
-      gimp_progress_init( _("Creating Onionskin Layers..."));
+      gimp_progress_init( _("Creating onionskin layers..."));
     }
     else
     {
-      gimp_progress_init( _("Removing Onionskin Layers..."));
+      gimp_progress_init( _("Removing onionskin layers..."));
     }
   }
 

@@ -1,5 +1,5 @@
 /*  gap_player_main.c
- *  video (preview) playback of animframes based on thumbnails  by Wolfgang Hofer
+ *  video (preview) playback of video frames based on thumbnails  by Wolfgang Hofer
  *  2003/06/11
  */
 
@@ -204,7 +204,7 @@ static void query (void)
   gimp_install_procedure (PLUG_IN_NAME,
                           "Video Preview Playback",
                           "This plug-in does videoplayback, "
-                          "based on thumbnail preview or full sized anim frames.",
+                          "based on thumbnail preview or full sized video frames.",
                           PLUG_IN_AUTHOR,
                           PLUG_IN_COPYRIGHT,
                           PLUG_IN_VERSION,

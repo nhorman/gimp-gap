@@ -1,3 +1,104 @@
+2003-11-05  Wolfgang Hofer <hof@gimp.org>
+        removed 'Import Layers' Plug-In from gimp-gap. 
+	(This plug-in will be placed somwhere else in the GIMP source tree.
+	it will not appear in gimp-gap CVS, because creation and change history
+	happened on my local machine only)
+
+	gap/gap_main.c               # updated main version
+        gap/gap_layer_copy.c [.h]    # removed that file
+
+2003-11-04  Wolfgang Hofer <hof@gimp.org>
+		    gimprc:
+		    (audioconvert_program "/usr/local/bin/audioconvert_to_wav.sh")
+
+        bugfix: first save attempt of a NON-XCF frame
+	was just recognized the first time in a GIMP-session.
+	
+	but must be also recognized when the first frame of any other
+	NON-XCF animation is to be saved to disk.
+	(the first save operation of NON-XCF frame
+	 has to be performed INTERACTIVE to define settings for the file-save plug-in)
+
+        ARRAY_DIALOG:
+        blind attempt to fix the "window does not close on cancel button"  
+	part of bug #125977. 
+	(maybe gtk+2.x is a little different on
+	Windows ? -- i dont have a windows environment to test gimp-gap)
+	
+        1) now call arr_close_callback explicite on Cancel and other buttons
+	   rather than rely on the implicite call caused by "destroy" event
+	   of the main dialog
+	2) take care that gtk_main_quit and gtk_widget_destroy(dlg)
+	   are called only once.
+	3) gimprc configuration for filename extensions
+	   allows to skip the warning dialog for all configured
+	   fileformat extensions. (as suggegsted in #125977 feature request part)
+	   
+           (video-save-flattened-xxx    "yes")
+	   
+	   where xxx is the extension (jpg, jpeg, png, gif ...)
+	   
+	
+	bugfix: custom palette names for converting to indexed now 
+	have typical platte extension .gpl
+	(implayer_cmap.gpl , gap_cmap.gpl)
+	
+	gap/gap_lib.c [.h]
+	gap/gap_arr_dialog.c   # attempt to fix 125977
+	gap/gap_imp_layer_main.c
+
+2003-11-02  Wolfgang Hofer <hof@gimp.org>
+        added the 'Import Layers' Plug-In to the gimp-gap package. 
+
+        changed message texts capitalization (#125429)
+	and linebreaks  (#125430)
+	There are still some linebreaks where i think it makes sense.
+
+	gap/gap_arr_dialog.c
+	gap/gap_base_ops.c
+	gap/gap_bluebox.c
+	gap/gap_dbbrowser_utils.c
+	gap/gap_decode_xanim.c
+	gap/gap_filter_foreach.c
+	gap/gap_lib.c
+	gap/gap_lock.c
+	gap/gap_main.c
+	gap/gap_mod_layer.c
+	gap/gap_mov_dialog.c	
+	gap/gap_mov_exec.c
+	gap/gap_mpege.c
+	gap/gap_name2layer_main.c
+	gap/gap_navigator_dialog.c
+	gap/gap_onion_dialog.c
+	gap/gap_onion_main.c
+	gap/gap_onion_worker.c
+	gap/gap_player_dialog.c
+	gap/gap_player_main.c
+	gap/gap_range_ops.c
+	gap/gap_split.c
+	gap/README                   # updated docs
+	gap/Makefile.am              # updated to copile the new module gap_imp_layer_main
+        gap/gap_imp_layer_main.c     # new file
+        gap/gap_layer_copy.c [.h]    # new procedure gap_layer_copy_to_image
+	po/POTFILES.in               # added new file
+	
+2003-10-29  Wolfgang Hofer <hof@gimp.org>
+	removed DEPRECATED gtk_window_set_policy calls
+	In case of the MovePath this required some workarounds.
+	With current workarounds you can enlarge the dialog window
+	continously but all shrinking window resize actions 
+	shrink down to the initial window size immediate.
+	(The old version with gtk_window_set_policy did allow
+	 continous shrinks, but sometimes placed wigets overlapping
+	 each other after shriking the window)
+	
+	MovePath: removed MOVE_PATH_FRAMES_ENABLE conditional compiled
+	layout otion for extra decoration frames in the layout
+	
+	gap/gap_player_dialog.c
+	gap/gap_mov_dialog.c
+	gap/gap_bluebox.c      # chnged processing order to feather before shrink
+	
 2003-10-26  Wolfgang Hofer <hof@gimp.org>
 	bugfix:  MovePath rendering of the TraceLayer produces trash
 	in the areas that should be transparent. (added an initial

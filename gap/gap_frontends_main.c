@@ -112,7 +112,7 @@ query ()
   static GimpParamDef args_mpege[] =
   {
     {GIMP_PDB_INT32, "run_mode", "Interactive, non-interactive"},
-    {GIMP_PDB_IMAGE, "image", "Input image (one of the Anim Frames)"},
+    {GIMP_PDB_IMAGE, "image", "Input image (one of the video frames)"},
     {GIMP_PDB_DRAWABLE, "drawable", "Input drawable (unused)"},
   };
 
@@ -122,7 +122,7 @@ query ()
   gimp_plugin_domain_register (GETTEXT_PACKAGE, LOCALEDIR);
 
   gimp_install_procedure("plug_in_gap_xanim_decode",
-			 "This plugin calls xanim to split any video to anim frames. (xanim exporting edition must be installed on your system)",
+			 "This plugin calls xanim to split any video to video frames. (xanim exporting edition must be installed on your system)",
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
@@ -134,7 +134,7 @@ query ()
 			 args_xanim, return_vals);
 
   gimp_install_procedure("plug_in_gap_xanim_decode_toolbox",
-			 "This plugin calls xanim to split any video to anim frames. (xanim exporting edition must be installed on your system)",
+			 "This plugin calls xanim to split any video to video frames. (xanim exporting edition must be installed on your system)",
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
@@ -146,7 +146,7 @@ query ()
 			 args_xanim_ext, return_vals);
 
   gimp_install_procedure("plug_in_gap_mpeg_encode",
-			 "This plugin calls mpeg_encode to convert anim frames to MPEG1, or just generates a param file for mpeg_encode. (mpeg_encode must be installed on your system)",
+			 "This plugin calls mpeg_encode to convert video frames to MPEG1, or just generates a param file for mpeg_encode. (mpeg_encode must be installed on your system)",
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
@@ -159,7 +159,7 @@ query ()
 
 
   gimp_install_procedure("plug_in_gap_mpeg2encode",
-			 "This plugin calls mpeg2encode to convert anim frames to MPEG1 or MPEG2, or just generates a param file for mpeg2encode. (mpeg2encode must be installed on your system)",
+			 "This plugin calls mpeg2encode to convert video frames to MPEG1 or MPEG2, or just generates a param file for mpeg2encode. (mpeg2encode must be installed on your system)",
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",

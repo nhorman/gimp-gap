@@ -61,7 +61,7 @@
  *                            in non-interactive runmode
  * 0.96.02; 1998/08/05   hof: - p_frames_to_multilayer added framerate support
  * 0.96.00; 1998/07/01   hof: - added scale, resize and crop 
- *                              (affects full range == all anim frames)
+ *                              (affects full range == all video frames)
  *                            - now using gap_arr_dialog.h
  * 0.94.01; 1998/04/28   hof: added flatten_mode to plugin: gap_range_to_multilayer
  * 0.92.00  1998.01.10   hof: bugfix in p_frames_to_multilayer
@@ -105,7 +105,7 @@ extern      int gap_debug; /* ==0  ... dont print debug infos */
 /* ============================================================================
  * p_anim_sizechange_dialog
  *   dialog window with 2 (or 4) entry fields
- *   where the user can select the new Anim Frame (Image)-Size
+ *   where the user can select the new video frame (Image)-Size
  *   (if cnt == 4 additional Inputfields for offests are available)
  * return -1  in case of cancel or any error
  *            (include check for change of current frame)
@@ -177,7 +177,7 @@ p_anim_sizechange_dialog(GapAnimInfo *ainfo_ptr, GapRangeOpsAsiz asiz_mode,
   switch(asiz_mode)
   {
     case GAP_ASIZ_CROP:
-      title = _("Crop AnimFrames (all)");
+      title = _("Crop Video Frames (all)");
       hline = g_strdup_printf (_("Crop (original %dx%d)"), l_width, l_height);
       argv[0].int_max   = l_width;
       argv[0].constraint = TRUE;
@@ -188,14 +188,14 @@ p_anim_sizechange_dialog(GapAnimInfo *ainfo_ptr, GapRangeOpsAsiz asiz_mode,
       cnt = 4;
       break;
     case GAP_ASIZ_RESIZE:
-      title = _("Resize AnimFrames (all)");
+      title = _("Resize Video Frames (all)");
       hline = g_strdup_printf (_("Resize (original %dx%d)"), l_width, l_height);
       argv[2].int_min    = -l_width;
       argv[3].int_min    = -l_height;
      cnt = 4;
       break;
     default:
-      title = _("Scale AnimFrames (all)");
+      title = _("Scale Video Frames (all)");
       hline = g_strdup_printf (_("Scale (original %dx%d)"), l_width, l_height);
       cnt = 2;
       break;
@@ -203,7 +203,7 @@ p_anim_sizechange_dialog(GapAnimInfo *ainfo_ptr, GapRangeOpsAsiz asiz_mode,
 
   gap_arr_arg_init(&argv[cnt], GAP_ARR_WGT_DEFAULT_BUTTON);
   argv[cnt].label_txt =  _("Reset");                /* should use GIMP_STOCK_RESET if possible */
-  argv[cnt].help_txt  = _("Reset Parameters to Original Size");
+  argv[cnt].help_txt  = _("Reset parameters to original size");
 
   cnt++;
   
@@ -282,6 +282,7 @@ p_range_dialog(GapAnimInfo *ainfo_ptr,
 
   gap_arr_arg_init(&argv[0], GAP_ARR_WGT_INT_PAIR);
   argv[0].label_txt = _("From Frame:");
+  argv[0].help_txt  = _("First handled frame");
   argv[0].constraint = TRUE;
   argv[0].int_min   = (gint)ainfo_ptr->first_frame_nr;
   argv[0].int_max   = (gint)ainfo_ptr->last_frame_nr;
@@ -289,6 +290,7 @@ p_range_dialog(GapAnimInfo *ainfo_ptr,
   
   gap_arr_arg_init(&argv[1], GAP_ARR_WGT_INT_PAIR);
   argv[1].label_txt = _("To Frame:");
+  argv[1].help_txt  = _("Last handled frame");
   argv[1].constraint = TRUE;
   argv[1].int_min   = (gint)ainfo_ptr->first_frame_nr;
   argv[1].int_max   = (gint)ainfo_ptr->last_frame_nr;
@@ -296,6 +298,7 @@ p_range_dialog(GapAnimInfo *ainfo_ptr,
   
   gap_arr_arg_init(&argv[2], GAP_ARR_WGT_INT_PAIR);
   argv[2].label_txt = _("Layerstack:");
+  argv[2].help_txt  = _("Layerstack postition where 0 is the top layer");
   argv[2].constraint = FALSE;
   argv[2].int_min   = 0;
   argv[2].int_max   = 99;
@@ -363,19 +366,19 @@ p_convert_indexed_dialog(gint32 *dest_colors, gint32 *dest_dither,
 
   gap_arr_arg_init(&argv[1], GAP_ARR_WGT_TEXT);
   argv[1].label_txt = _("Custom Palette");
-  argv[1].help_txt  = _("Name of a cutom palette\n(is ignored if Palette Type is not custom)");
+  argv[1].help_txt  = _("Name of a cutom palette (ignored if palette type is not custom)");
   argv[1].text_buf_len = len_palette;
   argv[1].text_buf_ret = palette;
 
   gap_arr_arg_init(&argv[2], GAP_ARR_WGT_TOGGLE);
   argv[2].label_txt = _("Remove Unused");
-  argv[2].help_txt  = _("Remove unused or double colors\n(is ignored if Palette Type is not custom)");
+  argv[2].help_txt  = _("Remove unused or double colors (ignored if palette type is not custom)");
   argv[2].int_ret   = 1;
 
   gap_arr_arg_init(&argv[3], GAP_ARR_WGT_INT_PAIR);
   argv[3].constraint = TRUE;
   argv[3].label_txt = _("Number of Colors");
-  argv[3].help_txt  = _("Number of resulting Colors\n(ignored if Palette Type is not Generate optimal palette)");
+  argv[3].help_txt  = _("Number of resulting colors (ignored if palette type is not generate optimal palette)");
   argv[3].int_min   = 2;
   argv[3].int_max   = 256;
   argv[3].int_ret   = 255;
@@ -389,7 +392,7 @@ p_convert_indexed_dialog(gint32 *dest_colors, gint32 *dest_dither,
   argv[4].radio_ret  = 0;
   
   gap_arr_arg_init(&argv[5], GAP_ARR_WGT_TOGGLE);
-  argv[5].label_txt = _("Enable transparency");
+  argv[5].label_txt = _("Enable Transparency");
   argv[5].help_txt  = _("Enable dithering of transparency");
   argv[5].int_ret   = 0;
 
@@ -472,7 +475,7 @@ p_convert_dialog(GapAnimInfo *ainfo_ptr,
   gap_arr_arg_init(&argv[0], GAP_ARR_WGT_INT_PAIR);
   argv[0].constraint = TRUE;
   argv[0].label_txt = _("From Frame:");
-  argv[0].help_txt  = _("first handled frame");
+  argv[0].help_txt  = _("First handled frame");
   argv[0].int_min   = (gint)ainfo_ptr->first_frame_nr;
   argv[0].int_max   = (gint)ainfo_ptr->last_frame_nr;
   argv[0].int_ret   = (gint)ainfo_ptr->curr_frame_nr;
@@ -480,37 +483,46 @@ p_convert_dialog(GapAnimInfo *ainfo_ptr,
   gap_arr_arg_init(&argv[1], GAP_ARR_WGT_INT_PAIR);
   argv[1].constraint = TRUE;
   argv[1].label_txt = _("To Frame:");
-  argv[1].help_txt  = _("last handled frame");
+  argv[1].help_txt  = _("Last handled frame");
   argv[1].int_min   = (gint)ainfo_ptr->first_frame_nr;
   argv[1].int_max   = (gint)ainfo_ptr->last_frame_nr;
   argv[1].int_ret   = (gint)ainfo_ptr->last_frame_nr;
 
   gap_arr_arg_init(&argv[2], GAP_ARR_WGT_LABEL);
-  argv[2].label_txt = _("\nSelect destination fileformat by extension\noptionally convert imagetype\n");
+  argv[2].label_txt = " ";
 
   gap_arr_arg_init(&argv[3], GAP_ARR_WGT_FILESEL);
   argv[3].label_txt = _("Basename:");
-  argv[3].help_txt  = _("basename of the resulting frames\n(0001.ext is added)");
+  argv[3].help_txt  = _("basename of the resulting frames. The number part and extension "
+                        "(000001.ext) is added automatically to all converted frames.");
   argv[3].text_buf_len = len_base;
   argv[3].text_buf_ret = basename;
 
   gap_arr_arg_init(&argv[4], GAP_ARR_WGT_TEXT);
   argv[4].label_txt = _("Extension:");
-  argv[4].help_txt  = _("extension of resulting frames\n(is also used to define Fileformat)");
+  argv[4].help_txt  = _("The extension of resulting frames is also used to define the fileformat. "
+                        "Please note that fileformats differ in capabilities to store informations for "
+			"multiple layers and other things."
+			"Some fileformats may require converting to another imagetype "
+			"and/or falttening the frames.");
   argv[4].text_buf_len = len_ext;
   argv[4].text_buf_ret = extension;
   
 
   gap_arr_arg_init(&argv[5], GAP_ARR_WGT_OPTIONMENU);
   argv[5].label_txt = _("Imagetype:");
-  argv[5].help_txt  = _("Convert to, or keep imagetype\n(most fileformats can't handle all types)");
+  argv[5].help_txt  = _("Convert to another imagetype, or keep imagetype as it is. "
+                        "Most fileformats can't handle all types and may require a conversion."
+			"Example: GIF can not handle RGB and requires conert to indexed imagetype.");
   argv[5].radio_argc  = 4;
   argv[5].radio_argv = radio_args;
   argv[5].radio_ret  = 0;
 
   gap_arr_arg_init(&argv[6], GAP_ARR_WGT_TOGGLE);
   argv[6].label_txt = _("Flatten:");
-  argv[6].help_txt  = _("Flatten all resulting frames\n(most fileformats need flattened frames)");
+  argv[6].help_txt  = _("Flatten all resulting frames. Most fileformats can not handle multiple layers "
+                        "and need flattened frames (flattening does melt down all layers to one composite layer)."
+			"Example: JPEG can not handle multiple layers and requires flattened frames.");
   argv[6].int_ret   = 1;
 
   if(0 != gap_lib_chk_framerange(ainfo_ptr))   return -1;
@@ -594,46 +606,46 @@ p_range_to_multilayer_dialog(GapAnimInfo *ainfo_ptr,
 {
   static GapArrArg  argv[11];
   
-  static char *radio_args[4]  = { N_("Expand as necessary"), 
+  static char *radio_args[4] = { N_("Expand as necessary"), 
                                  N_("Clipped to image"),
                                  N_("Clipped to bottom layer"), 
                                  N_("Flattened image") };
-  static char *radio_help[4]  = { N_("Resulting Layer Size is made of the outline-rectangle\nof all visible layers (may differ from frame to frame)"), 
-                                 N_("Resulting Layer Size is the frame size"),
-                                 N_("Resulting Layer Size is the size of the bottom layer\n(may differ from frame to frame)"), 
-                                 N_("Resulting Layer Size is the frame size\ntransparent parts are filled with BG color") };
+  static char *radio_help[4] = { N_("Resulting layer size is made of the outline-rectangle of all visible layers (may differ from frame to frame)"), 
+                                 N_("Resulting layer size is the frame size"),
+                                 N_("Resulting layer size is the size of the bottom layer (may differ from frame to frame)"), 
+                                 N_("Resulting layer size is the frame size transparent parts are filled with background color") };
 
   /* Layer select modes */
-  static char *layersel_args[7]  = { N_("Pattern is equal to LayerName"),
-                                  N_("Pattern is Start of LayerName"),
-                                  N_("Pattern is End of Layername"),
-                                  N_("Pattern is a Part of LayerName"),
-                                  N_("Pattern is LayerstackNumber List"),
-                                  N_("Pattern is REVERSE-stack List"),
-                                  N_("All Visible (ignore Pattern)")
+  static char *layersel_args[7] = { N_("Pattern is equal to layer name"),
+                                  N_("Pattern is start of layer name"),
+                                  N_("Pattern is end of layer name"),
+                                  N_("Pattern is a part of layer name"),
+                                  N_("Pattern is a list of layerstack numbers"),
+                                  N_("Pattern is a list of reverse layerstack numbers"),
+                                  N_("All visible (ignore pattern)")
                                   };
-  static char *layersel_help[7] = { N_("select all Layers where Layername is equal to Pattern"),
-                                  N_("select all Layers where Layername starts with Pattern"),
-                                  N_("select all Layers where Layername ends up with Pattern"),
-                                  N_("select all Layers where Layername contains Pattern"),
-                                  N_("select Layerstack positions.\n0, 4-5, 8\nwhere 0 == Top-layer"),
-                                  N_("select Layerstack positions.\n0, 4-5, 8\nwhere 0 == BG-layer"),
-                                  N_("select all visible Layers")
+  static char *layersel_help[7] = { N_("Select all layers where layername is equal to pattern"),
+                                  N_("Select all layers where layername starts with pattern"),
+                                  N_("Select all layers where layername ends up with pattern"),
+                                  N_("Select all layers where layername contains pattern"),
+                                  N_("Select layerstack positions where 0 is the top layer.\nExample: 0, 4-5, 8"),
+                                  N_("Select layerstack positions where 0 is the background layer.\nExample: 0, 4-5, 8"),
+                                  N_("Select all visible layers")
                                   };
 
   /* Selection modes */
   static char *selection_args[3] = { N_("Ignore"),
-                                  N_("Initial Frame"),
+                                  N_("Initial frame"),
                                   N_("Frame specific")
                                   };
-  static char *selection_help[3] = { N_("Pick Layers at full Size.\n"
-                                        "Ignore all Pixel Selections in all Frames"),
-                                     N_("Pick only the selected Pixels\n"
-				        "Use one fixed Selection in all Frames\n"
-				        "(The Selection from the invoking Frame)"),
-                                     N_("Pick only the selected Pixels\n"
-					"Use the individual Selection\n"
-					"as it is in each handled Frame")
+  static char *selection_help[3] = { N_("Pick layers at full size. "
+                                        "Ignore all pixel selections in all frames"),
+                                     N_("Pick only the selected pixels. "
+				        "Use the selection from the invoking frame "
+				        "as fixed selection in all handled frames."),
+                                     N_("Pick only the selected pixels. "
+					"Use the individual selection "
+					"as it is in each handled frame.")
                                   };
 				  
   static int gettextize_radio = 0, gettextize_layersel = 0, gettextize_sel = 0;
@@ -654,7 +666,7 @@ p_range_to_multilayer_dialog(GapAnimInfo *ainfo_ptr,
   gap_arr_arg_init(&argv[0], GAP_ARR_WGT_INT_PAIR);
   argv[0].constraint = TRUE;
   argv[0].label_txt = _("From Frame:");
-  argv[0].help_txt  = _("first handled frame");
+  argv[0].help_txt  = _("First handled frame");
   argv[0].int_min   = (gint)ainfo_ptr->first_frame_nr;
   argv[0].int_max   = (gint)ainfo_ptr->last_frame_nr;
   argv[0].int_ret   = (gint)ainfo_ptr->curr_frame_nr;
@@ -662,14 +674,14 @@ p_range_to_multilayer_dialog(GapAnimInfo *ainfo_ptr,
   gap_arr_arg_init(&argv[1], GAP_ARR_WGT_INT_PAIR);
   argv[1].constraint = TRUE;
   argv[1].label_txt = _("To Frame:");
-  argv[1].help_txt  = _("last handled frame");
+  argv[1].help_txt  = _("Last handled frame");
   argv[1].int_min   = (gint)ainfo_ptr->first_frame_nr;
   argv[1].int_max   = (gint)ainfo_ptr->last_frame_nr;
   argv[1].int_ret   = (gint)ainfo_ptr->last_frame_nr;
 
   gap_arr_arg_init(&argv[2], GAP_ARR_WGT_TEXT);
   argv[2].label_txt = _("Layer Basename:");
-  argv[2].help_txt  = _("Basename for all Layers\n[######] is replaced by frame number");
+  argv[2].help_txt  = _("Basename for all layers where the string '[######]' is replaced by the frame number");
   argv[2].text_buf_len = len_frame_basename;
   argv[2].text_buf_ret = frame_basename;
 
@@ -695,7 +707,8 @@ p_range_to_multilayer_dialog(GapAnimInfo *ainfo_ptr,
   
   gap_arr_arg_init(&argv[5], GAP_ARR_WGT_TOGGLE);
   argv[5].label_txt = _("Exclude BG-Layer:");
-  argv[5].help_txt  = _("Exclude the BG-Layers\nin all handled frames\nregardless to selection");
+  argv[5].help_txt  = _("Exclude the background layer in all handled frames, "
+                        "regardless to the other settings of layer selection.");
   argv[5].int_ret   = 0;   /* 1: exclude BG Layer from all selections */
 
 
@@ -712,20 +725,21 @@ p_range_to_multilayer_dialog(GapAnimInfo *ainfo_ptr,
   gap_arr_arg_init(&argv[7], GAP_ARR_WGT_TEXT);
   argv[7].label_txt = _("Layer Pattern:");
   argv[7].entry_width = 140;       /* pixel */
-  argv[7].help_txt  = _("String to identify layer names\nor layerstack position numbers\n0,3-5");
+  argv[7].help_txt  = _("String to identify layer(s) by name or by layerstack position numbers. "
+			"Example: 0,3-5");
   argv[7].text_buf_len = MAX_LAYERNAME;
   argv[7].text_buf_ret = sel_pattern;
 
   /* case sensitive checkbutton */
   gap_arr_arg_init(&argv[8], GAP_ARR_WGT_TOGGLE);
   argv[8].label_txt = _("Case sensitive:");
-  argv[8].help_txt  = _("Lowercase and UPPERCASE letters are considered as different");
+  argv[8].help_txt  = _("Lowercase and uppercase letters are considered as different");
   argv[8].int_ret   = 1;
 
   /* invert selection checkbutton */
   gap_arr_arg_init(&argv[9], GAP_ARR_WGT_TOGGLE);
   argv[9].label_txt = _("Invert Layer Selection:");
-  argv[9].help_txt  = _("Use all unselected Layers");
+  argv[9].help_txt  = _("Use all unselected layers");
   argv[9].int_ret   = 0;
 
   
@@ -810,7 +824,7 @@ p_frames_to_multilayer(GapAnimInfo *ainfo_ptr,
   l_nlayers_result = 0;
   if(ainfo_ptr->run_mode == GIMP_RUN_INTERACTIVE)
   { 
-    gimp_progress_init( _("Creating Layer-Animated Image..."));
+    gimp_progress_init( _("Creating layer-animated image..."));
   }
  
   l_tmp_layer_id = -1;
@@ -1244,8 +1258,8 @@ p_frames_convert(GapAnimInfo *ainfo_ptr,
   l_run_mode  = ainfo_ptr->run_mode;
   if(ainfo_ptr->run_mode == GIMP_RUN_INTERACTIVE)
   { 
-    if(save_proc_name == NULL) gimp_progress_init( _("Flattening Frames..."));
-    else                       gimp_progress_init( _("Converting Frames..."));
+    if(save_proc_name == NULL) gimp_progress_init( _("Flattening frames..."));
+    else                       gimp_progress_init( _("Converting frames..."));
   }
  
 
@@ -1400,7 +1414,7 @@ p_frames_convert(GapAnimInfo *ainfo_ptr,
              l_rc = gap_lib_save_named_image(l_tmp_image_id, l_sav_name, l_run_mode);
              if(l_rc < 0)
              {
-               gap_arr_msg_win(ainfo_ptr->run_mode, _("Convert Frames: SAVE operation FAILED.\n"
+               gap_arr_msg_win(ainfo_ptr->run_mode, _("Convert Frames: Save operation failed.\n"
 						"Desired save plugin can't handle type\n"
 						"or desired save plugin not available."));
              }
@@ -1531,13 +1545,13 @@ gint32 p_anim_sizechange(GapAnimInfo *ainfo_ptr,
     switch(asiz_mode)
     {
       case GAP_ASIZ_CROP:
-        gimp_progress_init( _("Cropping all Animation Frames..."));
+        gimp_progress_init( _("Cropping all video frames..."));
         break;
       case GAP_ASIZ_RESIZE:
-        gimp_progress_init( _("Resizing all Animation Frames..."));
+        gimp_progress_init( _("Resizing all video frames..."));
         break;
       default:
-        gimp_progress_init( _("Scaling all Animation Frames..."));
+        gimp_progress_init( _("Scaling all video frames..."));
         break;
     }
   }
@@ -1693,7 +1707,7 @@ p_frames_layer_del(GapAnimInfo *ainfo_ptr,
   l_percentage = 0.0;  
   if(ainfo_ptr->run_mode == GIMP_RUN_INTERACTIVE)
   {
-    l_buff = g_strdup_printf (_("Removing Layer (pos:%ld) from Frames..."), position); 
+    l_buff = g_strdup_printf (_("Removing layer (pos:%ld) from frames..."), position); 
     gimp_progress_init(l_buff);
     g_free (l_buff);
   }
@@ -1815,7 +1829,7 @@ gap_range_layer_del(GimpRunMode run_mode, gint32 image_id,
       {
          l_rc = p_range_dialog (ainfo_ptr, &l_from, &l_to,
                                 _("Delete Layers in Frames"),
-                                _("Select Frame Range & Position"), 3);
+                                _("Select Frame Range & Stack Position"), 3);
          l_position = l_rc;
 
       }
@@ -1986,7 +2000,7 @@ gap_range_conv(GimpRunMode run_mode, gint32 image_id,
 
 /* ============================================================================
  * gap_range_anim_sizechange
- *    scale, resize or crop all anim_frame images of the animation
+ *    scale, resize or crop all video frame images of the animation
  *    (depending on asiz_mode)
  * ============================================================================
  */
@@ -2026,9 +2040,9 @@ int gap_range_anim_sizechange(GimpRunMode run_mode, GapRangeOpsAsiz asiz_mode, g
          }
          if(l_rc >= 0)
          {
-           /* we have to resize the current anim frame image in gimp's ram
+           /* we have to resize the current video frame image in gimp's ram
             *(from where we were invoked)
-            * Note: All anim frames on disc and the current one in ram
+            * Note: All video frames on disc and the current one in ram
             *       must fit in size and type, to allow further animation operations.
             *       (Restriction of duplicate_into)
             */
@@ -2037,7 +2051,7 @@ int gap_range_anim_sizechange(GimpRunMode run_mode, GapRangeOpsAsiz asiz_mode, g
 
            if(l_rc == 0)
            {
-              /* sizechange for all anim frames on disk */
+              /* sizechange for all video frames on disk */
               l_rc = p_anim_sizechange(ainfo_ptr, asiz_mode,
                                        l_size_x, l_size_y,
                                        l_offs_x, l_offs_y );

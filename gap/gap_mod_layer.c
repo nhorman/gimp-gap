@@ -95,47 +95,47 @@ int p_layer_modify_dialog(GapAnimInfo *ainfo_ptr,
   gint   l_rc;
 
   /* Layer select modes */
-  static char *sel_args[7]    = { N_("Pattern is equal to LayerName"),
-                                  N_("Pattern is Start of LayerName"),
-                                  N_("Pattern is End of Layername"),
-                                  N_("Pattern is a Part of LayerName"),
-                                  N_("Pattern is LayerstackNumber List"),
-                                  N_("Pattern is REVERSE-stack List"),
-                                  N_("All Visible (ignore Pattern)")
+  static char *sel_args[7]    = { N_("Pattern is equal to layer name"),
+                                  N_("Pattern is start of layer name"),
+                                  N_("Pattern is end of layer name"),
+                                  N_("Pattern is a part of layer name"),
+                                  N_("Pattern is a list of layerstack numbers"),
+                                  N_("Pattern is a list of reverse layerstack numbers"),
+                                  N_("All visible (ignore pattern)")
                                   };
-  static char *sel_help[7]    = { N_("Select all Layers where Layername is equal to Pattern"),
-                                  N_("Select all Layers where Layername starts with Pattern"),
-                                  N_("Select all Layers where Layername ends up with Pattern"),
-                                  N_("Select all Layers where Layername contains Pattern"),
-                                  N_("Select Layerstack positions.\n0, 4-5, 8\nwhere 0 == Top-layer"),
-                                  N_("Select Layerstack positions.\n0, 4-5, 8\nwhere 0 == BG-layer"),
-                                  N_("Select all visible Layers")
+  static char *sel_help[7]    = { N_("Select all layers where layer name is equal to pattern"),
+                                  N_("Select all layers where layer name starts with pattern"),
+                                  N_("Select all layers where layer name ends up with pattern"),
+                                  N_("Select all layers where layer name contains pattern"),
+                                  N_("Select layerstack positions where 0 is the top layer.\nExample: 0, 4-5, 8"),
+                                  N_("Select layerstack positions where 0 is the background layer.\nExample: 0, 4-5, 8"),
+                                  N_("Select all visible layers")
                                   };
 
   /* action items what to do with the selected layer(s) */
-  static char *action_args[23] = { N_("Set Layer(s) visible"),
-                                  N_("Set Layer(s) invisible"),
-                                  N_("Set Layer(s) linked"),
-                                  N_("Set Layer(s) unlinked"),
-                                  N_("Raise Layer(s)"),
-                                  N_("Lower Layer(s)"),
-                                  N_("Merge Layer(s) expand as necessary"),
-                                  N_("Merge Layer(s) clipped to image"),
-                                  N_("Merge Layer(s) clipped to bg-layer"),
-                                  N_("Apply filter on Layer(s)"),
-                                  N_("Duplicate Layer(s)"),
-                                  N_("Delete Layer(s)"),
-                                  N_("Rename Layer(s)"),
-                                  N_("Replace Selection"),
-                                  N_("Add Selection"),
-                                  N_("Subtract Selection"),
-                                  N_("Intersect Selection"),
-                                  N_("Selection None"),
-                                  N_("Selection All"),
-                                  N_("Selection Invert"),
-                                  N_("Save Selection to Channel"),
-				  N_("Load Selection from Channel"),
-                                  N_("Delete Channel (by Name)")
+  static char *action_args[23]= { N_("Set layer(s) visible"),
+                                  N_("Set layer(s) invisible"),
+                                  N_("Set layer(s) linked"),
+                                  N_("Set layer(s) unlinked"),
+                                  N_("Raise layer(s)"),
+                                  N_("Lower layer(s)"),
+                                  N_("Merge layer(s) expand as necessary"),
+                                  N_("Merge layer(s) clipped to image"),
+                                  N_("Merge layer(s) clipped to bg-layer"),
+                                  N_("Apply filter on layer(s)"),
+                                  N_("Duplicate layer(s)"),
+                                  N_("Delete layer(s)"),
+                                  N_("Rename layer(s)"),
+                                  N_("Replace selection"),
+                                  N_("Add selection"),
+                                  N_("Subtract selection"),
+                                  N_("Intersect selection"),
+                                  N_("Selection none"),
+                                  N_("Selection all"),
+                                  N_("Selection invert"),
+                                  N_("Save selection to channel"),
+				  N_("Load selection from channel"),
+                                  N_("Delete channel (by name)")
                                   };
                                   
 
@@ -185,13 +185,13 @@ int p_layer_modify_dialog(GapAnimInfo *ainfo_ptr,
     b_argv[1].but_val  = 0;
   
   gap_arr_arg_init(&argv[0], GAP_ARR_WGT_LABEL);
-  argv[0].label_txt = _("Perform Function on one or more Layer(s)\n"
-                        "in all Frames of the selected Frame Range\n");
+  argv[0].label_txt = _("Perform function on one or more layer(s)\n"
+                        "in all frames of the selected frame range\n");
 
   gap_arr_arg_init(&argv[1], GAP_ARR_WGT_INT_PAIR);
   argv[1].constraint = TRUE;
   argv[1].label_txt = _("From Frame:");
-  argv[1].help_txt  = _("first handled frame");
+  argv[1].help_txt  = _("First handled frame");
   argv[1].int_min   = (gint)ainfo_ptr->first_frame_nr;
   argv[1].int_max   = (gint)ainfo_ptr->last_frame_nr;
   argv[1].int_ret   = (gint)ainfo_ptr->curr_frame_nr;
@@ -199,7 +199,7 @@ int p_layer_modify_dialog(GapAnimInfo *ainfo_ptr,
   gap_arr_arg_init(&argv[2], GAP_ARR_WGT_INT_PAIR);
   argv[2].constraint = TRUE;
   argv[2].label_txt = _("To Frame:");
-  argv[2].help_txt  = _("last handled frame");
+  argv[2].help_txt  = _("Last handled frame");
   argv[2].int_min   = (gint)ainfo_ptr->first_frame_nr;
   argv[2].int_max   = (gint)ainfo_ptr->last_frame_nr;
   argv[2].int_ret   = (gint)ainfo_ptr->last_frame_nr;
@@ -219,20 +219,20 @@ int p_layer_modify_dialog(GapAnimInfo *ainfo_ptr,
   gap_arr_arg_init(&argv[4], GAP_ARR_WGT_TEXT);
   argv[4].label_txt = _("Layer Pattern:");
   argv[4].entry_width = 140;       /* pixel */
-  argv[4].help_txt  = _("String to identify Layer names\nor Layerstack Position Numbers\n0,3-5");
+  argv[4].help_txt  = _("String to identify layer names or layerstack position numbers. Example: 0,3-5");
   argv[4].text_buf_len = MAX_LAYERNAME;
   argv[4].text_buf_ret = sel_pattern;
 
   /* case sensitive checkbutton */
   gap_arr_arg_init(&argv[5], GAP_ARR_WGT_TOGGLE);
   argv[5].label_txt = _("Case sensitive");
-  argv[5].help_txt  = _("Lowercase and UPPERCASE letters are considered as different");
+  argv[5].help_txt  = _("Lowercase and uppercase letters are considered as different");
   argv[5].int_ret   = 1;
 
   /* invert selection checkbutton */
   gap_arr_arg_init(&argv[6], GAP_ARR_WGT_TOGGLE);
   argv[6].label_txt = _("Invert Layer Selection");
-  argv[6].help_txt  = _("Perform actions on all unselected Layers");
+  argv[6].help_txt  = _("Perform actions on all unselected layers");
   argv[6].int_ret   = 0;
 
   /* desired action to perform OPTIONMENU  */
@@ -241,7 +241,7 @@ int p_layer_modify_dialog(GapAnimInfo *ainfo_ptr,
   argv[7].radio_argc = G_N_ELEMENTS (action_args);
   argv[7].radio_argv = action_args;
   /* argv[7].radio_help_argv = action_help */
-  argv[7].help_txt = _("Function to be performed on all selected Layers");
+  argv[7].help_txt = _("Function to be performed on all selected layers");
   argv[7].radio_ret  = 0;
 
   /* a new name for the handled Layer(s) */
@@ -249,14 +249,14 @@ int p_layer_modify_dialog(GapAnimInfo *ainfo_ptr,
   gap_arr_arg_init(&argv[8], GAP_ARR_WGT_TEXT);
   argv[8].label_txt = _("New Layer\n or Channel Name:");
   argv[8].entry_width = 140;       /* pixel */
-  argv[8].help_txt  = _("Layer (or Channel) Name for all handled Layers (or Channels)\n"
-                        "[####] is replaced by Framenumber\n"
-			"This Name is only relevant for the Functions:\n"
-			" Duplicate Layer(s)\n"
-			" Rename Layer(s)\n"
-			" Save Selection to Channel\n"
-			" Load Selection from Channel\n"
-			" Delete Channel (by Name)"
+  argv[8].help_txt  = _("Layer (or channel) name for all handled layers (or channels),\n"
+                        "where the string '[######]' is replaced by the frame number.\n"
+			"This name is only relevant for the functions:\n"
+			" Duplicate layer(s)\n"
+			" Rename layer(s)\n"
+			" Save selection to channel\n"
+			" Load selection from channel\n"
+			" Delete channel (by name)"
 			);
   argv[8].text_buf_len = MAX_LAYERNAME;
   argv[8].text_buf_ret = new_layername;
@@ -328,7 +328,7 @@ p_pitstop_dialog(gint text_flag, char *filter_procname)
   {
      l_msg = g_strdup_printf ( _("Non-Interactive call of %s\n(for all selected layers)"), filter_procname);
   }
-  l_continue = gap_arr_std_dialog ( _("Animated Filter apply"), l_msg,
+  l_continue = gap_arr_std_dialog ( _("Animated Filter Apply"), l_msg,
   				   l_argc,     l_argv, 
   				   l_but_argc, l_but_argv, 0);
   g_free (l_msg);
@@ -804,7 +804,7 @@ p_do_filter_dialogs(GapAnimInfo *ainfo_ptr,
 
   /* GAP-PDB-Browser Dialog */
   /* ---------------------- */
-  if(gap_db_browser_dialog( _("Select Filter for Animated frames-apply"),
+  if(gap_db_browser_dialog( _("Select Filter for Animated Apply on Frames"),
                             _("Apply Constant"),
                             _("Apply Varying"),
                             gap_filt_pdb_constraint_proc,
@@ -1027,7 +1027,7 @@ p_frames_modify(GapAnimInfo *ainfo_ptr,
   l_percentage = 0.0;
   if(ainfo_ptr->run_mode == GIMP_RUN_INTERACTIVE)
   { 
-    gimp_progress_init( _("Modifying Frames/Layer(s)..."));
+    gimp_progress_init( _("Modifying frames/layer(s)..."));
   }
  
 
@@ -1108,7 +1108,7 @@ p_frames_modify(GapAnimInfo *ainfo_ptr,
 
       if(l_sel_cnt < 1)
       {
-         gap_arr_msg_win(GIMP_RUN_INTERACTIVE, _("No selected Layer in start frame"));
+         gap_arr_msg_win(GIMP_RUN_INTERACTIVE, _("No selected layer in start frame"));
          goto error;
       }
       

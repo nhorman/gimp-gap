@@ -171,7 +171,7 @@ gap_db_browser_dialog(char *title_txt,
 
   dbbrowser->dialog = gtk_dialog_new ();
   
-  gtk_window_set_title (GTK_WINDOW (dbbrowser->dialog), _("Animated Filter apply"));
+  gtk_window_set_title (GTK_WINDOW (dbbrowser->dialog), _("Animated Filter Apply"));
   gtk_window_set_position (GTK_WINDOW (dbbrowser->dialog), GTK_WIN_POS_MOUSE);
   g_signal_connect (dbbrowser->dialog, "destroy",
                     G_CALLBACK (dialog_close_callback), dbbrowser);

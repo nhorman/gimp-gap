@@ -138,15 +138,15 @@ query ()
   gimp_plugin_domain_register (GETTEXT_PACKAGE, LOCALEDIR);
 
   gimp_install_procedure(GAP_PLUGIN_NAME_ONION_CFG,
-             _("This plugin sets Configuration for Onion Layers in Videofames"),
-                         _("This plugin is the configuration GUI for Onion layers."
+                         "This plugin sets Configuration for Onion Layers in Videofames",
+                         "This plugin is the configuration GUI for Onion layers."
                          " Onion Layer(s) usually do show previous (or next) frame(s)"
                          " of the video in the current frame."
                          " Onion Layers are not created automatically. You have to create or delete them manually"
                          " using the menu Video/OnionSkin/make or Video/OnionSkin/delete or call the Procedures "
                          GAP_PLUGIN_NAME_ONION_APPLY " "
                          GAP_PLUGIN_NAME_ONION_DEL " "
-                         " The configuration can be saved in the gimprc parameter file."),
+                         " The configuration can be saved in the gimprc parameter file.",
                          "Wolfgang Hofer (hof@gimp.org)",
                          "Wolfgang Hofer",
                          gap_onion_version,
@@ -157,14 +157,14 @@ query ()
                          args_onion_cfg, return_vals);
 
   gimp_install_procedure(GAP_PLUGIN_NAME_ONION_APPLY,
-             _("This plugin creates or replaces Onionskin Layer(s)"),
-                         _("This plugin creates or updates Onionskin Layers in the current Videoframe."
+                         "This plugin creates or replaces Onionskin Layer(s)",
+                         "This plugin creates or updates Onionskin Layers in the current Videoframe."
                          " Onion Layer(s) usually do show previous (or next) frame(s)"
                          " of the video. At 1.st call  in the current frame."
                          " This Plugin runs NONINTERACTIVE only. It depends on the configuration settings"
                          " made by Video/Onionskin/Config or call of the plugin: "
                          GAP_PLUGIN_NAME_ONION_CFG " "
-                         " if no configuration is found, default settings are used"),
+                         " if no configuration is found, default settings are used",
                          "Wolfgang Hofer (hof@gimp.org)",
                          "Wolfgang Hofer",
                          gap_onion_version,
@@ -176,10 +176,10 @@ query ()
 
 
   gimp_install_procedure(GAP_PLUGIN_NAME_ONION_DEL,
-             _("This plugin removes OnionSkin Layer(s)"),
-                         _("This plugin removes Onion Skin Layers from the current Videoframe."
+                         "This plugin removes OnionSkin Layer(s)",
+                         "This plugin removes Onion Skin Layers from the current Videoframe."
                          " Onion Layer(s) usually do show previous (or next) frame(s)"
-                         " of the video."),
+                         " of the video.",
                          "Wolfgang Hofer (hof@gimp.org)",
                          "Wolfgang Hofer",
                          gap_onion_version,
@@ -191,8 +191,8 @@ query ()
 
 
   gimp_install_procedure(GAP_PLUGIN_NAME_ONION_VISI,
-             _("This plugin toggles visibility of OnionSkin Layer(s)"),
-                         _("This plugin sets visibility for all onionskin Layers in the current Videoframe."),
+                         "This plugin toggles visibility of OnionSkin Layer(s)",
+                         "This plugin sets visibility for all onionskin Layers in the current Videoframe.",
                          "Wolfgang Hofer (hof@gimp.org)",
                          "Wolfgang Hofer",
                          gap_onion_version,

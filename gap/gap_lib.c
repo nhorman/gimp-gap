@@ -26,6 +26,7 @@
  */
 
 /* revision history:
+ * 1.3.21e  2003/11/04   hof: - gimprc 
  * 1.3.18a  2003/08/23   hof: - all gap_debug messages to stdout (do not mix with stderr)
  *                            - do not save thumbnails in p_decide_save_as because it saves
  *                              to a temp filename that is renamed later after successful save
@@ -138,8 +139,8 @@ extern      int gap_debug; /* ==0  ... dont print debug infos */
 /* ------------------------------------------ */
 
 static int          p_save_old_frame(GapAnimInfo *ainfo_ptr, GapVinVideoInfo *vin_ptr);
-static int          p_decide_save_as(gint32 image_id, char *sav_name);
-static gint32       gap_lib_save_named_image2(gint32 image_id, char *sav_name, GimpRunMode run_mode, gboolean enable_thumbnailsave);
+static int          p_decide_save_as(gint32 image_id, const char *sav_name, const char *final_sav_name);
+static gint32       p_lib_save_named_image2(gint32 image_id, const char *sav_name, GimpRunMode run_mode, gboolean enable_thumbnailsave);
 static char*        p_gzip (char *orig_name, char *new_name, char *zip);
 
 
@@ -524,11 +525,11 @@ gap_lib_alloc_basename(const char *imagename, long *number)
  * ============================================================================
  */
 char *
-gap_lib_alloc_extension(char *imagename)
+gap_lib_alloc_extension(const char *imagename)
 {
   int   l_exlen;
   char *l_ext;
-  char *l_ptr;
+  const char *l_ptr;
   
   l_exlen = 0;
   l_ptr = &imagename[strlen(imagename)];
@@ -1160,8 +1161,8 @@ gap_lib_chk_framechange(GapAnimInfo *ainfo_ptr)
     else
     {
        gap_arr_msg_win(ainfo_ptr->run_mode,
-         _("OPERATION CANCELLED.\n"
-	   "Current frame changed while dialog was open."));
+         _("Operation cancelled.\n"
+	   "Current frame was changed while dialog was open."));
     }
     gap_lib_free_ainfo(&l_ainfo_ptr);
   }
@@ -1183,8 +1184,8 @@ gap_lib_chk_framerange(GapAnimInfo *ainfo_ptr)
   if(ainfo_ptr->frame_cnt == 0)
   {
      gap_arr_msg_win(ainfo_ptr->run_mode,
-	       _("OPERATION CANCELLED.\n"
-                 "GAP plug-ins only work with filenames\n"
+	       _("Operation cancelled.\n"
+                 "GAP video plug-ins only work with filenames\n"
                  "that end in numbers like _000001.xcf.\n"
                  "==> Rename your image, then try again."));
      return -1;
@@ -1248,57 +1249,122 @@ p_gzip (char *orig_name, char *new_name, char *zip)
 
 /* ============================================================================
  * p_decide_save_as
- *   decide what to to, when attempt to save a frame in any image format 
+ *   decide what to do on attempt to save a frame in any image format 
  *  (other than xcf)
  *   Let the user decide if the frame is to save "as it is" or "flattened"
  *   ("as it is" will save only the backround layer in most fileformat types)
  *   The SAVE_AS_MODE is stored , and reused
- *   (without displaying the dialog) on subsequent calls.
+ *   (without displaying the dialog again) 
+ *   on subsequent calls of the same frame-basename and extension
+ *   in the same GIMP-session.
  *
  *   return -1  ... CANCEL (do not save)
  *           0  ... save the image (may be flattened)
  * ============================================================================
  */
 int
-p_decide_save_as(gint32 image_id, char *sav_name)
+p_decide_save_as(gint32 image_id, const char *sav_name, const char *final_sav_name)
 {
-  static char *l_msg;
+  gchar *l_key_save_as_mode;
+  gchar *l_extension;
+  gchar *l_ext;
+  gchar *l_basename;
+  long  l_number;
 
-
-  static char l_save_as_name[80];
-  
   static GapArrButtonArg  l_argv[3];
   int               l_argc;  
   int               l_save_as_mode;
   GimpRunMode      l_run_mode;  
 
-  l_msg = _("You are using a file format != xcf\n"
-	    "Save Operations may result\n"
-	    "in loss of layer information.");
-  /* check if there are SAVE_AS_MODE settings (from privious calls within one gimp session) */
+   /* check if there are SAVE_AS_MODE settings (from privious calls within one gimp session) */
   l_save_as_mode = -1;
-  /* g_snprintf(l_save_as_name, sizeof(l_save_as_name), "plug_in_gap_plugins_SAVE_AS_MODE_%d", (int)image_id);*/
-  g_snprintf(l_save_as_name, sizeof(l_save_as_name), "plug_in_gap_plugins_SAVE_AS_MODE");
-  gimp_get_data (l_save_as_name, &l_save_as_mode);
+
+  l_extension = gap_lib_alloc_extension(final_sav_name);
+  l_basename = gap_lib_alloc_basename(final_sav_name, &l_number);
+
+  l_key_save_as_mode = g_strdup_printf("GIMP_GAP_SAVE_MODE_%s%s"
+		       ,l_basename
+		       ,l_extension
+		       );
+
+  gimp_get_data (l_key_save_as_mode, &l_save_as_mode);
 
   if(l_save_as_mode == -1)
   {
-    /* no defined value found (this is the 1.st call for this image_id)
-     * ask what to do with a 3 Button dialog
+    gchar *l_key_gimprc;
+    gchar *l_val_gimprc;
+    gboolean l_ask;
+    
+    /* no defined value found (this is the 1.st call for this animation in the current session)
+     * check for gimprc configuration to decide how to continue:
+     * open a dialog (if no configuration value was found,
+     * or configuration says "ask" (== other value than "yes" or "no" )
      */
-    l_argv[0].but_txt  = GTK_STOCK_CANCEL;
-    l_argv[0].but_val  = -1;
-    l_argv[1].but_txt  = _("Save Flattened");
-    l_argv[1].but_val  = 1;
-    l_argv[2].but_txt  = _("Save As Is");
-    l_argv[2].but_val  = 0;
-    l_argc             = 3;
+    l_ext = l_extension;
+    if(*l_ext == '.')
+    {
+      l_ext++;
+    }
+    l_key_gimprc = g_strdup_printf("video-save-flattened-%s", l_ext);
 
-    l_save_as_mode =  gap_arr_buttons_dialog  (_("GAP Question"), l_msg, l_argc, l_argv, -1);
+    if(gap_debug) printf("GIMPRC KEY:%s:\n", l_key_gimprc);
+
+    l_val_gimprc = gimp_gimprc_query(l_key_gimprc);
+    l_ask = TRUE;
+
+    if(l_val_gimprc)
+    {
+      if(gap_debug) printf("GIMPRC VAL:%s:\n", l_val_gimprc);
+      
+      if(strcmp(l_val_gimprc, "yes") == 0)
+      {
+	l_save_as_mode = 1;
+        l_ask = FALSE;
+      }
+      if(strcmp(l_val_gimprc, "no") == 0)
+      {
+	l_save_as_mode = 0;
+        l_ask = FALSE;
+      }
+      
+      g_free(l_val_gimprc);
+    }
+    else
+    {
+      if(gap_debug) printf("GIMPRC VAL:<NULL>\n");
+    }
+    
+    if(l_ask)
+    {
+      gchar *l_msg;
+      
+      l_argv[0].but_txt  = GTK_STOCK_CANCEL;
+      l_argv[0].but_val  = -1;
+      l_argv[1].but_txt  = _("Save Flattened");
+      l_argv[1].but_val  = 1;
+      l_argv[2].but_txt  = _("Save As Is");
+      l_argv[2].but_val  = 0;
+      l_argc             = 3;
+
+      l_msg = g_strdup_printf(_("You are using another file format than xcf.\n"
+				"Save operations may result in loss of layer information.\n\n"
+				"To configure flattening for this fileformat\n"
+				"(permanent for all further sessions) please add the line:\n"
+				"(%s %s)\n"
+				"to your gimprc file.")
+			     , l_key_gimprc
+			     , "\"yes\""
+			     );
+      l_save_as_mode =  gap_arr_buttons_dialog (_("Fileformat Warning")
+                                        	,l_msg
+						, l_argc, l_argv, -1);
+      g_free(l_msg);
+    }
+
+    g_free(l_key_gimprc);
     
     if(gap_debug) printf("DEBUG: decide SAVE_AS_MODE %d\n", (int)l_save_as_mode);
     
-    if(l_save_as_mode < 0) return -1;
     l_run_mode = GIMP_RUN_INTERACTIVE;
   }
   else
@@ -1306,15 +1372,23 @@ p_decide_save_as(gint32 image_id, char *sav_name)
     l_run_mode = GIMP_RUN_WITH_LAST_VALS;
   }
 
-  gimp_set_data (l_save_as_name, &l_save_as_mode, sizeof(l_save_as_mode));
+  gimp_set_data (l_key_save_as_mode, &l_save_as_mode, sizeof(l_save_as_mode));
+
+  g_free(l_basename);
+  g_free(l_extension);
+  g_free(l_key_save_as_mode);
    
+  if(l_save_as_mode < 0)
+  {
+    return -1;
+  }
   
   if(l_save_as_mode == 1)
   {
       gimp_image_flatten (image_id);
   }
 
-  return(gap_lib_save_named_image2(image_id
+  return(p_lib_save_named_image2(image_id
                            , sav_name
 			   , l_run_mode
 			   , FALSE      /* do not enable_thumbnailsave */
@@ -1360,15 +1434,15 @@ gap_lib_gap_check_save_needed(gint32 image_id)
  * gap_lib_save_named_image / 2
  * ============================================================================
  */
-gint32
-gap_lib_save_named_image2(gint32 image_id, char *sav_name, GimpRunMode run_mode, gboolean enable_thumbnailsave)
+static gint32
+p_lib_save_named_image2(gint32 image_id, const char *sav_name, GimpRunMode run_mode, gboolean enable_thumbnailsave)
 {
   GimpDrawable  *l_drawable;
   gint        l_nlayers;
   gint32     *l_layers_list;
   gboolean    l_rc;
 
-  if(gap_debug) printf("DEBUG: before   gap_lib_save_named_image2: '%s'\n", sav_name);
+  if(gap_debug) printf("DEBUG: before   p_lib_save_named_image2: '%s'\n", sav_name);
 
   l_layers_list = gimp_image_get_layers(image_id, &l_nlayers);
   if(l_layers_list == NULL)
@@ -1377,7 +1451,7 @@ gap_lib_save_named_image2(gint32 image_id, char *sav_name, GimpRunMode run_mode,
   l_drawable =  gimp_drawable_get(l_layers_list[l_nlayers -1]);  /* use the background layer */
   if(l_drawable == NULL)
   {
-     fprintf(stderr, "ERROR: gap_lib_save_named_image2 gimp_drawable_get failed '%s' nlayers=%d\n",
+     fprintf(stderr, "ERROR: p_lib_save_named_image2 gimp_drawable_get failed '%s' nlayers=%d\n",
                      sav_name, (int)l_nlayers);
      g_free (l_layers_list);
      return -1;
@@ -1391,11 +1465,15 @@ gap_lib_save_named_image2(gint32 image_id, char *sav_name, GimpRunMode run_mode,
 		 );
 
   
-  if(gap_debug) printf("DEBUG: after    gap_lib_save_named_image2: '%s' nlayers=%d image=%d drw=%d run_mode=%d\n", sav_name, (int)l_nlayers, (int)image_id, (int)l_drawable->drawable_id, (int)run_mode);
+  if(gap_debug) printf("DEBUG: after    p_lib_save_named_image2: '%s' nlayers=%d image=%d drw=%d run_mode=%d\n", sav_name, (int)l_nlayers, (int)image_id, (int)l_drawable->drawable_id, (int)run_mode);
 
   if(enable_thumbnailsave)
   {
-    gap_thumb_cond_gimp_file_save_thumbnail(image_id, sav_name);
+    gchar *l_sav_name;
+    
+    l_sav_name = g_strdup(sav_name);
+    gap_thumb_cond_gimp_file_save_thumbnail(image_id, l_sav_name);
+    g_free(l_sav_name);
   }
 
   if(gap_debug) printf("DEBUG: after thumbmail save\n");
@@ -1406,17 +1484,17 @@ gap_lib_save_named_image2(gint32 image_id, char *sav_name, GimpRunMode run_mode,
 
   if (l_rc != TRUE)
   {
-    fprintf(stderr, "ERROR: gap_lib_save_named_image2  gimp_file_save failed '%s'\n", sav_name);
+    fprintf(stderr, "ERROR: p_lib_save_named_image2  gimp_file_save failed '%s'\n", sav_name);
     return -1;
   }
   return image_id;
 
-}	/* end gap_lib_save_named_image2 */
+}	/* end p_lib_save_named_image2 */
 
 gint32
-gap_lib_save_named_image(gint32 image_id, char *sav_name, GimpRunMode run_mode)
+gap_lib_save_named_image(gint32 image_id, const char *sav_name, GimpRunMode run_mode)
 {
-  return(gap_lib_save_named_image2(image_id
+  return(p_lib_save_named_image2(image_id
                             , sav_name
 			    , run_mode
 			    , TRUE      /* enable_thumbnailsave */
@@ -1525,7 +1603,7 @@ gap_lib_save_named_frame(gint32 image_id, char *sav_name)
       * To Do: Should warn the user at 1.st attempt to do this.
       */
       
-     l_rc = p_decide_save_as(image_id, l_tmpname);
+     l_rc = p_decide_save_as(image_id, l_tmpname, sav_name);
   } 
 
   if(l_rc < 0)
@@ -2052,7 +2130,7 @@ p_custom_palette_file(char *filename, guchar *rgb, gint count)
 gint32
 gap_vid_edit_paste(GimpRunMode run_mode, gint32 image_id, long paste_mode)
 {
-#define CUSTOM_PALETTE_NAME "gap_cmap"
+#define CUSTOM_PALETTE_NAME "gap_cmap.gpl"
   gint32 rc;
   GapAnimInfo *ainfo_ptr;
   

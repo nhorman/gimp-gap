@@ -127,7 +127,7 @@ static gint p_pitstop(GimpRunMode run_mode, char *plugin_name, gint text_flag,
     
 
     gap_arr_arg_init(&l_argv[0], GAP_ARR_WGT_FILESEL);
-    l_argv[0].label_txt = _("backup to file");
+    l_argv[0].label_txt = _("Backup to file");
     l_argv[0].entry_width = 140;	/* pixel */
     l_argv[0].help_txt  = _("Make backup of the image after each step");
     l_argv[0].text_buf_len = len_step_backup_file;
@@ -164,7 +164,7 @@ static gint p_pitstop(GimpRunMode run_mode, char *plugin_name, gint text_flag,
          l_but_argc = 3;
          l_argc = 1;
       }
-      l_continue = gap_arr_std_dialog (_("Animated Filter apply"), l_msg,
+      l_continue = gap_arr_std_dialog (_("Animated Filter Apply"), l_msg,
                                        l_argc,     l_argv, 
                                        l_but_argc, l_but_argv, 0);
       g_free (l_msg);
@@ -280,7 +280,7 @@ int p_foreach_multilayer(GimpRunMode run_mode, gint32 image_id,
   l_percentage = 0.0;  
   if(run_mode == GIMP_RUN_INTERACTIVE)
   { 
-    gimp_progress_init( _("Applying Filter to all Layers..."));
+    gimp_progress_init( _("Applying filter to all layers..."));
   }
 
   l_layer_id = p_get_indexed_layerid(image_id, &l_nlayers, 0,  plugin_name);
@@ -567,7 +567,7 @@ gint gap_proc_anim_apply(GimpRunMode run_mode, gint32 image_id, char *plugin_nam
   if(run_mode == GIMP_RUN_INTERACTIVE)
   {
 
-    if(gap_db_browser_dialog( _("Select Filter for Animated apply"),
+    if(gap_db_browser_dialog( _("Select Filter for Animated Apply"),
                                  _("Apply Constant"),
                                  _("Apply Varying"),
                                  gap_filt_pdb_constraint_proc,

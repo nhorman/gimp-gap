@@ -8,7 +8,7 @@
  *        GIMP/GAP-frontend interface for XANIM exporting edition from loki entertainmaint
  *         Call xanim exporting edition (the loki version)
  *         To split any xanim supported video into
- *         anim frames (single images on disk)
+ *         video frames (single images on disk)
  *         Audio can also be extracted.
  *
  *        xanim  exporting edition is available at:
@@ -173,7 +173,7 @@ p_xanim_info(char *errlist)
   l_idx++;
   gap_arr_arg_init(&argv[l_idx], GAP_ARR_WGT_LABEL_LEFT);
   argv[l_idx].label_txt = _("if your xanim exporting edition is not in your PATH or is not named xanim\n"
-                            "you have to set Environment variable GAP_XANIM_PROG\n"
+                            "you have to set environment variable GAP_XANIM_PROG\n"
                             "to your xanim exporting program and restart gimp"
                            );
 
@@ -183,7 +183,7 @@ p_xanim_info(char *errlist)
 
   l_idx++;
   gap_arr_arg_init(&argv[l_idx], GAP_ARR_WGT_LABEL_LEFT);
-  argv[l_idx].label_txt = _("An ERROR occured while trying to call xanim:");  
+  argv[l_idx].label_txt = _("An error occured while trying to call xanim:");  
 
   l_idx++;
   gap_arr_arg_init(&argv[l_idx], GAP_ARR_WGT_LABEL_LEFT);
@@ -236,9 +236,9 @@ p_xanim_dialog   (gint32 *first_frame,
 
   gap_arr_arg_init(&argv[0], GAP_ARR_WGT_FILESEL);
   argv[0].label_txt = _("Video:");
-  argv[0].help_txt  = _("Name of a videofile to READ by xanim.\n"
-                        "Frames are extracted from the videofile\n"
-			"and written to separate diskfiles.\n"
+  argv[0].help_txt  = _("Name of a videofile to read by xanim. "
+                        "Frames are extracted from the videofile "
+			"and written to separate diskfiles. "
 			"xanim exporting edition is required.");
   argv[0].text_buf_len = len_filename;
   argv[0].text_buf_ret = filename;
@@ -266,15 +266,15 @@ p_xanim_dialog   (gint32 *first_frame,
   
   gap_arr_arg_init(&argv[3], GAP_ARR_WGT_FILESEL);
   argv[3].label_txt = _("Framenames:");
-  argv[3].help_txt  = _("Basename for the AnimFrames to write on disk\n"
-                        "(framenumber and extension is added)");
+  argv[3].help_txt  = _("Basename for the video frames to write on disk. "
+                        "Framenumber and extension is added.");
   argv[3].text_buf_len = len_basename;
   argv[3].text_buf_ret = basename;
   argv[3].entry_width = 250;
   
   gap_arr_arg_init(&argv[4], GAP_ARR_WGT_OPTIONMENU);
   argv[4].label_txt = _("Format");
-  argv[4].help_txt  = _("Fileformat for the extracted AnimFrames\n"
+  argv[4].help_txt  = _("Fileformat for the extracted video frames. "
         	       "(xcf is extracted as ppm and converted to xcf)");
   argv[4].radio_argc  = 3;
   argv[4].radio_argv = radio_args;
@@ -282,18 +282,18 @@ p_xanim_dialog   (gint32 *first_frame,
 
   gap_arr_arg_init(&argv[5], GAP_ARR_WGT_TOGGLE);
   argv[5].label_txt = _("Extract Frames");
-  argv[5].help_txt  = _("Enable extraction of Frames");
+  argv[5].help_txt  = _("Enable extraction of frames");
   argv[5].int_ret   = 1;
 
   gap_arr_arg_init(&argv[6], GAP_ARR_WGT_TOGGLE);
   argv[6].label_txt = _("Extract Audio");
-  argv[6].help_txt  = _("Enable extraction of audio to raw audiofile\n"
+  argv[6].help_txt  = _("Enable extraction of audio to raw audiofile. "
                         "(frame range limits are ignored for audio)");
   argv[6].int_ret   = 0;
   
   gap_arr_arg_init(&argv[7], GAP_ARR_WGT_INT_PAIR);
   argv[7].label_txt = _("Jpeg Quality:");
-  argv[7].help_txt  = _("Quality for resulting Jpeg frames\n"
+  argv[7].help_txt  = _("Quality for resulting jpeg frames. "
                         "(is ignored when other formats are used)");
   argv[7].constraint = TRUE;
   argv[7].int_min    = 0;
@@ -310,7 +310,7 @@ p_xanim_dialog   (gint32 *first_frame,
 
   gap_arr_arg_init(&argv[10], GAP_ARR_WGT_TOGGLE);
   argv[10].label_txt = _("Run asynchronously");
-  argv[10].help_txt  = _("Run xanim asynchronously and delete unwanted frames\n"
+  argv[10].help_txt  = _("Run xanim asynchronously and delete unwanted frames "
                         "(out of the specified range) while xanim is still running");
   argv[10].int_ret   = 1;
 
@@ -1141,7 +1141,7 @@ gap_xanim_decode(GimpRunMode run_mode)
    
   if(l_rc == 0)
   {
-     gimp_progress_init (_("extracting frames..."));
+     gimp_progress_init (_("Extracting frames..."));
      gimp_progress_update (0.1);  /* fake some progress */
      /* note:
       *  we can't show realistic progress for the extracting process
@@ -1206,12 +1206,12 @@ gap_xanim_decode(GimpRunMode run_mode)
 
        if(strcmp(extension, &extension2[1]) == 0)
        {
-          gimp_progress_init (_("renaming frames..."));
+          gimp_progress_init (_("Renaming frames..."));
           l_rc = gap_lib_rename_frames(first_frame, last_frame, basename, extension);
        }
        else
        {
-          gimp_progress_init (_("converting frames..."));
+          gimp_progress_init (_("Converting frames..."));
           l_rc = p_convert_frames(first_frame, last_frame, basename, extension, extension2);
        }
 

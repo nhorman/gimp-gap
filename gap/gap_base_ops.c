@@ -81,7 +81,7 @@ p_density_shrink(GapAnimInfo *ainfo_ptr
 
    if(ainfo_ptr->run_mode == GIMP_RUN_INTERACTIVE)
    {
-     gimp_progress_init(_("Decreasing Density by deleting Frames..."));
+     gimp_progress_init(_("Decreasing density by deleting frames..."));
    }
 
    l_percentage = 0.0;  
@@ -201,7 +201,7 @@ p_density_grow(GapAnimInfo *ainfo_ptr
 
    if(ainfo_ptr->run_mode == GIMP_RUN_INTERACTIVE)
    {
-     gimp_progress_init(_("Density-Duplicating frames..."));
+     gimp_progress_init(_("Density duplicating frames..."));
    }
 
    src_range_size = 1 + (range_to - range_from);
@@ -767,7 +767,7 @@ p_shift(GapAnimInfo *ainfo_ptr, long cnt, long range_from, long range_to)
    l_percentage = 0.0;  
    if(ainfo_ptr->run_mode == GIMP_RUN_INTERACTIVE)
    { 
-     gimp_progress_init( _("Renumber Frame Sequence..."));
+     gimp_progress_init( _("Renumber frame sequence..."));
    }
 
    /* rename (renumber) all frames (using high numbers)
@@ -834,8 +834,8 @@ p_shift(GapAnimInfo *ainfo_ptr, long cnt, long range_from, long range_to)
 /* ============================================================================
  * gap_base_next gap_base_prev
  *
- * store the current Gimp Image to the current anim Frame
- * and load it from the next/prev anim Frame on disk.
+ * store the current Gimp Image to the current video frame
+ * and load it from the next/prev video frame on disk.
  *
  * return image_id (of the new loaded frame) on success
  *        or -1 on errors
@@ -882,8 +882,8 @@ gap_base_prev(GimpRunMode run_mode, gint32 image_id)
 /* ============================================================================
  * gap_base_first  gap_base_last
  *
- * store the current Gimp Image to the current anim Frame
- * and load it from the first/last anim Frame on disk.
+ * store the current Gimp Image to the current video frame
+ * and load it from the first/last video frame on disk.
  * ============================================================================
  */
 
@@ -933,7 +933,7 @@ gap_base_last(GimpRunMode run_mode, gint32 image_id)
  * gap_base_goto
  * 
  * store the current Gimp Image to disk
- * and load it from the anim Frame on disk that has the specified frame Nr.
+ * and load it from the video frame on disk that has the specified frame Nr.
  * GIMP_RUN_INTERACTIVE:
  *    show dialogwindow where user can enter the destination frame Nr.
  * ============================================================================
@@ -968,7 +968,7 @@ gap_base_goto(GimpRunMode run_mode, gint32 image_id, int nr)
 
         l_dest = gap_arr_slider_dialog(l_title, l_hline,
 	         _("Number:")
-		,_("Go to this Frame Number")                 /* tooltip */
+		,_("Go to this frame number")                 /* tooltip */
                 , ainfo_ptr->first_frame_nr
                 , ainfo_ptr->last_frame_nr
                 , ainfo_ptr->curr_frame_nr
@@ -1016,8 +1016,8 @@ p_delete_confirm_dialog(GapAnimInfo *ainfo_ptr, long range_from, long range_to)
   gchar *msg_txt;
   gboolean l_rc;
   
-  msg_txt = g_strdup_printf(_("Frames %d - %d will be deleted\n"
-                    "There will be no UNDO for this Operation\n")
+  msg_txt = g_strdup_printf(_("Frames %d - %d will be deleted. "
+                    "There will be no undo for this operation.")
                    , (int)range_from
                    , (int)range_to
                  );
@@ -1061,7 +1061,7 @@ gap_base_del(GimpRunMode run_mode, gint32 image_id, int nr)
         l_title = g_strdup_printf (_("Delete Frames (%ld/%ld)")
 				   , ainfo_ptr->curr_frame_nr
 				   , ainfo_ptr->frame_cnt);
-        l_hline = g_strdup_printf (_("Delete Frames from %ld to (number)")
+        l_hline = g_strdup_printf (_("Delete frames from %ld to (number)")
 				   , ainfo_ptr->curr_frame_nr);
 
         l_max = ainfo_ptr->last_frame_nr;
@@ -1074,8 +1074,8 @@ gap_base_del(GimpRunMode run_mode, gint32 image_id, int nr)
           l_max++;
         }
 	
-        l_tooltip = g_strdup_printf(_("Delete Frames starting at current Number %d\n"
-	                              "up to this Number (inclusive)")
+        l_tooltip = g_strdup_printf(_("Delete frames starting at current number %d "
+	                              "up to this number (inclusive)")
 	            , (int)ainfo_ptr->curr_frame_nr );
         l_cnt = gap_arr_slider_dialog(l_title, l_hline
 	      , _("Number:")
@@ -1154,9 +1154,9 @@ p_density_confirm_dialog(GapAnimInfo *ainfo_ptr, long range_from, long range_to
                      ;
                       
     msg_txt =              
-    g_strdup_printf(_("Frames in the Range: %d - %d will be duplicated %.4f times\n"
-                      "This will increase the total number of frames from %d up to %d\n"
-                      "There will be no UNDO for this Operation\n")
+    g_strdup_printf(_("Frames in the range: %d - %d will be duplicated %.4f times.\n"
+                      "This will increase the total number of frames from %d up to %d.\n"
+                      "There will be no undo for this operation\n")
                    , (int)range_from
                    , (int)range_to
                    , (float)density_factor
@@ -1172,10 +1172,10 @@ p_density_confirm_dialog(GapAnimInfo *ainfo_ptr, long range_from, long range_to
                      + l_target_range_size
                      ;
     msg_txt =              
-    g_strdup_printf(_("%.04f Percent of the Frames in the Range: %d - %d\n"
-                      "will be DELETED\n" 
+    g_strdup_printf(_("%.04f percent of the frames in the range: %d - %d\n"
+                      "will be deleted.\n" 
                       "This will decrease the total number of frames from %d down to %d\n"
-                      "There will be no UNDO for this Operation\n")
+                      "There will be no undo for this operation\n")
                    , (float)100.0 - (100.0 / l_src_range_size * l_target_range_size)
                    , (int)range_from
                    , (int)range_to
@@ -1216,7 +1216,7 @@ p_density_dialog(GapAnimInfo *ainfo_ptr, long *range_from, long *range_to
   argv[0].int_min   = (gint)ainfo_ptr->first_frame_nr;
   argv[0].int_max   = (gint)ainfo_ptr->last_frame_nr;
   argv[0].int_ret   = (gint)ainfo_ptr->curr_frame_nr;
-  argv[0].help_txt  = _("Affected Range starts at this framenumber");
+  argv[0].help_txt  = _("Affected range starts at this framenumber");
 
   gap_arr_arg_init(&argv[1], GAP_ARR_WGT_INT_PAIR);
   argv[1].label_txt = _("To Frame:");
@@ -1224,7 +1224,7 @@ p_density_dialog(GapAnimInfo *ainfo_ptr, long *range_from, long *range_to
   argv[1].int_min   = (gint)ainfo_ptr->first_frame_nr;
   argv[1].int_max   = (gint)ainfo_ptr->last_frame_nr;
   argv[1].int_ret   = (gint)ainfo_ptr->last_frame_nr;
-  argv[1].help_txt  = _("Affected Range ends at this framenumber");
+  argv[1].help_txt  = _("Affected range ends at this framenumber");
     
   gap_arr_arg_init(&argv[2], GAP_ARR_WGT_FLT_PAIR);
   argv[2].label_txt = _("Density:");
@@ -1237,12 +1237,12 @@ p_density_dialog(GapAnimInfo *ainfo_ptr, long *range_from, long *range_to
   argv[2].flt_digits = 4;
   argv[2].umin      = 1.0;
   argv[2].umax      = 100.0;
-  argv[2].help_txt  = _("Factor to Increase the Frame Density (acts as Divisor if checkbutton Increase Density is OFF)");
+  argv[2].help_txt  = _("Factor to increase the frame density (acts as divisor if checkbutton increase density is off)");
 
   gap_arr_arg_init(&argv[3], GAP_ARR_WGT_TOGGLE);
   argv[3].label_txt = _("Increase Density");
-  argv[3].help_txt  = _("ON: Duplicate Frames to get a target rate that is Density * Originalrate\n"
-                        "OFF: Delete Frames to get a target rate that is Originalrate/Density");
+  argv[3].help_txt  = _("ON: Duplicate frames to get a target rate that is density * originalrate.\n"
+                        "OFF: Delete frames to get a target rate that is originalrate/density.");
   argv[3].int_ret   = 1;
 
 
@@ -1309,8 +1309,8 @@ gap_base_density(GimpRunMode run_mode, gint32 image_id
               * (typical for new created images named like 'Untitled' (or 'Unbenannt' for german GUI or .. in other languages)
               */
                gap_arr_msg_win(ainfo_ptr->run_mode,
-                       _("OPERATION CANCELLED.\n"
-                         "GAP plug-ins only work with filenames\n"
+                       _("Operation cancelled.\n"
+                         "GAP video plug-ins only work with filenames\n"
                          "that end in numbers like _000001.xcf.\n"
                          "==> Rename your image, then try again."));
                return -1;
@@ -1368,7 +1368,7 @@ p_dup_dialog(GapAnimInfo *ainfo_ptr, long *range_from, long *range_to)
   argv[0].int_min   = (gint)ainfo_ptr->first_frame_nr;
   argv[0].int_max   = (gint)ainfo_ptr->last_frame_nr;
   argv[0].int_ret   = (gint)ainfo_ptr->curr_frame_nr;
-  argv[0].help_txt  = _("Source Range starts at this framenumber");
+  argv[0].help_txt  = _("Source range starts at this framenumber");
 
   gap_arr_arg_init(&argv[1], GAP_ARR_WGT_INT_PAIR);
   argv[1].label_txt = _("To Frame:");
@@ -1376,7 +1376,7 @@ p_dup_dialog(GapAnimInfo *ainfo_ptr, long *range_from, long *range_to)
   argv[1].int_min   = (gint)ainfo_ptr->first_frame_nr;
   argv[1].int_max   = (gint)ainfo_ptr->last_frame_nr;
   argv[1].int_ret   = (gint)ainfo_ptr->curr_frame_nr;
-  argv[1].help_txt  = _("Source Range ends at this framenumber");
+  argv[1].help_txt  = _("Source range ends at this framenumber");
     
   gap_arr_arg_init(&argv[2], GAP_ARR_WGT_INT_PAIR);
   argv[2].label_txt = _("N times:");
@@ -1386,7 +1386,7 @@ p_dup_dialog(GapAnimInfo *ainfo_ptr, long *range_from, long *range_to)
   argv[2].int_ret   = 1;
   argv[2].umin      = 1;
   argv[2].umax      = 9999;
-  argv[2].help_txt  = _("Copy selected Range n-times\n(you may type in Values > 99)");
+  argv[2].help_txt  = _("Copy selected range n-times (you may type in values > 99)");
 
 
   if(TRUE == gap_arr_ok_cancel_dialog(l_title, _("Make Duplicates of Frame Range"),  3, argv))
@@ -1436,8 +1436,8 @@ gap_base_dup(GimpRunMode run_mode, gint32 image_id, int nr,
 	      * (typical for new created images named like 'Untitled' (or 'Unbenannt' for german GUI or .. in other languages)
 	      */
 	       gap_arr_msg_win(ainfo_ptr->run_mode,
-		       _("OPERATION CANCELLED.\n"
-			 "GAP plug-ins only work with filenames\n"
+		       _("Operation cancelled.\n"
+			 "GAP video plug-ins only work with filenames\n"
 			 "that end in numbers like _000001.xcf.\n"
 			 "==> Rename your image, then try again."));
 	       return -1;
@@ -1509,14 +1509,14 @@ gap_base_exchg(GimpRunMode run_mode, gint32 image_id, int nr)
          {
            l_initial = ainfo_ptr->last_frame_nr; 
          }
-         l_title = g_strdup_printf (_("Exchange current Frame (%ld)")
+         l_title = g_strdup_printf (_("Exchange Current Frame (%ld)")
 				    , ainfo_ptr->curr_frame_nr);
 
-         l_tooltip = g_strdup_printf(_("Exchange the current Frame %d\n"
-	                              "with the Frame having this Number")
+         l_tooltip = g_strdup_printf(_("Exchange the current frame %d "
+	                              "with the frame that has the number entered here")
 	            , (int)ainfo_ptr->curr_frame_nr );
          l_dest = gap_arr_slider_dialog(l_title, 
-				  _("With Frame (number)"), 
+				  _("Exchange with Frame"), 
 				  _("Number:")
 				  , l_tooltip
 				  , ainfo_ptr->first_frame_nr 
@@ -1571,7 +1571,7 @@ p_shift_dialog(GapAnimInfo *ainfo_ptr, long *range_from, long *range_to)
   argv[0].int_min   = (gint)ainfo_ptr->first_frame_nr;
   argv[0].int_max   = (gint)ainfo_ptr->last_frame_nr;
   argv[0].int_ret   = (gint)ainfo_ptr->curr_frame_nr;
-  argv[0].help_txt  = _("Affected Range starts at this framenumber");
+  argv[0].help_txt  = _("Affected range starts at this framenumber");
 
   gap_arr_arg_init(&argv[1], GAP_ARR_WGT_INT_PAIR);
   argv[1].label_txt = _("To Frame:");
@@ -1579,7 +1579,7 @@ p_shift_dialog(GapAnimInfo *ainfo_ptr, long *range_from, long *range_to)
   argv[1].int_min   = (gint)ainfo_ptr->first_frame_nr;
   argv[1].int_max   = (gint)ainfo_ptr->last_frame_nr;
   argv[1].int_ret   = (gint)ainfo_ptr->last_frame_nr;
-  argv[1].help_txt  = _("Affected Range ends at this framenumber");
+  argv[1].help_txt  = _("Affected range ends at this framenumber");
     
   gap_arr_arg_init(&argv[2], GAP_ARR_WGT_INT_PAIR);
   argv[2].label_txt = _("N-Shift:");
@@ -1587,9 +1587,9 @@ p_shift_dialog(GapAnimInfo *ainfo_ptr, long *range_from, long *range_to)
   argv[2].int_min   = -1 * (gint)ainfo_ptr->last_frame_nr;
   argv[2].int_max   = (gint)ainfo_ptr->last_frame_nr;
   argv[2].int_ret   = 1;
-  argv[2].help_txt  = _("Renumber the affected Frame Sequence\n(numbers are shifted in circle by N)");
+  argv[2].help_txt  = _("Renumber the affected frame sequence (numbers are shifted in circle by N steps)");
   
-  if(TRUE == gap_arr_ok_cancel_dialog(l_title, _("Frame Sequence shift"),  3, argv))
+  if(TRUE == gap_arr_ok_cancel_dialog(l_title, _("Frame Sequence Shift"),  3, argv))
   { 
     g_free (l_title);
     *range_from = (long)(argv[0].int_ret);
@@ -1683,7 +1683,7 @@ p_renumber_dialog(GapAnimInfo *ainfo_ptr, long *start_frame_nr, long *digits)
   argv[0].int_min   = (gint)0;
   argv[0].int_max   = (gint)999999;
   argv[0].int_ret   = (gint)1;
-  argv[0].help_txt  = _("New Framenumber for the first Frame");
+  argv[0].help_txt  = _("New framenumber for the first frame");
 
   gap_arr_arg_init(&argv[1], GAP_ARR_WGT_INT_PAIR);
   argv[1].label_txt = _("Digits:");
@@ -1691,7 +1691,7 @@ p_renumber_dialog(GapAnimInfo *ainfo_ptr, long *start_frame_nr, long *digits)
   argv[1].int_min   = 1;
   argv[1].int_max   = 6;
   argv[1].int_ret   = 6;
-  argv[1].help_txt  = _("How many digits to use for the Framenumber in the File Name");
+  argv[1].help_txt  = _("How many digits to use for the framenumber in the filename");
     
 
 

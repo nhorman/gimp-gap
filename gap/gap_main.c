@@ -38,9 +38,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-static char *gap_main_version =  "1.3.21a; 2003/10/20";
+static char *gap_main_version =  "1.3.22a; 2003/11/05";
 
 /* revision history:
+ * gimp    1.3.22a; 2003/10/09  hof: - updated main version
  * gimp    1.3.21a; 2003/10/09  hof: - updated main version
  * gimp    1.3.20d; 2003/10/09  hof: - bluebox filter for movepath
  * gimp    1.3.20d; 2003/10/09  hof: - sourcecode cleanup
@@ -154,7 +155,7 @@ GimpPlugInInfo PLUG_IN_INFO =
   static GimpParamDef args_std[] =
   {
     {GIMP_PDB_INT32, "run_mode", "Interactive, non-interactive"},
-    {GIMP_PDB_IMAGE, "image", "Input image (current one of the Anim Frames)"},
+    {GIMP_PDB_IMAGE, "image", "Input image (current one of the video frames)"},
     {GIMP_PDB_DRAWABLE, "drawable", "Input drawable (unused)"},
   };
   static int nargs_std = G_N_ELEMENTS (args_std);
@@ -174,7 +175,7 @@ GimpPlugInInfo PLUG_IN_INFO =
   static GimpParamDef args_goto[] =
   {
     {GIMP_PDB_INT32, "run_mode", "Interactive, non-interactive"},
-    {GIMP_PDB_IMAGE, "image", "Input image (current one of the Anim Frames)"},
+    {GIMP_PDB_IMAGE, "image", "Input image (current one of the video frames)"},
     {GIMP_PDB_DRAWABLE, "drawable", "Input drawable (unused)"},
     {GIMP_PDB_INT32, "nr", "frame nr where to go"},
   };
@@ -183,7 +184,7 @@ GimpPlugInInfo PLUG_IN_INFO =
   static GimpParamDef args_del[] =
   {
     {GIMP_PDB_INT32, "run_mode", "Interactive, non-interactive"},
-    {GIMP_PDB_IMAGE, "image", "Input image (current one of the Anim Frames)"},
+    {GIMP_PDB_IMAGE, "image", "Input image (current one of the video frames)"},
     {GIMP_PDB_DRAWABLE, "drawable", "Input drawable (unused)"},
     {GIMP_PDB_INT32, "nr", "number of frames to delete (delete starts at current frame)"},
   };
@@ -193,7 +194,7 @@ GimpPlugInInfo PLUG_IN_INFO =
   static GimpParamDef args_dup[] =
   {
     {GIMP_PDB_INT32, "run_mode", "Interactive, non-interactive"},
-    {GIMP_PDB_IMAGE, "image", "Input image (current one of the Anim Frames)"},
+    {GIMP_PDB_IMAGE, "image", "Input image (current one of the video frames)"},
     {GIMP_PDB_DRAWABLE, "drawable", "Input drawable (unused)"},
     {GIMP_PDB_INT32, "nr", "how often to copy current frame"},
     {GIMP_PDB_INT32, "range_from", "frame nr to start"},
@@ -204,7 +205,7 @@ GimpPlugInInfo PLUG_IN_INFO =
   static GimpParamDef args_density[] =
   {
     {GIMP_PDB_INT32, "run_mode", "Interactive, non-interactive"},
-    {GIMP_PDB_IMAGE, "image", "Input image (current one of the Anim Frames)"},
+    {GIMP_PDB_IMAGE, "image", "Input image (current one of the video frames)"},
     {GIMP_PDB_DRAWABLE, "drawable", "Input drawable (unused)"},
     {GIMP_PDB_INT32, "range_from", "frame nr to start"},
     {GIMP_PDB_INT32, "range_to", "frame nr to stop"},
@@ -216,7 +217,7 @@ GimpPlugInInfo PLUG_IN_INFO =
   static GimpParamDef args_exchg[] =
   {
     {GIMP_PDB_INT32, "run_mode", "non-interactive"},
-    {GIMP_PDB_IMAGE, "image", "Input image (current one of the Anim Frames)"},
+    {GIMP_PDB_IMAGE, "image", "Input image (current one of the video frames)"},
     {GIMP_PDB_DRAWABLE, "drawable", "Input drawable (unused)"},
     {GIMP_PDB_INT32, "nr", "nr of frame to exchange with current frame"},
   };
@@ -225,22 +226,22 @@ GimpPlugInInfo PLUG_IN_INFO =
   static GimpParamDef args_mov[] =
   {
     {GIMP_PDB_INT32, "run_mode", "Interactive"},
-    {GIMP_PDB_IMAGE, "image", "Input image (one of the Anim Frames)"},
+    {GIMP_PDB_IMAGE, "image", "Input image (one of the video frames)"},
     {GIMP_PDB_DRAWABLE, "drawable", "Input drawable (unused)"},
   };
 
   static GimpParamDef args_mov_path_ext[] =
   {
     {GIMP_PDB_INT32,        "run_mode",   "non-interactive"},
-    {GIMP_PDB_IMAGE,        "dst_image",  "Destination image (one of the Anim Frames), where to insert the animated source layers"},
+    {GIMP_PDB_IMAGE,        "dst_image",  "Destination image (one of the video frames), where to insert the animated source layers"},
     {GIMP_PDB_DRAWABLE,     "drawable",   "drawable (unused)"},
     {GIMP_PDB_INT32,        "range_from", "destination frame nr to start"},
     {GIMP_PDB_INT32,        "range_to",   "destination frame nr to stop (can be lower than range_from)"},
     {GIMP_PDB_INT32,        "nr",         "layerstack position where to insert source layer (0 == on top)"},
     /* source specs */
-    { GIMP_PDB_LAYER,      "src_layer_id",      "starting LayerID of SourceObject. (use any Multilayeranimated Image, or an AnimFrame of anoter Animation)"},
+    { GIMP_PDB_LAYER,      "src_layer_id",      "starting LayerID of SourceObject. (use any Multilayeranimated Image, or a video frame of anoter Animation)"},
     { GIMP_PDB_INT32,      "src_stepmode",      "0-5     derive inserted object as copy of one layer from a multilayer src_image \n"
-                                                "100-105 derive inserted object as copy of merged visible layers of a source animframe \n"
+                                                "100-105 derive inserted object as copy of merged visible layers of a source video frame \n"
                                                 "0:  Layer Loop  1: Layer Loop reverse  2: Layer Once  3: Layer Once reverse  4: Layer PingPong \n"
 						"5: None (use onle the selected src_layer)\n"
                                                 "100: Frame Loop  101: Frame Loop reverse  102: Frame Once  103: Frame Once reverse  104: Frame PingPong \n"
@@ -251,7 +252,7 @@ GimpPlugInInfo PLUG_IN_INFO =
 						"4: handle center"},
     { GIMP_PDB_INT32,      "src_paintmode",     "0: GIMP_NORMAL_MODE (see GimpLayerModeEffects -- libgimp/gimpenums.h -- for more information)"},
     { GIMP_PDB_INT32,      "src_force_visible", "1: Set inserted layres visible, 0: insert layers as is"},
-    { GIMP_PDB_INT32,      "clip_to_img",       "1: Clip inserted layers to Image size of the destination AnimFrame, 0: dont clip"},
+    { GIMP_PDB_INT32,      "clip_to_img",       "1: Clip inserted layers to Image size of the destination video frame, 0: dont clip"},
     /* extras */
     { GIMP_PDB_INT32,      "rotation_follow",   "0: NO automatic calculation (use the rotation array parameters as it is) \n"
                                                 "1: Automatic calculation of rotation, following the path vectors, (Ignore rotation array parameters)\n"},
@@ -312,15 +313,15 @@ GimpPlugInInfo PLUG_IN_INFO =
   static GimpParamDef args_mov_path_ext2[] =
   {
     {GIMP_PDB_INT32,        "run_mode",   "non-interactive"},
-    {GIMP_PDB_IMAGE,        "dst_image",  "Destination image (one of the Anim Frames), where to insert the animated source layers"},
+    {GIMP_PDB_IMAGE,        "dst_image",  "Destination image (one of the video frames), where to insert the animated source layers"},
     {GIMP_PDB_DRAWABLE,     "drawable",   "drawable (unused)"},
     {GIMP_PDB_INT32,        "range_from", "destination frame nr to start"},
     {GIMP_PDB_INT32,        "range_to",   "destination frame nr to stop (can be lower than range_from)"},
     {GIMP_PDB_INT32,        "nr",         "layerstack position where to insert source layer (0 == on top)"},
     /* source specs */
-    { GIMP_PDB_LAYER,      "src_layer_id",      "starting LayerID of SourceObject. (use any Multilayeranimated Image, or an AnimFrame of anoter Animation)"},
+    { GIMP_PDB_LAYER,      "src_layer_id",      "starting LayerID of SourceObject. (use any Multilayeranimated Image, or an video frame of anoter Animation)"},
     { GIMP_PDB_INT32,      "src_stepmode",      "0-5     derive inserted object as copy of one layer from a multilayer src_image \n"
-                                                "100-105 derive inserted object as copy of merged visible layers of a source animframe \n"
+                                                "100-105 derive inserted object as copy of merged visible layers of a source video frame \n"
                                                 "0:  Layer Loop  1: Layer Loop reverse  2: Layer Once  3: Layer Once reverse  4: Layer PingPong \n"
 						"5: None (use onle the selected src_layer)\n"
                                                 "100: Frame Loop  101: Frame Loop reverse  102: Frame Once  103: Frame Once reverse  104: Frame PingPong \n"
@@ -331,7 +332,7 @@ GimpPlugInInfo PLUG_IN_INFO =
 						"4: handle center"},
     { GIMP_PDB_INT32,      "src_paintmode",     "0: GIMP_NORMAL_MODE (see GimpLayerModeEffects -- libgimp/gimpenums.h -- for more information)"},
     { GIMP_PDB_INT32,      "src_force_visible", "1: Set inserted layres visible, 0: insert layers as is"},
-    { GIMP_PDB_INT32,      "clip_to_img",       "1: Clip inserted layers to Image size of the destination AnimFrame, 0: dont clip"},
+    { GIMP_PDB_INT32,      "clip_to_img",       "1: Clip inserted layers to Image size of the destination video frame, 0: dont clip"},
     /* extras */
     { GIMP_PDB_INT32,      "rotation_follow",   "0: NO automatic calculation (use the rotation array parameters as it is) \n"
                                                 "1: Automatic calculation of rotation, following the path vectors, (Ignore rotation array parameters)\n"},
@@ -357,7 +358,7 @@ GimpPlugInInfo PLUG_IN_INFO =
   static GimpParamDef args_f2multi[] =
   {
     {GIMP_PDB_INT32, "run_mode", "Interactive, non-interactive"},
-    {GIMP_PDB_IMAGE, "image", "Input image (one of the Anim Frames)"},
+    {GIMP_PDB_IMAGE, "image", "Input image (one of the video frames)"},
     {GIMP_PDB_DRAWABLE, "drawable", "Input drawable (unused)"},
     {GIMP_PDB_INT32, "range_from", "frame nr to start"},
     {GIMP_PDB_INT32, "range_to", "frame nr to stop (can be lower than range_from)"},
@@ -384,7 +385,7 @@ GimpPlugInInfo PLUG_IN_INFO =
   static GimpParamDef args_rflatt[] =
   {
     {GIMP_PDB_INT32, "run_mode", "Interactive, non-interactive"},
-    {GIMP_PDB_IMAGE, "image", "Input image (one of the Anim Frames)"},
+    {GIMP_PDB_IMAGE, "image", "Input image (one of the video frames)"},
     {GIMP_PDB_DRAWABLE, "drawable", "Input drawable (unused)"},
     {GIMP_PDB_INT32, "range_from", "frame nr to start"},
     {GIMP_PDB_INT32, "range_to", "frame nr to stop (can be lower than range_from)"},
@@ -394,7 +395,7 @@ GimpPlugInInfo PLUG_IN_INFO =
   static GimpParamDef args_rlayerdel[] =
   {
     {GIMP_PDB_INT32, "run_mode", "Interactive, non-interactive"},
-    {GIMP_PDB_IMAGE, "image", "Input image (one of the Anim Frames)"},
+    {GIMP_PDB_IMAGE, "image", "Input image (one of the video frames)"},
     {GIMP_PDB_DRAWABLE, "drawable", "Input drawable (unused)"},
     {GIMP_PDB_INT32, "range_from", "frame nr to start"},
     {GIMP_PDB_INT32, "range_to", "frame nr to stop (can be lower than range_from)"},
@@ -406,7 +407,7 @@ GimpPlugInInfo PLUG_IN_INFO =
   static GimpParamDef args_rconv[] =
   {
     {GIMP_PDB_INT32, "run_mode", "Interactive, non-interactive"},
-    {GIMP_PDB_IMAGE, "image", "Input image (one of the Anim Frames)"},
+    {GIMP_PDB_IMAGE, "image", "Input image (one of the video frames)"},
     {GIMP_PDB_DRAWABLE, "drawable", "Input drawable (unused)"},
     {GIMP_PDB_INT32, "range_from", "frame nr to start"},
     {GIMP_PDB_INT32, "range_to", "frame nr to stop (can be lower than range_from)"},
@@ -422,7 +423,7 @@ GimpPlugInInfo PLUG_IN_INFO =
   static GimpParamDef args_rconv2[] =
   {
     {GIMP_PDB_INT32, "run_mode", "Interactive, non-interactive"},
-    {GIMP_PDB_IMAGE, "image", "Input image (one of the Anim Frames)"},
+    {GIMP_PDB_IMAGE, "image", "Input image (one of the video frames)"},
     {GIMP_PDB_DRAWABLE, "drawable", "Input drawable (unused)"},
     {GIMP_PDB_INT32, "range_from", "frame nr to start"},
     {GIMP_PDB_INT32, "range_to", "frame nr to stop (can be lower than range_from)"},
@@ -452,10 +453,10 @@ GimpPlugInInfo PLUG_IN_INFO =
   static GimpParamDef args_resize[] =
   {
     {GIMP_PDB_INT32, "run_mode", "Interactive, non-interactive"},
-    {GIMP_PDB_IMAGE, "image", "Input image (one of the Anim Frames)"},
+    {GIMP_PDB_IMAGE, "image", "Input image (one of the video frames)"},
     {GIMP_PDB_DRAWABLE, "drawable", "Input drawable (unused)"},
-    {GIMP_PDB_INT32, "new_width", "width of the resulting  anim_frame images in pixels"},
-    {GIMP_PDB_INT32, "new_height", "height of the resulting  anim_frame images in pixels"},
+    {GIMP_PDB_INT32, "new_width", "width of the resulting  video frame images in pixels"},
+    {GIMP_PDB_INT32, "new_height", "height of the resulting  video frame images in pixels"},
     {GIMP_PDB_INT32, "offset_x", "X offset in pixels"},
     {GIMP_PDB_INT32, "offset_y", "Y offset in pixels"},
   };
@@ -464,10 +465,10 @@ GimpPlugInInfo PLUG_IN_INFO =
   static GimpParamDef args_scale[] =
   {
     {GIMP_PDB_INT32, "run_mode", "Interactive, non-interactive"},
-    {GIMP_PDB_IMAGE, "image", "Input image (one of the Anim Frames)"},
+    {GIMP_PDB_IMAGE, "image", "Input image (one of the video frames)"},
     {GIMP_PDB_DRAWABLE, "drawable", "Input drawable (unused)"},
-    {GIMP_PDB_INT32, "new_width", "width of the resulting  anim_frame images in pixels"},
-    {GIMP_PDB_INT32, "new_height", "height of the resulting  anim_frame images in pixels"},
+    {GIMP_PDB_INT32, "new_width", "width of the resulting  video frame images in pixels"},
+    {GIMP_PDB_INT32, "new_height", "height of the resulting  video frame images in pixels"},
   };
   static int nargs_scale = G_N_ELEMENTS (args_scale);
 
@@ -475,12 +476,12 @@ GimpPlugInInfo PLUG_IN_INFO =
   static GimpParamDef args_split[] =
   {
     {GIMP_PDB_INT32, "run_mode", "Interactive, non-interactive"},
-    {GIMP_PDB_IMAGE, "image", "Input image (NO Anim Frame allowed)"},
+    {GIMP_PDB_IMAGE, "image", "Input image (NO video frame allowed)"},
     {GIMP_PDB_DRAWABLE, "drawable", "Input drawable (unused)"},
     {GIMP_PDB_INT32, "inverse_order", "True/False"},
     {GIMP_PDB_INT32, "no_alpha", "True: remove alpha channel(s) in the destination frames"},
     {GIMP_PDB_STRING, "extension", "extension for the destination filetype (jpg, tif ...or any other gimp supported type)"},
-    {GIMP_PDB_INT32, "only visible", "ON: Handle only visible layers, OFF: Handle all layers and force visibility"},
+    {GIMP_PDB_INT32, "only visible", "TRUE: Handle only visible layers, FALSE: Handle all layers and force visibility"},
     {GIMP_PDB_INT32, "digits", "Number of digits for the number part in the frames filenames"},
   };
   static int nargs_split = G_N_ELEMENTS (args_split);
@@ -494,7 +495,7 @@ GimpPlugInInfo PLUG_IN_INFO =
   static GimpParamDef args_shift[] =
   {
     {GIMP_PDB_INT32, "run_mode", "Interactive, non-interactive"},
-    {GIMP_PDB_IMAGE, "image", "Input image (current one of the Anim Frames)"},
+    {GIMP_PDB_IMAGE, "image", "Input image (current one of the video frames)"},
     {GIMP_PDB_DRAWABLE, "drawable", "Input drawable (unused)"},
     {GIMP_PDB_INT32, "nr", "how many framenumbers to shift the Frame Sequence"},
     {GIMP_PDB_INT32, "range_from", "frame nr to start"},
@@ -505,7 +506,7 @@ GimpPlugInInfo PLUG_IN_INFO =
   static GimpParamDef args_renumber[] =
   {
     {GIMP_PDB_INT32, "run_mode", "Interactive, non-interactive"},
-    {GIMP_PDB_IMAGE, "image", "Input image (current one of the Anim Frames)"},
+    {GIMP_PDB_IMAGE, "image", "Input image (current one of the video frames)"},
     {GIMP_PDB_DRAWABLE, "drawable", "Input drawable (unused)"},
     {GIMP_PDB_INT32, "nr", "start frame number for the first frame (usual value is 1)"},
     {GIMP_PDB_INT32, "digits", "how many digits to use for the framenumber part (1 upto 6)"},
@@ -515,7 +516,7 @@ GimpPlugInInfo PLUG_IN_INFO =
   static GimpParamDef args_modify[] =
   {
     {GIMP_PDB_INT32, "run_mode", "Interactive, non-interactive"},
-    {GIMP_PDB_IMAGE, "image", "Input image (current one of the Anim Frames)"},
+    {GIMP_PDB_IMAGE, "image", "Input image (current one of the video frames)"},
     {GIMP_PDB_DRAWABLE, "drawable", "Input drawable (unused)"},
     {GIMP_PDB_INT32, "range_from", "frame nr to start"},
     {GIMP_PDB_INT32, "range_to", "frame nr to stop"},
@@ -531,7 +532,7 @@ GimpPlugInInfo PLUG_IN_INFO =
   static GimpParamDef args_video_copy[] =
   {
     {GIMP_PDB_INT32, "run_mode", "always non-interactive"},
-    {GIMP_PDB_IMAGE, "image", "Input image (current one of the Anim Frames)"},
+    {GIMP_PDB_IMAGE, "image", "Input image (current one of the video frames)"},
     {GIMP_PDB_DRAWABLE, "drawable", "Input drawable (unused)"},
     {GIMP_PDB_INT32, "range_from", "frame nr to start"},
     {GIMP_PDB_INT32, "range_to", "frame nr to stop"},
@@ -541,7 +542,7 @@ GimpPlugInInfo PLUG_IN_INFO =
   static GimpParamDef args_video_paste[] =
   {
     {GIMP_PDB_INT32, "run_mode", "always non-interactive"},
-    {GIMP_PDB_IMAGE, "image", "Input image (current one of the Anim Frames)"},
+    {GIMP_PDB_IMAGE, "image", "Input image (current one of the video frames)"},
     {GIMP_PDB_DRAWABLE, "drawable", "Input drawable (unused)"},
     {GIMP_PDB_INT32, "paste_mode", "0 .. paste at current frame (replacing current and following frames)"
                                 "1 .. paste insert before current frame "
@@ -558,13 +559,13 @@ GimpPlugInInfo PLUG_IN_INFO =
 
   static GimpParamDef return_ainfo[] =
   {
-    { GIMP_PDB_INT32,  "first_frame_nr", "lowest frame number of all AnimFrame discfiles" },
-    { GIMP_PDB_INT32,  "last_frame_nr",  "highest frame number of all AnimFrame discfiles" },
+    { GIMP_PDB_INT32,  "first_frame_nr", "lowest frame number of all video frame discfiles" },
+    { GIMP_PDB_INT32,  "last_frame_nr",  "highest frame number of all video frame discfiles" },
     { GIMP_PDB_INT32,  "curr_frame_nr",  "current frame number (extracted from the imagename)" },
-    { GIMP_PDB_INT32,  "frame_cnt",      "total number of all AnimFrame discfiles that belong to the passed image" },
-    { GIMP_PDB_STRING, "basename",       "basename of the AnimFrame (without frame number and extension)\n"
+    { GIMP_PDB_INT32,  "frame_cnt",      "total number of all video frame discfiles that belong to the passed image" },
+    { GIMP_PDB_STRING, "basename",       "basename of the video frame (without frame number and extension)\n"
                                          " may also include path (depending how the current frame image was opened)" },
-    { GIMP_PDB_STRING, "extension",      "extension of the AnimFrames (.xcf)" },
+    { GIMP_PDB_STRING, "extension",      "extension of the video frames (.xcf)" },
     { GIMP_PDB_FLOAT,  "framerate",      "framerate in frames per second" }
   };
   static int nreturn_ainfo = G_N_ELEMENTS (return_ainfo);
@@ -572,7 +573,7 @@ GimpPlugInInfo PLUG_IN_INFO =
   static GimpParamDef args_setrate[] =
   {
     {GIMP_PDB_INT32, "run_mode", "non-interactive"},
-    {GIMP_PDB_IMAGE, "image", "Input image (current one of the Anim Frames)"},
+    {GIMP_PDB_IMAGE, "image", "Input image (current one of the video frames)"},
     {GIMP_PDB_DRAWABLE, "drawable", "Input drawable (unused)"},
     {GIMP_PDB_FLOAT,  "framerate",      "framerate in frames per second" }
   };
@@ -717,7 +718,7 @@ query ()
   l_help_str = g_strdup_printf(
 			 "This plugin inserts one layer in each frame of the selected frame range of an Animation\n"
 			 " (specified by the dst_image parameter).\n"
-			 " An Animation is a series of numbered AnimFrame Images on disk where only the current\n"
+			 " An Animation is a series of numbered video frame images on disk where only the current\n"
 			 " Frame is opened in the gimp\n"
 			 " The inserted layer is derived from another (multilayer)image\n"
 			 " or from another Animation (as merged copy of the visible layers in a source frame)\n"
@@ -812,7 +813,7 @@ query ()
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
 			 gap_main_version,
-			 N_("<Image>/Video/Frames LayerDel..."),
+			 N_("<Image>/Video/Frames Layer Delete..."),
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
 			 nargs_rlayerdel, nreturn_std,
@@ -843,7 +844,7 @@ query ()
 			 args_rconv2, return_rconv);
 
   gimp_install_procedure("plug_in_gap_anim_resize",
-			 "This plugin resizes all anim_frames (images on disk) to the given new_width/new_height",
+			 "This plugin resizes all video frames (images on disk) to the given new_width/new_height",
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
@@ -855,7 +856,7 @@ query ()
 			 args_resize, return_std);
 
   gimp_install_procedure("plug_in_gap_anim_crop",
-			 "This plugin crops all anim_frames (images on disk) to the given new_width/new_height",
+			 "This plugin crops all video frames (images on disk) to the given new_width/new_height",
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
@@ -867,7 +868,7 @@ query ()
 			 args_resize, return_std);
 
   gimp_install_procedure("plug_in_gap_anim_scale",
-			 "This plugin scales all anim_frames (images on disk) to the given new_width/new_height",
+			 "This plugin scales all video frames (images on disk) to the given new_width/new_height",
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
@@ -879,7 +880,7 @@ query ()
 			 args_scale, return_std);
 
   gimp_install_procedure("plug_in_gap_split",
-			 "This plugin splits the current image to anim frames (images on disk). Each layer is saved as one frame",
+			 "This plugin splits the current image to video frames (images on disk). Each layer is saved as one frame",
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
@@ -976,11 +977,11 @@ query ()
 			 args_video_clear, return_nothing);
 
   gimp_install_procedure("plug_in_gap_get_animinfo",
-			 "This plugin gets animation infos about AnimFrames."
+			 "This plugin gets animation infos about video frames."
                          ,
-			 "Informations about the AnimFrames belonging to the\n"
+			 "Informations about the video frames belonging to the\n"
                          " passed image_id are returned. (therefore the directory\n"
-                         " is scanned and checked for AnimFrame discfiles.\n"
+                         " is scanned and checked for video frame discfiles.\n"
                          " If you call this plugin on images without a Name\n"
                          " You will get just default values."
                          ,
@@ -994,9 +995,9 @@ query ()
 			 args_std, return_ainfo);
 
   gimp_install_procedure("plug_in_gap_set_framerate",
-			 "This plugin sets the framerate for AnimFrames",
+			 "This plugin sets the framerate for video frames",
 			 "The framerate is stored in a video info file"
-                         " named like the basename of the AnimFrames"
+                         " named like the basename of the video frames"
                          " without a framenumber. The extension"
                          " of this video info file is .vin",
 			 "Wolfgang Hofer (hof@gimp.org)",

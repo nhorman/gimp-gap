@@ -3,7 +3,7 @@
  *
  * GAP ... Gimp Animation Plugins
  *
- * This Module contains the resize and scale Dialog for AnimFrames.
+ * This Module contains the resize and scale Dialog for video frames.
  * (It just is a shell to call Gimp's resize / scale Dialog )
  */
 /* The GIMP -- an image manipulation program

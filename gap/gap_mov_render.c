@@ -416,7 +416,7 @@ gap_mov_render_render(gint32 image_id, GapMovValues *val_ptr, GapMovCurrent *cur
   }
 
   /* check for layermask */
-  l_cp_layer_mask_id = gimp_layer_get_mask_id(l_cp_layer_id);
+  l_cp_layer_mask_id = gimp_layer_mask(l_cp_layer_id);
   if(l_cp_layer_mask_id >= 0)
   {
      /* apply the layermask
@@ -568,7 +568,7 @@ gap_mov_render_render(gint32 image_id, GapMovValues *val_ptr, GapMovCurrent *cur
         * instead of removing we make the layer small and move him outside
         * the image.
         * (that helps to keep the layerstack position of the inserted layer(s)
-        * constant in all handled anim_frames) 
+        * constant in all handled video frames) 
         */
        gimp_layer_resize(l_cp_layer_id, 2, 2, -3, -3);
      }
@@ -616,7 +616,7 @@ gap_mov_render_render(gint32 image_id, GapMovValues *val_ptr, GapMovCurrent *cur
 
 /* ============================================================================
  * gap_mov_render_fetch_src_frame
- *   fetch the requested AnimFrame SourceImage into cache_tmp_image_id
+ *   fetch the requested video frame SourceImage into cache_tmp_image_id
  *   and
  *    - reduce all visible layer to one layer (cache_tmp_layer_id)
  *    - (scale to animated preview size if called for AnimPreview )

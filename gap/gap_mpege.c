@@ -169,19 +169,18 @@ int p_mpege_info(GapAnimInfo *ainfo_ptr, char *errlist, GapMpegEncoderType encod
   gap_arr_arg_init(&argv[l_idx], GAP_ARR_WGT_LABEL_LEFT);
   if(encoder == GAP_MPEGE_MPEG2ENCODE)
   {
-    argv[l_idx].label_txt = _("You need a series of single Images on disk (AnimFrames)\n"
-                              "all with fileformat JPEG (or YUV or PNM or PPM)\n"
+    argv[l_idx].label_txt = _("You need a series of single images on disk (video frames),\n"
                               "all with fileformat PPM (or YUV)\n"
-                              "(use 'Frames Convert' from the Video Menu\n"
-                              "or 'Split Image to Frames' from the Video Menu)"
+                              "(use 'Frames Convert' from the video menu\n"
+                              "or 'Split Image to Frames' from the video menu)"
                              );
   }
   else
   {
-    argv[l_idx].label_txt = _("You need a series of single Images on disk (AnimFrames)\n"
+    argv[l_idx].label_txt = _("You need a series of single images on disk (video frames)\n"
                               "all with fileformat JPEG (or YUV or PNM or PPM)\n"
-                              "(use 'Frames Convert' from the Video Menu\n"
-                              "or 'Split Image to Frames' from the Video Menu)"
+                              "(use 'Frames Convert' from the video menu\n"
+                              "or 'Split Image to Frames' from the video menu)"
                              );
   }
 
@@ -195,14 +194,14 @@ int p_mpege_info(GapAnimInfo *ainfo_ptr, char *errlist, GapMpegEncoderType encod
   if(encoder == GAP_MPEGE_MPEG_ENCODE)
   {
 
-     argv[l_idx].label_txt = _("All Images must have the same size,\n"
+     argv[l_idx].label_txt = _("All images must have the same size,\n"
                                "width and height must be a multiple of 16\n"
-                               "(use Scale or Crop from the Video Menu)"
+                               "(use scale or crop from the video menu)"
                               );
   }
   else
   {
-     argv[l_idx].label_txt = _("All Images must have the same size,");
+     argv[l_idx].label_txt = _("All images must have the same size,");
   }
 
   l_idx++;
@@ -283,7 +282,7 @@ int p_mpege_dialog(GapAnimInfo *ainfo_ptr, t_mpg_par *mp_ptr, GapMpegEncoderType
   gap_arr_arg_init(&argv[1], GAP_ARR_WGT_INT_PAIR);
   argv[1].constraint = TRUE;
   argv[1].label_txt = _("From Frame:");
-  argv[1].help_txt  = _("first handled frame");
+  argv[1].help_txt  = _("First handled frame");
   argv[1].int_min   = (gint)ainfo_ptr->first_frame_nr;
   argv[1].int_max   = (gint)ainfo_ptr->last_frame_nr;
   argv[1].int_ret   = (gint)ainfo_ptr->curr_frame_nr;
@@ -293,7 +292,7 @@ int p_mpege_dialog(GapAnimInfo *ainfo_ptr, t_mpg_par *mp_ptr, GapMpegEncoderType
   gap_arr_arg_init(&argv[2], GAP_ARR_WGT_INT_PAIR);
   argv[2].constraint = TRUE;
   argv[2].label_txt = _("To Frame:");
-  argv[2].help_txt  = _("last handled frame");
+  argv[2].help_txt  = _("Last handled frame");
   argv[2].int_min   = (gint)ainfo_ptr->first_frame_nr;
   argv[2].int_max   = (gint)ainfo_ptr->last_frame_nr;
   argv[2].int_ret   = (gint)ainfo_ptr->last_frame_nr;
@@ -302,7 +301,7 @@ int p_mpege_dialog(GapAnimInfo *ainfo_ptr, t_mpg_par *mp_ptr, GapMpegEncoderType
 
   gap_arr_arg_init(&argv[3], GAP_ARR_WGT_OPTIONMENU);
   argv[3].label_txt = _("Framerate:");
-  argv[3].help_txt  = _("framerate in frames/second");
+  argv[3].help_txt  = _("Framerate in frames/second");
   argv[3].radio_argc = 8;
   argv[3].radio_argv = frate_args;
   argv[3].radio_ret  = 4;
@@ -312,7 +311,7 @@ int p_mpege_dialog(GapAnimInfo *ainfo_ptr, t_mpg_par *mp_ptr, GapMpegEncoderType
   gap_arr_arg_init(&argv[4], GAP_ARR_WGT_INT_PAIR);
   argv[4].constraint = FALSE;
   argv[4].label_txt = _("Bitrate:");
-  argv[4].help_txt  = _("used for constant bitrates (bit/sec)\n(low rate gives good compression + bad quality)");
+  argv[4].help_txt  = _("Used for constant bitrates (bit/sec). low rate gives good compression + bad quality");
   argv[4].int_min   = 500000;
   argv[4].int_step  = 100000;
   argv[4].int_max   = 9000000;
@@ -338,7 +337,7 @@ int p_mpege_dialog(GapAnimInfo *ainfo_ptr, t_mpg_par *mp_ptr, GapMpegEncoderType
   gap_arr_arg_init(&argv[l_idx], GAP_ARR_WGT_FILESEL);
   argv[l_idx].label_txt = _("Paramfile:");
   argv[l_idx].entry_width = 250;       /* pixel */
-  argv[l_idx].help_txt  = _("Name of the Encoder-Parameterfile\n(is generated)");
+  argv[l_idx].help_txt  = _("Name of the encoder-parameterfile (to be generated)");
   argv[l_idx].text_buf_len = sizeof(l_parfile);
   argv[l_idx].text_buf_ret = &l_parfile[0];
 
@@ -346,7 +345,7 @@ int p_mpege_dialog(GapAnimInfo *ainfo_ptr, t_mpg_par *mp_ptr, GapMpegEncoderType
   gap_arr_arg_init(&argv[l_idx], GAP_ARR_WGT_FILESEL);
   argv[l_idx].label_txt = _("Startscript:");
   argv[l_idx].entry_width = 250;       /* pixel */
-  argv[l_idx].help_txt  = _("Name of the Startscript\n(is generated/executed)");
+  argv[l_idx].help_txt  = _("Name of the startscript (to be generated/executed)");
   argv[l_idx].text_buf_len = sizeof(l_startscript);
   argv[l_idx].text_buf_ret = &l_startscript[0];
 
@@ -354,11 +353,11 @@ int p_mpege_dialog(GapAnimInfo *ainfo_ptr, t_mpg_par *mp_ptr, GapMpegEncoderType
   l_idx++;
   gap_arr_arg_init(&argv[l_idx], GAP_ARR_WGT_DEFAULT_BUTTON);
   argv[l_idx].label_txt = _("Default");
-  argv[l_idx].help_txt  = _("Reset all Parameters to Default Values");
+  argv[l_idx].help_txt  = _("Reset all parameters to default values");
 
   if(encoder == GAP_MPEGE_MPEG_ENCODE)
   {
-     argv[0].label_txt = _("Generate parameterfile for mpeg_encode 1.5\n(the freely distributed Berkeley MPEG-1 Video Encoder.)\n");
+     argv[0].label_txt = _("Generate parameterfile for mpeg_encode 1.5\n(the freely distributed Berkeley MPEG-1 video encoder.)\n");
 
 
      gap_arr_arg_init(&argv[5], GAP_ARR_WGT_TOGGLE);
@@ -372,7 +371,7 @@ int p_mpege_dialog(GapAnimInfo *ainfo_ptr, t_mpg_par *mp_ptr, GapMpegEncoderType
      gap_arr_arg_init(&argv[6], GAP_ARR_WGT_TEXT);
      argv[6].label_txt = _("Pattern:");
      argv[6].entry_width = 140;       /* pixel */
-     argv[6].help_txt  = _("How to encode MPEG Frame Sequence (I/P/B frames)");
+     argv[6].help_txt  = _("How to encode MPEG frame sequence (I/P/B frames)");
      argv[6].text_buf_len = sizeof(l_pattern);
      argv[6].text_buf_ret = &l_pattern[0];
      argv[6].has_default = TRUE;
@@ -381,7 +380,7 @@ int p_mpege_dialog(GapAnimInfo *ainfo_ptr, t_mpg_par *mp_ptr, GapMpegEncoderType
      gap_arr_arg_init(&argv[7], GAP_ARR_WGT_INT_PAIR);
      argv[7].constraint = TRUE;
      argv[7].label_txt = _("IQSCALE:");
-     argv[7].help_txt  = _("Quality scale for I-Frames\n(1 = best quality, 31 = best comression)");
+     argv[7].help_txt  = _("Quality scale for I-frames\n(1 = best quality, 31 = best comression)");
      argv[7].int_min   = 1;
      argv[7].int_max   = 31;
      argv[7].int_ret   = 2;
@@ -391,7 +390,7 @@ int p_mpege_dialog(GapAnimInfo *ainfo_ptr, t_mpg_par *mp_ptr, GapMpegEncoderType
      gap_arr_arg_init(&argv[8], GAP_ARR_WGT_INT_PAIR);
      argv[8].constraint = TRUE;
      argv[8].label_txt = _("PQSCALE:");
-     argv[8].help_txt  = _("Quality scale for P-Frames\n(1 = best quality, 31 = best comression)");
+     argv[8].help_txt  = _("Quality scale for P-frames\n(1 = best quality, 31 = best comression)");
      argv[8].int_min   = 1;
      argv[8].int_max   = 31;
      argv[8].int_ret   = 5;
@@ -401,7 +400,7 @@ int p_mpege_dialog(GapAnimInfo *ainfo_ptr, t_mpg_par *mp_ptr, GapMpegEncoderType
      gap_arr_arg_init(&argv[9], GAP_ARR_WGT_INT_PAIR);
      argv[9].constraint = TRUE;
      argv[9].label_txt = _("BQSCALE:");
-     argv[9].help_txt  = _("Quality scale for B-Frames\n(1 = best quality, 31 = best comression)");
+     argv[9].help_txt  = _("Quality scale for B-frames\n(1 = best quality, 31 = best comression)");
      argv[9].int_min   = 1;
      argv[9].int_max   = 31;
      argv[9].int_ret   = 9;
@@ -411,7 +410,7 @@ int p_mpege_dialog(GapAnimInfo *ainfo_ptr, t_mpg_par *mp_ptr, GapMpegEncoderType
 
      gap_arr_arg_init(&argv[10], GAP_ARR_WGT_OPTIONMENU);
      argv[10].label_txt = _("P-Search:");
-     argv[10].help_txt  = _("Search Algorithmus used for P-frames");
+     argv[10].help_txt  = _("Search algorithmus used for P-frames");
      argv[10].radio_argc = 3;
      argv[10].radio_argv = psearch_args;
      argv[10].radio_ret  = 1;
@@ -420,7 +419,7 @@ int p_mpege_dialog(GapAnimInfo *ainfo_ptr, t_mpg_par *mp_ptr, GapMpegEncoderType
 
      gap_arr_arg_init(&argv[11], GAP_ARR_WGT_OPTIONMENU);
      argv[11].label_txt = _("B-Search:");
-     argv[11].help_txt  = _("Search Algorithmus used for B-frames");
+     argv[11].help_txt  = _("Search algorithmus used for B-frames");
      argv[11].radio_argc = 3;
      argv[11].radio_argv = bsearch_args;
      argv[11].radio_ret  = 1;
@@ -444,7 +443,7 @@ int p_mpege_dialog(GapAnimInfo *ainfo_ptr, t_mpg_par *mp_ptr, GapMpegEncoderType
 
   if(encoder == GAP_MPEGE_MPEG2ENCODE)
   {
-     argv[0].label_txt = _("Generate parameterfile for mpeg2encode 1.2\n(MPEG-2 Video Encoder.)\n");
+     argv[0].label_txt = _("Generate parameterfile for mpeg2encode 1.2\n(MPEG-2 video encoder.)\n");
 
      gap_arr_arg_init(&argv[5], GAP_ARR_WGT_RADIO);
      argv[5].label_txt = _("MPEG-type:");
@@ -1034,7 +1033,7 @@ int gap_mpeg_encode(GimpRunMode run_mode,
       {
         if(*l_base_file_format == '\0')
         {
-          strcat(l_errlist, _("\nWARNING: mpeg_encode does not support Fileformat "));
+          strcat(l_errlist, _("\nWARNING: mpeg_encode does not support fileformat "));
           strcat(l_errlist, mp_par.ext);
         }
         if((l_width % 16) != 0)         { strcat(l_errlist, _("\nERROR: width not a multiple of 16")); }
@@ -1044,12 +1043,12 @@ int gap_mpeg_encode(GimpRunMode run_mode,
       {
          if(l_base_ffidx < 0)
          {
-           strcat(l_errlist, _("\nWARNING: mpeg2encode does not support Fileformat "));
+           strcat(l_errlist, _("\nWARNING: mpeg2encode does not support fileformat "));
            strcat(l_errlist, mp_par.ext);
          }
       }
 
-      if(ainfo_ptr->frame_cnt == 0)   { strcat(l_errlist, _("\nERROR: invoked from a single image, animframe required")); }
+      if(ainfo_ptr->frame_cnt == 0)   { strcat(l_errlist, _("\nERROR: invoked from a single image, but video frame is required")); }
 
       if((l_rc == 0) && (l_errlist[0] != '\0'))
       {

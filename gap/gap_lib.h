@@ -91,7 +91,7 @@ char*        gap_lib_searchpath_for_exefile(const char *exefile, const char *pat
 int          gap_lib_file_copy(char *fname, char *fname_copy);
 void         gap_lib_free_ainfo(GapAnimInfo **ainfo);
 char*        gap_lib_alloc_basename(const char *imagename, long *number);
-char*        gap_lib_alloc_extension(char *imagename);
+char*        gap_lib_alloc_extension(const char *imagename);
 GapAnimInfo* gap_lib_alloc_ainfo(gint32 image_id, GimpRunMode run_mode);
 int          gap_lib_dir_ainfo(GapAnimInfo *ainfo_ptr);
 int          gap_lib_chk_framerange(GapAnimInfo *ainfo_ptr);
@@ -100,7 +100,7 @@ int          gap_lib_chk_framechange(GapAnimInfo *ainfo_ptr);
 int    gap_lib_save_named_frame (gint32 image_id, char *sav_name);
 int    gap_lib_load_named_frame (gint32 image_id, char *lod_name);
 gint32 gap_lib_load_image (char *lod_name);
-gint32 gap_lib_save_named_image(gint32 image_id, char *sav_name, GimpRunMode run_mode);
+gint32 gap_lib_save_named_image(gint32 image_id, const char *sav_name, GimpRunMode run_mode);
 char*  gap_lib_alloc_fname_fixed_digits(char *basename, long nr, char *extension, long digits);
 char*  gap_lib_alloc_fname(char *basename, long nr, char *extension);
 char*  gap_lib_alloc_fname6(char *basename, long nr, char *extension, long default_digits);

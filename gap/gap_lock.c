@@ -132,14 +132,10 @@ gap_lock_check_for_lock(gint32 image_id, GimpRunMode run_mode)
          {
            if(run_mode == GIMP_RUN_INTERACTIVE)
            {
-              gchar *l_lockmsg;
-           
-              l_lockmsg = g_strdup_printf(_("Can't execute more than 1 Video Function\n"
-                                            "on the same AnimFrame Image at the same time\n"
-                                            "Locking IMAGE_ID:%d\n")
-                                         ,  (int)image_id);
-              gimp_message(l_lockmsg);
-              g_free(l_lockmsg);
+              g_message(_("Can't execute more than 1 video function\n"
+                          "on the same video frame image at the same time.\n"
+                          "Locking image_id:%d\n")
+                       ,  (int)image_id);
            }
            printf("GAP plug-in is LOCKED  IMAGE_ID:%d PID:%d\n", 
                   (int)l_locktab[l_idx].image_id,

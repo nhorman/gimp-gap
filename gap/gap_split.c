@@ -30,10 +30,10 @@
  *                            added digits and only_visible parameter
  * 1.1.28a; 2000/10/29   hof: subsequent save calls use GIMP_RUN_WITH_LAST_VALS
  * 1.1.9a;  1999/09/21   hof: bugfix GIMP_RUN_NONINTERACTIVE mode did not work
- * 1.1.8a;  1999/08/31   hof: accept anim framenames without underscore '_'
+ * 1.1.8a;  1999/08/31   hof: accept video framenames without underscore '_'
  * 1.1.5a;  1999/05/08   hof: bugix (dont mix GimpImageType with GimpImageBaseType)
  * 0.96.00; 1998/07/01   hof: - added scale, resize and crop
- *                              (affects full range == all anim frames)
+ *                              (affects full range == all video frames)
  *                            - now using gap_arr_dialog.h
  * 0.94.01; 1998/04/28   hof: added flatten_mode to plugin: gap_range_to_multilayer
  * 0.92.00  1998.01.10   hof: bugfix in p_frames_to_multilayer
@@ -69,7 +69,7 @@ extern      int gap_debug; /* ==0  ... dont print debug infos */
  * p_split_image
  *
  * returns   value >= 0 if all is ok  return the image_id of
- *                      the new created image (the last handled anim frame)
+ *                      the new created image (the last handled video frame)
  *           (or -1 on error)
  * ============================================================================
  */
@@ -101,7 +101,7 @@ p_split_image(GapAnimInfo *ainfo_ptr,
   l_run_mode  = ainfo_ptr->run_mode;
   if(ainfo_ptr->run_mode == GIMP_RUN_INTERACTIVE)
   {
-    gimp_progress_init( _("Splitting into Frames..."));
+    gimp_progress_init( _("Splitting image into frames..."));
   }
 
   l_new_image_id = -1;
@@ -189,7 +189,7 @@ p_split_image(GapAnimInfo *ainfo_ptr,
           l_rc = gap_lib_save_named_image(l_new_image_id, l_sav_name, l_run_mode);
           if(l_rc < 0)
           {
-            gap_arr_msg_win(ainfo_ptr->run_mode, _("Split Frames: SAVE operation FAILED.\n"
+            gap_arr_msg_win(ainfo_ptr->run_mode, _("Split Frames: Save operation failed.\n"
 					     "desired save plugin can't handle type\n"
 					     "or desired save plugin not available."));
             break;
@@ -239,9 +239,11 @@ p_split_dialog(GapAnimInfo *ainfo_ptr, gint *inverse_order, gint *no_alpha, char
   static GapArrArg  argv[7];
   gchar   *buf;
 
-  buf = g_strdup_printf (_("%s\n%s\n(%s_0001.%s)\n"),
-			 _("Make a frame (diskfile) from each Layer"),
-			 _("frames are named: base_nr.extension"),
+  buf = g_strdup_printf (_("Make a frame (diskfile) from each layer.\n"
+			   "Frames are named in the style:\n"
+			   "<basename><framenumber>.<extension>\n"
+			   "The first frame for the current case gets the name\n\n"
+			   "%s000001.%s\n"),
 			 ainfo_ptr->basename, extension);
 
   gap_arr_arg_init(&argv[0], GAP_ARR_WGT_LABEL);
@@ -249,7 +251,7 @@ p_split_dialog(GapAnimInfo *ainfo_ptr, gint *inverse_order, gint *no_alpha, char
 
   gap_arr_arg_init(&argv[1], GAP_ARR_WGT_TEXT);
   argv[1].label_txt = _("Extension:");
-  argv[1].help_txt  = _("extension of resulting frames (is also used to define Fileformat)");
+  argv[1].help_txt  = _("Extension of resulting frames. The extension is also used to define fileformat.");
   argv[1].text_buf_len = len_ext;
   argv[1].text_buf_ret = extension;
   argv[1].has_default = TRUE;
@@ -257,21 +259,24 @@ p_split_dialog(GapAnimInfo *ainfo_ptr, gint *inverse_order, gint *no_alpha, char
 
   gap_arr_arg_init(&argv[2], GAP_ARR_WGT_TOGGLE);
   argv[2].label_txt = _("Inverse Order:");
-  argv[2].help_txt  = _("Start frame 0001 at Top Layer");
+  argv[2].help_txt  = _("ON: Start with frame 000001 at top layer.\n"
+                        "OFF: Start with frame 000001 at background layer.");
   argv[2].int_ret   = 0;
   argv[2].has_default = TRUE;
   argv[2].int_default = 0;
 
   gap_arr_arg_init(&argv[3], GAP_ARR_WGT_TOGGLE);
   argv[3].label_txt = _("Flatten:");
-  argv[3].help_txt  = _("Remove Alpha Channel in resulting Frames. Transparent parts are filled with BG color.");
+  argv[3].help_txt  = _("ON: Remove alpha channel in resulting frames. Transparent parts are filled with the background color.\n"
+                        "OFF: Layers in the resulting frames keep their alpha channel.");
   argv[3].int_ret   = 0;
   argv[3].has_default = TRUE;
   argv[3].int_default = 0;
 
   gap_arr_arg_init(&argv[4], GAP_ARR_WGT_TOGGLE);
   argv[4].label_txt = _("Only Visible:");
-  argv[4].help_txt  = _("ON: Handle only visible Layers, OFF: handle all Layers and force visibiblity");
+  argv[4].help_txt  = _("ON: Handle only visible layers.\n"
+                        "OFF: handle all layers and force visibiblity");
   argv[4].int_ret   = 0;
   argv[4].has_default = TRUE;
   argv[4].int_default = 0;
@@ -279,7 +284,7 @@ p_split_dialog(GapAnimInfo *ainfo_ptr, gint *inverse_order, gint *no_alpha, char
   gap_arr_arg_init(&argv[5], GAP_ARR_WGT_INT);
   argv[5].constraint = TRUE;
   argv[5].label_txt = _("Digits:");
-  argv[5].help_txt  = _("How many digits to use for the framenumber filenamwpart");
+  argv[5].help_txt  = _("How many digits to use for the framenumber filename part");
   argv[5].int_min   = (gint)1;
   argv[5].int_max   = (gint)6;
   argv[5].int_ret   = (gint)6;
@@ -289,7 +294,7 @@ p_split_dialog(GapAnimInfo *ainfo_ptr, gint *inverse_order, gint *no_alpha, char
 
   gap_arr_arg_init(&argv[6], GAP_ARR_WGT_DEFAULT_BUTTON);
   argv[6].label_txt = _("Default");
-  argv[6].help_txt  = _("Reset all Parameters to Default Values");
+  argv[6].help_txt  = _("Reset all parameters to default values");
 
   if(TRUE == gap_arr_ok_cancel_dialog( _("Split Image into Frames"),
 			     _("Split Settings"),
@@ -311,7 +316,7 @@ p_split_dialog(GapAnimInfo *ainfo_ptr, gint *inverse_order, gint *no_alpha, char
 
 /* ============================================================================
  * gap_split_image
- *    Split one (multilayer) image into anim-frames
+ *    Split one (multilayer) image into video frames
  *    one frame per layer.
  * ============================================================================
  */
@@ -356,9 +361,9 @@ int gap_split_image(GimpRunMode run_mode,
       && (l_imagename != NULL))
       {
          gap_arr_msg_win(run_mode,
-           _("OPERATION CANCELLED.\n"
-	     "This image is already an AnimFrame.\n"
-	     "Try again on a Duplicate (Image/Duplicate)."));
+           _("Operation cancelled.\n"
+	     "This image is already a video frame.\n"
+	     "Try again on a duplicate (Image/Duplicate)."));
          return -1;
       }
       else

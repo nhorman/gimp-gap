@@ -166,8 +166,16 @@ static void
 arr_close_callback (GtkWidget *widget,
 		       gpointer   data)
 {
-  gtk_widget_destroy (GTK_WIDGET (global_arrint.dlg));  /* close & destroy dialog window */
-  gtk_main_quit ();
+  GtkWidget *dlg;
+  
+  dlg = global_arrint.dlg;
+  global_arrint.dlg = NULL;
+
+  if(dlg)
+  {
+    gtk_widget_destroy (GTK_WIDGET (dlg));  /* close & destroy dialog window */
+    gtk_main_quit ();
+  }
 }
 
 static void
@@ -175,9 +183,7 @@ but_array_callback (GtkWidget *widget,
 		    gpointer   data)
 {
   global_arrint.run = *((gint *)data);                  /* set returnvalue according to button */
-  gtk_widget_destroy (GTK_WIDGET (global_arrint.dlg));  /* close & destroy dialog window */
-
-  /* gtk_main_quit (); */ /* is called implicite in the "desstroy" handler */
+  arr_close_callback(NULL, NULL);
 }
 
 
@@ -1598,12 +1604,12 @@ gap_arr_overwrite_file_dialog(char *filename)
     l_ii = 0;
     if(g_file_test(filename, G_FILE_TEST_IS_DIR))
     {
-      l_msg = g_strdup_printf(_("Directory '%s'\nalready exists"), filename);
+      l_msg = g_strdup_printf(_("Directory '%s' already exists"), filename);
       /* filename is a directory, do not show the Overwrite Button */
     }
     else
     {
-      l_msg = g_strdup_printf(_("File '%s'\nalready exists"), filename);
+      l_msg = g_strdup_printf(_("File '%s' already exists"), filename);
       l_argv[l_ii].but_txt  = _("Overwrite");
       l_argv[l_ii].but_val  = 0;
       l_ii++;
@@ -1632,8 +1638,8 @@ gap_arr_overwrite_file_dialog(char *filename)
 
 /* ============================================================================
  * gap_arr_msg_win
- *   print a message both to stderr
- *   and to a gimp info window with OK button (only when run INTERACTIVE)
+ *   print a message both to stdout
+ *   and to a dialog window with OK button (only when run INTERACTIVE)
  * ============================================================================
  */
 
@@ -1651,10 +1657,12 @@ gap_arr_msg_win(GimpRunMode run_mode, char *msg)
   {
     if(*msg)
     {
-       fwrite(msg, 1, strlen(msg), stderr);
-       fputc('\n', stderr);
+       printf("%s\n", msg);
 
-       if(run_mode == GIMP_RUN_INTERACTIVE) gap_arr_buttons_dialog  (_("GAP Message"), msg, l_argc, l_argv, -1);
+       if(run_mode == GIMP_RUN_INTERACTIVE)
+       {
+         g_message (msg);
+       }
     }
   }
 }    /* end  gap_arr_msg_win */

@@ -25,6 +25,7 @@
  */
 
 /* revision history:
+ * version 1.3.21c 2003.11.02   hof: added gap_layer_copy_to_image
  * version 1.3.5a  2002.04.20   hof: use gimp_layer_new_from_drawable (API cleanup, requries gimp.1.3.6)
  *                                   removed channel_copy
  * version 0.98.00 1998.11.26   hof: added channel copy
@@ -48,6 +49,8 @@ gint32 gap_layer_copy_to_dest_image (gint32 dst_image_id,
                         GimpLayerModeEffects mode,
                         gint *src_offset_x,
                         gint *src_offset_y );
+gint32 gap_layer_copy_to_image (gint32 dst_image_id,
+                                gint32 src_layer_id);
 
 gboolean gap_layer_copy_content (gint32 dst_drawable_id, gint32 src_drawable_id);
 gboolean gap_layer_copy_picked_channel (gint32 dst_drawable_id,  guint dst_channel_pick

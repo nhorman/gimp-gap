@@ -411,20 +411,21 @@ static OpsButton frames_ops_buttons[] =
 {
   { GAP_STOCK_PLAY, OPS_BUTTON_FUNC (navi_dialog_vcr_play_callback), navi_dialog_vcr_play_ext_callbacks,
     N_("Playback\n"
-       "<Shift> Make Tempimage and do Layeranimation Playback"),
+       "<Shift> converts the selected frames to temporary image "
+       "and do layeranimation playback on the temporary image"),
     "#playback",
     NULL, 0 },
   { GAP_STOCK_UPDATE, OPS_BUTTON_FUNC (navi_dialog_thumb_update_callback), navi_dialog_update_ext_callbacks,
-    N_("Smart Update Thumbnails\n"
-       "<Shift> forced upd"),
+    N_("Smart update thumbnails\n"
+       "<Shift> forced thumbnail update for all frames"),
     "#update",
     NULL, 0 },
   { GIMP_STOCK_DUPLICATE, OPS_BUTTON_FUNC (navi_dialog_frames_duplicate_frame_callback), NULL,
-    N_("Duplicate selected Frames"),
+    N_("Duplicate selected frames"),
     "#duplicate",
     NULL, 0 },
   { GTK_STOCK_DELETE, OPS_BUTTON_FUNC (navi_dialog_frames_delete_frame_callback), NULL,
-    N_("Delete selected Frames"),
+    N_("Delete selected frames"),
     "#delete",
     NULL, 0 },
   { NULL, NULL, NULL, NULL, NULL, NULL, 0 }
@@ -433,21 +434,21 @@ static OpsButton frames_ops_buttons[] =
 static OpsButton vcr_ops_buttons[] =
 {
   { GTK_STOCK_GOTO_FIRST, OPS_BUTTON_FUNC (navi_dialog_vcr_goto_first_callback), NULL,
-    N_("Goto 1st Frame"),
+    N_("Goto first frame"),
     "#goto_first",
     NULL, 0 },
   { GTK_STOCK_GO_BACK, OPS_BUTTON_FUNC (navi_dialog_vcr_goto_prev_callback), navi_dialog_vcr_goto_prev_ext_callbacks,
-    N_("Goto prev Frame\n"
+    N_("Goto prev frame\n"
        "<Shift> use timezoom stepsize"),
     "#goto_previous",
     NULL, 0 },
   { GTK_STOCK_GO_FORWARD, OPS_BUTTON_FUNC (navi_dialog_vcr_goto_next_callback), navi_dialog_vcr_goto_next_ext_callbacks,
-    N_("Goto next Frame\n"
+    N_("Goto next frame\n"
        "<Shift> use timezoom stepsize"),
     "#goto_next",
     NULL, 0 },
   { GTK_STOCK_GOTO_LAST, OPS_BUTTON_FUNC (navi_dialog_vcr_goto_last_callback), NULL,
-    N_("Goto last Frame"),
+    N_("Goto last frame"),
     "#goto_last",
     NULL, 0 },
 
@@ -578,7 +579,7 @@ run(const gchar *name
         */
       if (0 == kill(l_navid_pid, 0))
       {
-         gap_arr_msg_win(GIMP_RUN_INTERACTIVE, _("Cant open two or more Video Navigator Windows."));
+         gap_arr_msg_win(GIMP_RUN_INTERACTIVE, _("Cant open two or more video navigator windows."));
          l_rc = -1;    
       }
     }
@@ -629,8 +630,8 @@ navi_delete_confirm_dialog(gint32 del_cnt)
   gchar *msg_txt;
   gboolean l_rc;
   
-  msg_txt = g_strdup_printf(_("The Selected %d Frame(s) will be deleted\n"
-                    "There will be no UNDO for this Operation\n")
+  msg_txt = g_strdup_printf(_("The selected %d frame(s) will be deleted.\n"
+                    "There will be no undo for this operation\n")
                     ,(int)del_cnt
                  );
   l_rc = gap_arr_confirm_dialog(msg_txt
@@ -718,7 +719,7 @@ p_edit_paste_call(gint32 paste_mode)
   {
     g_free(return_vals);
     gap_arr_msg_win(GIMP_RUN_INTERACTIVE
-             ,_("Error while positioning to Frame. Video Paste Operaton Failed")
+             ,_("Error while positioning to frame. Video paste operaton failed")
              );
     return;
   }
@@ -740,7 +741,7 @@ p_edit_paste_call(gint32 paste_mode)
   }
   else
   {
-    gap_arr_msg_win(GIMP_RUN_INTERACTIVE, _("Video Paste Operaton Failed"));
+    gap_arr_msg_win(GIMP_RUN_INTERACTIVE, _("Video paste operaton failed"));
   }
   
   g_free(return_vals);
@@ -851,7 +852,7 @@ navi_vid_copy_and_cut(gint cut_flag)
        
        if(!vid_copy_ok)
        {
-         gap_arr_msg_win(GIMP_RUN_INTERACTIVE, _("Video Copy (or Cut) Operation failed"));
+         gap_arr_msg_win(GIMP_RUN_INTERACTIVE, _("Video copy (or cut) operation failed"));
          break;
        }
        
@@ -898,7 +899,7 @@ navi_vid_copy_and_cut(gint cut_flag)
          }
          else
          {
-            gap_arr_msg_win(GIMP_RUN_INTERACTIVE, _("Video Cut Operation failed"));
+            gap_arr_msg_win(GIMP_RUN_INTERACTIVE, _("Video cut operation failed"));
          }
 
         range_list2 = range_list2->prev;
@@ -1372,7 +1373,7 @@ navi_check_image_menu_changes()
   images = gimp_image_list (&nimages);
   for (i = 0; i < nimages; i++)
   {
-     frame_nr = gap_lib_get_frame_nr(images[i]);  /* check for anim frame */
+     frame_nr = gap_lib_get_frame_nr(images[i]);  /* check for video frame */
      if(frame_nr >= 0)
      {
         item_count++;
@@ -1579,9 +1580,9 @@ navi_thumb_update(gboolean update_all)
   {
     l_msg_win_alrady_open = TRUE;
     gap_arr_msg_win(GIMP_RUN_INTERACTIVE
-             , _("For the Thumbnail update you have to select\n"
-                 "a Thumbnail Filesze other than 'No Thumbnails'\n"
-                 "in the Environment Section of the Preferences Dialog")
+             , _("For the thumbnail update you have to select\n"
+                 "a thumbnail filesize other than 'No Thumbnails'\n"
+                 "in the environment section of the preferences dialog")
              );
     l_msg_win_alrady_open = FALSE;
     return;
@@ -1721,7 +1722,7 @@ navi_playback(gboolean use_gimp_layeranimplayer)
 
   if(!use_gimp_layeranimplayer)
   {
-     /* Start GAP Animationframe Playback Module via PDB
+     /* Start GAP video frame Playback Module via PDB
       * note: the player always rund INTERACTIVE
       * but accepts calling parameters only when called in
       * GIMP_RUN_NONINTERACTIVE runmode
@@ -3711,7 +3712,7 @@ navi_dialog_create (GtkWidget* shell, gint32 image_id)
       naviD->cut_menu_item = menu_item;
 
       /* menu_item paste before */
-      menu_item = gtk_menu_item_new_with_label (_("Paste before"));
+      menu_item = gtk_menu_item_new_with_label (_("Paste Before"));
       gtk_container_add (GTK_CONTAINER (naviD->ops_menu), menu_item);
       gtk_widget_show (menu_item);
       g_signal_connect (G_OBJECT (menu_item), "activate",
@@ -3720,7 +3721,7 @@ navi_dialog_create (GtkWidget* shell, gint32 image_id)
       naviD->pasteb_menu_item = menu_item;
 
       /* menu_item copy */
-      menu_item = gtk_menu_item_new_with_label (_("Paste after"));
+      menu_item = gtk_menu_item_new_with_label (_("Paste After"));
       gtk_container_add (GTK_CONTAINER (naviD->ops_menu), menu_item);
       gtk_widget_show (menu_item);
       g_signal_connect (G_OBJECT (menu_item), "activate",
@@ -3729,7 +3730,7 @@ navi_dialog_create (GtkWidget* shell, gint32 image_id)
       naviD->pastea_menu_item = menu_item;
 
       /* menu_item copy */
-      menu_item = gtk_menu_item_new_with_label (_("Paste replace"));
+      menu_item = gtk_menu_item_new_with_label (_("Paste Replace"));
       gtk_container_add (GTK_CONTAINER (naviD->ops_menu), menu_item);
       gtk_widget_show (menu_item);
       g_signal_connect (G_OBJECT (menu_item), "activate",
@@ -3817,7 +3818,7 @@ navi_dialog_create (GtkWidget* shell, gint32 image_id)
                     naviD);
   gtk_widget_show (spinbutton);
 
-  gimp_help_set_help_data (spinbutton, _("Set Framerate in Frames/sec"), NULL);
+  gimp_help_set_help_data (spinbutton, _("Set framerate in frames/sec"), NULL);
 
   gtk_widget_show (util_box);
 

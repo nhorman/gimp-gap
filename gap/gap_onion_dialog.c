@@ -973,7 +973,8 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gimp_help_set_help_data(oni__checkbutton_asc_opacity
-                         , _("ON: Far Neighbour Frames have the higher Opacity, OFF: Near Neighbour Frames have the higher Opacity")
+                         , _("ON: Far neighbour frames have the higher opacity.\n"
+			     "OFF: Near neighbour frames have the higher opacity.")
                          , NULL);
 
 
@@ -993,7 +994,7 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gimp_help_set_help_data(oni__spinbutton_num_olayers
-                         , _("Number of Onionskin Layers to create in the handled Frame.")
+                         , _("Number of onionskin layers to create in the handled frame.")
                          , NULL);
 
   label2 = gtk_label_new (_("Frame Reference:"));
@@ -1018,7 +1019,7 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gimp_help_set_help_data(oni__spinbutton_ref_delta
-                         , _("-1 is previous Frame, +1 is next Frame")
+                         , _("-1 is previous frame, +1 is next frame")
                          , NULL);
 
   oni__checkbutton_ref_cycle = gtk_check_button_new_with_label (_("Cyclic"));
@@ -1027,7 +1028,7 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gimp_help_set_help_data(oni__checkbutton_ref_cycle
-                         , _("ON: foldback next Frame of last is first")
+                         , _("ON: Next frame of last is first and vice versa.")
                          , NULL);
 
   label3 = gtk_label_new (_("Stackposition:"));
@@ -1052,7 +1053,7 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gimp_help_set_help_data(oni__spinbutton_stack_pos
-                         , _("Stackposition where to place Onionskin Layer(s)")
+                         , _("Stackposition where to place onionskin layer(s)")
                          , NULL);
 
   oni__checkbutton_stack_top = gtk_check_button_new_with_label (_("From Top"));
@@ -1061,7 +1062,8 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gimp_help_set_help_data(oni__checkbutton_stack_top
-                         , _("ON: 0 is on Top, OFF: 0 is on Bottom")
+                         , _("ON: 0 is top of stack (in front).\n"
+			     "OFF: 0 is bottom of stack (in background).")
                          , NULL);
 
   label4 = gtk_label_new (_("Opacity:"));
@@ -1086,7 +1088,7 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gimp_help_set_help_data(oni__spinbutton_opacity
-                         , _("Opacity of 1.st Onionskin Layer (0 is transparent, 100 full opaque)")
+                         , _("Opacity of first onionskin layer (0 is transparent, 100 full opaque)")
                          , NULL);
 
   oni__spinbutton_opacity_delta = gimp_spin_button_new (&gpp->oni__spinbutton_opacity_delta_adj,  /* return value (the adjustment) */
@@ -1104,7 +1106,7 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gimp_help_set_help_data(oni__spinbutton_opacity_delta
-                         , _("Descending Opacity for 2.nd Onionskin Layer")
+                         , _("Descending opacity for 2.nd onionskin layer")
                          , NULL);
 
   frame2 = gtk_frame_new (_("Layer Selection"));
@@ -1141,7 +1143,7 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gimp_help_set_help_data(oni__spinbutton_ignore_botlayers
-                         , _("exclude N BG-Layers (use 0 if you dont want to exclude any Layer)")
+                         , _("Exclude N background layers. Use 0 if you dont want to exclude any layer.")
                          , NULL);
 
   label7 = gtk_label_new (_("Select Mode:"));
@@ -1157,10 +1159,10 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gimp_help_set_help_data(oni__optionmenu_select_mode
-                         , _("Modes how to use Select Pattern")
+                         , _("Modes how to use select pattern")
                          , NULL);
   oni__optionmenu_select_mode_menu = gtk_menu_new ();
-  glade_menuitem = gtk_menu_item_new_with_label (_("Pattern is equal to LayerName"));
+  glade_menuitem = gtk_menu_item_new_with_label (_("Pattern is equal to layername"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (oni__optionmenu_select_mode_menu), glade_menuitem);
         g_signal_connect (G_OBJECT (glade_menuitem), "activate",
@@ -1168,7 +1170,7 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
                           (gpointer)gpp);
         gtk_object_set_data (GTK_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY, (gpointer)0);
 
-  glade_menuitem = gtk_menu_item_new_with_label (_("Pattern is Start of LayerName"));
+  glade_menuitem = gtk_menu_item_new_with_label (_("Pattern is start of layername"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (oni__optionmenu_select_mode_menu), glade_menuitem);
         g_signal_connect (G_OBJECT (glade_menuitem), "activate",
@@ -1176,7 +1178,7 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
                           (gpointer)gpp);
         gtk_object_set_data (GTK_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY, (gpointer)1);
 
-  glade_menuitem = gtk_menu_item_new_with_label (_("Pattern is End of Layername"));
+  glade_menuitem = gtk_menu_item_new_with_label (_("Pattern is end of layername"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (oni__optionmenu_select_mode_menu), glade_menuitem);
         g_signal_connect (G_OBJECT (glade_menuitem), "activate",
@@ -1184,7 +1186,7 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
                           (gpointer)gpp);
         gtk_object_set_data (GTK_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY, (gpointer)2);
 
-  glade_menuitem = gtk_menu_item_new_with_label (_("Pattern is a Part of LayerName"));
+  glade_menuitem = gtk_menu_item_new_with_label (_("Pattern is a part of layername"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (oni__optionmenu_select_mode_menu), glade_menuitem);
         g_signal_connect (G_OBJECT (glade_menuitem), "activate",
@@ -1192,7 +1194,7 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
                           (gpointer)gpp);
         gtk_object_set_data (GTK_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY, (gpointer)3);
 
-  glade_menuitem = gtk_menu_item_new_with_label (_("Pattern is LayerstackNumber List"));
+  glade_menuitem = gtk_menu_item_new_with_label (_("Pattern is a list of layerstack numbers"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (oni__optionmenu_select_mode_menu), glade_menuitem);
         g_signal_connect (G_OBJECT (glade_menuitem), "activate",
@@ -1200,7 +1202,7 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
                           (gpointer)gpp);
         gtk_object_set_data (GTK_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY, (gpointer)4);
 
-  glade_menuitem = gtk_menu_item_new_with_label (_("Pattern is REVERSE-stack List"));
+  glade_menuitem = gtk_menu_item_new_with_label (_("Pattern is a list of reverse layerstack numbers"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (oni__optionmenu_select_mode_menu), glade_menuitem);
         g_signal_connect (G_OBJECT (glade_menuitem), "activate",
@@ -1208,7 +1210,7 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
                           (gpointer)gpp);
         gtk_object_set_data (GTK_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY, (gpointer)5);
 
-  glade_menuitem = gtk_menu_item_new_with_label (_("All Visible (ignore Pattern)"));
+  glade_menuitem = gtk_menu_item_new_with_label (_("All visible (ignore pattern)"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (oni__optionmenu_select_mode_menu), glade_menuitem);
         g_signal_connect (G_OBJECT (glade_menuitem), "activate",
@@ -1236,14 +1238,16 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
   gtk_widget_show (oni__checkbutton_select_case);
   gtk_box_pack_start (GTK_BOX (hbox2), oni__checkbutton_select_case, FALSE, TRUE, 0);
   gimp_help_set_help_data(oni__checkbutton_select_case
-                         , _("ON: case sensitive pattern, OFF ignore case")
+                         , _("ON: Case sensitive pattern.\n"
+			     "OFF: Ignore case.")
                          , NULL);
 
   oni__checkbutton_select_invert = gtk_check_button_new_with_label (_("Invert Selection"));
   gtk_widget_show (oni__checkbutton_select_invert);
   gtk_box_pack_start (GTK_BOX (hbox2), oni__checkbutton_select_invert, FALSE, TRUE, 0);
   gimp_help_set_help_data(oni__checkbutton_select_invert
-                         , _("ON: Select NON-matching Layers, OFF: Select matching Layers")
+                         , _("ON: Select non-matching layers.\n"
+			     "OFF: Select matching layers")
                          , NULL);
 
   label6 = gtk_label_new (_("Select Pattern:"));
@@ -1259,7 +1263,7 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gimp_help_set_help_data(oni__entry_select_string
-                         , _("Select Layernames by Pattern (depends on Mode and Options)")
+                         , _("Select layernames by pattern (depends on mode and options)")
                          , NULL);
 
 
@@ -1276,7 +1280,7 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 2, 0);
   gimp_help_set_help_data(oni__button_set
-                         , _("Set Onionskin Parameters for the current Video")
+                         , _("Set onionskin parameters for the current video")
                          , NULL);
 
   {
@@ -1288,25 +1292,25 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
                       (GtkAttachOptions) (GTK_FILL),
                       (GtkAttachOptions) (0), 2, 0);
 
-     oni__checkbutton_auto_replace = gtk_check_button_new_with_label (_("Auto Create after Load"));
+     oni__checkbutton_auto_replace = gtk_check_button_new_with_label (_("Auto create after load"));
      gtk_widget_show (oni__checkbutton_auto_replace);
      gimp_help_set_help_data(oni__checkbutton_auto_replace
-                         , _("ON: Automatic Creation/Replacement of Onionskinlayer(s)\n"
-                             "(works on Framechanges via VCR Navigator and Goto Ops\n"
-                             "in the Video Menu -- but not on explicite Load from the File menu")
+                         , _("ON: Automatic creation/replacement of onionskin layer(s). "
+                             "Works on frame changes via 'VCR Navigator' and go to operations "
+                             "in the video menu -- but not on explicite load from the file menu.")
                          , NULL);
      gtk_table_attach (GTK_TABLE (auto_table), oni__checkbutton_auto_replace,
                        0, 1, 0, 1,
                        (GtkAttachOptions) (GTK_FILL),
                        (GtkAttachOptions) (GTK_FILL), 0, 0);
 
-     oni__checkbutton_auto_delete = gtk_check_button_new_with_label (_("Auto Delete before Save"));
+     oni__checkbutton_auto_delete = gtk_check_button_new_with_label (_("Auto delete before save"));
      gtk_widget_show (oni__checkbutton_auto_delete);
      gimp_help_set_help_data(oni__checkbutton_auto_delete
-                         , _("ON: Automatic Delete  of Onionskinlayer(s)\n"
-                             "(on Framechanges via VCR Navigator and Goto Ops\n"
-                             "in the Video Menu -- but not on explicite Save from the File menu\n"
-                             "use this if Onionskinlayers should not appear in Thumbnailfiles)")
+                         , _("ON: Automatic delete of onionskin layer(s). "
+                             "Works on framechanges via 'VCR Navigator' and go to operations "
+                             "in the video menu -- but not on explicite save from the file menu. "
+                             "Use this option if you dont want onionskin layers to appear in thumbnail files.")
                          , NULL);
      gtk_table_attach (GTK_TABLE (auto_table), oni__checkbutton_auto_delete,
                        1, 2, 0, 1,
@@ -1329,21 +1333,21 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
   gtk_widget_show (oni__button_apply);
   gtk_box_pack_end (GTK_BOX (hbox1), oni__button_apply, FALSE, FALSE, 2);
   gimp_help_set_help_data(oni__button_apply
-                         , _("Create or replace Onionskin Layer in all Frames of the selected Framerange")
+                         , _("Create or replace onionskin layer(s) in all frames of the selected frame range")
                          , NULL);
 
   oni__button_delete = gtk_button_new_from_stock (GTK_STOCK_DELETE);
   gtk_widget_show (oni__button_delete);
   gtk_box_pack_end (GTK_BOX (hbox1), oni__button_delete, FALSE, FALSE, 2);
   gimp_help_set_help_data(oni__button_delete
-                         , _("Remove all Onionskin Layers in all Frames of the the selected Framerange")
+                         , _("Remove all onionskin layers in all frames of the the selected frame range")
                          , NULL);
 
   oni__button_close = gtk_button_new_from_stock (GTK_STOCK_CLOSE);
   gtk_widget_show (oni__button_close);
   gtk_box_pack_end (GTK_BOX (hbox1), oni__button_close, FALSE, FALSE, 2);
   gimp_help_set_help_data(oni__button_close
-                         , _("Close Window without creating or deleting any Onionskin Layers\n"
+                         , _("Close window without creating or deleting any onionskin layers\n"
                              "but store current Settings")
                          , NULL);
 
@@ -1351,14 +1355,14 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
   gtk_widget_show (oni__button_cancel);
   gtk_box_pack_end (GTK_BOX (hbox1), oni__button_cancel, FALSE, FALSE, 2);
   gimp_help_set_help_data(oni__button_cancel
-                         , _("Exit without any Action")
+                         , _("Close window without any action")
                          , NULL);
 
   oni__button_default = gtk_button_new_from_stock (GIMP_STOCK_RESET);
   gtk_widget_show (oni__button_default);
   gtk_box_pack_end (GTK_BOX (hbox1), oni__button_default, FALSE, FALSE, 2);
   gimp_help_set_help_data(oni__button_default
-                         , _("Reset to Default Settings")
+                         , _("Reset to default settings")
                          , NULL);
 
 

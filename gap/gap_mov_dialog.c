@@ -26,6 +26,7 @@
  */
 
 /* revision history:
+ * gimp    1.3.21d; 2003/10/29  hof: removed deprecated calls to gtk_window_set_policy 
  * gimp    1.3.20d; 2003/10/14  hof: added bluebox filter effect 
  * gimp    1.3.20d; 2003/10/05  hof: use gimp_image_undo_disable for internal temporary images 
  *                                   (for better performance and less resources)
@@ -61,7 +62,7 @@
  * gimp    1.1.13b; 1999/12/04  hof: some cosmetic gtk fixes
  *                                   changed border_width spacing and Buttons in action area
  *                                   to same style as used in dialogs of the gimp 1.1.13 main dialogs
- * gimp   1.1.8a;   1999/08/31  hof: accept anim framenames without underscore '_'
+ * gimp   1.1.8a;   1999/08/31  hof: accept video framenames without underscore '_'
  * gimp   1.1.5a;   1999/05/08  hof: call fileselect in gtk+1.2 style 
  * version 0.99.00; 1999.03.03  hof: bugfix: update of the preview (did'nt work with gimp1.1.2)
  * version 0.98.00; 1998.11.28  hof: Port to GIMP 1.1: replaced buildmenu.h, apply layermask (before rotate)
@@ -87,11 +88,6 @@
  * (maybe this will be a configure option later)
  */
 
-/*#define MOVE_PATH_FRAMES_ENABLE*/
-/* if defined MOVE_PATH_FRAMES_ENABLE do waste some layout space 
- * and add frames in the notebook widgets
- * (maybe ill remove that stuff before stable release)
- */
 
 /* SYTEM (UNIX) includes */ 
 #include <stdio.h>
@@ -243,6 +239,8 @@ typedef struct
   gint                first_nr;
   gint                last_nr;
   GtkWidget          *shell;
+  gint                shell_initial_width;
+  gint                shell_initial_height;
   GtkWidget          *master_vbox;
   GdkCursor     *cursor_wait;
   GdkCursor     *cursor_acitve;
@@ -389,8 +387,12 @@ p_mov_spinbutton_new(GtkTable *table
                     ,gchar    *tooltip_text
                     ,gchar    *privatetip
                     );
+static void  mov_fit_initial_shell_window(t_mov_gui_stuff *mgp);
+static void  mov_shell_window_size_allocate (GtkWidget       *widget,
+                                             GtkAllocation   *allocation,
+                                             gpointer         user_data);
 
-static void mov_pview_size_allocate_callback(GtkWidget *widget
+static void  mov_pview_size_allocate_callback(GtkWidget *widget
                                 , GtkAllocation *allocation
 				, t_mov_gui_stuff *mgp
 				);
@@ -433,14 +435,14 @@ static MenuItem option_step_items[] =
   { N_("Loop"),         0, 0, mov_stepmode_menu_callback, (gpointer) GAP_STEP_LOOP, NULL, NULL },
   { N_("Loop Reverse"), 0, 0, mov_stepmode_menu_callback, (gpointer) GAP_STEP_LOOP_REV, NULL, NULL },
   { N_("Once"),         0, 0, mov_stepmode_menu_callback, (gpointer) GAP_STEP_ONCE, NULL, NULL },
-  { N_("OnceReverse"),  0, 0, mov_stepmode_menu_callback, (gpointer) GAP_STEP_ONCE_REV, NULL, NULL },
-  { N_("PingPong"),     0, 0, mov_stepmode_menu_callback, (gpointer) GAP_STEP_PING_PONG, NULL, NULL },
+  { N_("Once Reverse"), 0, 0, mov_stepmode_menu_callback, (gpointer) GAP_STEP_ONCE_REV, NULL, NULL },
+  { N_("Ping Pong"),    0, 0, mov_stepmode_menu_callback, (gpointer) GAP_STEP_PING_PONG, NULL, NULL },
   { N_("None"),         0, 0, mov_stepmode_menu_callback, (gpointer) GAP_STEP_NONE, NULL, NULL },
   { N_("Frame Loop"),         0, 0, mov_stepmode_menu_callback, (gpointer) GAP_STEP_FRAME_LOOP, NULL, NULL },
   { N_("Frame Loop Reverse"), 0, 0, mov_stepmode_menu_callback, (gpointer) GAP_STEP_FRAME_LOOP_REV, NULL, NULL },
   { N_("Frame Once"),         0, 0, mov_stepmode_menu_callback, (gpointer) GAP_STEP_FRAME_ONCE, NULL, NULL },
-  { N_("Frame OnceReverse"),  0, 0, mov_stepmode_menu_callback, (gpointer) GAP_STEP_FRAME_ONCE_REV, NULL, NULL },
-  { N_("Frame PingPong"),     0, 0, mov_stepmode_menu_callback, (gpointer) GAP_STEP_FRAME_PING_PONG, NULL, NULL },
+  { N_("Frame Once Reverse"), 0, 0, mov_stepmode_menu_callback, (gpointer) GAP_STEP_FRAME_ONCE_REV, NULL, NULL },
+  { N_("Frame Ping Pong"),    0, 0, mov_stepmode_menu_callback, (gpointer) GAP_STEP_FRAME_PING_PONG, NULL, NULL },
   { N_("Frame None"),         0, 0, mov_stepmode_menu_callback, (gpointer) GAP_STEP_FRAME_NONE, NULL, NULL },
   { NULL, 0, 0, NULL, NULL, NULL, NULL }
 };
@@ -481,6 +483,8 @@ long      gap_mov_dlg_move_dialog    (GapMovData *mov_ptr)
     printf("error can't alloc path_preview structure\n");
     return -1;
   }
+  mgp->shell_initial_width = -1;
+  mgp->shell_initial_height = -1;
   mgp->show_path = TRUE;
   mgp->show_cursor = TRUE;
   mgp->show_grid = FALSE;
@@ -654,11 +658,7 @@ mov_dialog ( GimpDrawable *drawable, t_mov_gui_stuff *mgp,
   g_signal_connect (G_OBJECT (dlg), "destroy",
 		    G_CALLBACK (mov_close_callback),
 		    mgp);
-  gtk_window_set_policy (GTK_WINDOW (mgp->shell)
-                         , FALSE   /* allow_shrink */
-			 , TRUE   /* allow_grow */
-			 , TRUE   /* auto_shrink */
-			 );
+  gtk_window_set_resizable(GTK_WINDOW (mgp->shell), TRUE);
 
   /*  Action area  */
   gtk_container_set_border_width (GTK_CONTAINER (GTK_DIALOG (dlg)->action_area), 2);
@@ -678,12 +678,12 @@ mov_dialog ( GimpDrawable *drawable, t_mov_gui_stuff *mgp,
 		    G_CALLBACK(mov_close_callback),
 		    mgp);
 
-  /* button = gtk_button_new_with_label ( _("Update Preview")); */
+  /* button = gtk_button_new_with_label */
   button = gtk_button_new_from_stock ( GTK_STOCK_REFRESH );
   GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
   gtk_box_pack_start (GTK_BOX (hbbox), button, TRUE, TRUE, 0);
   gimp_help_set_help_data(button,
-                       _("Show PreviewFrame with Selected SrcLayer at current Controlpoint")
+                       _("Show preview frame with selected source layer at current controlpoint")
                        , NULL);
   gtk_widget_show (button);
   g_signal_connect (G_OBJECT (button), "clicked",
@@ -694,7 +694,7 @@ mov_dialog ( GimpDrawable *drawable, t_mov_gui_stuff *mgp,
   GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
   gtk_box_pack_start (GTK_BOX (hbbox), button, TRUE, TRUE, 0);
   gimp_help_set_help_data(button,
-                       _("Generate Animated Preview as multilayer image")
+                       _("Generate animated preview as multilayer image")
                        , NULL);
   gtk_widget_show (button);
   g_signal_connect (G_OBJECT (button), "clicked",
@@ -782,6 +782,10 @@ mov_dialog ( GimpDrawable *drawable, t_mov_gui_stuff *mgp,
                   );
   mov_path_prevw_preview_init(mgp);
   mov_show_path_or_cursor(mgp);
+ 
+  g_signal_connect (G_OBJECT (mgp->shell), "size_allocate",
+                    G_CALLBACK (mov_shell_window_size_allocate),
+                    mgp);
   
   gtk_main ();
   gdk_flush ();
@@ -801,8 +805,8 @@ mov_check_valid_src_layer(t_mov_gui_stuff   *mgp)
   
   if(pvals->src_layer_id < 0)
   {
-     g_message(_("No Source Image was selected\n"
-	         "(Please open a 2nd Image of the same type before opening Move Path)"));
+     g_message(_("No source image was selected.\n"
+	         "Please open a 2nd image of the same type before opening 'Move Path'"));
      return(FALSE);	   
   }
   return(TRUE);	   
@@ -983,7 +987,7 @@ mov_apv_callback (GtkWidget *widget,
   static GapArrArg  argv[ARGC_APV];
   static char *radio_apv_mode[3] = { N_("Object on empty frames")
                                    , N_("Object on one frame")
-				   , N_("Exact Object on frames")
+				   , N_("Exact object on frames")
 				   };
   static int gettextize_loop = 0;
 
@@ -1014,7 +1018,7 @@ mov_apv_callback (GtkWidget *widget,
   }
   
   gap_arr_arg_init(&argv[0], GAP_ARR_WGT_RADIO);
-  argv[0].label_txt = _("Anim Preview Mode");
+  argv[0].label_txt = _("Anim Preview Mode:");
   argv[0].help_txt  = NULL;
   argv[0].radio_argc  = 3;
   argv[0].radio_argv = radio_apv_mode;
@@ -1036,7 +1040,7 @@ mov_apv_callback (GtkWidget *widget,
 
   gap_arr_arg_init(&argv[1], GAP_ARR_WGT_FLT_PAIR);
   argv[1].constraint = TRUE;
-  argv[1].label_txt = _("Scale Preview");
+  argv[1].label_txt = _("Scale Preview:");
   argv[1].help_txt  = _("Scale down size of the generated animated preview (in %)");
   argv[1].flt_min   = 5.0;
   argv[1].flt_max   = 100.0;
@@ -1047,7 +1051,7 @@ mov_apv_callback (GtkWidget *widget,
 
   gap_arr_arg_init(&argv[2], GAP_ARR_WGT_FLT_PAIR);
   argv[2].constraint = TRUE;
-  argv[2].label_txt = _("Framerate");
+  argv[2].label_txt = _("Framerate:");
   argv[2].help_txt  = _("Framerate to use in the animated preview in frames/sec");
   argv[2].flt_min   = 1.0;
   argv[2].flt_max   = 100.0;
@@ -1064,8 +1068,8 @@ mov_apv_callback (GtkWidget *widget,
   argv[2].flt_default = argv[2].flt_ret;
 
   gap_arr_arg_init(&argv[3], GAP_ARR_WGT_TOGGLE);
-  argv[3].label_txt = _("Copy to Video Buffer");
-  argv[3].help_txt  = _("Save all single frames of animated preview to video buffer\n"
+  argv[3].label_txt = _("Copy to Video Buffer:");
+  argv[3].help_txt  = _("Save all single frames of animated preview to video buffer."
                         "(configured in gimprc by video-paste-dir and video-paste-basename)");
   argv[3].int_ret   = 0;
   argv[3].has_default = TRUE;
@@ -1073,7 +1077,7 @@ mov_apv_callback (GtkWidget *widget,
 
   gap_arr_arg_init(&argv[4], GAP_ARR_WGT_DEFAULT_BUTTON);
   argv[4].label_txt = _("Default");
-  argv[4].help_txt  = _("Reset all Parameters to Default Values");
+  argv[4].help_txt  = _("Reset all parameters to default values");
 
   l_rc = gap_arr_ok_cancel_dialog( _("Move Path Animated Preview"),
                                  _("Options"), 
@@ -1128,7 +1132,7 @@ mov_apv_callback (GtkWidget *widget,
       if(l_new_image_id < 0)
       {
 	 gap_arr_msg_win(GIMP_RUN_INTERACTIVE,
-         _("Generate Animated Preview failed\n"));
+         _("Generation of animated preview failed"));
       }
       else
       {
@@ -1246,7 +1250,7 @@ mov_pgrab_callback (GtkWidget *widget,
 	    
       if((pathtype != 1) || (path_closed == -44))
       {
-        g_message(_("Unsupported Pathtype %d found in Path:\n"
+        g_message(_("Unsupported pathtype %d found in path:\n"
 	            "'%s'\n"
 		    "in the Image:\n"
 	            "'%s'")
@@ -1319,7 +1323,7 @@ mov_pgrab_callback (GtkWidget *widget,
     }
     else
     {
-      g_message(_("No Path found in the Image:\n"
+      g_message(_("No path found in the image:\n"
 	          "'%s'")
 		,mgp->ainfo_ptr->old_filename
 		);
@@ -1577,7 +1581,7 @@ mov_pload_callback (GtkWidget *widget,
 
   if(mgp->filesel != NULL) return;  /* filesel is already open */
   
-  filesel = gtk_file_selection_new ( _("Load Path Points from file"));
+  filesel = gtk_file_selection_new ( _("Load Path Points from File"));
   mgp->filesel = filesel;
 
   gtk_window_set_position (GTK_WINDOW (filesel), GTK_WIN_POS_MOUSE);
@@ -1614,7 +1618,7 @@ mov_psave_callback (GtkWidget *widget,
 
   if(mgp->filesel != NULL) return;  /* filesel is already open */
   
-  filesel = gtk_file_selection_new ( _("Save Path Points to file"));
+  filesel = gtk_file_selection_new ( _("Save Path Points to File"));
   mgp->filesel = filesel;
 
   gtk_window_set_position (GTK_WINDOW (filesel), GTK_WIN_POS_MOUSE);
@@ -2326,15 +2330,15 @@ p_load_points(char *filename)
   {
     if(l_errno != 0)
     {
-      g_message(_("ERROR: Could not open Controlpoints\n"
+      g_message(_("ERROR: Could not open controlpoints\n"
 	        "filename: '%s'\n%s")
-	     ,filename, g_strerror (errno));
+	       ,filename, g_strerror (errno));
     }
     else
     {
-      g_message(_("ERROR: Could not read Controlpoints\n"
-	        "filename: '%s'\n(Is not a valid Controlpoint File)")
-	     ,filename);
+      g_message(_("ERROR: Could not read controlpoints\n"
+	        "filename: '%s'\n(Is not a valid controlpoint file)")
+	       ,filename);
     }
   }
 }  /* end p_load_points */
@@ -2363,7 +2367,7 @@ p_save_points(char *filename, t_mov_gui_stuff *mgp)
 
     if(l_rc != 0)
     {
-	g_message (_("Failed to write Controlpointfile\n"
+	g_message (_("Failed to write controlpointfile\n"
                       "filename: '%s':\n%s"),
 		   filename, g_strerror (l_errno));
     }
@@ -2435,7 +2439,7 @@ mov_src_sel_create(t_mov_gui_stuff *mgp)
 		   GTK_EXPAND | GTK_FILL, 0, 0, 0);
 
   gimp_help_set_help_data(option_menu,
-                       _("Source Object to insert into Frame Range")
+                       _("Source object to insert into destination frames of the specified range")
                        , NULL);
 
   gtk_widget_show(option_menu);
@@ -2507,7 +2511,7 @@ mov_src_sel_create(t_mov_gui_stuff *mgp)
   menu = p_buildmenu (option_step_items, mgp);
   gtk_option_menu_set_menu(GTK_OPTION_MENU(option_menu), menu);
   gimp_help_set_help_data(option_menu,
-                       _("How to fetch the next SrcLayer at the next handled frame")
+                       _("How to fetch the next source layer at the next handled frame")
                        , NULL);
   gtk_widget_show(option_menu);
 
@@ -2521,10 +2525,9 @@ mov_src_sel_create(t_mov_gui_stuff *mgp)
 			  3,                                  /* digits */
 			  FALSE,                              /* constrain */
 			  (gdouble)0.0, (gdouble)50.0,        /* lower, upper (unconstrained) */
-			  _("Step Speed Factor\n"
-			    "Source and Targetframes step synchron at value 1.0\n"
-			    "A Value of 0.5 will step the Source half time slower\n"
-			    "(1 Sourcestep only at every 2.nd Targetframe)"),
+			  _("Source and target frames step synchron at value 1.0. "
+			    "A value of 0.5 will step the source half time slower."
+			    "One source step is done only at every 2.nd target frame."),
 			  NULL);    /* tooltip privatetip */
   g_signal_connect (G_OBJECT (adj), "value_changed",
 		    G_CALLBACK (gimp_double_adjustment_update),
@@ -2554,21 +2557,14 @@ mov_src_sel_create(t_mov_gui_stuff *mgp)
   menu = p_buildmenu (option_handle_items, mgp);
   gtk_option_menu_set_menu(GTK_OPTION_MENU(option_menu), menu);
   gimp_help_set_help_data(option_menu,
-                       _("How to place the SrcLayer at Controlpoint Coordinates")
+                       _("How to place the Source layer at controlpoint coordinates")
                        , NULL);
   gtk_widget_show(option_menu);
 
   gtk_widget_show( table );
 
-#ifndef MOVE_PATH_FRAMES_ENABLE
   /* copile without MOVE_PATH_LAYOUT_frame needs less space */  
   return table;
-#else
-  gtk_container_add (GTK_CONTAINER (frame), table);
-  gtk_container_set_border_width (GTK_CONTAINER (frame), 2);
-  gtk_widget_show(frame);  
-  return frame;
-#endif  
 }	/* end mov_src_sel_create */
 
  
@@ -2620,8 +2616,8 @@ mov_advanced_tab_create(t_mov_gui_stuff *mgp)
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (check_button),
                 		  pvals->src_apply_bluebox);
     gimp_help_set_help_data(check_button,
-                         _("Apply the Bluebox Filter on the moving Object(s).\n"
-			   "The Bluebox Filter makes the Keycolor transparent.")
+                         _("Apply the bluebox filter on the moving object(s). "
+			   "The bluebox filter makes the keycolor transparent.")
                          , NULL);
     gtk_widget_show (check_button);
     gtk_table_attach(GTK_TABLE(table), check_button, col, col+1, row, row+1
@@ -2644,7 +2640,7 @@ mov_advanced_tab_create(t_mov_gui_stuff *mgp)
     }
     
     /* keycolor button */
-    color_button = gimp_color_button_new (_("MovePath Bluebox Keycolor"), 
+    color_button = gimp_color_button_new (_("Move Path Bluebox Keycolor"), 
 				  25, 12,                     /* WIDTH, HEIGHT, */
 				  &pvals->bbp_pv->vals.keycolor, 
 				  GIMP_COLOR_AREA_FLAT);
@@ -2660,8 +2656,8 @@ mov_advanced_tab_create(t_mov_gui_stuff *mgp)
                     , 0, 0, 0, 0);
     gtk_widget_show (color_button);
     gimp_help_set_help_data(color_button,
-                         _("Open Dialog Window to set\n"
-			   "Parameters and Keycolor for the Bluebox Filter")
+                         _("Open dialog window to set "
+			   "parameters and keycolor for the bluebox filter")
                          , NULL);
 
     g_signal_connect (color_button, "clicked",
@@ -2682,7 +2678,7 @@ mov_advanced_tab_create(t_mov_gui_stuff *mgp)
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (check_button),
                 		  pvals->tracelayer_enable);
   gimp_help_set_help_data(check_button,
-                         _("Create an additional Trace Layer in all handled Frames")
+                         _("Create an additional trace layer in all handled frames")
                          , NULL);
   gtk_widget_show (check_button);
   gtk_table_attach(GTK_TABLE(table), check_button, col, col+1, row, row+1
@@ -2702,7 +2698,7 @@ mov_advanced_tab_create(t_mov_gui_stuff *mgp)
 			  1,                                    /* digits */
 			  FALSE,                                /* constrain */
 			  (gdouble)0.0, (gdouble)100,           /* lower, upper (unconstrained) */
-			  _("Initial Opacity of the Tracelayer"),
+			  _("Initial opacity of the trace layer"),
 			  NULL);    /* tooltip privatetip */
   g_signal_connect (G_OBJECT (adj), "value_changed",
 		    G_CALLBACK (gimp_double_adjustment_update),
@@ -2720,7 +2716,7 @@ mov_advanced_tab_create(t_mov_gui_stuff *mgp)
 			  1,                                    /* digits */
 			  FALSE,                                /* constrain */
 			  (gdouble)0.0, (gdouble)100,           /* lower, upper (unconstrained) */
-			  _("Descending Opacity of the Tracelayer"),
+			  _("Descending opacity of the trace layer"),
 			  NULL);    /* tooltip privatetip */
   g_signal_connect (G_OBJECT (adj), "value_changed",
 		    G_CALLBACK (gimp_double_adjustment_update),
@@ -2740,11 +2736,11 @@ mov_advanced_tab_create(t_mov_gui_stuff *mgp)
 			  0,                                    /* digits */
 			  FALSE,                                /* constrain */
 			  (gdouble)0, (gdouble)50,              /* lower, upper (unconstrained) */
-			  _("Calculate n Steps between 2 Frames\n"
-			    "The Rendered Tweensteps are collected in a Tweenlayer\n"
-			    "that will be added to the handeld destination frames\n"
-			    "If Value is 0, No tweens are calculated\n"
-			    "and no Tweenlayers are created"),
+			  _("Calculate n steps between 2 frames. "
+			    "The rendered tween steps are collected in a tween layer "
+			    "that will be added to the handeld destination frames. "
+			    "If the tween steps value is 0, no tweens are calculated "
+			    "and no tween layers are created"),
 			  NULL);    /* tooltip privatetip */
   mgp->tween_steps_adj = GTK_ADJUSTMENT(adj);
   g_object_set_data(G_OBJECT(adj), "mgp", mgp);
@@ -2763,7 +2759,7 @@ mov_advanced_tab_create(t_mov_gui_stuff *mgp)
 			  1,                                    /* digits */
 			  FALSE,                                /* constrain */
 			  (gdouble)0.0, (gdouble)100,           /* lower, upper (unconstrained) */
-			  _("Initial Opacity of the Tweenlayer"),
+			  _("Initial opacity of the tween layer"),
 			  NULL);    /* tooltip privatetip */
   g_signal_connect (G_OBJECT (adj), "value_changed",
 		    G_CALLBACK (gimp_double_adjustment_update),
@@ -2780,7 +2776,7 @@ mov_advanced_tab_create(t_mov_gui_stuff *mgp)
 			  1,                                    /* digits */
 			  FALSE,                                /* constrain */
 			  (gdouble)0.0, (gdouble)100,           /* lower, upper (unconstrained) */
-			  _("Descending Opacity of the Tweenlayer"),
+			  _("Descending opacity of the tween layer"),
 			  NULL);    /* tooltip privatetip */
   g_signal_connect (G_OBJECT (adj), "value_changed",
 		    G_CALLBACK (gimp_double_adjustment_update),
@@ -2793,14 +2789,8 @@ mov_advanced_tab_create(t_mov_gui_stuff *mgp)
   
   gtk_widget_show( table );
   
-#ifndef MOVE_PATH_FRAMES_ENABLE
   /* copile without MOVE_PATH_LAYOUT_frame needs less space */  
   return table;
-#else
-  gtk_container_add (GTK_CONTAINER (frame), table);
-  gtk_widget_show(frame);  
-  return frame;
-#endif
 }	/* end mov_advanced_tab_create */
 
 /* ============================================================================
@@ -2841,7 +2831,7 @@ mov_edit_button_box_create (t_mov_gui_stuff *mgp)
   gtk_table_attach( GTK_TABLE(button_table), button, 0, 1, row, row+1,
 		    GTK_FILL, 0, 0, 0 );
   gimp_help_set_help_data(button,
-                       _("Add Controlpoint at end\n(the last Point is duplicated)")
+                       _("Add controlpoint at end. The last controlpoint is duplicated.")
                        , NULL);
   gtk_widget_show (button);
   g_signal_connect (G_OBJECT (button), "clicked",
@@ -2854,9 +2844,9 @@ mov_edit_button_box_create (t_mov_gui_stuff *mgp)
   gtk_table_attach( GTK_TABLE(button_table), button, 1, 2, row, row+1,
 		    GTK_FILL, 0, 0, 0 );
   gimp_help_set_help_data(button,
-                       _("Delete all Controlpoints, and replace them with\n"
-		         "a Copy of all Anchorpoints of the current Path\n"
-		         "from the Image where MovePath was invoked from")
+                       _("Delete all controlpoints, and replace them with "
+		         "a copy of all anchorpoints of the current path "
+		         "from the image where 'MovePath' was invoked from")
                        , NULL);
   gtk_widget_show (button);
   g_signal_connect (G_OBJECT (button), "clicked",
@@ -2871,7 +2861,7 @@ mov_edit_button_box_create (t_mov_gui_stuff *mgp)
   gtk_table_attach( GTK_TABLE(button_table), button, 0, 1, row, row+1,
 		    GTK_FILL, 0, 0, 0 );
   gimp_help_set_help_data(button,
-                       _("Insert Controlpoint\n(the current Point is duplicated)")
+                       _("Insert controlpoint. The current controlpoint is duplicated.")
                        , NULL);
   gtk_widget_show (button);
   g_signal_connect (G_OBJECT (button), "clicked",
@@ -2884,7 +2874,7 @@ mov_edit_button_box_create (t_mov_gui_stuff *mgp)
   gtk_table_attach( GTK_TABLE(button_table), button, 1, 2, row, row+1,
 		    GTK_FILL, 0, 0, 0 );
   gimp_help_set_help_data(button,
-                       _("Delete current Controlpoint")
+                       _("Delete current controlpoint")
                        , NULL);
   gtk_widget_show (button);
   g_signal_connect (G_OBJECT (button), "clicked",
@@ -2899,7 +2889,7 @@ mov_edit_button_box_create (t_mov_gui_stuff *mgp)
   gtk_table_attach( GTK_TABLE(button_table), button, 0, 1, row, row+1,
 		    GTK_FILL, 0, 0, 0 );
   gimp_help_set_help_data(button,
-                       _("Show Previous Controlpoint")
+                       _("Show previous controlpoint")
                        , NULL);
   gtk_widget_show (button);
   g_signal_connect (G_OBJECT (button), "clicked",
@@ -2912,7 +2902,7 @@ mov_edit_button_box_create (t_mov_gui_stuff *mgp)
   gtk_table_attach( GTK_TABLE(button_table), button, 1, 2, row, row+1,
 		    GTK_FILL, 0, 0, 0 );
   gimp_help_set_help_data(button,
-                       _("Show Next Controlpoint")
+                       _("Show next controlpoint")
                        , NULL);
   gtk_widget_show (button);
   g_signal_connect (G_OBJECT (button), "clicked",
@@ -2927,7 +2917,7 @@ mov_edit_button_box_create (t_mov_gui_stuff *mgp)
   gtk_table_attach( GTK_TABLE(button_table), button, 0, 1, row, row+1,
 		    GTK_FILL, 0, 0, 0 );
   gimp_help_set_help_data(button,
-                       _("Show First Controlpoint")
+                       _("Show first controlpoint")
                        , NULL);
   gtk_widget_show (button);
   g_signal_connect (G_OBJECT (button), "clicked",
@@ -2940,7 +2930,7 @@ mov_edit_button_box_create (t_mov_gui_stuff *mgp)
   gtk_table_attach( GTK_TABLE(button_table), button, 1, 2, row, row+1,
 		    GTK_FILL, 0, 0, 0 );
   gimp_help_set_help_data(button,
-                       _("Show Last Controlpoint")
+                       _("Show last controlpoint")
                        , NULL);
   gtk_widget_show (button);
   g_signal_connect (G_OBJECT (button), "clicked",
@@ -2955,7 +2945,7 @@ mov_edit_button_box_create (t_mov_gui_stuff *mgp)
   gtk_table_attach( GTK_TABLE(button_table), button, 0, 1, row, row+1,
 		    GTK_FILL, 0, 0, 0 );
   gimp_help_set_help_data(button,
-                       _("Reset the current Controlpoint to default Values")
+                       _("Reset the current controlpoint to default values")
                        , NULL);
   gtk_widget_show (button);
   g_signal_connect (G_OBJECT (button), "clicked",
@@ -2968,8 +2958,8 @@ mov_edit_button_box_create (t_mov_gui_stuff *mgp)
   gtk_table_attach( GTK_TABLE(button_table), button, 1, 2, row, row+1,
 		    GTK_FILL, 0, 0, 0 );
   gimp_help_set_help_data(button,
-                       _("Reset all Controlpoints to default Values "
-		         "but dont change the path (X/Y Values)")
+                       _("Reset all controlpoints to default values "
+		         "but dont change the path (X/Y values)")
                        , NULL);
   gtk_widget_show (button);
   g_signal_connect (G_OBJECT (button), "clicked",
@@ -2984,9 +2974,9 @@ mov_edit_button_box_create (t_mov_gui_stuff *mgp)
   gtk_table_attach( GTK_TABLE(button_table), button, 0, 1, row, row+1,
 		    GTK_FILL, 0, 0, 0 );
   gimp_help_set_help_data(button,
-                       _("Set Rotation for all Controlpoints "
-		         "to follow the shape of the path.\n"
-		         "(Shift: use Rotation of contolpoint 1 as offset)")
+                       _("Set rotation for all controlpoints "
+		         "to follow the shape of the path. "
+		         "Hold down the shift key to use rotation of contolpoint 1 as offset.")
                        , NULL);
   gtk_widget_show (button);
   g_signal_connect (G_OBJECT (button), "button_press_event",
@@ -2999,7 +2989,7 @@ mov_edit_button_box_create (t_mov_gui_stuff *mgp)
   gtk_table_attach( GTK_TABLE(button_table), button, 1, 2, row, row+1,
 		    GTK_FILL, 0, 0, 0 );
   gimp_help_set_help_data(button,
-                       _("Delete all Controlpoints")
+                       _("Delete all controlpoints")
                        , NULL);
   gtk_widget_show (button);
   g_signal_connect (G_OBJECT (button), "clicked",
@@ -3015,7 +3005,7 @@ mov_edit_button_box_create (t_mov_gui_stuff *mgp)
   gtk_table_attach( GTK_TABLE(button_table), button, 0, 1, row, row+1,
 		    GTK_FILL, 0, 0, 0 );
   gimp_help_set_help_data(button,
-                       _("Load Controlpoints from file")
+                       _("Load controlpoints from file")
                        , NULL);
   gtk_widget_show (button);
   g_signal_connect (G_OBJECT (button), "clicked",
@@ -3028,7 +3018,7 @@ mov_edit_button_box_create (t_mov_gui_stuff *mgp)
   gtk_table_attach( GTK_TABLE(button_table), button, 1, 2, row, row+1,
 		    GTK_FILL, 0, 0, 0 );
   gimp_help_set_help_data(button,
-                       _("Save Controlpoints to file")
+                       _("Save controlpoints to file")
                        , NULL);
   gtk_widget_show (button);
   g_signal_connect (G_OBJECT (button), "clicked",
@@ -3139,7 +3129,7 @@ mov_path_framerange_box_create(t_mov_gui_stuff *mgp
 			  TRUE,                                 /* constrain */
 			  (gdouble)mgp->first_nr,               /* lower, (unconstrained) */
 			  (gdouble)mgp->last_nr,                /* upper (unconstrained) */
-			  _("First handled frame"), NULL);      /* tooltip privatetip */
+			  _("First handled destination frame"), NULL);      /* tooltip privatetip */
   g_object_set_data(G_OBJECT(adj), "mgp", mgp);
   g_signal_connect (G_OBJECT (adj), "value_changed",
 		    G_CALLBACK (gimp_int_adjustment_update),
@@ -3157,7 +3147,7 @@ mov_path_framerange_box_create(t_mov_gui_stuff *mgp
 			  TRUE,                                 /* constrain */
 			  (gdouble)mgp->first_nr,               /* lower, (unconstrained) */
 			  (gdouble)mgp->last_nr,                /* upper (unconstrained) */
-			  _("Last handled frame"), NULL);       /* tooltip privatetip */
+			  _("Last handled destination frame"), NULL);       /* tooltip privatetip */
   g_object_set_data(G_OBJECT(adj), "mgp", mgp);
   g_signal_connect (G_OBJECT (adj), "value_changed",
 		    G_CALLBACK (gimp_int_adjustment_update),
@@ -3173,7 +3163,9 @@ mov_path_framerange_box_create(t_mov_gui_stuff *mgp
 			  0,                                    /* digits */
 			  FALSE,                                /* constrain */
 			  0.0, 999999.0,                        /* lower, upper (unconstrained) */
-			  _("How to insert SrcLayer into the Dst. Frame's Layerstack\n0 means on top i.e. in front"),
+			  _("How to insert source layer into the "
+			    "layerstack of the destination frames. "
+			    "layerstack 0 means on top i.e. in front"),
 			  NULL);                              /* tooltip privatetip */
   g_object_set_data(G_OBJECT(adj), "mgp", mgp);
   g_signal_connect (G_OBJECT (adj), "value_changed",
@@ -3186,11 +3178,11 @@ mov_path_framerange_box_create(t_mov_gui_stuff *mgp
 
 
   /* toggle force visibility  */
-  check_button = gtk_check_button_new_with_label ( _("Force visibility"));
+  check_button = gtk_check_button_new_with_label ( _("Force Visibility"));
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (check_button),
 				pvals->src_force_visible);
   gimp_help_set_help_data(check_button,
-                       _("Force visibility for all copied Src-Layers")
+                       _("Force visibility for all copied source layers")
                        , NULL);
   gtk_widget_show (check_button);
   g_object_set_data(G_OBJECT(check_button), "mgp", mgp);
@@ -3204,7 +3196,7 @@ mov_path_framerange_box_create(t_mov_gui_stuff *mgp
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (check_button),
 				pvals->clip_to_img);
   gimp_help_set_help_data(check_button,
-                       _("Clip all copied Src-Layers at Frame Boundaries")
+                       _("Clip all copied source layers at destination frame boundaries")
                        , NULL);
   gtk_widget_show (check_button);
   g_signal_connect (G_OBJECT (check_button), "toggled",
@@ -3263,7 +3255,7 @@ mov_modify_tab_create(t_mov_gui_stuff *mgp)
 			  1,                                  /* digits */
 			  FALSE,                              /* constrain */
 			  (gdouble)1, (gdouble)1000,          /* lower, upper (unconstrained) */
-			  _("Scale Source Layer's Width in percent"),
+			  _("Scale source layer's width in percent"),
 			  NULL);    /* tooltip privatetip */
   g_object_set_data(G_OBJECT(adj), "mgp", mgp);
   g_signal_connect (G_OBJECT (adj), "value_changed",
@@ -3281,7 +3273,7 @@ mov_modify_tab_create(t_mov_gui_stuff *mgp)
 			  1,                                  /* digits */
 			  FALSE,                              /* constrain */
 			  (gdouble)1, (gdouble)1000,          /* lower, upper (unconstrained) */
-			  _("Scale SrcLayer's Height in percent"),
+			  _("Scale source layer's height in percent"),
 			  NULL);    /* tooltip privatetip */
   g_object_set_data(G_OBJECT(adj), "mgp", mgp);
   g_signal_connect (G_OBJECT (adj), "value_changed",
@@ -3315,7 +3307,7 @@ mov_modify_tab_create(t_mov_gui_stuff *mgp)
 			  1,                                  /* digits */
 			  TRUE,                               /* constrain */
 			  (gdouble)0, (gdouble)100,           /* lower, upper (unconstrained) */
-			  _("SrcLayer's Opacity in percent"),
+			  _("Set the source layer's opacity in percent"),
 			  NULL);    /* tooltip privatetip */
   g_object_set_data(G_OBJECT(adj), "mgp", mgp);
   g_signal_connect (G_OBJECT (adj), "value_changed",
@@ -3333,7 +3325,7 @@ mov_modify_tab_create(t_mov_gui_stuff *mgp)
 			  1,                                  /* digits */
 			  FALSE,                              /* constrain */
 			  (gdouble)-3600, (gdouble)3600,      /* lower, upper (unconstrained) */
-			  _("Rotate SrcLayer (in degree)"),
+			  _("Rotate source layer (in degree)"),
 			  NULL);    /* tooltip privatetip */
   g_object_set_data(G_OBJECT(adj), "mgp", mgp);
   g_signal_connect (G_OBJECT (adj), "value_changed",
@@ -3345,15 +3337,8 @@ mov_modify_tab_create(t_mov_gui_stuff *mgp)
   gtk_widget_show (table);
   gtk_widget_show (vbox);
   
-#ifndef MOVE_PATH_FRAMES_ENABLE
   /* copile without MOVE_PATH_LAYOUT_frame needs less space */  
   return vbox;
-#else
-  gtk_container_set_border_width( GTK_CONTAINER( frame ), 2 );
-  gtk_container_add (GTK_CONTAINER (frame), vbox);
-  gtk_widget_show(frame);
-  return frame;
-#endif  
 
 }  /* end mov_modify_tab_create */
 
@@ -3540,14 +3525,7 @@ mov_trans_tab_create (t_mov_gui_stuff *mgp)
   gtk_widget_show(table);
   gtk_widget_show(vbox);
 
-#ifndef MOVE_PATH_FRAMES_ENABLE
-  /* copile without MOVE_PATH_LAYOUT_frame needs less space */  
   return vbox;
-#else
-  gtk_container_add (GTK_CONTAINER (frame), vbox);
-  gtk_widget_show(frame);
-  return frame;
-#endif  
 }  /* end mov_trans_tab_create */
 
 
@@ -3568,9 +3546,9 @@ mov_selection_handling_tab_create (t_mov_gui_stuff *mgp)
   /*  the option menu items -- for the Selection Handling modes  */
   static MenuItem option_selmode_items[] =
   {
-    { N_("Ignore Selection (in all Source Images)"),   0, 0, mov_selmode_menu_callback, (gpointer) GAP_MOV_SEL_IGNORE, NULL, NULL },
-    { N_("Use Selection (from Initial Source Image)"), 0, 0, mov_selmode_menu_callback, (gpointer) GAP_MOV_SEL_INITIAL, NULL, NULL },
-    { N_("Use Selections (from all Source Images)"),   0, 0, mov_selmode_menu_callback, (gpointer) GAP_MOV_SEL_FRAME_SPECIFIC, NULL, NULL },
+    { N_("Ignore selection (in all source images)"),   0, 0, mov_selmode_menu_callback, (gpointer) GAP_MOV_SEL_IGNORE, NULL, NULL },
+    { N_("Use selection (from initial source image)"), 0, 0, mov_selmode_menu_callback, (gpointer) GAP_MOV_SEL_INITIAL, NULL, NULL },
+    { N_("Use selections (from all source images)"),   0, 0, mov_selmode_menu_callback, (gpointer) GAP_MOV_SEL_FRAME_SPECIFIC, NULL, NULL },
     { NULL, 0, 0, NULL, NULL, NULL, NULL }
   };
 
@@ -3598,7 +3576,7 @@ mov_selection_handling_tab_create (t_mov_gui_stuff *mgp)
   gtk_table_attach(GTK_TABLE(table), option_menu, 0, 3, 0, 1,
 		   0, 0, 0, 0);
   gimp_help_set_help_data(option_menu,
-                       _("How to handle Selections in the Source Image")
+                       _("How to handle selections in the source image")
                        , NULL);
   gtk_widget_show(option_menu);
 
@@ -3624,7 +3602,7 @@ mov_selection_handling_tab_create (t_mov_gui_stuff *mgp)
 			  1,                                  /* digits */
 			  FALSE,                              /* constrain */
 			  (gdouble)0, (gdouble)1000,          /* lower, upper (unconstrained) */
-			  _("Feather Radius in Pixels (for smoothing Selection(s))"),
+			  _("Feather radius in pixels (for smoothing selection(s))"),
 			  NULL);    /* tooltip privatetip */
   g_object_set_data(G_OBJECT(adj), "mgp", mgp);
   g_signal_connect (G_OBJECT (adj), "value_changed",
@@ -3638,14 +3616,7 @@ mov_selection_handling_tab_create (t_mov_gui_stuff *mgp)
   gtk_widget_show(table);
   gtk_widget_show(vbox);
 
-#ifndef MOVE_PATH_FRAMES_ENABLE
-  /* copile without MOVE_PATH_LAYOUT_frame needs less space */  
   return vbox;
-#else
-  gtk_container_add (GTK_CONTAINER (frame), vbox);
-  gtk_widget_show(frame);
-  return frame;
-#endif  
 }  /* end mov_selection_handling_tab_create */
 
 /* ============================================================================
@@ -3668,6 +3639,7 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_gui_stuff *mgp, gboolean v
 {
   GtkWidget	 *cpt_frame;
   GtkWidget	 *pv_frame;
+  GtkWidget      *wrap_box;
   GtkWidget	 *vbox;
   GtkWidget	 *hbox;
   GtkWidget      *notebook;
@@ -3733,7 +3705,7 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_gui_stuff *mgp, gboolean v
 			  FALSE,                                  /* constrain */
 			  (gdouble)(-GIMP_MAX_IMAGE_SIZE),
 			  (gdouble)GIMP_MAX_IMAGE_SIZE,           /* lower, upper (unconstrained) */
-			  _("X Coordinate"),
+			  _("X coordinate"),
 			  NULL);    /* tooltip privatetip */
   g_signal_connect (G_OBJECT (adj), "value_changed",
 		    G_CALLBACK (mov_path_x_adjustment_update),
@@ -3751,7 +3723,7 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_gui_stuff *mgp, gboolean v
 			  FALSE,                                  /* constrain */
 			  (gdouble)(-GIMP_MAX_IMAGE_SIZE),
 			  (gdouble)GIMP_MAX_IMAGE_SIZE,           /* lower, upper (unconstrained) */
-			  _("Y Coordinate"),
+			  _("Y coordinate"),
 			  NULL);    /* tooltip privatetip */
   g_signal_connect (G_OBJECT (adj), "value_changed",
 		    G_CALLBACK (mov_path_y_adjustment_update),
@@ -3768,7 +3740,7 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_gui_stuff *mgp, gboolean v
 			  0,                                    /* digits */
 			  TRUE,                                 /* constrain */
 			  (gdouble)0, (gdouble)mgp->max_frame,  /* lower, upper (unconstrained) */
-			  _("Fix Controlpoint to Keyframe number\n(0 == No Keyframe)"),
+			  _("Fix controlpoint to keyframe number where 0 == no keyframe"),
 			  NULL);    /* tooltip privatetip */
   g_signal_connect (G_OBJECT (adj), "value_changed",
 		    G_CALLBACK (gimp_int_adjustment_update),
@@ -3857,26 +3829,64 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_gui_stuff *mgp, gboolean v
     mgp->pheight = PREVIEW_SIZE;
   }
 
-  
-  /* aspect_frame is the CONTAINER for the preview drawing area */
-  aspect_frame = gtk_aspect_frame_new (NULL   /* without label */
+
+  /* preview dummy widgets */
+  {
+    GtkWidget *table11;
+    GtkWidget *dummy;
+    
+    gint ix;
+    gint iy;
+    /* aspect_frame is the CONTAINER for the preview drawing area */
+    aspect_frame = gtk_aspect_frame_new (NULL   /* without label */
                                       , 0.5   /* xalign center */
                                       , 0.5   /* yalign center */
                                       , mgp->pwidth / mgp->pheight     /* ratio */
                                       , TRUE  /* obey_child */
                                       );
-  gtk_table_attach( GTK_TABLE(pv_table), aspect_frame, 0, 1, 0, 1,
-		    GTK_EXPAND|GTK_FILL|GTK_SHRINK, GTK_EXPAND|GTK_FILL|GTK_SHRINK, 0, 0 );
 
+
+    /* table11 is used to center aspect_frame */
+    table11 = gtk_table_new (3, 3, FALSE);
+    gtk_widget_show (table11);
+    for(ix = 0; ix < 3; ix++)
+    {
+      for(iy = 0; iy < 3; iy++)
+      {
+        if((ix == 1) && (iy == 1))
+        {
+           gtk_table_attach (GTK_TABLE (table11), aspect_frame, ix, ix+1, iy, iy+1,
+                            (GtkAttachOptions) (GTK_FILL | GTK_SHRINK | GTK_EXPAND),
+                            (GtkAttachOptions) (GTK_FILL | GTK_SHRINK | GTK_EXPAND),
+			    0, 0);
+        }
+        else
+        {
+          /* dummy widgets to fill up table11  */
+          dummy = gtk_vbox_new (FALSE,3);
+          gtk_widget_show (dummy);
+          gtk_table_attach (GTK_TABLE (table11), dummy, ix, ix+1, iy, iy+1,
+                            (GtkAttachOptions) (GTK_FILL | GTK_SHRINK | GTK_EXPAND),
+                            (GtkAttachOptions) (GTK_FILL | GTK_SHRINK | GTK_EXPAND),
+			    0, 0);
+        }
+      }
+    }   
+
+    wrap_box = gtk_vbox_new (FALSE,3);
+    gtk_box_pack_start (GTK_BOX (wrap_box), table11, FALSE, FALSE, 0);
+    gtk_widget_show(wrap_box);
+    gtk_table_attach (GTK_TABLE (pv_table), wrap_box, 0, 1, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_SHRINK | GTK_FILL),
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_SHRINK | GTK_FILL), 0, 0);
+
+  }
 
 
   /* hbox_show block */
   {
     GtkWidget *hbox_show;
-    GtkWidget *frame_show;
     
-    frame_show = gtk_frame_new ( _("Show"));
-    gtk_frame_set_shadow_type (GTK_FRAME (frame_show), GTK_SHADOW_ETCHED_IN);
    
     hbox_show = gtk_hbox_new (FALSE, 3);
     gtk_widget_show (hbox_show);
@@ -3893,8 +3903,8 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_gui_stuff *mgp, gboolean v
       gtk_box_pack_start (GTK_BOX (hbox_show), color_button, TRUE, TRUE, 4);
       gtk_widget_show (color_button);
       gimp_help_set_help_data(color_button,
-                         _("Select the Color that is used to\n"
-			   "draw Pathlines in The Preview")
+                         _("Select the color that is used to "
+			   "draw pathlines in the preview")
                          , NULL);
 
       g_signal_connect (color_button, "color_changed",
@@ -3909,7 +3919,7 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_gui_stuff *mgp, gboolean v
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (check_button),
 				  mgp->show_path);
     gimp_help_set_help_data(check_button,
-                         _("Show Path Lines and enable "
+                         _("Show path lines and enable "
                            "pick/drag with left button "
                            "or move with right button")
                          , NULL);
@@ -3927,7 +3937,7 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_gui_stuff *mgp, gboolean v
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (check_button),
 				  mgp->show_cursor);
     gimp_help_set_help_data(check_button,
-                         _("Show Cursor Crosslines")
+                         _("Show cursor crosslines")
                          , NULL);
     gtk_widget_show (check_button);
     gtk_box_pack_start (GTK_BOX (hbox_show), check_button, TRUE, TRUE, 0);
@@ -3942,7 +3952,7 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_gui_stuff *mgp, gboolean v
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (check_button),
 				  mgp->show_grid);
     gimp_help_set_help_data(check_button,
-                         _("Show Source Layer as Gridlines")
+                         _("Show source layer as gridlines")
                          , NULL);
     //XX gtk_widget_show (check_button);
     gtk_box_pack_start (GTK_BOX (hbox_show), check_button, TRUE, TRUE, 0);
@@ -3956,7 +3966,7 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_gui_stuff *mgp, gboolean v
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (check_button),
 				  mgp->instant_apply);
     gimp_help_set_help_data(check_button,
-                         _("Update the Preview automatically")
+                         _("Update the preview automatically")
                          , NULL);
     gtk_widget_show (check_button);
     gtk_box_pack_start (GTK_BOX (hbox_show), check_button, TRUE, TRUE, 0);
@@ -3966,15 +3976,8 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_gui_stuff *mgp, gboolean v
                       mgp);
 
    
-    /* #ifndef MOVE_PATH_FRAMES_ENABLE */
     gtk_table_attach(GTK_TABLE(pv_table), hbox_show, 0, 1, 1, 2,
                      0, 0, 16, 0);
-    /* #else */
-    /* gtk_widget_show (frame_show); */
-    /* gtk_container_add (GTK_CONTAINER (frame_show), hbox_show); */
-    /* gtk_table_attach(GTK_TABLE(pv_table), frame_show, 0, 1, 1, 2, */
-    /*                 0, 0, 12, 0); */
-    /*#endif */
   }
 
   /* the preview sub table (1 row) */
@@ -3992,7 +3995,7 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_gui_stuff *mgp, gboolean v
 			  TRUE,                                 /* constrain */
 			  (gdouble)mgp->first_nr,               /* lower (unconstrained)*/
 			  (gdouble)mgp->last_nr,                /* upper (unconstrained)*/
-			  _("Frame to show when UpdPreview button is pressed"),
+			  _("Frame to show when 'Refresh' button is pressed"),
 			  NULL);                                /* tooltip privatetip */
   g_object_set_data(G_OBJECT(adj), "mgp", mgp);
   g_signal_connect (G_OBJECT (adj), "value_changed",
@@ -4027,20 +4030,9 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_gui_stuff *mgp, gboolean v
 
   /* keep track of resizing events of the preview
    * for automatic preview scale when more or less layoutspace is available.
-   *
-   * it would be better to track size_allocate events of the da_widget directly
-   * but this does not work properly, because sometimes the preview frame
-   * is allocated with say 30 pixel width, and the size_allocate events
-   * both for the included aspect_frame and the included da_widget
-   * are still 360 pixels width or so.. and wigets in the layout will overlap each other.
-   * As workaround i connected the mov_pview_size_allocate_callback handler procedure
-   * to the pv_frame, where size_allocate events deliver usable allocation width / height values.
-   * but this requires that the code has to take care for borders
-   * (PREVIEW_BORDER_X, PREVIEW_BORDER_Y) that are dependent of the other widgets
-   * packed into the pv_frame widget, and dependent to standard fontsize
    */
 
-  g_signal_connect_after (G_OBJECT (pv_frame), "size_allocate",
+  g_signal_connect_after (G_OBJECT (wrap_box), "size_allocate",
                       G_CALLBACK (mov_pview_size_allocate_callback),
                       mgp);
 
@@ -4711,7 +4703,7 @@ p_chk_keyframes_OLD(t_mov_gui_stuff *mgp)
       
       keychk_locked = TRUE;
       gap_arr_arg_init(&argv[0], GAP_ARR_WGT_LABEL);
-      argv[0].label_txt = _("Can't operate with current Controlpoint\nor Keyframe settings");
+      argv[0].label_txt = _("Can't operate with current controlpoint or keyframe settings");
 
       gap_arr_arg_init(&argv[1], GAP_ARR_WGT_LABEL);
       argv[1].label_txt = l_err_lbltext;
@@ -4769,8 +4761,8 @@ p_chk_keyframes(t_mov_gui_stuff *mgp)
 
   if(*l_err_lbltext != '\0')
   {
-    g_message(_("Can't operate with current Controlpoint\n"
-                "or Keyframe settings\n\n"
+    g_message(_("Can't operate with current controlpoint\n"
+                "or keyframe settings.\n\n"
 		"Error List:\n"
 		"%s")
              ,l_err_lbltext );
@@ -5044,6 +5036,66 @@ p_mov_spinbutton_new(GtkTable *table
   return(adj);
 }  /* end p_mov_spinbutton_new */
 
+ 
+/* --------------------------
+ * mov_fit_initial_shell_window
+ * --------------------------
+ */
+static void 
+mov_fit_initial_shell_window(t_mov_gui_stuff *mgp)
+{
+  gint width;
+  gint height;
+
+  if(mgp == NULL)                   { return; }
+  if(mgp->shell_initial_width < 0)  { return; }
+
+  width = mgp->shell_initial_width;
+  height = mgp->shell_initial_height;
+
+  gtk_widget_set_size_request (mgp->shell, width, height);  /* shrink shell window */
+  gtk_window_set_default_size(GTK_WINDOW(mgp->shell), width, height);  /* shrink shell window */
+  gtk_window_resize (GTK_WINDOW(mgp->shell), width, height);  /* shrink shell window */
+}  /* end mov_fit_initial_shell_window */
+
+/* -----------------------------
+ * mov_shell_window_size_allocate
+ * -----------------------------
+ */
+static void
+mov_shell_window_size_allocate (GtkWidget       *widget,
+                                GtkAllocation   *allocation,
+                                gpointer         user_data)
+{
+   t_mov_gui_stuff *mgp;
+
+   mgp = (t_mov_gui_stuff*)user_data;
+   if((mgp == NULL) || (allocation == NULL))
+   {
+     return;
+   }
+   
+   if(gap_debug) printf("mov_shell_window_size_allocate: START  shell_alloc: w:%d h:%d \n"
+                           , (int)allocation->width
+                           , (int)allocation->height
+                           );
+
+   if(mgp->shell_initial_width < 0)
+   {
+     mgp->shell_initial_width = allocation->width;
+     mgp->shell_initial_height = allocation->height;
+     mov_fit_initial_shell_window(mgp);  /* for setting window default size */
+   }
+   else
+   {
+     if((allocation->width < mgp->shell_initial_width)
+     || (allocation->height < mgp->shell_initial_height))
+     {
+       /* dont allow shrink below initial size */
+       mov_fit_initial_shell_window(mgp);
+     }
+   }  			   
+}  /* end mov_shell_window_size_allocate */ 
 
 /* --------------------------------
  * mov_pview_size_allocate_callback
@@ -5059,12 +5111,14 @@ mov_pview_size_allocate_callback(GtkWidget *widget
   gint pwidth;
   gint pheight;
   gint psize;
+  gboolean fit_initial;
 
   static gint ignore_inital_cnt = 2;
 
-
 #define PREVIEW_BORDER_X  18
-#define PREVIEW_BORDER_Y  78
+#define PREVIEW_BORDER_Y  18
+
+  fit_initial = FALSE;
 
   if(ignore_inital_cnt > 0)
   {
@@ -5093,7 +5147,10 @@ mov_pview_size_allocate_callback(GtkWidget *widget
   psize = MAX(pwidth, pheight);
   
   if ((allocation->width - PREVIEW_BORDER_X < PREVIEW_SIZE)
-  ||  (allocation->height - PREVIEW_BORDER_Y < PREVIEW_SIZE))
+  ||  (allocation->height - PREVIEW_BORDER_Y < PREVIEW_SIZE)
+  ||  (pwidth < mgp->pwidth)    /* TOTAL SHRINK WORKAROUND */
+  ||  (pheight < mgp->pheight)  /* TOTAL SHRINK WORKAROUND */
+  )
   {
     /* do not allow shrinks smaller than PREVIEW_SIZE */
     if ( mgp->dwidth > mgp->dheight ) 
@@ -5108,33 +5165,18 @@ mov_pview_size_allocate_callback(GtkWidget *widget
     }
     psize = PREVIEW_SIZE;
     ignore_inital_cnt = 1;
+    fit_initial = TRUE;
   }
   
   actual_check_size = (GAP_MOV_CHECK_SIZE * psize) / PREVIEW_SIZE;
 
-  if(psize > PREVIEW_SIZE)
-  {
-    gtk_window_set_policy (GTK_WINDOW (mgp->shell)
-                         , TRUE   /* allow_shrink */
-			 , TRUE   /* allow_grow */
-			 , TRUE   /* auto_shrink */
-			 );
-  }
-  else
-  {
-    gtk_window_set_policy (GTK_WINDOW (mgp->shell)
-                         , FALSE   /* allow_shrink */
-			 , TRUE   /* allow_grow */
-			 , TRUE   /* auto_shrink */
-			 );
-  }
-
-  
   if(gap_debug)
   {
-    printf("allocation w:%d  h:%d    preview: w:%d  h:%d   psize MAX:%d\n"
+    printf("allocation w:%d  h:%d  pwidth:%d  pheight:%d   preview: w:%d  h:%d   psize MAX:%d\n"
                       , (int)allocation->width
 		      , (int)allocation->height
+                      , (int)pwidth
+		      , (int)pheight
                       , (int)mgp->pwidth
 		      , (int)mgp->pheight
 		      , (int)psize
@@ -5145,6 +5187,7 @@ mov_pview_size_allocate_callback(GtkWidget *widget
   && ((pwidth / 6)  == (mgp->pwidth / 6)))
   {
     /* skip resize if equal size or no significant change (< 6 pixel) */
+    if(gap_debug) printf("RET\n");
     return;
   }
   
@@ -5157,4 +5200,10 @@ mov_pview_size_allocate_callback(GtkWidget *widget
                   , actual_check_size
                   );
   mov_upvw_callback (NULL, mgp);
+  
+  if(fit_initial)
+  {
+    mov_fit_initial_shell_window(mgp);
+  }
+
 }  /* end mov_pview_size_allocate_callback */

@@ -1,6 +1,6 @@
 /*  gap_player_dialog.c
  *
- *  video (preview) playback of animframes  by Wolfgang Hofer (hof)
+ *  video (preview) playback of video frames  by Wolfgang Hofer (hof)
  *     supports both (fast) thumbnail based playback
  *     and full image playback (slow)
  *  the current implementation has audio support for RIFF WAV audiofiles
@@ -28,6 +28,7 @@
  */
 
 /* Revision history
+ *  (2003/11/01)  v1.3.21d   hof: cleanup messages
  *  (2003/10/14)  v1.3.20d   hof: sourcecode cleanup
  *  (2003/10/06)  v1.3.20d   hof: bugfix: changed shell_window resize handling
  *  (2003/09/29)  v1.3.20c   hof: moved gap_arr_overwrite_file_dialog to module gap_arr_dialog.c
@@ -279,7 +280,7 @@ p_audio_errfunc(const char *format,va_list ap)
   char buf[1024];
 
   vsnprintf(buf,sizeof(buf),format,ap);	/* Format the message */
-  g_message(_("Problem with audioplayback\naudiolib reported:\n%s"),buf);
+  g_message(_("Problem with audioplayback. The audiolib reported:\n%s"),buf);
 
 }  /* end p_audio_errfunc */
 
@@ -313,7 +314,7 @@ p_create_wav_dialog(GapPlayerMainGlobalParams *gpp)
   gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_FILESEL);
   argv[l_ii].label_txt = _("Wavefile:");
   argv[l_ii].entry_width = 400;
-  argv[l_ii].help_txt  = _("Name of Wavefile to create as copy in RIFF WAVE Format");
+  argv[l_ii].help_txt  = _("Name of wavefile to create as copy in RIFF WAVE format");
   argv[l_ii].text_buf_len = sizeof(gpp->audio_wavfile_tmp);
   argv[l_ii].text_buf_ret = gpp->audio_wavfile_tmp;
   
@@ -321,7 +322,8 @@ p_create_wav_dialog(GapPlayerMainGlobalParams *gpp)
   l_ii_resample = l_ii;
   gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_TOGGLE);
   argv[l_ii].label_txt = _("Resample:");
-  argv[l_ii].help_txt  = _("ON: Resample the copy at specified Samplerate, OFF: use original Samplerate");
+  argv[l_ii].help_txt  = _("ON: Resample the copy at specified samplerate.\n"
+                           "OFF: Use original samplerate");
   argv[l_ii].int_ret   = 1;
 
   l_ii++;
@@ -329,7 +331,7 @@ p_create_wav_dialog(GapPlayerMainGlobalParams *gpp)
   gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_INT_PAIR);
   argv[l_ii].constraint = TRUE;
   argv[l_ii].label_txt = _("Samplerate:");
-  argv[l_ii].help_txt  = _("Target Audio Samperate in Samples/sec\n(ignored if Resample is OFF)");
+  argv[l_ii].help_txt  = _("Target audio samperate in samples/sec. Ignored if resample is off)");
   argv[l_ii].int_min   = (gint)GAP_PLAYER_MAIN_MIN_SAMPLERATE;
   argv[l_ii].int_max   = (gint)GAP_PLAYER_MAIN_MAX_SAMPLERATE;
   argv[l_ii].int_ret   = (gint)22050;
@@ -810,7 +812,7 @@ p_audio_startup_server(GapPlayerMainGlobalParams *gpp)
   else
   {
     gpp->audio_enable = FALSE;
-    g_message(_("NO Audiosupport available\n"
+    g_message(_("No audiosupport available\n"
                  "the audioserver executable file '%s' was not found.\n"
                  "If you have installed '%s'\n"
 		 "you should add the installation dir to your PATH\n"
@@ -1635,7 +1637,7 @@ on_timer_playback(gpointer   user_data)
               */
              l_frame_dropped = TRUE;
              printf("DROP (SKIP) frame\n");
-             gtk_label_set_text ( GTK_LABEL(gpp->status_label), _("SKIP"));
+             gtk_label_set_text ( GTK_LABEL(gpp->status_label), _("Skip"));
            }
            else
            {
@@ -3034,7 +3036,7 @@ on_audio_create_copy_button_clicked (GtkButton       *button,
     }
     else
     {
-      g_message(_("WARNING: your gimprc file configuration for the audioconverter Script\n"
+      g_message(_("WARNING: Your gimprc file configuration for the audioconverter script\n"
              "does not point to an executable program\n"
 	     "the configured value for %s is: %s\n")
 	     , "audioconvert_program"
@@ -3056,7 +3058,7 @@ on_audio_create_copy_button_clicked (GtkButton       *button,
       }
       else
       {
-	g_message(_("WARNING: the environment variable %s\n"
+	g_message(_("WARNING: The environment variable %s\n"
                "does not point to an executable program\n"
 	       "the current value is: %s\n")
 	       , "AUDIOCONVERT_TO_WAV"
@@ -3075,8 +3077,8 @@ on_audio_create_copy_button_clicked (GtkButton       *button,
 					      );
       if(!g_file_test(envAUDIOCONVERT_TO_WAV, G_FILE_TEST_IS_EXECUTABLE))
       {
-        g_message(_("ERROR: external program for audioconversion not executable\n"
-	            "filename: '%s'\n")
+        g_message(_("ERROR: The external program for audioconversion is not executable.\n"
+	            "Filename: '%s'\n")
 	         , envAUDIOCONVERT_TO_WAV
 		 );
         return;
@@ -3095,7 +3097,7 @@ on_audio_create_copy_button_clicked (GtkButton       *button,
            "  in progress ***\n"
 	   ,gpp->audio_wavfile_tmp );
       
-      gtk_label_set_text ( GTK_LABEL(gpp->audio_status_label), _("Creating Audiofile - Please Wait"));
+      gtk_label_set_text ( GTK_LABEL(gpp->audio_status_label), _("Creating audiofile - please wait"));
       gtk_widget_hide(gpp->audio_table);
       gtk_widget_show(gpp->audio_status_label);
       while (gtk_events_pending ())
@@ -3330,7 +3332,7 @@ p_new_audioframe(GapPlayerMainGlobalParams *gpp)
   entry = gtk_entry_new();
   gpp->audio_filename_entry = entry;
   gtk_widget_show (entry);
-  gimp_help_set_help_data(entry, _("Enter an Audiofile. (the file must be in RIFF WAVE Fileformat)"),NULL);
+  gimp_help_set_help_data(entry, _("Enter an audiofile. The file must be in RIFF WAVE fileformat."),NULL);
   gtk_widget_set_size_request(entry, 300, -1);
   gtk_entry_set_text(GTK_ENTRY(entry), gpp->audio_filename);
   gtk_table_attach(GTK_TABLE(table1), entry, 1, 2, row, row + 1,
@@ -3344,7 +3346,7 @@ p_new_audioframe(GapPlayerMainGlobalParams *gpp)
   /* audiofile button (fileselect invoker) */
   button = gtk_button_new_with_label ( _("File Browser"));
   gtk_widget_show (button);
-  gimp_help_set_help_data(button, _("Open Audiofile selection Browserdialog"),NULL);
+  gimp_help_set_help_data(button, _("Open audiofile selection browser dialog window"),NULL);
   gtk_table_attach(GTK_TABLE(table1), button, 2, 3, row, row + 1,
                     (GtkAttachOptions) GTK_FILL, 
 		    (GtkAttachOptions) GTK_FILL, 4, 0);
@@ -3386,7 +3388,8 @@ p_new_audioframe(GapPlayerMainGlobalParams *gpp)
   gtk_table_attach ( GTK_TABLE (table1), check_button, 2, 3, row, row+1, GTK_FILL, 0, 0, 0);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (check_button),
 				gpp->audio_enable);
-  gimp_help_set_help_data(check_button, _("ON: Play Button plays Video + Audio, OFF: Play silent"),NULL);
+  gimp_help_set_help_data(check_button, _("ON: Play button plays video + audio.\n"
+                                          "OFF: Play video silently"),NULL);
   gtk_widget_show (check_button);
   g_signal_connect (G_OBJECT (check_button), "toggled",
                       G_CALLBACK (on_audio_enable_checkbutton_toggled),
@@ -3415,14 +3418,14 @@ p_new_audioframe(GapPlayerMainGlobalParams *gpp)
   gpp->audio_frame_offset_spinbutton_adj = adj;
   gtk_table_attach(GTK_TABLE(table1), spinbutton, 1, 2, row, row + 1, GTK_FILL, GTK_FILL, 4, 0);
   gimp_help_set_help_data(spinbutton
-                         , _("Audio Offset in frames at Original Videoplayback speed\n"
-                             "(a value of 0 starts audio and video at synchron time\n"
-                             "a value of -10 will play frame 1 upto 9 silently\n"
-                             "and start audio at frame 10\n"
-			     "a value of 10 starts audio at frame 1,\n"
-			     "but skips the audio begin part in a length that is\n"
-			     "equal to the duration of 10 frames\n"
-			     "(at original video playback speed)")
+                         , _("Audio offset in frames at original video playback speed. "
+                             "A value of 0 starts audio and video at synchron time. "
+                             "A value of -10 will play frame 1 up to frame 9 silently "
+                             "and start audio at frame 10. "
+			     "A value of 10 starts audio at frame 1, "
+			     "but skips the audio begin part in a length that is "
+			     "equal to the duration of 10 frames "
+			     "at original video playback speed.")
 			 ,NULL);
   g_signal_connect (G_OBJECT (spinbutton), "changed",
                       G_CALLBACK (on_audio_frame_offset_spinbutton_changed),
@@ -3431,7 +3434,7 @@ p_new_audioframe(GapPlayerMainGlobalParams *gpp)
   /* reset button */
   button = gtk_button_new_from_stock (GIMP_STOCK_RESET);
   gtk_widget_show (button);
-  gimp_help_set_help_data(button, _("Reset Offset and Volume"),NULL);
+  gimp_help_set_help_data(button, _("Reset offset and volume"),NULL);
   gtk_table_attach(GTK_TABLE(table1), button, 2, 3, row, row + 1,
                     (GtkAttachOptions) GTK_FILL, 
 		    (GtkAttachOptions) GTK_FILL, 4, 0);
@@ -3444,8 +3447,8 @@ p_new_audioframe(GapPlayerMainGlobalParams *gpp)
   /* create wavfile button */
   button = gtk_button_new_with_label(_("Copy As Wavfile"));
   gtk_widget_show (button);
-  gimp_help_set_help_data(button, _("Create a copy from Audiofile as RIFF WAVE Audiofile\n"
-                                    "and use the copy for Audio Playback"),NULL);
+  gimp_help_set_help_data(button, _("Create a copy from audiofile as RIFF WAVE audiofile "
+                                    "and use the copy for audio playback"),NULL);
   gtk_table_attach(GTK_TABLE(table1), button, 1, 3, row, row + 1,
                     (GtkAttachOptions) GTK_FILL, 
 		    (GtkAttachOptions) GTK_FILL, 4, 0);
@@ -3508,7 +3511,7 @@ p_new_audioframe(GapPlayerMainGlobalParams *gpp)
 
   row++;
 
-  /* Length (Samples) */
+  /* Audiolength (Samples) */
   label = gtk_label_new(_("Samples:"));
   gtk_misc_set_alignment(GTK_MISC(label), 1.0, 0.5);
   gtk_table_attach(GTK_TABLE(table1), label, 0, 1, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
@@ -3523,7 +3526,7 @@ p_new_audioframe(GapPlayerMainGlobalParams *gpp)
 
   row++;
 
-  /* Samplerate */
+  /* Audio Samplerate */
   label = gtk_label_new(_("Samplerate:"));
   gtk_misc_set_alignment(GTK_MISC(label), 1.0, 0.5);
   gtk_table_attach(GTK_TABLE(table1), label, 0, 1, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
@@ -3537,7 +3540,7 @@ p_new_audioframe(GapPlayerMainGlobalParams *gpp)
 
   row++;
 
-  /* Channels */
+  /* Audio Channels */
   label = gtk_label_new(_("Channels:"));
   gtk_misc_set_alignment(GTK_MISC(label), 1.0, 0.5);
   gtk_table_attach(GTK_TABLE(table1), label, 0, 1, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
@@ -3551,7 +3554,7 @@ p_new_audioframe(GapPlayerMainGlobalParams *gpp)
 
   row++;
 
-  /* Bits */
+  /* Bits per Audio Sample */
   label = gtk_label_new(_("Bits/Sample:"));
   gtk_misc_set_alignment(GTK_MISC(label), 1.0, 0.5);
   gtk_table_attach(GTK_TABLE(table1), label, 0, 1, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
@@ -3665,11 +3668,7 @@ p_create_player_window (GapPlayerMainGlobalParams *gpp)
   shell_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gpp->shell_window = shell_window;
   gtk_window_set_title (GTK_WINDOW (shell_window), _("Videoframe Playback"));
-  gtk_window_set_policy (GTK_WINDOW (shell_window)
-                        , FALSE   /* do not allow shrink */
-			, TRUE
-			, TRUE
-			);
+  gtk_window_set_resizable(GTK_WINDOW (shell_window), TRUE);
   g_signal_connect (G_OBJECT (shell_window), "destroy",
                       G_CALLBACK (on_shell_window_destroy),
                       gpp);
@@ -3746,7 +3745,7 @@ p_create_player_window (GapPlayerMainGlobalParams *gpp)
        gtk_widget_set_size_request (go_button, -1, 40);
        if(go_number == 0)
        {
-         gimp_help_set_help_data (go_button, _("Click: go to frame, Ctrl-Click: set From Frame, Alt-Click: set To Frame"), NULL);
+         gimp_help_set_help_data (go_button, _("Click: go to frame, Ctrl-Click: set 'From Frame', Alt-Click: set 'To Frame'"), NULL);
        }
        g_signal_connect (go_button, "enter_notify_event",
                       G_CALLBACK (on_go_button_enter)
@@ -3819,7 +3818,7 @@ p_create_player_window (GapPlayerMainGlobalParams *gpp)
                     (GtkAttachOptions) (0),
 		     0, 0);
   gtk_widget_set_size_request (from_spinbutton, 80, -1);
-  gimp_help_set_help_data (from_spinbutton, _("Start Framenumber of Selection Range"), NULL);
+  gimp_help_set_help_data (from_spinbutton, _("Start framenumber of selection range"), NULL);
   g_signal_connect (G_OBJECT (from_spinbutton), "changed",
                       G_CALLBACK (on_from_spinbutton_changed),
                       gpp);
@@ -3836,7 +3835,7 @@ p_create_player_window (GapPlayerMainGlobalParams *gpp)
                     (GtkAttachOptions) (0),
 		     0, 0);
   gtk_widget_set_size_request (to_spinbutton, 80, -1);
-  gimp_help_set_help_data (to_spinbutton, _("End Framenumber of Selection Range"), NULL);
+  gimp_help_set_help_data (to_spinbutton, _("End framenumber of selection range"), NULL);
   g_signal_connect (G_OBJECT (to_spinbutton), "changed",
                       G_CALLBACK (on_to_spinbutton_changed),
                       gpp);
@@ -3855,7 +3854,7 @@ p_create_player_window (GapPlayerMainGlobalParams *gpp)
   gtk_table_attach (GTK_TABLE (table2), framenr_button, 0, 1, 3, 4,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gimp_help_set_help_data (framenr_button, _("Load this Frame into the calling image"), NULL);
+  gimp_help_set_help_data (framenr_button, _("Load this frame into the calling image"), NULL);
   g_signal_connect (G_OBJECT (framenr_button), "clicked",
                       G_CALLBACK (on_framenr_button_clicked),
                       gpp);
@@ -3873,7 +3872,7 @@ p_create_player_window (GapPlayerMainGlobalParams *gpp)
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_widget_set_size_request (framenr_spinbutton, 80, -1);
-  gimp_help_set_help_data (framenr_spinbutton, _("Displayed Frame Nr"), NULL);
+  gimp_help_set_help_data (framenr_spinbutton, _("The currently displayed frame number"), NULL);
   g_signal_connect (G_OBJECT (framenr_spinbutton), "changed",
                       G_CALLBACK (on_framenr_spinbutton_changed),
                       gpp);
@@ -3916,7 +3915,7 @@ p_create_player_window (GapPlayerMainGlobalParams *gpp)
   gtk_table_attach (GTK_TABLE (table2), origspeed_button, 0, 1, 6, 7,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gimp_help_set_help_data (origspeed_button, _("Reset Playback Speed to original (or previous) Value"), NULL);
+  gimp_help_set_help_data (origspeed_button, _("Reset playback speed to original (or previous) value"), NULL);
   g_signal_connect (G_OBJECT (origspeed_button), "clicked",
                       G_CALLBACK (on_origspeed_button_clicked),
                       gpp);
@@ -3936,7 +3935,7 @@ p_create_player_window (GapPlayerMainGlobalParams *gpp)
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_widget_set_size_request (speed_spinbutton, 80, -1);
-  gimp_help_set_help_data (speed_spinbutton, _("Current Playbackspeed (frames/sec)"), NULL);
+  gimp_help_set_help_data (speed_spinbutton, _("Current playback speed (frames/sec)"), NULL);
 
   hseparator = gtk_hseparator_new ();
   gtk_widget_show (hseparator);
@@ -3957,7 +3956,7 @@ p_create_player_window (GapPlayerMainGlobalParams *gpp)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0),
 		    0, 0);
-  gimp_help_set_help_data (size_button, _("Toggle Size 128/256, SHIFT: Set 1:1 full image Size"), NULL);
+  gimp_help_set_help_data (size_button, _("Toggle size 128/256. <Shift> Set 1:1 full image size"), NULL);
   g_signal_connect (G_OBJECT (size_button), "button_press_event",
                       G_CALLBACK (on_size_button_button_press_event),
                       gpp);
@@ -3976,7 +3975,7 @@ p_create_player_window (GapPlayerMainGlobalParams *gpp)
                     (GtkAttachOptions) (0),
 		    0, 0);
   gtk_widget_set_size_request (size_spinbutton, 80, -1);
-  gimp_help_set_help_data (size_spinbutton, _("Video Preview Size (pixels)"), NULL);
+  gimp_help_set_help_data (size_spinbutton, _("Video preview size (pixels)"), NULL);
 
   g_signal_connect (G_OBJECT (size_spinbutton), "value_changed",
                       G_CALLBACK (on_size_spinbutton_changed),
@@ -4003,7 +4002,8 @@ p_create_player_window (GapPlayerMainGlobalParams *gpp)
   gtk_table_attach (GTK_TABLE (table2), loop_checkbutton, 0, 2, 10, 11,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gimp_help_set_help_data (loop_checkbutton, _("ON: Play in endless Loop, OFF: Play only once"), NULL);
+  gimp_help_set_help_data (loop_checkbutton, _("ON: Play in endless loop.\n"
+                                               "OFF: Play only once"), NULL);
   if(gpp->play_loop)
   {
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (loop_checkbutton), TRUE);
@@ -4012,12 +4012,13 @@ p_create_player_window (GapPlayerMainGlobalParams *gpp)
                       G_CALLBACK (on_loop_checkbutton_toggled),
                       gpp);
 
-  selonly_checkbutton = gtk_check_button_new_with_label (_("Play Selection only"));
+  selonly_checkbutton = gtk_check_button_new_with_label (_("Play selection only"));
   gtk_widget_show (selonly_checkbutton);
   gtk_table_attach (GTK_TABLE (table2), selonly_checkbutton, 0, 2, 11, 12,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gimp_help_set_help_data (selonly_checkbutton, _("ON: Play Selection only, OFF: Play all frames"), NULL);
+  gimp_help_set_help_data (selonly_checkbutton, _("ON: Play selection only.\n"
+                                                  "OFF: Play all frames"), NULL);
   if(gpp->play_selection_only)
   {
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (selonly_checkbutton), TRUE);
@@ -4026,7 +4027,7 @@ p_create_player_window (GapPlayerMainGlobalParams *gpp)
                       G_CALLBACK (on_selonly_checkbutton_toggled),
                       gpp);
 
-  pinpong_checkbutton = gtk_check_button_new_with_label (_("PingPong"));
+  pinpong_checkbutton = gtk_check_button_new_with_label (_("Ping pong"));
   gtk_widget_show (pinpong_checkbutton);
   gtk_table_attach (GTK_TABLE (table2), pinpong_checkbutton, 0, 2, 12, 13,
                     (GtkAttachOptions) (GTK_FILL),
@@ -4040,12 +4041,13 @@ p_create_player_window (GapPlayerMainGlobalParams *gpp)
                       G_CALLBACK (on_pinpong_checkbutton_toggled),
                       gpp);
 
-  use_thumb_checkbutton = gtk_check_button_new_with_label (_("Use Thumbnails"));
+  use_thumb_checkbutton = gtk_check_button_new_with_label (_("Use thumbnails"));
   gtk_widget_show (use_thumb_checkbutton);
   gtk_table_attach (GTK_TABLE (table2), use_thumb_checkbutton, 0, 2, 13, 14,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gimp_help_set_help_data (use_thumb_checkbutton, _("ON: use thumbnails when available, OFF: read full sized frames"), NULL);
+  gimp_help_set_help_data (use_thumb_checkbutton, _("ON: Use thumbnails when available.\n"
+                                                    "OFF: Read full sized frames"), NULL);
   if(gpp->use_thumbnails)
   {
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (use_thumb_checkbutton), TRUE);
@@ -4055,12 +4057,13 @@ p_create_player_window (GapPlayerMainGlobalParams *gpp)
                       gpp);
 
 
-  exact_timing_checkbutton = gtk_check_button_new_with_label (_("Exact Timing"));
+  exact_timing_checkbutton = gtk_check_button_new_with_label (_("Exact timing"));
   gtk_widget_show (exact_timing_checkbutton);
   gtk_table_attach (GTK_TABLE (table2), exact_timing_checkbutton, 0, 2, 14, 15,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gimp_help_set_help_data (exact_timing_checkbutton, _("ON: skip frames to hold exact timing, OFF: disable frame skipping"), NULL);
+  gimp_help_set_help_data (exact_timing_checkbutton, _("ON: Skip frames to hold exact timing.\n"
+                                                       "OFF: Disable frame skipping"), NULL);
   if(gpp->exact_timing)
   {
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (exact_timing_checkbutton), TRUE);
@@ -4104,7 +4107,7 @@ p_create_player_window (GapPlayerMainGlobalParams *gpp)
   play_button = gtk_button_new_from_stock (GAP_STOCK_PLAY);
   gtk_widget_show (play_button);
   gtk_box_pack_start (GTK_BOX (hbox1), play_button, FALSE, TRUE, 0);
-  gimp_help_set_help_data (play_button, _("Start Playback"), NULL);
+  gimp_help_set_help_data (play_button, _("Start playback"), NULL);
   g_signal_connect (G_OBJECT (play_button), "clicked",
                       G_CALLBACK (on_play_button_clicked),
                       gpp);
@@ -4114,8 +4117,8 @@ p_create_player_window (GapPlayerMainGlobalParams *gpp)
   gtk_widget_show (pause_button);
   gtk_widget_set_events(pause_button, GDK_BUTTON_PRESS_MASK);
   gtk_box_pack_start (GTK_BOX (hbox1), pause_button, FALSE, TRUE, 0);
-  gimp_help_set_help_data (pause_button, _("Pause if playing (Any Mouseboutton)\n"
-                                           "Goto Selection Start/Active/End (Left/Middle/Right Button) if not playing"), NULL);
+  gimp_help_set_help_data (pause_button, _("Pause if playing (any mouseboutton). "
+                                           "Go to selection start/active/end (left/middle/right mousebutton) if not playing"), NULL);
   g_signal_connect (G_OBJECT (pause_button), "button_press_event",
                       G_CALLBACK (on_pause_button_press_event),
                       gpp);
@@ -4124,7 +4127,7 @@ p_create_player_window (GapPlayerMainGlobalParams *gpp)
   back_button = gtk_button_new_from_stock (GAP_STOCK_PLAY_REVERSE);
   gtk_widget_show (back_button);
   gtk_box_pack_start (GTK_BOX (hbox1), back_button, FALSE, TRUE, 0);
-  gimp_help_set_help_data (back_button, _("Start Reverse Playback"), NULL);
+  gimp_help_set_help_data (back_button, _("Start reverse playback"), NULL);
   g_signal_connect (G_OBJECT (back_button), "clicked",
                       G_CALLBACK (on_back_button_clicked),
                       gpp);
@@ -4133,7 +4136,7 @@ p_create_player_window (GapPlayerMainGlobalParams *gpp)
   close_button = gtk_button_new_from_stock (GTK_STOCK_CLOSE);
   gtk_widget_show (close_button);
   gtk_box_pack_start (GTK_BOX (hbox1), close_button, FALSE, TRUE, 0);
-  gimp_help_set_help_data (close_button, _("Close Window"), NULL);
+  gimp_help_set_help_data (close_button, _("Close window"), NULL);
   g_signal_connect (G_OBJECT (close_button), "clicked",
                       G_CALLBACK (on_close_button_clicked),
                       gpp);
@@ -4154,6 +4157,7 @@ p_create_player_window (GapPlayerMainGlobalParams *gpp)
   {
     gint ix;
     gint iy;
+    GtkWidget *dummy;
     
     for(ix = 0; ix < 3; ix++)
     {
@@ -4167,10 +4171,10 @@ p_create_player_window (GapPlayerMainGlobalParams *gpp)
         }
         else
         {
-          /* dummy labels to fill up table11  */
-          label = gtk_label_new (" ");
-          gtk_widget_show (label);
-          gtk_table_attach (GTK_TABLE (table11), label, ix, ix+1, iy, iy+1,
+          /* dummy widgets to fill up table11  */
+          dummy = gtk_vbox_new (FALSE,3);
+          gtk_widget_show (dummy);
+          gtk_table_attach (GTK_TABLE (table11), dummy, ix, ix+1, iy, iy+1,
                             (GtkAttachOptions) (GTK_FILL | GTK_SHRINK | GTK_EXPAND),
                             (GtkAttachOptions) (GTK_FILL | GTK_SHRINK | GTK_EXPAND), 0, 0);
         }

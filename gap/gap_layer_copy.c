@@ -21,6 +21,7 @@
  */
 
 /* revision history:
+ * version 1.3.21c 2003.11.02   hof: added gap_layer_copy_to_image
  * version 1.3.20d 2003.10.14   hof: sourcecode cleanup, new: gap_layer_copy_content, gap_layer_copy_picked_channel
  * version 1.3.5a  2002.04.20   hof: use gimp_layer_new_from_drawable (API cleanup, requries gimp.1.3.6)
  *                                   removed channel_copy
@@ -101,6 +102,79 @@ gint32 gap_layer_copy_to_dest_image (gint32 dst_image_id,
 
   return l_ret_id;
 }	/* end gap_layer_copy_to_dest_image */
+
+
+/* -----------------------
+ * gap_layer_copy_to_image
+ * -----------------------
+ *  copy src_layer 1:1 on top of the layerstack at dst_image_id,
+ *    return the id of the new created layer (the copy)
+ *    
+ * NOTES: 
+ * -  source layer MUST have same type as the destination image
+ *   (you cant copy INDEXED or GRAY src_layers to RGB images and so on..)
+ * - if the src_layer has no alpha channel,
+ *   an alpha_channel is added to the copied layer.
+ */
+gint32 
+gap_layer_copy_to_image (gint32 dst_image_id, gint32 src_layer_id)
+{
+  gint32 l_new_layer_id;
+  GimpDrawable *src_drawable;
+  GimpImageType  l_src_type;
+  gdouble        l_src_opacity;
+  GimpLayerModeEffects  l_src_mode;
+  gint           l_src_offset_x;
+  gint           l_src_offset_y;
+
+  /* create new layer in destination image */
+  l_src_type    = gimp_drawable_type(src_layer_id);
+  src_drawable  = gimp_drawable_get (src_layer_id);
+  l_src_opacity = gimp_layer_get_opacity(src_layer_id);
+  l_src_mode    = gimp_layer_get_mode(src_layer_id);
+
+  switch(l_src_type)
+  {
+    case GIMP_RGB_IMAGE:         /* 0 */
+    case GIMP_RGBA_IMAGE:        /* 1 */
+       if(gimp_image_base_type(dst_image_id) != GIMP_RGB) { return -1; }
+       break;
+    case GIMP_GRAY_IMAGE:        /* 2 */
+    case GIMP_GRAYA_IMAGE:       /* 3 */
+       if(gimp_image_base_type(dst_image_id) != GIMP_GRAY) { return -1; }
+       break;
+    case GIMP_INDEXED_IMAGE:     /* 4 */
+    case GIMP_INDEXEDA_IMAGE:    /* 5 */
+       if(gimp_image_base_type(dst_image_id) != GIMP_INDEXED) { return -1; }
+       break;
+  }
+
+
+  l_new_layer_id = gap_layer_copy_to_dest_image(dst_image_id
+                                               ,src_layer_id
+					       ,l_src_opacity
+					       ,l_src_mode
+					       ,&l_src_offset_x
+					       ,&l_src_offset_y
+					       );
+  if(l_new_layer_id < 0)
+  {
+     return -1;
+  }
+  
+  if(! gimp_drawable_has_alpha(l_new_layer_id))
+  {
+     /* have to add alpha channel */
+     gimp_layer_add_alpha(l_new_layer_id);
+  }
+
+  /* add the copied layer to  destination dst_image_id (0 == on top of layerstack) */
+  gimp_image_add_layer(dst_image_id, l_new_layer_id, 0);
+  gimp_layer_set_offsets(l_new_layer_id, l_src_offset_x, l_src_offset_y);
+
+  return l_new_layer_id; /* all done OK */
+
+}       /* end gap_layer_copy_to_image */
 
 
 

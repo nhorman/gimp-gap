@@ -5,7 +5,7 @@
  *         Call xanim exporting edition (the loki version)
  *         via shellscript gap_xanim_export.sh
  *         To split any xanim supported video into
- *         anim frames (single images on disk)
+ *         video frames (single images on disk)
  *         Audio Tracks can also be extracted.
  *
  */

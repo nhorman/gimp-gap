@@ -682,8 +682,8 @@ p_mov_execute(GapMovData *mov_ptr)
    if(mov_ptr->val_ptr->src_image_id < 0)
    {
       gap_arr_msg_win(mov_ptr->dst_ainfo_ptr->run_mode,
-        _("No Source Image was selected.\n"
-	  "Please open a 2nd Image of the same type before opening Move Path."));
+        _("No source image was selected.\n"
+	  "Please open a 2nd image of the same type before opening 'Move Path'."));
       return -1;
    }
 
@@ -693,11 +693,11 @@ p_mov_execute(GapMovData *mov_ptr)
   { 
     if(mov_ptr->val_ptr->apv_mlayer_image < 0)
     {
-      gimp_progress_init( _("Copying Layers into Frames..."));
+      gimp_progress_init( _("Copying layers into frames..."));
     }
     else
     {
-      gimp_progress_init( _("Generating Animated Preview..."));
+      gimp_progress_init( _("Generating animated preview..."));
     }
   }
 
@@ -1967,8 +1967,8 @@ gchar *gap_mov_exec_chk_keyframes(GapMovValues *pvals)
 
   if(pvals->point_idx_max + 1 > l_affected_frames)
   {
-	l_err = g_strdup_printf(_("\nError: more controlpoints (%d) than handled frames (%d)"
-	                          "\nplease reduce controlpoints or select more frames"),
+	l_err = g_strdup_printf(_("\nError: More controlpoints (%d) than handled frames (%d)."
+	                          "\nPlease reduce controlpoints or select more frames"),
 	                          (int)pvals->point_idx_max+1, (int)l_affected_frames);
 	l_err_lbltext = g_strdup_printf("%s%s", l_err_lbltext, l_err);
 	g_free(l_err);
