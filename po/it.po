@@ -5,14 +5,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gimp 2.0.0\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-04-30 20:46+0200\n"
-"PO-Revision-Date: 2004-04-19 23:26+0200\n"
+"POT-Creation-Date: 2004-05-07 00:51+0200\n"
+"PO-Revision-Date: 2004-05-07 00:56+0200\n"
 "Last-Translator: Marco Ciampa <ciampix@libero.it>\n"
 "Language-Team: gimp.linux.it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Report-Msgid-Bugs-To: \n"
 "Date: sab ott  2 05:46:51 CEST 1999\n"
 "From: Daniele Medri <madrid@linux.it>\n"
 "Xgettext-Options: --default-domain=gimp --directory=.. --add-comments --"
@@ -25,7 +25,6 @@ msgid "Font Browser"
 msgstr "Navigatore caratteri"
 
 #. Button  to invoke filebrowser
-#. audiofile button (fileselect invoker)
 #: gap/gap_arr_dialog.c:540 gap/gap_fmac_main.c:594
 #: gap/gap_player_dialog.c:3383
 msgid "File Browser"
@@ -358,7 +357,6 @@ msgid "Select By Color"
 msgstr "Selezione per colore"
 
 #. the keycolor label
-#. keycolor label
 #: gap/gap_bluebox.c:284 gap/gap_mov_dialog.c:2663
 msgid "Keycolor:"
 msgstr "Colorechiave:"
@@ -461,7 +459,6 @@ msgid "ON: Keep preview image up to date"
 msgstr "Acceso: mantieni l'immagine di anteprima aggiornata"
 
 #. button
-#. the preview frame
 #: gap/gap_bluebox.c:442 gap/gap_mov_dialog.c:3835
 msgid "Preview"
 msgstr "Anteprima"
@@ -1652,7 +1649,7 @@ msgstr "Multiplo"
 
 #: gap/gap_mov_dialog.c:409
 msgid "Divide"
-msgstr ""
+msgstr "Dividi"
 
 #: gap/gap_mov_dialog.c:410
 msgid "Screen"
@@ -1663,30 +1660,28 @@ msgid "Overlay"
 msgstr "Sovrapposta"
 
 #: gap/gap_mov_dialog.c:413
-#, fuzzy
 msgid "Dodge"
-msgstr "Modalità:"
+msgstr "Schiva"
 
 #: gap/gap_mov_dialog.c:414
-#, fuzzy
 msgid "Burn"
-msgstr "Blurb:"
+msgstr "Brucia"
 
 #: gap/gap_mov_dialog.c:415
 msgid "Hard Light"
-msgstr ""
+msgstr "Luce intensa"
 
 #: gap/gap_mov_dialog.c:416
 msgid "Soft Light"
-msgstr ""
+msgstr "Luce soffusa"
 
 #: gap/gap_mov_dialog.c:417
 msgid "Grain Extract"
-msgstr ""
+msgstr "Estrazione grana"
 
 #: gap/gap_mov_dialog.c:418
 msgid "Grain Merge"
-msgstr ""
+msgstr "Fusione grana"
 
 #: gap/gap_mov_dialog.c:420
 msgid "Difference"
@@ -1725,9 +1720,8 @@ msgid "Value"
 msgstr "Valore"
 
 #: gap/gap_mov_dialog.c:431
-#, fuzzy
 msgid "Keep Paintmode"
-msgstr "Modalità di Disegno"
+msgstr "Mantieni modalità di disegno"
 
 #: gap/gap_mov_dialog.c:438
 msgid "Left  Top"
@@ -2491,8 +2485,6 @@ msgstr ""
 
 #. tbly transformfactor
 #. table col, row
-#. tbry transformfactor
-#. table col, row
 #: gap/gap_mov_dialog.c:3505 gap/gap_mov_dialog.c:3541
 msgid "y3:"
 msgstr "y3:"
@@ -2583,8 +2575,6 @@ msgstr "Raggio selezione piumata in punti (per selezioni sfumate)"
 
 #. X
 #. table col, row
-#. gtk_container_add (GTK_CONTAINER (abox), table3);
-#. the x/y offest labels
 #: gap/gap_mov_dialog.c:3731 gap/gap_name2layer_main.c:476
 #: gap/gap_resi_dialog.c:819
 msgid "X:"
@@ -4679,20 +4669,19 @@ msgid "Channel:"
 msgstr "Canali:"
 
 #. Channel the radio buttons
-#. Hue Mode the radio buttons
-#: gap/gap_wr_color_levels.c:635 gap/gap_wr_color_huesat.c:632
+#: gap/gap_wr_color_huesat.c:632 gap/gap_wr_color_levels.c:635
 msgid "Master"
 msgstr "Principale"
 
-#: gap/gap_wr_color_levels.c:640 gap/gap_wr_color_huesat.c:637
+#: gap/gap_wr_color_huesat.c:637 gap/gap_wr_color_levels.c:640
 msgid "Red"
 msgstr "Rosso"
 
-#: gap/gap_wr_color_levels.c:645 gap/gap_wr_color_huesat.c:647
+#: gap/gap_wr_color_huesat.c:647 gap/gap_wr_color_levels.c:645
 msgid "Green"
 msgstr "Verde"
 
-#: gap/gap_wr_color_levels.c:650 gap/gap_wr_color_huesat.c:657
+#: gap/gap_wr_color_huesat.c:657 gap/gap_wr_color_levels.c:650
 msgid "Blue"
 msgstr "Blu"
 
