@@ -1,30 +1,35 @@
 ## Process this file with automake to produce Makefile.in
 
-# FIXME: this Makefile.am is not finished 
-#        (dont know howto create a library using autoconf/automake)
-# FIXME: there is no support for PLATFORM_WIN32
+# FIXME: there is no support for PLATFORM_WIN32 in this release
+# the general idea is, to add clientcode variants in the future
+#  (for WIN32 and maybe others)
+# 
+# All that stuff should use the same simple wavplay API on clientside
+# but should talk to different audioserver programs.
+# (using other server api than wavplayer's API)  
 #
 
-libwavplayclientincludedir = $(includedir)/gimp-$(LT_RELEASE)/libwavplayclient
+scriptdatadir = $(exec_prefix)/bin
 
-if PLATFORM_WIN32
-AM_CPPFLAGS = \
-	-DGAP_DISABLE_WAV_AUDIOSUPPORT
-else
-AM_CPPFLAGS = \
-	-DGAP_ENABLE_WAV_AUDIOSUPPORT
-endif
+scriptdata_DATA = audioconvert_to_wav.sh
+
+noinst_LIBRARIES = libwavplayclient.a
 
 INCLUDES = \
 	-I$(top_srcdir)	\
 	$(GLIB_CFLAGS) \
-	$(GMODULE_CFLAGS) \
+	$(GIMP_CFLAGS) \
 	-I$(includedir)
 
 
-lib_LTLIBRARIES = libwavplayclient-1.4.la
+libwavplayclient_a_SOURCES = \
+	wpc_client.c		\
+	wpc_lib.h		\
+	wpc_msg.c		\
+	wpc_procterm.c		\
+	wpc_wavfile.c
 
-libwavplayclient_1_4_la_SOURCES = \
+EXTRA_DIST = \
 	client.h		\
 	client.c		\
 	msg.c			\
@@ -32,36 +37,5 @@ libwavplayclient_1_4_la_SOURCES = \
 	wavfile.c		\
 	wavfile.h		\
 	wavplay.h		\
-	wpc_client.c		\
-	wpc_lib.h		\
-	wpc_msg.c		\
-	wpc_procterm.c		\
-	wpc_wavfile.c
-
-libwavplayclientinclude_HEADERS = \
-	wpc_lib.h		\
-	client.h		\
-	client.c		\
-	msg.c			\
-	procterm.c		\
-	wavfile.c		\
-	wavfile.h		\
-	wavplay.h
-
-EXTRA_HEADERS =
-
-libwavplayclient_1_4_la_LDFLAGS = \
-	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)	\
-	$(no_undefined) 					\
-	$(libwavplayclient_export_symbols)
-
-libwavplayclient_1_4_la_DEPENDENCIES = $(gimpmodule_def)
-
-libwavplayclient_1_4_la_LIBADD = \
-	$(top_builddir)/libgimpbase/libgimpbase-$(LT_RELEASE).la	\
-	$(GLIB_LIBS)							\
-	$(GMODULE_LIBS)
-
-install-data-local: install-ms-lib install-libtool-import-lib
-
-uninstall-local: uninstall-ms-lib uninstall-libtool-import-lib
+	README			\
+	$(scriptdata_DATA)

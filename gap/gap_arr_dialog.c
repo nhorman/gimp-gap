@@ -38,6 +38,9 @@
  */
 
 /* revision history:
+ * gimp    1.3.20a; 2003/09/14  hof: extended function of WGT_LABEL WGT_LABEL_LEFT WGT_LABEL_RIGHT
+ *                                   (caller can provide additional Text via text_buf_ret,
+ *                                    to create 2 Labels)
  * gimp    1.3.18a; 2003/08/23  hof: p_slider_dialog increased entry_width from 45 to 80 (to show 6 digits)
  * gimp    1.3.17b; 2003/07/31  hof: message text fixes for translators (# 118392)
  * gimp    1.3.17a; 2003/07/28  hof: gimp_interactive_selection_font was renamed to:  gimp_font_select_new
@@ -210,20 +213,43 @@ label_create_value(char *title, GtkTable *table, int row, t_arr_arg *arr_ptr, gf
 {
     GtkWidget *label;
     GtkWidget *hbox;
+    gint       from_col;
 
-    label = gtk_label_new(title);
+    from_col = 0;
+    if(arr_ptr->text_buf_ret)
+    {
+      /* the caller provided both label and text
+       * in this case 2 Labels are shown
+       */
+      label = gtk_label_new(title);
+      gtk_misc_set_alignment(GTK_MISC(label), 1.0, 0.5);
+      gtk_table_attach(table, label, 0, 1, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
+      gtk_widget_show(label);
+
+
+      from_col = 1;
+      label = gtk_label_new(arr_ptr->text_buf_ret);
+    }
+    else
+    {
+      /* the caller provided just the Label
+       * in this case we show the label (spread accross all columns)
+       */
+     from_col = 0;
+     label = gtk_label_new(title);
+    }
     gtk_misc_set_alignment(GTK_MISC(label), align, 0.5);
-
+    
     if(align != 0.5)
     {
       hbox = gtk_hbox_new (FALSE, 2);
       gtk_widget_show (hbox);
       gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, TRUE, 0);
-      gtk_table_attach(table, hbox, 0, 3, row, row + 1, GTK_FILL, GTK_FILL, 4, 0);
+      gtk_table_attach(table, hbox, from_col, 3, row, row + 1, GTK_FILL, GTK_FILL, 4, 0);
     }
     else
     {
-      gtk_table_attach(table, label, 0, 3, row, row + 1, GTK_FILL, GTK_FILL, 4, 0);
+      gtk_table_attach(table, label, from_col, 3, row, row + 1, GTK_FILL, GTK_FILL, 4, 0);
     }
 
     gtk_widget_show(label);
@@ -1281,6 +1307,9 @@ void     p_init_arr_arg  (t_arr_arg *arr_ptr,
      case WGT_LABEL:
      case WGT_LABEL_LEFT:
      case WGT_LABEL_RIGHT:
+        arr_ptr->text_buf_len     = 0;
+        arr_ptr->text_buf_default = NULL;
+        arr_ptr->text_buf_ret     = NULL;
         arr_ptr->widget_type = widget_type;
         break;
      case WGT_INT_PAIR:

@@ -20,7 +20,7 @@
  *
  * Warning: This Module needs UNIX environment to run.
  *   It uses programs and commands that are NOT available
- *   on other Operating Systems (Win95, NT ...)
+ *   on other Operating Systems (Win95, NT, XP ...)
  *
  *     - xanim              2.80 exporting edition with extensions from loki entertainment.
  *                          set environment GAP_XANIM_PROG to configure where to find xanim
@@ -48,6 +48,8 @@
  */
 
 /* revision history
+ * gimp    1.3.20a; 2003/09/15  hof: should fix compile problems on WIN32 (#122220)
+ *                                   (but will not run at WIN OS)
  * gimp    1.3.17b; 2003/07/31  hof: message text fixes for translators (# 118392)
  * gimp    1.3.16a; 2003/06/25  hof: no textsplitting across multiple lables (for translation)
  * gimp    1.3.15a; 2003/06/21  hof: checked textspacing
@@ -85,6 +87,11 @@
 #  endif
 #endif
 
+#ifdef G_OS_WIN32
+#include <direct.h>		/* For _mkdir() */
+#define mkdir(path,mode) _mkdir(path)
+#endif
+
 /* GAP includes */
 #include "gap_lib.h"
 #include "gap_arr_dialog.h"
@@ -100,7 +107,11 @@ gchar *global_errlist = NULL;
 
 gint32  global_delete_number;
 
+#ifdef G_OS_WIN32
+#define MKDIR_MODE 0  /* not relevant for WIN mkdir */
+#else
 #define MKDIR_MODE (S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH )
+#endif
 
 /* ============================================================================
  * p_xanim_info

@@ -114,7 +114,6 @@ p_conv_framenr_to_timestr( gint32 framenr, gdouble framerate, gchar *txt, gint t
 void
 p_conv_samples_to_timestr( gint32 samples, gdouble samplerate, gchar *txt, gint txt_size)
 {
-  gdouble  msec_per_sample;
   gdouble  tmsec;
 
   if(samplerate > 0)

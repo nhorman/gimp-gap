@@ -117,7 +117,9 @@ static t_global_params global_params =
 , 0           /*  gint32    old_resize_height */
 
 , FALSE       /* audio_enable */
+, 0           /* audio_resync */
 , "\0"        /* audiofile */
+, "\0"        /* audio_wavfile_tmp */
 , 0           /* audio_frame_offset */
 , 0           /* audio_samplerate */
 , 0           /* audio_required_samplerate */
@@ -126,6 +128,10 @@ static t_global_params global_params =
 , 0           /* audio_samples */
 , 0           /* audio_status */
 , 1.0         /* audio_volume */
+, 0           /* audio_tmp_samplerate */
+, 0           /* audio_tmp_samples */
+, FALSE       /* audio_tmp_resample */
+, FALSE       /* audio_tmp_dialog_is_open */
 , NULL        /* audio_filename_entry */
 , NULL        /* audio_offset_time_label */
 , NULL        /* audio_total_time_label */
@@ -137,6 +143,10 @@ static t_global_params global_params =
 , NULL        /* audio_volume_spinbutton_adj */
 , NULL        /* audio_frame_offset_spinbutton_adj */
 , NULL        /* audio_filesel */
+, NULL        /* audio_table */
+, NULL        /* audio_status_label */
+, NULL        /* video_total_time_label */
+, NULL        /* video_total_frames_label */
 };
 
 

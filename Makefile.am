@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = images gap po
+SUBDIRS = images libwavplayclient gap po
 
 EXTRA_DIST = \
 	AUTHORS			\

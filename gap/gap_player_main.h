@@ -103,7 +103,9 @@ typedef struct t_global_params {
   
   /* audio stuff */
   gboolean  audio_enable;
+  gint32    audio_resync;        /* force audio brak for n frames and sync restart */
   gchar     audio_filename[MAX_AUDIOFILE_LEN];
+  gchar     audio_wavfile_tmp[MAX_AUDIOFILE_LEN];
   gint32    audio_frame_offset;
   guint32   audio_samplerate;
   guint32   audio_required_samplerate;
@@ -112,6 +114,10 @@ typedef struct t_global_params {
   guint32   audio_samples;  
   gint32    audio_status;
   gdouble   audio_volume;   /* 0.0 upto 1.0 */
+  gint32    audio_tmp_samplerate;
+  gint32    audio_tmp_samples;
+  gboolean  audio_tmp_resample;
+  gboolean  audio_tmp_dialog_is_open;
   
   GtkWidget *audio_filename_entry;
   GtkWidget *audio_offset_time_label;
@@ -124,6 +130,10 @@ typedef struct t_global_params {
   GtkObject *audio_volume_spinbutton_adj;
   GtkObject *audio_frame_offset_spinbutton_adj;
   GtkWidget *audio_filesel;
+  GtkWidget *audio_table;
+  GtkWidget *audio_status_label;
+  GtkWidget *video_total_time_label;
+  GtkWidget *video_total_frames_label;
  
 } t_global_params;
 
@@ -132,7 +142,7 @@ typedef struct t_global_params {
 #define AUSTAT_FILENAME_SET     2
 #define AUSTAT_PLAYING          3
 
-#define MIN_SAMPLERATE   8000 
+#define MIN_SAMPLERATE   1000 
 #define MAX_SAMPLERATE   48000
 
 #endif

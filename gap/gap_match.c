@@ -26,6 +26,7 @@
  */
 
 /* revision history:
+ * gimp   1.3.20a;   2003/09/14  hof: p_match_name increased limit of 256 bytes to 2048
  * gimp   1.1.29b;   2000/11/30  hof: used g_snprintf
  * version 0.97.00  1998.10.14  hof: - created module 
  */
@@ -45,7 +46,7 @@
 #include "gap_match.h"
 
 int
-p_is_empty (char *str)
+p_is_empty (const char *str)
 {
   if(str == NULL)  return(TRUE);
   if(*str == '\0') return(TRUE);
@@ -146,7 +147,7 @@ void str_toupper(char *str)
  * pattern contains a list like that:
  *  "0, 3-4, 7, 10"
  */
-int p_match_number(gint32 layer_idx, char *pattern)
+int p_match_number(gint32 layer_idx, const char *pattern)
 {
    char    l_digit_buff[128];
    char   *l_ptr;
@@ -218,15 +219,15 @@ int p_match_number(gint32 layer_idx, char *pattern)
   
 
 /* simple stringmatching without wildcards */
-int p_match_name(char *layername, char *pattern, gint32 mode, gint32 case_sensitive)
+int p_match_name(const char *layername, const char *pattern, gint32 mode, gint32 case_sensitive)
 {
    int l_idx;
    int l_llen;
    int l_plen;
-   char *l_name_ptr;
-   char *l_patt_ptr;
-   char  l_name_buff[256];
-   char  l_patt_buff[256];
+   const char *l_name_ptr;
+   const char *l_patt_ptr;
+   char  l_name_buff[2048];
+   char  l_patt_buff[2048];
 
    if(pattern == NULL)   return (FALSE);
    if(layername == NULL) return (FALSE);
@@ -239,9 +240,9 @@ int p_match_name(char *layername, char *pattern, gint32 mode, gint32 case_sensit
    }
    else
    {
-     /* ignore case by converting everything to UPPER before comare */
-     strcpy (l_name_buff, layername);
-     strcpy (l_patt_buff, pattern);
+     /* ignore case by converting everything to UPPER before compare */
+     g_snprintf(l_name_buff, sizeof(l_name_buff), "%s", layername);
+     g_snprintf(l_patt_buff, sizeof(l_patt_buff), "%s", pattern);
  
      str_toupper (l_name_buff);
      str_toupper (l_patt_buff);
@@ -296,7 +297,7 @@ int p_match_name(char *layername, char *pattern, gint32 mode, gint32 case_sensit
 
 }
 
-int p_match_layer(gint32 layer_idx, char *layername, char *pattern,
+int p_match_layer(gint32 layer_idx, const char *layername, const char *pattern,
                   gint32 mode, gint32 case_sensitive, gint32 invert,
                   gint nlayers, gint32 layer_id)
 {

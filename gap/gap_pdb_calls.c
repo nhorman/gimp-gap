@@ -46,6 +46,7 @@
 
 /* GAP includes */
 #include "gap_pdb_calls.h"
+#include "gap-intl.h"
 
 extern int gap_debug;
 
@@ -326,4 +327,3 @@ workaround:
    printf("GAP: Error: PDB call of %s failed\n", l_called_proc);
    return(FALSE);
 }	/* end p_gimp_image_thumbnail */
-

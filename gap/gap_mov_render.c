@@ -24,6 +24,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 /* revision history:
+ * gimp    1.3.20a; 2003/09/14  hof: fixed compiler warnings
  * gimp    1.3.14a; 2003/05/24  hof: created (splitted off from gap_mov_dialog)
  */
 
@@ -240,10 +241,10 @@ p_mov_render(gint32 image_id, t_mov_values *val_ptr, t_mov_current *cur_ptr)
      l_image_width = gimp_image_width(image_id);
      l_image_height = gimp_image_height(image_id);
      
-     lx1 = BOUNDS (l_offset_x, 0, l_image_width);
-     ly1 = BOUNDS (l_offset_y, 0, l_image_height);
-     lx2 = BOUNDS ((l_new_width + l_offset_x), 0, l_image_width);
-     ly2 = BOUNDS ((l_new_height + l_offset_y), 0, l_image_height);
+     lx1 = BOUNDS (l_offset_x, 0, (gint32)l_image_width);
+     ly1 = BOUNDS (l_offset_y, 0, (gint32)l_image_height);
+     lx2 = BOUNDS ((gint32)(l_new_width + l_offset_x), 0, (gint32)l_image_width);
+     ly2 = BOUNDS ((gint32)(l_new_height + l_offset_y), 0, (gint32)l_image_height);
 
      l_new_width = lx2 - lx1;
      l_new_height = ly2 - ly1;

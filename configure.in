@@ -46,9 +46,26 @@ dnl       [AC_MSG_WARN(*** MPEG plug-in will not be built (MPEG library not foun
 dnl   fi
 dnl   fi
 
+AC_SUBST(GAP_DECODE_MPEG)
+
+dnl Test for unix-frontends
+AC_ARG_ENABLE(audiosupport,
+              [  --disable-unix-frontends    don't build with UNIX specific frontends for xanim and mpeg encoders])
+  if test "x$enable_unix_frontends" != "xno"; then
+    GAP_UNIX_FRONTENDS='gap_frontends'
+    AC_MSG_NOTICE(gimp-gap is configured with LINUX/UNIX specific frontends for xanim and mpeg encoders)
+    AC_MSG_NOTICE(non LINUX/UNIX users should configure with  --disable-unix-frontends)
+  else
+    GAP_UNIX_FRONTENDS=''
+    AC_MSG_WARN(*** the LINUX/UNIX specific frontends for xanim and mpeg encoders will NOT be built)
+    AC_MSG_NOTICE(that is OK for non LINUX/UNIX users)
+  fi
+
+AC_SUBST(GAP_UNIX_FRONTENDS)
+
 dnl Test for audiosupport
 AC_ARG_ENABLE(audiosupport,
-              [  --disable-audiosupport          don't build with audiosupport])
+              [  --disable-audiosupport      don't build with audiosupport])
   if test "x$enable_audiosupport" != "xno"; then
     AC_CHECK_PROG(WAVPLAY_SERVER, wavplay, true, false)
     if $WAVPLAY_SERVER; then
@@ -63,13 +80,14 @@ AC_ARG_ENABLE(audiosupport,
   fi
 
   
-AC_SUBST(GAP_DECODE_MPEG)
 AC_SUBST(GAP_AUDIOSUPPORT)
 
 ALL_LINGUAS="az ca cs da de el en_GB es fi fr hr hu it ja ko lt ml nl nn no pl pt pt_BR ru sk sl sv tr uk zh_CN zh_TW"
 AM_GLIB_GNU_GETTEXT
 
 LOCALEDIR='${prefix}/${DATADIRNAME}/locale'
+
+AC_PROG_RANLIB
 
 dnl Use -Wall if we have gcc.
 changequote(,)dnl
@@ -93,5 +111,6 @@ AC_OUTPUT([
 Makefile
 images/Makefile
 gap/Makefile
+libwavplayclient/Makefile
 po/Makefile.in
 ])

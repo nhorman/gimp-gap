@@ -1,4 +1,4 @@
-Project gap "Gimp Animation Package"   07. Sept 2003  (pre)release 1.3.19a
+Project gap "Gimp Animation Package"   14. Sept 2003  (pre)release 1.3.20a
 
 --------------------------------------------------------------------
 Introduction
@@ -108,11 +108,17 @@ and DOES NOT compile/run with GIMP-1.2.x
      
      If you want to have audiosupport you MUST install wavplay
      and compile gimp-gap without the option --disable-audiosupport
-      
+     
      As far as i know, wavplay is available only for Linux, but i may be wrong..
      
+     The GAP Playback Module further provides a Button for converting
+     other audiofile formats to RIFF WAV.
+     If you want to use that feature the external following programs
+     must be installed:
+      - sox
+      - lame
      
-     (There is no need to install those external programs to compile GAP)
+   - There is no need to install all those external programs to compile GAP.
         
 
 
@@ -517,8 +523,29 @@ How to use
 
 	If No valid Audiofile was specified, all Values are filled with 0.
      
+     - Copy As Wavfile
+        This Button provides conversion of audiofile formats to RIFF WAV.
+	It opens a Subdialog where the Name of the wavfile can be entered
+	and where you can optional specify a new samplerate if you want
+	to resample down to lower samplerates.
+	
+	IMPORTANT NOTE:
+	- You need the external programs sox and lame to run that feature,
+	  because the provided converter script audioconvert_to_wav.sh
+	  is based on that programs.
+	- If you have another external audio converter program, you can configure
+	  gimp-gap to use that program rather than the standard converter script
+	  audioconvert_to_wav.sh
+	  
+	  The preferred way is to edit your gimprc file and add a line
+	  like this on:
+	  (audioconvert_program "/usr/local/bin/audioconvert_to_wav.sh")
+
+          The 2nd way is to set an Environmentvariable:
+	  export AUDIOCONVERT_TO_WAV=/usr/local/bin/audioconvert_to_wav.sh
+	  
  
-    Alternatives:
+    Playback Alternatives:
  
       You can convert your frames to one Multilayer Image
          menu:  <image>/Video/Frames to Image)

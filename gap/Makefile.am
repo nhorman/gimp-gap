@@ -6,14 +6,20 @@ scriptdatadir = $(GIMP_DATA_DIR)/scripts
 
 scriptdata_DATA = sel-to-anim-img.scm
 
+WAVPLAYCLEINTL = $(top_builddir)/libwavplayclient/libwavplayclient.a
+
+
 libexec_PROGRAMS = \
 	gap_plugins		\
 	gap_filter		\
-	gap_frontends		\
+	$(GAP_UNIX_FRONTENDS)	\
 	gap_name2layer		\
 	gap_navigator_dialog	\
 	gap_player		\
         gap_onion
+
+EXTRA_PROGRAMS = \
+	gap_frontends
 
 
 gap_plugins_SOURCES = \
@@ -82,6 +88,8 @@ gap_filter_SOURCES = \
 	gap_filter_pdb.h	\
 	gap_lastvaldesc.c	\
 	gap_lastvaldesc.h	\
+	gap_match.c		\
+	gap_match.h		\
 	gap_pdb_calls.c		\
 	gap_pdb_calls.h		\
 	gap_stock.c		\
@@ -154,8 +162,6 @@ gap_navigator_dialog_SOURCES = \
 	gap_vin.c		\
 	gap_vin.h
 
-#
-# TODO: use a library instead of all the sources with teh wpc_ prefix
 gap_player_SOURCES = \
 	gap_arr_dialog.c	\
 	gap_arr_dialog.h	\
@@ -184,12 +190,7 @@ gap_player_SOURCES = \
 	gap_timeconv.c		\
 	gap_timeconv.h		\
 	gap_vin.c		\
-	gap_vin.h		\
-	wpc_client.c		\
-	wpc_msg.c		\
-	wpc_procterm.c		\
-	wpc_wavfile.c		\
-	wpc_lib.h
+	gap_vin.h
 
 gap_onion_SOURCES = \
 	gap_arr_dialog.c	\
@@ -234,10 +235,16 @@ LDADD = \
 	$(GIMP_LIBS)
 
 
+gap_player_LDADD = \
+	$(WAVPLAYCLEINTL) \
+	$(GIMP_LIBS)
+
 EXTRA_DIST = \
 	README							\
 	README_developers					\
 	TESTPROT_iter_ALT					\
+	gimplastvaldesc.c					\
+	gimplastvaldesc.h					\	
 	iter_ALT/README_iter_subdirs				\
 	iter_ALT/gen/plug_in_CML_explorer_iter_ALT.inc		\
 	iter_ALT/gen/plug_in_alpha2color_iter_ALT.inc		\
