@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gimp CVS\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-04-30 20:46+0200\n"
-"PO-Revision-Date: 2004-03-25 16:09-0500\n"
+"POT-Creation-Date: 2004-05-02 16:12-0400\n"
+"PO-Revision-Date: 2004-05-02 16:13-0400\n"
 "Last-Translator: Gareth Owen <gowen72@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -20,7 +20,6 @@ msgid "Font Browser"
 msgstr "Font Browser"
 
 #. Button  to invoke filebrowser
-#. audiofile button (fileselect invoker)
 #: gap/gap_arr_dialog.c:540 gap/gap_fmac_main.c:594
 #: gap/gap_player_dialog.c:3383
 msgid "File Browser"
@@ -351,7 +350,6 @@ msgid "Select By Color"
 msgstr "Select By Colour"
 
 #. the keycolor label
-#. keycolor label
 #: gap/gap_bluebox.c:284 gap/gap_mov_dialog.c:2663
 msgid "Keycolor:"
 msgstr "Keycolour:"
@@ -451,7 +449,6 @@ msgid "ON: Keep preview image up to date"
 msgstr "ON: Keep preview image up to date"
 
 #. button
-#. the preview frame
 #: gap/gap_bluebox.c:442 gap/gap_mov_dialog.c:3835
 msgid "Preview"
 msgstr "Preview"
@@ -1637,7 +1634,7 @@ msgstr "Multiply"
 
 #: gap/gap_mov_dialog.c:409
 msgid "Divide"
-msgstr ""
+msgstr "Divide"
 
 #: gap/gap_mov_dialog.c:410
 msgid "Screen"
@@ -1648,30 +1645,28 @@ msgid "Overlay"
 msgstr "Overlay"
 
 #: gap/gap_mov_dialog.c:413
-#, fuzzy
 msgid "Dodge"
-msgstr "Mode:"
+msgstr "Dodge"
 
 #: gap/gap_mov_dialog.c:414
-#, fuzzy
 msgid "Burn"
-msgstr "Blurb:"
+msgstr "Burn"
 
 #: gap/gap_mov_dialog.c:415
 msgid "Hard Light"
-msgstr ""
+msgstr "Hard Light"
 
 #: gap/gap_mov_dialog.c:416
 msgid "Soft Light"
-msgstr ""
+msgstr "Soft Light"
 
 #: gap/gap_mov_dialog.c:417
 msgid "Grain Extract"
-msgstr ""
+msgstr "Grain Extract"
 
 #: gap/gap_mov_dialog.c:418
 msgid "Grain Merge"
-msgstr ""
+msgstr "Grain Merge"
 
 #: gap/gap_mov_dialog.c:420
 msgid "Difference"
@@ -1710,9 +1705,8 @@ msgid "Value"
 msgstr "Value"
 
 #: gap/gap_mov_dialog.c:431
-#, fuzzy
 msgid "Keep Paintmode"
-msgstr "Paintmode"
+msgstr "Keep Paintmode"
 
 #: gap/gap_mov_dialog.c:438
 msgid "Left  Top"
@@ -2464,8 +2458,6 @@ msgstr "Transformfactor for lower left corner X coordinate"
 
 #. tbly transformfactor
 #. table col, row
-#. tbry transformfactor
-#. table col, row
 #: gap/gap_mov_dialog.c:3505 gap/gap_mov_dialog.c:3541
 msgid "y3:"
 msgstr "y3:"
@@ -2553,8 +2545,6 @@ msgstr "Feather radius in pixels (for smoothing selection(s))"
 
 #. X
 #. table col, row
-#. gtk_container_add (GTK_CONTAINER (abox), table3);
-#. the x/y offest labels
 #: gap/gap_mov_dialog.c:3731 gap/gap_name2layer_main.c:476
 #: gap/gap_resi_dialog.c:819
 msgid "X:"
@@ -4629,7 +4619,6 @@ msgid "Channel:"
 msgstr "Channel:"
 
 #. Channel the radio buttons
-#. Hue Mode the radio buttons
 #: gap/gap_wr_color_levels.c:635 gap/gap_wr_color_huesat.c:632
 msgid "Master"
 msgstr "Master"
