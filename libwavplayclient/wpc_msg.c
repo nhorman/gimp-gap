@@ -1,4 +1,3 @@
-#ifndef GAP_DISABLE_WAV_AUDIOSUPPORT
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
@@ -19,4 +18,3 @@
 #include <wavfile.h>
 
 #include <msg.c>
-#endif

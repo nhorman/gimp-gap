@@ -51,9 +51,9 @@ void p_set_data(char *key, gint plugin_data_len);
 gint p_procedure_available(char  *proc_name, t_proc_type ptype);
 char * p_get_iterator_proc(char *plugin_name, gint *count);
 
-int p_constraint_proc_sel1(gchar *proc_name);
-int p_constraint_proc_sel2(gchar *proc_name);
-int p_constraint_proc(gchar *proc_name);
+int p_constraint_proc_sel1(gchar *proc_name, gint32 image_id);
+int p_constraint_proc_sel2(gchar *proc_name, gint32 image_id);
+int p_constraint_proc(gchar *proc_name, gint32 image_id);
 
 
 #endif

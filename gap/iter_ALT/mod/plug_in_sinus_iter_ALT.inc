@@ -10,16 +10,14 @@ gint p_plug_in_sinus_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble 
       gdouble   scaley;
       gdouble   cmplx;
       gdouble   blend_power;
-      gint      seed;
+      guint32   seed;
       gint      tiling;
-      gint      perturbation;
-      gint      colorization;
-      gint      colors;
-      t_color   col1;
-      guchar    col1_alpha;
-      t_color   col2;
-      guchar    col2_alpha;
-     } t_plug_in_sinus_Vals;
+      glong     perturbation;
+      glong     colorization;
+      glong     colors;
+      GimpRGB   col1;
+      GimpRGB   col2;
+    } t_plug_in_sinus_Vals;
 
     t_plug_in_sinus_Vals  buf, *buf_from, *buf_to; 
 
@@ -41,15 +39,13 @@ gint p_plug_in_sinus_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble 
     p_delta_gdouble(&buf.scaley, buf_from->scaley, buf_to->scaley, total_steps, current_step);
     p_delta_gdouble(&buf.cmplx, buf_from->cmplx, buf_to->cmplx, total_steps, current_step);
     p_delta_gdouble(&buf.blend_power, buf_from->blend_power, buf_to->blend_power, total_steps, current_step);
-    p_delta_gint(&buf.seed, buf_from->seed, buf_to->seed, total_steps, current_step);
+    p_delta_guint32(&buf.seed, buf_from->seed, buf_to->seed, total_steps, current_step);
     p_delta_gint(&buf.tiling, buf_from->tiling, buf_to->tiling, total_steps, current_step);
-    p_delta_gint(&buf.perturbation, buf_from->perturbation, buf_to->perturbation, total_steps, current_step);
-    p_delta_gint(&buf.colorization, buf_from->colorization, buf_to->colorization, total_steps, current_step);
-    p_delta_gint(&buf.colors, buf_from->colors, buf_to->colors, total_steps, current_step);
-    p_delta_color(&buf.col1, &buf_from->col1, &buf_to->col1, total_steps, current_step);
-    p_delta_char(&buf.col1_alpha, buf_from->col1_alpha, buf_to->col1_alpha, total_steps, current_step);
-    p_delta_color(&buf.col2, &buf_from->col2, &buf_to->col2, total_steps, current_step);
-    p_delta_char(&buf.col2_alpha, buf_from->col2_alpha, buf_to->col2_alpha, total_steps, current_step);
+    p_delta_long(&buf.perturbation, buf_from->perturbation, buf_to->perturbation, total_steps, current_step);
+    p_delta_long(&buf.colorization, buf_from->colorization, buf_to->colorization, total_steps, current_step);
+    p_delta_long(&buf.colors, buf_from->colors, buf_to->colors, total_steps, current_step);
+    p_delta_GimpRGB(&buf.col1, &buf_from->col1, &buf_to->col1, total_steps, current_step);
+    p_delta_GimpRGB(&buf.col2, &buf_from->col2, &buf_to->col2, total_steps, current_step);
 
     gimp_set_data("plug_in_sinus", &buf, sizeof(buf)); 
 

@@ -7,7 +7,7 @@ gint p_plug_in_newsprint_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdou
     typedef struct t_plug_in_newsprint_Vals 
     {
       long      cell_width;
-      long      colourspace;
+      long      colorspace;
       long      k_pullout;
       gdouble   gry_ang;
       long      gry_spotfn;
@@ -37,7 +37,7 @@ gint p_plug_in_newsprint_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdou
     memcpy(&buf, buf_from, sizeof(buf));
 
     p_delta_long(&buf.cell_width, buf_from->cell_width, buf_to->cell_width, total_steps, current_step);
-    p_delta_long(&buf.colourspace, buf_from->colourspace, buf_to->colourspace, total_steps, current_step);
+    p_delta_long(&buf.colorspace, buf_from->colorspace, buf_to->colorspace, total_steps, current_step);
     p_delta_long(&buf.k_pullout, buf_from->k_pullout, buf_to->k_pullout, total_steps, current_step);
     p_delta_gdouble(&buf.gry_ang, buf_from->gry_ang, buf_to->gry_ang, total_steps, current_step);
     p_delta_long(&buf.gry_spotfn, buf_from->gry_spotfn, buf_to->gry_spotfn, total_steps, current_step);

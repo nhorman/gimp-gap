@@ -28,6 +28,7 @@
  */
 
 /* revision history:
+ *          2003/09/20   hof: added datatype support for guint guint32.
  *          2002/04/07   hof: created.
  */
 
@@ -61,6 +62,8 @@ typedef enum
   GIMP_LASTVAL_GINTDRAWABLE,
   GIMP_LASTVAL_GBOOLEAN,
   GIMP_LASTVAL_ENUM,         /* not able to iterate */
+  GIMP_LASTVAL_GUINT,
+  GIMP_LASTVAL_GUINT32,
   GIMP_LASTVAL_END,          /* keep GIMP_LASTVAL_END always the last entry  */
 } GimpLastvalType;
 
@@ -86,6 +89,8 @@ typedef enum
 #define GIMP_LASTVALDEF_GINTDRAWABLE(flag,elem,name)  { GIMP_LASTVAL_GINTDRAWABLE,   &elem, sizeof(elem),       flag, name }
 #define GIMP_LASTVALDEF_GBOOLEAN(flag,elem,name)      { GIMP_LASTVAL_BOOLEAN,        &elem, sizeof(elem),       flag, name }
 #define GIMP_LASTVALDEF_ENUM(flag,elem,name)          { GIMP_LASTVAL_ENUM,           &elem, sizeof(elem),       flag, name }
+#define GIMP_LASTVALDEF_GUINT(flag,elem,name)         { GIMP_LASTVAL_GUINT,          &elem, sizeof(elem),       flag, name }
+#define GIMP_LASTVALDEF_GUINT32(flag,elem,name)       { GIMP_LASTVAL_GUINT32,        &elem, sizeof(elem),       flag, name }
 
 /* More Helper MACROS for some often used Structured Types */
 #define GIMP_LASTVALDEF_GIMPRGB(flag,elem,name) \
@@ -141,6 +146,8 @@ typedef enum
 #define GIMP_DDESC_GINTDRAWABLE      "gintdrawable"
 #define GIMP_DDESC_GBOOLEAN          "gboolean"
 #define GIMP_DDESC_ENUM              "ENUM"
+#define GIMP_DDESC_GUINT             "guint"
+#define GIMP_DDESC_GUINT32           "guint32"
 #define GIMP_DDESC_END               "END"
 
 

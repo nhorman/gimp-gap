@@ -16,3 +16,11 @@ Subdirectorys for Iterator_ALT Procedure include files.
          (For Plugins that are not part of gimp 1.1.3
           but once were part of gimp 1.0 or prior releases)
           
+
+2003.09.21: hof: this concept is no longer supported
+            (it would move files from one dir to another
+	     on changes. 
+	     but i think for the CVS archive history it would
+	     be better, when the sourcecode stays in the same dir.)
+	     
+	     All new iterators go into the mod directory now.

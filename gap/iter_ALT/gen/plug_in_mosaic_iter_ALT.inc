@@ -10,6 +10,7 @@ gint p_plug_in_mosaic_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble
       gdouble   tile_height;
       gdouble   tile_spacing;
       gdouble   tile_neatness;
+      long      tile_allow_split;
       gdouble   light_dir;
       gdouble   color_variation;
       long      antialiasing;
@@ -39,6 +40,7 @@ gint p_plug_in_mosaic_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble
     p_delta_gdouble(&buf.tile_height, buf_from->tile_height, buf_to->tile_height, total_steps, current_step);
     p_delta_gdouble(&buf.tile_spacing, buf_from->tile_spacing, buf_to->tile_spacing, total_steps, current_step);
     p_delta_gdouble(&buf.tile_neatness, buf_from->tile_neatness, buf_to->tile_neatness, total_steps, current_step);
+    p_delta_long(&buf.tile_allow_split, buf_from->tile_allow_split, buf_to->tile_allow_split, total_steps, current_step);
     p_delta_gdouble(&buf.light_dir, buf_from->light_dir, buf_to->light_dir, total_steps, current_step);
     p_delta_gdouble(&buf.color_variation, buf_from->color_variation, buf_to->color_variation, total_steps, current_step);
     p_delta_long(&buf.antialiasing, buf_from->antialiasing, buf_to->antialiasing, total_steps, current_step);

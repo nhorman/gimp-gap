@@ -21,6 +21,8 @@
  */
 
 /* revision history:
+ * gimp    1.3.20b; 2003/09/20  hof: gap_db_browser_dialog and constraint procedures added new param image_id
+ *                                   DEBUG MODE: made iterator code generation working again.
  * gimp    1.3.20a; 2003/09/14  hof: merged in changes of the file
  *                                   gimp-1.3.20/plug-ins/dbbrowser/dbbrowser_utils.c
  *                                   now uses GtkTreeView and gtk+2.2 compatible coding
@@ -60,7 +62,6 @@
 
 
 extern int gap_debug;
-
 
 typedef struct
 {
@@ -102,7 +103,8 @@ typedef struct
   t_constraint_func      constraint_func_sel2;
   t_gap_db_browse_result *result;
   
-  gint codegen_flag;
+  gint                   codegen_flag;
+  gint32                 current_image_id;
 } dbbrowser_t;
 
 /* local functions */
@@ -142,7 +144,8 @@ gap_db_browser_dialog(char *title_txt,
                       t_constraint_func        constraint_func,
                       t_constraint_func        constraint_func_sel1,
                       t_constraint_func        constraint_func_sel2,
-                      t_gap_db_browse_result  *result)
+                      t_gap_db_browse_result  *result,
+		      gint32                   image_id)
 {
   dbbrowser_t     *dbbrowser;
   GtkWidget       *hpaned;
@@ -162,6 +165,7 @@ gap_db_browser_dialog(char *title_txt,
   dbbrowser->constraint_func_sel2 = constraint_func_sel2;
   dbbrowser->result  = result;
   dbbrowser->codegen_flag  = 0;   /* default: no code generation */
+  dbbrowser->current_image_id = image_id;
   
   /* the dialog box */
 
@@ -661,7 +665,7 @@ dialog_select (dbbrowser_t *dbbrowser,
   /* call GAP constraint functions to check sensibility for the apply buttons */ 
   if(dbbrowser->app_const_button != NULL)
   {
-     if(0 != (dbbrowser->constraint_func_sel1)(dbbrowser->selected_proc_name))
+     if(0 != (dbbrowser->constraint_func_sel1)(dbbrowser->selected_proc_name, dbbrowser->current_image_id))
      { 
        gtk_widget_set_sensitive (dbbrowser->app_const_button, TRUE);
      }
@@ -672,7 +676,7 @@ dialog_select (dbbrowser_t *dbbrowser,
   }
   if(dbbrowser->app_vary_button != NULL)
   {
-     if(0 != (dbbrowser->constraint_func_sel2)(dbbrowser->selected_proc_name))
+     if(0 != (dbbrowser->constraint_func_sel2)(dbbrowser->selected_proc_name, dbbrowser->current_image_id))
      { 
         gtk_widget_set_sensitive (dbbrowser->app_vary_button, TRUE);
      }
@@ -881,9 +885,16 @@ dialog_search_callback (GtkWidget   *widget,
 	   * PDB-proc has a typical interface to operate on a single drawable.
 	   * all other PDB-procedures are not listed in the GAP-dbbrowser
 	   */
-	  if (0 != (dbbrowser->constraint_func)((char *)proc_list[i]))
+	  if (0 != (dbbrowser->constraint_func)((char *)proc_list[i], dbbrowser->current_image_id))
             {
               i_added++;
+	      
+	      if((dbbrowser->codegen_flag != 0) && (gap_debug))
+	        {
+                  p_gen_forward_iter_ALT(proc_list[i]);
+                  p_gen_tab_iter_ALT(proc_list[i]);
+                  p_gen_code_iter_ALT(proc_list[i]);
+		}
               label = g_strdup (proc_list[i]);
               convert_string (label);
               gtk_list_store_append (dbbrowser->store, &iter);

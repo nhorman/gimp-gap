@@ -49,10 +49,12 @@
 #include "gap_lastvaldesc.h"
 #include "gap_filter.h"
 #include "gap_filter_iterators.h"
+#include "gap_dbbrowser_utils.h"
 
-static char *gap_filter_version = "1.3.17a; 2003/07/29";
+static char *gap_filter_version = "1.3.20b; 2003/09/20";
 
 /* revision history:
+ * gimp   1.3.20b;  2003/09/20  hof: update version, minor cleanup
  * gimp   1.3.12a;  2003/05/02  hof: merge into CVS-gimp-gap project
  * gimp   1.3.4b;   2002/03/24  hof: support COMMON_ITERATOR, removed support of iter_ALT Procedures
  * 2000/11/30 v1.1.29b:  hof: new e-mail adress

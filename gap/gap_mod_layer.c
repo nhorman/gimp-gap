@@ -28,6 +28,7 @@
  */
 
 /* revision history:
+ * gimp   1.3.20b;   2003/09/20  hof: gap_db_browser_dialog new param image_id
  * gimp   1.3.15a;   2003/06/21  hof: textspacing
  * gimp   1.3.14a;   2003/05/17  hof: placed OK button right.
  * gimp   1.3.12a;   2003/05/01  hof: merge into CVS-gimp-gap project
@@ -60,6 +61,7 @@
 #include "gap_arr_dialog.h"
 #include "gap_filter.h"
 #include "gap_filter_pdb.h"
+#include "gap_dbbrowser_utils.h"
 #include "gap_pdb_calls.h"
 #include "gap_match.h"
 #include "gap_lib.h"
@@ -667,7 +669,8 @@ p_do_filter_dialogs(t_anim_info *ainfo_ptr,
                             p_constraint_proc,
                             p_constraint_proc_sel1,
                             p_constraint_proc_sel2,
-                            &l_browser_result) < 0)
+                            &l_browser_result,
+			    image_id) < 0)
   {
       if(gap_debug) fprintf(stderr, "DEBUG: gap_db_browser_dialog cancelled\n");
       return -1;

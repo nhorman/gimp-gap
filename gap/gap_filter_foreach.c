@@ -28,6 +28,7 @@
  */
 
 /* revision history:
+ * gimp   1.3.20b;  2003/09/20  hof: gap_db_browser_dialog new param image_id
  * gimp   1.3.12a;  2003/05/02  hof: merge into CVS-gimp-gap project
  * gimp   1.3.8a;   2002/09/21  hof: gap_lastvaldesc
  * gimp   1.3.4b;   2002/03/24  hof: support COMMON_ITERATOR
@@ -67,6 +68,7 @@
 #include "gap_arr_dialog.h"
 #include "gap_filter.h"
 #include "gap_filter_pdb.h"
+#include "gap_dbbrowser_utils.h"
 #include "gap_lib.h"
 
 
@@ -79,8 +81,6 @@
 /* int gap_debug = 0; */    /* 0: dont print debug infos */
 
 extern int gap_debug;
-
-static gint32 g_current_image_id;
 
 void p_gdisplays_update_full(gint32 image_id)
 {
@@ -563,7 +563,6 @@ gint gap_proc_anim_apply(GimpRunMode run_mode, gint32 image_id, char *plugin_nam
   t_apply_mode            l_apply_mode;
 
   l_apply_mode = PAPP_CONSTANT;
-  g_current_image_id = image_id;
   
   if(run_mode == GIMP_RUN_INTERACTIVE)
   {
@@ -574,7 +573,8 @@ gint gap_proc_anim_apply(GimpRunMode run_mode, gint32 image_id, char *plugin_nam
                                  p_constraint_proc,
                                  p_constraint_proc_sel1,
                                  p_constraint_proc_sel2,
-                                 &l_browser_result) 
+                                 &l_browser_result,
+				 image_id) 
       < 0)
     {
       if(gap_debug) fprintf(stderr, "DEBUG: gap_db_browser_dialog cancelled\n");

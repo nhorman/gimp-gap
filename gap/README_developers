@@ -25,8 +25,7 @@ First of all:
    for the selected procedure.
    
    
-   If you have gap prerelease 0.93.00 or later you can generate 
-   the "plug_in_XXXX_Iterator"
+   You can generate the "plug_in_XXXX_Iterator"
    for a Plugin as seperated Sourcefile, ready to compile.
    (The Plugin must be found in the PDB at generation time)
    

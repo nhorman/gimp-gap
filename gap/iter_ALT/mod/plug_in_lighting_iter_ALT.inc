@@ -13,8 +13,8 @@ gint p_plug_in_lighting_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdoub
       /* Render variables */
       /* ================ */
   
-      t_GckVector3       viewpoint;
-      t_GckVector3       planenormal;
+      GimpVector3       viewpoint;
+      GimpVector3       planenormal;
       t_LightSettings    lightsource;
       t_MaterialSettings material;
       t_MaterialSettings refmaterial;
@@ -36,14 +36,15 @@ gint p_plug_in_lighting_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdoub
       gint antialiasing;
       gint create_new_image;
       gint transparent_background;
-      gint tooltips_enabled;
       gint bump_mapped;
       gint env_mapped;
       gint ref_mapped;
       gint bumpstretch;
       gint previewquality;
 
-  
+      gboolean symbols;
+      gboolean interactive_preview;
+ 
 
       /* Misc */
       /* ==== */
@@ -66,8 +67,8 @@ gint p_plug_in_lighting_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdoub
     memcpy(&buf, &buf_from, sizeof(buf));
 
 
-    p_delta_GckVector3(&buf.viewpoint, &buf_from.viewpoint, &buf_to.viewpoint, total_steps, current_step);
-    p_delta_GckVector3(&buf.planenormal, &buf_from.planenormal, &buf_to.planenormal, total_steps, current_step);
+    p_delta_GimpVector3(&buf.viewpoint, &buf_from.viewpoint, &buf_to.viewpoint, total_steps, current_step);
+    p_delta_GimpVector3(&buf.planenormal, &buf_from.planenormal, &buf_to.planenormal, total_steps, current_step);
     p_delta_LightSettings(&buf.lightsource, &buf_from.lightsource, &buf_to.lightsource, total_steps, current_step);
     p_delta_MaterialSettings(&buf.material, &buf_from.material, &buf_to.material, total_steps, current_step);
     p_delta_MaterialSettings(&buf.refmaterial, &buf_from.refmaterial, &buf_to.refmaterial, total_steps, current_step);

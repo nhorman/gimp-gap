@@ -6,15 +6,9 @@ gint p_plug_in_exchange_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdoub
 {
     typedef struct t_plug_in_exchange_Vals 
     {
-      guchar      fromred;
-      guchar      fromgreen;
-      guchar      fromblue;
-      guchar      tored;
-      guchar      togreen;
-      guchar      toblue;
-      guchar      red_threshold;
-      guchar      green_threshold;
-      guchar      blue_threshold;
+      GimpRGB from;
+      GimpRGB to;
+      GimpRGB threshold;
       gint32      image;
       gint32      drawable;
     } t_plug_in_exchange_Vals; 
@@ -35,18 +29,13 @@ gint p_plug_in_exchange_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdoub
     buf_to   = (t_plug_in_exchange_Vals *)&g_plugin_data_to[0]; 
     memcpy(&buf, buf_from, sizeof(buf));
 
-    p_delta_guchar(&buf.fromred, buf_from->fromred, buf_to->fromred, total_steps, current_step);
-    p_delta_guchar(&buf.fromgreen, buf_from->fromgreen, buf_to->fromgreen, total_steps, current_step);
-    p_delta_guchar(&buf.fromblue, buf_from->fromblue, buf_to->fromblue, total_steps, current_step);
-    p_delta_guchar(&buf.tored, buf_from->tored, buf_to->tored, total_steps, current_step);
-    p_delta_guchar(&buf.togreen, buf_from->togreen, buf_to->togreen, total_steps, current_step);
-    p_delta_guchar(&buf.toblue, buf_from->toblue, buf_to->toblue, total_steps, current_step);
-    p_delta_guchar(&buf.red_threshold, buf_from->red_threshold, buf_to->red_threshold, total_steps, current_step);
-    p_delta_guchar(&buf.green_threshold, buf_from->green_threshold, buf_to->green_threshold, total_steps, current_step);
-    p_delta_guchar(&buf.blue_threshold, buf_from->blue_threshold, buf_to->blue_threshold, total_steps, current_step);
+    p_delta_GimpRGB(&buf.from, &buf_from->from, &buf_to->from, total_steps, current_step);
+    p_delta_GimpRGB(&buf.to, &buf_from->to, &buf_to->to, total_steps, current_step);
+    p_delta_GimpRGB(&buf.threshold, &buf_from->threshold, &buf_to->threshold, total_steps, current_step);
 
     /* exchange takes FROM colors from foreground when called in mode GIMP_RUN_WITH_LAST_VALS */
-    gimp_palette_set_foreground(buf.fromred, buf.fromgreen, buf.fromblue);
+    gimp_palette_set_foreground(&buf.from);
+    
     gimp_set_data("plug_in_exchange", &buf, sizeof(buf)); 
 
     return 0; /* OK */

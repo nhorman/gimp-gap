@@ -6,9 +6,8 @@ gint p_plug_in_plasma_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble
 {
     typedef struct t_plug_in_plasma_Vals 
     {
-      long      seed;
+      guint32   seed;
       gdouble   turbulence;
-      gboolean timeseed;
     } t_plug_in_plasma_Vals; 
 
     t_plug_in_plasma_Vals  buf, *buf_from, *buf_to; 
@@ -27,7 +26,7 @@ gint p_plug_in_plasma_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble
     buf_to   = (t_plug_in_plasma_Vals *)&g_plugin_data_to[0]; 
     memcpy(&buf, buf_from, sizeof(buf));
 
-    p_delta_long(&buf.seed, buf_from->seed, buf_to->seed, total_steps, current_step);
+    p_delta_guint32(&buf.seed, buf_from->seed, buf_to->seed, total_steps, current_step);
     p_delta_gdouble(&buf.turbulence, buf_from->turbulence, buf_to->turbulence, total_steps, current_step);
 
     gimp_set_data("plug_in_plasma", &buf, sizeof(buf)); 

@@ -9,11 +9,14 @@
 # (using other server api than wavplayer's API)  
 #
 
-scriptdatadir = $(exec_prefix)/bin
+scriptdatadir = $(GAPLIBDIR)
 
 scriptdata_DATA = audioconvert_to_wav.sh
 
 noinst_LIBRARIES = libwavplayclient.a
+
+AM_CPPFLAGS = \
+	-DLOCALEDIR=\""$(LOCALEDIR)"\"
 
 INCLUDES = \
 	-I$(top_srcdir)	\

@@ -28,6 +28,7 @@
  */
 
 /* Revision history
+ *  (2003/09/23)  v1.3.20b   hof: use GAPLIBDIR to locate audioconvert_to_wav.sh
  *  (2003/09/14)  v1.3.20a   hof: bugfix: added p_create_wav_dialog 
  *                                now can create and resample WAVFILE from other audiofiles (MP3 and others)
  *                                based on external shellscript (using SOX and LAME to do that job)
@@ -77,7 +78,6 @@
 
 
 #include "gap-intl.h"
-
 
 extern int gap_debug;  /* 1 == print debug infos , 0 dont print debug infos */
 int cmdopt_x = 0;				/* Debug option flag */
@@ -3131,20 +3131,20 @@ on_audio_create_copy_button_clicked (GtkButton       *button,
   
   if(!script_found)
   {
-    if ( (cp = g_getenv("PATH")) != NULL )
-    {
       g_free(envAUDIOCONVERT_TO_WAV);
-      envAUDIOCONVERT_TO_WAV = p_searchpath_for_exefile("audioconvert_to_wav.sh", cp);
-      if(envAUDIOCONVERT_TO_WAV == NULL)
+      envAUDIOCONVERT_TO_WAV = g_build_filename(GAPLIBDIR
+					      , "audioconvert_to_wav.sh"
+					      , NULL
+					      );
+      if(!g_file_test(envAUDIOCONVERT_TO_WAV, G_FILE_TEST_IS_EXECUTABLE))
       {
-        g_message(_("ERROR: external program for audioconversion not available\n"
-	            "you should install: '%s'\n")
-	         , "audioconvert_to_wav.sh"
+        g_message(_("ERROR: external program for audioconversion not executable\n"
+	            "filename: '%s'\n")
+	         , envAUDIOCONVERT_TO_WAV
 		 );
         return;
       }
       script_found = TRUE;
-    }
   }
 
   gpp->audio_tmp_dialog_is_open  = TRUE;

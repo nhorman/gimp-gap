@@ -55,6 +55,8 @@
  */
 
 /* Change Log:
+ * gimp     1.3.20b; 2003/09/20  hof: include gap_dbbrowser_utils.h, datatype support for guint, guint32
+ *                                    replaced t_GckVector3 and t_GckColor by GimpVector3 and GimpRGB
  * gimp     1.3.17a; 2003/07/29  hof: fixed signed/unsigned comparison warnings
  * gimp     1.3.12a; 2003/05/02  hof: merge into CVS-gimp-gap project, added iter_ALT Procedures again
  * gimp   1.3.8a;    2002/09/21  hof: gap_lastvaldesc
@@ -90,6 +92,7 @@
 #include "gap_lastvaldesc.h"
 #include "gap_filter.h"
 #include "gap_filter_iterators.h"
+#include "gap_dbbrowser_utils.h"
 
 
 static gchar *g_plugin_data_from = NULL;
@@ -200,7 +203,25 @@ static void p_delta_gint(gint *val, gint val_from, gint val_to, gint32 total_ste
     delta = ((double)(val_to - val_from) / (double)total_steps) * ((double)total_steps - current_step);
     *val  = val_from + delta; 
 }
+static void p_delta_guint(guint *val, guint val_from, guint val_to, gint32 total_steps, gdouble current_step)
+{
+    double     delta;
+
+    if(total_steps < 1) return;
+
+    delta = ((double)(val_to - val_from) / (double)total_steps) * ((double)total_steps - current_step);
+    *val  = val_from + delta; 
+}
 static void p_delta_gint32(gint32 *val, gint32 val_from, gint32 val_to, gint32 total_steps, gdouble current_step)
+{
+    double     delta;
+
+    if(total_steps < 1) return;
+
+    delta = ((double)(val_to - val_from) / (double)total_steps) * ((double)total_steps - current_step);
+    *val  = val_from + delta; 
+}
+static void p_delta_guint32(guint32 *val, guint32 val_from, guint32 val_to, gint32 total_steps, gdouble current_step)
 {
     double     delta;
 
@@ -382,8 +403,14 @@ static void gp_delta_int (int *val, int *val_from, int *val_to, gint32 total_ste
 static void gp_delta_gint (gint *val, gint *val_from, gint *val_to, gint32 total_steps, gdouble current_step)
 { p_delta_gint(val, *val_from, *val_to, total_steps, current_step); }
 
+static void gp_delta_guint (guint *val, guint *val_from, guint *val_to, gint32 total_steps, gdouble current_step)
+{ p_delta_guint(val, *val_from, *val_to, total_steps, current_step); }
+
 static void gp_delta_gint32 (gint32 *val, gint32 *val_from, gint32 *val_to, gint32 total_steps, gdouble current_step)
 { p_delta_gint32(val, *val_from, *val_to, total_steps, current_step); }
+
+static void gp_delta_guint32 (guint32 *val, guint32 *val_from, guint32 *val_to, gint32 total_steps, gdouble current_step)
+{ p_delta_guint32(val, *val_from, *val_to, total_steps, current_step); }
 
 static void gp_delta_char (char *val, char *val_from, char *val_to, gint32 total_steps, gdouble current_step)
 { p_delta_char(val, *val_from, *val_to, total_steps, current_step); }
@@ -424,8 +451,14 @@ void gap_delta_int (void *val, void *val_from, void *val_to, gint32 total_steps,
 void gap_delta_gint (void *val, void *val_from, void *val_to, gint32 total_steps, gdouble current_step)
 {  gp_delta_gint (val, val_from, val_to, total_steps, current_step); }
 
+void gap_delta_guint (void *val, void *val_from, void *val_to, gint32 total_steps, gdouble current_step)
+{  gp_delta_guint (val, val_from, val_to, total_steps, current_step); }
+
 void gap_delta_gint32 (void *val, void *val_from, void *val_to, gint32 total_steps, gdouble current_step)
 {  gp_delta_gint32 (val, val_from, val_to, total_steps, current_step); }
+
+void gap_delta_guint32 (void *val, void *val_from, void *val_to, gint32 total_steps, gdouble current_step)
+{  gp_delta_guint32 (val, val_from, val_to, total_steps, current_step); }
 
 void gap_delta_char (void *val, void *val_from, void *val_to, gint32 total_steps, gdouble current_step)
 {  gp_delta_char (val, val_from, val_to, total_steps, current_step); }
@@ -480,6 +513,8 @@ p_init_iter_jump_table(void)
     jmp_table[GIMP_LASTVAL_GINTDRAWABLE].func_ptr = gap_delta_gintdrawable;
     jmp_table[GIMP_LASTVAL_GBOOLEAN].func_ptr = gap_delta_none;
     jmp_table[GIMP_LASTVAL_ENUM].func_ptr = gap_delta_none;
+    jmp_table[GIMP_LASTVAL_GUINT].func_ptr = gap_delta_guint;
+    jmp_table[GIMP_LASTVAL_GUINT32].func_ptr = gap_delta_guint32;
 
      /* size of one element for the supported basetypes and predefined structs */
     jmp_table[GIMP_LASTVAL_NONE].item_size = 0;
@@ -502,6 +537,8 @@ p_init_iter_jump_table(void)
     jmp_table[GIMP_LASTVAL_GINTDRAWABLE].item_size = sizeof(gint);
     jmp_table[GIMP_LASTVAL_GBOOLEAN].item_size = sizeof(gboolean);
     jmp_table[GIMP_LASTVAL_ENUM].item_size = sizeof(gint);
+    jmp_table[GIMP_LASTVAL_GUINT].item_size = sizeof(guint);
+    jmp_table[GIMP_LASTVAL_GUINT32].item_size = sizeof(guint32);
     
     jmp_table_initialized = TRUE;
   }
@@ -842,18 +879,9 @@ gap_common_iterator(const char *c_keyname, GimpRunMode run_mode, gint32 total_st
 
 
 /* ----------------------------------------------------------------------
- * iterator UTILITIES for Gck Vectors, Material and Light Sewttings
+ * iterator UTILITIES for GimpRGB, GimpVector3, Material and Light Sewttings
  * ----------------------------------------------------------------------
  */
-
-    typedef struct
-    {
-      double color[4];  /* r,g,b,a */
-    } t_GckRGB;
-    typedef struct
-    {
-      double  coord[3]; /* x,y,z; */
-    } t_GckVector3;
 
     typedef enum {
       POINT_LIGHT,
@@ -874,44 +902,52 @@ gap_common_iterator(const char *c_keyname, GimpRunMode run_mode, gint32 total_st
       gdouble diffuse_ref;
       gdouble specular_ref;
       gdouble highlight;
-      t_GckRGB  color;
+      GimpRGB  color;
     } t_MaterialSettings;
 
     typedef struct
     {
       t_LightType  type;
-      t_GckVector3 position;
-      t_GckVector3 direction;
-      t_GckRGB     color;
+      GimpVector3  position;
+      GimpVector3  direction;
+      GimpRGB     color;
       gdouble    intensity;
     } t_LightSettings;
     
 
-static void p_delta_GckRGB(t_GckRGB *val, t_GckRGB *val_from, t_GckRGB *val_to, gint32 total_steps, gdouble current_step)
+
+static void p_delta_GimpRGB(GimpRGB *val, GimpRGB *val_from, GimpRGB *val_to, gint32 total_steps, gdouble current_step)
 {
     double     delta;
-    int l_idx;
 
     if(total_steps < 1) return;
     
-    for(l_idx = 0; l_idx < 4; l_idx++)
-    {
-       delta = ((double)(val_to->color[l_idx] - val_from->color[l_idx]) / (double)total_steps) * ((double)total_steps - current_step);
-       val->color[l_idx]  = val_from->color[l_idx] + delta; 
-    }
+    delta = ((double)(val_to->r - val_from->r) / (double)total_steps) * ((double)total_steps - current_step);
+    val->r = val_from->r + delta; 
+
+    delta = ((double)(val_to->g - val_from->g) / (double)total_steps) * ((double)total_steps - current_step);
+    val->g = val_from->g + delta; 
+
+    delta = ((double)(val_to->b - val_from->b) / (double)total_steps) * ((double)total_steps - current_step);
+    val->b = val_from->b + delta; 
+
+    delta = ((double)(val_to->a - val_from->a) / (double)total_steps) * ((double)total_steps - current_step);
+    val->a = val_from->a + delta; 
 }
-static void p_delta_GckVector3(t_GckVector3 *val, t_GckVector3 *val_from, t_GckVector3 *val_to, gint32 total_steps, gdouble current_step)
+static void p_delta_GimpVector3(GimpVector3 *val, GimpVector3 *val_from, GimpVector3 *val_to, gint32 total_steps, gdouble current_step)
 {
     double     delta;
-    int l_idx;
 
     if(total_steps < 1) return;
     
-    for(l_idx = 0; l_idx < 3; l_idx++)
-    {
-       delta = ((double)(val_to->coord[l_idx] - val_from->coord[l_idx]) / (double)total_steps) * ((double)total_steps - current_step);
-       val->coord[l_idx]  = val_from->coord[l_idx] + delta; 
-    }
+    delta = ((double)(val_to->x - val_from->x) / (double)total_steps) * ((double)total_steps - current_step);
+    val->x  = val_from->x + delta; 
+    
+    delta = ((double)(val_to->y - val_from->y) / (double)total_steps) * ((double)total_steps - current_step);
+    val->y  = val_from->y + delta; 
+    
+    delta = ((double)(val_to->z - val_from->z) / (double)total_steps) * ((double)total_steps - current_step);
+    val->z  = val_from->z + delta; 
 }
 
 static void p_delta_MaterialSettings(t_MaterialSettings *val, t_MaterialSettings *val_from, t_MaterialSettings *val_to, gint32 total_steps, gdouble current_step)
@@ -921,16 +957,16 @@ static void p_delta_MaterialSettings(t_MaterialSettings *val, t_MaterialSettings
     p_delta_gdouble(&val->diffuse_ref, val_from->diffuse_ref, val_to->diffuse_ref, total_steps, current_step);
     p_delta_gdouble(&val->specular_ref, val_from->specular_ref, val_to->specular_ref, total_steps, current_step);
     p_delta_gdouble(&val->highlight, val_from->highlight, val_to->highlight, total_steps, current_step);
-    p_delta_GckRGB(&val->color, &val_from->color, &val_to->color, total_steps, current_step);
+    p_delta_GimpRGB(&val->color, &val_from->color, &val_to->color, total_steps, current_step);
 
 }
 
 static void p_delta_LightSettings(t_LightSettings *val, t_LightSettings *val_from, t_LightSettings *val_to, gint32 total_steps, gdouble current_step)
 {
     /* no delta is done for LightType */
-    p_delta_GckVector3(&val->position, &val_from->position, &val_to->position, total_steps, current_step);
-    p_delta_GckVector3(&val->direction, &val_from->direction, &val_to->direction, total_steps, current_step);
-    p_delta_GckRGB(&val->color, &val_from->color, &val_to->color, total_steps, current_step);
+    p_delta_GimpVector3(&val->position, &val_from->position, &val_to->position, total_steps, current_step);
+    p_delta_GimpVector3(&val->direction, &val_from->direction, &val_to->direction, total_steps, current_step);
+    p_delta_GimpRGB(&val->color, &val_from->color, &val_to->color, total_steps, current_step);
     p_delta_gdouble(&val->intensity, val_from->intensity, val_to->intensity, total_steps, current_step);
 }
 
@@ -952,7 +988,7 @@ static void p_delta_LightSettings(t_LightSettings *val, t_LightSettings *val_fro
 #include "iter_ALT/mod/plug_in_depth_merge_iter_ALT.inc"
 #include "iter_ALT/mod/plug_in_despeckle_iter_ALT.inc"
 #include "iter_ALT/mod/plug_in_emboss_iter_ALT.inc"
-/*  #include "iter_ALT/mod/plug_in_exchange_iter_ALT.inc" */
+#include "iter_ALT/mod/plug_in_exchange_iter_ALT.inc"
 #include "iter_ALT/mod/plug_in_flame_iter_ALT.inc"
 #include "iter_ALT/mod/plug_in_lighting_iter_ALT.inc"
 #include "iter_ALT/mod/plug_in_map_object_iter_ALT.inc"
@@ -968,6 +1004,24 @@ static void p_delta_LightSettings(t_LightSettings *val, t_LightSettings *val_fro
 #include "iter_ALT/mod/plug_in_sinus_iter_ALT.inc"
 #include "iter_ALT/mod/plug_in_solid_noise_iter_ALT.inc"
 #include "iter_ALT/mod/plug_in_sparkle_iter_ALT.inc"
+
+#include "iter_ALT/mod/plug_in_alienmap2_iter_ALT.inc"
+#include "iter_ALT/mod/plug_in_apply_canvas_iter_ALT.inc"
+#include "iter_ALT/mod/plug_in_colortoalpha_iter_ALT.inc"
+#include "iter_ALT/mod/plug_in_deinterlace_iter_ALT.inc"
+#include "iter_ALT/mod/plug_in_illusion_iter_ALT.inc"
+#include "iter_ALT/mod/plug_in_lic_iter_ALT.inc"
+#include "iter_ALT/mod/plug_in_make_seamless_iter_ALT.inc"
+#include "iter_ALT/mod/plug_in_max_rgb_iter_ALT.inc"
+#include "iter_ALT/mod/plug_in_normalize_iter_ALT.inc"
+#include "iter_ALT/mod/plug_in_sel_gauss_iter_ALT.inc"
+#include "iter_ALT/mod/plug_in_small_tiles_iter_ALT.inc"
+#include "iter_ALT/mod/plug_in_sobel_iter_ALT.inc"
+#include "iter_ALT/mod/plug_in_unsharp_mask_iter_ALT.inc"
+#include "iter_ALT/mod/plug_in_vinvert_iter_ALT.inc"
+
+
+
 
 #include "iter_ALT/old/plug_in_CentralReflection_iter_ALT.inc"
 #include "iter_ALT/old/plug_in_anamorphose_iter_ALT.inc"
@@ -1088,7 +1142,7 @@ static t_iter_ALT_tab   g_iter_ALT_tab[] =
   , { "plug_in_emboss",  p_plug_in_emboss_iter_ALT }
   , { "plug_in_encript",  p_plug_in_encript_iter_ALT }
   , { "plug_in_engrave",  p_plug_in_engrave_iter_ALT }
-/*    , { "plug_in_exchange",  p_plug_in_exchange_iter_ALT } */
+  , { "plug_in_exchange",  p_plug_in_exchange_iter_ALT }
 /*, { "plug_in_export_palette",  p_plug_in_export_palette_iter_ALT }              */
   , { "plug_in_figures",  p_plug_in_figures_iter_ALT }
 /*, { "plug_in_film",  p_plug_in_film_iter_ALT }                                  */
@@ -1175,6 +1229,21 @@ static t_iter_ALT_tab   g_iter_ALT_tab[] =
   , { "plug_in_whirl_pinch",  p_plug_in_whirl_pinch_iter_ALT }
   , { "plug_in_wind",  p_plug_in_wind_iter_ALT }
 /*, { "plug_in_zealouscrop",  p_plug_in_zealouscrop_iter_ALT }                    */
+
+  , { "plug_in_alienmap2", p_plug_in_alienmap2_iter_ALT }
+  , { "plug_in_apply_canvas", p_plug_in_apply_canvas_iter_ALT }
+  , { "plug_in_colortoalpha", p_plug_in_colortoalpha_iter_ALT }
+  , { "plug_in_deinterlace", p_plug_in_deinterlace_iter_ALT }
+  , { "plug_in_illusion", p_plug_in_illusion_iter_ALT }
+  , { "plug_in_lic", p_plug_in_lic_iter_ALT }
+  , { "plug_in_make_seamless", p_plug_in_make_seamless_iter_ALT }
+  , { "plug_in_max_rgb", p_plug_in_max_rgb_iter_ALT }
+  , { "plug_in_normalize", p_plug_in_normalize_iter_ALT }
+  , { "plug_in_sel_gauss", p_plug_in_sel_gauss_iter_ALT }
+  , { "plug_in_small_tiles", p_plug_in_small_tiles_iter_ALT }
+  , { "plug_in_sobel", p_plug_in_sobel_iter_ALT }
+  , { "plug_in_unsharp_mask", p_plug_in_unsharp_mask_iter_ALT }
+  , { "plug_in_vinvert", p_plug_in_vinvert_iter_ALT }
 };  /* end g_iter_ALT_tab */
 
 
@@ -1221,7 +1290,9 @@ static void p_install_proc_iter_ALT(char *name)
   g_free(l_blurb_text);
 }
 
-void gap_query_iterators_ALT()
+
+void 
+gap_query_iterators_ALT()
 {
   guint l_idx;
   for(l_idx = 0; l_idx < MAX_ITER_ALT; l_idx++)
@@ -1235,7 +1306,8 @@ void gap_query_iterators_ALT()
  * ---------------------------------------------------------------------- 
  */
 
-gint gap_run_iterators_ALT(const char *name, GimpRunMode run_mode, gint32 total_steps, gdouble current_step, gint32 len_struct)
+gint
+gap_run_iterators_ALT(const char *name, GimpRunMode run_mode, gint32 total_steps, gdouble current_step, gint32 len_struct)
 {
   gint l_rc;
   guint l_idx;

@@ -49,32 +49,6 @@ gint gap_run_iterators_ALT(const char *name, GimpRunMode run_mode, gint32 total_
 void gap_query_iterators_ALT();
 
 /* ------------------------
- * gap_dbbrowser.h
- * ------------------------
- */
-
-typedef struct {
-   char selected_proc_name[256];
-   int  button_nr;               /* -1 on cancel, 0 .. n */
-} t_gap_db_browse_result;
-
-/* proc to check if to add or not to add the procedure to the browsers listbox
- * retcode:
- * 0 ... do not add
- * 1 ... add the procedure to the browsers listbox
- */
-typedef int (*t_constraint_func) ( gchar *proc_name);
-
-int
-gap_db_browser_dialog (char *title_txt,
-                       char *button_1_txt,
-                       char *button_2_txt,
-                       t_constraint_func        constraint_func,
-                       t_constraint_func        constraint_func_sel1,
-                       t_constraint_func        constraint_func_sel2,
-                       t_gap_db_browse_result  *result);
-
-/* ------------------------
  * gap_filter_codegen.h
  * ------------------------
  */

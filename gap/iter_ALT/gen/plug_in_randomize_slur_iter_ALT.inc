@@ -8,7 +8,6 @@ gint p_plug_in_randomize_slur_iter_ALT(GimpRunMode run_mode, gint32 total_steps,
     {
       gdouble   rndm_pct;
       gdouble   rndm_rcount;
-      long      seed_type;
       long      rndm_seed;
     } t_plug_in_randomize_slur_Vals; 
 
@@ -30,7 +29,6 @@ gint p_plug_in_randomize_slur_iter_ALT(GimpRunMode run_mode, gint32 total_steps,
 
     p_delta_gdouble(&buf.rndm_pct, buf_from->rndm_pct, buf_to->rndm_pct, total_steps, current_step);
     p_delta_gdouble(&buf.rndm_rcount, buf_from->rndm_rcount, buf_to->rndm_rcount, total_steps, current_step);
-    p_delta_long(&buf.seed_type, buf_from->seed_type, buf_to->seed_type, total_steps, current_step);
     p_delta_long(&buf.rndm_seed, buf_from->rndm_seed, buf_to->rndm_seed, total_steps, current_step);
 
     gimp_set_data("plug_in_randomize_slur", &buf, sizeof(buf)); 

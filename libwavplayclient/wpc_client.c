@@ -1,4 +1,3 @@
-#ifndef GAP_DISABLE_WAV_AUDIOSUPPORT
 #include <gtk/gtk.h>
 #include <client.c>
 
@@ -33,7 +32,5 @@ apcl_get_serverpid(void)
 {
   return(svrPID);
 }
-
-#endif
 
 #endif

@@ -28,6 +28,7 @@
  */
 
 /* revision history:
+ *          2003/09/20   hof: added datatype support for guint guint32.
  *          2003/01/19   hof: use gimp_directory (replace gimprc query for "gimp_dir")
  *          2002/04/07   hof: created.
  */
@@ -469,6 +470,8 @@ p_init_token_table(void)
     token_tab[GIMP_LASTVAL_GINTDRAWABLE].token     = GIMP_DDESC_GINTDRAWABLE;
     token_tab[GIMP_LASTVAL_GBOOLEAN].token         = GIMP_DDESC_GBOOLEAN;
     token_tab[GIMP_LASTVAL_ENUM].token             = GIMP_DDESC_ENUM;
+    token_tab[GIMP_LASTVAL_GUINT].token            = GIMP_DDESC_GUINT;
+    token_tab[GIMP_LASTVAL_GUINT32].token          = GIMP_DDESC_GUINT32;
     token_tab[GIMP_LASTVAL_END].token              = GIMP_DDESC_END;
 
     /* type lastval_type informations */
@@ -493,6 +496,8 @@ p_init_token_table(void)
     token_tab[GIMP_LASTVAL_GINTDRAWABLE].lastval_type     = GIMP_LASTVAL_GINTDRAWABLE;
     token_tab[GIMP_LASTVAL_GBOOLEAN].lastval_type         = GIMP_LASTVAL_GBOOLEAN;
     token_tab[GIMP_LASTVAL_ENUM].lastval_type             = GIMP_LASTVAL_ENUM;
+    token_tab[GIMP_LASTVAL_GUINT].lastval_type            = GIMP_LASTVAL_GUINT;
+    token_tab[GIMP_LASTVAL_GUINT32].lastval_type          = GIMP_LASTVAL_GUINT32;
     token_tab[GIMP_LASTVAL_END].lastval_type              = 0;
 
     token_table_initialized = TRUE;

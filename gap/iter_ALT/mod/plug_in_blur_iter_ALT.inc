@@ -8,8 +8,7 @@ gint p_plug_in_blur_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble c
     {
       gdouble blur_pct;     /* likelihood of randomization (as %age) */
       gdouble blur_rcount;  /* repeat count */
-      gint seed_type;       /* seed init. type - current time or user value */
-      gint blur_seed;       /* seed value for rand() function */
+      guint blur_seed;      /* seed value for rand() function */
     } t_plug_in_blur_Vals; 
 
     t_plug_in_blur_Vals  buf, *buf_from, *buf_to; 
@@ -30,8 +29,7 @@ gint p_plug_in_blur_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble c
 
     p_delta_gdouble(&buf.blur_pct, buf_from->blur_pct, buf_to->blur_pct, total_steps, current_step);
     p_delta_gdouble(&buf.blur_rcount, buf_from->blur_rcount, buf_to->blur_rcount, total_steps, current_step);
-    p_delta_gint(&buf.seed_type, buf_from->seed_type, buf_to->seed_type, total_steps, current_step);
-    p_delta_gint(&buf.blur_seed, buf_from->blur_seed, buf_to->blur_seed, total_steps, current_step);
+    p_delta_guint(&buf.blur_seed, buf_from->blur_seed, buf_to->blur_seed, total_steps, current_step);
 
     gimp_set_data("plug_in_blur", &buf, sizeof(buf)); 
 

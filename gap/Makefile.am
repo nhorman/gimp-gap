@@ -318,6 +318,20 @@ EXTRA_DIST = \
 	iter_ALT/mod/plug_in_sinus_iter_ALT.inc			\
 	iter_ALT/mod/plug_in_solid_noise_iter_ALT.inc		\
 	iter_ALT/mod/plug_in_sparkle_iter_ALT.inc		\
+	iter_ALT/mod/plug_in_alienmap2_iter_ALT.inc		\
+	iter_ALT/mod/plug_in_apply_canvas_iter_ALT.inc		\
+	iter_ALT/mod/plug_in_colortoalpha_iter_ALT.inc		\
+	iter_ALT/mod/plug_in_deinterlace_iter_ALT.inc		\
+	iter_ALT/mod/plug_in_illusion_iter_ALT.inc		\
+	iter_ALT/mod/plug_in_lic_iter_ALT.inc			\
+	iter_ALT/mod/plug_in_make_seamless_iter_ALT.inc		\
+	iter_ALT/mod/plug_in_max_rgb_iter_ALT.inc		\
+	iter_ALT/mod/plug_in_normalize_iter_ALT.inc		\
+	iter_ALT/mod/plug_in_sel_gauss_iter_ALT.inc		\
+	iter_ALT/mod/plug_in_small_tiles_iter_ALT.inc		\
+	iter_ALT/mod/plug_in_sobel_iter_ALT.inc			\
+	iter_ALT/mod/plug_in_unsharp_mask_iter_ALT.inc		\
+	iter_ALT/mod/plug_in_vinvert_iter_ALT.inc		\
 	iter_ALT/old/plug_in_CentralReflection_iter_ALT.inc	\
 	iter_ALT/old/plug_in_anamorphose_iter_ALT.inc		\
 	iter_ALT/old/plug_in_blur2_iter_ALT.inc			\

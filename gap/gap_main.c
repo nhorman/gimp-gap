@@ -38,9 +38,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-static char *gap_main_version =  "1.3.17b; 2003/07/31";
+static char *gap_main_version =  "1.3.20b; 2003/09/20";
 
 /* revision history:
+ * gimp    1.3.20b; 2003/09/20  hof: - updated main version
  * gimp    1.3.17b; 2003/07/31  hof: - updated main version, message text fixes for translators (# 118392)
  * gimp    1.3.17a; 2003/07/29  hof: - updated main version,
  *                                   - param types GimpPlugInInfo.run procedure

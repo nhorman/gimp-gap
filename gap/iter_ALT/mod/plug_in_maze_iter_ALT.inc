@@ -13,13 +13,12 @@ gint p_plug_in_maze_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble c
     {
        gint width;
        gint height;
-       guint seed;
+       guint32 seed;
        gboolean tile;
        gint multiple;
        gint offset;
        MazeAlgoType algorithm;
        /* Interface options. */
-       gboolean timeseed;
     } t_plug_in_maze_Vals; 
 
     t_plug_in_maze_Vals  buf, *buf_from, *buf_to; 
@@ -40,7 +39,7 @@ gint p_plug_in_maze_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble c
 
     p_delta_gint(&buf.width, buf_from->width, buf_to->width, total_steps, current_step);
     p_delta_gint(&buf.height, buf_from->height, buf_to->height, total_steps, current_step);
-    p_delta_gint(&buf.seed, buf_from->seed, buf_to->seed, total_steps, current_step);
+    p_delta_guint32(&buf.seed, buf_from->seed, buf_to->seed, total_steps, current_step);
     p_delta_gint(&buf.multiple, buf_from->multiple, buf_to->multiple, total_steps, current_step);
     p_delta_gint(&buf.offset, buf_from->offset, buf_to->offset, total_steps, current_step);
 

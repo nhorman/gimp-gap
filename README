@@ -6,13 +6,15 @@ a stable Version usable with the next planned stable GIMP release.
 
 The stable Version of GAP is part of the stable GIMP-1.2 release.
 
-Latest is:  gap-1.3.16b_pre60.tgz
+Latest unstable is:  gimp-gap-1.3.20a_pre97.tgz
 
-Requires: - gimp 1.3.16 (unstable developers version)
+Requires: - gimp 1.3.20 (unstable developers version)
 
-          - optional Patch for libgimp lastvalues registrations
-            for the common iterator
 
 On my Homepage at tripod http://wolfganghofer.tripod.com/gap/gap.html
-you can find the latest Snapshot of my development Versions of GAP.
+you can find the latest Snapshot of my offline development Versions of GAP.
+The official Sources are in CVS.
 (I can't use CVS because i have no Internet on my Linuxbox)
+
+
+For information about gimp-gap details please read the file gap/README.

@@ -6,14 +6,12 @@ gint p_plug_in_solid_noise_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gd
 {
     typedef struct t_plug_in_solid_noise_Vals 
     {
-      long      tilable;
-      long      turbulent;
-      long      seed;
-      long      detail;
-      gdouble   xsize;
-      gdouble   ysize;
-
-      gint    timeseed;
+      gint    tilable;
+      gint    turbulent;
+      guint   seed;
+      gint    detail;
+      gdouble xsize;
+      gdouble ysize;
     } t_plug_in_solid_noise_Vals; 
 
     t_plug_in_solid_noise_Vals  buf, *buf_from, *buf_to; 
@@ -32,10 +30,10 @@ gint p_plug_in_solid_noise_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gd
     buf_to   = (t_plug_in_solid_noise_Vals *)&g_plugin_data_to[0]; 
     memcpy(&buf, buf_from, sizeof(buf));
 
-    p_delta_long(&buf.tilable, buf_from->tilable, buf_to->tilable, total_steps, current_step);
-    p_delta_long(&buf.turbulent, buf_from->turbulent, buf_to->turbulent, total_steps, current_step);
-    p_delta_long(&buf.seed, buf_from->seed, buf_to->seed, total_steps, current_step);
-    p_delta_long(&buf.detail, buf_from->detail, buf_to->detail, total_steps, current_step);
+    p_delta_gint(&buf.tilable, buf_from->tilable, buf_to->tilable, total_steps, current_step);
+    p_delta_gint(&buf.turbulent, buf_from->turbulent, buf_to->turbulent, total_steps, current_step);
+    p_delta_guint(&buf.seed, buf_from->seed, buf_to->seed, total_steps, current_step);
+    p_delta_gint(&buf.detail, buf_from->detail, buf_to->detail, total_steps, current_step);
     p_delta_gdouble(&buf.xsize, buf_from->xsize, buf_to->xsize, total_steps, current_step);
     p_delta_gdouble(&buf.ysize, buf_from->ysize, buf_to->ysize, total_steps, current_step);
 

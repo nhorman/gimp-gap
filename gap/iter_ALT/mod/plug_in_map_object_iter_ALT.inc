@@ -6,12 +6,12 @@ gint p_plug_in_map_object_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdo
 {
     typedef struct 
     {
-      t_GckVector3    viewpoint;
-      t_GckVector3    firstaxis;
-      t_GckVector3    secondaxis;
-      t_GckVector3    normal;
-      t_GckVector3    position;
-      t_GckVector3    scale;
+      GimpVector3    viewpoint;
+      GimpVector3    firstaxis;
+      GimpVector3    secondaxis;
+      GimpVector3    normal;
+      GimpVector3    position;
+      GimpVector3    scale;
       t_LightSettings lightsource;
 
       t_MaterialSettings material;
@@ -24,7 +24,6 @@ gint p_plug_in_map_object_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdo
       gint transparent_background;
       gint tiled;
       gint showgrid;
-      gint tooltips_enabled;
       gint showcaps;
 
       glong preview_zoom_factor;
@@ -33,7 +32,6 @@ gint p_plug_in_map_object_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdo
       gdouble maxdepth;
       gdouble pixeltreshold;
       gdouble radius;
-      
       gdouble cylinder_radius;
       gdouble cylinder_length;
 
@@ -56,12 +54,12 @@ gint p_plug_in_map_object_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdo
     gimp_get_data("plug_in_map_object_ITER_TO",   &buf_to); 
     memcpy(&buf, &buf_from, sizeof(buf));
 
-    p_delta_GckVector3(&buf.viewpoint, &buf_from.viewpoint, &buf_to.viewpoint, total_steps, current_step);
-    p_delta_GckVector3(&buf.firstaxis, &buf_from.firstaxis, &buf_to.firstaxis, total_steps, current_step);
-    p_delta_GckVector3(&buf.secondaxis, &buf_from.secondaxis, &buf_to.secondaxis, total_steps, current_step);
-    p_delta_GckVector3(&buf.normal, &buf_from.normal, &buf_to.normal, total_steps, current_step);
-    p_delta_GckVector3(&buf.position, &buf_from.position, &buf_to.position, total_steps, current_step);
-    p_delta_GckVector3(&buf.scale, &buf_from.scale, &buf_to.scale, total_steps, current_step);
+    p_delta_GimpVector3(&buf.viewpoint, &buf_from.viewpoint, &buf_to.viewpoint, total_steps, current_step);
+    p_delta_GimpVector3(&buf.firstaxis, &buf_from.firstaxis, &buf_to.firstaxis, total_steps, current_step);
+    p_delta_GimpVector3(&buf.secondaxis, &buf_from.secondaxis, &buf_to.secondaxis, total_steps, current_step);
+    p_delta_GimpVector3(&buf.normal, &buf_from.normal, &buf_to.normal, total_steps, current_step);
+    p_delta_GimpVector3(&buf.position, &buf_from.position, &buf_to.position, total_steps, current_step);
+    p_delta_GimpVector3(&buf.scale, &buf_from.scale, &buf_to.scale, total_steps, current_step);
 
     p_delta_LightSettings(&buf.lightsource, &buf_from.lightsource, &buf_to.lightsource, total_steps, current_step);
     p_delta_MaterialSettings(&buf.material, &buf_from.material, &buf_to.material, total_steps, current_step);

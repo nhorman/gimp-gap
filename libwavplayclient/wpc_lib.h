@@ -1,4 +1,3 @@
-#ifndef GAP_DISABLE_WAV_AUDIOSUPPORT
 #include <wavplay.h>
 #include <wavfile.h>
 #include <client.h>
@@ -30,7 +29,5 @@ extern pid_t apcl_get_serverpid(void);
 #define apcl_path(path,flags,erf) tosvr_path(path,flags,erf)	/* Tell server a pathname */
 #define apcl_sampling_rate(rate,flags,erf) tosvr_sampling_rate(flags,erf,rate)	/* Tell server a pathname */
 #define apcl_start_sample(offs,flags,erf) tosvr_start_sample(flags,erf,offs)	/* Tell server a pathname */
-
-#endif
 
 #endif

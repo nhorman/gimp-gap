@@ -57,6 +57,7 @@
 #include "gap_arr_dialog.h"
 #include "gap_filter.h"
 #include "gap_filter_pdb.h"
+#include "gap_dbbrowser_utils.h"
 #include "gap_lib.h"
 
 
@@ -71,10 +72,6 @@
 extern int gap_debug;
 
 static char *global_plugin_data = NULL;
-
-static gint32 g_current_image_id;
-
-
 
 gint p_call_plugin(char *plugin_name, gint32 image_id, gint32 layer_id, GimpRunMode run_mode)
 {
@@ -260,8 +257,14 @@ void p_set_data(char *key, gint plugin_data_len)
 /* ============================================================================
  * p_procedure_available
  * ============================================================================
+ * return 0 if available, -1 if not available
+ *
+ * if ptype is PTYP_ITERATOR then check for typical iterator procedure PDB parameters
+ *          and return -1 if the procedure is available but has no typical parameters.
+ *
+ * if ptype is PTYP_CAN_OPERATE_ON_DRAWABLE:
+ *           return -1 if procedure has not the 3 typical parameters INT32, IMAGE, DRAWABLE
  */
-
 
 gint p_procedure_available(char  *proc_name, t_proc_type ptype)
 {
@@ -330,6 +333,7 @@ gint p_procedure_available(char  *proc_name, t_proc_type ptype)
   }
   else
   {
+     /* procedure is not n the PDB */
      return -1;
   }
   
@@ -465,40 +469,42 @@ char * p_get_iterator_proc(char *plugin_name, gint *count)
  * ============================================================================
  */
 
-int p_constraint_proc_sel1(gchar *proc_name)
+int p_constraint_proc_sel1(gchar *proc_name, gint32 image_id)
 {
-  int        l_rc;
-  GimpImageBaseType l_base_type;
-
   /* here we should check, if proc_name
    * can operate on the current Imagetype (RGB, INDEXED, GRAY)
    * if not, 0 should be returned.
-   *
-   * I did not find a way to do this with the PDB Interface of gimp 0.99.16
    */
   return 1;
 
-  l_rc = 0;    /* 0 .. set Apply Button in_sensitive */
-
-  l_base_type =gimp_image_base_type(g_current_image_id);
-  switch(l_base_type)
+#ifdef THIS_IS_A_COMMENT_DONT_COMPILE
   {
-    case GIMP_RGB:
-    case GIMP_GRAY:
-    case GIMP_INDEXED:
-      l_rc = 1;
-      break;
-  }
-  return l_rc;
+    int        l_rc;
+    GimpImageBaseType l_base_type;
+
+    l_rc = 0;    /* 0 .. set Apply Button in_sensitive */
+
+    l_base_type = gimp_image_base_type(image_id);
+    switch(l_base_type)
+    {
+      case GIMP_RGB:
+      case GIMP_GRAY:
+      case GIMP_INDEXED:
+	l_rc = 1;
+	break;
+    }
+    return l_rc;
+  }  
+#endif  
 }
 
-int p_constraint_proc_sel2(gchar *proc_name)
+int p_constraint_proc_sel2(gchar *proc_name, gint32 image_id)
 {
   char *l_plugin_iterator;
   int   l_rc;
   gint  l_count;
   
-  l_rc = p_constraint_proc_sel1(proc_name);
+  l_rc = p_constraint_proc_sel1(proc_name, image_id);
   if(l_rc != 0)
   {
     l_plugin_iterator =  p_get_iterator_proc(proc_name, &l_count);
@@ -516,7 +522,7 @@ int p_constraint_proc_sel2(gchar *proc_name)
   return 0;         /* 0 .. set "Apply Varying" Button in_sensitive */
 }
 
-int p_constraint_proc(gchar *proc_name)
+int p_constraint_proc(gchar *proc_name, gint32 image_id)
 {
   int l_rc;
   char *l_plugin_iterator;
@@ -542,6 +548,14 @@ int p_constraint_proc(gchar *proc_name)
      return 0;
   }
  
+  if(gap_debug)
+  {
+    /* skip the last check for iterator in debug mode 
+     * want to see the other procedures too in that case (hof)
+     */
+    return 1;    /* 1 add the plugin procedure */
+  }
+
   l_plugin_iterator =  p_get_iterator_proc(proc_name, &l_count);
   if(l_plugin_iterator == NULL)
   {
