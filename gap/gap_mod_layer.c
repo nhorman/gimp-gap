@@ -491,7 +491,7 @@ p_selection_combine(gint32 image_id
 			    , 0
 			    , 0
 			    );
-  gimp_channel_delete(l_new_channel_id);
+  gimp_drawable_delete(l_new_channel_id);
 
 }  /* end p_selection_combine */
 
