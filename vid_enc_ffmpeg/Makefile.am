@@ -28,6 +28,8 @@ gap_vid_enc_ffmpeg_SOURCES = \
 	gap_enc_ffmpeg_main.h		\
 	gap_enc_ffmpeg_gui.c		\
 	gap_enc_ffmpeg_gui.h		\
+	gap_enc_ffmpeg_par.h		\
+	gap_enc_ffmpeg_par.c		\
 	gap_enc_ffmpeg_callbacks.c	\
 	gap_enc_ffmpeg_callbacks.h	
 

@@ -28,7 +28,7 @@
  * version 1.3.18b; 2003/08/23  hof: gap_vin_get_all: force timezoom value >= 1 (0 results in divison by zero)
  * version 1.3.18a; 2003/08/23  hof: bugfix: gap_vin_get_all must clear (g_malloc0) vin_ptr struct at creation
  * version 1.3.16c; 2003/07/12  hof: support onionskin settings in video_info files
- *                                   key/value/datatype is now managed by t_keylist
+ *                                   key/value/datatype is now managed by GapVinKeyList
  * version 1.3.14b; 2003/06/03  hof: using setlocale independent float conversion procedures
  *                                   g_ascii_strtod() and g_ascii_dtostr()
  * version 1.3.14a; 2003/05/24  hof: created (splitted off from gap_pdb_calls module)
@@ -47,57 +47,36 @@
 extern int gap_debug;
 
 
-typedef enum
-{
-  GAP_VIN_GINT32
-, GAP_VIN_GDOUBLE
-, GAP_VIN_STRING
-, GAP_VIN_GBOOLEAN
-, GAP_VIN_DUMMY
-} t_vin_datatype;
-
-
-typedef struct t_keylist
-{
-  char            keyword[50];
-  char            comment[80];
-  gint32          len;
-  gpointer        val_ptr;
-  t_vin_datatype  dataype;
-  gboolean        done_flag;
-  void *next;
-} t_keylist;
-
 
 /* --------------------------
- * p_free_keylist
+ * gap_vin_free_keylist
  * --------------------------
  */
-static void
-p_free_keylist(t_keylist *keylist)
+void
+gap_vin_free_keylist(GapVinKeyList *keylist)
 {
-  t_keylist *keyptr;
+  GapVinKeyList *keyptr;
   
   while(keylist)
   {
-    keyptr = (t_keylist *)keylist->next;
+    keyptr = (GapVinKeyList *)keylist->next;
     g_free(keylist);
     keylist = keyptr;
   }
 
-}  /* end p_free_keylist */
+}  /* end gap_vin_free_keylist */
 
 
 /* --------------------------
- * p_new_keylist
+ * gap_vin_new_keylist
  * --------------------------
  */
-static t_keylist*
-p_new_keylist(void)
+GapVinKeyList*
+gap_vin_new_keylist(void)
 {
-  t_keylist *keyptr;
+  GapVinKeyList *keyptr;
   
-  keyptr = g_malloc0(sizeof(t_keylist));
+  keyptr = g_malloc0(sizeof(GapVinKeyList));
   keyptr->keyword[0] = '\0';
   keyptr->comment[0] = '\0';
   keyptr->len = 0;
@@ -108,11 +87,11 @@ p_new_keylist(void)
   
   return(keyptr);
 
-}  /* end p_new_keylist */
+}  /* end gap_vin_new_keylist */
 
 
 /* --------------------------
- * p_set_keyword
+ * gap_vin_set_keyword
  * --------------------------
  * create a new element, init with the passed args
  * and add to end of the passed keylist.
@@ -120,26 +99,26 @@ p_new_keylist(void)
  * keylist must contain at least one element.
  * (if this is a dummy it will be replaced)
  */
-static void
-p_set_keyword(t_keylist *keylist
+void
+gap_vin_set_keyword(GapVinKeyList *keylist
              , const gchar *keyword
              , gpointer val_ptr
-             , t_vin_datatype dataype
+             , GapVinDataType dataype
              , gint32 len
              , const gchar *comment
              )
 {
-  t_keylist *keyptr;
+  GapVinKeyList *keyptr;
   
   if(keylist == NULL)
   {
-    printf ("** INTERNAL ERROR p_set_keyword was called with keylist == NULL\n");
+    printf ("** INTERNAL ERROR gap_vin_set_keyword was called with keylist == NULL\n");
     return;
   }
   
   if(keyword == NULL)
   {
-    printf ("** INTERNAL ERROR p_set_keyword was called with keyword == NULL\n");
+    printf ("** INTERNAL ERROR gap_vin_set_keyword was called with keyword == NULL\n");
     return;
   }
 
@@ -152,12 +131,12 @@ p_set_keyword(t_keylist *keylist
   }
   else
   {
-    keyptr = p_new_keylist();
+    keyptr = gap_vin_new_keylist();
     
     /* add new element to end of keylist */  
     while(keylist->next)
     {
-      keylist = (t_keylist *)keylist->next;
+      keylist = (GapVinKeyList *)keylist->next;
     }
     keylist->next = keyptr;
   }
@@ -172,7 +151,7 @@ p_set_keyword(t_keylist *keylist
   keyptr->val_ptr = val_ptr;
   keyptr->dataype = dataype;
   
-}  /* end p_set_keyword */
+}  /* end gap_vin_set_keyword */
 
 
 /* --------------------------
@@ -180,11 +159,11 @@ p_set_keyword(t_keylist *keylist
  * --------------------------
  */
 static void
-p_set_master_keywords(t_keylist *keylist, GapVinVideoInfo *vin_ptr)
+p_set_master_keywords(GapVinKeyList *keylist, GapVinVideoInfo *vin_ptr)
 {
-   p_set_keyword(keylist, "(framerate ", &vin_ptr->framerate, GAP_VIN_GDOUBLE, 0, "# 1.0 upto 100.0 frames per sec");
-   p_set_keyword(keylist, "(timezoom ", &vin_ptr->timezoom,   GAP_VIN_GINT32, 0, "# 1 upto 100 frames");
-   p_set_keyword(keylist, "(active_layer_tracking ", &vin_ptr->active_layer_tracking,   GAP_VIN_GINT32, 0, "# 0:OFF 1 by name 2 by stackpos");
+   gap_vin_set_keyword(keylist, "(framerate ", &vin_ptr->framerate, GAP_VIN_GDOUBLE, 0, "# 1.0 upto 100.0 frames per sec");
+   gap_vin_set_keyword(keylist, "(timezoom ", &vin_ptr->timezoom,   GAP_VIN_GINT32, 0, "# 1 upto 100 frames");
+   gap_vin_set_keyword(keylist, "(active_layer_tracking ", &vin_ptr->active_layer_tracking,   GAP_VIN_GINT32, 0, "# 0:OFF 1 by name 2 by stackpos");
 }  /* end p_set_master_keywords */
 
 /* --------------------------
@@ -192,25 +171,25 @@ p_set_master_keywords(t_keylist *keylist, GapVinVideoInfo *vin_ptr)
  * --------------------------
  */
 static void
-p_set_onion_keywords(t_keylist *keylist, GapVinVideoInfo *vin_ptr)
+p_set_onion_keywords(GapVinKeyList *keylist, GapVinVideoInfo *vin_ptr)
 {
-   p_set_keyword(keylist, "(onion_auto_enable ", &vin_ptr->onionskin_auto_enable, GAP_VIN_GBOOLEAN, 0, "\0");
-   p_set_keyword(keylist, "(onion_auto_replace_after_load ", &vin_ptr->auto_replace_after_load, GAP_VIN_GBOOLEAN, 0, "\0");
-   p_set_keyword(keylist, "(onion_auto_delete_before_save ", &vin_ptr->auto_delete_before_save, GAP_VIN_GBOOLEAN, 0, "\0");
-   p_set_keyword(keylist, "(onion_number_of_layers ", &vin_ptr->num_olayers, GAP_VIN_GINT32, 0, "\0");
-   p_set_keyword(keylist, "(onion_ref_mode ", &vin_ptr->ref_mode, GAP_VIN_GINT32, 0, "\0");
-   p_set_keyword(keylist, "(onion_ref_delta ", &vin_ptr->ref_delta, GAP_VIN_GINT32, 0, "\0");
-   p_set_keyword(keylist, "(onion_ref_cycle ", &vin_ptr->ref_cycle, GAP_VIN_GBOOLEAN, 0, "\0");
-   p_set_keyword(keylist, "(onion_stack_pos ", &vin_ptr->stack_pos, GAP_VIN_GINT32, 0, "\0");
-   p_set_keyword(keylist, "(onion_stack_top ", &vin_ptr->stack_top, GAP_VIN_GBOOLEAN, 0, "\0");
-   p_set_keyword(keylist, "(onion_opacity_initial ", &vin_ptr->opacity, GAP_VIN_GDOUBLE, 0, "\0");
-   p_set_keyword(keylist, "(onion_opacity_delta ", &vin_ptr->opacity_delta, GAP_VIN_GDOUBLE, 0, "\0");
-   p_set_keyword(keylist, "(onion_ignore_botlayers ", &vin_ptr->ignore_botlayers, GAP_VIN_GINT32, 0, "\0");
-   p_set_keyword(keylist, "(onion_select_mode ", &vin_ptr->select_mode, GAP_VIN_GINT32, 0, "\0");
-   p_set_keyword(keylist, "(onion_select_casesensitive ", &vin_ptr->select_case, GAP_VIN_GBOOLEAN, 0, "\0");
-   p_set_keyword(keylist, "(onion_select_invert ", &vin_ptr->select_invert, GAP_VIN_GBOOLEAN, 0, "\0");
-   p_set_keyword(keylist, "(onion_select_string ", &vin_ptr->select_string[0], GAP_VIN_STRING, sizeof(vin_ptr->select_string), "\0");
-   p_set_keyword(keylist, "(onion_ascending_opacity ", &vin_ptr->asc_opacity, GAP_VIN_GBOOLEAN, 0, "\0");
+   gap_vin_set_keyword(keylist, "(onion_auto_enable ", &vin_ptr->onionskin_auto_enable, GAP_VIN_GBOOLEAN, 0, "\0");
+   gap_vin_set_keyword(keylist, "(onion_auto_replace_after_load ", &vin_ptr->auto_replace_after_load, GAP_VIN_GBOOLEAN, 0, "\0");
+   gap_vin_set_keyword(keylist, "(onion_auto_delete_before_save ", &vin_ptr->auto_delete_before_save, GAP_VIN_GBOOLEAN, 0, "\0");
+   gap_vin_set_keyword(keylist, "(onion_number_of_layers ", &vin_ptr->num_olayers, GAP_VIN_GINT32, 0, "\0");
+   gap_vin_set_keyword(keylist, "(onion_ref_mode ", &vin_ptr->ref_mode, GAP_VIN_GINT32, 0, "\0");
+   gap_vin_set_keyword(keylist, "(onion_ref_delta ", &vin_ptr->ref_delta, GAP_VIN_GINT32, 0, "\0");
+   gap_vin_set_keyword(keylist, "(onion_ref_cycle ", &vin_ptr->ref_cycle, GAP_VIN_GBOOLEAN, 0, "\0");
+   gap_vin_set_keyword(keylist, "(onion_stack_pos ", &vin_ptr->stack_pos, GAP_VIN_GINT32, 0, "\0");
+   gap_vin_set_keyword(keylist, "(onion_stack_top ", &vin_ptr->stack_top, GAP_VIN_GBOOLEAN, 0, "\0");
+   gap_vin_set_keyword(keylist, "(onion_opacity_initial ", &vin_ptr->opacity, GAP_VIN_GDOUBLE, 0, "\0");
+   gap_vin_set_keyword(keylist, "(onion_opacity_delta ", &vin_ptr->opacity_delta, GAP_VIN_GDOUBLE, 0, "\0");
+   gap_vin_set_keyword(keylist, "(onion_ignore_botlayers ", &vin_ptr->ignore_botlayers, GAP_VIN_GINT32, 0, "\0");
+   gap_vin_set_keyword(keylist, "(onion_select_mode ", &vin_ptr->select_mode, GAP_VIN_GINT32, 0, "\0");
+   gap_vin_set_keyword(keylist, "(onion_select_casesensitive ", &vin_ptr->select_case, GAP_VIN_GBOOLEAN, 0, "\0");
+   gap_vin_set_keyword(keylist, "(onion_select_invert ", &vin_ptr->select_invert, GAP_VIN_GBOOLEAN, 0, "\0");
+   gap_vin_set_keyword(keylist, "(onion_select_string ", &vin_ptr->select_string[0], GAP_VIN_STRING, sizeof(vin_ptr->select_string), "\0");
+   gap_vin_set_keyword(keylist, "(onion_ascending_opacity ", &vin_ptr->asc_opacity, GAP_VIN_GBOOLEAN, 0, "\0");
 }  /* end p_set_onion_keywords */
 
 
@@ -308,16 +287,26 @@ gap_vin_load_textfile(const char *filename)
 
 
 
-/* --------------------------
+/* ---------------------------
  * p_write_keylist_value
- * --------------------------
+ * ---------------------------
  * write Key/value entry (one line) to file,
  * value format depends on datatype
  *   (keyname value) #comment
  */
 static void
-p_write_keylist_value(FILE *fp, t_keylist *keyptr)
+p_write_keylist_value(FILE *fp, GapVinKeyList *keyptr, const char *term_str)
 {
+  static char *termbuf = "\0";
+  const char *term_ptr;
+  
+  
+  term_ptr = termbuf;
+  if(term_str)
+  {
+    term_ptr = term_str;
+  }
+  
   switch(keyptr->dataype)
   {
     case GAP_VIN_GINT32:
@@ -325,10 +314,11 @@ p_write_keylist_value(FILE *fp, t_keylist *keyptr)
         gint32 *val_ptr;
       
         val_ptr = (gint32 *)keyptr->val_ptr;
-        fprintf(fp, "%s%d) %s\n"
+        fprintf(fp, "%s%d%s %s\n"
                , keyptr->keyword   /* "(keyword " */
                , (int)*val_ptr     /* value */
-               , keyptr->comment   /*  "# 1.0 upto 100.0 frames per sec\n" */
+	       , term_ptr
+               , keyptr->comment
                );
       }
       break;
@@ -344,10 +334,11 @@ p_write_keylist_value(FILE *fp, t_keylist *keyptr)
                      ,*val_ptr
                      );
      
-        fprintf(fp, "%s%s) %s\n"
+        fprintf(fp, "%s%s%s %s\n"
                , keyptr->keyword   /* "(keyword " */
                , l_dbl_str         /* value */
-               , keyptr->comment   /*  "# 1.0 upto 100.0 frames per sec\n" */
+	       , term_ptr
+               , keyptr->comment
                );
       }
       break;
@@ -358,18 +349,55 @@ p_write_keylist_value(FILE *fp, t_keylist *keyptr)
         val_ptr = (gboolean *)keyptr->val_ptr;
         if(*val_ptr)
         {
-          fprintf(fp, "%syes) %s\n"
+          fprintf(fp, "%syes%s %s\n"
                , keyptr->keyword   /* "(keyword " */
-               , keyptr->comment   /*  "# 1.0 upto 100.0 frames per sec\n" */
+	       , term_ptr
+               , keyptr->comment
                );
         }
         else
         {
-          fprintf(fp, "%sno) %s\n"
+          fprintf(fp, "%sno%s %s\n"
                , keyptr->keyword   /* "(keyword " */
-               , keyptr->comment   /*  "# 1.0 upto 100.0 frames per sec\n" */
+	       , term_ptr
+               , keyptr->comment
                );
         }
+      }
+      break;
+    case GAP_VIN_G32BOOLEAN:
+      {
+        gint32 *val_ptr;
+
+        val_ptr = (gint32 *)keyptr->val_ptr;
+        if((*val_ptr == TRUE) || (*val_ptr == 1))
+        {
+          fprintf(fp, "%syes%s %s\n"
+               , keyptr->keyword   /* "(keyword " */
+	       , term_ptr
+               , keyptr->comment
+               );
+        }
+        else
+        {
+          if((*val_ptr == FALSE) || (*val_ptr == 0))
+          {
+            fprintf(fp, "%sno%s %s\n"
+               , keyptr->keyword   /* "(keyword " */
+	       , term_ptr
+               , keyptr->comment
+               );
+          }
+          else
+          {
+            fprintf(fp, "%s%d%s %s\n"
+               , keyptr->keyword   /* "(keyword " */
+               , (int)*val_ptr     /* value */
+	       , term_ptr
+               , keyptr->comment
+               );
+          }
+	    }
       }
       break;
     case GAP_VIN_STRING:
@@ -400,8 +428,9 @@ p_write_keylist_value(FILE *fp, t_keylist *keyptr)
           }
         }
                
-        fprintf(fp, "\") %s\n"
-               , keyptr->comment   /*  "# 1.0 upto 100.0 frames per sec\n" */
+        fprintf(fp, "\"%s %s\n"
+	       , term_ptr
+               , keyptr->comment
                );
         
       }
@@ -413,39 +442,37 @@ p_write_keylist_value(FILE *fp, t_keylist *keyptr)
 }  /* end p_write_keylist_value */
 
 
-
 /* --------------------------
- * gap_vin_set_common_keylist
+ * gap_vin_rewrite_file
  * --------------------------
- * (re)write the current video info to .vin file
+ * (re)write the file
  * only the values for the keywords in the passed keylist
  * are created (or replaced) in the file.
  * all other lines are left unchanged.
- * if the file is empty a header is added.
+ * if the file is empty a header  is added.
+ *  (this is only done if the header text is specified
+ *   in the hdr_text parameter.
+ *   pass NULL if you dont want add header text
+ *  )
+ * return: 0 if file could be written, -1 on error
  */
-static int
-gap_vin_set_common_keylist(t_keylist *keylist, GapVinVideoInfo *vin_ptr, char *basename)
+int
+gap_vin_rewrite_file(GapVinKeyList *keylist, const char *filename, const char *hdr_text, const char *term_str)
 {
   FILE *l_fp;
   GapVinTextFileLines *txf_ptr_root;
   GapVinTextFileLines *txf_ptr;
-  t_keylist *keyptr;
-  char  *l_vin_filename;
+  GapVinKeyList *keyptr;
   int   l_rc;
-  int   l_cnt_framerate;
-  int   l_cnt_timezoom;
   int   l_len;
    
   l_rc = -1;
-  l_cnt_framerate = 0;
-  l_cnt_timezoom = 0;
-  l_vin_filename = gap_vin_alloc_name(basename);
 
-  if(l_vin_filename)
+  if(filename)
   {
-      txf_ptr_root = gap_vin_load_textfile(l_vin_filename);
+      txf_ptr_root = gap_vin_load_textfile(filename);
   
-      l_fp = fopen(l_vin_filename, "w");
+      l_fp = fopen(filename, "w");
       if(l_fp)
       {
          for(txf_ptr = txf_ptr_root; txf_ptr != NULL; txf_ptr = (GapVinTextFileLines *) txf_ptr->next)
@@ -453,13 +480,13 @@ gap_vin_set_common_keylist(t_keylist *keylist, GapVinVideoInfo *vin_ptr, char *b
            gboolean line_done;
            
            line_done = FALSE;
-           for(keyptr=keylist; keyptr != NULL; keyptr = (t_keylist*)keyptr->next)
+           for(keyptr=keylist; keyptr != NULL; keyptr = (GapVinKeyList*)keyptr->next)
            {
              l_len = strlen(keyptr->keyword);
              if(strncmp(txf_ptr->line, keyptr->keyword, l_len) == 0)
              {
                /* replace the existing line (same key, new value) */
-               p_write_keylist_value(l_fp, keyptr);
+               p_write_keylist_value(l_fp, keyptr, term_str);
                keyptr->done_flag = TRUE;
                line_done = TRUE;
                break;
@@ -492,16 +519,19 @@ gap_vin_set_common_keylist(t_keylist *keylist, GapVinVideoInfo *vin_ptr, char *b
          }
          else
          {
-           /* write header if file was empty or not existent */
-           fprintf(l_fp, "# GIMP / GAP Videoinfo file\n");
+	   if(hdr_text)
+	   {
+             /* write header if file was empty or not existent */
+             fprintf(l_fp, "%s\n", hdr_text);
+	   }
          }
          
          /* write the unhandled key/values (where key was not found in the file before) */
-         for(keyptr=keylist; keyptr != NULL; keyptr = (t_keylist*)keyptr->next)
+         for(keyptr=keylist; keyptr != NULL; keyptr = (GapVinKeyList*)keyptr->next)
          {
            if(keyptr->done_flag == FALSE)
            {
-             p_write_keylist_value(l_fp, keyptr);
+             p_write_keylist_value(l_fp, keyptr, term_str);
              keyptr->done_flag = TRUE;
            }
          }   /* end for keylist loop */
@@ -509,65 +539,41 @@ gap_vin_set_common_keylist(t_keylist *keylist, GapVinVideoInfo *vin_ptr, char *b
          fclose(l_fp);
          l_rc = 0;
        }
-       g_free(l_vin_filename);
   }
 
   return(l_rc);
-}  /* end gap_vin_set_common_keylist */
-
+}  /* end gap_vin_rewrite_file */
 
 
 /* --------------------------
- * gap_vin_get_all_keylist
+ * gap_vin_scann_filevalues
  * --------------------------
- * get video info from .vin file
+ * get values for all specified keynames in the keylist from file
+ * returns the number of recognized keynames (== scanned values)
  */
-static void
-gap_vin_get_all_keylist(t_keylist *keylist, GapVinVideoInfo *vin_ptr, char *basename)
+int
+gap_vin_scann_filevalues(GapVinKeyList *keylist, const char *filename)
 {
-  char  *l_vin_filename;
-  t_keylist *keyptr;
+  GapVinKeyList *keyptr;
   GapVinTextFileLines *txf_ptr_root;
   GapVinTextFileLines *txf_ptr;
   GapVinVideoInfo *l_vin_ptr;
   int   l_len;
+  int   l_cnt_keys;
   
-  l_vin_ptr = g_malloc(sizeof(GapVinVideoInfo));
-  /* init wit defaults (for the case where no video_info file available) */
-  l_vin_ptr->timezoom = 1;
-  l_vin_ptr->framerate = 24.0;
-  l_vin_ptr->active_layer_tracking = GAP_ACTIVE_LAYER_TRACKING_OFF;
-  
-  l_vin_ptr->onionskin_auto_enable = TRUE;
-  l_vin_ptr->auto_replace_after_load = FALSE;
-  l_vin_ptr->auto_delete_before_save = FALSE;
-
-  l_vin_ptr->num_olayers        = 2;
-  l_vin_ptr->ref_delta          = -1;
-  l_vin_ptr->ref_cycle          = FALSE;
-  l_vin_ptr->stack_pos          = 1;
-  l_vin_ptr->stack_top          = FALSE;
-  l_vin_ptr->asc_opacity        = FALSE;
-  l_vin_ptr->opacity            = 80.0;
-  l_vin_ptr->opacity_delta      = 80.0;
-  l_vin_ptr->ignore_botlayers   = 1;
-  l_vin_ptr->select_mode        = 6;     /* GAP_MTCH_ALL_VISIBLE */
-  l_vin_ptr->select_case        = 0;     /* 0 .. ignore case, 1..case sensitve */
-  l_vin_ptr->select_invert      = 0;     /* 0 .. no invert, 1 ..invert */
-  l_vin_ptr->select_string[0] = '\0';
-  
-  l_vin_filename = gap_vin_alloc_name(basename);
-  if(l_vin_filename)
+  l_cnt_keys = 0;
+  if(filename)
   {
-      txf_ptr_root = gap_vin_load_textfile(l_vin_filename);
+      txf_ptr_root = gap_vin_load_textfile(filename);
 
       for(txf_ptr = txf_ptr_root; txf_ptr != NULL; txf_ptr = (GapVinTextFileLines *) txf_ptr->next)
       {
-          for(keyptr=keylist; keyptr != NULL; keyptr = (t_keylist*)keyptr->next)
+          for(keyptr=keylist; keyptr != NULL; keyptr = (GapVinKeyList*)keyptr->next)
           {
              l_len = strlen(keyptr->keyword);
              if(strncmp(txf_ptr->line, keyptr->keyword, l_len) == 0)
              {
+	       l_cnt_keys++;
                switch(keyptr->dataype)
                {
                  case GAP_VIN_GINT32:
@@ -593,7 +599,8 @@ gap_vin_get_all_keylist(t_keylist *keylist, GapVinVideoInfo *vin_ptr, char *base
                       
                       val_ptr = (gboolean *)keyptr->val_ptr;
                       if((txf_ptr->line[l_len] == 'N')
-                      || (txf_ptr->line[l_len] == 'n'))
+                      || (txf_ptr->line[l_len] == 'n')
+                      || (txf_ptr->line[l_len] == '0'))
                       {
                         *val_ptr = FALSE;
                       }
@@ -601,6 +608,30 @@ gap_vin_get_all_keylist(t_keylist *keylist, GapVinVideoInfo *vin_ptr, char *base
                       {
                         *val_ptr = TRUE;
                       }
+                   }
+                   break;
+                 case GAP_VIN_G32BOOLEAN:
+                   {
+                      gint32 *val_ptr;
+
+                      val_ptr = (gint32 *)keyptr->val_ptr;
+                      if((txf_ptr->line[l_len] == 'N')
+                      || (txf_ptr->line[l_len] == 'n'))
+                      {
+                        *val_ptr = 0;
+                      }
+                      else
+                      {
+                        if((txf_ptr->line[l_len] == 'Y')
+                        || (txf_ptr->line[l_len] == 'y'))
+                        {
+                          *val_ptr = 1;
+                        }
+                        else
+                        {
+                          *val_ptr = atol(&txf_ptr->line[l_len]);
+                        }
+		      }
                    }
                    break;
                  case GAP_VIN_STRING:
@@ -657,6 +688,94 @@ gap_vin_get_all_keylist(t_keylist *keylist, GapVinVideoInfo *vin_ptr, char *base
         gap_vin_free_textfile_lines(txf_ptr_root);
       }
 
+  }
+
+  return(l_cnt_keys);
+}  /* end gap_vin_scann_filevalues */
+
+
+
+
+
+
+/* --------------------------
+ * gap_vin_set_common_keylist
+ * --------------------------
+ * (re)write the current video info to .vin file
+ * only the values for the keywords in the passed keylist
+ * are created (or replaced) in the file.
+ * all other lines are left unchanged.
+ * if the file is empty a header is added.
+ */
+static int
+gap_vin_set_common_keylist(GapVinKeyList *keylist, GapVinVideoInfo *vin_ptr, char *basename)
+{
+  char  *l_vin_filename;
+  int   l_rc;
+  int   l_len;
+   
+  l_rc = -1;
+  l_vin_filename = gap_vin_alloc_name(basename);
+
+  if(l_vin_filename)
+  {
+    l_rc = gap_vin_rewrite_file(keylist
+                          ,l_vin_filename
+			  ,"# GIMP / GAP Videoinfo file"   /*  hdr_text */
+			  ,")"                             /* terminate char */
+			  );
+    g_free(l_vin_filename);
+  }
+
+  return(l_rc);
+}  /* end gap_vin_set_common_keylist */
+
+
+
+/* --------------------------
+ * gap_vin_get_all_keylist
+ * --------------------------
+ * get video info from .vin file
+ */
+static void
+gap_vin_get_all_keylist(GapVinKeyList *keylist, GapVinVideoInfo *vin_ptr, char *basename)
+{
+  char  *l_vin_filename;
+  GapVinKeyList *keyptr;
+  GapVinTextFileLines *txf_ptr_root;
+  GapVinTextFileLines *txf_ptr;
+  GapVinVideoInfo *l_vin_ptr;
+  int   l_len;
+  
+  l_vin_ptr = g_malloc(sizeof(GapVinVideoInfo));
+  /* init wit defaults (for the case where no video_info file available) */
+  l_vin_ptr->timezoom = 1;
+  l_vin_ptr->framerate = 24.0;
+  l_vin_ptr->active_layer_tracking = GAP_ACTIVE_LAYER_TRACKING_OFF;
+  
+  l_vin_ptr->onionskin_auto_enable = TRUE;
+  l_vin_ptr->auto_replace_after_load = FALSE;
+  l_vin_ptr->auto_delete_before_save = FALSE;
+
+  l_vin_ptr->num_olayers        = 2;
+  l_vin_ptr->ref_delta          = -1;
+  l_vin_ptr->ref_cycle          = FALSE;
+  l_vin_ptr->stack_pos          = 1;
+  l_vin_ptr->stack_top          = FALSE;
+  l_vin_ptr->asc_opacity        = FALSE;
+  l_vin_ptr->opacity            = 80.0;
+  l_vin_ptr->opacity_delta      = 80.0;
+  l_vin_ptr->ignore_botlayers   = 1;
+  l_vin_ptr->select_mode        = 6;     /* GAP_MTCH_ALL_VISIBLE */
+  l_vin_ptr->select_case        = 0;     /* 0 .. ignore case, 1..case sensitve */
+  l_vin_ptr->select_invert      = 0;     /* 0 .. no invert, 1 ..invert */
+  l_vin_ptr->select_string[0] = '\0';
+  
+  l_vin_filename = gap_vin_alloc_name(basename);
+  if(l_vin_filename)
+  {
+      gap_vin_scann_filevalues(keylist, l_vin_filename);
+      txf_ptr_root = gap_vin_load_textfile(l_vin_filename);
       g_free(l_vin_filename);
   }
 }  /* end gap_vin_get_all_keylist */
@@ -672,9 +791,9 @@ GapVinVideoInfo *
 gap_vin_get_all(char *basename)
 {
   GapVinVideoInfo *vin_ptr;
-  t_keylist    *keylist;
+  GapVinKeyList    *keylist;
 
-  keylist = p_new_keylist();
+  keylist = gap_vin_new_keylist();
   vin_ptr = g_new0 (GapVinVideoInfo, 1);
   vin_ptr->timezoom = 1;
   p_set_master_keywords(keylist, vin_ptr);
@@ -684,7 +803,7 @@ gap_vin_get_all(char *basename)
 
   vin_ptr->timezoom = MAX(1,vin_ptr->timezoom);
   
-  p_free_keylist(keylist);
+  gap_vin_free_keylist(keylist);
 
   if(gap_debug)
   {
@@ -718,15 +837,15 @@ gap_vin_get_all(char *basename)
 int
 gap_vin_set_common(GapVinVideoInfo *vin_ptr, char *basename)
 {
-  t_keylist    *keylist;
+  GapVinKeyList    *keylist;
   int          l_rc;
 
-  keylist = p_new_keylist();
+  keylist = gap_vin_new_keylist();
 
   p_set_master_keywords(keylist, vin_ptr);
   l_rc = gap_vin_set_common_keylist(keylist, vin_ptr, basename);
   
-  p_free_keylist(keylist);
+  gap_vin_free_keylist(keylist);
 
   return(l_rc);
 }  /* end gap_vin_set_common */
@@ -741,15 +860,15 @@ gap_vin_set_common(GapVinVideoInfo *vin_ptr, char *basename)
 int
 gap_vin_set_common_onion(GapVinVideoInfo *vin_ptr, char *basename)
 {
-  t_keylist    *keylist;
+  GapVinKeyList    *keylist;
   int          l_rc;
 
-  keylist = p_new_keylist();
+  keylist = gap_vin_new_keylist();
 
   p_set_onion_keywords(keylist, vin_ptr);
   l_rc = gap_vin_set_common_keylist(keylist, vin_ptr, basename);
   
-  p_free_keylist(keylist);
+  gap_vin_free_keylist(keylist);
 
   return(l_rc);
 }  /* end gap_vin_set_common_onion */

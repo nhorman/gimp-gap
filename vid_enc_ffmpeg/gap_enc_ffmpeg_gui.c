@@ -61,6 +61,8 @@
 #include "avformat.h"
 #include "avcodec.h"
 
+
+
 typedef struct
 {
   char *name;
@@ -68,6 +70,7 @@ typedef struct
   void *next;
 } t_string_combo_elem;
 
+static GtkWidget * p_ff_cmp_func_combo_box_new(void);
 static void     p_replace_combo_file_format(GapGveFFMpegGlobalParams *gpp);
 static void     p_replace_combo_vid_codec(GapGveFFMpegGlobalParams *gpp);
 static void     p_replace_combo_aud_codec(GapGveFFMpegGlobalParams *gpp);
@@ -75,13 +78,14 @@ static void     p_init_spinbuttons(GapGveFFMpegGlobalParams *gpp);
 static void     p_init_vid_checkbuttons(GapGveFFMpegGlobalParams *gpp);
 static void     p_init_entry_widgets(GapGveFFMpegGlobalParams *gpp);
 static char*    p_init_combo_actual_nameidx(GapGveFFMpegGlobalParams *gpp, GtkWidget *wgt, t_string_combo_elem *list, char *name);
-static gint     p_init_gint_combo_actual_idx(GapGveFFMpegGlobalParams *gpp, GtkWidget *widget, gint *gtab_ptr, gint val, gint maxidx);
+static gint32   p_init_gint_combo_active(GapGveFFMpegGlobalParams *gpp, GtkWidget *widget, gint *gtab_ptr, gint val, gint maxidx);
 static gint     p_init_gdouble_combo_actual_idx(GapGveFFMpegGlobalParams *gpp, GtkWidget *widget, gdouble *gtab_ptr, gdouble val, gint maxidx);
 
 
 
 GtkWidget*      p_create_basic_options_frame (GapGveFFMpegGlobalParams *gpp);
 GtkWidget*      p_create_expert_algortihms_frame (GapGveFFMpegGlobalParams *gpp);
+GtkWidget*      p_create_expert_flags_frame (GapGveFFMpegGlobalParams *gpp);
 GtkWidget*      p_create_expert_options_frame (GapGveFFMpegGlobalParams *gpp);
 GtkWidget*      p_create_2pass_options_frame (GapGveFFMpegGlobalParams *gpp);
 GtkWidget*      p_create_file_comment_frame (GapGveFFMpegGlobalParams *gpp);
@@ -89,12 +93,40 @@ GtkWidget*      p_create_file_comment_frame (GapGveFFMpegGlobalParams *gpp);
 
 
 static gint     gtab_motion_est[GAP_GVE_FFMPEG_MOTION_ESTIMATION_MAX_ELEMENTS] =  { 1, 2, 3, 4, 5, 6 };
-static gint     gtab_dct_algo[GAP_GVE_FFMPEG_DCT_ALGO_MAX_ELEMENTS] =  { 0, 1, 2, 3, 4, 5 };
+static gint     gtab_dct_algo[GAP_GVE_FFMPEG_DCT_ALGO_MAX_ELEMENTS] =  { 0, 1, 2, 3, 4, 5, 6 };
 static gint     gtab_idct_algo[GAP_GVE_FFMPEG_IDCT_ALGO_MAX_ELEMENTS] =  { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
 static gint     gtab_mb_decision[GAP_GVE_FFMPEG_MB_DECISION_MAX_ELEMENTS] =  { FF_MB_DECISION_SIMPLE, FF_MB_DECISION_BITS, FF_MB_DECISION_RD };
 static gint     gtab_audio_krate[GAP_GVE_FFMPEG_AUDIO_KBIT_RATE_MAX_ELEMENTS] = { 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320 };
 static gdouble  gtab_aspect[GAP_GVE_FFMPEG_ASPECT_MAX_ELEMENTS] =  { 0.0, 1.5, 1.333333333, 1.777777778 };
 
+static gint     gtab_coder[GAP_GVE_FFMPEG_CODER_TYPE_MAX_ELEMENTS] =  
+                 { GAP_GVE_FFMPEG_CODER_TYPE_00_VLC
+		 , GAP_GVE_FFMPEG_CODER_TYPE_01_AC
+		 };
+
+static gint     gtab_predictor[GAP_GVE_FFMPEG_PREDICTOR_MAX_ELEMENTS] =  
+                 { GAP_GVE_FFMPEG_PREDICTOR_00_LEFT
+		 , GAP_GVE_FFMPEG_PREDICTOR_01_PLANE
+		 , GAP_GVE_FFMPEG_PREDICTOR_02_MEDIAN
+		 };
+
+static gint     gtab_cmp_func[GAP_GVE_FFMPEG_CMP_MAX_ELEMENTS] =  
+                 { GAP_GVE_FFMPEG_CMP_00_SAD
+                 , GAP_GVE_FFMPEG_CMP_01_SSE
+                 , GAP_GVE_FFMPEG_CMP_02_SATD
+                 , GAP_GVE_FFMPEG_CMP_03_DCT
+                 , GAP_GVE_FFMPEG_CMP_04_PSNR
+                 , GAP_GVE_FFMPEG_CMP_05_BIT
+                 , GAP_GVE_FFMPEG_CMP_06_RD
+                 , GAP_GVE_FFMPEG_CMP_07_ZERO
+                 , GAP_GVE_FFMPEG_CMP_08_VSAD
+                 , GAP_GVE_FFMPEG_CMP_09_VSSE
+                 , GAP_GVE_FFMPEG_CMP_10_NSSE
+                 , GAP_GVE_FFMPEG_CMP_11_W53
+                 , GAP_GVE_FFMPEG_CMP_12_W97
+                 , GAP_GVE_FFMPEG_CMP_13_DCTMAX
+                 , GAP_GVE_FFMPEG_CMP_14_CHROMA
+		 };
 
 /* lists of all available fileformats and codecs
  * (lists are built at runtime by ffmpeg specific query)
@@ -104,6 +136,36 @@ t_string_combo_elem  *glist_aud_codec = NULL;
 t_string_combo_elem  *glist_fileformat = NULL;
 
 
+/* --------------------------------
+ * p_ff_cmp_func_combo_box_new
+ * --------------------------------
+ * create a new gimp_int_combo_box
+ * with items for the ffmpeg compare funtions
+ */
+GtkWidget *
+p_ff_cmp_func_combo_box_new(void)
+{
+  GtkWidget *combo;
+  
+  combo = gimp_int_combo_box_new (_("0 sad"),            GAP_GVE_FFMPEG_CMP_00_SAD,
+                                  _("1 sse"),            GAP_GVE_FFMPEG_CMP_01_SSE,
+                                  _("2 satd"),           GAP_GVE_FFMPEG_CMP_02_SATD,
+                                  _("3 dct"),            GAP_GVE_FFMPEG_CMP_03_DCT,
+                                  _("4 psnr"),           GAP_GVE_FFMPEG_CMP_04_PSNR,
+                                  _("5 bit"),            GAP_GVE_FFMPEG_CMP_05_BIT,
+                                  _("6 rd"),             GAP_GVE_FFMPEG_CMP_06_RD,
+                                  _("7 zero"),           GAP_GVE_FFMPEG_CMP_07_ZERO,
+                                  _("8 vsad"),           GAP_GVE_FFMPEG_CMP_08_VSAD,
+                                  _("9 vsse"),           GAP_GVE_FFMPEG_CMP_09_VSSE,
+                                  _("10 nsse"),          GAP_GVE_FFMPEG_CMP_10_NSSE,
+                                  _("11 w53"),           GAP_GVE_FFMPEG_CMP_11_W53,
+                                  _("12 w97"),           GAP_GVE_FFMPEG_CMP_12_W97,
+                                  _("13 dctmax"),        GAP_GVE_FFMPEG_CMP_13_DCTMAX,
+                                  _("256 chroma"),       GAP_GVE_FFMPEG_CMP_14_CHROMA,
+                                  NULL);
+  return (combo);  
+}  /* end p_ff_cmp_func_combo_box_new */
+  
 
 /* --------------------------------
  * p_replace_combo_file_format
@@ -413,17 +475,41 @@ gap_enc_ffgui_set_default_codecs(GapGveFFMpegGlobalParams *gpp, gboolean set_cod
        default_aud_codec = g_strdup(_("NOT SUPPORTED"));
      }
 
-     info_msg = g_strdup_printf(_("Selected Fileformat : [%s] %s\n"
+     {
+       char *recomand_size;
+	
+       recomand_size = NULL;
+       if((gpp->evl.ntsc_width  > 0)
+       && (gpp->evl.ntsc_height > 0)
+       && (gpp->evl.pal_width   > 0)
+       && (gpp->evl.pal_height  > 0))
+       {
+         recomand_size = g_strdup_printf("   Recommanded Framesize : %d x %d (PAL)  %d x %d (NTSC)"
+	                                  ,(int)gpp->evl.pal_width
+	                                  ,(int)gpp->evl.pal_height
+	                                  ,(int)gpp->evl.ntsc_width
+	                                  ,(int)gpp->evl.ntsc_height
+					  );
+       }
+       else
+       {
+         recomand_size = g_strdup_printf(" ");
+       }
+       info_msg = g_strdup_printf(_("Selected Fileformat : [%s] %s\n"
                                   "Recommanded Video CODEC : %s\n"
                                   "Recommanded Audio CODEC : %s\n"
-                                  "Extension(s): %s"
+                                  "Extension(s): %s %s"
                                  )
                                , ofmt->name
                                , ofmt->long_name
                                , default_vid_codec
                                , default_aud_codec
                                , ofmt->extensions
+			       , recomand_size
                                );
+       g_free(recomand_size);
+     }
+
      /* store the current video extension
       * ofmt->extensions may contain more than 1 extension (comma seperated)
       * but we always use only the 1.st one.
@@ -533,7 +619,10 @@ p_init_combo_actual_nameidx(GapGveFFMpegGlobalParams *gpp, GtkWidget *widget, t_
   {
     if(strcmp(name, elem->name) == 0)
     {
-      gimp_int_combo_box_set_active (GIMP_INT_COMBO_BOX (widget), elem->menu_idx);
+      if(widget)
+      {
+        gimp_int_combo_box_set_active (GIMP_INT_COMBO_BOX (widget), elem->menu_idx);
+      }
       if(gap_debug) printf("p_init_combo_actual_nameidx START found: %s\n", name);
       return(elem->name);
     }
@@ -542,11 +631,11 @@ p_init_combo_actual_nameidx(GapGveFFMpegGlobalParams *gpp, GtkWidget *widget, t_
 }  /* end p_init_combo_actual_nameidx */
 
 /* ---------------------------------
- * p_init_gint_combo_actual_idx
+ * p_init_gint_combo_active
  * ---------------------------------
  */
-static gint
-p_init_gint_combo_actual_idx(GapGveFFMpegGlobalParams *gpp, GtkWidget *widget, gint *gtab_ptr, gint val, gint maxidx)
+static gint32
+p_init_gint_combo_active(GapGveFFMpegGlobalParams *gpp, GtkWidget *widget, gint *gtab_ptr, gint val, gint maxidx)
 {
   gint l_idx;
 
@@ -554,13 +643,16 @@ p_init_gint_combo_actual_idx(GapGveFFMpegGlobalParams *gpp, GtkWidget *widget, g
   {
     if(val == gtab_ptr[l_idx])
     {
-      gimp_int_combo_box_set_active (GIMP_INT_COMBO_BOX (widget), l_idx);
-      return (l_idx);
+      if(widget)
+      {
+        gimp_int_combo_box_set_active (GIMP_INT_COMBO_BOX (widget), gtab_ptr[l_idx]);
+      }
+      return (gtab_ptr[l_idx]);
     }
   }
   
-  return(0);
-}  /* end p_init_gint_combo_actual_idx */
+  return(gtab_ptr[0]);
+}  /* end p_init_gint_combo_active */
 
 /* ------------------------------------
  * p_init_gdouble_combo_actual_idx
@@ -575,7 +667,10 @@ p_init_gdouble_combo_actual_idx(GapGveFFMpegGlobalParams *gpp, GtkWidget *widget
   {
     if(val == gtab_ptr[l_idx])
     {
-      gimp_int_combo_box_set_active (GIMP_INT_COMBO_BOX (widget), l_idx);
+      if(widget)
+      {
+        gimp_int_combo_box_set_active (GIMP_INT_COMBO_BOX (widget), l_idx);
+      }
       return (l_idx);
     }
   }
@@ -591,33 +686,75 @@ p_init_combo_vals(GapGveFFMpegGlobalParams *gpp)
 {
   char *name;
 
-  p_init_gint_combo_actual_idx(gpp, gpp->ff_motion_estimation_combo
+  p_init_gint_combo_active(gpp, gpp->ff_motion_estimation_combo
                               , &gtab_motion_est[0]
                               , gpp->evl.motion_estimation
                               , GAP_GVE_FFMPEG_MOTION_ESTIMATION_MAX_ELEMENTS
                               );
-  p_init_gint_combo_actual_idx(gpp, gpp->ff_dct_algo_combo
+  p_init_gint_combo_active(gpp, gpp->ff_dct_algo_combo
                               , &gtab_dct_algo[0]
                               , gpp->evl.dct_algo
                               , GAP_GVE_FFMPEG_DCT_ALGO_MAX_ELEMENTS
                               );
-  p_init_gint_combo_actual_idx(gpp, gpp->ff_idct_algo_combo
+  p_init_gint_combo_active(gpp, gpp->ff_idct_algo_combo
                               , &gtab_idct_algo[0]
                               , gpp->evl.idct_algo
                               , GAP_GVE_FFMPEG_IDCT_ALGO_MAX_ELEMENTS
                               );
-  p_init_gint_combo_actual_idx(gpp, gpp->ff_mb_decision_combo
+  p_init_gint_combo_active(gpp, gpp->ff_mb_decision_combo
                               , &gtab_mb_decision[0]
                               , gpp->evl.mb_decision
                               , GAP_GVE_FFMPEG_MB_DECISION_MAX_ELEMENTS
                               );
 
-  p_init_gint_combo_actual_idx(gpp, gpp->ff_aud_bitrate_combo
+  p_init_gint_combo_active(gpp, gpp->ff_aud_bitrate_combo
                               , &gtab_audio_krate[0]
                               , gpp->evl.audio_bitrate
                               , GAP_GVE_FFMPEG_AUDIO_KBIT_RATE_MAX_ELEMENTS
                               );
 
+
+
+  p_init_gint_combo_active(gpp, gpp->ff_mb_cmp_combo
+                              , &gtab_cmp_func[0]
+                              , gpp->evl.mb_cmp
+                              , GAP_GVE_FFMPEG_CMP_MAX_ELEMENTS
+                              );
+  p_init_gint_combo_active(gpp, gpp->ff_ildct_cmp_combo
+                              , &gtab_cmp_func[0]
+                              , gpp->evl.ildct_cmp
+                              , GAP_GVE_FFMPEG_CMP_MAX_ELEMENTS
+                              );
+  p_init_gint_combo_active(gpp, gpp->ff_sub_cmp_combo
+                              , &gtab_cmp_func[0]
+                              , gpp->evl.sub_cmp
+                              , GAP_GVE_FFMPEG_CMP_MAX_ELEMENTS
+                              );
+  p_init_gint_combo_active(gpp, gpp->ff_cmp_combo
+                              , &gtab_cmp_func[0]
+                              , gpp->evl.cmp
+                              , GAP_GVE_FFMPEG_CMP_MAX_ELEMENTS
+                              );
+  p_init_gint_combo_active(gpp, gpp->ff_pre_cmp_combo
+                              , &gtab_cmp_func[0]
+                              , gpp->evl.pre_cmp
+                              , GAP_GVE_FFMPEG_CMP_MAX_ELEMENTS
+                              );
+  p_init_gint_combo_active(gpp, gpp->ff_frame_skip_cmp_combo
+                              , &gtab_cmp_func[0]
+                              , gpp->evl.frame_skip_cmp
+                              , GAP_GVE_FFMPEG_CMP_MAX_ELEMENTS
+                              );
+  p_init_gint_combo_active(gpp, gpp->ff_coder_combo
+                              , &gtab_coder[0]
+                              , gpp->evl.coder
+                              , GAP_GVE_FFMPEG_CODER_TYPE_MAX_ELEMENTS
+                              );
+  p_init_gint_combo_active(gpp, gpp->ff_predictor_combo
+                              , &gtab_predictor[0]
+                              , gpp->evl.predictor
+                              , GAP_GVE_FFMPEG_PREDICTOR_MAX_ELEMENTS
+                              );
 
   p_init_gdouble_combo_actual_idx(gpp, gpp->ff_aspect_combo
                               , &gtab_aspect[0]
@@ -664,6 +801,11 @@ p_init_spinbuttons(GapGveFFMpegGlobalParams *gpp)
   GtkAdjustment *adj;
 
   if(gap_debug) printf("p_init_spinbuttons\n");
+  
+  if(gpp->startup)
+  {
+    return;
+  }
 
   adj = GTK_ADJUSTMENT(gpp->ff_aud_bitrate_spinbutton_adj);
   gtk_adjustment_set_value(adj, (gfloat)gpp->evl.audio_bitrate);
@@ -734,6 +876,19 @@ p_init_spinbuttons(GapGveFFMpegGlobalParams *gpp)
   adj = GTK_ADJUSTMENT(gpp->ff_b_frames_spinbutton_adj);
   gtk_adjustment_set_value(adj, (gfloat)gpp->evl.b_frames);
 
+
+  adj = GTK_ADJUSTMENT(gpp->ff_mux_rate_adj);
+  gtk_adjustment_set_value(adj, (gfloat)gpp->evl.mux_rate);
+
+  adj = GTK_ADJUSTMENT(gpp->ff_mux_packet_size_adj);
+  gtk_adjustment_set_value(adj, (gfloat)gpp->evl.mux_packet_size);
+
+  adj = GTK_ADJUSTMENT(gpp->ff_mux_preload_adj);
+  gtk_adjustment_set_value(adj, (gfloat)gpp->evl.mux_preload);
+
+  adj = GTK_ADJUSTMENT(gpp->ff_mux_max_delay_adj);
+  gtk_adjustment_set_value(adj, (gfloat)gpp->evl.mux_max_delay);
+  
 }  /* end p_init_spinbuttons */
 
 
@@ -745,6 +900,11 @@ static void
 p_init_vid_checkbuttons(GapGveFFMpegGlobalParams *gpp)
 {
   gint32 flag;
+  
+  if(gpp->startup)
+  {
+    return;
+  }
 
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_intra_checkbutton)
                                , gpp->evl.intra);
@@ -766,6 +926,46 @@ p_init_vid_checkbuttons(GapGveFFMpegGlobalParams *gpp)
 
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_dont_recode_checkbutton)
                                , gpp->evl.dont_recode_flag);
+
+
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_closed_gop_checkbutton)
+                                 , gpp->evl.closed_gop);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_do_interlace_dct_checkbutton)
+                                 , gpp->evl.do_interlace_dct);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_use_ss_checkbutton)
+                                 , gpp->evl.use_ss);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_use_alt_scan_checkbutton)
+                                 , gpp->evl.use_alt_scan);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_do_interlace_me_checkbutton)
+                                 , gpp->evl.do_interlace_me);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_use_aiv_checkbutton)
+                                 , gpp->evl.use_aiv);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_use_trell_checkbutton)
+                                 , gpp->evl.use_trell);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_use_obmc_checkbutton)
+                                 , gpp->evl.use_obmc);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_use_qpel_checkbutton)
+                                 , gpp->evl.use_qpel);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_use_loop_checkbutton)
+                                 , gpp->evl.use_loop);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_use_qprd_checkbutton)
+                                 , gpp->evl.use_qprd);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_use_cbprd_checkbutton)
+                                 , gpp->evl.use_cbprd);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_use_mv0_checkbutton)
+                                 , gpp->evl.use_mv0);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_do_normalize_aqp_checkbutton)
+                                 , gpp->evl.do_normalize_aqp);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_use_scan_offset_checkbutton)
+                                 , gpp->evl.use_scan_offset);
+
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_strict_gop_checkbutton)
+                                 , gpp->evl.strict_gop);
+  if(gpp->ff_no_output_checkbutton)
+  {
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_no_output_checkbutton)
+                                 , gpp->evl.no_output);
+  }
 }   /* end p_init_vid_checkbuttons */
 
 /* --------------------------------
@@ -775,7 +975,19 @@ p_init_vid_checkbuttons(GapGveFFMpegGlobalParams *gpp)
 static void
 p_init_entry_widgets(GapGveFFMpegGlobalParams *gpp)
 {
-  if(gap_debug) printf("p_init_entry_widgets\n");
+  if(gap_debug)
+  {
+    printf("p_init_entry_widgets gpp:%d  adr of evl: %d\n"
+          , (int)gpp
+          , (int)(&gpp->evl)
+	  );
+    printf("gpp->evl.passlogfile %s\n", gpp->evl.passlogfile);
+  }
+  
+  if(gpp->startup)
+  {
+    return;
+  }
 
   gtk_entry_set_text(GTK_ENTRY(gpp->ff_passlogfile_entry), gpp->evl.passlogfile);
   gtk_entry_set_text(GTK_ENTRY(gpp->ff_title_entry), gpp->evl.title);
@@ -792,7 +1004,10 @@ p_init_entry_widgets(GapGveFFMpegGlobalParams *gpp)
 void
 gap_enc_ffgui_init_main_dialog_widgets(GapGveFFMpegGlobalParams *gpp)
 {
-  if(gap_debug) printf("gap_enc_ffgui_init_main_dialog_widgets: Start INIT\n");
+  if(gap_debug) 
+  {
+    printf("gap_enc_ffgui_init_main_dialog_widgets: Start INIT\n");
+  }
 
   /* put initial values to the widgets */
 
@@ -805,69 +1020,7 @@ gap_enc_ffgui_init_main_dialog_widgets(GapGveFFMpegGlobalParams *gpp)
 }  /* end gap_enc_ffgui_init_main_dialog_widgets */
 
 
-/* --------------------------------
- * gap_enc_ffgui_gettab_motion_est
- * --------------------------------
- */
-gint
-gap_enc_ffgui_gettab_motion_est(gint idx)
-{
- if((idx >= GAP_GVE_FFMPEG_MOTION_ESTIMATION_MAX_ELEMENTS) || (idx < 1))
- {
-    idx = 0;
- }
 
- return(gtab_motion_est[idx]);
-
-}  /* end gap_enc_ffgui_gettab_motion_est */
-
-/* --------------------------------
- * gap_enc_ffgui_gettab_dct_algo
- * --------------------------------
- */
-gint
-gap_enc_ffgui_gettab_dct_algo(gint idx)
-{
- if((idx >= GAP_GVE_FFMPEG_DCT_ALGO_MAX_ELEMENTS) || (idx < 1))
- {
-    idx = 0;
- }
-
- return (gtab_dct_algo[idx]);
-
-}  /* end gap_enc_ffgui_gettab_dct_algo */
-
-/* --------------------------------
- * gap_enc_ffgui_gettab_idct_algo
- * --------------------------------
- */
-gint
-gap_enc_ffgui_gettab_idct_algo(gint idx)
-{
- if((idx >= GAP_GVE_FFMPEG_IDCT_ALGO_MAX_ELEMENTS) || (idx < 1))
- {
-    idx = 0;
- }
-
- return(gtab_idct_algo[idx]);
-
-}  /* end gap_enc_ffgui_gettab_idct_algo */
-
-/* --------------------------------
- * gap_enc_ffgui_gettab_mb_decision
- * --------------------------------
- */
-gint
-gap_enc_ffgui_gettab_mb_decision(gint idx)
-{
- if((idx >= GAP_GVE_FFMPEG_MB_DECISION_MAX_ELEMENTS) || (idx < 1))
- {
-    idx = 0;
- }
-
- return(gtab_mb_decision[idx]);
-
-}  /* end gap_enc_ffgui_gettab_mb_decision */
 
 /* --------------------------------
  * gap_enc_ffgui_gettab_audio_krate
@@ -905,11 +1058,9 @@ gap_enc_ffgui_gettab_aspect(gint idx)
 }  /* end gap_enc_ffgui_gettab_aspect */
 
 
-
-
-/* --------------------------------
+/* ---------------------------------------
  * gap_enc_ffgui_create_fsb__fileselection
- * --------------------------------
+ * ---------------------------------------
  */
 GtkWidget*
 gap_enc_ffgui_create_fsb__fileselection (GapGveFFMpegGlobalParams *gpp)
@@ -957,6 +1108,7 @@ p_create_basic_options_frame (GapGveFFMpegGlobalParams *gpp)
   GtkWidget *combo;
   GtkObject *adj;
   GtkWidget *spinbutton;
+  GtkWidget *checkbutton;
   
   gint       row;
   gint       inital_value;
@@ -1095,7 +1247,7 @@ p_create_basic_options_frame (GapGveFFMpegGlobalParams *gpp)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gimp_help_set_help_data (combo, _("Common used audio bitrates"), NULL);
-  inital_value = p_init_gint_combo_actual_idx(gpp
+  inital_value = p_init_gint_combo_active(gpp
                               , combo
                               , &gtab_audio_krate[0]
                               , gpp->evl.audio_bitrate
@@ -1231,7 +1383,6 @@ p_create_basic_options_frame (GapGveFFMpegGlobalParams *gpp)
 
   row++;
 
-
   /* the qdiff label */
   label = gtk_label_new (_("qdiff:"));
   gtk_widget_show (label);
@@ -1259,6 +1410,137 @@ p_create_basic_options_frame (GapGveFFMpegGlobalParams *gpp)
                       &gpp->evl.qdiff);
 
 
+  row++;
+
+  /* the Frametype label */
+  label = gtk_label_new (_("Frametype:"));
+  gtk_widget_show (label);
+  gtk_table_attach (GTK_TABLE (table), label, 0, 1, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+
+  /* the intra only checkbutton */
+  checkbutton = gtk_check_button_new_with_label (_("Intra Only"));
+  gpp->ff_intra_checkbutton = checkbutton;
+  gtk_widget_show (checkbutton);
+  gtk_table_attach (GTK_TABLE (table), checkbutton, 1, 2, row, row+1,
+                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                      (GtkAttachOptions) (0), 0, 0);
+  gimp_help_set_help_data (checkbutton, _("use only intra frames (I)"), NULL);
+  g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+  g_signal_connect (G_OBJECT (checkbutton), "toggled",
+                      G_CALLBACK (on_ff_gint32_checkbutton_toggled),
+                      &gpp->evl.intra);
+
+  row++;
+
+  /* the GOP label */
+  label = gtk_label_new (_("GOP:"));
+  gtk_widget_show (label);
+  gtk_table_attach (GTK_TABLE (table), label, 0, 1, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+
+
+
+  /* the GOP spinbutton */
+  adj = gtk_adjustment_new (12, 0, 512, 1, 10, 10);
+  spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
+  gpp->ff_gop_size_spinbutton_adj = adj;
+  gpp->ff_gop_size_spinbutton     = spinbutton;
+  gtk_widget_show (spinbutton);
+  gtk_table_attach (GTK_TABLE (table), spinbutton, 1, 2, row, row+1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gimp_help_set_help_data (spinbutton, _("Group of picture size"), NULL);
+  g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_ADJ, (gpointer)adj);
+  g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+  g_signal_connect (G_OBJECT (spinbutton), "changed",
+                    G_CALLBACK (on_ff_gint32_spinbutton_changed),
+                    &gpp->evl.gop_size);
+
+  row++;
+
+  /* the B_frames label */
+  label = gtk_label_new (_("B-Frames:"));
+  gtk_widget_show (label);
+  gtk_table_attach (GTK_TABLE (table), label, 0, 1, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+
+
+  /* the B_frames spinbutton */
+  adj = gtk_adjustment_new (0, 0, (gdouble)FF_MAX_B_FRAMES, 1, 1, 1);
+  spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
+  gpp->ff_b_frames_spinbutton_adj = adj;
+  gpp->ff_b_frames_spinbutton     = spinbutton;
+  gtk_widget_show (spinbutton);
+  gtk_table_attach (GTK_TABLE (table), spinbutton, 1, 2, row, row+1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gimp_help_set_help_data (spinbutton, _("Max number of B-frames in sequence"), NULL);
+  g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_ADJ, (gpointer)adj);
+  g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+  g_signal_connect (G_OBJECT (spinbutton), "changed",
+                    G_CALLBACK (on_ff_gint32_spinbutton_changed),
+                    &gpp->evl.b_frames);
+
+  row++;
+
+  /* the qdiff label */
+  label = gtk_label_new (_("Aspect:"));
+  gtk_widget_show (label);
+  gtk_table_attach (GTK_TABLE (table), label, 0, 1, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+
+
+  /* the Set Aspectratio checkbutton */
+  checkbutton = gtk_check_button_new_with_label (_("Set Aspectratio"));
+  gpp->ff_aspect_checkbutton = checkbutton;
+  gtk_widget_show (checkbutton);
+  gtk_table_attach (GTK_TABLE (table), checkbutton, 1, 2, row, row+1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gimp_help_set_help_data (checkbutton, _("store aspectratio information (width/height) in the output video"), NULL);
+  g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+  g_signal_connect (G_OBJECT (checkbutton), "toggled",
+                    G_CALLBACK (on_ff_gint32_checkbutton_toggled),
+                    &gpp->evl.set_aspect_ratio);
+
+
+  /* the ASPECT combo */
+  combo = gimp_int_combo_box_new (_("auto"),   GAP_GVE_FFMPEG_ASPECT_00_AUTO,
+                                  _("3:2"),    GAP_GVE_FFMPEG_ASPECT_01_3_2,
+                                  _("4:3"),    GAP_GVE_FFMPEG_ASPECT_02_4_3,
+                                  _("16:9"),   GAP_GVE_FFMPEG_ASPECT_03_16_9,
+                                  NULL);
+
+  gpp->ff_aspect_combo = combo;
+  gtk_widget_show (combo);
+
+  gtk_table_attach (GTK_TABLE (table), combo, 2, 3, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gimp_help_set_help_data (combo, _("Select aspect ratio"), NULL);
+
+  inital_value =  p_init_gdouble_combo_actual_idx(gpp
+                            , combo
+                            , &gtab_aspect[0]
+                            , gpp->evl.factor_aspect_ratio
+                            , GAP_GVE_FFMPEG_ASPECT_MAX_ELEMENTS
+                            );
+
+  gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (combo),
+                            inital_value,
+                            G_CALLBACK (on_ff_aspect_combo),
+                            gpp);
+
+
   return(frame); 
 }  /* end  p_create_basic_options_frame */
 
@@ -1272,18 +1554,14 @@ GtkWidget*
 p_create_expert_algortihms_frame (GapGveFFMpegGlobalParams *gpp)
 {
   GtkWidget *frame;
-  GtkWidget *flags_frame;
   GtkWidget *table2;
   GtkWidget *label;
   GtkWidget *combo;
-  GtkObject *adj;
-  GtkWidget *spinbutton;
-  GtkWidget *checkbutton;
   
   gint       row;
   gint       inital_value;
   
-  frame = gimp_frame_new (_("FFMpeg Expert Encoder Algorithms and Flags"));
+  frame = gimp_frame_new (_("FFMpeg Expert Encoder Algorithms"));
 
   table2 = gtk_table_new (7, 3, FALSE);
   gtk_widget_show (table2);
@@ -1295,7 +1573,7 @@ p_create_expert_algortihms_frame (GapGveFFMpegGlobalParams *gpp)
   row = 0;
   
   /* the motion estimation label */
-  label = gtk_label_new (_("Motion Estimation:"));
+  label = gtk_label_new (_("Motion estimation:"));
   gtk_widget_show (label);
   gtk_table_attach (GTK_TABLE (table2), label, 0, 1, row, row+1,
                     (GtkAttachOptions) (GTK_FILL),
@@ -1304,12 +1582,12 @@ p_create_expert_algortihms_frame (GapGveFFMpegGlobalParams *gpp)
 
 
   /* the motion estimation combo box */
-  combo = gimp_int_combo_box_new (_("1 zero (fastest)"),     GAP_GVE_FFMPEG_MOTION_ESTIMATION_00_ZERO,
-                                  _("2 full (best)"),        GAP_GVE_FFMPEG_MOTION_ESTIMATION_01_FULL,
-                                  _("3 log"),                GAP_GVE_FFMPEG_MOTION_ESTIMATION_02_LOG,
-                                  _("4 phods"),              GAP_GVE_FFMPEG_MOTION_ESTIMATION_03_PHODS,
-                                  _("5 epzs (recommanded)"), GAP_GVE_FFMPEG_MOTION_ESTIMATION_04_EPZS,
-                                  _("6 x1"),                 GAP_GVE_FFMPEG_MOTION_ESTIMATION_05_X1,
+  combo = gimp_int_combo_box_new (_("1 zero (fastest)"),     GAP_GVE_FFMPEG_MOTION_ESTIMATION_01_ZERO,
+                                  _("2 full (best)"),        GAP_GVE_FFMPEG_MOTION_ESTIMATION_02_FULL,
+                                  _("3 log"),                GAP_GVE_FFMPEG_MOTION_ESTIMATION_03_LOG,
+                                  _("4 phods"),              GAP_GVE_FFMPEG_MOTION_ESTIMATION_04_PHODS,
+                                  _("5 epzs (recommanded)"), GAP_GVE_FFMPEG_MOTION_ESTIMATION_05_EPZS,
+                                  _("6 x1"),                 GAP_GVE_FFMPEG_MOTION_ESTIMATION_06_X1,
                                   NULL);
   gpp->ff_motion_estimation_combo = combo;
   gtk_widget_show (combo);
@@ -1318,7 +1596,7 @@ p_create_expert_algortihms_frame (GapGveFFMpegGlobalParams *gpp)
                     (GtkAttachOptions) (0), 0, 0);
   gimp_help_set_help_data (combo, _("Select algorithm for motion estimation"), NULL);
 
-  inital_value =  p_init_gint_combo_actual_idx(gpp
+  inital_value =  p_init_gint_combo_active(gpp
                               , combo
                               , &gtab_motion_est[0]
                               , gpp->evl.motion_estimation
@@ -1326,8 +1604,8 @@ p_create_expert_algortihms_frame (GapGveFFMpegGlobalParams *gpp)
                               );
   gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (combo),
                               inital_value,
-                              G_CALLBACK (on_ff_motion_estimation_combo),
-                              gpp);
+                              G_CALLBACK (on_ff_gint32_combo),
+                              &gpp->evl.motion_estimation);
 
 
   row++;
@@ -1348,6 +1626,9 @@ p_create_expert_algortihms_frame (GapGveFFMpegGlobalParams *gpp)
                                   _("3 mmx"),          GAP_GVE_FFMPEG_DCT_ALGO_03_MMX,
                                   _("4 mlib"),         GAP_GVE_FFMPEG_DCT_ALGO_04_MLIB,
                                   _("5 altivec"),      GAP_GVE_FFMPEG_DCT_ALGO_05_ALTIVEC,
+#ifdef HAVE_FULL_FFMPEG
+                                  _("6 faan"),         GAP_GVE_FFMPEG_DCT_ALGO_06_FAAN,
+#endif
                                   NULL);
   gpp->ff_dct_algo_combo = combo;
   gtk_widget_show (combo);
@@ -1356,7 +1637,7 @@ p_create_expert_algortihms_frame (GapGveFFMpegGlobalParams *gpp)
                     (GtkAttachOptions) (0), 0, 0);
   gimp_help_set_help_data (combo, _("Select algorithm for DCT"), NULL);
 
-  inital_value =  p_init_gint_combo_actual_idx(gpp
+  inital_value =  p_init_gint_combo_active(gpp
                               , combo
                               , &gtab_dct_algo[0]
                               , gpp->evl.dct_algo
@@ -1364,8 +1645,8 @@ p_create_expert_algortihms_frame (GapGveFFMpegGlobalParams *gpp)
                               );
   gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (combo),
                               inital_value,
-                              G_CALLBACK (on_ff_dct_algo_combo),
-                              gpp);
+                              G_CALLBACK (on_ff_gint32_combo),
+                              &gpp->evl.dct_algo);
 
   row++;
   
@@ -1389,6 +1670,11 @@ p_create_expert_algortihms_frame (GapGveFFMpegGlobalParams *gpp)
                                   _("6 mlib"),         GAP_GVE_FFMPEG_IDCT_ALGO_06_MLIB,
                                   _("7 arm"),          GAP_GVE_FFMPEG_IDCT_ALGO_07_ARM,
                                   _("8 altivec"),      GAP_GVE_FFMPEG_IDCT_ALGO_08_ALTIVEC,
+#ifdef HAVE_FULL_FFMPEG
+                                  _("9 sh4"),          GAP_GVE_FFMPEG_IDCT_ALGO_09_SH4,
+                                  _("10 simplearm"),   GAP_GVE_FFMPEG_IDCT_ALGO_10_SIMPLEARM,
+                                  _("11 h264"),        GAP_GVE_FFMPEG_IDCT_ALGO_11_H264,
+#endif
                                   NULL);
 
   gpp->ff_idct_algo_combo = combo;
@@ -1398,7 +1684,7 @@ p_create_expert_algortihms_frame (GapGveFFMpegGlobalParams *gpp)
                     (GtkAttachOptions) (0), 0, 0);
   gimp_help_set_help_data (combo, _("Select algorithm for IDCT"), NULL);
 
-  inital_value = p_init_gint_combo_actual_idx(gpp
+  inital_value = p_init_gint_combo_active(gpp
                               , combo
                               , &gtab_idct_algo[0]
                               , gpp->evl.idct_algo
@@ -1407,8 +1693,8 @@ p_create_expert_algortihms_frame (GapGveFFMpegGlobalParams *gpp)
 
   gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (combo),
                               inital_value,
-                              G_CALLBACK (on_ff_idct_algo_combo),
-                              gpp);
+                              G_CALLBACK (on_ff_gint32_combo),
+                              &gpp->evl.idct_algo);
 
 
   row++;
@@ -1434,18 +1720,296 @@ p_create_expert_algortihms_frame (GapGveFFMpegGlobalParams *gpp)
                     (GtkAttachOptions) (0), 0, 0);
   gimp_help_set_help_data (combo, _("Select algorithm for macroblock decision"), NULL);
 
-  inital_value = 
+  inital_value = p_init_gint_combo_active(gpp
+                              , combo
+                              , &gtab_mb_decision[0]
+                              , gpp->evl.mb_decision
+                              , GAP_GVE_FFMPEG_MB_DECISION_MAX_ELEMENTS
+                              );
 
   gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (combo),
                               inital_value,
-                              G_CALLBACK (on_ff_mb_decision_combo),
-                              gpp);
+                              G_CALLBACK (on_ff_gint32_combo),
+                              &gpp->evl.mb_decision);
+
 
   row++;
 
-  /* the GOP label */
-  label = gtk_label_new (_("GOP:"));
+  /* the Coder Type label */
+  label = gtk_label_new (_("Coder Type:"));
+#ifdef HAVE_FULL_FFMPEG
   gtk_widget_show (label);
+#endif
+  gtk_table_attach (GTK_TABLE (table2), label, 0, 1, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+
+  /* the MB_DECISION combo */
+  combo = gimp_int_combo_box_new (_("0 vlc"),        GAP_GVE_FFMPEG_CODER_TYPE_00_VLC,
+                                  _("1 ac"),         GAP_GVE_FFMPEG_CODER_TYPE_01_AC,
+                                  NULL);
+
+  gpp->ff_coder_combo = combo;
+#ifdef HAVE_FULL_FFMPEG
+  gtk_widget_show (combo);
+#endif
+  gtk_table_attach (GTK_TABLE (table2), combo, 1, 2, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gimp_help_set_help_data (combo, _("coder type"), NULL);
+
+  inital_value = p_init_gint_combo_active(gpp
+                              , combo
+                              , &gtab_coder[0]
+                              , gpp->evl.coder
+                              , GAP_GVE_FFMPEG_CODER_TYPE_MAX_ELEMENTS
+                              );
+
+  gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (combo),
+                              inital_value,
+                              G_CALLBACK (on_ff_gint32_combo),
+                              &gpp->evl.coder);
+
+
+  row++;
+
+  /* the Predictor label */
+  label = gtk_label_new (_("Predictor:"));
+#ifdef HAVE_FULL_FFMPEG
+  gtk_widget_show (label);
+#endif
+  gtk_table_attach (GTK_TABLE (table2), label, 0, 1, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+
+  /* the MB_DECISION combo */
+  combo = gimp_int_combo_box_new (_("0 left"),         GAP_GVE_FFMPEG_PREDICTOR_00_LEFT,
+                                  _("1 plane"),        GAP_GVE_FFMPEG_PREDICTOR_01_PLANE,
+                                  _("2 median"),       GAP_GVE_FFMPEG_PREDICTOR_02_MEDIAN,
+                                  NULL);
+
+  gpp->ff_predictor_combo = combo;
+#ifdef HAVE_FULL_FFMPEG
+  gtk_widget_show (combo);
+#endif
+  gtk_table_attach (GTK_TABLE (table2), combo, 1, 2, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gimp_help_set_help_data (combo, _("prediction method"), NULL);
+
+  inital_value = p_init_gint_combo_active(gpp
+                              , combo
+                              , &gtab_predictor[0]
+                              , gpp->evl.predictor
+                              , GAP_GVE_FFMPEG_PREDICTOR_MAX_ELEMENTS
+                              );
+
+  gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (combo),
+                              inital_value,
+                              G_CALLBACK (on_ff_gint32_combo),
+                              &gpp->evl.predictor);
+
+
+  row++;
+
+  /* the Macroblock compare function label */
+  label = gtk_label_new (_("Macroblock cmp:"));
+#ifdef HAVE_FULL_FFMPEG
+  gtk_widget_show (label);
+#endif
+  gtk_table_attach (GTK_TABLE (table2), label, 0, 1, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+
+
+  /* the Macroblock compare function combo */
+  combo = p_ff_cmp_func_combo_box_new ();
+
+  gpp->ff_mb_cmp_combo = combo;
+#ifdef HAVE_FULL_FFMPEG
+  gtk_widget_show (combo);
+#endif
+  gtk_table_attach (GTK_TABLE (table2), combo, 1, 2, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gimp_help_set_help_data (combo, _("Select macroblock compare function "), NULL);
+
+  inital_value = p_init_gint_combo_active(gpp
+                              , combo
+                              , &gtab_cmp_func[0]
+                              , gpp->evl.mb_cmp
+                              , GAP_GVE_FFMPEG_CMP_MAX_ELEMENTS
+                              );
+ 
+  gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (combo),
+                              inital_value,
+                              G_CALLBACK (on_ff_gint32_combo),
+                              &gpp->evl.mb_cmp);
+
+
+  row++;
+
+  /* the ildct compare function label */
+  label = gtk_label_new (_("ildct cmp:"));
+#ifdef HAVE_FULL_FFMPEG
+  gtk_widget_show (label);
+#endif
+  gtk_table_attach (GTK_TABLE (table2), label, 0, 1, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+
+
+  /* the ildct compare function combo */
+  combo = p_ff_cmp_func_combo_box_new ();
+
+  gpp->ff_ildct_cmp_combo = combo;
+#ifdef HAVE_FULL_FFMPEG
+  gtk_widget_show (combo);
+#endif
+  gtk_table_attach (GTK_TABLE (table2), combo, 1, 2, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gimp_help_set_help_data (combo, _("Select ildct compare function "), NULL);
+
+  inital_value = p_init_gint_combo_active(gpp
+                              , combo
+                              , &gtab_cmp_func[0]
+                              , gpp->evl.ildct_cmp
+                              , GAP_GVE_FFMPEG_CMP_MAX_ELEMENTS
+                              );
+ 
+  gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (combo),
+                              inital_value,
+                              G_CALLBACK (on_ff_gint32_combo),
+                              &gpp->evl.ildct_cmp);
+
+
+
+  row++;
+
+  /* the fullpel compare function label */
+  label = gtk_label_new (_("Fullpel cmp:"));
+#ifdef HAVE_FULL_FFMPEG
+  gtk_widget_show (label);
+#endif
+  gtk_table_attach (GTK_TABLE (table2), label, 0, 1, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+
+
+  /* the fullpel compare function combo */
+  combo = p_ff_cmp_func_combo_box_new ();
+
+  gpp->ff_cmp_combo = combo;
+#ifdef HAVE_FULL_FFMPEG
+  gtk_widget_show (combo);
+#endif
+  gtk_table_attach (GTK_TABLE (table2), combo, 1, 2, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gimp_help_set_help_data (combo, _("Select fullpel compare function "), NULL);
+
+  inital_value = p_init_gint_combo_active(gpp
+                              , combo
+                              , &gtab_cmp_func[0]
+                              , gpp->evl.cmp
+                              , GAP_GVE_FFMPEG_CMP_MAX_ELEMENTS
+                              );
+ 
+  gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (combo),
+                              inital_value,
+                              G_CALLBACK (on_ff_gint32_combo),
+                              &gpp->evl.cmp);
+
+
+  row++;
+
+  /* the subpel compare function label */
+  label = gtk_label_new (_("Subpel cmp:"));
+#ifdef HAVE_FULL_FFMPEG
+  gtk_widget_show (label);
+#endif
+  gtk_table_attach (GTK_TABLE (table2), label, 0, 1, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+
+
+  /* the subpel compare function combo */
+  combo = p_ff_cmp_func_combo_box_new ();
+
+  gpp->ff_sub_cmp_combo = combo;
+#ifdef HAVE_FULL_FFMPEG
+  gtk_widget_show (combo);
+#endif
+  gtk_table_attach (GTK_TABLE (table2), combo, 1, 2, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gimp_help_set_help_data (combo, _("Select subpel compare function "), NULL);
+
+  inital_value = p_init_gint_combo_active(gpp
+                              , combo
+                              , &gtab_cmp_func[0]
+                              , gpp->evl.sub_cmp
+                              , GAP_GVE_FFMPEG_CMP_MAX_ELEMENTS
+                              );
+ 
+  gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (combo),
+                              inital_value,
+                              G_CALLBACK (on_ff_gint32_combo),
+                              &gpp->evl.sub_cmp);
+
+
+  row++;
+
+  /* the pre motion estimation compare function label */
+  label = gtk_label_new (_("Pre motion estimation cmp:"));
+#ifdef HAVE_FULL_FFMPEG
+  gtk_widget_show (label);
+#endif
+  gtk_table_attach (GTK_TABLE (table2), label, 0, 1, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+
+
+  /* the pre motion estimation compare function combo */
+  combo = p_ff_cmp_func_combo_box_new ();
+
+  gpp->ff_pre_cmp_combo = combo;
+#ifdef HAVE_FULL_FFMPEG
+  gtk_widget_show (combo);
+#endif
+  gtk_table_attach (GTK_TABLE (table2), combo, 1, 2, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gimp_help_set_help_data (combo, _("Select pre motion estimation compare function "), NULL);
+
+  inital_value = p_init_gint_combo_active(gpp
+                              , combo
+                              , &gtab_cmp_func[0]
+                              , gpp->evl.pre_cmp
+                              , GAP_GVE_FFMPEG_CMP_MAX_ELEMENTS
+                              );
+ 
+  gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (combo),
+                              inital_value,
+                              G_CALLBACK (on_ff_gint32_combo),
+                              &gpp->evl.pre_cmp);
+
+
+  row++;
+
+  /* the frame skip compare function label */
+  label = gtk_label_new (_("Frame skip cmp:"));
+#ifdef HAVE_FULL_FFMPEG
+  gtk_widget_show (label);
+#endif
   gtk_table_attach (GTK_TABLE (table2), label, 0, 1, row, row+1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
@@ -1453,57 +2017,69 @@ p_create_expert_algortihms_frame (GapGveFFMpegGlobalParams *gpp)
 
 
 
-  /* the GOP spinbutton */
-  adj = gtk_adjustment_new (12, 0, 100, 1, 10, 10);
-  spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
-  gpp->ff_gop_size_spinbutton_adj = adj;
-  gpp->ff_gop_size_spinbutton     = spinbutton;
-  gtk_widget_show (spinbutton);
-  gtk_table_attach (GTK_TABLE (table2), spinbutton, 1, 2, row, row+1,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gimp_help_set_help_data (spinbutton, _("Group of picture size"), NULL);
-  g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_ADJ, (gpointer)adj);
-  g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
-  g_signal_connect (G_OBJECT (spinbutton), "changed",
-                    G_CALLBACK (on_ff_gint32_spinbutton_changed),
-                    &gpp->evl.gop_size);
+  /* the frame skip compare function combo */
+  combo = p_ff_cmp_func_combo_box_new ();
 
-  row++;
-
-  /* the B_frames label */
-  label = gtk_label_new (_("B-Frames:"));
-  gtk_widget_show (label);
-  gtk_table_attach (GTK_TABLE (table2), label, 0, 1, row, row+1,
+  gpp->ff_frame_skip_cmp_combo = combo;
+#ifdef HAVE_FULL_FFMPEG
+  gtk_widget_show (combo);
+#endif
+  gtk_table_attach (GTK_TABLE (table2), combo, 1, 2, row, row+1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+  gimp_help_set_help_data (combo, _("Select pre motion estimation compare function "), NULL);
 
-  /* the B_frames spinbutton */
-  adj = gtk_adjustment_new (0, 0, (gdouble)FF_MAX_B_FRAMES, 1, 1, 1);
-  spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
-  gpp->ff_b_frames_spinbutton_adj = adj;
-  gpp->ff_b_frames_spinbutton     = spinbutton;
-  gtk_widget_show (spinbutton);
-  gtk_table_attach (GTK_TABLE (table2), spinbutton, 1, 2, row, row+1,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gimp_help_set_help_data (spinbutton, _("Max number of B-frames in sequence"), NULL);
-  g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_ADJ, (gpointer)adj);
-  g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
-  g_signal_connect (G_OBJECT (spinbutton), "changed",
-                    G_CALLBACK (on_ff_gint32_spinbutton_changed),
-                    &gpp->evl.b_frames);
+  inital_value = p_init_gint_combo_active(gpp
+                              , combo
+                              , &gtab_cmp_func[0]
+                              , gpp->evl.frame_skip_cmp
+                              , GAP_GVE_FFMPEG_CMP_MAX_ELEMENTS
+                              );
+ 
+  gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (combo),
+                              inital_value,
+                              G_CALLBACK (on_ff_gint32_combo),
+                              &gpp->evl.frame_skip_cmp);
 
   row++;
+
+  return(frame); 
+}  /* end  p_create_expert_algortihms_frame */
+
+
+/* --------------------------------
+ * p_create_expert_flags_frame
+ * --------------------------------
+ */
+GtkWidget*
+p_create_expert_flags_frame (GapGveFFMpegGlobalParams *gpp)
+{
+  GtkWidget *frame;
+  GtkWidget *flags_frame;
+  GtkWidget *table2;
+  GtkWidget *label;
+  GtkWidget *checkbutton;
+  
+  gint       row;
+  
+  frame = gimp_frame_new (_("FFMpeg Expert Flags"));
+
+  table2 = gtk_table_new (7, 3, FALSE);
+  gtk_widget_show (table2);
+  gtk_container_add (GTK_CONTAINER (frame), table2);
+  gtk_container_set_border_width (GTK_CONTAINER (table2), 2);
+  gtk_table_set_row_spacings (GTK_TABLE (table2), 4);
+  gtk_table_set_col_spacings (GTK_TABLE (table2), 4);
+
+  row = 0;
 
   /* Flags label */
-  label = gtk_label_new (_("Flags:"));
-  gtk_widget_show (label);
-  gtk_table_attach (GTK_TABLE (table2), label, 0, 1, row, row+1,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+//  label = gtk_label_new (_("Flags:"));
+//  gtk_widget_show (label);
+//  gtk_table_attach (GTK_TABLE (table2), label, 0, 1, row, row+1,
+//                    (GtkAttachOptions) (GTK_FILL),
+//                    (GtkAttachOptions) (0), 0, 0);
+//  gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 
   /* the (invisible) frame Flags container for the flag checkbuttons */
   flags_frame = gimp_frame_new (NULL);
@@ -1526,80 +2102,34 @@ p_create_expert_algortihms_frame (GapGveFFMpegGlobalParams *gpp)
 
     flags_row = 0;
 
-    checkbutton = gtk_check_button_new_with_label (_("Intra Only"));
-    gpp->ff_intra_checkbutton = checkbutton;
-    gtk_widget_show (checkbutton);
-    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 0, 1, flags_row, flags_row+1,
+    /* LABELS */
+    label = gtk_label_new (_("General flags:"));
+    gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+    gtk_widget_show (label);
+    gtk_table_attach (GTK_TABLE (flags_table), label, 0, 1, flags_row, flags_row+1,
                       (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                       (GtkAttachOptions) (0), 0, 0);
-    gimp_help_set_help_data (checkbutton, _("use only intra frames (I)"), NULL);
-    g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
-    g_signal_connect (G_OBJECT (checkbutton), "toggled",
-                      G_CALLBACK (on_ff_gint32_checkbutton_toggled),
-                      &gpp->evl.intra);
 
-    flags_row++;
-
-    checkbutton = gtk_check_button_new_with_label (_("Advanced intra coding"));
-    gpp->ff_aic_checkbutton                 = checkbutton;
-    gtk_widget_show (checkbutton);
-    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 0, 1, flags_row, flags_row+1,
+    label = gtk_label_new (_("H263:"));
+    gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+    gtk_widget_show (label);
+    gtk_table_attach (GTK_TABLE (flags_table), label, 1, 2, flags_row, flags_row+1,
                       (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                       (GtkAttachOptions) (0), 0, 0);
-    gimp_help_set_help_data (checkbutton, _("activate intra frame coding (only h263+ CODEC)"), NULL);
-    g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
-    g_signal_connect (G_OBJECT (checkbutton), "toggled",
-                      G_CALLBACK (on_ff_gint32_checkbutton_toggled),
-                      &gpp->evl.aic);
+
+
+    label = gtk_label_new (_("MPEG2/4:"));
+    gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+    gtk_widget_show (label);
+    gtk_table_attach (GTK_TABLE (flags_table), label, 2, 3, flags_row, flags_row+1,
+                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                      (GtkAttachOptions) (0), 0, 0);
 
 
     flags_row++;
-
-    checkbutton = gtk_check_button_new_with_label (_("Unlimited motion vector"));
-    gpp->ff_umv_checkbutton = checkbutton;
-    gtk_widget_show (checkbutton);
-    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 0, 1, flags_row, flags_row+1,
-                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                      (GtkAttachOptions) (0), 0, 0);
-    gimp_help_set_help_data (checkbutton, _("enable unlimited motion vector (only h263+ CODEC)"), NULL);
-    g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
-    g_signal_connect (G_OBJECT (checkbutton), "toggled",
-                      G_CALLBACK (on_ff_gint32_checkbutton_toggled),
-                      &gpp->evl.umv);
-
-
-    flags_row++;
-
-    checkbutton = gtk_check_button_new_with_label (_("4 Motion Vectors"));
-    gpp->ff_mv4_checkbutton = checkbutton;
-    gtk_widget_show (checkbutton);
-    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 0, 1, flags_row, flags_row+1,
-                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                      (GtkAttachOptions) (0), 0, 0);
-    gimp_help_set_help_data (checkbutton, _("use four motion vector by macroblock (only MPEG-4 CODEC)"), NULL);
-    g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
-    g_signal_connect (G_OBJECT (checkbutton), "toggled",
-                      G_CALLBACK (on_ff_gint32_checkbutton_toggled),
-                      &gpp->evl.mv4);
- 
-
-    flags_row++;
-
-    checkbutton = gtk_check_button_new_with_label (_("Partitioning"));
-    gpp->ff_partitioning_checkbutton = checkbutton;
-    gtk_widget_show (checkbutton);
-    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 0, 1, flags_row, flags_row+1,
-                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                      (GtkAttachOptions) (0), 0, 0);
-    gimp_help_set_help_data (checkbutton, _("use data partitioning (only MPEG-4 CODEC)"), NULL);
-    g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
-    g_signal_connect (G_OBJECT (checkbutton), "toggled",
-                      G_CALLBACK (on_ff_gint32_checkbutton_toggled),
-                      &gpp->evl.partitioning);
-
-
-    flags_row++;
-
+    
+    /* CHECKBUTTONS */
+    /* the Bitexact checkbutton */
     checkbutton = gtk_check_button_new_with_label (_("Bitexact"));
     gpp->ff_bitexact_checkbutton = checkbutton;
     gtk_widget_show (checkbutton);
@@ -1613,47 +2143,343 @@ p_create_expert_algortihms_frame (GapGveFFMpegGlobalParams *gpp)
                       &gpp->evl.bitexact);
 
 
-    flags_row++;
-
-    checkbutton = gtk_check_button_new_with_label (_("Set Aspectratio"));
-    gpp->ff_aspect_checkbutton = checkbutton;
+    /* the Advanced intra coding checkbutton */
+    checkbutton = gtk_check_button_new_with_label (_("Advanced intra coding"));
+    gpp->ff_aic_checkbutton                 = checkbutton;
     gtk_widget_show (checkbutton);
-    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 0, 1, flags_row, flags_row+1,
+    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 1, 2, flags_row, flags_row+1,
                       (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                       (GtkAttachOptions) (0), 0, 0);
-    gimp_help_set_help_data (checkbutton, _("store aspectratio information (width/height) in the output video"), NULL);
+    gimp_help_set_help_data (checkbutton, _("activate intra frame coding (only h263+ CODEC)"), NULL);
     g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
     g_signal_connect (G_OBJECT (checkbutton), "toggled",
                       G_CALLBACK (on_ff_gint32_checkbutton_toggled),
-                      &gpp->evl.set_aspect_ratio);
+                      &gpp->evl.aic);
 
-    /* the ASPECT combo */
-    combo = gimp_int_combo_box_new (_("auto from pixelsize"),  GAP_GVE_FFMPEG_ASPECT_00_AUTO,
-                                    _("3:2"),                  GAP_GVE_FFMPEG_ASPECT_01_3_2,
-                                    _("4:3"),                  GAP_GVE_FFMPEG_ASPECT_02_4_3,
-                                    _("16:9"),                 GAP_GVE_FFMPEG_ASPECT_03_16_9,
-                                    NULL);
 
-    gpp->ff_aspect_combo = combo;
-    gtk_widget_show (combo);
-
-    gtk_table_attach (GTK_TABLE (flags_table), combo, 1, 2, flags_row, flags_row+1,
-                      (GtkAttachOptions) (GTK_FILL),
+    /* the 4 Motion Vectors checkbutton */
+    checkbutton = gtk_check_button_new_with_label (_("4 Motion Vectors"));
+    gpp->ff_mv4_checkbutton = checkbutton;
+    gtk_widget_show (checkbutton);
+    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 2, 3, flags_row, flags_row+1,
+                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                       (GtkAttachOptions) (0), 0, 0);
-    gimp_help_set_help_data (combo, _("Select aspect ratio"), NULL);
+    gimp_help_set_help_data (checkbutton, _("use four motion vector by macroblock (only MPEG-4 CODEC)"), NULL);
+    g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+    g_signal_connect (G_OBJECT (checkbutton), "toggled",
+                      G_CALLBACK (on_ff_gint32_checkbutton_toggled),
+                      &gpp->evl.mv4);
 
-    inital_value =  p_init_gdouble_combo_actual_idx(gpp
-                              , combo
-                              , &gtab_aspect[0]
-                              , gpp->evl.factor_aspect_ratio
-                              , GAP_GVE_FFMPEG_ASPECT_MAX_ELEMENTS
-                              );
 
-    gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (combo),
-                              inital_value,
-                              G_CALLBACK (on_ff_aspect_combo),
-                              gpp);
+    flags_row++;
+
+    /* the Closed GOP checkbutton */
+    checkbutton = gtk_check_button_new_with_label (_("Closed GOP"));
+    gpp->ff_closed_gop_checkbutton = checkbutton;
+#ifdef HAVE_FULL_FFMPEG
+    gtk_widget_show (checkbutton);
+#endif
+    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 0, 1, flags_row, flags_row+1,
+                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                      (GtkAttachOptions) (0), 0, 0);
+    gimp_help_set_help_data (checkbutton, _("closed group of pictures"), NULL);
+    g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+    g_signal_connect (G_OBJECT (checkbutton), "toggled",
+                      G_CALLBACK (on_ff_gint32_checkbutton_toggled),
+                      &gpp->evl.closed_gop);
+
+    /* the Unlimited motion vector checkbutton */
+    checkbutton = gtk_check_button_new_with_label (_("Unlimited motion vector"));
+    gpp->ff_umv_checkbutton = checkbutton;
+    gtk_widget_show (checkbutton);
+    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 1, 2, flags_row, flags_row+1,
+                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                      (GtkAttachOptions) (0), 0, 0);
+    gimp_help_set_help_data (checkbutton, _("enable unlimited motion vector (only h263+ CODEC)"), NULL);
+    g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+    g_signal_connect (G_OBJECT (checkbutton), "toggled",
+                      G_CALLBACK (on_ff_gint32_checkbutton_toggled),
+                      &gpp->evl.umv);
+
+
+    /* the Partitioning checkbutton */
+    checkbutton = gtk_check_button_new_with_label (_("Partitioning"));
+    gpp->ff_partitioning_checkbutton = checkbutton;
+    gtk_widget_show (checkbutton);
+    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 2, 3, flags_row, flags_row+1,
+                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                      (GtkAttachOptions) (0), 0, 0);
+    gimp_help_set_help_data (checkbutton, _("use data partitioning (only MPEG-4 CODEC)"), NULL);
+    g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+    g_signal_connect (G_OBJECT (checkbutton), "toggled",
+                      G_CALLBACK (on_ff_gint32_checkbutton_toggled),
+                      &gpp->evl.partitioning);
+
+
+
+    flags_row++;
+
+    /* the Strict GOP checkbutton */
+    checkbutton = gtk_check_button_new_with_label (_("Strict GOP"));
+    gpp->ff_strict_gop_checkbutton = checkbutton;
+#ifdef HAVE_FULL_FFMPEG
+    gtk_widget_show (checkbutton);
+#endif
+    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 0, 1, flags_row, flags_row+1,
+                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                      (GtkAttachOptions) (0), 0, 0);
+    gimp_help_set_help_data (checkbutton, _("strictly enforce GOP size"), NULL);
+    g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+    g_signal_connect (G_OBJECT (checkbutton), "toggled",
+                      G_CALLBACK (on_ff_gint32_checkbutton_toggled),
+                      &gpp->evl.strict_gop);
+
+
+
+
+    /* the Use slice struct checkbutton */
+    checkbutton = gtk_check_button_new_with_label (_("Use slice struct"));
+    gpp->ff_use_ss_checkbutton = checkbutton;
+#ifdef HAVE_FULL_FFMPEG
+    gtk_widget_show (checkbutton);
+#endif
+    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 1, 2, flags_row, flags_row+1,
+                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                      (GtkAttachOptions) (0), 0, 0);
+    gimp_help_set_help_data (checkbutton, _("enable slice structured mode (only h263+ CODEC)"), NULL);
+    g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+    g_signal_connect (G_OBJECT (checkbutton), "toggled",
+                      G_CALLBACK (on_ff_gint32_checkbutton_toggled),
+                      &gpp->evl.use_ss);
+
+
+    /* the Use Alt scantable checkbutton */
+    checkbutton = gtk_check_button_new_with_label (_("Use alt scanntable"));
+    gpp->ff_use_alt_scan_checkbutton = checkbutton;
+#ifdef HAVE_FULL_FFMPEG
+    gtk_widget_show (checkbutton);
+#endif
+    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 2, 3, flags_row, flags_row+1,
+                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                      (GtkAttachOptions) (0), 0, 0);
+    gimp_help_set_help_data (checkbutton, _("enable alternate scantable (only MPEG-2 MPEG-4 CODECs)"), NULL);
+    g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+    g_signal_connect (G_OBJECT (checkbutton), "toggled",
+                      G_CALLBACK (on_ff_gint32_checkbutton_toggled),
+                      &gpp->evl.use_alt_scan);
+
+
  
+    flags_row++;
+
+    /* the Use interlaced me checkbutton */
+    checkbutton = gtk_check_button_new_with_label (_("Use interlaced me"));
+    gpp->ff_do_interlace_me_checkbutton = checkbutton;
+#ifdef HAVE_FULL_FFMPEG
+    gtk_widget_show (checkbutton);
+#endif
+    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 0, 1, flags_row, flags_row+1,
+                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                      (GtkAttachOptions) (0), 0, 0);
+    gimp_help_set_help_data (checkbutton, _("enable interlaced motion estimation"), NULL);
+    g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+    g_signal_connect (G_OBJECT (checkbutton), "toggled",
+                      G_CALLBACK (on_ff_gint32_checkbutton_toggled),
+                      &gpp->evl.do_interlace_me);
+    
+
+    /* the Use AIV checkbutton */
+    checkbutton = gtk_check_button_new_with_label (_("Use AIV"));
+    gpp->ff_use_aiv_checkbutton = checkbutton;
+#ifdef HAVE_FULL_FFMPEG
+    gtk_widget_show (checkbutton);
+#endif
+    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 1, 2, flags_row, flags_row+1,
+                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                      (GtkAttachOptions) (0), 0, 0);
+    gimp_help_set_help_data (checkbutton, _("enable Alternative inter vlc (only h263+ CODEC)"), NULL);
+    g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+    g_signal_connect (G_OBJECT (checkbutton), "toggled",
+                      G_CALLBACK (on_ff_gint32_checkbutton_toggled),
+                      &gpp->evl.use_aiv);
+
+ 
+    flags_row++;
+
+    /* the interlace dct checkbutton */
+    checkbutton = gtk_check_button_new_with_label (_("Interlace DCT"));
+    gpp->ff_do_interlace_dct_checkbutton = checkbutton;
+#ifdef HAVE_FULL_FFMPEG
+    gtk_widget_show (checkbutton);
+#endif
+    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 0, 1, flags_row, flags_row+1,
+                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                      (GtkAttachOptions) (0), 0, 0);
+    gimp_help_set_help_data (checkbutton, _("use interlaced dct"), NULL);
+    g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+    g_signal_connect (G_OBJECT (checkbutton), "toggled",
+                      G_CALLBACK (on_ff_gint32_checkbutton_toggled),
+                      &gpp->evl.do_interlace_dct);
+    
+
+    /* the Use OBMC checkbutton */
+    checkbutton = gtk_check_button_new_with_label (_("Overlapped block"));
+    gpp->ff_use_obmc_checkbutton = checkbutton;
+#ifdef HAVE_FULL_FFMPEG
+    gtk_widget_show (checkbutton);
+#endif
+    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 1, 2, flags_row, flags_row+1,
+                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                      (GtkAttachOptions) (0), 0, 0);
+    gimp_help_set_help_data (checkbutton, _("enable use overlapped block motion compensation (only h263+ CODEC)"), NULL);
+    g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+    g_signal_connect (G_OBJECT (checkbutton), "toggled",
+                      G_CALLBACK (on_ff_gint32_checkbutton_toggled),
+                      &gpp->evl.use_obmc);
+
+
+ 
+    flags_row++;
+
+    /* the quarter pel checkbutton */
+    checkbutton = gtk_check_button_new_with_label (_("quarter pel"));
+    gpp->ff_use_qpel_checkbutton = checkbutton;
+#ifdef HAVE_FULL_FFMPEG
+    gtk_widget_show (checkbutton);
+#endif
+    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 0, 1, flags_row, flags_row+1,
+                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                      (GtkAttachOptions) (0), 0, 0);
+    gimp_help_set_help_data (checkbutton, _("enable 1/4-pel"), NULL);
+    g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+    g_signal_connect (G_OBJECT (checkbutton), "toggled",
+                      G_CALLBACK (on_ff_gint32_checkbutton_toggled),
+                      &gpp->evl.use_qpel);
+    
+    /* the Use Loop checkbutton */
+    checkbutton = gtk_check_button_new_with_label (_("Loop Filter"));
+    gpp->ff_use_loop_checkbutton = checkbutton;
+#ifdef HAVE_FULL_FFMPEG
+    gtk_widget_show (checkbutton);
+#endif
+    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 1, 2, flags_row, flags_row+1,
+                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                      (GtkAttachOptions) (0), 0, 0);
+    gimp_help_set_help_data (checkbutton, _("use loop filter (only h263+ CODEC)"), NULL);
+    g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+    g_signal_connect (G_OBJECT (checkbutton), "toggled",
+                      G_CALLBACK (on_ff_gint32_checkbutton_toggled),
+                      &gpp->evl.use_loop);
+
+ 
+    flags_row++;
+
+    /* the Use qprd checkbutton */
+    checkbutton = gtk_check_button_new_with_label (_("Use qprd"));
+    gpp->ff_use_qprd_checkbutton = checkbutton;
+#ifdef HAVE_FULL_FFMPEG
+    gtk_widget_show (checkbutton);
+#endif
+    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 0, 1, flags_row, flags_row+1,
+                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                      (GtkAttachOptions) (0), 0, 0);
+    gimp_help_set_help_data (checkbutton, _("use rate distortion optimization for qp selection"), NULL);
+    g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+    g_signal_connect (G_OBJECT (checkbutton), "toggled",
+                      G_CALLBACK (on_ff_gint32_checkbutton_toggled),
+                      &gpp->evl.use_qprd);
+
+    flags_row++;
+
+    /* the Use cbprd checkbutton */
+    checkbutton = gtk_check_button_new_with_label (_("Use cbprd"));
+    gpp->ff_use_cbprd_checkbutton = checkbutton;
+#ifdef HAVE_FULL_FFMPEG
+    gtk_widget_show (checkbutton);
+#endif
+    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 0, 1, flags_row, flags_row+1,
+                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                      (GtkAttachOptions) (0), 0, 0);
+    gimp_help_set_help_data (checkbutton, _("use rate distortion optimization for cbp"), NULL);
+    g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+    g_signal_connect (G_OBJECT (checkbutton), "toggled",
+                      G_CALLBACK (on_ff_gint32_checkbutton_toggled),
+                      &gpp->evl.use_cbprd);
+    
+
+    flags_row++;
+
+    /* the Use MV0 checkbutton */
+    checkbutton = gtk_check_button_new_with_label (_("Use MV0"));
+    gpp->ff_use_mv0_checkbutton = checkbutton;
+#ifdef HAVE_FULL_FFMPEG
+    gtk_widget_show (checkbutton);
+#endif
+    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 0, 1, flags_row, flags_row+1,
+                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                      (GtkAttachOptions) (0), 0, 0);
+    gimp_help_set_help_data (checkbutton, _("try to encode each MB with MV=<0,0> and choose the better one (has no effect if mbd=0)"), NULL);
+    g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+    g_signal_connect (G_OBJECT (checkbutton), "toggled",
+                      G_CALLBACK (on_ff_gint32_checkbutton_toggled),
+                      &gpp->evl.use_mv0);
+
+    flags_row++;
+
+    /* the Use Normalize checkbutton */
+    checkbutton = gtk_check_button_new_with_label (_("Normalize"));
+    gpp->ff_do_normalize_aqp_checkbutton = checkbutton;
+#ifdef HAVE_FULL_FFMPEG
+    gtk_widget_show (checkbutton);
+#endif
+    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 0, 1, flags_row, flags_row+1,
+                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                      (GtkAttachOptions) (0), 0, 0);
+    gimp_help_set_help_data (checkbutton, _("normalize adaptive quantization"), NULL);
+    g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+    g_signal_connect (G_OBJECT (checkbutton), "toggled",
+                      G_CALLBACK (on_ff_gint32_checkbutton_toggled),
+                      &gpp->evl.do_normalize_aqp);
+
+
+
+    flags_row++;
+
+    /* the SVCD scan offset checkbutton */
+    checkbutton = gtk_check_button_new_with_label (_("SVCD scan offset"));
+    gpp->ff_use_scan_offset_checkbutton = checkbutton;
+#ifdef HAVE_FULL_FFMPEG
+    gtk_widget_show (checkbutton);
+#endif
+    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 0, 1, flags_row, flags_row+1,
+                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                      (GtkAttachOptions) (0), 0, 0);
+    gimp_help_set_help_data (checkbutton, _("enable SVCD scan offset placeholder"), NULL);
+    g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+    g_signal_connect (G_OBJECT (checkbutton), "toggled",
+                      G_CALLBACK (on_ff_gint32_checkbutton_toggled),
+                      &gpp->evl.use_scan_offset);
+
+
+
+    flags_row++;
+
+    /* the Use trell checkbutton */
+    checkbutton = gtk_check_button_new_with_label (_("Use trell"));
+    gpp->ff_use_trell_checkbutton = checkbutton;
+#ifdef HAVE_FULL_FFMPEG
+    gtk_widget_show (checkbutton);
+#endif
+    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 0, 1, flags_row, flags_row+1,
+                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                      (GtkAttachOptions) (0), 0, 0);
+    gimp_help_set_help_data (checkbutton, _("enable trellis quantization"), NULL);
+    g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+    g_signal_connect (G_OBJECT (checkbutton), "toggled",
+                      G_CALLBACK (on_ff_gint32_checkbutton_toggled),
+                      &gpp->evl.use_trell);
+
+
   }  /* end flags_table */
 
 
@@ -1679,7 +2505,8 @@ p_create_expert_algortihms_frame (GapGveFFMpegGlobalParams *gpp)
 
 
   return(frame); 
-}  /* end  p_create_expert_algortihms_frame */
+}  /* end  p_create_expert_flags_frame */
+
 
 
 /* --------------------------------
@@ -1997,7 +2824,7 @@ p_create_expert_options_frame (GapGveFFMpegGlobalParams *gpp)
   gtk_table_attach (GTK_TABLE (table4), spinbutton, 1, 2, row, row+1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gimp_help_set_help_data (spinbutton, _("set ratecontrol buffere size (in kbit)"), NULL);
+  gimp_help_set_help_data (spinbutton, _("set ratecontrol buffere size (in kbyte)"), NULL);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_ADJ, (gpointer)adj);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
   g_signal_connect (G_OBJECT (spinbutton), "changed",
@@ -2098,22 +2925,24 @@ GtkWidget*
 p_create_2pass_options_frame (GapGveFFMpegGlobalParams *gpp)
 {
   GtkWidget *frame;
-  GtkWidget *table5;
+  GtkWidget *table;
   GtkWidget *label;
   GtkWidget *entry;
   GtkWidget *button;
   GtkWidget *checkbutton;
+  GtkObject *adj;
+  GtkWidget *spinbutton;
   
   gint       row;
 
-  frame = gimp_frame_new (_("FFMpeg 2 Pass Expert settings"));
+  frame = gimp_frame_new (_("FFMpeg 2 pass and multiplexer expert settings"));
 
-  table5 = gtk_table_new (3, 3, FALSE);
-  gtk_widget_show (table5);
-  gtk_container_add (GTK_CONTAINER (frame), table5);
-  gtk_container_set_border_width (GTK_CONTAINER (table5), 4);
-  gtk_table_set_row_spacings (GTK_TABLE (table5), 4);
-  gtk_table_set_col_spacings (GTK_TABLE (table5), 4);
+  table = gtk_table_new (8, 3, FALSE);
+  gtk_widget_show (table);
+  gtk_container_add (GTK_CONTAINER (frame), table);
+  gtk_container_set_border_width (GTK_CONTAINER (table), 4);
+  gtk_table_set_row_spacings (GTK_TABLE (table), 4);
+  gtk_table_set_col_spacings (GTK_TABLE (table), 4);
 
   row = 0;
 
@@ -2121,7 +2950,7 @@ p_create_2pass_options_frame (GapGveFFMpegGlobalParams *gpp)
   checkbutton = gtk_check_button_new_with_label (_("2 Pass Encoding"));
   gpp->ff_pass_checkbutton                = checkbutton;
   gtk_widget_show (checkbutton);
-  gtk_table_attach (GTK_TABLE (table5), checkbutton, 1, 2, row, row+1,
+  gtk_table_attach (GTK_TABLE (table), checkbutton, 1, 2, row, row+1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gimp_help_set_help_data (checkbutton, _("Activate 2 pass encoding when set"), NULL);
@@ -2135,7 +2964,7 @@ p_create_2pass_options_frame (GapGveFFMpegGlobalParams *gpp)
   /* the pass_logfile label */
   label = gtk_label_new (_("Pass Logfile:"));
   gtk_widget_show (label);
-  gtk_table_attach (GTK_TABLE (table5), label, 0, 1, row, row+1,
+  gtk_table_attach (GTK_TABLE (table), label, 0, 1, row, row+1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
@@ -2146,7 +2975,7 @@ p_create_2pass_options_frame (GapGveFFMpegGlobalParams *gpp)
   entry = gtk_entry_new ();
   gpp->ff_passlogfile_entry               = entry;
   gtk_widget_show (entry);
-  gtk_table_attach (GTK_TABLE (table5), entry, 1, 2, row, row+1,
+  gtk_table_attach (GTK_TABLE (table), entry, 1, 2, row, row+1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gimp_help_set_help_data (entry, _("The pass logfile is only used as workfile for 2-pass encoding"), NULL);
@@ -2157,13 +2986,157 @@ p_create_2pass_options_frame (GapGveFFMpegGlobalParams *gpp)
   /* the pass_logfile fileselector button */
   button = gtk_button_new_with_label (_("..."));
   gtk_widget_show (button);
-  gtk_table_attach (GTK_TABLE (table5), button, 2, 3, row, row+1,
+  gtk_table_attach (GTK_TABLE (table), button, 2, 3, row, row+1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gimp_help_set_help_data (button, _("Select pass logfile via file browser"), NULL);
   g_signal_connect (G_OBJECT (button), "clicked",
                       G_CALLBACK (on_ff_passlogfile_filesel_button_clicked),
                       gpp);
+
+  row++;
+    
+  /* the empty label */
+  label = gtk_label_new (" ");
+  gtk_widget_show (label);
+  gtk_table_attach (GTK_TABLE (table), label, 0, 1, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+  
+    
+
+
+  row++;
+
+  /* the video bitrate label */
+  label = gtk_label_new (_("Mux Rate:"));
+#ifdef HAVE_FULL_FFMPEG
+  gtk_widget_show (label);
+#endif
+  gtk_table_attach (GTK_TABLE (table), label, 0, 1, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+
+  /* the video bitrate spinbutton */
+  adj = gtk_adjustment_new (0, 0, 1000000, 100, 1000, 1000);
+  spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
+  gpp->ff_mux_rate_adj = adj;
+  gpp->ff_mux_rate_spinbutton     = spinbutton;
+
+#ifdef HAVE_FULL_FFMPEG
+  gtk_widget_show (spinbutton);
+#endif
+  gtk_table_attach (GTK_TABLE (table), spinbutton, 1, 2, row, row+1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gimp_help_set_help_data (spinbutton, _("Multiplexer rate Bit/sec"), NULL);
+  g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_ADJ, (gpointer)adj);
+  g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+  g_signal_connect (G_OBJECT (spinbutton), "changed",
+                      G_CALLBACK (on_ff_gint32_spinbutton_changed),
+                      &gpp->evl.mux_rate);
+
+
+  row++;
+
+  /* the video bitrate label */
+  label = gtk_label_new (_("Mux Packetsize:"));
+#ifdef HAVE_FULL_FFMPEG
+  gtk_widget_show (label);
+#endif
+  gtk_table_attach (GTK_TABLE (table), label, 0, 1, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+
+  /* the video bitrate spinbutton */
+  adj = gtk_adjustment_new (0, 0, 32000, 100, 1000, 1000);
+  spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
+  gpp->ff_mux_packet_size_adj = adj;
+  gpp->ff_mux_packet_size_spinbutton     = spinbutton;
+
+#ifdef HAVE_FULL_FFMPEG
+  gtk_widget_show (spinbutton);
+#endif
+  gtk_table_attach (GTK_TABLE (table), spinbutton, 1, 2, row, row+1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gimp_help_set_help_data (spinbutton, _("Multiplexer packet size"), NULL);
+  g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_ADJ, (gpointer)adj);
+  g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+  g_signal_connect (G_OBJECT (spinbutton), "changed",
+                      G_CALLBACK (on_ff_gint32_spinbutton_changed),
+                      &gpp->evl.mux_packet_size);
+
+
+
+
+  row++;
+
+  /* the video bitrate label */
+  label = gtk_label_new (_("Mux Preload:"));
+#ifdef HAVE_FULL_FFMPEG
+  gtk_widget_show (label);
+#endif
+  gtk_table_attach (GTK_TABLE (table), label, 0, 1, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+
+  /* the video bitrate spinbutton */
+  adj = gtk_adjustment_new (0.0, 0.0, 100.0, 0.01, 0.1, 0.1);
+  spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 3);
+  gpp->ff_mux_preload_adj = adj;
+  gpp->ff_mux_preload_spinbutton     = spinbutton;
+
+#ifdef HAVE_FULL_FFMPEG
+  gtk_widget_show (spinbutton);
+#endif
+  gtk_table_attach (GTK_TABLE (table), spinbutton, 1, 2, row, row+1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gimp_help_set_help_data (spinbutton, _("set the initial demux-decode delay (seconds)"), NULL);
+  g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_ADJ, (gpointer)adj);
+  g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+  g_signal_connect (G_OBJECT (spinbutton), "changed",
+                      G_CALLBACK (on_ff_gdouble_spinbutton_changed),
+                      &gpp->evl.mux_preload);
+
+
+
+  row++;
+
+  /* the video bitrate label */
+  label = gtk_label_new (_("Mux Max Delay:"));
+#ifdef HAVE_FULL_FFMPEG
+  gtk_widget_show (label);
+#endif
+  gtk_table_attach (GTK_TABLE (table), label, 0, 1, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+
+  /* the video bitrate spinbutton */
+  adj = gtk_adjustment_new (0.0, 0.0, 100.0, 0.01, 0.1, 0.1);
+  spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 3);
+  gpp->ff_mux_max_delay_adj = adj;
+  gpp->ff_mux_max_delay_spinbutton     = spinbutton;
+
+#ifdef HAVE_FULL_FFMPEG
+  gtk_widget_show (spinbutton);
+#endif
+  gtk_table_attach (GTK_TABLE (table), spinbutton, 1, 2, row, row+1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gimp_help_set_help_data (spinbutton, _("Set the maximum demux-decode delay (seconds)"), NULL);
+  g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_ADJ, (gpointer)adj);
+  g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+  g_signal_connect (G_OBJECT (spinbutton), "changed",
+                      G_CALLBACK (on_ff_gdouble_spinbutton_changed),
+                      &gpp->evl.mux_max_delay);
+
 
   return(frame); 
 }  /* end  p_create_2pass_options_frame */
@@ -2312,18 +3285,14 @@ p_create_ffmpeg_dialog_shell (GapGveFFMpegGlobalParams *gpp)
 
   GtkWidget *table_preset;
 
-  GtkWidget *nb1_label1;
-  GtkWidget *nb1_label2;
-  GtkWidget *nb1_label3;
-  GtkWidget *nb1_label4;
-  GtkWidget *nb1_label5;
+  GtkWidget *nb1_label;
+  gint       nb_page_nr;
 
 
 
   GtkWidget *combo;
   GtkWidget *ff_basic_info_label;
   GtkWidget *spc_hbox;
-
 
   /* set the widgets to defined NULL before we create them
    * (some callbacks may refer to those widgets before
@@ -2378,12 +3347,45 @@ p_create_ffmpeg_dialog_shell (GapGveFFMpegGlobalParams *gpp)
   gpp->ff_vid_bitrate_spinbutton = NULL;
   gpp->ff_vid_codec_combo = NULL;
 
+  gpp->ff_mb_cmp_combo = NULL;
+  gpp->ff_ildct_cmp_combo = NULL;
+  gpp->ff_sub_cmp_combo = NULL;
+  gpp->ff_cmp_combo = NULL;
+  gpp->ff_pre_cmp_combo = NULL;
+  gpp->ff_frame_skip_cmp_combo = NULL;
+  gpp->ff_coder_combo = NULL;
+  gpp->ff_predictor_combo = NULL;
+
+  gpp->ff_mux_rate_spinbutton = NULL;
+  gpp->ff_mux_packet_size_spinbutton = NULL;
+  gpp->ff_mux_preload_spinbutton = NULL;
+  gpp->ff_mux_max_delay_spinbutton = NULL;
+  
+  gpp->ff_use_ss_checkbutton = NULL;
+  gpp->ff_use_aiv_checkbutton = NULL;
+  gpp->ff_use_obmc_checkbutton = NULL;
+  gpp->ff_use_loop_checkbutton = NULL;
+  gpp->ff_use_alt_scan_checkbutton = NULL;
+  gpp->ff_use_trell_checkbutton = NULL;
+  gpp->ff_use_mv0_checkbutton = NULL;
+  gpp->ff_do_normalize_aqp_checkbutton = NULL;
+  gpp->ff_use_scan_offset_checkbutton = NULL;
+  gpp->ff_closed_gop_checkbutton = NULL;
+  gpp->ff_use_qpel_checkbutton = NULL;
+  gpp->ff_use_qprd_checkbutton = NULL;
+  gpp->ff_use_cbprd_checkbutton = NULL;
+  gpp->ff_do_interlace_dct_checkbutton = NULL;
+  gpp->ff_do_interlace_me_checkbutton = NULL;
+  gpp->ff_strict_gop_checkbutton = NULL;
+  gpp->ff_no_output_checkbutton = NULL;
 
   shell_window = gimp_dialog_new (_("FFMPEG Video Encode Parameters"),
                          GAP_PLUGIN_NAME_FFMPEG_PARAMS,
                          NULL, 0,
                          gimp_standard_help_func, GAP_HELP_ID_FFMPEG_PARAMS,
 
+                         GTK_STOCK_OPEN, GAP_ENC_FFMPEG_RESPONSE_OPEN,
+			 GTK_STOCK_SAVE, GAP_ENC_FFMPEG_RESPONSE_SAVE,
                          GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
                          GTK_STOCK_OK,     GTK_RESPONSE_OK,
                          NULL);
@@ -2420,13 +3422,20 @@ p_create_ffmpeg_dialog_shell (GapGveFFMpegGlobalParams *gpp)
   /* the presets combo */
   combo = gimp_int_combo_box_new (
      _("** OOPS do not change any parameter **"),   GAP_GVE_FFMPEG_PRESET_00_NONE,
-     _("use DivX VBR, default presets"),            GAP_GVE_FFMPEG_PRESET_01_DIVX_DEFAULT,
-     _("use DivX VBR, best quality presets"),       GAP_GVE_FFMPEG_PRESET_02_DIVX_BEST,
-     _("use DivX VBR, low quality presets"),        GAP_GVE_FFMPEG_PRESET_03_DIVX_LOW,
-     _("use MPEG1 fixed rate (VCD) presets"),       GAP_GVE_FFMPEG_PRESET_04_MPEG1_VCD,
-     _("use MPEG1 VBR, best quality presets"),      GAP_GVE_FFMPEG_PRESET_05_MPEG1_BEST,
-     _("use MPEG2 VBR (DVD) presets"),              GAP_GVE_FFMPEG_PRESET_06_MPEG2_VBR,
-     _("use REAL video presets"),                   GAP_GVE_FFMPEG_PRESET_07_REAL,
+     _("use DivX default presets"),                 GAP_GVE_FFMPEG_PRESET_01_DIVX_DEFAULT,
+     _("use DivX high quality presets"),            GAP_GVE_FFMPEG_PRESET_02_DIVX_BEST,
+     _("use DivX low quality presets"),             GAP_GVE_FFMPEG_PRESET_03_DIVX_LOW,
+     _("use DivX WINDOWS presets"),                 GAP_GVE_FFMPEG_PRESET_04_DIVX_MS,
+     _("use MPEG1 (VCD) presets"),                  GAP_GVE_FFMPEG_PRESET_05_MPEG1_VCD,
+     _("use MPEG1 high quality presets"),           GAP_GVE_FFMPEG_PRESET_06_MPEG1_BEST,
+#ifdef HAVE_FULL_FFMPEG
+     /* the SVCD preset does not work with old ffmpeg 0.4.8
+      * (libavformat has no support for this fileformat)
+      */
+     _("use MPEG2 (SVCD) presets"),                 GAP_GVE_FFMPEG_PRESET_07_MPEG2_SVCD,
+#endif
+     _("use MPEG2 (DVD) presets"),                  GAP_GVE_FFMPEG_PRESET_08_MPEG2_DVD,
+     _("use REAL video presets"),                   GAP_GVE_FFMPEG_PRESET_09_REAL,
      NULL);
   gpp->ff_presets_combo                   = combo;
 
@@ -2485,6 +3494,8 @@ p_create_ffmpeg_dialog_shell (GapGveFFMpegGlobalParams *gpp)
   gtk_container_add (GTK_CONTAINER (frame), notebook1);
   gtk_container_set_border_width (GTK_CONTAINER (notebook1), 4);
 
+  nb_page_nr = 0;
+
   /* the frame with basic options */
   frame = p_create_basic_options_frame(gpp);
   gtk_widget_show (frame);
@@ -2493,10 +3504,12 @@ p_create_ffmpeg_dialog_shell (GapGveFFMpegGlobalParams *gpp)
   gtk_container_set_border_width (GTK_CONTAINER (frame), 4);
 
   /* the notebook page label for basic options */
-  nb1_label1 = gtk_label_new (_("Basic Options"));
-  gtk_widget_show (nb1_label1);
-  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook1), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook1), 0), nb1_label1);
+  nb1_label = gtk_label_new (_("Basic Options"));
+  gtk_widget_show (nb1_label);
+  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook1), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook1), nb_page_nr), nb1_label);
 
+
+  nb_page_nr++;
 
   /* the frame with expert_algortihms */
   frame = p_create_expert_algortihms_frame(gpp);
@@ -2505,11 +3518,27 @@ p_create_ffmpeg_dialog_shell (GapGveFFMpegGlobalParams *gpp)
   gtk_container_add (GTK_CONTAINER (notebook1), frame);
   gtk_container_set_border_width (GTK_CONTAINER (frame), 4);
 
+  
   /* the notebook page label for expert algorithms */
-  nb1_label2 = gtk_label_new (_("Expert Algorithms"));
-  gtk_widget_show (nb1_label2);
-  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook1), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook1), 1), nb1_label2);
+  nb1_label = gtk_label_new (_("Algorithms"));
+  gtk_widget_show (nb1_label);
+  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook1), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook1), nb_page_nr), nb1_label);
 
+  nb_page_nr++;
+
+  /* the frame with expert_flags */
+  frame = p_create_expert_flags_frame(gpp);
+  gtk_widget_show (frame);
+  
+  gtk_container_add (GTK_CONTAINER (notebook1), frame);
+  gtk_container_set_border_width (GTK_CONTAINER (frame), 4);
+
+  /* the notebook page label for expert flags */
+  nb1_label = gtk_label_new (_("Expert Flags"));
+  gtk_widget_show (nb1_label);
+  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook1), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook1), nb_page_nr), nb1_label);
+
+  nb_page_nr++;
 
   /* the frame with expert_options */
   frame = p_create_expert_options_frame(gpp);
@@ -2519,10 +3548,12 @@ p_create_ffmpeg_dialog_shell (GapGveFFMpegGlobalParams *gpp)
   gtk_container_set_border_width (GTK_CONTAINER (frame), 4);
 
   /* the notebook page label for expert encoder options */
-  nb1_label3 = gtk_label_new (_("Expert Options"));
-  gtk_widget_show (nb1_label3);
-  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook1), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook1), 2), nb1_label3);
+  nb1_label = gtk_label_new (_("Expert Options"));
+  gtk_widget_show (nb1_label);
+  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook1), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook1), nb_page_nr), nb1_label);
 
+
+  nb_page_nr++;
 
   /* the frame with the 2-pass settings */
   frame = p_create_2pass_options_frame(gpp);
@@ -2532,10 +3563,12 @@ p_create_ffmpeg_dialog_shell (GapGveFFMpegGlobalParams *gpp)
   gtk_container_set_border_width (GTK_CONTAINER (frame), 4);
 
   /* the notebook page label for 2 Pass Expert settings */
-  nb1_label4 = gtk_label_new (_("Expert 2Pass"));
-  gtk_widget_show (nb1_label4);
-  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook1), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook1), 3), nb1_label4);
+  nb1_label = gtk_label_new (_("2Pass/Mux"));
+  gtk_widget_show (nb1_label);
+  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook1), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook1), nb_page_nr), nb1_label);
 
+
+  nb_page_nr++;
 
   /* the frame with the 2-pass settings */
   frame = p_create_file_comment_frame(gpp);
@@ -2546,9 +3579,9 @@ p_create_ffmpeg_dialog_shell (GapGveFFMpegGlobalParams *gpp)
 
 
   /* the notebook page label for file comment settings */
-  nb1_label5 = gtk_label_new (_("File Comment"));
-  gtk_widget_show (nb1_label5);
-  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook1), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook1), 4), nb1_label5);
+  nb1_label = gtk_label_new (_("File Comment"));
+  gtk_widget_show (nb1_label);
+  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook1), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook1), nb_page_nr), nb1_label);
 
   return shell_window;
 }  /* end p_create_ffmpeg_dialog_shell */
@@ -2564,10 +3597,13 @@ gap_enc_ffgui_ffmpeg_encode_dialog(GapGveFFMpegGlobalParams *gpp)
 {
   if(gap_debug) printf("gap_enc_ffgui_ffmpeg_encode_dialog: Start\n");
 
-  gimp_ui_init ("gap_video_extract", FALSE);
+  gimp_ui_init ("gap_enc_ffmpeg_params", FALSE);
   gap_stock_init();
 
   /* ---------- sub dialog windows ----------*/
+  gpp->startup = TRUE;
+  gpp->ffpar_filename[0] = '\0';
+  gpp->ffpar_fileselection = NULL;  /* used for video encoder parameter fileselection */
   gpp->fsb__fileselection = NULL;   /* used for pass log fileselection */
   gpp->ecp = NULL;
 
@@ -2575,6 +3611,7 @@ gap_enc_ffgui_ffmpeg_encode_dialog(GapGveFFMpegGlobalParams *gpp)
 
   /* ---------- dialog ----------*/
   gpp->shell_window = p_create_ffmpeg_dialog_shell (gpp);
+  gpp->startup = FALSE;
 
   if(gap_debug) printf("p_ffmpeg_encode_dialog: After p_create_ffmpeg_dialog_shell\n");
 

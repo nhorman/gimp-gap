@@ -39,13 +39,12 @@
 #define GAP_ENC_FFGUI_ADJ                    "gap_enc_ffgui_adj"
 #define GAP_ENC_FFGUI_COMBO_STRLIST          "gap_enc_ffgui_combo_strlist"
 
+#define GAP_ENC_FFMPEG_RESPONSE_OPEN 1
+#define GAP_ENC_FFMPEG_RESPONSE_SAVE 2
+
 void        gap_enc_ffgui_set_default_codecs(GapGveFFMpegGlobalParams *gpp, gboolean set_codec_menus);
 void        gap_enc_ffgui_init_main_dialog_widgets(GapGveFFMpegGlobalParams *gpp);
 
-gint        gap_enc_ffgui_gettab_motion_est(gint idx);
-gint        gap_enc_ffgui_gettab_dct_algo(gint idx);
-gint        gap_enc_ffgui_gettab_idct_algo(gint idx);
-gint        gap_enc_ffgui_gettab_mb_decision(gint idx);
 gint        gap_enc_ffgui_gettab_audio_krate(gint idx);
 gdouble     gap_enc_ffgui_gettab_aspect(gint idx);
 

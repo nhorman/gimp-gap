@@ -25,6 +25,7 @@
  */
 
 /* revision history:
+ * version 2.1.0a;  2005.03.24   hof: added ffpar_fileselection.
  * version 2.1.0a;  2004.11.06   hof: use some general callbacks.
  *                                   (removed lots of similar callbacks
  *                                    that was needed for the old glade generated code)
@@ -43,10 +44,19 @@
 #include "gap_enc_ffmpeg_main.h"
 #include "gap_enc_ffmpeg_gui.h"
 #include "gap_enc_ffmpeg_callbacks.h"
+#include "gap_enc_ffmpeg_par.h"
 
 /* Includes for encoder specific extra LIBS */
 #include "avformat.h"
 #include "avcodec.h"
+
+#define GAP_FFPAR_FILE_KEY "gap_ffpar_file_key"
+
+static void p_create_ffpar_fileselection (GapGveFFMpegGlobalParams *gpp, gboolean save_flag);
+static void on_ffpar_fileselection_destroy (GtkObject *object, GapGveFFMpegGlobalParams *gpp);
+static void on_ffpar_cancel_button_clicked (GtkButton *button, GapGveFFMpegGlobalParams *gpp);
+static void on_ffpar_ok_button_clicked (GtkButton *button, GapGveFFMpegGlobalParams *gpp);
+
 
 /* ---------------------------------
  * on_ff_response
@@ -67,6 +77,18 @@ on_ff_response (GtkWidget *widget,
 
   switch (response_id)
   {
+    case GAP_ENC_FFMPEG_RESPONSE_OPEN:
+      if(gpp)
+      {
+        p_create_ffpar_fileselection (gpp, FALSE /* save_flag */ );
+      }
+      break;
+    case GAP_ENC_FFMPEG_RESPONSE_SAVE:
+      if(gpp)
+      {
+        p_create_ffpar_fileselection (gpp, TRUE /* save_flag */ );
+      }
+      break;
     case GTK_RESPONSE_OK:
       if(gpp)
       {
@@ -412,96 +434,36 @@ on_ff_aud_bitrate_combo  (GtkWidget     *widget,
   }
 }  /* end on_ff_aud_bitrate_combo */
 
+
 /* --------------------------------
- * on_ff_motion_estimation_combo
+ * on_ff_gint32_combo
  * --------------------------------
  */
 void
-on_ff_motion_estimation_combo  (GtkWidget     *widget,
-                                     GapGveFFMpegGlobalParams *gpp)
+on_ff_gint32_combo  (GtkWidget     *widget,
+                     gint32 *val_ptr)
 {
-  gint       l_idx;
   gint       value;
 
-  if(gap_debug) printf("CB: on_ff_motion_estimation_combo\n");
+  if(gap_debug) 
+  {
+    printf("CB: on_ff_gint32_combo\n");
+  }
 
-  if(gpp == NULL) return;
-
-  gimp_int_combo_box_get_active (GIMP_INT_COMBO_BOX (widget), &value);
-  l_idx = value;
-
-  if(gap_debug) printf("CB: on_ff_motion_estimation_combo index: %d\n", (int)l_idx);
-  gpp->evl.motion_estimation = gap_enc_ffgui_gettab_motion_est(l_idx);
-}  /* end on_ff_motion_estimation_combo */
-
-
-/* --------------------------------
- * on_ff_dct_algo_combo
- * --------------------------------
- */
-void
-on_ff_dct_algo_combo  (GtkWidget     *widget,
-                       GapGveFFMpegGlobalParams *gpp)
-{
-  gint       l_idx;
-  gint       value;
-
-  if(gap_debug) printf("CB: on_ff_dct_algo_combo\n");
-
-  if(gpp == NULL) return;
+  if(val_ptr == NULL) return;
 
   gimp_int_combo_box_get_active (GIMP_INT_COMBO_BOX (widget), &value);
-  l_idx = value;
+  *val_ptr = value;
 
-  if(gap_debug) printf("CB: on_ff_dct_algo_combo index: %d\n", (int)l_idx);
-  gpp->evl.dct_algo = gap_enc_ffgui_gettab_dct_algo(l_idx);
-}  /* end on_ff_dct_algo_combo */
+  if(gap_debug)
+  { 
+    printf("CB: on_ff_gint32_combo index: val_ptr: %d %d\n"
+           , (int)val_ptr
+	   , (int)value
+	   );
+  }
+}  /* end on_ff_gint32_combo */
 
-
-/* --------------------------------
- * on_ff_idct_algo_combo
- * --------------------------------
- */
-void
-on_ff_idct_algo_combo  (GtkWidget     *widget,
-                           GapGveFFMpegGlobalParams *gpp)
-{
-  gint       l_idx;
-  gint       value;
-
-  if(gap_debug) printf("CB: on_ff_idct_algo_combo\n");
-
-  if(gpp == NULL) return;
-
-  gimp_int_combo_box_get_active (GIMP_INT_COMBO_BOX (widget), &value);
-  l_idx = value;
-
-  if(gap_debug) printf("CB: on_ff_idct_algo_combo index: %d\n", (int)l_idx);
-  gpp->evl.idct_algo = gap_enc_ffgui_gettab_idct_algo(l_idx);
-}  /* end on_ff_idct_algo_combo */
-
-
-/* --------------------------------
- * on_ff_mb_decision_combo
- * --------------------------------
- */
-void
-on_ff_mb_decision_combo  (GtkWidget     *widget,
-                          GapGveFFMpegGlobalParams *gpp)
-{
-  gint       l_idx;
-  gint       value;
-
-  if(gap_debug) printf("CB: on_ff_mb_decision_combo\n");
-
-  if(gpp == NULL) return;
-
-  gimp_int_combo_box_get_active (GIMP_INT_COMBO_BOX (widget), &value);
-  l_idx = value;
-
-  if(gap_debug) printf("CB: on_ff_mb_decision_combo index: %d\n", (int)l_idx);
-  gpp->evl.mb_decision = gap_enc_ffgui_gettab_idct_algo(l_idx);
-}  /* end on_ff_mb_decision_combo */
 
 
 /* --------------------------------
@@ -515,14 +477,20 @@ on_ff_presets_combo  (GtkWidget     *widget,
   gint       l_idx;
   gint       value;
 
-  if(gap_debug) printf("CB: on_ff_presets_combo\n");
+  if(gap_debug)
+  {
+    printf("CB: on_ff_presets_combo\n");
+  }
 
   if(gpp == NULL) return;
 
   gimp_int_combo_box_get_active (GIMP_INT_COMBO_BOX (widget), &value);
   l_idx = value;
 
-  if(gap_debug) printf("CB: on_ff_presets_combo index: %d\n", (int)l_idx);
+  if(gap_debug)
+  {
+    printf("CB: on_ff_presets_combo index: %d\n", (int)l_idx);
+  }
 
   if((l_idx <= GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS) && (l_idx > 0))
   {
@@ -531,7 +499,10 @@ on_ff_presets_combo  (GtkWidget     *widget,
      */
     l_idx--;
 
-    if(gap_debug) printf ("** encoder PRESET: %d\n", (int)l_idx);
+    if(gap_debug)
+    {
+      printf ("** encoder PRESET: %d\n", (int)l_idx);
+    }
     gap_enc_ffmpeg_main_init_preset_params(&gpp->evl, l_idx);
     gap_enc_ffgui_init_main_dialog_widgets(gpp);                /* update all wdgets */
 
@@ -626,6 +597,160 @@ on_fsb__cancel_button_clicked          (GtkButton       *button,
    gpp->fsb__fileselection = NULL;
  }
 }
+
+
+
+/* ---------------------------------
+ * ffpar fileselct  callbacks
+ * ---------------------------------
+ */
+
+static void
+on_ffpar_fileselection_destroy          (GtkObject       *object,
+                                        GapGveFFMpegGlobalParams *gpp)
+{
+ if(gap_debug) 
+ {
+   printf("CB: on_ffpar_fileselection_destroy\n");
+ }
+
+ if(gpp == NULL) return;
+
+ gpp->ffpar_fileselection = NULL;
+}
+
+
+static void
+on_ffpar_cancel_button_clicked          (GtkButton       *button,
+                                        GapGveFFMpegGlobalParams *gpp)
+{
+ if(gap_debug) printf("CB: on_ffpar_cancel_button_clicked\n");
+ if(gpp == NULL) return;
+
+ if(gpp->ffpar_fileselection)
+ {
+   gtk_widget_destroy(gpp->ffpar_fileselection);
+   gpp->ffpar_fileselection = NULL;
+ }
+}
+
+static void
+on_ffpar_ok_button_clicked              (GtkButton       *button,
+                                        GapGveFFMpegGlobalParams *gpp)
+{
+ const gchar *filename;
+
+ if(gap_debug) printf("CB: on_ffpar_ok_button_clicked\n");
+ if(gpp == NULL) return;
+
+ if(gpp->ffpar_fileselection)
+ {
+   filename = gtk_file_selection_get_filename (GTK_FILE_SELECTION (gpp->ffpar_fileselection));
+   g_snprintf(gpp->ffpar_filename, sizeof(gpp->ffpar_filename), "%s"
+             , filename);
+   on_ffpar_cancel_button_clicked(NULL, (gpointer)gpp);
+   
+   gimp_set_data(GAP_FFPAR_FILE_KEY
+                ,&gpp->ffpar_filename[0]
+		,sizeof(gpp->ffpar_filename)
+		);
+   
+   if(gpp->ffpar_save_flag)
+   {
+     gboolean write_permission;
+     
+     write_permission = gap_arr_overwrite_file_dialog(filename);
+     if(write_permission)
+     {
+       gap_ffpar_set(filename, &gpp->evl);
+     }
+   }
+   else
+   {
+     gap_ffpar_get(filename, &gpp->evl);
+     gap_enc_ffgui_init_main_dialog_widgets(gpp);                /* update all wdgets */
+     /* switch back to index 0 (OOPS, do not change presets)
+      * after presets were loaded.
+      */
+     gimp_int_combo_box_set_active (GIMP_INT_COMBO_BOX (gpp->ff_presets_combo), GAP_GVE_FFMPEG_PRESET_00_NONE);
+   }
+ }
+}
+
+ 
+
+/* -----------------------------------------
+ * p_create_ffpar_fileselection
+ * -----------------------------------------
+ */
+static void
+p_create_ffpar_fileselection (GapGveFFMpegGlobalParams *gpp, gboolean save_flag)
+{
+  GtkWidget *ffpar_fileselection;
+  GtkWidget *ffpar_ok_button;
+  GtkWidget *ffpar_cancel_button;
+
+  if(gpp == NULL)
+  {
+    return;
+  }
+
+  if(gpp->ffpar_fileselection)
+  {
+    return;
+  }
+
+  if(save_flag)
+  {
+    ffpar_fileselection = gtk_file_selection_new (_("Save ffmpeg-encoder parameters"));
+  }
+  else
+  {
+    ffpar_fileselection = gtk_file_selection_new (_("Load ffmpeg-encoder parameters"));
+  }
+  
+  gpp->ffpar_fileselection = ffpar_fileselection;
+  gpp->ffpar_save_flag = save_flag;
+  gtk_container_set_border_width (GTK_CONTAINER (ffpar_fileselection), 10);
+
+  /* get previously (in this session) used ffpar_filename */
+  if(gimp_get_data_size(GAP_FFPAR_FILE_KEY) == sizeof(gpp->ffpar_filename))
+  {
+    gimp_get_data(GAP_FFPAR_FILE_KEY, &gpp->ffpar_filename[0]);
+  }
+
+  if(gpp->ffpar_filename[0] != '\0')
+  {
+    gtk_file_selection_set_filename (GTK_FILE_SELECTION (ffpar_fileselection),
+				   gpp->ffpar_filename);
+  }
+
+  ffpar_ok_button = GTK_FILE_SELECTION (ffpar_fileselection)->ok_button;
+  gtk_widget_show (ffpar_ok_button);
+  GTK_WIDGET_SET_FLAGS (ffpar_ok_button, GTK_CAN_DEFAULT);
+
+  ffpar_cancel_button = GTK_FILE_SELECTION (ffpar_fileselection)->cancel_button;
+  gtk_widget_show (ffpar_cancel_button);
+  GTK_WIDGET_SET_FLAGS (ffpar_cancel_button, GTK_CAN_DEFAULT);
+
+  g_signal_connect (G_OBJECT (ffpar_fileselection), "destroy",
+                    G_CALLBACK (on_ffpar_fileselection_destroy),
+                    gpp);
+  g_signal_connect (G_OBJECT (ffpar_ok_button), "clicked",
+                    G_CALLBACK (on_ffpar_ok_button_clicked),
+                    gpp);
+
+  g_signal_connect (G_OBJECT (ffpar_cancel_button), "clicked",
+                    G_CALLBACK (on_ffpar_cancel_button_clicked),
+                    gpp);
+
+  gtk_widget_show(ffpar_fileselection);
+  
+}  /* end p_create_ffpar_fileselection */
+
+
+
+
 
 /* ---------------------------------
  * FFMPEG ENCODER Dialog

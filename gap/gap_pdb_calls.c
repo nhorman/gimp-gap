@@ -23,6 +23,7 @@
  */
 
 /* revision history:
+ *                  2005/04/03  carol: changed deprecated procedure 'gimp_rotate' to 'gimp_drawable_transform_rotate_default' 
  * version 1.3.25a; 2004/01/20  hof: removed gap_pdb_gimp_file_load_thumbnail
  * version 1.3.14c; 2003/06/15  hof: take care of gimp_image_thumbnail 128x128 sizelimit
  * version 1.3.14b; 2003/06/03  hof: gboolean retcode for thumbnail procedures
@@ -61,14 +62,6 @@ extern int gap_debug;
 gint 
 gap_pdb_procedure_available(char *proc_name)
 {
-   /* Note: It would be nice to call "gimp_layer_get_linked" direct,
-    *       but there is not such an Interface in gimp 0.99.16
-    * Workaround:
-    *   I did a patch to implement the "gimp_layer_get_linked"
-    *   procedure, and call it via PDB call if available.
-    *   if not available FALSE is returned.
-    */
-    
   gint             l_nparams;
   gint             l_nreturn_vals;
   GimpPDBProcType   l_proc_type;
@@ -125,7 +118,16 @@ gap_pdb_gimp_rotate_degree(gint32 drawable_id, gboolean interpolation, gdouble a
    gdouble          l_angle_rad;
 
    l_angle_rad = (angle_deg * G_PI) / 180.0;
-   return(gimp_rotate(drawable_id, interpolation, l_angle_rad));
+
+   return(gimp_drawable_transform_rotate_default(drawable_id
+                                                , l_angle_rad
+						, FALSE            /* auto_center */
+						, 0                /* center_x */
+						, 0                /* center_y */
+						, interpolation
+						, FALSE            /* clip_results */
+						));
+
    
 }  /* end gap_pdb_gimp_rotate_degree */
 

@@ -1694,7 +1694,34 @@ p_ff_open_input(char *filename, t_GVA_Handle *gvahand, t_GVA_ffmpeg*  handle, gb
 #ifdef HAVE_OLD_FFMPEG_0408	      
 	      gvahand->aspect_ratio = acc->aspect_ratio;
 #else
-	      gvahand->aspect_ratio = av_q2d (acc->sample_aspect_ratio);
+	      gvahand->aspect_ratio = 0;
+	      switch(acc->dtg_active_format)
+	      {
+	        case FF_DTG_AFD_4_3:
+	        case FF_DTG_AFD_4_3_SP_14_9:
+	        case FF_DTG_AFD_SP_4_3:
+	          gvahand->aspect_ratio = 4.0 / 3.0;
+		  break;
+	        case FF_DTG_AFD_16_9:
+	        case FF_DTG_AFD_16_9_SP_14_9:
+	          gvahand->aspect_ratio = 16.0 / 9.0;
+		  break;
+	        case FF_DTG_AFD_14_9:
+	          gvahand->aspect_ratio = 14.0 / 9.0;
+		  break;
+	        case FF_DTG_AFD_SAME:
+		default:
+	          gvahand->aspect_ratio = av_q2d (acc->sample_aspect_ratio);
+		  break;
+	      }
+	      //if(gap_debug)
+	      {
+	        printf("FF ASPECT: dtg_active_format:%d  num:%d den:%d\n"
+		      ,(int)acc->dtg_active_format
+		      ,(int)acc->sample_aspect_ratio.num
+		      ,(int)acc->sample_aspect_ratio.den
+		      );
+	      }
 #endif	      
               rfps = ic->streams[ii]->r_frame_rate;
               acc->workaround_bugs = FF_BUG_AUTODETECT;

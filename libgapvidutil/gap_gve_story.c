@@ -5324,7 +5324,7 @@ gap_gve_story_fetch_composite_image_or_chunk(GapGveStoryVidHandle *vidhand
 				     ,master_frame_nr
 				     );			
             if ((1==0)
-	    &&  (master_frame_nr < 10))  /* debug code: dump fist 9 video chunks to file(s) */
+	    &&  (master_frame_nr < 10))  /* debug code: dump first 9 video chunks to file(s) */
             {
                FILE *fp;
                char *fname;
@@ -5343,7 +5343,7 @@ gap_gve_story_fetch_composite_image_or_chunk(GapGveStoryVidHandle *vidhand
 	    if (l_frame_type == GVA_MPGFRAME_I_TYPE)
 	    {
 	      /* intra frame has no dependencies to other frames
-	       * can use that frame type at any place in the stram 
+	       * can use that frame type at any place in the stream 
 	       */
               last_video_frame_nr = l_video_frame_nr;
               last_intra_frame_fetched = TRUE;
@@ -5362,7 +5362,8 @@ gap_gve_story_fetch_composite_image_or_chunk(GapGveStoryVidHandle *vidhand
               return(TRUE);
 	    }
 
-	    if (l_frame_type == GVA_MPGFRAME_P_TYPE)
+	    if ((l_frame_type == GVA_MPGFRAME_P_TYPE)
+	    &&  (1==1))
 	    {
 	      /* predicted frame has dependencies to the previous intra frame
 	       * can use that frame if fetch sequence contains previous i frame
@@ -5370,7 +5371,7 @@ gap_gve_story_fetch_composite_image_or_chunk(GapGveStoryVidHandle *vidhand
 	      if(last_videofile)
 	      {
 		if((strcmp(l_videofile, last_videofile) == 0)
-		&& (l_video_frame_nr = last_video_frame_nr +1))
+		&& (l_video_frame_nr == last_video_frame_nr +1))
 		{
                   last_video_frame_nr = l_video_frame_nr;
 		  last_fetch_was_compressed_chunk = TRUE;
@@ -5384,7 +5385,8 @@ gap_gve_story_fetch_composite_image_or_chunk(GapGveStoryVidHandle *vidhand
 	      }
 	    }
 
-	    if (l_frame_type == GVA_MPGFRAME_B_TYPE)
+	    if ((l_frame_type == GVA_MPGFRAME_B_TYPE)
+	    ||  (l_frame_type == GVA_MPGFRAME_P_TYPE))
 	    {
 	      /* bi-directional predicted frame has dependencies both to 
 	       * the previous intra frame or p-frame and to the following i or p-frame.
@@ -5403,7 +5405,7 @@ gap_gve_story_fetch_composite_image_or_chunk(GapGveStoryVidHandle *vidhand
                 l_bframe_ok = TRUE;  /* assume that B-frame can be used */
 		
 		if((strcmp(l_videofile, last_videofile) == 0)
-		&& (l_video_frame_nr = last_video_frame_nr +1))
+		&& (l_video_frame_nr == last_video_frame_nr +1))
 		{
 		  if(master_frame_nr + GAP_MPEG_ASSUMED_REFERENCE_DISTANCE > max_master_frame_nr)
 		  {
@@ -5467,7 +5469,14 @@ gap_gve_story_fetch_composite_image_or_chunk(GapGveStoryVidHandle *vidhand
 		    last_fetch_was_compressed_chunk = TRUE;
 		    /*if(gap_debug)*/
 		    {
-	              printf("B,");
+		      if (l_frame_type == GVA_MPGFRAME_B_TYPE)
+		      {
+	                printf("B,");
+		      }
+		      else
+		      {
+                        printf("p,");
+		      }
 	              //printf(" Reuse B-FRAME Chunk  at %06d\n", (int)master_frame_nr);
 		    }
                     return(TRUE);

@@ -3,6 +3,7 @@
  */
 /*
  * Changelog:
+ * version 2.1.0a;  2005/03/27  hof: support for ffmpeg 0.4.9 and later CVS versions (LIBAVCODEC_BUILD  >= 4744)
  * version 2.1.0a;  2004/11/05  hof: replaced deprecated option menu by gimp_int_combo_box
  * version 2.1.0a;  2004.06.05   hof: update params from ffmpeg 0.4.6 to 0.4.8
  * version 2.1.0a;  2004.05.07   created
@@ -61,11 +62,13 @@
 #define GAP_GVE_FFMPEG_PRESET_01_DIVX_DEFAULT   1
 #define GAP_GVE_FFMPEG_PRESET_02_DIVX_BEST      2
 #define GAP_GVE_FFMPEG_PRESET_03_DIVX_LOW       3
-#define GAP_GVE_FFMPEG_PRESET_04_MPEG1_VCD      4
-#define GAP_GVE_FFMPEG_PRESET_05_MPEG1_BEST     5
-#define GAP_GVE_FFMPEG_PRESET_06_MPEG2_VBR      6
-#define GAP_GVE_FFMPEG_PRESET_07_REAL           7
-#define GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS      8
+#define GAP_GVE_FFMPEG_PRESET_04_DIVX_MS        4
+#define GAP_GVE_FFMPEG_PRESET_05_MPEG1_VCD      5
+#define GAP_GVE_FFMPEG_PRESET_06_MPEG1_BEST     6
+#define GAP_GVE_FFMPEG_PRESET_07_MPEG2_SVCD     7
+#define GAP_GVE_FFMPEG_PRESET_08_MPEG2_DVD      8
+#define GAP_GVE_FFMPEG_PRESET_09_REAL           9
+#define GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS      10
 
 #define GAP_GVE_FFMPEG_AUDIO_KBIT_RATE_00_32   0
 #define GAP_GVE_FFMPEG_AUDIO_KBIT_RATE_01_40   1
@@ -83,13 +86,15 @@
 #define GAP_GVE_FFMPEG_AUDIO_KBIT_RATE_13_320  13
 #define GAP_GVE_FFMPEG_AUDIO_KBIT_RATE_MAX_ELEMENTS   14
 
-#define GAP_GVE_FFMPEG_MOTION_ESTIMATION_00_ZERO   0
-#define GAP_GVE_FFMPEG_MOTION_ESTIMATION_01_FULL   1
-#define GAP_GVE_FFMPEG_MOTION_ESTIMATION_02_LOG    2
-#define GAP_GVE_FFMPEG_MOTION_ESTIMATION_03_PHODS  3
-#define GAP_GVE_FFMPEG_MOTION_ESTIMATION_04_EPZS   4
-#define GAP_GVE_FFMPEG_MOTION_ESTIMATION_05_X1     5
+#define GAP_GVE_FFMPEG_MOTION_ESTIMATION_01_ZERO   ME_ZERO
+#define GAP_GVE_FFMPEG_MOTION_ESTIMATION_02_FULL   ME_FULL
+#define GAP_GVE_FFMPEG_MOTION_ESTIMATION_03_LOG    ME_LOG
+#define GAP_GVE_FFMPEG_MOTION_ESTIMATION_04_PHODS  ME_PHODS
+#define GAP_GVE_FFMPEG_MOTION_ESTIMATION_05_EPZS   ME_EPZS
+#define GAP_GVE_FFMPEG_MOTION_ESTIMATION_06_X1     ME_X1
 #define GAP_GVE_FFMPEG_MOTION_ESTIMATION_MAX_ELEMENTS   6
+
+
 
 #define GAP_GVE_FFMPEG_DCT_ALGO_00_AUTO        0
 #define GAP_GVE_FFMPEG_DCT_ALGO_01_FASTINT     1
@@ -97,7 +102,9 @@
 #define GAP_GVE_FFMPEG_DCT_ALGO_03_MMX         3
 #define GAP_GVE_FFMPEG_DCT_ALGO_04_MLIB        4
 #define GAP_GVE_FFMPEG_DCT_ALGO_05_ALTIVEC     5
-#define GAP_GVE_FFMPEG_DCT_ALGO_MAX_ELEMENTS   6
+#define GAP_GVE_FFMPEG_DCT_ALGO_06_FAAN        6
+#define GAP_GVE_FFMPEG_DCT_ALGO_MAX_ELEMENTS   7
+
 
 #define GAP_GVE_FFMPEG_IDCT_ALGO_00_AUTO        0
 #define GAP_GVE_FFMPEG_IDCT_ALGO_01_INT         1
@@ -108,7 +115,10 @@
 #define GAP_GVE_FFMPEG_IDCT_ALGO_06_MLIB        6
 #define GAP_GVE_FFMPEG_IDCT_ALGO_07_ARM         7
 #define GAP_GVE_FFMPEG_IDCT_ALGO_08_ALTIVEC     8
-#define GAP_GVE_FFMPEG_IDCT_ALGO_MAX_ELEMENTS   9
+#define GAP_GVE_FFMPEG_IDCT_ALGO_09_SH4         9
+#define GAP_GVE_FFMPEG_IDCT_ALGO_10_SIMPLEARM  10
+#define GAP_GVE_FFMPEG_IDCT_ALGO_11_H264       11
+#define GAP_GVE_FFMPEG_IDCT_ALGO_MAX_ELEMENTS  12
 
 #define GAP_GVE_FFMPEG_MB_DECISION_00_SIMPLE    0
 #define GAP_GVE_FFMPEG_MB_DECISION_01_BITS      1
@@ -120,6 +130,75 @@
 #define GAP_GVE_FFMPEG_ASPECT_02_4_3     2
 #define GAP_GVE_FFMPEG_ASPECT_03_16_9    3
 #define GAP_GVE_FFMPEG_ASPECT_MAX_ELEMENTS    4
+
+
+#ifdef HAVE_FULL_FFMPEG
+#define GAP_GVE_FFMPEG_CMP_00_SAD     FF_CMP_SAD
+#define GAP_GVE_FFMPEG_CMP_01_SSE     FF_CMP_SSE
+#define GAP_GVE_FFMPEG_CMP_02_SATD    FF_CMP_SATD
+#define GAP_GVE_FFMPEG_CMP_03_DCT     FF_CMP_DCT
+#define GAP_GVE_FFMPEG_CMP_04_PSNR    FF_CMP_PSNR
+#define GAP_GVE_FFMPEG_CMP_05_BIT     FF_CMP_BIT
+#define GAP_GVE_FFMPEG_CMP_06_RD      FF_CMP_RD
+#define GAP_GVE_FFMPEG_CMP_07_ZERO    FF_CMP_ZERO
+#define GAP_GVE_FFMPEG_CMP_08_VSAD    FF_CMP_VSAD
+#define GAP_GVE_FFMPEG_CMP_09_VSSE    FF_CMP_VSSE
+#define GAP_GVE_FFMPEG_CMP_10_NSSE    FF_CMP_NSSE
+#define GAP_GVE_FFMPEG_CMP_11_W53     FF_CMP_W53
+#define GAP_GVE_FFMPEG_CMP_12_W97     FF_CMP_W97
+#define GAP_GVE_FFMPEG_CMP_13_DCTMAX  FF_CMP_DCTMAX 
+#define GAP_GVE_FFMPEG_CMP_14_CHROMA  FF_CMP_CHROMA
+#define GAP_GVE_FFMPEG_CMP_MAX_ELEMENTS   15
+#else
+#define GAP_GVE_FFMPEG_CMP_00_SAD     0
+#define GAP_GVE_FFMPEG_CMP_01_SSE     1
+#define GAP_GVE_FFMPEG_CMP_02_SATD    2
+#define GAP_GVE_FFMPEG_CMP_03_DCT     3
+#define GAP_GVE_FFMPEG_CMP_04_PSNR    4
+#define GAP_GVE_FFMPEG_CMP_05_BIT     5
+#define GAP_GVE_FFMPEG_CMP_06_RD      6
+#define GAP_GVE_FFMPEG_CMP_07_ZERO    7
+#define GAP_GVE_FFMPEG_CMP_08_VSAD    8
+#define GAP_GVE_FFMPEG_CMP_09_VSSE    9
+#define GAP_GVE_FFMPEG_CMP_10_NSSE    10
+#define GAP_GVE_FFMPEG_CMP_11_W53     11
+#define GAP_GVE_FFMPEG_CMP_12_W97     12
+#define GAP_GVE_FFMPEG_CMP_13_DCTMAX  13 
+#define GAP_GVE_FFMPEG_CMP_14_CHROMA  256
+#define GAP_GVE_FFMPEG_CMP_MAX_ELEMENTS   15
+#endif
+
+
+#ifdef HAVE_FULL_FFMPEG
+#define GAP_GVE_FFMPEG_CODER_TYPE_00_VLC       FF_CODER_TYPE_VLC      
+#define GAP_GVE_FFMPEG_CODER_TYPE_01_AC        FF_CODER_TYPE_AC
+#define GAP_GVE_FFMPEG_CODER_TYPE_MAX_ELEMENTS 2        
+#else
+#define GAP_GVE_FFMPEG_CODER_TYPE_00_VLC       0        
+#define GAP_GVE_FFMPEG_CODER_TYPE_01_AC        1
+#define GAP_GVE_FFMPEG_CODER_TYPE_MAX_ELEMENTS 2        
+#endif
+
+#ifdef HAVE_FULL_FFMPEG
+#define GAP_GVE_FFMPEG_PREDICTOR_00_LEFT        FF_PRED_LEFT
+#define GAP_GVE_FFMPEG_PREDICTOR_01_PLANE       FF_PRED_PLANE
+#define GAP_GVE_FFMPEG_PREDICTOR_02_MEDIAN      FF_PRED_MEDIAN
+#define GAP_GVE_FFMPEG_PREDICTOR_MAX_ELEMENTS   3
+#else
+#define GAP_GVE_FFMPEG_PREDICTOR_00_LEFT        0
+#define GAP_GVE_FFMPEG_PREDICTOR_01_PLANE       1
+#define GAP_GVE_FFMPEG_PREDICTOR_02_MEDIAN      2 
+#define GAP_GVE_FFMPEG_PREDICTOR_MAX_ELEMENTS   3
+#endif
+
+
+#ifdef HAVE_FULL_FFMPEG
+#define GAP_GVE_FF_QP2LAMBDA   FF_QP2LAMBDA
+#else
+#define GAP_GVE_FF_QP2LAMBDA   118
+#endif
+
+
 
 /* ffmpeg specific encoder params */
 typedef struct {
@@ -249,6 +328,12 @@ typedef struct {
   gdouble mux_preload;
   gdouble mux_max_delay;
 
+
+  gint32  ntsc_width;
+  gint32  ntsc_height;
+  gint32  pal_width;
+  gint32  pal_height;
+  
 } GapGveFFMpegValues;
 
 
@@ -262,7 +347,11 @@ typedef struct GapGveFFMpegGlobalParams {   /* nick: gpp */
   GapGveFFMpegValues   evl;
 
   GtkWidget *shell_window;
-  GtkWidget *fsb__fileselection;
+  gboolean   startup;
+  gboolean   ffpar_save_flag;
+  char       ffpar_filename[1024];
+  GtkWidget *ffpar_fileselection;   /* ffmpeg video encoder parameter file */
+  GtkWidget *fsb__fileselection;    /* passlog file */
 
   GtkWidget *ff_aspect_combo;
   GtkWidget *ff_aud_bitrate_combo;
@@ -312,6 +401,38 @@ typedef struct GapGveFFMpegGlobalParams {   /* nick: gpp */
   GtkWidget *ff_vid_bitrate_spinbutton;
   GtkWidget *ff_vid_codec_combo;
 
+  GtkWidget *ff_mb_cmp_combo;
+  GtkWidget *ff_ildct_cmp_combo;
+  GtkWidget *ff_sub_cmp_combo;
+  GtkWidget *ff_cmp_combo;
+  GtkWidget *ff_pre_cmp_combo;
+  GtkWidget *ff_frame_skip_cmp_combo;
+  GtkWidget *ff_coder_combo;
+  GtkWidget *ff_predictor_combo;
+  
+  GtkWidget *ff_use_ss_checkbutton;
+  GtkWidget *ff_use_aiv_checkbutton;
+  GtkWidget *ff_use_obmc_checkbutton;
+  GtkWidget *ff_use_loop_checkbutton;
+  GtkWidget *ff_use_alt_scan_checkbutton;
+  GtkWidget *ff_use_trell_checkbutton;
+  GtkWidget *ff_use_mv0_checkbutton;
+  GtkWidget *ff_do_normalize_aqp_checkbutton;
+  GtkWidget *ff_use_scan_offset_checkbutton;
+  GtkWidget *ff_closed_gop_checkbutton;
+  GtkWidget *ff_use_qpel_checkbutton;
+  GtkWidget *ff_use_qprd_checkbutton;
+  GtkWidget *ff_use_cbprd_checkbutton;
+  GtkWidget *ff_do_interlace_dct_checkbutton;
+  GtkWidget *ff_do_interlace_me_checkbutton;
+  GtkWidget *ff_strict_gop_checkbutton;
+  GtkWidget *ff_no_output_checkbutton;
+
+  GtkWidget *ff_mux_rate_spinbutton;
+  GtkWidget *ff_mux_packet_size_spinbutton;
+  GtkWidget *ff_mux_preload_spinbutton;
+  GtkWidget *ff_mux_max_delay_spinbutton;
+
 
   GtkObject *ff_aud_bitrate_spinbutton_adj;
   GtkObject *ff_vid_bitrate_spinbutton_adj;
@@ -336,10 +457,14 @@ typedef struct GapGveFFMpegGlobalParams {   /* nick: gpp */
   GtkObject *ff_mb_qmax_spinbutton_adj;
   GtkObject *ff_b_frames_spinbutton_adj;
 
+  GtkObject *ff_mux_rate_adj;
+  GtkObject *ff_mux_packet_size_adj;
+  GtkObject *ff_mux_preload_adj;
+  GtkObject *ff_mux_max_delay_adj;
+
 } GapGveFFMpegGlobalParams;
 
 
 void  gap_enc_ffmpeg_main_init_preset_params(GapGveFFMpegValues *epp, gint preset_idx);
-
 
 #endif

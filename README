@@ -46,6 +46,11 @@ Requires:
 		    ##  --enable-mp3lame
 		    
 		    
+		    If you want create videos with gimp-gap
+		    you should install those libs
+		    and configure gimp-gap with
+		    
+		    --enable_gva_libavformat
 		    
  - libmpeg3   1.5.4
                     libmpeg3 is an additional library for
@@ -76,6 +81,12 @@ Requires:
 		    cp i686/libmpeg3.a /usr/local/lib
 		    
 		    
+		    
+		    If you want to extract frames form DVD typical .IFO
+		    files you should install libmpeg3 and configure
+		    gimp-gap with 
+
+		    -- enable_gva_libmpeg3
 		    
  - xvid       1.0.2
                    The free XVID Codec is used for MPEG4 encoding
@@ -110,7 +121,43 @@ A correct installation adds the follwing menu trees to the GIMP:
 An overview of all menus can be found at
 docs/reference/txt/INTRODUCTION.txt    
 
-  Notes:
+
+
+Static linking with ffmpeg and libmpeg3 from sourcetree:
+========================================================
+
+The configure options
+  --with-ffmpegsrcdir=DIR
+  --with-libmpeg3srcdir=DIR
+
+enable static linking without the need to install ffmpeg and libmpeg3
+permanent on your system. The gimp-gap binaries are then built
+including those libs without dependencies at runtime.
+
+In this case you have to get the source tarballs of ffmpeg and libmpeg3
+extract them somewhere on your machine (using tar -xzf xxx.tar.gz)
+and run .configure and make in the extracted directories.
+
+after successful build of the libmpeg3 and ffmpeg libs
+you can pass their sourcedirectory names as configure options:
+(the autogen.sh script passes the options to the configure script)
+
+
+example:
+
+./autogen.sh \
+   --with-ffmpegsrcdir=/home/hof/FFMpeg-20050302 \
+   --with-libmpeg3srcdir=/home/hof/libmpeg3-1.5.4
+
+
+
+After successful installation of gimp-gap you may
+remove the libmpeg3 and ffmpeg sourcedirectories.
+
+
+
+Notes:
+======
    
    - GIMP 1.1.4 upto GIMP-1.2.x have included older versions of GIMP-GAP 
      as standard plug-in (named gap) with no need of extra installation.
@@ -187,7 +234,7 @@ Other known Bugs
 
   you can produce such problem videos
   with the ffmpeg encoder, 
-  and with "MPEG1 best" preset in the GIMP-GAP Master Encoder dialog
+  and with "MPEG1 high quality" preset in the GIMP-GAP Master Encoder dialog
   
 
 

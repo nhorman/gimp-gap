@@ -83,20 +83,10 @@ on_ff_aud_bitrate_combo  (GtkWidget     *wgt_item,
                                GapGveFFMpegGlobalParams *gpp);
 
 void
-on_ff_motion_estimation_combo  (GtkWidget     *wgt_item,
-                                     GapGveFFMpegGlobalParams *gpp);
+on_ff_gint32_combo  (GtkWidget     *wgt_item,
+                       gint32 *val_ptr);
 
-void
-on_ff_dct_algo_combo  (GtkWidget     *wgt_item,
-                           GapGveFFMpegGlobalParams *gpp);
 
-void
-on_ff_idct_algo_combo  (GtkWidget     *wgt_item,
-                           GapGveFFMpegGlobalParams *gpp);
-
-void
-on_ff_mb_decision_combo  (GtkWidget     *wgt_item,
-                           GapGveFFMpegGlobalParams *gpp);
 
 void
 on_ff_presets_combo  (GtkWidget     *wgt_item,

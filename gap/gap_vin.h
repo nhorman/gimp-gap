@@ -83,12 +83,52 @@ typedef struct GapVinTextFileLines {
 } GapVinTextFileLines;
 
 
+typedef enum
+{
+  GAP_VIN_GINT32
+, GAP_VIN_GDOUBLE
+, GAP_VIN_STRING
+, GAP_VIN_GBOOLEAN
+, GAP_VIN_G32BOOLEAN
+, GAP_VIN_DUMMY
+} GapVinDataType;
+
+
+typedef struct GapVinKeyList
+{
+  char            keyword[50];
+  char            comment[80];
+  gint32          len;
+  gpointer        val_ptr;
+  GapVinDataType  dataype;
+  gboolean        done_flag;
+  void *next;
+} GapVinKeyList;
+
+
 char *gap_vin_alloc_name(char *basename);
 int   gap_vin_set_common(GapVinVideoInfo *vin_ptr, char *basename);
 int   gap_vin_set_common_onion(GapVinVideoInfo *vin_ptr, char *basename);
 GapVinVideoInfo *gap_vin_get_all(char *basename);
 GapVinTextFileLines * gap_vin_load_textfile(const char *filename);
 void  gap_vin_free_textfile_lines(GapVinTextFileLines *txf_ptr_root);
+
+
+GapVinKeyList* gap_vin_new_keylist(void);
+void  gap_vin_free_keylist(GapVinKeyList *keylist);
+void  gap_vin_set_keyword(GapVinKeyList *keylist
+             , const gchar *keyword
+             , gpointer val_ptr
+             , GapVinDataType dataype
+             , gint32 len
+             , const gchar *comment
+             );
+int   gap_vin_rewrite_file(GapVinKeyList *keylist
+             , const char *filename
+	     , const char *hdr_text
+	     , const char *term_str
+	     );
+int   gap_vin_scann_filevalues(GapVinKeyList *keylist, const char *filename);
 
 
 #endif

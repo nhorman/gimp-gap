@@ -1,3 +1,159 @@
+2005-04-04  Wolfgang Hofer <hof@gimp.org>
+	2005-04-04:
+	- replaced some deprecated calls
+	  (gimp_rotate, gimp_perspective, gimp_drawable_image_id
+	  
+	  (thanks to carol for pointing out)
+	
+	* gap/gap_pdb_calls.c
+	* gap/gap_mov_render.c
+	* gap/gap_filter_codegen.c
+
+	2005-03-29:
+
+        - added new configure options:
+	  --with-ffmpegsrcdir=DIR      specify where to find ffmpeg src directory DIR
+	  --with-libmpeg3srcdir=DIR    specify where to find libmpeg3 src directory DIR
+	  
+	  those options may be used for static linking ffmpeg and libmpeg3
+	  from their sourcetree without the need to install those libs.
+	  (you have to configure / make both libs manually before
+	   configure gimp-gap)
+	   
+	  The new options are primary for internal use on my development
+	  machine, but can be also used to create gimp-gap binaries
+	  without dependencies to libavformat, libavcodec and libmpeg3.
+	   
+	  There still should be more sophisticated checks for the
+	  case where the user wants to compile with installed versions
+	  of those libs.
+
+	* configure.in
+	* README
+
+	2005-03-24:
+
+        - added new configure options:
+	  --with-ffmpegsrcdir=DIR      specify where to find ffmpeg src directory DIR
+	  --with-libmpeg3srcdir=DIR    specify where to find libmpeg3 src directory DIR
+	  
+	  those options may be used for static linking ffmpeg and libmpeg3
+	  from their sourcetree without the need to install those libs.
+	  (you have to configure / make both libs manually before
+	   configure gimp-gap)
+	  
+	  (i droped the plan to include the tarballs of those libs)
+	  but this may cause problems
+	  
+
+	- new feature: ffmpeg video encoder now supports
+	  save/load paramters to/from parameterfile
+	- NON-interactive PDB interface to set parameters
+	  changed. 
+	  (instead of passing all the parameters
+	  the caller has to pass the name of an
+	  ffmpeg video encoder parameterfile).
+	  
+        - reorganized notebook widget of the 
+	  FFMPEG Video Encode Parameters dialog window.
+	  
+	  Added New Tab: Expert Flags
+	   IntraOnly, GOP, B-Frames and Aspect moved to
+	   the "Basic Options" Tab.
+	  
+        - GUI support for many new ffmpeg encoder parameters 
+	  (depends on LIBAVCODEC_BUILD  >= 4744)
+
+	- Tried to provide encoder presets 
+	  (based on ffmpeg.c code reading) but most of the preset values
+	  are still a wild guess.
+	  
+	  Algorithms Tab:
+	    added algoritmhm combo boxes:
+	    -Macroblock cmp
+	    -ildct cmp
+	    -Fullpel cmp
+	    -Subpel cmp
+	    -Pre motion estimation Cmp
+	    -frame_skip_cmp
+	    -predictor
+	    -coder
+	
+	 Expert Flags Tab:
+	    added checkbuttons for new flags:
+	      
+	    -use_ss;		  "enable Slice Structured mode (h263+)"
+	    -use_aiv;		  "enable Alternative inter vlc (h263+)"
+	    -use_obmc;		  "use overlapped block motion compensation (h263+)"
+	    -use_loop;		  "use loop filter (h263+)"
+	    -use_alt_scan;  	  "enable alternate scantable (MPEG2/MPEG4)"
+	    -use_trell;		  "enable trellis quantization" 							    
+	    -use_mv0;		  "try to encode each MB with MV=<0,0> and choose the better one (has no effect if mbd=0)"  
+	    -do_normalize_aqp;	  "normalize adaptive quantization"							    
+	    -use_scan_offset;	  "enable SVCD Scan Offset placeholder" 						    
+	    -closed_gop;          "closed gop"
+	    -strict_gop           "strictly enforce GOP size"									    
+	    -use_qpel;		  "enable 1/4-pel"									    
+	    -use_qprd;		  "use rate distortion optimization for qp selection"					    
+	    -use_cbprd;		  "use rate distortion optimization for cbp"						    
+	    -do_interlace_dct;	  "use interlaced dct"  								    
+	    -do_interlace_me;	  "interlaced motion estimation"							    
+  
+	  
+	  
+
+	The current FFMPEG version has lots of video encoder parameters 
+	(more than 100) 
+	but most of them i dont know what they are used for.
+	I think most of the parameters can be set to default value
+	unless you are an ffmpeg expert.
+	
+	Some of the new parameters are not supported in the 
+	video encoder parameter GUI, but support via
+	parameterfile is implemented.
+	FFMPEG experts can edit the parameterfile
+	and then load the edited parameterfile.
+	
+
+	* vid_enc_ffmpeg/Makefile.am
+	* vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c [.h]
+	* vid_enc_ffmpeg/gap_enc_ffmpeg_callbacks.c [.h]
+	* vid_enc_ffmpeg/gap_enc_ffmpeg_par.c [.h]  # new files
+
+	2005-03-19:
+	made gap_vin procedures and types public and 
+	fit for common use to read/write other parameter files.
+	 
+	*  gap/gap_vin.c [.h]
+	
+	2005-03-16:
+	- ffmpeg Params updated GUI for those params that
+	   allow additional values in ffmpeg versions >= 0.4.9
+	   
+	   DCT algorithm "faan"
+	   IDCT algorithms "sh4", "simplearm", "h264"
+	   
+	   the new param values can be set from GUI when linked with
+	   sufficient ffmpeg CVS version (LIBAVCODEC_BUILD  >= 4744)
+
+	- bugfix attempt: try to detect aspect ratio with ffmpeg >= 0.4.9
+	    when reading video 
+	    (by additional reading AVCodecContext.dtg_active_format
+	     information, but this does not work either)
+
+	* vid_enc_ffmpeg/gap_enc_ffmpeg_main.c [.h]
+	* vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c
+	* libgapvidapi/gap_vid_api_ffmpeg.c 
+
+
+        2005-03-13:
+	- bugfix: lossles mpeg cut:
+	  fixed check for required framesequence to copy P and B frames
+	  (compare used assign operator (= / == missmatch))
+	  
+	
+	* libgapvidutil/gap_gve_story.c
+
 2005-04-01  Steve Murphy  <murf@e-tools.com>
 
         * configure.in: Added "rw" to ALL_LINGUAS.

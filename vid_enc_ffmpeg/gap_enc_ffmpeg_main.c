@@ -45,6 +45,9 @@
  */
 
 /* revision history:
+ * version 2.1.0a;  2005.03.27   hof: support ffmpeg  LIBAVCODEC_BUILD  >= 4744,
+ *                                    changed Noninteractive PDB-API (use paramfile)
+ *                                    changed presets (are still a wild guess)
  * version 2.1.0a;  2004.11.02   hof: added patch from pippin (allows compile with FFMPEG-0.4.0.9pre1)
  *                               support for the incompatible older (stable) FFMPEG 0.4.8 version is available
  *                               via precompiler checks HAVE_OLD_FFMPEG_0408
@@ -74,6 +77,7 @@
 #include "gap_libgimpgap.h"
 #include "gap_enc_ffmpeg_main.h"
 #include "gap_enc_ffmpeg_gui.h"
+#include "gap_enc_ffmpeg_par.h"
 
 #include "gap_audio_wav.h"
 
@@ -303,64 +307,11 @@ query ()
     {GIMP_PDB_INT32, "run_mode", "interactive, non-interactive"},
     {GIMP_PDB_STRING, "key_stdpar", "key to get standard video encoder params via gimp_get_data"},
 
-    {GIMP_PDB_STRING, "format_name", "fileformat shortname (AVI,MPEG..) execute ffmpeg -formats to get list of supported formats"},
-    {GIMP_PDB_STRING, "vcodec_name", "video CODEC shortname. execute the commandline tool: ffmpeg -formats to get list of supported CODECS"},
-    {GIMP_PDB_STRING, "acodec_name", "audio CODEC shortname. execute the commandline tool: ffmpeg -formats to get list of supported CODECS"},
+    {GIMP_PDB_STRING, "ffmpeg_encode_parameter_file", "name of an ffmpeg encoder parameter file."
+                                                      " Such a file can be created via save button in the"
+						      " INTERACTIVE runmode"},
 
-    {GIMP_PDB_STRING, "title", "set the title"},
-    {GIMP_PDB_STRING, "author", "set the author"},
-    {GIMP_PDB_STRING, "copyright", "set the copyright"},
-    {GIMP_PDB_STRING, "comment", "set the comment"},
-    {GIMP_PDB_STRING, "passlogfile", "logfilename for two pass encoding"},
-    {GIMP_PDB_INT32,  "pass", "1: do single pass encoding, 2: do 2 pass encoding"},
 
-    {GIMP_PDB_INT32,  "audio_bitrate", "set audio bitrate (in kbit/s)"},
-    {GIMP_PDB_INT32,  "video_bitrate", "set video bitrate (in kbit/s)"},
-    {GIMP_PDB_INT32,  "gop_size", "set the group of picture size"},
-    {GIMP_PDB_INT32,  "intra", "1:use only intra frames (I), 0:use I,P,B frames"},
-
-#ifdef HAVE_OLD_FFMPEG_0408
-    {GIMP_PDB_FLOAT,  "qscale", "(0 upto 31) use fixed video quantiser scale (VBR)"},
-#else
-    {GIMP_PDB_FLOAT,  "qscale", "(0 upto 255) use fixed video quantiser scale (VBR)"},
-#endif
-
-    {GIMP_PDB_INT32,  "qmin", "(0 upto 31) min video quantiser scale (VBR)"},
-    {GIMP_PDB_INT32,  "qmax", "(0 upto 31) max video quantiser scale (VBR)"},
-    {GIMP_PDB_INT32,  "qdiff", "(0 upto 31) max difference between the quantiser scale (VBR)"},
-    {GIMP_PDB_FLOAT,  "qblur", "video quantiser scale blur (VBR)"},
-    {GIMP_PDB_FLOAT,  "qcomp", "video quantiser scale compression (VBR)"},
-    {GIMP_PDB_FLOAT,  "rc_init_cplx", "initial complexity for 1-pass encoding"},
-    {GIMP_PDB_FLOAT,  "b_qfactor", "qp factor between p and b frames"},
-    {GIMP_PDB_FLOAT,  "i_qfactor", "qp factor between p and i frames"},
-    {GIMP_PDB_FLOAT,  "b_qoffset", "qp offset between p and b frames"},
-    {GIMP_PDB_FLOAT,  "i_qoffset", "qp offset between p and i frames"},
-    {GIMP_PDB_INT32,  "bitrate_tol", "set video bitrate tolerance (in kbit/s)"},
-    {GIMP_PDB_INT32,  "maxrate_tol", "set max video bitrate tolerance (in kbit/s)"},
-    {GIMP_PDB_INT32,  "minrate_tol", "set min video bitrate tolerance (in kbit/s)"},
-    {GIMP_PDB_INT32,  "bufsize", "set ratecontrol buffere size (in kbit)"},
-    {GIMP_PDB_INT32,  "motion_estimation", "set motion estimation method"
-                      " 1:zero(fastest), 2:full(best), 3:log, 4:phods, 5:epzs(recommanded), 6:x1"},
-    {GIMP_PDB_INT32,  "dct_algo", "set dct algorithm. 0:AUTO, 1:FAST_INT, 2:INT, 3:MMX, 4:MLIB, 5:ALTIVEC"},
-    {GIMP_PDB_INT32,  "idct_algo", "set idct algorithm. 0:AUTO, 1:INT, 2:SIMPLE, 3:SIMPLEMMX, 4:LIBMPEG2MMX, 5:PS2, 6:MLIB, 7:ARM, 8:ALTIVEC"},
-    {GIMP_PDB_INT32,  "strict", "how strictly to follow the standards  0:"},
-    {GIMP_PDB_INT32,  "mb_qmin", "(1 upto 31) min macroblock quantiser scale (VBR)"},
-    {GIMP_PDB_INT32,  "mb_qmax", "(1 upto 31) max macroblock quantiser scale (VBR)"},
-    {GIMP_PDB_INT32,  "mb_decision", "macroblock decision mode  0:SIMPLE (use mb_cmp) 1:BITS (chooses the one which needs the fewest bits) 2:RD (rate distoration) "},
-    {GIMP_PDB_INT32,  "aic", "0:OFF, 1:enable Advanced intra coding (h263+)"},
-    {GIMP_PDB_INT32,  "umv", "0:OFF, 1:enable Unlimited Motion Vector (h263+)"},
-    {GIMP_PDB_INT32,  "b_frames", "0:OFF, 1 upto 8: use n B frames per GOP (only MPEG-4 CODEC)"},
-    {GIMP_PDB_INT32,  "mv4", "0:OFF, 1:use four motion vector by macroblock (only MPEG-4 CODEC)"},
-    {GIMP_PDB_INT32,  "partitioning", "0:OFF, 1:use data partitioning (only MPEG-4 CODEC)"},
-    {GIMP_PDB_INT32,  "packet_size", "packet size in bits (use 0 for default)"},
-    {GIMP_PDB_INT32,  "benchmark", "0:OFF, 1:add timings for benchmarking"},
-    {GIMP_PDB_INT32,  "hex_dump", "0:OFF, 1:dump each input packet"},
-    {GIMP_PDB_INT32,  "psnr", "UNUSED since ffmpeg 0.4.6  0:OFF, 1:calculate PSNR of compressed frames"},
-    {GIMP_PDB_INT32,  "vstats", "0:OFF, 1:dump video coding statistics to file"},
-    {GIMP_PDB_INT32,  "bitexact", "0:OFF, 1:only use bit exact algorithms (for codec testing)"},
-    {GIMP_PDB_INT32,  "set_aspect_ratio", "0:OFF, 1:set video aspect_ratio"},
-    {GIMP_PDB_FLOAT,  "factor_aspect_ratio", "0..autodetect from pixelsize, or with/height value"},
-    {GIMP_PDB_INT32,  "dont_recode", "0:OFF, 1:try to copy videoframes 1:1 without recode (if possible and input is an mpeg videofile)"}
   };
   static int nargs_ffmpeg_enc_par = sizeof(args_ffmpeg_enc_par) / sizeof(args_ffmpeg_enc_par[0]);
 
@@ -388,7 +339,7 @@ query ()
   gimp_install_procedure(GAP_PLUGIN_NAME_FFMPEG_ENCODE,
                          _("ffmpeg video encoding for anim frames. Menu: @FFMPEG@"),
                          _("This plugin does video encoding of animframes based on libavformat."
-                         " (also known as FFMPGEG encoder)."
+                         " (also known as FFMPEG encoder)."
                          " The (optional) audiodata must be RIFF WAVEfmt (.wav) file."
                          " .wav files can be mono (1) or stereo (2channels) audiodata and must be 16bit uncompressed."
                          " IMPORTANT:  Non-interactive callers should first call "
@@ -407,7 +358,9 @@ query ()
 
   gimp_install_procedure(GAP_PLUGIN_NAME_FFMPEG_PARAMS,
                          _("Set Parameters for GAP ffmpeg video encoder Plugin"),
-                         _("This plugin sets ffmpeg specific video encoding parameters."),
+                         _("This plugin sets ffmpeg specific video encoding parameters."
+			   " Non-interactive callers must provide a parameterfile,"
+			   " Interactive calls provide a dialog window to specify and optionally save the parameters."),
                          "Wolfgang Hofer (hof@gimp.org)",
                          "Wolfgang Hofer",
                          gap_enc_ffmpeg_version,
@@ -550,93 +503,27 @@ run (const gchar      *name,
         }
         else
         {
-           gint32 l_ii;
+           /* get parameters from file in NON_INTERACTIVE mode */
+           if(param[2].data.d_string)
+           {
+             g_snprintf(gpp->ffpar_filename, sizeof(gpp->ffpar_filename), "%s", param[2].data.d_string);
+	     if(g_file_test(gpp->ffpar_filename, G_FILE_TEST_EXISTS))
+	     {
+               gap_ffpar_get(gpp->ffpar_filename, &gpp->evl);
+               l_set_it = TRUE;
+	     }
+	     else
+	     {
+               values[0].data.d_status = GIMP_PDB_EXECUTION_ERROR;
+               l_set_it = FALSE;
+	     }
+           }
+	   else
+	   {
+             values[0].data.d_status = GIMP_PDB_EXECUTION_ERROR;
+             l_set_it = FALSE;
+	   }
 
-           /* get parameters in NON_INTERACTIVE mode */
-           l_ii = 3;
-           if(param[l_ii].data.d_string)
-           {
-             g_snprintf(epp->format_name, sizeof(epp->format_name), "%s", param[l_ii].data.d_string);
-           }
-           l_ii++;
-           if(param[l_ii].data.d_string)
-           {
-             g_snprintf(epp->vcodec_name, sizeof(epp->vcodec_name), "%s", param[l_ii].data.d_string);
-           }
-           l_ii++;
-           if(param[l_ii].data.d_string)
-           {
-             g_snprintf(epp->acodec_name, sizeof(epp->acodec_name), "%s", param[l_ii].data.d_string);
-           }
-           l_ii++;
-           if(param[l_ii].data.d_string)
-           {
-             g_snprintf(epp->title, sizeof(epp->title), "%s", param[l_ii].data.d_string);
-           }
-           l_ii++;
-           if(param[l_ii].data.d_string)
-           {
-             g_snprintf(epp->author, sizeof(epp->author), "%s", param[l_ii].data.d_string);
-           }
-           l_ii++;
-           if(param[l_ii].data.d_string)
-           {
-             g_snprintf(epp->copyright, sizeof(epp->copyright), "%s", param[l_ii].data.d_string);
-           }
-           l_ii++;
-           if(param[l_ii].data.d_string)
-           {
-             g_snprintf(epp->comment, sizeof(epp->comment), "%s", param[l_ii].data.d_string);
-           }
-           l_ii++;
-           if(param[l_ii].data.d_string)
-           {
-             g_snprintf(epp->passlogfile, sizeof(epp->passlogfile), "%s", param[l_ii].data.d_string);
-           }
-           l_ii++;
-
-           epp->audio_bitrate       = param[l_ii++].data.d_int32;
-           epp->video_bitrate       = param[l_ii++].data.d_int32;
-           epp->gop_size            = param[l_ii++].data.d_int32;
-           epp->intra               = param[l_ii++].data.d_int32;
-           epp->qscale              = param[l_ii++].data.d_float;
-           epp->qmin                = param[l_ii++].data.d_int32;
-           epp->pass                = param[l_ii++].data.d_int32;
-           epp->qmax                = param[l_ii++].data.d_int32;
-           epp->qdiff               = param[l_ii++].data.d_int32;
-           epp->qblur               = param[l_ii++].data.d_float;
-           epp->qcomp               = param[l_ii++].data.d_float;
-           epp->rc_init_cplx        = param[l_ii++].data.d_float;
-           epp->b_qfactor           = param[l_ii++].data.d_float;
-           epp->i_qfactor           = param[l_ii++].data.d_float;
-           epp->b_qoffset           = param[l_ii++].data.d_float;
-           epp->i_qoffset           = param[l_ii++].data.d_float;
-           epp->bitrate_tol         = param[l_ii++].data.d_int32;
-           epp->maxrate_tol         = param[l_ii++].data.d_int32;
-           epp->minrate_tol         = param[l_ii++].data.d_int32;
-           epp->bufsize             = param[l_ii++].data.d_int32;
-           epp->motion_estimation   = param[l_ii++].data.d_int32;
-           epp->dct_algo            = param[l_ii++].data.d_int32;
-           epp->idct_algo           = param[l_ii++].data.d_int32;
-           epp->strict              = param[l_ii++].data.d_int32;
-           epp->mb_qmin             = param[l_ii++].data.d_int32;
-           epp->mb_qmax             = param[l_ii++].data.d_int32;
-           epp->mb_decision         = param[l_ii++].data.d_int32;
-           epp->aic                 = param[l_ii++].data.d_int32;
-           epp->umv                 = param[l_ii++].data.d_int32;
-           epp->b_frames            = param[l_ii++].data.d_int32;
-           epp->mv4                 = param[l_ii++].data.d_int32;
-           epp->partitioning        = param[l_ii++].data.d_int32;
-           epp->packet_size         = param[l_ii++].data.d_int32;
-           epp->benchmark           = param[l_ii++].data.d_int32;
-           epp->hex_dump            = param[l_ii++].data.d_int32;
-           epp->psnr                = param[l_ii++].data.d_int32;
-           epp->vstats              = param[l_ii++].data.d_int32;
-           epp->bitexact            = param[l_ii++].data.d_int32;
-           epp->set_aspect_ratio    = param[l_ii++].data.d_int32;
-           epp->factor_aspect_ratio = param[l_ii++].data.d_float;
-
-           epp->dont_recode_flag    = param[l_ii++].data.d_int32;
         }
       }
       else
@@ -786,6 +673,7 @@ p_gimp_get_data(const char *key, void *buffer, gint expected_size)
 }  /* end p_gimp_get_data */
 
 
+
 /* ----------------------------------
  * gap_enc_ffmpeg_main_init_preset_params
  * ----------------------------------
@@ -793,75 +681,85 @@ p_gimp_get_data(const char *key, void *buffer, gint expected_size)
  * 0 .. DivX default (ffmpeg defaults, OK)
  * 1 .. DivX Best
  * 2 .. DivX Low
- * 3 .. MPEG1 VCD
- * 4 .. MPEG1 Best
- * 5 .. MPEG2 DVD
- * 6 .. Real Video
+ * 3 .. DivX MSMPEG default
+ * 4 .. MPEG1 VCD
+ * 5 .. MPEG1 Best
+ * 6 .. MPEG2 SVCD
+ * 7 .. MPEG2 DVD
+ * 8 .. Real Video default
  */
 void
 gap_enc_ffmpeg_main_init_preset_params(GapGveFFMpegValues *epp, gint preset_idx)
 {
   gint l_idx;
-  /*                                                                        DivX def      best       low       VCD   MPGbest       DVD      Real */
+  /*                                                                        DivX def      best       low   MS-def         VCD	MPGbest      SVCD 	DVD 	 Real */
+  static gint32 tab_ntsc_width[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]        =  {     0,        0,        0,  	0,        352,        0,      480,      720,	    0 };
+  static gint32 tab_ntsc_height[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  {     0,        0,        0,  	0,        240,        0,      480,      480,	    0 };
 
-  static gint32 tab_pass[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]              =  {     1,        1,        1,    	 1,        1,        1,        1 };
-  static gint32 tab_audio_bitrate[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]     =  {   160,      192,       96,      128,      192,      160,       96 };
-  static gint32 tab_video_bitrate[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]     =  {  5000,     5000,     1500,     3000,     6000,     6000,     1200 };
-  static gint32 tab_gop_size[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]          =  {    12,       12,       96,    	18,       12,       18,       48 };
-  static gint32 tab_intra[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]             =  {     0,        0,        0,    	 0,        0,        0,        0 };
+  static gint32 tab_pal_width[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]         =  {     0,        0,        0,  	0,        352,        0,      480,      720,	    0 };
+  static gint32 tab_pal_height[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]        =  {     0,        0,        0,  	0,        288,        0,      576,      576,	    0 };
 
-#ifdef HAVE_OLD_FFMPEG_0408
-  static float  tab_qscale[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]            =  {     2,        1,        6,    	 0,        1,        1,        6 };
-#else
-  static float  tab_qscale[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]            =  {     2,        1,        6,    	 0,        1,        1,        6 };
-#endif
+  static gint32 tab_pass[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]              =  {     1,        1,        1,  	1,          1,        1,	1,	  1,	    1 };
+  static gint32 tab_audio_bitrate[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]     =  {   160,      192,       96,     160,        224,      192,      224,	192,	  160 };
+  static gint32 tab_video_bitrate[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]     =  {   200,     1500,      150,     200,       1150,     6000,     2040,     6000,	 1200 };
+  static gint32 tab_gop_size[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]          =  {    12,       12,       96,      12,         18,       12,       18,	 18,	   18 };
+  static gint32 tab_intra[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]             =  {     0,        0,        0,  	0,          0,        0,	0,	  0,	    0 };
 
-  static gint32 tab_qmin[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]              =  {     2,        1,       10,    	 2,        1,        2,       10 };
-  static gint32 tab_qmax[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]              =  {    31,        4,       31,       31,        4,        8,       31 };
-  static gint32 tab_qdiff[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]             =  {     3,        2,        9,        3,        2,        2,       10 };
+//static float  tab_qscale[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]            =  {     2,        1,        6,  	2,          0,        1,	1,	  1,	    2 };
+  static float  tab_qscale[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]            =  {     2,        1,        6,  	2,          1,        1,	1,	  1,	    2 };
 
-  static float  tab_qblur[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]             =  {   0.5,       0.5,      0.5,     0.5,      0.5,      0.5,      0.5 };
-  static float  tab_qcomp[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]             =  {   0.5,       0.5,      0.5,     0.5,      0.5,      0.5,      0.5 };
-  static float  tab_rc_init_cplx[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]      =  {   0.0,       0.0,      0.0,     0.0,      0.0,      0.0,      0.0 };
-  static float  tab_b_qfactor[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]         =  {  1.25,      1.25,     1.25,    1.25,     1.25,     1.25,     1.25 };
-  static float  tab_i_qfactor[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]         =  {  -0.8,      -0.8,     -0.8,    -0.8,     -0.8,     -0.8,     -0.8 };
-  static float  tab_b_qoffset[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]         =  {  1.25,      1.25,     1.25,    1.25,     1.25,     1.25,     1.25 };
-  static float  tab_i_qoffset[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]         =  {   0.0,       0.0,      0.0,     0.0,      0.0,      0.0,      0.0 };
+  static gint32 tab_qmin[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]              =  {     2,        2,        8,  	2,          2,        2,	2,	  2,	    2 };
+  static gint32 tab_qmax[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]              =  {    31,        8,       31,      31,         31,        8,       16,	  8,	   31 };
+  static gint32 tab_qdiff[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]             =  {     3,        2,        9,  	3,          3,        2,	2,	  2,	    3 };
 
-  static gint32 tab_bitrate_tol[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  {  4000,     6000,     1000,        0,     1000,     2000,     5000 };
-  static gint32 tab_maxrate_tol[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  {     0,        0,        0,        0,        0,        0,        0 };
-  static gint32 tab_minrate_tol[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  {     0,        0,        0,        0,        0,        0,        0 };
-  static gint32 tab_bufsize[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]           =  {     0,        0,        0,        0,        0,        0,        0 };
-  static gint32 tab_motion_estimation[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS] =  {     5,        5,        1,        5,        5,        5,        1 };
-  static gint32 tab_dct_algo[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]          =  {     0,        0,        0,        0,        0,        0,        0 };
-  static gint32 tab_idct_algo[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]         =  {     0,        0,        0,        0,        0,        0,        0 };
-  static gint32 tab_strict[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]            =  {     0,        0,        0,        0,        0,        0,        0 };
-  static gint32 tab_mb_qmin[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]           =  {     2,        2,        8,        2,        2,        2,        2 };
-  static gint32 tab_mb_qmax[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]           =  {    31,       18,       31,       31,       18,       31,       31 };
-  static gint32 tab_mb_decision[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  {     0,        0,        0,        0,        0,        0,        0 };
-  static gint32 tab_aic[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]               =  {     0,        0,        0,        0,        0,        0,        0 };
-  static gint32 tab_umv[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]               =  {     0,        0,        0,        0,        0,        0,        0 };
+  static float  tab_qblur[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]             =  {   0.5,       0.5,      0.5,    0.5,        0.5,      0.5,      0.5,	0.5,	  0.5 };
+  static float  tab_qcomp[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]             =  {   0.5,       0.5,      0.5,    0.5,        0.5,      0.5,      0.5,	0.5,	  0.5 };
+  static float  tab_rc_init_cplx[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]      =  {   0.0,       0.0,      0.0,    0.0,        0.0,      0.0,      0.0,	0.0,	  0.0 };
+  static float  tab_b_qfactor[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]         =  {  1.25,      1.25,     1.25,   1.25,       1.25,     1.25,     1.25,     1.25,	 1.25 };
+  static float  tab_i_qfactor[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]         =  {  -0.8,      -0.8,     -0.8,   -0.8,       -0.8,     -0.8,     -0.8,     -0.8,	 -0.8 };
+  static float  tab_b_qoffset[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]         =  {  1.25,      1.25,     1.25,   1.25,       1.25,     1.25,     1.25,     1.25,	 1.25 };
+  static float  tab_i_qoffset[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]         =  {   0.0,       0.0,      0.0,    0.0,        0.0,      0.0,      0.0,	0.0,	  0.0 };
 
-  static gint32 tab_b_frames[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]          =  {     2,        2,        4,        0,        0,        2,        0 };
-  static gint32 tab_mv4[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]               =  {     0,        0,        0,        0,        0,        0,        0 };
-  static gint32 tab_partitioning[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]      =  {     0,        0,        0,        0,        0,        0,        0 };
-  static gint32 tab_packet_size[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  {     0,        0,        0,        0,        0,        0,        0 };
-  static gint32 tab_bitexact[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]          =  {     0,        0,        0,        0,        0,        0,        0 };
-  static gint32 tab_aspect[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]            =  {     1,        1,        1,        1,        1,        1,        1 };
-  static gint32 tab_aspect_fact[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  {   0.0,      0.0,      0.0,      0.0,      0.0,      0.0,      0.0 };
+  static gint32 tab_bitrate_tol[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  {  4000,     6000,     2000,    4000,          0,     4000,     2000,     2000,	 5000 };
+  static gint32 tab_maxrate_tol[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  {     0,        0,        0,  	0,       1150,        0,     2516,     9000,	    0 };
+  static gint32 tab_minrate_tol[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  {     0,        0,        0,  	0,       1150,        0,	0,	  0,	    0 };
+  static gint32 tab_bufsize[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]           =  {     0,        0,        0,  	0,         40,        0,      224,	224,	    0 };
 
-  static char*  tab_format_name[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  { "avi",    "avi",    "avi",     "vcd",   "mpeg",    "vob",     "rm" };
-  static char*  tab_vcodec_name[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  { "mpeg4", "mpeg4", "mpeg4", "mpeg1video", "mpeg1video", "mpeg2video", "rv10" };
-  static char*  tab_acodec_name[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  { "mp2",     "mp2",   "mp2",     "mp2",    "mp2",     "ac3",    "ac3" };
+  static gint32 tab_motion_estimation[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS] =  {     5,        5,        5,  	5,          5,        5,	5,	  5,	    5 };
 
-  static gint32 tab_mux_rate[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]          =  {     0,         0,     	0, 1411200,        0, 10080000,        0 };
-  static gint32 tab_mux_packet_size[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]   =  {     0,         0,     	0,    2324,        0,     2048,        0 };
-  static float  tab_mux_preload[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  {   0.5,       0.5,      0.5,    0.44,      0.5,      0.5,      0.5 };
-  static float  tab_mux_max_delay[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]     =  {   0.7,       0.7,      0.7,     0.7,      0.7,      0.7,      0.7 };
+  static gint32 tab_dct_algo[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]          =  {     0,        0,        0,  	0,          0,        0,	0,	  0,	    0 };
+  static gint32 tab_idct_algo[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]         =  {     0,        0,        0,  	0,          0,        0,	0,	  0,	    0 };
+  static gint32 tab_strict[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]            =  {     0,        0,        0,  	0,          0,        0,	0,	  0,	    0 };
+  static gint32 tab_mb_qmin[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]           =  {     2,        2,        8,  	2,          2,        2,	2,	  2,	    2 };
+  static gint32 tab_mb_qmax[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]           =  {    31,       18,       31,      31,         31,       18,       31,	 31,	   31 };
+  static gint32 tab_mb_decision[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  {     0,        0,        0,  	0,          0,        0,	0,	  0,	    0 };
+  static gint32 tab_aic[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]               =  {     0,        0,        0,  	0,          0,        0,	0,	  0,	    0 };
+  static gint32 tab_umv[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]               =  {     0,        0,        0,  	0,          0,        0,	0,	  0,	    0 };
 
-  if(gap_debug) printf("gap_enc_ffmpeg_main_init_preset_params\n");
+  static gint32 tab_b_frames[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]          =  {     2,        2,        4,  	0,          0,        0,	2,	  2,	    0 };
+  static gint32 tab_mv4[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]               =  {     0,        0,        0,  	0,          0,        0,	0,	  0,	    0 };
+  static gint32 tab_partitioning[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]      =  {     0,        0,        0,  	0,          0,        0,	0,	  0,	    0 };
+  static gint32 tab_packet_size[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  {     0,        0,        0,  	0,          0,        0,	0,	  0,	    0 };
+  static gint32 tab_bitexact[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]          =  {     0,        0,        0,  	0,          0,        0,	0,	  0,	    0 };
+  static gint32 tab_aspect[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]            =  {     1,        1,        1,  	1,          1,        1,	1,	  1,	    1 };
+  static gint32 tab_aspect_fact[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  {   0.0,      0.0,      0.0,     0.0,        0.0,      0.0,      0.0,	0.0,	  0.0 };
+
+  static char*  tab_format_name[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  { "avi",    "avi",    "avi",     "avi",     "vcd",   "mpeg",   "svcd",    "vob",     "rm" };
+  static char*  tab_vcodec_name[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  { "mpeg4", "mpeg4", "mpeg4", "msmpeg4", "mpeg1video", "mpeg1video", "mpeg2video", "mpeg2video", "rv10" };
+  static char*  tab_acodec_name[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  { "mp2",     "mp2",   "mp2",     "mp2",      "mp2",    "mp2",    "mp2",   "ac3",    "ac3" };
+
+  static gint32 tab_mux_rate[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]          =  {     0,         0,     	0,	0,     1411200,       0,       0,   10080000,        0 };
+  static gint32 tab_mux_packet_size[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]   =  {     0,         0,     	0,	0,        2324,    2324,    2324,       2048,        0 };
+  static float  tab_mux_preload[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  {   0.5,       0.5,      0.5,    0.5,        0.44,     0.5,     0.5,        0.5,      0.5 };
+  static float  tab_mux_max_delay[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]     =  {   0.7,       0.7,      0.7,    0.7,         0.7,     0.7,     0.7,        0.7,      0.7 };
+  static gint32 tab_use_scann_offset[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]  =  {     0,         0,     	0,	0,           0,       0,       1,          0,        0 };
+
 
   l_idx = CLAMP(preset_idx, 0, GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS -1);
+  if(gap_debug)
+  {
+    printf("gap_enc_ffmpeg_main_init_preset_params L_IDX:%d\n", (int)l_idx);
+  }
 
   g_snprintf(epp->format_name, sizeof(epp->format_name), tab_format_name[l_idx]);   /* "avi" */
   g_snprintf(epp->vcodec_name, sizeof(epp->vcodec_name), tab_vcodec_name[l_idx]);   /* "msmpeg4" */
@@ -917,11 +815,11 @@ gap_enc_ffmpeg_main_init_preset_params(GapGveFFMpegValues *epp, gint preset_idx)
    * TODO: findout valid value ranges and provide GUI widgets for those options
    */
   epp->thread_count                 = 1;
-  epp->mb_cmp                       = FF_CMP_SAD;
-  epp->ildct_cmp                    = FF_CMP_VSAD;
-  epp->sub_cmp                      = FF_CMP_SAD;
-  epp->cmp                          = FF_CMP_SAD;
-  epp->pre_cmp                      = FF_CMP_SAD;
+  epp->mb_cmp                       = GAP_GVE_FFMPEG_CMP_00_SAD;
+  epp->ildct_cmp                    = GAP_GVE_FFMPEG_CMP_08_VSAD;
+  epp->sub_cmp                      = GAP_GVE_FFMPEG_CMP_00_SAD;
+  epp->cmp                          = GAP_GVE_FFMPEG_CMP_00_SAD;
+  epp->pre_cmp                      = GAP_GVE_FFMPEG_CMP_00_SAD;
   epp->pre_me                       = 0;
   epp->lumi_mask                    = 0;
   epp->dark_mask                    = 0;
@@ -938,7 +836,7 @@ gap_enc_ffmpeg_main_init_preset_params(GapGveFFMpegValues *epp, gint preset_idx)
   epp->use_trell                    = 0;
   epp->use_mv0                      = 0;
   epp->do_normalize_aqp             = 0;
-  epp->use_scan_offset              = 0;
+  epp->use_scan_offset              = tab_use_scann_offset[l_idx];
   epp->closed_gop                   = 0;
   epp->strict_gop                   = 0;
   epp->use_qpel                     = 0;
@@ -947,10 +845,10 @@ gap_enc_ffmpeg_main_init_preset_params(GapGveFFMpegValues *epp, gint preset_idx)
   epp->do_interlace_dct             = 0;
   epp->do_interlace_me              = 0;
   epp->no_output                    = 0;
-  epp->video_lmin                   = 2*FF_QP2LAMBDA;
-  epp->video_lmax                   = 31*FF_QP2LAMBDA;
-  epp->video_mb_lmin                = 2*FF_QP2LAMBDA;
-  epp->video_mb_lmax                = 31*FF_QP2LAMBDA;
+  epp->video_lmin                   = 2*GAP_GVE_FF_QP2LAMBDA;
+  epp->video_lmax                   = 31*GAP_GVE_FF_QP2LAMBDA;
+  epp->video_mb_lmin                = 2*GAP_GVE_FF_QP2LAMBDA;
+  epp->video_mb_lmax                = 31*GAP_GVE_FF_QP2LAMBDA;
   epp->video_lelim                  = 0;
   epp->video_celim                  = 0;
   epp->video_intra_quant_bias       = FF_DEFAULT_QUANT_BIAS;
@@ -981,6 +879,10 @@ gap_enc_ffmpeg_main_init_preset_params(GapGveFFMpegValues *epp, gint preset_idx)
   epp->mux_preload                  = tab_mux_preload[l_idx];
   epp->mux_max_delay                = tab_mux_max_delay[l_idx];
 
+  epp->ntsc_width                   = tab_ntsc_width[l_idx];
+  epp->ntsc_height                  = tab_ntsc_height[l_idx];
+  epp->pal_width                    = tab_pal_width[l_idx];
+  epp->pal_height                   = tab_pal_height[l_idx];
 
 }   /* end gap_enc_ffmpeg_main_init_preset_params */
 
@@ -1066,8 +968,8 @@ p_ffmpeg_open(GapGveFFMpegGlobalParams *gpp
   ffh->video_rc_eq                  =  "tex^qComp";
   ffh->video_rc_buffer_size         = epp->bufsize;
   ffh->video_rc_buffer_aggressivity = 1.0;
-  ffh->video_rc_max_rate            = epp->maxrate_tol;
-  ffh->video_rc_min_rate            = epp->minrate_tol;
+  ffh->video_rc_max_rate            = epp->maxrate_tol * 1000;
+  ffh->video_rc_min_rate            = epp->minrate_tol * 1000;
   ffh->video_rc_initial_cplx        = (float)epp->rc_init_cplx;
   ffh->video_b_qfactor              = (float)epp->b_qfactor;
   ffh->video_b_qoffset              = (float)epp->b_qoffset;
@@ -1481,8 +1383,8 @@ p_ffmpeg_open(GapGveFFMpegGlobalParams *gpp
   video_enc->rc_eq     = "tex^qComp";
 
   video_enc->rc_override_count      =0;
-  video_enc->rc_max_rate            = epp->maxrate_tol;
-  video_enc->rc_min_rate            = epp->minrate_tol;
+  video_enc->rc_max_rate            = epp->maxrate_tol * 1000;
+  video_enc->rc_min_rate            = epp->minrate_tol * 1000;
   video_enc->rc_buffer_size         = epp->bufsize * 8*1024;
   video_enc->rc_buffer_aggressivity = 1.0;
   video_enc->rc_initial_cplx        = (float)epp->rc_init_cplx;
@@ -1510,6 +1412,11 @@ p_ffmpeg_open(GapGveFFMpegGlobalParams *gpp
   video_enc->inter_quant_bias       = epp->video_inter_quant_bias;
 
   video_enc->me_threshold           = epp->me_threshold;
+  if(epp->me_threshold)
+  {
+    video_enc->debug |= FF_DEBUG_MV;
+  }
+  
   video_enc->mb_threshold           = epp->mb_threshold;
   video_enc->intra_dc_precision     = epp->intra_dc_precision - 8;
 
@@ -1925,7 +1832,7 @@ p_ffmpeg_write_frame_chunk(t_ffmpeg_handle *ffh, gint32 encoded_size)
       }
       
 
-      //if(gap_debug)  
+      if(gap_debug)  
       {
         printf("CHUNK picture_number: enc_dummy_size:%d  frame_type:%d pic_number: %d %d PTS:%d\n"
 	      , (int)encoded_dummy_size

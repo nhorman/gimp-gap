@@ -327,8 +327,7 @@ p_mov_transform_perspective(gint32 layer_id
 	  );
   }
 
-  gimp_perspective  (layer_id,
-		      TRUE,        /* always use interpolation for good quality */
+  gimp_drawable_transform_perspective_default (layer_id,
 		      x0,
 		      y0,
 		      x1,
@@ -336,7 +335,10 @@ p_mov_transform_perspective(gint32 layer_id
 		      x2,
 		      y2,
 		      x3,
-		      y3);
+		      y3,
+		      TRUE,        /* whether to use interpolation and supersampling for good quality */
+                      FALSE        /* whether to clip results */
+		      );
 
   *resized_flag = 1;
   *new_width = neww;
@@ -362,7 +364,6 @@ gap_mov_render_render(gint32 image_id, GapMovValues *val_ptr, GapMovCurrent *cur
   guint        l_orig_width;
   guint        l_orig_height;
   gint         l_resized_flag;
-  gboolean     l_interpolation;
   gint         lx1, ly1, lx2, ly2;
   guint        l_image_width;
   guint        l_image_height;
@@ -523,8 +524,11 @@ gap_mov_render_render(gint32 image_id, GapMovValues *val_ptr, GapMovCurrent *cur
 
   if((cur_ptr->currRotation  > 0.5) || (cur_ptr->currRotation < -0.5))
   {
+    gboolean     l_interpolation;
+
     l_resized_flag = 1;
-    l_interpolation = TRUE;  /* rotate always with smoothing option turned on */
+
+    l_interpolation = TRUE;  /* use the default interpolation (as configured in prefs) */
 
     /* have to rotate the layer (rotation also changes size as needed) */
     gap_pdb_gimp_rotate_degree(l_cp_layer_id, l_interpolation, cur_ptr->currRotation);
