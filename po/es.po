@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: es\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-12-21 22:12+0100\n"
-"PO-Revision-Date: 2003-12-21 22:38+0100\n"
+"POT-Creation-Date: 2003-12-27 20:56+0100\n"
+"PO-Revision-Date: 2003-12-27 22:08+0100\n"
 "Last-Translator: Francisco Javier F. Serrador <serrador@cvs.gnome.org>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -85,7 +85,7 @@ msgstr "Error: No puedo renombrar el fotograma %d a %d"
 
 #: gap/gap_base_ops.c:204
 msgid "Density duplicating frames..."
-msgstr "Duplicando la desidad de fotogramas..."
+msgstr "Duplicando la densidad de fotogramas..."
 
 #: gap/gap_base_ops.c:359 gap/gap_base_ops.c:533
 #, c-format
@@ -151,7 +151,9 @@ msgstr "Borrar fotogramas desde %ld hasta (nº)"
 #: gap/gap_base_ops.c:1077
 #, c-format
 msgid "Delete frames starting at current number %d up to this number (inclusive)"
-msgstr "Borrar fotogramas comenzando en el número actual %d hasta este número (incluido)"
+msgstr ""
+"Borrar fotogramas comenzando en el número actual %d hasta este número "
+"(incluido)"
 
 #: gap/gap_base_ops.c:1157
 #, c-format
@@ -289,7 +291,9 @@ msgstr "Intercambiar fotograma actual (%ld)"
 #: gap/gap_base_ops.c:1515
 #, c-format
 msgid "Exchange the current frame %d with the frame that has the number entered here"
-msgstr "Intercambiar el fotograma actual %d con el fotograma que tiene el número introducido aquí"
+msgstr ""
+"Intercambiar el fotograma actual %d con el fotograma que tiene el número "
+"introducido aquí"
 
 #: gap/gap_base_ops.c:1519
 msgid "Exchange with Frame"
@@ -394,7 +398,7 @@ msgstr "Alfa del origen:"
 #. lowr/upper unconstrained
 #: gap/gap_bluebox.c:340
 msgid "Affect only pixels with alpha >= source alpha where 1.0 is full opaque"
-msgstr ""
+msgstr "Afectar sólo a píxeles con alfa >= alfa de origen donde 1.0 es completamente opaco"
 
 #: gap/gap_bluebox.c:351
 msgid "Target Alpha:"
@@ -407,7 +411,7 @@ msgstr "Alfa del destino:"
 #. lowr/upper unconstrained
 #: gap/gap_bluebox.c:358
 msgid "Set alpha of affected pixel to target alpha where 0.0 is full transparent"
-msgstr ""
+msgstr "Establecer alfa del píxel afectado para alfa destino donde 0.0 es completamente transparente"
 
 #: gap/gap_bluebox.c:369
 msgid "Feather Edges:"
@@ -449,7 +453,7 @@ msgstr "Vista previa automática:"
 
 #: gap/gap_bluebox.c:433
 msgid "ON: Keep preview image up to date"
-msgstr "Activar: Mantener la imagend e previsualización actualizada"
+msgstr "Activar: Mantener la imagen de previsualización actualizada"
 
 #. button
 #: gap/gap_bluebox.c:442 gap/gap_mov_dialog.c:3803
@@ -714,7 +718,7 @@ msgstr "Buscando por ruta del menú - por favor espere"
 
 #: gap/gap_dbbrowser_utils.c:847
 msgid "Searching - please wait"
-msgstr "Buscando - por fabor espere"
+msgstr "Buscando - por favor espere"
 
 #: gap/gap_dbbrowser_utils.c:946
 msgid "No matches"
@@ -1066,7 +1070,7 @@ msgstr "Nombre del archivo de script de macros de filtro"
 
 #: gap/gap_fmac_main.c:591
 msgid "Open filebrowser window to select a filename"
-msgstr ""
+msgstr "Abrir una ventana de examinador de archivos para seleccionar un archivo"
 
 #: gap/gap_fmac_main.c:618
 msgid "Nr"
@@ -1082,7 +1086,7 @@ msgstr "Ruta del menú"
 
 #: gap/gap_fmac_main.c:788
 msgid "** No menu path available **"
-msgstr ""
+msgstr "** No hay ruta al menú disponible **"
 
 #: gap/gap_fmac_main.c:824
 msgid "** Empty **"
@@ -1123,6 +1127,11 @@ msgid ""
 "current session and have setup the internal buffer with the parameter "
 "settings of the last call"
 msgstr ""
+"Abrir una ventana de examinador PDB para añadir un filtro nuevo para el archivo de script de macros de filtro. "
+"Importante:\n"
+"El examinador PDB muestra únicamente filtros que han sido usados ya en la sesión "
+"actual y han configurado el búfer interno con los ajustes de parámetros de "
+"la última llamada"
 
 #: gap/gap_fmac_main.c:915 gap/gap_player_dialog.c:4152
 msgid "Close window"
@@ -1130,7 +1139,7 @@ msgstr "Cerrar ventana"
 
 #: gap/gap_fmac_main.c:929
 msgid "Apply filtermacro script on current drawable and close window"
-msgstr ""
+msgstr "Aplicar el script de macro de filtrado en el dibujable actual y cerrar la ventana"
 
 #: gap/gap_fmac_main.c:1120
 #, c-format
@@ -1139,11 +1148,14 @@ msgid ""
 "filename: '%s'\n"
 "%s"
 msgstr ""
+"ERROR: No se pudo escribir el script de macro de filtros\n"
+"nombre de archivo: «%s»\n"
+"%s"
 
 #. filesel is already open
 #: gap/gap_fmac_main.c:1140
 msgid "Select Filtermacro Scriptfile"
-msgstr "Selecione el script de la macro de filtrado"
+msgstr "Seleccione el script de la macro de filtrado"
 
 #: gap/gap_fmac_main.c:1414
 #, c-format
@@ -1195,6 +1207,13 @@ msgid ""
 "(%s %s)\n"
 "to your gimprc file."
 msgstr ""
+"Está usando otro formato de archivo distinto de xcf.\n"
+"Las operaciones de guardado pueden tener pérdidas de información de capas.\n"
+"\n"
+"Para configurar el aplanado para este formato de archivo\n"
+"(permanente para todas las sesiones futuras) añada la línea:\n"
+"(%s %s)\n"
+"a su archivo gimprc."
 
 #: gap/gap_lib.c:1358
 msgid "Fileformat Warning"
@@ -1805,7 +1824,7 @@ msgid ""
 "in the Image:\n"
 "'%s'"
 msgstr ""
-"Tipo de ruta no soportada %d en contrada en:\n"
+"Tipo de ruta no soportada %d encontrada en:\n"
 "«%s»\n"
 "en la imagen:\n"
 "«%s»"
@@ -1865,7 +1884,7 @@ msgstr "Imagen/capa origen"
 
 #: gap/gap_mov_dialog.c:2442
 msgid "Source object to insert into destination frames of the specified range"
-msgstr "Objeto origen a insertar en los fotogramas de destiono del rango especificado"
+msgstr "Objeto origen a insertar en los fotogramas de destino del rango especificado"
 
 #. Paintmode menu
 #: gap/gap_mov_dialog.c:2453 gap/gap_name2layer_main.c:445
@@ -1905,11 +1924,13 @@ msgid ""
 "step the source half time slower.One source step is done only at every 2.nd "
 "target frame."
 msgstr ""
+"Paso de sincronización de fotogramas origen y destino al valor 1.0. Un valor de 0.5 "
+"hará el paso del origen la mitad de lento. Un paso de origen se hace sólo cada segundo fotograma destino."
 
 #. Source Image Handle menu
 #: gap/gap_mov_dialog.c:2540
 msgid "Handle:"
-msgstr "Manejar:"
+msgstr "Manipular:"
 
 #: gap/gap_mov_dialog.c:2560
 msgid "How to place the Source layer at controlpoint coordinates"
@@ -1928,7 +1949,7 @@ msgstr ""
 
 #: gap/gap_mov_dialog.c:2659
 msgid "Open dialog window to set parameters and keycolor for the bluebox filter"
-msgstr ""
+msgstr "Abrir la ventana de diálogo para establecer parámetros y clave de color para el filtro bluebox"
 
 #. toggle Tracelayer
 #: gap/gap_mov_dialog.c:2677 gap/gap_mov_exec.c:927
@@ -2013,7 +2034,7 @@ msgstr ""
 #. lower, upper (unconstrained)
 #: gap/gap_mov_dialog.c:2762
 msgid "Initial opacity of the tween layer"
-msgstr "Opcidad inicial de la capa gemela"
+msgstr "Opacidad inicial de la capa gemela"
 
 #. TweenOpacityDescending
 #. table col, row
@@ -2243,7 +2264,7 @@ msgstr "Opacidad:"
 #. lower, upper (unconstrained)
 #: gap/gap_mov_dialog.c:3310
 msgid "Set the source layer's opacity in percent"
-msgstr "Establcer opacidad de la capa origen en porcentaje"
+msgstr "Establecer opacidad de la capa origen en porcentaje"
 
 #. Rotation
 #. table col, row
@@ -2302,7 +2323,7 @@ msgstr "y1:"
 #. lower, upper (unconstrained)
 #: gap/gap_mov_dialog.c:3408
 msgid "Transformfactor for upper left corner Y coordinate"
-msgstr "Factor de transformación para la esquina superior izquierda coordenada Y<"
+msgstr "Factor de transformación para la esquina superior izquierda coordenada Y"
 
 #. ttrx transformfactor
 #. table col, row
@@ -2320,7 +2341,7 @@ msgstr "x2:"
 #. lower, upper (unconstrained)
 #: gap/gap_mov_dialog.c:3427
 msgid "Transformfactor for upper right corner X coordinate"
-msgstr ""
+msgstr "Factor de transformación para la coordenada X esquina superior derecha"
 
 #. ttry transformfactor
 #. table col, row
@@ -2338,7 +2359,7 @@ msgstr "y2:"
 #. lower, upper (unconstrained)
 #: gap/gap_mov_dialog.c:3445
 msgid "Transformfactor for upper right corner Y coordinate"
-msgstr "factor de transformación para la esquina superior derecha coordenada Y"
+msgstr "Factor de transformación para la esquina superior derecha coordenada Y"
 
 #. tblx transformfactor
 #. table col, row
@@ -2356,7 +2377,7 @@ msgstr "x3:"
 #. lower, upper (unconstrained)
 #: gap/gap_mov_dialog.c:3463
 msgid "Transformfactor for lower left corner X coordinate"
-msgstr ""
+msgstr "Factor de transformación para la coordenada X esquina inferior izquierda"
 
 #. tbly transformfactor
 #. table col, row
@@ -2374,7 +2395,7 @@ msgstr "y3:"
 #. lower, upper (unconstrained)
 #: gap/gap_mov_dialog.c:3481
 msgid "Transformfactor for lower left corner Y coordinate"
-msgstr ""
+msgstr "Factor de transformación para la coordenada Y esquina inferior izquierda"
 
 #. tbrx transformfactor
 #. table col, row
@@ -2392,7 +2413,7 @@ msgstr "x4:"
 #. lower, upper (unconstrained)
 #: gap/gap_mov_dialog.c:3499
 msgid "Transformfactor for lower right corner X coordinate"
-msgstr ""
+msgstr "Factor de transformación para la coordenada X esquina inferior derecha"
 
 #. label text
 #. scalesize spinsize
@@ -2404,7 +2425,7 @@ msgstr ""
 #. lower, upper (unconstrained)
 #: gap/gap_mov_dialog.c:3517
 msgid "Transformfactor for lower right corner Y coordinate"
-msgstr ""
+msgstr "Factor de transformación para la coordenada Y de la esquina inferior derecha"
 
 #: gap/gap_mov_dialog.c:3549
 msgid "Ignore selection (in all source images)"
@@ -2416,7 +2437,7 @@ msgstr "Usar selección (desde la imagen origen inicial)"
 
 #: gap/gap_mov_dialog.c:3551
 msgid "Use selections (from all source images)"
-msgstr "Usar selecciones (desde todas las imágenes orígen)"
+msgstr "Usar selecciones (desde todas las imágenes origen)"
 
 #. the frame
 #: gap/gap_mov_dialog.c:3558
@@ -2510,7 +2531,7 @@ msgstr "Seleccionador del color de la línea del camino"
 #: gap/gap_mov_dialog.c:3906
 msgid "Select the color that is used to draw pathlines in the preview"
 msgstr ""
-"Seleccione el color que se usa para dibujer líneas de caminos en la vista "
+"Seleccione el color que se usa para dibujar líneas de caminos en la vista "
 "previa"
 
 #. toggle Show path
@@ -3035,7 +3056,7 @@ msgid ""
 "layeranimation playback on the temporary image"
 msgstr ""
 "Reproducción\n"
-"<Mayúsculas> conviete los fotogramas seleccionados en una imagen temporal y "
+"<Mayúsculas> convierte los fotogramas seleccionados en una imagen temporal y "
 "reproducir capa de animación en la imagen temporal"
 
 #: gap/gap_navigator_dialog.c:419
@@ -3348,7 +3369,10 @@ msgid ""
 "ON: Automatic creation/replacement of onionskin layer(s). Works on frame "
 "changes via 'VCR Navigator' and go to operations in the video menu -- but "
 "not on explicite load from the file menu."
-msgstr "Activado: Creación/Reemplazo automático de capas de papel cebolla. (funciona en cambios de fotograma vía Navegador VCR y operaciones ir a en el menú vídeo -- pero no en carga explícita desde el menú de archivo"
+msgstr ""
+"Activado: Creación/Reemplazo automático de capas de papel cebolla. (funciona "
+"en cambios de fotograma vía Navegador VCR y operaciones ir a en el menú "
+"vídeo -- pero no en carga explícita desde el menú de archivo"
 
 #: gap/gap_onion_dialog.c:1307
 msgid "Auto delete before save"
@@ -3461,7 +3485,9 @@ msgstr "Velocidad de muestreo:"
 
 #: gap/gap_player_dialog.c:335
 msgid "Target audio samperate in samples/sec. Ignored if resample is off)"
-msgstr "Tasa de muestreo del sonido destino en muestras/seg. Ignorado si el remuestreo está desactivado)"
+msgstr ""
+"Tasa de muestreo del sonido destino en muestras/seg. Ignorado si el "
+"remuestreo está desactivado)"
 
 #: gap/gap_player_dialog.c:356
 msgid "Copy Audiofile as Wavefile"
@@ -3474,7 +3500,7 @@ msgid ""
 "If you have installed the wavplay executeable somewhere\n"
 "you can set the Environmentvariable WAVPLAYPATH before gimp startup\n"
 msgstr ""
-"Un fallo al iniciar el servidor wavpaly es fatal.\n"
+"Un fallo al iniciar el servidor wavplay es fatal.\n"
 "Compruebe que el comando «wavplay» es ejecutable.\n"
 "Si ha instalado el ejecutable wavplay en algún otro lugar\n"
 "puede establecer la variable de entorno WAVPLAYPATH antes\n"
@@ -3538,7 +3564,7 @@ msgstr ""
 "No hay soporte de sonido disponible\n"
 "el archivo ejecutable del servidor de sonido «%s» no se ha encontrado.\n"
 "Si ha instalado «%s»\n"
-"debería añadir el directorio de intalación a su variable PATH\n"
+"debería añadir el directorio de instalación a su variable PATH\n"
 "o establecer la variable de entorno %s con el nombre del ejecutable\n"
 "antes de iniciar El GIMP"
 
@@ -3649,7 +3675,7 @@ msgid ""
 "frame 1, but skips the audio begin part in a length that is equal to the "
 "duration of 10 frames at original video playback speed."
 msgstr ""
-"El desplazamiento del sonido en fotogramas a la valocidad de reproducción de "
+"El desplazamiento del sonido en fotogramas a la velocidad de reproducción de "
 "vídeo original. Un valor de 0 inicia el sonido y el vídeo a la vez, un valor "
 "de -10 reproducirá los fotogramas 0 a 9 en silencio e iniciará el sonido en "
 "el fotograma 10 un valor de 10 iniciará el sonido en el fotograma 1, pero "
@@ -3799,7 +3825,7 @@ msgid ""
 "OFF: Play all frames"
 msgstr ""
 "Activado: Reproducir sólo la selección.\n"
-"Desactivado: reproducir todos los fotogramas"
+"Desactivado: Reproducir todos los fotogramas"
 
 #: gap/gap_player_dialog.c:4043
 msgid "Ping pong"
@@ -3819,7 +3845,7 @@ msgid ""
 "OFF: Read full sized frames"
 msgstr ""
 "Activado: Usar miniaturas cuando estén disponibles.\n"
-"Desactivado: leer fotogramas a tamaño completo"
+"Desactivado: Leer fotogramas a tamaño completo"
 
 #: gap/gap_player_dialog.c:4073
 msgid "Exact timing"
@@ -3830,7 +3856,7 @@ msgid ""
 "ON: Skip frames to hold exact timing.\n"
 "OFF: Disable frame skipping"
 msgstr ""
-"Activado: Saltar fotogramas para mantener un tiempo exacto.\n"
+"Activado: Saltar fotogramas para mantener una temporización exacta.\n"
 "Desactivado: desactivar salto de fotogramas"
 
 #. the status label
@@ -3862,7 +3888,7 @@ msgstr "<Image>/Vídeo/Reproducir..."
 #. the new size labels
 #: gap/gap_range_ops.c:133 gap/gap_resi_dialog.c:668
 msgid "New Width:"
-msgstr "Nueva anchura:"
+msgstr "Anchura nueva:"
 
 #: gap/gap_range_ops.c:144
 msgid "New Height:"
@@ -3998,11 +4024,11 @@ msgstr "Activar tramado de transparencia"
 
 #: gap/gap_range_ops.c:399
 msgid "Convert Frames to Indexed"
-msgstr "Convertir Fotogramas a Indexados"
+msgstr "Convertir fotogramas a indexados"
 
 #: gap/gap_range_ops.c:400
 msgid "Palette and Dither Settings"
-msgstr "Ajustes de Paleta y Tramado"
+msgstr "Ajustes de paleta y tramado"
 
 #: gap/gap_range_ops.c:465
 msgid "Keep Type"
@@ -4018,7 +4044,7 @@ msgstr "Convertir a tonos de gris"
 
 #: gap/gap_range_ops.c:468
 msgid "Convert to Indexed"
-msgstr "Convertir a Indexada"
+msgstr "Convertir a indexada"
 
 #: gap/gap_range_ops.c:495
 msgid "Basename:"
@@ -4028,7 +4054,9 @@ msgstr "Nombre base"
 msgid ""
 "basename of the resulting frames. The number part and extension (000001.ext) "
 "is added automatically to all converted frames."
-msgstr "nombre base de los fotogramas resultantes. La parte numérica y extensión (000001.ext) se ñañade automáticamnete a todos los fotogramas convertidos."
+msgstr ""
+"nombre base de los fotogramas resultantes. La parte numérica y extensión "
+"(000001.ext) se añade automáticamente a todos los fotogramas convertidos."
 
 #: gap/gap_range_ops.c:502 gap/gap_split.c:253
 msgid "Extension:"
@@ -4041,10 +4069,14 @@ msgid ""
 "for multiple layers and other things.Some fileformats may require converting "
 "to another imagetype and/or falttening the frames."
 msgstr ""
+"La extensión de los fotogramas resultantes se usa también para definir el formato de archivo. "
+"Note que los formatos de archivo difieren en capacidades para almacenar información para capas "
+"múltiples y otras cosas. Algunos formatos de archivo pueden requerir la conversión a "
+"otros tipos de imágenes y/o aplanar los fotogramas."
 
 #: gap/gap_range_ops.c:513
 msgid "Imagetype:"
-msgstr "Tipo de Imagen:"
+msgstr "Tipo de imagen:"
 
 #: gap/gap_range_ops.c:514
 msgid ""
@@ -4052,6 +4084,10 @@ msgid ""
 "can't handle all types and may require a conversion.Example: GIF can not "
 "handle RGB and requires conert to indexed imagetype."
 msgstr ""
+"Convertir a otro tipo de imagen, o mantener el tipo de imagen como está. La mayoría de "
+"los formatos de archivo no pueden manipular todos los tipos y pueden requerir una "
+"conversión. Por ejemplo: GIF no puede manipular RGB y requiere convertirse a un tipo "
+"de imagen indexada."
 
 #: gap/gap_range_ops.c:522 gap/gap_split.c:269
 msgid "Flatten:"
@@ -4064,10 +4100,13 @@ msgid ""
 "one composite layer).Example: JPEG can not handle multiple layers and "
 "requires flattened frames."
 msgstr ""
+"Aplanar todos los fotogramas resultantes. La mayoría de los formatos no pueden manipular capas múltiples "
+"y necesitan fotogramas aplanados (aplanar funde todas las capas en una capa compuesta). Ejemplo: JPEG "
+"no puede manipular capas múltiples y requiere fotogramas aplanados."
 
 #: gap/gap_range_ops.c:530
 msgid "Convert Frames to other Formats"
-msgstr "Convertir Fotogramas a otros formatos"
+msgstr "Convertir fotogramas a otros formatos"
 
 #: gap/gap_range_ops.c:531
 msgid "Convert Settings"
@@ -4148,19 +4187,26 @@ msgstr "Fotograma específico"
 
 #: gap/gap_range_ops.c:641
 msgid "Pick layers at full size. Ignore all pixel selections in all frames"
-msgstr "Escoger capas a tamaño completo. Ignorar todas las selecciones de pixel en todos los fotogramas."
+msgstr ""
+"Escoger capas a tamaño completo. Ignorar todas las selecciones de pixel en "
+"todos los fotogramas."
 
 #: gap/gap_range_ops.c:643
 msgid ""
 "Pick only the selected pixels. Use the selection from the invoking frame as "
 "fixed selection in all handled frames."
-msgstr "Escoger çunicamente los píxeles seleccionados. Usar la selección desde el fotograma invocador como una selección fija en todos los fotogramas manipulados."
+msgstr ""
+"Escoger únicamente los píxeles seleccionados. Usar la selección desde el "
+"fotograma invocador como una selección fija en todos los fotogramas "
+"manipulados."
 
 #: gap/gap_range_ops.c:646
 msgid ""
 "Pick only the selected pixels. Use the individual selection as it is in each "
 "handled frame."
-msgstr "Escoger sólo los píxeles selecionados. usar selección individual como si fuera en cada fotograma seleccionado."
+msgstr ""
+"Escoger sólo los píxeles seleccionados. usar selección individual como si "
+"fuera en cada fotograma seleccionado."
 
 #: gap/gap_range_ops.c:683
 msgid "Layer Basename:"
@@ -4333,6 +4379,12 @@ msgid ""
 "\n"
 "%s000001.%s\n"
 msgstr ""
+"Hacer un fotogrma (en disco) de cada capa.\n"
+"Los fotogramas se nombran en el estilo:\n"
+"<nombre_base><nº fotograma>.<extensión>\n"
+"El primer fotograma para el caso actual obtiene el nombre\n"
+"\n"
+"%s000001.%s\n"
 
 #: gap/gap_split.c:254
 msgid ""
@@ -4422,7 +4474,7 @@ msgstr "Primer punto"
 
 #: gap/gap_stock.c:48
 msgid "Grab Path"
-msgstr "Ruta de extración"
+msgstr "Ruta de extracción"
 
 #: gap/gap_stock.c:49
 msgid "Insert Point"
