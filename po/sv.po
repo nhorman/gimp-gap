@@ -8,8 +8,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gimp-gap\n"
-"POT-Creation-Date: 2003-09-16 23:38+0200\n"
-"PO-Revision-Date: 2003-09-16 23:38+0200\n"
+"POT-Creation-Date: 2003-09-24 11:08+0200\n"
+"PO-Revision-Date: 2003-09-24 11:10+0200\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -22,7 +22,7 @@ msgid "Font Browser"
 msgstr "Typsnittsbläddrare"
 
 #. Button  to invoke filebrowser
-#: gap/gap_arr_dialog.c:508 gap/gap_player_dialog.c:3404
+#: gap/gap_arr_dialog.c:508 gap/gap_player_dialog.c:3408
 msgid "File Browser"
 msgstr "Filbläddrare"
 
@@ -102,7 +102,7 @@ msgstr ""
 
 #. title_txt
 #: gap/gap_base_ops.c:1023 gap/gap_base_ops.c:1024
-#: gap/gap_navigator_dialog.c:634 gap/gap_navigator_dialog.c:635
+#: gap/gap_navigator_dialog.c:637 gap/gap_navigator_dialog.c:638
 msgid "Confirm Frame Delete"
 msgstr "Bekräfta bildruteborttagning"
 
@@ -152,8 +152,8 @@ msgstr "Ändra bildrutedensitet"
 #. the start frame scale_entry
 #. table col, row
 #: gap/gap_base_ops.c:1210 gap/gap_base_ops.c:1362 gap/gap_base_ops.c:1560
-#: gap/gap_decode_xanim.c:240 gap/gap_mod_layer.c:165 gap/gap_mov_dialog.c:567
-#: gap/gap_mpege.c:285 gap/gap_onion_dialog.c:899 gap/gap_player_dialog.c:3844
+#: gap/gap_decode_xanim.c:240 gap/gap_mod_layer.c:167 gap/gap_mov_dialog.c:567
+#: gap/gap_mpege.c:285 gap/gap_onion_dialog.c:899 gap/gap_player_dialog.c:3848
 #: gap/gap_range_ops.c:281 gap/gap_range_ops.c:471 gap/gap_range_ops.c:630
 msgid "From Frame:"
 msgstr "Från bildruta:"
@@ -165,8 +165,8 @@ msgstr "Det påverkade intervallet börjar vid detta bildrutenumret"
 #. the end frame scale_entry
 #. table col, row
 #: gap/gap_base_ops.c:1218 gap/gap_base_ops.c:1370 gap/gap_base_ops.c:1568
-#: gap/gap_decode_xanim.c:250 gap/gap_mod_layer.c:173 gap/gap_mov_dialog.c:582
-#: gap/gap_mpege.c:295 gap/gap_onion_dialog.c:906 gap/gap_player_dialog.c:3851
+#: gap/gap_decode_xanim.c:250 gap/gap_mod_layer.c:175 gap/gap_mov_dialog.c:582
+#: gap/gap_mpege.c:295 gap/gap_onion_dialog.c:906 gap/gap_player_dialog.c:3855
 #: gap/gap_range_ops.c:288 gap/gap_range_ops.c:479 gap/gap_range_ops.c:638
 msgid "To Frame:"
 msgstr "Till bildruta:"
@@ -306,91 +306,91 @@ msgstr "Numrera om bildrutor"
 msgid "Renumber Frames 2nd Pass"
 msgstr "Numrera om bildrutor andra passet"
 
-#: gap/gap_dbbrowser_utils.c:170 gap/gap_filter_foreach.c:167
-#: gap/gap_mod_layer.c:295
+#: gap/gap_dbbrowser_utils.c:174 gap/gap_filter_foreach.c:167
+#: gap/gap_mod_layer.c:297
 msgid "Animated Filter apply"
 msgstr "Tillämpning av animerat filter"
 
-#: gap/gap_dbbrowser_utils.c:227
+#: gap/gap_dbbrowser_utils.c:231
 msgid "_Search:"
 msgstr "_Sök:"
 
-#: gap/gap_dbbrowser_utils.c:322
+#: gap/gap_dbbrowser_utils.c:326
 msgid "Gen Code by name"
 msgstr "Generera kod efter namn"
 
 #. Button Search by Name
-#: gap/gap_dbbrowser_utils.c:334
+#: gap/gap_dbbrowser_utils.c:338
 msgid "Search by Name"
 msgstr "Sök efter namn"
 
 #. Button Search by Blurb
-#: gap/gap_dbbrowser_utils.c:343
+#: gap/gap_dbbrowser_utils.c:347
 msgid "Search by Blurb"
 msgstr "Sök efter sammanfattning"
 
 #. Button Search by Menupath
-#: gap/gap_dbbrowser_utils.c:352
+#: gap/gap_dbbrowser_utils.c:356
 msgid "Search by Menu Path"
 msgstr "Sök efter menysökväg"
 
-#: gap/gap_dbbrowser_utils.c:447
+#: gap/gap_dbbrowser_utils.c:451
 msgid "** not available **"
 msgstr "** inte tillgänglig **"
 
-#: gap/gap_dbbrowser_utils.c:480
+#: gap/gap_dbbrowser_utils.c:484
 msgid "Name:"
 msgstr "Namn:"
 
-#: gap/gap_dbbrowser_utils.c:488
+#: gap/gap_dbbrowser_utils.c:492
 msgid "Blurb:"
 msgstr "Sammanfattning:"
 
-#: gap/gap_dbbrowser_utils.c:499
+#: gap/gap_dbbrowser_utils.c:503
 msgid "Menu Path:"
 msgstr "Menysökväg:"
 
-#: gap/gap_dbbrowser_utils.c:513
+#: gap/gap_dbbrowser_utils.c:517
 msgid "In:"
 msgstr "In:"
 
-#: gap/gap_dbbrowser_utils.c:561
+#: gap/gap_dbbrowser_utils.c:565
 msgid "Out:"
 msgstr "Ut:"
 
-#: gap/gap_dbbrowser_utils.c:615
+#: gap/gap_dbbrowser_utils.c:619
 msgid "Help:"
 msgstr "Hjälp:"
 
-#: gap/gap_dbbrowser_utils.c:633
+#: gap/gap_dbbrowser_utils.c:637
 msgid "Author:"
 msgstr "Författare:"
 
-#: gap/gap_dbbrowser_utils.c:641
+#: gap/gap_dbbrowser_utils.c:645
 msgid "Date:"
 msgstr "Datum:"
 
-#: gap/gap_dbbrowser_utils.c:649
+#: gap/gap_dbbrowser_utils.c:653
 msgid "Copyright:"
 msgstr "Copyright:"
 
-#: gap/gap_dbbrowser_utils.c:782
+#: gap/gap_dbbrowser_utils.c:786
 msgid "Searching by name - please wait"
 msgstr "Söker efter namn - var vänlig vänta"
 
-#: gap/gap_dbbrowser_utils.c:805
+#: gap/gap_dbbrowser_utils.c:809
 msgid "Searching by blurb - please wait"
 msgstr "Söker efter sammanfattning - var vänlig vänta"
 
-#: gap/gap_dbbrowser_utils.c:817
+#: gap/gap_dbbrowser_utils.c:821
 msgid "Searching by menupath - please wait"
 msgstr "Söker efter menysökväg - var vänlig vänta"
 
-#: gap/gap_dbbrowser_utils.c:821
+#: gap/gap_dbbrowser_utils.c:825
 msgid "Searching - please wait"
 msgstr "Söker - var vänlig vänta"
 
-#: gap/gap_dbbrowser_utils.c:913
+#: gap/gap_dbbrowser_utils.c:924
 msgid "No matches"
 msgstr "Inga träffar"
 
@@ -556,7 +556,7 @@ msgstr "Skriv över bildrutor"
 msgid "Overwrite All"
 msgstr "Skriv över allt"
 
-#: gap/gap_decode_xanim.c:363 gap/gap_lib.c:1325 gap/gap_player_dialog.c:312
+#: gap/gap_decode_xanim.c:363 gap/gap_lib.c:1325 gap/gap_player_dialog.c:314
 #: gap/gap_range_ops.c:1292
 msgid "GAP Question"
 msgstr "GAP-fråga"
@@ -672,7 +672,7 @@ msgstr "säkerhetskopiera till fil"
 msgid "Make backup of the image after each step"
 msgstr "Gör säkerhetskopia av bilden efter varje steg"
 
-#: gap/gap_filter_foreach.c:136 gap/gap_mod_layer.c:270
+#: gap/gap_filter_foreach.c:136 gap/gap_mod_layer.c:272
 msgid "Continue"
 msgstr "Fortsätt"
 
@@ -681,7 +681,7 @@ msgstr "Fortsätt"
 msgid "Skip %d"
 msgstr "Hoppa över %d"
 
-#: gap/gap_filter_foreach.c:159 gap/gap_mod_layer.c:289
+#: gap/gap_filter_foreach.c:159 gap/gap_mod_layer.c:291
 #, c-format
 msgid ""
 "2nd call of %s\n"
@@ -703,19 +703,19 @@ msgstr ""
 msgid "Applying Filter to all Layers..."
 msgstr "Tillämpa filter på alla lager..."
 
-#: gap/gap_filter_foreach.c:571
+#: gap/gap_filter_foreach.c:570
 msgid "Select Filter for Animated apply"
 msgstr "Välj filter för animerad tillämpning"
 
-#: gap/gap_filter_foreach.c:572 gap/gap_mod_layer.c:665
+#: gap/gap_filter_foreach.c:571 gap/gap_mod_layer.c:667
 msgid "Apply Constant"
 msgstr "Tillämpa konstant"
 
-#: gap/gap_filter_foreach.c:573 gap/gap_mod_layer.c:666
+#: gap/gap_filter_foreach.c:572 gap/gap_mod_layer.c:668
 msgid "Apply Varying"
 msgstr "Tillämpa varierande"
 
-#: gap/gap_filter_main.c:124
+#: gap/gap_filter_main.c:126
 msgid "<Image>/Filters/Filter all Layers..."
 msgstr "<Image>/Filter/Filtrera alla lager..."
 
@@ -777,136 +777,136 @@ msgstr ""
 "på samma AnimFrame-bild åt gången\n"
 "Låser IMAGE_ID:%d\n"
 
-#: gap/gap_main.c:542
+#: gap/gap_main.c:543
 msgid "<Image>/Video/Go To/Next Frame"
 msgstr "<Image>/Video/Gå till/Nästa bildruta"
 
-#: gap/gap_main.c:554
+#: gap/gap_main.c:555
 msgid "<Image>/Video/Go To/Previous Frame"
 msgstr "<Image>/Video/Gå till/Föregående bildruta"
 
-#: gap/gap_main.c:566
+#: gap/gap_main.c:567
 msgid "<Image>/Video/Go To/First Frame"
 msgstr "<Image>/Video/Gå till/Första bildrutan"
 
-#: gap/gap_main.c:578
+#: gap/gap_main.c:579
 msgid "<Image>/Video/Go To/Last Frame"
 msgstr "<Image>/Video/Gå till/Sista bildrutan"
 
-#: gap/gap_main.c:590
+#: gap/gap_main.c:591
 msgid "<Image>/Video/Go To/Any Frame..."
 msgstr "<Image>/Video/Gå till/Någon bildruta..."
 
-#: gap/gap_main.c:602
+#: gap/gap_main.c:603
 msgid "<Image>/Video/Delete Frames..."
 msgstr "<Image>/Video/Ta bort bildrutor..."
 
-#: gap/gap_main.c:614
+#: gap/gap_main.c:615
 msgid "<Image>/Video/Duplicate Frames..."
 msgstr "<Image>/Video/Duplicera bildrutor..."
 
-#: gap/gap_main.c:631
+#: gap/gap_main.c:632
 msgid "<Image>/Video/Frames Density..."
 msgstr "<Image>/Video/Bildrutedensitet..."
 
-#: gap/gap_main.c:643
+#: gap/gap_main.c:644
 msgid "<Image>/Video/Exchange Frame..."
 msgstr "<Image>/Video/Byt ut bildruta..."
 
-#: gap/gap_main.c:655
+#: gap/gap_main.c:656
 msgid "<Image>/Video/Move Path..."
 msgstr "<Image>/Video/Flyttslinga..."
 
-#: gap/gap_main.c:726
+#: gap/gap_main.c:727
 msgid "<Image>/Video/Frames to Image..."
 msgstr "<Image>/Video/Bildrutor till bild..."
 
-#: gap/gap_main.c:738
+#: gap/gap_main.c:739
 msgid "<Image>/Video/Frames Flatten..."
 msgstr "<Image>/Video/Utplattning av bildrutor..."
 
-#: gap/gap_main.c:750
+#: gap/gap_main.c:751
 msgid "<Image>/Video/Frames LayerDel..."
 msgstr "<Image>/Video/Lagerborttagning för bildrutor..."
 
-#: gap/gap_main.c:774
+#: gap/gap_main.c:775
 msgid "<Image>/Video/Frames Convert..."
 msgstr "<Image>/Video/Bildrutekonvertering..."
 
-#: gap/gap_main.c:786
+#: gap/gap_main.c:787
 msgid "<Image>/Video/Frames Resize..."
 msgstr "<Image>/Video/Storleksändring av bildrutor..."
 
-#: gap/gap_main.c:798
+#: gap/gap_main.c:799
 msgid "<Image>/Video/Frames Crop..."
 msgstr "<Image>/Video/Bildrutebeskärning..."
 
-#: gap/gap_main.c:810
+#: gap/gap_main.c:811
 msgid "<Image>/Video/Frames Scale..."
 msgstr "<Image>/Video/Bildruteskalning..."
 
-#: gap/gap_main.c:822
+#: gap/gap_main.c:823
 msgid "<Image>/Video/Split Image to Frames..."
 msgstr "<Image>/Video/Dela bild till bildrutor..."
 
-#: gap/gap_main.c:835
+#: gap/gap_main.c:836
 msgid "<Image>/Video/Frame Sequence Shift..."
 msgstr "<Image>/Video/Bildrutesekvensskifte..."
 
-#: gap/gap_main.c:847
+#: gap/gap_main.c:848
 msgid "<Image>/Video/Frames Renumber..."
 msgstr "<Image>/Video/Bildruteomnumrering..."
 
-#: gap/gap_main.c:859
+#: gap/gap_main.c:860
 msgid "<Image>/Video/Frames Modify..."
 msgstr "<Image>/Video/Bildrutemodifiering..."
 
 #. Layer select modes
-#: gap/gap_mod_layer.c:92 gap/gap_onion_dialog.c:1163 gap/gap_range_ops.c:602
+#: gap/gap_mod_layer.c:94 gap/gap_onion_dialog.c:1163 gap/gap_range_ops.c:602
 msgid "Pattern is equal to LayerName"
 msgstr "Mönster är lika med lagernamn"
 
-#: gap/gap_mod_layer.c:93 gap/gap_onion_dialog.c:1171 gap/gap_range_ops.c:603
+#: gap/gap_mod_layer.c:95 gap/gap_onion_dialog.c:1171 gap/gap_range_ops.c:603
 msgid "Pattern is Start of LayerName"
 msgstr "Mönster är början på lagernamn"
 
-#: gap/gap_mod_layer.c:94 gap/gap_onion_dialog.c:1179 gap/gap_range_ops.c:604
+#: gap/gap_mod_layer.c:96 gap/gap_onion_dialog.c:1179 gap/gap_range_ops.c:604
 msgid "Pattern is End of Layername"
 msgstr "Mönster är slut på lagernamn"
 
-#: gap/gap_mod_layer.c:95 gap/gap_onion_dialog.c:1187 gap/gap_range_ops.c:605
+#: gap/gap_mod_layer.c:97 gap/gap_onion_dialog.c:1187 gap/gap_range_ops.c:605
 msgid "Pattern is a Part of LayerName"
 msgstr "Mönster är del av lagernamn"
 
-#: gap/gap_mod_layer.c:96 gap/gap_onion_dialog.c:1195 gap/gap_range_ops.c:606
+#: gap/gap_mod_layer.c:98 gap/gap_onion_dialog.c:1195 gap/gap_range_ops.c:606
 msgid "Pattern is LayerstackNumber List"
 msgstr "Mönster är lagerstacknummerlista"
 
-#: gap/gap_mod_layer.c:97 gap/gap_onion_dialog.c:1203 gap/gap_range_ops.c:607
+#: gap/gap_mod_layer.c:99 gap/gap_onion_dialog.c:1203 gap/gap_range_ops.c:607
 msgid "Pattern is REVERSE-stack List"
 msgstr "Mönster är OMVÄND-stacklista"
 
-#: gap/gap_mod_layer.c:98 gap/gap_onion_dialog.c:1211 gap/gap_range_ops.c:608
+#: gap/gap_mod_layer.c:100 gap/gap_onion_dialog.c:1211 gap/gap_range_ops.c:608
 msgid "All Visible (ignore Pattern)"
 msgstr "Alla synliga (ignorera mönster)"
 
-#: gap/gap_mod_layer.c:100
+#: gap/gap_mod_layer.c:102
 msgid "Select all Layers where Layername is equal to Pattern"
 msgstr "Välj alla lager där lagernamn är lika med mönster"
 
-#: gap/gap_mod_layer.c:101
+#: gap/gap_mod_layer.c:103
 msgid "Select all Layers where Layername starts with Pattern"
 msgstr "Välj alla lager där lagernamn börjar med mönster"
 
-#: gap/gap_mod_layer.c:102
+#: gap/gap_mod_layer.c:104
 msgid "Select all Layers where Layername ends up with Pattern"
 msgstr "Välj alla lager där lagernamn slutar med mönster"
 
-#: gap/gap_mod_layer.c:103
+#: gap/gap_mod_layer.c:105
 msgid "Select all Layers where Layername contains Pattern"
 msgstr "Välj alla lager där lagernamn innehåller mönster"
 
-#: gap/gap_mod_layer.c:104
+#: gap/gap_mod_layer.c:106
 msgid ""
 "Select Layerstack positions.\n"
 "0, 4-5, 8\n"
@@ -916,7 +916,7 @@ msgstr ""
 "0, 4-5, 8\n"
 "där 0 == topplager"
 
-#: gap/gap_mod_layer.c:105
+#: gap/gap_mod_layer.c:107
 msgid ""
 "Select Layerstack positions.\n"
 "0, 4-5, 8\n"
@@ -926,64 +926,64 @@ msgstr ""
 "0, 4-5, 8\n"
 "där 0 == bakgrundslager"
 
-#: gap/gap_mod_layer.c:106
+#: gap/gap_mod_layer.c:108
 msgid "Select all visible Layers"
 msgstr "Välj alla synliga lager"
 
 #. action items what to do with the selected layer(s)
-#: gap/gap_mod_layer.c:110
+#: gap/gap_mod_layer.c:112
 msgid "Set Layer(s) visible"
 msgstr "Ställ in lager som synliga"
 
-#: gap/gap_mod_layer.c:111
+#: gap/gap_mod_layer.c:113
 msgid "Set Layer(s) invisible"
 msgstr "Ställ in lager som osynliga"
 
-#: gap/gap_mod_layer.c:112
+#: gap/gap_mod_layer.c:114
 msgid "Set Layer(s) linked"
 msgstr "Ställ in lager som länkade"
 
-#: gap/gap_mod_layer.c:113
+#: gap/gap_mod_layer.c:115
 msgid "Set Layer(s) unlinked"
 msgstr "Ställ in lager som olänkade"
 
-#: gap/gap_mod_layer.c:114
+#: gap/gap_mod_layer.c:116
 msgid "Raise Layer(s)"
 msgstr "Höj lager"
 
-#: gap/gap_mod_layer.c:115
+#: gap/gap_mod_layer.c:117
 msgid "Lower Layer(s)"
 msgstr "Sänk lager"
 
-#: gap/gap_mod_layer.c:116
+#: gap/gap_mod_layer.c:118
 msgid "Merge Layer(s) expand as necessary"
 msgstr "Slå samman lager expandera vid behov"
 
-#: gap/gap_mod_layer.c:117
+#: gap/gap_mod_layer.c:119
 msgid "Merge Layer(s) clipped to image"
 msgstr "Slå samman lager klippt till bild"
 
-#: gap/gap_mod_layer.c:118
+#: gap/gap_mod_layer.c:120
 msgid "Merge Layer(s) clipped to bg-layer"
 msgstr "Slå samman klippt till bakgrundslager"
 
-#: gap/gap_mod_layer.c:119
+#: gap/gap_mod_layer.c:121
 msgid "Apply filter on Layer(s)"
 msgstr "Tillämpa filter på lager"
 
-#: gap/gap_mod_layer.c:120
+#: gap/gap_mod_layer.c:122
 msgid "Duplicate Layer(s)"
 msgstr "Duplicera lager"
 
-#: gap/gap_mod_layer.c:121
+#: gap/gap_mod_layer.c:123
 msgid "Delete Layer(s)"
 msgstr "Ta bort lager"
 
-#: gap/gap_mod_layer.c:122
+#: gap/gap_mod_layer.c:124
 msgid "Rename Layer(s)"
 msgstr "Byt namn på lager"
 
-#: gap/gap_mod_layer.c:161
+#: gap/gap_mod_layer.c:163
 msgid ""
 "Perform function on one or more Layer(s)\n"
 "in all frames of the selected frame range\n"
@@ -991,26 +991,26 @@ msgstr ""
 "Utför funktion på en eller flera lager i\n"
 "alla bildrutor i det valda bildruteintervallet\n"
 
-#: gap/gap_mod_layer.c:166 gap/gap_mpege.c:286 gap/gap_range_ops.c:472
+#: gap/gap_mod_layer.c:168 gap/gap_mpege.c:286 gap/gap_range_ops.c:472
 #: gap/gap_range_ops.c:631
 msgid "first handled frame"
 msgstr "första hanterade bildruta"
 
-#: gap/gap_mod_layer.c:174 gap/gap_mpege.c:296 gap/gap_range_ops.c:480
+#: gap/gap_mod_layer.c:176 gap/gap_mpege.c:296 gap/gap_range_ops.c:480
 #: gap/gap_range_ops.c:639
 msgid "last handled frame"
 msgstr "senast hanterade bildruta"
 
-#: gap/gap_mod_layer.c:182 gap/gap_range_ops.c:678
+#: gap/gap_mod_layer.c:184 gap/gap_range_ops.c:678
 msgid "Select Layer(s):"
 msgstr "Välj lager:"
 
-#: gap/gap_mod_layer.c:192 gap/gap_onion_dialog.c:1249 gap/gap_range_ops.c:687
+#: gap/gap_mod_layer.c:194 gap/gap_onion_dialog.c:1249 gap/gap_range_ops.c:687
 msgid "Select Pattern:"
 msgstr "Välj mönster:"
 
 #. pixel
-#: gap/gap_mod_layer.c:194 gap/gap_range_ops.c:689
+#: gap/gap_mod_layer.c:196 gap/gap_range_ops.c:689
 msgid ""
 "String to identify layer names\n"
 "or layerstack position numbers\n"
@@ -1021,37 +1021,37 @@ msgstr ""
 "0,3-5"
 
 # src/dialogs.c:485
-#: gap/gap_mod_layer.c:200 gap/gap_onion_dialog.c:1235 gap/gap_range_ops.c:695
+#: gap/gap_mod_layer.c:202 gap/gap_onion_dialog.c:1235 gap/gap_range_ops.c:695
 msgid "Case sensitive"
 msgstr "Gör skillnad på gemener/VERSALER"
 
-#: gap/gap_mod_layer.c:201 gap/gap_range_ops.c:696
+#: gap/gap_mod_layer.c:203 gap/gap_range_ops.c:696
 msgid "Lowercase and UPPERCASE letters are considered as different"
 msgstr "Gemener och VERSALER betraktas som olika"
 
-#: gap/gap_mod_layer.c:206 gap/gap_onion_dialog.c:1242 gap/gap_range_ops.c:701
+#: gap/gap_mod_layer.c:208 gap/gap_onion_dialog.c:1242 gap/gap_range_ops.c:701
 msgid "Invert Selection"
 msgstr "Omvänd markering"
 
-#: gap/gap_mod_layer.c:207
+#: gap/gap_mod_layer.c:209
 msgid "Perform actions on all unselected Layers"
 msgstr "Utför åtgärder på alla omarkerade lager"
 
-#: gap/gap_mod_layer.c:212
+#: gap/gap_mod_layer.c:214
 msgid "Function:"
 msgstr "Funktion:"
 
 #. argv[7].radio_help_argv = action_help
-#: gap/gap_mod_layer.c:216
+#: gap/gap_mod_layer.c:218
 msgid "Function to be performed on all selected layers"
 msgstr "Funktion att utföras på alla markerade lager"
 
-#: gap/gap_mod_layer.c:222
+#: gap/gap_mod_layer.c:224
 msgid "New Layername:"
 msgstr "Nytt lagernamn:"
 
 #. pixel
-#: gap/gap_mod_layer.c:224
+#: gap/gap_mod_layer.c:226
 msgid ""
 "New Layername for all handled layers \n"
 "[####] is replaced by frame number\n"
@@ -1061,15 +1061,15 @@ msgstr ""
 "[####] ersätts av bildrutenummer\n"
 "(används endast vid funktionsnamnbyte)"
 
-#: gap/gap_mod_layer.c:229
+#: gap/gap_mod_layer.c:231
 msgid "Frames Modify"
 msgstr "Bildrutemodifiering"
 
-#: gap/gap_mod_layer.c:230 gap/gap_player_dialog.c:395
+#: gap/gap_mod_layer.c:232 gap/gap_player_dialog.c:397
 msgid "Settings"
 msgstr "Inställningar"
 
-#: gap/gap_mod_layer.c:293
+#: gap/gap_mod_layer.c:295
 #, c-format
 msgid ""
 "Non-Interactive call of %s\n"
@@ -1080,19 +1080,19 @@ msgstr ""
 
 #. GAP-PDB-Browser Dialog
 #. ----------------------
-#: gap/gap_mod_layer.c:664
+#: gap/gap_mod_layer.c:666
 msgid "Select Filter for Animated frames-apply"
 msgstr "Välj filter för tillämpning av animerade bildrutor"
 
-#: gap/gap_mod_layer.c:799
+#: gap/gap_mod_layer.c:802
 msgid "GAP Modify: No layer selected in last handled frame"
 msgstr "GAP-modifiering: Inget lager valt i den senast hanterade bildrutan"
 
-#: gap/gap_mod_layer.c:886
+#: gap/gap_mod_layer.c:889
 msgid "Modifying Frames/Layer(s)..."
 msgstr "Modifierar bildrutor/lager..."
 
-#: gap/gap_mod_layer.c:967
+#: gap/gap_mod_layer.c:970
 msgid "No selected Layer in start frame"
 msgstr "Inget markerat lager i startbildruta"
 
@@ -1173,7 +1173,7 @@ msgid "Center"
 msgstr "Mittpunkt"
 
 #. the playback mode checkbuttons
-#: gap/gap_mov_dialog.c:303 gap/gap_player_dialog.c:4044
+#: gap/gap_mov_dialog.c:303 gap/gap_player_dialog.c:4048
 msgid "Loop"
 msgstr "Slinga"
 
@@ -1189,7 +1189,7 @@ msgstr "En gång"
 msgid "OnceReverse"
 msgstr "En gång baklänges"
 
-#: gap/gap_mov_dialog.c:307 gap/gap_player_dialog.c:4072
+#: gap/gap_mov_dialog.c:307 gap/gap_player_dialog.c:4076
 msgid "PingPong"
 msgstr "Ping-pong"
 
@@ -1845,7 +1845,7 @@ msgstr "Genereringsparametrar"
 msgid "Gen + Encode"
 msgstr "Generera + koda"
 
-#: gap/gap_mpege.c:304 gap/gap_navigator_dialog.c:3795
+#: gap/gap_mpege.c:304 gap/gap_navigator_dialog.c:3798
 msgid "Framerate:"
 msgstr "Bildrutehastighet:"
 
@@ -2179,11 +2179,11 @@ msgstr "Gå till sista bildrutan"
 msgid "<Image>/Video/VCR Navigator..."
 msgstr "<Image>/Video/VCR-navigatör..."
 
-#: gap/gap_navigator_dialog.c:579
+#: gap/gap_navigator_dialog.c:581
 msgid "Cant open two or more Video Navigator Windows."
 msgstr "Kan inte öppna två eller fler videonavigatörsfönster."
 
-#: gap/gap_navigator_dialog.c:629
+#: gap/gap_navigator_dialog.c:632
 #, c-format
 msgid ""
 "The Selected %d Frame(s) will be deleted\n"
@@ -2192,24 +2192,24 @@ msgstr ""
 "De markerade %d bildrutorna kommer att tas bort\n"
 "Dessa åtgärder kommer inte att kunna ångras\n"
 
-#: gap/gap_navigator_dialog.c:718
+#: gap/gap_navigator_dialog.c:721
 msgid "Error while positioning to Frame. Video Paste Operaton Failed"
 msgstr ""
 "Fel vid positionering till bildruta. Videoinklistringsåtgärd misslyckades"
 
-#: gap/gap_navigator_dialog.c:740
+#: gap/gap_navigator_dialog.c:743
 msgid "Video Paste Operaton Failed"
 msgstr "Videoinklistringsåtgärd misslyckades"
 
-#: gap/gap_navigator_dialog.c:851
+#: gap/gap_navigator_dialog.c:854
 msgid "Video Copy (or Cut) Operation failed"
 msgstr "Videokopierings- eller utklippsåtgärd misslyckades"
 
-#: gap/gap_navigator_dialog.c:898
+#: gap/gap_navigator_dialog.c:901
 msgid "Video Cut Operation failed"
 msgstr "Videoutklippsåtgärd misslyckades"
 
-#: gap/gap_navigator_dialog.c:1579
+#: gap/gap_navigator_dialog.c:1582
 msgid ""
 "For the Thumbnail update you have to select\n"
 "a Thumbnail Filesze other than 'No Thumbnails'\n"
@@ -2221,64 +2221,64 @@ msgstr ""
 "miljösektion"
 
 #. menu_item copy
-#: gap/gap_navigator_dialog.c:3692
+#: gap/gap_navigator_dialog.c:3695
 msgid "Copy"
 msgstr "Kopiera"
 
 #. menu_item cut
-#: gap/gap_navigator_dialog.c:3702
+#: gap/gap_navigator_dialog.c:3705
 msgid "Cut"
 msgstr "Klipp ut"
 
 #. menu_item paste before
-#: gap/gap_navigator_dialog.c:3711
+#: gap/gap_navigator_dialog.c:3714
 msgid "Paste before"
 msgstr "Klistra in före"
 
 #. menu_item copy
-#: gap/gap_navigator_dialog.c:3720
+#: gap/gap_navigator_dialog.c:3723
 msgid "Paste after"
 msgstr "Klistra in efter"
 
 #. menu_item copy
-#: gap/gap_navigator_dialog.c:3729
+#: gap/gap_navigator_dialog.c:3732
 msgid "Paste replace"
 msgstr "Ersätt klistra in"
 
 #. menu_item copy
-#: gap/gap_navigator_dialog.c:3738
+#: gap/gap_navigator_dialog.c:3741
 msgid "Clear Video Buffer"
 msgstr "Töm videobuffert"
 
 #. menu_item Select All
-#: gap/gap_navigator_dialog.c:3748
+#: gap/gap_navigator_dialog.c:3751
 msgid "Select All"
 msgstr "Markera allt"
 
 #. menu_item Select None
-#: gap/gap_navigator_dialog.c:3757
+#: gap/gap_navigator_dialog.c:3760
 msgid "Select None"
 msgstr "Markera ingen"
 
 #. Video Length (frames)
-#: gap/gap_navigator_dialog.c:3780 gap/gap_player_dialog.c:3643
+#: gap/gap_navigator_dialog.c:3783 gap/gap_player_dialog.c:3647
 msgid "Videoframes:"
 msgstr "Videobildrutor:"
 
-#: gap/gap_navigator_dialog.c:3817
+#: gap/gap_navigator_dialog.c:3820
 msgid "Set Framerate in Frames/sec"
 msgstr "Ställ in bildrutehastighet i bildrutor/sek"
 
-#: gap/gap_navigator_dialog.c:3825
+#: gap/gap_navigator_dialog.c:3828
 msgid "Timezoom:"
 msgstr "Tidszoom:"
 
-#: gap/gap_navigator_dialog.c:3847
+#: gap/gap_navigator_dialog.c:3850
 msgid "Show only every N.th frame"
 msgstr "Visa endast var N:te bildruta"
 
 #. The main shell
-#: gap/gap_navigator_dialog.c:3944
+#: gap/gap_navigator_dialog.c:3947
 msgid "Video Navigator"
 msgstr "Videonavigatör"
 
@@ -2558,7 +2558,7 @@ msgid "Removing Onionskin Layers..."
 msgstr "Tar bort lökskalslager..."
 
 #. Format the message
-#: gap/gap_player_dialog.c:267
+#: gap/gap_player_dialog.c:269
 #, c-format
 msgid ""
 "Problem with audioplayback\n"
@@ -2569,7 +2569,7 @@ msgstr ""
 "audiolib rapporterade:\n"
 "%s"
 
-#: gap/gap_player_dialog.c:295
+#: gap/gap_player_dialog.c:297
 #, c-format
 msgid ""
 "Directory '%s'\n"
@@ -2578,7 +2578,7 @@ msgstr ""
 "Katalogen \"%s\"\n"
 "finns redan"
 
-#: gap/gap_player_dialog.c:300
+#: gap/gap_player_dialog.c:302
 #, c-format
 msgid ""
 "File '%s'\n"
@@ -2587,31 +2587,31 @@ msgstr ""
 "Filen \"%s\"\n"
 "finns redan"
 
-#: gap/gap_player_dialog.c:301
+#: gap/gap_player_dialog.c:303
 msgid "Overwrite"
 msgstr "Skriv över"
 
-#: gap/gap_player_dialog.c:313
+#: gap/gap_player_dialog.c:315
 msgid "File Overwrite Warning"
 msgstr "Varning för filöverskrivning"
 
-#: gap/gap_player_dialog.c:344
+#: gap/gap_player_dialog.c:346
 msgid "Audiosource:"
 msgstr "Ljudkälla:"
 
-#: gap/gap_player_dialog.c:355
+#: gap/gap_player_dialog.c:357
 msgid "Wavefile:"
 msgstr "Wave-fil:"
 
-#: gap/gap_player_dialog.c:357
+#: gap/gap_player_dialog.c:359
 msgid "Name of Wavefile to create as copy in RIFF WAVE Format"
 msgstr "Namn på Wave-fil att skapa som kopia i RIFF WAVE-format"
 
-#: gap/gap_player_dialog.c:364
+#: gap/gap_player_dialog.c:366
 msgid "Resample:"
 msgstr "Omsampla:"
 
-#: gap/gap_player_dialog.c:365
+#: gap/gap_player_dialog.c:367
 msgid ""
 "ON: Resample the copy at specified Samplerate, OFF: use original Samplerate"
 msgstr ""
@@ -2619,11 +2619,11 @@ msgstr ""
 "samplingshastighet"
 
 #. Samplerate
-#: gap/gap_player_dialog.c:372 gap/gap_player_dialog.c:3585
+#: gap/gap_player_dialog.c:374 gap/gap_player_dialog.c:3589
 msgid "Samplerate:"
 msgstr "Samplingshastighet:"
 
-#: gap/gap_player_dialog.c:373
+#: gap/gap_player_dialog.c:375
 msgid ""
 "Target Audio Samperate in Samples/sec\n"
 "(ignored if Resample is OFF)"
@@ -2631,11 +2631,11 @@ msgstr ""
 "Målljudsamplingshastighet i samplingar/sek\n"
 "(ignoreras om Omsampla är AV)"
 
-#: gap/gap_player_dialog.c:394
+#: gap/gap_player_dialog.c:396
 msgid "Copy Audiofile as Wavefile"
 msgstr "Kopiera ljudfil som Wave-fil"
 
-#: gap/gap_player_dialog.c:479
+#: gap/gap_player_dialog.c:481
 msgid ""
 "Failure to start the wavplay server is fatal.\n"
 "Please check the executability of the 'wavplay' command.\n"
@@ -2647,29 +2647,29 @@ msgstr ""
 "Om du har installerat wavplay-binärfilen någonstans\n"
 "kan du ange miljövariabeln WAVPLAYPATH innan gimp startas\n"
 
-#: gap/gap_player_dialog.c:542
+#: gap/gap_player_dialog.c:544
 msgid "Audio Delay"
 msgstr "Ljudfördröjning"
 
-#: gap/gap_player_dialog.c:554
+#: gap/gap_player_dialog.c:556
 msgid "Syncron"
 msgstr "Synkron"
 
-#: gap/gap_player_dialog.c:558
+#: gap/gap_player_dialog.c:560
 msgid "Audio Skipped"
 msgstr "Ljud överhoppat"
 
-#: gap/gap_player_dialog.c:570
+#: gap/gap_player_dialog.c:572
 #, c-format
 msgid "%d (at %.4f frames/sec)"
 msgstr "%d (vid %.4f bildrutor/sek)"
 
-#: gap/gap_player_dialog.c:664
+#: gap/gap_player_dialog.c:666
 #, c-format
 msgid "Error at reading WAV header from file '%s'"
 msgstr "Fel vid läsning av WAV-huvud från filen \"%s\""
 
-#: gap/gap_player_dialog.c:797
+#: gap/gap_player_dialog.c:799
 #, c-format
 msgid ""
 "WARNING: your gimprc file configuration for the wavplay audio server\n"
@@ -2680,7 +2680,7 @@ msgstr ""
 "till ett körbart program\n"
 "det konfigurerade värdet för %s är: %s\n"
 
-#: gap/gap_player_dialog.c:818 gap/gap_player_dialog.c:3118
+#: gap/gap_player_dialog.c:820 gap/gap_player_dialog.c:3122
 #, c-format
 msgid ""
 "WARNING: the environment variable %s\n"
@@ -2691,7 +2691,7 @@ msgstr ""
 "pekar inte till ett körbart program\n"
 "det aktuella värdet är: %s\n"
 
-#: gap/gap_player_dialog.c:854
+#: gap/gap_player_dialog.c:856
 #, c-format
 msgid ""
 "NO Audiosupport available\n"
@@ -2709,25 +2709,25 @@ msgstr ""
 "innan du startar GIMP"
 
 #. pending timer_go_job gets useless, since we start playback now
-#: gap/gap_player_dialog.c:1276 gap/gap_player_dialog.c:1743
+#: gap/gap_player_dialog.c:1278 gap/gap_player_dialog.c:1745
 msgid "Playing"
 msgstr "Spelar"
 
 #. the status value label
-#: gap/gap_player_dialog.c:1313 gap/gap_player_dialog.c:4125
+#: gap/gap_player_dialog.c:1315 gap/gap_player_dialog.c:4129
 msgid "Ready"
 msgstr "Redo"
 
-#: gap/gap_player_dialog.c:1726
+#: gap/gap_player_dialog.c:1728
 msgid "SKIP"
 msgstr "HOPPA ÖVER"
 
-#: gap/gap_player_dialog.c:1755
+#: gap/gap_player_dialog.c:1757
 #, c-format
 msgid "Delay %.2f"
 msgstr "Fördröj %.2f"
 
-#: gap/gap_player_dialog.c:3096
+#: gap/gap_player_dialog.c:3100
 #, c-format
 msgid ""
 "WARNING: your gimprc file configuration for the audioconverter Script\n"
@@ -2738,60 +2738,60 @@ msgstr ""
 "till ett körbart program\n"
 "det konfigurerade värdet för %s är: %s\n"
 
-#: gap/gap_player_dialog.c:3136
+#: gap/gap_player_dialog.c:3141
 #, c-format
 msgid ""
-"ERROR: external program for audioconversion not available\n"
-"you should install: '%s'\n"
+"ERROR: external program for audioconversion not executable\n"
+"filename: '%s'\n"
 msgstr ""
-"FEL: externt program för ljudkonvertering inte tillgängligt\n"
-"du bör installera: \"%s\"\n"
+"FEL: externt program för ljudkonvertering inte körbart\n"
+"filnamn: \"%s\"\n"
 
-#: gap/gap_player_dialog.c:3157
+#: gap/gap_player_dialog.c:3161
 msgid "Creating Audiofile - Please Wait"
 msgstr "Skapar ljudfil - Var vänlig vänta"
 
-#: gap/gap_player_dialog.c:3308
+#: gap/gap_player_dialog.c:3312
 msgid "Select Audiofile"
 msgstr "Välj ljudfil"
 
 #. audiofile label
-#: gap/gap_player_dialog.c:3380
+#: gap/gap_player_dialog.c:3384
 msgid "Audiofile:"
 msgstr "Ljudfil:"
 
-#: gap/gap_player_dialog.c:3392
+#: gap/gap_player_dialog.c:3396
 msgid "Enter an Audiofile. (the file must be in RIFF WAVE Fileformat)"
 msgstr "Ange en ljudfil (filen måste vara i RIFF WAVE-filformat)."
 
-#: gap/gap_player_dialog.c:3406
+#: gap/gap_player_dialog.c:3410
 msgid "Open Audiofile selection Browserdialog"
 msgstr "Öppna bläddrardialogen för ljudfilsval"
 
 #. Volume
-#: gap/gap_player_dialog.c:3418
+#: gap/gap_player_dialog.c:3422
 msgid "Volume:"
 msgstr "Volym:"
 
-#: gap/gap_player_dialog.c:3438
+#: gap/gap_player_dialog.c:3442
 msgid "Audio Volume"
 msgstr "Ljudvolym"
 
 #. check button
-#: gap/gap_player_dialog.c:3444
+#: gap/gap_player_dialog.c:3448
 msgid "Enable"
 msgstr "Aktivera"
 
-#: gap/gap_player_dialog.c:3448
+#: gap/gap_player_dialog.c:3452
 msgid "ON: Play Button plays Video + Audio, OFF: Play silent"
 msgstr "PÅ: Spelaknappen spelar video + ljud, AV: Spela tyst"
 
 #. Sample Offset
-#: gap/gap_player_dialog.c:3457
+#: gap/gap_player_dialog.c:3461
 msgid "Offset:"
 msgstr "Avstånd:"
 
-#: gap/gap_player_dialog.c:3477
+#: gap/gap_player_dialog.c:3481
 msgid ""
 "Audio Offset in frames at Original Videoplayback speed\n"
 "(a value of 0 starts audio and video at synchron time\n"
@@ -2811,16 +2811,16 @@ msgstr ""
 "med varaktigheten för 10 bildrutor\n"
 "(vid ursprunglig videouppspelningshastighet)"
 
-#: gap/gap_player_dialog.c:3493
+#: gap/gap_player_dialog.c:3497
 msgid "Reset Offset and Volume"
 msgstr "Återställ avstånd och volym"
 
 #. create wavfile button
-#: gap/gap_player_dialog.c:3504
+#: gap/gap_player_dialog.c:3508
 msgid "Copy As Wavfile"
 msgstr "Kopiera som Wav-fil"
 
-#: gap/gap_player_dialog.c:3506
+#: gap/gap_player_dialog.c:3510
 msgid ""
 "Create a copy from Audiofile as RIFF WAVE Audiofile\n"
 "and use the copy for Audio Playback"
@@ -2829,156 +2829,156 @@ msgstr ""
 "och använd kopian för ljuduppspelning"
 
 #. Audio Offset Length (mm:ss:msec)
-#: gap/gap_player_dialog.c:3526
+#: gap/gap_player_dialog.c:3530
 msgid "Offsettime:"
 msgstr "Avståndstid:"
 
 #. Total Audio Length (mm:ss:msec)
-#: gap/gap_player_dialog.c:3540
+#: gap/gap_player_dialog.c:3544
 msgid "Audiotime:"
 msgstr "Ljudtid:"
 
 #. Length (frames)
-#: gap/gap_player_dialog.c:3555
+#: gap/gap_player_dialog.c:3559
 msgid "Audioframes:"
 msgstr "Ljudrutor:"
 
 #. Length (Samples)
-#: gap/gap_player_dialog.c:3570
+#: gap/gap_player_dialog.c:3574
 msgid "Samples:"
 msgstr "Samplingar:"
 
 #. Cannels
-#: gap/gap_player_dialog.c:3599
+#: gap/gap_player_dialog.c:3603
 msgid "Cannels:"
 msgstr "Kanaler:"
 
 #. Bits
-#: gap/gap_player_dialog.c:3613
+#: gap/gap_player_dialog.c:3617
 msgid "Bits/Sample:"
 msgstr "Bitar/sampling:"
 
 #. Total Video Length (mm:ss:msec)
-#: gap/gap_player_dialog.c:3628
+#: gap/gap_player_dialog.c:3632
 msgid "Videotime:"
 msgstr "Videotid:"
 
-#: gap/gap_player_dialog.c:3724
+#: gap/gap_player_dialog.c:3728
 msgid "Videoframe Playback"
 msgstr "Uppspelning av videobildrutor"
 
-#: gap/gap_player_dialog.c:3742
+#: gap/gap_player_dialog.c:3746
 msgid "Video Options"
 msgstr "Videoalternativ"
 
-#: gap/gap_player_dialog.c:3743
+#: gap/gap_player_dialog.c:3747
 msgid "Audio Options"
 msgstr "Ljudalternativ"
 
-#: gap/gap_player_dialog.c:3800
+#: gap/gap_player_dialog.c:3804
 msgid "Click: go to frame, Ctrl-Click: set From Frame, Alt-Click: set To Frame"
 msgstr ""
 "Klick: gå till bildruta, Ctrl-Klick: ställ in från bildruta, Alt-Klick: "
 "ställ in till bildruta"
 
-#: gap/gap_player_dialog.c:3869
+#: gap/gap_player_dialog.c:3873
 msgid "Start Framenumber of Selection Range"
 msgstr "Startbildrutenummer i markeringsintervall"
 
-#: gap/gap_player_dialog.c:3885
+#: gap/gap_player_dialog.c:3889
 msgid "End Framenumber of Selection Range"
 msgstr "Slutbildrutenummer i markeringsintervall"
 
 #. the framenr button
-#: gap/gap_player_dialog.c:3898
+#: gap/gap_player_dialog.c:3902
 msgid "FrameNr"
 msgstr "Bildrutenummer"
 
-#: gap/gap_player_dialog.c:3903
+#: gap/gap_player_dialog.c:3907
 msgid "Load this Frame into the calling image"
 msgstr "Läs in denna bildruta i den anropande bilden"
 
-#: gap/gap_player_dialog.c:3921
+#: gap/gap_player_dialog.c:3925
 msgid "Displayed Frame Nr"
 msgstr "Visat bildrutenummer"
 
 #. the time position
-#: gap/gap_player_dialog.c:3928
+#: gap/gap_player_dialog.c:3932
 msgid "Timepos:"
 msgstr "Tidspos:"
 
 #. the origspeed_button
-#: gap/gap_player_dialog.c:3957
+#: gap/gap_player_dialog.c:3961
 msgid "Speed"
 msgstr "Hastighet"
 
-#: gap/gap_player_dialog.c:3962
+#: gap/gap_player_dialog.c:3966
 msgid "Reset Playback Speed to original (or previous) Value"
 msgstr ""
 "Återställ uppspelningshastighet till ursprungligt (eller föregående) värde"
 
-#: gap/gap_player_dialog.c:3982
+#: gap/gap_player_dialog.c:3986
 msgid "Current Playbackspeed (frames/sec)"
 msgstr "Aktuell uppspelningshastighet (bildrutor/sek)"
 
 #. the size button
-#: gap/gap_player_dialog.c:3995
+#: gap/gap_player_dialog.c:3999
 msgid "Size"
 msgstr "Storlek"
 
-#: gap/gap_player_dialog.c:4001
+#: gap/gap_player_dialog.c:4005
 msgid "Toggle Size 128/256, SHIFT: Set 1:1 full image Size"
 msgstr "Växla storleken 128/256, SKIFT: Ställ in 1:1 full bildstorlek"
 
-#: gap/gap_player_dialog.c:4019
+#: gap/gap_player_dialog.c:4023
 msgid "Video Preview Size (pixels)"
 msgstr "Videoförhandsgranskningsstorlek (bildpunkter)"
 
-#: gap/gap_player_dialog.c:4049
+#: gap/gap_player_dialog.c:4053
 msgid "ON: Play in endless Loop, OFF: Play only once"
 msgstr "PÅ: Spela i oändlig slinga, AV: Spela endast en gång"
 
-#: gap/gap_player_dialog.c:4058
+#: gap/gap_player_dialog.c:4062
 msgid "Play Selection only"
 msgstr "Spela endast markering"
 
-#: gap/gap_player_dialog.c:4063
+#: gap/gap_player_dialog.c:4067
 msgid "ON: Play Selection only, OFF: Play all frames"
 msgstr "PÅ: Spela endast markering, AV: Spela alla bildrutor"
 
-#: gap/gap_player_dialog.c:4077
+#: gap/gap_player_dialog.c:4081
 msgid "ON: Play alternating forward/backward"
 msgstr "PÅ: Spela alternerande framåt/bakåt"
 
-#: gap/gap_player_dialog.c:4086
+#: gap/gap_player_dialog.c:4090
 msgid "Use Thumbnails"
 msgstr "Använd miniatyrbilder"
 
-#: gap/gap_player_dialog.c:4091
+#: gap/gap_player_dialog.c:4095
 msgid "ON: use thumbnails when available, OFF: read full sized frames"
 msgstr ""
 "PÅ: använd miniatyrbilder om tillgängliga, AV: läs bildrutor i full storlek"
 
-#: gap/gap_player_dialog.c:4101
+#: gap/gap_player_dialog.c:4105
 msgid "Exact Timing"
 msgstr "Exakt tidtagning"
 
-#: gap/gap_player_dialog.c:4106
+#: gap/gap_player_dialog.c:4110
 msgid "ON: skip frames to hold exact timing, OFF: disable frame skipping"
 msgstr ""
 "PÅ: hoppa över bildrutor för att hålla exakt tidtagning, AV: inaktivera "
 "överhoppning av bildrutor"
 
 #. the status label
-#: gap/gap_player_dialog.c:4117
+#: gap/gap_player_dialog.c:4121
 msgid "Status:"
 msgstr "Status:"
 
-#: gap/gap_player_dialog.c:4150
+#: gap/gap_player_dialog.c:4154
 msgid "Start Playback"
 msgstr "Starta uppspelning"
 
-#: gap/gap_player_dialog.c:4160
+#: gap/gap_player_dialog.c:4164
 msgid ""
 "Pause if playing (Any Mouseboutton)\n"
 "Goto Selection Start/Active/End (Left/Middle/Right Button) if not playing"
@@ -2987,11 +2987,11 @@ msgstr ""
 "Gå till markeringens start/aktiv/slut (vänstra/mittersta/högra knappen) om "
 "inte spelandes"
 
-#: gap/gap_player_dialog.c:4170
+#: gap/gap_player_dialog.c:4174
 msgid "Start Reverse Playback"
 msgstr "Starta baklängesuppspelning"
 
-#: gap/gap_player_dialog.c:4179
+#: gap/gap_player_dialog.c:4183
 msgid "Close Window"
 msgstr "Stäng fönster"
 
