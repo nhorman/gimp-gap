@@ -1,5 +1,9 @@
 2004-01-19  Sven Neumann  <sven@gimp.org>
 
+	* autogen.sh: no need to check for gtk-2.0.m4; we don't use it.
+
+2004-01-19  Sven Neumann  <sven@gimp.org>
+
 	* configure.in
 	* gap/Makefile.am: fixed libgimpthumb issues and some other
 	oddities that Wolfgang as workarounds.

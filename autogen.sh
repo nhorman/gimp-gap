@@ -119,7 +119,7 @@ fi
 if test -z "$ACLOCAL_FLAGS"; then
 
     acdir=`$ACLOCAL --print-ac-dir`
-    m4list="glib-gettext.m4 gtk-2.0.m4 intltool.m4 pkg.m4"
+    m4list="glib-gettext.m4 intltool.m4 pkg.m4"
 
     for file in $m4list
     do
