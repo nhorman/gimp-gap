@@ -1,0 +1,62 @@
+"plug-in-gap-storyboard-master-prop"
+
+
+Master Properties (Storyboard)
+
+    The master properties dialog window is used to
+    create new storyboard files and to view and update properties
+    of an existing storyboard file.
+    It is a popup dialog of the storyboard editor
+
+    ## refere to Storyboard Dialog
+    ## (plug-in-gap-storyboard-edit.txt)
+
+    File:
+      The name of the stroyboard file.
+      If the dialog was opened via menu "properties" 
+      the filename is read only information.
+      If invoked via "new" you can specify the filename 
+      here and the button "..." opens a filebrowser dialog window
+      where you can select the filename.
+
+    Width:
+    Height:
+      Master size of the target videofile in pixels.
+      At encoding time all input frames are
+      scaled to this master size.
+      (For manually edited storyboard files
+      there you can control how to scale the input
+      frames individually per clip using
+      records of type VID_FIT_SIZE
+      see storyboard syntax description for more details.
+      ## STORYBOARD_FILE_DOC.txt ####
+
+    Framerate:
+      Master framerate of the resulting videofile
+      in frames per second.
+
+    Decoder:
+      Selection of a preferred video decoder software library.
+      If nothing is specified the decoder is selected automatically.
+      The decoder setting is only relevant for the clip references
+      to videofiles, to specify what software to use for readaccess
+      to the videofile.
+
+      
+    Samplerate:
+      Master samplerate in 1000 samples per second.
+      The master samplerate is the target samplerate
+      for the resulting audiotrack when storyboard file
+      is encoded to a videofile.
+      GIMP-GAP creates this track in a pre-processing
+      step (in the Master Videoencoder module) as
+      composite audiofile by mixing down all
+      audiotracks of a storyboard file.
+      
+    Volume:
+      Master volume of the resulting audiotrack,
+      where values greater than 1.0 will amplify the volume.
+      (with the risk of producing noise on overflow)
+      
+      
+

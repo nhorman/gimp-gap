@@ -1,0 +1,42 @@
+"plug-in-wr-curves"
+
+Apply Color Curves File
+
+    Start from Menu:
+       <Image>/Video/Layer/Colors/CurvesFile
+       
+       for automated apply, this filter is started
+       indirect via the menus:
+	<Image>/Filters/Filter all Layers   or
+        <Image>/Video/Frames Modify
+
+       when its internal PDB-name:
+ 
+           "plug_in_wr_curves"
+	   
+       is selected as filter name.
+
+    This curves file dialog works the same way
+    as the color curves tool that can be found in the menu:
+     Layer/Colors/Curves)
+
+    but has no graphical dialog for editing
+    the color curve settings.
+    It needs a color curves file as input.
+
+    The advantage of this variante is the ability
+    to run automatically on many layers or frames
+    with constant value settings or as animated filter 
+    with varying value settings in combination with 
+    the GIMP-GAP plug-ins:
+
+       "Filter All Layer"
+       "Modify Layers"
+
+    For applying this filter with varying values you need 2
+    color curves file and provide them as input for the
+    first and last handled layer. All the
+    layers inbetween will be automatically handled with
+    slightly varying the color curve settings from
+    the start color curve to the end color curve.
+	

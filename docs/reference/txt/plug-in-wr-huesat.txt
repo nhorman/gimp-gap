@@ -1,0 +1,34 @@
+"plug-in-wr-huesat"
+
+Hue-Saturation
+
+    Start from Menu:
+       <Image>/Video/Layer/Colors/Hue-Saturation
+       
+       for automated apply, this filter is started
+       indirect via the menus:
+	<Image>/Filters/Filter all Layers   or
+        <Image>/Video/Frames Modify
+
+       when its internal PDB-name:
+ 
+           "plug_in_wr_huesat"
+	   
+	is selected as filter name.
+
+    This Hue-Saturation dialog works the same way
+    as the hue-saturation tool that can be found in the menu:
+     Layer/Colors/Hue-Saturation
+
+    but has a less comfortable dialog without preview.
+
+    The advantage of this variante is the ability
+    to run automatically on many layers or frames
+    with constant value settings or as animated filter 
+    with varying value settings in combination with 
+    the GIMP-GAP plug-ins:
+
+       "Filter All Layer"
+       "Modify Layers"
+
+	

@@ -1,0 +1,43 @@
+"plug-in-gap-storyboard-gen-otone"
+
+
+Generate original tone autiotrack (Storyboard)
+
+    This feature generates an audiotrack in the storyboard.
+    This audiotrack adds the audio original tone references 
+    for all the videoclips of type MOVIE that are found
+    in the storyboard.
+    (except those clips that are played backwards, pingpong mode
+     or at other stepsize than 1.0)
+
+    It is a popup dialog of the storyboard editor.
+
+    ## refere to Storyboard Dialog
+    ## (plug-in-gap-storyboard-edit.txt)
+    
+
+    File:
+    Input Audiotrack:
+       This refers to the audiotrack number of (all used) inputvideoclips.
+       Most videofiles have just one track. 
+       DVD's typically store multiple language versions on
+       multiple audotracks in their .vob files.
+
+    Output Audiotrack:
+       This is the storyboard specific audiotrack number.
+         
+    Replace Audiotrack
+       This flag allows replace of the specified audiotrack
+       in the storyboard.
+
+    Notes:
+       the generated audiotrack is just a list of references
+       to the audiopart of the used videoclips.
+       Processing of this list is done as audio preprocessing step
+       at encoding in the Master Videoencoder.
+       (see Master Videoencoder, Create Composite Audio for more
+       information)
+         
+       ### refere to chapter Master Videoencoder dialog #######
+
+       
