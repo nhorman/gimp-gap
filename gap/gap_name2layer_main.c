@@ -23,7 +23,8 @@
  */
 
 /* Revision history
- *  (2003/05/15)  v1.0   hof: created
+ *  (2003/06/21)  v1.3.15a   hof: bugfix: MenuPath is language dependent string
+ *  (2003/05/15)  v1.0       hof: created
  */
 
 #include "config.h"
@@ -44,8 +45,7 @@
 /* Defines */
 #define PLUG_IN_NAME        "plug_in_name2layer"
 #define PLUG_IN_PRINT_NAME  "Name to Layer"
-#define PLUG_IN_VERSION     "v1.0 (2003/05/15)"
-#define PLUG_IN_MENU_PATH   "<Image>/Video/Filename to Layer..."
+#define PLUG_IN_VERSION     "v1.3.15 (2003/06/21)"
 #define PLUG_IN_IMAGE_TYPES "RGB*, INDEXED*, GRAY*"
 #define PLUG_IN_AUTHOR      "Wolfgang Hofer (hof@gimp.org)"
 #define PLUG_IN_COPYRIGHT   "Wolfgang Hofer"
@@ -165,7 +165,7 @@ static void query (void)
                           PLUG_IN_AUTHOR,
                           PLUG_IN_COPYRIGHT,
                           PLUG_IN_VERSION,
-                          PLUG_IN_MENU_PATH,
+                          N_("<Image>/Video/Filename to Layer..."),
                           PLUG_IN_IMAGE_TYPES,
                           GIMP_PLUGIN,
                           global_number_in_args,

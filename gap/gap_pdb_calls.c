@@ -23,6 +23,7 @@
  */
 
 /* revision history:
+ * version 1.3.14c; 2003/06/15  hof: take care of gimp_image_thumbnail 128x128 sizelimit
  * version 1.3.14b; 2003/06/03  hof: gboolean retcode for thumbnail procedures
  * version 1.3.14a; 2003/05/24  hof: moved vin Procedures to gap_vin module
  * version 1.3.5a;  2002/04/20  hof: p_gimp_layer_new_from_drawable. (removed set_drabale)
@@ -250,7 +251,8 @@ p_gimp_file_load_thumbnail(char* filename, gint32 *th_width, gint32 *th_height,
 
 
 
-gboolean p_gimp_image_thumbnail(gint32 image_id, gint32 width, gint32 height,
+gboolean
+p_gimp_image_thumbnail(gint32 image_id, gint32 width, gint32 height,
                               gint32 *th_width, gint32 *th_height, gint32 *th_bpp,
 			      gint32 *th_data_count, unsigned char **th_data)
 {
@@ -259,6 +261,20 @@ gboolean p_gimp_image_thumbnail(gint32 image_id, gint32 width, gint32 height,
    int              nreturn_vals;
 
    *th_data = NULL;
+
+    /* gimp_image_thumbnail 
+     *   has a limit of maximal 128x128 pixels. (in gimp-1.3.14)
+     *   On bigger sizes it returns success, along with a th_data == NULL.
+     * THIS workaround makes a 2nd try with reduced size.
+     * TODO:
+     *  - if gimp keeps the size limit until the stable 1.4 release
+     *       i suggest to check for sizs < 128 before the 1.st attemp.
+     *       (for better performance on bigger thumbnail sizes)
+     *  - if there will be no size limit in the future,
+     *       the 2.nd try cold be removed (just for cleanup reasons)
+     * hof, 2003.06.17
+     */
+workaround:
    return_vals = gimp_run_procedure (l_called_proc,
                                  &nreturn_vals,
  				 GIMP_PDB_IMAGE,    image_id,
@@ -273,6 +289,34 @@ gboolean p_gimp_image_thumbnail(gint32 image_id, gint32 width, gint32 height,
       *th_bpp    = return_vals[3].data.d_int32;
       *th_data_count = return_vals[4].data.d_int32;
       *th_data = (unsigned char *)return_vals[5].data.d_int8array;
+
+      if (*th_data == NULL)
+      {
+         if(gap_debug)
+         {
+           printf("(PDB_WRAPPER workaround for gimp_image_thumbnail GIMP_PDB_SUCCESS, th_data:%d  (%d x %d) \n"
+            , (int)return_vals[5].data.d_int8array
+            , (int)return_vals[1].data.d_int32
+            , (int)return_vals[2].data.d_int32
+            );
+         }
+         if(MAX(width, height) > 128)
+         {
+           if(width > height)
+           {
+              height = (128 * height) / width;
+              width = 128;
+           }
+           else
+           {
+              width = (128 * width) / height;
+              height = 128;
+           }
+
+           goto workaround;
+         }
+         return(FALSE);  /* this is no success */
+      }
       return(TRUE); /* OK */
    }
    printf("GAP: Error: PDB call of %s failed\n", l_called_proc);

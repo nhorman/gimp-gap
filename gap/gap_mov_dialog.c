@@ -30,6 +30,7 @@
  */
 
 /* revision history:
+ * gimp    1.3.15a; 2003/06/21  hof: attempt to remove some deprecated calls (no success)
  * gimp    1.3.14b; 2003/06/03  hof: added gap_stock_init
  *                                   replaced mov_gtk_button_new_with_pixmap  by  gtk_button_new_from_stock
  * gimp    1.3.14a; 2003/05/24  hof: moved render procedures to module gap_mov_render
@@ -177,6 +178,7 @@ typedef struct
   gint                first_nr;
   gint                last_nr;
   GtkWidget          *shell;
+  GtkWidget          *master_vbox;
 } t_mov_path_preview;
 
 
@@ -528,6 +530,8 @@ mov_dialog ( GimpDrawable *drawable, t_mov_path_preview *path_ptr,
   gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_ETCHED_IN);
   gtk_container_set_border_width (GTK_CONTAINER (frame), 4);
   gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dlg)->vbox), frame, TRUE, TRUE, 0);
+  gtk_widget_show (frame);
+
 
   /* the vbox */
   vbox = gtk_vbox_new (FALSE, 3);
@@ -541,8 +545,9 @@ mov_dialog ( GimpDrawable *drawable, t_mov_path_preview *path_ptr,
 
   /* the path preview frame (with all the controlpoint widgets) */
   path_ptr->max_frame = MAX(first_nr, last_nr);
+  path_ptr->master_vbox = vbox;
   path_prevw_frame = mov_path_prevw_create ( drawable, path_ptr);
-  gtk_box_pack_start (GTK_BOX (vbox), path_prevw_frame, TRUE, TRUE, 0);
+  /*gtk_box_pack_start (GTK_BOX (vbox), path_prevw_frame, TRUE, TRUE, 0); */ /* moved to mov_path_prevw_create */
 
   /* the hbox_table (1 row) */
   hbox_table = gtk_table_new (5, 3, FALSE);
@@ -554,6 +559,7 @@ mov_dialog ( GimpDrawable *drawable, t_mov_path_preview *path_ptr,
   gtk_table_set_row_spacings (GTK_TABLE (table), 2);
   gtk_table_set_col_spacings (GTK_TABLE (table), 4);
   gtk_table_attach(GTK_TABLE(hbox_table), table, 0, 1, 0, 1, GTK_FILL|GTK_EXPAND, GTK_FILL, 4, 0);
+  gtk_widget_show (table);
 
   /* the start frame scale_entry */
   adj = gimp_scale_entry_new( GTK_TABLE (table), 0, 0,        /* table col, row */
@@ -634,10 +640,8 @@ mov_dialog ( GimpDrawable *drawable, t_mov_path_preview *path_ptr,
 
   gtk_table_attach(GTK_TABLE(hbox_table), vcbox, 1, 2, 0, 1, GTK_FILL, GTK_FILL, 4, 0);
 
-  gtk_widget_show (frame);
-  gtk_widget_show (table);
-  gtk_widget_show (dlg);
 
+  gtk_widget_show (dlg);
   path_ptr->startup = FALSE;
 
   gtk_main ();
@@ -1783,6 +1787,11 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_path_preview *path_ptr)
   gtk_frame_set_shadow_type( GTK_FRAME( frame ) ,GTK_SHADOW_ETCHED_IN );
   gtk_container_set_border_width( GTK_CONTAINER( frame ), 2 );
 
+  gtk_box_pack_start (GTK_BOX (path_ptr->master_vbox), frame, TRUE, TRUE, 0);
+  gtk_widget_show( path_ptr->master_vbox );
+  gtk_widget_show( frame );
+  
+
   /* the vbox */
   vbox = gtk_vbox_new (FALSE, 3);
   gtk_container_set_border_width (GTK_CONTAINER (vbox), 2);
@@ -1933,12 +1942,14 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_path_preview *path_ptr)
   gtk_table_set_row_spacings (GTK_TABLE (pv_table), 2);
   gtk_table_set_col_spacings (GTK_TABLE (pv_table), 4);
   gtk_box_pack_start (GTK_BOX (hbox), pv_table, TRUE, TRUE, 0);
+  gtk_widget_show( pv_table );
 
   /* frame (shadow_in) that contains preview */
   pframe = gtk_frame_new ( NULL );
   gtk_frame_set_shadow_type( GTK_FRAME( pframe ), GTK_SHADOW_IN );
   gtk_table_attach( GTK_TABLE(pv_table), pframe, 0, 1, 0, 1,
 		    0, 0, 0, 0 );
+  gtk_widget_show(pframe);
 
 
   /* the preview sub table (2 rows) */
@@ -1988,22 +1999,40 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_path_preview *path_ptr)
     path_ptr->pwidth = path_ptr->dwidth * PREVIEW_SIZE / path_ptr->dheight;
     path_ptr->pheight = PREVIEW_SIZE;
   }
-  gtk_preview_size( GTK_PREVIEW( preview ), path_ptr->pwidth, path_ptr->pheight );
 
-  /* port to gtk+-2.0.0 not finished. at the moment the new
-   * gtk_widget_set_size_request does not work on the preview as expected.
-   *  ==> results in size of 0 x 0 pixels ??
+  gtk_widget_show(preview);
+
+  /* port to gtk+-2.0.0
+   * gtk_widget_set_size_request needs an already allocated parent window to work
+   * properly.
+   * gtk_widget_realize should force allocation of the window
+   *  ==> but still does not work ??
+   *      continue using the DEPRECATED but working gtk_preview_size procedure
+   *      until i find out whats wrong 
    */
-  /* gtk_widget_set_size_request(preview, path_ptr->pwidth, path_ptr->pheight ); */
+
+/*
+   gtk_widget_realize(path_ptr->shell);
+   gtk_widget_realize(path_ptr->master_vbox);
+   gtk_widget_realize(frame);
+   gtk_widget_realize(vbox);
+   gtk_widget_realize(table);
+   gtk_widget_realize(preview);
+   gtk_widget_set_size_request(preview, path_ptr->pwidth, path_ptr->pheight );
+*/   
+
+   gtk_preview_size( GTK_PREVIEW( preview ), path_ptr->pwidth, path_ptr->pheight );
+  
+  
 
   /* Draw the contents of preview, that is saved in the preview widget */
   mov_path_prevw_preview_init( path_ptr );
-  gtk_widget_show(preview);
 
   /* button_table 8 rows */
   button_table = gtk_table_new (8, 2, TRUE);
   gtk_table_set_row_spacings (GTK_TABLE (button_table), 0);
   gtk_table_set_col_spacings (GTK_TABLE (button_table), 0);
+  gtk_widget_show (button_table);
 
   row = 0;
 
@@ -2212,9 +2241,6 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_path_preview *path_ptr)
   gtk_box_pack_start (GTK_BOX (hbox), button_table, TRUE, TRUE, 0);
 
   gtk_widget_show (button_table);
-  gtk_widget_show( pframe );
-  gtk_widget_show( pv_table );
-  gtk_widget_show( frame );
 
   mov_path_prevw_cursor_update( path_ptr );
 

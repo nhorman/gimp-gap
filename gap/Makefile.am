@@ -12,6 +12,7 @@ libexec_PROGRAMS = \
 	gap_frontends		\
 	gap_name2layer		\
 	gap_navigator_dialog	\
+	gap_player		\
         gap_onion
 
 
@@ -136,6 +137,34 @@ gap_navigator_dialog_SOURCES = \
 	gap_stock.h		\
 	gap_thumbnail.c		\
 	gap_thumbnail.h		\
+	gap_timeconv.c		\
+	gap_timeconv.h		\
+	gap_vin.c		\
+	gap_vin.h
+
+gap_player_SOURCES = \
+	gap_arr_dialog.c	\
+	gap_arr_dialog.h	\
+	gap_layer_copy.c        \
+	gap_layer_copy.h        \
+	gap_lib.c		\
+	gap_lib.h		\
+	gap_navi_activtable.c	\
+	gap_navi_activtable.h	\
+	gap_player_main.c	\
+	gap_player_main.h	\
+	gap_player_dialog.c	\
+	gap_player_dialog.h	\
+	gap_pdb_calls.c		\
+	gap_pdb_calls.h		\
+	gap_pview_da.c		\
+	gap_pview_da.h		\
+	gap_stock.c		\
+	gap_stock.h		\
+	gap_thumbnail.c		\
+	gap_thumbnail.h		\
+	gap_timeconv.c		\
+	gap_timeconv.h		\
 	gap_vin.c		\
 	gap_vin.h
 

@@ -70,6 +70,9 @@
 
 
 /* revision history:
+ * gimp    1.3.15a; 2003/06/21  hof: p_conv_framenr_to_timestr, use plug_in_gap_videoframes_player for playback
+ *                                   ops_button_pressed_callback must have returnvalue FALSE
+ *                                   (this enables other handlers -- ops_button_extended_callback -- to run afterwards
  * gimp    1.3.14b; 2003/06/03  hof: added gap_stock_init
  *                                   ops_button_box_new: now using stock buttons instead of xpm pixmap data
  * gimp    1.3.14a; 2003/05/27  hof: replaced old workaround procedure readXVThumb by legal API gimp_file_load_thumbnail
@@ -110,6 +113,7 @@ static char *gap_navigator_version = "1.3.14a; 2003/05/27";
 #include <libgimp/gimpui.h>
 
 #include "gap_stock.h"
+#include "gap_timeconv.h"
 
 #include "gap_navi_activtable.h"
 
@@ -313,7 +317,7 @@ static void navi_ops_menu_set_sensitive(void);
 static void navi_dialog_thumb_update_callback(GtkWidget *w, gpointer   data);
 static void navi_dialog_thumb_updateall_callback(GtkWidget *w, gpointer   data);
 static void navi_dialog_vcr_play_callback(GtkWidget *w, gpointer   data);
-static void navi_dialog_vcr_play_optim_callback(GtkWidget *w, gpointer   data);
+static void navi_dialog_vcr_play_layeranim_callback(GtkWidget *w, gpointer   data);
 static void navi_dialog_frames_duplicate_frame_callback(GtkWidget *w, gpointer   data);
 static void navi_dialog_frames_delete_frame_callback(GtkWidget *w, gpointer   data);
 
@@ -363,7 +367,7 @@ static OpsButtonFunc navi_dialog_update_ext_callbacks[] =
 };
 static OpsButtonFunc navi_dialog_vcr_play_ext_callbacks[] = 
 {
-  OPS_BUTTON_FUNC (navi_dialog_vcr_play_optim_callback), NULL, NULL, NULL
+  OPS_BUTTON_FUNC (navi_dialog_vcr_play_layeranim_callback), NULL, NULL, NULL
 };
 static OpsButtonFunc navi_dialog_vcr_goto_prev_ext_callbacks[] = 
 {
@@ -377,8 +381,8 @@ static OpsButtonFunc navi_dialog_vcr_goto_next_ext_callbacks[] =
 static OpsButton frames_ops_buttons[] =
 {
   { GAP_STOCK_PLAY, OPS_BUTTON_FUNC (navi_dialog_vcr_play_callback), navi_dialog_vcr_play_ext_callbacks,
-    N_("Playback         \n"
-       "<Shift> optimized"),
+    N_("Playback\n"
+       "<Shift> Make Tempimage and do Layeranimation Playback"),
     "#playback",
     NULL, 0 },
   { GAP_STOCK_UPDATE, OPS_BUTTON_FUNC (navi_dialog_thumb_update_callback), navi_dialog_update_ext_callbacks,
@@ -1415,7 +1419,8 @@ static void navi_dialog_thumb_updateall_callback(GtkWidget *w, gpointer   data)
 }
 
 
-static void navi_playback(gint32 optimize)
+static void 
+navi_playback(gboolean use_gimp_layeranimplayer)
 {
    SelectedRange *range_list;
    SelectedRange *range_item;
@@ -1460,6 +1465,34 @@ static void navi_playback(gint32 optimize)
      }
   }
 
+  if(!use_gimp_layeranimplayer)
+  {
+     /* Start GAP Animationframe Playback Module via PDB
+      * note: the player always rund INTERACTIVE
+      * but accepts calling parameters only when called in
+      * GIMP_RUN_NONINTERACTIVE runmode
+      */
+     return_vals = gimp_run_procedure ("plug_in_gap_videoframes_player",
+                                    &nreturn_vals,
+	                            GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
+				    GIMP_PDB_IMAGE,    naviD->active_imageid,
+				    GIMP_PDB_DRAWABLE, -1,  /* dummy */
+	                            GIMP_PDB_INT32,    l_from,
+	                            GIMP_PDB_INT32,    l_to,
+	                            GIMP_PDB_INT32,    TRUE,  /* autostart */
+	                            GIMP_PDB_INT32,    TRUE,  /* use_thumbnails (playback using thumbnails where available) */
+	                            GIMP_PDB_INT32,    TRUE,  /* exact_timing */
+	                            GIMP_PDB_INT32,    TRUE,  /* play_selection_only */
+	                            GIMP_PDB_INT32,    TRUE,  /* play_loop */
+	                            GIMP_PDB_INT32,    FALSE, /* play_pingpong */
+	                            GIMP_PDB_FLOAT,    -1.0,  /* speed is original framerate */
+	                            GIMP_PDB_INT32,    -1,    /* use default width */
+	                            GIMP_PDB_INT32,    -1,    /* use default height */
+                                    GIMP_PDB_END);
+     return;
+  }
+
+
   return_vals = gimp_run_procedure ("plug_in_gap_range_to_multilayer",
                                     &nreturn_vals,
 	                            GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
@@ -1479,36 +1512,11 @@ static void navi_playback(gint32 optimize)
 
   if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
   {
-         l_new_image_id = return_vals[1].data.d_image;
+     l_new_image_id = return_vals[1].data.d_image;
 
-         if(optimize)
-	 {
-             return_vals = gimp_run_procedure ("plug_in_animationoptimize",
-                                    &nreturn_vals,
-	                            GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
-				    GIMP_PDB_IMAGE,    l_new_image_id,
-				    GIMP_PDB_DRAWABLE, -1,  /* dummy */
-                                   GIMP_PDB_END);
-             if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
-             {
-#ifdef COMMENT_BLOCK		
-                 /* sorry, plug_in_animationoptimize does create 
-		  * a new anim-optimized image, but does not return the id
-		  * of the created image so we can't play the optimized
-		  * image automatically.
-		  */
-                
-	        /* destroy the tmp image */
-                gimp_image_delete(l_new_image_id);
-
-                l_new_image_id = return_vals[1].data.d_image;
-#endif		
-             }
-	 }
-
-         /* TODO: here we should start a thread for the playback, 
-	  * so the navigator is not blocked until playback exits
-	  */
+     /* TODO: here we should start a thread for the playback, 
+      * so the navigator is not blocked until playback exits
+      */
       return_vals = gimp_run_procedure ("plug_in_animationplay",
                                     &nreturn_vals,
 	                            GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
@@ -1516,19 +1524,19 @@ static void navi_playback(gint32 optimize)
 				    GIMP_PDB_DRAWABLE, -1,  /* dummy */
                                    GIMP_PDB_END);
   }
-}
+}  /* end navi_playback */
 
 
 static void navi_dialog_vcr_play_callback(GtkWidget *w, gpointer   data)
 {
   if(gap_debug) printf("navi_dialog_vcr_play_callback\n");
-  navi_playback(FALSE /* dont not optimize */);
+  navi_playback(FALSE /* dont use_gimp_layeranimplayer */);
 }
 
-static void navi_dialog_vcr_play_optim_callback(GtkWidget *w, gpointer   data)
+static void navi_dialog_vcr_play_layeranim_callback(GtkWidget *w, gpointer   data)
 {
-  if(gap_debug) printf("navi_dialog_vcr_play_optim_callback\n");
-  navi_playback(TRUE /* optimize */);
+  if(gap_debug) printf("navi_dialog_vcr_play_layeranim_callback\n");
+  navi_playback(TRUE /* use_gimp_layeranimplayer */);
 }
 
 void navi_dialog_frames_duplicate_frame_callback(GtkWidget *w, gpointer   data)
@@ -2542,7 +2550,11 @@ navi_dialog_poll(GtkWidget *w, gpointer   data)
       }
       
       /* restart timer */
-      naviD->timer = gtk_timeout_add(naviD->cycle_time,
+      if(naviD->timer < 0)
+      {
+         g_source_remove(naviD->timer);
+      }
+      naviD->timer = g_timeout_add(naviD->cycle_time,
                                     (GtkFunction)navi_dialog_poll, NULL);
    }
    return FALSE;
@@ -2711,11 +2723,7 @@ static void
 navi_calc_frametiming(gint32 frame_nr, char *buf, gint32 sizeof_buf)
 {
   gint32 first;
-  gdouble msec_per_frame;
-  gint32 tmsec;
-  gint32 tms;
-  gint32 tsec;
-  gint32 tmin;
+  gdouble framerate;
   
   first = frame_nr;
   if(naviD->ainfo_ptr)
@@ -2723,26 +2731,17 @@ navi_calc_frametiming(gint32 frame_nr, char *buf, gint32 sizeof_buf)
     first = naviD->ainfo_ptr->first_frame_nr;
   }
 
+  framerate = 24.0;
   if(naviD->vin_ptr == NULL)
   {
-    g_snprintf(buf, sizeof_buf, "min:sec:msec");
-    return;
+    framerate = naviD->vin_ptr->framerate;
   }
-  
-  if(naviD->vin_ptr->framerate < 1)
-  {
-    g_snprintf(buf, sizeof_buf, "min:sec:msec");
-    return;
-  }
-  
-  msec_per_frame = 1000.0 / naviD->vin_ptr->framerate;
-  tmsec = (frame_nr - first) * msec_per_frame;
-  
-  tms = tmsec % 1000;
-  tsec = (tmsec / 1000) % 60;
-  tmin = tmsec / 60000;
-  
-  g_snprintf(buf, sizeof_buf, "%02d:%02d:%03d", (int)tmin, (int)tsec, (int)tms);
+
+  p_conv_framenr_to_timestr( (frame_nr - first)
+                           , framerate
+                           , buf
+                           , sizeof_buf
+                           );
 }
 
 static void
@@ -2914,7 +2913,7 @@ navi_dialog_create (GtkWidget* shell, gint32 image_id)
   naviD->any_imageid = -1;
   naviD->frame_widgets  = NULL;
   naviD->cycle_time   = 1000;  /* polling cylcle of 1 sec */
-  naviD->timer        = 0;
+  naviD->timer        = -1;
   naviD->active_imageid = image_id;
 /*  naviD->ainfo_ptr  = navi_get_ainfo(naviD->active_imageid, NULL); */
   naviD->ainfo_ptr  = NULL;
@@ -3201,7 +3200,7 @@ int  gap_navigator(gint32 image_id)
   frames_dialog_flush();
   navi_scroll_to_current_frame_nr();
   
-  naviD->timer = gtk_timeout_add(naviD->cycle_time,
+  naviD->timer = g_timeout_add(naviD->cycle_time,
                                 (GtkFunction)navi_dialog_poll, NULL);
 
    
@@ -3230,7 +3229,7 @@ int  gap_navigator(gint32 image_id)
 
 /* ---------------------------------------  start copy of gimp-1.1.14/app/ops_buttons.c */
 /* -- 2003.06.03  hof: changed code by using stock buttons instead of xpm pixmap data */
-static void ops_button_pressed_callback  (GtkWidget*, GdkEventButton*, gpointer);
+static gboolean ops_button_pressed_callback  (GtkWidget*, GdkEventButton*, gpointer);
 static void ops_button_extended_callback (GtkWidget*, gpointer);
 
 
@@ -3279,6 +3278,7 @@ ops_button_box_new (GtkWidget     *parent,
 	}
       else
 	{
+          gtk_widget_set_events(button, GDK_BUTTON_PRESS_MASK);
 	  g_signal_connect (G_OBJECT (button), "button_press_event",
 			    G_CALLBACK (ops_button_pressed_callback),
 			    ops_button);
@@ -3304,14 +3304,14 @@ ops_button_box_new (GtkWidget     *parent,
   return (button_box);
 }
 
-static void
+static gboolean
 ops_button_pressed_callback (GtkWidget      *widget, 
 			     GdkEventButton *bevent,
 			     gpointer        client_data)
 {
   OpsButton *ops_button;
 
-  g_return_if_fail (client_data != NULL);
+  if (client_data == NULL) { return FALSE; }
   ops_button = (OpsButton*)client_data;
 
   if (bevent->state & GDK_SHIFT_MASK)
@@ -3327,6 +3327,8 @@ ops_button_pressed_callback (GtkWidget      *widget,
     ops_button->modifier = OPS_BUTTON_MODIFIER_ALT;
   else 
     ops_button->modifier = OPS_BUTTON_MODIFIER_NONE;
+
+  return FALSE;
 }
 
 static void

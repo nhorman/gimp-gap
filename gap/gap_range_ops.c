@@ -32,6 +32,7 @@
  */
 
 /* revision history
+ * 1.3.15a; 2003/06/21   hof: textspacing
  * 1.3.14a; 2003/05/18   hof: again using gap_resi_dialog (now based on GimpOffsetArea widget)
  * 1.3.12a; 2003/05/01   hof: merge into CVS-gimp-gap project
  * 1.3.11a; 2003/01/18   hof: Conditional frame save, added Default Button (p_anim_sizechange_dialog)
@@ -370,7 +371,7 @@ p_convert_indexed_dialog(gint32 *dest_colors, gint32 *dest_dither,
   p_init_arr_arg(&argv[3], WGT_INT_PAIR);
   argv[3].constraint = TRUE;
   argv[3].label_txt = _("Number of Colors");
-  argv[3].help_txt  = _("Number of resulting Colors		 \n(ignored if Palette Type is not Generate optimal palette)");
+  argv[3].help_txt  = _("Number of resulting Colors\n(ignored if Palette Type is not Generate optimal palette)");
   argv[3].int_min   = 2;
   argv[3].int_max   = 256;
   argv[3].int_ret   = 255;
@@ -485,27 +486,27 @@ p_convert_dialog(t_anim_info *ainfo_ptr,
 
   p_init_arr_arg(&argv[3], WGT_FILESEL);
   argv[3].label_txt = _("Basename:");
-  argv[3].help_txt  = _("basename of the resulting frames       \n(0001.ext is added)");
+  argv[3].help_txt  = _("basename of the resulting frames\n(0001.ext is added)");
   argv[3].text_buf_len = len_base;
   argv[3].text_buf_ret = basename;
 
   p_init_arr_arg(&argv[4], WGT_TEXT);
   argv[4].label_txt = _("Extension:");
-  argv[4].help_txt  = _("extension of resulting frames       \n(is also used to define Fileformat)");
+  argv[4].help_txt  = _("extension of resulting frames\n(is also used to define Fileformat)");
   argv[4].text_buf_len = len_ext;
   argv[4].text_buf_ret = extension;
   
 
   p_init_arr_arg(&argv[5], WGT_OPTIONMENU);
   argv[5].label_txt = _("Imagetype:");
-  argv[5].help_txt  = _("Convert to, or keep imagetype           \n(most fileformats can't handle all types)");
+  argv[5].help_txt  = _("Convert to, or keep imagetype\n(most fileformats can't handle all types)");
   argv[5].radio_argc  = 4;
   argv[5].radio_argv = radio_args;
   argv[5].radio_ret  = 0;
 
   p_init_arr_arg(&argv[6], WGT_TOGGLE);
   argv[6].label_txt = _("Flatten:");
-  argv[6].help_txt  = _("Flatten all resulting frames               \n(most fileformats need flattened frames)");
+  argv[6].help_txt  = _("Flatten all resulting frames\n(most fileformats need flattened frames)");
   argv[6].int_ret   = 1;
 
   if(0 != p_chk_framerange(ainfo_ptr))   return -1;
@@ -592,10 +593,10 @@ p_range_to_multilayer_dialog(t_anim_info *ainfo_ptr,
                                  N_("Clipped to image"),
                                  N_("Clipped to bottom layer"), 
                                  N_("Flattened image") };
-  static char *radio_help[4]  = { N_("Resulting Layer Size is made of the outline-rectangle \nof all visible layers (may differ from frame to frame)"), 
+  static char *radio_help[4]  = { N_("Resulting Layer Size is made of the outline-rectangle\nof all visible layers (may differ from frame to frame)"), 
                                  N_("Resulting Layer Size is the frame size"),
                                  N_("Resulting Layer Size is the size of the bottom layer\n(may differ from frame to frame)"), 
-                                 N_("Resulting Layer Size is the frame size     \ntransparent parts are filled with BG color") };
+                                 N_("Resulting Layer Size is the frame size\ntransparent parts are filled with BG color") };
   /* Layer select modes */
   static char *sel_args[7]    = { N_("Pattern is equal to LayerName"),
                                   N_("Pattern is Start of LayerName"),
@@ -641,7 +642,7 @@ p_range_to_multilayer_dialog(t_anim_info *ainfo_ptr,
 
   p_init_arr_arg(&argv[2], WGT_TEXT);
   argv[2].label_txt = _("Layer Basename:");
-  argv[2].help_txt  = _("Basename for all Layers    \n[####] is replaced by frame number");
+  argv[2].help_txt  = _("Basename for all Layers\n[######] is replaced by frame number");
   argv[2].text_buf_len = len_frame_basename;
   argv[2].text_buf_ret = frame_basename;
 
@@ -667,7 +668,7 @@ p_range_to_multilayer_dialog(t_anim_info *ainfo_ptr,
   
   p_init_arr_arg(&argv[5], WGT_TOGGLE);
   argv[5].label_txt = _("Exclude BG-Layer");
-  argv[5].help_txt  = _("Exclude the BG-Layers    \nin all handled frames\nregardless to selection");
+  argv[5].help_txt  = _("Exclude the BG-Layers\nin all handled frames\nregardless to selection");
   argv[5].int_ret   = 0;   /* 1: exclude BG Layer from all selections */
 
 
@@ -684,7 +685,7 @@ p_range_to_multilayer_dialog(t_anim_info *ainfo_ptr,
   p_init_arr_arg(&argv[7], WGT_TEXT);
   argv[7].label_txt = _("Select Pattern:");
   argv[7].entry_width = 140;       /* pixel */
-  argv[7].help_txt  = _("String to identify layer names    \nor layerstack position numbers\n0,3-5");
+  argv[7].help_txt  = _("String to identify layer names\nor layerstack position numbers\n0,3-5");
   argv[7].text_buf_len = MAX_LAYERNAME;
   argv[7].text_buf_ret = sel_pattern;
 
@@ -908,8 +909,8 @@ p_frames_to_multilayer(t_anim_info *ainfo_ptr,
         gimp_layer_add_alpha(l_cp_layer_id);
 
         /* set name and visibility */
-        if (frame_basename == NULL)  frame_basename = "frame_[####]";
-        if (*frame_basename == '\0') frame_basename = "frame_[####]";
+        if (frame_basename == NULL)  frame_basename = "frame_[######]";
+        if (*frame_basename == '\0') frame_basename = "frame_[######]";
         
 	p_substitute_framenr(&l_layername[0], sizeof(l_layername),
 	                      frame_basename, (long)l_cur_frame_nr);
@@ -988,7 +989,7 @@ gint32 gap_range_to_multilayer(GimpRunMode run_mode, gint32 image_id,
 	   if(vin_ptr->framerate > 0) l_framerate = vin_ptr->framerate;
 	   g_free(vin_ptr);
 	 }	 
-         g_snprintf(frame_basename, frame_basename_len, "frame_[####] (%dms)", (int)(1000/l_framerate));
+         g_snprintf(frame_basename, frame_basename_len, "frame_[######] (%dms)", (int)(1000/l_framerate));
          framerate = 0;
          l_rc = p_range_to_multilayer_dialog (ainfo_ptr, &l_from, &l_to,
                                 &flatten_mode, &bg_visible,

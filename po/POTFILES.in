@@ -21,6 +21,8 @@ gap/gap_navigator_dialog.c
 gap/gap_onion_dialog.c
 gap/gap_onion_main.c
 gap/gap_onion_worker.c
+gap/gap_player_dialog.c
+gap/gap_player_main.c
 gap/gap_range_ops.c
 gap/gap_resi_dialog.c
 gap/gap_split.c

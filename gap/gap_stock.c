@@ -20,6 +20,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+/* revision history:
+ * gimp    1.3.14c; 2003/06/09  hof: bugfix: gap_stock_init must set initialized = TRUE; to avoid double init problems
+ *                                   GAP_STOCK_PLAY_REVERSE, GAP_STOCK_PAUSE
+ */
+ 
 #include "config.h"
 
 #include <gtk/gtk.h>
@@ -42,7 +47,9 @@ static GtkStockItem gap_stock_items[] =
   {  GAP_STOCK_INSERT_POINT       , N_("Insert Point"),      0, 0, NULL },
   {  GAP_STOCK_LAST_POINT         , N_("Last Point"),        0, 0, NULL },
   {  GAP_STOCK_NEXT_POINT         , N_("Next Point"),        0, 0, NULL },
+  {  GAP_STOCK_PAUSE              , NULL,                    0, 0, NULL },
   {  GAP_STOCK_PLAY               , NULL,                    0, 0, NULL },
+  {  GAP_STOCK_PLAY_REVERSE       , NULL,                    0, 0, NULL },
   {  GAP_STOCK_PREV_POINT         , N_("Prev Point"),        0, 0, NULL },
   {  GAP_STOCK_RESET_ALL_POINTS   , N_("Reset All Points"),  0, 0, NULL },
   {  GAP_STOCK_RESET_POINT        , N_("Reset Point"),       0, 0, NULL },
@@ -100,7 +107,9 @@ gap_stock_init (void)
   add_stock_icon (GAP_STOCK_INSERT_POINT       , GTK_ICON_SIZE_BUTTON, gap_insert_point);
   add_stock_icon (GAP_STOCK_LAST_POINT         , GTK_ICON_SIZE_BUTTON, gap_last_point);
   add_stock_icon (GAP_STOCK_NEXT_POINT         , GTK_ICON_SIZE_BUTTON, gap_next_point);
+  add_stock_icon (GAP_STOCK_PAUSE              , GTK_ICON_SIZE_BUTTON, gap_pause);
   add_stock_icon (GAP_STOCK_PLAY               , GTK_ICON_SIZE_BUTTON, gap_play);
+  add_stock_icon (GAP_STOCK_PLAY_REVERSE       , GTK_ICON_SIZE_BUTTON, gap_play_reverse);
   add_stock_icon (GAP_STOCK_PREV_POINT         , GTK_ICON_SIZE_BUTTON, gap_prev_point);
   add_stock_icon (GAP_STOCK_RESET_ALL_POINTS   , GTK_ICON_SIZE_BUTTON, gap_reset_all_points);
   add_stock_icon (GAP_STOCK_RESET_POINT        , GTK_ICON_SIZE_BUTTON, gap_reset_point);

@@ -1206,7 +1206,7 @@ create_oni__dialog (t_global_params *gpp)
 
 
   oni__button_apply = gtk_button_new_from_stock (GTK_STOCK_OK);
-  gtk_widget_set_usize (oni__button_apply, 100, -2);
+  gtk_widget_set_size_request (oni__button_apply, 100, -1);
   gtk_widget_show (oni__button_apply);
   gtk_box_pack_end (GTK_BOX (hbox1), oni__button_apply, FALSE, FALSE, 2);
   gimp_help_set_help_data(oni__button_apply
@@ -1360,19 +1360,8 @@ p_init_default_values(t_global_params *gpp)
 gint
 p_onion_cfg_dialog(t_global_params *gpp)
 {
-  //gint argc = 1;
-  //gchar **argv = g_new (gchar *, 1);
-
   if(gap_debug) printf("p_onion_cfg_dialog: Start\n");
 
-  //argv[0] = g_strdup (_("GAP_ONION__DIALOG"));
-  //gtk_set_locale ();
-  //setlocale (LC_NUMERIC, "C");  /* is needed when after gtk_set_locale ()
-  //                               * to make sure PASSING FLOAT PDB_PARAMETERS works
-  //                               * (thanks to sven for the tip)
-  //                               */
-  //
-  //gtk_init (&argc, &argv);
   gimp_ui_init ("gap_onion_dialog", FALSE);
 
   /* ---------- dialog ----------*/
@@ -1383,7 +1372,6 @@ p_onion_cfg_dialog(t_global_params *gpp)
 
   if(gap_debug) printf("p_onion_cfg_dialog: After create_oni__dialog\n");
 
-  //p_set_option_menu_callbacks(gpp);
   p_init_main_dialog_widgets(gpp);
   gtk_widget_show (gpp->main_dialog);
 

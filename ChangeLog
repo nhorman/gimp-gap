@@ -1,3 +1,67 @@
+2003-06-22 Wolfgang Hofer <hof@gimp.org>
+       - downloaded CVS-snapshot gimp-gap-2003-06-20.tar.gz and
+         merged changes from mitch with my local copy of gimp-gap
+         (could not test the merged version, because gimp-1.3.16 was not availabe
+         for download, and i have no CVS)
+
+        * ChangeLog                   (added merge comments)
+          configure.in                (using CVS 1:1 no changes needed)
+          gap/gap_decode_mpeg_main.c  (using CVS 1:1 no changes needed this is DEAD code)
+          gap/gap_filter_codegen.c    (using CVS 1:1 no changes needed)
+          gap/gap_filter_iterators.c  (using CVS 1:1 no changes needed)
+          gap/gap_filter_main.c       (using CVS 1:1 no changes needed)
+          gap/gap_filter_pdb.c        (using CVS 1:1 no changes needed)
+          gap/gap_frontends_main.c    (using CVS 1:1 no changes needed)
+        * gap/gap_stock.c             (initilized bug was already fixed local)
+       
+2003-06-21 Wolfgang Hofer <hof@gimp.org>
+       - cleanup texts with leading/trailing spaces (textspacing)
+         (changes applied to all po/*.po files)
+        * gap/gap_array_dialog.c
+        * gap/gap_base_ops.c
+        * gap/gap_decode_xanim.c
+        * gap/gap_mod_layer
+        * gap/gap_mpege.c
+        * gap/gap_range_ops.c
+         
+       - bugfixes and performance tweaks for the Playback Module
+          (use a seperate new module for rendering drawing_area with GDK routines,
+          and handle expose events in my own handler)
+        * gap/gap_player_main.c [.h]
+        * gap/gap_player_dialog.c [.h]
+        * gap/gap_pview_da.c [.h]
+        
+       - VCR Navigator bugfix for OPS-Button handler makes SHIFT modifier work again.
+       - gap_name2layer_main.c bugfix: MenuPath is language dependent string
+       - gap_mov_dialog.c:  attempt to remove some deprecated calls (no success)
+       
+2003-06-15 Wolfgang Hofer <hof@gimp.org>
+       - (hopefully temporary) Workaround in gap_pd_calls.c: p_gimp_image_thumbnail
+          gimp_image_thumbnail  cant handle size bigger than 128x128
+          but return success and NULL data pointer on bigger sizes
+          (The workaround tries a 2.nd call with reduced size in such cases)
+         
+      - VCR Navigator:
+          now use new gap_player  Plug-In as new playback standard,
+                SHIFT: use gimp animation play (on temp_image)
+      - new modules for gap common use in playback and naviagator
+        
+	* gap/Makefile.am
+        * gap/gap_pview.c [.h]
+        * gap/gap_timeconv.c [.h]
+      
+2003-06-09 Wolfgang Hofer <hof@gimp.org>
+      - Start Implementation of video playback modules
+	* gap/Makefile.am
+        * gap/gap_player_main.c [.h]
+        * gap/gap_player_dialog.c [.h]
+        
+      - gap_stock.c:gap_stock_init  bugfix: must set initialized = TRUE; to avoid double init problems
+	* images/Makefile.am
+	* images/gap-play-reverse.png
+	* images/gap-pause.png
+         
+    
 2003-06-20  Michael Natterer  <mitch@gimp.org>
 
 	* configure.in: require autoconf 2.52 and GIMP 1.3.16.

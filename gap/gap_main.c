@@ -14,7 +14,7 @@
  *
  * Frames are Images with naming convention like this:
  * Imagename_<number>.<ext>
- * Example:   snoopy_0001.xcf, snoopy_0002.xcf, snoopy_0003.xcf
+ * Example:   snoopy_000001.xcf, snoopy_000002.xcf, snoopy_000003.xcf
  *
  * if gzip is installed on your system you may optional
  * use gziped xcf frames with extensions ".xcfgz"
@@ -38,9 +38,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-static char *gap_main_version =  "1.3.14a; 2003/05/27";
+static char *gap_main_version =  "1.3.15a; 2003/06/21";
 
 /* revision history:
+ * gimp    1.3.15a; 2003/06/21  hof: - updated main version,
  * gimp    1.3.14a; 2003/05/27  hof: include gap_base_ops.h
  *                                   Split Image To frame: added parameter "digits" and "only_visible"
  * gimp    1.3.12a; 2003/05/03  hof: merge into CVS-gimp-gap project, updated main version, added gap_renumber

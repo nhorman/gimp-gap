@@ -1,10 +1,10 @@
-Project gap "Gimp Animation Package"   25. Nov 2000  release 1.1.29b
+Project gap "Gimp Animation Package"   18. Jun 2003  release 1.3.14c
 
 --------------------------------------------------------------------
 Introduction
 --------------------------------------------------------------------
 
-The GIMP (1.0.2 and 1.1.x) is a great Program for creating and manipulating
+The GIMP is a great Program for creating and manipulating
 Pixelbased Images of many types. The Plugin Concept and the Procedural Database
 allows Programmers to extend the Gimp's Functions in many ways.
 
@@ -73,11 +73,20 @@ Concept:
 Installation
 --------------------------------------------------------------------
 
-GAP is part of the development Gimp distribution since GIMP 1.1.4 and
-should get installed along with the other plug-ins.
+This version of GAP is a seprated Package since GIMP-1.3.x
+and DOES NOT compile/run with GIMP-1.2.x
+
+  ./autogen.sh   # includes th ./configure
+  make
+  make install
 
     
-   Notes:
+  Notes:
+   
+   - GIMP 1.1.4 upto GIMP-1.2.x have included GAP as standard Plug-In
+     with no need of extra installation
+
+
    - GAP provides frontend dialogs for:
       - mpeg_encode (V1.5R2)
       - mpeg2encode (V1.2)
@@ -94,10 +103,6 @@ should get installed along with the other plug-ins.
      
      (There is no need to install those external programs to compile GAP)
         
-   - GAP-Patch support for some older gimp releases
-     is available at the Registry:
-     
-        http://registry.gimp.org/detailview.phtml?plugin=gap_patches
 
 
 --------------------------------------------------------------------
@@ -126,172 +131,6 @@ Write (encode)
   SMJPEG
      (under development)
 
-
---------------------------------------------------------------------
-Change Log
---------------------------------------------------------------------
-- 1.1.29b - Frame Based Stepmodes in MovePath
-          - NONINTERACTIVE interface for Move Path
-          - Inform about Locks in Dialog Window,
-            (clear lock if locking process does not exist --UNIX only)
-- 1.1.20a - MovePath
-             - AnimPreview
-             - Keyframes
-	     - Force visibility
-	  - VCR Navigator
-	     Popup menu
-		copy, 
-		cut
-		paste before
-		paste after
-		paste replace
-		clear pastebuffer
-- 0.99.00 - Move Path bugfix in the dialog
-            (update preview did'nt work with gimp 1.1.2 and gtk 1.1)
-          - Animated Filtercalls:
-            added a 2.nd Set of Iterators (iter_ALT Procedures) for
-            Plugins of GIMP 1.1.3.
-          - bugfixes in iterator code generator.
-          - GAP now uses gimp standard procedures to copy layers and channels.
-          - prepared filename-handling for win/dos conventions.
-- 0.98.02 - GAP_DB_BROWSER (1.1 variant) show help like the dbbrowser in gimp-1.1.1
-- 0.98.01 - GAP_DB_BROWSER variants for GIMP 1.0 and GIMP 1.1
-            new e-mail adress
-            xanim-hack
-- 0.98.00 - Sarted porting GAP to GIMP 1.1
-            Changed internal interfaces to work with
-            both GIMP 1.0.2 and GIMP 1.1 PDB.
-            
-            MovePath: The Layermask of imported Source Layerobjects
-                      is no longer ignored.
-- 0.97.01 - Added Patches for the XJT Load/Save filters
-            (XJT support for gimp 1.0.0 upto gimp 1.0.2)
-- 0.97.00 - Patches updated to work with gimp 1.0.2
-          - New Plugin 'Frames Modify'
-          - Bugfix in patchcode layer_cmds.c 
-            (get/set linked state didnt work since gimp 0.99.18)
-- 0.96.04 - Patches updated to work with gimp 1.0.1
-- 0.96.03 - Extended Pitstop-Dialog in 'Filter All layers'
-                  (now you can specify a backup file to store the
-		  Image after each non-interactive filtercall,
-		  futher you may skip the filtercall.
-		  These extensions were done because the MapObject
-		  Plugin crashes sometimes
-		  (after 3 hours calculating time on a PII 300Mhz processor)
-          - Extended Parameters for non-interactive call of 
-                  plug_in_gap_range_to_multilayer and
-                  plug_in_gap_split
-                  (the image_id of the created image is now returned)                
-- 0.96.02 - Added Clip To Image Option and Tooltips in MovePath Plugin.
-          _ Added Plugin 'Framesequence shift'
-          - Exended 'Frames To Image' Plugin 
-                  (now you can set framerate and framename
-                  for the generated layers) 
-          - Extended 'Duplicate Frames' Plugin
-                  (now you can use a framerange as source,
-                   not just the current frame)
-- 0.96.01 - Bugfix (refresh problems when GAP's array dialog was used twice
-                    in one plugin -- because of double call to gtk_init)
-- 0.96.00 - Added AnimFrames scale, resize and crop
-          - Added 'Split Image to Frames" (plug_in_gap_split)
-          - Added 'Frames MPEG_encode'  plug_in_gap_mpeg_encode
-                   (Requires free software 'mpeg_encode' to run)
-          - Added 'Frames MPEG2_encode'  plug_in_gap_mpeg2encode
-                   (Requires software 'mpeg2encode' to run)
-          - Most Dialogs changed  (some have got tooltips)
-            (now based on the new gap_arr_dialog module)
-          - internal changes (header files for all modules)
-          - bugfix: memory leak in gap_layer_copy.c
-- 0.95.04 - Iterator Generation: added support for iteration on PARAM_DRAWABLE type
-            Updated Iterator_ALT procedures for:
-            - BumpMap          (now you can use animated bumpmaps)
-            - DepthMerge
-            - Displace
-            - Refract
-- 0.95.03 - Patches updated to work with gimp 1.0.0
-            (Removed patches for gimp 0.99.19 due to sizelimit
-            in the Plugin registry)
-- 0.95.02 - Added Script sel-to-anim-img.scm
-- 0.95.01 - Made Patches usable for GIMP release 0.99.31
-            (there were no updates needed, just added some links
-             from 0.99.29 to 0.99.31)
-- 0.95.00 - extended MovePath plugin.
-            Now you can specify an angle for each point of the path
-            how to rotate the moving object layer.
-- 0.94.02 - Patches updated to work with gimp 0.99.29
-- 0.94.01 - Added new features to 'Frames to Image' Plugin:
-            Select of flatten_modes, and optional exclude of the BG-Layer.
-- 0.94.00 - Move Path Plugin uses now 1 Point per default.
-            (If you want to move an Object, you'll have to)
-            add Point(s) explicit.
-          - bugfix: Move Path Plugin initial value for src_paintmode
-                    undefined values sometimes caused 'cant get new layer' Error
-                    and Sourcelayers were not copied to the frames
-          - Patches updated to work with gimp 0.99.28
-          - Updated Foundation adress
-- 0.93.06 - Patches updated to work with gimp 0.99.27
-            implemented new versions of
-              gimage:gimage_lower_top_layer
-              gimage:gimage_lower_bot_layer
-            (the old versions were slow and failed
-             on Images with many layers)
-- 0.93.05 - Patches updated to work with gimp 0.99.24
-            Patches extended:
-            Added gimp-core functions to layers dialog:
-            raising/lowering a Layer to Top/Bottom of the layerstack
-- 0.93.04 - Patches updated to work with gimp 0.99.22
-            Window with Info Message if no Source Image was
-            selected in MovePath
-- 0.93.03 - Bugfix of the Patches updated to work with gimp 0.99.19
-            (duplicate_into should now copy channels too)
-- 0.93.02 - Patches updated to work with gimp 0.99.19
-
-- 0.93.01 - Bugfix
-           (GAP filters now should work on frames that are not 
-           in the current directory)
-
-- 0.93.00 - Internal "Gen Code by name" Button
-            generates additional file <plugin_name>_Iterator.c
-            (see README_Developers for more details)
-          - The Patches to the gimp core
-            (needed to run GAP bend, movel, adjust, implayer Plugins)
-            are now available for gimp releases:
-              0.99.16
-              0.99.17
-              0.99.18
-              0.99.19
-            the patches are stored in seperate versioned directories,
-            The apply_patch.sh script now expects the gimp-version
-            as calling argument.
-
-- 0.92.00 - "Filter all Layers"  Dialog Window after 1.st and 2.nd
-            Interactive Plugin call. (to give a chance to see
-            the effects caused by the plugin or to cancel
-            before proceeding) 
-          - New Patches to the gimp core
-              "gimp_layer_get_linked"
-              "gimp_layer_set_linked"
-          
-            (for Plugins "adjust", "bend", "movel"
-             these Plugins are not part of GAP, you can get them
-             from the Plugin Registry)
-                          
-          - Internal"Gen Code by name" Button if GAP_DEBUG environment is set.
-
-- 0.91.01 - "Apply Varying" Button insensitive if animated call
-             not available.
-          - Convert Frames Dialog window
-             now hides Colors and Dither entries
-             if Conv to INDEXED is not selected.
-             
-
-- 0.91.00  - Patches to the gimp core were updated to work with gimp 0.99.16
-             (plus: gimage_update_full was added for GAP)
-             (The Patches do work with  gimp 0.99.17 too)
-
-            - "plug_in_gap_layers_run_animfilter"
-              New Plugin allows animated calls to (more than 50) existing Plugins
-
 --------------------------------------------------------------------
 How to use
 --------------------------------------------------------------------
@@ -307,10 +146,11 @@ WebTip:	My GIMP-page http://pages.hotbot.com/arts/hof/index.html
 
 
 - Creating multiple frames (AnimFrames)
+- -------------------------------------
 
       - from an existing single image
            Save your Image as XCF file.  (File->Save as)
-           use a Name that ends up in _0001.xcf (or _0001.xcfgz)
+           use a Name that ends up in _000001.xcf (or _000001.xcfgz)
            
            Then duplicate your image (Video->Duplicate)
            You'll be asked how much Copies you need.
@@ -319,10 +159,10 @@ WebTip:	My GIMP-page http://pages.hotbot.com/arts/hof/index.html
  
        - from an existing (layeranimated) multilayer image
            use
-               Video->Split Img to frames
+               <Image>/Video/Split Img to frames
                
            This will create Frames, a series of Images on disk,
-           with a Name that ends up in _0001.xcf).
+           with a Name that ends up in _000001.xcf).
            Optional you may use other extensions. (.xcfgz, .jpg ...)
 
            WARNING: The extension defines the fileformat
@@ -333,12 +173,13 @@ WebTip:	My GIMP-page http://pages.hotbot.com/arts/hof/index.html
       - from outside the gimp
            You may rename and copy existing XCF Images
            according to the frame naming conventions.
-           <img>_0001.xcf
-           <img>_0002.xcf
+           <img>_000001.xcf
+           <img>_000002.xcf
            ...
            Then load (only one of them) into the GIMP.
            
 - Navigation (Goto)
+- ------------------
       It is recommanded to define some Accelerator Keys for quick
       walk through the frames.
       Here are my settings (excerpt from my $HOME/.gimp/menurc )
@@ -349,21 +190,32 @@ WebTip:	My GIMP-page http://pages.hotbot.com/arts/hof/index.html
       (menu-path "<Image>/Video/Goto/Any Frame" "<alt>3")
       (menu-path "<Image>/Video/Goto/Last Frame" "<control><alt>2")
       
-      Alternative you may open the GAP Video Navigator Dialog
-      (menu-path "<Image>/Video/VCR Navigator)
+      Alternatives:
+      - You may open the GAP Videoplayer
+        (menu-path: <Image>/Video/Playback...)
+        and use the Player for visual positioning 
+        (use the FrameNr Button or the GO-Button array for that task)
+      
+      - You may open the GAP Video Navigator Dialog
+        (menu-path: <Image>/Video/VCR Navigator)
+      
 
 - GAP VCR Navigator:
+- ------------------
 
-   The VCR Navigator Dialog shows icons frame_number and
+   Start from menu:
+     <Image>/Video/VCR Navigator
+
+   The VCR Navigator Dialog shows a thumbnail view, frame_number and
    time (mm:ss:msec) of the frames in a scrollable listbox.
    framerate:
      You can set the global framerate for all frames here.
    timezoom:
-     with timezoom you tell theVCR Navigator Dialog Window
-     to display ever n-th frame only, to get an overview
+     with timezoom you tell the VCR Navigator Dialog Window
+     to display every n-th frame only, to get an overview
      on larger videos.
 
-     Framerate and timezoom values are stores in
+     Framerate and timezoom values are stored in
       a gap vide info file named:
       <framebasename>_vin.gap
 
@@ -414,7 +266,8 @@ WebTip:	My GIMP-page http://pages.hotbot.com/arts/hof/index.html
 	   after the last frame.
 	replace:
 	   Replace Frames beginning at the current frame
-	   with the frames from the video paste buffer.
+	   with the frames from the video paste buffer,
+	   and does overwrite existing frames.
 
       If there are selected frames in the VCR navigator
       Dialog Window, the current frame is set to
@@ -437,23 +290,193 @@ WebTip:	My GIMP-page http://pages.hotbot.com/arts/hof/index.html
     video paste buffer.
     IMPORTANT NOTE: 
        There is no undo for GAP operations,
-       so the deleted Frames cannot be restored.
+       and the deleted Frames can NOT be restored.
     
 
 - Playback
-      playbak of multilayered image is not available.
-      (it would be very slow)
-      But you can convert your frames to one Multilayer Image
-         (Video->Frames to Image)
+- --------
+    Start the Playback Plug-In from the menu:
+
+    <Image>/Video/Playback...
+
+    This Player does playback of your Animationframes. 
+    The Player is a Tool that should help to give a motionpreview
+    and allows visible positioning for the animation designer. 
+    
+    It is not designed for presentation purpose.
+
+    The current implementation has no Audio support, 
+      (this may be added in a later version)
+    and can NOT play Videoformats (like MPEG, AVI ....)
+    
+    - Play (>) Button
+        Start the Playback,
+        or switch to forward play if already playing reversed. 
+        
+    - PlayRevers (<) Button
+        Start the Reversed Playback,
+        or switch to reversed play if already playing forward. 
+    
+    - Pause Button (||)
+        Stop Playback,
+        or goto fist frame of the selcted range if not playing.
+        goto the end of selection if right mousebutton was used.
+        or goto the active framenr if the midle mouse button was used.
+        (the active framenr is the one that is currently
+        loaded in the gimp image window from where you invoked the player)
+
+    - The GO Buttonarray
+         the 50 blank Buttons above the Preview build up the GO Buttonarray,
+         This Tool is for positioning and manual speedcontrol.
+         
+         Move the Mousepointer over those Buttons to display
+         Frames in sequence as fast as you move the Mouse.
+         Moving right is forward, left is backward.
+
+         Tip: 
+           the Positioning is done relative to the Point where the
+           Mouse entered the GO Buttonarray.
+           If you reached the leftmost GO-Button at Framenr 50
+           and want to go more backwards (to framenr 35), 
+           just move the Mouse outside the GO Buttonarray (up or down)
+           and then enter again from the right side,
+           and continue moving to the left, but now
+           keeping the Mouse inside the GO Buttonarray
+           until the desired frame (Nr. 35) is reached.
+         
+         
+         WARNING: This feature requires that the Use Thumbnails
+          checkbutton is turned ON, and can do useful work
+          only if your frames have thumbnail files.
+          
+          Even fast machines may have problems to deliver 
+          full sized multilayer frames in time.
+          (depending on size of the frames, number of layers
+           and IO performance of your Hardware)
+  
+   - From and To Spinbuttons:
+        Here You can select a Framerange by entering
+        the Begin and End Framenumber.
+    
+
+   - FrameNr Button
+        With A Mouseclick on the FrameNr Button
+        You can load the frame (the Nr that is currently on the players display)
+        into the active image window where you can paint on it.
+        
+        Alternative you can also click on one of the GO-Buttons,
+        or on the players display to reload the active image with
+        the desired frame.
+
+   - FrameNr Spinbutton
+        This widget displays the current framenr of the Player.
+        you can enter any availale framenumber.   
+
+        The Timepos: mm:ss:sec Displays the current Position
+        in Minutes:Secons:Microseconds
+        
+        (The Time calculation is always based on the original Speed
+         This is the framerate of your Animation as found in the _vin.gap file.
+         You can change the framerate in the VCR Navigator Window)
+
+    - Speed Button
+         Reset Speed to the original (the framerate of your Animation)
+         (a 2.nd click goes back to the previous enters Speed)
+
+    - Speed Spinbutton
+         Here you can enter the desired Playback Speed.
+         The available Range is 1 upto 250 frames/sec.
+         
+         Please note that 250 frames/sec may not be reached on
+         most machines. 
+         If the exact_timing checkbutton is ON
+         The 250.th frame will be reached in time (after 1 second),
+         but if your machine can handle only 25 frames in one second
+         you will see just frame 10, 20, 30, 40, .... , 230, 240, 250
+
+    - Size Button
+         Set the standard Thumbail size 
+         There are two standard Sizes 
+            "normal" 128 Pixels
+            "large"  256 Pixels
+         this Button toggles between both Sizes.
+         If you hold the SHIFT Key wihle clicking the Size Button,
+         the Preview is scaled to 1:1 original Framesize.
+        
+    
+    - Loop Checkbutton:
+         Plays in Loop if ON, otherwise play once and then stop.
+
+    - Selection Only
+         Play only frames within the selected range.
+         if not checked (OFF) Play all frames.
+         
+    - PingPong
+         Play alternating backward/forward
+    
+    - Exact Timing
+         if this checkbutton is ON (the checked state)
+         the player tries to keep the frametiming
+         as exact as possible. if your machine
+         is not fast enough one or more frames
+         of the sequence are not displayed (dropped)
+         and the next frame is diplayed in time.
+
+         if this checkbutton is OFF
+         all frames are displayed.
+         this leads to more and more growing delay
+         depending on the the power of your machine.
+
+         
+    - Use Thumbnails
+         use Thumbnail files if available.
+         Both the PNG based OPen Thumbnails standard
+         and the older .xvpics based Thumbnail files
+         are supported.
+         
+         Thumbnail based playback has reduced quality.
+         If there are just .xvpics thumbnail files
+         the quality is very miserable.
+         
+         The full original frame images are read in case when
+         no thumbnail file is available,
+         (Note:
+           It also does create the thumbnail file in such a case,
+           but this is only done, if the preferences setting
+           permits normal (or large) thumbnail files)
+         )
+         
+         
+         If the Use Thumbnails checkbutton is switched OFF
+         the player always reads the full original sized frame images 
+
+         Playback with full frame image read mode
+         is VERY SLOW, even on fast machines,
+         but gives the original quality.
+         
+     
+ 
+    Alternatives:
+ 
+      You can convert your frames to one Multilayer Image
+         menu:  <image>/Video/Frames to Image)
       And then playback the newly created Image
-         (Filters->Animation->Playback) 
+         menu:  <image>/Filters/Animation/Playback
 	 
      The GAP Video Navigator Dialog Playback Button
-     does as described above automatic for all selected
-     Frames.
+     makes those steps automatic when the SHIFT Key
+     is pressed together with the mouseclick,
+     The Playback Multilayer Image contains only the selected frames,
+     or all Frames if no Selection was made.
      
 
 - Move Path (Make Things Move)
+- ----------------------------
+
+      Start from Menu:
+          (<Image>/Video/Move Path)
+
+
       For this Plugin you need a series of frames
       and one single image (that may have more layers).
 
@@ -468,10 +491,7 @@ WebTip:	My GIMP-page http://pages.hotbot.com/arts/hof/index.html
                         least 2 Images of the same type.      
       
       
-      
-      Invoke this Plugin from one of the frames:
-      (Menu: Video->Move Path)
-      
+            
       The selected Layer(s) of the Source Image
          is (are) copied into the selected range of frames.
          Each handled frame recieves exactly one Copy of the selected Layer
@@ -592,8 +612,6 @@ WebTip:	My GIMP-page http://pages.hotbot.com/arts/hof/index.html
          
 
 
-
-
       
       Tips:
          - with the UpdPreview Button you can blend in the
@@ -702,9 +720,11 @@ WebTip:	My GIMP-page http://pages.hotbot.com/arts/hof/index.html
 	 are set visible when they are copied into frames.
     
 - Convert frames to one multilayered Image.
+- -----------------------------------------
+
     This can be done with
     
-          (Video->Frames to Image)
+          menu:  <image>/Video/Frames to Image
           
     The selected Source Range of Frames is copied into one
     new created multilayered destination Image.
@@ -789,6 +809,7 @@ WebTip:	My GIMP-page http://pages.hotbot.com/arts/hof/index.html
 
 
 - Modify Frames
+- --------------
     
     The GAP-tool 'Frames Modify' provides the feature to perform functions
     on one ore more selected Layer(s) in all frames of the selected framerange.
@@ -836,7 +857,7 @@ WebTip:	My GIMP-page http://pages.hotbot.com/arts/hof/index.html
     Example 1 (useful Layertack structure/names)
     
     
-                    film_0001.xcf    film_0002.xcf  ....  film_0010.xcf       
+                    film_000001.xcf    film_000002.xcf  ....  film_000010.xcf       
     ---------------------------------------------------------------------
     
     layerstack [0]  mouse_01         mouse_02              mouse_10
@@ -849,7 +870,7 @@ WebTip:	My GIMP-page http://pages.hotbot.com/arts/hof/index.html
     Example 2 (not recommanded)
     
     
-                    film_0001.xcf    film_0002.xcf  ....  film_0010.xcf       
+                    film_000001.xcf    film_000002.xcf  ....  film_000010.xcf       
     ---------------------------------------------------------------------
     
     layerstack [0]  tree             layer                 mouse_10
@@ -860,11 +881,20 @@ WebTip:	My GIMP-page http://pages.hotbot.com/arts/hof/index.html
 
 
 
-- Saving MPEG files:
+- Saving frames to Videofiles:
+- ----------------------------
 
-    GAP provides only frontend dialogs to call MPEG encoding programs.
+    The GAP Base Package provides only frontend dialogs to call MPEG
+    encoding programs.
     You must have installed one of them if you want to save
     your finished AnimFrames in MPEG Video Fileformat.
+    
+    UNIX Users can install the optional GAP video encoder Package,
+    to save (==encode) your Frames in MPEG and other Videoformats
+    on the fly.
+    
+    ==> the  GAP video encoder Package is available for gimp-1.2.x
+        porting to gimp-1.3 will start in summer 2003
 
     The MPEG-encoders are:
 
@@ -932,28 +962,28 @@ WebTip:	My GIMP-page http://pages.hotbot.com/arts/hof/index.html
      This can be done if you create a series of empty frames.
      The Number of frames should be equal to the number of layers
      in your multilayered image.
-     (File->New, Video->Duplicate)
+     (menu: File/New,  menu: <image>/Video/Duplicate)
      
-     Then use the "Move Path" Plugin (Video->Move Path)
+     Then use the "Move Path" Plugin ( menu: <image>/Video/Move Path)
      to copy the layers to all your frames.
      Use 2 Points with both X=0, Y=0, Opacity=100%, Width=100%, Height=100%,
      select the 1.st Layer of your multilayer Image as Source,
      Handle=LeftTop, Mode=Normal, Stepmode=Loop
     
      Finally you can delete the (empty) backround Layers
-     (Video->Frames LayerDel)  with Layerstack Parameter >= 1
+     (menu: <image>/Video/Frames LayerDel)  with Layerstack Parameter >= 1
 
   - Reverse the order of Layers within one multilayer Image
       Convert one multilayer Image to a series of frames (see above)
-      then select Video->FramesToImage and use an invers Range
+      then select menu: <image>/Video/FramesToImage and use an invers Range
       from N to 1. 
 
   - Convert multiple frames from one Fileformat to another:
       rename your images to fit GAP framename conventions
       (Example: img_0001.tif, img_0003.tif img_0004.tif)
       
-      then load the 1.st image into the gimp (File->Load)
-      and select (Video->Frames Convert)
+      then load the 1.st image into the gimp (menu: File/Load)
+      and select (menu: <image>/Video/Frames Convert)
       In the following dialog window you can select
       the desired destination filtype by its typical extension
       (.jpg, .bmp or so on)
@@ -977,45 +1007,53 @@ WebTip:	My GIMP-page http://pages.hotbot.com/arts/hof/index.html
       
 - NO UNDO
       There is no Undo for the AnimFrame Plugins.
-      Note: If you step to the next frame (Video->Goto Next)
+      Note: If you step to the next frame (menu: <image>/Video/Goto Next)
             the current frame is saved to disk and the next frame
             is loaded into the image. 
             All Undo steps were cleared at this time.
       
       Tip: "undo" for Move Path
          You can Delete the Layers at desired Layerstackposition
-         (0 == on top) by (Video->Frames LayerDel)
+         (0 == on top) by (menu: <image>/Video/Frames LayerDel)
          So you can remove all the Layers inserted by "Move Path" plugin.
 
 - About Locks
-   All the GAP Plugins are using a lock, based on the image_id
-   (that is common to all frame images within one gimp session).
+   All the GAP Plugins are using a lock.
    This lock disables to run other gap-plugins (or the same plugin twice)
-   from the frames Image menu
+   on the same image at the same time,
    while the current GAP-plugin is working on that frame.
-   If you cancel a running GAP-plugin (Cancel Button in the progress window,
-   or kill it from a shell) the lock remains. To unlock save the current
-   frame image, close all views to that image, then reload the frame image.
+   
+   GAP keeps a locktable (for the current session) that contains
+   the image_id's of all images currently locked by gap_plugins.
+
+   If you cancel a running GAP-plugin with the Cancel Button
+   in the progress window,
+   or kill it from your Operating Sytem the lock may remain.
+   (This should only happen to WINDOWS users, for UNIX users
+    locks are checked for dead process ids)
+
+   To unlock you can save the current frame image,
+   close all views to that image, then reload the frame image.
    (or quit and restart the gimp)
 
   WARNING:
   It is not recommanded to open more than one frame of
   an animation at the same time.
-  (File->Open "img_0001.xcf"
-   File->Open "img_0002.xcf")
+  (menu: File/Open "img_000001.xcf"
+   menu: File/Open "img_000002.xcf")
   
   In this constellation both gap plugins may concurrent 
   in save/load to/from the same file.
   Example:
-     call from "img_0001.xcf" Video->Delete Frames (range 0001 to 0003)
-           now img_0004.xcf is renamed to img_0001.xcf
-               img_0005.xcf is renamed to img_0002.xcf
+     call from "img_000001.xcf" Video->Delete Frames (range 000001 to 000003)
+           now img_000004.xcf is renamed to img_000001.xcf
+               img_000005.xcf is renamed to img_000002.xcf
  
      then  
-     call from "img_0002.xcf" Video->Goto First
-            the img_0002.xcf (its old content) is saved,
-                             overwiting wht was img_0004.xcf before.
-  If you make the 2nd call while the 1st one is in progress,
+     call from "img_000002.xcf" Video->Goto First
+            the img_000002.xcf (its old content) is saved,
+                             overwiting wht was img_000004.xcf before.
+  If you make the 2.nd call while the 1.st one is in progress,
   you may trash your frames (2 writers on one file) and/or crash
   your gimp session.
 
@@ -1102,45 +1140,9 @@ WebTip:	My GIMP-page http://pages.hotbot.com/arts/hof/index.html
 - How to write (or generate) Animated Plugins:
       (see file: README_devlopers)
 
---------------------------------------------------------------------
-changes to the gimp-core:
---------------------------------------------------------------------
-
-Please note that NO CHANGES are needed if you have GIMP 1.1
-
-	For my Plugins I added NEW internals 
-	(they are not part of the official gimp 1.0.2,
-	 in most cases the Patch just offers a PDB-Interface
-	 for already existing GIMP-core internal Functions)
-
-	- gimp_drawable_set_image
-        - gimage_update_full
-        - gimp_layer_get_linked
-        - gimp_layer_set_linked
-        - floating_sel_attach_proc
-        - floating_sel_rigor_proc
-        - floating_sel_relax_proc
-        - gimage_floating_sel_attached_to
-        
-        my private extension for the layers_dialog Window
-        
-        - gimage_lower_top_layer
-        - gimage_lower_bot_layer
-        
-        Affected gimp-core sources (in directory app/)
-             gimage.c
-             gimage.h
-             gimage_cmds.c
-             gimage_cmds.h
-             layer_cmds.c
-             layer_cmds.h
-             layers_dialog.c
-             internal_procs.c
-             floating_sel_cmds.c
-             floating_sel_cmds.h
 
 =============================================
-plugin's included in release gap 0.99.00:
+plugin's included in release gap 1.3.15:
 =============================================
 
   plug_in_gap_next

@@ -28,6 +28,7 @@
  */
 
 /* revision history:
+ * 1.3.15a  2003/06/21   hof: textspacing
  * 1.3.14a  2003/05/27   hof: created (module was splitted off from gap_lib)
  */
 
@@ -611,7 +612,7 @@ gap_goto(GimpRunMode run_mode, gint32 image_id, int nr)
         l_title = g_strdup_printf (_("Goto Frame (%ld/%ld)")
 				   , ainfo_ptr->curr_frame_nr
 				   , ainfo_ptr->frame_cnt);
-        l_hline =  g_strdup_printf (_("Destination Frame Number (%ld  - %ld)")
+        l_hline =  g_strdup_printf (_("Destination Frame Number (%ld - %ld)")
 				    , ainfo_ptr->first_frame_nr
 				    , ainfo_ptr->last_frame_nr);
 
@@ -772,7 +773,7 @@ p_dup_dialog(t_anim_info *ainfo_ptr, long *range_from, long *range_to)
   argv[2].int_ret   = 1;
   argv[2].umin      = 1;
   argv[2].umax      = 9999;
-  argv[2].help_txt  = _("Copy selected Range n-times  \n(you may type in Values > 99)");
+  argv[2].help_txt  = _("Copy selected Range n-times\n(you may type in Values > 99)");
 
 
   if(TRUE == p_array_dialog(l_title, _("Duplicate Frame Range"),  3, argv))
@@ -968,7 +969,7 @@ p_shift_dialog(t_anim_info *ainfo_ptr, long *range_from, long *range_to)
   argv[2].int_min   = -1 * (gint)ainfo_ptr->last_frame_nr;
   argv[2].int_max   = (gint)ainfo_ptr->last_frame_nr;
   argv[2].int_ret   = 1;
-  argv[2].help_txt  = _("Renumber the affected framesequence     \n(numbers are shifted in circle by N)");
+  argv[2].help_txt  = _("Renumber the affected framesequence\n(numbers are shifted in circle by N)");
   
   if(TRUE == p_array_dialog(l_title, _("Framesequence shift"),  3, argv))
   { 

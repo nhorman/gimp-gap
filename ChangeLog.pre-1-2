@@ -1,0 +1,166 @@
+
+--------------------------------------------------------------------
+Change Log
+--------------------------------------------------------------------
+- 1.1.29b - Frame Based Stepmodes in MovePath
+          - NONINTERACTIVE interface for Move Path
+          - Inform about Locks in Dialog Window,
+            (clear lock if locking process does not exist --UNIX only)
+- 1.1.20a - MovePath
+             - AnimPreview
+             - Keyframes
+	     - Force visibility
+	  - VCR Navigator
+	     Popup menu
+		copy, 
+		cut
+		paste before
+		paste after
+		paste replace
+		clear pastebuffer
+- 0.99.00 - Move Path bugfix in the dialog
+            (update preview did'nt work with gimp 1.1.2 and gtk 1.1)
+          - Animated Filtercalls:
+            added a 2.nd Set of Iterators (iter_ALT Procedures) for
+            Plugins of GIMP 1.1.3.
+          - bugfixes in iterator code generator.
+          - GAP now uses gimp standard procedures to copy layers and channels.
+          - prepared filename-handling for win/dos conventions.
+- 0.98.02 - GAP_DB_BROWSER (1.1 variant) show help like the dbbrowser in gimp-1.1.1
+- 0.98.01 - GAP_DB_BROWSER variants for GIMP 1.0 and GIMP 1.1
+            new e-mail adress
+            xanim-hack
+- 0.98.00 - Sarted porting GAP to GIMP 1.1
+            Changed internal interfaces to work with
+            both GIMP 1.0.2 and GIMP 1.1 PDB.
+            
+            MovePath: The Layermask of imported Source Layerobjects
+                      is no longer ignored.
+- 0.97.01 - Added Patches for the XJT Load/Save filters
+            (XJT support for gimp 1.0.0 upto gimp 1.0.2)
+- 0.97.00 - Patches updated to work with gimp 1.0.2
+          - New Plugin 'Frames Modify'
+          - Bugfix in patchcode layer_cmds.c 
+            (get/set linked state didnt work since gimp 0.99.18)
+- 0.96.04 - Patches updated to work with gimp 1.0.1
+- 0.96.03 - Extended Pitstop-Dialog in 'Filter All layers'
+                  (now you can specify a backup file to store the
+		  Image after each non-interactive filtercall,
+		  futher you may skip the filtercall.
+		  These extensions were done because the MapObject
+		  Plugin crashes sometimes
+		  (after 3 hours calculating time on a PII 300Mhz processor)
+          - Extended Parameters for non-interactive call of 
+                  plug_in_gap_range_to_multilayer and
+                  plug_in_gap_split
+                  (the image_id of the created image is now returned)                
+- 0.96.02 - Added Clip To Image Option and Tooltips in MovePath Plugin.
+          _ Added Plugin 'Framesequence shift'
+          - Exended 'Frames To Image' Plugin 
+                  (now you can set framerate and framename
+                  for the generated layers) 
+          - Extended 'Duplicate Frames' Plugin
+                  (now you can use a framerange as source,
+                   not just the current frame)
+- 0.96.01 - Bugfix (refresh problems when GAP's array dialog was used twice
+                    in one plugin -- because of double call to gtk_init)
+- 0.96.00 - Added AnimFrames scale, resize and crop
+          - Added 'Split Image to Frames" (plug_in_gap_split)
+          - Added 'Frames MPEG_encode'  plug_in_gap_mpeg_encode
+                   (Requires free software 'mpeg_encode' to run)
+          - Added 'Frames MPEG2_encode'  plug_in_gap_mpeg2encode
+                   (Requires software 'mpeg2encode' to run)
+          - Most Dialogs changed  (some have got tooltips)
+            (now based on the new gap_arr_dialog module)
+          - internal changes (header files for all modules)
+          - bugfix: memory leak in gap_layer_copy.c
+- 0.95.04 - Iterator Generation: added support for iteration on PARAM_DRAWABLE type
+            Updated Iterator_ALT procedures for:
+            - BumpMap          (now you can use animated bumpmaps)
+            - DepthMerge
+            - Displace
+            - Refract
+- 0.95.03 - Patches updated to work with gimp 1.0.0
+            (Removed patches for gimp 0.99.19 due to sizelimit
+            in the Plugin registry)
+- 0.95.02 - Added Script sel-to-anim-img.scm
+- 0.95.01 - Made Patches usable for GIMP release 0.99.31
+            (there were no updates needed, just added some links
+             from 0.99.29 to 0.99.31)
+- 0.95.00 - extended MovePath plugin.
+            Now you can specify an angle for each point of the path
+            how to rotate the moving object layer.
+- 0.94.02 - Patches updated to work with gimp 0.99.29
+- 0.94.01 - Added new features to 'Frames to Image' Plugin:
+            Select of flatten_modes, and optional exclude of the BG-Layer.
+- 0.94.00 - Move Path Plugin uses now 1 Point per default.
+            (If you want to move an Object, you'll have to)
+            add Point(s) explicit.
+          - bugfix: Move Path Plugin initial value for src_paintmode
+                    undefined values sometimes caused 'cant get new layer' Error
+                    and Sourcelayers were not copied to the frames
+          - Patches updated to work with gimp 0.99.28
+          - Updated Foundation adress
+- 0.93.06 - Patches updated to work with gimp 0.99.27
+            implemented new versions of
+              gimage:gimage_lower_top_layer
+              gimage:gimage_lower_bot_layer
+            (the old versions were slow and failed
+             on Images with many layers)
+- 0.93.05 - Patches updated to work with gimp 0.99.24
+            Patches extended:
+            Added gimp-core functions to layers dialog:
+            raising/lowering a Layer to Top/Bottom of the layerstack
+- 0.93.04 - Patches updated to work with gimp 0.99.22
+            Window with Info Message if no Source Image was
+            selected in MovePath
+- 0.93.03 - Bugfix of the Patches updated to work with gimp 0.99.19
+            (duplicate_into should now copy channels too)
+- 0.93.02 - Patches updated to work with gimp 0.99.19
+
+- 0.93.01 - Bugfix
+           (GAP filters now should work on frames that are not 
+           in the current directory)
+
+- 0.93.00 - Internal "Gen Code by name" Button
+            generates additional file <plugin_name>_Iterator.c
+            (see README_Developers for more details)
+          - The Patches to the gimp core
+            (needed to run GAP bend, movel, adjust, implayer Plugins)
+            are now available for gimp releases:
+              0.99.16
+              0.99.17
+              0.99.18
+              0.99.19
+            the patches are stored in seperate versioned directories,
+            The apply_patch.sh script now expects the gimp-version
+            as calling argument.
+
+- 0.92.00 - "Filter all Layers"  Dialog Window after 1.st and 2.nd
+            Interactive Plugin call. (to give a chance to see
+            the effects caused by the plugin or to cancel
+            before proceeding) 
+          - New Patches to the gimp core
+              "gimp_layer_get_linked"
+              "gimp_layer_set_linked"
+          
+            (for Plugins "adjust", "bend", "movel"
+             these Plugins are not part of GAP, you can get them
+             from the Plugin Registry)
+                          
+          - Internal"Gen Code by name" Button if GAP_DEBUG environment is set.
+
+- 0.91.01 - "Apply Varying" Button insensitive if animated call
+             not available.
+          - Convert Frames Dialog window
+             now hides Colors and Dither entries
+             if Conv to INDEXED is not selected.
+             
+
+- 0.91.00  - Patches to the gimp core were updated to work with gimp 0.99.16
+             (plus: gimage_update_full was added for GAP)
+             (The Patches do work with  gimp 0.99.17 too)
+
+            - "plug_in_gap_layers_run_animfilter"
+              New Plugin allows animated calls to (more than 50) existing Plugins
+

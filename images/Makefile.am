@@ -9,7 +9,9 @@ STOCK_IMAGES = \
 	gap-insert-point.png		\
 	gap-last-point.png		\
 	gap-next-point.png		\
+	gap-pause.png			\
 	gap-play.png			\
+	gap-play-reverse.png		\
 	gap-prev-point.png		\
 	gap-reset-all-points.png	\
 	gap-reset-point.png		\

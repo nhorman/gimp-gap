@@ -120,7 +120,7 @@ gap_db_browser_dialog(char *title_txt,
   gtk_clist_set_selection_mode (GTK_CLIST (dbbrowser->clist),
 			        GTK_SELECTION_BROWSE);
 
-  gtk_widget_set_usize(dbbrowser->clist, DBL_LIST_WIDTH, DBL_HEIGHT);
+  gtk_widget_set_size_request(dbbrowser->clist, DBL_LIST_WIDTH, DBL_HEIGHT);
   gtk_signal_connect (GTK_OBJECT (dbbrowser->clist), "select_row",
 		      (GtkSignalFunc) procedure_select_callback,
 		      dbbrowser);
@@ -156,7 +156,7 @@ gap_db_browser_dialog(char *title_txt,
 				  );
   gtk_box_pack_start (GTK_BOX (hbox), 
 		      dbbrowser->descr_scroll, TRUE, TRUE, 0);
-  gtk_widget_set_usize (dbbrowser->descr_scroll, DBL_WIDTH - DBL_LIST_WIDTH, 0);
+  gtk_widget_set_size_request (dbbrowser->descr_scroll, DBL_WIDTH - DBL_LIST_WIDTH, 0);
   gtk_widget_show (dbbrowser->descr_scroll);
 
   /* buttons in dlg->action_aera */
@@ -475,7 +475,7 @@ dialog_select (dbbrowser_t *dbbrowser,
       text = gtk_text_new (NULL, NULL);
       gtk_text_set_editable (GTK_TEXT (text), FALSE);
       gtk_text_set_word_wrap(GTK_TEXT(text), TRUE);
-      gtk_widget_set_usize (text, -1, 60);
+      gtk_widget_set_size_request (text, -1, 60);
       gtk_table_attach (GTK_TABLE (help), text, 0, 1, 0, 1,
 			GTK_EXPAND | GTK_SHRINK | GTK_FILL,
 			GTK_EXPAND | GTK_SHRINK | GTK_FILL, 0, 0);

@@ -28,6 +28,7 @@
  */
 
 /* revision history:
+ * gimp   1.3.15a;   2003/06/21  hof: textspacing
  * gimp   1.3.14a;   2003/05/17  hof: placed OK button right.
  * gimp   1.3.12a;   2003/05/01  hof: merge into CVS-gimp-gap project
  * gimp   1.3.11a;   2003/01/18  hof: Conditional framesave
@@ -190,7 +191,7 @@ int p_layer_modify_dialog(t_anim_info *ainfo_ptr,
   p_init_arr_arg(&argv[4], WGT_TEXT);
   argv[4].label_txt = _("Select Pattern:");
   argv[4].entry_width = 140;       /* pixel */
-  argv[4].help_txt  = _("String to identify layer names    \nor layerstack position numbers\n0,3-5");
+  argv[4].help_txt  = _("String to identify layer names\nor layerstack position numbers\n0,3-5");
   argv[4].text_buf_len = MAX_LAYERNAME;
   argv[4].text_buf_ret = sel_pattern;
 

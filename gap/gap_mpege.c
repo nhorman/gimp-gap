@@ -36,6 +36,7 @@
  */
 
 /* revision history
+ * 1.3.15a; 2003/06/21   hof: textspacing
  * 1.3.12a; 2003/05/02   hof: merge into CVS-gimp-gap project, 6digit framenumbers
  * 1.3.11a; 2003/01/18   hof: Default Value button for GUI dialog 
  * 1.1.11b; 1999/11/20   hof: Changed menunames AnimFrames to Video in menu hints
@@ -101,7 +102,7 @@ typedef struct t_mpg_par
 static
 int p_mpege_info(t_anim_info *ainfo_ptr, char *errlist, t_gap_mpeg_encoder encoder)
 {
-  t_arr_arg  argv[13];
+  t_arr_arg  argv[16];
   t_but_arg  b_argv[2];
 
   int        l_idx;
@@ -123,62 +124,74 @@ int p_mpege_info(t_anim_info *ainfo_ptr, char *errlist, t_gap_mpeg_encoder encod
 
   l_idx++;
   p_init_arr_arg(&argv[l_idx], WGT_LABEL_LEFT);
-  argv[l_idx].label_txt = _("1.) mpeg_encode 1.5 must be installed");
+  argv[l_idx].label_txt = "1.)";
+
+  l_idx++;
+  p_init_arr_arg(&argv[l_idx], WGT_LABEL_LEFT);
+  argv[l_idx].label_txt = _("mpeg_encode 1.5 must be installed");
   if(encoder == MPEG2ENCODE)
   {
-    argv[l_idx].label_txt = _("1.) mpeg2encode 1.2 must be installed");
+    argv[l_idx].label_txt = _("mpeg2encode 1.2 must be installed");
   }
 
   l_idx++;
   p_init_arr_arg(&argv[l_idx], WGT_LABEL_LEFT);
-  argv[l_idx].label_txt = _("    you can get mpeg_encode at");
+  argv[l_idx].label_txt = _("you can get mpeg_encode at");
   if(encoder == MPEG2ENCODE)
   {
-    argv[l_idx].label_txt = _("    you can get mpeg2encode at http://www.mpeg.org/MSSG");
+    argv[l_idx].label_txt = _("you can get mpeg2encode at http://www.mpeg.org/MSSG");
   }
 
   l_idx++;
   p_init_arr_arg(&argv[l_idx], WGT_LABEL_LEFT);
-  argv[l_idx].label_txt = _("    ftp://mm-ftp.cs.berkeley.edu/pub/multimedia/mpeg/bmt1r1.tar.gz");
+  argv[l_idx].label_txt = "ftp://mm-ftp.cs.berkeley.edu/pub/multimedia/mpeg/bmt1r1.tar.gz";
   if(encoder == MPEG2ENCODE)
   {
-    argv[l_idx].label_txt = _("   or at ftp://ftp.mpeg.org/pub/mpeg/mssg ");
+    argv[l_idx].label_txt = _("or at ftp://ftp.mpeg.org/pub/mpeg/mssg ");
   }
 
   l_idx++;
   p_init_arr_arg(&argv[l_idx], WGT_LABEL_LEFT);
-  argv[l_idx].label_txt = _("2.) You need a series of single Images on disk (AnimFrames)");
+  argv[l_idx].label_txt = "2.)";
 
   l_idx++;
   p_init_arr_arg(&argv[l_idx], WGT_LABEL_LEFT);
-  argv[l_idx].label_txt = _("    all with fileformat JPEG (or YUV or PNM or PPM)");
+  argv[l_idx].label_txt = _("You need a series of single Images on disk (AnimFrames)");
+
+  l_idx++;
+  p_init_arr_arg(&argv[l_idx], WGT_LABEL_LEFT);
+  argv[l_idx].label_txt = _("all with fileformat JPEG (or YUV or PNM or PPM)");
   if(encoder == MPEG2ENCODE)
   {
-    argv[l_idx].label_txt = _("   all with fileformat PPM (or YUV)");
+    argv[l_idx].label_txt = _("all with fileformat PPM (or YUV)");
   }
 
   l_idx++;
   p_init_arr_arg(&argv[l_idx], WGT_LABEL_LEFT);
-  argv[l_idx].label_txt = _("    (use 'Frames Convert' from the Video Menu");
+  argv[l_idx].label_txt = _("(use 'Frames Convert' from the Video Menu");
 
   l_idx++;
   p_init_arr_arg(&argv[l_idx], WGT_LABEL_LEFT);
-  argv[l_idx].label_txt = _("    or 'Split Image to Frames' from the Video Menu)");
+  argv[l_idx].label_txt = _("or 'Split Image to Frames' from the Video Menu)");
 
   l_idx++;
   p_init_arr_arg(&argv[l_idx], WGT_LABEL_LEFT);
-  argv[l_idx].label_txt = _("3.) All Images must have the same size,");
+  argv[l_idx].label_txt = "3.)";
+
+  l_idx++;
+  p_init_arr_arg(&argv[l_idx], WGT_LABEL_LEFT);
+  argv[l_idx].label_txt = _("All Images must have the same size,");
 
   if(encoder == MPEG_ENCODE)
   {
 
      l_idx++;
      p_init_arr_arg(&argv[l_idx], WGT_LABEL_LEFT);
-     argv[l_idx].label_txt = _("    width and height must be a multiple of 16");
+     argv[l_idx].label_txt = _("width and height must be a multiple of 16");
 
      l_idx++;
      p_init_arr_arg(&argv[l_idx], WGT_LABEL_LEFT);
-     argv[l_idx].label_txt = _("    (use Scale or Crop from the Video Menu)");
+     argv[l_idx].label_txt = _("(use Scale or Crop from the Video Menu)");
   }
 
   l_idx++;
@@ -267,7 +280,7 @@ int p_mpege_dialog(t_anim_info *ainfo_ptr, t_mpg_par *mp_ptr, t_gap_mpeg_encoder
 
   p_init_arr_arg(&argv[2], WGT_INT_PAIR);
   argv[2].constraint = TRUE;
-  argv[2].label_txt = _("To   Frame:");
+  argv[2].label_txt = _("To Frame:");
   argv[2].help_txt  = _("last handled frame");
   argv[2].int_min   = (gint)ainfo_ptr->first_frame_nr;
   argv[2].int_max   = (gint)ainfo_ptr->last_frame_nr;
@@ -276,7 +289,7 @@ int p_mpege_dialog(t_anim_info *ainfo_ptr, t_mpg_par *mp_ptr, t_gap_mpeg_encoder
   argv[2].int_default = (gint)ainfo_ptr->last_frame_nr;
 
   p_init_arr_arg(&argv[3], WGT_OPTIONMENU);
-  argv[3].label_txt = _("Framerate :");
+  argv[3].label_txt = _("Framerate:");
   argv[3].help_txt  = _("framerate in frames/second");
   argv[3].radio_argc = 8;
   argv[3].radio_argv = frate_args;
@@ -287,7 +300,7 @@ int p_mpege_dialog(t_anim_info *ainfo_ptr, t_mpg_par *mp_ptr, t_gap_mpeg_encoder
   p_init_arr_arg(&argv[4], WGT_INT_PAIR);
   argv[4].constraint = FALSE;
   argv[4].label_txt = _("Bitrate:");
-  argv[4].help_txt  = _("used for constant bitrates (bit/sec)                  \n(low rate gives good compression + bad quality)");
+  argv[4].help_txt  = _("used for constant bitrates (bit/sec)\n(low rate gives good compression + bad quality)");
   argv[4].int_min   = 500000;
   argv[4].int_step  = 100000;
   argv[4].int_max   = 9000000;
@@ -321,7 +334,7 @@ int p_mpege_dialog(t_anim_info *ainfo_ptr, t_mpg_par *mp_ptr, t_gap_mpeg_encoder
   p_init_arr_arg(&argv[l_idx], WGT_FILESEL);
   argv[l_idx].label_txt = _("Startscript:");
   argv[l_idx].entry_width = 250;       /* pixel */
-  argv[l_idx].help_txt  = _("Name of the Startscript           \n(is generated/executed)");
+  argv[l_idx].help_txt  = _("Name of the Startscript\n(is generated/executed)");
   argv[l_idx].text_buf_len = sizeof(l_startscript);
   argv[l_idx].text_buf_ret = &l_startscript[0];
 
@@ -333,7 +346,7 @@ int p_mpege_dialog(t_anim_info *ainfo_ptr, t_mpg_par *mp_ptr, t_gap_mpeg_encoder
 
   if(encoder == MPEG_ENCODE)
   {
-     argv[0].label_txt = _("Generate parameterfile for mpeg_encode 1.5\n(the freely distributed Berkeley MPEG-1 Video  Encoder.)\n");
+     argv[0].label_txt = _("Generate parameterfile for mpeg_encode 1.5\n(the freely distributed Berkeley MPEG-1 Video Encoder.)\n");
 
 
      p_init_arr_arg(&argv[5], WGT_TOGGLE);
@@ -356,7 +369,7 @@ int p_mpege_dialog(t_anim_info *ainfo_ptr, t_mpg_par *mp_ptr, t_gap_mpeg_encoder
      p_init_arr_arg(&argv[7], WGT_INT_PAIR);
      argv[7].constraint = TRUE;
      argv[7].label_txt = _("IQSCALE:");
-     argv[7].help_txt  = _("Quality scale for I-Frames                       \n(1 = best quality, 31 = best comression)");
+     argv[7].help_txt  = _("Quality scale for I-Frames\n(1 = best quality, 31 = best comression)");
      argv[7].int_min   = 1;
      argv[7].int_max   = 31;
      argv[7].int_ret   = 2;
@@ -366,7 +379,7 @@ int p_mpege_dialog(t_anim_info *ainfo_ptr, t_mpg_par *mp_ptr, t_gap_mpeg_encoder
      p_init_arr_arg(&argv[8], WGT_INT_PAIR);
      argv[8].constraint = TRUE;
      argv[8].label_txt = _("PQSCALE:");
-     argv[8].help_txt  = _("Quality scale for P-Frames                  \n(1 = best quality, 31 = best comression)");
+     argv[8].help_txt  = _("Quality scale for P-Frames\n(1 = best quality, 31 = best comression)");
      argv[8].int_min   = 1;
      argv[8].int_max   = 31;
      argv[8].int_ret   = 5;
@@ -376,7 +389,7 @@ int p_mpege_dialog(t_anim_info *ainfo_ptr, t_mpg_par *mp_ptr, t_gap_mpeg_encoder
      p_init_arr_arg(&argv[9], WGT_INT_PAIR);
      argv[9].constraint = TRUE;
      argv[9].label_txt = _("BQSCALE:");
-     argv[9].help_txt  = _("Quality scale for B-Frames                  \n(1 = best quality, 31 = best comression)");
+     argv[9].help_txt  = _("Quality scale for B-Frames\n(1 = best quality, 31 = best comression)");
      argv[9].int_min   = 1;
      argv[9].int_max   = 31;
      argv[9].int_ret   = 9;
@@ -419,7 +432,7 @@ int p_mpege_dialog(t_anim_info *ainfo_ptr, t_mpg_par *mp_ptr, t_gap_mpeg_encoder
   
   if(encoder == MPEG2ENCODE)
   {
-     argv[0].label_txt = _("Generate parameterfile for mpeg2encode 1.2\n(MPEG-2 Video  Encoder.)\n");
+     argv[0].label_txt = _("Generate parameterfile for mpeg2encode 1.2\n(MPEG-2 Video Encoder.)\n");
 
      p_init_arr_arg(&argv[5], WGT_RADIO);
      argv[5].label_txt = _("MPEG-type :");
@@ -828,7 +841,7 @@ int p_mpeg_encode_gen_parfile(t_anim_info *ainfo_ptr, t_mpg_par *mp_ptr)
   fprintf(l_fp, "INPUT_DIR	%s\n", l_dirname_ptr);
 
   fprintf(l_fp, "# There are a bunch of ways to specify the input files.\n");
-  fprintf(l_fp, "# from a simple one-per-line listing, to the following \n");
+  fprintf(l_fp, "# from a simple one-per-line listing, to the following\n");
   fprintf(l_fp, "# way of numbering them.  See the manual for more information.\n");
   fprintf(l_fp, "INPUT\n");
   fprintf(l_fp, "# '*' is replaced by the numbers 01, 02, 03, 04\n");

@@ -38,6 +38,7 @@
  */
 
 /* revision history:
+ * gimp    1.3.15a; 2003/06/21  hof: textspacing
  * gimp    1.3.14b; 2003/06/03  hof: added gap_stock_init
  * gimp    1.3.14a; 2003/05/19  hof: GUI standard (OK ist rightmost button)
  *                                   changed WGT_INT, and WGT_FLT from entry to spinbutton
@@ -852,7 +853,7 @@ optionmenu_create_value(char *title, GtkTable *table, int row, t_arr_arg *arr_pt
   {
     l_col++;
     entry = gtk_entry_new();
-    gtk_widget_set_usize(entry, arr_ptr->entry_width, 0);
+    gtk_widget_set_size_request(entry, arr_ptr->entry_width, 0);
     gtk_entry_set_text(GTK_ENTRY(entry), arr_ptr->text_buf_ret);
     gtk_table_attach(GTK_TABLE(table), entry, l_col, l_col+1, row, row + 1, GTK_FILL, GTK_FILL | GTK_EXPAND, 4, 0);
     if(arr_ptr->help_txt != NULL)
@@ -1209,7 +1210,7 @@ gint p_array_std_dialog(char *title_txt,
      {
         arr_ptr = &argv[l_idx];
 
-        if(arr_ptr->label_txt == NULL)  l_label_txt = _("Value: ");
+        if(arr_ptr->label_txt == NULL)  l_label_txt = _("Value:");
         else                            l_label_txt = arr_ptr->label_txt;
         arr_ptr = &argv[l_idx];
         
