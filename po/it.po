@@ -1,7 +1,7 @@
 # This is the Italian catalog for the standard GIMP Plugins.
 # Copyright (C) 1999 Free Software Foundation, Inc.
 # Daniele Medri <madrid@linux.it>, 1999
-# Marco Ciampa <ciampix@libero.it>, 2004
+# Marco Ciampa <ciampix@libero.it>, 2004, 2005
 #
 # Convenzioni adottate per la traduzione
 # (oltre a quelle che trovate nell'intestazione del file 
@@ -12,10 +12,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gimp 2.0.0\n"
+"Project-Id-Version: gimp 2.2.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-01-17 00:15+0100\n"
-"PO-Revision-Date: 2005-01-17 00:31+0100\n"
+"PO-Revision-Date: 2005-01-17 00:49+0100\n"
 "Last-Translator: Marco Ciampa <ciampix@libero.it>\n"
 "Language-Team: gimp.linux.it\n"
 "MIME-Version: 1.0\n"
@@ -23,8 +23,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Date: sab ott  2 05:46:51 CEST 1999\n"
 "From: Daniele Medri <madrid@linux.it>\n"
-"Xgettext-Options: --default-domain=gimp --directory=.. --add-comments --"
-"keyword=_ --keyword=N_ --files-from=./POTFILES.in\n"
+"Xgettext-Options: --default-domain=gimp --directory=.. --add-comments --keyword=_ --keyword=N_ --files-from=./POTFILES.in\n"
 "Files: app/about_dialog.c app/main.c app/menus.c app/regex.c\n"
 
 #. Button  to invoke fontbrowser
@@ -916,13 +915,10 @@ msgid "Format:"
 msgstr "Formato"
 
 #: gap/gap_decode_mplayer.c:486
-#, fuzzy
 msgid ""
 "Image fileformat for the extracted video frames. (xcf is extracted as png "
 "and converted to xcf)"
-msgstr ""
-"Formato file per i frame video estratti. (l'xcf viene estratto come ppm e "
-"convertito in xcf)"
+msgstr "Formato file per i frame video estratti. (l'xcf viene estratto come png e convertito in xcf)"
 
 #: gap/gap_decode_mplayer.c:495
 msgid "Png Compression:"
@@ -939,59 +935,43 @@ msgid "Jpeg Quality:"
 msgstr "Qualità Jpeg:"
 
 #: gap/gap_decode_mplayer.c:506
-#, fuzzy
 msgid ""
 "Quality for resulting jpeg frames where 100 is best quality(is ignored when "
 "other formats are used)"
-msgstr ""
-"Qualità per i frame risultanti. (viene ignorato se vengono usati altri "
-"formati)"
+msgstr "Qualità per i frame risultanti dove 100 è la migliore qualità (ignorato se vengono usati altri formati)"
 
 #: gap/gap_decode_mplayer.c:516
 msgid "Jpeg Optimize:"
-msgstr "Ottimizzazione jpeg:"
+msgstr "Jpeg ottimizzato:"
 
 #: gap/gap_decode_mplayer.c:517
-#, fuzzy
 msgid "optimization factor(is ignored when other formats are used)"
-msgstr ""
-"Qualità per i frame risultanti. (viene ignorato se vengono usati altri "
-"formati)"
+msgstr "Fattore di ottimizzazione (ignorato se vengono usati altri formati)"
 
 #: gap/gap_decode_mplayer.c:527
 msgid "Jpeg Smooth:"
-msgstr "Sfumatura jpeg:"
+msgstr "Jpeg sfumato:"
 
 #: gap/gap_decode_mplayer.c:528
-#, fuzzy
 msgid "Smooth factor(is ignored when other formats are used)"
-msgstr ""
-"Qualità per i frame risultanti. (viene ignorato se vengono usati altri "
-"formati)"
+msgstr "Fattore di sfumatura (ignorato se vengono usati altri formati)"
 
 #: gap/gap_decode_mplayer.c:538
 msgid "Jpeg Progressive:"
-msgstr "Progressione jpeg:"
+msgstr "Jpeg progressivo:"
 
 #: gap/gap_decode_mplayer.c:539
-#, fuzzy
 msgid ""
 "Enable progressive jpeg encoding(is ignored when other formats are used)"
-msgstr ""
-"Qualità per i frame risultanti. (viene ignorato se vengono usati altri "
-"formati)"
+msgstr "Abilita la codifica progressiva jpeg (ignorato se vengono usati altri formati)"
 
 #: gap/gap_decode_mplayer.c:545
-#, fuzzy
 msgid "Jpeg Baseline:"
-msgstr "Base jpeg:"
+msgstr "Jpeg base:"
 
 #: gap/gap_decode_mplayer.c:546
-#, fuzzy
 msgid "Enable baseline jpeg encoding(is ignored when other formats are used)"
-msgstr ""
-"Qualità per i frame risultanti. (viene ignorato se vengono usati altri "
-"formati)"
+msgstr "Abilita la codifica base jpeg (ignorato se vengono usati altri formati)"
 
 #: gap/gap_decode_mplayer.c:557
 msgid "Silent"
@@ -1002,6 +982,8 @@ msgid ""
 "use -nosound (-novideo) in case audiotrack (videotrack) is 0.\n"
 "mplayer will operate silent and faster."
 msgstr ""
+"usa -nosound (-novideo) nel caso la traccia audio (video) sia 0.\n"
+"mplayer opererà silenzioso e più velocemente."
 
 #: gap/gap_decode_mplayer.c:564 gap/gap_decode_xanim.c:305
 msgid "Open"
@@ -1021,7 +1003,7 @@ msgstr "Esegui l'mplayer come processo asincrono"
 
 #: gap/gap_decode_mplayer.c:580
 msgid "MPlayer based extract"
-msgstr ""
+msgstr "Estrazione basata su MPlayer"
 
 #: gap/gap_decode_mplayer.c:581 gap/gap_decode_xanim.c:325
 #: gap/gap_range_ops.c:1686
@@ -1029,9 +1011,9 @@ msgid "Select Frame Range"
 msgstr "Seleziona serie di frame"
 
 #: gap/gap_decode_mplayer.c:613 gap/gap_decode_mplayer.c:1429
-#, fuzzy, c-format
+#, c-format
 msgid "videofile %s not existent\n"
-msgstr "il file video %s non esiste o è vuoto\n"
+msgstr "il file video %s non esiste\n"
 
 #: gap/gap_decode_mplayer.c:622
 #, c-format
@@ -1108,7 +1090,7 @@ msgstr "Il file eseguibile del lettore multimediale '%s' non è stato trovato"
 
 #: gap/gap_decode_mplayer.c:1419
 msgid "Exit, neither video nor audio track was selected"
-msgstr ""
+msgstr "Uscita, non è stata selezionata né una traccia video né una audio"
 
 #: gap/gap_decode_mplayer.c:1477
 #, c-format
@@ -5685,46 +5667,43 @@ msgstr "Salva il file storyboard"
 
 #: gap/gap_story_dialog.c:2780
 msgid "Global Layout Properties dialog already open"
-msgstr ""
+msgstr "Finestra delle proprietà della disposizione globale già aperta"
 
 #: gap/gap_story_dialog.c:2786
 msgid "large"
-msgstr ""
+msgstr "grande"
 
 #: gap/gap_story_dialog.c:2787
 msgid "medium"
-msgstr ""
+msgstr "media"
 
 #: gap/gap_story_dialog.c:2788
 msgid "small"
-msgstr ""
+msgstr "piccola"
 
 #: gap/gap_story_dialog.c:2793
-#, fuzzy
 msgid "Cliplist Layout:"
-msgstr "Elenco clip"
+msgstr "Disposizione elenco clip:"
 
 #: gap/gap_story_dialog.c:2798 gap/gap_story_dialog.c:2838
 msgid "Thumbnail Size:"
-msgstr ""
+msgstr "Ampiezza miniature:"
 
 #: gap/gap_story_dialog.c:2799
 msgid "Thumbnail size in the cliplist"
 msgstr ""
 
 #: gap/gap_story_dialog.c:2809 gap/gap_story_dialog.c:2849
-#, fuzzy
 msgid "Columns:"
-msgstr "Volume:"
+msgstr "Colonne:"
 
 #: gap/gap_story_dialog.c:2810
 msgid "columns in the cliplist"
 msgstr ""
 
 #: gap/gap_story_dialog.c:2820 gap/gap_story_dialog.c:2860
-#, fuzzy
 msgid "Rows:"
-msgstr "Riga:"
+msgstr "Righe:"
 
 #: gap/gap_story_dialog.c:2821
 #, fuzzy
@@ -5732,18 +5711,16 @@ msgid "rows in the cliplist"
 msgstr "Aggiungi campo all'elenco clip"
 
 #: gap/gap_story_dialog.c:2833
-#, fuzzy
 msgid "Storyboard Layout:"
-msgstr "Storyboard"
+msgstr "Disposizione storyboard:"
 
 #: gap/gap_story_dialog.c:2839
 msgid "Thumbnail size in the storyboard list"
 msgstr ""
 
 #: gap/gap_story_dialog.c:2850
-#, fuzzy
 msgid "columns in the storyboard list"
-msgstr "Nome del file storyboard"
+msgstr "Colonne nell'elenco storyboard"
 
 #: gap/gap_story_dialog.c:2861
 #, fuzzy
