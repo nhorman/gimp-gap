@@ -12,10 +12,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gimp-gap 1.3.24\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-01-20 00:17+0100\n"
-"PO-Revision-Date: 2004-01-20 00:06+0100\n"
+"POT-Creation-Date: 2004-01-24 00:02+0100\n"
+"PO-Revision-Date: 2004-01-23 23:59+0100\n"
 "Last-Translator: Raymond Ostertag <r.ostertag@caramail.com>\n"
-"Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
+"Language-Team: GNOME French Team <fr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -1479,42 +1479,39 @@ msgstr "Supprimer le canal (par nom)"
 
 #: gap/gap_mod_layer.c:140
 msgid "Add alpha channel"
-msgstr ""
+msgstr "Ajouter un canal alpha"
 
 #: gap/gap_mod_layer.c:141
 msgid "Add white layermask (opaque)"
-msgstr ""
+msgstr "Ajouter un masque de calque blanc (opaque)"
 
 #: gap/gap_mod_layer.c:142
 msgid "Add black layermask (transparent)"
-msgstr ""
+msgstr "Ajouter un masque de calque noir (transparent)"
 
 #: gap/gap_mod_layer.c:143
 msgid "Add layermask from alpha"
-msgstr ""
+msgstr "Ajouter un masque de calque depuis l'alpha"
 
 #: gap/gap_mod_layer.c:144
 msgid "Add layermask transfer from alpha"
-msgstr ""
+msgstr "Ajouter un masque de calque transfert depuis l'alpha"
 
 #: gap/gap_mod_layer.c:145
-#, fuzzy
 msgid "Add layermask from selection"
-msgstr "Ajouter la sélection"
+msgstr "Ajouter lun masque de claque depuis la sélection"
 
 #: gap/gap_mod_layer.c:146
 msgid "Add layermask from bw copy"
-msgstr ""
+msgstr "Ajouter un masque de calque depuis une copie en noir et blanc"
 
 #: gap/gap_mod_layer.c:147
-#, fuzzy
 msgid "Delete layermask"
-msgstr "Effacer le(s) calque(s)"
+msgstr "Effacer le masque de calque"
 
 #: gap/gap_mod_layer.c:148
-#, fuzzy
 msgid "Apply layermask"
-msgstr "Appliquer le filtre au(x) calque(s)"
+msgstr "Appliquer le masque de calque"
 
 #: gap/gap_mod_layer.c:198
 msgid ""
@@ -3106,7 +3103,6 @@ msgid "Render Filename to Layer"
 msgstr "Mettre le nom du fichier dans le calque"
 
 #: gap/gap_name2layer_main.c:517 gap/gap_wr_opacity.c:352
-#, fuzzy
 msgid "Settings :"
 msgstr "Réglages :"
 
@@ -4569,181 +4565,164 @@ msgid "Rotate Follow"
 msgstr "Rotation suivie"
 
 #: gap/gap_wr_opacity.c:143
-#, fuzzy
 msgid "<Image>/Video/Layer/Set Layer Opacity..."
-msgstr "<Image>/Vidéo/Effacer les calques des images..."
+msgstr "<Image>/Vidéo/Calque/Régler l'opacité du calque..."
 
 #: gap/gap_wr_opacity.c:326
-#, fuzzy
 msgid "New opacity value where 0 is transparent and 100.0 is opaque"
-msgstr ""
-"Opacité du premier calque pelable (0 est transparent, 100 est totalement "
-"opaque)"
+msgstr "Nouvelle valeur d'opacité où 0 est transparent et 100 est opaque "
 
 #: gap/gap_wr_opacity.c:337
 msgid ""
 "Modes set opacity or change the old opacty value by adding, subtracting or "
 "multiply by the supplied new value"
 msgstr ""
+"Modes de réglage d'opacité ou changer l'ancienne valeur de l'opacité en "
+"ajoutant, soustrayant ou multipliant avec la nouvelle valeur fournie"
 
 #: gap/gap_wr_opacity.c:349
-#, fuzzy
 msgid "Reset all Parameters to Default Values"
 msgstr "Remettre tous les paramètres à leur valeurs par défaut"
 
 #: gap/gap_wr_opacity.c:351
 msgid "Set Layer Opacity"
-msgstr ""
+msgstr "Régler l'opacité du calque"
 
 #: gap/gap_wr_color_curve.c:394
 #, c-format
 msgid "Unable to open file %s"
-msgstr ""
+msgstr "Impossible d'ouvrir le fichier %s"
 
 #: gap/gap_wr_color_curve.c:525
-#, fuzzy
 msgid "<Image>/Video/Layer/Colors/CurvesFile..."
-msgstr "<Image>/Vidéo/Redimensionner les images..."
+msgstr "<Image>/Vidéo/Calque/Couleurs/Fichier de courbes..."
 
 #. filesel is already open
 #: gap/gap_wr_color_curve.c:785
-#, fuzzy
 msgid "Load color curve from file"
-msgstr "Charger des points de contrôle depuis un fichier"
+msgstr "Charger une courbe de couleur depuis un fichier"
 
 #. The dialog and main vbox
 #: gap/gap_wr_color_curve.c:877
 msgid "CurvesFile"
-msgstr ""
+msgstr "Fichier de courbes"
 
 #. The Load button
 #: gap/gap_wr_color_curve.c:904
 msgid "Load Curve"
-msgstr ""
+msgstr "Charger une courbe"
 
 #: gap/gap_wr_color_curve.c:911
 msgid ""
 "Load curve from a GIMP curve file (that was saved with the GIMP's color "
 "curve tool)"
 msgstr ""
+"Charger une courbe depuis un fichier de courbe GIMP (ce qui est enregistré "
+"avec l'outil couleur Courbes de Gimp)"
 
 #: gap/gap_wr_color_levels.c:268
-#, fuzzy
 msgid "<Image>/Video/Layer/Colors/Levels..."
-msgstr "<Image>/Vidéo/Effacer les calques des images..."
+msgstr "<Image>/Vidéo/Calque/Niveaux..."
 
 #. The dialog1 and main vbox
 #: gap/gap_wr_color_levels.c:583
 msgid "Color Levels"
-msgstr ""
+msgstr "Niveaux de couleur"
 
 #. the frame
 #: gap/gap_wr_color_levels.c:610
 msgid "Color Levels  Adjustments "
-msgstr ""
+msgstr "Ajustements des niveux de couleur"
 
 #. Channel the label
 #: gap/gap_wr_color_levels.c:626
-#, fuzzy
 msgid "Channel:"
-msgstr "Canaux :"
+msgstr "Canal :"
 
 #. Channel the radio buttons
 #. Hue Mode the radio buttons
 #: gap/gap_wr_color_levels.c:633 gap/gap_wr_color_huesat.c:630
-#, fuzzy
 msgid "Master"
-msgstr "Calque principal"
+msgstr "Maitre"
 
 #: gap/gap_wr_color_levels.c:638 gap/gap_wr_color_huesat.c:635
-#, fuzzy
 msgid "Red"
-msgstr "Prêt"
+msgstr "Rouge"
 
 #: gap/gap_wr_color_levels.c:643 gap/gap_wr_color_huesat.c:645
-#, fuzzy
 msgid "Green"
-msgstr "Écran"
+msgstr "Vert"
 
 #: gap/gap_wr_color_levels.c:648 gap/gap_wr_color_huesat.c:655
-#, fuzzy
 msgid "Blue"
-msgstr "Bluebox"
+msgstr "Blue"
 
 #: gap/gap_wr_color_levels.c:653
 msgid "Alpha"
-msgstr ""
+msgstr "Alpha"
 
 #: gap/gap_wr_color_levels.c:665
 msgid "Low Input:"
-msgstr ""
+msgstr "Entrée basse :"
 
 #: gap/gap_wr_color_levels.c:672
-#, fuzzy
 msgid "High Input:"
-msgstr "Hauteur :"
+msgstr "Entrée haute :"
 
 #: gap/gap_wr_color_levels.c:679
 msgid "Gamma:"
-msgstr ""
+msgstr "Gamma :"
 
 #: gap/gap_wr_color_levels.c:686
-#, fuzzy
 msgid "Low Output:"
-msgstr "Fichier de sortie :"
+msgstr "Sortie basse :"
 
 #: gap/gap_wr_color_levels.c:693
-#, fuzzy
 msgid "High Output:"
-msgstr "Hauteur :"
+msgstr "Sortie haute :"
 
 #: gap/gap_wr_color_huesat.c:259
-#, fuzzy
 msgid "<Image>/Video/Layer/Colors/Hue-Saturation..."
-msgstr "<Image>/Vidéo/Calque pelable/Configuration..."
+msgstr "<Image>/Vidéo/Calque/Couleurs/Teinte-Saturation..."
 
 #. The dialog1 and main vbox
 #: gap/gap_wr_color_huesat.c:568
-#, fuzzy
 msgid "Hue-Saturation"
-msgstr "Saturation"
+msgstr "Teinte-Saturation"
 
 #. the frame
 #: gap/gap_wr_color_huesat.c:603
 msgid "Hue / Lightness / Saturation Adjustments "
-msgstr ""
+msgstr "Ajustements de Teinte / Luminosité / Saturation"
 
 #. Hue Mode the label
 #: gap/gap_wr_color_huesat.c:622
-#, fuzzy
 msgid "Hue Mode:"
-msgstr "Mode :"
+msgstr "Mode teinte :"
 
 #: gap/gap_wr_color_huesat.c:640
 msgid "Yellow"
-msgstr ""
+msgstr "Jaune"
 
 #: gap/gap_wr_color_huesat.c:650
 msgid "Cyan"
-msgstr ""
+msgstr "Cyan"
 
 #: gap/gap_wr_color_huesat.c:660
 msgid "Magenta"
-msgstr ""
+msgstr "Magenta"
 
 #: gap/gap_wr_color_huesat.c:672
-#, fuzzy
 msgid "Hue:"
-msgstr "Teinte"
+msgstr "Teinte :"
 
 #: gap/gap_wr_color_huesat.c:679
 msgid "Lightness:"
-msgstr ""
+msgstr "Luminosité :"
 
 #: gap/gap_wr_color_huesat.c:686
-#, fuzzy
 msgid "Saturation:"
-msgstr "Saturation"
+msgstr "Saturation :"
 
 #~ msgid "GAP Message"
 #~ msgstr "Message GAP"
