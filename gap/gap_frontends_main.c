@@ -194,6 +194,7 @@ run (char    *name,
   nr = 0;
   l_rc = 0;
 
+  INIT_I18N ();
 
   l_env = g_getenv("GAP_DEBUG");
   if(l_env != NULL)
@@ -226,12 +227,6 @@ run (char    *name,
     p_gap_lock_set(lock_image_id);
   }
   
-  if (run_mode == GIMP_RUN_NONINTERACTIVE) {
-    INIT_I18N();
-  } else {
-    INIT_I18N_UI();
-  }
-
   if ((strcmp (name, "plug_in_gap_xanim_decode") == 0)
   ||  (strcmp (name, "extension_gap_xanim_decode") == 0))
   {

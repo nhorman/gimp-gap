@@ -94,8 +94,6 @@ query ()
   static GimpParamDef *return_vals = NULL;
   static int nreturn_vals = 0;
 
-  INIT_I18N();
-
   gimp_install_procedure("plug_in_gap_layers_run_animfilter",
 			 "This plugin calls another plugin for each layer of an image, varying its settings (to produce animated effects). The called plugin must work on a single drawable and must be able to GIMP_RUN_WITH_LAST_VALS",
 			 "",
@@ -150,6 +148,7 @@ run (char    *name,
 
   run_mode = param[0].data.d_int32;
 
+  INIT_I18N ();
 
   if(gap_debug) fprintf(stderr, "\n\ngap_filter_main: debug name = %s\n", name);
   
@@ -166,14 +165,11 @@ run (char    *name,
           strncpy(l_plugin_name, param[3].data.d_string, MAX_PLUGIN_NAME_LEN -1);
           l_plugin_name[MAX_PLUGIN_NAME_LEN -1] = '\0';
         }
-        INIT_I18N();
       }
       else if(run_mode == GIMP_RUN_WITH_LAST_VALS)
       {
         /* probably get last values (name of last plugin) */
         gimp_get_data("plug_in_gap_layers_run_animfilter", l_plugin_name);
-      } else {
-        INIT_I18N_UI();
       }
 
       if (status == GIMP_PDB_SUCCESS)
@@ -182,7 +178,8 @@ run (char    *name,
         image_id    = param[1].data.d_image;
 
         l_rc = gap_proc_anim_apply(run_mode, image_id, l_plugin_name);
-        gimp_set_data("plug_in_gap_layers_run_animfilter", l_plugin_name, sizeof(l_plugin_name));
+        gimp_set_data("plug_in_gap_layers_run_animfilter",
+                      l_plugin_name, sizeof(l_plugin_name));
       }
   }
   else
@@ -192,7 +189,9 @@ run (char    *name,
         total_steps  =  param[1].data.d_int32;
         current_step =  param[2].data.d_float;
         len_struct   =  param[3].data.d_int32;
-        l_rc =  gap_run_iterators_ALT(name, run_mode, total_steps, current_step, len_struct);
+        l_rc =  gap_run_iterators_ALT(name,
+                                      run_mode,
+                                      total_steps, current_step, len_struct);
       }
       else status = GIMP_PDB_CALLING_ERROR;
   }

@@ -111,27 +111,15 @@ AM_CPPFLAGS = \
 
 INCLUDES = \
 	-I$(top_srcdir)	\
-	$(GTK_CFLAGS)	\
+	$(GIMP_CFLAGS)	\
 	-I$(includedir)
 
 LDADD = \
-	$(top_builddir)/libgimp/libgimpui-$(LT_RELEASE).la		\
-	$(top_builddir)/libgimpwidgets/libgimpwidgets-$(LT_RELEASE).la	\
-	$(top_builddir)/libgimp/libgimp-$(LT_RELEASE).la		\
-	$(top_builddir)/libgimpcolor/libgimpcolor-$(LT_RELEASE).la	\
-	$(top_builddir)/libgimpbase/libgimpbase-$(LT_RELEASE).la	\
-	$(GTK_LIBS)							\
-	$(INTLLIBS)
+	$(GIMP_LIBS)
 
 gap_decode_mpeg_LDADD = \
-	$(top_builddir)/libgimp/libgimpui-$(LT_RELEASE).la		\
-	$(top_builddir)/libgimpwidgets/libgimpwidgets-$(LT_RELEASE).la	\
-	$(top_builddir)/libgimp/libgimp-$(LT_RELEASE).la		\
-	$(top_builddir)/libgimpcolor/libgimpcolor-$(LT_RELEASE).la	\
-	$(top_builddir)/libgimpbase/libgimpbase-$(LT_RELEASE).la	\
-	$(LIBMPEG)							\
-	$(GTK_LIBS)							\
-	$(INTLLIBS)
+	$(LIBMPEG)	\
+	$(GIMP_LIBS)
 
 EXTRA_DIST = \
 	README							\

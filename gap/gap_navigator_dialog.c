@@ -130,18 +130,20 @@ typedef enum
   OPS_BUTTON_RADIO
 } OpsButtonType;
 
+typedef void (* OpsButtonCallback)  (GtkWidget *, gpointer);
+
 typedef struct _OpsButton OpsButton;
 
 struct _OpsButton 
 {
-  gchar         **xpm_data;       /*  xpm data for the button  */
-  GtkSignalFunc   callback;       /*  callback function        */
-  GtkSignalFunc  *ext_callbacks;  /*  callback functions when
+  gchar             **xpm_data;       /*  xpm data for the button  */
+  OpsButtonCallback   callback;       /*  callback function        */
+  OpsButtonCallback  *ext_callbacks;  /*  callback functions when
 				   *  modifiers are pressed    */
-  gchar          *tooltip;
-  gchar          *private_tip;
-  GtkWidget      *widget;         /*  the button widget        */
-  gint            modifier;
+  gchar              *tooltip;
+  gchar              *private_tip;
+  GtkWidget          *widget;         /*  the button widget        */
+  gint                modifier;
 };
 
 /* Function declarations */
@@ -344,19 +346,19 @@ static gint suspend_gimage_notify = 0;
 static gint32  global_old_active_imageid = -1;
 
 /*  the ops buttons  */
-static GtkSignalFunc navi_dialog_update_ext_callbacks[] =
+static OpsButtonCallback navi_dialog_update_ext_callbacks[] =
 {
   navi_dialog_thumb_updateall_callback, NULL, NULL, NULL
 };
-static GtkSignalFunc navi_dialog_vcr_play_ext_callbacks[] = 
+static OpsButtonCallback navi_dialog_vcr_play_ext_callbacks[] = 
 {
   navi_dialog_vcr_play_optim_callback, NULL, NULL, NULL
 };
-static GtkSignalFunc navi_dialog_vcr_goto_prev_ext_callbacks[] = 
+static OpsButtonCallback navi_dialog_vcr_goto_prev_ext_callbacks[] = 
 {
   navi_dialog_vcr_goto_prevblock_callback, NULL, NULL, NULL
 };
-static GtkSignalFunc navi_dialog_vcr_goto_next_ext_callbacks[] = 
+static OpsButtonCallback navi_dialog_vcr_goto_next_ext_callbacks[] = 
 {
   navi_dialog_vcr_goto_nextblock_callback, NULL, NULL, NULL
 };
@@ -490,6 +492,7 @@ run (char    *name,
   nr = 0;
   l_rc = 0;
 
+  INIT_I18N ();
 
   l_env = g_getenv("GAP_DEBUG");
   if(l_env != NULL)
@@ -504,12 +507,6 @@ run (char    *name,
   
   l_active_image = param[1].data.d_image;
   
-  if (run_mode == GIMP_RUN_NONINTERACTIVE) {
-    INIT_I18N();
-  } else {
-    INIT_I18N_UI();
-  }
-
   /* check for other Video navigator Dialog Process */
   if (sizeof(pid_t) == gimp_get_data_size(PLUGIN_NAME))
   {
@@ -2246,7 +2243,7 @@ frame_widget_preview_redraw (FrameWidget *frame_widget)
 			 naviD->image_width + 4, naviD->image_height + 4);
     if(*pixmap)
     {
-       gdk_drawable_unref(*pixmap);
+       g_object_unref (*pixmap);
        *pixmap = NULL;
     }
   }
@@ -2790,7 +2787,7 @@ frame_widget_delete (FrameWidget *fw)
                         );
    if(fw->frame_pixmap)
    {
-      gdk_drawable_unref(fw->frame_pixmap);
+      g_object_unref (fw->frame_pixmap);
    }
 
    if(fw->thumb_filename) g_free(fw->thumb_filename);
