@@ -227,7 +227,6 @@ gap_vex_exe_extract_videorange(GapVexMainGlobalParams *gpp)
   gint    l_overwrite_mode;
   gint    l_overwrite_mode_audio;
 
-  gap_debug = TRUE;
   l_overwrite_mode_audio = 0;
 
   if(gap_debug)

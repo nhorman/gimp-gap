@@ -81,7 +81,7 @@ static char *gap_enc_single_version = "1.2.2b; 2002/11/24";
 /* int gap_debug = 1; */    /* print debug infos */
 /* int gap_debug = 0; */    /* 0: dont print debug infos */
 
-int gap_debug = 1;
+int gap_debug = 0;
 GapGveSingleGlobalParams global_params;
 int global_nargs_single_enc_par;
 
@@ -749,6 +749,11 @@ p_singleframe_encode(GapGveSingleGlobalParams *gpp)
   }
 
   g_free(l_frame_fmt);
+
+  if(l_vidhand)
+  {
+    gap_gve_story_close_vid_handle(l_vidhand);
+  }
 
   return l_rc;
 }  /* end p_singleframe_encode */

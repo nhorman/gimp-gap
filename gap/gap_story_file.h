@@ -141,6 +141,9 @@
     gdouble  aud_volume_end;
     gdouble  aud_fade_in_sec;
     gdouble  aud_fade_out_sec;
+    gdouble  aud_min_play_sec;  /* for optimzed audio extract from videofiles */
+    gdouble  aud_max_play_sec;
+    gdouble  aud_framerate;     /* framerate that is used to convert audio unit frame <-> secs */
  
     struct GapStoryElem  *comment;
     struct GapStoryElem  *next;
@@ -233,6 +236,16 @@ void                gap_story_get_master_size(GapStoryBoard *stb_ptr
 void                gap_story_selection_all_set(GapStoryBoard *stb, gboolean sel_state);
 
 const char *        gap_story_get_preferred_decoder(GapStoryBoard *stb, GapStoryElem *stb_elem);
+
+void                gap_story_set_aud_movie_min_max(GapStoryBoard *stb);
+gboolean            gap_story_elem_is_audio(GapStoryElem *stb_elem);
+void                gap_story_del_audio_track(GapStoryBoard *stb, gint aud_track);
+gboolean            gap_story_gen_otone_audio(GapStoryBoard *stb
+                         ,gint vid_track
+                         ,gint aud_track
+                         ,gint aud_seltrack
+                         ,gboolean replace_existing_aud_track
+                         );
 
 
 #endif

@@ -379,7 +379,7 @@ p_wrapper_ffmpeg_open_read(char *filename, t_GVA_Handle *gvahand)
 
   /* workaround: initial frameread and reopen for detection of yuv_buff_pix_fmt */ 
   {
-    //if(gap_debug) 
+    if(gap_debug) 
     {
       printf("INITIAL call p_wrapper_ffmpeg_get_next_frame\n");
     }
@@ -425,7 +425,7 @@ p_wrapper_ffmpeg_open_read(char *filename, t_GVA_Handle *gvahand)
     }
   }
 
-  //if(gap_debug)  //####XXXXXXXXXXXXXx
+  if(gap_debug)  //####XXXXXXXXXXXXXx
   {
     if(gvahand->vindex)
     {
@@ -659,7 +659,7 @@ p_wrapper_ffmpeg_get_next_frame(t_GVA_Handle *gvahand)
 
     if(handle->yuv_buff_pix_fmt != handle->vid_codec_context->pix_fmt)
     {
-      //if(gap_debug)
+      if(gap_debug)
       {
 	printf("$$ pix_fmt: old:%d new from codec:%d (PIX_FMT_YUV420P:%d PIX_FMT_YUV422P:%d)\n"
 	    , (int)handle->yuv_buff_pix_fmt
@@ -919,7 +919,7 @@ p_wrapper_ffmpeg_seek_frame(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit po
 
   gvahand->percentage_done = 0.0;
 
-  //if(gap_debug)
+  if(gap_debug)
   {
     printf("p_wrapper_ffmpeg_seek_frame: start: l_frame_pos: %d cur_seek:%d cur_frame:%d\n"
                            , (int)l_frame_pos
@@ -947,7 +947,7 @@ p_wrapper_ffmpeg_seek_frame(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit po
 	*/
        if(l_idx > vindex->tabsize_used -1)
        {
-         //if(gap_debug)
+         if(gap_debug)
 	 {
 	   printf("SEEK: overflow l_idx: %d limit:%d\n"
 	                 , (int)l_idx
@@ -980,7 +980,7 @@ p_wrapper_ffmpeg_seek_frame(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit po
            l_nloops = 1;
            while(l_idx >= 0)
 	   {
-	     //if(gap_debug)
+	     if(gap_debug)
 	     {
 	       printf("SEEK: USING_INDEX: ofs_tab[%d]: ofs64: %d seek_nr:%d flen:%d chk:%d NLOOPS:%d\n"
 	       , (int)l_idx
@@ -1030,7 +1030,7 @@ p_wrapper_ffmpeg_seek_frame(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit po
 		 }
 		 else
 		 {
-		   //if(gap_debug)
+		   if(gap_debug)
 		   {
 		     /* checksum missmatch is non critical
 		      * continue searching for an exactly matching frame
@@ -1061,7 +1061,7 @@ p_wrapper_ffmpeg_seek_frame(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit po
 	     {
 
                l_url_frame_pos = 1 + vindex->ofs_tab[l_idx].seek_nr;
-               //if(gap_debug)
+               if(gap_debug)
 	       {
 	         printf("SEEK: url_fseek seek_pos: %d  l_idx:%d l_url_frame_pos:%d\n"
 	                                , (int)seek_pos
@@ -1071,7 +1071,7 @@ p_wrapper_ffmpeg_seek_frame(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit po
 	       }
                gvahand->current_seek_nr = (gint32)l_url_frame_pos;
                l_readsteps = l_frame_pos - gvahand->current_seek_nr;
-               //if(gap_debug)
+               if(gap_debug)
 	       {
 	         printf("SEEK: l_readsteps: %d\n", (int)l_readsteps);
 	       }
@@ -1103,7 +1103,7 @@ p_wrapper_ffmpeg_seek_frame(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit po
     }
   }
 
-  //if(gap_debug) printf("p_wrapper_ffmpeg_seek_frame: l_readsteps: %d\n", (int)l_readsteps);
+  if(gap_debug) printf("p_wrapper_ffmpeg_seek_frame: l_readsteps: %d\n", (int)l_readsteps);
 
   l_progress_step =  1.0 / MAX((gdouble)l_readsteps, 1.0);
   l_rc_rd = GVA_RET_OK;
@@ -1131,7 +1131,7 @@ p_wrapper_ffmpeg_seek_frame(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit po
 
   if(l_rc_rd == GVA_RET_OK)
   {
-    //if(gap_debug)
+    if(gap_debug)
     {
        printf("p_wrapper_ffmpeg_seek_frame: SEEK OK: l_frame_pos: %d cur_seek:%d cur_frame:%d\n"
                             , (int)l_frame_pos
@@ -1360,7 +1360,9 @@ p_wrapper_ffmpeg_count_frames(t_GVA_Handle *gvahand)
   copy_gvahand->current_seek_nr = 1;
   copy_gvahand->vindex = vindex;
   handle = (t_GVA_ffmpeg*)copy_gvahand->decoder_handle;
-printf("p_wrapper_ffmpeg_count_frames: ## 10 ## handle:%d\n", (int)handle);
+
+  // printf("p_wrapper_ffmpeg_count_frames: ## 10 ## handle:%d\n", (int)handle);
+  
   if(handle)
   {
     if(vindex)

@@ -68,7 +68,7 @@ typedef struct t_global_stb
 {
   gdouble framerate;
   gdouble aud_total_sec;
-  gchar *composite_audio;
+  gchar  composite_audio[1000];
   gchar *errtext;
   gchar *errline;
   gchar *warntext;
@@ -118,7 +118,6 @@ static void            p_range_widgets_set_limits(GapCmeGlobalParams *gpp
                            , gint32 upper_limit
                            , GapGveTypeInputRange range_type);
 static void            p_init_shell_window_widgets (GapCmeGlobalParams *gpp);
-static char *          p_dialog_use_storyboard_audio(char *storyboard_file);
 static void            p_status_progress(GapCmeGlobalParams *gpp, t_global_stb *gstb);
 static void            p_storybord_job_finished(GapCmeGlobalParams *gpp, t_global_stb *gstb);
 static void            on_timer_poll(gpointer   user_data);
@@ -914,6 +913,25 @@ gap_cme_gui_upd_wgt_sensitivity (GapCmeGlobalParams *gpp)
   }
 
   gtk_widget_set_sensitive(gpp->cme__button_params, sensitive);
+  
+  sensitive = FALSE;
+  if(gpp->val.storyboard_file[0] != '\0')
+  {
+    if(g_file_test(gpp->val.storyboard_file, G_FILE_TEST_EXISTS))
+    {
+      t_global_stb         *gstb;
+      
+      /* check if storyboard file is valid and has audio */
+      gstb = &global_stb;     
+      if((gstb->aud_total_sec > 0.0)
+      && (gstb->vidhand_open_ok))
+      {
+	sensitive = TRUE;
+      }
+    }
+  }
+  gtk_widget_set_sensitive(gpp->cme__button_stb_audio, sensitive);
+ 
 }  /* end gap_cme_gui_upd_wgt_sensitivity */
 
 /* ----------------------------------------
@@ -970,6 +988,9 @@ gap_cme_gui_update_vid_labels (GapCmeGlobalParams *gpp)
 {
   GtkLabel   *lbl;
   gint32      tmsec;        /* audioplaytime in milli secs */
+  gint32      first_offset;
+  gint32      range_from;
+  gint32      range_to;
   gdouble     msec_per_frame;
 
   if(gpp->val.framerate > 0)
@@ -981,14 +1002,27 @@ gap_cme_gui_update_vid_labels (GapCmeGlobalParams *gpp)
     msec_per_frame = 1000.0;
   }
 
+  first_offset = gpp->ainfo.first_frame_nr;
+  range_from = gpp->val.range_from;
+  range_to = gpp->val.range_to;
 
+  if(gpp->val.input_mode == GAP_RNGTYPE_STORYBOARD)
+  {
+    first_offset = MIN(1, MIN(range_from, range_to));
+  }
+  if(gpp->val.input_mode == GAP_RNGTYPE_LAYER)
+  {
+    range_from = gpp->val.range_to;
+    range_to = gpp->val.range_from;
+    first_offset = 0;
+  }
 
   lbl = GTK_LABEL(gpp->cme__label_fromtime);
-  tmsec = (gpp->val.range_from - gpp->ainfo.first_frame_nr) * msec_per_frame;
+  tmsec = (range_from - first_offset) * msec_per_frame;
   p_print_time_label(lbl, tmsec);
 
   lbl = GTK_LABEL(gpp->cme__label_totime);
-  tmsec = (gpp->val.range_to - gpp->ainfo.first_frame_nr) * msec_per_frame;
+  tmsec = (range_to - first_offset) * msec_per_frame;
   p_print_time_label(lbl, tmsec);
 
   lbl = GTK_LABEL(gpp->cme__label_totaltime);
@@ -1151,55 +1185,6 @@ p_init_shell_window_widgets (GapCmeGlobalParams *gpp)
 }    /* end p_init_shell_window_widgets */
 
 
-/* ----------------------------------------
- * p_dialog_use_storyboard_audio
- * ----------------------------------------
- * p_dialog_use_storyboard_audio
- *   Dialog Requester Window to let user decide
- *   if to create and use the composite audiotrack (return Audifilename)
- *   or not (return NULL)
- */
-static char *
-p_dialog_use_storyboard_audio(char *storyboard_file)
-{
-  static GapArrArg  argv[1];
-  int               l_argc;
-  int               l_rc;
-
-
-  l_argc             = 1;
-
-  if(*storyboard_file)
-  {
-     char *l_msg;
-     char *l_audio_filename;
-
-     l_audio_filename = g_strdup_printf("%s_composite_audio.wav", storyboard_file);
-     l_msg = g_strdup_printf("Audio track(s) found.\nCreate composite audiotrack as file:\n\n%s\n\nand use that file for encoding?"
-                            , l_audio_filename);
-
-     gap_arr_arg_init(&argv[0], GAP_ARR_WGT_LABEL);
-     argv[0].label_txt = l_msg;
-
-     l_rc = gap_arr_ok_cancel_dialog(_("Storyboardfile has Audio")
-                          , _("Create Audio")
-                          , l_argc
-                          , argv
-                          );
-     g_free(l_msg);
-     if(l_rc == TRUE)
-     {
-        if(gap_debug) printf("** START create request for COMPOSITE AUDIO: %s\n", l_audio_filename);
-
-        return(l_audio_filename);
-     }
-     g_free(l_audio_filename);
-  }
-  if(gap_debug) printf("** Cancel  do not crate COMPOSITE AUDIO !\n");
-  return (NULL);
-}   /* p_dialog_use_storyboard_audio */
-
-
 /* ------------------
  * p_status_progress
  * ------------------
@@ -1212,12 +1197,17 @@ p_status_progress(GapCmeGlobalParams *gpp, t_global_stb *gstb)
   /* storyboard thread job still running
    * update status, and restart poll timer
    */
+
   status_lbl = gpp->cme__label_status;
   if(status_lbl) gtk_label_set_text(GTK_LABEL(status_lbl), gstb->status_msg);
 
   pbar = gpp->cme__progressbar_status;
-  if(pbar) gtk_progress_bar_update (GTK_PROGRESS_BAR (pbar), gstb->progress);
-
+  if(pbar) 
+  {
+    gtk_progress_bar_update (GTK_PROGRESS_BAR (pbar), gstb->progress);
+    gtk_progress_bar_set_text(GTK_PROGRESS_BAR(pbar), gstb->status_msg);
+  }
+  
   if(gap_debug) printf("progress: %f\n", (float)gstb->progress );
 }  /* end p_status_progress */
 
@@ -1248,7 +1238,10 @@ p_storybord_job_finished(GapCmeGlobalParams *gpp, t_global_stb *gstb)
 
 
 
-  if(gap_debug) printf("p_storybord_job_finished: START\n");
+  if(gap_debug) 
+  {
+    printf("p_storybord_job_finished: START\n");
+  }
 
   gstb->progress = 1.0;
   g_snprintf(gstb->status_msg, sizeof(gstb->status_msg), _("ready"));
@@ -1259,9 +1252,17 @@ p_storybord_job_finished(GapCmeGlobalParams *gpp, t_global_stb *gstb)
    if(gpp->val.gui_proc_tid != 0)
    {
       /* wait until thread exits */
-      if(gap_debug) printf("p_storybord_job_finished: before pthread_join\n");
+      if(gap_debug) 
+      {
+        printf("p_storybord_job_finished: before pthread_join\n");
+      }
+
       pthread_join(gpp->val.gui_proc_tid, 0);
-      if(gap_debug) printf("p_storybord_job_finished: after pthread_join\n");
+
+      if(gap_debug)
+      {
+        printf("p_storybord_job_finished: after pthread_join\n");
+      }
       gpp->val.gui_proc_tid = 0;
    }
 #endif
@@ -1289,7 +1290,7 @@ p_storybord_job_finished(GapCmeGlobalParams *gpp, t_global_stb *gstb)
 
     if(gstb->aud_total_sec > 0.0)
     {
-      if(gstb->composite_audio)
+      if(gstb->composite_audio[0] != '\0')
       {
          if(g_file_test(gstb->composite_audio, G_FILE_TEST_EXISTS))
          {
@@ -1301,11 +1302,10 @@ p_storybord_job_finished(GapCmeGlobalParams *gpp, t_global_stb *gstb)
             entry = GTK_ENTRY(gpp->cme__entry_audio1);
             if(entry)
             {
-               gtk_entry_set_text(entry, gpp->val.audioname_ptr);
+              gtk_entry_set_text(entry, gstb->composite_audio);
             }
 
-            g_free(gstb->composite_audio);
-            gstb->composite_audio = NULL;
+            gstb->composite_audio[0] = '\0';
          }
       }
 
@@ -1431,6 +1431,7 @@ p_storybord_job_finished(GapCmeGlobalParams *gpp, t_global_stb *gstb)
                              , gpp->val.input_mode
                              );
 
+  gap_cme_gui_upd_wgt_sensitivity(gpp);
 
 }  /* end p_storybord_job_finished */
 
@@ -1511,17 +1512,21 @@ on_timer_poll(gpointer   user_data)
 static void
 p_thread_storyboard_file(void)
 {
-   GapCmeGlobalParams *gpp;
-   t_global_stb    *gstb;
+  GapCmeGlobalParams   *gpp;
+  t_global_stb         *gstb;
   GapGveStoryVidHandle *vidhand;
-  gint32 l_first_frame_limit;
-  gint32 l_last_frame_nr;
-  GapGveTypeInputRange l_rangetype;
-
-  gdouble l_aud_total_sec;
+  gint32                l_first_frame_limit;
+  gint32                l_last_frame_nr;
+  GapGveTypeInputRange  l_rangetype;
+  gdouble               l_aud_total_sec;
+  gboolean              l_create_audio_tmp_files;
 
   gpp = gap_cme_main_get_global_params();
-  if(gap_debug) printf("THREAD: p_thread_storyboard_file &gpp: %d\n", (int)gpp);
+
+  if(gap_debug) 
+  {
+    printf("THREAD: p_thread_storyboard_file &gpp: %d\n", (int)gpp);
+  }
 
   gstb = &global_stb;
   gstb->total_stroyboard_frames = 0;
@@ -1529,10 +1534,18 @@ p_thread_storyboard_file(void)
   p_get_range_and_type (gpp, &l_first_frame_limit, &l_last_frame_nr, &l_rangetype);
 
 
+  gstb->vidhand_open_ok = FALSE;
+
+  l_create_audio_tmp_files = FALSE;
+  if(gpp->storyboard_create_composite_audio)
+  {
+    l_create_audio_tmp_files = TRUE;
+  }
 
   vidhand = gap_gve_story_open_extended_video_handle
            ( FALSE   /* dont ignore video */
            , FALSE   /* dont ignore audio */
+	   , l_create_audio_tmp_files
            , &gstb->progress
            , &gstb->status_msg[0]
            , sizeof(gstb->status_msg)
@@ -1565,31 +1578,29 @@ p_thread_storyboard_file(void)
     gap_gve_story_calc_audio_playtime(vidhand, &l_aud_total_sec);
     gstb->aud_total_sec = l_aud_total_sec;
 
-    if(l_aud_total_sec > 0.0)
+    if((gpp->storyboard_create_composite_audio)
+    && (l_aud_total_sec > 0.0))
     {
       char *l_composite_audio;
 
-      /*if(gap_debug)*/ gap_gve_story_debug_print_audiorange_list(vidhand->aud_list, -1);
+      if(gap_debug) gap_gve_story_debug_print_audiorange_list(vidhand->aud_list, -1);
 
-
-      /* l_composite_audio = p_dialog_use_storyboard_audio(gpp->val.storyboard_file); */  /* no dialog in the thread !!! */
-      /* always set audio if storyboard has audio */
+      /* name for the composite audio that should be created */
       l_composite_audio = g_strdup_printf("%s_composite_audio.wav", gpp->val.storyboard_file);
 
 
-
-      gstb->composite_audio = NULL;
+      gstb->composite_audio[0] = '\0';
       if(l_composite_audio)
       {
-         gstb->composite_audio = g_strdup(l_composite_audio);
          gap_gve_story_create_composite_audiofile(vidhand, l_composite_audio);
          if(g_file_test(l_composite_audio, G_FILE_TEST_EXISTS))
          {
-            g_snprintf(gpp->val.audioname1, sizeof(gpp->val.audioname1), "%s"
-                      , l_composite_audio);
-            gpp->val.audioname_ptr = &gpp->val.audioname1[0];
-
-            if(/* 1==1 */ gap_debug) gap_gve_story_debug_print_audiorange_list(vidhand->aud_list, -1);
+	    g_snprintf(gstb->composite_audio, sizeof(gstb->composite_audio)
+	              , "%s"
+		      ,l_composite_audio
+		      );
+	              
+            if(gap_debug) gap_gve_story_debug_print_audiorange_list(vidhand->aud_list, -1);
             gap_gve_story_drop_audio_cache();
          }
          g_free(l_composite_audio);
@@ -1667,10 +1678,11 @@ gap_cme_gui_check_storyboard_file(GapCmeGlobalParams *gpp)
   p_get_range_and_type (gpp, &l_first_frame_limit, &l_last_frame_nr, &l_rangetype);
 
   gstb->total_stroyboard_frames = 0;
-  gstb->first_frame_limit = l_first_frame_limit;
-  gstb->last_frame_nr     = l_last_frame_nr;
-  gpp->val.input_mode     = l_rangetype;
-  gstb->composite_audio   = NULL;
+  gstb->first_frame_limit  = l_first_frame_limit;
+  gstb->last_frame_nr      = l_last_frame_nr;
+  gpp->val.input_mode      = l_rangetype;
+  gstb->composite_audio[0] = '\0';
+  gstb->aud_total_sec      = 0.0;
 
   p_range_widgets_set_limits(gpp
                              , l_first_frame_limit
@@ -1727,18 +1739,35 @@ gap_cme_gui_check_storyboard_file(GapCmeGlobalParams *gpp)
    * (the common GUI window is not refreshed until the called gui_proc ends)
    */
   {
-    static GapArrArg  argv[1];
+    gboolean do_processing;
     
-    gap_arr_arg_init(&argv[0], GAP_ARR_WGT_LABEL);
-    argv[0].label_txt = _("Go for checking storyboard file");
+    do_processing = TRUE;
     
-    if(gap_arr_ok_cancel_dialog(_("Storyboardfile Check")
+    /* if storyboard_create_composite_audio button was pressed
+     * there is no need for extra pop-up dialog
+     * before start processing
+     */
+    if (!gpp->storyboard_create_composite_audio)
+    {
+      static GapArrArg  argv[1];
+      
+      do_processing = FALSE;
+    
+      gap_arr_arg_init(&argv[0], GAP_ARR_WGT_LABEL);
+      argv[0].label_txt = _("Go for checking storyboard file");
+
+      if(gap_arr_ok_cancel_dialog(_("Storyboardfile Check")
                                ,_("Storyboardfile Check")
 			       ,1
 			       ,argv
                                ))
+      {
+        do_processing = TRUE;
+      }
+    }
+    
+    if(do_processing)
     {			       
-
       p_thread_storyboard_file();
       p_storybord_job_finished(gpp, gstb);
     }
@@ -2458,7 +2487,11 @@ p_create_shell_window (GapCmeGlobalParams *gpp)
   /* the Status label */
   label = gtk_label_new (_("READY"));
   gpp->cme__label_status = label;
-  gtk_widget_show (label);
+  
+  /* hide cme__label_status, because status is now displayed
+   * via gtk_progress_bar_set_text
+   */
+  gtk_widget_hide (label);
   gtk_table_attach (GTK_TABLE (cme__table_status), label, 0, 2, 0, 1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
@@ -2529,7 +2562,7 @@ p_create_encode_extras_frame (GapCmeGlobalParams *gpp)
   frame = gimp_frame_new (_("Encoding Extras"));
 
 
-  table1 = gtk_table_new (6, 3, FALSE);
+  table1 = gtk_table_new (7, 3, FALSE);
   gtk_widget_show (table1);
   gtk_container_add (GTK_CONTAINER (frame), table1);
 
@@ -2602,6 +2635,32 @@ p_create_encode_extras_frame (GapCmeGlobalParams *gpp)
   gimp_help_set_help_data (button, _("select storyboard file via browser"), NULL);
   g_signal_connect (G_OBJECT (button), "clicked",
                       G_CALLBACK (on_cme__button_stb_clicked),
+                      gpp);
+  row++;
+  
+  /* the Storyboard Audio */
+  label = gtk_label_new (_("Storyboard Audio:"));
+  gtk_widget_show (label);
+  gtk_table_attach (GTK_TABLE (table1), label, 0, 1, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+
+  /* the Storyboard filebrowser button */
+  button = gtk_button_new_with_label (_("Create Composite Audiofile"));
+  gpp->cme__button_stb_audio = button;
+  gtk_widget_show (button);
+  gtk_table_attach (GTK_TABLE (table1), button, 1, 2, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gimp_help_set_help_data (button
+                          , _("create a composite audiofile "
+                              "as mixdown of all audio tracks in the "
+			      "storyboard file and use the created composite audiofile "
+			      "as input for encoding")
+		          , NULL);
+  g_signal_connect (G_OBJECT (button), "clicked",
+                      G_CALLBACK (on_cme__button_stb_audio_clicked),
                       gpp);
   
   row++;
@@ -3432,13 +3491,14 @@ gap_cme_gui_master_encoder_dialog(GapCmeGlobalParams *gpp)
   t_global_stb    *gstb;
   GapGveTypeInputRange l_rangetype;
 
-gap_debug=TRUE;
   if(gap_debug) printf("gap_cme_gui_master_encoder_dialog: Start\n");
 
   gstb = &global_stb;
   gstb->stb_job_done = FALSE;
+  gstb->vidhand_open_ok = FALSE;
   gstb->poll_timertag = -1;
   gstb->total_stroyboard_frames = 0;
+  gstb->aud_total_sec = 0.0;
 
   gimp_ui_init ("gap_video_extract", FALSE);
   gap_stock_init();
@@ -3452,6 +3512,7 @@ gap_debug=TRUE;
 
 
   /* ---------- dialog ----------*/
+  gpp->storyboard_create_composite_audio = FALSE;
   gpp->fsv__fileselection = NULL;
   gpp->fsb__fileselection = NULL;
   gpp->fsa__fileselection = NULL;

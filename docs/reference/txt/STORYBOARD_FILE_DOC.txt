@@ -17,8 +17,6 @@ Expect there will be changes until the first stable release.
 //          - none of the audio features (AUD_xx)
 //          - video is limited to one track
 //          - no video attributes (effects) VID_OPACITY, VID_ZOOM, VID_MOVE)
-// - currently there is no support for symbolic frameranges 
-//   (first, last, top or bottom (VIDEO), or start, end (AUDIO)) 
 //
 // - the exactseek parameter should be removed (both in implementation
 //   and documentation) NOW GAP videoaccess should always work exact.
@@ -447,6 +445,8 @@ AUD_PLAY_SOUND
   (3) file              ... filename of soundfile (.WAV and other types).
   (4) start_sec         ... start playback range at offest in seconds (float)
   (5) end_sec           ... end playback range at offest in seconds (float)
+                            Alternative you can specify the time in frames
+			    (see from and to parameters below)
   [6] volume            ... adjust the volume. (float)
                             A value of 1.0 keeps the original input volume for this track
                             value 0.5 results in half, value 2.0 in double volume.
@@ -470,6 +470,12 @@ AUD_PLAY_SOUND
                             DEFAULT: 0
   [11] nloops           ... number of repeats
                             DEFAULT = 1
+  [12] from             ... start playback range at offest in frames
+  [13] to               ... end playback range at offest in frames
+  [14] framerate        ... framerate that is used for transformation frames to seconds
+                            (specify the original framerate of the video here
+			     in case when it differs from the master framerate)
+			    DEFAULT: the value specified by VID_MASTER_FRAMERATE
                             
 
 AUD_PLAY_MOVIE
@@ -562,19 +568,7 @@ Filenames:
 Videotracks:
 ------------
   The Videotracks in a Storyboard_file are Input tracks
-  and will be merged internal to one (or more) composite Videotrack.
-
-  (Please note that most of the Encoders
-   do not support encoding of Videos with more output tracks,
-   such as multiangle and or multilingual DVD stuff.
-
-// muliple output SYNTAX was planed, but NOT impleneted yet !
-
-//   The storyboard Syntax can describe multiple output
-//   tracks both for video and audio as groups of input tracks,
-//   but the encoders will just use video channel 0
-//   and audio channel 0 in most cases.
-  )
+  and will be merged internal to one composite Videotrack.
 
   The composite Frame Image for the output Videotrack is built
   as Layerstack, where each videotrack represents one Layer
@@ -604,13 +598,6 @@ Framerange:
   
   FROM and TO can be specified as integer numbers (10  ==> unit is frames or layers)
 
-// not implemented    
-//  or by symolic keywords:
-//    "first"  for the lowest available frame number
-//    "last"   for the highst available frame number
-//    "top"    for the layer on top of the layerstack (if the Framerange refers to ANIMIMAGE)
-//    "bottom" for the layer on bottom of the layerstack
-
   If the FROM value is greater than the TO
   value, the Framerange is processed backwards.
 
@@ -629,15 +616,6 @@ Audiorange:
 
   It can be specified by
     - two float numbers (1.0 = 1 second)
-
-// not implemented    
-//    - symbolic keywords: "start" "end"  
-//    - two times in the format MM:SS:sss
-//      MM  .. minutes (00 upto 999999)
-//      SS  .. seconds (00 upto 59)
-//      sss .. 1/1000
-
-  
 
 
 Macrofiles:

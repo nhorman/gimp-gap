@@ -40,6 +40,102 @@ static int p_mpeg3_gopseek(mpeg3_t*  handle, gint32 seekto_frame, t_GVA_Handle *
 static int p_mpeg3_emulate_seek(mpeg3_t*  handle, gint32 seekto_frame, t_GVA_Handle *gvahand);
 static gboolean p_check_libmpeg3_toc_file(const char *filename);
 
+#ifndef G_OS_WIN32
+static gboolean  p_mpeg3_sig_workaround_fork(const char *filename);
+#endif
+
+
+#define GVA_PROCESS_EXIT_OK       0
+#define GVA_PROCESS_EXIT_FAILURE  1
+
+
+#ifndef G_OS_WIN32
+/* -----------------------------
+ * p_mpeg3_sig_handler
+ * -----------------------------
+ */
+static void
+p_mpeg3_sig_handler(int sig_num)
+{
+  printf("GVA_MP3: CILD SIG HANDLER workaround libmpeg3 close crash captured\n");
+  exit (GVA_PROCESS_EXIT_FAILURE);
+}  /* end p_mpeg3_sig_handler */
+
+ 
+/* -----------------------------
+ * p_mpeg3_sig_workaround_fork
+ * -----------------------------
+ * call libmpeg3 open/close sequence as own
+ * process, and deliver FALSE when the process has crashed
+ */
+static gboolean
+p_mpeg3_sig_workaround_fork(const char *filename)
+{
+  pid_t l_pid;
+  int   l_status;
+
+  l_pid = fork();
+  if(l_pid == 0)
+  {
+     mpeg3_t *tmp_handle;
+     gint     l_rc;
+     char    *l_filename;
+
+     /* here we are in the forked child process
+      * where we install our own signal handlers
+      */
+     l_rc = GVA_PROCESS_EXIT_FAILURE;
+     l_filename = g_strdup(filename);
+     
+     signal(SIGBUS,  p_mpeg3_sig_handler);
+     signal(SIGSEGV, p_mpeg3_sig_handler);
+     signal(SIGFPE,  p_mpeg3_sig_handler);
+
+     if(gap_debug) printf("GVA_MP3: CILD process before mpeg3_open\n");
+     tmp_handle = mpeg3_open(l_filename);
+     if(gap_debug) printf("GVA_MP3: CILD process after mpeg3_open\n");
+     if(tmp_handle)
+     {
+       if(gap_debug) printf("GVA_MP3: CILD process before mpeg3_close\n");
+       mpeg3_close(tmp_handle);  /* this call causes the crash (sometimes) */ 
+       if(gap_debug) printf("GVA_MP3: CILD process after mpeg3_close\n");
+       l_rc = GVA_PROCESS_EXIT_OK;  /* retcode for OK */
+     }
+     g_free(l_filename);
+     exit (l_rc);
+  }
+
+  if(l_pid < 0)
+  {
+    if(gap_debug) printf("GVA_MP3: PARENT process fork failed\n");
+    /* negative pid indicates error to fork a child process */
+    return (FALSE);
+  }
+
+  if(gap_debug) printf("GVA_MP3: PARENT before waitpid(%d)\n", (int)l_pid);
+  waitpid(l_pid, &l_status, 0);
+  if(gap_debug) printf("GVA_MP3: PARENT after waitpid(%d) status:%d\n", (int)l_pid, (int)l_status);
+   
+  if(l_status == 0)
+  {
+    if(gap_debug) printf("GVA_MP3: PARENT child normal end(%d)\n", (int)l_pid);
+    return(TRUE);
+  }
+
+  if(gap_debug) printf("GVA_MP3: PARENT child crashed (%d)\n", (int)l_pid);
+  return(FALSE);
+   
+}  /* end p_mpeg3_sig_workaround_fork */
+#endif
+
+
+
+
+
+/* -----------------------------
+ * p_wrapper_mpeg3_check_sig
+ * -----------------------------
+ */
 gboolean
 p_wrapper_mpeg3_check_sig(char *filename)
 {
@@ -47,6 +143,7 @@ p_wrapper_mpeg3_check_sig(char *filename)
   int minor;
   int release;
   gboolean version_ok;
+  gboolean sig_ok;
   
   major = mpeg3_major();
   minor = mpeg3_minor();
@@ -101,8 +198,44 @@ p_wrapper_mpeg3_check_sig(char *filename)
   }
   
   /* mpeg3_check_sig returns 1 if the file is compatible (MPEG1 or 2) */
-  return (1 == mpeg3_check_sig(filename));
-}
+  sig_ok = mpeg3_check_sig(filename);
+
+#ifndef G_OS_WIN32
+  if(sig_ok)
+  {
+    gchar   *libmpeg3_workaround;
+    gboolean libmpeg3_workaround_enabled;
+
+    libmpeg3_workaround_enabled = TRUE;  /* enable per default if nothing configured in gimprc */
+    libmpeg3_workaround = gimp_gimprc_query("video-workaround-for-libmpeg3-close-bug");
+    if(libmpeg3_workaround)
+    {
+      libmpeg3_workaround_enabled = FALSE;
+      if ((*libmpeg3_workaround == 'y')
+      ||  (*libmpeg3_workaround == 'Y'))
+      {
+        libmpeg3_workaround_enabled = TRUE;
+      }
+      g_free(libmpeg3_workaround); 
+    }
+    
+    if(libmpeg3_workaround_enabled)
+    {
+      /* workaround: (available for UNIX systems only)
+       * libmpeg3 does sometimes crash on close.
+       * (some mpeg1 files encoded by ffmpeg)
+       * this code tries open close sequence in a seperated process
+       *
+       * to catch those crashes, and deliver sig_ok FALSE
+       * in case of crash)
+       */
+      sig_ok = p_mpeg3_sig_workaround_fork(filename);
+    }
+  }
+#endif
+  return (sig_ok);
+}  /* end p_wrapper_mpeg3_check_sig */
+
 
 /* -----------------------------
  * p_wrapper_mpeg3_open_read
@@ -186,6 +319,12 @@ p_wrapper_mpeg3_open_read(char *in_filename, t_GVA_Handle *gvahand)
         gvahand->width            = mpeg3_video_width(handle->main_handle, (int)gvahand->vid_track);
         gvahand->height           = mpeg3_video_height(handle->main_handle, (int)gvahand->vid_track);
         gvahand->aspect_ratio     = mpeg3_aspect_ratio(handle->main_handle, (int)gvahand->vid_track);
+
+        /* libmpeg3-1.5.4 has a bug and did always deliver apect ratio value 0.0
+	 * the aspect was not recognized when it was there 
+	 * tested with some DVD and MPEG1 videofiles
+	 */
+        /* printf("ASPECT RATIO: %f\n", (float)gvahand->aspect_ratio); */
 
         if(gvahand->total_frames <= 1)
         {
@@ -336,7 +475,7 @@ p_wrapper_mpeg3_get_next_frame(t_GVA_Handle *gvahand)
   {
     gvahand->current_frame_nr = gvahand->current_seek_nr;
     gvahand->current_seek_nr++;
-
+ 
     /* if we found more frames, increase total_frames */
     gvahand->total_frames = MAX(gvahand->total_frames, gvahand->current_frame_nr);
     return(GVA_RET_OK);

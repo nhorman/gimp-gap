@@ -134,6 +134,7 @@ typedef struct {  /* nick: gpp */
   GtkWidget *mw__button_video;
   GtkWidget *mw__combo_preferred_decoder;
   GtkWidget *mw__label_active_decoder;
+  GtkWidget *mw__label_aspect_ratio;
   GtkWidget *mw__entry_preferred_decoder;
   GtkObject *mw__spinbutton_audiotrack_adj;
   GtkWidget *mw__spinbutton_audiotrack;

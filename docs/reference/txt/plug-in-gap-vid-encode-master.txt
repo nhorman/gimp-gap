@@ -45,7 +45,23 @@ Video Options:
 	 Therefore the name of the storyboard file must be specified
 	 (in the "Extras" tab)
 	 If the master videoencoder is started from the storyboard editor,
-	 thie name of the storyboard_file is already selected.
+	 the name of the storyboard_file is already selected.
+	 
+	 Important: 
+	 ==========
+	 If the storyboard describes audio tracks
+	 it is required to perform the audio mixdown processing
+	 to create a composite audiofile. This composite
+	 audiofile can be passed as audio input to the video encoder plug-ins.
+	 
+	 The video-encoder plug-ins are accepting only one simple RIFF-WAV file
+	 as audio input and ignore all audio records in the storyboard file.
+	 Therefore all audio mixing and converting tasks are handled
+	 in the Master Videoencoder itself.
+
+	 (see description Extras Tab below in this chapter, 
+	  Stroybard Audio: Button "Create Composite Audio")
+	 
 	 
 
     From Frame (Layer/Storyframe)
@@ -160,9 +176,20 @@ Extras
       the properties and tracks found in the file.
       Further the Input Mode (in the Video Options notebook tab) 
       is set to "Storyboard".
-      If the Storyboard has an audiopart as well, the resulting audiotrack
-      will be mixed, and the resulting file will be inserted
+
+    Stroybard Audio:
+      The Button "Create Composite Audiofile"
+      starts the audio mixdown processing for all included audiotracks
+      of the storyboard and creates a composite audiofile in RIFF Wave
+      fileformat.
+      The name of this resulting file will be inserted
       in the "Audiofile:" entry at the Audio Options notebook tab.
+      
+
+      The "Create Composite Audiofile" button is set insensitive when 
+      there is no valid storyboard specified,
+      or when the specified storyboard file has no audiopart.  
+
       
     Monitor Frames while Encoding checkbutton
       will create an image during the encoding process and

@@ -212,6 +212,12 @@ on_cme__button_stb_clicked             (GtkButton       *button,
                                         GapCmeGlobalParams *gpp);
 
 void
+on_cme__button_stb_audio_clicked      (GtkButton       *button,
+                                       GapCmeGlobalParams *gpp);
+
+
+
+void
 on_fss__fileselection_destroy          (GtkObject       *object,
                                         GapCmeGlobalParams *gpp);
 

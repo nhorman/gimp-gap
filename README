@@ -90,13 +90,19 @@ Additional Installation Notes
 =============================
 
 This version of GIMP-GAP is a seperated Package since GIMP-1.3.x
-and does not compile/run with GIMP-1.2.x or older GIMP versions.
+and does not compile/run with GIMP-1.2.x or older GIMP versions than 2.2.
 
   ./autogen.sh   # includes the ./configure call
   make
   make install
 
-    
+A correct installation adds the follwing menu trees to the GIMP:
+  <Image>/Video
+  <Xtns>/Split Video to Frames
+  
+An overview of all menus can be found at
+docs/reference/txt/INTRODUCTION.txt    
+
   Notes:
    
    - GIMP 1.1.4 upto GIMP-1.2.x have included older versions of GIMP-GAP 
@@ -165,14 +171,16 @@ Other known Bugs
 - some mpeg videos do crash at read attempt.
   libmpeg3 1.5.4  has problems in its CLOSE procedure on those
   videos.
-  The GVA API tries to check videos by OPEN/CLOSE calls
-  to findout a compatible decoder.
-
-  (you can produce such problem videos
-   with the ffmpeg-0.4.8, 
-   and with "MPEG1 best" preset in the GIMP-GAP Master Encoder dialog)
+  The GVA API has a built in workaround for UNIX operating systems
+  and automatically use the libavformat based decoder in such a case
+  (with a little run-time penalty at opening)
   
-  Workaround: set libavformat as preferred decoder for those videos.
+  for more details see docs/reference/txt/gap_gimprc_params.txt
+    (video-workaround-for-libmpeg3-close-bug "no")
+
+  you can produce such problem videos
+  with the ffmpeg-0.4.8, 
+   and with "MPEG1 best" preset in the GIMP-GAP Master Encoder dialog
   
 
 - GIMP-GAP does not compile with ffmpeg-0.4.9pre1 because

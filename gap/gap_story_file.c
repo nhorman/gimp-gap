@@ -48,6 +48,7 @@
 #include <libgimp/gimp.h>
 
 #include "gap_story_syntax.h"
+#include "gap_story_main.h"
 #include "gap_story_file.h"
 #include "gap_lib.h"
 #include "gap_vin.h"
@@ -515,6 +516,9 @@ gap_story_new_elem(GapStoryRecordType record_type)
     stb_elem->aud_volume_end    = 1.0;
     stb_elem->aud_fade_in_sec   = 0.0;
     stb_elem->aud_fade_out_sec  = 0.0;
+    stb_elem->aud_min_play_sec  = -1.0;
+    stb_elem->aud_max_play_sec  = -1.0;
+    stb_elem->aud_framerate     = GAP_STORY_DEFAULT_FRAMERATE;
 
     /* init list pointers */
     stb_elem->comment = NULL;
@@ -1336,7 +1340,7 @@ p_scan_gdouble(char *ptr, gdouble min, gdouble max, GapStoryBoard *stb)
 static void
 p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *multi_lines)
 {
-#define GAP_MAX_STB_PARAMS_PER_LINE 14  
+#define GAP_MAX_STB_PARAMS_PER_LINE 16  
   char *l_scan_ptr;
   char *l_record_key;
   char *l_parname;
@@ -1378,10 +1382,11 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
     gchar *l_value;
     gint   l_key_idx;
 
-// printf("\n%s   ii:%d\n", l_record_key, (int)ii);
+    /* if(gap_debug)  printf("\n%s   ii:%d\n", l_record_key, (int)ii); */
     l_parname = NULL;
     l_value = p_fetch_string(&l_scan_ptr, &l_parname);
-// printf("%s   ii:%d (after SCANN)\n", l_record_key, (int)ii);
+
+    /* if(gap_debug)  printf("%s   ii:%d (after SCANN)\n", l_record_key, (int)ii); */
     if(l_value)
     {
       if(*l_value != '\0')
@@ -1393,7 +1398,7 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
                                                     ,l_parname
                                                     );
 
-// printf("%s   parname:%s: key_idx:%d\n", l_record_key, l_parname, (int)l_key_idx);
+          /* if(gap_debug) printf("%s   parname:%s: key_idx:%d\n", l_record_key, l_parname, (int)l_key_idx); */
 
           g_free(l_parname);
           l_parname = NULL;
@@ -1425,7 +1430,7 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
       }
       g_free(l_value);
     }
-// printf("%s   ii:%d (END)\n", l_record_key, (int)ii);
+    /* if(gap_debug) printf("%s   ii:%d (END)\n", l_record_key, (int)ii); */
   }
  
   if(gap_debug)
@@ -2025,8 +2030,11 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
       if(*l_fade_out_sec_ptr) { stb_elem->aud_fade_out_sec  = p_scan_gdouble(l_fade_out_sec_ptr, 0.0, 9999.9, stb); }
       if(*l_nloops_ptr)       { stb_elem->nloop             = p_scan_gint32(l_nloops_ptr,  1, 999999, stb); }
 
-//printf("\n##++ GAP_STBREC_AUD_SOUND\n");
-//gap_story_debug_print_elem(stb_elem);
+      if(gap_debug)
+      {
+        printf("\n##++ GAP_STBREC_AUD_SOUND\n");
+        gap_story_debug_print_elem(stb_elem);
+      }
 
       gap_story_list_append_elem(stb, stb_elem);
     }
@@ -2049,6 +2057,12 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
     char *l_nloops_ptr        = l_wordval[10];
     char *l_seltrack_ptr      = l_wordval[11];
     char *l_decoder_ptr       = l_wordval[12];
+    char *l_from_ptr          = l_wordval[13];
+    char *l_to_ptr            = l_wordval[14];
+    char *l_frate_ptr         = l_wordval[15];
+    gint32  l_from_frame;
+    gint32  l_to_frame;
+    gdouble l_framerate;
 
 
     stb_elem = gap_story_new_elem(GAP_STBREC_AUD_MOVIE);
@@ -2073,6 +2087,38 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
       if(*l_seltrack_ptr)     { stb_elem->aud_seltrack      = p_scan_gint32(l_seltrack_ptr,  1, 999999, stb); }
       if(*l_decoder_ptr)      { stb_elem->preferred_decoder = g_strdup(l_decoder_ptr);
                               }
+
+      /* optional positioning in unit frames */
+      l_from_frame = -1;
+      l_to_frame = -1;
+      
+      /* per default we use the master framerate for frame base positioning
+       * (correctly we should get the original framerate used in the videofile 
+       *  where the audio is extracted from)
+       */
+      l_framerate = stb->master_framerate;
+      
+      if(*l_from_ptr)     { l_from_frame = p_scan_gint32(l_from_ptr,     0, 999999, stb); }
+      if(*l_to_ptr)       { l_to_frame   = p_scan_gint32(l_to_ptr,       0, 999999, stb); }
+      if(*l_frate_ptr)    { l_framerate  = p_scan_gdouble(l_frate_ptr,   1.0, 999.9, stb); }
+
+      if(l_framerate < 1)
+      {
+        l_framerate = 1;
+      }
+      
+      if(l_from_frame > 0)
+      {
+        /* framenumbers starts at 1. frame one has 0 sec starttime */ 
+        stb_elem->aud_play_from_sec = (l_from_frame -1) / l_framerate;
+	stb_elem->from_frame = l_from_frame;
+	stb_elem->aud_framerate = l_framerate;
+      }
+      if(l_to_frame > 0)
+      {
+        stb_elem->aud_play_to_sec = (l_to_frame -1) / l_framerate;
+	stb_elem->to_frame = l_to_frame;
+      }
 
       gap_story_list_append_elem(stb, stb_elem);
     }
@@ -2503,6 +2549,7 @@ gap_story_save(GapStoryBoard *stb, const char *filename)
     for(stb_elem = stb->stb_elem; stb_elem != NULL; stb_elem = (GapStoryElem *)stb_elem->next)
     {
       gchar l_dbl_str_step_dendity[G_ASCII_DTOSTR_BUF_SIZE];
+      gchar l_dbl_str[G_ASCII_DTOSTR_BUF_SIZE];
 
       /* setlocale independent float string */
       g_ascii_dtostr(&l_dbl_str_step_dendity[0]
@@ -2663,6 +2710,234 @@ gap_story_save(GapStoryBoard *stb, const char *filename)
 	    gap_story_debug_print_elem(stb_elem);
 	  }
           break;
+
+
+        case GAP_STBREC_AUD_MOVIE:
+          {
+            gap_stb_syntax_get_parname_tab(GAP_STBKEY_AUD_PLAY_MOVIE
+                                    ,&l_parnam_tab
+                                    );
+            p_story_save_comments(fp, stb_elem);
+
+            fprintf(fp, "%s      %s:%d %s:\"%s\" "
+                 , GAP_STBKEY_AUD_PLAY_MOVIE
+                 , l_parnam_tab.parname[1]              , (int)stb_elem->track
+                 , l_parnam_tab.parname[2]              , stb_elem->orig_filename
+                 );
+
+            if(stb_elem->to_frame <= 0.0)
+            {
+              /* use values in seconds when
+               * no valid frame range values are available
+               */
+              g_ascii_dtostr(&l_dbl_str[0]
+                       ,G_ASCII_DTOSTR_BUF_SIZE
+                       ,stb_elem->aud_play_from_sec
+                       );
+                 
+              fprintf(fp, "%s:%s "
+                    , l_parnam_tab.parname[3]              , l_dbl_str
+                   );
+                   
+              g_ascii_dtostr(&l_dbl_str[0]
+                       ,G_ASCII_DTOSTR_BUF_SIZE
+                       ,stb_elem->aud_play_to_sec
+                       );
+                   
+              fprintf(fp, "%s:%s "
+                   , l_parnam_tab.parname[4]              , l_dbl_str
+                   );
+            }     
+            g_ascii_dtostr(&l_dbl_str[0]
+                     ,G_ASCII_DTOSTR_BUF_SIZE
+                     ,stb_elem->aud_volume
+                     );
+                 
+            fprintf(fp, "%s:%s "
+                 , l_parnam_tab.parname[5]              , l_dbl_str
+                 );
+
+            if((stb_elem->aud_fade_in_sec > 0.0)
+            || (stb_elem->aud_fade_out_sec > 0.0))
+            {
+              g_ascii_dtostr(&l_dbl_str[0]
+                     ,G_ASCII_DTOSTR_BUF_SIZE
+                     ,stb_elem->aud_volume_start
+                     );
+              fprintf(fp, "%s:%s "
+                     , l_parnam_tab.parname[6]              , l_dbl_str
+                     );
+
+              g_ascii_dtostr(&l_dbl_str[0]
+                     ,G_ASCII_DTOSTR_BUF_SIZE
+                     ,stb_elem->aud_fade_in_sec
+                     );
+              fprintf(fp, "%s:%s "
+                     , l_parnam_tab.parname[7]              , l_dbl_str
+                     );
+
+              g_ascii_dtostr(&l_dbl_str[0]
+                     ,G_ASCII_DTOSTR_BUF_SIZE
+                     ,stb_elem->aud_volume_end
+                     );
+              fprintf(fp, "%s:%s "
+                     , l_parnam_tab.parname[8]              , l_dbl_str
+                     );
+
+              g_ascii_dtostr(&l_dbl_str[0]
+                     ,G_ASCII_DTOSTR_BUF_SIZE
+                     ,stb_elem->aud_fade_out_sec
+                     );
+                 
+              fprintf(fp, "%s:%s "
+                     , l_parnam_tab.parname[9]              , l_dbl_str
+                     );
+            }
+
+            fprintf(fp, "%s:%d %s:%d "
+                 , l_parnam_tab.parname[10]              , (int)stb_elem->nloop
+                 , l_parnam_tab.parname[11]              , (int)stb_elem->aud_seltrack
+                 );
+
+            if(stb_elem->preferred_decoder)
+            {
+              fprintf(fp, " %s:\"%s\""
+                 , l_parnam_tab.parname[12]
+                 , stb_elem->preferred_decoder
+                 );
+            }
+                 
+            if(stb_elem->to_frame > 0)
+            {
+              g_ascii_dtostr(&l_dbl_str[0]
+                     ,G_ASCII_DTOSTR_BUF_SIZE
+                     ,stb_elem->aud_framerate
+                     );
+              fprintf(fp, "%s:%06d %s:%06d %s:%s "
+                 , l_parnam_tab.parname[13]              , (int)stb_elem->from_frame
+                 , l_parnam_tab.parname[14]              , (int)stb_elem->to_frame
+                 , l_parnam_tab.parname[15]              , l_dbl_str
+                 );
+            }
+
+            fprintf(fp, "\n");
+          }
+          break;
+        case GAP_STBREC_AUD_SILENCE:
+          {
+            gap_stb_syntax_get_parname_tab(GAP_STBKEY_AUD_SILENCE
+                                    ,&l_parnam_tab
+                                    );
+            p_story_save_comments(fp, stb_elem);
+
+            g_ascii_dtostr(&l_dbl_str[0]
+                     ,G_ASCII_DTOSTR_BUF_SIZE
+                     ,stb_elem->aud_play_to_sec
+                     );
+            fprintf(fp, "%s      %s:%d %s:%s "
+                 , GAP_STBKEY_AUD_SILENCE
+                 , l_parnam_tab.parname[1]              , (int)stb_elem->track
+                 , l_parnam_tab.parname[2]              , l_dbl_str
+                 );
+            if(stb_elem->aud_wait_untiltime_sec > 0.0)
+            {
+              g_ascii_dtostr(&l_dbl_str[0]
+                     ,G_ASCII_DTOSTR_BUF_SIZE
+                     ,stb_elem->aud_wait_untiltime_sec
+                     );
+              fprintf(fp, "%s:%s "
+                 , l_parnam_tab.parname[3]              , l_dbl_str
+                 );
+            }
+            fprintf(fp, "\n");
+          }
+          break;
+        case GAP_STBREC_AUD_SOUND:
+          {
+            gap_stb_syntax_get_parname_tab(GAP_STBKEY_AUD_PLAY_SOUND
+                                    ,&l_parnam_tab
+                                    );
+            p_story_save_comments(fp, stb_elem);
+
+            fprintf(fp, "%s      %s:%d %s:\"%s\" "
+                 , GAP_STBKEY_AUD_PLAY_SOUND
+                 , l_parnam_tab.parname[1]              , (int)stb_elem->track
+                 , l_parnam_tab.parname[2]              , stb_elem->orig_filename
+                 );
+
+            g_ascii_dtostr(&l_dbl_str[0]
+                     ,G_ASCII_DTOSTR_BUF_SIZE
+                     ,stb_elem->aud_play_from_sec
+                     );
+               
+            fprintf(fp, "%s:%s "
+                  , l_parnam_tab.parname[3]              , l_dbl_str
+                 );
+                 
+            g_ascii_dtostr(&l_dbl_str[0]
+                     ,G_ASCII_DTOSTR_BUF_SIZE
+                     ,stb_elem->aud_play_to_sec
+                     );
+                 
+            fprintf(fp, "%s:%s "
+                 , l_parnam_tab.parname[4]              , l_dbl_str
+                 );
+
+            g_ascii_dtostr(&l_dbl_str[0]
+                     ,G_ASCII_DTOSTR_BUF_SIZE
+                     ,stb_elem->aud_volume
+                     );
+                 
+            fprintf(fp, "%s:%s "
+                 , l_parnam_tab.parname[5]              , l_dbl_str
+                 );
+
+            if((stb_elem->aud_fade_in_sec > 0.0)
+            || (stb_elem->aud_fade_out_sec > 0.0))
+            {
+              g_ascii_dtostr(&l_dbl_str[0]
+                     ,G_ASCII_DTOSTR_BUF_SIZE
+                     ,stb_elem->aud_volume_start
+                     );
+              fprintf(fp, "%s:%s "
+                     , l_parnam_tab.parname[6]              , l_dbl_str
+                     );
+
+              g_ascii_dtostr(&l_dbl_str[0]
+                     ,G_ASCII_DTOSTR_BUF_SIZE
+                     ,stb_elem->aud_fade_in_sec
+                     );
+              fprintf(fp, "%s:%s "
+                     , l_parnam_tab.parname[7]              , l_dbl_str
+                     );
+
+              g_ascii_dtostr(&l_dbl_str[0]
+                     ,G_ASCII_DTOSTR_BUF_SIZE
+                     ,stb_elem->aud_volume_end
+                     );
+              fprintf(fp, "%s:%s "
+                     , l_parnam_tab.parname[8]              , l_dbl_str
+                     );
+
+              g_ascii_dtostr(&l_dbl_str[0]
+                     ,G_ASCII_DTOSTR_BUF_SIZE
+                     ,stb_elem->aud_fade_out_sec
+                     );
+                 
+              fprintf(fp, "%s:%s "
+                     , l_parnam_tab.parname[9]              , l_dbl_str
+                     );
+            }
+
+            fprintf(fp, "%s:%d "
+                 , l_parnam_tab.parname[10]              , (int)stb_elem->nloop
+                 );
+
+
+            fprintf(fp, "\n");
+          }
+          break;
+
         case GAP_STBREC_VID_COMMENT:
           p_story_save_fprint_comment(fp, stb_elem);
           break;
@@ -2994,8 +3269,8 @@ gap_story_get_master_size(GapStoryBoard *stb
   
   if(*width < 1)
   {
-    *width = MAX(stb->master_width, 320);
-    *height = MAX(stb->master_height, 200);
+    *width = MAX(stb->master_width, 720);
+    *height = MAX(stb->master_height, 576);
   }
   
   
@@ -3108,6 +3383,32 @@ gap_story_elem_duplicate(GapStoryElem      *stb_elem)
     stb_elem_dup->nframes         = stb_elem->nframes; 
     stb_elem_dup->step_density    = stb_elem->step_density; 
     stb_elem_dup->file_line_nr    = stb_elem->file_line_nr;  
+
+    stb_elem_dup->vid_wait_untiltime_sec  = stb_elem->vid_wait_untiltime_sec;  
+    stb_elem_dup->color_red               = stb_elem->color_red;  
+    stb_elem_dup->color_green             = stb_elem->color_green;  
+    stb_elem_dup->color_blue              = stb_elem->color_blue;  
+    stb_elem_dup->color_alpha             = stb_elem->color_alpha;  
+    stb_elem_dup->att_keep_proportions    = stb_elem->att_keep_proportions;  
+    stb_elem_dup->att_fit_width           = stb_elem->att_fit_width;  
+    stb_elem_dup->att_fit_height          = stb_elem->att_fit_height;  
+    stb_elem_dup->att_value_from          = stb_elem->att_value_from;  
+    stb_elem_dup->att_value_to            = stb_elem->att_value_to;  
+    stb_elem_dup->att_value_dur           = stb_elem->att_value_dur;  
+    if(stb_elem->aud_filename)            stb_elem_dup->aud_filename     = g_strdup(stb_elem->aud_filename);
+    stb_elem_dup->aud_seltrack            = stb_elem->aud_seltrack;  
+    stb_elem_dup->aud_wait_untiltime_sec  = stb_elem->aud_wait_untiltime_sec;  
+    stb_elem_dup->aud_play_from_sec       = stb_elem->aud_play_from_sec;  
+    stb_elem_dup->aud_play_to_sec         = stb_elem->aud_play_to_sec;  
+    stb_elem_dup->aud_volume_start        = stb_elem->aud_volume_start;  
+    stb_elem_dup->aud_volume              = stb_elem->aud_volume;  
+    stb_elem_dup->aud_volume_end          = stb_elem->aud_volume_end;  
+    stb_elem_dup->aud_fade_in_sec         = stb_elem->aud_fade_in_sec;  
+    stb_elem_dup->aud_fade_out_sec        = stb_elem->aud_fade_out_sec;  
+    stb_elem_dup->aud_min_play_sec        = stb_elem->aud_min_play_sec;  
+    stb_elem_dup->aud_max_play_sec        = stb_elem->aud_max_play_sec;  
+    stb_elem_dup->aud_framerate           = stb_elem->aud_framerate;  
+
     stb_elem_dup->comment = NULL;
     stb_elem_dup->next = NULL;
 
@@ -3450,3 +3751,259 @@ gap_story_get_preferred_decoder(GapStoryBoard *stb, GapStoryElem *stb_elem)
   return(preferred_decoder);
 
 }  /* end gap_story_get_preferred_decoder */
+
+
+/* --------------------------------
+ * gap_story_set_aud_movie_min_max
+ * --------------------------------
+ * analyze the storyboard elements from type GAP_STBREC_AUD_MOVIE
+ * and set the aud_min_play_sec and aud_max_play_sec information
+ * if the clip is the only reference to a videofile
+ * these values are equal to aud_play_from_sec, aud_play_to_sec
+ * if there are more references the min/max of all references is set
+ * (in all refrencing GAP_STBREC_AUD_MOVIE elements)
+ *
+ * this information is provided for optimized audio extraction
+ * at storyboard audio processing.
+ */
+void
+gap_story_set_aud_movie_min_max(GapStoryBoard *stb)
+{
+  GapStoryElem *stb_element;
+  GapStoryElem *stb_elem;
+
+  /* init all min/max values with negative value */
+  for(stb_elem = stb->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
+  {
+    stb_elem->aud_min_play_sec = -1.0;
+    stb_elem->aud_max_play_sec = -1.0;
+  }
+
+
+  /* Loop foreach Element in the STB */
+  for(stb_element = stb->stb_elem; stb_element != NULL;  stb_element = stb_element->next)
+  {
+    if((stb_element->record_type == GAP_STBREC_AUD_MOVIE)
+    && (stb_element->aud_min_play_sec < 0.0))
+    {
+      gdouble min_play_sec;
+      gdouble max_play_sec;
+      
+      min_play_sec = stb_element->aud_play_from_sec;
+      max_play_sec = stb_element->aud_play_to_sec;
+
+      /* search for more references to same audiotrack in the same videofile */
+      for(stb_elem = stb_element->next; stb_elem != NULL;  stb_elem = stb_elem->next)
+      {
+        if((stb_elem->aud_filename)
+	&& (stb_element->aud_filename)
+        && (stb_elem->record_type  == stb_element->record_type)
+        && (stb_elem->aud_seltrack == stb_element->aud_seltrack))
+        {
+	  if(strcmp(stb_elem->aud_filename, stb_element->aud_filename) == 0)
+	  {
+            min_play_sec = MIN(min_play_sec, stb_elem->aud_play_from_sec);
+            max_play_sec = MAX(max_play_sec, stb_elem->aud_play_to_sec);
+	  }
+        }
+      }
+      
+      /* set min/max values in all references */
+      for(stb_elem = stb_element; stb_elem != NULL;  stb_elem = stb_elem->next)
+      {
+        if((stb_elem->aud_filename)
+	&& (stb_element->aud_filename)
+        && (stb_elem->record_type  == stb_element->record_type)
+        && (stb_elem->aud_seltrack == stb_element->aud_seltrack))
+        {
+	  if(strcmp(stb_elem->aud_filename, stb_element->aud_filename) == 0)
+	  {
+            stb_elem->aud_min_play_sec = min_play_sec;
+            stb_elem->aud_max_play_sec = max_play_sec;
+	  }
+        }
+      }
+
+    }
+  }
+  
+}  /* end gap_story_set_aud_movie_min_max */
+
+
+/* --------------------------
+ * gap_story_elem_is_audio
+ * --------------------------
+ */
+gboolean
+gap_story_elem_is_audio(GapStoryElem *stb_elem)
+{
+  switch(stb_elem->record_type)
+  {
+    case GAP_STBREC_AUD_SILENCE:
+    case GAP_STBREC_AUD_SOUND:
+    case GAP_STBREC_AUD_MOVIE:
+      return (TRUE);
+      break;
+    default:
+      return (FALSE);
+  }
+  
+  return (FALSE);
+}  /* end gap_story_elem_is_audio */
+
+
+/* --------------------------
+ * gap_story_del_audio_track
+ * --------------------------
+ * delete all elements of the specified audio track
+ */
+void
+gap_story_del_audio_track(GapStoryBoard *stb
+                         ,gint aud_track
+                         )
+{
+  GapStoryElem *stb_elem;
+  GapStoryElem *stb_prev;
+  GapStoryElem *stb_next;
+
+
+  stb_prev = NULL;
+  for(stb_elem = stb->stb_elem; stb_elem != NULL;  stb_elem = stb_next)
+  {
+    stb_next = (GapStoryElem *)stb_elem->next;
+
+    if((stb_elem->track == aud_track)
+    && (gap_story_elem_is_audio(stb_elem)))
+    {
+      /* unlink the current element */
+      if(stb_prev)
+      {
+        stb_prev->next = stb_next;
+      }
+      else
+      {
+        /* unlink the 1.st elem in the storyboard list */
+        stb->stb_elem = stb_next;
+      }
+      
+      gap_story_elem_free(&stb_elem);
+    }
+    else
+    {
+      stb_prev = stb_elem;
+    }
+  }
+
+}  /* end gap_story_del_audio_track */
+
+
+/* --------------------------
+ * gap_story_gen_otone_audio
+ * --------------------------
+ */
+gboolean
+gap_story_gen_otone_audio(GapStoryBoard *stb
+                         ,gint vid_track
+                         ,gint aud_track
+                         ,gint aud_seltrack
+                         ,gboolean replace_existing_aud_track
+                         )
+{
+  GapStoryElem *stb_elem;
+  GapStoryElem *stb_elem_new;
+  gdouble      l_framerate;
+  
+  l_framerate = MAX(0.1, stb->master_framerate);
+  
+  /* handling for already existing audio track */
+  if(replace_existing_aud_track)
+  {
+    gap_story_del_audio_track(stb, aud_track);
+  }
+  else
+  {
+    for(stb_elem = stb->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
+    {
+      if((stb_elem->track == aud_track)
+      && (gap_story_elem_is_audio(stb_elem)))
+      {
+        /* there are already elements for the specified aud_track
+         * and replace is not required.
+         */
+        return(FALSE);
+      }
+    }
+  }
+
+  /* generate the otone track (at the lists tail) */
+  for(stb_elem = stb->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
+  {
+    if(stb_elem->track == vid_track)
+    {
+      switch(stb_elem->record_type)
+      {
+        case GAP_STBREC_VID_MOVIE:
+          /* add otne for the movie when playing normal forward */
+          if((stb_elem->playmode == GAP_STB_PM_NORMAL)
+          && (stb_elem->step_density == 1.0)
+          && (stb_elem->from_frame < stb_elem->to_frame))
+          {
+            stb_elem_new = gap_story_new_elem(GAP_STBREC_AUD_MOVIE);
+            if(stb_elem_new)
+            {
+              stb_elem_new->aud_play_from_sec = 0.0;
+              stb_elem_new->track             = aud_track;
+              stb_elem_new->from_frame        = stb_elem->from_frame;
+              stb_elem_new->to_frame          = stb_elem->to_frame;
+              stb_elem_new->aud_filename      = g_strdup(stb_elem->aud_filename);
+              stb_elem_new->orig_filename     = g_strdup(stb_elem->orig_filename);
+              
+              stb_elem_new->aud_play_from_sec = (gdouble)stb_elem->from_frame / l_framerate;
+              stb_elem_new->aud_play_to_sec   = (gdouble)stb_elem->to_frame / l_framerate;
+              stb_elem_new->aud_wait_untiltime_sec = 0.0;
+              stb_elem_new->aud_volume             = 1.0;
+              stb_elem_new->aud_volume_start       = 1.0;
+              stb_elem_new->aud_fade_in_sec        = 0.0;
+              stb_elem_new->aud_volume_end         = 1.0;
+              stb_elem_new->aud_fade_out_sec       = 0.0;
+              stb_elem_new->nloop                  = stb_elem->nloop;
+              stb_elem_new->aud_seltrack           = aud_seltrack;
+              stb_elem_new->preferred_decoder      = g_strdup(stb_elem->preferred_decoder);
+
+              gap_story_list_append_elem(stb, stb_elem_new);
+            }
+            break;
+          }
+          /* no break at this point, 
+           * same handling as all other vid record types is required
+           */
+        case GAP_STBREC_VID_SILENCE:
+        case GAP_STBREC_VID_COLOR:
+        case GAP_STBREC_VID_IMAGE:
+        case GAP_STBREC_VID_ANIMIMAGE:
+        case GAP_STBREC_VID_FRAMES:
+          /* add silence for the duration of those elements */
+          stb_elem_new = gap_story_new_elem(GAP_STBREC_AUD_SILENCE);
+          if(stb_elem_new)
+          {
+            stb_elem_new->aud_play_from_sec      = 0.0;
+            stb_elem_new->track                  = aud_track;
+            stb_elem_new->aud_play_from_sec      = 0.0;
+            stb_elem_new->aud_play_to_sec        = stb_elem->nframes / l_framerate;
+            stb_elem_new->aud_wait_untiltime_sec = 0.0;
+
+            gap_story_list_append_elem(stb, stb_elem_new);
+          }
+          break;
+        case GAP_STBREC_VID_COMMENT:
+        case GAP_STBREC_VID_UNKNOWN:
+          break;
+        default:
+          break;
+      }
+    }
+  }
+
+  return(TRUE);
+  
+}  /* end gap_story_gen_otone_audio */

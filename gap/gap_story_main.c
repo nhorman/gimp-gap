@@ -79,6 +79,7 @@ static GapStbMainGlobalParams global_params =
 , FALSE       /*  gboolean           auto_vthumb */
 , FALSE       /*  gboolean           auto_vthumb_refresh_canceled */
 , FALSE       /*  gboolean           in_player_call */
+, FALSE       /*  gboolean           arr_dlg_open */
 
 , FALSE       /*  gboolean           win_prop_dlg_open */
 , GAP_STB_EDMO_SEQUENCE_NUMBER   /*  gint32             cll_edmode */

@@ -38,6 +38,8 @@
  */
 
 /* revision history:
+ * gimp    2.1.0a;  2005/01/15  hof: replaced global data (global_arrint) by dynamic allocated data
+ *                                   to enable 2 or more simultan opened gap_arr_dialog based pop-up dialogs
  * gimp    2.1.0a;  2004/11/11  hof: added GAP_ARR_WGT_HELP_BUTTON
  * gimp    2.1.0a;  2004/11/05  hof: replaced deprecated option_menu by gimp_int_combo_box
  * gimp    2.1.0a;  2004/10/09  hof: bugfix GAP_ARR_WGT_OPT_ENTRY (entry height was set to 0)
@@ -105,6 +107,7 @@
 /* default alignment for labels 0.0 == left, 1.0 == right */
 #define LABEL_DEFAULT_ALIGN_X 0.0
 #define LABEL_DEFAULT_ALIGN_Y 0.5
+#define GAP_ARR_INTERFACE_PTR  "gap_arr_interface_ptr"
 
 typedef void (*t_entry_cb_func) (GtkWidget *widget, GapArrArg *arr_ptr);
 
@@ -129,12 +132,6 @@ typedef struct
   gint       argc;
 }   t_all_arr_args;
 
-static t_arr_interface global_arrint =
-{
-  NULL,     /*  dlg  */
-  FALSE     /*  run  */
-};
-
 
 extern      int gap_debug; /* ==0  ... dont print debug infos */
 
@@ -145,45 +142,72 @@ static void   arr_close_callback        (GtkWidget *widget, gpointer data);
 static void   but_array_callback        (GtkWidget *widget, gpointer data);
 static void   arr_help_callback         (GtkWidget *widget, GapArrArg *arr_ptr);
 
-static void   entry_create_value        (char *title, GtkTable *table, int row, GapArrArg *arr_ptr,
+static void   entry_create_value        (char *title, GtkTable *table, int row, 
+                                         GapArrArg *arr_ptr, t_arr_interface *arrint_ptr,
                                          t_entry_cb_func entry_update_cb, char *init_txt);
-static void   label_create_value         (char *title, GtkTable *table, int row, GapArrArg *arr_ptr,
+static void   label_create_value         (char *title, GtkTable *table, int row,
+                                          GapArrArg *arr_ptr, t_arr_interface *arrint_ptr,
                                           gfloat align);
 static void   text_entry_update_cb       (GtkWidget *widget, GapArrArg *arr_ptr);
-static void   text_create_value          (char *title, GtkTable *table, int row, GapArrArg *arr_ptr);
+static void   text_create_value          (char *title, GtkTable *table, int row,
+                                          GapArrArg *arr_ptr, t_arr_interface *arrint_ptr);
 static void   filesel_close_cb           (GtkWidget *widget, GapArrArg *arr_ptr);
 static void   filesel_ok_cb              (GtkWidget *widget, GapArrArg *arr_ptr);
 static void   filesel_open_cb            (GtkWidget *widget, GapArrArg *arr_ptr);
-static void   filesel_create_value       (char *title, GtkTable *table, int row, GapArrArg *arr_ptr);
+static void   filesel_create_value       (char *title, GtkTable *table, int row,
+                                          GapArrArg *arr_ptr, t_arr_interface *arrint_ptr);
 
-static void   int_create_value           (char *title, GtkTable *table, int row, GapArrArg *arr_ptr);
-static void   flt_create_value           (char *title, GtkTable *table, int row, GapArrArg *arr_ptr);
+static void   int_create_value           (char *title, GtkTable *table, int row,
+                                          GapArrArg *arr_ptr, t_arr_interface *arrint_ptr);
+static void   flt_create_value           (char *title, GtkTable *table, int row,
+                                          GapArrArg *arr_ptr, t_arr_interface *arrint_ptr);
 
 static void   toggle_update_cb           (GtkWidget *widget, GapArrArg *arr_ptr);
-static void   toggle_create_value        (char *title, GtkTable *table, int row, GapArrArg *arr_ptr);
+static void   toggle_create_value        (char *title, GtkTable *table, int row, 
+                                          GapArrArg *arr_ptr, t_arr_interface *arrint_ptr);
 
 static void   combo_update_cb            (GtkWidget *widget, GapArrArg *arr_ptr);
 
 static void   radio_update_cb            (GtkWidget *widget, t_radio_arg *radio_ptr);
-static void   radio_create_value         (char *title, GtkTable *table, int row, GapArrArg *arr_ptr);
-static void   combo_create_value         (char *title, GtkTable *table, int row, GapArrArg *arr_ptr);
+static void   radio_create_value         (char *title, GtkTable *table, int row, 
+                                          GapArrArg *arr_ptr, t_arr_interface *arrint_ptr);
+static void   combo_create_value         (char *title, GtkTable *table, int row,
+                                          GapArrArg *arr_ptr, t_arr_interface *arrint_ptr);
 
-static void   pair_int_create_value     (gchar *title, GtkTable *table, gint row, GapArrArg *arr_ptr);
-static void   pair_flt_create_value     (gchar *title, GtkTable *table, gint row, GapArrArg *arr_ptr);
+static void   pair_int_create_value     (gchar *title, GtkTable *table, gint row,
+                                         GapArrArg *arr_ptr, t_arr_interface *arrint_ptr);
+static void   pair_flt_create_value     (gchar *title, GtkTable *table, gint row,
+                                         GapArrArg *arr_ptr, t_arr_interface *arrint_ptr);
 
 static void   default_button_cb           (GtkWidget *widget, t_all_arr_args *arr_all);
-static void   default_button_create_value (char *title, GtkWidget *hbox, GapArrArg *arr_ptr, t_all_arr_args *arr_all);
+static void   default_button_create_value (char *title, GtkWidget *hbox, 
+                                           GapArrArg *arr_ptr, t_arr_interface *arrint_ptr, 
+					   t_all_arr_args *arr_all);
 
 
 
 static void
 arr_close_callback (GtkWidget *widget,
-		       gpointer   data)
+		    gpointer   data)
 {
+  t_arr_interface *arrint_ptr;
   GtkWidget *dlg;
   
-  dlg = global_arrint.dlg;
-  global_arrint.dlg = NULL;
+  arrint_ptr = NULL;
+  dlg = NULL;
+
+  if(widget)
+  {
+    arrint_ptr = (t_arr_interface *) g_object_get_data (G_OBJECT (widget)
+                                                       , GAP_ARR_INTERFACE_PTR
+						       );
+  }
+
+  if(arrint_ptr)
+  {
+    dlg = arrint_ptr->dlg;
+    arrint_ptr->dlg = NULL;
+  }
 
   if(dlg)
   {
@@ -195,19 +219,30 @@ arr_close_callback (GtkWidget *widget,
 static void
 arr_help_callback (GtkWidget *widget, GapArrArg *arr_ptr)
 {
-  if(arr_ptr)
+  t_arr_interface *arrint_ptr;
+  
+  arrint_ptr = NULL;
+  if(widget)
+  {
+    arrint_ptr = (t_arr_interface *) g_object_get_data (G_OBJECT (widget)
+                                                       , GAP_ARR_INTERFACE_PTR
+						       );
+  }
+  
+  if((arr_ptr)
+  && (arrint_ptr))
   {
     if(arr_ptr->help_id)
     {
       if(arr_ptr->help_func)
       {
         /* call user help function */   
-	 arr_ptr->help_func (arr_ptr->help_id, global_arrint.dlg);
+	 arr_ptr->help_func (arr_ptr->help_id, arrint_ptr->dlg);
       }
       else
       {
         /* call gimp standard help function */
-        gimp_standard_help_func(arr_ptr->help_id, global_arrint.dlg);
+        gimp_standard_help_func(arr_ptr->help_id, arrint_ptr->dlg);
       }
     }
   }
@@ -217,14 +252,26 @@ static void
 but_array_callback (GtkWidget *widget,
 		    gpointer   data)
 {
-  global_arrint.run = *((gint *)data);                  /* set returnvalue according to button */
-  arr_close_callback(NULL, NULL);
+  t_arr_interface *arrint_ptr;
+
+  arrint_ptr = (t_arr_interface *) g_object_get_data (G_OBJECT (widget), GAP_ARR_INTERFACE_PTR);
+  if(arrint_ptr)
+  {
+    arrint_ptr->run = *((gint *)data);                  /* set returnvalue according to button */
+    arr_close_callback(arrint_ptr->dlg, NULL);
+    return;
+  }
+  else
+  {
+    arr_close_callback(widget, NULL);
+  }
 }
 
 
 static void
-entry_create_value(char *title, GtkTable *table, int row, GapArrArg *arr_ptr,
-                   t_entry_cb_func entry_update_cb, char *init_txt)
+entry_create_value(char *title, GtkTable *table, int row,
+                   GapArrArg *arr_ptr, t_arr_interface *arrint_ptr,
+		   t_entry_cb_func entry_update_cb, char *init_txt)
 {
     GtkWidget *entry;
     GtkWidget *label;
@@ -236,6 +283,7 @@ entry_create_value(char *title, GtkTable *table, int row, GapArrArg *arr_ptr,
     gtk_widget_show(label);
 
     entry = gtk_entry_new();
+    g_object_set_data (G_OBJECT (entry), GAP_ARR_INTERFACE_PTR, (gpointer)arrint_ptr);
     gtk_widget_set_size_request(entry, arr_ptr->entry_width, -1);
     gtk_entry_set_text(GTK_ENTRY(entry), init_txt);
     gtk_table_attach(GTK_TABLE(table), entry, 1, 2, row, row + 1, GTK_FILL, GTK_FILL | GTK_EXPAND, 4, 0);
@@ -257,7 +305,9 @@ entry_create_value(char *title, GtkTable *table, int row, GapArrArg *arr_ptr,
  */
 
 static void
-label_create_value(char *title, GtkTable *table, int row, GapArrArg *arr_ptr, gfloat align)
+label_create_value(char *title, GtkTable *table, int row,
+                   GapArrArg *arr_ptr, t_arr_interface *arrint_ptr,
+		   gfloat align)
 {
     GtkWidget *label;
     GtkWidget *hbox;
@@ -309,11 +359,14 @@ label_create_value(char *title, GtkTable *table, int row, GapArrArg *arr_ptr, gf
  */
 
 static void
-default_button_create_value(char *title, GtkWidget *hbox, GapArrArg *arr_ptr, t_all_arr_args *arr_all)
+default_button_create_value(char *title, GtkWidget *hbox,
+                            GapArrArg *arr_ptr, t_arr_interface *arrint_ptr,
+			    t_all_arr_args *arr_all)
 {
     GtkWidget *button;
 
     button = gtk_button_new_from_stock (GIMP_STOCK_RESET);    /*button = gtk_button_new_with_label (title);*/
+    g_object_set_data (G_OBJECT (button), GAP_ARR_INTERFACE_PTR, (gpointer)arrint_ptr);
     
     gtk_widget_show(button);
     g_signal_connect (G_OBJECT (button), "clicked",
@@ -478,11 +531,11 @@ fontsel_open_cb(GtkWidget *widget, GapArrArg *arr_ptr)
 
 
 static void
-fontsel_create_value(char *title, GtkTable *table, int row, GapArrArg *arr_ptr)
+fontsel_create_value(char *title, GtkTable *table, int row, GapArrArg *arr_ptr, t_arr_interface *arrint_ptr)
 {
   GtkWidget *button;
 
-  entry_create_value(title, table, row, arr_ptr, text_entry_update_cb, arr_ptr->text_buf_ret);
+  entry_create_value(title, table, row, arr_ptr, arrint_ptr, text_entry_update_cb, arr_ptr->text_buf_ret);
   gtk_widget_set_sensitive(arr_ptr->text_entry ,FALSE);
   arr_ptr->text_fontsel = NULL;
     
@@ -564,15 +617,17 @@ filesel_open_cb(GtkWidget *widget, GapArrArg *arr_ptr)
 
 
 static void
-filesel_create_value(char *title, GtkTable *table, int row, GapArrArg *arr_ptr)
+filesel_create_value(char *title, GtkTable *table, int row, 
+                     GapArrArg *arr_ptr, t_arr_interface *arrint_ptr)
 {
   GtkWidget *button;
 
-  entry_create_value(title, table, row, arr_ptr, text_entry_update_cb, arr_ptr->text_buf_ret);
+  entry_create_value(title, table, row, arr_ptr, arrint_ptr, text_entry_update_cb, arr_ptr->text_buf_ret);
   arr_ptr->text_filesel = NULL;
     
   /* Button  to invoke filebrowser */  
   button = gtk_button_new_with_label ( "..." );
+  g_object_set_data (G_OBJECT (button), GAP_ARR_INTERFACE_PTR, (gpointer)arrint_ptr);
   gtk_table_attach( GTK_TABLE(table), button, 2, 3, row, row +1,
 		    0, 0, 0, 0 );
   gtk_widget_show (button);
@@ -604,9 +659,9 @@ text_entry_update_cb(GtkWidget *widget, GapArrArg *arr_ptr)
 }
 
 static void
-text_create_value(char *title, GtkTable *table, int row, GapArrArg *arr_ptr)
+text_create_value(char *title, GtkTable *table, int row, GapArrArg *arr_ptr, t_arr_interface *arrint_ptr)
 {
-    entry_create_value(title, table, row, arr_ptr, text_entry_update_cb, arr_ptr->text_buf_ret);
+    entry_create_value(title, table, row, arr_ptr, arrint_ptr, text_entry_update_cb, arr_ptr->text_buf_ret);
 }
 
 
@@ -616,7 +671,8 @@ text_create_value(char *title, GtkTable *table, int row, GapArrArg *arr_ptr)
  */
 
 static void
-spin_create_value(char *title, GtkTable *table, int row, GapArrArg *arr_ptr
+spin_create_value(char *title, GtkTable *table, int row
+                , GapArrArg *arr_ptr, t_arr_interface *arrint_ptr
                 , gboolean int_flag
                 , gdouble un_min
                 , gdouble un_max
@@ -675,6 +731,8 @@ spin_create_value(char *title, GtkTable *table, int row, GapArrArg *arr_ptr
 		      1.0,                 /* climb_rate */
 		      l_digits              /* digits */
                       );
+
+  g_object_set_data (G_OBJECT (spinbutton), GAP_ARR_INTERFACE_PTR, (gpointer)arrint_ptr);
  
   gtk_widget_set_size_request(spinbutton, arr_ptr->entry_width, -1);
   gtk_widget_show (spinbutton);
@@ -717,9 +775,10 @@ spin_create_value(char *title, GtkTable *table, int row, GapArrArg *arr_ptr
  * --------------------------
  */
 static void
-int_create_value(char *title, GtkTable *table, int row, GapArrArg *arr_ptr)
+int_create_value(char *title, GtkTable *table, int row, 
+                 GapArrArg *arr_ptr, t_arr_interface *arrint_ptr)
 {
-  spin_create_value(title, table, row, arr_ptr
+  spin_create_value(title, table, row, arr_ptr, arrint_ptr
                    , TRUE  /* int_flag */
                    , (gdouble) arr_ptr->int_min
                    , (gdouble) arr_ptr->int_max
@@ -731,9 +790,10 @@ int_create_value(char *title, GtkTable *table, int row, GapArrArg *arr_ptr)
  */
 
 static void
-flt_create_value(char *title, GtkTable *table, int row, GapArrArg *arr_ptr)
+flt_create_value(char *title, GtkTable *table, int row, 
+                 GapArrArg *arr_ptr, t_arr_interface *arrint_ptr)
 {
-  spin_create_value(title, table, row, arr_ptr
+  spin_create_value(title, table, row, arr_ptr, arrint_ptr
                    , FALSE  /* int_flag */
                    , (gdouble) arr_ptr->flt_min
                    , (gdouble) arr_ptr->flt_max
@@ -762,7 +822,8 @@ toggle_update_cb (GtkWidget *widget, GapArrArg *arr_ptr)
 }
 
 static void
-toggle_create_value(char *title, GtkTable *table, int row, GapArrArg *arr_ptr)
+toggle_create_value(char *title, GtkTable *table, int row, 
+                    GapArrArg *arr_ptr, t_arr_interface *arrint_ptr)
 {
   GtkWidget *check_button;
   GtkWidget *label;
@@ -781,6 +842,7 @@ toggle_create_value(char *title, GtkTable *table, int row, GapArrArg *arr_ptr)
   else                            l_togg_txt = arr_ptr->togg_label;
   /* check button */
   check_button = gtk_check_button_new_with_label (l_togg_txt);
+  g_object_set_data (G_OBJECT (check_button), GAP_ARR_INTERFACE_PTR, (gpointer)arrint_ptr);
   gtk_table_attach ( GTK_TABLE (table), check_button, 1, 3, row, row+1, GTK_FILL, 0, 0, 0);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (check_button),
 				arr_ptr->int_ret);
@@ -870,7 +932,8 @@ radio_update_cb (GtkWidget *widget, t_radio_arg *radio_ptr)
 }
 
 static void
-radio_create_value(char *title, GtkTable *table, int row, GapArrArg *arr_ptr)
+radio_create_value(char *title, GtkTable *table, int row, 
+                   GapArrArg *arr_ptr, t_arr_interface *arrint_ptr)
 {
   GtkWidget *label;
   GtkWidget *radio_table;
@@ -937,6 +1000,7 @@ radio_create_value(char *title, GtkTable *table, int row, GapArrArg *arr_ptr)
      if(gap_debug) printf("radio_create_value: %02d %s\n", l_idy, l_radio_txt);
     
      radio_button = gtk_radio_button_new_with_label ( radio_group, l_radio_txt );
+     g_object_set_data (G_OBJECT (radio_button), GAP_ARR_INTERFACE_PTR, (gpointer)arrint_ptr);
      radio_group = gtk_radio_button_get_group ( GTK_RADIO_BUTTON (radio_button) );  
      gtk_table_attach ( GTK_TABLE (radio_table), radio_button, 0, 2, l_idy, l_idy+1, GTK_FILL | GTK_EXPAND, 0, 0, 0);
 
@@ -978,7 +1042,8 @@ radio_create_value(char *title, GtkTable *table, int row, GapArrArg *arr_ptr)
 
 /* combo boxes share data structure with GAP_ARR_WGT_RADIO */
 static void
-combo_create_value(char *title, GtkTable *table, int row, GapArrArg *arr_ptr)
+combo_create_value(char *title, GtkTable *table, int row,
+                   GapArrArg *arr_ptr, t_arr_interface *arrint_ptr)
 {
   GtkWidget *label;
   GtkWidget *entry;
@@ -1001,6 +1066,7 @@ combo_create_value(char *title, GtkTable *table, int row, GapArrArg *arr_ptr)
   {
     l_col++;
     entry = gtk_entry_new();
+    g_object_set_data (G_OBJECT (entry), GAP_ARR_INTERFACE_PTR, (gpointer)arrint_ptr);
     gtk_widget_set_size_request(entry, arr_ptr->entry_width, -1);
     gtk_entry_set_text(GTK_ENTRY(entry), arr_ptr->text_buf_ret);
     gtk_table_attach(GTK_TABLE(table), entry, l_col, l_col+1, row, row + 1, GTK_FILL, GTK_FILL | GTK_EXPAND, 4, 0);
@@ -1019,6 +1085,7 @@ combo_create_value(char *title, GtkTable *table, int row, GapArrArg *arr_ptr)
   /* create an empty combo box */
   l_col++;
   combo = gimp_int_combo_box_new (NULL, 0);
+  g_object_set_data (G_OBJECT (combo), GAP_ARR_INTERFACE_PTR, (gpointer)arrint_ptr);
 
   g_signal_connect (combo, "changed",
                     G_CALLBACK (combo_update_cb),
@@ -1068,7 +1135,8 @@ combo_create_value(char *title, GtkTable *table, int row, GapArrArg *arr_ptr)
  */
 
 static void
-pair_flt_create_value(gchar *title, GtkTable *table, gint row, GapArrArg *arr_ptr)
+pair_flt_create_value(gchar *title, GtkTable *table, gint row,
+                      GapArrArg *arr_ptr, t_arr_interface *arrint_ptr)
 {
   GtkObject *adj;
   gfloat     umin, umax;
@@ -1113,7 +1181,8 @@ pair_flt_create_value(gchar *title, GtkTable *table, gint row, GapArrArg *arr_pt
  */
 
 static void
-pair_int_create_value(gchar *title, GtkTable *table, gint row, GapArrArg *arr_ptr)
+pair_int_create_value(gchar *title, GtkTable *table, gint row, 
+                      GapArrArg *arr_ptr, t_arr_interface *arrint_ptr)
 {
   GtkObject *adj;
   gfloat     umin, umax;
@@ -1180,39 +1249,44 @@ gint gap_arr_std_dialog(const char *title_txt,
   GapArrArg  *arr_ptr;
   GapArrArg  *arr_help_ptr;
   GapArrArg  *arr_def_ptr;
+  t_arr_interface arrint_struct;
+  t_arr_interface *arrint_ptr;
     
-  global_arrint.run = b_def_val;           /* prepare default retcode (if window is closed without button) */
+  arr_def_ptr = NULL;
+  arrint_ptr = &arrint_struct;
+
+  arrint_ptr->run = b_def_val;           /* prepare default retcode (if window is closed without button) */
   l_ok_value = 0;
   table = NULL;
   arr_help_ptr = NULL;
-  arr_def_ptr = NULL;
   
   if((argc > 0) && (argv == NULL))
   {
     printf("gap_arr_std_dialog: calling error (widget array == NULL)\n");
-    return (global_arrint.run);
+    return (arrint_ptr->run);
   }
   if((b_argc > 0) && (b_argv == NULL))
   {
     printf("gap_arr_std_dialog: calling error (button array == NULL)\n");
-    return (global_arrint.run);
+    return (arrint_ptr->run);
   }
 
   gimp_ui_init ("gap_std_dialog", FALSE);
   gap_stock_init();
   
   /* dialog */
-  global_arrint.dlg = gtk_dialog_new ();
-  gtk_window_set_title (GTK_WINDOW (global_arrint.dlg), title_txt);
-  gtk_window_set_position (GTK_WINDOW (global_arrint.dlg), GTK_WIN_POS_MOUSE);
-  g_signal_connect (G_OBJECT (global_arrint.dlg), "destroy",
+  arrint_ptr->dlg = gtk_dialog_new ();
+  g_object_set_data (G_OBJECT (arrint_ptr->dlg), GAP_ARR_INTERFACE_PTR, (gpointer)arrint_ptr);
+  gtk_window_set_title (GTK_WINDOW (arrint_ptr->dlg), title_txt);
+  gtk_window_set_position (GTK_WINDOW (arrint_ptr->dlg), GTK_WIN_POS_MOUSE);
+  g_signal_connect (G_OBJECT (arrint_ptr->dlg), "destroy",
 		    G_CALLBACK (arr_close_callback),
 		    NULL);
 
-  gtk_container_set_border_width (GTK_CONTAINER (GTK_DIALOG (global_arrint.dlg)->action_area), 2);
-  gtk_box_set_homogeneous (GTK_BOX (GTK_DIALOG (global_arrint.dlg)->action_area), FALSE);
+  gtk_container_set_border_width (GTK_CONTAINER (GTK_DIALOG (arrint_ptr->dlg)->action_area), 2);
+  gtk_box_set_homogeneous (GTK_BOX (GTK_DIALOG (arrint_ptr->dlg)->action_area), FALSE);
 
-  hbbox = GTK_WIDGET(GTK_DIALOG (global_arrint.dlg)->action_area);
+  hbbox = GTK_WIDGET(GTK_DIALOG (arrint_ptr->dlg)->action_area);
 
 
   /*  parameter settings  */
@@ -1220,7 +1294,7 @@ gint gap_arr_std_dialog(const char *title_txt,
   else                     frame = gimp_frame_new (frame_txt);
   gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_ETCHED_IN);
   gtk_container_set_border_width (GTK_CONTAINER (frame), 6);
-  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (global_arrint.dlg)->vbox), frame, TRUE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (arrint_ptr->dlg)->vbox), frame, TRUE, TRUE, 0);
 
   if(argc > 0)
   {
@@ -1242,44 +1316,44 @@ gint gap_arr_std_dialog(const char *title_txt,
        switch(arr_ptr->widget_type)
        {
          case GAP_ARR_WGT_FLT_PAIR:
-            pair_flt_create_value(l_label_txt, GTK_TABLE(table), (l_idx + 1), arr_ptr);
+            pair_flt_create_value(l_label_txt, GTK_TABLE(table), (l_idx + 1), arr_ptr, arrint_ptr);
             break;
          case GAP_ARR_WGT_INT_PAIR:
-            pair_int_create_value(l_label_txt, GTK_TABLE(table), (l_idx + 1), arr_ptr);
+            pair_int_create_value(l_label_txt, GTK_TABLE(table), (l_idx + 1), arr_ptr, arrint_ptr);
             break;
          case GAP_ARR_WGT_TOGGLE:
-            toggle_create_value(l_label_txt, GTK_TABLE(table), (l_idx + 1),  arr_ptr);
+            toggle_create_value(l_label_txt, GTK_TABLE(table), (l_idx + 1),  arr_ptr, arrint_ptr);
             break;
          case GAP_ARR_WGT_RADIO:
-            radio_create_value(l_label_txt, GTK_TABLE(table), (l_idx + 1),  arr_ptr);
+            radio_create_value(l_label_txt, GTK_TABLE(table), (l_idx + 1),  arr_ptr, arrint_ptr);
             break;
          case GAP_ARR_WGT_OPTIONMENU:
          case GAP_ARR_WGT_OPT_ENTRY:
-            combo_create_value(l_label_txt, GTK_TABLE(table), (l_idx + 1),  arr_ptr);
+            combo_create_value(l_label_txt, GTK_TABLE(table), (l_idx + 1),  arr_ptr, arrint_ptr);
             break;
          case GAP_ARR_WGT_FILESEL:
-            filesel_create_value(l_label_txt, GTK_TABLE(table), (l_idx + 1),  arr_ptr);
+            filesel_create_value(l_label_txt, GTK_TABLE(table), (l_idx + 1),  arr_ptr, arrint_ptr);
             break;
          case GAP_ARR_WGT_FONTSEL:
-            fontsel_create_value(l_label_txt, GTK_TABLE(table), (l_idx + 1),  arr_ptr);
+            fontsel_create_value(l_label_txt, GTK_TABLE(table), (l_idx + 1),  arr_ptr, arrint_ptr);
             break;
          case GAP_ARR_WGT_TEXT:
-            text_create_value(l_label_txt, GTK_TABLE(table), (l_idx + 1),  arr_ptr);
+            text_create_value(l_label_txt, GTK_TABLE(table), (l_idx + 1),  arr_ptr, arrint_ptr);
             break;
          case GAP_ARR_WGT_INT:
-            int_create_value(l_label_txt, GTK_TABLE(table), (l_idx + 1),  arr_ptr);
+            int_create_value(l_label_txt, GTK_TABLE(table), (l_idx + 1),  arr_ptr, arrint_ptr);
             break;
          case GAP_ARR_WGT_FLT:
-            flt_create_value(l_label_txt, GTK_TABLE(table), (l_idx + 1),  arr_ptr);
+            flt_create_value(l_label_txt, GTK_TABLE(table), (l_idx + 1),  arr_ptr, arrint_ptr);
             break;
          case GAP_ARR_WGT_LABEL:
-            label_create_value(l_label_txt, GTK_TABLE(table), (l_idx + 1),  arr_ptr, 0.5);
+            label_create_value(l_label_txt, GTK_TABLE(table), (l_idx + 1),  arr_ptr, arrint_ptr, 0.5);
             break;
          case GAP_ARR_WGT_LABEL_LEFT:
-            label_create_value(l_label_txt, GTK_TABLE(table), (l_idx + 1),  arr_ptr, 0.0);
+            label_create_value(l_label_txt, GTK_TABLE(table), (l_idx + 1),  arr_ptr, arrint_ptr, 0.0);
             break;
          case GAP_ARR_WGT_LABEL_RIGHT:
-            label_create_value(l_label_txt, GTK_TABLE(table), (l_idx + 1),  arr_ptr, 1.0);
+            label_create_value(l_label_txt, GTK_TABLE(table), (l_idx + 1),  arr_ptr, arrint_ptr, 1.0);
             break;
          case GAP_ARR_WGT_ACT_BUTTON:
             printf ("GAP_ARR_WGT_ACT_BUTTON not implemented yet, widget type ignored\n");
@@ -1309,6 +1383,7 @@ gint gap_arr_std_dialog(const char *title_txt,
     if(arr_help_ptr->help_id)
     {
       button = gtk_button_new_from_stock (GTK_STOCK_HELP);
+      g_object_set_data (G_OBJECT (button), GAP_ARR_INTERFACE_PTR, (gpointer)arrint_ptr);
       gtk_box_pack_end (GTK_BOX (hbbox), button, FALSE, TRUE, 0); 
       gtk_button_box_set_child_secondary (GTK_BUTTON_BOX (hbbox),
                                           button, TRUE);
@@ -1325,7 +1400,7 @@ gint gap_arr_std_dialog(const char *title_txt,
 
     arr_all.argc = argc;
     arr_all.argv = argv;
-    default_button_create_value(l_label_txt, hbbox, arr_def_ptr, &arr_all);
+    default_button_create_value(l_label_txt, hbbox, arr_def_ptr, arrint_ptr, &arr_all);
   }
 
   /* buttons in the action area */
@@ -1340,6 +1415,7 @@ gint gap_arr_std_dialog(const char *title_txt,
      {
        button = gtk_button_new_from_stock (b_argv[l_idx].but_txt);
      }
+     g_object_set_data (G_OBJECT (button), GAP_ARR_INTERFACE_PTR, (gpointer)arrint_ptr);
      GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
      gtk_box_pack_start (GTK_BOX (hbbox), button, FALSE, FALSE, 0);
      if( b_argv[l_idx].but_val == b_def_val ) gtk_widget_grab_default (button);
@@ -1354,6 +1430,7 @@ gint gap_arr_std_dialog(const char *title_txt,
   {
      /* if no buttons are specified use one CLOSE button per default */
      button = gtk_button_new_from_stock ( GTK_STOCK_CLOSE);
+     g_object_set_data (G_OBJECT (button), GAP_ARR_INTERFACE_PTR, (gpointer)arrint_ptr);
      GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
      gtk_box_pack_start (GTK_BOX (hbbox), button, FALSE, FALSE, 0);
      gtk_widget_grab_default (button);
@@ -1368,7 +1445,7 @@ gint gap_arr_std_dialog(const char *title_txt,
 
   gtk_widget_show (frame);
   if(argc > 0)  {  gtk_widget_show (table); }
-  gtk_widget_show (global_arrint.dlg);
+  gtk_widget_show (arrint_ptr->dlg);
 
   gtk_main ();
   gdk_flush ();
@@ -1416,7 +1493,7 @@ gint gap_arr_std_dialog(const char *title_txt,
      }
   }
   
-  return (global_arrint.run);
+  return (arrint_ptr->run);
 }	/* end gap_arr_std_dialog */
 
 

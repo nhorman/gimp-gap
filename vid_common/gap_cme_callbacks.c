@@ -703,7 +703,10 @@ on_cme__entry_audio1_changed           (GtkEditable     *editable,
 {
   GtkEntry *entry;
 
- if(gap_debug) printf("CB: on_cme__entry_audio1_changed\n");
+ if(gap_debug) 
+ {
+   printf("CB: on_cme__entry_audio1_changed\n");
+ }
  if(gpp == NULL) return;
 
  entry = GTK_ENTRY(gpp->cme__entry_audio1);
@@ -952,6 +955,7 @@ on_cme__entry_stb_changed              (GtkEditable     *editable,
     g_snprintf(gpp->val.storyboard_file, sizeof(gpp->val.storyboard_file), "%s"
               , gtk_entry_get_text(entry));
 
+    gpp->storyboard_create_composite_audio = FALSE;
     gap_cme_gui_check_storyboard_file(gpp);
  }
 
@@ -975,6 +979,28 @@ on_cme__button_stb_clicked             (GtkButton       *button,
  }
 
 }
+
+
+
+void
+on_cme__button_stb_audio_clicked     (GtkButton       *button,
+                                      GapCmeGlobalParams *gpp)
+{
+ if(gap_debug) printf("CB: on_cme__button_stb_audio_clicked\n");
+
+  if(gpp)
+  {
+    if(gpp->val.storyboard_file[0] != '\0')
+    {
+      if(g_file_test(gpp->val.storyboard_file, G_FILE_TEST_EXISTS))
+      {
+        gpp->storyboard_create_composite_audio = TRUE;
+	gap_cme_gui_check_storyboard_file(gpp);
+      }
+    }
+  }
+}
+
 
 
 void

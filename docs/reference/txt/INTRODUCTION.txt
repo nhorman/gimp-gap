@@ -1,4 +1,4 @@
-Project gap "GIMP Animation Package"   08. Dect. 2004  (pre)release 2.1.0
+Project gap "GIMP Animation Package"   08. Dec. 2004  (pre)release 2.1.0
 
 --------------------------------------------------------------------
 Introduction

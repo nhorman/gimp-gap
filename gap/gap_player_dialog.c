@@ -944,6 +944,16 @@ p_mtrace_image_alive(GapPlayerMainGlobalParams *gpp
                                          , *mtrace_height
                                          , image_type
                                          );
+#ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
+    /* if there is an active videohandle
+     * set image resolution according to
+     * aspect_ratio of the videofile
+     */
+    if(gpp->gvahand)
+    {
+      GVA_image_set_aspect(gpp->gvahand, gpp->mtrace_image_id);
+    }
+#endif
     gimp_display_new(gpp->mtrace_image_id);                                          
   }
 }  /* end p_mtrace_image_alive */
@@ -1855,12 +1865,12 @@ p_vid_progress_callback(gdouble progress
   gpp = (GapPlayerMainGlobalParams *)user_data;
   if(gpp == NULL) 
   { 
-    printf("PLAYER: p_vid_progress_callback CANCEL == true\n");
+    if(gap_debug) printf("PLAYER: p_vid_progress_callback CANCEL == true\n");
     return (TRUE);
   }
   if(gpp->progress_bar == NULL)
   {
-    printf("PLAYER: p_vid_progress_callback CANCEL == trUE\n");
+    if(gap_debug) printf("PLAYER: p_vid_progress_callback CANCEL == trUE\n");
     return (TRUE);
   }
 
@@ -1888,7 +1898,7 @@ p_vid_progress_callback(gdouble progress
   
   if(gpp->cancel_video_api)
   {
-    printf("PLAYER: p_vid_progress_callback CANCEL == TRUE\n");
+    if(gap_debug) printf("PLAYER: p_vid_progress_callback CANCEL == TRUE\n");
     return (TRUE);   /* cancel video api if playback was stopped */
   }
 
@@ -2798,7 +2808,7 @@ on_timer_playback(GapPlayerMainGlobalParams *gpp)
        *       the check if in_timer_playback is done just to be at the safe side.
        *       (late frames are detected by checking the elapsed time).
        */
-      printf("\n\n\n  on_timer_playback interrupted by next TIMERCALL \n\n");
+      if(gap_debug) printf("\n\n\n  on_timer_playback interrupted by next TIMERCALL \n\n");
       return;
     }
     gpp->in_timer_playback = TRUE;
@@ -3234,7 +3244,7 @@ on_vid_preview_button_press_event      (GtkWidget       *widget,
                                         GdkEventButton  *bevent,
                                         GapPlayerMainGlobalParams *gpp)
 {
-  /*if(gap_debug)*/ printf("on_vid_preview_button_press_event: START\n");
+  /*if(gap_debug) printf("on_vid_preview_button_press_event: START\n"); */
 
   if(gpp->mtrace_mode == GAP_PLAYER_MTRACE_OFF)
   {
@@ -4229,7 +4239,7 @@ on_go_button_enter                   (GtkButton       *button,
           {
              if(gpp->go_timertag >= 0) 
              {
-               printf("on_go_button_enter: DROP GO_FRAMENR: %d\n", (int)gpp->go_job_framenr);
+               if(gap_debug) printf("on_go_button_enter: DROP GO_FRAMENR: %d\n", (int)gpp->go_job_framenr);
              }
           }
           

@@ -92,6 +92,18 @@ Input Video Selection:
     If a compatible decoder for the videofile was found
     its name is displayed as the Active Decoder.
 
+  Aspect Ratio:
+    Displays the aspect ratio information of the frames in the videofile.
+    Aspect Ratio is defined as width / height. 
+    Commonly used aspect ratio values (4:3) or (16:9) will be detected
+    and shown as additional information to the ratio value.
+
+    If the videofile contains no aspect ratio information,
+    or the active decoder is not able to access this information
+    the string "unknown" is displayed instead of the ratio value.
+    (libavformat works well, libmpeg3 does not recognize the aspect ratio)
+    
+
 Output:
 
   Mode:

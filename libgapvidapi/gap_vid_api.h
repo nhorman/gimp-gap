@@ -349,6 +349,7 @@ t_GVA_RetCode   GVA_search_fcache_by_index(t_GVA_Handle *gvahand
                  ,gint32 *framenumber
                  );
 void            GVA_debug_print_fcache(t_GVA_Handle *gvahand);
+void            GVA_image_set_aspect(t_GVA_Handle *gvahand, gint32 image_id);
 
 t_GVA_RetCode   GVA_gimp_image_to_rowbuffer(t_GVA_Handle *gvahand, gint32 image_id);
 

@@ -40,7 +40,7 @@
 
 #define GAP_STORY_MAX_STORYFILENAME_LEN 2048
 #define GAP_STORY_MAX_CLIP_WIDGETS 2000
-#define GAP_STORY_DEFAULT_FRAMERATE 24.0
+#define GAP_STORY_DEFAULT_FRAMERATE 25.0
 
 #ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
 #include "gap_vid_api.h"
@@ -156,6 +156,7 @@ typedef struct GapStbTabWidgets  /* nickname: tabw */
   gint32 rowpage;
 
   gboolean  master_dlg_open;
+  gboolean  otone_dlg_open;
 
   GtkWidget *mount_table;
   GtkWidget *fw_gtk_table;
@@ -213,6 +214,7 @@ typedef struct GapStbMainGlobalParams  /* nickname: sgpp */
   gboolean           auto_vthumb;
   gboolean           auto_vthumb_refresh_canceled;
   gboolean           in_player_call;
+  gboolean           arr_dlg_open;
 
   /* layout values
    * those values are used for LAST_VALUES runmode at startup only
@@ -239,6 +241,7 @@ typedef struct GapStbMainGlobalParams  /* nickname: sgpp */
   GtkWidget *menu_item_stb_add_clip;
   GtkWidget *menu_item_stb_playback;
   GtkWidget *menu_item_stb_properties;
+  GtkWidget *menu_item_stb_audio_otone;
   GtkWidget *menu_item_stb_encode;
   GtkWidget *menu_item_stb_close;
 
@@ -247,6 +250,7 @@ typedef struct GapStbMainGlobalParams  /* nickname: sgpp */
   GtkWidget *menu_item_cll_add_clip;
   GtkWidget *menu_item_cll_playback;
   GtkWidget *menu_item_cll_properties;
+  GtkWidget *menu_item_cll_audio_otone;
   GtkWidget *menu_item_cll_encode;
   GtkWidget *menu_item_cll_close;
   

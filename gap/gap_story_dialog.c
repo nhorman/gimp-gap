@@ -109,6 +109,7 @@ static void     p_story_call_player(GapStbMainGlobalParams *sgpp
 		   );
 static void     p_call_master_encoder(GapStbMainGlobalParams *sgpp
                    , GapStoryBoard *stb
+		   , const char *stb_filename
 		   );
 
 
@@ -121,6 +122,7 @@ static void     p_player_stb_mode_cb (GtkWidget *w, GdkEventButton  *bevent, Gap
 static void     p_player_img_mode_cb (GtkWidget *w, GapStbMainGlobalParams *sgpp);
 static void     p_cancel_button_cb (GtkWidget *w, GapStbMainGlobalParams *sgpp);
 
+static void     p_tabw_gen_otone_dialog(GapStbTabWidgets *tabw);
 static void     p_tabw_master_prop_dialog(GapStbTabWidgets *tabw, gboolean new_flag);
 static void     p_tabw_add_elem (GapStbTabWidgets *tabw, GapStbMainGlobalParams *sgpp, GapStoryBoard *stb_dst);
 
@@ -178,6 +180,7 @@ static void     p_menu_cll_playback_cb (GtkWidget *widget, GapStbMainGlobalParam
 static void     p_menu_cll_properties_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp);
 static void     p_menu_cll_add_elem_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp);
 static void     p_menu_cll_toggle_edmode (GtkWidget *widget, GapStbMainGlobalParams *sgpp);
+static void     p_menu_cll_audio_otone_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp);
 static void     p_menu_cll_encode_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp);
 static void     p_menu_cll_close_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp);
 
@@ -189,6 +192,7 @@ static void     p_menu_stb_playback_cb (GtkWidget *widget, GapStbMainGlobalParam
 static void     p_menu_stb_properties_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp);
 static void     p_menu_stb_add_elem_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp);
 static void     p_menu_stb_toggle_edmode (GtkWidget *widget, GapStbMainGlobalParams *sgpp);
+static void     p_menu_stb_audio_otone_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp);
 static void     p_menu_stb_encode_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp);
 static void     p_menu_stb_close_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp);
 
@@ -266,7 +270,6 @@ static void     p_create_button_bar(GapStbTabWidgets *tabw
 	           ,gint32 mount_vs_col
 		   ,gint32 mount_vs_row
 		   );
-
 
 
 /* -----------------------------
@@ -401,7 +404,6 @@ p_new_stb_tab_widgets(GapStbMainGlobalParams *sgpp, GapStoryMasterType type)
     tabw->pw = NULL;
     tabw->fw_tab = NULL;
     tabw->fw_tab_size = 0;  /* start up with empty fw table of 0 elements */
-    tabw->master_dlg_open  = FALSE;
     tabw->sgpp = sgpp;
   }
   return(tabw);
@@ -1161,6 +1163,7 @@ p_story_call_player(GapStbMainGlobalParams *sgpp
 static void
 p_call_master_encoder(GapStbMainGlobalParams *sgpp
                      , GapStoryBoard *stb
+		     , const char *stb_filename
 		   )
 {
 #define GAP_PLUG_IN_MASTER_ENCODER  "plug_in_gap_vid_encode_master"
@@ -1197,14 +1200,14 @@ p_call_master_encoder(GapStbMainGlobalParams *sgpp
                      GIMP_PDB_INT32,  2,            /* range_to */
                      GIMP_PDB_INT32,  vid_width,
                      GIMP_PDB_INT32,  vid_height,
-                     GIMP_PDB_INT32,  1,           /* 1 VID_FMT_PAL,  2 VID_FMT_NTSC */
+                     GIMP_PDB_INT32,  1,            /* 1 VID_FMT_PAL,  2 VID_FMT_NTSC */
                      GIMP_PDB_FLOAT,  MAX(stb->master_framerate, 1.0), 
-                     GIMP_PDB_INT32,  44100,       /* samplerate */
-                     GIMP_PDB_STRING, NULL,        /* audfile l_16bit_wav_file */
-                     GIMP_PDB_STRING, NULL,        /* vid_enc_plugin */
-                     GIMP_PDB_STRING, NULL,        /* filtermacro_file */
-                     GIMP_PDB_STRING, stb->storyboardfile,        /* storyboard_file */
-                     GIMP_PDB_INT32,  2,           /* GAP_RNGTYPE_STORYBOARD input_mode */
+                     GIMP_PDB_INT32,  44100,        /* samplerate */
+                     GIMP_PDB_STRING, NULL,         /* audfile l_16bit_wav_file */
+                     GIMP_PDB_STRING, NULL,         /* vid_enc_plugin */
+                     GIMP_PDB_STRING, NULL,         /* filtermacro_file */
+                     GIMP_PDB_STRING, stb_filename, /* storyboard_file */
+                     GIMP_PDB_INT32,  2,            /* GAP_RNGTYPE_STORYBOARD input_mode */
                      GIMP_PDB_END);
   switch(l_params[0].data.d_status)
   {
@@ -1224,8 +1227,6 @@ p_call_master_encoder(GapStbMainGlobalParams *sgpp
   }
   g_free(l_params);
 
-
-  
 }  /* end p_call_master_encoder */
 
 /* -----------------------------
@@ -2006,19 +2007,8 @@ p_frame_widget_preview_events_cb (GtkWidget *widget,
 
       if (bevent->button == 3)
       {
-          /* right mousebutton (3) shows the PopUp Menu */
-          //navi_ops_menu_set_sensitive();
-          //naviD->paste_at_frame = fw->frame_nr;
-          //gtk_menu_popup (GTK_MENU (naviD->ops_menu),
-          //             NULL, NULL, NULL, NULL,
-          //             3, bevent->time);
-
-        // XXXXXXXXXXXXXX debug
-        {
           gap_story_fw_properties_dialog(fw);
-
           return TRUE;
-	}
       }
 
       /*  handle selctions, according to modifier keys */
@@ -2078,7 +2068,7 @@ p_frame_widget_preview_events_cb (GtkWidget *widget,
  * destroy the open property dialog(s) attached to tabw 
  * destroy_all == FALSE: destroy only the invalid elents
  *                       (that are no members of the tabw->xxx list)
- * destroy_all == FALSE: destroy all elents
+ * destroy_all == TRUE:  destroy all elements
  */
 static void
 p_tabw_destroy_properties_dlg (GapStbTabWidgets *tabw, gboolean destroy_all)
@@ -2610,14 +2600,15 @@ p_widget_sensibility (GapStbMainGlobalParams *sgpp)
       }
     }
   }
-  if(sgpp->menu_item_cll_save)       gtk_widget_set_sensitive(sgpp->menu_item_cll_save, l_sensitive);
-  if(sgpp->menu_item_cll_save_as)    gtk_widget_set_sensitive(sgpp->menu_item_cll_save_as, l_sensitive);
-  if(sgpp->menu_item_cll_playback)   gtk_widget_set_sensitive(sgpp->menu_item_cll_playback, l_sensitive);
-  if(sgpp->menu_item_cll_properties) gtk_widget_set_sensitive(sgpp->menu_item_cll_properties, l_sensitive);
-  if(sgpp->menu_item_cll_encode)     gtk_widget_set_sensitive(sgpp->menu_item_cll_close, l_sensitive);
-  if(sgpp->menu_item_cll_close)      gtk_widget_set_sensitive(sgpp->menu_item_cll_encode, l_sensitive_encode);
+  if(sgpp->menu_item_cll_save)         gtk_widget_set_sensitive(sgpp->menu_item_cll_save, l_sensitive);
+  if(sgpp->menu_item_cll_save_as)      gtk_widget_set_sensitive(sgpp->menu_item_cll_save_as, l_sensitive);
+  if(sgpp->menu_item_cll_playback)     gtk_widget_set_sensitive(sgpp->menu_item_cll_playback, l_sensitive);
+  if(sgpp->menu_item_cll_properties)   gtk_widget_set_sensitive(sgpp->menu_item_cll_properties, l_sensitive);
+  if(sgpp->menu_item_cll_audio_otone)  gtk_widget_set_sensitive(sgpp->menu_item_cll_audio_otone, l_sensitive);
+  if(sgpp->menu_item_cll_close)        gtk_widget_set_sensitive(sgpp->menu_item_cll_close, l_sensitive);
+  if(sgpp->menu_item_cll_encode)       gtk_widget_set_sensitive(sgpp->menu_item_cll_encode, l_sensitive_encode);
 
-  if(sgpp->menu_item_cll_add_clip)   gtk_widget_set_sensitive(sgpp->menu_item_cll_add_clip, l_sensitive_add);
+  if(sgpp->menu_item_cll_add_clip)    gtk_widget_set_sensitive(sgpp->menu_item_cll_add_clip, l_sensitive_add);
   
   if(sgpp->cll_widgets)
   {
@@ -2641,14 +2632,15 @@ p_widget_sensibility (GapStbMainGlobalParams *sgpp)
       }
     }
   }
-  if(sgpp->menu_item_stb_save)       gtk_widget_set_sensitive(sgpp->menu_item_stb_save, l_sensitive);
-  if(sgpp->menu_item_stb_save_as)    gtk_widget_set_sensitive(sgpp->menu_item_stb_save_as, l_sensitive);
-  if(sgpp->menu_item_stb_playback)   gtk_widget_set_sensitive(sgpp->menu_item_stb_playback, l_sensitive);
-  if(sgpp->menu_item_stb_properties) gtk_widget_set_sensitive(sgpp->menu_item_stb_properties, l_sensitive);
-  if(sgpp->menu_item_stb_encode)     gtk_widget_set_sensitive(sgpp->menu_item_stb_encode, l_sensitive);
-  if(sgpp->menu_item_stb_close)      gtk_widget_set_sensitive(sgpp->menu_item_stb_close, l_sensitive);
+  if(sgpp->menu_item_stb_save)         gtk_widget_set_sensitive(sgpp->menu_item_stb_save, l_sensitive);
+  if(sgpp->menu_item_stb_save_as)      gtk_widget_set_sensitive(sgpp->menu_item_stb_save_as, l_sensitive);
+  if(sgpp->menu_item_stb_playback)     gtk_widget_set_sensitive(sgpp->menu_item_stb_playback, l_sensitive);
+  if(sgpp->menu_item_stb_properties)   gtk_widget_set_sensitive(sgpp->menu_item_stb_properties, l_sensitive);
+  if(sgpp->menu_item_stb_audio_otone)  gtk_widget_set_sensitive(sgpp->menu_item_stb_audio_otone, l_sensitive);
+  if(sgpp->menu_item_stb_close)        gtk_widget_set_sensitive(sgpp->menu_item_stb_close, l_sensitive);
+  if(sgpp->menu_item_stb_encode)       gtk_widget_set_sensitive(sgpp->menu_item_stb_encode, l_sensitive_encode);
 
-  if(sgpp->menu_item_stb_add_clip)   gtk_widget_set_sensitive(sgpp->menu_item_stb_add_clip, l_sensitive_add);
+  if(sgpp->menu_item_stb_add_clip)     gtk_widget_set_sensitive(sgpp->menu_item_stb_add_clip, l_sensitive_add);
   
   if(sgpp->stb_widgets)
   {
@@ -3058,6 +3050,13 @@ p_menu_cll_save_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
     printf("p_menu_cll_save_cb: ** INTERNAL ERROR save of corrupted storyboard canceled\n");
     return;
   }
+
+  /* replace the internal copy of the name in the GapStoryBoard struct */
+  if(sgpp->cll->storyboardfile)
+  {
+    g_free(sgpp->cll->storyboardfile);
+  }
+  sgpp->cll->storyboardfile = g_strdup(sgpp->cliplist_filename);
 	
   /* save cliplist as new filename */
   l_save_ok = gap_story_save(sgpp->cll, sgpp->cliplist_filename);
@@ -3149,6 +3148,17 @@ p_menu_cll_toggle_edmode (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
 
 
 /* -----------------------------
+ * p_menu_cll_audio_otone_cb
+ * -----------------------------
+ */
+static void
+p_menu_cll_audio_otone_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
+{
+  if(gap_debug) printf("p_menu_cll_audio_otone_cb\n");
+  p_tabw_gen_otone_dialog(sgpp->cll_widgets);
+}  /* end p_menu_cll_audio_otone_cb */ 
+
+/* -----------------------------
  * p_menu_cll_encode_cb
  * -----------------------------
  */
@@ -3157,7 +3167,7 @@ p_menu_cll_encode_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
 {
   if(gap_debug) printf("p_menu_cll_encode_cb\n");
 
-  p_call_master_encoder(sgpp, sgpp->cll);
+  p_call_master_encoder(sgpp, sgpp->cll, sgpp->cliplist_filename);
 }  /* end p_menu_cll_encode_cb */ 
 
 
@@ -3241,7 +3251,14 @@ p_menu_stb_save_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
     printf("p_menu_stb_save_cb: ** INTERNAL ERROR save of corrupted storyboard canceled\n");
     return;
   }
-	
+
+  /* replace the internal copy of the name in the GapStoryBoard struct */
+  if(sgpp->stb->storyboardfile)
+  {
+    g_free(sgpp->stb->storyboardfile);
+  }
+  sgpp->stb->storyboardfile = g_strdup(sgpp->storyboard_filename);
+  
   /* save storyboard as new filename */
   l_save_ok = gap_story_save(sgpp->stb, sgpp->storyboard_filename);
   l_errno = errno;
@@ -3332,6 +3349,17 @@ p_menu_stb_toggle_edmode (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
 
 
 /* -----------------------------
+ * p_menu_stb_audio_otone_cb
+ * -----------------------------
+ */
+static void
+p_menu_stb_audio_otone_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
+{
+  if(gap_debug) printf("p_menu_stb_audio_otone_cb\n");
+  p_tabw_gen_otone_dialog(sgpp->stb_widgets);
+}  /* end p_menu_stb_audio_otone_cb */ 
+
+/* -----------------------------
  * p_menu_stb_encode_cb
  * -----------------------------
  */
@@ -3340,7 +3368,7 @@ p_menu_stb_encode_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
 {
   if(gap_debug) printf("p_menu_stb_encode_cb\n");
 
-  p_call_master_encoder(sgpp, sgpp->stb);
+  p_call_master_encoder(sgpp, sgpp->stb, sgpp->storyboard_filename);
 }  /* end p_menu_stb_encode_cb */ 
 
 
@@ -3544,6 +3572,12 @@ p_make_menu_cliplist(GapStbMainGlobalParams *sgpp, GtkWidget *menu_bar)
 			  , sgpp
 			  );
 
+   sgpp->menu_item_cll_audio_otone =			  
+   p_make_item_with_label(file_menu, _("Add Audio Otone")
+                          , p_menu_cll_audio_otone_cb
+			  , sgpp
+			  );
+
    sgpp->menu_item_cll_encode =			  
    p_make_item_with_label(file_menu, _("Encode")
                           , p_menu_cll_encode_cb
@@ -3610,6 +3644,12 @@ p_make_menu_storyboard(GapStbMainGlobalParams *sgpp, GtkWidget *menu_bar)
  
    p_make_item_with_label(file_menu, _("Toggle Unit")
                           , p_menu_stb_toggle_edmode
+			  , sgpp
+			  );
+
+   sgpp->menu_item_stb_audio_otone =			  
+   p_make_item_with_label(file_menu, _("Add Audio Otone")
+                          , p_menu_stb_audio_otone_cb
 			  , sgpp
 			  );
 
@@ -5375,19 +5415,135 @@ gap_storyboard_dialog(GapStbMainGlobalParams *sgpp)
 }  /* end gap_storyboard_dialog */
 
 
+/* -----------------------------------
+ * p_tabw_gen_otone_dialog
+ * ------------------------------------
+ */
+static void
+p_tabw_gen_otone_dialog(GapStbTabWidgets *tabw)
+{
+  GapArrArg  argv[6];
+  gint   l_ii;
+  gint   l_ii_aud_seltrack;
+  gint   l_ii_aud_track;
+  gint   l_ii_replace;
+  GapStbMainGlobalParams *sgpp;
+  GapStoryBoard *stb_dst;
+  gboolean l_rc;
+
+  stb_dst = p_tabw_get_stb_ptr (tabw);
+  if(stb_dst == NULL) { return; }
+  if(tabw->otone_dlg_open)  { return; }
+  sgpp = (GapStbMainGlobalParams *)tabw->sgpp;
+
+  tabw->otone_dlg_open  = TRUE;
+
+  l_ii = 0;
+  gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_LABEL_LEFT);
+  argv[l_ii].label_txt = _("Generate original tone audio track "
+                           "for all video clips in the storyboard");
+  
+  l_ii++; l_ii_aud_seltrack = l_ii;
+  gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_INT);
+  argv[l_ii].constraint = TRUE;
+  argv[l_ii].label_txt = _("Input Audiotrack:");
+  argv[l_ii].help_txt  = _("select input audiotrack in the videofile(s)."
+                           "(if your input videos have multiple audiotracks "
+			   "values > 1 usually refer to non-default language)");
+  argv[l_ii].int_min   = (gint)1;
+  argv[l_ii].int_max   = (gint)99;
+  argv[l_ii].int_ret   = (gint)1;
+  argv[l_ii].has_default = TRUE;
+  argv[l_ii].int_default = (gint)1;
+
+
+  l_ii++; l_ii_aud_track = l_ii;
+  gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_INT);
+  argv[l_ii].constraint = TRUE;
+  argv[l_ii].label_txt = _("Output Audiotrack:");
+  argv[l_ii].help_txt  = _("output audiotrack to be generated in the storyboard file. "
+                           "The generated storyboard audiotrack will be a list of references "
+			   "to the audioparts in the input videos, corresponding to all "
+			   "used video clip references.");
+  argv[l_ii].int_min   = (gint)1;
+  argv[l_ii].int_max   = (gint)GAP_STB_MAX_AUD_TRACKS;
+  argv[l_ii].int_ret   = (gint)1;
+  argv[l_ii].has_default = TRUE;
+  argv[l_ii].int_default = (gint)1;
+
+  l_ii++; l_ii_replace = l_ii;
+  gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_TOGGLE);
+  argv[l_ii].label_txt = _("Replace Audiotrack:");
+  argv[l_ii].help_txt  = _("ON: Allow replacing of already existing audio clip references "
+                        " in the storyboard");
+  argv[l_ii].int_ret   = FALSE;
+  argv[l_ii].has_default = TRUE;
+  argv[l_ii].int_default = FALSE;
+
+
+  l_ii++;
+  gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_DEFAULT_BUTTON);
+  argv[l_ii].label_txt =  _("Reset");
+  argv[l_ii].help_txt  = _("Reset parameters to default size");
+
+  l_ii++;
+
+  l_rc = gap_arr_ok_cancel_dialog( _("Generate Original Tone Audio")
+                                 , _("Settings")
+                                 , l_ii
+				 , argv);
+
+  if(l_rc)                       
+  {
+     gint     aud_seltrack;
+     gint     aud_track;
+     gint     vid_track;
+     gboolean replace_existing_aud_track;
+     gboolean l_ok;
+     
+     aud_seltrack = (gint32)(argv[l_ii_aud_seltrack].int_ret);
+     aud_track    = (gint32)(argv[l_ii_aud_track].int_ret);
+     vid_track    = 1;
+     replace_existing_aud_track = (gint32)(argv[l_ii_replace].int_ret);
+
+     /* start otone generator procedure */
+     l_ok = gap_story_gen_otone_audio(stb_dst
+                         ,vid_track
+                         ,aud_track
+                         ,aud_seltrack
+                         ,replace_existing_aud_track
+                         );
+     if(!l_ok)
+     {
+       g_message(_("Original tone track was not created.\n"
+		   "The storyboard %s\n"
+		   "has already audio clip references at track %d.\n"
+		   "Use another track number or allow replace at next try.")
+                ,tabw->filename_refptr
+		,(int)aud_track
+                );
+     }
+     
+     /* update to reflect the modified status */
+     p_tabw_update_frame_label (tabw, sgpp);
+
+  }
+  tabw->otone_dlg_open  = FALSE;
+  
+}  /* end p_tabw_gen_otone_dialog */
 
 
 /* -----------------------------------
  * p_tabw_master_prop_dialog
  * ------------------------------------
- * // TODO:  replace this arr_dialog by scaling widget (see gap_resi_dialog.c)
  */
 static void
 p_tabw_master_prop_dialog(GapStbTabWidgets *tabw, gboolean new_flag)
 {
-  static GapArrArg  argv[6];
+  GapArrArg  argv[6];
   static char *radio_args[4]  = { N_("automatic"), "libmpeg3", "libavformat", "quicktime4linux" };
   gint   l_ii;
+  gint   l_decoder_idx;
   gint   l_ii_width;
   gint   l_ii_height;
   gint   l_ii_rate;
@@ -5401,8 +5557,14 @@ p_tabw_master_prop_dialog(GapStbTabWidgets *tabw, gboolean new_flag)
   gboolean l_rc;
 
   stb_dst = p_tabw_get_stb_ptr (tabw);
-  if(stb_dst == NULL) { return; }
-  if(tabw->master_dlg_open)  { return; }
+  if(stb_dst == NULL) 
+  { 
+    return;
+  }
+  if(tabw->master_dlg_open)  
+  {
+    return; 
+  }
   sgpp = (GapStbMainGlobalParams *)tabw->sgpp;
 
   tabw->master_dlg_open  = TRUE;
@@ -5483,16 +5645,29 @@ p_tabw_master_prop_dialog(GapStbTabWidgets *tabw, gboolean new_flag)
 
   l_ii++; l_ii_preferred_decoder = l_ii;
   buf_preferred_decoder[0] = '\0';
+  l_decoder_idx = 0;
   if(stb_dst->preferred_decoder)
   {
     if(*stb_dst->preferred_decoder != '\0')
     {
+      guint jj;
+      
       g_snprintf(buf_preferred_decoder
 	       , sizeof(buf_preferred_decoder)
 	       , "%s"
 	       , stb_dst->preferred_decoder
 	       );
+      for(jj=0; jj < G_N_ELEMENTS(radio_args);jj++)
+      {
+	if(strcmp(radio_args[jj], buf_preferred_decoder) == 0)
+	{
+	  l_decoder_idx = jj;
+	  break;
+	}
+      }
+	       
     }
+    
   }
   gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_OPT_ENTRY);
   argv[l_ii].label_txt = _("Decoder:");
@@ -5503,9 +5678,9 @@ p_tabw_master_prop_dialog(GapStbTabWidgets *tabw, gboolean new_flag)
 		       "that are imagefiles)");
   argv[l_ii].radio_argc  = G_N_ELEMENTS(radio_args);
   argv[l_ii].radio_argv = radio_args;
-  argv[l_ii].radio_ret  = 0;
+  argv[l_ii].radio_ret  = l_decoder_idx;
   argv[l_ii].has_default = TRUE;
-  argv[l_ii].int_default = 0;
+  argv[l_ii].radio_default = l_decoder_idx;
   argv[l_ii].text_buf_ret = buf_preferred_decoder;
   argv[l_ii].text_buf_len = sizeof(buf_preferred_decoder);
   argv[l_ii].text_buf_default = g_strdup(buf_preferred_decoder);

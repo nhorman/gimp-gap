@@ -9,6 +9,8 @@ Storyboard Dialog
   A storyboard file is a textfile that can be used to
   assemble many videoclips, single images and frame sequences 
   to one resulting video.
+  The file contains lists of references to both video and audio
+  sourcefiles and is organized in tracks.
   (see STORYBOARD_FILE_DOC.txt for more information
   about storyboard file syntax and usage)
   
@@ -189,6 +191,40 @@ The Cliplist and Storyboard Menu
       - Clip Number only
       - Clip Number + Framenumber
       - Clip Number + Timestamp (mm:ss:msec)
+  - Add Audio Otone
+      This feature generates an audiotrack in the storyboard.
+      This audiotrack adds the audio original tone references 
+      for all the videoclips of type MOVIE that are found
+      in the storyboard.
+      (except those clips that are played backwards, pingpong mode
+       or at other stepsize than 1.0)
+      
+      A pop-up dialog is opened where you can specify:
+      Input Audiotrack:
+         This refers to the audiotrack number of (all used) inputvideoclips.
+	 Most videofiles have just one track. 
+	 DVD's typically store multiple language versions on
+	 multiple audotracks in their .vob files.
+
+      Output Audiotrack:
+         This is the storyboard specific audiotrack number.
+	 
+      Replace Audiotrack
+         This flag allows replace of the specified audiotrack
+	 in the storyboard.
+
+      Note:
+         the generated audiotrack is just a list of references
+	 to the audiopart of the used videoclips.
+	 Processing of this list is done as audio preprocessing step
+	 at encoding in the Master Videoencoder.
+	 (see Master Videoencoder, Create Composite Audio for more
+	 information)
+	 
+	 ### refere to chapter Master Videoencoder dialog #######
+
+
+
   - Encode
       Call the master videoencoder dialog for
       storyboard based encoding.

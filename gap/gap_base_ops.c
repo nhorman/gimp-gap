@@ -908,8 +908,6 @@ gap_base_first(GimpRunMode run_mode, gint32 image_id)
   int rc;
   GapAnimInfo *ainfo_ptr;
 
-gap_debug=TRUE;
-
   rc = -1;
   ainfo_ptr = gap_lib_alloc_ainfo(image_id, run_mode);
   if(ainfo_ptr != NULL)

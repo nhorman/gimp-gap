@@ -623,6 +623,29 @@ p_call_player_widget(GapVexMainGlobalParams *gpp
 }  /* end p_call_player_widget */
 
 
+/* -------------------
+ * p_check_aspect
+ * -------------------
+ */
+gboolean
+p_check_aspect(gdouble aspect_ratio, gint width, gint height)
+{
+  gdouble w_div_h;
+  
+  if(height)
+  {
+    w_div_h = (gdouble)width / (gdouble)height;
+    
+    if ((aspect_ratio <=  w_div_h + 0.001)
+    &&  (aspect_ratio >=  w_div_h - 0.001))
+    {
+      return(TRUE);
+    }
+  }
+  
+  return (FALSE);
+}  /* end p_check_aspect */
+ 
 
 /* -------------------
  * p_check_videofile
@@ -636,11 +659,13 @@ p_check_videofile(GapVexMainGlobalParams *gpp)
   t_GVA_Handle   *gvahand;
   GtkLabel       *lbl;
   char           *active_decoder;
+  gdouble         aspect_ratio;
 
   gpp->val.chk_is_compatible_videofile = FALSE;
   gpp->val.chk_vtracks = 0;
   gpp->val.chk_atracks = 0;
   gpp->val.chk_total_frames = 0;
+  aspect_ratio = 0;
   
   active_decoder = NULL;
 
@@ -662,6 +687,7 @@ p_check_videofile(GapVexMainGlobalParams *gpp)
        gpp->val.chk_total_frames = gvahand->total_frames;
        gpp->video_width = gvahand->width;
        gpp->video_height = gvahand->height;
+       aspect_ratio = gvahand->aspect_ratio;
        
 
        if(gvahand->dec_elem)
@@ -680,6 +706,40 @@ p_check_videofile(GapVexMainGlobalParams *gpp)
        
        GVA_close(gvahand);
     }
+  }
+
+
+  /* update label aspect ratio */
+  lbl = GTK_LABEL(gpp->mw__label_aspect_ratio);
+  if(aspect_ratio != 0.0)
+  {
+     char ratio_txt[20];
+     char ratio2_txt[20];
+
+     ratio2_txt[0] = '\0';
+     if(p_check_aspect(aspect_ratio, 3, 2))
+     {
+       g_snprintf(ratio2_txt, sizeof(ratio2_txt), " (3:2)");
+     }
+     if(p_check_aspect(aspect_ratio, 4, 3))
+     {
+       g_snprintf(ratio2_txt, sizeof(ratio2_txt), " (4:3)");
+     }
+     if(p_check_aspect(aspect_ratio, 16, 9))
+     {
+       g_snprintf(ratio2_txt, sizeof(ratio2_txt), " (16:9)");
+     }
+     g_snprintf(ratio_txt, sizeof(ratio_txt)
+                           , "%0.5f%s"
+			   , (float)aspect_ratio
+			   , ratio2_txt
+			   );
+     
+     gtk_label_set_text(lbl, ratio_txt);
+  }
+  else
+  {
+     gtk_label_set_text(lbl, _("unknown") );
   }
 
 
@@ -1756,6 +1816,7 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
   GtkWidget *mw__button_video;
   GtkWidget *mw__combo_preferred_decoder;
   GtkWidget *mw__label_active_decoder;
+  GtkWidget *mw__label_aspect_ratio;
   GtkWidget *mw__entry_preferred_decoder;
   GtkObject *mw__spinbutton_audiotrack_adj;
   GtkWidget *mw__spinbutton_audiotrack;
@@ -1787,12 +1848,6 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
   GtkWidget *mw__button_OK;
   GtkWidget *mw__player_frame;
   GtkWidget *mw__main_hbox;
-  GtkWidget *label1;
-  GtkWidget *label2;
-  GtkWidget *label3;
-  GtkWidget *label4;
-  GtkWidget *label5;
-  GtkWidget *label6;
   GtkWidget *label;
   GtkWidget *hbox2;
   GtkWidget *wgt_array[50];
@@ -1914,12 +1969,12 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
   in_row++;
 
   /* the videoextract range from label */
-  label1 = gtk_label_new (_("From Frame:"));
-  gtk_misc_set_alignment (GTK_MISC (label1), 0.0, 0.0);
-  lbl_array[lbl_idx] = label1; 
+  label = gtk_label_new (_("From Frame:"));
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.0);
+  lbl_array[lbl_idx] = label; 
   lbl_idx++;
-  gtk_widget_show (label1);
-  gtk_table_attach (GTK_TABLE (mw__table_in), label1, 0, 1, in_row, in_row+1,
+  gtk_widget_show (label);
+  gtk_table_attach (GTK_TABLE (mw__table_in), label, 0, 1, in_row, in_row+1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
@@ -1962,12 +2017,12 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
   in_row++;
 
   /* the videoextract range to label */
-  label2 = gtk_label_new (_("To Frame:"));
-  gtk_widget_show (label2);
-  lbl_array[lbl_idx] = label2; 
+  label = gtk_label_new (_("To Frame:"));
+  gtk_widget_show (label);
+  lbl_array[lbl_idx] = label; 
   lbl_idx++;
-  gtk_misc_set_alignment (GTK_MISC (label2), 0.0, 0);
-  gtk_table_attach (GTK_TABLE (mw__table_in), label2, 0, 1, in_row, in_row+1,
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0);
+  gtk_table_attach (GTK_TABLE (mw__table_in), label, 0, 1, in_row, in_row+1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
@@ -2011,12 +2066,12 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
   in_row++;
 
   /* the videotrack to label */
-  label3 = gtk_label_new (_("Videotrack:"));
-  gtk_widget_show (label3);
-  lbl_array[lbl_idx] = label3; 
+  label = gtk_label_new (_("Videotrack:"));
+  gtk_widget_show (label);
+  lbl_array[lbl_idx] = label; 
   lbl_idx++;
-  gtk_misc_set_alignment (GTK_MISC (label3), 0.0, 0);
-  gtk_table_attach (GTK_TABLE (mw__table_in), label3, 0, 1, in_row, in_row+1,
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0);
+  gtk_table_attach (GTK_TABLE (mw__table_in), label, 0, 1, in_row, in_row+1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
@@ -2045,12 +2100,12 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
   in_row++;
 
   /* the audiotrack to label */
-  label4 = gtk_label_new (_("Audiotrack:"));
-  gtk_widget_show (label4);
-  lbl_array[lbl_idx] = label4; 
+  label = gtk_label_new (_("Audiotrack:"));
+  gtk_widget_show (label);
+  lbl_array[lbl_idx] = label; 
   lbl_idx++;
-  gtk_misc_set_alignment (GTK_MISC (label4), 0.0, 0);
-  gtk_table_attach (GTK_TABLE (mw__table_in), label4, 0, 1, in_row, in_row+1,
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0);
+  gtk_table_attach (GTK_TABLE (mw__table_in), label, 0, 1, in_row, in_row+1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
@@ -2081,12 +2136,12 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
 
   /* the (preferred) Decoder label */
 
-  label5 = gtk_label_new (_("Decoder:"));
-  gtk_widget_show (label5);
-  lbl_array[lbl_idx] = label5; 
+  label = gtk_label_new (_("Decoder:"));
+  gtk_widget_show (label);
+  lbl_array[lbl_idx] = label; 
   lbl_idx++;
-  gtk_misc_set_alignment (GTK_MISC (label5), 0.0, 0.0);
-  gtk_table_attach (GTK_TABLE (mw__table_in), label5, 0, 1, in_row, in_row+1,
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.0);
+  gtk_table_attach (GTK_TABLE (mw__table_in), label, 0, 1, in_row, in_row+1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
@@ -2128,12 +2183,12 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
 
   /* the (Active) Decoder Label(s) */
 
-  label6 = gtk_label_new (_("Active Decoder:"));
-  gtk_widget_show (label6);
-  lbl_array[lbl_idx] = label6; 
+  label = gtk_label_new (_("Active Decoder:"));
+  gtk_widget_show (label);
+  lbl_array[lbl_idx] = label; 
   lbl_idx++;
-  gtk_misc_set_alignment (GTK_MISC (label6), 0.0, 0);
-  gtk_table_attach (GTK_TABLE (mw__table_in), label6, 0, 1, in_row, in_row+1,
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0);
+  gtk_table_attach (GTK_TABLE (mw__table_in), label, 0, 1, in_row, in_row+1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
@@ -2146,6 +2201,28 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
   gtk_misc_set_padding (GTK_MISC (mw__label_active_decoder), 4, 0);
   gtk_misc_set_alignment (GTK_MISC (mw__label_active_decoder), 0.0, 0.0);
 
+
+  in_row++;
+
+  /* the Aspect Ratio Label(s) */
+
+  label = gtk_label_new (_("Aspect Ratio:"));
+  gtk_widget_show (label);
+  lbl_array[lbl_idx] = label; 
+  lbl_idx++;
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0);
+  gtk_table_attach (GTK_TABLE (mw__table_in), label, 0, 1, in_row, in_row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+
+  mw__label_aspect_ratio = gtk_label_new (_("****"));
+  gtk_widget_show (mw__label_aspect_ratio);
+  gtk_table_attach (GTK_TABLE (mw__table_in), mw__label_aspect_ratio, 1, 2, in_row, in_row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_padding (GTK_MISC (mw__label_aspect_ratio), 4, 0);
+  gtk_misc_set_alignment (GTK_MISC (mw__label_aspect_ratio), 0.0, 0.0);
 
 
   /* OLD percentage based seek is no longer supported
@@ -2496,6 +2573,7 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
   gpp->mw__button_video                        = mw__button_video;
   gpp->mw__combo_preferred_decoder             = mw__combo_preferred_decoder;
   gpp->mw__label_active_decoder                = mw__label_active_decoder;
+  gpp->mw__label_aspect_ratio                  = mw__label_aspect_ratio;
   gpp->mw__entry_preferred_decoder             = mw__entry_preferred_decoder;
   gpp->mw__spinbutton_audiotrack_adj           = mw__spinbutton_audiotrack_adj;
   gpp->mw__spinbutton_audiotrack               = mw__spinbutton_audiotrack;
@@ -2538,8 +2616,6 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
 void
 gap_vex_dlg_main_dialog (GapVexMainGlobalParams *gpp)
 {
-gap_debug = TRUE;
-
   gimp_ui_init ("gap_video_extract", FALSE);
   gap_stock_init();
   

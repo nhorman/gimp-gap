@@ -61,6 +61,26 @@ If you edit gimprc files by hand, you must do this before you startup GIMP.
 # in your gimpdirectory by default
 (video-index-dir "/path/to/writeable/directory")
 
+# If the gimp-gap videoapi uses libmpeg3 there is a built-in
+# workaround for a libmpeg decoder specific bug that sometimes 
+# causes crashes when MPEG1 videos are closed.
+# The workaround is implemented for UNIX OS only and 
+# forks a child process with its own sgnal handler.
+# the child process tries open/close. Crashes are then caught
+# in the signal handler of the child process to tell the parent
+# process (via retcode) that this videofile cant be handled safe by libmpeg3.
+#
+# This workaround makes open videofiles safer but slow.
+# (mainly caused by additional open/close rather than by forking).
+# setting the gimprc parameter 
+#   (video-workaround-for-libmpeg3-close-bug "no")
+# can skip the workaround, and makes opening of viedofiles faster 
+# with some risk of crashing  when libmpeg3 is used.
+#
+# per default (without this gimprc parameter) the workaround is enabled.
+#
+(video-workaround-for-libmpeg3-close-bug "no")
+
 
 # optional external audioconverter program
 # must be able to handle the same parameters as the

@@ -93,7 +93,7 @@ static gint     gtab_dct_algo[GAP_GVE_FFMPEG_DCT_ALGO_MAX_ELEMENTS] =  { 0, 1, 2
 static gint     gtab_idct_algo[GAP_GVE_FFMPEG_IDCT_ALGO_MAX_ELEMENTS] =  { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
 static gint     gtab_mb_decision[GAP_GVE_FFMPEG_MB_DECISION_MAX_ELEMENTS] =  { FF_MB_DECISION_SIMPLE, FF_MB_DECISION_BITS, FF_MB_DECISION_RD };
 static gint     gtab_audio_krate[GAP_GVE_FFMPEG_AUDIO_KBIT_RATE_MAX_ELEMENTS] = { 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320 };
-static gdouble  gtab_aspect[GAP_GVE_FFMPEG_ASPECT_MAX_ELEMENTS] =  { 0.0, 1.333333333, 1.777777778 };
+static gdouble  gtab_aspect[GAP_GVE_FFMPEG_ASPECT_MAX_ELEMENTS] =  { 0.0, 1.5, 1.333333333, 1.777777778 };
 
 
 /* lists of all available fileformats and codecs
@@ -1624,8 +1624,9 @@ p_create_expert_algortihms_frame (GapGveFFMpegGlobalParams *gpp)
 
     /* the ASPECT combo */
     combo = gimp_int_combo_box_new (_("auto from pixelsize"),  GAP_GVE_FFMPEG_ASPECT_00_AUTO,
-                                    _("4:3"),                  GAP_GVE_FFMPEG_ASPECT_01_4_3,
-                                    _("16:9"),                 GAP_GVE_FFMPEG_ASPECT_02_16_9,
+                                    _("3:2"),                  GAP_GVE_FFMPEG_ASPECT_01_3_2,
+                                    _("4:3"),                  GAP_GVE_FFMPEG_ASPECT_02_4_3,
+                                    _("16:9"),                 GAP_GVE_FFMPEG_ASPECT_03_16_9,
                                     NULL);
 
     gpp->ff_aspect_combo = combo;
@@ -2556,8 +2557,6 @@ p_create_ffmpeg_dialog_shell (GapGveFFMpegGlobalParams *gpp)
 gint
 gap_enc_ffgui_ffmpeg_encode_dialog(GapGveFFMpegGlobalParams *gpp)
 {
-gap_debug = TRUE;
-
   if(gap_debug) printf("gap_enc_ffgui_ffmpeg_encode_dialog: Start\n");
 
   gimp_ui_init ("gap_video_extract", FALSE);

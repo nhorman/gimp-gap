@@ -90,7 +90,7 @@ static char *gap_enc_avi_version = "2.1.0a; 2004/10/07";
 /* int gap_debug = 1; */    /* print debug infos */
 /* int gap_debug = 0; */    /* 0: dont print debug infos */
 
-int gap_debug = 1;
+int gap_debug = 0;
 GapGveAviGlobalParams global_params;
 int global_nargs_avi_enc_par;
 
@@ -1231,6 +1231,11 @@ p_avi_encode(GapGveAviGlobalParams *gpp)
     g_free(xvid_control);
   }
 #endif
+
+  if(l_vidhand)
+  {
+    gap_gve_story_close_vid_handle(l_vidhand);
+  }
 
   return l_rc;
 }    /* end p_avi_encode */

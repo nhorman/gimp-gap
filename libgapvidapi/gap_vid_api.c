@@ -62,6 +62,13 @@
 #include <libgimp/gimp.h>
 #include <gap_vid_api-intl.h>
 
+/* includes for UNIX fork-based workarond for the libmpeg3 crash on close bug */
+#ifndef G_OS_WIN32
+#include <unistd.h>          /* for fork */
+#include <sys/wait.h>
+#include <signal.h> 
+#endif
+
 extern      int gap_debug; /* ==0  ... dont print debug infos */
 
 #include "gap_vid_api.h"
@@ -71,10 +78,13 @@ extern      int gap_debug; /* ==0  ... dont print debug infos */
 t_GVA_DecoderElem  *GVA_global_decoder_list = NULL;
 
 
+
 /* max threshold for row mix algorithm (used for deinterlacing frames)
  * (510*510) + (256+256+256)
  */
 #define MIX_MAX_THRESHOLD  260865
+
+
 
 static void                      p_alloc_rowpointers(t_GVA_Handle *gvahand, t_GVA_Frame_Cache_Elem  *fc_ptr);
 static t_GVA_Frame_Cache_Elem *  p_new_frame_cache_elem(t_GVA_Handle *gvahand);
@@ -1765,7 +1775,39 @@ GVA_delace_frame(t_GVA_Handle *gvahand
 }  /* end GVA_delace_frame */
 
 
+/* ------------------------------------
+ * GVA_image_set_aspect
+ * ------------------------------------
+ */
+void
+GVA_image_set_aspect(t_GVA_Handle *gvahand, gint32 image_id)
+{
 
+  if(gvahand->aspect_ratio != 0.0)
+  {
+    gdouble xresolution;
+    gdouble yresolution;
+    gdouble asymetric;
+
+    asymetric = ((gdouble)gvahand->width / (gdouble)gvahand->height)
+              / gvahand->aspect_ratio;
+
+    yresolution = 72.0;
+    xresolution = yresolution * asymetric;
+
+    /* set resolution in DPI according to aspect ratio */
+    gimp_image_set_unit (gvahand->image_id, GIMP_UNIT_INCH);
+    gimp_image_set_resolution (gvahand->image_id, xresolution, yresolution);
+
+    if(gap_debug)
+    {
+      printf("API: resolution x/y %f / %f\n"
+	, (float)xresolution
+	, (float)yresolution
+	);
+    }
+  }
+}  /* end GVA_image_set_aspect */
 
 
 /* ------------------------------------
@@ -1841,12 +1883,14 @@ GVA_frame_to_gimp_layer_2(t_GVA_Handle *gvahand
 		       , gvahand->height
 		       , 0
 		       , 0);
+       GVA_image_set_aspect(gvahand, *image_id);
      }
   }
   else
   {
      *image_id = gimp_image_new (gvahand->width, gvahand->height, GIMP_RGB);
      if (gap_debug)  printf("DEBUG: after gimp_image_new\n");
+     GVA_image_set_aspect(gvahand, *image_id);
 
      old_layer_id = -1;
   }
@@ -1983,8 +2027,6 @@ GVA_frame_to_gimp_layer_2(t_GVA_Handle *gvahand
   /* clear undo stack */
   gimp_image_undo_enable(*image_id);
   gimp_image_undo_disable(*image_id);
-
-
 
   /* debug code to display a copy of the image */
   /*
@@ -2156,6 +2198,7 @@ GVA_frame_to_gimp_layer(t_GVA_Handle *gvahand
             , (int)gvahand->layer_id
             );
   }
+
 
   return(l_rc);
 }  /* end GVA_frame_to_gimp_layer */

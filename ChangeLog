@@ -1,3 +1,114 @@
+2005-01-15  Wolfgang Hofer <hof@gimp.org>
+	- bugfix: Storyboard dialog: after save as, and encoder call:
+          the encoder was called with the OLD name!
+	- gap_arr_dialog replaced global data to enable 2 pop-ups
+	  created with gap_arr_dialog open at same time.
+	  (fixes some bugs from my internal list
+	   related to the storyboard dialog that does use
+	   2 or more arr_dialog based pop-ups)
+	  
+	* gap/gap_story_dialog.c
+        * gap/gap_arr_dialog.c
+	* docs/reference/txt/STORYBOARD_FILE_DOC.txt
+	
+2005-01-14  Wolfgang Hofer <hof@gimp.org>
+	- STORYBOARD Processing:
+	  Show progress while analyzing storyboard files and while
+	  extracting audioparts of videofiles to temporary audiofiles
+	  for creating the composite audio track.
+
+	- GVA workaround for libmpeg3 crash on close bug (limited to UNIX systems).
+	  the workaround forks a child process with its own sgnal handler.
+	  the child process tries open/close. Crashes are then caught
+	  in the signal handler of the child process and tell the parent
+	  process (via retcode) that this videofile cant be handled by libmpeg3.
+	  
+	  This workaround makes open safe but slow 
+	  (mainly caused by additional open/close rather than by forking).
+	  but with gimprc parameter:
+	  
+	  (video-workaround-for-libmpeg3-close-bug "no")
+	  
+	  the workaround can be skipped.
+	
+	* vid_common/gap_cme_gui.c
+	* libgapvidutil/gap_gve_story.c
+	* libgapvidapi/gap_vid_api_mpeg3.c
+	* libgapvidapi/gap_vid_api.c
+	* docs/reference/txt/gap_gimprc_params.txt
+	* NEWS
+	
+2005-01-13  Wolfgang Hofer <hof@gimp.org>
+	- Storyboard added feature to generate audio original tone
+	  cut references in the storyboard file
+	  for all the clips refering to videofiles.
+	  
+	* gap/gap_story_dialog.c [.h]
+	* gap/gap_story_file.c [.h]
+	* gap/gap_story_main.h
+	* docs/reference/txt/plug-in-gap-storyboard-edit.txt
+	
+2005-01-12  Wolfgang Hofer <hof@gimp.org>
+	- Master Videoencoder: added button 'Create Composite Audiofile'
+	  this starts the long running audio mixdown for storyboard processing.
+	  
+	  in the old behaviour this was started implicite when a new
+	  storyboard filename was entered, and there was no way to skip that
+	  part. the explicite start gives more flexibility if the user
+	  wants to encode only the video part, or the composite audiofile
+	  is already there from a previous encoder call, and wants to encode
+	  again with other compression parameters.
+	  
+	- Storyboard processing optimized:
+	  - the new flag create_audio_tmp_files controls the long running
+	    creation of temporary audiofiles. Setting this flag to FALSE
+	    can speed up storyboard processing for the case when
+	    the storyboard file contains audio tracks, and the caller
+	    (== the Master Videoencoder) is only interested in
+	    total audioplaytime and if syntax of audio records is OK.
+
+	  - implicite extracting audiodata from videofiles for the
+	    mix down of the composite audiotrack is now reduced
+	    to the affected range(s) refering a videofile.
+	    (old behaviour extracted always the audiodata in full length)
+
+	* gap/gap_story_file.c [.h]
+	* vid_common/gap_cme_gui.c [.h]
+	* vid_common/gap_cme_callbacks.c [.h]
+	* vid_common/gap_cme_main.c [.h]
+	* libgapvidutil/gap_gve_story.c [.h]
+	
+	* docs/reference/txt/plug-in-gap-vid-encode-master.txt
+	* docs/reference/txt/plug-in-gap-extract-video.txt
+	
+	  
+2005-01-06  Wolfgang Hofer <hof@gimp.org>
+	- Storyboard syntax: the AUD_PLAY_MOVIE command
+	  now provides positioning in unit frames.
+	  this makes it easier to add an original tone
+	  audiotrack (by manual editing) because
+	  the video clips (VID_PLAY_MOVIE syntax) is also mesured in frames.
+
+	* gap/gap_story_syntax.c
+	* gap/gap_story_file.c [.h]
+	
+2005-01-05  Wolfgang Hofer <hof@gimp.org>
+	- removed/disabled more debug output printf statements
+	- video_extract: show aspect_ratio information of the video
+	  (this feature does not work with the libmpeg3 decoder,
+	   mpeg3_aspect_ratio delivered 0.0
+	   for all tested video files, 
+	   libavformat did deliver correct aspect informations)
+	  
+	  when available the aspect ratio is also used to set the 
+	  image resolution in all the handled (extracted) videoframe images, 
+	  where yresolution is fixed at 72 DPI and xresolution
+	  is calculated according to the aspect ratio of the video.
+	  Typically 16:9 DVDs have 720x576 non-quadratic pixels. 
+	  This results in xresolution 60.75 DPI  and yresolution 72.0 DPI.
+	  
+	  the aspect is set in the Video API procedure GVA_image_set_aspect.
+	
 2004-12-22  Wolfgang Hofer <hof@gimp.org>
 	-fixed some bugs in message texts (reported by popolon via mail)
 	-fixed bug scanning strings from _vin.gap files

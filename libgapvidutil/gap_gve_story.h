@@ -6,6 +6,9 @@
  */
 
 /*
+ * 2005.01.12  hof  - audio processing has new flag: create_audio_tmp_files
+ *                  - no more checks and constraints for valid video/audio ranges
+ *                    adressing illegal range delivers black frames (or audio silence)
  * 2004.07.24  hof  - added step_density parameter
  * 2003.05.29  hof  - gap_gve_story_fetch_composite_image_or_chunk (for dont_recode_flag)
  * 2003.04.16  hof  - Support deinterlace and exact_seek features for VID_PLAY_MOVIE
@@ -314,6 +317,7 @@ typedef struct GapGveStoryVidHandle
 
   gboolean ignore_audio;
   gboolean ignore_video;
+  gboolean create_audio_tmp_files;
 
   gboolean   cancel_operation;   /* not supported yet */
   gdouble    *progress;
@@ -383,6 +387,7 @@ GapGveStoryVidHandle *  gap_gve_story_open_vid_handle(
 GapGveStoryVidHandle *  gap_gve_story_open_extended_video_handle(
                            gboolean ignore_audio
                           ,gboolean igore_video
+			  ,gboolean create_audio_tmp_files
                           ,gdouble  *progress_ptr
                           ,char *status_msg
                           ,gint32 status_msg_len

@@ -402,6 +402,9 @@ p_create_syntax_list(void)
 	       ,"nloops"
                ,"seltrack"
                ,"decoder"
+               ,"from"
+               ,"to"
+               ,"framerate"
 	       ,NULL
                );
   p_add_keyword(GAP_STBKEY_AUD_SILENCE

@@ -74,5 +74,4 @@ GapVThumbElem * gap_story_dlg_add_vthumb(GapStbMainGlobalParams *sgpp
 void  gap_story_dlg_recreate_tab_widgets(GapStbTabWidgets *tabw
 				  ,GapStbMainGlobalParams *sgpp
 				  );
-
 #endif

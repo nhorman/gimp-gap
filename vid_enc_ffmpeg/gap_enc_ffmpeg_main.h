@@ -97,9 +97,10 @@
 #define GAP_GVE_FFMPEG_MB_DECISION_MAX_ELEMENTS    3
 
 #define GAP_GVE_FFMPEG_ASPECT_00_AUTO    0
-#define GAP_GVE_FFMPEG_ASPECT_01_4_3     1
-#define GAP_GVE_FFMPEG_ASPECT_02_16_9    2
-#define GAP_GVE_FFMPEG_ASPECT_MAX_ELEMENTS    3
+#define GAP_GVE_FFMPEG_ASPECT_01_3_2     1
+#define GAP_GVE_FFMPEG_ASPECT_02_4_3     2
+#define GAP_GVE_FFMPEG_ASPECT_03_16_9    3
+#define GAP_GVE_FFMPEG_ASPECT_MAX_ELEMENTS    4
 
 /* ffmpeg specific encoder params */
 typedef struct {

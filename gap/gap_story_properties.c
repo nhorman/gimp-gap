@@ -600,14 +600,16 @@ p_pw_auto_scene_split(GapStbPropWidget *pw, gboolean all_scenes)
     sum_diff += diff;
     num_diff++;
                     
-// DEBUG print DIFF
-    printf("SCENE: frame_max:%d frame:%d  THRES:%d AVG_DIFF:%d DIFF:%d\n"
-    , (int)framenr_max
-    , (int)framenr
-    , (int)diff_threshold
-    , (int)(sum_diff /  num_diff)
-    , (int)diff
-    );
+    if(gap_debug)
+    {
+      printf("SCENE: frame_max:%d frame:%d  THRES:%d AVG_DIFF:%d DIFF:%d\n"
+      , (int)framenr_max
+      , (int)framenr
+      , (int)diff_threshold
+      , (int)(sum_diff /  num_diff)
+      , (int)diff
+      );
+    }
     
     /* check if diff is bigger than abs threshold
      * or if we have more than 4 frames:
@@ -646,8 +648,7 @@ p_pw_auto_scene_split(GapStbPropWidget *pw, gboolean all_scenes)
           return;
         }
 
-// DEBUG 
-printf("AUTO SCENE NEW_ELEM:\n");
+        if(gap_debug) printf("AUTO SCENE NEW_ELEM:\n");
     
         /* add a new Element for the next scene */
         stb_elem_new = gap_story_elem_duplicate(stb_elem);
@@ -660,17 +661,19 @@ printf("AUTO SCENE NEW_ELEM:\n");
         stb_elem->next = stb_elem_new;
         stb_elem = stb_elem_new;
 
-// DEBUG 
-printf("AUTO SCENE NEW_ELEM linked to list: drop:%d, video_id:%d\n"
-     ,(int)drop_th_data
-     ,(int)video_id
-     );
+        if(gap_debug)
+	{
+	  printf("AUTO SCENE NEW_ELEM linked to list: drop:%d, video_id:%d\n"
+	       ,(int)drop_th_data
+	       ,(int)video_id
+	       );
+	} 
 
         if((stb_elem->record_type == GAP_STBREC_VID_MOVIE)
         && (drop_th_data)
         && (video_id >= 0))
         {
-printf("AUTO SCENE ADD VTHUMB:\n");
+           if(gap_debug) printf("AUTO SCENE ADD VTHUMB:\n");
            drop_th_data = FALSE;
            gap_story_dlg_add_vthumb(sgpp
                                    ,framenr
@@ -888,7 +891,7 @@ p_pw_timer_go_job(GapStbPropWidget *pw)
          */
         pw->go_timertag = (gint32) g_timeout_add(96, (GtkFunction)p_pw_timer_go_job, pw);
 
-        /*if(gap_debug)*/ printf("p_pw_timer_go_job: TRY LATER (96msec) %06d\n", (int)pw->go_job_framenr);
+        /*if(gap_debug) printf("p_pw_timer_go_job: TRY LATER (96msec) %06d\n", (int)pw->go_job_framenr); */
       }
       else
       {
@@ -913,10 +916,6 @@ p_pw_timer_go_job(GapStbPropWidget *pw)
              */
             p_pv_pview_render_immediate(pw);
             gap_story_dlg_pw_render_all(pw);
-printf("GO_RENDER_JOB: go_job_framenr: %d  rom_frame:%d\n"
-      , (int)pw->go_job_framenr
-      , (int)pw->stb_elem_refptr->from_frame
-      );
           }
           else
           {
@@ -924,8 +923,6 @@ printf("GO_RENDER_JOB: go_job_framenr: %d  rom_frame:%d\n"
             {
               pw->stb_elem_refptr->from_frame = pw->go_job_framenr;
               p_pv_pview_render_immediate(pw);
-
-printf("GO_JOB: go_job_framenr: %d\n", (int)pw->go_job_framenr );
 
             }
           }
@@ -1038,7 +1035,7 @@ p_pw_check_ainfo_range(GapStbPropWidget *pw, char *filename)
   gdouble l_upper;
   gdouble l_val;
 
-printf("PROP AINFO CHECK\n");
+  if(gap_debug) printf("PROP AINFO CHECK\n");
 
   /* default: allow maximum range 
    * (for movies we dont know the exactnumber of frames
@@ -1069,7 +1066,7 @@ printf("PROP AINFO CHECK\n");
     {
       GapStoryVideoElem *velem;
 
-printf("PROP AINFO CHECK --> GAP_STBREC_VID_MOVIE\n");
+      if(gap_debug) printf("PROP AINFO CHECK --> GAP_STBREC_VID_MOVIE\n");
       velem = gap_story_dlg_get_velem(pw->sgpp
                            ,pw->stb_elem_refptr->orig_filename
                            ,pw->stb_elem_refptr->seltrack
@@ -1476,7 +1473,7 @@ p_pw_gint32_adjustment_callback(GtkObject *obj, gint32 *val)
     if(pw->stb_elem_refptr)
     {
       l_val = RINT (GTK_ADJUSTMENT(obj)->value);
-printf("gint32_adjustment_callback: old_val:%d val:%d\n", (int)*val ,(int)l_val );
+      if(gap_debug) printf("gint32_adjustment_callback: old_val:%d val:%d\n", (int)*val ,(int)l_val );
       if(l_val != *val)
       {
         *val = l_val;

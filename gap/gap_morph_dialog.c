@@ -3964,8 +3964,6 @@ gap_morph_dialog(GapMorphGlobalParams *mgpp)
   mgup = &morph_gui_params;
   mgup->mgpp = mgpp;
 
-gap_debug = TRUE;
-
   if(gap_debug) printf("gap_morph_dialog: START mgpp->master_wp_list: %d\n", (int)mgpp->master_wp_list);
 
   /* startup with empty workpoint list

@@ -7,6 +7,8 @@ version only. Some of the new features are just partly implemented
 and may crash or deliver unexpected results. 
 
 
+- support upto 8 framenumber digits for frame images (mplayer style)
+  (older support was limited to 6 digits)
 
 - Videoapi (GVA) for read access in videofiles (.mpg, .avi ....)
   (frames and audio)
@@ -14,6 +16,8 @@ and may crash or deliver unexpected results.
 - Videoextract Plug-In
    extract frames and/or audio samples
    from a videofile, based on the GAP Video API (GVA))
+
+- Videoextract Plug-In based on external program MPlayer
 
 - Storyboard dialog to create and edit
   Videocliplists (Storyboard text files)

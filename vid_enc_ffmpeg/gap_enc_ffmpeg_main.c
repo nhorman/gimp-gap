@@ -1849,6 +1849,8 @@ p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
   gdouble       l_percentage, l_percentage_step;
   int           l_rc;
   gint32        l_max_master_frame_nr;
+  gint32        l_cnt_encoded_frames;
+  gint32        l_cnt_reused_frames;
 
   FILE *l_fp_inwav = NULL;
   gint32 datasize;
@@ -1859,6 +1861,8 @@ p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
   long  l_bytes_per_sample = 4;
   long  l_bits = 16;
   long  l_samples = 0;
+  l_cnt_encoded_frames = 0;
+  l_cnt_reused_frames = 0;
 
 
   gint32 wavsize = 0; /* Data size of the wav file */
@@ -2044,13 +2048,27 @@ p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
 
       if (l_video_frame_chunk_size > 0)
       {
+        l_cnt_reused_frames++;
+        if (gap_debug)
+	{
+	  printf("DEBUG: 1:1 copy of frame %d\n", (int)l_cur_frame_nr);
+	}
+
         /* dont recode, just copy video chunk to output videofile */
         p_ffmpeg_write_frame_chunk(ffh, l_video_frame_chunk_size);
       }
       else   /* encode one VIDEO FRAME */
       {
+        l_cnt_encoded_frames++;
         l_drawable = gimp_drawable_get (l_layer_id);
-        if (gap_debug) printf("DEBUG: %s encoding frame %d\n", epp->vcodec_name, (int)l_cur_frame_nr);
+        
+	if (gap_debug)
+	{
+	  printf("DEBUG: %s encoding frame %d\n"
+	        , epp->vcodec_name
+		, (int)l_cur_frame_nr
+		);
+	}
 
 
         /* fill the yuv420_buffer with current frame image data */
@@ -2097,7 +2115,6 @@ p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
 
         if (gap_debug) printf("Now encoding audio frame datasize:%d, audio codec:%s\n", (int)datasize, epp->acodec_name);
 
-        /****** AVI_write_audio(l_avifile, databuffer, datasize); *****/
         p_ffmpeg_write_audioframe(ffh, databuffer, datasize);
 
         audio_filled_100 -= audio_margin * 100;
@@ -2136,5 +2153,19 @@ p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
     fclose(l_fp_inwav);
   }
 
+  if(l_vidhand)
+  {
+    if(gap_debug)
+    {
+      gap_gve_story_debug_print_framerange_list(l_vidhand->frn_list, -1);
+    }
+    gap_gve_story_close_vid_handle(l_vidhand);
+  }
+
+  /* statistics */
+  printf("encoded       frames: %d\n", (int)l_cnt_encoded_frames);
+  printf("1:1 copied    frames: %d\n", (int)l_cnt_reused_frames);
+  printf("total handled frames: %d\n", (int)l_cnt_encoded_frames + l_cnt_reused_frames);
+  
   return l_rc;
 }    /* end p_ffmpeg_encode */

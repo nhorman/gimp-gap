@@ -87,6 +87,8 @@ typedef struct GapCmeGlobalParams {                    /* nick: gpp */
   GapGveCommonValues   val;
   GapGveEncAInfo       ainfo;
   GapGveEncList        *ecp;
+  
+  gboolean   storyboard_create_composite_audio;
 
   GtkWidget *shell_window;
   GtkWidget *fsv__fileselection;
@@ -99,6 +101,7 @@ typedef struct GapCmeGlobalParams {                    /* nick: gpp */
   GtkWidget *ow__filename;
   GtkWidget *cme__button_gen_tmp_audfile;
   GtkWidget *cme__button_params;
+  GtkWidget *cme__button_stb_audio;
   GtkWidget *cme__entry_audio1;
   GtkWidget *cme__entry_debug_flat;
   GtkWidget *cme__entry_debug_multi;
