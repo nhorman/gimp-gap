@@ -1,4 +1,3 @@
-# Slovak translation of 
 # Slovak translation of gimp-gap.HEAD.pot
 # Copyright (C) 1999,2003, 2004 Free Software Foundation, Inc.
 # Zdenko Podobný <zdpo@mailbox.sk>, 2002, 2003, 2004.
@@ -6,10 +5,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-10 14:39+0100\n"
-"PO-Revision-Date: 2004-03-10 20:26+0100\n"
+"Project-Id-Version: gimp2-gap-1.3.25\n"
+"Report-Msgid-Bugs-To: Zdenko Podobný <zdpo@mailbox.sk>\\n"
+"POT-Creation-Date: 2004-03-12 14:56+0100\n"
+"PO-Revision-Date: 2004-03-13 19:57+0100\n"
 "Last-Translator: Zdenko Podobný <zdpo@mailbox.sk>\n"
 "Language-Team: Slovak <sk-i18n@lists.linux.sk>\n"
 "MIME-Version: 1.0\n"
@@ -340,7 +339,7 @@ msgstr "Prečíslovať snímky druhá fáza"
 #. toggle bluebox
 #: gap/gap_bluebox.c:247 gap/gap_mov_dialog.c:2615
 msgid "Bluebox"
-msgstr ""
+msgstr "Bluebox"
 
 #. the frame
 #: gap/gap_bluebox.c:269
@@ -356,7 +355,7 @@ msgstr "Kľúčová farba:"
 #. the keycolor button
 #: gap/gap_bluebox.c:290
 msgid "Bluebox Color Picker"
-msgstr ""
+msgstr "Bluebox výber farieb"
 
 #: gap/gap_bluebox.c:314
 msgid "Alpha Tolerance:"
@@ -605,11 +604,11 @@ msgstr "Chyba: Obrázok '%s' nenájdený"
 
 #: gap/gap_bluebox.c:1487
 msgid "Error: Bluebox effect operates only on layers"
-msgstr ""
+msgstr "Chyba: Bluebox efekt pracuje iba s vrstvami"
 
 #: gap/gap_bluebox.c:1496
 msgid "Error: Bluebox effect operates only on RGB layers"
-msgstr ""
+msgstr "Chyba: Bluebox efekt pracuje iba s RGB vrstvami"
 
 #: gap/gap_bluebox.c:1580
 msgid "BlueboxPreview.xcf"
@@ -628,7 +627,7 @@ msgstr "Hlavná vrstva"
 
 #: gap/gap_bluebox_main.c:180
 msgid "<Image>/Video/Bluebox ..."
-msgstr ""
+msgstr "<Image>/Video/Bluebox ..."
 
 #: gap/gap_dbbrowser_utils.c:230
 msgid "_Search:"
@@ -1965,7 +1964,7 @@ msgid ""
 "step the source half time slower.One source step is done only at every 2.nd "
 "target frame."
 msgstr ""
-"Krok zdrojových a cielových snímok je synchrónny pri hodnote 1.0. Hodnota "
+"Krok zdrojových a cieľových snímok je synchrónny pri hodnote 1.0. Hodnota "
 "0.5 bude prechádzať zdrojom dva krát pomalšie, 1 krok zdroja pri každej "
 "druhej cielovej snímke."
 
@@ -1983,15 +1982,17 @@ msgid ""
 "Apply the bluebox filter on the moving object(s). The bluebox filter makes "
 "the keycolor transparent."
 msgstr ""
+"Aplikuje bluebox filter na pohyblivé objekty. Bluebox filter robí kľúčovú "
+"farbu priesvitnou."
 
 #. keycolor button
 #: gap/gap_mov_dialog.c:2643
 msgid "Move Path Bluebox Keycolor"
-msgstr ""
+msgstr "Presunúť cestu kľúčovej farby Bluebox"
 
 #: gap/gap_mov_dialog.c:2659
 msgid "Open dialog window to set parameters and keycolor for the bluebox filter"
-msgstr ""
+msgstr "Otvorí dialógové okno pre nastavenie parametrov a kľúčovej farby pre filter bluebox"
 
 #. toggle Tracelayer
 #: gap/gap_mov_dialog.c:2677 gap/gap_mov_exec.c:927
