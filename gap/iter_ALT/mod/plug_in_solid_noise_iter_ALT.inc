@@ -12,6 +12,7 @@ gint p_plug_in_solid_noise_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gd
       gint    detail;
       gdouble xsize;
       gdouble ysize;
+      gboolean random_seed;
     } t_plug_in_solid_noise_Vals; 
 
     t_plug_in_solid_noise_Vals  buf, *buf_from, *buf_to; 

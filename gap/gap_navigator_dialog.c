@@ -26,6 +26,7 @@
  */
 
 /* revision history:
+ * gimp    1.3.26a; 2004/01/30  hof: navi_pviews_reset: use the procedure gap_pview_drop_repaint_buffers rather than g_free the pixmap
  * gimp    1.3.25a; 2004/01/21  hof: gap_thumb_file_load_thumbnail now returns th_data with th_bpp == 4
  *                                   (the flatten capabilities were removed) 
  * gimp    1.3.24a; 2004/01/17  hof: bugfix: call of plug_in_gap_range_to_multilayer needs regionselect_mode
@@ -1545,11 +1546,7 @@ navi_pviews_reset(void)
     fw = &naviD->frame_widget_tab[l_row];
     fw->frame_timestamp = 0;
 
-    if(fw->pv_ptr->pixmap)
-    {
-      g_free(fw->pv_ptr->pixmap);
-      fw->pv_ptr->pixmap = NULL;
-    }
+    gap_pview_drop_repaint_buffers(fw->pv_ptr);
   }
 }  /* end navi_pviews_reset */
 
@@ -1655,7 +1652,7 @@ navi_thumb_update(gboolean update_all)
 
   if(l_any_upd_flag  )
   {
-    /* forget about he previous chached thumbnials
+    /* forget about the previous chached thumbnials
      * (if we had no thumbnails before, the cache holds only the default icons
      *  but now we generated real thumbnails without changing the timestamp
      *  of the oroginal file)

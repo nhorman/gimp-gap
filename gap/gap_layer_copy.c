@@ -21,6 +21,7 @@
  */
 
 /* revision history:
+ * version 1.3.26a 2004.01.28   hof: added gap_layer_copy_from_buffer
  * version 1.3.21c 2003.11.02   hof: added gap_layer_copy_to_image
  * version 1.3.20d 2003.10.14   hof: sourcecode cleanup, new: gap_layer_copy_content, gap_layer_copy_picked_channel
  * version 1.3.5a  2002.04.20   hof: use gimp_layer_new_from_drawable (API cleanup, requries gimp.1.3.6)
@@ -214,7 +215,6 @@ gap_layer_copy_content (gint32 dst_drawable_id, gint32 src_drawable_id)
   GimpPixelRgn srcPR, dstPR;
   GimpDrawable *src_drawable;
   GimpDrawable *dst_drawable;
-  guint   row;
   gpointer  pr;
 
   src_drawable = gimp_drawable_get (src_drawable_id);
@@ -408,4 +408,89 @@ gap_layer_copy_picked_channel (gint32 dst_drawable_id,  guint dst_channel_pick
 
   return TRUE;
 }  /* end gap_layer_copy_picked_channel */
+
+
+
+
+/* ---------------------------------
+ * gap_layer_new_from_buffer
+ * ---------------------------------
+ * create a new RGB or RGBA layer for the image with image_id
+ * and init with supplied data.
+ * The caller is responsible to add the returned layer
+ * to the image ( by calling gimp_image_add_layer )
+ *
+ * return layer_id or -1 in case of errors
+ */
+gint32 
+gap_layer_new_from_buffer(gint32 image_id
+                                    , gint32 width
+				    , gint32 height
+				    , gint32 bpp
+				    , guchar *data
+				    )
+{
+  gint32 layer_id;
+  GimpImageBaseType l_basetype;
+  GimpImageBaseType l_type;
+  GimpPixelRgn  dstPR;
+  GimpDrawable *dst_drawable;
+ 
+  l_basetype   = gimp_image_base_type(image_id);
+  if(l_basetype != GIMP_RGB)
+  {
+    printf("**ERROR gap_layer_copy_from_buffer: image != RGB is not supported\n");
+    return -1;
+  }
+  
+  l_type   = GIMP_RGB_IMAGE;
+  if(bpp == 4)
+  {
+    l_type   = GIMP_RGBA_IMAGE;
+  }
+
+  layer_id = gimp_layer_new(image_id
+                , "dummy"
+		, width
+		, height
+		, l_type
+		, 100.0   /* full opacity */
+		, 0       /* normal mode */
+		);
+
+  if(layer_id >= 0)
+  {
+    guchar *buf_ptr;
+    gint    row;
+    gint    rowstride;
+    
+    dst_drawable = gimp_drawable_get (layer_id);
+    buf_ptr = data;
+    rowstride = bpp * width;
+
+    gimp_pixel_rgn_init (&dstPR, dst_drawable
+                      , 0, 0     /* x1, y1 */
+                      , width
+		      , height
+		      , TRUE     /* dirty */
+		      , FALSE    /* shadow */
+		       );
+    
+    for(row=0; row < height; row++)
+    {
+      gimp_pixel_rgn_set_row(&dstPR
+                            ,buf_ptr
+			    ,0
+			    ,row
+			    , width
+			    );
+      buf_ptr += rowstride;
+    }
+
+    /*  update the processed region  */
+    gimp_drawable_flush (dst_drawable);
+  }
+  
+  return(layer_id);
+}  /* end gap_layer_new_from_buffer */
 

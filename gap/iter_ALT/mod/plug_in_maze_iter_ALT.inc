@@ -18,6 +18,7 @@ gint p_plug_in_maze_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble c
        gint multiple;
        gint offset;
        MazeAlgoType algorithm;
+       gboolean random_seed;
        /* Interface options. */
     } t_plug_in_maze_Vals; 
 

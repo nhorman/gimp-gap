@@ -6,7 +6,8 @@ gint p_plug_in_destripe_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdoub
 {
     typedef struct t_plug_in_destripe_Vals 
     {
-      long      avg_width;
+      gboolean      histogram;
+      gint          avg_width;
     } t_plug_in_destripe_Vals; 
 
     t_plug_in_destripe_Vals  buf, *buf_from, *buf_to; 
@@ -25,7 +26,7 @@ gint p_plug_in_destripe_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdoub
     buf_to   = (t_plug_in_destripe_Vals *)&g_plugin_data_to[0]; 
     memcpy(&buf, buf_from, sizeof(buf));
 
-    p_delta_long(&buf.avg_width, buf_from->avg_width, buf_to->avg_width, total_steps, current_step);
+    p_delta_gint(&buf.avg_width, buf_from->avg_width, buf_to->avg_width, total_steps, current_step);
 
     gimp_set_data("plug_in_destripe", &buf, sizeof(buf)); 
 

@@ -6,7 +6,8 @@ gint p_plug_in_pixelize_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdoub
 {
     typedef struct t_plug_in_pixelize_Vals 
     {
-      long      pixelwidth;
+      gint pixelwidth;
+      gint pixelheight;
     } t_plug_in_pixelize_Vals; 
 
     t_plug_in_pixelize_Vals  buf, *buf_from, *buf_to; 
@@ -25,7 +26,8 @@ gint p_plug_in_pixelize_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdoub
     buf_to   = (t_plug_in_pixelize_Vals *)&g_plugin_data_to[0]; 
     memcpy(&buf, buf_from, sizeof(buf));
 
-    p_delta_long(&buf.pixelwidth, buf_from->pixelwidth, buf_to->pixelwidth, total_steps, current_step);
+    p_delta_gint(&buf.pixelwidth, buf_from->pixelwidth, buf_to->pixelwidth, total_steps, current_step);
+    p_delta_gint(&buf.pixelheight, buf_from->pixelheight, buf_to->pixelheight, total_steps, current_step);
 
     gimp_set_data("plug_in_pixelize", &buf, sizeof(buf)); 
 

@@ -4,13 +4,11 @@
  */
 gint p_plug_in_color_map_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble current_step, gint32 len_struct) 
 {
+    gint ii;
     typedef struct t_plug_in_color_map_Vals 
     {
-      t_color   srccolor_1;
-      t_color   srccolor_2;
-      t_color   dstcolor_1;
-      t_color   dstcolor_2;
-      long      map_mode;
+      GimpRGB   colors[4];
+      gint32    map_mode;
     } t_plug_in_color_map_Vals; 
 
     t_plug_in_color_map_Vals  buf, *buf_from, *buf_to; 
@@ -29,11 +27,11 @@ gint p_plug_in_color_map_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdou
     buf_to   = (t_plug_in_color_map_Vals *)&g_plugin_data_to[0]; 
     memcpy(&buf, buf_from, sizeof(buf));
 
-    p_delta_color(&buf.srccolor_1, &buf_from->srccolor_1, &buf_to->srccolor_1, total_steps, current_step);
-    p_delta_color(&buf.srccolor_2, &buf_from->srccolor_2, &buf_to->srccolor_2, total_steps, current_step);
-    p_delta_color(&buf.dstcolor_1, &buf_from->dstcolor_1, &buf_to->dstcolor_1, total_steps, current_step);
-    p_delta_color(&buf.dstcolor_2, &buf_from->dstcolor_2, &buf_to->dstcolor_2, total_steps, current_step);
-    p_delta_long(&buf.map_mode, buf_from->map_mode, buf_to->map_mode, total_steps, current_step);
+    for(ii=0; ii < 4; ii++)
+    {
+      p_delta_GimpRGB(&buf.colors[ii], &buf_from->colors[ii], &buf_to->colors[ii], total_steps, current_step);
+    }
+    p_delta_gint32(&buf.map_mode, buf_from->map_mode, buf_to->map_mode, total_steps, current_step);
 
     gimp_set_data("plug_in_color_map", &buf, sizeof(buf)); 
 

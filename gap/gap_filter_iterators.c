@@ -55,6 +55,7 @@
  */
 
 /* Change Log:
+ * gimp     1.3.26a; 2004/02/07  hof: added p_delta_CML_PARAM, removed gfig
  * gimp     1.3.20b; 2003/09/20  hof: include gap_dbbrowser_utils.h, datatype support for guint, guint32
  *                                    replaced t_GckVector3 and t_GckColor by GimpVector3 and GimpRGB
  * gimp     1.3.17a; 2003/07/29  hof: fixed signed/unsigned comparison warnings
@@ -156,6 +157,25 @@ typedef struct {
 typedef struct {
 	gint color[3];
 } t_gint_color;
+
+typedef struct t_CML_PARAM
+{
+  gint    function;
+  gint    composition;
+  gint    arrange;
+  gint    cyclic_range;
+  gdouble mod_rate;		/* diff / old-value */
+  gdouble env_sensitivity;	/* self-diff : env-diff */
+  gint    diffusion_dist;
+  gdouble ch_sensitivity;
+  gint    range_num;
+  gdouble power;
+  gdouble parameter_k;
+  gdouble range_l;
+  gdouble range_h;
+  gdouble mutation_rate;
+  gdouble mutation_dist;
+} t_CML_PARAM;
 
 
 /* ----------------------------------------------------------------------
@@ -971,6 +991,27 @@ static void p_delta_LightSettings(t_LightSettings *val, t_LightSettings *val_fro
 }
 
 
+/* for p_plug_in_CML_explorer_iter_ALT */
+static void p_delta_CML_PARAM(t_CML_PARAM *val, t_CML_PARAM *val_from, t_CML_PARAM *val_to, gint32 total_steps, gdouble current_step)
+{
+    p_delta_gint(&val->function, val_from->function, val_to->function, total_steps, current_step);
+    p_delta_gint(&val->composition, val_from->composition, val_to->composition, total_steps, current_step);
+    p_delta_gint(&val->arrange, val_from->arrange, val_to->arrange, total_steps, current_step);
+    p_delta_gint(&val->cyclic_range, val_from->cyclic_range, val_to->cyclic_range, total_steps, current_step);
+    p_delta_gdouble(&val->mod_rate, val_from->mod_rate, val_to->mod_rate, total_steps, current_step);
+    p_delta_gdouble(&val->env_sensitivity, val_from->env_sensitivity, val_to->env_sensitivity, total_steps, current_step);
+    p_delta_gint(&val->diffusion_dist, val_from->diffusion_dist, val_to->diffusion_dist, total_steps, current_step);
+
+    p_delta_gdouble(&val->ch_sensitivity, val_from->ch_sensitivity, val_to->ch_sensitivity, total_steps, current_step);
+    p_delta_gint(&val->range_num, val_from->range_num, val_to->range_num, total_steps, current_step);
+    p_delta_gdouble(&val->power, val_from->power, val_to->power, total_steps, current_step);
+    p_delta_gdouble(&val->parameter_k, val_from->parameter_k, val_to->parameter_k, total_steps, current_step);
+    p_delta_gdouble(&val->range_l, val_from->range_l, val_to->range_l, total_steps, current_step);
+    p_delta_gdouble(&val->range_h, val_from->range_h, val_to->range_h, total_steps, current_step);
+    p_delta_gdouble(&val->mutation_rate, val_from->mutation_rate, val_to->mutation_rate, total_steps, current_step);
+    p_delta_gdouble(&val->mutation_dist, val_from->mutation_dist, val_to->mutation_dist, total_steps, current_step);
+}
+
 
 /* ---------------------------------------- 2.nd Section
  * ----------------------------------------
@@ -1060,7 +1101,6 @@ static void p_delta_LightSettings(t_LightSettings *val, t_LightSettings *val_fro
 #include "iter_ALT/gen/plug_in_gauss_iir2_iter_ALT.inc"
 #include "iter_ALT/gen/plug_in_gauss_rle_iter_ALT.inc"
 #include "iter_ALT/gen/plug_in_gauss_rle2_iter_ALT.inc"
-#include "iter_ALT/gen/plug_in_gfig_iter_ALT.inc"
 #include "iter_ALT/gen/plug_in_glasstile_iter_ALT.inc"
 #include "iter_ALT/gen/plug_in_grid_iter_ALT.inc"
 #include "iter_ALT/gen/plug_in_jigsaw_iter_ALT.inc"
@@ -1154,7 +1194,7 @@ static t_iter_ALT_tab   g_iter_ALT_tab[] =
   , { "plug_in_gauss_iir2",  p_plug_in_gauss_iir2_iter_ALT }
   , { "plug_in_gauss_rle",  p_plug_in_gauss_rle_iter_ALT }
   , { "plug_in_gauss_rle2",  p_plug_in_gauss_rle2_iter_ALT }
-  , { "plug_in_gfig",  p_plug_in_gfig_iter_ALT }
+/*, { "plug_in_gfig",  p_plug_in_gfig_iter_ALT }                                  */
   , { "plug_in_gflare",  p_plug_in_gflare_iter_ALT }
   , { "plug_in_glasstile",  p_plug_in_glasstile_iter_ALT }
 /*, { "plug_in_gradmap",  p_plug_in_gradmap_iter_ALT }                            */

@@ -1051,6 +1051,7 @@ query ()
 			 nargs_setrate, nreturn_nothing,
 			 args_setrate, return_nothing);
 
+  g_free(gap_main_version);
 }	/* end query */
 
 

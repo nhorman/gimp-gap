@@ -1,3 +1,38 @@
+2004-02-08  Wolfgang Hofer <hof@gimp.org>
+	- bugfixes: changed iterator Procedures to follow up
+		    LastValues Buffer Structure changes of the
+	            plug-ins that are part of the gimp-2.0pre3 release
+
+	* gap/gap_filter_iterators.c
+	* gap/iter_ALT/mod/plug_in_blur_iter_ALT.inc
+	* gap/iter_ALT/gen/plug_in_color_map_iter_ALT.inc
+	* gap/iter_ALT/gen/plug_in_colorify_iter_ALT.inc
+	* gap/iter_ALT/gen/plug_in_destripe_iter_ALT.inc
+	* gap/iter_ALT/gen/plug_in_grid_iter_ALT.inc
+	* gap/iter_ALT/gen/plug_in_pixelize_iter_ALT.inc
+	* gap/iter_ALT/gen/plug_in_randomize_hurl_iter_ALT.inc
+	* gap/iter_ALT/gen/plug_in_randomize_pick_iter_ALT.inc
+	* gap/iter_ALT/gen/plug_in_randomize_slur_iter_ALT.inc
+	* gap/iter_ALT/mod/plug_in_sample_colorize_iter_ALT.inc
+	* gap/iter_ALT/mod/plug_in_maze_iter_ALT.inc
+	* gap/iter_ALT/mod/plug_in_plasma_iter_ALT.inc
+	* gap/iter_ALT/mod/plug_in_sinus_iter_ALT.inc
+	* gap/iter_ALT/mod/plug_in_solid_noise_iter_ALT.inc
+
+2004-02-01  Wolfgang Hofer <hof@gimp.org>
+	bugfixes (free repaint buffers of the gap_pview drawing area widget)
+	* gap/gap_lib.c [.h]
+	* gap/gap_pview_da.c [.h]
+	* gap/gap_navigator_dialog.c
+
+2004-01-28  Wolfgang Hofer <hof@gimp.org>
+	added new procedure gap_layer_copy_from_buffer
+	* gap/gap_layer_copy.c [.h]
+
+2004-01-23  Wolfgang Hofer <hof@gimp.org>
+	bugfix: gap_vin_load_textfile set correct line_nr
+	* gap/gap_vin.c
+
 2004-01-27  Sven Neumann  <sven@gimp.org>
 
 	* configure.in: AC_SUBST some values to workaround automake-1.6
@@ -65,10 +100,10 @@
 	
 	* configure.in
 	* gap/gap_lib.c
-        * gap/gap_thumbnail.c
+	* gap/gap_thumbnail.c
 	* gap/gap_pdb_calls.c [.h]
 	* gap/gap_pview_da.c [.h]
-        * gap/gap_player_dialog.c
+	* gap/gap_player_dialog.c
 	* gap/gap_navigator_dialog.c
 	
 2004-01-21  Wolfgang Hofer <hof@gimp.org>
@@ -86,7 +121,7 @@
 	must connect to "value_changed" rather than "changed" signal
 	to immediate accept the values typed in by keyboard.
 	
-        * gap/gap_player_dialog.c
+	* gap/gap_player_dialog.c
 
 2004-01-19  Sven Neumann  <sven@gimp.org>
 
@@ -103,7 +138,7 @@
 
 2004-01-17  Wolfgang Hofer <hof@gimp.org>
 
-        Changes to make use of libgimpthumb library.
+	Changes to make use of libgimpthumb library.
 
 	the new procedure gap_thumb_file_load_thumbnail	is based on
 	libgimpthumb and can directly load thumbnail data from PNG
@@ -111,16 +146,16 @@
 	
 	Added Layermask Functions for the Video/Frames Modify Module
 		 
-        * configure.in                 # put defs for MAJOR/MINOR/MICRO VERSION into config.h
+	* configure.in                 # put defs for MAJOR/MINOR/MICRO VERSION into config.h
 	* gap/Makefile.am
 
 	* gap/gap_main.c               # get main version from config.h
 	* gap/gap_navigator_dialog.c   # bugfix: call of plug_in_gap_range_to_multilayer needs regionselect_mode
-        * gap/gap_base_ops.c
-        * gap/gap_lib.c
-        * gap/gap_player_dialog.c
-        * gap/gap_thumbnail.c [.h]
-        * gap/gap_pview_da.c           # use gap_thumb_file_load_thumbnail
+	* gap/gap_base_ops.c
+	* gap/gap_lib.c
+	* gap/gap_player_dialog.c
+	* gap/gap_thumbnail.c [.h]
+	* gap/gap_pview_da.c           # use gap_thumb_file_load_thumbnail
 	* gap/gap_navigator_dialog.c   # use gap_thumb_file_load_thumbnail 
 	* gap/gap_mod_layer.c [.h]     # added layermask support
 	
@@ -256,19 +291,19 @@
 	po/POTFILES.in                 # added new file
 	
 2003-11-05  Wolfgang Hofer <hof@gimp.org>
-        removed 'Import Layers' Plug-In from gimp-gap. 
+	removed 'Import Layers' Plug-In from gimp-gap. 
 	(This plug-in will be placed somwhere else in the GIMP source tree.
 	it will not appear in gimp-gap CVS, because creation and change history
 	happened on my local machine only)
 
 	gap/gap_main.c               # updated main version
-        gap/gap_imp_layer_main.c     # removed that file
+	gap/gap_imp_layer_main.c     # removed that file
 
 2003-11-04  Wolfgang Hofer <hof@gimp.org>
 		    gimprc:
 		    (audioconvert_program "/usr/local/bin/audioconvert_to_wav.sh")
 
-        bugfix: first save attempt of a NON-XCF frame
+	bugfix: first save attempt of a NON-XCF frame
 	was just recognized the first time in a GIMP-session.
 	
 	but must be also recognized when the first frame of any other
@@ -276,13 +311,13 @@
 	(the first save operation of NON-XCF frame
 	 has to be performed INTERACTIVE to define settings for the file-save plug-in)
 
-        ARRAY_DIALOG:
-        blind attempt to fix the "window does not close on cancel button"  
+	ARRAY_DIALOG:
+	blind attempt to fix the "window does not close on cancel button"  
 	part of bug #125977. 
 	(maybe gtk+2.x is a little different on
 	Windows ? -- i dont have a windows environment to test gimp-gap)
 	
-        1) now call arr_close_callback explicite on Cancel and other buttons
+	1) now call arr_close_callback explicite on Cancel and other buttons
 	   rather than rely on the implicite call caused by "destroy" event
 	   of the main dialog
 	2) take care that gtk_main_quit and gtk_widget_destroy(dlg)
@@ -291,7 +326,7 @@
 	   allows to skip the warning dialog for all configured
 	   fileformat extensions. (as suggegsted in #125977 feature request part)
 	   
-           (video-save-flattened-xxx    "yes")
+	   (video-save-flattened-xxx    "yes")
 	   
 	   where xxx is the extension (jpg, jpeg, png, gif ...)
 	   
@@ -305,9 +340,9 @@
 	gap/gap_imp_layer_main.c
 
 2003-11-02  Wolfgang Hofer <hof@gimp.org>
-        added the 'Import Layers' Plug-In to the gimp-gap package. 
+	added the 'Import Layers' Plug-In to the gimp-gap package. 
 
-        changed message texts capitalization (#125429)
+	changed message texts capitalization (#125429)
 	and linebreaks  (#125430)
 	There are still some linebreaks where i think it makes sense.
 
@@ -335,8 +370,8 @@
 	gap/gap_split.c
 	gap/README                   # updated docs
 	gap/Makefile.am              # updated to copile the new module gap_imp_layer_main
-        gap/gap_imp_layer_main.c     # new file
-        gap/gap_layer_copy.c [.h]    # new procedure gap_layer_copy_to_image
+	gap/gap_imp_layer_main.c     # new file
+	gap/gap_layer_copy.c [.h]    # new procedure gap_layer_copy_to_image
 	po/POTFILES.in               # added new file
 	
 2003-10-29  Wolfgang Hofer <hof@gimp.org>
@@ -378,8 +413,8 @@
 	(When everything is selected in the SourceImage
 	the whole Alpha Channel was cleared to full transparent)
 	
-        gap/gap_mov_render.c      # bugfix selectiopn handling
-        gap/gap_mov_render.h      # bugfix selectiopn handling
+	gap/gap_mov_render.c      # bugfix selectiopn handling
+	gap/gap_mov_render.h      # bugfix selectiopn handling
 	gap/gap_mov_exec.c
 	gap/gap_mov_dialog.c
 	gap/gap_player_dialog.c   # bugfix #124896 typemissmatch "Cannels"
@@ -389,7 +424,7 @@
 	with my local changes since 2003-10-04
 
 2003-10-18  Wolfgang Hofer <hof@gimp.org>
-        Request to remove dead code modules:
+	Request to remove dead code modules:
 	(i think i already removed those file, 
 	 but they appear in the CVS snaphots again)
 	gap/gap_exchange_image.c   # dead code
@@ -399,7 +434,7 @@
 	VCR Navigator: Removed Close Button.
 
 2003-10-16  Wolfgang Hofer <hof@gimp.org>
-        Extended MovePath to [optional] respect Selections
+	Extended MovePath to [optional] respect Selections
 	in the SourceImage (or SourceFrames).
 	feather_radius can be controled individual
 	via controlpoint settings.
@@ -408,17 +443,17 @@
 	extended controlpoint fileformat with feather_radius
 
 2003-10-15  Wolfgang Hofer <hof@gimp.org>
-        Extended MovePath to allow Bluebox Filtercalls
+	Extended MovePath to allow Bluebox Filtercalls
 	on the handled moving SourceLayer.
 	
 2003-10-14  Wolfgang Hofer <hof@gimp.org>
-        New Bluebox Plug-In
+	New Bluebox Plug-In
 	Converts the keycolor to Transparent Aplhachannel
 	based on a By Color Selection, and optional Selection Feather / Shrink Ops.
 
 
 2003-10-09  Wolfgang Hofer <hof@gimp.org>
-        Support for Selection Handling in 'Frames To Image'
+	Support for Selection Handling in 'Frames To Image'
 	and 'Frames Modify' Plug-In.
 	Now you can propagate Selections from one Frame
 	into all Frames of a selected Framerange (Frames Modify)
@@ -426,17 +461,17 @@
 	(Frames To Image)
 
 2003-10-07  Wolfgang Hofer <hof@gimp.org>
-        Cleanup all external Procedure and type names
+	Cleanup all external Procedure and type names
 	as first step for the planed Library libgimpgap.so
 
-        here are the internal revision numbers that wer used for the cleanup
+	here are the internal revision numbers that wer used for the cleanup
 	(those versions are kept on my local machine only and were not
 	checked into CVS)
-        gimp-gap-1.3.20d_pre107  # compileclean with all new names	
+	gimp-gap-1.3.20d_pre107  # compileclean with all new names	
 	gimp-gap-1.3.20d_pre106  # manual name changes (that would conflict on automatic string replacements)
 	gimp-gap-1.3.20d_pre105  # was the sourcecode base
 	
-        touched nearly ALL Sourcefiles for this Cleanup Step.
+	touched nearly ALL Sourcefiles for this Cleanup Step.
 	the affected fiels are:
 	
 	gap/gap_arr_dialog.c  gap/gap_arr_dialog.h  
@@ -473,7 +508,7 @@
 	* gap(gap_stoc.c [.h]
 	
 2003-10-05  Wolfgang Hofer <hof@gimp.org>
-        Player: tweaks in the resize behavior of the dialog window
+	Player: tweaks in the resize behavior of the dialog window
 	MovePath: On Window resize (enlarge), automatic
 	resize the Preview to use the extra layout space.
 	keep a cached copy of the currently displayed frame
@@ -487,7 +522,7 @@
 
 2003-10-04  Wolfgang Hofer <hof@gimp.org>
 
-        Array Dialog: bugfix: added missing implementation for WGT_RADIO defaults
+	Array Dialog: bugfix: added missing implementation for WGT_RADIO defaults
  	* gap/gap_arr_dialog.c [.h]
 
 2003-10-15  Danilo Šegan  <dsegan@gmx.net>
@@ -496,7 +531,7 @@
 
 2003-10-15  Sven Neumann  <sven@gimp.org>
 
-        Fixed translation of menu entries (reported in bug #124600):
+	Fixed translation of menu entries (reported in bug #124600):
 
 	* configure.in: don't add GAPLIBDIR to CPPFLAGS here...
 
@@ -522,7 +557,7 @@
 	removed trailing whitespace.
 
 2003-09-28  Wolfgang Hofer <hof@gimp.org>
-        MovePath: dialog layout reorganisation
+	MovePath: dialog layout reorganisation
 	bugfixes: 
 	- report errors when controlpointfile load/save failed.
 	- overwrite warning dialog if controlpointfile already exists. 
@@ -554,12 +589,12 @@
 	executable.
 
 2003-09-23  Wolfgang Hofer <hof@gimp.org>
-        checked all Iterator Procedures and fixed most of them
+	checked all Iterator Procedures and fixed most of them
 	to make plug-ins of the gimp-1.3.20 release
 	work with 'Filter All Layers' again.
  	added new iter_ALT Procedures for some plug-ins 
 	that had none, but make sense when called via 'Filter All Layers'
-        Iterators now support more datatypes (guint, guint32, GimpRGB, GimpVector3)
+	Iterators now support more datatypes (guint, guint32, GimpRGB, GimpVector3)
 
  	Playback: use GAPLIBDIR to locate the default audioconvert program
 
@@ -626,7 +661,7 @@
 	* gap/gap_navigator_dialog.c (run): cannot use kill() on WIN32.
 
 2003-09-15  Wolfgang Hofer <hof@gimp.org>
-        bugfix attempt for #122220 (gap_frontends require UNIX to run)
+	bugfix attempt for #122220 (gap_frontends require UNIX to run)
 
 	Non UNIX users should run autogen.sh (configure) with the new option
 	--disable-unix-frontends when they run into compile troubles
@@ -636,7 +671,7 @@
  	* gap/gap_decode_xanim.c
 	
 2003-09-14  Wolfgang Hofer <hof@gimp.org>
-        Updated GAP Version of DBBROWSER to remove old DEPRECATED codeparts.
+	Updated GAP Version of DBBROWSER to remove old DEPRECATED codeparts.
 	  (Merged in from
 	  gimp-1.3.20/plug-ins/dbbrowser/dbbrowser_utils.c)
 	  Added display of the MenuPath, and Search by MenuPath Button
@@ -648,8 +683,8 @@
 	to get the Translated MenuPath for the plug-ins in the PDB.
 	(at least i did not found an API that can do that)
 
-        new features:
-        - Player: Added "Copy As Wavfile" Button and corresponding PopUp Dialog
+	new features:
+	- Player: Added "Copy As Wavfile" Button and corresponding PopUp Dialog
 	          allows conversion from other audioformats to wav, 
 		  and optional resample using lower samplerates.
 		  The Conversion is done by CALL of a configurable external Program.
@@ -661,14 +696,14 @@
 		  based on sox and lame. 
 		  (now can handle MP3 and other audiofile formats
 		   by converting to RIFF WAV)
-        - Player: Added Video time and videoframes Labels in the Audio TAB.
+	- Player: Added Video time and videoframes Labels in the Audio TAB.
 	- Player: Use Abstract AudioPlayerClient API (apcl_ ) Procedures
-                   
+	           
 	bugfixes:
-        - Player: scaling of the Player window did unwanted skip to the initial Frame Number.
+	- Player: scaling of the Player window did unwanted skip to the initial Frame Number.
 	- fixed some compiler warnings
 	- Player: FrameNr Spinbutton callback must 
-                resync audio to the new Position when playing
+	        resync audio to the new Position when playing
 	- Player: Selection of a new audiofile did continue play the old one
 	- Player: selection of audiofile via fileselect dialog did not work (sometimes)		
 	 
@@ -681,7 +716,7 @@
  	* gap/gap_player_main.c [.h]
  	* gap/gap_arr_dialog.c        extended WGT_LABEL (now can create 2 LABELS per row)
 
-        changed Makefiles and Configure to use 	libwavplayclient.a
+	changed Makefiles and Configure to use 	libwavplayclient.a
 	as convenience-Library.
 	Added Abstract AudioPlayerClient API Procedures Layer (apcl_)
 	* Makefile.am

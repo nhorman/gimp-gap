@@ -25,6 +25,7 @@
  */
 
 /* revision history:
+ * 1.3.26a  2004/02/01   hof: added: gap_lib_alloc_ainfo_from_name
  * 1.3.19a  2003/09/06   hof: added gap_lib_searchpath_for_exefile
  * 1.3.16c  2003/07/07   hof: extend ainfo  onion_triggers
  * 1.3.14a  2003/05/27   hof: moved basic gap operations to new module gap_base_ops
@@ -92,6 +93,7 @@ int          gap_lib_file_copy(char *fname, char *fname_copy);
 void         gap_lib_free_ainfo(GapAnimInfo **ainfo);
 char*        gap_lib_alloc_basename(const char *imagename, long *number);
 char*        gap_lib_alloc_extension(const char *imagename);
+GapAnimInfo* gap_lib_alloc_ainfo_from_name(const char *imagename, GimpRunMode run_mode);
 GapAnimInfo* gap_lib_alloc_ainfo(gint32 image_id, GimpRunMode run_mode);
 int          gap_lib_dir_ainfo(GapAnimInfo *ainfo_ptr);
 int          gap_lib_chk_framerange(GapAnimInfo *ainfo_ptr);

@@ -8,6 +8,7 @@ gint p_plug_in_plasma_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble
     {
       guint32   seed;
       gdouble   turbulence;
+      gboolean  random_seed;
     } t_plug_in_plasma_Vals; 
 
     t_plug_in_plasma_Vals  buf, *buf_from, *buf_to; 

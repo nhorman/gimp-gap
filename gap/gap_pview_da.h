@@ -22,6 +22,7 @@
  */
 
 /* revision history:
+ * version 1.3.26a; 2004/01/30  hof: added gap_pview_drop_repaint_buffers 
  * version 1.3.25a; 2004/01/21  hof: added gap_pview_render_from_pixbuf 
  * version 1.3.16a; 2003/06/27  hof: use aspect_frame instead of simple frame, added gap_pview_render_default_icon
  * version 1.3.14c; 2003/06/12  hof: created
@@ -69,6 +70,7 @@ void       gap_pview_repaint(GapPView *pv_ptr);
 GapPView   *gap_pview_new(gint pv_width, gint pv_height, gint pv_check_size, GtkWidget *frame);
 void       gap_pview_set_size(GapPView *pv_ptr, gint pv_width, gint pv_height, gint pv_check_size);
 void       gap_pview_reset(GapPView *pv_ptr);
+void       gap_pview_drop_repaint_buffers(GapPView *pv_ptr);
 
 void       gap_pview_render_default_icon(GapPView   *pv_ptr);
 

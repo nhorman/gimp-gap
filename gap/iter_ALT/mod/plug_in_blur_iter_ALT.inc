@@ -8,6 +8,7 @@ gint p_plug_in_blur_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble c
     {
       gdouble blur_pct;     /* likelihood of randomization (as %age) */
       gdouble blur_rcount;  /* repeat count */
+      gboolean blur_randomize; /* Generate a random seed value */
       guint blur_seed;      /* seed value for rand() function */
     } t_plug_in_blur_Vals; 
 

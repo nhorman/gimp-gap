@@ -23,6 +23,7 @@
  */
 
 /* revision history:
+ * version 1.3.25b; 2004/01/23  hof: bugfix: gap_vin_load_textfile set correct line_nr
  * version 1.3.18b; 2003/08/23  hof: gap_vin_get_all: force timezoom value >= 1 (0 results in divison by zero)
  * version 1.3.18a; 2003/08/23  hof: bugfix: gap_vin_get_all must clear (g_malloc0) vin_ptr struct at creation
  * version 1.3.16c; 2003/07/12  hof: support onionskin settings in video_info files
@@ -283,7 +284,7 @@ gap_vin_load_textfile(const char *filename)
       l_len = strlen("(framerate ");
       txf_ptr = g_malloc0(sizeof(GapVinTextFileLines));
       txf_ptr->line = g_strdup(l_buf);
-      txf_ptr->line_nr++;
+      txf_ptr->line_nr=line_nr;
       txf_ptr->next = NULL;
       
       if(txf_ptr_prev == NULL)

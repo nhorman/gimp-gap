@@ -1,16 +1,20 @@
-Here is a result List of the "Animated Filtercall" Tests
-  I tested more than 100 PDB-Procedures and the GAP's _iter_ALT Procedures
-  on a 3-Layer Testimage with Menu:
+Here is a result List of the "Animated Filtercall" Tests.
+  I tested all the listed PDB-Procedures
+  that can be selected via the GAP's DB-Browser
+  and the corresponding _iter_ALT Procedures
+  on a 5-Layer Testimage with Menu.
+
    
   <Image>/Filter/Filter All Layers   using "Apply Varying" Button
+
 
 ---------------------------------------------------
 Testresults
 --------------------------------------------------
-20.09.2003
+2004.02.08
 
    Test with PDB-Procedures (Plugins) that came with
-   gimp release 1.3.20
+   gimp release 2.0pre3
    and all the generated (or manually changed) _iter_ALT Procedures
 
 State:
@@ -19,120 +23,104 @@ State:
 - ... Failed Test
 . ... not tested
 
-
 State Procedure_name                      Testnotes
 ---------------------------------------------------------------------------
 
-Mod: (NEWLY ADDED)
-
++     plug_in_CML_explorer_iter_ALT.inc
 +     plug_in_alienmap2_iter_ALT.inc
-#     plug_in_apply_canvas_iter_ALT.inc
-+     plug_in_colortoalpha_iter_ALT.inc
-+     plug_in_deinterlace_iter_ALT.inc
-+     plug_in_illusion_iter_ALT.inc
-+     plug_in_lic_iter_ALT.inc                 (?) did make all layers fully TRANSPARENT
-#     plug_in_make_seamless_iter_ALT.inc
-+     plug_in_max_rgb_iter_ALT.inc
-#     plug_in_normalize_iter_ALT.inc
-+     plug_in_sel_gauss_iter_ALT.inc
-#     plug_in_small_tiles_iter_ALT.inc
-+     plug_in_sobel_iter_ALT.inc
-+     plug_in_unsharp_mask_iter_ALT.inc
-#     plug_in_vinvert_iter_ALT.inc
-
-
-Mod: (iterator procedures modified or written manually)
-.     plug_in_Twist_iter_ALT.inc		(-) could not test, No longer part of the gimp standard plug-ins
 +     plug_in_alienmap_iter_ALT.inc
+#     plug_in_apply_canvas_iter_ALT.inc
 +     plug_in_applylens_iter_ALT.inc
-+     plug_in_blur_iter_ALT.inc                 # fixed
-+     plug_in_bump_map_iter_ALT.inc
-+     plug_in_convmatrix_iter_ALT.inc
-+     plug_in_depth_merge_iter_ALT.inc          (?) runs, but did not see any effect
-+     plug_in_despeckle_iter_ALT.inc
-+     plug_in_emboss_iter_ALT.inc
-+     plug_in_exchange_iter_ALT.inc             # fixed
-+     plug_in_flame_iter_ALT.inc                (?) runs, but all layer were transparent when finished
-+     plug_in_lighting_iter_ALT.inc	        # fixed
-+     plug_in_map_object_iter_ALT.inc		# fixed
-+     plug_in_maze_iter_ALT.inc                 # fixed
-+     plug_in_nlfilt_iter_ALT.inc               (?) runs, but did not see any effect
-.     plug_in_nova_iter_ALT.inc                 CRASH at 1st call
-+     plug_in_oilify_iter_ALT.inc
--     plug_in_pagecurl_iter_ALT.inc             ERROR: creates a new layer
-+     plug_in_papertile_iter_ALT.inc            # fixed
-+     plug_in_plasma_iter_ALT.inc               # fixed
-+     plug_in_polar_coords_iter_ALT.inc
-.     plug_in_sample_colorize_iter_ALT.inc      (HANGS)
-+     plug_in_sinus_iter_ALT.inc                # fixed
-+     plug_in_solid_noise_iter_ALT.inc          # fixed
-+     plug_in_sparkle_iter_ALT.inc
-
-
-
-Old: (iterator procedures for Plug-Ins that once was part of older gimp-releases)
-.     plug_in_CentralReflection_iter_ALT.inc
-.     plug_in_anamorphose_iter_ALT.inc
-.     plug_in_blur2_iter_ALT.inc
-.     plug_in_encript_iter_ALT.inc
-.     plug_in_figures_iter_ALT.inc
-+     plug_in_gflare_iter_ALT.inc              # OK, plug-in is part of gimp again and iterator works
-.     plug_in_holes_iter_ALT.inc
-.     plug_in_julia_iter_ALT.inc
-.     plug_in_magic_eye_iter_ALT.inc
-.     plug_in_mandelbrot_iter_ALT.inc
-.     plug_in_randomize_iter_ALT.inc
-.     plug_in_refract_iter_ALT.inc
-.     plug_in_struc_iter_ALT.inc
-.     plug_in_tileit_iter_ALT.inc
-.     plug_in_universal_filter_iter_ALT.inc
-+     plug_in_warp_iter_ALT.inc                # OK, plug-in is part of gimp again and iterator works
-
-
-Gen: (iterator procedures generated automatic)
-
--     plug_in_CML_explorer_iter_ALT.inc		ERROR: p_plug_in_CML_explorer_iter_ALT  stored Data missmatch in size 560 != 4
-.     plug_in_alpha2color_iter_ALT.inc          (-) gone, No longer part of the gimp standard plug-ins
 +     plug_in_blinds_iter_ALT.inc
++     plug_in_blur_iter_ALT.inc
 +     plug_in_borderaverage_iter_ALT.inc        (?) runs, but did not see any effect
++     plug_in_bump_map_iter_ALT.inc
 +     plug_in_checkerboard_iter_ALT.inc
--     plug_in_color_map_iter_ALT.inc		ERROR: p_plug_in_color_map_iter_ALT  stored Data missmatch in size 132 != 16
--     plug_in_colorify_iter_ALT.inc		ERROR: p_plug_in_colorify_iter_ALT  stored Data missmatch in size 32 != 3
++     plug_in_color_map_iter_ALT.inc
++     plug_in_colorify_iter_ALT.inc
++     plug_in_colortoalpha_iter_ALT.inc
++     plug_in_convmatrix_iter_ALT.inc
 +     plug_in_cubism_iter_ALT.inc
++     plug_in_deinterlace_iter_ALT.inc
++     plug_in_depth_merge_iter_ALT.inc
++     plug_in_despeckle_iter_ALT.inc
 +     plug_in_destripe_iter_ALT.inc
 +     plug_in_diffraction_iter_ALT.inc
 +     plug_in_displace_iter_ALT.inc
-+     plug_in_edge_iter_ALT.inc                 # changed
++     plug_in_edge_iter_ALT.inc
++     plug_in_emboss_iter_ALT.inc
 +     plug_in_engrave_iter_ALT.inc
++     plug_in_exchange_iter_ALT.inc
++     plug_in_flame_iter_ALT.inc 	       (?) runs, but all layer were transparent when finished
 +     plug_in_flarefx_iter_ALT.inc
 +     plug_in_fractal_trace_iter_ALT.inc
 +     plug_in_gauss_iir2_iter_ALT.inc
 +     plug_in_gauss_iir_iter_ALT.inc
 +     plug_in_gauss_rle2_iter_ALT.inc
 +     plug_in_gauss_rle_iter_ALT.inc
--     plug_in_gfig_iter_ALT.inc			(-) ERROR: no stored data found for Key plug_in_gfig
++     plug_in_gflare_iter_ALT.inc 
 +     plug_in_glasstile_iter_ALT.inc
--     plug_in_grid_iter_ALT.inc			ERROR: p_plug_in_grid_iter_ALT  stored Data missmatch in size 132 != 48
++     plug_in_grid_iter_ALT.inc
++     plug_in_illusion_iter_ALT.inc
 +     plug_in_jigsaw_iter_ALT.inc
+-     plug_in_lic_iter_ALT.inc		      (crashed)
++     plug_in_lighting_iter_ALT.inc
+#     plug_in_make_seamless_iter_ALT.inc
++     plug_in_map_object_iter_ALT.inc
++     plug_in_max_rgb_iter_ALT.inc
++     plug_in_maze_iter_ALT.inc
 +     plug_in_mblur_iter_ALT.inc
-+     plug_in_mosaic_iter_ALT.inc              # changed
-+     plug_in_newsprint_iter_ALT.inc           # changed (only names)
++     plug_in_mosaic_iter_ALT.inc
++     plug_in_newsprint_iter_ALT.inc
++     plug_in_nlfilt_iter_ALT.inc	       (?) runs, but did not see any effect
 +     plug_in_noisify_iter_ALT.inc
--     plug_in_pixelize_iter_ALT.inc		ERROR: p_plug_in_pixelize_iter_ALT  stored Data missmatch in size 8 != 4
-+     plug_in_randomize_hurl_iter_ALT.inc      # changed
-+     plug_in_randomize_pick_iter_ALT.inc      # changed
-+     plug_in_randomize_slur_iter_ALT.inc      # changed
+#     plug_in_normalize_iter_ALT.inc
++     plug_in_nova_iter_ALT.inc  	       CRASH at 1st call
++     plug_in_oilify_iter_ALT.inc
+(1)   plug_in_pagecurl_iter_ALT.inc	       ERROR: creates a new layer
++     plug_in_papertile_iter_ALT.inc
++     plug_in_pixelize_iter_ALT.inc
++     plug_in_plasma_iter_ALT.inc
++     plug_in_polar_coords_iter_ALT.inc
++     plug_in_randomize_hurl_iter_ALT.inc
++     plug_in_randomize_pick_iter_ALT.inc
++     plug_in_randomize_slur_iter_ALT.inc
 +     plug_in_ripple_iter_ALT.inc
--     plug_in_rotate_iter_ALT.inc              (-) untestable, does not show any dialog at interactive call !
+-     plug_in_rotate_iter_ALT.inc	      (-) untestable, does not show any dialog at interactive call !
++     plug_in_sample_colorize_iter_ALT.inc
 +     plug_in_scatter_hsv_iter_ALT.inc
++     plug_in_sel_gauss_iter_ALT.inc
 +     plug_in_sharpen_iter_ALT.inc
 +     plug_in_shift_iter_ALT.inc
++     plug_in_sinus_iter_ALT.inc
+#     plug_in_small_tiles_iter_ALT.inc
++     plug_in_sobel_iter_ALT.inc
++     plug_in_solid_noise_iter_ALT.inc
++     plug_in_sparkle_iter_ALT.inc
 +     plug_in_spread_iter_ALT.inc
-#     plug_in_video_iter_ALT.inc		(!) varying values does not make sense, but keep iterator to get into gap_dbbrowser selection
++     plug_in_unsharp_mask_iter_ALT.inc
+#     plug_in_video_iter_ALT.inc 	       (!) varying values does not make sense, but keep iterator to get into gap_dbbrowser selection
+#     plug_in_vinvert_iter_ALT.inc
 +     plug_in_vpropagate_iter_ALT.inc
++     plug_in_warp_iter_ALT.inc
 +     plug_in_waves_iter_ALT.inc
 +     plug_in_whirl_pinch_iter_ALT.inc
 +     plug_in_wind_iter_ALT.inc
+
+
+Additional notes:
+
+(1)   the pagecurl plugin fails when called via
+           <image>/Filters/Filter all Layers
+      because it adds an extra layer for the curl to the image.
+      
+      pagecurl can be used as filter when called via
+           <image>/Video/Frames Modify
+      when Function: "Apply filter on layers" is selected as action.
+      
+      From my point of view it does not make much sense
+      in animations,
+      because this plugin works with fixed curling amount.
 
 
 
@@ -164,4 +152,34 @@ plug_in_map_object ol Testreport: (did not verfy that at the latest test)
     (in older GIMP releases these Procedures did return -1
      on invalid Ids, in Gimp 1.1.3 it comes to a crash
      I hope that this Bug will be fixed in gimp 1.2)
+
+
+
+
+
+
+
+State Procedure_name                      Testnotes
+---------------------------------------------------------------------------
+
+
+
+Old: (iterator procedures for Plug-Ins that once was part of older gimp-releases)
+.     plug_in_CentralReflection_iter_ALT.inc
+.     plug_in_anamorphose_iter_ALT.inc
+.     plug_in_blur2_iter_ALT.inc
+.     plug_in_encript_iter_ALT.inc
+.     plug_in_figures_iter_ALT.inc
++     plug_in_gflare_iter_ALT.inc              # OK, plug-in is part of gimp again and iterator works
+.     plug_in_holes_iter_ALT.inc
+.     plug_in_julia_iter_ALT.inc
+.     plug_in_magic_eye_iter_ALT.inc
+.     plug_in_mandelbrot_iter_ALT.inc
+.     plug_in_randomize_iter_ALT.inc
+.     plug_in_refract_iter_ALT.inc
+.     plug_in_struc_iter_ALT.inc
+.     plug_in_tileit_iter_ALT.inc
+.     plug_in_universal_filter_iter_ALT.inc
++     plug_in_warp_iter_ALT.inc                # OK, plug-in is part of gimp again and iterator works
+
 

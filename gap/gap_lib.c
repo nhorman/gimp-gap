@@ -26,6 +26,7 @@
  */
 
 /* revision history:
+ * 1.3.26a  2004/02/01   hof: added: gap_lib_alloc_ainfo_from_name
  * 1.3.25a  2004/01/20   hof: - removed xvpics support (gap_lib_get_video_paste_name)
  * 1.3.21e  2003/11/04   hof: - gimprc
  * 1.3.18a  2003/08/23   hof: - all gap_debug messages to stdout (do not mix with stderr)
@@ -871,6 +872,56 @@ gap_lib_exists_frame_nr(GapAnimInfo *ainfo_ptr, long nr, long *l_has_digits)
 
   return(l_exists);
 }    /* end gap_lib_exists_frame_nr */
+
+
+/* ============================================================================
+ * gap_lib_alloc_ainfo_from_name
+ *
+ * allocate and init an ainfo structure from the given imagename
+ * (use this to get anim informations if none of the frame is not loaded
+ *  as image into the gimp
+ *  and no image_id is available)
+ * ============================================================================
+ */
+GapAnimInfo *
+gap_lib_alloc_ainfo_from_name(const char *imagename, GimpRunMode run_mode)
+{
+   GapAnimInfo   *l_ainfo_ptr;
+
+   if(imagename == NULL)
+   {
+     return (NULL);
+   }
+
+   l_ainfo_ptr = (GapAnimInfo*)g_malloc(sizeof(GapAnimInfo));
+   if(l_ainfo_ptr == NULL) return(NULL);
+
+   l_ainfo_ptr->basename = NULL;
+   l_ainfo_ptr->new_filename = NULL;
+   l_ainfo_ptr->extension = NULL;
+   l_ainfo_ptr->image_id = -1;
+
+   l_ainfo_ptr->old_filename = g_strdup(imagename);
+
+   l_ainfo_ptr->basename = gap_lib_alloc_basename(l_ainfo_ptr->old_filename, &l_ainfo_ptr->frame_nr);
+   if(NULL == l_ainfo_ptr->basename)
+   {
+       gap_lib_free_ainfo(&l_ainfo_ptr);
+       return(NULL);
+   }
+
+   l_ainfo_ptr->extension = gap_lib_alloc_extension(l_ainfo_ptr->old_filename);
+
+   l_ainfo_ptr->curr_frame_nr = l_ainfo_ptr->frame_nr;
+   l_ainfo_ptr->first_frame_nr = -1;
+   l_ainfo_ptr->last_frame_nr = -1;
+   l_ainfo_ptr->frame_cnt = 0;
+   l_ainfo_ptr->run_mode = run_mode;
+
+
+   return(l_ainfo_ptr);
+
+}    /* end gap_lib_alloc_ainfo_from_name */
 
 
 /* ============================================================================

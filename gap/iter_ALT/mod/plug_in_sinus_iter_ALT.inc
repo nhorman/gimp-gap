@@ -17,6 +17,7 @@ gint p_plug_in_sinus_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble 
       glong     colors;
       GimpRGB   col1;
       GimpRGB   col2;
+      gboolean  random_seed;
     } t_plug_in_sinus_Vals;
 
     t_plug_in_sinus_Vals  buf, *buf_from, *buf_to; 

@@ -23,6 +23,7 @@
  */
 
 /* revision history:
+ * version 1.3.26a; 2004/01/30  hof: added gap_pview_drop_repaint_buffers 
  * version 1.3.25a; 2004/01/22  hof: added gap_pview_render_from_pixbuf 
  * version 1.3.24a; 2004/01/17  hof: speed up gap_pview_render_from_buf 
  *                                   faster rendering of fully opaque pixels
@@ -55,6 +56,21 @@ extern int gap_debug;  /* 1 == print debug infos , 0 dont print debug infos */
 #define PREVIEW_BG_GRAY2_GDK 0xb4b4b4
 
 /* ------------------------------
+ * gap_pview_drop_repaint_buffers
+ * ------------------------------
+ */
+void
+gap_pview_drop_repaint_buffers(GapPView *pv_ptr)
+{
+  if(pv_ptr->pixmap)        g_object_unref(pv_ptr->pixmap);
+  if(pv_ptr->pixbuf)        g_object_unref(pv_ptr->pixbuf);
+
+  pv_ptr->pixmap = NULL;
+  pv_ptr->pixbuf = NULL;
+  
+} /* end gap_pview_drop_repaint_buffers */
+
+/* ------------------------------
  * gap_pview_reset
  * ------------------------------
  * reset/free precalculated stuff
@@ -64,9 +80,9 @@ gap_pview_reset(GapPView *pv_ptr)
 {
   if(pv_ptr->src_col) g_free(pv_ptr->src_col);
   if(pv_ptr->pv_area_data)  g_free(pv_ptr->pv_area_data);
-  if(pv_ptr->pixmap)        g_object_unref(pv_ptr->pixmap);
-  if(pv_ptr->pixbuf)        g_object_unref(pv_ptr->pixbuf);
 
+  gap_pview_drop_repaint_buffers(pv_ptr);
+  
   pv_ptr->src_col = NULL;
   pv_ptr->pv_area_data = NULL;
   pv_ptr->src_width = 0;
@@ -74,8 +90,6 @@ gap_pview_reset(GapPView *pv_ptr)
   pv_ptr->src_rowstride = 0;
   pv_ptr->use_pixmap_repaint = FALSE;
   pv_ptr->use_pixbuf_repaint = FALSE;
-  pv_ptr->pixmap = NULL;
-  pv_ptr->pixbuf = NULL;
   
 } /* end gap_pview_reset */
 
