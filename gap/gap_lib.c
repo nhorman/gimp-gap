@@ -4,7 +4,7 @@
  * GAP ... Gimp Animation Plugins
  *
  * basic GAP types and utility procedures
- * 
+ *
  *
  */
 /* The GIMP -- an image manipulation program
@@ -26,7 +26,7 @@
  */
 
 /* revision history:
- * 1.3.21e  2003/11/04   hof: - gimprc 
+ * 1.3.21e  2003/11/04   hof: - gimprc
  * 1.3.18a  2003/08/23   hof: - all gap_debug messages to stdout (do not mix with stderr)
  *                            - do not save thumbnails in p_decide_save_as because it saves
  *                              to a temp filename that is renamed later after successful save
@@ -44,7 +44,7 @@
  *                            gap_locking (now moved to gap_lock.c)
  * 1.3.4b;  2002/03/15   hof: gap_lib_load_named_frame now uses gimp_displays_reconnect (removed gap_exchange_image.h)
  * 1.3.4a;  2002/03/11   hof: port to gimp-1.3.4
- * 1.2.2a;  2001/10/21   hof: bufix # 61677 (error in duplicate frames GUI) 
+ * 1.2.2a;  2001/10/21   hof: bufix # 61677 (error in duplicate frames GUI)
  *                            and disable duplicate for Unsaved/untitled Images.
  *                            (creating frames from such images with a default name may cause problems
  *                             as unexpected overwriting frames or mixing animations with different sized frames)
@@ -79,8 +79,8 @@
  * 0.90.00;              hof: 1.st (pre) release
  */
 #include "config.h"
- 
-/* SYSTEM (UNIX) includes */ 
+
+/* SYSTEM (UNIX) includes */
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -133,7 +133,7 @@
 
 
 extern      int gap_debug; /* ==0  ... dont print debug infos */
- 
+
 /* ------------------------------------------ */
 /* forward  working procedures */
 /* ------------------------------------------ */
@@ -170,7 +170,7 @@ gap_lib_strdup_add_underscore(char *name)
        l_str[l_len    ] = '_';
        l_str[l_len +1 ] = '\0';
     }
-      
+
   }
   return(l_str);
 }
@@ -193,7 +193,7 @@ gap_lib_strdup_del_underscore(char *name)
     {
        l_str[l_len -1 ] = '\0';
     }
-      
+
   }
   return(l_str);
 }
@@ -220,19 +220,19 @@ gap_lib_file_exists(const char *fname)
     /* stat error (file does not exist) */
     return(0);
   }
-  
+
   if(!S_ISREG(l_stat_buf.st_mode))
   {
     return(0);
   }
-  
+
   l_len = (long)l_stat_buf.st_size;
   if(l_len < 1)
   {
     /* File is empty*/
     return(0);
   }
-  
+
   return(1);
 }	/* end gap_lib_file_exists */
 
@@ -253,14 +253,14 @@ gap_lib_searchpath_for_exefile(const char *exefile, const char *path)
   char *dirpath;
   char *pp;
   gboolean break_flag;
-       
- 
+
+
   path_copy = g_strdup(path);
   exe_fullname = NULL;
   break_flag = FALSE;
   pp = path_copy;
   dirpath = path_copy;
-  
+
   while(pp && break_flag == FALSE)
   {
     if (*pp == '\0')
@@ -293,9 +293,9 @@ gap_lib_searchpath_for_exefile(const char *exefile, const char *path)
     }
     pp++;
   }
-  
+
   g_free(path_copy);
-  
+
   if (gap_debug)
   {
     printf("gap_lib_searchpath_for_exefile: path: %s\n", path);
@@ -311,7 +311,7 @@ gap_lib_searchpath_for_exefile(const char *exefile, const char *path)
   }
 
   return(exe_fullname);
-  
+
 }  /* end gap_lib_searchpath_for_exefile */
 
 
@@ -325,7 +325,7 @@ gap_lib_image_file_copy(char *fname, char *fname_copy)
 {
    int            l_rc;
 
-   l_rc = gap_lib_file_copy(fname, fname_copy);  
+   l_rc = gap_lib_file_copy(fname, fname_copy);
    gap_thumb_file_copy_thumbnail(fname, fname_copy);
    return(l_rc);
 }
@@ -370,7 +370,7 @@ gap_lib_file_copy(char *fname, char *fname_copy)
   }
   fread(l_buffer, 1, (size_t)l_len, l_fp);
   fclose(l_fp);
-  
+
   l_fp = fopen(fname_copy, "wb");		    /* open write */
   if(l_fp == NULL)
   {
@@ -399,19 +399,19 @@ gap_lib_delete_frame(GapAnimInfo *ainfo_ptr, long nr)
 {
    char          *l_fname;
    int            l_rc;
-   
+
    l_fname = gap_lib_alloc_fname(ainfo_ptr->basename, nr, ainfo_ptr->extension);
    if(l_fname == NULL) { return(1); }
 
    if(gap_debug) printf("\nDEBUG gap_lib_delete_frame: %s\n", l_fname);
    l_rc = remove(l_fname);
-   
+
    gap_thumb_gimp_file_delete_thumbnail(l_fname);
-   
+
    g_free(l_fname);
-   
+
    return(l_rc);
-   
+
 }    /* end gap_lib_delete_frame */
 
 /* ============================================================================
@@ -424,25 +424,25 @@ gap_lib_rename_frame(GapAnimInfo *ainfo_ptr, long from_nr, long to_nr)
    char          *l_from_fname;
    char          *l_to_fname;
    int            l_rc;
-   
+
    l_from_fname = gap_lib_alloc_fname(ainfo_ptr->basename, from_nr, ainfo_ptr->extension);
    if(l_from_fname == NULL) { return(1); }
-   
+
    l_to_fname = gap_lib_alloc_fname(ainfo_ptr->basename, to_nr, ainfo_ptr->extension);
    if(l_to_fname == NULL) { g_free(l_from_fname); return(1); }
-   
-     
+
+
    if(gap_debug) printf("\nDEBUG gap_lib_rename_frame: %s ..to.. %s\n", l_from_fname, l_to_fname);
    l_rc = rename(l_from_fname, l_to_fname);
 
    gap_thumb_gimp_file_rename_thumbnail(l_from_fname, l_to_fname);
 
-   
+
    g_free(l_from_fname);
    g_free(l_to_fname);
-   
+
    return(l_rc);
-   
+
 }    /* end gap_lib_rename_frame */
 
 
@@ -487,29 +487,29 @@ gap_lib_alloc_basename(const char *imagename, long *number)
   while(l_ptr != l_fname)
   {
     if((*l_ptr >= '0') && (*l_ptr <= '9'))
-    { 
+    {
       *number += ((*l_ptr - '0') * l_idx);
        l_idx = l_idx * 10;
-      *l_ptr = '\0'; 
-       l_ptr--; 
+      *l_ptr = '\0';
+       l_ptr--;
     }
     else
     {
       /* do not cut off underscore any longer */
       /*
        * if(*l_ptr == '_')
-       * { 
+       * {
        *    *l_ptr = '\0';
        * }
        */
        break;
     }
   }
-  
+
   if(gap_debug) printf("DEBUG gap_lib_alloc_basename  result:'%s'\n", l_fname);
 
   return(l_fname);
-   
+
 }    /* end gap_lib_alloc_basename */
 
 
@@ -530,7 +530,7 @@ gap_lib_alloc_extension(const char *imagename)
   int   l_exlen;
   char *l_ext;
   const char *l_ptr;
-  
+
   l_exlen = 0;
   l_ptr = &imagename[strlen(imagename)];
   while(l_ptr != imagename)
@@ -539,7 +539,7 @@ gap_lib_alloc_extension(const char *imagename)
     if(*l_ptr == '.')                                        { l_exlen = strlen(l_ptr); break; }
     l_ptr--;
   }
-  
+
   if(l_exlen > 0)
   {
     l_ext = g_strdup(l_ptr);
@@ -548,7 +548,7 @@ gap_lib_alloc_extension(const char *imagename)
   {
     l_ext = g_strdup("\0");
   }
-     
+
   return(l_ext);
 }
 
@@ -560,7 +560,7 @@ gap_lib_alloc_extension(const char *imagename)
  * the Number part has leading zeroes, depending
  * on the number of digits specified.
  */
-char*  
+char*
 gap_lib_alloc_fname_fixed_digits(char *basename, long nr, char *extension, long digits)
 {
   gchar *l_fname;
@@ -596,11 +596,11 @@ gap_lib_alloc_fname_fixed_digits(char *basename, long nr, char *extension, long 
  * to findout how many digits (leading zeroes) to use in framename numbers
  * per default.
  */
-char*  
+char*
 gap_lib_alloc_fname(char *basename, long nr, char *extension)
 {
   static long default_digits = -1;
-  
+
   if (default_digits < 0)
   {
     const char   *l_env;
@@ -636,13 +636,13 @@ gap_lib_alloc_fname(char *basename, long nr, char *extension)
  *     return ("frame_00005.xcf");
  *
  *   - discfile was found with name:  "frame_001.xcf"
- *     return ("frame_005.xcf"); 
+ *     return ("frame_005.xcf");
  *
  * return the resulting framename string
  *   (the calling program should g_free this string
  *    after use)
  */
-char*  
+char*
 gap_lib_alloc_fname6(char *basename, long nr, char *extension, long default_digits)
 {
   gchar *l_fname;
@@ -760,7 +760,7 @@ gap_lib_alloc_fname6(char *basename, long nr, char *extension, long default_digi
  * check if frame with nr does exist
  * and find out how much digits are used for the number part
  */
-gboolean  
+gboolean
 gap_lib_exists_frame_nr(GapAnimInfo *ainfo_ptr, long nr, long *l_has_digits)
 {
   gchar *l_fname;
@@ -770,7 +770,7 @@ gap_lib_exists_frame_nr(GapAnimInfo *ainfo_ptr, long nr, long *l_has_digits)
   gboolean l_exists;
 
   l_exists = FALSE;
-  
+
   if(ainfo_ptr->basename == NULL) return (FALSE);
   l_len = (strlen(ainfo_ptr->basename)  + strlen(ainfo_ptr->extension) + 10);
   l_fname = (char *)g_malloc(l_len);
@@ -885,13 +885,13 @@ gap_lib_alloc_ainfo(gint32 image_id, GimpRunMode run_mode)
 
    l_ainfo_ptr = (GapAnimInfo*)g_malloc(sizeof(GapAnimInfo));
    if(l_ainfo_ptr == NULL) return(NULL);
-   
+
    l_ainfo_ptr->basename = NULL;
    l_ainfo_ptr->new_filename = NULL;
    l_ainfo_ptr->extension = NULL;
    l_ainfo_ptr->image_id = image_id;
- 
-   /* get current gimp images name  */   
+
+   /* get current gimp images name  */
    l_ainfo_ptr->old_filename = gimp_image_get_filename(image_id);
    if(l_ainfo_ptr->old_filename == NULL)
    {
@@ -919,7 +919,7 @@ gap_lib_alloc_ainfo(gint32 image_id, GimpRunMode run_mode)
 
 
    return(l_ainfo_ptr);
-   
+
 }    /* end gap_lib_alloc_ainfo */
 
 /* ============================================================================
@@ -959,7 +959,7 @@ gap_lib_dir_ainfo(GapAnimInfo *ainfo_ptr)
    while(l_ptr != l_dirname)
    {
       if ((*l_ptr == G_DIR_SEPARATOR) || (*l_ptr == DIR_ROOT))
-      { 
+      {
         *l_ptr = '\0';   /* split the string into dirpath 0 basename */
         l_ptr++;
         break;           /* stop at char behind the slash */
@@ -968,14 +968,14 @@ gap_lib_dir_ainfo(GapAnimInfo *ainfo_ptr)
    }
 
    if(gap_debug) printf("DEBUG gap_lib_dir_ainfo: BASENAME:%s\n", l_ptr);
-   
+
    if      (l_ptr == l_dirname)   { l_dirname_ptr = ".";  l_dirflag = 0; }
    else if (*l_dirname == '\0')   { l_dirname_ptr = G_DIR_SEPARATOR_S ; l_dirflag = 1; }
    else                           { l_dirname_ptr = l_dirname; l_dirflag = 2; }
 
    if(gap_debug) printf("DEBUG gap_lib_dir_ainfo: DIRNAME:%s\n", l_dirname_ptr);
-   l_dirp = g_dir_open( l_dirname_ptr, 0, NULL );  
-   
+   l_dirp = g_dir_open( l_dirname_ptr, 0, NULL );
+
    if(!l_dirp) fprintf(stderr, "ERROR gap_lib_dir_ainfo: can't read directory %s\n", l_dirname_ptr);
    else
    {
@@ -983,8 +983,8 @@ gap_lib_dir_ainfo(GapAnimInfo *ainfo_ptr)
      {
 
        /* if(gap_debug) printf("DEBUG gap_lib_dir_ainfo: l_entry:%s\n", l_entry); */
-       
-       
+
+
        /* findout extension of the directory entry name */
        l_exptr = &l_entry[strlen(l_entry)];
        while(l_exptr != l_entry)
@@ -1013,13 +1013,13 @@ gap_lib_dir_ainfo(GapAnimInfo *ainfo_ptr)
             g_snprintf(dirname_buff, sizeof(dirname_buff), "%s%c%s", l_dirname_ptr,  G_DIR_SEPARATOR,  l_entry);
             break;
          }
-         
+
          if(1 == gap_lib_file_exists(dirname_buff)) /* check for regular file */
          {
            /* get basename and frame number of the directory entry */
            l_dummy = gap_lib_alloc_basename(l_entry, &l_nr);
            if(l_dummy != NULL)
-           { 
+           {
                /* check for files, with equal basename (frames)
                 * (length must be greater than basepart+extension
                 * because of the frame_nr part "0000")
@@ -1054,7 +1054,7 @@ gap_lib_dir_ainfo(GapAnimInfo *ainfo_ptr)
 
   return 0;           /* OK */
 }	/* end gap_lib_dir_ainfo */
- 
+
 
 /* ============================================================================
  * gap_lib_free_ainfo
@@ -1067,22 +1067,22 @@ void
 gap_lib_free_ainfo(GapAnimInfo **ainfo)
 {
   GapAnimInfo *aptr;
-  
+
   if((aptr = *ainfo) == NULL)
      return;
-  
+
   if(aptr->basename)
      g_free(aptr->basename);
-  
+
   if(aptr->extension)
      g_free(aptr->extension);
-   
+
   if(aptr->new_filename)
      g_free(aptr->new_filename);
 
   if(aptr->old_filename)
      g_free(aptr->old_filename);
-     
+
   g_free(aptr);
 }
 
@@ -1098,13 +1098,13 @@ gap_lib_get_frame_nr_from_name(char *fname)
   int  len;
   char *basename;
   if(fname == NULL) return(-1);
-  
+
   basename = gap_lib_alloc_basename(fname, &number);
   if(basename == NULL) return(-1);
-  
+
   len = strlen(basename);
   g_free(basename);
-  
+
   if(number > 0)  return(number);
 
   if(fname[len]  == '0') return(number);
@@ -1122,7 +1122,7 @@ gap_lib_get_frame_nr(gint32 image_id)
 {
   char *fname;
   long  number;
-  
+
   number = -1;
   fname = gimp_image_get_filename(image_id);
   if(fname)
@@ -1136,7 +1136,7 @@ gap_lib_get_frame_nr(gint32 image_id)
 /* ============================================================================
  * gap_lib_chk_framechange
  *
- * check if the current frame nr has changed. 
+ * check if the current frame nr has changed.
  * useful after dialogs, because the user may have renamed the current image
  * (using save as)
  * while the gap-plugin's dialog was open.
@@ -1144,18 +1144,18 @@ gap_lib_get_frame_nr(gint32 image_id)
  *        -1 .. Changed (or error occured)
  * ============================================================================
  */
-int 
+int
 gap_lib_chk_framechange(GapAnimInfo *ainfo_ptr)
 {
   int l_rc;
   GapAnimInfo *l_ainfo_ptr;
- 
+
   l_rc = -1;
   l_ainfo_ptr = gap_lib_alloc_ainfo(ainfo_ptr->image_id, ainfo_ptr->run_mode);
   if(l_ainfo_ptr != NULL)
   {
     if(ainfo_ptr->curr_frame_nr == l_ainfo_ptr->curr_frame_nr )
-    { 
+    {
        l_rc = 0;
     }
     else
@@ -1167,7 +1167,7 @@ gap_lib_chk_framechange(GapAnimInfo *ainfo_ptr)
     gap_lib_free_ainfo(&l_ainfo_ptr);
   }
 
-  return l_rc;   
+  return l_rc;
 }	/* end gap_lib_chk_framechange */
 
 /* ============================================================================
@@ -1178,7 +1178,7 @@ gap_lib_chk_framechange(GapAnimInfo *ainfo_ptr)
  *        -1 .. No frames there (print error)
  * ============================================================================
  */
-int 
+int
 gap_lib_chk_framerange(GapAnimInfo *ainfo_ptr)
 {
   if(ainfo_ptr->frame_cnt == 0)
@@ -1202,7 +1202,7 @@ gap_lib_chk_framerange(GapAnimInfo *ainfo_ptr)
  *          NULL  in case of errors
  * ============================================================================
  */
-char * 
+char *
 p_gzip (char *orig_name, char *new_name, char *zip)
 {
   gchar*   l_cmd;
@@ -1210,10 +1210,10 @@ p_gzip (char *orig_name, char *new_name, char *zip)
   gint     l_rc, l_rc2;
 
   if(zip == NULL) return NULL;
-  
+
   l_cmd = NULL;
   l_tmpname = new_name;
-  
+
   /* used gzip options:
    *     -c --stdout --to-stdout
    *          Write  output  on  standard  output
@@ -1233,7 +1233,7 @@ p_gzip (char *orig_name, char *new_name, char *zip)
   }
 
   if(gap_debug) printf("system: %s\n", l_cmd);
-  
+
   l_rc = system(l_cmd);
   if(l_rc != 0)
   {
@@ -1244,17 +1244,17 @@ p_gzip (char *orig_name, char *new_name, char *zip)
   }
   g_free(l_cmd);
   return l_tmpname;
-  
+
 }	/* end p_gzip */
 
 /* ============================================================================
  * p_decide_save_as
- *   decide what to do on attempt to save a frame in any image format 
+ *   decide what to do on attempt to save a frame in any image format
  *  (other than xcf)
  *   Let the user decide if the frame is to save "as it is" or "flattened"
  *   ("as it is" will save only the backround layer in most fileformat types)
  *   The SAVE_AS_MODE is stored , and reused
- *   (without displaying the dialog again) 
+ *   (without displaying the dialog again)
  *   on subsequent calls of the same frame-basename and extension
  *   in the same GIMP-session.
  *
@@ -1272,9 +1272,9 @@ p_decide_save_as(gint32 image_id, const char *sav_name, const char *final_sav_na
   long  l_number;
 
   static GapArrButtonArg  l_argv[3];
-  int               l_argc;  
+  int               l_argc;
   int               l_save_as_mode;
-  GimpRunMode      l_run_mode;  
+  GimpRunMode      l_run_mode;
 
    /* check if there are SAVE_AS_MODE settings (from privious calls within one gimp session) */
   l_save_as_mode = -1;
@@ -1294,7 +1294,7 @@ p_decide_save_as(gint32 image_id, const char *sav_name, const char *final_sav_na
     gchar *l_key_gimprc;
     gchar *l_val_gimprc;
     gboolean l_ask;
-    
+
     /* no defined value found (this is the 1.st call for this animation in the current session)
      * check for gimprc configuration to decide how to continue:
      * open a dialog (if no configuration value was found,
@@ -1315,7 +1315,7 @@ p_decide_save_as(gint32 image_id, const char *sav_name, const char *final_sav_na
     if(l_val_gimprc)
     {
       if(gap_debug) printf("GIMPRC VAL:%s:\n", l_val_gimprc);
-      
+
       if(strcmp(l_val_gimprc, "yes") == 0)
       {
 	l_save_as_mode = 1;
@@ -1326,18 +1326,18 @@ p_decide_save_as(gint32 image_id, const char *sav_name, const char *final_sav_na
 	l_save_as_mode = 0;
         l_ask = FALSE;
       }
-      
+
       g_free(l_val_gimprc);
     }
     else
     {
       if(gap_debug) printf("GIMPRC VAL:<NULL>\n");
     }
-    
+
     if(l_ask)
     {
       gchar *l_msg;
-      
+
       l_argv[0].but_txt  = GTK_STOCK_CANCEL;
       l_argv[0].but_val  = -1;
       l_argv[1].but_txt  = _("Save Flattened");
@@ -1362,9 +1362,9 @@ p_decide_save_as(gint32 image_id, const char *sav_name, const char *final_sav_na
     }
 
     g_free(l_key_gimprc);
-    
+
     if(gap_debug) printf("DEBUG: decide SAVE_AS_MODE %d\n", (int)l_save_as_mode);
-    
+
     l_run_mode = GIMP_RUN_INTERACTIVE;
   }
   else
@@ -1377,12 +1377,12 @@ p_decide_save_as(gint32 image_id, const char *sav_name, const char *final_sav_na
   g_free(l_basename);
   g_free(l_extension);
   g_free(l_key_save_as_mode);
-   
+
   if(l_save_as_mode < 0)
   {
     return -1;
   }
-  
+
   if(l_save_as_mode == 1)
   {
       gimp_image_flatten (image_id);
@@ -1409,7 +1409,7 @@ gap_lib_gap_check_save_needed(gint32 image_id)
     if(gap_debug) printf("gap_lib_gap_check_save_needed: GAP need save, caused by dirty image id: %d\n", (int)image_id);
     return(TRUE);
   }
-  else 
+  else
   {
     value_string = gimp_gimprc_query("trust-dirty-flag");
     if(value_string != NULL)
@@ -1456,21 +1456,21 @@ p_lib_save_named_image2(gint32 image_id, const char *sav_name, GimpRunMode run_m
      g_free (l_layers_list);
      return -1;
   }
-  
-  l_rc = gimp_file_save(run_mode, 
+
+  l_rc = gimp_file_save(run_mode,
                  image_id,
 		 l_drawable->drawable_id,
 		 sav_name,
 		 sav_name /* raw name ? */
 		 );
 
-  
+
   if(gap_debug) printf("DEBUG: after    p_lib_save_named_image2: '%s' nlayers=%d image=%d drw=%d run_mode=%d\n", sav_name, (int)l_nlayers, (int)image_id, (int)l_drawable->drawable_id, (int)run_mode);
 
   if(enable_thumbnailsave)
   {
     gchar *l_sav_name;
-    
+
     l_sav_name = g_strdup(sav_name);
     gap_thumb_cond_gimp_file_save_thumbnail(image_id, l_sav_name);
     g_free(l_sav_name);
@@ -1525,28 +1525,28 @@ gap_lib_save_named_frame(gint32 image_id, char *sav_name)
   l_rc   = -1;
   l_gzip = 0;          /* dont zip */
   l_xcf  = 0;          /* assume no xcf format */
-  
-  /* check extension to decide if savd file will be zipped */      
+
+  /* check extension to decide if savd file will be zipped */
   l_ext = gap_lib_alloc_extension(sav_name);
   if(l_ext == NULL)  return -1;
-  
+
   if(0 == strcmp(l_ext, ".xcf"))
-  { 
+  {
     l_xcf  = 1;
   }
   else if(0 == strcmp(l_ext, ".xcfgz"))
-  { 
+  {
     l_gzip = 1;          /* zip it */
     l_xcf  = 1;
   }
   else if(0 == strcmp(l_ext, ".gz"))
-  { 
+  {
     l_gzip = 1;          /* zip it */
   }
 
-  /* find a temp name 
+  /* find a temp name
    * that resides on the same filesystem as sav_name
-   * and has the same extension as the original sav_name 
+   * and has the same extension as the original sav_name
    */
   l_tmpname = g_strdup_printf("%s.gtmp%s", sav_name, l_ext);
   if(1 == gap_lib_file_exists(l_tmpname))
@@ -1602,9 +1602,9 @@ gap_lib_save_named_frame(gint32 image_id, char *sav_name)
       *
       * To Do: Should warn the user at 1.st attempt to do this.
       */
-      
+
      l_rc = p_decide_save_as(image_id, l_tmpname, sav_name);
-  } 
+  }
 
   if(l_rc < 0)
   {
@@ -1653,7 +1653,7 @@ gap_lib_save_named_frame(gint32 image_id, char *sav_name)
   g_free(l_tmpname);  /* free temporary name */
 
   return l_rc;
-   
+
 }	/* end gap_lib_save_named_frame */
 
 
@@ -1666,7 +1666,7 @@ p_save_old_frame(GapAnimInfo *ainfo_ptr, GapVinVideoInfo *vin_ptr)
 {
   /* SAVE of old image image if it has unsaved changes
    * (or if Unconditional frame save is forced by gimprc setting)
-   */ 
+   */
   if(gap_lib_gap_check_save_needed(ainfo_ptr->image_id))
   {
     /* check and peroform automatic onionskinlayer remove */
@@ -1697,7 +1697,7 @@ gap_lib_load_image (char *lod_name)
   char  *l_tmpname;
   gint32 l_tmp_image_id;
   int    l_rc;
-  
+
   l_rc = 0;
   l_tmpname = NULL;
   l_ext = gap_lib_alloc_extension(lod_name);
@@ -1705,7 +1705,7 @@ gap_lib_load_image (char *lod_name)
   {
     if((0 == strcmp(l_ext, ".xcfgz"))
     || (0 == strcmp(l_ext, ".gz")))
-    { 
+    {
 
       /* find a temp name and */
       /* try to unzip file, before loading it */
@@ -1727,7 +1727,7 @@ gap_lib_load_image (char *lod_name)
 		l_tmpname,
 		l_tmpname  /* raw name ? */
 		);
-  
+
   if(gap_debug) printf("DEBUG: after    gap_lib_load_image: '%s' id=%d\n\n",
                                l_tmpname, (int)l_tmp_image_id);
 
@@ -1736,7 +1736,7 @@ gap_lib_load_image (char *lod_name)
     remove(l_tmpname);
     g_free(l_tmpname);  /* free if it was a temporary name */
   }
-  
+
 
   return l_tmp_image_id;
 
@@ -1752,13 +1752,13 @@ gap_lib_load_image (char *lod_name)
  *  returns: new_image_id (or -1 on errors)
  * ============================================================================
  */
-gint32 
+gint32
 gap_lib_load_named_frame (gint32 old_image_id, char *lod_name)
 {
   gint32 l_new_image_id;
 
   l_new_image_id = gap_lib_load_image(lod_name);
-  
+
   if(gap_debug) printf("DEBUG: after    gap_lib_load_named_frame: '%s' old_id=%d  new_id=%d\n\n",
                                lod_name, (int)old_image_id, (int)l_new_image_id);
 
@@ -1807,7 +1807,7 @@ gap_lib_replace_image(GapAnimInfo *ainfo_ptr)
   gint32 image_id;
   GapVinVideoInfo *vin_ptr;
   gboolean  do_onionskin_crate;
-  
+
   do_onionskin_crate  = FALSE;
   if(ainfo_ptr->new_filename != NULL) g_free(ainfo_ptr->new_filename);
   ainfo_ptr->new_filename = gap_lib_alloc_fname(ainfo_ptr->basename,
@@ -1828,11 +1828,11 @@ gap_lib_replace_image(GapAnimInfo *ainfo_ptr)
     }
     return -1;
   }
- 
+
   if((vin_ptr->auto_replace_after_load) && (vin_ptr->onionskin_auto_enable))
   {
     do_onionskin_crate  = TRUE;
-    
+
     /* check if directoryscan is needed */
     if((ainfo_ptr->first_frame_nr < 0)
     || (ainfo_ptr->last_frame_nr < 0))
@@ -1843,7 +1843,7 @@ gap_lib_replace_image(GapAnimInfo *ainfo_ptr)
        gap_lib_dir_ainfo(ainfo_ptr);
     }
   }
- 
+
   image_id = gap_lib_load_named_frame(ainfo_ptr->image_id, ainfo_ptr->new_filename);
 
   /* check and peroform automatic onionskinlayer creation */
@@ -1874,9 +1874,9 @@ gap_lib_replace_image(GapAnimInfo *ainfo_ptr)
 }	/* end gap_lib_replace_image */
 
 
-/* XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX */ 
-/* XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX */ 
-/* XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX */ 
+/* XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX */
+/* XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX */
+/* XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX */
 
 /* ============================================================================
  * gap_video_paste Buffer procedures
@@ -1887,7 +1887,7 @@ static gchar *
 p_get_video_paste_basename(void)
 {
   gchar *l_basename;
-  
+
   l_basename = gimp_gimprc_query("video-paste-basename");
   if(l_basename == NULL)
   {
@@ -1901,13 +1901,13 @@ p_get_video_paste_dir(void)
 {
   gchar *l_dir;
   gint   l_len;
-  
+
   l_dir = gimp_gimprc_query("video-paste-dir");
   if(l_dir == NULL)
   {
      l_dir = g_strdup("/tmp");
   }
-  
+
   /* if dir is configured with trailing dir seprator slash
    * then cut it off
    */
@@ -1926,7 +1926,7 @@ gap_lib_get_video_paste_name(void)
   gchar *l_basename;
   gchar *l_video_name;
   gchar *l_dir_thumb;
-         
+
   l_dir = p_get_video_paste_dir();
   l_basename = p_get_video_paste_basename();
   l_video_name = g_strdup_printf("%s%s%s", l_dir, G_DIR_SEPARATOR_S, l_basename);
@@ -1939,7 +1939,7 @@ gap_lib_get_video_paste_name(void)
   g_free(l_dir_thumb);
 
   if(gap_debug) printf("gap_lib_get_video_paste_name: %s\n", l_video_name);
-  return(l_video_name); 
+  return(l_video_name);
 }
 
 static gint32
@@ -1954,9 +1954,9 @@ p_clear_or_count_video_paste(gint delete_flag)
   const char    *l_entry;
 
   l_dir = p_get_video_paste_dir();
-  l_dirp = g_dir_open(l_dir, 0, NULL);  
+  l_dirp = g_dir_open(l_dir, 0, NULL);
   l_framecount = 0;
-  
+
   if(!l_dirp)
   {
     printf("ERROR gap_vid_edit_clear: can't read directory %s\n", l_dir);
@@ -1965,7 +1965,7 @@ p_clear_or_count_video_paste(gint delete_flag)
   else
   {
      l_basename = p_get_video_paste_basename();
-     
+
      l_len = strlen(l_basename);
      while ( (l_entry = g_dir_read_name( l_dirp )) != NULL )
      {
@@ -2013,7 +2013,7 @@ gap_vid_edit_framecount()
 /* ============================================================================
  * gap_vid_edit_copy
  * ============================================================================
- * copy frames to the vid paste directory 
+ * copy frames to the vid paste directory
  * (always using 6 digit framenumbers in the vid paste dir)
  */
 gint
@@ -2021,7 +2021,7 @@ gap_vid_edit_copy(GimpRunMode run_mode, gint32 image_id, long range_from, long r
 {
   int rc;
   GapAnimInfo *ainfo_ptr;
-  
+
   gchar *l_curr_name;
   gchar *l_fname ;
   gchar *l_fname_copy;
@@ -2044,16 +2044,16 @@ gap_vid_edit_copy(GimpRunMode run_mode, gint32 image_id, long range_from, long r
   {
     /* current frame is in the affected range
      * so we have to save current frame to file
-     */   
+     */
     l_curr_name = gap_lib_alloc_fname(ainfo_ptr->basename, ainfo_ptr->curr_frame_nr, ainfo_ptr->extension);
     gap_lib_save_named_frame(ainfo_ptr->image_id, l_curr_name);
     g_free(l_curr_name);
   }
-  
+
   l_basename = gap_lib_get_video_paste_name();
   l_cnt2 = gap_vid_edit_framecount();  /* count frames in the video paste buffer */
   l_frame_nr = 1 + l_cnt2;           /* start at one, or continue (append) at end +1 */
-  
+
   l_cnt_range = 1 + MAX(range_to, range_from) - MIN(range_to, range_from);
   for(l_idx = 0; l_idx < l_cnt_range;  l_idx++)
   {
@@ -2065,7 +2065,7 @@ gap_vid_edit_copy(GimpRunMode run_mode, gint32 image_id, long range_from, long r
                              MIN(range_to, range_from) + l_idx,
                              ainfo_ptr->extension);
      l_fname_copy = g_strdup_printf("%s%06ld.xcf", l_basename, (long)l_frame_nr);
-     
+
      if(strcmp(ainfo_ptr->extension, ".xcf") == 0)
      {
         rc = gap_lib_image_file_copy(l_fname, l_fname_copy);
@@ -2101,7 +2101,7 @@ p_custom_palette_file(char *filename, guchar *rgb, gint count)
   {
     return -1;
   }
-  
+
   fprintf(l_fp, "GIMP Palette\n");
   fprintf(l_fp, "# this file will be overwritten each time when video frames are converted to INDEXED\n");
 
@@ -2124,7 +2124,7 @@ p_custom_palette_file(char *filename, guchar *rgb, gint count)
  * return image_id (of the new loaded current frame) on success
  *        or -1 on errors
  * ============================================================================
- * copy frames from the vid paste directory 
+ * copy frames from the vid paste directory
  * (always using 6 digit framenumbers in the vid paste dir)
  */
 gint32
@@ -2133,7 +2133,7 @@ gap_vid_edit_paste(GimpRunMode run_mode, gint32 image_id, long paste_mode)
 #define CUSTOM_PALETTE_NAME "gap_cmap.gpl"
   gint32 rc;
   GapAnimInfo *ainfo_ptr;
-  
+
   gchar *l_curr_name;
   gchar *l_fname ;
   gchar *l_fname_copy;
@@ -2189,19 +2189,19 @@ gap_vid_edit_paste(GimpRunMode run_mode, gint32 image_id, long paste_mode)
 
   if(paste_mode != GAP_VID_PASTE_INSERT_AFTER)
   {
-    /* we have to save current frame to file */   
+    /* we have to save current frame to file */
     l_curr_name = gap_lib_alloc_fname(ainfo_ptr->basename, ainfo_ptr->curr_frame_nr, ainfo_ptr->extension);
     gap_lib_save_named_frame(ainfo_ptr->image_id, l_curr_name);
     g_free(l_curr_name);
   }
-  
+
   if(paste_mode != GAP_VID_PASTE_REPLACE)
   {
      if(paste_mode == GAP_VID_PASTE_INSERT_AFTER)
      {
        l_insert_frame_nr = ainfo_ptr->curr_frame_nr +1;
      }
-    
+
      /* rename (renumber) all frames with number greater (or greater equal)  than current
       */
      l_lo   = ainfo_ptr->last_frame_nr;
@@ -2212,9 +2212,9 @@ gap_vid_edit_paste(GimpRunMode run_mode, gint32 image_id, long paste_mode)
        printf("gap_vid_edit_paste: l_insert_frame_nr %d l_lo:%d l_hi:%d\n"
            , (int)l_insert_frame_nr, (int)l_lo, (int)l_hi);
      }
-     
+
      while(l_lo >= l_insert_frame_nr)
-     {     
+     {
        if(0 != gap_lib_rename_frame(ainfo_ptr, l_lo, l_hi))
        {
           gchar *tmp_errtxt;
@@ -2238,10 +2238,10 @@ gap_vid_edit_paste(GimpRunMode run_mode, gint32 image_id, long paste_mode)
      l_fname_copy = g_strdup_printf("%s%06ld.xcf", l_basename, (long)l_frame_nr);
 
      l_tmp_image_id = gap_lib_load_image(l_fname_copy);
-     
+
      /* delete onionskin layers (if there are any) before paste */
      gap_onion_base_onionskin_delete(l_tmp_image_id);
-     
+
      /* check size and resize if needed */
      if((gimp_image_width(l_tmp_image_id) != gimp_image_width(image_id))
      || (gimp_image_height(l_tmp_image_id) != gimp_image_height(image_id)))
@@ -2251,10 +2251,10 @@ gap_vid_edit_paste(GimpRunMode run_mode, gint32 image_id, long paste_mode)
          l_size_x = gimp_image_width(image_id);
          l_size_y = gimp_image_height(image_id);
          if(gap_debug) printf("DEBUG: scale to size %d %d\n", (int)l_size_x, (int)l_size_y);
- 
+
          gimp_image_scale(l_tmp_image_id, l_size_x, l_size_y);
      }
-     
+
      /* check basetype and convert if needed */
      l_orig_basetype = gimp_image_base_type(image_id);
      if(gimp_image_base_type(l_tmp_image_id) != l_orig_basetype)
@@ -2264,7 +2264,7 @@ gap_vid_edit_paste(GimpRunMode run_mode, gint32 image_id, long paste_mode)
            gchar      *l_palette_filename;
            guchar     *l_cmap;
            gint        l_ncolors;
- 
+
            /* convert tmp image to dest type */
            case GIMP_INDEXED:
              l_cmap = gimp_image_get_cmap(image_id, &l_ncolors);
@@ -2275,19 +2275,19 @@ gap_vid_edit_paste(GimpRunMode run_mode, gint32 image_id, long paste_mode)
                                                  , G_DIR_SEPARATOR_S
                                                  , G_DIR_SEPARATOR_S
                                                  , CUSTOM_PALETTE_NAME);
- 
+
              l_rc = p_custom_palette_file(l_palette_filename, l_cmap, l_ncolors);
              if(l_rc == 0)
              {
                gimp_palettes_refresh();
-               gimp_convert_indexed(l_tmp_image_id,
-                                    GIMP_FS_DITHER,           /* dither floyd-steinberg */
-                                    GIMP_CUSTOM_PALETTE,
-                                    l_ncolors,                /* number of colors */
-                                    FALSE,                    /* No alpha_dither */
-                                    FALSE,                    /* dont remove_unused */
-                                    CUSTOM_PALETTE_NAME
-                                    );
+               gimp_image_convert_indexed(l_tmp_image_id,
+                                          GIMP_FS_DITHER,           /* dither floyd-steinberg */
+                                          GIMP_CUSTOM_PALETTE,
+                                          l_ncolors,                /* number of colors */
+                                          FALSE,                    /* No alpha_dither */
+                                          FALSE,                    /* dont remove_unused */
+                                          CUSTOM_PALETTE_NAME
+                                          );
              }
              else
              {
@@ -2298,11 +2298,11 @@ gap_vid_edit_paste(GimpRunMode run_mode, gint32 image_id, long paste_mode)
              break;
            case GIMP_GRAY:
              if(gap_debug) printf("DEBUG: convert to GRAY'\n");
-             gimp_convert_grayscale(l_tmp_image_id);
+             gimp_image_convert_grayscale(l_tmp_image_id);
              break;
            case GIMP_RGB:
              if(gap_debug) printf("DEBUG: convert to RGB'\n");
-             gimp_convert_rgb(l_tmp_image_id);
+             gimp_image_convert_rgb(l_tmp_image_id);
              break;
            default:
              printf( "DEBUG: unknown image type\n");
@@ -2325,7 +2325,7 @@ gap_vid_edit_paste(GimpRunMode run_mode, gint32 image_id, long paste_mode)
 
      l_dst_frame_nr++;
   }
-  
+
   if(paste_mode == GAP_VID_PASTE_INSERT_AFTER)
   {
     /* we pasted successful after the current image,
@@ -2340,7 +2340,7 @@ gap_vid_edit_paste(GimpRunMode run_mode, gint32 image_id, long paste_mode)
   {
     if(rc >= 0)
     {
-      /* load from the "new" current frame */   
+      /* load from the "new" current frame */
       if(ainfo_ptr->new_filename != NULL) g_free(ainfo_ptr->new_filename);
 
       ainfo_ptr->new_filename = gap_lib_alloc_fname(ainfo_ptr->basename,
@@ -2368,6 +2368,6 @@ gap_vid_edit_paste(GimpRunMode run_mode, gint32 image_id, long paste_mode)
   if(gap_debug)  printf("gap_vid_edit_paste: rc: %d\n", (int)rc);
 
   gap_lib_free_ainfo(&ainfo_ptr);
-  
+
   return(rc);
 }       /* end gap_vid_edit_paste */

@@ -1,5 +1,8 @@
 2003-12-04  Sven Neumann  <sven@gimp.org>
 
+	* gap/gap_lib.c
+	* gap/gap_range_ops.c: s/gimp_convert/gimp_image_convert/
+
 	* gap/gap_mov_render.c: s/gimp_layer_mask/gimp_layer_get_mask/
 
 2003-12-04  Sven Neumann  <sven@gimp.org>

@@ -1183,22 +1183,22 @@ p_type_convert(gint32 image_id, GimpImageBaseType dest_type, gint32 dest_colors,
       l_alpha_dither = (alpha_dither != 0);
       l_remove_unused = (remove_unused != 0);
 
-      l_rc  = gimp_convert_indexed(image_id,
-			           l_dither_type,
-			           l_palette_type,   /* value 0: MAKE_PALETTE, 2: WEB_PALETTE 4:CUSTOM_PALETTE */
-			           dest_colors,
-			           l_alpha_dither,
-			           l_remove_unused,
-			           palette          /* name of custom palette */
-			           );
+      l_rc  = gimp_image_convert_indexed(image_id,
+                                         l_dither_type,
+                                         l_palette_type,   /* value 0: MAKE_PALETTE, 2: WEB_PALETTE 4:CUSTOM_PALETTE */
+                                         dest_colors,
+                                         l_alpha_dither,
+                                         l_remove_unused,
+                                         palette          /* name of custom palette */
+                                         );
       break;
     case GIMP_GRAY:
       if(gap_debug) fprintf(stderr, "DEBUG: p_type_convert to GRAY'\n");
-      l_rc = gimp_convert_grayscale(image_id);
+      l_rc = gimp_image_convert_grayscale(image_id);
       break;
     case GIMP_RGB:
       if(gap_debug) fprintf(stderr, "DEBUG: p_type_convert to RGB'\n");
-      l_rc = gimp_convert_rgb(image_id);
+      l_rc = gimp_image_convert_rgb(image_id);
       break;
     default:
       if(gap_debug) fprintf(stderr, "DEBUG: p_type_convert AS_IT_IS (dont convert)'\n");
