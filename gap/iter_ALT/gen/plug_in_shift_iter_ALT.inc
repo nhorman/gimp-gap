@@ -6,8 +6,9 @@ gint p_plug_in_shift_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble 
 {
     typedef struct t_plug_in_shift_Vals 
     {
-      long      shift_amount;
-      long      orientation;
+      gint      shift_amount;
+      gint      orientation;
+      gboolean  preview;
     } t_plug_in_shift_Vals; 
 
     t_plug_in_shift_Vals  buf, *buf_from, *buf_to; 
@@ -26,9 +27,10 @@ gint p_plug_in_shift_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble 
     buf_to   = (t_plug_in_shift_Vals *)&g_plugin_data_to[0]; 
     memcpy(&buf, buf_from, sizeof(buf));
 
-    p_delta_long(&buf.shift_amount, buf_from->shift_amount, buf_to->shift_amount, total_steps, current_step);
-    p_delta_long(&buf.orientation, buf_from->orientation, buf_to->orientation, total_steps, current_step);
+    p_delta_gint(&buf.shift_amount, buf_from->shift_amount, buf_to->shift_amount, total_steps, current_step);
+    p_delta_gint(&buf.orientation, buf_from->orientation, buf_to->orientation, total_steps, current_step);
 
+    buf.preview = FALSE;
     gimp_set_data("plug_in_shift", &buf, sizeof(buf)); 
 
     return 0; /* OK */

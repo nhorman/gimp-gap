@@ -9,6 +9,7 @@ gint p_plug_in_plasma_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble
       guint32   seed;
       gdouble   turbulence;
       gboolean  random_seed;
+      gboolean  preview;
     } t_plug_in_plasma_Vals; 
 
     t_plug_in_plasma_Vals  buf, *buf_from, *buf_to; 
@@ -30,6 +31,7 @@ gint p_plug_in_plasma_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble
     p_delta_guint32(&buf.seed, buf_from->seed, buf_to->seed, total_steps, current_step);
     p_delta_gdouble(&buf.turbulence, buf_from->turbulence, buf_to->turbulence, total_steps, current_step);
 
+    buf.preview = FALSE;
     gimp_set_data("plug_in_plasma", &buf, sizeof(buf)); 
 
     return 0; /* OK */

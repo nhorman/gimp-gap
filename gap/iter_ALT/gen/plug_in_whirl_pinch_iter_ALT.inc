@@ -9,6 +9,7 @@ gint p_plug_in_whirl_pinch_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gd
       gdouble   whirl;
       gdouble   pinch;
       gdouble   radius;
+      gboolean  preview;
     } t_plug_in_whirl_pinch_Vals; 
 
     t_plug_in_whirl_pinch_Vals  buf, *buf_from, *buf_to; 
@@ -31,6 +32,7 @@ gint p_plug_in_whirl_pinch_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gd
     p_delta_gdouble(&buf.pinch, buf_from->pinch, buf_to->pinch, total_steps, current_step);
     p_delta_gdouble(&buf.radius, buf_from->radius, buf_to->radius, total_steps, current_step);
 
+    buf.preview = FALSE;
     gimp_set_data("plug_in_whirl_pinch", &buf, sizeof(buf)); 
 
     return 0; /* OK */

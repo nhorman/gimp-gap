@@ -6,8 +6,9 @@ gint p_plug_in_flarefx_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdoubl
 {
     typedef struct t_plug_in_flarefx_Vals 
     {
-      long      posx;
-      long      posy;
+      gint      posx;
+      gint      posy;
+      gboolean preview;
     } t_plug_in_flarefx_Vals; 
 
     t_plug_in_flarefx_Vals  buf, *buf_from, *buf_to; 
@@ -26,9 +27,10 @@ gint p_plug_in_flarefx_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdoubl
     buf_to   = (t_plug_in_flarefx_Vals *)&g_plugin_data_to[0]; 
     memcpy(&buf, buf_from, sizeof(buf));
 
-    p_delta_long(&buf.posx, buf_from->posx, buf_to->posx, total_steps, current_step);
-    p_delta_long(&buf.posy, buf_from->posy, buf_to->posy, total_steps, current_step);
+    p_delta_gint(&buf.posx, buf_from->posx, buf_to->posx, total_steps, current_step);
+    p_delta_gint(&buf.posy, buf_from->posy, buf_to->posy, total_steps, current_step);
 
+    buf.preview = FALSE;
     gimp_set_data("plug_in_flarefx", &buf, sizeof(buf)); 
 
     return 0; /* OK */

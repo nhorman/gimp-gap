@@ -9,6 +9,7 @@ gint p_plug_in_color_map_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdou
     {
       GimpRGB   colors[4];
       gint32    map_mode;
+      gboolean  preview;
     } t_plug_in_color_map_Vals; 
 
     t_plug_in_color_map_Vals  buf, *buf_from, *buf_to; 
@@ -32,6 +33,9 @@ gint p_plug_in_color_map_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdou
       p_delta_GimpRGB(&buf.colors[ii], &buf_from->colors[ii], &buf_to->colors[ii], total_steps, current_step);
     }
     p_delta_gint32(&buf.map_mode, buf_from->map_mode, buf_to->map_mode, total_steps, current_step);
+
+
+    buf.preview = FALSE;
 
     gimp_set_data("plug_in_color_map", &buf, sizeof(buf)); 
 

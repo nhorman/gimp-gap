@@ -6,11 +6,10 @@ gint p_plug_in_nlfilt_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble
 {
     typedef struct t_plug_in_nlfilt_Vals 
     {
-      gint32    img;
-      gint32    drw;
       gdouble   alpha;
       gdouble   radius;
       gint      filter;
+      gboolean preview;
     } t_plug_in_nlfilt_Vals; 
 
     t_plug_in_nlfilt_Vals  buf, *buf_from, *buf_to; 
@@ -33,6 +32,7 @@ gint p_plug_in_nlfilt_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble
     p_delta_gdouble(&buf.radius, buf_from->radius, buf_to->radius, total_steps, current_step);
     p_delta_gint(&buf.filter, buf_from->filter, buf_to->filter, total_steps, current_step);
 
+    buf.preview = FALSE;
     gimp_set_data("plug_in_nlfilt", &buf, sizeof(buf)); 
 
     return 0; /* OK */

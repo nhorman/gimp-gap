@@ -9,6 +9,7 @@ gint p_plug_in_unsharp_mask_iter_ALT(GimpRunMode run_mode, gint32 total_steps, g
       gdouble   radius;
       gdouble   amount;
       gint      threshold;
+      gboolean  update_preview;
     } t_plug_in_unsharp_mask_Vals; 
 
     t_plug_in_unsharp_mask_Vals  buf, *buf_from, *buf_to; 
@@ -31,6 +32,7 @@ gint p_plug_in_unsharp_mask_iter_ALT(GimpRunMode run_mode, gint32 total_steps, g
     p_delta_gdouble(&buf.amount, buf_from->amount, buf_to->amount, total_steps, current_step);
     p_delta_gint(&buf.threshold, buf_from->threshold, buf_to->threshold, total_steps, current_step);
 
+    buf.update_preview = FALSE;
     gimp_set_data("plug_in_unsharp_mask", &buf, sizeof(buf)); 
 
     return 0; /* OK */

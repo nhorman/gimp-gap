@@ -8,6 +8,7 @@ gint p_plug_in_sel_gauss_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdou
     {
       gdouble   radius;
       gint      maxdelta;
+      gboolean update_preview;
     } t_plug_in_sel_gauss_Vals; 
 
     t_plug_in_sel_gauss_Vals  buf, *buf_from, *buf_to; 
@@ -29,6 +30,7 @@ gint p_plug_in_sel_gauss_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdou
     p_delta_gdouble(&buf.radius, buf_from->radius, buf_to->radius, total_steps, current_step);
     p_delta_gint(&buf.maxdelta, buf_from->maxdelta, buf_to->maxdelta, total_steps, current_step);
 
+    buf.update_preview = FALSE;
     gimp_set_data("plug_in_sel_gauss", &buf, sizeof(buf)); 
 
     return 0; /* OK */

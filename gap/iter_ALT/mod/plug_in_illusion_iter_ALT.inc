@@ -6,9 +6,10 @@ gint p_plug_in_illusion_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdoub
 {
     typedef struct t_plug_in_illusion_Vals 
     {
-      gint32 division;
-      gint   type1;
-      gint   type2;
+      gint32     division;
+      gboolean   type1;
+      gboolean   type2;
+      gboolean   preview;
     } t_plug_in_illusion_Vals; 
 
     t_plug_in_illusion_Vals  buf, *buf_from, *buf_to; 
@@ -28,9 +29,8 @@ gint p_plug_in_illusion_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdoub
     memcpy(&buf, buf_from, sizeof(buf));
 
     p_delta_gint32(&buf.division, buf_from->division, buf_to->division, total_steps, current_step);
-    p_delta_gint(&buf.type1, buf_from->type1, buf_to->type1, total_steps, current_step);
-    p_delta_gint(&buf.type2, buf_from->type2, buf_to->type2, total_steps, current_step);
 
+    buf.preview = FALSE;
     gimp_set_data("plug_in_illusion", &buf, sizeof(buf)); 
 
     return 0; /* OK */

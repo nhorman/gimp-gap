@@ -27,6 +27,8 @@
  */
 
 /* revision history:
+ * gimp   2.1.0a;  2004/11/16   hof: init string args with "\0" rather than NULL
+ *                                   when calling a PDB-Procedure
  * gimp   1.3.12a; 2003/05/02   hof: merge into CVS-gimp-gap project, re-added support of iter_ALT procedures
  * gimp   1.3.8a;  2002/09/21   hof: gap_lastvaldesc
  * gimp   1.3.4b;  2002/03/24   hof: gap_filt_pdb_get_iterator_proc supports COMMON_ITERATOR, removed support of iter_ALT procedures
@@ -128,10 +130,10 @@ gap_filt_pdb_call_plugin(char *plugin_name, gint32 image_id, gint32 layer_id, Gi
       case GIMP_PDB_DRAWABLE:
       case GIMP_PDB_LAYER:
       case GIMP_PDB_CHANNEL:
-        l_argv[l_idx].data.d_drawable  = -1;
+        l_argv[l_idx].data.d_drawable  = l_drawable->drawable_id;
         break;
       case GIMP_PDB_IMAGE:
-        l_argv[l_idx].data.d_image  = -1;
+        l_argv[l_idx].data.d_image  = image_id;
         break;
       case GIMP_PDB_INT32:
       case GIMP_PDB_INT16:
@@ -142,7 +144,7 @@ gap_filt_pdb_call_plugin(char *plugin_name, gint32 image_id, gint32 layer_id, Gi
         l_argv[l_idx].data.d_float  = 0.0;
         break;
       case GIMP_PDB_STRING:
-        l_argv[l_idx].data.d_string  =  NULL;
+        l_argv[l_idx].data.d_string  =  g_strdup("\0");
         break;
       default:
         l_argv[l_idx].data.d_int32  = 0;
@@ -158,8 +160,9 @@ gap_filt_pdb_call_plugin(char *plugin_name, gint32 image_id, gint32 layer_id, Gi
 
   /* run the plug-in procedure */
   l_ret_params = gimp_run_procedure2 (plugin_name, &l_retvals, l_nparams, l_argv);
+
   /*  free up arguments and values  */
-  g_free (l_argv);
+  gimp_destroy_params (l_argv, l_nparams);
 
 
   /*  free the query information  */
@@ -532,6 +535,60 @@ int gap_filt_pdb_constraint_proc_sel2(gchar *proc_name, gint32 image_id)
   return 0;         /* 0 .. set "Apply Varying" Button in_sensitive */
 }
 
+/* check for procedures that are able to run with filter all layers
+ * (limited to Constant apply) without having an iterator.
+ * most of them have no dialog for the interactive runmode.
+ *
+ * some of them operate without a LAST_VALUES buffer
+ * to support even those plug-ins a dummy buffer is added here
+ *
+ * this hardcoded check is based on tests with gimp-2.2pre1
+ */
+gboolean
+gap_filt_pdb_check_additional_supported_procedure(const char *proc_name)
+{
+  static gint buf;
+  
+  /* if(strcmp(proc_name, "plug_in_autocrop_layer") == 0) { return (TRUE); }  */ 
+
+  if(strcmp(proc_name, "plug_in_autostretch_hsv") == 0)   { return (TRUE); }
+  if(strcmp(proc_name, "plug_in_blur") == 0)              { return (TRUE); }
+  if(strcmp(proc_name, "plug_in_c_astretch") == 0)        { return (TRUE); }
+  if(strcmp(proc_name, "plug_in_color_adjust") == 0)      { return (TRUE); }
+  if(strcmp(proc_name, "plug_in_color_enhance") == 0)     { return (TRUE); }
+  if(strcmp(proc_name, "plug_in_deinterlace") == 0)       { return (TRUE); }
+  if(strcmp(proc_name, "plug_in_dilate") == 0)            { return (TRUE); }
+  if(strcmp(proc_name, "plug_in_erode") == 0)             { return (TRUE); }
+  if(strcmp(proc_name, "plug_in_gradmap") == 0)           { return (TRUE); }
+  if(strcmp(proc_name, "plug_in_hot") == 0)               { return (TRUE); }
+  if(strcmp(proc_name, "plug_in_laplace") == 0)           { return (TRUE); }
+  if(strcmp(proc_name, "plug_in_make_seamless") == 0)
+  {
+    /* add a dummy LAST_VALUE buffer if there is none */
+    if(gimp_get_data_size(proc_name) == 0)
+    {
+       gimp_set_data(proc_name, &buf, sizeof(buf)); 
+    }
+    return (TRUE); 
+  }
+  if(strcmp(proc_name, "plug_in_max_rgb") == 0)           { return (TRUE); }
+  if(strcmp(proc_name, "plug_in_normalize") == 0)         { return (TRUE); }
+  if(strcmp(proc_name, "plug_in_pixelize2") == 0)         { return (TRUE); }
+  if(strcmp(proc_name, "plug_in_qbist") == 0)             { return (TRUE); }
+  if(strcmp(proc_name, "plug_in_vinvert") == 0) 
+  {
+    /* add a dummy LAST_VALUE buffer if there is none */
+    if(gimp_get_data_size(proc_name) == 0)
+    {
+       gimp_set_data(proc_name, &buf, sizeof(buf)); 
+    }
+    return (TRUE); 
+  }
+
+  return (FALSE);
+}
+
+
 int gap_filt_pdb_constraint_proc(gchar *proc_name, gint32 image_id)
 {
   int l_rc;
@@ -569,6 +626,15 @@ int gap_filt_pdb_constraint_proc(gchar *proc_name, gint32 image_id)
   l_plugin_iterator =  gap_filt_pdb_get_iterator_proc(proc_name, &l_count);
   if(l_plugin_iterator == NULL)
   {
+      /* hardcoded check for some known exceptions
+       * that are useful for constant apply
+       * (even if they have no iterator)
+       */
+     if(gap_filt_pdb_check_additional_supported_procedure(proc_name))
+     {
+       return 1;    /* 1 add the plugin procedure */
+     }
+
      /* do not add Plug-In without Iterator or Common Iterator */
      return 0;
   }

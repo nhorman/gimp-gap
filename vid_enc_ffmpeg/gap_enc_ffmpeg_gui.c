@@ -1483,7 +1483,7 @@ p_create_expert_algortihms_frame (GapGveFFMpegGlobalParams *gpp)
   gtk_table_attach (GTK_TABLE (table2), spinbutton, 1, 2, row, row+1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gimp_help_set_help_data (spinbutton, _("Number of B-frames per group of pictures"), NULL);
+  gimp_help_set_help_data (spinbutton, _("Max number of B-frames in sequence"), NULL);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_ADJ, (gpointer)adj);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
   g_signal_connect (G_OBJECT (spinbutton), "changed",

@@ -13,6 +13,7 @@ gint p_plug_in_displace_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdoub
       gint32    displace_map_x;
       gint32    displace_map_y;
       long      displace_type;
+      gboolean  preview;
     } t_plug_in_displace_Vals; 
 
     t_plug_in_displace_Vals  buf, *buf_from, *buf_to; 
@@ -39,6 +40,7 @@ gint p_plug_in_displace_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdoub
     p_delta_drawable(&buf.displace_map_y, buf_from->displace_map_y, buf_to->displace_map_y, total_steps, current_step);
     p_delta_long(&buf.displace_type, buf_from->displace_type, buf_to->displace_type, total_steps, current_step);
 
+    buf.preview = FALSE;
     gimp_set_data("plug_in_displace", &buf, sizeof(buf)); 
 
     return 0; /* OK */

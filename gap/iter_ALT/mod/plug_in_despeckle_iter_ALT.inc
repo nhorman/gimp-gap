@@ -10,6 +10,9 @@ gint p_plug_in_despeckle_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdou
       gint      type;    /* not iterated */
       gint      black;
       gint      white;
+      gint      preview;
+      gint      dummy1;
+      gint      dummy2;
     } t_plug_in_despeckle_Vals; 
 
     t_plug_in_despeckle_Vals  buf, *buf_from, *buf_to; 
@@ -33,6 +36,7 @@ gint p_plug_in_despeckle_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdou
     p_delta_gint(&buf.black, buf_from->black, buf_to->black, total_steps, current_step);
     p_delta_gint(&buf.white, buf_from->white, buf_to->white, total_steps, current_step);
 
+    buf.preview = FALSE;
     gimp_set_data("plug_in_despeckle", &buf, sizeof(buf)); 
 
     return 0; /* OK */

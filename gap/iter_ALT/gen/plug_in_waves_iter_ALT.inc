@@ -9,8 +9,9 @@ gint p_plug_in_waves_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble 
       gdouble   amplitude;
       gdouble   phase;
       gdouble   wavelength;
-      long      type;
-      long      reflective;
+      gint32    type;
+      gboolean  reflective;
+      gboolean  preview;
     } t_plug_in_waves_Vals; 
 
     t_plug_in_waves_Vals  buf, *buf_from, *buf_to; 
@@ -32,9 +33,9 @@ gint p_plug_in_waves_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble 
     p_delta_gdouble(&buf.amplitude, buf_from->amplitude, buf_to->amplitude, total_steps, current_step);
     p_delta_gdouble(&buf.phase, buf_from->phase, buf_to->phase, total_steps, current_step);
     p_delta_gdouble(&buf.wavelength, buf_from->wavelength, buf_to->wavelength, total_steps, current_step);
-    p_delta_long(&buf.type, buf_from->type, buf_to->type, total_steps, current_step);
-    p_delta_long(&buf.reflective, buf_from->reflective, buf_to->reflective, total_steps, current_step);
+    p_delta_gint32(&buf.type, buf_from->type, buf_to->type, total_steps, current_step);
 
+    buf.preview = FALSE;
     gimp_set_data("plug_in_waves", &buf, sizeof(buf)); 
 
     return 0; /* OK */

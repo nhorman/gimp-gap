@@ -6,7 +6,8 @@ gint p_plug_in_sharpen_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdoubl
 {
     typedef struct t_plug_in_sharpen_Vals 
     {
-      long      percent;
+      gint      percent;
+      gboolean  update_preview;
     } t_plug_in_sharpen_Vals; 
 
     t_plug_in_sharpen_Vals  buf, *buf_from, *buf_to; 
@@ -25,8 +26,9 @@ gint p_plug_in_sharpen_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdoubl
     buf_to   = (t_plug_in_sharpen_Vals *)&g_plugin_data_to[0]; 
     memcpy(&buf, buf_from, sizeof(buf));
 
-    p_delta_long(&buf.percent, buf_from->percent, buf_to->percent, total_steps, current_step);
+    p_delta_gint(&buf.percent, buf_from->percent, buf_to->percent, total_steps, current_step);
 
+    buf.update_preview = FALSE;
     gimp_set_data("plug_in_sharpen", &buf, sizeof(buf)); 
 
     return 0; /* OK */

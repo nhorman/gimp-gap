@@ -4,13 +4,34 @@
  */
 gint p_plug_in_wind_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble current_step, gint32 len_struct) 
 {
+    typedef enum
+    {
+      LEFT,
+      RIGHT
+    } t_wind_direction;
+
+    typedef enum
+    {
+      RENDER_WIND,
+      RENDER_BLAST
+    } t_wind_algorithm;
+
+    typedef enum
+    {
+      BOTH,
+      LEADING,
+      TRAILING
+    } t_wind_edge;
+
+
     typedef struct t_plug_in_wind_Vals 
     {
-      long      threshold;
-      long      direction;
-      long      strength;
-      long      alg;
-      long      edge;
+      gint                  threshold;
+      t_wind_direction      direction;
+      gint                  strength;
+      t_wind_algorithm      alg;
+      t_wind_edge           edge;
+      gboolean              update_preview;
     } t_plug_in_wind_Vals; 
 
     t_plug_in_wind_Vals  buf, *buf_from, *buf_to; 
@@ -29,12 +50,10 @@ gint p_plug_in_wind_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble c
     buf_to   = (t_plug_in_wind_Vals *)&g_plugin_data_to[0]; 
     memcpy(&buf, buf_from, sizeof(buf));
 
-    p_delta_long(&buf.threshold, buf_from->threshold, buf_to->threshold, total_steps, current_step);
-    p_delta_long(&buf.direction, buf_from->direction, buf_to->direction, total_steps, current_step);
-    p_delta_long(&buf.strength, buf_from->strength, buf_to->strength, total_steps, current_step);
-    p_delta_long(&buf.alg, buf_from->alg, buf_to->alg, total_steps, current_step);
-    p_delta_long(&buf.edge, buf_from->edge, buf_to->edge, total_steps, current_step);
+    p_delta_gint(&buf.threshold, buf_from->threshold, buf_to->threshold, total_steps, current_step);
+    p_delta_gint(&buf.strength, buf_from->strength, buf_to->strength, total_steps, current_step);
 
+    buf.update_preview = FALSE;
     gimp_set_data("plug_in_wind", &buf, sizeof(buf)); 
 
     return 0; /* OK */

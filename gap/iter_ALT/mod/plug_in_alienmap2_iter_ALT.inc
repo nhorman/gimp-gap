@@ -16,6 +16,7 @@ gint p_plug_in_alienmap2_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdou
       gint      redmode;
       gint      greenmode;
       gint      bluemode;
+      gboolean   preview;
     } t_plug_in_alienmap2_Vals; 
 
     t_plug_in_alienmap2_Vals  buf, *buf_from, *buf_to; 

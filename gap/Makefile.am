@@ -306,10 +306,6 @@ EXTRA_DIST = \
 	iter_ALT/gen/plug_in_engrave_iter_ALT.inc		\
 	iter_ALT/gen/plug_in_flarefx_iter_ALT.inc		\
 	iter_ALT/gen/plug_in_fractal_trace_iter_ALT.inc		\
-	iter_ALT/gen/plug_in_gauss_iir_iter_ALT.inc		\
-	iter_ALT/gen/plug_in_gauss_iir2_iter_ALT.inc		\
-	iter_ALT/gen/plug_in_gauss_rle_iter_ALT.inc		\
-	iter_ALT/gen/plug_in_gauss_rle2_iter_ALT.inc		\
 	iter_ALT/gen/plug_in_gfig_iter_ALT.inc			\
 	iter_ALT/gen/plug_in_glasstile_iter_ALT.inc		\
 	iter_ALT/gen/plug_in_grid_iter_ALT.inc			\
@@ -323,7 +319,6 @@ EXTRA_DIST = \
 	iter_ALT/gen/plug_in_randomize_pick_iter_ALT.inc	\
 	iter_ALT/gen/plug_in_randomize_slur_iter_ALT.inc	\
 	iter_ALT/gen/plug_in_ripple_iter_ALT.inc		\
-	iter_ALT/gen/plug_in_rotate_iter_ALT.inc		\
 	iter_ALT/gen/plug_in_scatter_hsv_iter_ALT.inc		\
 	iter_ALT/gen/plug_in_sharpen_iter_ALT.inc		\
 	iter_ALT/gen/plug_in_shift_iter_ALT.inc			\
@@ -336,14 +331,18 @@ EXTRA_DIST = \
 	iter_ALT/mod/plug_in_Twist_iter_ALT.inc			\
 	iter_ALT/mod/plug_in_alienmap_iter_ALT.inc		\
 	iter_ALT/mod/plug_in_applylens_iter_ALT.inc		\
-	iter_ALT/mod/plug_in_blur_iter_ALT.inc			\
 	iter_ALT/mod/plug_in_bump_map_iter_ALT.inc		\
+	iter_ALT/mod/plug_in_cartoon_iter_ALT.inc		\
+	iter_ALT/mod/plug_in_colors_channel_mixer_iter_ALT.inc	\
 	iter_ALT/mod/plug_in_convmatrix_iter_ALT.inc		\
 	iter_ALT/mod/plug_in_depth_merge_iter_ALT.inc		\
 	iter_ALT/mod/plug_in_despeckle_iter_ALT.inc		\
+	iter_ALT/mod/plug_in_dog_iter_ALT.inc			\
 	iter_ALT/mod/plug_in_emboss_iter_ALT.inc		\
 	iter_ALT/mod/plug_in_exchange_iter_ALT.inc		\
 	iter_ALT/mod/plug_in_flame_iter_ALT.inc			\
+	iter_ALT/mod/plug_in_gauss_iter_ALT.inc			\
+	iter_ALT/mod/plug_in_gimpressionist_iter_ALT.inc	\
 	iter_ALT/mod/plug_in_lighting_iter_ALT.inc		\
 	iter_ALT/mod/plug_in_map_object_iter_ALT.inc		\
 	iter_ALT/mod/plug_in_maze_iter_ALT.inc			\
@@ -352,10 +351,13 @@ EXTRA_DIST = \
 	iter_ALT/mod/plug_in_oilify_iter_ALT.inc		\
 	iter_ALT/mod/plug_in_pagecurl_iter_ALT.inc		\
 	iter_ALT/mod/plug_in_papertile_iter_ALT.inc		\
+	iter_ALT/mod/plug_in_photocopy_iter_ALT.inc		\
 	iter_ALT/mod/plug_in_plasma_iter_ALT.inc		\
 	iter_ALT/mod/plug_in_polar_coords_iter_ALT.inc		\
+	iter_ALT/mod/plug_in_retinex_iter_ALT.inc		\
 	iter_ALT/mod/plug_in_sample_colorize_iter_ALT.inc	\
 	iter_ALT/mod/plug_in_sinus_iter_ALT.inc			\
+	iter_ALT/mod/plug_in_softglow_iter_ALT.inc		\
 	iter_ALT/mod/plug_in_solid_noise_iter_ALT.inc		\
 	iter_ALT/mod/plug_in_sparkle_iter_ALT.inc		\
 	iter_ALT/mod/plug_in_alienmap2_iter_ALT.inc		\
@@ -364,14 +366,10 @@ EXTRA_DIST = \
 	iter_ALT/mod/plug_in_deinterlace_iter_ALT.inc		\
 	iter_ALT/mod/plug_in_illusion_iter_ALT.inc		\
 	iter_ALT/mod/plug_in_lic_iter_ALT.inc			\
-	iter_ALT/mod/plug_in_make_seamless_iter_ALT.inc		\
-	iter_ALT/mod/plug_in_max_rgb_iter_ALT.inc		\
-	iter_ALT/mod/plug_in_normalize_iter_ALT.inc		\
 	iter_ALT/mod/plug_in_sel_gauss_iter_ALT.inc		\
 	iter_ALT/mod/plug_in_small_tiles_iter_ALT.inc		\
 	iter_ALT/mod/plug_in_sobel_iter_ALT.inc			\
 	iter_ALT/mod/plug_in_unsharp_mask_iter_ALT.inc		\
-	iter_ALT/mod/plug_in_vinvert_iter_ALT.inc		\
 	iter_ALT/old/plug_in_CentralReflection_iter_ALT.inc	\
 	iter_ALT/old/plug_in_anamorphose_iter_ALT.inc		\
 	iter_ALT/old/plug_in_blur2_iter_ALT.inc			\
@@ -383,6 +381,7 @@ EXTRA_DIST = \
 	iter_ALT/old/plug_in_julia_iter_ALT.inc			\
 	iter_ALT/old/plug_in_magic_eye_iter_ALT.inc		\
 	iter_ALT/old/plug_in_mandelbrot_iter_ALT.inc		\
+	iter_ALT/old/plug_in_neon_iter_ALT.inc		\
 	iter_ALT/old/plug_in_randomize_iter_ALT.inc		\
 	iter_ALT/old/plug_in_refract_iter_ALT.inc		\
 	iter_ALT/old/plug_in_struc_iter_ALT.inc			\

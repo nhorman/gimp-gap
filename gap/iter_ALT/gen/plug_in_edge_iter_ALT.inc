@@ -7,8 +7,9 @@ gint p_plug_in_edge_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble c
     typedef struct t_plug_in_edge_Vals 
     {
       gdouble   amount;
-      long      wrapmode;
-      long      edgemode;
+      gint      edgemode;
+      gint      wrapmode;
+      gboolean  update_preview;
     } t_plug_in_edge_Vals; 
 
     t_plug_in_edge_Vals  buf, *buf_from, *buf_to; 
@@ -28,9 +29,10 @@ gint p_plug_in_edge_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble c
     memcpy(&buf, buf_from, sizeof(buf));
 
     p_delta_gdouble(&buf.amount, buf_from->amount, buf_to->amount, total_steps, current_step);
-    p_delta_long(&buf.wrapmode, buf_from->wrapmode, buf_to->wrapmode, total_steps, current_step);
-    p_delta_long(&buf.edgemode, buf_from->edgemode, buf_to->edgemode, total_steps, current_step);
+    p_delta_gint(&buf.wrapmode, buf_from->wrapmode, buf_to->wrapmode, total_steps, current_step);
+    p_delta_gint(&buf.edgemode, buf_from->edgemode, buf_to->edgemode, total_steps, current_step);
 
+    buf.update_preview = FALSE;
     gimp_set_data("plug_in_edge", &buf, sizeof(buf)); 
 
     return 0; /* OK */

@@ -7,6 +7,7 @@ gint p_plug_in_colorify_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdoub
     typedef struct t_plug_in_colorify_Vals 
     {
       GimpRGB   color;
+      gboolean preview;
     } t_plug_in_colorify_Vals; 
 
     t_plug_in_colorify_Vals  buf, *buf_from, *buf_to; 
@@ -26,6 +27,8 @@ gint p_plug_in_colorify_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdoub
     memcpy(&buf, buf_from, sizeof(buf));
 
     p_delta_GimpRGB(&buf.color, &buf_from->color, &buf_to->color, total_steps, current_step);
+
+    buf.preview = FALSE;
 
     gimp_set_data("plug_in_colorify", &buf, sizeof(buf)); 
 

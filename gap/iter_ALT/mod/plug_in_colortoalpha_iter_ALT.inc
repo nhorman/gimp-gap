@@ -7,6 +7,7 @@ gint p_plug_in_colortoalpha_iter_ALT(GimpRunMode run_mode, gint32 total_steps, g
     typedef struct t_plug_in_colortoalpha_Vals 
     {
       GimpRGB   color;
+      gboolean preview;
     } t_plug_in_colortoalpha_Vals; 
 
     t_plug_in_colortoalpha_Vals  buf, *buf_from, *buf_to; 
@@ -27,6 +28,7 @@ gint p_plug_in_colortoalpha_iter_ALT(GimpRunMode run_mode, gint32 total_steps, g
 
     p_delta_GimpRGB(&buf.color, &buf_from->color, &buf_to->color, total_steps, current_step);
 
+    buf.preview = FALSE;
     gimp_set_data("plug_in_colortoalpha", &buf, sizeof(buf)); 
 
     return 0; /* OK */

@@ -8,6 +8,7 @@ gint p_plug_in_destripe_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdoub
     {
       gboolean      histogram;
       gint          avg_width;
+      gboolean preview;
     } t_plug_in_destripe_Vals; 
 
     t_plug_in_destripe_Vals  buf, *buf_from, *buf_to; 
@@ -28,6 +29,7 @@ gint p_plug_in_destripe_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdoub
 
     p_delta_gint(&buf.avg_width, buf_from->avg_width, buf_to->avg_width, total_steps, current_step);
 
+    buf.preview = FALSE;
     gimp_set_data("plug_in_destripe", &buf, sizeof(buf)); 
 
     return 0; /* OK */

@@ -6,9 +6,13 @@ gint p_plug_in_mblur_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble 
 {
     typedef struct t_plug_in_mblur_Vals 
     {
-      long      type;
-      long      length;
-      long      angle;
+      gint32    mblur_type;
+      gint32    length;
+      gint32    angle;
+      gdouble   center_x;
+      gdouble   center_y;
+      gboolean  preview;
+
     } t_plug_in_mblur_Vals; 
 
     t_plug_in_mblur_Vals  buf, *buf_from, *buf_to; 
@@ -27,10 +31,14 @@ gint p_plug_in_mblur_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble 
     buf_to   = (t_plug_in_mblur_Vals *)&g_plugin_data_to[0]; 
     memcpy(&buf, buf_from, sizeof(buf));
 
-    p_delta_long(&buf.type, buf_from->type, buf_to->type, total_steps, current_step);
-    p_delta_long(&buf.length, buf_from->length, buf_to->length, total_steps, current_step);
-    p_delta_long(&buf.angle, buf_from->angle, buf_to->angle, total_steps, current_step);
+    p_delta_gint32(&buf.mblur_type, buf_from->mblur_type, buf_to->mblur_type, total_steps, current_step);
+    p_delta_gint32(&buf.length, buf_from->length, buf_to->length, total_steps, current_step);
+    p_delta_gint32(&buf.angle, buf_from->angle, buf_to->angle, total_steps, current_step);
 
+    p_delta_gdouble(&buf.center_x, buf_from->center_x, buf_to->center_x, total_steps, current_step);
+    p_delta_gdouble(&buf.center_y, buf_from->center_y, buf_to->center_y, total_steps, current_step);
+
+    buf.preview = FALSE;
     gimp_set_data("plug_in_mblur", &buf, sizeof(buf)); 
 
     return 0; /* OK */

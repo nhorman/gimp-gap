@@ -1,3 +1,73 @@
+2004-11-18  Wolfgang Hofer <hof@gimp.org>
+	- tested plug-ins of the gimp-2.2pre1 release
+	  for animated "filter all layers" capabilites,
+	  and fixed _iter_ALT procedures.
+	  
+	- #158078  added "filter all layers" support for:
+	     plug_in_gimpressionist
+	     plug_in_autostretch_hsv         (limited to constant apply)
+	     plug_in_blur                    (limited to constant apply)
+	     plug_in_c_astretch              (limited to constant apply)
+	     plug_in_cartoon
+	     plug_in_color_adjust            (limited to constant apply)
+	     plug_in_color_enhance           (limited to constant apply)
+	     plug_in_colors_channel_mixer
+             plug_in_dilate                  (limited to constant apply)
+	     plug_in_dog
+	     plug_in_erode                   (limited to constant apply)
+	     plug_in_gauss
+	     plug_in_gradmap                 (limited to constant apply)
+	     plug_in_hot                     (limited to constant apply)
+	     plug_in_laplace                 (limited to constant apply)
+	     plug_in_make_seamless           (limited to constant apply)
+	     plug_in_max_rgb                 (limited to constant apply)
+	     plug_in_neon
+	     plug_in_normalize
+	     plug_in_photocopy
+	     plug_in_qbist                   (limited to constant apply)
+	     plug_in_softglow
+	     plug_in_vinvert
+	     
+	- dropped "filter all layers" support for:
+	  (by removing the iter_ALT procedure registration)
+	 
+	     plug_in_blur
+	     plug_in_gauss_iir
+	     plug_in_gauss_iir2
+	     plug_in_gauss_rle
+	     plug_in_gauss_rle2
+	     plug_in_make_seamless    (removed just iter_ALT, const apply still there)
+             plug_in_max_rgb          (removed just iter_ALT, const apply still there)
+	     plug_in_rotate           (has no GUI dialog, apply without specify angle makes no sense)
+	     plug_in_normalize        (removed just iter_ALT, const apply still there)
+	     plug_in_vinvert          (removed just iter_ALT, const apply still there)
+	
+	* gap/TESTPROT_iter_ALT
+	* gap/Makefile.am
+	* gap/gap_filter_iterators.c
+	* gap/gap_filter_pdb.c
+	
+	# Created NEW files:
+	* gap/iter_ALT/mod/plug_in_cartoon_iter_ALT.inc
+	* gap/iter_ALT/mod/plug_in_colors_channel_mixer_iter_ALT.inc
+	* gap/iter_ALT/mod/plug_in_dog_iter_ALT.inc
+	* gap/iter_ALT/mod/plug_in_gauss_iter_ALT.inc
+	* gap/iter_ALT/mod/plug_in_gimpressionist_iter_ALT.inc
+	* gap/iter_ALT/mod/plug_in_neon_iter_ALT.inc
+	* gap/iter_ALT/mod/plug_in_photocopy_iter_ALT.inc
+	* gap/iter_ALT/mod/plug_in_softglow_iter_ALT.inc
+	
+	
+2004-11-16  Wolfgang Hofer <hof@gimp.org>
+	- bugfix: gap_filt_pdb_call_plugin call plug-ins
+	  with pointer to string "\0" rather than using NULL pointer
+	  Some plug-ins crash when string args are passed
+	  as NULL pointer, even if the call is INTERACTIVE
+	  (example:  plug_in_gimpressionist)
+	
+	* gap/gap_filter_pdb.c
+	* vid_common/gap_cme_gui.c
+	
 2004-11-16  Sven Neumann  <sven@gimp.org>
 
 	* configure.in: check for GIMP >= 2.2.0.
@@ -156,20 +226,22 @@
 	
 	
 2004-11-02  Wolfgang Hofer <hof@gimp.org>
-	applied patches from pippin that enable compile with the ffmpeg-4.0.9pre1
-	prerelease.
+	applied patches from pippin that enable compile with the
+	ffmpeg-4.0.9pre1 prerelease.
 	(made some changes to enable compile with both 
 	stable FFMPEG_VERSION 0.4.8 and
 	newest FFMPEG_VERSION 4.0.9pre1    
-	(experimental code, failed at 1.st video extract test, need more tests and bugfixes)
+	(experimental code, failed at 1.st video extract test, need more
+	tests and bugfixes)
 	
 	added #ifdef HAVE_OLD_FFMPEG_0408
 	
 	well, it compiles now but:
 	.. there are much changes between ffmeg 0.4.8 and 4.0.9pre1.
-	this requires deeper analyse and lots of tests and changes in the GAP code
-	to get a working support for the new ffmpeg 4.0.9pre1.
-	also requires support for the new encoder parameters of the 4.0.9pre1 release.
+	this requires deeper analyse and lots of tests and changes in the
+	GAP code to get a working support for the new ffmpeg 4.0.9pre1.
+	also requires support for the new encoder parameters of the
+	4.0.9pre1 release.
 	
 	now using hardcoded #define HAVE_OLD_FFMPEG_0408
 	to avoid successful (but useless) compiling with
@@ -178,17 +250,14 @@
 	Maybe we should ship gimp-gap-2.2 with included
 	ffmeg 0.4.8 and libmpeg3 sources, and link those libs
 	statically ?
-	
-	
-	http://pippin.gimp.org/tmp/pippins__gap_seems_strange_this_makes_it_compile_but_i_dont_think_i_want_to_touch_it.patch
 
 	* configure.in
 	* gap/gap_vex_main.c
 	* libgapvidapi/gap_vid_api.c
-	* libgapvidapi/gap_vid_api_ffmpeg.c     #
+	* libgapvidapi/gap_vid_api_ffmpeg.c
 	* libgapvidapi/gap_vid_api_gimp.c
 	* libgapvidapi/gap_vid_api_mpeg3.c
-	* vid_enc_ffmpeg/gap_enc_ffmpeg_main.c  #
+	* vid_enc_ffmpeg/gap_enc_ffmpeg_main.c
 	
 2004-11-01  Wolfgang Hofer <hof@gimp.org>
 	redesign of the ModifyFrames plug-in dialog using GTK+ rather than

@@ -9,6 +9,7 @@ gint p_plug_in_cubism_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble
       gdouble   tile_size;
       gdouble   tile_saturation;
       long      bg_color;
+      gboolean preview;
     } t_plug_in_cubism_Vals; 
 
     t_plug_in_cubism_Vals  buf, *buf_from, *buf_to; 
@@ -31,6 +32,7 @@ gint p_plug_in_cubism_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble
     p_delta_gdouble(&buf.tile_saturation, buf_from->tile_saturation, buf_to->tile_saturation, total_steps, current_step);
     p_delta_long(&buf.bg_color, buf_from->bg_color, buf_to->bg_color, total_steps, current_step);
 
+    buf.preview = FALSE;
     gimp_set_data("plug_in_cubism", &buf, sizeof(buf)); 
 
     return 0; /* OK */

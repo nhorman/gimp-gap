@@ -12,6 +12,7 @@ gint p_plug_in_nova_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble c
       gint      radius;
       gint      nspoke;
       gint      randomhue;
+      gboolean  preview;
     } t_plug_in_nova_Vals; 
 
     t_plug_in_nova_Vals  buf, *buf_from, *buf_to; 
@@ -37,6 +38,7 @@ gint p_plug_in_nova_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble c
     p_delta_gint(&buf.nspoke, buf_from->nspoke, buf_to->nspoke, total_steps, current_step);
     p_delta_gint(&buf.randomhue, buf_from->randomhue, buf_to->randomhue, total_steps, current_step);
 
+    buf.preview = FALSE;
     gimp_set_data("plug_in_nova", &buf, sizeof(buf)); 
 
     return 0; /* OK */

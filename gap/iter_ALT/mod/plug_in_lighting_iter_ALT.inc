@@ -4,6 +4,7 @@
  */
 gint p_plug_in_lighting_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble current_step, gint32 len_struct) 
 {
+#define LIGHTING_NUM_LIGHTS      6
     typedef struct t_plug_in_lighting_Vals 
     {
       gint32    drawable_id;
@@ -15,20 +16,16 @@ gint p_plug_in_lighting_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdoub
   
       GimpVector3       viewpoint;
       GimpVector3       planenormal;
-      t_LightSettings    lightsource;
-      t_MaterialSettings material;
-      t_MaterialSettings refmaterial;
+      t_LightingLightSettings    lightsource[LIGHTING_NUM_LIGHTS];
+      t_LightingMaterialSettings material;
+      t_LightingMaterialSettings refmaterial;
 
       gdouble pixel_treshold;
       gdouble bumpmax;
       gdouble bumpmin;
 
-    /*  gdouble wave_cx,wave_cy;
-      gdouble wave_lx,wave_ly;
-      gdouble wave_amp,wave_ph; */
       gint    max_depth;
       gint    bumpmaptype;
-    /*  gint    bumptype; */
 
       /* Flags */
       /* ===== */
@@ -48,12 +45,15 @@ gint p_plug_in_lighting_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdoub
 
       /* Misc */
       /* ==== */
-  
-      gdouble preview_zoom_factor;
+      gboolean     update_enabled;
+      gint         light_selected;
+      gboolean     light_isolated;
+      gdouble      preview_zoom_factor;
       
     } t_plug_in_lighting_Vals; 
 
-    t_plug_in_lighting_Vals  buf, buf_from, buf_to; 
+    t_plug_in_lighting_Vals  buf, buf_from, buf_to;
+    gint ii;
 
     if(len_struct != sizeof(t_plug_in_lighting_Vals)) 
     {
@@ -69,32 +69,29 @@ gint p_plug_in_lighting_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdoub
 
     p_delta_GimpVector3(&buf.viewpoint, &buf_from.viewpoint, &buf_to.viewpoint, total_steps, current_step);
     p_delta_GimpVector3(&buf.planenormal, &buf_from.planenormal, &buf_to.planenormal, total_steps, current_step);
-    p_delta_LightSettings(&buf.lightsource, &buf_from.lightsource, &buf_to.lightsource, total_steps, current_step);
-    p_delta_MaterialSettings(&buf.material, &buf_from.material, &buf_to.material, total_steps, current_step);
-    p_delta_MaterialSettings(&buf.refmaterial, &buf_from.refmaterial, &buf_to.refmaterial, total_steps, current_step);
+
+    for(ii=0; ii < LIGHTING_NUM_LIGHTS; ii++)
+    {
+      p_delta_LightingLightSettings(&buf.lightsource[ii], &buf_from.lightsource[ii], &buf_to.lightsource[ii], total_steps, current_step);
+    }
+    p_delta_LightingMaterialSettings(&buf.material, &buf_from.material, &buf_to.material, total_steps, current_step);
+    p_delta_LightingMaterialSettings(&buf.refmaterial, &buf_from.refmaterial, &buf_to.refmaterial, total_steps, current_step);
 
     
     p_delta_gdouble(&buf.pixel_treshold, buf_from.pixel_treshold, buf_to.pixel_treshold, total_steps, current_step);
     p_delta_gdouble(&buf.bumpmax, buf_from.bumpmax, buf_to.bumpmax, total_steps, current_step);
     p_delta_gdouble(&buf.bumpmin, buf_from.bumpmin, buf_to.bumpmin, total_steps, current_step);
-/*
-    p_delta_gdouble(&buf.wave_cx, buf_from.wave_cx, buf_to.wave_cx, total_steps, current_step);
-    p_delta_gdouble(&buf.wave_cy, buf_from.wave_cy, buf_to.wave_cy, total_steps, current_step);
-    p_delta_gdouble(&buf.wave_lx, buf_from.wave_lx, buf_to.wave_lx, total_steps, current_step);
-    p_delta_gdouble(&buf.wave_ly, buf_from.wave_ly, buf_to.wave_ly, total_steps, current_step);
- */
     p_delta_gint(&buf.max_depth, buf_from.max_depth, buf_to.max_depth, total_steps, current_step);
     p_delta_gint(&buf.bumpmaptype, buf_from.bumpmaptype, buf_to.bumpmaptype, total_steps, current_step);
 
-/*    p_delta_gint(&buf.bumptype, buf_from.bumptype, buf_to.bumptype, total_steps, current_step);
- */
-    
     p_delta_gint(&buf.antialiasing, buf_from.antialiasing, buf_to.antialiasing, total_steps, current_step);
     p_delta_gint(&buf.transparent_background, buf_from.transparent_background, buf_to.transparent_background, total_steps, current_step);
     p_delta_gint(&buf.bump_mapped, buf_from.bump_mapped, buf_to.bump_mapped, total_steps, current_step);
     p_delta_gint(&buf.ref_mapped, buf_from.ref_mapped, buf_to.ref_mapped, total_steps, current_step);
     p_delta_gint(&buf.bumpstretch, buf_from.bumpstretch, buf_to.bumpstretch, total_steps, current_step);
     p_delta_gint(&buf.previewquality, buf_from.previewquality, buf_to.previewquality, total_steps, current_step);
+
+    p_delta_gint(&buf.light_selected, buf_from.light_selected, buf_to.light_selected, total_steps, current_step);
 
     gimp_set_data("plug_in_lighting", &buf, sizeof(buf)); 
 

@@ -2,7 +2,7 @@ Here is a result List of the "Animated Filtercall" Tests.
   I tested all the listed PDB-Procedures
   that can be selected via the GAP's DB-Browser
   and the corresponding _iter_ALT Procedures
-  on a 5-Layer Testimage with Menu.
+  on a 4-Layer Testimage with Menu.
 
    
   <Image>/Filter/Filter All Layers   using "Apply Varying" Button
@@ -11,102 +11,165 @@ Here is a result List of the "Animated Filtercall" Tests.
 ---------------------------------------------------
 Testresults
 --------------------------------------------------
-2004.02.08
+2004.11.19
 
    Test with PDB-Procedures (Plugins) that came with
-   gimp release 2.0pre3
-   and all the generated (or manually changed) _iter_ALT Procedures
+   gimp release 2.2pre1
+   Test also includes PDB-Procedures provided by GIMP-GAP itself
+
 
 State:
-+ ... Passed simple "Apply Varying" Test OK
-# ... Apply constant OK, but Apply Varying not possible (failed or has no LAST_VALUES buffer)
-- ... Failed Test
++ ... Full Supported, and passed simple "Apply Varying" Test OK
+           (79 procedures)
+# ... Partly Supported, Apply constant OK, 
+           but Apply Varying not possible or does not make sense
+           (21 procedures)
+- ... NOT supported (Failed Test)
+: ... Not supported (support would make no sense)
 . ... not tested
 
-State Procedure_name                      Testnotes
+
+State Procedure/Iterator_ALT ame               Testnotes
 ---------------------------------------------------------------------------
 
-+     plug_in_CML_explorer_iter_ALT.inc
-+     plug_in_alienmap2_iter_ALT.inc
-+     plug_in_alienmap_iter_ALT.inc
-#     plug_in_apply_canvas_iter_ALT.inc
-+     plug_in_applylens_iter_ALT.inc
-+     plug_in_blinds_iter_ALT.inc
-+     plug_in_blur_iter_ALT.inc
-+     plug_in_borderaverage_iter_ALT.inc        (?) runs, but did not see any effect
-+     plug_in_bump_map_iter_ALT.inc
-+     plug_in_checkerboard_iter_ALT.inc
-+     plug_in_color_map_iter_ALT.inc
-+     plug_in_colorify_iter_ALT.inc
-+     plug_in_colortoalpha_iter_ALT.inc
-+     plug_in_convmatrix_iter_ALT.inc
-+     plug_in_cubism_iter_ALT.inc
-+     plug_in_deinterlace_iter_ALT.inc
-+     plug_in_depth_merge_iter_ALT.inc
-+     plug_in_despeckle_iter_ALT.inc
-+     plug_in_destripe_iter_ALT.inc
-+     plug_in_diffraction_iter_ALT.inc
-+     plug_in_displace_iter_ALT.inc
-+     plug_in_edge_iter_ALT.inc
-+     plug_in_emboss_iter_ALT.inc
-+     plug_in_engrave_iter_ALT.inc
-+     plug_in_exchange_iter_ALT.inc
-+     plug_in_flame_iter_ALT.inc 	       (?) runs, but all layer were transparent when finished
-+     plug_in_flarefx_iter_ALT.inc
-+     plug_in_fractal_trace_iter_ALT.inc
-+     plug_in_gauss_iir2_iter_ALT.inc
-+     plug_in_gauss_iir_iter_ALT.inc
-+     plug_in_gauss_rle2_iter_ALT.inc
-+     plug_in_gauss_rle_iter_ALT.inc
-+     plug_in_gflare_iter_ALT.inc 
-+     plug_in_glasstile_iter_ALT.inc
-+     plug_in_grid_iter_ALT.inc
-+     plug_in_illusion_iter_ALT.inc
-+     plug_in_jigsaw_iter_ALT.inc
--     plug_in_lic_iter_ALT.inc		      (crashed)
-+     plug_in_lighting_iter_ALT.inc
-#     plug_in_make_seamless_iter_ALT.inc
-+     plug_in_map_object_iter_ALT.inc
-+     plug_in_max_rgb_iter_ALT.inc
-+     plug_in_maze_iter_ALT.inc
-+     plug_in_mblur_iter_ALT.inc
-+     plug_in_mosaic_iter_ALT.inc
-+     plug_in_newsprint_iter_ALT.inc
-+     plug_in_nlfilt_iter_ALT.inc	       (?) runs, but did not see any effect
-+     plug_in_noisify_iter_ALT.inc
-#     plug_in_normalize_iter_ALT.inc
-+     plug_in_nova_iter_ALT.inc  	       CRASH at 1st call
-+     plug_in_oilify_iter_ALT.inc
-(1)   plug_in_pagecurl_iter_ALT.inc	       ERROR: creates a new layer
-+     plug_in_papertile_iter_ALT.inc
-+     plug_in_pixelize_iter_ALT.inc
-+     plug_in_plasma_iter_ALT.inc
-+     plug_in_polar_coords_iter_ALT.inc
-+     plug_in_randomize_hurl_iter_ALT.inc
-+     plug_in_randomize_pick_iter_ALT.inc
-+     plug_in_randomize_slur_iter_ALT.inc
-+     plug_in_ripple_iter_ALT.inc
--     plug_in_rotate_iter_ALT.inc	      (-) untestable, does not show any dialog at interactive call !
-+     plug_in_sample_colorize_iter_ALT.inc
-+     plug_in_scatter_hsv_iter_ALT.inc
-+     plug_in_sel_gauss_iter_ALT.inc
-+     plug_in_sharpen_iter_ALT.inc
-+     plug_in_shift_iter_ALT.inc
-+     plug_in_sinus_iter_ALT.inc
-#     plug_in_small_tiles_iter_ALT.inc
-+     plug_in_sobel_iter_ALT.inc
-+     plug_in_solid_noise_iter_ALT.inc
-+     plug_in_sparkle_iter_ALT.inc
-+     plug_in_spread_iter_ALT.inc
-+     plug_in_unsharp_mask_iter_ALT.inc
-#     plug_in_video_iter_ALT.inc 	       (!) varying values does not make sense, but keep iterator to get into gap_dbbrowser selection
-#     plug_in_vinvert_iter_ALT.inc
-+     plug_in_vpropagate_iter_ALT.inc
-+     plug_in_warp_iter_ALT.inc
-+     plug_in_waves_iter_ALT.inc
-+     plug_in_whirl_pinch_iter_ALT.inc
-+     plug_in_wind_iter_ALT.inc
-
++     plug_in_alienmap2_iter_ALT
+:     plug_in_align_layers
+:     plug_in_animationoptimize
+:     plug_in_animationoptimize_diff
+:     plug_in_animationplay
+:     plug_in_animationunoptimize
+#(+)  plug_in_apply_canvas_iter_ALT             Uses wrong name "plug_in_struc" to store LAST_VAL's
++     plug_in_applylens_iter_ALT
+:     plug_in_autocrop
+-     plug_in_autocrop_layer                    constant apply would make sense, but did not work
+#     plug_in_autostretch_hsv
++     plug_in_blinds_iter_ALT
++     plug_in_bluebox
+#     plug_in_blur                              has no dialog but works fine with defaults.
++     plug_in_borderaverage_iter_ALT            (?) runs, but produces no effect on the processed layers
++     plug_in_bump_map_iter_ALT
+:     plug_in_bump_map_tiled
+#     plug_in_c_astretch
++     plug_in_cartoon_iter_ALT
+:     plug_in_ccanalyze
++     plug_in_checkerboard_iter_ALT
++     plug_in_cml_explorer_iter_ALT
+#     plug_in_color_adjust
+#     plug_in_color_enhance
++     plug_in_color_map_iter_ALT
++     plug_in_colorify_iter_ALT
++     plug_in_colors_channel_mixer
++     plug_in_colortoalpha_iter_ALT
+:     plug_in_compose
++     plug_in_convmatrix_iter_ALT
++     plug_in_cubism_iter_ALT
++     plug_in_curve_bend
+:     plug_in_decompose
+#     plug_in_deinterlace                       disabled the Iter_ALT proc (only const apply makes sense)
++     plug_in_depth_merge_iter_ALT
++     plug_in_despeckle_iter_ALT
++     plug_in_destripe_iter_ALT
++     plug_in_diffraction_iter_ALT
+#     plug_in_dilate                            (?) noninteractive variante of plug_in_vpropagate
++     plug_in_displace_iter_ALT
++(?)  plug_in_dog                               call works but produces strange results and warnings: (gimp-2.2:23057): Gimp-Core-CRITICAL **: file gimpdrawable.c: line 1221 (gimp_drawable_mask_bounds): assertion `gimp_item_is_attached (item)' failed
+:     plug_in_drawable_compose
++     plug_in_edge_iter_ALT
++     plug_in_emboss_iter_ALT
++     plug_in_engrave_iter_ALT
+#     plug_in_erode                             (?) noninteractive variante of plug_in_vpropagate with default values
++     plug_in_exchange_iter_ALT
+:     plug_in_film
+#     plug_in_filter_macro
+:     plug_in_filter_pack                       makes no sense because opens Dialog even in run_mode: GIMP_RUN_WITH_LAST_VALS
++     plug_in_flame_iter_ALT 	                (?) runs, but all layer were transparent when finished
++     plug_in_flarefx_iter_ALT
++     plug_in_fractal_trace_iter_ALT
+.     plug_in_fractalexplorer
++     plug_in_gauss_iter_ALT
+:     plug_in_gauss_iir2                        makes no sense (no dialog), use plug_in_gauss instead
+:     plug_in_gauss_iir                         makes no sense (no dialog), use plug_in_gauss instead
+:     plug_in_gauss_rle2                        makes no sense (no dialog), use plug_in_gauss instead
+:     plug_in_gauss_rle                         makes no sense (no dialog), use plug_in_gauss instead
+:     plug_in_gfig                              makes no sense (is INTERACTIVE only and creates layer)
++     plug_in_gflare_iter_ALT 
++     plug_in_gimpressionist
++     plug_in_glasstile_iter_ALT
+#     plug_in_gradmap
++     plug_in_grid_iter_ALT
+:     plug_in_guillotine
+#     plug_in_hot
+:     plug_in_ifs_compose
++     plug_in_illusion_iter_ALT
+:     plug_in_imagemap                          makes no sense (needs INTERACTIVE mode)
+:     plug_in_iwarp                             makes no sense (needs INTERACTIVE mode, has its own animate option where layers are created)
++     plug_in_jigsaw_iter_ALT
+#     plug_in_laplace
++     plug_in_lic_iter_ALT
++     plug_in_lighting_iter_ALT
+:     plug_in_mail_image
+#     plug_in_make_seamless                     HAS no dialog and no LAST_VAL Buffer
++     plug_in_map_object_iter_ALT
+#     plug_in_max_rgb_iter_ALT
++     plug_in_maze_iter_ALT
++     plug_in_mblur_iter_ALT
++     plug_in_mosaic_iter_ALT
++     plug_in_name2layer
++     plug_in_neon
++     plug_in_newsprint_iter_ALT
++     plug_in_nlfilt_iter_ALT	               (?) runs, but did not see any effect
++     plug_in_noisify_iter_ALT
+#     plug_in_normalize                        has no dialog, constant apply makes sense
++     plug_in_nova_iter_ALT
++     plug_in_oilify_iter_ALT
+:     plug_in_onionskin_create_or_replace
+:     plug_in_onionskin_del
+:     plug_in_onionskin_toggle_visibility
+(1)   plug_in_pagecurl_iter_ALT	               ERROR: creates a new layer
++     plug_in_papertile_iter_ALT
++     plug_in_photocopy
++     plug_in_pixelize_iter_ALT
+#     plug_in_pixelize2                        
++     plug_in_plasma_iter_ALT
++     plug_in_polar_coords_iter_ALT
+#     plug_in_qbist
++     plug_in_randomize_hurl_iter_ALT
++     plug_in_randomize_pick_iter_ALT
++     plug_in_randomize_slur_iter_ALT
++     plug_in_retinex
++     plug_in_ripple_iter_ALT
+-     plug_in_rotate_iter_ALT	               does not make sense (has no dialog where to specify rotation angle)
+:     plug_in_rotate_colormap                  makes no sense,  because opens Dialog even in run_mode: GIMP_RUN_WITH_LAST_VALS
+-     plug_in_sample_colorize_iter_ALT         (?) iter size ok, but does not work for GIMP_RUN_WITH_LAST_VALS calls
++     plug_in_scatter_hsv_iter_ALT
++     plug_in_sel_gauss_iter_ALT
+:     plug_in_sel2path
+:     plug_in_sel2path_advanced
+:     plug_in_semiflatten                      makes no sense
++     plug_in_sharpen_iter_ALT
++     plug_in_shift_iter_ALT
++     plug_in_sinus_iter_ALT
+#(+)  plug_in_small_tiles_iter_ALT             Uses wrong name "plug_in_tileit" to store LAST_VAL's     
+:     plug_in_smooth_palette                   makes no sense (creates palette)
++     plug_in_sobel_iter_ALT                   OK, but only constant apply makes sense
++     plug_in_softglow
++     plug_in_solid_noise_iter_ALT
++     plug_in_sparkle_iter_ALT
+:     plug_in_spheredesigner
++     plug_in_spread_iter_ALT
++     plug_in_unsharp_mask_iter_ALT
+#     plug_in_video_iter_ALT 	              varying values does not make sense, but keep iterator to get into gap_dbbrowser selection
+#     plug_in_vinvert_iter_ALT
++     plug_in_vpropagate_iter_ALT
++     plug_in_warp_iter_ALT
++     plug_in_waves_iter_ALT
++     plug_in_whirl_pinch_iter_ALT
++     plug_in_wind_iter_ALT
++     plug_in_wr_color_levels
++     plug_in_wr_curves
++     plug_in_wr_huesat
++     plug_in_wr_set_opacity
+:     plug_in_zealouscrop
 
 Additional notes:
 
@@ -156,21 +219,20 @@ plug_in_map_object ol Testreport: (did not verfy that at the latest test)
 
 
 
+Old: (iterator procedures for Plug-Ins that once was part of gimp-releases
+      some of them are still available but got a new name)
+
+old (gimp-2.0)
+.     plug_in_alienmap_iter_ALT.inc
 
 
-
-State Procedure_name                      Testnotes
----------------------------------------------------------------------------
-
-
-
-Old: (iterator procedures for Plug-Ins that once was part of older gimp-releases)
+older (gimp-1.2 and before)
+	   
 .     plug_in_CentralReflection_iter_ALT.inc
 .     plug_in_anamorphose_iter_ALT.inc
 .     plug_in_blur2_iter_ALT.inc
 .     plug_in_encript_iter_ALT.inc
 .     plug_in_figures_iter_ALT.inc
-+     plug_in_gflare_iter_ALT.inc              # OK, plug-in is part of gimp again and iterator works
 .     plug_in_holes_iter_ALT.inc
 .     plug_in_julia_iter_ALT.inc
 .     plug_in_magic_eye_iter_ALT.inc
@@ -180,6 +242,3 @@ Old: (iterator procedures for Plug-Ins that once was part of older gimp-releases
 .     plug_in_struc_iter_ALT.inc
 .     plug_in_tileit_iter_ALT.inc
 .     plug_in_universal_filter_iter_ALT.inc
-+     plug_in_warp_iter_ALT.inc                # OK, plug-in is part of gimp again and iterator works
-
-

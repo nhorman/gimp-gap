@@ -930,13 +930,15 @@ gap_common_iterator(const char *c_keyname, GimpRunMode run_mode, gint32 total_st
       t_LightType  type;
       GimpVector3  position;
       GimpVector3  direction;
-      GimpRGB     color;
-      gdouble    intensity;
+      GimpRGB      color;
+      gdouble      intensity;
     } t_LightSettings;
 
 
 
-static void p_delta_GimpRGB(GimpRGB *val, GimpRGB *val_from, GimpRGB *val_to, gint32 total_steps, gdouble current_step)
+
+static void 
+p_delta_GimpRGB(GimpRGB *val, GimpRGB *val_from, GimpRGB *val_to, gint32 total_steps, gdouble current_step)
 {
     double     delta;
 
@@ -954,7 +956,9 @@ static void p_delta_GimpRGB(GimpRGB *val, GimpRGB *val_from, GimpRGB *val_to, gi
     delta = ((double)(val_to->a - val_from->a) / (double)total_steps) * ((double)total_steps - current_step);
     val->a = val_from->a + delta;
 }
-static void p_delta_GimpVector3(GimpVector3 *val, GimpVector3 *val_from, GimpVector3 *val_to, gint32 total_steps, gdouble current_step)
+
+static void 
+p_delta_GimpVector3(GimpVector3 *val, GimpVector3 *val_from, GimpVector3 *val_to, gint32 total_steps, gdouble current_step)
 {
     double     delta;
 
@@ -970,7 +974,8 @@ static void p_delta_GimpVector3(GimpVector3 *val, GimpVector3 *val_from, GimpVec
     val->z  = val_from->z + delta;
 }
 
-static void p_delta_MaterialSettings(t_MaterialSettings *val, t_MaterialSettings *val_from, t_MaterialSettings *val_to, gint32 total_steps, gdouble current_step)
+static void 
+p_delta_MaterialSettings(t_MaterialSettings *val, t_MaterialSettings *val_from, t_MaterialSettings *val_to, gint32 total_steps, gdouble current_step)
 {
     p_delta_gdouble(&val->ambient_int, val_from->ambient_int, val_to->ambient_int, total_steps, current_step);
     p_delta_gdouble(&val->diffuse_int, val_from->diffuse_int, val_to->diffuse_int, total_steps, current_step);
@@ -981,7 +986,8 @@ static void p_delta_MaterialSettings(t_MaterialSettings *val, t_MaterialSettings
 
 }
 
-static void p_delta_LightSettings(t_LightSettings *val, t_LightSettings *val_from, t_LightSettings *val_to, gint32 total_steps, gdouble current_step)
+static void 
+p_delta_LightSettings(t_LightSettings *val, t_LightSettings *val_from, t_LightSettings *val_to, gint32 total_steps, gdouble current_step)
 {
     /* no delta is done for LightType */
     p_delta_GimpVector3(&val->position, &val_from->position, &val_to->position, total_steps, current_step);
@@ -991,8 +997,57 @@ static void p_delta_LightSettings(t_LightSettings *val, t_LightSettings *val_fro
 }
 
 
+/* for Lighting */
+    /* since gimp-2.2 MapObject and Lighting Types drifted apart
+     * therefore we need 2 sets of Material and Light Setting Types
+     */
+
+    typedef struct
+    {
+      gdouble ambient_int;
+      gdouble diffuse_int;
+      gdouble diffuse_ref;
+      gdouble specular_ref;
+      gdouble highlight;
+      gboolean metallic;
+      GimpRGB  color;
+    } t_LightingMaterialSettings;
+
+    typedef struct
+    {
+      t_LightType  type;
+      GimpVector3  position;
+      GimpVector3  direction;
+      GimpRGB      color;
+      gdouble      intensity;
+      gboolean     active;
+    } t_LightingLightSettings;
+
+static void 
+p_delta_LightingMaterialSettings(t_LightingMaterialSettings *val, t_LightingMaterialSettings *val_from, t_LightingMaterialSettings *val_to, gint32 total_steps, gdouble current_step)
+{
+    p_delta_gdouble(&val->ambient_int, val_from->ambient_int, val_to->ambient_int, total_steps, current_step);
+    p_delta_gdouble(&val->diffuse_int, val_from->diffuse_int, val_to->diffuse_int, total_steps, current_step);
+    p_delta_gdouble(&val->diffuse_ref, val_from->diffuse_ref, val_to->diffuse_ref, total_steps, current_step);
+    p_delta_gdouble(&val->specular_ref, val_from->specular_ref, val_to->specular_ref, total_steps, current_step);
+    p_delta_gdouble(&val->highlight, val_from->highlight, val_to->highlight, total_steps, current_step);
+    p_delta_GimpRGB(&val->color, &val_from->color, &val_to->color, total_steps, current_step);
+
+}
+
+static void 
+p_delta_LightingLightSettings(t_LightingLightSettings *val, t_LightingLightSettings *val_from, t_LightingLightSettings *val_to, gint32 total_steps, gdouble current_step)
+{
+    /* no delta is done for LightType */
+    p_delta_GimpVector3(&val->position, &val_from->position, &val_to->position, total_steps, current_step);
+    p_delta_GimpVector3(&val->direction, &val_from->direction, &val_to->direction, total_steps, current_step);
+    p_delta_GimpRGB(&val->color, &val_from->color, &val_to->color, total_steps, current_step);
+    p_delta_gdouble(&val->intensity, val_from->intensity, val_to->intensity, total_steps, current_step);
+}
+
 /* for p_plug_in_cml_explorer_iter_ALT */
-static void p_delta_CML_PARAM(t_CML_PARAM *val, t_CML_PARAM *val_from, t_CML_PARAM *val_to, gint32 total_steps, gdouble current_step)
+static void 
+p_delta_CML_PARAM(t_CML_PARAM *val, t_CML_PARAM *val_from, t_CML_PARAM *val_to, gint32 total_steps, gdouble current_step)
 {
     p_delta_gint(&val->function, val_from->function, val_to->function, total_steps, current_step);
     p_delta_gint(&val->composition, val_from->composition, val_to->composition, total_steps, current_step);
@@ -1013,6 +1068,72 @@ static void p_delta_CML_PARAM(t_CML_PARAM *val, t_CML_PARAM *val_from, t_CML_PAR
 }
 
 
+/* for gimpressionist */
+  typedef struct gimpressionist_vector
+  {
+    double x, y;
+    double dir;
+    double dx, dy;
+    double str;
+    int    type;
+  } t_gimpressionist_vector;
+
+  typedef struct gimpressionist_smvector
+  {
+    double x, y;
+    double siz;
+    double str;
+  } t_gimpressionist_smvector;
+
+static 
+void p_delta_gimpressionist_vector(t_gimpressionist_vector *val, t_gimpressionist_vector *val_from, t_gimpressionist_vector *val_to, gint32 total_steps, gdouble current_step)
+{
+    if(total_steps < 1) return;
+
+    p_delta_gdouble(&val->x, val_from->x, val_to->x, total_steps, current_step);
+    p_delta_gdouble(&val->y, val_from->y, val_to->y, total_steps, current_step);
+    p_delta_gdouble(&val->dir, val_from->dir, val_to->dir, total_steps, current_step);
+    p_delta_gdouble(&val->dx, val_from->dx, val_to->dx, total_steps, current_step);
+    p_delta_gdouble(&val->dy, val_from->dy, val_to->dy, total_steps, current_step);
+    p_delta_gdouble(&val->str, val_from->str, val_to->str, total_steps, current_step);
+
+    p_delta_gint(&val->type, val_from->type, val_to->type, total_steps, current_step);
+}
+
+
+static 
+void p_delta_gimpressionist_smvector(t_gimpressionist_smvector *val, t_gimpressionist_smvector *val_from, t_gimpressionist_smvector *val_to, gint32 total_steps, gdouble current_step)
+{
+    if(total_steps < 1) return;
+
+    p_delta_gdouble(&val->x, val_from->x, val_to->x, total_steps, current_step);
+    p_delta_gdouble(&val->y, val_from->y, val_to->y, total_steps, current_step);
+    p_delta_gdouble(&val->siz, val_from->siz, val_to->siz, total_steps, current_step);
+    p_delta_gdouble(&val->str, val_from->str, val_to->str, total_steps, current_step);
+}
+
+
+/* for channel_mixer */
+  typedef struct
+  {
+    gdouble red_gain;
+    gdouble green_gain;
+    gdouble blue_gain;
+  } t_channel_mixer_ch_type;
+
+
+static 
+void p_delta_channel_mixer_ch_type(t_channel_mixer_ch_type *val, t_channel_mixer_ch_type *val_from, t_channel_mixer_ch_type *val_to, gint32 total_steps, gdouble current_step)
+{
+    if(total_steps < 1) return;
+
+    p_delta_gdouble(&val->red_gain, val_from->red_gain, val_to->red_gain, total_steps, current_step);
+    p_delta_gdouble(&val->green_gain, val_from->green_gain, val_to->green_gain, total_steps, current_step);
+    p_delta_gdouble(&val->blue_gain, val_from->blue_gain, val_to->blue_gain, total_steps, current_step);
+}
+
+
+
 /* ---------------------------------------- 2.nd Section
  * ----------------------------------------
  * INCLUDE the generated p_XXX_iter_ALT procedures
@@ -1020,46 +1141,49 @@ static void p_delta_CML_PARAM(t_CML_PARAM *val, t_CML_PARAM *val_from, t_CML_PAR
  * ----------------------------------------
  */
 
+
 #include "iter_ALT/mod/plug_in_Twist_iter_ALT.inc"
-#include "iter_ALT/mod/plug_in_alienmap_iter_ALT.inc"
+#include "iter_ALT/mod/plug_in_alienmap2_iter_ALT.inc"
+#include "iter_ALT/mod/plug_in_apply_canvas_iter_ALT.inc"
 #include "iter_ALT/mod/plug_in_applylens_iter_ALT.inc"
-#include "iter_ALT/mod/plug_in_blur_iter_ALT.inc"
 #include "iter_ALT/mod/plug_in_bump_map_iter_ALT.inc"
+#include "iter_ALT/mod/plug_in_cartoon_iter_ALT.inc"
+#include "iter_ALT/mod/plug_in_colortoalpha_iter_ALT.inc"
+#include "iter_ALT/mod/plug_in_colors_channel_mixer_iter_ALT.inc"
 #include "iter_ALT/mod/plug_in_convmatrix_iter_ALT.inc"
 #include "iter_ALT/mod/plug_in_depth_merge_iter_ALT.inc"
 #include "iter_ALT/mod/plug_in_despeckle_iter_ALT.inc"
+#include "iter_ALT/mod/plug_in_dog_iter_ALT.inc"
 #include "iter_ALT/mod/plug_in_emboss_iter_ALT.inc"
 #include "iter_ALT/mod/plug_in_exchange_iter_ALT.inc"
 #include "iter_ALT/mod/plug_in_flame_iter_ALT.inc"
+#include "iter_ALT/mod/plug_in_gauss_iter_ALT.inc"
+#include "iter_ALT/mod/plug_in_gimpressionist_iter_ALT.inc"
+#include "iter_ALT/mod/plug_in_illusion_iter_ALT.inc"
+#include "iter_ALT/mod/plug_in_lic_iter_ALT.inc"
 #include "iter_ALT/mod/plug_in_lighting_iter_ALT.inc"
 #include "iter_ALT/mod/plug_in_map_object_iter_ALT.inc"
 #include "iter_ALT/mod/plug_in_maze_iter_ALT.inc"
+#include "iter_ALT/mod/plug_in_neon_iter_ALT.inc"
 #include "iter_ALT/mod/plug_in_nlfilt_iter_ALT.inc"
 #include "iter_ALT/mod/plug_in_nova_iter_ALT.inc"
 #include "iter_ALT/mod/plug_in_oilify_iter_ALT.inc"
 #include "iter_ALT/mod/plug_in_pagecurl_iter_ALT.inc"
 #include "iter_ALT/mod/plug_in_papertile_iter_ALT.inc"
+#include "iter_ALT/mod/plug_in_photocopy_iter_ALT.inc"
 #include "iter_ALT/mod/plug_in_plasma_iter_ALT.inc"
 #include "iter_ALT/mod/plug_in_polar_coords_iter_ALT.inc"
+#include "iter_ALT/mod/plug_in_retinex_iter_ALT.inc"
 #include "iter_ALT/mod/plug_in_sample_colorize_iter_ALT.inc"
-#include "iter_ALT/mod/plug_in_sinus_iter_ALT.inc"
-#include "iter_ALT/mod/plug_in_solid_noise_iter_ALT.inc"
-#include "iter_ALT/mod/plug_in_sparkle_iter_ALT.inc"
-
-#include "iter_ALT/mod/plug_in_alienmap2_iter_ALT.inc"
-#include "iter_ALT/mod/plug_in_apply_canvas_iter_ALT.inc"
-#include "iter_ALT/mod/plug_in_colortoalpha_iter_ALT.inc"
-#include "iter_ALT/mod/plug_in_deinterlace_iter_ALT.inc"
-#include "iter_ALT/mod/plug_in_illusion_iter_ALT.inc"
-#include "iter_ALT/mod/plug_in_lic_iter_ALT.inc"
-#include "iter_ALT/mod/plug_in_make_seamless_iter_ALT.inc"
-#include "iter_ALT/mod/plug_in_max_rgb_iter_ALT.inc"
-#include "iter_ALT/mod/plug_in_normalize_iter_ALT.inc"
 #include "iter_ALT/mod/plug_in_sel_gauss_iter_ALT.inc"
+#include "iter_ALT/mod/plug_in_sinus_iter_ALT.inc"
 #include "iter_ALT/mod/plug_in_small_tiles_iter_ALT.inc"
 #include "iter_ALT/mod/plug_in_sobel_iter_ALT.inc"
+#include "iter_ALT/mod/plug_in_softglow_iter_ALT.inc"
+#include "iter_ALT/mod/plug_in_solid_noise_iter_ALT.inc"
+#include "iter_ALT/mod/plug_in_sparkle_iter_ALT.inc"
 #include "iter_ALT/mod/plug_in_unsharp_mask_iter_ALT.inc"
-#include "iter_ALT/mod/plug_in_vinvert_iter_ALT.inc"
+
 
 
 
@@ -1097,10 +1221,6 @@ static void p_delta_CML_PARAM(t_CML_PARAM *val, t_CML_PARAM *val_from, t_CML_PAR
 #include "iter_ALT/gen/plug_in_engrave_iter_ALT.inc"
 #include "iter_ALT/gen/plug_in_flarefx_iter_ALT.inc"
 #include "iter_ALT/gen/plug_in_fractal_trace_iter_ALT.inc"
-#include "iter_ALT/gen/plug_in_gauss_iir_iter_ALT.inc"
-#include "iter_ALT/gen/plug_in_gauss_iir2_iter_ALT.inc"
-#include "iter_ALT/gen/plug_in_gauss_rle_iter_ALT.inc"
-#include "iter_ALT/gen/plug_in_gauss_rle2_iter_ALT.inc"
 #include "iter_ALT/gen/plug_in_glasstile_iter_ALT.inc"
 #include "iter_ALT/gen/plug_in_grid_iter_ALT.inc"
 #include "iter_ALT/gen/plug_in_jigsaw_iter_ALT.inc"
@@ -1113,7 +1233,6 @@ static void p_delta_CML_PARAM(t_CML_PARAM *val, t_CML_PARAM *val_from, t_CML_PAR
 #include "iter_ALT/gen/plug_in_randomize_pick_iter_ALT.inc"
 #include "iter_ALT/gen/plug_in_randomize_slur_iter_ALT.inc"
 #include "iter_ALT/gen/plug_in_ripple_iter_ALT.inc"
-#include "iter_ALT/gen/plug_in_rotate_iter_ALT.inc"
 #include "iter_ALT/gen/plug_in_scatter_hsv_iter_ALT.inc"
 #include "iter_ALT/gen/plug_in_sharpen_iter_ALT.inc"
 #include "iter_ALT/gen/plug_in_shift_iter_ALT.inc"
@@ -1126,47 +1245,39 @@ static void p_delta_CML_PARAM(t_CML_PARAM *val, t_CML_PARAM *val_from, t_CML_PAR
 
 /* table of proc_names and funtion pointers to iter_ALT procedures */
 /* del ... Deleted (does not make sense to animate)
- * +   ... generated code did not work (changed manually)
+ * +  ... generated code did not work (changed manually)
  */
 static t_iter_ALT_tab   g_iter_ALT_tab[] =
 {
-/*  { "Colorify",  p_Colorify_iter_ALT }                                          */
-/*, { "perl_fu_blowinout",  p_perl_fu_blowinout_iter_ALT }                        */
-/*, { "perl_fu_feedback",  p_perl_fu_feedback_iter_ALT }                          */
-/*, { "perl_fu_prep4gif",  p_perl_fu_prep4gif_iter_ALT }                          */
-/*, { "perl_fu_scratches",  p_perl_fu_scratches_iter_ALT }                        */
-/*, { "perl_fu_terraltext",  p_perl_fu_terraltext_iter_ALT }                      */
-/*, { "perl_fu_tex_string_to_float",  p_perl_fu_tex_string_to_float_iter_ALT }    */
-/*, { "perl_fu_webify",  p_perl_fu_webify_iter_ALT }                              */
-/*, { "perl_fu_windify",  p_perl_fu_windify_iter_ALT }                            */
-/*, { "perl_fu_xach_blocks",  p_perl_fu_xach_blocks_iter_ALT }                    */
-/*, { "perl_fu_xach_shadows",  p_perl_fu_xach_shadows_iter_ALT }                  */
-/*, { "perl_fu_xachvision",  p_perl_fu_xachvision_iter_ALT }                      */
-    { "plug_in_cml_explorer",  p_plug_in_cml_explorer_iter_ALT }
+    { "plug_in_alienmap2", p_plug_in_alienmap2_iter_ALT }
+  , { "plug_in_cml_explorer",  p_plug_in_cml_explorer_iter_ALT }
   , { "plug_in_CentralReflection",  p_plug_in_CentralReflection_iter_ALT }
   , { "plug_in_Twist",  p_plug_in_Twist_iter_ALT }
-  , { "plug_in_alienmap",  p_plug_in_alienmap_iter_ALT }
+/*, { "plug_in_alienmap",  p_plug_in_alienmap_iter_ALT }                          */
 /*, { "plug_in_align_layers",  p_plug_in_align_layers_iter_ALT }                  */
   , { "plug_in_alpha2color",  p_plug_in_alpha2color_iter_ALT }
   , { "plug_in_anamorphose",  p_plug_in_anamorphose_iter_ALT }
 /*, { "plug_in_animationoptimize",  p_plug_in_animationoptimize_iter_ALT }        */
 /*, { "plug_in_animationplay",  p_plug_in_animationplay_iter_ALT }                */
 /*, { "plug_in_animationunoptimize",  p_plug_in_animationunoptimize_iter_ALT }    */
-/*, { "plug_in_apply_canvas",  p_plug_in_apply_canvas_iter_ALT }                  */
+  , { "plug_in_apply_canvas",  p_plug_in_apply_canvas_iter_ALT }
   , { "plug_in_applylens",  p_plug_in_applylens_iter_ALT }
 /*, { "plug_in_autocrop",  p_plug_in_autocrop_iter_ALT }                          */
 /*, { "plug_in_autostretch_hsv",  p_plug_in_autostretch_hsv_iter_ALT }            */
   , { "plug_in_blinds",  p_plug_in_blinds_iter_ALT }
-  , { "plug_in_blur",  p_plug_in_blur_iter_ALT }
+/*, { "plug_in_blur",  p_plug_in_blur_iter_ALT }                                  */
   , { "plug_in_blur2",  p_plug_in_blur2_iter_ALT }
 /*, { "plug_in_blur_randomize",  p_plug_in_blur_randomize_iter_ALT }              */
   , { "plug_in_borderaverage",  p_plug_in_borderaverage_iter_ALT }
   , { "plug_in_bump_map",  p_plug_in_bump_map_iter_ALT }
 /*, { "plug_in_c_astretch",  p_plug_in_c_astretch_iter_ALT }                      */
+  , { "plug_in_cartoon", p_plug_in_cartoon_iter_ALT }
   , { "plug_in_checkerboard",  p_plug_in_checkerboard_iter_ALT }
 /*, { "plug_in_color_adjust",  p_plug_in_color_adjust_iter_ALT }                  */
   , { "plug_in_color_map",  p_plug_in_color_map_iter_ALT }
   , { "plug_in_colorify",  p_plug_in_colorify_iter_ALT }
+  , { "plug_in_colortoalpha", p_plug_in_colortoalpha_iter_ALT }
+  , { "plug_in_colors_channel_mixer", p_plug_in_colors_channel_mixer_iter_ALT }
 /*, { "plug_in_compose",  p_plug_in_compose_iter_ALT }                            */
   , { "plug_in_convmatrix",  p_plug_in_convmatrix_iter_ALT }
   , { "plug_in_cubism",  p_plug_in_cubism_iter_ALT }
@@ -1178,6 +1289,7 @@ static t_iter_ALT_tab   g_iter_ALT_tab[] =
   , { "plug_in_diffraction",  p_plug_in_diffraction_iter_ALT }
   , { "plug_in_displace",  p_plug_in_displace_iter_ALT }
 /*, { "plug_in_ditherize",  p_plug_in_ditherize_iter_ALT }                        */
+  , { "plug_in_dog",  p_plug_in_dog_iter_ALT }
   , { "plug_in_edge",  p_plug_in_edge_iter_ALT }
   , { "plug_in_emboss",  p_plug_in_emboss_iter_ALT }
   , { "plug_in_encript",  p_plug_in_encript_iter_ALT }
@@ -1190,12 +1302,10 @@ static t_iter_ALT_tab   g_iter_ALT_tab[] =
   , { "plug_in_flame",  p_plug_in_flame_iter_ALT }
   , { "plug_in_flarefx",  p_plug_in_flarefx_iter_ALT }
   , { "plug_in_fractal_trace",  p_plug_in_fractal_trace_iter_ALT }
-  , { "plug_in_gauss_iir",  p_plug_in_gauss_iir_iter_ALT }
-  , { "plug_in_gauss_iir2",  p_plug_in_gauss_iir2_iter_ALT }
-  , { "plug_in_gauss_rle",  p_plug_in_gauss_rle_iter_ALT }
-  , { "plug_in_gauss_rle2",  p_plug_in_gauss_rle2_iter_ALT }
+  , { "plug_in_gauss",  p_plug_in_gauss_iter_ALT }
 /*, { "plug_in_gfig",  p_plug_in_gfig_iter_ALT }                                  */
   , { "plug_in_gflare",  p_plug_in_gflare_iter_ALT }
+  , { "plug_in_gimpressionist",  p_plug_in_gimpressionist_iter_ALT }
   , { "plug_in_glasstile",  p_plug_in_glasstile_iter_ALT }
 /*, { "plug_in_gradmap",  p_plug_in_gradmap_iter_ALT }                            */
   , { "plug_in_grid",  p_plug_in_grid_iter_ALT }
@@ -1203,7 +1313,7 @@ static t_iter_ALT_tab   g_iter_ALT_tab[] =
   , { "plug_in_holes",  p_plug_in_holes_iter_ALT }
 /*, { "plug_in_hot",  p_plug_in_hot_iter_ALT }                                    */
 /*, { "plug_in_ifs_compose",  p_plug_in_ifs_compose_iter_ALT }                    */
-/*, { "plug_in_illusion",  p_plug_in_illusion_iter_ALT }                          */
+  , { "plug_in_illusion",  p_plug_in_illusion_iter_ALT }
 /*, { "plug_in_image_rot270",  p_plug_in_image_rot270_iter_ALT }                  */
 /*, { "plug_in_image_rot90",  p_plug_in_image_rot90_iter_ALT }                    */
 /*, { "plug_in_iwarp",  p_plug_in_iwarp_iter_ALT }                                */
@@ -1213,17 +1323,17 @@ static t_iter_ALT_tab   g_iter_ALT_tab[] =
 /*, { "plug_in_layer_rot270",  p_plug_in_layer_rot270_iter_ALT }                  */
 /*, { "plug_in_layer_rot90",  p_plug_in_layer_rot90_iter_ALT }                    */
 /*, { "plug_in_layers_import",  p_plug_in_layers_import_iter_ALT }                */
-/*, { "plug_in_lic",  p_plug_in_lic_iter_ALT }                                    */
+  , { "plug_in_lic",  p_plug_in_lic_iter_ALT }
   , { "plug_in_lighting",  p_plug_in_lighting_iter_ALT }
   , { "plug_in_magic_eye",  p_plug_in_magic_eye_iter_ALT }
 /*, { "plug_in_mail_image",  p_plug_in_mail_image_iter_ALT }                      */
-/*, { "plug_in_make_seamless",  p_plug_in_make_seamless_iter_ALT }                */
   , { "plug_in_mandelbrot",  p_plug_in_mandelbrot_iter_ALT }
   , { "plug_in_map_object",  p_plug_in_map_object_iter_ALT }
 /*, { "plug_in_max_rgb",  p_plug_in_max_rgb_iter_ALT }                            */
   , { "plug_in_maze",  p_plug_in_maze_iter_ALT }
   , { "plug_in_mblur",  p_plug_in_mblur_iter_ALT }
   , { "plug_in_mosaic",  p_plug_in_mosaic_iter_ALT }
+  , { "plug_in_neon",  p_plug_in_neon_iter_ALT }
   , { "plug_in_newsprint",  p_plug_in_newsprint_iter_ALT }
   , { "plug_in_nlfilt",  p_plug_in_nlfilt_iter_ALT }
   , { "plug_in_noisify",  p_plug_in_noisify_iter_ALT }
@@ -1232,6 +1342,7 @@ static t_iter_ALT_tab   g_iter_ALT_tab[] =
   , { "plug_in_oilify",  p_plug_in_oilify_iter_ALT }
   , { "plug_in_pagecurl",  p_plug_in_pagecurl_iter_ALT }
   , { "plug_in_papertile",  p_plug_in_papertile_iter_ALT }
+  , { "plug_in_photocopy",  p_plug_in_photocopy_iter_ALT }
   , { "plug_in_pixelize",  p_plug_in_pixelize_iter_ALT }
   , { "plug_in_plasma",  p_plug_in_plasma_iter_ALT }
   , { "plug_in_polar_coords",  p_plug_in_polar_coords_iter_ALT }
@@ -1241,17 +1352,20 @@ static t_iter_ALT_tab   g_iter_ALT_tab[] =
   , { "plug_in_randomize_pick",  p_plug_in_randomize_pick_iter_ALT }
   , { "plug_in_randomize_slur",  p_plug_in_randomize_slur_iter_ALT }
   , { "plug_in_refract",  p_plug_in_refract_iter_ALT }
+  , { "plug_in_retinex",  p_plug_in_retinex_iter_ALT }
   , { "plug_in_ripple",  p_plug_in_ripple_iter_ALT }
-  , { "plug_in_rotate",  p_plug_in_rotate_iter_ALT }
+/*, { "plug_in_rotate",  p_plug_in_rotate_iter_ALT }                              */
   , { "plug_in_sample_colorize",  p_plug_in_sample_colorize_iter_ALT }
   , { "plug_in_scatter_hsv",  p_plug_in_scatter_hsv_iter_ALT }
+  , { "plug_in_sel_gauss", p_plug_in_sel_gauss_iter_ALT }
 /*, { "plug_in_semiflatten",  p_plug_in_semiflatten_iter_ALT }                    */
   , { "plug_in_sharpen",  p_plug_in_sharpen_iter_ALT }
   , { "plug_in_shift",  p_plug_in_shift_iter_ALT }
   , { "plug_in_sinus",  p_plug_in_sinus_iter_ALT }
-/*, { "plug_in_small_tiles",  p_plug_in_small_tiles_iter_ALT }                    */
+  , { "plug_in_small_tiles",  p_plug_in_small_tiles_iter_ALT }
 /*, { "plug_in_smooth_palette",  p_plug_in_smooth_palette_iter_ALT }              */
-/*, { "plug_in_sobel",  p_plug_in_sobel_iter_ALT }                                */
+  , { "plug_in_sobel",  p_plug_in_sobel_iter_ALT }
+  , { "plug_in_softglow",  p_plug_in_softglow_iter_ALT }
   , { "plug_in_solid_noise",  p_plug_in_solid_noise_iter_ALT }
   , { "plug_in_sparkle",  p_plug_in_sparkle_iter_ALT }
   , { "plug_in_spread",  p_plug_in_spread_iter_ALT }
@@ -1261,6 +1375,7 @@ static t_iter_ALT_tab   g_iter_ALT_tab[] =
 /*, { "plug_in_tile",  p_plug_in_tile_iter_ALT }                                  */
   , { "plug_in_tileit",  p_plug_in_tileit_iter_ALT }
   , { "plug_in_universal_filter",  p_plug_in_universal_filter_iter_ALT }
+  , { "plug_in_unsharp_mask", p_plug_in_unsharp_mask_iter_ALT }
   , { "plug_in_video",  p_plug_in_video_iter_ALT }
 /*, { "plug_in_vinvert",  p_plug_in_vinvert_iter_ALT }                            */
   , { "plug_in_vpropagate",  p_plug_in_vpropagate_iter_ALT }
@@ -1270,20 +1385,6 @@ static t_iter_ALT_tab   g_iter_ALT_tab[] =
   , { "plug_in_wind",  p_plug_in_wind_iter_ALT }
 /*, { "plug_in_zealouscrop",  p_plug_in_zealouscrop_iter_ALT }                    */
 
-  , { "plug_in_alienmap2", p_plug_in_alienmap2_iter_ALT }
-  , { "plug_in_apply_canvas", p_plug_in_apply_canvas_iter_ALT }
-  , { "plug_in_colortoalpha", p_plug_in_colortoalpha_iter_ALT }
-  , { "plug_in_deinterlace", p_plug_in_deinterlace_iter_ALT }
-  , { "plug_in_illusion", p_plug_in_illusion_iter_ALT }
-  , { "plug_in_lic", p_plug_in_lic_iter_ALT }
-  , { "plug_in_make_seamless", p_plug_in_make_seamless_iter_ALT }
-  , { "plug_in_max_rgb", p_plug_in_max_rgb_iter_ALT }
-  , { "plug_in_normalize", p_plug_in_normalize_iter_ALT }
-  , { "plug_in_sel_gauss", p_plug_in_sel_gauss_iter_ALT }
-  , { "plug_in_small_tiles", p_plug_in_small_tiles_iter_ALT }
-  , { "plug_in_sobel", p_plug_in_sobel_iter_ALT }
-  , { "plug_in_unsharp_mask", p_plug_in_unsharp_mask_iter_ALT }
-  , { "plug_in_vinvert", p_plug_in_vinvert_iter_ALT }
 };  /* end g_iter_ALT_tab */
 
 

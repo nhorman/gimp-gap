@@ -331,8 +331,9 @@ gap_cme_gui_pthread_async_pdb_call(void)
 
   /* run the plug-in procedure */
   l_ret_params = gimp_run_procedure2 (plugin_name, &l_retvals, l_nparams, l_argv);
+
   /*  free up arguments and values  */
-  g_free (l_argv);
+  gimp_destroy_params (l_argv, l_nparams);
 
 
   /*  free the query information  */

@@ -15,9 +15,9 @@ gint p_plug_in_sparkle_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdoubl
       gdouble   opacity;
       gdouble   random_hue;
       gdouble   random_saturation;
-      gint      preserve_luminosity;
-      gint      invers;
-      gint      border;
+      gboolean  preserve_luminosity;
+      gboolean  invers;
+      gboolean  border;
       gint      colortype;
     } t_plug_in_sparkle_Vals; 
 
@@ -46,9 +46,6 @@ gint p_plug_in_sparkle_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdoubl
     p_delta_gdouble(&buf.opacity, buf_from->opacity, buf_to->opacity, total_steps, current_step);
     p_delta_gdouble(&buf.random_hue, buf_from->random_hue, buf_to->random_hue, total_steps, current_step);
     p_delta_gdouble(&buf.random_saturation, buf_from->random_saturation, buf_to->random_saturation, total_steps, current_step);
-    p_delta_gint(&buf.preserve_luminosity, buf_from->preserve_luminosity, buf_to->preserve_luminosity, total_steps, current_step);
-    p_delta_gint(&buf.invers, buf_from->invers, buf_to->invers, total_steps, current_step);
-    p_delta_gint(&buf.border, buf_from->border, buf_to->border, total_steps, current_step);
     p_delta_gint(&buf.colortype, buf_from->colortype, buf_to->colortype, total_steps, current_step);
 
     gimp_set_data("plug_in_sparkle", &buf, sizeof(buf)); 

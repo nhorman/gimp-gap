@@ -8,6 +8,7 @@ gint p_plug_in_spread_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble
     {
       gdouble   spread_amount_x;
       gdouble   spread_amount_y;
+      gboolean  preview;
     } t_plug_in_spread_Vals; 
 
     t_plug_in_spread_Vals  buf, *buf_from, *buf_to; 
@@ -29,6 +30,7 @@ gint p_plug_in_spread_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble
     p_delta_gdouble(&buf.spread_amount_x, buf_from->spread_amount_x, buf_to->spread_amount_x, total_steps, current_step);
     p_delta_gdouble(&buf.spread_amount_y, buf_from->spread_amount_y, buf_to->spread_amount_y, total_steps, current_step);
 
+    buf.preview = FALSE;
     gimp_set_data("plug_in_spread", &buf, sizeof(buf)); 
 
     return 0; /* OK */

@@ -6,8 +6,11 @@ gint p_plug_in_glasstile_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdou
 {
     typedef struct t_plug_in_glasstile_Vals 
     {
-      long      tilex;
-      long      tiley;
+      gint      tilex;
+      gint      tiley;
+      gboolean preview;
+      /* interface only */
+      gint     constrain;
     } t_plug_in_glasstile_Vals; 
 
     t_plug_in_glasstile_Vals  buf, *buf_from, *buf_to; 
@@ -26,8 +29,8 @@ gint p_plug_in_glasstile_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdou
     buf_to   = (t_plug_in_glasstile_Vals *)&g_plugin_data_to[0]; 
     memcpy(&buf, buf_from, sizeof(buf));
 
-    p_delta_long(&buf.tilex, buf_from->tilex, buf_to->tilex, total_steps, current_step);
-    p_delta_long(&buf.tiley, buf_from->tiley, buf_to->tiley, total_steps, current_step);
+    p_delta_gint(&buf.tilex, buf_from->tilex, buf_to->tilex, total_steps, current_step);
+    p_delta_gint(&buf.tiley, buf_from->tiley, buf_to->tiley, total_steps, current_step);
 
     gimp_set_data("plug_in_glasstile", &buf, sizeof(buf)); 
 
