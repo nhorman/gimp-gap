@@ -1,4 +1,4 @@
-STORYBOARD_FILES           2004.09.12:
+STORYBOARD_FILES           2004.10.27:
 
 
 WARNING:
@@ -17,7 +17,13 @@ Expect there will be changes until the first stable release.
 //          - none of the audio features (AUD_xx)
 //          - video is limited to one track
 //          - no video attributes (effects) VID_OPACITY, VID_ZOOM, VID_MOVE)
-// - currently there is no support for symbolic ranges (first, last, top or bottom) 
+// - currently there is no support for symbolic frameranges 
+//   (first, last, top or bottom (VIDEO), or start, end (AUDIO)) 
+//
+// - the exactseek parameter should be removed (both in implementation
+//   and documentation) NOW GAP videoaccess should always work exact.
+//   for both fast and exact access create a videoindex before!
+
 
 General
 -------
@@ -29,7 +35,7 @@ The images and frame sequences may be located in different directories,
 and can contain frame_images of any imagefiletype
 (.jpg, .xcf, .gif ...) that is readable by GIMP.
 You may also use parts from videofiles.
-(.mpg ... see chapter supported video input)
+(.avi, .mpg ... see chapter supported video input)
 
 all frames are converted and scaled to the desired
 video master size on the fly at encoding time.
@@ -65,7 +71,7 @@ The other items depend on the RECORD Type.
 Lines starting with # are Comments, Blanklines are allowed and will be ignored.
 
 You may join 2 or more Lines to one logical Line
-if you set the backslash '\' as last charcter 
+if you set the backslash '\' as last character 
 (immediate before newline)
 
 
@@ -74,9 +80,9 @@ in the style:
 
    key:value
 
-item values may have a comment suffix starting with =
 if no parametername key prefix is specified the fixed order of items
-is assumed. items must not contain blanks.
+is assumed. items must not contain blanks. (except blanks in "qutes strings")
+
 
 
 Overview of supported RECORD TYPES:
@@ -205,7 +211,7 @@ VID_PLAY_MOVIE
 			    a value of 2.0 does skip every 2.nd input frame
 			    use a value of 1.0 to fetch all input frames step by step
                             DEFAULT: 1.0
- [12] macro_filename    ... optional name of a filtermacro_file
+ [12] macro             ... optional name of a filtermacro_file
                             that will be execute on each imported input_layer
  [13] decoder           ... optional name of preferred video decoder that should
                             be used for the videofile read access.
@@ -232,7 +238,7 @@ VID_PLAY_ANIMIMAGE
 			    a value of 2.0 does skip every 2.nd input layer
 			    use a value of 1.0 to fetch all input layers step by step
                             DEFAULT: 1.0
-  [9] macro_filename    ... optional name of a filtermacro_file
+  [9] macro             ... optional name of a filtermacro_file
                             that will be execute on each imported input_layer
 
 VID_PLAY_FRAMES
@@ -260,7 +266,7 @@ VID_PLAY_FRAMES
 			    a value of 2.0 does skip every 2.nd input frame
 			    use a value of 1.0 to fetch all input frames step by step
                             DEFAULT: 1.0
- [10] macro_filename    ... optional name of a filtermacro_file
+ [10] macro             ... optional name of a filtermacro_file
                             that will be execute on each imported input frame
 
 VID_PLAY_IMAGE
@@ -273,7 +279,7 @@ VID_PLAY_IMAGE
   (3) file              ... filename of the image.
   [4] nloops            ... optional duration in number of frames (integer) or seconds (float)
                             DEFAULT: 1
-  [5] macro_filename    ... optional name of a filtermacro_file
+  [5] macro             ... optional name of a filtermacro_file
                             that will be execute on the imported input image
 
 
@@ -440,9 +446,7 @@ AUD_PLAY_SOUND
   (2) track             ... integer tracknumer
   (3) file              ... filename of soundfile (.WAV and other types).
   (4) start_sec         ... start playback range at offest in seconds (float)
-                            or in frames (int)
   (5) end_sec           ... end playback range at offest in seconds (float)
-                            or in frames (int)
   [6] volume            ... adjust the volume. (float)
                             A value of 1.0 keeps the original input volume for this track
                             value 0.5 results in half, value 2.0 in double volume.
@@ -477,9 +481,7 @@ AUD_PLAY_MOVIE
   (2) track             ... integer tracknumer
   (3) file              ... filename of a video (must contain the audiotrack).
   (4) start_sec         ... start playback range at offest in seconds (float)
-                            or in frames (int)
   (5) end_sec           ... end playback range at offest in seconds (float)
-                            or in frames (int)
   [6] volume            ... adjust the volume. (float)
                             A value of 1.0 keeps the original input volume for this track
                             value 0.5 results in half, value 2.0 in double volume.
@@ -519,12 +521,11 @@ AUD_SILENCE
   
   (1) Record Key        ... AUD_SILENCE
   (2) track             ... integer tracknumer
-  [3] duration_sec      ... duration of the silent pause in number of frames (integer) 
-                            or seconds (float)
+  [3] duration_sec      ... duration of the silent pause in seconds (float)
                             DEFAULT: 1
   [4] wait_until_sec    ... wait silently until this timestamp is reached,
                             (then do the unconditional pause for duration time)
-                            timestamp can be a framenumber (integer) or seconds (float)
+                            timestamp in measured in seconds (float)
                             DEFAULT: 0
 
   Examples:
@@ -566,10 +567,13 @@ Videotracks:
   (Please note that most of the Encoders
    do not support encoding of Videos with more output tracks,
    such as multiangle and or multilingual DVD stuff.
-   The storyboard Syntax can describe multiple output
-   tracks both for video and audio as groups of input tracks,
-   but the encoders will just use video channel 0
-   and audio channel 0 in most cases.
+
+// muliple output SYNTAX was planed, but NOT impleneted yet !
+
+//   The storyboard Syntax can describe multiple output
+//   tracks both for video and audio as groups of input tracks,
+//   but the encoders will just use video channel 0
+//   and audio channel 0 in most cases.
   )
 
   The composite Frame Image for the output Videotrack is built
@@ -599,12 +603,13 @@ Framerange:
   (example: from:3 to:6  results in playback 3,4,5,6)
   
   FROM and TO can be specified as integer numbers (10  ==> unit is frames or layers)
-  as float numbers (10.0 ==> unit is seconds)
-  or by symolic keywords:
-    "first"  for the lowest available frame number
-    "last"   for the highst available frame number
-    "top"    for the layer on top of the layerstack (if the Framerange refers to ANIMIMAGE)
-    "bottom" for the layer on bottom of the layerstack
+
+// not implemented    
+//  or by symolic keywords:
+//    "first"  for the lowest available frame number
+//    "last"   for the highst available frame number
+//    "top"    for the layer on top of the layerstack (if the Framerange refers to ANIMIMAGE)
+//    "bottom" for the layer on bottom of the layerstack
 
   If the FROM value is greater than the TO
   value, the Framerange is processed backwards.
@@ -623,12 +628,14 @@ Audiorange:
   of a movie) that is to play.
 
   It can be specified by
-    - symbolic keywords: "start" "end"
     - two float numbers (1.0 = 1 second)
-    - two times in the format MM:SS:sss
-      MM  .. minutes (00 upto 999999)
-      SS  .. seconds (00 upto 59)
-      sss .. 1/1000
+
+// not implemented    
+//    - symbolic keywords: "start" "end"  
+//    - two times in the format MM:SS:sss
+//      MM  .. minutes (00 upto 999999)
+//      SS  .. seconds (00 upto 59)
+//      sss .. 1/1000
 
   
 
@@ -646,9 +653,13 @@ Macrofiles:
   The macro is performed before
   the frame is added to the composite frame.
   
-  (if you want to perform a macro on all flattened composite
-  frames, you can do this directly in the common video encoder
-  dialog)
+  Another methode to perform a macro with global scope
+  an all frames can be done by specifying the macro directly
+  in the "Master Encoder" dialog.
+  In that case the macro is performed on the already
+  flattened composite frames immediate before they are
+  passed to the encoder engine.
+
   
   Macrofiles can be from type 
    - filtermacro_files
@@ -662,19 +673,34 @@ Macrofiles:
  
   NOTES:
    - gimp-gap filtermacro files are machine dependent,
+     and GIMP / FILTER Version dependent.
+     
      filtermacro support may be dropped in the future.
 
 
 Supported video input
 ---------------------
-  - MPEG1, MPEG2 (DVD) Video 
-       (see docs of libmpeg3 decoder for detailed list)
-  - MPEG1, MPEG2 (DVD), MPEG4 Video, AVI, WMV,
-       (see docs of ffmpeg decoder for detailed list of
-        supported fileformats and codecs)
-  - Quicktime Video
-       (quicktime4linux decoder
-        only the internal CODECS: JPEG, MJPA, PNG, DV )
+  - libmpeg3 based MPEG1, MPEG2 (DVD) Video 
+       libmpeg3 can read most videos from DVD.
+       there is support for typical .vob and .ifo files
+       and fast exact random access to the videoframes.
+       (libmeg3 native tocfiles are used for access.
+       GIMP-GAP API does create such tocfiles
+       on demand when videoindex creation is done)
+       
+       See docs of libmpeg3 decoder for detailed list.
+
+  - libavformat based MPEG1, MPEG2 (DVD), MPEG4 Video, AVI, WMV, Quicktime, ..
+       libavformat can read many videofileformats and codecs
+       but can not handle .ifo files.
+       Exact random access is slower than libmpeg3,
+       because it is handled in the GIMP-GAP API 
+       (GIMP-GAP videoindex creation is handled 
+        completely outside the library)
+       
+       See docs of ffmpeg decoder for detailed list of
+       supported fileformats and codecs.
+
 
 
 LIMITS:

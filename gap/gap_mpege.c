@@ -106,7 +106,7 @@ typedef struct t_mpg_par
 static
 int p_mpege_info(GapAnimInfo *ainfo_ptr, char *errlist, GapMpegEncoderType encoder)
 {
-  GapArrArg  argv[16];
+  GapArrArg  argv[17];
   GapArrButtonArg  b_argv[2];
   gchar      *txt;
 
@@ -115,6 +115,7 @@ int p_mpege_info(GapAnimInfo *ainfo_ptr, char *errlist, GapMpegEncoderType encod
 
 
   l_idx = 0;
+
   gap_arr_arg_init(&argv[l_idx], GAP_ARR_WGT_LABEL_LEFT);
   if(encoder == GAP_MPEGE_MPEG2ENCODE)
   {
@@ -205,11 +206,22 @@ int p_mpege_info(GapAnimInfo *ainfo_ptr, char *errlist, GapMpegEncoderType encod
      argv[l_idx].label_txt = _("All images must have the same size,");
   }
 
+
+#ifdef ENABLE_GVA_LIBAVFORMAT
+  l_idx++;
+
+  gap_arr_arg_init(&argv[l_idx], GAP_ARR_WGT_LABEL_LEFT);
+  argv[l_idx].label_txt = _("\nINFORMATINON:\n"
+                            "For more efficient MPEG encoding use the menu:\n"
+                            "Video->Encode->Master Videoencoder");
+#endif
+
   l_idx++;
   gap_arr_arg_init(&argv[l_idx], GAP_ARR_WGT_LABEL_LEFT);
   argv[l_idx].label_txt = errlist;
 
   l_idx++;
+
 
   /* the  Action Button */
     b_argv[0].but_txt  = GTK_STOCK_CANCEL;

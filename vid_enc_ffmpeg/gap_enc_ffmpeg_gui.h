@@ -35,7 +35,9 @@
 #include <config.h>
 #include "gap_enc_ffmpeg_main.h"
 
-#define GAP_ENC_FFGUI_ENC_MENU_ITEM_ENC_PTR  "gap_enc_ffgui_enc_menu_item_enc_ptr"
+#define GAP_ENC_FFGUI_GPP                    "gap_enc_ffgui_gpp"
+#define GAP_ENC_FFGUI_ADJ                    "gap_enc_ffgui_adj"
+#define GAP_ENC_FFGUI_COMBO_STRLIST          "gap_enc_ffgui_combo_strlist"
 
 void        gap_enc_ffgui_set_default_codecs(GapGveFFMpegGlobalParams *gpp, gboolean set_codec_menus);
 void        gap_enc_ffgui_init_main_dialog_widgets(GapGveFFMpegGlobalParams *gpp);
@@ -49,5 +51,7 @@ gdouble     gap_enc_ffgui_gettab_aspect(gint idx);
 
 GtkWidget*  gap_enc_ffgui_create_fsb__fileselection (GapGveFFMpegGlobalParams *gpp);
 gint        gap_enc_ffgui_ffmpeg_encode_dialog(GapGveFFMpegGlobalParams *gpp);
+
+const char * gap_get_combo_string_by_idx(gpointer string_combo_elem_list, gint idx);
 
 #endif

@@ -110,6 +110,8 @@ gap_plugins_SOURCES = \
 	gap_main.c		\
 	gap_mod_layer.c		\
 	gap_mod_layer.h		\
+	gap_mod_layer_dialog.c	\
+	gap_mod_layer_dialog.h	\
 	gap_mov_dialog.c	\
 	gap_mov_dialog.h	\
 	gap_mov_exec.c		\

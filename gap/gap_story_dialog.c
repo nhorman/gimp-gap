@@ -91,6 +91,11 @@ static void     p_story_call_player(GapStbMainGlobalParams *sgpp
 		   , gdouble delace
 		   , const char *preferred_decoder
 		   );
+static void     p_call_master_encoder(GapStbMainGlobalParams *sgpp
+                   , GapStoryBoard *stb
+		   );
+
+
 
 static gboolean p_cliplist_reload (GapStbMainGlobalParams *sgpp);
 static gboolean p_storyboard_reload (GapStbMainGlobalParams *sgpp);
@@ -156,6 +161,7 @@ static void     p_menu_cll_playback_cb (GtkWidget *widget, GapStbMainGlobalParam
 static void     p_menu_cll_properties_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp);
 static void     p_menu_cll_add_elem_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp);
 static void     p_menu_cll_toggle_edmode (GtkWidget *widget, GapStbMainGlobalParams *sgpp);
+static void     p_menu_cll_encode_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp);
 static void     p_menu_cll_close_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp);
 
 static void     p_menu_stb_new_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp);
@@ -166,6 +172,7 @@ static void     p_menu_stb_playback_cb (GtkWidget *widget, GapStbMainGlobalParam
 static void     p_menu_stb_properties_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp);
 static void     p_menu_stb_add_elem_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp);
 static void     p_menu_stb_toggle_edmode (GtkWidget *widget, GapStbMainGlobalParams *sgpp);
+static void     p_menu_stb_encode_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp);
 static void     p_menu_stb_close_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp);
 
 
@@ -989,6 +996,80 @@ printf("p_story_call_player: RE start\n");
 
 
 
+/* -----------------------------
+ * p_call_master_encoder
+ * -----------------------------
+ * INTERACTIVE call of the GAP master videoencoder dialog plug-in
+ */
+static void
+p_call_master_encoder(GapStbMainGlobalParams *sgpp
+                     , GapStoryBoard *stb
+		   )
+{
+#define GAP_PLUG_IN_MASTER_ENCODER  "plug_in_gap_vid_encode_master"
+  GimpParam* l_params;
+  gint       l_retvals;
+  gint       l_rc;
+
+  gint32 vid_width;
+  gint32 vid_height;
+
+  if(gap_debug) 
+  {
+    printf("p_call_master_encoder\n");
+  }
+
+  if((sgpp == NULL)
+  || (stb == NULL))
+  {
+    return;
+  }
+  
+  l_rc = -1;
+  gap_story_get_master_size(stb, &vid_width, &vid_height);
+
+
+  /* generic call of GAP master video encoder plugin */
+  l_params = gimp_run_procedure (GAP_PLUG_IN_MASTER_ENCODER,
+                     &l_retvals,
+                     GIMP_PDB_INT32,  GIMP_RUN_INTERACTIVE,
+                     GIMP_PDB_IMAGE,  sgpp->image_id,  /* pass the image where invoked from */
+                     GIMP_PDB_DRAWABLE, -1,
+                     GIMP_PDB_STRING, "video_output.avi",
+                     GIMP_PDB_INT32,  1,            /* range_from */
+                     GIMP_PDB_INT32,  2,            /* range_to */
+                     GIMP_PDB_INT32,  vid_width,
+                     GIMP_PDB_INT32,  vid_height,
+                     GIMP_PDB_INT32,  1,           /* 1 VID_FMT_PAL,  2 VID_FMT_NTSC */
+                     GIMP_PDB_FLOAT,  MAX(stb->master_framerate, 1.0), 
+                     GIMP_PDB_INT32,  44100,       /* samplerate */
+                     GIMP_PDB_STRING, NULL,        /* audfile l_16bit_wav_file */
+                     GIMP_PDB_STRING, NULL,        /* vid_enc_plugin */
+                     GIMP_PDB_STRING, NULL,        /* filtermacro_file */
+                     GIMP_PDB_STRING, stb->storyboardfile,        /* storyboard_file */
+                     GIMP_PDB_INT32,  2,           /* GAP_RNGTYPE_STORYBOARD input_mode */
+                     GIMP_PDB_END);
+  switch(l_params[0].data.d_status)
+  {
+    case GIMP_PDB_SUCCESS:
+      l_rc = 0;
+      break;
+    case GIMP_PDB_CANCEL:
+      break;
+    default:
+      printf("gap_story_dialog:p_call_master_encoder\n"
+             "PDB calling error %s\n"
+	     "status: %d\n"
+            , GAP_PLUG_IN_MASTER_ENCODER
+	    , (int)l_params[0].data.d_status
+	    );
+      break;
+  }
+  g_free(l_params);
+
+
+  
+}  /* end p_call_master_encoder */
 
 /* -----------------------------
  * p_storyboard_reload
@@ -2338,6 +2419,7 @@ p_widget_sensibility (GapStbMainGlobalParams *sgpp)
 {
   gboolean l_sensitive;
   gboolean l_sensitive_add;
+  gboolean l_sensitive_encode;
 
   if(gap_debug) printf("p_tabw_set_sensibility\n");
 
@@ -2346,19 +2428,26 @@ p_widget_sensibility (GapStbMainGlobalParams *sgpp)
 
   l_sensitive  = FALSE;
   l_sensitive_add = FALSE;
+  l_sensitive_encode = FALSE;
   if(sgpp->cll)
   {
     l_sensitive_add = TRUE;
     if(sgpp->cll->stb_elem)
     {
       l_sensitive  = TRUE;
+      if(!sgpp->cll->unsaved_changes)
+      {
+        /* encoder call only available when saved */
+        l_sensitive_encode = TRUE;
+      }
     }
   }
   if(sgpp->menu_item_cll_save)       gtk_widget_set_sensitive(sgpp->menu_item_cll_save, l_sensitive);
   if(sgpp->menu_item_cll_save_as)    gtk_widget_set_sensitive(sgpp->menu_item_cll_save_as, l_sensitive);
   if(sgpp->menu_item_cll_playback)   gtk_widget_set_sensitive(sgpp->menu_item_cll_playback, l_sensitive);
   if(sgpp->menu_item_cll_properties) gtk_widget_set_sensitive(sgpp->menu_item_cll_properties, l_sensitive);
-  if(sgpp->menu_item_cll_close)      gtk_widget_set_sensitive(sgpp->menu_item_cll_close, l_sensitive);
+  if(sgpp->menu_item_cll_encode)     gtk_widget_set_sensitive(sgpp->menu_item_cll_close, l_sensitive);
+  if(sgpp->menu_item_cll_close)      gtk_widget_set_sensitive(sgpp->menu_item_cll_encode, l_sensitive_encode);
 
   if(sgpp->menu_item_cll_add_clip)   gtk_widget_set_sensitive(sgpp->menu_item_cll_add_clip, l_sensitive_add);
   
@@ -2370,18 +2459,25 @@ p_widget_sensibility (GapStbMainGlobalParams *sgpp)
   
   l_sensitive  = FALSE;
   l_sensitive_add = FALSE;
+  l_sensitive_encode = FALSE;
   if(sgpp->stb)
   {
     l_sensitive_add = TRUE;
     if(sgpp->stb->stb_elem)
     {
       l_sensitive  = TRUE;
+      if(!sgpp->stb->unsaved_changes)
+      {
+        /* encoder call only available when saved */
+        l_sensitive_encode = TRUE;
+      }
     }
   }
   if(sgpp->menu_item_stb_save)       gtk_widget_set_sensitive(sgpp->menu_item_stb_save, l_sensitive);
   if(sgpp->menu_item_stb_save_as)    gtk_widget_set_sensitive(sgpp->menu_item_stb_save_as, l_sensitive);
   if(sgpp->menu_item_stb_playback)   gtk_widget_set_sensitive(sgpp->menu_item_stb_playback, l_sensitive);
   if(sgpp->menu_item_stb_properties) gtk_widget_set_sensitive(sgpp->menu_item_stb_properties, l_sensitive);
+  if(sgpp->menu_item_stb_encode)     gtk_widget_set_sensitive(sgpp->menu_item_stb_encode, l_sensitive);
   if(sgpp->menu_item_stb_close)      gtk_widget_set_sensitive(sgpp->menu_item_stb_close, l_sensitive);
 
   if(sgpp->menu_item_stb_add_clip)   gtk_widget_set_sensitive(sgpp->menu_item_stb_add_clip, l_sensitive_add);
@@ -2664,6 +2760,20 @@ p_menu_cll_toggle_edmode (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
   }
 }  /* end p_menu_cll_toggle_edmode */ 
 
+
+/* -----------------------------
+ * p_menu_cll_encode_cb
+ * -----------------------------
+ */
+static void
+p_menu_cll_encode_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
+{
+  if(gap_debug) printf("p_menu_cll_encode_cb\n");
+
+  p_call_master_encoder(sgpp, sgpp->cll);
+}  /* end p_menu_cll_encode_cb */ 
+
+
 /* -----------------------------
  * p_menu_cll_close_cb
  * -----------------------------
@@ -2678,7 +2788,6 @@ p_menu_cll_close_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
 			   , FALSE  /* check_storyboard */
 			   );
 }  /* end p_menu_cll_close_cb */ 
-
 
 
 
@@ -2833,6 +2942,19 @@ p_menu_stb_toggle_edmode (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
     p_render_all_frame_widgets(sgpp->stb_widgets);
   }
 }  /* end p_menu_stb_toggle_edmode */ 
+
+
+/* -----------------------------
+ * p_menu_stb_encode_cb
+ * -----------------------------
+ */
+static void
+p_menu_stb_encode_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
+{
+  if(gap_debug) printf("p_menu_stb_encode_cb\n");
+
+  p_call_master_encoder(sgpp, sgpp->stb);
+}  /* end p_menu_stb_encode_cb */ 
 
 
 /* -----------------------------
@@ -3020,6 +3142,12 @@ p_make_menu_cliplist(GapStbMainGlobalParams *sgpp, GtkWidget *menu_bar)
                           , p_menu_cll_toggle_edmode
 			  , sgpp
 			  );
+
+   sgpp->menu_item_cll_encode =			  
+   p_make_item_with_label(file_menu, _("Encode")
+                          , p_menu_cll_encode_cb
+			  , sgpp
+			  );
 			  
    sgpp->menu_item_cll_close =			  
    p_make_item_with_image(file_menu, GTK_STOCK_CLOSE
@@ -3081,6 +3209,12 @@ p_make_menu_storyboard(GapStbMainGlobalParams *sgpp, GtkWidget *menu_bar)
  
    p_make_item_with_label(file_menu, _("Toggle Unit")
                           , p_menu_stb_toggle_edmode
+			  , sgpp
+			  );
+
+   sgpp->menu_item_stb_encode =			  
+   p_make_item_with_label(file_menu, _("Encode")
+                          , p_menu_stb_encode_cb
 			  , sgpp
 			  );
 

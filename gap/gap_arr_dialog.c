@@ -38,6 +38,7 @@
  */
 
 /* revision history:
+ * gimp    2.1.0a;  2004/11/05  hof: replaced deprecated option_menu by gimp_int_combo_box
  * gimp    2.1.0a;  2004/10/09  hof: bugfix GAP_ARR_WGT_OPT_ENTRY (entry height was set to 0)
  * gimp    2.1.0a;  2004/09/25  hof: gap_arr_create_vindex_permission
  * gimp    1.3.20d; 2003/10/04  hof: bugfix: added missing implementation for GAP_ARR_WGT_RADIO defaults
@@ -159,9 +160,11 @@ static void   flt_create_value           (char *title, GtkTable *table, int row,
 static void   toggle_update_cb           (GtkWidget *widget, GapArrArg *arr_ptr);
 static void   toggle_create_value        (char *title, GtkTable *table, int row, GapArrArg *arr_ptr);
 
+static void   combo_update_cb            (GtkWidget *widget, GapArrArg *arr_ptr);
+
 static void   radio_update_cb            (GtkWidget *widget, t_radio_arg *radio_ptr);
 static void   radio_create_value         (char *title, GtkTable *table, int row, GapArrArg *arr_ptr);
-static void   optionmenu_create_value    (char *title, GtkTable *table, int row, GapArrArg *arr_ptr);
+static void   combo_create_value         (char *title, GtkTable *table, int row, GapArrArg *arr_ptr);
 
 static void   pair_int_create_value     (gchar *title, GtkTable *table, gint row, GapArrArg *arr_ptr);
 static void   pair_flt_create_value     (gchar *title, GtkTable *table, gint row, GapArrArg *arr_ptr);
@@ -339,7 +342,7 @@ default_button_cb(GtkWidget *widget,  t_all_arr_args *arr_all)
 	  if(arr_ptr->widget_type == GAP_ARR_WGT_OPT_ENTRY)
 	  {
             arr_ptr->radio_ret = arr_ptr->radio_default;
-            gtk_option_menu_set_history (GTK_OPTION_MENU (arr_ptr->option_menu), arr_ptr->radio_ret);
+            gimp_int_combo_box_set_active (GIMP_INT_COMBO_BOX (arr_ptr->combo), arr_ptr->radio_ret);
 	  }
 	  break;
         case GAP_ARR_WGT_FLT_PAIR:
@@ -388,7 +391,7 @@ default_button_cb(GtkWidget *widget,  t_all_arr_args *arr_all)
  	  break;
         case GAP_ARR_WGT_OPTIONMENU:
          arr_ptr->radio_ret = arr_ptr->radio_default;
-         gtk_option_menu_set_history (GTK_OPTION_MENU (arr_ptr->option_menu), arr_ptr->radio_ret);
+         gimp_int_combo_box_set_active (GIMP_INT_COMBO_BOX (arr_ptr->combo), arr_ptr->radio_ret);
          break;
         default :
          break;
@@ -773,6 +776,55 @@ toggle_create_value(char *title, GtkTable *table, int row, GapArrArg *arr_ptr)
 
 
 /* --------------------------
+ * COMBO
+ * --------------------------
+ */
+static void
+combo_update_cb (GtkWidget *widget, GapArrArg *arr_ptr)
+{
+  gint   value;
+  gint   radio_index;
+  gint   l_idy;
+
+  if(arr_ptr == NULL) return;
+  if(arr_ptr->widget_locked) return;
+  if((arr_ptr->widget_type != GAP_ARR_WGT_OPTIONMENU)
+  && (arr_ptr->widget_type != GAP_ARR_WGT_OPT_ENTRY))
+  {
+    return;
+  }
+
+  
+  gimp_int_combo_box_get_active (GIMP_INT_COMBO_BOX (widget), &value);
+  
+  arr_ptr->int_ret = value;
+  arr_ptr->radio_ret = value;
+  if(gap_debug) printf("radio_update_cb: radio_ret %d\n", (int)value);
+
+  if((arr_ptr->widget_type == GAP_ARR_WGT_OPT_ENTRY)
+  && (arr_ptr->radio_argv != NULL))
+  {
+    /* get the radio_index for the selected in value */
+    for(l_idy=0; l_idy < arr_ptr->radio_argc; l_idy++)
+    {
+       if(value == l_idy) 
+       {
+         radio_index = l_idy;
+         break;
+       }
+    }
+
+    gtk_entry_set_text(GTK_ENTRY(arr_ptr->text_entry), arr_ptr->radio_argv[radio_index]);
+
+    strncpy(arr_ptr->text_buf_ret,
+          arr_ptr->radio_argv[radio_index],
+          arr_ptr->text_buf_len -1);
+    arr_ptr->text_buf_ret[arr_ptr->text_buf_len -1] = '\0';
+
+  }
+}
+
+/* --------------------------
  * RADIO
  * --------------------------
  */
@@ -782,9 +834,7 @@ radio_update_cb (GtkWidget *widget, t_radio_arg *radio_ptr)
 {
   if(radio_ptr->arr_ptr == NULL) return;
   if(radio_ptr->arr_ptr->widget_locked) return;
-  if((radio_ptr->arr_ptr->widget_type != GAP_ARR_WGT_RADIO)
-  && (radio_ptr->arr_ptr->widget_type != GAP_ARR_WGT_OPTIONMENU)
-  && (radio_ptr->arr_ptr->widget_type != GAP_ARR_WGT_OPT_ENTRY))
+  if(radio_ptr->arr_ptr->widget_type != GAP_ARR_WGT_RADIO)
   {
     return;
   }
@@ -793,17 +843,6 @@ radio_update_cb (GtkWidget *widget, t_radio_arg *radio_ptr)
   radio_ptr->arr_ptr->radio_ret = radio_ptr->radio_index;
   if(gap_debug) printf("radio_update_cb: radio_ret %d\n", (int)radio_ptr->arr_ptr->radio_ret );
 
-  if((radio_ptr->arr_ptr->widget_type == GAP_ARR_WGT_OPT_ENTRY)
-  && (radio_ptr->arr_ptr->radio_argv != NULL))
-  {
-    gtk_entry_set_text(GTK_ENTRY(radio_ptr->arr_ptr->text_entry), radio_ptr->arr_ptr->radio_argv[radio_ptr->radio_index]);
-
-    strncpy(radio_ptr->arr_ptr->text_buf_ret,
-          radio_ptr->arr_ptr->radio_argv[radio_ptr->radio_index],
-          radio_ptr->arr_ptr->text_buf_len -1);
-    radio_ptr->arr_ptr->text_buf_ret[radio_ptr->arr_ptr->text_buf_len -1] = '\0';
-
-  }
 }
 
 static void
@@ -908,27 +947,24 @@ radio_create_value(char *title, GtkTable *table, int row, GapArrArg *arr_ptr)
 }
 
 
-/* --------------------------
- * OPTIONMENU
- * --------------------------
+/* ----------------------------------------------
+ * COMBO BOX (replaces the deprecated OPTIONMENU)
+ * ----------------------------------------------
  */
 
-/* optionmenus share callback and data structure with GAP_ARR_WGT_RADIO */
+/* combo boxes share data structure with GAP_ARR_WGT_RADIO */
 static void
-optionmenu_create_value(char *title, GtkTable *table, int row, GapArrArg *arr_ptr)
+combo_create_value(char *title, GtkTable *table, int row, GapArrArg *arr_ptr)
 {
   GtkWidget *label;
   GtkWidget *entry;
-  GtkWidget  *option_menu;
-  GtkWidget  *menu;
-  GtkWidget  *menu_item;
+  GtkWidget  *combo;
   gint       l_idx;
   gint       l_idy;
   char      *l_radio_txt;
   gint       l_col;
 
-  t_radio_arg *l_menu_ptr;
-  
+
   /* label */
   l_col = 0;
   label = gtk_label_new(title);
@@ -956,21 +992,23 @@ optionmenu_create_value(char *title, GtkTable *table, int row, GapArrArg *arr_pt
     arr_ptr->text_entry = entry;
   }
 
-  /* optionmenu */
+  /* create an empty combo box */
   l_col++;
-  option_menu = gtk_option_menu_new();
-  gtk_table_attach(GTK_TABLE(table), option_menu, l_col, l_col+1, row, row +1,
+  combo = gimp_int_combo_box_new (NULL, 0);
+
+  g_signal_connect (combo, "changed",
+                    G_CALLBACK (combo_update_cb),
+                    arr_ptr);
+  
+  gtk_table_attach(GTK_TABLE(table), combo, l_col, l_col+1, row, row +1,
 		   GTK_FILL, GTK_FILL, 0, 0);
-  gtk_widget_show(option_menu);
 
   if(arr_ptr->help_txt != NULL)
   { 
-       gimp_help_set_help_data(option_menu, arr_ptr->help_txt, NULL);
+       gimp_help_set_help_data(combo, arr_ptr->help_txt, NULL);
   }
 
-  /* menu (filled with items in loop) */
-  menu = gtk_menu_new ();
-
+  /* fill the combo box liststore with value/label */
   l_idx=0;
   for(l_idy=0; l_idy < arr_ptr->radio_argc; l_idy++)
   {
@@ -985,26 +1023,17 @@ optionmenu_create_value(char *title, GtkTable *table, int row, GapArrArg *arr_pt
         if (arr_ptr->radio_argv[l_idy] != NULL)
             l_radio_txt = arr_ptr->radio_argv[l_idy];
      }
-     l_menu_ptr   = g_malloc0(sizeof(t_radio_arg));
-     l_menu_ptr->radio_index  = l_idy;
-     l_menu_ptr->arr_ptr  = arr_ptr;
 
-
-     menu_item = gtk_menu_item_new_with_label (l_radio_txt);
-     gtk_container_add (GTK_CONTAINER (menu), menu_item);
-
-     gtk_widget_show (menu_item);
-
-     g_signal_connect (G_OBJECT (menu_item), "activate",
-                       G_CALLBACK (radio_update_cb),
-                       l_menu_ptr);
+     gimp_int_combo_box_append (GIMP_INT_COMBO_BOX (combo),
+                                 GIMP_INT_STORE_VALUE, l_idy,
+                                 GIMP_INT_STORE_LABEL, l_radio_txt,
+                                 -1);
   }
 
-  gtk_option_menu_set_menu(GTK_OPTION_MENU(option_menu), menu);
-  gtk_widget_show(option_menu);
-  gtk_option_menu_set_history (GTK_OPTION_MENU (option_menu), l_idx);
+  gtk_widget_show(combo);
+  gimp_int_combo_box_set_active (GIMP_INT_COMBO_BOX (combo), l_idx);
   
-  arr_ptr->option_menu = option_menu;
+  arr_ptr->combo = combo;
 
 }
 
@@ -1200,7 +1229,7 @@ gint gap_arr_std_dialog(const char *title_txt,
             break;
          case GAP_ARR_WGT_OPTIONMENU:
          case GAP_ARR_WGT_OPT_ENTRY:
-            optionmenu_create_value(l_label_txt, GTK_TABLE(table), (l_idx + 1),  arr_ptr);
+            combo_create_value(l_label_txt, GTK_TABLE(table), (l_idx + 1),  arr_ptr);
             break;
          case GAP_ARR_WGT_FILESEL:
             filesel_create_value(l_label_txt, GTK_TABLE(table), (l_idx + 1),  arr_ptr);
@@ -1360,7 +1389,7 @@ void     gap_arr_arg_init  (GapArrArg *arr_ptr,
    arr_ptr->text_filesel = NULL;
    arr_ptr->text_entry = NULL;
    arr_ptr->check_button = NULL;
-   arr_ptr->option_menu = NULL;
+   arr_ptr->combo = NULL;
    arr_ptr->adjustment = NULL;
    arr_ptr->radiogroup = NULL;
 

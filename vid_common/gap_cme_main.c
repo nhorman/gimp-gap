@@ -119,7 +119,7 @@ query ()
     {GIMP_PDB_INT32,    "run_mode", "Interactive, non-interactive"},
     {GIMP_PDB_IMAGE,    "image", "Input image"},
     {GIMP_PDB_DRAWABLE, "drawable", "Input drawable (unused)"},
-    {GIMP_PDB_STRING,   "vidfile", "filename of quicktime video (to write)"},
+    {GIMP_PDB_STRING,   "vidfile", "filename of the output video (to write)"},
     {GIMP_PDB_INT32,    "range_from", "number of first frame"},
     {GIMP_PDB_INT32,    "range_to", "number of last frame"},
     {GIMP_PDB_INT32,    "vid_width", "Width of resulting Video Frames (all Frames are scaled to this width)"},
@@ -128,15 +128,19 @@ query ()
     {GIMP_PDB_FLOAT,    "framerate", "framerate in frames per seconds"},
     {GIMP_PDB_INT32,    "samplerate", "audio samplerate in samples per seconds (.wav files are resampled using sox, if needed)"},
     {GIMP_PDB_STRING,   "audfile", "optional audiodata file .wav or any audiodata compatible to sox (see manpage of sox for more info)"},
-    {GIMP_PDB_STRING,   "vid_enc_plugin", "name of a gap_video_encoder plugin choose one of these strings: "
-                                "\"" GAP_PLUGIN_NAME_QT1_ENCODE    "\""
-                                "\"" GAP_PLUGIN_NAME_QT2_ENCODE    "\""
-                                "\"" GAP_PLUGIN_NAME_SINGLEFRAMES_ENCODE "\""
-                                "\"" GAP_PLUGIN_NAME_FFMPEG_ENCODE "\""
-                                "\"" GAP_PLUGIN_NAME_MPG1_ENCODE   "\""
-                                "\"" GAP_PLUGIN_NAME_MPG2_ENCODE   "\""
+    {GIMP_PDB_STRING,   "vid_enc_plugin", "name of a gap_video_encoder plugin choose one of these strings: \n"
+                                "\"" GAP_PLUGIN_NAME_SINGLEFRAMES_ENCODE "\"\n"
+                                "\"" GAP_PLUGIN_NAME_FFMPEG_ENCODE "\"\n"
+                                "\"" GAP_PLUGIN_NAME_AVI_ENCODE    "\"\n"
+                           /*   "\"" GAP_PLUGIN_NAME_QT1_ENCODE    "\"\n" */
+                           /*   "\"" GAP_PLUGIN_NAME_QT2_ENCODE    "\"\n" */
+                           /*   "\"" GAP_PLUGIN_NAME_MPG1_ENCODE   "\"\n" */
+                           /*   "\"" GAP_PLUGIN_NAME_MPG2_ENCODE   "\"\n" */
                                },
-    {GIMP_PDB_STRING,   "filtermacro_file", "macro to apply on each handled frame. (textfile with filter plugin names and LASTVALUE bufferdump"},
+    {GIMP_PDB_STRING,   "filtermacro_file", "macro to apply on each handled frame."
+                                            " filtermacro_files are textfiles with filter plugin names and LASTVALUE bufferdump,"
+					    " usually created by gimp-gap filermacro dialog "
+					    " (menu: Filters->Filtermacro)"},
     {GIMP_PDB_STRING,   "storyboard_file", "textfile with list of one or more images, framesequences, videoclips or audioclips (see storyboard docs for more information)"},
     {GIMP_PDB_INT32,    "input_mode", "0 ... image is one of the frames to encode, range_from/to params refere to numberpart of the other frameimages on disc. \n"
                                       "1 ... image is multilayer, range_from/to params refere to layer index. \n"
@@ -357,6 +361,7 @@ run (const gchar *name,          /* name of plugin */
   {
       char *l_base;
       int   l_l;
+      gboolean l_copy_parameters;
 
       /* get image_ID and animinfo */
       gpp->val.image_ID    = param[1].data.d_image;
@@ -388,35 +393,69 @@ run (const gchar *name,          /* name of plugin */
       gpp->val.vid_format = VID_FMT_NTSC;
       gpp->val.input_mode = GAP_RNGTYPE_FRAMES;
 
+      l_copy_parameters = FALSE;
+
       /* g_snprintf(gpp->val.ecp_sel.vid_enc_plugin, sizeof(gpp->val.ecp_sel.vid_enc_plugin), "%s", GAP_PLUGIN_NAME_MPG1_ENCODE); */
       gpp->val.ecp_sel.vid_enc_plugin[0] = '\0';
 
       if (gpp->val.run_mode == GIMP_RUN_NONINTERACTIVE)
       {
-        if (n_params != GAP_VENC_NUM_STANDARD_PARAM)
+        if (n_params == GAP_VENC_NUM_STANDARD_PARAM)
         {
-          values[0].data.d_status = GIMP_PDB_CALLING_ERROR;
+	  l_copy_parameters = TRUE;
         }
         else
         {
-           g_snprintf(gpp->val.videoname, sizeof(gpp->val.videoname), "%s", param[3].data.d_string);
+          values[0].data.d_status = GIMP_PDB_CALLING_ERROR;
+        }
+      }
+      else 
+      {
+	if(gpp->val.run_mode == GIMP_RUN_INTERACTIVE)
+	{
+          if (n_params == GAP_VENC_NUM_STANDARD_PARAM)
+          {
+	    l_copy_parameters = TRUE;
+	  }
+	  /* dont complain on less parameters at INTERCATIVE calls */ 
+	}
+	else
+	{
+           values[0].data.d_status = GIMP_PDB_CALLING_ERROR;
+	}
+      }
+      
+      if(l_copy_parameters)
+      {
+           if(param[3].data.d_string)
+	   {
+	     g_snprintf(gpp->val.videoname, sizeof(gpp->val.videoname), "%s", param[3].data.d_string);
+	   }
            if (param[4].data.d_int32 >= 0) { gpp->val.range_from =    param[4].data.d_int32; }
            if (param[5].data.d_int32 >= 0) { gpp->val.range_to   =    param[5].data.d_int32; }
            if (param[6].data.d_int32 > 0)  { gpp->val.vid_width  =    param[6].data.d_int32; }
            if (param[7].data.d_int32 > 0)  { gpp->val.vid_height  =   param[7].data.d_int32; }
            if (param[8].data.d_int32 >= 0) { gpp->val.vid_format  =   param[8].data.d_int32; }
-           gpp->val.framerate   = param[9].data.d_float;
+           gpp->val.framerate   = MAX(param[9].data.d_float, 1.0);
            gpp->val.samplerate  = param[10].data.d_int32;
-           g_snprintf(gpp->val.audioname1, sizeof(gpp->val.audioname1), "%s", param[11].data.d_string);
-           g_snprintf(gpp->val.ecp_sel.vid_enc_plugin, sizeof(gpp->val.ecp_sel.vid_enc_plugin), "%s", param[12].data.d_string);
-           g_snprintf(gpp->val.filtermacro_file, sizeof(gpp->val.filtermacro_file), "%s", param[13].data.d_string);
-           g_snprintf(gpp->val.storyboard_file, sizeof(gpp->val.storyboard_file), "%s", param[14].data.d_string);
+           if(param[11].data.d_string) 
+	   { 
+	     g_snprintf(gpp->val.audioname1, sizeof(gpp->val.audioname1), "%s", param[11].data.d_string);
+	   }
+	   if(param[12].data.d_string)
+	   {
+             g_snprintf(gpp->val.ecp_sel.vid_enc_plugin, sizeof(gpp->val.ecp_sel.vid_enc_plugin), "%s", param[12].data.d_string);
+	   }
+	   if(param[13].data.d_string)
+	   {
+             g_snprintf(gpp->val.filtermacro_file, sizeof(gpp->val.filtermacro_file), "%s", param[13].data.d_string);
+	   }
+	   if(param[14].data.d_string)
+	   {
+             g_snprintf(gpp->val.storyboard_file, sizeof(gpp->val.storyboard_file), "%s", param[14].data.d_string);
+	   }
+	   
            if (param[15].data.d_int32 >= 0) { gpp->val.input_mode  =   param[15].data.d_int32; }
-       }
-      }
-      else if(gpp->val.run_mode != GIMP_RUN_INTERACTIVE)
-      {
-         values[0].data.d_status = GIMP_PDB_CALLING_ERROR;
       }
 
       if (values[0].data.d_status == GIMP_PDB_SUCCESS)
@@ -426,6 +465,10 @@ run (const gchar *name,          /* name of plugin */
             if(gap_debug) printf("MAIN before gap_cme_gui_master_encoder_dialog ------------------\n");
             l_rc = gap_cme_gui_master_encoder_dialog (gpp);
             if(gap_debug) printf("MAIN after gap_cme_gui_master_encoder_dialog ------------------\n");
+	    if(l_rc < 0)
+	    {
+              values[0].data.d_status = GIMP_PDB_CANCEL;
+	    }
 
             /* delete images in the cache
              * (the cache may have been filled while parsing
@@ -523,7 +566,7 @@ run (const gchar *name,          /* name of plugin */
       values[0].data.d_status = GIMP_PDB_CALLING_ERROR;
   }
 
- if(l_rc < 0)
+ if((l_rc < 0) && (values[0].data.d_status == GIMP_PDB_SUCCESS))
  {
     values[0].data.d_status = GIMP_PDB_EXECUTION_ERROR;
  }

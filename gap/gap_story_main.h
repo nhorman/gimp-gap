@@ -222,6 +222,7 @@ typedef struct GapStbMainGlobalParams  /* nickname: sgpp */
   GtkWidget *menu_item_stb_add_clip;
   GtkWidget *menu_item_stb_playback;
   GtkWidget *menu_item_stb_properties;
+  GtkWidget *menu_item_stb_encode;
   GtkWidget *menu_item_stb_close;
 
   GtkWidget *menu_item_cll_save;
@@ -229,6 +230,7 @@ typedef struct GapStbMainGlobalParams  /* nickname: sgpp */
   GtkWidget *menu_item_cll_add_clip;
   GtkWidget *menu_item_cll_playback;
   GtkWidget *menu_item_cll_properties;
+  GtkWidget *menu_item_cll_encode;
   GtkWidget *menu_item_cll_close;
   
 

@@ -131,6 +131,9 @@ typedef struct GapCmeGlobalParams {                    /* nick: gpp */
   GtkWidget *cme__spinbutton_width;
   GtkWidget *cme__label_aud_tmp_time;
   GtkWidget *cme__label_tmp_audfile;
+  GtkWidget *cme__radio_button_frame;
+  GtkWidget *cme__radio_button_layer;
+  GtkWidget *cme__radio_button_storyboard;
 
   GtkObject *cme__spinbutton_width_adj;
   GtkObject *cme__spinbutton_height_adj;

@@ -1,3 +1,155 @@
+2004-11-06  Wolfgang Hofer <hof@gimp.org>
+	- replaced deprecated GtkOptionMenu widgets by gimp_int_combo_box
+	  (not finished yet
+	   todo: the master videoencoder dialog)
+	   
+	- reorganized ffmpeg encoder dialog code,
+	  (the old glade generated code was much harder to read by humans)
+	- ffmpeg encoder dialog: B-frames changed from checkbutton
+	  to spinbutton (allows values 0 upto 8)
+	  to specify number of B-frames per GOP.
+	  (ffmpeg supported this since 0.4.8 but GAP gui-dialog
+	   did forget to follow up this feature)
+
+	* vid_enc_ffmpeg/gap_enc_ffmpeg_callbacks.c [.h]
+	* vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c [.h]
+	* vid_enc_ffmpeg/gap_enc_ffmpeg_main.c [.h]
+
+	* vid_enc_avi/gap_enc_avi_main.h
+	* vid_enc_avi/gap_enc_avi_gui.c
+	
+	* gap/gap_vex_dialog.c
+	* gap/gap_vex_main.h
+	* gap/gap_onion_main.h
+	* gap/gap_onion_dialog.c
+	
+2004-11-04  Wolfgang Hofer <hof@gimp.org>
+	replaced deprecated gimp procedure calls and adapted 
+	corresponding callbacks
+	
+	DEPRECATED proc:                   REPLACEMENT:
+	- gimp_layer_menu_new              gimp_layer_combo_box_new
+	- gimp_image_menu_new              gimp_image_combo_box_new
+	- gimp_palette_set_background      gimp_context_set_background
+	- gimp_palette_set_foreground      gimp_context_set_foreground
+	
+	* gap/gap_morph_dialog.c [.h]
+	* gap/gap_mov_dialog.c
+	* gap/gap_layer_copy.c
+	* gap/iter_ALT/mod/plug_in_exchange_iter_ALT.inc
+	* libgapvidutil/gap_gve_story.c
+	* gap/gap_navigator_dialog.c
+	
+	
+2004-11-02  Wolfgang Hofer <hof@gimp.org>
+	applied patches from pippin that enable compile with the ffmpeg-4.0.9pre1
+	prerelease.
+	(made some changes to enable compile with both 
+	stable FFMPEG_VERSION 0.4.8 and
+	newest FFMPEG_VERSION 4.0.9pre1    
+	(experimental code, failed at 1.st video extract test, need more tests and bugfixes)
+	
+	added #ifdef HAVE_OLD_FFMPEG_0408
+	
+	well, it compiles now but:
+	.. there are much changes between ffmeg 0.4.8 and 4.0.9pre1.
+	this requires deeper analyse and lots of tests and changes in the GAP code
+	to get a working support for the new ffmpeg 4.0.9pre1.
+	also requires support for the new encoder parameters of the 4.0.9pre1 release.
+	
+	now using hardcoded #define HAVE_OLD_FFMPEG_0408
+	to avoid successful (but useless) compiling with
+	ffmpeg 4.0.9pre1.
+	
+	Maybe we should ship gimp-gap-2.2 with included
+	ffmeg 0.4.8 and libmpeg3 sources, and link those libs
+	statically ?
+	
+	
+	http://pippin.gimp.org/tmp/pippins__gap_seems_strange_this_makes_it_compile_but_i_dont_think_i_want_to_touch_it.patch
+
+	* configure.in
+	* gap/gap_vex_main.c
+	* libgapvidapi/gap_vid_api.c
+	* libgapvidapi/gap_vid_api_ffmpeg.c     #
+	* libgapvidapi/gap_vid_api_gimp.c
+	* libgapvidapi/gap_vid_api_mpeg3.c
+	* vid_enc_ffmpeg/gap_enc_ffmpeg_main.c  #
+	
+2004-11-01  Wolfgang Hofer <hof@gimp.org>
+	redesign of the ModifyFrames plug-in dialog using GTK+ rather than
+	gap_array_dialog.
+	gives more flexibility to set widget sensibility
+	and allows grouping of the functions in submenus.
+	
+	* gap/gap_mod_layer_dialog.c [.h]   ## New files
+	* gap/gap_mod_layer.c [.h]
+	* gap/Makefile.am
+	* po/POTFILES.in
+2004-10-31  Wolfgang Hofer <hof@gimp.org>
+	For the old MPEG encoder frontends:
+	Added Information label to tell the user that the
+	Master Videoencoder is the more efficient methode
+	for videoencoding.
+	* gap/gap_mpege.c
+	* gap/gap_decode_xanim.c
+
+2004-10-27  Wolfgang Hofer <hof@gimp.org>
+	updated README file(s)
+	got mail from: Marcel Telka <marcel@telka.sk>
+	   I have tested module gimp-gap (CVS branch HEAD) which lives
+	   in GNOME CVS for missing translatable files with `intltool-update -M`
+	   command.
+
+	   Here is a content of the 'missing' file:
+
+	   libgapvidapi/gap_vid_api_mpeg3.c
+	   libgapvidapi/gap_vid_api_vidindex.c
+	   
+	* README
+	* gap/README
+	* docs/STORYBOARD_FILE_DOC.txt
+	* po/POTFILES.in
+	
+2004-10-26  Wolfgang Hofer <hof@gimp.org>
+	Master Videoencoder dialog:
+	Added radio buttons to select the input mode explicite.
+	This makes clear that the encoder can handle all 3 types of input,
+	If invoked from an animation frame "Frames" is selected at startup.
+	for other (multilayer) images "Layers" is selcted automatically
+	(this was already done before, but now the user has a chance
+	to see whats going on, and can encode the layers of 
+	one animation frame too if he wants to do so.)
+	
+	Storyboard dialog: added "Encode" menu item(s) to call the 
+	Master video encoder dialog from the storyboard.
+	
+	* vid_common/gap_cme_main.c [h]
+	* vid_common/gap_cme_gui.c
+	* libgapvidutil/gap_gvetypes.h
+	* vid_enc_avi/gap_enc_avi_main.h
+	
+	* gap/gap_story_main.c [h]
+	* gap/gap_story_dialog.c
+
+2004-10-24  Wolfgang Hofer <hof@gimp.org>
+	bugfix: player now uses only valid videoindex files
+	and forces re-creation on invalid ones.
+	
+	workaround: ffmpeg videoapi backend now makes an initial frame read
+	and then reopens the video.
+	this is done to detect the CODEC's native pixel format (YUV420 or YUV422).
+	Before reading the 1.st frame libavcodec seems to deliver always YUV420
+	that does match most, but not all codecs and,
+	delivered wrong results for the 1.st read frame on the non matching codecs.
+	
+	bugfix: use gimp_context_get_background, gimp_context_set_background
+	rather than the deprecated procedures: gimp_palette_get_background, gimp_palette_set_background
+	
+	* gap/gap_player_dialog.c
+	* libgapvidapi/gap_vid_api_ffmpeg.c
+	* gap/sel-to-anim-img.scm
+	
 2004-10-27  Sven Neumann  <sven@gimp.org>
 
 	* libgapvidapi/gap_vid_api-intl.h: forgot to add this file to CVS.

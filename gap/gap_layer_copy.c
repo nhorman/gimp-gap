@@ -518,7 +518,7 @@ gap_layer_clear_to_color(gint32 layer_id
     color.b = blue;
     color.a = alpha;
     gimp_selection_all(image_id);
-    gimp_palette_set_background(&color);
+    gimp_context_set_background(&color);
     gimp_drawable_fill(layer_id, GIMP_BACKGROUND_FILL);
     gimp_selection_none(image_id);
   }

@@ -1,17 +1,19 @@
-Project gap "GIMP Animation Package"   17. Jan. 2004  (pre)release 1.3.24a
+Project gap "GIMP Animation Package"   22. Oct. 2004  (pre)release 2.1.0
 
 --------------------------------------------------------------------
 Introduction
 --------------------------------------------------------------------
 
 The GIMP is a great program for creating and manipulating
-pixelbased images of many types. The plug-in concept and the procedural database
+pixelbased images of many types. 
+The plug-in concept and the procedural database
 allows programmers to extend the GIMP's functions in many ways.
 
 In the GIMP there are some plug-in's supporting animation features,
 based on layers where each layer of the image is considered as one frame
 of the animation.
-GIMP-GAP is a collection of plug-ins that extends the GIMP's animation capabilities
+GIMP-GAP is a collection of plug-ins that extends the 
+GIMP's animation capabilities
 by supporting the creation of more complex animations.
 
 Idea:
@@ -28,7 +30,7 @@ Idea:
         or converted to frames and vice-versa. 
 
 	
-Concept:
+General:
 	An animation consists of a series of images of the same size & type
 	(frames).
 	The concept of GIMP-GAP is to store each frame seperate on disk, using a filename
@@ -56,12 +58,44 @@ Concept:
 	(gzip has to be installed on your system to do that)
 	If you can accept lossy compression you may also use 
 	the xjt fileformat to store your frames on jpeg based compression.
-	(the curent implementation of the xjt fileformat
-	 is resticted to UNIX operating systems)
+	The curent implementation of the xjt fileformat
+	is restricted to UNIX operating systems.
+
+Input from videofile:
+	GIMP-GAP has features to access both audio and frames in
+	already encoded videofiles.
 	
-	The final product can be encoded as videofile
-	or converted to one multilayerd image
-	that can be saved as animated-gif
+	On way to deal with such videofiles is to extract
+	the frames. Each frame can be stored as numbered frame
+	image on disk in that case.
+	
+	On UNIX platforms GIMP-GAP also provides an XANIM frontend to load frames
+	from multimedia fileformats
+	(avi, quicktime, ....) based on the XANIM multimedia player.
+	please note that XANIM is old unmaintained software.
+
+	The other methode can read the frames from one or more
+	videofiles and pass them to one of the GIMP-GAP video encoders
+	without the need to store the frames separately.
+	This methode requires a storyboard file.
+	The storyboard file describes
+	how to assemble videoclips, images and audiofiles
+	to one resulting output video.
+
+Output to videofile:
+
+        GIMP-GAP provides video encoder plug-ins
+        to save a series of input frame images or videoclips
+        as videofile.
+        This process is called encoding an usually 
+        does compresses the processed frames and audiodata.
+
+        GIMP-GAP encoder plug-ins can operate on
+        a series of numbered frame images or storyboard files
+        as input (encoding on the fly).
+        	
+	Another option is to convert the frames to one multilayerd image
+	that can be saved as MNG animation, animated-GIF
 	(or, in the future in other animation formats 
 	when other load/save modules were added to the GIMP)
 
@@ -72,14 +106,34 @@ Concept:
 	All GIMP-supported imagefileformats may be used.
 	
 	On UNIX Platforms GIMP-GAP provides frontend dialog interfaces for
-	software MPEG video encoder programs.
+	external software MPEG video encoder programs.
 	(mpeg_encode and mpeg2encode)
-	
-	On UNIX platforms GIMP-GAP also provides an XANIM frontend to load frames
-	from multimedia fileformats
-	(avi, quicktime, ....) based on the XANIM multimedia player.
-	please note that XANIM is old unmaintained software.
-	
+	This methode and both encoders are old.
+	External encoders can NOT directly encode storyboard files,
+	and typically want input as series of single frames in PPM format.
+	This need much diskspace and extra time for converting
+	frames to PPM.
+
+The Storyboard:
+        Storyboards are useful for the creation and cutting of longer videos.
+        GIMP-GAP provides the storyboard dialog to create and edit
+        simple storyboard files.
+        Storyboard files are textfiles and can be compared with playlists
+        for videoclips, images and audioclips.
+        
+        In this release the storyboard dialog is limited to simple storyboard
+        features without soundsupport. 
+        For encoding videos via storyboard files the soundsupport is
+        already implemented and there are some more advanced features available.
+        
+        See docs/STORYBOARD_FILE_DOC.txt for the complete Syntax description.
+        
+        ** Storyboard dialog is not documented yet **
+
+Morphing:
+        ** Morphing not documented yet **
+        Morphing can be used to render frames
+        between 2 scenes.
 	
 Onionskin Layers
         GIMP-GAP does support onionskin layers, this features are described
@@ -112,6 +166,8 @@ and does not compile/run with GIMP-1.2.x or older GIMP versions.
       - xanim 2.80.1 exporting edition (with the extensions from loki entertainment)
 
      The frontends and the external programs need UNIX environment to run.
+     All those programs are old and you may not need them since GIMP-GAP-2.2
+     also comes with improved alternatives for all of them.
       
      If you like to use that stuff, you should install
        mpeg_encode and mpeg_play
@@ -144,14 +200,16 @@ Supported Videoformats
 Read(decode):
   Any multimedia fileformat, XANIM can read
   (AVI, Quicktime, and a lot more, see xanim docu for more information)
+
+  All formats readable by FFMPEG
+  when configured and compiled with ##############
+  
+
   
 Write (encode)
   MPEG1/2 based on the external encoders mpeg_encode and mpeg2encode
   
 
-The GIMP_VIDEO_ENCODER project is an additional Package for GIMP-GAP
-that implements Video Encoding. It is still under development.
-An unstable prototype of the GIMP_VIDEO_ENCODER is available for GIMP-1.2.x.
 
 
 --------------------------------------------------------------------

@@ -51,7 +51,7 @@ static char *gap_main_version_fmt =  "%d.%d.%da; 2004/04/10";
 #include <libgimp/gimp.h>
 #include <libgimp/gimpui.h>
 
-
+#include <locale.h>
 
 #ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
 /* conditional Includes for video API */

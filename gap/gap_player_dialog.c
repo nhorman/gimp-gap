@@ -1903,9 +1903,11 @@ p_open_videofile(GapPlayerMainGlobalParams *gpp
 #ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
   char *vindex_file;
   const char *l_preferred_decoder;
+  gboolean    l_have_valid_vindex;
   
   p_close_videofile(gpp);
   vindex_file = NULL;
+  l_have_valid_vindex = FALSE;
 
   /* use global preferred_decoder setting per default */  
   l_preferred_decoder = gpp->preferred_decoder;
@@ -1964,7 +1966,15 @@ printf("PLAYER: open fptr_progress_callback FPTR:%d\n", (int)gpp->gvahand->fptr_
       }
     }
 
-    if((gpp->gvahand->vindex == NULL)
+    if(gpp->gvahand->vindex)
+    {
+      if(gpp->gvahand->vindex->total_frames > 0)
+      {
+        l_have_valid_vindex = TRUE;
+      }
+    }
+    
+    if((l_have_valid_vindex == FALSE)
     &&(gpp->startup == FALSE))
     {
       gboolean vindex_permission;

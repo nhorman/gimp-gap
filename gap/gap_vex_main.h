@@ -127,8 +127,7 @@ typedef struct {  /* nick: gpp */
   GtkWidget *mw__button_vrange_dialog;
   GtkWidget *mw__button_vrange_docked;
   GtkWidget *mw__button_video;
-  GtkWidget *mw__optionmenu_preferred_decoder;
-  GtkWidget *mw__optionmenu_preferred_decoder_menu;
+  GtkWidget *mw__combo_preferred_decoder;
   GtkWidget *mw__label_active_decoder;
   GtkWidget *mw__entry_preferred_decoder;
   GtkObject *mw__spinbutton_audiotrack_adj;
@@ -148,8 +147,7 @@ typedef struct {  /* nick: gpp */
   GtkWidget *mw__entry_audiofile;
   GtkWidget *mw__button_audiofile;
   GtkWidget *mw__checkbutton_multilayer;
-  GtkWidget *mw__optionmenu_deinterlace;
-  GtkWidget *mw__optionmenu_deinterlace_menu;
+  GtkWidget *mw__combo_deinterlace;
   GtkObject *mw__spinbutton_delace_threshold_adj;
   GtkWidget *mw__spinbutton_delace_threshold;
   GtkObject *mw__spinbutton_fn_digits_adj;

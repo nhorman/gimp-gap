@@ -3,6 +3,8 @@
  * GAP Video read API implementation of libavformat/lbavcodec (also known as FFMPEG)
  * based wrappers to read various videofile formats
  *
+ * 2004.10.24   workaround initial frameread and reopen for detection of yuv_buff_pix_fmt
+ *              of the active codec. (works only after the 1.st frame was read) 
  * 2004.04.12   vindex bugfix seek high framnumbers sometimes used wrong (last index)
  * 2004.03.07   vindex
  * 2004.02.29   hof fptr_progress_callback
@@ -19,6 +21,14 @@
 #ifdef ENABLE_GVA_LIBAVFORMAT
 #include "avformat.h"
 
+// #if FFMPEG_VERSION_INT ==  0x000408
+// #define HAVE_OLD_FFMPEG_0408
+// #else
+// #undef  HAVE_OLD_FFMPEG_0408
+// #endif
+
+
+#define HAVE_OLD_FFMPEG_0408
 
 /* -------------------------
  * API READ extension FFMPEG
@@ -96,6 +106,7 @@ typedef struct t_GVA_ffmpeg
  int             aud_stream_index;
  int             vid_codec_id;
  int             aud_codec_id;
+ gboolean        key_frame_detection_works;
 } t_GVA_ffmpeg;
 
 
@@ -123,6 +134,7 @@ static void      p_vindex_add_url_offest(t_GVA_Handle *gvahand
 			 , guint16 checksum
 			 );
 static guint16  p_gva_checksum(AVPicture *picture_yuv, gint32 height);
+static t_GVA_RetCode p_wrapper_ffmpeg_get_next_frame(t_GVA_Handle *gvahand);
 
 /* -----------------------------
  * p_wrapper_ffmpeg_check_sig
@@ -163,7 +175,8 @@ p_wrapper_ffmpeg_check_sig(char *filename)
   if(gap_debug) printf("p_wrapper_ffmpeg_check_sig: compatible is TRUE\n");
 
   return (TRUE);
-}
+}  /* end p_wrapper_ffmpeg_check_sig */
+
 
 /* -----------------------------
  * p_wrapper_ffmpeg_open_read
@@ -229,6 +242,7 @@ p_wrapper_ffmpeg_open_read(char *filename, t_GVA_Handle *gvahand)
   handle->output_samples_ptr = NULL;    /* current write position (points somewhere into samples_buffer) */
   handle->samples_buffer_size = 0;
   handle->samples_read = 0;
+  handle->key_frame_detection_works = FALSE;  /* assume a Codec with non working detection */
 
   /* open for the VIDEO part */
   if(FALSE == p_ff_open_input(filename, gvahand, handle, TRUE))
@@ -358,6 +372,27 @@ p_wrapper_ffmpeg_open_read(char *filename, t_GVA_Handle *gvahand)
                 ,gvahand->height
                 );
 
+
+
+  gvahand->decoder_handle = (void *)handle;
+
+
+  /* workaround: initial frameread and reopen for detection of yuv_buff_pix_fmt */ 
+  {
+    //if(gap_debug) 
+    {
+      printf("INITIAL call p_wrapper_ffmpeg_get_next_frame\n");
+    }
+    p_wrapper_ffmpeg_get_next_frame(gvahand);
+
+    /* reset seek position */
+    p_ffmpeg_vid_reopen_read(handle, gvahand);
+    gvahand->current_frame_nr = 0;
+    gvahand->current_seek_nr = 1;
+    
+  }
+
+
   if(gap_debug)
   {
      printf("gvahand->width: %d  gvahand->height: %d aspect_ratio:%f\n", (int)gvahand->width , (int)gvahand->height, (float)gvahand->aspect_ratio);
@@ -373,7 +408,6 @@ p_wrapper_ffmpeg_open_read(char *filename, t_GVA_Handle *gvahand)
      printf("handle->yuv_buff_pix_fmt: %d\n", (int)handle->yuv_buff_pix_fmt);
   }
 
-  gvahand->decoder_handle = (void *)handle;
 
   if(gvahand->vindex == NULL)
   {
@@ -391,7 +425,28 @@ p_wrapper_ffmpeg_open_read(char *filename, t_GVA_Handle *gvahand)
     }
   }
 
-  if(gap_debug) printf("p_wrapper_ffmpeg_open_read: END, OK\n");
+  //if(gap_debug)  //####XXXXXXXXXXXXXx
+  {
+    if(gvahand->vindex)
+    {
+      if(gvahand->vindex->videoindex_filename)
+      {
+        printf("IDX: p_wrapper_ffmpeg_open_read: vindex->videoindex_filename %s\n"
+	      , gvahand->vindex->videoindex_filename
+	      );
+      }
+      else
+      {
+        printf("IDX: p_wrapper_ffmpeg_open_read: vindex->videoindex_filename is NULL\n");
+      }
+    }
+    else
+    {
+      printf("IDX: p_wrapper_ffmpeg_open_read: vindex is NULL\n");
+    }
+    
+    printf("p_wrapper_ffmpeg_open_read: END, OK\n");
+  }
 
 }  /* end p_wrapper_ffmpeg_open_read */
 
@@ -463,7 +518,7 @@ p_wrapper_ffmpeg_close(t_GVA_Handle *gvahand)
  * TODO: when EOF reached: update total_frames and close the stream)
  *
  */
-t_GVA_RetCode
+static t_GVA_RetCode
 p_wrapper_ffmpeg_get_next_frame(t_GVA_Handle *gvahand)
 {
   t_GVA_ffmpeg *handle;
@@ -478,6 +533,7 @@ p_wrapper_ffmpeg_get_next_frame(t_GVA_Handle *gvahand)
   gint32    l_pkt_count;
   gint32    l_prev_pkt_count;
   guint16   l_checksum;
+  gboolean  l_potential_index_frame;
 
   handle = (t_GVA_ffmpeg *)gvahand->decoder_handle;
 
@@ -488,26 +544,6 @@ p_wrapper_ffmpeg_get_next_frame(t_GVA_Handle *gvahand)
                 ,gvahand->width
                 ,gvahand->height
                 );
-  if(handle->yuv_buff_pix_fmt != handle->vid_codec_context->pix_fmt)
-  {
-    if(gap_debug)
-    {
-      printf("## pix_fmt: old:%d new from codec:%d (PIX_FMT_YUV420P:%d PIX_FMT_YUV422P:%d)\n"
-	  , (int)handle->yuv_buff_pix_fmt
-	  , (int)handle->vid_codec_context->pix_fmt
-	  , (int)PIX_FMT_YUV420P
-	  , (int)PIX_FMT_YUV422P
-	  );
-    }
-
-    handle->yuv_buff_pix_fmt = handle->vid_codec_context->pix_fmt;   /* PIX_FMT_YUV420P */
-    avpicture_fill(handle->picture_yuv
-              ,handle->yuv_buffer
-              ,handle->yuv_buff_pix_fmt
-              ,gvahand->width
-              ,gvahand->height
-              );
-  } 
 
   l_got_picture = 0;
   l_rc = 0;
@@ -608,6 +644,7 @@ p_wrapper_ffmpeg_get_next_frame(t_GVA_Handle *gvahand)
 
     /* if (gap_debug) printf("before avcodec_decode_video: inbuf_ptr:%d inbuf_len:%d\n", (int)handle->inbuf_ptr, (int)handle->inbuf_len); */
 
+
     /* decode a frame. return -1 if error, otherwise return the number of
      * bytes used. If no frame could be decompressed, *got_picture_ptr is
      * zero. Otherwise, it is non zero.
@@ -619,6 +656,27 @@ p_wrapper_ffmpeg_get_next_frame(t_GVA_Handle *gvahand)
                                ,handle->inbuf_len
                                );
     /*if (gap_debug) printf("after avcodec_decode_video: l_len:%d got_pic:%d\n", (int)l_len, (int)l_got_picture);*/
+
+    if(handle->yuv_buff_pix_fmt != handle->vid_codec_context->pix_fmt)
+    {
+      //if(gap_debug)
+      {
+	printf("$$ pix_fmt: old:%d new from codec:%d (PIX_FMT_YUV420P:%d PIX_FMT_YUV422P:%d)\n"
+	    , (int)handle->yuv_buff_pix_fmt
+	    , (int)handle->vid_codec_context->pix_fmt
+	    , (int)PIX_FMT_YUV420P
+	    , (int)PIX_FMT_YUV422P
+	    );
+      }
+
+      handle->yuv_buff_pix_fmt = handle->vid_codec_context->pix_fmt;   /* PIX_FMT_YUV420P */
+      avpicture_fill(handle->picture_yuv
+        	,handle->yuv_buffer
+        	,handle->yuv_buff_pix_fmt
+        	,gvahand->width
+        	,gvahand->height
+        	);
+    } 
 
     if(l_len < 0)
     {
@@ -683,20 +741,58 @@ p_wrapper_ffmpeg_get_next_frame(t_GVA_Handle *gvahand)
       /* if (gap_debug) printf("p_wrapper_ffmpeg_get_next_frame: after img_convert l_rc:%d\n", (int)l_rc); */
     }
 
+#define GVA_LOW_GOP_LIMIT 24
+#define GVA_HIGH_GOP_LIMIT 100
+
+
+    l_potential_index_frame = FALSE;
+    if(handle->big_picture_yuv.key_frame == 1)
+    {
+      l_potential_index_frame = TRUE;
+      handle->key_frame_detection_works = TRUE;
+    }
+    else
+    {
+      if(handle->key_frame_detection_works == FALSE)
+      {
+        if(l_url_seek_nr >= handle->prev_key_seek_nr + GVA_HIGH_GOP_LIMIT)
+	{
+          /* some codecs do not deliver key_frame information even if all frames are stored
+           * as keyframes.
+           * this would result in empty videoindexes for videoreads using such codecs
+	   * and seek ops would be done as sequential reads as if we had no videoindexes at all.
+           * the GVA_HIGH_GOP_LIMIT  allows creation of videoindexes
+           * to store offesets of frames that are NOT explicite marked as keyframes.
+	   * but never use non-keyframes for codecs with working key_frame detection.
+	   * (dont set GVA_HIGH_GOP_LIMIT lower than 100)
+           */
+          l_potential_index_frame = TRUE;
+	}
+      }
+    }
+
+if( (gvahand->vindex) 
+    && (handle->capture_offset)
+    )
+{    
+  printf("KeyFrame: %d  works:%d\n"
+    ,(int)handle->big_picture_yuv.key_frame
+    ,(int)handle->key_frame_detection_works
+    );
+}
 
     if((gvahand->vindex) 
     && (handle->capture_offset)
-    && (handle->big_picture_yuv.key_frame == 1)
+    && (l_potential_index_frame)
     )
     {
-#define GVA_LOW_GOP_LIMIT 24
         l_checksum = p_gva_checksum(handle->picture_yuv, gvahand->height);
 
         /* the automatic GOP detection has a lower LIMIT of 24 frames
 	 * GOP values less than the limit can make the videoindex
 	 * slow, because the packet reads in libavformat are buffered,
 	 * and the index based search starting at the recorded seek offset (in the index)
-	 * may not find the wanted keyframe in the first Synchronisation Lopp
+	 * may not find the wanted keyframe in the first Synchronisation Loop
 	 * if its 1.st packet starts before the recorded seek offset.
 	 * 24 frames shold be enough to catch an offest before the start of the wanted
 	 * packet.
@@ -823,7 +919,7 @@ p_wrapper_ffmpeg_seek_frame(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit po
 
   gvahand->percentage_done = 0.0;
 
-  if(gap_debug)
+  //if(gap_debug)
   {
     printf("p_wrapper_ffmpeg_seek_frame: start: l_frame_pos: %d cur_seek:%d cur_frame:%d\n"
                            , (int)l_frame_pos
@@ -851,7 +947,7 @@ p_wrapper_ffmpeg_seek_frame(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit po
 	*/
        if(l_idx > vindex->tabsize_used -1)
        {
-         if(gap_debug)
+         //if(gap_debug)
 	 {
 	   printf("SEEK: overflow l_idx: %d limit:%d\n"
 	                 , (int)l_idx
@@ -884,7 +980,7 @@ p_wrapper_ffmpeg_seek_frame(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit po
            l_nloops = 1;
            while(l_idx >= 0)
 	   {
-	     if(gap_debug)
+	     //if(gap_debug)
 	     {
 	       printf("SEEK: USING_INDEX: ofs_tab[%d]: ofs64: %d seek_nr:%d flen:%d chk:%d NLOOPS:%d\n"
 	       , (int)l_idx
@@ -934,7 +1030,7 @@ p_wrapper_ffmpeg_seek_frame(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit po
 		 }
 		 else
 		 {
-		   if(gap_debug)
+		   //if(gap_debug)
 		   {
 		     /* checksum missmatch is non critical
 		      * continue searching for an exactly matching frame
@@ -965,7 +1061,7 @@ p_wrapper_ffmpeg_seek_frame(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit po
 	     {
 
                l_url_frame_pos = 1 + vindex->ofs_tab[l_idx].seek_nr;
-               if(gap_debug)
+               //if(gap_debug)
 	       {
 	         printf("SEEK: url_fseek seek_pos: %d  l_idx:%d l_url_frame_pos:%d\n"
 	                                , (int)seek_pos
@@ -975,7 +1071,7 @@ p_wrapper_ffmpeg_seek_frame(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit po
 	       }
                gvahand->current_seek_nr = (gint32)l_url_frame_pos;
                l_readsteps = l_frame_pos - gvahand->current_seek_nr;
-               if(gap_debug)
+               //if(gap_debug)
 	       {
 	         printf("SEEK: l_readsteps: %d\n", (int)l_readsteps);
 	       }
@@ -1007,7 +1103,7 @@ p_wrapper_ffmpeg_seek_frame(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit po
     }
   }
 
-  if(gap_debug) printf("p_wrapper_ffmpeg_seek_frame: l_readsteps: %d\n", (int)l_readsteps);
+  //if(gap_debug) printf("p_wrapper_ffmpeg_seek_frame: l_readsteps: %d\n", (int)l_readsteps);
 
   l_progress_step =  1.0 / MAX((gdouble)l_readsteps, 1.0);
   l_rc_rd = GVA_RET_OK;
@@ -1035,7 +1131,7 @@ p_wrapper_ffmpeg_seek_frame(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit po
 
   if(l_rc_rd == GVA_RET_OK)
   {
-    if(gap_debug)
+    //if(gap_debug)
     {
        printf("p_wrapper_ffmpeg_seek_frame: SEEK OK: l_frame_pos: %d cur_seek:%d cur_frame:%d\n"
                             , (int)l_frame_pos
@@ -1582,7 +1678,11 @@ p_ff_open_input(char *filename, t_GVA_Handle *gvahand, t_GVA_ffmpeg*  handle, gb
               }
               gvahand->height = acc->height;
               gvahand->width = acc->width;
+#ifdef HAVE_OLD_FFMPEG_0408	      
 	      gvahand->aspect_ratio = acc->aspect_ratio;
+#else
+	      gvahand->aspect_ratio = av_q2d (acc->sample_aspect_ratio);
+#endif	      
               rfps = ic->streams[ii]->r_frame_rate;
               acc->workaround_bugs = FF_BUG_AUTODETECT;
               acc->error_resilience = 2;
@@ -1733,6 +1833,17 @@ p_ffmpeg_vid_reopen_read(t_GVA_ffmpeg *handle, t_GVA_Handle *gvahand)
 
     /* RE-open for the VIDEO part */
     p_ff_open_input(gvahand->filename, gvahand, handle, TRUE);
+
+
+    if(gap_debug)
+    {
+      printf("++## pix_fmt: keep:%d ignore from codec:%d (PIX_FMT_YUV420P:%d PIX_FMT_YUV422P:%d)\n"
+	  , (int)handle->yuv_buff_pix_fmt
+	  , (int)handle->vid_codec_context->pix_fmt
+	  , (int)PIX_FMT_YUV420P
+	  , (int)PIX_FMT_YUV422P
+	  );
+    }
 
 }  /* end p_ffmpeg_vid_reopen_read */
 

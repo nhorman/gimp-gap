@@ -26,6 +26,7 @@
  */
 
 /* revision history:
+ * gimp    2.1.0a;  2004/11/04  hof: replaced deprecated option_menu by gimp_image_combo_box_new
  * gimp    2.1.0a;  2004/06/26  hof: #144649 use NULL for the default cursor as active_cursor
  * gimp    1.3.26a; 2004/01/30  hof: navi_pviews_reset: use the procedure gap_pview_drop_repaint_buffers rather than g_free the pixmap
  * gimp    1.3.25a; 2004/01/21  hof: gap_thumb_file_load_thumbnail now returns th_data with th_bpp == 4
@@ -266,12 +267,11 @@ typedef struct NaviDialog
 
   gint          tooltip_on;
   GtkWidget     *shell;
-  GtkWidget     *mode_option_menu;
   GtkWidget     *preserve_trans;
   GtkWidget     *framerate_box;
   GtkWidget     *timezoom_box;
-  GtkWidget     *image_option_menu;
-  GtkWidget     *image_menu;
+  GtkWidget     *image_combo;
+  GtkWidget     *image_combo_hbox;
   GtkWidget     *ops_menu;
   GtkWidget     *copy_menu_item;
   GtkWidget     *cut_menu_item;
@@ -322,8 +322,8 @@ static void frames_dialog_update (gint32 image_id);
 static void frame_widget_preview_redraw      (FrameWidget *);
 static void navi_vid_copy_and_cut(gint cut_flag);
 
-static gint navi_images_menu_constrain (gint32 image_id, gint32 drawable_id, gpointer data);
-static void navi_images_menu_callback  (gint32 id, gpointer data);
+static gboolean navi_images_menu_constrain (gint32 image_id, gpointer data);
+static void navi_images_menu_callback  (GtkWidget *widget, gpointer data);
 static void navi_update_after_goto(void);
 static void navi_ops_menu_set_sensitive(void);
 static void navi_ops_buttons_set_sensitive(void);
@@ -1163,8 +1163,8 @@ navi_reload_ainfo(gint32 image_id)
  * navi_images_menu_constrain
  * ---------------------------------
  */
-static gint
-navi_images_menu_constrain(gint32 image_id, gint32 drawable_id, gpointer data)
+static gboolean
+navi_images_menu_constrain(gint32 image_id, gpointer data)
 {
   if(gap_debug) printf("navi_images_menu_constrain PROCEDURE imageID:%d\n", (int)image_id);
 
@@ -1191,9 +1191,16 @@ navi_images_menu_constrain(gint32 image_id, gint32 drawable_id, gpointer data)
  * ---------------------------------
  */
 static void
-navi_images_menu_callback  (gint32 image_id, gpointer data)
+navi_images_menu_callback  (GtkWidget *widget, gpointer data)
 {
-  if(gap_debug) printf("navi_images_menu_callback PROCEDURE imageID:%d\n", (int)image_id);
+  gint32 image_id;
+  gint   value;
+  
+  gimp_int_combo_box_get_active (GIMP_INT_COMBO_BOX (widget), &value);
+  image_id = (gint32)value;
+  
+  
+  /*if(gap_debug)*/ printf("navi_images_menu_callback PROCEDURE imageID:%d\n", (int)image_id);
 
   if(naviD)
   {
@@ -1428,19 +1435,33 @@ navi_refresh_image_menu()
   {
     if(!navi_check_image_menu_changes())
     {
+      GtkWidget *old_combo;
+      
       if(gap_debug) printf("navi_refresh_image_menu ** BEGIN REFRESH\n");
       if(naviD->OpenFrameImagesCount != 0)
       {
         gtk_widget_set_sensitive(naviD->vbox, TRUE);
       }
 
-      naviD->image_menu = gimp_image_menu_new(navi_images_menu_constrain,
-                                              navi_images_menu_callback,
-                                              naviD,
-                                              naviD->active_imageid
-                                              );
-      gtk_option_menu_set_menu(GTK_OPTION_MENU(naviD->image_option_menu), naviD->image_menu);
-      gtk_widget_show (naviD->image_menu);
+      old_combo = naviD->image_combo;
+      naviD->image_combo = gimp_image_combo_box_new(navi_images_menu_constrain, naviD);
+
+      if(old_combo)
+      {
+        /* drop the old combo box */
+        gtk_widget_destroy(old_combo);
+      }
+      
+      gtk_box_pack_start (GTK_BOX (naviD->image_combo_hbox)
+                         , naviD->image_combo
+			 , TRUE, TRUE, 0);
+      gtk_widget_show (naviD->image_combo);
+      
+      gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (naviD->image_combo), 
+                              naviD->active_imageid,                      /* initial value */
+                              G_CALLBACK (navi_images_menu_callback),
+                              naviD);
+      
       if(naviD->OpenFrameImagesCount == 0)
       {
         gtk_widget_set_sensitive(naviD->vbox, FALSE);
@@ -3694,6 +3715,12 @@ navi_dialog_create (GtkWidget* shell, gint32 image_id)
   util_box = gtk_hbox_new (FALSE, 1);
   gtk_box_pack_start (GTK_BOX (vbox), util_box, FALSE, FALSE, 0);
 
+  /*  The image combobox (is replaced at navi_refresh_image_menu) */
+  naviD->image_combo = NULL;
+  naviD->image_combo_hbox = util_box;
+  navi_refresh_image_menu();
+  gtk_widget_show (util_box);
+
   /*  The popup menu (copy/cut/paste) */
   naviD->ops_menu = gtk_menu_new ();
 
@@ -3772,15 +3799,6 @@ navi_dialog_create (GtkWidget* shell, gint32 image_id)
       naviD->sel_none_menu_item = menu_item;
   gtk_widget_show (naviD->ops_menu);
 
-
-  /*  The image menu */
-  naviD->image_option_menu = gtk_option_menu_new();
-  naviD->image_menu = NULL;
-  navi_refresh_image_menu();
-  gtk_box_pack_start (GTK_BOX (util_box), naviD->image_option_menu, TRUE, TRUE, 0);
-  gtk_widget_show (naviD->image_option_menu);
-  gtk_widget_show (naviD->image_menu);
-  gtk_widget_show (util_box);
 
   /*  the Framerange label */
   util_box = gtk_hbox_new (FALSE, 1);

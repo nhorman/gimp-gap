@@ -308,7 +308,8 @@ p_xanim_dialog   (gint32 *first_frame,
   argv[10].int_ret   = 1;
 
   gap_arr_arg_init(&argv[11], GAP_ARR_WGT_LABEL_LEFT);
-  argv[11].label_txt = _("\nWarning: xanim 2.80 has only limited MPEG support.\n"
+  argv[11].label_txt = _("\nWarning: xanim 2.80 is old unmaintained software\n"
+                         "and has only limited MPEG support.\n"
 			 "Most of the frames (type P and B) will be skipped.");
    
   if(TRUE == gap_arr_ok_cancel_dialog(_("Split any Xanim readable Video to Frames"), 

@@ -26,6 +26,7 @@
  */
 
 /* revision history:
+ * gimp    2.1.0b;  2004/11/04  hof: replaced deprecated option_menu by combo box
  * gimp    2.1.0b;  2004/08/14  hof: feature: point navigation + SHIFT ==> mov_follow_keyframe
  * gimp    2.1.0b;  2004/08/10  hof: bugfix save/load Pathpoints work again.
  * gimp    2.1.0a;  2004/06/26  hof: #144649 use NULL for the default cursor as active_cursor
@@ -199,7 +200,7 @@ typedef struct
   GtkAdjustment *keyframe_adj;
   GtkAdjustment *preview_frame_nr_adj;
 
-  GtkWidget     *src_layer_option_menu;
+  GtkWidget     *src_layer_combo;
   GtkWidget     *constrain;       /* scale width/height keeps ratio constant */
   GtkAdjustment *ttlx_adj;
   GtkAdjustment *ttly_adj;
@@ -257,27 +258,8 @@ typedef struct
 } t_mov_gui_stuff;
 
 
-/* p_buildmenu Structures */
-
-typedef struct _MenuItem   MenuItem;
-
-typedef void (*MenuItemCallback) (GtkWidget *widget,
-				  gpointer   user_data);
-struct _MenuItem
-{
-  char *label;
-  char  unused_accelerator_key;
-  gint  unused_accelerator_mods;
-  MenuItemCallback callback;
-  gpointer user_data;
-  MenuItem *unused_subitems;
-  GtkWidget *widget;
-};
-
-
 /* Declare a local function.
  */
-GtkWidget       *  p_buildmenu (MenuItem *, t_mov_gui_stuff *mgp);
 
        long        gap_mov_dlg_move_dialog             (GapMovData *mov_ptr);
 static void        p_update_point_index_text (t_mov_gui_stuff *mgp);
@@ -320,7 +302,7 @@ static void	   mov_path_x_adjustment_update ( GtkWidget *widget, gpointer data )
 static void	   mov_path_y_adjustment_update ( GtkWidget *widget, gpointer data );
 static void        mov_path_tfactor_adjustment_update( GtkWidget *widget, gdouble *val);
 static void        mov_path_feather_adjustment_update( GtkWidget *widget, gdouble *val );
-static void        mov_selmode_menu_callback (GtkWidget *widget, gpointer   client_data);
+static void        mov_selmode_menu_callback (GtkWidget *widget, t_mov_gui_stuff *mgp);
 
 
 static void        mov_path_resize_adjustment_update( GtkObject *obj, gdouble *val);
@@ -356,10 +338,10 @@ static void     mov_apv_callback         (GtkWidget *widget,gpointer data);
 static void	p_filesel_close_cb       (GtkWidget *widget, t_mov_gui_stuff *mgp);
 
 static gint mov_imglayer_constrain      (gint32 image_id, gint32 drawable_id, gpointer data);
-static void mov_imglayer_menu_callback  (gint32 id, gpointer data);
-static void mov_paintmode_menu_callback (GtkWidget *, gpointer);
-static void mov_handmode_menu_callback  (GtkWidget *, gpointer);
-static void mov_stepmode_menu_callback  (GtkWidget *, gpointer);
+static void mov_imglayer_menu_callback  (GtkWidget *, t_mov_gui_stuff *mgp);
+static void mov_paintmode_menu_callback (GtkWidget *, t_mov_gui_stuff *mgp);
+static void mov_handmode_menu_callback  (GtkWidget *, t_mov_gui_stuff *mgp);
+static void mov_stepmode_menu_callback  (GtkWidget *, t_mov_gui_stuff *mgp);
 static void mov_tweenlayer_sensitivity(t_mov_gui_stuff *mgp);
 static void mov_tracelayer_sensitivity(t_mov_gui_stuff *mgp);
 static void mov_gint_toggle_callback    (GtkWidget *, gpointer);
@@ -407,71 +389,6 @@ static void  mov_pview_size_allocate_callback(GtkWidget *widget
 				, t_mov_gui_stuff *mgp
 				);
 
-/*  the option menu items -- the paint modes  */
-static MenuItem option_paint_items[] =
-{
-  { N_("Normal"), 0, 0, mov_paintmode_menu_callback, (gpointer) GIMP_NORMAL_MODE, NULL, NULL },
-  { N_("Dissolve"), 0, 0, mov_paintmode_menu_callback, (gpointer) GIMP_DISSOLVE_MODE, NULL, NULL },
-
-  { N_("Multiply"), 0, 0, mov_paintmode_menu_callback, (gpointer) GIMP_MULTIPLY_MODE, NULL, NULL },
-  { N_("Divide"), 0, 0, mov_paintmode_menu_callback, (gpointer) GIMP_DIVIDE_MODE, NULL, NULL },
-  { N_("Screen"), 0, 0, mov_paintmode_menu_callback, (gpointer) GIMP_SCREEN_MODE, NULL, NULL },
-  { N_("Overlay"), 0, 0, mov_paintmode_menu_callback, (gpointer) GIMP_OVERLAY_MODE, NULL, NULL },
-
-  { N_("Dodge"), 0, 0, mov_paintmode_menu_callback, (gpointer) GIMP_DODGE_MODE, NULL, NULL },
-  { N_("Burn"), 0, 0, mov_paintmode_menu_callback, (gpointer) GIMP_BURN_MODE, NULL, NULL },
-  { N_("Hard Light"), 0, 0, mov_paintmode_menu_callback, (gpointer) GIMP_HARDLIGHT_MODE, NULL, NULL },
-  { N_("Soft Light"), 0, 0, mov_paintmode_menu_callback, (gpointer) GIMP_SOFTLIGHT_MODE, NULL, NULL },
-  { N_("Grain Extract"), 0, 0, mov_paintmode_menu_callback, (gpointer) GIMP_GRAIN_EXTRACT_MODE, NULL, NULL },
-  { N_("Grain Merge"), 0, 0, mov_paintmode_menu_callback, (gpointer) GIMP_GRAIN_MERGE_MODE, NULL, NULL },
-
-  { N_("Difference"), 0, 0, mov_paintmode_menu_callback, (gpointer) GIMP_DIFFERENCE_MODE, NULL, NULL },
-  { N_("Addition"), 0, 0, mov_paintmode_menu_callback, (gpointer) GIMP_ADDITION_MODE, NULL, NULL },
-  { N_("Subtract"), 0, 0, mov_paintmode_menu_callback, (gpointer) GIMP_SUBTRACT_MODE, NULL, NULL },
-  { N_("Darken Only"), 0, 0, mov_paintmode_menu_callback, (gpointer) GIMP_DARKEN_ONLY_MODE, NULL, NULL },
-  { N_("Lighten Only"), 0, 0, mov_paintmode_menu_callback, (gpointer) GIMP_LIGHTEN_ONLY_MODE, NULL, NULL },
-
-  { N_("Hue"), 0, 0, mov_paintmode_menu_callback, (gpointer) GIMP_HUE_MODE, NULL, NULL },
-  { N_("Saturation"), 0, 0, mov_paintmode_menu_callback, (gpointer) GIMP_SATURATION_MODE, NULL, NULL },
-  { N_("Color"), 0, 0, mov_paintmode_menu_callback, (gpointer) GIMP_COLOR_MODE, NULL, NULL },
-  { N_("Value"), 0, 0, mov_paintmode_menu_callback, (gpointer) GIMP_VALUE_MODE, NULL, NULL },
-
-  { N_("Keep Paintmode"), 0, 0, mov_paintmode_menu_callback, (gpointer) GAP_MOV_KEEP_SRC_PAINTMODE, NULL, NULL },
-  { NULL, 0, 0, NULL, NULL, NULL, NULL }
-};
-
-/*  the option menu items -- the handle modes  */
-static MenuItem option_handle_items[] =
-{
-  { N_("Left  Top"),    0, 0, mov_handmode_menu_callback, (gpointer) GAP_HANDLE_LEFT_TOP, NULL, NULL },
-  { N_("Left  Bottom"), 0, 0, mov_handmode_menu_callback, (gpointer) GAP_HANDLE_LEFT_BOT, NULL, NULL },
-  { N_("Right Top"),    0, 0, mov_handmode_menu_callback, (gpointer) GAP_HANDLE_RIGHT_TOP, NULL, NULL },
-  { N_("Right Bottom"), 0, 0, mov_handmode_menu_callback, (gpointer) GAP_HANDLE_RIGHT_BOT, NULL, NULL },
-  { N_("Center"),       0, 0, mov_handmode_menu_callback, (gpointer) GAP_HANDLE_CENTER, NULL, NULL },
-  { NULL, 0, 0, NULL, NULL, NULL, NULL }
-};
-
-
-/*  the option menu items -- the loop step modes  */
-static MenuItem option_step_items[] =
-{
-  { N_("Loop"),         0, 0, mov_stepmode_menu_callback, (gpointer) GAP_STEP_LOOP, NULL, NULL },
-  { N_("Loop Reverse"), 0, 0, mov_stepmode_menu_callback, (gpointer) GAP_STEP_LOOP_REV, NULL, NULL },
-  { N_("Once"),         0, 0, mov_stepmode_menu_callback, (gpointer) GAP_STEP_ONCE, NULL, NULL },
-  { N_("Once Reverse"), 0, 0, mov_stepmode_menu_callback, (gpointer) GAP_STEP_ONCE_REV, NULL, NULL },
-  { N_("Ping Pong"),    0, 0, mov_stepmode_menu_callback, (gpointer) GAP_STEP_PING_PONG, NULL, NULL },
-  { N_("None"),         0, 0, mov_stepmode_menu_callback, (gpointer) GAP_STEP_NONE, NULL, NULL },
-  { N_("Frame Loop"),         0, 0, mov_stepmode_menu_callback, (gpointer) GAP_STEP_FRAME_LOOP, NULL, NULL },
-  { N_("Frame Loop Reverse"), 0, 0, mov_stepmode_menu_callback, (gpointer) GAP_STEP_FRAME_LOOP_REV, NULL, NULL },
-  { N_("Frame Once"),         0, 0, mov_stepmode_menu_callback, (gpointer) GAP_STEP_FRAME_ONCE, NULL, NULL },
-  { N_("Frame Once Reverse"), 0, 0, mov_stepmode_menu_callback, (gpointer) GAP_STEP_FRAME_ONCE_REV, NULL, NULL },
-  { N_("Frame Ping Pong"),    0, 0, mov_stepmode_menu_callback, (gpointer) GAP_STEP_FRAME_PING_PONG, NULL, NULL },
-  { N_("Frame None"),         0, 0, mov_stepmode_menu_callback, (gpointer) GAP_STEP_FRAME_NONE, NULL, NULL },
-  { NULL, 0, 0, NULL, NULL, NULL, NULL }
-};
-
-
-
 
 static GapMovValues *pvals;
 
@@ -497,7 +414,6 @@ long      gap_mov_dlg_move_dialog    (GapMovData *mov_ptr)
   char      *l_str;
   t_mov_gui_stuff *mgp;
 
-
   if(gap_debug) printf("GAP-DEBUG: START gap_mov_dlg_move_dialog\n");
 
   mgp = g_new( t_mov_gui_stuff, 1 );
@@ -520,6 +436,11 @@ long      gap_mov_dlg_move_dialog    (GapMovData *mov_ptr)
   mgp->pv_ptr = NULL;
   mgp->cursor_wait = gdk_cursor_new (GDK_WATCH);
   mgp->cursor_acitve = NULL; /* use the default cursor */
+  mgp->step_speed_factor_adj = NULL;
+  mgp->tween_opacity_initial_adj = NULL;
+  mgp->tween_opacity_desc_adj = NULL;
+  mgp->trace_opacity_initial_adj = NULL;
+  mgp->sel_feather_radius_adj = NULL;
 
   pvals = mov_ptr->val_ptr;
 
@@ -1903,11 +1824,15 @@ p_pick_nearest_point(gint px, gint py)
 }	/* end p_pick_nearest_point */
 
 
-
 static void
-mov_imglayer_menu_callback(gint32 id, gpointer data)
+mov_imglayer_menu_callback(GtkWidget *widget, t_mov_gui_stuff *mgp)
 {
   gint32 l_image_id;
+  gint32 id;
+  gint value;
+
+  gimp_int_combo_box_get_active (GIMP_INT_COMBO_BOX (widget), &value);
+  id = value;
 
   l_image_id = gimp_drawable_get_image(id);
   if(!gap_image_is_alive(l_image_id))
@@ -1932,7 +1857,8 @@ mov_imglayer_menu_callback(gint32 id, gpointer data)
   if(gap_debug) printf("mov_imglayer_menu_callback: image_id=%d layer_id=%d\n",
          (int)pvals->src_image_id, (int)pvals->src_layer_id);
 
-  mov_set_instant_apply_request((t_mov_gui_stuff *) data);
+  mov_set_instant_apply_request(mgp);
+  
 } /* end mov_imglayer_menu_callback */
 
 static gint
@@ -1974,35 +1900,37 @@ mov_imglayer_constrain(gint32 image_id, gint32 drawable_id, gpointer data)
 } /* end mov_imglayer_constrain */
 
 static void
-mov_paintmode_menu_callback (GtkWidget *widget,  gpointer   client_data)
+mov_paintmode_menu_callback (GtkWidget *widget,  t_mov_gui_stuff *mgp)
 {
-  t_mov_gui_stuff *mgp;
+  gint value;
+  
+  gimp_int_combo_box_get_active (GIMP_INT_COMBO_BOX (widget), &value);
 
-  pvals->src_paintmode = (gint)client_data;
-  mgp = g_object_get_data( G_OBJECT(widget), "mgp" );
+  pvals->src_paintmode = value;
   mov_set_instant_apply_request(mgp);
 }
 
 static void
-mov_handmode_menu_callback (GtkWidget *widget,  gpointer   client_data)
+mov_handmode_menu_callback (GtkWidget *widget,  t_mov_gui_stuff *mgp)
 {
-  t_mov_gui_stuff *mgp;
+  gint value;
 
-  pvals->src_handle = (gint)client_data;
-  mgp = g_object_get_data( G_OBJECT(widget), "mgp" );
+  gimp_int_combo_box_get_active (GIMP_INT_COMBO_BOX (widget), &value);
+  pvals->src_handle = value;
+  if(mgp == NULL) return;
+
   mov_set_instant_apply_request(mgp);
 }
 
 static void
-mov_stepmode_menu_callback (GtkWidget *widget, gpointer   client_data)
+mov_stepmode_menu_callback (GtkWidget *widget, t_mov_gui_stuff *mgp)
 {
   gboolean l_sensitive;
   GtkWidget *spinbutton;
-  t_mov_gui_stuff *mgp;
+  gint       value;
 
-  pvals->src_stepmode = (gint)client_data;
-
-  mgp = g_object_get_data( G_OBJECT(widget), "mgp" );
+  gimp_int_combo_box_get_active (GIMP_INT_COMBO_BOX (widget), &value);
+  pvals->src_stepmode = value;
   if(mgp == NULL) return;
 
   l_sensitive = TRUE;
@@ -2012,12 +1940,17 @@ mov_stepmode_menu_callback (GtkWidget *widget, gpointer   client_data)
     l_sensitive = FALSE;
   }
 
-
-  spinbutton = GTK_WIDGET(g_object_get_data (G_OBJECT (mgp->step_speed_factor_adj), "spinbutton"));
-  if(spinbutton)
+  if(mgp->step_speed_factor_adj)
   {
-    gtk_widget_set_sensitive(spinbutton, l_sensitive);
+    spinbutton = GTK_WIDGET(g_object_get_data (G_OBJECT (mgp->step_speed_factor_adj), "spinbutton"));
+    if(spinbutton)
+    {
+      gtk_widget_set_sensitive(spinbutton, l_sensitive);
+    }
   }
+
+  mov_set_instant_apply_request(mgp);
+
 }  /* end mov_stepmode_menu_callback */
 
 
@@ -2033,16 +1966,22 @@ mov_tweenlayer_sensitivity(t_mov_gui_stuff *mgp)
     l_sensitive = FALSE;
   }
 
-  spinbutton = GTK_WIDGET(g_object_get_data (G_OBJECT (mgp->tween_opacity_initial_adj), "spinbutton"));
-  if(spinbutton)
+  if(mgp->tween_opacity_initial_adj)
   {
-    gtk_widget_set_sensitive(spinbutton, l_sensitive);
+    spinbutton = GTK_WIDGET(g_object_get_data (G_OBJECT (mgp->tween_opacity_initial_adj), "spinbutton"));
+    if(spinbutton)
+    {
+      gtk_widget_set_sensitive(spinbutton, l_sensitive);
+    }
   }
 
-  spinbutton = GTK_WIDGET(g_object_get_data (G_OBJECT (mgp->tween_opacity_desc_adj), "spinbutton"));
-  if(spinbutton)
+  if(mgp->tween_opacity_desc_adj)
   {
-    gtk_widget_set_sensitive(spinbutton, l_sensitive);
+   spinbutton = GTK_WIDGET(g_object_get_data (G_OBJECT (mgp->tween_opacity_desc_adj), "spinbutton"));
+   if(spinbutton)
+   {
+     gtk_widget_set_sensitive(spinbutton, l_sensitive);
+   }
   }
 }  /* end mov_tweenlayer_sensitivity */
 
@@ -2058,16 +1997,22 @@ mov_tracelayer_sensitivity(t_mov_gui_stuff *mgp)
     l_sensitive = TRUE;
   }
 
-  spinbutton = GTK_WIDGET(g_object_get_data (G_OBJECT (mgp->trace_opacity_initial_adj), "spinbutton"));
-  if(spinbutton)
+  if(mgp->trace_opacity_initial_adj)
   {
-    gtk_widget_set_sensitive(spinbutton, l_sensitive);
+    spinbutton = GTK_WIDGET(g_object_get_data (G_OBJECT (mgp->trace_opacity_initial_adj), "spinbutton"));
+    if(spinbutton)
+    {
+      gtk_widget_set_sensitive(spinbutton, l_sensitive);
+    }
   }
 
-  spinbutton = GTK_WIDGET(g_object_get_data (G_OBJECT (mgp->trace_opacity_desc_adj), "spinbutton"));
-  if(spinbutton)
+  if(mgp->trace_opacity_desc_adj)
   {
-    gtk_widget_set_sensitive(spinbutton, l_sensitive);
+   spinbutton = GTK_WIDGET(g_object_get_data (G_OBJECT (mgp->trace_opacity_desc_adj), "spinbutton"));
+   if(spinbutton)
+   {
+     gtk_widget_set_sensitive(spinbutton, l_sensitive);
+   }
   }
 }  /* end mov_tracelayer_sensitivity */
 
@@ -2489,19 +2434,10 @@ p_save_points(char *filename, t_mov_gui_stuff *mgp)
 static void
 mov_refresh_src_layer_menu(t_mov_gui_stuff *mgp)
 {
-  GtkWidget *menu;
-
-  if(pvals->tmpsel_image_id >= 0)
-  {
-    gimp_image_delete(pvals->tmpsel_image_id);
-    pvals->tmpsel_image_id = -1;
-  }
-
-  menu = gimp_layer_menu_new(mov_imglayer_constrain,
-			     mov_imglayer_menu_callback,
-			     mgp,
-			     pvals->src_layer_id);
-  gtk_option_menu_set_menu(GTK_OPTION_MENU(mgp->src_layer_option_menu), menu);
+  gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (mgp->src_layer_combo), 
+                              pvals->src_layer_id,                      /* initial value */
+                              G_CALLBACK (mov_imglayer_menu_callback),
+                              mgp);
 
 }  /* end mov_refresh_src_layer_menu */
 
@@ -2518,11 +2454,9 @@ mov_src_sel_create(t_mov_gui_stuff *mgp)
 {
   GtkWidget *table;
   GtkWidget *sub_table;
-  GtkWidget *option_menu;
-  GtkWidget *menu;
+  GtkWidget *combo;
   GtkWidget *label;
   GtkObject      *adj;
-  gint gettextize_loop;
 
 
   /* the table */
@@ -2537,45 +2471,61 @@ mov_src_sel_create(t_mov_gui_stuff *mgp)
   gtk_table_attach(GTK_TABLE(table), label, 0, 1, 0, 1, GTK_FILL, 0, 4, 0);
   gtk_widget_show(label);
 
-  option_menu = gtk_option_menu_new();
-  gtk_table_attach(GTK_TABLE(table), option_menu, 1, 2, 0, 1,
+  combo = gimp_layer_combo_box_new (mov_imglayer_constrain, NULL);
+  gtk_table_attach(GTK_TABLE(table), combo, 1, 2, 0, 1,
 		   GTK_EXPAND | GTK_FILL, 0, 0, 0);
 
-  gimp_help_set_help_data(option_menu,
+  gimp_help_set_help_data(combo,
                        _("Source object to insert into destination frames of the specified range")
                        , NULL);
 
-  gtk_widget_show(option_menu);
-  mgp->src_layer_option_menu = option_menu;
+  gtk_widget_show(combo);
+  mgp->src_layer_combo = combo;
   mov_refresh_src_layer_menu(mgp);
-  gtk_widget_show(option_menu);
+  gtk_widget_show(combo);
 
 
-  /* Paintmode menu */
+  /* Paintmode combo (menu) */
 
   label = gtk_label_new( _("Mode:"));
   gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
   gtk_table_attach(GTK_TABLE(table), label, 2, 3, 0, 1, GTK_FILL, 0, 4, 0);
   gtk_widget_show(label);
 
-  option_menu = gtk_option_menu_new();
-  gtk_table_attach(GTK_TABLE(table), option_menu, 3, 4, 0, 1,
+  combo = gimp_int_combo_box_new (_("Normal"),         GIMP_NORMAL_MODE,
+                                  _("Dissolve"),       GIMP_DISSOLVE_MODE,
+                                  _("Multiply"),       GIMP_MULTIPLY_MODE,
+                                  _("Divide"),         GIMP_DIVIDE_MODE,
+                                  _("Screen"),         GIMP_SCREEN_MODE,
+                                  _("Overlay"),        GIMP_OVERLAY_MODE,
+                                  _("Dodge"),          GIMP_DODGE_MODE,
+                                  _("Burn"),           GIMP_BURN_MODE,
+                                  _("Hard Light"),     GIMP_HARDLIGHT_MODE,
+                                  _("Soft Light"),     GIMP_SOFTLIGHT_MODE,
+                                  _("Grain Extract"),  GIMP_GRAIN_EXTRACT_MODE,
+                                  _("Grain Merge"),    GIMP_GRAIN_MERGE_MODE,
+                                  _("Difference"),     GIMP_DIFFERENCE_MODE,
+                                  _("Addition"),       GIMP_ADDITION_MODE,
+                                  _("Subtract"),       GIMP_SUBTRACT_MODE,
+                                  _("Darken Only"),    GIMP_DARKEN_ONLY_MODE,
+                                  _("Lighten Only"),   GIMP_LIGHTEN_ONLY_MODE,
+                                  _("Hue"),            GIMP_HUE_MODE,
+                                  _("Saturation"),     GIMP_SATURATION_MODE,
+                                  _("Color"),          GIMP_COLOR_MODE,
+                                  _("Value"),          GIMP_VALUE_MODE,
+                                  _("Keep Paintmode"), GAP_MOV_KEEP_SRC_PAINTMODE,
+                                  NULL);
+                                 
+  gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (combo), 
+                              GIMP_NORMAL_MODE,              /* initial int value */
+                              G_CALLBACK (mov_paintmode_menu_callback),
+                              mgp);
+  gtk_table_attach(GTK_TABLE(table), combo, 3, 4, 0, 1,
 		   GTK_EXPAND | GTK_FILL, 0, 0, 0);
-  gimp_help_set_help_data(option_menu,
+  gimp_help_set_help_data(combo,
                        _("Paintmode")
                        , NULL);
-  gtk_widget_show(option_menu);
-
-  for (gettextize_loop = 0; option_paint_items[gettextize_loop].label != NULL;
-       gettextize_loop++)
-  {
-    option_paint_items[gettextize_loop].label =
-      gettext(option_paint_items[gettextize_loop].label);
-  }
-
-  menu = p_buildmenu (option_paint_items, mgp);
-  gtk_option_menu_set_menu(GTK_OPTION_MENU(option_menu), menu);
-  gtk_widget_show(option_menu);
+  gtk_widget_show(combo);
 
 
 
@@ -2597,26 +2547,6 @@ mov_src_sel_create(t_mov_gui_stuff *mgp)
 		   GTK_EXPAND | GTK_FILL, 0, 0, 0);
 
 
-  /* Loop Stepmode menu */
-
-  option_menu = gtk_option_menu_new();
-  gtk_table_attach(GTK_TABLE(sub_table), option_menu, 0, 1, 0, 1,
-		   GTK_EXPAND | GTK_FILL, 0, 0, 0);
-  gtk_widget_show(option_menu);
-
-  for (gettextize_loop = 0; option_step_items[gettextize_loop].label != NULL;
-       gettextize_loop++)
-  {
-    option_step_items[gettextize_loop].label =
-      gettext(option_step_items[gettextize_loop].label);
-  }
-
-  menu = p_buildmenu (option_step_items, mgp);
-  gtk_option_menu_set_menu(GTK_OPTION_MENU(option_menu), menu);
-  gimp_help_set_help_data(option_menu,
-                       _("How to fetch the next source layer at the next handled frame")
-                       , NULL);
-  gtk_widget_show(option_menu);
 
   /* StepSpeedFactor */
   adj = p_mov_spinbutton_new( GTK_TABLE (sub_table), 1, 0,    /* table col, row */
@@ -2638,6 +2568,35 @@ mov_src_sel_create(t_mov_gui_stuff *mgp)
   mgp->step_speed_factor_adj = GTK_ADJUSTMENT(adj);
 
 
+
+  /* Loop Stepmode combo  */
+  combo = gimp_int_combo_box_new (_("Loop"),                 GAP_STEP_LOOP,
+                                  _("Loop Reverse"),         GAP_STEP_LOOP_REV,
+                                  _("Once"),                 GAP_STEP_ONCE,
+                                  _("Once Reverse"),         GAP_STEP_ONCE_REV,
+                                  _("Ping Pong"),            GAP_STEP_PING_PONG,
+                                  _("None"),                 GAP_STEP_NONE,
+                                  _("Frame Loop"),           GAP_STEP_FRAME_LOOP,
+                                  _("Frame Loop Reverse"),   GAP_STEP_FRAME_LOOP_REV,
+                                  _("Frame Once"),           GAP_STEP_FRAME_ONCE,
+                                  _("Frame Once Reverse"),   GAP_STEP_FRAME_ONCE_REV,
+                                  _("Frame Ping Pong"),      GAP_STEP_FRAME_PING_PONG,
+                                  _("Frame None"),           GAP_STEP_FRAME_NONE,
+                                  NULL);
+
+  gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (combo), 
+                              GAP_STEP_LOOP,              /* initial int value */
+                              G_CALLBACK (mov_stepmode_menu_callback),
+                              mgp);
+
+  gtk_table_attach(GTK_TABLE(sub_table), combo, 0, 1, 0, 1,
+		   GTK_EXPAND | GTK_FILL, 0, 0, 0);
+  gimp_help_set_help_data(combo,
+                       _("How to fetch the next source layer at the next handled frame")
+                       , NULL);
+  gtk_widget_show(combo);
+
+
   /* Source Image Handle menu */
 
   label = gtk_label_new( _("Handle:"));
@@ -2645,24 +2604,25 @@ mov_src_sel_create(t_mov_gui_stuff *mgp)
   gtk_table_attach(GTK_TABLE(table), label, 2, 3, 1, 2, GTK_FILL, 0, 4, 0);
   gtk_widget_show(label);
 
-  option_menu = gtk_option_menu_new();
-  gtk_table_attach(GTK_TABLE(table), option_menu, 3, 4, 1, 2,
+  combo = gimp_int_combo_box_new (_("Left  Top"),     GAP_HANDLE_LEFT_TOP,
+                                  _("Left  Bottom"),  GAP_HANDLE_LEFT_BOT,
+                                  _("Right Top"),     GAP_HANDLE_RIGHT_TOP,
+                                  _("Right Bottom"),  GAP_HANDLE_RIGHT_BOT,
+                                  _("Center"),        GAP_HANDLE_CENTER,
+                                  NULL);
+
+  gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (combo), 
+                              GAP_HANDLE_LEFT_TOP,              /* initial int value */
+                              G_CALLBACK (mov_handmode_menu_callback),
+                              mgp);
+
+
+  gtk_table_attach(GTK_TABLE(table), combo, 3, 4, 1, 2,
 		   GTK_EXPAND | GTK_FILL, 0, 0, 0);
-  gtk_widget_show(option_menu);
-
-  for (gettextize_loop = 0; option_handle_items[gettextize_loop].label != NULL;
-       gettextize_loop++)
-  {
-    option_handle_items[gettextize_loop].label =
-      gettext(option_handle_items[gettextize_loop].label);
-  }
-
-  menu = p_buildmenu (option_handle_items, mgp);
-  gtk_option_menu_set_menu(GTK_OPTION_MENU(option_menu), menu);
-  gimp_help_set_help_data(option_menu,
+  gimp_help_set_help_data(combo,
                        _("How to place the Source layer at controlpoint coordinates")
                        , NULL);
-  gtk_widget_show(option_menu);
+  gtk_widget_show(combo);
 
   gtk_widget_show( table );
 
@@ -3618,22 +3578,10 @@ mov_trans_tab_create (t_mov_gui_stuff *mgp)
 static GtkWidget *
 mov_selection_handling_tab_create (t_mov_gui_stuff *mgp)
 {
-  GtkWidget	 *option_menu;
-  GtkWidget      *menu;
+  GtkWidget	 *combo;
   GtkWidget	 *vbox;
   GtkWidget	 *table;
   GtkObject      *adj;
-
-  /*  the option menu items -- for the Selection Handling modes  */
-  static MenuItem option_selmode_items[] =
-  {
-    { N_("Ignore selection (in all source images)"),   0, 0, mov_selmode_menu_callback, (gpointer) GAP_MOV_SEL_IGNORE, NULL, NULL },
-    { N_("Use selection (from initial source image)"), 0, 0, mov_selmode_menu_callback, (gpointer) GAP_MOV_SEL_INITIAL, NULL, NULL },
-    { N_("Use selections (from all source images)"),   0, 0, mov_selmode_menu_callback, (gpointer) GAP_MOV_SEL_FRAME_SPECIFIC, NULL, NULL },
-    { NULL, 0, 0, NULL, NULL, NULL, NULL }
-  };
-
-  gint gettextize_loop;
 
   /* the vbox */
   vbox = gtk_vbox_new (FALSE, 3);
@@ -3646,26 +3594,21 @@ mov_selection_handling_tab_create (t_mov_gui_stuff *mgp)
   gtk_table_set_col_spacings (GTK_TABLE (table), 4);
   gtk_box_pack_start (GTK_BOX (vbox), table, TRUE, TRUE, 0);
 
-  /* Selection menu */
-  option_menu = gtk_option_menu_new();
-  gtk_table_attach(GTK_TABLE(table), option_menu, 0, 3, 0, 1,
+  /* Selection combo */
+  combo = gimp_int_combo_box_new (_("Ignore selection (in all source images)"),    GAP_MOV_SEL_IGNORE,
+                                  _("Use selection (from initial source image)"),  GAP_MOV_SEL_INITIAL,
+                                  _("Use selections (from all source images)"),    GAP_MOV_SEL_FRAME_SPECIFIC,
+                                  NULL);
+  gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (combo), 
+                              GAP_MOV_SEL_IGNORE,              /* initial int value */
+                              G_CALLBACK (mov_selmode_menu_callback),
+                              mgp);
+  gtk_table_attach(GTK_TABLE(table), combo, 0, 3, 0, 1,
 		   0, 0, 0, 0);
-  gimp_help_set_help_data(option_menu,
+  gimp_help_set_help_data(combo,
                        _("How to handle selections in the source image")
                        , NULL);
-  gtk_widget_show(option_menu);
-
-  for (gettextize_loop = 0; option_selmode_items[gettextize_loop].label != NULL;
-       gettextize_loop++)
-  {
-    option_selmode_items[gettextize_loop].label =
-      gettext(option_selmode_items[gettextize_loop].label);
-  }
-
-  menu = p_buildmenu (option_selmode_items, mgp);
-  g_object_set_data(G_OBJECT(menu), "mgp", mgp);
-  gtk_option_menu_set_menu(GTK_OPTION_MENU(option_menu), menu);
-  gtk_widget_show(option_menu);
+  gtk_widget_show(combo);
 
   /* ttlx transformfactor */
   adj = gimp_scale_entry_new( GTK_TABLE (table), 0, 1,        /* table col, row */
@@ -3686,7 +3629,8 @@ mov_selection_handling_tab_create (t_mov_gui_stuff *mgp)
   mgp->sel_feather_radius_adj = GTK_ADJUSTMENT(adj);
 
   /* for initial sensitivity */
-  mov_selmode_menu_callback(menu, (gpointer)pvals->src_selmode);
+  gimp_int_combo_box_set_active (GIMP_INT_COMBO_BOX (combo), pvals->src_selmode);
+
 
   gtk_widget_show(table);
   gtk_widget_show(vbox);
@@ -4527,15 +4471,15 @@ mov_path_feather_adjustment_update( GtkWidget *widget,
 }  /* end mov_path_feather_adjustment_update */
 
 static void
-mov_selmode_menu_callback (GtkWidget *widget, gpointer   client_data)
+mov_selmode_menu_callback (GtkWidget *widget, t_mov_gui_stuff *mgp)
 {
   gboolean l_sensitive;
   GtkWidget *spinbutton;
-  t_mov_gui_stuff *mgp;
+  gint value;
 
-  pvals->src_selmode = (gint)client_data;
+  gimp_int_combo_box_get_active (GIMP_INT_COMBO_BOX (widget), &value);
+  pvals->src_selmode = value;
 
-  mgp = g_object_get_data( G_OBJECT(widget), "mgp" );
   if(mgp == NULL) return;
 
   l_sensitive = TRUE;
@@ -4544,10 +4488,13 @@ mov_selmode_menu_callback (GtkWidget *widget, gpointer   client_data)
     l_sensitive = FALSE;
   }
 
-  spinbutton = GTK_WIDGET(g_object_get_data (G_OBJECT (mgp->sel_feather_radius_adj), "spinbutton"));
-  if(spinbutton)
+  if(mgp->sel_feather_radius_adj)
   {
-    gtk_widget_set_sensitive(spinbutton, l_sensitive);
+    spinbutton = GTK_WIDGET(g_object_get_data (G_OBJECT (mgp->sel_feather_radius_adj), "spinbutton"));
+    if(spinbutton)
+    {
+      gtk_widget_set_sensitive(spinbutton, l_sensitive);
+    }
   }
   mov_set_instant_apply_request(mgp);
 }  /* end mov_selmode_menu_callback */
@@ -4752,76 +4699,6 @@ mov_path_prevw_preview_events ( GtkWidget *widget,
 
 
 /* ============================================================================
- * p_chk_keyframes_OLD
- *   check if controlpoints and keyframe settings are OK
- *   return TRUE if OK,
- *   Pop Up error Dialog window and return FALSE if NOT.
- * ============================================================================
- */
-
-static gint
-p_chk_keyframes_OLD(t_mov_gui_stuff *mgp)
-{
-#define ARGC_ERRWINDOW 2
-
-  static GapArrArg  argv[ARGC_APV];
-  gint   l_idx;
-  gchar *l_err_lbltext;
-  static GapArrButtonArg  b_argv[2];
-  static gint  keychk_locked = FALSE;
-
-  p_points_to_tab(mgp);
-
-  l_err_lbltext = gap_mov_exec_chk_keyframes(pvals);
-
-  if(*l_err_lbltext != '\0')
-  {
-    if(!keychk_locked)
-    {
-      gint l_rc;
-
-      keychk_locked = TRUE;
-      gap_arr_arg_init(&argv[0], GAP_ARR_WGT_LABEL);
-      argv[0].label_txt = _("Can't operate with current controlpoint or keyframe settings");
-
-      gap_arr_arg_init(&argv[1], GAP_ARR_WGT_LABEL);
-      argv[1].label_txt = l_err_lbltext;
-
-      b_argv[0].but_txt  = _("Reset Keyframes");
-      b_argv[0].but_val  = TRUE;
-      b_argv[1].but_txt  = GTK_STOCK_CANCEL;
-      b_argv[1].but_val  = FALSE;
-
-      l_rc = gap_arr_std_dialog( _("Move Path Controlpointcheck"),
-                                   _("Errors:"),
-                                   ARGC_ERRWINDOW, argv,
-				   2,    b_argv, TRUE);
-
-      if(mgp->shell == NULL) { gtk_main_quit (); return FALSE; }
-
-      if(l_rc)
-      {
-	 /* Reset all keyframes */
-	 for(l_idx = 0; l_idx <= pvals->point_idx_max; l_idx++ )
-	 {
-            pvals->point[l_idx].keyframe = 0;
-            pvals->point[l_idx].keyframe_abs = 0;
-            p_point_refresh(mgp);
-	 }
-      }
-      keychk_locked = FALSE;
-    }
-
-    g_free(l_err_lbltext);
-    return(FALSE);
-
-  }
-  g_free(l_err_lbltext);
-  return(TRUE);
-}	/* end p_chk_keyframes_OLD */
-
-
-/* ============================================================================
  * p_chk_keyframes
  *   check if controlpoints and keyframe settings are OK
  *   return TRUE if OK,
@@ -5014,44 +4891,6 @@ mov_set_active_cursor(t_mov_gui_stuff *mgp)
   gdk_window_set_cursor(GTK_WIDGET(mgp->shell)->window, mgp->cursor_acitve);
   gdk_flush();
 }  /* end mov_set_active_cursor */
-
-/* ============================================================================
- * p_buildmenu
- *    build menu widget for all Items passed in the MenuItems Parameter
- *    MenuItems is an array of Pointers to Structure MenuItem.
- *    The End is marked by a Structure Member where the label is a NULL pointer
- *    (simplifyed version of GIMP 1.0.2 bulid_menu procedur)
- * ============================================================================
- */
-
-GtkWidget *
-p_buildmenu (MenuItem            *items, t_mov_gui_stuff *mgp)
-{
-  GtkWidget *menu;
-  GtkWidget *menu_item;
-
-  menu = gtk_menu_new ();
-
-  while (items->label)
-  {
-      menu_item = gtk_menu_item_new_with_label (items->label);
-      gtk_container_add (GTK_CONTAINER (menu), menu_item);
-
-      if (items->callback)
-      {
-        g_object_set_data(G_OBJECT(menu_item), "mgp", mgp);
-	g_signal_connect (G_OBJECT (menu_item), "activate",
-			  G_CALLBACK (items->callback),
-			  items->user_data);
-      }
-      gtk_widget_show (menu_item);
-      items->widget = menu_item;
-
-      items++;
-  }
-
-  return menu;
-}	/* end p_buildmenu */
 
 
 /* ----------------------------------

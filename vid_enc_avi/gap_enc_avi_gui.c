@@ -68,7 +68,7 @@ on_avi_response (GtkWidget *widget,
                  gint       response_id,
                  GapGveAviGlobalParams *gpp);
 static void p_init_widget_values(GapGveAviGlobalParams *gpp);
-static void on_optionmenu_video_codec  (GtkWidget     *wgt_item, GapGveAviGlobalParams *gpp);
+static void on_combo_video_codec  (GtkWidget     *widget, GapGveAviGlobalParams *gpp);
 static void on_checkbutton_toggled(GtkToggleButton *togglebutton, gint32 *val_ptr);
 static void on_gint32_spinbutton_changed (GtkAdjustment *adj, gint32 *val_ptr);
 
@@ -187,7 +187,7 @@ p_init_widget_values(GapGveAviGlobalParams *gpp)
       /* for unknow codec, set the default */
       l_idx = 0;
     }
-    gtk_option_menu_set_history (GTK_OPTION_MENU (gpp->optionmenu_codec), l_idx);
+    gimp_int_combo_box_set_active (GIMP_INT_COMBO_BOX (gpp->combo_codec), l_idx);
     p_set_codec_dependent_wgt_senistive(gpp, l_idx);
   }
 }  /* end p_init_widget_values */
@@ -229,43 +229,58 @@ p_set_codec_dependent_wgt_senistive(GapGveAviGlobalParams *gpp, gint32 idx)
       break;
   }
 
-  gtk_notebook_set_current_page(GTK_NOTEBOOK(gpp->notebook_main), idx);
+  if(gpp->notebook_main)
+    gtk_notebook_set_current_page(GTK_NOTEBOOK(gpp->notebook_main), idx);
 
-  gtk_widget_set_sensitive(gpp->jpg_dont_recode_checkbutton, jpeg_sensitive);
-  gtk_widget_set_sensitive(gpp->jpg_interlace_checkbutton,   jpeg_sensitive);
-  gtk_widget_set_sensitive(gpp->jpg_odd_first_checkbutton,   (jpeg_sensitive 
-                                                           && gpp->evl.jpeg_interlaced) );
-  gtk_widget_set_sensitive(gpp->jpg_quality_spinbutton,      jpeg_sensitive);
+  if(gpp->jpg_dont_recode_checkbutton)
+    gtk_widget_set_sensitive(gpp->jpg_dont_recode_checkbutton, jpeg_sensitive);
+  if(gpp->jpg_interlace_checkbutton)
+    gtk_widget_set_sensitive(gpp->jpg_interlace_checkbutton,   jpeg_sensitive);
+  if(gpp->jpg_odd_first_checkbutton)
+    gtk_widget_set_sensitive(gpp->jpg_odd_first_checkbutton,   (jpeg_sensitive 
+                                                             && gpp->evl.jpeg_interlaced) );
+  if(gpp->jpg_quality_spinbutton)
+    gtk_widget_set_sensitive(gpp->jpg_quality_spinbutton,      jpeg_sensitive);
 
-  gtk_widget_set_sensitive(gpp->xvid_rc_kbitrate_spinbutton,       xvid_sensitive);
-  gtk_widget_set_sensitive(gpp->xvid_rc_reaction_delay_spinbutton, xvid_sensitive);
-  gtk_widget_set_sensitive(gpp->xvid_rc_avg_period_spinbutton,     xvid_sensitive);
-  gtk_widget_set_sensitive(gpp->xvid_rc_buffer_spinbutton,         xvid_sensitive);
-  gtk_widget_set_sensitive(gpp->xvid_max_quantizer_spinbutton,     xvid_sensitive);
-  gtk_widget_set_sensitive(gpp->xvid_min_quantizer_spinbutton,     xvid_sensitive);
-  gtk_widget_set_sensitive(gpp->xvid_max_key_interval_spinbutton,  xvid_sensitive);
-  gtk_widget_set_sensitive(gpp->xvid_quality_spinbutton,           xvid_sensitive);
+  if(gpp->xvid_rc_kbitrate_spinbutton)
+    gtk_widget_set_sensitive(gpp->xvid_rc_kbitrate_spinbutton,       xvid_sensitive);
+  if(gpp->xvid_rc_reaction_delay_spinbutton)
+    gtk_widget_set_sensitive(gpp->xvid_rc_reaction_delay_spinbutton, xvid_sensitive);
+  if(gpp->xvid_rc_avg_period_spinbutton)
+    gtk_widget_set_sensitive(gpp->xvid_rc_avg_period_spinbutton,     xvid_sensitive);
+  if(gpp->xvid_rc_buffer_spinbutton)
+    gtk_widget_set_sensitive(gpp->xvid_rc_buffer_spinbutton,         xvid_sensitive);
+  if(gpp->xvid_max_quantizer_spinbutton)
+    gtk_widget_set_sensitive(gpp->xvid_max_quantizer_spinbutton,     xvid_sensitive);
+  if(gpp->xvid_min_quantizer_spinbutton)
+    gtk_widget_set_sensitive(gpp->xvid_min_quantizer_spinbutton,     xvid_sensitive);
+  if(gpp->xvid_max_key_interval_spinbutton)
+    gtk_widget_set_sensitive(gpp->xvid_max_key_interval_spinbutton,  xvid_sensitive);
+  if(gpp->xvid_quality_spinbutton)
+    gtk_widget_set_sensitive(gpp->xvid_quality_spinbutton,           xvid_sensitive);
   
 }  /* end p_set_codec_dependent_wgt_senistive  */
 
 
 /* ----------------------------------------
- * on_optionmenu_video_codec
+ * on_combo_video_codec
  * ----------------------------------------
  */
 static void
-on_optionmenu_video_codec  (GtkWidget     *wgt_item,
-                           GapGveAviGlobalParams *gpp)
+on_combo_video_codec  (GtkWidget     *widget,
+                       GapGveAviGlobalParams *gpp)
 {
   gint       l_idx;
+  gint       value;
 
-  if(gap_debug) printf("CB: on_optionmenu_video_codec\n");
+  if(gap_debug) printf("CB: on_combo_video_codec\n");
 
   if(gpp == NULL) return;
 
-  l_idx = (gint) g_object_get_data (G_OBJECT (wgt_item), GAP_GVE_MENU_ITEM_INDEX_KEY);
+  gimp_int_combo_box_get_active (GIMP_INT_COMBO_BOX (widget), &value);
+  l_idx = value;
 
-  if(gap_debug) printf("CB: on_optionmenu_video_codec index: %d\n", (int)l_idx);
+  if(gap_debug) printf("CB: on_combo_video_codec index: %d\n", (int)l_idx);
   if(l_idx < 1)
   {
     l_idx = 0;
@@ -282,7 +297,7 @@ on_optionmenu_video_codec  (GtkWidget     *wgt_item,
   p_set_codec_dependent_wgt_senistive(gpp, l_idx);
 
 
-}  /* end on_optionmenu_video_codec */
+}  /* end on_combo_video_codec */
 
 
 /* ----------------------------------------
@@ -379,9 +394,7 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
   GtkWidget *checkbutton;
   GtkWidget *spinbutton;
   GtkObject *adj;
-  GtkWidget *menuitem;
-  GtkWidget *optionmenu_codec;
-  GtkWidget *optionmenu_codec_menu;
+  GtkWidget *combo_codec;
   
 
   epp = &gpp->evl;
@@ -427,47 +440,27 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
                     (GtkAttachOptions) (0), 0, 0);
 
 
-  /* the Video CODEC optionmenu */
-  optionmenu_codec = gtk_option_menu_new ();
-  gpp->optionmenu_codec = optionmenu_codec;
-  gtk_widget_show (optionmenu_codec);
-  gtk_table_attach (GTK_TABLE (table_master), optionmenu_codec, 1, 2, master_row, master_row+1,
+  /* the Video CODEC combo */
+  combo_codec = gimp_int_combo_box_new ("JPEG",   GAP_AVI_VIDCODEC_00_JPEG,
+                                        "RAW",    GAP_AVI_VIDCODEC_01_RAW,
+#ifdef ENABLE_LIBXVIDCORE
+                                        "XVID",   GAP_AVI_VIDCODEC_02_XVID,
+#endif
+                                     NULL);
+
+  gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (combo_codec),
+                             GAP_AVI_VIDCODEC_00_JPEG,  /* inital value */
+                             G_CALLBACK (on_combo_video_codec),
+                             gpp);
+
+  gpp->combo_codec = combo_codec;
+  gtk_widget_show (combo_codec);
+  gtk_table_attach (GTK_TABLE (table_master), combo_codec, 1, 2, master_row, master_row+1,
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_usize (optionmenu_codec, 160, -2);
-  gimp_help_set_help_data (optionmenu_codec, _("Select video codec"), NULL);
+  gtk_widget_set_usize (combo_codec, 160, -2);
+  gimp_help_set_help_data (combo_codec, _("Select video codec"), NULL);
 
-
-  optionmenu_codec_menu = gtk_menu_new ();
-  menuitem = gtk_menu_item_new_with_label (_("JPEG"));
-        g_signal_connect (G_OBJECT (menuitem), "activate",
-                          G_CALLBACK (on_optionmenu_video_codec),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (menuitem), GAP_GVE_MENU_ITEM_INDEX_KEY
-                          , (gpointer)GAP_AVI_VIDCODEC_00_JPEG);
-  gtk_widget_show (menuitem);
-  gtk_menu_append (GTK_MENU (optionmenu_codec_menu), menuitem);
-  menuitem = gtk_menu_item_new_with_label (_("RAW"));
-        g_signal_connect (G_OBJECT (menuitem), "activate",
-                          G_CALLBACK (on_optionmenu_video_codec),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (menuitem), GAP_GVE_MENU_ITEM_INDEX_KEY
-                          , (gpointer)GAP_AVI_VIDCODEC_01_RAW);
-  gtk_widget_show (menuitem);
-
-#ifdef ENABLE_LIBXVIDCORE
-  gtk_menu_append (GTK_MENU (optionmenu_codec_menu), menuitem);
-  menuitem = gtk_menu_item_new_with_label (_("XVID"));
-        g_signal_connect (G_OBJECT (menuitem), "activate",
-                          G_CALLBACK (on_optionmenu_video_codec),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (menuitem), GAP_GVE_MENU_ITEM_INDEX_KEY
-                          , (gpointer)GAP_AVI_VIDCODEC_02_XVID);
-  gtk_widget_show (menuitem);
-#endif
-  gtk_menu_append (GTK_MENU (optionmenu_codec_menu), menuitem);
-
-  gtk_option_menu_set_menu (GTK_OPTION_MENU (optionmenu_codec), optionmenu_codec_menu);
 
   master_row++;
 
@@ -992,6 +985,21 @@ gap_enc_avi_gui_dialog(GapGveAviGlobalParams *gpp)
   /* ---------- dialog ----------*/
 
   if(gap_debug) printf("gap_enc_avi_gui_dialog: Before create_shell_window\n");
+
+  gpp->notebook_main = NULL;
+  gpp->jpg_dont_recode_checkbutton = NULL;
+  gpp->jpg_interlace_checkbutton = NULL;
+  gpp->jpg_odd_first_checkbutton = NULL;
+  gpp->jpg_quality_spinbutton = NULL;
+  gpp->xvid_rc_kbitrate_spinbutton = NULL;
+  gpp->xvid_rc_reaction_delay_spinbutton = NULL;
+  gpp->xvid_rc_avg_period_spinbutton = NULL;
+  gpp->xvid_rc_buffer_spinbutton = NULL;
+  gpp->xvid_max_quantizer_spinbutton = NULL;
+  gpp->xvid_min_quantizer_spinbutton = NULL;
+  gpp->xvid_max_key_interval_spinbutton = NULL;
+  gpp->xvid_quality_spinbutton = NULL;
+
 
   gpp->shell_window = p_create_shell_window (gpp);
   p_init_widget_values(gpp);

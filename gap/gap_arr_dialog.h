@@ -139,7 +139,7 @@ typedef struct {
   GtkWidget  *text_filesel; /* for private (arr_dialog.c) use only */
   GtkWidget  *text_entry;   /* for private (arr_dialog.c) use only */
   GtkWidget  *check_button;   /* for private (arr_dialog.c) use only */
-  GtkWidget  *option_menu;    /* for private (arr_dialog.c) use only */
+  GtkWidget  *combo;          /* for private (arr_dialog.c) use only */
   GtkObject  *adjustment;     /* for private (arr_dialog.c) use only */
   gpointer    radiogroup;     /* for private (arr_dialog.c) use only */
 

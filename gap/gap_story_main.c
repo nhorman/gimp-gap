@@ -87,6 +87,7 @@ static GapStbMainGlobalParams global_params =
 , NULL        /*  GtkWidget *menu_item_stb_save_as */
 , NULL        /*  GtkWidget *menu_item_stb_playback */
 , NULL        /*  GtkWidget *menu_item_stb_properties */
+, NULL        /*  GtkWidget *menu_item_stb_encode */
 , NULL        /*  GtkWidget *menu_item_stb_close */
 
 , NULL        /*  GtkWidget *menu_item_cll_save */
@@ -94,6 +95,7 @@ static GapStbMainGlobalParams global_params =
 , NULL        /*  GtkWidget *menu_item_cll_add_clip */
 , NULL        /*  GtkWidget *menu_item_cll_playback */
 , NULL        /*  GtkWidget *menu_item_cll_properties */
+, NULL        /*  GtkWidget *menu_item_cll_encode */
 , NULL        /*  GtkWidget *menu_item_cll_close */
 
 

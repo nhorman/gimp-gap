@@ -153,7 +153,7 @@ static gint         on_pview_events (GtkWidget *widget
 			                         );
 
 static void         p_scale_wp_list(GapMorphGUIParams *mgup);
-static void         p_imglayer_menu_callback(gint32 layer_id, gpointer user_data);
+static void         p_imglayer_menu_callback(GtkWidget *widget, GapMorphSubWin *swp);
 static gint         p_imglayer_constrain(gint32 image_id, gint32 drawable_id, gpointer data);
 static void         p_refresh_layer_menu(GapMorphSubWin *swp, GapMorphGUIParams *mgup);
 static void         on_pointcolor_button_changed(GimpColorButton *widget, GimpRGB *pcolor);
@@ -762,6 +762,9 @@ on_swap_button_pressed_callback(GtkWidget *wgt, GapMorphGUIParams *mgup)
     /* scale is needed because src and dst layer differ in size */
     p_scale_wp_list(mgup);
   }
+
+  gimp_int_combo_box_set_active(mgup->src_win.combo, mgup->mgpp->osrc_layer_id);
+  gimp_int_combo_box_set_active(mgup->dst_win.combo, mgup->mgpp->fdst_layer_id);
   
   p_set_upd_timer_request(mgup
                          ,GAP_MORPH_DLG_UPD_REQUEST_FULL_REFRESH
@@ -2283,17 +2286,19 @@ p_scale_wp_list(GapMorphGUIParams *mgup)
  * -----------------------------
  */
 static void
-p_imglayer_menu_callback(gint32 layer_id, gpointer user_data)
+p_imglayer_menu_callback(GtkWidget *widget, GapMorphSubWin *swp)
 {
   gint32 l_image_id;
-  GapMorphSubWin *swp;
-  
-  swp = (GapMorphSubWin *)user_data;
+  gint   value;
+  gint32 layer_id;
+
+  gimp_int_combo_box_get_active (GIMP_INT_COMBO_BOX (widget), &value);
+  layer_id = value;
 
   l_image_id = gimp_drawable_get_image(layer_id);
   if(!gap_image_is_alive(l_image_id))
   {
-    /*if(gap_debug)*/ printf("p_imglayer_menu_callback: NOT ALIVE image_id=%d layer_id=%d\n",
+     if(gap_debug) printf("p_imglayer_menu_callback: NOT ALIVE image_id=%d layer_id=%d\n",
          (int)l_image_id, (int)layer_id);
      return;
   }
@@ -2326,7 +2331,7 @@ p_imglayer_menu_callback(gint32 layer_id, gpointer user_data)
 static gint
 p_imglayer_constrain(gint32 image_id, gint32 drawable_id, gpointer data)
 {
-  if(gap_debug) printf("GAP-DEBUG: p_imglayer_constrain PROCEDURE image_id:%d drawable_id:%d\n"
+  /*if(gap_debug)*/ printf("GAP-DEBUG: p_imglayer_constrain PROCEDURE image_id:%d drawable_id:%d\n"
                           ,(int)image_id
                           ,(int)drawable_id
                           );
@@ -2350,9 +2355,20 @@ p_imglayer_constrain(gint32 image_id, gint32 drawable_id, gpointer data)
      return(FALSE);
   }
 
-   /* Accept all other layers
+   /* Accept all other RGB and GRAY layers
     */
-  return(TRUE);
+
+  if(gimp_drawable_is_rgb(drawable_id))
+  {
+    return(TRUE);
+  }
+  
+  if(gimp_drawable_is_gray(drawable_id))
+  {
+    return(TRUE);
+  }
+  
+  return (FALSE);
   
 } /* end p_imglayer_constrain */
 
@@ -2365,13 +2381,11 @@ p_imglayer_constrain(gint32 image_id, gint32 drawable_id, gpointer data)
 static void
 p_refresh_layer_menu(GapMorphSubWin *swp, GapMorphGUIParams *mgup)
 {
-  GtkWidget *menu;
-
-  menu = gimp_layer_menu_new(p_imglayer_constrain,
-                             p_imglayer_menu_callback,
-                             swp,
-                             *swp->layer_id_ptr);
-  gtk_option_menu_set_menu(GTK_OPTION_MENU(swp->layer_option_menu), menu);
+  gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (swp->combo), 
+                              *swp->layer_id_ptr,                    /* the initial value to set */
+                              G_CALLBACK (p_imglayer_menu_callback),
+                              swp
+			      );
 
 }  /* end p_refresh_layer_menu */
 
@@ -3122,7 +3136,7 @@ p_create_subwin(GapMorphSubWin *swp
   GtkWidget *pv_table;
   GtkWidget *spinbutton;
   GtkWidget *button;
-  GtkWidget *option_menu;
+  GtkWidget *combo;
   GtkWidget *label;
   gint       row;
   GtkObject *adj;
@@ -3144,7 +3158,7 @@ p_create_subwin(GapMorphSubWin *swp
   
   row = 0;
   
-  /* the layer seletion optionmenu */
+  /* the layer seletion combobox */
   label = gtk_label_new( _("Layer:"));
   
   gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
@@ -3152,27 +3166,27 @@ p_create_subwin(GapMorphSubWin *swp
                   , GTK_FILL, 0, 4, 0);
   gtk_widget_show(label);
 
-  option_menu = gtk_option_menu_new();
-  gtk_table_attach(GTK_TABLE(table), option_menu, 1, 10, row, row+1,
+  combo = gimp_drawable_combo_box_new (p_imglayer_constrain, NULL);
+  gtk_table_attach(GTK_TABLE(table), combo, 1, 10, row, row+1,
                    GTK_EXPAND | GTK_FILL, 0, 0, 0);
 
   if(swp->src_flag)
   {
-    gimp_help_set_help_data(option_menu,
+    gimp_help_set_help_data(combo,
                        _("Select the source layer")
                        , NULL);
   }
   else
   {
-    gimp_help_set_help_data(option_menu,
+    gimp_help_set_help_data(combo,
                        _("Select the destination layer ")
                        , NULL);
   }
 
-  gtk_widget_show(option_menu);
-  swp->layer_option_menu = option_menu;
+  gtk_widget_show(combo);
+  swp->combo = combo;
   /* p_refresh_layer_menu(swp, mgup); */ /* is done later after the pview widget is initialized */
-  gtk_widget_show(option_menu);
+  gtk_widget_show(combo);
 
 
   row++;

@@ -76,227 +76,11 @@
 #include "gap_image.h"
 #include "gap_range_ops.h"
 #include "gap_mod_layer.h"
+#include "gap_mod_layer_dialog.h"
 
 
 extern      int gap_debug; /* ==0  ... dont print debug infos */
 
-
-/* ============================================================================
- * p_layer_modify_dialog
- *   retcode
- *               0   ... Generate Paramfile
- *               1   ... Generate Paramfile and start mpeg_encode
- * ============================================================================
- */
-static
-int p_layer_modify_dialog(GapAnimInfo *ainfo_ptr,
-                   gint32 *range_from,  gint32 *range_to,
-                   gint32 *action_mode, gint32 *sel_mode,
-                   gint32 *sel_case,    gint32 *sel_invert,
-                   char *sel_pattern,   char   *new_layername)
-{
-  static GapArrArg  argv[9];
-  static GapArrButtonArg  b_argv[2];
-  gint   l_rc;
-
-  /* Layer select modes */
-  static char *sel_args[7]    = { N_("Pattern is equal to layer name"),
-                                  N_("Pattern is start of layer name"),
-                                  N_("Pattern is end of layer name"),
-                                  N_("Pattern is a part of layer name"),
-                                  N_("Pattern is a list of layerstack numbers"),
-                                  N_("Pattern is a list of reverse layerstack numbers"),
-                                  N_("All visible (ignore pattern)")
-                                  };
-  static char *sel_help[7]    = { N_("Select all layers where layer name is equal to pattern"),
-                                  N_("Select all layers where layer name starts with pattern"),
-                                  N_("Select all layers where layer name ends up with pattern"),
-                                  N_("Select all layers where layer name contains pattern"),
-                                  N_("Select layerstack positions where 0 is the top layer.\nExample: 0, 4-5, 8"),
-                                  N_("Select layerstack positions where 0 is the background layer.\nExample: 0, 4-5, 8"),
-                                  N_("Select all visible layers")
-                                  };
-
-  /* action items what to do with the selected layer(s) */
-  static char *action_args[34]= { N_("Set layer(s) visible"),
-                                  N_("Set layer(s) invisible"),
-                                  N_("Set layer(s) linked"),
-                                  N_("Set layer(s) unlinked"),
-                                  N_("Raise layer(s)"),
-                                  N_("Lower layer(s)"),
-                                  N_("Merge layer(s) expand as necessary"),
-                                  N_("Merge layer(s) clipped to image"),
-                                  N_("Merge layer(s) clipped to bg-layer"),
-                                  N_("Apply filter on layer(s)"),
-                                  N_("Duplicate layer(s)"),
-                                  N_("Delete layer(s)"),
-                                  N_("Rename layer(s)"),
-                                  N_("Replace selection"),
-                                  N_("Add selection"),
-                                  N_("Subtract selection"),
-                                  N_("Intersect selection"),
-                                  N_("Selection none"),
-                                  N_("Selection all"),
-                                  N_("Selection invert"),
-                                  N_("Save selection to channel"),
-				  N_("Load selection from channel"),
-                                  N_("Delete channel (by name)"),
-				  N_("Add alpha channel"),
-				  N_("Add white layermask (opaque)"),
-				  N_("Add black layermask (transparent)"),
-				  N_("Add layermask from alpha"),
-				  N_("Add layermask transfer from alpha"),
-				  N_("Add layermask from selection"),
-				  N_("Add layermask from bw copy"),
-				  N_("Delete layermask"),
-				  N_("Apply layermask"),
-				  N_("Copy layermask from layer above"),
-				  N_("Copy layermask from layer below")
-                                  };
-
-
-/*
-  static char *action_help[32]  = {"set all selected layers visible",
-                                  "set all selected layers  invisible",
-                                  "set all selected layers  linked",
-                                  "set all selected layers  unlinked",
-                                  "raise all selected layers",
-                                  "lower all selected layers",
-                                  "merge expand as necessary",
-                                  "merge clipped to image",
-                                  "merge clipped to bg-layer",
-                                  "APPLY FILTER to all selected layers",
-                                  "duplicate all selected layers",
-                                  "delete REMOVES all selected layers",
-                                  "rename all selected layers\nto NewLayername.",
-
-				  "Replace Selection by Selection of the invoking Frame Image",
-				  "Add Selection",
-				  "Subtract Selection",
-				  "Intersect Selection",
-				  "Clear Selection in all handled Frames",
-				  "Select All in all handled Frames",
-				  "Invert Selection in all handled Frames",
-				  "Save Selection as Channel",
-				  "Load Selection from Channel",
-				  "Delete Channel by Name"
-                                  };
-*/
-
-  guint get_textize_loop;
-
-  for (get_textize_loop = 0; get_textize_loop < G_N_ELEMENTS (sel_args) ; get_textize_loop++) {
-    sel_args[get_textize_loop] = gettext(sel_args[get_textize_loop]);
-    sel_help[get_textize_loop] = gettext(sel_help[get_textize_loop]);
-  }
-  for (get_textize_loop = 0; get_textize_loop < G_N_ELEMENTS (action_args); get_textize_loop++)
-    action_args[get_textize_loop] = gettext(action_args[get_textize_loop]);
-
-  l_rc = -1;
-
-  /* the 2 Action Buttons */
-    b_argv[0].but_txt  = GTK_STOCK_CANCEL;
-    b_argv[0].but_val  = -1;
-    b_argv[1].but_txt  = GTK_STOCK_OK;
-    b_argv[1].but_val  = 0;
-
-  gap_arr_arg_init(&argv[0], GAP_ARR_WGT_LABEL);
-  argv[0].label_txt = _("Perform function on one or more layer(s)\n"
-                        "in all frames of the selected frame range\n");
-
-  gap_arr_arg_init(&argv[1], GAP_ARR_WGT_INT_PAIR);
-  argv[1].constraint = TRUE;
-  argv[1].label_txt = _("From Frame:");
-  argv[1].help_txt  = _("First handled frame");
-  argv[1].int_min   = (gint)ainfo_ptr->first_frame_nr;
-  argv[1].int_max   = (gint)ainfo_ptr->last_frame_nr;
-  argv[1].int_ret   = (gint)ainfo_ptr->curr_frame_nr;
-
-  gap_arr_arg_init(&argv[2], GAP_ARR_WGT_INT_PAIR);
-  argv[2].constraint = TRUE;
-  argv[2].label_txt = _("To Frame:");
-  argv[2].help_txt  = _("Last handled frame");
-  argv[2].int_min   = (gint)ainfo_ptr->first_frame_nr;
-  argv[2].int_max   = (gint)ainfo_ptr->last_frame_nr;
-  argv[2].int_ret   = (gint)ainfo_ptr->last_frame_nr;
-
-
-  /* Layer select mode RADIO buttons */
-  gap_arr_arg_init(&argv[3], GAP_ARR_WGT_RADIO);
-  argv[3].label_txt = _("Layer Selection:");
-  argv[3].radio_argc = G_N_ELEMENTS (sel_args);
-  argv[3].radio_argv = sel_args;
-  argv[3].radio_help_argv = sel_help;
-  argv[3].radio_ret  = 4;
-
-  /* Layer select pattern string */
-  sel_pattern[0] = '0';
-  sel_pattern[1] = '\0';
-  gap_arr_arg_init(&argv[4], GAP_ARR_WGT_TEXT);
-  argv[4].label_txt = _("Layer Pattern:");
-  argv[4].entry_width = 140;       /* pixel */
-  argv[4].help_txt  = _("String to identify layer names or layerstack position numbers. Example: 0,3-5");
-  argv[4].text_buf_len = MAX_LAYERNAME;
-  argv[4].text_buf_ret = sel_pattern;
-
-  /* case sensitive checkbutton */
-  gap_arr_arg_init(&argv[5], GAP_ARR_WGT_TOGGLE);
-  argv[5].label_txt = _("Case sensitive");
-  argv[5].help_txt  = _("Lowercase and uppercase letters are considered as different");
-  argv[5].int_ret   = 1;
-
-  /* invert selection checkbutton */
-  gap_arr_arg_init(&argv[6], GAP_ARR_WGT_TOGGLE);
-  argv[6].label_txt = _("Invert Layer Selection");
-  argv[6].help_txt  = _("Perform actions on all unselected layers");
-  argv[6].int_ret   = 0;
-
-  /* desired action to perform OPTIONMENU  */
-  gap_arr_arg_init(&argv[7], GAP_ARR_WGT_OPTIONMENU);
-  argv[7].label_txt = _("Function:");
-  argv[7].radio_argc = G_N_ELEMENTS (action_args);
-  argv[7].radio_argv = action_args;
-  /* argv[7].radio_help_argv = action_help */
-  argv[7].help_txt = _("Function to be performed on all selected layers");
-  argv[7].radio_ret  = 0;
-
-  /* a new name for the handled Layer(s) */
-  *new_layername = '\0';
-  gap_arr_arg_init(&argv[8], GAP_ARR_WGT_TEXT);
-  argv[8].label_txt = _("Layer Name\n or Channel Name:");
-  argv[8].entry_width = 140;       /* pixel */
-  argv[8].help_txt  = _("Layer (or channel) name for all handled layers (or channels),\n"
-                        "where the string '[######]' is replaced by the frame number.\n"
-			"This name is only relevant for the functions:\n"
-			" Duplicate layer(s)\n"
-			" Rename layer(s)\n"
-			" Save selection to channel\n"
-			" Load selection from channel\n"
-			" Delete channel (by name)"
-			);
-  argv[8].text_buf_len = MAX_LAYERNAME;
-  argv[8].text_buf_ret = new_layername;
-
-
-  l_rc =  gap_arr_std_dialog( _("Frames Modify"),
-                                _("Settings"),
-                                 9,   argv,      /* widget array */
-                                 2,   b_argv,    /* button array */
-                                 0);
-
-  /* return the entered values */
-  *range_from           = argv[1].int_ret;
-  *range_to             = argv[2].int_ret;
-  *sel_mode             = argv[3].int_ret;
-                       /*     [4] sel_pattern  */
-  *sel_case             = argv[5].int_ret;
-  *sel_invert           = argv[6].int_ret;
-  *action_mode          = argv[7].int_ret;
-                       /*     [8] l_new_layername */
-
-
-  return (l_rc);
-}	/* end p_layer_modify_dialog */
 
 
 /* ============================================================================
@@ -1223,7 +1007,7 @@ p_frames_modify(GapAnimInfo *ainfo_ptr,
     gimp_progress_init( _("Modifying frames/layer(s)..."));
   }
 
-
+  l_operating_on_current_image = TRUE;
   l_begin = range_from;
   l_end   = range_to;
   l_tmp_image_id = -1;
@@ -1539,11 +1323,10 @@ gint gap_mod_layer(GimpRunMode run_mode, gint32 image_id,
     {
       if(run_mode == GIMP_RUN_INTERACTIVE)
       {
-         l_rc = p_layer_modify_dialog (ainfo_ptr, &l_from, &l_to,
+         l_rc = gap_mod_frames_dialog (ainfo_ptr, &l_from, &l_to,
 	                               &l_action_mode,
 				       &l_sel_mode, &sel_case, &sel_invert,
 				       &l_sel_pattern[0], &l_new_layername[0]);
-
       }
       else
       {

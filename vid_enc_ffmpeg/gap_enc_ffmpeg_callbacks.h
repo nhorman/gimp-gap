@@ -25,6 +25,9 @@
  */
 
 /* revision history:
+ * version 2.1.0a;  2004.11.06   hof: use some general callbacks.
+ *                                   (removed lots of similar callbacks
+ *                                    that was needed for the old glade generated code)
  * version 2.1.0a;  2004.06.05   hof: update params from ffmpeg 0.4.6 to 0.4.8
  * version 2.1.0a;  2004.05.12 : created
  */
@@ -48,149 +51,60 @@ on_ff_response (GtkWidget *widget,
                  GapGveFFMpegGlobalParams *gpp);
 
 void
-on_ff_fileformat_optionmenu  (GtkWidget     *wgt_item,
+on_ff_gint32_spinbutton_changed  (GtkWidget *widget,
+                                  gint32    *dest_value_ptr);
+
+void
+on_ff_gdouble_spinbutton_changed  (GtkWidget *widget,
+                                   gdouble    *dest_value_ptr);
+
+void
+on_ff_gint32_checkbutton_toggled  (GtkToggleButton *checkbutton,
+                                   gint32          *dest_value_ptr);
+				   
+
+
+
+
+void
+on_ff_fileformat_combo  (GtkWidget     *wgt_item,
                               GapGveFFMpegGlobalParams *gpp);
 
 void
-on_ff_vid_codec_optionmenu  (GtkWidget     *wgt_item,
+on_ff_vid_codec_combo  (GtkWidget     *wgt_item,
                              GapGveFFMpegGlobalParams *gpp);
 
 void
-on_ff_aud_codec_optionmenu  (GtkWidget     *wgt_item,
+on_ff_aud_codec_combo  (GtkWidget     *wgt_item,
                              GapGveFFMpegGlobalParams *gpp);
 
 void
-on_ff_aud_bitrate_optionmenu  (GtkWidget     *wgt_item,
+on_ff_aud_bitrate_combo  (GtkWidget     *wgt_item,
                                GapGveFFMpegGlobalParams *gpp);
 
 void
-on_ff_motion_estimation_optionmenu  (GtkWidget     *wgt_item,
+on_ff_motion_estimation_combo  (GtkWidget     *wgt_item,
                                      GapGveFFMpegGlobalParams *gpp);
 
 void
-on_ff_dct_algo_optionmenu  (GtkWidget     *wgt_item,
+on_ff_dct_algo_combo  (GtkWidget     *wgt_item,
                            GapGveFFMpegGlobalParams *gpp);
 
 void
-on_ff_idct_algo_optionmenu  (GtkWidget     *wgt_item,
+on_ff_idct_algo_combo  (GtkWidget     *wgt_item,
                            GapGveFFMpegGlobalParams *gpp);
 
 void
-on_ff_mb_decision_optionmenu  (GtkWidget     *wgt_item,
+on_ff_mb_decision_combo  (GtkWidget     *wgt_item,
                            GapGveFFMpegGlobalParams *gpp);
 
 void
-on_ff_presets_optionmenu  (GtkWidget     *wgt_item,
+on_ff_presets_combo  (GtkWidget     *wgt_item,
                            GapGveFFMpegGlobalParams *gpp);
 
 void
-on_ff_aspect_optionmenu  (GtkWidget     *wgt_item,
+on_ff_aspect_combo  (GtkWidget     *wgt_item,
                            GapGveFFMpegGlobalParams *gpp);
-
-void
-on_ff_aud_bitrate_spinbutton_changed   (GtkEditable     *editable,
-                                        GapGveFFMpegGlobalParams *gpp);
-
-void
-on_ff_vid_bitrate_spinbutton_changed   (GtkEditable     *editable,
-                                        GapGveFFMpegGlobalParams *gpp);
-
-void
-on_ff_qscale_spinbutton_changed        (GtkEditable     *editable,
-                                        GapGveFFMpegGlobalParams *gpp);
-
-void
-on_ff_qmin_spinbutton_changed          (GtkEditable     *editable,
-                                        GapGveFFMpegGlobalParams *gpp);
-
-void
-on_ff_qmax_spinbutton_changed          (GtkEditable     *editable,
-                                        GapGveFFMpegGlobalParams *gpp);
-
-void
-on_ff_qdiff_spinbutton_changed         (GtkEditable     *editable,
-                                        GapGveFFMpegGlobalParams *gpp);
-
-void
-on_ff_gop_size_spinbutton_changed      (GtkEditable     *editable,
-                                        GapGveFFMpegGlobalParams *gpp);
-
-void
-on_ff_intra_checkbutton_toggled        (GtkToggleButton *checkbutton,
-                                        GapGveFFMpegGlobalParams *gpp);
-
-void
-on_ff_aic_checkbutton_toggled          (GtkToggleButton *checkbutton,
-                                        GapGveFFMpegGlobalParams *gpp);
-void
-on_ff_umv_checkbutton_toggled          (GtkToggleButton *checkbutton,
-                                        GapGveFFMpegGlobalParams *gpp);
-					
-
-void
-on_ff_bitexact_checkbutton_toggled     (GtkToggleButton *checkbutton,
-                                        GapGveFFMpegGlobalParams *gpp);
-
-void
-on_ff_aspect_checkbutton_toggled       (GtkToggleButton *checkbutton,
-                                        GapGveFFMpegGlobalParams *gpp);
-
-void
-on_ff_b_frames_checkbutton_toggled     (GtkToggleButton *checkbutton,
-                                        GapGveFFMpegGlobalParams *gpp);
-
-void
-on_ff_mv4_checkbutton_toggled          (GtkToggleButton *checkbutton,
-                                        GapGveFFMpegGlobalParams *gpp);
-
-void
-on_ff_partitioning_checkbutton_toggled
-                                        (GtkToggleButton *checkbutton,
-                                        GapGveFFMpegGlobalParams *gpp);
-
-void
-on_ff_qblur_spinbutton_changed         (GtkEditable     *editable,
-                                        GapGveFFMpegGlobalParams *gpp);
-
-void
-on_ff_qcomp_spinbutton_changed         (GtkEditable     *editable,
-                                        GapGveFFMpegGlobalParams *gpp);
-
-void
-on_ff_rc_init_cplx_spinbutton_changed  (GtkEditable     *editable,
-                                        GapGveFFMpegGlobalParams *gpp);
-
-void
-on_ff_b_qfactor_spinbutton_changed     (GtkEditable     *editable,
-                                        GapGveFFMpegGlobalParams *gpp);
-
-void
-on_ff_i_qfactor_spinbutton_changed     (GtkEditable     *editable,
-                                        GapGveFFMpegGlobalParams *gpp);
-
-void
-on_ff_b_qoffset_spinbutton_changed     (GtkEditable     *editable,
-                                        GapGveFFMpegGlobalParams *gpp);
-
-void
-on_ff_i_qoffset_spinbutton_changed     (GtkEditable     *editable,
-                                        GapGveFFMpegGlobalParams *gpp);
-
-void
-on_ff_bitrate_tol_spinbutton_changed   (GtkEditable     *editable,
-                                        GapGveFFMpegGlobalParams *gpp);
-
-void
-on_ff_maxrate_tol_spinbutton_changed   (GtkEditable     *editable,
-                                        GapGveFFMpegGlobalParams *gpp);
-
-void
-on_ff_minrate_tol_spinbutton_changed   (GtkEditable     *editable,
-                                        GapGveFFMpegGlobalParams *gpp);
-
-void
-on_ff_bufsize_spinbutton_changed       (GtkEditable     *editable,
-                                        GapGveFFMpegGlobalParams *gpp);
 
 void
 on_ff_passlogfile_entry_changed        (GtkEditable     *editable,
@@ -198,10 +112,6 @@ on_ff_passlogfile_entry_changed        (GtkEditable     *editable,
 
 void
 on_ff_passlogfile_filesel_button_clicked (GtkButton       *button,
-                                        GapGveFFMpegGlobalParams *gpp);
-
-void
-on_ff_pass_checkbutton_toggled         (GtkToggleButton *checkbutton,
                                         GapGveFFMpegGlobalParams *gpp);
 
 void
@@ -230,26 +140,6 @@ on_fsb__ok_button_clicked              (GtkButton       *button,
 
 void
 on_fsb__cancel_button_clicked          (GtkButton       *button,
-                                        GapGveFFMpegGlobalParams *gpp);
-
-void
-on_ff_strict_spinbutton_changed        (GtkEditable     *editable,
-                                        GapGveFFMpegGlobalParams *gpp);
-
-void
-on_ff_mb_qmin_spinbutton_changed       (GtkEditable     *editable,
-                                        GapGveFFMpegGlobalParams *gpp);
-
-void
-on_ff_mb_qmax_spinbutton_changed       (GtkEditable     *editable,
-                                        GapGveFFMpegGlobalParams *gpp);
-
-void
-on_ff_dont_recodecheckbutton_toggled   (GtkToggleButton *checkbutton,
-                                        GapGveFFMpegGlobalParams *gpp);
-
-void
-on_ff_dont_recode_checkbutton_toggled  (GtkToggleButton *checkbutton,
                                         GapGveFFMpegGlobalParams *gpp);
 
 #endif

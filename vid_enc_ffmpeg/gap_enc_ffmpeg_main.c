@@ -45,6 +45,9 @@
  */
 
 /* revision history:
+ * version 2.1.0a;  2004.11.02   hof: added patch from pippin (allows compile with FFMPEG-0.4.0.9pre1)
+ *                               support for the incompatible older (stable) FFMPEG 0.4.8 version is available
+ *                               via precompiler checks HAVE_OLD_FFMPEG_0408
  * version 2.1.0a;  2004.06.10   hof: removed deinterlace option
  *                               delace was not implemented in the encoder module
  *                               and probably will never be implemented here for reasons a) and b)
@@ -83,10 +86,16 @@
 #include "avcodec.h"
 
 
+// #if FFMPEG_VERSION_INT ==  0x000408
+// #define HAVE_OLD_FFMPEG_0408
+// #else
+// #undef  HAVE_OLD_FFMPEG_0408
+// #endif
+
+#define HAVE_OLD_FFMPEG_0408
 
 
-
-static char *gap_enc_ffmpeg_version = "2.1.0a; 2004/05/28";
+static char *gap_enc_ffmpeg_version = "2.1.0a; 2004/11/06";
 
 
 
@@ -318,7 +327,7 @@ query ()
     {GIMP_PDB_INT32,  "mb_decision", "macroblock decision mode  0:SIMPLE (use mb_cmp) 1:BITS (chooses the one which needs the fewest bits) 2:RD (rate distoration) "},
     {GIMP_PDB_INT32,  "aic", "0:OFF, 1:enable Advanced intra coding (h263+)"},
     {GIMP_PDB_INT32,  "umv", "0:OFF, 1:enable Unlimited Motion Vector (h263+)"},
-    {GIMP_PDB_INT32,  "b_frames", "0:OFF, 1: use B frames (only MPEG-4 CODEC)"},
+    {GIMP_PDB_INT32,  "b_frames", "0:OFF, 1 upto 8: use n B frames per GOP (only MPEG-4 CODEC)"},
     {GIMP_PDB_INT32,  "mv4", "0:OFF, 1:use four motion vector by macroblock (only MPEG-4 CODEC)"},
     {GIMP_PDB_INT32,  "partitioning", "0:OFF, 1:use data partitioning (only MPEG-4 CODEC)"},
     {GIMP_PDB_INT32,  "packet_size", "packet size in bits (use 0 for default)"},
@@ -771,7 +780,7 @@ void
 gap_enc_ffmpeg_main_init_preset_params(GapGveFFMpegValues *epp, gint preset_idx)
 {
   gint l_idx;
-  /*                                                                DivX def   best   low       VCD   MPGbest   DVD     Real */
+  /*                                                                        DivX def   best   low       VCD   MPGbest   DVD     Real */
 
   static gint32 tab_pass[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]              =  {     1,      1,      1,      1,      1,      1,      1 };
   static gint32 tab_audio_bitrate[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]     =  {   160,    192,     96,    128,    192,    160,     96 };
@@ -805,7 +814,7 @@ gap_enc_ffmpeg_main_init_preset_params(GapGveFFMpegValues *epp, gint preset_idx)
   static gint32 tab_aic[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]               =  {     0,      0,      0,      0,      0,      0,      0 };
   static gint32 tab_umv[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]               =  {     0,      0,      0,      0,      0,      0,      0 };
 
-  static gint32 tab_b_frames[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]          =  {     0,      0,      0,      0,      0,      0,      0 };
+  static gint32 tab_b_frames[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]          =  {     2,      1,      4,      0,      0,      2,      0 };
   static gint32 tab_mv4[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]               =  {     0,      0,      0,      0,      0,      0,      0 };
   static gint32 tab_partitioning[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]      =  {     0,      0,      0,      0,      0,      0,      0 };
   static gint32 tab_packet_size[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  {     0,      0,      0,      0,      0,      0,      0 };
@@ -859,7 +868,7 @@ gap_enc_ffmpeg_main_init_preset_params(GapGveFFMpegValues *epp, gint preset_idx)
   epp->mb_decision         = tab_mb_decision[l_idx];     /* 0:FF_MB_DECISION_SIMPLE  1:FF_MB_DECISION_BITS 2:FF_MB_DECISION_RD */
   epp->aic                 = tab_aic[l_idx];             /* 0:FALSE 1:TRUE */
   epp->umv                 = tab_umv[l_idx];             /* 0:FALSE 1:TRUE */
-  epp->b_frames            = tab_b_frames[l_idx];        /* 0:FALSE 1:TRUE */
+  epp->b_frames            = tab_b_frames[l_idx];        /* 0-8: number of B-frames per GOP */
   epp->mv4                 = tab_mv4[l_idx];             /* 0:FALSE 1:TRUE */
   epp->partitioning        = tab_partitioning[l_idx];    /* 0:FALSE 1:TRUE */
   epp->packet_size         = tab_packet_size[l_idx];
@@ -1084,6 +1093,7 @@ p_ffmpeg_open(GapGveFFMpegGlobalParams *gpp
   }
 
 
+#ifdef HAVE_OLD_FFMPEG_0408
   video_enc->aspect_ratio = 0;
   if(epp->set_aspect_ratio)
   {
@@ -1097,6 +1107,23 @@ p_ffmpeg_open(GapGveFFMpegGlobalParams *gpp
       video_enc->aspect_ratio = epp->factor_aspect_ratio;
     }
   }
+#else
+  video_enc->sample_aspect_ratio.num = 0;
+  video_enc->sample_aspect_ratio.den = 0;
+  if(epp->set_aspect_ratio)
+  {
+    if(epp->factor_aspect_ratio == 0.0)
+    {
+      video_enc->sample_aspect_ratio = 
+          av_d2q ( (gdouble)gpp->val.vid_width / (gdouble)(MAX(1,gpp->val.vid_height)), 
+                  255);
+    }
+    else
+    {
+      video_enc->sample_aspect_ratio = av_d2q (epp->factor_aspect_ratio, 255);
+    }
+  }
+#endif  
 
   if(!epp->intra)  { video_enc->gop_size = epp->gop_size;  }
   else             { video_enc->gop_size = 0;              }
@@ -1150,18 +1177,11 @@ p_ffmpeg_open(GapGveFFMpegGlobalParams *gpp
       video_enc->flags |= CODEC_FLAG_PART;
   }
 
-  if (epp->b_frames)
+  if ((epp->b_frames > 0) && (!epp->intra))
   {
-    if (video_enc->codec_id != CODEC_ID_MPEG4)
-    {
-       printf("\n### Warning: B frames encoding only supported by MPEG-4. (option ignored)\n");
-    }
-    else
-    {
       video_enc->max_b_frames = epp->b_frames;
       video_enc->b_frame_strategy = 0;
       video_enc->b_quant_factor = 2.0;
-    }
   }
 
   video_enc->qmin      = epp->qmin;
@@ -1432,8 +1452,20 @@ p_ffmpeg_write_frame_chunk(t_ffmpeg_handle *ffh, gint32 encoded_size)
   {
     if(gap_debug)  printf("before av_write_frame  encoded_size:%d\n", (int)encoded_size );
 
+#ifdef HAVE_OLD_FFMPEG_0408
     ret = av_write_frame(ffh->output_context, ffh->video_stream_index, ffh->video_buffer, encoded_size);
+#else
+    {
+      AVPacket pkt;
+      av_init_packet (&pkt);
 
+      pkt.pts = ffh->vid_codec_context->coded_frame->pts;
+      pkt.stream_index = ffh->video_stream_index;
+      pkt.data = ffh->video_buffer;
+      pkt.size = encoded_size;
+      ret = av_write_frame(ffh->output_context, &pkt);
+    }
+#endif
     if(gap_debug)  printf("after av_write_frame  encoded_size:%d\n", (int)encoded_size );
   }
 
@@ -1576,8 +1608,24 @@ p_ffmpeg_write_frame(t_ffmpeg_handle *ffh, gboolean force_keyframe)
 
 
     if(gap_debug)  printf("before av_write_frame  encoded_size:%d\n", (int)encoded_size );
-
+#ifdef HAVE_OLD_FFMPEG_0408
     ret = av_write_frame(ffh->output_context, ffh->video_stream_index, ffh->video_buffer, encoded_size);
+#else
+    {
+      AVPacket pkt;
+      av_init_packet (&pkt);
+          
+      if(gap_debug)  printf("before av_write_frame  encoded_size:%d\n", (int)encoded_size );
+
+      pkt.pts = ffh->vid_codec_context->coded_frame->pts;
+      pkt.stream_index = ffh->video_stream_index;
+      pkt.data = ffh->video_buffer;
+      pkt.size = encoded_size;
+      ret = av_write_frame(ffh->output_context, &pkt);
+
+      if(gap_debug)  printf("after av_write_frame  encoded_size:%d\n", (int)encoded_size );
+    }
+#endif    
   }
 
 
@@ -1614,7 +1662,24 @@ p_ffmpeg_write_audioframe(t_ffmpeg_handle *ffh, guchar *audio_buf, int frame_byt
     encoded_size = avcodec_encode_audio(ffh->aud_codec_context
                            ,ffh->audio_buffer, ffh->audio_buffer_size
                            ,(short *)audio_buf);
+#ifdef HAVE_OLD_FFMPEG_0408
     ret = av_write_frame(ffh->output_context, ffh->audio_stream_index, ffh->audio_buffer, encoded_size);
+#else
+    {
+      AVPacket pkt;
+      av_init_packet (&pkt);
+          
+      if(gap_debug)  printf("before av_write_frame  encoded_size:%d\n", (int)encoded_size );
+
+      pkt.pts = ffh->aud_codec_context->coded_frame->pts;
+      pkt.stream_index = ffh->audio_stream_index;
+      pkt.data = ffh->audio_buffer;
+      pkt.size = encoded_size;
+      ret = av_write_frame(ffh->output_context, &pkt);
+
+      if(gap_debug)  printf("after av_write_frame  encoded_size:%d\n", (int)encoded_size );
+    }
+#endif    
   }
   return(ret);
 }  /* end p_ffmpeg_write_audioframe */

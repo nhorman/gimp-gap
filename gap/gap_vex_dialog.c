@@ -76,10 +76,10 @@ static void        on_mw_response (GtkWidget *widget,
                 		   gint       response_id,
                 		   GapVexMainGlobalParams *gpp);
 
-static void        on_mw__optionmenu_preferred_decoder  (GtkWidget     *wgt_item,
-                           GapVexMainGlobalParams *gpp);
-static void        on_mw__optionmenu_deinterlace  (GtkWidget     *wgt_item,
-                           GapVexMainGlobalParams *gpp);
+static void        on_mw__combo_preferred_decoder  (GtkWidget     *widget,
+                                                   GapVexMainGlobalParams *gpp);
+static void        on_mw__combo_deinterlace  (GtkWidget     *widget,
+                                              GapVexMainGlobalParams *gpp);
 
 static void        on_mw__checkbutton_disable_mmx_toggled (GtkToggleButton *togglebutton,
                                         GapVexMainGlobalParams *gpp);
@@ -329,7 +329,7 @@ p_update_wgt_sensitivity(GapVexMainGlobalParams *gpp)
   sensitive_vid = sensitive;
   
   gtk_widget_set_sensitive(gpp->mw__spinbutton_basenum, sensitive);
-  gtk_widget_set_sensitive(gpp->mw__optionmenu_deinterlace, sensitive);
+  gtk_widget_set_sensitive(gpp->mw__combo_deinterlace, sensitive);
   gtk_widget_set_sensitive(gpp->mw__checkbutton_multilayer, sensitive);
 
   if((gpp->val.multilayer == 0) && (sensitive_vid))
@@ -743,25 +743,27 @@ on_mw_response (GtkWidget *widget,
 }  /* end on_mw_response */
 
 /* -----------------------------------
- * on_mw__optionmenu_preferred_decoder
+ * on_mw__combo_preferred_decoder
  * -----------------------------------
  */
 static void
-on_mw__optionmenu_preferred_decoder  (GtkWidget     *wgt_item,
-                           GapVexMainGlobalParams *gpp)
+on_mw__combo_preferred_decoder  (GtkWidget     *widget,
+                                 GapVexMainGlobalParams *gpp)
 {
   GtkEntry *entry;
   gint       l_idx;
+  gint       value;
   const char *preferred_decoder;
 
- if(gap_debug) printf("CB: on_mw__optionmenu_preferred_decoder\n");
+ if(gap_debug) printf("CB: on_mw__combo_preferred_decoder\n");
 
  if(gpp == NULL) return;
 
- l_idx = (gint) g_object_get_data (G_OBJECT (wgt_item), ENC_MENU_ITEM_INDEX_KEY);
+ gimp_int_combo_box_get_active (GIMP_INT_COMBO_BOX (widget), &value);
+ l_idx = value;
 
  preferred_decoder = "\0";
- if(gap_debug) printf("CB: on_mw__optionmenu_preferred_decoder index: %d\n", (int)l_idx);
+ if(gap_debug) printf("CB: on_mw__combo_preferred_decoder index: %d\n", (int)l_idx);
  switch(l_idx)
  {
    case GAP_VEX_DECODER_NONE:
@@ -781,44 +783,52 @@ on_mw__optionmenu_preferred_decoder  (GtkWidget     *wgt_item,
                , preferred_decoder
                );
  entry = GTK_ENTRY(gpp->mw__entry_preferred_decoder);
- gtk_entry_set_text(entry, preferred_decoder);
+ if(entry)
+ {
+   gtk_entry_set_text(entry, preferred_decoder);
+ }
 
-}  /* end on_mw__optionmenu_preferred_decoder */
+}  /* end on_mw__combo_preferred_decoder */
 
 
 /* ------------------------------
- * on_mw__optionmenu_deinterlace
+ * on_mw__combo_deinterlace
  * ------------------------------
  */
 static void
-on_mw__optionmenu_deinterlace  (GtkWidget     *wgt_item,
+on_mw__combo_deinterlace  (GtkWidget     *widget,
                            GapVexMainGlobalParams *gpp)
 {
   gint       l_idx;
+  gint       value;
   gboolean   sensitive;
 
- if(gap_debug) printf("CB: on_mw__optionmenu_deinterlace\n");
+  if(gap_debug) printf("CB: on_mw__combo_deinterlace\n");
 
- if(gpp == NULL) return;
+  if(gpp == NULL) return;
 
- l_idx = (gint) g_object_get_data (G_OBJECT (wgt_item), ENC_MENU_ITEM_INDEX_KEY);
- 
- if(gap_debug) printf("CB: on_mw__optionmenu_deinterlace index: %d\n", (int)l_idx);
+  gimp_int_combo_box_get_active (GIMP_INT_COMBO_BOX (widget), &value);
+  l_idx = value;
 
- gpp->val.deinterlace = l_idx;
+  if(gap_debug) printf("CB: on_mw__combo_deinterlace index: %d\n", (int)l_idx);
 
- if(gpp->val.deinterlace != 0)
- {
-      sensitive = TRUE;
- }
- else
- {
-      sensitive = FALSE;
- }
- 
- gtk_widget_set_sensitive(gpp->mw__spinbutton_delace_threshold, sensitive);
+  gpp->val.deinterlace = l_idx;
 
-}  /* end on_mw__optionmenu_deinterlace */
+  if(gpp->val.deinterlace != 0)
+  {
+       sensitive = TRUE;
+  }
+  else
+  {
+       sensitive = FALSE;
+  }
+
+  if(gpp->mw__spinbutton_delace_threshold)
+  {
+    gtk_widget_set_sensitive(gpp->mw__spinbutton_delace_threshold, sensitive);
+  }
+
+}  /* end on_mw__combo_deinterlace */
 
 
 /* --------------------------------
@@ -1745,8 +1755,7 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
   GtkWidget *mw__button_vrange_dialog;
   GtkWidget *mw__button_vrange_docked;
   GtkWidget *mw__button_video;
-  GtkWidget *mw__optionmenu_preferred_decoder;
-  GtkWidget *mw__optionmenu_preferred_decoder_menu;
+  GtkWidget *mw__combo_preferred_decoder;
   GtkWidget *mw__label_active_decoder;
   GtkWidget *mw__entry_preferred_decoder;
   GtkObject *mw__spinbutton_audiotrack_adj;
@@ -1770,8 +1779,7 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
   GtkWidget *mw__entry_audiofile;
   GtkWidget *mw__button_audiofile;
   GtkWidget *mw__checkbutton_multilayer;
-  GtkWidget *mw__optionmenu_deinterlace;
-  GtkWidget *mw__optionmenu_deinterlace_menu;
+  GtkWidget *mw__combo_deinterlace;
   GtkObject *mw__spinbutton_delace_threshold_adj;
   GtkWidget *mw__spinbutton_delace_threshold;
   GtkWidget *mw__entry_extension;
@@ -1788,7 +1796,6 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
   GtkWidget *label6;
   GtkWidget *label;
   GtkWidget *hbox2;
-  GtkWidget *glade_menuitem;
   GtkWidget *wgt_array[50];
   GtkWidget *lbl_array[50];
   gint       wgt_idx;
@@ -2097,43 +2104,25 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
 
 
   /* the menu to select the preferred decoder */
-  mw__optionmenu_preferred_decoder = gtk_option_menu_new ();
-  gtk_widget_show (mw__optionmenu_preferred_decoder);
-  wgt_array[wgt_idx] = mw__optionmenu_preferred_decoder; 
+  mw__combo_preferred_decoder 
+    = gimp_int_combo_box_new (_("(none, automatic)"),    GAP_VEX_DECODER_NONE ,
+                                "libmpeg3",              GAP_VEX_DECODER_LIBMPEG3,
+                                "libavformat",           GAP_VEX_DECODER_LIBAVFORMAT,
+                                "quicktime4linux",       GAP_VEX_DECODER_QUICKTIME,
+                              NULL);
+
+  gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (mw__combo_preferred_decoder),
+                             GAP_VEX_DECODER_NONE,   /* initial value */
+                             G_CALLBACK (on_mw__combo_preferred_decoder),
+                             gpp);
+
+  gtk_widget_show (mw__combo_preferred_decoder);
+  wgt_array[wgt_idx] = mw__combo_preferred_decoder; 
   wgt_idx++;
-  gtk_table_attach (GTK_TABLE (mw__table_in), mw__optionmenu_preferred_decoder, 2, 3, in_row, in_row+1,
+  gtk_table_attach (GTK_TABLE (mw__table_in), mw__combo_preferred_decoder, 2, 3, in_row, in_row+1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  mw__optionmenu_preferred_decoder_menu = gtk_menu_new ();
-  glade_menuitem = gtk_menu_item_new_with_label (_("(none, automatic)"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (mw__optionmenu_preferred_decoder_menu), glade_menuitem);
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
-                          G_CALLBACK (on_mw__optionmenu_preferred_decoder),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY, (gpointer)GAP_VEX_DECODER_NONE);
-  glade_menuitem = gtk_menu_item_new_with_label (_("libmpeg3"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (mw__optionmenu_preferred_decoder_menu), glade_menuitem);
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
-                          G_CALLBACK (on_mw__optionmenu_preferred_decoder),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY, (gpointer)GAP_VEX_DECODER_LIBMPEG3);
-  glade_menuitem = gtk_menu_item_new_with_label (_("quicktime4linux"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (mw__optionmenu_preferred_decoder_menu), glade_menuitem);
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
-                          G_CALLBACK (on_mw__optionmenu_preferred_decoder),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY, (gpointer)GAP_VEX_DECODER_QUICKTIME);
-  glade_menuitem = gtk_menu_item_new_with_label (_("libavformat"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (mw__optionmenu_preferred_decoder_menu), glade_menuitem);
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
-                          G_CALLBACK (on_mw__optionmenu_preferred_decoder),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY, (gpointer)GAP_VEX_DECODER_LIBAVFORMAT);
-  gtk_option_menu_set_menu (GTK_OPTION_MENU (mw__optionmenu_preferred_decoder), mw__optionmenu_preferred_decoder_menu);
+
 
 
   in_row++;
@@ -2370,55 +2359,24 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
   gimp_help_set_help_data (mw__spinbutton_delace_threshold, _("0.0 .. no interpolation, 1.0 smooth interpolation at deinterlacing"), NULL);
 
 
-  /* the deinterlace optionmenu */
-  mw__optionmenu_deinterlace = gtk_option_menu_new ();
-  gtk_widget_show (mw__optionmenu_deinterlace);
-  gtk_box_pack_start (GTK_BOX (hbox2), mw__optionmenu_deinterlace, TRUE, TRUE, 0);
-  gimp_help_set_help_data (mw__optionmenu_deinterlace, _("Deinterlace splits each extracted frame in 2 frames"), NULL);
-  mw__optionmenu_deinterlace_menu = gtk_menu_new ();
+  /* the deinterlace combo */
+  mw__combo_deinterlace 
+    = gimp_int_combo_box_new (_("no deinterlace"),                    GAP_VEX_DELACE_NONE,
+                              _("deinterlace (odd lines only)"),      GAP_VEX_DELACE_ODD,
+                              _("deinterlace (even lines only)"),     GAP_VEX_DELACE_EVEN,
+                              _("deinterlace frames x 2 (odd 1st)"),  GAP_VEX_DELACE_ODD_X2,
+                              _("deinterlace frames x 2 (even 1st)"), GAP_VEX_DELACE_EVEN_X2,
+                              NULL);
 
-  glade_menuitem = gtk_menu_item_new_with_label (_("no deinterlace"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (mw__optionmenu_deinterlace_menu), glade_menuitem);
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
-                          G_CALLBACK (on_mw__optionmenu_deinterlace),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY
-	                  , (gpointer)GAP_VEX_DELACE_NONE);
-  glade_menuitem = gtk_menu_item_new_with_label (_("deinterlace (odd lines only)"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (mw__optionmenu_deinterlace_menu), glade_menuitem);
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
-                          G_CALLBACK (on_mw__optionmenu_deinterlace),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY
-                          , (gpointer)GAP_VEX_DELACE_ODD);
-  glade_menuitem = gtk_menu_item_new_with_label (_("deinterlace (even lines only)"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (mw__optionmenu_deinterlace_menu), glade_menuitem);
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
-                          G_CALLBACK (on_mw__optionmenu_deinterlace),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY
-	                  , (gpointer)GAP_VEX_DELACE_EVEN);
-  glade_menuitem = gtk_menu_item_new_with_label (_("deinterlace framesx2 (odd 1st)"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (mw__optionmenu_deinterlace_menu), glade_menuitem);
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
-                          G_CALLBACK (on_mw__optionmenu_deinterlace),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY
-	                  , (gpointer)GAP_VEX_DELACE_ODD_X2);
-  glade_menuitem = gtk_menu_item_new_with_label (_("deinterlace framesx2 (even 1st)"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (mw__optionmenu_deinterlace_menu), glade_menuitem);
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
-                          G_CALLBACK (on_mw__optionmenu_deinterlace),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY
-	                  , (gpointer)GAP_VEX_DELACE_EVEN_X2);
-  gtk_option_menu_set_menu (GTK_OPTION_MENU (mw__optionmenu_deinterlace), mw__optionmenu_deinterlace_menu);
+  gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (mw__combo_deinterlace),
+                             GAP_VEX_DELACE_NONE,   /* initial value */
+                             G_CALLBACK (on_mw__combo_deinterlace),
+                             gpp);
 
+
+  gtk_widget_show (mw__combo_deinterlace);
+  gtk_box_pack_start (GTK_BOX (hbox2), mw__combo_deinterlace, TRUE, TRUE, 0);
+  gimp_help_set_help_data (mw__combo_deinterlace, _("Deinterlace splits each extracted frame in 2 frames"), NULL);
 
   out_row++;
 
@@ -2537,8 +2495,7 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
   gpp->mw__button_vrange_dialog                = mw__button_vrange_dialog;
   gpp->mw__button_vrange_docked                = mw__button_vrange_docked;
   gpp->mw__button_video                        = mw__button_video;
-  gpp->mw__optionmenu_preferred_decoder        = mw__optionmenu_preferred_decoder;
-  gpp->mw__optionmenu_preferred_decoder_menu   = mw__optionmenu_preferred_decoder_menu;
+  gpp->mw__combo_preferred_decoder             = mw__combo_preferred_decoder;
   gpp->mw__label_active_decoder                = mw__label_active_decoder;
   gpp->mw__entry_preferred_decoder             = mw__entry_preferred_decoder;
   gpp->mw__spinbutton_audiotrack_adj           = mw__spinbutton_audiotrack_adj;
@@ -2558,8 +2515,7 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
   gpp->mw__entry_audiofile                     = mw__entry_audiofile;
   gpp->mw__button_audiofile                    = mw__button_audiofile;
   gpp->mw__checkbutton_multilayer              = mw__checkbutton_multilayer;
-  gpp->mw__optionmenu_deinterlace              = mw__optionmenu_deinterlace;
-  gpp->mw__optionmenu_deinterlace_menu         = mw__optionmenu_deinterlace_menu;
+  gpp->mw__combo_deinterlace                   = mw__combo_deinterlace;
   gpp->mw__spinbutton_delace_threshold_adj     = mw__spinbutton_delace_threshold_adj;
   gpp->mw__spinbutton_delace_threshold         = mw__spinbutton_delace_threshold;
   gpp->mw__spinbutton_fn_digits_adj            = mw__spinbutton_fn_digits_adj;
@@ -2583,12 +2539,16 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
 void
 gap_vex_dlg_main_dialog (GapVexMainGlobalParams *gpp)
 {
+gap_debug = TRUE;
+
   gimp_ui_init ("gap_video_extract", FALSE);
   gap_stock_init();
   
   gpp->fsv__fileselection = NULL;
   gpp->fsb__fileselection = NULL;
   gpp->fsa__fileselection = NULL;
+  gpp->mw__entry_preferred_decoder = NULL;
+  gpp->mw__spinbutton_delace_threshold = NULL;
   gpp->mw__main_window = gap_vex_dlg_create_mw__main_window (gpp);
   gtk_widget_show (gpp->mw__main_window);
 

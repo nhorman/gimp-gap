@@ -32,7 +32,6 @@
 
 
 
-#define GAP_PLUGIN_NAME_AVI_ENCODE     "plug_in_gap_enc_avi1"
 #define GAP_PLUGIN_NAME_AVI_PARAMS     "extension_gap_encpar_avi1"
 #define GAP_MENUNAME                   "AVI1"
 
@@ -70,7 +69,7 @@ typedef struct GapGveAviGlobalParams {   /* nick: gpp */
   GtkWidget *shell_window;
   GtkWidget *notebook_main;
 
-  GtkWidget *optionmenu_codec;
+  GtkWidget *combo_codec;
   GtkWidget *app0_checkbutton;
   GtkWidget *jpg_dont_recode_checkbutton;
   GtkWidget *jpg_interlace_checkbutton;

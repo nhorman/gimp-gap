@@ -282,7 +282,7 @@ p_wrapper_gimp_seek_frame(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit pos_
       l_frame_pos = (gint32)pos;
       break;
     case GVA_UPOS_SECS:
-      l_frame_pos = (gint32)round(pos * gvahand->framerate);
+      l_frame_pos = (gint32)rint (pos * gvahand->framerate);
       break;
     case GVA_UPOS_PRECENTAGE:
       /* is not reliable until all_frames_counted == TRUE */

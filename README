@@ -7,7 +7,7 @@ Animations as sequences of single frames.
 
 Requires:
 =========
- - gimp 2.0.0 or higher (stable release)
+ - gimp 2.1.7 or higher (unstable developers release)
 
  Optional libs for decode/encode videofiles:
 
@@ -70,7 +70,7 @@ Requires:
 		    
 		    
 		    
- - xvid       1.0.0
+ - xvid       1.0.2
                    The free XVID Codec is used for MPEG4 encoding
 		   with the gimp-gap AVI fileformat encoding plug-in.
 		   (the FFMPEG libs have built in MPEG4 support
@@ -99,10 +99,6 @@ already - check http://bugzilla.gnome.org/buglist.cgi?product=gimp-gap
 
 Other known Bugs
 ================
-
-- The AVI video encoder Plug-in does crash with
-  the xvid-1.0.0 codec
-  (since xvid-1.0.0 it crashes, looks like a thred problem)
 
 - some mpeg videos do crash at read attempt.
   libmpeg3 1.5.4  has problems in its CLOSE procedure on those

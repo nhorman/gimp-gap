@@ -38,9 +38,10 @@
 #define GAP_VENC_PAR_GUI_PROC           "gapve_gui_proc"
 
 #define GAP_PLUGIN_NAME_SINGLEFRAMES_ENCODE  "plug_in_gap_enc_singleframes"
+#define GAP_PLUGIN_NAME_FFMPEG_ENCODE        "plug_in_gap_enc_ffmpeg"
+#define GAP_PLUGIN_NAME_AVI_ENCODE           "plug_in_gap_enc_avi1"
 #define GAP_PLUGIN_NAME_QT1_ENCODE           "plug_in_gap_enc_qt1"
 #define GAP_PLUGIN_NAME_QT2_ENCODE           "plug_in_gap_enc_qt2"
-#define GAP_PLUGIN_NAME_FFMPEG_ENCODE        "plug_in_gap_enc_ffmpeg"
 
 /* the old encoders MPG1 and MPG2 are not ported
  * to GTK+2.2 (maybe i'll remove them completely)

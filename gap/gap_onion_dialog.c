@@ -197,9 +197,15 @@ p_init_sensitive(GapOnionMainGlobalParams *gpp)
     l_sensitive = FALSE;
   }
   wgt = gpp->oni__checkbutton_select_case;
-  gtk_widget_set_sensitive(wgt, l_sensitive);
+  if(wgt)
+  {
+    gtk_widget_set_sensitive(wgt, l_sensitive);
+  }
   wgt = gpp->oni__checkbutton_select_invert;
-  gtk_widget_set_sensitive(wgt, l_sensitive);
+  if(wgt)
+  {
+    gtk_widget_set_sensitive(wgt, l_sensitive);
+  }
 
   l_sensitive = TRUE;
   if(gpp->vin.select_mode == 6)
@@ -208,50 +214,57 @@ p_init_sensitive(GapOnionMainGlobalParams *gpp)
      l_sensitive = FALSE;
   }
   wgt = gpp->oni__entry_select_string;
-  gtk_widget_set_sensitive(wgt, l_sensitive);
+  if(wgt)
+  {
+    gtk_widget_set_sensitive(wgt, l_sensitive);
+  }
 }
 
 
 static void
-on_oni__optionmenu_select_mode (GtkWidget     *wgt_item,
+on_oni__combo_select_mode (GtkWidget     *widget,
                            GapOnionMainGlobalParams *gpp)
 {
   gint       l_idx;
+  gint       value;
 
- if(gap_debug) printf("CB: on_oni__optionmenu_select_mode\n");
+  if(gap_debug) printf("CB: on_oni__combo_select_mode\n");
 
- if(gpp == NULL) return;
+  if(gpp == NULL) return;
 
- l_idx = (gint) g_object_get_data (G_OBJECT (wgt_item), ENC_MENU_ITEM_INDEX_KEY);
+  gimp_int_combo_box_get_active (GIMP_INT_COMBO_BOX (widget), &value);
+  l_idx = value;
 
- if(gap_debug) printf("CB: on_oni__optionmenu_select_mode index: %d\n", (int)l_idx);
- if((l_idx >= MAX_SELECT_MODE_ARRAY_ELEMENTS) || (l_idx < 1))
- {
-    l_idx = 0;
- }
- gpp->vin.select_mode = gtab_select_modes[l_idx];
- p_init_sensitive(gpp);
+  if(gap_debug) printf("CB: on_oni__combo_select_mode index: %d\n", (int)l_idx);
+  if((l_idx >= MAX_SELECT_MODE_ARRAY_ELEMENTS) || (l_idx < 1))
+  {
+     l_idx = 0;
+  }
+  gpp->vin.select_mode = gtab_select_modes[l_idx];
+  p_init_sensitive(gpp);
 }
 
 
 static void
-on_oni__optionmenu_ref_mode (GtkWidget     *wgt_item,
-                           GapOnionMainGlobalParams *gpp)
+on_oni__combo_ref_mode (GtkWidget     *widget,
+                        GapOnionMainGlobalParams *gpp)
 {
   gint       l_idx;
+  gint       value;
 
- if(gap_debug) printf("CB: on_oni__optionmenu_ref_mode\n");
+  if(gap_debug) printf("CB: on_oni__combo_ref_mode\n");
 
- if(gpp == NULL) return;
+  if(gpp == NULL) return;
 
- l_idx = (gint) g_object_get_data (G_OBJECT (wgt_item), ENC_MENU_ITEM_INDEX_KEY);
+  gimp_int_combo_box_get_active (GIMP_INT_COMBO_BOX (widget), &value);
+  l_idx = value;
 
- if(gap_debug) printf("CB: on_oni__optionmenu_ref_mode index: %d\n", (int)l_idx);
- if((l_idx >= MAX_REF_MODE_ARRAY_ELEMENTS) || (l_idx < 1))
- {
-    l_idx = 0;
- }
- gpp->vin.ref_mode = gtab_ref_modes[l_idx];
+  if(gap_debug) printf("CB: on_oni__combo_ref_mode index: %d\n", (int)l_idx);
+  if((l_idx >= MAX_REF_MODE_ARRAY_ELEMENTS) || (l_idx < 1))
+  {
+     l_idx = 0;
+  }
+  gpp->vin.ref_mode = gtab_ref_modes[l_idx];
 }
 
 static void
@@ -674,7 +687,7 @@ on_oni__checkbutton_auto_delete_toggled  (GtkToggleButton *togglebutton,
 }
 
 static void
-p_init_optionmenu_actual_idx(GapOnionMainGlobalParams *gpp, GtkWidget *wgt, gint *gtab_ptr, gint val, gint maxidx)
+p_init_combo_actual_idx(GapOnionMainGlobalParams *gpp, GtkWidget *wgt, gint *gtab_ptr, gint val, gint maxidx)
 {
   gint l_idx;
 
@@ -682,7 +695,7 @@ p_init_optionmenu_actual_idx(GapOnionMainGlobalParams *gpp, GtkWidget *wgt, gint
   {
     if(val == gtab_ptr[l_idx])
     {
-      gtk_option_menu_set_history (GTK_OPTION_MENU (wgt), l_idx);
+      gimp_int_combo_box_set_active (GIMP_INT_COMBO_BOX (wgt), l_idx);
       return;
     }
   }
@@ -690,16 +703,16 @@ p_init_optionmenu_actual_idx(GapOnionMainGlobalParams *gpp, GtkWidget *wgt, gint
 
 
 static void
-p_init_optionmenus(GapOnionMainGlobalParams *gpp)
+p_init_combos(GapOnionMainGlobalParams *gpp)
 {
- p_init_optionmenu_actual_idx( gpp
-                             , gpp->oni__optionmenu_select_mode
+ p_init_combo_actual_idx( gpp
+                             , gpp->oni__combo_select_mode
                              , gtab_select_modes
                              , gpp->vin.select_mode
                              , MAX_SELECT_MODE_ARRAY_ELEMENTS
                              );
- p_init_optionmenu_actual_idx( gpp
-                             , gpp->oni__optionmenu_ref_mode
+ p_init_combo_actual_idx( gpp
+                             , gpp->oni__combo_ref_mode
                              , gtab_ref_modes
                              , gpp->vin.ref_mode
                              , MAX_REF_MODE_ARRAY_ELEMENTS
@@ -793,7 +806,7 @@ p_init_main_dialog_widgets(GapOnionMainGlobalParams *gpp)
 
   p_init_spinbuttons(gpp);
   p_init_entries(gpp);
-  p_init_optionmenus(gpp);
+  p_init_combos(gpp);
   p_init_togglebuttons(gpp);
   p_init_sensitive(gpp);
 
@@ -831,11 +844,8 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
   GtkWidget *label9;
   GtkWidget *label10;
 
-  GtkWidget *glade_menuitem;
-  GtkWidget *oni__optionmenu_ref_mode;
-  GtkWidget *oni__optionmenu_ref_mode_menu;
-  GtkWidget *oni__optionmenu_select_mode;
-  GtkWidget *oni__optionmenu_select_mode_menu;
+  GtkWidget *oni__combo_ref_mode;
+  GtkWidget *oni__combo_select_mode;
 
   GtkWidget *oni__spinbutton_range_from;
   GtkWidget *oni__spinbutton_range_to;
@@ -961,46 +971,28 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
 
 
 
-  oni__optionmenu_ref_mode = gtk_option_menu_new ();
-  gtk_widget_show (oni__optionmenu_ref_mode);
-  gtk_table_attach (GTK_TABLE (table1), oni__optionmenu_ref_mode, 1, 3, tab1_row, tab1_row+1,
+  /* the ref_mode combo box */
+  oni__combo_ref_mode
+    = gimp_int_combo_box_new (_("Normal +1,+2,+3,+4,+5,+6"),                   0,
+                              _("Bidiriectional (single) +1,-2,+3,-4,+5,-6"),  1,
+                              _("Bidiriectional (double) +1,-1,+2,-2,+3,-3"),  2,
+                              NULL);
+  gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (oni__combo_ref_mode),
+                                 0,  /* initial gint value */
+                        	 G_CALLBACK (on_oni__combo_ref_mode),
+                        	 gpp);
+
+  gtk_widget_show (oni__combo_ref_mode);
+  gtk_table_attach (GTK_TABLE (table1), oni__combo_ref_mode, 1, 3, tab1_row, tab1_row+1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gimp_help_set_help_data(oni__optionmenu_ref_mode
+  gimp_help_set_help_data(oni__combo_ref_mode
                          , _("Reference Modes determines stepsequence:\n"
 			     " normal: +1,+2,+3,+4,+5,+6\n"
 			     " bidirectional single: +1,-2,+3,-4,+5,-6\n"
 			     " bidirectional double: +1,-1,+2,-2,+3,-3\n"
 			     " (stepsize is set by frame reference parameter)")
                          , NULL);
-
-  oni__optionmenu_ref_mode_menu = gtk_menu_new ();
-  glade_menuitem = gtk_menu_item_new_with_label (_("Normal"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (oni__optionmenu_ref_mode_menu), glade_menuitem);
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
-                          G_CALLBACK (on_oni__optionmenu_ref_mode),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY, (gpointer)0);
-
-  glade_menuitem = gtk_menu_item_new_with_label (_("Bidiriectional (single)"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (oni__optionmenu_ref_mode_menu), glade_menuitem);
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
-                          G_CALLBACK (on_oni__optionmenu_ref_mode),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY, (gpointer)1);
-
-  glade_menuitem = gtk_menu_item_new_with_label (_("Bidiriectional (double)"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (oni__optionmenu_ref_mode_menu), glade_menuitem);
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
-                          G_CALLBACK (on_oni__optionmenu_ref_mode),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY, (gpointer)2);
-
-  gtk_option_menu_set_menu (GTK_OPTION_MENU (oni__optionmenu_ref_mode), oni__optionmenu_ref_mode_menu);
-  gtk_option_menu_set_history (GTK_OPTION_MENU (oni__optionmenu_ref_mode), 0);
 
 
   tab1_row++;
@@ -1208,75 +1200,35 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label7), 0, 0.5);
 
-  oni__optionmenu_select_mode = gtk_option_menu_new ();
-  gtk_widget_show (oni__optionmenu_select_mode);
-  gtk_table_attach (GTK_TABLE (table2), oni__optionmenu_select_mode, 1, 2, 2, 3,
+
+
+  /* the ref_mode combo box */
+  oni__combo_select_mode 
+    = gimp_int_combo_box_new (_("Pattern is equal to layername"),                   0,
+                              _("Pattern is start of layername"),                   1,
+                              _("Pattern is end of layername"),                     2,
+                              _("Pattern is a part of layername"),                  3,
+                              _("Pattern is a list of layerstack numbers"),         4,
+                              _("Pattern is a list of reverse layerstack numbers"), 5,
+                              _("All visible (ignore pattern)"),                    6,
+                              NULL);
+  gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (oni__combo_select_mode),
+                                 0,  /* initial gint value */
+                        	 G_CALLBACK (on_oni__combo_select_mode),
+                        	 gpp);
+
+  gtk_widget_show (oni__combo_select_mode);
+  gtk_table_attach (GTK_TABLE (table2), oni__combo_select_mode, 1, 2, 2, 3,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gimp_help_set_help_data(oni__optionmenu_select_mode
+  gimp_help_set_help_data(oni__combo_select_mode
                          , _("Modes how to use select pattern")
                          , NULL);
 
-  oni__optionmenu_select_mode_menu = gtk_menu_new ();
-  glade_menuitem = gtk_menu_item_new_with_label (_("Pattern is equal to layername"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (oni__optionmenu_select_mode_menu), glade_menuitem);
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
-                          G_CALLBACK (on_oni__optionmenu_select_mode),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY, (gpointer)0);
+ 
+ 
 
-  glade_menuitem = gtk_menu_item_new_with_label (_("Pattern is start of layername"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (oni__optionmenu_select_mode_menu), glade_menuitem);
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
-                          G_CALLBACK (on_oni__optionmenu_select_mode),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY, (gpointer)1);
-
-  glade_menuitem = gtk_menu_item_new_with_label (_("Pattern is end of layername"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (oni__optionmenu_select_mode_menu), glade_menuitem);
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
-                          G_CALLBACK (on_oni__optionmenu_select_mode),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY, (gpointer)2);
-
-  glade_menuitem = gtk_menu_item_new_with_label (_("Pattern is a part of layername"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (oni__optionmenu_select_mode_menu), glade_menuitem);
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
-                          G_CALLBACK (on_oni__optionmenu_select_mode),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY, (gpointer)3);
-
-  glade_menuitem = gtk_menu_item_new_with_label (_("Pattern is a list of layerstack numbers"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (oni__optionmenu_select_mode_menu), glade_menuitem);
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
-                          G_CALLBACK (on_oni__optionmenu_select_mode),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY, (gpointer)4);
-
-  glade_menuitem = gtk_menu_item_new_with_label (_("Pattern is a list of reverse layerstack numbers"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (oni__optionmenu_select_mode_menu), glade_menuitem);
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
-                          G_CALLBACK (on_oni__optionmenu_select_mode),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY, (gpointer)5);
-
-  glade_menuitem = gtk_menu_item_new_with_label (_("All visible (ignore pattern)"));
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (oni__optionmenu_select_mode_menu), glade_menuitem);
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
-                          G_CALLBACK (on_oni__optionmenu_select_mode),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY, (gpointer)6);
-
-  gtk_option_menu_set_menu (GTK_OPTION_MENU (oni__optionmenu_select_mode), oni__optionmenu_select_mode_menu);
-  gtk_option_menu_set_history (GTK_OPTION_MENU (oni__optionmenu_select_mode), 6);
-
+  /* the selct options label */
   label8 = gtk_label_new (_("Select Options:"));
   gtk_widget_show (label8);
   gtk_table_attach (GTK_TABLE (table2), label8, 0, 1, 3, 4,
@@ -1506,8 +1458,8 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
    * (for use in callbacks outside of this procedure)
    */
   gpp->oni__entry_select_string         = oni__entry_select_string;
-  gpp->oni__optionmenu_ref_mode         = oni__optionmenu_ref_mode;
-  gpp->oni__optionmenu_select_mode      = oni__optionmenu_select_mode;
+  gpp->oni__combo_ref_mode              = oni__combo_ref_mode;
+  gpp->oni__combo_select_mode           = oni__combo_select_mode;
   gpp->oni__spinbutton_ignore_botlayers = oni__spinbutton_ignore_botlayers;
   gpp->oni__spinbutton_num_olayers      = oni__spinbutton_num_olayers;
   gpp->oni__spinbutton_opacity          = oni__spinbutton_opacity;
@@ -1579,6 +1531,9 @@ gap_onion_dlg_onion_cfg_dialog(GapOnionMainGlobalParams *gpp)
   gimp_ui_init ("gap_onion_dialog", FALSE);
 
   /* ---------- dialog ----------*/
+  gpp->oni__checkbutton_select_case = NULL;
+  gpp->oni__checkbutton_select_invert = NULL;
+  gpp->oni__entry_select_string = NULL;
 
   if(gap_debug) printf("gap_onion_dlg_onion_cfg_dialog: Before create_oni__dialog\n");
 

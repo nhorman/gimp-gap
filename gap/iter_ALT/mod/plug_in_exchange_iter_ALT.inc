@@ -34,7 +34,7 @@ gint p_plug_in_exchange_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdoub
     p_delta_GimpRGB(&buf.threshold, &buf_from->threshold, &buf_to->threshold, total_steps, current_step);
 
     /* exchange takes FROM colors from foreground when called in mode GIMP_RUN_WITH_LAST_VALS */
-    gimp_palette_set_foreground(&buf.from);
+    gimp_context_set_foreground(&buf.from);
     
     gimp_set_data("plug_in_exchange", &buf, sizeof(buf)); 
 

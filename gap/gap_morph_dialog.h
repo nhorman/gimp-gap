@@ -37,7 +37,7 @@ typedef struct GapMorphSubWin  { /* nickname: swp */
   void      *mgup;               /* pointer to parent GapMorphGUIParams struct */
   GtkObject  *x_spinbutton_adj;
   GtkObject  *y_spinbutton_adj;
-  GtkWidget  *layer_option_menu;
+  GtkWidget  *combo;
   GtkObject  *vscale_adj;
   GtkObject  *hscale_adj;
   GtkWidget  *vscale;

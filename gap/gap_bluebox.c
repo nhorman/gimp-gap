@@ -198,7 +198,7 @@ gap_bluebox_bbp_new(gint32 layer_id)
 int
 gap_bluebox_dialog(GapBlueboxGlobalParams *bbp)
 {
-  if(gap_debug) fprintf(stderr, "\nSTART gap_bluebox_dialog\n");
+  if(gap_debug) printf("\nSTART gap_bluebox_dialog\n");
 
   gimp_ui_init ("gap_bluebox", FALSE);
   gap_stock_init();

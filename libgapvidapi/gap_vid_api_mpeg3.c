@@ -381,7 +381,7 @@ p_wrapper_mpeg3_seek_frame(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit pos
       l_frame_pos = (long)pos;
       break;
     case GVA_UPOS_SECS:
-      l_frame_pos = (long)round(pos * gvahand->framerate);
+      l_frame_pos = (long)rint(pos * gvahand->framerate);
       break;
     case GVA_UPOS_PRECENTAGE:
       l_frame_pos = (long)GVA_percent_2_frame(gvahand->total_frames, pos);
@@ -468,7 +468,7 @@ p_wrapper_mpeg3_seek_audio(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit pos
       l_sample_pos = (long)GVA_frame_2_samples(gvahand->framerate, gvahand->samplerate, pos);
       break;
     case GVA_UPOS_SECS:
-      l_sample_pos = (long)round(pos / MAX(gvahand->samplerate, 1.0));
+      l_sample_pos = (long)rint(pos / MAX(gvahand->samplerate, 1.0));
       break;
     case GVA_UPOS_PRECENTAGE:
       l_frame_pos= (long)GVA_percent_2_frame(gvahand->total_frames, pos);

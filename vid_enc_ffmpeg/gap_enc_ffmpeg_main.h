@@ -3,6 +3,7 @@
  */
 /*
  * Changelog:
+ * version 2.1.0a;  2004/11/05  hof: replaced deprecated option menu by gimp_int_combo_box
  * version 2.1.0a;  2004.06.05   hof: update params from ffmpeg 0.4.6 to 0.4.8
  * version 2.1.0a;  2004.05.07   created
  */
@@ -175,12 +176,12 @@ typedef struct GapGveFFMpegGlobalParams {   /* nick: gpp */
   GtkWidget *shell_window;
   GtkWidget *fsb__fileselection;
 
-  GtkWidget *ff_aspect_optionmenu;
-  GtkWidget *ff_aud_bitrate_optionmenu;
+  GtkWidget *ff_aspect_combo;
+  GtkWidget *ff_aud_bitrate_combo;
   GtkWidget *ff_aud_bitrate_spinbutton;
-  GtkWidget *ff_aud_codec_optionmenu;
+  GtkWidget *ff_aud_codec_combo;
   GtkWidget *ff_author_entry;
-  GtkWidget *ff_b_frames_checkbutton;
+  GtkWidget *ff_b_frames_spinbutton;
   GtkWidget *ff_b_qfactor_spinbutton;
   GtkWidget *ff_b_qoffset_spinbutton;
   GtkWidget *ff_basic_info_label;
@@ -188,9 +189,9 @@ typedef struct GapGveFFMpegGlobalParams {   /* nick: gpp */
   GtkWidget *ff_bufsize_spinbutton;
   GtkWidget *ff_comment_entry;
   GtkWidget *ff_copyright_entry;
-  GtkWidget *ff_dct_algo_optionmenu;
+  GtkWidget *ff_dct_algo_combo;
   GtkWidget *ff_dont_recode_checkbutton;
-  GtkWidget *ff_fileformat_optionmenu;
+  GtkWidget *ff_fileformat_combo;
   GtkWidget *ff_gop_size_spinbutton;
   GtkWidget *ff_bitexact_checkbutton;
   GtkWidget *ff_aspect_checkbutton;
@@ -198,19 +199,19 @@ typedef struct GapGveFFMpegGlobalParams {   /* nick: gpp */
   GtkWidget *ff_umv_checkbutton;
   GtkWidget *ff_i_qfactor_spinbutton;
   GtkWidget *ff_i_qoffset_spinbutton;
-  GtkWidget *ff_idct_algo_optionmenu;
+  GtkWidget *ff_idct_algo_combo;
   GtkWidget *ff_intra_checkbutton;
   GtkWidget *ff_maxrate_tol_spinbutton;
   GtkWidget *ff_mb_qmax_spinbutton;
   GtkWidget *ff_mb_qmin_spinbutton;
-  GtkWidget *ff_mb_decision_optionmenu;
+  GtkWidget *ff_mb_decision_combo;
   GtkWidget *ff_minrate_tol_spinbutton;
-  GtkWidget *ff_motion_estimation_optionmenu;
+  GtkWidget *ff_motion_estimation_combo;
   GtkWidget *ff_mv4_checkbutton;
   GtkWidget *ff_partitioning_checkbutton;
   GtkWidget *ff_pass_checkbutton;
   GtkWidget *ff_passlogfile_entry;
-  GtkWidget *ff_presets_optionmenu;
+  GtkWidget *ff_presets_combo;
   GtkWidget *ff_qblur_spinbutton;
   GtkWidget *ff_qcomp_spinbutton;
   GtkWidget *ff_qdiff_spinbutton;
@@ -221,7 +222,7 @@ typedef struct GapGveFFMpegGlobalParams {   /* nick: gpp */
   GtkWidget *ff_strict_spinbutton;
   GtkWidget *ff_title_entry;
   GtkWidget *ff_vid_bitrate_spinbutton;
-  GtkWidget *ff_vid_codec_optionmenu;
+  GtkWidget *ff_vid_codec_combo;
 
 
   GtkObject *ff_aud_bitrate_spinbutton_adj;
@@ -245,6 +246,7 @@ typedef struct GapGveFFMpegGlobalParams {   /* nick: gpp */
   GtkObject *ff_strict_spinbutton_adj;
   GtkObject *ff_mb_qmin_spinbutton_adj;
   GtkObject *ff_mb_qmax_spinbutton_adj;
+  GtkObject *ff_b_frames_spinbutton_adj;
 
 } GapGveFFMpegGlobalParams;
 
