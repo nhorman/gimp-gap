@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: gimp 2.0.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2004-10-09 16:25+0200\n"
-"PO-Revision-Date: 2004-10-10 00:46+0200\n"
+"PO-Revision-Date: 2004-10-11 00:50+0200\n"
 "Last-Translator: Marco Ciampa <ciampix@libero.it>\n"
 "Language-Team: gimp.linux.it\n"
 "MIME-Version: 1.0\n"
@@ -113,7 +113,7 @@ msgstr "Decrementa densità eliminando frame..."
 #: gap/gap_base_ops.c:282
 #, c-format
 msgid "Error: could not rename frame %d to %d"
-msgstr "Errore: impossibie rinominare il frame da %d a %d"
+msgstr "Errore: impossibile rinominare il frame da %d a %d"
 
 #: gap/gap_base_ops.c:204
 msgid "Density duplicating frames..."
@@ -122,7 +122,7 @@ msgstr "Densità duplicazione frame..."
 #: gap/gap_base_ops.c:359 gap/gap_base_ops.c:533
 #, c-format
 msgid "Error: could not save frame %s"
-msgstr "Errore: impossibie salvare il frame %s"
+msgstr "Errore: impossibile salvare il frame %s"
 
 #: gap/gap_base_ops.c:463 gap/gap_base_ops.c:595 gap/gap_base_ops.c:688
 #: gap/gap_base_ops.c:695 gap/gap_base_ops.c:702 gap/gap_base_ops.c:790
@@ -219,7 +219,7 @@ msgstr "Conferma il cambiamento di densità di frame"
 
 #: gap/gap_base_ops.c:1219
 msgid "Change Frame Density"
-msgstr "Cambiamento desità frame"
+msgstr "Cambiamento densità frame"
 
 #. the start frame scale_entry
 #. table col, row
@@ -276,10 +276,8 @@ msgid ""
 "ON: Duplicate frames to get a target rate that is density * originalrate.\n"
 "OFF: Delete frames to get a target rate that is originalrate/density."
 msgstr ""
-"Acceso: duplica frame per ottenere un rapporto che sia densità * "
-"rapporto_originale.\n"
-"Spento: cancella frame per ottenere un rapporto che sia rapporto_originale/"
-"densità."
+"Acceso: duplica frame per ottenere un rapporto che sia densità * rapporto_originale.\n"
+"Spento: cancella frame per ottenere un rapporto che sia rapporto_originale/densità."
 
 #: gap/gap_base_ops.c:1257
 msgid "Change Frames Density"
@@ -392,7 +390,7 @@ msgstr "Seconda passata rinumerazione frame"
 #. toggle bluebox
 #: gap/gap_bluebox.c:248 gap/gap_mov_dialog.c:2719
 msgid "Bluebox"
-msgstr "Bluwbox:"
+msgstr "Bluebox:"
 
 #. the frame
 #: gap/gap_bluebox.c:270
@@ -483,7 +481,7 @@ msgstr "Raggio piumato per sfumare il canale alfa"
 
 #: gap/gap_bluebox.c:407
 msgid "Shrink/Grow:"
-msgstr "Retringi/allarga:"
+msgstr "Restringi/allarga:"
 
 #. lower/upper
 #. step, page
@@ -937,7 +935,7 @@ msgid ""
 msgstr ""
 "impossibile trovare nessun frame estratto,\n"
 "%s\n"
-"forse xanim è fallito o è stato interrotto"
+"forse xanim ha fallito o è stato interrotto"
 
 #: gap/gap_decode_xanim.c:618
 #, c-format
@@ -979,7 +977,7 @@ msgid ""
 "The xanim program on your system \"%s\"\n"
 "does not support exporting of single frames"
 msgstr ""
-"Il programma xanim sul sistena \"%s\"\n"
+"Il programma xanim sul sistema \"%s\"\n"
 "non supporta l'esportazione del frame singolo"
 
 #: gap/gap_decode_xanim.c:1085
@@ -1015,7 +1013,7 @@ msgid ""
 "xanim has failed or was cancelled"
 msgstr ""
 "non è possibile trovare nessun frame estratto,\n"
-"xanim ha fallito o erano cancellati"
+"xanim ha fallito o è stato interrotto"
 
 #: gap/gap_decode_xanim.c:1214
 msgid "Renaming frames..."
@@ -1255,7 +1253,7 @@ msgid ""
 "to your gimprc file."
 msgstr ""
 "Si sta usando un formato file diverso da xcf.\n"
-"L'operazione di salvataggio potrà causa la perdita di informazioni.\n"
+"L'operazione di salvataggio potrà causare la perdita di informazioni.\n"
 "\n"
 "Per configurare l'appiattimento a questo formato di file\n"
 "(permanente per tutte le future sessioni) aggiungere la linea:\n"
@@ -1600,7 +1598,7 @@ msgstr ""
 
 #: gap/gap_mod_layer.c:242 gap/gap_onion_dialog.c:1293
 msgid "Case sensitive"
-msgstr "Case sensitive"
+msgstr "Maiuscolo significativo"
 
 #: gap/gap_mod_layer.c:243 gap/gap_range_ops.c:741
 msgid "Lowercase and uppercase letters are considered as different"
@@ -2003,11 +2001,7 @@ msgid ""
 "Number of layers to create or modify. Steps refers to N layers under the "
 "destination layer. Steps is ignored if render mode is warp and source and "
 "destination are different layers of the same image"
-msgstr ""
-"Numero di livelli da cerare o modificare. Passi si riferisce a N livelli "
-"sotto il livello di destinazione. Passi è ignorato se la modalità di render "
-"è warp e se sorgente e destinazione sono livelli differenti della stessa "
-"immagine"
+msgstr "Numero di livelli da creare o modificare. Passi si riferisce a N livelli sotto il livello di destinazione. Passi è ignorato se la modalità di render è warp e se sorgente e destinazione sono livelli differenti della stessa immagine"
 
 #. the pointcolor colorbutton
 #: gap/gap_morph_dialog.c:3783
@@ -2036,9 +2030,7 @@ msgstr "Crea livelli"
 msgid ""
 "ON: Create specified number of tween layers. OFF: Operate on existing layers "
 "below the destination layer"
-msgstr ""
-"Acceso: crea il numero specificato di livelli intermedi. Spento: opera sui "
-"livelli esistenti sotto il livello di destinazione"
+msgstr "ACCESO: crea il numero specificato di livelli intermedi. SPENTO: opera sui livelli esistenti sotto il livello di destinazione"
 
 #. the multiple pointsets checkbutton
 #: gap/gap_morph_dialog.c:3846
@@ -2263,7 +2255,7 @@ msgstr "Copia livelli-sorgente in movimento nei frame"
 #. the frame
 #: gap/gap_mov_dialog.c:766 gap/gap_mov_dialog.c:2526
 msgid "Source Select"
-msgstr "Selezione Sorgente"
+msgstr "Selezione sorgente"
 
 #. the frame
 #: gap/gap_mov_dialog.c:774 gap/gap_mov_dialog.c:2698
@@ -2687,7 +2679,7 @@ msgstr "Carica i punti di controllo da file"
 
 #: gap/gap_mov_dialog.c:3125
 msgid "Save controlpoints to file"
-msgstr "Salva punti di controllo in file"
+msgstr "Salva punti di controllo su file"
 
 #. label text
 #. scalesize spinsize
@@ -3632,7 +3624,7 @@ msgid ""
 "Goto prev frame\n"
 "<Shift> use timezoom stepsize"
 msgstr ""
-"Vai alla frame precedente\n"
+"Vai al frame precedente\n"
 "<Maiusc> usa l'ampiezza passo zoom tempo"
 
 #: gap/gap_navigator_dialog.c:452
@@ -3640,7 +3632,7 @@ msgid ""
 "Goto next frame\n"
 "<Shift> use timezoom stepsize"
 msgstr ""
-"Vai alla frame successiva\n"
+"Vai al frame successivo\n"
 "<Maiusc> usa l'ampiezza passo zoom"
 
 #: gap/gap_navigator_dialog.c:457
@@ -3666,9 +3658,7 @@ msgstr ""
 
 #: gap/gap_navigator_dialog.c:728
 msgid "Error while positioning to frame. Video paste operaton failed"
-msgstr ""
-"Errore durante il posizionamento alla frame. L'operazione di incollamento "
-"video è fallita"
+msgstr "Errore durante il posizionamento al frame. L'operazione di incollamento video è fallita"
 
 #: gap/gap_navigator_dialog.c:750
 msgid "Video paste operaton failed"
@@ -4373,7 +4363,7 @@ msgid ""
 msgstr ""
 "Ctrl-Clic: imposta 'da frame',\n"
 "Alt-Clic: imposta 'a frame',\n"
-"Maiusc-Clic: carica la frame nell'immagine chiamante"
+"Maiusc-Clic: carica il frame nell'immagine chiamante"
 
 #: gap/gap_player_dialog.c:5118
 msgid ""
@@ -5107,7 +5097,7 @@ msgid ""
 "This image is already a video frame.\n"
 "Try again on a duplicate (Image/Duplicate)."
 msgstr ""
-"Operazione cancellata.\n"
+"Operazione interrotta.\n"
 "Quest'immagine è già un frame video.\n"
 "Ritenta su un duplicato (Immagine/Duplica). "
 
@@ -8060,11 +8050,11 @@ msgstr "Questo plugin ha un'API da codificatore video ma scrive una serie di sin
 msgid ""
 "\" to set encoder specific paramters, is not required because this release "
 "of the singleframe encoder has NO encoder specific paramters"
-msgstr "\" per impostare i parametri specifici del codificatore non sono richiesti dato che questa versione del codificatore della frame singola NON ha parametri specifici"
+msgstr "\" per impostare i parametri specifici del codificatore non sono richiesti dato che questa versione del codificatore del frame singolo NON ha parametri specifici"
 
 #: vid_enc_single/gap_enc_singleframes_main.c:205
 msgid "Set Parameters for GAP singleframes video encoder Plugins"
-msgstr "Imposta i parametri per il plugin codificatore video a singola frame"
+msgstr "Imposta i parametri per il plugin codificatore video a singolo frame"
 
 #: vid_enc_single/gap_enc_singleframes_main.c:206
 msgid "This plugin sets singleframes specific video encoding parameters."
