@@ -38,9 +38,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-static char *gap_main_version =  "1.3.17a; 2003/07/29";
+static char *gap_main_version =  "1.3.17b; 2003/07/31";
 
 /* revision history:
+ * gimp    1.3.17b; 2003/07/31  hof: - updated main version, message text fixes for translators (# 118392)
  * gimp    1.3.17a; 2003/07/29  hof: - updated main version,
  *                                   - param types GimpPlugInInfo.run procedure
  * gimp    1.3.16c; 2003/07/09  hof: - updated main version,
@@ -440,7 +441,7 @@ GimpPlugInInfo PLUG_IN_INFO =
     {GIMP_PDB_INT32, "run_mode", "Interactive, non-interactive"},
     {GIMP_PDB_IMAGE, "image", "Input image (current one of the Anim Frames)"},
     {GIMP_PDB_DRAWABLE, "drawable", "Input drawable (unused)"},
-    {GIMP_PDB_INT32, "nr", "how many framenumbers to shift the framesequence"},
+    {GIMP_PDB_INT32, "nr", "how many framenumbers to shift the Frame Sequence"},
     {GIMP_PDB_INT32, "range_from", "frame nr to start"},
     {GIMP_PDB_INT32, "range_to", "frame nr to stop"},
   };
@@ -538,7 +539,7 @@ query ()
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
 			 gap_main_version,
-			 N_("<Image>/Video/Goto/Next Frame"),
+			 N_("<Image>/Video/Go To/Next Frame"),
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
 			 nargs_std, nreturn_std,
@@ -550,7 +551,7 @@ query ()
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
 			 gap_main_version,
-			 N_("<Image>/Video/Goto/Previous Frame"),
+			 N_("<Image>/Video/Go To/Previous Frame"),
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
 			 nargs_std, nreturn_std,
@@ -562,7 +563,7 @@ query ()
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
 			 gap_main_version,
-			 N_("<Image>/Video/Goto/First Frame"),
+			 N_("<Image>/Video/Go To/First Frame"),
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
 			 nargs_std, nreturn_std,
@@ -574,7 +575,7 @@ query ()
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
 			 gap_main_version,
-			 N_("<Image>/Video/Goto/Last Frame"),
+			 N_("<Image>/Video/Go To/Last Frame"),
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
 			 nargs_std, nreturn_std,
@@ -586,7 +587,7 @@ query ()
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
 			 gap_main_version,
-			 N_("<Image>/Video/Goto/Any Frame..."),
+			 N_("<Image>/Video/Go To/Any Frame..."),
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
 			 nargs_goto, nreturn_std,
@@ -831,7 +832,7 @@ query ()
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
 			 gap_main_version,
-			 N_("<Image>/Video/Framesequence Shift..."),
+			 N_("<Image>/Video/Frame Sequence Shift..."),
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
 			 nargs_shift, nreturn_std,

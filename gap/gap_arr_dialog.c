@@ -38,6 +38,7 @@
  */
 
 /* revision history:
+ * gimp    1.3.17b; 2003/07/31  hof: message text fixes for translators (# 118392)
  * gimp    1.3.17a; 2003/07/28  hof: gimp_interactive_selection_font was renamed to:  gimp_font_select_new
  * gimp    1.3.16c; 2003/07/12  hof: new p_confirm_dialog
  * gimp    1.3.15a; 2003/06/21  hof: textspacing
@@ -396,7 +397,7 @@ fontsel_create_value(char *title, GtkTable *table, int row, t_arr_arg *arr_ptr)
   arr_ptr->text_fontsel = NULL;
     
   /* Button  to invoke fontbrowser */  
-  button = gtk_button_new_with_label ( _("Font-Browser"));
+  button = gtk_button_new_with_label ( _("Font Browser"));
   gtk_table_attach( GTK_TABLE(table), button, 2, 3, row, row +1,
 		    0, 0, 0, 0 );
   if(arr_ptr->help_txt != NULL)
@@ -477,7 +478,7 @@ filesel_create_value(char *title, GtkTable *table, int row, t_arr_arg *arr_ptr)
   arr_ptr->text_filesel = NULL;
     
   /* Button  to invoke filebrowser */  
-  button = gtk_button_new_with_label ( _("File-Browser"));
+  button = gtk_button_new_with_label ( _("File Browser"));
   gtk_table_attach( GTK_TABLE(table), button, 2, 3, row, row +1,
 		    0, 0, 0, 0 );
   gtk_widget_show (button);

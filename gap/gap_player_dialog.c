@@ -27,6 +27,7 @@
  */
 
 /* Revision history
+ *  (2003/07/31)  v1.3.17b   hof: message text fixes for translators (# 118392)
  *  (2003/06/26)  v1.3.16a   hof: bugfix: make preview drawing_area fit into frame (use an aspect_frame)
  *                                query gimprc for "show-tool-tips"
  *  (2003/06/21)  v1.3.15a   hof: created
@@ -2265,14 +2266,14 @@ p_create_player_window (t_global_params *gpp)
   gtk_widget_show (table2);
   gtk_container_add (GTK_CONTAINER (frame2), table2);
 
-  label = gtk_label_new (_("From:"));
+  label = gtk_label_new (_("From Frame:"));
   gtk_widget_show (label);
   gtk_table_attach (GTK_TABLE (table2), label, 0, 1, 0, 1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 
-  label = gtk_label_new (_("To:"));
+  label = gtk_label_new (_("To Frame:"));
   gtk_widget_show (label);
   gtk_table_attach (GTK_TABLE (table2), label, 0, 1, 1, 2,
                     (GtkAttachOptions) (GTK_FILL),

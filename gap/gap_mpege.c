@@ -36,6 +36,7 @@
  */
 
 /* revision history
+ * 1.3.17b; 2003/07/31   hof: message text fixes for translators (# 118392)
  * 1.3.16a; 2003/06/25   hof: no textsplitting across multiple lables (for translation)
  * 1.3.15a; 2003/06/21   hof: textspacing
  * 1.3.12a; 2003/05/02   hof: merge into CVS-gimp-gap project, 6digit framenumbers
@@ -114,11 +115,11 @@ int p_mpege_info(t_anim_info *ainfo_ptr, char *errlist, t_gap_mpeg_encoder encod
   p_init_arr_arg(&argv[l_idx], WGT_LABEL_LEFT);
   if(encoder == MPEG2ENCODE)
   {
-    argv[l_idx].label_txt = _("Conditions to run mpeg2encode 1.2:");
+    argv[l_idx].label_txt = _("Requirements to run mpeg2encode 1.2:");
   }
   else
   {
-    argv[l_idx].label_txt = _("Conditions to run mpeg_encode 1.5:");
+    argv[l_idx].label_txt = _("Requirements to run mpeg_encode 1.5:");
   }
 
 
@@ -361,7 +362,7 @@ int p_mpege_dialog(t_anim_info *ainfo_ptr, t_mpg_par *mp_ptr, t_gap_mpeg_encoder
      p_init_arr_arg(&argv[6], WGT_TEXT);
      argv[6].label_txt = _("Pattern:");
      argv[6].entry_width = 140;       /* pixel */
-     argv[6].help_txt  = _("How to encode MPEG framesequence (I/P/B frames)");
+     argv[6].help_txt  = _("How to encode MPEG Frame Sequence (I/P/B frames)");
      argv[6].text_buf_len = sizeof(l_pattern);
      argv[6].text_buf_ret = &l_pattern[0];
      argv[6].has_default = TRUE;

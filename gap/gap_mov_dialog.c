@@ -30,6 +30,7 @@
  */
 
 /* revision history:
+ * gimp    1.3.17b; 2003/07/31  hof: message text fixes for translators (# 118392)
  * gimp    1.3.16c; 2003/07/12  hof: removed deprecated GtkKPreview widget (replaced by drawing_area based gap_pview_da calls)
  *                                   cursor crosslines ar now switchable (show_cursor flag)
  * gimp    1.3.15a; 2003/06/21  hof: attempt to remove some deprecated calls (no success)
@@ -563,7 +564,7 @@ mov_dialog ( GimpDrawable *drawable, t_mov_path_preview *path_ptr,
 
   /* the start frame scale_entry */
   adj = gimp_scale_entry_new( GTK_TABLE (table), 0, 0,        /* table col, row */
-			  _("Start Frame:"),                  /* label text */
+			  _("From Frame:"),                   /* label text */
 			  SCALE_WIDTH, ENTRY_WIDTH,           /* scalesize spinsize */
 			  (gfloat)pvals->dst_range_start,     /* value */
 			  (gfloat)first_nr, (gfloat)last_nr,  /* lower, upper */
@@ -578,7 +579,7 @@ mov_dialog ( GimpDrawable *drawable, t_mov_path_preview *path_ptr,
 
   /* the end frame scale_entry */
   adj = gimp_scale_entry_new( GTK_TABLE (table), 0, 1,        /* table col, row */
-			  _("End Frame:"),                    /* label text */
+			  _("To Frame:"),                     /* label text */
 			  SCALE_WIDTH, ENTRY_WIDTH,           /* scalesize spinsize */
 			  (gfloat)pvals->dst_range_end,       /* value */
 			  (gfloat)first_nr, (gfloat)last_nr,  /* lower, upper */

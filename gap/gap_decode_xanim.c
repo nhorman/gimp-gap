@@ -48,6 +48,7 @@
  */
 
 /* revision history
+ * gimp    1.3.17b; 2003/07/31  hof: message text fixes for translators (# 118392)
  * gimp    1.3.16a; 2003/06/25  hof: no textsplitting across multiple lables (for translation)
  * gimp    1.3.15a; 2003/06/21  hof: checked textspacing
  * gimp    1.3.12a; 2003/05/02  hof: merge into CVS-gimp-gap project, 6digit framenumbers
@@ -117,7 +118,7 @@ p_xanim_info(char *errlist)
 
   l_idx = 0;
   p_init_arr_arg(&argv[l_idx], WGT_LABEL_LEFT);
-  argv[l_idx].label_txt = _("Conditions to run the xanim based video split");
+  argv[l_idx].label_txt = _("Requirements to run the xanim based video split");
 
   l_idx++;
   p_init_arr_arg(&argv[l_idx], WGT_LABEL_LEFT);
@@ -225,7 +226,7 @@ p_xanim_dialog   (gint32 *first_frame,
   argv[0].entry_width = 250;
 
   p_init_arr_arg(&argv[1], WGT_INT_PAIR);
-  argv[1].label_txt = _("From:");
+  argv[1].label_txt = _("From Frame:");
   argv[1].help_txt  = _("Framenumber of 1st frame to extract");
   argv[1].constraint = FALSE;
   argv[1].int_min    = 0;
@@ -235,7 +236,7 @@ p_xanim_dialog   (gint32 *first_frame,
   argv[1].entry_width = 80;
   
   p_init_arr_arg(&argv[2], WGT_INT_PAIR);
-  argv[2].label_txt = _("To:");
+  argv[2].label_txt = _("To Frame:");
   argv[2].help_txt  = _("Framenumber of last frame to extract");
   argv[2].constraint = FALSE;
   argv[2].int_min    = 0;

@@ -32,6 +32,7 @@
  */
 
 /* revision history
+ * 1.3.17b; 2003/07/31   hof: message text fixes for translators (# 118392)
  * 1.3.15a; 2003/06/21   hof: textspacing
  * 1.3.14a; 2003/05/18   hof: again using gap_resi_dialog (now based on GimpOffsetArea widget)
  * 1.3.12a; 2003/05/01   hof: merge into CVS-gimp-gap project
@@ -277,14 +278,14 @@ p_range_dialog(t_anim_info *ainfo_ptr,
   if(cnt != 3)  cnt = 2;
 
   p_init_arr_arg(&argv[0], WGT_INT_PAIR);
-  argv[0].label_txt = _("From:");
+  argv[0].label_txt = _("From Frame:");
   argv[0].constraint = TRUE;
   argv[0].int_min   = (gint)ainfo_ptr->first_frame_nr;
   argv[0].int_max   = (gint)ainfo_ptr->last_frame_nr;
   argv[0].int_ret   = (gint)ainfo_ptr->curr_frame_nr;
   
   p_init_arr_arg(&argv[1], WGT_INT_PAIR);
-  argv[1].label_txt = _("To:");
+  argv[1].label_txt = _("To Frame:");
   argv[1].constraint = TRUE;
   argv[1].int_min   = (gint)ainfo_ptr->first_frame_nr;
   argv[1].int_max   = (gint)ainfo_ptr->last_frame_nr;
@@ -626,7 +627,7 @@ p_range_to_multilayer_dialog(t_anim_info *ainfo_ptr,
 
   p_init_arr_arg(&argv[0], WGT_INT_PAIR);
   argv[0].constraint = TRUE;
-  argv[0].label_txt = _("From:");
+  argv[0].label_txt = _("From Frame:");
   argv[0].help_txt  = _("first handled frame");
   argv[0].int_min   = (gint)ainfo_ptr->first_frame_nr;
   argv[0].int_max   = (gint)ainfo_ptr->last_frame_nr;
@@ -634,7 +635,7 @@ p_range_to_multilayer_dialog(t_anim_info *ainfo_ptr,
   
   p_init_arr_arg(&argv[1], WGT_INT_PAIR);
   argv[1].constraint = TRUE;
-  argv[1].label_txt = _("To:");
+  argv[1].label_txt = _("To Frame:");
   argv[1].help_txt  = _("last handled frame");
   argv[1].int_min   = (gint)ainfo_ptr->first_frame_nr;
   argv[1].int_max   = (gint)ainfo_ptr->last_frame_nr;

@@ -28,6 +28,7 @@
  */
 
 /* revision history:
+ * 1.3.17b; 2003/07/31   hof: message text fixes for translators (# 118392)
  * 1.3.16b; 2003/07/04   hof: added gap_density, confirm dialog for frame deleting operations
  * 1.3.15a  2003/06/21   hof: textspacing
  * 1.3.14a  2003/05/27   hof: created (module was splitted off from gap_lib)
@@ -80,7 +81,7 @@ p_density_shrink(t_anim_info *ainfo_ptr
 
    if(ainfo_ptr->run_mode == GIMP_RUN_INTERACTIVE)
    {
-     gimp_progress_init(_("Density-Deleting frames..."));
+     gimp_progress_init(_("Decreasing Density by deleting Frames..."));
    }
 
    l_percentage = 0.0;  
@@ -766,7 +767,7 @@ p_shift(t_anim_info *ainfo_ptr, long cnt, long range_from, long range_to)
    l_percentage = 0.0;  
    if(ainfo_ptr->run_mode == GIMP_RUN_INTERACTIVE)
    { 
-     gimp_progress_init( _("Renumber Framesequence..."));
+     gimp_progress_init( _("Renumber Frame Sequence..."));
    }
 
    /* rename (renumber) all frames (using high numbers)
@@ -958,7 +959,7 @@ gap_goto(GimpRunMode run_mode, gint32 image_id, int nr)
 
       if(run_mode == GIMP_RUN_INTERACTIVE)
       {
-        l_title = g_strdup_printf (_("Goto Frame (%ld/%ld)")
+        l_title = g_strdup_printf (_("Go To Frame (%ld/%ld)")
 				   , ainfo_ptr->curr_frame_nr
 				   , ainfo_ptr->frame_cnt);
         l_hline =  g_strdup_printf (_("Destination Frame Number (%ld - %ld)")
@@ -1180,8 +1181,8 @@ p_density_confirm_dialog(t_anim_info *ainfo_ptr, long range_from, long range_to
   }
 
   l_rc = p_confirm_dialog(msg_txt
-                         , _("Confirm Framedensity Change")   /* title_txt */
-                         , _("Confirm Framedensity Change")   /* frame_txt */
+                         , _("Confirm Frame Density Change")   /* title_txt */
+                         , _("Confirm Frame Density Change")   /* frame_txt */
                          );
   g_free(msg_txt);
 
@@ -1203,10 +1204,10 @@ p_density_dialog(t_anim_info *ainfo_ptr, long *range_from, long *range_to
   gint              l_rci;
   gboolean          l_rc;
 
-  l_title = g_strdup_printf (_("Change Frames Density"));
+  l_title = g_strdup_printf (_("Change Frame Density"));
 
   p_init_arr_arg(&argv[0], WGT_INT_PAIR);
-  argv[0].label_txt = _("From:");
+  argv[0].label_txt = _("From Frame:");
   argv[0].constraint = TRUE;
   argv[0].int_min   = (gint)ainfo_ptr->first_frame_nr;
   argv[0].int_max   = (gint)ainfo_ptr->last_frame_nr;
@@ -1214,7 +1215,7 @@ p_density_dialog(t_anim_info *ainfo_ptr, long *range_from, long *range_to
   argv[0].help_txt  = _("Affected Range starts at this framenumber");
 
   p_init_arr_arg(&argv[1], WGT_INT_PAIR);
-  argv[1].label_txt = _("To:");
+  argv[1].label_txt = _("To Frame:");
   argv[1].constraint = TRUE;
   argv[1].int_min   = (gint)ainfo_ptr->first_frame_nr;
   argv[1].int_max   = (gint)ainfo_ptr->last_frame_nr;
@@ -1232,10 +1233,10 @@ p_density_dialog(t_anim_info *ainfo_ptr, long *range_from, long *range_to
   argv[2].flt_digits = 4;
   argv[2].umin      = 1.0;
   argv[2].umax      = 100.0;
-  argv[2].help_txt  = _("Density Factor for Density grow (or Divisor for shrink)");
+  argv[2].help_txt  = _("Factor to Increase the Frame Density (acts as Divisor if checkbutton Increase Density is OFF)");
 
   p_init_arr_arg(&argv[3], WGT_TOGGLE);
-  argv[3].label_txt = _("Density Grow");
+  argv[3].label_txt = _("Increase Density");
   argv[3].help_txt  = _("ON: Duplicate Frames to get a target rate that is Density * Originalrate\n"
                         "OFF: Delete Frames to get a target rate that is Originalrate/Density");
   argv[3].int_ret   = 1;
@@ -1358,7 +1359,7 @@ p_dup_dialog(t_anim_info *ainfo_ptr, long *range_from, long *range_to)
 			     , ainfo_ptr->frame_cnt);
 
   p_init_arr_arg(&argv[0], WGT_INT_PAIR);
-  argv[0].label_txt = _("From:");
+  argv[0].label_txt = _("From Frame:");
   argv[0].constraint = TRUE;
   argv[0].int_min   = (gint)ainfo_ptr->first_frame_nr;
   argv[0].int_max   = (gint)ainfo_ptr->last_frame_nr;
@@ -1366,7 +1367,7 @@ p_dup_dialog(t_anim_info *ainfo_ptr, long *range_from, long *range_to)
   argv[0].help_txt  = _("Source Range starts at this framenumber");
 
   p_init_arr_arg(&argv[1], WGT_INT_PAIR);
-  argv[1].label_txt = _("To:");
+  argv[1].label_txt = _("To Frame:");
   argv[1].constraint = TRUE;
   argv[1].int_min   = (gint)ainfo_ptr->first_frame_nr;
   argv[1].int_max   = (gint)ainfo_ptr->last_frame_nr;
@@ -1384,7 +1385,7 @@ p_dup_dialog(t_anim_info *ainfo_ptr, long *range_from, long *range_to)
   argv[2].help_txt  = _("Copy selected Range n-times\n(you may type in Values > 99)");
 
 
-  if(TRUE == p_array_dialog(l_title, _("Duplicate Frame Range"),  3, argv))
+  if(TRUE == p_array_dialog(l_title, _("Make Duplicates of Frame Range"),  3, argv))
   { 
     g_free (l_title);
     *range_from = (long)(argv[0].int_ret);
@@ -1551,12 +1552,12 @@ p_shift_dialog(t_anim_info *ainfo_ptr, long *range_from, long *range_to)
   static t_arr_arg  argv[3];
   gchar            *l_title;
 
-  l_title = g_strdup_printf (_("Framesequence Shift (%ld/%ld)")
+  l_title = g_strdup_printf (_("Frame Sequence Shift (%ld/%ld)")
 			     , ainfo_ptr->curr_frame_nr
 			     , ainfo_ptr->frame_cnt);
 
   p_init_arr_arg(&argv[0], WGT_INT_PAIR);
-  argv[0].label_txt = _("From:");
+  argv[0].label_txt = _("From Frame:");
   argv[0].constraint = TRUE;
   argv[0].int_min   = (gint)ainfo_ptr->first_frame_nr;
   argv[0].int_max   = (gint)ainfo_ptr->last_frame_nr;
@@ -1564,7 +1565,7 @@ p_shift_dialog(t_anim_info *ainfo_ptr, long *range_from, long *range_to)
   argv[0].help_txt  = _("Affected Range starts at this framenumber");
 
   p_init_arr_arg(&argv[1], WGT_INT_PAIR);
-  argv[1].label_txt = _("To:");
+  argv[1].label_txt = _("To Frame:");
   argv[1].constraint = TRUE;
   argv[1].int_min   = (gint)ainfo_ptr->first_frame_nr;
   argv[1].int_max   = (gint)ainfo_ptr->last_frame_nr;
@@ -1577,9 +1578,9 @@ p_shift_dialog(t_anim_info *ainfo_ptr, long *range_from, long *range_to)
   argv[2].int_min   = -1 * (gint)ainfo_ptr->last_frame_nr;
   argv[2].int_max   = (gint)ainfo_ptr->last_frame_nr;
   argv[2].int_ret   = 1;
-  argv[2].help_txt  = _("Renumber the affected framesequence\n(numbers are shifted in circle by N)");
+  argv[2].help_txt  = _("Renumber the affected Frame Sequence\n(numbers are shifted in circle by N)");
   
-  if(TRUE == p_array_dialog(l_title, _("Framesequence shift"),  3, argv))
+  if(TRUE == p_array_dialog(l_title, _("Frame Sequence shift"),  3, argv))
   { 
     g_free (l_title);
     *range_from = (long)(argv[0].int_ret);
@@ -1668,12 +1669,12 @@ p_renumber_dialog(t_anim_info *ainfo_ptr, long *start_frame_nr, long *digits)
 			     , ainfo_ptr->frame_cnt);
 
   p_init_arr_arg(&argv[0], WGT_INT_PAIR);
-  argv[0].label_txt = _("Start Frame Number:");
+  argv[0].label_txt = _("First Frame Number:");
   argv[0].constraint = TRUE;
   argv[0].int_min   = (gint)0;
   argv[0].int_max   = (gint)999999;
   argv[0].int_ret   = (gint)1;
-  argv[0].help_txt  = _("New Framenumber for the 1.st frame");
+  argv[0].help_txt  = _("New Framenumber for the first Frame");
 
   p_init_arr_arg(&argv[1], WGT_INT_PAIR);
   argv[1].label_txt = _("Digits:");
@@ -1681,7 +1682,7 @@ p_renumber_dialog(t_anim_info *ainfo_ptr, long *start_frame_nr, long *digits)
   argv[1].int_min   = 1;
   argv[1].int_max   = 6;
   argv[1].int_ret   = 6;
-  argv[1].help_txt  = _("How many digits to use for the framenumber filenamepart");
+  argv[1].help_txt  = _("How many digits to use for the Framenumber in the File Name");
     
 
 
@@ -1794,7 +1795,7 @@ p_renumber_frames(t_anim_info *ainfo_ptr, long start_frame_nr, long digits)
 
   if(ainfo_ptr->run_mode == GIMP_RUN_INTERACTIVE)
   {
-    gimp_progress_init(_("renumber frames"));
+    gimp_progress_init(_("Renumber Frames"));
   }
   two_pass = FALSE;
   if(start_frame_nr > ainfo_ptr->first_frame_nr)
@@ -1834,7 +1835,7 @@ p_renumber_frames(t_anim_info *ainfo_ptr, long start_frame_nr, long digits)
       two_pass = TRUE;
       if(ainfo_ptr->run_mode == GIMP_RUN_INTERACTIVE)
       {
-        gimp_progress_init(_("renumber frames 2nd pass"));
+        gimp_progress_init(_("Renumber Frames 2nd Pass"));
       }
     }
   }
