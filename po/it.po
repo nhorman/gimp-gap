@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gimp 2.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-10-12 08:35+0200\n"
-"PO-Revision-Date: 2004-10-12 08:34+0200\n"
+"POT-Creation-Date: 2004-10-17 11:52+0200\n"
+"PO-Revision-Date: 2004-10-17 12:01+0200\n"
 "Last-Translator: Marco Ciampa <ciampix@libero.it>\n"
 "Language-Team: gimp.linux.it\n"
 "MIME-Version: 1.0\n"
@@ -7137,11 +7137,11 @@ msgstr "fattore di ritardo reazione (-1 per predefinito)"
 #. the xvid AVG Period label
 #: vid_enc_avi/gap_enc_avi_gui.c:781
 msgid "AVG Period:"
-msgstr "Periofo AVG:"
+msgstr "Periodo AVG:"
 
 #: vid_enc_avi/gap_enc_avi_gui.c:805
 msgid "averaging period (-1 for default)"
-msgstr "periodo medio (-1 per predefinito)"
+msgstr "periodo medio (-1 per il predefinito)"
 
 #. the xvid Buffer label
 #: vid_enc_avi/gap_enc_avi_gui.c:812
@@ -7187,7 +7187,7 @@ msgstr ""
 
 #: vid_enc_avi/gap_enc_avi_main.c:214
 msgid "avi video encoding for anim frames. Menu: @AVI@"
-msgstr "cidifica video avi per i frame animati. Menu: @AVI@"
+msgstr "codifica video avi per i frame animati. Menu: @AVI@"
 
 #: vid_enc_avi/gap_enc_avi_main.c:215
 msgid ""
@@ -7211,7 +7211,7 @@ msgstr ""
 
 #: vid_enc_avi/gap_enc_avi_main.c:233
 msgid "Set Parameters for GAP avi video encoder Plugins"
-msgstr "Imposta i parametri per il pluin del codificatore video avi GAP"
+msgstr "Imposta i parametri per il plugin del codificatore video avi GAP"
 
 #: vid_enc_avi/gap_enc_avi_main.c:234
 msgid "This plugin sets avi specific video encoding parameters."
@@ -7257,9 +7257,7 @@ msgstr "Non ricodificare"
 msgid ""
 "Don't recode the input JPEG frames (works for 4:2:2 JPEG only, may result in "
 "unreadable Video)"
-msgstr ""
-"Non ricodificare i frame JPEG in ingresso (lavora solo per JPEG 4:2:2 e può "
-"portare ad un video non leggibile)"
+msgstr "Non ricodificare i frame JPEG in ingresso (funziona solo per JPEG 4:2:2 e può portare ad un video non leggibile)"
 
 #: vid_enc_avi/gap_enc_avi_main.c:624
 msgid "Interlaced Frames)"
@@ -8004,7 +8002,7 @@ msgstr ""
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:358
 msgid "ffmpeg video encoding for anim frames. Menu: @FFMPEG@"
-msgstr "codifica video ffmpeg per frame animate. Menu: @FFMPEG@"
+msgstr "codifica video ffmpeg per frame animati. Menu: @FFMPEG@"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:359
 msgid ""
@@ -8013,12 +8011,7 @@ msgid ""
 "wav) file. .wav files can be mono (1) or stereo (2channels) audiodata and "
 "must be 16bit uncompressed. IMPORTANT:  Non-interactive callers should first "
 "call \""
-msgstr ""
-"Questo plugin esegue la codifica video di frame animate usando libavformat "
-"(conosciuto anche come codificatore FFMPEG). I dati audio (opzionali) devono "
-"essere in formato RIFF WAVE (.wav) a 16 bit non compressi e possono essere "
-"mono(1) o stereo (2 canali). IMPORTANTE: chiamate non interattive devono "
-"prima chiamare \""
+msgstr "Questo plugin esegue la codifica video di frame animati usando libavformat (conosciuto anche come codificatore FFMPEG). I dati audio (opzionali) devono essere in formato RIFF WAVE (.wav) a 16 bit non compressi e possono essere mono(1) o stereo (2 canali). IMPORTANTE: chiamate non interattive devono prima chiamare \""
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:378
 msgid "Set Parameters for GAP ffmpeg video encoder Plugin"
@@ -8031,7 +8024,7 @@ msgstr ""
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:392
 msgid "Get GUI Parameters for GAP ffmpeg video encoder"
-msgstr "Ottieni parametri GUI per il codificatore video GAP ffmpeg"
+msgstr "Ottieni i parametri GUI per il codificatore video GAP ffmpeg"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:393
 msgid "This plugin returns ffmpeg encoder specific parameters."
@@ -8051,7 +8044,7 @@ msgstr ""
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:918
 #, c-format
 msgid "Frame width and height must be a multiple of 2\n"
-msgstr "L'ampiezza e l'altezza frame devono essere multipli di 2\n"
+msgstr "L'ampiezza e l'altezza del frame devono essere multipli di 2\n"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:1815
 msgid "FFMPEG Video Encoding .."
@@ -8059,7 +8052,7 @@ msgstr "Codifica video FFMPEG .."
 
 #: vid_enc_single/gap_enc_singleframes_main.c:180
 msgid "singleframes video encoding for anim frames. Menu: @SINGLEFRAMES@"
-msgstr "codifica video a frame singola per frame animate. Menu: @SINGLEFRAMES@"
+msgstr "codifica video a frame singolo per frame animati. Menu: @SINGLEFRAMES@"
 
 #: vid_enc_single/gap_enc_singleframes_main.c:181
 msgid ""
@@ -8099,7 +8092,7 @@ msgstr ""
 
 #: vid_enc_single/gap_enc_singleframes_main.c:219
 msgid "Get GUI Parameters for GAP singleframes video encoder"
-msgstr "Imposta i parametri GUI per il codificatore a frame singola GAP"
+msgstr "Imposta i parametri GUI per il codificatore a frame singolo GAP"
 
 #: vid_enc_single/gap_enc_singleframes_main.c:220
 msgid "This plugin returns singleframes encoder specific parameters."
@@ -8115,7 +8108,7 @@ msgid ""
 "extension of the video name, frames are named\n"
 "video name plus 6-digit number + extension"
 msgstr ""
-"Questo codificatore a frame singola\n"
+"Questo codificatore a frame singolo\n"
 "scrive i frame singoli invece di un file video.\n"
 "Il formato video dei frame è derivato\n"
 "dall'estensione del nome del video; i frame\n"
@@ -8124,7 +8117,7 @@ msgstr ""
 
 #: vid_enc_single/gap_enc_singleframes_main.c:511
 msgid "the Singleframe Encoder has no encoder specific Parameters"
-msgstr "il codificatore a frame singola non ha parametri specifici"
+msgstr "il codificatore a frame singolo non ha parametri specifici"
 
 #: vid_enc_single/gap_enc_singleframes_main.c:680
 msgid "Singleframes Video Encoding .."
