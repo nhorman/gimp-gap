@@ -1,3 +1,37 @@
+2003-06-29 Wolfgang Hofer <hof@gimp.org>
+        - VCR Navigator Redesign
+          - replaced all the scrolled_window stuff by a gtk_table
+            and add/remove rows on significant window height changes.
+              now the navigator can handle unlimited number of animframes
+              uses less resources and works faster.
+          - use gap_pview_da instead of deprecated gtk_preview
+          - mtime checking now based on framefilename
+            (checking the thumbnailfilename is not a good idea since we support
+             2 thumbnail standards)
+          - added Select All / Select None menu_items
+            to the PopUp Menu
+          - manage scroll and selection in navigator code.
+            
+            HIGHLIGHTING of the selected frame_widgets does not work yet.
+            (need to learn more about gtk to fix that)
+
+        * gap/gap_navigator_dialog.c
+        * gap/gap_pview_da.c [.h]
+        * gap/Makefile.am
+2003-06-26 Wolfgang Hofer <hof@gimp.org>
+        - Player: layout bugfix preview drawing_area size did not math surrounding frame
+                  (now using an aspect_frame, required some changes in resizing)
+                  query gimprc for "show-tool-tips"
+        * gap/gap_pview_da.c [.h]
+        * gap/gap_player_main.c [.h]
+        * gap_player_dialog.c
+        
+        - no textsplitting across multiple lables (for translation)
+        * gap/gap_mpege.c
+        * gap/gap_decode_xanim.c
+
+-- gimp-gap-1.3.15a_pre52 --
+
 2003-06-22 Wolfgang Hofer <hof@gimp.org>
        - downloaded CVS-snapshot gimp-gap-2003-06-20.tar.gz and
          merged changes from mitch with my local copy of gimp-gap

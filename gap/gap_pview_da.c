@@ -23,6 +23,8 @@
  */
 
 /* revision history:
+ * version 1.3.16a; 2003/06/26  hof: use aspect_frame instead of simple frame
+ *                                   added p_pview_render_default_icon
  * version 1.3.14c; 2003/06/19  hof: created
  */
 
@@ -55,12 +57,14 @@ p_pview_reset(t_pview *pv_ptr)
 {
   if(pv_ptr->src_col) g_free(pv_ptr->src_col);
   if(pv_ptr->pv_area_data)  g_free(pv_ptr->pv_area_data);
+  if(pv_ptr->pixmap)        g_object_unref(pv_ptr->pixmap);
 
   pv_ptr->src_col = NULL;
   pv_ptr->pv_area_data = NULL;
   pv_ptr->src_width = 0;
   pv_ptr->src_bpp = 0;
   pv_ptr->src_rowstride = 0;
+  pv_ptr->use_pixmap_repaint = FALSE;
 } /* end p_pview_reset */
 
 
@@ -78,9 +82,18 @@ p_pview_set_size(t_pview *pv_ptr, gint pv_width, gint pv_height, gint pv_check_s
   p_pview_reset(pv_ptr);
 
   gtk_widget_set_size_request (pv_ptr->da_widget, pv_width, pv_height);
-  if(pv_ptr->frame)
+  if(pv_ptr->aspect_frame)
   { 
-    gtk_widget_set_size_request (pv_ptr->frame, pv_width+5, pv_height+5);
+    gtk_aspect_frame_set (GTK_ASPECT_FRAME(pv_ptr->aspect_frame)
+                         ,0.5
+                         ,0.5
+                         , pv_width / pv_height
+                         , TRUE  /* obey_child */
+                         );
+    gtk_widget_set_size_request (pv_ptr->aspect_frame
+                                , pv_width+5
+                                , (gdouble)(pv_width+5) * ( (gdouble)pv_height / (gdouble)pv_width)                       /* pv_height */
+                                );
   }
   pv_ptr->pv_width = pv_width;
   pv_ptr->pv_height = pv_height;
@@ -100,7 +113,7 @@ p_pview_set_size(t_pview *pv_ptr, gint pv_width, gint pv_height, gint pv_check_s
  * (for transparent pixels)
  */
 t_pview *
-p_pview_new(gint pv_width, gint pv_height, gint pv_check_size, GtkWidget *frame)
+p_pview_new(gint pv_width, gint pv_height, gint pv_check_size, GtkWidget *aspect_frame)
 {
   t_pview *pv_ptr;
  
@@ -108,8 +121,10 @@ p_pview_new(gint pv_width, gint pv_height, gint pv_check_size, GtkWidget *frame)
   pv_ptr->pv_bpp = 3;
  
   pv_ptr->da_widget = gtk_drawing_area_new ();
-  pv_ptr->frame = frame;
+  pv_ptr->aspect_frame = aspect_frame;
   p_pview_set_size(pv_ptr, pv_width, pv_height, pv_check_size);
+  pv_ptr->use_pixmap_repaint = FALSE;
+  pv_ptr->pixmap = NULL;
 
   return(pv_ptr);
 }  /* end p_pview_new */
@@ -125,8 +140,9 @@ p_pview_repaint(t_pview *pv_ptr)
   if(pv_ptr == NULL) { return; }
   if(pv_ptr->da_widget == NULL) { return; }
   if(pv_ptr->da_widget->window == NULL) { return; }
-  if(pv_ptr->pv_area_data == NULL) { return; }
-  
+  if((pv_ptr->pv_area_data != NULL)
+  && (!pv_ptr->use_pixmap_repaint))
+  {
     gdk_draw_rgb_image ( pv_ptr->da_widget->window
 		       , pv_ptr->da_widget->style->white_gc
 		       , 0
@@ -137,7 +153,21 @@ p_pview_repaint(t_pview *pv_ptr)
 		       , pv_ptr->pv_area_data
 		       , pv_ptr->pv_width * 3
 		       );
-  
+    return;
+  }
+  if(pv_ptr->pixmap != NULL)
+  {
+    gdk_draw_drawable(pv_ptr->da_widget->window
+                   ,pv_ptr->da_widget->style->white_gc
+                   ,pv_ptr->pixmap
+                   ,0
+                   ,0
+                   ,0
+                   ,0
+                   ,pv_ptr->pv_width
+                   ,pv_ptr->pv_height
+                   );
+  }
 }  /* end p_pview_repaint */
 
 
@@ -185,6 +215,11 @@ p_pview_render_from_buf (t_pview *pv_ptr
     printf("p_pview_render_from_buf: drawing_area window pointer is NULL, cant render\n");
     return FALSE;
   }
+
+  /* clear flag to let p_pview_repaint procedure know
+   * to use the pv_area_data rather than the pixmap for refresh
+   */
+  pv_ptr->use_pixmap_repaint = FALSE;
 
   /* check for col and area_data buffers (allocate if needed) */
   if ((pv_ptr->src_col == NULL)
@@ -449,3 +484,116 @@ p_pview_render_from_image (t_pview *pv_ptr, gint32 image_id)
   }
   
 }  /* end p_pview_render_from_image */
+
+
+/* ------------------------------
+ * p_pview_render_default_icon
+ * ------------------------------
+ */
+void
+p_pview_render_default_icon(t_pview   *pv_ptr)
+{
+  GtkWidget *widget;
+  int w, h;
+  int x1, y1, x2, y2;
+  GdkPoint poly[6];
+  int foldh, foldw;
+  int i;
+
+  if(pv_ptr == NULL) { return; }
+  if(pv_ptr->da_widget == NULL) { return; }
+  if(pv_ptr->da_widget->window == NULL) { return; }
+
+  widget = pv_ptr->da_widget;  /* the drawing area */
+
+  /* set flag to let p_pview_repaint procedure know
+   * to use the pixmap rather than pv_area_data for refresh
+   */
+  pv_ptr->use_pixmap_repaint = TRUE;
+  
+  if(pv_ptr->pixmap)
+  {
+    gdk_drawable_get_size (pv_ptr->pixmap, &w, &h);
+    if((w != pv_ptr->pv_width)
+    || (h != pv_ptr->pv_height))
+    {
+       /* drop the old pixmap because of size missmatch */
+       g_object_unref(pv_ptr->pixmap);
+       pv_ptr->pixmap = NULL;
+    }
+  }
+
+  w = pv_ptr->pv_width;
+  h = pv_ptr->pv_height;
+
+  if(pv_ptr->pixmap == NULL)
+  {
+       pv_ptr->pixmap = gdk_pixmap_new (widget->window
+                          ,pv_ptr->pv_width
+                          ,pv_ptr->pv_height
+                          ,-1    /* use same depth as widget->window */
+                          );
+
+  }
+
+  x1 = 2;
+  y1 = h / 8 + 2;
+  x2 = w - w / 8 - 2;
+  y2 = h - 2;
+  gdk_draw_rectangle (pv_ptr->pixmap, widget->style->bg_gc[GTK_STATE_NORMAL], 1,
+                      0, 0, w, h);
+/*
+  gdk_draw_rectangle (pv_ptr->pixmap, widget->style->black_gc, 0,
+                      x1, y1, (x2 - x1), (y2 - y1));
+*/
+
+  foldw = w / 4;
+  foldh = h / 4;
+  x1 = w / 8 + 2;
+  y1 = 2;
+  x2 = w - 2;
+  y2 = h - h / 8 - 2;
+
+  poly[0].x = x1 + foldw; poly[0].y = y1;
+  poly[1].x = x1 + foldw; poly[1].y = y1 + foldh;
+  poly[2].x = x1; poly[2].y = y1 + foldh;
+  poly[3].x = x1; poly[3].y = y2;
+  poly[4].x = x2; poly[4].y = y2;
+  poly[5].x = x2; poly[5].y = y1;
+  gdk_draw_polygon (pv_ptr->pixmap, widget->style->white_gc, 1, poly, 6);
+
+  gdk_draw_line (pv_ptr->pixmap, widget->style->black_gc,
+                 x1, y1 + foldh, x1, y2);
+  gdk_draw_line (pv_ptr->pixmap, widget->style->black_gc,
+                 x1, y2, x2, y2);
+  gdk_draw_line (pv_ptr->pixmap, widget->style->black_gc,
+                 x2, y2, x2, y1);
+  gdk_draw_line (pv_ptr->pixmap, widget->style->black_gc,
+                 x1 + foldw, y1, x2, y1);
+
+  for (i = 0; i < foldw; i++)
+  {
+    gdk_draw_line (pv_ptr->pixmap, widget->style->black_gc,
+                   x1 + i, y1 + foldh, x1 + i, (foldw == 1) ? y1 :
+                   (y1 + (foldh - (foldh * i) / (foldw - 1))));
+  }
+
+  gdk_draw_drawable(widget->window
+                   ,widget->style->black_gc
+                   ,pv_ptr->pixmap
+                   ,0
+                   ,0
+                   ,0
+                   ,0
+                   ,w
+                   ,h
+                   );
+
+  
+}  /* end p_pview_render_default_icon */
+
+
+
+
+
+

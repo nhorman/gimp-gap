@@ -27,6 +27,8 @@
  */
 
 /* Revision history
+ *  (2003/06/26)  v1.3.16a   hof: bugfix: make preview drawing_area fit into frame (use an aspect_frame)
+ *                                query gimprc for "show-tool-tips"
  *  (2003/06/21)  v1.3.15a   hof: created
  */
 
@@ -112,6 +114,12 @@ static gboolean   on_size_button_button_press_event  (GtkWidget       *widget,
 
 static void   on_size_spinbutton_changed             (GtkEditable     *editable,
                                                       gpointer         user_data);
+static gboolean   on_size_spinbutton_enter           (GtkWidget        *widget,
+                                                      GdkEvent         *event,
+                                                      gpointer         user_data);
+static gboolean   on_size_spinbutton_leave           (GtkWidget        *widget,
+                                                      GdkEvent         *event,
+                                                      gpointer         user_data);
 
 
 static void   on_exact_timing_checkbutton_toggled    (GtkToggleButton *togglebutton,
@@ -162,6 +170,35 @@ static void   on_gobutton_hbox_leave                 (GtkWidget        *widget,
 
 static void    p_update_position_widgets(t_global_params *gpp);
 static void    p_stop_playback(t_global_params *gpp);
+
+/* -----------------------------
+ * p_check_tooltips
+ * -----------------------------
+ */
+static void
+p_check_tooltips(void)
+{
+  char *value_string;
+  
+  value_string = gimp_gimprc_query("show-tool-tips");
+  
+  if(value_string != NULL)
+  {
+    if (strcmp(value_string, "no") == 0)
+    {
+       gimp_help_disable_tooltips ();
+    }
+    else
+    {
+       gimp_help_enable_tooltips ();
+    }
+  }
+  else
+  {
+       gimp_help_enable_tooltips ();
+  }
+  
+}  /* end p_check_tooltips */
 
 /* -----------------------------
  * p_reload_ainfo_ptr
@@ -278,7 +315,7 @@ p_check_image_is_alive(gint32 image_id)
     return TRUE;  /* OK */
   }
 
-  /*if(gap_debug)*/ printf("p_check_image_is_alive: image_id %d is not VALID\n", (int)image_id);
+  if(gap_debug) printf("p_check_image_is_alive: image_id %d is not VALID\n", (int)image_id);
  
   return FALSE ;   /* INVALID image id */
 }  /* end p_check_image_is_alive */
@@ -305,7 +342,7 @@ p_find_master_image_id(t_global_params *gpp)
   if(gpp->ainfo_ptr == NULL) { return -1; }
   if(gpp->ainfo_ptr->basename == NULL) { return -1; }
 
-  /*if(gap_debug)*/
+  if(gap_debug)
   {
     printf("p_find_master_image_id: image_id %s %s START\n"
            , gpp->ainfo_ptr->basename
@@ -326,7 +363,7 @@ p_find_master_image_id(t_global_params *gpp)
     l_filename = gimp_image_get_filename(images[l_idi]);
     if(l_filename)
     {
-      /*if(gap_debug)*/ printf("p_find_master_image_id: comare with %s\n", l_filename);
+      if(gap_debug) printf("p_find_master_image_id: comare with %s\n", l_filename);
       
       if(strncmp(l_filename, gpp->ainfo_ptr->basename, l_baselen) == 0)
       {
@@ -431,11 +468,13 @@ p_update_pviewsize(t_global_params *gpp)
    */
   if ( gpp->ainfo_ptr->width > gpp->ainfo_ptr->height )
   {
+    /* landscape */
     gpp->pv_height = gpp->ainfo_ptr->height * gpp->pv_pixelsize / gpp->ainfo_ptr->width;
     gpp->pv_width = gpp->pv_pixelsize;
   }
   else
   {
+    /* portrait */
     gpp->pv_width = gpp->ainfo_ptr->width * gpp->pv_pixelsize / gpp->ainfo_ptr->height;
     gpp->pv_height = gpp->pv_pixelsize;
   }
@@ -581,6 +620,8 @@ p_stop_playback(t_global_params *gpp)
   gpp->pingpong_count = 0;
 
   gtk_label_set_text ( GTK_LABEL(gpp->status_label), _("Ready"));
+
+  p_check_tooltips();
 }  /* end p_stop_playback */
 
 
@@ -679,7 +720,7 @@ p_display_frame(t_global_params *gpp, gint32 framenr)
          * so we stop playback,
          * and try to reload informations about all frames
          */
-        /* if(gap_debug)*/ printf("LOAD IMAGE_ID: %s failed\n", l_filename);
+        if(gap_debug) printf("LOAD IMAGE_ID: %s failed\n", l_filename);
         p_keep_track_of_active_master_image(gpp);
       }
     }
@@ -1017,7 +1058,7 @@ on_timer_go_job(gpointer   user_data)
 {
   t_global_params *gpp;
 
-  /*if(gap_debug)*/ printf("\non_timer_go_job: START\n");
+  if(gap_debug) printf("\non_timer_go_job: START\n");
   gpp = (t_global_params*)user_data;
   if(gpp)
   {
@@ -1289,10 +1330,10 @@ on_vid_preview_expose_event      (GtkWidget       *widget,
  * but is also called on other size changes
  * This handlerprocedure acts on the table11 widget.
  *   the table11 is of size 3x3 where the center holds
- *   frame1 wiget. (frame1 is the container for the drawing_area)
+ *   aspect_frame wiget. (aspect_frame is the container for the drawing_area)
  *   (all othe table11 elements are empty dummy labels)
  * Size changes of table11 are propagated to
- * the preview (frame1 and drawing_area) by calls to p_update_pviewsize.
+ * the preview (aspect_frame and drawing_area) by calls to p_update_pviewsize.
  */
 static void
 on_vid_preview_size_allocate            (GtkWidget       *widget,
@@ -1308,7 +1349,7 @@ on_vid_preview_size_allocate            (GtkWidget       *widget,
    }
 
 
-   /*if(gap_debug)*/ printf("on_vid_preview_size_allocate: START old: ow:%d oh:%d  new: w:%d h:%d \n"
+   if(gap_debug) printf("on_vid_preview_size_allocate: START old: ow:%d oh:%d  new: w:%d h:%d \n"
                            , (int)gpp->old_resize_width
                            , (int)gpp->old_resize_height
                            , (int)allocation->width
@@ -1318,7 +1359,7 @@ on_vid_preview_size_allocate            (GtkWidget       *widget,
    if(gpp->pv_ptr->da_widget == NULL) { return; }
    if(gpp->pv_ptr->da_widget->window == NULL) { return; }
 
-   /*if(gap_debug)*/ printf("  on_vid_preview_size_allocate: ORIGINAL pv_w:%d pv_h:%d count:%d\n"
+   if(gap_debug) printf("  on_vid_preview_size_allocate: ORIGINAL pv_w:%d pv_h:%d count:%d\n"
                            , (int)gpp->pv_ptr->pv_width
                            , (int)gpp->pv_ptr->pv_height
                            , (int)gpp->resize_count
@@ -1326,7 +1367,7 @@ on_vid_preview_size_allocate            (GtkWidget       *widget,
 
    if(gpp->in_resize)
    {
-     /*if(gap_debug)*/ printf("  on_vid_preview_size_allocate: IN_RESIZE (TERMINATED)\n");
+     if(gap_debug) printf("  on_vid_preview_size_allocate: IN_RESIZE (TERMINATED)\n");
      gpp->old_resize_width = allocation->width;
      gpp->old_resize_height = allocation->height;
      return;
@@ -1351,10 +1392,12 @@ on_vid_preview_size_allocate            (GtkWidget       *widget,
    {
      gint32  pv_pixelsize;
      gboolean blocked;
-     gboolean landscape;
+     gdouble  img_ratio;
+     gdouble  alloc_ratio;
      
      blocked = FALSE;
-     landscape = TRUE;
+     alloc_ratio = (gdouble)allocation->width / (gdouble)allocation->height;
+     img_ratio   = (gdouble)gpp->ainfo_ptr->width / (gdouble)gpp->ainfo_ptr->height;
      if(gpp->ainfo_ptr == NULL)
      {
        blocked = FALSE;
@@ -1362,34 +1405,59 @@ on_vid_preview_size_allocate            (GtkWidget       *widget,
      }
      else
      {
-        if(allocation->width > allocation->height)
+        if(img_ratio >= 1.0)
         {
-          landscape = TRUE;
-          pv_pixelsize = CLAMP( (((allocation->height -15) * gpp->ainfo_ptr->width) / gpp->ainfo_ptr->height)
+           /* imageorientation is landscape */
+           if(alloc_ratio <= img_ratio)
+           {
+             pv_pixelsize = CLAMP( (allocation->width -10)
                        , GAP_PLAYER_MIN_SIZE
                        , GAP_PLAYER_MAX_SIZE);
+           }
+           else
+           {
+             pv_pixelsize = CLAMP( (((allocation->height -10) * gpp->ainfo_ptr->width) / gpp->ainfo_ptr->height)
+                       , GAP_PLAYER_MIN_SIZE
+                       , GAP_PLAYER_MAX_SIZE);
+           }
         }
         else
         {
-          landscape = FALSE;
-          pv_pixelsize = CLAMP( (((allocation->width -15) * gpp->ainfo_ptr->height) / gpp->ainfo_ptr->width)
+           /* imageorientation is portrait */
+           if(alloc_ratio <= img_ratio)
+           {
+             pv_pixelsize = CLAMP( (((allocation->width -10) * gpp->ainfo_ptr->height) / gpp->ainfo_ptr->width)
                        , GAP_PLAYER_MIN_SIZE
                        , GAP_PLAYER_MAX_SIZE);
+           }
+           else
+           {
+             pv_pixelsize = CLAMP( (allocation->height -10)
+                       , GAP_PLAYER_MIN_SIZE
+                       , GAP_PLAYER_MAX_SIZE);
+           }
         }
      }
+
+
+     if (gap_debug) printf("pv_pixelsize: %d  img_ratio:%.3f alloc_ratio:%.3f\n"
+                               , (int)pv_pixelsize
+                               , (float)img_ratio
+                               , (float)alloc_ratio
+                               );
      
      if(pv_pixelsize > gpp->pv_pixelsize)
      {
-       if ((landscape)
+       if ((alloc_ratio > 1.0) /* landscape */
        && (allocation->width < gpp->old_resize_width))
        {
-         /*if(gap_debug)*/ printf(" BLOCK preview grow on  width shrink\n");
+         if(gap_debug) printf(" BLOCK preview grow on  width shrink\n");
          blocked = TRUE;
        }
-       if ((!landscape)
+       if ((alloc_ratio <= 1.0) /* portrait */
        && (allocation->height < gpp->old_resize_height))
        {
-         /*if(gap_debug)*/ printf(" BLOCK preview grow on  height shrink\n");
+         if(gap_debug) printf(" BLOCK preview grow on  height shrink\n");
          blocked = TRUE;
        }
      }
@@ -1411,7 +1479,7 @@ on_vid_preview_size_allocate            (GtkWidget       *widget,
          }
      }
 
-     /*if(gap_debug)*/ printf("  on_vid_preview_size_allocate: AFTER resize pv_w:%d pv_h:%d\n"
+     if(gap_debug) printf("  on_vid_preview_size_allocate: AFTER resize pv_w:%d pv_h:%d\n"
                            , (int)gpp->pv_ptr->pv_width
                            , (int)gpp->pv_ptr->pv_height
                            );
@@ -1424,7 +1492,7 @@ on_vid_preview_size_allocate            (GtkWidget       *widget,
    gpp->old_resize_width = allocation->width;
    gpp->old_resize_height = allocation->height;
 
-   /*if(gap_debug)*/ printf("  on_vid_preview_size_allocate: END\n");
+   if(gap_debug) printf("  on_vid_preview_size_allocate: END\n");
    
 }  /* end on_vid_preview_size_allocate */
 
@@ -1559,8 +1627,29 @@ on_speed_spinbutton_changed            (GtkEditable     *editable,
 
 }  /* end on_speed_spinbutton_changed */
 
+ 
+/* ---------------------
+ * p_fit_shell_window
+ * ---------------------
+ */
+static void 
+p_fit_shell_window(t_global_params *gpp)
+{
+  gint width;
+  gint height;
 
+  /* gtk_window_get_default_size(GTK_WINDOW(gpp->shell_window), &width, &height); */
+  /* if(gap_debug) printf("window default size (%dx%d)\n", (int)width, (int)height ); */
 
+  /* FIXME: use preview size plus fix offsets (the offsets are just a guess
+   * and may be too small for other languages
+   */
+  width =  MAX(gpp->pv_ptr->pv_width, 256) + 272;
+  height = MAX(gpp->pv_ptr->pv_height, 256) + 128;
+
+  gtk_widget_set_size_request (gpp->shell_window, width, height);  /* shrink shell window */
+  gtk_window_resize (GTK_WINDOW(gpp->shell_window), width, height);  /* shrink shell window */
+}  /* end p_fit_shell_window */
 
 /* -----------------------------
  * on_size_button_button_press_event
@@ -1582,6 +1671,7 @@ on_size_button_button_press_event  (GtkWidget       *widget,
     return FALSE;
   }
   gpp->resize_count = 1;
+  gpp->in_resize = TRUE;              /* blocks resize chain reaction on initil size allocation event */
 
   if ((bevent->state & GDK_SHIFT_MASK)
   &&  (bevent->type == GDK_BUTTON_PRESS)
@@ -1618,22 +1708,10 @@ on_size_button_button_press_event  (GtkWidget       *widget,
                             );                            
   
 
-  {
-    gint width;
-    gint height;
-    
-    
-    /* workaround: gtk_window_get_default_size delivers just -1/-1
-     * use fixed size for shrink
-     */
-    /* gtk_window_get_default_size(GTK_WINDOW(gpp->shell_window), &width, &height); */
-    /* if(gap_debug) printf("window default size (%dx%d)\n", (int)width, (int)height ); */
-    width = 520;
-    height = 380;
-    
-    gtk_widget_set_size_request (gpp->shell_window, width, height);  /* shrink shell window */
-    gtk_window_resize (GTK_WINDOW(gpp->shell_window), width, height);  /* shrink shell window */
-  }
+  p_fit_shell_window(gpp);
+
+  gpp->in_resize = FALSE;
+  gpp->resize_count = 2;
   
   return FALSE;
 
@@ -1661,14 +1739,79 @@ on_size_spinbutton_changed             (GtkEditable     *editable,
   if(gpp->pv_pixelsize != (gint32)GTK_ADJUSTMENT(gpp->size_spinbutton_adj)->value)
   {
     gpp->pv_pixelsize = (gint32)GTK_ADJUSTMENT(gpp->size_spinbutton_adj)->value;
+
+    if((gpp->in_resize) && (gpp->pv_pixelsize > 256))
+    {
+       /* disable bigger sizes than 256 when entered by spinbutton
+        */
+       gpp->pv_pixelsize = 256;
+       gtk_adjustment_set_value( GTK_ADJUSTMENT(gpp->size_spinbutton_adj)
+                            , (gfloat)gpp->pv_pixelsize
+                            );                            
+      
+    }
+
     p_update_pviewsize(gpp);
+
     if(!gpp->play_is_active)
     {
       p_display_frame(gpp, gpp->play_current_framenr);
     }
+    if(gpp->in_resize)
+    {
+       /* the resize was caused by click to size_spinbutton
+        * or we are in startup, 
+        * we should resize shell window to fit.
+        */
+       p_fit_shell_window(gpp);
+    }
   }
 
 }  /* end on_size_spinbutton_changed */
+
+
+/* -----------------------------
+ * on_size_spinbutton_enter
+ * -----------------------------
+ */
+static gboolean   on_size_spinbutton_enter               (GtkWidget        *widget,
+                                                      GdkEvent         *event,
+                                                      gpointer         user_data)
+{
+  t_global_params *gpp;
+
+  /*if(gap_debug) printf("\n on_size_spinbutton_enter START\n");*/
+
+  gpp = (t_global_params *)user_data;
+  if(gpp)
+  { 
+    gpp->in_resize = TRUE;
+  }
+  return FALSE;
+}  /* end on_size_spinbutton_enter */
+                                                      
+
+/* -----------------------------
+ * on_size_spinbutton_leave
+ * -----------------------------
+ */
+static gboolean   on_size_spinbutton_leave               (GtkWidget        *widget,
+                                                      GdkEvent         *event,
+                                                      gpointer         user_data)
+{
+  t_global_params *gpp;
+
+  /*if(gap_debug) printf("\n on_size_spinbutton_leave START\n");*/
+
+  gpp = (t_global_params *)user_data;
+  if(gpp)
+  { 
+    gpp->in_resize = FALSE;
+  }
+  return FALSE;
+}  /* end on_size_spinbutton_leave */
+
+
 
 
 /* -----------------------------
@@ -1923,7 +2066,7 @@ on_go_button_enter                   (GtkButton       *button,
       framenr = p_framenr_from_go_number(gpp, gob->go_number);
       if(gpp->play_current_framenr != framenr)
       {
-          /*if(gap_debug)*/
+          if(gap_debug)
           {
              if(gpp->go_timertag >= 0) 
              {
@@ -1970,7 +2113,9 @@ on_gobutton_hbox_leave                 (GtkWidget        *widget,
   /* reset go_base */
   gpp->go_base_framenr = -1;
   gpp->go_base = -1;
-
+ 
+  p_check_tooltips();
+ 
 }  /* end on_gobutton_hbox_leave */
 
 
@@ -1985,7 +2130,7 @@ p_create_player_window (t_global_params *gpp)
   GtkWidget *event_box;
   
   GtkWidget *frame0;
-  GtkWidget *frame1;
+  GtkWidget *aspect_frame;
   GtkWidget *frame2;
 
   GtkWidget *vbox1;
@@ -2289,16 +2434,27 @@ p_create_player_window (t_global_params *gpp)
                                            , 1, 10, 10);
 
   size_spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (size_spinbutton_adj), 1, 0);
+  gpp->size_spinbutton = size_spinbutton;
   gtk_widget_show (size_spinbutton);
   gtk_table_attach (GTK_TABLE (table2), size_spinbutton, 1, 2, 8, 9,
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_widget_set_size_request (size_spinbutton, 80, -1);
   gimp_help_set_help_data (size_spinbutton, _("Video Preview Size (pixels)"), NULL);
+
   g_signal_connect (G_OBJECT (size_spinbutton), "changed",
                       G_CALLBACK (on_size_spinbutton_changed),
                       gpp);
-
+  gtk_widget_set_events(size_spinbutton
+                       ,  GDK_ENTER_NOTIFY_MASK | GDK_LEAVE_NOTIFY_MASK
+                       );
+  g_signal_connect (G_OBJECT (size_spinbutton), "enter_notify_event",
+                      G_CALLBACK (on_size_spinbutton_enter),
+                      gpp);
+  g_signal_connect (G_OBJECT (size_spinbutton), "leave_notify_event",
+                      G_CALLBACK (on_size_spinbutton_leave),
+                      gpp);
+  
 
 
   hseparator = gtk_hseparator_new ();
@@ -2449,11 +2605,16 @@ p_create_player_window (t_global_params *gpp)
                       gpp);
 
 
-  /* frame1 is the CONTAINER for the video preview */
-  frame1 = gtk_frame_new (NULL);
-  gtk_widget_show (frame1);
+  /* aspect_frame is the CONTAINER for the video preview */
+  aspect_frame = gtk_aspect_frame_new (NULL   /* without label */
+                                      , 0.5   /* xalign center */
+                                      , 0.5   /* yalign center */
+                                      , gpp->ainfo_ptr->width / gpp->ainfo_ptr->height     /* ratio */
+                                      , TRUE  /* obey_child */
+                                      );
+  gtk_widget_show (aspect_frame);
 
-  /* table11 is used to center frame1 */
+  /* table11 is used to center aspect_frame */
   table11 = gtk_table_new (3, 3, FALSE);
   gtk_widget_show (table11);
   gtk_table_attach (GTK_TABLE (table1), table11, 0, 1, 0, 2,
@@ -2469,9 +2630,9 @@ p_create_player_window (t_global_params *gpp)
       {
         if((ix == 1) && (iy == 1))
         {
-           gtk_table_attach (GTK_TABLE (table11), frame1, ix, ix+1, iy, iy+1,
-                             (GtkAttachOptions) (GTK_FILL | GTK_SHRINK ),
-                             (GtkAttachOptions) (GTK_FILL | GTK_SHRINK ), 0, 0);
+           gtk_table_attach (GTK_TABLE (table11), aspect_frame, ix, ix+1, iy, iy+1,
+                             (GtkAttachOptions) (0 ),
+                             (GtkAttachOptions) (0 ), 0, 0);
         }
         else
         {
@@ -2491,9 +2652,9 @@ p_create_player_window (t_global_params *gpp)
 
   /* the preview drawing_area_widget */
   /* ############################### */
-  gpp->pv_ptr = p_pview_new(128, 128, GAP_PLAYER_CHECK_SIZE, frame1);
+  gpp->pv_ptr = p_pview_new(128, 128, GAP_PLAYER_CHECK_SIZE, aspect_frame);
   vid_preview = gpp->pv_ptr->da_widget;
-  gtk_container_add (GTK_CONTAINER (frame1), vid_preview);
+  gtk_container_add (GTK_CONTAINER (aspect_frame), vid_preview);
   gtk_widget_show (vid_preview);
   gtk_widget_set_events (vid_preview, GDK_BUTTON_PRESS_MASK | GDK_EXPOSURE_MASK);
 
@@ -2540,7 +2701,8 @@ p_playback_dialog(t_global_params *gpp)
 {
   gimp_ui_init ("gap_player_dialog", FALSE);
   gap_stock_init();
-
+  p_check_tooltips();
+ 
   gpp->ainfo_ptr = NULL;
   gpp->original_speed = 24.0;   /* default if framerate is unknown */
   gpp->prev_speed = 24.0;       /* default if framerate is unknown */
@@ -2613,7 +2775,8 @@ p_playback_dialog(t_global_params *gpp)
     gpp->shell_window = p_create_player_window(gpp);
 
     p_display_frame(gpp, gpp->play_current_framenr);
-    p_pview_repaint(gpp->pv_ptr); 
+    p_pview_repaint(gpp->pv_ptr);
+    p_check_tooltips();
     if(gpp->autostart)
     {
        on_play_button_clicked(NULL, gpp);

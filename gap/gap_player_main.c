@@ -22,6 +22,7 @@
  */
 
 /* Revision history
+ * version 1.3.16a; 2003/06/26  hof: updated version
  * version 1.3.15a; 2003/06/21  hof: created
  */
 
@@ -44,7 +45,7 @@
 /* Defines */
 #define PLUG_IN_NAME        "plug_in_gap_videoframes_player"
 #define PLUG_IN_PRINT_NAME  "Videopreview Player"
-#define PLUG_IN_VERSION     "v1.3.15 (2003/06/21)"
+#define PLUG_IN_VERSION     "v1.3.16 (2003/06/26)"
 #define PLUG_IN_IMAGE_TYPES "RGB*, INDEXED*, GRAY*"
 #define PLUG_IN_AUTHOR      "Wolfgang Hofer (hof@gimp.org)"
 #define PLUG_IN_COPYRIGHT   "Wolfgang Hofer"
@@ -101,6 +102,7 @@ static t_global_params global_params =
 , NULL        /*  GtkWidget *status_label */
 , NULL        /*  GtkWidget *timepos_label */
 , NULL        /*  GtkWidget *table11 */
+, NULL        /*  GtkWidget *size_spinbutton */
 
 , NULL        /*  Gtimer    *gtimer */
 , 0.0         /*  gdouble   cycle_time_secs  */

@@ -48,6 +48,7 @@
  */
 
 /* revision history
+ * gimp    1.3.16a; 2003/06/25  hof: no textsplitting across multiple lables (for translation)
  * gimp    1.3.15a; 2003/06/21  hof: checked textspacing
  * gimp    1.3.12a; 2003/05/02  hof: merge into CVS-gimp-gap project, 6digit framenumbers
  * 1.3.4b    2002/03723  hof: merged in bugfix from stable branch 1.2.2c; 2002/03/19 xanim call fails if . not in PATH or no write permission for current dir
@@ -128,15 +129,10 @@ p_xanim_info(char *errlist)
 
   l_idx++;
   p_init_arr_arg(&argv[l_idx], WGT_LABEL_LEFT);
-  argv[l_idx].label_txt = _("xanim 2.80.0 exporting edition (the loki version)");
-
-  l_idx++;
-  p_init_arr_arg(&argv[l_idx], WGT_LABEL_LEFT);
-  argv[l_idx].label_txt = _("must be installed somewhere in your PATH");
-
-  l_idx++;
-  p_init_arr_arg(&argv[l_idx], WGT_LABEL_LEFT);
-  argv[l_idx].label_txt = _("you can get xanim exporting edition at");
+  argv[l_idx].label_txt = _("xanim 2.80.0 exporting edition (the loki version)\n"
+                            "must be installed somewhere in your PATH\n"
+                            "you can get xanim exporting edition at:\n"
+                           );
 
   l_idx++;
   p_init_arr_arg(&argv[l_idx], WGT_LABEL_LEFT);
@@ -156,15 +152,10 @@ p_xanim_info(char *errlist)
 
   l_idx++;
   p_init_arr_arg(&argv[l_idx], WGT_LABEL_LEFT);
-  argv[l_idx].label_txt = _("if your xanim exporting edition is not in your PATH or is not named xanim");
-
-  l_idx++;
-  p_init_arr_arg(&argv[l_idx], WGT_LABEL_LEFT);
-  argv[l_idx].label_txt = _("you have to set Environment variable GAP_XANIM_PROG ");
-
-  l_idx++;
-  p_init_arr_arg(&argv[l_idx], WGT_LABEL_LEFT);
-  argv[l_idx].label_txt = _("to your xanim exporting program and restart gimp");
+  argv[l_idx].label_txt = _("if your xanim exporting edition is not in your PATH or is not named xanim\n"
+                            "you have to set Environment variable GAP_XANIM_PROG\n"
+                            "to your xanim exporting program and restart gimp"
+                           );
 
   l_idx++;
   p_init_arr_arg(&argv[l_idx], WGT_LABEL_LEFT);

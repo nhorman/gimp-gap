@@ -25,51 +25,48 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/* TODO:
- * - BUG  X11 deadlock if GAP Video Navigator runs another plugin
- *          from the double-click callback procedure in the frame listbox,
- *          and the other plugin opens a new gtk dialog.
- *          (the new dialog does not get the focus)
- *       Current workaround:
- *          save frames of other types than xcf before the
- *          listbox is filled.
- *          (this forces the GAP p_decide_save_as Dialog
- *           when the Navigator is opened or an image != xcf is
- *           selected in the image optionmenu, and sets
- *           the fileformat specific save parameters)
- *         
- * - BUGFIX or workaround needed: list widget can't handle large lists
- *          (test failed at 1093 items at normal icon size.)
- *
- * - start of a 2.nd navigator should pop up the 1st one and exit.
- * x- scroll the listbox (active image should always be in the visible (exposed) area
- *     problem: 1092 limit !
- * x- implement the unfinished callback procedures
- * x- Updatde Button (to create all missing and out of date thumbnails)
- * x- tooltips
- * x- multiple selections
- * x- timezoom and framerate should be stored in a video info file
- * x- calculate & update for frame timing labels
- * x- Render Preview defaultIcon for images without thumbnail
- *          and for preview_size 0 (off)
- *
- * Events that sould be handled:
- * - changes of the active_image (in ram)  :: update of one frame_widget
- * x- change of preview_size :: update full frame_widgets list
- * x- changes of the active_image (on disk) :: update of image_menu + full frame_widgets list
- *   (maybe i'll set a polling timer event to watch the diskfile)
- * x- close of the active_image (in ram)  :: update of image_menu + full frame_widgets list
- *
- * - drag & drop 
- *    (Problem: gimage struct is not available for plugins,
- *                         need a Drag&Drop type that operates on image_id)
- * - preferences should have additional video_preview_size
- *   (tiny,small,normal,large,huge)
- *
- */
-
-
 /* revision history:
+ * gimp    1.3.16a; 2003/06/29  hof: redesign: replaced scrolled_window by table that fits the visible window height
+ *                                   and a vertical scale to manage scrolling.
+ *                                   with this approach it is now possible to handle
+ *                                   all frames of an animation without a limit.
+ *                                   HIGHLIGHTING of the selected frame_widgets does not work yet.
+ *
+ *        Overview about the GAP Navigator Redesign
+ *      
+ *        - use gap_pview_da (drawing_area based) render procedures (instead of deprecated gtk_preview)
+ *        - dyn_table is a gtk_table that has 1 column, and 1 upto MAX_DYN_ROWS.
+ *        - dyn_table shows only a subset of thumbnails beginning at dyn_topframenr
+ *          frame_widget_tab[0] is always attached to the 1.st dyn_table row.
+ *          if dyn_rows > 1
+ *          then  frame_widget_tab[1] is attached to 2.nd dyn_table row and so on...
+ *      
+ *        - with the adjustment (vscale) dyn_adj the user can set dyn_topframenr
+ *          to scroll the displayed framerange.
+ *          at changes of dyn_topframenr all visible thumbnails are updated as follows:
+ *      
+ *      
+ *            frame_widget_tab[0]  is loaded with thumbnail [dyn_topframenr]
+ *            frame_widget_tab[1]  is loaded with thumbnail [dyn_topframenr+1]
+ *            ...
+ *      
+ *            frame_widget_tab[dyn_rows-1]  is loaded with thumbnail [dyn_topframenr + (dyn_rows - 1)]
+ *      
+ *      
+ *        - dyn_table grows and shrinks at user window resize operations
+ *          on significant height grow events:
+ *             additional rows are added to dyn_table (using gtk_table_resize)
+ *             and more elements from frame_widget_tab are attached to
+ *             the newly added row(s)
+ *      
+ *          on significant height shrink events:
+ *             rows are removed from dyn_table (using gtk_table_resize)
+ *             detach is done by destroying the attached frame_widgets 
+ *             before the row is removed.
+ *      
+ *        - Selections are handled completely by this module in the SelectedRange List
+ *             this list is sorted ascending by "from" numbers (framenumber).
+ *      
  * gimp    1.3.15a; 2003/06/21  hof: p_conv_framenr_to_timestr, use plug_in_gap_videoframes_player for playback
  *                                   ops_button_pressed_callback must have returnvalue FALSE
  *                                   (this enables other handlers -- ops_button_extended_callback -- to run afterwards
@@ -87,7 +84,7 @@
  * version 1.1.14a; 2000.01.08   hof: 1st release
  */
 
-static char *gap_navigator_version = "1.3.14a; 2003/05/27";
+static char *gap_navigator_version = "1.3.16a; 2003/06/29";
 
 
 /* SYTEM (UNIX) includes */ 
@@ -100,11 +97,6 @@ static char *gap_navigator_version = "1.3.14a; 2003/05/27";
 #include <unistd.h>
 #include <locale.h>
 
-#ifdef __GNUC__
-#warning GTK_DISABLE_DEPRECATED
-#endif
-#undef GTK_DISABLE_DEPRECATED
-
 /* GIMP includes */
 #include <gtk/gtk.h>
 #include "config.h"
@@ -116,22 +108,22 @@ static char *gap_navigator_version = "1.3.14a; 2003/05/27";
 #include "gap_timeconv.h"
 
 #include "gap_navi_activtable.h"
+#include "gap_pview_da.h"
 
 
 
 #define PLUGIN_NAME "plug_in_gap_navigator"
 
+#define NAVI_CHECK_SIZE 4
+#define MAX_DYN_ROWS 400
+
 /*
- *   OpsButton  is not available for plugins in libgimp 1.1.14
- *   workaround: include gimp-1.1.14/app/ops_buttons.h /.c
- *
- *  seems that OpsButton became obsolete in gimp-1.3.3 ??
- *  switched from GtkSignalFunc to private OpsButtonFunc
- *  
- *  
+ * OpsButton  code was inspired by gimp-1.2 core code,
+ *   but was changed for gap_navigator_dialog use and ported to gtk+2.2 
+ *   switched from GtkSignalFunc to private OpsButtonFunc
  */
 
-typedef void (*OpsButtonFunc)	   (GtkWidget *widget, gpointer data);
+typedef void (*OpsButtonFunc)      (GtkWidget *widget, gpointer data);
 #define OPS_BUTTON_FUNC(f)  ((OpsButtonFunc) f)
  
 /* ---------------------------------------  start copy of gimp-1.1.14/app/ops_buttons.h */
@@ -161,7 +153,7 @@ struct _OpsButton
   const char     *stock_id;       /*  STOCK id for the stock button  */
   OpsButtonFunc   callback;       /*  callback function        */
   OpsButtonFunc  *ext_callbacks;  /*  callback functions when
-				   *  modifiers are pressed    */
+                                   *  modifiers are pressed    */
   gchar          *tooltip;
   gchar          *private_tip;
   GtkWidget      *widget;         /*  the button widget        */
@@ -171,8 +163,8 @@ struct _OpsButton
 /* Function declarations */
 
 GtkWidget * ops_button_box_new (GtkWidget     *parent,
-				OpsButton     *ops_button,
-				OpsButtonType  ops_type);
+                                OpsButton     *ops_button,
+                                OpsButtonType  ops_type);
 
 #endif /* __OPS_BUTTONS_H__ */
 /* ---------------------------------------  end copy of gimp-1.1.14/app/ops_buttons.h */
@@ -185,11 +177,8 @@ GtkWidget * ops_button_box_new (GtkWidget     *parent,
 #include "gap_vin.h"
 
 /*  some definitions used in all dialogs  */
-#define PREVIEW_EVENT_MASK (GDK_EXPOSURE_MASK | GDK_BUTTON_PRESS_MASK | \
-                            GDK_ENTER_NOTIFY_MASK)
-#define BUTTON_EVENT_MASK  (GDK_EXPOSURE_MASK | GDK_ENTER_NOTIFY_MASK | \
-                            GDK_LEAVE_NOTIFY_MASK | GDK_BUTTON_PRESS_MASK | \
-                            GDK_BUTTON_RELEASE_MASK)
+//#define PREVIEW_EVENT_MASK (GDK_EXPOSURE_MASK | GDK_BUTTON_PRESS_MASK | GDK_ENTER_NOTIFY_MASK)
+//#define BUTTON_EVENT_MASK  (GDK_EXPOSURE_MASK | GDK_ENTER_NOTIFY_MASK | GDK_LEAVE_NOTIFY_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK)
 
 #define MAX_HEIGHT_GTK_SCROLLED_WIN 32767
 #define LIST_WIDTH  200
@@ -207,10 +196,10 @@ GtkWidget * ops_button_box_new (GtkWidget     *parent,
 #define NUPD_PREV_LIST_ICONS        16
 #define NUPD_ALL                   0xffffffff;
 
+
 typedef struct _OpenFrameImages OpenFrameImages;
-typedef struct _NaviDialog NaviDialog;
-typedef struct _FrameWidget FrameWidget;
 typedef struct _SelectedRange SelectedRange;
+
 
 struct _OpenFrameImages{
   gint32 image_id;
@@ -219,14 +208,53 @@ struct _OpenFrameImages{
 };
 
 
-struct _NaviDialog
+struct _SelectedRange {
+   gint32 from;
+   gint32 to;
+   SelectedRange *next;
+   SelectedRange *prev;
+};
+
+
+typedef struct FrameWidget
 {
+  GtkWidget *event_box;
+  GtkWidget *vbox;
+  GtkWidget *hbox;
+  GtkWidget *number_label;      /* for the 6-digit framenumber */
+  GtkWidget *time_label;
+  t_pview   *pv_ptr;            /* for gap preview rendering based on drawing_area */
+
+  gint32    image_id;
+  gint32    frame_nr;
+  gint       width;
+  gint       height;
+
+  /*  state information  */
+  time_t    frame_timestamp;
+  char      *frame_filename;
+} FrameWidget;
+
+
+
+typedef struct NaviDialog
+{
+  FrameWidget   frame_widget_tab[MAX_DYN_ROWS];
+  gint32        fw_tab_used_count;    /* how much elements are initialized in frame_widget_tab */
+  GtkWidget     *vbox;
+  GtkWidget     *hbox;
+  GtkWidget     *dyn_frame;           /* table with */
+  GtkWidget     *dyn_table;           /* table with */
+  GtkObject     *dyn_adj;
+  gint32         dyn_topframenr;
+  gint32         dyn_rows;
+  gint32         prev_selected_framnr;
+  SelectedRange *sel_range_list;
+  gboolean       in_dyn_table_sizeinit;
+  
   gint          tooltip_on;
   GtkWidget     *shell;
-  GtkWidget     *vbox;
   GtkWidget     *mode_option_menu;
-  GtkWidget     *frame_list;
-  GtkWidget     *scrolled_win;
   GtkWidget     *preserve_trans;
   GtkWidget     *framerate_box;
   GtkWidget     *timezoom_box;
@@ -239,10 +267,11 @@ struct _NaviDialog
   GtkWidget     *pasteb_menu_item;
   GtkWidget     *paster_menu_item;
   GtkWidget     *clrpaste_menu_item;
+  GtkWidget     *sel_all_menu_item;
+  GtkWidget     *sel_none_menu_item;
   GtkAccelGroup *accel_group;
-  GtkAdjustment *framerate_data;
-  GtkAdjustment *timezoom_data;
-  GtkWidget     *frame_preview;
+  GtkObject     *framerate_adj;
+  GtkObject     *timezoom_adj;
   GtkWidget     *framerange_number_label;
   gint           waiting_cursor;
   GdkCursor     *cursor_wait;
@@ -259,43 +288,14 @@ struct _NaviDialog
   gint32        any_imageid;
   t_anim_info  *ainfo_ptr;
   t_video_info *vin_ptr;
-  GSList       *frame_widgets;
+  
   int           timer;
   int           cycle_time;
   OpenFrameImages *OpenFrameImagesList;
   int              OpenFrameImagesCount;
   gint32       item_height;
-};
+} NaviDialog;
 
-
-struct _FrameWidget
-{
-  GtkWidget *clip_widget;
-  GtkWidget *number_label;
-  GtkWidget *time_label;
-  GtkWidget *frame_preview;
-  GtkWidget *list_item;
-  GtkWidget *label;
-
-  gint32    image_id;
-  gint32    frame_nr;
-  GdkPixmap *frame_pixmap;
-  gint       width, height;
-
-  /*  state information  */
-  gboolean  visited;
-  time_t    thumb_timestamp;
-  char      *thumb_filename;
-  /* GimpDropType drop_type; */
-};
-
-
-struct _SelectedRange {
-   gint32 from;
-   gint32 to;
-   SelectedRange *next;
-   SelectedRange *prev;
-};
 
 /* -----------------------
  * procedure declarations
@@ -311,7 +311,7 @@ static void navi_vid_copy_and_cut(gint cut_flag);
 static gint navi_images_menu_constrain (gint32 image_id, gint32 drawable_id, gpointer data);
 static void navi_images_menu_callback  (gint32 id, gpointer data);
 static void navi_update_after_goto(void);
-static SelectedRange *navi_get_selected_ranges(void);
+//static SelectedRange *navi_get_selected_ranges(void);
 static void navi_ops_menu_set_sensitive(void);
 
 static void navi_dialog_thumb_update_callback(GtkWidget *w, gpointer   data);
@@ -328,28 +328,46 @@ static void navi_dialog_vcr_goto_next_callback(GtkWidget *w, gpointer   data);
 static void navi_dialog_vcr_goto_nextblock_callback(GtkWidget *w, gpointer   data);
 static void navi_dialog_vcr_goto_last_callback(GtkWidget *w, gpointer   data);
 
-static void navi_framerate_scale_update(GtkAdjustment *w, gpointer   data);
-static void navi_timezoom_scale_update(GtkAdjustment *w, gpointer   data);
+static void navi_framerate_spinbutton_update(GtkAdjustment *w, gpointer   data);
+static void navi_timezoom_spinbutton_update(GtkAdjustment *w, gpointer   data);
 
-
-static gint frame_list_events                   (GtkWidget *, GdkEvent *, gpointer);
-
-static void frame_widget_select_update       (GtkWidget *, gpointer);
-static gint frame_widget_button_events       (GtkWidget *, GdkEvent *);
-static gint frame_widget_preview_events      (GtkWidget *, GdkEvent *);
+static gboolean frame_widget_preview_events      (GtkWidget *, GdkEvent *, gpointer);
 
 static gint navi_dialog_poll(GtkWidget *w, gpointer   data);
 static void navi_dialog_update(gint32 update_flag);
 static void navi_scroll_to_current_frame_nr(void);
 
-static FrameWidget * frame_widget_create (gint32 image_id, gint32 frame_nr);
-static void          frame_widget_delete (FrameWidget *fw);
-static gint32        navi_get_preview_size(void);
-static void          frames_timing_update (void);
-static void          frame_widget_time_label_update(FrameWidget *fw);
-static void          navi_dialog_tooltips(void);
-static void          navi_set_waiting_cursor(void);
-static void          navi_set_active_cursor(void);
+static gint32          navi_get_preview_size(void);
+static void            navi_frames_timing_update (void);
+static void            navi_frame_widget_time_label_update(FrameWidget *fw);
+static void            navi_dialog_tooltips(void);
+static void            navi_set_waiting_cursor(void);
+static void            navi_set_active_cursor(void);
+
+static SelectedRange * navi_get_last_range_list(SelectedRange *sel_range_list);
+static void            navi_debug_print_sel_range(void);
+static void            navi_drop_sel_range_list(void);
+static void            navi_drop_sel_range_list2(void);
+static void            navi_drop_sel_range_elem(SelectedRange *range_item);
+static SelectedRange * navi_findframe_in_sel_range(gint32 framenr);
+static void            navi_add_sel_range_list(gint32 framenr_from, gint32 framenr_to);
+static void            navi_sel_normal(gint32 framenr);
+static void            navi_sel_ctrl(gint32 framenr);
+static void            navi_sel_shift(gint32 framenr);
+
+
+
+static void            navi_dyn_frame_size_allocate  (GtkWidget       *widget,
+                                                      GtkAllocation   *allocation,
+                                                      gpointer         user_data);
+
+static void            navi_frame_widget_replace2(FrameWidget *fw);
+static void            navi_frame_widget_replace(gint32 image_id, gint32 frame_nr, gint32 dyn_rowindex);
+static void            navi_refresh_dyn_table(gint32 l_frame_nr);
+static void            navi_dyn_adj_changed_callback(GtkWidget *wgt, gpointer data);
+static void            navi_dyn_adj_set_limits(void);
+static void            navi_frame_widget_init_empty (FrameWidget *fw);
+static int             navi_dyn_table_set_size(gint win_height);
 
 /* -----------------------
  * Local data 
@@ -457,6 +475,10 @@ GimpPlugInInfo PLUG_IN_INFO =
 
 MAIN ()
 
+/* ---------------------------------
+ * query
+ * ---------------------------------
+ */
 static void
 query ()
 {
@@ -474,19 +496,23 @@ query ()
 
 
   gimp_install_procedure(PLUGIN_NAME,
-			 "GAP video navigator dialog",
-			 "",
-			 "Wolfgang Hofer (hof@gimp.org)",
-			 "Wolfgang Hofer",
-			 gap_navigator_version,
-			 N_("<Image>/Video/VCR Navigator..."),
-			 "RGB*, INDEXED*, GRAY*",
-			 GIMP_PLUGIN,
-			 G_N_ELEMENTS (args_navigator), nreturn_vals,
-			 args_navigator, return_vals);
-}	/* end query */
+                         "GAP video navigator dialog",
+                         "",
+                         "Wolfgang Hofer (hof@gimp.org)",
+                         "Wolfgang Hofer",
+                         gap_navigator_version,
+                         N_("<Image>/Video/VCR Navigator..."),
+                         "RGB*, INDEXED*, GRAY*",
+                         GIMP_PLUGIN,
+                         G_N_ELEMENTS (args_navigator), nreturn_vals,
+                         args_navigator, return_vals);
+}       /* end query */
 
 
+/* ---------------------------------
+ * run
+ * ---------------------------------
+ */
 static void
 run (char    *name,
      int      n_params,
@@ -549,15 +575,15 @@ run (char    *name,
     gimp_set_data(PLUGIN_NAME, &l_navid_pid, sizeof(pid_t));
     if (strcmp (name, PLUGIN_NAME) == 0)
     {
-	if (run_mode != GIMP_RUN_INTERACTIVE)
-	{
+        if (run_mode != GIMP_RUN_INTERACTIVE)
+        {
             status = GIMP_PDB_CALLING_ERROR;
-	}
+        }
 
-	if (status == GIMP_PDB_SUCCESS)
-	{
+        if (status == GIMP_PDB_SUCCESS)
+        {
           l_rc = gap_navigator(l_active_image);
-	}
+        }
     }
     /* set pid data to 0 when navigator stops */
     l_navid_pid = 0;
@@ -573,7 +599,27 @@ run (char    *name,
  
   values[0].type = GIMP_PDB_STATUS;
   values[0].data.d_status = status;
-}
+}  /* end run */
+
+
+/* ---------------------------------
+ * navi_constrain_dyn_topframenr
+ * ---------------------------------
+ */
+static gint32
+navi_constrain_dyn_topframenr(gint32 frame_nr)
+{
+  gint32       l_frame_nr;
+
+  l_frame_nr = (frame_nr - naviD->ainfo_ptr->first_frame_nr) / naviD->vin_ptr->timezoom;
+  l_frame_nr = (l_frame_nr * naviD->vin_ptr->timezoom)+ naviD->ainfo_ptr->first_frame_nr;
+
+  l_frame_nr = CLAMP(l_frame_nr
+                    , naviD->ainfo_ptr->first_frame_nr   
+                    , naviD->ainfo_ptr->last_frame_nr
+                    );
+  return (l_frame_nr);
+}  /* end navi_constrain_dyn_topframenr */
 
 
 /* ---------------------------------
@@ -595,6 +641,10 @@ edit_cut_callback (GtkWidget *w,  gpointer   client_data)
 }
 
 
+/* ---------------------------------
+ * p_edit_paste_call
+ * ---------------------------------
+ */
 static void
 p_edit_paste_call(gint32 paste_mode)
 {
@@ -606,26 +656,28 @@ p_edit_paste_call(gint32 paste_mode)
      /* goto the first selected frame */
          return_vals = gimp_run_procedure ("plug_in_gap_goto",
                                       &nreturn_vals,
-	                              GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
-				      GIMP_PDB_IMAGE,    naviD->active_imageid,
-				      GIMP_PDB_DRAWABLE, -1,  /* dummy */
-	                              GIMP_PDB_INT32,    naviD->paste_at_frame,
+                                      GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
+                                      GIMP_PDB_IMAGE,    naviD->active_imageid,
+                                      GIMP_PDB_DRAWABLE, -1,  /* dummy */
+                                      GIMP_PDB_INT32,    naviD->paste_at_frame,
                                       GIMP_PDB_END);
          if (return_vals[0].data.d_status != GIMP_PDB_SUCCESS)
          {
- 	    return;
+            return;
          }
   }
   return_vals = gimp_run_procedure ("plug_in_gap_video_edit_paste",
                                       &nreturn_vals,
-	                              GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
-				      GIMP_PDB_IMAGE,    naviD->active_imageid,
-				      GIMP_PDB_DRAWABLE, -1,  /* dummy */
-	                              GIMP_PDB_INT32,    paste_mode,
+                                      GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
+                                      GIMP_PDB_IMAGE,    naviD->active_imageid,
+                                      GIMP_PDB_DRAWABLE, -1,  /* dummy */
+                                      GIMP_PDB_INT32,    paste_mode,
                                       GIMP_PDB_END);
    navi_update_after_goto();                                 
 
-}
+}  /* end p_edit_paste_call */
+
+
 static void
 edit_pasteb_callback (GtkWidget *w,  gpointer   client_data)
 {
@@ -651,104 +703,124 @@ edit_clrpaste_callback (GtkWidget *w,  gpointer   client_data)
   if(gap_debug) printf("edit_clrpaste_callback\n");
   return_vals = gimp_run_procedure ("plug_in_gap_video_edit_clear",
                                       &nreturn_vals,
-	                              GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
-				      GIMP_PDB_IMAGE,    naviD->active_imageid,
-				      GIMP_PDB_DRAWABLE, -1,  /* dummy */
+                                      GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
+                                      GIMP_PDB_IMAGE,    naviD->active_imageid,
+                                      GIMP_PDB_DRAWABLE, -1,  /* dummy */
                                       GIMP_PDB_END);
 }
 
+static void
+navi_sel_all_callback (GtkWidget *w,  gpointer   client_data)
+{
+  navi_drop_sel_range_list();
+  navi_add_sel_range_list(naviD->ainfo_ptr->first_frame_nr
+                         ,naviD->ainfo_ptr->last_frame_nr);
+  navi_debug_print_sel_range();
+  navi_frames_timing_update();
+}
 
+static void
+navi_sel_none_callback (GtkWidget *w,  gpointer   client_data)
+{
+  navi_drop_sel_range_list();
+  navi_debug_print_sel_range();
+  navi_frames_timing_update();
+}
+
+/* ---------------------------------
+ * navi_vid_copy_and_cut
+ * ---------------------------------
+ * perform copy (or cut) operations
+ * and free the selection list
+ */
 void 
 navi_vid_copy_and_cut(gint cut_flag)
 {
    SelectedRange *range_list;
    SelectedRange *range_list2;
-   SelectedRange *range_item;
    GimpParam          *return_vals;
    int              nreturn_vals;
 
   if(gap_debug) printf("navi_dialog_vid_copy_callback\n");
     
-  range_list = navi_get_selected_ranges();
-  if(range_list)
+  if(naviD->sel_range_list)
   {
     navi_set_waiting_cursor();    
     p_vid_edit_clear();
     
-    /* generate prev linkpointers in the range list */
-    range_item = NULL;
-    range_list2 = range_list;
-    while(1 == 1)
-    {
-       range_list2->prev = range_item;
-       range_item = range_list2;
-       if(range_list2->next == NULL)
-       {
-         break;
-       }
-       range_list2 = range_list2->next;
-    }
     
-    while(range_list2)
+    range_list = naviD->sel_range_list;
+    while(range_list)
     {
        /* Note: process the ranges from low frame_nummers
-	*       upto high frame_numbers.
-	*       (the range_list was created in a way that
-	*        the highest range is added as 1st list element
-        *        so we start at end of the list and to the 1. element using prev linkpinters
-	*/
+        *       upto high frame_numbers.
+        *       (the sel_range_list is sorted by ascending from-framenumbers at creation
+        *        the lowest range the 1st list element in the list)
+        */
        if(gap_debug) printf("Copy Range from:%d  to:%d\n"
-	             ,(int)range_list2->from ,(int)range_list2->to );
+                     ,(int)range_list->from ,(int)range_list->to );
 
        return_vals = gimp_run_procedure ("plug_in_gap_video_edit_copy",
                                    &nreturn_vals,
-	                           GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
-				   GIMP_PDB_IMAGE,    naviD->active_imageid,
-				   GIMP_PDB_DRAWABLE, -1,  /* dummy */
-	                           GIMP_PDB_INT32,    range_list2->from,
-	                           GIMP_PDB_INT32,    range_list2->to,
+                                   GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
+                                   GIMP_PDB_IMAGE,    naviD->active_imageid,
+                                   GIMP_PDB_DRAWABLE, -1,  /* dummy */
+                                   GIMP_PDB_INT32,    range_list->from,
+                                   GIMP_PDB_INT32,    range_list->to,
                                   GIMP_PDB_END);
-       range_item = range_list2;
-       range_list2 = range_list2->prev;
+       range_list = range_list->next;
     }
 
-    while(range_list)
+    if(cut_flag)
     {
-      if(cut_flag)
+      range_list2 = navi_get_last_range_list(naviD->sel_range_list);
+      while(range_list2)
       {
+         /* for delete we process the ranges from high frame_nummers
+          * downto low frame_numbers.
+          * (the sel_range_list is sorted by ascending from-framenumbers at creation
+          *  therefore we step from the last range liste elem backto the 1st
+          *  using the prev pointers in the list)
+          */
          if(gap_debug) printf("Delete Range from:%d  to:%d\n"
-	               ,(int)range_list->from ,(int)range_list->to );
+                       ,(int)range_list2->from ,(int)range_list2->to );
 
          return_vals = gimp_run_procedure ("plug_in_gap_goto",
                                       &nreturn_vals,
-	                              GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
-				      GIMP_PDB_IMAGE,    naviD->active_imageid,
-				      GIMP_PDB_DRAWABLE, -1,  /* dummy */
-	                              GIMP_PDB_INT32,    range_list->from,
+                                      GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
+                                      GIMP_PDB_IMAGE,    naviD->active_imageid,
+                                      GIMP_PDB_DRAWABLE, -1,  /* dummy */
+                                      GIMP_PDB_INT32,    range_list2->from,
                                       GIMP_PDB_END);
          if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
          {
- 	    return_vals = gimp_run_procedure ("plug_in_gap_del",
+            return_vals = gimp_run_procedure ("plug_in_gap_del",
                                      &nreturn_vals,
-	                             GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
-				     GIMP_PDB_IMAGE,    naviD->active_imageid,
-				     GIMP_PDB_DRAWABLE, -1,  /* dummy */
-	                             GIMP_PDB_INT32,    1 + (range_list->to - range_list->from), /* number of frames to delete */
+                                     GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
+                                     GIMP_PDB_IMAGE,    naviD->active_imageid,
+                                     GIMP_PDB_DRAWABLE, -1,  /* dummy */
+                                     GIMP_PDB_INT32,    1 + (range_list2->to - range_list2->from), /* number of frames to delete */
                                     GIMP_PDB_END);
          }
-      }
 
-       range_item = range_list;
-       range_list = range_list->next;
-       g_free(range_item);
+        range_list2 = range_list2->prev;
+      }
     }
+    
+    /* selection is cleared after copy/cut operations */
+    navi_drop_sel_range_list();
+
 
     navi_update_after_goto();                                 
   }
-}	/* end navi_dialog_frames_duplicate_frame_callback */
+}       /* end navi_vid_copy_and_cut */
 
 
 
+/* ---------------------------------
+ * navi_get_preview_size
+ * ---------------------------------
+ */
 static gint32
 navi_get_preview_size(void)
 {
@@ -767,26 +839,26 @@ navi_get_preview_size(void)
     if(gap_debug) printf("navi_get_preview_size value_str:%s:\n", value_string);
 
      if (strcmp (value_string, "none") == 0)
-	preview_size = 0;
+        preview_size = 0;
       else if (strcmp (value_string, "tiny") == 0)
-	preview_size = 24;
+        preview_size = 24;
       else if (strcmp (value_string, "small") == 0)
-	preview_size = 32;
+        preview_size = 32;
       else if (strcmp (value_string, "medium") == 0)
-	preview_size = 48;
+        preview_size = 48;
       else if (strcmp (value_string, "large") == 0)
-	preview_size = 64;
+        preview_size = 64;
       else if (strcmp (value_string, "extra-large") == 0)
-	preview_size = 128;
+        preview_size = 128;
       else if (strcmp (value_string, "huge") == 0)
-	preview_size = 160;
+        preview_size = 160;
       else if (strcmp (value_string, "enormous") == 0)
-	preview_size = 192;
+        preview_size = 192;
       else if (strcmp (value_string, "gigantic") == 0)
-	preview_size = 256;
+        preview_size = 256;
       else
-	preview_size = atol(value_string);
-	
+        preview_size = atol(value_string);
+        
     g_free(value_string);
   }
   else
@@ -795,8 +867,13 @@ navi_get_preview_size(void)
   }
   
   return (preview_size);
-}
+}  /* navi_get_preview_size */
  
+
+/* ---------------------------------
+ * navi_check_exist_first_and_last
+ * ---------------------------------
+ */
 static gint
 navi_check_exist_first_and_last(t_anim_info *ainfo_ptr)
 {
@@ -804,7 +881,7 @@ navi_check_exist_first_and_last(t_anim_info *ainfo_ptr)
 
   l_fname = p_alloc_fname(ainfo_ptr->basename,
                           ainfo_ptr->last_frame_nr, 
-			  ainfo_ptr->extension);
+                          ainfo_ptr->extension);
   if (!p_file_exists(l_fname))
   { 
      g_free(l_fname);
@@ -814,7 +891,7 @@ navi_check_exist_first_and_last(t_anim_info *ainfo_ptr)
   
   l_fname = p_alloc_fname(ainfo_ptr->basename,
                           ainfo_ptr->first_frame_nr, 
-			  ainfo_ptr->extension);
+                          ainfo_ptr->extension);
   if (!p_file_exists(l_fname))
   { 
      g_free(l_fname);
@@ -824,7 +901,7 @@ navi_check_exist_first_and_last(t_anim_info *ainfo_ptr)
 
   l_fname = p_alloc_fname(ainfo_ptr->basename,
                           ainfo_ptr->last_frame_nr+1, 
-			  ainfo_ptr->extension);
+                          ainfo_ptr->extension);
   if (p_file_exists(l_fname))
   { 
      g_free(l_fname);
@@ -834,7 +911,7 @@ navi_check_exist_first_and_last(t_anim_info *ainfo_ptr)
   
   l_fname = p_alloc_fname(ainfo_ptr->basename,
                           ainfo_ptr->first_frame_nr-1, 
-			  ainfo_ptr->extension);
+                          ainfo_ptr->extension);
   if (p_file_exists(l_fname))
   { 
      g_free(l_fname);
@@ -842,9 +919,14 @@ navi_check_exist_first_and_last(t_anim_info *ainfo_ptr)
   }
   g_free(l_fname);
 
-  return(TRUE);			  
-}
+  return(TRUE);                   
+}  /* end navi_check_exist_first_and_last */
 
+
+/* ---------------------------------
+ * navi_get_ainfo
+ * ---------------------------------
+ */
 t_anim_info *
 navi_get_ainfo(gint32 image_id, t_anim_info *old_ainfo_ptr)
 {
@@ -855,29 +937,36 @@ navi_get_ainfo(gint32 image_id, t_anim_info *old_ainfo_ptr)
      if(old_ainfo_ptr)
      {
         if((old_ainfo_ptr->image_id == image_id)
-	&& (strcmp(old_ainfo_ptr->basename, ainfo_ptr->basename) == 0))
-	{
-	   if(navi_check_exist_first_and_last(old_ainfo_ptr))
-	   {
-	      /* - image_id and name have not changed,
-	       * - first and last frame still exist
-	       *   and are still first and last frame
-	       * In that case we can reuse first and last frame_nr
-	       * without scanning the directory for frames
-	       */
-	      ainfo_ptr->first_frame_nr = old_ainfo_ptr->first_frame_nr;
-	      ainfo_ptr->last_frame_nr  = old_ainfo_ptr->last_frame_nr;
-	      ainfo_ptr->frame_cnt      = old_ainfo_ptr->frame_cnt;
+        && (strcmp(old_ainfo_ptr->basename, ainfo_ptr->basename) == 0))
+        {
+           if(navi_check_exist_first_and_last(old_ainfo_ptr))
+           {
+              /* - image_id and name have not changed,
+               * - first and last frame still exist
+               *   and are still first and last frame
+               * In that case we can reuse first and last frame_nr
+               * without scanning the directory for frames
+               */
+              ainfo_ptr->first_frame_nr = old_ainfo_ptr->first_frame_nr;
+              ainfo_ptr->last_frame_nr  = old_ainfo_ptr->last_frame_nr;
+              ainfo_ptr->frame_cnt      = old_ainfo_ptr->frame_cnt;
               return(ainfo_ptr);
-	   }
-	}
+           }
+        }
      }
      p_dir_ainfo(ainfo_ptr);
   }
+  navi_dyn_adj_set_limits();
   return(ainfo_ptr);
-}
+}  /* navi_get_ainfo */
 
-void navi_reload_ainfo_force(gint32 image_id)
+
+/* ---------------------------------
+ * navi_reload_ainfo_force
+ * ---------------------------------
+ */
+void 
+navi_reload_ainfo_force(gint32 image_id)
 {
   t_anim_info *old_ainfo_ptr;
   char frame_nr_to_char[20];
@@ -906,15 +995,24 @@ void navi_reload_ainfo_force(gint32 image_id)
   {
      g_snprintf(frame_nr_to_char, sizeof(frame_nr_to_char), "%06d - %06d"
             , (int)naviD->ainfo_ptr->first_frame_nr
-	    , (int)naviD->ainfo_ptr->last_frame_nr );
+            , (int)naviD->ainfo_ptr->last_frame_nr );
      gtk_label_set_text (GTK_LABEL (naviD->framerange_number_label),
-			 frame_nr_to_char);
+                         frame_nr_to_char);
   }
 
-  if(old_ainfo_ptr) p_free_ainfo(&old_ainfo_ptr);
-}
+  navi_dyn_adj_set_limits();
 
-void navi_reload_ainfo(gint32 image_id)
+  if(old_ainfo_ptr) p_free_ainfo(&old_ainfo_ptr);
+  
+}  /* end navi_reload_ainfo_force */
+
+
+/* ---------------------------------
+ * navi_reload_ainfo
+ * ---------------------------------
+ */
+void
+navi_reload_ainfo(gint32 image_id)
 {
   if(gap_debug) printf("navi_reload_ainfo  image_id:%d\n", (int)image_id);
 
@@ -947,14 +1045,18 @@ void navi_reload_ainfo(gint32 image_id)
   {
     if(naviD->vin_ptr) g_free(naviD->vin_ptr);
     naviD->vin_ptr = p_get_video_info(naviD->ainfo_ptr->basename);
-    gtk_adjustment_set_value(naviD->framerate_data, (gfloat)naviD->vin_ptr->framerate);
-    gtk_adjustment_set_value(naviD->timezoom_data, (gfloat)naviD->vin_ptr->timezoom);
+    gtk_adjustment_set_value(GTK_ADJUSTMENT(naviD->framerate_adj), (gfloat)naviD->vin_ptr->framerate);
+    gtk_adjustment_set_value(GTK_ADJUSTMENT(naviD->timezoom_adj), (gfloat)naviD->vin_ptr->timezoom);
 
   }
-}
+}  /* end navi_reload_ainfo */
 
 
 
+/* ---------------------------------
+ * navi_images_menu_constrain
+ * ---------------------------------
+ */
 static gint
 navi_images_menu_constrain(gint32 image_id, gint32 drawable_id, gpointer data)
 {
@@ -978,6 +1080,10 @@ navi_images_menu_constrain(gint32 image_id, gint32 drawable_id, gpointer data)
 } /* end  navi_images_menu_constrain */
 
 
+/* ---------------------------------
+ * navi_images_menu_callback
+ * ---------------------------------
+ */
 static void
 navi_images_menu_callback  (gint32 image_id, gpointer data)
 {
@@ -993,25 +1099,13 @@ navi_images_menu_callback  (gint32 image_id, gpointer data)
     }
 
   }
-}
+}  /* end navi_images_menu_callback */
 
 
-static void
-navid_update_exposed_previews(void)
-{
-  if(naviD == NULL) return;
-
-  /* I've tried  to send an "expose_event"  to frame_preview widgets
-   * using gtk_signal_emit_by_name , but it did not work.
-   * So i decided to use the trick widget_hide and widget_show
-   * to force gtk to (re)expose the widgets in the listbox 
-   * That way all visible items in the listbox are refreshed (redraw)
-   */
-  gtk_widget_hide(naviD->scrolled_win);
-  gtk_widget_show(naviD->scrolled_win);
-}
-
-
+/* ---------------------------------
+ * navi_set_waiting_cursor
+ * ---------------------------------
+ */
 static void
 navi_set_waiting_cursor(void)
 {
@@ -1020,7 +1114,12 @@ navi_set_waiting_cursor(void)
 
   naviD->waiting_cursor = TRUE;
   gdk_window_set_cursor(GTK_WIDGET(naviD->shell)->window, naviD->cursor_wait);
-}
+}  /* end navi_set_waiting_cursor */
+
+/* ---------------------------------
+ * navi_set_active_cursor
+ * ---------------------------------
+ */
 static void
 navi_set_active_cursor(void)
 {
@@ -1029,57 +1128,42 @@ navi_set_active_cursor(void)
   
   naviD->waiting_cursor = FALSE;
   gdk_window_set_cursor(GTK_WIDGET(naviD->shell)->window, naviD->cursor_acitve);
-}
+}  /* end navi_set_active_cursor */
 
+/* --------------------------------
+ * navi_scroll_to_current_frame_nr
+ * --------------------------------
+ */
 static void
 navi_scroll_to_current_frame_nr(void)
 {
-  GtkAdjustment *adj;
-  gfloat adj_val;
-  gint index;
-  gint page_size;
-
   if(naviD == NULL) return;
   if(naviD->ainfo_ptr == NULL) return;
   if(naviD->vin_ptr == NULL) return;
-  if(naviD->scrolled_win == NULL) return;
+  if(naviD->dyn_table == NULL) return;
 
 
   if(gap_debug) printf("navi_scroll_to_current_frame_nr: BEGIN timezoom:%d, item_height:%d\n", (int)naviD->vin_ptr->timezoom, (int)naviD->item_height);
 
-  adj = gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (naviD->scrolled_win));
-  adj_val = adj->value;
-  page_size = MAX(adj->page_size, naviD->item_height);
-  index = 0;
-  if(naviD->vin_ptr->timezoom)
+  if((naviD->ainfo_ptr->curr_frame_nr >= naviD->dyn_topframenr)
+  && (naviD->ainfo_ptr->curr_frame_nr < naviD->dyn_topframenr + (naviD->dyn_rows * naviD->vin_ptr->timezoom)) )
   {
-    index = (naviD->ainfo_ptr->curr_frame_nr - naviD->ainfo_ptr->first_frame_nr) / naviD->vin_ptr->timezoom;
+     /* current frame is within in the currently displayed range */
+     return;
   }
+
+  naviD->dyn_topframenr = naviD->ainfo_ptr->curr_frame_nr;
+
+  /* fetch and render all thumbnail_previews in the dyn table */
+  navi_refresh_dyn_table(naviD->dyn_topframenr);
   
-  if (index * naviD->item_height < adj->value)
-  {
-      adj_val = index * naviD->item_height;
-  }
-  else if ((index + 1) * naviD->item_height > adj->value + page_size)
-  {
-      adj_val = (index + 1) * naviD->item_height - page_size;
-  }
+}  /* end navi_scroll_to_current_frame_nr */
 
-  if(adj_val > MAX_HEIGHT_GTK_SCROLLED_WIN - page_size)
-  {
-    adj_val = MAX_HEIGHT_GTK_SCROLLED_WIN - page_size;
-  }
-  if(adj_val != adj->value)
-  {
-    if(gap_debug) printf("navi_scroll_to_current_frame_nr: OLD: %d  should be set to adj_val: %d  index:%d\n", (int)adj->value, (int)adj_val, (int)index);
-    if(gap_debug) printf("navi_scroll_to_current_frame_nr: adj->lower :%d adj->upper :%d\n", (int)adj->lower, (int)adj->upper);
-    /* gtk_adjustment_set_value(adj, adj_val); */
-    adj->value = adj_val;
-    gtk_adjustment_value_changed (adj);
-    if(gap_debug) printf("navi_scroll_to_current_frame_nr: NEW : %d should be equal to adj_val: %d adj->page_size:%d\n", (int)adj->value, (int)adj_val, (int)adj->page_size);  
-  }
-}
 
+/* ---------------------------------
+ * navi_dialog_tooltips
+ * ---------------------------------
+ */
 static void
 navi_dialog_tooltips(void)
 {
@@ -1112,9 +1196,13 @@ navi_dialog_tooltips(void)
        gimp_help_disable_tooltips ();
      }
   }
-}
+}  /* end navi_dialog_tooltips */
 
 
+/* ---------------------------------
+ * navi_find_OpenFrameList
+ * ---------------------------------
+ */
 static gint
 navi_find_OpenFrameList(OpenFrameImages *search_item)
 {
@@ -1131,8 +1219,13 @@ navi_find_OpenFrameList(OpenFrameImages *search_item)
     item_list = (OpenFrameImages *)item_list->next;
   }
   return(FALSE);
-}
+}  /* end navi_find_OpenFrameList */
 
+
+/* ---------------------------------
+ * navi_free_OpenFrameList
+ * ---------------------------------
+ */
 static void
 navi_free_OpenFrameList(OpenFrameImages *list)
 {
@@ -1146,8 +1239,13 @@ navi_free_OpenFrameList(OpenFrameImages *list)
     g_free(item_list);
     item_list = item_next;
   }
-}
+}  /* end navi_free_OpenFrameList */
 
+
+/* ---------------------------------
+ * navi_check_image_menu_changes
+ * ---------------------------------
+ */
 static gint
 navi_check_image_menu_changes()
 {
@@ -1175,14 +1273,14 @@ navi_check_image_menu_changes()
      {
         item_count++;
         new_item = g_new (OpenFrameImages, 1);
-	new_item->image_id = images[i];
-	new_item->frame_nr = frame_nr;
+        new_item->image_id = images[i];
+        new_item->frame_nr = frame_nr;
         new_item->next = item_list;
-	item_list = new_item;
-	if(!navi_find_OpenFrameList(new_item))
-	{
+        item_list = new_item;
+        if(!navi_find_OpenFrameList(new_item))
+        {
           l_rc = FALSE;
-	}
+        }
      }
   }
   g_free(images);
@@ -1203,8 +1301,13 @@ navi_check_image_menu_changes()
     naviD->OpenFrameImagesList = item_list;
   }
   return(l_rc);
-}
+}  /* end navi_check_image_menu_changes */
 
+
+/* ---------------------------------
+ * navi_refresh_image_menu
+ * ---------------------------------
+ */
 static gint
 navi_refresh_image_menu()
 {
@@ -1220,8 +1323,8 @@ navi_refresh_image_menu()
       
       naviD->image_menu = gimp_image_menu_new(navi_images_menu_constrain,
                                               navi_images_menu_callback,
-					      naviD,
-					      naviD->active_imageid
+                                              naviD,
+                                              naviD->active_imageid
                                               );
       gtk_option_menu_set_menu(GTK_OPTION_MENU(naviD->image_option_menu), naviD->image_menu);
       gtk_widget_show (naviD->image_menu);
@@ -1233,8 +1336,14 @@ navi_refresh_image_menu()
     }
   }
   return(FALSE);
-}
+}  /* end navi_refresh_image_menu */
 
+
+
+/* ---------------------------------
+ * navi_update_after_goto
+ * ---------------------------------
+ */
 void 
 navi_update_after_goto(void)
 {
@@ -1245,58 +1354,17 @@ navi_update_after_goto(void)
    }
    gimp_displays_flush();
    navi_set_active_cursor();
-}
+}  /* end navi_update_after_goto */
 
 
-static SelectedRange *
-navi_get_selected_ranges(void)
-{
-  FrameWidget *fw;
-  GSList      *list;
-  GtkStateType  state;
 
-  SelectedRange *new_range;
-  SelectedRange *range_list;
-
-  range_list = NULL;
-  new_range  = NULL;
-  list = naviD->frame_widgets;
-  while (list)
-  {
-      fw = (FrameWidget *) list->data;
-      list = g_slist_next (list);
-      state = fw->list_item->state;
-      if(state == GTK_STATE_SELECTED)
-      {
-         if(new_range == NULL)
-	 {
-	    new_range = g_new (SelectedRange, 1);
-	    new_range->next = range_list;
-	    new_range->from = fw->frame_nr;
-	    new_range->to   = fw->frame_nr;
-	    range_list = new_range;
-	 }
-	 else
-	 {
-	    new_range->to = fw->frame_nr;
-	 }
-      }
-      else
-      {
-         new_range  = NULL;
-      }
-  }
-  
-  return(range_list);
-}
-
-void
+/* ---------------------------------
+ * navi_ops_menu_set_sensitive
+ * ---------------------------------
+ */
+static void
 navi_ops_menu_set_sensitive(void)
 {
-  FrameWidget *fw;
-  GSList      *list;
-  GtkStateType  state;
-
   if(naviD == NULL)
   {
     return;
@@ -1316,31 +1384,31 @@ navi_ops_menu_set_sensitive(void)
      gtk_widget_set_sensitive(naviD->clrpaste_menu_item, FALSE);
   }
   
-  list = naviD->frame_widgets;
-  while (list)
+  if(naviD->sel_range_list)
   {
-      fw = (FrameWidget *) list->data;
-      list = g_slist_next (list);
-      state = fw->list_item->state;
-      if(state == GTK_STATE_SELECTED)
-      {
-         naviD->paste_at_frame = fw->frame_nr;
-         gtk_widget_set_sensitive(naviD->copy_menu_item, TRUE);
-         gtk_widget_set_sensitive(naviD->cut_menu_item, TRUE);
-         return;
-      }
+     gtk_widget_set_sensitive(naviD->copy_menu_item, TRUE);
+     gtk_widget_set_sensitive(naviD->cut_menu_item, TRUE);
   }
-  gtk_widget_set_sensitive(naviD->copy_menu_item, FALSE);
-  gtk_widget_set_sensitive(naviD->cut_menu_item, FALSE);
+  else
+  {
+     gtk_widget_set_sensitive(naviD->copy_menu_item, FALSE);
+     gtk_widget_set_sensitive(naviD->cut_menu_item, FALSE);
 
-  naviD->paste_at_frame = -1;  /* nothing selected, use current frame_nr */
+     naviD->paste_at_frame = -1;  /* nothing selected, use current frame_nr */
+  }
+}       /* end navi_ops_menu_set_sensitive */
 
-}	/* end navi_ops_menu_set_sensitive */
 
 
 
+/* ---------------------------------
+ * navi_thumb_update
+ * ---------------------------------
+ * update thumbnailfiles on disk
+ * IN: update_all TRUE force update on all frames
+ */
 static void
-navi_thumb_update(gint update_all)
+navi_thumb_update(gboolean update_all)
 {
   gint32 l_frame_nr;
   gint32 l_image_id;
@@ -1393,7 +1461,7 @@ navi_thumb_update(gint update_all)
         l_any_upd_flag = TRUE;
         if(gap_debug) printf("navi_thumb_update frame_nr:%d\n", (int)l_frame_nr);
         l_image_id = p_load_image(l_image_filename);
-	p_gimp_file_save_thumbnail(l_image_id, l_image_filename);
+        p_gimp_file_save_thumbnail(l_image_id, l_image_filename);
         gimp_image_delete(l_image_id);
      }
      
@@ -1402,54 +1470,62 @@ navi_thumb_update(gint update_all)
   
   if(l_any_upd_flag  )
   {
-    navid_update_exposed_previews();
+    /* fetch and render all thumbnail_previews in the dyn table */
+    navi_refresh_dyn_table(naviD->dyn_topframenr);
   }
-}
+}  /* end navi_thumb_update */
 
-static void navi_dialog_thumb_update_callback(GtkWidget *w, gpointer   data)
+
+
+static void 
+navi_dialog_thumb_update_callback(GtkWidget *w, gpointer   data)
 {
   if(gap_debug) printf("navi_dialog_thumb_update_callback\n");
   navi_thumb_update(FALSE);
 }
 
-static void navi_dialog_thumb_updateall_callback(GtkWidget *w, gpointer   data)
+static void 
+navi_dialog_thumb_updateall_callback(GtkWidget *w, gpointer   data)
 {
   if(gap_debug) printf("navi_dialog_thumb_updateall_callback\n");  
   navi_thumb_update(TRUE);
 }
 
 
+/* ---------------------------------
+ * navi_playback
+ * ---------------------------------
+ */
 static void 
 navi_playback(gboolean use_gimp_layeranimplayer)
 {
    SelectedRange *range_list;
-   SelectedRange *range_item;
    gint32         l_from;
    gint32         l_to;
 
    gint32         l_new_image_id;
-   GimpParam          *return_vals;
-   int              nreturn_vals;
+   GimpParam     *return_vals;
+   int            nreturn_vals;
    char           l_frame_name[50];
    int            l_frame_delay;
   
 
   if(gap_debug) printf("navi_dialog_vcr_play_callback\n");
   
-  strcpy(l_frame_name, "frame_[####]");
+  strcpy(l_frame_name, "frame_[######]");
   if(naviD->vin_ptr)
   {
     if(naviD->vin_ptr->framerate > 0)
     {
        l_frame_delay = 1000 / naviD->vin_ptr->framerate;
-       g_snprintf(l_frame_name, sizeof(l_frame_name), "frame_[####] (%dms)", (int)l_frame_delay);
+       g_snprintf(l_frame_name, sizeof(l_frame_name), "frame_[######] (%dms)", (int)l_frame_delay);
     }
   }
 
   l_from = naviD->ainfo_ptr->first_frame_nr;
   l_to   = naviD->ainfo_ptr->last_frame_nr;
   
-  range_list = navi_get_selected_ranges();
+  range_list = naviD->sel_range_list;
   if(range_list)
   {
      l_to   = naviD->ainfo_ptr->first_frame_nr;
@@ -1459,9 +1535,7 @@ navi_playback(gboolean use_gimp_layeranimplayer)
      {
         l_from = MIN(l_from, range_list->from);
         l_to   = MAX(l_to,   range_list->to);
-	range_item = range_list;
-	range_list = range_list->next;
-	g_free(range_item);
+        range_list = range_list->next;
      }
   }
 
@@ -1474,20 +1548,20 @@ navi_playback(gboolean use_gimp_layeranimplayer)
       */
      return_vals = gimp_run_procedure ("plug_in_gap_videoframes_player",
                                     &nreturn_vals,
-	                            GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
-				    GIMP_PDB_IMAGE,    naviD->active_imageid,
-				    GIMP_PDB_DRAWABLE, -1,  /* dummy */
-	                            GIMP_PDB_INT32,    l_from,
-	                            GIMP_PDB_INT32,    l_to,
-	                            GIMP_PDB_INT32,    TRUE,  /* autostart */
-	                            GIMP_PDB_INT32,    TRUE,  /* use_thumbnails (playback using thumbnails where available) */
-	                            GIMP_PDB_INT32,    TRUE,  /* exact_timing */
-	                            GIMP_PDB_INT32,    TRUE,  /* play_selection_only */
-	                            GIMP_PDB_INT32,    TRUE,  /* play_loop */
-	                            GIMP_PDB_INT32,    FALSE, /* play_pingpong */
-	                            GIMP_PDB_FLOAT,    -1.0,  /* speed is original framerate */
-	                            GIMP_PDB_INT32,    -1,    /* use default width */
-	                            GIMP_PDB_INT32,    -1,    /* use default height */
+                                    GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
+                                    GIMP_PDB_IMAGE,    naviD->active_imageid,
+                                    GIMP_PDB_DRAWABLE, -1,  /* dummy */
+                                    GIMP_PDB_INT32,    l_from,
+                                    GIMP_PDB_INT32,    l_to,
+                                    GIMP_PDB_INT32,    TRUE,  /* autostart */
+                                    GIMP_PDB_INT32,    TRUE,  /* use_thumbnails (playback using thumbnails where available) */
+                                    GIMP_PDB_INT32,    TRUE,  /* exact_timing */
+                                    GIMP_PDB_INT32,    TRUE,  /* play_selection_only */
+                                    GIMP_PDB_INT32,    TRUE,  /* play_loop */
+                                    GIMP_PDB_INT32,    FALSE, /* play_pingpong */
+                                    GIMP_PDB_FLOAT,    -1.0,  /* speed is original framerate */
+                                    GIMP_PDB_INT32,    -1,    /* use default width */
+                                    GIMP_PDB_INT32,    -1,    /* use default height */
                                     GIMP_PDB_END);
      return;
   }
@@ -1495,19 +1569,19 @@ navi_playback(gboolean use_gimp_layeranimplayer)
 
   return_vals = gimp_run_procedure ("plug_in_gap_range_to_multilayer",
                                     &nreturn_vals,
-	                            GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
-				    GIMP_PDB_IMAGE,    naviD->active_imageid,
-				    GIMP_PDB_DRAWABLE, -1,  /* dummy */
-	                            GIMP_PDB_INT32,    l_from,
-	                            GIMP_PDB_INT32,    l_to,
-	                            GIMP_PDB_INT32,    3,     /* flatten image */
-	                            GIMP_PDB_INT32,    1,     /* BG_VISIBLE */
-	                            GIMP_PDB_INT32,    (gint32)naviD->vin_ptr->framerate,
-				    GIMP_PDB_STRING,   l_frame_name,
-	                            GIMP_PDB_INT32,    6,     /* use all visible layers */
-	                            GIMP_PDB_INT32,    0,     /* ignore case */
-	                            GIMP_PDB_INT32,    0,     /* normal selection (no invert) */
- 				    GIMP_PDB_STRING,   "0",   /* select string (ignored) */
+                                    GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
+                                    GIMP_PDB_IMAGE,    naviD->active_imageid,
+                                    GIMP_PDB_DRAWABLE, -1,  /* dummy */
+                                    GIMP_PDB_INT32,    l_from,
+                                    GIMP_PDB_INT32,    l_to,
+                                    GIMP_PDB_INT32,    3,     /* flatten image */
+                                    GIMP_PDB_INT32,    1,     /* BG_VISIBLE */
+                                    GIMP_PDB_INT32,    (gint32)naviD->vin_ptr->framerate,
+                                    GIMP_PDB_STRING,   l_frame_name,
+                                    GIMP_PDB_INT32,    6,     /* use all visible layers */
+                                    GIMP_PDB_INT32,    0,     /* ignore case */
+                                    GIMP_PDB_INT32,    0,     /* normal selection (no invert) */
+                                    GIMP_PDB_STRING,   "0",   /* select string (ignored) */
                                    GIMP_PDB_END);
 
   if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
@@ -1519,127 +1593,142 @@ navi_playback(gboolean use_gimp_layeranimplayer)
       */
       return_vals = gimp_run_procedure ("plug_in_animationplay",
                                     &nreturn_vals,
-	                            GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
-				    GIMP_PDB_IMAGE,    l_new_image_id,
-				    GIMP_PDB_DRAWABLE, -1,  /* dummy */
+                                    GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
+                                    GIMP_PDB_IMAGE,    l_new_image_id,
+                                    GIMP_PDB_DRAWABLE, -1,  /* dummy */
                                    GIMP_PDB_END);
   }
 }  /* end navi_playback */
 
 
-static void navi_dialog_vcr_play_callback(GtkWidget *w, gpointer   data)
+static void 
+navi_dialog_vcr_play_callback(GtkWidget *w, gpointer   data)
 {
   if(gap_debug) printf("navi_dialog_vcr_play_callback\n");
   navi_playback(FALSE /* dont use_gimp_layeranimplayer */);
 }
 
-static void navi_dialog_vcr_play_layeranim_callback(GtkWidget *w, gpointer   data)
+static void 
+navi_dialog_vcr_play_layeranim_callback(GtkWidget *w, gpointer   data)
 {
   if(gap_debug) printf("navi_dialog_vcr_play_layeranim_callback\n");
   navi_playback(TRUE /* use_gimp_layeranimplayer */);
 }
 
-void navi_dialog_frames_duplicate_frame_callback(GtkWidget *w, gpointer   data)
+
+/* -------------------------------------------
+ * navi_dialog_frames_duplicate_frame_callback
+ * -------------------------------------------
+ */
+static void 
+navi_dialog_frames_duplicate_frame_callback(GtkWidget *w, gpointer   data)
 {
    SelectedRange *range_list;
-   SelectedRange *range_item;
-   GimpParam          *return_vals;
-   int              nreturn_vals;
+   GimpParam     *return_vals;
+   int            nreturn_vals;
   
 
   if(gap_debug) printf("navi_dialog_frames_duplicate_frame_callback\n");
     
-  range_list = navi_get_selected_ranges();
-  if(range_list)
+  if(naviD->sel_range_list)
   {
     navi_set_waiting_cursor();    
+    range_list = navi_get_last_range_list(naviD->sel_range_list);
     while(range_list)
     {
        /* Note: process the ranges from high frame_nummers
-	*       downto low frame_numbers.
-	*       (the range_list was created in a way that
-	*        the highest range is added as 1st list element)
-	*/
+        *       downto low frame_numbers.
+        *       (the sel_range_list is sorted by ascending from framenumbers
+        *        therefore we step from the last element back to the 1st)
+        */
        if(gap_debug) printf("Duplicate Range from:%d  to:%d\n"
-	             ,(int)range_list->from ,(int)range_list->to );
-		     
+                     ,(int)range_list->from ,(int)range_list->to );
+                     
        return_vals = gimp_run_procedure ("plug_in_gap_goto",
                                     &nreturn_vals,
-	                            GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
-				    GIMP_PDB_IMAGE,    naviD->active_imageid,
-				    GIMP_PDB_DRAWABLE, -1,  /* dummy */
-	                            GIMP_PDB_INT32,    range_list->from,
+                                    GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
+                                    GIMP_PDB_IMAGE,    naviD->active_imageid,
+                                    GIMP_PDB_DRAWABLE, -1,  /* dummy */
+                                    GIMP_PDB_INT32,    range_list->from,
                                     GIMP_PDB_END);
        if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
        {
-	  return_vals = gimp_run_procedure ("plug_in_gap_dup",
+          return_vals = gimp_run_procedure ("plug_in_gap_dup",
                                    &nreturn_vals,
-	                           GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
-				   GIMP_PDB_IMAGE,    naviD->active_imageid,
-				   GIMP_PDB_DRAWABLE, -1,  /* dummy */
-	                           GIMP_PDB_INT32,    1,     /* copy block 1 times */
-	                           GIMP_PDB_INT32,    range_list->from,
-	                           GIMP_PDB_INT32,    range_list->to,
+                                   GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
+                                   GIMP_PDB_IMAGE,    naviD->active_imageid,
+                                   GIMP_PDB_DRAWABLE, -1,  /* dummy */
+                                   GIMP_PDB_INT32,    1,     /* copy block 1 times */
+                                   GIMP_PDB_INT32,    range_list->from,
+                                   GIMP_PDB_INT32,    range_list->to,
                                   GIMP_PDB_END);
        }
-       range_item = range_list;
-       range_list = range_list->next;
-       g_free(range_item);
+       range_list = range_list->prev;
     }
+    navi_drop_sel_range_list();
     navi_update_after_goto();                                 
   }
-}	/* end navi_dialog_frames_duplicate_frame_callback */
+}       /* end navi_dialog_frames_duplicate_frame_callback */
 
-void navi_dialog_frames_delete_frame_callback(GtkWidget *w, gpointer   data)
+/* ----------------------------------------
+ * navi_dialog_frames_delete_frame_callback
+ * ----------------------------------------
+ */
+static void
+navi_dialog_frames_delete_frame_callback(GtkWidget *w, gpointer   data)
 {
    SelectedRange *range_list;
-   SelectedRange *range_item;
-   GimpParam          *return_vals;
-   int              nreturn_vals;
+   GimpParam     *return_vals;
+   int            nreturn_vals;
   
 
   if(gap_debug) printf("navi_dialog_frames_delete_frame_callback\n");
     
-  range_list = navi_get_selected_ranges();
-  if(range_list)
+  if(naviD->sel_range_list)
   {
     navi_set_waiting_cursor();    
+    range_list = navi_get_last_range_list(naviD->sel_range_list);
     while(range_list)
     {
        /* Note: process the ranges from high frame_nummers
-	*       downto low frame_numbers.
-	*       (the range_list was created in a way that
-	*        the highest range is added as 1st list element)
-	*/
+        *       downto low frame_numbers.
+        *       (the sel_range_list is sorted by ascending from framenumbers
+        *        therefore we step from the last element back to the 1st)
+        */
        if(gap_debug) printf("Delete Range from:%d  to:%d\n"
-	             ,(int)range_list->from ,(int)range_list->to );
-		     
+                     ,(int)range_list->from ,(int)range_list->to );
+                     
        return_vals = gimp_run_procedure ("plug_in_gap_goto",
                                     &nreturn_vals,
-	                            GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
-				    GIMP_PDB_IMAGE,    naviD->active_imageid,
-				    GIMP_PDB_DRAWABLE, -1,  /* dummy */
-	                            GIMP_PDB_INT32,    range_list->from,
+                                    GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
+                                    GIMP_PDB_IMAGE,    naviD->active_imageid,
+                                    GIMP_PDB_DRAWABLE, -1,  /* dummy */
+                                    GIMP_PDB_INT32,    range_list->from,
                                     GIMP_PDB_END);
        if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
        {
- 	  return_vals = gimp_run_procedure ("plug_in_gap_del",
+          return_vals = gimp_run_procedure ("plug_in_gap_del",
                                    &nreturn_vals,
-	                           GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
-				   GIMP_PDB_IMAGE,    naviD->active_imageid,
-				   GIMP_PDB_DRAWABLE, -1,  /* dummy */
-	                           GIMP_PDB_INT32,    1 + (range_list->to - range_list->from), /* number of frames to delete */
+                                   GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
+                                   GIMP_PDB_IMAGE,    naviD->active_imageid,
+                                   GIMP_PDB_DRAWABLE, -1,  /* dummy */
+                                   GIMP_PDB_INT32,    1 + (range_list->to - range_list->from), /* number of frames to delete */
                                   GIMP_PDB_END);
        }
-       range_item = range_list;
-       range_list = range_list->next;
-       g_free(range_item);
+       range_list = range_list->prev;
     }
+    navi_drop_sel_range_list();
     navi_update_after_goto();                                 
   }
-}	/* end navi_dialog_frames_delete_frame_callback */
+}       /* end navi_dialog_frames_delete_frame_callback */
 
-void navi_dialog_goto_callback(gint32 dst_framenr)
+
+/* ---------------------------------
+ * navi_dialog_goto_callback
+ * ---------------------------------
+ */
+static void
+navi_dialog_goto_callback(gint32 dst_framenr)
 {
    GimpParam          *return_vals;
    int              nreturn_vals;
@@ -1648,15 +1737,21 @@ void navi_dialog_goto_callback(gint32 dst_framenr)
    navi_set_waiting_cursor();       
    return_vals = gimp_run_procedure ("plug_in_gap_goto",
                                     &nreturn_vals,
-	                            GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
-				    GIMP_PDB_IMAGE,    naviD->active_imageid,
-				    GIMP_PDB_DRAWABLE, -1,  /* dummy */
-	                            GIMP_PDB_INT32,    dst_framenr,
+                                    GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
+                                    GIMP_PDB_IMAGE,    naviD->active_imageid,
+                                    GIMP_PDB_DRAWABLE, -1,  /* dummy */
+                                    GIMP_PDB_INT32,    dst_framenr,
                                     GIMP_PDB_END);
    navi_update_after_goto();                                 
-}
+}  /* end navi_dialog_goto_callback */
 
-void navi_dialog_vcr_goto_first_callback(GtkWidget *w, gpointer   data)
+
+/* -----------------------------------
+ * navi_dialog_vcr_goto_first_callback
+ * -----------------------------------
+ */
+static void
+navi_dialog_vcr_goto_first_callback(GtkWidget *w, gpointer   data)
 {
    GimpParam          *return_vals;
    int              nreturn_vals;
@@ -1665,14 +1760,20 @@ void navi_dialog_vcr_goto_first_callback(GtkWidget *w, gpointer   data)
    navi_set_waiting_cursor();
    return_vals = gimp_run_procedure ("plug_in_gap_first",
                                     &nreturn_vals,
-	                            GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
-				    GIMP_PDB_IMAGE,    naviD->active_imageid,
-				    GIMP_PDB_DRAWABLE, -1,  /* dummy */
+                                    GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
+                                    GIMP_PDB_IMAGE,    naviD->active_imageid,
+                                    GIMP_PDB_DRAWABLE, -1,  /* dummy */
                                     GIMP_PDB_END);
    navi_update_after_goto();                                 
-}
+}  /* end navi_dialog_vcr_goto_first_callback */
 
-void navi_dialog_vcr_goto_prev_callback(GtkWidget *w, gpointer   data)
+
+/* ---------------------------------
+ * navi_dialog_vcr_goto_prev_callback
+ * ---------------------------------
+ */
+static void
+navi_dialog_vcr_goto_prev_callback(GtkWidget *w, gpointer   data)
 {
    GimpParam          *return_vals;
    int              nreturn_vals;
@@ -1681,14 +1782,19 @@ void navi_dialog_vcr_goto_prev_callback(GtkWidget *w, gpointer   data)
    navi_set_waiting_cursor();       
    return_vals = gimp_run_procedure ("plug_in_gap_prev",
                                     &nreturn_vals,
-	                            GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
-				    GIMP_PDB_IMAGE,    naviD->active_imageid,
-				    GIMP_PDB_DRAWABLE, -1,  /* dummy */
+                                    GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
+                                    GIMP_PDB_IMAGE,    naviD->active_imageid,
+                                    GIMP_PDB_DRAWABLE, -1,  /* dummy */
                                     GIMP_PDB_END);
    navi_update_after_goto();                                 
-}
+}  /* end navi_dialog_vcr_goto_prev_callback */
 
-void navi_dialog_vcr_goto_prevblock_callback(GtkWidget *w, gpointer   data)
+/* ---------------------------------
+ * navi_dialog_goto_callback
+ * ---------------------------------
+ */
+static void
+navi_dialog_vcr_goto_prevblock_callback(GtkWidget *w, gpointer   data)
 {
    gint32           dst_framenr;
 
@@ -1700,24 +1806,35 @@ void navi_dialog_vcr_goto_prevblock_callback(GtkWidget *w, gpointer   data)
                      naviD->ainfo_ptr->first_frame_nr);
 
    navi_dialog_goto_callback(dst_framenr);
-}
+}  /* end navi_dialog_goto_callback */
 
-void navi_dialog_vcr_goto_next_callback(GtkWidget *w, gpointer   data)
+/* ----------------------------------
+ * navi_dialog_vcr_goto_next_callback
+ * ----------------------------------
+ */
+static void
+navi_dialog_vcr_goto_next_callback(GtkWidget *w, gpointer   data)
 {
-   GimpParam          *return_vals;
+   GimpParam       *return_vals;
    int              nreturn_vals;
 
    if(gap_debug) printf("navi_dialog_vcr_goto_next_callback\n");
    navi_set_waiting_cursor();       
    return_vals = gimp_run_procedure ("plug_in_gap_next",
                                     &nreturn_vals,
-	                            GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
-				    GIMP_PDB_IMAGE,    naviD->active_imageid,
-				    GIMP_PDB_DRAWABLE, -1,  /* dummy */
+                                    GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
+                                    GIMP_PDB_IMAGE,    naviD->active_imageid,
+                                    GIMP_PDB_DRAWABLE, -1,  /* dummy */
                                     GIMP_PDB_END);
    navi_update_after_goto();                                 
-}
-void navi_dialog_vcr_goto_nextblock_callback(GtkWidget *w, gpointer   data)
+}  /* end navi_dialog_vcr_goto_next_callback */
+
+/* ---------------------------------------
+ * navi_dialog_vcr_goto_nextblock_callback
+ * ---------------------------------------
+ */
+static void
+navi_dialog_vcr_goto_nextblock_callback(GtkWidget *w, gpointer   data)
 {
    gint32           dst_framenr;
 
@@ -1729,9 +1846,15 @@ void navi_dialog_vcr_goto_nextblock_callback(GtkWidget *w, gpointer   data)
                      naviD->ainfo_ptr->last_frame_nr);
        
    navi_dialog_goto_callback(dst_framenr);
-}
+}  /* end navi_dialog_vcr_goto_nextblock_callback */
 
-void navi_dialog_vcr_goto_last_callback(GtkWidget *w, gpointer   data)
+
+/* ---------------------------------
+ * navi_dialog_vcr_goto_last_callback
+ * ---------------------------------
+ */
+static void
+navi_dialog_vcr_goto_last_callback(GtkWidget *w, gpointer   data)
 {
    GimpParam          *return_vals;
    int              nreturn_vals;
@@ -1740,31 +1863,61 @@ void navi_dialog_vcr_goto_last_callback(GtkWidget *w, gpointer   data)
    navi_set_waiting_cursor();       
    return_vals = gimp_run_procedure ("plug_in_gap_last",
                                     &nreturn_vals,
-	                            GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
-				    GIMP_PDB_IMAGE,    naviD->active_imageid,
-				    GIMP_PDB_DRAWABLE, -1,  /* dummy */
+                                    GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
+                                    GIMP_PDB_IMAGE,    naviD->active_imageid,
+                                    GIMP_PDB_DRAWABLE, -1,  /* dummy */
                                     GIMP_PDB_END);
    navi_update_after_goto();                                 
-}
+} /* end navi_dialog_vcr_goto_last_callback */
 
+
+/* ---------------------------------
+ * navi_frames_timing_update
+ * ---------------------------------
+ */
 static void
-frames_timing_update (void)
+navi_frames_timing_update (void)
 {
-  FrameWidget *fw;
-  GSList      *list;
+  gint32       l_frame_nr;
+  gint32       l_frame_nr_prev;
+  gint32       l_count;
 
-  list = naviD->frame_widgets;
-  while (list)
+  l_frame_nr = naviD->dyn_topframenr;
+
+  l_frame_nr_prev = -1;
+  for(l_count = 0; l_count < naviD->dyn_rows; l_count++)
   {
-      fw = (FrameWidget *) list->data;
-      list = g_slist_next (list);
-      frame_widget_time_label_update(fw);
+     FrameWidget   *fw;
+     
+     fw = &naviD->frame_widget_tab[l_count];
+     
+     l_frame_nr = CLAMP(l_frame_nr
+                    , naviD->ainfo_ptr->first_frame_nr   
+                    , naviD->ainfo_ptr->last_frame_nr
+                    );
+        
+      if(l_frame_nr == l_frame_nr_prev)
+      {
+        /* make sure that dummy element has no -1 (dummy frame_nr)
+         * (will display a blank label)
+         */
+        fw->frame_nr = -1;
+      }
+      navi_frame_widget_time_label_update(fw);
+      
+      l_frame_nr_prev = l_frame_nr;
+      l_frame_nr += naviD->vin_ptr->timezoom;
   }
-}
+}  /* end navi_frames_timing_update */
 
+
+/* ---------------------------------
+ * navi_framerate_spinbutton_update
+ * ---------------------------------
+ */
 void 
-navi_framerate_scale_update(GtkAdjustment *adjustment,
-		      gpointer       data)
+navi_framerate_spinbutton_update(GtkAdjustment *adjustment,
+                      gpointer       data)
 {
   gdouble    framerate;
 
@@ -1780,18 +1933,21 @@ navi_framerate_scale_update(GtkAdjustment *adjustment,
        /* write new framerate to video info file */
        p_set_video_info(naviD->vin_ptr, naviD->ainfo_ptr->basename);
      }
-     frames_timing_update();
+     navi_frames_timing_update();
   }
-  if(gap_debug) printf("navi_framerate_scale_update :%d\n", (int)naviD->vin_ptr->framerate);
-}
+  if(gap_debug) printf("navi_framerate_spinbutton_update :%d\n", (int)naviD->vin_ptr->framerate);
+}  /* end navi_framerate_spinbutton_update */
 
+
+/* ---------------------------------
+ * navi_timezoom_spinbutton_update
+ * ---------------------------------
+ */
 void
-navi_timezoom_scale_update(GtkAdjustment *adjustment,
-		      gpointer       data)
+navi_timezoom_spinbutton_update(GtkAdjustment *adjustment,
+                      gpointer       data)
 {
   gint    timezoom;
-  GtkAdjustment *adj;
-  gfloat adj_val;
 
   if(naviD == NULL) return;
   if(naviD->vin_ptr == NULL) return;
@@ -1799,86 +1955,23 @@ navi_timezoom_scale_update(GtkAdjustment *adjustment,
   timezoom = (int) (adjustment->value);
   if(timezoom != naviD->vin_ptr->timezoom)
   {
-    adj = gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (naviD->scrolled_win));
-
-    if(timezoom != 0)
-    {
-      adj_val = (adj->value * (gfloat)naviD->vin_ptr->timezoom) / (gfloat)timezoom;
-      if(adj_val > MAX_HEIGHT_GTK_SCROLLED_WIN)
-      {
-        adj_val = MAX_HEIGHT_GTK_SCROLLED_WIN - adj->page_size;
-      }
-    }
-    else
-    {
-      adj_val = adj->value;
-    }
     naviD->vin_ptr->timezoom = timezoom;     
-     if(naviD->ainfo_ptr)
-     {
+    if(naviD->ainfo_ptr)
+    {
        /* write new timezoom to video info file */
        p_set_video_info(naviD->vin_ptr, naviD->ainfo_ptr->basename);
-     }
-     frames_dialog_flush();
-     gtk_adjustment_set_value(adjustment, (gfloat)timezoom);
-     adj->value = adj_val;
-     gtk_adjustment_value_changed (adj);
+    }
+    frames_dialog_flush();
   }
-  if(gap_debug) printf("navi_timezoom_scale_update :%d\n", (int)naviD->vin_ptr->timezoom);
-}
-
-/********************************/
-/*  frame list events callback  */
-/********************************/
-
-static gint
-frame_list_events (GtkWidget *widget,
-		   GdkEvent  *event,
-		   gpointer   data)
-{
-  GdkEventButton *bevent;
-  GtkWidget      *event_widget;
-  FrameWidget    *frame_widget;
-
-  event_widget = gtk_get_event_widget (event);    
-
-  if (GTK_IS_LIST_ITEM (event_widget))
-  {
-      frame_widget =
-	(FrameWidget *) g_object_get_data (G_OBJECT (event_widget), "frame_widget");
-
-      switch (event->type)
-      {
- 	case GDK_BUTTON_PRESS:
-	  bevent = (GdkEventButton *) event;
-
-	  if (bevent->button == 3)
-	  {
-	      if(gap_debug) printf("frame_list_events: GDK_BUTTON_PRESS bevent->button == 3\n");
-              navi_ops_menu_set_sensitive();
-              gtk_menu_popup (GTK_MENU (naviD->ops_menu),
-		       NULL, NULL, NULL, NULL,
-		       3, bevent->time);
-
-	      return TRUE;
-	  }
-	  break;
-	case GDK_2BUTTON_PRESS:
-	  bevent = (GdkEventButton *) event;
-	  if(gap_debug) printf("frame_list_events: GDK_2BUTTON_PRESS event\n");
-	  
-	  navi_dialog_goto_callback(frame_widget->frame_nr);
-	  return TRUE;
-
-	default:
-	  break;
-      }
-  }
-  return FALSE;
-}
+  if(gap_debug) printf("navi_timezoom_spinbutton_update :%d\n", (int)naviD->vin_ptr->timezoom);
+}  /* end navi_timezoom_spinbutton_update */
 
 
-void
+/* ------------------------
+ * frames_dialog_flush
+ * ------------------------
+ */
+static void
 frames_dialog_flush (void)
 {
   if(gap_debug) printf("frames_dialog_flush\n");
@@ -1886,21 +1979,17 @@ frames_dialog_flush (void)
   {
     frames_dialog_update(naviD->active_imageid);
   }
-}
+}  /* end frames_dialog_flush */
 
+
+/* ------------------------
+ * frames_dialog_update
+ * ------------------------
+ */
 void
 frames_dialog_update (gint32 image_id)
 {
-  FrameWidget *fw;
-  GSList      *list;
-  GList       *item_list;
-  gint32       l_frame_nr;
-  gint32       l_count;
-  gint32       l_warning_flag;
-  gint32       scrolled_window_height;
-  gint32       scrolled_window_height_ok;
-  GtkAdjustment *adj;
-  gint          l_waiting_cursor;
+  gint         l_waiting_cursor;
 
   if(gap_debug) printf("frames_dialog_update image_id:%d\n", (int)image_id);
 
@@ -1915,584 +2004,325 @@ frames_dialog_update (gint32 image_id)
 
   /*  Make sure the gimage is not notified of this change  */
   suspend_gimage_notify++;
-  scrolled_window_height_ok = 0;
-
-  /*  Free all elements in the frames listbox  */
-  gtk_list_clear_items (GTK_LIST (naviD->frame_list), 0, -1);
-
-  list = naviD->frame_widgets;
-  while (list)
-  {
-      fw = (FrameWidget *) list->data;
-      list = g_slist_next (list);
-      frame_widget_delete (fw);
-  }
-
-  if (naviD->frame_widgets)
-    g_warning ("frames_dialog_update(): naviD->frame_widgets not empty!");
-  naviD->frame_widgets = NULL;
 
   /*  Find the preview extents  */
   navi_preview_extents ();
 
-  
-/*  naviD->active_layer = NULL;
- */
+  /*  Refresh all elements in dyn_table  */
+  navi_refresh_dyn_table (naviD->dyn_topframenr);
 
-  l_count = 0;
-  l_warning_flag = 0;
-  scrolled_window_height = naviD->item_height;
-  item_list = NULL;
-  for (l_frame_nr = naviD->ainfo_ptr->first_frame_nr;
-       l_frame_nr <= naviD->ainfo_ptr->last_frame_nr;
-       l_frame_nr++)
-  {
-      /*  create a frame list item  */
-      if((l_frame_nr == naviD->ainfo_ptr->first_frame_nr)
-      || (l_frame_nr == naviD->ainfo_ptr->last_frame_nr)
-      || (((l_frame_nr - naviD->ainfo_ptr->first_frame_nr) % naviD->vin_ptr->timezoom) == 0)  )
-      {
-
-        if(scrolled_window_height < MAX_HEIGHT_GTK_SCROLLED_WIN)
-	{
-          fw = frame_widget_create (image_id, l_frame_nr);
-	  if(fw)
-	  {
-            naviD->frame_widgets = g_slist_append (naviD->frame_widgets, fw);
-            item_list = g_list_append (item_list, fw->list_item);
-	    scrolled_window_height_ok = scrolled_window_height;
-	  }
-	}
-	else
-	{
-	   if(l_warning_flag == 0)
-	   {
-             printf("WARNING: GTK listbox can't handle more than %d items of %d pixels height\n"
-	            ,(int)l_count, (int)naviD->item_height);
-             printf("         can't display frames upto %d\n", (int)naviD->ainfo_ptr->last_frame_nr);
-	     l_warning_flag = 1;
-	   }
-	}
-        l_count++;
-	scrolled_window_height += naviD->item_height;
-      }
-  }
-
-  if(gap_debug) printf("LIST_CREATED: first:%d, last:%d\n, count:%d\n", 
-                (int)naviD->ainfo_ptr->first_frame_nr,
-		(int)naviD->ainfo_ptr->last_frame_nr,
-		(int)l_count );
-  
-
-  /*  get the index of the active frame  */
-  if (item_list)
-  {
-    gtk_list_insert_items (GTK_LIST (naviD->frame_list), item_list, 0);
-    adj = gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (naviD->scrolled_win));
-    adj->lower = 0;
-    adj->upper = scrolled_window_height_ok;
-  }
   suspend_gimage_notify--;
   if(!l_waiting_cursor) navi_set_active_cursor();
-}
+}  /* end frames_dialog_update */
 
+
+/* ---------------------------------
+ * navi_render_preview
+ * ---------------------------------
+ */
 static void
-frame_widget_select_update (GtkWidget *widget,
-			    gpointer   data)
+navi_render_preview (FrameWidget *fw)
 {
-  FrameWidget *frame_widget;
-
-  if (! (frame_widget = (FrameWidget *) data))
-    return;
-
-  /*  Is the list item being selected?  */
-  if (widget->state != GTK_STATE_SELECTED)
-    return;
-
-  /*  Only notify the gimage of an active layer change if necessary  */
-  if (suspend_gimage_notify == 0)
-  {
-     if(gap_debug) printf("frame_widget_select_update NOT IMPLEMENTED (maybe not needed)\n");
-  }
-}
-
-static gint
-frame_widget_button_events (GtkWidget *widget,
-			    GdkEvent  *event)
-{
-  if(gap_debug) printf("frame_widget_button_events NOT IMPLEMENTED\n");
-  return -1;
-}
-
-/***********************/
-/*  Preview functions  */
-/***********************/
-static gint
-render_current_preview (GtkWidget *preview_widget, FrameWidget *fw)
-{
-   guchar *l_rowbuf;
-   guchar *l_ptr;
-   gint32  l_x, l_y;
-   gint32  l_ofx, l_ofy;
-   gint32  l_ofs_thpixel;
-   guchar *l_thumbdata_ptr;
-   gint32  l_thumbdata_count;
-   gint32  l_th_width;
-   gint32  l_th_height;
-   gint32  l_th_bpp;
-   gint32  l_thumb_rowstride;
-   gint32  l_pv_width;
-   gint32  l_pv_height;
-   gdouble l_xscale;
-   gdouble l_yscale;
-   gdouble l_ofd;
-   guchar  l_alpha;
-   gint    l_1;
-   gint    l_offset;
-   gint    l_rc;
-
-
-   if(gap_debug) printf("render_current_preview START\n");
-
-   l_rc = FALSE;
-   if(naviD == NULL) return (l_rc);
-   if(naviD->ainfo_ptr == NULL) return(l_rc);
-
-   l_thumbdata_ptr = NULL;
-   l_pv_width = naviD->image_width;
-   l_pv_height = naviD->image_height;
-
-   if(gap_debug) printf("render_current_preview BEFORE p_gimp_image_thumbnail w:%d h:%d,\n"
-                         ,(int)l_pv_width, (int)l_pv_height);
-   p_gimp_image_thumbnail(naviD->active_imageid, l_pv_width, l_pv_height,
-                          &l_th_width, &l_th_height, &l_th_bpp,
-			  &l_thumbdata_count, &l_thumbdata_ptr);
-   if(gap_debug) printf("render_current_preview AFTER p_gimp_image_thumbnail th_w:%d th_h:%d, th_bpp:%d, count:%d\n"
-                         ,(int)l_th_width, (int)l_th_height, (int)l_th_bpp, (int)l_thumbdata_count);
-
-   if(l_th_bpp < 3) l_1 = 0;
-   else             l_1 = 1;		 
-
-   l_rowbuf = g_malloc(PREVIEW_BPP * l_pv_width);
-   if(l_rowbuf == NULL) return(l_rc);
-
-   if(l_thumbdata_ptr != NULL)
-   {
-     l_xscale = (gdouble)l_th_width / (gdouble)l_pv_width;
-     l_yscale = (gdouble)l_th_height / (gdouble)l_pv_height;
-     l_thumb_rowstride = l_th_bpp * l_th_width;
-
-    /* render preview */
-    for(l_y = 0; l_y < l_pv_height; l_y++)
-    {
-       l_ptr = l_rowbuf;
-       l_ofd = (l_yscale * (gdouble)l_y) + 0.5;
-       l_ofy = (gint32)(l_ofd) * l_thumb_rowstride;
-
-       if(l_y & 0x4) l_offset = 4;
-       else          l_offset = 0;
-       
-       if((l_th_bpp > 3) || (l_th_bpp == 2))
-       {
-         /* thumbdata has alpha channel */
-	 for(l_x = 0; l_x < l_pv_width; l_x++)
-	 {
-	     l_ofd = (l_xscale * (gdouble)l_x) + 0.5;
-	     l_ofx = (gint32)(l_ofd) * l_th_bpp;
-	     l_ofs_thpixel =  l_ofy + l_ofx;
-
-             l_alpha = l_thumbdata_ptr[l_ofs_thpixel + (l_th_bpp -1)];
-
-             if((l_x + l_offset) & 0x4)
-	     {
-              *l_ptr    = MIX_CHANNEL (PREVIEW_BG_GRAY2, l_thumbdata_ptr[l_ofs_thpixel], l_alpha);
-	       l_ptr[1] = MIX_CHANNEL (PREVIEW_BG_GRAY2, l_thumbdata_ptr[l_ofs_thpixel + l_1], l_alpha);
-	       l_ptr[2] = MIX_CHANNEL (PREVIEW_BG_GRAY2, l_thumbdata_ptr[l_ofs_thpixel + l_1 + l_1], l_alpha);
-	     }
-	     else
-	     {
-              *l_ptr    = MIX_CHANNEL (PREVIEW_BG_GRAY1, l_thumbdata_ptr[l_ofs_thpixel], l_alpha);
-	       l_ptr[1] = MIX_CHANNEL (PREVIEW_BG_GRAY1, l_thumbdata_ptr[l_ofs_thpixel + l_1], l_alpha);
-	       l_ptr[2] = MIX_CHANNEL (PREVIEW_BG_GRAY1, l_thumbdata_ptr[l_ofs_thpixel + l_1 + l_1], l_alpha);
-	     }
-
-            l_ptr += PREVIEW_BPP;
-	 }
-       }
-       else
-       {
-	 for(l_x = 0; l_x < l_pv_width; l_x++)
-	 {
-	     l_ofd = (l_xscale * (gdouble)l_x) + 0.5;
-	     l_ofx = (gint32)(l_ofd) * l_th_bpp;
-	     l_ofs_thpixel =  l_ofy + l_ofx;
-
-            *l_ptr    = l_thumbdata_ptr[l_ofs_thpixel];
-	     l_ptr[1] = l_thumbdata_ptr[l_ofs_thpixel + l_1];
-	     l_ptr[2] = l_thumbdata_ptr[l_ofs_thpixel + l_1 + l_1];
-
-            l_ptr += PREVIEW_BPP;
-	 }
-       }
-       gtk_preview_draw_row(GTK_PREVIEW(preview_widget), l_rowbuf, 0, l_y, l_pv_width);
-    }
-    l_rc = TRUE;
-  }
-
-  if(l_rowbuf)          g_free(l_rowbuf);
-  if(l_thumbdata_ptr)   g_free(l_thumbdata_ptr);
-
-  if(gap_debug) printf("render_current_preview END\n");
- 
-  return (l_rc);
-			  
-}	/* end render_current_preview */
-
-static gint
-render_preview (GtkWidget *preview_widget, FrameWidget *fw)
-{
-   guchar *l_rowbuf;
-   guchar *l_ptr;
-   gint32  l_x, l_y;
-   gint32  l_ofx, l_ofy;
-   gint32  l_ofs_thpixel;
    gint32  l_th_width;
    gint32  l_th_height;
    gint32  l_th_data_count;
-   gint32  l_thumb_rowstride;
-   gint32  l_pv_width;
-   gint32  l_pv_height;
-   gdouble l_xscale;
-   gdouble l_yscale;
-   gdouble l_ofd;
-   char   *l_filename;
-   gint    l_rc;
-   guchar *l_raw_thumb;
-   /* gchar  *l_tname; */
-   /* struct stat  l_stat_thumb; */
+   gint    l_th_bpp;
+   guchar *l_th_data;
+   gint32  l_thumbdata_count;
 
 
-   if(gap_debug) printf("render_preview (std)\n");
+   if(gap_debug) printf("navi_render_preview START\n");
 
-   l_rc = FALSE;
-   l_raw_thumb = NULL;
-   if(naviD == NULL) return (l_rc);
-   if(naviD->ainfo_ptr == NULL) return(l_rc);
+   l_th_data = NULL;
+   l_th_bpp = 3;                /* l_th_bpp always 3 for thumbnail_file data, but can be 4 for the actual image */
+   if(naviD == NULL)            { return; }
+   if(fw == NULL)               { return; }
+   if(fw->pv_ptr == NULL)       { return; }
+   if(naviD->ainfo_ptr == NULL) { return; }
+
+   if((fw->pv_ptr->pv_width != naviD->image_width)
+   || (fw->pv_ptr->pv_height != naviD->image_height))
+   {
+      p_pview_set_size(fw->pv_ptr, naviD->image_width, naviD->image_height, NAVI_CHECK_SIZE);
+   }
+
    if(naviD->ainfo_ptr->curr_frame_nr == fw->frame_nr)
    {
      /* if this is the currently open image
-      * we first write the thumbnail to disc
-      * so we get an up to date version in the following p_gimp_file_load_thumbnail call
+      * we must get the thumbnail from memory (gimp composite view)
+      * rather than reading from thumbnail file
+      * to get an actual version.
       */
-      l_rc = render_current_preview(preview_widget, fw);
-      return(l_rc);
+     if(gap_debug) printf("navi_render_preview ACTUAL image BEFORE p_gimp_image_thumbnail w:%d h:%d,\n"
+                         ,(int)fw->pv_ptr->pv_width, (int)fw->pv_ptr->pv_height);
+     p_gimp_image_thumbnail(naviD->active_imageid
+                           , fw->pv_ptr->pv_width
+                           , fw->pv_ptr->pv_height
+                           , &l_th_width
+                           , &l_th_height
+                           , &l_th_bpp
+                           , &l_thumbdata_count
+                           , &l_th_data
+                           );
+     if(gap_debug) printf("navi_render_preview AFTER p_gimp_image_thumbnail th_w:%d th_h:%d, th_bpp:%d, count:%d\n"
+                         ,(int)l_th_width, (int)l_th_height, (int)l_th_bpp, (int)l_thumbdata_count);
+   }
+   else
+   {
+     struct stat  l_stat;
+     gchar       *l_frame_filename;
+     gboolean     l_can_use_cached_thumbnail;
+     
+     l_can_use_cached_thumbnail = FALSE;
+     l_frame_filename = p_alloc_fname(naviD->ainfo_ptr->basename, fw->frame_nr, naviD->ainfo_ptr->extension);
+     if(l_frame_filename)
+     {
+       if (0 == stat(l_frame_filename, &l_stat))
+       {
+         if(fw->frame_filename)
+         {
+           if(gap_debug)
+           {
+             printf("  CHECK SIZE old pv_area_data: %d  pv_w: %d pv_h:%d  filename:%s timestamp:%d\n"
+                               , (int)fw->pv_ptr->pv_area_data
+                               , (int)fw->pv_ptr->pv_width
+                               , (int)fw->pv_ptr->pv_height
+                               , fw->frame_filename
+                               , (int)fw->frame_timestamp
+                               );
+ 
+             printf("  CHECK SIZE new w: %d h:%d  filename:%s timestamp:%d\n"
+                               , (int)naviD->image_width
+                               , (int)naviD->image_height
+                               , l_frame_filename
+                               , (int)l_stat.st_mtime
+                               );
+           }
+ 
+ 
+           if((strcmp(l_frame_filename,fw->frame_filename) == 0)
+           && (fw->frame_timestamp == l_stat.st_mtime)
+           && (fw->pv_ptr->pv_area_data)
+           && (fw->pv_ptr->pv_width == naviD->image_width)
+           && (fw->pv_ptr->pv_height == naviD->image_height) )
+           {
+             /* there was no change of the frame file since
+              * we cached the thumbnail data
+              * and the cached data does match in size
+              * (fw->pv_ptr->pv_area_data is the pointer to the cached thumbnaildata)
+              */
+              l_can_use_cached_thumbnail = TRUE;
+           }
+           else
+           {
+              /* free the old filename */
+              g_free(fw->frame_filename);
+
+              /* store te new name and mtime */
+              fw->frame_filename = l_frame_filename;
+              fw->frame_timestamp = l_stat.st_mtime;
+           }
+         }
+         else
+         {
+            /* we are going to read thumbnaildata of this frame for the 1.st time
+             * store its name and mtime for next usage
+             */
+            fw->frame_filename = l_frame_filename;
+            fw->frame_timestamp = l_stat.st_mtime;
+         }
+       }
+     }
+
+     if(l_can_use_cached_thumbnail)
+     {
+        if(gap_debug) printf("navi_render_preview: USING CACHED THUMBNAIL\n");
+        p_pview_repaint(fw->pv_ptr);
+        return;
+     }
+     else
+     {
+       /* fetch l_th_data from thumbnail_file */
+       if(gap_debug) printf("navi_render_preview: fetching THUMBNAILFILE for: %s\n", l_frame_filename);
+       if(l_frame_filename)
+       {
+         p_gimp_file_load_thumbnail(l_frame_filename
+                                   , &l_th_width
+                                   , &l_th_height
+                                   , &l_th_data_count
+                                   , &l_th_data
+                                   );
+       }
+     }
    }
    
-   l_filename = p_alloc_fname(naviD->ainfo_ptr->basename, fw->frame_nr, naviD->ainfo_ptr->extension);
-   /* l_tname = p_alloc_fname_thumbnail(l_filename); */
-
-    
-   /* if (0 == stat(l_tname, &l_stat_thumb)) */
+   if(l_th_data)
    {
-     /* fw->thumb_timestamp  = l_stat_thumb.st_mtime; */
-     p_gimp_file_load_thumbnail(l_filename, &l_th_width, &l_th_height, &l_th_data_count, &l_raw_thumb);
+     gboolean l_th_data_was_grabbed;
      
-     
-     if(fw->thumb_filename) g_free(fw->thumb_filename);
-     fw->thumb_filename = NULL; /* l_tname; */
+     /* fetch was successful, we can call the render procedure */
+     l_th_data_was_grabbed = p_pview_render_from_buf (fw->pv_ptr
+                 , l_th_data
+                 , l_th_width
+                 , l_th_height
+                 , l_th_bpp
+                 , TRUE         /* allow_grab_src_data */
+                 );
+
+     if(l_th_data_was_grabbed)
+     {
+       l_th_data = NULL;
+     }
+   }
+   else
+   {
+     /* fetch failed, render a default icon */
+     if(gap_debug) printf("navi_render_preview: fetch failed, using DEFAULT_ICON\n");
+     p_pview_render_default_icon(fw->pv_ptr);
    }
 
-   l_pv_width = naviD->image_width;
-   l_pv_height = naviD->image_height;
-
-   l_rowbuf = g_malloc(PREVIEW_BPP * l_pv_width);
-   if(l_rowbuf == NULL) return(l_rc);
-      
-   if((l_raw_thumb != NULL) && (l_th_data_count > 0))
+  
+   if(l_th_data)
    {
-     l_xscale = (gdouble)l_th_width / (gdouble)l_pv_width;
-     l_yscale = (gdouble)l_th_height / (gdouble)l_pv_height;
-     l_thumb_rowstride = l_th_width * 3; /* raw thumb data BPP is 3 */
-
-    /* render preview */
-    for(l_y = 0; l_y < l_pv_height; l_y++)
-    {
-       l_ptr = l_rowbuf;
-       l_ofd = (l_yscale * (gdouble)l_y) + 0.5;
-       l_ofy = (gint32)(l_ofd) * l_thumb_rowstride;   /* check if > thumbnail height !!! */
-
-       for(l_x = 0; l_x < l_pv_width; l_x++)
-       {
-	   l_ofd = (l_xscale * (gdouble)l_x) + 0.5;
-	   l_ofx = (gint32)(l_ofd) * 3;  /* raw thumb data BPP is 3 */
-	   l_ofs_thpixel =  l_ofy + l_ofx;
-
-           l_ptr[0] = l_raw_thumb[l_ofs_thpixel];
-	   l_ptr[1] = l_raw_thumb[l_ofs_thpixel +1];
-	   l_ptr[2] = l_raw_thumb[l_ofs_thpixel +2];
-
-          l_ptr += PREVIEW_BPP;
-       }
-       gtk_preview_draw_row(GTK_PREVIEW(preview_widget), l_rowbuf, 0, l_y, l_pv_width);
-    }
-    l_rc = TRUE;
-  }
-
-  if(l_rowbuf)          g_free(l_rowbuf);
-  if(l_raw_thumb)       g_free(l_raw_thumb);
-  if(l_filename)        g_free(l_filename);
+     g_free(l_th_data);
+   }
   
-  return (l_rc);
-}	/* end render_preview */
+}       /* end navi_render_preview */
 
 
-void
-render_no_preview (GtkWidget *widget,
-		   GdkPixmap *pixmap)
-{
-  int w, h;
-  int x1, y1, x2, y2;
-  GdkPoint poly[6];
-  int foldh, foldw;
-  int i;
-
-  gdk_drawable_get_size (pixmap, &w, &h);
-
-  x1 = 2;
-  y1 = h / 8 + 2;
-  x2 = w - w / 8 - 2;
-  y2 = h - 2;
-  gdk_draw_rectangle (pixmap, widget->style->bg_gc[GTK_STATE_NORMAL], 1,
-		      0, 0, w, h);
-/*
-  gdk_draw_rectangle (pixmap, widget->style->black_gc, 0,
-		      x1, y1, (x2 - x1), (y2 - y1));
-*/
-
-  foldw = w / 4;
-  foldh = h / 4;
-  x1 = w / 8 + 2;
-  y1 = 2;
-  x2 = w - 2;
-  y2 = h - h / 8 - 2;
-
-  poly[0].x = x1 + foldw; poly[0].y = y1;
-  poly[1].x = x1 + foldw; poly[1].y = y1 + foldh;
-  poly[2].x = x1; poly[2].y = y1 + foldh;
-  poly[3].x = x1; poly[3].y = y2;
-  poly[4].x = x2; poly[4].y = y2;
-  poly[5].x = x2; poly[5].y = y1;
-  gdk_draw_polygon (pixmap, widget->style->white_gc, 1, poly, 6);
-
-  gdk_draw_line (pixmap, widget->style->black_gc,
-		 x1, y1 + foldh, x1, y2);
-  gdk_draw_line (pixmap, widget->style->black_gc,
-		 x1, y2, x2, y2);
-  gdk_draw_line (pixmap, widget->style->black_gc,
-		 x2, y2, x2, y1);
-  gdk_draw_line (pixmap, widget->style->black_gc,
-		 x1 + foldw, y1, x2, y1);
-
-  for (i = 0; i < foldw; i++)
-  {
-    gdk_draw_line (pixmap, widget->style->black_gc,
-		   x1 + i, y1 + foldh, x1 + i, (foldw == 1) ? y1 :
-		   (y1 + (foldh - (foldh * i) / (foldw - 1))));
-  }
-}
-
-
+/* ---------------------------------
+ * frame_widget_preview_redraw
+ * ---------------------------------
+ */
 static void
-frame_widget_preview_redraw (FrameWidget *frame_widget)
+frame_widget_preview_redraw (FrameWidget *fw)
 {
-  GdkPixmap **pixmap;
-  GtkWidget *widget;
 
-  widget = frame_widget->frame_preview;
-  pixmap = &frame_widget->frame_pixmap;
-
-  if(gap_debug) printf("frame_widget_preview_redraw image_id: %d, frame_nr:%d\n"
-                       ,(int)frame_widget->image_id
-                       ,(int)frame_widget->frame_nr);
-
-  /*  determine width and height  */
-  if((frame_widget->width != naviD->image_width)
-  || (frame_widget->height != naviD->image_height))
-  {
-    frame_widget->width = naviD->image_width;
-    frame_widget->height = naviD->image_height;
-    if (frame_widget->width < 1) frame_widget->width = 1;
-    if (frame_widget->height < 1) frame_widget->height = 1;
-    gtk_drawing_area_size (GTK_DRAWING_AREA (frame_widget->frame_preview),
-			 naviD->image_width + 4, naviD->image_height + 4);
-    if(*pixmap)
-    {
-       g_object_unref (*pixmap);
-       *pixmap = NULL;
-    }
-  }
-  /*  allocate the layer widget pixmap  */
-  if (! *pixmap)
-  {
-    *pixmap = gdk_pixmap_new (widget->window,
-			      naviD->image_width,
-			      naviD->image_height,
-			      -1);
-  }
-
-
-  if(naviD->preview_size < 1)
-  {
-    /* preview_size is none, render a default icon */
-    render_no_preview (widget, *pixmap);
-  }
-  else
-  {
-    if(TRUE == render_preview (naviD->frame_preview, frame_widget))
-    {
-      gtk_preview_put (GTK_PREVIEW (naviD->frame_preview),
-		   *pixmap, widget->style->black_gc,
-		   0, 0, 0, 0, naviD->image_width, naviD->image_height);
-    }
-    else
-    {
-      /* frame has no thumbnail, render a default icon */
-      render_no_preview (widget, *pixmap);
-    }
-  }
+  if(fw == NULL) { return;}
+  if(fw->pv_ptr == NULL) { return;}
   
+  p_pview_repaint(fw->pv_ptr);
+
   /*  make sure the image has been transfered completely to the pixmap before
    *  we use it again...
    */
   gdk_flush ();
 
-}	/* end frame_widget_preview_redraw */
+}  /* end frame_widget_preview_redraw */
 
 
-static gint
+/* ---------------------------------
+ * frame_widget_preview_events
+ * ---------------------------------
+ * handles events for all frame_widgets (in the dyn_table)
+ * - Expose of pview drawing_area
+ * - Doubleclick (goto)
+ * - Selections (Singleclick, and key-modifiers)
+ */
+static gboolean
 frame_widget_preview_events (GtkWidget *widget,
-			     GdkEvent  *event)
+                             GdkEvent  *event,
+                             gpointer  user_data)
 {
   GdkEventExpose *eevent;
-  GdkPixmap **pixmap;
   GdkEventButton *bevent;
-  FrameWidget *frame_widget;
-  int valid;
-  int sx, sy, dx, dy, w, h;
+  FrameWidget *fw;
+  /* int sx, sy, dx, dy, w, h; */
 
-  pixmap = NULL;
-  valid  = FALSE;
-
-  frame_widget = (FrameWidget *) g_object_get_data (G_OBJECT (widget), "frame_widget");
-  if (frame_widget->frame_nr < 0)
+  fw = (FrameWidget *) user_data;
+  if(fw == NULL)
   {
-    return FALSE;
+    fw = (FrameWidget *) g_object_get_data (G_OBJECT (widget), "frame_widget");
+    if(fw == NULL)
+    {
+      return FALSE;
+    }
   }
 
-  pixmap = &frame_widget->frame_pixmap;
- /*   valid = GIMP_DRAWABLE(frame_widget->layer)->preview_valid; */  /* ?? */
+  if (fw->frame_nr < 0)
+  {
+    /* the frame_widget is not initialized or it is just a dummy, no action needed */
+    return FALSE;
+  }
 
   switch (event->type)
   {
     case GDK_2BUTTON_PRESS:
-	  navi_dialog_goto_callback(frame_widget->frame_nr);
-	  return TRUE;
+      if(gap_debug) printf("frame_widget_preview_events GDK_2BUTTON_PRESS (doubleclick)\n");
+      navi_dialog_goto_callback(fw->frame_nr);
+      return TRUE;
+       
     case GDK_BUTTON_PRESS:
-      /*  Control-button press disables the application of the mask  */
       bevent = (GdkEventButton *) event;
 
-      if(gap_debug) printf("frame_widget_preview_events GDK_BUTTON_PRESS button:%d\n"
-                            , (int)bevent->button);
+      if(gap_debug) printf("frame_widget_preview_events GDK_BUTTON_PRESS button:%d frame_nr:%d widget:%d  da_wgt:%d\n"
+                              , (int)bevent->button
+                              , (int)fw->frame_nr
+                              , (int)widget
+                              , (int)fw->pv_ptr->da_widget
+                              );
+      if(fw->frame_nr < 0)
+      {
+        /* perform no actions on dummy entries in the dyn_table */
+        return TRUE;
+      }
 
       if (bevent->button == 3)
       {
+          /* right mousebutton (3) shows the PopUp Menu */
           navi_ops_menu_set_sensitive();
           gtk_menu_popup (GTK_MENU (naviD->ops_menu),
-		       NULL, NULL, NULL, NULL,
-		       3, bevent->time);
+                       NULL, NULL, NULL, NULL,
+                       3, bevent->time);
 
-	  return TRUE;
+          return TRUE;
       }
 
+      /*  handle selctions, according to modifier keys */
       if (event->button.state & GDK_CONTROL_MASK)
       {
+         if(gap_debug) printf("frame_widget_preview_events SELECTION GDK_CONTROL_MASK (ctrl modifier)\n");
+         navi_sel_ctrl(fw->frame_nr);
+         navi_debug_print_sel_range();
       }
-      /*  Alt-button press makes the mask visible instead of the layer  */
+      else if (event->button.state & GDK_SHIFT_MASK)
+      {
+         if(gap_debug) printf("frame_widget_preview_events SELECTION GDK_SHIFT_MASK  (shift modifier)\n");
+         navi_sel_shift(fw->frame_nr);
+         navi_debug_print_sel_range();
+      }
       else if (event->button.state & GDK_MOD1_MASK)
       {
-      }
-      break;
-
-    case GDK_EXPOSE:
-      if(gap_debug) printf("frame_widget_preview_events GDK_EXPOSE\n");
-
-      navi_preview_extents();
-      frame_widget_time_label_update(frame_widget);
-
-      if (!valid || !*pixmap)
-      {
-	  frame_widget_preview_redraw (frame_widget);
-
-	  gdk_draw_drawable (widget->window,
-			     widget->style->black_gc,
-			     *pixmap,
-			     0, 0, 2, 2,
-			     naviD->image_width,
-			     naviD->image_height);
+         if(gap_debug) printf("frame_widget_preview_events SELECTION GDK_MOD1_MASK  (alt modifier)\n");
+         navi_sel_ctrl(fw->frame_nr);  /* alt does same as ctrl */
+         navi_debug_print_sel_range();
       }
       else
       {
-	  eevent = (GdkEventExpose *) event;
-
-	  w = eevent->area.width;
-	  h = eevent->area.height;
-
-	  if (eevent->area.x < 2)
-	  {
-	      sx = eevent->area.x;
-	      dx = 2;
-	      w -= (2 - eevent->area.x);
-	  }
-	  else
-	  {
-	      sx = eevent->area.x - 2;
-	      dx = eevent->area.x;
-	  }
-
-	  if (eevent->area.y < 2)
-	  {
-	      sy = eevent->area.y;
-	      dy = 2;
-	      h -= (2 - eevent->area.y);
-	  }
-	  else
-	  {
-	      sy = eevent->area.y - 2;
-	      dy = eevent->area.y;
-	  }
-
-	  if ((sx + w) >= naviD->image_width)
-	  {
-	    w = naviD->image_width - sx;
-          }
-
-	  if ((sy + h) >= naviD->image_height)
-	  {
-	    h = naviD->image_height - sy;
-          }
-
-	  if ((w > 0) && (h > 0))
-	  {
-	    gdk_draw_drawable (widget->window,
-			       widget->style->black_gc,
-			       *pixmap,
-			       sx, sy, dx, dy, w, h);
-          }
+         if(gap_debug) printf("frame_widget_preview_events SELECTION (no modifier)\n");
+         navi_sel_normal(fw->frame_nr);
+         navi_debug_print_sel_range();
       }
 
-      /*  The boundary indicating whether layer or mask is active  */
-      /* frames do not have boundary */
-      /* frame_widget_boundary_redraw (frame_widget); */
+      navi_frames_timing_update();  /* this is also for refresh of the selection state */
+      break;
+
+    case GDK_EXPOSE:
+      if(gap_debug) printf("frame_widget_preview_events GDK_EXPOSE frame_nr:%d widget:%d  da_wgt:%d\n"
+                              , (int)fw->frame_nr
+                              , (int)widget
+                              , (int)fw->pv_ptr->da_widget
+                              );
+
+      eevent = (GdkEventExpose *) event;
+
+      if(widget == fw->pv_ptr->da_widget)
+      {
+        navi_preview_extents();
+        navi_frame_widget_time_label_update(fw);
+        frame_widget_preview_redraw (fw);
+      }
+
       break;
 
     default:
@@ -2500,9 +2330,13 @@ frame_widget_preview_events (GtkWidget *widget,
   }
 
   return FALSE;
-}	/* end  frame_widget_preview_events */
+}       /* end  frame_widget_preview_events */
 
 
+/* ---------------------------------
+ * navi_dialog_poll
+ * ---------------------------------
+ */
 static gint
 navi_dialog_poll(GtkWidget *w, gpointer   data)
 {
@@ -2516,37 +2350,37 @@ navi_dialog_poll(GtkWidget *w, gpointer   data)
    {
       if(suspend_gimage_notify == 0)
       {
-	 update_flag = NUPD_IMAGE_MENU;
-	 video_preview_size = navi_get_preview_size();
-	 if(naviD->preview_size != video_preview_size)
-	 {
+         update_flag = NUPD_IMAGE_MENU;
+         video_preview_size = navi_get_preview_size();
+         if(naviD->preview_size != video_preview_size)
+         {
             naviD->preview_size = video_preview_size;
             update_flag = NUPD_ALL;
-	 }
+         }
 
-	 /* check and enable/disable tooltips */      
-	 navi_dialog_tooltips ();
+         /* check and enable/disable tooltips */      
+         navi_dialog_tooltips ();
 
-	 frame_nr = p_get_frame_nr(naviD->active_imageid);
-	 if(frame_nr < 0 )
-	 {
+         frame_nr = p_get_frame_nr(naviD->active_imageid);
+         if(frame_nr < 0 )
+         {
             /* no valid frame number, maybe frame was closed
-	     */
-	    naviD->active_imageid = -1;
-            update_flag = NUPD_ALL;	 
-	 }
-	 else
-	 {
-	   if(naviD->ainfo_ptr)
-	   {
+             */
+            naviD->active_imageid = -1;
+            update_flag = NUPD_ALL;      
+         }
+         else
+         {
+           if(naviD->ainfo_ptr)
+           {
               update_flag = NUPD_IMAGE_MENU | NUPD_FRAME_NR_CHANGED;
-	   }
-	   else
-	   {
-              update_flag = NUPD_ALL;	 
-	   }
-	 }
-	 navi_dialog_update(update_flag);
+           }
+           else
+           {
+              update_flag = NUPD_ALL;    
+           }
+         }
+         navi_dialog_update(update_flag);
       }
       
       /* restart timer */
@@ -2558,68 +2392,13 @@ navi_dialog_poll(GtkWidget *w, gpointer   data)
                                     (GtkFunction)navi_dialog_poll, NULL);
    }
    return FALSE;
-}
-
-static void
-navid_thumb_timestamp_check(void)
-{
-  struct stat  l_stat_thumb;
-  FrameWidget *fw;
-  GSList      *list;
-  GtkAdjustment *adj;
-  gint item_count;
-
-   if(naviD == NULL) return;
-   if(naviD->ainfo_ptr == NULL) return;
-
-  adj = gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (naviD->scrolled_win));
-
-  if(gap_debug) printf("navid_thumb_timestamp_check: adj->value:%d  adj->page_size:%d\n", (int)adj->value, (int)adj->page_size);
-
-   list = naviD->frame_widgets;
-   item_count = -1;
-   while (list)
-   {
-      item_count++;
-      fw = (FrameWidget *) list->data;
-      list = g_slist_next (list);
-
-      if((item_count * naviD->item_height) < (adj->value - naviD->image_height))
-      {
-        continue;  /* WIDGET IS NOT EXPOSED */
-      }
-      if((item_count * naviD->item_height) > (adj->value + adj->page_size))
-      {
-        return;    /* WIDGET (and all further widgets) ARE NOT EXPOSED */
-      }
-      
-      if(gap_debug) printf("navid_thumb_timestamp_check: Widget IS EXPOSED frame_nr:%06d\n", (int)fw->frame_nr);
-      
-      if(fw->frame_nr == naviD->ainfo_ptr->curr_frame_nr)
-      {
-        /* always redraw the currently opened frame
-	 * (the render procedure uses gimp's internal chached thumbnaildata
-	 * so the timestamp of the thumbnailfile does not matter here)
-	 */
-        gtk_widget_queue_draw(fw->frame_preview);
-        continue;
-      }
-
-      /* for the other exposed items we check the tumbnail timestamp */      
-      if(fw->thumb_filename)
-      {
-	if (0 == stat(fw->thumb_filename, &l_stat_thumb))
-	{
-	   if(fw->thumb_timestamp < l_stat_thumb.st_mtime)
-	   {
-              gtk_widget_queue_draw(fw->frame_preview);
-	   }
-	}
-      }
-   }
-}
+}  /* end navi_dialog_poll */
 
 
+/* ---------------------------------
+ * navi_dialog_update
+ * ---------------------------------
+ */
 static void
 navi_dialog_update(gint32 update_flag)
 {
@@ -2644,7 +2423,7 @@ navi_dialog_update(gint32 update_flag)
      navi_reload_ainfo(naviD->active_imageid);
      navi_preview_extents();
 
-     /* we must force a rebuild of the list of frame_widgets
+     /* we must force a rebuild of the dyn_table of frame_widgets
       * if any frames were deleteted or are created 
       * (outside of the navigator)
       */
@@ -2652,9 +2431,10 @@ navi_dialog_update(gint32 update_flag)
      {
         if((l_first != naviD->ainfo_ptr->first_frame_nr)
         || (l_last  != naviD->ainfo_ptr->last_frame_nr))
-	{
+        {
           update_flag |= NUPD_PREV_LIST;
-	}
+          navi_drop_sel_range_list();
+        }
      }
   }
   if(update_flag & NUPD_PREV_LIST)
@@ -2663,13 +2443,18 @@ navi_dialog_update(gint32 update_flag)
   }
   else
   {
-     navid_thumb_timestamp_check();
+     /* SIMPLY refresh all frame_widgets in the dn_table.
+      * (could limit refresh to those frame_widgets
+      * where the thumbnail file timestamp changed since last access
+      * and always refresh the preview of the active image.)
+      */
+     navi_refresh_dyn_table (naviD->dyn_topframenr);
   }
-}
+}  /* end navi_dialog_update */
 
 
 /* ------------------------
- * dialog helper procedures
+ * navi_preview_extents
  * ------------------------ 
  */
 static void
@@ -2701,6 +2486,7 @@ navi_preview_extents (void)
   }
   else
   {
+      /* defaults for the case that gimprc preferences says: use no layer previews at all */
       width = 16;
       height = 10;
   }
@@ -2708,17 +2494,43 @@ navi_preview_extents (void)
   if((naviD->image_width != width)
   || (naviD->image_height != height))
   {
+    gint ii;
+    
     naviD->image_width = width;
     naviD->image_height = height;
-    gtk_preview_size (GTK_PREVIEW (naviD->frame_preview),
-		     naviD->image_width, naviD->image_height);
+
+    /* set new size for all (used) frame_wiget_tab element preview drawing_areas */
+    for(ii=0; ii < naviD->fw_tab_used_count; ii++)
+    {
+      FrameWidget *fw;
+      
+      fw = &naviD->frame_widget_tab[ii];
+      if(fw->pv_ptr)
+      {
+
+
+        if(gap_debug) printf("navi_preview_extents pv_w: %d pv_h:%d\n", (int)fw->pv_ptr->pv_width, (int)fw->pv_ptr->pv_height);
+
+
+        p_pview_set_size(fw->pv_ptr
+                       , naviD->image_width
+                       , naviD->image_height
+                       , NAVI_CHECK_SIZE
+                       );
+      }
+    }
   }
 
-  naviD->item_height = 6 + naviD->image_height;
+  naviD->item_height = 4 + naviD->image_height;
   
   if(gap_debug) printf("navi_preview_extents w: %d h:%d\n", (int)naviD->image_width, (int)naviD->image_height);
-}
+}  /* end navi_preview_extents */
 
+
+/* ---------------------------------
+ * navi_calc_frametiming
+ * ---------------------------------
+ */
 static void
 navi_calc_frametiming(gint32 frame_nr, char *buf, gint32 sizeof_buf)
 {
@@ -2742,149 +2554,823 @@ navi_calc_frametiming(gint32 frame_nr, char *buf, gint32 sizeof_buf)
                            , buf
                            , sizeof_buf
                            );
-}
+}  /* end navi_calc_frametiming */
 
+
+/* ---------------------------------
+ * navi_frame_widget_time_label_update
+ * ---------------------------------
+ */
 static void
-frame_widget_time_label_update(FrameWidget *fw)
+navi_frame_widget_time_label_update(FrameWidget *fw)
 {
   char frame_nr_to_time[20];
+  GtkStateType  sel_state;
   
-  navi_calc_frametiming(fw->frame_nr, frame_nr_to_time, sizeof(frame_nr_to_time));
+  if(fw->frame_nr >= 0)
+  {
+    navi_calc_frametiming(fw->frame_nr, frame_nr_to_time, sizeof(frame_nr_to_time));
+    if(navi_findframe_in_sel_range(fw->frame_nr) == NULL)
+    {
+       sel_state = GTK_STATE_NORMAL;
+    }
+    else
+    {
+       sel_state = GTK_STATE_SELECTED;
+    }
+  }
+  else
+  {
+    sel_state = GTK_STATE_NORMAL;
+    frame_nr_to_time[0] = ' ';
+    frame_nr_to_time[1] = '\0';
+  }
+
+  /* set BG color for frame widget according to its selection state */
+  {
+    /* FIXME: ???????????????? dont know howto set BG color.
+     * gtk+2.2.2 Docs/FAQ says:
+     *    How do I set the background color of a GtkLabel widget?
+     *    The GtkLabel widget is one of a few GTK+ widgets that don't create their own window
+     *    to render themselves into. Instead, they draw themselves directly onto their parents window.
+     *    This means that in order to set the background color for a GtkLabel widget,
+     *    you need to change the background color of its parent, i.e. the object that you pack it into.
+     *
+     * ---------------------------------------------------------
+     * But i did not findout how to change the background color of its parent ?
+     * both lables  (fw->number_label and  fw->time_label) are packed into fw->hbox
+     *
+     * widget tree is:
+     *   naviD->shell->window
+     *      +--- naviD->vbox->style
+     *           +--- naviD->hbox->style
+     *                +--- naviD->dyn_frame
+     *                     +--- naviD->dyn_table
+     *                          +--- fw->vbox
+     *                               +--- fw->event_box
+     *                                    +--- fw->hbox
+     *                                         +--- fw->number_label
+     *                                         +--- fw->pv_ptr->da_widget
+     *                                         +--- fw->time_label
+     *
+     * the following code was my attempt to set the BG-Color for
+     * the widgets in the fw->hbox Container, but it does not work yet.
+     */
+
+     if(gap_debug) printf("navi_frame_widget_time_label_update: GTK_STYLE_SET_BACKGROUND sel_state:%d\n", (int)sel_state);
+
+     //gtk_style_set_background (naviD->shell->style, naviD->shell->window, sel_state);
+
+     //gtk_style_set_background (fw->vbox->style, fw->vbox->window, sel_state);
+     //gtk_style_set_background (fw->event_box->style, fw->event_box->window, sel_state);
+     gtk_style_set_background (fw->hbox->style, fw->hbox->window, sel_state);
+
+     //gdk_flush();
+  }
 
   gtk_label_set_text (GTK_LABEL (fw->time_label), frame_nr_to_time);
-}
+}  /* end navi_frame_widget_time_label_update */
 
-static FrameWidget *
-frame_widget_create (gint32 image_id, gint32 frame_nr)
+
+/*  ######### SelctionRange Procedures ########## */
+
+/* -----------------------------------------
+ * navi_debug_print_sel_range
+ * -----------------------------------------
+ */
+static void
+navi_debug_print_sel_range(void)
 {
-  FrameWidget *frame_widget;
-  GtkWidget *list_item;
-  GtkWidget *hbox;
-  GtkWidget *vbox;
+  SelectedRange *range_item;
+
+  /*if(gap_debug)*/
+  {  
+    printf("\n SEL_RANGE  ------------------------- START\n");
+    range_item = naviD->sel_range_list;
+    while(range_item)
+    {
+      printf(" SEL_RANGE  from: %06d  to: %06d\n"
+             , (int)range_item->from
+             , (int)range_item->to
+             );
+      range_item = range_item->next;
+    }
+    printf(" SEL_RANGE  ------------------------- END\n\n");
+  }
+}  /* end navi_debug_print_sel_range */
+
+
+/* ---------------------------------
+ * navi_drop_sel_range_list (2)
+ * ---------------------------------
+ */
+static void
+navi_drop_sel_range_list2(void)
+{
+  SelectedRange *range_list;
+  SelectedRange *range_item;
+
+  range_list = naviD->sel_range_list;
+  while(range_list)
+  {
+    range_item = range_list;
+    range_list = range_list->next;
+    
+    g_free(range_item);
+  }
+  naviD->sel_range_list = NULL;
+}  /* end navi_drop_sel_range_list2 */
+
+static void
+navi_drop_sel_range_list(void)
+{
+  navi_drop_sel_range_list2();
+  naviD->prev_selected_framnr = -1;
+}  /* end navi_drop_sel_range_list */
+
+
+/* ---------------------------------
+ * navi_drop_sel_range_elem
+ * ---------------------------------
+ */
+static void
+navi_drop_sel_range_elem(SelectedRange *range_item)
+{
+  SelectedRange *range_next;
+  SelectedRange *range_prev;
+
+  range_prev = range_item->prev;
+  range_next = range_item->next;
+
+  if(range_prev)
+  {
+    range_prev->next = range_next;
+  }
+  if(range_next)
+  {
+    range_next->prev = range_prev;
+  }
+    
+  if(range_item == naviD->sel_range_list)
+  {
+    naviD->sel_range_list = range_next;
+  }
+
+  g_free(range_item);
+
+}  /* end navi_drop_sel_range_elem */
+
+
+/* -----------------------------------------
+ * navi_findframe_in_sel_range
+ * -----------------------------------------
+ * return the SelectedRange that contains the framenr
+ * return NULL if framenr is not found in the selected ranges
+ */
+static SelectedRange *
+navi_findframe_in_sel_range(gint32 framenr)
+{
+  SelectedRange *range_item;
+  
+  range_item = naviD->sel_range_list;
+  while(range_item)
+  {
+    if((framenr >= range_item->from) && (framenr <= range_item->to))
+    {
+      return (range_item);
+    }
+
+    range_item = range_item->next;
+  }
+  return (NULL);
+  
+}  /* end navi_findframe_in_sel_range */
+
+
+/* -----------------------------------------
+ * navi_add_sel_range_list
+ * -----------------------------------------
+ * add a new element to the naviD->sel_range_list
+ * the element is added at its place following ascending sort order
+ * by framenr_from.
+ */
+static void
+navi_add_sel_range_list(gint32 framenr_from, gint32 framenr_to)
+{
+  SelectedRange *range_list;
+  SelectedRange *range_item;
+  SelectedRange *range_prev;
+  SelectedRange *range_next;
+
+  range_prev = NULL;
+  range_next = naviD->sel_range_list;
+  range_list = naviD->sel_range_list;
+  while(range_list)
+  {
+    if(framenr_from < range_list->from)
+    {
+      break;
+    }
+    range_prev = range_list;
+    range_list = range_list->next;
+    range_next = range_list;
+  }
+  
+  range_item = g_new(SelectedRange, 1);
+  range_item->from = framenr_from;
+  range_item->to = framenr_to;
+
+  if(range_prev == NULL)
+  {
+    /* add new element as 1.st element in the list */
+    range_item->next = naviD->sel_range_list;
+    range_item->prev = NULL;
+    naviD->sel_range_list = range_item;
+  }
+  else
+  {
+    range_prev->next = range_item;
+
+    range_item->next = range_next;
+    range_item->prev = range_prev;
+  }
+    
+  if(range_next)
+  {
+    range_next->prev = range_item;
+  }
+    
+}  /* end navi_add_sel_range_list */
+
+
+/* -----------------------------------------
+ * navi_sel_normal
+ * -----------------------------------------
+ */
+static void
+navi_sel_normal(gint32 framenr)
+{
+  navi_drop_sel_range_list();
+  navi_add_sel_range_list(framenr, framenr);
+  naviD->prev_selected_framnr = framenr;
+}  /* end navi_sel_normal */
+
+
+/* -----------------------------------------
+ * navi_sel_ctrl
+ * -----------------------------------------
+ */
+static void
+navi_sel_ctrl(gint32 framenr)
+{
+  SelectedRange *range_item;
+  
+  range_item = navi_findframe_in_sel_range(framenr);
+  if(range_item)
+  {
+     /* framenr was already selected, DESELECT now */
+     if((range_item->from == framenr) 
+     && (range_item->to == framenr))
+     {
+       /* completely remove the range_item */
+       navi_drop_sel_range_elem(range_item);
+     }
+     else if (range_item->from == framenr)
+     {
+       /* take out the first frame from the range */
+       range_item->from++;
+     }
+     else if (range_item->to == framenr)
+     {
+       /* take out the last frame from the range */
+       range_item->to--;
+     }
+     else
+     {
+       gint32 old_framenr_to;
+
+       if(gap_debug) printf(" ** SPLIT from:%d to:%d framenr:%d\n", (int)range_item->from, (int)range_item->to, (int)framenr);
+       
+       /* have to split the range (take out framenr) */
+       old_framenr_to = range_item->to;
+       range_item->to = framenr - 1;
+       navi_add_sel_range_list(framenr +1, old_framenr_to);
+     }
+  }
+  else
+  {
+     /* framenr was not SELECTED, select now */
+     navi_add_sel_range_list(framenr, framenr);
+  }
+  
+  naviD->prev_selected_framnr = framenr;
+  
+}  /* end navi_sel_ctrl */
+
+
+/* -----------------------------------------
+ * navi_sel_shift
+ * -----------------------------------------
+ */
+static void
+navi_sel_shift(gint32 framenr)
+{
+  navi_drop_sel_range_list2();  /* use the variant without resetting naviD->prev_selected_framnr */
+  
+  /* if there was no previous selection
+   * then we use the first_frame_nr as starting point
+   */
+  naviD->prev_selected_framnr = MAX(naviD->prev_selected_framnr
+                                   ,naviD->ainfo_ptr->first_frame_nr);
+                                   
+  
+  navi_add_sel_range_list(MIN(framenr, naviD->prev_selected_framnr)
+                         ,MAX(framenr, naviD->prev_selected_framnr));
+}  /* end navi_sel_shift */
+
+
+/* ################################################# */
+
+
+/* ---------------------------------
+ * navi_dyn_frame_size_allocate
+ * ---------------------------------
+ */
+static void
+navi_dyn_frame_size_allocate  (GtkWidget       *widget,
+                              GtkAllocation   *allocation,
+                              gpointer         user_data)
+{
+  if(naviD == NULL) { return; }
+  
+  if(gap_debug) printf("\n#  on_vid_preview_size_allocate: START new: w:%d h:%d \n"
+                           , (int)allocation->width
+                           , (int)allocation->height
+                           );
+  if(!naviD->in_dyn_table_sizeinit)
+  {
+     gint resize_flag;
+
+     resize_flag = navi_dyn_table_set_size((gint)allocation->height);
+ 
+     if(resize_flag > 0)
+     {
+        /* need refresh if new ros were added */
+        navi_refresh_dyn_table(naviD->dyn_topframenr);
+     }
+  }
+  
+}  /* end navi_dyn_frame_size_allocate */
+
+
+/* ---------------------------------
+ * navi_get_last_range_list
+ * ---------------------------------
+ * 
+ */
+static SelectedRange *
+navi_get_last_range_list(SelectedRange *sel_range_list)
+{
+  SelectedRange *range_list;
+  SelectedRange *range_item;
+
+  /* generate prev linkpointers in the range list */
+  range_item = NULL;
+  range_list = sel_range_list;
+  while(range_list)
+  {
+    range_list->prev = range_item;
+    range_item = range_list;
+    if(range_list->next == NULL)
+    {
+      break;  /* now range_list points to the last element in the list */
+    }
+    range_list = range_list->next;
+  }
+  return (range_list);
+  
+}  /* end navi_get_last_range_list */
+
+
+/* --------------------------
+ * navi_frame_widget_replace2
+ * --------------------------
+ * in frame_nr (create empty dummy widgets for illegal frame_nr -1)
+ */
+static void
+navi_frame_widget_replace2(FrameWidget *fw)
+{
+  if(gap_debug) printf("navi_frame_widget_replace2 START\n");
+
+  if(naviD == NULL)  { return; }
+
+  if(fw->pv_ptr == NULL)
+  {
+    fw->pv_ptr = p_pview_new( naviD->image_width    /* width */
+                            , naviD->image_height   /* height */
+                            , NAVI_CHECK_SIZE
+                            , NULL   /* preview without aspect_frame */
+                            );
+  }
+  else
+  {
+    if((naviD->image_width != fw->pv_ptr->pv_width)
+    || (naviD->image_height != fw->pv_ptr->pv_height))
+    {
+       p_pview_set_size(fw->pv_ptr
+                       , naviD->image_width
+                       , naviD->image_height
+                       , NAVI_CHECK_SIZE
+                       );
+
+    }
+  }
+  
+  fw->width  = naviD->image_width;
+  fw->height = naviD->image_height;
+
+  if(fw->frame_nr < 0)
+  {
+    gtk_label_set_text (GTK_LABEL (fw->number_label), " ");
+    gtk_label_set_text (GTK_LABEL (fw->time_label), " ");
+
+    gtk_widget_hide(fw->pv_ptr->da_widget);
+    return;
+
+    p_pview_render_from_buf (fw->pv_ptr
+                 , NULL   /* render black frame */
+                 , naviD->image_width
+                 , naviD->image_height
+                 , 3             /* bpp */
+                 , FALSE         /* DONT allow_grab_src_data */
+                 );
+  }
+  else
+  {
+    char frame_nr_to_char[20];
+
+    gtk_widget_show(fw->pv_ptr->da_widget);
+    if(naviD->preview_size <= 0)
+    {
+      p_pview_render_default_icon(fw->pv_ptr);
+    }
+    else
+    {
+      navi_render_preview(fw);
+    }
+
+    /* update the labeltexts */
+    navi_frame_widget_time_label_update(fw);
+    g_snprintf(frame_nr_to_char, sizeof(frame_nr_to_char), "%06d", (int)fw->frame_nr);
+    gtk_label_set_text (GTK_LABEL (fw->number_label), frame_nr_to_char);
+  }
+  
+}  /* end navi_frame_widget_replace2 */
+
+
+/* ---------------------------------
+ * navi_frame_widget_replace
+ * ---------------------------------
+ */
+static void 
+navi_frame_widget_replace(gint32 image_id, gint32 frame_nr, gint32 dyn_rowindex)
+{
+  FrameWidget *fw;
+  time_t new_timestamp;
+  
+  if((dyn_rowindex < 0) 
+  || (dyn_rowindex >= MAX_DYN_ROWS)
+  || (naviD == NULL)
+  )
+  {
+    return;
+  }
+
+  fw = &naviD->frame_widget_tab[dyn_rowindex];
+  new_timestamp = 0;
+  
+
+  if(fw->frame_filename)
+  {
+    gchar       *l_frame_filename;
+    
+    l_frame_filename = NULL;
+    if(frame_nr >= 0)
+    {
+      l_frame_filename = p_alloc_fname(naviD->ainfo_ptr->basename, frame_nr, naviD->ainfo_ptr->extension);
+      if(l_frame_filename)
+      {
+        if(strcmp(l_frame_filename, fw->frame_filename) == 0)
+        {
+          /* filename has not changed, keep the current timestamp in that case */
+          new_timestamp = fw->frame_timestamp;
+        }
+      }
+    }
+    g_free(fw->frame_filename);
+    fw->frame_filename = l_frame_filename;
+  }
+
+  fw->frame_timestamp = new_timestamp;
+
+  fw->image_id      = image_id;
+  fw->frame_nr      = frame_nr;
+  
+  navi_frame_widget_replace2(fw);
+} /* end navi_frame_widget_replace */
+
+
+
+/* ---------------------------------
+ * navi_refresh_dyn_table
+ * ---------------------------------
+ * the refresh does read pixmap data for all items in the dyn_table
+ * (from thumbnail_file or gimp_image_thumbnail)
+ * the labels are refreshed too.
+ */
+static void
+navi_refresh_dyn_table(gint32 frame_nr)
+{
+  gint32       l_frame_nr;
+  gint32       l_frame_nr_prev;
+  gint32       l_count;
+
+
+  if(gap_debug) printf("navi_refresh_dyn_table: START frame_nr:%d\n", (int)frame_nr);
+
+  naviD->dyn_topframenr = navi_constrain_dyn_topframenr(frame_nr);
+  l_frame_nr = naviD->dyn_topframenr;
+
+  l_frame_nr_prev = -1;
+  for(l_count = 0; l_count < naviD->dyn_rows; l_count++)
+  {
+      l_frame_nr = CLAMP(l_frame_nr
+                    , naviD->ainfo_ptr->first_frame_nr   
+                    , naviD->ainfo_ptr->last_frame_nr
+                    );
+       
+      if(gap_debug) printf("navi_refresh_dyn_table: l_frame_nr:%d\n", (int)l_frame_nr);
+      
+      if(l_frame_nr == l_frame_nr_prev)
+      {
+        /* dont repeat display of the last frame again (use -1 instead) */
+        navi_frame_widget_replace (-1, -1, l_count);
+      }
+      else
+      {
+        navi_frame_widget_replace (naviD->active_imageid, l_frame_nr, l_count);
+      }
+      
+      l_frame_nr_prev = l_frame_nr;
+      l_frame_nr += naviD->vin_ptr->timezoom;
+  }
+}  /* end navi_refresh_dyn_table */
+
+
+/* ---------------------------------
+ * navi_dyn_adj_changed_callback
+ * ---------------------------------
+ */
+static void
+navi_dyn_adj_changed_callback(GtkWidget *wgt, gpointer data)
+{
+  gint32  adj_intval;
+  gint32  dyn_topframenr;
+  if(naviD == NULL) { return; }
+  
+  adj_intval = GTK_ADJUSTMENT(naviD->dyn_adj)->value;
+  if(gap_debug) printf("navi_dyn_adj_changed_callback: adj_intval:%d dyn_topframenr:%d\n", (int)adj_intval, (int)naviD->dyn_topframenr);
+
+  GTK_ADJUSTMENT(naviD->dyn_adj)->value = adj_intval;
+  
+  dyn_topframenr = ((adj_intval -1) * naviD->vin_ptr->timezoom) + naviD->ainfo_ptr->first_frame_nr;
+  dyn_topframenr = navi_constrain_dyn_topframenr(dyn_topframenr);
+  
+  if(naviD->dyn_topframenr != dyn_topframenr)
+  {
+    naviD->dyn_topframenr = dyn_topframenr;
+    navi_refresh_dyn_table(dyn_topframenr);
+  }
+  
+}  /* end navi_dyn_adj_changed_callback */
+
+
+/* ---------------------------------
+ * navi_dyn_adj_set_limits
+ * ---------------------------------
+ */
+static void
+navi_dyn_adj_set_limits(void)
+{
+  gdouble upper_limit;
+  gdouble lower_limit;
+  gint32 frame_cnt_zoomed;
+  
+  if(naviD == NULL) { return; }
+  if(naviD->dyn_adj == NULL) { return; }
+
+  frame_cnt_zoomed = naviD->ainfo_ptr->frame_cnt / naviD->vin_ptr->timezoom;
+  if(naviD->vin_ptr->timezoom > 1)
+  {
+    /* if there is a rest add 1 to make the last frame,
+     * (that should never be filtered out by timezoom) reachable
+     */
+    frame_cnt_zoomed++;
+  }
+  lower_limit = 1.0;
+  upper_limit = lower_limit + MAX((frame_cnt_zoomed - naviD->dyn_rows), 0);
+  
+  GTK_ADJUSTMENT(naviD->dyn_adj)->lower = lower_limit;
+  GTK_ADJUSTMENT(naviD->dyn_adj)->upper = upper_limit;
+  
+}  /* end navi_dyn_adj_set_limits */
+
+
+/* ---------------------------------
+ * navi_frame_widget_init_empty
+ * ---------------------------------
+ * this procedure does initialize
+ * the passed frame_widget, by creating all
+ * the gtk_widget stuff to build up the frame_widget 
+ */
+static void
+navi_frame_widget_init_empty (FrameWidget *fw)
+{
   GtkWidget *alignment;
   
-  char frame_nr_to_char[20];
-  char frame_nr_to_time[20];
+  if(gap_debug) printf("navi_frame_widget_init_empty START\n");
 
+  /* create all sub-widgets for the given frame widget */
+  fw->image_id      = -1;
+  fw->frame_nr      = -1;
+  fw->pv_ptr        = NULL;
+  fw->width         = -1;
+  fw->height        = -1;
+  fw->frame_timestamp = 0;
+  fw->frame_filename = NULL;
 
-  if(gap_debug) printf("frame_widget_create CREATE image_id:%d, nr:%d\n", (int)image_id, (int)frame_nr);
+  fw->vbox = gtk_vbox_new (FALSE, 1);
 
-  list_item = gtk_list_item_new ();
+  /* the hbox  */
+  fw->hbox = gtk_hbox_new (FALSE, 1);
 
-  /*  create the frame widget and add it to the list  */
-  frame_widget = g_new (FrameWidget, 1);
-  frame_widget->image_id      = image_id;
-  frame_widget->frame_nr      = frame_nr;
-  frame_widget->frame_preview = NULL;
-  frame_widget->frame_pixmap  = NULL;
-  frame_widget->list_item     = list_item;
-  frame_widget->width         = -1;
-  frame_widget->height        = -1;
-  frame_widget->thumb_timestamp = 0;
-  frame_widget->thumb_filename = NULL;
-  frame_widget->visited       = TRUE;
-  /* frame_widget->drop_type     = GIMP_DROP_NONE; */
-  
-  g_snprintf(frame_nr_to_char, sizeof(frame_nr_to_char), "%06d", (int)frame_nr);
-  navi_calc_frametiming(frame_nr, frame_nr_to_time, sizeof(frame_nr_to_time));
-  
+  /* Create an EventBox (container for labels and the preview drawing_area)
+   * used to handle selection events
+   */
+  fw->event_box = gtk_event_box_new ();
+  gtk_container_add (GTK_CONTAINER (fw->event_box), fw->hbox);
+  gtk_widget_set_events (fw->event_box, GDK_BUTTON_PRESS_MASK);
+  g_signal_connect (G_OBJECT (fw->event_box), "button_press_event",
+                    G_CALLBACK (frame_widget_preview_events),
+                    fw);
 
-  /*  Need to let the list item know about the frame_widget  */
-  g_object_set_data (G_OBJECT (list_item), "frame_widget", frame_widget);
-
-  /*  set up the list item observer  */
-  g_signal_connect (G_OBJECT (list_item), "select",
-		    G_CALLBACK (frame_widget_select_update),
-		    frame_widget);
-  g_signal_connect (G_OBJECT (list_item), "deselect",
-		    G_CALLBACK (frame_widget_select_update),
-		    frame_widget);
-
-  vbox = gtk_vbox_new (FALSE, 1);
-  gtk_container_add (GTK_CONTAINER (list_item), vbox);
-
-  hbox = gtk_hbox_new (FALSE, 1);
-  gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 1);
+  gtk_box_pack_start (GTK_BOX (fw->vbox), fw->event_box, FALSE, FALSE, 1);
 
   /*  the frame number label */
-  frame_widget->number_label = gtk_label_new (frame_nr_to_char);
-  gtk_box_pack_start (GTK_BOX (hbox), frame_widget->number_label, FALSE, FALSE, 2);
-  gtk_widget_show (frame_widget->number_label);
+  fw->number_label = gtk_label_new ("######");
+  gtk_box_pack_start (GTK_BOX (fw->hbox), fw->number_label, FALSE, FALSE, 2);
+  gtk_widget_show (fw->number_label);
 
   /*  The frame preview  */
   alignment = gtk_alignment_new (0.5, 0.5, 0.0, 0.0);
-  gtk_box_pack_start (GTK_BOX (hbox), alignment, FALSE, FALSE, 2);
+  gtk_box_pack_start (GTK_BOX (fw->hbox), alignment, FALSE, FALSE, 2);
   gtk_widget_show (alignment);
 
-  frame_widget->frame_preview = gtk_drawing_area_new ();
-  gtk_drawing_area_size (GTK_DRAWING_AREA (frame_widget->frame_preview),
-			 naviD->image_width + 4, naviD->image_height + 4);
-  gtk_widget_set_events (frame_widget->frame_preview, PREVIEW_EVENT_MASK);
-  g_object_set_data (G_OBJECT (frame_widget->frame_preview), "frame_widget", frame_widget);
-  gtk_container_add (GTK_CONTAINER (alignment), frame_widget->frame_preview);
-  gtk_widget_show (frame_widget->frame_preview);
-  g_signal_connect (G_OBJECT (frame_widget->frame_preview), "event",
-		    G_CALLBACK (frame_widget_preview_events),
-		    frame_widget);
+
+  fw->pv_ptr = p_pview_new( naviD->image_width + 4
+                                    , naviD->image_height + 4
+                                    , NAVI_CHECK_SIZE
+                                    , NULL   /* no aspect_frame is used */
+                                    );
+
+  gtk_widget_set_events (fw->pv_ptr->da_widget, GDK_EXPOSURE_MASK);
+  gtk_container_add (GTK_CONTAINER (alignment), fw->pv_ptr->da_widget);
+  gtk_widget_show (fw->pv_ptr->da_widget);
+  g_signal_connect (G_OBJECT (fw->pv_ptr->da_widget), "event",
+                    G_CALLBACK (frame_widget_preview_events),
+                    fw);
 
   /*  the frame timing label */
-  frame_widget->time_label = gtk_label_new (frame_nr_to_time);
-  gtk_box_pack_start (GTK_BOX (hbox), frame_widget->time_label, FALSE, FALSE, 2);
-  gtk_widget_show (frame_widget->time_label);
-
-  frame_widget->clip_widget = gtk_drawing_area_new ();
-  gtk_drawing_area_size (GTK_DRAWING_AREA (frame_widget->clip_widget), 1, 2);
-  gtk_widget_set_events (frame_widget->clip_widget, BUTTON_EVENT_MASK);
-  g_signal_connect (G_OBJECT (frame_widget->clip_widget), "event",
-		    G_CALLBACK (frame_widget_button_events),
-		    frame_widget);
-  g_object_set_data (G_OBJECT (frame_widget->clip_widget), "frame_widget", frame_widget);
-  gtk_box_pack_start (GTK_BOX (vbox), frame_widget->clip_widget,
-		      FALSE, FALSE, 0);
-  /* gtk_widget_show (frame_widget->clip_widget); */
+  fw->time_label = gtk_label_new ("##:##:###");
+  gtk_box_pack_start (GTK_BOX (fw->hbox), fw->time_label, FALSE, FALSE, 2);
+  gtk_widget_show (fw->time_label);
 
 
-  gtk_object_set_data (GTK_OBJECT (list_item), "gap_framenumber", (gpointer)frame_nr );
-
-  gtk_widget_show (hbox);
-  gtk_widget_show (vbox);
-  gtk_widget_show (list_item);
-
-  g_object_ref (frame_widget->list_item);
-
-  if(gap_debug) printf("frame_widget_create END image_id:%d, nr:%d\n", (int)image_id, (int)frame_nr);
-
-  return frame_widget;
-}
-
-static void
-frame_widget_delete (FrameWidget *fw)
-{
-   if(gap_debug) printf("frame_widget_delete image_id:%d frame_nr:%d\n"
-                        ,(int)fw->image_id
-                        ,(int)fw->frame_nr
-                        );
-   if(fw->frame_pixmap)
-   {
-      g_object_unref (fw->frame_pixmap);
-   }
-
-   if(fw->thumb_filename) g_free(fw->thumb_filename);
+  gtk_widget_show (fw->hbox);
+  gtk_widget_show (fw->event_box);
+  gtk_widget_show (fw->vbox);
    
-   /*  Remove the layer widget from the list  */
-   naviD->frame_widgets = g_slist_remove (naviD->frame_widgets, fw);
- 
-   /*  Release the widget  */
-   g_object_unref(fw->list_item);
-   g_free(fw);
-}
+  if(gap_debug) printf("navi_frame_widget_init_empty END\n");
+
+}  /* end navi_frame_widget_init_empty */
 
 
 
+/* ---------------------------------
+ * navi_dyn_table_set_size
+ * ---------------------------------
+ * init and attach frame_widgets from naviD->frame_widget_tab
+ * to dyn_tab
+ * return 0 if number of rows was not changed,
+ *       -n if shrinked by n rows
+ *       +n if expanded by n rows
+ */
+static gint
+navi_dyn_table_set_size(gint win_height)
+{
+  gint l_row;
+  gint l_new_rows;
+  gint l_resize_flag;
+  
+  l_new_rows = MIN((win_height / MAX(naviD->item_height,10)), MAX_DYN_ROWS);
+
+  if(gap_debug) printf("navi_dyn_table_set_size: START (old)fw_tab_used_count:%d (old)dyn_rows:%d (new)l_new_rows:%d\n"
+                      , (int)naviD->fw_tab_used_count
+                      , (int)naviD->dyn_rows
+                      , (int)l_new_rows
+                      );
+
+  l_resize_flag = l_new_rows - naviD->dyn_rows;
+  if(l_resize_flag < 0)
+  {
+      /* gtk_table_resize does not work if we want less rows
+       * and the rows already have widgets attached.
+       * we first have to destroy the attached widgets.
+       */
+     for(l_row = l_new_rows; l_row < naviD->dyn_rows; l_row++)
+     {
+       FrameWidget *fw;
+
+       if(gap_debug) printf("navi_dyn_table_set_size: destroy row:%d\n", (int)l_row);
+
+       fw = &naviD->frame_widget_tab[l_row];
+  
+       p_pview_reset(fw->pv_ptr);
+       if(fw->frame_filename) g_free(fw->frame_filename);
+     
+       gtk_widget_destroy(fw->vbox);
+       navi_frame_widget_init_empty(fw);
+     }
+     naviD->fw_tab_used_count = MIN(l_new_rows, naviD->fw_tab_used_count);
+  }
+
+  if(l_new_rows != naviD->dyn_rows)
+  {
+    gtk_table_resize(GTK_TABLE(naviD->dyn_table),  l_new_rows, 1);
+  }
+
+  
+  /* initialize as much frame_widgets as needed
+   * NOTE: frame_widgets in the frame_widget_tab are initialzed
+   *       only once, and are kept even if dyn_table shrinks down
+   *       to less rows.
+   *       (they can be reused later if dyn_table expands again)
+   */
+  for(l_row = naviD->fw_tab_used_count; l_row < l_new_rows; l_row++)
+  {
+     if(gap_debug) printf("navi_dyn_table_set_size: init row:%d\n", (int)l_row);
+     
+     navi_frame_widget_init_empty(&naviD->frame_widget_tab[l_row]);
+  }
+  naviD->fw_tab_used_count = l_row;
+
+  /* attach frame_widgets as needed */
+  for(l_row = naviD->dyn_rows; l_row < l_new_rows; l_row++)
+  {
+     if(gap_debug) printf("navi_dyn_table_set_size: attach row:%d\n", (int)l_row);
+
+     gtk_table_attach (GTK_TABLE (naviD->dyn_table)
+                      , naviD->frame_widget_tab[l_row].vbox
+                      , 0, 1
+                      , l_row, l_row+1
+                      , (GtkAttachOptions) (GTK_FILL | GTK_EXPAND)
+                      , (GtkAttachOptions) (GTK_FILL | GTK_EXPAND)
+                      , 0, 0);
+  }
+  naviD->dyn_rows = l_new_rows;
+  navi_dyn_adj_set_limits();
+  
+  if(gap_debug) printf("navi_dyn_table_set_size: END (result)fw_tab_used_count:%d (res)dyn_rows:%d flag:%d\n"
+                      , (int)naviD->fw_tab_used_count
+                      , (int)naviD->dyn_rows
+                      , (int)l_resize_flag
+                      );
+
+  return (l_resize_flag);
+  
+} /* end navi_dyn_table_set_size */
+
+
+/* ------------------------
+ * navi_dialog_create
+ * ------------------------
+ */
 GtkWidget *
 navi_dialog_create (GtkWidget* shell, gint32 image_id)
 {
   GtkWidget *vbox;
+  GtkWidget *vbox2;
+  GtkWidget *vscale;
   GtkWidget *util_box;
   GtkWidget *button_box;
   GtkWidget *label;
@@ -2903,15 +3389,19 @@ navi_dialog_create (GtkWidget* shell, gint32 image_id)
   l_basename = NULL;
   g_snprintf(frame_nr_to_char, sizeof(frame_nr_to_char), "0000 - 0000");
   naviD = g_new (NaviDialog, 1);
+  /* init the global naviD structure */
+  naviD->dyn_adj = NULL;         /* disable procedure navi_dyn_adj_set_limits before this widget is created  */
+  naviD->sel_range_list = NULL;  /* startup without selection */
+  naviD->prev_selected_framnr = -1;
+  naviD->fw_tab_used_count = 0;  /* nothing used/initialized in the frame_widget table */
+  naviD->dyn_rows = 0;           /* no rows in the dyn table (are added later at 1st resize while creation) */
   naviD->waiting_cursor = FALSE;
   naviD->cursor_wait = gdk_cursor_new (GDK_WATCH);
   naviD->cursor_acitve = gdk_cursor_new (GDK_TOP_LEFT_ARROW);
   naviD->shell = shell;
-  naviD->frame_preview  = NULL;
   naviD->OpenFrameImagesList  = NULL;
   naviD->OpenFrameImagesCount  = 0;
   naviD->any_imageid = -1;
-  naviD->frame_widgets  = NULL;
   naviD->cycle_time   = 1000;  /* polling cylcle of 1 sec */
   naviD->timer        = -1;
   naviD->active_imageid = image_id;
@@ -2933,7 +3423,6 @@ navi_dialog_create (GtkWidget* shell, gint32 image_id)
 
   if (naviD->preview_size > 0)
   {
-      naviD->frame_preview = gtk_preview_new (GTK_PREVIEW_COLOR);
       navi_preview_extents ();
   }
 
@@ -2957,8 +3446,8 @@ navi_dialog_create (GtkWidget* shell, gint32 image_id)
 
       gtk_widget_show (menu_item);
       g_signal_connect (G_OBJECT (menu_item), "activate",
-			G_CALLBACK (edit_copy_callback),
-			naviD);
+                        G_CALLBACK (edit_copy_callback),
+                        naviD);
       naviD->copy_menu_item = menu_item;
 
       /* menu_item cut */
@@ -2966,8 +3455,8 @@ navi_dialog_create (GtkWidget* shell, gint32 image_id)
       gtk_container_add (GTK_CONTAINER (naviD->ops_menu), menu_item);
       gtk_widget_show (menu_item);
       g_signal_connect (G_OBJECT (menu_item), "activate",
-			G_CALLBACK (edit_cut_callback),
-			naviD);
+                        G_CALLBACK (edit_cut_callback),
+                        naviD);
       naviD->cut_menu_item = menu_item;
 
       /* menu_item paste before */
@@ -2975,8 +3464,8 @@ navi_dialog_create (GtkWidget* shell, gint32 image_id)
       gtk_container_add (GTK_CONTAINER (naviD->ops_menu), menu_item);
       gtk_widget_show (menu_item);
       g_signal_connect (G_OBJECT (menu_item), "activate",
-			G_CALLBACK (edit_pasteb_callback),
-			naviD);
+                        G_CALLBACK (edit_pasteb_callback),
+                        naviD);
       naviD->pasteb_menu_item = menu_item;
 
       /* menu_item copy */
@@ -2984,8 +3473,8 @@ navi_dialog_create (GtkWidget* shell, gint32 image_id)
       gtk_container_add (GTK_CONTAINER (naviD->ops_menu), menu_item);
       gtk_widget_show (menu_item);
       g_signal_connect (G_OBJECT (menu_item), "activate",
-			G_CALLBACK (edit_pastea_callback),
-			naviD);
+                        G_CALLBACK (edit_pastea_callback),
+                        naviD);
       naviD->pastea_menu_item = menu_item;
 
       /* menu_item copy */
@@ -2993,8 +3482,8 @@ navi_dialog_create (GtkWidget* shell, gint32 image_id)
       gtk_container_add (GTK_CONTAINER (naviD->ops_menu), menu_item);
       gtk_widget_show (menu_item);
       g_signal_connect (G_OBJECT (menu_item), "activate",
-			G_CALLBACK (edit_paster_callback),
-			naviD);
+                        G_CALLBACK (edit_paster_callback),
+                        naviD);
       naviD->paster_menu_item = menu_item;
 
       /* menu_item copy */
@@ -3002,10 +3491,28 @@ navi_dialog_create (GtkWidget* shell, gint32 image_id)
       gtk_container_add (GTK_CONTAINER (naviD->ops_menu), menu_item);
       gtk_widget_show (menu_item);
       g_signal_connect (G_OBJECT (menu_item), "activate",
-			G_CALLBACK (edit_clrpaste_callback),
-			naviD);
+                        G_CALLBACK (edit_clrpaste_callback),
+                        naviD);
       naviD->clrpaste_menu_item = menu_item;
 
+
+      /* menu_item Select All */
+      menu_item = gtk_menu_item_new_with_label (_("Select All"));
+      gtk_container_add (GTK_CONTAINER (naviD->ops_menu), menu_item);
+      gtk_widget_show (menu_item);
+      g_signal_connect (G_OBJECT (menu_item), "activate",
+                        G_CALLBACK (navi_sel_all_callback),
+                        naviD);
+      naviD->sel_all_menu_item = menu_item;
+
+      /* menu_item Select None */
+      menu_item = gtk_menu_item_new_with_label (_("Select None"));
+      gtk_container_add (GTK_CONTAINER (naviD->ops_menu), menu_item);
+      gtk_widget_show (menu_item);
+      g_signal_connect (G_OBJECT (menu_item), "activate",
+                        G_CALLBACK (navi_sel_none_callback),
+                        naviD);
+      naviD->sel_none_menu_item = menu_item;
   gtk_widget_show (naviD->ops_menu);
 
 
@@ -3042,21 +3549,21 @@ navi_dialog_create (GtkWidget* shell, gint32 image_id)
   gtk_widget_show (label);
 
   spinbutton = gimp_spin_button_new (&adj,  /* return value (the adjustment) */
-		      naviD->vin_ptr->framerate,     /* initial_val */
-		      1.0,                  /* umin */
-		      100.0,                /* umax */
-		      1.0,                  /* sstep */
-		      10.0,                /* pagestep */
-		      0.0,                 /* page_size */
-		      1.0,                 /* climb_rate */
-		      4                    /* digits */
+                      naviD->vin_ptr->framerate,     /* initial_val */
+                      1.0,                  /* umin */
+                      100.0,                /* umax */
+                      1.0,                  /* sstep */
+                      10.0,                /* pagestep */
+                      0.0,                 /* page_size */
+                      1.0,                 /* climb_rate */
+                      4                    /* digits */
                       );
-  naviD->framerate_data = GTK_ADJUSTMENT(adj);
+  naviD->framerate_adj = adj;
 
   gtk_box_pack_start (GTK_BOX (util_box), spinbutton, TRUE, TRUE, 0);
-  g_signal_connect (G_OBJECT (naviD->framerate_data), "value_changed",
-		    G_CALLBACK (navi_framerate_scale_update),
-		    naviD);
+  g_signal_connect (G_OBJECT (naviD->framerate_adj), "value_changed",
+                    G_CALLBACK (navi_framerate_spinbutton_update),
+                    naviD);
   gtk_widget_show (spinbutton);
 
   gimp_help_set_help_data (spinbutton, _("Set Framerate in Frames/sec"), NULL);
@@ -3072,60 +3579,92 @@ navi_dialog_create (GtkWidget* shell, gint32 image_id)
   gtk_widget_show (label);
 
   spinbutton = gimp_spin_button_new (&adj,  /* return value (the adjustment) */
-		      naviD->vin_ptr->framerate,     /* initial_val */
-		      1.0,                  /* umin */
-		      100.0,                /* umax */
-		      1.0,                  /* sstep */
-		      10.0,                /* pagestep */
-		      0.0,                 /* page_size */
-		      1.0,                 /* climb_rate */
-		      0                    /* digits */
+                      naviD->vin_ptr->framerate,     /* initial_val */
+                      1.0,                  /* umin */
+                      500.0,                /* umax */
+                      1.0,                  /* sstep */
+                      10.0,                /* pagestep */
+                      0.0,                 /* page_size */
+                      1.0,                 /* climb_rate */
+                      0                    /* digits */
                       );
 
-  naviD->timezoom_data = GTK_ADJUSTMENT(adj);
+  naviD->timezoom_adj = adj;
   gtk_box_pack_start (GTK_BOX (util_box), spinbutton, TRUE, TRUE, 0);
-  g_signal_connect (G_OBJECT (naviD->timezoom_data), "value_changed",
-		    G_CALLBACK (navi_timezoom_scale_update),
-		    naviD);
+  g_signal_connect (G_OBJECT (naviD->timezoom_adj), "value_changed",
+                    G_CALLBACK (navi_timezoom_spinbutton_update),
+                    naviD);
   gtk_widget_show (spinbutton);
 
   gimp_help_set_help_data (spinbutton, _("Show only every N.th frame"), NULL);
 
   gtk_widget_show (util_box);
 
-  /*  The frames listbox  */
-  naviD->scrolled_win = gtk_scrolled_window_new (NULL, NULL);
-  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (naviD->scrolled_win), 
-				  GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
-  gtk_widget_set_size_request (naviD->scrolled_win, LIST_WIDTH, LIST_HEIGHT);
-  gtk_box_pack_start (GTK_BOX (vbox), naviD->scrolled_win, TRUE, TRUE, 2);
+  /*  The frame (that will contain the dyn_table)  */
+  naviD->dyn_frame = gtk_frame_new ("");
+  naviD->in_dyn_table_sizeinit = TRUE;
+  g_signal_connect (G_OBJECT (naviD->dyn_frame), "size_allocate",
+                      G_CALLBACK (navi_dyn_frame_size_allocate),
+                      NULL);
 
-  naviD->frame_list = gtk_list_new ();
-  gtk_scrolled_window_add_with_viewport (GTK_SCROLLED_WINDOW (naviD->scrolled_win),
-					 naviD->frame_list);
-  gtk_list_set_selection_mode (GTK_LIST (naviD->frame_list),
-			       GTK_SELECTION_EXTENDED);  /* GTK_SELECTION_BROWSE */
-  gtk_container_set_focus_vadjustment (GTK_CONTAINER (naviD->frame_list), 
-				       gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (naviD->scrolled_win)));
-  GTK_WIDGET_UNSET_FLAGS (GTK_SCROLLED_WINDOW (naviD->scrolled_win)->vscrollbar,
-			  GTK_CAN_FOCUS);
-      
-  gtk_widget_show (naviD->frame_list);
-  gtk_widget_show (naviD->scrolled_win);
-  g_signal_connect (G_OBJECT (naviD->frame_list), "event",
-		    G_CALLBACK (frame_list_events), 
-		    naviD);
+  gtk_widget_set_size_request (naviD->dyn_frame
+                              , -1                 /* LIST_WIDTH */
+                              , LIST_HEIGHT        /* LIST_HEIGHT */
+                              );
+  gtk_box_pack_start (GTK_BOX (vbox), naviD->dyn_frame, TRUE, TRUE, 2);
+  gtk_widget_show (naviD->dyn_frame);
+
+  /* hbox for dyn_table and vscale */
+  naviD->hbox = gtk_hbox_new (FALSE, 0);
+  gtk_container_add (GTK_CONTAINER (naviD->dyn_frame), naviD->hbox);
+  gtk_widget_show (naviD->hbox);
+
+  /* dyn_table has 1 upto MAX_DYN_ROWS and always just 1 column */
+  naviD->dyn_table = gtk_table_new (1, 1, TRUE);
+  navi_dyn_table_set_size(LIST_HEIGHT);
+  gtk_widget_show (naviD->dyn_table);
+  gtk_box_pack_start (GTK_BOX (naviD->hbox), naviD->dyn_table, TRUE, TRUE, 2);
+
+  /*  The vbox for vscale with arrow buttons */
+  vbox2 = gtk_vbox_new (FALSE, 1);
+  gtk_widget_show (vbox2);
+  gtk_box_pack_start (GTK_BOX (naviD->hbox), vbox2, FALSE, FALSE, 2);
+
+  {
+    gdouble upper_max;
+    gdouble initial_val;
+    
+    upper_max = naviD->ainfo_ptr->frame_cnt;
+    initial_val = 1 + ((naviD->ainfo_ptr->curr_frame_nr - naviD->ainfo_ptr->first_frame_nr) / naviD->vin_ptr->timezoom);
+    
+    naviD->dyn_adj = gtk_adjustment_new (initial_val
+                                         , 1
+                                         , upper_max
+                                         , 1.0, 1.0, 0.0
+                                        );
+    /* vscale = gtk_vscale_new (GTK_ADJUSTMENT(naviD->dyn_adj)); */
+    vscale = gtk_vscrollbar_new (GTK_ADJUSTMENT(naviD->dyn_adj));
+
+
+    gtk_range_set_update_policy (GTK_RANGE (vscale), GTK_UPDATE_DELAYED); /* GTK_UPDATE_CONTINUOUS */
+    gtk_box_pack_start (GTK_BOX (vbox2), vscale, TRUE, TRUE, 0);
+    gtk_signal_connect (GTK_OBJECT (naviD->dyn_adj), "value_changed",
+                      (GtkSignalFunc) navi_dyn_adj_changed_callback,
+                      naviD);
+    gtk_widget_show (vscale);
+  }
+
 
   /*  The ops buttons  */
   button_box = ops_button_box_new (naviD->shell,
-				   frames_ops_buttons, OPS_BUTTON_NORMAL);
+                                   frames_ops_buttons, OPS_BUTTON_NORMAL);
   gtk_box_pack_start (GTK_BOX (vbox), button_box, FALSE, FALSE, 2);
   gtk_widget_show (button_box);
 
 
   /*  The VCR ops buttons  */
   button_box = ops_button_box_new (naviD->shell,
-				   vcr_ops_buttons, OPS_BUTTON_NORMAL);
+                                   vcr_ops_buttons, OPS_BUTTON_NORMAL);
   gtk_box_pack_start (GTK_BOX (vbox), button_box, FALSE, FALSE, 2);
   gtk_widget_show (button_box);
 
@@ -3135,7 +3674,7 @@ navi_dialog_create (GtkWidget* shell, gint32 image_id)
   if(gap_debug) printf("navi_dialog_create END\n");
 
   return naviD->vbox;
-}
+}  /* end navi_dialog_create */
 
 
 /* ---------------------------------
@@ -3152,22 +3691,24 @@ int  gap_navigator(gint32 image_id)
 
   gimp_ui_init ("gap_navigator", FALSE);
   gap_stock_init();
-
-
+  
   /*  The main shell */
   shell = gimp_dialog_new (_("Video Navigator"), "gap_navigator",
-			   gimp_standard_help_func, "filters/gap_navigator_dialog.html",
-			   GTK_WIN_POS_NONE,
-			   FALSE, TRUE, FALSE,
-			   NULL);
+                           gimp_standard_help_func, "filters/gap_navigator_dialog.html",
+                           GTK_WIN_POS_NONE,
+                           FALSE,   /* allow_shrink */
+                           TRUE,    /* allow_grow */
+                           TRUE,    /* auto_shrink */
+                           NULL     /* end marker for va_args */
+                           );
   
   g_signal_connect (G_OBJECT (shell), "delete_event",
-		    G_CALLBACK (gtk_widget_destroy), 
-		    NULL);
+                    G_CALLBACK (gtk_widget_destroy), 
+                    NULL);
   
   g_signal_connect (G_OBJECT (shell), "destroy",
-		    G_CALLBACK (gtk_main_quit), 
-		    NULL);
+                    G_CALLBACK (gtk_main_quit), 
+                    NULL);
 
   /*  The subshell (toplevel vbox)  */
   subshell = gtk_vbox_new (FALSE, 1);
@@ -3188,8 +3729,8 @@ int  gap_navigator(gint32 image_id)
   /*  The close button */
   button = gtk_button_new_from_stock (GTK_STOCK_CLOSE);
   g_signal_connect_swapped (G_OBJECT (button), "clicked",
-			    G_CALLBACK (gtk_widget_destroy),
-			    shell);
+                            G_CALLBACK (gtk_widget_destroy),
+                            shell);
   gtk_box_pack_start (GTK_BOX (GTK_DIALOG (shell)->action_area),
                       button, TRUE, TRUE, 0);
   gtk_widget_show (button);
@@ -3204,6 +3745,8 @@ int  gap_navigator(gint32 image_id)
                                 (GtkFunction)navi_dialog_poll, NULL);
 
    
+  naviD->in_dyn_table_sizeinit = FALSE;
+
   if(gap_debug) printf("BEFORE  gtk_main\n");  
   gtk_main ();
   gdk_flush ();
@@ -3217,11 +3760,8 @@ int  gap_navigator(gint32 image_id)
 
 
 
-
-
-
 /* XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
- * Some Code Parts copied from gimp/app directory
+ * Some Code Parts copied from gimp-1.2/app directory
  * XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
  */
 
@@ -3235,8 +3775,8 @@ static void ops_button_extended_callback (GtkWidget*, gpointer);
 
 GtkWidget *
 ops_button_box_new (GtkWidget     *parent,
-		    OpsButton     *ops_button,
-		    OpsButtonType  ops_type)   
+                    OpsButton     *ops_button,
+                    OpsButtonType  ops_type)   
 {
   GtkWidget *button;
   GtkWidget *image;
@@ -3250,46 +3790,46 @@ ops_button_box_new (GtkWidget     *parent,
   while (ops_button->stock_id)
     {
       switch (ops_type)
-	{
-	case OPS_BUTTON_NORMAL :
-	  button = gtk_button_new ();
+        {
+        case OPS_BUTTON_NORMAL :
+          button = gtk_button_new ();
           image = gtk_image_new_from_stock (ops_button->stock_id,
                                             GTK_ICON_SIZE_BUTTON);
           gtk_container_add (GTK_CONTAINER (button), image);
           gtk_widget_show (image);
-	  break;
-	case OPS_BUTTON_RADIO :
-	  button = gtk_radio_button_new (group);
-	  group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (button));
-	  gtk_container_set_border_width (GTK_CONTAINER (button), 0);
-	  gtk_toggle_button_set_mode (GTK_TOGGLE_BUTTON (button), FALSE);
-	  break;
-	default :
-	  button = NULL; /*stop compiler complaints */
-	  g_error ("ops_button_box_new: unknown type %d\n", ops_type);
-	  break;
-	}
+          break;
+        case OPS_BUTTON_RADIO :
+          button = gtk_radio_button_new (group);
+          group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (button));
+          gtk_container_set_border_width (GTK_CONTAINER (button), 0);
+          gtk_toggle_button_set_mode (GTK_TOGGLE_BUTTON (button), FALSE);
+          break;
+        default :
+          button = NULL; /*stop compiler complaints */
+          g_error ("ops_button_box_new: unknown type %d\n", ops_type);
+          break;
+        }
 
       if (ops_button->ext_callbacks == NULL)
-	{
-	  g_signal_connect_swapped (G_OBJECT (button), "clicked",
-				    G_CALLBACK (ops_button->callback),
-				    NULL);
-	}
+        {
+          g_signal_connect_swapped (G_OBJECT (button), "clicked",
+                                    G_CALLBACK (ops_button->callback),
+                                    NULL);
+        }
       else
-	{
+        {
           gtk_widget_set_events(button, GDK_BUTTON_PRESS_MASK);
-	  g_signal_connect (G_OBJECT (button), "button_press_event",
-			    G_CALLBACK (ops_button_pressed_callback),
-			    ops_button);
-	  g_signal_connect (G_OBJECT (button), "clicked",
-			    G_CALLBACK (ops_button_extended_callback),
-			    ops_button);
-	}
+          g_signal_connect (G_OBJECT (button), "button_press_event",
+                            G_CALLBACK (ops_button_pressed_callback),
+                            ops_button);
+          g_signal_connect (G_OBJECT (button), "clicked",
+                            G_CALLBACK (ops_button_extended_callback),
+                            ops_button);
+        }
 
       gimp_help_set_help_data (button,
-			       gettext (ops_button->tooltip),
-			       ops_button->private_tip);
+                               gettext (ops_button->tooltip),
+                               ops_button->private_tip);
 
       gtk_box_pack_start (GTK_BOX (button_box), button, TRUE, TRUE, 0); 
 
@@ -3306,8 +3846,8 @@ ops_button_box_new (GtkWidget     *parent,
 
 static gboolean
 ops_button_pressed_callback (GtkWidget      *widget, 
-			     GdkEventButton *bevent,
-			     gpointer        client_data)
+                             GdkEventButton *bevent,
+                             gpointer        client_data)
 {
   OpsButton *ops_button;
 
@@ -3317,9 +3857,9 @@ ops_button_pressed_callback (GtkWidget      *widget,
   if (bevent->state & GDK_SHIFT_MASK)
     {
       if (bevent->state & GDK_CONTROL_MASK)
-	  ops_button->modifier = OPS_BUTTON_MODIFIER_SHIFT_CTRL;
+          ops_button->modifier = OPS_BUTTON_MODIFIER_SHIFT_CTRL;
       else 
-	ops_button->modifier = OPS_BUTTON_MODIFIER_SHIFT;
+        ops_button->modifier = OPS_BUTTON_MODIFIER_SHIFT;
     }
   else if (bevent->state & GDK_CONTROL_MASK)
     ops_button->modifier = OPS_BUTTON_MODIFIER_CTRL;
@@ -3333,7 +3873,7 @@ ops_button_pressed_callback (GtkWidget      *widget,
 
 static void
 ops_button_extended_callback (GtkWidget *widget, 
-			      gpointer   client_data)
+                              gpointer   client_data)
 {
   OpsButton *ops_button;
 
@@ -3344,9 +3884,9 @@ ops_button_extended_callback (GtkWidget *widget,
       ops_button->modifier < OPS_BUTTON_MODIFIER_LAST)
     {
       if (ops_button->ext_callbacks[ops_button->modifier - 1] != NULL)
-	(ops_button->ext_callbacks[ops_button->modifier - 1]) (widget, NULL);
+        (ops_button->ext_callbacks[ops_button->modifier - 1]) (widget, NULL);
       else
-	(ops_button->callback) (widget, NULL);
+        (ops_button->callback) (widget, NULL);
     } 
   else 
     (ops_button->callback) (widget, NULL);

@@ -22,6 +22,7 @@
  */
 
 /* revision history:
+ * version 1.3.16a; 2003/06/27  hof: use aspect_frame instead of simple frame, added p_pview_render_default_icon
  * version 1.3.14c; 2003/06/12  hof: created
  */
 
@@ -36,7 +37,7 @@
 typedef struct t_pview
 {
   GtkWidget *da_widget;       /* the preview drawing_area */
-  GtkWidget *frame;
+  GtkWidget *aspect_frame;
   gint   *src_col;            /* Pointer array[pv_width] used for width scaling */
   gint    src_width;          /* width of last handled src buffer */
   gint    src_bpp;            /* byte per pixel of last handled src buffer */
@@ -45,7 +46,9 @@ typedef struct t_pview
   gint    pv_height;          /* Preview Height in pixels */
   gint    pv_bpp;             /* BPP of the preview currently always 3 */
   gint    pv_check_size;      /* size of the cheks in pixels */
+  gboolean use_pixmap_repaint;
   guchar *pv_area_data;       /* buffer to hold RGB image in preview size */
+  GdkPixmap *pixmap;          /* alternative pixmap buffer */
 } t_pview;
 
 
@@ -63,5 +66,6 @@ t_pview   *p_pview_new(gint pv_width, gint pv_height, gint pv_check_size, GtkWid
 void       p_pview_set_size(t_pview *pv_ptr, gint pv_width, gint pv_height, gint pv_check_size);
 void       p_pview_reset(t_pview *pv_ptr);
 
+void       p_pview_render_default_icon(t_pview   *pv_ptr);
 
 #endif

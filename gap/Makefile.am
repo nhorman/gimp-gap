@@ -133,6 +133,8 @@ gap_navigator_dialog_SOURCES = \
 	gap_navigator_dialog.c	\
 	gap_pdb_calls.c		\
 	gap_pdb_calls.h		\
+	gap_pview_da.c		\
+	gap_pview_da.h		\
 	gap_stock.c		\
 	gap_stock.h		\
 	gap_thumbnail.c		\

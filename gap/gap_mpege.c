@@ -36,6 +36,7 @@
  */
 
 /* revision history
+ * 1.3.16a; 2003/06/25   hof: no textsplitting across multiple lables (for translation)
  * 1.3.15a; 2003/06/21   hof: textspacing
  * 1.3.12a; 2003/05/02   hof: merge into CVS-gimp-gap project, 6digit framenumbers
  * 1.3.11a; 2003/01/18   hof: Default Value button for GUI dialog 
@@ -111,10 +112,13 @@ int p_mpege_info(t_anim_info *ainfo_ptr, char *errlist, t_gap_mpeg_encoder encod
 
   l_idx = 0;
   p_init_arr_arg(&argv[l_idx], WGT_LABEL_LEFT);
-  argv[l_idx].label_txt = _("Conditions to run mpeg_encode 1.5:");
   if(encoder == MPEG2ENCODE)
   {
     argv[l_idx].label_txt = _("Conditions to run mpeg2encode 1.2:");
+  }
+  else
+  {
+    argv[l_idx].label_txt = _("Conditions to run mpeg_encode 1.5:");
   }
   
 
@@ -128,51 +132,49 @@ int p_mpege_info(t_anim_info *ainfo_ptr, char *errlist, t_gap_mpeg_encoder encod
 
   l_idx++;
   p_init_arr_arg(&argv[l_idx], WGT_LABEL_LEFT);
-  argv[l_idx].label_txt = _("mpeg_encode 1.5 must be installed");
   if(encoder == MPEG2ENCODE)
   {
-    argv[l_idx].label_txt = _("mpeg2encode 1.2 must be installed");
+    argv[l_idx].label_txt = _("mpeg2encode 1.2 must be installed\n"
+                              "you can get mpeg2encode at\n"
+                              "http://www.mpeg.org/MSSG\n"
+                              "or at\n"
+                              "ftp://ftp.mpeg.org/pub/mpeg/mssg"
+                             );
+  }
+  else
+  {
+    argv[l_idx].label_txt = _("mpeg_encode 1.5 must be installed}\n"
+                              "you can get mpeg_encode at\n"
+                              "ftp://mm-ftp.cs.berkeley.edu/pub/multimedia/mpeg/bmt1r1.tar.gz"
+                             );
   }
 
-  l_idx++;
-  p_init_arr_arg(&argv[l_idx], WGT_LABEL_LEFT);
-  argv[l_idx].label_txt = _("you can get mpeg_encode at");
-  if(encoder == MPEG2ENCODE)
-  {
-    argv[l_idx].label_txt = _("you can get mpeg2encode at http://www.mpeg.org/MSSG");
-  }
-
-  l_idx++;
-  p_init_arr_arg(&argv[l_idx], WGT_LABEL_LEFT);
-  argv[l_idx].label_txt = "ftp://mm-ftp.cs.berkeley.edu/pub/multimedia/mpeg/bmt1r1.tar.gz";
-  if(encoder == MPEG2ENCODE)
-  {
-    argv[l_idx].label_txt = _("or at ftp://ftp.mpeg.org/pub/mpeg/mssg ");
-  }
 
   l_idx++;
   p_init_arr_arg(&argv[l_idx], WGT_LABEL_LEFT);
   argv[l_idx].label_txt = "2.)";
 
-  l_idx++;
-  p_init_arr_arg(&argv[l_idx], WGT_LABEL_LEFT);
-  argv[l_idx].label_txt = _("You need a series of single Images on disk (AnimFrames)");
 
   l_idx++;
   p_init_arr_arg(&argv[l_idx], WGT_LABEL_LEFT);
-  argv[l_idx].label_txt = _("all with fileformat JPEG (or YUV or PNM or PPM)");
   if(encoder == MPEG2ENCODE)
   {
-    argv[l_idx].label_txt = _("all with fileformat PPM (or YUV)");
+    argv[l_idx].label_txt = _("You need a series of single Images on disk (AnimFrames)\n"
+                              "all with fileformat JPEG (or YUV or PNM or PPM)\n"
+                              "all with fileformat PPM (or YUV)\n"
+                              "(use 'Frames Convert' from the Video Menu\n"
+                              "or 'Split Image to Frames' from the Video Menu)"
+                             );
+  }
+  else
+  {
+    argv[l_idx].label_txt = _("You need a series of single Images on disk (AnimFrames)\n"
+                              "all with fileformat JPEG (or YUV or PNM or PPM)\n"
+                              "(use 'Frames Convert' from the Video Menu\n"
+                              "or 'Split Image to Frames' from the Video Menu)"
+                             );
   }
 
-  l_idx++;
-  p_init_arr_arg(&argv[l_idx], WGT_LABEL_LEFT);
-  argv[l_idx].label_txt = _("(use 'Frames Convert' from the Video Menu");
-
-  l_idx++;
-  p_init_arr_arg(&argv[l_idx], WGT_LABEL_LEFT);
-  argv[l_idx].label_txt = _("or 'Split Image to Frames' from the Video Menu)");
 
   l_idx++;
   p_init_arr_arg(&argv[l_idx], WGT_LABEL_LEFT);
@@ -180,18 +182,17 @@ int p_mpege_info(t_anim_info *ainfo_ptr, char *errlist, t_gap_mpeg_encoder encod
 
   l_idx++;
   p_init_arr_arg(&argv[l_idx], WGT_LABEL_LEFT);
-  argv[l_idx].label_txt = _("All Images must have the same size,");
-
   if(encoder == MPEG_ENCODE)
   {
 
-     l_idx++;
-     p_init_arr_arg(&argv[l_idx], WGT_LABEL_LEFT);
-     argv[l_idx].label_txt = _("width and height must be a multiple of 16");
-
-     l_idx++;
-     p_init_arr_arg(&argv[l_idx], WGT_LABEL_LEFT);
-     argv[l_idx].label_txt = _("(use Scale or Crop from the Video Menu)");
+     argv[l_idx].label_txt = _("All Images must have the same size,\n"
+                               "width and height must be a multiple of 16\n"
+                               "(use Scale or Crop from the Video Menu)"
+                              );
+  }
+  else
+  {
+     argv[l_idx].label_txt = _("All Images must have the same size,");
   }
 
   l_idx++;

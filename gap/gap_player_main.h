@@ -86,6 +86,7 @@ typedef struct t_global_params {
   GtkWidget *status_label;
   GtkWidget *timepos_label;
   GtkWidget *table11;
+  GtkWidget *size_spinbutton;
 
   GTimer    *gtimer;
   gdouble   cycle_time_secs;
