@@ -17,7 +17,7 @@ msgstr ""
 "Project-Id-Version: gimp 2.2.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-01-17 23:11+0100\n"
-"PO-Revision-Date: 2005-01-17 23:31+0100\n"
+"PO-Revision-Date: 2005-01-19 23:51+0100\n"
 "Last-Translator: Marco Ciampa <ciampix@libero.it>\n"
 "Language-Team: gimp.linux.it\n"
 "MIME-Version: 1.0\n"
@@ -5967,7 +5967,7 @@ msgstr "Traccia audio in ingresso:"
 msgid ""
 "select input audiotrack in the videofile(s).(if your input videos have "
 "multiple audiotracks values > 1 usually refer to non-default language)"
-msgstr ""
+msgstr "seleziona le tracce audio in ingresso nei file video (se i video in ingresso possiedono tracce audio multiple, valori > 1 normalmente si riferiscono a una lingua non predefinita)."
 
 #: gap/gap_story_dialog.c:5463
 msgid "Output Audiotrack:"
@@ -5978,7 +5978,7 @@ msgid ""
 "output audiotrack to be generated in the storyboard file. The generated "
 "storyboard audiotrack will be a list of references to the audioparts in the "
 "input videos, corresponding to all used video clip references."
-msgstr ""
+msgstr "traccia audio in uscita generata nel file storyboard. La traccia audio dello storyboard generata, sarà un'elenco di riferimenti alle parti audio nei file video in ingresso, corrispondenti a tutti i riferimenti alle clip video usate."
 
 #: gap/gap_story_dialog.c:5476
 msgid "Replace Audiotrack:"
@@ -5988,7 +5988,7 @@ msgstr "Rimpiazza traccia audio:"
 msgid ""
 "ON: Allow replacing of already existing audio clip references  in the "
 "storyboard"
-msgstr ""
+msgstr "ACCESO: permette il rimpiazzo dei riferimenti all'audio clip nello storyboard"
 
 #. should use GIMP_STOCK_RESET if possible
 #: gap/gap_story_dialog.c:5487 gap/gap_story_dialog.c:5692
@@ -6007,6 +6007,10 @@ msgid ""
 "has already audio clip references at track %d.\n"
 "Use another track number or allow replace at next try."
 msgstr ""
+"Traccia tono originale non creata.\n"
+"Lo storyboard %s\n"
+"ha già riferimenti a una clip audio alla traccia %d.\n"
+"Usare un'altro numero di traccia o permettere il rimpiazzo al prossimo tentativo."
 
 #: gap/gap_story_dialog.c:5544
 msgid "automatic"
@@ -6025,19 +6029,17 @@ msgid "Name of the Cliplistfile"
 msgstr "Nome del file elenco clip"
 
 #: gap/gap_story_dialog.c:5599 gap/gap_story_dialog.c:5603
-#, fuzzy, c-format
+#, c-format
 msgid "Name: %s"
-msgstr "Nome:"
+msgstr "Nome: %s"
 
 #: gap/gap_story_dialog.c:5612
-#, fuzzy
 msgid "Master width of the resulting video in pixels"
-msgstr "Ampiezza dell'uscita video (pixel)"
+msgstr "Ampiezza principale del video risultante in pixel"
 
 #: gap/gap_story_dialog.c:5623
-#, fuzzy
 msgid "Master height of the resulting video in pixels)"
-msgstr "Altezza del video in uscita (pixel)"
+msgstr "Altezza principale del video risultante in pixel"
 
 #: gap/gap_story_dialog.c:5635
 msgid "Framerate in frames/sec."
@@ -6203,9 +6205,8 @@ msgid "Find Scene End"
 msgstr "Trova la fine della scena"
 
 #: gap/gap_story_properties.c:1650 gap/gap_story_properties.c:1661
-#, fuzzy
 msgid "Auto Scene Split"
-msgstr "Taglio scena Aoto"
+msgstr "Suddivisione automatica scene"
 
 #. the cliptype label
 #: gap/gap_story_properties.c:1693
@@ -6486,9 +6487,8 @@ msgstr "****"
 
 #. the Aspect Ratio Label(s)
 #: gap/gap_vex_dialog.c:2209
-#, fuzzy
 msgid "Aspect Ratio:"
-msgstr "Imposta rapporto dimensioni"
+msgstr "Rapporto dimensioni:"
 
 #. OLD percentage based seek is no longer supported
 #. * and the videoapi always should deliver exact frame positions now
@@ -6554,12 +6554,9 @@ msgid "Framenr 1:"
 msgstr "Frame nr 1:"
 
 #: gap/gap_vex_dialog.c:2404
-#, fuzzy
 msgid ""
 "Framenumber for 1st extracted frame (use 0 for keeping original framenumbers)"
-msgstr ""
-"Numero del primo frame estratto (usare 0 per mantenere i numeri di frame "
-"originali)"
+msgstr "Numero del primo frame estratto (usare 0 per mantenere i numeri di frame originali)"
 
 #: gap/gap_vex_dialog.c:2435
 msgid "0.0 .. no interpolation, 1.0 smooth interpolation at deinterlacing"
@@ -6580,14 +6577,12 @@ msgid "deinterlace (even lines only)"
 msgstr "deinterlaccia (solo linee pari)"
 
 #: gap/gap_vex_dialog.c:2443
-#, fuzzy
 msgid "deinterlace frames x 2 (odd 1st)"
-msgstr "deinterlaccia framesx2 (prima dispari)"
+msgstr "deinterlaccia frame x 2 (prima dispari)"
 
 #: gap/gap_vex_dialog.c:2444
-#, fuzzy
 msgid "deinterlace frames x 2 (even 1st)"
-msgstr "deinterlaccia framesx2 (prima pari)"
+msgstr "deinterlaccia frame x 2 (prima pari)"
 
 #: gap/gap_vex_dialog.c:2455
 msgid "Deinterlace splits each extracted frame in 2 frames"
@@ -6807,25 +6802,25 @@ msgid "Set Layer Opacity"
 msgstr "Imposta opacità livello"
 
 #: libgapvidapi/gap_vid_api_mpeg3.c:829
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "ERROR: Failed to write videoindex tocfile\n"
 "tocfile: '%s'\n"
 "%s"
 msgstr ""
 "ERRORE: fallita la scrittura dell'indice video\n"
-"file: '%s':\n"
+"file indice '%s':\n"
 "%s"
 
 #: libgapvidapi/gap_vid_api_vidindex.c:401
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "ERROR: Failed to write videoindex file\n"
 "file: '%s'\n"
 "%s"
 msgstr ""
 "ERRORE: fallita la scrittura dell'indice video\n"
-"file: '%s':\n"
+"file: '%s'\n"
 "%s"
 
 #: libgapvidutil/gap_gve_story.c:577
@@ -6857,14 +6852,12 @@ msgid "ready"
 msgstr "pronto"
 
 #: libgapvidutil/gap_gve_story.c:2002
-#, fuzzy
 msgid "extracting audio to tmp audiofile"
-msgstr "Converti file audio in filetmp"
+msgstr "estrazione audio in file audio tmp"
 
 #: libgapvidutil/gap_gve_story.c:2007
-#, fuzzy
 msgid "seeking audio"
-msgstr "controllo picchi audio"
+msgstr "posizionamento audio"
 
 #: libgapvidutil/gap_gve_story.c:2218
 #, c-format
@@ -6872,9 +6865,8 @@ msgid "file not found:  %s for audioinput"
 msgstr "file non trovato:  %s per l'input audio"
 
 #: libgapvidutil/gap_gve_story.c:2333 libgapvidutil/gap_gve_story.c:2471
-#, fuzzy
 msgid "converting audio (via external programm)"
-msgstr "Configurazione del programma strumento audio esterno"
+msgstr "conversione audio (tramite programma esterno)"
 
 #: libgapvidutil/gap_gve_story.c:2392 libgapvidutil/gap_gve_story.c:2520
 #, c-format
