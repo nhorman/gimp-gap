@@ -26,6 +26,7 @@
  */
 
 /* revision history:
+ * gimp    1.3.23a; 2003/11/26  hof: follow API changes for gimp_dialog_new
  * gimp    1.3.20d; 2003/10/14  hof: creation
  */
 
@@ -65,6 +66,7 @@
 #define  GAP_SUMM_HSV(h, s, v) ((50 * h) + (30 * v) + (20 * s))
 #define  GAP_SUMM_RGB(r, g, b) ((     r) + (     g) + (     b))
 
+#define GAP_BLUEBOX_RESPONSE_RESET 1
 
 
 /*  some definitions   */
@@ -92,7 +94,7 @@ extern int gap_debug;
  */
 static void       p_reset_callback(GtkWidget *w, GapBlueboxGlobalParams *bbp);
 static void       p_quit_callback(GtkWidget *w, GapBlueboxGlobalParams *bbp);
-static void       p_ok_callback(GtkWidget *w, GapBlueboxGlobalParams *bbp);
+static void       p_bluebox_response(GtkWidget *w, gint response_id, GapBlueboxGlobalParams *bbp);
 static void       p_set_waiting_cursor(GapBlueboxGlobalParams *bbp);
 static void       p_set_active_cursor(GapBlueboxGlobalParams *bbp);
 static void       p_apply_callback(GtkWidget *w, GapBlueboxGlobalParams *bbp);
@@ -241,26 +243,19 @@ gap_bluebox_create_dialog (GapBlueboxGlobalParams *bbp)
 
 
   dlg = gimp_dialog_new (_("Bluebox"), GAP_BLUEBOX_PLUGIN_NAME,
+                         NULL, 0,
 			 gimp_standard_help_func, GAP_BLUEBOX_PLUGIN_NAME".html",
-			 GTK_WIN_POS_MOUSE,
-			 FALSE, TRUE, FALSE,
 
-			 GIMP_STOCK_RESET, p_reset_callback,
-			 bbp, NULL, NULL, FALSE, FALSE,
-
-			 GTK_STOCK_CANCEL, p_quit_callback,
-			 bbp, NULL, NULL, FALSE, TRUE,      /* connect_delete */
-
-			 GTK_STOCK_OK, p_ok_callback,
-			 bbp, NULL, NULL, TRUE, FALSE,
-
+			 GIMP_STOCK_RESET, GAP_BLUEBOX_RESPONSE_RESET,
+			 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+			 GTK_STOCK_OK,     GTK_RESPONSE_OK,
 			 NULL);
 
   bbp->shell = dlg;
 
-  g_signal_connect (G_OBJECT (bbp->shell), "destroy",
-		    G_CALLBACK (p_quit_callback),
-		    bbp);
+  g_signal_connect (G_OBJECT (bbp->shell), "response",
+                    G_CALLBACK (p_bluebox_response),
+                    bbp);
 
 
   main_vbox = gtk_vbox_new (FALSE, 4);
@@ -615,20 +610,29 @@ p_quit_callback(GtkWidget *w, GapBlueboxGlobalParams *bbp)
 
 
 /* ---------------------------------
- * p_ok_callback
+ * p_bluebox_response
  * ---------------------------------
  */
 static void
-p_ok_callback(GtkWidget *w, GapBlueboxGlobalParams *bbp)
+p_bluebox_response (GtkWidget *widget,
+                 gint       response_id,
+                 GapBlueboxGlobalParams *bbp)
 {
-  if(bbp)
+  switch (response_id)
   {
-     bbp->run_flag = TRUE;
+    case GAP_BLUEBOX_RESPONSE_RESET:
+      p_reset_callback(widget, bbp);
+      break;
+
+    case GTK_RESPONSE_OK:
+      bbp->run_flag = TRUE;
+
+    default:
+      gtk_widget_hide (widget);
+      p_quit_callback (widget, bbp);
+      break;
   }
-  
-  p_quit_callback(NULL, bbp);
- 
-}  /* end p_ok_callback */
+}  /* end p_bluebox_response */
 
 /* ---------------------------------
  * p_set_waiting_cursor

@@ -26,6 +26,7 @@
  */
 
 /* revision history:
+ * gimp    1.3.23a; 2003/11/26  hof: follow API changes for gimp_dialog_new
  * gimp    1.3.20d; 2003/10/18  hof: sourcecode cleanup, remove close button
  * gimp    1.3.19a; 2003/09/06  hof: call plug_in_gap_videoframes_player with dummy audioparameters
  * gimp    1.3.18b; 2003/08/27  hof: fixed waiting cursor for long running ops
@@ -3946,11 +3947,8 @@ int  gap_navigator(gint32 image_id)
   
   /*  The main shell */
   shell = gimp_dialog_new (_("Video Navigator"), "gap_navigator",
+                           NULL, 0,
                            gimp_standard_help_func, "filters/gap_navigator_dialog.html",
-                           GTK_WIN_POS_NONE,
-                           FALSE,   /* allow_shrink */
-                           TRUE,    /* allow_grow */
-                           TRUE,    /* auto_shrink */
                            NULL     /* end marker for va_args */
                            );
   
