@@ -72,7 +72,7 @@ AC_SUBST(LOCALEDIR)
 
 AC_OUTPUT([
 Makefile
+images/Makefile
 gap/Makefile
-pixmaps/Makefile
 po/Makefile.in
 ])

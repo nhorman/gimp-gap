@@ -55,6 +55,8 @@ gap_plugins_SOURCES = \
 	gap_resi_dialog.h	\
 	gap_split.c		\
 	gap_split.h		\
+	gap_stock.c		\
+	gap_stock.h		\
 	gap_thumbnail.c		\
 	gap_thumbnail.h		\
 	gap_vin.c		\
@@ -77,6 +79,8 @@ gap_filter_SOURCES = \
 	gap_lastvaldesc.h	\
 	gap_pdb_calls.c		\
 	gap_pdb_calls.h		\
+	gap_stock.c		\
+	gap_stock.h		\
 	gap_vin.c		\
 	gap_vin.h
 
@@ -102,6 +106,8 @@ gap_frontends_SOURCES = \
 	gap_pdb_calls.h		\
 	gap_thumbnail.c		\
 	gap_thumbnail.h		\
+	gap_stock.c		\
+	gap_stock.h		\
 	gap_vin.c		\
 	gap_vin.h
 
@@ -110,6 +116,8 @@ gap_name2layer_SOURCES = \
 	gap_arr_dialog.h	\
 	gap_lastvaldesc.c	\
 	gap_lastvaldesc.h	\
+	gap_stock.c		\
+	gap_stock.h		\
 	gap_name2layer_main.c
 
 gap_navigator_dialog_SOURCES = \
@@ -124,6 +132,8 @@ gap_navigator_dialog_SOURCES = \
 	gap_navigator_dialog.c	\
 	gap_pdb_calls.c		\
 	gap_pdb_calls.h		\
+	gap_stock.c		\
+	gap_stock.h		\
 	gap_thumbnail.c		\
 	gap_thumbnail.h		\
 	gap_vin.c		\
@@ -152,6 +162,8 @@ gap_onion_SOURCES = \
 	gap_pdb_calls.h		\
 	gap_thumbnail.c		\
 	gap_thumbnail.h		\
+	gap_stock.c		\
+	gap_stock.h		\
 	gap_vin.c		\
 	gap_vin.h
 

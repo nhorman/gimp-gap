@@ -1,3 +1,15 @@
+2003-06-03 Wolfgang Hofer <hof@gimp.org>
+      - switched to PNG stock-icons 
+          added gap_stock.c [.h]
+          added images directory
+          removed pixmaps directory
+          (gap_navigator_dialog.c, gap_mov_dialog.c)
+      - gap_vin.c : using setlocale independent float conversion procedures  g_ascii_strtod() and g_ascii_dtostr()
+      - gap_thumbnail.c:  check only for thumbnail-size "none" (suggested by sven see #113033)
+                          removed p_gimp_file_has_valid_thumbnail
+
+       ### unstable prerelease: gimp-gap-1.3.14a_pre37  (http://sven.gimp.org/gimp-gap-2003-05-30.tar.gz)
+
 2003-05-27 Wolfgang Hofer <hof@gimp.org>
        - GAP thumbnail handling procedures are now in module gap_thumbnail
          - support for new PNG thumbnail standard

@@ -21,6 +21,7 @@
  */
 
 /* revision history:
+ * version 1.3.14b; 2003/06/03  hof: gboolean retcode for thumbnail procedures
  * version 1.3.14a; 2003/05/24  hof: moved vin Procedures to gap_vin module
  * version 1.3.5a;  2002/04/20  hof: p_gimp_layer_new_from_drawable. (removed set_drabale)
  * version 1.3.4a;  2002/03/12  hof: removed duplicate wrappers that are available in libgimp too.
@@ -45,10 +46,10 @@ gint32 p_gimp_rotate_degree(gint32 drawable_id, gboolean interpolation, gdouble 
 gboolean p_gimp_displays_reconnect(gint32 old_image_id, gint32 new_image_id);
 gint32   p_gimp_layer_new_from_drawable(gint32 drawable_id, gint32 dst_image_id);
 
-gint   p_gimp_file_save_thumbnail(gint32 image_id, char* filename);
-gint   p_gimp_file_load_thumbnail(char* filename, gint32 *th_width, gint32 *th_height, gint32 *th_data_count, unsigned char **th_data);
+gboolean   p_gimp_file_save_thumbnail(gint32 image_id, char* filename);
+gboolean   p_gimp_file_load_thumbnail(char* filename, gint32 *th_width, gint32 *th_height, gint32 *th_data_count, unsigned char **th_data);
 
-gint   p_gimp_image_thumbnail(gint32 image_id, gint32 width, gint32 height,
+gboolean   p_gimp_image_thumbnail(gint32 image_id, gint32 width, gint32 height,
                               gint32 *th_width, gint32 *th_height, gint32 *th_bpp,
 			      gint32 *th_data_count, unsigned char **th_data);
 

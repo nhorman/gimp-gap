@@ -31,6 +31,8 @@
  */
 
 /* revision history:
+ * 1.3.14b  2003/06/03   hof: check only for thumbnail-size "none" (suggested by sven see #113033)
+ *                            removed p_gimp_file_has_valid_thumbnail
  * 1.3.14a  2003/05/27   hof: created
  */
 
@@ -229,8 +231,7 @@ p_gap_filename_to_png_thumb_name (const gchar *filename)
  * responsible for video thumbnail configuration
  * the caller should g_free the retuned string
  *
- * checking gimprc both for "thumbnail-size" (GIMP native, values:  "none", "normal", "large"
- * and                  for "video-thumbnails" (GAP values:  "none", "png")
+ * checking gimprc for "thumbnail-size" (GIMP native, values:  "none", "normal", "large"
  *
  */
 char *   
@@ -241,13 +242,12 @@ p_gimprc_query_thumbnailsave(void)
     g_free(global_thumbnail_mode);
   }
 
-  global_thumbnail_mode = gimp_gimprc_query("video-thumbnails");
-  
-  if(global_thumbnail_mode == NULL)
+  global_thumbnail_mode = gimp_gimprc_query("thumbnail-size");
+  if(global_thumbnail_mode)
   {
-     global_thumbnail_mode = gimp_gimprc_query("thumbnail-size");
+    return g_strdup(global_thumbnail_mode);
   }
-  return g_strdup(global_thumbnail_mode);
+  return(NULL);
 }  /* end p_gimprc_query_thumbnailsave */
 
 
@@ -255,20 +255,15 @@ p_gimprc_query_thumbnailsave(void)
  * p_thumbnailsave_is_on
  * -------------------------------
  * checking gimprc if thumnail saving is enabled.
- * both keywords "video-thumbnails" value:  "none",
- * and           "thumbnail-size" values:  "none"
- * are checked.
+ * keyword "thumbnail-size" values:  "none"
+ * is checked.
  */
 gboolean   
 p_thumbnailsave_is_on(void)
 {
   if(global_thumbnail_mode == NULL)
   {
-    global_thumbnail_mode = gimp_gimprc_query("video-thumbnails");
-    if(global_thumbnail_mode == NULL)
-    {
-       global_thumbnail_mode = gimp_gimprc_query("thumbnail-size");
-    }
+    global_thumbnail_mode = gimp_gimprc_query("thumbnail-size");
   }
 
   if(global_thumbnail_mode)
@@ -297,7 +292,7 @@ p_thumbnailsave_is_on(void)
  *
  * Conditional Thubnail save Procedure
  */
-gint   
+gboolean   
 p_cond_gimp_file_save_thumbnail(gint32 image_id, char* filename)
 {
   if (!p_thumbnailsave_is_on())
@@ -305,7 +300,7 @@ p_cond_gimp_file_save_thumbnail(gint32 image_id, char* filename)
     /* Thumbnails are turned off via (gimprc) Preferences
      * return without saving any thumbnails
      */
-    return 0;  /* OK */
+    return TRUE;  /* OK */
   }
 
   return (p_gimp_file_save_thumbnail(image_id, filename));
@@ -460,132 +455,6 @@ p_copy_png_thumb(char *filename_src, char *filename_dst)
   g_free(dst_png_thumb);
 
 } /* end p_copy_png_thumb  */
-
-
-
-/* -------------------------------
- * p_gimp_file_has_valid_thumbnail
- * -------------------------------
- *
- * check if filename has a valid thumbnail
- * 1. check if filename exists
- * 2. check for the new PNG standard (Mtime and URI must match exact)
- * 3. if there is no PNG thumbnail at all then check the old .xvpics standard
- */
-gboolean 
-p_gimp_file_has_valid_thumbnail(char *filename)
-{
-  struct stat  l_stat_thumb;
-  struct stat  l_stat_image;
-  char        *l_xvpics_thumb;
-
-  GdkPixbuf          *pixbuf     = NULL;
-  GError             *error = NULL;
-  gint               ii;
-  const gchar        *option_t_str;
-  const gchar        *option_uri;
-  gchar              *uri;
-  gchar              *src_png_thumb;
-  gchar              *src_png_thumb_full;
-  long               thumb_mtime;
-  gint               png_thumb_is_valid;   /* 0 no png thumb, 1 valid png thumb, 2 invalid png thumb */
-
-  png_thumb_is_valid = 0;
-
-  if (0 != stat(filename, &l_stat_image))
-  {
-    return(FALSE);  /* no imagefile was found, cant have a valid thumbnail */
-  }
-  
-  /* first we check for the Thumb::MTime Tag in new PNG thumbnail standard
-   */
-  if(thumb_dir == NULL)
-  {
-    p_gap_init_thumb_dirs();
-  }
-
-  src_png_thumb = p_gap_filename_to_png_thumb_name(filename);
-  if(src_png_thumb)
-  {
-    /* check only the normal and large subdir (but not the fail subdir) */
-    for (ii = 1; ii < G_N_ELEMENTS (thumb_subdirs); ii++)
-    {
-      src_png_thumb_full = g_build_filename (thumb_subdirs[ii], src_png_thumb, NULL);
-      if(src_png_thumb_full)
-      {
-        if(p_file_exists(src_png_thumb_full) == 1 )
-        {
-            png_thumb_is_valid = 2;  /* assume invalid thumbnail */
-            pixbuf = gdk_pixbuf_new_from_file (src_png_thumb_full, &error);
-
-            if(pixbuf)
-            {
-
-               uri = p_gap_filename_to_uri(filename);
-               option_uri = gdk_pixbuf_get_option (pixbuf, TAG_THUMB_URI);
-               option_t_str = gdk_pixbuf_get_option (pixbuf, TAG_THUMB_MTIME);
-
-               if((option_t_str) && (option_uri))
-               {
-                 sscanf (option_t_str, "%ld", &thumb_mtime);
-                  
-                 if((strcmp(uri, option_uri) == 0)
-                 && (thumb_mtime == l_stat_image.st_mtime))
-                 {
-                   png_thumb_is_valid = 1;  /* thumbnail is valid */
-                 }
-               }
-
-               g_object_unref(pixbuf);
-            }
-        }
-        g_free(src_png_thumb_full);
-      }
-      
-      if(png_thumb_is_valid != 0)
-      {
-        break;
-      }
-    }
-
-    g_free(src_png_thumb);
-  }
-
-  if(png_thumb_is_valid == 1)
-  {
-    return TRUE;
-  }
-  if(png_thumb_is_valid == 2)
-  {
-    return FALSE;
-  }
-
-  /* there was no PNG thumnail at all, so we check the old .xvpics standard too */
-  l_xvpics_thumb = p_alloc_xvpics_thumbname(filename);
-     
-  if(l_xvpics_thumb)
-  {
-    if (0 == stat(l_xvpics_thumb, &l_stat_thumb))
-    {
-      /* thumbnail filename exists */
-      if(S_ISREG(l_stat_thumb.st_mode))
-      {
-          if(l_stat_image.st_mtime <= l_stat_thumb.st_mtime)
-          {
-           /* time of last modification of image is older (less or equal)
-            * than last modification of the thumbnail
-            * So we can assume the thumbnail is valid
-            */
-            g_free(l_xvpics_thumb);
-            return TRUE;
-          }
-      }
-    }
-    g_free(l_xvpics_thumb);
-  }
-
-  return FALSE;
-}  /* end p_gimp_file_has_valid_thumbnail */
 
 
 /* ------------------------------

@@ -38,6 +38,7 @@
  */
 
 /* revision history:
+ * gimp    1.3.14b; 2003/06/03  hof: added gap_stock_init
  * gimp    1.3.14a; 2003/05/19  hof: GUI standard (OK ist rightmost button)
  *                                   changed WGT_INT, and WGT_FLT from entry to spinbutton
  *                                   added WGT_FONTSEL
@@ -82,6 +83,7 @@
 
 /* private includes */
 #include "gap_arr_dialog.h"
+#include "gap_stock.h"
 #include "gap-intl.h"
 
 typedef void (*t_entry_cb_func) (GtkWidget *widget, t_arr_arg *arr_ptr);
@@ -1051,7 +1053,8 @@ gint p_array_std_dialog(char *title_txt,
   }
 
   gimp_ui_init ("gap_std_dialog", FALSE);
-
+  gap_stock_init();
+  
   /* dialog */
   g_arrint.dlg = gtk_dialog_new ();
   gtk_window_set_title (GTK_WINDOW (g_arrint.dlg), title_txt);

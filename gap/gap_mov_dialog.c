@@ -30,9 +30,12 @@
  */
 
 /* revision history:
+ * gimp    1.3.14b; 2003/06/03  hof: added gap_stock_init
+ *                                   replaced mov_gtk_button_new_with_pixmap  by  gtk_button_new_from_stock
  * gimp    1.3.14a; 2003/05/24  hof: moved render procedures to module gap_mov_render
  *                                   placed OK button right.
  *                                   added pixmaps (thanks to Jakub Steiner for providing the pixmaps)
+ *                              sven:  replaced _gimp_help_init by gimp_ui_init
  * gimp    1.3.12a; 2003/05/03  hof: merge into CVS-gimp-gap project, replace gimp_help_init by _gimp_help_init
  * gimp    1.3.4b;  2002/03/15  hof: temp. reverted setting of preview widget size.
  * gimp    1.3.4;   2002/03/12  hof: ported to gtk+-2.0.0
@@ -95,21 +98,8 @@
 #include "gap_vin.h"
 #include "gap_arr_dialog.h"
 
+#include "gap_stock.h"
 
-#include <pixmaps/add-point.xpm>
-#include <pixmaps/anim-preview.xpm>
-#include <pixmaps/insert-point.xpm>
-#include <pixmaps/reset-point.xpm>
-#include <pixmaps/reset-all-points.xpm>
-#include <pixmaps/delete-all-points.xpm>
-#include <pixmaps/delete-point.xpm>
-#include <pixmaps/first-point.xpm>
-#include <pixmaps/last-point.xpm>
-#include <pixmaps/next-point.xpm>
-#include <pixmaps/prev-point.xpm>
-#include <pixmaps/rotate-follow.xpm>
-#include <pixmaps/source-image.xpm>
-#include <pixmaps/stepmode.xpm>
 
 extern      int gap_debug; /* ==0  ... dont print debug infos */
 
@@ -272,7 +262,6 @@ static void mov_stepmode_menu_callback  (GtkWidget *, gpointer);
 static void mov_gint_toggle_callback    (GtkWidget *, gpointer);
 static void mov_show_path_callback      (GtkWidget *, gpointer);
 
-static GtkWidget * mov_gtk_button_new_with_pixmap (char* label_text, GtkWidget *shell, char **pixmap_data);
 
 /*  the option menu items -- the paint modes  */
 static MenuItem option_paint_items[] =
@@ -469,6 +458,7 @@ mov_dialog ( GimpDrawable *drawable, t_mov_path_preview *path_ptr,
   if(gap_debug) printf("GAP-DEBUG: START mov_dialog\n");
 
   gimp_ui_init ("gap_move", FALSE);
+  gap_stock_init();
 
   /* dialog */
   dlg = gtk_dialog_new ();
@@ -512,7 +502,7 @@ mov_dialog ( GimpDrawable *drawable, t_mov_path_preview *path_ptr,
 		    G_CALLBACK  (mov_upvw_callback),
 		    path_ptr);
 
-  button = mov_gtk_button_new_with_pixmap (  _("Anim Preview"), path_ptr->shell, anim_preview_xpm);
+  button = gtk_button_new_from_stock ( GAP_STOCK_ANIM_PREVIEW );
   GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
   gtk_box_pack_start (GTK_BOX (hbbox), button, TRUE, TRUE, 0);
   gimp_help_set_help_data(button,
@@ -1742,95 +1732,6 @@ mov_src_sel_create()
 }	/* end mov_src_sel_create */
 
 /* ============================================================================
- * mov_gtk_button_new_with_pixmap
- * ============================================================================
- * create button with pixmap and label
- * both pixmap_data and label are optional (pass NULL iif you dont need one of them)
- * return the newly created button widget
- */
-
-static GtkWidget *
-mov_gtk_button_new_with_pixmap (char* label_text, GtkWidget *shell, char **pixmap_data)
-{
-  GtkWidget      *label;
-  GtkWidget      *button;
-  GtkWidget      *pixmap_widget;
-  GdkPixmap      *pixmap;
-  GdkBitmap      *mask;
-  /* GtkStyle       *style; */
-  GdkColormap    *colormap;
-
-  label = NULL;
-  pixmap_widget = NULL;
-  
-  button = gtk_button_new ();
-
-  if (label_text)
-  { 
-    label = gtk_label_new ( label_text );
-  }
-
-  if(pixmap_data)
-  {
-    /* style = gtk_widget_get_style (shell);
-     * printf("style: %d\n", (int)style);
-     * colormap = gtk_widget_get_colormap (shell);
-     * pixmap = gdk_pixmap_create_from_xpm_d (shell->window,
-     *                                        &mask,
-     *					     &style->bg[GTK_STATE_NORMAL],
-     *				     pixmap_data
-     *                                    );
-     */
-     colormap = gtk_widget_get_colormap (shell);
-     pixmap = gdk_pixmap_colormap_create_from_xpm_d (NULL,
-                                             colormap,
-                                             &mask,
-					     NULL,
-					     pixmap_data
-                                            );
-     if(pixmap == NULL)
-     {
-       printf("could not create pixmap for label: %s\n", label_text);
-     }
-     else
-     {
-       pixmap_widget = gtk_pixmap_new (pixmap, mask);
-     }
-
-   }
-   if(pixmap_widget) 
-   {
-     GtkWidget *hbox;
-
-     hbox = gtk_hbox_new (FALSE, 6);
-
-     gtk_box_pack_start (GTK_BOX (hbox), pixmap_widget, FALSE, FALSE, 0);
-     if(label)
-     {
-       gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
-       gtk_widget_show (label);
-     }
-
-     gtk_widget_show (pixmap_widget);
-     gtk_widget_show (hbox);
-
-     gtk_container_add (GTK_CONTAINER (button), hbox);
-   }
-   else
-   {
-     if(label)
-     {
-       gtk_widget_show (label);
-
-       gtk_container_add (GTK_CONTAINER (button), label);
-     }
-   }
-
-  return(button);
-}  /* end mov_gtk_button_new_with_pixmap */
-
-
-/* ============================================================================
  * Create new path_preview Frame, and return it (GtkFrame).
  *   A frame that contains one preview and the entries of the current point
  *   One "Point" has:
@@ -2116,7 +2017,7 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_path_preview *path_ptr)
 
   row++;
 
-  button = mov_gtk_button_new_with_pixmap ( _("Add Point"), path_ptr->shell, add_point_xpm);
+  button = gtk_button_new_from_stock ( GAP_STOCK_ADD_POINT );
   GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
   gtk_table_attach( GTK_TABLE(button_table), button, 0, 1, row, row+1,
 		    GTK_FILL, 0, 0, 0 );
@@ -2146,7 +2047,7 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_path_preview *path_ptr)
 
   row++;
 
-  button = mov_gtk_button_new_with_pixmap ( _("Insert Point"), path_ptr->shell, insert_point_xpm);
+  button = gtk_button_new_from_stock ( GAP_STOCK_INSERT_POINT );
   GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
   gtk_table_attach( GTK_TABLE(button_table), button, 0, 1, row, row+1,
 		    GTK_FILL, 0, 0, 0 );
@@ -2158,7 +2059,7 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_path_preview *path_ptr)
 		    G_CALLBACK (mov_pins_callback),
 		    path_ptr);
 
-  button = mov_gtk_button_new_with_pixmap ( _("Delete Point"), path_ptr->shell, delete_point_xpm);
+  button = gtk_button_new_from_stock ( GAP_STOCK_DELETE_POINT );
   GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
   gtk_table_attach( GTK_TABLE(button_table), button, 1, 2, row, row+1,
 		    GTK_FILL, 0, 0, 0 );
@@ -2172,7 +2073,7 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_path_preview *path_ptr)
 
   row++;
 
-  button = mov_gtk_button_new_with_pixmap ( _("Prev Point"), path_ptr->shell, prev_point_xpm);
+  button = gtk_button_new_from_stock ( GAP_STOCK_PREV_POINT );
   GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
   gtk_table_attach( GTK_TABLE(button_table), button, 0, 1, row, row+1,
 		    GTK_FILL, 0, 0, 0 );
@@ -2184,7 +2085,7 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_path_preview *path_ptr)
 		    G_CALLBACK (mov_pprev_callback),
 		    path_ptr);
 
-  button = mov_gtk_button_new_with_pixmap ( _("Next Point"), path_ptr->shell, next_point_xpm);
+  button = gtk_button_new_from_stock ( GAP_STOCK_NEXT_POINT );
   GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
   gtk_table_attach( GTK_TABLE(button_table), button, 1, 2, row, row+1,
 		    GTK_FILL, 0, 0, 0 );
@@ -2198,7 +2099,7 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_path_preview *path_ptr)
 
   row++;
 
-  button = mov_gtk_button_new_with_pixmap ( _("First Point"), path_ptr->shell, first_point_xpm);
+  button = gtk_button_new_from_stock ( GAP_STOCK_FIRST_POINT );
   GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
   gtk_table_attach( GTK_TABLE(button_table), button, 0, 1, row, row+1,
 		    GTK_FILL, 0, 0, 0 );
@@ -2210,7 +2111,7 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_path_preview *path_ptr)
 		    G_CALLBACK (mov_pfirst_callback),
 		    path_ptr);
 
-  button = mov_gtk_button_new_with_pixmap ( _("Last Point"), path_ptr->shell, last_point_xpm);
+  button = gtk_button_new_from_stock ( GAP_STOCK_LAST_POINT );
   GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
   gtk_table_attach( GTK_TABLE(button_table), button, 1, 2, row, row+1,
 		    GTK_FILL, 0, 0, 0 );
@@ -2224,7 +2125,7 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_path_preview *path_ptr)
 
   row++;
 
-  button = mov_gtk_button_new_with_pixmap ( _("Reset Point"), path_ptr->shell, reset_point_xpm);
+  button = gtk_button_new_from_stock ( GAP_STOCK_RESET_POINT );
   GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
   gtk_table_attach( GTK_TABLE(button_table), button, 0, 1, row, row+1,
 		    GTK_FILL, 0, 0, 0 );
@@ -2236,7 +2137,7 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_path_preview *path_ptr)
 		    G_CALLBACK (mov_pclr_callback),
 		    path_ptr);
 
-  button = mov_gtk_button_new_with_pixmap ( _("Reset All Points"), path_ptr->shell, reset_all_points_xpm);
+  button = gtk_button_new_from_stock ( GAP_STOCK_RESET_ALL_POINTS );
   GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
   gtk_table_attach( GTK_TABLE(button_table), button, 1, 2, row, row+1,
 		    GTK_FILL, 0, 0, 0 );
@@ -2251,7 +2152,7 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_path_preview *path_ptr)
 
   row++;
 
-  button = mov_gtk_button_new_with_pixmap ( _("Rotate Follow"), path_ptr->shell, rotate_follow_xpm);
+  button = gtk_button_new_from_stock ( GAP_STOCK_ROTATE_FOLLOW );
   GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
   gtk_table_attach( GTK_TABLE(button_table), button, 0, 1, row, row+1,
 		    GTK_FILL, 0, 0, 0 );
@@ -2265,7 +2166,7 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_path_preview *path_ptr)
 		    G_CALLBACK (mov_prot_follow_callback),
 		    path_ptr);
 
-  button = mov_gtk_button_new_with_pixmap ( _("Delete All Points"), path_ptr->shell, delete_all_points_xpm);
+  button = gtk_button_new_from_stock ( GAP_STOCK_DELETE_ALL_POINTS );
   GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
   gtk_table_attach( GTK_TABLE(button_table), button, 1, 2, row, row+1,
 		    GTK_FILL, 0, 0, 0 );

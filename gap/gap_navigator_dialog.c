@@ -70,6 +70,8 @@
 
 
 /* revision history:
+ * gimp    1.3.14b; 2003/06/03  hof: added gap_stock_init
+ *                                   ops_button_box_new: now using stock buttons instead of xpm pixmap data
  * gimp    1.3.14a; 2003/05/27  hof: replaced old workaround procedure readXVThumb by legal API gimp_file_load_thumbnail
  *                                   replaced scale widgets by spinbuttons
  * gimp    1.3.12a; 2003/05/03  hof: merge into CVS-gimp-gap project
@@ -107,6 +109,10 @@ static char *gap_navigator_version = "1.3.14a; 2003/05/27";
 #include <libgimp/gimp.h>
 #include <libgimp/gimpui.h>
 
+
+#include "gap_stock.h"
+
+/*
 #include <pixmaps/update.xpm>
 #include <pixmaps/play.xpm>
 #include <pixmaps/duplicate.xpm>
@@ -116,6 +122,7 @@ static char *gap_navigator_version = "1.3.14a; 2003/05/27";
 #include <pixmaps/next.xpm>
 #include <pixmaps/first.xpm>
 #include <pixmaps/last.xpm>
+*/
 
 
 #include "gap_navi_activtable.h"
@@ -161,7 +168,7 @@ typedef struct _OpsButton OpsButton;
 
 struct _OpsButton 
 {
-  gchar         **xpm_data;       /*  xpm data for the button  */
+  const char     *stock_id;       /*  STOCK id for the stock button  */
   OpsButtonFunc   callback;       /*  callback function        */
   OpsButtonFunc  *ext_callbacks;  /*  callback functions when
 				   *  modifiers are pressed    */
@@ -383,21 +390,21 @@ static OpsButtonFunc navi_dialog_vcr_goto_next_ext_callbacks[] =
 
 static OpsButton frames_ops_buttons[] =
 {
-  { play_xpm, OPS_BUTTON_FUNC (navi_dialog_vcr_play_callback), navi_dialog_vcr_play_ext_callbacks,
+  { GAP_STOCK_PLAY, OPS_BUTTON_FUNC (navi_dialog_vcr_play_callback), navi_dialog_vcr_play_ext_callbacks,
     N_("Playback         \n"
        "<Shift> optimized"),
     "#playback",
     NULL, 0 },
-  { update_xpm, OPS_BUTTON_FUNC (navi_dialog_thumb_update_callback), navi_dialog_update_ext_callbacks,
+  { GAP_STOCK_UPDATE, OPS_BUTTON_FUNC (navi_dialog_thumb_update_callback), navi_dialog_update_ext_callbacks,
     N_("Smart Update Thumbnails\n"
        "<Shift> forced upd"),
     "#update",
     NULL, 0 },
-  { duplicate_xpm, OPS_BUTTON_FUNC (navi_dialog_frames_duplicate_frame_callback), NULL,
+  { GAP_STOCK_DUPLICATE, OPS_BUTTON_FUNC (navi_dialog_frames_duplicate_frame_callback), NULL,
     N_("Duplicate selected Frames"),
     "#duplicate",
     NULL, 0 },
-  { delete_xpm, OPS_BUTTON_FUNC (navi_dialog_frames_delete_frame_callback), NULL,
+  { GAP_STOCK_DELETE, OPS_BUTTON_FUNC (navi_dialog_frames_delete_frame_callback), NULL,
     N_("Delete selected Frames"),
     "#delete",
     NULL, 0 },
@@ -406,21 +413,21 @@ static OpsButton frames_ops_buttons[] =
 
 static OpsButton vcr_ops_buttons[] =
 {
-  { first_xpm, OPS_BUTTON_FUNC (navi_dialog_vcr_goto_first_callback), NULL,
+  { GAP_STOCK_FIRST, OPS_BUTTON_FUNC (navi_dialog_vcr_goto_first_callback), NULL,
     N_("Goto 1st Frame"),
     "#goto_first",
     NULL, 0 },
-  { prev_xpm, OPS_BUTTON_FUNC (navi_dialog_vcr_goto_prev_callback), navi_dialog_vcr_goto_prev_ext_callbacks,
+  { GAP_STOCK_PREV, OPS_BUTTON_FUNC (navi_dialog_vcr_goto_prev_callback), navi_dialog_vcr_goto_prev_ext_callbacks,
     N_("Goto prev Frame\n"
        "<Shift> use timezoom stepsize"),
     "#goto_previous",
     NULL, 0 },
-  { next_xpm, OPS_BUTTON_FUNC (navi_dialog_vcr_goto_next_callback), navi_dialog_vcr_goto_next_ext_callbacks,
+  { GAP_STOCK_NEXT, OPS_BUTTON_FUNC (navi_dialog_vcr_goto_next_callback), navi_dialog_vcr_goto_next_ext_callbacks,
     N_("Goto next Frame\n"
        "<Shift> use timezoom stepsize"),
     "#goto_next",
     NULL, 0 },
-  { last_xpm, OPS_BUTTON_FUNC (navi_dialog_vcr_goto_last_callback), NULL,
+  { GAP_STOCK_LAST, OPS_BUTTON_FUNC (navi_dialog_vcr_goto_last_callback), NULL,
     N_("Goto last Frame"),
     "#goto_last",
     NULL, 0 },
@@ -514,7 +521,6 @@ run (char    *name,
   l_rc = 0;
 
   INIT_I18N();
-  setlocale (LC_NUMERIC, "C");
 
   l_env = g_getenv("GAP_DEBUG");
   if(l_env != NULL)
@@ -1365,9 +1371,30 @@ navi_thumb_update(gint update_all)
      
      if(!update_all)
      {
-       if (p_gimp_file_has_valid_thumbnail(l_image_filename))
+       gint32  l_th_width;
+       gint32  l_th_height;
+       gint32  l_th_data_count;
+       guchar *l_raw_thumb;
+
+       l_raw_thumb = NULL;
+       if(FALSE == p_gimp_file_load_thumbnail(l_image_filename
+                                  , &l_th_width
+                                  , &l_th_height
+                                  , &l_th_data_count
+                                  , &l_raw_thumb
+                                  ))
+     
        {
+         /* Thumbnail load failed, so an update is needed to create one */
          l_upd_flag = FALSE;
+       }
+       else
+       {
+         /* Thumbnail load succeeded, update is not needed */
+         if(l_raw_thumb)
+         {
+           g_free(l_raw_thumb);
+         }
        }
      }
 
@@ -3037,9 +3064,9 @@ navi_dialog_create (GtkWidget* shell, gint32 image_id)
 		      10.0,                /* pagestep */
 		      0.0,                 /* page_size */
 		      1.0,                 /* climb_rate */
-		      1                    /* digits */
+		      4                    /* digits */
                       );
-  naviD->framerate_data = adj;
+  naviD->framerate_data = GTK_ADJUSTMENT(adj);
 
   gtk_box_pack_start (GTK_BOX (util_box), spinbutton, TRUE, TRUE, 0);
   g_signal_connect (G_OBJECT (naviD->framerate_data), "value_changed",
@@ -3070,7 +3097,7 @@ navi_dialog_create (GtkWidget* shell, gint32 image_id)
 		      0                    /* digits */
                       );
 
-  naviD->timezoom_data = adj;
+  naviD->timezoom_data = GTK_ADJUSTMENT(adj);
   gtk_box_pack_start (GTK_BOX (util_box), spinbutton, TRUE, TRUE, 0);
   g_signal_connect (G_OBJECT (naviD->timezoom_data), "value_changed",
 		    G_CALLBACK (navi_timezoom_scale_update),
@@ -3139,6 +3166,7 @@ int  gap_navigator(gint32 image_id)
   if(gap_debug) fprintf(stderr, "\nSTARTing gap_navigator_dialog\n");
 
   gimp_ui_init ("gap_navigator", FALSE);
+  gap_stock_init();
 
 
   /*  The main shell */
@@ -3215,6 +3243,7 @@ int  gap_navigator(gint32 image_id)
 
 
 /* ---------------------------------------  start copy of gimp-1.1.14/app/ops_buttons.c */
+/* -- 2003.06.03  hof: changed code by using stock buttons instead of xpm pixmap data */
 static void ops_button_pressed_callback  (GtkWidget*, GdkEventButton*, gpointer);
 static void ops_button_extended_callback (GtkWidget*, gpointer);
 
@@ -3226,29 +3255,18 @@ ops_button_box_new (GtkWidget     *parent,
 {
   GtkWidget *button;
   GtkWidget *button_box;
-  GtkWidget *pixmap_widget;
-  GdkPixmap *pixmap;
-  GdkBitmap *mask;
-  GtkStyle  *style;
   GSList    *group = NULL;
   
   gtk_widget_realize (parent);
-  style = gtk_widget_get_style (parent);
 
   button_box = gtk_hbox_new (TRUE, 1);
 
-  while (ops_button->xpm_data)
+  while (ops_button->stock_id)
     {
-      pixmap = gdk_pixmap_create_from_xpm_d (parent->window,
-					     &mask,
-					     &style->bg[GTK_STATE_NORMAL],
-					     ops_button->xpm_data);
-      pixmap_widget = gtk_pixmap_new (pixmap, mask);
-
       switch (ops_type)
 	{
 	case OPS_BUTTON_NORMAL :
-	  button = gtk_button_new ();
+	  button = gtk_button_new_from_stock (ops_button->stock_id);
 	  break;
 	case OPS_BUTTON_RADIO :
 	  button = gtk_radio_button_new (group);
@@ -3262,8 +3280,6 @@ ops_button_box_new (GtkWidget     *parent,
 	  break;
 	}
 
-      gtk_container_add (GTK_CONTAINER (button), pixmap_widget);
-      
       if (ops_button->ext_callbacks == NULL)
 	{
 	  g_signal_connect_swapped (G_OBJECT (button), "clicked",
@@ -3286,7 +3302,6 @@ ops_button_box_new (GtkWidget     *parent,
 
       gtk_box_pack_start (GTK_BOX (button_box), button, TRUE, TRUE, 0); 
 
-      gtk_widget_show (pixmap_widget);
       gtk_widget_show (button);
 
       ops_button->widget = button;

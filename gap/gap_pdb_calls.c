@@ -23,6 +23,7 @@
  */
 
 /* revision history:
+ * version 1.3.14b; 2003/06/03  hof: gboolean retcode for thumbnail procedures
  * version 1.3.14a; 2003/05/24  hof: moved vin Procedures to gap_vin module
  * version 1.3.5a;  2002/04/20  hof: p_gimp_layer_new_from_drawable. (removed set_drabale)
  * version 1.3.4a;  2002/03/12  hof: removed duplicate wrappers that are available in libgimp too.
@@ -190,7 +191,7 @@ p_gimp_layer_new_from_drawable(gint32 drawable_id, gint32 dst_image_id)
  * ============================================================================
  */
 
-gint
+gboolean
 p_gimp_file_save_thumbnail(gint32 image_id, char* filename)
 {
    static char     *l_called_proc = "gimp_file_save_thumbnail";
@@ -207,10 +208,10 @@ p_gimp_file_save_thumbnail(gint32 image_id, char* filename)
 
    if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
    {
-      return (0);
+      return (TRUE);
    }
    printf("GAP: Error: PDB call of %s failed\n", l_called_proc);
-   return(-1);
+   return(FALSE);
 }	/* end p_gimp_file_save_thumbnail */
 
 /* ============================================================================
@@ -219,7 +220,7 @@ p_gimp_file_save_thumbnail(gint32 image_id, char* filename)
  * ============================================================================
  */
 
-gint
+gboolean
 p_gimp_file_load_thumbnail(char* filename, gint32 *th_width, gint32 *th_height,
                            gint32 *th_data_count,  unsigned char **th_data)
 {
@@ -227,7 +228,7 @@ p_gimp_file_load_thumbnail(char* filename, gint32 *th_width, gint32 *th_height,
    GimpParam          *return_vals;
    int              nreturn_vals;
 
-printf("p_gimp_file_load_thumbnail:  %s\n", filename);
+   if(gap_debug) printf("p_gimp_file_load_thumbnail:  %s\n", filename);
 
    *th_data = NULL;
    return_vals = gimp_run_procedure (l_called_proc,
@@ -241,15 +242,15 @@ printf("p_gimp_file_load_thumbnail:  %s\n", filename);
       *th_height = return_vals[2].data.d_int32;
       *th_data_count = return_vals[3].data.d_int32;
       *th_data = (unsigned char *)return_vals[4].data.d_int8array;
-      return (0); /* OK */
+      return (TRUE); /* OK */
    }
-   printf("GAP: Error: PDB call of %s failed\n", l_called_proc);
-   return(-1);
+   if(gap_debug) printf("GAP: Error: PDB call of %s failed\n", l_called_proc);
+   return(FALSE);
 }	/* end p_gimp_file_load_thumbnail */
 
 
 
-gint   p_gimp_image_thumbnail(gint32 image_id, gint32 width, gint32 height,
+gboolean p_gimp_image_thumbnail(gint32 image_id, gint32 width, gint32 height,
                               gint32 *th_width, gint32 *th_height, gint32 *th_bpp,
 			      gint32 *th_data_count, unsigned char **th_data)
 {
@@ -272,9 +273,9 @@ gint   p_gimp_image_thumbnail(gint32 image_id, gint32 width, gint32 height,
       *th_bpp    = return_vals[3].data.d_int32;
       *th_data_count = return_vals[4].data.d_int32;
       *th_data = (unsigned char *)return_vals[5].data.d_int8array;
-      return(0); /* OK */
+      return(TRUE); /* OK */
    }
    printf("GAP: Error: PDB call of %s failed\n", l_called_proc);
-   return(-1);
+   return(FALSE);
 }	/* end p_gimp_image_thumbnail */
 

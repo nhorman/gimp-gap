@@ -61,6 +61,7 @@
 #include "gap_lib.h"
 #include "gap_mov_dialog.h"
 #include "gap_mov_exec.h"
+#include "gap_mov_render.h"
 #include "gap_pdb_calls.h"
 
 extern      int gap_debug; /* ==0  ... dont print debug infos */

@@ -23,6 +23,8 @@
  */
 
 /* revision history:
+ * version 1.3.14b; 2003/06/03  hof: using setlocale independent float conversion procedures
+ *                                   g_ascii_strtod() and g_ascii_dtostr()
  * version 1.3.14a; 2003/05/24  hof: created (splitted off from gap_pdb_calls module)
  *                              write now keeps unkown keyword lines in _vin.gap files
  */
@@ -157,10 +159,6 @@ p_set_video_info(t_video_info *vin_ptr, char *basename)
 
   if(l_vin_filename)
   {
-      /* use "." as decimalpoint (in the fprintf statements) */
-      /* setlocale (LC_NUMERIC, "C"); */
-      
-      
       txf_ptr_root = p_load_textfile(l_vin_filename);
   
       l_fp = fopen(l_vin_filename, "w");
@@ -171,8 +169,17 @@ p_set_video_info(t_video_info *vin_ptr, char *basename)
             l_len = strlen("(framerate ");
             if(strncmp(txf_ptr->line, "(framerate ", l_len) == 0)
             {
-                fprintf(l_fp, "(framerate %f) # 1.0 upto 100.0 frames per sec\n"
-                       , (float)vin_ptr->framerate);
+                gchar l_dbl_str[G_ASCII_DTOSTR_BUF_SIZE];
+                
+                /* setlocale independent float string */
+                g_ascii_dtostr(&l_dbl_str[0]
+                               ,G_ASCII_DTOSTR_BUF_SIZE
+                               ,(gdouble)vin_ptr->framerate
+                               );
+            
+                fprintf(l_fp, "(framerate %s) # 1.0 upto 100.0 frames per sec\n"
+                       , l_dbl_str);
+                 
                 l_cnt_framerate++;
             }
             else
@@ -256,9 +263,6 @@ p_get_video_info(char *basename)
   l_vin_filename = p_alloc_video_info_name(basename);
   if(l_vin_filename)
   {
-      /* use "." as decimalpoint (in the atof statements) */
-      /* setlocale (LC_NUMERIC, "C"); */
-      
       txf_ptr_root = p_load_textfile(l_vin_filename);
 
       for(txf_ptr = txf_ptr_root; txf_ptr != NULL; txf_ptr = (t_textfile_lines *) txf_ptr->next)
@@ -268,7 +272,8 @@ p_get_video_info(char *basename)
           l_len = strlen("(framerate ");
           if(strncmp(txf_ptr->line, "(framerate ", l_len) == 0)
           {
-             l_vin_ptr->framerate = atof(&txf_ptr->line[l_len]);
+             /* setlocale independent sting to double converion */
+             l_vin_ptr->framerate = g_ascii_strtod(&txf_ptr->line[l_len], NULL);
           }
           
           l_len = strlen("(timezoom ");

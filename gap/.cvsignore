@@ -7,5 +7,6 @@ gap_filter
 gap_plugins
 gap_frontends
 gap_decode_mpeg
+gap_name2layer
 gap_navigator_dialog
 gap_onion
