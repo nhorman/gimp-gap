@@ -1,3 +1,7 @@
+2003-10-15  Danilo Šegan  <dsegan@gmx.net>
+
+	* configure.in: Added "sr" and "sr@Latn" to ALL_LINGUAS.
+
 2003-10-15  Sven Neumann  <sven@gimp.org>
 
         Fixed translation of menu entries (reported in bug #124600):
