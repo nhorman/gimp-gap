@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gimp-gap\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-01-18 00:46-0500\n"
-"PO-Revision-Date: 2005-01-18 20:40-0400\n"
+"POT-Creation-Date: 2005-02-01 02:31-0500\n"
+"PO-Revision-Date: 2005-02-01 20:40-0400\n"
 "Last-Translator: Adam Weinberger <adamw@gnome.org>\n"
 "Language-Team: Canadian English <adamw@FreeBSD.org>\n"
 "MIME-Version: 1.0\n"
@@ -378,7 +378,7 @@ msgid "New framenumber for the first frame"
 msgstr "New framenumber for the first frame"
 
 #. the framenumber digits label
-#: gap/gap_base_ops.c:1715 gap/gap_split.c:302 gap/gap_vex_dialog.c:2313
+#: gap/gap_base_ops.c:1715 gap/gap_split.c:302 gap/gap_vex_dialog.c:2320
 msgid "Digits:"
 msgstr "Digits:"
 
@@ -1309,7 +1309,7 @@ msgid "Make backup of the image after each step"
 msgstr "Make backup of the image after each step"
 
 #: gap/gap_filter_foreach.c:117 gap/gap_mod_layer.c:107
-#: gap/gap_story_dialog.c:3727
+#: gap/gap_story_dialog.c:3785
 msgid "Continue"
 msgstr "Continue"
 
@@ -2509,7 +2509,7 @@ msgstr "Scale down size of the generated animated preview (in %)"
 
 #. the Framerate lable
 #: gap/gap_mov_dialog.c:1036 gap/gap_mpege.c:319
-#: gap/gap_navigator_dialog.c:3877 gap/gap_story_dialog.c:5634
+#: gap/gap_navigator_dialog.c:3877 gap/gap_story_dialog.c:5854
 #: vid_common/gap_cme_gui.c:3337
 msgid "Framerate:"
 msgstr "Framerate:"
@@ -2532,7 +2532,7 @@ msgstr ""
 
 #. the Default button
 #: gap/gap_mov_dialog.c:1061 gap/gap_mpege.c:371 gap/gap_name2layer_main.c:511
-#: gap/gap_split.c:312 gap/gap_story_dialog.c:2864 gap/gap_wr_opacity.c:344
+#: gap/gap_split.c:312 gap/gap_story_dialog.c:2922 gap/gap_wr_opacity.c:344
 #: vid_common/gap_cme_gui.c:2879
 msgid "Default"
 msgstr "Default"
@@ -2634,7 +2634,7 @@ msgstr "Source object to insert into destination frames of the specified range"
 #. Paintmode combo (menu)
 #. the operating Mode label
 #: gap/gap_mov_dialog.c:2512 gap/gap_name2layer_main.c:443
-#: gap/gap_vex_dialog.c:2257 gap/gap_wr_opacity.c:332
+#: gap/gap_vex_dialog.c:2264 gap/gap_wr_opacity.c:332
 msgid "Mode:"
 msgstr "Mode:"
 
@@ -3116,7 +3116,7 @@ msgstr "Clip all copied source layers at destination frame boundaries"
 #. Width Scale
 #. table col, row
 #. the width label
-#: gap/gap_mov_dialog.c:3321 gap/gap_story_dialog.c:5611
+#: gap/gap_mov_dialog.c:3321 gap/gap_story_dialog.c:5831
 #: vid_common/gap_cme_gui.c:3262
 msgid "Width:"
 msgstr "Width:"
@@ -3136,7 +3136,7 @@ msgstr "Scale source layer's width in percent"
 #. Height Scale
 #. table col, row
 #. the height label
-#: gap/gap_mov_dialog.c:3339 gap/gap_story_dialog.c:5622
+#: gap/gap_mov_dialog.c:3339 gap/gap_story_dialog.c:5842
 #: vid_common/gap_cme_gui.c:3311
 msgid "Height:"
 msgstr "Height:"
@@ -4387,7 +4387,7 @@ msgstr ""
 #. Audio Samplerate
 #. the Samplerate label
 #: gap/gap_player_dialog.c:401 gap/gap_player_dialog.c:4924
-#: vid_common/gap_cme_gui.c:2977
+#: gap/gap_story_dialog.c:5913 vid_common/gap_cme_gui.c:2977
 msgid "Samplerate:"
 msgstr "Samplerate:"
 
@@ -4399,8 +4399,8 @@ msgstr "Target audio samperate in samples/sec. Ignored if resample is off)"
 msgid "Copy Audiofile as Wavefile"
 msgstr "Copy Audiofile as Wavefile"
 
-#: gap/gap_player_dialog.c:424 gap/gap_story_dialog.c:2868
-#: gap/gap_story_dialog.c:5492 gap/gap_story_dialog.c:5695
+#: gap/gap_player_dialog.c:424 gap/gap_story_dialog.c:2926
+#: gap/gap_story_dialog.c:5710 gap/gap_story_dialog.c:5958
 msgid "Settings"
 msgstr "Settings"
 
@@ -4491,7 +4491,7 @@ msgstr "Playing"
 msgid "Ready"
 msgstr "Ready"
 
-#: gap/gap_player_dialog.c:2041 gap/gap_story_dialog.c:4034
+#: gap/gap_player_dialog.c:2041 gap/gap_story_dialog.c:4092
 msgid "Creating Index"
 msgstr "Creating Index"
 
@@ -4504,12 +4504,12 @@ msgstr ""
 "No videoindex available. Access is limited to (slow) sequential read on "
 "file: %s"
 
-#: gap/gap_player_dialog.c:2145 gap/gap_story_dialog.c:4169
+#: gap/gap_player_dialog.c:2145 gap/gap_story_dialog.c:4227
 msgid "Videoseek"
 msgstr "Videoseek"
 
 #: gap/gap_player_dialog.c:2350 gap/gap_player_dialog.c:2401
-#: gap/gap_story_dialog.c:4077
+#: gap/gap_story_dialog.c:4135
 msgid "Canceled"
 msgstr "Cancelled"
 
@@ -4565,7 +4565,7 @@ msgstr "Select Audiofile"
 #. audiofile label
 #. the output audiofile label
 #. the Audiofile label
-#: gap/gap_player_dialog.c:4710 gap/gap_vex_dialog.c:2460
+#: gap/gap_player_dialog.c:4710 gap/gap_vex_dialog.c:2467
 #: vid_common/gap_cme_gui.c:2922
 msgid "Audiofile:"
 msgstr "Audiofile:"
@@ -4579,7 +4579,7 @@ msgid "Open audiofile selection browser dialog window"
 msgstr "Open audiofile selection browser dialog window"
 
 #. Volume
-#: gap/gap_player_dialog.c:4755
+#: gap/gap_player_dialog.c:4755 gap/gap_story_dialog.c:5929
 msgid "Volume:"
 msgstr "Volume:"
 
@@ -4935,8 +4935,8 @@ msgstr "Scale Video Frames (all)"
 msgid "Scale (original %dx%d)"
 msgstr "Scale (original %dx%d)"
 
-#: gap/gap_range_ops.c:215 gap/gap_story_dialog.c:5486
-#: gap/gap_story_dialog.c:5691
+#: gap/gap_range_ops.c:215 gap/gap_story_dialog.c:5700
+#: gap/gap_story_dialog.c:5945
 msgid "Reset"
 msgstr "Reset"
 
@@ -5051,7 +5051,7 @@ msgid "Convert to Indexed"
 msgstr "Convert to Indexed"
 
 #. the basename label
-#: gap/gap_range_ops.c:523 gap/gap_vex_dialog.c:2280
+#: gap/gap_range_ops.c:523 gap/gap_vex_dialog.c:2287
 msgid "Basename:"
 msgstr "Basename:"
 
@@ -5064,7 +5064,7 @@ msgstr ""
 "is added automatically to all converted frames."
 
 #. the extension label
-#: gap/gap_range_ops.c:530 gap/gap_split.c:269 gap/gap_vex_dialog.c:2350
+#: gap/gap_range_ops.c:530 gap/gap_split.c:269 gap/gap_vex_dialog.c:2357
 msgid "Extension:"
 msgstr "Extension:"
 
@@ -5524,7 +5524,7 @@ msgstr "Reset Point"
 msgid "Rotate Follow"
 msgstr "Rotate Follow"
 
-#: gap/gap_story_dialog.c:1254 gap/gap_story_dialog.c:1310
+#: gap/gap_story_dialog.c:1273 gap/gap_story_dialog.c:1329
 #, c-format
 msgid ""
 "** ERROR: Storyboard parser reported:\n"
@@ -5533,87 +5533,87 @@ msgstr ""
 "** ERROR: Storyboard parser reported:\n"
 "%s\n"
 
-#: gap/gap_story_dialog.c:1734
+#: gap/gap_story_dialog.c:1753
 msgid "Load Storyboard"
 msgstr "Load Storyboard"
 
-#: gap/gap_story_dialog.c:1738
+#: gap/gap_story_dialog.c:1757
 msgid "Load Cliplist"
 msgstr "Load Cliplist"
 
-#: gap/gap_story_dialog.c:1776
+#: gap/gap_story_dialog.c:1795
 msgid "Save Storyboard file"
 msgstr "Save Storyboard file"
 
-#: gap/gap_story_dialog.c:2772
+#: gap/gap_story_dialog.c:2830
 msgid "Global Layout Properties dialog already open"
 msgstr "Global Layout Properties dialogue already open"
 
-#: gap/gap_story_dialog.c:2778
+#: gap/gap_story_dialog.c:2836
 msgid "large"
 msgstr "large"
 
-#: gap/gap_story_dialog.c:2779
+#: gap/gap_story_dialog.c:2837
 msgid "medium"
 msgstr "medium"
 
-#: gap/gap_story_dialog.c:2780
+#: gap/gap_story_dialog.c:2838
 msgid "small"
 msgstr "small"
 
-#: gap/gap_story_dialog.c:2785
+#: gap/gap_story_dialog.c:2843
 msgid "Cliplist Layout:"
 msgstr "Cliplist Layout:"
 
-#: gap/gap_story_dialog.c:2790 gap/gap_story_dialog.c:2830
+#: gap/gap_story_dialog.c:2848 gap/gap_story_dialog.c:2888
 msgid "Thumbnail Size:"
 msgstr "Thumbnail Size:"
 
-#: gap/gap_story_dialog.c:2791
+#: gap/gap_story_dialog.c:2849
 msgid "Thumbnail size in the cliplist"
 msgstr "Thumbnail size in the cliplist"
 
-#: gap/gap_story_dialog.c:2801 gap/gap_story_dialog.c:2841
+#: gap/gap_story_dialog.c:2859 gap/gap_story_dialog.c:2899
 msgid "Columns:"
 msgstr "Columns:"
 
-#: gap/gap_story_dialog.c:2802
+#: gap/gap_story_dialog.c:2860
 msgid "columns in the cliplist"
 msgstr "columns in the cliplist"
 
-#: gap/gap_story_dialog.c:2812 gap/gap_story_dialog.c:2852
+#: gap/gap_story_dialog.c:2870 gap/gap_story_dialog.c:2910
 msgid "Rows:"
 msgstr "Rows:"
 
-#: gap/gap_story_dialog.c:2813
+#: gap/gap_story_dialog.c:2871
 msgid "rows in the cliplist"
 msgstr "rows in the cliplist"
 
-#: gap/gap_story_dialog.c:2825
+#: gap/gap_story_dialog.c:2883
 msgid "Storyboard Layout:"
 msgstr "Storyboard Layout:"
 
-#: gap/gap_story_dialog.c:2831
+#: gap/gap_story_dialog.c:2889
 msgid "Thumbnail size in the storyboard list"
 msgstr "Thumbnail size in the storyboard list"
 
-#: gap/gap_story_dialog.c:2842
+#: gap/gap_story_dialog.c:2900
 msgid "columns in the storyboard list"
 msgstr "columns in the storyboard list"
 
-#: gap/gap_story_dialog.c:2853
+#: gap/gap_story_dialog.c:2911
 msgid "rows in the storyboard list"
 msgstr "rows in the storyboard list"
 
-#: gap/gap_story_dialog.c:2865
+#: gap/gap_story_dialog.c:2923
 msgid "Use the standard built in layout settings"
 msgstr "Use the standard built in layout settings"
 
-#: gap/gap_story_dialog.c:2867
+#: gap/gap_story_dialog.c:2925
 msgid "Global Layout Properties"
 msgstr "Global Layout Properties"
 
-#: gap/gap_story_dialog.c:2967
+#: gap/gap_story_dialog.c:3025
 msgid ""
 "GIMP-GAP is compiled without videoapi support. Therfore thumbnails for "
 "videoframes can not be displayed."
@@ -5621,7 +5621,7 @@ msgstr ""
 "GIMP-GAP is compiled without videoapi support. Therfore thumbnails for "
 "videoframes can not be displayed."
 
-#: gap/gap_story_dialog.c:3067
+#: gap/gap_story_dialog.c:3125
 #, c-format
 msgid ""
 "Failed to write cliplistfile\n"
@@ -5632,7 +5632,7 @@ msgstr ""
 "filename: '%s':\n"
 "%s"
 
-#: gap/gap_story_dialog.c:3268
+#: gap/gap_story_dialog.c:3326
 #, c-format
 msgid ""
 "Failed to write storyboardfile\n"
@@ -5643,154 +5643,153 @@ msgstr ""
 "filename: '%s':\n"
 "%s"
 
-#: gap/gap_story_dialog.c:3486
+#: gap/gap_story_dialog.c:3544
 msgid "Global"
 msgstr "Global"
 
 #. the frame
-#: gap/gap_story_dialog.c:3488 gap/gap_story_dialog.c:3559
-#: gap/gap_story_dialog.c:3634 gap/gap_story_properties.c:1678
+#: gap/gap_story_dialog.c:3546 gap/gap_story_dialog.c:3617
+#: gap/gap_story_dialog.c:3692 gap/gap_story_properties.c:1678
 msgid "Properties"
 msgstr "Properties"
 
-#: gap/gap_story_dialog.c:3494
+#: gap/gap_story_dialog.c:3552
 msgid "Videothumbnails"
 msgstr "Videothumbnails"
 
-#: gap/gap_story_dialog.c:3514
+#: gap/gap_story_dialog.c:3572
 msgid "Help"
 msgstr "Help"
 
-#. XXXXXXXXXXX Start of the CLIPLIST widgets  XXXXXXXXXXXX
 #. the clp_frame
-#: gap/gap_story_dialog.c:3529 gap/gap_story_dialog.c:5268
+#: gap/gap_story_dialog.c:3587 gap/gap_story_dialog.c:5465
 msgid "Cliplist"
 msgstr "Cliplist"
 
 #. XXXXXXXXXXX Player Frame  XXXXXXXXXXXX
 #. the player_frame
-#: gap/gap_story_dialog.c:3553 gap/gap_story_dialog.c:3628
-#: gap/gap_story_dialog.c:5310
+#: gap/gap_story_dialog.c:3611 gap/gap_story_dialog.c:3686
+#: gap/gap_story_dialog.c:5514
 msgid "Playback"
 msgstr "Playback"
 
-#: gap/gap_story_dialog.c:3565 gap/gap_story_dialog.c:3640
+#: gap/gap_story_dialog.c:3623 gap/gap_story_dialog.c:3698
 msgid "Create Clip"
 msgstr "Create Clip"
 
-#: gap/gap_story_dialog.c:3570 gap/gap_story_dialog.c:3645
+#: gap/gap_story_dialog.c:3628 gap/gap_story_dialog.c:3703
 msgid "Toggle Unit"
 msgstr "Toggle Unit"
 
-#: gap/gap_story_dialog.c:3576 gap/gap_story_dialog.c:3651
+#: gap/gap_story_dialog.c:3634 gap/gap_story_dialog.c:3709
 msgid "Add Audio Otone"
 msgstr "Add Audio Otone"
 
-#: gap/gap_story_dialog.c:3582 gap/gap_story_dialog.c:3657
+#: gap/gap_story_dialog.c:3640 gap/gap_story_dialog.c:3715
 msgid "Encode"
 msgstr "Encode"
 
-#: gap/gap_story_dialog.c:3604
+#: gap/gap_story_dialog.c:3662
 msgid "_Storyboard"
 msgstr "_Storyboard"
 
-#: gap/gap_story_dialog.c:3699
+#: gap/gap_story_dialog.c:3757
 #, c-format
 msgid "Unsaved cliplist changes '%s'"
 msgstr "Unsaved cliplist changes '%s'"
 
-#: gap/gap_story_dialog.c:3711
+#: gap/gap_story_dialog.c:3769
 #, c-format
 msgid "Unsaved storyboard changes '%s'"
 msgstr "Unsaved storyboard changes '%s'"
 
-#: gap/gap_story_dialog.c:3723
+#: gap/gap_story_dialog.c:3781
 msgid "Quit Storyboard"
 msgstr "Quit Storyboard"
 
-#: gap/gap_story_dialog.c:3736 gap/gap_story_dialog.c:3737
+#: gap/gap_story_dialog.c:3794 gap/gap_story_dialog.c:3795
 msgid "Storyboard unsaved changes"
 msgstr "Storyboard unsaved changes"
 
-#: gap/gap_story_dialog.c:3789
+#: gap/gap_story_dialog.c:3847
 msgid "Storyboard:"
 msgstr "Storyboard:"
 
-#: gap/gap_story_dialog.c:3804 gap/gap_story_dialog.c:3833
+#: gap/gap_story_dialog.c:3862 gap/gap_story_dialog.c:3891
 msgid "(modified)"
 msgstr "(modified)"
 
-#: gap/gap_story_dialog.c:3810
+#: gap/gap_story_dialog.c:3868
 msgid "Cliplist:"
 msgstr "Cliplist:"
 
-#: gap/gap_story_dialog.c:4026
+#: gap/gap_story_dialog.c:4084
 #, c-format
 msgid "Creating Index (decoder: %s)"
 msgstr "Creating Index (decoder: %s)"
 
-#: gap/gap_story_dialog.c:4165
+#: gap/gap_story_dialog.c:4223
 #, c-format
 msgid "Videoseek (decoder: %s)"
 msgstr "Videoseek (decoder: %s)"
 
-#: gap/gap_story_dialog.c:4496
+#: gap/gap_story_dialog.c:4554
 msgid "videothumbnail cancelled"
 msgstr "videothumbnail cancelled"
 
-#: gap/gap_story_dialog.c:4511
+#: gap/gap_story_dialog.c:4569
 #, c-format
 msgid "Fetching videothumbnail for clip: %d (out of %d)"
 msgstr "Fetching videothumbnail for clip: %d (out of %d)"
 
-#: gap/gap_story_dialog.c:4968
+#: gap/gap_story_dialog.c:5158
 msgid "Load storyboard file"
 msgstr "Load storyboard file"
 
-#: gap/gap_story_dialog.c:4974
+#: gap/gap_story_dialog.c:5164
 msgid "Load cliplist file"
 msgstr "Load cliplist file"
 
-#: gap/gap_story_dialog.c:4989
+#: gap/gap_story_dialog.c:5179
 msgid "Save storyboard to file"
 msgstr "Save storyboard to file"
 
-#: gap/gap_story_dialog.c:4998
+#: gap/gap_story_dialog.c:5188
 msgid "Save cliplist to file"
 msgstr "Save cliplist to file"
 
-#: gap/gap_story_dialog.c:5014
+#: gap/gap_story_dialog.c:5204
 msgid "Cut a clip"
 msgstr "Cut a clip"
 
-#: gap/gap_story_dialog.c:5026
+#: gap/gap_story_dialog.c:5216
 msgid "Copy a clip"
 msgstr "Copy a clip"
 
-#: gap/gap_story_dialog.c:5038
+#: gap/gap_story_dialog.c:5228
 msgid "Paste a clip after last (selected) element"
 msgstr "Paste a clip after last (selected) element"
 
-#: gap/gap_story_dialog.c:5053
+#: gap/gap_story_dialog.c:5243
 msgid "Playback storyboard file. SHIFT: Play only selected clips"
 msgstr "Playback storyboard file. SHIFT: Play only selected clips"
 
-#: gap/gap_story_dialog.c:5062
+#: gap/gap_story_dialog.c:5252
 msgid "Playback cliplist. SHIFT: Play only selected clips"
 msgstr "Playback cliplist. SHIFT: Play only selected clips"
 
 #. gtk_widget_show (entry);
 #. Row label
-#: gap/gap_story_dialog.c:5080
+#: gap/gap_story_dialog.c:5270
 msgid "Row:"
 msgstr "Row:"
 
-#: gap/gap_story_dialog.c:5095
+#: gap/gap_story_dialog.c:5285
 msgid "Top rownumber"
 msgstr "Top rownumber"
 
 #. of label
-#: gap/gap_story_dialog.c:5101
+#: gap/gap_story_dialog.c:5291
 msgid "of:"
 msgstr "of:"
 
@@ -5801,29 +5800,28 @@ msgstr "of:"
 #. *  additional note: the Storyboard dialog provides
 #. *  Help via Menu-Item
 #.
-#. XXXXXXXXXXX Start of the STORYBOARD widgets  XXXXXXXXXXXX
 #. the stb_frame
 #. radio button Storyboard input_mode
-#: gap/gap_story_dialog.c:5229 gap/gap_story_dialog.c:5321
+#: gap/gap_story_dialog.c:5419 gap/gap_story_dialog.c:5530
 #: vid_common/gap_cme_gui.c:2307
 msgid "Storyboard"
 msgstr "Storyboard"
 
-#: gap/gap_story_dialog.c:5384 vid_common/gap_cme_gui.c:2179
+#: gap/gap_story_dialog.c:5597 vid_common/gap_cme_gui.c:2179
 msgid "Cancel"
 msgstr "Cancel"
 
-#: gap/gap_story_dialog.c:5443
+#: gap/gap_story_dialog.c:5657
 msgid ""
 "Generate original tone audio track for all video clips in the storyboard"
-msgstr""
+msgstr ""
 "Generate original tone audio track for all video clips in the storyboard"
 
-#: gap/gap_story_dialog.c:5449
+#: gap/gap_story_dialog.c:5663
 msgid "Input Audiotrack:"
 msgstr "Input Audiotrack:"
 
-#: gap/gap_story_dialog.c:5450
+#: gap/gap_story_dialog.c:5664
 msgid ""
 "select input audiotrack in the videofile(s).(if your input videos have "
 "multiple audiotracks values > 1 usually refer to non-default language)"
@@ -5831,11 +5829,11 @@ msgstr ""
 "select input audiotrack in the videofile(s). (if your input videos have "
 "multiple audiotracks, values > 1 usually refer to non-default language)"
 
-#: gap/gap_story_dialog.c:5463
+#: gap/gap_story_dialog.c:5677
 msgid "Output Audiotrack:"
 msgstr "Output Audiotrack:"
 
-#: gap/gap_story_dialog.c:5464
+#: gap/gap_story_dialog.c:5678
 msgid ""
 "output audiotrack to be generated in the storyboard file. The generated "
 "storyboard audiotrack will be a list of references to the audioparts in the "
@@ -5845,28 +5843,26 @@ msgstr ""
 "storyboard audiotrack will be a list of references to the audioparts in the "
 "input videos, corresponding to all used video clip references."
 
-#: gap/gap_story_dialog.c:5476
+#: gap/gap_story_dialog.c:5690
 msgid "Replace Audiotrack:"
 msgstr "Replace Audiotrack:"
 
-#: gap/gap_story_dialog.c:5477
+#: gap/gap_story_dialog.c:5691
 msgid ""
 "ON: Allow replacing of already existing audio clip references  in the "
 "storyboard"
 msgstr ""
-"ON: Allow replacement of existing audio clip references in the "
-"storyboard"
+"ON: Allow replacement of existing audio clip references in the storyboard"
 
-#. should use GIMP_STOCK_RESET if possible
-#: gap/gap_story_dialog.c:5487 gap/gap_story_dialog.c:5692
-msgid "Reset parameters to default size"
-msgstr "Reset parameters to default size"
+#: gap/gap_story_dialog.c:5701
+msgid "Reset parameters to default values"
+msgstr "Reset parameters to default values"
 
-#: gap/gap_story_dialog.c:5491
+#: gap/gap_story_dialog.c:5709
 msgid "Generate Original Tone Audio"
 msgstr "Generate Original Tone Audio"
 
-#: gap/gap_story_dialog.c:5518
+#: gap/gap_story_dialog.c:5736
 #, c-format
 msgid ""
 "Original tone track was not created.\n"
@@ -5879,45 +5875,45 @@ msgstr ""
 "already has audio clip references at track %d.\n"
 "Use another track number or allow replace at next try."
 
-#: gap/gap_story_dialog.c:5544
+#: gap/gap_story_dialog.c:5762
 msgid "automatic"
 msgstr "automatic"
 
-#: gap/gap_story_dialog.c:5579
+#: gap/gap_story_dialog.c:5799
 msgid "Name:"
 msgstr "Name:"
 
-#: gap/gap_story_dialog.c:5583
+#: gap/gap_story_dialog.c:5803
 msgid "Name of the Storyboardfile"
 msgstr "Name of the Storyboardfile"
 
-#: gap/gap_story_dialog.c:5589
+#: gap/gap_story_dialog.c:5809
 msgid "Name of the Cliplistfile"
 msgstr "Name of the Cliplistfile"
 
-#: gap/gap_story_dialog.c:5599 gap/gap_story_dialog.c:5603
+#: gap/gap_story_dialog.c:5819 gap/gap_story_dialog.c:5823
 #, c-format
 msgid "Name: %s"
 msgstr "Name: %s"
 
-#: gap/gap_story_dialog.c:5612
+#: gap/gap_story_dialog.c:5832
 msgid "Master width of the resulting video in pixels"
 msgstr "Master width of the resulting video in pixels"
 
-#: gap/gap_story_dialog.c:5623
+#: gap/gap_story_dialog.c:5843
 msgid "Master height of the resulting video in pixels)"
 msgstr "Master height of the resulting video in pixels"
 
-#: gap/gap_story_dialog.c:5635
+#: gap/gap_story_dialog.c:5855
 msgid "Framerate in frames/sec."
 msgstr "Framerate in frames/sec."
 
 #. the (preferred) Decoder label
-#: gap/gap_story_dialog.c:5673 gap/gap_vex_dialog.c:2139
+#: gap/gap_story_dialog.c:5895 gap/gap_vex_dialog.c:2139
 msgid "Decoder:"
 msgstr "Decoder:"
 
-#: gap/gap_story_dialog.c:5674
+#: gap/gap_story_dialog.c:5896
 msgid ""
 "Select preferred video decoder library, or leave empty for automatic "
 "selection.The decoder setting is only relevant if videoclips are used (but "
@@ -5928,7 +5924,20 @@ msgstr ""
 "The decoder setting is only relevant if videoclips are used (but not for "
 "frames that are imagefiles)"
 
-#: gap/gap_story_dialog.c:5694
+#: gap/gap_story_dialog.c:5914
+msgid "Master audio samplerate for the resulting video in samples/sec."
+msgstr "Master audio samplerate for the resulting video in samples/sec."
+
+#: gap/gap_story_dialog.c:5930
+msgid "Master audio volume, where 1.0 keeps original volume"
+msgstr "Master audio volume, where 1.0 keeps original volume"
+
+#. should use GIMP_STOCK_RESET if possible
+#: gap/gap_story_dialog.c:5946
+msgid "Reset parameters to inital values"
+msgstr "Reset parameters to inital values"
+
+#: gap/gap_story_dialog.c:5957
 msgid "Master Properties"
 msgstr "Master Properties"
 
@@ -5995,7 +6004,7 @@ msgstr ""
 "the passed filename %s has irrelevant content or could not be opened by the "
 "parser"
 
-#: gap/gap_story_main.c:167
+#: gap/gap_story_main.c:164
 msgid "<Image>/Video/Storyboard..."
 msgstr "<Image>/Video/Storyboard..."
 
@@ -6160,7 +6169,7 @@ msgstr "select input videotrack(most videofiles have just 1 track)"
 
 #. the Deinterlace Mode label
 #. the deinterlace Mode label
-#: gap/gap_story_properties.c:1876 gap/gap_vex_dialog.c:2414
+#: gap/gap_story_properties.c:1876 gap/gap_vex_dialog.c:2421
 msgid "Deinterlace:"
 msgstr "Deinterlace:"
 
@@ -6270,8 +6279,8 @@ msgstr "Name of videofile (used as inputfile)"
 #. the Storyboard filebrowser button
 #. the Audiofile filebrowser button
 #. the pass_logfile fileselector button
-#: gap/gap_vex_dialog.c:1952 gap/gap_vex_dialog.c:2300
-#: gap/gap_vex_dialog.c:2480 vid_common/gap_cme_gui.c:2465
+#: gap/gap_vex_dialog.c:1952 gap/gap_vex_dialog.c:2307
+#: gap/gap_vex_dialog.c:2487 vid_common/gap_cme_gui.c:2465
 #: vid_common/gap_cme_gui.c:2594 vid_common/gap_cme_gui.c:2630
 #: vid_common/gap_cme_gui.c:2942 vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2153
 msgid "..."
@@ -6343,34 +6352,42 @@ msgstr "(none, automatic)"
 msgid "Active Decoder:"
 msgstr "Active Decoder:"
 
-#: gap/gap_vex_dialog.c:2196 gap/gap_vex_dialog.c:2219
+#: gap/gap_vex_dialog.c:2196 gap/gap_vex_dialog.c:2234
 msgid "****"
 msgstr "****"
 
-#. the Aspect Ratio Label(s)
+#. exact_seek option to disable fast videoindex based positioning.
+#. * (the videoapi delivers exact frame positions on most videos
+#. *  but sometimes is not exact when libmepg3 is used)
+#.
 #: gap/gap_vex_dialog.c:2209
+msgid "Exact Seek"
+msgstr "Exact Seek"
+
+#: gap/gap_vex_dialog.c:2212
+msgid ""
+"ON: emulate seek operations by seqeuntial reads, even when videoindex is "
+"available"
+msgstr ""
+"ON: emulate seek operations by sequential reads, even when videoindex is "
+"available"
+
+#. the Aspect Ratio Label(s)
+#: gap/gap_vex_dialog.c:2224
 msgid "Aspect Ratio:"
 msgstr "Aspect Ratio:"
 
-#. OLD percentage based seek is no longer supported
-#. * and the videoapi always should deliver exact frame positions now
-#. * (therefore the mw__checkbutton_exact_seek widget is not needed any longer)
-#.
-#: gap/gap_vex_dialog.c:2232
-msgid "Exact"
-msgstr "Exact"
-
 #. the output frame
-#: gap/gap_vex_dialog.c:2241 vid_common/gap_cme_gui.c:2439
+#: gap/gap_vex_dialog.c:2248 vid_common/gap_cme_gui.c:2439
 msgid "Output"
 msgstr "Output"
 
 #. the multilayer checkbox (decide if extract writes to frames on disc or to one image)
-#: gap/gap_vex_dialog.c:2267
+#: gap/gap_vex_dialog.c:2274
 msgid "Create only one multilayer Image"
 msgstr "Create only one multilayer Image"
 
-#: gap/gap_vex_dialog.c:2273
+#: gap/gap_vex_dialog.c:2280
 msgid ""
 "On: extracted frames are stored in one multilayer image\n"
 "Off: extracted frames are written to frame files on disc"
@@ -6378,19 +6395,19 @@ msgstr ""
 "On: extracted frames are stored in one multilayer image\n"
 "Off: extracted frames are written to frame files on disc"
 
-#: gap/gap_vex_dialog.c:2296
+#: gap/gap_vex_dialog.c:2303
 msgid "Basename for extracted frames (framenr and extension is added)"
 msgstr "Basename for extracted frames (framenr and extension is added)"
 
-#: gap/gap_vex_dialog.c:2297
+#: gap/gap_vex_dialog.c:2304
 msgid "frame_"
 msgstr "frame_"
 
-#: gap/gap_vex_dialog.c:2307
+#: gap/gap_vex_dialog.c:2314
 msgid "Use filebrowser to select basename for extracted frames"
 msgstr "Use filebrowser to select basename for extracted frames"
 
-#: gap/gap_vex_dialog.c:2338
+#: gap/gap_vex_dialog.c:2345
 msgid ""
 "Digits to use for framenumber part in filenames (use 1 if you dont want "
 "leading zeroes)"
@@ -6398,66 +6415,66 @@ msgstr ""
 "Digits to use for framenumber part in filenames (use 1 if you dont want "
 "leading zeroes)"
 
-#: gap/gap_vex_dialog.c:2371
+#: gap/gap_vex_dialog.c:2378
 msgid "Extension of extracted frames (.xcf, .jpg, .ppm)"
 msgstr "Extension of extracted frames (.xcf, .jpg, .ppm)"
 
-#: gap/gap_vex_dialog.c:2372
+#: gap/gap_vex_dialog.c:2379
 msgid ".xcf"
 msgstr ".xcf"
 
 #. the framenumber for 1st frame label
-#: gap/gap_vex_dialog.c:2383
+#: gap/gap_vex_dialog.c:2390
 msgid "Framenr 1:"
 msgstr "Framenr 1:"
 
-#: gap/gap_vex_dialog.c:2404
+#: gap/gap_vex_dialog.c:2411
 msgid ""
 "Framenumber for 1st extracted frame (use 0 for keeping original framenumbers)"
 msgstr ""
 "Framenumber for 1st extracted frame (use 0 to keep original framenumbers)"
 
-#: gap/gap_vex_dialog.c:2435
+#: gap/gap_vex_dialog.c:2442
 msgid "0.0 .. no interpolation, 1.0 smooth interpolation at deinterlacing"
 msgstr "0.0 .. no interpolation, 1.0 smooth interpolation at deinterlacing"
 
-#: gap/gap_vex_dialog.c:2440
+#: gap/gap_vex_dialog.c:2447
 msgid "no deinterlace"
 msgstr "no deinterlace"
 
-#: gap/gap_vex_dialog.c:2441
+#: gap/gap_vex_dialog.c:2448
 msgid "deinterlace (odd lines only)"
 msgstr "deinterlace (odd lines only)"
 
-#: gap/gap_vex_dialog.c:2442
+#: gap/gap_vex_dialog.c:2449
 msgid "deinterlace (even lines only)"
 msgstr "deinterlace (even lines only)"
 
-#: gap/gap_vex_dialog.c:2443
+#: gap/gap_vex_dialog.c:2450
 msgid "deinterlace frames x 2 (odd 1st)"
 msgstr "deinterlace frames x 2 (odd 1st)"
 
-#: gap/gap_vex_dialog.c:2444
+#: gap/gap_vex_dialog.c:2451
 msgid "deinterlace frames x 2 (even 1st)"
 msgstr "deinterlace frames x 2 (even 1st)"
 
-#: gap/gap_vex_dialog.c:2455
+#: gap/gap_vex_dialog.c:2462
 msgid "Deinterlace splits each extracted frame in 2 frames"
 msgstr "Deinterlace splits each extracted frame in 2 frames"
 
-#: gap/gap_vex_dialog.c:2476
+#: gap/gap_vex_dialog.c:2483
 msgid "Name for extracted audio (audio is written in RIFF WAV format)"
 msgstr "Name for extracted audio (audio is written in RIFF WAV format)"
 
-#: gap/gap_vex_dialog.c:2477
+#: gap/gap_vex_dialog.c:2484
 msgid "frame.wav"
 msgstr "frame.wav"
 
-#: gap/gap_vex_dialog.c:2487
+#: gap/gap_vex_dialog.c:2494
 msgid "Use filebrowser to select audiofilename"
 msgstr "Use filebrowser to select audiofilename"
 
-#: gap/gap_vex_dialog.c:2493
+#: gap/gap_vex_dialog.c:2500
 msgid "Start extraction"
 msgstr "Start extraction"
 
@@ -6465,15 +6482,15 @@ msgstr "Start extraction"
 msgid "Seek Frame Position..."
 msgstr "Seek Frame Position..."
 
-#: gap/gap_vex_exec.c:444
+#: gap/gap_vex_exec.c:443
 msgid "Extracting Frames..."
 msgstr "Extracting Frames..."
 
-#: gap/gap_vex_exec.c:600
+#: gap/gap_vex_exec.c:599
 msgid "Seek Audio Position..."
 msgstr "Seek Audio Position..."
 
-#: gap/gap_vex_exec.c:635
+#: gap/gap_vex_exec.c:634
 msgid "Extracting Audio..."
 msgstr "Extracting Audio..."
 
@@ -6508,21 +6525,21 @@ msgstr "Unable to open file %s"
 msgid "<Image>/Video/Layer/Colors/CurvesFile..."
 msgstr "<Image>/Video/Layer/Colours/CurvesFile..."
 
-#: gap/gap_wr_color_curve.c:790
+#: gap/gap_wr_color_curve.c:792
 msgid "Load color curve from file"
 msgstr "Load colour curve from file"
 
 #. The dialog and main vbox
-#: gap/gap_wr_color_curve.c:882
+#: gap/gap_wr_color_curve.c:886
 msgid "CurvesFile"
 msgstr "CurvesFile"
 
 #. The Load button
-#: gap/gap_wr_color_curve.c:909
+#: gap/gap_wr_color_curve.c:913
 msgid "Load Curve"
 msgstr "Load Curve"
 
-#: gap/gap_wr_color_curve.c:916
+#: gap/gap_wr_color_curve.c:920
 msgid ""
 "Load curve from a GIMP curve file (that was saved with the GIMP's color "
 "curve tool)"
@@ -6530,107 +6547,107 @@ msgstr ""
 "Load curve from a GIMP curve file (that was saved with the GIMP's colour "
 "curve tool)"
 
-#: gap/gap_wr_color_huesat.c:261
+#: gap/gap_wr_color_huesat.c:262
 msgid "<Image>/Video/Layer/Colors/Hue-Saturation..."
 msgstr "<Image>/Video/Layer/Colours/Hue-Saturation..."
 
 #. The dialog1 and main vbox
-#: gap/gap_wr_color_huesat.c:570
+#: gap/gap_wr_color_huesat.c:571
 msgid "Hue-Saturation"
 msgstr "Hue-Saturation"
 
 #. the frame
-#: gap/gap_wr_color_huesat.c:605
+#: gap/gap_wr_color_huesat.c:606
 msgid "Hue / Lightness / Saturation Adjustments "
 msgstr "Hue / Lightness / Saturation Adjustments "
 
 #. Hue Mode the label
-#: gap/gap_wr_color_huesat.c:624
+#: gap/gap_wr_color_huesat.c:625
 msgid "Hue Mode:"
 msgstr "Hue Mode:"
 
 #. Hue Mode the radio buttons
 #. Channel the radio buttons
-#: gap/gap_wr_color_huesat.c:632 gap/gap_wr_color_levels.c:635
+#: gap/gap_wr_color_huesat.c:633 gap/gap_wr_color_levels.c:636
 msgid "Master"
 msgstr "Master"
 
-#: gap/gap_wr_color_huesat.c:637 gap/gap_wr_color_levels.c:640
+#: gap/gap_wr_color_huesat.c:638 gap/gap_wr_color_levels.c:641
 msgid "Red"
 msgstr "Red"
 
-#: gap/gap_wr_color_huesat.c:642
+#: gap/gap_wr_color_huesat.c:643
 msgid "Yellow"
 msgstr "Yellow"
 
-#: gap/gap_wr_color_huesat.c:647 gap/gap_wr_color_levels.c:645
+#: gap/gap_wr_color_huesat.c:648 gap/gap_wr_color_levels.c:646
 msgid "Green"
 msgstr "Green"
 
-#: gap/gap_wr_color_huesat.c:652
+#: gap/gap_wr_color_huesat.c:653
 msgid "Cyan"
 msgstr "Cyan"
 
-#: gap/gap_wr_color_huesat.c:657 gap/gap_wr_color_levels.c:650
+#: gap/gap_wr_color_huesat.c:658 gap/gap_wr_color_levels.c:651
 msgid "Blue"
 msgstr "Blue"
 
-#: gap/gap_wr_color_huesat.c:662
+#: gap/gap_wr_color_huesat.c:663
 msgid "Magenta"
 msgstr "Magenta"
 
-#: gap/gap_wr_color_huesat.c:674
+#: gap/gap_wr_color_huesat.c:675
 msgid "Hue:"
 msgstr "Hue:"
 
-#: gap/gap_wr_color_huesat.c:681
+#: gap/gap_wr_color_huesat.c:682
 msgid "Lightness:"
 msgstr "Lightness:"
 
-#: gap/gap_wr_color_huesat.c:688
+#: gap/gap_wr_color_huesat.c:689
 msgid "Saturation:"
 msgstr "Saturation:"
 
-#: gap/gap_wr_color_levels.c:270
+#: gap/gap_wr_color_levels.c:271
 msgid "<Image>/Video/Layer/Colors/Levels..."
 msgstr "<Image>/Video/Layer/Colours/Levels..."
 
 #. The dialog1 and main vbox
-#: gap/gap_wr_color_levels.c:585
+#: gap/gap_wr_color_levels.c:586
 msgid "Color Levels"
 msgstr "Colour Levels"
 
 #. the frame
-#: gap/gap_wr_color_levels.c:612
+#: gap/gap_wr_color_levels.c:613
 msgid "Color Levels  Adjustments "
 msgstr "Colour Levels  Adjustments "
 
 #. Channel the label
-#: gap/gap_wr_color_levels.c:628
+#: gap/gap_wr_color_levels.c:629
 msgid "Channel:"
 msgstr "Channel:"
 
-#: gap/gap_wr_color_levels.c:655
+#: gap/gap_wr_color_levels.c:656
 msgid "Alpha"
 msgstr "Alpha"
 
-#: gap/gap_wr_color_levels.c:667
+#: gap/gap_wr_color_levels.c:668
 msgid "Low Input:"
 msgstr "Low Input:"
 
-#: gap/gap_wr_color_levels.c:674
+#: gap/gap_wr_color_levels.c:675
 msgid "High Input:"
 msgstr "High Input:"
 
-#: gap/gap_wr_color_levels.c:681
+#: gap/gap_wr_color_levels.c:682
 msgid "Gamma:"
 msgstr "Gamma:"
 
-#: gap/gap_wr_color_levels.c:688
+#: gap/gap_wr_color_levels.c:689
 msgid "Low Output:"
 msgstr "Low Output:"
 
-#: gap/gap_wr_color_levels.c:695
+#: gap/gap_wr_color_levels.c:696
 msgid "High Output:"
 msgstr "High Output:"
 
@@ -6759,11 +6776,11 @@ msgstr "analyze line %d (out of %d)"
 msgid "No Frames or Images found ...."
 msgstr "No Frames or Images found ...."
 
-#: libgapvidutil/gap_gve_story.c:4768
+#: libgapvidutil/gap_gve_story.c:4763
 msgid "Seek Inputvideoframe..."
 msgstr "Seek Input video frame..."
 
-#: libgapvidutil/gap_gve_story.c:4773
+#: libgapvidutil/gap_gve_story.c:4768
 msgid "Continue Encoding..."
 msgstr "Continue Encoding..."
 
