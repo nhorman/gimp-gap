@@ -51,8 +51,8 @@
 
 #define SPIN_WIDTH_SMALL 40
 #define SPIN_WIDTH_LARGE 80
+#define ENTRY_WIDTH_LARGE 320
 
-#define INDENT_PIXELS 4
 
 /* -------- GUI TOOL PROCEDURES -----------*/
 static void        p_update_range_widgets(GapVexMainGlobalParams *gpp);
@@ -110,7 +110,8 @@ static void        on_mw__button_audiofile_clicked        (GtkButton       *butt
 static void        on_mw__checkbutton_multilayer_toggled  (GtkToggleButton *togglebutton,
                                         GapVexMainGlobalParams *gpp);
 static void        on_mw__button_vrange_dialog_clicked    (GtkButton       *button,
-                                        GapVexMainGlobalParams *gpp);
+                                        GdkEventButton  *bevent,
+					GapVexMainGlobalParams *gpp);
 static void        on_mw__button_vrange_docked_clicked    (GtkButton       *button,
                                         GapVexMainGlobalParams *gpp);
 static void        on_mw__entry_preferred_decoder_changed (GtkEditable     *editable,
@@ -274,6 +275,7 @@ static void
 p_update_wgt_sensitivity(GapVexMainGlobalParams *gpp)
 {
   gboolean   sensitive;
+  gboolean   sensitive_vid;
 
 
   if(gap_debug) printf("p_update_wgt_sensitivity : START\n");
@@ -305,6 +307,7 @@ p_update_wgt_sensitivity(GapVexMainGlobalParams *gpp)
   {
       sensitive = FALSE;
   }
+  
   gtk_widget_set_sensitive(gpp->mw__spinbutton_begin_frame, sensitive);
   gtk_widget_set_sensitive(gpp->mw__spinbutton_end_frame, sensitive);
   gtk_widget_set_sensitive(gpp->mw__button_vrange_dialog, sensitive);
@@ -323,12 +326,24 @@ p_update_wgt_sensitivity(GapVexMainGlobalParams *gpp)
   {
       sensitive = FALSE;
   }
+  sensitive_vid = sensitive;
+  
+  gtk_widget_set_sensitive(gpp->mw__spinbutton_basenum, sensitive);
+  gtk_widget_set_sensitive(gpp->mw__optionmenu_deinterlace, sensitive);
+  gtk_widget_set_sensitive(gpp->mw__checkbutton_multilayer, sensitive);
+
+  if((gpp->val.multilayer == 0) && (sensitive_vid))
+  {
+      sensitive = TRUE;  /* we want to extract to frame files on disc */
+  }
+  else
+  {
+      sensitive = FALSE;  /*  we want to extract to one multilayer image  */
+  }
   gtk_widget_set_sensitive(gpp->mw__entry_basename, sensitive);
   gtk_widget_set_sensitive(gpp->mw__button_basename, sensitive);
-  gtk_widget_set_sensitive(gpp->mw__entry_extension, sensitive);
-  gtk_widget_set_sensitive(gpp->mw__spinbutton_basenum, sensitive);
   gtk_widget_set_sensitive(gpp->mw__spinbutton_fn_digits, sensitive);
-
+  gtk_widget_set_sensitive(gpp->mw__entry_extension, sensitive);
 
 
   if((gpp->val.audiotrack > 0)
@@ -344,7 +359,7 @@ p_update_wgt_sensitivity(GapVexMainGlobalParams *gpp)
   gtk_widget_set_sensitive(gpp->mw__entry_audiofile, sensitive);
   gtk_widget_set_sensitive(gpp->mw__button_audiofile, sensitive);
 
-  if(gpp->val.deinterlace != 0)
+  if((gpp->val.deinterlace != 0) && (sensitive_vid))
   {
       sensitive = TRUE;
   }
@@ -534,6 +549,7 @@ printf("p_call_player_widget: 1.st start\n");
       }
 
       gpp->plp->autostart = FALSE;
+      gpp->plp->caller_range_linked = TRUE;
       gpp->plp->use_thumbnails = FALSE;
       gpp->plp->exact_timing = FALSE;
       gpp->plp->play_selection_only = FALSE;
@@ -1151,6 +1167,7 @@ on_mw__checkbutton_multilayer_toggled  (GtkToggleButton *togglebutton,
  {
     gpp->val.multilayer = FALSE;
  }
+ p_update_wgt_sensitivity(gpp);
 }
 
 
@@ -1160,9 +1177,11 @@ on_mw__checkbutton_multilayer_toggled  (GtkToggleButton *togglebutton,
  */
 static void
 on_mw__button_vrange_dialog_clicked             (GtkButton       *button,
-                                                 GapVexMainGlobalParams *gpp)
+                                                 GdkEventButton  *bevent,
+						 GapVexMainGlobalParams *gpp)
 {
- gdouble delace;
+ gdouble  delace;
+ gboolean docked_mode;
 
  delace = gpp->val.deinterlace;
  if(delace == GAP_VEX_DELACE_ODD_X2)
@@ -1179,6 +1198,15 @@ on_mw__button_vrange_dialog_clicked             (GtkButton       *button,
  if(gap_debug) printf("CB: on_mw__button_vrange_dialog_clicked\n");
  if(gpp == NULL) return;
 
+ docked_mode = TRUE;
+ if(bevent)
+ {
+   if ((bevent->state & GDK_SHIFT_MASK))  /* SHIFT Click */
+   {
+     docked_mode = FALSE;
+   }
+ }
+
  p_call_player_widget(gpp
 		   ,gpp->val.videoname
 		   ,gpp->video_width
@@ -1187,9 +1215,7 @@ on_mw__button_vrange_dialog_clicked             (GtkButton       *button,
 		   , gpp->val.end_frame
 		   , gpp->val.videotrack
 		   , delace
- // TODO: support more parameters:
- //                , gpp->val.preferred_decoder
-                   , FALSE                      /* docked_mode */
+                   , docked_mode
  		   );
 }
 
@@ -1227,8 +1253,6 @@ on_mw__button_vrange_docked_clicked             (GtkButton       *button,
 		   , gpp->val.end_frame
 		   , gpp->val.videotrack
 		   , delace
- // TODO: support more parameters:
- //                , gpp->val.preferred_decoder
                    , TRUE                      /* docked_mode */
  		   );
 }
@@ -1656,6 +1680,49 @@ create_fsa__fileselection (GapVexMainGlobalParams *gpp)
 /* endif GAP_ENABLE_VIDEOAPI_SUPPORT (1) */
 #endif 
 
+/* ----------------------------------
+ * p_align_widget_columns
+ * ----------------------------------
+ * IN: array of pointers to widgets 
+ *    (the array contains widgets that are arranged in one column
+ *     but do not belong to the same table)
+ * this procedure does check for the max width of all those widgets,
+ * and forces them all to use the same width.
+ * (to get same alignment in the different tables)
+ */
+static void
+p_align_widget_columns(GtkWidget **wgt_array, gint max_elements)
+{
+  gint       max_label_width;
+  gint       ii;
+
+  max_label_width = 0;
+  for(ii=0; ii < max_elements; ii++)
+  {
+    GtkRequisition  requisition;
+    gtk_widget_size_request(wgt_array[ii], &requisition);
+    //if(gap_debug)
+    {
+      printf("WIDGET[%02d].width: %d\n"
+          ,(int)ii
+          ,(int)requisition.width
+	  );
+    }
+    if(requisition.width > max_label_width)
+    {
+      max_label_width = requisition.width;
+    }
+  }
+
+  /* force all labels to use the max width
+   * (to reach same alignment in both frames)
+   */
+  for(ii=0; ii < max_elements; ii++)
+  {
+    gtk_widget_set_usize (wgt_array[ii], max_label_width, -2);
+  }
+
+}  /* end p_align_widget_columns */
 
 /* ----------------------------------
  * gap_vex_dlg_create_mw__main_window
@@ -1670,7 +1737,8 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
   GtkWidget *mw__vbox1;
   GtkWidget *mw__frame1;
   GtkWidget *mw__vbox2;
-  GtkWidget *mw__table1;
+  GtkWidget *mw__table_in;
+  GtkWidget *mw__table_out;
   GtkWidget *mw__label_video;
   GtkWidget *mw__checkbutton_disable_mmx;
   GtkWidget *mw__entry_video;
@@ -1692,7 +1760,6 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
   GtkWidget *mw__checkbutton_exact_seek;
   GtkWidget *mw__frame2;
   GtkWidget *mw__vbox10;
-  GtkWidget *mw__table10;
   GtkWidget *mw__label_basename;
   GtkWidget *mw__entry_basename;
   GtkWidget *mw__button_basename;
@@ -1702,7 +1769,6 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
   GtkWidget *mw__label_audifile;
   GtkWidget *mw__entry_audiofile;
   GtkWidget *mw__button_audiofile;
-  GtkWidget *mw__hbox11;
   GtkWidget *mw__checkbutton_multilayer;
   GtkWidget *mw__optionmenu_deinterlace;
   GtkWidget *mw__optionmenu_deinterlace_menu;
@@ -1720,17 +1786,24 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
   GtkWidget *label4;
   GtkWidget *label5;
   GtkWidget *label6;
-  GtkWidget *label7;
-  GtkWidget *label8;
   GtkWidget *label;
   GtkWidget *hbox2;
   GtkWidget *glade_menuitem;
+  GtkWidget *wgt_array[50];
+  GtkWidget *lbl_array[50];
+  gint       wgt_idx;
+  gint       lbl_idx;
+  gint       out_row;
+  gint       in_row;
+
 
   mw__main_window = NULL;
+  wgt_idx = 0;
+  lbl_idx = 0;
 
 #ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
 
-  mw__main_window = gimp_dialog_new (_("Extract Videoframes"),
+  mw__main_window = gimp_dialog_new (_("Extract Videorange"),
                          "plug_in_gap_extract_video",
                          NULL, 0,
 			 gimp_standard_help_func, "plug_in_gap_extract_video.html",
@@ -1749,30 +1822,32 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
 
   mw__main_hbox = gtk_hbox_new (FALSE, 0);
   gtk_widget_show (mw__main_hbox);
-  gtk_box_pack_start (GTK_BOX (mw__dialog_vbox1), mw__main_hbox, TRUE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (mw__dialog_vbox1), mw__main_hbox, TRUE, TRUE, 5);
 
  
-
-
   mw__vbox1 = gtk_vbox_new (FALSE, 0);
   gtk_widget_show (mw__vbox1);
-  gtk_box_pack_start (GTK_BOX (mw__main_hbox), mw__vbox1, TRUE, TRUE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (mw__vbox1), 5);
+  gtk_box_pack_start (GTK_BOX (mw__main_hbox), mw__vbox1, TRUE, TRUE, 10);
+  /*gtk_container_set_border_width (GTK_CONTAINER (mw__vbox1), 5);*/
 
 
   /* XXXXXXXXXXX Player Frame  XXXXXXXXXXXX */
   /* the player_frame */
-  mw__player_frame = gtk_frame_new ( _("Select Videorange") );
+  mw__player_frame = gimp_frame_new ( _("Select Videorange") );
   gtk_frame_set_shadow_type (GTK_FRAME (mw__player_frame) ,GTK_SHADOW_ETCHED_IN);
   gtk_box_pack_start (GTK_BOX (mw__main_hbox), mw__player_frame, TRUE, TRUE, 0);
 
+  /* the mw__player_frame widget is hidden at startup
+   * and becomes visible, when the user wants to select
+   * the videorange via player in docked mode
+   */
   /* gtk_widget_show (mw__player_frame); */  /* not yet, show the widget later */
 
 
 
 
 
-  mw__frame1 = gtk_frame_new (_("Input Video selection"));
+  mw__frame1 = gimp_frame_new (_("Input Video selection"));
   gtk_widget_show (mw__frame1);
   gtk_box_pack_start (GTK_BOX (mw__vbox1), mw__frame1, TRUE, TRUE, 0);
 
@@ -1781,68 +1856,72 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
   gtk_container_add (GTK_CONTAINER (mw__frame1), mw__vbox2);
   gtk_container_set_border_width (GTK_CONTAINER (mw__vbox2), 4);
 
-  mw__table1 = gtk_table_new (7, 3, FALSE);
-  gtk_widget_show (mw__table1);
-  gtk_box_pack_start (GTK_BOX (mw__vbox2), mw__table1, TRUE, TRUE, 2);
-  gtk_table_set_row_spacings (GTK_TABLE (mw__table1), 1);
-  gtk_table_set_col_spacings (GTK_TABLE (mw__table1), 1);
 
+  mw__table_in = gtk_table_new (7, 3, FALSE);
+  gtk_widget_show (mw__table_in);
+  gtk_box_pack_start (GTK_BOX (mw__vbox2), mw__table_in, TRUE, TRUE, 2);
+  gtk_table_set_row_spacings (GTK_TABLE (mw__table_in), 1);
+  gtk_table_set_col_spacings (GTK_TABLE (mw__table_in), 1);
+
+  in_row = 0;
 
   /* the videofile label */
   mw__label_video = gtk_label_new (_("Videofilename:"));
+  lbl_array[lbl_idx] = mw__label_video; 
+  lbl_idx++;
+  
   gtk_widget_show (mw__label_video);
-  gtk_misc_set_alignment (GTK_MISC (mw__label_video), 1.0, 0.0);
-  gtk_table_attach (GTK_TABLE (mw__table1), mw__label_video, 0, 1, 0, 1,
+  gtk_misc_set_alignment (GTK_MISC (mw__label_video), 0.0, 0.0);
+  gtk_table_attach (GTK_TABLE (mw__table_in), mw__label_video, 0, 1, in_row, in_row+1,
                     (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), INDENT_PIXELS, 0);
+                    (GtkAttachOptions) (0), 0, 0);
 
 
   /* the videofile entry */
   mw__entry_video = gtk_entry_new ();
   gtk_widget_show (mw__entry_video);
-  gtk_table_attach (GTK_TABLE (mw__table1), mw__entry_video, 1, 2, 0, 1,
+  gtk_widget_set_usize (mw__entry_video, ENTRY_WIDTH_LARGE, -2);
+  gtk_table_attach (GTK_TABLE (mw__table_in), mw__entry_video, 1, 2, in_row, in_row+1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 3, 1);
-  gtk_widget_set_usize (mw__entry_video, 300, -2);
+                    (GtkAttachOptions) (0), 0, 0);
   gimp_help_set_help_data (mw__entry_video, _("Name of videofile (used as inputfile)"), NULL);
 
 
   /* the videofile button (that invokes fileselection dialog) */
   mw__button_video = gtk_button_new_with_label (_("..."));
   gtk_widget_show (mw__button_video);
-  gtk_table_attach (GTK_TABLE (mw__table1), mw__button_video, 2, 3, 0, 1,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 3, 1);
-  gtk_widget_set_usize (mw__button_video, 60, -2);
+  wgt_array[wgt_idx] = mw__button_video; 
+  wgt_idx++;
+  gtk_table_attach (GTK_TABLE (mw__table_in), mw__button_video, 2, 3, in_row, in_row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
   gimp_help_set_help_data (mw__button_video, _("Select video using file browser"), NULL);
 
 
 
   /* MMX sometimes gives unusable results, and therefore is always OFF
-   * checkbox is not needed
+   * checkbox is not needed any more..
    */
   mw__checkbutton_disable_mmx = gtk_check_button_new_with_label (_("Disable MMX"));
-  /*  gtk_widget_show (mw__checkbutton_disable_mmx); */
-  gtk_table_attach (GTK_TABLE (mw__table1), mw__checkbutton_disable_mmx, 2, 3, 3, 4,
-                    (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_usize (mw__checkbutton_disable_mmx, 100, -2);
-  gimp_help_set_help_data (mw__checkbutton_disable_mmx, _("Turn off MMX (MMX is faster but lossy on low bitrate streams)"), NULL);
+  gtk_widget_hide (mw__checkbutton_disable_mmx);
+
+  in_row++;
 
   /* the videoextract range from label */
   label1 = gtk_label_new (_("From Frame:"));
-  gtk_misc_set_alignment (GTK_MISC (label1), 1.0, 0.0);
+  gtk_misc_set_alignment (GTK_MISC (label1), 0.0, 0.0);
+  lbl_array[lbl_idx] = label1; 
+  lbl_idx++;
   gtk_widget_show (label1);
-  gtk_table_attach (GTK_TABLE (mw__table1), label1, 0, 1, 1, 2,
+  gtk_table_attach (GTK_TABLE (mw__table_in), label1, 0, 1, in_row, in_row+1,
                     (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), INDENT_PIXELS, 0);
+                    (GtkAttachOptions) (0), 0, 0);
 
 
   /* from spinbutton */
-
   hbox2 = gtk_hbox_new (FALSE, 0);
   gtk_widget_show (hbox2);
-  gtk_table_attach (GTK_TABLE (mw__table1), hbox2, 1, 2, 1, 2,
+  gtk_table_attach (GTK_TABLE (mw__table_in), hbox2, 1, 2, in_row, in_row+1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
@@ -1850,8 +1929,9 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
   mw__spinbutton_begin_frame = gtk_spin_button_new (GTK_ADJUSTMENT (mw__spinbutton_begin_frame_adj), 1, 0);
   gtk_widget_show (mw__spinbutton_begin_frame);
   gtk_widget_set_usize (mw__spinbutton_begin_frame, SPIN_WIDTH_LARGE, -2);
-  gtk_box_pack_start (GTK_BOX (hbox2), mw__spinbutton_begin_frame, FALSE, FALSE, 3);
+  gtk_box_pack_start (GTK_BOX (hbox2), mw__spinbutton_begin_frame, FALSE, FALSE, 0);
   gimp_help_set_help_data (mw__spinbutton_begin_frame, _("Frame number of 1.st frame to extract"), NULL);
+
 
   /* dummy label to fill up the hbox2 */
   label = gtk_label_new (" ");
@@ -1859,30 +1939,50 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
   gtk_box_pack_start (GTK_BOX (hbox2), label, TRUE, TRUE, 0);
 
 
+  /* the videorange button (that invokes the player for video range selection) */
+  mw__button_vrange_dialog = gtk_button_new_with_label (_("Video Range"));
+  gtk_widget_show (mw__button_vrange_dialog);
+  wgt_array[wgt_idx] = mw__button_vrange_dialog; 
+  wgt_idx++;
+  gtk_table_attach (GTK_TABLE (mw__table_in), mw__button_vrange_dialog, 2, 3, in_row, in_row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gimp_help_set_help_data (mw__button_vrange_dialog
+                         , _("Visual video range selection via videoplayer\n"
+                             "SHIFT: Open a separate player window")
+			 , NULL);
+
+
+  in_row++;
 
   /* the videoextract range to label */
   label2 = gtk_label_new (_("To Frame:"));
   gtk_widget_show (label2);
-  gtk_misc_set_alignment (GTK_MISC (label2), 1.0, 0);
-  gtk_table_attach (GTK_TABLE (mw__table1), label2, 0, 1, 2, 3,
+  lbl_array[lbl_idx] = label2; 
+  lbl_idx++;
+  gtk_misc_set_alignment (GTK_MISC (label2), 0.0, 0);
+  gtk_table_attach (GTK_TABLE (mw__table_in), label2, 0, 1, in_row, in_row+1,
                     (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), INDENT_PIXELS, 0);
+                    (GtkAttachOptions) (0), 0, 0);
 
 
   /* to spinbutton */
-
   hbox2 = gtk_hbox_new (FALSE, 0);
   gtk_widget_show (hbox2);
-  gtk_table_attach (GTK_TABLE (mw__table1), hbox2, 1, 2, 2, 3,
+  gtk_table_attach (GTK_TABLE (mw__table_in), hbox2, 1, 2, in_row, in_row+1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
   mw__spinbutton_end_frame_adj = gtk_adjustment_new (1, 1, 999999, 1, 10, 10);
   mw__spinbutton_end_frame = gtk_spin_button_new (GTK_ADJUSTMENT (mw__spinbutton_end_frame_adj), 1, 0);
   gtk_widget_show (mw__spinbutton_end_frame);
-  gtk_box_pack_start (GTK_BOX (hbox2), mw__spinbutton_end_frame, FALSE, FALSE, 3);
+  gtk_box_pack_start (GTK_BOX (hbox2), mw__spinbutton_end_frame, FALSE, FALSE, 0);
   gtk_widget_set_usize (mw__spinbutton_end_frame, SPIN_WIDTH_LARGE, -2);
-  gimp_help_set_help_data (mw__spinbutton_end_frame, _("Frame number of last frame to extract (0 == use last frame)"), NULL);
+  gimp_help_set_help_data (mw__spinbutton_end_frame
+                          , _("Frame number of last frame to extract. "
+			      "To extract all frames use a range from 1 to 999999. "
+			      "(Extract stops at the last available frame)")
+			  , NULL);
 
   /* dummy label to fill up the hbox2 */
   label = gtk_label_new (" ");
@@ -1891,36 +1991,28 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
 
 
 
-
-
-  /* the videorange button (that invokes the player for video range selection) */
-  mw__button_vrange_dialog = gtk_button_new_with_label (_("VideoRange"));
-  gtk_widget_show (mw__button_vrange_dialog);
-  gtk_table_attach (GTK_TABLE (mw__table1), mw__button_vrange_dialog, 2, 3, 1, 2,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gimp_help_set_help_data (mw__button_vrange_dialog, _("Open visual video range selection window"), NULL);
-
-
-
   /* the videorange button (that invokes the player for video range selection in docked mode) */
   mw__button_vrange_docked = gtk_button_new_with_label (_("VideoRange"));
-  gtk_widget_show (mw__button_vrange_docked);
-  gtk_table_attach (GTK_TABLE (mw__table1), mw__button_vrange_docked, 2, 3, 2, 3,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gimp_help_set_help_data (mw__button_vrange_docked, _("visual video range selection (docked mode)"), NULL);
+//  gtk_widget_show (mw__button_vrange_docked);
+//  wgt_array[wgt_idx] = mw__button_vrange_docked; 
+//  wgt_idx++;
+//  gtk_table_attach (GTK_TABLE (mw__table_in), mw__button_vrange_docked, 2, 3, in_row, in_row+1,
+//                    (GtkAttachOptions) (GTK_FILL),
+//                    (GtkAttachOptions) (0), 0, 0);
+//  gimp_help_set_help_data (mw__button_vrange_docked, _("visual video range selection (docked mode)"), NULL);
 
 
-
+  in_row++;
 
   /* the videotrack to label */
   label3 = gtk_label_new (_("Videotrack:"));
   gtk_widget_show (label3);
-  gtk_misc_set_alignment (GTK_MISC (label3), 1.0, 0);
-  gtk_table_attach (GTK_TABLE (mw__table1), label3, 0, 1, 3, 4,
+  lbl_array[lbl_idx] = label3; 
+  lbl_idx++;
+  gtk_misc_set_alignment (GTK_MISC (label3), 0.0, 0);
+  gtk_table_attach (GTK_TABLE (mw__table_in), label3, 0, 1, in_row, in_row+1,
                     (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), INDENT_PIXELS, 0);
+                    (GtkAttachOptions) (0), 0, 0);
 
 
 
@@ -1928,7 +2020,7 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
 
   hbox2 = gtk_hbox_new (FALSE, 0);
   gtk_widget_show (hbox2);
-  gtk_table_attach (GTK_TABLE (mw__table1), hbox2, 1, 2, 3, 4,
+  gtk_table_attach (GTK_TABLE (mw__table_in), hbox2, 1, 2, in_row, in_row+1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (GTK_FILL), 0, 0);
 
@@ -1936,7 +2028,7 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
   mw__spinbutton_videotrack = gtk_spin_button_new (GTK_ADJUSTMENT (mw__spinbutton_videotrack_adj), 1, 0);
   gtk_widget_show (mw__spinbutton_videotrack);
   gtk_widget_set_usize (mw__spinbutton_videotrack, SPIN_WIDTH_SMALL, -2);
-  gtk_box_pack_start (GTK_BOX (hbox2), mw__spinbutton_videotrack, FALSE, FALSE, 3);
+  gtk_box_pack_start (GTK_BOX (hbox2), mw__spinbutton_videotrack, FALSE, FALSE, 0);
   gimp_help_set_help_data (mw__spinbutton_videotrack, _("Videotrack number (0 == extract no frames)"), NULL);
 
   /* dummy label to fill up the hbox2 */
@@ -1944,15 +2036,17 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
   gtk_widget_show (label);
   gtk_box_pack_start (GTK_BOX (hbox2), label, TRUE, TRUE, 0);
 
-
+  in_row++;
 
   /* the audiotrack to label */
   label4 = gtk_label_new (_("Audiotrack:"));
   gtk_widget_show (label4);
-  gtk_misc_set_alignment (GTK_MISC (label4), 1.0, 0);
-  gtk_table_attach (GTK_TABLE (mw__table1), label4, 0, 1, 4, 5,
+  lbl_array[lbl_idx] = label4; 
+  lbl_idx++;
+  gtk_misc_set_alignment (GTK_MISC (label4), 0.0, 0);
+  gtk_table_attach (GTK_TABLE (mw__table_in), label4, 0, 1, in_row, in_row+1,
                     (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), INDENT_PIXELS, 0);
+                    (GtkAttachOptions) (0), 0, 0);
 
 
 
@@ -1960,7 +2054,7 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
 
   hbox2 = gtk_hbox_new (FALSE, 0);
   gtk_widget_show (hbox2);
-  gtk_table_attach (GTK_TABLE (mw__table1), hbox2, 1, 2, 4, 5,
+  gtk_table_attach (GTK_TABLE (mw__table_in), hbox2, 1, 2, in_row, in_row+1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (GTK_FILL), 0, 0);
 
@@ -1968,7 +2062,7 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
   mw__spinbutton_audiotrack = gtk_spin_button_new (GTK_ADJUSTMENT (mw__spinbutton_audiotrack_adj), 1, 0);
   gtk_widget_show (mw__spinbutton_audiotrack);
   gtk_widget_set_usize (mw__spinbutton_audiotrack, SPIN_WIDTH_SMALL, -2);
-  gtk_box_pack_start (GTK_BOX (hbox2), mw__spinbutton_audiotrack, FALSE, FALSE, 3);
+  gtk_box_pack_start (GTK_BOX (hbox2), mw__spinbutton_audiotrack, FALSE, FALSE, 0);
   gimp_help_set_help_data (mw__spinbutton_audiotrack, _("Audiotrack number (0 == extract no audio)"), NULL);
 
   /* dummy label to fill up the hbox2 */
@@ -1977,25 +2071,27 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
   gtk_box_pack_start (GTK_BOX (hbox2), label, TRUE, TRUE, 0);
 
 
-
+  in_row++;
 
   /* the (preferred) Decoder label */
 
   label5 = gtk_label_new (_("Decoder:"));
   gtk_widget_show (label5);
-  gtk_misc_set_alignment (GTK_MISC (label5), 1.0, 0);
-  gtk_table_attach (GTK_TABLE (mw__table1), label5, 0, 1, 5, 6,
+  lbl_array[lbl_idx] = label5; 
+  lbl_idx++;
+  gtk_misc_set_alignment (GTK_MISC (label5), 0.0, 0.0);
+  gtk_table_attach (GTK_TABLE (mw__table_in), label5, 0, 1, in_row, in_row+1,
                     (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), INDENT_PIXELS, 0);
+                    (GtkAttachOptions) (0), 0, 0);
 
 
 
   mw__entry_preferred_decoder = gtk_entry_new ();
   gtk_widget_show (mw__entry_preferred_decoder);
-  gtk_table_attach (GTK_TABLE (mw__table1), mw__entry_preferred_decoder, 1, 2, 5, 6,
-                    (GtkAttachOptions) (GTK_FILL),
+  gtk_widget_set_usize (mw__entry_preferred_decoder, ENTRY_WIDTH_LARGE, -2);
+  gtk_table_attach (GTK_TABLE (mw__table_in), mw__entry_preferred_decoder, 1, 2, in_row, in_row+1,
+                    (GtkAttachOptions) (GTK_FILL | GTK_EXPAND),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_usize (mw__entry_preferred_decoder, 158, -2);
   gimp_help_set_help_data (mw__entry_preferred_decoder, _("leave empty or select your preferred decoder (libmpeg3, libavformat, quicktime4linux)"), NULL);
 
 
@@ -2003,10 +2099,11 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
   /* the menu to select the preferred decoder */
   mw__optionmenu_preferred_decoder = gtk_option_menu_new ();
   gtk_widget_show (mw__optionmenu_preferred_decoder);
-  gtk_table_attach (GTK_TABLE (mw__table1), mw__optionmenu_preferred_decoder, 2, 3, 5, 6,
+  wgt_array[wgt_idx] = mw__optionmenu_preferred_decoder; 
+  wgt_idx++;
+  gtk_table_attach (GTK_TABLE (mw__table_in), mw__optionmenu_preferred_decoder, 2, 3, in_row, in_row+1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_usize (mw__optionmenu_preferred_decoder, 120, -2);
   mw__optionmenu_preferred_decoder_menu = gtk_menu_new ();
   glade_menuitem = gtk_menu_item_new_with_label (_("(none, automatic)"));
   gtk_widget_show (glade_menuitem);
@@ -2039,27 +2136,27 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
   gtk_option_menu_set_menu (GTK_OPTION_MENU (mw__optionmenu_preferred_decoder), mw__optionmenu_preferred_decoder_menu);
 
 
+  in_row++;
 
   /* the (Active) Decoder Label(s) */
 
   label6 = gtk_label_new (_("Active Decoder:"));
   gtk_widget_show (label6);
-  gtk_misc_set_alignment (GTK_MISC (label6), 1.0, 0);
-  gtk_table_attach (GTK_TABLE (mw__table1), label6, 0, 1, 6, 7,
+  lbl_array[lbl_idx] = label6; 
+  lbl_idx++;
+  gtk_misc_set_alignment (GTK_MISC (label6), 0.0, 0);
+  gtk_table_attach (GTK_TABLE (mw__table_in), label6, 0, 1, in_row, in_row+1,
                     (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), INDENT_PIXELS, 0);
+                    (GtkAttachOptions) (0), 0, 0);
 
 
   mw__label_active_decoder = gtk_label_new (_("****"));
   gtk_widget_show (mw__label_active_decoder);
-  gtk_table_attach (GTK_TABLE (mw__table1), mw__label_active_decoder, 1, 2, 6, 7,
+  gtk_table_attach (GTK_TABLE (mw__table_in), mw__label_active_decoder, 1, 2, in_row, in_row+1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  /* gtk_widget_set_usize (mw__label_active_decoder, 120, -2); */
   gtk_misc_set_padding (GTK_MISC (mw__label_active_decoder), 4, 0);
-  gtk_misc_set_alignment (GTK_MISC (mw__label_active_decoder), 0, 0.0);
-
-
+  gtk_misc_set_alignment (GTK_MISC (mw__label_active_decoder), 0.0, 0.0);
 
 
 
@@ -2068,70 +2165,94 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
    * (therefore the mw__checkbutton_exact_seek widget is not needed any longer)
    */
   mw__checkbutton_exact_seek = gtk_check_button_new_with_label (_("Exact"));
-  /* gtk_widget_show (mw__checkbutton_exact_seek); */
-  gtk_table_attach (GTK_TABLE (mw__table1), mw__checkbutton_exact_seek, 2, 3, 4, 5,
-                    (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_usize (mw__checkbutton_exact_seek, 100, -2);
-  gimp_help_set_help_data (mw__checkbutton_exact_seek, _("ON is slow but exact, OFF does seek faster but may not give exact framenumbers"), NULL);
+  gtk_widget_hide (mw__checkbutton_exact_seek);
 
 
 
 
 
 
-  mw__frame2 = gtk_frame_new (_("Output"));
+
+  mw__frame2 = gimp_frame_new (_("Output"));
   gtk_widget_show (mw__frame2);
-  gtk_box_pack_start (GTK_BOX (mw__vbox1), mw__frame2, TRUE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (mw__vbox1), mw__frame2, TRUE, TRUE, 10);
 
   mw__vbox10 = gtk_vbox_new (FALSE, 0);
   gtk_widget_show (mw__vbox10);
   gtk_container_add (GTK_CONTAINER (mw__frame2), mw__vbox10);
   gtk_container_set_border_width (GTK_CONTAINER (mw__vbox10), 4);
 
-  mw__table10 = gtk_table_new (4, 3, FALSE);
-  gtk_widget_show (mw__table10);
-  gtk_box_pack_start (GTK_BOX (mw__vbox10), mw__table10, TRUE, TRUE, 0);
+  mw__table_out = gtk_table_new (4, 3, FALSE);
+  gtk_widget_show (mw__table_out);
+  gtk_box_pack_start (GTK_BOX (mw__vbox10), mw__table_out, TRUE, TRUE, 0);
 
+  out_row = 0;
+
+  /* the operating Mode label */
+  label = gtk_label_new (_("Mode:"));
+  gtk_widget_show (label);
+  lbl_array[lbl_idx] = label; 
+  lbl_idx++;
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0);
+  gtk_table_attach (GTK_TABLE (mw__table_out), label, 0, 1, out_row, out_row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  /* the multilayer checkbox (decide if extract writes to frames on disc or to one image) */
+  mw__checkbutton_multilayer = gtk_check_button_new_with_label (_("Create only one multilayer Image"));
+  gtk_widget_show (mw__checkbutton_multilayer);
+  gtk_table_attach (GTK_TABLE (mw__table_out), mw__checkbutton_multilayer, 1, 2, out_row, out_row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gimp_help_set_help_data (mw__checkbutton_multilayer
+                          , _("On: extracted frames are stored in one multilayer image\n"
+			      "Off: extracted frames are written to frame files on disc")
+			  , NULL);
+
+  out_row++;
 
   /* the basename label */
   mw__label_basename = gtk_label_new (_("Basename:"));
   gtk_widget_show (mw__label_basename);
-  gtk_misc_set_alignment (GTK_MISC (mw__label_basename), 1.0, 0);
-  gtk_table_attach (GTK_TABLE (mw__table10), mw__label_basename, 0, 1, 0, 1,
+  lbl_array[lbl_idx] = mw__label_basename; 
+  lbl_idx++;
+  gtk_misc_set_alignment (GTK_MISC (mw__label_basename), 0.0, 0);
+  gtk_table_attach (GTK_TABLE (mw__table_out), mw__label_basename, 0, 1, out_row, out_row+1,
                     (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), INDENT_PIXELS, 0);
+                    (GtkAttachOptions) (0), 0, 0);
 
   /* the basename entry */
   mw__entry_basename = gtk_entry_new ();
   gtk_widget_show (mw__entry_basename);
-  gtk_table_attach (GTK_TABLE (mw__table10), mw__entry_basename, 1, 2, 0, 1,
+  gtk_widget_set_usize (mw__entry_basename, ENTRY_WIDTH_LARGE, -2);
+  gtk_table_attach (GTK_TABLE (mw__table_out), mw__entry_basename, 1, 2, out_row, out_row+1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 3, 1);
+                    (GtkAttachOptions) (0), 0, 0);
   gimp_help_set_help_data (mw__entry_basename, _("Basename for extracted frames (framenr and extension is added)"), NULL);
   gtk_entry_set_text (GTK_ENTRY (mw__entry_basename), _("frame_"));
 
   /* the basename button (that invokes the fileselection dialog) */
   mw__button_basename = gtk_button_new_with_label (_("..."));
   gtk_widget_show (mw__button_basename);
-  gtk_table_attach (GTK_TABLE (mw__table10), mw__button_basename, 2, 3, 0, 1,
-                    (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 3, 1);
-  gtk_widget_set_usize (mw__button_basename, 60, -2);
+  wgt_array[wgt_idx] = mw__button_basename; 
+  wgt_idx++;
+  gtk_table_attach (GTK_TABLE (mw__table_out), mw__button_basename, 2, 3, out_row, out_row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
   gimp_help_set_help_data (mw__button_basename, _("Use filebrowser to select basename for extracted frames"), NULL);
 
 
-
-
-  /* widgets to handle the output framenumber part */
-
+  out_row++;
+  
   /* the framenumber digits label */
-  label7 = gtk_label_new (_("Digits:"));
-  gtk_widget_show (label7);
-  gtk_misc_set_alignment (GTK_MISC (label7), 1.0, 0);
-  gtk_table_attach (GTK_TABLE (mw__table10), label7, 0, 1, 1, 2,
+  label = gtk_label_new (_("Digits:"));
+  gtk_widget_show (label);
+  lbl_array[lbl_idx] = label; 
+  lbl_idx++;
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0);
+  gtk_table_attach (GTK_TABLE (mw__table_out), label, 0, 1, out_row, out_row+1,
                     (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), INDENT_PIXELS, 0);
+                    (GtkAttachOptions) (0), 0, 0);
 
 
 
@@ -2139,7 +2260,7 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
 
   hbox2 = gtk_hbox_new (FALSE, 0);
   gtk_widget_show (hbox2);
-  gtk_table_attach (GTK_TABLE (mw__table10), hbox2, 1, 2, 1, 2,
+  gtk_table_attach (GTK_TABLE (mw__table_out), hbox2, 1, 2, out_row, out_row+1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
@@ -2148,7 +2269,7 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
   mw__spinbutton_fn_digits = gtk_spin_button_new (GTK_ADJUSTMENT (mw__spinbutton_fn_digits_adj), 1, 0);
   gtk_widget_show (mw__spinbutton_fn_digits);
   gtk_widget_set_usize (mw__spinbutton_fn_digits, SPIN_WIDTH_SMALL, -2);
-  gtk_box_pack_start (GTK_BOX (hbox2), mw__spinbutton_fn_digits, FALSE, FALSE, 3);
+  gtk_box_pack_start (GTK_BOX (hbox2), mw__spinbutton_fn_digits, FALSE, FALSE, 0);
   gimp_help_set_help_data (mw__spinbutton_fn_digits, _("Digits to use for framenumber part in filenames (use 1 if you dont want leading zeroes)"), NULL);
 
   /* dummy label to fill up the hbox2 */
@@ -2158,39 +2279,30 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
 
 
 
-  /* the basenum spinbutton (set framenumber for  the 1st extracted frame) */
-  mw__spinbutton_basenum_adj = gtk_adjustment_new (0, 0, 10000, 1, 10, 10);
-  mw__spinbutton_basenum = gtk_spin_button_new (GTK_ADJUSTMENT (mw__spinbutton_basenum_adj), 1, 0);
-  gtk_widget_show (mw__spinbutton_basenum);
-  gtk_table_attach (GTK_TABLE (mw__table10), mw__spinbutton_basenum, 2, 3, 1, 2,
-                    (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_usize (mw__spinbutton_basenum, 60, -2);
-  gimp_help_set_help_data (mw__spinbutton_basenum, _("Famenumber for 1st extracted frame (use 0 for original framenumbers)"), NULL);
-
-
-
+  out_row++;
 
   /* the extension label */
   mw__label_extension = gtk_label_new (_("Extension:"));
   gtk_widget_show (mw__label_extension);
-  gtk_misc_set_alignment (GTK_MISC (mw__label_extension), 1.0, 0);
-  gtk_table_attach (GTK_TABLE (mw__table10), mw__label_extension, 0, 1, 2, 3,
+  lbl_array[lbl_idx] = mw__label_extension; 
+  lbl_idx++;
+  gtk_misc_set_alignment (GTK_MISC (mw__label_extension), 0.0, 0);
+  gtk_table_attach (GTK_TABLE (mw__table_out), mw__label_extension, 0, 1, out_row, out_row+1,
                     (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), INDENT_PIXELS, 0);
+                    (GtkAttachOptions) (0), 0, 0);
 
 
   /* the extension entry (fileextension for output frames) */
   hbox2 = gtk_hbox_new (FALSE, 0);
   gtk_widget_show (hbox2);
-  gtk_table_attach (GTK_TABLE (mw__table10), hbox2, 1, 2, 2, 3,
+  gtk_table_attach (GTK_TABLE (mw__table_out), hbox2, 1, 2, out_row, out_row+1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
   mw__entry_extension = gtk_entry_new ();
   gtk_widget_show (mw__entry_extension);
   gtk_widget_set_usize (mw__entry_extension, SPIN_WIDTH_LARGE, -2);
-  gtk_box_pack_start (GTK_BOX (hbox2), mw__entry_extension, FALSE, FALSE, 3);
+  gtk_box_pack_start (GTK_BOX (hbox2), mw__entry_extension, FALSE, FALSE, 0);
   gimp_help_set_help_data (mw__entry_extension, _("Extension of extracted frames (.xcf, .jpg, .ppm)"), NULL);
   gtk_entry_set_text (GTK_ENTRY (mw__entry_extension), _(".xcf"));
 
@@ -2200,43 +2312,72 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
   gtk_box_pack_start (GTK_BOX (hbox2), label, TRUE, TRUE, 0);
 
 
+  out_row++;
+  
+  /* the framenumber for 1st frame label */
+  label = gtk_label_new (_("Framenr 1:"));
+  gtk_widget_show (label);
+  lbl_array[lbl_idx] = label; 
+  lbl_idx++;
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0);
+  gtk_table_attach (GTK_TABLE (mw__table_out), label, 0, 1, out_row, out_row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
 
+  /* the basenum spinbutton (set framenumber for  the 1st extracted frame) */
+  hbox2 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_show (hbox2);
+  gtk_table_attach (GTK_TABLE (mw__table_out), hbox2, 1, 2, out_row, out_row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  mw__spinbutton_basenum_adj = gtk_adjustment_new (0, 0, 10000, 1, 10, 10);
+  mw__spinbutton_basenum = gtk_spin_button_new (GTK_ADJUSTMENT (mw__spinbutton_basenum_adj), 1, 0);
+  gtk_widget_show (mw__spinbutton_basenum);
+  gtk_widget_set_usize (mw__spinbutton_basenum, SPIN_WIDTH_LARGE, -2);
+  gtk_box_pack_start (GTK_BOX (hbox2), mw__spinbutton_basenum, FALSE, FALSE, 0);
+  gimp_help_set_help_data (mw__spinbutton_basenum, _("Famenumber for 1st extracted frame (use 0 for keeping original framenumbers)"), NULL);
+
+  /* dummy label to fill up the hbox2 */
+  label = gtk_label_new (" ");
+  gtk_widget_show (label);
+  gtk_box_pack_start (GTK_BOX (hbox2), label, TRUE, TRUE, 0);
+
+  out_row++;
 
   /* the deinterlace Mode label */
-  label8 = gtk_label_new (_("Mode:"));
-  gtk_widget_show (label8);
-  gtk_misc_set_alignment (GTK_MISC (label8), 1.0, 0);
-  gtk_table_attach (GTK_TABLE (mw__table10), label8, 0, 1, 3, 4,
+  label = gtk_label_new (_("Deinterlace:"));
+  gtk_widget_show (label);
+  lbl_array[lbl_idx] = label; 
+  lbl_idx++;
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0);
+  gtk_table_attach (GTK_TABLE (mw__table_out), label, 0, 1, out_row, out_row+1,
                     (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), INDENT_PIXELS, 0);
+                    (GtkAttachOptions) (0), 0, 0);
 
-
-  mw__hbox11 = gtk_hbox_new (FALSE, 0);
-  gtk_widget_show (mw__hbox11);
-  gtk_table_attach (GTK_TABLE (mw__table10), mw__hbox11, 1, 2, 3, 4,
+  hbox2 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_show (hbox2);
+  gtk_table_attach (GTK_TABLE (mw__table_out), hbox2, 1, 2, out_row, out_row+1,
                     (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+                    (GtkAttachOptions) (0), 0, 0);
 
-
-  /* the multilayer checkbox (decide if extract writes to frames on disc or to one image) */
-  mw__checkbutton_multilayer = gtk_check_button_new_with_label (_("Create only one multilayer Image"));
-  gtk_widget_show (mw__checkbutton_multilayer);
-  gtk_box_pack_start (GTK_BOX (mw__hbox11), mw__checkbutton_multilayer, FALSE, FALSE, 0);
-  gimp_help_set_help_data (mw__checkbutton_multilayer
-                          , _("On: extracted frames are stored in one multilayer image"
-			      "Off: extracted frames are written to frame files on disc")
-			  , NULL);
-
+  /* the deinterlace threshold spinbutton */
+  mw__spinbutton_delace_threshold_adj = gtk_adjustment_new (0, 0, 1, 0.01, 0.1, 0.1);
+  mw__spinbutton_delace_threshold = gtk_spin_button_new (GTK_ADJUSTMENT (mw__spinbutton_delace_threshold_adj), 1, 2);
+  gtk_widget_show (mw__spinbutton_delace_threshold);
+  gtk_box_pack_start (GTK_BOX (hbox2), mw__spinbutton_delace_threshold, FALSE, FALSE, 0);
+  gtk_widget_set_usize (mw__spinbutton_delace_threshold, SPIN_WIDTH_LARGE, -2);
+  gimp_help_set_help_data (mw__spinbutton_delace_threshold, _("0.0 .. no interpolation, 1.0 smooth interpolation at deinterlacing"), NULL);
 
 
   /* the deinterlace optionmenu */
   mw__optionmenu_deinterlace = gtk_option_menu_new ();
   gtk_widget_show (mw__optionmenu_deinterlace);
-  gtk_box_pack_start (GTK_BOX (mw__hbox11), mw__optionmenu_deinterlace, TRUE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (hbox2), mw__optionmenu_deinterlace, TRUE, TRUE, 0);
   gimp_help_set_help_data (mw__optionmenu_deinterlace, _("Deinterlace splits each extracted frame in 2 frames"), NULL);
   mw__optionmenu_deinterlace_menu = gtk_menu_new ();
 
-  glade_menuitem = gtk_menu_item_new_with_label (_("normal"));
+  glade_menuitem = gtk_menu_item_new_with_label (_("no deinterlace"));
   gtk_widget_show (glade_menuitem);
   gtk_menu_append (GTK_MENU (mw__optionmenu_deinterlace_menu), glade_menuitem);
         g_signal_connect (G_OBJECT (glade_menuitem), "activate",
@@ -2278,31 +2419,25 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
 	                  , (gpointer)GAP_VEX_DELACE_EVEN_X2);
   gtk_option_menu_set_menu (GTK_OPTION_MENU (mw__optionmenu_deinterlace), mw__optionmenu_deinterlace_menu);
 
-  /* the deinterlace threshold spinbutton */
-  mw__spinbutton_delace_threshold_adj = gtk_adjustment_new (0, 0, 1, 0.01, 0.1, 0.1);
-  mw__spinbutton_delace_threshold = gtk_spin_button_new (GTK_ADJUSTMENT (mw__spinbutton_delace_threshold_adj), 1, 2);
-  gtk_widget_show (mw__spinbutton_delace_threshold);
-  gtk_table_attach (GTK_TABLE (mw__table10), mw__spinbutton_delace_threshold, 2, 3, 2, 3,
-                    (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_usize (mw__spinbutton_delace_threshold, 60, -2);
-  gimp_help_set_help_data (mw__spinbutton_delace_threshold, _("0.0 .. no interpolation, 1.0 smooth interpolation at deinterlacing"), NULL);
 
-
+  out_row++;
 
   /* the output audiofile label */
   mw__label_audifile = gtk_label_new (_("Audiofile:"));
   gtk_widget_show (mw__label_audifile);
-  gtk_misc_set_alignment (GTK_MISC (mw__label_audifile), 1.0, 0);
-  gtk_table_attach (GTK_TABLE (mw__table10), mw__label_audifile, 0, 1, 4, 5,
+  lbl_array[lbl_idx] = mw__label_audifile; 
+  lbl_idx++;
+  gtk_misc_set_alignment (GTK_MISC (mw__label_audifile), 0.0, 0);
+  gtk_table_attach (GTK_TABLE (mw__table_out), mw__label_audifile, 0, 1, out_row, out_row+1,
                     (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), INDENT_PIXELS, 0);
+                    (GtkAttachOptions) (0), 0, 0);
 
   /* the output audiofile entry */
   mw__entry_audiofile = gtk_entry_new ();
   gtk_widget_show (mw__entry_audiofile);
-  gtk_table_attach (GTK_TABLE (mw__table10), mw__entry_audiofile, 1, 2, 4, 5,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+  gtk_widget_set_usize (mw__entry_audiofile, ENTRY_WIDTH_LARGE, -2);
+  gtk_table_attach (GTK_TABLE (mw__table_out), mw__entry_audiofile, 1, 2, out_row, out_row+1,
+                    (GtkAttachOptions) (GTK_FILL | GTK_EXPAND),
                     (GtkAttachOptions) (0), 0, 0);
   gimp_help_set_help_data (mw__entry_audiofile, _("Name for extracted audio (audio is written in RIFF WAV format)"), NULL);
   gtk_entry_set_text (GTK_ENTRY (mw__entry_audiofile), _("frame.wav"));
@@ -2310,10 +2445,11 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
   /* the output audiofile button (that invokes the fileselection dialog) */
   mw__button_audiofile = gtk_button_new_with_label (_("..."));
   gtk_widget_show (mw__button_audiofile);
-  gtk_table_attach (GTK_TABLE (mw__table10), mw__button_audiofile, 2, 3, 4, 5,
-                    (GtkAttachOptions) (0),
+  wgt_array[wgt_idx] = mw__button_audiofile; 
+  wgt_idx++;
+  gtk_table_attach (GTK_TABLE (mw__table_out), mw__button_audiofile, 2, 3, out_row, out_row+1,
+                    (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_usize (mw__button_audiofile, 60, -2);
   gimp_help_set_help_data (mw__button_audiofile, _("Use filebrowser to select audiofilename"), NULL);
 
 
@@ -2324,6 +2460,11 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
   }
 
 
+  /* check for the max width of all labels in both frames
+   * for "input Video selection" and "Output"
+   */
+  p_align_widget_columns(lbl_array, lbl_idx);
+  p_align_widget_columns(wgt_array, wgt_idx);
 
 
   g_signal_connect (G_OBJECT (mw__checkbutton_disable_mmx), "toggled",
@@ -2332,7 +2473,7 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
   g_signal_connect (G_OBJECT (mw__entry_video), "changed",
                       G_CALLBACK (on_mw__entry_video_changed),
                       gpp);
-  g_signal_connect (G_OBJECT (mw__button_vrange_dialog), "clicked",
+  g_signal_connect (G_OBJECT (mw__button_vrange_dialog), "button_press_event",
                       G_CALLBACK (on_mw__button_vrange_dialog_clicked),
                       gpp);
   g_signal_connect (G_OBJECT (mw__button_vrange_docked), "clicked",

@@ -2,7 +2,7 @@
 README_onionskin
 
 REQUIRED:
-  gimp 1.3.16
+  gimp 2.0.x
 
 INSTALLATION:
   # the onionskin module was integrated into the gimp-gap basepackage
@@ -67,6 +67,26 @@ DESCRIPTION:
     SET for <name_of_the_current_animation>:
     This button sets the values for the current
     handled Animation.
+
+    Reference Mode:
+      NORMAL             /* default */
+         The Frame Reference Parameter is used as delta
+	 in just one direction.
+	 Negative values refere to previous frames only,
+	 positive values rfere to next frames only.
+      BIDRIECTIONAL_SINGLE
+         The Frame Reference Parameter is used as 
+	 bidirectional delta in both directions
+	 With an inital Frame Reference offset -1
+	 the reference sequence is
+	 -1, +2, -3, +4, -5, +6, ...
+	 
+      BIDRIECTIONAL_DOUBLE
+         The Frame Reference Parameter is used as 
+	 bidirectional delta in both directions
+	 With an inital Frame Reference offset -1
+	 the reference sequence is
+	 -1, +1 -2, +2, -3, +3, ...
     
     
     Onionskin Layers:
@@ -82,6 +102,8 @@ DESCRIPTION:
                 
          +2  .. copy 1.st onionlayer from current framenumber +2
                 copy 2.nd onionlayer from current framenumber +4
+
+         The example assumes Reference Mode NORMAL.
 
     Cyclic (Togglebutton):
          Define fold back behavior when referencing previous

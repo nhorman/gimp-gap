@@ -30,6 +30,7 @@
 #define GVA_MPGFRAME_B_TYPE 3
 
 #define GVA_MPGHDR_PICTURE_START_CODE    0x00000100
+#define GVA_MPGHDR_GOP_START_CODE        0x000001b8
 
 
 /* -----------------------
@@ -409,5 +410,10 @@ t_GVA_RetCode   GVA_get_video_chunk(t_GVA_Handle  *gvahand
                    , gint32 *size
                    , gint32 max_size);
 gint           GVA_util_check_mpg_frame_type(unsigned char *buffer, gint32 buf_size);
+void           GVA_util_fix_mpg_timecode(unsigned char *buffer
+                         ,gint32 buf_size
+                         ,gdouble master_framerate
+                         ,gint32  master_frame_nr
+                         );
 
 #endif

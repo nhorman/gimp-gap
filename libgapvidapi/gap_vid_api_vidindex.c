@@ -40,7 +40,7 @@ GVA_build_videoindex_filename(const char *filename, gint32 track, const char *de
   }
   
   filename_part = g_strdup_printf("%s.%d.%s.gvaidx", name, (int)track, decoder_name);
-  gvaindexes_dir = gimp_gimprc_query("video-gvaindexes-dir");
+  gvaindexes_dir = gimp_gimprc_query("video-index-dir");
   if(gvaindexes_dir)
   {
     vindex_file = g_build_filename(gvaindexes_dir, filename_part, NULL);
@@ -91,7 +91,7 @@ GVA_build_video_toc_filename(const char *filename, const char *decoder_name)
   }
   
   filename_part = g_strdup_printf("%s.%s.toc", name, decoder_name);
-  gvaindexes_dir = gimp_gimprc_query("video-gvaindexes-dir");
+  gvaindexes_dir = gimp_gimprc_query("video-index-dir");
   if(gvaindexes_dir)
   {
     toc_file = g_build_filename(gvaindexes_dir, filename_part, NULL);
@@ -372,27 +372,39 @@ GVA_save_videoindex(t_GVA_Videoindex *vindex, const char *filename, const char *
   vindex->videoindex_filename = GVA_build_videoindex_filename(filename, vindex->track, decoder_name);
   if(vindex->videoindex_filename)
   {
-   fp = fopen(vindex->videoindex_filename, "wb");
-   if(fp)
-   {
-     /* write HEAEDR */
-     fwrite(&vindex->hdr, 1, sizeof(vindex->hdr), fp);
+    fp = fopen(vindex->videoindex_filename, "wb");
+    if(fp)
+    {
+      /* write HEAEDR */
+      fwrite(&vindex->hdr, 1, sizeof(vindex->hdr), fp);
 
-     /* write VIDEOFILE_URI + terminating \0 character(s)  */
-     {
-       gchar *uri_buffer;
-       
-       uri_buffer = g_malloc0(l_flen);
-       g_snprintf(uri_buffer, l_flen, "%s", vindex->videofile_uri);
-       fwrite(uri_buffer, 1, l_flen, fp);
-       g_free(uri_buffer);
-     }
-     
-     /* write offset table */
-     fwrite(vindex->ofs_tab, 1, sizeof(t_GVA_IndexElem) * vindex->tabsize_used, fp);
-     fclose(fp);
-     return(TRUE);
-   }
+      /* write VIDEOFILE_URI + terminating \0 character(s)  */
+      {
+	gchar *uri_buffer;
+
+	uri_buffer = g_malloc0(l_flen);
+	g_snprintf(uri_buffer, l_flen, "%s", vindex->videofile_uri);
+	fwrite(uri_buffer, 1, l_flen, fp);
+	g_free(uri_buffer);
+      }
+
+      /* write offset table */
+      fwrite(vindex->ofs_tab, 1, sizeof(t_GVA_IndexElem) * vindex->tabsize_used, fp);
+      fclose(fp);
+      return(TRUE);
+    }
+    else
+    {
+      gint l_errno;
+      
+      l_errno = errno;
+      g_message(_("ERROR: Failed to write videoindex file\n"
+		"file: '%s'\n"
+		"%s")
+		, vindex->videoindex_filename
+		, g_strerror (l_errno));
+      
+    }
   }
  
   return (FALSE);

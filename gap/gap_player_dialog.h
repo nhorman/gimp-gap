@@ -46,7 +46,7 @@ void    gap_player_dlg_restart(GapPlayerMainGlobalParams *gpp
 		      , gboolean play_selection_only
 		      , gint32 seltrack
 		      , gdouble delace
-		      , gchar    *preferred_decoder
+		      , const char *preferred_decoder
 		      , gboolean  force_open_as_video
 		      );
 

@@ -49,6 +49,8 @@ gap_image_delete_immediate (gint32 image_id)
 {
     if(gap_debug) printf("gap_image_delete_immediate: SCALED down to 2x2 id = %d (workaround for gimp_image-delete problem)\n", (int)image_id);
 
+    gimp_image_undo_disable(image_id);
+
     gimp_image_scale(image_id, 2, 2);
 
     gimp_image_undo_enable(image_id); /* clear undo stack */

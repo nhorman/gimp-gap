@@ -1,12 +1,3 @@
-/* TODO:  2004.06.12
- *  - XVID encoding does crash since upgrade to xvid-1.0.0 (pthread problem?):
-#0  g_on_error_stack_trace (
-#1  0x404bd06f in g_on_error_query (
-#2  0x400f1ece in gimp_plugin_sigfatal_handler (sig_num=1079074824)
-#3  0x40757895 in __pthread_sighandler () from /lib/libpthread.so.0
- */
-
-
 /* gap_enc_main_avi.c
  *  by hof (Wolfgang Hofer & Gernot Ziegler (gz@lysator.liu.se))
  *
@@ -36,6 +27,10 @@
  */
 
 /* revision history:
+ * version 2.1.0b;  2004.10.07   hof: bugfix init xvid_control->plugins[xvid_enc_create->num_plugins]
+ *                                    must start at index 0 (not at 1)
+ *                  2004.10.05   hof: relinked with xvid-1.0.2 (same crash)
+ *                  2004.06.12   hof: update to xvid-1.0.0 (but does permanent crash)
  * version 1.2.2b;  2003.04.17   hof: conditional compile of DivX Stuff
  *                                    (DivX dos not work and is disabled in this release)
  * version 1.2.2b;  2002.12.08   hof: created (based on avi_main.c done by gz)
@@ -84,7 +79,7 @@ static gint p_avi_encode_dialog(GapGveAviGlobalParams *gpp);
 #include "avilib.h"
 
 
-static char *gap_enc_avi_version = "2.1.0a; 2004/06/12";
+static char *gap_enc_avi_version = "2.1.0a; 2004/10/07";
 
 
 /* ------------------------
@@ -1134,16 +1129,27 @@ p_avi_encode(GapGveAviGlobalParams *gpp)
 #endif
         }
 
-        /* store the compressed video frame */
-        if (gap_debug) printf("GAP_AVI: Writing frame nr. %d, size %d\n",
-                              (int)l_cur_frame_nr, (int)l_FRAME_size);
 
         if(buffer)
         {
+          /* store the compressed video frame */
+          if (gap_debug) printf("GAP_AVI: Writing frame nr. %d, size %d\n",
+                        	(int)l_cur_frame_nr, (int)l_FRAME_size);
           AVI_write_frame(l_avifile, buffer, l_FRAME_size, l_keyframe);
           /* free the (un)compressed Frame data buffer */
           g_free(buffer);
         }
+	else
+	{
+	  /* the CODEC delivered a NULL buffer
+	   * there is something essential wrong (TERMINATE)
+	   */
+	  g_message(_("ERROR: GAP AVI encoder CODEC %s delivered empty buffer at frame %d")
+	           , epp->codec_name
+		   , (int)l_cur_frame_nr
+		   );
+	  l_rc = -1;
+	}
 
         /* destroy the tmp image */
         gimp_image_delete(l_tmp_image_id);

@@ -405,7 +405,7 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
   vbox1 = GTK_DIALOG (shell_window)->vbox;
   gtk_widget_show (vbox1);
 
-  frame_main = gtk_frame_new (NULL);
+  frame_main = gimp_frame_new (NULL);
   gtk_widget_show (frame_main);
   gtk_box_pack_start (GTK_BOX (vbox1), frame_main, TRUE, TRUE, 0);
 
@@ -421,8 +421,9 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
   /* the Video CODEC label */
   label = gtk_label_new (_("Video CODEC:"));
   gtk_widget_show (label);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
   gtk_table_attach (GTK_TABLE (table_master), label, 0, 1, master_row, master_row+1,
-                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
 
@@ -473,8 +474,9 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
   /* the Audio CODEC label */
   label = gtk_label_new (_("Audio CODEC:"));
   gtk_widget_show (label);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
   gtk_table_attach (GTK_TABLE (table_master), label, 0, 1, master_row, master_row+1,
-                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
   /* the Audio CODEC label */
@@ -490,8 +492,9 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
   /* the APP0 Marker label */
   label = gtk_label_new (_("APP0 Marker:"));
   gtk_widget_show (label);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
   gtk_table_attach (GTK_TABLE (table_master), label, 0, 1, master_row, master_row+1,
-                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
   /* the APP0 Marker checkbutton */
@@ -524,7 +527,7 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
 
   /* the notebook page for JPEG Codec options */
   /* ----------------------------------------- */
-  frame_jpg = gtk_frame_new (_("JPEG Codec Options"));
+  frame_jpg = gimp_frame_new (_("JPEG Codec Options"));
   gtk_widget_show (frame_jpg);
   gtk_container_add (GTK_CONTAINER (notebook_main), frame_jpg);
   gtk_container_set_border_width (GTK_CONTAINER (frame_jpg), 4);
@@ -547,10 +550,10 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
   /* the dont recode label */
   label = gtk_label_new (_("Dont Recode:"));
   gtk_widget_show (label);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
   gtk_table_attach (GTK_TABLE (table_jpg), label, 0, 1, jpg_row, jpg_row+1,
-                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_RIGHT);
 
   /* the dont recode checkbutton */
   checkbutton = gtk_check_button_new_with_label (" ");
@@ -569,7 +572,7 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
                        " This option is ignored when input is read from storyboard."
                        " WARNING: works only if all input frames are JPEG pictures"
                        " with matching size and YUV 4:2:2 encoding."
-                       " This option may produce an unuasable video"
+                       " This option may produce an unusable video"
                        " when other frames are provided as input.")
                    , NULL);
 
@@ -579,10 +582,10 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
   /* the interlace label */
   label = gtk_label_new (_("Interlace:"));
   gtk_widget_show (label);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
   gtk_table_attach (GTK_TABLE (table_jpg), label, 0, 1, jpg_row, jpg_row+1,
-                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_RIGHT);
 
 
   /* the interlace checkbutton */
@@ -607,8 +610,9 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
   /* the odd frames first label */
   label = gtk_label_new (_("Odd Frames first:"));
   gtk_widget_show (label);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
   gtk_table_attach (GTK_TABLE (table_jpg), label, 0, 1, jpg_row, jpg_row+1,
-                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_RIGHT);
 
@@ -634,10 +638,10 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
   /* the jpeg quality label */
   label = gtk_label_new (_("Quality:"));
   gtk_widget_show (label);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
   gtk_table_attach (GTK_TABLE (table_jpg), label, 0, 1, jpg_row, jpg_row+1,
-                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_RIGHT);
 
   /* the jpeg quality spinbutton */
   adj = gtk_adjustment_new (epp->jpeg_quality
@@ -663,7 +667,7 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
 
   /* the notebook page for RAW Codec options */
   /* ----------------------------------------- */
-  frame_raw = gtk_frame_new (_("RAW Codec Options"));
+  frame_raw = gimp_frame_new (_("RAW Codec Options"));
   gtk_widget_show (frame_raw);
   gtk_container_add (GTK_CONTAINER (notebook_main), frame_raw);
   gtk_container_set_border_width (GTK_CONTAINER (frame_raw), 4);
@@ -695,7 +699,7 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
 
   /* the notebook page for XVID Codec options */
   /* ----------------------------------------- */
-  frame_xvid = gtk_frame_new (_("XVID Codec Options"));
+  frame_xvid = gimp_frame_new (_("XVID Codec Options"));
   gtk_widget_show (frame_xvid);
   gtk_container_add (GTK_CONTAINER (notebook_main), frame_xvid);
   gtk_container_set_border_width (GTK_CONTAINER (frame_xvid), 4);
@@ -718,10 +722,10 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
   /* the xvid KBitrate label */
   label = gtk_label_new (_("KBitrate:"));
   gtk_widget_show (label);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
   gtk_table_attach (GTK_TABLE (table_xvid), label, 0, 1, xvid_row, xvid_row+1,
-                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_RIGHT);
 
   /* the xvid KBitrate spinbutton */
   adj = gtk_adjustment_new (epp->xvid.rc_bitrate / 1000
@@ -749,10 +753,10 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
   /* the xvid Reaction Delay label */
   label = gtk_label_new (_("Reaction Delay:"));
   gtk_widget_show (label);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
   gtk_table_attach (GTK_TABLE (table_xvid), label, 0, 1, xvid_row, xvid_row+1,
-                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_RIGHT);
 
   /* the xvid Reaction Delay spinbutton */
   adj = gtk_adjustment_new (epp->xvid.rc_reaction_delay_factor
@@ -780,10 +784,10 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
   /* the xvid AVG Period label */
   label = gtk_label_new (_("AVG Period:"));
   gtk_widget_show (label);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
   gtk_table_attach (GTK_TABLE (table_xvid), label, 0, 1, xvid_row, xvid_row+1,
-                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_RIGHT);
 
   /* the xvid AVG Period spinbutton */
   adj = gtk_adjustment_new (epp->xvid.rc_averaging_period
@@ -811,10 +815,10 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
   /* the xvid Buffer label */
   label = gtk_label_new (_("Buffer:"));
   gtk_widget_show (label);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
   gtk_table_attach (GTK_TABLE (table_xvid), label, 0, 1, xvid_row, xvid_row+1,
-                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_RIGHT);
 
   /* the xvid Buffer spinbutton */
   adj = gtk_adjustment_new (epp->xvid.rc_buffer
@@ -842,10 +846,10 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
   /* the xvid max_quantizer label */
   label = gtk_label_new (_("Max Quantizer:"));
   gtk_widget_show (label);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
   gtk_table_attach (GTK_TABLE (table_xvid), label, 0, 1, xvid_row, xvid_row+1,
-                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_RIGHT);
 
   /* the xvid max_quantizer spinbutton */
   adj = gtk_adjustment_new (epp->xvid.max_quantizer
@@ -872,10 +876,10 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
   /* the xvid min_quantizer label */
   label = gtk_label_new (_("Min Quantizer:"));
   gtk_widget_show (label);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
   gtk_table_attach (GTK_TABLE (table_xvid), label, 0, 1, xvid_row, xvid_row+1,
-                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_RIGHT);
 
   /* the xvid min_quantizer spinbutton */
   adj = gtk_adjustment_new (epp->xvid.min_quantizer
@@ -903,10 +907,10 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
   /* the xvid max_key_interval label */
   label = gtk_label_new (_("Key Interval:"));
   gtk_widget_show (label);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
   gtk_table_attach (GTK_TABLE (table_xvid), label, 0, 1, xvid_row, xvid_row+1,
-                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_RIGHT);
 
   /* the xvid max_key_interval spinbutton */
   adj = gtk_adjustment_new (epp->xvid.max_key_interval
@@ -933,10 +937,10 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
   /* the xvid quality label */
   label = gtk_label_new (_("Quality:"));
   gtk_widget_show (label);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
   gtk_table_attach (GTK_TABLE (table_xvid), label, 0, 1, xvid_row, xvid_row+1,
-                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_RIGHT);
 
   /* the xvid quality spinbutton */
   adj = gtk_adjustment_new (epp->xvid.quality_preset

@@ -125,10 +125,7 @@ AC_ARG_ENABLE(libavformat,
 gimp-gap is configured without libavformat
    This reduces the number of supported videoformats both for read and write
    access. libavformat and libavcodec are part of ffmpeg-0.4.8.
-"
-        GAP_VLIBS_FFMPEG=" "
-        GAP_VINCS_FFMPEG=" "
-        vid_ffmpeg_warning="
+
 Warning: checks for libavformat and libavcodec are not implemented yet.
 You can get ffmpeg at: http://ffmpeg.sourceforge.net.
 
@@ -137,6 +134,8 @@ those libs are part of ffmpeg-0.4.8. Make sure to configure
 ffmpeg with the option --enable-shared.
 per default ffmpeg-0.4.8 does install without libavformat and libavcodec 
 "
+        GAP_VLIBS_FFMPEG=" "
+        GAP_VINCS_FFMPEG=" "
 
   fi
 

@@ -50,6 +50,17 @@
 
 #endif /* !G_OS_WIN32 */
 
+#ifdef G_OS_WIN32
+#include <direct.h>		/* For _mkdir() */
+#define mkdir(path,mode) _mkdir(path)
+#endif
+
+
+#ifdef G_OS_WIN32
+#define GAP_FILE_MKDIR_MODE 0  /* not relevant for WIN mkdir */
+#else
+#define GAP_FILE_MKDIR_MODE (S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH )
+#endif
 
 /* --------------------------*/
 /* PROCEDURE DECLARATIONS    */
@@ -64,6 +75,8 @@ gint32      gap_file_load_file_segment(const char *filename
                   ,gint32 segment_size      /* segment size in byets (must be a multiple of 4) */
                   );
 
+int         gap_file_chmod (const char *fname, int mode);
+int         gap_file_mkdir (const char *fname, int mode);
 
 
 

@@ -88,15 +88,12 @@
 #  endif
 #endif
 
-#ifdef G_OS_WIN32
-#include <direct.h>		/* For _mkdir() */
-#define mkdir(path,mode) _mkdir(path)
-#endif
 
 /* GAP includes */
 #include "gap_lib.h"
 #include "gap_arr_dialog.h"
 #include "gap_decode_xanim.h"
+#include "gap_file_util.h"
 
 extern      int gap_debug; /* ==0  ... dont print debug infos */
 
@@ -116,11 +113,6 @@ typedef enum
  , XAENC_JPEG
 } GapXAnimFormats;
 
-#ifdef G_OS_WIN32
-#define MKDIR_MODE 0  /* not relevant for WIN mkdir */
-#else
-#define MKDIR_MODE (S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH )
-#endif
 
 /* ============================================================================
  * p_xanim_info
@@ -910,7 +902,7 @@ p_start_xanim_process(gint32 first_frame, gint32 last_frame,
 	 /* fprintf(l_fp, "exit $XANIM_PID\n"); */
 	 fclose(l_fp);
 
-	 chmod(l_xanim_startscript, MKDIR_MODE);
+	 gap_file_chmod(l_xanim_startscript, GAP_FILE_MKDIR_MODE);
      }
 
      l_rc = system(l_xanim_startscript);
@@ -1126,7 +1118,7 @@ gap_xanim_decode(GimpRunMode run_mode)
          else
          {
             /* create input directory (needed by xanim to store the frames) */
-            mkdir(global_xanim_input_dir, MKDIR_MODE);
+            gap_file_mkdir(global_xanim_input_dir, GAP_FILE_MKDIR_MODE);
 
             if (p_is_directory(global_xanim_input_dir))
             {
@@ -1205,7 +1197,7 @@ gap_xanim_decode(GimpRunMode run_mode)
        {
 	 if ( !p_is_directory(l_dst_dir) )
 	 {
-            mkdir (l_dst_dir, MKDIR_MODE);
+            gap_file_mkdir (l_dst_dir, GAP_FILE_MKDIR_MODE);
 	 }
        }
 

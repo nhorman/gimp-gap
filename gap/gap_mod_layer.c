@@ -28,6 +28,8 @@
  */
 
 /* revision history:
+ * gimp   2.1.0b;    2004/10/17  hof: bugfix Function: Add layermask from selection
+ *                                    optim: direct processing for the current image
  * gimp   2.1.0b;    2004/08/11  hof: new action_modes "Copy layermask from layer above/below"
  * gimp   1.3.25a;   2004/01/21  hof: message text fixes (# 132030)
  * gimp   1.3.24a;   2004/01/17  hof: added Layermask Handling
@@ -880,6 +882,7 @@ p_apply_action(gint32 image_id,
 	    gimp_layer_remove_mask (l_layer_id, GIMP_MASK_APPLY);
 	  }
 	  l_layermask_id = gimp_layer_create_mask(l_layer_id, GIMP_ADD_SELECTION_MASK);
+	  gimp_layer_add_mask(l_layer_id, l_layermask_id);
 	  break;
         case GAP_MOD_ACM_LMASK_BWCOPY:
 	  if(gimp_layer_get_mask(l_layer_id) >= 0)
@@ -1206,6 +1209,7 @@ p_frames_modify(GapAnimInfo *ainfo_ptr,
   GapFiltPdbApplyMode  l_apply_mode;
   char         *l_last_frame_filename;
   gint          l_count;
+  gboolean      l_operating_on_current_image;
 
 
 
@@ -1276,8 +1280,18 @@ p_frames_modify(GapAnimInfo *ainfo_ptr,
     if(ainfo_ptr->new_filename == NULL)
        goto error;
 
-    /* load current frame into temporary image */
-    l_tmp_image_id = gap_lib_load_image(ainfo_ptr->new_filename);
+    if(ainfo_ptr->curr_frame_nr == l_cur_frame_nr)
+    {
+      /* directly operate on the current image (where we were invoked from) */
+      l_operating_on_current_image = TRUE;
+      l_tmp_image_id = ainfo_ptr->image_id;
+    }
+    else
+    {
+      /* load current frame into temporary image */
+      l_operating_on_current_image = FALSE;
+      l_tmp_image_id = gap_lib_load_image(ainfo_ptr->new_filename);
+    }
     if(l_tmp_image_id < 0)
        goto error;
 
@@ -1444,8 +1458,11 @@ p_frames_modify(GapAnimInfo *ainfo_ptr,
       l_dpy_id = -1;
     }
 
-    /* destroy the tmp image */
-    gimp_image_delete(l_tmp_image_id);
+    if(l_operating_on_current_image == FALSE)
+    {
+      /* destroy the tmp image */
+      gimp_image_delete(l_tmp_image_id);
+    }
 
     if(l_rc != 0)
       goto error;
@@ -1477,7 +1494,10 @@ error:
       gimp_display_delete(l_dpy_id);
       l_dpy_id = -1;
   }
-  if(l_tmp_image_id >= 0) gimp_image_delete(l_tmp_image_id);
+  if((l_tmp_image_id >= 0) && (l_operating_on_current_image == FALSE))
+  {
+    gimp_image_delete(l_tmp_image_id);
+  }
   if(l_layli_ptr != NULL) g_free(l_layli_ptr);
   if(l_plugin_iterator != NULL)  g_free(l_plugin_iterator);
   return -1;
@@ -1542,21 +1562,18 @@ gint gap_mod_layer(GimpRunMode run_mode, gint32 image_id,
 
       if(l_rc >= 0)
       {
-         if(gap_lib_gap_check_save_needed(ainfo_ptr->image_id))
-         {
-           l_rc = gap_lib_save_named_frame(ainfo_ptr->image_id, ainfo_ptr->old_filename);
-         }
-         if(l_rc >= 0)
-         {
+        /* no need to save the current image before processing
+	 * because the p_frames_modify procedure operates directly on the current frame
+	 * and loads all other frames from disc.
+	 * futher all successful processed frames are saved back to disk
+	 * (including the current one)
+	 */
            l_rc = p_frames_modify(ainfo_ptr, l_from, l_to,
 	                          l_action_mode,
 				  l_sel_mode, sel_case, sel_invert,
 				  &l_sel_pattern[0], &l_new_layername[0]
 				 );
-           gap_lib_load_named_frame(ainfo_ptr->image_id, ainfo_ptr->old_filename);
-         }
       }
-
 
     }
     gap_lib_free_ainfo(&ainfo_ptr);

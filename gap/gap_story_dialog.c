@@ -89,6 +89,7 @@ static void     p_story_call_player(GapStbMainGlobalParams *sgpp
 		   , gboolean play_all
 		   , gint32 seltrack
 		   , gdouble delace
+		   , const char *preferred_decoder
 		   );
 
 static gboolean p_cliplist_reload (GapStbMainGlobalParams *sgpp);
@@ -197,11 +198,13 @@ static void        p_close_videofile(GapStbMainGlobalParams *sgpp);
 static void        p_open_videofile(GapStbMainGlobalParams *sgpp
                      , const char *filename
 		     , gint32 seltrack
+		     , const char *preferred_decoder
 		     );
 static guchar *    p_fetch_videoframe(GapStbMainGlobalParams *sgpp
                    , const char *gva_videofile
 		   , gint32 framenumber
 		   , gint32 seltrack
+		   , const char *preferred_decoder
 		   , gdouble delace
 		   , gint32 *th_bpp
 		   , gint32 *th_width
@@ -211,6 +214,7 @@ GapVThumbElem *   p_fetch_vthumb_elem(GapStbMainGlobalParams *sgpp
         	   ,const char *video_filename
 		   ,gint32 framenr
 		   ,gint32 seltrack
+		   ,const char *preferred_decoder
 		   );
 
 
@@ -595,12 +599,14 @@ p_frame_widget_render (GapStbFrameWidget *fw)
    if(fw->stb_elem_refptr->record_type == GAP_STBREC_VID_MOVIE)
    {
      guchar *l_th_data;
+     
      /*if(gap_debug) printf("RENDER: p_frame_widget_render MOVIE Thumbnail\n"); */
      
      l_th_data = gap_story_dlg_fetch_vthumb(fw->sgpp
               ,fw->stb_elem_refptr->orig_filename
 	      ,fw->stb_elem_refptr->from_frame
 	      ,fw->stb_elem_refptr->seltrack
+	      ,gap_story_get_preferred_decoder(fw->stb_refptr, fw->stb_elem_refptr)
 	      ,&l_th_bpp
 	      ,&l_th_width
 	      ,&l_th_height
@@ -719,7 +725,7 @@ p_get_max_rowpage(gint32 act_elems, gint32 cols, gint rows)
     l_max_rowpage = ((MAX(act_elems, 1) -1) / cols);
   }
   l_max_rowpage =  1 + (l_max_rowpage - (MAX(rows,1) -1));
-  return(l_max_rowpage);
+  return(MAX(l_max_rowpage,1));
   
 }  /* end p_get_max_rowpage */
 
@@ -837,9 +843,9 @@ p_story_call_player(GapStbMainGlobalParams *sgpp
 		   , gboolean play_all
 		   , gint32 seltrack
 		   , gdouble delace
+		   , const char *preferred_decoder
 		   )
 {
-  static char   *preferred_decoder = "libavformat";
   GapStoryBoard *stb_dup;
   
   if(sgpp->in_player_call)
@@ -922,6 +928,7 @@ printf("p_story_call_player: 1.st start\n");
       sgpp->plp->docking_container = sgpp->player_frame;
 
       sgpp->plp->autostart = TRUE;
+      sgpp->plp->caller_range_linked = FALSE;
       sgpp->plp->use_thumbnails = TRUE;
       sgpp->plp->exact_timing = TRUE;
       sgpp->plp->play_selection_only = TRUE;
@@ -1134,6 +1141,7 @@ p_player_cll_mode_cb (GtkWidget *w
 			 ,play_all
 			 ,1         /* seltrack */
 			 ,0.0       /* delace */
+			 ,gap_story_get_preferred_decoder(sgpp->cll, NULL)
 			 );
   }
 }  /* end p_player_cll_mode_cb */
@@ -1173,6 +1181,7 @@ p_player_stb_mode_cb (GtkWidget *w
 			 ,play_all
 			 ,1         /* seltrack */
 			 ,0.0       /* delace */
+			 ,gap_story_get_preferred_decoder(sgpp->stb, NULL)
 			 );  
   }
 }  /* end p_player_stb_mode_cb */
@@ -1215,6 +1224,7 @@ p_player_img_mode_cb (GtkWidget *w,
 		     ,FALSE      /* play all */
 		     ,1         /* seltrack */
 		     ,0.0       /* delace */
+		     ,"libavformat"
 		     );  
     g_free(basename);
   }
@@ -1649,6 +1659,7 @@ gap_story_pw_single_clip_playback(GapStbPropWidget *pw)
      		     ,TRUE      /* play all */
 		     ,pw->stb_elem_refptr->seltrack
 		     ,pw->stb_elem_refptr->delace
+		     ,gap_story_get_preferred_decoder(pw->stb_refptr, pw->stb_elem_refptr)
 		     );  
     g_free(imagename);
   }
@@ -1681,6 +1692,7 @@ p_single_clip_playback(GapStbFrameWidget *fw)
 		     ,TRUE                                 /* play all */
 		     ,fw->stb_elem_refptr->seltrack
 		     ,fw->stb_elem_refptr->delace
+		     ,gap_story_get_preferred_decoder(fw->stb_refptr, fw->stb_elem_refptr)
 		     );  
     g_free(imagename);
   }
@@ -3268,7 +3280,7 @@ p_tabw_update_frame_label (GapStbTabWidgets *tabw, GapStbMainGlobalParams *sgpp)
     lower_limit = 1.0;
     upper_limit = l_max_rowpage + page_size;
 
-    if(gap_debug)
+    //if(gap_debug)
     {
       printf("\n######rowpage_vscale_adj : %d  tabw->rows:%d\n", (int)l_max_rowpage ,(int)tabw->rows);
       printf("lower_limit %f\n", (float)lower_limit );
@@ -3287,8 +3299,16 @@ p_tabw_update_frame_label (GapStbTabWidgets *tabw, GapStbMainGlobalParams *sgpp)
       gtk_adjustment_set_value(GTK_ADJUSTMENT(tabw->rowpage_vscale_adj), (gdouble)l_max_rowpage);
     }
 
+    if(lower_limit+page_size >= upper_limit)
+    {
+      gtk_widget_hide(tabw->rowpage_vscale);
+    }
+    else
+    {
+      gtk_widget_show(tabw->rowpage_vscale);
+      gtk_widget_queue_draw(tabw->rowpage_vscale);
+    }
 
-    gtk_widget_queue_draw(tabw->rowpage_vscale);
   }
   
   if(tabw->total_rows_label)
@@ -3369,6 +3389,7 @@ static void
 p_open_videofile(GapStbMainGlobalParams *sgpp
                 , const char *filename
 		, gint32 seltrack
+		, const char *preferred_decoder
 		)
 {
 #ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
@@ -3383,7 +3404,7 @@ p_open_videofile(GapStbMainGlobalParams *sgpp
   sgpp->gvahand =  GVA_open_read_pref(filename
 	                          , seltrack
 				  , 1 /* aud_track */
-				  , "libavformat"    /* preferred_decoder */
+				  , preferred_decoder
 				  , FALSE  /* use MMX if available (disable_mmx == FALSE) */
 				  );
   if(sgpp->gvahand)
@@ -3471,6 +3492,7 @@ p_fetch_videoframe(GapStbMainGlobalParams *sgpp
                    , const char *gva_videofile
 		   , gint32 framenumber
 		   , gint32 seltrack
+		   , const char *preferred_decoder
 		   , gdouble delace
 		   , gint32 *th_bpp
 		   , gint32 *th_width
@@ -3506,7 +3528,7 @@ p_fetch_videoframe(GapStbMainGlobalParams *sgpp
 //printf(" VIDFETCH (-0) sgpp->gvahand: %d  framenumber:%06d\n", (int)sgpp->gvahand, (int)framenumber);
   if(sgpp->gvahand == NULL)
   {
-    p_open_videofile(sgpp, gva_videofile, seltrack);
+    p_open_videofile(sgpp, gva_videofile, seltrack, preferred_decoder);
   }
   
   if(sgpp->gvahand)
@@ -3611,6 +3633,7 @@ GapStoryVideoElem *
 gap_story_dlg_get_velem(GapStbMainGlobalParams *sgpp
               ,const char *video_filename
 	      ,gint32 seltrack
+	      ,const char *preferred_decoder
 	      )
 {
   GapStoryVideoElem *velem;
@@ -3639,7 +3662,7 @@ gap_story_dlg_get_velem(GapStbMainGlobalParams *sgpp
   }
 
 
-  p_open_videofile(sgpp, video_filename, seltrack);
+  p_open_videofile(sgpp, video_filename, seltrack, preferred_decoder);
   if(sgpp->gvahand)
   {
     /* video_filename is new, add a new element */
@@ -3725,6 +3748,7 @@ p_fetch_vthumb_elem(GapStbMainGlobalParams *sgpp
               ,const char *video_filename
 	      ,gint32 framenr
 	      ,gint32 seltrack
+	      ,const char *preferred_decoder
 	      )
 {
   GapStoryVideoElem *velem;
@@ -3739,6 +3763,7 @@ p_fetch_vthumb_elem(GapStbMainGlobalParams *sgpp
   velem = gap_story_dlg_get_velem(sgpp
               ,video_filename
 	      ,seltrack
+	      ,preferred_decoder
 	      );
 	      
   if(velem == NULL) { return (NULL); }
@@ -3772,6 +3797,7 @@ p_fetch_vthumb_elem(GapStbMainGlobalParams *sgpp
                    , video_filename
 		   , framenr
 		   , seltrack
+		   , preferred_decoder
 		   , 1.5               /* delace */
 		   , &th_bpp
 		   , &th_width
@@ -3823,6 +3849,7 @@ gap_story_dlg_fetch_vthumb(GapStbMainGlobalParams *sgpp
               ,const char *video_filename
 	      ,gint32 framenr
 	      ,gint32 seltrack
+	      ,const char *preferred_decoder
 	      , gint32 *th_bpp
 	      , gint32 *th_width
 	      , gint32 *th_height
@@ -3837,6 +3864,7 @@ gap_story_dlg_fetch_vthumb(GapStbMainGlobalParams *sgpp
               ,video_filename
 	      ,framenr
 	      ,seltrack
+	      ,preferred_decoder
 	      );
   if(vthumb)
   {
@@ -3873,6 +3901,7 @@ gap_story_dlg_fetch_vthumb_no_store(GapStbMainGlobalParams *sgpp
               ,const char *video_filename
 	      ,gint32 framenr
 	      ,gint32 seltrack
+	      ,const char *preferred_decoder
 	      , gint32   *th_bpp
 	      , gint32   *th_width
 	      , gint32   *th_height
@@ -3891,6 +3920,7 @@ gap_story_dlg_fetch_vthumb_no_store(GapStbMainGlobalParams *sgpp
   velem = gap_story_dlg_get_velem(sgpp
               ,video_filename
 	      ,seltrack
+	      ,preferred_decoder
 	      );
 	      
   if(velem == NULL) { return (NULL); }
@@ -3925,6 +3955,7 @@ gap_story_dlg_fetch_vthumb_no_store(GapStbMainGlobalParams *sgpp
                    , video_filename
 		   , framenr
 		   , seltrack
+		   , preferred_decoder
 		   , 1.5               /* delace */
 		   , th_bpp
 		   , th_width
@@ -4399,7 +4430,8 @@ p_create_button_bar(GapStbTabWidgets *tabw
   gtk_signal_connect (GTK_OBJECT (adj), "value_changed",
                       (GtkSignalFunc)p_vscale_changed_cb,
                       tabw);
-  gtk_widget_show (vscale);
+  /* startup with invisble vscale */
+  gtk_widget_hide (vscale);
     
   tabw->rowpage_vscale_adj = adj;					   
   tabw->rowpage_vscale = vscale;					   
@@ -4523,7 +4555,7 @@ gap_storyboard_dialog(GapStbMainGlobalParams *sgpp)
   /* XXXXXXXXXXX Start of the CLIPLIST widgets  XXXXXXXXXXXX */
   
   /* the clp_frame */
-  clp_frame = gtk_frame_new ( _("Cliplist") );
+  clp_frame = gimp_frame_new ( _("Cliplist") );
   gtk_frame_set_shadow_type (GTK_FRAME (clp_frame) ,GTK_SHADOW_ETCHED_IN);
   gtk_box_pack_start (GTK_BOX (hbox), clp_frame, TRUE, TRUE, 0);
   gtk_widget_show (clp_frame);
@@ -4565,7 +4597,7 @@ gap_storyboard_dialog(GapStbMainGlobalParams *sgpp)
 
   /* XXXXXXXXXXX Player Frame  XXXXXXXXXXXX */
   /* the player_frame */
-  player_frame = gtk_frame_new ( _("Playback") );
+  player_frame = gimp_frame_new ( _("Playback") );
   gtk_frame_set_shadow_type (GTK_FRAME (player_frame) ,GTK_SHADOW_ETCHED_IN);
   gtk_box_pack_start (GTK_BOX (hbox), player_frame, TRUE, TRUE, 0);
   gtk_widget_show (player_frame);
@@ -4576,7 +4608,7 @@ gap_storyboard_dialog(GapStbMainGlobalParams *sgpp)
 
 
   /* the stb_frame */
-  stb_frame = gtk_frame_new ( _("Storyboard") );
+  stb_frame = gimp_frame_new ( _("Storyboard") );
   gtk_frame_set_shadow_type (GTK_FRAME (stb_frame) ,GTK_SHADOW_ETCHED_IN);
   gtk_box_pack_start (GTK_BOX (vbox), stb_frame, TRUE, TRUE, 0);
   gtk_widget_show (stb_frame);
@@ -4683,15 +4715,18 @@ gap_storyboard_dialog(GapStbMainGlobalParams *sgpp)
 static void
 p_tabw_master_prop_dialog(GapStbTabWidgets *tabw)
 {
-  static GapArrArg  argv[5];
+  static GapArrArg  argv[6];
+  static char *radio_args[4]  = { N_("automatic"), "libmpeg3", "libavformat", "quicktime4linux" };
   gint   l_ii;
   gint   l_ii_width;
   gint   l_ii_height;
   gint   l_ii_rate;
+  gint   l_ii_preferred_decoder;
   GapStbMainGlobalParams *sgpp;
   GapStoryBoard *stb_dst;
   gint32   l_master_width;
   gint32   l_master_height;
+  gchar    buf_preferred_decoder[60];
 
   stb_dst = p_tabw_get_stb_ptr (tabw);
   if(stb_dst == NULL) { return; }
@@ -4755,7 +4790,36 @@ p_tabw_master_prop_dialog(GapStbTabWidgets *tabw)
     argv[l_ii].flt_ret   = stb_dst->master_framerate;
   }
   argv[l_ii].has_default = TRUE;
-  argv[l_ii].flt_default = GAP_STORY_DEFAULT_FRAMERATE;
+  argv[l_ii].flt_default = argv[l_ii].flt_ret;
+
+  l_ii++; l_ii_preferred_decoder = l_ii;
+  buf_preferred_decoder[0] = '\0';
+  if(stb_dst->preferred_decoder)
+  {
+    if(*stb_dst->preferred_decoder != '\0')
+    {
+      g_snprintf(buf_preferred_decoder
+	       , sizeof(buf_preferred_decoder)
+	       , "%s"
+	       , stb_dst->preferred_decoder
+	       );
+    }
+  }
+  gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_OPT_ENTRY);
+  argv[l_ii].label_txt = _("Decoder:");
+  argv[l_ii].help_txt  = _("Select preferred video decoder library, "
+        	       "or leave empty for automatic selection."
+		       "The decoder setting is only relevant if "
+		       "videoclips are used (but not for frames "
+		       "that are imagefiles)");
+  argv[l_ii].radio_argc  = G_N_ELEMENTS(radio_args);
+  argv[l_ii].radio_argv = radio_args;
+  argv[l_ii].radio_ret  = 0;
+  argv[l_ii].has_default = TRUE;
+  argv[l_ii].int_default = 0;
+  argv[l_ii].text_buf_ret = buf_preferred_decoder;
+  argv[l_ii].text_buf_len = sizeof(buf_preferred_decoder);
+  argv[l_ii].text_buf_default = g_strdup(buf_preferred_decoder);
 
 
   l_ii++;
@@ -4770,6 +4834,36 @@ p_tabw_master_prop_dialog(GapStbTabWidgets *tabw)
      stb_dst->master_width = (gint32)(argv[l_ii_width].int_ret);
      stb_dst->master_height = (gint32)(argv[l_ii_height].int_ret);
      stb_dst->master_framerate = (gint32)(argv[l_ii_rate].flt_ret);
+     if(*buf_preferred_decoder)
+     {
+       if(stb_dst->preferred_decoder)
+       {
+         if(strcmp(stb_dst->preferred_decoder, buf_preferred_decoder) != 0)
+	 {
+           g_free(stb_dst->preferred_decoder);
+	   stb_dst->preferred_decoder = g_strdup(buf_preferred_decoder);
+	   
+	   /* close the videohandle (if open)
+	    * this ensures that the newly selected decoder
+	    * can be used at the next videofile access attempt
+	    */
+           p_close_videofile(sgpp);
+	 }
+       }
+       else
+       {
+	   stb_dst->preferred_decoder = g_strdup(buf_preferred_decoder);
+           p_close_videofile(sgpp);
+       }
+     }
+     else
+     {
+       if(stb_dst->preferred_decoder)
+       {
+         g_free(stb_dst->preferred_decoder);
+       }
+       stb_dst->preferred_decoder = NULL;
+     }
     
      /* refresh storyboard layout and thumbnail list widgets */
      p_recreate_tab_widgets( stb_dst

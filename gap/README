@@ -1806,6 +1806,7 @@ If you edit gimprc files by hand, you must do this before you startup GIMP.
 # (default is "yes")
 (video-confirm-frame-delete "yes")
 
+
 # videoindexes are files that store seekoffsets for keyframes
 # and enable fast and frame exact random access to frames in a videofile.
 # if gimp-gap should create such files automatically when needed
@@ -1816,6 +1817,12 @@ If you edit gimprc files by hand, you must do this before you startup GIMP.
 # if gimp-gap should not create such videoindex files at all
 # configure value "no"
 (video-index-creation "ask")
+
+# configure where to store and check for video index files
+# if video-index-dir is not configured
+# the GAP video API uses a directory named gvaindexes
+# in your gimpdirectory by default
+(video-index-dir "/path/to/writeable/directory")
 
 
 # optional external audioconverter program

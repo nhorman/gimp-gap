@@ -86,11 +86,12 @@ static void     p_pw_prop_response(GtkWidget *widget
                   , GapStbPropWidget *pw
                   );
 
+static const char * p_pw_get_preferred_decoder(GapStbPropWidget *pw);
 static gdouble  p_overall_colordiff(guchar *buf1, guchar *buf2
                                    , gint32 th_width
-				   , gint32 th_height
-				   , gint32 th_bpp
-				   , gdouble cmp_ignore);
+                                   , gint32 th_height
+                                   , gint32 th_bpp
+                                   , gdouble cmp_ignore);
 static void     p_pw_auto_scene_split(GapStbPropWidget *pw, gboolean all_scenes);
 
 
@@ -205,15 +206,15 @@ p_pw_prop_response(GtkWidget *widget
 
         pw->stb_refptr->unsaved_changes = TRUE;
         pw->scene_detection_busy = TRUE;
-	all_scenes = FALSE;
-	if(response_id == GAP_STORY_RESPONSE_SCENE_SPLIT)
-	{
-	  all_scenes = TRUE;
-	}
-	
+        all_scenes = FALSE;
+        if(response_id == GAP_STORY_RESPONSE_SCENE_SPLIT)
+        {
+          all_scenes = TRUE;
+        }
+        
         p_pw_auto_scene_split(pw, all_scenes);
         gtk_adjustment_set_value(GTK_ADJUSTMENT(pw->pw_spinbutton_to_adj)
-	                    , pw->stb_elem_refptr->to_frame);
+                            , pw->stb_elem_refptr->to_frame);
         p_pv_pview_render(pw);
         pw->scene_detection_busy = FALSE;
       }
@@ -232,12 +233,12 @@ p_pw_prop_response(GtkWidget *widget
       && (pw->scene_detection_busy))
       {
         /* we were called from within the p_pw_auto_scene_split procedure
-	 * that has not finished yet. in this case just set the close_flag
-	 * The p_pw_auto_scene_split procedure will stop at next loop
-	 * if close_flag  == TRUE
-	 */
+         * that has not finished yet. in this case just set the close_flag
+         * The p_pw_auto_scene_split procedure will stop at next loop
+         * if close_flag  == TRUE
+         */
         pw->close_flag = TRUE;
-	return;
+        return;
       }
       if(pw->pw_filesel)
       {
@@ -245,7 +246,7 @@ p_pw_prop_response(GtkWidget *widget
       }
       if(pw->go_timertag >= 0)
       {
-	g_source_remove(pw->go_timertag);
+        g_source_remove(pw->go_timertag);
       }
       pw->go_timertag = -1;
       dlg = pw->pw_prop_dialog;
@@ -257,6 +258,18 @@ p_pw_prop_response(GtkWidget *widget
       break;
   }
 }  /* end p_pw_prop_response */
+
+
+/* ---------------------------------
+ * p_pw_get_preferred_decoder
+ * ---------------------------------
+ */
+static const char *
+p_pw_get_preferred_decoder(GapStbPropWidget *pw)
+{
+  return(gap_story_get_preferred_decoder(pw->stb_refptr, pw->stb_elem_refptr));
+}  /* end p_pw_get_preferred_decoder */
+
 
 
 /* -------------------------------
@@ -284,9 +297,9 @@ p_pw_prop_response(GtkWidget *widget
 gdouble
 p_overall_colordiff(guchar *buf1, guchar *buf2
                    , gint32 th_width
-		   , gint32 th_height
-		   , gint32 th_bpp
-		   , gdouble cmp_ignore)
+                   , gint32 th_height
+                   , gint32 th_bpp
+                   , gdouble cmp_ignore)
 {
   gint32 stepsize, bpp_step;
   gint32 checked_blocks;
@@ -445,38 +458,39 @@ p_pw_auto_scene_split(GapStbPropWidget *pw, gboolean all_scenes)
   {
     prev_th_data = gap_story_dlg_fetch_vthumb(sgpp
               ,stb_elem->orig_filename
-	      ,stb_elem->from_frame
-	      ,stb_elem->seltrack
-	      ,&l_th_bpp
-	      ,&l_th_width
-	      ,&l_th_height
-	      );
+              ,stb_elem->from_frame
+              ,stb_elem->seltrack
+              ,p_pw_get_preferred_decoder(pw)
+              ,&l_th_bpp
+              ,&l_th_width
+              ,&l_th_height
+              );
   }
   else
   {
     char *filename;
     
     filename = gap_lib_alloc_fname(stb_elem->basename
-	                           , stb_elem->from_frame
-				   , stb_elem->ext
-				   );
+                                   , stb_elem->from_frame
+                                   , stb_elem->ext
+                                   );
     if(filename)
     {
       prev_pixbuf = gap_thumb_file_load_pixbuf_thumbnail(filename
                                       , &l_th_width
-				      , &l_th_height
-				      , &l_th_bpp
+                                      , &l_th_height
+                                      , &l_th_bpp
                                       );
       g_free(filename);
       if(prev_pixbuf)
       {
-	prev_th_data = gdk_pixbuf_get_pixels(prev_pixbuf);
+        prev_th_data = gdk_pixbuf_get_pixels(prev_pixbuf);
       }
       else
       {
         g_message(_("Scene detection for cliptype FRAMES "
-	            "depends on thumbnails. "
-		    "Please create thumbnails for your frames and then try again."));
+                    "depends on thumbnails. "
+                    "Please create thumbnails for your frames and then try again."));
         return;
       }
 
@@ -504,14 +518,15 @@ p_pw_auto_scene_split(GapStbPropWidget *pw, gboolean all_scenes)
     {
       th_data = gap_story_dlg_fetch_vthumb_no_store(sgpp
               ,stb_elem->orig_filename
-	      ,framenr
-	      ,stb_elem->seltrack
-	      ,&l_th_bpp
-	      ,&l_th_width
-	      ,&l_th_height
-	      ,&drop_th_data   /* TRUE if th_data was not already in vthumb list */
-	      ,&video_id
-	      );
+              ,framenr
+              ,stb_elem->seltrack
+              ,p_pw_get_preferred_decoder(pw)
+              ,&l_th_bpp
+              ,&l_th_width
+              ,&l_th_height
+              ,&drop_th_data   /* TRUE if th_data was not already in vthumb list */
+              ,&video_id
+              );
     }
     else
     {
@@ -519,30 +534,30 @@ p_pw_auto_scene_split(GapStbPropWidget *pw, gboolean all_scenes)
 
       th_data = NULL;
       filename = gap_lib_alloc_fname(stb_elem->basename
-	                           , framenr
-				   , stb_elem->ext
-				   );
+                                   , framenr
+                                   , stb_elem->ext
+                                   );
       if(filename)
       {
-	pixbuf = gap_thumb_file_load_pixbuf_thumbnail(filename
-                                	, &l_th_width
-					, &l_th_height
-					, &l_th_bpp
-                                	);
-	if(pixbuf)
-	{
-	  th_data = gdk_pixbuf_get_pixels(pixbuf);
-	}
-	else
-	{
-	  if(g_file_test(filename, G_FILE_TEST_EXISTS))
-	  {
+        pixbuf = gap_thumb_file_load_pixbuf_thumbnail(filename
+                                        , &l_th_width
+                                        , &l_th_height
+                                        , &l_th_bpp
+                                        );
+        if(pixbuf)
+        {
+          th_data = gdk_pixbuf_get_pixels(pixbuf);
+        }
+        else
+        {
+          if(g_file_test(filename, G_FILE_TEST_EXISTS))
+          {
             g_message(_("Scene detection for cliptype FRAMES "
-	                "depends on thumbnails. "
-		        "Please create thumbnails for your frames and then try again."));
-	  }
-	}
-	g_free(filename);
+                        "depends on thumbnails. "
+                        "Please create thumbnails for your frames and then try again."));
+          }
+        }
+        g_free(filename);
       }
     }
 
@@ -561,11 +576,11 @@ p_pw_auto_scene_split(GapStbPropWidget *pw, gboolean all_scenes)
     
     diff = p_overall_colordiff(prev_th_data
                               ,th_data
-			      ,l_th_width
-			      ,l_th_height
-			      ,l_th_bpp
-			      ,l_cmp_ignore
-			      );
+                              ,l_th_width
+                              ,l_th_height
+                              ,l_th_bpp
+                              ,l_cmp_ignore
+                              );
 
 
     /* visible trace the current frame in the pview widget */
@@ -581,7 +596,7 @@ p_pw_auto_scene_split(GapStbPropWidget *pw, gboolean all_scenes)
 
     sum_diff += diff;
     num_diff++;
-    		    
+                    
 // DEBUG print DIFF
     printf("SCENE: frame_max:%d frame:%d  THRES:%d AVG_DIFF:%d DIFF:%d\n"
     , (int)framenr_max
@@ -623,24 +638,24 @@ p_pw_auto_scene_split(GapStbPropWidget *pw, gboolean all_scenes)
         GapStoryElem *stb_elem_new;
 
         if((framenr >= framenr_max)
-	|| (pw->close_flag))
-	{
+        || (pw->close_flag))
+        {
           return;
-	}
+        }
 
 // DEBUG 
 printf("AUTO SCENE NEW_ELEM:\n");
     
         /* add a new Element for the next scene */
-	stb_elem_new = gap_story_elem_duplicate(stb_elem);
-	
-	stb_elem_new->from_frame = framenr;
-	stb_elem_new->to_frame = framenr;
-	gap_story_elem_calculate_nframes(stb_elem_new);
-	
-	stb_elem_new->next = stb_elem->next;
-	stb_elem->next = stb_elem_new;
-	stb_elem = stb_elem_new;
+        stb_elem_new = gap_story_elem_duplicate(stb_elem);
+        
+        stb_elem_new->from_frame = framenr;
+        stb_elem_new->to_frame = framenr;
+        gap_story_elem_calculate_nframes(stb_elem_new);
+        
+        stb_elem_new->next = stb_elem->next;
+        stb_elem->next = stb_elem_new;
+        stb_elem = stb_elem_new;
 
 // DEBUG 
 printf("AUTO SCENE NEW_ELEM linked to list: drop:%d, video_id:%d\n"
@@ -648,32 +663,32 @@ printf("AUTO SCENE NEW_ELEM linked to list: drop:%d, video_id:%d\n"
      ,(int)video_id
      );
 
-	if((stb_elem->record_type == GAP_STBREC_VID_MOVIE)
-	&& (drop_th_data)
-	&& (video_id >= 0))
-	{
+        if((stb_elem->record_type == GAP_STBREC_VID_MOVIE)
+        && (drop_th_data)
+        && (video_id >= 0))
+        {
 printf("AUTO SCENE ADD VTHUMB:\n");
-	   drop_th_data = FALSE;
-	   gap_story_dlg_add_vthumb(sgpp
-				   ,framenr
-	                           ,th_data
-				   ,l_th_width
-				   ,l_th_height
-				   ,l_th_bpp
-				   ,video_id
-				   );
-	   /* refresh storyboard layout and thumbnail list widgets */
-	   gap_story_dlg_recreate_tab_widgets(pw->tabw
-				  ,sgpp
-				  );
-	}
-	if(stb_elem->record_type != GAP_STBREC_VID_MOVIE)
-	{
-	   /* refresh storyboard layout and thumbnail list widgets */
-	   gap_story_dlg_recreate_tab_widgets(pw->tabw
-				  ,sgpp
-				  );
-	}
+           drop_th_data = FALSE;
+           gap_story_dlg_add_vthumb(sgpp
+                                   ,framenr
+                                   ,th_data
+                                   ,l_th_width
+                                   ,l_th_height
+                                   ,l_th_bpp
+                                   ,video_id
+                                   );
+           /* refresh storyboard layout and thumbnail list widgets */
+           gap_story_dlg_recreate_tab_widgets(pw->tabw
+                                  ,sgpp
+                                  );
+        }
+        if(stb_elem->record_type != GAP_STBREC_VID_MOVIE)
+        {
+           /* refresh storyboard layout and thumbnail list widgets */
+           gap_story_dlg_recreate_tab_widgets(pw->tabw
+                                  ,sgpp
+                                  );
+        }
       }
       
     }
@@ -691,10 +706,10 @@ printf("AUTO SCENE ADD VTHUMB:\n");
       else
       {
         g_object_unref(prev_pixbuf);
-	prev_pixbuf = NULL;
+        prev_pixbuf = NULL;
       }
       prev_th_data = NULL;
-    }		      
+    }                 
     if(stb_elem->record_type == GAP_STBREC_VID_MOVIE)
     {
       prev_th_data = th_data;
@@ -753,12 +768,13 @@ p_pv_pview_render_immediate (GapStbPropWidget *pw)
      
      l_th_data = gap_story_dlg_fetch_vthumb(pw->sgpp
               ,pw->stb_elem_refptr->orig_filename
-	      ,pw->stb_elem_refptr->from_frame
-	      ,pw->stb_elem_refptr->seltrack
-	      ,&l_th_bpp
-	      ,&l_th_width
-	      ,&l_th_height
-	      );
+              ,pw->stb_elem_refptr->from_frame
+              ,pw->stb_elem_refptr->seltrack
+              ,p_pw_get_preferred_decoder(pw)
+              ,&l_th_bpp
+              ,&l_th_width
+              ,&l_th_height
+              );
      if(l_th_data)
      {
        gboolean l_th_data_was_grabbed;
@@ -772,13 +788,13 @@ p_pv_pview_render_immediate (GapStbPropWidget *pw)
                     );
        if(!l_th_data_was_grabbed)
        {
-	 /* the gap_pview_render_from_buf procedure can grab the l_th_data
-	  * instead of making a ptivate copy for later use on repaint demands.
-	  * if such a grab happened it returns TRUE.
-	  * (this is done for optimal performance reasons)
-	  * in such a case the caller must NOT free the src_data (l_th_data) !!!
-	  */
-	  g_free(l_th_data);
+         /* the gap_pview_render_from_buf procedure can grab the l_th_data
+          * instead of making a ptivate copy for later use on repaint demands.
+          * if such a grab happened it returns TRUE.
+          * (this is done for optimal performance reasons)
+          * in such a case the caller must NOT free the src_data (l_th_data) !!!
+          */
+          g_free(l_th_data);
        }
        l_th_data = NULL;
        p_pw_update_framenr_labels(pw, pw->stb_elem_refptr->from_frame);
@@ -797,7 +813,7 @@ p_pv_pview_render_immediate (GapStbPropWidget *pw)
 
    pixbuf = gap_thumb_file_load_pixbuf_thumbnail(l_frame_filename
                                     , &l_th_width, &l_th_height
-				    , &l_th_bpp
+                                    , &l_th_bpp
                                     );
    if(pixbuf)
    {
@@ -819,18 +835,18 @@ p_pv_pview_render_immediate (GapStbPropWidget *pw)
       }
       else
       {
-	/* there is no need for undo on this scratch image
-	 * so we turn undo off for performance reasons
-	 */
-	gimp_image_undo_disable (l_image_id);
+        /* there is no need for undo on this scratch image
+         * so we turn undo off for performance reasons
+         */
+        gimp_image_undo_disable (l_image_id);
         gap_pview_render_from_image (pw->pv_ptr, l_image_id);
-	
-	/* create thumbnail (to speed up acces next time) */
-	gap_thumb_cond_gimp_file_save_thumbnail(l_image_id, l_frame_filename);
-	
+        
+        /* create thumbnail (to speed up acces next time) */
+        gap_thumb_cond_gimp_file_save_thumbnail(l_image_id, l_frame_filename);
+        
         gimp_image_delete(l_image_id);
       }
-   }				    
+   }                                
 
    p_pw_update_framenr_labels(pw, pw->stb_elem_refptr->from_frame);
 
@@ -864,57 +880,57 @@ p_pw_timer_go_job(GapStbPropWidget *pw)
       if(sgpp->gva_lock)
       {
         /* the video api is still busy with fetching the previous frame
-	 * (do not disturb, but setup the go_timer for a next try
-	 * after 96 milliseconds)
-	 */
-	pw->go_timertag = (gint32) g_timeout_add(96, (GtkFunction)p_pw_timer_go_job, pw);
+         * (do not disturb, but setup the go_timer for a next try
+         * after 96 milliseconds)
+         */
+        pw->go_timertag = (gint32) g_timeout_add(96, (GtkFunction)p_pw_timer_go_job, pw);
 
         /*if(gap_debug)*/ printf("p_pw_timer_go_job: TRY LATER (96msec) %06d\n", (int)pw->go_job_framenr);
       }
       else
       {
         if(pw->stb_elem_refptr)
-	{
-	  if(pw->go_render_all_request)
-	  {
-	    if (pw->go_job_framenr >= 0)
-	    {
-	      pw->stb_elem_refptr->from_frame = pw->go_job_framenr;
+        {
+          if(pw->go_render_all_request)
+          {
+            if (pw->go_job_framenr >= 0)
+            {
+              pw->stb_elem_refptr->from_frame = pw->go_job_framenr;
               p_pv_pview_render_immediate(pw);
-	    }
-	    gap_story_dlg_pw_render_all(pw);
-	    pw->go_render_all_request = FALSE;
-	    
-	    /* sometimes the displayed thumbnail does not match with the displayed
-	     * from_frame number at this point. (dont know exactly why)
-	     * the simple workaround is just render twice
-	     * and now it seems to work fine.
-	     * (rendering twice should not be too slow, since the requested videothumbnails
-	     *  are now cached in memory)
-	     */
+            }
+            gap_story_dlg_pw_render_all(pw);
+            pw->go_render_all_request = FALSE;
+            
+            /* sometimes the displayed thumbnail does not match with the displayed
+             * from_frame number at this point. (dont know exactly why)
+             * the simple workaround is just render twice
+             * and now it seems to work fine.
+             * (rendering twice should not be too slow, since the requested videothumbnails
+             *  are now cached in memory)
+             */
             p_pv_pview_render_immediate(pw);
-	    gap_story_dlg_pw_render_all(pw);
+            gap_story_dlg_pw_render_all(pw);
 printf("GO_RENDER_JOB: go_job_framenr: %d  rom_frame:%d\n"
       , (int)pw->go_job_framenr
       , (int)pw->stb_elem_refptr->from_frame
       );
           }
-	  else
-	  {
-	    if (pw->go_job_framenr >= 0)
-	    {
-	      pw->stb_elem_refptr->from_frame = pw->go_job_framenr;
+          else
+          {
+            if (pw->go_job_framenr >= 0)
+            {
+              pw->stb_elem_refptr->from_frame = pw->go_job_framenr;
               p_pv_pview_render_immediate(pw);
 
 printf("GO_JOB: go_job_framenr: %d\n", (int)pw->go_job_framenr );
 
-	    }
-	  }
+            }
+          }
 
           pw->go_job_framenr = -1;
-	  
-	}
-	
+          
+        }
+        
       }
     }
 
@@ -1037,8 +1053,8 @@ printf("PROP AINFO CHECK\n");
       if(0== gap_lib_dir_ainfo(ainfo_ptr))
       {
 
-	 l_lower = MIN(ainfo_ptr->last_frame_nr, ainfo_ptr->first_frame_nr);
-	 l_upper = MAX(ainfo_ptr->last_frame_nr, ainfo_ptr->first_frame_nr);
+         l_lower = MIN(ainfo_ptr->last_frame_nr, ainfo_ptr->first_frame_nr);
+         l_upper = MAX(ainfo_ptr->last_frame_nr, ainfo_ptr->first_frame_nr);
 
       }
       gap_lib_free_ainfo(&ainfo_ptr);
@@ -1053,8 +1069,9 @@ printf("PROP AINFO CHECK\n");
 printf("PROP AINFO CHECK --> GAP_STBREC_VID_MOVIE\n");
       velem = gap_story_dlg_get_velem(pw->sgpp
                            ,pw->stb_elem_refptr->orig_filename
-			   ,pw->stb_elem_refptr->seltrack
-			   );
+                           ,pw->stb_elem_refptr->seltrack
+                           ,p_pw_get_preferred_decoder(pw)
+                           );
       if(velem)
       {
         l_upper = velem->total_frames;
@@ -1068,7 +1085,7 @@ printf("PROP AINFO CHECK --> GAP_STBREC_VID_MOVIE\n");
   if((l_val < l_lower) || (l_val > l_upper))
   {
     gtk_adjustment_set_value(GTK_ADJUSTMENT(pw->pw_spinbutton_from_adj)
-	                    , CLAMP(l_val, l_lower, l_upper));
+                            , CLAMP(l_val, l_lower, l_upper));
   }
 
   l_val = gtk_adjustment_get_value(GTK_ADJUSTMENT(pw->pw_spinbutton_to_adj));
@@ -1077,7 +1094,7 @@ printf("PROP AINFO CHECK --> GAP_STBREC_VID_MOVIE\n");
   if((l_val < l_lower) || (l_val > l_upper))
   {
     gtk_adjustment_set_value(GTK_ADJUSTMENT(pw->pw_spinbutton_to_adj)
-	                    , CLAMP(l_val, l_lower, l_upper));
+                            , CLAMP(l_val, l_lower, l_upper));
   }
 
 }  /* end p_pw_check_ainfo_range */
@@ -1124,7 +1141,7 @@ p_pw_filename_changed(const char *filename, GapStbPropWidget *pw)
  */
 static void
 p_filesel_pw_ok_cb (GtkWidget *widget
-		   ,GapStbPropWidget *pw)
+                   ,GapStbPropWidget *pw)
 {
   const gchar *filename;
   gchar *dup_filename;
@@ -1169,7 +1186,7 @@ p_filesel_pw_ok_cb (GtkWidget *widget
  */
 static void
 p_filesel_pw_close_cb ( GtkWidget *widget
-		      , GapStbPropWidget *pw)
+                      , GapStbPropWidget *pw)
 {
   if(pw->pw_filesel == NULL) return;
 
@@ -1186,7 +1203,7 @@ p_filesel_pw_close_cb ( GtkWidget *widget
  */
 static void
 p_pw_filesel_button_cb ( GtkWidget *w
-		       , GapStbPropWidget *pw)
+                       , GapStbPropWidget *pw)
 {
   GtkWidget *filesel = NULL;
 
@@ -1207,14 +1224,14 @@ p_pw_filesel_button_cb ( GtkWidget *w
 
   gtk_window_position (GTK_WINDOW (filesel), GTK_WIN_POS_MOUSE);
   gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION (filesel)->ok_button),
-		      "clicked", (GtkSignalFunc) p_filesel_pw_ok_cb,
-		      pw);
+                      "clicked", (GtkSignalFunc) p_filesel_pw_ok_cb,
+                      pw);
   gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION (filesel)->cancel_button),
-		      "clicked", (GtkSignalFunc) p_filesel_pw_close_cb,
-		      pw);
+                      "clicked", (GtkSignalFunc) p_filesel_pw_close_cb,
+                      pw);
   gtk_signal_connect (GTK_OBJECT (filesel), "destroy",
-		      (GtkSignalFunc) p_filesel_pw_close_cb,
-		      pw);
+                      (GtkSignalFunc) p_filesel_pw_close_cb,
+                      pw);
   gtk_file_selection_set_filename (GTK_FILE_SELECTION (filesel),
                                      pw->stb_elem_refptr->orig_filename);
   gtk_widget_show (filesel);
@@ -1459,7 +1476,7 @@ p_pw_gint32_adjustment_callback(GtkObject *obj, gint32 *val)
 printf("gint32_adjustment_callback: old_val:%d val:%d\n", (int)*val ,(int)l_val );
       if(l_val != *val)
       {
-	*val = l_val;
+        *val = l_val;
         pw->stb_refptr->unsaved_changes = TRUE;
         p_pw_update_properties(pw);
       }
@@ -1583,7 +1600,7 @@ p_step_density_spinbutton_cb(GtkObject *obj, GapStbPropWidget *pw)
       if(pw->stb_elem_refptr->step_density != l_val)
       {
         pw->stb_elem_refptr->step_density = l_val;
-	gap_story_elem_calculate_nframes(pw->stb_elem_refptr);
+        gap_story_elem_calculate_nframes(pw->stb_elem_refptr);
         pw->stb_refptr->unsaved_changes = TRUE;
         p_pw_update_properties(pw);
       }
@@ -1626,24 +1643,24 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
   {
     dlg = gimp_dialog_new (_("Clip Properties"), "gap_story_clip_properties"
                          ,NULL, 0
-			 ,gimp_standard_help_func, "gap_story_clip_properties.html"
+                         ,gimp_standard_help_func, "gap_story_clip_properties.html"
 
-			 ,GIMP_STOCK_RESET, GAP_STORY_RESPONSE_RESET
-			 ,_("Find Scene End"), GAP_STORY_RESPONSE_SCENE_END
-			 ,_("Aoto Scene Split"), GAP_STORY_RESPONSE_SCENE_SPLIT
-			 ,GTK_STOCK_CLOSE,  GTK_RESPONSE_CLOSE
-			 ,NULL);
+                         ,GIMP_STOCK_RESET, GAP_STORY_RESPONSE_RESET
+                         ,_("Find Scene End"), GAP_STORY_RESPONSE_SCENE_END
+                         ,_("Aoto Scene Split"), GAP_STORY_RESPONSE_SCENE_SPLIT
+                         ,GTK_STOCK_CLOSE,  GTK_RESPONSE_CLOSE
+                         ,NULL);
   }
   else
   {
     dlg = gimp_dialog_new (_("Clip Properties"), "gap_story_clip_properties"
                          ,NULL, 0
-			 ,gimp_standard_help_func, "gap_story_clip_properties.html"
+                         ,gimp_standard_help_func, "gap_story_clip_properties.html"
 
-			 ,_("Find Scene End"), GAP_STORY_RESPONSE_SCENE_END
-			 ,_("Aoto Scene Split"), GAP_STORY_RESPONSE_SCENE_SPLIT
-			 ,GTK_STOCK_CLOSE,  GTK_RESPONSE_CLOSE
-			 ,NULL);
+                         ,_("Find Scene End"), GAP_STORY_RESPONSE_SCENE_END
+                         ,_("Aoto Scene Split"), GAP_STORY_RESPONSE_SCENE_SPLIT
+                         ,GTK_STOCK_CLOSE,  GTK_RESPONSE_CLOSE
+                         ,NULL);
   }
   
   pw->pw_prop_dialog = dlg;
@@ -1658,7 +1675,7 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
   gtk_container_add (GTK_CONTAINER (GTK_DIALOG (dlg)->vbox), main_vbox);
 
   /*  the frame  */
-  frame = gtk_frame_new (_("Properties"));
+  frame = gimp_frame_new (_("Properties"));
   gtk_box_pack_start (GTK_BOX (main_vbox), frame, FALSE, FALSE, 0);
   gtk_widget_show (frame);
 
@@ -1674,7 +1691,7 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
 
   /* the cliptype label */
   label = gtk_label_new (_("Clip Type:"));
-  gtk_misc_set_alignment (GTK_MISC (label), 1.0, 0.5);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
   gtk_table_attach_defaults (GTK_TABLE(table), label, 0, 1, row, row+1);
   gtk_widget_show (label);
 
@@ -1689,7 +1706,7 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
 
   /* the filename label */
   label = gtk_label_new (_("File:"));
-  gtk_misc_set_alignment (GTK_MISC (label), 1.0, 0.5);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
   gtk_table_attach_defaults (GTK_TABLE(table), label, 0, 1, row, row+1);
   gtk_widget_show (label);
 
@@ -1705,7 +1722,7 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
   }
   gtk_table_attach_defaults (GTK_TABLE(table), entry, 1, 2, row, row+1);
   g_signal_connect(G_OBJECT(entry), "changed",
-		     G_CALLBACK(p_pw_filename_entry_update_cb),
+                     G_CALLBACK(p_pw_filename_entry_update_cb),
                      pw);
   gtk_widget_show (entry);
   pw->pw_filename_entry = entry;
@@ -1714,7 +1731,7 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
   button = gtk_button_new_with_label ( _("File Browser"));
   gtk_table_attach_defaults (GTK_TABLE(table), button, 2, 3, row, row+1);
   g_signal_connect(G_OBJECT(button), "clicked",
-		     G_CALLBACK(p_pw_filesel_button_cb),
+                     G_CALLBACK(p_pw_filesel_button_cb),
                      pw);
   gtk_widget_show (button);
 
@@ -1723,15 +1740,15 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
 
   /* the from spinbutton */
   adj = gimp_scale_entry_new (GTK_TABLE (pw->master_table), 0, row++,
-			      _("From:"), PW_SCALE_WIDTH, PW_SPIN_BUTTON_WIDTH,
-			      pw->stb_elem_refptr->from_frame,
-			      1.0, 999999.0,  /* lower/upper */
-			      1.0, 10.0,      /* step, page */
-			      0,              /* digits */
-			      TRUE,           /* constrain */
-			      1.0, 999999.0,  /* lower/upper unconstrained */
-			      _("framenumber of the first frame "
-			        "in the clip range"), NULL);
+                              _("From:"), PW_SCALE_WIDTH, PW_SPIN_BUTTON_WIDTH,
+                              pw->stb_elem_refptr->from_frame,
+                              1.0, 999999.0,  /* lower/upper */
+                              1.0, 10.0,      /* step, page */
+                              0,              /* digits */
+                              TRUE,           /* constrain */
+                              1.0, 999999.0,  /* lower/upper unconstrained */
+                              _("framenumber of the first frame "
+                                "in the clip range"), NULL);
   pw->pw_spinbutton_from_adj = adj;
   g_object_set_data(G_OBJECT(adj), "pw", pw);
   g_signal_connect (adj, "value_changed",
@@ -1752,15 +1769,15 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
 
   /* the to spinbutton */
   adj = gimp_scale_entry_new (GTK_TABLE (pw->master_table), 0, row++,
-			      _("To:"), PW_SCALE_WIDTH, PW_SPIN_BUTTON_WIDTH,
-			      pw->stb_elem_refptr->to_frame,
-			      1.0, 999999.0,  /* lower/upper */
-			      1.0, 10.0,      /* step, page */
-			      0,              /* digits */
-			      TRUE,           /* constrain */
-			      1.0, 999999.0,  /* lower/upper unconstrained */
-			      _("framenumber of the last frame "
-			        "in the clip range"), NULL);
+                              _("To:"), PW_SCALE_WIDTH, PW_SPIN_BUTTON_WIDTH,
+                              pw->stb_elem_refptr->to_frame,
+                              1.0, 999999.0,  /* lower/upper */
+                              1.0, 10.0,      /* step, page */
+                              0,              /* digits */
+                              TRUE,           /* constrain */
+                              1.0, 999999.0,  /* lower/upper unconstrained */
+                              _("framenumber of the last frame "
+                                "in the clip range"), NULL);
   pw->pw_spinbutton_to_adj = adj;
   g_object_set_data(G_OBJECT(adj), "pw", pw);
   g_signal_connect (adj, "value_changed",
@@ -1771,15 +1788,15 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
   row++;
   /* the loops spinbutton */
   adj = gimp_scale_entry_new (GTK_TABLE (pw->master_table), 0, row++,
-			      _("Loops:"), PW_SCALE_WIDTH, PW_SPIN_BUTTON_WIDTH,
-			      pw->stb_elem_refptr->nloop,
-			      1.0, 1000.0,  /* lower/upper */
-			      1.0, 10.0,      /* step, page */
-			      0,              /* digits */
-			      TRUE,           /* constrain */
-			      1.0, 1000.0,  /* lower/upper unconstrained */
-			      _("number of loops "
-			        "(how often to play the framerange)"), NULL);
+                              _("Loops:"), PW_SCALE_WIDTH, PW_SPIN_BUTTON_WIDTH,
+                              pw->stb_elem_refptr->nloop,
+                              1.0, 1000.0,  /* lower/upper */
+                              1.0, 10.0,      /* step, page */
+                              0,              /* digits */
+                              TRUE,           /* constrain */
+                              1.0, 1000.0,  /* lower/upper unconstrained */
+                              _("number of loops "
+                                "(how often to play the framerange)"), NULL);
   pw->pw_spinbutton_loops_adj = adj;
   g_object_set_data(G_OBJECT(adj), "pw", pw);
   g_signal_connect (adj, "value_changed",
@@ -1789,15 +1806,15 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
   row++;
   /* the seltrack spinbutton */
   adj = gimp_scale_entry_new (GTK_TABLE (pw->master_table), 0, row++,
-			      _("Videotrack:"), PW_SCALE_WIDTH, PW_SPIN_BUTTON_WIDTH,
-			      pw->stb_elem_refptr->seltrack,
-			      1.0, 100.0,  /* lower/upper */
-			      1.0, 10.0,      /* step, page */
-			      0,              /* digits */
-			      TRUE,           /* constrain */
-			      1.0, 100.0,  /* lower/upper unconstrained */
-			      _("select input videotrack"
-			        "(most videofiles have just 1 track)"), NULL);
+                              _("Videotrack:"), PW_SCALE_WIDTH, PW_SPIN_BUTTON_WIDTH,
+                              pw->stb_elem_refptr->seltrack,
+                              1.0, 100.0,  /* lower/upper */
+                              1.0, 10.0,      /* step, page */
+                              0,              /* digits */
+                              TRUE,           /* constrain */
+                              1.0, 100.0,  /* lower/upper unconstrained */
+                              _("select input videotrack"
+                                "(most videofiles have just 1 track)"), NULL);
   pw->pw_spinbutton_seltrack_adj = adj;
   g_object_set_data(G_OBJECT(adj), "pw", pw);
   g_signal_connect (adj, "value_changed",
@@ -1808,7 +1825,7 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
   
   /* the Deinterlace Mode label */
   label = gtk_label_new (_("Deinterlace:"));
-  gtk_misc_set_alignment (GTK_MISC (label), 1.0, 0.5);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
   gtk_table_attach_defaults (GTK_TABLE(table), label, 0, 1, row, row+1);
   gtk_widget_show (label);
  
@@ -1832,13 +1849,13 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
 
     l_radio_pressed = (pw->delace_mode == 0);
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radio_button),
-				     l_radio_pressed);
+                                     l_radio_pressed);
     gimp_help_set_help_data(radio_button, _("Read videoframes 1:1 without de-interlace filter"), NULL);
 
     gtk_widget_show (radio_button);
     g_signal_connect ( G_OBJECT (radio_button), "toggled",
-		       G_CALLBACK (p_radio_delace_none_callback),
-		       pw);
+                       G_CALLBACK (p_radio_delace_none_callback),
+                       pw);
 
     l_idx++;
     /* radio button delace_mode odd */
@@ -1849,13 +1866,13 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
 
     l_radio_pressed = (pw->delace_mode == 1);
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radio_button),
-				     l_radio_pressed);
+                                     l_radio_pressed);
     gimp_help_set_help_data(radio_button, _("Apply odd-lines filter when reading videoframes"), NULL);
 
     gtk_widget_show (radio_button);
     g_signal_connect ( G_OBJECT (radio_button), "toggled",
-		       G_CALLBACK (p_radio_delace_odd_callback),
-		       pw);
+                       G_CALLBACK (p_radio_delace_odd_callback),
+                       pw);
 
     l_idx++;
     /* radio button delace_mode even */
@@ -1866,13 +1883,13 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
 
     l_radio_pressed = (pw->delace_mode == 2);
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radio_button),
-				     l_radio_pressed);
+                                     l_radio_pressed);
     gimp_help_set_help_data(radio_button, _("Apply even-lines filter when reading videoframes"), NULL);
 
     gtk_widget_show (radio_button);
     g_signal_connect ( G_OBJECT (radio_button), "toggled",
-		       G_CALLBACK (p_radio_delace_even_callback),
-		       pw);
+                       G_CALLBACK (p_radio_delace_even_callback),
+                       pw);
 
     gtk_widget_show (radio_table);
     gtk_table_attach_defaults (GTK_TABLE(table), radio_table, 1, 2, row, row+1);
@@ -1894,8 +1911,8 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
 
     gimp_help_set_help_data (spinbutton, _("deinterlacing threshold: "
                                            "0.0 no interpolation "
-					   "0.999 smooth interpolation")
-					   , NULL);
+                                           "0.999 smooth interpolation")
+                                           , NULL);
     g_signal_connect (G_OBJECT (pw->pw_spinbutton_delace_adj), "value_changed",
                       G_CALLBACK (p_delace_spinbutton_cb),
                       pw);
@@ -1909,7 +1926,7 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
 
   /* pingpong */
   label = gtk_label_new(_("Pingpong:"));
-  gtk_misc_set_alignment(GTK_MISC(label), 1.0, 0.5);
+  gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
   gtk_table_attach(GTK_TABLE (table), label, 0, 1, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
   gtk_widget_show(label);
 
@@ -1922,8 +1939,8 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
     
     pingpong_state = (pw->stb_elem_refptr->playmode == GAP_STB_PM_PINGPONG);
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (check_button), pingpong_state);
-				
-  }				
+                                
+  }                             
   gimp_help_set_help_data(check_button, _("ON: Play clip in pingpong mode"), NULL);
   gtk_widget_show(check_button);
   pw->pingpong_toggle = check_button;
@@ -1935,16 +1952,16 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
 
   /* the step_density spinbutton */
   adj = gimp_scale_entry_new (GTK_TABLE (pw->master_table), 0, row++,
-			      _("Stepsize:"), PW_SCALE_WIDTH, PW_SPIN_BUTTON_WIDTH,
-			      pw->stb_elem_refptr->step_density,
-			      0.125, 8.0,     /* lower/upper */
-			      0.125, 0.5,     /* step, page */
-			      6,              /* digits */
-			      TRUE,           /* constrain */
-			      0.125, 8.0,     /* lower/upper unconstrained */
-			      _("Stepsize density. Use 1.0 for normal 1:1 frame by frame steps. "
-			        "a value of 0.5 shows each input frame 2 times. "
-				"a value of 2.0 shows only every 2.nd input frame"), NULL);
+                              _("Stepsize:"), PW_SCALE_WIDTH, PW_SPIN_BUTTON_WIDTH,
+                              pw->stb_elem_refptr->step_density,
+                              0.125, 8.0,     /* lower/upper */
+                              0.125, 0.5,     /* step, page */
+                              6,              /* digits */
+                              TRUE,           /* constrain */
+                              0.125, 8.0,     /* lower/upper unconstrained */
+                              _("Stepsize density. Use 1.0 for normal 1:1 frame by frame steps. "
+                                "a value of 0.5 shows each input frame 2 times. "
+                                "a value of 2.0 shows only every 2.nd input frame"), NULL);
   pw->pw_spinbutton_step_density_adj = adj;
   g_object_set_data(G_OBJECT(adj), "pw", pw);
   g_signal_connect (adj, "value_changed",
@@ -1956,7 +1973,7 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
 
   /* the duration label */
   label = gtk_label_new (_("Duration:"));
-  gtk_misc_set_alignment (GTK_MISC (label), 1.0, 0.5);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
   gtk_table_attach_defaults (GTK_TABLE(table), label, 0, 1, row, row+1);
   gtk_widget_show (label);
 
@@ -2045,7 +2062,7 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
 
   /* the comment label */
   label = gtk_label_new (_("Comment:"));
-  gtk_misc_set_alignment (GTK_MISC (label), 1.0, 0.5);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
   gtk_table_attach_defaults (GTK_TABLE(table), label, 0, 1, row, row+1);
   gtk_widget_show (label);
 
@@ -2065,7 +2082,7 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
   }
   gtk_table_attach_defaults (GTK_TABLE(table), entry, 1, 4, row, row+1);
   g_signal_connect(G_OBJECT(entry), "changed",
-		     G_CALLBACK(p_pw_comment_entry_update_cb),
+                     G_CALLBACK(p_pw_comment_entry_update_cb),
                      pw);
   gtk_widget_show (entry);
   pw->comment_entry = entry;
@@ -2106,9 +2123,9 @@ gap_story_stb_elem_properties_dialog ( GapStbTabWidgets *tabw
       if(pw->pw_prop_dialog)
       {
         /* Properties for the selected element already open
-	 * bring the window to front
-	 */
-	gtk_window_present(GTK_WINDOW(pw->pw_prop_dialog));
+         * bring the window to front
+         */
+        gtk_window_present(GTK_WINDOW(pw->pw_prop_dialog));
         return ;
       }
       /* we found a dead element (that is already closed)
@@ -2152,10 +2169,10 @@ gap_story_stb_elem_properties_dialog ( GapStbTabWidgets *tabw
       pw->stb_elem_bck = gap_story_elem_duplicate(stb_elem);
       if(stb_elem->comment)
       {
-	if(stb_elem->comment->orig_src_line)
-	{
+        if(stb_elem->comment->orig_src_line)
+        {
           pw->stb_elem_bck->comment = gap_story_elem_duplicate(stb_elem->comment);
-	}
+        }
       }
     }
   }

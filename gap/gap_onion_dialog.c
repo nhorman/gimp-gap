@@ -869,16 +869,14 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
 
 
   oni__dialog = gtk_dialog_new ();
-  gtk_container_set_border_width (GTK_CONTAINER (oni__dialog), 2);
+  gtk_container_set_border_width (GTK_CONTAINER (oni__dialog), 12);
   gtk_window_set_title (GTK_WINDOW (oni__dialog), _("Onionskin Configuration"));
 
   dialog_vbox1 = GTK_DIALOG (oni__dialog)->vbox;
   gtk_widget_show (dialog_vbox1);
 
-  frame3 = gtk_frame_new (NULL);
+  frame3 = gimp_frame_new (_("Frame Range"));
   gtk_widget_show (frame3);
-  gtk_box_pack_start (GTK_BOX (dialog_vbox1), frame3, TRUE, TRUE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (frame3), 2);
 
   table3 = gtk_table_new (2, 2, FALSE);
   gtk_widget_show (table3);
@@ -937,10 +935,13 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 2, 0);
 
-  frame1 = gtk_frame_new (NULL);
+  frame1 = gimp_frame_new (_("Onionskin Settings"));
   gtk_widget_show (frame1);
   gtk_box_pack_start (GTK_BOX (dialog_vbox1), frame1, TRUE, TRUE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (frame1), 2);
+
+
+  gtk_box_pack_start (GTK_BOX (dialog_vbox1), frame3, TRUE, TRUE, 0);
+
 
   table1 = gtk_table_new (8, 3, FALSE);
   gtk_widget_show (table1);
@@ -968,8 +969,8 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
   gimp_help_set_help_data(oni__optionmenu_ref_mode
                          , _("Reference Modes determines stepsequence:\n"
 			     " normal: +1,+2,+3,+4,+5,+6\n"
-			     " bilinear single: +1,-2,+3,-4,+5,-6\n"
-			     " bilinear double: +1,-1,+2,-2,+3,-3\n"
+			     " bidirectional single: +1,-2,+3,-4,+5,-6\n"
+			     " bidirectional double: +1,-1,+2,-2,+3,-3\n"
 			     " (stepsize is set by frame reference parameter)")
                          , NULL);
 
@@ -1164,12 +1165,11 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
   tab1_row++;
 
 
-  frame2 = gtk_frame_new (_("Layer Selection"));
+  frame2 = gimp_frame_new (_("Layer Selection"));
   gtk_widget_show (frame2);
   gtk_table_attach (GTK_TABLE (table1), frame2, 0, 3, tab1_row, tab1_row+1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (frame2), 2);
 
   table2 = gtk_table_new (5, 2, FALSE);
   gtk_widget_show (table2);
@@ -1378,6 +1378,7 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
                        (GtkAttachOptions) (GTK_FILL), 0, 0);
   }
 
+
   dialog_action_area1 = GTK_DIALOG (oni__dialog)->action_area;
   gtk_widget_show (dialog_action_area1);
   gtk_container_set_border_width (GTK_CONTAINER (dialog_action_area1), 10);
@@ -1540,6 +1541,7 @@ gap_onion_dlg_init_default_values(GapOnionMainGlobalParams *gpp)
           gpp->vin.auto_delete_before_save = FALSE;
 
           gpp->vin.num_olayers        = 2;
+          gpp->vin.ref_mode           = gtab_ref_modes[0]; /* normal ref mode */
           gpp->vin.ref_delta          = -1;
           gpp->vin.ref_cycle          = FALSE;
           gpp->vin.stack_pos          = 1;

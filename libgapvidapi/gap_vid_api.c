@@ -56,8 +56,10 @@
 #include <stdlib.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <errno.h>
 #include <gtk/gtk.h>
 #include <libgimp/gimp.h>
+#include <gap_vid_api-intl.h>
 
 extern      int gap_debug; /* ==0  ... dont print debug infos */
 
@@ -1842,7 +1844,6 @@ GVA_frame_to_gimp_layer_2(t_GVA_Handle *gvahand
   {
      *image_id = gimp_image_new (gvahand->width, gvahand->height, GIMP_RGB);
      if (gap_debug)  printf("DEBUG: after gimp_image_new\n");
-     gimp_image_undo_disable(*image_id);
 
      old_layer_id = -1;
   }

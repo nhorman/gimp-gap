@@ -241,6 +241,7 @@ gap_bluebox_create_dialog (GapBlueboxGlobalParams *bbp)
   GtkWidget *label;
   GtkWidget *button;
   GtkWidget *check_button;
+  GtkWidget *hseparator;
   gint       row;
   GtkObject *adj;
 
@@ -267,7 +268,7 @@ gap_bluebox_create_dialog (GapBlueboxGlobalParams *bbp)
 
   /*  the frame  */
 
-  frame = gtk_frame_new (_("Select By Color"));
+  frame = gimp_frame_new (_("Select By Color"));
   gtk_box_pack_start (GTK_BOX (main_vbox), frame, FALSE, FALSE, 0);
   gtk_widget_show (frame);
 
@@ -283,7 +284,7 @@ gap_bluebox_create_dialog (GapBlueboxGlobalParams *bbp)
 
   /* the keycolor label */
   label = gtk_label_new (_("Keycolor:"));
-  gtk_misc_set_alignment (GTK_MISC (label), 1.0, 0.5);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.0);
   gtk_table_attach_defaults (GTK_TABLE(table), label, 0, 1, row, row+1);
   gtk_widget_show (label);
 
@@ -293,7 +294,7 @@ gap_bluebox_create_dialog (GapBlueboxGlobalParams *bbp)
 				  &bbp->vals.keycolor,
 				  GIMP_COLOR_AREA_FLAT);
   gtk_table_attach (GTK_TABLE (table), button, 1, 3, row, row+1,
-		    GTK_FILL, GTK_SHRINK, 0, 0) ;
+		    GTK_FILL | GTK_EXPAND, GTK_SHRINK, 0, 0) ;
   gtk_widget_show (button);
   g_object_set_data(G_OBJECT(button), "bbp", bbp);
   bbp->keycolor_button = button;
@@ -368,8 +369,9 @@ gap_bluebox_create_dialog (GapBlueboxGlobalParams *bbp)
   row++;
 
   label = gtk_label_new(_("Feather Edges:"));
-  gtk_misc_set_alignment(GTK_MISC(label), 1.0, 0.5);
-  gtk_table_attach(GTK_TABLE (table), label, 0, 1, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
+  gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.0);
+  gtk_table_attach(GTK_TABLE (table), label, 0, 1, row, row + 1
+                  , GTK_FILL, GTK_FILL, 0, 0);
   gtk_widget_show(label);
 
   /* check button */
@@ -421,7 +423,7 @@ gap_bluebox_create_dialog (GapBlueboxGlobalParams *bbp)
   row++;
 
   label = gtk_label_new(_("Automatic Preview:"));
-  gtk_misc_set_alignment(GTK_MISC(label), 1.0, 0.5);
+  gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.0);
   gtk_table_attach(GTK_TABLE (table), label, 0, 1, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
   gtk_widget_show(label);
 
@@ -463,6 +465,11 @@ gap_bluebox_create_dialog (GapBlueboxGlobalParams *bbp)
   g_signal_connect (adj, "value_changed",
                     G_CALLBACK (p_gdouble_adjustment_callback),
                     &bbp->pv_size_percent);
+
+
+  hseparator = gtk_hseparator_new ();
+  gtk_widget_show (hseparator);
+  gtk_box_pack_start (GTK_BOX (main_vbox), hseparator, FALSE, FALSE, 0);
 
   /*  Show the main containers  */
 
@@ -849,7 +856,7 @@ p_radio_create_thres_mode(GtkWidget *table, int row, int col, GapBlueboxGlobalPa
   gboolean  l_radio_pressed;
 
   label = gtk_label_new(_("Threshold Mode:"));
-  gtk_misc_set_alignment(GTK_MISC(label), 1.0, 0.5);
+  gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.0);
   gtk_table_attach( GTK_TABLE (table), label, col, col+1, row, row+1, GTK_FILL, GTK_FILL, 0, 10);
   gtk_widget_show(label);
 

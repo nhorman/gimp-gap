@@ -76,6 +76,7 @@ static GapPlayerMainGlobalParams global_params =
 , NULL                     /* gpointer user_data_ptr */      
 
 , FALSE       /*  gboolean   autostart */
+, FALSE       /*  gboolean   caller_range_linked */
 , TRUE        /*  gboolean   use_thumbnails */
 , TRUE        /*  gboolean   exact_timing */
 , FALSE       /*  gboolean   play_is_active */

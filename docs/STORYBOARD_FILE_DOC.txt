@@ -158,7 +158,7 @@ STORYBOARDFILE
 
 VID_PREFERRED_DECODER
   (1) Record Key        ... VID_PREFERRED_DECODER
-  (2) decoder_name      ... Name of the preferred Videodecoder
+  (2) decoder           ... Name of the preferred Videodecoder
                             The Videodecoder is relevant for all Clips
 			    specified with VID_PLAY_MOVIE or AUD_PLAY_MOVIE statements.
 			    If you set a preferred Videodecoder this one tried first.
@@ -207,7 +207,10 @@ VID_PLAY_MOVIE
                             DEFAULT: 1.0
  [12] macro_filename    ... optional name of a filtermacro_file
                             that will be execute on each imported input_layer
-
+ [13] decoder           ... optional name of preferred video decoder that should
+                            be used for the videofile read access.
+			    "libmpeg3"
+			    "libavformat"
 
 VID_PLAY_ANIMIMAGE
   fetch frames from layers of a multilayer image (such as GIF animations,
@@ -505,6 +508,10 @@ AUD_PLAY_MOVIE
                             use 1 for the first audiotrack, or if the video has only
                             one audiotrack)
                             DEFAULT: 1
+  [13] decoder          ... optional name of preferred audio/video decoder that should
+                            be used for the videofile read access.
+			    "libmpeg3"
+			    "libavformat"
                             
 
 AUD_SILENCE

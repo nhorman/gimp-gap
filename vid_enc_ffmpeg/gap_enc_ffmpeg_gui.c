@@ -1019,6 +1019,7 @@ p_create_fsb__fileselection (GapGveFFMpegGlobalParams *gpp)
   GtkWidget *ff_comment_entry;
   GtkWidget *ff_filecomment_label;
   GtkAccelGroup *accel_group;
+  GtkWidget *spc_hbox;
 
 
   accel_group = gtk_accel_group_new ();
@@ -1042,14 +1043,16 @@ p_create_fsb__fileselection (GapGveFFMpegGlobalParams *gpp)
   gtk_widget_show (dialog_vbox2);
 
 
-
   /* ================== */
   /* the preset frame   */
   /* ================== */
-  frame_preset = gtk_frame_new (_("Parameter Presets"));
+  spc_hbox = gtk_hbox_new (FALSE, 0);
+  gtk_widget_show (spc_hbox);
+  frame_preset = gimp_frame_new (_("Parameter Presets"));
   gtk_widget_show (frame_preset);
 
-  gtk_box_pack_start (GTK_BOX (dialog_vbox2), frame_preset, TRUE, TRUE, 4);
+  gtk_box_pack_start (GTK_BOX (spc_hbox), frame_preset, TRUE, TRUE, 10);
+  gtk_box_pack_start (GTK_BOX (dialog_vbox2), spc_hbox, TRUE, TRUE, 4);
  
   /* the preset table */
   table_preset = gtk_table_new (2, 1, FALSE);
@@ -1152,9 +1155,12 @@ p_create_fsb__fileselection (GapGveFFMpegGlobalParams *gpp)
   /* ================== */
   /* the parmeter frame */
   /* ================== */
-  frame1 = gtk_frame_new (_("Parameter Values"));
+  spc_hbox = gtk_hbox_new (FALSE, 0);
+  gtk_widget_show (spc_hbox);
+  frame1 = gimp_frame_new (_("Parameter Values"));
   gtk_widget_show (frame1);
-  gtk_box_pack_start (GTK_BOX (dialog_vbox2), frame1, TRUE, TRUE, 4);
+  gtk_box_pack_start (GTK_BOX (spc_hbox), frame1, TRUE, TRUE, 10);
+  gtk_box_pack_start (GTK_BOX (dialog_vbox2), spc_hbox, TRUE, TRUE, 4);
 
   /* the notebook for detailed parameter settings */
   notebook1 = gtk_notebook_new ();
@@ -1162,7 +1168,7 @@ p_create_fsb__fileselection (GapGveFFMpegGlobalParams *gpp)
   gtk_container_add (GTK_CONTAINER (frame1), notebook1);
   gtk_container_set_border_width (GTK_CONTAINER (notebook1), 4);
 
-  frame3 = gtk_frame_new (_("FFMpeg Basic Encoder Options"));
+  frame3 = gimp_frame_new (_("FFMpeg Basic Encoder Options"));
   gtk_widget_show (frame3);
   gtk_container_add (GTK_CONTAINER (notebook1), frame3);
   gtk_container_set_border_width (GTK_CONTAINER (frame3), 4);
@@ -1480,7 +1486,7 @@ p_create_fsb__fileselection (GapGveFFMpegGlobalParams *gpp)
 
 
 
-  frame4 = gtk_frame_new (_("FFMpeg Expert Encoder Algorithms and Flags"));
+  frame4 = gimp_frame_new (_("FFMpeg Expert Encoder Algorithms and Flags"));
   gtk_widget_show (frame4);
   gtk_container_add (GTK_CONTAINER (notebook1), frame4);
   gtk_container_set_border_width (GTK_CONTAINER (frame4), 4);
@@ -1796,7 +1802,7 @@ p_create_fsb__fileselection (GapGveFFMpegGlobalParams *gpp)
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label20), 0, 0.5);
 
-  frame2 = gtk_frame_new (NULL);
+  frame2 = gimp_frame_new (NULL);
   gtk_widget_show (frame2);
   gtk_table_attach (GTK_TABLE (table2), frame2, 1, 2, 5, 6,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
@@ -1947,7 +1953,7 @@ p_create_fsb__fileselection (GapGveFFMpegGlobalParams *gpp)
 
 
 
-  frame5 = gtk_frame_new (_("FFMpeg Expert Encoder Options"));
+  frame5 = gimp_frame_new (_("FFMpeg Expert Encoder Options"));
   gtk_widget_show (frame5);
   gtk_container_add (GTK_CONTAINER (notebook1), frame5);
   gtk_container_set_border_width (GTK_CONTAINER (frame5), 4);
@@ -2178,7 +2184,7 @@ p_create_fsb__fileselection (GapGveFFMpegGlobalParams *gpp)
   gimp_help_set_help_data (ff_mb_qmax_spinbutton, _("max macroblock quantiser scale (VBR)"), NULL);
 
 
-  frame6 = gtk_frame_new (_("FFMpeg 2 Pass Expert settings"));
+  frame6 = gimp_frame_new (_("FFMpeg 2 Pass Expert settings"));
   gtk_widget_show (frame6);
   gtk_container_add (GTK_CONTAINER (notebook1), frame6);
   gtk_container_set_border_width (GTK_CONTAINER (frame6), 4);
@@ -2234,7 +2240,7 @@ p_create_fsb__fileselection (GapGveFFMpegGlobalParams *gpp)
   gtk_misc_set_alignment (GTK_MISC (ff_2pass_info_label), 0, 0.5);
 
 
-  frame7 = gtk_frame_new (_("FFMpeg File Comment settings"));
+  frame7 = gimp_frame_new (_("FFMpeg File Comment settings"));
   gtk_widget_show (frame7);
   gtk_container_add (GTK_CONTAINER (notebook1), frame7);
   gtk_container_set_border_width (GTK_CONTAINER (frame7), 3);

@@ -3269,7 +3269,7 @@ p_storyboard_analyze(GapStoryBoard *stb
                                                   , l_sub_from
                                                   , l_sub_to
                                                   , storyboard_file
-                                                  , vidhand->preferred_decoder
+                                                  , gap_story_get_preferred_decoder(stb, stb_elem)
                                                   , stb_elem->filtermacro_file
                                                   , frn_pinglist
                                                   , sterr
@@ -3360,7 +3360,7 @@ p_storyboard_analyze(GapStoryBoard *stb
                                            , vidhand->util_sox
                                            , vidhand->util_sox_options
                                            , storyboard_file
-                                           , vidhand->preferred_decoder
+                                           , gap_story_get_preferred_decoder(stb, stb_elem)
                                            , vidhand->aud_list  /* known audio range elements */
                                            , sterr
                                            , stb_elem->aud_seltrack
@@ -4200,7 +4200,10 @@ p_prepare_RGB_image(gint32 image_id)
  /* dont waste time and memory for undo in noninteracive processing
   * of the frames
   */
-  gimp_image_undo_enable(image_id); /* clear undo stack */
+  /*  gimp_image_undo_enable(image_id); */ /* clear undo stack */
+  /* no more gimp_image_undo_enable, because this results in Warnings since gimp-2.1.6
+   * Gimp-Core-CRITICAL **: file gimpimage.c: line 1708 (gimp_image_undo_thaw): assertion `gimage->undo_freeze_count > 0' failed
+   */
   gimp_image_undo_disable(image_id); /*  NO Undo */
 
   l_layers_list = gimp_image_get_layers(image_id, &l_nlayers);
@@ -4735,6 +4738,148 @@ gap_gve_story_fetch_composite_image(GapGveStoryVidHandle *vidhand
 } /* end gap_gve_story_fetch_composite_image */
 
 
+/* ----------------------------------------------------
+ * p_check_chunk_fetch_possible
+ * ----------------------------------------------------
+ * This procedure checks the preconditions for a possible
+ * fetch of already compresses MPEG chunks.
+ * - there is only 1 videoinput track at this master_frame_nr
+ * - the videoframe must match 1:1 in size
+ * - there are no transformations (opacity, offsets ....)
+ *
+ * return the name of the input videofile if preconditions are OK,
+ *        or NULL if not.
+ */
+static char *
+p_check_chunk_fetch_possible(GapGveStoryVidHandle *vidhand
+                    , gint32 master_frame_nr  /* starts at 1 */
+                    , gint32  vid_width       /* desired Video Width in pixels */
+                    , gint32  vid_height      /* desired Video Height in pixels */
+                    , gint32 *video_frame_nr  /* OUT: corresponding frame number in the input video */
+		    , GapGveStoryFrameRangeElem **frn_elem  /* OUT: pointer to relevant frame range element */
+                    )
+{
+  gint    l_track;
+  gint32    l_track_min;
+  gint32    l_track_max;
+  gchar  *l_framename;
+  gchar  *l_videofile;
+  gdouble l_opacity;
+  gdouble l_scale_x;
+  gdouble l_scale_y;
+  gdouble l_move_x;
+  gdouble l_move_y;
+  GapGveStoryFrameRangeElem *l_frn_elem_2;
+
+  gint32        l_localframe_index;
+  gboolean      l_keep_proportions;
+  gboolean      l_fit_width;
+  gboolean      l_fit_height;
+  GapGveStoryFrameType   l_frn_type;
+  char            *l_trak_filtermacro_file;
+   guchar l_red;
+   guchar l_green;
+   guchar l_blue;
+   guchar l_alpha;
+
+
+  *video_frame_nr   = -1;
+  *frn_elem = NULL;
+
+  l_videofile = NULL;
+  
+  p_find_min_max_vid_tracknumbers(vidhand->frn_list, &l_track_min, &l_track_max);
+
+  /* findout if there is just one input track from type videofile
+   * (that possibly could be fetched as comressed videoframe_chunk
+   *  and passed 1:1 to the calling encoder)
+   */
+  for(l_track = MIN(GAP_STB_MAX_VID_TRACKS, l_track_max); l_track >= MAX(0, l_track_min); l_track--)
+  {
+    l_framename = p_fetch_framename(vidhand->frn_list
+                 , master_frame_nr /* starts at 1 */
+                 , l_track
+                 , &l_frn_type
+                 , &l_trak_filtermacro_file
+                 , &l_localframe_index   /* used for ANIMIMAGE and Videoframe Number, -1 for all other types */
+                 , &l_keep_proportions
+                 , &l_fit_width
+                 , &l_fit_height
+                 , &l_red
+                 , &l_green
+                 , &l_blue
+                 , &l_alpha
+                 , &l_opacity       /* output opacity 0.0 upto 1.0 */
+                 , &l_scale_x       /* output 0.0 upto 10.0 where 1.0 is 1:1 */
+                 , &l_scale_y       /* output 0.0 upto 10.0 where 1.0 is 1:1 */
+                 , &l_move_x        /* output -1.0 upto 1.0 where 0.0 is centered */
+                 , &l_move_y        /* output -1.0 upto 1.0 where 0.0 is centered */
+                 , &l_frn_elem_2    /* output selected to the relevant framerange element */
+                 );
+
+     if(gap_debug) printf("l_track:%d  l_frn_type:%d\n", (int)l_track, (int)l_frn_type);
+
+
+     if((l_framename) || (l_frn_type == GAP_FRN_COLOR))
+     {
+       if(l_framename)
+       {
+         if(l_frn_type == GAP_FRN_MOVIE)
+         {
+           if(l_videofile == NULL)
+           {
+             /* check for transformations */
+             if((l_opacity == 1.0)
+             && (l_scale_x == 1.0)
+             && (l_scale_y == 1.0)
+             && (l_move_x == 0.0)
+             && (l_move_y == 0.0)
+             && (l_fit_width)
+             && (l_fit_height)
+             && (!l_keep_proportions)
+             && (l_trak_filtermacro_file == NULL))
+             {
+               if(gap_debug) printf("gap_gve_story_fetch_composite_image_or_chunk:  video:%s\n", l_framename);
+               l_videofile = g_strdup(l_framename);
+               *video_frame_nr = l_localframe_index;
+               *frn_elem = l_frn_elem_2;
+             }
+             else
+             {
+               if(gap_debug) printf("gap_gve_story_fetch_composite_image_or_chunk:  there are transformations\n");
+               /* there are transformations, cant use compressed frame */
+               l_videofile = NULL;
+               break;
+             }
+           }
+           else
+           {
+             if(gap_debug) printf("gap_gve_story_fetch_composite_image_or_chunk:  2 or more videotracks found\n");
+             l_videofile = NULL;
+             break;
+           }
+         }
+         else
+         {
+             l_videofile = NULL;
+             break;
+         }
+
+         g_free(l_framename);
+       }
+       else
+       {
+             l_videofile = NULL;
+             break;
+       }
+     }
+     /* else: (vid track not used) continue  */
+
+  }       /* end for loop over all video tracks */
+
+  return(l_videofile);  
+}  /* end p_check_chunk_fetch_possible */
+
 
 /* ----------------------------------------------------
  * gap_gve_story_fetch_composite_image_or_chunk
@@ -4780,38 +4925,24 @@ gap_gve_story_fetch_composite_image_or_chunk(GapGveStoryVidHandle *vidhand
                     , unsigned char *video_frame_chunk_data    /* OUT: */
                     , gint32 *video_frame_chunk_size             /* OUT: */
                     , gint32 video_frame_chunk_maxsize           /* IN: */
+                    , gdouble master_framerate
+                    , gint32  max_master_frame_nr   /* the number of frames that will be encode in total */
                  )
 {
+#define GAP_MPEG_ASSUMED_REFERENCE_DISTANCE 3
   static gint32     last_video_frame_nr = -1;
   static char      *last_videofile = NULL;
   static gboolean   last_fetch_was_compressed_chunk = FALSE;
   static gboolean   last_intra_frame_fetched = FALSE;
 
-  gint    l_track;
-  gint32    l_track_min;
-  gint32    l_track_max;
   gchar  *l_framename;
   gchar  *l_videofile_name;
   gchar  *l_videofile;
-  gdouble l_opacity;
-  gdouble l_scale_x;
-  gdouble l_scale_y;
-  gdouble l_move_x;
-  gdouble l_move_y;
   GapGveStoryFrameRangeElem *l_frn_elem;
   GapGveStoryFrameRangeElem *l_frn_elem_2;
 
-  gint32        l_localframe_index;
   gint32        l_video_frame_nr;
-  gboolean      l_keep_proportions;
-  gboolean      l_fit_width;
-  gboolean      l_fit_height;
   GapGveStoryFrameType   l_frn_type;
-  char            *l_trak_filtermacro_file;
-   guchar l_red;
-   guchar l_green;
-   guchar l_blue;
-   guchar l_alpha;
 
 
   *image_id         = -1;
@@ -4843,101 +4974,22 @@ gap_gve_story_fetch_composite_image_or_chunk(GapGveStoryVidHandle *vidhand
   /* first check if recode is forced by the calling program */
   if (dont_recode_flag)
   {
-    p_find_min_max_vid_tracknumbers(vidhand->frn_list, &l_track_min, &l_track_max);
-
-    /* findout if there is just one input track from type videofile
-     * (that possibly could be fetched as comressed videoframe_chunk
-     *  and passed 1:1 to the calling encoder)
-     */
-    for(l_track = MIN(GAP_STB_MAX_VID_TRACKS, l_track_max); l_track >= MAX(0, l_track_min); l_track--)
+    l_videofile = p_check_chunk_fetch_possible(vidhand
+                      , master_frame_nr
+                      , vid_width 
+                      , vid_height
+                      , &l_video_frame_nr
+		      , &l_frn_elem
+                      );
+    if(l_videofile)
     {
-      l_framename = p_fetch_framename(vidhand->frn_list
-                   , master_frame_nr /* starts at 1 */
-                   , l_track
-                   , &l_frn_type
-                   , &l_trak_filtermacro_file
-                   , &l_localframe_index   /* used only for ANIMIMAGE and Videoframe Number, -1 for all other types */
-                   , &l_keep_proportions
-                   , &l_fit_width
-                   , &l_fit_height
-                   , &l_red
-                   , &l_green
-                   , &l_blue
-                   , &l_alpha
-                   , &l_opacity       /* output opacity 0.0 upto 1.0 */
-                   , &l_scale_x       /* output 0.0 upto 10.0 where 1.0 is 1:1 */
-                   , &l_scale_y       /* output 0.0 upto 10.0 where 1.0 is 1:1 */
-                   , &l_move_x        /* output -1.0 upto 1.0 where 0.0 is centered */
-                   , &l_move_y        /* output -1.0 upto 1.0 where 0.0 is centered */
-                   , &l_frn_elem_2    /* output selected to the relevant framerange element */
-                   );
-
-       if(gap_debug) printf("l_track:%d  l_frn_type:%d\n", (int)l_track, (int)l_frn_type);
-
-
-       if((l_framename) || (l_frn_type == GAP_FRN_COLOR))
-       {
-         if(l_framename)
-         {
-           if(l_frn_type == GAP_FRN_MOVIE)
-           {
-             if(l_videofile == NULL)
-             {
-               /* check for transformations */
-               if((l_opacity == 1.0)
-               && (l_scale_x == 1.0)
-               && (l_scale_y == 1.0)
-               && (l_move_x == 0.0)
-               && (l_move_y == 0.0)
-               && (l_fit_width)
-               && (l_fit_height)
-               && (!l_keep_proportions)
-               && (l_trak_filtermacro_file == NULL))
-               {
-                 if(gap_debug) printf("gap_gve_story_fetch_composite_image_or_chunk:  video:%s\n", l_framename);
-                 l_videofile_name = g_strdup(l_framename);
-                 l_videofile = l_videofile_name;
-                 l_video_frame_nr = l_localframe_index;
-                 l_frn_elem = l_frn_elem_2;
-               }
-               else
-               {
-                 if(gap_debug) printf("gap_gve_story_fetch_composite_image_or_chunk:  there are transformations\n");
-                 /* there are transformations, cant use compressed frame */
-                 l_videofile = NULL;
-                 break;
-               }
-             }
-             else
-             {
-               if(gap_debug) printf("gap_gve_story_fetch_composite_image_or_chunk:  2 or more videotracks found\n");
-               l_videofile = NULL;
-               break;
-             }
-           }
-           else
-           {
-               l_videofile = NULL;
-               break;
-           }
-
-           g_free(l_framename);
-         }
-         else
-         {
-               l_videofile = NULL;
-               break;
-         }
-       }
-       /* else: (vid track not used) continue  */
-
-    }       /* end for loop over all video tracks */
-
+      l_videofile_name = g_strdup(l_videofile);
+    }
 
 
     if((l_videofile) && (l_frn_elem))
     {
-       if(gap_debug) printf("gap_gve_story_fetch_composite_image_or_chunk: ATTEMPT access l_videofile :%s \n", l_videofile);
+      if(gap_debug) printf("gap_gve_story_fetch_composite_image_or_chunk: ATTEMPT access l_videofile :%s \n", l_videofile);
 
        /* check if we can FETCH compressed video chunk */
       if(l_frn_elem->gvahand == NULL)
@@ -5035,6 +5087,11 @@ gap_gve_story_fetch_composite_image_or_chunk(GapGveStoryVidHandle *vidhand
 	    l_frame_type = GVA_util_check_mpg_frame_type(video_frame_chunk_data
 	                                                ,*video_frame_chunk_size
 							);
+	    GVA_util_fix_mpg_timecode(video_frame_chunk_data
+	                             ,*video_frame_chunk_size
+				     ,master_framerate
+				     ,master_frame_nr
+				     );			
             if ((1==0)
 	    &&  (master_frame_nr < 10))  /* debug code: dump fist 9 video chunks to file(s) */
             {
@@ -5102,25 +5159,85 @@ gap_gve_story_fetch_composite_image_or_chunk(GapGveStoryVidHandle *vidhand
 	       * can use that frame if fetch sequence contains previous i frame
 	       * and fetch will continue until the next i or p frame.
 	       *
-	       * currently we do not check for next frames in (storyboard) sequence.
-	       *
-	       * (TODO: we should at least check
-	       *  if the next few (say 6) frames in storyboard sequence
-	       *  will fetch the next (6) frames in videofile sequence from the same videofile.
-	       *  this would be just a guess, but maybe sufficient in most cases)
+	       * we do a simplified check if the next few (say 3) frames in storyboard sequence
+	       * will fetch the next (3) frames in videofile sequence from the same videofile.
+	       * this is just a guess, but maybe sufficient in most cases.
 	       */
 	      if(last_videofile)
 	      {
+                gboolean l_bframe_ok;
+		
+                l_bframe_ok = TRUE;  /* assume that B-frame can be used */
+		
 		if((strcmp(l_videofile, last_videofile) == 0)
 		&& (l_video_frame_nr = last_video_frame_nr +1))
 		{
-                  last_video_frame_nr = l_video_frame_nr;
-		  last_fetch_was_compressed_chunk = TRUE;
+		  if(master_frame_nr + GAP_MPEG_ASSUMED_REFERENCE_DISTANCE > max_master_frame_nr)
+		  {
+		    /* never deliver B-frame at the last few frames in the output video.
+		     * (unresolved references to following p or i frames of the
+		     *  input video could be the result)
+		     */
+		    l_bframe_ok = FALSE;
+		  }
+		  else
+		  {
+		    gint ii;
+		    gint32 l_next_video_frame_nr;
+		    char  *l_next_videofile;
+
+		    /* look ahead if the next few fetches in storyboard sequence
+		     * will deliver the next frames from the same inputvideo
+		     * in ascending input_video sequence at stepsize 1
+		     * (it is assumed that the referenced P or I frame
+		     *  will be fetched in later calls then)
+		     */
+		    for(ii=1; ii <= GAP_MPEG_ASSUMED_REFERENCE_DISTANCE; ii++)
+		    {
+		      l_next_videofile = p_check_chunk_fetch_possible(vidhand
+                		    , (master_frame_nr + ii)
+                		    , vid_width
+                		    , vid_height
+                		    , &l_next_video_frame_nr
+		                    , &l_frn_elem_2
+                		    );
+		      if(l_next_videofile)
+		      {
+        		if((strcmp(l_next_videofile, l_videofile) != 0)
+        		|| (l_next_video_frame_nr != l_video_frame_nr +ii))
+        		{
+        		  l_bframe_ok = FALSE;
+        		}
+			g_free(l_next_videofile);
+		      }
+		      else
+		      {
+        		l_bframe_ok = FALSE;
+ 		      }
+		      if(!l_bframe_ok)
+		      {
+		        break;
+		      }
+
+		    }  /* end for loop (look ahed next few frames in storyboard sequence) */
+		  }
+		    
 		  /*if(gap_debug)*/
 		  {
-	            printf(" Reuse B-FRAME Chunk  at %06d\n", (int)master_frame_nr);
+		    if(l_bframe_ok) printf("Look Ahead B-FRAME OK to copy\n");
+		    else            printf("Look Ahead B-FRAME dont USE\n");
 		  }
-                  return(TRUE);
+		
+		  if(l_bframe_ok)
+		  {
+                    last_video_frame_nr = l_video_frame_nr;
+		    last_fetch_was_compressed_chunk = TRUE;
+		    /*if(gap_debug)*/
+		    {
+	              printf(" Reuse B-FRAME Chunk  at %06d\n", (int)master_frame_nr);
+		    }
+                    return(TRUE);
+		  }
 		}
 	      }
 	    }

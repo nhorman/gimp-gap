@@ -602,7 +602,7 @@ do_dialog (wr_huesat_val_t *cuvals)
 
 
   /* the frame */
-  frame1 = gtk_frame_new (_("Hue / Lightness / Saturation Adjustments "));
+  frame1 = gimp_frame_new (_("Hue / Lightness / Saturation Adjustments "));
 
   gtk_widget_show (frame1);
   gtk_box_pack_start (GTK_BOX (dialog_vbox1), frame1, TRUE, TRUE, 0);

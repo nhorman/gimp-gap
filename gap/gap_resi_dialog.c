@@ -591,13 +591,13 @@ gap_resi_dialog (gint32 image_id, GapRangeOpsAsiz asiz_mode, char *title_text,
   switch(res_private->asiz_mode)
   {
     case GAP_ASIZ_SCALE:
-      frame        = gtk_frame_new (_("Scale Frames"));
+      frame        = gimp_frame_new (_("Scale Frames"));
       break;
     case GAP_ASIZ_RESIZE:
-      frame        = gtk_frame_new (_("Resize Frames"));
+      frame        = gimp_frame_new (_("Resize Frames"));
       break;
     case GAP_ASIZ_CROP:
-      frame        = gtk_frame_new (_("Crop Frames"));
+      frame        = gimp_frame_new (_("Crop Frames"));
       break;
   }
 
@@ -637,14 +637,14 @@ gap_resi_dialog (gint32 image_id, GapRangeOpsAsiz asiz_mode, char *title_text,
 
 
   /*  the original width & height labels  */
-  label = gtk_label_new (_("Original Width:"));
-  gtk_misc_set_alignment (GTK_MISC (label), 1.0, 0.5);
+  label = gtk_label_new (_("Current width:"));
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
   gtk_table_attach (GTK_TABLE (table), label, 0, 1, 0, 1,
                     GTK_SHRINK | GTK_FILL, GTK_SHRINK | GTK_FILL, 0, 0);
   gtk_widget_show (label);
 
-  label = gtk_label_new (_("Height:"));
-  gtk_misc_set_alignment (GTK_MISC (label), 1.0, 0.5);
+  label = gtk_label_new (_("Current height:"));
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
   gtk_table_attach (GTK_TABLE (table), label, 0, 1, 1, 2,
                     GTK_SHRINK | GTK_FILL, GTK_SHRINK | GTK_FILL, 0, 0);
   gtk_widget_show (label);
@@ -665,14 +665,14 @@ gap_resi_dialog (gint32 image_id, GapRangeOpsAsiz asiz_mode, char *title_text,
 
 
   /*  the new size labels  */
-  label = gtk_label_new (_("New Width:"));
-  gtk_misc_set_alignment (GTK_MISC (label), 1.0, 0.5);
+  label = gtk_label_new (_("New width:"));
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
   gtk_table_attach (GTK_TABLE (table), label, 0, 1, 2, 3,
                     GTK_SHRINK | GTK_FILL, GTK_SHRINK | GTK_FILL, 0, 0);
   gtk_widget_show (label);
 
-  label = gtk_label_new (_("Height:"));
-  gtk_misc_set_alignment (GTK_MISC (label), 1.0, 0.5);
+  label = gtk_label_new (_("New height:"));
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
   gtk_table_attach (GTK_TABLE (table), label, 0, 1, 3, 4,
                     GTK_SHRINK | GTK_FILL, GTK_SHRINK | GTK_FILL, 0, 0);
   gtk_widget_show (label);
@@ -719,14 +719,14 @@ gap_resi_dialog (gint32 image_id, GapRangeOpsAsiz asiz_mode, char *title_text,
 
 
   /*  the scale ratio labels  */
-  label = gtk_label_new (_("Ratio X:"));
-  gtk_misc_set_alignment (GTK_MISC (label), 1.0, 0.5);
+  label = gtk_label_new (_("X ratio:"));
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
   gtk_table_attach (GTK_TABLE (table), label, 0, 1, 4, 5,
                     GTK_SHRINK | GTK_FILL, GTK_SHRINK | GTK_FILL, 0, 0);
   gtk_widget_show (label);
 
-  label = gtk_label_new (_("Y:"));
-  gtk_misc_set_alignment (GTK_MISC (label), 1.0, 0.5);
+  label = gtk_label_new (_("Y ratio:"));
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
   gtk_table_attach (GTK_TABLE (table), label, 0, 1, 5, 6,
                     GTK_SHRINK | GTK_FILL, GTK_SHRINK | GTK_FILL, 0, 0);
   gtk_widget_show (label);
@@ -797,7 +797,7 @@ gap_resi_dialog (gint32 image_id, GapRangeOpsAsiz asiz_mode, char *title_text,
   if(res_private->asiz_mode != GAP_ASIZ_SCALE)
   {
     /*  the offset frame  */
-    frame = gtk_frame_new (_("Offset"));
+    frame = gimp_frame_new (_("Offset"));
     gtk_box_pack_start (GTK_BOX (main_vbox), frame, FALSE, FALSE, 0);
     gtk_widget_show (frame);
 
@@ -817,13 +817,13 @@ gap_resi_dialog (gint32 image_id, GapRangeOpsAsiz asiz_mode, char *title_text,
     
     /* the x/y offest labels */
     label = gtk_label_new (_("X:"));
-    gtk_misc_set_alignment (GTK_MISC (label), 1.0, 0.5);
+    gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
     gtk_table_attach (GTK_TABLE (table3), label, 0, 1, 0, 1,
                     GTK_SHRINK | GTK_FILL, GTK_SHRINK | GTK_FILL, 0, 0);
     gtk_widget_show (label);
     
     label = gtk_label_new (_("Y:"));
-    gtk_misc_set_alignment (GTK_MISC (label), 1.0, 0.5);
+    gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
     gtk_table_attach (GTK_TABLE (table3), label, 0, 1, 1, 2,
                     GTK_SHRINK | GTK_FILL, GTK_SHRINK | GTK_FILL, 0, 0);
     gtk_widget_show (label);
@@ -892,8 +892,7 @@ gap_resi_dialog (gint32 image_id, GapRangeOpsAsiz asiz_mode, char *title_text,
     abox = gtk_alignment_new (0.5, 0.5, 0.0, 0.0);
     gtk_box_pack_start (GTK_BOX (vbox), abox, FALSE, FALSE, 0);
 
-    frame = gtk_frame_new (NULL);
-    gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_IN);
+    frame = gimp_frame_new (NULL);
     gtk_container_add (GTK_CONTAINER (abox), frame);
 
     /* the GimpOffsetArea widget */

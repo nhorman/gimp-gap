@@ -114,10 +114,6 @@
 #  endif
 #endif
 
-#ifdef G_OS_WIN32
-#include <direct.h>		/* For _mkdir() */
-#define mkdir(path,mode) _mkdir(path)
-#endif
 
 #ifdef G_OS_WIN32
 #include <process.h>		/* For _getpid() */

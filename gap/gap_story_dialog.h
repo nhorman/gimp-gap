@@ -40,11 +40,13 @@ void    gap_story_pw_single_clip_playback(GapStbPropWidget *pw);
 GapStoryVideoElem * gap_story_dlg_get_velem(GapStbMainGlobalParams *sgpp
               ,const char *video_filename
 	      ,gint32 seltrack
+	      ,const char *preferred_decoder
 	      );
 guchar *    gap_story_dlg_fetch_vthumb(GapStbMainGlobalParams *sgpp
         	   ,const char *video_filename
 		   ,gint32 framenr
 		   ,gint32 seltrack
+	           ,const char *preferred_decoder
 		   , gint32 *th_bpp
 		   , gint32 *th_width
 		   , gint32 *th_height
@@ -53,6 +55,7 @@ guchar *    gap_story_dlg_fetch_vthumb_no_store(GapStbMainGlobalParams *sgpp
               ,const char *video_filename
 	      ,gint32 framenr
 	      ,gint32 seltrack
+	      ,const char *preferred_decoder
 	      , gint32   *th_bpp
 	      , gint32   *th_width
 	      , gint32   *th_height

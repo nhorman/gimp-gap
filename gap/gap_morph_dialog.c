@@ -3128,7 +3128,7 @@ p_create_subwin(GapMorphSubWin *swp
   GtkObject *adj;
 
   /*  the frame  */
-  frame = gtk_frame_new (title);
+  frame = gimp_frame_new (title);
   gtk_box_pack_start (GTK_BOX (master_hbox), frame, FALSE, FALSE, 0);
 
   /* the vbox */
@@ -3481,7 +3481,7 @@ gap_morph_create_dialog(GapMorphGUIParams *mgup)
   gtk_container_add (GTK_CONTAINER (GTK_DIALOG (dlg)->vbox), main_vbox);
 
   /*  the frame  */
-  frame = gtk_frame_new (NULL);
+  frame = gimp_frame_new (NULL);
   gtk_box_pack_start (GTK_BOX (main_vbox), frame, FALSE, FALSE, 0);
   gtk_widget_show (frame);
 

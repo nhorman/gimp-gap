@@ -424,7 +424,9 @@ gap_onion_base_onionskin_apply(gpointer gpp
       /* dont waste time and memory for undo in noninteracive processing
        * of the src frames
        */
-      gimp_image_undo_enable(l_tmp_image_id); /* clear undo stack */
+      /*gimp_image_undo_enable(l_tmp_image_id);*/ /* clear undo stack */
+      /* no more gimp_image_undo_enable, causes warnings since gimp-2.1.6 */
+      /*  Gimp-Core-CRITICAL **: file gimpimage.c: line 1708 (gimp_image_undo_thaw): assertion `gimage->undo_freeze_count > 0' failed */
       gimp_image_undo_disable(l_tmp_image_id); /*  NO Undo */
     }
     else

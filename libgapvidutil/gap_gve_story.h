@@ -365,6 +365,8 @@ gboolean gap_gve_story_fetch_composite_image_or_chunk(GapGveStoryVidHandle *vidh
                     , unsigned char *video_frame_chunk_data    /* OUT: */
                     , gint32 *video_frame_chunk_size           /* OUT: */
                     , gint32 video_frame_chunk_maxsize         /* IN: */
+                    , gdouble master_framerate
+                    , gint32  max_master_frame_nr   /* the number of frames that will be encode in total */
                  );
 
 GapGveStoryVidHandle *  gap_gve_story_open_vid_handle(

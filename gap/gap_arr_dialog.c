@@ -38,6 +38,7 @@
  */
 
 /* revision history:
+ * gimp    2.1.0a;  2004/10/09  hof: bugfix GAP_ARR_WGT_OPT_ENTRY (entry height was set to 0)
  * gimp    2.1.0a;  2004/09/25  hof: gap_arr_create_vindex_permission
  * gimp    1.3.20d; 2003/10/04  hof: bugfix: added missing implementation for GAP_ARR_WGT_RADIO defaults
  * gimp    1.3.20a; 2003/09/29  hof: gap_arr_overwrite_file_dialog
@@ -85,6 +86,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
+#include <sys/stat.h>
+#include <errno.h>
 
 /* GIMP includes */
 #include "gtk/gtk.h"
@@ -94,7 +97,12 @@
 /* private includes */
 #include "gap_arr_dialog.h"
 #include "gap_stock.h"
+#include "gap_file_util.h"
 #include "gap-intl.h"
+
+/* default alignment for labels 0.0 == left, 1.0 == right */
+#define LABEL_DEFAULT_ALIGN_X 0.0
+#define LABEL_DEFAULT_ALIGN_Y 0.5
 
 typedef void (*t_entry_cb_func) (GtkWidget *widget, GapArrArg *arr_ptr);
 
@@ -197,7 +205,7 @@ entry_create_value(char *title, GtkTable *table, int row, GapArrArg *arr_ptr,
 
 
     label = gtk_label_new(title);
-    gtk_misc_set_alignment(GTK_MISC(label), 1.0, 0.5);
+    gtk_misc_set_alignment(GTK_MISC(label), LABEL_DEFAULT_ALIGN_X, LABEL_DEFAULT_ALIGN_Y);
     gtk_table_attach(table, label, 0, 1, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
     gtk_widget_show(label);
 
@@ -236,7 +244,7 @@ label_create_value(char *title, GtkTable *table, int row, GapArrArg *arr_ptr, gf
        * in this case 2 Labels are shown
        */
       label = gtk_label_new(title);
-      gtk_misc_set_alignment(GTK_MISC(label), 1.0, 0.5);
+      gtk_misc_set_alignment(GTK_MISC(label), LABEL_DEFAULT_ALIGN_X, LABEL_DEFAULT_ALIGN_Y);
       gtk_table_attach(table, label, 0, 1, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
       gtk_widget_show(label);
 
@@ -252,7 +260,7 @@ label_create_value(char *title, GtkTable *table, int row, GapArrArg *arr_ptr, gf
      from_col = 0;
      label = gtk_label_new(title);
     }
-    gtk_misc_set_alignment(GTK_MISC(label), align, 0.5);
+    gtk_misc_set_alignment(GTK_MISC(label), align, LABEL_DEFAULT_ALIGN_Y);
     
     if(align != 0.5)
     {
@@ -556,6 +564,7 @@ static void
 text_entry_update_cb(GtkWidget *widget, GapArrArg *arr_ptr)
 {
   if((arr_ptr->widget_type != GAP_ARR_WGT_TEXT)
+  && (arr_ptr->widget_type != GAP_ARR_WGT_OPT_ENTRY)
   && (arr_ptr->widget_type != GAP_ARR_WGT_FONTSEL)
   && (arr_ptr->widget_type != GAP_ARR_WGT_FILESEL))
   {
@@ -599,7 +608,7 @@ spin_create_value(char *title, GtkTable *table, int row, GapArrArg *arr_ptr
   gint        l_digits;
 
   label = gtk_label_new(title);
-  gtk_misc_set_alignment(GTK_MISC(label), 1.0, 0.5);
+  gtk_misc_set_alignment(GTK_MISC(label), LABEL_DEFAULT_ALIGN_X, LABEL_DEFAULT_ALIGN_Y);
   gtk_table_attach(table, label, 0, 1, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
   gtk_widget_show(label);
 
@@ -735,7 +744,7 @@ toggle_create_value(char *title, GtkTable *table, int row, GapArrArg *arr_ptr)
 
 
   label = gtk_label_new(title);
-  gtk_misc_set_alignment(GTK_MISC(label), 1.0, 0.5);
+  gtk_misc_set_alignment(GTK_MISC(label), LABEL_DEFAULT_ALIGN_X, LABEL_DEFAULT_ALIGN_Y);
   gtk_table_attach(table, label, 0, 1, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
   gtk_widget_show(label);
 
@@ -818,7 +827,7 @@ radio_create_value(char *title, GtkTable *table, int row, GapArrArg *arr_ptr)
   l_int_ret_initial_value = arr_ptr->radio_ret;
   
   label = gtk_label_new(title);
-  gtk_misc_set_alignment(GTK_MISC(label), 1.0, 0.0);
+  gtk_misc_set_alignment(GTK_MISC(label), LABEL_DEFAULT_ALIGN_X, LABEL_DEFAULT_ALIGN_Y);
   gtk_table_attach( GTK_TABLE (table), label, 0, 1, row, row+1, GTK_FILL, GTK_FILL, 0, 0);
   gtk_widget_show(label);
 
@@ -923,7 +932,7 @@ optionmenu_create_value(char *title, GtkTable *table, int row, GapArrArg *arr_pt
   /* label */
   l_col = 0;
   label = gtk_label_new(title);
-  gtk_misc_set_alignment(GTK_MISC(label), 1.0, 0.5);
+  gtk_misc_set_alignment(GTK_MISC(label), LABEL_DEFAULT_ALIGN_X, LABEL_DEFAULT_ALIGN_Y);
   gtk_table_attach( GTK_TABLE (table), label, l_col, l_col+1, row, row+1, GTK_FILL, GTK_FILL, 0, 0);
   gtk_widget_show(label);
 
@@ -932,7 +941,7 @@ optionmenu_create_value(char *title, GtkTable *table, int row, GapArrArg *arr_pt
   {
     l_col++;
     entry = gtk_entry_new();
-    gtk_widget_set_size_request(entry, arr_ptr->entry_width, 0);
+    gtk_widget_set_size_request(entry, arr_ptr->entry_width, -1);
     gtk_entry_set_text(GTK_ENTRY(entry), arr_ptr->text_buf_ret);
     gtk_table_attach(GTK_TABLE(table), entry, l_col, l_col+1, row, row + 1, GTK_FILL, GTK_FILL | GTK_EXPAND, 4, 0);
     if(arr_ptr->help_txt != NULL)
@@ -1152,8 +1161,8 @@ gint gap_arr_std_dialog(const char *title_txt,
 
 
   /*  parameter settings  */
-  if (frame_txt == NULL)   frame = gtk_frame_new ( _("Enter Values"));
-  else                     frame = gtk_frame_new (frame_txt);
+  if (frame_txt == NULL)   frame = gimp_frame_new ( _("Enter Values"));
+  else                     frame = gimp_frame_new (frame_txt);
   gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_ETCHED_IN);
   gtk_container_set_border_width (GTK_CONTAINER (frame), 6);
   gtk_box_pack_start (GTK_BOX (GTK_DIALOG (global_arrint.dlg)->vbox), frame, TRUE, TRUE, 0);
@@ -1404,6 +1413,10 @@ void     gap_arr_arg_init  (GapArrArg *arr_ptr,
         arr_ptr->radio_ret     = 0;
         arr_ptr->radio_argv    = NULL;
         arr_ptr->radio_help_argv = NULL;
+	/* for GAP_ARR_WGT_OPT_ENTRY */
+        arr_ptr->text_buf_len     = 0;
+        arr_ptr->text_buf_default = NULL;
+        arr_ptr->text_buf_ret     = NULL;
         break;
      case GAP_ARR_WGT_TEXT:
      case GAP_ARR_WGT_FONTSEL:
@@ -1678,9 +1691,95 @@ gap_arr_msg_win(GimpRunMode run_mode, const char *msg)
   }
 }    /* end  gap_arr_msg_win */
 
+
+/* --------------------------------
+ * p_check_vindex_file
+ * --------------------------------
+ */
+static gboolean
+p_check_vindex_file(const char *vindex_file)
+{
+  gint   l_ii;
+  char *l_vindex_dir;
+  gboolean l_rc;
+
+  l_rc = TRUE; /* assume success */
+  if(vindex_file)
+  {
+    l_vindex_dir = g_strdup(vindex_file);
+    for(l_ii = strlen(l_vindex_dir) -1; l_ii >= 0; l_ii--)
+    {
+      if(l_vindex_dir[l_ii] == G_DIR_SEPARATOR)
+      {
+        l_vindex_dir[l_ii] = '\0';
+        break;
+      }
+      l_vindex_dir[l_ii] = '\0';
+    }
+
+    if(!g_file_test(l_vindex_dir, G_FILE_TEST_IS_DIR))
+    {
+      gint l_errno;
+      if(0 != gap_file_mkdir(l_vindex_dir, GAP_FILE_MKDIR_MODE))
+      {
+	l_errno = errno;
+	g_message(_("ERROR: could not create video-index-directory:"
+	           "'%s'"
+		   "%s")
+		   ,l_vindex_dir
+		   ,g_strerror (l_errno) );
+        l_rc = FALSE;/* can not create vindex (invalid direcory path) */
+      }
+    }
+    
+    if(l_rc)
+    {
+      if(!g_file_test(vindex_file, G_FILE_TEST_EXISTS))
+      {
+	FILE *fp;
+	gint l_errno;
+
+        /* try to pre-create an empty videoindex file
+	 * this is done to check file creation errors immediate.
+	 * without this pre-create check the error would be detected very late
+	 * (after minutes minutes on large videos)
+	 * when the whole video was scanned and the index
+	 * should be written to file.
+	 */
+	fp = fopen(vindex_file, "wb");
+	if(fp)
+	{
+          fclose(fp);  /* OK, empty file written */
+	}
+	else
+	{
+          l_errno = errno;
+          g_message(_("ERROR: Failed to write videoindex\n"
+	            "file: '%s'\n"
+		    "%s")
+		    , vindex_file
+		    , g_strerror (l_errno));
+	  l_rc = FALSE;
+	}
+      }
+    }
+    
+    g_free(l_vindex_dir);
+  }
+  return(l_rc);
+}  /* end p_check_vindex_file */
+
+
 /* --------------------------------
  * gap_arr_create_vindex_permission
  * --------------------------------
+ * this procedure checks permission to create videoindex files
+ * if permission is granted, but the videoindex name 
+ * does not reside in a valid directory, the procedure tries to
+ * create the directory automatically 
+ * (but this is limited to a simple mkdir call and will create just one directory
+ * not the full path if parent directories are invalid too)
+ *
  * return TRUE : OK, permission to create videoindex
  *        FALSE: user has cancelled, dont create videoindex
  */
@@ -1701,11 +1800,6 @@ gap_arr_create_vindex_permission(const char *videofile, const char *vindex_file)
 	
   if(value_string)
   {
-    if((*value_string == 'y')
-    || (*value_string == 'Y'))
-    {
-      return(TRUE);  /* gimprc setting grants general permission to create */
-    }
     if((*value_string == 'n')
     || (*value_string == 'N'))
     {
@@ -1713,11 +1807,24 @@ gap_arr_create_vindex_permission(const char *videofile, const char *vindex_file)
     }
   }
 
+	
+  l_rc = FALSE;
+  if(value_string)
+  {
+    /* check if gimprc setting grants general permission to create */
+    if((*value_string == 'y')
+    || (*value_string == 'Y'))
+    {
+      l_rc = p_check_vindex_file(vindex_file);
+      return(l_rc);
+    }
+  }
+
   l_info_msg = g_strdup_printf(_("Do you want to create a videoindex file ?\n"
                               "This will enable fast and random frame access.\n"
 			      "\n"
 			      "If you want GIMP-GAP to create videoindex files\n"
-			      "automatically whithot showing up this dialog again\n"
+			      "automatically whithout showing up this dialog again\n"
 			      "then you should add the following line to\n"
 			      "your gimprc file:\n"
 			      "%s")
@@ -1751,6 +1858,11 @@ gap_arr_create_vindex_permission(const char *videofile, const char *vindex_file)
                                  " ", 
                                  l_ii, argv);
 
+  if(l_rc)
+  {
+    l_rc = p_check_vindex_file(vindex_file);
+  }
+  
   if(l_videofile)
   {
     g_free(l_videofile);

@@ -1,3 +1,204 @@
+2004-10-16  Wolfgang Hofer <hof@gimp.org>
+	bugfix: Frames Modify plug-in
+	Function: Add layermask from selection
+	gimp_layer_add_mask call was missing after layermask creation.
+	
+	The GIMP-2.1.7 core crashed somewhere IN displays_reconnect_invoker
+	after that fix. 
+	(but only for Function: Add layermask from selection
+	 not in other Functions)
+	 
+	Now this crash does not happen any more
+	after the additional optimizing step
+	in the Frames Modify plug-in.
+	(old: 
+	      save current frame 
+	      foreach frame 
+	      {
+	        load; processing; save; delete;
+	      }
+	      load current frame
+	      reconnect displays,
+	      delete current frame
+	 new:
+	      foreach frame 
+	      {
+	        if(frame == current)
+		{ 
+		  processing; save
+		}
+		else
+		{ 
+	          load; processing; save; delete;
+		}
+	      }
+	 )
+	
+	* gap/gap_mod_layer.c
+2004-10-15  Wolfgang Hofer <hof@gimp.org>
+	Layout changes (spacing, alingnment, widget sensitivity) for the VideoExtract Plugin
+	to get one step closer to GNOME HIG
+	
+	feature: when the player is started from the videoextract plug-in,
+	the player now uses the initial range (fom/to) selection
+	from the video extract dialog.
+	
+	feature: the player button widget "FrameNr" was splitted into
+	2 separate buttons "Frame" and "Nr",
+	where "Frame" sets the current FramNr as Begin of selected Range
+	and   "Nr"    sets the current FramNr as End of selected Range.
+
+	The old behaviour (ALT-click for end) is harder to handle
+	because it needs additional keyboard interaction.
+	
+	PlayerDialog: added the flag: caller_range_linked
+	this flag causes the player to propagate changes in the
+	selected framerange immediate to the callers
+	Frame-Range widgets (by calling the p_printout_range procedure)
+	
+	The videoextract plug-in calls the player with the new
+	caller_range_linked set TRUE.
+	
+	The explicite manual transfer of the of the players selected range
+	into the extract dialog's extract range (Player Buttons: FromFrame / ToFrame)
+	might be hard to find for new users and was removed.
+	(The Player Buttons: FromFrame / ToFrame are replaced by
+	 Labels when caller_range_linked is TRUE)
+
+	When The player is called via STORYBOARD dialog,
+	the caller_range_linked flag is set to FALSE.
+	In this case the Player Buttons: FromFrame / ToFrame
+	do create a new Clip. This must not be triggered automatically
+	on each change in the Player's selected range
+	-- otherwise we would produce lots of unwanted clips--
+	
+	* gap/gap_player_dialog.c
+	* gap/gap_vex_dialog.c
+2004-10-12  Wolfgang Hofer <hof@gimp.org>
+	- renamed gimprc parameter from 
+	  old: (video-gvaindexes-dir "dir")
+	  new: (video-index-dir "dir")
+	- bugfix: create of libmpeg3 videoindex toc files crashed after scanning th whole video
+	  if the file could not be opened.
+	  (in most cases this happened when the gvaindexes directory does not exist)
+          
+	  - extended the gap_arr_create_vindex_permission procedure:
+	    now tries automatically create the gvaindex dir when permission is granted.
+	    also try precreate empty videoindex file for immediate detection
+	    of file creation errors.
+	  - show error messages if videoindex (or libmpeg3 specific tocfile) creation failed
+
+	- provided wrappers for mkdir and chmod in gap_file_util module
+	
+	* libgapvidapi/gap_vid_api_vidindex.c
+	* libgapvidapi/gap_vid_api_mpeg3toc.c
+	* libgapvidapi/gap_vid_api.c [.h]
+	* libgapvidapi/gap_vid_api-intl.h        # created NEW FILE
+	* libgapvidapi/Makefile.am
+	* gap/gap_decode_xanim.c
+	* gap/gap_file_util.c [.h]
+	* gap/gap_lib.c
+	
+2004-10-09  Wolfgang Hofer <hof@gimp.org>
+	handling of preferred video decoder in storyboard dialogs
+	and storyboard file processing.
+	Added Entry and Optionmenu widgets to Storyboard master Properties dialog
+	where the user can select a preferred video decoder
+	(with global scope in the storyboard file)
+	
+	it is now possible to specify the preferred_decoder individual
+	per videoclip in the storyboard file.
+	(widgets in the Clip Properties dialog still missing)
+
+	bugfix: arraydialog widget GAP_ARR_WGT_OPT_ENTRY 
+	had a fixed entry height of 0 pixels
+        - video encoding results in warnings (since gimp-2.1.6)
+	
+          (gimp-2.1:22905): Gimp-Core-CRITICAL **: file gimpimage.c: line 1708 (gimp_image_undo_thaw): assertion `gimage->undo_freeze_count > 0' failed
+	  
+	  maybe this warning is triggered by calls to gimp_image_undo_enable(image_id)
+	  when undo is already enabled on that image.
+	  (GAP used this to clear the undo stack when processing temporary
+	  images)
+	  i removed such calls in the storyboard and onionskin processing modules.
+	
+	- bugfix onionskin config dialog: reset did not reset the Reference Mode
+	  to value "normal"
+	- Storyboard dialog: hide vscale widgets if scrolling is not possible
+
+	* gap/gap_arr_dialog.c
+	* gap/gap_image.c
+	* gap/gap_player_dialog.c [.h]
+	* gap/gap_story_syntax.c
+	* gap/gap_story_dialog.c [.h]
+	* gap/gap_story_file.c [.h]
+	* gap/gap_story_prperties.c [.h]
+	* libgapvidutil/gap_gve_story.c
+	* gap/gap_onion_dialog.c
+	* gap/gap_onion_base.c
+	
+2004-10-07  Wolfgang Hofer <hof@gimp.org>
+	bugfix: fixed permanent XVID codec crash in the AVI video encoder plugin.
+	some more bugfixes to get the encoder working with XVID-1.0.2 now.
+	(XVID_VERSION was not initialized at all required places,
+	 length of encoded buffer is now reported via positive
+	 returncode, the length field is now ignored,
+	 no more need of vertical flip)
+	* vid_enc_avi/gap_enc_avi_main.c
+	* libgapvidutil/gap_gve_xvid.c
+	
+2004-10-02  Wolfgang Hofer <hof@gimp.org>
+	Layout changes (#153626)
+	use gimp_frame_new rather than gtk_frame_new 
+	and other minor layout changes
+	labels aligned LEFT, spacing.
+	
+	GIMP-GAP is not fully HIG compliant,
+	but the layout may now fit a little better into the
+	GIMP-2.1 and GNOME HIG look and feel 
+
+	* gap/gap_arr_dialog.c
+	* gap/gap_bluebox.c
+	* gap/gap_morph_dialog.c
+	* gap/gap_mov_dialog.c
+	* gap/gap_navigator_dialog.c
+	* gap/gap_onion_dialog.c
+	* gap/gap_player_dialog.c
+	* gap/gap_resi_dialog.c
+	* gap/gap_story_dialog.c
+	* gap/gap_story_properties.c
+	* gap/gap_vex_dialog.c
+	* gap/gap_wr_color_huesat.c
+	* gap/gap_wr_color_levels.c
+	* vid_common/gap_cme_gui.c
+	* vid_enc_avi/gap_enc_avi_gui.c
+	* vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c
+
+	
+2004-09-28  Wolfgang Hofer <hof@gimp.org>
+	more bugfix attempts for lossless MPEG cut.
+	- timecode correction in GOP-HEADER 
+	  (not sure if it works on all MPEG1 and MPEG2 videos)
+	- look ahead to decide if B-frames can be copied
+	  with lower risk to get trashed frames when cut immediate
+	  after a B-frame
+	
+	* libgapvidapi/gap_vid_api.h
+	* libgapvidapi/gap_vid_api_util.c
+	* libgapvidutil/gap_gve_story.c [.h]
+	* vid_enc_ffmpeg/gap_enc_ffmpeg_main.c
+	
+2004-09-27  Wolfgang Hofer <hof@gimp.org>
+	bugfix in videoextract plugin: window title and tooltip texts (#153627)
+	bugfix in the player dialog: set total_frames dependet widget limits
+	when player reaches EOF on single videofiles.
+	(the total_frame number that we get at videofile open
+	 was just a guess to init the widgets for the 1.st time)
+	 
+	* gap/gap_vex_dialog.c
+	* gap/gap_player_dialog.c
+
+
 2004-10-14  Amanpreet Singh Alam <amanpreetalam@yahoo.com>
 	
 	* configure.in: ALL_LINGUS-> Add pa (Punjabi) Language
@@ -293,7 +494,7 @@
 	  - Snaphot to Multilayer image 
 	   SHIFT Play use original size,
 	   CTRL Play at preview size
-	   + ALT force Creation of new Snapshot image
+	   ALT force Creation of new Snapshot image
 	   Click on preview creates Mtrace Image of current frame.
 	  - added basic videofile playback support 
     	  (just frames, no audio)
@@ -438,7 +639,7 @@
 	* gap/gap_resi_dialog.c
 	* gap/gap_wr_color_curve.c
 	* gap/gap_wr_color_huesat.c
-	* gap/gap_wr_color_levels.c: don't use deprecated GTK+ calls.
+	* gap/gap_wr_color_levels.c: don't use deprecated GTKcalls.
 
 2004-05-06  Wolfgang Hofer <hof@gimp.org>
 
@@ -829,7 +1030,7 @@
 	gap/gap_bluebox.c
 	gap/gap_navigator_dialog.c
 2003-11-15  Wolfgang Hofer <hof@gimp.org>
-	bugfixes:Playback: SizeButton + SHIFT resulted in Overlapping
+	bugfixes:Playback: SizeButton SHIFT resulted in Overlapping
 	         Widget arrangement.
 		 Filtermacro: Buttons sensitivity now depends
 		              on valid filtermacro scriptfile name.
@@ -1637,7 +1838,7 @@
 2003-06-04  Sven Neumann  <sven@gimp.org>
 
 	* gap/gap_navigator_dialog.c
-	* gap/gap_stock.[ch]: use GIMP and GTK+ stock icons instead of
+	* gap/gap_stock.[ch]: use GIMP and GTKstock icons instead of
 	duplicating them.
 
 	* images/Makefile.am

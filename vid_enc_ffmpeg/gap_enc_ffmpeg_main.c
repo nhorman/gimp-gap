@@ -1704,6 +1704,7 @@ p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
   long          l_step, l_begin, l_end;
   gdouble       l_percentage, l_percentage_step;
   int           l_rc;
+  gint32        l_max_master_frame_nr;
 
   FILE *l_fp_inwav = NULL;
   gint32 datasize;
@@ -1856,6 +1857,7 @@ p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
   }
   l_begin = gpp->val.range_from;
   l_end   = gpp->val.range_to;
+  l_max_master_frame_nr = abs(l_end - l_begin) + 1;
 
   l_cur_frame_nr = l_begin;
   while(l_rc >= 0)
@@ -1882,6 +1884,8 @@ p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
                                            , ffh->video_buffer
                                            , &l_video_frame_chunk_size
                                            , ffh->video_buffer_size    /* IN max size */
+					   , gpp->val.framerate
+					   , l_max_master_frame_nr
                                            );
 
     if(gap_debug) printf("\nFFenc: after gap_gve_story_fetch_composite_image_or_chunk image_id:%d layer_id:%d\n", (int)l_tmp_image_id , (int) l_layer_id);

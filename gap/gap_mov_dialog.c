@@ -652,6 +652,7 @@ mov_dialog ( GimpDrawable *drawable, t_mov_gui_stuff *mgp,
   GtkWidget *notebook;
   GtkWidget *vbox;
   GtkWidget *hbbox;
+  GtkWidget *spc_hbox;
   GtkWidget *dlg;
   GtkWidget *frame;
   GtkWidget *button;
@@ -736,11 +737,14 @@ mov_dialog ( GimpDrawable *drawable, t_mov_gui_stuff *mgp,
 		    mgp);
 
   /*  parameter settings  */
-  frame = gtk_frame_new ( _("Copy moving source-layer(s) into frames"));
-  gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_ETCHED_IN);
-  gtk_container_set_border_width (GTK_CONTAINER (frame), 4);
-  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dlg)->vbox), frame, TRUE, TRUE, 0);
+  spc_hbox = gtk_hbox_new (FALSE, 0);
+  gtk_widget_show (spc_hbox);
+  
+  frame = gimp_frame_new ( _("Copy moving source-layer(s) into frames"));
   gtk_widget_show (frame);
+
+  gtk_box_pack_start (GTK_BOX (spc_hbox), frame, TRUE, TRUE, 10);
+  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dlg)->vbox), spc_hbox, TRUE, TRUE, 2);
 
 
   /* the vbox */
@@ -2436,7 +2440,7 @@ p_load_points(char *filename)
     {
       g_message(_("ERROR: Could not open controlpoints\n"
 	        "filename: '%s'\n%s")
-	       ,filename, g_strerror (errno));
+	       ,filename, g_strerror (l_errno));
     }
     else
     {
@@ -2512,7 +2516,6 @@ mov_refresh_src_layer_menu(t_mov_gui_stuff *mgp)
 static GtkWidget *
 mov_src_sel_create(t_mov_gui_stuff *mgp)
 {
-  GtkWidget *frame;
   GtkWidget *table;
   GtkWidget *sub_table;
   GtkWidget *option_menu;
@@ -2521,10 +2524,6 @@ mov_src_sel_create(t_mov_gui_stuff *mgp)
   GtkObject      *adj;
   gint gettextize_loop;
 
-
-  /* the frame */
-  frame = gtk_frame_new ( _("Source Select") );
-  gtk_frame_set_shadow_type (GTK_FRAME (frame) ,GTK_SHADOW_ETCHED_IN);
 
   /* the table */
   table = gtk_table_new (2, 4, FALSE);
@@ -2667,7 +2666,6 @@ mov_src_sel_create(t_mov_gui_stuff *mgp)
 
   gtk_widget_show( table );
 
-  /* copile without MOVE_PATH_LAYOUT_frame needs less space */
   return table;
 }	/* end mov_src_sel_create */
 
@@ -2686,18 +2684,12 @@ mov_src_sel_create(t_mov_gui_stuff *mgp)
 static GtkWidget *
 mov_advanced_tab_create(t_mov_gui_stuff *mgp)
 {
-  GtkWidget	 *frame;
   GtkWidget	 *table;
   GtkWidget	 *check_button;
   GtkObject      *adj;
   guint          row;
   guint          col;
 
-
-  /* the frame */
-  frame = gtk_frame_new ( _("Advanced Settings") );
-  gtk_frame_set_shadow_type (GTK_FRAME (frame) ,GTK_SHADOW_ETCHED_IN);
-  gtk_container_set_border_width (GTK_CONTAINER (frame), 2);
 
   /* the table (2 rows) */
   table = gtk_table_new (2, 8, FALSE);
@@ -2893,7 +2885,6 @@ mov_advanced_tab_create(t_mov_gui_stuff *mgp)
 
   gtk_widget_show( table );
 
-  /* copile without MOVE_PATH_LAYOUT_frame needs less space */
   return table;
 }	/* end mov_advanced_tab_create */
 
@@ -2916,8 +2907,7 @@ mov_edit_button_box_create (t_mov_gui_stuff *mgp)
   gtk_widget_show (vbox);
 
   /* the frame */
-  frame = gtk_frame_new (_("Edit Controlpoints"));
-  gtk_frame_set_shadow_type( GTK_FRAME( frame ) ,GTK_SHADOW_ETCHED_IN );
+  frame = gimp_frame_new (_("Edit Controlpoints"));
   gtk_container_set_border_width( GTK_CONTAINER( frame ), 2 );
 
 
@@ -3328,14 +3318,9 @@ mov_path_framerange_box_create(t_mov_gui_stuff *mgp
 static GtkWidget*
 mov_modify_tab_create(t_mov_gui_stuff *mgp)
 {
-  GtkWidget *frame;
   GtkWidget      *vbox;
   GtkWidget      *table;
   GtkObject      *adj;
-
-  /* the frame */
-  frame = gtk_frame_new ( _("Modify Size Opacity and Rotation") );
-  gtk_frame_set_shadow_type( GTK_FRAME( frame ) ,GTK_SHADOW_ETCHED_IN );
 
   /* the vbox */
   vbox = gtk_vbox_new (FALSE, 3);
@@ -3456,16 +3441,9 @@ mov_modify_tab_create(t_mov_gui_stuff *mgp)
 static GtkWidget *
 mov_trans_tab_create (t_mov_gui_stuff *mgp)
 {
-  GtkWidget	 *frame;
   GtkWidget	 *vbox;
   GtkWidget	 *table;
   GtkObject      *adj;
-
-
-  /* the frame */
-  frame = gtk_frame_new ( _("Transformfactors X/Y for the 4 corners") );
-  gtk_frame_set_shadow_type( GTK_FRAME( frame ) ,GTK_SHADOW_ETCHED_IN );
-  gtk_container_set_border_width( GTK_CONTAINER( frame ), 2 );
 
 
   /* the vbox */
@@ -3640,7 +3618,6 @@ mov_trans_tab_create (t_mov_gui_stuff *mgp)
 static GtkWidget *
 mov_selection_handling_tab_create (t_mov_gui_stuff *mgp)
 {
-  GtkWidget	 *frame;
   GtkWidget	 *option_menu;
   GtkWidget      *menu;
   GtkWidget	 *vbox;
@@ -3657,12 +3634,6 @@ mov_selection_handling_tab_create (t_mov_gui_stuff *mgp)
   };
 
   gint gettextize_loop;
-
-  /* the frame */
-  frame = gtk_frame_new ( _("Pixel Selction Handling") );
-  gtk_frame_set_shadow_type( GTK_FRAME( frame ) ,GTK_SHADOW_ETCHED_IN );
-  gtk_container_set_border_width( GTK_CONTAINER( frame ), 2 );
-
 
   /* the vbox */
   vbox = gtk_vbox_new (FALSE, 3);
@@ -3776,10 +3747,9 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_gui_stuff *mgp, gboolean v
   gtk_box_pack_start (GTK_BOX (mgp->master_vbox), vbox, TRUE, TRUE, 0);
 
   /* the cpt_frame */
-  cpt_frame = gtk_frame_new (" ");  /* text "Current Point: [ %3d ] of [ %3d ]"
+  cpt_frame = gimp_frame_new (" ");  /* text "Current Point: [ %3d ] of [ %3d ]"
                                  * is set later in procedure p_update_point_index_text
                                  */
-  gtk_frame_set_shadow_type( GTK_FRAME( cpt_frame ) ,GTK_SHADOW_ETCHED_IN );
   gtk_container_set_border_width( GTK_CONTAINER( cpt_frame ), 2 );
   mgp->point_index_frame = cpt_frame;
   p_update_point_index_text(mgp);
@@ -3904,8 +3874,7 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_gui_stuff *mgp, gboolean v
   gtk_box_pack_start (GTK_BOX (vbox), hbox, TRUE, TRUE, 0);
 
   /* the preview frame */
-  pv_frame = gtk_frame_new ( _("Preview"));
-  gtk_frame_set_shadow_type (GTK_FRAME (pv_frame), GTK_SHADOW_ETCHED_IN);
+  pv_frame = gimp_frame_new ( _("Preview"));
   gtk_container_set_border_width (GTK_CONTAINER (pv_frame), 2);
   gtk_box_pack_start (GTK_BOX (hbox), pv_frame, TRUE, TRUE, 0);
   gtk_widget_show (pv_frame);

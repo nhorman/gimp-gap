@@ -86,6 +86,7 @@ typedef struct GapPlayerMainGlobalParams {
   gpointer              user_data_ptr;      /* userdata for the callback procedure */ 
   
   gboolean   autostart;
+  gboolean   caller_range_linked;  /* propagate range selection immediate to the caller */
   gboolean   use_thumbnails;
   gboolean   exact_timing;      /* TRUE: allow drop frames fro exact timing, FALSE: disable drop */
   gboolean   play_is_active;

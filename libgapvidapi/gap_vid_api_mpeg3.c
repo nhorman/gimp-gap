@@ -663,21 +663,46 @@ p_wrapper_mpeg3_count_frames(t_GVA_Handle *gvahand)
   /* create the libmpeg3 specific TOC file */
   if(vindex)
   {
-    int argc;
-    char *argv[3];
 
     vindex->tocfile = GVA_build_video_toc_filename(gvahand->filename, GVA_LIBMPEG3_DECODER_NAME);
 
-    argc = 3;
-    argv[0] = g_strdup("GVA_mpeg3toc");
-    argv[1] = g_strdup(gvahand->filename);
-    argv[2] = g_strdup(vindex->tocfile);
+    /* check if writeable by creating an empty toc file first */
+    {
+      FILE *fp;
+      gint l_errno;
+      
+      fp = fopen(vindex->tocfile, "wb");
+      if(fp)
+      {
+	int argc;
+	char *argv[3];
 
-    GVA_create_libmpeg3_toc(argc, argv, gvahand, &l_total_frames);
+        fclose(fp);
+	
+	argc = 3;
+	argv[0] = g_strdup("GVA_mpeg3toc");
+	argv[1] = g_strdup(gvahand->filename);
+	argv[2] = g_strdup(vindex->tocfile);
+	
+        GVA_create_libmpeg3_toc(argc, argv, gvahand, &l_total_frames);
+	
+	g_free(argv[0]);
+	g_free(argv[1]);
+	g_free(argv[2]);
+      }
+      else
+      {
+        l_errno = errno;
+        g_message(_("ERROR: Failed to write videoindex tocfile\n"
+	          "tocfile: '%s'\n"
+		  "%s")
+		  , vindex->tocfile
+		  , g_strerror (l_errno));
+	gvahand->cancel_operation = TRUE;
+      }
+    }
+
     
-    g_free(argv[0]);
-    g_free(argv[1]);
-    g_free(argv[2]);
     
     if(gvahand->cancel_operation)
     {

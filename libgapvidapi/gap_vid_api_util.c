@@ -180,6 +180,7 @@ p_alloc_fname(char *basename, long nr, char *extension)
 static void
 p_gimp_image_delete(gint32 image_id)
 {
+    gimp_image_undo_disable(image_id); /* clear undo stack */
     gimp_image_scale(image_id, 2, 2);
     if(gap_debug) printf("SCALED down to 2x2 id = %d (workaround for gimp_image-delete problem)\n", (int)image_id);
 
@@ -324,3 +325,83 @@ GVA_util_check_mpg_frame_type(unsigned char *buffer, gint32 buf_size)
   
   return(l_frame_type);
 }  /* end GVA_util_check_mpg_frame_type */
+
+
+/* -------------------------------
+ * GVA_util_fix_mpg_timecode
+ * -------------------------------
+ * In: buffer (in length buf_size)
+ *     the buffer should contain one compressed MPEG
+ *     frame, optionally prefixed by Sequence Header, GOP Header ...
+ * If the buffer contains a GOP header,
+ * the timecode in the GOP Header is replaced with a new timecode,
+ * matching master_frame_nr at playbackrate of master_framerate (fps)
+ *
+ * the timecode is not replaced if the old code is all zero (00:00:00:00)
+ */
+void
+GVA_util_fix_mpg_timecode(unsigned char *buffer
+                         ,gint32 buf_size
+                         ,gdouble master_framerate
+                         ,gint32  master_frame_nr
+                         )
+{
+  unsigned long code;
+  gint          l_idx;
+
+  
+  code = 0;
+  l_idx = 0;
+  while(l_idx < buf_size)
+  {
+    code <<= 8;
+    code |= buffer[l_idx++];
+    
+    if(code == GVA_MPGHDR_GOP_START_CODE)
+    {
+      int hour, minute, second, frame;
+      float carry;
+
+      /* Get the time old time code (including the drop_frame flag in the 1.st byte) */
+      code = (unsigned long)buffer[l_idx] << 24;
+      code |= (unsigned long)buffer[l_idx + 1] << 16;
+      code |= (unsigned long)buffer[l_idx + 2] << 8;
+      code |= (unsigned long)buffer[l_idx + 3];
+
+      hour = code >> 26 & 0x1f;
+      minute = code >> 20 & 0x3f;
+      second = code >> 13 & 0x3f;
+      frame = code >> 7 & 0x3f;
+
+      /*if(gap_debug)*/ printf("Timecode old: %02d:%02d:%02d:%02d ", hour, minute, second, frame);
+
+      if((hour == 0)
+      && (minute == 0)
+      && (second == 0)
+      && (frame == 0))
+      {
+        /*if(gap_debug)*/ printf("\n");
+      }
+      else
+      {
+	/* Write a new time code */
+	hour = (long)((float)(master_frame_nr - 1) / master_framerate / 3600);
+	carry = hour * 3600 * master_framerate;
+	minute = (long)((float)(master_frame_nr - 1 - carry) / master_framerate / 60);
+	carry += minute * 60 * master_framerate;
+	second = (long)((float)(master_frame_nr - 1 - carry) / master_framerate);
+	carry += second * master_framerate;
+	frame = (master_frame_nr - 1 - carry);
+
+	buffer[l_idx] = ((code >> 24) & 0x80) | (hour << 2) | (minute >> 4);
+	buffer[l_idx + 1] = ((code >> 16) & 0x08) | ((minute & 0xf) << 4) | (second >> 3);
+	buffer[l_idx + 2] = ((second & 0x7) << 5) | (frame >> 1);
+	buffer[l_idx + 3] = (code & 0x7f) | ((frame & 0x1) << 7);
+
+	/*if(gap_debug)*/ printf("new: %02d:%02d:%02d:%02d\n", hour, minute, second, frame);
+      }
+
+      break;
+    }
+  }
+}  /* end GVA_util_fix_mpg_timecode */

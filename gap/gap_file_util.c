@@ -169,4 +169,23 @@ gap_file_load_file(const char *fname)
   return(gap_file_load_file_len(fname, &l_filelen));
 }  /* end gap_file_load_file */
 
+/* -------------------------
+ * gap_file_chmod
+ * -------------------------
+ */
+int
+gap_file_chmod (const char *fname, int mode)
+{
+  return(chmod(fname, mode));
+}
+
+/* -------------------------
+ * gap_file_mkdir
+ * -------------------------
+ */
+int
+gap_file_mkdir (const char *fname, int mode)
+{
+  return(mkdir(fname, mode));
+}
 

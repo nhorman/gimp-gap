@@ -167,6 +167,17 @@ gap_story_debug_print_elem(GapStoryElem *stb_elem)
       printf("filtermacro_file: (NULL)\n");
     }
 
+    if(stb_elem->preferred_decoder)
+    {
+      printf("preferred_decoder :%s:\n", stb_elem->preferred_decoder);
+    }
+    else
+    {
+      printf("preferred_decoder: (NULL)\n");
+    }
+
+
+
     printf("comment ptr:%d\n", (int)stb_elem->comment);
     printf("next    ptr:%d\n", (int)stb_elem->next);
   }
@@ -469,6 +480,7 @@ gap_story_new_elem(GapStoryRecordType record_type)
     stb_elem->exact_seek = 0;
     stb_elem->delace = 0.0;
     stb_elem->filtermacro_file = NULL;
+    stb_elem->preferred_decoder = NULL;
     stb_elem->from_frame = 1;
     stb_elem->to_frame = 1;
     stb_elem->nloop = 1;
@@ -650,6 +662,7 @@ p_free_stb_elem(GapStoryElem *stb_elem)
   if(stb_elem->basename)          { g_free(stb_elem->basename);}
   if(stb_elem->ext)               { g_free(stb_elem->ext);}
   if(stb_elem->filtermacro_file)  { g_free(stb_elem->filtermacro_file);}
+  if(stb_elem->preferred_decoder) { g_free(stb_elem->preferred_decoder);}
 }  /* end p_free_stb_elem */
 
 
@@ -1820,6 +1833,7 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
     char *l_delace_ptr     = l_wordval[9];
     char *l_stepsize_ptr   = l_wordval[10];
     char *l_macro_ptr      = l_wordval[11];
+    char *l_decoder_ptr    = l_wordval[12];
 
     stb_elem = gap_story_new_elem(GAP_STBREC_VID_MOVIE);
     if(stb_elem)
@@ -1842,6 +1856,8 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
 
       if(*l_macro_ptr)    { p_flip_dir_seperators(l_macro_ptr);
                             stb_elem->filtermacro_file = g_strdup(l_macro_ptr);
+                          }
+      if(*l_decoder_ptr)  { stb_elem->preferred_decoder = g_strdup(l_decoder_ptr);
                           }
       if(*l_pingpong_ptr) { if ((strncmp(l_pingpong_ptr, "PINGPONG", strlen("PINGPONG")) == 0)
                             ||  (strncmp(l_pingpong_ptr, "pingpong", strlen("pingpong")) == 0))
@@ -2032,6 +2048,7 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
     char *l_fade_out_sec_ptr  = l_wordval[9];
     char *l_nloops_ptr        = l_wordval[10];
     char *l_seltrack_ptr      = l_wordval[11];
+    char *l_decoder_ptr       = l_wordval[12];
 
 
     stb_elem = gap_story_new_elem(GAP_STBREC_AUD_MOVIE);
@@ -2054,6 +2071,8 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
       if(*l_fade_out_sec_ptr) { stb_elem->aud_fade_out_sec  = p_scan_gdouble(l_fade_out_sec_ptr, 0.0, 9999.9, stb); }
       if(*l_nloops_ptr)       { stb_elem->nloop             = p_scan_gint32(l_nloops_ptr,    1, 999999, stb); }
       if(*l_seltrack_ptr)     { stb_elem->aud_seltrack      = p_scan_gint32(l_seltrack_ptr,  1, 999999, stb); }
+      if(*l_decoder_ptr)      { stb_elem->preferred_decoder = g_strdup(l_decoder_ptr);
+                              }
 
       gap_story_list_append_elem(stb, stb_elem);
     }
@@ -2419,7 +2438,7 @@ gap_story_save(GapStoryBoard *stb, const char *filename)
       gap_stb_syntax_get_parname_tab(GAP_STBKEY_VID_MASTER_SIZE
                                     ,&l_parnam_tab
 				    );
-      fprintf(fp, "%s    %s:%d %s:%d\n"
+      fprintf(fp, "%s         %s:%d %s:%d\n"
            , GAP_STBKEY_VID_MASTER_SIZE
 	   , l_parnam_tab.parname[1]
            , (int)stb->master_width
@@ -2464,6 +2483,22 @@ gap_story_save(GapStoryBoard *stb, const char *filename)
            , (int)stb->layout_thumbsize
            );
      }
+    
+    /* print PREFERRED_DECODER */
+    if(stb->preferred_decoder > 0)
+    {
+      if(*stb->preferred_decoder != '\0')
+      {
+	gap_stb_syntax_get_parname_tab(GAP_STBKEY_VID_PREFERRED_DECODER
+                                      ,&l_parnam_tab
+				      );
+	fprintf(fp, "%s   %s:\"%s\"\n"
+             , GAP_STBKEY_VID_PREFERRED_DECODER
+	     , l_parnam_tab.parname[1]
+             , stb->preferred_decoder
+             );
+      }
+    }
    
     for(stb_elem = stb->stb_elem; stb_elem != NULL; stb_elem = (GapStoryElem *)stb_elem->next)
     {
@@ -2611,6 +2646,13 @@ gap_story_save(GapStoryBoard *stb, const char *filename)
               fprintf(fp, " %s:\"%s\""
  	         , l_parnam_tab.parname[11]
                  , stb_elem->filtermacro_file
+                 );
+            }
+            if(stb_elem->preferred_decoder)
+            {
+              fprintf(fp, " %s:\"%s\""
+ 	         , l_parnam_tab.parname[12]
+                 , stb_elem->preferred_decoder
                  );
             }
             fprintf(fp, "\n");
@@ -3048,23 +3090,24 @@ gap_story_elem_duplicate(GapStoryElem      *stb_elem)
      * stb_elem_dup->story_id   ...  keep id as initialized by gap_story_new_elem
      * stb_elem_dup->selected   ...  keep FALSE as initialized by gap_story_new_elem
      */
-    stb_elem_dup->story_orig_id  = stb_elem->story_id;
-    stb_elem_dup->playmode       = stb_elem->playmode;
-    stb_elem_dup->track          = stb_elem->track;
-    if(stb_elem->orig_filename)    stb_elem_dup->orig_filename    = g_strdup(stb_elem->orig_filename);
-    if(stb_elem->orig_src_line)    stb_elem_dup->orig_src_line    = g_strdup(stb_elem->orig_src_line);
-    if(stb_elem->basename)         stb_elem_dup->basename         = g_strdup(stb_elem->basename);
-    if(stb_elem->ext)              stb_elem_dup->ext              = g_strdup(stb_elem->ext);
-    if(stb_elem->filtermacro_file) stb_elem_dup->filtermacro_file = g_strdup(stb_elem->filtermacro_file);
-    stb_elem_dup->seltrack       = stb_elem->seltrack;
-    stb_elem_dup->exact_seek     = stb_elem->exact_seek;
-    stb_elem_dup->delace         = stb_elem->delace;
-    stb_elem_dup->from_frame     = stb_elem->from_frame;
-    stb_elem_dup->to_frame       = stb_elem->to_frame;
-    stb_elem_dup->nloop          = stb_elem->nloop;
-    stb_elem_dup->nframes        = stb_elem->nframes; 
-    stb_elem_dup->step_density   = stb_elem->step_density; 
-    stb_elem_dup->file_line_nr   = stb_elem->file_line_nr;  
+    stb_elem_dup->story_orig_id   = stb_elem->story_id;
+    stb_elem_dup->playmode        = stb_elem->playmode;
+    stb_elem_dup->track           = stb_elem->track;
+    if(stb_elem->orig_filename)     stb_elem_dup->orig_filename     = g_strdup(stb_elem->orig_filename);
+    if(stb_elem->orig_src_line)     stb_elem_dup->orig_src_line     = g_strdup(stb_elem->orig_src_line);
+    if(stb_elem->basename)          stb_elem_dup->basename          = g_strdup(stb_elem->basename);
+    if(stb_elem->ext)               stb_elem_dup->ext               = g_strdup(stb_elem->ext);
+    if(stb_elem->filtermacro_file)  stb_elem_dup->filtermacro_file  = g_strdup(stb_elem->filtermacro_file);
+    if(stb_elem->preferred_decoder) stb_elem_dup->preferred_decoder = g_strdup(stb_elem->preferred_decoder);
+    stb_elem_dup->seltrack        = stb_elem->seltrack;
+    stb_elem_dup->exact_seek      = stb_elem->exact_seek;
+    stb_elem_dup->delace          = stb_elem->delace;
+    stb_elem_dup->from_frame      = stb_elem->from_frame;
+    stb_elem_dup->to_frame        = stb_elem->to_frame;
+    stb_elem_dup->nloop           = stb_elem->nloop;
+    stb_elem_dup->nframes         = stb_elem->nframes; 
+    stb_elem_dup->step_density    = stb_elem->step_density; 
+    stb_elem_dup->file_line_nr    = stb_elem->file_line_nr;  
     stb_elem_dup->comment = NULL;
     stb_elem_dup->next = NULL;
 
@@ -3089,37 +3132,41 @@ gap_story_elem_copy(GapStoryElem *stb_elem_dst, GapStoryElem *stb_elem)
     if(stb_elem_dst->basename)          g_free(stb_elem_dst->basename);
     if(stb_elem_dst->ext)	        g_free(stb_elem_dst->ext);
     if(stb_elem_dst->filtermacro_file)  g_free(stb_elem_dst->filtermacro_file);
+    if(stb_elem_dst->preferred_decoder) g_free(stb_elem_dst->preferred_decoder);
 
     stb_elem_dst->orig_filename     = NULL;
     stb_elem_dst->orig_src_line     = NULL;
     stb_elem_dst->basename          = NULL;
     stb_elem_dst->ext               = NULL;
     stb_elem_dst->filtermacro_file  = NULL;
+    stb_elem_dst->preferred_decoder = NULL;
 
     stb_elem_dst->record_type = stb_elem->record_type;
     /*
      * stb_elem_dst->story_id   ...  keep id as initialized by gap_story_new_elem
      * stb_elem_dst->selected   ...  keep FALSE as initialized by gap_story_new_elem
      */
-    stb_elem_dst->story_orig_id  = stb_elem->story_id;
-    stb_elem_dst->playmode       = stb_elem->playmode;
-    stb_elem_dst->track          = stb_elem->track;
-    if(stb_elem->orig_filename)    stb_elem_dst->orig_filename    = g_strdup(stb_elem->orig_filename);
-    if(stb_elem->orig_src_line)    stb_elem_dst->orig_src_line    = g_strdup(stb_elem->orig_src_line);
-    if(stb_elem->basename)         stb_elem_dst->basename         = g_strdup(stb_elem->basename);
-    if(stb_elem->ext)              stb_elem_dst->ext              = g_strdup(stb_elem->ext);
-    if(stb_elem->filtermacro_file) stb_elem_dst->filtermacro_file = g_strdup(stb_elem->filtermacro_file);
-    stb_elem_dst->seltrack       = stb_elem->seltrack;
-    stb_elem_dst->exact_seek     = stb_elem->exact_seek;
-    stb_elem_dst->delace         = stb_elem->delace;
-    stb_elem_dst->from_frame     = stb_elem->from_frame;
-    stb_elem_dst->to_frame       = stb_elem->to_frame;
-    stb_elem_dst->nloop          = stb_elem->nloop;
-    stb_elem_dst->nframes        = stb_elem->nframes; 
-    stb_elem_dst->step_density   = stb_elem->step_density; 
-    stb_elem_dst->file_line_nr   = stb_elem->file_line_nr;  
-    if(stb_elem_dst->comment)      gap_story_elem_free(&stb_elem_dst->comment);
-    if(stb_elem->comment)          stb_elem_dst->comment = gap_story_elem_duplicate(stb_elem->comment);
+    stb_elem_dst->story_orig_id   = stb_elem->story_id;
+    stb_elem_dst->playmode        = stb_elem->playmode;
+    stb_elem_dst->track           = stb_elem->track;
+    if(stb_elem->orig_filename)     stb_elem_dst->orig_filename     = g_strdup(stb_elem->orig_filename);
+    if(stb_elem->orig_src_line)     stb_elem_dst->orig_src_line     = g_strdup(stb_elem->orig_src_line);
+    if(stb_elem->basename)          stb_elem_dst->basename          = g_strdup(stb_elem->basename);
+    if(stb_elem->ext)               stb_elem_dst->ext               = g_strdup(stb_elem->ext);
+    if(stb_elem->filtermacro_file)  stb_elem_dst->filtermacro_file  = g_strdup(stb_elem->filtermacro_file);
+    if(stb_elem->preferred_decoder) stb_elem_dst->preferred_decoder = g_strdup(stb_elem->preferred_decoder);
+
+    stb_elem_dst->seltrack        = stb_elem->seltrack;
+    stb_elem_dst->exact_seek      = stb_elem->exact_seek;
+    stb_elem_dst->delace          = stb_elem->delace;
+    stb_elem_dst->from_frame      = stb_elem->from_frame;
+    stb_elem_dst->to_frame        = stb_elem->to_frame;
+    stb_elem_dst->nloop           = stb_elem->nloop;
+    stb_elem_dst->nframes         = stb_elem->nframes; 
+    stb_elem_dst->step_density    = stb_elem->step_density; 
+    stb_elem_dst->file_line_nr    = stb_elem->file_line_nr;  
+    if(stb_elem_dst->comment)       gap_story_elem_free(&stb_elem_dst->comment);
+    if(stb_elem->comment)           stb_elem_dst->comment = gap_story_elem_duplicate(stb_elem->comment);
 
     /* stb_elem_dst->next */ /* dont change the next pointer */
 
@@ -3358,3 +3405,48 @@ gap_story_selection_all_set(GapStoryBoard *stb, gboolean sel_state)
 
 }  /* end gap_story_selection_all_set */
 
+
+/* ---------------------------------
+ * gap_story_get_preferred_decoder
+ * ---------------------------------
+ * get the name of preferred_deceoder
+ * in that order:
+ * 1.) from current storyboard element (if available)
+ * 2.) from general storyboard setting (if available)
+ * 3.) return NULL if both cases do not provide a preferred_deceoder
+ *
+ * Do not free the returned pointer.
+ */
+const char *
+gap_story_get_preferred_decoder(GapStoryBoard *stb, GapStoryElem *stb_elem)
+{
+  const char *preferred_decoder;
+
+  /* use the file-global preferred_decoder per default */ 
+  preferred_decoder = NULL;
+  
+  if(stb_elem)
+  {
+    if(stb_elem->preferred_decoder)
+    {
+      if(*stb_elem->preferred_decoder != '\0')
+      {
+        preferred_decoder = stb_elem->preferred_decoder;
+      }
+    }
+  }
+  
+  if((stb) && (preferred_decoder == NULL))
+  {
+    if(stb->preferred_decoder)
+    {
+      if(*stb->preferred_decoder != '\0')
+      {
+        preferred_decoder = stb->preferred_decoder;
+      }
+    }
+  }
+
+  return(preferred_decoder);
+
+}  /* end gap_story_get_preferred_decoder */

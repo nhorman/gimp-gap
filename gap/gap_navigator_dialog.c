@@ -3777,7 +3777,7 @@ navi_dialog_create (GtkWidget* shell, gint32 image_id)
   naviD->image_option_menu = gtk_option_menu_new();
   naviD->image_menu = NULL;
   navi_refresh_image_menu();
-  gtk_box_pack_start (GTK_BOX (util_box), naviD->image_option_menu, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (util_box), naviD->image_option_menu, TRUE, TRUE, 0);
   gtk_widget_show (naviD->image_option_menu);
   gtk_widget_show (naviD->image_menu);
   gtk_widget_show (util_box);
@@ -3858,7 +3858,7 @@ navi_dialog_create (GtkWidget* shell, gint32 image_id)
   gtk_widget_show (util_box);
 
   /*  The frame (that will contain the dyn_table)  */
-  naviD->dyn_frame = gtk_frame_new ("");
+  naviD->dyn_frame = gimp_frame_new (NULL);
   naviD->in_dyn_table_sizeinit = TRUE;
   g_signal_connect (G_OBJECT (naviD->dyn_frame), "size_allocate",
                       G_CALLBACK (navi_dyn_frame_size_allocate),

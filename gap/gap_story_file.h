@@ -97,6 +97,7 @@
     gint32     exact_seek;  /* 0 fast seek, 1 exact seek (for GAP_FRN_MOVIE) */
     gdouble    delace;      /* 0.0 no deinterlace, 1.0-1.99 odd 2.0-2.99 even rows  (for GAP_FRN_MOVIE) */
     
+    gchar *preferred_decoder;
     gchar *filtermacro_file;
     gint32 from_frame;
     gint32 to_frame;
@@ -231,6 +232,7 @@ void                gap_story_get_master_size(GapStoryBoard *stb_ptr
 			 ,gint32 *height);
 void                gap_story_selection_all_set(GapStoryBoard *stb, gboolean sel_state);
 
+const char *        gap_story_get_preferred_decoder(GapStoryBoard *stb, GapStoryElem *stb_elem);
 
 
 #endif

@@ -277,6 +277,7 @@ p_create_syntax_list(void)
                ,"deinterlace"
 	       ,"stepsize"
                ,"macro"
+               ,"decoder"
                ,NULL
                );
   p_add_keyword(GAP_STBKEY_VID_PLAY_FRAMES
@@ -400,6 +401,7 @@ p_create_syntax_list(void)
 	       ,"fade_out_time"
 	       ,"nloops"
                ,"seltrack"
+               ,"decoder"
 	       ,NULL
                );
   p_add_keyword(GAP_STBKEY_AUD_SILENCE

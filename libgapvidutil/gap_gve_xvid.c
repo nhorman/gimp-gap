@@ -27,7 +27,7 @@
 
 
 /* revision history:
- * version 1.3.27; 2004.08.02  hof: updated to XVID-1.0 API
+ * version 1.3.27; 2004.08.02  hof: updated to XVID-1.0 API (but does not work anymore)
  *                                  Colorspace XVID_CSP_RGB24 no longer supported
  * version 1.2.5;  2003.08.02  hof: use Colorspace XVID_CSP_RGB24  gives better quality and fixes Red-Blue colorflip errors
  *                                 (XVID_CSP_YV12 expects strange BGR to YUV encoded buffer
@@ -53,6 +53,7 @@
 #include "gap_gve_raw.h"
 #include "gap_gve_xvid.h"
 
+extern      int gap_debug; /* ==0  ... dont print debug infos */
 
 
 #ifdef ENABLE_LIBXVIDCORE
@@ -214,43 +215,42 @@ gap_gve_xvid_init(gint32 width, gint32 height, gdouble framerate, GapGveXvidValu
   int xerr;
   gdouble         l_framerate_x1000;
 
-printf("(1) gap_gve_xvid_init START\n");
-
   l_framerate_x1000 = framerate * 1000.0;
   xvid_control = g_malloc0(sizeof(GapGveXvidControl));
   xvid_gbl_init   = &xvid_control->xvid_gbl_init;
   xvid_enc_create = &xvid_control->xvid_enc_create;
   xvid_enc_frame  = &xvid_control->xvid_enc_frame;
 
-printf("(2)\n");
-printf("  xvid_control:%d\n", (int)xvid_control  );
-printf("  xvid_gbl_init:%d\n", (int)xvid_gbl_init  );
-printf("  xvid_enc_create:%d\n", (int)xvid_enc_create  );
-printf("  xvid_enc_frame:%d\n", (int)xvid_enc_frame  );
   /* ------------------------
    * XviD core initialization
    * -------------------------
    */
   memset(xvid_gbl_init, 0, sizeof(xvid_gbl_init_t));
-printf("(3)\n");
   xvid_gbl_init->version = XVID_VERSION;
   xvid_gbl_init->debug = 0;
   xvid_gbl_init->cpu_flags = 0;
   xvid_gbl_init->cpu_flags = XVID_CPU_FORCE;
 
-printf("(4)\n");
+  if(gap_debug)
+  {
+    printf("gap_gve_xvid_init XVID_VERSION: %d (%d.%d.%d)\n"
+          ,(int)xvid_gbl_init->version
+          ,(int)XVID_VERSION_MAJOR(xvid_gbl_init->version)
+          ,(int)XVID_VERSION_MINOR(xvid_gbl_init->version)
+          ,(int)XVID_VERSION_PATCH(xvid_gbl_init->version)
+	  );
+  }
+    
+
   /* Initialize XviD core -- Should be done once per __process__ */
   xvid_global(NULL, XVID_GBL_INIT, xvid_gbl_init, NULL);
-printf("(5)\n");
 
   /* ------------------------
    * XviD encoder initialization
    * -------------------------
    */
   /* Version again */
-printf("(6)\n");
   memset(xvid_enc_create, 0, sizeof(xvid_enc_create_t));
-printf("(7)\n");
   xvid_enc_create->version = XVID_VERSION;
 
 
@@ -264,7 +264,6 @@ printf("(7)\n");
 
   /* init zones  */
   xvid_control->num_zones = 0;
-printf("(8)\n");
   if(FALSE)
   {
     /* the current implementation does not use zones
@@ -284,20 +283,16 @@ printf("(8)\n");
     xvid_control->zones[xvid_control->num_zones].base = 100;
     xvid_control->num_zones++;
   }
-printf("(9)\n");
   xvid_enc_create->zones = &xvid_control->zones[0];
   xvid_enc_create->num_zones = xvid_control->num_zones;
 
   /* init plugins  */
   xvid_enc_create->plugins = xvid_control->plugins;
-  xvid_enc_create->num_plugins = 1;
+  xvid_enc_create->num_plugins = 0;
 
-printf("(10)\n");
   /* this implementation only uses SINGLE PASS */
   {
-printf("(11)\n");
     memset(&xvid_control->single, 0, sizeof(xvid_plugin_single_t));
-printf("(12)\n");
     xvid_control->single.version = XVID_VERSION;
     xvid_control->single.bitrate = xvid_val->rc_bitrate;
 
@@ -306,11 +301,9 @@ printf("(12)\n");
     xvid_enc_create->num_plugins++;
   }
 
-printf("(13)\n");
   /* TODO: lumimasking should be a Parameter */
   if(FALSE)
   {
-printf("(14)\n");
     xvid_control->plugins[xvid_enc_create->num_plugins].func = xvid_plugin_lumimasking;
     xvid_control->plugins[xvid_enc_create->num_plugins].param = NULL;
     xvid_enc_create->num_plugins++;
@@ -319,7 +312,6 @@ printf("(14)\n");
   /* TODO: Dump should be a Parameter */
   if(FALSE)
   {
-printf("(15)\n");
     xvid_control->plugins[xvid_enc_create->num_plugins].func = xvid_plugin_dump;
     xvid_control->plugins[xvid_enc_create->num_plugins].param = NULL;
     xvid_enc_create->num_plugins++;
@@ -332,7 +324,6 @@ printf("(15)\n");
   // xvid_encparam->max_quantizer            = xvid_val->max_quantizer;
   // xvid_encparam->min_quantizer            = xvid_val->min_quantizer;
 
-printf("(16)\n");
   /* Maximum key frame interval */
   xvid_enc_create->max_key_interval          = xvid_val->max_key_interval;
 
@@ -365,11 +356,7 @@ printf("(16)\n");
   }
 
 
-printf("(17)\n");
-
   xvid_enc_create->handle =  NULL;      /* out param The encoder instance */
-
-printf("(18)\n");
 
   xvid_enc_frame->version            = XVID_VERSION;
   xvid_enc_frame->length             = -1;      /* out: length returned by encoder */
@@ -392,7 +379,6 @@ printf("(18)\n");
   }
 
 
-printf("(19)\n");
   xvid_enc_frame->vop_flags = xvid_val->general;
   xvid_enc_frame->motion    = xvid_val->motion;
 
@@ -414,10 +400,8 @@ printf("(19)\n");
   xvid_enc_frame->type = XVID_TYPE_AUTO;       /* Frame type -- let core decide for us */
 
 
-printf("(20)\n");
   /* create the encoder instance */
   xerr = xvid_encore(NULL, XVID_ENC_CREATE, xvid_enc_create, NULL);
-printf("(21) xerr:%d\n", (int)xerr);
 
   if(xerr)
   {
@@ -425,8 +409,6 @@ printf("(21) xerr:%d\n", (int)xerr);
     g_free(xvid_control);
     return (NULL);
   }
-
-printf("(22) xvid_control:%d\n", (int)xvid_control);
 
   return(xvid_control);
 }   /* end gap_gve_xvid_init */
@@ -449,8 +431,12 @@ gap_gve_xvid_drawable_encode(GimpDrawable *drawable, gint32 *XVID_size,  GapGveX
   gboolean             l_vflip;
 
   xvid_enc_frame_t *xvid_enc_frame;
-  xvid_enc_stats_t xstats;
+  xvid_enc_stats_t xvid_enc_stats;
   int xerr;
+
+  memset(&xvid_enc_stats, 0, sizeof(xvid_enc_stats));
+  xvid_enc_stats.version = XVID_VERSION;
+
 
   /* buffer for encoding (allocate in full uncompressed size to be on the save side) */
   bitstream_data = (guchar *)g_malloc0((drawable->width * drawable->height * 3)
@@ -478,10 +464,10 @@ gap_gve_xvid_drawable_encode(GimpDrawable *drawable, gint32 *XVID_size,  GapGveX
    *
    * (we use the raw encoding procedure to convert the drawable to BGR
    *  suitable for xvid input)
-   * (do?) we use vertical flip
+   * (do?) we use vertical flip (yes for older xvid, no since 1.0.0)
    * (RAW AVI and gimp have opposite vertical order of the pixel lines)
    */
-  l_vflip = TRUE;
+  l_vflip = FALSE;
 
   /* XVID_CSP_BGR */
   {
@@ -498,14 +484,24 @@ gap_gve_xvid_drawable_encode(GimpDrawable *drawable, gint32 *XVID_size,  GapGveX
   if(xvid_enc_frame->input.plane[0])
   {
     /* This Call to xvid_encore Encodes one Frame with xvid compression */
-    xerr = xvid_encore(xvid_control->xvid_enc_create.handle, XVID_ENC_ENCODE, xvid_enc_frame, &xstats);
+    xerr = xvid_encore(xvid_control->xvid_enc_create.handle, XVID_ENC_ENCODE, xvid_enc_frame, &xvid_enc_stats);
     g_free(xvid_enc_frame->input.plane[0]);
 
-    if(xerr==0)
+    if(gap_debug)
+    {
+      printf("gap_gve_xvid_drawable_encode returnCODE: %d\n", (int)xerr);
+      printf("gap_gve_xvid_drawable_encode xvid_enc_frame->length: %d\n", (int)xvid_enc_frame->length);
+    }
+    
+    /* since xvid 1.0 the encoded length  is returned,
+     * and errorcodes are negative values,
+     * the xvid_enc_frame->length field is ignored now
+     */
+    if(xerr>=0)
     {
       *keyframe = xvid_enc_frame->type;
-      *XVID_size = xvid_enc_frame->length + app0_length;
-
+      /*  *XVID_size = xvid_enc_frame->length + app0_length; */
+      *XVID_size = xerr + app0_length;
 
       /*if(1==1)
        *{

@@ -2008,7 +2008,7 @@ create_ow__dialog (GapCmeGlobalParams *gpp)
   ow__dialog_vbox0 = GTK_DIALOG (ow__dialog)->vbox;
   gtk_widget_show (ow__dialog_vbox0);
 
-  ow__frame1 = gtk_frame_new (NULL);
+  ow__frame1 = gimp_frame_new (NULL);
   gtk_widget_show (ow__frame1);
   gtk_box_pack_start (GTK_BOX (ow__dialog_vbox0), ow__frame1, TRUE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (ow__frame1), 5);
@@ -2210,7 +2210,7 @@ create_shell_window (GapCmeGlobalParams *gpp)
   gtk_widget_show (cme__notebook_main);
   gtk_box_pack_start (GTK_BOX (cme__vbox_main), cme__notebook_main, TRUE, TRUE, 0);
 
-  cme__frame1 = gtk_frame_new (_("Video Encode Options"));
+  cme__frame1 = gimp_frame_new (_("Video Encode Options"));
   gtk_widget_show (cme__frame1);
   gtk_container_add (GTK_CONTAINER (cme__notebook_main), cme__frame1);
   gtk_container_set_border_width (GTK_CONTAINER (cme__frame1), 4);
@@ -2224,31 +2224,31 @@ create_shell_window (GapCmeGlobalParams *gpp)
 
   cme__label_from = gtk_label_new (_("From Frame:"));
   gtk_widget_show (cme__label_from);
+  gtk_misc_set_alignment (GTK_MISC (cme__label_from), 0.0, 0.5);
   gtk_table_attach (GTK_TABLE (cme__table1), cme__label_from, 0, 1, 0, 1,
-                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_label_set_justify (GTK_LABEL (cme__label_from), GTK_JUSTIFY_RIGHT);
 
   cme__label_to = gtk_label_new (_("To Frame:"));
   gtk_widget_show (cme__label_to);
+  gtk_misc_set_alignment (GTK_MISC (cme__label_to), 0.0, 0.5);
   gtk_table_attach (GTK_TABLE (cme__table1), cme__label_to, 0, 1, 1, 2,
-                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_label_set_justify (GTK_LABEL (cme__label_to), GTK_JUSTIFY_RIGHT);
 
   cme__label_width = gtk_label_new (_("Width:"));
   gtk_widget_show (cme__label_width);
+  gtk_misc_set_alignment (GTK_MISC (cme__label_width), 0.0, 0.5);
   gtk_table_attach (GTK_TABLE (cme__table1), cme__label_width, 0, 1, 2, 3,
-                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_label_set_justify (GTK_LABEL (cme__label_width), GTK_JUSTIFY_RIGHT);
 
   cme__label_height = gtk_label_new (_("Height:"));
   gtk_widget_show (cme__label_height);
+  gtk_misc_set_alignment (GTK_MISC (cme__label_height), 0.0, 0.5);
   gtk_table_attach (GTK_TABLE (cme__table1), cme__label_height, 0, 1, 3, 4,
-                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_label_set_justify (GTK_LABEL (cme__label_height), GTK_JUSTIFY_RIGHT);
 
   cme__spinbutton_width_adj = gtk_adjustment_new (10, 10, 10000, 1, 10, 10);
   cme__spinbutton_width = gtk_spin_button_new (GTK_ADJUSTMENT (cme__spinbutton_width_adj), 1, 0);
@@ -2326,6 +2326,7 @@ create_shell_window (GapCmeGlobalParams *gpp)
 
   cme__label_framerate = gtk_label_new (_("Framerate:"));
   gtk_widget_show (cme__label_framerate);
+  gtk_misc_set_alignment (GTK_MISC (cme__label_framerate), 0.0, 0.5);
   gtk_table_attach (GTK_TABLE (cme__table1), cme__label_framerate, 0, 1, 4, 5,
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
@@ -2522,8 +2523,9 @@ create_shell_window (GapCmeGlobalParams *gpp)
 
   cme__label_vidnorm = gtk_label_new (_("Videonorm:"));
   gtk_widget_show (cme__label_vidnorm);
+  gtk_misc_set_alignment (GTK_MISC (cme__label_vidnorm), 0.0, 0.5);
   gtk_table_attach (GTK_TABLE (cme__table1), cme__label_vidnorm, 0, 1, 5, 6,
-                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
   cme__optionmenu_vidnorm = gtk_option_menu_new ();
@@ -2586,8 +2588,9 @@ create_shell_window (GapCmeGlobalParams *gpp)
 
   cme__label_encodername = gtk_label_new (_("Encoder:"));
   gtk_widget_show (cme__label_encodername);
+  gtk_misc_set_alignment (GTK_MISC (cme__label_encodername), 0.0, 0.5);
   gtk_table_attach (GTK_TABLE (cme__table1), cme__label_encodername, 0, 1, 6, 7,
-                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
   cme__optionmenu_encodername = gtk_option_menu_new ();
@@ -2621,13 +2624,13 @@ create_shell_window (GapCmeGlobalParams *gpp)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_label_set_line_wrap (GTK_LABEL (cme__short_description), TRUE);
-  gtk_misc_set_alignment (GTK_MISC (cme__short_description), 0, 0.5);
+  gtk_misc_set_alignment (GTK_MISC (cme__short_description), 0.0, 0.5);
 
   cme__label_nb1 = gtk_label_new (_("Video Options"));
   gtk_widget_show (cme__label_nb1);
   gtk_notebook_set_tab_label (GTK_NOTEBOOK (cme__notebook_main), gtk_notebook_get_nth_page (GTK_NOTEBOOK (cme__notebook_main), 0), cme__label_nb1);
 
-  cme__frame2 = gtk_frame_new (_("Audio Input"));
+  cme__frame2 = gimp_frame_new (_("Audio Input"));
   gtk_widget_show (cme__frame2);
   gtk_container_add (GTK_CONTAINER (cme__notebook_main), cme__frame2);
   gtk_container_set_border_width (GTK_CONTAINER (cme__frame2), 4);
@@ -2640,8 +2643,9 @@ create_shell_window (GapCmeGlobalParams *gpp)
 
   cme__label_audio1 = gtk_label_new (_("Audiofile:"));
   gtk_widget_show (cme__label_audio1);
+  gtk_misc_set_alignment (GTK_MISC (cme__label_audio1), 0.0, 0.5);
   gtk_table_attach (GTK_TABLE (cme__table2), cme__label_audio1, 0, 1, 0, 1,
-                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
   cme__entry_audio1 = gtk_entry_new ();
@@ -2659,15 +2663,16 @@ create_shell_window (GapCmeGlobalParams *gpp)
 
   cme__label_aud1_info = gtk_label_new (_("WAV, 16 Bit stereo, rate: 44100"));
   gtk_widget_show (cme__label_aud1_info);
+  gtk_misc_set_alignment (GTK_MISC (cme__label_aud1_info), 0.0, 0.5);
   gtk_table_attach (GTK_TABLE (cme__table2), cme__label_aud1_info, 1, 2, 1, 2,
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_label_set_justify (GTK_LABEL (cme__label_aud1_info), GTK_JUSTIFY_LEFT);
 
   cme__label_samplerate = gtk_label_new (_("Samplerate:"));
   gtk_widget_show (cme__label_samplerate);
+  gtk_misc_set_alignment (GTK_MISC (cme__label_samplerate), 0.0, 0.5);
   gtk_table_attach (GTK_TABLE (cme__table2), cme__label_samplerate, 0, 1, 2, 3,
-                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
   cme__spinbutton_samplerate_adj = gtk_adjustment_new (44100, 1000, 100000, 10, 100, 1000);
@@ -2769,14 +2774,16 @@ create_shell_window (GapCmeGlobalParams *gpp)
 
   cme__label_tmp_audfile = gtk_label_new ("");
   gtk_widget_show (cme__label_tmp_audfile);
+  gtk_misc_set_alignment (GTK_MISC (cme__label_tmp_audfile), 0.0, 0.5);
   gtk_table_attach (GTK_TABLE (cme__table2), cme__label_tmp_audfile, 1, 2, 3, 4,
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
 
   cme__label_tmp = gtk_label_new (_("Tmpfile:"));
   gtk_widget_show (cme__label_tmp);
+  gtk_misc_set_alignment (GTK_MISC (cme__label_tmp), 0.0, 0.5);
   gtk_table_attach (GTK_TABLE (cme__table2), cme__label_tmp, 0, 1, 3, 4,
-                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 4);
 
   cme__label_aud_tmp_info = gtk_label_new (_("WAV, 16 Bit stereo, rate: 44100"));
@@ -2810,7 +2817,7 @@ create_shell_window (GapCmeGlobalParams *gpp)
   gtk_widget_show (cme__label_nb2);
   gtk_notebook_set_tab_label (GTK_NOTEBOOK (cme__notebook_main), gtk_notebook_get_nth_page (GTK_NOTEBOOK (cme__notebook_main), 1), cme__label_nb2);
 
-  cme__frame_cfg4 = gtk_frame_new (NULL);
+  cme__frame_cfg4 = gimp_frame_new (_("Configuration of external audiotool program"));
   gtk_widget_show (cme__frame_cfg4);
   gtk_container_add (GTK_CONTAINER (cme__notebook_main), cme__frame_cfg4);
   gtk_container_set_border_width (GTK_CONTAINER (cme__frame_cfg4), 4);
@@ -2821,14 +2828,16 @@ create_shell_window (GapCmeGlobalParams *gpp)
 
   cme__label_sox = gtk_label_new (_("Audiotool:"));
   gtk_widget_show (cme__label_sox);
+  gtk_misc_set_alignment (GTK_MISC (cme__label_sox), 0.0, 0.5);
   gtk_table_attach (GTK_TABLE (qte_table_cfg4), cme__label_sox, 0, 1, 0, 1,
-                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
   cme__label_sox_options = gtk_label_new (_("Options:"));
   gtk_widget_show (cme__label_sox_options);
+  gtk_misc_set_alignment (GTK_MISC (cme__label_sox_options), 0.0, 0.5);
   gtk_table_attach (GTK_TABLE (qte_table_cfg4), cme__label_sox_options, 0, 1, 1, 2,
-                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
   cme__hbox_cfg4 = gtk_hbox_new (TRUE, 0);
@@ -2875,12 +2884,13 @@ create_shell_window (GapCmeGlobalParams *gpp)
                     (GtkAttachOptions) (0), 2, 2);
   gtk_widget_set_usize (cme__label_sox_info, 300, -2);
   gtk_label_set_line_wrap (GTK_LABEL (cme__label_sox_info), TRUE);
+  gtk_misc_set_alignment (GTK_MISC (cme__label_sox_info), 0.5, 0.5);
 
   cme__label_nb3 = gtk_label_new (_("Audio Tool Configuration"));
   gtk_widget_show (cme__label_nb3);
   gtk_notebook_set_tab_label (GTK_NOTEBOOK (cme__notebook_main), gtk_notebook_get_nth_page (GTK_NOTEBOOK (cme__notebook_main), 2), cme__label_nb3);
 
-  cme__frame_nb4 = gtk_frame_new (_("Encoding Extras"));
+  cme__frame_nb4 = gimp_frame_new (_("Encoding Extras"));
   gtk_widget_show (cme__frame_nb4);
   gtk_container_add (GTK_CONTAINER (cme__notebook_main), cme__frame_nb4);
   gtk_container_set_border_width (GTK_CONTAINER (cme__frame_nb4), 4);
@@ -2894,7 +2904,7 @@ create_shell_window (GapCmeGlobalParams *gpp)
   gtk_table_attach (GTK_TABLE (table1), cme__mac_label, 0, 1, 0, 1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_misc_set_alignment (GTK_MISC (cme__mac_label), 0, 0.5);
+  gtk_misc_set_alignment (GTK_MISC (cme__mac_label), 0.0, 0.5);
 
   cme__entry_mac = gtk_entry_new ();
   gtk_widget_show (cme__entry_mac);
@@ -2916,7 +2926,7 @@ create_shell_window (GapCmeGlobalParams *gpp)
   gtk_table_attach (GTK_TABLE (table1), cme__label_stb, 0, 1, 1, 2,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_misc_set_alignment (GTK_MISC (cme__label_stb), 0, 0.5);
+  gtk_misc_set_alignment (GTK_MISC (cme__label_stb), 0.0, 0.5);
 
   cme__entry_stb = gtk_entry_new ();
   gtk_widget_show (cme__entry_stb);
@@ -2937,8 +2947,7 @@ create_shell_window (GapCmeGlobalParams *gpp)
   gtk_table_attach (GTK_TABLE (table1), cme__label_debug_flat, 0, 1, 5, 6,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_label_set_justify (GTK_LABEL (cme__label_debug_flat), GTK_JUSTIFY_LEFT);
-  gtk_misc_set_alignment (GTK_MISC (cme__label_debug_flat), 0, 0.5);
+  gtk_misc_set_alignment (GTK_MISC (cme__label_debug_flat), 0.0, 0.5);
 
   cme__entry_debug_flat = gtk_entry_new ();
   gtk_widget_show (cme__entry_debug_flat);
@@ -2952,8 +2961,7 @@ create_shell_window (GapCmeGlobalParams *gpp)
   gtk_table_attach (GTK_TABLE (table1), cme__label_debug_multi, 0, 1, 4, 5,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_label_set_justify (GTK_LABEL (cme__label_debug_multi), GTK_JUSTIFY_LEFT);
-  gtk_misc_set_alignment (GTK_MISC (cme__label_debug_multi), 0, 0.5);
+  gtk_misc_set_alignment (GTK_MISC (cme__label_debug_multi), 0.0, 0.5);
 
   cme__entry_debug_multi = gtk_entry_new ();
   gtk_widget_show (cme__entry_debug_multi);
@@ -2967,7 +2975,7 @@ create_shell_window (GapCmeGlobalParams *gpp)
   gtk_table_attach (GTK_TABLE (table1), cme__label_debug_monitor, 0, 1, 3, 4,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_misc_set_alignment (GTK_MISC (cme__label_debug_monitor), 0, 0.5);
+  gtk_misc_set_alignment (GTK_MISC (cme__label_debug_monitor), 0.0, 0.5);
 
   cme__checkbutton_enc_monitor = gtk_check_button_new_with_label (_("Monitor Frames while Encoding"));
   gtk_widget_show (cme__checkbutton_enc_monitor);
@@ -2985,13 +2993,13 @@ create_shell_window (GapCmeGlobalParams *gpp)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 2, 6);
   gtk_label_set_justify (GTK_LABEL (cme__label_storyboard_helptext), GTK_JUSTIFY_FILL);
-  gtk_misc_set_alignment (GTK_MISC (cme__label_storyboard_helptext), 0, 0.5);
+  gtk_misc_set_alignment (GTK_MISC (cme__label_storyboard_helptext), 0.0, 0.5);
 
   cme__label_nb4 = gtk_label_new (_("Extras"));
   gtk_widget_show (cme__label_nb4);
   gtk_notebook_set_tab_label (GTK_NOTEBOOK (cme__notebook_main), gtk_notebook_get_nth_page (GTK_NOTEBOOK (cme__notebook_main), 3), cme__label_nb4);
 
-  cme__frame3 = gtk_frame_new (_("Output"));
+  cme__frame3 = gimp_frame_new (_("Output"));
   gtk_widget_show (cme__frame3);
   gtk_box_pack_start (GTK_BOX (cme__vbox_main), cme__frame3, TRUE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (cme__frame3), 4);
@@ -3015,7 +3023,7 @@ create_shell_window (GapCmeGlobalParams *gpp)
   gtk_widget_set_usize (cme__button_video, 80, -2);
   gimp_help_set_help_data (cme__button_video, _("Select output videofile via browser"), NULL);
 
-  cme__frame_status = gtk_frame_new (_("status"));
+  cme__frame_status = gimp_frame_new (_("Status"));
   gtk_widget_show (cme__frame_status);
   gtk_box_pack_start (GTK_BOX (cme__vbox_main), cme__frame_status, TRUE, TRUE, 2);
   gtk_container_set_border_width (GTK_CONTAINER (cme__frame_status), 4);
@@ -3029,7 +3037,7 @@ create_shell_window (GapCmeGlobalParams *gpp)
   gtk_table_attach (GTK_TABLE (cme__table_status), cme__label_status, 0, 2, 0, 1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_misc_set_alignment (GTK_MISC (cme__label_status), 0, 0.5);
+  gtk_misc_set_alignment (GTK_MISC (cme__label_status), 0.0, 0.5);
   gtk_misc_set_padding (GTK_MISC (cme__label_status), 2, 0);
 
   cme__progressbar_status = gtk_progress_bar_new ();

@@ -30,4 +30,5 @@ EXTRA_DIST = \
 	gap_vid_api_quicktime.c	\
 	gap_vid_api_util.c	\
 	gap_vid_api_vidindex.c	\
+	gap_vid_api-intl.h	\
 	example.c

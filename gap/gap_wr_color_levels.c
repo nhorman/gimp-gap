@@ -609,7 +609,7 @@ do_dialog (wr_levels_val_t *cuvals)
 
 
   /* the frame */
-  frame1 = gtk_frame_new (_("Color Levels  Adjustments "));
+  frame1 = gimp_frame_new (_("Color Levels  Adjustments "));
   gtk_widget_show (frame1);
   gtk_box_pack_start (GTK_BOX (dialog_vbox1), frame1, TRUE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (frame1), 2);
