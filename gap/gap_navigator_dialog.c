@@ -26,6 +26,7 @@
  */
 
 /* revision history:
+ * gimp    2.1.0a;  2004/06/26  hof: #144649 use NULL for the default cursor as active_cursor
  * gimp    1.3.26a; 2004/01/30  hof: navi_pviews_reset: use the procedure gap_pview_drop_repaint_buffers rather than g_free the pixmap
  * gimp    1.3.25a; 2004/01/21  hof: gap_thumb_file_load_thumbnail now returns th_data with th_bpp == 4
  *                                   (the flatten capabilities were removed) 
@@ -3653,7 +3654,7 @@ navi_dialog_create (GtkWidget* shell, gint32 image_id)
   naviD->dyn_rows = 0;           /* no rows in the dyn table (are added later at 1st resize while creation) */
   naviD->waiting_cursor = FALSE;
   naviD->cursor_wait = gdk_cursor_new (GDK_WATCH);
-  naviD->cursor_acitve = gdk_cursor_new (GDK_TOP_LEFT_ARROW);
+  naviD->cursor_acitve = NULL;   /* NULL: use the default cursor */
   naviD->shell = shell;
   naviD->OpenFrameImagesList  = NULL;
   naviD->OpenFrameImagesCount  = 0;

@@ -32,11 +32,16 @@
 
 #define GAP_MORPH_PLUGIN_NAME    "plug_in_gap_morph"
 
+
 typedef struct GapMorphSubWin  { /* nickname: swp */
   void      *mgup;               /* pointer to parent GapMorphGUIParams struct */
   GtkObject  *x_spinbutton_adj;
   GtkObject  *y_spinbutton_adj;
   GtkWidget  *layer_option_menu;
+  GtkObject  *vscale_adj;
+  GtkObject  *hscale_adj;
+  GtkWidget  *vscale;
+  GtkWidget  *hscale;
   
   GapPView   *pv_ptr;
   gboolean   src_flag;
@@ -63,10 +68,19 @@ typedef struct GapMorphGUIParams  { /* nickname: mgup */
   /* GUI widget pointers */
   GtkWidget  *shell;
 
-  GtkObject  *tween_steps_spinbutton_adj;
+  GtkObject  *num_shapepoints_adj;
+  GtkWidget  *create_tween_layers_checkbutton;  
+  GtkWidget  *multiple_pointsets_checkbutton;  
 
   GapMorphSubWin src_win;
   GapMorphSubWin dst_win;
+
+  GtkObject  *tween_steps_spinbutton_adj;
+  GtkObject  *affect_radius_spinbutton_adj;
+  GtkObject  *gravity_intensity_spinbutton_adj;
+  GtkWidget  *gravity_intensity_spinbutton;
+  GtkWidget  *use_gravity_checkbutton;
+  GtkWidget  *use_fast_wp_selection_checkbutton;
 
   GtkWidget  *wp_filesel;
   gboolean    wp_save_mode;
@@ -86,6 +100,9 @@ typedef struct GapMorphGUIParams  { /* nickname: mgup */
   GtkWidget *op_mode_zoom_toggle;  
   GtkWidget *op_mode_show_toggle;  
 
+  GtkWidget *render_mode_morph_toggle;  
+  GtkWidget *render_mode_warp_toggle;  
+
   GtkObject *curr_point_spinbutton_adj;
   GtkWidget *toal_points_label;
   GtkWidget *warp_info_label;
@@ -97,7 +114,13 @@ typedef struct GapMorphGUIParams  { /* nickname: mgup */
   gdouble   show_in_y;
 
   gint32     num_shapepoints;
-
+  
+  char      *workpoint_file_ptr;
+  GtkWidget *workpoint_file_lower_label;  
+  GtkWidget *workpoint_file_upper_label;  
+  GtkWidget *workpoint_lower_label;  
+  GtkWidget *workpoint_upper_label;
+  
 } GapMorphGUIParams;
 
 

@@ -112,6 +112,7 @@ static void     p_tabw_file_save_as_cb ( GtkWidget *w, GapStbTabWidgets *tabw);
 static void     p_tabw_filename_entry_cb(GtkWidget *widget, GapStbTabWidgets *tabw);
 static void     p_rowpage_spinbutton_cb(GtkEditable     *editable,
                                      GapStbTabWidgets *tabw);
+static void     p_vscale_changed_cb(GtkObject *adj, GapStbTabWidgets *tabw);
 static void     p_single_clip_playback(GapStbFrameWidget *fw);
 static gboolean p_frame_widget_preview_events_cb (GtkWidget *widget,
                              GdkEvent  *event,
@@ -230,6 +231,8 @@ static void     p_create_button_bar(GapStbTabWidgets *tabw
 		   ,gint32 mount_row
                    ,GapStbMainGlobalParams *sgpp
 		   ,gboolean with_open_and_save
+	           ,gint32 mount_vs_col
+		   ,gint32 mount_vs_row
 		   );
 
 
@@ -320,6 +323,7 @@ p_new_stb_tab_widgets(GapStbMainGlobalParams *sgpp, GapStoryMasterType type)
     tabw->frame_with_name = NULL;
     tabw->fw_gtk_table = NULL;
     tabw->rowpage_spinbutton_adj = NULL;
+    tabw->rowpage_vscale_adj = NULL;
     tabw->total_rows_label = NULL;
     
     tabw->pw = NULL;
@@ -1564,8 +1568,39 @@ p_rowpage_spinbutton_cb( GtkEditable     *editable
       p_render_all_frame_widgets(tabw);
     }
   }
+  if(rowpage != (gint32)GTK_ADJUSTMENT(tabw->rowpage_vscale_adj)->value)
+  {
+    gtk_adjustment_set_value(GTK_ADJUSTMENT(tabw->rowpage_vscale_adj), (gdouble)rowpage);
+  }
   
 }  /* end p_rowpage_spinbutton_cb */
+
+
+/* ------------------------------
+ * p_vscale_changed_cb
+ * ------------------------------
+ */
+static void
+p_vscale_changed_cb(GtkObject *adj, GapStbTabWidgets *tabw)
+{
+  gint32  value;
+
+  if(tabw == NULL) { return;}
+
+  if((adj) && (tabw->rowpage_spinbutton_adj))
+  {
+    value = (gint32)GTK_ADJUSTMENT(adj)->value;
+    if(value != tabw->rowpage)
+    {
+      /* set value in the rowpage spinbutton 
+       * (this fires another callback for update of tabw->rowpage;)
+       */
+      gtk_adjustment_set_value(GTK_ADJUSTMENT(tabw->rowpage_spinbutton_adj), (gdouble)value);
+      
+    }
+  }
+  
+}  /* end p_vscale_changed_cb */
 
 
 /* ---------------------------------
@@ -3201,7 +3236,49 @@ p_tabw_update_frame_label (GapStbTabWidgets *tabw, GapStbMainGlobalParams *sgpp)
       gtk_adjustment_set_value(GTK_ADJUSTMENT(tabw->rowpage_spinbutton_adj), (gdouble)l_max_rowpage);
     }
   }
+  if(tabw->rowpage_vscale_adj)
+  {
+    gdouble upper_limit;
+    gdouble lower_limit;
+    gdouble page_increment;
+    gdouble page_size;
 
+    page_size = (gdouble)tabw->rows;
+    page_increment = (gdouble)(page_size / 2);
+    lower_limit = 1.0;
+    upper_limit = l_max_rowpage + page_size;
+
+    if(gap_debug)
+    {
+      printf("\n######rowpage_vscale_adj : %d  tabw->rows:%d\n", (int)l_max_rowpage ,(int)tabw->rows);
+      printf("lower_limit %f\n", (float)lower_limit );
+      printf("upper_limit %f\n", (float)upper_limit );
+      printf("page_size %f\n", (float) page_size);
+      printf("page_increment %f\n", (float)page_increment );
+      printf("value          %f\n", (float)GTK_ADJUSTMENT(tabw->rowpage_vscale_adj)->value );
+    }
+
+    GTK_ADJUSTMENT(tabw->rowpage_vscale_adj)->lower = lower_limit;
+    GTK_ADJUSTMENT(tabw->rowpage_vscale_adj)->upper = upper_limit;
+    GTK_ADJUSTMENT(tabw->rowpage_vscale_adj)->page_increment = page_increment;
+    GTK_ADJUSTMENT(tabw->rowpage_vscale_adj)->page_size = page_size;
+    if(GTK_ADJUSTMENT(tabw->rowpage_vscale_adj)->value > l_max_rowpage)
+    {
+      gtk_adjustment_set_value(GTK_ADJUSTMENT(tabw->rowpage_vscale_adj), (gdouble)l_max_rowpage);
+    }
+
+
+    gtk_widget_queue_draw(tabw->rowpage_vscale);
+  }
+  
+  if(tabw->total_rows_label)
+  {
+    char max_rowpage_txt[40];
+    
+    g_snprintf(max_rowpage_txt, sizeof(max_rowpage_txt), "%d", (int)l_max_rowpage);
+    gtk_label_set_text(GTK_LABEL(tabw->total_rows_label), max_rowpage_txt);
+  }
+ 
   p_widget_sensibility(sgpp);
   
 }  /* end p_tabw_update_frame_label */ 
@@ -4017,7 +4094,8 @@ void  gap_story_dlg_recreate_tab_widgets(GapStbTabWidgets *tabw
 /* -----------------------------
  * p_create_button_bar
  * -----------------------------
- *
+ * create button bar (cut,copy,paste,play and rowpage spinbutton)
+ * and rowpage vscale widgets
  */
 static void
 p_create_button_bar(GapStbTabWidgets *tabw
@@ -4025,6 +4103,8 @@ p_create_button_bar(GapStbTabWidgets *tabw
 		   ,gint32 mount_row
                    ,GapStbMainGlobalParams *sgpp
 		   ,gboolean with_open_and_save
+	           ,gint32 mount_vs_col
+		   ,gint32 mount_vs_row
 		   )
 {
   /* rowpage spinbutton and labels */
@@ -4033,8 +4113,10 @@ p_create_button_bar(GapStbTabWidgets *tabw
   GtkWidget *entry;
   GtkWidget *label;
   GtkWidget *button;
+  GtkWidget *vscale;
   GtkWidget *spinbutton;
   GtkObject *spinbutton_adj;
+  GtkObject *adj;
 
   /* the hbox */
   hbox = gtk_hbox_new (FALSE, 2);
@@ -4211,6 +4293,31 @@ p_create_button_bar(GapStbTabWidgets *tabw
   gtk_widget_show (label);
   tabw->total_rows_label = label;
 
+
+  /* rowpage vscale */
+  adj = gtk_adjustment_new ( tabw->rowpage
+                                       , 1   /* min */
+                                       , 1   /* max */
+                                       , 1, 10, 10);
+  vscale = gtk_vscrollbar_new (GTK_ADJUSTMENT(adj));
+
+  gtk_range_set_update_policy (GTK_RANGE (vscale), GTK_UPDATE_DELAYED); /* GTK_UPDATE_CONTINUOUS */
+
+  gtk_table_attach (GTK_TABLE (tabw->mount_table)
+                  , vscale
+                  , mount_vs_col, mount_vs_col+1
+                  , mount_vs_row, mount_vs_row+1
+                  , (GtkAttachOptions) (0)
+                  , (GtkAttachOptions) (GTK_FILL)
+                  , 0, 0);
+  gtk_signal_connect (GTK_OBJECT (adj), "value_changed",
+                      (GtkSignalFunc)p_vscale_changed_cb,
+                      tabw);
+  gtk_widget_show (vscale);
+    
+  tabw->rowpage_vscale_adj = adj;					   
+  tabw->rowpage_vscale = vscale;					   
+ 
       
 }  /* end p_create_button_bar */
 
@@ -4341,7 +4448,7 @@ gap_storyboard_dialog(GapStbMainGlobalParams *sgpp)
   gtk_widget_show (clp_vbox);
  
   /* mount_table for the cliplist table */
-  table = gtk_table_new (2, 1, FALSE);
+  table = gtk_table_new (2, 2, FALSE);
   gtk_widget_show (table);
   gtk_box_pack_start (GTK_BOX (clp_vbox), table, TRUE, TRUE, 0);
 
@@ -4364,6 +4471,8 @@ gap_storyboard_dialog(GapStbMainGlobalParams *sgpp)
 			 ,1    /* mount_row */
 			 ,sgpp
 			 ,FALSE  /*  with_open_and_save == FALSE */
+			 ,1    /* mount_vs_col */
+			 ,0    /* mount_vs_row */
 			 );
 
 
@@ -4393,7 +4502,7 @@ gap_storyboard_dialog(GapStbMainGlobalParams *sgpp)
 
 
   /* mount_table for the storyboard table */
-  table = gtk_table_new (2, 1, FALSE);
+  table = gtk_table_new (2, 2, FALSE);
   gtk_widget_show (table);
   gtk_box_pack_start (GTK_BOX (stb_vbox), table, TRUE, TRUE, 0);
 
@@ -4417,6 +4526,8 @@ gap_storyboard_dialog(GapStbMainGlobalParams *sgpp)
 			 ,1    /* mount_row */
 			 ,sgpp
 			 ,TRUE  /*  with_open_and_save == FALSE */
+			 ,1    /* mount_vs_col */
+			 ,0    /* mount_vs_row */
 			 );
 
   /* the hbox */

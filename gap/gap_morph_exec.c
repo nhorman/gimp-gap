@@ -1,16 +1,3 @@
-#define K_GRAVITY_POWER 2
-#define K_GRAVITY_RADIUS 125
-//#define K_AFFECT_POWER 1
-#define K_AFFECT_RADIUS  125
-
-#define GAP_MORPH_SECTORS  8
-#define GAP_MORPH_SECTOR_TABSIZE  16
-#define GAP_MORPH_AFFECT_FACTOR  0
-
-// TO check:
-//    p_pixel_warp:  // need better algorithm. the current implementation
-//                   // produces rippled distortions between workpoints
-
 /* gap_morph_exec.c
  * 2004.02.12 hof (Wolfgang Hofer)
  * layer morphing worker procedures
@@ -62,8 +49,41 @@
 #include "gap_morph_exec.h"
 #include "gap_layer_copy.h"
 
+
+/* GAP_MORPH_USE_SIMPLE_PIXEL_WARP is used for development test only
+ * (gives bad quality results, you should NOT enable this option)
+ */
+#undef  GAP_MORPH_USE_SIMPLE_PIXEL_WARP
+//#define  GAP_MORPH_USE_SIMPLE_PIXEL_WARP
+
+#define GAP_MORPH_NEAR_RADIUS  4
+#define GAP_MORPH_FAR_RADIUS  40
+#define GAP_MORPH_TOL_FACT_NEAR  3.0
+#define GAP_MORPH_TOL_FACT_FAR   1.5
+
+#define GAP_MORPH_MAX_SECTORS  24
+
+
+
+typedef struct GapMorphExeLayerstack
+{
+  gint32    *src_layers;
+  gint       src_nlayers;
+  gint32    *dst_layers;
+  gint       dst_nlayers;
+  gint       src1_idx;
+  gint       src2_idx;
+  gint       dst1_idx;
+  gint       dst2_idx;
+
+  gint32 available_wp_sets;
+  GapMorphWarpCoreAPI **tab_wp_sets;
+  
+} GapMorphExeLayerstack;
+
 extern int gap_debug;
 
+static inline gdouble     p_get_tolerance(gdouble dist);
 static void               p_clip_gimp_pixel_fetcher_get_pixel(GimpPixelFetcher *pft
                                    ,GimpDrawable     *drawable
 				   ,gint xi
@@ -82,35 +102,41 @@ static gdouble            p_linear_advance(gdouble total_steps
                                      ,gdouble val_from
                                      ,gdouble val_to
                                      );
-static inline gint32      p_calc_sector(GapMorphWorkPoint *wp, gint32 in_x, gint32 in_y);
-static inline gdouble     p_calc_sqr_distance(GapMorphWorkPoint *wp, gint32 in_x, gint32 in_y);
-static inline gdouble     p_calc_distance(GapMorphWorkPoint *wp, gint32 in_x, gint32 in_y);
-static void               p_pixel_warp_core(GapMorphWorkPoint *wp_list
+static inline gint        p_calc_sector(GapMorphWorkPoint *wp, gdouble dx, gdouble dy);
+static inline gint        p_calc_angle_core(GapMorphWorkPoint *wp, gdouble dx, gdouble dy, gint num_sectors);
+static gint               p_calc_angle(GapMorphWorkPoint *wp, gint32 in_x, gint32 in_y);
+static void               p_pixel_warp_core(GapMorphWarpCoreAPI *wcap
         			      , gint32        in_x
         			      , gint32        in_y
-        			      , gdouble       scale_x
-        			      , gdouble       scale_y
         			      , gdouble *out_pick_x
 				      , gdouble *out_pick_y
-				      , gboolean      printf_flag
         			      );
-static void               p_pixel_warp(GapMorphWorkPoint *wp_list
+static void               p_pixel_warp_pick(GapMorphWarpCoreAPI *wcap
                                       , gint32        in_x
                                       , gint32        in_y
-                                      , GimpPixelFetcher *pixfet
-				      , GimpDrawable     *drawable
-                                      , guchar           *pixel
-                                      , gint              bpp
-                                      , gdouble           scale_x
-                                      , gdouble           scale_y
+				      , gint          set_idx
+				      , gdouble      *out_pick_x
+				      , gdouble      *out_pick_y
+                                      );
+static void               p_pixel_warp_multipick(GapMorphWarpCoreAPI *wcap_1
+                                      , GapMorphWarpCoreAPI *wcap_2
+		                      , gdouble       wp_mix_factor
+                                      , gint32        in_x
+                                      , gint32        in_y
+				      , gdouble      *out_pick_x
+				      , gdouble      *out_pick_y
                                       );
 GapMorphWorkPoint *       p_calculate_work_point_movement(gdouble total_steps
                                ,gdouble current_step
-                               ,GapMorphGlobalParams *mgpp
+			       ,GapMorphWorkPoint *master_list
+			       ,gint32 src_layer_id
+			       ,gint32 dst_layer_id
                                ,gint32 curr_width
                                ,gint32 curr_height
                                ,gboolean forward_move
                                );
+
+static gint32 p_get_tween_steps_and_layerstacks(GapMorphGlobalParams *mgpp, GapMorphExeLayerstack *mlayers);
 
 #define GAP_MORPH_WORKPOINT_FILE_HEADER "GAP-MORPH workpoint file"
 
@@ -126,8 +152,34 @@ typedef struct GapMorphExePickCache
 } GapMorphExePickCache;
 
 #define GAP_MORPH_PCK_CACHE_SIZE 32
-static  GapMorphExePickCache gloabl_pick_cache[GAP_MORPH_PCK_CACHE_SIZE];
-static  gint gloabl_pick_cache_idx;
+static  GapMorphExePickCache gloabl_pick_cache[GAP_MORPH_PCK_CACHE_SIZE][2];
+static  gint gloabl_pick_cache_idx[2];
+
+
+/* ---------------------------------
+ * p_get_tolerance
+ * ---------------------------------
+ */
+static inline gdouble
+p_get_tolerance(gdouble dist)
+{
+  gdouble factor;
+  
+  if(dist <= GAP_MORPH_NEAR_RADIUS)
+  {
+    return(GAP_MORPH_TOL_FACT_NEAR);
+  }
+  if(dist >= GAP_MORPH_FAR_RADIUS)
+  {
+    return(GAP_MORPH_TOL_FACT_FAR);
+  }
+  
+  factor = (dist - GAP_MORPH_NEAR_RADIUS) / GAP_MORPH_FAR_RADIUS;
+  return(  (GAP_MORPH_TOL_FACT_NEAR * (1 -factor)) 
+         + (GAP_MORPH_TOL_FACT_FAR *  factor)
+	);
+}  /* end  p_get_tolerance */
+
 
 /* ---------------------------------
  * gap_moprh_exec_save_workpointfile
@@ -167,6 +219,29 @@ gap_moprh_exec_save_workpointfile(const char *filename
     fprintf(l_fp, "TWEEN-STEPS: %d\n"
                   ,(int)mgup->mgpp->tween_steps
                   );
+    fprintf(l_fp, "AFFECT-RADIUS:");
+    gap_lib_fprintf_gdouble(l_fp, mgup->mgpp->affect_radius, 4, 2, " ");
+    fprintf(l_fp, " # pixels\n");
+
+    fprintf(l_fp, "INTENSITY:");
+    if(mgup->mgpp->use_gravity)
+    {
+      gap_lib_fprintf_gdouble(l_fp, mgup->mgpp->gravity_intensity, 2, 3, " ");
+      fprintf(l_fp, "\n");
+    }
+    else
+    {
+      fprintf(l_fp, "0 # OFF\n");
+    }
+
+    if(mgup->mgpp->use_fast_wp_selection)
+    {
+      fprintf(l_fp, "FAST-WP-SELECT: 1 # TRUE\n");
+    }
+    else
+    {
+      fprintf(l_fp, "FAST-WP-SELECT: 0 # FALSE (better quality)\n");
+    }
 
     gimp_rgb_get_uchar (&mgup->pointcolor, &l_red, &l_green, &l_blue);
     fprintf(l_fp, "POINTCOLOR: %d %d %d\n"
@@ -202,16 +277,21 @@ gap_moprh_exec_save_workpointfile(const char *filename
 }  /* end gap_moprh_exec_save_workpointfile */
 
 
-
 /* ----------------------------------
- * gap_moprh_exec_load_workpointfile
+ * p_load_workpointfile
  * ----------------------------------
- * return root pointer to the loaded workpoint list in SUCCESS
+ * return root pointer to the loaded workpoint list on SUCCESS
  * return NULL if load failed.
  */
 GapMorphWorkPoint *
-gap_moprh_exec_load_workpointfile(const char *filename
-                                 , GapMorphGUIParams *mgup
+p_load_workpointfile(const char *filename
+                                 , gint32 src_layer_id
+				 , gint32 dst_layer_id
+				 , gint32 *tween_steps
+				 , gdouble *affect_radius
+				 , gdouble *gravity_intensity
+				 , gboolean *use_gravity
+				 , gboolean *use_fast_wp_selection
                                  )
 {
 #define POINT_REC_MAX 512
@@ -235,10 +315,10 @@ gap_moprh_exec_load_workpointfile(const char *filename
   gdouble l_farr[MAX_NUMVALUES_PER_LINE];
 
 
-  src_layer_width  = gimp_drawable_width(mgup->mgpp->osrc_layer_id);
-  src_layer_height = gimp_drawable_height(mgup->mgpp->osrc_layer_id);
-  dst_layer_width  = gimp_drawable_width(mgup->mgpp->fdst_layer_id);
-  dst_layer_height = gimp_drawable_height(mgup->mgpp->fdst_layer_id);
+  src_layer_width  = gimp_drawable_width(src_layer_id);
+  src_layer_height = gimp_drawable_height(src_layer_id);
+  dst_layer_width  = gimp_drawable_width(dst_layer_id);
+  dst_layer_height = gimp_drawable_height(dst_layer_id);
   src_scale_x = 1.0;
   src_scale_y = 1.0;
   dst_scale_x = 1.0;
@@ -247,6 +327,8 @@ gap_moprh_exec_load_workpointfile(const char *filename
   wp = NULL;
   if(filename == NULL) return(NULL);
 
+  *use_gravity = FALSE;
+  *use_fast_wp_selection = TRUE;
   l_fp = fopen(filename, "r");
   if(l_fp != NULL)
   {
@@ -298,11 +380,73 @@ gap_moprh_exec_load_workpointfile(const char *filename
            l_cnt = gap_lib_sscan_flt_numbers(l_ptr, &l_farr[0], MAX_NUMVALUES_PER_LINE);
            if(l_cnt >= 1)
            {
-             mgup->mgpp->tween_steps = MAX(1,l_farr[0]);
+             *tween_steps = MAX(1,l_farr[0]);
            }
            else
            {
              printf("** error file: %s is corrupted (TWEEN-STEPS record requires 1 number)\n"
+                   , filename);
+             fclose(l_fp);
+             return (NULL);
+           }
+         }
+
+         l_len = strlen("AFFECT-RADIUS:");
+         if(strncmp(l_ptr, "AFFECT-RADIUS:", l_len) == 0)
+         {
+           l_ptr += l_len;
+           l_cnt = gap_lib_sscan_flt_numbers(l_ptr, &l_farr[0], MAX_NUMVALUES_PER_LINE);
+           if(l_cnt >= 1)
+           {
+             *affect_radius = MAX(0,l_farr[0]);
+           }
+           else
+           {
+             printf("** error file: %s is corrupted (AFFECT-RADIUS record requires 1 number)\n"
+                   , filename);
+             fclose(l_fp);
+             return (NULL);
+           }
+         }
+
+         l_len = strlen("INTENSITY:");
+         if(strncmp(l_ptr, "INTENSITY:", l_len) == 0)
+         {
+           l_ptr += l_len;
+           l_cnt = gap_lib_sscan_flt_numbers(l_ptr, &l_farr[0], MAX_NUMVALUES_PER_LINE);
+           if(l_cnt >= 1)
+           {
+             *gravity_intensity = MAX(0,l_farr[0]);
+	     if(*gravity_intensity > 0.0)
+	     {
+	       *use_gravity = TRUE;
+	     }
+           }
+           else
+           {
+             printf("** error file: %s is corrupted (INTENSITY record requires 1 number)\n"
+                   , filename);
+             fclose(l_fp);
+             return (NULL);
+           }
+         }
+
+         l_len = strlen("FAST-WP-SELECT:");
+         if(strncmp(l_ptr, "FAST-WP-SELECT:", l_len) == 0)
+         {
+           l_ptr += l_len;
+           l_cnt = gap_lib_sscan_flt_numbers(l_ptr, &l_farr[0], MAX_NUMVALUES_PER_LINE);
+           if(l_cnt >= 1)
+           {
+	     *use_fast_wp_selection = FALSE;
+             if(l_farr[0] != 0)
+	     {
+	       *use_fast_wp_selection = TRUE;
+	     }
+           }
+           else
+           {
+             printf("** error file: %s is corrupted (FAST-WP-SELECT record requires 1 number)\n"
                    , filename);
              fclose(l_fp);
              return (NULL);
@@ -349,7 +493,160 @@ gap_moprh_exec_load_workpointfile(const char *filename
     fclose(l_fp);
   }
   return (wp_list);
+}  /* end p_load_workpointfile */
+
+
+/* ----------------------------------
+ * gap_moprh_exec_load_workpointfile
+ * ----------------------------------
+ * return root pointer to the loaded workpoint list on SUCCESS
+ * return NULL if load failed.
+ */
+GapMorphWorkPoint *
+gap_moprh_exec_load_workpointfile(const char *filename
+                                 , GapMorphGUIParams *mgup
+                                 )
+{
+  GapMorphWorkPoint *wp_list;
+  
+  wp_list = p_load_workpointfile(filename
+                                ,mgup->mgpp->osrc_layer_id
+				,mgup->mgpp->fdst_layer_id
+				,&mgup->mgpp->tween_steps
+				,&mgup->mgpp->affect_radius
+				,&mgup->mgpp->gravity_intensity
+				,&mgup->mgpp->use_gravity
+				,&mgup->mgpp->use_fast_wp_selection
+				);
+  return(wp_list);
 }  /* end gap_moprh_exec_load_workpointfile */
+
+/* ---------------------------------
+ * p_load_workpoint_set
+ * ---------------------------------
+ * load workpoint set from file.
+ * in case file not exists or other loading troubles
+ * use the master workpoint list as the default workpoint set.
+ */
+static GapMorphWarpCoreAPI*
+p_load_workpoint_set(const char *filename
+		    ,GapMorphGlobalParams  *mgpp
+		    ,GapMorphExeLayerstack *mlayers
+		    )
+{
+  GapMorphWarpCoreAPI *wps;
+  gint32              tween_steps;
+  
+  wps = g_new(GapMorphWarpCoreAPI ,1);
+  wps->wp_list = p_load_workpointfile(filename
+                                ,mgpp->osrc_layer_id
+				,mgpp->fdst_layer_id
+				,&tween_steps
+				,&wps->affect_radius
+				,&wps->gravity_intensity
+				,&wps->use_gravity
+				,&wps->use_fast_wp_selection
+				);
+  if(wps->wp_list == NULL)
+  {
+    wps->wp_list = mgpp->master_wp_list;
+    wps->affect_radius = mgpp->affect_radius;
+    wps->gravity_intensity = mgpp->gravity_intensity;
+    wps->use_gravity = mgpp->use_gravity;
+    wps->use_fast_wp_selection = mgpp->use_fast_wp_selection;
+  }
+  return(wps);
+}   /* end p_load_workpoint_set */
+
+
+
+/* ---------------------------------
+ * p_build_wp_set_table
+ * ---------------------------------
+ */
+static void
+p_build_wp_set_table(GapMorphGlobalParams  *mgpp
+                    ,GapMorphExeLayerstack *mlayers
+		    )
+{
+  long lower_num;
+  long upper_num;
+  gchar *lower_basename;
+  gchar *upper_basename;
+  gchar *lower_ext;
+  gchar *upper_ext;
+  
+  lower_basename = gap_lib_alloc_basename(mgpp->workpoint_file_lower
+                                         ,&lower_num);
+  upper_basename = gap_lib_alloc_basename(mgpp->workpoint_file_upper
+                                         ,&upper_num);
+  lower_ext = gap_lib_alloc_extension(mgpp->workpoint_file_lower);
+  upper_ext = gap_lib_alloc_extension(mgpp->workpoint_file_upper);
+  
+  if((lower_num != upper_num)
+  && (strcmp(lower_basename, upper_basename) == 0)
+  && (strcmp(lower_ext, upper_ext) == 0))
+  {
+    gchar *wp_filename;
+    gint   ii;
+    gint   wp_idx;
+    
+    
+    mlayers->available_wp_sets = 0;
+    for(ii=MIN(lower_num, upper_num); ii <= MAX(upper_num, lower_num); ii++)
+    {
+      wp_filename = g_strdup_printf("%s%02d%s"
+                                   ,lower_basename
+				   ,(int)ii
+				   ,lower_ext
+				   );
+      if(g_file_test(wp_filename, G_FILE_TEST_EXISTS))
+      {
+        mlayers->available_wp_sets++;
+      }
+      g_free(wp_filename);
+    }
+
+    mlayers->tab_wp_sets = g_new(GapMorphWarpCoreAPI*, mlayers->available_wp_sets);
+    wp_idx = 0;
+    for(ii=MIN(lower_num, upper_num); ii <= MAX(upper_num, lower_num); ii++)
+    {
+      wp_filename = g_strdup_printf("%s%02d%s"
+                                   ,lower_basename
+				   ,(int)ii
+				   ,lower_ext
+				   );
+      if(g_file_test(wp_filename, G_FILE_TEST_EXISTS))
+      {
+        if(wp_idx < mlayers->available_wp_sets)
+	{
+	  if(gap_debug)
+	  {
+	    printf("p_build_wp_set_table: LOADING workpoint file: %s\n", wp_filename);
+	  }
+	  mlayers->tab_wp_sets[wp_idx] = p_load_workpoint_set(wp_filename, mgpp, mlayers);
+	}
+	wp_idx++;
+      }
+      g_free(wp_filename);
+    }
+    
+  }
+  else
+  {
+    /* create 2 workpoint sets from upper and lower file */
+    mlayers->available_wp_sets = 2;
+    mlayers->tab_wp_sets = g_new(GapMorphWarpCoreAPI*, mlayers->available_wp_sets);
+    mlayers->tab_wp_sets[0] = p_load_workpoint_set(mgpp->workpoint_file_lower, mgpp, mlayers);
+    mlayers->tab_wp_sets[1] = p_load_workpoint_set(mgpp->workpoint_file_upper, mgpp, mlayers);
+  }
+  
+  g_free(lower_basename);
+  g_free(upper_basename);
+  g_free(lower_ext);
+  g_free(upper_ext);
+  
+}   /* end p_build_wp_set_table */
 
 
 
@@ -499,8 +796,6 @@ p_linear_advance(gdouble total_steps
 
    delta = ((val_to - val_from) / total_steps) * (total_steps - current_step);
    return (val_to - delta);
-//   return (val_from + delta);
-
 }  /* end p_linear_advance */
 
 /* ----------------------------------
@@ -531,18 +826,11 @@ gap_morph_exec_free_workpoint_list(GapMorphWorkPoint **wp_list)
  * p_calc_sector
  * ---------------------------------
  * return sector index (an integer val 0 upto 7)
- *
- * the sector of the workpoint in relation to the center in_x/in_y
+ * (is much faster than calculating the angle, but restricted to 8 sectors)
  */
-static inline gint32
-p_calc_sector(GapMorphWorkPoint *wp, gint32 in_x, gint32 in_y)
+static inline gint
+p_calc_sector(GapMorphWorkPoint *wp, gdouble dx, gdouble dy)
 {
-  gint32 dx;
-  gint32 dy;
-  
-  dx = in_x - wp->dst_x;
-  dy = in_y - wp->dst_y;
-  
   if(dx >= 0)
   {
     if(dy >= 0)
@@ -575,49 +863,112 @@ p_calc_sector(GapMorphWorkPoint *wp, gint32 in_x, gint32 in_y)
   }
   return(6);              /* 271 - 315 degree */
   
-  
 }  /* end p_calc_sector */
 
-/* ---------------------------------
- * p_calc_sqr_distance
- * ---------------------------------
- * calculate the distance
- * between in_y/in_y and the workpoint
- */
-static inline gdouble
-p_calc_sqr_distance(GapMorphWorkPoint *wp, gint32 in_x, gint32 in_y)
-{
-  gdouble adx, ady;
 
-  adx = abs(in_x - wp->dst_x);
-  ady = abs(in_y - wp->dst_y);
-
-  return ((adx * adx ) + (ady * ady));
-}  /* end p_calc_sqr_distance */
 
 /* ---------------------------------
- * p_calc_distance
+ * p_calc_angle_core
  * ---------------------------------
- * calculate the distance
- * between in_y/in_y and the workpoint
+ * calculate the angle and return as sector (rounded to sectorsize)
  */
-static inline gdouble
-p_calc_distance(GapMorphWorkPoint *wp, gint32 in_x, gint32 in_y)
+static inline gint
+p_calc_angle_core(GapMorphWorkPoint *wp, gdouble dx, gdouble dy, gint num_sectors)
 {
-  gdouble adx, ady;
+  gdouble angle_rad;
+  gdouble sector;
 
-  adx = abs(in_x - wp->dst_x);
-  ady = abs(in_y - wp->dst_y);
+  if(dx == 0)
+  {
+    if(dy < 0)
+    {
+      wp->angle_deg  = 270;
+    }
+    else
+    {
+      if(dy > 0)
+      {
+        wp->angle_deg  = 90;
+      }
+      else
+      {
+        wp->angle_deg  = 0;
+      }
+    }
+  }
+  else
+  {
+    gdouble adx;
+    gdouble ady;
 
-  return (sqrt((adx * adx ) + (ady * ady)));
-}  /* end p_calc_distance */
+    adx = abs(dx);
+    ady = abs(dy);
+
+    angle_rad = atan(ady / adx);
+
+    /* angle_rad = atan(abs(dy) / abs(dx)); */ /* this version crashes sometimes, dont know why ? */
+    
+     
+    wp->angle_deg  = 180.0 * (angle_rad / G_PI);
+
+    if(dx > 0)
+    {
+      if(dy < 0)
+      {
+        wp->angle_deg  = 360 - wp->angle_deg;
+      }
+    }
+    else
+    {
+      if(dy > 0)
+      {
+        wp->angle_deg  = 180 - wp->angle_deg;
+      }
+      else
+      {
+        wp->angle_deg  += 180;
+      }
+    }
+  }
+  
+  sector = (wp->angle_deg / 360.0) * num_sectors;
+  return(CLAMP((gint)sector, 0 , (num_sectors-1)));
+  
+}   /* end p_calc_angle_core */
+
+
+/* ---------------------------------
+ * p_calc_angle
+ * ---------------------------------
+ * calculate the angle (rounded to sectorsize) and distance
+ * between in_x/in_y and the workpoint
+ */
+static gint
+p_calc_angle(GapMorphWorkPoint *wp, gint32 in_x, gint32 in_y)
+{
+  gdouble dx;
+  gdouble dy;
+  
+  if(wp)
+  {
+    dx = in_x - wp->dst_x;
+    dy = in_y - wp->dst_y;
+
+    wp->sqr_dist = (dx * dx ) + (dy * dy);
+    wp->dist = sqrt(wp->sqr_dist);
+
+    return(p_calc_angle_core(wp, dx, dy, GAP_MORPH_MAX_SECTORS));
+  }
+  return (0);
+
+}   /* end p_calc_angle */
 
 
 /* ---------------------------------
  * p_pixel_warp_core
  * ---------------------------------
  *  the movement vektor for in_x/in_y is calculated by mixing
- *  the movement vektors of the nearest workpoints in 8 sektors
+ *  the movement vektors of the nearest workpoints in N sektors
  *  weighted by distances of the workpoint to in_x/in_y
  *
  *  in case there is no workpoint available
@@ -625,62 +976,55 @@ p_calc_distance(GapMorphWorkPoint *wp, gint32 in_x, gint32 in_y)
  *
  */
 static void
-p_pixel_warp_core(GapMorphWorkPoint *wp_list
+p_pixel_warp_core(GapMorphWarpCoreAPI *wcap
             , gint32        in_x
             , gint32        in_y
-            , gdouble       scale_x
-            , gdouble       scale_y
             , gdouble *out_pick_x
 	    , gdouble *out_pick_y
-	    , gboolean      printf_flag
             )
 {
   register GapMorphWorkPoint *wp;
-  GapMorphWorkPoint *wp_sektor_tab[GAP_MORPH_SECTOR_TABSIZE];
+  GapMorphWorkPoint *wp_sektor_tab[GAP_MORPH_MAX_SECTORS];
   gdouble            vektor_x;  /* movement vektor for the current point at in_x/in_y */
   gdouble            vektor_y;
   gdouble            new_vektor_x;
   gdouble            new_vektor_y;
-  gdouble            sqr_dist;
   gdouble            weight;
   gdouble            sum_inv_dist;
+  gdouble            min_sqr_dist;
+  gdouble            min_dist;
   gboolean           direct_hit_flag;
-  gdouble           sqr_affect_radius;
-  gdouble           affect_factor;
-  gdouble           sqr_gravity_radius;
-  gdouble           gravity_power;
-  gint32            sek_idx;
+  gint32             sek_idx;
 
 
-  sqr_affect_radius = (K_AFFECT_RADIUS * K_AFFECT_RADIUS);
-  gravity_power = K_GRAVITY_POWER;
-  sqr_gravity_radius = (K_GRAVITY_RADIUS * K_GRAVITY_RADIUS);
-  affect_factor = GAP_MORPH_AFFECT_FACTOR;
-
-  
   /* reset sektor tab */
-  for(sek_idx=0; sek_idx < GAP_MORPH_SECTOR_TABSIZE; sek_idx++)
+  for(sek_idx=0; sek_idx < wcap->num_sectors; sek_idx++)
   {
     wp_sektor_tab[sek_idx] = NULL;
   }
   
   vektor_x = 0;
   vektor_y = 0;
-  sum_inv_dist = 0;
   direct_hit_flag = FALSE;
+  min_sqr_dist = 99999999;
 
   /* loop1 calculate square distance, 
    * check for direct hits
    * and build sector table (nearest workpoints foreach sector
    */
-  for(wp=wp_list; wp != NULL; wp = (GapMorphWorkPoint *)wp->next)
+  for(wp=wcap->wp_list; wp != NULL; wp = (GapMorphWorkPoint *)wp->next)
   {
-    sqr_dist = p_calc_sqr_distance(wp, in_x, in_y);
-    wp->sqr_dist = sqr_dist;
+    gdouble dx;
+    gdouble dy;
+
+    dx = in_x - wp->dst_x;
+    dy = in_y - wp->dst_y;
     
-    if(sqr_dist <= sqr_affect_radius)
+    wp->sqr_dist =  (dx * dx ) + (dy * dy);
+    
+    if(wp->sqr_dist <= wcap->sqr_affect_radius)
     {
-      if(sqr_dist < 1)
+      if(wp->sqr_dist < 1)
       {
 	new_vektor_x = (wp->src_x - wp->dst_x);
 	new_vektor_y = (wp->src_y - wp->dst_y);
@@ -701,35 +1045,25 @@ p_pixel_warp_core(GapMorphWorkPoint *wp_list
       {
         GapMorphWorkPoint *wp_sek;
 	
-	sek_idx = p_calc_sector(wp, in_x, in_y);
+	if(wcap->num_sectors == 8)
+	{
+	  /* can use the fast calculation optimized for 8 sectors */
+   	  sek_idx = p_calc_sector(wp, dx, dy);
+	}
+	else
+	{
+	  /* use the generic but slow calculation */
+	  sek_idx = p_calc_angle_core(wp, dx, dy, wcap->num_sectors);
+	}
         wp_sek = wp_sektor_tab[sek_idx];
 	
 	if(wp_sek)
 	{
 	  /* there is already a workpoint for this sektor */
-	  if(sqr_dist <= wp_sek->sqr_dist)
+	  if(wp->sqr_dist <= wp_sek->sqr_dist)
 	  {
-            if(FALSE)  /* accept 2.nd nearest point too */
-	    {
-	      GapMorphWorkPoint *wp_sek2;
-
-              wp_sek2 = wp_sektor_tab[GAP_MORPH_SECTORS + sek_idx];
-	      if(wp_sek2)
-	      {
-		sum_inv_dist -= wp_sek2->inv_dist;
-	      }
-	      
-              /* save the existing wp_sek as 2.nd nearest point for this sektor */
-	      wp_sektor_tab[GAP_MORPH_SECTORS + sek_idx] = wp_sek;
-	    }
-	    else
-	    {
-	      sum_inv_dist -= wp_sek->inv_dist;
-	    }
-	  
 	    /* set current workpoint as the new nearest point for this sektor */
 	    wp_sektor_tab[sek_idx] = wp;
-
 	  }
 	  else
 	  {
@@ -742,68 +1076,121 @@ p_pixel_warp_core(GapMorphWorkPoint *wp_list
 	  wp_sektor_tab[sek_idx] = wp;
 	}
 	
-	wp->dist = sqrt(sqr_dist);
-	
-	wp->inv_dist = 1.0 / (wp->dist + (affect_factor * sqr_dist));
-	sum_inv_dist += wp->inv_dist;
-	
-	
+	if(wp->sqr_dist < min_sqr_dist)
+	{
+	  min_sqr_dist = wp->sqr_dist;
+	}
       }
     }
   }
 
   if(!direct_hit_flag)
   {
-    /* loop2: build result vektor as weightened mix of all workpoint vektors */
-    for(sek_idx=0; sek_idx < GAP_MORPH_SECTOR_TABSIZE; sek_idx++)
+    GapMorphWorkPoint *wp_selected_list;
+    gdouble            thres_dist;
+    gdouble            tol_factor;
+
+    sum_inv_dist = 0;
+    wp_selected_list = NULL;
+    min_dist = sqrt(min_sqr_dist);
+    
+    tol_factor = p_get_tolerance(min_dist);
+    thres_dist = min_dist * tol_factor;
+
+    /* build selection list by picking the sektors with near points */
+    for(sek_idx = 0; sek_idx < wcap->num_sectors; sek_idx++)
     {
       wp = wp_sektor_tab[sek_idx];
       if(wp)
       {
-        wp->gravity = 1.0;
-	if(sqr_gravity_radius > 1)
+        wp->dist = sqrt(wp->sqr_dist);
+	if(wp->dist <= thres_dist)
 	{
-	  wp->gravity -= pow((MIN(wp->sqr_dist,sqr_gravity_radius) / sqr_gravity_radius) , gravity_power);
+          if(wcap->printf_flag)
+	  {
+	     /* this is a debug feature for tuning the warp algorithm */
+	     printf("sek: %02d, ang: %.2f, dist:%.3f, thres_dist: %.3f (%.3f) SELECTED\n"
+	           ,(int)sek_idx
+		   ,(float)wp->angle_deg
+		   ,(float)wp->dist
+		   ,(float)thres_dist
+		   ,(float)min_dist
+		   );
+	  }
+	  
+	  /* add point to selection list */
+	  wp->next_selected = wp_selected_list;
+	  wp_selected_list = wp;
+
+          wp->inv_dist = 1.0 / wp->dist;
+          sum_inv_dist += wp->inv_dist;
 	}
-
-	new_vektor_x = (wp->src_x - wp->dst_x);
-	new_vektor_y = (wp->src_y - wp->dst_y);
-
-	weight = (wp->inv_dist / sum_inv_dist) * wp->gravity;
-	vektor_x += (new_vektor_x * weight);
-	vektor_y += (new_vektor_y * weight);
-	if(printf_flag)
+	else
 	{
-          wp->warp_weight = weight;
-          printf("wp->src_x/y:  %.3f / %.3f  wp->dst_x/y: %.3f / %.3f dist:%.3f weight: %.7f vek: %.3f / %.3f \n"
-        	, (float)wp->src_x
-        	, (float)wp->src_y
-        	, (float)wp->dst_x
-        	, (float)wp->dst_y
-        	, (float)wp->dist
-        	, (float)weight
-        	, (float)vektor_x
-        	, (float)vektor_y
-        	);
+          if(wcap->printf_flag)
+	  {
+	     /* this is a debug feature for tuning the warp algorithm */
+	     printf("sek: %02d, ang: %.2f, dist:%.3f, thres_dist: %.3f (%.3f)\n"
+	           ,(int)sek_idx
+		   ,(float)wp->angle_deg
+		   ,(float)wp->dist
+		   ,(float)thres_dist
+		   ,(float)min_dist
+		   );
+	  }
 	}
+      }
+    }    /* end  for(sek_idx..) */
+    
+    /* build result vektor as weightened mix of all selected workpoint vektors */
+    for(wp = wp_selected_list; wp != NULL; wp = wp->next_selected)
+    {
+      wp->gravity = 1.0;
+      if(wcap->use_gravity)
+      {
+	wp->gravity -= pow((MIN(wp->sqr_dist,wcap->sqr_affect_radius) / wcap->sqr_affect_radius) , wcap->gravity_intensity);
+      }
 
+      new_vektor_x = (wp->src_x - wp->dst_x);
+      new_vektor_y = (wp->src_y - wp->dst_y);
+
+      weight = (wp->inv_dist / sum_inv_dist) * wp->gravity;
+      vektor_x += (new_vektor_x * weight);
+      vektor_y += (new_vektor_y * weight);
+      
+      if(wcap->printf_flag)
+      {
+        wp->warp_weight = weight;
+        printf("wp->src_x/y:  %.3f / %.3f  wp->dst_x/y: %.3f / %.3f dist:%.3f weight: %.7f vek: %.3f / %.3f \n"
+	      , (float)wp->src_x
+              , (float)wp->src_y
+              , (float)wp->dst_x
+              , (float)wp->dst_y
+              , (float)wp->dist
+              , (float)weight
+              , (float)vektor_x
+              , (float)vektor_y
+              );
       }
     }
-  }
+  }  /* end direct_hit_flag */
 
-  *out_pick_x = (in_x + vektor_x) * scale_x;
-  *out_pick_y = (in_y + vektor_y) * scale_y;
+  *out_pick_x = (in_x + vektor_x) * wcap->scale_x;
+  *out_pick_y = (in_y + vektor_y) * wcap->scale_y;
 
 }  /* end p_pixel_warp_core */
-
-
-
 
 
 
 /* -----------------------------------
  * gap_morph_exec_get_warp_pick_koords
  * -----------------------------------
+ * this procedure is used for the show option (a debug feature in the GUI)
+ * it is not used for the rendering, but should give an idea
+ * how selecting of relevant workpoints will work and set
+ * the weight values for all workpoints for later display in the GUI
+ * This was the major quality tuning tool for the development of the warp
+ * algorithm
  */
 void
 gap_morph_exec_get_warp_pick_koords(GapMorphWorkPoint *wp_list
@@ -811,11 +1198,17 @@ gap_morph_exec_get_warp_pick_koords(GapMorphWorkPoint *wp_list
                                       , gint32        in_y
 				      , gdouble       scale_x
 				      , gdouble       scale_y
+				      , gboolean      use_fast_wp_selection
+				      , gboolean      use_gravity
+				      , gdouble       gravity_intensity
+				      , gdouble       affect_radius
 				      , gdouble *out_pick_x
 				      , gdouble *out_pick_y
                                       )
 {
-  register GapMorphWorkPoint *wp;
+  GapMorphWarpCoreAPI  wcap_struct;
+  GapMorphWarpCoreAPI *wcap;
+  GapMorphWorkPoint *wp;
   gdouble            pick_x;
   gdouble            pick_y;
   gdouble            sum_pick_x;
@@ -824,10 +1217,27 @@ gap_morph_exec_get_warp_pick_koords(GapMorphWorkPoint *wp_list
   gint yy;
   gint nn;
 
+
+  wcap = &wcap_struct;
+  
+  wcap->sqr_affect_radius = affect_radius * affect_radius;
+  wcap->wp_list = wp_list;
+  wcap->scale_x = scale_x;
+  wcap->scale_y = scale_y;
+  wcap->use_gravity = use_gravity;
+  wcap->gravity_intensity = gravity_intensity;
+  wcap->printf_flag = TRUE;
+  wcap->num_sectors = GAP_MORPH_MAX_SECTORS;
+  if(use_fast_wp_selection)
+  {
+    wcap->num_sectors = 8;
+  }
+  
+  
   for(wp=wp_list; wp != NULL; wp = (GapMorphWorkPoint *)wp->next)
   {
     wp->warp_weight = -1;  /* for debug display in warp_info_label */
-    wp->dist = p_calc_distance(wp, in_x, in_y); /* for debug display in warp_info_label */
+    wp->dist = p_calc_angle(wp, in_x, in_y); /* for debug display in warp_info_label */
     if(wp->dist < 1)
     {
       wp->warp_weight = -4;  /* for debug display in warp_info_label */
@@ -841,20 +1251,29 @@ gap_morph_exec_get_warp_pick_koords(GapMorphWorkPoint *wp_list
      , (int)in_y
      );
   nn = 0;
-  sum_pick_x = 0;		       
-  sum_pick_y = 0;		       
+  sum_pick_x = 0;
+  sum_pick_y = 0;
+
+#ifdef   GAP_MORPH_USE_SIMPLE_PIXEL_WARP
+  p_pixel_warp_core(wcap
+                   ,in_x
+                   ,in_y
+                   ,&pick_x
+                   ,&pick_y
+		   );
+
+
+#else
   for(xx=MAX(0,in_x -3); xx <= in_x +3; xx+=3)
   {
+    wcap->printf_flag = FALSE;
     for(yy=MAX(0,in_y -3); yy <= in_y +3; yy+=3)
     {
-      p_pixel_warp_core(wp_list
+      p_pixel_warp_core(wcap
                        ,xx
                        ,yy
-                       ,scale_x
-                       ,scale_y
                        ,&pick_x
                        ,&pick_y
-		       ,FALSE         /* printf_flag */
 		       );
        sum_pick_x += pick_x;		       
        sum_pick_y += pick_y;
@@ -865,16 +1284,16 @@ gap_morph_exec_get_warp_pick_koords(GapMorphWorkPoint *wp_list
   pick_x = sum_pick_x / (gdouble)nn;
   pick_y = sum_pick_y / (gdouble)nn;
 
-
-  p_pixel_warp_core(wp_list
+  /* this call is for reset wp->angel and other things to the center pick point */
+  wcap->printf_flag = TRUE;
+  p_pixel_warp_core(wcap
                    ,in_x
                    ,in_y
-                   ,scale_x
-                   ,scale_y
                    ,out_pick_x
                    ,out_pick_y
-		   ,TRUE         /* printf_flag */
 		   );
+
+#endif
 
 
 
@@ -891,19 +1310,16 @@ gap_morph_exec_get_warp_pick_koords(GapMorphWorkPoint *wp_list
 
 
 /* ---------------------------------
- * p_pixel_warp
+ * p_pixel_warp_pick
  * ---------------------------------
  */
 static void
-p_pixel_warp(GapMorphWorkPoint *wp_list
+p_pixel_warp_pick(GapMorphWarpCoreAPI *wcap
             , gint32        in_x
             , gint32        in_y
-            , GimpPixelFetcher *pixfet
-	    , GimpDrawable     *drawable
-            , guchar           *pixel
-            , gint              pixel_bpp
-            , gdouble           scale_x
-            , gdouble           scale_y
+	    , gint          set_idx
+	    , gdouble      *out_pick_x
+	    , gdouble      *out_pick_y
             )
 {
   gdouble            pick_x;
@@ -913,16 +1329,14 @@ p_pixel_warp(GapMorphWorkPoint *wp_list
   gint xx;
   gint yy;
   gint nn;
+  GapMorphExePickCache *pcp;
 
 #ifdef GAP_MORPH_USE_SIMPLE_PIXEL_WARP
-        p_pixel_warp_core(wp_list
+        p_pixel_warp_core(wcap
                        ,in_x
                        ,in_y
-                       ,scale_x
-                       ,scale_y
-                       ,&pick_x
-                       ,&pick_y
-		       ,FALSE         /* printf_flag */
+                       ,out_pick_x
+                       ,out_pick_y
 		       );
 
 #else
@@ -931,9 +1345,8 @@ p_pixel_warp(GapMorphWorkPoint *wp_list
    * the selection of relevant near workpoints
    * switches to another set of workpoints with
    * signifikant different movement settings.
-   * This workaround does multiple picks 
-   * and uses the average pick koordinates to compensate
-   * this effect.
+   * To comensate this unwanted effect, we do multiple picks 
+   * and use the average pick koordinates.
    * We use gloabl_pick_cache to reduce the effective
    * number of p_pixel_warp_core calls
    */
@@ -948,12 +1361,13 @@ p_pixel_warp(GapMorphWorkPoint *wp_list
       
       for(ii=0; ii < GAP_MORPH_PCK_CACHE_SIZE; ii++)
       {
-        if ((gloabl_pick_cache[ii].valid)
-	&&  (gloabl_pick_cache[ii].xx == xx)
-	&&  (gloabl_pick_cache[ii].yy == yy))
+        pcp = &gloabl_pick_cache[ii][set_idx];
+        if ((pcp->valid)
+	&&  (pcp->xx == xx)
+	&&  (pcp->yy == yy))
 	{
-	  pick_x = gloabl_pick_cache[ii].pick_x;
-	  pick_y = gloabl_pick_cache[ii].pick_y;
+	  pick_x = pcp->pick_x;
+	  pick_y = pcp->pick_y;
 	  
 	  /* printf("** CACHE HIT\n"); */
 	  break;
@@ -962,49 +1376,98 @@ p_pixel_warp(GapMorphWorkPoint *wp_list
       if(ii == GAP_MORPH_PCK_CACHE_SIZE)
       {
         /* printf("** must do pixel warp\n"); */
-        p_pixel_warp_core(wp_list
+        p_pixel_warp_core(wcap
                        ,xx
                        ,yy
-                       ,scale_x
-                       ,scale_y
                        ,&pick_x
                        ,&pick_y
-		       ,FALSE         /* printf_flag */
 		       );
          /* save pick koords in cache table */
-	 gloabl_pick_cache[gloabl_pick_cache_idx].xx     = xx;
-	 gloabl_pick_cache[gloabl_pick_cache_idx].yy     = yy;
-	 gloabl_pick_cache[gloabl_pick_cache_idx].pick_x = pick_x;
-	 gloabl_pick_cache[gloabl_pick_cache_idx].pick_y = pick_y;
-	 gloabl_pick_cache[gloabl_pick_cache_idx].valid  = TRUE;
-	 gloabl_pick_cache_idx++;
-	 if(gloabl_pick_cache_idx >= GAP_MORPH_PCK_CACHE_SIZE)
+         pcp = &gloabl_pick_cache[gloabl_pick_cache_idx[set_idx]][set_idx];
+
+	 pcp->xx     = xx;
+	 pcp->yy     = yy;
+	 pcp->pick_x = pick_x;
+	 pcp->pick_y = pick_y;
+	 pcp->valid  = TRUE;
+	 gloabl_pick_cache_idx[set_idx]++;
+	 if(gloabl_pick_cache_idx[set_idx] >= GAP_MORPH_PCK_CACHE_SIZE)
 	 {
-	   gloabl_pick_cache_idx = 0;
+	   gloabl_pick_cache_idx[set_idx] = 0;
 	 }
        }
-       sum_pick_x += (pick_x - ((in_x - xx) * scale_x));
-       sum_pick_y += (pick_y - ((in_y - yy) * scale_y));
+       sum_pick_x += (pick_x - ((in_x - xx) * wcap->scale_x));
+       sum_pick_y += (pick_y - ((in_y - yy) * wcap->scale_y));
        nn++;		       
     }
   }
-  pick_x = sum_pick_x / (gdouble)nn;
-  pick_y = sum_pick_y / (gdouble)nn;
+  *out_pick_x = sum_pick_x / (gdouble)nn;
+  *out_pick_y = sum_pick_y / (gdouble)nn;
 
 #endif
+}  /* end p_pixel_warp_pick */
+
+
+/* ---------------------------------
+ * p_pixel_warp_multipick
+ * ---------------------------------
+ */
+static void
+p_pixel_warp_multipick(GapMorphWarpCoreAPI *wcap_1
+                      ,GapMorphWarpCoreAPI *wcap_2
+		      ,gdouble wp_mix_factor
+                      , gint32        in_x
+                      , gint32        in_y
+		      , gdouble      *out_pick_x
+		      , gdouble      *out_pick_y
+                      )
+{
+  gdouble            pick_x_1;
+  gdouble            pick_y_1;
+  gdouble            pick_x_2;
+  gdouble            pick_y_2;
+
+  pick_x_1 = 0;
+  pick_y_1 = 0;
+  pick_x_2 = 0;
+  pick_y_2 = 0;
   
+  if(wp_mix_factor != 0.0)
+  {
+    p_pixel_warp_pick(wcap_1
+	  , in_x
+	  , in_y
+	  , 0                      /* set_idx */
+	  , &pick_x_1
+	  , &pick_y_1
+          );
+  }
   
-  p_bilinear_get_pixel (pixfet, drawable, pick_x, pick_y, pixel, pixel_bpp);
-}  /* end p_pixel_warp */
+  if(wp_mix_factor != 1.0)
+  {
+    p_pixel_warp_pick(wcap_1
+	  , in_x
+	  , in_y
+	  , 1                      /* set_idx */
+	  , &pick_x_2
+	  , &pick_y_2
+          );
+  }
+  
+  *out_pick_x = (pick_x_1 * wp_mix_factor) + (pick_x_2 * (1 - wp_mix_factor));
+  *out_pick_y = (pick_y_1 * wp_mix_factor) + (pick_y_2 * (1 - wp_mix_factor));
+
+}  /* end p_pixel_warp_multipick */
 
 
 /* ---------------------------------
  * p_calculate_work_point_movement
  * ---------------------------------
  * return the newly created workpoint list
- * the list contains duplicates of the input workpoint list
+ * the list contains duplicates of the input workpoint master_list
  * with transformed point koordinates, according to current movement
- * step.
+ * step and scaling.
+ * 
  * forward_move == TRUE:
  *   dup->fdest_x,y := master->fdest_x,y
  *   dup->orsc_x,y  := master->orsc_x,y
@@ -1021,7 +1484,9 @@ p_pixel_warp(GapMorphWorkPoint *wp_list
 GapMorphWorkPoint *
 p_calculate_work_point_movement(gdouble total_steps
                                ,gdouble current_step
-                               ,GapMorphGlobalParams *mgpp
+			       ,GapMorphWorkPoint *master_list
+			       ,gint32 src_layer_id
+			       ,gint32 dst_layer_id
                                ,gint32 curr_width
                                ,gint32 curr_height
                                ,gboolean forward_move
@@ -1039,19 +1504,19 @@ p_calculate_work_point_movement(gdouble total_steps
 
   if(forward_move)
   {
-    scalex = (gdouble)curr_width  / (gdouble)gimp_drawable_width(mgpp->osrc_layer_id);
-    scaley = (gdouble)curr_height / (gdouble)gimp_drawable_height(mgpp->osrc_layer_id);
+    scalex = (gdouble)curr_width  / (gdouble)gimp_drawable_width(src_layer_id);
+    scaley = (gdouble)curr_height / (gdouble)gimp_drawable_height(src_layer_id);
   }
   else
   {
-    scalex = (gdouble)curr_width  / (gdouble)gimp_drawable_width(mgpp->fdst_layer_id);
-    scaley = (gdouble)curr_height / (gdouble)gimp_drawable_height(mgpp->fdst_layer_id);
+    scalex = (gdouble)curr_width  / (gdouble)gimp_drawable_width(dst_layer_id);
+    scaley = (gdouble)curr_height / (gdouble)gimp_drawable_height(dst_layer_id);
   }
   
   wp_list = NULL;
   wp_elem_prev = NULL;
   
-  for(wp_elem_orig = mgpp->master_wp_list; wp_elem_orig != NULL; wp_elem_orig = (GapMorphWorkPoint *)wp_elem_orig->next)
+  for(wp_elem_orig = master_list; wp_elem_orig != NULL; wp_elem_orig = (GapMorphWorkPoint *)wp_elem_orig->next)
   {
     wp_elem_dup = g_new(GapMorphWorkPoint, 1);
     wp_elem_dup->next = NULL;
@@ -1132,12 +1597,20 @@ p_calculate_work_point_movement(gdouble total_steps
  * ---------------------------------
  */
 static void
-p_layer_warp_move (GapMorphWorkPoint *wp_list
-                  , gint32 src_layer_id
-                  , gint32 dst_layer_id
+p_layer_warp_move (GapMorphWorkPoint     *wp_list_1
+                  ,GapMorphWorkPoint     *wp_list_2
+                  , gint32                src_layer_id
+                  , gint32                dst_layer_id
 		  , GapMorphGlobalParams *mgpp
+		  , GapMorphWarpCoreAPI  *p1
+		  , GapMorphWarpCoreAPI  *p2
+		  , gdouble               wp_mix_factor
                   )
 {
+  GapMorphWarpCoreAPI  wcap_struct_1;
+  GapMorphWarpCoreAPI  wcap_struct_2;
+  GapMorphWarpCoreAPI *wcap_1;
+  GapMorphWarpCoreAPI *wcap_2;
   GimpDrawable *src_drawable;
   GimpDrawable *dst_drawable;
   GimpPixelFetcher *src_pixfet;
@@ -1152,13 +1625,56 @@ p_layer_warp_move (GapMorphWorkPoint *wp_list
   gdouble         l_max_progress;
   gdouble         l_progress;
   gint ii;
+  gint num_sectors;
+  gint set_idx;
 
-  /* clear the global cache for picking koordinates */
-  for(ii=0; ii < GAP_MORPH_PCK_CACHE_SIZE; ii++)
+  wcap_1 = &wcap_struct_1;
+  wcap_2 = &wcap_struct_2;
+
+  wcap_1->wp_list = wp_list_1;
+  wcap_2->wp_list = wp_list_2;
+  
+  wcap_1->sqr_affect_radius = mgpp->affect_radius * mgpp->affect_radius;
+  wcap_1->use_gravity = mgpp->use_gravity;
+  wcap_1->gravity_intensity = mgpp->gravity_intensity;
+  if(p1)
   {
-     gloabl_pick_cache[ii].valid = FALSE;
+    wcap_1->sqr_affect_radius = p1->affect_radius * p1->affect_radius;
+    wcap_1->use_gravity = p1->use_gravity;
+    wcap_1->gravity_intensity = p1->gravity_intensity;
   }
-  gloabl_pick_cache_idx = 0;
+  
+  wcap_2->sqr_affect_radius = mgpp->affect_radius * mgpp->affect_radius;
+  wcap_2->use_gravity = mgpp->use_gravity;
+  wcap_2->gravity_intensity = mgpp->gravity_intensity;
+  if(p2)
+  {
+    wcap_2->sqr_affect_radius = p2->sqr_affect_radius * p2->sqr_affect_radius;
+    wcap_2->use_gravity = p2->use_gravity;
+    wcap_2->gravity_intensity = p2->gravity_intensity;
+  }
+  
+
+  wcap_1->printf_flag = FALSE;
+  wcap_2->printf_flag = FALSE;
+
+  num_sectors = GAP_MORPH_MAX_SECTORS;
+  if(mgpp->use_fast_wp_selection)
+  {
+    num_sectors = 8;
+  }
+  wcap_1->num_sectors = num_sectors;
+  wcap_2->num_sectors = num_sectors;
+  
+  /* clear the global cache for picking koordinates */
+  for(set_idx=0; set_idx < 2; set_idx++)
+  {
+    for(ii=0; ii < GAP_MORPH_PCK_CACHE_SIZE; ii++)
+    {
+       gloabl_pick_cache[ii][set_idx].valid = FALSE;
+    }
+    gloabl_pick_cache_idx[set_idx] = 0;
+  }
 
   src_drawable = gimp_drawable_get (src_layer_id);
   dst_drawable = gimp_drawable_get (dst_layer_id);
@@ -1175,6 +1691,11 @@ p_layer_warp_move (GapMorphWorkPoint *wp_list
   /* if src and dst size not equal: caluclate scaling factors x/y */
   scale_x = src_drawable->width / MAX(1,dst_drawable->width);
   scale_y = src_drawable->height / MAX(1,dst_drawable->height);
+
+  wcap_1->scale_x = scale_x;
+  wcap_2->scale_x = scale_x;
+  wcap_1->scale_y = scale_y;
+  wcap_2->scale_y = scale_y;
 
   /* init Pixel Fetcher for source drawable  */
   src_pixfet = gimp_pixel_fetcher_new (src_drawable, FALSE /*shadow*/);
@@ -1206,16 +1727,6 @@ p_layer_warp_move (GapMorphWorkPoint *wp_list
      guint y;
      guchar *dest;
 
-     if(gap_debug)
-     {
-       printf("PR: w: %d  h:%d     x:%d  y:%d\n"
-	   , (int)dstPR.w
-	   , (int)dstPR.h
-	   , (int)dstPR.x
-	   , (int)dstPR.y
-	   );
-     }
-
      dest = dstPR.data;
      for (y = 0; y < dstPR.h; y++)
      {
@@ -1224,14 +1735,39 @@ p_layer_warp_move (GapMorphWorkPoint *wp_list
 	
         for (x = 0; x < dstPR.w; x++)
 	{
+           gdouble            pick_x;
+           gdouble            pick_y;
+	   
 	   l_col = dstPR.x + x;
-           p_pixel_warp(wp_list, l_col, l_row
-                   , src_pixfet
-		   , src_drawable
-                   , pixel_ptr
-                   , dst_drawable->bpp
-                   , scale_x, scale_y
+	   if(mgpp->multiple_pointsets)
+	   {
+	     /* pick based on 2 sets of workpoints */
+             p_pixel_warp_multipick(wcap_1  /// XXXXX list1
+	           , wcap_2                 /// XXXXX list2
+		   , wp_mix_factor
+		   , l_col
+		   , l_row
+		   , &pick_x
+		   , &pick_y
                    );
+	   }
+	   else
+	   {
+	     /* pick based on a single set of workpoints */
+             p_pixel_warp_pick(wcap_1
+	           , l_col
+		   , l_row
+		   , 0                      /* set_idx */
+		   , &pick_x
+		   , &pick_y
+                   );
+	   }
+           p_bilinear_get_pixel (src_pixfet
+	                        ,src_drawable
+				,pick_x
+				,pick_y
+				,pixel_ptr
+				,dst_drawable->bpp);
            pixel_ptr += dstPR.bpp;
 	}
         dest += dstPR.rowstride;
@@ -1266,13 +1802,14 @@ p_layer_warp_move (GapMorphWorkPoint *wp_list
  * ---------------------------------
  * return the newly created tween morphed layer
  */
-gint32
+static gint32
 p_create_morph_tween_frame(gint32 total_steps
                           ,gint32 current_step
                           ,GapMorphGlobalParams *mgpp
+			  ,GapMorphExeLayerstack *mlayers
                           )
 {
-   GimpDrawable *src_drawable;
+   GimpDrawable *dst_drawable;
    gint32  curr_image_id;  /* a temp image of current layer size */
    gint32  bg_layer_id;
    gint32  top_layer_id;
@@ -1280,32 +1817,84 @@ p_create_morph_tween_frame(gint32 total_steps
    gint32  curr_width;
    gint32  curr_height;
    gdouble curr_opacity;
-   GapMorphWorkPoint *curr_wp_list;
+   GapMorphWorkPoint *curr_wp_list_1;
+   GapMorphWorkPoint *curr_wp_list_2;
+   GapMorphWarpCoreAPI *wp_set_1;
+   GapMorphWarpCoreAPI *wp_set_2;
    gint32 src_layer_id;
    gint32 dst_layer_id;
+   gboolean forward_move;
+   gdouble  wp_mix_factor;
    
+   forward_move = TRUE;
    src_layer_id = mgpp->osrc_layer_id;
    dst_layer_id = mgpp->fdst_layer_id;
 
-   src_drawable = gimp_drawable_get (src_layer_id);
+   wp_set_1 = NULL;
+   wp_set_2 = NULL;
+   wp_mix_factor = 1.0;
 
-   /* size of the new frame */
-   curr_width = p_linear_advance((gdouble)total_steps
-                                ,(gdouble)current_step
-                                ,(gdouble)gimp_drawable_width(src_layer_id)
-                                ,(gdouble)gimp_drawable_width(dst_layer_id)
-                                );
-   curr_height = p_linear_advance((gdouble)total_steps
-                                ,(gdouble)current_step
-                                ,(gdouble)gimp_drawable_height(src_layer_id)
-                                ,(gdouble)gimp_drawable_height(dst_layer_id)
-                                );
+   if(mgpp->create_tween_layers)
+   {
+     /* size of the new frame */
+     curr_width = p_linear_advance((gdouble)total_steps
+                                  ,(gdouble)current_step
+                                  ,(gdouble)gimp_drawable_width(src_layer_id)
+                                  ,(gdouble)gimp_drawable_width(dst_layer_id)
+                                  );
+     curr_height = p_linear_advance((gdouble)total_steps
+                                  ,(gdouble)current_step
+                                  ,(gdouble)gimp_drawable_height(src_layer_id)
+                                  ,(gdouble)gimp_drawable_height(dst_layer_id)
+                                  );
+   }
+   else
+   {
+     gint ii;
+     
+     ii = mlayers->dst1_idx - (current_step -1);
+     
+     /* operate on existing destination layers */
+     dst_layer_id = mlayers->dst_layers[ii];
+     curr_width = gimp_drawable_width(dst_layer_id);
+     curr_height = gimp_drawable_height(dst_layer_id);
+     
+     ii = p_linear_advance((gdouble)total_steps
+                                  ,(gdouble)current_step
+                                  ,(gdouble)mlayers->src1_idx
+                                  ,(gdouble)mlayers->src2_idx
+                                  );
 
+     /* in this case also operate with changing source layers (if there are more than one) */
+     src_layer_id = mlayers->src_layers[ii];
+   }
+
+   if((mgpp->multiple_pointsets)
+   && (mlayers->available_wp_sets > 1))
+   {
+     gint wps_idx;
+     gint wps_idx_2;
+     gdouble wp_stepspeed;
+     gdouble ref;
+     
+     wp_stepspeed = (gdouble)(mlayers->available_wp_sets -1) / (gdouble)MIN((total_steps -1),1);
+     ref = (gdouble)((gdouble)(current_step -1) * wp_stepspeed);
+     wps_idx = (gint)ref;
+     wps_idx_2 = MIN(wps_idx+1, (mlayers->available_wp_sets -1));
+
+     wp_set_1 = mlayers->tab_wp_sets[wps_idx];
+     wp_set_2 = mlayers->tab_wp_sets[wps_idx_2];
+     wp_mix_factor = ref - (gdouble)wps_idx;
+   }
+
+
+   dst_drawable = gimp_drawable_get (dst_layer_id);
+   
    /* create the tween frame image */
    curr_image_id = gimp_image_new(curr_width, curr_height, GIMP_RGB);
 
    /* add empty BG layer */
-   if(src_drawable->bpp < 3)
+   if(dst_drawable->bpp < 3)
    {
      bg_layer_id = gimp_layer_new(curr_image_id, "bg_morph_layer"
                                , curr_width
@@ -1341,53 +1930,149 @@ p_create_morph_tween_frame(gint32 total_steps
                                , GIMP_NORMAL_MODE
                                );
    gimp_image_add_layer(curr_image_id, top_layer_id, 0);
+
    
-   /* workpoint settings for sc_layer */
-   curr_wp_list = p_calculate_work_point_movement((gdouble)total_steps
-                                                 ,(gdouble)current_step
-                                                 ,mgpp
-                                                 ,curr_width
-                                                 ,curr_height
-                                                 ,TRUE    /* forward_move */
-                                                 );
-                                                 
-   /* warp the BG layer */
-   p_layer_warp_move ( curr_wp_list
-                     , src_layer_id
-                     , bg_layer_id
-		     , mgpp
-                     );
 
-   gap_morph_exec_free_workpoint_list(&curr_wp_list);
 
-   if(mgpp->warp_and_morph_mode == FALSE)
+   if(!mgpp->render_mode == GAP_MORPH_RENDER_MODE_WARP)
    {
-     /* for warp only mode all is done at this point */
-     return(bg_layer_id);
+     if((wp_set_1) && (wp_set_2))
+     {
+       /* multi workpoint settings for src_layer */
+       curr_wp_list_1 = p_calculate_work_point_movement((gdouble)total_steps
+                                                     ,(gdouble)current_step
+                                                     ,wp_set_1->wp_list
+						     ,mgpp->osrc_layer_id
+						     ,mgpp->fdst_layer_id
+                                                     ,curr_width
+                                                     ,curr_height
+                                                     ,forward_move
+                                                     );
+
+       curr_wp_list_2 = p_calculate_work_point_movement((gdouble)total_steps
+                                                     ,(gdouble)current_step
+                                                     ,wp_set_2->wp_list
+						     ,mgpp->osrc_layer_id
+						     ,mgpp->fdst_layer_id
+                                                     ,curr_width
+                                                     ,curr_height
+                                                     ,forward_move
+                                                     );
+
+       /* warp the BG layer */
+       p_layer_warp_move ( curr_wp_list_1
+                         , curr_wp_list_2
+                	 , src_layer_id
+                	 , bg_layer_id
+			 , mgpp
+			 , wp_set_1
+			 , wp_set_2
+			 , wp_mix_factor
+                	 );
+
+       gap_morph_exec_free_workpoint_list(&curr_wp_list_1);
+       gap_morph_exec_free_workpoint_list(&curr_wp_list_2);
+     }
+     else
+     {
+       /* simple workpoint settings for src_layer */
+       curr_wp_list_1 = p_calculate_work_point_movement((gdouble)total_steps
+                                                     ,(gdouble)current_step
+                                                     ,mgpp->master_wp_list
+						     ,mgpp->osrc_layer_id
+						     ,mgpp->fdst_layer_id
+                                                     ,curr_width
+                                                     ,curr_height
+                                                     ,forward_move
+                                                     );
+
+       /* warp the BG layer */
+       p_layer_warp_move ( curr_wp_list_1
+                         , NULL
+                	 , src_layer_id
+                	 , bg_layer_id
+			 , mgpp
+			 , NULL
+			 , NULL
+			 , wp_mix_factor
+                	 );
+
+       gap_morph_exec_free_workpoint_list(&curr_wp_list_1);
+     }
+     forward_move = FALSE;
+     mgpp->master_progress += mgpp->layer_progress_step;
+   }
+   
+   if((wp_set_1) && (wp_set_2))
+   {
+     /* milti workpoint settings for sc_layer */
+     curr_wp_list_1 = p_calculate_work_point_movement((gdouble)total_steps
+                                                   ,(gdouble)current_step
+                                                   ,wp_set_1->wp_list
+						   ,mgpp->osrc_layer_id
+						   ,mgpp->fdst_layer_id
+                                                   ,curr_width
+                                                   ,curr_height
+                                                   ,forward_move
+                                                   );
+     
+     curr_wp_list_2 = p_calculate_work_point_movement((gdouble)total_steps
+                                                   ,(gdouble)current_step
+                                                   ,wp_set_2->wp_list
+						   ,mgpp->osrc_layer_id
+						   ,mgpp->fdst_layer_id
+                                                   ,curr_width
+                                                   ,curr_height
+                                                   ,forward_move
+                                                   );
+     
+     /* warp the TOP layer */
+     p_layer_warp_move ( curr_wp_list_1
+                       , curr_wp_list_2
+                       , dst_layer_id
+                       , top_layer_id
+		       , mgpp
+		       , wp_set_1
+		       , wp_set_2
+		       , wp_mix_factor
+                       );
+
+     gap_morph_exec_free_workpoint_list(&curr_wp_list_1);
+     gap_morph_exec_free_workpoint_list(&curr_wp_list_2);
+   }
+   else
+   {
+     /* simple workpoint settings for sc_layer */
+     curr_wp_list_1 = p_calculate_work_point_movement((gdouble)total_steps
+                                                   ,(gdouble)current_step
+                                                   ,mgpp->master_wp_list
+						   ,mgpp->osrc_layer_id
+						   ,mgpp->fdst_layer_id
+                                                   ,curr_width
+                                                   ,curr_height
+                                                   ,forward_move
+                                                   );
+
+     /* warp the TOP layer */
+     p_layer_warp_move ( curr_wp_list_1
+                       , NULL
+                       , dst_layer_id
+                       , top_layer_id
+		       , mgpp
+		       , NULL
+		       , NULL
+		       , wp_mix_factor
+                       );
+
+     gap_morph_exec_free_workpoint_list(&curr_wp_list_1);
    }
 
-   /* workpoint settings for sc_layer */
-   curr_wp_list = p_calculate_work_point_movement((gdouble)total_steps
-                                                 ,(gdouble)current_step
-                                                 ,mgpp
-                                                 ,curr_width
-                                                 ,curr_height
-                                                 ,FALSE /* no forward move */
-                                                 );
-   
-   /* warp the TOP layer */
-   p_layer_warp_move ( curr_wp_list
-                     , dst_layer_id
-                     , top_layer_id
-		     , mgpp
-                     );
 
-   gap_morph_exec_free_workpoint_list(&curr_wp_list);
-
-
-// XXXX /* debug show image and stop before merge */
-//gimp_display_new(curr_image_id);
-//return -1;
+   if(mgpp->render_mode == GAP_MORPH_RENDER_MODE_WARP)
+   {
+     /* for warp only mode all is done at this point */
+     return(top_layer_id);
+   }
 
    /* merge BG and TOP Layer (does mix opacity according to current step) */
    merged_layer_id = 
@@ -1397,6 +2082,121 @@ p_create_morph_tween_frame(gint32 total_steps
 
 }  /* end p_create_morph_tween_frame  */
 
+
+/* ---------------------------------
+ * p_get_tween_steps_and_layerstacks
+ * ---------------------------------
+ * get layerstack for both src and dst
+ * 
+ * return the constraint tween_steps value
+ * when operating on existing destination layers
+ */
+static gint32
+p_get_tween_steps_and_layerstacks(GapMorphGlobalParams *mgpp, GapMorphExeLayerstack *mlayers)
+{
+  gint32 src_image_id;
+  gint32 dst_image_id;
+  gint32 tween_steps;
+  gint32 ii;
+  
+  tween_steps = 0;
+  mlayers->src_nlayers = 0;
+  mlayers->src_layers = NULL;
+  mlayers->dst_nlayers = 0;
+  mlayers->dst_layers = NULL;
+
+  mlayers->src1_idx = -1;
+  mlayers->src2_idx = -1;
+  mlayers->dst1_idx = -1;
+  mlayers->dst2_idx = -1;
+  src_image_id = -1;
+  dst_image_id = -1;
+
+
+  
+  if(mgpp->osrc_layer_id >= 0)
+  {
+    src_image_id = gimp_drawable_get_image(mgpp->osrc_layer_id);
+    
+    mlayers->src_layers = gimp_image_get_layers (src_image_id
+                                             ,&mlayers->src_nlayers
+				             );
+    for(ii=0; ii < mlayers->src_nlayers; ii++)
+    {
+      if(gap_debug) printf("src: id[%d]: %d\n", (int)ii, (int)mlayers->src_layers[ii] );
+      if(mlayers->src_layers[ii] == mgpp->osrc_layer_id)
+      {
+        mlayers->src1_idx = ii;  /* src at 1.st step */
+        mlayers->src2_idx = ii;  /* src at last step */
+	break;
+      }
+    }
+  }
+  
+  if(mgpp->fdst_layer_id >= 0)
+  {
+    tween_steps = mgpp->tween_steps;
+    
+    dst_image_id = gimp_drawable_get_image(mgpp->fdst_layer_id);
+    mlayers->dst_layers = gimp_image_get_layers (dst_image_id
+                                             ,&mlayers->dst_nlayers
+				             );
+    for(ii=0; ii < mlayers->dst_nlayers; ii++)
+    {
+
+      if(gap_debug) printf("dst: id[%d]: %d\n", (int)ii, (int)mlayers->dst_layers[ii] );
+
+      if(mlayers->dst_layers[ii] == mgpp->fdst_layer_id)
+      {
+        mlayers->dst2_idx = ii;  /* dst at last step */
+	break;
+      }
+    }
+  }
+
+  if(mgpp->create_tween_layers)
+  {
+    mlayers->dst1_idx = mlayers->dst2_idx + (tween_steps -1);
+    return(tween_steps);
+  }
+  
+  if(mgpp->render_mode == GAP_MORPH_RENDER_MODE_WARP)
+  {
+    if(dst_image_id == src_image_id)
+    {
+      if(mlayers->dst2_idx > mlayers->src1_idx)
+      {
+        gint32 tmp;
+        /* source layer is above the destination layer
+	 * in this case swap src with dst layer
+	 */
+	tmp = mgpp->fdst_layer_id;
+	mgpp->fdst_layer_id = mgpp->osrc_layer_id;
+	mgpp->osrc_layer_id = tmp;
+	
+	tmp = mlayers->dst2_idx;
+	mlayers->dst2_idx = mlayers->src1_idx;
+	mlayers->src1_idx = tmp;
+	mlayers->src2_idx = tmp;
+      }
+      tween_steps = 1 + (mlayers->src1_idx - mlayers->dst2_idx );
+    }
+    else
+    {
+      tween_steps = MIN(tween_steps, (mlayers->dst_nlayers - mlayers->dst2_idx) );
+    }
+  }
+
+  mlayers->dst1_idx = mlayers->dst2_idx + (tween_steps -1);
+  if(mgpp->render_mode == GAP_MORPH_RENDER_MODE_WARP)
+  {
+    mgpp->osrc_layer_id = mlayers->dst_layers[mlayers->dst1_idx];
+  }
+  
+  mlayers->src1_idx = MIN((mlayers->src2_idx + (tween_steps -1)) , (mlayers->src_nlayers -1));
+
+  return(tween_steps);
+}   /* end p_get_tween_steps_and_layerstacks */
 
 
 /* ---------------------------------
@@ -1414,6 +2214,20 @@ gap_morph_execute(GapMorphGlobalParams *mgpp)
   gint32 cp_layer_id;
   gint32 dst_image_id;
   gint32 dst_stack_position;
+  GapMorphExeLayerstack mlayers_struct;
+  GapMorphExeLayerstack *mlayers;
+  
+  mlayers = &mlayers_struct;
+  mlayers->tab_wp_sets = NULL;
+  mlayers->available_wp_sets = 0;
+  
+  mgpp->tween_steps = p_get_tween_steps_and_layerstacks(mgpp, mlayers);
+  
+  if(mgpp->multiple_pointsets)
+  {
+    /* check for available workpointfile sets and load them */
+    p_build_wp_set_table(mgpp ,mlayers);
+  }
   
   if(gap_debug) printf("gap_morph_execute: START src_layer:%d dst_layer:%d  tween_steps:%d\n"
          ,(int)mgpp->osrc_layer_id
@@ -1421,18 +2235,17 @@ gap_morph_execute(GapMorphGlobalParams *mgpp)
          ,(int)mgpp->tween_steps
          );
 
-  mgpp->warp_and_morph_mode = TRUE;
   if(mgpp->osrc_layer_id == mgpp->fdst_layer_id)
   {
      /* for identical layers we do only warp
-      * (fading identical images makes no sense)
+      * (fading identical images makes no sense, force warp only mode)
       */
-    mgpp->warp_and_morph_mode = FALSE;
+    mgpp->render_mode = GAP_MORPH_RENDER_MODE_WARP;
   }
 
   if(mgpp->do_progress)
   {
-    if(mgpp->warp_and_morph_mode)
+    if(mgpp->render_mode == GAP_MORPH_RENDER_MODE_MORPH)
     {
       gimp_progress_init(_("creating morph tween layers..."));
     }
@@ -1478,7 +2291,7 @@ gap_morph_execute(GapMorphGlobalParams *mgpp)
   mgpp->master_progress = 0.0;
   mgpp->layer_progress_step = 0.5 / (gdouble)(MAX(1, last_step));
 
-  if(mgpp->warp_and_morph_mode == FALSE)
+  if(mgpp->render_mode == GAP_MORPH_RENDER_MODE_WARP)
   {
     /* warp_only mode (equal layer)
      * must do one extra step to render the final distortion step
@@ -1497,6 +2310,7 @@ gap_morph_execute(GapMorphGlobalParams *mgpp)
     new_layer_id = p_create_morph_tween_frame(total_steps
                           ,current_step
                           ,mgpp
+			  ,mlayers
                           );
     if(new_layer_id < 0)
     {
@@ -1508,17 +2322,28 @@ gap_morph_execute(GapMorphGlobalParams *mgpp)
       gint32 tween_image_id;
       gint   l_src_offset_x, l_src_offset_y;    /* layeroffsets as they were in src_image */
       
-      cp_layer_id = gap_layer_copy_to_dest_image(dst_image_id
-                                   ,new_layer_id
-                                   ,100.0           /* Opacity */
-                                   ,0               /* NORMAL */
-                                   ,&l_src_offset_x
-                                   ,&l_src_offset_y
-                                   );
-      gimp_image_add_layer(dst_image_id
-                          , cp_layer_id
-                          , dst_stack_position
-                          );
+      if(mgpp->create_tween_layers)
+      {
+	cp_layer_id = gap_layer_copy_to_dest_image(dst_image_id
+                                     ,new_layer_id
+                                     ,100.0           /* Opacity */
+                                     ,0               /* NORMAL */
+                                     ,&l_src_offset_x
+                                     ,&l_src_offset_y
+                                     );
+	gimp_image_add_layer(dst_image_id
+                            , cp_layer_id
+                            , dst_stack_position
+                            );
+      }
+      else
+      {
+        gint ii;
+
+        /* replace content of current dst_layer[ii] by content of new_layer_id */
+        ii = mlayers->dst1_idx - (current_step -1);
+	gap_layer_copy_content(mlayers->dst_layers[ii], new_layer_id);
+      }
       tween_image_id = gimp_drawable_get_image(new_layer_id);
       gimp_image_delete(tween_image_id);
     }

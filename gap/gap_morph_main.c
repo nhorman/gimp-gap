@@ -68,8 +68,18 @@ static GapMorphGlobalParams global_params =
 , -1          /* gint32  osrc_layer_id */
 , NULL        /* GapMorphWorkPoint  *master_wp_list */
 
-
-, "\0"        /* char workpoint_file[1024] */
+, "\0"        /* char workpoint_file_lower[1024] */
+, "\0"        /* char workpoint_file_upper[1024] */
+, TRUE        /* gboolean            create_tween_layers */
+, FALSE       /* gboolean            multiple_pointsets */
+, TRUE        /* gboolean            use_fast_wp_selection */
+, FALSE       /* gboolean            use_gravity */
+, 2.0         /* gdouble             gravity_intensity */
+, 100.0       /* gdouble             affect_radius */
+, GAP_MORPH_RENDER_MODE_MORPH  /* gint32 render_mode */
+, FALSE       /* gboolean            do_progress */
+, 0.0         /* gdouble             master_progress */
+, 0.0         /* gdouble             layer_progress_step */
 };
 
 

@@ -26,6 +26,7 @@
  */
 
 /* revision history:
+ * gimp    2.1.0a;  2004/06/26  hof: #144649 use NULL for the default cursor as active_cursor
  * gimp    2.0.1a;  2004/05/01  hof: proc: mov_dialog init mgp->drawable with temporary image (pvals->tmp_image_id)
  *                                   this shows a valid copy of the dest frames at startup
  *                                   (from where the move path  plug-in was invoked)
@@ -513,7 +514,7 @@ long      gap_mov_dlg_move_dialog    (GapMovData *mov_ptr)
   mgp->keyframe_adj = NULL;
   mgp->pv_ptr = NULL;
   mgp->cursor_wait = gdk_cursor_new (GDK_WATCH);
-  mgp->cursor_acitve = gdk_cursor_new (GDK_TOP_LEFT_ARROW);
+  mgp->cursor_acitve = NULL; /* use the default cursor */
 
   pvals = mov_ptr->val_ptr;
 

@@ -35,6 +35,12 @@
 #include <libgimp/gimpui.h>
 #include "gap_pview_da.h"
 
+/* render_mode Radio Buttons */
+#define   GAP_MORPH_RENDER_MODE_MORPH    0
+#define   GAP_MORPH_RENDER_MODE_WARP     1    
+
+#define   GAP_MORPH_WORKPOINT_FILENAME_MAX_LENGTH     1024 
+
 typedef struct GapMorphWorkPoint { /* nickname: wp */
      gdouble fdst_x;   /* final dest koord (as set by user for last dest. frame) */
      gdouble fdst_y;
@@ -54,9 +60,8 @@ typedef struct GapMorphWorkPoint { /* nickname: wp */
      gdouble sqr_dist;
      gdouble dist;
      gdouble inv_dist;    /* 1 / sqr_distance */
+     gdouble angle_deg;
      void *next_selected;
-
-
      
   } GapMorphWorkPoint;
 
@@ -68,12 +73,27 @@ typedef struct GapMorphGlobalParams  { /* nickname: mgpp */
   gint32              tween_steps;
   gint32              fdst_layer_id;
   gint32              osrc_layer_id;
+
+
   GapMorphWorkPoint  *master_wp_list;
 
+  char                workpoint_file_lower[GAP_MORPH_WORKPOINT_FILENAME_MAX_LENGTH];
+  char                workpoint_file_upper[GAP_MORPH_WORKPOINT_FILENAME_MAX_LENGTH];
 
-  char                workpoint_file[1024];
+  gboolean            create_tween_layers;       /* FALSE: operate on existing layers only */
+  gboolean            multiple_pointsets;        /* FALSE: use the default workpointset master_wp_list
+                                                  * TRUE: use lower_wp_list and upper_wp_list
+						  *       foreach handled frame the
+						  *       lower and upper list are fetched from 
+						  *       best matching workpointfile.
+						  *       (using the numberpart of the filename)
+						  */
+  gboolean            use_fast_wp_selection;           /* TRUE: */
+  gboolean            use_gravity;           /* TRUE: */
+  gdouble             gravity_intensity;     /* 1.0 upto 5 (gravity power) */
+  gdouble             affect_radius;         /* distortion pixelradius (0 == no gravity) */
 
-  gboolean            warp_and_morph_mode;
+  gint32              render_mode;
   gboolean            do_progress;
   gdouble             master_progress;
   gdouble             layer_progress_step;
@@ -81,6 +101,21 @@ typedef struct GapMorphGlobalParams  { /* nickname: mgpp */
 
 } GapMorphGlobalParams;
 
+typedef struct GapMorphWarpCoreAPI  { /* nickname: wcap */
+  GapMorphWorkPoint *wp_list;
+  gboolean      use_fast_wp_selection;
+  gboolean      use_gravity;
+  gdouble       gravity_intensity;
+  gdouble       affect_radius;         /* distortion pixelradius (0 == no gravity) */
+  gdouble       sqr_affect_radius;
+  
+  
+  gdouble       scale_x;
+  gdouble       scale_y;
+  gboolean      printf_flag;
+  gint          num_sectors;  /* 8 (fast) or 24 quality algorithm */
+  
+}  GapMorphWarpCoreAPI;
 
 #endif
 

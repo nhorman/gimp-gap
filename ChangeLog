@@ -1,11 +1,65 @@
+2004-07-11  Wolfgang Hofer <hof@gimp.org>
+
+	MORPH: added hscale/vscale widgets for preview scrolling,
+	FitZoom and Swap Buttons
+	Radius and Intensity Spinbutton widgets
+	checkbutton for Optional fast or quality workpoint selection.
+	implemented rendering with multiple_pointsets.
+	
+	STORYBOARD: added rowpage vscale widget for scrolling
+	
+	* gap/gap_morph_dialog.c [.h]
+	* gap/gap_morph_exec.c [.h]
+	* gap/gap_morph_main.c [.h]
+	
+	* gap/gap_story_dialog.c
+	* gap/gap_story_main.h
+	
+2004-06-28  Wolfgang Hofer <hof@gimp.org>
+
+	frames_to_multilayer: do not force save of current image
+        and use gimp_image_duplicate for the current frame.
+        this is faster, and avoids the "not using xcf" dialog
+        for this plug-in when working with other imagefile formats.
+	(this is only only one step to solve # 125977)
+	* gap/gap_range_ops.c 
+
+2004-06-26  Wolfgang Hofer <hof@gimp.org>
+
+	#144649 use NULL rather than GDK_TOP_LEFT_ARROW
+	to get the default cursor as active_cursor
+	* gap/gap_navigator_dialog.c
+	* gap/gap_bluebox.c
+	* gap/gap_mov_dialog.c
+	
+2004-06-20  Wolfgang Hofer <hof@gimp.org>
+
+	MORPH: added render_mode radiobuttons, shape_points spinbutton
+	Optional work on existing Layers (CreateLayers checkbutton)
+	Optional work with multiple pointsets,
+	and multiple_pointset label widgets in the Warp/Morp dialog.
+	(rendering with multiple_pointsets is not implemented yet)
+	
+	changed pixel_warp algorithm
+	
+	use more precise constant G_PI instead of 3.14159
+	
+	* gap/gap_morph_dialog.c [.h]
+	* gap/gap_morph_exec.c [.h]
+	* gap/gap_morph_main.c [.h]
+	
+	* gap/gap_mov_exec.c
+	* gap/gap_pdb_calls.c
+
 2004-06-14  Sven Neumann  <sven@gimp.org>
 
 	* configure.in: some minor cleanup, still doesn't compile for me.
 
 2004-06-12  Wolfgang Hofer <hof@gimp.org>
+
 	Added new features for GIMP-GAP-2.1 
-	(some of the new features and dialogs are not completely implemented yet
-	and need more testing and better GUI support)
+	(some of the new features and dialogs are not completely
+	implemented yet and need more testing and better GUI support)
 	
 	
 	- Added Storyboard dialog. 

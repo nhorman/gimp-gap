@@ -26,6 +26,7 @@
  */
 
 /* revision history:
+ * gimp    2.1.0a;  2004/06/26  hof: #144649 use NULL for the default cursor as active_cursor
  * gimp    1.3.23b; 2003/12/06  hof: added mode GAP_BLUBOX_THRES_ALL
  * gimp    1.3.23a; 2003/11/26  hof: follow API changes for gimp_dialog_new
  * gimp    1.3.20d; 2003/10/14  hof: creation
@@ -204,7 +205,7 @@ gap_bluebox_dialog(GapBlueboxGlobalParams *bbp)
 
   bbp->run_flag = FALSE;
   bbp->cursor_wait = gdk_cursor_new (GDK_WATCH);
-  bbp->cursor_acitve = gdk_cursor_new (GDK_TOP_LEFT_ARROW);
+  bbp->cursor_acitve = NULL; /* use the default cursor */
 
   gap_bluebox_create_dialog(bbp);
   gtk_widget_show (bbp->shell);

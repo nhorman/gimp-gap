@@ -32,6 +32,10 @@
  */
 
 /* revision history
+ * 2.1.0a;  2004/04/26   hof: frames_to_multilayer: do not force save of current image
+ *                            and use gimp_image_duplicate for the current frame
+ *                            works faster, and avoid the "not using xcf" dialog (# 125977)
+ *                            for this plug-in when working with other imagefile formats.
  * 1.3.25a; 2004/01/21   hof: message text fixes (# 132030)
  * 1.3.20d; 2003/10/09   hof: sourcecode cleanup,
  *                            extended p_frames_to_multilayer to handle selected regions
@@ -819,6 +823,12 @@ p_frames_to_multilayer(GapAnimInfo *ainfo_ptr,
   GapModLayliElem *l_layli_ptr;
   gint32     l_sel_cnt;
   gboolean   l_clear_selected_area;
+  gint32 calling_image_id;
+  gint32 calling_frame_nr;
+
+  
+  calling_image_id = ainfo_ptr->image_id;
+  calling_frame_nr = ainfo_ptr->curr_frame_nr;
 
 
   l_percentage = 0.0;
@@ -894,7 +904,7 @@ p_frames_to_multilayer(GapAnimInfo *ainfo_ptr,
       l_clear_selected_area = TRUE;
     }
   }
-
+  
 
   l_cur_frame_nr = l_begin;
   while(1)
@@ -907,8 +917,16 @@ p_frames_to_multilayer(GapAnimInfo *ainfo_ptr,
     if(ainfo_ptr->new_filename == NULL)
        goto error;
 
-    /* load current frame into temporary image */
-    l_tmp_image_id = gap_lib_load_image(ainfo_ptr->new_filename);
+    if(l_cur_frame_nr == calling_frame_nr)
+    {
+      /* for the current image use duplicate */
+      l_tmp_image_id = gimp_image_duplicate(calling_image_id);
+    }
+    else
+    {
+      /* load current frame into temporary image */
+      l_tmp_image_id = gap_lib_load_image(ainfo_ptr->new_filename);
+    }
     if(l_tmp_image_id < 0)
        goto error;
 
@@ -1120,21 +1138,14 @@ gint32 gap_range_to_multilayer(GimpRunMode run_mode, gint32 image_id,
 
       if(l_rc >= 0)
       {
-         if(gap_lib_gap_check_save_needed(ainfo_ptr->image_id))
-         {
-           l_rc = gap_lib_save_named_frame(ainfo_ptr->image_id, ainfo_ptr->old_filename);
-         }
-         if(l_rc >= 0)
-         {
-           new_image_id = p_frames_to_multilayer(ainfo_ptr, l_from, l_to,
-                                        	 flatten_mode, bg_visible,
-                                        	 framerate, frame_basename,
-						 l_layersel_mode, layersel_case,
-						 sel_invert, &l_sel_pattern[0],
-						 l_selection_mode);
-           gimp_display_new(new_image_id);
-           l_rc = new_image_id;
-	 }
+         new_image_id = p_frames_to_multilayer(ainfo_ptr, l_from, l_to,
+                                               flatten_mode, bg_visible,
+                                               framerate, frame_basename,
+					       l_layersel_mode, layersel_case,
+					       sel_invert, &l_sel_pattern[0],
+					       l_selection_mode);
+         gimp_display_new(new_image_id);
+         l_rc = new_image_id;
       }
     }
     gap_lib_free_ainfo(&ainfo_ptr);

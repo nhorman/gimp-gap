@@ -46,6 +46,10 @@ void    gap_morph_exec_get_warp_pick_koords(GapMorphWorkPoint *wp_list
                                       , gint32        in_y
 				      , gdouble       scale_x
 				      , gdouble       scale_y
+				      , gboolean      use_fast_wp_selection
+				      , gboolean      use_gravity
+				      , gdouble       gravity_intensity
+				      , gdouble       affect_radius
 				      , gdouble *pick_x
 				      , gdouble *pick_y
                                       );

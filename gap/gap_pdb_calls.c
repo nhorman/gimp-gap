@@ -124,7 +124,7 @@ gap_pdb_gimp_rotate_degree(gint32 drawable_id, gboolean interpolation, gdouble a
 {
    gdouble          l_angle_rad;
 
-   l_angle_rad = (angle_deg * 3.14159) / 180.0;
+   l_angle_rad = (angle_deg * G_PI) / 180.0;
    return(gimp_rotate(drawable_id, interpolation, l_angle_rad));
    
 }  /* end gap_pdb_gimp_rotate_degree */

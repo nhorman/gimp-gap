@@ -159,6 +159,8 @@ typedef struct GapStbTabWidgets  /* nickname: tabw */
   GtkWidget *frame_with_name;
   GtkWidget *total_rows_label;
   GtkObject *rowpage_spinbutton_adj;
+  GtkObject *rowpage_vscale_adj;
+  GtkWidget *rowpage_vscale;
 
   GtkWidget *filesel;
   GtkWidget *filename_entry;

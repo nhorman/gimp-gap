@@ -1668,7 +1668,7 @@ p_calc_angle(gint p1x, gint p1y, gint p2x, gint p2y)
   else
   {
     l_angle_rad = atan(l_b/l_a);
-    l_angle = (l_angle_rad * 180.0) / 3.14159;
+    l_angle = (l_angle_rad * 180.0) / G_PI;
 
     if(l_a < 0)
     {
