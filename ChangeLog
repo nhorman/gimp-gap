@@ -1,3 +1,10 @@
+2004-01-26  Sven Neumann  <sven@gimp.org>
+
+	* autogen.sh: use automake-1.8 if available.
+
+	* NEWS
+	* README: some minor updates.
+
 2004-01-22  Wolfgang Hofer <hof@gimp.org>
 	- removed xvpics support
 	- added pixbuf support for rendering of the GAP preview widget.
