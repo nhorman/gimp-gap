@@ -1,3 +1,7 @@
+2004-10-14  Amanpreet Singh Alam <amanpreetalam@yahoo.com>
+	
+	* configure.in: ALL_LINGUS-> Add pa (Punjabi) Language
+
 2004-10-11  Carol Spears <carol@gimp.org>
 	fixed the readme.  it was spreading lies about needing special 
         compiler options
