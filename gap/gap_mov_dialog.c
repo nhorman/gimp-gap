@@ -194,6 +194,7 @@ typedef struct
   GtkAdjustment *rotation_adj;
   GtkAdjustment *keyframe_adj;
 
+  GtkWidget     *src_layer_option_menu;
   GtkWidget     *constrain;       /* scale width/height keeps ratio constant */
   GtkAdjustment *ttlx_adj;
   GtkAdjustment *ttly_adj;
@@ -294,6 +295,7 @@ static GtkWidget * mov_selection_handling_tab_create (t_mov_gui_stuff *mgp);
 static void        mov_path_prevw_create ( GimpDrawable *drawable,
                                            t_mov_gui_stuff *mgp,
 					   gboolean vertical_layout);
+static void        mov_refresh_src_layer_menu(t_mov_gui_stuff *mgp);
 static GtkWidget * mov_src_sel_create (t_mov_gui_stuff *mgp);
 static GtkWidget * mov_advanced_tab_create(t_mov_gui_stuff *mgp);
 static GtkWidget * mov_edit_button_box_create (t_mov_gui_stuff *mgp);
@@ -1793,19 +1795,30 @@ p_pick_nearest_point(gint px, gint py)
 static void
 mov_imglayer_menu_callback(gint32 id, gpointer data)
 {
+  gint32 l_image_id;
+  
+  l_image_id = gimp_layer_get_image_id(id);
+  if(!gap_image_is_alive(l_image_id))
+  {
+    /*if(gap_debug)*/ printf("mov_imglayer_menu_callback: NOT ALIVE image_id=%d layer_id=%d\n",
+         (int)l_image_id, (int)id);
+     return;
+  }
+  
   if(id != pvals->src_layer_id)
   {
     if(pvals->tmpsel_image_id >= 0)
     {
       gimp_image_delete(pvals->tmpsel_image_id);
+      pvals->tmpsel_image_id = -1;
     }
   }
   pvals->src_layer_id = id;
-  pvals->src_image_id = gimp_layer_get_image_id(id);
+  pvals->src_image_id = l_image_id;
 
   
-  if(gap_debug) printf("mov_imglayer_menu_callback: image_id=%ld layer_id=%ld\n",
-         (long)pvals->src_image_id, (long)pvals->src_layer_id);
+  if(gap_debug) printf("mov_imglayer_menu_callback: image_id=%d layer_id=%d\n",
+         (int)pvals->src_image_id, (int)pvals->src_layer_id);
 
   mov_set_instant_apply_request((t_mov_gui_stuff *) data);
 } /* end mov_imglayer_menu_callback */
@@ -1813,9 +1826,10 @@ mov_imglayer_menu_callback(gint32 id, gpointer data)
 static gint
 mov_imglayer_constrain(gint32 image_id, gint32 drawable_id, gpointer data)
 {
-  gint32 l_src_image_id;
-
-  if(gap_debug) printf("GAP-DEBUG: mov_imglayer_constrain PROCEDURE\n");
+  if(gap_debug) printf("GAP-DEBUG: mov_imglayer_constrain PROCEDURE image_id:%d drawable_id:%d\n"
+                          ,(int)image_id
+			  ,(int)drawable_id
+			  );
 
   if(drawable_id < 0)
   {
@@ -1824,17 +1838,27 @@ mov_imglayer_constrain(gint32 image_id, gint32 drawable_id, gpointer data)
       */
      return(TRUE);
   }
+
+  if(!gap_image_is_alive(image_id))
+  {
+     return(FALSE);
+  }
   
-  l_src_image_id = gimp_layer_get_image_id(drawable_id);
   
    /* dont accept layers from within the destination image id 
-    * or layers within the tmp preview image
-    * conversions between different base_types are not supported in this version
+    * or layers within the internal used tmporary images
+    * or layers within images of other base types
+    * (conversions between different base_types are not supported in this version)
     */
-  return((l_src_image_id != pvals->dst_image_id) &&
-          (l_src_image_id != pvals->tmp_image_id) &&
-          (l_src_image_id != pvals->tmp_alt_image_id) &&
-          (gimp_image_base_type(l_src_image_id) == gimp_image_base_type(pvals->tmp_image_id)) );
+  return((image_id != pvals->dst_image_id) &&
+          (image_id != pvals->cache_tmp_image_id) &&
+          (image_id != pvals->apv_mlayer_image) &&
+          (image_id != pvals->tmp_image_id) &&
+          (image_id != pvals->tmp_alt_image_id) &&
+          (image_id != pvals->tmpsel_image_id) &&
+          (image_id != pvals->tween_image_id) &&
+          (image_id != pvals->trace_image_id) &&
+          (gimp_image_base_type(image_id) == gimp_image_base_type(pvals->tmp_image_id)) );
 } /* end mov_imglayer_constrain */
 
 static void
@@ -2346,6 +2370,29 @@ p_save_points(char *filename, t_mov_gui_stuff *mgp)
   }
 }	/* end p_save_points */
 
+/* ============================================================================
+ * mov_refresh_src_layer_menu
+ * ============================================================================
+ */
+static void
+mov_refresh_src_layer_menu(t_mov_gui_stuff *mgp)
+{
+  GtkWidget *menu;
+
+  if(pvals->tmpsel_image_id >= 0)
+  {
+    gimp_image_delete(pvals->tmpsel_image_id);
+    pvals->tmpsel_image_id = -1;
+  }
+
+  menu = gimp_layer_menu_new(mov_imglayer_constrain,
+			     mov_imglayer_menu_callback,
+			     mgp,
+			     pvals->src_layer_id);
+  gtk_option_menu_set_menu(GTK_OPTION_MENU(mgp->src_layer_option_menu), menu);
+
+}  /* end mov_refresh_src_layer_menu */
+
 
 /* ============================================================================
  * Create new source selection table Frame, and return it.
@@ -2392,12 +2439,8 @@ mov_src_sel_create(t_mov_gui_stuff *mgp)
                        , NULL);
 
   gtk_widget_show(option_menu);
-
-  menu = gimp_layer_menu_new(mov_imglayer_constrain,
-			     mov_imglayer_menu_callback,
-			     mgp,
-			     pvals->src_layer_id);
-  gtk_option_menu_set_menu(GTK_OPTION_MENU(option_menu), menu);
+  mgp->src_layer_option_menu = option_menu;
+  mov_refresh_src_layer_menu(mgp);
   gtk_widget_show(option_menu);
 
 
@@ -4776,6 +4819,11 @@ p_get_prevw_drawable (t_mov_gui_stuff *mgp)
   {
     p_points_to_tab(mgp);
     
+    if(!gap_image_is_alive(pvals->src_image_id))
+    {
+      mov_refresh_src_layer_menu(mgp);
+    }
+    
     /* calculate current settings */
     l_curr.dst_frame_nr    = 0;
 
@@ -4819,13 +4867,15 @@ p_get_prevw_drawable (t_mov_gui_stuff *mgp)
      if(pvals->src_selmode != GAP_MOV_SEL_IGNORE)
      {
        gint32        l_sel_channel_id;
-       
+       gboolean      l_all_empty;
+      
+       l_all_empty = FALSE;
        if(gimp_selection_is_empty(pvals->src_image_id))
        {
-         gimp_selection_all(pvals->src_image_id);
+         l_all_empty = TRUE;
        }
        l_sel_channel_id = gimp_image_get_selection(pvals->src_image_id);
-       gap_mov_render_create_or_replace_tempsel_image(l_sel_channel_id, pvals);
+       gap_mov_render_create_or_replace_tempsel_image(l_sel_channel_id, pvals, l_all_empty);
      }
     }
 

@@ -118,7 +118,7 @@ typedef struct
   gint       argc;
 }   t_all_arr_args;
 
-static t_arr_interface g_arrint =
+static t_arr_interface global_arrint =
 {
   NULL,     /*  dlg  */
   FALSE     /*  run  */
@@ -166,7 +166,7 @@ static void
 arr_close_callback (GtkWidget *widget,
 		       gpointer   data)
 {
-  gtk_widget_destroy (GTK_WIDGET (g_arrint.dlg));  /* close & destroy dialog window */
+  gtk_widget_destroy (GTK_WIDGET (global_arrint.dlg));  /* close & destroy dialog window */
   gtk_main_quit ();
 }
 
@@ -174,8 +174,8 @@ static void
 but_array_callback (GtkWidget *widget,
 		    gpointer   data)
 {
-  g_arrint.run = *((gint *)data);                  /* set returnvalue according to button */
-  gtk_widget_destroy (GTK_WIDGET (g_arrint.dlg));  /* close & destroy dialog window */
+  global_arrint.run = *((gint *)data);                  /* set returnvalue according to button */
+  gtk_widget_destroy (GTK_WIDGET (global_arrint.dlg));  /* close & destroy dialog window */
 
   /* gtk_main_quit (); */ /* is called implicite in the "desstroy" handler */
 }
@@ -662,7 +662,7 @@ spin_create_value(char *title, GtkTable *table, int row, GapArrArg *arr_ptr
   }
   
     
-  arr_ptr->adjustment = (GtkWidget *)adj;                
+  arr_ptr->adjustment = adj;                
 }  /* end spin_create_value */
 
 
@@ -1031,7 +1031,7 @@ pair_flt_create_value(gchar *title, GtkTable *table, gint row, GapArrArg *arr_pt
   g_signal_connect (G_OBJECT (adj), "value_changed",
 		    G_CALLBACK (gimp_double_adjustment_update),
 		    &arr_ptr->flt_ret);
-  arr_ptr->adjustment = (GtkWidget *)adj;                
+  arr_ptr->adjustment = adj;                
 }
 
 /* --------------------------
@@ -1076,7 +1076,7 @@ pair_int_create_value(gchar *title, GtkTable *table, gint row, GapArrArg *arr_pt
 		    G_CALLBACK (gimp_int_adjustment_update),
 		    &arr_ptr->int_ret);
 
-  arr_ptr->adjustment = (GtkWidget *)adj;                
+  arr_ptr->adjustment = adj;                
 }
 
 
@@ -1106,37 +1106,37 @@ gint gap_arr_std_dialog(char *title_txt,
   char   *l_label_txt;
   GapArrArg  *arr_ptr;
     
-  g_arrint.run = b_def_val;           /* prepare default retcode (if window is closed without button) */
+  global_arrint.run = b_def_val;           /* prepare default retcode (if window is closed without button) */
   l_ok_value = 0;
   table = NULL;
   
   if((argc > 0) && (argv == NULL))
   {
     printf("gap_arr_std_dialog: calling error (widget array == NULL)\n");
-    return (g_arrint.run);
+    return (global_arrint.run);
   }
   if((b_argc > 0) && (b_argv == NULL))
   {
     printf("gap_arr_std_dialog: calling error (button array == NULL)\n");
-    return (g_arrint.run);
+    return (global_arrint.run);
   }
 
   gimp_ui_init ("gap_std_dialog", FALSE);
   gap_stock_init();
   
   /* dialog */
-  g_arrint.dlg = gtk_dialog_new ();
-  gtk_window_set_title (GTK_WINDOW (g_arrint.dlg), title_txt);
-  gtk_window_set_position (GTK_WINDOW (g_arrint.dlg), GTK_WIN_POS_MOUSE);
-  g_signal_connect (G_OBJECT (g_arrint.dlg), "destroy",
+  global_arrint.dlg = gtk_dialog_new ();
+  gtk_window_set_title (GTK_WINDOW (global_arrint.dlg), title_txt);
+  gtk_window_set_position (GTK_WINDOW (global_arrint.dlg), GTK_WIN_POS_MOUSE);
+  g_signal_connect (G_OBJECT (global_arrint.dlg), "destroy",
 		    G_CALLBACK (arr_close_callback),
 		    NULL);
 
-  gtk_container_set_border_width (GTK_CONTAINER (GTK_DIALOG (g_arrint.dlg)->action_area), 2);
-  gtk_box_set_homogeneous (GTK_BOX (GTK_DIALOG (g_arrint.dlg)->action_area), FALSE);
+  gtk_container_set_border_width (GTK_CONTAINER (GTK_DIALOG (global_arrint.dlg)->action_area), 2);
+  gtk_box_set_homogeneous (GTK_BOX (GTK_DIALOG (global_arrint.dlg)->action_area), FALSE);
   hbbox = gtk_hbutton_box_new ();
   gtk_box_set_spacing (GTK_BOX (hbbox), 4);
-  gtk_box_pack_end (GTK_BOX (GTK_DIALOG (g_arrint.dlg)->action_area), hbbox, FALSE, FALSE, 0);
+  gtk_box_pack_end (GTK_BOX (GTK_DIALOG (global_arrint.dlg)->action_area), hbbox, FALSE, FALSE, 0);
   gtk_widget_show (hbbox);
 
 
@@ -1145,7 +1145,7 @@ gint gap_arr_std_dialog(char *title_txt,
   else                     frame = gtk_frame_new (frame_txt);
   gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_ETCHED_IN);
   gtk_container_set_border_width (GTK_CONTAINER (frame), 6);
-  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (g_arrint.dlg)->vbox), frame, TRUE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (global_arrint.dlg)->vbox), frame, TRUE, TRUE, 0);
 
   if(argc > 0)
   {
@@ -1266,7 +1266,7 @@ gint gap_arr_std_dialog(char *title_txt,
 
   gtk_widget_show (frame);
   if(argc > 0)  {  gtk_widget_show (table); }
-  gtk_widget_show (g_arrint.dlg);
+  gtk_widget_show (global_arrint.dlg);
 
   gtk_main ();
   gdk_flush ();
@@ -1314,7 +1314,7 @@ gint gap_arr_std_dialog(char *title_txt,
      }
   }
   
-  return (g_arrint.run);
+  return (global_arrint.run);
 }	/* end gap_arr_std_dialog */
 
 

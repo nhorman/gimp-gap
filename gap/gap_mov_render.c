@@ -24,6 +24,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 /* revision history:
+ * gimp    1.3.21b; 2003/09/22  hof: bugfix in selection handling
  * gimp    1.3.20d; 2003/09/14  hof: new: added bluebox stuff
  * gimp    1.3.20c; 2003/09/28  hof: new features: perspective transformation, tween_layer and trace_layer
  *                                   changed opacity, rotation and resize from int to gdouble
@@ -145,15 +146,23 @@ p_mov_selection_handling(gint32 orig_layer_id
     gimp_selection_feather(val_ptr->tmpsel_image_id, cur_ptr->currSelFeatherRadius);
   }
   gimp_selection_invert(val_ptr->tmpsel_image_id);
-  gimp_edit_clear(l_tmp_layer_id);
   
-  /* merge selection into alpha channel of l_tmp_layer_id */
-
-  /* copy alpha channel form dummy back to original */
-  gap_layer_copy_picked_channel(orig_layer_id, (drawable->bpp -1)
+  if(!gimp_selection_is_empty(val_ptr->tmpsel_image_id))
+  {
+    /* clear invers selected pixels to set unselected pixels transparent
+     * (merge selection into alpha channel of l_tmp_layer_id)
+     * We do not CLEAR on empty selection (== everything was selected originally),
+     * because this would clear the alpha channels for all pixels.
+     * But in that case we want all pixels to keep the origial alpha channel
+     */
+    gimp_edit_clear(l_tmp_layer_id);
+  
+    /* copy alpha channel form dummy back to original */
+    gap_layer_copy_picked_channel(orig_layer_id, (drawable->bpp -1)
                                ,l_tmp_layer_id, 3 /* dst_pick is the alpha channel */
 			       ,FALSE  /* shadow */
 			       );
+  }
 
   /* DEBUG code: show the tmpsel_image */
   if(1==0)
@@ -570,6 +579,7 @@ gap_mov_render_render(gint32 image_id, GapMovValues *val_ptr, GapMovCurrent *cur
   {
      gint32  l_trc_layer_id;
      GimpMergeType l_mergemode;
+     gdouble       l_opacity_initial;
      
      l_mergemode = GIMP_EXPAND_AS_NECESSARY;
      if(val_ptr->clip_to_img)
@@ -583,9 +593,12 @@ gap_mov_render_render(gint32 image_id, GapMovValues *val_ptr, GapMovCurrent *cur
       */
      gimp_layer_set_opacity(val_ptr->trace_layer_id, val_ptr->trace_opacity_desc);
      
+     l_opacity_initial = (val_ptr->trace_opacity_initial * cur_ptr->currOpacity) / 100.0;
+     l_opacity_initial = CLAMP(l_opacity_initial, 0.0, 100.0);
+     
      l_trc_layer_id = gap_layer_copy_to_dest_image(val_ptr->trace_image_id,     /* the dest image */
                                    l_cp_layer_id,                  /* the layer to copy */
-                                   val_ptr->trace_opacity_initial,
+                                   l_opacity_initial,
                                    0,                              /* NORMAL paintmode */
                                    &l_src_offset_x,
                                    &l_src_offset_y);
@@ -740,16 +753,18 @@ gap_mov_render_fetch_src_frame(GapMovValues *pvals,  gint32 wanted_frame_nr)
        || (pvals->src_selmode == GAP_MOV_SEL_FRAME_SPECIFIC))
        {
 	 gint32        l_sel_channel_id;
+	 gboolean      l_all_empty;
 
+         l_all_empty = FALSE;
 	 /* pick the selection for the 1.st handled frame
 	  * or foreach handled frame when mode is GAP_MOV_SEL_FRAME_SPECIFIC
 	  */
 	 if(gimp_selection_is_empty(pvals->cache_tmp_image_id))
 	 {
-           gimp_selection_all(pvals->cache_tmp_image_id);
+           l_all_empty = TRUE;
 	 }
 	 l_sel_channel_id = gimp_image_get_selection(pvals->cache_tmp_image_id);
-	 gap_mov_render_create_or_replace_tempsel_image(l_sel_channel_id, pvals);
+	 gap_mov_render_create_or_replace_tempsel_image(l_sel_channel_id, pvals, l_all_empty);
        }
      }
 
@@ -768,11 +783,15 @@ gap_mov_render_fetch_src_frame(GapMovValues *pvals,  gint32 wanted_frame_nr)
  * gap_mov_render_create_or_replace_tempsel_image
  *    create or replace a temp image to store the selection
  *    of the initial source image (or frame)
+ * the all_empty parameter == TRUE indicates, that the channel_id
+ * represents an empty selection.
+ * in this case tmpsel_channel_id is set to everything selected
  * ============================================================================
  */
 void
 gap_mov_render_create_or_replace_tempsel_image(gint32 channel_id
                   , GapMovValues *val_ptr
+		  , gboolean all_empty
                   )
 {
   GimpDrawable *drawable;
@@ -790,8 +809,11 @@ gap_mov_render_create_or_replace_tempsel_image(gint32 channel_id
   
   gimp_selection_all(val_ptr->tmpsel_image_id);
   val_ptr->tmpsel_channel_id = gimp_selection_save(val_ptr->tmpsel_image_id);
-  gap_layer_copy_content(val_ptr->tmpsel_channel_id   /* dst */
-                        ,channel_id                   /* src */
-			);
 
+  if(!all_empty)
+  {
+    gap_layer_copy_content(val_ptr->tmpsel_channel_id   /* dst */
+                          ,channel_id                   /* src */
+			  );
+  }
 }  /* end gap_mov_render_create_or_replace_tempsel_image */

@@ -3537,8 +3537,8 @@ p_new_audioframe(GapPlayerMainGlobalParams *gpp)
 
   row++;
 
-  /* Cannels */
-  label = gtk_label_new(_("Cannels:"));
+  /* Channels */
+  label = gtk_label_new(_("Channels:"));
   gtk_misc_set_alignment(GTK_MISC(label), 1.0, 0.5);
   gtk_table_attach(GTK_TABLE(table1), label, 0, 1, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
   gtk_widget_show(label);

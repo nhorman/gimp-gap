@@ -1,3 +1,31 @@
+2003-10-26  Wolfgang Hofer <hof@gimp.org>
+	bugfix:  MovePath rendering of the TraceLayer produces trash
+	in the areas that should be transparent. (added an initial
+	clear of the tracelayer at creation).
+	bugfix: tracelayer and tweenlayer opacity handling must respect current
+	         opacity of the moving object
+	bugfix: #124897 (translation did not work because INIT_I18N() was missing
+	
+	gap/gap_arr_dialog.c [.h] # adjustment has type GtkObject
+	gap/gap_mov_exec.c
+	gap/gap_mov_render.c
+	gap/gap_player_dialog.c   # bugfix #124896 typemissmatch "Cannels"
+	gap/gap_name2layer_main.c # changed labeltext "Decoders:" to "Mode:"
+	gap/gap_player_main.c     # #124897
+	gap/gap_name2layer_main.c # #124897
+	gap/README                # update docs for the new features
+	
+2003-10-22  Wolfgang Hofer <hof@gimp.org>
+	bugfix MovePath Selection Handling.
+	(When everything is selected in the SourceImage
+	the whole Alpha Channel was cleared to full transparent)
+	
+        gap/gap_mov_render.c      # bugfix selectiopn handling
+        gap/gap_mov_render.h      # bugfix selectiopn handling
+	gap/gap_mov_exec.c
+	gap/gap_mov_dialog.c
+	gap/gap_player_dialog.c   # bugfix #124896 typemissmatch "Cannels"
+	
 2003-10-20  Wolfgang Hofer <hof@gimp.org>
 	Merged changes from CVS-snapshot 2003.10.15
 	with my local changes since 2003-10-04

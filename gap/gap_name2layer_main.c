@@ -199,6 +199,8 @@ run (const gchar *name,          /* name of plugin */
   /* always return at least the status to the caller. */
   static GimpParam values[2];
 
+  INIT_I18N();
+
   l_env = g_getenv("NUML_DEBUG");
   if(l_env != NULL)
   {
@@ -440,8 +442,8 @@ Naml_dialog(void)
   static char *radio_modes[VR_MODELIST_SIZE]  = {"Number Only", "Filename", "Path/Filename" };
 
   ii=0; gap_arr_arg_init(&argv[ii], GAP_ARR_WGT_OPTIONMENU); ii_mode = ii;
-  argv[ii].label_txt = _("Decoder:");
-  argv[ii].help_txt  = _("Mode");
+  argv[ii].label_txt = _("Mode:");
+  argv[ii].help_txt  = _("Modes to choose entire filename or just parts of the filename");
   argv[ii].radio_argc  = VR_MODELIST_SIZE;
   argv[ii].radio_argv = radio_modes;
   argv[ii].radio_ret  = 0;

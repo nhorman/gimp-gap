@@ -2115,7 +2115,7 @@ msgstr "Danach einfügen"
 #. menu_item copy
 #: gap/gap_navigator_dialog.c:2917
 msgid "Paste replace"
-msgstr "Einfügen und Ersetyen"
+msgstr "Einfügen und Ersetzen"
 
 #. menu_item copy
 #: gap/gap_navigator_dialog.c:2927

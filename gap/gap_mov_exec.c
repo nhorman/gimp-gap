@@ -26,6 +26,7 @@
  */
 
 /* revision history:
+ * gimp    1.3.21c; 2003/10/23  hof: bugfix: trace_layer was not initialized (must be cleared at creation)
  * gimp    1.3.20d; 2003/10/14  hof: new: implemented missing parts for trace and tween_layer processing
  * gimp    1.3.20c; 2003/09/29  hof: new features: perspective transformation, step_speed_factor,
  *                                   tween_layer and trace_layer (not finshed yet)
@@ -150,6 +151,16 @@ p_add_tween_and_trace(gint32 dest_image_id, GapMovData *mov_ptr, GapMovCurrent *
 
     /* add the layer to the destination image */
     gimp_image_add_layer (dest_image_id, l_new_layer_id, mov_ptr->val_ptr->dst_layerstack +1);
+
+    if((mov_ptr->val_ptr->trace_image_id >= 0)
+    && (mov_ptr->val_ptr->trace_layer_id >= 0))
+    {
+      /* both tween_layer and trace_layer are active
+       * in this case the tween_layer is set invisible
+       *
+       */
+       gimp_layer_set_visible(l_new_layer_id, FALSE);
+    }
     
     /* remove tween layers from the tween_image after usage */
     l_new_tween_image_id = gap_image_new_of_samesize(mov_ptr->val_ptr->tween_image_id);
@@ -228,7 +239,7 @@ p_mov_call_render(GapMovData *mov_ptr, GapMovCurrent *cur_ptr, gint apv_layersta
         gdouble l_tween_opacity;
         gdouble l_fadefactor;
 
-        l_tween_opacity = mov_ptr->val_ptr->tween_opacity_initial;
+        l_tween_opacity = (mov_ptr->val_ptr->tween_opacity_initial * cur_ptr->currOpacity) / 100.0;
         
         l_fadefactor = mov_ptr->val_ptr->tween_opacity_desc / 100.0;
         if(l_fadefactor < 1.0)
@@ -807,15 +818,17 @@ p_mov_execute(GapMovData *mov_ptr)
    if(mov_ptr->val_ptr->src_stepmode < GAP_STEP_FRAME)
    {   
      gint32        l_sel_channel_id;
+     gboolean      l_all_empty;
  
      if(val_ptr->src_selmode != GAP_MOV_SEL_IGNORE)
      {
+       l_all_empty = FALSE;
        if(gimp_selection_is_empty(val_ptr->src_image_id))
        {
-         gimp_selection_all(val_ptr->src_image_id);
+         l_all_empty = TRUE;
        }
        l_sel_channel_id = gimp_image_get_selection(val_ptr->src_image_id);
-       gap_mov_render_create_or_replace_tempsel_image(l_sel_channel_id, val_ptr);
+       gap_mov_render_create_or_replace_tempsel_image(l_sel_channel_id, val_ptr, l_all_empty);
      }
     
      cur_ptr->src_layers = gimp_image_get_layers (val_ptr->src_image_id, &l_nlayers);
@@ -909,6 +922,9 @@ p_mov_execute(GapMovData *mov_ptr)
                                  , &val_ptr->trace_layer_id
                                  );
        gimp_image_undo_disable (val_ptr->trace_image_id);
+       gimp_layer_add_alpha(val_ptr->trace_layer_id);
+       gimp_edit_clear(val_ptr->trace_layer_id);
+       gimp_layer_set_name(val_ptr->trace_layer_id, _("Tracelayer"));				 
      }
 
      /* RENDER the 1.st frame outside the frameindex loop,

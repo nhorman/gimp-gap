@@ -139,7 +139,7 @@ typedef struct {
   GtkWidget  *text_entry;   /* for private (arr_dialog.c) use only */
   GtkWidget  *check_button;   /* for private (arr_dialog.c) use only */
   GtkWidget  *option_menu;    /* for private (arr_dialog.c) use only */
-  GtkWidget  *adjustment;     /* for private (arr_dialog.c) use only */
+  GtkObject  *adjustment;     /* for private (arr_dialog.c) use only */
   gpointer    radiogroup;     /* for private (arr_dialog.c) use only */
 
   /* action_ fileds are used for GAP_ARR_WGT_ACT_BUTTON */

@@ -1,4 +1,4 @@
-Project gap "Gimp Animation Package"   29. Sept 2003  (pre)release 1.3.20c
+Project gap "GIMP Animation Package"   26. Oct. 2003  (pre)release 1.3.21c
 
 --------------------------------------------------------------------
 Introduction
@@ -40,7 +40,7 @@ Concept:
 	         ..
 	         film_000012.xcf
 	
-	gimp's xcf Fileformat should be used to store the frames,
+	GIMP's xcf Fileformat should be used to store the frames,
 	so that each frame can have more Layers.
 
 	Sound is not supported in this Concept, but will be handled
@@ -64,7 +64,7 @@ Concept:
 	or converted to one multilayerd Image
 	that can be saved as Animated-Gif
 	(or, in the future in other Animation Formats 
-	when other Load/Save Modules were added to the gimp)
+	when other Load/Save Modules were added to the GIMP)
 	
 	GAP provides automated Fileformat Conversions for
 	the Frames of an Animation. 
@@ -148,7 +148,7 @@ Write (encode)
   
 
 The GIMP_VIDEO_ENCODER project is an additional Package for GIMP/GAP
-that implements Video Encoding. It is available for gimp-1.2.x
+that implements Video Encoding. It is available for GIMP-1.2.x
 
 
 
@@ -182,7 +182,7 @@ How to use
                     (than GIMP's .xcf Format) can NOT save
                     multilayer frames or frames with alpha channels.
           
-      - from outside the gimp
+      - from outside the GIMP
            You may rename and copy existing XCF Images
            according to the frame naming conventions.
            <img>_000001.xcf
@@ -370,7 +370,7 @@ How to use
         goto the end of selection if right mousebutton was used.
         or goto the active framenr if the midle mouse button was used.
         (the active framenr is the one that is currently
-        loaded in the gimp image window from where you invoked the player)
+        loaded in the GIMP image window from where you invoked the player)
 
     - The GO Buttonarray
          the 50 blank Buttons above the Preview build up the GO Buttonarray,
@@ -579,12 +579,20 @@ How to use
           (<Image>/Video/Move Path)
 
 
-      For this Plug-In you need a series of frames as destination
-      and a source object.
-      The source object can be one single image
-      that may have one or more layers or another series of frames.
+      For this Plug-In you need a Series of Frames (Destination Videoframes)
+      and one single Image or another Series of Frames. (Source Object or Moving Object)
+      If you use a single Image as Source Object all the Layers in it
+      can be used as Source Frames.
+      
+      The Source Frames are copied into the Destination Frames.
+      This copy can be transformed in many ways, using Controlpoints
+      and appears as one new Layer in each handled Destination Frame.
+      The X/Y Controlpoint Coordinates affects the Offest of the copied new Layer
+      in the Destination Frame(s). All Controlpoints build up a Path
+      that defines how the copied new Layer moves within the Destination Frames.
+      
 
-      - The Source Image must be opened in the gimp
+      - The Source Image must be opened in the GIMP
       - The Source Image must be another Image than the destination frame
         (if you really want to copy layers from destination frame
          to destination frame(s) you have to duplicate it first)
@@ -596,14 +604,16 @@ How to use
       
       
             
-      The selected Layer(s) of the Source Image
-         is (are) copied into the selected range of frames.
-         Each handled frame recieves exactly one Copy of the selected Layer
-         from the Source Image.
+      The selected Layer(s) of the Source Image or Frame 
+         is (are) copied into the selected Range of Frames.
+         Each handled Frame recieves exactly one Copy of the selected Layer
+         from the Source Image, where the copy will be modified by
+         Transformations such as scaling, changing transparency and more,
+         according to the Controlpoint Settings.
          
-      If you use other Stepmodes than "None",
+      If you use Stepmodes "Loop", "Loop Reverse", "Once", "OnceReverse" or "PingPong"
         the Layers of the SourceImage are stepped through,
-        and the next handled frame recieves the next
+        and the next handled Frame recieves the next
         Layer from the Source_images Layerstack.
         
         For the Frame based Stepmodes ("Frame Loop", "Frame PingPong" ...)
@@ -613,7 +623,7 @@ How to use
         (and not from layer to layer)
         The inserted Layer is always a copy of one Frame of the
         source object Animation (no matter which Src Layer was selected)
-        where all the visible source Layers are merged.
+        where all the visible source Layers are merged to build up the moving Object.
         
         The FrameBased Modes can be used to mix Videos with many frames,
         because there is no need to convert one of the videos to
@@ -624,18 +634,39 @@ How to use
 	only one frame.
         
       The Step Speed Factor
-        decides how fast to Step Through the Source Object,
+        decides how fast to step through the Source Object,
         in relation to the Target Frames. 
         With Factor 1.0 Source and Target will step synchron.
         Factor 0.5 slows down the Source Steps to half Speed.
-        The Same SourceLayer is copied into 2 Frames,
+        The same SourceLayer is copied into 2 Frames,
         before the advance to the next SourceLayer is done.
         
         The StepSpeedFactor is not relevant for the 
         Stepmodes "None" and "FrameNone".
+
+      Selection Handling
+        Move Path can ignore or respect Selections (Selected Areas) in the
+        Source Image (or SourceFrame(s))
+        The Optionmenu Modes are:.
+         - "Ignore Selection (in all Source Images)"
+              Ignores all Selections.
+         - "Use Selection (from Initial Source Image)"
+              Takes the Selection from the Initial SourceImage (or Frame)
+              and applies it to all handled copies.
+              This makes all unselected Pixels of the moving Object
+              transparent. You can get smooth edges
+              depending on the feather_radius Settings in the Controlpoints.
+         - "Use Selections (from all Source Images)"
+              Uses all selections in all SourceFrames.
+              The Source Frames without Selections are handled
+              as if all Pixels were selected.
+              This Mode is only relevant for the Frame based Stepmodes, 
+             "Frame Loop", "Frame Once", "Frame Loop Reverse",
+             "Frame OnceReverse", "Frame PingPong"
+               
       
       
-      The copies of the SourceLayer(s) were modified by transitions
+      The copies of the SourceLayer(s) were modified by Transitions
         with varying Parameters.
         Parameters:
        - SourceLayer (depends on Stepmode)
@@ -643,8 +674,11 @@ How to use
         - Size Scaling (Width/Height)
         - Opacity
         - Rotation (angle from -360 to +360 degrees)
+        - Selection Feather Radius (in Pixels)
+           the Feather Radius controls how much to smooth the edges of the Selections
+           (this is only relevant for Source Selection Handling modes other than
+           "Ignore Selection")
         - Perspective Transformation (transformation factors for X/Y of the 4 Corner Points)
-
 
            Perspective Transformation Factors are Scalingfactors
            that are applied to the Coordinates of the 4 Corners.
@@ -681,19 +715,20 @@ How to use
 
 
 
-      The Parameters were changed linear from one starting point to
-      the next point. Per default the move Path has only only 1 Point.
+      The Controlpoint Parameters were changed linear from one starting
+      Controlpoint to the next Controlpoint.
+      Per default the move Path has only only 1 Controlpoint.
       (So the Src-Layers(s) are copied to all frames of the framerange
        at constant Position, Size and Opacity)
       If you want your Source_layers to move, grow, rotate or to fade (in or out)
-      you have to add one more points (limited to 1024) to define a Path.
+      you have to add one more Controlpoints (limited to 1024) to define a Path.
 
-      The affected range is selected by  Start Frame - End Frame.
-      Each affected frame recieves exactly one copy of the (current)
-      Sourcelayer adjusted to the current Prameters.
+      The affected Range is selected by  Start Frame - End Frame.
+      Each affected Frame recieves exactly one copy of the (current)
+      Sourcelayer adjusted to the current Controlpoint Prameters.
       The Layerstack defines if the pasted copy appears
-      in the foreground (0 == on top) or below other layers that are
-      already in the frame.
+      in the Foreground (0 == on top) or below other Layers that are
+      already in the Frame.
       With the toggle button 'Clip To Frame' the the copied layer
       is clipped to the destination Frames Image Width and Height.
        
@@ -710,7 +745,7 @@ How to use
        If checkbutton "Show Path" is on, all the Controlpoints
        are shown in the Preview window, connected with pathlines.
        Furter it enables picking controlpoints
-       and draging controlpoint koordinates (X/Y).
+       and draging controlpoint koordinates (X/Y)
        in the Preview with the Left Mousebutton.
        With the Right Mousebutton you always drag
        the koordinates of the current controlpoint
@@ -900,6 +935,17 @@ How to use
 
     MovePath Advanced Settings
     
+    - Bluebox
+         With the Bluebox check_button you can apply the Bluebox Filtereffect
+         on the moving Object that makes the Keycolor transparent.
+
+    - The Keycolor Button
+         Opens a Dialog Window where you can set all the Parameters
+         of the Bluebox Effectfilter.
+         If Clicked with the right Mouse Button you can grab the Keycolor
+         from thhe current FG/BG Color (in the GIMP Main window)
+         
+    
     - Tracelayer
          a Tracelayer shows all Positions of the moving Object
 	 from begin until the Position of the previous Frame.
@@ -915,11 +961,11 @@ How to use
         beetween real Frames. You can control this by setting tween_steps
         to a value greater than 0.
         In that case the MovePath Tool creates an additional Layer
-        (the Tweenlayer) and inserts that Tween_Layer below the
+        (the Tweenlayer) and inserts that Tweenlayer below the
         Stackpostion of the Current Moving Object in the next real Frame.
-        The Tween_Layer shows the moving Object at the Positions of
+        The Tweenlayer shows the moving Object at the Positions of
         all virtual Frames beetween two real Frames.
-        
+	
         Example: The selected Framerange is 10 Frames and
         the Tweensteps value is 2. In this case 28 steps
         are processed internal. 10 real Frames + 18 virtual Frames
@@ -930,6 +976,12 @@ How to use
 	if descending Opacity is less than 100%.
 	With Tweens and Opacity Settings you can produce Motion-Blur Effects
 	for fast moving Objects.
+
+        If both tween processing and Tracelayer are active, the
+	Tweenlayer is added as INVISIBLE Layer. This is done because
+	the Tracelayer contains already all the tween steps.
+	A visible Tweenlayer would produce unwanted increase
+	of the total opacity of the moving object in the composite view.
 
     
 - Convert frames to one multilayered Image.
@@ -1018,11 +1070,28 @@ How to use
        if this checkbutton is set to off.
     Invert Selection:
        Select all unselected Layers.
+    Pixel Selection:
+       Howto handle Selected Areas in the handled Framerange.
+       "Ignore"
+           Ignore all Selections in all handled Frames
+       "Initial Frame"
+           Use only one Selection from the first handled Frame,
+           All unselected Areas are set to transparent in the
+           resulting Multilayer Image.
+           All the resulting Layers in the generated Multilayer Image
+           are shaped by the initial Selection.
+       "Frame specific"
+           Use Selections from all handled Frames.
+           (Frames without any selection are handled as if all Pixels were selected)
+           All unselected Areas are set to transparent in the
+           resulting Multilayer Image.
 
 
 
 - Modify Frames
 - --------------
+    Start from Menu:
+       <Image>/Video/Frames Modify
     
     The GAP-tool 'Frames Modify' provides the feature to perform functions
     on one ore more selected Layer(s) in all frames of the selected framerange.
@@ -1032,22 +1101,49 @@ How to use
     (for more information on Layer Selection see above).
     
     Available Functions are:
-	    "0:set_visible,
-	     1:set_invisible,
-	     2:set_linked,
-	     3:set_unlinked,
-	     4:raise,
-	     5:lower,
-	     6:merge_expand,
-	     7:merge_img,
-	     8:merge_bg,
-	     9:apply_filter,
-	     10:duplicate,
-	     11:delete,
-	     12:rename"
+       "Set Layer(s) visible",
+       "Set Layer(s) invisible",
+       "Set Layer(s) linked",
+       "Set Layer(s) unlinked),
+       "Raise Layer(s)",
+       "Lower Layer(s)",
+       "Merge Layer(s) expand as necessary",
+       "Merge Layer(s) clipped to image",
+       "Merge Layer(s) clipped to bg-layer",
+       "Apply filter on Layer(s)",
+       "Duplicate Layer(s)",
+       "Delete Layer(s)",
+       "Rename Layer(s)",
+       "Replace Selection",
+       "Add Selection",
+       "Subtract Selection",
+       "Intersect Selection",
+       "Selection None",
+       "Selection All",
+       "Selection Invert",
+       "Save Selection to Channel",
+       "Load Selection from Channel",
+       "Delete Channel (by Name)"
     
+
+    The Functions 
+       "Replace Selection",
+       "Add Selection",
+       "Subtract Selection",
+       "Intersect Selection",
+    take the Selection from the initial (invoking) frame and combines it
+    with existing selections in all the other handled frames.
+
+    The Functions:
+	"Duplicate Layer(s)"
+	"Rename Layer(s)"
+	"Save Selection to Channel"
+	"Load Selection from Channel"
+	"Delete Channel (by Name)"
+    require a Name in the Entry field "New Layer or Channel Name:"
+
     
-    The function 'apply_filter' brigs up a dialog window that is
+    The function 'Apply filter on Layer(s)' brigs up a dialog window that is
     similar to the PDB-Browser, where you can select any available
     filter.
 
@@ -1092,8 +1188,111 @@ How to use
     layerstack [3]                   background                       
     
 
+- Renumber Frames
+- ---------------------------------
+
+  Start from Menu:
+       <Image>/Video/Frames Renumber
+
+  This plugin renumbers all frames (discfiles) of a video.
+  
+  First Frame Number:
+     Enter the new number for the first frame in this
+     entry field.
+     All frames of video are renumbered, starting at this
+     number.
+ 
+  Digits:
+    Here you can enter how many digits (1 up to 6) to use for your frame
+    numbers. Framenumbers are fileld up with leading zeros to the
+    specified number of digits.
+    Framenumber that are greater than the specified number of digits
+    will use more digits than specified, but are built without leading zeroes.
+    If you choose 1 your framenumbers are built without
+    any leading zeroes at all.
+
+
+  If the frames are numbered in a non-continous way, you can
+  make them continous with this plug-ins.
+  (Most other GAP features do not accept non-continous numbered frames)
+
+  Example:
+    you have the frames:
+       film_0001.xcf
+       film_0007.xcf
+       film_0008.xcf
+
+  After running the renumber feature with settings
+    First Frame Number: 4
+    Digits: 6
+ 
+    the frames will be renumbered as:
+ 
+       film_000004.xcf     # old name was film_0001.xcf
+       film_000005.xcf     # old name was film_0007.xcf
+       film_000006.xcf     # old name was film_0008.xcf
+    
+  
+- Render Filename to Layer
+- ---------------------------------
+
+  Start from Menu:
+       <Image>/Video/
+
+  This plug-in renders the filename of the image
+  or just the numberpart of the filename onto the image.
+  If the parameter create_new_layer is 0, the filename is rendered 
+  to the active drawable (the layer that was active when
+  this plug-in was invoked)
+  Otherwise a new textlayer is created.
+  
+  Mode:
+    "Number Only"     ... render just the number part
+    "Filename"        ... render the filename without directory path
+    "Path/Filename"   ... render the filename including the directory path
+    
+  Fontname:
+    Entry for the Fontname
+    
+  Fontsize:
+    Fontsize in pixels
+    
+  PosX:
+    Position x offset in pixels
+    
+  PosY:
+    Position y offset in pixels
+    
+  Antialias:
+    ON: Use Antialiasing
+    OFF: No Antialiasing
+    
+  Create Layer:
+    ON: Create a new layer,
+    OFF: Render on the active drawable
+
+
+  Tip:
+  To create framenumbers in all of your Frames
+  you can use the "Modify Frames" (<Image>/Video/Frames Modify) feature
+  and choose "Apply filter on Layer(s)" as function.
+  In the next dialog step, the GAP DB-Browser window
+  select "plug_in_gap_renumber" as filter name.
+  (this is the internal PDB-Name of the "Render Filename to Layer" plug-in)
+  
+  Then choose Apply constant in the DB-Browser window.
+  This should open the 'Render Filename to Layer' dialog window
+  (only for the first frame) where you can adjust the settings.
+  Choose "Number Only" mode for rendering only the framenumber part,
+  and Create Layer turned if you want the number as seperate layer.
+  With Create Layer turned off the number will be rendered on (all)
+  the layer(s) that were selected in the initial "Modify Frames" dialog window.  
+
 - Change Framedensity
 - ---------------------------------
+
+  Start from Menu:
+       <Image>/Video/Frames Density
 
   Changing the Framedensity results in duplicating Frames
   for growing Framedensity, and will delete Frames
@@ -1150,6 +1349,92 @@ How to use
 
 
 
+- Blubox Filter
+- --------------
+    Start from Menu:
+       <Image>/Video/Bluebox
+
+    The Bluebox Filter makes the selected Keycolor transparent.
+    The Bluebox Filter operates on a single Layer that must be of RGB(A) type.
+    (INDEXED and GRAY Images are not supported)
+    
+    Keycolor:
+      This colorbutton shows the wanted keycolor. Pixels that are similar
+      to this color can be set more or less transparent by the Bluebox filter.
+      You can define the detection of similar colors by Threshold(s) in
+      3 different ways depending on Threshold Mode:
+      
+    Threshold Mode:
+      HSV ..... has 3 seperate thresholds for hue, saturation and value
+                and operates in the HSV Colormodel.
+      RGB ..... has 3 seperate thresholds for red, green and blue Channels
+                and operates in the RGB Colormodel
+      VALUE ... has only one single threshold for the maximum difference
+                of red, green, and blue Channels and operates in the RGB Colormodel.
+
+    Thresholds
+      All Thresholds have the Range from 0.0 to 1.0
+      where 0.0 has no tolerance the compared channel (requires exact match)
+      and 1.0 allows the maximum tolerance (all values will match)
+
+       
+    Alpha Tolerance:
+      Alpha tolerance value 0.0 upto 1.0
+      where 0.0 makes hard pixel selection by color threshold(s)
+      greater values allow more or less variable transparency (alpha channel values)
+      for the selected Pixels within the threshold(s)
+      depending on their difference to the keycolor.
+      Pixels with color equal or near the keycolor appear more transparent
+      than Pixels with more color differnce.
+      Pixels with color differences bigger than the threshold(s)
+      are not affected by the Alpha Tolerance setting.
+
+    
+    Source Alpha:
+      Select only pixels with alpha channel >= source_alpha
+      where 0.0 is full transparent, 1.0 is full opaque.
+      Normally this is set to 0.2 to protect the alpha_channel
+      of pixels that are already transparent against changes
+      by the bluebox filter.
+      
+    Target Alpha:
+      Control the minimum alpha value for the selected pixels.
+      where 0.0 sets a full selected pixel (== matching with keycolor)
+      to full transparent,
+      0.5 sets a full selected pixel to half transparent
+      and 1.0 to full opaque.
+      
+    Feather Edges:
+      Enable Smoothing the selection using the Feather Radius.
+      
+    Feather Radius:
+      Feather Radius in pixels, makes the selection smooth.
+      (this is done internally by applying a blur filter on the 
+       selection that was built by keycolor, threshold(s) alpha tolerance,
+       shrink/grow and target alpha settings)
+   
+    Shrink/Grow:
+      Grow or shrink the Selection in Pixels,
+      where negative values are for shrinking the selection
+      (that was built by keycolor, threshold(s) alpha tolerance,
+       and target alpha settings)  
+    
+    
+    The Bluebox Filter creates an Image for Preview of the Effect.
+    This Image contains an (optinal scaled) copy of the original Layer.
+    
+    Automatic Preview:
+      when checked perform automatical update of the Preview Image 
+      on all changes of the parameter settings.
+    
+    Preview Button:
+      Create or Update the Preview Image.
+    
+    Previewsize:
+      Set Size of the Preview Image in Percent of the original.
+    
+    
+
 - Saving frames to Videofiles:
 - ----------------------------
 
@@ -1162,8 +1447,8 @@ How to use
     to save (==encode) your Frames in MPEG and other Videoformats
     on the fly.
     
-    ==> the  GAP video encoder Package is available for gimp-1.2.x
-        porting to gimp-1.3 will start in summer 2003
+    ==> the  GAP video encoder Package is available for GIMP-1.2.x
+        porting to GIMP-1.3 will start in summer 2003
 
     The MPEG-encoders are:
 
@@ -1226,6 +1511,8 @@ How to use
 	   
 
 - Tips:
+- ----
+
   - Convert one multilayer Image to a series of frames:
    
      This can be done if you create a series of empty frames.
@@ -1251,7 +1538,7 @@ How to use
       rename your images to fit GAP framename conventions
       (Example: img_0001.tif, img_0003.tif img_0004.tif)
       
-      then load the 1.st image into the gimp (menu: File/Load)
+      then load the 1.st image into the GIMP (menu: File/Load)
       and select (menu: <image>/Video/Frames Convert)
       In the following dialog window you can select
       the desired destination filtype by its typical extension
@@ -1287,6 +1574,8 @@ How to use
          So you can remove all the Layers inserted by "Move Path" Plug-In.
 
 - About Locks
+- -----------
+
    All the GAP Plug-Ins are using a lock.
    This lock disables to run other gap-Plug-Ins (or the same Plug-In twice)
    on the same image at the same time,
@@ -1303,7 +1592,7 @@ How to use
 
    To unlock you can save the current frame image,
    close all views to that image, then reload the frame image.
-   (or quit and restart the gimp)
+   (or quit and restart the GIMP)
 
   WARNING:
   It is not recommanded to open more than one frame of
@@ -1324,9 +1613,10 @@ How to use
                              overwiting wht was img_000004.xcf before.
   If you make the 2.nd call while the 1.st one is in progress,
   you may trash your frames (2 writers on one file) and/or crash
-  your gimp session.
+  your GIMP session.
 
 - Animated calls of Plug-In Filters:
+- ----------------------------------
 
   First of all, you need a multilayered Image.
   You can use "<Image>->Video->Frames to Image"
@@ -1374,7 +1664,7 @@ How to use
             (an animation sequence as the user might expect)             
   
   "Apply Constant":
-      The selected Plug-In is called 2 times in Interactive mode,
+      The selected Plug-In is called only once in Interactive mode,
       For all further Layers, the Plug-In will work non-interactive
       using the last stored values.
 
@@ -1392,7 +1682,8 @@ How to use
           in NON_INTERACTIVE mode. (see TESTPROT_iter_ALT)
         
         - Some Pugin's in your PDB can have earlier or later versions
-          If their Interfaces were changed
+          If their Interfaces were changed and does not match with the
+          Interface version of the Iterator Procedure
           you get the message:(in the shell window)
         
                ERROR: xxxx_Iterator stored Data missmatch in size N != M
@@ -1417,7 +1708,7 @@ There are optional Configuration Values for the GAP Video Plug-Ins.
 Those Values are stored in your personal gimprc file (located in $HOME/.gimp-1.3/gimprc)
 or in the system-wide gimprc file (usually located at /usr/local/etc/gimp/1.3/gimprc)
 
-If you edit gimprc files by hand, you must do this before you startup gimp.
+If you edit gimprc files by hand, you must do this before you startup GIMP.
 
 
 # there are 2 Values to define direcory and basename

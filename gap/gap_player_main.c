@@ -241,6 +241,9 @@ run (const gchar *name,          /* name of plugin */
   /* always return at least the status to the caller. */
   static GimpParam values[1];
 
+  INIT_I18N();
+
+
   l_env = g_getenv("GAP_DEBUG");
   if(l_env != NULL)
   {
