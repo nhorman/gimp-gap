@@ -1,3 +1,10 @@
+2004-07-15  Sven Neumann  <sven@gimp.org>
+
+	* gap/gap_bluebox.c
+	* gap/gap_mov_dialog.c
+	* gap/gap_navigator_dialog.c: merged fix for bug #144649 from HEAD
+	branch.
+
 2004-05-10  Sven Neumann  <sven@gimp.org>
 
 	* Made 2.0.2 release.

@@ -513,7 +513,7 @@ long      gap_mov_dlg_move_dialog    (GapMovData *mov_ptr)
   mgp->keyframe_adj = NULL;
   mgp->pv_ptr = NULL;
   mgp->cursor_wait = gdk_cursor_new (GDK_WATCH);
-  mgp->cursor_acitve = gdk_cursor_new (GDK_TOP_LEFT_ARROW);
+  mgp->cursor_acitve = NULL; /* use the default cursor */
 
   pvals = mov_ptr->val_ptr;
 

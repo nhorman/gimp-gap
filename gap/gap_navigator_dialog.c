@@ -3653,7 +3653,7 @@ navi_dialog_create (GtkWidget* shell, gint32 image_id)
   naviD->dyn_rows = 0;           /* no rows in the dyn table (are added later at 1st resize while creation) */
   naviD->waiting_cursor = FALSE;
   naviD->cursor_wait = gdk_cursor_new (GDK_WATCH);
-  naviD->cursor_acitve = gdk_cursor_new (GDK_TOP_LEFT_ARROW);
+  naviD->cursor_acitve = NULL;   /* NULL: use the default cursor */
   naviD->shell = shell;
   naviD->OpenFrameImagesList  = NULL;
   naviD->OpenFrameImagesCount  = 0;

@@ -204,7 +204,7 @@ gap_bluebox_dialog(GapBlueboxGlobalParams *bbp)
 
   bbp->run_flag = FALSE;
   bbp->cursor_wait = gdk_cursor_new (GDK_WATCH);
-  bbp->cursor_acitve = gdk_cursor_new (GDK_TOP_LEFT_ARROW);
+  bbp->cursor_acitve = NULL; /* use the default cursor */
 
   gap_bluebox_create_dialog(bbp);
   gtk_widget_show (bbp->shell);
