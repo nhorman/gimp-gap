@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: gimp-gap.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2003-12-15 11:42+0100\n"
-"PO-Revision-Date: 2003-12-15 12:27+0100\n"
+"PO-Revision-Date: 2003-12-16 12:50+0100\n"
 "Last-Translator: Francisco Javier F. Serrador <serrador@arrakis.es>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -127,7 +127,7 @@ msgstr "Ir al fotograma nº"
 #, c-format
 msgid ""
 "Frames %d - %d will be deleted. There will be no undo for this operation."
-msgstr "Los fotogramas %d - %d se borrarán.No habrá posibilidad de DESHACER esta operación\n"
+msgstr "Los fotogramas %d - %d se borrarán.No habrá posibilidad de DESHACER esta operación"
 
 #. title_txt
 #: gap/gap_base_ops.c:1025 gap/gap_base_ops.c:1026
@@ -342,9 +342,8 @@ msgstr "Renumerar fotogramas en la segunda pasada"
 
 #. toggle bluebox
 #: gap/gap_bluebox.c:247 gap/gap_mov_dialog.c:2615
-#, fuzzy
 msgid "Bluebox"
-msgstr "Descripción:"
+msgstr "Bluebox"
 
 #. the frame
 #: gap/gap_bluebox.c:269
@@ -664,12 +663,10 @@ msgid "Name:"
 msgstr "Nombre:"
 
 #: gap/gap_dbbrowser_utils.c:497
-#, fuzzy
 msgid "Blurb:"
-msgstr "Descripción:"
+msgstr "Anuncio efusivo:"
 
 #: gap/gap_dbbrowser_utils.c:508
-#, fuzzy
 msgid "Menu Path:"
 msgstr "Ruta del menú:"
 
@@ -698,13 +695,12 @@ msgid "Copyright:"
 msgstr "Copyright:"
 
 #: gap/gap_dbbrowser_utils.c:808
-#, fuzzy
 msgid "Searching by name - please wait"
 msgstr "Buscando por el nombre - por favor, espere"
 
 #: gap/gap_dbbrowser_utils.c:831
 msgid "Searching by blurb - please wait"
-msgstr "Buscando por por descripción - por favor, espere"
+msgstr "Buscando por anuncio - por favor, espere"
 
 #: gap/gap_dbbrowser_utils.c:843
 msgid "Searching by menupath - please wait"
@@ -755,7 +751,6 @@ msgid "Video:"
 msgstr "Vídeo:"
 
 #: gap/gap_decode_xanim.c:239
-#, fuzzy
 msgid ""
 "Name of a videofile to read by xanim. Frames are extracted from the "
 "videofile and written to separate diskfiles. xanim exporting edition is "
@@ -785,7 +780,6 @@ msgid "Format"
 msgstr "Formato"
 
 #: gap/gap_decode_xanim.c:277
-#, fuzzy
 msgid ""
 "Fileformat for the extracted video frames. (xcf is extracted as ppm and "
 "converted to xcf)"
@@ -804,11 +798,10 @@ msgid "Extract Audio"
 msgstr "Extraer audio"
 
 #: gap/gap_decode_xanim.c:290
-#, fuzzy
 msgid ""
 "Enable extraction of audio to raw audiofile. (frame range limits are ignored "
 "for audio)"
-msgstr "Activar extracción de audio a archivos de audio en bruto (no se consideran los límites en el rango de fotogramas al extraer audio)"
+msgstr "Activar extracción de audio a archivos de audio en bruto. (no se consideran los límites en el rango de fotogramas al extraer audio)"
 
 #: gap/gap_decode_xanim.c:295
 msgid "Jpeg Quality:"
@@ -1096,9 +1089,8 @@ msgid "Delete"
 msgstr "Borrar"
 
 #: gap/gap_fmac_main.c:882
-#, fuzzy
 msgid "Delete the selected filtercall"
-msgstr "Borrar fotogramas seleccionados"
+msgstr "Borrar la llamada del filtro seleccionada"
 
 #. Button Add
 #: gap/gap_fmac_main.c:891
@@ -1159,12 +1151,11 @@ msgid "<Image>/Video/Encode/MPEG2..."
 msgstr "<Image>/Vídeo/Codificar/MPEG2..."
 
 #: gap/gap_lib.c:1164
-#, fuzzy
 msgid ""
 "Operation cancelled.\n"
 "Current frame was changed while dialog was open."
 msgstr ""
-"OPERACIÓN CANCELADA.\n"
+"Operación cancelada.\n"
 "El fotograma actual cambió mientras el diálogo estaba abierto."
 
 #: gap/gap_lib.c:1343
@@ -1649,9 +1640,8 @@ msgid "Once"
 msgstr "Una vez"
 
 #: gap/gap_mov_dialog.c:438
-#, fuzzy
 msgid "Once Reverse"
-msgstr "Una vez-Invertido"
+msgstr "Invertir una vez"
 
 #: gap/gap_mov_dialog.c:439
 msgid "Ping Pong"
@@ -1806,13 +1796,11 @@ msgstr ""
 
 #. filesel is already open
 #: gap/gap_mov_dialog.c:1584
-#, fuzzy
 msgid "Load Path Points from File"
 msgstr "Cargar puntos del camino desde un archivo"
 
 #. filesel is already open
 #: gap/gap_mov_dialog.c:1621
-#, fuzzy
 msgid "Save Path Points to File"
 msgstr "Guardar puntos del camino en un archivo"
 
@@ -1851,9 +1839,8 @@ msgid "Source Image/Layer:"
 msgstr "Imagen/capa origen"
 
 #: gap/gap_mov_dialog.c:2442
-#, fuzzy
 msgid "Source object to insert into destination frames of the specified range"
-msgstr "Objeto origen a insertar en el rango de fotogramas"
+msgstr "Objeto origen a insertar en los fotogramas de destiono del rango especificado"
 
 #. Paintmode menu
 #: gap/gap_mov_dialog.c:2453 gap/gap_name2layer_main.c:445
@@ -1901,7 +1888,6 @@ msgid "Handle:"
 msgstr "Manejar:"
 
 #: gap/gap_mov_dialog.c:2560
-#, fuzzy
 msgid "How to place the Source layer at controlpoint coordinates"
 msgstr "Cómo colocar la capa origen en las coordenadas del punto de control"
 
@@ -1933,9 +1919,8 @@ msgstr "Crear una capa de trazado adicional en todos los fotogramas manejados"
 #. TraceOpacityInitial
 #. table col, row
 #: gap/gap_mov_dialog.c:2693
-#, fuzzy
 msgid "TraceOpacity1:"
-msgstr "Opacidad:"
+msgstr "TrazaOpacidad1:"
 
 #. label text
 #. scalesize spinsize
@@ -1947,14 +1932,13 @@ msgstr "Opacidad:"
 #. lower, upper (unconstrained)
 #: gap/gap_mov_dialog.c:2701
 msgid "Initial opacity of the trace layer"
-msgstr ""
+msgstr "Opacidad inicial de la capa de traza"
 
 #. TraceOpacityDescending
 #. table col, row
 #: gap/gap_mov_dialog.c:2711
-#, fuzzy
 msgid "TraceOpacity2:"
-msgstr "Opacidad:"
+msgstr "TrazaOpacidad2:"
 
 #. label text
 #. scalesize spinsize
@@ -1965,9 +1949,8 @@ msgstr "Opacidad:"
 #. constrain
 #. lower, upper (unconstrained)
 #: gap/gap_mov_dialog.c:2719
-#, fuzzy
 msgid "Descending opacity of the trace layer"
-msgstr "Opacidad descendiente para la 2ª capa de papel cebolla"
+msgstr "Opacidad descendiente para la capa de traza"
 
 #. TweenSteps
 #. table col, row
@@ -2037,57 +2020,44 @@ msgid "Edit Controlpoints"
 msgstr "Mostrar primer punto de control"
 
 #: gap/gap_mov_dialog.c:2834
-#, fuzzy
 msgid "Add controlpoint at end. The last controlpoint is duplicated."
-msgstr ""
-"Añadir punto de control al final\n"
-"(el último punto es duplicado)"
+msgstr "Añadir punto de control al final. El último punto es duplicado."
 
 #: gap/gap_mov_dialog.c:2847
 msgid ""
 "Delete all controlpoints, and replace them with a copy of all anchorpoints "
 "of the current path from the image where 'MovePath' was invoked from"
-msgstr ""
+msgstr "Borrar todos los puntos de control, y reemplazarlos con una copia de todos los puntos de arco de la ruta inicial desde la imagen donde se invocó 'MovePath'"
 
 #: gap/gap_mov_dialog.c:2864
-#, fuzzy
 msgid "Insert controlpoint. The current controlpoint is duplicated."
-msgstr ""
-"Insertar punto de control\n"
-"(se duplica el punto actual)"
+msgstr "Insertar punto de control (se duplica el punto actual)."
 
 #: gap/gap_mov_dialog.c:2877
-#, fuzzy
 msgid "Delete current controlpoint"
 msgstr "Borrar punto de control actual"
 
 #: gap/gap_mov_dialog.c:2892
-#, fuzzy
 msgid "Show previous controlpoint"
 msgstr "Mostrar punto de control anterior"
 
 #: gap/gap_mov_dialog.c:2905
-#, fuzzy
 msgid "Show next controlpoint"
 msgstr "Mostrar siguiente punto de control"
 
 #: gap/gap_mov_dialog.c:2920
-#, fuzzy
 msgid "Show first controlpoint"
 msgstr "Mostrar primer punto de control"
 
 #: gap/gap_mov_dialog.c:2933
-#, fuzzy
 msgid "Show last controlpoint"
 msgstr "Mostrar el último punto de control"
 
 #: gap/gap_mov_dialog.c:2948
-#, fuzzy
 msgid "Reset the current controlpoint to default values"
 msgstr "Restaurar todos los puntos de control actuales a valores predefinidos"
 
 #: gap/gap_mov_dialog.c:2961
-#, fuzzy
 msgid ""
 "Reset all controlpoints to default values but dont change the path (X/Y "
 "values)"
@@ -2096,28 +2066,20 @@ msgstr ""
 "cambiar el camino (Valores X/Y)"
 
 #: gap/gap_mov_dialog.c:2977
-#, fuzzy
 msgid ""
 "Set rotation for all controlpoints to follow the shape of the path. Hold "
 "down the shift key to use rotation of contolpoint 1 as offset."
-msgstr ""
-"Pone las rotaciones en todos los puntos de control de manera que se siga la "
-"forma del camino.\n"
-"(Con Mayúsculas: utilizar la rotación del primer punto de control para "
-"desfasar todas las rotaciones)"
+msgstr "Establecer las rotaciones en todos los puntos de control de manera que se siga la forma del camino. Con mayúsculas: utilizar la rotación del primer punto de control 1 como desfase."
 
 #: gap/gap_mov_dialog.c:2992
-#, fuzzy
 msgid "Delete all controlpoints"
 msgstr "Borrar todos los puntos de control"
 
 #: gap/gap_mov_dialog.c:3008
-#, fuzzy
 msgid "Load controlpoints from file"
 msgstr "Cargar puntos de control desde un archivo"
 
 #: gap/gap_mov_dialog.c:3021
-#, fuzzy
 msgid "Save controlpoints to file"
 msgstr "Guardar puntos de control en un archivo"
 
@@ -2133,9 +2095,8 @@ msgstr "Guardar puntos de control en un archivo"
 #. lower, (unconstrained)
 #. upper (unconstrained)
 #: gap/gap_mov_dialog.c:3132
-#, fuzzy
 msgid "First handled destination frame"
-msgstr "Primer fotograma manejado"
+msgstr "Primer fotograma manejado de destino"
 
 #. label text
 #. scalesize spinsize
@@ -2148,9 +2109,8 @@ msgstr "Primer fotograma manejado"
 #. lower, (unconstrained)
 #. upper (unconstrained)
 #: gap/gap_mov_dialog.c:3150
-#, fuzzy
 msgid "Last handled destination frame"
-msgstr "Último fotograma manejado"
+msgstr "Último fotograma manejado de destino"
 
 #. the Layerstack scale_entry
 #. table col, row
@@ -2167,23 +2127,18 @@ msgstr "Pila de capas:"
 #. constrain
 #. lower, upper (unconstrained)
 #: gap/gap_mov_dialog.c:3166
-#, fuzzy
 msgid ""
 "How to insert source layer into the layerstack of the destination frames. "
 "layerstack 0 means on top i.e. in front"
-msgstr ""
-"Cómo insertar la capa origen en la pila de capas del fotograma destino\n"
-"0 significa en la cima, es decir, en el frente"
+msgstr "Cómo insertar la capa origen en la pila de capas del fotograma destino. 0 significa en la cima, es decir, en el frente"
 
 #. toggle force visibility
 #: gap/gap_mov_dialog.c:3181
-#, fuzzy
 msgid "Force Visibility"
 msgstr "Forzar visibilidad"
 
 # //R Esto está en chino
 #: gap/gap_mov_dialog.c:3185
-#, fuzzy
 msgid "Force visibility for all copied source layers"
 msgstr "Forzar visibilidad para todas las capas origen copiadas"
 
@@ -2193,14 +2148,13 @@ msgid "Clip To Frame"
 msgstr "Recortar a fotograma"
 
 #: gap/gap_mov_dialog.c:3199
-#, fuzzy
 msgid "Clip all copied source layers at destination frame boundaries"
 msgstr "Recorta todas las capas origen copiadas a los bordes del fotograma"
 
 #. the frame
 #: gap/gap_mov_dialog.c:3233
 msgid "Modify Size Opacity and Rotation"
-msgstr ""
+msgstr "Modificar la opacidad lateral y rotación"
 
 #. Width Scale
 #. table col, row
@@ -2217,9 +2171,8 @@ msgstr "Anchura:"
 #. constrain
 #. lower, upper (unconstrained)
 #: gap/gap_mov_dialog.c:3258
-#, fuzzy
 msgid "Scale source layer's width in percent"
-msgstr "Redimensionar anchura de capa origen (en %)"
+msgstr "Escalar anchura de capa origen en porcentaje"
 
 #. Height Scale
 #. table col, row
@@ -2237,9 +2190,8 @@ msgstr "Altura:"
 #. constrain
 #. lower, upper (unconstrained)
 #: gap/gap_mov_dialog.c:3276
-#, fuzzy
 msgid "Scale source layer's height in percent"
-msgstr "Redimensionar altura de capa origen (en %)"
+msgstr "Escalar altura de capa origen en porcentaje"
 
 #: gap/gap_mov_dialog.c:3293 gap/gap_resi_dialog.c:784
 msgid "Constrain aspect ratio"
@@ -2263,9 +2215,8 @@ msgstr "Opacidad:"
 #. constrain
 #. lower, upper (unconstrained)
 #: gap/gap_mov_dialog.c:3310
-#, fuzzy
 msgid "Set the source layer's opacity in percent"
-msgstr "Opacidad de la capa origen en porcentaje:"
+msgstr "Establcer opacidad de la capa origen en porcentaje"
 
 #. Rotation
 #. table col, row
@@ -2282,20 +2233,19 @@ msgstr "Rotar:"
 #. constrain
 #. lower, upper (unconstrained)
 #: gap/gap_mov_dialog.c:3328
-#, fuzzy
 msgid "Rotate source layer (in degree)"
 msgstr "Rotar capa origen (en grados)"
 
 #. the frame
 #: gap/gap_mov_dialog.c:3362
 msgid "Transformfactors X/Y for the 4 corners"
-msgstr ""
+msgstr "Factores de transformación X/Y para las 4 esquinas"
 
 #. ttlx transformfactor
 #. table col, row
 #: gap/gap_mov_dialog.c:3381
 msgid "x1:"
-msgstr ""
+msgstr "x1:"
 
 #. label text
 #. scalesize spinsize
@@ -2307,13 +2257,13 @@ msgstr ""
 #. lower, upper (unconstrained)
 #: gap/gap_mov_dialog.c:3389
 msgid "Transformfactor for upper left corner X coordinate"
-msgstr ""
+msgstr "Factor de transformación para la esquina superior izquierda coordenada X"
 
 #. ttly transformfactor
 #. table col, row
 #: gap/gap_mov_dialog.c:3400
 msgid "y1:"
-msgstr ""
+msgstr "y1:"
 
 #. label text
 #. scalesize spinsize
@@ -2325,7 +2275,7 @@ msgstr ""
 #. lower, upper (unconstrained)
 #: gap/gap_mov_dialog.c:3408
 msgid "Transformfactor for upper left corner Y coordinate"
-msgstr ""
+msgstr "Factor de transformación para la esquina superior izquierda coordenada Y<"
 
 #. ttrx transformfactor
 #. table col, row
@@ -2443,13 +2393,12 @@ msgstr ""
 
 #. the frame
 #: gap/gap_mov_dialog.c:3558
-#, fuzzy
 msgid "Pixel Selction Handling"
-msgstr "Reproducir sólo la selección"
+msgstr "Manejo de la selección de píxel"
 
 #: gap/gap_mov_dialog.c:3579
 msgid "How to handle selections in the source image"
-msgstr ""
+msgstr "Cómo manejar las selecciones en la imagen origen"
 
 #. ttlx transformfactor
 #. table col, row
@@ -2519,18 +2468,16 @@ msgstr ""
 "(0 == Sin fotograma clave)"
 
 #: gap/gap_mov_dialog.c:3769
-#, fuzzy
 msgid "Scale and Modify"
-msgstr "Modificar fotogramas"
+msgstr "Escalar y modificar"
 
 #: gap/gap_mov_dialog.c:3775
 msgid "Perspective"
-msgstr ""
+msgstr "Perspectiva"
 
 #: gap/gap_mov_dialog.c:3782
-#, fuzzy
 msgid "Selection Handling"
-msgstr "Reproducir sólo la selección"
+msgstr "Manejo de la selección"
 
 #. startup with RED pathline color
 #: gap/gap_mov_dialog.c:3899
@@ -2540,7 +2487,7 @@ msgstr "Tramado de color posicionado"
 
 #: gap/gap_mov_dialog.c:3906
 msgid "Select the color that is used to draw pathlines in the preview"
-msgstr ""
+msgstr "Seleccione el color que se usa para dibujer líneas de caminos en la vista previa"
 
 #. toggle Show path
 #: gap/gap_mov_dialog.c:3918
@@ -2562,14 +2509,13 @@ msgid "Cursor"
 msgstr "Cursor"
 
 #: gap/gap_mov_dialog.c:3940
-#, fuzzy
 msgid "Show cursor crosslines"
 msgstr "Mostrar líneas de cruce del cursor"
 
 #. toggle Show Grid
 #: gap/gap_mov_dialog.c:3951
 msgid "Grid"
-msgstr ""
+msgstr "Rejilla"
 
 #: gap/gap_mov_dialog.c:3955
 #, fuzzy
@@ -2579,18 +2525,17 @@ msgstr "Mostrar líneas de cruce del cursor"
 #. toggle Instant Apply
 #: gap/gap_mov_dialog.c:3965
 msgid "Instant Apply"
-msgstr ""
+msgstr "Aplicación instantánea"
 
 #: gap/gap_mov_dialog.c:3969
 msgid "Update the preview automatically"
-msgstr ""
+msgstr "Actualiza la vista previa automáticamente"
 
 #. the Preview Frame Number
 #. table col, row
 #: gap/gap_mov_dialog.c:3988
-#, fuzzy
 msgid "Frame:"
-msgstr "Hasta fotograma:"
+msgstr "Fotograma:"
 
 #. label text
 #. scalesize spinsize
@@ -2603,16 +2548,12 @@ msgstr "Hasta fotograma:"
 #. lower (unconstrained)
 #. upper (unconstrained)
 #: gap/gap_mov_dialog.c:3998
-#, fuzzy
 msgid "Frame to show when 'Refresh' button is pressed"
-msgstr "Fotograma a mostrar cuando se pulse el botón Actualizar vista previa."
+msgstr "Fotograma a mostrar cuando se pulse el botón Actualizar"
 
 #: gap/gap_mov_dialog.c:4706
-#, fuzzy
 msgid "Can't operate with current controlpoint or keyframe settings"
-msgstr ""
-"No puedo operar con los actuales puntos de\n"
-"control o ajustes de fotogramas llave."
+msgstr "No puedo operar con los actuales puntos de control o ajustes de fotogramas llave."
 
 #: gap/gap_mov_dialog.c:4711
 msgid "Reset Keyframes"
@@ -2620,7 +2561,7 @@ msgstr "Restaurar fotogramas llave"
 
 #: gap/gap_mov_dialog.c:4716
 msgid "Move Path Controlpointcheck"
-msgstr "Chequeo de puntos de control de Camino de movimiento"
+msgstr "Chequeo de puntos de control de la ruta de movimiento"
 
 #: gap/gap_mov_dialog.c:4717
 msgid "Errors:"
