@@ -31,6 +31,7 @@
 #include "gap_morph_main.h"
 
 #define GAP_MORPH_PLUGIN_NAME    "plug_in_gap_morph"
+#define GAP_MORPH_HELP_ID        "plug-in-gap-morph"
 
 
 typedef struct GapMorphSubWin  { /* nickname: swp */

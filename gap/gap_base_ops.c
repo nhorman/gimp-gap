@@ -58,6 +58,13 @@
 
 extern      int gap_debug; /* ==0  ... dont print debug infos */
 
+#define GAP_HELP_ID_DUPLICATE         "plug-in-gap-dup"
+#define GAP_HELP_ID_DELETE            "plug-in-gap-del"
+#define GAP_HELP_ID_DENSITY           "plug-in-gap-density"
+#define GAP_HELP_ID_EXCHANGE          "plug-in-gap-exchg"
+#define GAP_HELP_ID_RENUMBER          "plug-in-gap-renumber"
+#define GAP_HELP_ID_SHIFT             "plug-in-gap-shift"
+
 
 /* ------------------------
  * p_density_shrink
@@ -980,7 +987,9 @@ gap_base_goto(GimpRunMode run_mode, gint32 image_id, int nr)
                 , ainfo_ptr->first_frame_nr
                 , ainfo_ptr->last_frame_nr
                 , ainfo_ptr->curr_frame_nr
-                , TRUE);
+                , TRUE
+		, NULL  /* help_id NULL: has no help button */
+		);
 
 	g_free (l_title);
 	g_free (l_hline);
@@ -1091,7 +1100,8 @@ gap_base_del(GimpRunMode run_mode, gint32 image_id, int nr)
               , ainfo_ptr->curr_frame_nr
               , l_max
               , ainfo_ptr->curr_frame_nr
-              , TRUE);
+              , TRUE
+	      , GAP_HELP_ID_DELETE);
                 
 	g_free (l_tooltip);
 	g_free (l_title);
@@ -1211,7 +1221,7 @@ static gboolean
 p_density_dialog(GapAnimInfo *ainfo_ptr, long *range_from, long *range_to
                 , gdouble *density_factor, gboolean *density_grow)
 {
-  static GapArrArg  argv[4];
+  static GapArrArg  argv[5];
   gchar            *l_title;
   gint              l_rci;
   gboolean          l_rc;
@@ -1253,8 +1263,10 @@ p_density_dialog(GapAnimInfo *ainfo_ptr, long *range_from, long *range_to
                         "OFF: Delete frames to get a target rate that is originalrate/density.");
   argv[3].int_ret   = 1;
 
+  gap_arr_arg_init(&argv[4], GAP_ARR_WGT_HELP_BUTTON);
+  argv[4].help_id = GAP_HELP_ID_DENSITY;
 
-  l_rci = gap_arr_ok_cancel_dialog(l_title, _("Change Frames Density"),  4, argv);
+  l_rci = gap_arr_ok_cancel_dialog(l_title, _("Change Frames Density"),  5, argv);
   g_free (l_title);
 
   if(l_rci)
@@ -1363,7 +1375,7 @@ gap_base_density(GimpRunMode run_mode, gint32 image_id
 gint32
 p_dup_dialog(GapAnimInfo *ainfo_ptr, long *range_from, long *range_to)
 {
-  static GapArrArg  argv[3];
+  static GapArrArg  argv[4];
   gchar            *l_title;
 
   l_title = g_strdup_printf (_("Duplicate Frames (%ld/%ld)")
@@ -1396,8 +1408,10 @@ p_dup_dialog(GapAnimInfo *ainfo_ptr, long *range_from, long *range_to)
   argv[2].umax      = 9999;
   argv[2].help_txt  = _("Copy selected range n-times (you may type in values > 99)");
 
+  gap_arr_arg_init(&argv[3], GAP_ARR_WGT_HELP_BUTTON);
+  argv[3].help_id = GAP_HELP_ID_DUPLICATE;
 
-  if(TRUE == gap_arr_ok_cancel_dialog(l_title, _("Make Duplicates of Frame Range"),  3, argv))
+  if(TRUE == gap_arr_ok_cancel_dialog(l_title, _("Make Duplicates of Frame Range"),  4, argv))
   { 
     g_free (l_title);
     *range_from = (long)(argv[0].int_ret);
@@ -1530,7 +1544,8 @@ gap_base_exchg(GimpRunMode run_mode, gint32 image_id, int nr)
 				  , ainfo_ptr->first_frame_nr 
 				  , ainfo_ptr->last_frame_nr
 				  , l_initial
-				  , TRUE);
+				  , TRUE
+				  , GAP_HELP_ID_EXCHANGE);
 	 g_free (l_tooltip);
 	 g_free (l_title);
 				  
@@ -1566,7 +1581,7 @@ gap_base_exchg(GimpRunMode run_mode, gint32 image_id, int nr)
 gint32
 p_shift_dialog(GapAnimInfo *ainfo_ptr, long *range_from, long *range_to)
 {
-  static GapArrArg  argv[3];
+  static GapArrArg  argv[4];
   gchar            *l_title;
 
   l_title = g_strdup_printf (_("Frame Sequence Shift (%ld/%ld)")
@@ -1596,8 +1611,11 @@ p_shift_dialog(GapAnimInfo *ainfo_ptr, long *range_from, long *range_to)
   argv[2].int_max   = (gint)ainfo_ptr->last_frame_nr;
   argv[2].int_ret   = 1;
   argv[2].help_txt  = _("Renumber the affected frame sequence (numbers are shifted in circle by N steps)");
+
+  gap_arr_arg_init(&argv[3], GAP_ARR_WGT_HELP_BUTTON);
+  argv[3].help_id = GAP_HELP_ID_SHIFT;
   
-  if(TRUE == gap_arr_ok_cancel_dialog(l_title, _("Frame Sequence Shift"),  3, argv))
+  if(TRUE == gap_arr_ok_cancel_dialog(l_title, _("Frame Sequence Shift"),  4, argv))
   { 
     g_free (l_title);
     *range_from = (long)(argv[0].int_ret);
@@ -1679,7 +1697,7 @@ gap_base_shift(GimpRunMode run_mode, gint32 image_id, int nr,
 static int 
 p_renumber_dialog(GapAnimInfo *ainfo_ptr, long *start_frame_nr, long *digits)
 {
-  static GapArrArg  argv[2];
+  static GapArrArg  argv[3];
   gchar            *l_title;
 
   l_title = g_strdup_printf (_("Renumber Frames (%ld)")
@@ -1701,9 +1719,11 @@ p_renumber_dialog(GapAnimInfo *ainfo_ptr, long *start_frame_nr, long *digits)
   argv[1].int_ret   = 6;
   argv[1].help_txt  = _("How many digits to use for the framenumber in the filename");
     
+  gap_arr_arg_init(&argv[2], GAP_ARR_WGT_HELP_BUTTON);
+  argv[2].help_id = GAP_HELP_ID_RENUMBER;
 
 
-  if(TRUE == gap_arr_ok_cancel_dialog(l_title, _("Renumber Frames"),  2, argv))
+  if(TRUE == gap_arr_ok_cancel_dialog(l_title, _("Renumber Frames"),  3, argv))
   { 
     g_free (l_title);
     *start_frame_nr = (long)(argv[0].int_ret);

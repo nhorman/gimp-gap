@@ -55,6 +55,9 @@
 
 #include "gap-intl.h"
 
+
+#define GAP_STORY_CLIP_PROP_HELP_ID  "plug-in-gap-storyboard-clip-prop"
+
 #define GAP_STORY_RESPONSE_RESET 1
 #define GAP_STORY_RESPONSE_SCENE_SPLIT 2 
 #define GAP_STORY_RESPONSE_SCENE_END   3
@@ -1643,7 +1646,7 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
   {
     dlg = gimp_dialog_new (_("Clip Properties"), "gap_story_clip_properties"
                          ,NULL, 0
-                         ,gimp_standard_help_func, "gap_story_clip_properties.html"
+                         ,gimp_standard_help_func, GAP_STORY_CLIP_PROP_HELP_ID
 
                          ,GIMP_STOCK_RESET, GAP_STORY_RESPONSE_RESET
                          ,_("Find Scene End"), GAP_STORY_RESPONSE_SCENE_END
@@ -1655,7 +1658,7 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
   {
     dlg = gimp_dialog_new (_("Clip Properties"), "gap_story_clip_properties"
                          ,NULL, 0
-                         ,gimp_standard_help_func, "gap_story_clip_properties.html"
+                         ,gimp_standard_help_func, GAP_STORY_CLIP_PROP_HELP_ID
 
                          ,_("Find Scene End"), GAP_STORY_RESPONSE_SCENE_END
                          ,_("Aoto Scene Split"), GAP_STORY_RESPONSE_SCENE_SPLIT

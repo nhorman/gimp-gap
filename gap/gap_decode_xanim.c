@@ -89,6 +89,8 @@
 #endif
 
 
+#define GAP_XANIM_HELP_ID  "plug-in-gap-xanim-decode"
+
 /* GAP includes */
 #include "gap_lib.h"
 #include "gap_arr_dialog.h"
@@ -187,6 +189,7 @@ p_xanim_info(char *errlist)
   gap_arr_arg_init(&argv[l_idx], GAP_ARR_WGT_LABEL_LEFT);
   argv[l_idx].label_txt = errlist;
 
+
   l_idx++;
 
   /* the  Action Button */
@@ -223,7 +226,7 @@ p_xanim_dialog   (gint32 *first_frame,
 		  gint32  *autoload,
 		  gint32  *run_xanim_asynchron)
 {
-#define XADIALOG_NUM_ARGS 12
+#define XADIALOG_NUM_ARGS 13
   static GapArrArg  argv[XADIALOG_NUM_ARGS];
   static char *radio_args[3]  = { "XCF", "PPM", "JPEG" };
 
@@ -311,6 +314,10 @@ p_xanim_dialog   (gint32 *first_frame,
   argv[11].label_txt = _("\nWarning: xanim 2.80 is old unmaintained software\n"
                          "and has only limited MPEG support.\n"
 			 "Most of the frames (type P and B) will be skipped.");
+
+  gap_arr_arg_init(&argv[12], GAP_ARR_WGT_HELP_BUTTON);
+  argv[12].help_id = GAP_XANIM_HELP_ID;
+
    
   if(TRUE == gap_arr_ok_cancel_dialog(_("Split any Xanim readable Video to Frames"), 
 			    _("Select Frame Range"), XADIALOG_NUM_ARGS, argv))

@@ -2376,7 +2376,7 @@ p_create_ffmpeg_dialog_shell (GapGveFFMpegGlobalParams *gpp)
   shell_window = gimp_dialog_new (_("FFMPEG Video Encode Parameters"),
                          GAP_PLUGIN_NAME_FFMPEG_PARAMS,
                          NULL, 0,
-                         gimp_standard_help_func, GAP_PLUGIN_NAME_FFMPEG_PARAMS ".html",
+                         gimp_standard_help_func, GAP_HELP_ID_FFMPEG_PARAMS,
 
                          GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
                          GTK_STOCK_OK,     GTK_RESPONSE_OK,

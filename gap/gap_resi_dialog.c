@@ -54,6 +54,12 @@
 /* common used spinbutton char width */
 #define SB_WIDTH 10
 
+#define GAP_HELP_ID_CROP    "plug-in-gap-anim-crop"
+#define GAP_HELP_ID_RESIZE  "plug-in-gap-anim-resize"
+#define GAP_HELP_ID_SCALE   "plug-in-gap-anim-scale"
+
+
+
 typedef struct
 {
   GapRangeOpsAsiz asiz_mode;    /* GAP specific resize mode GAP_ASIZ_SCALE, GAP_ASIZ_RESIZE, GAP_ASIZ_CROP */
@@ -153,7 +159,7 @@ p_resize_bound_off_y (GapResizePrivateType *res_private,
  */
 static void
 p_res_cancel_callback (GtkWidget *widget,
-                                gpointer   data)
+                       GapResizePrivateType *res_private)
 {
   gtk_main_quit ();
 }  /* end p_res_cancel_callback */
@@ -164,17 +170,39 @@ p_res_cancel_callback (GtkWidget *widget,
  */
 static void
 p_res_ok_callback (GtkWidget *widget,
-                    gpointer   data)
+                   GapResizePrivateType *res_private)
 {
-  GapResizePrivateType *res_private;
-  
-  res_private = (GapResizePrivateType *)data;
   if(res_private)
   {
     res_private->run = TRUE;
     gtk_widget_destroy (GTK_WIDGET (res_private->dlg));
   }
 }  /* end p_res_ok_callback */
+
+/* -----------------------------
+ * p_res_help_callback
+ * -----------------------------
+ */
+static void
+p_res_help_callback (GtkWidget *widget,
+                     GapResizePrivateType *res_private)
+{
+  if(res_private)
+  {
+    switch(res_private->asiz_mode)
+    {
+      case GAP_ASIZ_SCALE:
+        gimp_standard_help_func(GAP_HELP_ID_SCALE, res_private->dlg);
+        break;
+      case GAP_ASIZ_RESIZE:
+        gimp_standard_help_func(GAP_HELP_ID_RESIZE, res_private->dlg);
+        break;
+      case GAP_ASIZ_CROP:
+        gimp_standard_help_func(GAP_HELP_ID_CROP, res_private->dlg);
+        break;
+    }
+  }
+}  /* end p_res_help_callback */
 
 /* -----------------------------
  * p_set_size_spinbuttons
@@ -912,6 +940,13 @@ gap_resi_dialog (gint32 image_id, GapRangeOpsAsiz asiz_mode, char *title_text,
 
 
   /*  Action area  */
+
+  button = gtk_button_new_from_stock ( GTK_STOCK_HELP);
+  gtk_box_pack_end (GTK_BOX (hbbox), button, TRUE, TRUE, 0);
+  gtk_widget_show (button);
+  g_signal_connect (GTK_OBJECT (button), "clicked",
+                    G_CALLBACK  (p_res_help_callback),
+                    res_private);
 
   button = gtk_button_new_from_stock ( GIMP_STOCK_RESET);
   gtk_box_pack_start (GTK_BOX (hbbox), button, TRUE, TRUE, 0);

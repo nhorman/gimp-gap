@@ -403,7 +403,7 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
   shell_window = gimp_dialog_new (_("AVI Video Encode Parameters"),
                          GAP_PLUGIN_NAME_AVI_PARAMS,
                          NULL, 0,
-                         gimp_standard_help_func, GAP_PLUGIN_NAME_AVI_PARAMS ".html",
+                         gimp_standard_help_func, GAP_HELP_ID_AVI_PARAMS,
 
 			 GIMP_STOCK_RESET, GAP_ENC_AVI_RESPONSE_RESET,
                          GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,

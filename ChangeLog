@@ -1,3 +1,113 @@
+2004-11-14  Wolfgang Hofer <hof@gimp.org>
+	- bugfix VCR navigator: Timezoom changes and Goto other frame
+	  actions did not
+	  update the scale widgets adjustment (dyn_adj)
+	- bugfix: after gap controlled image excange disable undo
+	  (otherwise undo can discard the layers
+	   step by step in order they were added by the image load operation)
+	- gap_Use the same PDB-description render procedures
+	  as the official DBBROWSER plug-in
+	  copied code from gimp-2.1.7/plug-ins/dbbrowser/gimpprocbrowser.c
+
+	  IDEA: if this code is transfered to libgimp
+	  it could be used both from the offical DBBROWSER plug-in
+	  and in GAP. (maybe after the gimp-2.2 release ?)
+	  
+	  * gap/gap_dbbrowser_utils.c
+	  * gap/gap_navigator_dialog.c
+	  * gap/gap_lib.c
+
+2004-11-12  Wolfgang Hofer <hof@gimp.org>
+	- hardcoded precompiler switch GAP_MORPH_DEBUG_FEATURES
+	  to hide experimental and debug features in the morph plug-in
+	  
+	  * gap/gap_morph_dialog.c
+	  	  
+2004-11-11  Wolfgang Hofer <hof@gimp.org>
+	- gap_arr_dialog  added new widget type: GAP_ARR_WGT_HELP_BUTTON
+	- Added HelpButtons for most GAP plug-ins
+	  (the ones where i think they should have a Help page.)
+	  
+	  some of the gap plug-ins had already a Help Button per default
+	  because the implementation uses gimp_dialog_new to create
+	  the dialog shell window.
+          
+	  All GAP help-buttons call the GIMP standard help procedure
+	  gimp_standard_help_func
+	 
+	 - changed existing HELP_ID strings
+	  from:  "plug_in_xxx.html"
+	  to:    "plug-in-xxx"
+
+        - here is the list of HELP_ID's. 
+	  For each HELP-ID we need a html help page.
+	  
+	  As far as i know there are no help-pages for gimp-gap available
+	  at all (until now). 
+	  Some (partly outdated) information is already available 
+	  in the gap/README textfile.
+
+	  (dont know howto create Helppages and have no XML knowledge either.)
+	   
+
+
+	new HELP_ID                           menupath:
+	--------------------------------------------------------
+	"plug-in-bluebox"		      <Image>/Video/Bluebox
+	"plug-in-gap-modify"                  <Image>/Video/Frames Modify
+        "plug-in-gap-vid-encode-master"       <Image>/Video/Encode/Master Encoder
+	"plug-in-gap-encpar-avi1"             ## AVI videoencoder params (invoked via master encoder)
+	"plug-in-gap-encpar-ffmpeg"           ## FFMPEG videoencoder params (invoked via master encoder)
+	"plug-in-gap-navigator"               <Image>/Video/VCR Navigator
+        "plug-in-gap-morph"                   <Image>/Video/Morph
+        "plug-in-gap-extract-video"           <Image>/Video/Split Video to Frames/Extract Videorange
+	
+	"plug-in-gap-move-path"               <Image>/Video/Move Path
+        "plug-in-gap-xanim-decode"	      <Image>/Video/Split Video to Frames/Any XANIM readable
+	"plug-in-filter-macro"                <Image>/Filters/Filtermacro
+        "gap-filtermacro-db-browser"          ## gap_dbbrowser dialog invoked from filtermacro
+        "gap-modframes-db-browser"            ## gap_dbbrowser dialog invoked from modify frames plug-in
+        "gap-filterall-db-browser"            <Image>/Filters/Filter all Layers
+	"plug-in-gap-onionskin-configuration" <Image>/Video/Onionskin/Configuration
+	"plug-in-gap-storyboard-edit"         <Image>/Video/Storyboard  (has HelpMenu, no Button)
+	"plug-in-gap-storyboard-clip-prop"    ## storyboard edit dialog sub window  (clip properties)
+	"plug-in-gap-videoframes-player"      <Image>/Video/Playback
+	"plug-in-gap-extract-player"          ## Player invoked from videoextract plug-in
+	"plug-in-gap-storyboard-player"       ## Player invoked from storyboard dialog editor plug-in
+	"plug-in-gap-anim-scale"              <Image>/Video/Frames Scale
+	"plug-in-gap-anim-resize"             <Image>/Video/Frames Resize
+	"plug-in-gap-anim-crop"               <Image>/Video/Frames Crop
+        "plug-in-gap-range-flatten"           <Image>/Video/Frames Flatten
+        "plug-in-gap-range-layer-del"         <Image>/Video/Frames Layer Delete
+	"plug-in-gap-range-convert"           <Image>/Video/Frames Convert
+        "plug-in-gap-range-to-multilayer"     <Image>/Video/Frames to Image
+        "plug-in-gap-renumber"                <Image>/Video/Frames Renumber
+        "plug-in-gap-shift"                   <Image>/Video/Framesequence Shift
+	"plug-in-gap-dup"                     <Image>/Video/Duplicate Frames
+	"plug-in-gap-density"                 <Image>/Video/Frames Density
+        "plug-in-gap-split"                   <Image>/Video/Split Img to Frames
+        "plug-in-gap-del"                     <Image>/Video/Delete Frames
+	"plug-in-gap-exchg"                   <Image>/Video/Exchange Frame
+	"plug-in-gap-mpeg-encode"             <Image>/Video/Encode/MPEG1...
+	"plug-in-gap-mpeg2encode"             <Image>/Video/Encode/MPEG2...
+	"plug-in-name2layer"                  <Image>/Video/Filename to Layer...
+
+	* touched most source files
+	
+2004-11-10  Wolfgang Hofer <hof@gimp.org>
+	- reorganized master encoder dialog
+	  replaced deprecated GtkOptionMenu widgets by gimp_int_combo_box
+        - bugfix: ffmpeg default presets must not use b_frames for msmpeg4
+	  codecs (ffmpeg-0.4.8 does crash with this parameter set > 0)
+	  changed presets, and made workaround to avoid this crash.
+
+	* vid_common/gap_cme_callbacks.c [.h]
+	* vid_common/gap_cme_gui.c [.h]
+	* vid_common/gap_main.c [.h]
+	* gap/gap_morph_dialog.c
+	* gap/gap_morph_dialog.c
+	* vid_enc_ffmpeg/gap_enc_ffmpeg_main.c
+		
 2004-11-06  Wolfgang Hofer <hof@gimp.org>
 	- replaced deprecated GtkOptionMenu widgets by gimp_int_combo_box
 	  (not finished yet

@@ -36,6 +36,8 @@
 #include "gap_story_file.h"
 #include "gap_player_main.h"
 
+#define GAP_STORYBOARD_EDIT_HELP_ID       "plug-in-gap-storyboard-edit"
+
 #define GAP_STORY_MAX_STORYFILENAME_LEN 2048
 #define GAP_STORY_MAX_CLIP_WIDGETS 2000
 #define GAP_STORY_DEFAULT_FRAMERATE 24.0

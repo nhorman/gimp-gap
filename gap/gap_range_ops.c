@@ -32,6 +32,7 @@
  */
 
 /* revision history
+ * 2.1.0a;  2004/11/12   hof: added help buttons
  * 2.1.0a;  2004/04/26   hof: frames_to_multilayer: do not force save of current image
  *                            and use gimp_image_duplicate for the current frame
  *                            works faster, and avoid the "not using xcf" dialog (# 125977)
@@ -106,6 +107,10 @@
 
 extern      int gap_debug; /* ==0  ... dont print debug infos */
 
+#define GAP_HELP_ID_FLATTEN          "plug-in-gap-range-flatten"
+#define GAP_HELP_ID_LAYER_DEL        "plug-in-gap-range-layer-del"
+#define GAP_HELP_ID_CONVERT          "plug-in-gap-range-convert"
+#define GAP_HELP_ID_TO_MULTILAYER    "plug-in-gap-range-to-multilayer"
 
 /* ============================================================================
  * p_anim_sizechange_dialog
@@ -278,41 +283,59 @@ p_anim_sizechange_dialog(GapAnimInfo *ainfo_ptr, GapRangeOpsAsiz asiz_mode,
 static int
 p_range_dialog(GapAnimInfo *ainfo_ptr,
                long *range_from, long *range_to,
-               char *title, char *hline, gint cnt)
+               char *title, char *hline, gint cnt,
+	       const char *help_id)
 {
-  static GapArrArg  argv[3];
+  static GapArrArg  argv[4];
+  gint              argc;
 
 
-  if(cnt != 3)  cnt = 2;
+  argc = 0;
+  
+  gap_arr_arg_init(&argv[argc], GAP_ARR_WGT_INT_PAIR);
+  argv[argc].label_txt = _("From Frame:");
+  argv[argc].help_txt  = _("First handled frame");
+  argv[argc].constraint = TRUE;
+  argv[argc].int_min   = (gint)ainfo_ptr->first_frame_nr;
+  argv[argc].int_max   = (gint)ainfo_ptr->last_frame_nr;
+  argv[argc].int_ret   = (gint)ainfo_ptr->curr_frame_nr;
+  argc++;
 
-  gap_arr_arg_init(&argv[0], GAP_ARR_WGT_INT_PAIR);
-  argv[0].label_txt = _("From Frame:");
-  argv[0].help_txt  = _("First handled frame");
-  argv[0].constraint = TRUE;
-  argv[0].int_min   = (gint)ainfo_ptr->first_frame_nr;
-  argv[0].int_max   = (gint)ainfo_ptr->last_frame_nr;
-  argv[0].int_ret   = (gint)ainfo_ptr->curr_frame_nr;
 
-  gap_arr_arg_init(&argv[1], GAP_ARR_WGT_INT_PAIR);
-  argv[1].label_txt = _("To Frame:");
-  argv[1].help_txt  = _("Last handled frame");
-  argv[1].constraint = TRUE;
-  argv[1].int_min   = (gint)ainfo_ptr->first_frame_nr;
-  argv[1].int_max   = (gint)ainfo_ptr->last_frame_nr;
-  argv[1].int_ret   = (gint)ainfo_ptr->last_frame_nr;
+  gap_arr_arg_init(&argv[argc], GAP_ARR_WGT_INT_PAIR);
+  argv[argc].label_txt = _("To Frame:");
+  argv[argc].help_txt  = _("Last handled frame");
+  argv[argc].constraint = TRUE;
+  argv[argc].int_min   = (gint)ainfo_ptr->first_frame_nr;
+  argv[argc].int_max   = (gint)ainfo_ptr->last_frame_nr;
+  argv[argc].int_ret   = (gint)ainfo_ptr->last_frame_nr;
+  argc++;
 
-  gap_arr_arg_init(&argv[2], GAP_ARR_WGT_INT_PAIR);
-  argv[2].label_txt = _("Layerstack:");
-  argv[2].help_txt  = _("Layerstack position where 0 is the top layer");
-  argv[2].constraint = FALSE;
-  argv[2].int_min   = 0;
-  argv[2].int_max   = 99;
-  argv[2].umin      = 0;
-  argv[2].umax      = 999999;
-  argv[2].int_ret   = 0;
+  if(cnt == 3)
+  {
+    gap_arr_arg_init(&argv[argc], GAP_ARR_WGT_INT_PAIR);
+    argv[argc].label_txt = _("Layerstack:");
+    argv[argc].help_txt  = _("Layerstack position where 0 is the top layer");
+    argv[argc].constraint = FALSE;
+    argv[argc].int_min   = 0;
+    argv[argc].int_max   = 99;
+    argv[argc].umin      = 0;
+    argv[argc].umax      = 999999;
+    argv[argc].int_ret   = 0;
+    argc++;
+  }
+ 
+  
+  if(help_id)
+  {
+    gap_arr_arg_init(&argv[argc], GAP_ARR_WGT_HELP_BUTTON);
+    argv[argc].help_id = help_id;
+    argc++;
+  }
+  
 
   if(0 != gap_lib_chk_framerange(ainfo_ptr))   return -1;
-  if(TRUE == gap_arr_ok_cancel_dialog(title, hline, cnt, argv))
+  if(TRUE == gap_arr_ok_cancel_dialog(title, hline, argc, argv))
   {   *range_from = (long)(argv[0].int_ret);
       *range_to   = (long)(argv[1].int_ret);
 
@@ -465,7 +488,7 @@ p_convert_dialog(GapAnimInfo *ainfo_ptr,
 		      gint32 *palette_type, gint32 *alpha_dither, gint32 *remove_unused,
                       char *palette,   gint len_palette)
 {
-  static GapArrArg  argv[7];
+  static GapArrArg  argv[8];
   static char *radio_args[4]  = {
     N_("Keep Type"),
     N_("Convert to RGB"),
@@ -530,11 +553,14 @@ p_convert_dialog(GapAnimInfo *ainfo_ptr,
 			"Example: JPEG can not handle multiple layers and requires flattened frames.");
   argv[6].int_ret   = 1;
 
+  gap_arr_arg_init(&argv[7], GAP_ARR_WGT_HELP_BUTTON);
+  argv[7].help_id = GAP_HELP_ID_CONVERT;
+
   if(0 != gap_lib_chk_framerange(ainfo_ptr))   return -1;
 
   if(TRUE == gap_arr_ok_cancel_dialog( _("Convert Frames to other Formats"),
                                  _("Convert Settings"),
-                                  7, argv))
+                                  8, argv))
   {
       *range_from  = (long)(argv[0].int_ret);
       *range_to    = (long)(argv[1].int_ret);
@@ -609,7 +635,7 @@ p_range_to_multilayer_dialog(GapAnimInfo *ainfo_ptr,
 	       gint32 *sel_invert, char *sel_pattern,
 	       gint32 *selection_mode)
 {
-  static GapArrArg  argv[11];
+  static GapArrArg  argv[12];
 
   static char *radio_args[4] = { N_("Expand as necessary"),
                                  N_("Clipped to image"),
@@ -757,10 +783,13 @@ p_range_to_multilayer_dialog(GapAnimInfo *ainfo_ptr,
   argv[10].radio_ret  = GAP_RANGE_OPS_SEL_IGNORE;
 
 
+  gap_arr_arg_init(&argv[11], GAP_ARR_WGT_HELP_BUTTON);
+  argv[11].help_id = GAP_HELP_ID_TO_MULTILAYER;
+
 
   if(0 != gap_lib_chk_framerange(ainfo_ptr))   return -1;
 
-  if(TRUE == gap_arr_ok_cancel_dialog(title, hline, 11, argv))
+  if(TRUE == gap_arr_ok_cancel_dialog(title, hline, 12, argv))
   {   *range_from   = (long)(argv[0].int_ret);
       *range_to     = (long)(argv[1].int_ret);
       *framrate     = (long)(argv[3].int_ret);
@@ -1532,8 +1561,8 @@ int p_image_sizechange(gint32 image_id,
  *     scale, resize or crop all frames in the animation
  * ============================================================================
  */
-static
-gint32 p_anim_sizechange(GapAnimInfo *ainfo_ptr,
+static gint32 
+p_anim_sizechange(GapAnimInfo *ainfo_ptr,
                GapRangeOpsAsiz asiz_mode,
                long size_x, long size_y,
                long offs_x, long offs_y
@@ -1654,7 +1683,8 @@ gap_range_flatten(GimpRunMode run_mode, gint32 image_id,
       {
          l_rc = p_range_dialog (ainfo_ptr, &l_from, &l_to,
                                 _("Flatten Frames"),
-                                _("Select Frame Range"), 2);
+                                _("Select Frame Range"), 2,
+				GAP_HELP_ID_FLATTEN);
 
       }
       else
@@ -1841,7 +1871,8 @@ gap_range_layer_del(GimpRunMode run_mode, gint32 image_id,
       {
          l_rc = p_range_dialog (ainfo_ptr, &l_from, &l_to,
                                 _("Delete Layers in Frames"),
-                                _("Select Frame Range & Stack Position"), 3);
+                                _("Select Frame Range & Stack Position"), 3,
+				GAP_HELP_ID_LAYER_DEL);
          l_position = l_rc;
 
       }
@@ -2016,7 +2047,8 @@ gap_range_conv(GimpRunMode run_mode, gint32 image_id,
  *    (depending on asiz_mode)
  * ============================================================================
  */
-int gap_range_anim_sizechange(GimpRunMode run_mode, GapRangeOpsAsiz asiz_mode, gint32 image_id,
+int 
+gap_range_anim_sizechange(GimpRunMode run_mode, GapRangeOpsAsiz asiz_mode, gint32 image_id,
                   long size_x, long size_y, long offs_x, long offs_y)
 {
   int    l_rc;
@@ -2058,6 +2090,7 @@ int gap_range_anim_sizechange(GimpRunMode run_mode, GapRangeOpsAsiz asiz_mode, g
             *       must fit in size and type, to allow further animation operations.
             *       (Restriction of duplicate_into)
             */
+           gimp_image_undo_disable(ainfo_ptr->image_id);
            l_rc = p_image_sizechange(ainfo_ptr->image_id, asiz_mode,
                                      l_size_x, l_size_y, l_offs_x, l_offs_y);
 

@@ -57,6 +57,11 @@
 #endif
 
 
+#define GAP_VEX_PLUG_IN_NAME        "plug_in_gap_extract_video"
+#define GAP_VEX_PLUG_IN_NAME_XTNS   "plug_in_gap_extract_video_toolbox"
+#define GAP_VEX_PLUG_IN_HELP_ID     "plug-in-gap-extract-video"
+
+
 #define GAP_VEX_DELACE_NONE     0
 #define GAP_VEX_DELACE_ODD      1
 #define GAP_VEX_DELACE_EVEN     2

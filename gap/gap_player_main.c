@@ -49,8 +49,9 @@
 
 /* Defines */
 #define PLUG_IN_NAME        "plug_in_gap_videoframes_player"
+#define PLUG_IN_HELP_ID     "plug-in-gap-videoframes-player"
 #define PLUG_IN_PRINT_NAME  "Videopreview Player"
-#define PLUG_IN_VERSION     "v1.3.19 (2003/09/07)"
+#define PLUG_IN_VERSION     "v2.1.0 (2004/11/12)"
 #define PLUG_IN_IMAGE_TYPES "RGB*, INDEXED*, GRAY*"
 #define PLUG_IN_AUTHOR      "Wolfgang Hofer (hof@gimp.org)"
 #define PLUG_IN_COPYRIGHT   "Wolfgang Hofer"
@@ -187,6 +188,7 @@ static GapPlayerMainGlobalParams global_params =
 , FALSE       /* vindex_creation_is_running */
 , NULL        /* play_n_stop_hbox */
 , NULL        /* cancel_vindex_button */
+, NULL        /* help_id */
 };
 
 
@@ -370,6 +372,7 @@ run (const gchar *name,          /* name of plugin */
     gpp->image_id = image_id;
     gpp->run_mode = run_mode;
     gpp->stb_ptr  = NULL;
+    gpp->help_id  = PLUG_IN_HELP_ID;
     gap_player_dlg_playback_dialog(gpp);
   
     /* Store variable states for next run */

@@ -56,7 +56,7 @@
 #include "gap_dbbrowser_utils.h"
 #include "gap_lastvaldesc.h"
 
-static char *gap_fmac_version = "1.3.22c; 2003/11/12";
+static char *gap_fmac_version = "2.1.0; 2004/11/12";
 
 /* revision history:
  * gimp   1.3.26b;  2004/02/29  hof: bugfix NONINTERACTIVE call did crash
@@ -64,8 +64,12 @@ static char *gap_fmac_version = "1.3.22c; 2003/11/12";
  * gimp   1.3.22b;  2003/11/09  hof: created (based on old unpublished patches for gimp-1.2)
  */
 
-#define PLUG_IN_NAME_FMAC   "plug_in_filter_macro"
+#define PLUG_IN_NAME_FMAC            "plug_in_filter_macro"
+#define HELP_ID_NAME_FMAC            "plug-in-filter-macro"
+#define GAP_DB_BROWSER_FMAC_HELP_ID  "gap-filtermacro-db-browser"
+
 #define FMAC_FILE_LENGTH  1500
+
 /* ------------------------
  * global gap DEBUG switch
  * ------------------------
@@ -109,6 +113,7 @@ static void  p_procedure_select_callback (GtkTreeSelection *sel, fmac_globalpara
 static void  p_tree_fill (fmac_globalparams_t *gpp);
 static void  p_close_callback  (GtkWidget *widget, fmac_globalparams_t *gpp);
 static void  p_ok_callback     (GtkWidget *widget, fmac_globalparams_t *gpp);
+static void  p_help_callback  (GtkWidget *widget, fmac_globalparams_t *gpp);
 static void  p_add_callback    (GtkWidget *widget, fmac_globalparams_t *gpp);
 static void  p_delete_callback (GtkWidget *widget, fmac_globalparams_t *gpp);
 static void  p_delete_all_callback (GtkWidget *widget, fmac_globalparams_t *gpp);
@@ -499,6 +504,7 @@ p_fmac_add_filter(const char *filtermacro_file, gint32 image_id)
                           , p_fmac_pdb_constraint_proc_sel2
                           , &l_browser_result
                           , image_id
+			  , GAP_DB_BROWSER_FMAC_HELP_ID
 			  )
     < 0)
   {
@@ -866,6 +872,20 @@ p_create_action_area_buttons(fmac_globalparams_t *gpp)
 
   gtk_container_set_border_width (GTK_CONTAINER (GTK_DIALOG(gpp->dialog)->action_area), 0);
 
+
+  /* Button HELP */
+  button = gtk_button_new_from_stock ( GTK_STOCK_HELP);
+  gtk_box_pack_start (GTK_BOX (hbox), button, TRUE, TRUE, 0);
+  gimp_help_set_help_data(button
+                          ,_("Show help page")
+                          , NULL);
+  g_signal_connect (G_OBJECT (button), "clicked"
+		   ,G_CALLBACK (p_help_callback)
+                   ,gpp
+                   );
+  gtk_widget_show (button);
+
+
   /* Button Delete All */
   button = gtk_button_new_with_label (_("Delete All"));
   gpp->delete_all_button = button;
@@ -1013,6 +1033,18 @@ p_ok_callback (GtkWidget *widget, fmac_globalparams_t *gpp)
   p_close_callback(NULL, gpp);
 }
 
+/* ----------------------------
+ * p_help_callback
+ * ----------------------------
+ */
+static void
+p_help_callback (GtkWidget *widget, fmac_globalparams_t *gpp)
+{
+  if(gpp)
+  {
+    gimp_standard_help_func(HELP_ID_NAME_FMAC, gpp->dialog);
+  }
+}
 
 /* ----------------------------
  * p_delete_callback

@@ -46,6 +46,7 @@
 
 /* Defines */
 #define PLUG_IN_NAME        "plug_in_name2layer"
+#define PLUG_IN_HELP_ID     "plug-in-name2layer"
 #define PLUG_IN_PRINT_NAME  "Name to Layer"
 #define PLUG_IN_VERSION     "v2.0.2 (2004/05/06)"
 #define PLUG_IN_IMAGE_TYPES "RGB*, INDEXED*, GRAY*"
@@ -426,7 +427,7 @@ p_Naml (gint32 image_id, gint32 drawable_id)
 static gint
 Naml_dialog(void)
 {
-#define VR_NAME2LAYER_DIALOG_ARGC 8
+#define VR_NAME2LAYER_DIALOG_ARGC 9
 #define VR_MODELIST_SIZE 3
   static GapArrArg  argv[VR_NAME2LAYER_DIALOG_ARGC];
   gint ii;
@@ -509,6 +510,9 @@ Naml_dialog(void)
   ii++; gap_arr_arg_init(&argv[ii], GAP_ARR_WGT_DEFAULT_BUTTON);
   argv[ii].label_txt = _("Default");
   argv[ii].help_txt  = _("Reset all parameters to default values");
+
+  ii++; gap_arr_arg_init(&argv[ii], GAP_ARR_WGT_HELP_BUTTON);
+  argv[ii].help_id = PLUG_IN_HELP_ID;
 
   if(TRUE == gap_arr_ok_cancel_dialog(_("Render Filename to Layer"),
                             _("Settings :"),

@@ -163,7 +163,7 @@ query ()
 
   INIT_I18N();
 
-  gimp_install_procedure ("plug_in_gap_extract_video",
+  gimp_install_procedure (GAP_VEX_PLUG_IN_NAME,
                           "Extract frames from videofiles into animframes or multilayer image",
                           "The specified range of frames (params: begin_pos upto end_pos) is extracted from"
                           " the videofile (param: videoname) and stored as sequence of frame imagefiles"
@@ -183,7 +183,7 @@ query ()
                           nload_args, nload_return_vals,
                           load_args, load_return_vals);
 
-  gimp_install_procedure ("plug_in_gap_extract_video_toolbox",
+  gimp_install_procedure (GAP_VEX_PLUG_IN_NAME_XTNS,
                           "Extract frames from videofiles into animframes or multilayer image",
                           "The specified range of frames (params: begin_pos upto end_pos) is extracted from"
                           " the videofile (param: videoname) and stored as sequence of frame imagefiles"
@@ -242,14 +242,14 @@ run (const gchar *name,          /* name of plugin */
 
 
 
-  if(strcmp(name, "plug_in_gap_extract_video") == 0)
+  if(strcmp(name, GAP_VEX_PLUG_IN_NAME) == 0)
   {
     l_par = 2;
   }
   else
   {
     l_par = 0;
-    if(strcmp (name, "plug_in_gap_extract_video_toolbox") != 0)
+    if(strcmp (name, GAP_VEX_PLUG_IN_NAME_XTNS) != 0)
     {
        return;  /* calling error */
     }

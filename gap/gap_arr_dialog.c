@@ -38,6 +38,7 @@
  */
 
 /* revision history:
+ * gimp    2.1.0a;  2004/11/11  hof: added GAP_ARR_WGT_HELP_BUTTON
  * gimp    2.1.0a;  2004/11/05  hof: replaced deprecated option_menu by gimp_int_combo_box
  * gimp    2.1.0a;  2004/10/09  hof: bugfix GAP_ARR_WGT_OPT_ENTRY (entry height was set to 0)
  * gimp    2.1.0a;  2004/09/25  hof: gap_arr_create_vindex_permission
@@ -141,7 +142,8 @@ extern      int gap_debug; /* ==0  ... dont print debug infos */
  */
 
 static void   arr_close_callback        (GtkWidget *widget, gpointer data);
-static void   but_array_callback           (GtkWidget *widget, gpointer data);
+static void   but_array_callback        (GtkWidget *widget, gpointer data);
+static void   arr_help_callback         (GtkWidget *widget, GapArrArg *arr_ptr);
 
 static void   entry_create_value        (char *title, GtkTable *table, int row, GapArrArg *arr_ptr,
                                          t_entry_cb_func entry_update_cb, char *init_txt);
@@ -187,6 +189,27 @@ arr_close_callback (GtkWidget *widget,
   {
     gtk_widget_destroy (GTK_WIDGET (dlg));  /* close & destroy dialog window */
     gtk_main_quit ();
+  }
+}
+
+static void
+arr_help_callback (GtkWidget *widget, GapArrArg *arr_ptr)
+{
+  if(arr_ptr)
+  {
+    if(arr_ptr->help_id)
+    {
+      if(arr_ptr->help_func)
+      {
+        /* call user help function */   
+	 arr_ptr->help_func (arr_ptr->help_id, global_arrint.dlg);
+      }
+      else
+      {
+        /* call gimp standard help function */
+        gimp_standard_help_func(arr_ptr->help_id, global_arrint.dlg);
+      }
+    }
   }
 }
 
@@ -794,6 +817,7 @@ combo_update_cb (GtkWidget *widget, GapArrArg *arr_ptr)
     return;
   }
 
+  radio_index = 0;
   
   gimp_int_combo_box_get_active (GIMP_INT_COMBO_BOX (widget), &value);
   
@@ -1154,10 +1178,14 @@ gint gap_arr_std_dialog(const char *title_txt,
   gint    l_ok_value;
   char   *l_label_txt;
   GapArrArg  *arr_ptr;
+  GapArrArg  *arr_help_ptr;
+  GapArrArg  *arr_def_ptr;
     
   global_arrint.run = b_def_val;           /* prepare default retcode (if window is closed without button) */
   l_ok_value = 0;
   table = NULL;
+  arr_help_ptr = NULL;
+  arr_def_ptr = NULL;
   
   if((argc > 0) && (argv == NULL))
   {
@@ -1183,10 +1211,8 @@ gint gap_arr_std_dialog(const char *title_txt,
 
   gtk_container_set_border_width (GTK_CONTAINER (GTK_DIALOG (global_arrint.dlg)->action_area), 2);
   gtk_box_set_homogeneous (GTK_BOX (GTK_DIALOG (global_arrint.dlg)->action_area), FALSE);
-  hbbox = gtk_hbutton_box_new ();
-  gtk_box_set_spacing (GTK_BOX (hbbox), 4);
-  gtk_box_pack_end (GTK_BOX (GTK_DIALOG (global_arrint.dlg)->action_area), hbbox, FALSE, FALSE, 0);
-  gtk_widget_show (hbbox);
+
+  hbbox = GTK_WIDGET(GTK_DIALOG (global_arrint.dlg)->action_area);
 
 
   /*  parameter settings  */
@@ -1259,13 +1285,10 @@ gint gap_arr_std_dialog(const char *title_txt,
             printf ("GAP_ARR_WGT_ACT_BUTTON not implemented yet, widget type ignored\n");
             break;
          case GAP_ARR_WGT_DEFAULT_BUTTON:
-	    {
-	      t_all_arr_args arr_all;
-	    
-	      arr_all.argc = argc;
-	      arr_all.argv = argv;
-              default_button_create_value(l_label_txt, hbbox, arr_ptr, &arr_all);
-	    }
+	    arr_def_ptr = arr_ptr;
+            break;
+         case GAP_ARR_WGT_HELP_BUTTON:
+	    arr_help_ptr = arr_ptr;
             break;
          default:     /* undefined widget type */
             printf ("Unknown widget type %d ignored\n", arr_ptr->widget_type);
@@ -1279,7 +1302,33 @@ gint gap_arr_std_dialog(const char *title_txt,
   }
 
 
-  /*  Action area  */
+
+  /*  Action area help-button (if desired) */
+  if(arr_help_ptr)
+  {
+    if(arr_help_ptr->help_id)
+    {
+      button = gtk_button_new_from_stock (GTK_STOCK_HELP);
+      gtk_box_pack_end (GTK_BOX (hbbox), button, FALSE, TRUE, 0); 
+      gtk_button_box_set_child_secondary (GTK_BUTTON_BOX (hbbox),
+                                          button, TRUE);
+      gtk_widget_show (button);
+      g_signal_connect (G_OBJECT (button), "clicked",
+		        G_CALLBACK(arr_help_callback),
+		        arr_help_ptr);
+    }
+  }
+  
+  if(arr_def_ptr)
+  {
+    t_all_arr_args arr_all;
+
+    arr_all.argc = argc;
+    arr_all.argv = argv;
+    default_button_create_value(l_label_txt, hbbox, arr_def_ptr, &arr_all);
+  }
+
+  /* buttons in the action area */
   for(l_idx = 0; l_idx < b_argc; l_idx++)
   {
 
@@ -1306,13 +1355,15 @@ gint gap_arr_std_dialog(const char *title_txt,
      /* if no buttons are specified use one CLOSE button per default */
      button = gtk_button_new_from_stock ( GTK_STOCK_CLOSE);
      GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
-     gtk_box_pack_start (GTK_BOX (hbbox), button, TRUE, TRUE, 0);
+     gtk_box_pack_start (GTK_BOX (hbbox), button, FALSE, FALSE, 0);
      gtk_widget_grab_default (button);
      gtk_widget_show (button);
      g_signal_connect (G_OBJECT (button), "clicked",
                        G_CALLBACK (but_array_callback),
                        &l_ok_value);
   }
+
+
 
 
   gtk_widget_show (frame);
@@ -1370,11 +1421,14 @@ gint gap_arr_std_dialog(const char *title_txt,
 
 
 
-void     gap_arr_arg_init  (GapArrArg *arr_ptr,
-                          gint       widget_type)
+void
+gap_arr_arg_init  (GapArrArg *arr_ptr,
+                   gint       widget_type)
 {
    arr_ptr->label_txt   = NULL;
    arr_ptr->help_txt    = NULL;
+   arr_ptr->help_id     = NULL;
+   arr_ptr->help_func   = NULL;
    arr_ptr->togg_label  = NULL;
    arr_ptr->entry_width = 80;
    arr_ptr->scale_width = 200;
@@ -1463,6 +1517,7 @@ void     gap_arr_arg_init  (GapArrArg *arr_ptr,
         arr_ptr->action_data    = NULL;
         break;
      case GAP_ARR_WGT_DEFAULT_BUTTON:
+     case GAP_ARR_WGT_HELP_BUTTON:
         arr_ptr->widget_type = widget_type;
         break;
      default:     /* Calling error: undefined widget type */
@@ -1545,23 +1600,34 @@ gint gap_arr_buttons_dialog(const char *title_txt,
 
 long gap_arr_slider_dialog(const char *title, const char *frame,
                      const char *label, const char *tooltip,
-                     long min, long max, long curr, long constraint)
+                     long min, long max, long curr, long constraint,
+		     const char *help_id)
 {
-  static GapArrArg  argv[1];
+  static GapArrArg  argv[2];
   gboolean l_rc;
+  gint argc;
   
-  gap_arr_arg_init(&argv[0], GAP_ARR_WGT_INT_PAIR);
-  argv[0].label_txt = label;
-  argv[0].help_txt = tooltip;
-  argv[0].constraint = constraint;
-  argv[0].entry_width = 80;
-  argv[0].scale_width = 130;
-  argv[0].int_min    = (gint)min;
-  argv[0].int_max    = (gint)max;
-  argv[0].int_step   = 1;
-  argv[0].int_ret    = (gint)curr;
+  argc = 0;
+  gap_arr_arg_init(&argv[argc], GAP_ARR_WGT_INT_PAIR);
+  argv[argc].label_txt = label;
+  argv[argc].help_txt = tooltip;
+  argv[argc].constraint = constraint;
+  argv[argc].entry_width = 80;
+  argv[argc].scale_width = 130;
+  argv[argc].int_min    = (gint)min;
+  argv[argc].int_max    = (gint)max;
+  argv[argc].int_step   = 1;
+  argv[argc].int_ret    = (gint)curr;
+  argc++;
   
-  l_rc = gap_arr_ok_cancel_dialog(title, frame, 1, argv);
+  if(help_id)
+  {
+    gap_arr_arg_init(&argv[argc], GAP_ARR_WGT_HELP_BUTTON);
+    argv[argc].help_id = help_id;
+    argc++;
+  }
+  
+  l_rc = gap_arr_ok_cancel_dialog(title, frame, argc, argv);
   
   if(l_rc == TRUE)
   {    return (long)(argv[0].int_ret);

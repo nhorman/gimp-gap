@@ -248,7 +248,7 @@ gap_bluebox_create_dialog (GapBlueboxGlobalParams *bbp)
 
   dlg = gimp_dialog_new (_("Bluebox"), GAP_BLUEBOX_PLUGIN_NAME,
                          NULL, 0,
-			 gimp_standard_help_func, GAP_BLUEBOX_PLUGIN_NAME".html",
+			 gimp_standard_help_func, GAP_BLUEBOX_HELP_ID,
 
 			 GIMP_STOCK_RESET, GAP_BLUEBOX_RESPONSE_RESET,
 			 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,

@@ -49,6 +49,8 @@
 
 #define ENC_MENU_ITEM_INDEX_KEY "gap_enc_menu_item_index"
 
+#define GAP_VEX_PLAYER_HELP_ID    "plug-in-gap-extract-player"
+
 #define SPIN_WIDTH_SMALL 40
 #define SPIN_WIDTH_LARGE 80
 #define ENTRY_WIDTH_LARGE 320
@@ -529,8 +531,6 @@ p_call_player_widget(GapVexMainGlobalParams *gpp
 
   if(gpp->plp == NULL)
   {
-printf("p_call_player_widget: 1.st start\n");
-
     /* 1. START mode */
     gpp->plp = (GapPlayerMainGlobalParams *)g_malloc0(sizeof(GapPlayerMainGlobalParams));
 
@@ -538,6 +538,7 @@ printf("p_call_player_widget: 1.st start\n");
     {
       gpp->plp->standalone_mode = FALSE;  /* player acts as widget and does not call gtk_main_quit */
 
+      gpp->plp->help_id = NULL;
       if(docked_mode)
       {
         gtk_widget_show(gpp->mw__player_frame);
@@ -546,6 +547,7 @@ printf("p_call_player_widget: 1.st start\n");
       else
       {
         gpp->plp->docking_container = NULL;  /* player has own window (not docked) */
+        gpp->plp->help_id = GAP_VEX_PLAYER_HELP_ID;
       }
 
       gpp->plp->autostart = FALSE;
@@ -578,17 +580,14 @@ printf("p_call_player_widget: 1.st start\n");
       gpp->plp->preferred_decoder = g_strdup(gpp->val.preferred_decoder);
       gpp->plp->force_open_as_video = TRUE;   /* TRUE: try video open even for unknown videofile extensions */
       gpp->plp->have_progress_bar = TRUE;
+
       
-printf("BEFORE gap_player_dlg_create\n");
-//gap_debug = TRUE;
       gap_player_dlg_create(gpp->plp);
-printf("AFTER gap_player_dlg_create\n");
 
     }
   }
   else
   {
-printf("p_call_player_widget: RE start\n");
     /* RESTART mode */
     gap_player_dlg_restart(gpp->plp
                       , FALSE              /* gboolean autostart */
@@ -1811,9 +1810,9 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
 #ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
 
   mw__main_window = gimp_dialog_new (_("Extract Videorange"),
-                         "plug_in_gap_extract_video",
+                         GAP_VEX_PLUG_IN_NAME,
                          NULL, 0,
-			 gimp_standard_help_func, "plug_in_gap_extract_video.html",
+			 gimp_standard_help_func, GAP_VEX_PLUG_IN_HELP_ID,
 
 			 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 			 GTK_STOCK_OK,     GTK_RESPONSE_OK,

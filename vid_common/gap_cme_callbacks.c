@@ -104,143 +104,177 @@ on_cme__response (GtkWidget *widget,
 
 
 
+/* ------------------------
+ * on_cme__combo_enocder
+ * ------------------------
+ */
 void
-on_cme__optionmenu_enocder  (GtkWidget     *wgt_item,
-                           GapCmeGlobalParams *gpp)
+on_cme__combo_enocder  (GtkWidget     *widget,
+                        GapCmeGlobalParams *gpp)
 {
- GapGveEncList *l_ecp;
+  gint       value;
+  GapGveEncList *l_ecp;
 
- if(gap_debug) printf("CB: on_cme__optionmenu_encoder\n");
+  if(gap_debug) printf("CB: on_cme__combo_encoder\n");
 
- if(gpp == NULL) return;
+  if(gpp == NULL) return;
 
- l_ecp = (GapGveEncList*) g_object_get_data (G_OBJECT (wgt_item)
-                                             , GAP_CME_GUI_ENC_MENU_ITEM_ENC_PTR);
-
- if(l_ecp)
- {
-    if(gap_debug)
+  gimp_int_combo_box_get_active (GIMP_INT_COMBO_BOX (widget), &value);
+  l_ecp = gpp->ecp;
+  while(l_ecp)
+  {
+    if(l_ecp->menu_nr == value)
     {
-       printf("CB: on_cme__optionmenu_encoder index: %d, %s, plugin: %s\n"
-              , (int)l_ecp->menu_nr
-              , l_ecp->menu_name
-              , l_ecp->vid_enc_plugin);
+      /* found encoder element with wanted menu_nr */
+      break;
     }
-    /* copy the selected ecp record */
-    memcpy(&gpp->val.ecp_sel, l_ecp, sizeof(GapGveEncList));
-    gap_cme_gui_upd_wgt_sensitivity(gpp);
-    gap_cme_gui_upd_vid_extension(gpp);
- }
-}
+    l_ecp = (GapGveEncList *)l_ecp->next;
+  }
+
+  if(l_ecp)
+  {
+     if(gap_debug)
+     {
+	printf("CB: on_cme__combo_encoder index: %d, %s, plugin: %s\n"
+               , (int)l_ecp->menu_nr
+               , l_ecp->menu_name
+               , l_ecp->vid_enc_plugin);
+     }
+     /* copy the selected ecp record */
+     memcpy(&gpp->val.ecp_sel, l_ecp, sizeof(GapGveEncList));
+     gap_cme_gui_upd_wgt_sensitivity(gpp);
+     gap_cme_gui_upd_vid_extension(gpp);
+  }
+}  /* end on_cme__combo_enocder */
 
 
+/* ------------------------
+ * on_cme__combo_scale
+ * ------------------------
+ */
 void
-on_cme__optionmenu_scale  (GtkWidget     *wgt_item,
-                           GapCmeGlobalParams *gpp)
+on_cme__combo_scale  (GtkWidget     *widget,
+                      GapCmeGlobalParams *gpp)
 {
+  gint       value;
   gint       l_idx;
   static gint  tab_width[GAP_CME_STANDARD_SIZE_MAX_ELEMENTS] =  { 0, 320, 320, 640, 720, 720 };
   static gint  tab_height[GAP_CME_STANDARD_SIZE_MAX_ELEMENTS] = { 0, 240, 288, 480, 480, 576 };
 
- if(gap_debug) printf("CB: on_cme__optionmenu_scale\n");
+  if(gap_debug) printf("CB: on_cme__combo_scale\n");
 
- if(gpp == NULL) return;
+  if(gpp == NULL) return;
 
- l_idx = (gint) g_object_get_data (G_OBJECT (wgt_item), GAP_GVE_MENU_ITEM_INDEX_KEY);
+  gimp_int_combo_box_get_active (GIMP_INT_COMBO_BOX (widget), &value);
+  l_idx = value;
 
- if(gap_debug) printf("CB: on_cme__optionmenu_scale index: %d\n", (int)l_idx);
- if((l_idx >= GAP_CME_STANDARD_SIZE_MAX_ELEMENTS) || (l_idx < 1))
- {
-    l_idx = 0;
-    if(!gap_cme_gui_check_gui_thread_is_active(gpp))
-    {
-      tab_width[0] = gimp_image_width(gpp->val.image_ID);
-      tab_height[0] = gimp_image_height(gpp->val.image_ID);
-    }
- }
+  if(gap_debug) printf("CB: on_cme__combo_scale index: %d\n", (int)l_idx);
+  if((l_idx >= GAP_CME_STANDARD_SIZE_MAX_ELEMENTS) || (l_idx < 1))
+  {
+     l_idx = 0;
+     if(!gap_cme_gui_check_gui_thread_is_active(gpp))
+     {
+       tab_width[0] = gimp_image_width(gpp->val.image_ID);
+       tab_height[0] = gimp_image_height(gpp->val.image_ID);
+     }
+  }
+
+  if(gpp->cme__spinbutton_width_adj)
+  {
+    gtk_adjustment_set_value(GTK_ADJUSTMENT(gpp->cme__spinbutton_width_adj)
+                            , (gfloat)tab_width[l_idx]);
+  }
+
+  if(gpp->cme__spinbutton_height_adj)
+  {
+    gtk_adjustment_set_value(GTK_ADJUSTMENT(gpp->cme__spinbutton_height_adj)
+                          , (gfloat)tab_height[l_idx]);
+  }
+}  /* end on_cme__combo_scale */
 
 
- gtk_adjustment_set_value(GTK_ADJUSTMENT(gpp->cme__spinbutton_width_adj)
-                         , (gfloat)tab_width[l_idx]);
- gtk_adjustment_set_value(GTK_ADJUSTMENT(gpp->cme__spinbutton_height_adj)
-                         , (gfloat)tab_height[l_idx]);
-}
-
-
+/* ------------------------
+ * on_cme__combo_framerate
+ * ------------------------
+ */
 void
-on_cme__optionmenu_framerate  (GtkWidget     *wgt_item,
-                           GapCmeGlobalParams *gpp)
+on_cme__combo_framerate  (GtkWidget     *widget,
+                          GapCmeGlobalParams *gpp)
 {
+  gint       value;
   gint       l_idx;
   static gdouble  tab_framerate[GAP_CME_STANDARD_FRAMERATE_MAX_ELEMENTS]
                   =  { 0, 23.98, 24, 25, 29.97, 30, 50, 59.94, 60, 1, 5, 10, 12, 15 };
 
- if(gap_debug) printf("CB: on_cme__optionmenu_framerate\n");
+  if(gap_debug) printf("CB: on_cme__combo_framerate\n");
 
- if(gpp == NULL) return;
+  if(gpp == NULL) return;
 
- l_idx = (gint) g_object_get_data (G_OBJECT (wgt_item), GAP_GVE_MENU_ITEM_INDEX_KEY);
+  gimp_int_combo_box_get_active (GIMP_INT_COMBO_BOX (widget), &value);
+  l_idx = value;
 
- if(gap_debug) printf("CB: on_cme__optionmenu_framerate index: %d\n", (int)l_idx);
- if((l_idx >= GAP_CME_STANDARD_FRAMERATE_MAX_ELEMENTS) || (l_idx < 1))
- {
-    l_idx = 0;
-    tab_framerate[0] = gpp->ainfo.framerate;
- }
+  if(gap_debug) printf("CB: on_cme__combo_framerate index: %d\n", (int)l_idx);
+  if((l_idx >= GAP_CME_STANDARD_FRAMERATE_MAX_ELEMENTS) || (l_idx < 1))
+  {
+     l_idx = 0;
+     tab_framerate[0] = gpp->ainfo.framerate;
+  }
 
- gtk_adjustment_set_value(GTK_ADJUSTMENT(gpp->cme__spinbutton_framerate_adj)
-                         , (gfloat)tab_framerate[l_idx]);
-}
+  if(gpp->cme__spinbutton_framerate_adj)
+  {
+    gtk_adjustment_set_value(GTK_ADJUSTMENT(gpp->cme__spinbutton_framerate_adj)
+                            , (gfloat)tab_framerate[l_idx]);
+  }
+}  /* end on_cme__combo_framerate */
 
 
+/* ---------------------------
+ * on_cme__combo_outsamplerate
+ * ---------------------------
+ */
 void
-on_cme__optionmenu_outsamplerate  (GtkWidget     *wgt_item,
-                           GapCmeGlobalParams *gpp)
+on_cme__combo_outsamplerate  (GtkWidget     *widget,
+                              GapCmeGlobalParams *gpp)
 {
-  gint       l_idx;
-  static gint32  tab_outsamplerate[GAP_CME_STANDARD_SAMPLERATE_MAX_ELEMENTS]
-       =  { 8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000};
+  gint       value;
 
- if(gap_debug) printf("CB: on_cme__optionmenu_outsamplerate\n");
+  if(gap_debug) printf("CB: on_cme__combo_outsamplerate\n");
 
- if(gpp == NULL) return;
+  if(gpp == NULL) return;
 
- l_idx = (gint) g_object_get_data (G_OBJECT (wgt_item), GAP_GVE_MENU_ITEM_INDEX_KEY);
+  gimp_int_combo_box_get_active (GIMP_INT_COMBO_BOX (widget), &value);
 
- if(gap_debug) printf("CB: on_cme__optionmenu_outsamplerate index: %d\n", (int)l_idx);
- if(l_idx < 1)
- {
-    l_idx = 0;
- }
- if(l_idx >= GAP_CME_STANDARD_SAMPLERATE_MAX_ELEMENTS)
- {
-    l_idx = GAP_CME_STANDARD_SAMPLERATE_MAX_ELEMENTS -1;
- }
+  if(gap_debug) printf("CB: on_cme__combo_outsamplerate value: %d\n", (int)value);
 
- gtk_adjustment_set_value(GTK_ADJUSTMENT(gpp->cme__spinbutton_samplerate_adj)
-                        , (gfloat)tab_outsamplerate[l_idx]);
-}
+  if(gpp->cme__spinbutton_samplerate_adj)
+  {
+    gtk_adjustment_set_value(GTK_ADJUSTMENT(gpp->cme__spinbutton_samplerate_adj)
+                           , (gfloat)value);
+  }
+}  /* end on_cme__combo_outsamplerate */
 
 
+/* ------------------------
+ * on_cme__combo_vid_norm
+ * ------------------------
+ */
 void
-on_cme__optionmenu_vid_norm  (GtkWidget     *wgt_item,
-                           GapCmeGlobalParams *gpp)
+on_cme__combo_vid_norm  (GtkWidget     *widget,
+                         GapCmeGlobalParams *gpp)
 {
-  gint       l_idx;
-  static gint32  tab_vid_format[GAP_CME_STANDARD_VIDNORM_MAX_ELEMENTS]
-       =  { VID_FMT_COMP, VID_FMT_PAL, VID_FMT_NTSC, VID_FMT_SECAM, VID_FMT_MAC, VID_FMT_UNDEF};
+  gint       value;
 
- if(gap_debug) printf("CB: on_cme__optionmenu_outsamplerate\n");
+  if(gap_debug) printf("CB: on_cme__combo_outsamplerate\n");
 
- if(gpp == NULL) return;
+  if(gpp == NULL) return;
 
- l_idx = (gint) g_object_get_data (G_OBJECT (wgt_item), GAP_GVE_MENU_ITEM_INDEX_KEY);
+  gimp_int_combo_box_get_active (GIMP_INT_COMBO_BOX (widget), &value);
 
- if(gap_debug) printf("CB: on_cme__optionmenu_vid_norm index: %d\n", (int)l_idx);
- l_idx =  CLAMP(l_idx, 0, GAP_CME_STANDARD_VIDNORM_MAX_ELEMENTS);
+  if(gap_debug) printf("CB: on_cme__combo_vid_norm : %d\n", (int)value);
 
- gpp->val.vid_format = tab_vid_format[l_idx];
-}
+  gpp->val.vid_format = value;
+  
+}  /* end on_cme__combo_vid_norm */
 
 
 /* ---------------------------------
@@ -530,7 +564,7 @@ void
 on_cme__button_params_clicked           (GtkButton       *button,
                                         GapCmeGlobalParams *gpp)
 {
- /*if(gap_debug)*/ printf("CB: on_cme__button_params_clicked\n");
+ if(gap_debug) printf("CB: on_cme__button_params_clicked\n");
 
  if(gpp)
  {

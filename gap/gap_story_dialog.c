@@ -59,6 +59,9 @@
 
 #include "gap-intl.h"
 
+#define GAP_STB_PLAYER_HELP_ID    "plug-in-gap-storyboard-player"
+
+
 extern int gap_debug;  /* 1 == print debug infos , 0 dont print debug infos */
 static gint32 global_stb_video_id = 0;
 
@@ -150,6 +153,7 @@ static gboolean p_close_one_or_both_lists(GapStbMainGlobalParams *sgpp
 			 );
 
 static void     p_menu_win_quit_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp);
+static void     p_menu_win_help_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp);
 static void     p_menu_win_properties_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp);
 static void     p_menu_win_vthumbs_toggle_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp);
 
@@ -188,6 +192,7 @@ static GtkWidget*  p_make_check_item_with_label(GtkWidget *parent, gchar *label,
 static void        p_make_menu_global(GapStbMainGlobalParams *sgpp, GtkWidget *menu_bar);
 static void        p_make_menu_cliplist(GapStbMainGlobalParams *sgpp, GtkWidget *menu_bar);
 static void        p_make_menu_storyboard(GapStbMainGlobalParams *sgpp, GtkWidget *menu_bar);
+static void        p_make_menu_help(GapStbMainGlobalParams *sgpp, GtkWidget *menu_bar);
 
 static gboolean    p_check_unsaved_changes (GapStbMainGlobalParams *sgpp
                            , gboolean check_cliplist
@@ -933,6 +938,15 @@ printf("p_story_call_player: 1.st start\n");
     {
       sgpp->plp->standalone_mode = FALSE;  /* player acts as widget and does not call gtk_main_quit */
       sgpp->plp->docking_container = sgpp->player_frame;
+      
+      sgpp->plp->help_id = GAP_STB_PLAYER_HELP_ID;
+      if(sgpp->plp->docking_container)
+      {
+        /* the player widget is created without Help button
+	 * when it is part of the storyboard window
+	 */
+        sgpp->plp->help_id = NULL;
+      }
 
       sgpp->plp->autostart = TRUE;
       sgpp->plp->caller_range_linked = FALSE;
@@ -2571,6 +2585,22 @@ p_menu_win_quit_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
 }  /* end p_menu_win_quit_cb */ 
 
 /* -----------------------------
+ * p_menu_win_help_cb
+ * -----------------------------
+ */
+static void
+p_menu_win_help_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
+{
+  if(gap_debug) printf("p_menu_win_help_cb\n");
+
+  if(sgpp)
+  {
+    gimp_standard_help_func(GAP_STORYBOARD_EDIT_HELP_ID, sgpp->shell_window);
+  }
+
+}  /* end p_menu_win_help_cb */ 
+
+/* -----------------------------
  * p_menu_win_properties_cb
  * -----------------------------
  */
@@ -3089,6 +3119,20 @@ p_make_menu_global(GapStbMainGlobalParams *sgpp, GtkWidget *menu_bar)
    
 }  /* end p_make_menu_global */
 
+/* -----------------------------
+ * p_make_menu_help
+ * -----------------------------
+ */
+static void
+p_make_menu_help(GapStbMainGlobalParams *sgpp, GtkWidget *menu_bar)
+{
+   GtkWidget *file_menu = p_make_menu_bar_item(menu_bar, _("Help"));
+   
+   p_make_item_with_image(file_menu, GTK_STOCK_HELP
+                          , p_menu_win_help_cb
+			  , sgpp
+			  );
+}  /* end p_make_menu_help */
 
 /* -----------------------------
  * p_make_menu_cliplist
@@ -4651,9 +4695,15 @@ gap_storyboard_dialog(GapStbMainGlobalParams *sgpp)
   sgpp->menu_item_stb_close = NULL;
 
   /*  The dialog and main vbox  */
+  /* the help_id is passed as NULL to avoid creation of the HELP button
+   * (the Help Button would be the only button in the action area and results
+   *  in creating an extra row
+   *  additional note: the Storyboard dialog provides
+   *  Help via Menu-Item
+   */
   dialog = gimp_dialog_new (_("Storyboard"), "storyboard",
                                NULL, 0,
-			       gimp_standard_help_func, NULL, /* "filters/color/wrapper.html" */
+			       gimp_standard_help_func, NULL, /* GAP_STORYBOARD_EDIT_HELP_ID */
                                NULL);
 
   sgpp->shell_window = dialog;
@@ -4676,6 +4726,7 @@ gap_storyboard_dialog(GapStbMainGlobalParams *sgpp)
   p_make_menu_global(sgpp, menu_bar);
   p_make_menu_cliplist(sgpp, menu_bar);
   p_make_menu_storyboard(sgpp, menu_bar);
+  p_make_menu_help(sgpp, menu_bar);
 
   gtk_widget_show(menu_bar);
  

@@ -128,7 +128,8 @@ static char *gap_navigator_version = "1.3.17a; 2003/07/29";
 
 
 
-#define PLUGIN_NAME "plug_in_gap_navigator"
+#define PLUGIN_NAME     "plug_in_gap_navigator"
+#define PLUGIN_HELP_ID  "plug-in-gap-navigator"
 
 #define NAVI_CHECK_SIZE 4
 #define MAX_DYN_ROWS 400
@@ -380,6 +381,7 @@ static void            navi_frame_widget_replace2(FrameWidget *fw);
 static void            navi_frame_widget_replace(gint32 image_id, gint32 frame_nr, gint32 dyn_rowindex);
 static void            navi_refresh_dyn_table(gint32 l_frame_nr);
 static void            navi_dyn_adj_changed_callback(GtkWidget *wgt, gpointer data);
+static void            navi_dyn_adj_set_pos(void);
 static void            navi_dyn_adj_set_limits(void);
 static void            navi_frame_widget_init_empty (FrameWidget *fw);
 static int             navi_dyn_table_set_size(gint win_height);
@@ -1200,7 +1202,7 @@ navi_images_menu_callback  (GtkWidget *widget, gpointer data)
   image_id = (gint32)value;
   
   
-  /*if(gap_debug)*/ printf("navi_images_menu_callback PROCEDURE imageID:%d\n", (int)image_id);
+  if(gap_debug) printf("navi_images_menu_callback PROCEDURE imageID:%d\n", (int)image_id);
 
   if(naviD)
   {
@@ -1256,17 +1258,33 @@ navi_set_active_cursor(void)
 static void
 navi_scroll_to_current_frame_nr(void)
 {
+  gint32 adj_intval;
+
   if(naviD == NULL) return;
   if(naviD->ainfo_ptr == NULL) return;
   if(naviD->vin_ptr == NULL) return;
   if(naviD->dyn_table == NULL) return;
 
+  adj_intval = (gint32)(GTK_ADJUSTMENT(naviD->dyn_adj)->value + 0.5);
 
-  if(gap_debug) printf("navi_scroll_to_current_frame_nr: BEGIN timezoom:%d, item_height:%d\n", (int)naviD->vin_ptr->timezoom, (int)naviD->item_height);
+  if(gap_debug) 
+  {
+    printf("navi_scroll_to_current_frame_nr: BEGIN timezoom:%d, item_height:%d\n"
+           "  curr_frame_nr: %d  dyn_topframenr: %d  dyn_rows:%d dyn_adj: %d\n"
+          , (int)naviD->vin_ptr->timezoom
+	  , (int)naviD->item_height
+	  , (int)naviD->ainfo_ptr->curr_frame_nr
+	  , (int)naviD->dyn_topframenr
+	  , (int)naviD->dyn_rows
+	  , (int)adj_intval
+	  );
+  }
+
 
   if((naviD->ainfo_ptr->curr_frame_nr >= naviD->dyn_topframenr)
   && (naviD->ainfo_ptr->curr_frame_nr < naviD->dyn_topframenr + (naviD->dyn_rows * naviD->vin_ptr->timezoom)) )
   {
+     navi_dyn_adj_set_pos();
      /* current frame is within in the currently displayed range */
      return;
   }
@@ -1276,6 +1294,7 @@ navi_scroll_to_current_frame_nr(void)
 
   /* fetch and render all thumbnail_previews in the dyn table */
   navi_refresh_dyn_table(naviD->dyn_topframenr);
+  navi_dyn_adj_set_pos();
 
 }  /* end navi_scroll_to_current_frame_nr */
 
@@ -2239,6 +2258,8 @@ navi_timezoom_spinbutton_update(GtkAdjustment *adjustment,
        gap_vin_set_common(naviD->vin_ptr, naviD->ainfo_ptr->basename);
     }
     frames_dialog_flush();
+    navi_dyn_adj_set_limits();
+    navi_dyn_adj_set_pos();
   }
   if(gap_debug) printf("navi_timezoom_spinbutton_update :%d\n", (int)naviD->vin_ptr->timezoom);
 }  /* end navi_timezoom_spinbutton_update */
@@ -3382,6 +3403,40 @@ navi_refresh_dyn_table(gint32 frame_nr)
   }
 }  /* end navi_refresh_dyn_table */
 
+/* ---------------------------------
+ * navi_dyn_adj_set_pos
+ * ---------------------------------
+ */
+static void
+navi_dyn_adj_set_pos(void)
+{
+  gint32  adj_intval;
+  gint32  topval;
+
+  if(naviD == NULL) { return; }
+
+
+  GTK_ADJUSTMENT(naviD->dyn_adj)->value = adj_intval;
+
+  topval = (naviD->dyn_topframenr - naviD->ainfo_ptr->first_frame_nr)
+               / naviD->vin_ptr->timezoom;
+  topval++;
+
+  if(gap_debug)
+  {
+     printf("navi_dyn_adj_set_pos: adj_intval:%d topval:%d\n"
+           , (int)adj_intval
+	   , (int)topval
+	   );
+  }
+
+ 
+  if(adj_intval != topval)
+  {
+    gtk_adjustment_set_value(GTK_ADJUSTMENT(naviD->dyn_adj), (gdouble)topval);
+  }
+}  /* end navi_dyn_adj_set_pos */
+
 
 /* ---------------------------------
  * navi_dyn_adj_changed_callback
@@ -3969,7 +4024,7 @@ int  gap_navigator(gint32 image_id)
   /*  The main shell */
   shell = gimp_dialog_new (_("Video Navigator"), "gap_navigator",
                            NULL, 0,
-                           gimp_standard_help_func, "filters/gap_navigator_dialog.html",
+                           gimp_standard_help_func, PLUGIN_HELP_ID,
 
                            GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE,
 

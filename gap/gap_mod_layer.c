@@ -82,6 +82,7 @@
 extern      int gap_debug; /* ==0  ... dont print debug infos */
 
 
+#define GAP_DB_BROWSER_MODFRAMES_HELP_ID  "gap-modframes-db-browser"
 
 /* ============================================================================
  * p_pitstop_dialog
@@ -787,7 +788,8 @@ p_do_filter_dialogs(GapAnimInfo *ainfo_ptr,
                             gap_filt_pdb_constraint_proc_sel1,
                             gap_filt_pdb_constraint_proc_sel2,
                             &l_browser_result,
-			    image_id) < 0)
+			    image_id,
+			    GAP_DB_BROWSER_MODFRAMES_HELP_ID) < 0)
   {
       if(gap_debug) fprintf(stderr, "DEBUG: gap_db_browser_dialog cancelled\n");
       return -1;

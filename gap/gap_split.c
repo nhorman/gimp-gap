@@ -26,6 +26,7 @@
  */
 
 /* revision history
+ * 2.1.0;   2004/11/12   hof: added help button
  * 1.3.14a; 2003/05/25   hof: bugfix: defaultname for unnamed image
  *                            added digits and only_visible parameter
  * 1.1.28a; 2000/10/29   hof: subsequent save calls use GIMP_RUN_WITH_LAST_VALS
@@ -64,6 +65,9 @@
 #include "gap_arr_dialog.h"
 
 extern      int gap_debug; /* ==0  ... dont print debug infos */
+
+#define GAP_HELP_ID_SPLIT           "plug-in-gap-split"
+
 
 /* ============================================================================
  * p_split_image
@@ -236,7 +240,7 @@ p_split_image(GapAnimInfo *ainfo_ptr,
 static long
 p_split_dialog(GapAnimInfo *ainfo_ptr, gint *inverse_order, gint *no_alpha, char *extension, gint len_ext, gint *only_visible, gint *digits)
 {
-  static GapArrArg  argv[7];
+  static GapArrArg  argv[8];
   gchar   *buf;
 
   buf = g_strdup_printf (_("Make a frame (diskfile) from each layer.\n"
@@ -296,9 +300,12 @@ p_split_dialog(GapAnimInfo *ainfo_ptr, gint *inverse_order, gint *no_alpha, char
   argv[6].label_txt = _("Default");
   argv[6].help_txt  = _("Reset all parameters to default values");
 
+  gap_arr_arg_init(&argv[7], GAP_ARR_WGT_HELP_BUTTON);
+  argv[7].help_id = GAP_HELP_ID_SPLIT;
+
   if(TRUE == gap_arr_ok_cancel_dialog( _("Split Image into Frames"),
 			     _("Split Settings"),
-			     7, argv))
+			     8, argv))
   {
     g_free (buf);
     *inverse_order = argv[2].int_ret;

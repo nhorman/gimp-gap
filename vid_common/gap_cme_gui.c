@@ -27,6 +27,8 @@
 
 
 /* revision history:
+ * version 2.1.0a;  2004.11.10   hof: reorganized dialog creation procedures
+ *                                    and replaced the deprecated GtkOptionMenu widget by gimp_int_combo_box
  * version 2.1.0a;  2004.10.26   hof: added input_mode radiobuttons
  * version 2.1.0a;  2004.05.06   hof: integration into gimp-gap project
  * version 1.2.2b;  2003.03.08   hof: thread for storyboard_file processing
@@ -94,7 +96,7 @@ static t_global_stb  global_stb;
 static void            p_gap_message(const char *msg);
 static gint            p_overwrite_dialog(GapCmeGlobalParams *gpp, gchar *filename, gint overwrite_mode);
 static GapGveEncList*  pdb_find_video_encoders(void);
-static void            p_replace_optionmenu_encodername(GapCmeGlobalParams *gpp);
+static void            p_replace_combo_encodername(GapCmeGlobalParams *gpp);
 static void            p_get_range_from_type (GapCmeGlobalParams *gpp
                            , GapGveTypeInputRange range_type
 			   , gint32 *lower
@@ -127,7 +129,13 @@ static void            p_thread_storyboard_file(void);
 static GtkWidget*      create_ow__dialog (GapCmeGlobalParams *gpp);
 static void            p_input_mode_radio_callback(GtkWidget *widget, GapCmeGlobalParams *gpp);
 static void            p_create_input_mode_widgets(GtkWidget *table, int row, int col, GapCmeGlobalParams *gpp);
-static GtkWidget*      create_shell_window (GapCmeGlobalParams *gpp);
+
+static GtkWidget*      p_create_encode_extras_frame (GapCmeGlobalParams *gpp);
+static GtkWidget*      p_create_audiotool_cfg_frame (GapCmeGlobalParams *gpp);
+static GtkWidget*      p_create_audio_options_frame (GapCmeGlobalParams *gpp);
+static GtkWidget*      p_create_video_timing_table (GapCmeGlobalParams *gpp);
+static GtkWidget*      p_create_video_options_frame (GapCmeGlobalParams *gpp);
+static GtkWidget*      p_create_shell_window (GapCmeGlobalParams *gpp);
 
 static gint            p_overwrite_dialog(GapCmeGlobalParams *gpp, gchar *filename, gint overwrite_mode);
 
@@ -588,68 +596,59 @@ gap_cme_gui_requery_vid_extension(GapCmeGlobalParams *gpp)
 
 
 /* ----------------------------------------
- * p_replace_optionmenu_encodername
+ * p_replace_combo_encodername
  * ----------------------------------------
- * replace encodername optionmenu by dynamic menu we got from the PDB
+ * replace encodername combo by dynamic menu we got from the PDB
  */
 static void
-p_replace_optionmenu_encodername(GapCmeGlobalParams *gpp)
+p_replace_combo_encodername(GapCmeGlobalParams *gpp)
 {
-  GtkWidget *wgt;
-  GtkWidget *menu_item;
-  GtkWidget *menu;
+  GtkWidget *combo;
   GapGveEncList *l_ecp;
-  gint  l_active_idx;
+  gint  l_active_menu_nr;
   gint  l_idx;
 
-  if(gap_debug) printf("p_replace_optionmenu_encodername: START\n");
+  if(gap_debug) printf("p_replace_combo_encodername: START\n");
 
-  wgt = gpp->cme__optionmenu_encodername;
-  menu =  gtk_option_menu_get_menu(GTK_OPTION_MENU(wgt));
-  if(menu == NULL)
+  combo = gpp->cme__combo_encodername;
+  if(combo == NULL)
   {
-    printf("p_replace_optionmenu_encodername: widget is no GTK_OPTION_MENU\n");
     return;
   }
 
-  menu = gtk_menu_new ();
-
   l_idx = 0;
-  l_active_idx = 0;
+  l_active_menu_nr = 0;
   l_ecp = gpp->ecp;
   while(l_ecp)
   {
      if(gap_debug)
      {
-        printf("p_replace_optionmenu_encodername: %d, %s %s\n"
+        printf("p_replace_combo_encodername: %d, %s %s\n"
               , (int)l_ecp->menu_nr
               , l_ecp->menu_name
               , l_ecp->vid_enc_plugin);
      }
 
-     menu_item = gtk_menu_item_new_with_label(l_ecp->menu_name);
 
-     gtk_widget_show (menu_item);
-     gtk_menu_append (GTK_MENU (menu), menu_item);
-
-     gtk_signal_connect (GTK_OBJECT (menu_item), "activate",
-                              (GtkSignalFunc) on_cme__optionmenu_enocder,
-                              (gpointer)gpp);
-     g_object_set_data (G_OBJECT (menu_item), GAP_CME_GUI_ENC_MENU_ITEM_ENC_PTR, (gpointer)l_ecp);
+     gimp_int_combo_box_append (GIMP_INT_COMBO_BOX (combo),
+                                GIMP_INT_STORE_VALUE, l_ecp->menu_nr,
+                                GIMP_INT_STORE_LABEL, l_ecp->menu_name,
+                                -1);
 
      /* set FFMPEG as default encoder (if this encoder is installed) */
      if(strcmp(l_ecp->vid_enc_plugin, GAP_PLUGIN_NAME_FFMPEG_ENCODE) == 0)
      {
-         gtk_menu_item_activate(GTK_MENU_ITEM (menu_item));
-         l_active_idx = l_idx;
+         l_active_menu_nr = l_ecp->menu_nr;
      }
      l_ecp =  (GapGveEncList *)l_ecp->next;
      l_idx++;
   }
 
-  gtk_option_menu_set_menu (GTK_OPTION_MENU (wgt), menu);
-  gtk_option_menu_set_history (GTK_OPTION_MENU (wgt), l_active_idx);
-}  /* end p_replace_optionmenu_encodername */
+  gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (combo)
+                             , l_active_menu_nr,
+                              G_CALLBACK (on_cme__combo_enocder),
+                              gpp);
+}  /* end p_replace_combo_encodername */
 
 
 /* ----------------------------------------
@@ -1145,8 +1144,8 @@ p_init_shell_window_widgets (GapCmeGlobalParams *gpp)
  gap_cme_gui_update_aud_labels (gpp);
  gap_cme_gui_update_vid_labels (gpp);
 
- /* dynamic optionmenu for all encoders that are registered at runtime */
- p_replace_optionmenu_encodername(gpp);
+ /* dynamic combo for all encoders that are registered at runtime */
+ p_replace_combo_encodername(gpp);
  gap_cme_gui_util_sox_widgets(gpp);
 }    /* end p_init_shell_window_widgets */
 
@@ -2304,118 +2303,36 @@ p_create_input_mode_widgets(GtkWidget *table, int row, int col, GapCmeGlobalPara
 }  /* end p_create_input_mode_widgets */
 
 
+
 /* ----------------------------------------
- * create_shell_window
+ * p_create_shell_window
  * ----------------------------------------
  */
 static GtkWidget*
-create_shell_window (GapCmeGlobalParams *gpp)
+p_create_shell_window (GapCmeGlobalParams *gpp)
 {
   GtkWidget *shell_window;
   GtkWidget *cme__dialog_vbox1;
   GtkWidget *cme__vbox_main;
-  GtkWidget *cme__notebook_main;
-  GtkWidget *cme__frame1;
-  GtkWidget *cme__table1;
-  GtkWidget *cme__label_from;
-  GtkWidget *cme__label_to;
-  GtkWidget *cme__label_width;
-  GtkWidget *cme__label_height;
-  GtkObject *cme__spinbutton_width_adj;
-  GtkWidget *cme__spinbutton_width;
-  GtkObject *cme__spinbutton_height_adj;
-  GtkWidget *cme__spinbutton_height;
-  GtkWidget *cme__optionmenu_scale;
-  GtkWidget *cme__optionmenu_scale_menu;
-  GtkWidget *glade_menuitem;
-  GtkWidget *cme__label_framerate;
-  GtkObject *cme__spinbutton_from_adj;
-  GtkWidget *cme__spinbutton_from;
-  GtkObject *cme__spinbutton_to_adj;
-  GtkWidget *cme__spinbutton_to;
-  GtkObject *cme__spinbutton_framerate_adj;
-  GtkWidget *cme__spinbutton_framerate;
-  GtkWidget *cme__optionmenu_framerate;
-  GtkWidget *cme__optionmenu_framerate_menu;
-  GtkWidget *cme__table_times;
-  GtkWidget *cme__label_fromtime;
-  GtkWidget *cme__label_vid_tot_text;
-  GtkWidget *cme__label_totaltime;
-  GtkWidget *cme__label_totime;
-  GtkWidget *cme__label_aud_tot_text;
-  GtkWidget *cme__label_aud0_time;
-  GtkWidget *cme__label_vidnorm;
-  GtkWidget *cme__optionmenu_vidnorm;
-  GtkWidget *cme__optionmenu_vidnorm_menu;
-  GtkWidget *cme__label_encodername;
-  GtkWidget *cme__optionmenu_encodername;
-  GtkWidget *cme__optionmenu_encodername_menu;
-  GtkWidget *cme__button_params;
-  GtkWidget *cme__short_description;
-  GtkWidget *cme__label_nb1;
-  GtkWidget *cme__frame2;
-  GtkWidget *cme__table2;
-  GtkWidget *cme__label_audio1;
-  GtkWidget *cme__entry_audio1;
-  GtkWidget *cme__label_aud1_time;
-  GtkWidget *cme__label_aud1_info;
-  GtkWidget *cme__label_samplerate;
-  GtkObject *cme__spinbutton_samplerate_adj;
-  GtkWidget *cme__spinbutton_samplerate;
-  GtkWidget *cme__optionmenu_outsamplerate;
-  GtkWidget *cme__optionmenu_outsamplerate_menu;
-  GtkWidget *cme__label_aud_opt_info;
-  GtkWidget *cme__label_tmp_audfile;
-  GtkWidget *cme__label_tmp;
-  GtkWidget *cme__label_aud_tmp_info;
-  GtkWidget *cme__label_aud_tmp_time;
-  GtkWidget *cme__button_gen_tmp_audfile;
-  GtkWidget *cme__button_audio1;
-  GtkWidget *cme__label_nb2;
-  GtkWidget *cme__frame_cfg4;
-  GtkWidget *qte_table_cfg4;
-  GtkWidget *cme__label_sox;
-  GtkWidget *cme__label_sox_options;
-  GtkWidget *cme__hbox_cfg4;
-  GtkWidget *cme__button_sox_save;
-  GtkWidget *cme__button_sox_load;
-  GtkWidget *cme__button_sox_default;
-  GtkWidget *cme__entry_sox;
-  GtkWidget *cme__entry_sox_options;
-  GtkWidget *cme__label_sox_info;
-  GtkWidget *cme__label_nb3;
-  GtkWidget *cme__frame_nb4;
-  GtkWidget *table1;
-  GtkWidget *cme__mac_label;
-  GtkWidget *cme__entry_mac;
-  GtkWidget *cme__button_mac;
-  GtkWidget *cme__label_stb;
-  GtkWidget *cme__entry_stb;
-  GtkWidget *cme__button_stb;
-  GtkWidget *cme__label_debug_flat;
-  GtkWidget *cme__entry_debug_flat;
-  GtkWidget *cme__label_debug_multi;
-  GtkWidget *cme__entry_debug_multi;
-  GtkWidget *cme__label_debug_monitor;
-  GtkWidget *cme__checkbutton_enc_monitor;
-  GtkWidget *cme__label_storyboard_helptext;
-  GtkWidget *cme__label_nb4;
-  GtkWidget *cme__frame3;
-  GtkWidget *cme__hbox2;
-  GtkWidget *cme__label_video;
-  GtkWidget *cme__entry_video;
-  GtkWidget *cme__button_video;
-  GtkWidget *cme__frame_status;
+  GtkWidget *notebook;
+  GtkWidget *frame;
+  GtkWidget *label;
+  GtkWidget *hbox;
+  GtkWidget *entry;
+  GtkWidget *button;
   GtkWidget *cme__table_status;
-  GtkWidget *cme__label_status;
-  GtkWidget *cme__progressbar_status;
+  GtkWidget *progressbar;
 
-  gint l_row;
+
+  gpp->cme__spinbutton_width_adj = NULL;
+  gpp->cme__spinbutton_height_adj = NULL;
+  gpp->cme__spinbutton_framerate_adj = NULL;
+  gpp->cme__spinbutton_samplerate_adj = NULL;
 
   shell_window = gimp_dialog_new (_("Master Videoencoder"),
                          GAP_CME_PLUGIN_NAME_VID_ENCODE_MASTER,
                          NULL, 0,
-                         gimp_standard_help_func, GAP_CME_PLUGIN_NAME_VID_ENCODE_MASTER ".html",
+                         gimp_standard_help_func, GAP_CME_PLUGIN_HELP_ID_VID_ENCODE_MASTER,
 
                          GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
                          GTK_STOCK_OK,     GTK_RESPONSE_OK,
@@ -2433,1016 +2350,131 @@ create_shell_window (GapCmeGlobalParams *gpp)
   gtk_widget_show (cme__vbox_main);
   gtk_box_pack_start (GTK_BOX (cme__dialog_vbox1), cme__vbox_main, TRUE, TRUE, 0);
 
-  cme__notebook_main = gtk_notebook_new ();
-  gtk_widget_show (cme__notebook_main);
-  gtk_box_pack_start (GTK_BOX (cme__vbox_main), cme__notebook_main, TRUE, TRUE, 0);
-
-  cme__frame1 = gimp_frame_new (_("Video Encode Options"));
-  gtk_widget_show (cme__frame1);
-  gtk_container_add (GTK_CONTAINER (cme__notebook_main), cme__frame1);
-  gtk_container_set_border_width (GTK_CONTAINER (cme__frame1), 4);
-
-  cme__table1 = gtk_table_new (10, 3, FALSE);
-  
-  gtk_widget_show (cme__table1);
-  gtk_container_add (GTK_CONTAINER (cme__frame1), cme__table1);
-  gtk_container_set_border_width (GTK_CONTAINER (cme__table1), 5);
-  gtk_table_set_row_spacings (GTK_TABLE (cme__table1), 2);
-  gtk_table_set_col_spacings (GTK_TABLE (cme__table1), 2);
-  
-
-  l_row = 0;
-  p_create_input_mode_widgets(cme__table1, l_row, 0, gpp);
-
-  l_row++;  
-
-  cme__label_from = gtk_label_new (_("From Frame:"));
-  gtk_widget_show (cme__label_from);
-  gtk_misc_set_alignment (GTK_MISC (cme__label_from), 0.0, 0.5);
-  gtk_table_attach (GTK_TABLE (cme__table1), cme__label_from, 0, 1, l_row, l_row+1,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-
-
-  /* the from_frame spinbutton */
-  cme__spinbutton_from_adj = gtk_adjustment_new (1, 0, 100000, 1, 10, 10);
-  cme__spinbutton_from = gtk_spin_button_new (GTK_ADJUSTMENT (cme__spinbutton_from_adj), 1, 0);
-  gtk_widget_show (cme__spinbutton_from);
-  gtk_table_attach (GTK_TABLE (cme__table1), cme__spinbutton_from, 1, 2, l_row, l_row+1,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gimp_help_set_help_data (cme__spinbutton_from, _("Start encoding at this frame"), NULL);
-
-
-
-  /* subtable for the video timing info labels (takes 2 rows) */
-  cme__table_times = gtk_table_new (2, 3, FALSE);
-  gtk_widget_show (cme__table_times);
-  gtk_table_attach (GTK_TABLE (cme__table1), cme__table_times, 2, 3, l_row, l_row+2,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (GTK_FILL), 0, 0);
-  gtk_table_set_row_spacings (GTK_TABLE (cme__table_times), 10);
-
-  cme__label_fromtime = gtk_label_new (_("00:00:000"));
-  gtk_widget_show (cme__label_fromtime);
-  gtk_table_attach (GTK_TABLE (cme__table_times), cme__label_fromtime, 0, 1, 0, 1,
-                    (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
-
-  cme__label_vid_tot_text = gtk_label_new (_("Vidtime:"));
-  gtk_widget_show (cme__label_vid_tot_text);
-  gtk_table_attach (GTK_TABLE (cme__table_times), cme__label_vid_tot_text, 1, 2, 0, 1,
-                    (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_misc_set_padding (GTK_MISC (cme__label_vid_tot_text), 7, 0);
-
-  cme__label_totaltime = gtk_label_new (_("00:00:000"));
-  gtk_widget_show (cme__label_totaltime);
-  gtk_table_attach (GTK_TABLE (cme__table_times), cme__label_totaltime, 2, 3, 0, 1,
-                    (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
-
-  cme__label_totime = gtk_label_new (_("00:00:000"));
-  gtk_widget_show (cme__label_totime);
-  gtk_table_attach (GTK_TABLE (cme__table_times), cme__label_totime, 0, 1, 1, 2,
-                    (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
-
-  cme__label_aud_tot_text = gtk_label_new (_("Audtime:"));
-  gtk_widget_show (cme__label_aud_tot_text);
-  gtk_table_attach (GTK_TABLE (cme__table_times), cme__label_aud_tot_text, 1, 2, 1, 2,
-                    (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
-
-  cme__label_aud0_time = gtk_label_new (_("00:00:000"));
-  gtk_widget_show (cme__label_aud0_time);
-  gtk_table_attach (GTK_TABLE (cme__table_times), cme__label_aud0_time, 2, 3, 1, 2,
-                    (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
-
-
-  l_row++;
-  
-  cme__label_to = gtk_label_new (_("To Frame:"));
-  gtk_widget_show (cme__label_to);
-  gtk_misc_set_alignment (GTK_MISC (cme__label_to), 0.0, 0.5);
-  gtk_table_attach (GTK_TABLE (cme__table1), cme__label_to, 0, 1, l_row, l_row+1,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-
-  /* the to_frame spinbutton */
-  cme__spinbutton_to_adj = gtk_adjustment_new (1, 0, 100000, 1, 10, 10);
-  cme__spinbutton_to = gtk_spin_button_new (GTK_ADJUSTMENT (cme__spinbutton_to_adj), 1, 0);
-  gtk_widget_show (cme__spinbutton_to);
-  gtk_table_attach (GTK_TABLE (cme__table1), cme__spinbutton_to, 1, 2, l_row, l_row+1,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gimp_help_set_help_data (cme__spinbutton_to, _("Stop encoding at this frame"), NULL);
-
-  l_row++;  
-
-  /* the width label */
-  cme__label_width = gtk_label_new (_("Width:"));
-  gtk_widget_show (cme__label_width);
-  gtk_misc_set_alignment (GTK_MISC (cme__label_width), 0.0, 0.5);
-  gtk_table_attach (GTK_TABLE (cme__table1), cme__label_width, 0, 1, l_row, l_row+1,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-
-
-  /* the width spinbutton */
-  cme__spinbutton_width_adj = gtk_adjustment_new (10, 10, 10000, 1, 10, 10);
-  cme__spinbutton_width = gtk_spin_button_new (GTK_ADJUSTMENT (cme__spinbutton_width_adj), 1, 0);
-  gtk_widget_show (cme__spinbutton_width);
-  gtk_table_attach (GTK_TABLE (cme__table1), cme__spinbutton_width, 1, 2, l_row, l_row+1,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gimp_help_set_help_data (cme__spinbutton_width, _("Width of the output video (pixels)"), NULL);
-
-  /* the Frame width/height scale optionmenu (for picking common used video sizes) */
-  cme__optionmenu_scale = gtk_option_menu_new ();
-  gtk_widget_show (cme__optionmenu_scale);
-  gtk_table_attach (GTK_TABLE (cme__table1), cme__optionmenu_scale, 2, 3, l_row, l_row+1,
-                    (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_usize (cme__optionmenu_scale, 160, -2);
-  gimp_help_set_help_data (cme__optionmenu_scale, _("Scale width/height to common size"), NULL);
-  cme__optionmenu_scale_menu = gtk_menu_new ();
-  glade_menuitem = gtk_menu_item_new_with_label (_("Framesize (1:1)"));
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
-                          G_CALLBACK (on_cme__optionmenu_scale),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (glade_menuitem), GAP_GVE_MENU_ITEM_INDEX_KEY
-                          , (gpointer)GAP_CME_STANDARD_SIZE_IMAGE);
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (cme__optionmenu_scale_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("320x240 NTSC"));
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
-                          G_CALLBACK (on_cme__optionmenu_scale),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (glade_menuitem), GAP_GVE_MENU_ITEM_INDEX_KEY
-                          , (gpointer)GAP_CME_STANDARD_SIZE_320x240);
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (cme__optionmenu_scale_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("320x288 PAL"));
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
-                          G_CALLBACK (on_cme__optionmenu_scale),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (glade_menuitem), GAP_GVE_MENU_ITEM_INDEX_KEY
-                          , (gpointer)GAP_CME_STANDARD_SIZE_320x288);
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (cme__optionmenu_scale_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("640x480"));
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
-                          G_CALLBACK (on_cme__optionmenu_scale),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (glade_menuitem), GAP_GVE_MENU_ITEM_INDEX_KEY
-                          , (gpointer)GAP_CME_STANDARD_SIZE_640x480);
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (cme__optionmenu_scale_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("720x480 NTSC"));
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
-                          G_CALLBACK (on_cme__optionmenu_scale),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (glade_menuitem), GAP_GVE_MENU_ITEM_INDEX_KEY
-                          , (gpointer)GAP_CME_STANDARD_SIZE_720x480);
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (cme__optionmenu_scale_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("720x576 PAL"));
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
-                          G_CALLBACK (on_cme__optionmenu_scale),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (glade_menuitem), GAP_GVE_MENU_ITEM_INDEX_KEY
-                          , (gpointer)GAP_CME_STANDARD_SIZE_720x576);
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (cme__optionmenu_scale_menu), glade_menuitem);
-  gtk_option_menu_set_menu (GTK_OPTION_MENU (cme__optionmenu_scale), cme__optionmenu_scale_menu);
-
-
-  l_row++;  
-
-  /* the height label */
-  cme__label_height = gtk_label_new (_("Height:"));
-  gtk_widget_show (cme__label_height);
-  gtk_misc_set_alignment (GTK_MISC (cme__label_height), 0.0, 0.5);
-  gtk_table_attach (GTK_TABLE (cme__table1), cme__label_height, 0, 1, l_row, l_row+1,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-
-  /* the height spinbutton */
-  cme__spinbutton_height_adj = gtk_adjustment_new (10, 10, 10000, 1, 10, 10);
-  cme__spinbutton_height = gtk_spin_button_new (GTK_ADJUSTMENT (cme__spinbutton_height_adj), 1, 0);
-  gtk_widget_show (cme__spinbutton_height);
-  gtk_table_attach (GTK_TABLE (cme__table1), cme__spinbutton_height, 1, 2, l_row, l_row+1,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gimp_help_set_help_data (cme__spinbutton_height, _("Height of the output video (pixels)"), NULL);
-
-  l_row++;  
-
-  /* the Framerate lable */
-  cme__label_framerate = gtk_label_new (_("Framerate:"));
-  gtk_widget_show (cme__label_framerate);
-  gtk_misc_set_alignment (GTK_MISC (cme__label_framerate), 0.0, 0.5);
-  gtk_table_attach (GTK_TABLE (cme__table1), cme__label_framerate, 0, 1, l_row, l_row+1,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-
-
-  /* the framerate spinbutton */
-  cme__spinbutton_framerate_adj = gtk_adjustment_new (24, 1, 100, 0.1, 1, 10);
-  cme__spinbutton_framerate = gtk_spin_button_new (GTK_ADJUSTMENT (cme__spinbutton_framerate_adj), 1, 2);
-  gtk_widget_show (cme__spinbutton_framerate);
-  gtk_table_attach (GTK_TABLE (cme__table1), cme__spinbutton_framerate, 1, 2, l_row, l_row+1,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gimp_help_set_help_data (cme__spinbutton_framerate, _("Framerate of the output video (frames/sec)"), NULL);
-
-  /* the framerate optionmenu (to select common used video framerates) */
-  cme__optionmenu_framerate = gtk_option_menu_new ();
-  gtk_widget_show (cme__optionmenu_framerate);
-  gtk_table_attach (GTK_TABLE (cme__table1), cme__optionmenu_framerate, 2, 3, l_row, l_row+1,
-                    (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_usize (cme__optionmenu_framerate, 160, -2);
-  gimp_help_set_help_data (cme__optionmenu_framerate, _("Set framerate"), NULL);
-  cme__optionmenu_framerate_menu = gtk_menu_new ();
-  glade_menuitem = gtk_menu_item_new_with_label (_("unchanged"));
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
-                          G_CALLBACK (on_cme__optionmenu_framerate),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (glade_menuitem), GAP_GVE_MENU_ITEM_INDEX_KEY
-                          , (gpointer)GAP_CME_STANDARD_FRAMERATE_00_UNCHANGED);
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (cme__optionmenu_framerate_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("23.98"));
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
-                          G_CALLBACK (on_cme__optionmenu_framerate),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (glade_menuitem), GAP_GVE_MENU_ITEM_INDEX_KEY
-                          , (gpointer)GAP_CME_STANDARD_FRAMERATE_01_23_98);
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (cme__optionmenu_framerate_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("24"));
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
-                          G_CALLBACK (on_cme__optionmenu_framerate),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (glade_menuitem), GAP_GVE_MENU_ITEM_INDEX_KEY
-                          , (gpointer)GAP_CME_STANDARD_FRAMERATE_02_24);
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (cme__optionmenu_framerate_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("25"));
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
-                          G_CALLBACK (on_cme__optionmenu_framerate),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (glade_menuitem), GAP_GVE_MENU_ITEM_INDEX_KEY
-                          , (gpointer)GAP_CME_STANDARD_FRAMERATE_03_25);
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (cme__optionmenu_framerate_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("29.97"));
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
-                          G_CALLBACK (on_cme__optionmenu_framerate),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (glade_menuitem), GAP_GVE_MENU_ITEM_INDEX_KEY
-                          , (gpointer)GAP_CME_STANDARD_FRAMERATE_04_29_97);
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (cme__optionmenu_framerate_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("30"));
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
-                          G_CALLBACK (on_cme__optionmenu_framerate),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (glade_menuitem), GAP_GVE_MENU_ITEM_INDEX_KEY
-                          , (gpointer)GAP_CME_STANDARD_FRAMERATE_05_30);
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (cme__optionmenu_framerate_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("50"));
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
-                          G_CALLBACK (on_cme__optionmenu_framerate),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (glade_menuitem), GAP_GVE_MENU_ITEM_INDEX_KEY
-                          , (gpointer)GAP_CME_STANDARD_FRAMERATE_06_50);
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (cme__optionmenu_framerate_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("59.94"));
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
-                          G_CALLBACK (on_cme__optionmenu_framerate),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (glade_menuitem), GAP_GVE_MENU_ITEM_INDEX_KEY
-                          , (gpointer)GAP_CME_STANDARD_FRAMERATE_07_59_94);
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (cme__optionmenu_framerate_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("60"));
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
-                          G_CALLBACK (on_cme__optionmenu_framerate),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (glade_menuitem), GAP_GVE_MENU_ITEM_INDEX_KEY
-                          , (gpointer)GAP_CME_STANDARD_FRAMERATE_08_60);
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (cme__optionmenu_framerate_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("1"));
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
-                          G_CALLBACK (on_cme__optionmenu_framerate),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (glade_menuitem), GAP_GVE_MENU_ITEM_INDEX_KEY
-                          , (gpointer)GAP_CME_STANDARD_FRAMERATE_09_1);
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (cme__optionmenu_framerate_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("5"));
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
-                          G_CALLBACK (on_cme__optionmenu_framerate),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (glade_menuitem), GAP_GVE_MENU_ITEM_INDEX_KEY
-                          , (gpointer)GAP_CME_STANDARD_FRAMERATE_10_5);
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (cme__optionmenu_framerate_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("10"));
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
-                          G_CALLBACK (on_cme__optionmenu_framerate),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (glade_menuitem), GAP_GVE_MENU_ITEM_INDEX_KEY
-                          , (gpointer)GAP_CME_STANDARD_FRAMERATE_11_10);
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (cme__optionmenu_framerate_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("12"));
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
-                          G_CALLBACK (on_cme__optionmenu_framerate),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (glade_menuitem), GAP_GVE_MENU_ITEM_INDEX_KEY
-                          , (gpointer)GAP_CME_STANDARD_FRAMERATE_12_12);
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (cme__optionmenu_framerate_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("15"));
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
-                          G_CALLBACK (on_cme__optionmenu_framerate),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (glade_menuitem), GAP_GVE_MENU_ITEM_INDEX_KEY
-                          , (gpointer)GAP_CME_STANDARD_FRAMERATE_13_15);
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (cme__optionmenu_framerate_menu), glade_menuitem);
-  gtk_option_menu_set_menu (GTK_OPTION_MENU (cme__optionmenu_framerate), cme__optionmenu_framerate_menu);
-
-  l_row++;  
-
-
-  /* the Videonorm label */
-  cme__label_vidnorm = gtk_label_new (_("Videonorm:"));
-  gtk_widget_show (cme__label_vidnorm);
-  gtk_misc_set_alignment (GTK_MISC (cme__label_vidnorm), 0.0, 0.5);
-  gtk_table_attach (GTK_TABLE (cme__table1), cme__label_vidnorm, 0, 1, l_row, l_row+1,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-
-  /* the Videonorm optionmenu */
-  cme__optionmenu_vidnorm = gtk_option_menu_new ();
-  gtk_widget_show (cme__optionmenu_vidnorm);
-  gtk_table_attach (GTK_TABLE (cme__table1), cme__optionmenu_vidnorm, 2, 3, l_row, l_row+1,
-                    (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_usize (cme__optionmenu_vidnorm, 160, -2);
-  gimp_help_set_help_data (cme__optionmenu_vidnorm, _("Select videonorm"), NULL);
-  cme__optionmenu_vidnorm_menu = gtk_menu_new ();
-  glade_menuitem = gtk_menu_item_new_with_label (_("NTSC"));
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
-                          G_CALLBACK (on_cme__optionmenu_vid_norm),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (glade_menuitem), GAP_GVE_MENU_ITEM_INDEX_KEY
-                          , (gpointer)GAP_CME_STANDARD_VIDNORM_00_NTSC);
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (cme__optionmenu_vidnorm_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("PAL"));
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
-                          G_CALLBACK (on_cme__optionmenu_vid_norm),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (glade_menuitem), GAP_GVE_MENU_ITEM_INDEX_KEY
-                          , (gpointer)GAP_CME_STANDARD_VIDNORM_01_PAL);
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (cme__optionmenu_vidnorm_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("SECAM"));
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
-                          G_CALLBACK (on_cme__optionmenu_vid_norm),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (glade_menuitem), GAP_GVE_MENU_ITEM_INDEX_KEY
-                          , (gpointer)GAP_CME_STANDARD_VIDNORM_02_SECAM);
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (cme__optionmenu_vidnorm_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("MAC"));
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
-                          G_CALLBACK (on_cme__optionmenu_vid_norm),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (glade_menuitem), GAP_GVE_MENU_ITEM_INDEX_KEY
-                          , (gpointer)GAP_CME_STANDARD_VIDNORM_03_MAC);
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (cme__optionmenu_vidnorm_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("COMP"));
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
-                          G_CALLBACK (on_cme__optionmenu_vid_norm),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (glade_menuitem), GAP_GVE_MENU_ITEM_INDEX_KEY
-                          , (gpointer)GAP_CME_STANDARD_VIDNORM_04_COMP);
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (cme__optionmenu_vidnorm_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("undefined"));
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
-                          G_CALLBACK (on_cme__optionmenu_vid_norm),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (glade_menuitem), GAP_GVE_MENU_ITEM_INDEX_KEY
-                          , (gpointer)GAP_CME_STANDARD_VIDNORM_05_UNDEF);
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (cme__optionmenu_vidnorm_menu), glade_menuitem);
-  gtk_option_menu_set_menu (GTK_OPTION_MENU (cme__optionmenu_vidnorm), cme__optionmenu_vidnorm_menu);
-
-
-  l_row++;  
-
-  /* the videoencoder label */
-  cme__label_encodername = gtk_label_new (_("Encoder:"));
-  gtk_widget_show (cme__label_encodername);
-  gtk_misc_set_alignment (GTK_MISC (cme__label_encodername), 0.0, 0.5);
-  gtk_table_attach (GTK_TABLE (cme__table1), cme__label_encodername, 0, 1, l_row, l_row+1,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-
-  /* the videoencoder optionmenu */
-  cme__optionmenu_encodername = gtk_option_menu_new ();
-  gtk_widget_show (cme__optionmenu_encodername);
-  gtk_table_attach (GTK_TABLE (cme__table1), cme__optionmenu_encodername, 2, 3, l_row, l_row+1,
-                    (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_usize (cme__optionmenu_encodername, 160, -2);
-  gimp_help_set_help_data (cme__optionmenu_encodername, _("Select video encoder plugin"), NULL);
-  cme__optionmenu_encodername_menu = gtk_menu_new ();
-  
-  /* the menuitems are set later by query the PDB
-   * for all registered video encoder plug-ins
-   */
-  glade_menuitem = gtk_menu_item_new_with_label ("DUMMY");
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (cme__optionmenu_encodername_menu), glade_menuitem);
-
-  gtk_option_menu_set_menu (GTK_OPTION_MENU (cme__optionmenu_encodername), cme__optionmenu_encodername_menu);
-
-  /* the parameters button (invokes videoencoder specific GUI dialog) */
-  cme__button_params = gtk_button_new_with_label (_("Parameters"));
-  gtk_widget_show (cme__button_params);
-  gtk_table_attach (GTK_TABLE (cme__table1), cme__button_params, 1, 2, l_row, l_row+1,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gimp_help_set_help_data (cme__button_params, _("Edit encoder specific parameters"), NULL);
-
-
-  l_row++;
-  
-  /* videoencoder short description label */
-  cme__short_description = gtk_label_new ("");
-  gtk_widget_show (cme__short_description);
-  gtk_table_attach (GTK_TABLE (cme__table1), cme__short_description, 1, 3, l_row, l_row+1,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_label_set_line_wrap (GTK_LABEL (cme__short_description), TRUE);
-  gtk_misc_set_alignment (GTK_MISC (cme__short_description), 0.0, 0.5);
-
-
-
-
-
-  cme__label_nb1 = gtk_label_new (_("Video Options"));
-  gtk_widget_show (cme__label_nb1);
-  gtk_notebook_set_tab_label (GTK_NOTEBOOK (cme__notebook_main), gtk_notebook_get_nth_page (GTK_NOTEBOOK (cme__notebook_main), 0), cme__label_nb1);
-
-  cme__frame2 = gimp_frame_new (_("Audio Input"));
-  gtk_widget_show (cme__frame2);
-  gtk_container_add (GTK_CONTAINER (cme__notebook_main), cme__frame2);
-  gtk_container_set_border_width (GTK_CONTAINER (cme__frame2), 4);
-
-  cme__table2 = gtk_table_new (6, 3, FALSE);
-  gtk_widget_show (cme__table2);
-  gtk_container_add (GTK_CONTAINER (cme__frame2), cme__table2);
-  gtk_table_set_row_spacings (GTK_TABLE (cme__table2), 2);
-  gtk_table_set_col_spacings (GTK_TABLE (cme__table2), 2);
-
-  cme__label_audio1 = gtk_label_new (_("Audiofile:"));
-  gtk_widget_show (cme__label_audio1);
-  gtk_misc_set_alignment (GTK_MISC (cme__label_audio1), 0.0, 0.5);
-  gtk_table_attach (GTK_TABLE (cme__table2), cme__label_audio1, 0, 1, 0, 1,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-
-  cme__entry_audio1 = gtk_entry_new ();
-  gtk_widget_show (cme__entry_audio1);
-  gtk_table_attach (GTK_TABLE (cme__table2), cme__entry_audio1, 1, 2, 0, 1,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gimp_help_set_help_data (cme__entry_audio1, _("Name of audiofile (.wav 16 bit mono or stereo samples preferred)"), NULL);
-
-  cme__label_aud1_time = gtk_label_new (_("00:00:000"));
-  gtk_widget_show (cme__label_aud1_time);
-  gtk_table_attach (GTK_TABLE (cme__table2), cme__label_aud1_time, 2, 3, 1, 2,
-                    (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
-
-  cme__label_aud1_info = gtk_label_new (_("WAV, 16 Bit stereo, rate: 44100"));
-  gtk_widget_show (cme__label_aud1_info);
-  gtk_misc_set_alignment (GTK_MISC (cme__label_aud1_info), 0.0, 0.5);
-  gtk_table_attach (GTK_TABLE (cme__table2), cme__label_aud1_info, 1, 2, 1, 2,
-                    (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
-
-  cme__label_samplerate = gtk_label_new (_("Samplerate:"));
-  gtk_widget_show (cme__label_samplerate);
-  gtk_misc_set_alignment (GTK_MISC (cme__label_samplerate), 0.0, 0.5);
-  gtk_table_attach (GTK_TABLE (cme__table2), cme__label_samplerate, 0, 1, 2, 3,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-
-  cme__spinbutton_samplerate_adj = gtk_adjustment_new (44100, 1000, 100000, 10, 100, 1000);
-  cme__spinbutton_samplerate = gtk_spin_button_new (GTK_ADJUSTMENT (cme__spinbutton_samplerate_adj), 1, 0);
-  gtk_widget_show (cme__spinbutton_samplerate);
-  gtk_table_attach (GTK_TABLE (cme__table2), cme__spinbutton_samplerate, 1, 2, 2, 3,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gimp_help_set_help_data (cme__spinbutton_samplerate, _("Output samplerate in samples/sec"), NULL);
-
-  cme__optionmenu_outsamplerate = gtk_option_menu_new ();
-  gtk_widget_show (cme__optionmenu_outsamplerate);
-  gtk_table_attach (GTK_TABLE (cme__table2), cme__optionmenu_outsamplerate, 2, 3, 2, 3,
-                    (GtkAttachOptions) (GTK_EXPAND),
-                    (GtkAttachOptions) (0), 0, 0);
-  gimp_help_set_help_data (cme__optionmenu_outsamplerate, _("Select a common used samplerate"), NULL);
-  cme__optionmenu_outsamplerate_menu = gtk_menu_new ();
-  glade_menuitem = gtk_menu_item_new_with_label (_(" 8k Phone"));
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
-                          G_CALLBACK (on_cme__optionmenu_outsamplerate),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (glade_menuitem), GAP_GVE_MENU_ITEM_INDEX_KEY
-                          , (gpointer)GAP_CME_STANDARD_SAMPLERATE_00_8000);
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (cme__optionmenu_outsamplerate_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("11.025k"));
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
-                          G_CALLBACK (on_cme__optionmenu_outsamplerate),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (glade_menuitem), GAP_GVE_MENU_ITEM_INDEX_KEY
-                          , (gpointer)GAP_CME_STANDARD_SAMPLERATE_01_11025);
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (cme__optionmenu_outsamplerate_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("12k Voice"));
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
-                          G_CALLBACK (on_cme__optionmenu_outsamplerate),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (glade_menuitem), GAP_GVE_MENU_ITEM_INDEX_KEY
-                          , (gpointer)GAP_CME_STANDARD_SAMPLERATE_02_12000);
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (cme__optionmenu_outsamplerate_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("16k FM"));
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
-                          G_CALLBACK (on_cme__optionmenu_outsamplerate),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (glade_menuitem), GAP_GVE_MENU_ITEM_INDEX_KEY
-                          , (gpointer)GAP_CME_STANDARD_SAMPLERATE_03_16000);
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (cme__optionmenu_outsamplerate_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("22.05k"));
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
-                          G_CALLBACK (on_cme__optionmenu_outsamplerate),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (glade_menuitem), GAP_GVE_MENU_ITEM_INDEX_KEY
-                          , (gpointer)GAP_CME_STANDARD_SAMPLERATE_04_22050);
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (cme__optionmenu_outsamplerate_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("24k Tape"));
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
-                          G_CALLBACK (on_cme__optionmenu_outsamplerate),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (glade_menuitem), GAP_GVE_MENU_ITEM_INDEX_KEY
-                          , (gpointer)GAP_CME_STANDARD_SAMPLERATE_05_24000);
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (cme__optionmenu_outsamplerate_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("32k HiFi"));
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
-                          G_CALLBACK (on_cme__optionmenu_outsamplerate),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (glade_menuitem), GAP_GVE_MENU_ITEM_INDEX_KEY
-                          , (gpointer)GAP_CME_STANDARD_SAMPLERATE_05_32000);
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (cme__optionmenu_outsamplerate_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("44.1k CD"));
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
-                          G_CALLBACK (on_cme__optionmenu_outsamplerate),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (glade_menuitem), GAP_GVE_MENU_ITEM_INDEX_KEY
-                          , (gpointer)GAP_CME_STANDARD_SAMPLERATE_05_44100);
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (cme__optionmenu_outsamplerate_menu), glade_menuitem);
-  glade_menuitem = gtk_menu_item_new_with_label (_("48 k Studio"));
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
-                          G_CALLBACK (on_cme__optionmenu_outsamplerate),
-                          (gpointer)gpp);
-        g_object_set_data (G_OBJECT (glade_menuitem), GAP_GVE_MENU_ITEM_INDEX_KEY
-                          , (gpointer)GAP_CME_STANDARD_SAMPLERATE_05_48000);
-  gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (cme__optionmenu_outsamplerate_menu), glade_menuitem);
-  gtk_option_menu_set_menu (GTK_OPTION_MENU (cme__optionmenu_outsamplerate), cme__optionmenu_outsamplerate_menu);
-  gtk_option_menu_set_history (GTK_OPTION_MENU (cme__optionmenu_outsamplerate), 7);
-
-  cme__label_aud_opt_info = gtk_label_new (_("\nNote:\nif you set samplerate lower than\nrate of the WAV file, you loose sound quality,\nbut higher samplerates can not improve the\nquality of the original sound. "));
-  gtk_widget_show (cme__label_aud_opt_info);
-  gtk_table_attach (GTK_TABLE (cme__table2), cme__label_aud_opt_info, 1, 2, 5, 6,
-                    (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_label_set_line_wrap (GTK_LABEL (cme__label_aud_opt_info), TRUE);
-
-  cme__label_tmp_audfile = gtk_label_new ("");
-  gtk_widget_show (cme__label_tmp_audfile);
-  gtk_misc_set_alignment (GTK_MISC (cme__label_tmp_audfile), 0.0, 0.5);
-  gtk_table_attach (GTK_TABLE (cme__table2), cme__label_tmp_audfile, 1, 2, 3, 4,
-                    (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
-
-  cme__label_tmp = gtk_label_new (_("Tmpfile:"));
-  gtk_widget_show (cme__label_tmp);
-  gtk_misc_set_alignment (GTK_MISC (cme__label_tmp), 0.0, 0.5);
-  gtk_table_attach (GTK_TABLE (cme__table2), cme__label_tmp, 0, 1, 3, 4,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 4);
-
-  cme__label_aud_tmp_info = gtk_label_new (_("WAV, 16 Bit stereo, rate: 44100"));
-  gtk_widget_show (cme__label_aud_tmp_info);
-  gtk_table_attach (GTK_TABLE (cme__table2), cme__label_aud_tmp_info, 1, 2, 4, 5,
-                    (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
-
-  cme__label_aud_tmp_time = gtk_label_new (_("00:00:000"));
-  gtk_widget_show (cme__label_aud_tmp_time);
-  gtk_table_attach (GTK_TABLE (cme__table2), cme__label_aud_tmp_time, 2, 3, 4, 5,
-                    (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
-
-  cme__button_gen_tmp_audfile = gtk_button_new_with_label (_("Audioconvert"));
-  gtk_widget_show (cme__button_gen_tmp_audfile);
-  gtk_table_attach (GTK_TABLE (cme__table2), cme__button_gen_tmp_audfile, 2, 3, 3, 4,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 2, 0);
-  gimp_help_set_help_data (cme__button_gen_tmp_audfile, _("Convert audiofile to tmpfile"), NULL);
-
-  cme__button_audio1 = gtk_button_new_with_label (_("..."));
-  gtk_widget_show (cme__button_audio1);
-  gtk_table_attach (GTK_TABLE (cme__table2), cme__button_audio1, 2, 3, 0, 1,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_usize (cme__button_audio1, 80, -2);
-  gimp_help_set_help_data (cme__button_audio1, _("Select input audiofile via browser"), NULL);
-
-  cme__label_nb2 = gtk_label_new (_("Audio Options"));
-  gtk_widget_show (cme__label_nb2);
-  gtk_notebook_set_tab_label (GTK_NOTEBOOK (cme__notebook_main), gtk_notebook_get_nth_page (GTK_NOTEBOOK (cme__notebook_main), 1), cme__label_nb2);
-
-  cme__frame_cfg4 = gimp_frame_new (_("Configuration of external audiotool program"));
-  gtk_widget_show (cme__frame_cfg4);
-  gtk_container_add (GTK_CONTAINER (cme__notebook_main), cme__frame_cfg4);
-  gtk_container_set_border_width (GTK_CONTAINER (cme__frame_cfg4), 4);
-
-  qte_table_cfg4 = gtk_table_new (4, 2, FALSE);
-  gtk_widget_show (qte_table_cfg4);
-  gtk_container_add (GTK_CONTAINER (cme__frame_cfg4), qte_table_cfg4);
-
-  cme__label_sox = gtk_label_new (_("Audiotool:"));
-  gtk_widget_show (cme__label_sox);
-  gtk_misc_set_alignment (GTK_MISC (cme__label_sox), 0.0, 0.5);
-  gtk_table_attach (GTK_TABLE (qte_table_cfg4), cme__label_sox, 0, 1, 0, 1,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-
-  cme__label_sox_options = gtk_label_new (_("Options:"));
-  gtk_widget_show (cme__label_sox_options);
-  gtk_misc_set_alignment (GTK_MISC (cme__label_sox_options), 0.0, 0.5);
-  gtk_table_attach (GTK_TABLE (qte_table_cfg4), cme__label_sox_options, 0, 1, 1, 2,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-
-  cme__hbox_cfg4 = gtk_hbox_new (TRUE, 0);
-  gtk_widget_show (cme__hbox_cfg4);
-  gtk_table_attach (GTK_TABLE (qte_table_cfg4), cme__hbox_cfg4, 0, 2, 3, 4,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (GTK_EXPAND), 0, 2);
-
-  cme__button_sox_save = gtk_button_new_with_label (_("Save"));
-  gtk_widget_show (cme__button_sox_save);
-  gtk_box_pack_start (GTK_BOX (cme__hbox_cfg4), cme__button_sox_save, FALSE, TRUE, 2);
-  gimp_help_set_help_data (cme__button_sox_save, _("Save audiotool configuration to gimprc"), NULL);
-
-  cme__button_sox_load = gtk_button_new_with_label (_("Load"));
-  gtk_widget_show (cme__button_sox_load);
-  gtk_box_pack_start (GTK_BOX (cme__hbox_cfg4), cme__button_sox_load, FALSE, TRUE, 2);
-  gimp_help_set_help_data (cme__button_sox_load, _("Load audiotool configuration from gimprc"), NULL);
-
-  cme__button_sox_default = gtk_button_new_with_label (_("Default"));
-  gtk_widget_show (cme__button_sox_default);
-  gtk_box_pack_start (GTK_BOX (cme__hbox_cfg4), cme__button_sox_default, FALSE, TRUE, 2);
-  gimp_help_set_help_data (cme__button_sox_default, _("Set default audiotool configuration "), NULL);
-
-  cme__entry_sox = gtk_entry_new ();
-  gtk_widget_show (cme__entry_sox);
-  gtk_table_attach (GTK_TABLE (qte_table_cfg4), cme__entry_sox, 1, 2, 0, 1,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 2, 2);
-  gimp_help_set_help_data (cme__entry_sox, _("name of audiotool (something like sox with or without path)"), NULL);
-
-  cme__entry_sox_options = gtk_entry_new ();
-  gtk_widget_show (cme__entry_sox_options);
-  gtk_table_attach (GTK_TABLE (qte_table_cfg4), cme__entry_sox_options, 1, 2, 1, 2,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 2, 2);
-  gimp_help_set_help_data (cme__entry_sox_options, _("Options to call the audiotool ($IN, $OUT $RATE are replaced)"), NULL);
-
-  cme__label_sox_info = gtk_label_new ("");
-  gtk_label_parse_uline (GTK_LABEL (cme__label_sox_info),
-                         _("Configuration of an audiotool (like sox on UNIX).\n\n$IN .. is replaced by the input audiofile\n$OUT .. is replaced by audiofile with suffix  _tmp.wav\n$RATE .. is replaced by samplerate in byte/sec\n\nThis tool is called for audio conversions  if\na) the input audiofile is not WAV 16Bit format\nb) Desired Samplerate does not match the\n     rate in the .wav file"));
-  gtk_widget_show (cme__label_sox_info);
-  gtk_table_attach (GTK_TABLE (qte_table_cfg4), cme__label_sox_info, 0, 2, 2, 3,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 2, 2);
-  gtk_widget_set_usize (cme__label_sox_info, 300, -2);
-  gtk_label_set_line_wrap (GTK_LABEL (cme__label_sox_info), TRUE);
-  gtk_misc_set_alignment (GTK_MISC (cme__label_sox_info), 0.5, 0.5);
-
-  cme__label_nb3 = gtk_label_new (_("Audio Tool Configuration"));
-  gtk_widget_show (cme__label_nb3);
-  gtk_notebook_set_tab_label (GTK_NOTEBOOK (cme__notebook_main), gtk_notebook_get_nth_page (GTK_NOTEBOOK (cme__notebook_main), 2), cme__label_nb3);
-
-  cme__frame_nb4 = gimp_frame_new (_("Encoding Extras"));
-  gtk_widget_show (cme__frame_nb4);
-  gtk_container_add (GTK_CONTAINER (cme__notebook_main), cme__frame_nb4);
-  gtk_container_set_border_width (GTK_CONTAINER (cme__frame_nb4), 4);
-
-  table1 = gtk_table_new (6, 3, FALSE);
-  gtk_widget_show (table1);
-  gtk_container_add (GTK_CONTAINER (cme__frame_nb4), table1);
-
-  cme__mac_label = gtk_label_new (_("Macrofile:"));
-  gtk_widget_show (cme__mac_label);
-  gtk_table_attach (GTK_TABLE (table1), cme__mac_label, 0, 1, 0, 1,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_misc_set_alignment (GTK_MISC (cme__mac_label), 0.0, 0.5);
-
-  cme__entry_mac = gtk_entry_new ();
-  gtk_widget_show (cme__entry_mac);
-  gtk_table_attach (GTK_TABLE (table1), cme__entry_mac, 1, 2, 0, 1,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gimp_help_set_help_data (cme__entry_mac, _("optional filtermacro file to be performed on each handled frame "), NULL);
-
-  cme__button_mac = gtk_button_new_with_label (_("..."));
-  gtk_widget_show (cme__button_mac);
-  gtk_table_attach (GTK_TABLE (table1), cme__button_mac, 2, 3, 0, 1,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_usize (cme__button_mac, 70, -2);
-  gimp_help_set_help_data (cme__button_mac, _("select macrofile via browser"), NULL);
-
-  cme__label_stb = gtk_label_new (_("Storyboard File:"));
-  gtk_widget_show (cme__label_stb);
-  gtk_table_attach (GTK_TABLE (table1), cme__label_stb, 0, 1, 1, 2,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_misc_set_alignment (GTK_MISC (cme__label_stb), 0.0, 0.5);
-
-  cme__entry_stb = gtk_entry_new ();
-  gtk_widget_show (cme__entry_stb);
-  gtk_table_attach (GTK_TABLE (table1), cme__entry_stb, 1, 2, 1, 2,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gimp_help_set_help_data (cme__entry_stb, _("optional use a storyboard file to feed the encoder"), NULL);
-
-  cme__button_stb = gtk_button_new_with_label (_("..."));
-  gtk_widget_show (cme__button_stb);
-  gtk_table_attach (GTK_TABLE (table1), cme__button_stb, 2, 3, 1, 2,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gimp_help_set_help_data (cme__button_stb, _("select storyboard file via browser"), NULL);
-
-  cme__label_debug_flat = gtk_label_new (_("Debug\nFlat File:"));
-  gtk_widget_show (cme__label_debug_flat);
-  gtk_table_attach (GTK_TABLE (table1), cme__label_debug_flat, 0, 1, 5, 6,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_misc_set_alignment (GTK_MISC (cme__label_debug_flat), 0.0, 0.5);
-
-  cme__entry_debug_flat = gtk_entry_new ();
-  gtk_widget_show (cme__entry_debug_flat);
-  gtk_table_attach (GTK_TABLE (table1), cme__entry_debug_flat, 1, 2, 5, 6,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gimp_help_set_help_data (cme__entry_debug_flat, _("optional Save each composite frame to JPEG file, before it is passed to the encoder"), NULL);
-
-  cme__label_debug_multi = gtk_label_new (_("Debug\nMultilayer File:"));
-  gtk_widget_show (cme__label_debug_multi);
-  gtk_table_attach (GTK_TABLE (table1), cme__label_debug_multi, 0, 1, 4, 5,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_misc_set_alignment (GTK_MISC (cme__label_debug_multi), 0.0, 0.5);
-
-  cme__entry_debug_multi = gtk_entry_new ();
-  gtk_widget_show (cme__entry_debug_multi);
-  gtk_table_attach (GTK_TABLE (table1), cme__entry_debug_multi, 1, 2, 4, 5,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gimp_help_set_help_data (cme__entry_debug_multi, _("optional save each composite multilayer frame to XCF file, before flattening and executing macro"), NULL);
-
-  cme__label_debug_monitor = gtk_label_new (_("Monitor"));
-  gtk_widget_hide (cme__label_debug_monitor);
-  gtk_table_attach (GTK_TABLE (table1), cme__label_debug_monitor, 0, 1, 3, 4,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_misc_set_alignment (GTK_MISC (cme__label_debug_monitor), 0.0, 0.5);
-
-  cme__checkbutton_enc_monitor = gtk_check_button_new_with_label (_("Monitor Frames while Encoding"));
-  gtk_widget_show (cme__checkbutton_enc_monitor);
-  gtk_table_attach (GTK_TABLE (table1), cme__checkbutton_enc_monitor, 1, 2, 3, 4,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gimp_help_set_help_data (cme__checkbutton_enc_monitor, _("Show each frame before passed to encoder"), NULL);
-
-  cme__label_storyboard_helptext = gtk_label_new (_("Storyboardfiles are textfiles that are used to\n"
-			   "assemble a video from a list of single images,\n"
-			   "frameranges, videoclips, gif animations or audiofiles.\n"
-			   "(see STORYBOARD_FILE_DOC.txt for details)"));
-  gtk_widget_show (cme__label_storyboard_helptext);
-  gtk_table_attach (GTK_TABLE (table1), cme__label_storyboard_helptext, 0, 3, 2, 3,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 2, 6);
-  gtk_label_set_justify (GTK_LABEL (cme__label_storyboard_helptext), GTK_JUSTIFY_FILL);
-  gtk_misc_set_alignment (GTK_MISC (cme__label_storyboard_helptext), 0.0, 0.5);
-
-  cme__label_nb4 = gtk_label_new (_("Extras"));
-  gtk_widget_show (cme__label_nb4);
-  gtk_notebook_set_tab_label (GTK_NOTEBOOK (cme__notebook_main), gtk_notebook_get_nth_page (GTK_NOTEBOOK (cme__notebook_main), 3), cme__label_nb4);
-
-  cme__frame3 = gimp_frame_new (_("Output"));
-  gtk_widget_show (cme__frame3);
-  gtk_box_pack_start (GTK_BOX (cme__vbox_main), cme__frame3, TRUE, TRUE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (cme__frame3), 4);
-
-  cme__hbox2 = gtk_hbox_new (FALSE, 0);
-  gtk_widget_show (cme__hbox2);
-  gtk_container_add (GTK_CONTAINER (cme__frame3), cme__hbox2);
-
-  cme__label_video = gtk_label_new (_("Video :"));
-  gtk_widget_show (cme__label_video);
-  gtk_box_pack_start (GTK_BOX (cme__hbox2), cme__label_video, FALSE, FALSE, 2);
-
-  cme__entry_video = gtk_entry_new ();
-  gtk_widget_show (cme__entry_video);
-  gtk_box_pack_start (GTK_BOX (cme__hbox2), cme__entry_video, TRUE, TRUE, 0);
-  gimp_help_set_help_data (cme__entry_video, _("Name of output videofile"), NULL);
-
-  cme__button_video = gtk_button_new_with_label (_("..."));
-  gtk_widget_show (cme__button_video);
-  gtk_box_pack_start (GTK_BOX (cme__hbox2), cme__button_video, FALSE, FALSE, 0);
-  gtk_widget_set_usize (cme__button_video, 80, -2);
-  gimp_help_set_help_data (cme__button_video, _("Select output videofile via browser"), NULL);
-
-  cme__frame_status = gimp_frame_new (_("Status"));
-  gtk_widget_show (cme__frame_status);
-  gtk_box_pack_start (GTK_BOX (cme__vbox_main), cme__frame_status, TRUE, TRUE, 2);
-  gtk_container_set_border_width (GTK_CONTAINER (cme__frame_status), 4);
-
-  cme__table_status = gtk_table_new (2, 2, FALSE);
-  gtk_widget_show (cme__table_status);
-  gtk_container_add (GTK_CONTAINER (cme__frame_status), cme__table_status);
-
-  cme__label_status = gtk_label_new (_("READY"));
-  gtk_widget_show (cme__label_status);
-  gtk_table_attach (GTK_TABLE (cme__table_status), cme__label_status, 0, 2, 0, 1,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_misc_set_alignment (GTK_MISC (cme__label_status), 0.0, 0.5);
-  gtk_misc_set_padding (GTK_MISC (cme__label_status), 2, 0);
-
-  cme__progressbar_status = gtk_progress_bar_new ();
-  gtk_widget_show (cme__progressbar_status);
-  gtk_table_attach (GTK_TABLE (cme__table_status), cme__progressbar_status, 0, 2, 1, 2,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 2, 0);
-
-  g_signal_connect (G_OBJECT (cme__spinbutton_width), "changed",
-                      G_CALLBACK (on_cme__spinbutton_width_changed),
-                      gpp);
-  g_signal_connect (G_OBJECT (cme__spinbutton_height), "changed",
-                      G_CALLBACK (on_cme__spinbutton_height_changed),
-                      gpp);
-  g_signal_connect (G_OBJECT (cme__spinbutton_from), "changed",
-                      G_CALLBACK (on_cme__spinbutton_from_changed),
-                      gpp);
-  g_signal_connect (G_OBJECT (cme__spinbutton_to), "changed",
-                      G_CALLBACK (on_cme__spinbutton_to_changed),
-                      gpp);
-  g_signal_connect (G_OBJECT (cme__spinbutton_framerate), "changed",
-                      G_CALLBACK (on_cme__spinbutton_framerate_changed),
-                      gpp);
-  g_signal_connect (G_OBJECT (cme__button_params), "clicked",
-                      G_CALLBACK (on_cme__button_params_clicked),
-                      gpp);
-  g_signal_connect (G_OBJECT (cme__entry_audio1), "changed",
-                      G_CALLBACK (on_cme__entry_audio1_changed),
-                      gpp);
-  g_signal_connect (G_OBJECT (cme__spinbutton_samplerate), "changed",
-                      G_CALLBACK (on_cme__spinbutton_samplerate_changed),
-                      gpp);
-  g_signal_connect (G_OBJECT (cme__button_gen_tmp_audfile), "clicked",
-                      G_CALLBACK (on_cme__button_gen_tmp_audfile_clicked),
-                      gpp);
-  g_signal_connect (G_OBJECT (cme__button_audio1), "clicked",
-                      G_CALLBACK (on_cme__button_audio1_clicked),
-                      gpp);
-  g_signal_connect (G_OBJECT (cme__button_sox_save), "clicked",
-                      G_CALLBACK (on_cme__button_sox_save_clicked),
-                      gpp);
-  g_signal_connect (G_OBJECT (cme__button_sox_load), "clicked",
-                      G_CALLBACK (on_cme__button_sox_load_clicked),
-                      gpp);
-  g_signal_connect (G_OBJECT (cme__button_sox_default), "clicked",
-                      G_CALLBACK (on_cme__button_sox_default_clicked),
-                      gpp);
-  g_signal_connect (G_OBJECT (cme__entry_sox), "changed",
-                      G_CALLBACK (on_cme__entry_sox_changed),
-                      gpp);
-  g_signal_connect (G_OBJECT (cme__entry_sox_options), "changed",
-                      G_CALLBACK (on_cme__entry_sox_options_changed),
-                      gpp);
-  g_signal_connect (G_OBJECT (cme__entry_mac), "changed",
-                      G_CALLBACK (on_cme__entry_mac_changed),
-                      gpp);
-  g_signal_connect (G_OBJECT (cme__button_mac), "clicked",
-                      G_CALLBACK (on_cme__button_mac_clicked),
-                      gpp);
-  g_signal_connect (G_OBJECT (cme__entry_stb), "changed",
-                      G_CALLBACK (on_cme__entry_stb_changed),
-                      gpp);
-  g_signal_connect (G_OBJECT (cme__button_stb), "clicked",
-                      G_CALLBACK (on_cme__button_stb_clicked),
-                      gpp);
-  g_signal_connect (G_OBJECT (cme__entry_debug_flat), "changed",
-                      G_CALLBACK (on_cme__entry_debug_flat_changed),
-                      gpp);
-  g_signal_connect (G_OBJECT (cme__entry_debug_multi), "changed",
-                      G_CALLBACK (on_cme__entry_debug_multi_changed),
-                      gpp);
-  g_signal_connect (G_OBJECT (cme__checkbutton_enc_monitor), "toggled",
-                      G_CALLBACK (on_cme__checkbutton_enc_monitor_toggled),
-                      gpp);
-  g_signal_connect (G_OBJECT (cme__entry_video), "changed",
+  notebook = gtk_notebook_new ();
+  gtk_widget_show (notebook);
+  gtk_box_pack_start (GTK_BOX (cme__vbox_main), notebook, TRUE, TRUE, 0);
+
+
+  /* the video options notebook tab */
+  label = gtk_label_new (_("Video Options"));
+  gtk_widget_show (label);
+  frame = p_create_video_options_frame(gpp);
+  gtk_widget_show (frame);
+  gtk_container_add (GTK_CONTAINER (notebook), frame);
+  gtk_container_set_border_width (GTK_CONTAINER (frame), 4);
+  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook)
+                            , gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), 0)
+			    , label);
+
+
+  /* the Audio Options notebook tab */
+  label = gtk_label_new (_("Audio Options"));
+  gtk_widget_show (label);
+  frame = p_create_audio_options_frame (gpp);
+  gtk_widget_show (frame);
+  gtk_container_add (GTK_CONTAINER (notebook), frame);
+  gtk_container_set_border_width (GTK_CONTAINER (frame), 4);
+  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook)
+                             , gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), 1)
+			     , label);
+
+
+  /* the Audio Tool notebook tab */
+  label = gtk_label_new (_("Audio Tool Configuration"));
+  gtk_widget_show (label);
+  frame = p_create_audiotool_cfg_frame (gpp);
+  gtk_widget_show (frame);
+  gtk_container_add (GTK_CONTAINER (notebook), frame);
+  gtk_container_set_border_width (GTK_CONTAINER (frame), 4);
+  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook)
+                             , gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), 2)
+			     , label);
+
+
+
+  /* the Extras notebook tab */
+  label = gtk_label_new (_("Extras"));
+  gtk_widget_show (label);
+  frame = p_create_encode_extras_frame (gpp);
+  gtk_widget_show (frame);
+  gtk_container_add (GTK_CONTAINER (notebook), frame);
+  gtk_container_set_border_width (GTK_CONTAINER (frame), 4);
+  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook)
+                             , gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), 3)
+			     , label);
+
+
+
+  /* the output frame */
+  frame = gimp_frame_new (_("Output"));
+  gtk_widget_show (frame);
+  gtk_box_pack_start (GTK_BOX (cme__vbox_main), frame, TRUE, TRUE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (frame), 4);
+
+  /* the hbox */
+  hbox = gtk_hbox_new (FALSE, 0);
+  gtk_widget_show (hbox);
+  gtk_container_add (GTK_CONTAINER (frame), hbox);
+
+  /* the (output) video label */
+  label = gtk_label_new (_("Video :"));
+  gtk_widget_show (label);
+  gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 2);
+
+  /* the (output) video entry */
+  entry = gtk_entry_new ();
+  gpp->cme__entry_video = entry;
+  gtk_widget_show (entry);
+  gtk_box_pack_start (GTK_BOX (hbox), entry, TRUE, TRUE, 0);
+  gimp_help_set_help_data (entry, _("Name of output videofile"), NULL);
+  g_signal_connect (G_OBJECT (entry), "changed",
                       G_CALLBACK (on_cme__entry_video_changed),
                       gpp);
-  g_signal_connect (G_OBJECT (cme__button_video), "clicked",
+
+  /* the (output) video filebrowser button */
+  button = gtk_button_new_with_label (_("..."));
+  gtk_widget_show (button);
+  gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 0);
+  gtk_widget_set_usize (button, 80, -2);
+  gimp_help_set_help_data (button, _("Select output videofile via browser"), NULL);
+  g_signal_connect (G_OBJECT (button), "clicked",
                       G_CALLBACK (on_cme__button_video_clicked),
                       gpp);
 
-  gpp->cme__button_gen_tmp_audfile      = cme__button_gen_tmp_audfile;
-  gpp->cme__button_params               = cme__button_params;
-  gpp->cme__entry_audio1                = cme__entry_audio1;
-  gpp->cme__entry_debug_flat            = cme__entry_debug_flat;
-  gpp->cme__entry_debug_multi           = cme__entry_debug_multi;
-  gpp->cme__entry_mac                   = cme__entry_mac;
-  gpp->cme__entry_sox                   = cme__entry_sox;
-  gpp->cme__entry_sox_options           = cme__entry_sox_options;
-  gpp->cme__entry_stb                   = cme__entry_stb;
-  gpp->cme__entry_video                 = cme__entry_video;
-  gpp->cme__label_aud0_time             = cme__label_aud0_time;
-  gpp->cme__label_aud1_info             = cme__label_aud1_info;
-  gpp->cme__label_aud1_time             = cme__label_aud1_time;
-  gpp->cme__label_aud_tmp_info          = cme__label_aud_tmp_info;
-  gpp->cme__label_from                  = cme__label_from;
-  gpp->cme__label_fromtime              = cme__label_fromtime;
-  gpp->cme__label_status                = cme__label_status;
-  gpp->cme__label_storyboard_helptext   = cme__label_storyboard_helptext;
-  gpp->cme__label_to                    = cme__label_to;
-  gpp->cme__label_totaltime             = cme__label_totaltime;
-  gpp->cme__label_totime                = cme__label_totime;
-  gpp->cme__optionmenu_encodername      = cme__optionmenu_encodername;
-  gpp->cme__optionmenu_framerate        = cme__optionmenu_framerate;
-  gpp->cme__optionmenu_outsamplerate    = cme__optionmenu_outsamplerate;
-  gpp->cme__optionmenu_scale            = cme__optionmenu_scale;
-  gpp->cme__progressbar_status          = cme__progressbar_status;
-  gpp->cme__short_description           = cme__short_description;
-  gpp->cme__spinbutton_framerate        = cme__spinbutton_framerate;
-  gpp->cme__spinbutton_from             = cme__spinbutton_from;
-  gpp->cme__spinbutton_height           = cme__spinbutton_height;
-  gpp->cme__spinbutton_samplerate       = cme__spinbutton_samplerate;
-  gpp->cme__spinbutton_to               = cme__spinbutton_to;
-  gpp->cme__spinbutton_width            = cme__spinbutton_width;
-  gpp->cme__label_aud_tmp_time          = cme__label_aud_tmp_time;
-  gpp->cme__label_tmp_audfile           = cme__label_tmp_audfile;
 
-  gpp->cme__spinbutton_width_adj        = cme__spinbutton_width_adj;
-  gpp->cme__spinbutton_height_adj       = cme__spinbutton_height_adj;
-  gpp->cme__spinbutton_from_adj         = cme__spinbutton_from_adj;
-  gpp->cme__spinbutton_to_adj           = cme__spinbutton_to_adj;
-  gpp->cme__spinbutton_framerate_adj    = cme__spinbutton_framerate_adj;
-  gpp->cme__spinbutton_samplerate_adj   = cme__spinbutton_samplerate_adj;
+
+  /* the Status frame */
+  frame = gimp_frame_new (_("Status"));
+  gtk_widget_show (frame);
+  gtk_box_pack_start (GTK_BOX (cme__vbox_main), frame, TRUE, TRUE, 2);
+  gtk_container_set_border_width (GTK_CONTAINER (frame), 4);
+
+  /* the Status table */
+  cme__table_status = gtk_table_new (2, 2, FALSE);
+  gtk_widget_show (cme__table_status);
+  gtk_container_add (GTK_CONTAINER (frame), cme__table_status);
+
+  /* the Status label */
+  label = gtk_label_new (_("READY"));
+  gpp->cme__label_status = label;
+  gtk_widget_show (label);
+  gtk_table_attach (GTK_TABLE (cme__table_status), label, 0, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+  gtk_misc_set_padding (GTK_MISC (label), 2, 0);
+
+  /* the Status progressbar */
+  progressbar = gtk_progress_bar_new ();
+  gpp->cme__progressbar_status = progressbar;
+  gtk_widget_show (progressbar);
+  gtk_table_attach (GTK_TABLE (cme__table_status), progressbar, 0, 2, 1, 2,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 2, 0);
+
 
   return shell_window;
-}  /* end create_shell_window */
+}  /* end p_create_shell_window */
 
 
 /* ----------------------------------------
@@ -3477,6 +2509,914 @@ p_overwrite_dialog(GapCmeGlobalParams *gpp, gchar *filename, gint overwrite_mode
 }  /* end p_overwrite_dialog */
 
 
+
+/* ----------------------------------------
+ * p_create_encode_extras_frame
+ * ----------------------------------------
+ */
+static GtkWidget*
+p_create_encode_extras_frame (GapCmeGlobalParams *gpp)
+{
+  GtkWidget *frame;
+  GtkWidget *table1;
+  GtkWidget *button;
+  GtkWidget *entry;
+  GtkWidget *label;
+  GtkWidget *checkbutton;
+  gint       row;
+
+  frame = gimp_frame_new (_("Encoding Extras"));
+
+
+  table1 = gtk_table_new (6, 3, FALSE);
+  gtk_widget_show (table1);
+  gtk_container_add (GTK_CONTAINER (frame), table1);
+
+  row = 0;
+  
+  /* the Macrofile label */
+  label = gtk_label_new (_("Macrofile:"));
+  gtk_widget_show (label);
+  gtk_table_attach (GTK_TABLE (table1), label, 0, 1, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+  
+
+  /* the Macrofile entry */
+  entry = gtk_entry_new ();
+  gpp->cme__entry_mac = entry;
+  gtk_widget_show (entry);
+  gtk_table_attach (GTK_TABLE (table1), entry, 1, 2, row, row+1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gimp_help_set_help_data (entry, _("optional filtermacro file to be performed on each handled frame "), NULL);
+  g_signal_connect (G_OBJECT (entry), "changed",
+                      G_CALLBACK (on_cme__entry_mac_changed),
+                      gpp);
+
+
+  /* the Macrofile filebrowser button */
+  button = gtk_button_new_with_label (_("..."));
+  gtk_widget_show (button);
+  gtk_table_attach (GTK_TABLE (table1), button, 2, 3, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_widget_set_usize (button, 70, -2);
+  gimp_help_set_help_data (button, _("select macrofile via browser"), NULL);
+  g_signal_connect (G_OBJECT (button), "clicked",
+                      G_CALLBACK (on_cme__button_mac_clicked),
+                      gpp);
+
+  
+  row++;
+  
+  /* the Storyboard label */
+  label = gtk_label_new (_("Storyboard File:"));
+  gtk_widget_show (label);
+  gtk_table_attach (GTK_TABLE (table1), label, 0, 1, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+
+  /* the Storyboard entry */
+  entry = gtk_entry_new ();
+  gpp->cme__entry_stb = entry;
+  gtk_widget_show (entry);
+  gtk_table_attach (GTK_TABLE (table1), entry, 1, 2, row, row+1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gimp_help_set_help_data (entry, _("optional use a storyboard file to feed the encoder"), NULL);
+  g_signal_connect (G_OBJECT (entry), "changed",
+                      G_CALLBACK (on_cme__entry_stb_changed),
+                      gpp);
+
+
+  /* the Storyboard filebrowser button */
+  button = gtk_button_new_with_label (_("..."));
+  gtk_widget_show (button);
+  gtk_table_attach (GTK_TABLE (table1), button, 2, 3, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gimp_help_set_help_data (button, _("select storyboard file via browser"), NULL);
+  g_signal_connect (G_OBJECT (button), "clicked",
+                      G_CALLBACK (on_cme__button_stb_clicked),
+                      gpp);
+  
+  row++;
+  
+  /* the  storyboard helptext & parsing report label */
+  label = gtk_label_new (_("Storyboardfiles are textfiles that are used to\n"
+			   "assemble a video from a list of single images,\n"
+			   "frameranges, videoclips, gif animations or audiofiles.\n"
+			   "(see STORYBOARD_FILE_DOC.txt for details)"));
+  gpp->cme__label_storyboard_helptext   = label;
+  gtk_widget_show (label);
+  gtk_table_attach (GTK_TABLE (table1), label, 0, 3, row, row+1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 2, 6);
+  gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_FILL);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+  
+  row++;
+  
+  /* the Monitor label */
+  label = gtk_label_new (_("Monitor"));
+  gtk_widget_hide (label);
+  gtk_table_attach (GTK_TABLE (table1), label, 0, 1, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+
+  /* the Monitor checkbutton */
+  checkbutton = gtk_check_button_new_with_label (_("Monitor Frames while Encoding"));
+  gtk_widget_show (checkbutton);
+  gtk_table_attach (GTK_TABLE (table1), checkbutton, 1, 2, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gimp_help_set_help_data (checkbutton, _("Show each frame before passed to encoder"), NULL);
+  g_signal_connect (G_OBJECT (checkbutton), "toggled",
+                      G_CALLBACK (on_cme__checkbutton_enc_monitor_toggled),
+                      gpp);
+
+  
+  row++;
+
+  /* the Debug Flat File label */
+  label = gtk_label_new (_("Debug\nFlat File:"));
+  gtk_widget_show (label);
+  gtk_table_attach (GTK_TABLE (table1), label, 0, 1, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+
+  /* the Debug Flat File entry */
+  entry = gtk_entry_new ();
+  gpp->cme__entry_debug_flat = entry;
+  gtk_widget_show (entry);
+  gtk_table_attach (GTK_TABLE (table1), entry, 1, 2, row, row+1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gimp_help_set_help_data (entry, _("optional Save each composite frame to JPEG file, before it is passed to the encoder"), NULL);
+  g_signal_connect (G_OBJECT (entry), "changed",
+                      G_CALLBACK (on_cme__entry_debug_flat_changed),
+                      gpp);
+
+  
+  row++;
+
+  /* the Debug Multilayer File label */
+  label = gtk_label_new (_("Debug\nMultilayer File:"));
+  gtk_widget_show (label);
+  gtk_table_attach (GTK_TABLE (table1), label, 0, 1, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+
+  /* the Debug Multilayer File entry */
+  entry = gtk_entry_new ();
+  gpp->cme__entry_debug_multi = entry;
+  gtk_widget_show (entry);
+  gtk_table_attach (GTK_TABLE (table1), entry, 1, 2, row, row+1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gimp_help_set_help_data (entry, _("optional save each composite multilayer frame to XCF file, before flattening and executing macro"), NULL);
+  g_signal_connect (G_OBJECT (entry), "changed",
+                      G_CALLBACK (on_cme__entry_debug_multi_changed),
+                      gpp);
+
+
+
+  return(frame);
+}  /* end p_create_encode_extras_frame */
+
+
+/* ----------------------------------------
+ * p_create_audiotool_cfg_frame
+ * ----------------------------------------
+ */
+static GtkWidget*
+p_create_audiotool_cfg_frame (GapCmeGlobalParams *gpp)
+{
+  GtkWidget *frame;
+  GtkWidget *table;
+  GtkWidget *button;
+  GtkWidget *entry;
+  GtkWidget *label;
+  GtkWidget *hbox;
+  gint       row;
+
+  frame = gimp_frame_new (_("Configuration of external audiotool program"));
+
+
+  table = gtk_table_new (4, 2, FALSE);
+  gtk_widget_show (table);
+  gtk_container_add (GTK_CONTAINER (frame), table);
+
+  row = 0;
+  
+  /* the audiotool (sox) label */
+  label = gtk_label_new (_("Audiotool:"));
+  gtk_widget_show (label);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+  gtk_table_attach (GTK_TABLE (table), label, 0, 1, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  /* the audiotool (sox)  entry */
+  entry = gtk_entry_new ();
+  gpp->cme__entry_sox = entry;
+  gtk_widget_show (entry);
+  gtk_table_attach (GTK_TABLE (table), entry, 1, 2, row, row+1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 2, 2);
+  gimp_help_set_help_data (entry, _("name of audiotool (something like sox with or without path)"), NULL);
+  g_signal_connect (G_OBJECT (entry), "changed",
+                      G_CALLBACK (on_cme__entry_sox_changed),
+                      gpp);
+
+
+
+  row++;
+   
+  /* the audiotool options (sox options) label */
+  label = gtk_label_new (_("Options:"));
+  gtk_widget_show (label);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+  gtk_table_attach (GTK_TABLE (table), label, 0, 1, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  
+  /* the audiotool options (sox options) entry */
+  entry = gtk_entry_new ();
+  gpp->cme__entry_sox_options           = entry;
+  gtk_widget_show (entry);
+  gtk_table_attach (GTK_TABLE (table), entry, 1, 2, row, row+1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 2, 2);
+  gimp_help_set_help_data (entry, _("Options to call the audiotool ($IN, $OUT $RATE are replaced)"), NULL);
+  g_signal_connect (G_OBJECT (entry), "changed",
+                      G_CALLBACK (on_cme__entry_sox_options_changed),
+                      gpp);
+
+
+  row++;
+   
+  /* the multitextline information label 
+   * (explains how params are passed to audiotool) 
+   */
+  label = gtk_label_new ("");
+  gtk_label_parse_uline (GTK_LABEL (label),
+                        _("Configuration of an audiotool (like sox on UNIX).\n\n"
+			  "$IN .. is replaced by the input audiofile\n"
+			  "$OUT .. is replaced by audiofile with suffix  _tmp.wav\n"
+			  "$RATE .. is replaced by samplerate in byte/sec\n"
+			  "\n"
+			  "This tool is called for audio conversions  if\n"
+			  "a) the input audiofile is not WAV 16Bit format\n"
+			  "b) Desired Samplerate does not match the\n"
+			  "     rate in the .wav file")
+			  );
+  gtk_widget_show (label);
+  gtk_table_attach (GTK_TABLE (table), label, 0, 2, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 2, 2);
+  gtk_widget_set_usize (label, 300, -2);
+  gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.5, 0.5);
+
+
+  row++;
+  
+  /* the hbox for LOAD/SAVE/DEFAULT buttons */
+
+  hbox = gtk_hbox_new (TRUE, 0);
+  gtk_widget_show (hbox);
+  gtk_table_attach (GTK_TABLE (table), hbox, 0, 2, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_EXPAND), 0, 2);
+
+  /* the Save button */
+  button = gtk_button_new_with_label (_("Save"));
+  gtk_widget_show (button);
+  gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, TRUE, 2);
+  gimp_help_set_help_data (button, _("Save audiotool configuration to gimprc"), NULL);
+  g_signal_connect (G_OBJECT (button), "clicked",
+                      G_CALLBACK (on_cme__button_sox_save_clicked),
+                      gpp);
+
+  /* the Load button */
+  button = gtk_button_new_with_label (_("Load"));
+  gtk_widget_show (button);
+  gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, TRUE, 2);
+  gimp_help_set_help_data (button, _("Load audiotool configuration from gimprc"), NULL);
+  g_signal_connect (G_OBJECT (button), "clicked",
+                      G_CALLBACK (on_cme__button_sox_load_clicked),
+                      gpp);
+
+  /* the Default button */
+  button = gtk_button_new_with_label (_("Default"));
+  gtk_widget_show (button);
+  gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, TRUE, 2);
+  gimp_help_set_help_data (button, _("Set default audiotool configuration "), NULL);
+  g_signal_connect (G_OBJECT (button), "clicked",
+                      G_CALLBACK (on_cme__button_sox_default_clicked),
+                      gpp);
+
+
+  return(frame);
+}  /* end p_create_audiotool_cfg_frame */
+
+
+/* ----------------------------------------
+ * p_create_audio_options_frame
+ * ----------------------------------------
+ */
+static GtkWidget*
+p_create_audio_options_frame (GapCmeGlobalParams *gpp)
+{
+  GtkWidget *frame;
+  GtkWidget *table;
+  GtkWidget *label;
+  GtkObject *adj;
+  GtkWidget *spinbutton;
+  GtkWidget *combo;
+  GtkWidget *button;
+  GtkWidget *entry;
+  gint       row;
+
+  frame = gimp_frame_new (_("Audio Input"));
+
+
+  table = gtk_table_new (6, 3, FALSE);
+  gtk_widget_show (table);
+  gtk_container_add (GTK_CONTAINER (frame), table);
+  gtk_table_set_row_spacings (GTK_TABLE (table), 2);
+  gtk_table_set_col_spacings (GTK_TABLE (table), 2);
+
+
+  row = 0;
+  
+  /* the Audiofile label */
+  label = gtk_label_new (_("Audiofile:"));
+  gtk_widget_show (label);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+  gtk_table_attach (GTK_TABLE (table), label, 0, 1, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  /* the Audiofile entry */
+  entry = gtk_entry_new ();
+  gpp->cme__entry_audio1                = entry;
+  gtk_widget_show (entry);
+  gtk_table_attach (GTK_TABLE (table), entry, 1, 2, row, row+1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gimp_help_set_help_data (entry, _("Name of audiofile (.wav 16 bit mono or stereo samples preferred)"), NULL);
+  g_signal_connect (G_OBJECT (entry), "changed",
+                      G_CALLBACK (on_cme__entry_audio1_changed),
+                      gpp);
+
+  /* the Audiofile filebrowser button */
+  button = gtk_button_new_with_label (_("..."));
+  gtk_widget_show (button);
+  gtk_table_attach (GTK_TABLE (table), button, 2, 3, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_widget_set_usize (button, 80, -2);
+  gimp_help_set_help_data (button, _("Select input audiofile via browser"), NULL);
+  g_signal_connect (G_OBJECT (button), "clicked",
+                      G_CALLBACK (on_cme__button_audio1_clicked),
+                      gpp);
+
+
+  row++;
+
+  /* the audiofile information label */  
+  label = gtk_label_new (_("WAV, 16 Bit stereo, rate: 44100"));
+  gpp->cme__label_aud1_info             = label;
+  gtk_widget_show (label);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+  gtk_table_attach (GTK_TABLE (table), label, 1, 2, row, row+1,
+                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (0), 0, 0);
+ 
+  /* the audiofile total playtime information label */  
+  label = gtk_label_new (_("00:00:000"));
+  gpp->cme__label_aud1_time             = label;
+  gtk_widget_show (label);
+  gtk_table_attach (GTK_TABLE (table), label, 2, 3, row, row+1,
+                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (0), 0, 0);
+
+
+  row++;
+
+  /* the Samplerate label */  
+  label = gtk_label_new (_("Samplerate:"));
+  gtk_widget_show (label);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+  gtk_table_attach (GTK_TABLE (table), label, 0, 1, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+
+  /* the Samplerate spinbutton */  
+  adj = gtk_adjustment_new (44100, 1000, 100000, 10, 100, 1000);
+  spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
+  gpp->cme__spinbutton_samplerate_adj   = adj;
+  gpp->cme__spinbutton_samplerate       = spinbutton;
+  gtk_widget_show (spinbutton);
+  gtk_table_attach (GTK_TABLE (table), spinbutton, 1, 2, row, row+1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gimp_help_set_help_data (spinbutton, _("Output samplerate in samples/sec"), NULL);
+  g_signal_connect (G_OBJECT (spinbutton), "value_changed",
+                      G_CALLBACK (on_cme__spinbutton_samplerate_changed),
+                      gpp);
+ 
+  /* the Samplerate combo */  
+  combo = gimp_int_combo_box_new (_(" 8k Phone"),       8000,
+                                  _("11.025k"),        11025,
+                                  _("12k Voice"),      12000,
+                                  _("16k FM"),         16000,
+                                  _("22.05k"),         22050,
+                                  _("24k Tape"),       24000,
+                                  _("32k HiFi"),       32000,
+                                  _("44.1k CD"),       44100,
+                                  _("48 k Studio"),    48000,
+                                  NULL);
+
+
+  gpp->cme__combo_outsamplerate    = combo;
+  gtk_widget_show (combo);
+  gtk_table_attach (GTK_TABLE (table), combo, 2, 3, row, row+1,
+                    (GtkAttachOptions) (GTK_EXPAND),
+                    (GtkAttachOptions) (0), 0, 0);
+  gimp_help_set_help_data (combo, _("Select a common used samplerate"), NULL);
+  gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (combo),
+                              44100,  /* initial gint value */
+                              G_CALLBACK (on_cme__combo_outsamplerate),
+                              gpp);
+
+
+  row++;
+
+  /* the Tmp audiofile label */
+  label = gtk_label_new (_("Tmpfile:"));
+  gtk_widget_show (label);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+  gtk_table_attach (GTK_TABLE (table), label, 0, 1, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 4);
+
+  /* the Tmp audiofilefilename label */
+  label = gtk_label_new ("");
+  gpp->cme__label_tmp_audfile           = label;
+  gtk_widget_show (label);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+  gtk_table_attach (GTK_TABLE (table), label, 1, 2, row, row+1,
+                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  /* the convert Tmp audiofilefile button */
+  button = gtk_button_new_with_label (_("Audioconvert"));
+  gpp->cme__button_gen_tmp_audfile      = button;
+  gtk_widget_show (button);
+  gtk_table_attach (GTK_TABLE (table), button, 2, 3, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 2, 0);
+  gimp_help_set_help_data (button, _("Convert audiofile to tmpfile"), NULL);
+  g_signal_connect (G_OBJECT (button), "clicked",
+                      G_CALLBACK (on_cme__button_gen_tmp_audfile_clicked),
+                      gpp);
+
+  row++;
+
+  /* the Tmp audioinformation  label */
+  label = gtk_label_new (_("WAV, 16 Bit stereo, rate: 44100"));
+  gpp->cme__label_aud_tmp_info = label;
+  gtk_widget_show (label);
+  gtk_table_attach (GTK_TABLE (table), label, 1, 2, row, row+1,
+                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (0), 0, 0);
+
+
+  /* the Tmp audio playtime information  label */
+  label = gtk_label_new (_("00:00:000"));
+  gpp->cme__label_aud_tmp_time          = label;
+  gtk_widget_show (label);
+  gtk_table_attach (GTK_TABLE (table), label, 2, 3, row, row+1,
+                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  row++;
+
+  /* the resample general information label */
+  label = gtk_label_new (_("\nNote:\n"
+                           "if you set samplerate lower than\n"
+			   "rate of the WAV file, you loose sound quality,\n"
+			   "but higher samplerates can not improve the\n"
+			   "quality of the original sound.")
+			 );
+  gtk_widget_show (label);
+  gtk_table_attach (GTK_TABLE (table), label, 1, 2, row, row+1,
+                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
+
+
+  return(frame);
+}  /* end p_create_audio_options_frame */
+
+
+/* ----------------------------------------
+ * p_create_video_timing_table
+ * ----------------------------------------
+ */
+static GtkWidget*
+p_create_video_timing_table (GapCmeGlobalParams *gpp)
+{
+  GtkWidget *cme__table_times;
+  GtkWidget *label;
+  
+
+  /* table for the video timing info labels */
+  cme__table_times = gtk_table_new (2, 3, FALSE);
+
+  gtk_table_set_row_spacings (GTK_TABLE (cme__table_times), 10);
+
+  /* the timestamp of the first frame */
+  label = gtk_label_new ("00:00:000");
+  gpp->cme__label_fromtime              = label;
+  gtk_widget_show (label);
+  gtk_table_attach (GTK_TABLE (cme__table_times), label, 0, 1, 0, 1,
+                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (0), 0, 0);
+
+
+  /* the video timing information labels */
+  label = gtk_label_new (_("Videotime:"));
+  gtk_widget_show (label);
+  gtk_table_attach (GTK_TABLE (cme__table_times), label, 1, 2, 0, 1,
+                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_padding (GTK_MISC (label), 7, 0);
+
+
+  label = gtk_label_new ("00:00:000");
+  gpp->cme__label_totaltime = label;
+  gtk_widget_show (label);
+  gtk_table_attach (GTK_TABLE (cme__table_times), label, 2, 3, 0, 1,
+                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (0), 0, 0);
+
+
+
+  /* the timestamp of the last frame */
+  label = gtk_label_new (_("00:00:000"));
+  gpp->cme__label_totime = label;
+  gtk_widget_show (label);
+  gtk_table_attach (GTK_TABLE (cme__table_times), label, 0, 1, 1, 2,
+                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  /* the audio timing information labels */
+
+  label = gtk_label_new (_("Audiotime:"));
+  gtk_widget_show (label);
+  gtk_table_attach (GTK_TABLE (cme__table_times), label, 1, 2, 1, 2,
+                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  label = gtk_label_new (_("00:00:000"));
+  gpp->cme__label_aud0_time = label;
+  gtk_widget_show (label);
+  gtk_table_attach (GTK_TABLE (cme__table_times), label, 2, 3, 1, 2,
+                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (0), 0, 0);
+
+
+  return(cme__table_times);
+}  /* end p_create_video_timing_table */
+
+
+/* ----------------------------------------
+ * p_create_video_options_frame
+ * ----------------------------------------
+ */
+static GtkWidget*
+p_create_video_options_frame (GapCmeGlobalParams *gpp)
+{
+  GtkWidget *frame;
+  GtkWidget *cme__table1;
+  GtkWidget *cme__table_times;
+  GtkWidget *label;
+  GtkObject *adj;
+  GtkWidget *spinbutton;
+  GtkWidget *combo;
+  GtkWidget *button;
+  gint       l_row;
+
+
+  frame = gimp_frame_new (_("Video Encode Options"));
+
+
+
+  cme__table1 = gtk_table_new (10, 3, FALSE);
+  
+  gtk_widget_show (cme__table1);
+  gtk_container_add (GTK_CONTAINER (frame), cme__table1);
+  gtk_container_set_border_width (GTK_CONTAINER (cme__table1), 5);
+  gtk_table_set_row_spacings (GTK_TABLE (cme__table1), 2);
+  gtk_table_set_col_spacings (GTK_TABLE (cme__table1), 2);
+  
+
+  l_row = 0;
+  p_create_input_mode_widgets(cme__table1, l_row, 0, gpp);
+
+  l_row++;  
+
+  /* the from_frame label */
+  label = gtk_label_new (_("From Frame:"));
+  gpp->cme__label_from = label;
+  gtk_widget_show (label);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+  gtk_table_attach (GTK_TABLE (cme__table1), label, 0, 1, l_row, l_row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  
+
+  /* the from_frame spinbutton */
+  adj = gtk_adjustment_new (1, 0, 100000, 1, 10, 10);
+  spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
+  gpp->cme__spinbutton_from_adj         = adj;
+  gpp->cme__spinbutton_from             = spinbutton;
+  gtk_widget_show (spinbutton);
+  gtk_table_attach (GTK_TABLE (cme__table1), spinbutton, 1, 2, l_row, l_row+1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gimp_help_set_help_data (spinbutton, _("Start encoding at this frame"), NULL);
+  g_signal_connect (G_OBJECT (spinbutton), "value_changed",
+                      G_CALLBACK (on_cme__spinbutton_from_changed),
+                      gpp);
+
+  /* subtable for the video timing info labels (takes 2 rows) */
+  cme__table_times = p_create_video_timing_table (gpp);
+  gtk_widget_show (cme__table_times);
+  gtk_table_attach (GTK_TABLE (cme__table1), cme__table_times, 2, 3, l_row, l_row+2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+
+
+  l_row++;
+  
+  /* the to_frame label */
+  label = gtk_label_new (_("To Frame:"));
+  gpp->cme__label_to                    = label;
+  gtk_widget_show (label);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+  gtk_table_attach (GTK_TABLE (cme__table1), label, 0, 1, l_row, l_row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  /* the to_frame spinbutton */
+  adj = gtk_adjustment_new (1, 0, 100000, 1, 10, 10);
+  spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
+  gpp->cme__spinbutton_to_adj           = adj;
+  gpp->cme__spinbutton_to               = spinbutton;
+  gtk_widget_show (spinbutton);
+  gtk_table_attach (GTK_TABLE (cme__table1), spinbutton, 1, 2, l_row, l_row+1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gimp_help_set_help_data (spinbutton, _("Stop encoding at this frame"), NULL);
+  g_signal_connect (G_OBJECT (spinbutton), "value_changed",
+                      G_CALLBACK (on_cme__spinbutton_to_changed),
+                      gpp);
+
+
+  l_row++;  
+
+  /* the width label */
+  label = gtk_label_new (_("Width:"));
+  gtk_widget_show (label);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+  gtk_table_attach (GTK_TABLE (cme__table1), label, 0, 1, l_row, l_row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+
+  /* the width spinbutton */
+  adj = gtk_adjustment_new (10, 10, 10000, 1, 10, 10);
+  spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
+  gpp->cme__spinbutton_width_adj        = adj;
+  gpp->cme__spinbutton_width            = spinbutton;
+  gtk_widget_show (spinbutton);
+  gtk_table_attach (GTK_TABLE (cme__table1), spinbutton, 1, 2, l_row, l_row+1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gimp_help_set_help_data (spinbutton, _("Width of the output video (pixels)"), NULL);
+  g_signal_connect (G_OBJECT (spinbutton), "value_changed",
+                      G_CALLBACK (on_cme__spinbutton_width_changed),
+                      gpp);
+
+
+  /* the Frame width/height scale combo (for picking common used video sizes) */
+  combo = gimp_int_combo_box_new (_("Framesize (1:1)"),     GAP_CME_STANDARD_SIZE_IMAGE,
+                                  _("320x240 NTSC"),        GAP_CME_STANDARD_SIZE_320x240,
+                                  _("320x288 PAL"),         GAP_CME_STANDARD_SIZE_320x288,
+                                  _("640x480"),             GAP_CME_STANDARD_SIZE_640x480,
+                                  _("720x480 NTSC"),        GAP_CME_STANDARD_SIZE_720x480,
+                                  _("720x576 PAL"),         GAP_CME_STANDARD_SIZE_720x576,
+                                  NULL);
+
+  gpp->cme__combo_scale            = combo;
+  gtk_widget_show (combo);
+  gtk_table_attach (GTK_TABLE (cme__table1), combo, 2, 3, l_row, l_row+1,
+                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_widget_set_usize (combo, 160, -2);
+  gimp_help_set_help_data (combo, _("Scale width/height to common size"), NULL);
+  gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (combo),
+                              GAP_CME_STANDARD_SIZE_IMAGE,  /* initial gint value */
+                              G_CALLBACK (on_cme__combo_scale),
+                              gpp);
+
+
+
+  l_row++;  
+
+  /* the height label */
+  label = gtk_label_new (_("Height:"));
+  gtk_widget_show (label);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+  gtk_table_attach (GTK_TABLE (cme__table1), label, 0, 1, l_row, l_row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  /* the height spinbutton */
+  adj = gtk_adjustment_new (10, 10, 10000, 1, 10, 10);
+  spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
+  gpp->cme__spinbutton_height_adj       = adj;
+  gpp->cme__spinbutton_height           = spinbutton;
+  gtk_widget_show (spinbutton);
+  gtk_table_attach (GTK_TABLE (cme__table1), spinbutton, 1, 2, l_row, l_row+1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gimp_help_set_help_data (spinbutton, _("Height of the output video (pixels)"), NULL);
+  g_signal_connect (G_OBJECT (spinbutton), "value_changed",
+                      G_CALLBACK (on_cme__spinbutton_height_changed),
+                      gpp);
+
+
+
+  l_row++;  
+
+  /* the Framerate lable */
+  label = gtk_label_new (_("Framerate:"));
+  gtk_widget_show (label);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+  gtk_table_attach (GTK_TABLE (cme__table1), label, 0, 1, l_row, l_row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+
+  /* the framerate spinbutton */
+  adj = gtk_adjustment_new (24, 1, 100, 0.1, 1, 10);
+  spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 2);
+  gpp->cme__spinbutton_framerate_adj    = adj;
+  gpp->cme__spinbutton_framerate        = spinbutton;
+  gtk_widget_show (spinbutton);
+  gtk_table_attach (GTK_TABLE (cme__table1), spinbutton, 1, 2, l_row, l_row+1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gimp_help_set_help_data (spinbutton, _("Framerate of the output video (frames/sec)"), NULL);
+  g_signal_connect (G_OBJECT (spinbutton), "value_changed",
+                      G_CALLBACK (on_cme__spinbutton_framerate_changed),
+                      gpp);
+
+
+  /* the framerate combo (to select common used video framerates) */
+  combo = gimp_int_combo_box_new (_("unchanged"),   GAP_CME_STANDARD_FRAMERATE_00_UNCHANGED,
+                                  "23.98",          GAP_CME_STANDARD_FRAMERATE_01_23_98,
+                                  "24",             GAP_CME_STANDARD_FRAMERATE_02_24,
+                                  "25",             GAP_CME_STANDARD_FRAMERATE_03_25,
+                                  "29.97",          GAP_CME_STANDARD_FRAMERATE_04_29_97,
+                                  "30",             GAP_CME_STANDARD_FRAMERATE_05_30,
+                                  "50",             GAP_CME_STANDARD_FRAMERATE_06_50,
+                                  "59.94",          GAP_CME_STANDARD_FRAMERATE_07_59_94,
+                                  "60",             GAP_CME_STANDARD_FRAMERATE_08_60,
+                                  "1",              GAP_CME_STANDARD_FRAMERATE_09_1,
+                                  "5",              GAP_CME_STANDARD_FRAMERATE_10_5,
+                                  "10",             GAP_CME_STANDARD_FRAMERATE_11_10,
+                                  "12",             GAP_CME_STANDARD_FRAMERATE_12_12,
+                                  "15",             GAP_CME_STANDARD_FRAMERATE_13_15,
+                                   NULL);
+
+  gpp->cme__combo_framerate        = combo;
+  gtk_widget_show (combo);
+  gtk_table_attach (GTK_TABLE (cme__table1), combo, 2, 3, l_row, l_row+1,
+                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_widget_set_usize (combo, 160, -2);
+  gimp_help_set_help_data (combo, _("Set framerate"), NULL);
+  gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (combo),
+                              GAP_CME_STANDARD_FRAMERATE_00_UNCHANGED,  /* initial gint value */
+                              G_CALLBACK (on_cme__combo_framerate),
+                              gpp);
+
+
+  l_row++;  
+
+
+  /* the Videonorm label */
+  label = gtk_label_new (_("Videonorm:"));
+  gtk_widget_show (label);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+  gtk_table_attach (GTK_TABLE (cme__table1), label, 0, 1, l_row, l_row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  /* the Videonorm combo */
+  combo = gimp_int_combo_box_new (_("NTSC"),       VID_FMT_NTSC,
+                                  _("PAL"),        VID_FMT_PAL,
+                                  _("SECAM"),      VID_FMT_SECAM,
+                                  _("MAC"),        VID_FMT_MAC,
+                                  _("COMP"),       VID_FMT_COMP,
+                                  _("undefined"),  VID_FMT_UNDEF,
+                                  NULL);
+
+
+  gtk_widget_show (combo);
+  gtk_table_attach (GTK_TABLE (cme__table1), combo, 2, 3, l_row, l_row+1,
+                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_widget_set_usize (combo, 160, -2);
+  gimp_help_set_help_data (combo, _("Select videonorm"), NULL);
+  gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (combo),
+                              VID_FMT_NTSC,  /* initial gint value */
+                              G_CALLBACK (on_cme__combo_vid_norm),
+                              gpp);
+
+
+  l_row++;  
+
+  /* the videoencoder label */
+  label = gtk_label_new (_("Encoder:"));
+  gtk_widget_show (label);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+  gtk_table_attach (GTK_TABLE (cme__table1), label, 0, 1, l_row, l_row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  /* the parameters button (invokes videoencoder specific GUI dialog) */
+  button = gtk_button_new_with_label (_("Parameters"));
+  gpp->cme__button_params               = button;
+  gtk_widget_show (button);
+  gtk_table_attach (GTK_TABLE (cme__table1), button, 1, 2, l_row, l_row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gimp_help_set_help_data (button, _("Edit encoder specific parameters"), NULL);
+  g_signal_connect (G_OBJECT (button), "clicked",
+                      G_CALLBACK (on_cme__button_params_clicked),
+                      gpp);
+
+
+
+
+  /* the videoencoder combo */
+  combo =  gimp_int_combo_box_new (NULL, 0);
+  gpp->cme__combo_encodername      = combo;
+  gtk_widget_show (combo);
+  gtk_table_attach (GTK_TABLE (cme__table1), combo, 2, 3, l_row, l_row+1,
+                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_widget_set_usize (combo, 160, -2);
+  gimp_help_set_help_data (combo, _("Select video encoder plugin"), NULL);
+  
+  /* the  videoencoder combo items are set later by query the PDB
+   * for all registered video encoder plug-ins
+   */
+
+
+  l_row++;
+  
+  /* videoencoder short description label */
+  label = gtk_label_new ("");
+  gpp->cme__short_description           = label;
+  gtk_widget_show (label);
+  gtk_table_attach (GTK_TABLE (cme__table1), label, 1, 3, l_row, l_row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+
+
+  return(frame);
+}  /* end p_create_video_options_frame */
+
+
 /* ----------------------------------------
  * gap_cme_gui_master_encoder_dialog
  * ----------------------------------------
@@ -3491,6 +3431,7 @@ gap_cme_gui_master_encoder_dialog(GapCmeGlobalParams *gpp)
   t_global_stb    *gstb;
   GapGveTypeInputRange l_rangetype;
 
+gap_debug=TRUE;
   if(gap_debug) printf("gap_cme_gui_master_encoder_dialog: Start\n");
 
   gstb = &global_stb;
@@ -3517,11 +3458,11 @@ gap_cme_gui_master_encoder_dialog(GapCmeGlobalParams *gpp)
   gpp->ow__dialog_window = NULL;
   gpp->ecp = pdb_find_video_encoders();
 
-  if(gap_debug) printf("gap_cme_gui_master_encoder_dialog: Before create_shell_window\n");
+  if(gap_debug) printf("gap_cme_gui_master_encoder_dialog: Before p_create_shell_window\n");
 
-  gpp->shell_window = create_shell_window (gpp);
+  gpp->shell_window = p_create_shell_window (gpp);
 
-  if(gap_debug) printf("gap_cme_gui_master_encoder_dialog: After create_shell_window\n");
+  if(gap_debug) printf("gap_cme_gui_master_encoder_dialog: After p_create_shell_window\n");
 
   p_init_shell_window_widgets(gpp);
   gtk_widget_show (gpp->shell_window);

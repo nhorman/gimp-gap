@@ -33,7 +33,8 @@
 #include <config.h>
 #include "gap_gvetypes.h"
 
-#define GAP_CME_PLUGIN_NAME_VID_ENCODE_MASTER   "plug_in_gap_vid_encode_master"
+#define GAP_CME_PLUGIN_NAME_VID_ENCODE_MASTER    "plug_in_gap_vid_encode_master"
+#define GAP_CME_PLUGIN_HELP_ID_VID_ENCODE_MASTER "plug-in-gap-vid-encode-master"
 
 
 #define GAP_CME_STANDARD_SIZE_IMAGE   0
@@ -117,10 +118,10 @@ typedef struct GapCmeGlobalParams {                    /* nick: gpp */
   GtkWidget *cme__label_to;
   GtkWidget *cme__label_totaltime;
   GtkWidget *cme__label_totime;
-  GtkWidget *cme__optionmenu_encodername;
-  GtkWidget *cme__optionmenu_framerate;
-  GtkWidget *cme__optionmenu_outsamplerate;
-  GtkWidget *cme__optionmenu_scale;
+  GtkWidget *cme__combo_encodername;
+  GtkWidget *cme__combo_framerate;
+  GtkWidget *cme__combo_outsamplerate;
+  GtkWidget *cme__combo_scale;
   GtkWidget *cme__progressbar_status;
   GtkWidget *cme__short_description;
   GtkWidget *cme__spinbutton_framerate;

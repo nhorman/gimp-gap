@@ -72,6 +72,7 @@
 #include "gap_dbbrowser_utils.h"
 #include "gap_lib.h"
 
+#define GAP_DB_BROWSER_FILTERALL_HELP_ID  "gap-filterall-db-browser"
 
 /* ------------------------
  * global gap DEBUG switch
@@ -553,7 +554,8 @@ gint gap_proc_anim_apply(GimpRunMode run_mode, gint32 image_id, char *plugin_nam
                                  gap_filt_pdb_constraint_proc_sel1,
                                  gap_filt_pdb_constraint_proc_sel2,
                                  &l_browser_result,
-				 image_id)
+				 image_id,
+				 GAP_DB_BROWSER_FILTERALL_HELP_ID)
       < 0)
     {
       if(gap_debug) fprintf(stderr, "DEBUG: gap_db_browser_dialog cancelled\n");

@@ -48,23 +48,23 @@ on_cme__response (GtkWidget *widget,
                   GapCmeGlobalParams *gpp);
 
 void
-on_cme__optionmenu_enocder  (GtkWidget     *wgt_item,
+on_cme__combo_enocder  (GtkWidget     *wgt_item,
                            GapCmeGlobalParams *gpp);
 
 void
-on_cme__optionmenu_scale  (GtkWidget     *wgt_item,
+on_cme__combo_scale  (GtkWidget     *wgt_item,
                            GapCmeGlobalParams *gpp);
 
 void
-on_cme__optionmenu_framerate  (GtkWidget     *wgt_item,
+on_cme__combo_framerate  (GtkWidget     *wgt_item,
                            GapCmeGlobalParams *gpp);
 
 void
-on_cme__optionmenu_outsamplerate  (GtkWidget     *wgt_item,
+on_cme__combo_outsamplerate  (GtkWidget     *wgt_item,
                            GapCmeGlobalParams *gpp);
 
 void
-on_cme__optionmenu_vid_norm  (GtkWidget     *wgt_item,
+on_cme__combo_vid_norm  (GtkWidget     *wgt_item,
                            GapCmeGlobalParams *gpp);
 
 void

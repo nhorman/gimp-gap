@@ -1832,6 +1832,9 @@ gap_lib_load_named_frame (gint32 old_image_id, char *lod_name)
       /* delete the old image */
       gimp_image_delete(old_image_id);
 
+
+      gimp_image_undo_disable(l_new_image_id);
+
       /* use the original lod_name */
       gimp_image_set_filename (l_new_image_id, lod_name);
 
@@ -1843,6 +1846,7 @@ gap_lib_load_named_frame (gint32 old_image_id, char *lod_name)
        */
       gap_navat_update_active_image(old_image_id, l_new_image_id);
 
+      gimp_image_undo_enable(l_new_image_id);
 
       return l_new_image_id;
    }

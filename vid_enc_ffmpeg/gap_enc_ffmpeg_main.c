@@ -61,6 +61,7 @@
 #include <config.h>
 
 
+#include <errno.h>
 
 #include <gtk/gtk.h>
 #include <libgimp/gimp.h>
@@ -814,7 +815,7 @@ gap_enc_ffmpeg_main_init_preset_params(GapGveFFMpegValues *epp, gint preset_idx)
   static gint32 tab_aic[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]               =  {     0,      0,      0,      0,      0,      0,      0 };
   static gint32 tab_umv[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]               =  {     0,      0,      0,      0,      0,      0,      0 };
 
-  static gint32 tab_b_frames[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]          =  {     2,      1,      4,      0,      0,      2,      0 };
+  static gint32 tab_b_frames[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]          =  {     2,      0,      4,      0,      0,      2,      0 };
   static gint32 tab_mv4[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]               =  {     0,      0,      0,      0,      0,      0,      0 };
   static gint32 tab_partitioning[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]      =  {     0,      0,      0,      0,      0,      0,      0 };
   static gint32 tab_packet_size[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  {     0,      0,      0,      0,      0,      0,      0 };
@@ -823,7 +824,7 @@ gap_enc_ffmpeg_main_init_preset_params(GapGveFFMpegValues *epp, gint preset_idx)
   static gint32 tab_aspect_fact[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  {   0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0 };
 
   static char*  tab_format_name[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  { "avi",  "avi", "avi",  "vcd", "mpeg", "vob", "rm" };
-  static char*  tab_vcodec_name[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  { "msmpeg4",  "msmpeg4", "msmpeg4",  "mpeg1video", "mpeg1video", "mpeg2video", "rv10" };
+  static char*  tab_vcodec_name[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  { "mpeg4", "msmpeg4", "mpeg4",  "mpeg1video", "mpeg1video", "mpeg2video", "rv10" };
   static char*  tab_acodec_name[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  { "mp2",  "mp2", "mp2",  "mp2", "mp2", "mp2", "ac3" };
 
 
@@ -924,8 +925,15 @@ p_ffmpeg_open(GapGveFFMpegGlobalParams *gpp
 
   if(((gpp->val.vid_width % 2) != 0) || ((gpp->val.vid_height % 2) != 0))
   {
-     printf(_("Frame width and height must be a multiple of 2\n"));
-     return (NULL);
+    if(gpp->val.run_mode == GIMP_RUN_NONINTERACTIVE)
+    {
+      printf(_("Frame width and height must be a multiple of 2\n"));
+    }
+    else
+    {
+      g_message(_("Frame width and height must be a multiple of 2\n"));
+    }
+    return (NULL);
   }
 
   av_register_all();  /* register all fileformats and codecs before we can use th lib */
@@ -1179,9 +1187,34 @@ p_ffmpeg_open(GapGveFFMpegGlobalParams *gpp
 
   if ((epp->b_frames > 0) && (!epp->intra))
   {
-      video_enc->max_b_frames = epp->b_frames;
-      video_enc->b_frame_strategy = 0;
-      video_enc->b_quant_factor = 2.0;
+    /* hof: TODO: here we should check if the selected codec 
+     * has the ability to encode B_frames
+     * (dont know how to do yet)
+     * 
+     * as workaround i do check for the MSMPEG4 codec ID's
+     * because these codecs do crash (at least the version of the ffmpeg-0.4.8 release) 
+     * when b_frames setting > 0 is used
+     */
+    switch(video_enc->codec_id)
+    {
+      case CODEC_ID_MSMPEG4V1:
+      case CODEC_ID_MSMPEG4V2:
+      case CODEC_ID_MSMPEG4V3:
+	if(gpp->val.run_mode == GIMP_RUN_NONINTERACTIVE)
+	{
+          printf("\n### Warning: B frames encoding not supported by selected codec. (option ignored)\n");
+	}
+	else
+	{
+          g_message("Warning: B frames encoding not supported by selected codec. (option ignored)\n");
+	}
+        break;
+      default:
+	video_enc->max_b_frames = epp->b_frames;
+	video_enc->b_frame_strategy = 0;
+	video_enc->b_quant_factor = 2.0;
+        break;
+    }
   }
 
   video_enc->qmin      = epp->qmin;
@@ -1257,14 +1290,27 @@ p_ffmpeg_open(GapGveFFMpegGlobalParams *gpp
       FILE *fp;
       int size;
       char *logbuffer;
+      gint l_errno;
 
       snprintf(logfilename, sizeof(logfilename), "%s.log", epp->passlogfile);
       if (video_enc->flags & CODEC_FLAG_PASS1)
       {
           fp = fopen(logfilename, "w");
+          l_errno = errno;
           if (!fp)
           {
-              perror(logfilename);
+	      if(gpp->val.run_mode == GIMP_RUN_NONINTERACTIVE)
+	      {
+                perror(logfilename);
+	      }
+	      else
+	      {
+		g_message(_("Could not create pass logfile:"
+			   "'%s'"
+			   "%s")
+			   ,logfilename
+			   ,g_strerror (l_errno) );
+	      }
               return(NULL);
           }
           ffh->passlog_fp = fp;
@@ -1273,9 +1319,21 @@ p_ffmpeg_open(GapGveFFMpegGlobalParams *gpp
       {
           /* read the log file */
           fp = fopen(logfilename, "r");
+          l_errno = errno;
           if (!fp)
           {
-              perror(logfilename);
+	      if(gpp->val.run_mode == GIMP_RUN_NONINTERACTIVE)
+	      {
+                perror(logfilename);
+	      }
+	      else
+	      {
+		g_message(_("Could not open pass logfile:"
+			   "'%s'"
+			   "%s")
+			   ,logfilename
+			   ,g_strerror (l_errno) );
+	      }
               return(NULL);
           }
           fseek(fp, 0, SEEK_END);
@@ -1297,14 +1355,28 @@ p_ffmpeg_open(GapGveFFMpegGlobalParams *gpp
   g_snprintf(ffh->output_context->filename, sizeof(ffh->output_context->filename), "%s", &gpp->val.videoname[0]);
   if (url_fopen(&ffh->output_context->pb, gpp->val.videoname, URL_WRONLY) < 0)
   {
-    printf("Could not url_fopen: %s\n", gpp->val.videoname);
+    gint l_errno;
+
+    l_errno = errno;
+    g_message(_("Could not create videofile:"
+	       "'%s'"
+	       "%s")
+	       ,gpp->val.videoname
+	       ,g_strerror (l_errno) );
     return(NULL);
   }
 
   /* open video codec */
   if (avcodec_open(ffh->vid_codec_context, ffh->vid_codec) < 0)
   {
-    printf("could not avcodec_open codec: %s\n", epp->vcodec_name);
+    if(gpp->val.run_mode == GIMP_RUN_NONINTERACTIVE)
+    {
+      printf("could not avcodec_open video-codec: %s\n", epp->vcodec_name);
+    }
+    else
+    {
+      g_message("could not open video codec: %s\n", epp->vcodec_name);
+    }
     return(NULL);
   }
 
@@ -1351,7 +1423,14 @@ p_ffmpeg_open(GapGveFFMpegGlobalParams *gpp
         /* open audio codec */
         if (avcodec_open(ffh->aud_codec_context, ffh->aud_codec) < 0)
         {
-          printf("could not avcodec_open codec: %s\n", epp->acodec_name);
+	  if(gpp->val.run_mode == GIMP_RUN_NONINTERACTIVE)
+	  {
+            printf("could not avcodec_open audio-codec: %s\n", epp->acodec_name);
+	  }
+	  else
+	  {
+	    g_message("could not open audio codec: %s\n", epp->acodec_name);
+	  }
           ffh->aud_codec = NULL;
         }
       }
@@ -1831,7 +1910,7 @@ p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
                                        );
   }
 
-  /* TODO check for overwrite */
+  /* TODO check for overwrite (in case we are called non-interactive) */
 
 
   if (gap_debug) printf("Creating ffmpeg file.\n");
@@ -1867,7 +1946,11 @@ p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
   ffh = p_ffmpeg_open(gpp, 0, l_sample_rate, l_channels);
   if(ffh == NULL)
   {
-    l_rc = -1;
+    if(l_fp_inwav)
+    {
+      fclose(l_fp_inwav);
+    }
+    return(-1);     /* FFMPEG open Faield */
   }
 
   if(l_fp_inwav)

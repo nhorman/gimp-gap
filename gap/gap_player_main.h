@@ -202,7 +202,8 @@ typedef struct GapPlayerMainGlobalParams {
   gboolean   vindex_creation_is_running;
   GtkWidget *play_n_stop_hbox;
   GtkWidget *cancel_vindex_button;
- 
+
+  const char *help_id; 
 } GapPlayerMainGlobalParams;
 
 #define GAP_PLAYER_MAIN_AUSTAT_NONE             0

@@ -55,6 +55,7 @@
 
 
 #define GAP_MOD_FRAMES_PLUGIN_NAME "plug_in_gap_modify"
+#define GAP_MOD_FRAMES_HELP_ID     "plug-in-gap-modify"
 #define SCALE_WIDTH        180
 #define SPIN_BUTTON_WIDTH   75
 #define RADIO_ITEM_INDEX_KEY   "gap_radio_item_index_key"
@@ -417,7 +418,7 @@ p_create_mod_frames_dialog(GapModFramesGlobalParams *gmop)
 
   dlg = gimp_dialog_new (_("Frames Modify"), GAP_MOD_FRAMES_PLUGIN_NAME,
                          NULL, 0,
-			 gimp_standard_help_func, GAP_MOD_FRAMES_PLUGIN_NAME".html",
+			 gimp_standard_help_func, GAP_MOD_FRAMES_HELP_ID,
 
 			 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 			 GTK_STOCK_OK,     GTK_RESPONSE_OK,

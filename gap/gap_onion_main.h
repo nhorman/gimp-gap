@@ -68,6 +68,7 @@
 
 
 #define GAP_PLUGIN_NAME_ONION_CFG   "plug_in_gap_onionskin_configuration"
+#define GAP_HELP_ID_ONION_CFG       "plug-in-gap-onionskin-configuration"
 #define GAP_PLUGIN_NAME_ONION_APPLY "plug_in_onionskin_create_or_replace"
 #define GAP_PLUGIN_NAME_ONION_DEL   "plug_in_onionskin_del"
 #define GAP_PLUGIN_NAME_ONION_VISI  "plug_in_onionskin_toggle_visibility"

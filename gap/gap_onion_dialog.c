@@ -142,6 +142,10 @@ on_oni__button_default_clicked         (GtkButton       *button,
                                         GapOnionMainGlobalParams *gpp);
 
 static void
+on_oni__button_help_clicked            (GtkButton       *button,
+                                        GapOnionMainGlobalParams *gpp);
+
+static void
 on_oni__button_cancel_clicked          (GtkButton       *button,
                                         GapOnionMainGlobalParams *gpp);
 
@@ -559,6 +563,17 @@ on_oni__button_default_clicked         (GtkButton       *button,
  }
 }
 
+static void
+on_oni__button_help_clicked         (GtkButton       *button,
+                                     GapOnionMainGlobalParams *gpp)
+{
+ if(gap_debug) printf("CB: on_oni__button_help_clicked gpp: %d\n", (int)gpp);
+
+ if(gpp)
+ {
+   gimp_standard_help_func(GAP_HELP_ID_ONION_CFG, gpp->main_dialog);
+ }
+}
 
 static void
 on_oni__button_cancel_clicked          (GtkButton       *button,
@@ -873,7 +888,8 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
   GtkWidget *oni__button_close;
   GtkWidget *oni__button_delete;
   GtkWidget *oni__button_apply;
-  
+  GtkWidget *oni__button_help;
+ 
   gint tab1_row;
 
 
@@ -1335,25 +1351,32 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
   gtk_widget_show (dialog_action_area1);
   gtk_container_set_border_width (GTK_CONTAINER (dialog_action_area1), 10);
 
-  hbox1 = gtk_hbox_new (FALSE, 0);
+  /*  hbox1 = gtk_hbox_new (FALSE, 0); */
+  hbox1 = gtk_hbutton_box_new();
   gtk_widget_show (hbox1);
   gtk_box_pack_end (GTK_BOX (dialog_action_area1), hbox1, FALSE, TRUE, 0);
 
 
-
-  oni__button_apply = gtk_button_new_from_stock (GTK_STOCK_OK);
-  gtk_widget_set_size_request (oni__button_apply, 100, -1);
-  gtk_widget_show (oni__button_apply);
-  gtk_box_pack_end (GTK_BOX (hbox1), oni__button_apply, FALSE, FALSE, 2);
-  gimp_help_set_help_data(oni__button_apply
-                         , _("Create or replace onionskin layer(s) in all frames of the selected frame range")
+  oni__button_help = gtk_button_new_from_stock (GTK_STOCK_HELP);
+  gtk_widget_show (oni__button_help);
+  gtk_box_pack_end (GTK_BOX (hbox1), oni__button_help, FALSE, FALSE, 2);
+  gimp_help_set_help_data(oni__button_help
+                         , _("Show help page")
                          , NULL);
 
-  oni__button_delete = gtk_button_new_from_stock (GTK_STOCK_DELETE);
-  gtk_widget_show (oni__button_delete);
-  gtk_box_pack_end (GTK_BOX (hbox1), oni__button_delete, FALSE, FALSE, 2);
-  gimp_help_set_help_data(oni__button_delete
-                         , _("Remove all onionskin layers in all frames of the the selected frame range")
+
+  oni__button_default = gtk_button_new_from_stock (GIMP_STOCK_RESET);
+  gtk_widget_show (oni__button_default);
+  gtk_box_pack_end (GTK_BOX (hbox1), oni__button_default, FALSE, FALSE, 2);
+  gimp_help_set_help_data(oni__button_default
+                         , _("Reset to default settings")
+                         , NULL);
+
+  oni__button_cancel = gtk_button_new_from_stock (GTK_STOCK_CANCEL);
+  gtk_widget_show (oni__button_cancel);
+  gtk_box_pack_end (GTK_BOX (hbox1), oni__button_cancel, FALSE, FALSE, 2);
+  gimp_help_set_help_data(oni__button_cancel
+                         , _("Close window without any action")
                          , NULL);
 
   oni__button_close = gtk_button_new_from_stock (GTK_STOCK_CLOSE);
@@ -1364,18 +1387,20 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
                              "but store current Settings")
                          , NULL);
 
-  oni__button_cancel = gtk_button_new_from_stock (GTK_STOCK_CANCEL);
-  gtk_widget_show (oni__button_cancel);
-  gtk_box_pack_end (GTK_BOX (hbox1), oni__button_cancel, FALSE, FALSE, 2);
-  gimp_help_set_help_data(oni__button_cancel
-                         , _("Close window without any action")
+  oni__button_delete = gtk_button_new_from_stock (GTK_STOCK_DELETE);
+  gtk_widget_show (oni__button_delete);
+  gtk_box_pack_end (GTK_BOX (hbox1), oni__button_delete, FALSE, FALSE, 2);
+  gimp_help_set_help_data(oni__button_delete
+                         , _("Remove all onionskin layers in all frames of the the selected frame range")
                          , NULL);
 
-  oni__button_default = gtk_button_new_from_stock (GIMP_STOCK_RESET);
-  gtk_widget_show (oni__button_default);
-  gtk_box_pack_end (GTK_BOX (hbox1), oni__button_default, FALSE, FALSE, 2);
-  gimp_help_set_help_data(oni__button_default
-                         , _("Reset to default settings")
+
+  oni__button_apply = gtk_button_new_from_stock (GTK_STOCK_OK);
+  gtk_widget_set_size_request (oni__button_apply, 100, -1);
+  gtk_widget_show (oni__button_apply);
+  gtk_box_pack_end (GTK_BOX (hbox1), oni__button_apply, FALSE, FALSE, 2);
+  gimp_help_set_help_data(oni__button_apply
+                         , _("Create or replace onionskin layer(s) in all frames of the selected frame range")
                          , NULL);
 
 
@@ -1433,6 +1458,9 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
                       gpp);
 
 
+  g_signal_connect (G_OBJECT (oni__button_help), "clicked",
+                      G_CALLBACK (on_oni__button_help_clicked),
+                      gpp);
   g_signal_connect (G_OBJECT (oni__button_default), "clicked",
                       G_CALLBACK (on_oni__button_default_clicked),
                       gpp);

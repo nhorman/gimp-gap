@@ -32,12 +32,11 @@
 #include <config.h>
 #include "gap_gvetypes.h"
 
+#define GAP_HELP_ID_FFMPEG_PARAMS         "plug-in-gap-encpar-ffmpeg"
 #define GAP_PLUGIN_NAME_FFMPEG_PARAMS     "plug_in_gap_encpar_ffmpeg"
 #define GAP_PLUGIN_NAME_FFMPEG_ENCODE     "plug_in_gap_enc_ffmpeg"
 
 #define GAP_FFMPEG_CURRENT_VID_EXTENSION  "plug_in_gap_enc_ffmpeg_CURRENT_VIDEO_EXTENSION"
-
-#define GAP_GVE_MENU_ITEM_INDEX_KEY "gap_enc_menu_item_index"
 
 #define GAP_GVE_FFMPEG_PRESET_00_NONE           0
 #define GAP_GVE_FFMPEG_PRESET_01_DIVX_DEFAULT   1

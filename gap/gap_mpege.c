@@ -70,6 +70,9 @@ extern      int gap_debug; /* ==0  ... dont print debug infos */
 
 #define MBUF_SIZE 128
 
+#define GAP_HELP_ID_MPEG1          "plug-in-gap-mpeg-encode"
+#define GAP_HELP_ID_MPEG2          "plug-in-gap-mpeg2encode"
+
 typedef struct t_mpg_par
 {
   gint      from;
@@ -250,7 +253,7 @@ int p_mpege_info(GapAnimInfo *ainfo_ptr, char *errlist, GapMpegEncoderType encod
 static
 int p_mpege_dialog(GapAnimInfo *ainfo_ptr, t_mpg_par *mp_ptr, GapMpegEncoderType encoder)
 {
-  static GapArrArg  argv[16];
+  static GapArrArg  argv[17];
   static GapArrButtonArg  b_argv[3];
   gint   l_rc;
   gint   l_idx;
@@ -368,8 +371,12 @@ int p_mpege_dialog(GapAnimInfo *ainfo_ptr, t_mpg_par *mp_ptr, GapMpegEncoderType
   argv[l_idx].label_txt = _("Default");
   argv[l_idx].help_txt  = _("Reset all parameters to default values");
 
+  l_idx++;
+  gap_arr_arg_init(&argv[l_idx], GAP_ARR_WGT_HELP_BUTTON);
+
   if(encoder == GAP_MPEGE_MPEG_ENCODE)
   {
+     argv[l_idx].help_id = GAP_HELP_ID_MPEG1;
      argv[0].label_txt = _("Generate parameterfile for mpeg_encode 1.5\n(the freely distributed Berkeley MPEG-1 video encoder.)\n");
 
 
@@ -441,7 +448,7 @@ int p_mpege_dialog(GapAnimInfo *ainfo_ptr, t_mpg_par *mp_ptr, GapMpegEncoderType
 
      l_rc =  gap_arr_std_dialog( _("Gen MPEG_ENCODE Parameters"),
                                 _("Encode Values"),
-                                 16,   argv,      /* widget array */
+                                 17,   argv,      /* widget array */
                                  3,    b_argv,    /* button array */
                                  0);
 
@@ -456,6 +463,7 @@ int p_mpege_dialog(GapAnimInfo *ainfo_ptr, t_mpg_par *mp_ptr, GapMpegEncoderType
 
   if(encoder == GAP_MPEGE_MPEG2ENCODE)
   {
+     argv[l_idx].help_id = GAP_HELP_ID_MPEG2;
      argv[0].label_txt = _("Generate parameterfile for mpeg2encode 1.2\n(MPEG-2 video encoder.)\n");
 
      gap_arr_arg_init(&argv[5], GAP_ARR_WGT_RADIO);
@@ -483,7 +491,7 @@ int p_mpege_dialog(GapAnimInfo *ainfo_ptr, t_mpg_par *mp_ptr, GapMpegEncoderType
 
      l_rc =  gap_arr_std_dialog( _("Gen MPEG2ENCODE Parameters"),
                                  _("Encode Values"),
-                                 11,   argv,      /* widget array */
+                                 12,   argv,      /* widget array */
                                  3,    b_argv,    /* button array */
                                  0);
      mp_ptr->mpegtype    = argv[5].radio_ret;

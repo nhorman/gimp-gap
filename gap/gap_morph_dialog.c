@@ -23,6 +23,11 @@
  * version 2.1.0a; 2004/04/18  hof: created
  */
 
+/* define  GAP_MORPH_DEBUG_FEATURES shows both experimental features
+ * and testfeatures for developers only.
+ */
+#undef GAP_MORPH_DEBUG_FEATURES
+
 
 #include "config.h"
 
@@ -763,8 +768,10 @@ on_swap_button_pressed_callback(GtkWidget *wgt, GapMorphGUIParams *mgup)
     p_scale_wp_list(mgup);
   }
 
-  gimp_int_combo_box_set_active(mgup->src_win.combo, mgup->mgpp->osrc_layer_id);
-  gimp_int_combo_box_set_active(mgup->dst_win.combo, mgup->mgpp->fdst_layer_id);
+  gimp_int_combo_box_set_active(GIMP_INT_COMBO_BOX(mgup->src_win.combo)
+                               , mgup->mgpp->osrc_layer_id);
+  gimp_int_combo_box_set_active(GIMP_INT_COMBO_BOX(mgup->dst_win.combo)
+                               , mgup->mgpp->fdst_layer_id);
   
   p_set_upd_timer_request(mgup
                          ,GAP_MORPH_DLG_UPD_REQUEST_FULL_REFRESH
@@ -3449,7 +3456,7 @@ gap_morph_create_dialog(GapMorphGUIParams *mgup)
 
   dlg = gimp_dialog_new (_("Morph / Warp"), GAP_MORPH_PLUGIN_NAME,
                          NULL, 0,
-                         gimp_standard_help_func, GAP_MORPH_PLUGIN_NAME".html",
+                         gimp_standard_help_func, GAP_MORPH_HELP_ID,
 
                          GIMP_STOCK_RESET, GAP_MORPH_RESPONSE_RESET,
                          GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
@@ -3855,11 +3862,12 @@ gap_morph_create_dialog(GapMorphGUIParams *mgup)
 		         "OFF: Operate on existing layers below the destination layer")
                        , NULL);
 
-
   /* the multiple pointsets checkbutton */
   checkbutton = gtk_check_button_new_with_label ( _("Multiple Pointsets"));
   mgup->multiple_pointsets_checkbutton = checkbutton;
+#ifdef GAP_MORPH_DEBUG_FEATURES
   gtk_widget_show (checkbutton);
+#endif
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbutton), mgup->mgpp->multiple_pointsets);
   gtk_table_attach( GTK_TABLE(table), checkbutton, 11, 13, row, row+1,
 		    GTK_FILL, 0, 0, 0 );
@@ -3881,7 +3889,9 @@ gap_morph_create_dialog(GapMorphGUIParams *mgup)
   /* the number_of_points label */
   label = gtk_label_new ("---");
   mgup->warp_info_label = label;
+#ifdef GAP_MORPH_DEBUG_FEATURES
   gtk_widget_show (label);
+#endif
   gtk_table_attach (GTK_TABLE (table), label, 0, 2, row, row+1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 4, 0);

@@ -377,7 +377,6 @@ on_ff_aud_codec_combo  (GtkWidget     *widget,
 
 
 /* --- combos with gint32 results
- * --- access data by Index GAP_GVE_MENU_ITEM_INDEX_KEY
  */
 
 

@@ -30,6 +30,7 @@
 
 #define GAP_BLUEBOX_PLUGIN_NAME    "plug_in_bluebox"
 #define GAP_BLUEBOX_DATA_KEY_VALS  "plug_in_bluebox"
+#define GAP_BLUEBOX_HELP_ID        "plug-in-bluebox"
 
 typedef enum
 {

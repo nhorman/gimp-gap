@@ -28,6 +28,7 @@
  */
 
 /* Revision history
+ *  (2004/11/12)  v2.1.0     hof: - added help button
  *  (2004/03/17)  v1.3.27a   hof: - go_timer does check if video api is busy and retries
  *                                  to display the wanted frame if video fetch (of previous frame)
  *                                  has finished.
@@ -161,6 +162,8 @@ static gint32 global_max_vid_frames_to_keep_cached = 0;
 
 /* the callbacks */
 static void   on_shell_window_destroy                (GtkObject       *object,
+                                                      GapPlayerMainGlobalParams *gpp);
+static void   on_help_button_clicked                 (GtkButton       *button,
                                                       GapPlayerMainGlobalParams *gpp);
 
 static void   on_from_spinbutton_changed             (GtkEditable     *editable,
@@ -1532,6 +1535,23 @@ p_keep_track_of_active_master_image(GapPlayerMainGlobalParams *gpp)
   }
 }  /* end p_keep_track_of_active_master_image */
 
+
+/* -----------------------------
+ * on_help_button_clicked
+ * -----------------------------
+ */
+static void
+on_help_button_clicked (GtkButton       *button,
+                        GapPlayerMainGlobalParams *gpp)
+{
+  if(gpp)
+  {
+    if(gpp->help_id)
+    {
+      gimp_standard_help_func(gpp->help_id, gpp->shell_window);
+    }
+  }
+}  /* end on_help_button_clicked */
 
 
 /* -----------------------------
@@ -5730,6 +5750,20 @@ p_create_player_window (GapPlayerMainGlobalParams *gpp)
                     G_CALLBACK (on_cancel_vindex_button_clicked),
                     gpp);
 
+  if(gpp->help_id)
+  {
+    GtkWidget *help_button;
+    
+    /* the HELP button */
+    help_button = gtk_button_new_from_stock (GTK_STOCK_HELP);
+    gtk_widget_show (help_button);
+    gtk_box_pack_start (GTK_BOX (play_n_stop_hbox), help_button, FALSE, TRUE, 0);
+    gimp_help_set_help_data (help_button, _("Shop help page"), NULL);
+    g_signal_connect (G_OBJECT (help_button), "clicked",
+                	G_CALLBACK (on_help_button_clicked),
+                	gpp);
+  }
+  
 
   /* the PLAY button */
   play_button = gtk_button_new_from_stock (GAP_STOCK_PLAY);

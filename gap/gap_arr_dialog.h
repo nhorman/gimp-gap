@@ -60,6 +60,7 @@
 /* GIMP includes */
 #include "gtk/gtk.h"
 #include "libgimp/gimp.h"
+#include "libgimp/gimpui.h"
 
 typedef enum
 {
@@ -79,6 +80,7 @@ typedef enum
   ,GAP_ARR_WGT_OPT_ENTRY
   ,GAP_ARR_WGT_DEFAULT_BUTTON
   ,GAP_ARR_WGT_FONTSEL       
+  ,GAP_ARR_WGT_HELP_BUTTON
 } GapArrWidget;
 
 typedef int (*t_action_func) ( gpointer action_data);
@@ -93,7 +95,9 @@ typedef struct {
 
   /* common fields for all widget types */
   const char    *label_txt;
-  const char    *help_txt;
+  const char    *help_txt;  /* help for tooltips */
+  const char    *help_id;   /* help_id for the help page that should be displayed via help button */
+  GimpHelpFunc   help_func;
   gint     entry_width;  /* for all Widgets with  an entry */
   gint     scale_width;  /* for the Widgets with a scale */
   gint     constraint;   /* TRUE: check for min/max values */
@@ -174,7 +178,8 @@ long     gap_arr_slider_dialog(const char *title_txt,
                          const char *frame_txt,
                          const char *label_txt,
                          const char *tooltip_txt,
-                         long min, long max, long curr, long constraint);
+                         long min, long max, long curr, long constraint,
+			 const char *help_id);
 
 
 

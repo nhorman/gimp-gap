@@ -130,6 +130,8 @@
 extern      int gap_debug; /* ==0  ... dont print debug infos */
 
 /* Some useful defines and  macros */
+#define GAP_MOVE_PATH_HELP_ID             "plug-in-gap-move-path"
+
 #define ENTRY_WIDTH 60
 #define SPINBUTTON_WIDTH 60
 #define SCALE_WIDTH 125
@@ -331,6 +333,7 @@ static void     p_points_load_from_file  (GtkWidget *widget,t_mov_gui_stuff *mgp
 static void     p_points_save_to_file    (GtkWidget *widget,t_mov_gui_stuff *mgp);
 
 static gboolean mov_check_valid_src_layer(t_mov_gui_stuff   *mgp);
+static void	mov_help_callback	 (GtkWidget *widget, t_mov_gui_stuff *mgp);
 static void	mov_close_callback	 (GtkWidget *widget, t_mov_gui_stuff *mgp);
 static void	mov_ok_callback	         (GtkWidget *widget, t_mov_gui_stuff *mgp);
 static void     mov_upvw_callback        (GtkWidget *widget, t_mov_gui_stuff *mgp);
@@ -616,6 +619,17 @@ mov_dialog ( GimpDrawable *drawable, t_mov_gui_stuff *mgp,
   gtk_widget_show (hbbox);
 
 
+  /* the HELP button */
+  button = gtk_button_new_from_stock ( GTK_STOCK_HELP);
+  GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
+  gtk_box_pack_end (GTK_BOX (hbbox), button, FALSE, TRUE, 0);
+  gtk_widget_show (button);
+  g_signal_connect (G_OBJECT (button), "clicked",
+		    G_CALLBACK(mov_help_callback),
+		    mgp);
+
+
+  /* the CANCEL button */
   button = gtk_button_new_from_stock ( GTK_STOCK_CANCEL);
   GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
   gtk_box_pack_start (GTK_BOX (hbbox), button, TRUE, TRUE, 0);
@@ -776,6 +790,14 @@ mov_check_valid_src_layer(t_mov_gui_stuff   *mgp)
  * implementation of CALLBACK procedures
  * ============================================================================
  */
+static void
+mov_help_callback (GtkWidget *widget,
+		    t_mov_gui_stuff *mgp)
+{
+  if(gap_debug) printf("mov_help_callback:\n");
+  
+  gimp_standard_help_func(GAP_MOVE_PATH_HELP_ID, mgp->shell);
+}  /* end mov_help_callback */
 
 static void
 mov_close_callback (GtkWidget *widget,
