@@ -288,6 +288,23 @@ on_ff_presets_optionmenu  (GtkWidget     *wgt_item,
 
 
 
+void
+on_ff_aspect_optionmenu  (GtkWidget     *wgt_item,
+                           GapGveFFMpegGlobalParams *gpp)
+{
+  gint       l_idx;
+
+ if(gap_debug) printf("CB: on_ff_aspect_optionmenu\n");
+
+ if(gpp == NULL) return;
+
+ l_idx = (gint) g_object_get_data (G_OBJECT (wgt_item), GAP_GVE_MENU_ITEM_INDEX_KEY);
+
+ if(gap_debug) printf("CB: on_ff_aspect_optionmenu index: %d\n", (int)l_idx);
+ gpp->evl.factor_aspect_ratio = gap_enc_ffgui_gettab_aspect(l_idx);
+}
+
+
 
 
 
@@ -601,10 +618,12 @@ on_ff_aspect_checkbutton_toggled (GtkToggleButton *checkbutton,
   if (checkbutton->active)
   {
      gpp->evl.set_aspect_ratio = TRUE;
+     gtk_widget_set_sensitive(gpp->ff_aspect_optionmenu, TRUE);
   }
   else
   {
      gpp->evl.set_aspect_ratio = FALSE;
+     gtk_widget_set_sensitive(gpp->ff_aspect_optionmenu, FALSE);
   }
 }
 

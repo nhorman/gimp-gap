@@ -31,6 +31,7 @@ typedef struct t_GVA_mpeg3
  mpeg3_t *raw_handle;
 
  gint32  raw_pos;
+ unsigned long prev_code;  /* previous code for raw chunk reads */
 
 } t_GVA_mpeg3;
 
@@ -184,6 +185,7 @@ printf("GVA: oooooo OPEN handle->main_handle:%d\n", (int)handle->main_handle);
         gvahand->framerate        = mpeg3_frame_rate(handle->main_handle, (int)gvahand->vid_track);
         gvahand->width            = mpeg3_video_width(handle->main_handle, (int)gvahand->vid_track);
         gvahand->height           = mpeg3_video_height(handle->main_handle, (int)gvahand->vid_track);
+        gvahand->aspect_ratio     = mpeg3_aspect_ratio(handle->main_handle, (int)gvahand->vid_track);
 
         if(gvahand->total_frames <= 1)
         {
@@ -756,6 +758,8 @@ p_wrapper_mpeg3_get_video_chunk(t_GVA_Handle  *gvahand
   t_GVA_mpeg3 *handle;
   int      l_rc;
   long     l_size;
+  unsigned long code;
+  unsigned char *buffer;
 
   if(frame_nr < 1)
   {
@@ -791,15 +795,17 @@ p_wrapper_mpeg3_get_video_chunk(t_GVA_Handle  *gvahand
      }
      
      handle->raw_pos = 0;
+     handle->prev_code = 0;
   }
 
+  buffer = g_malloc(max_size);
   while (TRUE)
   {
     /* Read the next compressed frame including headers. */
     /* Store the size in size and return a 1 if error. */
     /* Stream defines the number of the multiplexed stream to read. */
     l_rc = mpeg3_read_video_chunk(handle->raw_handle
-	                         , chunk   /* out: unsigned char *output */
+	                         , buffer   /* out: unsigned char *output */
 	                         , &l_size  /* out: size of the chunk */
 	                         , (long) max_size
                                  ,(int)gvahand->vid_track      /* stream */
@@ -808,15 +814,51 @@ p_wrapper_mpeg3_get_video_chunk(t_GVA_Handle  *gvahand
     if(l_rc == 0)
     {
       handle->raw_pos++;
-
+      
+      code =  (unsigned long)buffer[l_size - 4] << 24;
+      code |= (unsigned long)buffer[l_size - 3] << 16;
+      code |= (unsigned long)buffer[l_size - 2] << 8;
+      code |= (unsigned long)buffer[l_size - 1];
+      
+      /* check if we have reached the wanted frame */
       if(handle->raw_pos == frame_nr)
       {
+        unsigned char *chunk_ptr;
+	
+	/* got start code of next frame at the end of the buffer ? */
+	if(handle->prev_code == MPEG3_PICTURE_START_CODE)
+	{
+	  l_size -= 4; 
+	}
+	
         *size = (gint32)l_size;
+	chunk_ptr = chunk;
+	
+	if(handle->prev_code == MPEG3_PICTURE_START_CODE)
+	{
+	  /* begin the chunk data with Picture start code 
+	   * (from the end of prev. buffer) 
+	   */
+	  *size += 4;
+	  chunk_ptr[0] = (handle->prev_code >> 24) & 0xff;
+	  chunk_ptr[1] = (handle->prev_code >> 16) & 0xff;
+	  chunk_ptr[2] = (handle->prev_code >> 8)  & 0xff;
+	  chunk_ptr[3] =  handle->prev_code        & 0xff;
+	  chunk_ptr += 4;
+	}
+	memcpy(chunk_ptr, buffer, l_size);
+        handle->prev_code = code;
+	
+	g_free(buffer);
+	
         return(GVA_RET_OK);
       }
+      
+      handle->prev_code = code;
     }
     else
     {
+      g_free(buffer);
       if(l_rc == 1)  
       {
         return(GVA_RET_EOF); 
@@ -840,6 +882,8 @@ p_wrapper_mpeg3_get_video_chunk(t_GVA_Handle  *gvahand
     }
 
   }
+
+  g_free(buffer);
   return(GVA_RET_ERROR);
 
 }  /* end p_wrapper_mpeg3_get_video_chunk */

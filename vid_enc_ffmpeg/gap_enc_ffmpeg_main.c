@@ -1,8 +1,13 @@
 /*
 - TODO:
-- maybe remove the experimental dont_recode specific code (?)
-    - dont_recode_flag   does not work (result is not a valid mpeg in most cases)
-    - p_ffmpeg_write_frame   :    l_force_keyframe
+  - dont_recode_flag  is still experimental code
+    but now basically works, but sometimes does not produce clean output videos
+    (need further fixes of framerate, pic_number and timecode informations
+     in the copied uncompressed frame chunks)
+  - p_ffmpeg_write_frame   :    l_force_keyframe
+     still need a working methode to force the encoder to write a keyframe
+     (in case after a sequence of copied uncompressed chunks that ends up in P or B frame)
+     as workaround we can use the option "Intra Only" 
 
 - RealVideo fileformat: Video+Audio encoding does not work. (unusable results) playback  blocks.
                         (Video only seems OK)
@@ -322,7 +327,8 @@ query ()
     {GIMP_PDB_INT32,  "psnr", "UNUSED since ffmpeg 0.4.6  0:OFF, 1:calculate PSNR of compressed frames"},
     {GIMP_PDB_INT32,  "vstats", "0:OFF, 1:dump video coding statistics to file"},
     {GIMP_PDB_INT32,  "bitexact", "0:OFF, 1:only use bit exact algorithms (for codec testing)"},
-    {GIMP_PDB_INT32,  "set_aspect_ratio", "0:OFF, 1:set video aspect_ratio as width/height)"},
+    {GIMP_PDB_INT32,  "set_aspect_ratio", "0:OFF, 1:set video aspect_ratio"},
+    {GIMP_PDB_FLOAT,  "factor_aspect_ratio", "0..autodetect from pixelsize, or with/height value"},
     {GIMP_PDB_INT32,  "dont_recode", "0:OFF, 1:try to copy videoframes 1:1 without recode (if possible and input is an mpeg videofile)"}
   };
   static int nargs_ffmpeg_enc_par = sizeof(args_ffmpeg_enc_par) / sizeof(args_ffmpeg_enc_par[0]);
@@ -597,6 +603,7 @@ run (const gchar      *name,
            epp->vstats              = param[l_ii++].data.d_int32;
            epp->bitexact            = param[l_ii++].data.d_int32;
            epp->set_aspect_ratio    = param[l_ii++].data.d_int32;
+           epp->factor_aspect_ratio = param[l_ii++].data.d_float;
 
            epp->dont_recode_flag    = param[l_ii++].data.d_int32;
         }
@@ -803,7 +810,8 @@ gap_enc_ffmpeg_main_init_preset_params(GapGveFFMpegValues *epp, gint preset_idx)
   static gint32 tab_partitioning[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]      =  {     0,      0,      0,      0,      0,      0,      0 };
   static gint32 tab_packet_size[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  {     0,      0,      0,      0,      0,      0,      0 };
   static gint32 tab_bitexact[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]          =  {     0,      0,      0,      0,      0,      0,      0 };
-  static gint32 tab_aspect[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]            =  {     0,      0,      0,      1,      1,      1,      0 };
+  static gint32 tab_aspect[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]            =  {     1,      1,      1,      1,      1,      1,      1 };
+  static gint32 tab_aspect_fact[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  {   0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0 };
 
   static char*  tab_format_name[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  { "avi",  "avi", "avi",  "vcd", "mpeg", "vob", "rm" };
   static char*  tab_vcodec_name[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  { "msmpeg4",  "msmpeg4", "msmpeg4",  "mpeg1video", "mpeg1video", "mpeg2video", "rv10" };
@@ -861,6 +869,7 @@ gap_enc_ffmpeg_main_init_preset_params(GapGveFFMpegValues *epp, gint preset_idx)
   epp->vstats              = 0;      /* 0:FALSE 1:TRUE */
   epp->bitexact            = tab_bitexact[l_idx];       /* 0:FALSE 1:TRUE */
   epp->set_aspect_ratio    = tab_aspect[l_idx];         /* 0:FALSE 1:TRUE */
+  epp->factor_aspect_ratio = tab_aspect_fact[l_idx];    /* 0:auto, or width/height */
 }   /* end gap_enc_ffmpeg_main_init_preset_params */
 
 
@@ -1074,11 +1083,19 @@ p_ffmpeg_open(GapGveFFMpegGlobalParams *gpp
     video_enc->flags |= CODEC_FLAG_GLOBAL_HEADER;
   }
 
+
   video_enc->aspect_ratio = 0;
   if(epp->set_aspect_ratio)
   {
-    video_enc->aspect_ratio = (gdouble)gpp->val.vid_width 
-                            / (gdouble)(MAX(1,gpp->val.vid_height));
+    if(epp->factor_aspect_ratio == 0.0)
+    {
+      video_enc->aspect_ratio = (gdouble)gpp->val.vid_width 
+                              / (gdouble)(MAX(1,gpp->val.vid_height));
+    }
+    else
+    {
+      video_enc->aspect_ratio = epp->factor_aspect_ratio;
+    }
   }
 
   if(!epp->intra)  { video_enc->gop_size = epp->gop_size;  }
@@ -1398,7 +1415,7 @@ p_ffmpeg_write_frame_chunk(t_ffmpeg_handle *ffh, gint32 encoded_size)
 
   ret = 0;
 
-  /*if(gap_debug) */
+  if(gap_debug)
   {
      AVCodec  *codec;
 
@@ -1413,11 +1430,11 @@ p_ffmpeg_write_frame_chunk(t_ffmpeg_handle *ffh, gint32 encoded_size)
 
   if(ffh->output_context)
   {
-    /*if(gap_debug)*/  printf("before av_write_frame  encoded_size:%d\n", (int)encoded_size );
+    if(gap_debug)  printf("before av_write_frame  encoded_size:%d\n", (int)encoded_size );
 
     ret = av_write_frame(ffh->output_context, ffh->video_stream_index, ffh->video_buffer, encoded_size);
 
-    /*if(gap_debug)*/  printf("after av_write_frame  encoded_size:%d\n", (int)encoded_size );
+    if(gap_debug)  printf("after av_write_frame  encoded_size:%d\n", (int)encoded_size );
   }
 
   return (ret);

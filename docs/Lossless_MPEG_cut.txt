@@ -1,0 +1,86 @@
+The GIMP-GAP FFMPEG encoder can do (nearly) lossles MPEG cut.
+This should give same quality as the original
+when your input videos are already compressed MPEG videos.
+(such as DVD's)
+
+
+The lossless MPEG-cut is still an experimental feature,
+and may sometimes produce output videos that do not
+playback properly on all players.
+
+
+To use lossless MPEG-cut GIMP-GAP must be configured
+with:
+
+--enable-videoapi-support
+--enable-libavformat 
+--enable-libmpeg3
+
+the required libraries must also be installed on your system.
+
+
+
+Create a STORYBOARD file, with an editor or with the
+Storyboard dialog, containing the desired clips of your videofiles.
+
+Lossless encoding becomes possible if the STORYBOARD file uses only
+one videotrack and the input clip(s) are MPEG ecoded videos
+in the same size as defined in the VID_MASTER_SIZE record
+Further there should be no transformations
+(such as ZOOM, MOVE operations) and no MACRO executions
+on the clips that are to encode.
+
+Another requirement is that you set libmpeg3 as your
+preferred video decoder:
+
+
+-------------------------- begin STORYBOARD example -----------------
+STORYBOARDFILE
+VID_PREFERRED_DECODER  libmpeg3
+VID_MASTER_SIZE        width:720 height:576
+VID_MASTER_FRAMERATE   frames_per_sec:25
+
+VID_PLAY_MOVIE      track:1 file:"/dos/data2/shrek/vob_files/vts_01_0.ifo" from:000030 to:000050 mode:normal nloops:1 seltrack:1 exactseek:1 deinterlace:0.0 stepsize:1
+
+
+-------------------------- end STORYBOARD example -----------------
+
+
+Then call the Master Encoder to encode your STORYBOARD file 
+(Menu: Video->Encode->Master Encoder)
+
+You must select the FFMPEG Encoder
+and set its Parameters like this:
+
+  Select an MPEG video codec that matches your input video(s)
+    "mpeg2video"     if your input clip(s) are .vob or .ifo file from DVD
+    "mpeg1video"     if your input clip(s) are MPEG1 strams from VCD
+ 
+  Dont Recode Flag: ON (checked)
+  Intra Only Flag:  ON (checked)
+
+
+  
+The Dont Recode Flag in the GIMP-GAP FFMPEG encoder
+will try to copy frames 1:1 from input video clips
+where possible, and does call the FFMPEG encoder engine
+for all the other frames.
+
+This way the user may cut videoclips at any desired frame,
+without respecting intra frame picture group boundaries.
+
+If there is a cut that does not start with an intra frame
+the encoder engine will be used until the next intra frame
+with matching size is read in sequence.
+Starting from this intra frame
+it can copy the already encoded frames 1:1 from the input
+MPEG video to the output MPEG video as long as the desired
+frames are fetched in ascending sequence with stepsize 1.
+
+If the quality settings for the FFMEG encoder are different
+from th quality of the input videoclip(s) this will be
+visible especially at those points, where the encoder
+switches from encoding engine to 1:1 copy mode.
+
+
+

@@ -45,6 +45,7 @@ gint        gap_enc_ffgui_gettab_dct_algo(gint idx);
 gint        gap_enc_ffgui_gettab_idct_algo(gint idx);
 gint        gap_enc_ffgui_gettab_mb_decision(gint idx);
 gint        gap_enc_ffgui_gettab_audio_krate(gint idx);
+gdouble     gap_enc_ffgui_gettab_aspect(gint idx);
 
 GtkWidget*  gap_enc_ffgui_create_fsb__fileselection (GapGveFFMpegGlobalParams *gpp);
 gint        gap_enc_ffgui_ffmpeg_encode_dialog(GapGveFFMpegGlobalParams *gpp);

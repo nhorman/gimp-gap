@@ -209,6 +209,7 @@ typedef struct GapStbMainGlobalParams  /* nickname: sgpp */
   gboolean           gva_lock;
   gboolean           cancel_video_api;
   gboolean           auto_vthumb;
+  gboolean           auto_vthumb_refresh_canceled;
   gboolean           in_player_call;
 
   GtkWidget *shell_window;  
