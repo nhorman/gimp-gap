@@ -1,5 +1,8 @@
 2004-01-19  Sven Neumann  <sven@gimp.org>
 
+	* configure.in: fixed installation path for plug-ins and scripts
+	that I broke with my latest changes.
+
 	* autogen.sh: no need to check for gtk-2.0.m4; we don't use it.
 
 2004-01-19  Sven Neumann  <sven@gimp.org>
