@@ -26,6 +26,9 @@
  */
 
 /* revision history:
+ * gimp    2.1.0b;  2004/08/14  hof: feature: point navigation + SHIFT ==> mov_follow_keyframe
+ * gimp    2.1.0b;  2004/08/10  hof: bugfix save/load Pathpoints work again.
+ * gimp    2.1.0a;  2004/06/26  hof: #144649 use NULL for the default cursor as active_cursor
  * gimp    2.0.1a;  2004/05/01  hof: proc: mov_dialog init mgp->drawable with temporary image (pvals->tmp_image_id)
  *                                   this shows a valid copy of the dest frames at startup
  *                                   (from where the move path  plug-in was invoked)
@@ -194,6 +197,7 @@ typedef struct
   GtkAdjustment *opacity_adj;
   GtkAdjustment *rotation_adj;
   GtkAdjustment *keyframe_adj;
+  GtkAdjustment *preview_frame_nr_adj;
 
   GtkWidget     *src_layer_option_menu;
   GtkWidget     *constrain;       /* scale width/height keeps ratio constant */
@@ -330,10 +334,11 @@ static void	mov_padd_callback        (GtkWidget *widget,gpointer data);
 static void	mov_pgrab_callback       (GtkWidget *widget,gpointer data);
 static void	mov_pins_callback        (GtkWidget *widget,gpointer data);
 static void	mov_pdel_callback        (GtkWidget *widget,gpointer data);
-static void     mov_pnext_callback       (GtkWidget *widget,gpointer data);
-static void     mov_pprev_callback       (GtkWidget *widget,gpointer data);
-static void     mov_pfirst_callback      (GtkWidget *widget,gpointer data);
-static void     mov_plast_callback       (GtkWidget *widget,gpointer data);
+static void     mov_follow_keyframe      (t_mov_gui_stuff *mgp);
+static void     mov_pnext_callback       (GtkWidget *widget,GdkEventButton *bevent,gpointer data);
+static void     mov_pprev_callback       (GtkWidget *widget,GdkEventButton *bevent,gpointer data);
+static void     mov_pfirst_callback      (GtkWidget *widget,GdkEventButton *bevent,gpointer data);
+static void     mov_plast_callback       (GtkWidget *widget,GdkEventButton *bevent,gpointer data);
 static void	mov_pdel_all_callback    (GtkWidget *widget,gpointer data);
 static void	mov_pclr_callback        (GtkWidget *widget,gpointer data);
 static void	mov_pclr_all_callback    (GtkWidget *widget,gpointer data);
@@ -511,6 +516,7 @@ long      gap_mov_dlg_move_dialog    (GapMovData *mov_ptr)
   mgp->instant_timertag = -1;
   mgp->startup = TRUE;
   mgp->keyframe_adj = NULL;
+  mgp->preview_frame_nr_adj = NULL;
   mgp->pv_ptr = NULL;
   mgp->cursor_wait = gdk_cursor_new (GDK_WATCH);
   mgp->cursor_acitve = NULL; /* use the default cursor */
@@ -1440,8 +1446,43 @@ mov_pdel_callback (GtkWidget *widget,
 }
 
 static void
+mov_follow_keyframe(t_mov_gui_stuff *mgp)
+{
+  gint32 keyframe_abs;
+
+  keyframe_abs = mgp->keyframe_abs;
+  if(pvals->point_idx <= 0)
+  {
+    keyframe_abs = mgp->first_nr;
+  }
+  else
+  {
+    if(pvals->point_idx  >= pvals->point_idx_max)
+    {
+      keyframe_abs = mgp->last_nr;
+    }
+    else
+    {
+      if(keyframe_abs < 1)
+      {
+        return;
+      }
+    }
+  }
+  
+  if((keyframe_abs >= mgp->first_nr)
+  && (keyframe_abs <= mgp->last_nr))
+  {
+    mgp->preview_frame_nr = keyframe_abs;
+    gtk_adjustment_set_value (mgp->preview_frame_nr_adj,
+			    (gdouble)keyframe_abs);
+  }
+}
+
+static void
 mov_pnext_callback (GtkWidget *widget,
-		      gpointer	 data)
+			 GdkEventButton *bevent,
+		         gpointer data)
 {
   t_mov_gui_stuff *mgp = data;
 
@@ -1452,6 +1493,10 @@ mov_pnext_callback (GtkWidget *widget,
     p_points_to_tab(mgp);
     pvals->point_idx++;
     p_point_refresh(mgp);
+    if (bevent->state & GDK_SHIFT_MASK)
+    {
+      mov_follow_keyframe(mgp);
+    }
     mov_set_instant_apply_request(mgp);
   }
 }
@@ -1459,7 +1504,8 @@ mov_pnext_callback (GtkWidget *widget,
 
 static void
 mov_pprev_callback (GtkWidget *widget,
-		      gpointer	 data)
+			 GdkEventButton *bevent,
+		         gpointer data)
 {
   t_mov_gui_stuff *mgp = data;
 
@@ -1470,13 +1516,18 @@ mov_pprev_callback (GtkWidget *widget,
     p_points_to_tab(mgp);
     pvals->point_idx--;
     p_point_refresh(mgp);
+    if (bevent->state & GDK_SHIFT_MASK)
+    {
+      mov_follow_keyframe(mgp);
+    }
     mov_set_instant_apply_request(mgp);
   }
 }
 
 static void
 mov_pfirst_callback (GtkWidget *widget,
-		      gpointer	 data)
+			 GdkEventButton *bevent,
+		         gpointer data)
 {
   t_mov_gui_stuff *mgp = data;
 
@@ -1486,13 +1537,18 @@ mov_pfirst_callback (GtkWidget *widget,
   p_points_to_tab(mgp);
   pvals->point_idx = 0;
   p_point_refresh(mgp);
+  if (bevent->state & GDK_SHIFT_MASK)
+  {
+    mov_follow_keyframe(mgp);
+  }
   mov_set_instant_apply_request(mgp);
 }
 
 
 static void
 mov_plast_callback (GtkWidget *widget,
-		      gpointer	 data)
+			 GdkEventButton *bevent,
+		         gpointer data)
 {
   t_mov_gui_stuff *mgp = data;
 
@@ -1502,6 +1558,10 @@ mov_plast_callback (GtkWidget *widget,
   p_points_to_tab(mgp);
   pvals->point_idx = pvals->point_idx_max;
   p_point_refresh(mgp);
+  if (bevent->state & GDK_SHIFT_MASK)
+  {
+    mov_follow_keyframe(mgp);
+  }
   mov_set_instant_apply_request(mgp);
 }
 
@@ -1691,10 +1751,9 @@ p_points_load_from_file (GtkWidget *widget,
   const gchar        *filename;
 
   if(gap_debug) printf("p_points_load_from_file\n");
-  if(mgp->filesel != NULL)
+  if(mgp->filesel == NULL)
   {
-    gtk_window_present(GTK_WINDOW(mgp->filesel));
-    return;  /* filesel is already open */
+    return;
   }
 
   filename = gtk_file_selection_get_filename (GTK_FILE_SELECTION (mgp->filesel));
@@ -1719,9 +1778,8 @@ p_points_save_to_file (GtkWidget *widget,
   const gchar        *filename;
 
   if(gap_debug) printf("p_points_save_to_file\n");
-  if(mgp->filesel != NULL)
+  if(mgp->filesel == NULL)
   {
-    gtk_window_present(GTK_WINDOW(mgp->filesel));
     return;  /* filesel is already open */
   }
 
@@ -2935,10 +2993,10 @@ mov_edit_button_box_create (t_mov_gui_stuff *mgp)
   gtk_table_attach( GTK_TABLE(button_table), button, 0, 1, row, row+1,
 		    GTK_FILL, 0, 0, 0 );
   gimp_help_set_help_data(button,
-                       _("Show previous controlpoint")
+                       _("Show previous controlpoint. Hold down the shift key to follow keyframes.")
                        , NULL);
   gtk_widget_show (button);
-  g_signal_connect (G_OBJECT (button), "clicked",
+  g_signal_connect (G_OBJECT (button), "button_press_event",
 		    G_CALLBACK (mov_pprev_callback),
 		    mgp);
 
@@ -2948,10 +3006,10 @@ mov_edit_button_box_create (t_mov_gui_stuff *mgp)
   gtk_table_attach( GTK_TABLE(button_table), button, 1, 2, row, row+1,
 		    GTK_FILL, 0, 0, 0 );
   gimp_help_set_help_data(button,
-                       _("Show next controlpoint")
+                       _("Show next controlpoint. Hold down the shift key to follow keyframes.")
                        , NULL);
   gtk_widget_show (button);
-  g_signal_connect (G_OBJECT (button), "clicked",
+  g_signal_connect (G_OBJECT (button), "button_press_event",
 		    G_CALLBACK (mov_pnext_callback),
 		    mgp);
 
@@ -2963,10 +3021,10 @@ mov_edit_button_box_create (t_mov_gui_stuff *mgp)
   gtk_table_attach( GTK_TABLE(button_table), button, 0, 1, row, row+1,
 		    GTK_FILL, 0, 0, 0 );
   gimp_help_set_help_data(button,
-                       _("Show first controlpoint")
+                       _("Show first controlpoint. Hold down the shift key to follow keyframes.")
                        , NULL);
   gtk_widget_show (button);
-  g_signal_connect (G_OBJECT (button), "clicked",
+  g_signal_connect (G_OBJECT (button), "button_press_event",
 		    G_CALLBACK (mov_pfirst_callback),
 		    mgp);
 
@@ -2976,10 +3034,10 @@ mov_edit_button_box_create (t_mov_gui_stuff *mgp)
   gtk_table_attach( GTK_TABLE(button_table), button, 1, 2, row, row+1,
 		    GTK_FILL, 0, 0, 0 );
   gimp_help_set_help_data(button,
-                       _("Show last controlpoint")
+                       _("Show last controlpoint. Hold down the shift key to follow keyframes.")
                        , NULL);
   gtk_widget_show (button);
-  g_signal_connect (G_OBJECT (button), "clicked",
+  g_signal_connect (G_OBJECT (button), "button_press_event",
 		    G_CALLBACK (mov_plast_callback),
 		    mgp);
 
@@ -4047,6 +4105,7 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_gui_stuff *mgp, gboolean v
   g_signal_connect (G_OBJECT (adj), "value_changed",
 		    G_CALLBACK (mov_instant_int_adjustment_update),
 		    &mgp->preview_frame_nr);
+  mgp->preview_frame_nr_adj = GTK_ADJUSTMENT(adj);
 
 
   gtk_table_attach( GTK_TABLE(pv_table), pv_sub_table, 0, 1, 2, 3,

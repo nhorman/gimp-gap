@@ -1,3 +1,10 @@
+2004-08-10  Wolfgang Hofer <hof@gimp.org>
+	Bugfix: make Load/Save Pathpoint work again.
+	(this bug was introduced with the changes on 2004/04/18 
+	 where gtk_window_present was used in the wrong callbacks too)
+	Feature: point navigation + SHIFT ==> mov_follow_keyframe
+	* gap/gap_mov_dialog.c
+
 2004-07-15  Sven Neumann  <sven@gimp.org>
 
 	* gap/gap_bluebox.c
