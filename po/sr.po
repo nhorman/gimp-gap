@@ -1,16 +1,16 @@
 # Serbian translation of gimp-gap
-# Courtesy of Prevod.org team (http://www.prevod.org/) -- 2003.
-# 
+# Courtesy of Prevod.org team (http://prevod.org/) -- 2003, 2004.
+#
 # This file is distributed under the same license as the gimp-gap package.
-# 
+#
 # Maintainer: Данило Шеган <dsegan@gmx.net>
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gimp-gap\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-02-14 14:35+0100\n"
-"PO-Revision-Date: 2004-01-20 11:42+0100\n"
+"POT-Creation-Date: 2004-02-20 07:03+0100\n"
+"PO-Revision-Date: 2004-02-20 07:05+0100\n"
 "Last-Translator: Данило Шеган <danilo@prevod.org>\n"
 "Language-Team: Serbian (sr) <serbiangnome-lista@nongnu.org>\n"
 "MIME-Version: 1.0\n"
@@ -23,7 +23,6 @@ msgid "Font Browser"
 msgstr "Прегледач фонтова"
 
 #. Button  to invoke filebrowser
-#. audiofile button (fileselect invoker)
 #: gap/gap_arr_dialog.c:536 gap/gap_fmac_main.c:589
 #: gap/gap_player_dialog.c:3383
 msgid "File Browser"
@@ -354,7 +353,6 @@ msgid "Select By Color"
 msgstr "Изабери према боји"
 
 #. the keycolor label
-#. keycolor label
 #: gap/gap_bluebox.c:284 gap/gap_mov_dialog.c:2631
 msgid "Keycolor:"
 msgstr "Боја кључа:"
@@ -457,7 +455,6 @@ msgid "ON: Keep preview image up to date"
 msgstr "Укључено: сам освежавај преглед слике"
 
 #. button
-#. the preview frame
 #: gap/gap_bluebox.c:442 gap/gap_mov_dialog.c:3803
 msgid "Preview"
 msgstr "Преглед"
@@ -1588,13 +1585,12 @@ msgid "Function to be performed on all selected layers"
 msgstr "Функција која се извршава на свим изабраним слојевима"
 
 #: gap/gap_mod_layer.c:261
-#, fuzzy
 msgid ""
 "Layer Name\n"
 " or Channel Name:"
 msgstr ""
-"Нови назив\n"
-"слоја или канала:"
+"Име слоја\n"
+" или име канала:"
 
 #. pixel
 #: gap/gap_mod_layer.c:263
@@ -2475,8 +2471,6 @@ msgstr "Коефицијент трансформације за X коорди�
 
 #. tbly transformfactor
 #. table col, row
-#. tbry transformfactor
-#. table col, row
 #: gap/gap_mov_dialog.c:3473 gap/gap_mov_dialog.c:3509
 msgid "y3:"
 msgstr "y3:"
@@ -2565,8 +2559,6 @@ msgstr "Полупречник размазивања као број тачка
 
 #. X
 #. table col, row
-#. gtk_container_add (GTK_CONTAINER (abox), table3);
-#. the x/y offest labels
 #: gap/gap_mov_dialog.c:3699 gap/gap_name2layer_main.c:476
 #: gap/gap_resi_dialog.c:819
 msgid "X:"
@@ -2961,12 +2953,11 @@ msgid "IQSCALE:"
 msgstr "IQ-размера:"
 
 #: gap/gap_mpege.c:384
-#, fuzzy
 msgid ""
 "Quality scale for I-frames\n"
 "(1 = best quality, 31 = best compression)"
 msgstr ""
-"Опсег квалитета за I-оквире                 \n"
+"Размера квалитета за I-кадрове\n"
 "(1 = најбољи квалитет, 31 = најбоље сажимање)"
 
 #: gap/gap_mpege.c:393
@@ -2974,7 +2965,6 @@ msgid "PQSCALE:"
 msgstr "PQ-размера:"
 
 #: gap/gap_mpege.c:394
-#, fuzzy
 msgid ""
 "Quality scale for P-frames\n"
 "(1 = best quality, 31 = best compression)"
@@ -2987,7 +2977,6 @@ msgid "BQSCALE:"
 msgstr "BQ-размера:"
 
 #: gap/gap_mpege.c:404
-#, fuzzy
 msgid ""
 "Quality scale for B-frames\n"
 "(1 = best quality, 31 = best compression)"
@@ -4041,7 +4030,6 @@ msgid "Reset parameters to original size"
 msgstr "Врати параметре на изворну величину"
 
 #: gap/gap_range_ops.c:302
-#, fuzzy
 msgid "Layerstack position where 0 is the top layer"
 msgstr "Положај у наслаги слојева где 0 представља горњи слој"
 
@@ -4087,7 +4075,6 @@ msgid "Custom Palette"
 msgstr "Посебна палета"
 
 #: gap/gap_range_ops.c:370
-#, fuzzy
 msgid "Name of a custom palette (ignored if palette type is not custom)"
 msgstr "Име посебне палете (занемарује се ако врста палете није посебна)"
 
@@ -4167,9 +4154,7 @@ msgid "Extension:"
 msgstr "Екстензија:"
 
 # bug: things.Some -> things. Some (space)
-# bug: falttening -> flattening
 #: gap/gap_range_ops.c:504
-#, fuzzy
 msgid ""
 "The extension of resulting frames is also used to define the fileformat. "
 "Please note that fileformats differ in capabilities to store informations "
@@ -4186,9 +4171,7 @@ msgid "Imagetype:"
 msgstr "Врста слике:"
 
 # bug: .Example -> . Example (space)
-# bug: conert -> convert
 #: gap/gap_range_ops.c:515
-#, fuzzy
 msgid ""
 "Convert to another imagetype, or keep imagetype as it is. Most fileformats "
 "can't handle all types and may require a conversion.Example: GIF can not "
@@ -4619,9 +4602,7 @@ msgid "New opacity value where 0 is transparent and 100.0 is opaque"
 msgstr ""
 "Нова вредност провидности где 0 представља провидно, а 100.0 непровидно"
 
-# bug: opacty -> opacity
 #: gap/gap_wr_opacity.c:338
-#, fuzzy
 msgid ""
 "Modes set opacity or change the old opacity value by adding, subtracting or "
 "multiply by the supplied new value"
@@ -4690,7 +4671,6 @@ msgid "Channel:"
 msgstr "Канал:"
 
 #. Channel the radio buttons
-#. Hue Mode the radio buttons
 #: gap/gap_wr_color_levels.c:633 gap/gap_wr_color_huesat.c:630
 msgid "Master"
 msgstr "Главни"

@@ -1,16 +1,16 @@
 # Serbian translation of gimp-gap
-# Courtesy of Prevod.org team (http://www.prevod.org/) -- 2003.
-# 
+# Courtesy of Prevod.org team (http://prevod.org/) -- 2003, 2004.
+#
 # This file is distributed under the same license as the gimp-gap package.
-# 
+#
 # Maintainer: Danilo Šegan <dsegan@gmx.net>
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gimp-gap\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-02-14 14:35+0100\n"
-"PO-Revision-Date: 2004-01-20 11:42+0100\n"
+"POT-Creation-Date: 2004-02-20 07:03+0100\n"
+"PO-Revision-Date: 2004-02-20 07:05+0100\n"
 "Last-Translator: Danilo Šegan <danilo@prevod.org>\n"
 "Language-Team: Serbian (sr) <serbiangnome-lista@nongnu.org>\n"
 "MIME-Version: 1.0\n"
@@ -23,7 +23,6 @@ msgid "Font Browser"
 msgstr "Pregledač fontova"
 
 #. Button  to invoke filebrowser
-#. audiofile button (fileselect invoker)
 #: gap/gap_arr_dialog.c:536 gap/gap_fmac_main.c:589
 #: gap/gap_player_dialog.c:3383
 msgid "File Browser"
@@ -354,7 +353,6 @@ msgid "Select By Color"
 msgstr "Izaberi prema boji"
 
 #. the keycolor label
-#. keycolor label
 #: gap/gap_bluebox.c:284 gap/gap_mov_dialog.c:2631
 msgid "Keycolor:"
 msgstr "Boja ključa:"
@@ -457,7 +455,6 @@ msgid "ON: Keep preview image up to date"
 msgstr "Uključeno: sam osvežavaj pregled slike"
 
 #. button
-#. the preview frame
 #: gap/gap_bluebox.c:442 gap/gap_mov_dialog.c:3803
 msgid "Preview"
 msgstr "Pregled"
@@ -782,8 +779,7 @@ msgid ""
 "required."
 msgstr ""
 "Ime video zapisa koji će čitati xanim. Kadrovi se izvlače iz video zapisa i "
-"snimaju se u odvojene datoteke na disku. Neophodno je izvozno izdanje xanim-"
-"a."
+"snimaju se u odvojene datoteke na disku. Neophodno je izvozno izdanje xanim-a."
 
 #: gap/gap_decode_xanim.c:249
 msgid "Framenumber of 1st frame to extract"
@@ -834,8 +830,8 @@ msgid ""
 "Enable extraction of audio to raw audiofile. (frame range limits are ignored "
 "for audio)"
 msgstr ""
-"Uključi izvlačenje zvuka u neobrađenu datoteku (ograničenja opsega kadrova "
-"se zanemaruju za zvuk)"
+"Uključi izvlačenje zvuka u neobrađenu datoteku (ograničenja opsega kadrova se "
+"zanemaruju za zvuk)"
 
 #: gap/gap_decode_xanim.c:295
 msgid "Jpeg Quality:"
@@ -1589,13 +1585,12 @@ msgid "Function to be performed on all selected layers"
 msgstr "Funkcija koja se izvršava na svim izabranim slojevima"
 
 #: gap/gap_mod_layer.c:261
-#, fuzzy
 msgid ""
 "Layer Name\n"
 " or Channel Name:"
 msgstr ""
-"Novi naziv\n"
-"sloja ili kanala:"
+"Ime sloja\n"
+" ili ime kanala:"
 
 #. pixel
 #: gap/gap_mod_layer.c:263
@@ -2104,10 +2099,9 @@ msgid ""
 "the tween steps value is 0, no tweens are calculated and no tween layers are "
 "created"
 msgstr ""
-"Sračunaj n koraka između 2 kadra. Iscrtani međukoraci se skupljaju u "
-"međusloj koji će biti dodat upravljanim odredišnim kadrovima. Ako je "
-"vrednost međukoraka 0, ne sračunavaju se međukoraci i ne obrazuju se "
-"međuslojevi"
+"Sračunaj n koraka između 2 kadra. Iscrtani međukoraci se skupljaju u međusloj "
+"koji će biti dodat upravljanim odredišnim kadrovima. Ako je vrednost "
+"međukoraka 0, ne sračunavaju se međukoraci i ne obrazuju se međuslojevi"
 
 #
 #. TweenOpacityInitial
@@ -2199,8 +2193,8 @@ msgid ""
 "Reset all controlpoints to default values but dont change the path (X/Y "
 "values)"
 msgstr ""
-"Vrati podrazumevane vrednosti svih kontrolnih tačaka ali ne menjaj putanju "
-"(X/Y vrednosti)"
+"Vrati podrazumevane vrednosti svih kontrolnih tačaka ali ne menjaj putanju (X/"
+"Y vrednosti)"
 
 # bug: contolpoint -> controlpoint
 #: gap/gap_mov_dialog.c:2977
@@ -2477,8 +2471,6 @@ msgstr "Koeficijent transformacije za X koordinatu donjeg levog temena"
 
 #. tbly transformfactor
 #. table col, row
-#. tbry transformfactor
-#. table col, row
 #: gap/gap_mov_dialog.c:3473 gap/gap_mov_dialog.c:3509
 msgid "y3:"
 msgstr "y3:"
@@ -2567,8 +2559,6 @@ msgstr "Poluprečnik razmazivanja kao broj tačka (za doterivanje izbora)"
 
 #. X
 #. table col, row
-#. gtk_container_add (GTK_CONTAINER (abox), table3);
-#. the x/y offest labels
 #: gap/gap_mov_dialog.c:3699 gap/gap_name2layer_main.c:476
 #: gap/gap_resi_dialog.c:819
 msgid "X:"
@@ -2753,8 +2743,8 @@ msgid ""
 "Error: Keyframe %d at point [%d] higher or equal than last handled frame"
 msgstr ""
 "\n"
-"Greška: Ključni kadar %d u tački [%d] je viši ili jednak poslednjem "
-"upravljanom kadru"
+"Greška: Ključni kadar %d u tački [%d] je viši ili jednak poslednjem upravljanom "
+"kadru"
 
 #: gap/gap_mov_exec.c:1928
 #, c-format
@@ -2764,8 +2754,7 @@ msgid ""
 "for the previous controlpoints"
 msgstr ""
 "\n"
-"Greška: Ključni kadar %d u tački [%d] ne ostavlja dovoljno prostora "
-"(kadrova)\n"
+"Greška: Ključni kadar %d u tački [%d] ne ostavlja dovoljno prostora (kadrova)\n"
 "za prethodne kontrolne tačke"
 
 #: gap/gap_mov_exec.c:1938
@@ -2964,12 +2953,11 @@ msgid "IQSCALE:"
 msgstr "IQ-razmera:"
 
 #: gap/gap_mpege.c:384
-#, fuzzy
 msgid ""
 "Quality scale for I-frames\n"
 "(1 = best quality, 31 = best compression)"
 msgstr ""
-"Opseg kvaliteta za I-okvire                 \n"
+"Razmera kvaliteta za I-kadrove\n"
 "(1 = najbolji kvalitet, 31 = najbolje sažimanje)"
 
 #: gap/gap_mpege.c:393
@@ -2977,7 +2965,6 @@ msgid "PQSCALE:"
 msgstr "PQ-razmera:"
 
 #: gap/gap_mpege.c:394
-#, fuzzy
 msgid ""
 "Quality scale for P-frames\n"
 "(1 = best quality, 31 = best compression)"
@@ -2990,7 +2977,6 @@ msgid "BQSCALE:"
 msgstr "BQ-razmera:"
 
 #: gap/gap_mpege.c:404
-#, fuzzy
 msgid ""
 "Quality scale for B-frames\n"
 "(1 = best quality, 31 = best compression)"
@@ -3222,8 +3208,7 @@ msgstr ""
 
 #: gap/gap_navigator_dialog.c:727
 msgid "Error while positioning to frame. Video paste operaton failed"
-msgstr ""
-"Greška pri postavljanju u kadar. Operacija ubacivanja videa nije uspela"
+msgstr "Greška pri postavljanju u kadar. Operacija ubacivanja videa nije uspela"
 
 #: gap/gap_navigator_dialog.c:749
 msgid "Video paste operaton failed"
@@ -3492,9 +3477,9 @@ msgid ""
 "to appear in thumbnail files."
 msgstr ""
 "Uključeno: Samobrisanje pelirnih slojeva. Radi pri izmeni kadrova pomoću VCR "
-"upravljača i „Idi na“ operacija u Video meniju — ali ne i na izričito "
-"snimanje iz menija Datoteka. Koristite ovo ukoliko pelirni slojevi ne treba "
-"da se pojave u sličicama."
+"upravljača i „Idi na“ operacija u Video meniju — ali ne i na izričito snimanje "
+"iz menija Datoteka. Koristite ovo ukoliko pelirni slojevi ne treba da se "
+"pojave u sličicama."
 
 #: gap/gap_onion_dialog.c:1336
 msgid ""
@@ -3698,8 +3683,7 @@ msgid ""
 "does not point to an executable program\n"
 "the configured value for %s is: %s\n"
 msgstr ""
-"Upozorenje: vaša datoteka sa podešavanjima gimprc za skriptu pretvarača "
-"zvuka\n"
+"Upozorenje: vaša datoteka sa podešavanjima gimprc za skriptu pretvarača zvuka\n"
 "ne ukazuje na izvršni program\n"
 "podešena vrednost za %s je: %s\n"
 
@@ -3801,8 +3785,8 @@ msgid ""
 "Create a copy from audiofile as RIFF WAVE audiofile and use the copy for "
 "audio playback"
 msgstr ""
-"Sačini umnožak iz zvučne datoteke kao RIFF WAVE zvuk i koristi ga za "
-"puštanje zvuka"
+"Sačini umnožak iz zvučne datoteke kao RIFF WAVE zvuk i koristi ga za puštanje "
+"zvuka"
 
 #. Audio Offset Length (mm:ss:msec)
 #: gap/gap_player_dialog.c:3507
@@ -4046,7 +4030,6 @@ msgid "Reset parameters to original size"
 msgstr "Vrati parametre na izvornu veličinu"
 
 #: gap/gap_range_ops.c:302
-#, fuzzy
 msgid "Layerstack position where 0 is the top layer"
 msgstr "Položaj u naslagi slojeva gde 0 predstavlja gornji sloj"
 
@@ -4092,7 +4075,6 @@ msgid "Custom Palette"
 msgstr "Posebna paleta"
 
 #: gap/gap_range_ops.c:370
-#, fuzzy
 msgid "Name of a custom palette (ignored if palette type is not custom)"
 msgstr "Ime posebne palete (zanemaruje se ako vrsta palete nije posebna)"
 
@@ -4172,9 +4154,7 @@ msgid "Extension:"
 msgstr "Ekstenzija:"
 
 # bug: things.Some -> things. Some (space)
-# bug: falttening -> flattening
 #: gap/gap_range_ops.c:504
-#, fuzzy
 msgid ""
 "The extension of resulting frames is also used to define the fileformat. "
 "Please note that fileformats differ in capabilities to store informations "
@@ -4182,8 +4162,8 @@ msgid ""
 "to another imagetype and/or flattening the frames."
 msgstr ""
 "Ekstenzija izlaznih kadrova se takođe koristi za određivanje načina zapisa. "
-"Primetite da se razni načini zapisa razlikuju u mogućnosti čuvanja podataka "
-"o više slojeva i drugim stvarima. Neki načini zapisa možda zahtevaju "
+"Primetite da se razni načini zapisa razlikuju u mogućnosti čuvanja podataka o "
+"više slojeva i drugim stvarima. Neki načini zapisa možda zahtevaju "
 "pretvaranje u drugu vrstu slike ili izravnavanje kadrova."
 
 #: gap/gap_range_ops.c:514
@@ -4191,9 +4171,7 @@ msgid "Imagetype:"
 msgstr "Vrsta slike:"
 
 # bug: .Example -> . Example (space)
-# bug: conert -> convert
 #: gap/gap_range_ops.c:515
-#, fuzzy
 msgid ""
 "Convert to another imagetype, or keep imagetype as it is. Most fileformats "
 "can't handle all types and may require a conversion.Example: GIF can not "
@@ -4260,8 +4238,8 @@ msgid ""
 "Resulting layer size is the size of the bottom layer (may differ from frame "
 "to frame)"
 msgstr ""
-"Izlazna veličina sloja je veličina donjeg sloja (može se razlikovati od "
-"kadra do kadra)"
+"Izlazna veličina sloja je veličina donjeg sloja (može se razlikovati od kadra "
+"do kadra)"
 
 # bug: two sentences?
 #: gap/gap_range_ops.c:617
@@ -4624,15 +4602,13 @@ msgid "New opacity value where 0 is transparent and 100.0 is opaque"
 msgstr ""
 "Nova vrednost providnosti gde 0 predstavlja providno, a 100.0 neprovidno"
 
-# bug: opacty -> opacity
 #: gap/gap_wr_opacity.c:338
-#, fuzzy
 msgid ""
 "Modes set opacity or change the old opacity value by adding, subtracting or "
 "multiply by the supplied new value"
 msgstr ""
-"Režimi postavljaju ili menjaju providnost dodavanjem, oduzimanjem ili "
-"množenjem novounete vrednosti"
+"Režimi postavljaju ili menjaju providnost dodavanjem, oduzimanjem ili množenjem "
+"novounete vrednosti"
 
 #: gap/gap_wr_opacity.c:350
 msgid "Reset all Parameters to Default Values"
@@ -4695,7 +4671,6 @@ msgid "Channel:"
 msgstr "Kanal:"
 
 #. Channel the radio buttons
-#. Hue Mode the radio buttons
 #: gap/gap_wr_color_levels.c:633 gap/gap_wr_color_huesat.c:630
 msgid "Master"
 msgstr "Glavni"
@@ -4876,10 +4851,10 @@ msgstr "Zasićenje:"
 #~ "delete them manually using the menu Video/OnionSkin/make or Video/"
 #~ "OnionSkin/delete or call the Procedures "
 #~ msgstr ""
-#~ "Ovaj dodatak služi za podešavanje pelirnih slojeva. Pelirni slojevi "
-#~ "obično prikazuju prethodne (ili naredne) kadrove videa u tekućem kadru. "
-#~ "Oni se ne obrazuju sami. Morate ih napraviti ili ukloniti ručno pomoću "
-#~ "menija Video/Pelir/Napravi ili Video/Pelir/Obriši, ili pozivom procedura"
+#~ "Ovaj dodatak služi za podešavanje pelirnih slojeva. Pelirni slojevi obično "
+#~ "prikazuju prethodne (ili naredne) kadrove videa u tekućem kadru. Oni se "
+#~ "ne obrazuju sami. Morate ih napraviti ili ukloniti ručno pomoću menija "
+#~ "Video/Pelir/Napravi ili Video/Pelir/Obriši, ili pozivom procedura"
 
 #~ msgid " "
 #~ msgstr " "
