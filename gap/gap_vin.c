@@ -665,7 +665,8 @@ p_get_video_info(char *basename)
   t_keylist    *keylist;
 
   keylist = p_new_keylist();
-  vin_ptr = g_malloc0(sizeof(t_video_info));
+  vin_ptr = g_new0 (t_video_info, 1);
+  vin_ptr->timezoom = 1;
   p_set_master_keywords(keylist, vin_ptr);
   p_set_onion_keywords(keylist, vin_ptr);
   

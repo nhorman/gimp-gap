@@ -1,3 +1,9 @@
+2003-08-25  Sven Neumann  <sven@gimp.org>
+
+	* gap/gap_vin.c (p_get_video_info): use g_new0() instead of the
+	ugly g_malloc0() construct. Initialize timezoom to 1 to avoid
+	instant crash of the GAP navigator due to division by zero.
+
 2003-08-23  Wolfgang Hofer <hof@gimp.org>
 
         increased entry_width for framenumbers from 45 to 80 (45 is too
