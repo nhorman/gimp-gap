@@ -200,66 +200,22 @@ INCLUDES = \
 	-I$(includedir)
 
 
-LDADD = \
-	$(GIMP_LIBS)
+LDADD = $(GIMP_LIBS)
 
 
-# workaround: -lgimpthumb-1.3 should be included in $(GIMP_LIBS)
-#             but is missing (bug in gimptool-1.3)   -lgimpthumb-1.3
-
-
-gap_bluebox_LDADD = \
-	$(LIBGIMPGAP)\
-	$(GIMP_LIBS)   -lgimpthumb-1.3
-
-gap_plugins_LDADD = \
-	$(LIBGIMPGAP)\
-	$(GIMP_LIBS)   -lgimpthumb-1.3
-
-gap_filter_LDADD = \
-	$(LIBGIMPGAP)\
-	$(GIMP_LIBS)   -lgimpthumb-1.3
-
-gap_fmac_LDADD = \
-	$(LIBGIMPGAP)\
-	$(GIMP_LIBS)   -lgimpthumb-1.3
-
-gap_frontends_LDADD = \
-	$(LIBGIMPGAP)\
-	$(GIMP_LIBS)   -lgimpthumb-1.3
-
-gap_name2layer_LDADD = \
-	$(LIBGIMPGAP)\
-	$(GIMP_LIBS)   -lgimpthumb-1.3
-
-gap_navigator_dialog_LDADD = \
-	$(LIBGIMPGAP)\
-	$(GIMP_LIBS)   -lgimpthumb-1.3
-
-gap_player_LDADD = \
-	$(LIBGIMPGAP)\
-	$(WAVPLAYCLIENT)\
-	$(GIMP_LIBS)   -lgimpthumb-1.3
-
-gap_onion_LDADD = \
-	$(LIBGIMPGAP)\
-	$(GIMP_LIBS)   -lgimpthumb-1.3
-
-gap_wr_opacity_LDADD = \
-	$(LIBGIMPGAP)\
-	$(GIMP_LIBS)   -lgimpthumb-1.3
-
-gap_wr_color_curve_LDADD = \
-	$(LIBGIMPGAP)\
-	$(GIMP_LIBS)   -lgimpthumb-1.3
-
-gap_wr_color_levels_LDADD = \
-	$(LIBGIMPGAP)\
-	$(GIMP_LIBS)   -lgimpthumb-1.3
-
-gap_wr_color_huesat_LDADD = \
-	$(LIBGIMPGAP)\
-	$(GIMP_LIBS)   -lgimpthumb-1.3
+gap_bluebox_LDADD =          $(LIBGIMPGAP) $(GIMP_LIBS)
+gap_plugins_LDADD =          $(LIBGIMPGAP) $(GIMP_LIBS)
+gap_filter_LDADD =           $(LIBGIMPGAP) $(GIMP_LIBS)
+gap_fmac_LDADD =             $(LIBGIMPGAP) $(GIMP_LIBS)
+gap_frontends_LDADD =        $(LIBGIMPGAP) $(GIMP_LIBS)
+gap_name2layer_LDADD =       $(LIBGIMPGAP) $(GIMP_LIBS)
+gap_navigator_dialog_LDADD = $(LIBGIMPGAP) $(GIMP_LIBS)
+gap_player_LDADD =           $(LIBGIMPGAP) $(GIMP_LIBS) $(WAVPLAYCLIENT)
+gap_onion_LDADD =            $(LIBGIMPGAP) $(GIMP_LIBS)
+gap_wr_opacity_LDADD =       $(LIBGIMPGAP) $(GIMP_LIBS)
+gap_wr_color_curve_LDADD =   $(LIBGIMPGAP) $(GIMP_LIBS)
+gap_wr_color_levels_LDADD =  $(LIBGIMPGAP) $(GIMP_LIBS)
+gap_wr_color_huesat_LDADD =  $(LIBGIMPGAP) $(GIMP_LIBS)
 
 EXTRA_DIST = \
 	README							\

@@ -1,15 +1,16 @@
+2004-01-19  Sven Neumann  <sven@gimp.org>
+
+	* configure.in
+	* gap/Makefile.am: fixed libgimpthumb issues and some other
+	oddities that Wolfgang as workarounds.
+
 2004-01-17  Wolfgang Hofer <hof@gimp.org>
 
         Changes to make use of libgimpthumb library.
-	But the gimptool-1.3 seems to have a bug, and does not
-	tell anything about the new library libgimpthumb when called with --libs param.
-	
-	WARNING: I added -lgimpthumb-1.3 as temporary workaround in gap/Makefile.am
-	         this must be removed after gimptool bug is fixed !
-	
-	the new procedure gap_thumb_file_load_thumbnail	is based on libgimpthumb
-	and can directly load thumbnail data from PNG thumbnail files.
-	(speeds up thumbnail playback a little) 
+
+	the new procedure gap_thumb_file_load_thumbnail	is based on
+	libgimpthumb and can directly load thumbnail data from PNG
+	thumbnail files. (speeds up thumbnail playback a little) 
 	
 	Added Layermask Functions for the Video/Frames Modify Module
 		 
