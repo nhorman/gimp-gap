@@ -263,6 +263,85 @@ p_file_exists(char *fname)
 }	/* end p_file_exists */
 
 /* ============================================================================
+ * p_searchpath_for_exefile
+ * -----------------------------
+ * search for executable file with given exefile name in given PATH
+ * return NULL if not found,
+ * else return full name of the exefile including the directorypath
+ * (the returned string should be g_free'ed by the caller after usage)
+ * ============================================================================
+ */
+char *
+p_searchpath_for_exefile(const char *exefile, const char *path)
+{
+  char *exe_fullname;
+  char *path_copy;
+  char *dirpath;
+  char *pp;
+  gboolean break_flag;
+       
+ 
+  path_copy = g_strdup(path);
+  exe_fullname = NULL;
+  break_flag = FALSE;
+  pp = path_copy;
+  dirpath = path_copy;
+  
+  while(pp && break_flag == FALSE)
+  {
+    if (*pp == '\0')
+    {
+      break_flag = TRUE;
+    }
+
+    if(*pp == G_SEARCHPATH_SEPARATOR)
+    {
+      *pp = '\0';  /* terminate dirpath string at seperator */
+    }
+
+    if (*pp == '\0')
+    {
+      exe_fullname = g_build_filename(dirpath, exefile, NULL);
+      if(g_file_test (exe_fullname, G_FILE_TEST_IS_EXECUTABLE) )
+      {
+	/* the executable was found at exe_fullname,
+	 * set break flag and keep that name as return value
+	 */
+        break_flag = TRUE;
+      }
+      else
+      {
+        g_free(exe_fullname);
+	exe_fullname = NULL;
+      }
+      dirpath = pp;
+      dirpath++;       /* start of next directoryname in the path string */
+    }
+    pp++;
+  }
+  
+  g_free(path_copy);
+  
+  if (gap_debug)
+  {
+    printf("p_searchpath_for_exefile: path: %s\n", path);
+    printf("p_searchpath_for_exefile: exe: %s\n", exefile);
+    if(exe_fullname)
+    {
+      printf("p_searchpath_for_exefile: RET: %s\n", exe_fullname);
+    }
+    else
+    {
+      printf("p_searchpath_for_exefile: RET: NULL (not found)\n");
+    }
+  }
+
+  return(exe_fullname);
+  
+}  /* end p_searchpath_for_exefile */
+
+
+/* ============================================================================
  * p_image_file_copy
  *    (copy the imagefile and its thumbnail)
  * ============================================================================

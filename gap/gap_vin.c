@@ -23,6 +23,7 @@
  */
 
 /* revision history:
+ * version 1.3.18b; 2003/08/23  hof: p_get_video_info: force timezoom value >= 1 (0 results in divison by zero)
  * version 1.3.18a; 2003/08/23  hof: bugfix: p_get_video_info must clear (g_malloc0) vin_ptr struct at creation
  * version 1.3.16c; 2003/07/12  hof: support onionskin settings in video_info files
  *                                   key/value/datatype is now managed by t_keylist
@@ -671,6 +672,8 @@ p_get_video_info(char *basename)
   p_set_onion_keywords(keylist, vin_ptr);
   
   p_get_video_info_keylist(keylist, vin_ptr, basename);
+
+  vin_ptr->timezoom = MAX(1,vin_ptr->timezoom);
   
   p_free_keylist(keylist);
 

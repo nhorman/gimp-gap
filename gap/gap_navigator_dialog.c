@@ -26,6 +26,8 @@
  */
 
 /* revision history:
+ * gimp    1.3.19a; 2003/09/06  hof: call plug_in_gap_videoframes_player with dummy audioparameters
+ * gimp    1.3.18b; 2003/08/27  hof: fixed waiting cursor for long running ops
  * gimp    1.3.17a; 2003/07/29  hof: param types GimpPlugInInfo.run procedure
  * gimp    1.3.16c; 2003/07/12  hof: bugfixes (vscale slider reflects pagesize), del_button,dup_button sensitivity
  * gimp    1.3.16b; 2003/07/02  hof: selection highlight bugfix (using gtk_widget_modify_bg)
@@ -1203,29 +1205,15 @@ static void
 navi_set_waiting_cursor(void)
 {
   if(naviD == NULL) return;
-  if(naviD->waiting_cursor) return;
 
   naviD->waiting_cursor = TRUE;
   gdk_window_set_cursor(GTK_WIDGET(naviD->shell)->window, naviD->cursor_wait);
+  gdk_flush();
   
+  /* g_main_context_iteration makes sure that waiting cursor is displayed */
+  while(g_main_context_iteration(NULL, FALSE));
 
-  /* FIXME: I could not see any waiting cursor, even with
-   *        the following attempts to show that thing ?
-   */
-
-  /* 1.st attempt */
-  /* while(g_main_context_iteration(NULL, FALSE)); */
-  /* gdk_flush(); */
-
-
-  /* 2.nd attempt */
-  /* while (g_main_context_pending (NULL))
-   * {
-   *   g_main_context_iteration (NULL, FALSE);
-   * }
-   * gdk_flush();
-   */
-  
+  gdk_flush();
 }  /* end navi_set_waiting_cursor */
 
 /* ---------------------------------
@@ -1236,10 +1224,10 @@ static void
 navi_set_active_cursor(void)
 {
   if(naviD == NULL) return;
-  if(!naviD->waiting_cursor) return;
   
   naviD->waiting_cursor = FALSE;
   gdk_window_set_cursor(GTK_WIDGET(naviD->shell)->window, naviD->cursor_acitve);
+  gdk_flush();
 }  /* end navi_set_active_cursor */
 
 /* --------------------------------
@@ -1596,6 +1584,8 @@ navi_thumb_update(gboolean update_all)
     return;
   }
 
+  navi_set_waiting_cursor();       
+
   l_any_upd_flag = FALSE;
   for(l_frame_nr = naviD->ainfo_ptr->first_frame_nr;
       l_frame_nr <= naviD->ainfo_ptr->last_frame_nr;
@@ -1657,6 +1647,7 @@ navi_thumb_update(gboolean update_all)
     /* fetch and render all thumbnail_previews in the dyn table */
     navi_refresh_dyn_table(naviD->dyn_topframenr);
   }
+   navi_set_active_cursor();
 }  /* end navi_thumb_update */
 
 
@@ -1695,6 +1686,8 @@ navi_playback(gboolean use_gimp_layeranimplayer)
   
 
   if(gap_debug) printf("navi_dialog_vcr_play_callback\n");
+
+  navi_set_waiting_cursor();       
   
   strcpy(l_frame_name, "frame_[######]");
   if(naviD->vin_ptr)
@@ -1746,7 +1739,12 @@ navi_playback(gboolean use_gimp_layeranimplayer)
                                     GIMP_PDB_FLOAT,    -1.0,  /* speed is original framerate */
                                     GIMP_PDB_INT32,    -1,    /* use default width */
                                     GIMP_PDB_INT32,    -1,    /* use default height */
+                                    GIMP_PDB_INT32,    FALSE, /* audio_enable (DISABLED) */
+                                    GIMP_PDB_STRING,   "\0",  /* audio_filename */
+                                    GIMP_PDB_INT32,    0,     /* audio_frame_offset */
+                                    GIMP_PDB_FLOAT,    1.0,   /* audio_volume */
                                     GIMP_PDB_END);
+     navi_set_active_cursor();
      return;
   }
 
@@ -1782,6 +1780,7 @@ navi_playback(gboolean use_gimp_layeranimplayer)
                                     GIMP_PDB_DRAWABLE, -1,  /* dummy */
                                    GIMP_PDB_END);
   }
+  navi_set_active_cursor();
 }  /* end navi_playback */
 
 
@@ -2802,7 +2801,7 @@ navi_calc_frametiming(gint32 frame_nr, char *buf, gint32 sizeof_buf)
   }
 
   framerate = 24.0;
-  if(naviD->vin_ptr == NULL)
+  if(naviD->vin_ptr)
   {
     framerate = naviD->vin_ptr->framerate;
   }

@@ -22,6 +22,8 @@
  */
 
 /* Revision history
+ * version 1.3.19a; 2003/09/06  hof: audiosupport (based on wavplay, for UNIX only),
+ * version 1.3.16a; 2003/06/26  hof: param types GimpPlugInInfo.run procedure
  * version 1.3.16a; 2003/06/26  hof: param types GimpPlugInInfo.run procedure
  * version 1.3.16a; 2003/06/26  hof: updated version
  * version 1.3.15a; 2003/06/21  hof: created
@@ -46,7 +48,7 @@
 /* Defines */
 #define PLUG_IN_NAME        "plug_in_gap_videoframes_player"
 #define PLUG_IN_PRINT_NAME  "Videopreview Player"
-#define PLUG_IN_VERSION     "v1.3.17 (2003/07/29)"
+#define PLUG_IN_VERSION     "v1.3.19 (2003/09/07)"
 #define PLUG_IN_IMAGE_TYPES "RGB*, INDEXED*, GRAY*"
 #define PLUG_IN_AUTHOR      "Wolfgang Hofer (hof@gimp.org)"
 #define PLUG_IN_COPYRIGHT   "Wolfgang Hofer"
@@ -113,6 +115,28 @@ static t_global_params global_params =
 , 0           /*  gint32    resize_count */
 , 0           /*  gint32    old_resize_width */
 , 0           /*  gint32    old_resize_height */
+
+, FALSE       /* audio_enable */
+, "\0"        /* audiofile */
+, 0           /* audio_frame_offset */
+, 0           /* audio_samplerate */
+, 0           /* audio_required_samplerate */
+, 0           /* audio_bits */
+, 0           /* audio_channels */
+, 0           /* audio_samples */
+, 0           /* audio_status */
+, 1.0         /* audio_volume */
+, NULL        /* audio_filename_entry */
+, NULL        /* audio_offset_time_label */
+, NULL        /* audio_total_time_label */
+, NULL        /* audio_total_frames_label */
+, NULL        /* audio_samples_label */
+, NULL        /* audio_samplerate_label */
+, NULL        /* audio_bits_label */
+, NULL        /* audio_channels_label */
+, NULL        /* audio_volume_spinbutton_adj */
+, NULL        /* audio_frame_offset_spinbutton_adj */
+, NULL        /* audio_filesel */
 };
 
 
@@ -148,6 +172,10 @@ static GimpParamDef in_args[] = {
                   { GIMP_PDB_FLOAT,    "speed", "-1 use original speed  framerate in frames/sec (valid range is 1.0 upto 250.0)"},
                   { GIMP_PDB_INT32,    "size_width", "-1 use standard size"},
                   { GIMP_PDB_INT32,    "size_height", "-1 use standard size"},
+                  { GIMP_PDB_INT32,    "audio_enable", "(0) FALSE: NO Audio, (1) TRUE: play audio too (requires UNIX, and intalled wavplay as audio server)"},
+                  { GIMP_PDB_STRING,   "audio_filename", "Name of audiofile (must be RIFF WAV fileformat, PCM encoded)"},
+                  { GIMP_PDB_INT32,    "audio_frame_offset", "0: audio starts at 1.st videoframe +n: start audio after n silent frames, -n: audio starts 10 frames before the video (this part of the audio is clipped and not played)"},
+                  { GIMP_PDB_FLOAT,    "audio_volume", "range is 0.0 upto 1.0"},
   };
 
 /* Functions */
@@ -184,8 +212,8 @@ run (const gchar *name,          /* name of plugin */
      gint *nreturn_vals,         /* number of out-parameters */
      GimpParam ** return_vals)   /* out-parameters */
 {
-  char       *l_env;
-  gint32      image_id = -1;
+  const gchar *l_env;
+  gint32       image_id = -1;
   t_global_params  *gpp = &global_params;
 
   /* Get the runmode from the in-parameters */
@@ -199,7 +227,7 @@ run (const gchar *name,          /* name of plugin */
   /* always return at least the status to the caller. */
   static GimpParam values[1];
 
-  l_env = getenv("GAP_DEBUG");
+  l_env = g_getenv("GAP_DEBUG");
   if(l_env != NULL)
   {
     if((*l_env != 'n') && (*l_env != 'N')) gap_debug = 1;
@@ -238,11 +266,25 @@ run (const gchar *name,          /* name of plugin */
           gpp->play_selection_only  = (gint) param[8].data.d_int32;
           gpp->play_loop            = (gint) param[9].data.d_int32;
           gpp->play_pingpong        = (gint) param[10].data.d_int32;
-          gpp->speed                = (gdouble) param[10].data.d_float;
-          gpp->pv_width             = (gint) param[11].data.d_int32;
-          gpp->pv_height            = (gint) param[12].data.d_int32;
-          
+          gpp->speed                = (gdouble) param[11].data.d_float;
+          gpp->pv_width             = (gint) param[12].data.d_int32;
+          gpp->pv_height            = (gint) param[13].data.d_int32;
+
           gpp->pv_pixelsize = MAX(gpp->pv_width, gpp->pv_height);
+          
+          gpp->audio_enable         = (gboolean) param[14].data.d_int32;
+	  if(param[15].data.d_string)
+	  {
+            g_snprintf(gpp->audio_filename, sizeof(gpp->audio_filename), "%s"
+	              , param[15].data.d_string);
+	  }
+	  else
+	  {
+            gpp->audio_filename[0] = '\0';
+	    gpp->audio_enable = FALSE;
+	  }
+          gpp->audio_frame_offset   = (gint) param[16].data.d_int32;
+          gpp->audio_volume         = (gdouble) param[17].data.d_float;
       }
       else
       {

@@ -36,6 +36,7 @@
  */
 
 /* revision history
+ * 1.3.19a; 2003/09/07   hof: message text fixes for translators (# 121145)
  * 1.3.17b; 2003/07/31   hof: message text fixes for translators (# 118392)
  * 1.3.16a; 2003/06/25   hof: no textsplitting across multiple lables (for translation)
  * 1.3.15a; 2003/06/21   hof: textspacing
@@ -106,6 +107,7 @@ int p_mpege_info(t_anim_info *ainfo_ptr, char *errlist, t_gap_mpeg_encoder encod
 {
   t_arr_arg  argv[16];
   t_but_arg  b_argv[2];
+  gchar      *txt;
 
   int        l_idx;
   int        l_rc;
@@ -135,19 +137,26 @@ int p_mpege_info(t_anim_info *ainfo_ptr, char *errlist, t_gap_mpeg_encoder encod
   p_init_arr_arg(&argv[l_idx], WGT_LABEL_LEFT);
   if(encoder == MPEG2ENCODE)
   {
-    argv[l_idx].label_txt = _("mpeg2encode 1.2 must be installed\n"
+    txt = g_strdup_printf(_("mpeg2encode 1.2 must be installed\n"
                               "you can get mpeg2encode at\n"
-                              "http://www.mpeg.org/MSSG\n"
+                              "%s\n"
                               "or at\n"
-                              "ftp://ftp.mpeg.org/pub/mpeg/mssg"
-                             );
+                              "%s"
+                             ),
+                         "http://www.mpeg.org/MSSG",
+			 "ftp://ftp.mpeg.org/pub/mpeg/mssg"
+                         );
+    argv[l_idx].label_txt = txt;
   }
   else
   {
-    argv[l_idx].label_txt = _("mpeg_encode 1.5 must be installed}\n"
+    txt = g_strdup_printf(_("mpeg_encode 1.5 must be installed\n"
                               "you can get mpeg_encode at\n"
-                              "ftp://mm-ftp.cs.berkeley.edu/pub/multimedia/mpeg/bmt1r1.tar.gz"
-                             );
+                              "%s"
+                             ),
+			 "ftp://mm-ftp.cs.berkeley.edu/pub/multimedia/mpeg/bmt1r1.tar.gz"
+                         );
+    argv[l_idx].label_txt = txt;
   }
 
 
@@ -214,6 +223,7 @@ int p_mpege_info(t_anim_info *ainfo_ptr, char *errlist, t_gap_mpeg_encoder encod
                               2,       b_argv,    /* button array */
                               -1);
 
+  g_free(txt);
   return (l_rc);
 }	/* end p_mpege_info */
 

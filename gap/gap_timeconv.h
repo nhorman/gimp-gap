@@ -1,4 +1,4 @@
-/*  gap_player_dialog.h
+/*  gap_timeconv.h
  *
  *  This module handles conversions framenumber/Rate  --> timestring (mm:ss:msec)
  */
@@ -21,6 +21,7 @@
  */
 
 /* revision history:
+ * version 1.3.19a; 2003/09/06  hof: added more converter procedures for audio
  * version 1.3.14c; 2003/06/14  hof: created
  */
 
@@ -30,7 +31,10 @@
 
 #include "libgimp/gimp.h"
 
-void  p_conv_framenr_to_timestr( gint32 framenr, gdouble framerate, gchar *txt, gint txt_size);
+void    p_conv_msecs_to_timestr(gint32 tmsec, gchar *txt, gint txt_size);
+void    p_conv_framenr_to_timestr( gint32 framenr, gdouble framerate, gchar *txt, gint txt_size);
+void    p_conv_samples_to_timestr( gint32 samples, gdouble samplerate, gchar *txt, gint txt_size);
+gdouble p_conv_samples_to_frames( gint32 samples, gdouble samplerate, gdouble framerate);
 
 
 #endif

@@ -1,6 +1,60 @@
+2003-09-08  Sven Neumann  <sven@gimp.org>
+
+	* gap/gap_player_main.c
+	* gap/gap_name2layer_main.c: fixed harmless but annoying compiler
+	warnings.
+
+	* libwavplayclient/client.c
+	* libwavplayclient/wavfile.c: include <glib.h> for g_strerror(),
+	removed redefinition of TRUE/FALSE.
+
+2003-09-07  Wolfgang Hofer <hof@gimp.org>
+
+	Playback Module: 
+ 	  added ctrl/alt modifiers for callback on_go_button_clicked
+ 	  added optional audiosupport based on wavplay (Linux only)
+ 	    (Dont know how to make/install libwavplayclient as library
+ 	     the gap/wpc_* files are just a workaround to compile without
+	     libwavplayclient)
+	
+ 	VCR-Navigator: 
+ 	 bugfix: show waiting cursor at long running ops
+ 		 to set range begin/end frame
+ 	 bugfix: frame timing labels did always show time at 24.0 fps
+ 		 now use the current framerate as it should be.	
+ 	* configure.in	      new parameter: --disable-audiosupport 
+ 	* gap/Makefile.am     variable GAP_AUDIOSUPPORT (for conditional audiosupport)
+ 	* gap/gap_player_dialog.c
+ 	* gap/gap_vin.c (force timezoom value >= 1 in case .vin has 0 value)
+ 	* gap/gap_navigator_dialog.c
+ 	* gap/gap_mpege.c	     (bugfix for #121145 translation text)
+ 	* gap/gap_lib.c [.h]
+ 	* gap/gap_timeconv.c [.h]
+ 	new files ()
+ 	* gap/wpc_client.c
+ 	* gap/wpc_lib.h
+ 	* gap/wpc_msg.c
+ 	* gap/wpc_procterm.c
+ 	* gap/wpc_wavfile.c
+ 	* libwavplayclient/wpc_client.c
+ 	* libwavplayclient/wpc_lib.h
+ 	* libwavplayclient/wpc_msg.c
+ 	* libwavplayclient/wpc_procterm.c
+ 	* libwavplayclient/wpc_wavfile.c
+ 	* libwavplayclient/COPYING
+ 	* libwavplayclient/Makefile.am       /* Not finished and currently not OK */
+ 	* libwavplayclient/README
+ 	* libwavplayclient/client.c
+ 	* libwavplayclient/client.h
+ 	* libwavplayclient/msg.c
+ 	* libwavplayclient/procterm.c
+ 	* libwavplayclient/wavfile.c
+ 	* libwavplayclient/wavfile.h
+ 	* libwavplayclient/wavplay.h
+
 2003-09-01  Metin Amiroff  <metin@karegen.com>
 
-	configure.in: Added "az" in ALL_LINGUAS.
+	* configure.in: Added "az" in ALL_LINGUAS.
 
 2003-08-25  Sven Neumann  <sven@gimp.org>
 
@@ -10,7 +64,7 @@
 
 2003-08-23  Wolfgang Hofer <hof@gimp.org>
 
-        increased entry_width for framenumbers from 45 to 80 (45 is too
+	increased entry_width for framenumbers from 45 to 80 (45 is too
 	small for 6 digits)
 	bugfix: do not attempt to write thumbnails for internal save op with
 	temp filenames
@@ -26,7 +80,7 @@
 	* configure.in: Removed "ga" "gl" "ro" from ALL_LINGUAS.
 
 2003-07-31  Wolfgang Hofer <hof@gimp.org>
-        message text fixes for translators (# 118392)
+	message text fixes for translators (# 118392)
 	* gap/gap_arr_dialog.c
 	* gap/gap_base_ops.c
 	* gap/gap_mpege.c
@@ -42,17 +96,17 @@
 	gimp20-gap.
 
 2003-07-29  Wolfgang Hofer <hof@gimp.org>
-        Minor fixes: compiler warnings signed/unsigned comparisons,
+	Minor fixes: compiler warnings signed/unsigned comparisons,
 	types of parameters in the GimpPlugInInfo.run procedure
 	changed to fit gimp-1.3.17
 	gimp_interactive_selection_font was renamed to:  gimp_font_select_new
-        * gap/gap_main.c
-        * gap/gap_arr_dialog.c [.h]
+	* gap/gap_main.c
+	* gap/gap_arr_dialog.c [.h]
 	* gap/gap_filter_iterators.c
 	* gap/gap_filter_main.c
 	* gap/gap_filter.h	
 	* gap/gap_timeconv.c
-        * gap/gap_frontends_main.c
+	* gap/gap_frontends_main.c
 	* gap/gap_name2layer_main.c
 	* gap/gap_navigator_dialog.c
 	* gap/gap_onion_main.c
@@ -75,13 +129,13 @@
      Scope of Onionskin Settings changed from "Global for GIMP Session"
      to "Permanent for the current Animation"
      (Settings are now stored in the *_vin.gap files)
-          
+	  
      Some Internal Reorganisations, more general video_info file handling
      (added processing of the onionskin Settings here)  
      
      Bugfixes Navigator Dialog: video paste now working again,
-                                scale slider now reflects visible size
-                                del_button, dup_button sensitvity depends on selections
+				scale slider now reflects visible size
+				del_button, dup_button sensitvity depends on selections
      
      * gap/gap_onion_base.c [.h]   (newly created modules, spliited of from gap_onion_worker)
      * gap/gap_onion_worker.c [.h]
@@ -94,7 +148,7 @@
      * gap/gap_arr_dialog.c
      * gap/gap_mov_dialog.c    // removed deprecated GtkKPreview widget (replaced by drawing_area based gap_pview_da calls)
 
-     * gap/README:          updated GAP-specific gimpc config
+     * gap/README:	  updated GAP-specific gimpc config
      * gap/Makefile.am
      
 2003-07-07  Sven Neumann  <sven@gimp.org>
@@ -107,7 +161,7 @@
       bugfixes in onionskinlayer dialog  
       spinbutton values were ignored when typed into the entry 
        (connect to "value_changed" of the ajustment 
-        rather than "changed" of spinbutton)
+	rather than "changed" of spinbutton)
       added new parameter farn_opaque for ascending opacity.
       (useful for cross-fading)
       
@@ -125,21 +179,21 @@
        Confirm Dialog for Frame Delete Operations
 
        should depend on new gimprc Paramter:
-          (video-confirm-frame-delete no)  // defaults to yes.
-          
-          ==> does not work. (gimprc was edited by hand)
-              ?? maybe gimprc does not support foreign keywords
-                 (unknown to the gimp-core) any longer
+	  (video-confirm-frame-delete no)  // defaults to yes.
+	  
+	  ==> does not work. (gimprc was edited by hand)
+	      ?? maybe gimprc does not support foreign keywords
+		 (unknown to the gimp-core) any longer
        
        * gap/gap_main.c
        * gap/gap_bae_ops.c [.h]
        * gap/gap_arr_dialog.c [.h]
 
 2003-07-02 Wolfgang Hofer <hof@gimp.org>
-        Navigator Dialog: bugfix for highlighting of selected items.
-        minor Tooltips helptext fixes
-        * gap/gap_navigator_dialog.c
-        * gap_onion_dialog.c
+	Navigator Dialog: bugfix for highlighting of selected items.
+	minor Tooltips helptext fixes
+	* gap/gap_navigator_dialog.c
+	* gap_onion_dialog.c
 
 2003-06-30  Abel Cheung  <maddog@linux.org.hk>
 
@@ -151,102 +205,102 @@
 	* gap/resize.c: removed these unused files from CVS.
 
 2003-06-29 Wolfgang Hofer <hof@gimp.org>
-        - VCR Navigator Redesign
-          - replaced all the scrolled_window stuff by a gtk_table
-            and add/remove rows on significant window height changes.
-              now the navigator can handle unlimited number of animframes
-              uses less resources and works faster.
-          - use gap_pview_da instead of deprecated gtk_preview
-          - mtime checking now based on framefilename
-            (checking the thumbnailfilename is not a good idea since we support
-             2 thumbnail standards)
-          - added Select All / Select None menu_items
-            to the PopUp Menu
-          - manage scroll and selection in navigator code.
-            
-            HIGHLIGHTING of the selected frame_widgets does not work yet.
-            (need to learn more about gtk to fix that)
+	- VCR Navigator Redesign
+	  - replaced all the scrolled_window stuff by a gtk_table
+	    and add/remove rows on significant window height changes.
+	      now the navigator can handle unlimited number of animframes
+	      uses less resources and works faster.
+	  - use gap_pview_da instead of deprecated gtk_preview
+	  - mtime checking now based on framefilename
+	    (checking the thumbnailfilename is not a good idea since we support
+	     2 thumbnail standards)
+	  - added Select All / Select None menu_items
+	    to the PopUp Menu
+	  - manage scroll and selection in navigator code.
+	    
+	    HIGHLIGHTING of the selected frame_widgets does not work yet.
+	    (need to learn more about gtk to fix that)
 
-        * gap/gap_navigator_dialog.c
-        * gap/gap_pview_da.c [.h]
-        * gap/Makefile.am
+	* gap/gap_navigator_dialog.c
+	* gap/gap_pview_da.c [.h]
+	* gap/Makefile.am
 2003-06-26 Wolfgang Hofer <hof@gimp.org>
-        - Player: layout bugfix preview drawing_area size did not math surrounding frame
-                  (now using an aspect_frame, required some changes in resizing)
-                  query gimprc for "show-tool-tips"
-        * gap/gap_pview_da.c [.h]
-        * gap/gap_player_main.c [.h]
-        * gap_player_dialog.c
-        
-        - no textsplitting across multiple lables (for translation)
-        * gap/gap_mpege.c
-        * gap/gap_decode_xanim.c
+	- Player: layout bugfix preview drawing_area size did not math surrounding frame
+		  (now using an aspect_frame, required some changes in resizing)
+		  query gimprc for "show-tool-tips"
+	* gap/gap_pview_da.c [.h]
+	* gap/gap_player_main.c [.h]
+	* gap_player_dialog.c
+	
+	- no textsplitting across multiple lables (for translation)
+	* gap/gap_mpege.c
+	* gap/gap_decode_xanim.c
 
 -- gimp-gap-1.3.15a_pre52 --
 
 2003-06-22 Wolfgang Hofer <hof@gimp.org>
        - downloaded CVS-snapshot gimp-gap-2003-06-20.tar.gz and
-         merged changes from mitch with my local copy of gimp-gap
-         (could not test the merged version, because gimp-1.3.16 was not availabe
-         for download, and i have no CVS)
+	 merged changes from mitch with my local copy of gimp-gap
+	 (could not test the merged version, because gimp-1.3.16 was not availabe
+	 for download, and i have no CVS)
 
-        * ChangeLog                   (added merge comments)
-          configure.in                (using CVS 1:1 no changes needed)
-          gap/gap_decode_mpeg_main.c  (using CVS 1:1 no changes needed this is DEAD code)
-          gap/gap_filter_codegen.c    (using CVS 1:1 no changes needed)
-          gap/gap_filter_iterators.c  (using CVS 1:1 no changes needed)
-          gap/gap_filter_main.c       (using CVS 1:1 no changes needed)
-          gap/gap_filter_pdb.c        (using CVS 1:1 no changes needed)
-          gap/gap_frontends_main.c    (using CVS 1:1 no changes needed)
-        * gap/gap_stock.c             (initilized bug was already fixed local)
+	* ChangeLog		   (added merge comments)
+	  configure.in		(using CVS 1:1 no changes needed)
+	  gap/gap_decode_mpeg_main.c  (using CVS 1:1 no changes needed this is DEAD code)
+	  gap/gap_filter_codegen.c    (using CVS 1:1 no changes needed)
+	  gap/gap_filter_iterators.c  (using CVS 1:1 no changes needed)
+	  gap/gap_filter_main.c       (using CVS 1:1 no changes needed)
+	  gap/gap_filter_pdb.c	(using CVS 1:1 no changes needed)
+	  gap/gap_frontends_main.c    (using CVS 1:1 no changes needed)
+	* gap/gap_stock.c	     (initilized bug was already fixed local)
        
 2003-06-21 Wolfgang Hofer <hof@gimp.org>
        - cleanup texts with leading/trailing spaces (textspacing)
-         (changes applied to all po/*.po files)
-        * gap/gap_array_dialog.c
-        * gap/gap_base_ops.c
-        * gap/gap_decode_xanim.c
-        * gap/gap_mod_layer
-        * gap/gap_mpege.c
-        * gap/gap_range_ops.c
-         
+	 (changes applied to all po/*.po files)
+	* gap/gap_array_dialog.c
+	* gap/gap_base_ops.c
+	* gap/gap_decode_xanim.c
+	* gap/gap_mod_layer
+	* gap/gap_mpege.c
+	* gap/gap_range_ops.c
+	 
        - bugfixes and performance tweaks for the Playback Module
-          (use a seperate new module for rendering drawing_area with GDK routines,
-          and handle expose events in my own handler)
-        * gap/gap_player_main.c [.h]
-        * gap/gap_player_dialog.c [.h]
-        * gap/gap_pview_da.c [.h]
-        
+	  (use a seperate new module for rendering drawing_area with GDK routines,
+	  and handle expose events in my own handler)
+	* gap/gap_player_main.c [.h]
+	* gap/gap_player_dialog.c [.h]
+	* gap/gap_pview_da.c [.h]
+	
        - VCR Navigator bugfix for OPS-Button handler makes SHIFT modifier work again.
        - gap_name2layer_main.c bugfix: MenuPath is language dependent string
        - gap_mov_dialog.c:  attempt to remove some deprecated calls (no success)
        
 2003-06-15 Wolfgang Hofer <hof@gimp.org>
        - (hopefully temporary) Workaround in gap_pd_calls.c: p_gimp_image_thumbnail
-          gimp_image_thumbnail  cant handle size bigger than 128x128
-          but return success and NULL data pointer on bigger sizes
-          (The workaround tries a 2.nd call with reduced size in such cases)
-         
+	  gimp_image_thumbnail  cant handle size bigger than 128x128
+	  but return success and NULL data pointer on bigger sizes
+	  (The workaround tries a 2.nd call with reduced size in such cases)
+	 
       - VCR Navigator:
-          now use new gap_player  Plug-In as new playback standard,
-                SHIFT: use gimp animation play (on temp_image)
+	  now use new gap_player  Plug-In as new playback standard,
+		SHIFT: use gimp animation play (on temp_image)
       - new modules for gap common use in playback and naviagator
-        
+	
 	* gap/Makefile.am
-        * gap/gap_pview.c [.h]
-        * gap/gap_timeconv.c [.h]
+	* gap/gap_pview.c [.h]
+	* gap/gap_timeconv.c [.h]
       
 2003-06-09 Wolfgang Hofer <hof@gimp.org>
       - Start Implementation of video playback modules
 	* gap/Makefile.am
-        * gap/gap_player_main.c [.h]
-        * gap/gap_player_dialog.c [.h]
-        
+	* gap/gap_player_main.c [.h]
+	* gap/gap_player_dialog.c [.h]
+	
       - gap_stock.c:gap_stock_init  bugfix: must set initialized = TRUE; to avoid double init problems
 	* images/Makefile.am
 	* images/gap-play-reverse.png
 	* images/gap-pause.png
-         
+	 
     
 2003-06-20  Michael Natterer  <mitch@gimp.org>
 
@@ -285,52 +339,52 @@
 
 2003-06-03 Wolfgang Hofer <hof@gimp.org>
       - switched to PNG stock-icons 
-          added gap_stock.c [.h]
-          added images directory
-          removed pixmaps directory
-          (gap_navigator_dialog.c, gap_mov_dialog.c)
+	  added gap_stock.c [.h]
+	  added images directory
+	  removed pixmaps directory
+	  (gap_navigator_dialog.c, gap_mov_dialog.c)
       - gap_vin.c : using setlocale independent float conversion procedures  g_ascii_strtod() and g_ascii_dtostr()
       - gap_thumbnail.c:  check only for thumbnail-size "none" (suggested by sven see #113033)
-                          removed p_gimp_file_has_valid_thumbnail
+			  removed p_gimp_file_has_valid_thumbnail
 
        ### unstable prerelease: gimp-gap-1.3.14a_pre37  (http://sven.gimp.org/gimp-gap-2003-05-30.tar.gz)
 
 2003-05-27 Wolfgang Hofer <hof@gimp.org>
        - GAP thumbnail handling procedures are now in module gap_thumbnail
-         - support for new PNG thumbnail standard
-           (old .xvpics standard is supported too 
-           but only at read, copy, rename and delete file operations)
-         - conditional thumbnail creation depends on gimprc
-           keywords: thumbnail-size, video-thumbnails
-           value strings for video-thumbnails are "none", "standard"
-         
+	 - support for new PNG thumbnail standard
+	   (old .xvpics standard is supported too 
+	   but only at read, copy, rename and delete file operations)
+	 - conditional thumbnail creation depends on gimprc
+	   keywords: thumbnail-size, video-thumbnails
+	   value strings for video-thumbnails are "none", "standard"
+	 
        - gap_lib  conditional save now depends on
-             GIMP standard gimprc keyword "trust-dirty-flag"
-             (removed support for old GAP private keyword "video-unconditional-frame-save")
+	     GIMP standard gimprc keyword "trust-dirty-flag"
+	     (removed support for old GAP private keyword "video-unconditional-frame-save")
        - gap_navigator_dialog 
-          - replaced scale widgets by spinbuttons
-          - check gimprc for layer-preview-size  (tiny to gigantic)
-            (old keyword was just "preview-size")
+	  - replaced scale widgets by spinbuttons
+	  - check gimprc for layer-preview-size  (tiny to gigantic)
+	    (old keyword was just "preview-size")
        - gap_split_image 
-          - bugfix: force default name (without numberpart) for unnamed image
-                    (otherwise split would be rejected as "is already an animframe")
-          - added parameter: digits and only_visible 
-         
+	  - bugfix: force default name (without numberpart) for unnamed image
+		    (otherwise split would be rejected as "is already an animframe")
+	  - added parameter: digits and only_visible 
+	 
        - gap_mov_dialog.c some layout changes suggested by Jakub Steiner
-         - added pixmap to buttons (many thanks to Jakub for the Icons)
-         - Moved the preview Frame slider right below the preview
-         - Clear point and Clear all points was renamed to
-           Reset point/Reset all points.
-           
+	 - added pixmap to buttons (many thanks to Jakub for the Icons)
+	 - Moved the preview Frame slider right below the preview
+	 - Clear point and Clear all points was renamed to
+	   Reset point/Reset all points.
+	   
        - p_set_video_info: now keeps unkown keyword lines in 
-         'videoinfo (_vin.gap) files
-         (to be compatible to future expansions)
-         
+	 'videoinfo (_vin.gap) files
+	 (to be compatible to future expansions)
+	 
        - internal sourcecode reorganisations:
-         -new module  gap_base_ops.c [.h]       split off from  gap_lib.c [.h]
-         -new module  gap_mov_render.c [.h]     split off from  gap_mov_dialog.c [.h]
-         -new module  gap_vin.c [.h]            split off from  gap_pdb_calls.c [.h]
-         -new module  gap_thumbnail.c [.h]      from  gap_lib.c [.h] and gimp/app/core/gimpimagefile.c
+	 -new module  gap_base_ops.c [.h]       split off from  gap_lib.c [.h]
+	 -new module  gap_mov_render.c [.h]     split off from  gap_mov_dialog.c [.h]
+	 -new module  gap_vin.c [.h]	    split off from  gap_pdb_calls.c [.h]
+	 -new module  gap_thumbnail.c [.h]      from  gap_lib.c [.h] and gimp/app/core/gimpimagefile.c
 
 2003-05-22 Wolfgang Hofer <hof@gimp.org>
        - added onionskin modules
@@ -341,34 +395,34 @@
 	 gap_onion_worker.c	\
 	 gap_onion_worker.h	\
 
-        (this is the integration of the onionskin stand alone package
-         plus porting to gimp-1.3.14, gtk+-2.2)
+	(this is the integration of the onionskin stand alone package
+	 plus porting to gimp-1.3.14, gtk+-2.2)
 
 2003-05-21 Wolfgang Hofer <hof@gimp.org>
        - added gap/gap_resi_dialog.c [h] again.
-         The code was completly rewritten inspired by gimp/app/resize.c
-         and provides dialogs for scale/resize/crop Frames
-         (now using the GimpOffsetArea widget.)
-         
+	 The code was completly rewritten inspired by gimp/app/resize.c
+	 and provides dialogs for scale/resize/crop Frames
+	 (now using the GimpOffsetArea widget.)
+	 
 2003-05-16 Wolfgang Hofer <hof@gimp.org>
        - gap_array_dialog  
-          - new WGT_FONTSEL
-          - gap_array_dialog  new WGT_DEFAULT_BUTTON 
-            moved to action area, now using button from stock GIMP_STOCK_RESET
-          - changed WGT_INT, and WGT_FLT from entry to spinbutton
-          - put OK button rightmost (new GUI standard)
+	  - new WGT_FONTSEL
+	  - gap_array_dialog  new WGT_DEFAULT_BUTTON 
+	    moved to action area, now using button from stock GIMP_STOCK_RESET
+	  - changed WGT_INT, and WGT_FLT from entry to spinbutton
+	  - put OK button rightmost (new GUI standard)
        - Added new Plug-In gap_name2layer_main.c
-         create a textlayer from imagename (or its number part)
-         optional renders on active drawable.
+	 create a textlayer from imagename (or its number part)
+	 optional renders on active drawable.
        - Put OK Button right (Gnome GUI Standard)
-         gap_array_dialog.c, gap_mov_dialog.c, gap_mod_layer.c
-            
+	 gap_array_dialog.c, gap_mov_dialog.c, gap_mod_layer.c
+	    
 2003-05-09  Sven Neumann  <sven@gimp.org>
 
 	Merged a large patch from Wolfgang Hofer.
 
 	Did some cleanup after applying the patch:
-        - Removed all calls to _gimp_help_init().
+	- Removed all calls to _gimp_help_init().
 	- Replaced all calls to gtk_init() with gimp_ui_init().
 	- Added back G*_DISABLE_DEPRECATED to the CPPFLAGS.
 	- Replaced newly added deprecated code with non-deprecated
@@ -459,7 +513,7 @@ x- Remove  gap_decode_mpeg  (gap_decode_mpeg_main.c)
       (video-unconditional-frame-save "yes")
       
  x- gap_arr_dialog   merged in changes of the gap_vid_enc project
-                     added WGT_OPT_ENTRY (entry comined with Optionmenu) and WGT_DEFAULT_BUTTON
+		     added WGT_OPT_ENTRY (entry comined with Optionmenu) and WGT_DEFAULT_BUTTON
   
 2002.09.21
  x- added gap_lastvaldesc
@@ -502,7 +556,7 @@ x- Remove  gap_decode_mpeg  (gap_decode_mpeg_main.c)
  x- Bugreport #74485: GAP crashes the GIMP-1.3.4 in the final call of gimp_displays_flush
 
     ==> The layer stealing strategy does not use clean API
-        and will be replaced by a new clean Concept.
+	and will be replaced by a new clean Concept.
 
 
 
@@ -522,10 +576,10 @@ x- array_dialog
      the code yet has some workarounds and needs much more work/redesign
       - relace polling by event handling (if possible)
       - needs a list widget that can handle thousands of thumbnails
-        (should only render the visible part)
+	(should only render the visible part)
       - selction of items does not work correct
       - .xvpics thumbnails have very low quality
-        (thumbnails in jpeg could give better quality with same diskspace usage.)
+	(thumbnails in jpeg could give better quality with same diskspace usage.)
 
 
 
@@ -565,9 +619,9 @@ x- frames_to_image does not work.
 - mov_path_dialog:
   x- rotate follow button  is not clickable (active) and does not WORK
     ==> new GLIB/GTK calls only the 1.st signal function for button_press_event
-        (the old GTK 1.2 gtk_signal_connect did fire both callback functions)
-        g_signal_connect "button_press_event"  
-        g_signal_connect  "clicked"
+	(the old GTK 1.2 gtk_signal_connect did fire both callback functions)
+	g_signal_connect "button_press_event"  
+	g_signal_connect  "clicked"
   
   
   - show path checkbox  --> SOMETIMES crashes plug-in when clicked (cant reproduce)

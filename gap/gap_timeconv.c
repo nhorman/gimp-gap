@@ -1,4 +1,4 @@
-/*  gap_player_dialog.h
+/*  gap_timeconv.c
  *
  *  This module handles conversions framenumber/Rate  --> timestring (mm:ss:msec)
  */
@@ -21,6 +21,7 @@
  */
 
 /* revision history:
+ * version 1.3.19a; 2003/09/06  hof: added more converter procedures for audio
  * version 1.3.14c; 2003/06/14  hof: created
  */
 
@@ -33,9 +34,36 @@
 #include "gap-intl.h"
 
 /* -------------------------------
+ * p_conv_msecs_to_timestr
+ * -------------------------------
+ * convert Input milliseconds value
+ * into time string formated as mm:ss:msec
+ * (minutes:seconds:milliseconds)
+ *
+ * the caller must provide a pointer to txt buffer
+ * where the output is written into at txt_size.
+ *
+ * the txt buffer size should be at last 12 bytes
+ */
+void
+p_conv_msecs_to_timestr(gint32 tmsec, gchar *txt, gint txt_size)
+{
+  gint32   tms;
+  gint32   tsec;
+  gint32   tmin;
+
+  tms = tmsec % 1000;
+  tsec = (tmsec / 1000) % 60;
+  tmin = tmsec / 60000;
+
+  g_snprintf(txt, txt_size,"%02d:%02d:%03d"
+            , (int)tmin, (int)tsec, (int)tms);
+}  /* end p_conv_msecs_to_timestr */
+
+/* -------------------------------
  * p_conv_framenr_to_timestr
  * -------------------------------
- * convert Input framenr at given framerate (unit is frames/sec)
+ * convert Input framenumber and framerate unit frames/sec)
  * into time string formated as mm:ss:msec
  * (minutes:seconds:milliseconds)
  *
@@ -49,9 +77,6 @@ p_conv_framenr_to_timestr( gint32 framenr, gdouble framerate, gchar *txt, gint t
 {
   gdouble  msec_per_frame;
   gint32   tmsec;
-  gint32   tms;
-  gint32   tsec;
-  gint32   tmin;
 
   if(framerate > 0)
   {
@@ -65,17 +90,69 @@ p_conv_framenr_to_timestr( gint32 framenr, gdouble framerate, gchar *txt, gint t
   if(framenr >= 0)
   {
     tmsec = framenr * msec_per_frame;
-
-    tms = tmsec % 1000;
-    tsec = (tmsec / 1000) % 60;
-    tmin = tmsec / 60000;
-    
-    g_snprintf(txt, txt_size,"%02d:%02d:%03d"
-              , (int)tmin, (int)tsec, (int)tms);
+    p_conv_msecs_to_timestr (tmsec, txt, txt_size);
   }
   else
   { g_snprintf(txt, txt_size, "??:??:???");
   }
 
 }  /* end p_conv_framenr_to_timestr */
+
+
+/* -------------------------------
+ * p_conv_samples_to_timestr
+ * -------------------------------
+ * convert Input samples at given samplerate (unit is samples/sec)
+ * into time string formated as mm:ss:msec
+ * (minutes:seconds:milliseconds)
+ *
+ * the caller must provide a pointer to txt buffer
+ * where the output is written into at txt_size.
+ *
+ * the txt buffer size should be at last 12 bytes
+ */
+void
+p_conv_samples_to_timestr( gint32 samples, gdouble samplerate, gchar *txt, gint txt_size)
+{
+  gdouble  msec_per_sample;
+  gdouble  tmsec;
+
+  if(samplerate > 0)
+  {
+    tmsec = (1000.0 * (gdouble)samples) / samplerate;
+  }
+  else
+  {
+    tmsec = (1000.0 * (gdouble)samples) / 44100;
+  } 
+
+  p_conv_msecs_to_timestr ((gint32)tmsec, txt, txt_size);
+}  /* end p_conv_samples_to_timestr */
+
+
+/* -------------------------------
+ * p_conv_samples_to_frames
+ * -------------------------------
+ * convert Input samples at given samplerate (unit is samples/sec)
+ *  and given framerate unit frames/sec)
+ *  to audioframes. (== number of frames that have to be played at framerate
+ *                      to get the same duration as samples played at samplerate)
+ * returns the number of audioframes
+ */
+gdouble
+p_conv_samples_to_frames( gint32 samples, gdouble samplerate, gdouble framerate)
+{
+  gdouble  secs;
+  gdouble  frames;
+
+  if((samplerate < 1) || (framerate < 1))
+  {
+    return (0);
+  }
+
+  secs = (gdouble)samples / samplerate;
+  frames = secs * framerate;
+  
+  return(frames);
+}  /* end p_conv_samples_to_frames */
 

@@ -22,6 +22,7 @@
  */
 
 /* revision history:
+ * version 1.3.19a; 2003/09/07  hof: audiosupport (based on wavplay, for UNIX only),
  * version 1.3.15a; 2003/06/21  hof: created
  */
 
@@ -34,6 +35,8 @@
 #include <libgimp/gimp.h>
 #include <libgimp/gimpui.h>
 #include "gap_pview_da.h"
+
+#define MAX_AUDIOFILE_LEN 1024
 
 typedef struct t_global_params {
   GimpRunMode  run_mode;
@@ -97,7 +100,39 @@ typedef struct t_global_params {
   gint32    resize_count;
   gint32    old_resize_width;
   gint32    old_resize_height;
+  
+  /* audio stuff */
+  gboolean  audio_enable;
+  gchar     audio_filename[MAX_AUDIOFILE_LEN];
+  gint32    audio_frame_offset;
+  guint32   audio_samplerate;
+  guint32   audio_required_samplerate;
+  guint32   audio_bits;
+  guint32   audio_channels;
+  guint32   audio_samples;  
+  gint32    audio_status;
+  gdouble   audio_volume;   /* 0.0 upto 1.0 */
+  
+  GtkWidget *audio_filename_entry;
+  GtkWidget *audio_offset_time_label;
+  GtkWidget *audio_total_time_label;
+  GtkWidget *audio_total_frames_label;
+  GtkWidget *audio_samples_label;
+  GtkWidget *audio_samplerate_label;
+  GtkWidget *audio_bits_label;
+  GtkWidget *audio_channels_label;
+  GtkObject *audio_volume_spinbutton_adj;
+  GtkObject *audio_frame_offset_spinbutton_adj;
+  GtkWidget *audio_filesel;
+ 
 } t_global_params;
 
+#define AUSTAT_NONE             0
+#define AUSTAT_SERVER_STARTED   1
+#define AUSTAT_FILENAME_SET     2
+#define AUSTAT_PLAYING          3
+
+#define MIN_SAMPLERATE   8000 
+#define MAX_SAMPLERATE   48000
 
 #endif

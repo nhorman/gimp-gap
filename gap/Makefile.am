@@ -154,6 +154,8 @@ gap_navigator_dialog_SOURCES = \
 	gap_vin.c		\
 	gap_vin.h
 
+#
+# TODO: use a library instead of all the sources with teh wpc_ prefix
 gap_player_SOURCES = \
 	gap_arr_dialog.c	\
 	gap_arr_dialog.h	\
@@ -182,7 +184,12 @@ gap_player_SOURCES = \
 	gap_timeconv.c		\
 	gap_timeconv.h		\
 	gap_vin.c		\
-	gap_vin.h
+	gap_vin.h		\
+	wpc_client.c		\
+	wpc_msg.c		\
+	wpc_procterm.c		\
+	wpc_wavfile.c		\
+	wpc_lib.h
 
 gap_onion_SOURCES = \
 	gap_arr_dialog.c	\
@@ -215,10 +222,11 @@ gap_onion_SOURCES = \
 	gap_vin.h
 
 AM_CPPFLAGS = \
-	-DLOCALEDIR=\""$(LOCALEDIR)"\"
+	-D$(GAP_AUDIOSUPPORT) -DLOCALEDIR=\""$(LOCALEDIR)"\"
 
 INCLUDES = \
 	-I$(top_srcdir)	\
+	-I$(top_srcdir)/libwavplayclient	\
 	$(GIMP_CFLAGS)	\
 	-I$(includedir)
 

@@ -184,8 +184,8 @@ run (const gchar *name,          /* name of plugin */
      gint *nreturn_vals,         /* number of out-parameters */
      GimpParam ** return_vals)   /* out-parameters */
 {
-  char       *l_env;
-  gint32      image_id = -1;
+  const gchar *l_env;
+  gint32       image_id = -1;
 
 
   /* Get the runmode from the in-parameters */
@@ -198,7 +198,7 @@ run (const gchar *name,          /* name of plugin */
   /* always return at least the status to the caller. */
   static GimpParam values[2];
 
-  l_env = getenv("NUML_DEBUG");
+  l_env = g_getenv("NUML_DEBUG");
   if(l_env != NULL)
   {
     if((*l_env != 'n') && (*l_env != 'N')) gap_debug = 1;

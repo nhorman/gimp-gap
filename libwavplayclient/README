@@ -1,0 +1,39 @@
+The libwawplay_client directory
+contains copies of the client waveplay-1.4 clientcode parts 
+but without the LessTif/MOTIF based gui stuff.
+The sourcefiles with the wpc_ prefix are wrapper sources
+(added by hof) to build the library and for conditional compile
+respecting the -DGAP_DISABLE_WAV_AUDIOSUPPORT switch
+without changing the original wavplay sourcecode parts.
+
+The only change i did was replacing the deprecated usage of 
+sys_errlist[errno] by g_strerror(errno)
+
+gimp-gap optional uses this lib to act as client for waveplay-1.4
+in the video Playback module. The audiosupport still depends on the
+wavplay-1.4 serversoftware at runtime.
+Therefore you need to install waveplay-1.4 if you have LINUX 
+and want audiosupport at runtime.
+For Compile and Link the wavplay-1.4 serversoftware is not required.
+(even if compiled with audio support eg. without -DGAP_DISABLE_WAV_AUDIOSUPPORT)
+
+If you run into trouble compiling libgapwavplayclient
+you should run 
+  autogen.sh --disable-audiosupport
+at gimp-gap toplevel directory.
+
+
+Notes:
+- I dont know if wavplay will work on other Systems than Linux.
+
+- Where to get the wavplay serversoftware:
+
+                       Warren W. Gay VE3WWG
+                         ve3wwg@home.com
+                  http://members.home.net/ve3wwg
+
+		    GNU GENERAL PUBLIC LICENSE
+		       Version 2, June 1991
+
+		        (See file COPYING)
+

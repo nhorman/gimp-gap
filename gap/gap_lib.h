@@ -25,6 +25,7 @@
  */
 
 /* revision history:
+ * 1.3.19a  2003/09/06   hof: added p_searchpath_for_exefile
  * 1.3.16c  2003/07/07   hof: extend ainfo  onion_triggers
  * 1.3.14a  2003/05/27   hof: moved basic gap operations to new module gap_base_ops
  * 1.3.12a  2003/05/02   hof: merge into CVS-gimp-gap project, added gap_renumber, upto 6digit framenumber support
@@ -86,6 +87,7 @@ typedef struct t_anim_info {
 
 /* procedures used in other gap*.c files */
 int          p_file_exists(char *fname);
+char*        p_searchpath_for_exefile(const char *exefile, const char *path);
 int          p_file_copy(char *fname, char *fname_copy);
 void         p_free_ainfo(t_anim_info **ainfo);
 char*        p_alloc_basename(const char *imagename, long *number);
