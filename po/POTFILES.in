@@ -2,6 +2,7 @@
 # marked to allow runtime translation of messages
 
 gap/gap_arr_dialog.c
+gap/gap_base_ops.c
 gap/gap_dbbrowser_utils.c
 gap/gap_decode_mpeg_main.c
 gap/gap_decode_xanim.c
@@ -9,13 +10,19 @@ gap/gap_filter_foreach.c
 gap/gap_filter_main.c
 gap/gap_frontends_main.c
 gap/gap_lib.c
+gap/gap_lock.c
 gap/gap_main.c
 gap/gap_mod_layer.c
 gap/gap_mov_dialog.c
 gap/gap_mov_exec.c
 gap/gap_mpege.c
+gap/gap_name2layer_main.c
 gap/gap_navigator_dialog.c
+gap/gap_onion_dialog.c
+gap/gap_onion_main.c
+gap/gap_onion_worker.c
 gap/gap_range_ops.c
 gap/gap_resi_dialog.c
 gap/gap_split.c
+gap/gap_stock.c
 gap/resize.c

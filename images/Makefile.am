@@ -5,18 +5,12 @@ STOCK_IMAGES = \
 	gap-anim-preview.png		\
 	gap-delete-all-points.png	\
 	gap-delete-point.png		\
-	gap-delete.png			\
-	gap-duplicate.png		\
 	gap-first-point.png		\
-	gap-first.png			\
 	gap-insert-point.png		\
 	gap-last-point.png		\
-	gap-last.png			\
 	gap-next-point.png		\
-	gap-next.png			\
 	gap-play.png			\
 	gap-prev-point.png		\
-	gap-prev.png			\
 	gap-reset-all-points.png	\
 	gap-reset-point.png		\
 	gap-rotate-follow.png		\
