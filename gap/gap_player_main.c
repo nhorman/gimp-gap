@@ -83,6 +83,7 @@ static GapPlayerMainGlobalParams global_params =
 , TRUE        /*  gboolean   play_loop */
 , FALSE       /*  gboolean   play_pingpong */
 , FALSE       /*  gboolean   play_backward */
+, FALSE       /*  gboolean   request_cancel_video_api */
 , FALSE       /*  gboolean   cancel_video_api */
 , FALSE       /*  gboolean   gva_lock */
 
@@ -182,6 +183,9 @@ static GapPlayerMainGlobalParams global_params =
 , NULL        /* audio_status_label */
 , NULL        /* video_total_time_label */
 , NULL        /* video_total_frames_label */
+, FALSE       /* vindex_creation_is_running */
+, NULL        /* play_n_stop_hbox */
+, NULL        /* cancel_vindex_button */
 };
 
 

@@ -360,7 +360,7 @@ p_wrapper_ffmpeg_open_read(char *filename, t_GVA_Handle *gvahand)
 
   if(gap_debug)
   {
-     printf("gvahand->width: %d  gvahand->height: %d\n", (int)gvahand->width , (int)gvahand->height);
+     printf("gvahand->width: %d  gvahand->height: %d aspect_ratio:%f\n", (int)gvahand->width , (int)gvahand->height, (float)gvahand->aspect_ratio);
      printf("picture_rgb: data[0]: %d linesize[0]: %d\n", (int)handle->picture_rgb->data[0], (int)handle->picture_rgb->linesize[0]);
      printf("picture_rgb: data[1]: %d linesize[1]: %d\n", (int)handle->picture_rgb->data[1], (int)handle->picture_rgb->linesize[1]);
      printf("picture_rgb: data[2]: %d linesize[2]: %d\n", (int)handle->picture_rgb->data[2], (int)handle->picture_rgb->linesize[2]);
@@ -1582,6 +1582,7 @@ p_ff_open_input(char *filename, t_GVA_Handle *gvahand, t_GVA_ffmpeg*  handle, gb
               }
               gvahand->height = acc->height;
               gvahand->width = acc->width;
+	      gvahand->aspect_ratio = acc->aspect_ratio;
               rfps = ic->streams[ii]->r_frame_rate;
               acc->workaround_bugs = FF_BUG_AUTODETECT;
               acc->error_resilience = 2;

@@ -93,6 +93,7 @@ typedef struct GapPlayerMainGlobalParams {
   gboolean   play_loop;
   gboolean   play_pingpong;
   gboolean   play_backward;
+  gboolean   request_cancel_video_api;
   gboolean   cancel_video_api;
   gboolean   gva_lock;
 
@@ -197,6 +198,9 @@ typedef struct GapPlayerMainGlobalParams {
   GtkWidget *audio_status_label;
   GtkWidget *video_total_time_label;
   GtkWidget *video_total_frames_label;
+  gboolean   vindex_creation_is_running;
+  GtkWidget *play_n_stop_hbox;
+  GtkWidget *cancel_vindex_button;
  
 } GapPlayerMainGlobalParams;
 

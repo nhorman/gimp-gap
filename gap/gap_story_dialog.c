@@ -352,7 +352,7 @@ p_render_all_frame_widgets (GapStbTabWidgets *tabw)
   gint32 ii;
   gint32 seq_nr;
   gint32 l_act_elems = 0;
-
+  
 
 //printf("(1) START p_render_all_frame_widgets\n");
 
@@ -362,6 +362,10 @@ p_render_all_frame_widgets (GapStbTabWidgets *tabw)
   }
 
   sgpp_ptr = (GapStbMainGlobalParams *)tabw->sgpp;
+  if(sgpp_ptr)
+  {
+    sgpp_ptr->auto_vthumb_refresh_canceled = FALSE;
+  }
   l_stb = p_tabw_get_stb_ptr(tabw);
  
   if(l_stb)
@@ -397,7 +401,22 @@ p_render_all_frame_widgets (GapStbTabWidgets *tabw)
     {
       fw->frame_filename = gap_story_get_filename_from_elem(fw->stb_elem_refptr);
       fw->seq_nr = seq_nr;
+      
       p_frame_widget_render(fw);
+      if(sgpp_ptr)
+      {
+       if(sgpp_ptr->cancel_video_api)
+       {
+         /* if user did press cancel during videoseek or videoindex creation
+	  * we set the flag auto_vthumb_refresh_canceled TRUE
+	  * this Flag stays TRUE until the next start of this refresh procedure.
+	  * All further video items waiting for refresh are then rendered 
+	  * with the default icon (instead of accessing the videofile) in this refresh cycle.
+	  * otherwise the user has to cancel each video item seperately
+	  */
+         sgpp_ptr->auto_vthumb_refresh_canceled = TRUE;
+       }
+      }
     }
 
   }
@@ -1224,6 +1243,7 @@ p_cancel_button_cb (GtkWidget *w,
   if(sgpp)
   {
     sgpp->cancel_video_api = TRUE;
+    sgpp->auto_vthumb_refresh_canceled = TRUE;
   }
 
 }  /* end p_cancel_button_cb */
@@ -3352,7 +3372,13 @@ p_open_videofile(GapStbMainGlobalParams *sgpp
 		)
 {
 #ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
+  gboolean vindex_permission;
+  char *vindex_file;
+  char *create_vindex_msg;
+  
   p_close_videofile(sgpp);
+  vindex_file = NULL;
+  create_vindex_msg = NULL;
 
   sgpp->gvahand =  GVA_open_read_pref(filename
 	                          , seltrack
@@ -3369,15 +3395,42 @@ p_open_videofile(GapStbMainGlobalParams *sgpp
     sgpp->gvahand->progress_cb_user_data = sgpp;
     sgpp->gvahand->fptr_progress_callback = p_vid_progress_callback;
 
-printf("STORY: DEBUG: create vidindex start\n");
-    sgpp->cancel_video_api = FALSE;
-    if(sgpp->progress_bar)
+    /* set decoder name as progress idle text */
     {
-       gtk_progress_bar_set_text(GTK_PROGRESS_BAR(sgpp->progress_bar), _("Creating Index"));
+      t_GVA_DecoderElem *dec_elem;
+
+      dec_elem = (t_GVA_DecoderElem *)sgpp->gvahand->dec_elem;
+      if(dec_elem->decoder_name)
+      {
+	create_vindex_msg = g_strdup_printf(_("Creating Index (decoder: %s)"), dec_elem->decoder_name);
+        vindex_file = GVA_build_videoindex_filename(sgpp->gva_videofile
+                                             ,1  /* track */
+					     ,dec_elem->decoder_name
+					     );
+      }
+      else
+      {
+	create_vindex_msg = g_strdup_printf(_("Creating Index"));
+      }
     }
-    sgpp->gvahand->create_vindex = TRUE;
-    GVA_count_frames(sgpp->gvahand);
+
+    sgpp->cancel_video_api = FALSE;
+
+    /* check for permission to create a videoindex file */
+    vindex_permission = gap_arr_create_vindex_permission(sgpp->gva_videofile, vindex_file);
+    
+    if(vindex_permission)
+    {
+printf("STORY: DEBUG: create vidindex start\n");
+      if(sgpp->progress_bar)
+      {
+	 gtk_progress_bar_set_text(GTK_PROGRESS_BAR(sgpp->progress_bar), create_vindex_msg);
+      }
+      sgpp->gvahand->create_vindex = TRUE;
+      GVA_count_frames(sgpp->gvahand);
 printf("STORY: DEBUG: create vidindex done\n");
+    }
+
     if(sgpp->progress_bar)
     {
        gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(sgpp->progress_bar), 0.0);
@@ -3392,6 +3445,15 @@ printf("STORY: DEBUG: create vidindex done\n");
        }
     }
 
+    if(vindex_file)
+    {
+      g_free(vindex_file);
+    }
+    
+    if(create_vindex_msg)
+    {
+      g_free(create_vindex_msg);
+    }
 
   }
 #endif
@@ -3455,7 +3517,22 @@ p_fetch_videoframe(GapStbMainGlobalParams *sgpp
      
      if(sgpp->progress_bar)
      {
-       gtk_progress_bar_set_text(GTK_PROGRESS_BAR(sgpp->progress_bar), _("Videoseek"));
+       t_GVA_DecoderElem *dec_elem;
+       char *videoseek_msg;
+       
+       videoseek_msg = NULL;
+       dec_elem = (t_GVA_DecoderElem *)sgpp->gvahand->dec_elem;
+       if(dec_elem->decoder_name)
+       {
+         videoseek_msg = g_strdup_printf(_("Videoseek (decoder: %s)"), dec_elem->decoder_name);
+       }
+       else
+       {
+         videoseek_msg = g_strdup_printf(_("Videoseek"));
+       }
+       
+       gtk_progress_bar_set_text(GTK_PROGRESS_BAR(sgpp->progress_bar), videoseek_msg);
+       g_free(videoseek_msg);
      }
      
      do_scale = TRUE;
@@ -3552,6 +3629,11 @@ gap_story_dlg_get_velem(GapStbMainGlobalParams *sgpp
   
 #ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
   if(!sgpp->auto_vthumb)
+  {
+    return(NULL);
+  }
+
+  if(sgpp->auto_vthumb_refresh_canceled)
   {
     return(NULL);
   }
@@ -3677,6 +3759,10 @@ p_fetch_vthumb_elem(GapStbMainGlobalParams *sgpp
     return(NULL);
   }
 
+  if(sgpp->auto_vthumb_refresh_canceled)
+  {
+    return(NULL);
+  }
   /* Videothumbnail not known yet,
    * we try to create it now
    */
@@ -4381,7 +4467,8 @@ gap_storyboard_dialog(GapStbMainGlobalParams *sgpp)
   sgpp->progress_bar = NULL;
   sgpp->gva_lock = FALSE;
   sgpp->auto_vthumb = FALSE;
-  sgpp->in_player_call = FALSE;
+  sgpp->auto_vthumb = FALSE;
+  sgpp->auto_vthumb_refresh_canceled = FALSE;
 
   sgpp->menu_item_cll_save = NULL;
   sgpp->menu_item_cll_save_as = NULL;

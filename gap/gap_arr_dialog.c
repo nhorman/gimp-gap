@@ -38,6 +38,7 @@
  */
 
 /* revision history:
+ * gimp    2.1.0a;  2004/09/25  hof: gap_arr_create_vindex_permission
  * gimp    1.3.20d; 2003/10/04  hof: bugfix: added missing implementation for GAP_ARR_WGT_RADIO defaults
  * gimp    1.3.20a; 2003/09/29  hof: gap_arr_overwrite_file_dialog
  * gimp    1.3.20a; 2003/09/14  hof: extended function of GAP_ARR_WGT_LABEL GAP_ARR_WGT_LABEL_LEFT GAP_ARR_WGT_LABEL_RIGHT
@@ -1676,3 +1677,89 @@ gap_arr_msg_win(GimpRunMode run_mode, const char *msg)
     }
   }
 }    /* end  gap_arr_msg_win */
+
+/* --------------------------------
+ * gap_arr_create_vindex_permission
+ * --------------------------------
+ * return TRUE : OK, permission to create videoindex
+ *        FALSE: user has cancelled, dont create videoindex
+ */
+gboolean
+gap_arr_create_vindex_permission(const char *videofile, const char *vindex_file)
+{
+  static GapArrArg  argv[4];
+  gint   l_ii;
+  char *value_string;
+  char *l_videofile;
+  char *l_vindex_file;
+  char *l_info_msg;
+  gboolean l_rc;
+
+  l_videofile = NULL;
+  l_vindex_file = NULL;
+  value_string = gimp_gimprc_query("video-index-creation");
+	
+  if(value_string)
+  {
+    if((*value_string == 'y')
+    || (*value_string == 'Y'))
+    {
+      return(TRUE);  /* gimprc setting grants general permission to create */
+    }
+    if((*value_string == 'n')
+    || (*value_string == 'N'))
+    {
+      return(FALSE);  /* gimprc setting refuses permission to create videoindex */
+    }
+  }
+
+  l_info_msg = g_strdup_printf(_("Do you want to create a videoindex file ?\n"
+                              "This will enable fast and random frame access.\n"
+			      "\n"
+			      "If you want GIMP-GAP to create videoindex files\n"
+			      "automatically whithot showing up this dialog again\n"
+			      "then you should add the following line to\n"
+			      "your gimprc file:\n"
+			      "%s")
+			      , "(video-index-creation \"yes\")"
+			      );
+  l_ii = 0;
+  gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_LABEL_LEFT);
+  argv[l_ii].label_txt = " ";
+  argv[l_ii].text_buf_ret = l_info_msg;
+
+  if(videofile)
+  {
+    l_videofile = g_strdup(videofile);
+    l_ii++;
+    gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_LABEL_LEFT);
+    argv[l_ii].label_txt = _("Video:");
+    argv[l_ii].text_buf_ret = l_videofile;
+  }
+
+  if(vindex_file)
+  {
+    l_vindex_file = g_strdup(vindex_file);
+    l_ii++;
+    gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_LABEL_LEFT);
+    argv[l_ii].label_txt = _("Index:");
+    argv[l_ii].text_buf_ret = l_vindex_file;
+  }
+  l_ii++;
+  
+  l_rc = gap_arr_ok_cancel_dialog( _("Create Videoindex file"),
+                                 " ", 
+                                 l_ii, argv);
+
+  if(l_videofile)
+  {
+    g_free(l_videofile);
+  }
+  if(l_vindex_file)
+  {
+    g_free(l_vindex_file);
+  }
+  g_free(l_info_msg);
+
+  return (l_rc);
+}  /* end gap_arr_create_vindex_permission */

@@ -77,6 +77,7 @@ static gint     gtab_dct_algo[GAP_GVE_FFMPEG_DCT_ALGO_MAX_ELEMENTS] =  { 0, 1, 2
 static gint     gtab_idct_algo[GAP_GVE_FFMPEG_IDCT_ALGO_MAX_ELEMENTS] =  { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
 static gint     gtab_mb_decision[GAP_GVE_FFMPEG_MB_DECISION_MAX_ELEMENTS] =  { FF_MB_DECISION_SIMPLE, FF_MB_DECISION_BITS, FF_MB_DECISION_RD };
 static gint     gtab_audio_krate[GAP_GVE_FFMPEG_AUDIO_KBIT_RATE_MAX_ELEMENTS] = { 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320 };
+static gdouble  gtab_aspect[GAP_GVE_FFMPEG_ASPECT_MAX_ELEMENTS] =  { 0.0, 1.333333333, 1.777777778 };
 
 t_string_optionmenu_elem  *glist_vid_codec = NULL;
 t_string_optionmenu_elem  *glist_aud_codec = NULL;
@@ -467,12 +468,12 @@ p_init_optionmenu_actual_nameidx(GapGveFFMpegGlobalParams *gpp, GtkWidget *wgt, 
   return (NULL);
 }  /* end p_init_optionmenu_actual_nameidx */
 
-/* --------------------------------
- * p_init_optionmenu_actual_idx
- * --------------------------------
+/* ---------------------------------
+ * p_init_gint_optionmenu_actual_idx
+ * ---------------------------------
  */
 static void
-p_init_optionmenu_actual_idx(GapGveFFMpegGlobalParams *gpp, GtkWidget *wgt, gint *gtab_ptr, gint val, gint maxidx)
+p_init_gint_optionmenu_actual_idx(GapGveFFMpegGlobalParams *gpp, GtkWidget *wgt, gint *gtab_ptr, gint val, gint maxidx)
 {
   gint l_idx;
 
@@ -484,7 +485,26 @@ p_init_optionmenu_actual_idx(GapGveFFMpegGlobalParams *gpp, GtkWidget *wgt, gint
       return;
     }
   }
-}  /* end p_init_optionmenu_actual_idx */
+}  /* end p_init_gint_optionmenu_actual_idx */
+
+/* ------------------------------------
+ * p_init_gdouble_optionmenu_actual_idx
+ * ------------------------------------
+ */
+static void
+p_init_gdouble_optionmenu_actual_idx(GapGveFFMpegGlobalParams *gpp, GtkWidget *wgt, gdouble *gtab_ptr, gdouble val, gint maxidx)
+{
+  gint l_idx;
+
+  for(l_idx = 0; l_idx < maxidx; l_idx++)
+  {
+    if(val == gtab_ptr[l_idx])
+    {
+      gtk_option_menu_set_history (GTK_OPTION_MENU (wgt), l_idx);
+      return;
+    }
+  }
+}  /* end p_init_gdouble_optionmenu_actual_idx */
 
 /* --------------------------------
  * p_init_optionmenu_vals
@@ -495,31 +515,38 @@ p_init_optionmenu_vals(GapGveFFMpegGlobalParams *gpp)
 {
   char *name;
 
-  p_init_optionmenu_actual_idx(gpp, gpp->ff_motion_estimation_optionmenu
+  p_init_gint_optionmenu_actual_idx(gpp, gpp->ff_motion_estimation_optionmenu
                               , &gtab_motion_est[0]
                               , gpp->evl.motion_estimation
                               , GAP_GVE_FFMPEG_MOTION_ESTIMATION_MAX_ELEMENTS
                               );
-  p_init_optionmenu_actual_idx(gpp, gpp->ff_dct_algo_optionmenu
+  p_init_gint_optionmenu_actual_idx(gpp, gpp->ff_dct_algo_optionmenu
                               , &gtab_dct_algo[0]
                               , gpp->evl.dct_algo
                               , GAP_GVE_FFMPEG_DCT_ALGO_MAX_ELEMENTS
                               );
-  p_init_optionmenu_actual_idx(gpp, gpp->ff_idct_algo_optionmenu
+  p_init_gint_optionmenu_actual_idx(gpp, gpp->ff_idct_algo_optionmenu
                               , &gtab_idct_algo[0]
                               , gpp->evl.idct_algo
                               , GAP_GVE_FFMPEG_IDCT_ALGO_MAX_ELEMENTS
                               );
-  p_init_optionmenu_actual_idx(gpp, gpp->ff_mb_decision_optionmenu
+  p_init_gint_optionmenu_actual_idx(gpp, gpp->ff_mb_decision_optionmenu
                               , &gtab_mb_decision[0]
                               , gpp->evl.mb_decision
                               , GAP_GVE_FFMPEG_MB_DECISION_MAX_ELEMENTS
                               );
 
-  p_init_optionmenu_actual_idx(gpp, gpp->ff_aud_bitrate_optionmenu
+  p_init_gint_optionmenu_actual_idx(gpp, gpp->ff_aud_bitrate_optionmenu
                               , &gtab_audio_krate[0]
                               , gpp->evl.audio_bitrate
                               , GAP_GVE_FFMPEG_AUDIO_KBIT_RATE_MAX_ELEMENTS
+                              );
+
+
+  p_init_gdouble_optionmenu_actual_idx(gpp, gpp->ff_aspect_optionmenu
+                              , &gtab_aspect[0]
+                              , gpp->evl.factor_aspect_ratio
+                              , GAP_GVE_FFMPEG_ASPECT_MAX_ELEMENTS
                               );
 
   name = p_init_optionmenu_actual_nameidx(gpp, gpp->ff_fileformat_optionmenu, glist_fileformat, gpp->evl.format_name);
@@ -787,6 +814,25 @@ gap_enc_ffgui_gettab_audio_krate(gint idx)
 
 
 /* --------------------------------
+ * gap_enc_ffgui_gettab_aspect
+ * --------------------------------
+ */
+gdouble
+gap_enc_ffgui_gettab_aspect(gint idx)
+{
+ if((idx >= GAP_GVE_FFMPEG_ASPECT_MAX_ELEMENTS) || (idx < 1))
+ {
+    idx = 0;
+ }
+
+ return(gtab_aspect[idx]);
+
+}  /* end gap_enc_ffgui_gettab_aspect */
+
+
+
+
+/* --------------------------------
  * gap_enc_ffgui_create_fsb__fileselection
  * --------------------------------
  */
@@ -925,6 +971,8 @@ p_create_fsb__fileselection (GapGveFFMpegGlobalParams *gpp)
   GtkWidget *ff_intra_checkbutton;
   GtkWidget *ff_bitexact_checkbutton;
   GtkWidget *ff_aspect_checkbutton;
+  GtkWidget *ff_aspect_optionmenu;
+  GtkWidget *ff_aspect_optionmenu_menu;
   GtkWidget *ff_aic_checkbutton;
   GtkWidget *ff_umv_checkbutton;
   GtkWidget *ff_mb_decision_optionmenu;
@@ -1757,7 +1805,7 @@ p_create_fsb__fileselection (GapGveFFMpegGlobalParams *gpp)
   {
     int flags_row;
 
-  table3 = gtk_table_new (8, 1, FALSE);
+  table3 = gtk_table_new (8, 2, FALSE);
   gtk_widget_show (table3);
   gtk_container_add (GTK_CONTAINER (frame2), table3);
   gtk_container_set_border_width (GTK_CONTAINER (table3), 2);
@@ -1842,6 +1890,45 @@ p_create_fsb__fileselection (GapGveFFMpegGlobalParams *gpp)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gimp_help_set_help_data (ff_aspect_checkbutton, _("store aspectratio information (width/height) in the output video"), NULL);
+   
+  /* the ASPECT optionmenu */
+  ff_aspect_optionmenu = gtk_option_menu_new ();
+  gtk_widget_show (ff_aspect_optionmenu);
+  gtk_table_attach (GTK_TABLE (table3), ff_aspect_optionmenu, 1, 2, flags_row, flags_row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gimp_help_set_help_data (ff_aspect_optionmenu, _("Select aspect ratio"), NULL);
+
+
+  ff_aspect_optionmenu_menu = gtk_menu_new ();
+  glade_menuitem = gtk_menu_item_new_with_label (_("auto from pixelsize"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (ff_aspect_optionmenu_menu), glade_menuitem);
+        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
+                          G_CALLBACK (on_ff_aspect_optionmenu),
+                          (gpointer)gpp);
+        g_object_set_data (G_OBJECT (glade_menuitem), GAP_GVE_MENU_ITEM_INDEX_KEY
+                          , (gpointer)GAP_GVE_FFMPEG_ASPECT_00_AUTO);
+  glade_menuitem = gtk_menu_item_new_with_label (_("4:3"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (ff_aspect_optionmenu_menu), glade_menuitem);
+        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
+                          G_CALLBACK (on_ff_aspect_optionmenu),
+                          (gpointer)gpp);
+        g_object_set_data (G_OBJECT (glade_menuitem), GAP_GVE_MENU_ITEM_INDEX_KEY
+                          , (gpointer)GAP_GVE_FFMPEG_ASPECT_01_4_3);
+  glade_menuitem = gtk_menu_item_new_with_label (_("16:9"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (ff_aspect_optionmenu_menu), glade_menuitem);
+        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
+                          G_CALLBACK (on_ff_aspect_optionmenu),
+                          (gpointer)gpp);
+        g_object_set_data (G_OBJECT (glade_menuitem), GAP_GVE_MENU_ITEM_INDEX_KEY
+                          , (gpointer)GAP_GVE_FFMPEG_ASPECT_02_16_9);
+  gtk_option_menu_set_menu (GTK_OPTION_MENU (ff_aspect_optionmenu), ff_aspect_optionmenu_menu);
+
+
+
 
   }
 
@@ -1851,7 +1938,12 @@ p_create_fsb__fileselection (GapGveFFMpegGlobalParams *gpp)
   gtk_table_attach (GTK_TABLE (table2), ff_dont_recode_checkbutton, 1, 2, 6, 7,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gimp_help_set_help_data (ff_dont_recode_checkbutton, _("Bypass the FFMPEG Vidoencoder if inputframe can be read 1:1 from an input MPEG videofile"), NULL);
+  gimp_help_set_help_data (ff_dont_recode_checkbutton
+                        , _("Bypass the FFMPEG Vidoencoder where inputframes can "
+			    "be copied 1:1 from an input MPEG videofile."
+			    "This experimental feature provides lossless MPEG "
+			    "video cut, but works only for the MPEG Fileformats.")
+			, NULL);
 
 
 
@@ -2340,6 +2432,7 @@ p_create_fsb__fileselection (GapGveFFMpegGlobalParams *gpp)
   gtk_window_add_accel_group (GTK_WINDOW (shell_window), accel_group);
 
 
+  gpp->ff_aspect_optionmenu               = ff_aspect_optionmenu;
   gpp->ff_aud_bitrate_optionmenu          = ff_aud_bitrate_optionmenu;
   gpp->ff_aud_bitrate_spinbutton          = ff_aud_bitrate_spinbutton;
   gpp->ff_aud_codec_optionmenu            = ff_aud_codec_optionmenu;
