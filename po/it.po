@@ -9,13 +9,15 @@
 #
 # Frame = frame (non tradotto ma trattato come maschile vista 
 #         la corrispondenza con il termine tecnico 'quadro (video)')
+# storyboard = non tradotto
+# thumbnail = miniatura
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gimp 2.2.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-01-17 00:15+0100\n"
-"PO-Revision-Date: 2005-01-17 00:49+0100\n"
+"PO-Revision-Date: 2005-01-17 11:48+0100\n"
 "Last-Translator: Marco Ciampa <ciampix@libero.it>\n"
 "Language-Team: gimp.linux.it\n"
 "MIME-Version: 1.0\n"
@@ -711,14 +713,12 @@ msgid "Parameters"
 msgstr "Parametri"
 
 #: gap/gap_dbbrowser_utils.c:253
-#, fuzzy
 msgid "Return Values"
-msgstr "Digita valori"
+msgstr "Valori di ritorno"
 
 #: gap/gap_dbbrowser_utils.c:266
-#, fuzzy
 msgid "Additional Information"
-msgstr "Informazioni XANIM"
+msgstr "Informazioni aggiuntive"
 
 #. the Author lable
 #: gap/gap_dbbrowser_utils.c:305 vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2215
@@ -798,9 +798,8 @@ msgid "Temporary Procedure"
 msgstr "Procedura temporanea"
 
 #: gap/gap_decode_mplayer.c:198
-#, fuzzy
 msgid "Requirements to run the mplayer based video split"
-msgstr "Prerequisiti per l'esecuzione dell'esportazione video xanim"
+msgstr "Prerequisiti per l'esecuzione dello split video basato su mplayer"
 
 #: gap/gap_decode_mplayer.c:210
 #, fuzzy
@@ -928,7 +927,7 @@ msgstr "Compressione png:"
 msgid ""
 "Compression for resulting png frames where 0 is uncopressed (fast), 9 is "
 "max. compression (this option is ignored when JPEG format is used)"
-msgstr ""
+msgstr "La compressione per i frame png risultanti dove 0 è non compresso (veloce) e 9 è la massima compressione (quest'opzione viene ignorata quando viene usato il formato JPEG)"
 
 #: gap/gap_decode_mplayer.c:505 gap/gap_decode_xanim.c:293
 msgid "Jpeg Quality:"
@@ -5687,11 +5686,11 @@ msgstr "Disposizione elenco clip:"
 
 #: gap/gap_story_dialog.c:2798 gap/gap_story_dialog.c:2838
 msgid "Thumbnail Size:"
-msgstr "Ampiezza miniature:"
+msgstr "Dimensione miniature:"
 
 #: gap/gap_story_dialog.c:2799
 msgid "Thumbnail size in the cliplist"
-msgstr ""
+msgstr "Dimensione miniature nell'elenco clip"
 
 #: gap/gap_story_dialog.c:2809 gap/gap_story_dialog.c:2849
 msgid "Columns:"
@@ -5699,7 +5698,7 @@ msgstr "Colonne:"
 
 #: gap/gap_story_dialog.c:2810
 msgid "columns in the cliplist"
-msgstr ""
+msgstr "colonne nell'elenco clip"
 
 #: gap/gap_story_dialog.c:2820 gap/gap_story_dialog.c:2860
 msgid "Rows:"
@@ -5716,7 +5715,7 @@ msgstr "Disposizione storyboard:"
 
 #: gap/gap_story_dialog.c:2839
 msgid "Thumbnail size in the storyboard list"
-msgstr ""
+msgstr "Dimensione miniature nell'elenco storyboard"
 
 #: gap/gap_story_dialog.c:2850
 msgid "columns in the storyboard list"
@@ -5729,7 +5728,7 @@ msgstr "Esegui un controllo del file storyboard"
 
 #: gap/gap_story_dialog.c:2873
 msgid "Use the standard built in layout settings"
-msgstr ""
+msgstr "Usa lo standard nelle impostazione di disposizione"
 
 #: gap/gap_story_dialog.c:2875
 #, fuzzy
@@ -5865,7 +5864,7 @@ msgstr "Miniature video"
 #: gap/gap_story_dialog.c:4471
 #, c-format
 msgid "Fetching videothumbnail for clip: %d (out of %d)"
-msgstr ""
+msgstr "Caricamento miniature video per clip: %d (di %d)"
 
 #: gap/gap_story_dialog.c:4928
 msgid "Load storyboard file"
@@ -7031,6 +7030,8 @@ msgid ""
 "ERROR: No valid storyboardfile was specified.\n"
 "(a storyboard file can be specified in the extras tab)"
 msgstr ""
+"ERRORE: non è stato specificato un file storyboard valido.\n"
+"(un file storyboard può essere specificato nelle schede extra)"
 
 #: vid_common/gap_cme_gui.c:1805
 #, c-format
@@ -7128,29 +7129,27 @@ msgstr "Modo tonalità:"
 
 #. radio button Frames input_mode
 #: vid_common/gap_cme_gui.c:2230
-#, fuzzy
 msgid "Frames"
-msgstr "Frame:"
+msgstr "Frame"
 
 #: vid_common/gap_cme_gui.c:2240
 msgid "Input is a sequence of frame images"
-msgstr ""
+msgstr "L'ingresso è una sequenza di immagini frame"
 
 #. radio button Layers input_mode
 #: vid_common/gap_cme_gui.c:2254
-#, fuzzy
 msgid "Layers"
-msgstr "Livello"
+msgstr "Livelli"
 
 #: vid_common/gap_cme_gui.c:2263
 msgid "Input are all the layers of one image"
-msgstr ""
+msgstr "L'ingresso sono tutti i livello di un'immagine"
 
 #: vid_common/gap_cme_gui.c:2287
 msgid ""
 "Input are videoclips and frames, defined via storyboard file. (specify the "
 "storyboard filename in the extras tab)"
-msgstr ""
+msgstr "L'ingresso sono videoclip e frame, definite tramite il file storyboard (specifica il file storyboard nella scheda extra)."
 
 #: vid_common/gap_cme_gui.c:2333
 msgid "Master Videoencoder"
@@ -8552,28 +8551,24 @@ msgid "use DivX VBR, best quality presets"
 msgstr "DivX VBR, migliore qualità"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2419
-#, fuzzy
 msgid "use DivX VBR, low quality presets"
-msgstr "DivX VBR, bassa qualità"
+msgstr "usa preimpostazioni DivX VBR a bassa qualità"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2420
-#, fuzzy
 msgid "use MPEG1 fixed rate (VCD) presets"
-msgstr "MPEG1 a tasso fisso (VCD)"
+msgstr "usa preimpostazioni MPEG1 a tasso fisso (VCD)"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2421
-#, fuzzy
 msgid "use MPEG1 VBR, best quality presets"
-msgstr "MPEG1 VBR, migliore qualità"
+msgstr "usa preimpostazioni MPEG1 VBR alla migliore qualità"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2422
-#, fuzzy
 msgid "use MPEG2 VBR (DVD) presets"
-msgstr "MPEG2 VBR (DVD)"
+msgstr "usa preimpostazioni MPEG2 VBR (DVD)"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2423
 msgid "use REAL video presets"
-msgstr ""
+msgstr "usa preimpostazioni video REAL"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2447
 msgid "Predefined encoder parameter settings"
@@ -8663,20 +8658,17 @@ msgstr "L'ampiezza e l'altezza del frame devono essere multipli di 2\n"
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:1308
 #, c-format
 msgid "Could not create pass logfile:'%s'%s"
-msgstr ""
+msgstr "Impossibile creare file di log del passo:'%s'%s"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:1331
-#, fuzzy, c-format
+#, c-format
 msgid "Could not open pass logfile:'%s'%s"
-msgstr ""
-"ERRORE: impossibile aprire i punti di lavoro morph\n"
-"nomefile: '%s'\n"
-"%s"
+msgstr "Impossibile aprire il file di log del passo:'%s'%s"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:1361
-#, fuzzy, c-format
+#, c-format
 msgid "Could not create videofile:'%s'%s"
-msgstr "ERRORE: impossibile creare directory-indice-video:'%s'%s"
+msgstr "Impossibile creare il file video:'%s'%s"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:1964
 msgid "FFMPEG Video Encoding .."
