@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gimp-gap\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-08-04 20:40-0400\n"
-"PO-Revision-Date: 2004-08-04 20:40-0400\n"
+"POT-Creation-Date: 2004-08-06 15:08-0400\n"
+"PO-Revision-Date: 2004-08-06 20:40-0400\n"
 "Last-Translator: Adam Weinberger <adamw@gnome.org>\n"
 "Language-Team: Canadian English <adamw@FreeBSD.org>\n"
 "MIME-Version: 1.0\n"
@@ -24,7 +24,7 @@ msgstr "Font Browser"
 #. audiofile button (fileselect invoker)
 #. the filesel invoker button
 #: gap/gap_arr_dialog.c:540 gap/gap_fmac_main.c:594
-#: gap/gap_player_dialog.c:4505 gap/gap_story_properties.c:1676
+#: gap/gap_player_dialog.c:4505 gap/gap_story_properties.c:1714
 msgid "File Browser"
 msgstr "File Browser"
 
@@ -1112,7 +1112,7 @@ msgstr "Delete the filtermacro scriptfile"
 
 #. Button Delete
 #. radio button DELETE
-#: gap/gap_fmac_main.c:883 gap/gap_morph_dialog.c:2964
+#: gap/gap_fmac_main.c:883 gap/gap_morph_dialog.c:2965
 msgid "Delete"
 msgstr "Delete"
 
@@ -1638,7 +1638,7 @@ msgstr "Modifying frames/layer(s)..."
 msgid "No selected layer in start frame"
 msgstr "No selected layer in start frame"
 
-#: gap/gap_morph_dialog.c:2494
+#: gap/gap_morph_dialog.c:2495
 #, c-format
 msgid ""
 "Failed to write morph workpointfile\n"
@@ -1649,7 +1649,7 @@ msgstr ""
 "filename: '%s':\n"
 "%s"
 
-#: gap/gap_morph_dialog.c:2523
+#: gap/gap_morph_dialog.c:2524
 #, c-format
 msgid ""
 "ERROR: Could not open morph workpoints\n"
@@ -1660,7 +1660,7 @@ msgstr ""
 "filename: '%s'\n"
 "%s"
 
-#: gap/gap_morph_dialog.c:2529
+#: gap/gap_morph_dialog.c:2530
 #, c-format
 msgid ""
 "ERROR: Could not read morph workpoints\n"
@@ -1671,24 +1671,24 @@ msgstr ""
 "filename: '%s'\n"
 "(Is not a valid morph workpoint file)"
 
-#: gap/gap_morph_dialog.c:2581
+#: gap/gap_morph_dialog.c:2582
 msgid "Save Morph Workpointfile"
 msgstr "Save Morph Workpointfile"
 
-#: gap/gap_morph_dialog.c:2585
+#: gap/gap_morph_dialog.c:2586
 msgid "Load Morph Workpointfile"
 msgstr "Load Morph Workpointfile"
 
-#: gap/gap_morph_dialog.c:2898
+#: gap/gap_morph_dialog.c:2899
 msgid "Edit Mode:"
 msgstr "Edit Mode:"
 
 #. radio button SET
-#: gap/gap_morph_dialog.c:2912
+#: gap/gap_morph_dialog.c:2913
 msgid "Set"
 msgstr "Set"
 
-#: gap/gap_morph_dialog.c:2921
+#: gap/gap_morph_dialog.c:2922
 msgid ""
 "Click: pick and drag point at cursor or create new point SHIFT-Click: force "
 "create new point Alt-Click: disable drag Right-Click: delete point at cursor"
@@ -1697,11 +1697,11 @@ msgstr ""
 "create new point Alt-Click: disable drag Right-Click: delete point at cursor"
 
 #. radio button MOVE
-#: gap/gap_morph_dialog.c:2938
+#: gap/gap_morph_dialog.c:2939
 msgid "Move"
 msgstr "Move"
 
-#: gap/gap_morph_dialog.c:2947
+#: gap/gap_morph_dialog.c:2948
 msgid ""
 "Click: drag next point SHIFT-Click: force create new point Alt-Click: "
 "disable drag Right-Click: delete point at cursor"
@@ -1709,60 +1709,60 @@ msgstr ""
 "Click: drag next point SHIFT-Click: force create new point Alt-Click: "
 "disable drag Right-Click: delete point at cursor"
 
-#: gap/gap_morph_dialog.c:2973
+#: gap/gap_morph_dialog.c:2974
 msgid "Click: delete next point"
 msgstr "Click: delete next point"
 
 #. radio button ZOOM
-#: gap/gap_morph_dialog.c:2986
+#: gap/gap_morph_dialog.c:2987
 msgid "Zoom"
 msgstr "Zoom"
 
-#: gap/gap_morph_dialog.c:2995
+#: gap/gap_morph_dialog.c:2996
 msgid "Click: zoom in, CTRL-click: zoom out"
 msgstr "Click: zoom in, CTRL-click: zoom out"
 
 #. radio button SHOW
-#: gap/gap_morph_dialog.c:3009
+#: gap/gap_morph_dialog.c:3010
 msgid "Show"
 msgstr "Show"
 
-#: gap/gap_morph_dialog.c:3018
+#: gap/gap_morph_dialog.c:3019
 msgid "Click: show warp pick koordinates in the source window"
 msgstr "Click: show warp pick co-ordinates in the source window"
 
-#: gap/gap_morph_dialog.c:3049
+#: gap/gap_morph_dialog.c:3050
 msgid "Render Mode:"
 msgstr "Render Mode:"
 
 #. radio button MORPH
-#: gap/gap_morph_dialog.c:3062
+#: gap/gap_morph_dialog.c:3063
 msgid "Morph"
 msgstr "Morph"
 
-#: gap/gap_morph_dialog.c:3071
+#: gap/gap_morph_dialog.c:3072
 msgid "Render morph transition (warp forward, warp backward and cross fade)"
 msgstr "Render morph transition (warp forward, warp backward and cross fade)"
 
 #. radio button WARP
-#: gap/gap_morph_dialog.c:3084
+#: gap/gap_morph_dialog.c:3085
 msgid "Warp"
 msgstr "Warp"
 
-#: gap/gap_morph_dialog.c:3093
+#: gap/gap_morph_dialog.c:3094
 msgid "Render forward warp transitions only"
 msgstr "Render forward warp transitions only"
 
 #. the layer seletion optionmenu
-#: gap/gap_morph_dialog.c:3147
+#: gap/gap_morph_dialog.c:3148
 msgid "Layer:"
 msgstr "Layer:"
 
-#: gap/gap_morph_dialog.c:3161
+#: gap/gap_morph_dialog.c:3162
 msgid "Select the source layer"
 msgstr "Select the source layer"
 
-#: gap/gap_morph_dialog.c:3167
+#: gap/gap_morph_dialog.c:3168
 msgid "Select the destination layer "
 msgstr "Select the destination layer "
 
@@ -1771,84 +1771,84 @@ msgstr "Select the destination layer "
 #. table col, row
 #. gtk_container_add (GTK_CONTAINER (abox), table3);
 #. the x/y offest labels
-#: gap/gap_morph_dialog.c:3181 gap/gap_mov_dialog.c:3746
+#: gap/gap_morph_dialog.c:3182 gap/gap_mov_dialog.c:3746
 #: gap/gap_name2layer_main.c:473 gap/gap_resi_dialog.c:819
 msgid "X:"
 msgstr "X:"
 
-#: gap/gap_morph_dialog.c:3203
+#: gap/gap_morph_dialog.c:3204
 msgid "Morphpoint X koordinate"
 msgstr "Morphpoint X co-ordinate"
 
 #. the y koordinate label
 #. Y
 #. table col, row
-#: gap/gap_morph_dialog.c:3212 gap/gap_mov_dialog.c:3764
+#: gap/gap_morph_dialog.c:3213 gap/gap_mov_dialog.c:3764
 #: gap/gap_name2layer_main.c:484 gap/gap_resi_dialog.c:728
 #: gap/gap_resi_dialog.c:825
 msgid "Y:"
 msgstr "Y:"
 
-#: gap/gap_morph_dialog.c:3235
+#: gap/gap_morph_dialog.c:3236
 msgid "Morphpoint Y koordinate"
 msgstr "Morphpoint Y co-ordinate"
 
 #. Fit Zoom Button
-#: gap/gap_morph_dialog.c:3243
+#: gap/gap_morph_dialog.c:3244
 msgid "Fit Zoom"
 msgstr "Fit Zoom"
 
-#: gap/gap_morph_dialog.c:3247
+#: gap/gap_morph_dialog.c:3248
 msgid "Show the whole layer. (by adjusting zoom to fit into preview)."
 msgstr "Show the whole layer. (by adjusting zoom to fit into preview)."
 
 #. there is just one total_points display (always in the dst frame)
 #. the current Point label
-#: gap/gap_morph_dialog.c:3271
+#: gap/gap_morph_dialog.c:3261
 msgid "Point:"
 msgstr "Point:"
 
-#: gap/gap_morph_dialog.c:3294
+#: gap/gap_morph_dialog.c:3284
 msgid "Number of the current point"
 msgstr "Number of the current point"
 
 #. the number_of_points label
-#: gap/gap_morph_dialog.c:3300
+#: gap/gap_morph_dialog.c:3290
 msgid "of total:"
 msgstr "of total:"
 
 #. the number_of_points label
-#: gap/gap_morph_dialog.c:3308
+#: gap/gap_morph_dialog.c:3298
 msgid "001"
 msgstr "001"
 
-#: gap/gap_morph_dialog.c:3446
+#: gap/gap_morph_dialog.c:3436
 msgid "Morph / Warp"
 msgstr "Morph / Warp"
 
-#: gap/gap_morph_dialog.c:3529
+#: gap/gap_morph_dialog.c:3519
 msgid "Source"
 msgstr "Source"
 
-#: gap/gap_morph_dialog.c:3544
+#: gap/gap_morph_dialog.c:3534
 msgid "Destination"
 msgstr "Destination"
 
 #. the nubner of ShapePoints label
-#: gap/gap_morph_dialog.c:3563
+#: gap/gap_morph_dialog.c:3553
 msgid "ShapePoints:"
 msgstr "ShapePoints:"
 
-#: gap/gap_morph_dialog.c:3585
+#: gap/gap_morph_dialog.c:3575
 msgid "Number of workpoints to create when Shape button is pressed"
 msgstr "Number of workpoints to create when Shape button is pressed"
 
 #. Shape Button
-#: gap/gap_morph_dialog.c:3591
+#: gap/gap_morph_dialog.c:3581
 msgid "Shape"
 msgstr "Shape"
 
-#: gap/gap_morph_dialog.c:3595
+#: gap/gap_morph_dialog.c:3585
 msgid ""
 "Create N workpoints following the outline shape of the layer.(the shape "
 "detection is looking for non-transparent pixels).SHIFT-click: adds the new "
@@ -1859,29 +1859,29 @@ msgstr ""
 "points and keeps the old points"
 
 #. the show lines checkbutton
-#: gap/gap_morph_dialog.c:3610
+#: gap/gap_morph_dialog.c:3600
 msgid "Lines"
 msgstr "Lines"
 
-#: gap/gap_morph_dialog.c:3619
+#: gap/gap_morph_dialog.c:3609
 msgid "Show movement vector lines in the destination preview"
 msgstr "Show movement vector lines in the destination preview"
 
 #. Swap Windows Button
-#: gap/gap_morph_dialog.c:3624
+#: gap/gap_morph_dialog.c:3614
 msgid "Swap"
 msgstr "Swap"
 
-#: gap/gap_morph_dialog.c:3628
+#: gap/gap_morph_dialog.c:3618
 msgid "Exchange source and destination"
 msgstr "Exchange source and destination"
 
 #. the deform affect radius label
-#: gap/gap_morph_dialog.c:3639
+#: gap/gap_morph_dialog.c:3629
 msgid "Radius:"
 msgstr "Radius:"
 
-#: gap/gap_morph_dialog.c:3661
+#: gap/gap_morph_dialog.c:3651
 msgid ""
 "Deform radius in pixels. Each workpoint causes a move-deform operation "
 "within this affect radius."
@@ -1890,58 +1890,58 @@ msgstr ""
 "within this affect radius."
 
 #. the deform intensity label
-#: gap/gap_morph_dialog.c:3671
+#: gap/gap_morph_dialog.c:3661
 msgid "Intensity:"
 msgstr "Intensity:"
 
-#: gap/gap_morph_dialog.c:3694
+#: gap/gap_morph_dialog.c:3684
 msgid "Deform intensity."
 msgstr "Deform intensity."
 
 #. the use_intensity checkbutton
-#: gap/gap_morph_dialog.c:3702
+#: gap/gap_morph_dialog.c:3692
 msgid "Use Intensity"
 msgstr "Use Intensity"
 
-#: gap/gap_morph_dialog.c:3712
+#: gap/gap_morph_dialog.c:3702
 msgid ""
-"ON: deform descending by power of intensity from workpoint (full) to radius "
-"(zero).OFF: linear deform inside the radius"
+"ON: Descending deform action from workpoint (full) to radius (zero). Descend "
+"by power of intensity.OFF: Linear deform action inside the radius"
 msgstr ""
-"ON: deform descending by power of intensity from workpoint (full) to radius "
-"(zero).OFF: linear deform inside the radius"
+"ON: Descending deform action from workpoint (full) to radius (zero). Descend "
+"by power of intensity. OFF: Linear deform action inside the radius"
 
-#. the use_fast_wp_selection checkbutton
+#. the use_quality_wp_selection checkbutton
+#: gap/gap_morph_dialog.c:3707
+msgid "Quality"
+msgstr "Quality"
+
 #: gap/gap_morph_dialog.c:3717
-msgid "Fast"
-msgstr "Fast"
+msgid ""
+"ON: Use quality workpoint selection algorithm.OFF: Use fast workpoint "
+"selection algorithm."
+msgstr ""
+"ON: Use quality workpoint selection algorithm. OFF: Use fast workpoint "
+"selection algorithm."
 
 #: gap/gap_morph_dialog.c:3727
 msgid ""
-"ON: use fast workpoint selection algorithm.OFF: use quality workpoint "
-"selection algorithm."
-msgstr ""
-"ON: use fast workpoint selection algorithm.OFF: use quality workpoint "
-"selection algorithm."
-
-#: gap/gap_morph_dialog.c:3737
-msgid ""
 "Load morph workpoints from file. SHIFT-click: define filename of Pointset B"
 msgstr ""
 "Load morph workpoints from file. SHIFT-click: define filename of Pointset B"
 
-#: gap/gap_morph_dialog.c:3749
+#: gap/gap_morph_dialog.c:3739
 msgid ""
 "Save morph workpoints to file. SHIFT-click: define filename of Pointset B"
 msgstr ""
 "Save morph workpoints to file. SHIFT-click: define filename of Pointset B"
 
 #. the tween_steps label
-#: gap/gap_morph_dialog.c:3761
+#: gap/gap_morph_dialog.c:3751
 msgid "Steps:"
 msgstr "Steps:"
 
-#: gap/gap_morph_dialog.c:3783
+#: gap/gap_morph_dialog.c:3773
 msgid ""
 "Number of layers to create or modify. Steps refers to N layers under the "
 "destination layer. Steps is ignored if render mode is warp and source and "
@@ -1952,29 +1952,29 @@ msgstr ""
 "destination are different layers of the same image"
 
 #. the pointcolor colorbutton
-#: gap/gap_morph_dialog.c:3793
+#: gap/gap_morph_dialog.c:3783
 msgid "Pointcolor"
 msgstr "Pointcolour"
 
-#: gap/gap_morph_dialog.c:3801
+#: gap/gap_morph_dialog.c:3791
 msgid "Set color for the morph workpoints"
 msgstr "Set colour for the morph workpoints"
 
 #. the currentcolor colorbutton
-#: gap/gap_morph_dialog.c:3812
+#: gap/gap_morph_dialog.c:3802
 msgid "Current Pointcolor"
 msgstr "Current Pointcolour"
 
-#: gap/gap_morph_dialog.c:3820
+#: gap/gap_morph_dialog.c:3810
 msgid "Set color for the current morph workpoint"
 msgstr "Set colour for the current morph workpoint"
 
 #. the create tween checkbutton
-#: gap/gap_morph_dialog.c:3840
+#: gap/gap_morph_dialog.c:3830
 msgid "Create Layers"
 msgstr "Create Layers"
 
-#: gap/gap_morph_dialog.c:3850
+#: gap/gap_morph_dialog.c:3840
 msgid ""
 "ON: Create specified number of tween layers. OFF: Operate on existing layers "
 "below the destination layer"
@@ -1983,11 +1983,11 @@ msgstr ""
 "below the destination layer"
 
 #. the multiple pointsets checkbutton
-#: gap/gap_morph_dialog.c:3856
+#: gap/gap_morph_dialog.c:3846
 msgid "Multiple Pointsets"
 msgstr "Multiple Pointsets"
 
-#: gap/gap_morph_dialog.c:3866
+#: gap/gap_morph_dialog.c:3856
 msgid ""
 "ON: use 2 or more pointsets from file. Please create and save the pointsets "
 "first, using filenames with a 2-digit numberpart before the extension "
@@ -2011,15 +2011,15 @@ msgstr "Pointset A:"
 msgid "Pointset B:"
 msgstr "Pointset B:"
 
-#: gap/gap_morph_exec.c:2250
+#: gap/gap_morph_exec.c:2582
 msgid "creating morph tween layers..."
 msgstr "creating morph tween layers..."
 
-#: gap/gap_morph_exec.c:2254
+#: gap/gap_morph_exec.c:2586
 msgid "creating warp tween layers..."
 msgstr "creating warp tween layers..."
 
-#: gap/gap_morph_main.c:388
+#: gap/gap_morph_main.c:146
 msgid "<Image>/Video/Morph..."
 msgstr "<Image>/Video/Morph..."
 
@@ -2154,7 +2154,7 @@ msgid "Ping Pong"
 msgstr "Ping Pong"
 
 #. radio button delace_mode None
-#: gap/gap_mov_dialog.c:459 gap/gap_story_properties.c:1789
+#: gap/gap_mov_dialog.c:459 gap/gap_story_properties.c:1828
 msgid "None"
 msgstr "None"
 
@@ -4541,7 +4541,8 @@ msgstr "Remove Unused"
 
 #: gap/gap_range_ops.c:380
 msgid "Remove unused or double colors (ignored if palette type is not custom)"
-msgstr "Remove unused or double colours (ignored if palette type is not custom)"
+msgstr ""
+"Remove unused or double colours (ignored if palette type is not custom)"
 
 #: gap/gap_range_ops.c:385
 msgid "Number of Colors"
@@ -5096,12 +5097,12 @@ msgstr ""
 "%s"
 
 #: gap/gap_story_dialog.c:2917
-msgid "Windows"
-msgstr "Windows"
+msgid "Global"
+msgstr "Global"
 
 #. the frame
 #: gap/gap_story_dialog.c:2919 gap/gap_story_dialog.c:2976
-#: gap/gap_story_dialog.c:3039 gap/gap_story_properties.c:1623
+#: gap/gap_story_dialog.c:3039 gap/gap_story_properties.c:1661
 msgid "Properties"
 msgstr "Properties"
 
@@ -5249,29 +5250,29 @@ msgstr "Reset parameters to default size"
 msgid "Master Properties"
 msgstr "Master Properties"
 
-#: gap/gap_story_file.c:281 gap/gap_story_file.c:315
+#: gap/gap_story_file.c:336 gap/gap_story_file.c:370
 msgid "internal error"
 msgstr "internal error"
 
-#: gap/gap_story_file.c:1146
+#: gap/gap_story_file.c:1202
 #, c-format
 msgid "illegal number: %s (valid range is %d upto %d)\n"
 msgstr "illegal number: %s (valid range is %d upto %d)\n"
 
-#: gap/gap_story_file.c:1185
+#: gap/gap_story_file.c:1241
 #, c-format
 msgid "illegal number: %s (valid range is %.3f upto %.3f)"
 msgstr "illegal number: %s (valid range is %.3f upto %.3f)"
 
-#: gap/gap_story_file.c:1284
+#: gap/gap_story_file.c:1340
 msgid "same parameter used more than once"
 msgstr "same parameter used more than once"
 
-#: gap/gap_story_file.c:1296
+#: gap/gap_story_file.c:1352
 msgid "conflict: positional parameter shadows named parameter"
 msgstr "conflict: positional parameter shadows named parameter"
 
-#: gap/gap_story_file.c:1344
+#: gap/gap_story_file.c:1400
 #, c-format
 msgid ""
 "Header not found!\n"
@@ -5285,11 +5286,11 @@ msgstr ""
 #. accept unsupported lines (with just a warning)
 #. * because the file has correct Header
 #.
-#: gap/gap_story_file.c:1565 gap/gap_story_file.c:1572
+#: gap/gap_story_file.c:1625 gap/gap_story_file.c:1632
 msgid "Unsupported line was igonored"
 msgstr "Unsupported line was igonored"
 
-#: gap/gap_story_file.c:1743
+#: gap/gap_story_file.c:1803
 #, c-format
 msgid ""
 "the passed filename %s has irrelevant content or could not be opened by the "
@@ -5302,11 +5303,11 @@ msgstr ""
 msgid "<Image>/Video/Storyboard..."
 msgstr "<Image>/Video/Storyboard..."
 
-#: gap/gap_story_properties.c:409
+#: gap/gap_story_properties.c:411
 msgid "Automatic scene detection operates only on cliptypes MOVIE and FRAMES"
 msgstr "Automatic scene detection operates only on cliptypes MOVIE and FRAMES"
 
-#: gap/gap_story_properties.c:416
+#: gap/gap_story_properties.c:418
 msgid ""
 "Scene detection depends on video thumbnails. Please enable videothumbnails "
 "(in the Windows Menu)"
@@ -5314,7 +5315,7 @@ msgstr ""
 "Scene detection depends on video thumbnails. Please enable videothumbnails "
 "(in the Windows Menu)"
 
-#: gap/gap_story_properties.c:475 gap/gap_story_properties.c:538
+#: gap/gap_story_properties.c:477 gap/gap_story_properties.c:540
 msgid ""
 "Scene detection for cliptype FRAMES depends on thumbnails. Please create "
 "thumbnails for your frames and then try again."
@@ -5322,70 +5323,70 @@ msgstr ""
 "Scene detection for cliptype FRAMES depends on thumbnails. Please create "
 "thumbnails for your frames and then try again."
 
-#: gap/gap_story_properties.c:1203
+#: gap/gap_story_properties.c:1205
 msgid "Set Image or Frame Filename"
 msgstr "Set Image or Frame Filename"
 
-#: gap/gap_story_properties.c:1281
+#: gap/gap_story_properties.c:1283
 msgid "EMPTY"
 msgstr "EMPTY"
 
-#: gap/gap_story_properties.c:1284
+#: gap/gap_story_properties.c:1286
 msgid "COLOR"
 msgstr "COLOUR"
 
-#: gap/gap_story_properties.c:1287
+#: gap/gap_story_properties.c:1289
 msgid "SINGLE-IMAGE"
 msgstr "SINGLE-IMAGE"
 
-#: gap/gap_story_properties.c:1291
+#: gap/gap_story_properties.c:1293
 msgid "ANIM-IMAGE"
 msgstr "ANIM-IMAGE"
 
-#: gap/gap_story_properties.c:1295
+#: gap/gap_story_properties.c:1297
 msgid "FRAME-IMAGES"
 msgstr "FRAME-IMAGES"
 
-#: gap/gap_story_properties.c:1300
+#: gap/gap_story_properties.c:1302
 msgid "MOVIE"
 msgstr "MOVIE"
 
-#: gap/gap_story_properties.c:1303
+#: gap/gap_story_properties.c:1305
 msgid "COMMENT"
 msgstr "COMMENT"
 
-#: gap/gap_story_properties.c:1306
+#: gap/gap_story_properties.c:1308
 msgid "** UNKNOWN **"
 msgstr "** UNKNOWN **"
 
-#: gap/gap_story_properties.c:1344
+#: gap/gap_story_properties.c:1357
 #, c-format
 msgid "%d (frames)"
 msgstr "%d (frames)"
 
-#: gap/gap_story_properties.c:1589 gap/gap_story_properties.c:1601
+#: gap/gap_story_properties.c:1627 gap/gap_story_properties.c:1639
 msgid "Clip Properties"
 msgstr "Clip Properties"
 
-#: gap/gap_story_properties.c:1594 gap/gap_story_properties.c:1605
+#: gap/gap_story_properties.c:1632 gap/gap_story_properties.c:1643
 msgid "Find Scene End"
 msgstr "Find Scene End"
 
-#: gap/gap_story_properties.c:1595 gap/gap_story_properties.c:1606
+#: gap/gap_story_properties.c:1633 gap/gap_story_properties.c:1644
 msgid "Aoto Scene Split"
 msgstr "Aoto Scene Split"
 
 #. the cliptype label
-#: gap/gap_story_properties.c:1638
+#: gap/gap_story_properties.c:1676
 msgid "Clip Type:"
 msgstr "Clip Type:"
 
 #. the filename label
-#: gap/gap_story_properties.c:1653
+#: gap/gap_story_properties.c:1691
 msgid "File:"
 msgstr "File:"
 
-#: gap/gap_story_properties.c:1688
+#: gap/gap_story_properties.c:1726
 msgid "From:"
 msgstr "From:"
 
@@ -5394,11 +5395,11 @@ msgstr "From:"
 #. digits
 #. constrain
 #. lower/upper unconstrained
-#: gap/gap_story_properties.c:1695
+#: gap/gap_story_properties.c:1733
 msgid "framenumber of the first frame in the clip range"
 msgstr "framenumber of the first frame in the clip range"
 
-#: gap/gap_story_properties.c:1717
+#: gap/gap_story_properties.c:1755
 msgid "To:"
 msgstr "To:"
 
@@ -5407,11 +5408,11 @@ msgstr "To:"
 #. digits
 #. constrain
 #. lower/upper unconstrained
-#: gap/gap_story_properties.c:1724
+#: gap/gap_story_properties.c:1762
 msgid "framenumber of the last frame in the clip range"
 msgstr "framenumber of the last frame in the clip range"
 
-#: gap/gap_story_properties.c:1735
+#: gap/gap_story_properties.c:1774
 msgid "Loops:"
 msgstr "Loops:"
 
@@ -5420,12 +5421,12 @@ msgstr "Loops:"
 #. digits
 #. constrain
 #. lower/upper unconstrained
-#: gap/gap_story_properties.c:1742
+#: gap/gap_story_properties.c:1781
 msgid "number of loops (how often to play the framerange)"
 msgstr "number of loops (how often to play the framerange)"
 
 #. the videotrack to label
-#: gap/gap_story_properties.c:1753 gap/gap_vex_dialog.c:1918
+#: gap/gap_story_properties.c:1792 gap/gap_vex_dialog.c:1918
 msgid "Videotrack:"
 msgstr "Videotrack:"
 
@@ -5434,59 +5435,78 @@ msgstr "Videotrack:"
 #. digits
 #. constrain
 #. lower/upper unconstrained
-#: gap/gap_story_properties.c:1760
+#: gap/gap_story_properties.c:1799
 msgid "select input videotrack(most videofiles have just 1 track)"
 msgstr "select input videotrack(most videofiles have just 1 track)"
 
 #. the Deinterlace Mode label
-#: gap/gap_story_properties.c:1771
+#: gap/gap_story_properties.c:1810
 msgid "Deinterlace:"
 msgstr "Deinterlace:"
 
-#: gap/gap_story_properties.c:1797
+#: gap/gap_story_properties.c:1836
 msgid "Read videoframes 1:1 without de-interlace filter"
 msgstr "Read videoframes 1:1 without de-interlace filter"
 
 #. radio button delace_mode odd
-#: gap/gap_story_properties.c:1806
+#: gap/gap_story_properties.c:1845
 msgid "Odd"
 msgstr "Odd"
 
-#: gap/gap_story_properties.c:1814
+#: gap/gap_story_properties.c:1853
 msgid "Apply odd-lines filter when reading videoframes"
 msgstr "Apply odd-lines filter when reading videoframes"
 
 #. radio button delace_mode even
-#: gap/gap_story_properties.c:1823
+#: gap/gap_story_properties.c:1862
 msgid "Even"
 msgstr "Even"
 
-#: gap/gap_story_properties.c:1831
+#: gap/gap_story_properties.c:1870
 msgid "Apply even-lines filter when reading videoframes"
 msgstr "Apply even-lines filter when reading videoframes"
 
-#: gap/gap_story_properties.c:1856
+#: gap/gap_story_properties.c:1895
 msgid ""
 "deinterlacing threshold: 0.0 no interpolation 0.999 smooth interpolation"
 msgstr ""
 "deinterlacing threshold: 0.0 no interpolation 0.999 smooth interpolation"
 
 #. pingpong
-#: gap/gap_story_properties.c:1872
+#: gap/gap_story_properties.c:1911
 msgid "Pingpong:"
 msgstr "Pingpong:"
 
-#: gap/gap_story_properties.c:1888
+#: gap/gap_story_properties.c:1927
 msgid "ON: Play clip in pingpong mode"
 msgstr "ON: Play clip in pingpong mode"
 
+#: gap/gap_story_properties.c:1938
+msgid "Stepsize:"
+msgstr "Step size:"
+
+#. lower/upper
+#. step, page
+#. digits
+#. constrain
+#. lower/upper unconstrained
+#: gap/gap_story_properties.c:1945
+msgid ""
+"Stepsize density. Use 1.0 for normal 1:1 frame by frame steps. a value of "
+"0.5 shows each input frame 2 times. a value of 2.0 shows only every 2.nd "
+"input frame"
+msgstr ""
+"Stepsize density. Use 1.0 for normal 1:1 frame by frame steps. A value of "
+"0.5 shows each input frame 2 times. A value of 2.0 shows only every 2nd "
+"input frame"
+
 #. the duration label
-#: gap/gap_story_properties.c:1900
+#: gap/gap_story_properties.c:1958
 msgid "Duration:"
 msgstr "Duration:"
 
 #. the comment label
-#: gap/gap_story_properties.c:1989 vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2185
+#: gap/gap_story_properties.c:2047 vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2185
 msgid "Comment:"
 msgstr "Comment:"
 
@@ -5944,65 +5964,65 @@ msgstr "Reset all Parameters to Default Values"
 msgid "Set Layer Opacity"
 msgstr "Set Layer Opacity"
 
-#: libgapvidutil/gap_gve_story.c:578
+#: libgapvidutil/gap_gve_story.c:581
 #, c-format
 msgid "encoding_video_frame_%06d"
 msgstr "encoding_video_frame_%06d"
 
-#: libgapvidutil/gap_gve_story.c:1233
+#: libgapvidutil/gap_gve_story.c:1236
 #, c-format
 msgid "cant load:  %s to memory"
 msgstr "cant load:  %s to memory"
 
-#: libgapvidutil/gap_gve_story.c:1537
+#: libgapvidutil/gap_gve_story.c:1540
 msgid "checking audio peaks"
 msgstr "checking audio peaks"
 
-#: libgapvidutil/gap_gve_story.c:1559
+#: libgapvidutil/gap_gve_story.c:1562
 msgid "writing composite audiofile"
 msgstr "writing composite audiofile"
 
-#: libgapvidutil/gap_gve_story.c:1572
+#: libgapvidutil/gap_gve_story.c:1575
 #, c-format
 msgid "cant write audio to file: %s "
 msgstr "cant write audio to file: %s "
 
-#: libgapvidutil/gap_gve_story.c:1579 vid_common/gap_cme_gui.c:1197
+#: libgapvidutil/gap_gve_story.c:1582 vid_common/gap_cme_gui.c:1197
 #: vid_common/gap_cme_gui.c:1356
 msgid "ready"
 msgstr "ready"
 
-#: libgapvidutil/gap_gve_story.c:2121
+#: libgapvidutil/gap_gve_story.c:2128
 #, c-format
 msgid "file not found:  %s for audioinput"
 msgstr "file not found:  %s for audioinput"
 
-#: libgapvidutil/gap_gve_story.c:2265 libgapvidutil/gap_gve_story.c:2377
+#: libgapvidutil/gap_gve_story.c:2272 libgapvidutil/gap_gve_story.c:2384
 #, c-format
 msgid "cant use file:  %s as audioinput"
 msgstr "cant use file:  %s as audioinput"
 
-#: libgapvidutil/gap_gve_story.c:2278 libgapvidutil/gap_gve_story.c:2654
+#: libgapvidutil/gap_gve_story.c:2285 libgapvidutil/gap_gve_story.c:2665
 #, c-format
 msgid "ERROR file: %s is not a supported videoformat"
 msgstr "ERROR file: %s is not a supported videoformat"
 
-#: libgapvidutil/gap_gve_story.c:2679
+#: libgapvidutil/gap_gve_story.c:2690
 #, c-format
 msgid "loading error on animimage:  %s"
 msgstr "loading error on animimage:  %s"
 
-#: libgapvidutil/gap_gve_story.c:2697
+#: libgapvidutil/gap_gve_story.c:2708
 #, c-format
 msgid "imagefile not found:  %s"
 msgstr "imagefile not found:  %s"
 
-#: libgapvidutil/gap_gve_story.c:2808
+#: libgapvidutil/gap_gve_story.c:2819
 #, c-format
 msgid "no framefile(s) found at:  %s"
 msgstr "no framefile(s) found at:  %s"
 
-#: libgapvidutil/gap_gve_story.c:3212
+#: libgapvidutil/gap_gve_story.c:3237
 #, c-format
 msgid ""
 "illegal number: %s (valid range is %d upto %d)\n"
@@ -6011,16 +6031,16 @@ msgstr ""
 "illegal number: %s (valid range is %d upto %d)\n"
 " using default value %d"
 
-#: libgapvidutil/gap_gve_story.c:3251
+#: libgapvidutil/gap_gve_story.c:3276
 #, c-format
 msgid ""
-"illegal number: %s (valid range is %.3f upto %.3f)\n"
+"Illegal number: %s (valid range is %.3f upto %.3f)\n"
 " using default value %.3f"
 msgstr ""
-"illegal number: %s (valid range is %.3f upto %.3f)\n"
-" using default value %.3f"
+"Illegal number: %s (valid range is %.3f up to %.3f)\n"
+" Using default value %.3f"
 
-#: libgapvidutil/gap_gve_story.c:3302
+#: libgapvidutil/gap_gve_story.c:3327
 #, c-format
 msgid ""
 "illegal tracknumber: %s (valid range is 0 upto %d)\n"
@@ -6029,7 +6049,7 @@ msgstr ""
 "illegal tracknumber: %s (valid range is 0 upto %d)\n"
 " using default track 0"
 
-#: libgapvidutil/gap_gve_story.c:3368
+#: libgapvidutil/gap_gve_story.c:3393
 #, c-format
 msgid ""
 "illegal rangenumber: %s\n"
@@ -6040,7 +6060,7 @@ msgstr ""
 "(valid range is positive number, or one of the keywords: first,last,top,"
 "bottom"
 
-#: libgapvidutil/gap_gve_story.c:3467
+#: libgapvidutil/gap_gve_story.c:3492
 #, c-format
 msgid ""
 "illegal item: %s (expected one of the keywords: normal pingpong)\n"
@@ -6049,7 +6069,7 @@ msgstr ""
 "illegal item: %s (expected one of the keywords: normal pingpong)\n"
 " using default normal"
 
-#: libgapvidutil/gap_gve_story.c:3651
+#: libgapvidutil/gap_gve_story.c:3679
 #, c-format
 msgid ""
 "Header not found!\n"
@@ -6058,12 +6078,12 @@ msgstr ""
 "Header not found!\n"
 "(line 1 must start with:  %s"
 
-#: libgapvidutil/gap_gve_story.c:3900
+#: libgapvidutil/gap_gve_story.c:3929
 #, c-format
 msgid "illegal keyword: %s (expected keywords are: width, height, both, none"
 msgstr "illegal keyword: %s (expected keywords are: width, height, both, none"
 
-#: libgapvidutil/gap_gve_story.c:3932
+#: libgapvidutil/gap_gve_story.c:3961
 #, c-format
 msgid ""
 "illegal keyword: %s (expected keywords are: keep_proportions, "
@@ -6072,24 +6092,24 @@ msgstr ""
 "illegal keyword: %s (expected keywords are: keep_proportions, "
 "change_proportions"
 
-#: libgapvidutil/gap_gve_story.c:4315
+#: libgapvidutil/gap_gve_story.c:4353
 msgid "Line is not supported and will be ignored"
 msgstr "Line is not supported and will be ignored"
 
-#: libgapvidutil/gap_gve_story.c:4417
+#: libgapvidutil/gap_gve_story.c:4455
 #, c-format
 msgid "PARSING %d: %s"
 msgstr "PARSING %d: %s"
 
-#: libgapvidutil/gap_gve_story.c:4457
+#: libgapvidutil/gap_gve_story.c:4495
 msgid "No Frames or Images found ...."
 msgstr "No Frames or Images found ...."
 
-#: libgapvidutil/gap_gve_story.c:5511
+#: libgapvidutil/gap_gve_story.c:5552
 msgid "Seek Inputviedoframe..."
 msgstr "Seek Inputviedoframe..."
 
-#: libgapvidutil/gap_gve_story.c:5516
+#: libgapvidutil/gap_gve_story.c:5557
 msgid "Continue Encoding..."
 msgstr "Continue Encoding..."
 
@@ -7963,10 +7983,10 @@ msgid ""
 "video name plus 4-digit number + extension"
 msgstr ""
 "The Singleframes Encoder\n"
-"writes single frames instead of one videofile\n"
-"the fileformat of the frames is derived from the\n"
-"extension of the video name, frames are named\n"
-"video name plus 4-digit number + extension"
+"Writes single frames instead of one videofile\n"
+"The file format of the frames is derived from the\n"
+"extension of the video name. Frames are named\n"
+"video name + 4-digit number + extension"
 
 #: vid_enc_single/gap_enc_singleframes_main.c:505
 msgid "the Singleframe Encoder has no encoder specific Parameters"
