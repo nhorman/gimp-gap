@@ -4,7 +4,7 @@ AC_PREREQ(2.54)
 
 m4_define([gap_major_version], [2])
 m4_define([gap_minor_version], [0])
-m4_define([gap_micro_version], [0])
+m4_define([gap_micro_version], [1])
 m4_define([gap_real_version],
           [gap_major_version.gap_minor_version.gap_micro_version])
 m4_define([gap_version], [gap_real_version])

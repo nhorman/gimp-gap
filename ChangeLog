@@ -1,3 +1,7 @@
+2004-04-30  Sven Neumann  <sven@gimp.org>
+
+	* Made 2.0.1 release.
+
 2004-04-19  Wolfgang Hofer <hof@gimp.org>
 
  	- process pixel region rectangle at once is faster
