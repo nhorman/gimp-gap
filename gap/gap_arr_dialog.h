@@ -40,6 +40,7 @@
  */
 
 /* revision history:
+ * gimp    1.3.20a; 2003/09/29  hof: p_overwrite_file_dialog
  * gimp    1.3.16b; 2003/07/04  hof: new p_confirm_dialog
  * gimp    1.3.14a; 2003/05/15  hof: new WGT_FONTSEL
  * gimp    1.3.12a; 2003/05/01  hof: merge into CVS-gimp-gap project
@@ -190,5 +191,7 @@ gint     p_array_std_dialog  (char     *title_txt,
                           gint      b_def_val);
 
 gboolean p_confirm_dialog(char *msg_txt, char *title_txt, char *frame_txt);
+
+gboolean p_overwrite_file_dialog(char *filename);
 
 #endif

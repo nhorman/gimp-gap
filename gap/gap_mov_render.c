@@ -24,6 +24,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 /* revision history:
+ * gimp    1.3.20c; 2003/09/28  hof: new features: perspective transformation, tween_layer and trace_layer
+ *                                   changed opacity, rotation and resize from int to gdouble
  * gimp    1.3.20a; 2003/09/14  hof: fixed compiler warnings
  * gimp    1.3.14a; 2003/05/24  hof: created (splitted off from gap_mov_dialog)
  */
@@ -59,18 +61,134 @@ extern      int gap_debug; /* ==0  ... dont print debug infos */
 #define BOUNDS(a,x,y)  ((a < x) ? x : ((a > y) ? y : a))
 
 /* ============================================================================
+ * p_mov_transform_perspective
+ *    perform perspective transformations on the passed layer
+ * ============================================================================
+ */
+static void
+p_mov_transform_perspective(gint32 layer_id
+                  , t_mov_values *val_ptr
+                  , t_mov_current *cur_ptr
+                  , gint         *resized_flag
+                  , guint        *new_width
+                  , guint        *new_height
+                  )
+{
+  gdouble             width;
+  gdouble             height;
+  gdouble             w2;
+  gdouble             h2;
+  gdouble             neww;
+  gdouble             newh;
+  gdouble             x0;
+  gdouble             y0;
+  gdouble             x1;
+  gdouble             y1;
+  gdouble             x2;
+  gdouble             y2;
+  gdouble             x3;
+  gdouble             y3;
+
+  if( (cur_ptr->currTTLX == 1.0)
+  &&  (cur_ptr->currTTLY == 1.0)
+  &&  (cur_ptr->currTTRX == 1.0)
+  &&  (cur_ptr->currTTRY == 1.0)
+  &&  (cur_ptr->currTBLX == 1.0)
+  &&  (cur_ptr->currTBLY == 1.0)
+  &&  (cur_ptr->currTBRX == 1.0)
+  &&  (cur_ptr->currTBRY == 1.0))
+  {
+    /* all 4 corner points unchanged, no perspective call needed */
+    return;
+  }
+
+
+  width  = gimp_drawable_width(layer_id);
+  height = gimp_drawable_height(layer_id);
+  w2 = width / 2.0;
+  h2 = height / 2.0;
+  
+
+  //XXX x0 = 0.0;
+  //XXX y0 = 0.0;
+  //XXX x1 = width;
+  //XXX y1 = 0.0;
+  //XXX x2 = 0.0;
+  //XXX y2 = height;
+  //XXX x3 = width;
+  //XXX y3 = height;
+
+  /* apply transform factors curT### to all 4 corners */
+  x0 = w2 - (cur_ptr->currTTLX * w2);
+  y0 = h2 - (cur_ptr->currTTLY * h2);
+  x1 = w2 + (cur_ptr->currTTRX * w2);
+  y1 = h2 - (cur_ptr->currTTRY * h2);
+  x2 = w2 - (cur_ptr->currTBLX * w2);
+  y2 = h2 + (cur_ptr->currTBLY * h2);
+  x3 = w2 + (cur_ptr->currTBRX * w2);
+  y3 = h2 + (cur_ptr->currTBRY * h2);
+
+  neww = MAX((x1 - x0), (x3 - x2));
+  newh = MAX((y2 - y0), (y3 - y1));
+  
+  if(gap_debug)
+  {
+    printf("** p_mov_transform_perspective:\n");
+    printf("  Factors: [0] %.3f %.3f  [1] %.3f %.3f  [2] %.3f %.3f  [3] %.3f %.3f\n"
+          ,(float)cur_ptr->currTTLX
+          ,(float)cur_ptr->currTTLY
+          ,(float)cur_ptr->currTTRX
+          ,(float)cur_ptr->currTTRY
+          ,(float)cur_ptr->currTBLX
+          ,(float)cur_ptr->currTBLY
+          ,(float)cur_ptr->currTBRX
+          ,(float)cur_ptr->currTBRY
+	  );
+    printf("  width: %.3f height: %.3f\n"
+          ,(float)width
+          ,(float)height
+	  );
+    printf("  x0: %4.3f y0: %4.3f     x1: %4.3f y1: %4.3f\n"
+          ,(float)x0
+          ,(float)y0
+          ,(float)x1
+          ,(float)y1
+	  );
+    printf("  x2: %4.3f y2: %4.3f     x3: %4.3f y3: %4.3f\n\n"
+          ,(float)x2
+          ,(float)y2
+          ,(float)x3
+          ,(float)y3
+	  );
+    printf("  neww: %.3f newh: %.3f\n"
+          ,(float)neww
+          ,(float)newh
+	  );
+  }
+  
+  gimp_perspective  (layer_id,
+		      TRUE,        /* always use interpolation for good quality */
+		      x0,
+		      y0,
+		      x1,
+		      y1,
+		      x2,
+		      y2,
+		      x3,
+		      y3);
+			  
+  *resized_flag = 1;
+  *new_width = neww;
+  *new_height = newh;
+
+}  /* end p_mov_transform_perspective  */
+
+/* ============================================================================
  * p_mov_render
  * insert current source layer into image
  *    at current settings (position, size opacity ...)
  * ============================================================================
  */
-
-  /*  why dont use: l_cp_layer_id = gimp_layer_copy(src_id);
-   *  ==> Sorry this procedure works only for layers within the same image !!
-   *  Workaround:
-   *    use my 'private' version of layercopy
-   */
-
 gint
 p_mov_render(gint32 image_id, t_mov_values *val_ptr, t_mov_current *cur_ptr)
 {
@@ -84,7 +202,7 @@ p_mov_render(gint32 image_id, t_mov_values *val_ptr, t_mov_current *cur_ptr)
   guint        l_orig_height;
   gint         l_resized_flag;
   gboolean     l_interpolation;   
-  gint          lx1, ly1, lx2, ly2;
+  gint         lx1, ly1, lx2, ly2;
   guint        l_image_width;
   guint        l_image_height;
  
@@ -178,17 +296,49 @@ p_mov_render(gint32 image_id, t_mov_values *val_ptr, t_mov_current *cur_ptr)
   l_new_width  = l_orig_width;
   l_new_height = l_orig_height;
   
-  if((cur_ptr->currWidth  > 100.01) || (cur_ptr->currWidth < 99.99)
-  || (cur_ptr->currHeight > 100.01) || (cur_ptr->currHeight < 99.99))
+  if((cur_ptr->currWidth * cur_ptr->currHeight) > (100.0 * 100.0))
   {
-     /* have to scale layer */
+     /* have to scale layer (enlarge) */
      l_resized_flag = 1;
 
      l_new_width  = (l_orig_width  * cur_ptr->currWidth) / 100;
      l_new_height = (l_orig_height * cur_ptr->currHeight) / 100;
      gimp_layer_scale(l_cp_layer_id, l_new_width, l_new_height, 0);
      
+     /* do 4-point perspective stuff (after enlarge) */
+     p_mov_transform_perspective(l_cp_layer_id
+                       , val_ptr
+                       , cur_ptr
+                       , &l_resized_flag
+                       , &l_new_width
+                       , &l_new_height
+                       );
   }
+  else
+  {
+    /* do 4-point perspective stuff (before shrink layer) */
+    p_mov_transform_perspective(l_cp_layer_id
+                       , val_ptr
+                       , cur_ptr
+                       , &l_resized_flag
+                       , &l_new_width
+                       , &l_new_height
+                       );
+     
+    if((cur_ptr->currWidth  > 100.01) || (cur_ptr->currWidth < 99.99)
+    || (cur_ptr->currHeight > 100.01) || (cur_ptr->currHeight < 99.99))
+    {
+       /* have to scale layer */
+       l_resized_flag = 1;
+
+       l_new_width  = (l_new_width  * cur_ptr->currWidth) / 100;
+       l_new_height = (l_new_height * cur_ptr->currHeight) / 100;
+       gimp_layer_scale(l_cp_layer_id, l_new_width, l_new_height, 0);
+    }
+  }
+
+
+
 
   if((cur_ptr->currRotation  > 0.5) || (cur_ptr->currRotation < -0.5))
   {

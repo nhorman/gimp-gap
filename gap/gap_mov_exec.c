@@ -26,6 +26,9 @@
  */
 
 /* revision history:
+ * gimp    1.3.20c; 2003/09/29  hof: new features: perspective transformation, step_speed_factor,
+ *                                   tween_layer and trace_layer (not finshed yet)
+ *                                   changed opacity, rotation and resize from int to gdouble
  * gimp    1.3.14a; 2003/05/24  hof: rename p_fetch_src_frame to p_mov_fetch_src_frame
  * gimp    1.3.12a; 2003/05/01  hof: merge into CVS-gimp-gap project
  * gimp    1.3.11a; 2003/01/18  hof: Conditional framesave
@@ -67,11 +70,13 @@
 extern      int gap_debug; /* ==0  ... dont print debug infos */
 
 static gint p_mov_call_render(t_mov_data *mov_ptr, t_mov_current *cur_ptr, gint apv_layerstack);
-static void p_mov_advance_src_layer(t_mov_current *cur_ptr, int src_stepmode);
+static void p_mov_advance_src_layer(t_mov_current *cur_ptr, t_mov_values  *pvals);
 static void p_mov_advance_src_frame(t_mov_current *cur_ptr, t_mov_values  *pvals);
 static long   p_mov_execute(t_mov_data *mov_ptr);
 static gdouble  p_calc_angle(gint p1x, gint p1y, gint p2x, gint p2y);
 static gdouble  p_rotatate_less_than_180(gdouble angle, gdouble angle_new, gint *turns);
+static void     p_fprintf_gdouble(FILE *fp, gdouble value, gint digits, gint precision_digits, const char *pfx);
+
 
 /* ============================================================================
  * p_mov_call_render
@@ -233,74 +238,91 @@ p_mov_call_render(t_mov_data *mov_ptr, t_mov_current *cur_ptr, gint apv_layersta
  * advance layer index according to stepmode
  * ============================================================================
  */
-void p_mov_advance_src_layer(t_mov_current *cur_ptr, int src_stepmode)
+static void 
+p_mov_advance_src_layer(t_mov_current *cur_ptr, t_mov_values  *pvals)
 {
-  static int l_ping = -1;
-
-  if(gap_debug) printf("p_mov_advance_src_layer: stepmode=%d last_layer=%d idx=%d\n",
-                       (int)src_stepmode,
+  static gdouble l_ping = -1;
+  gdouble l_step_speed_factor;
+  gdouble l_round;
+  
+  /* limit step factor to number of available layers -1 */
+  l_step_speed_factor = MIN(pvals->step_speed_factor, (gdouble)cur_ptr->src_last_layer);
+  if(pvals->tween_steps > 0)
+  {
+    /* when we have tweens, the speed_factor must be divided (the +1 is for the real frame) */
+    l_step_speed_factor /= (gdouble)(pvals->tween_steps +1);
+  }
+  l_round = 0.0;
+  
+  /*if(gap_debug)*/ printf("p_mov_advance_src_layer: stepmode=%d last_layer=%d idx=%d (%.4f) speed_factor: %.4f\n",
+                       (int)pvals->src_stepmode,
                        (int)cur_ptr->src_last_layer,
-                       (int)cur_ptr->src_layer_idx
+                       (int)cur_ptr->src_layer_idx,
+                       (float)cur_ptr->src_layer_idx_dbl,
+		       (float)l_step_speed_factor
                       ); 
 
   /* note: top layer has index 0
    *       therfore reverse loops have to count up
+   *       forward loop is defined as sequence from BG to TOP layer
    */
-  if((cur_ptr->src_last_layer > 0 ) && (src_stepmode != GAP_STEP_NONE))
+  if((cur_ptr->src_last_layer > 0 ) && (pvals->src_stepmode != GAP_STEP_NONE))
   {
-    switch(src_stepmode)
+    switch(pvals->src_stepmode)
     {
       case GAP_STEP_ONCE_REV:
-        cur_ptr->src_layer_idx++;
-        if(cur_ptr->src_layer_idx > cur_ptr->src_last_layer)
+        cur_ptr->src_layer_idx_dbl += l_step_speed_factor;
+        if(cur_ptr->src_layer_idx_dbl > cur_ptr->src_last_layer)
         {
-           cur_ptr->src_layer_idx = cur_ptr->src_last_layer;
+           cur_ptr->src_layer_idx_dbl = (gdouble)cur_ptr->src_last_layer;
         }
         break;
       case GAP_STEP_ONCE:
-        cur_ptr->src_layer_idx--;
-        if(cur_ptr->src_layer_idx < 0)
+        cur_ptr->src_layer_idx_dbl -= l_step_speed_factor;
+        if(cur_ptr->src_layer_idx_dbl < 0)
         {
-           cur_ptr->src_layer_idx = 0;
+           cur_ptr->src_layer_idx_dbl = 0.0;
         }
         break;
       case GAP_STEP_PING_PONG:
-        cur_ptr->src_layer_idx += l_ping;
+        cur_ptr->src_layer_idx_dbl += (l_ping * l_step_speed_factor);
         if(l_ping < 0)
         {
-          if(cur_ptr->src_layer_idx < 0)
+          if(cur_ptr->src_layer_idx_dbl < -0.5)
           {
-             cur_ptr->src_layer_idx = 1;
-             l_ping = 1;
+             cur_ptr->src_layer_idx_dbl = 1.0;
+             l_ping = 1.0;
           }
+          l_round = 0.5;
         }
         else
         {
-          if(cur_ptr->src_layer_idx > cur_ptr->src_last_layer)
+          if(cur_ptr->src_layer_idx_dbl >= (gdouble)(cur_ptr->src_last_layer +1))
           {
-             cur_ptr->src_layer_idx = cur_ptr->src_last_layer - 1;
+             cur_ptr->src_layer_idx_dbl = (gdouble)cur_ptr->src_last_layer - 1.0;
              l_ping = -1;
           }
         }
-
         break;
       case GAP_STEP_LOOP_REV:
-        cur_ptr->src_layer_idx++;
-        if(cur_ptr->src_layer_idx > cur_ptr->src_last_layer)
+        cur_ptr->src_layer_idx_dbl += l_step_speed_factor;
+        if(cur_ptr->src_layer_idx_dbl >= (gdouble)(cur_ptr->src_last_layer +1))
         {
-           cur_ptr->src_layer_idx = 0;
+           cur_ptr->src_layer_idx_dbl -= (gdouble)(cur_ptr->src_last_layer + 1);
         }
         break;
       case GAP_STEP_LOOP:
       default:
-        cur_ptr->src_layer_idx--;
-        if(cur_ptr->src_layer_idx < 0)
+        cur_ptr->src_layer_idx_dbl -= l_step_speed_factor;
+        if(cur_ptr->src_layer_idx_dbl < -0.5)
         {
-           cur_ptr->src_layer_idx = cur_ptr->src_last_layer;
+           cur_ptr->src_layer_idx_dbl += (gdouble)(cur_ptr->src_last_layer + 1);
         }
+        l_round = 0.5;
         break;
 
     }
+    cur_ptr->src_layer_idx = MAX((long)(cur_ptr->src_layer_idx_dbl + l_round), 0);
   }
 }	/* end  p_advance_src_layer */
 
@@ -314,7 +336,18 @@ void p_mov_advance_src_layer(t_mov_current *cur_ptr, int src_stepmode)
 static void
 p_mov_advance_src_frame(t_mov_current *cur_ptr, t_mov_values  *pvals)
 {
-  static int l_ping = 1;
+  static gdouble l_ping = 1;
+  gdouble l_step_speed_factor;
+  gdouble l_round;
+  
+  /* limit step factor to number of available frames -1 */
+  l_step_speed_factor = MIN(pvals->step_speed_factor, (gdouble)(pvals->cache_ainfo_ptr->frame_cnt -1));
+  if(pvals->tween_steps > 0)
+  {
+    /* when we have tweens, the speed_factor must be divided (the +1 is for the real frame) */
+    l_step_speed_factor /= (gdouble)(pvals->tween_steps +1);
+  }
+  l_round = 0.0;
 
   if(pvals->src_stepmode != GAP_STEP_FRAME_NONE)
   {
@@ -329,12 +362,14 @@ p_mov_advance_src_frame(t_mov_current *cur_ptr, t_mov_values  *pvals)
     }
   }
 
-  if(gap_debug) printf("p_mov_advance_src_frame: stepmode=%d frame_cnt=%d first_frame=%d last_frame=%d idx=%d\n",
+  if(gap_debug) printf("p_mov_advance_src_frame: stepmode=%d frame_cnt=%d first_frame=%d last_frame=%d idx=%d (%.4f) speed_factor: %.4f\n",
                        (int)pvals->src_stepmode,
                        (int)pvals->cache_ainfo_ptr->frame_cnt,
                        (int)pvals->cache_ainfo_ptr->first_frame_nr,
                        (int)pvals->cache_ainfo_ptr->last_frame_nr,
-                       (int)cur_ptr->src_frame_idx
+                       (int)cur_ptr->src_frame_idx,
+		       (float)cur_ptr->src_frame_idx_dbl,
+		       (float)l_step_speed_factor
                       ); 
 
   if((pvals->cache_ainfo_ptr->frame_cnt > 1 ) && (pvals->src_stepmode != GAP_STEP_FRAME_NONE))
@@ -342,56 +377,61 @@ p_mov_advance_src_frame(t_mov_current *cur_ptr, t_mov_values  *pvals)
     switch(pvals->src_stepmode)
     {
       case GAP_STEP_FRAME_ONCE_REV:
-        cur_ptr->src_frame_idx--;
-        if(cur_ptr->src_frame_idx < pvals->cache_ainfo_ptr->first_frame_nr)
+        cur_ptr->src_frame_idx_dbl -= l_step_speed_factor;
+        if(cur_ptr->src_frame_idx_dbl < (gdouble)pvals->cache_ainfo_ptr->first_frame_nr)
         {
-           cur_ptr->src_frame_idx = pvals->cache_ainfo_ptr->first_frame_nr;
+           cur_ptr->src_frame_idx_dbl = (gdouble)pvals->cache_ainfo_ptr->first_frame_nr;
         }
         break;
       case GAP_STEP_FRAME_ONCE:
-        cur_ptr->src_frame_idx++;
-        if(cur_ptr->src_frame_idx > pvals->cache_ainfo_ptr->last_frame_nr)
+        cur_ptr->src_frame_idx_dbl += l_step_speed_factor;
+        if(cur_ptr->src_frame_idx_dbl > (gdouble)pvals->cache_ainfo_ptr->last_frame_nr)
         {
-           cur_ptr->src_frame_idx = pvals->cache_ainfo_ptr->last_frame_nr;
+           cur_ptr->src_frame_idx_dbl = (gdouble)pvals->cache_ainfo_ptr->last_frame_nr;
         }
         break;
       case GAP_STEP_FRAME_PING_PONG:
-        cur_ptr->src_frame_idx += l_ping;
+        cur_ptr->src_frame_idx_dbl += (l_ping * l_step_speed_factor);
         if(l_ping < 0)
         {
-          if(cur_ptr->src_frame_idx < pvals->cache_ainfo_ptr->first_frame_nr)
+          if(cur_ptr->src_frame_idx_dbl < (gdouble)(pvals->cache_ainfo_ptr->first_frame_nr -0.5))
           {
-             cur_ptr->src_frame_idx = pvals->cache_ainfo_ptr->first_frame_nr + 1;
+             cur_ptr->src_frame_idx_dbl = (gdouble)pvals->cache_ainfo_ptr->first_frame_nr + 1;
              l_ping = 1;
           }
+          l_round = 0.5;
         }
         else
         {
-          if(cur_ptr->src_frame_idx > pvals->cache_ainfo_ptr->last_frame_nr)
+          if(cur_ptr->src_frame_idx_dbl >= (gdouble)(pvals->cache_ainfo_ptr->last_frame_nr +1))
           {
-             cur_ptr->src_frame_idx = pvals->cache_ainfo_ptr->last_frame_nr - 1;
+             cur_ptr->src_frame_idx_dbl = (gdouble)pvals->cache_ainfo_ptr->last_frame_nr - 1;
              l_ping = -1;
           }
         }
         break;
       case GAP_STEP_FRAME_LOOP_REV:
-        cur_ptr->src_frame_idx--;
-        if(cur_ptr->src_frame_idx < pvals->cache_ainfo_ptr->first_frame_nr)
+        cur_ptr->src_frame_idx_dbl -= l_step_speed_factor;
+        if(cur_ptr->src_frame_idx_dbl < (gdouble)(pvals->cache_ainfo_ptr->first_frame_nr -0.5))
         {
-           cur_ptr->src_frame_idx = pvals->cache_ainfo_ptr->last_frame_nr;
+           cur_ptr->src_frame_idx_dbl += (gdouble)pvals->cache_ainfo_ptr->frame_cnt;
         }
+        l_round = 0.5;
         break;
       case GAP_STEP_FRAME_LOOP:
       default:
-        cur_ptr->src_frame_idx++;
-        if(cur_ptr->src_frame_idx > pvals->cache_ainfo_ptr->last_frame_nr)
+        cur_ptr->src_frame_idx_dbl += l_step_speed_factor;
+        if(cur_ptr->src_frame_idx_dbl >= (gdouble)(pvals->cache_ainfo_ptr->last_frame_nr +1))
         {
-           cur_ptr->src_frame_idx = pvals->cache_ainfo_ptr->first_frame_nr;
+           cur_ptr->src_frame_idx_dbl -= (gdouble)pvals->cache_ainfo_ptr->frame_cnt;
         }
         break;
 
     }
-    
+    cur_ptr->src_frame_idx = CLAMP((long)(cur_ptr->src_frame_idx_dbl + l_round)
+                                  ,pvals->cache_ainfo_ptr->first_frame_nr
+				  ,pvals->cache_ainfo_ptr->last_frame_nr
+				  );
     p_mov_fetch_src_frame(pvals, cur_ptr->src_frame_idx);
   }
 }	/* end  p_advance_src_frame */
@@ -408,9 +448,6 @@ p_mov_advance_src_frame(t_mov_current *cur_ptr, t_mov_values  *pvals)
  * Sourceimages size.
  * ============================================================================
  */
-
-/* TODO: add keyframe support */
-
 long
 p_mov_execute(t_mov_data *mov_ptr)
 {
@@ -492,11 +529,20 @@ p_mov_execute(t_mov_data *mov_ptr)
     for(l_idx = 0; l_idx <= mov_ptr->val_ptr->point_idx_max; l_idx++)
     {
       printf("p_x[%d] :%d\n", l_idx, mov_ptr->val_ptr->point[l_idx].p_x);
-      printf("p_y[%d] : :%d\n", l_idx, mov_ptr->val_ptr->point[l_idx].p_y);
-      printf("opacity[%d] :%d\n", l_idx, mov_ptr->val_ptr->point[l_idx].opacity);
-      printf("w_resize[%d] :%d\n", l_idx, mov_ptr->val_ptr->point[l_idx].w_resize);
-      printf("h_resize[%d] :%d\n", l_idx, mov_ptr->val_ptr->point[l_idx].h_resize);
-      printf("rotation[%d] :%d\n", l_idx, mov_ptr->val_ptr->point[l_idx].rotation);
+      printf("p_y[%d] :%d\n", l_idx, mov_ptr->val_ptr->point[l_idx].p_y);
+      printf("opacity[%d] :%.3f\n", l_idx, (float)mov_ptr->val_ptr->point[l_idx].opacity);
+      printf("w_resize[%d] :%.3f\n", l_idx, (float)mov_ptr->val_ptr->point[l_idx].w_resize);
+      printf("h_resize[%d] :%.3f\n", l_idx, (float)mov_ptr->val_ptr->point[l_idx].h_resize);
+      printf("rotation[%d] :%.3f\n", l_idx, (float)mov_ptr->val_ptr->point[l_idx].rotation);
+      printf("ttlx[%d] :%.3f\n", l_idx, (float)mov_ptr->val_ptr->point[l_idx].ttlx);
+      printf("ttly[%d] :%.3f\n", l_idx, (float)mov_ptr->val_ptr->point[l_idx].ttly);
+      printf("ttrx[%d] :%.3f\n", l_idx, (float)mov_ptr->val_ptr->point[l_idx].ttrx);
+      printf("ttry[%d] :%.3f\n", l_idx, (float)mov_ptr->val_ptr->point[l_idx].ttry);
+      printf("tblx[%d] :%.3f\n", l_idx, (float)mov_ptr->val_ptr->point[l_idx].tblx);
+      printf("tbly[%d] :%.3f\n", l_idx, (float)mov_ptr->val_ptr->point[l_idx].tbly);
+      printf("tbrx[%d] :%.3f\n", l_idx, (float)mov_ptr->val_ptr->point[l_idx].tbrx);
+      printf("tbry[%d] :%.3f\n", l_idx, (float)mov_ptr->val_ptr->point[l_idx].tbry);
+
       printf("keyframe[%d] :%d\n", l_idx, mov_ptr->val_ptr->point[l_idx].keyframe);
       printf("keyframe_abs[%d] :%d\n", l_idx, mov_ptr->val_ptr->point[l_idx].keyframe_abs);
     }
@@ -546,6 +592,15 @@ p_mov_execute(t_mov_data *mov_ptr)
       val_ptr->point[1].w_resize = val_ptr->point[0].w_resize;
       val_ptr->point[1].h_resize = val_ptr->point[0].h_resize;
       val_ptr->point[1].rotation = val_ptr->point[0].rotation;
+      val_ptr->point[1].ttlx = val_ptr->point[0].ttlx;
+      val_ptr->point[1].ttly = val_ptr->point[0].ttly;
+      val_ptr->point[1].ttrx = val_ptr->point[0].ttrx;
+      val_ptr->point[1].ttry = val_ptr->point[0].ttry;
+      val_ptr->point[1].tblx = val_ptr->point[0].tblx;
+      val_ptr->point[1].tbly = val_ptr->point[0].tbly;
+      val_ptr->point[1].tbrx = val_ptr->point[0].tbrx;
+      val_ptr->point[1].tbry = val_ptr->point[0].tbry;
+
       l_points = 2;
    }
    
@@ -574,7 +629,10 @@ p_mov_execute(t_mov_data *mov_ptr)
 	 cur_ptr->src_layer_idx++)
      {
 	if(cur_ptr->src_layers[cur_ptr->src_layer_idx] == val_ptr->src_layer_id)
+	{
+	   cur_ptr->src_layer_idx_dbl = (gdouble)cur_ptr->src_layer_idx;
            break;
+	}
      }
      cur_ptr->src_last_layer = l_nlayers -1;   /* index of last layer */
      }
@@ -585,6 +643,7 @@ p_mov_execute(t_mov_data *mov_ptr)
       */
      p_mov_fetch_src_frame (val_ptr, -1);  /* negative value fetches the selected frame number */
      cur_ptr->src_frame_idx = val_ptr->cache_ainfo_ptr->curr_frame_nr;
+     cur_ptr->src_frame_idx_dbl = (gdouble)cur_ptr->src_frame_idx;
      
      if((val_ptr->cache_ainfo_ptr->first_frame_nr < 0)
      && (val_ptr->src_stepmode != GAP_STEP_FRAME_NONE))
@@ -602,6 +661,14 @@ p_mov_execute(t_mov_data *mov_ptr)
    cur_ptr->currWidth    = (gdouble)val_ptr->point[0].w_resize;
    cur_ptr->currHeight   = (gdouble)val_ptr->point[0].h_resize;
    cur_ptr->currRotation = (gdouble)val_ptr->point[0].rotation;
+   cur_ptr->currTTLX = (gdouble)val_ptr->point[0].ttlx;
+   cur_ptr->currTTLY = (gdouble)val_ptr->point[0].ttly;
+   cur_ptr->currTTRX = (gdouble)val_ptr->point[0].ttrx;
+   cur_ptr->currTTRY = (gdouble)val_ptr->point[0].ttry;
+   cur_ptr->currTBLX = (gdouble)val_ptr->point[0].tblx;
+   cur_ptr->currTBLY = (gdouble)val_ptr->point[0].tbly;
+   cur_ptr->currTBRX = (gdouble)val_ptr->point[0].tbrx;
+   cur_ptr->currTBRY = (gdouble)val_ptr->point[0].tbry;
 
    /* RENDER add current src_layer to current frame */
    l_rc = p_mov_call_render(mov_ptr, cur_ptr, l_apv_layerstack);
@@ -724,19 +791,28 @@ p_mov_execute(t_mov_data *mov_ptr)
       cur_ptr->currWidth =    MIX_VALUE(l_flt_posfactor, (gdouble)val_ptr->point[l_ptidx -1].w_resize, (gdouble)val_ptr->point[l_ptidx].w_resize);
       cur_ptr->currHeight =   MIX_VALUE(l_flt_posfactor, (gdouble)val_ptr->point[l_ptidx -1].h_resize, (gdouble)val_ptr->point[l_ptidx].h_resize);
       cur_ptr->currRotation = MIX_VALUE(l_flt_posfactor, (gdouble)val_ptr->point[l_ptidx -1].rotation, (gdouble)val_ptr->point[l_ptidx].rotation);
+      cur_ptr->currTTLX     = MIX_VALUE(l_flt_posfactor, (gdouble)val_ptr->point[l_ptidx -1].ttlx,     (gdouble)val_ptr->point[l_ptidx].ttlx);
+      cur_ptr->currTTLY     = MIX_VALUE(l_flt_posfactor, (gdouble)val_ptr->point[l_ptidx -1].ttly,     (gdouble)val_ptr->point[l_ptidx].ttly);
+      cur_ptr->currTTRX     = MIX_VALUE(l_flt_posfactor, (gdouble)val_ptr->point[l_ptidx -1].ttrx,     (gdouble)val_ptr->point[l_ptidx].ttrx);
+      cur_ptr->currTTRY     = MIX_VALUE(l_flt_posfactor, (gdouble)val_ptr->point[l_ptidx -1].ttry,     (gdouble)val_ptr->point[l_ptidx].ttry);
+      cur_ptr->currTBLX     = MIX_VALUE(l_flt_posfactor, (gdouble)val_ptr->point[l_ptidx -1].tblx,     (gdouble)val_ptr->point[l_ptidx].tblx);
+      cur_ptr->currTBLY     = MIX_VALUE(l_flt_posfactor, (gdouble)val_ptr->point[l_ptidx -1].tbly,     (gdouble)val_ptr->point[l_ptidx].tbly);
+      cur_ptr->currTBRX     = MIX_VALUE(l_flt_posfactor, (gdouble)val_ptr->point[l_ptidx -1].tbrx,     (gdouble)val_ptr->point[l_ptidx].tbrx);
+      cur_ptr->currTBRY     = MIX_VALUE(l_flt_posfactor, (gdouble)val_ptr->point[l_ptidx -1].tbry,     (gdouble)val_ptr->point[l_ptidx].tbry);
+
 
       if(gap_debug)
       {
-          printf("ROTATE [%02d] %d    [%02d] %d       MIX: %f\n"
-          , (int)l_ptidx-1,  (int)val_ptr->point[l_ptidx -1].rotation
-          , (int)l_ptidx,    (int)val_ptr->point[l_ptidx].rotation
+          printf("ROTATE [%02d] %f    [%02d] %f       MIX: %f\n"
+          , (int)l_ptidx-1,  (float)val_ptr->point[l_ptidx -1].rotation
+          , (int)l_ptidx,    (float)val_ptr->point[l_ptidx].rotation
 	  , (float)cur_ptr->currRotation);
       }
 
        if(val_ptr->src_stepmode < GAP_STEP_FRAME )
        {
          /* advance settings for next src layer */
-         p_mov_advance_src_layer(cur_ptr, val_ptr->src_stepmode);
+         p_mov_advance_src_layer(cur_ptr, val_ptr);
        }
 
        else
@@ -1016,6 +1092,36 @@ p_conv_keyframe_to_abs(gint rel_keyframe, t_mov_values *pvals)
     return(pvals->dst_range_start - rel_keyframe);
 }
 
+
+/* --------------------------------
+ * p_fprintf_gdouble
+ * --------------------------------
+ * print prefix and gdouble value to file
+ * (always use "." as decimalpoint, independent of LOCALE language settings)
+ */
+static void
+p_fprintf_gdouble(FILE *fp, gdouble value, gint digits, gint precision_digits, const char *pfx)
+{
+  gchar l_dbl_str[G_ASCII_DTOSTR_BUF_SIZE];
+  gchar l_fmt_str[20];
+  gint  l_len;
+
+  g_snprintf(l_fmt_str, sizeof(l_fmt_str), "%%.%df", (int)precision_digits);
+  g_ascii_formatd(l_dbl_str, sizeof(l_dbl_str), l_fmt_str, value);
+  
+  fprintf(fp, "%s", pfx);
+  
+  /* make leading blanks */
+  l_len = strlen(l_dbl_str) - (digits + 1 +  precision_digits);
+  while(l_len < 0)
+  {
+    fprintf(fp, " ");
+    l_len++;
+  }
+  fprintf(fp, "%s", l_dbl_str);
+}  /* end p_fprintf_gdouble */
+
+
 /* ============================================================================
  * p_gap_save_pointfile
  * ============================================================================
@@ -1035,32 +1141,53 @@ p_gap_save_pointfile(char *filename, t_mov_values *pvals)
     fprintf(l_fp, "%d  %d  # current_point  points\n",
                   (int)pvals->point_idx,
                   (int)pvals->point_idx_max + 1);
-    fprintf(l_fp, "# x  y   width height opacity rotation [rel_keyframe]\n");
+    fprintf(l_fp, "# x  y   width height opacity rotation [8 perspective transform factors] [rel_keyframe]\n");
     for(l_idx = 0; l_idx <= pvals->point_idx_max; l_idx++)
     {
+      fprintf(l_fp, "%04d %04d "
+                    , (int)pvals->point[l_idx].p_x
+                    , (int)pvals->point[l_idx].p_y
+                    );
+      p_fprintf_gdouble(l_fp, pvals->point[l_idx].w_resize, 3, 3, " ");
+      p_fprintf_gdouble(l_fp, pvals->point[l_idx].h_resize, 3, 3, " ");
+      p_fprintf_gdouble(l_fp, pvals->point[l_idx].opacity,  3, 3, " ");
+      p_fprintf_gdouble(l_fp, pvals->point[l_idx].rotation, 3, 3, " ");
+
+      /* conditional write transformation (only if there is any) */
+      if(pvals->point[l_idx].ttlx != 1.0
+      || pvals->point[l_idx].ttly != 1.0
+      || pvals->point[l_idx].ttrx != 1.0
+      || pvals->point[l_idx].ttry != 1.0
+      || pvals->point[l_idx].tblx != 1.0
+      || pvals->point[l_idx].tbly != 1.0
+      || pvals->point[l_idx].tbrx != 1.0
+      || pvals->point[l_idx].tbry != 1.0
+      )
+      {
+        fprintf(l_fp, " ");
+        p_fprintf_gdouble(l_fp, pvals->point[l_idx].ttlx, 2, 3, " ");
+        p_fprintf_gdouble(l_fp, pvals->point[l_idx].ttly, 2, 3, " ");
+        fprintf(l_fp, " ");
+        p_fprintf_gdouble(l_fp, pvals->point[l_idx].ttrx, 2, 3, " ");
+        p_fprintf_gdouble(l_fp, pvals->point[l_idx].ttry, 2, 3, " ");
+        fprintf(l_fp, " ");
+        p_fprintf_gdouble(l_fp, pvals->point[l_idx].tblx, 2, 3, " ");
+        p_fprintf_gdouble(l_fp, pvals->point[l_idx].tbly, 2, 3, " ");
+        fprintf(l_fp, " ");
+        p_fprintf_gdouble(l_fp, pvals->point[l_idx].tbrx, 2, 3, " ");
+        p_fprintf_gdouble(l_fp, pvals->point[l_idx].tbry, 2, 3, " ");
+      }
+
+      /* conditional write keyframe */
       if((l_idx > 0) 
       && (l_idx < pvals->point_idx_max)
       && ((int)pvals->point[l_idx].keyframe > 0))
       {
-	fprintf(l_fp, "%04d %04d  %03d %03d  %03d %d %d\n",
-                     (int)pvals->point[l_idx].p_x,
-                     (int)pvals->point[l_idx].p_y,
-                     (int)pvals->point[l_idx].w_resize,
-                     (int)pvals->point[l_idx].h_resize,
-                     (int)pvals->point[l_idx].opacity,
-                     (int)pvals->point[l_idx].rotation,
-                     (int)p_conv_keyframe_to_rel(pvals->point[l_idx].keyframe_abs, pvals));
+	fprintf(l_fp, " %d"
+                     , (int)p_conv_keyframe_to_rel(pvals->point[l_idx].keyframe_abs, pvals)
+                     );
       }
-      else
-      {
-	fprintf(l_fp, "%04d %04d  %03d %03d  %03d %d\n",
-                     (int)pvals->point[l_idx].p_x,
-                     (int)pvals->point[l_idx].p_y,
-                     (int)pvals->point[l_idx].w_resize,
-                     (int)pvals->point[l_idx].h_resize,
-                     (int)pvals->point[l_idx].opacity,
-                     (int)pvals->point[l_idx].rotation);
-      }
+      fprintf(l_fp, "\n");   /* terminate the output line */
     }
      
     fclose(l_fp);
@@ -1070,21 +1197,62 @@ p_gap_save_pointfile(char *filename, t_mov_values *pvals)
 }
 
 /* ============================================================================
+ * p_sscan_flt_numbers
+ * ============================================================================
+ * scan the blank seperated buffer for 2 integer and 13 float numbers.
+ * always use "." as decimalpoint in the float numbers regardless to LANGUAGE settings
+ * return a counter that tells how many numbers were scanned successfully
+ */
+static gint
+p_sscan_flt_numbers(gchar   *buf
+                  , gdouble *farr
+		  , gint     farr_max
+		  )
+{
+  gint  l_cnt;
+  gchar *nptr;
+  gchar *endptr;
+  
+  l_cnt =0;
+  nptr  = buf;
+  while(l_cnt < farr_max)
+  {
+    endptr = nptr;
+    farr[l_cnt] = g_ascii_strtod(nptr, &endptr);
+    if(nptr == endptr)
+    {
+      break;  /* pointer was not advanced because no valid floatnumber was scanned */
+    }
+    nptr = endptr;
+
+    l_cnt++;  /* count successful scans */
+  }
+  
+  return (l_cnt);			
+}  /* end p_sscan_flt_numbers */
+
+
+/* ============================================================================
  * p_gap_load_pointfile
  * ============================================================================
+ * return 0 if Load was OK,
+ * return -2 when load has read inconsistent pointfile
+ *           and the pointtable needs to be reset (dialog has to call p_reset_points)
  */
 gint
 p_gap_load_pointfile(char *filename, t_mov_values *pvals)
 {
-#define POINT_REC_MAX 128
+#define POINT_REC_MAX 512
+#define MAX_NUMVALUES_PER_LINE 15
+  FILE   *l_fp;
+  gint    l_idx;
+  char    l_buff[POINT_REC_MAX +1 ];
+  char   *l_ptr;
+  gint    l_cnt;
+  gint    l_rc;
+  gint    l_i1, l_i2;
+  gdouble l_farr[MAX_NUMVALUES_PER_LINE];
 
-  FILE *l_fp;
-  gint   l_idx;
-  char  l_buff[POINT_REC_MAX +1 ];
-  char *l_ptr;
-  gint   l_cnt;
-  gint   l_rc;
-  gint   l_v1, l_v2, l_v3, l_v4, l_v5, l_v6, l_v7;
 
   l_rc = -1;
   if(filename == NULL) return(l_rc);
@@ -1102,39 +1270,73 @@ p_gap_load_pointfile(char *filename, t_mov_values *pvals)
        /* check if line empty or comment only (starts with '#') */
        if((*l_ptr != '#') && (*l_ptr != '\n') && (*l_ptr != '\0'))
        {
-         l_cnt = sscanf(l_ptr, "%d%d%d%d%d%d%d", &l_v1, &l_v2, &l_v3, &l_v4, &l_v5, &l_v6, &l_v7);
+         l_cnt = p_sscan_flt_numbers(l_ptr, &l_farr[0], MAX_NUMVALUES_PER_LINE);
+	 l_i1 = (gint)l_farr[0];
+	 l_i2 = (gint)l_farr[1];
          if(l_idx == -1)
          {
-           if((l_cnt < 2) || (l_v2 > GAP_MOV_MAX_POINT) || (l_v1 > l_v2))
+           if((l_cnt < 2) || (l_i2 > GAP_MOV_MAX_POINT) || (l_i1 > l_i2))
            {
              break;
             }
-           pvals->point_idx     = l_v1;
-           pvals->point_idx_max = l_v2 -1;
+           pvals->point_idx     = l_i1;
+           pvals->point_idx_max = l_i2 -1;
            l_idx = 0;
          }
          else
          {
-           if((l_cnt != 6) && (l_cnt != 7))
+           /* the older format used in GAP.1.2 has 6 or 7 integer numbers per line 
+            * and should be compatible and readable by this code.
+            *
+            * the new format has 2 integer values (p_x, p_y) 
+            * and 4 float values (w_resize, h_resize, opacity, rotation)
+            * the rest of the line is optional
+            *  8  additional float values (transformation factors) 7th upto 14th parameter
+            *  1  integer values (keyframe) as 7th parameter 
+            *         or as 15th parameter (if transformation factors are present too)
+            */
+           if((l_cnt != 6) && (l_cnt != 7) && (l_cnt != 14) && (l_cnt != 15))
            {
+             /* invalid pointline format detected */
              l_rc = -2;  /* have to call p_reset_points() when called from dialog window */
              break;
            }
-           pvals->point[l_idx].p_x      = l_v1;
-           pvals->point[l_idx].p_y      = l_v2;
-           pvals->point[l_idx].w_resize = l_v3;
-           pvals->point[l_idx].h_resize = l_v4;
-           pvals->point[l_idx].opacity  = l_v5;
-           pvals->point[l_idx].rotation = l_v6;
+           pvals->point[l_idx].keyframe_abs = 0;
+           pvals->point[l_idx].keyframe = 0;
+           pvals->point[l_idx].p_x      = l_i1;
+           pvals->point[l_idx].p_y      = l_i2;
+           pvals->point[l_idx].ttlx     = 1.0;
+           pvals->point[l_idx].ttly     = 1.0;
+           pvals->point[l_idx].ttrx     = 1.0;
+           pvals->point[l_idx].ttry     = 1.0;
+           pvals->point[l_idx].tblx     = 1.0;
+           pvals->point[l_idx].tbly     = 1.0;
+           pvals->point[l_idx].tbrx     = 1.0;
+           pvals->point[l_idx].tbry     = 1.0;
+           pvals->point[l_idx].w_resize = l_farr[2];
+           pvals->point[l_idx].h_resize = l_farr[3];
+           pvals->point[l_idx].opacity  = l_farr[4];
+           pvals->point[l_idx].rotation = l_farr[5];
+           if(l_cnt >= 14)
+	   {
+             pvals->point[l_idx].ttlx = l_farr[6];
+             pvals->point[l_idx].ttly = l_farr[7];
+             pvals->point[l_idx].ttrx = l_farr[8];
+             pvals->point[l_idx].ttry = l_farr[9];
+             pvals->point[l_idx].tblx = l_farr[10];
+             pvals->point[l_idx].tbly = l_farr[11];
+             pvals->point[l_idx].tbrx = l_farr[12];
+             pvals->point[l_idx].tbry = l_farr[13];
+	   }
            if((l_cnt == 7) && (l_idx > 0))
 	   {
-             pvals->point[l_idx].keyframe = l_v7;
-             pvals->point[l_idx].keyframe_abs = p_conv_keyframe_to_abs(l_v7, pvals);
+             pvals->point[l_idx].keyframe = (gint)l_farr[6];
+             pvals->point[l_idx].keyframe_abs = p_conv_keyframe_to_abs((gint)l_farr[6], pvals);
 	   }
-	   else
+           if((l_cnt == 15) && (l_idx > 0))
 	   {
-             pvals->point[l_idx].keyframe_abs = 0;
-             pvals->point[l_idx].keyframe = 0;
+             pvals->point[l_idx].keyframe = l_farr[14];
+             pvals->point[l_idx].keyframe_abs = p_conv_keyframe_to_abs(l_farr[14], pvals);
 	   }
            l_idx ++;
          }
@@ -1154,7 +1356,7 @@ p_gap_load_pointfile(char *filename, t_mov_values *pvals)
 
 
 /* ============================================================================
- * procedured for calculating angels
+ * procedured for calculating angles
  *   (used in rotate_follow option)
  * ============================================================================
  */
@@ -1214,7 +1416,7 @@ p_rotatate_less_than_180(gdouble angle, gdouble angle_new, gint *turns)
    *
    * we can avoid this by preventing angle changes of more than 180 degree.
    * in such a case this procedure adjusts the new_angle from -85 to 275
-   * that results in oterations like this: 265.0, 268.3, 271.6, 275.0
+   * that results in iterations like this: 265.0, 268.3, 271.6, 275.0
    */
   gint l_diff;
   gint l_turns;
@@ -1252,7 +1454,7 @@ p_rotatate_less_than_180(gdouble angle, gdouble angle_new, gint *turns)
  * ============================================================================
  */
 void
-p_calculate_rotate_follow(t_mov_values *pvals, gint32 startangle)
+p_calculate_rotate_follow(t_mov_values *pvals, gdouble startangle)
 {
   gint l_idx;
   gdouble l_startangle;
@@ -1499,7 +1701,7 @@ p_check_move_path_params(t_mov_data *mov_data)
  */
 gint32
 gap_move_path(GimpRunMode run_mode, gint32 image_id, t_mov_values *pvals, gchar *pointfile
-             , gint rotation_follow , gint32 startangle)
+             , gint rotation_follow , gdouble startangle)
 {
   int l_rc;
   t_anim_info *ainfo_ptr;

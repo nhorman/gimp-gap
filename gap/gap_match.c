@@ -149,10 +149,10 @@ void str_toupper(char *str)
  */
 int p_match_number(gint32 layer_idx, const char *pattern)
 {
-   char    l_digit_buff[128];
-   char   *l_ptr;
-   int     l_idx;
-   gint32  l_num, l_range_start;
+   char        l_digit_buff[128];
+   const char *l_ptr;
+   int         l_idx;
+   gint32      l_num, l_range_start;
    
    l_idx = 0;
    l_num = -1; l_range_start = -1;

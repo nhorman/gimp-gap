@@ -27,6 +27,8 @@
 #define _GAP_MOV_DIALOG_H
 
 /* revision history:
+ * gimp    1.3.20c; 2003/09/29  hof: new features: perspective transformation, tween_layer and trace_layer
+ *                                   changed opacity, rotation and resize from int to gdouble
  * gimp    1.3.14a; 2003/05/24  hof: moved render procedures to module gap_mov_render
  * gimp    1.1.29b; 2000/11/19  hof: new feature: FRAME based Stepmodes, 
  *                                   increased controlpoint Limit GAP_MOV_MAX_POINT (from 256 -> 1024)
@@ -72,6 +74,8 @@ typedef struct {
 	long    dst_frame_nr;     /* current destination frame_nr */
 	long    src_layer_idx;    /* index of current layer (used for multilayer stepmodes) */
 	long    src_frame_idx;    /* current frame number (used for source frame stepmodes) */
+	gdouble src_layer_idx_dbl;
+	gdouble src_frame_idx_dbl;
 	gint32 *src_layers;       /* array of source images layer id's (used for multilayer stepmodes) */
 	long    src_last_layer;   /* index of last layer 0 upto n-1 (used for multilayer stepmodes) */
 	gdouble currX,  currY;
@@ -82,30 +86,45 @@ typedef struct {
 	gdouble currWidth;
 	gdouble currHeight;
 	gdouble currRotation;
+
+	gdouble currTTLX;     /*  transform x top left */
+	gdouble currTTLY;     /*  transform y top left */
+	gdouble currTTRX;     /*  transform x top right */
+	gdouble currTTRY;     /*  transform y top right */
+	gdouble currTBLX;     /*  transform x bot left */
+	gdouble currTBLY;     /*  transform y bot left */
+	gdouble currTBRX;     /*  transform x bot right */
+	gdouble currTBRY;     /*  transform y bot right */
 } t_mov_current;
 
+
 typedef struct {
-	gint    p_x, p_y;   /* +- koordinates */
-	gint    opacity;    /* 0  upto 100% */
-	gint    w_resize;   /* width resize 10 upto 300% */
-	gint    h_resize;   /* height resize 10 upto 300% */
-	gint    rotation;   /* rotatation +- degrees */
+	gint    p_x, p_y;   /* +- path koordinates */
+	gdouble opacity;    /* 0.0  upto 100.0% */
+	gdouble w_resize;   /* width resize 10 upto 300% */
+	gdouble h_resize;   /* height resize 10 upto 300% */
+	gdouble rotation;   /* rotatation +- degrees */
 	
 	gint    keyframe_abs;
 	gint    keyframe;
+	
+	/* 4-point transform distortion (perspective) */
+	gdouble ttlx;     /* 0.0 upto 10.0 transform x top left */
+	gdouble ttly;     /* 0.0 upto 10.0 transform y top left */
+	gdouble ttrx;     /* 0.0 upto 10.0 transform x top right */
+	gdouble ttry;     /* 0.0 upto 10.0 transform y top right */
+	gdouble tblx;     /* 0.0 upto 10.0 transform x bot left */
+	gdouble tbly;     /* 0.0 upto 10.0 transform y bot left */
+	gdouble tbrx;     /* 0.0 upto 10.0 transform x bot right */
+	gdouble tbry;     /* 0.0 upto 10.0 transform y bot right */
 } t_mov_point;
 
 #define GAP_MOV_MAX_POINT 1024
 
 /*
  * Notes:
- * - exchange of frames (load replace)
- *   keeps an images id, but all its
- *   layers were allocated new.
- *   this results in new layer_id's
- *   For this reason the source image MUST NOT be one of the Frames
+ * - The source image MUST NOT be one of the Frames
  *   of the destination Animation !!
- * - Rotation is now supported (since gap 0.95) (data structs are prepared for)
  */
 
 typedef struct {
@@ -116,7 +135,15 @@ typedef struct {
         int     src_paintmode;
         gint    src_force_visible;      /* TRUE FALSE */
         gint    clip_to_img;            /* TRUE FALSE */
-        
+
+        gdouble        step_speed_factor;
+        gdouble        tween_opacity_initail;
+        gdouble        tween_opacity_desc;
+        gdouble        trace_opacity_initial;
+        gdouble        trace_opacity_desc;
+        gint           tracelayer_enable;
+        gint           tween_steps;     /* 0 == no virtual tweens between frames */
+
 	gint    point_idx;           /* 0 upto MAX_POINT -1 */
 	gint    point_idx_max;       /* 0 upto MAX_POINT -1 */
 	t_mov_point point[GAP_MOV_MAX_POINT];
@@ -153,6 +180,12 @@ typedef struct {
         gint32   cache_tmp_layer_id;    /* the only visible layer in the cached image */
         gint32   cache_frame_number;
         t_anim_info *cache_ainfo_ptr;
+
+        /* for tween and trace layer processing */
+        gint32 tween_image_id;   /* -1 if no tweening */
+        gint32 tween_layer_id;   /* -1 if no tweening */
+        gint32 trace_image_id;   /* -1 if no tracing */
+        gint32 trace_layer_id;   /* -1 if no tracing */
 
 } t_mov_values;
 

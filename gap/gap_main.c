@@ -38,9 +38,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-static char *gap_main_version =  "1.3.20b; 2003/09/20";
+static char *gap_main_version =  "1.3.20c; 2003/09/28";
 
 /* revision history:
+ * gimp    1.3.20c; 2003/09/28  hof: - updates for move path 
  * gimp    1.3.20b; 2003/09/20  hof: - updated main version
  * gimp    1.3.17b; 2003/07/31  hof: - updated main version, message text fixes for translators (# 118392)
  * gimp    1.3.17a; 2003/07/29  hof: - updated main version,
@@ -1362,6 +1363,14 @@ run (const gchar *name
       pvals->cache_ainfo_ptr = NULL;
       pvals->point_idx = 0;
       pvals->point_idx_max = 0;
+
+      pvals->step_speed_factor = 1.0;
+      pvals->tracelayer_enable = FALSE;
+      pvals->trace_opacity_initial = 100.0;
+      pvals->trace_opacity_desc = 80.0;
+      pvals->tween_steps = 0;
+      pvals->tween_opacity_initail = 80.0;
+      pvals->tween_opacity_desc = 80.0;
       
       if (run_mode == GIMP_RUN_NONINTERACTIVE)
       {
@@ -1384,7 +1393,7 @@ run (const gchar *name
 	   pvals->clip_to_img       = param[11].data.d_int32;
 
            l_rotation_follow        = param[12].data.d_int32;
-           l_startangle             = param[13].data.d_int32;
+           l_startangle             = (gdouble)param[13].data.d_int32;
 	   
 	   if (strcmp (name, "plug_in_gap_move_path")  == 0)
 	   {
@@ -1407,10 +1416,10 @@ run (const gchar *name
 		{
         	   pvals->point[l_idx].p_x = param[14].data.d_int32array[l_idx];
         	   pvals->point[l_idx].p_y = param[16].data.d_int32array[l_idx];
-        	   pvals->point[l_idx].opacity = param[18].data.d_int32array[l_idx];
-        	   pvals->point[l_idx].w_resize = param[20].data.d_int32array[l_idx];
-        	   pvals->point[l_idx].h_resize = param[22].data.d_int32array[l_idx];
-        	   pvals->point[l_idx].rotation = param[24].data.d_int32array[l_idx];
+        	   pvals->point[l_idx].opacity = (gdouble)param[18].data.d_int32array[l_idx];
+        	   pvals->point[l_idx].w_resize = (gdouble)param[20].data.d_int32array[l_idx];
+        	   pvals->point[l_idx].h_resize = (gdouble)param[22].data.d_int32array[l_idx];
+        	   pvals->point[l_idx].rotation = (gdouble)param[24].data.d_int32array[l_idx];
         	   pvals->point[l_idx].keyframe_abs = param[26].data.d_int32array[l_idx];
         	   /* pvals->point[l_idx].keyframe = ; */ /* relative keyframes are calculated later */
 		}
@@ -1430,7 +1439,7 @@ run (const gchar *name
 
       if (status == GIMP_PDB_SUCCESS)
       {
-        l_rc_image = gap_move_path(run_mode, image_id, pvals, pointfile, l_rotation_follow, l_startangle);
+        l_rc_image = gap_move_path(run_mode, image_id, pvals, pointfile, l_rotation_follow, (gdouble)l_startangle);
       }
       g_free(pvals);
       if(pointfile != NULL) g_free(pointfile);

@@ -38,6 +38,7 @@
  */
 
 /* revision history:
+ * gimp    1.3.20a; 2003/09/29  hof: p_overwrite_file_dialog
  * gimp    1.3.20a; 2003/09/14  hof: extended function of WGT_LABEL WGT_LABEL_LEFT WGT_LABEL_RIGHT
  *                                   (caller can provide additional Text via text_buf_ret,
  *                                    to create 2 Labels)
@@ -1534,3 +1535,57 @@ p_confirm_dialog(char *msg_txt, char *title_txt, char *frame_txt)
   return FALSE;
 
 }  /* end p_confirm_dialog */
+
+
+/* -----------------------------
+ * p_overwrite_file_dialog
+ * -----------------------------
+ * if file exists ask for overwrite permission
+ * return TRUE : caller may (over)write the file
+ *        FALSE: do not write the file
+ */
+gboolean
+p_overwrite_file_dialog(char *filename)
+{
+  static  t_but_arg  l_argv[2];
+  static  t_arr_arg  argv[1];
+
+  if(g_file_test(filename, G_FILE_TEST_EXISTS))
+  {
+    gint    l_rc;
+    gchar  *l_msg;
+    gint    l_ii;
+    
+    l_ii = 0;
+    if(g_file_test(filename, G_FILE_TEST_IS_DIR))
+    {
+      l_msg = g_strdup_printf(_("Directory '%s'\nalready exists"), filename);
+      /* filename is a directory, do not show the Overwrite Button */
+    }
+    else
+    {
+      l_msg = g_strdup_printf(_("File '%s'\nalready exists"), filename);
+      l_argv[l_ii].but_txt  = _("Overwrite");
+      l_argv[l_ii].but_val  = 0;
+      l_ii++;
+    }
+
+    l_argv[l_ii].but_txt  = GTK_STOCK_CANCEL;
+    l_argv[l_ii].but_val  = -1;
+
+    p_init_arr_arg(&argv[0], WGT_LABEL);
+    argv[0].label_txt = l_msg;
+    
+    l_rc =p_array_std_dialog ( _("GAP Question"),
+                                  _("File Overwrite Warning"),
+				   1, argv,
+				   2, l_argv, -1);
+    g_free(l_msg);
+    if(l_rc < 0)
+    {
+      return (FALSE);   /* CANCEL was pressed, dont overwrite */
+    }
+  }
+  return (TRUE);
+  
+}  /* end p_overwrite_file_dialog */

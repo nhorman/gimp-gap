@@ -1,3 +1,32 @@
+2003-09-30  Sven Neumann  <sven@gimp.org>
+
+	* gap/gap_match.c (p_match_number): added a missing const qualifier,
+	removed trailing whitespace.
+
+2003-09-28  Wolfgang Hofer <hof@gimp.org>
+        MovePath: dialog layout reorganisation
+	bugfixes: 
+	- report errors when controlpointfile load/save failed.
+	- overwrite warning dialog if controlpointfile already exists. 
+	new  features (some are not completely finished yet)
+	- Instant Apply
+	- Perspective Transformation
+	- Stepspeed Factor
+	- Tween Layer Processing for fast moving objects  
+	  ==> Rendering not implemented yet
+	- TraceLayers
+	  ==> Rendering not implemented yet
+	- changed Scalefactors, Opacity and Rotation values
+	  from int to float (int precentage 0 to 100 was not precise enough)
+	- extended the controlpoint fileformat to handle float numbers
+	  and perspective factors (old fileformat is also accepted at load)
+
+ 	* gap/gap_main.c
+ 	* gap/gap_mov_dialog.c [.h]
+ 	* gap/gap_mov_exec.c [.h]
+ 	* gap/gap_mov_render.c [.h]
+ 	* gap/gap_arr_dialog.c [.h]
+
 2003-09-23  Sven Neumann  <sven@gimp.org>
 
 	* gap/Makefile.am: no need for using EXTRA_PROGRAMS here, the
