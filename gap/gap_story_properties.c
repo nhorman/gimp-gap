@@ -117,6 +117,7 @@ static void     p_radio_delace_none_callback(GtkWidget *widget, GapStbPropWidget
 static void     p_radio_delace_odd_callback(GtkWidget *widget, GapStbPropWidget *pw);
 static void     p_radio_delace_even_callback(GtkWidget *widget, GapStbPropWidget *pw);
 static void     p_delace_spinbutton_cb(GtkObject *obj, GapStbPropWidget *pw);
+static void     p_step_density_spinbutton_cb(GtkObject *obj, GapStbPropWidget *pw);
 
 
 
@@ -162,6 +163,7 @@ p_pw_prop_reset_all(GapStbPropWidget *pw)
     gtk_adjustment_set_value(GTK_ADJUSTMENT(pw->pw_spinbutton_from_adj), pw->stb_elem_refptr->from_frame);
     gtk_adjustment_set_value(GTK_ADJUSTMENT(pw->pw_spinbutton_to_adj), pw->stb_elem_refptr->to_frame);
     gtk_adjustment_set_value(GTK_ADJUSTMENT(pw->pw_spinbutton_loops_adj), pw->stb_elem_refptr->nloop);
+    gtk_adjustment_set_value(GTK_ADJUSTMENT(pw->pw_spinbutton_step_density_adj), pw->stb_elem_refptr->step_density);
 
     p_pw_update_properties(pw);
   }
@@ -1329,6 +1331,17 @@ p_pw_update_info_labels(GapStbPropWidget *pw)
     gtk_widget_set_sensitive(scale, l_sensitive);
   }
 
+  spinbutton = GTK_WIDGET(g_object_get_data (G_OBJECT (pw->pw_spinbutton_step_density_adj), "spinbutton"));
+  if(spinbutton)
+  {
+    gtk_widget_set_sensitive(spinbutton, l_sensitive);
+  }
+  scale = GTK_WIDGET(g_object_get_data (G_OBJECT (pw->pw_spinbutton_step_density_adj), "scale"));
+  if(scale)
+  {
+    gtk_widget_set_sensitive(scale, l_sensitive);
+  }
+
 
   spinbutton = GTK_WIDGET(g_object_get_data (G_OBJECT (pw->pw_spinbutton_seltrack_adj), "spinbutton"));
   if(spinbutton)
@@ -1553,6 +1566,31 @@ p_delace_spinbutton_cb(GtkObject *obj, GapStbPropWidget *pw)
   }
 }  /* end p_delace_spinbutton_cb */
 
+
+/* ---------------------------------
+ * p_step_density_spinbutton_cb
+ * ---------------------------------
+ */
+static void
+p_step_density_spinbutton_cb(GtkObject *obj, GapStbPropWidget *pw)
+{
+  gdouble l_val;
+  if(pw)
+  {
+    l_val = (GTK_ADJUSTMENT(pw->pw_spinbutton_step_density_adj)->value);
+    if(pw->stb_elem_refptr)
+    {
+      if(pw->stb_elem_refptr->step_density != l_val)
+      {
+        pw->stb_elem_refptr->step_density = l_val;
+	gap_story_elem_calculate_nframes(pw->stb_elem_refptr);
+        pw->stb_refptr->unsaved_changes = TRUE;
+        p_pw_update_properties(pw);
+      }
+    }
+  }
+}  /* end p_step_density_spinbutton_cb */
+
 /* -------------------------------
  * gap_story_pw_properties_dialog
  * -------------------------------
@@ -1624,7 +1662,7 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
   gtk_box_pack_start (GTK_BOX (main_vbox), frame, FALSE, FALSE, 0);
   gtk_widget_show (frame);
 
-  table = gtk_table_new (12, 4, FALSE);
+  table = gtk_table_new (14, 4, FALSE);
   pw->master_table = table;
   gtk_container_set_border_width (GTK_CONTAINER (table), 4);
   gtk_table_set_col_spacings (GTK_TABLE (table), 4);
@@ -1728,6 +1766,7 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
   g_signal_connect (adj, "value_changed",
                     G_CALLBACK (p_pw_gint32_adjustment_callback),
                     &pw->stb_elem_refptr->to_frame);
+
 
   row++;
   /* the loops spinbutton */
@@ -1892,6 +1931,25 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
                     G_CALLBACK (p_pw_pingpong_toggle_update_callback),
                     pw);
 
+  row++;
+
+  /* the step_density spinbutton */
+  adj = gimp_scale_entry_new (GTK_TABLE (pw->master_table), 0, row++,
+			      _("Stepsize:"), PW_SCALE_WIDTH, PW_SPIN_BUTTON_WIDTH,
+			      pw->stb_elem_refptr->step_density,
+			      0.125, 8.0,     /* lower/upper */
+			      0.125, 0.5,     /* step, page */
+			      6,              /* digits */
+			      TRUE,           /* constrain */
+			      0.125, 8.0,     /* lower/upper unconstrained */
+			      _("Stepsize density. Use 1.0 for normal 1:1 frame by frame steps. "
+			        "a value of 0.5 shows each input frame 2 times. "
+				"a value of 2.0 shows only every 2.nd input frame"), NULL);
+  pw->pw_spinbutton_step_density_adj = adj;
+  g_object_set_data(G_OBJECT(adj), "pw", pw);
+  g_signal_connect (adj, "value_changed",
+                    G_CALLBACK (p_step_density_spinbutton_cb),
+                    pw);
 
   row++;
 

@@ -180,7 +180,7 @@ static void         on_wp_shape_button_clicked (GtkButton *button
 static void         on_hvscale_changed_callback(GtkObject *obj, GapMorphSubWin *swp);
 
 static void         on_show_lines_toggled_callback(GtkWidget *widget, GapMorphGUIParams *mgup);
-static void         on_use_fast_wp_selection_toggled_callback(GtkWidget *widget, GapMorphGUIParams *mgup);
+static void         on_use_quality_wp_selection_toggled_callback(GtkWidget *widget, GapMorphGUIParams *mgup);
 static void         on_use_gravity_toggled_callback(GtkWidget *widget, GapMorphGUIParams *mgup);
 static void         on_multiple_pointsets_toggled_callback(GtkWidget *widget, GapMorphGUIParams *mgup);
 static void         on_create_tween_layers_toggled_callback(GtkWidget *widget, GapMorphGUIParams *mgup);
@@ -221,7 +221,7 @@ p_morph_response(GtkWidget *w, gint response_id, GapMorphGUIParams *mgup)
       mgup->num_shapepoints = 16;
       mgup->mgpp->affect_radius = 100;
       mgup->mgpp->gravity_intensity = 2.0;
-      mgup->mgpp->use_fast_wp_selection = TRUE;
+      mgup->mgpp->use_quality_wp_selection = FALSE;
       mgup->mgpp->use_gravity = FALSE;
       mgup->mgpp->create_tween_layers = TRUE;
       mgup->mgpp->multiple_pointsets = FALSE;
@@ -275,8 +275,8 @@ p_upd_widget_values(GapMorphGUIParams *mgup)
        gtk_adjustment_set_value(
             GTK_ADJUSTMENT(mgup->gravity_intensity_spinbutton_adj)
 	   ,mgup->mgpp->gravity_intensity);
-       gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (mgup->use_fast_wp_selection_checkbutton)
-                                    , mgup->mgpp->use_fast_wp_selection);
+       gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (mgup->use_quality_wp_selection_checkbutton)
+                                    , mgup->mgpp->use_quality_wp_selection);
        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (mgup->use_gravity_checkbutton)
                                     , mgup->mgpp->use_gravity);
        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (mgup->create_tween_layers_checkbutton)
@@ -306,9 +306,10 @@ p_upd_warp_info_label(GapMorphGUIParams *mgup)
       gchar msg[100];
       
       g_snprintf(&msg[0], sizeof(msg)
-                , "a:%d d:%.3f w:%.5f"
-                , (int)wp->angle_deg
-                , (float)wp->dist
+                , "si:%d rl:%d d:%.1f w:%.4f"
+                , (int)wp->sek_idx
+                , (int)wp->xy_relation
+                , (float)sqrt(wp->sqr_dist)
 		, (float)wp->warp_weight
 		);
       gtk_label_set_text(GTK_LABEL(mgup->warp_info_label), msg);
@@ -1517,7 +1518,7 @@ p_show_warp_pick_point(GapMorphGUIParams *mgup
 				     ,in_y
 				     ,scale_x
 				     ,scale_y
-				     ,mgup->mgpp->use_fast_wp_selection
+				     ,mgup->mgpp->use_quality_wp_selection
 				     ,mgup->mgpp->use_gravity
 				     ,mgup->mgpp->gravity_intensity
 				     ,mgup->mgpp->affect_radius
@@ -2745,25 +2746,25 @@ on_show_lines_toggled_callback(GtkWidget *widget, GapMorphGUIParams *mgup)
 }  /* end on_show_lines_toggled_callback */
 
 
-/* ------------------------------
- * on_use_fast_wp_selection_toggled_callback
- * ------------------------------
+/* --------------------------------------------
+ * on_use_quality_wp_selection_toggled_callback
+ * --------------------------------------------
  */
 static void
-on_use_fast_wp_selection_toggled_callback(GtkWidget *widget, GapMorphGUIParams *mgup)
+on_use_quality_wp_selection_toggled_callback(GtkWidget *widget, GapMorphGUIParams *mgup)
 {
   if(mgup)
   {
-    if(GTK_TOGGLE_BUTTON (mgup->use_fast_wp_selection_checkbutton)->active)
+    if(GTK_TOGGLE_BUTTON (mgup->use_quality_wp_selection_checkbutton)->active)
     {
-      mgup->mgpp->use_fast_wp_selection = TRUE;
+      mgup->mgpp->use_quality_wp_selection = TRUE;
     }
     else
     {
-      mgup->mgpp->use_fast_wp_selection = FALSE;
+      mgup->mgpp->use_quality_wp_selection = FALSE;
     }
   }
-}  /* end on_use_fast_wp_selection_toggled_callback */
+}  /* end on_use_quality_wp_selection_toggled_callback */
 
 
 /* ------------------------------
@@ -3137,7 +3138,7 @@ p_create_subwin(GapMorphSubWin *swp
 
 
   /* table */
-  table = gtk_table_new (2, 10, FALSE);
+  table = gtk_table_new (2, 11, FALSE);
   gtk_widget_show (table);
   gtk_box_pack_start (GTK_BOX (vbox), table, FALSE, FALSE, 0);
   
@@ -3252,18 +3253,7 @@ p_create_subwin(GapMorphSubWin *swp
 		    G_CALLBACK (on_fit_zoom_pressed_callback),
 		    swp);
 
-  if(swp->src_flag)
-  {
-    /* the number_of_points label */
-    label = gtk_label_new ("---");
-    mgup->warp_info_label = label;
-    gtk_widget_show (label);
-    gtk_table_attach (GTK_TABLE (table), label, 9, 10, row, row+1,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 4, 0);
-    gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
-  }
-  else
+  if(!swp->src_flag)
   {
     /* there is just one total_points display (always in the dst frame) */
 
@@ -3709,23 +3699,23 @@ gap_morph_create_dialog(GapMorphGUIParams *mgup)
                     mgup);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbutton), mgup->mgpp->use_gravity);
   gimp_help_set_help_data(checkbutton,
-                       _("ON: deform descending by power of intensity from workpoint (full) to radius (zero)."
-		         "OFF: linear deform inside the radius")
+                       _("ON: Descending deform action from workpoint (full) to radius (zero). Descend by power of intensity."
+		         "OFF: Linear deform action inside the radius")
                        , NULL);
 
-  /* the use_fast_wp_selection checkbutton */
-  checkbutton = gtk_check_button_new_with_label ( _("Fast"));
-  mgup->use_fast_wp_selection_checkbutton = checkbutton;
+  /* the use_quality_wp_selection checkbutton */
+  checkbutton = gtk_check_button_new_with_label ( _("Quality"));
+  mgup->use_quality_wp_selection_checkbutton = checkbutton;
   gtk_widget_show (checkbutton);
   gtk_table_attach( GTK_TABLE(table), checkbutton, 10, 11, row, row+1,
 		    GTK_FILL, 0, 0, 0 );
   g_signal_connect (checkbutton, "toggled",
-                    G_CALLBACK (on_use_fast_wp_selection_toggled_callback),
+                    G_CALLBACK (on_use_quality_wp_selection_toggled_callback),
                     mgup);
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbutton), mgup->mgpp->use_fast_wp_selection);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbutton), mgup->mgpp->use_quality_wp_selection);
   gimp_help_set_help_data(checkbutton,
-                       _("ON: use fast workpoint selection algorithm."
-		         "OFF: use quality workpoint selection algorithm.")
+                       _("ON: Use quality workpoint selection algorithm."
+		         "OFF: Use fast workpoint selection algorithm.")
                        , NULL);
 
 
@@ -3874,6 +3864,16 @@ gap_morph_create_dialog(GapMorphGUIParams *mgup)
 
   row++;
 
+  /* the number_of_points label */
+  label = gtk_label_new ("---");
+  mgup->warp_info_label = label;
+  gtk_widget_show (label);
+  gtk_table_attach (GTK_TABLE (table), label, 0, 2, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 4, 0);
+  gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+
+  row++;
 
   /* the lower workpoint label */
   label = gtk_label_new (_("Pointset A:"));
@@ -3918,7 +3918,7 @@ gap_morph_create_dialog(GapMorphGUIParams *mgup)
    */
   on_multiple_pointsets_toggled_callback(mgup->multiple_pointsets_checkbutton, mgup);
   on_use_gravity_toggled_callback(mgup->use_gravity_checkbutton, mgup);
-  on_use_fast_wp_selection_toggled_callback(mgup->use_fast_wp_selection_checkbutton, mgup);
+  on_use_quality_wp_selection_toggled_callback(mgup->use_quality_wp_selection_checkbutton, mgup);
 }  /* end gap_morph_create_dialog */
 
 

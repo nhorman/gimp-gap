@@ -111,6 +111,7 @@ typedef struct GapStbPropWidget  /* nickname: pw */
   GtkObject  *pw_spinbutton_seltrack_adj;
   GtkObject  *pw_spinbutton_delace_adj;
   GtkWidget  *pw_spinbutton_delace;
+  GtkObject  *pw_spinbutton_step_density_adj;
   GtkWidget  *pw_framenr_label;
   GtkWidget  *pw_frametime_label;
 

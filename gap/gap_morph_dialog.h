@@ -80,7 +80,7 @@ typedef struct GapMorphGUIParams  { /* nickname: mgup */
   GtkObject  *gravity_intensity_spinbutton_adj;
   GtkWidget  *gravity_intensity_spinbutton;
   GtkWidget  *use_gravity_checkbutton;
-  GtkWidget  *use_fast_wp_selection_checkbutton;
+  GtkWidget  *use_quality_wp_selection_checkbutton;
 
   GtkWidget  *wp_filesel;
   gboolean    wp_save_mode;

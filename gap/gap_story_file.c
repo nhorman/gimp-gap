@@ -102,6 +102,7 @@ gap_story_debug_print_elem(GapStoryElem *stb_elem)
     printf("exact_seek: %d\n", (int)stb_elem->exact_seek);
     printf("delace: %f\n", (float)stb_elem->delace);
     printf("nframes: %d\n", (int)stb_elem->nframes);
+    printf("step_density: %f\n", (float)stb_elem->step_density);
     printf("file_line_nr: %d\n", (int)stb_elem->file_line_nr);
     if(stb_elem->orig_filename)
     {
@@ -212,6 +213,58 @@ p_check_image_numpart (GapStoryElem *stb_elem, char *filename)
   }
 }  /* end p_check_image_numpart */ 
 
+
+/* -----------------------------
+ * p_calculate_rangesize
+ * -----------------------------
+ * calculate number of (output)frames within the specified range
+ * respecting the step_density
+ * at normal step_density of 1.0 number input and output frames are equal
+ * the range from: 000003 to 000005 delivers 3 frames as rangesize
+ *
+ * with step_density of 0.5 the same range results in 6 output frames
+ * (because each frame is shown 2 times).
+ *
+ * with step_density of 2.0 the same range delivers 2 frames
+ * because we show only every 2.nd frame (1.5 is rounded to 2)
+ */
+static gint32
+p_calculate_rangesize(GapStoryElem *stb_elem)
+{
+  gdouble fnr;
+  
+  if(stb_elem->step_density <= 0)
+  {
+    /* force leagal step_density value */
+    stb_elem->step_density = 1.0;
+  }
+  
+  fnr = (gdouble)(ABS(stb_elem->from_frame - stb_elem->to_frame) +1);
+  fnr = fnr / stb_elem->step_density;
+
+  return((gint32)MAX( (fnr+0.5), 1 ));
+  
+}  /* end p_calculate_rangesize */
+
+static gint32
+p_calculate_rangesize_pingpong(GapStoryElem *stb_elem)
+{
+  gdouble fnr;
+  
+  if(stb_elem->step_density <= 0)
+  {
+    /* force leagal step_density value */
+    stb_elem->step_density = 1.0;
+  }
+  
+  fnr = 2.0 * (gdouble)(ABS(stb_elem->from_frame - stb_elem->to_frame));
+  fnr = fnr / stb_elem->step_density;
+
+  return((gint32)MAX( (fnr+0.5), 1 ));
+  
+}  /* end p_calculate_rangesize_pingpong */
+
+
 /* ------------------------------
  * p_calculate_pingpong_framenr
  * ------------------------------
@@ -224,10 +277,11 @@ p_check_image_numpart (GapStoryElem *stb_elem, char *filename)
  *                PING        PONG  PING        PONG     .....
  */
 static gint32
-p_calculate_pingpong_framenr(gint32 framenr, gint32 rangesize)
+p_calculate_pingpong_framenr(gint32 framenr, gint32 rangesize, gdouble step_density)
 {
-  gint32 ret_framenr;
-  gint32 l_pingpongsize;
+  gint32  ret_framenr;
+  gint32  l_pingpongsize;
+  gdouble fnr;
 
 
   if ((framenr <= 1) || (rangesize <= 1))
@@ -250,7 +304,8 @@ p_calculate_pingpong_framenr(gint32 framenr, gint32 rangesize)
     }
   }
 
-  return (ret_framenr);
+  fnr = 1.0 + ((gdouble)(ret_framenr -1) * step_density);
+  return ((gint32)(fnr + 0.5));
   
 }  /* end p_calculate_pingpong_framenr */
 
@@ -398,7 +453,8 @@ gap_story_new_elem(GapStoryVideoType record_type)
     stb_elem->from_frame = 1;
     stb_elem->to_frame = 1;
     stb_elem->nloop = 1;
-    stb_elem->nframes = -1;       /* -1 : for not specified in file */ 
+    stb_elem->nframes = -1;         /* -1 : for not specified in file */ 
+    stb_elem->step_density = 1.0;   /* normal stepsize 1:1 */ 
     stb_elem->file_line_nr = -1;  
     stb_elem->comment = NULL;
     stb_elem->next = NULL;
@@ -1434,7 +1490,8 @@ printf("%s   ii:%d (END)\n", l_record_key, (int)ii);
     char *l_to_ptr         = l_wordval[5];
     char *l_pingpong_ptr   = l_wordval[6];
     char *l_nloops_ptr     = l_wordval[7];
-    char *l_macro_ptr      = l_wordval[8];
+    char *l_stepsize_ptr   = l_wordval[8];
+    char *l_macro_ptr      = l_wordval[9];
 
     stb_elem = gap_story_new_elem(GAP_STBV_FRAMES);
     if(stb_elem)
@@ -1444,6 +1501,7 @@ printf("%s   ii:%d (END)\n", l_record_key, (int)ii);
       if(*l_from_ptr)     { stb_elem->from_frame = p_scan_gint32(l_from_ptr,    1, 999999, stb); }
       if(*l_to_ptr)       { stb_elem->to_frame   = p_scan_gint32(l_to_ptr,      1, 999999, stb); }
       if(*l_nloops_ptr)   { stb_elem->nloop      = p_scan_gint32(l_nloops_ptr,  1, 999999, stb); }
+      if(*l_stepsize_ptr) { stb_elem->step_density = p_scan_gdouble(l_stepsize_ptr,  0.125, 99.9, stb); }
       if(*l_basename_ptr) { p_flip_dir_seperators(l_basename_ptr); 
                             stb_elem->basename = g_strdup(l_basename_ptr);
                           }
@@ -1488,7 +1546,8 @@ printf("%s   ii:%d (END)\n", l_record_key, (int)ii);
     char *l_seltrack_ptr   = l_wordval[7];
     char *l_exact_seek_ptr = l_wordval[8];
     char *l_delace_ptr     = l_wordval[9];
-    char *l_macro_ptr      = l_wordval[10];
+    char *l_stepsize_ptr   = l_wordval[10];
+    char *l_macro_ptr      = l_wordval[11];
 
     stb_elem = gap_story_new_elem(GAP_STBV_MOVIE);
     if(stb_elem)
@@ -1502,9 +1561,10 @@ printf("%s   ii:%d (END)\n", l_record_key, (int)ii);
       if(*l_to_ptr)       { stb_elem->to_frame   = p_scan_gint32(l_to_ptr,      1, 999999, stb); }
       if(*l_nloops_ptr)   { stb_elem->nloop      = p_scan_gint32(l_nloops_ptr,  1, 999999, stb); }
 
-      if(*l_seltrack_ptr)   { stb_elem->seltrack   = p_scan_gint32(l_seltrack_ptr,  1, 999999, stb); }
-      if(*l_exact_seek_ptr) { stb_elem->exact_seek = p_scan_gint32(l_exact_seek_ptr,  0, 1, stb); }
-      if(*l_delace_ptr)     { stb_elem->delace     = p_scan_gdouble(l_delace_ptr, 0.0, 3.0, stb); }
+      if(*l_seltrack_ptr)   { stb_elem->seltrack     = p_scan_gint32(l_seltrack_ptr,  1, 999999, stb); }
+      if(*l_exact_seek_ptr) { stb_elem->exact_seek   = p_scan_gint32(l_exact_seek_ptr,  0, 1, stb); }
+      if(*l_delace_ptr)     { stb_elem->delace       = p_scan_gdouble(l_delace_ptr, 0.0, 3.0, stb); }
+      if(*l_stepsize_ptr)   { stb_elem->step_density = p_scan_gdouble(l_stepsize_ptr,  0.125, 99.9, stb); }
 
       if(*l_macro_ptr)    { p_flip_dir_seperators(l_macro_ptr);
                             stb_elem->filtermacro_file = g_strdup(l_macro_ptr);
@@ -1796,11 +1856,13 @@ gap_story_elem_calculate_nframes(GapStoryElem *stb_elem)
     if ((stb_elem->playmode == GAP_STB_PM_PINGPONG) 
     &&  (stb_elem->from_frame != stb_elem->to_frame))
     {
-      stb_elem->nframes = (stb_elem->nloop * 2 * ABS(stb_elem->from_frame - stb_elem->to_frame));
+      //// stb_elem->nframes = (stb_elem->nloop * 2 * ABS(stb_elem->from_frame - stb_elem->to_frame));
+      stb_elem->nframes = p_calculate_rangesize_pingpong(stb_elem) * stb_elem->nloop;
     }
     else
     {
-      stb_elem->nframes = stb_elem->nloop * (ABS(stb_elem->from_frame - stb_elem->to_frame) + 1);
+      //// stb_elem->nframes = stb_elem->nloop * (ABS(stb_elem->from_frame - stb_elem->to_frame) + 1);
+      stb_elem->nframes = p_calculate_rangesize(stb_elem) * stb_elem->nloop;
     }
   }
 }  /* end gap_story_elem_calculate_nframes */
@@ -1856,6 +1918,7 @@ gap_story_save(GapStoryBoard *stb, const char *filename)
 {
   FILE *fp;
   GapStoryElem *stb_elem;
+      
   
   fp = fopen(filename, "w");
   if(fp)
@@ -1891,7 +1954,7 @@ gap_story_save(GapStoryBoard *stb, const char *filename)
     if(stb->master_framerate > 0.0)
     {
        gchar l_dbl_str[G_ASCII_DTOSTR_BUF_SIZE];
-      
+
        /* setlocale independent float string */
        g_ascii_dtostr(&l_dbl_str[0]
                      ,G_ASCII_DTOSTR_BUF_SIZE
@@ -1926,6 +1989,14 @@ gap_story_save(GapStoryBoard *stb, const char *filename)
    
     for(stb_elem = stb->stb_elem; stb_elem != NULL; stb_elem = (GapStoryElem *)stb_elem->next)
     {
+      gchar l_dbl_str_step_dendity[G_ASCII_DTOSTR_BUF_SIZE];
+
+      /* setlocale independent float string */
+      g_ascii_dtostr(&l_dbl_str_step_dendity[0]
+                     ,G_ASCII_DTOSTR_BUF_SIZE
+                     ,stb_elem->step_density
+                     );
+
       switch(stb_elem->record_type)
       {
         case GAP_STBV_FRAMES:
@@ -1942,11 +2013,12 @@ gap_story_save(GapStoryBoard *stb, const char *filename)
             {
               l_playmode_str = g_strdup("normal");
             }
+
             
             gap_stb_syntax_get_parname_tab(GAP_STBKEY_VID_PLAY_FRAMES
                                     ,&l_parnam_tab
 				    );
-            fprintf(fp, "%s     %s:%d %s:\"%s\" %s:%s %s:%06d %s:%06d %s:%s %s:%d"
+            fprintf(fp, "%s     %s:%d %s:\"%s\" %s:%s %s:%06d %s:%06d %s:%s %s:%d %s:%s"
                  , GAP_STBKEY_VID_PLAY_FRAMES
  	         , l_parnam_tab.parname[1]
                  , (int)stb_elem->track
@@ -1962,13 +2034,15 @@ gap_story_save(GapStoryBoard *stb, const char *filename)
                  , l_playmode_str
  	         , l_parnam_tab.parname[7]
                  , (int)stb_elem->nloop
+		 , l_parnam_tab.parname[8]
+		 , l_dbl_str_step_dendity
                  );
             g_free(l_playmode_str);
 
             if(stb_elem->filtermacro_file)
             {
               fprintf(fp, " %s:\"%s\""
- 	         , l_parnam_tab.parname[8]
+ 	         , l_parnam_tab.parname[9]
                  , stb_elem->filtermacro_file
                  );
             }
@@ -2028,7 +2102,7 @@ gap_story_save(GapStoryBoard *stb, const char *filename)
             }
             l_delace_int = (int)stb_elem->delace;
             fprintf(fp, "%s      %s:%d %s:\"%s\" %s:%06d %s:%06d %s:%s %s:%d "
-	                "%s:%d %s:%d %s:%d.%d"
+	                "%s:%d %s:%d %s:%d.%d %s:%s"
                  , GAP_STBKEY_VID_PLAY_MOVIE
  	         , l_parnam_tab.parname[1]
                  , (int)stb_elem->track
@@ -2049,13 +2123,15 @@ gap_story_save(GapStoryBoard *stb, const char *filename)
  	         , l_parnam_tab.parname[9]
 		 , (int)l_delace_int
 		 , (int)((gdouble)(1000.0 * (stb_elem->delace - (gdouble)l_delace_int)))
+		 , l_parnam_tab.parname[10]
+		 , l_dbl_str_step_dendity
                  );
             g_free(l_playmode_str);
 
             if(stb_elem->filtermacro_file)
             {
               fprintf(fp, " %s:\"%s\""
- 	         , l_parnam_tab.parname[10]
+ 	         , l_parnam_tab.parname[11]
                  , stb_elem->filtermacro_file
                  );
             }
@@ -2200,51 +2276,47 @@ gap_story_locate_framenr(GapStoryBoard *stb, gint32 in_framenr, gint32 in_track)
     }
     else
     {
-      gint32 l_rangesize;
+      gint32  l_rangesize;
+      gdouble fnr;
+      
+      l_rangesize = p_calculate_rangesize(stb_elem);
       
       /* the wanted in_framenr is within the range of the current stb_elem
        * now figure out the local framenr
-       *  (respecting normal|invers order, nloop count and normal|pingpong playmode)
+       *  (respecting normal|invers order, nloop count and normal|pingpong playmode
+       *   and step_density setting)
        */
       if (stb_elem->to_frame >= stb_elem->from_frame)
       {
         /* normal range */
-        l_rangesize = 1 + (stb_elem->to_frame - stb_elem->from_frame);
         if (stb_elem->playmode == GAP_STB_PM_PINGPONG)
         {
-          ret_elem->ret_framenr = p_calculate_pingpong_framenr(l_framenr, l_rangesize);
+          ret_elem->ret_framenr = p_calculate_pingpong_framenr(l_framenr
+	                                                      ,l_rangesize
+							      ,stb_elem->step_density
+							      );
         }
         else
         {
-          ret_elem->ret_framenr = l_framenr % l_rangesize;
-	  if(ret_elem->ret_framenr == 0)
-	  {
-	    ret_elem->ret_framenr = l_rangesize;
-	  }
+	  fnr = (gdouble)((l_framenr -1) % l_rangesize) * stb_elem->step_density;
+	  ret_elem->ret_framenr = 1 + (gint32)fnr;
         }
         ret_elem->ret_framenr += (stb_elem->from_frame -1); /* add rangeoffset */
       }
       else
       {
         /* inverse range */
-        l_rangesize = 1 + (stb_elem->from_frame - stb_elem->to_frame);
         if (stb_elem->playmode == GAP_STB_PM_PINGPONG)
         {
-          ret_elem->ret_framenr = 1 + l_rangesize - p_calculate_pingpong_framenr(l_framenr, l_rangesize);
+          ret_elem->ret_framenr = 1 + l_rangesize - p_calculate_pingpong_framenr(l_framenr
+	                                                                        ,l_rangesize
+										,stb_elem->step_density
+										);
         }
         else
         {
-          gint32             l_modnr;
-	  
-	  l_modnr = l_framenr % l_rangesize;
-	  if(l_modnr == 0)
-	  {
-            ret_elem->ret_framenr = 1;
-	  }
-	  else
-	  {
-            ret_elem->ret_framenr = 1 + l_rangesize - l_modnr;
-	  }
+	  fnr = (gdouble)((l_rangesize - l_framenr) % l_rangesize) * stb_elem->step_density;
+	  ret_elem->ret_framenr = 1 + (gint32)fnr;
         }
         ret_elem->ret_framenr += (stb_elem->to_frame -1);  /* add rangeoffset */
       }
@@ -2513,6 +2585,7 @@ gap_story_elem_duplicate(GapStoryElem      *stb_elem)
     stb_elem_dup->to_frame       = stb_elem->to_frame;
     stb_elem_dup->nloop          = stb_elem->nloop;
     stb_elem_dup->nframes        = stb_elem->nframes; 
+    stb_elem_dup->step_density   = stb_elem->step_density; 
     stb_elem_dup->file_line_nr   = stb_elem->file_line_nr;  
     stb_elem_dup->comment = NULL;
     stb_elem_dup->next = NULL;
@@ -2565,6 +2638,7 @@ gap_story_elem_copy(GapStoryElem *stb_elem_dst, GapStoryElem *stb_elem)
     stb_elem_dst->to_frame       = stb_elem->to_frame;
     stb_elem_dst->nloop          = stb_elem->nloop;
     stb_elem_dst->nframes        = stb_elem->nframes; 
+    stb_elem_dst->step_density   = stb_elem->step_density; 
     stb_elem_dst->file_line_nr   = stb_elem->file_line_nr;  
     if(stb_elem_dst->comment)      gap_story_elem_free(&stb_elem_dst->comment);
     if(stb_elem->comment)          stb_elem_dst->comment = gap_story_elem_duplicate(stb_elem->comment);

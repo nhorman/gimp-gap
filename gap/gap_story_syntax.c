@@ -275,6 +275,7 @@ p_create_syntax_list(void)
                ,"seltrack"
                ,"exactseek"
                ,"deinterlace"
+	       ,"stepsize"
                ,"macro"
                ,NULL
                );
@@ -286,6 +287,7 @@ p_create_syntax_list(void)
                ,"to"
 	       ,"mode"
                ,"nloops"
+	       ,"stepsize"
                ,"macro"
 	       ,NULL
                );
@@ -296,6 +298,7 @@ p_create_syntax_list(void)
                ,"to"
 	       ,"mode"
                ,"nloops"
+	       ,"stepsize"
                ,"macro"
 	       ,NULL
                );

@@ -1,4 +1,4 @@
-STORYBOARD_FILES           2004.04.24:
+STORYBOARD_FILES           2004.07.26:
 
 
 WARNING:
@@ -9,13 +9,21 @@ Expect there will be changes until the first stable release.
 // TODO: this docfile is not up to date with the currrent development state:
 //
 // - mark features that are only available in level2 STORYBOARD syntax
-// - Named Parameters: Param Names have changed 
-//   - nloops replaces repeat
-//   - nframes replaces duration
-//   - duration style (int == frames, float == secs) may change (in future)
-//     by using different parmeter names (nframes or seconds
-// - Named Parameters: new style is key:value
-//     (old style  value=key is deprecated but still supported) 
+//      the storyboard dialog does not support editing of all the features
+//      that are available at STORYBOARD based encoding.
+//      But you can edit storyboard files using a texteditor to use those
+//      "level2" features
+//      the current STORYBOARD dialog implementation has restrictions:
+//          - none of the audio features (AUD_xx)
+//          - video is limited to one track
+//          - no video attributes (effects) VID_OPACITY, VID_ZOOM, VID_MOVE)
+// - Named Parameters:
+//   - key:value parameter style is accepted,
+//     but (only for encoding) the order of parameter is still fixed 
+//     (the parser use din the encoder still needs positional parameters)
+//   - the STORYBOARD dialog accepts position independent named parameters (has a new parser)
+//     FILES  saved with the STORYBOARD dialog always write the parameters in the
+//     required postional order for the encoder.
 
 
 General
@@ -36,6 +44,9 @@ video master size on the fly at encoding time.
 All frame sequences and videoclips are played at the desired
 master framerate. This will result in speed up or
 slow down in all non rate-matching sequences.
+You can compensate this effect by dropping/duplicating
+the input frames or by using individual stepsize parameters
+on your input videoclips.
 
 The built in audio processing has support for
 uncompressed audio in the RIFF WAVE format,
@@ -65,12 +76,15 @@ if you set the backslash '\' as last charcter
 (immediate before newline)
 
 
-item values may be specified using a parametername prefix
+item values may be specified using a parametername key prefix
 in the style:
 
-   key:valu
+   key:value
 
 item values may have a comment suffix starting with =
+if no parametername key prefix is specified the fixed order of items
+is assumed.
+
 
 items that specify a duration or a timestamp can have
 unit FRAMES or SECONDS dependig on the way how the
@@ -83,8 +97,8 @@ Here are some Examples:
 
   File Example:
 
-   VID_MASTER_FRAMERATE  24.0=frames_per_sec
-   VID_PLAY_FRAMES        1=track   animframes_  .xcf   2  1.5
+   VID_MASTER_FRAMERATE   frames_per_sec:24.0
+   VID_PLAY_FRAMES        track:1   animframes_  .xcf   2  1.5
 
    Play the framerange from frame number 2:    animframes_0002.xcf
    until frame number 36 (1.5 sec * 24.0 fps)  animframes_0036.xcf
@@ -94,52 +108,59 @@ Here are some Examples:
 Overview of supported RECORD TYPES:
 ----------------------------------
 
-STORYBOARDFILE    1.0=version  # comments
+STORYBOARDFILE    version:1.0   # comments
 
 
-VID_MASTER_FRAMERATE  24.0=frames_per_sec
-VID_MASTER_SIZE       320=width  200=height
-VID_MASTER_CHANNEL     1=channel  1;2;3;4=track_members
+VID_MASTER_FRAMERATE  frames_per_sec:24.0
+VID_MASTER_SIZE       width:320  height:200
 VID_PREFERRED_DECODER  libavformat
 
-AUD_MASTER_VOLUME      1.0=volume
-AUD_MASTER_SAMPLERATE 44100=samples_per_sec
-AUD_MASTER_CHANNEL     2=channel  5;6;7;8=track_members
+AUD_MASTER_VOLUME      volume:1.0
+AUD_MASTER_SAMPLERATE  samples_per_sec:44100
 
 # video frames
-VID_PLAY_MOVIE     1=track  movie_filename     0001=frame_from 0099=frame_to  {pingpong|normal} 1=repeatcount \
-                                     1=selecttrack \
-                                     0=exact_seek \
-                                     1.0=deinterlace \
-                                     macro_filename
-VID_PLAY_ANIMIMAGE 1=track  image_filename     0001=layer_from 0099=layer_to  {pingpong|normal} 1=repeatcount macro_filename
-VID_PLAY_FRAMES    1=track  basename extension 0001=frame_from 0099=frame_to  {pingpong|normal} 1=repeatcount macro_filename
-VID_PLAY_IMAGE     1=track  image_filename                         0001=duration_frames macro_filename
-VID_PLAY_COLOR     1=track  0.0=red 1.0=green 0.0=blue 1.0=alpha   0001=duration_frames
-VID_SILENCE        1=track                                         0001=duration_frames  0.0=wait_until_sec
+VID_PLAY_MOVIE     track:1  file:"movie_filename"     from:0001  to:0099 mode:{pingpong|normal}\
+                             nloops:1 \
+	                     seltrack:1 \
+                             exactseek.0 \
+                             deinterlace:1.0 \
+			     stepsize:1.0 \
+                             macro:"macro_filename"
+VID_PLAY_ANIMIMAGE track:1  file:"image_filename"     from:0001 to:0099  mode:{pingpong|normal} \
+                             nloops:1 \
+			     stepsize:1.0 \
+			     macro:"macro_filename"
+VID_PLAY_FRAMES    track:1  base:"basename" ext:.jpg  from:0001 to:0099  mode:{pingpong|normal} \
+                             nloops:1 \
+			     stepsize:1.0 \
+			     macro:"macro_filename"
+VID_PLAY_IMAGE     track:1  file:"image_filename"    nloops:1 macro:"macro_filename"
+VID_PLAY_COLOR     track:1  red:0.0 green:1.0 blue:0.0 alpha:1.0   nloops:1
+VID_SILENCE        track:1                                         nloops:1  wait_until_sec:0.0
 # video attributes
-VID_OPACITY        1=track  0.0=opacity_from     1.0=opacity_to    10=duration_frames
-VID_ZOOM_X         1=track  0.1=zoom_x_from     10.0=zoom_x_to     10=duration_frames
-VID_ZOOM_Y         1=track  0.1=zoom_y_from     10.0=zoom_y_to     10=duration_frames
-VID_MOVE_X         1=track -1.0=move_x_from      1.0=move_x_to     10=duration_frames
-VID_MOVE_Y         1=track -1.0=move_y_from      1.0=move_y_to     10=duration_frames
-VID_FIT_SIZE       1=track  {both|none|width|height}  {keep_proportions|change_proportions}
+VID_OPACITY        track:1  opacity_from:0.0     opacity_to:1.0     nframes:10
+VID_ZOOM_X         track:1  zoom_x_from:0.1      zoom_x_to:10.0     nframes:10
+VID_ZOOM_Y         track:1  zoom_y_from:0.1      zoom_y_to:10.0     nframes:10
+VID_MOVE_X         track:1  move_x_from:-1.0     move_x_to:1.0      nframes:10
+VID_MOVE_Y         track:1  move_y_from:-1.0     move_y_to:1.0      nframes:10
+VID_FIT_SIZE       track:1  mode:{both|none|width|height}  proportions:{keep_proportions|change_proportions}
 
 
 # audio
-AUD_PLAY_SOUND     1=track  audiofile 0.0=start_sec 10.2=end_sec \
-                             1.0=volume 
-                             0.0=start_vol 1.0=fade_in_time
-                             0.0=end_vol   1.0=fade_out_time
-                             1=repeatcount
-AUD_PLAY_MOVIE     1=track  audiofile 0.0=start_sec 10.2=end_sec \
-                             1.0=volume 
-                             0.0=start_vol 1.0=fade_in_time
-                             0.0=end_vol   1.0=fade_out_time
-                             1=repeatcount
+AUD_PLAY_SOUND     track:1  file:"audiofile" start_sec:0.0 end_sec:10.2 \
+                             volume:1.0 \
+                             start_vol:0.0 fade_in_time:1.0  \
+                             end_vol:0.0   fade_out_time:1.0 \
+                             nloops:1
+AUD_PLAY_MOVIE     track:1  file:"videofile" start_sec:0.0 end_sec:10.2 \
+                             volume:1.0 
+                             volume:1.0 \
+                             start_vol:0.0 fade_in_time:1.0  \
+                             end_vol:0.0   fade_out_time:1.0 \
+                             nloops:1 \
                              1=selecttrack
-AUD_SILENCE        1=track  0.0=duration_sec  10.2=wait_until_sec
-AUD_TRACK          1=track  {on | off}
+AUD_SILENCE        track:1  duration_sec:0.0  wait_until_sec:10.2
+AUD_TRACK          track:1  {on | off}
 
 
 
@@ -183,19 +204,19 @@ VID_PLAY_MOVIE
 
   (1) Record Key        ... VID_PLAY_MOVIE
   (2) track             ... integer tracknumer
-  (3) video_filename    ... filename of the video.
-  (4) frame_from        ... start of Range Framenumber (integer)  or seconds (float)
+  (3) file              ... filename of the video.
+  (4) from              ... start of Range Framenumber (integer)  or seconds (float)
                             (where 1 is the first frame in the video)
-  (5) frame_to          ... end of Range Framenumber (integer) or seconds (float)
+  (5) to                ... end of Range Framenumber (integer) or seconds (float)
                             (see Range description for more information)
   [6] mode              ... optional keyword "pingpong" or "normal"
                             DEFAULT: "normal"
-  [7] repeatcount       ... optional integer of Range repetitions
+  [7] nloops            ... optional integer of Range repetitions
                             DEFAULT: 1
-  [8] videotrack        ... Select input videotrack (for videos with more viedeotracks.
+  [8] seltrack          ... Select input videotrack (for videos with more viedeotracks.
                             use 1 for the first track, or if the video has only one videotrack)
                             DEFAULT: 1
-  [9] exact_seek        ... 0 .. use faster seek ops for Videoframe reads (positioning may not be exact)
+  [9] exactseek         ... 0 .. use faster seek ops for Videoframe reads (positioning may not be exact)
                             1 .. force sequential reads for exact positioning (in the Video Read API (GVA))
                             that will be execute on each imported input_layer
                             DEFAULT: 1
@@ -205,7 +226,12 @@ VID_PLAY_MOVIE
                                 and   1.99 does soft interpolation for the even rows.
                             2.0 upto 2.99    deinterlace videoframes keeping even rows
                             DEFAULT: 0.0
- [11] macro_filename    ... optional name of a filtermacro_file
+ [11] stepsize          ... 0.125 (upto 8.0) step size for fetching input frames
+                            a value of 0.5 does fetch each input frame twice
+			    a value of 2.0 does skip every 2.nd input frame
+			    use a value of 1.0 to fetch all input frames step by step
+                            DEFAULT: 1.0
+ [12] macro_filename    ... optional name of a filtermacro_file
                             that will be execute on each imported input_layer
 
 
@@ -215,16 +241,21 @@ VID_PLAY_ANIMIMAGE
 
   (1) Record Key        ... VID_PLAY_ANIMIMAGE
   (2) track             ... integer tracknumer
-  (3) image_filename    ... filename of the multilayer image.
-  (4) layer_from        ... start of Range layernumber (integer)  or seconds (float)
+  (3) file              ... filename of the multilayer image.
+  (4) from              ... start of range layernumber (integer)  or seconds (float)
                             (where 0 is the top layer in the multilayer image)
-  (5) layer_to          ... end of Range layernumber (integer) or seconds (float)
-                            (see Range description for more information)
+  (5) to                ... end of range layernumber (integer) or seconds (float)
+                            (see range description for more information)
   [6] mode              ... optional keyword "pingpong" or "normal"
                             DEFAULT: "normal"
-  [7] repeatcount       ... optional integer of Range repetitions
+  [7] nloops            ... optional integer of Range repetitions
                             DEFAULT: 1
-  [8] macro_filename    ... optional name of a filtermacro_file
+  [8] stepsize          ... 0.125 (upto 8.0) step size for fetching input frames
+                            a value of 0.5 does fetch each input layer twice
+			    a value of 2.0 does skip every 2.nd input layer
+			    use a value of 1.0 to fetch all input layers step by step
+                            DEFAULT: 1.0
+  [9] macro_filename    ... optional name of a filtermacro_file
                             that will be execute on each imported input_layer
 
 VID_PLAY_FRAMES
@@ -238,16 +269,21 @@ VID_PLAY_FRAMES
   
   (1) Record Key        ... VID_PLAY_FRAMES
   (2) track             ... integer tracknumer
-  (3) base_filename     ... filename prefix part before the framenumber.
-  (4) extension         ... Extension (without '.'  jpg, gif xcf ...)
+  (3) base              ... filename prefix part before the framenumber.
+  (4) ext               ... Extension (without '.'  jpg, gif xcf ...)
   (5) from              ... start of Range frame number (integer) or seconds (float) or keyword
   (6) to                ... end of Range frame number (integer) or seconds (float) or keyword
                             (see Range description for more information)
   [7] mode              ... optional keyword "pingpong" or "normal"
                             DEFAULT: "normal"
-  [8] repeatcount       ... optional integer of Range repetitions
+  [8] nloops            ... optional integer of Range repetitions
                             DEFAULT: 1
-  [9] macro_filename    ... optional name of a filtermacro_file
+  [9] stepsize          ... 0.125 (upto 8.0) step size for fetching input frames
+                            a value of 0.5 does fetch each input frame twice
+			    a value of 2.0 does skip every 2.nd input frame
+			    use a value of 1.0 to fetch all input frames step by step
+                            DEFAULT: 1.0
+ [10] macro_filename    ... optional name of a filtermacro_file
                             that will be execute on each imported input frame
 
 VID_PLAY_IMAGE
@@ -257,8 +293,8 @@ VID_PLAY_IMAGE
   
   (1) Record Key        ... VID_PLAY_IMAGE
   (2) track             ... integer tracknumer
-  (3) image_filename    ... filename of the image.
-  [4] duration          ... optional duration in number of frames (integer) or seconds (float)
+  (3) file              ... filename of the image.
+  [4] nloops            ... optional duration in number of frames (integer) or seconds (float)
                             DEFAULT: 1
   [5] macro_filename    ... optional name of a filtermacro_file
                             that will be execute on the imported input image
@@ -274,7 +310,7 @@ VID_PLAY_COLOR
   (5) blue              ... 0.0 upto 1.0 
   (6) alpha             ... 0.0 upto 1.0  alphachannel 
                             (where 0.0 is full transparent and 1.0 is full opaque) 
-  [7] duration          ... duration in number of frames (integer) or seconds (float)
+  [7] nloops            ... duration in number of frames (integer) or seconds (float)
                             DEFAULT: 1
 
 VID_SILENCE
@@ -282,7 +318,7 @@ VID_SILENCE
   
   (1) Record Key        ... VID_SILENCE
   (2) track             ... integer tracknumer
-  [3] duration          ... duration of the silent pause in number of frames (integer) 
+  [3] nloops            ... duration of the silent pause in number of frames (integer) 
                             or seconds (float)
                             DEFAULT: 1
   [4] wait_until        ... wait until this timestamp is reached,
@@ -301,7 +337,7 @@ VID_OPACITY
                             where 0.0 is full transparent and 1.0 is full opaque
   [4] opacity_to        ... Change opacity to this value
                             DEFAULT: use same value as opacity_from
-  [5] duration          ... optional duration of the effect
+  [5] nframes           ... optional duration of the effect
                             in number of frames (integer) or seconds (float) 
                             The duration Value 0 applies the TO value immediate.
                             DEFAULT: 0
@@ -318,7 +354,7 @@ VID_ZOOM_X and VID_ZOOM_Y
                             where 0.0 is 1x1 Pixel, 1.0 is fit videosize, 2.0 is double videosize
   [4] zoom_to           ... Change opacity to this value
                             DEFAULT: use same value as opacity_from
-  [5] duration          ... optional duration of the effect 
+  [5] nframes           ... optional duration of the effect 
                             in number of frames (integer 10) or seconds (float) 
                             The duration Value 0 applies the TO value immediate.
                             DEFAULT: 0
@@ -332,13 +368,13 @@ VID_MOVE_X and VID_MOVE_Y
   
   (1) Record Key        ... VID_MOVE_X  (or VID_MOVE_Y)
   (2) track             ... integer tracknumer
-  (3) move_from         ... Start move with this value
+  (3) move_x_from       ... Start move with this value
                             where -1.0 is left (or up) outside,
                                    0.0 is centered,
                                   +1.0 is right (or bottom) outside
-  [4] move_to           ... Change offset to this value
+  [4] move_x_to         ... Change offset to this value
                             DEFAULT: use same value as move_from
-  [5] duration          ... optional duration time of the effect 
+  [5] nframes           ... optional duration time of the effect 
                             in number of frames (integer 10) or seconds (float) 
                             The duration Value 0 applies the TO value immediate.
                             DEFAULT: 0
@@ -425,10 +461,10 @@ AUD_PLAY_SOUND
 
   (1) Record Key        ... AUD_PLAY_SOUND
   (2) track             ... integer tracknumer
-  (3) audio_filename    ... filename of soundfile (.WAV and other types).
-  (4) start             ... start playback range at offest in seconds (float)
+  (3) file              ... filename of soundfile (.WAV and other types).
+  (4) start_sec         ... start playback range at offest in seconds (float)
                             or in frames (int)
-  (5) end               ... end playback range at offest in seconds (float)
+  (5) end_sec           ... end playback range at offest in seconds (float)
                             or in frames (int)
   [6] volume            ... adjust the volume. (float)
                             A value of 1.0 keeps the original input volume for this track
@@ -438,7 +474,7 @@ AUD_PLAY_SOUND
                             DEFAULT = 1.0
   [7] start_volume      ... Start Value of the volume. (float)
                             DEFAULT: 1.0
-  [8] fade_in_duration  ... duration for the fade in. In this durationtime the input volume
+  [8] fade_in_time      ... duration for the fade in. In this durationtime the input volume
                             changes slightly from start_volume --> to volume.
                             Duration can be specified in Seconds (float) or frames (int).
                             With value 0 the playback starts immediate with volume,
@@ -446,11 +482,13 @@ AUD_PLAY_SOUND
                             DEFAULT: 0
   [9] end_volume        ... End Value of the volume.. (float)
                             DEFAULT: 1.0
-  [10]fade_out_duration ... duration for the fade out. In this durationtime the input volume
+  [10]fade_out_time     ... duration for the fade out. In this durationtime the input volume
                             changes slightly from volume --> to end_volume.
                             Duration can be specified in Seconds (float) or frames (int).
                             With value 0 there will be no fade-out at all.
                             DEFAULT: 0
+  [11] nloops           ... number of repeats
+                            DEFAULT = 1
                             
 
 AUD_PLAY_MOVIE
@@ -460,10 +498,10 @@ AUD_PLAY_MOVIE
 
   (1) Record Key        ... AUD_PLAY_MOVIE
   (2) track             ... integer tracknumer
-  (3) video_filename    ... filename of a video (must contain the audiotrack).
-  (4) start             ... start playback range at offest in seconds (float)
+  (3) file              ... filename of a video (must contain the audiotrack).
+  (4) start_sec         ... start playback range at offest in seconds (float)
                             or in frames (int)
-  (5) end               ... end playback range at offest in seconds (float)
+  (5) end_sec           ... end playback range at offest in seconds (float)
                             or in frames (int)
   [6] volume            ... adjust the volume. (float)
                             A value of 1.0 keeps the original input volume for this track
@@ -473,7 +511,7 @@ AUD_PLAY_MOVIE
                             DEFAULT = 1.0
   [7] start_volume      ... Start Value of the volume. (float)
                             DEFAULT: 1.0
-  [8] fade_in_duration  ... duration for the fade in. In this durationtime the input volume
+  [8] fade_in_time      ... duration for the fade in. In this durationtime the input volume
                             changes slightly from start_volume --> to volume.
                             Duration can be specified in Seconds (float) or frames (int).
                             With value 0 the playback starts immediate with volume,
@@ -481,12 +519,14 @@ AUD_PLAY_MOVIE
                             DEFAULT: 0
   [9] end_volume        ... End Value of the volume.. (float)
                             DEFAULT: 1.0
-  [10]fade_out_duration ... duration for the fade out. In this durationtime the input volume
+  [10]fade_out_time     ... duration for the fade out. In this durationtime the input volume
                             changes slightly from volume --> to end_volume.
                             Duration can be specified in Seconds (float) or frames (int).
                             With value 0 there will be no fade-out at all.
                             DEFAULT: 0
-  [11] audiotrack       ... Select input audiotrack (for videos with more audiotracks
+  [11] nloops           ... number of repeats
+                            DEFAULT = 1
+  [12] seltrack         ... Select input audiotrack (for videos with more audiotracks
                             such as multilingual DVDs.
                             use 1 for the first audiotrack, or if the video has only
                             one audiotrack)
@@ -498,10 +538,10 @@ AUD_SILENCE
   
   (1) Record Key        ... AUD_SILENCE
   (2) track             ... integer tracknumer
-  [3] duration          ... duration of the silent pause in number of frames (integer) 
+  [3] duration_sec      ... duration of the silent pause in number of frames (integer) 
                             or seconds (float)
                             DEFAULT: 1
-  [4] wait_until        ... wait silently until this timestamp is reached,
+  [4] wait_until_sec    ... wait silently until this timestamp is reached,
                             (then do the unconditional pause for duration time)
                             timestamp can be a framenumber (integer) or seconds (float)
                             DEFAULT: 0
@@ -515,17 +555,17 @@ AUD_SILENCE
      (and a warning is reported)
   
   
-  AUD_PLAY_SOUND 1=track  hello.wav
-  AUD_SILENCE    1=track  0.0=delay  60.0=wait_until_sec
-  AUD_PLAY_SOUND 1=track  ringing.wav
+  AUD_PLAY_SOUND track:1  hello.wav
+  AUD_SILENCE    track:1  delay:0.0  wait_until_sec:60.0
+  AUD_PLAY_SOUND track:1  ringing.wav
   
   b) play the sound "hello.wav", 
      then wait 4 seconds and start the sound "ringing.wav" exactly at sec. 60.0
   
   
-  AUD_PLAY_SOUND 1=track  hello.wav
-  AUD_SILENCE    1=track  4.0=delay_sec  0.0=wait_until_sec
-  AUD_PLAY_SOUND 1=track  ringing.wav
+  AUD_PLAY_SOUND track:1  hello.wav
+  AUD_SILENCE    track:1  delay_sec:4.0  wait_until_sec:0.0
+  AUD_PLAY_SOUND track:1  ringing.wav
 
 
 Filenames:

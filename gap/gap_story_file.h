@@ -93,6 +93,11 @@
                             * then frames = nloop * (ABS(from_frame - to_frame) + 1);
                             * else frames = (nloop * 2 * ABS(from_frame - to_frame)) + 1;
 			    */
+
+    gdouble step_density;  /* 1.0 for normal stepsize
+                            * 2.0 use every 2.nd frame (double speed at same framerate)
+			    * 0.5 use each frame twice (half speed at same framerate)
+			    */
     gint32 file_line_nr;   /* line Number in the storyboard file */
     struct GapStoryElem  *comment;
     struct GapStoryElem  *next;

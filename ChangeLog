@@ -1,3 +1,47 @@
+2004-07-18  Wolfgang Hofer <hof@gimp.org>
+	Morph: fixed bug for layer mixing.
+	added p_mix_layers procedure to mix all channels r,g,b,a with current mix factor.
+	The old code used standard gimp_merge_visible_layers with overall opacity
+	but this way opaque pixels of the bg-layer were fully visible
+	for all pixels where the top-layer has full transparent alpha channel.
+	(regardless to the current mix-factor.)
+
+	* gap/gap_morph_exec.c
+
+2004-07-24  Wolfgang Hofer <hof@gimp.org>
+	introduced variable stepsize parameter (step_density) for STORYBOARD
+	processing.
+	This allows changing the playback speed of each
+	individual input clip while keeping the
+	same constant master_framerate of the resulting output video.
+	this is done at video encoding (and in the player) on the fly.
+	
+	until now the only way to get this effect
+	was explicite dropping or  duplicating 
+	source frames by using the Change Frame Density Feature
+	but this way you loose ever nth. frame or waste diskspace
+	with the duplicated frames.
+	 
+	- Added step_density spinbutton to the STB_ELEM Properties dialog
+	- extended both STORYBOARD file parsers,
+	  load and save procedures to handle the new parameter
+	 
+	* gap/gap_story_main.c [.h]
+	* gap/gap_story_file.c [.h]
+	* gap/gap_properties.c
+	* gap/gap_story_syntax.c
+	
+	* libgapvidutil/gap_gve_story.c [.h]
+	 
+	
+2004-07-18  Wolfgang Hofer <hof@gimp.org>
+	Morph/Warp Plug-IN: Tuning of workpoint selection algorithms
+	replaced use_fast_wp_selection flag by  use_quality_wp_selection flag
+	with invers logic
+	added NON-INTERACTIVE parameter handling
+	* gap/gap_morph_dialog.c [.h]
+	* gap/gap_morph_exec.c [.h]
+	* gap/gap_morph_main.c [.h]
 2004-07-11  Wolfgang Hofer <hof@gimp.org>
 
 	MORPH: added hscale/vscale widgets for preview scrolling,

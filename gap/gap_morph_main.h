@@ -55,13 +55,17 @@ typedef struct GapMorphWorkPoint { /* nickname: wp */
      void *next;
      
      /* for calculations per pixel */
-     gdouble warp_weight;
-     gdouble gravity;
-     gdouble sqr_dist;
-     gdouble dist;
-     gdouble inv_dist;    /* 1 / sqr_distance */
-     gdouble angle_deg;
-     void *next_selected;
+     gdouble  warp_weight;
+     gdouble  gravity;
+     gdouble  sqr_dist;
+     gdouble  dist;
+     gdouble  inv_dist;    /* 1 / sqr_distance */
+     gdouble  angle_deg;
+     gint     xy_relation;
+     gint     sek_idx;
+     gboolean is_alive;
+     void    *next_selected;
+     void    *next_sek;
      
   } GapMorphWorkPoint;
 
@@ -88,8 +92,8 @@ typedef struct GapMorphGlobalParams  { /* nickname: mgpp */
 						  *       best matching workpointfile.
 						  *       (using the numberpart of the filename)
 						  */
-  gboolean            use_fast_wp_selection;           /* TRUE: */
-  gboolean            use_gravity;           /* TRUE: */
+  gboolean            use_quality_wp_selection;
+  gboolean            use_gravity;
   gdouble             gravity_intensity;     /* 1.0 upto 5 (gravity power) */
   gdouble             affect_radius;         /* distortion pixelradius (0 == no gravity) */
 
@@ -103,7 +107,7 @@ typedef struct GapMorphGlobalParams  { /* nickname: mgpp */
 
 typedef struct GapMorphWarpCoreAPI  { /* nickname: wcap */
   GapMorphWorkPoint *wp_list;
-  gboolean      use_fast_wp_selection;
+  gboolean      use_quality_wp_selection;
   gboolean      use_gravity;
   gdouble       gravity_intensity;
   gdouble       affect_radius;         /* distortion pixelradius (0 == no gravity) */
@@ -113,7 +117,6 @@ typedef struct GapMorphWarpCoreAPI  { /* nickname: wcap */
   gdouble       scale_x;
   gdouble       scale_y;
   gboolean      printf_flag;
-  gint          num_sectors;  /* 8 (fast) or 24 quality algorithm */
   
 }  GapMorphWarpCoreAPI;
 

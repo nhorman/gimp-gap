@@ -6,6 +6,7 @@
  */
 
 /*
+ * 2004.07.24  hof  - added step_density parameter
  * 2003.05.29  hof  - gap_gve_story_fetch_composite_image_or_chunk (for dont_recode_flag)
  * 2003.04.16  hof  - Support deinterlace and exact_seek features for VID_PLAY_MOVIE
  * 2003.03.08  hof  - buffered audio processing
@@ -168,6 +169,7 @@ typedef struct GapGveStoryFrameRangeElem
    gint32  frames_to_handle;
    gint32  frame_cnt;
    gint32  delta;               /* +1 or -1 */
+   gdouble step_density;        /* 1==normal stepsize 1:1   0.5 == each frame twice, 2.0 only every 2nd frame */
    guchar red;
    guchar green;
    guchar blue;

@@ -33,8 +33,11 @@ Requires:
 
 
 		    cd ffmpeg
-		    ./configure --enable-shared --disable-mmx --enable-a52
-		       
+		    ./configure --enable-shared --disable-mmx
+		    
+		    ##  --enable-gpl --enable-a52
+		    ##  --enable-mp3lame
+		    
 		    
 		    If you want create videos with gimp-gap
 		    you should install those libs
@@ -53,7 +56,7 @@ Requires:
 		    you may prefere libmpeg3 rpm packages provided by SuSE
 		    or other LINUX distributors.
 		    
-		    To install the original, you must firts compile the library 
+		    To install the original, you must first compile the library 
 		    (see the included docs and Makefile).
 		    Then copy all header files
 		    to /usr/local/include and the library to /usr/local/lib.
@@ -103,6 +106,34 @@ Please use bugzilla productname gimp-gap for bugreports.
 
 Before reporting a problem, you may want to see if someone else did 
 already - check http://bugzilla.gnome.org/buglist.cgi?product=gimp-gap
+
+
+Other known Bugs
+================
+
+- The AVI video encoder Plug-in does crash with
+  the xvid-1.0.0 codec
+  (since xvid-1.0.0 it crashes, looks like a thred problem)
+
+- some mpeg videos do crash at read attempt.
+  libmpeg3 1.5.4  has problems in its CLOSE procedure on those
+  videos.
+  The GVA API tries to check videos by OPEN/CLOSE calls
+  to findout a compatible decoder.
+
+  (you can produce such problem videos
+   with the ffmpeg-0.4.8, 
+   and with "MPEG1 best" preset in the GIMP-GAP Master Encoder dialog)
+  
+  Workaround: set libavformat as preferred decoder for those videos.
+  
+
+- GIMP-GAP does not compile with ffmpeg-0.4.9pre1 because
+  ffmpeg-0.4.9pre1 API is NOT compatible with ffmpeg-0.4.8
+
+
+
+
 
 Have fun,
   Wolfgang Hofer

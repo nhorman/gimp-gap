@@ -177,7 +177,7 @@ static GtkWidget*  p_make_check_item_with_label(GtkWidget *parent, gchar *label,
 		     GapStbMenuCallbackFptr fptr, GapStbMainGlobalParams *sgpp
 		     ,gboolean initial_value);
 
-static void        p_make_menu_windows(GapStbMainGlobalParams *sgpp, GtkWidget *menu_bar);
+static void        p_make_menu_global(GapStbMainGlobalParams *sgpp, GtkWidget *menu_bar);
 static void        p_make_menu_cliplist(GapStbMainGlobalParams *sgpp, GtkWidget *menu_bar);
 static void        p_make_menu_storyboard(GapStbMainGlobalParams *sgpp, GtkWidget *menu_bar);
 
@@ -2908,13 +2908,13 @@ p_make_check_item_with_label(GtkWidget *parent, gchar *label
 }  /* end p_make_check_item_with_label */
 
 /* -----------------------------
- * p_make_menu_windows
+ * p_make_menu_global
  * -----------------------------
  */
 static void
-p_make_menu_windows(GapStbMainGlobalParams *sgpp, GtkWidget *menu_bar)
+p_make_menu_global(GapStbMainGlobalParams *sgpp, GtkWidget *menu_bar)
 {
-   GtkWidget *file_menu = p_make_menu_bar_item(menu_bar, _("Windows"));
+   GtkWidget *file_menu = p_make_menu_bar_item(menu_bar, _("Global"));
    
    p_make_item_with_label(file_menu, _("Properties")
                           , p_menu_win_properties_cb
@@ -2933,7 +2933,7 @@ p_make_menu_windows(GapStbMainGlobalParams *sgpp, GtkWidget *menu_bar)
 			  , sgpp
 			  );
    
-}  /* end p_make_menu_windows */
+}  /* end p_make_menu_global */
 
 
 /* -----------------------------
@@ -4420,7 +4420,7 @@ gap_storyboard_dialog(GapStbMainGlobalParams *sgpp)
   menu_bar = gtk_menu_bar_new();
   gtk_box_pack_start(GTK_BOX(vbox), menu_bar, FALSE, TRUE, 0);
 
-  p_make_menu_windows(sgpp, menu_bar);
+  p_make_menu_global(sgpp, menu_bar);
   p_make_menu_cliplist(sgpp, menu_bar);
   p_make_menu_storyboard(sgpp, menu_bar);
 

@@ -18,6 +18,7 @@
  */
 
 /*
+ * 2004.07.24  hof  - added step_density parameter
  * 2004.05.17  hof  - integration into gimp-gap project
  *                    Info: gimp-gap has already another storyboard parser module
  *                     gap/gap_story_file.c, but that module can not handle
@@ -253,6 +254,7 @@ static GapGveStoryFrameRangeElem *  p_new_framerange_element(
                           ,gint32 seltrack      /* IN: select videotrack number 1 upto 99 for GAP_FRN_MOVIE */
                           ,gint32 exact_seek    /* IN: 0 fast seek, 1 exact seek (only for GVA Videoreads) */
                           ,gdouble delace    /* IN: 0.0 no deinterlace, 1.0-1.99 odd 2.0-2.99 even rows (only for GVA Videoreads) */
+                          ,gdouble step_density    /* IN:  1==normal stepsize 1:1   0.5 == each frame twice, 2.0 only every 2nd frame */
                            );
 static void       p_add_frn_list(GapGveStoryVidHandle *vidhand, GapGveStoryFrameRangeElem *frn_elem);
 static void       p_add_aud_list(GapGveStoryVidHandle *vidhand, GapGveStoryAudioRangeElem *aud_elem);
@@ -366,6 +368,7 @@ gap_gve_story_debug_print_framerange_list(GapGveStoryFrameRangeElem *frn_list
       printf("  [%d] frames_to_handle  : %d\n", (int)l_idx, (int)frn_elem->frames_to_handle);
       printf("  [%d] frame_cnt         : %d\n", (int)l_idx, (int)frn_elem->frame_cnt );
       printf("  [%d] delta             : %d\n", (int)l_idx, (int)frn_elem->delta );
+      printf("  [%d] step_density      : %.4f\n", (int)l_idx, (float)frn_elem->step_density );
 
       if(frn_elem->keep_proportions)
       {printf("  [%d] keep_proportions  : TRUE\n", (int)l_idx );}
@@ -1727,7 +1730,11 @@ p_fetch_framename(GapGveStoryFrameRangeElem *frn_list
       }
       if (master_frame_nr <= l_frame_group_count + l_frames_to_handle)
       {
-        l_fnr = frn_elem->frame_from + (frn_elem->delta * (master_frame_nr - (l_frame_group_count +1 )));
+        gdouble fnr;
+
+	fnr = (gdouble)(frn_elem->delta * (master_frame_nr - (l_frame_group_count +1 )))
+	      * frn_elem->step_density;
+        l_fnr = frn_elem->frame_from + (gint32)fnr;
 
         if((frn_elem->frn_type == GAP_FRN_SILENCE)
         || (frn_elem->frn_type == GAP_FRN_COLOR))
@@ -2456,6 +2463,7 @@ p_new_framerange_element(GapGveStoryFrameType  frn_type
                       ,gint32 seltrack      /* IN: select videotrack number 1 upto 99 for GAP_FRN_MOVIE */
                       ,gint32 exact_seek    /* IN: 0 fast seek, 1 exact seek (only for GVA Videoreads) */
                       ,gdouble delace    /* IN: 0.0 no deinterlace, 1.0-1.99 odd 2.0-2.99 even rows (only for GVA Videoreads) */
+                      ,gdouble step_density    /* IN:  1==normal stepsize 1:1   0.5 == each frame twice, 2.0 only every 2nd frame */
                       )
 {
   GapGveStoryFrameRangeElem *frn_elem;
@@ -2481,11 +2489,13 @@ p_new_framerange_element(GapGveStoryFrameType  frn_type
      printf("  track:%d:\n", (int)track);
      printf("  frame_from:%d:\n", (int)frame_from);
      printf("  frame_to:%d:\n", (int)frame_to);
+     printf("  step_density:%f:\n", (float)step_density);
      if(basename)          printf("  basename:%s:\n", basename);
      if(ext)               printf("  ext:%s:\n", ext);
      if(storyboard_file)   printf("  storyboard_file:%s:\n", storyboard_file);
      if(preferred_decoder) printf("  preferred_decoder:%s:\n", preferred_decoder);
   }
+
 
   frn_elem = g_malloc0(sizeof(GapGveStoryFrameRangeElem));
   frn_elem->frn_type         = frn_type;
@@ -2497,6 +2507,7 @@ p_new_framerange_element(GapGveStoryFrameType  frn_type
   frn_elem->frames_to_handle = 0;
   frn_elem->frame_cnt        = 0;
   frn_elem->delta            = 1;
+  frn_elem->step_density     = step_density;
   frn_elem->last_master_frame_access = -1;   /* -1 indicate that there was no access */
 
   /* default attributes (used if storyboard does not define settings) */
@@ -2852,12 +2863,25 @@ p_new_framerange_element(GapGveStoryFrameType  frn_type
   if (frn_elem->frame_from > frn_elem->frame_to)
   {
     frn_elem->delta            = -1;   /* -1 is inverse (descending) order */
-    frn_elem->frames_to_handle = 1 + (frn_elem->frame_from - frn_elem->frame_to);
   }
   else
   {
     frn_elem->delta            = 1;    /* +1 is normal (ascending) order */
-    frn_elem->frames_to_handle = 1 + (frn_elem->frame_to - frn_elem->frame_from);
+  }
+  
+  /* calculate frames_to_handle respecting step_density */ 
+  {
+    gdouble fnr;
+
+    if(frn_elem->step_density < 0)
+    {
+      /* force legal value */
+      frn_elem->step_density = 1.0;
+    }
+    
+    fnr = (gdouble)(ABS(frn_elem->frame_from - frn_elem->frame_to) +1);
+    fnr = fnr / frn_elem->step_density;
+    frn_elem->frames_to_handle = MAX((gint32)(fnr + 0.5), 1);
   }
 
   if(gap_debug)
@@ -2866,6 +2890,7 @@ p_new_framerange_element(GapGveStoryFrameType  frn_type
     if(frn_elem->ext)      printf("p_new_framerange_element: frn_elem->ext:%s:\n",frn_elem->ext);
     printf("p_new_framerange_element: frn_elem->frame_from:%d:\n", (int)frn_elem->frame_from);
     printf("p_new_framerange_element: frn_elem->frame_to:%d:\n", (int)frn_elem->frame_to);
+    printf("p_new_framerange_element: frn_elem->frames_to_handle:%d:\n", (int)frn_elem->frames_to_handle);
     printf("\np_new_framerange_element: END\n");
   }
 
@@ -3237,7 +3262,7 @@ p_scan_gdouble_limit(char *ptr, gdouble default_value, gdouble min, gdouble max,
     if(*ptr != '\0')
     {
       l_end_ptr = ptr;
-      l_num = strtod(ptr, &l_end_ptr);
+      l_num = g_ascii_strtod(ptr, &l_end_ptr);
       if (ptr != l_end_ptr)
       {
          if((l_num >= min) && (l_num <= max))
@@ -3248,7 +3273,7 @@ p_scan_gdouble_limit(char *ptr, gdouble default_value, gdouble min, gdouble max,
 
       if(sterr)
       {
-        l_errtxt = g_strdup_printf(_("illegal number: %s (valid range is %.3f upto %.3f)\n using default value %.3f")
+        l_errtxt = g_strdup_printf(_("Illegal number: %s (valid range is %.3f upto %.3f)\n using default value %.3f")
                                   , ptr, (float)min, (float)max, (float)default_value);
         p_set_stb_warning(sterr, l_errtxt);
         g_free(l_errtxt);
@@ -3348,7 +3373,7 @@ p_scan_fromto(char *ptr, gint32 default_value, GapGveStoryVidHandle *vidhand)
       double l_dnum;
 
       /* unit is considered as secs */
-      l_dnum = strtod(ptr, &l_end_ptr);
+      l_dnum = g_ascii_strtod(ptr, &l_end_ptr);
       l_num = round(vidhand->master_framerate * l_dnum);
     }
     else
@@ -3599,6 +3624,7 @@ p_parse_storyboard_line(char *storyboard_line
   char *l_seltrack_ptr;
   char *l_exact_seek_ptr;
   char *l_delace_ptr;
+  char *l_stepsize_ptr;
   gint32 l_frame_from;
   gint32 l_frame_to;
   gint32 l_dur;
@@ -3609,6 +3635,7 @@ p_parse_storyboard_line(char *storyboard_line
   gboolean l_add_range;
   gint32  l_exact_seek;
   gdouble l_delace;
+  gdouble l_step_density;
 
   sterr=vidhand->sterr;
   frn_list = NULL;
@@ -3622,6 +3649,7 @@ p_parse_storyboard_line(char *storyboard_line
   l_seltrack = 1;
   l_exact_seek = 1;
   l_delace = 0.0;
+  l_step_density = 1.0;
   l_pingpong = 1;   /* normal mode */
 
   l_scan_ptr = storyboard_line;
@@ -3792,6 +3820,7 @@ p_parse_storyboard_line(char *storyboard_line
                                          , 1              /* seltrack */
                                          , 1              /* exact_seek*/
                                          , 0.0            /* delace */
+					 , 1.0            /* step_density */
                                          );
       if(frn_elem)
       {
@@ -4091,6 +4120,7 @@ p_parse_storyboard_line(char *storyboard_line
                                          , 1              /* seltrack */
                                          , 1              /* exact_seek*/
                                          , 0.0            /* delace */
+					 , 1.0            /* step_density */
                                          );
       if(frn_elem)
       {
@@ -4143,6 +4173,7 @@ p_parse_storyboard_line(char *storyboard_line
                                          , 1              /* seltrack */
                                          , 1              /* exact_seek*/
                                          , 0.0            /* delace */
+					 , 1.0            /* step_density */
                                          );
       if(frn_elem)
       {
@@ -4173,6 +4204,7 @@ p_parse_storyboard_line(char *storyboard_line
     l_to_ptr       = p_fetch_string(&l_scan_ptr);
     l_pingpong_ptr = p_fetch_string(&l_scan_ptr);
     l_dur_ptr      = p_fetch_string(&l_scan_ptr);
+    l_stepsize_ptr = p_fetch_string(&l_scan_ptr);
     l_macro_ptr    = p_fetch_string(&l_scan_ptr);
     p_flip_dir_seperators(l_macro_ptr);
 
@@ -4183,6 +4215,7 @@ p_parse_storyboard_line(char *storyboard_line
       l_frame_from = p_scan_fromto(l_from_ptr, 1, vidhand);
       l_frame_to   = p_scan_fromto(l_to_ptr, 999999, vidhand);
       l_dur        = p_scan_gint32_limit(l_dur_ptr, 1, 1, 999999, sterr);       /* repeat count */
+      l_step_density = p_scan_gdouble_limit(l_stepsize_ptr, 1.0, 0.125, 99.99, sterr);       /* stepsize */
 
       l_pingpong   = p_scan_pingpong(l_pingpong_ptr, sterr);
       l_add_range = TRUE;
@@ -4207,6 +4240,7 @@ p_parse_storyboard_line(char *storyboard_line
     l_to_ptr       = p_fetch_string(&l_scan_ptr);
     l_pingpong_ptr = p_fetch_string(&l_scan_ptr);
     l_dur_ptr      = p_fetch_string(&l_scan_ptr);
+    l_stepsize_ptr = p_fetch_string(&l_scan_ptr);
     l_macro_ptr    = p_fetch_string(&l_scan_ptr);
     p_flip_dir_seperators(l_macro_ptr);
 
@@ -4218,6 +4252,7 @@ p_parse_storyboard_line(char *storyboard_line
       l_frame_from = p_scan_fromto(l_from_ptr, 0, vidhand);
       l_frame_to   = p_scan_fromto(l_to_ptr, 999999, vidhand);
       l_dur        = p_scan_gint32_limit(l_dur_ptr, 1, 1, 999999, sterr);       /* repeat count */
+      l_step_density = p_scan_gdouble_limit(l_stepsize_ptr, 1.0, 0.125, 99.99, sterr);       /* stepsize */
 
       l_pingpong = p_scan_pingpong(l_pingpong_ptr, sterr);
       l_add_range = TRUE;
@@ -4244,6 +4279,7 @@ p_parse_storyboard_line(char *storyboard_line
     l_seltrack_ptr   = p_fetch_string(&l_scan_ptr);
     l_exact_seek_ptr = p_fetch_string(&l_scan_ptr);
     l_delace_ptr     = p_fetch_string(&l_scan_ptr);
+    l_stepsize_ptr   = p_fetch_string(&l_scan_ptr);
     l_macro_ptr      = p_fetch_string(&l_scan_ptr);
     p_flip_dir_seperators(l_macro_ptr);
 
@@ -4260,6 +4296,7 @@ p_parse_storyboard_line(char *storyboard_line
       l_pingpong = p_scan_pingpong(l_pingpong_ptr, sterr);
       l_exact_seek = p_scan_gint32_limit(l_exact_seek_ptr, 1, 0, 1, sterr);       /* exact seek mode */
       l_delace = p_scan_gdouble_limit(l_delace_ptr, 0.0, 0.0, 2.999999, sterr);       /* deinterlace mode */
+      l_step_density = p_scan_gdouble_limit(l_stepsize_ptr, 1.0, 0.125, 99.99, sterr);       /* stepsize */
       l_add_range = TRUE;
     }
   }   /* end STORYBOARD_VID_PLAY_MOVIE */
@@ -4294,6 +4331,7 @@ p_parse_storyboard_line(char *storyboard_line
                                            , l_seltrack
                                            , l_exact_seek
                                            , l_delace
+					   , l_step_density
                                            );
         if(frn_elem)
         {
@@ -4656,6 +4694,7 @@ p_open_video_handle_private(    gboolean ignore_audio
                                          , 1          /* seltrack */
                                          , 1              /* exact_seek*/
                                          , 0.0            /* delace */
+					 , 1.0            /* step_density */
                                          );
       if(frn_elem)
       {
@@ -4685,6 +4724,7 @@ p_open_video_handle_private(    gboolean ignore_audio
                                          , 1          /* seltrack */
                                          , 1              /* exact_seek*/
                                          , 0.0            /* delace */
+					 , 1.0            /* step_density */
                                          );
       if(frn_elem) *frame_count = frn_elem->frames_to_handle;
 
@@ -4705,6 +4745,7 @@ p_open_video_handle_private(    gboolean ignore_audio
                                          , 1               /* seltrack */
                                          , 1              /* exact_seek*/
                                          , 0.0            /* delace */
+					 , 1.0            /* step_density */
                                          );
       vidhand->frn_list->frames_to_handle = frn_elem->frame_first -1;
       vidhand->frn_list->next = frn_elem;
