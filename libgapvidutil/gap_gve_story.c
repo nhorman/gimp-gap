@@ -875,14 +875,33 @@ gap_gve_story_remove_tmp_audiofiles(GapGveStoryVidHandle *vidhand)
 {
   GapGveStoryAudioRangeElem *aud_elem;
 
-  if(gap_debug)  printf("gap_gve_story_remove_tmp_audiofiles START\n");
+  if(gap_debug)
+  {
+    printf("gap_gve_story_remove_tmp_audiofiles START\n");
+  }
 
   for(aud_elem = vidhand->aud_list; aud_elem != NULL; aud_elem = (GapGveStoryAudioRangeElem *)aud_elem->next)
   {
     if(aud_elem->tmp_audiofile)
     {
-      if(gap_debug) printf("gap_gve_story_remove_tmp_audiofiles removing: %s\n", aud_elem->tmp_audiofile);
-      remove(aud_elem->tmp_audiofile);
+      if(gap_debug)
+      {
+        printf("gap_gve_story_remove_tmp_audiofiles tmp_audiofile: %s\n"
+	      , aud_elem->tmp_audiofile);
+      }
+      
+      /* delete tmp_audiofile if still exists
+       * (more aud_elements may refere to the same tmp_audiofile)
+       */
+      if(g_file_test(aud_elem->tmp_audiofile, G_FILE_TEST_EXISTS))
+      {
+	if(gap_debug)
+	{
+	  printf("gap_gve_story_remove_tmp_audiofiles removing: %s\n"
+		, aud_elem->tmp_audiofile);
+	}
+        remove(aud_elem->tmp_audiofile);
+      }
       g_free(aud_elem->tmp_audiofile);
       aud_elem->tmp_audiofile = NULL;
     }
@@ -1814,7 +1833,7 @@ p_fetch_framename(GapGveStoryFrameRangeElem *frn_list
     l_found_at_idx++;
   }
 
-  if( /* 1==1 */ gap_debug)
+  if(gap_debug)
   {
    printf("p_fetch_framename: track:%d master_frame_nr:%d framename:%s: found_at_idx:%d opa:%f scale:%f %f move:%f %f layerstack_idx:%d\n"
        ,(int)track
@@ -2236,7 +2255,7 @@ p_new_audiorange_element(GapGveStoryAudioType  aud_type
           && (aud_elem->aud_type == aud_type))
           {
             if(gap_debug)  printf("p_new_audiorange_element: Range is already known audiofile:%s\n", aud_known->audiofile);
-            aud_elem->tmp_audiofile     = aud_known->tmp_audiofile;
+            aud_elem->tmp_audiofile     = g_strdup(aud_known->tmp_audiofile);
             aud_elem->samplerate        = aud_known->samplerate;
             aud_elem->channels          = aud_known->channels;
             aud_elem->bytes_per_sample  = aud_known->bytes_per_sample;
@@ -5458,7 +5477,7 @@ gap_gve_story_fetch_composite_image_or_chunk(GapGveStoryVidHandle *vidhand
 	      }
 	    }
     
-            /*if(gap_debug)*/
+            if(gap_debug)
 	    {
 	      printf("** sorry, no reuse of fetched CHUNK type: %d (1=I/2=P/3=B)  frame_nr:%d (last_frame_nr:%d)\n"
 	            ,(int)l_frame_type
@@ -5487,7 +5506,7 @@ gap_gve_story_fetch_composite_image_or_chunk(GapGveStoryVidHandle *vidhand
           }
 	  else
 	  {
-            /*if(gap_debug)*/
+            if(gap_debug)
 	    {
 	      printf("**# sorry, no reuse fetch failed  frame_nr:%d (last_frame_nr:%d)\n"
 		    ,(int)l_video_frame_nr
@@ -5527,7 +5546,7 @@ gap_gve_story_fetch_composite_image_or_chunk(GapGveStoryVidHandle *vidhand
     last_videofile = l_videofile;
 
 
-    /*if(gap_debug)*/
+    if(gap_debug)
     {
        printf("gap_gve_story_fetch_composite_image_or_chunk:  CHUNK fetch not possible (doing frame fetch instead)\n");
     }

@@ -3,6 +3,7 @@
  * GAP Video read API implementation of libavformat/lbavcodec (also known as FFMPEG)
  * based wrappers to read various videofile formats
  *
+ * 2005.02.05   update to ffmpeg-0.4.9 (basically works now)
  * 2004.10.24   workaround initial frameread and reopen for detection of yuv_buff_pix_fmt
  *              of the active codec. (works only after the 1.st frame was read) 
  * 2004.04.12   vindex bugfix seek high framnumbers sometimes used wrong (last index)
@@ -593,7 +594,11 @@ p_wrapper_ffmpeg_get_next_frame(t_GVA_Handle *gvahand)
         * @param pkt is filled
         * @return 0 if OK. AVERROR_xxx(negative) if error.
         */
+#ifndef HAVE_OLD_FFMPEG_0408
+      l_pktlen = av_read_frame(handle->vid_input_context, &handle->vid_pkt);
+#else
       l_pktlen = av_read_packet(handle->vid_input_context, &handle->vid_pkt);
+#endif
       if(l_pktlen < 0)
       {
          /* EOF reached */

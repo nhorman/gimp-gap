@@ -1,3 +1,36 @@
+2005-02-19  Wolfgang Hofer <hof@gimp.org>
+	- bugfix: STORYBOARD processing fixed crash that happened
+	  sometimes after creating the composite audiofile.
+	  (aud_elem->tmp_audiofile pointers did refere to the same
+	   adress that was g_free'd more than one time)
+	   
+	- bugfix: STORYBOARD processing of AUD_PLAY_MOVIE records
+	  from:000001 to:000002 resulted in too short duration time 
+	  of just one frame.
+	  now results in duration time for 2 frames to match with
+	  the video duration time that is 2 frames in that case.
+	  
+	  * gap/gap_story_file.c
+	  * libgapvidutil/gap_gve_story.c
+	  * README
+	  
+2005-02-05  Wolfgang Hofer <hof@gimp.org>
+	- API for video read access now also compiles and works with
+	  ffmpeg-0.4.9pre1 (and should also work with recent CVS snapshots
+	  tested with FFMpeg-20050120 CVS snapshot)
+	  
+	  existing videoindexes that are based on ffmpeg-0.4.8 will
+	  not work after upgrade to ffmpeg-0.4.9 or later versions.
+	  
+	  therefore it is recommanded to delete the old indexes,
+	  and create new ones based on the new version of ffmpeg.
+	  To delete videoindexes on UNIX use these commands:
+	  
+	  cd $HOME/.gimprc/gvaindexes
+	  rm *.libavformat.gvaidx
+	
+	* libgapvidapi/gap_vid_api_ffmpeg.c
+	
 2005-01-30  Wolfgang Hofer <hof@gimp.org>
 
 	Help Buttons for storyboard pop-up dialogs 

@@ -12,6 +12,12 @@ Requires:
  Optional libs for decode/encode videofiles:
 
  - ffmpeg     0.4.8 (libavformat 0.4.8 and libavcodec 0.4.8)
+ 		    
+		    ffmpeg-0.4.9pre1 and some later CVS snapshots until 02/2005
+		    of ffmpeg were also successfully tested to work with gimp-gap.
+		    But if you are using more recent CVS snapshots of ffmpeg it may
+		    not work properly together with gimp-gap or even fail to compile.
+		    
                     libavformat and libavcodec build up the basic
 		    videofile support for many MPEG based fileformats
 		    both for read and write access 
@@ -179,15 +185,9 @@ Other known Bugs
     (video-workaround-for-libmpeg3-close-bug "no")
 
   you can produce such problem videos
-  with the ffmpeg-0.4.8, 
-   and with "MPEG1 best" preset in the GIMP-GAP Master Encoder dialog
+  with the ffmpeg encoder, 
+  and with "MPEG1 best" preset in the GIMP-GAP Master Encoder dialog
   
-
-- GIMP-GAP does not compile with ffmpeg-0.4.9pre1 because
-  ffmpeg-0.4.9pre1 API is NOT compatible with ffmpeg-0.4.8
-
-
-
 
 
 Have fun,

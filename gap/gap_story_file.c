@@ -2062,6 +2062,8 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
     char *l_frate_ptr         = l_wordval[15];
     gint32  l_from_frame;
     gint32  l_to_frame;
+    gint32  l_min_frame;
+    gint32  l_max_frame;
     gdouble l_framerate;
 
 
@@ -2106,18 +2108,19 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
       {
         l_framerate = 1;
       }
+
+      l_min_frame = MIN(l_from_frame, l_to_frame);
+      l_max_frame = MAX(l_from_frame, l_to_frame);
       
-      if(l_from_frame > 0)
+      if((l_min_frame > 0) && (l_max_frame > 0))
       {
         /* framenumbers starts at 1. frame one has 0 sec starttime */ 
-        stb_elem->aud_play_from_sec = (l_from_frame -1) / l_framerate;
-	stb_elem->from_frame = l_from_frame;
+        stb_elem->aud_play_from_sec = (gdouble)(l_min_frame -1) / l_framerate;
+	stb_elem->from_frame = l_min_frame;
 	stb_elem->aud_framerate = l_framerate;
-      }
-      if(l_to_frame > 0)
-      {
-        stb_elem->aud_play_to_sec = (l_to_frame -1) / l_framerate;
-	stb_elem->to_frame = l_to_frame;
+
+        stb_elem->aud_play_to_sec = (gdouble)(l_max_frame) / l_framerate;
+	stb_elem->to_frame = l_max_frame;
       }
 
       gap_story_list_append_elem(stb, stb_elem);

@@ -106,7 +106,7 @@ Modify Frames
     The function 
       "Apply filter on Layer(s)"
       
-       brings up a dialog window whe started via pressing the OK button.
+       brings up a dialog window when started via pressing the OK button.
        this dialog is similar to the PDB-Browser, where you can select 
        one of the available filters.
 
