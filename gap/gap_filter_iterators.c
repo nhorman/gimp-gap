@@ -16,7 +16,7 @@
  * on animated multilayer Images.
  * Another simpler way is to register the structure description of the LAST_VALUES Buffer.
  * (so that the common iterator can be used)
- * 
+ *
  *
  * Common things to all Iteratur Plugins:
  * Interface:   run_mode        # is always GIMP_RUN_NONINTERACTIVE
@@ -28,9 +28,9 @@
  *                               but the (central) caller may fake step 1.2345 in the future
  *                               for logaritmic iterations or userdefined curves.
  *
- * Naming Convention: 
+ * Naming Convention:
  *    Iterators must have the name of the plugin (PDB proc_name), whose values
- *    are iterated, with Suffix 
+ *    are iterated, with Suffix
  *      "_Iterator"
  *      "_Iterator_ALT"    (if not provided within the original Plugin's sources)
  *
@@ -72,8 +72,8 @@
  * 1998.01.29 hof: 1st release
  */
 #include "config.h"
- 
-/* SYTEM (UNIX) includes */ 
+
+/* SYTEM (UNIX) includes */
 #include <stdio.h>
 #include <string.h>
 #ifdef HAVE_SYS_WAIT_H
@@ -115,7 +115,7 @@ typedef  struct IterStackItemType
 {
    GimpLastvalType lastval_type;   /* only ARRAY and STRUCT are pushed on the stack */
    gint32       elem_size;  /* only for ARRAY and STRUCT */
-   gint32       arr_count; 
+   gint32       arr_count;
    gint         idx;
    gint32       iter_flag;
 }IterStackItemType;
@@ -136,7 +136,7 @@ p_alloc_plugin_data(char *key)
 {
    int l_len;
    gchar *l_plugin_data;
-   
+
    l_len = gimp_get_data_size (key);
    if(l_len < 1)
    {
@@ -158,10 +158,10 @@ typedef struct {
 } t_gint_color;
 
 
-/* ---------------------------------------------------------------------- 
+/* ----------------------------------------------------------------------
  * iterator functions for basic datatypes
  * (were called from the generated procedures)
- * ---------------------------------------------------------------------- 
+ * ----------------------------------------------------------------------
  */
 
 static void p_delta_long(long *val, long val_from, long val_to, gint32 total_steps, gdouble current_step)
@@ -171,7 +171,7 @@ static void p_delta_long(long *val, long val_from, long val_to, gint32 total_ste
     if(total_steps < 1) return;
 
     delta = ((double)(val_to - val_from) / (double)total_steps) * ((double)total_steps - current_step);
-    *val  = val_from + delta; 
+    *val  = val_from + delta;
 
     if(gap_debug) printf("DEBUG: p_delta_long from: %ld to: %ld curr: %ld    delta: %f\n",
                                   val_from, val_to, *val, delta);
@@ -183,16 +183,16 @@ static void p_delta_short(short *val, short val_from, short val_to, gint32 total
     if(total_steps < 1) return;
 
     delta = ((double)(val_to - val_from) / (double)total_steps) * ((double)total_steps - current_step);
-    *val  = val_from + delta; 
+    *val  = val_from + delta;
 }
 static void p_delta_int(int *val, int val_from, int val_to, gint32 total_steps, gdouble current_step)
 {
      double     delta;
- 
+
      if(total_steps < 1) return;
- 
+
      delta = ((double)(val_to - val_from) / (double)total_steps) * ((double)total_steps - current_step);
-     *val  = val_from + delta; 
+     *val  = val_from + delta;
 }
 static void p_delta_gint(gint *val, gint val_from, gint val_to, gint32 total_steps, gdouble current_step)
 {
@@ -201,7 +201,7 @@ static void p_delta_gint(gint *val, gint val_from, gint val_to, gint32 total_ste
     if(total_steps < 1) return;
 
     delta = ((double)(val_to - val_from) / (double)total_steps) * ((double)total_steps - current_step);
-    *val  = val_from + delta; 
+    *val  = val_from + delta;
 }
 static void p_delta_guint(guint *val, guint val_from, guint val_to, gint32 total_steps, gdouble current_step)
 {
@@ -210,7 +210,7 @@ static void p_delta_guint(guint *val, guint val_from, guint val_to, gint32 total
     if(total_steps < 1) return;
 
     delta = ((double)(val_to - val_from) / (double)total_steps) * ((double)total_steps - current_step);
-    *val  = val_from + delta; 
+    *val  = val_from + delta;
 }
 static void p_delta_gint32(gint32 *val, gint32 val_from, gint32 val_to, gint32 total_steps, gdouble current_step)
 {
@@ -219,7 +219,7 @@ static void p_delta_gint32(gint32 *val, gint32 val_from, gint32 val_to, gint32 t
     if(total_steps < 1) return;
 
     delta = ((double)(val_to - val_from) / (double)total_steps) * ((double)total_steps - current_step);
-    *val  = val_from + delta; 
+    *val  = val_from + delta;
 }
 static void p_delta_guint32(guint32 *val, guint32 val_from, guint32 val_to, gint32 total_steps, gdouble current_step)
 {
@@ -228,7 +228,7 @@ static void p_delta_guint32(guint32 *val, guint32 val_from, guint32 val_to, gint
     if(total_steps < 1) return;
 
     delta = ((double)(val_to - val_from) / (double)total_steps) * ((double)total_steps - current_step);
-    *val  = val_from + delta; 
+    *val  = val_from + delta;
 }
 static void p_delta_char(char *val, char val_from, char val_to, gint32 total_steps, gdouble current_step)
 {
@@ -237,7 +237,7 @@ static void p_delta_char(char *val, char val_from, char val_to, gint32 total_ste
     if(total_steps < 1) return;
 
     delta = ((double)(val_to - val_from) / (double)total_steps) * ((double)total_steps - current_step);
-    *val  = val_from + delta; 
+    *val  = val_from + delta;
 }
 static void p_delta_guchar(guchar *val, char val_from, char val_to, gint32 total_steps, gdouble current_step)
 {
@@ -246,7 +246,7 @@ static void p_delta_guchar(guchar *val, char val_from, char val_to, gint32 total
     if(total_steps < 1) return;
 
     delta = ((double)(val_to - val_from) / (double)total_steps) * ((double)total_steps - current_step);
-    *val  = val_from + delta; 
+    *val  = val_from + delta;
 }
 static void p_delta_gdouble(double *val, double val_from, double val_to, gint32 total_steps, gdouble current_step)
 {
@@ -256,19 +256,19 @@ static void p_delta_gdouble(double *val, double val_from, double val_to, gint32 
 
    delta = ((double)(val_to - val_from) / (double)total_steps) * ((double)total_steps - current_step);
    *val  = val_from + delta;
-    
+
    if(gap_debug) printf("DEBUG: p_delta_gdouble total: %d  from: %f to: %f curr: %f    delta: %f\n",
                                   (int)total_steps, val_from, val_to, *val, delta);
 }
 static void p_delta_gfloat(gfloat *val, gfloat val_from, gfloat val_to, gint32 total_steps, gdouble current_step)
 {
     double     delta;
- 
+
     if(total_steps < 1) return;
- 
+
     delta = ((double)(val_to - val_from) / (double)total_steps) * ((double)total_steps - current_step);
     *val  = val_from + delta;
-     
+
     if(gap_debug) printf("DEBUG: p_delta_gfloat total: %d  from: %f to: %f curr: %f    delta: %f\n",
                                    (int)total_steps, val_from, val_to, *val, delta);
 }
@@ -281,7 +281,7 @@ static void p_delta_float(float *val, float val_from, float val_to, gint32 total
 
     delta = ((double)(val_to - val_from) / (double)total_steps) * ((double)total_steps - current_step);
     *val  = val_from + delta;
-    
+
     if(gap_debug) printf("DEBUG: p_delta_gdouble total: %d  from: %f to: %f curr: %f    delta: %f\n",
                                   (int)total_steps, val_from, val_to, *val, delta);
 }
@@ -291,14 +291,14 @@ static void p_delta_color(t_color *val, t_color *val_from, t_color *val_to, gint
     guint l_idx;
 
     if(total_steps < 1) return;
-    
+
     for(l_idx = 0; l_idx < 3; l_idx++)
     {
        delta = ((double)(val_to->color[l_idx] - val_from->color[l_idx]) / (double)total_steps) * ((double)total_steps - current_step);
-       val->color[l_idx]  = val_from->color[l_idx] + delta; 
+       val->color[l_idx]  = val_from->color[l_idx] + delta;
 
        if(gap_debug) printf("DEBUG: p_delta_color[%d] total: %d  from: %d to: %d curr: %d    delta: %f  current_step: %f\n",
-                                  (int)l_idx, (int)total_steps, 
+                                  (int)l_idx, (int)total_steps,
                                   (int)val_from->color[l_idx], (int)val_to->color[l_idx], (int)val->color[l_idx],
                                   delta, current_step);
     }
@@ -309,11 +309,11 @@ static void p_delta_gint_color(t_gint_color *val, t_gint_color *val_from, t_gint
     guint l_idx;
 
     if(total_steps < 1) return;
-    
+
     for(l_idx = 0; l_idx < 3; l_idx++)
     {
        delta = ((double)(val_to->color[l_idx] - val_from->color[l_idx]) / (double)total_steps) * ((double)total_steps - current_step);
-       val->color[l_idx]  = val_from->color[l_idx] + delta; 
+       val->color[l_idx]  = val_from->color[l_idx] + delta;
     }
 }
 static void p_delta_drawable(gint32 *val, gint32 val_from, gint32 val_to, gint32 total_steps, gdouble current_step)
@@ -328,22 +328,22 @@ static void p_delta_drawable(gint32 *val, gint32 val_from, gint32 val_to, gint32
       return;
     }
 
-    l_tmp_image_id = gimp_drawable_image_id(val_from);
+    l_tmp_image_id = gimp_drawable_get_image(val_from);
 
     /* check if from and to values are both valid drawables within the same image */
-    if ((l_tmp_image_id > 0) 
-    &&  (l_tmp_image_id = gimp_drawable_image_id(val_to)))
+    if ((l_tmp_image_id > 0)
+    &&  (l_tmp_image_id = gimp_drawable_get_image(val_to)))
     {
        l_idx_from = -1;
        l_idx_to   = -1;
-       
+
        /* check the layerstack index of from and to drawable */
        l_layers_list = gimp_image_get_layers(l_tmp_image_id, &l_nlayers);
        for (l_idx = l_nlayers -1; l_idx >= 0; l_idx--)
        {
           if( l_layers_list[l_idx] == val_from ) l_idx_from = l_idx;
           if( l_layers_list[l_idx] == val_to )   l_idx_to   = l_idx;
-          
+
           if((l_idx_from != -1) && (l_idx_to != -1))
           {
             /* OK found both index values, iterate the index (proceed to next layer) */
@@ -387,8 +387,8 @@ static void p_delta_gintdrawable(gint *val, gint val_from, gint val_to, gint32 t
 
 */
 
-/* wrapper calls with pointers to value transform 
- * (for those delta procedures that do not 
+/* wrapper calls with pointers to value transform
+ * (for those delta procedures that do not
     already use pointers for val_from and val-to parameters)
  */
 static void gp_delta_long (long *val, long *val_from, long *val_to, gint32 total_steps, gdouble current_step)
@@ -488,7 +488,7 @@ void
 p_init_iter_jump_table(void)
 {
   static gboolean  jmp_table_initialized = FALSE;
-  
+
   if(jmp_table_initialized != TRUE)
   {
     /* fuction pointers for typespecific delta procedures */
@@ -521,7 +521,7 @@ p_init_iter_jump_table(void)
     jmp_table[GIMP_LASTVAL_ARRAY].item_size = 0;
     jmp_table[GIMP_LASTVAL_STRUCT_BEGIN].item_size = 0;
     jmp_table[GIMP_LASTVAL_STRUCT_END].item_size = 0;
-    
+
     jmp_table[GIMP_LASTVAL_LONG].item_size = sizeof(long);
     jmp_table[GIMP_LASTVAL_SHORT].item_size = sizeof(short);
     jmp_table[GIMP_LASTVAL_INT].item_size = sizeof(int);
@@ -539,7 +539,7 @@ p_init_iter_jump_table(void)
     jmp_table[GIMP_LASTVAL_ENUM].item_size = sizeof(gint);
     jmp_table[GIMP_LASTVAL_GUINT].item_size = sizeof(guint);
     jmp_table[GIMP_LASTVAL_GUINT32].item_size = sizeof(guint32);
-    
+
     jmp_table_initialized = TRUE;
   }
 }
@@ -757,13 +757,13 @@ gap_common_iterator(const char *c_keyname, GimpRunMode run_mode, gint32 total_st
          l_iter_idx = (int)lastval_desc_arr[l_idx].lastval_type;
          l_iter_flag = lastval_desc_arr[l_idx].iter_flag;
          l_idx_next = l_idx +1;
-         
+
          l_stack_item.lastval_type = lastval_desc_arr[l_idx].lastval_type;
          l_stack_item.iter_flag = lastval_desc_arr[l_idx].iter_flag;
          l_stack_item.elem_size = lastval_desc_arr[l_idx].elem_size;
          l_stack_item.arr_count = 0;
          l_stack_item.idx = l_idx_next;
-         
+
          switch(lastval_desc_arr[l_idx].lastval_type)
          {
            case GIMP_LASTVAL_ARRAY:
@@ -823,10 +823,10 @@ gap_common_iterator(const char *c_keyname, GimpRunMode run_mode, gint32 total_st
                   }
                }
              }
-             
+
              l_offset = p_stack_offsetsum(stack_iter);            /* offest for current array position */
              l_offset += lastval_desc_arr[l_idx].offset;   /* local offest */
-             
+
              buf_ptr      = buffer      + l_offset;
              buf_ptr_from = buffer_from + l_offset;
              buf_ptr_to   = buffer_to   + l_offset;
@@ -886,7 +886,7 @@ gap_common_iterator(const char *c_keyname, GimpRunMode run_mode, gint32 total_st
     typedef enum {
       POINT_LIGHT,
       DIRECTIONAL_LIGHT,
-      SPOT_LIGHT, 
+      SPOT_LIGHT,
       NO_LIGHT
     } t_LightType;
 
@@ -913,7 +913,7 @@ gap_common_iterator(const char *c_keyname, GimpRunMode run_mode, gint32 total_st
       GimpRGB     color;
       gdouble    intensity;
     } t_LightSettings;
-    
+
 
 
 static void p_delta_GimpRGB(GimpRGB *val, GimpRGB *val_from, GimpRGB *val_to, gint32 total_steps, gdouble current_step)
@@ -921,33 +921,33 @@ static void p_delta_GimpRGB(GimpRGB *val, GimpRGB *val_from, GimpRGB *val_to, gi
     double     delta;
 
     if(total_steps < 1) return;
-    
+
     delta = ((double)(val_to->r - val_from->r) / (double)total_steps) * ((double)total_steps - current_step);
-    val->r = val_from->r + delta; 
+    val->r = val_from->r + delta;
 
     delta = ((double)(val_to->g - val_from->g) / (double)total_steps) * ((double)total_steps - current_step);
-    val->g = val_from->g + delta; 
+    val->g = val_from->g + delta;
 
     delta = ((double)(val_to->b - val_from->b) / (double)total_steps) * ((double)total_steps - current_step);
-    val->b = val_from->b + delta; 
+    val->b = val_from->b + delta;
 
     delta = ((double)(val_to->a - val_from->a) / (double)total_steps) * ((double)total_steps - current_step);
-    val->a = val_from->a + delta; 
+    val->a = val_from->a + delta;
 }
 static void p_delta_GimpVector3(GimpVector3 *val, GimpVector3 *val_from, GimpVector3 *val_to, gint32 total_steps, gdouble current_step)
 {
     double     delta;
 
     if(total_steps < 1) return;
-    
+
     delta = ((double)(val_to->x - val_from->x) / (double)total_steps) * ((double)total_steps - current_step);
-    val->x  = val_from->x + delta; 
-    
+    val->x  = val_from->x + delta;
+
     delta = ((double)(val_to->y - val_from->y) / (double)total_steps) * ((double)total_steps - current_step);
-    val->y  = val_from->y + delta; 
-    
+    val->y  = val_from->y + delta;
+
     delta = ((double)(val_to->z - val_from->z) / (double)total_steps) * ((double)total_steps - current_step);
-    val->z  = val_from->z + delta; 
+    val->z  = val_from->z + delta;
 }
 
 static void p_delta_MaterialSettings(t_MaterialSettings *val, t_MaterialSettings *val_from, t_MaterialSettings *val_to, gint32 total_steps, gdouble current_step)
@@ -1088,7 +1088,7 @@ static void p_delta_LightSettings(t_LightSettings *val, t_LightSettings *val_fro
 /* del ... Deleted (does not make sense to animate)
  * +   ... generated code did not work (changed manually)
  */
-static t_iter_ALT_tab   g_iter_ALT_tab[] = 
+static t_iter_ALT_tab   g_iter_ALT_tab[] =
 {
 /*  { "Colorify",  p_Colorify_iter_ALT }                                          */
 /*, { "perl_fu_blowinout",  p_perl_fu_blowinout_iter_ALT }                        */
@@ -1112,7 +1112,7 @@ static t_iter_ALT_tab   g_iter_ALT_tab[] =
 /*, { "plug_in_animationoptimize",  p_plug_in_animationoptimize_iter_ALT }        */
 /*, { "plug_in_animationplay",  p_plug_in_animationplay_iter_ALT }                */
 /*, { "plug_in_animationunoptimize",  p_plug_in_animationunoptimize_iter_ALT }    */
-/*, { "plug_in_apply_canvas",  p_plug_in_apply_canvas_iter_ALT }                  */   
+/*, { "plug_in_apply_canvas",  p_plug_in_apply_canvas_iter_ALT }                  */
   , { "plug_in_applylens",  p_plug_in_applylens_iter_ALT }
 /*, { "plug_in_autocrop",  p_plug_in_autocrop_iter_ALT }                          */
 /*, { "plug_in_autostretch_hsv",  p_plug_in_autostretch_hsv_iter_ALT }            */
@@ -1250,9 +1250,9 @@ static t_iter_ALT_tab   g_iter_ALT_tab[] =
 #define MAX_ITER_ALT ( sizeof(g_iter_ALT_tab) / sizeof(t_iter_ALT_tab) )
 
 
-/* ---------------------------------------------------------------------- 
+/* ----------------------------------------------------------------------
  * install (query) iterators_ALT
- * ---------------------------------------------------------------------- 
+ * ----------------------------------------------------------------------
  */
 
 static void p_install_proc_iter_ALT(char *name)
@@ -1273,7 +1273,7 @@ static void p_install_proc_iter_ALT(char *name)
 
   l_iter_proc_name = g_strdup_printf("%s_Iterator_ALT", name);
   l_blurb_text = g_strdup_printf("This procedure calculates the modified values for one iterationstep for the call of %s", name);
-  
+
   gimp_install_procedure(l_iter_proc_name,
 			 l_blurb_text,
 			 "",
@@ -1291,7 +1291,7 @@ static void p_install_proc_iter_ALT(char *name)
 }
 
 
-void 
+void
 gap_query_iterators_ALT()
 {
   guint l_idx;
@@ -1301,9 +1301,9 @@ gap_query_iterators_ALT()
   }
 }
 
-/* ---------------------------------------------------------------------- 
+/* ----------------------------------------------------------------------
  * run iterators_ALT
- * ---------------------------------------------------------------------- 
+ * ----------------------------------------------------------------------
  */
 
 gint
@@ -1331,9 +1331,9 @@ gap_run_iterators_ALT(const char *name, GimpRunMode run_mode, gint32 total_steps
   l_rc = -1;
   l_name[l_cut] = '\0';  /* cut off "_Iterator_ALT" from l_name end */
 
-  /* allocate from/to plugin_data buffers 
+  /* allocate from/to plugin_data buffers
    * as big as needed for the current plugin named l_name
-   */  
+   */
   g_plugin_data_from = p_alloc_plugin_data(l_name);
   g_plugin_data_to = p_alloc_plugin_data(l_name);
 
@@ -1349,10 +1349,10 @@ gap_run_iterators_ALT(const char *name, GimpRunMode run_mode, gint32 total_steps
         }
     }
   }
-  
+
   if(l_rc < 0) fprintf(stderr, "ERROR: gap_run_iterators_ALT: NOT FOUND proc_name=%s (%s)\n", name, l_name);
 
-  /* free from/to plugin_data buffers */  
+  /* free from/to plugin_data buffers */
   if(g_plugin_data_from) g_free(g_plugin_data_from);
   if(g_plugin_data_to)   g_free(g_plugin_data_to);
 

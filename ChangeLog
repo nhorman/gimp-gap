@@ -1,5 +1,13 @@
 2003-12-04  Sven Neumann  <sven@gimp.org>
 
+	* gap/gap_bluebox.c
+	* gap/gap_filter_iterators.c
+	* gap/gap_mov_dialog.c
+	* gap/gap_mov_exec.c
+	* gap/gap_mov_render.c: s/layer_get_image_id/drawable_get_image/
+
+2003-12-04  Sven Neumann  <sven@gimp.org>
+
 	* gap/gap_mod_layer.c: s/layer_set_linked/drawable_set_linked/
 
 2003-12-03  Sven Neumann  <sven@gimp.org>

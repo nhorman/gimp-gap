@@ -26,9 +26,9 @@
  */
 
 /* revision history:
- * gimp    1.3.21d; 2003/10/29  hof: removed deprecated calls to gtk_window_set_policy 
- * gimp    1.3.20d; 2003/10/14  hof: added bluebox filter effect 
- * gimp    1.3.20d; 2003/10/05  hof: use gimp_image_undo_disable for internal temporary images 
+ * gimp    1.3.21d; 2003/10/29  hof: removed deprecated calls to gtk_window_set_policy
+ * gimp    1.3.20d; 2003/10/14  hof: added bluebox filter effect
+ * gimp    1.3.20d; 2003/10/05  hof: use gimp_image_undo_disable for internal temporary images
  *                                   (for better performance and less resources)
  *                                   defaults for anim preview subdialog
  *                                   dynamic preview resize on window resize
@@ -63,7 +63,7 @@
  *                                   changed border_width spacing and Buttons in action area
  *                                   to same style as used in dialogs of the gimp 1.1.13 main dialogs
  * gimp   1.1.8a;   1999/08/31  hof: accept video framenames without underscore '_'
- * gimp   1.1.5a;   1999/05/08  hof: call fileselect in gtk+1.2 style 
+ * gimp   1.1.5a;   1999/05/08  hof: call fileselect in gtk+1.2 style
  * version 0.99.00; 1999.03.03  hof: bugfix: update of the preview (did'nt work with gimp1.1.2)
  * version 0.98.00; 1998.11.28  hof: Port to GIMP 1.1: replaced buildmenu.h, apply layermask (before rotate)
  *                                   mov_imglayer_constrain must check for drawable_id -1
@@ -89,7 +89,7 @@
  */
 
 
-/* SYTEM (UNIX) includes */ 
+/* SYTEM (UNIX) includes */
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -232,7 +232,7 @@ typedef struct
   gint           preview_frame_nr;      /* default: current frame */
   gint           old_preview_frame_nr;
   GapAnimInfo   *ainfo_ptr;
- 	
+
   gint          in_call;
   char         *pointfile_name;
 
@@ -470,7 +470,7 @@ static t_mov_interface mov_int =
 long      gap_mov_dlg_move_dialog    (GapMovData *mov_ptr)
 {
   GimpDrawable *l_drawable_ptr;
-  gint       l_first, l_last;  
+  gint       l_first, l_last;
   char      *l_str;
   t_mov_gui_stuff *mgp;
 
@@ -496,18 +496,18 @@ long      gap_mov_dlg_move_dialog    (GapMovData *mov_ptr)
   mgp->pv_ptr = NULL;
   mgp->cursor_wait = gdk_cursor_new (GDK_WATCH);
   mgp->cursor_acitve = gdk_cursor_new (GDK_TOP_LEFT_ARROW);
- 
+
   pvals = mov_ptr->val_ptr;
 
   l_str = gap_lib_strdup_del_underscore(mov_ptr->dst_ainfo_ptr->basename);
   mgp->pointfile_name  = g_strdup_printf("%s.path_points", l_str);
   g_free(l_str);
 
-  
+
   l_first = mov_ptr->dst_ainfo_ptr->first_frame_nr;
   l_last  = mov_ptr->dst_ainfo_ptr->last_frame_nr;
 
-  /* init parameter values */ 
+  /* init parameter values */
   pvals->dst_image_id = mov_ptr->dst_ainfo_ptr->image_id;
   pvals->tmp_image_id = -1;
   pvals->tmpsel_image_id= -1;
@@ -543,14 +543,14 @@ long      gap_mov_dlg_move_dialog    (GapMovData *mov_ptr)
   pvals->apv_scalex  = 40.0;
   pvals->apv_scaley  = 40.0;
 
-  pvals->cache_src_image_id  = -1;  
+  pvals->cache_src_image_id  = -1;
   pvals->cache_tmp_image_id  = -1;
   pvals->cache_tmp_layer_id  = -1;
   pvals->cache_frame_number  = -1;
   pvals->cache_ainfo_ptr = NULL;
 
   p_reset_points();
-  
+
   /* pvals->point[1].p_x = 100; */  /* default: move from 0/0 to 100/0 */
 
   pvals->dst_range_start = mov_ptr->dst_ainfo_ptr->curr_frame_nr;
@@ -562,13 +562,13 @@ long      gap_mov_dlg_move_dialog    (GapMovData *mov_ptr)
   mgp->preview_frame_nr     = mov_ptr->dst_ainfo_ptr->curr_frame_nr;
   mgp->old_preview_frame_nr = mgp->preview_frame_nr;
   mgp->point_index_frame = NULL;
-  
+
   p_points_from_tab(mgp);
   p_update_point_index_text(mgp);
 
   /* duplicate the curerent image (for flatten & preview)  */
   pvals->tmp_image_id = gimp_image_duplicate(pvals->dst_image_id);
-  
+
   /* wanted to disable undo for performance reasons
    * but if this is done here, the initial preview is black
    * and get error (gap_main:######): LibGimp-CRITICAL **: file gimppixelrgn.c: line 268 (gimp_pixel_
@@ -598,7 +598,7 @@ long      gap_mov_dlg_move_dialog    (GapMovData *mov_ptr)
 
   pvals->tmpsel_image_id = -1;
   pvals->tmpsel_channel_id = -1;
-  
+
   /* remove timer if there is one */
   mov_remove_timer(mgp);
 
@@ -652,7 +652,7 @@ mov_dialog ( GimpDrawable *drawable, t_mov_gui_stuff *mgp,
   mgp->shell = dlg;
   mgp->first_nr = first_nr;
   mgp->last_nr = last_nr;
-  
+
   gtk_window_set_title (GTK_WINDOW (dlg), _("Move Path"));
   gtk_window_set_position (GTK_WINDOW (dlg), GTK_WIN_POS_MOUSE);
   g_signal_connect (G_OBJECT (dlg), "destroy",
@@ -668,7 +668,7 @@ mov_dialog ( GimpDrawable *drawable, t_mov_gui_stuff *mgp,
   gtk_box_set_spacing (GTK_BOX (hbbox), 2);
   gtk_box_pack_end (GTK_BOX (GTK_DIALOG (dlg)->action_area), hbbox, FALSE, FALSE, 0);
   gtk_widget_show (hbbox);
-      
+
 
   button = gtk_button_new_from_stock ( GTK_STOCK_CANCEL);
   GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
@@ -735,8 +735,8 @@ mov_dialog ( GimpDrawable *drawable, t_mov_gui_stuff *mgp,
     gtk_box_pack_start (GTK_BOX (hbox), notebook, TRUE, TRUE, 4);
     gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
   }
-  
-  /* the source select frame */  
+
+  /* the source select frame */
   src_sel_frame = mov_src_sel_create (mgp);
   gtk_container_add (GTK_CONTAINER (notebook), src_sel_frame);
   label = gtk_label_new(_("Source Select"));
@@ -744,7 +744,7 @@ mov_dialog ( GimpDrawable *drawable, t_mov_gui_stuff *mgp,
                              , gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), 0)
 			     , label
 			     );
-  /* the advanced features frame */  
+  /* the advanced features frame */
   advanced_frame = mov_advanced_tab_create(mgp);
   gtk_container_add (GTK_CONTAINER (notebook), advanced_frame);
   label = gtk_label_new(_("Advanced Settings"));
@@ -753,7 +753,7 @@ mov_dialog ( GimpDrawable *drawable, t_mov_gui_stuff *mgp,
 			     , label
 			     );
   gtk_widget_show (notebook);
-  
+
   /* the path preview frame (with all the controlpoint widgets) */
   mgp->max_frame = MAX(first_nr, last_nr);
   mgp->master_vbox = vbox;
@@ -782,11 +782,11 @@ mov_dialog ( GimpDrawable *drawable, t_mov_gui_stuff *mgp,
                   );
   mov_path_prevw_preview_init(mgp);
   mov_show_path_or_cursor(mgp);
- 
+
   g_signal_connect (G_OBJECT (mgp->shell), "size_allocate",
                     G_CALLBACK (mov_shell_window_size_allocate),
                     mgp);
-  
+
   gtk_main ();
   gdk_flush ();
 
@@ -798,18 +798,18 @@ mov_dialog ( GimpDrawable *drawable, t_mov_gui_stuff *mgp,
 static gboolean
 mov_check_valid_src_layer(t_mov_gui_stuff   *mgp)
 {
-  if(mgp->startup) 
+  if(mgp->startup)
   {
     return(FALSE);
   }
-  
+
   if(pvals->src_layer_id < 0)
   {
      g_message(_("No source image was selected.\n"
 	         "Please open a 2nd image of the same type before opening 'Move Path'"));
-     return(FALSE);	   
+     return(FALSE);
   }
-  return(TRUE);	   
+  return(TRUE);
 }  /* end mov_check_valid_src_layer */
 
 /* ============================================================================
@@ -831,7 +831,7 @@ mov_close_callback (GtkWidget *widget,
 
       l_shell = mgp->shell;
       mgp->shell = NULL;
-      
+
        /* mov_close_callback is the signal handler for the "destroy"
 	* signal of the shell window.
 	* the gtk_widget_destroy call will immediate reenter this procedure.
@@ -864,7 +864,7 @@ mov_ok_callback (GtkWidget *widget,
   }
 
   mov_int.run = TRUE;
- 
+
   if(pvals->point_idx_max == 0)
   {
     /* if we have only one point duplicate that point
@@ -874,7 +874,7 @@ mov_ok_callback (GtkWidget *widget,
   }
 
   mov_close_callback(mgp->shell, mgp);
-  
+
 }  /* end mov_ok_callback */
 
 /* ---------------------------
@@ -931,14 +931,14 @@ mov_upvw_callback (GtkWidget *widget,
 	 }
 	 /* we must load a frame for preview update */
          l_new_tmp_image_id = gap_lib_load_image(l_filename);
-	 
+
 	 /* keep a copy of the frame to speed up further (instant) updates */
          pvals->tmp_alt_image_id = gimp_image_duplicate(l_new_tmp_image_id);
 	 pvals->tmp_alt_framenr = l_frame_nr;
        }
      }
      gimp_image_undo_disable(l_new_tmp_image_id);
-     
+
      g_free(l_filename);
      if (l_new_tmp_image_id >= 0)
      {
@@ -959,11 +959,11 @@ mov_upvw_callback (GtkWidget *widget,
 
 	gtk_widget_queue_draw(mgp->pv_ptr->da_widget);
 	mov_path_prevw_draw ( mgp, CURSOR | PATH_LINE );
-	gdk_flush();  
+	gdk_flush();
 
 	/* destroy the old tmp image */
 	gimp_image_delete(l_old_tmp_image_id);
-	
+
 	mgp->instant_apply_request = FALSE;
      }
      mov_set_active_cursor(mgp);
@@ -1000,7 +1000,7 @@ mov_apv_callback (GtkWidget *widget,
   {
     return;
   }
-  
+
   if(apv_locked)
   {
     return;
@@ -1016,7 +1016,7 @@ mov_apv_callback (GtkWidget *widget,
   {
     radio_apv_mode[gettextize_loop] = gettext(radio_apv_mode[gettextize_loop]);
   }
-  
+
   gap_arr_arg_init(&argv[0], GAP_ARR_WGT_RADIO);
   argv[0].label_txt = _("Anim Preview Mode:");
   argv[0].help_txt  = NULL;
@@ -1027,10 +1027,10 @@ mov_apv_callback (GtkWidget *widget,
   argv[0].radio_default = 0;
   switch(pvals->apv_mode)
   {
-    case GAP_APV_EXACT: 
+    case GAP_APV_EXACT:
        argv[0].radio_ret  = 2;
       break;
-    case GAP_APV_ONE_FRAME: 
+    case GAP_APV_ONE_FRAME:
        argv[0].radio_ret  = 1;
        break;
     default:
@@ -1063,7 +1063,7 @@ mov_apv_callback (GtkWidget *widget,
   {
      if(vin_ptr->framerate > 0) argv[2].flt_ret = vin_ptr->framerate;
      g_free(vin_ptr);
-   }	 
+   }
   argv[2].has_default = TRUE;
   argv[2].flt_default = argv[2].flt_ret;
 
@@ -1080,27 +1080,27 @@ mov_apv_callback (GtkWidget *widget,
   argv[4].help_txt  = _("Reset all parameters to default values");
 
   l_rc = gap_arr_ok_cancel_dialog( _("Move Path Animated Preview"),
-                                 _("Options"), 
+                                 _("Options"),
                                   ARGC_APV, argv);
 
   /* quit if MovePath Mainwindow was closed */
   if(mgp->shell == NULL) { gtk_main_quit(); return; }
-  
+
   if(l_rc)
   {
       switch(argv[0].radio_ret)
       {
-        case 2: 
+        case 2:
            pvals->apv_mode = GAP_APV_EXACT;
            break;
-        case 1: 
+        case 1:
            pvals->apv_mode = GAP_APV_ONE_FRAME;
            break;
         default:
            pvals->apv_mode = GAP_APV_QUICK;
            break;
       }
-      
+
       pvals->apv_scalex = argv[1].flt_ret;
       pvals->apv_scaley = argv[1].flt_ret;
       pvals->apv_framerate = argv[2].flt_ret;
@@ -1114,10 +1114,10 @@ mov_apv_callback (GtkWidget *widget,
       {
          pvals->apv_gap_paste_buff = NULL;
       }
-      
+
       if(gap_debug) printf("Generating Animated Preview\n");
 
-        /* TODO: here we should start a thread for calculate and playback of the anim preview, 
+        /* TODO: here we should start a thread for calculate and playback of the anim preview,
 	 * so the move_path main window is not blocked until playback exits
 	 */
       p_points_to_tab(mgp);
@@ -1127,7 +1127,7 @@ mov_apv_callback (GtkWidget *widget,
       }
 
       mov_set_waiting_cursor(mgp);
-      
+
       l_new_image_id = gap_mov_exec_anim_preview(pvals, mgp->ainfo_ptr, mgp->preview_frame_nr);
       if(l_new_image_id < 0)
       {
@@ -1182,17 +1182,17 @@ mov_pgrab_callback (GtkWidget *widget,
 {
   t_mov_gui_stuff *mgp = data;
   gint32 image_id;
-  
+
   /*if(gap_debug)*/ printf("mov_pgrab_callback\n");
 
   /* get the image where MovePath was invoked from */
   image_id = mgp->ainfo_ptr->image_id;
 
-  /* gimp_path_get_point_at_dist would be nice to use, 
+  /* gimp_path_get_point_at_dist would be nice to use,
    * but just prints out:
    * (gimp-1.3:2128): Gimp-PDB-WARNING **: FIXME: path_get_point_at_dist() is unimplemented
    */
-  if(1==0)  
+  if(1==0)
   {
     gint             x_point;
     gint             y_point;
@@ -1210,14 +1210,14 @@ mov_pgrab_callback (GtkWidget *widget,
 	    , (int)x_point
 	    , (int)y_point
             , (float)gradient
-	    ); 
+	    );
     }
   }
 
-  if(1==1)  
+  if(1==1)
   {
     gchar *pathname;
-    
+
     pathname = gimp_path_get_current(image_id);
     if(pathname)
     {
@@ -1231,7 +1231,7 @@ mov_pgrab_callback (GtkWidget *widget,
       gint    point_x;
       gint    point_y;
       gint    point_type;
- 
+
       points_details = NULL;
       path_closed = -44;
 
@@ -1247,7 +1247,7 @@ mov_pgrab_callback (GtkWidget *widget,
             , (int)pathtype
 	    , (int)path_closed
 	    );
-	    
+
       if((pathtype != 1) || (path_closed == -44))
       {
         g_message(_("Unsupported pathtype %d found in path:\n"
@@ -1259,9 +1259,9 @@ mov_pgrab_callback (GtkWidget *widget,
 		,mgp->ainfo_ptr->old_filename
 		);
         return;
-      }	    
-      point_x = 0;  
-      point_y = 0;  
+      }
+      point_x = 0;
+      point_y = 0;
       l_ti = 0;
       l_idx = 0;
       l_ii = 0;
@@ -1284,14 +1284,14 @@ mov_pgrab_callback (GtkWidget *widget,
 	if((l_ti > 2) || (l_ii == num_path_point_details))
 	{
           /*if(gap_debug)*/ printf("\n");
-	  
+
 	  l_ti=0;
 
 	  /* this implemenatation just fetches the BEZIER_ANCHOR points
 	   * and ignores BEZIER_CONTROL (type 2 points)
 	   * and ignores BEZIER_MOVE (type 3 points)
 	   */
-	  
+
 	  if((point_type == 1)  /* 1 == BEZIER_ANCHOR */
 	  || (point_type == -44))
 	  {
@@ -1314,7 +1314,7 @@ mov_pgrab_callback (GtkWidget *widget,
 	}
       }
       /*if(gap_debug)*/printf("\n");
-      
+
       g_free(points_details);
 
       pvals->point_idx = 0;
@@ -1338,7 +1338,7 @@ mov_padd_callback (GtkWidget *widget,
 {
   t_mov_gui_stuff *mgp = data;
   gint l_idx;
-  
+
   if(gap_debug) printf("mov_padd_callback\n");
   l_idx = pvals->point_idx_max;
   if (l_idx < GAP_MOV_MAX_POINT -2)
@@ -1347,7 +1347,7 @@ mov_padd_callback (GtkWidget *widget,
     p_points_to_tab(mgp);
     pvals->point_idx_max++;
     pvals->point_idx = pvals->point_idx_max;
-    
+
     /* copy values from previous point to current (new) point */
     p_copy_point(pvals->point_idx_max, l_idx);
     p_point_refresh(mgp);
@@ -1360,7 +1360,7 @@ mov_pins_callback (GtkWidget *widget,
 {
   t_mov_gui_stuff *mgp = data;
   gint l_idx;
-  
+
   if(gap_debug) printf("mov_pins_callback\n");
   l_idx = pvals->point_idx_max;
   if (l_idx < GAP_MOV_MAX_POINT -2)
@@ -1374,7 +1374,7 @@ mov_pins_callback (GtkWidget *widget,
       /* copy values from prev point */
       p_copy_point(l_idx, l_idx-1);
     }
-     
+
     pvals->point_idx++;
     p_point_refresh(mgp);
   }
@@ -1386,9 +1386,9 @@ mov_pdel_callback (GtkWidget *widget,
 {
   t_mov_gui_stuff *mgp = data;
   gint l_idx;
-  
+
   if(gap_debug) printf("mov_pdel_callback\n");
-  
+
   l_idx = pvals->point_idx_max;
   if(pvals->point_idx_max == 0)
   {
@@ -1414,7 +1414,7 @@ mov_pnext_callback (GtkWidget *widget,
 		      gpointer	 data)
 {
   t_mov_gui_stuff *mgp = data;
-  
+
   if(gap_debug) printf("mov_pnext_callback\n");
   if (pvals->point_idx < pvals->point_idx_max)
   {
@@ -1432,7 +1432,7 @@ mov_pprev_callback (GtkWidget *widget,
 		      gpointer	 data)
 {
   t_mov_gui_stuff *mgp = data;
-  
+
   if(gap_debug) printf("mov_pprev_callback\n");
   if (pvals->point_idx > 0)
   {
@@ -1449,7 +1449,7 @@ mov_pfirst_callback (GtkWidget *widget,
 		      gpointer	 data)
 {
   t_mov_gui_stuff *mgp = data;
-  
+
   if(gap_debug) printf("mov_pfirst_callback\n");
 
   /* advance to first point */
@@ -1465,7 +1465,7 @@ mov_plast_callback (GtkWidget *widget,
 		      gpointer	 data)
 {
   t_mov_gui_stuff *mgp = data;
-  
+
   if(gap_debug) printf("mov_plast_callback\n");
 
   /* advance to first point */
@@ -1481,7 +1481,7 @@ mov_pclr_callback (GtkWidget *widget,
 		      gpointer	 data)
 {
   t_mov_gui_stuff *mgp = data;
-  
+
   if(gap_debug) printf("mov_pclr_callback\n");
   p_clear_one_point(pvals->point_idx);         /* clear the current point */
   p_point_refresh(mgp);
@@ -1493,7 +1493,7 @@ mov_pdel_all_callback (GtkWidget *widget,
 		      gpointer	 data)
 {
   t_mov_gui_stuff *mgp = data;
-  
+
   if(gap_debug) printf("mov_pdel_all_callback\n");
   p_reset_points();
   p_point_refresh(mgp);
@@ -1506,9 +1506,9 @@ mov_pclr_all_callback (GtkWidget *widget,
 {
   gint l_idx;
   t_mov_gui_stuff *mgp = data;
-  
+
   if(gap_debug) printf("mov_pclr_all_callback\n");
- 
+
   for(l_idx = 0; l_idx <= pvals->point_idx_max; l_idx++)
   {
     p_clear_one_point(l_idx);
@@ -1525,10 +1525,10 @@ mov_prot_follow_callback (GtkWidget *widget,
 {
   gdouble  l_startangle;
   int     key_modifier;
-  
+
   t_mov_gui_stuff *mgp = data;
   key_modifier = 0;
-  
+
   if(gap_debug) printf("mov_prot_follow_callback\n");
 
   /* SHIFT: GDK_SHIFT_MASK,
@@ -1542,7 +1542,7 @@ mov_prot_follow_callback (GtkWidget *widget,
   }
 
   if(gap_debug)
-  {  
+  {
     printf("key_modifier %d\n", (int)key_modifier);
   }
 
@@ -1580,7 +1580,7 @@ mov_pload_callback (GtkWidget *widget,
   t_mov_gui_stuff *mgp = data;
 
   if(mgp->filesel != NULL) return;  /* filesel is already open */
-  
+
   filesel = gtk_file_selection_new ( _("Load Path Points from File"));
   mgp->filesel = filesel;
 
@@ -1595,12 +1595,12 @@ mov_pload_callback (GtkWidget *widget,
 		  "clicked",
                    G_CALLBACK (p_filesel_close_cb),
 	           mgp);
-	             
+
   gtk_file_selection_set_filename (GTK_FILE_SELECTION (filesel),
 				   mgp->pointfile_name);
 
   gtk_widget_show (filesel);
-  /* "destroy" has to be the last signal, 
+  /* "destroy" has to be the last signal,
    * (otherwise the other callbacks are never called)
    */
   g_signal_connect (G_OBJECT (filesel), "destroy",
@@ -1617,7 +1617,7 @@ mov_psave_callback (GtkWidget *widget,
   t_mov_gui_stuff *mgp = data;
 
   if(mgp->filesel != NULL) return;  /* filesel is already open */
-  
+
   filesel = gtk_file_selection_new ( _("Save Path Points to File"));
   mgp->filesel = filesel;
 
@@ -1637,7 +1637,7 @@ mov_psave_callback (GtkWidget *widget,
 				   mgp->pointfile_name);
 
   gtk_widget_show (filesel);
-  /* "destroy" has to be the last signal, 
+  /* "destroy" has to be the last signal,
    * (otherwise the other callbacks are never called)
    */
   g_signal_connect (G_OBJECT (filesel), "destroy",
@@ -1646,15 +1646,15 @@ mov_psave_callback (GtkWidget *widget,
 }
 
 
-static void 
+static void
 p_points_load_from_file (GtkWidget *widget,
 		      t_mov_gui_stuff *mgp)
 {
   const gchar        *filename;
-  
+
   if(gap_debug) printf("p_points_load_from_file\n");
   if(mgp->filesel == NULL) return;
-  
+
   filename = gtk_file_selection_get_filename (GTK_FILE_SELECTION (mgp->filesel));
   g_free(mgp->pointfile_name);
   mgp->pointfile_name = g_strdup(filename);
@@ -1675,10 +1675,10 @@ p_points_save_to_file (GtkWidget *widget,
 		      t_mov_gui_stuff *mgp)
 {
   const gchar        *filename;
-  
+
   if(gap_debug) printf("p_points_save_to_file\n");
   if(mgp->filesel == NULL) return;
-  
+
   filename = gtk_file_selection_get_filename (GTK_FILE_SELECTION (mgp->filesel));
   g_free(mgp->pointfile_name);
   mgp->pointfile_name = g_strdup(filename);
@@ -1693,7 +1693,7 @@ p_points_save_to_file (GtkWidget *widget,
 
   /* quit if MovePath Mainwindow was closed */
   if(mgp->shell == NULL) { gtk_main_quit(); return; }
-  
+
   p_point_refresh(mgp);
 
 }  /* end p_points_save_to_file */
@@ -1716,7 +1716,7 @@ p_point_refresh(t_mov_gui_stuff *mgp)
   gtk_adjustment_set_value (mgp->x_adj,
 			    (gdouble)mgp->p_x);
   gtk_adjustment_set_value (mgp->y_adj,
-			    (gdouble)mgp->p_y);    
+			    (gdouble)mgp->p_y);
   gtk_adjustment_set_value (mgp->wres_adj,
 			    (gdouble)mgp->w_resize);
   gtk_adjustment_set_value (mgp->hres_adj,
@@ -1757,7 +1757,7 @@ p_pick_nearest_point(gint px, gint py)
   gdouble l_sq_dist;
   gdouble l_dx, l_dy;
   gdouble l_sq_dist_min;
-  
+
   l_idx_min = 0;
   l_sq_dist_min = G_MAXDOUBLE;
 
@@ -1768,7 +1768,7 @@ p_pick_nearest_point(gint px, gint py)
     /* calculate x and y distance */
     l_dx = pvals->point[l_idx].p_x - px;
     l_dy = pvals->point[l_idx].p_y - py;
-    
+
     /* calculate square of the distance */
     l_sq_dist = (l_dx * l_dx) + (l_dy * l_dy);
     if(l_sq_dist < l_sq_dist_min)
@@ -1780,7 +1780,7 @@ p_pick_nearest_point(gint px, gint py)
     if(gap_debug)
     {
        printf("  [%2d] %4d %4d %f\n",
-             (int)l_idx, 
+             (int)l_idx,
              (int)pvals->point[l_idx].p_x,
              (int)pvals->point[l_idx].p_y,
              (float)l_sq_dist
@@ -1788,7 +1788,7 @@ p_pick_nearest_point(gint px, gint py)
     }
   }
   if(gap_debug) printf("p_pick_nearest_point: selected %d\n", (int)l_idx_min);
-     
+
   pvals->point_idx = l_idx_min;
   pvals->point[pvals->point_idx].p_x = px;
   pvals->point[pvals->point_idx].p_y = py;
@@ -1800,15 +1800,15 @@ static void
 mov_imglayer_menu_callback(gint32 id, gpointer data)
 {
   gint32 l_image_id;
-  
-  l_image_id = gimp_layer_get_image_id(id);
+
+  l_image_id = gimp_drawable_get_image(id);
   if(!gap_image_is_alive(l_image_id))
   {
     /*if(gap_debug)*/ printf("mov_imglayer_menu_callback: NOT ALIVE image_id=%d layer_id=%d\n",
          (int)l_image_id, (int)id);
      return;
   }
-  
+
   if(id != pvals->src_layer_id)
   {
     if(pvals->tmpsel_image_id >= 0)
@@ -1820,7 +1820,7 @@ mov_imglayer_menu_callback(gint32 id, gpointer data)
   pvals->src_layer_id = id;
   pvals->src_image_id = l_image_id;
 
-  
+
   if(gap_debug) printf("mov_imglayer_menu_callback: image_id=%d layer_id=%d\n",
          (int)pvals->src_image_id, (int)pvals->src_layer_id);
 
@@ -1847,9 +1847,9 @@ mov_imglayer_constrain(gint32 image_id, gint32 drawable_id, gpointer data)
   {
      return(FALSE);
   }
-  
-  
-   /* dont accept layers from within the destination image id 
+
+
+   /* dont accept layers from within the destination image id
     * or layers within the internal used tmporary images
     * or layers within images of other base types
     * (conversions between different base_types are not supported in this version)
@@ -1869,7 +1869,7 @@ static void
 mov_paintmode_menu_callback (GtkWidget *widget,  gpointer   client_data)
 {
   t_mov_gui_stuff *mgp;
-  
+
   pvals->src_paintmode = (gint)client_data;
   mgp = g_object_get_data( G_OBJECT(widget), "mgp" );
   mov_set_instant_apply_request(mgp);
@@ -1879,7 +1879,7 @@ static void
 mov_handmode_menu_callback (GtkWidget *widget,  gpointer   client_data)
 {
   t_mov_gui_stuff *mgp;
-  
+
   pvals->src_handle = (gint)client_data;
   mgp = g_object_get_data( G_OBJECT(widget), "mgp" );
   mov_set_instant_apply_request(mgp);
@@ -1891,20 +1891,20 @@ mov_stepmode_menu_callback (GtkWidget *widget, gpointer   client_data)
   gboolean l_sensitive;
   GtkWidget *spinbutton;
   t_mov_gui_stuff *mgp;
-  
+
   pvals->src_stepmode = (gint)client_data;
 
   mgp = g_object_get_data( G_OBJECT(widget), "mgp" );
   if(mgp == NULL) return;
 
   l_sensitive = TRUE;
-  if((pvals->src_stepmode == GAP_STEP_NONE) 
+  if((pvals->src_stepmode == GAP_STEP_NONE)
   || (pvals->src_stepmode == GAP_STEP_FRAME_NONE))
   {
     l_sensitive = FALSE;
   }
 
-  
+
   spinbutton = GTK_WIDGET(g_object_get_data (G_OBJECT (mgp->step_speed_factor_adj), "spinbutton"));
   if(spinbutton)
   {
@@ -1913,12 +1913,12 @@ mov_stepmode_menu_callback (GtkWidget *widget, gpointer   client_data)
 }  /* end mov_stepmode_menu_callback */
 
 
-static void 
+static void
 mov_tweenlayer_sensitivity(t_mov_gui_stuff *mgp)
 {
   gboolean l_sensitive;
   GtkWidget *spinbutton;
-  
+
   l_sensitive = TRUE;
   if(pvals->tween_steps < 1)
   {
@@ -1938,12 +1938,12 @@ mov_tweenlayer_sensitivity(t_mov_gui_stuff *mgp)
   }
 }  /* end mov_tweenlayer_sensitivity */
 
-static void 
+static void
 mov_tracelayer_sensitivity(t_mov_gui_stuff *mgp)
 {
   gboolean l_sensitive;
   GtkWidget *spinbutton;
-  
+
   l_sensitive = FALSE;
   if(pvals->tracelayer_enable)
   {
@@ -1969,9 +1969,9 @@ static void
 mov_gint_toggle_callback(GtkWidget *w, gpointer   client_data)
 {
   gint *data;
-  
+
   data = (gint*)client_data;
-  
+
   if (GTK_TOGGLE_BUTTON (w)->active)
   {
     *data = 1;
@@ -1982,7 +1982,7 @@ mov_gint_toggle_callback(GtkWidget *w, gpointer   client_data)
   }
 }  /* end mov_gint_toggle_callback */
 
-static void 
+static void
 mov_force_visibility_toggle_callback    (GtkWidget *widget, gpointer client_data)
 {
   t_mov_gui_stuff *mgp;
@@ -1994,10 +1994,10 @@ mov_force_visibility_toggle_callback    (GtkWidget *widget, gpointer client_data
   mov_gint_toggle_callback(widget, client_data);
   mgp = g_object_get_data( G_OBJECT(widget), "mgp" );
   mov_set_instant_apply_request(mgp);
-  
+
 }  /* end mov_force_visibility_toggle_callback */
 
-static void 
+static void
 mov_bluebox_callback    (GtkWidget *widget, gpointer client_data)
 {
   t_mov_gui_stuff *mgp;
@@ -2013,10 +2013,10 @@ mov_bluebox_callback    (GtkWidget *widget, gpointer client_data)
   {
     mov_set_instant_apply_request(mgp);
   }
-  
+
 }  /* end mov_bluebox_callback */
 
-static void 
+static void
 mov_tracelayer_callback    (GtkWidget *widget, gpointer client_data)
 {
   t_mov_gui_stuff *mgp;
@@ -2032,7 +2032,7 @@ mov_tracelayer_callback    (GtkWidget *widget, gpointer client_data)
   {
     mov_tracelayer_sensitivity(mgp);
   }
-  
+
 }  /* end mov_tracelayer_callback */
 
 
@@ -2044,11 +2044,11 @@ mov_show_path_or_cursor(t_mov_gui_stuff *mgp)
   if(mgp->pv_ptr == NULL) return;
   if(mgp->pv_ptr->da_widget == NULL) return;
   if(mgp->drawable == NULL) return;
-  
+
   p_point_refresh(mgp);
   mov_path_prevw_draw ( mgp, CURSOR | PATH_LINE );
   gtk_widget_queue_draw(mgp->pv_ptr->da_widget);
-  gdk_flush();  
+  gdk_flush();
 }  /* end mov_show_path_or_cursor */
 
 static void
@@ -2117,7 +2117,7 @@ mov_instant_timer_callback(gpointer   user_data)
   }
 
   mov_remove_timer(mgp);
-  
+
   if(!mov_check_valid_src_layer(mgp))
   {
     return;
@@ -2156,8 +2156,8 @@ mov_instant_apply_callback(GtkWidget *widget, t_mov_gui_stuff *mgp)
  * procedures to handle POINTS - TABLE
  * ============================================================================
  */
- 
- 
+
+
 static void
 p_points_from_tab(t_mov_gui_stuff *mgp)
 {
@@ -2180,7 +2180,7 @@ p_points_from_tab(t_mov_gui_stuff *mgp)
   mgp->tbry     = pvals->point[pvals->point_idx].tbry;
   mgp->sel_feather_radius  = pvals->point[pvals->point_idx].sel_feather_radius;
   mgp->keyframe_abs = pvals->point[pvals->point_idx].keyframe_abs;
-  
+
   if(( mgp->keyframe_adj != NULL) && (mgp->startup != TRUE))
   {
    /*   findout the gtk_widgets (scale and spinbutton) connected
@@ -2202,13 +2202,13 @@ p_points_from_tab(t_mov_gui_stuff *mgp)
     if((pvals->point_idx == 0) || (pvals->point_idx == pvals->point_idx_max))
     {
       gtk_widget_set_sensitive(spinbutton, FALSE);
-      if(scale) 
+      if(scale)
         gtk_widget_set_sensitive(scale, FALSE);
     }
     else
     {
       gtk_widget_set_sensitive(spinbutton, TRUE);
-      if(scale) 
+      if(scale)
         gtk_widget_set_sensitive(scale, TRUE);
     }
   }
@@ -2218,7 +2218,7 @@ static void
 p_points_to_tab(t_mov_gui_stuff *mgp)
 {
   if(gap_debug) printf("p_points_to_tab: idx=%d, rotation=%f\n", (int)pvals->point_idx , (float)mgp->rotation);
-  
+
   pvals->point[pvals->point_idx].p_x       = mgp->p_x;
   pvals->point[pvals->point_idx].p_y       = mgp->p_y;
   pvals->point[pvals->point_idx].opacity   = mgp->opacity;
@@ -2235,7 +2235,7 @@ p_points_to_tab(t_mov_gui_stuff *mgp)
   pvals->point[pvals->point_idx].tbry      = mgp->tbry;
   pvals->point[pvals->point_idx].sel_feather_radius  = mgp->sel_feather_radius;
   pvals->point[pvals->point_idx].keyframe_abs  = mgp->keyframe_abs;
-  if((mgp->keyframe_abs > 0) 
+  if((mgp->keyframe_abs > 0)
   && (pvals->point_idx != 0)
   && (pvals->point_idx != pvals->point_idx_max))
   {
@@ -2249,9 +2249,9 @@ p_points_to_tab(t_mov_gui_stuff *mgp)
 
 void
 p_update_point_index_text(t_mov_gui_stuff *mgp)
-{ 
+{
   g_snprintf (&mgp->point_index_text[0], POINT_INDEX_LABEL_LENGTH,
-	      _("Current Point: [ %3d ] of [ %3d ]"), 
+	      _("Current Point: [ %3d ] of [ %3d ]"),
 	      pvals->point_idx + 1, pvals->point_idx_max +1);
 
   if (mgp->point_index_frame)
@@ -2267,7 +2267,7 @@ p_update_point_index_text(t_mov_gui_stuff *mgp)
  *   Init point table with identical 2 Points
  * ============================================================================
  */
-void 
+void
 p_clear_one_point(gint idx)
 {
   if((idx >= 0) && (idx <= pvals->point_idx_max))
@@ -2313,15 +2313,15 @@ void p_reset_points()
  * ============================================================================
  */
 
-void 
+void
 p_load_points(char *filename)
 {
   gint l_rc;
   gint l_errno;
-  
+
   l_rc = gap_mov_exec_gap_load_pointfile(filename, pvals);
   l_errno = errno;
-  
+
   if (l_rc < -1)
   {
     p_reset_points();
@@ -2348,7 +2348,7 @@ p_load_points(char *filename)
  *   save point table (from global pvals into named file)
  * ============================================================================
  */
-static void 
+static void
 p_save_points(char *filename, t_mov_gui_stuff *mgp)
 {
   gint l_rc;
@@ -2359,7 +2359,7 @@ p_save_points(char *filename, t_mov_gui_stuff *mgp)
 
   /* quit if MovePath Mainwindow was closed */
   if(mgp->shell == NULL) { gtk_main_quit (); return; }
-  
+
   if(l_wr_permission)
   {
     l_rc = gap_mov_exec_gap_save_pointfile(filename, pvals);
@@ -2421,7 +2421,7 @@ mov_src_sel_create(t_mov_gui_stuff *mgp)
   /* the frame */
   frame = gtk_frame_new ( _("Source Select") );
   gtk_frame_set_shadow_type (GTK_FRAME (frame) ,GTK_SHADOW_ETCHED_IN);
-  
+
   /* the table */
   table = gtk_table_new (2, 4, FALSE);
   gtk_container_set_border_width (GTK_CONTAINER (table), 2);
@@ -2469,7 +2469,7 @@ mov_src_sel_create(t_mov_gui_stuff *mgp)
     option_paint_items[gettextize_loop].label =
       gettext(option_paint_items[gettextize_loop].label);
   }
-  
+
   menu = p_buildmenu (option_paint_items, mgp);
   gtk_option_menu_set_menu(GTK_OPTION_MENU(option_menu), menu);
   gtk_widget_show(option_menu);
@@ -2507,7 +2507,7 @@ mov_src_sel_create(t_mov_gui_stuff *mgp)
     option_step_items[gettextize_loop].label =
       gettext(option_step_items[gettextize_loop].label);
   }
-  
+
   menu = p_buildmenu (option_step_items, mgp);
   gtk_option_menu_set_menu(GTK_OPTION_MENU(option_menu), menu);
   gimp_help_set_help_data(option_menu,
@@ -2553,7 +2553,7 @@ mov_src_sel_create(t_mov_gui_stuff *mgp)
     option_handle_items[gettextize_loop].label =
       gettext(option_handle_items[gettextize_loop].label);
   }
-  
+
   menu = p_buildmenu (option_handle_items, mgp);
   gtk_option_menu_set_menu(GTK_OPTION_MENU(option_menu), menu);
   gimp_help_set_help_data(option_menu,
@@ -2563,11 +2563,11 @@ mov_src_sel_create(t_mov_gui_stuff *mgp)
 
   gtk_widget_show( table );
 
-  /* copile without MOVE_PATH_LAYOUT_frame needs less space */  
+  /* copile without MOVE_PATH_LAYOUT_frame needs less space */
   return table;
 }	/* end mov_src_sel_create */
 
- 
+
 /* ============================================================================
  * Create set of widgets for the advanced Move Path features
  *   A frame that contains:
@@ -2594,7 +2594,7 @@ mov_advanced_tab_create(t_mov_gui_stuff *mgp)
   frame = gtk_frame_new ( _("Advanced Settings") );
   gtk_frame_set_shadow_type (GTK_FRAME (frame) ,GTK_SHADOW_ETCHED_IN);
   gtk_container_set_border_width (GTK_CONTAINER (frame), 2);
-  
+
   /* the table (2 rows) */
   table = gtk_table_new (2, 8, FALSE);
   gtk_container_set_border_width (GTK_CONTAINER (table), 2);
@@ -2604,13 +2604,13 @@ mov_advanced_tab_create(t_mov_gui_stuff *mgp)
 
   row = 0;
   col = 0;
-  
+
   /* the bluebox widgets */
   {
     GtkWidget	 *check_button;
     GtkWidget	 *label;
     GtkWidget    *color_button;
-   
+
     /* toggle bluebox */
     check_button = gtk_check_button_new_with_label ( _("Bluebox"));
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (check_button),
@@ -2633,25 +2633,25 @@ mov_advanced_tab_create(t_mov_gui_stuff *mgp)
     gtk_table_attach(GTK_TABLE(table), label, col, col+1, row+1, row+2
                     , 0, 0, 0, 0);
     gtk_widget_show(label);
-    
+
     if(pvals->bbp_pv == NULL)
     {
       pvals->bbp_pv = gap_bluebox_bbp_new(-1);
     }
-    
+
     /* keycolor button */
-    color_button = gimp_color_button_new (_("Move Path Bluebox Keycolor"), 
+    color_button = gimp_color_button_new (_("Move Path Bluebox Keycolor"),
 				  25, 12,                     /* WIDTH, HEIGHT, */
-				  &pvals->bbp_pv->vals.keycolor, 
+				  &pvals->bbp_pv->vals.keycolor,
 				  GIMP_COLOR_AREA_FLAT);
-    
+
     /* dont know if it is possible to remove the signal handler for the "clicked" signal
      * on the gimp_color_button.
      * WORKAROUND:
-     *   destroy the unwanted standard dialog in my private handler 
+     *   destroy the unwanted standard dialog in my private handler
      *   mov_path_keycolorbutton_clicked
      */
-    
+
     gtk_table_attach(GTK_TABLE(table), color_button, col+1, col+2, row+1, row+2
                     , 0, 0, 0, 0);
     gtk_widget_show (color_button);
@@ -2667,7 +2667,7 @@ mov_advanced_tab_create(t_mov_gui_stuff *mgp)
     g_signal_connect (color_button, "color_changed",
                     G_CALLBACK (mov_path_keycolorbutton_changed),
                     mgp);
-   
+
   }
 
   row = 0;
@@ -2786,10 +2786,10 @@ mov_advanced_tab_create(t_mov_gui_stuff *mgp)
   /* set initial sensitivity */
   mov_tweenlayer_sensitivity(mgp);
   mov_tracelayer_sensitivity(mgp);
-  
+
   gtk_widget_show( table );
-  
-  /* copile without MOVE_PATH_LAYOUT_frame needs less space */  
+
+  /* copile without MOVE_PATH_LAYOUT_frame needs less space */
   return table;
 }	/* end mov_advanced_tab_create */
 
@@ -2815,7 +2815,7 @@ mov_edit_button_box_create (t_mov_gui_stuff *mgp)
   frame = gtk_frame_new (_("Edit Controlpoints"));
   gtk_frame_set_shadow_type( GTK_FRAME( frame ) ,GTK_SHADOW_ETCHED_IN );
   gtk_container_set_border_width( GTK_CONTAINER( frame ), 2 );
-  
+
 
   /* button_table 7 rows */
   button_table = gtk_table_new (7, 2, TRUE);
@@ -2996,7 +2996,7 @@ mov_edit_button_box_create (t_mov_gui_stuff *mgp)
 		    G_CALLBACK (mov_pdel_all_callback),
 		    mgp);
 
-  
+
   row++;
 
   /* Load Controlpoints */
@@ -3029,14 +3029,14 @@ mov_edit_button_box_create (t_mov_gui_stuff *mgp)
 
   gtk_widget_show(button_table);
   gtk_widget_show(frame);
- 
+
   /* the hbox */
   hbox = gtk_hbox_new (FALSE, 3);
   gtk_widget_show (hbox);
 
   gtk_box_pack_start (GTK_BOX (hbox), button_table, FALSE, FALSE, 4);
   gtk_container_add (GTK_CONTAINER (frame), hbox);
-  
+
   gtk_box_pack_start (GTK_BOX (vbox), frame, FALSE, FALSE, 4);
   return vbox;
 }  /* end mov_edit_button_box_create */
@@ -3085,7 +3085,7 @@ mov_path_framerange_box_create(t_mov_gui_stuff *mgp
   gint  master_rows;
   gint  master_cols;
   gint  tabcol, tabrow, boxcol, boxrow;
-  
+
   if(vertical_layout)
   {
     master_rows = 2;
@@ -3104,11 +3104,11 @@ mov_path_framerange_box_create(t_mov_gui_stuff *mgp
     boxcol = 1;
     boxrow = 0;
   }
-  
+
   /* the master_table (1 row) */
   master_table = gtk_table_new (master_rows, master_cols, FALSE);
   gtk_widget_show (master_table);
-  
+
   /* table with 3 rows */
   table = gtk_table_new (3, 3, FALSE);
   gtk_table_set_row_spacings (GTK_TABLE (table), 2);
@@ -3152,7 +3152,7 @@ mov_path_framerange_box_create(t_mov_gui_stuff *mgp
   g_signal_connect (G_OBJECT (adj), "value_changed",
 		    G_CALLBACK (gimp_int_adjustment_update),
 		    &pvals->dst_range_end);
-			  
+
   /* the Layerstack scale_entry */
   adj = gimp_scale_entry_new( GTK_TABLE (table), 0, 2,          /* table col, row */
 			  _("Layerstack:"),                     /* label text */
@@ -3213,8 +3213,8 @@ mov_path_framerange_box_create(t_mov_gui_stuff *mgp
 
 
 /* ============================================================================
- * Create  VBox with 
- *   The VBox contains 
+ * Create  VBox with
+ *   The VBox contains
  *   - Resize    2x spinbutton   (for resizing Width + Height in percent)
  *                  chainbutton  (for constrain both resize widgets)
  *   - Opacity      spinbutton   (0.0 upto 100.0 %)
@@ -3263,7 +3263,7 @@ mov_modify_tab_create(t_mov_gui_stuff *mgp)
 		    &mgp->w_resize);
   mgp->wres_adj = GTK_ADJUSTMENT(adj);
 
-  /* Height Scale */		      
+  /* Height Scale */
   adj = p_mov_spinbutton_new( GTK_TABLE (table), 0, 1,        /* table col, row */
 			  _("Height:"),                       /* label text */
 			  SCALE_WIDTH, ENTRY_WIDTH,           /* scalesize spinsize */
@@ -3291,12 +3291,12 @@ mov_modify_tab_create(t_mov_gui_stuff *mgp)
 
   gimp_help_set_help_data (GIMP_CHAIN_BUTTON (mgp->constrain)->button,
                            _("Constrain aspect ratio"), NULL);
-  
+
   /* the state of the contrain ratio chainbutton is checked in other callbacks (where needed)
    * there is no need for the chainbutton to have its own callback procedure
    */
 
-		      
+
   /* Opacity */
   adj = gimp_scale_entry_new( GTK_TABLE (table), 3, 0,        /* table col, row */
 			  _("Opacity:"),                      /* label text */
@@ -3314,8 +3314,8 @@ mov_modify_tab_create(t_mov_gui_stuff *mgp)
 		    G_CALLBACK (mov_instant_double_adjustment_update),
 		    &mgp->opacity);
   mgp->opacity_adj = GTK_ADJUSTMENT(adj);
-		      
-  /* Rotation */ 
+
+  /* Rotation */
   adj = gimp_scale_entry_new( GTK_TABLE (table), 3, 1,        /* table col, row */
 			  _("Rotate:"),                       /* label text */
 			  SCALE_WIDTH, ENTRY_WIDTH,           /* scalesize spinsize */
@@ -3336,8 +3336,8 @@ mov_modify_tab_create(t_mov_gui_stuff *mgp)
 
   gtk_widget_show (table);
   gtk_widget_show (vbox);
-  
-  /* copile without MOVE_PATH_LAYOUT_frame needs less space */  
+
+  /* copile without MOVE_PATH_LAYOUT_frame needs less space */
   return vbox;
 
 }  /* end mov_modify_tab_create */
@@ -3345,7 +3345,7 @@ mov_modify_tab_create(t_mov_gui_stuff *mgp)
 
 /* ============================================================================
  * Create  VBox with the 8 transformation factors and return it.
- *   The VBox contains 
+ *   The VBox contains
  *   - Transform 8x spinbutton   (0.01 upto 10.0) 4-point perspective transformation
  * ============================================================================
  */
@@ -3362,7 +3362,7 @@ mov_trans_tab_create (t_mov_gui_stuff *mgp)
   frame = gtk_frame_new ( _("Transformfactors X/Y for the 4 corners") );
   gtk_frame_set_shadow_type( GTK_FRAME( frame ) ,GTK_SHADOW_ETCHED_IN );
   gtk_container_set_border_width( GTK_CONTAINER( frame ), 2 );
-  
+
 
   /* the vbox */
   vbox = gtk_vbox_new (FALSE, 3);
@@ -3558,7 +3558,7 @@ mov_selection_handling_tab_create (t_mov_gui_stuff *mgp)
   frame = gtk_frame_new ( _("Pixel Selction Handling") );
   gtk_frame_set_shadow_type( GTK_FRAME( frame ) ,GTK_SHADOW_ETCHED_IN );
   gtk_container_set_border_width( GTK_CONTAINER( frame ), 2 );
-  
+
 
   /* the vbox */
   vbox = gtk_vbox_new (FALSE, 3);
@@ -3582,11 +3582,11 @@ mov_selection_handling_tab_create (t_mov_gui_stuff *mgp)
 
   for (gettextize_loop = 0; option_selmode_items[gettextize_loop].label != NULL;
        gettextize_loop++)
-  {       
+  {
     option_selmode_items[gettextize_loop].label =
       gettext(option_selmode_items[gettextize_loop].label);
   }
-  
+
   menu = p_buildmenu (option_selmode_items, mgp);
   g_object_set_data(G_OBJECT(menu), "mgp", mgp);
   gtk_option_menu_set_menu(GTK_OPTION_MENU(option_menu), menu);
@@ -3620,7 +3620,7 @@ mov_selection_handling_tab_create (t_mov_gui_stuff *mgp)
 }  /* end mov_selection_handling_tab_create */
 
 /* ============================================================================
- * Create all Widget Blocks that represent 
+ * Create all Widget Blocks that represent
  *   - The current contolpoint settings
  *   - The Preview
  *   - The Buttonbox for Editing Controlpoints
@@ -3683,7 +3683,7 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_gui_stuff *mgp, gboolean v
   gtk_box_pack_start (GTK_BOX (vbox), cpt_frame, FALSE, FALSE, 0);
   gtk_widget_show( mgp->master_vbox );
   gtk_widget_show( cpt_frame );
-  
+
 
 
   /* the table (3 rows) for other controlpoint specific settings */
@@ -3729,8 +3729,8 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_gui_stuff *mgp, gboolean v
 		    G_CALLBACK (mov_path_y_adjustment_update),
 		    mgp);
   mgp->y_adj = GTK_ADJUSTMENT(adj);
-  
-  /* Keyframe */ 
+
+  /* Keyframe */
   adj = p_mov_spinbutton_new( GTK_TABLE (table), 1, 2,          /* table col, row */
 			  _("Keyframe:"),                       /* label text */
 			  SCALE_WIDTH, ENTRY_WIDTH,             /* scalesize spinsize */
@@ -3746,11 +3746,11 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_gui_stuff *mgp, gboolean v
 		    G_CALLBACK (gimp_int_adjustment_update),
 		    &mgp->keyframe_abs);
   mgp->keyframe_adj = GTK_ADJUSTMENT(adj);
- 
+
 
   /* the notebook */
   notebook = gtk_notebook_new();
-  
+
   {
     GtkWidget *modify_table;
     GtkWidget *transform_table;
@@ -3758,10 +3758,10 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_gui_stuff *mgp, gboolean v
 
     /* set of modifier widgets for the current controlpoint */
     modify_table = mov_modify_tab_create(mgp);
-    
+
     /* set of perspective transformation widgets for the current controlpoint */
     transform_table = mov_trans_tab_create(mgp);
-    
+
     /* set of perspective transformation widgets for the current controlpoint */
     selhandling_table = mov_selection_handling_tab_create(mgp);
 
@@ -3818,12 +3818,12 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_gui_stuff *mgp, gboolean v
   /*
    * Resize the greater one of dwidth and dheight to PREVIEW_SIZE
    */
-  if ( mgp->dwidth > mgp->dheight ) 
+  if ( mgp->dwidth > mgp->dheight )
   {
     mgp->pheight = mgp->dheight * PREVIEW_SIZE / mgp->dwidth;
     mgp->pwidth = PREVIEW_SIZE;
-  } 
-  else 
+  }
+  else
   {
     mgp->pwidth = mgp->dwidth * PREVIEW_SIZE / mgp->dheight;
     mgp->pheight = PREVIEW_SIZE;
@@ -3834,7 +3834,7 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_gui_stuff *mgp, gboolean v
   {
     GtkWidget *table11;
     GtkWidget *dummy;
-    
+
     gint ix;
     gint iy;
     /* aspect_frame is the CONTAINER for the preview drawing area */
@@ -3871,7 +3871,7 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_gui_stuff *mgp, gboolean v
 			    0, 0);
         }
       }
-    }   
+    }
 
     wrap_box = gtk_vbox_new (FALSE,3);
     gtk_box_pack_start (GTK_BOX (wrap_box), table11, FALSE, FALSE, 0);
@@ -3886,8 +3886,8 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_gui_stuff *mgp, gboolean v
   /* hbox_show block */
   {
     GtkWidget *hbox_show;
-    
-   
+
+
     hbox_show = gtk_hbox_new (FALSE, 3);
     gtk_widget_show (hbox_show);
 
@@ -3896,9 +3896,9 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_gui_stuff *mgp, gboolean v
       GtkWidget      *color_button;
 
       gimp_rgb_set(&mgp->pathcolor, 1.0, 0.1, 0.1); /* startup with RED pathline color */
-      color_button = gimp_color_button_new (_("Pathline Color Picker"), 
+      color_button = gimp_color_button_new (_("Pathline Color Picker"),
 				  25, 12,                     /* WIDTH, HEIGHT, */
-				  &mgp->pathcolor, 
+				  &mgp->pathcolor,
 				  GIMP_COLOR_AREA_FLAT);
       gtk_box_pack_start (GTK_BOX (hbox_show), color_button, TRUE, TRUE, 4);
       gtk_widget_show (color_button);
@@ -3925,7 +3925,7 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_gui_stuff *mgp, gboolean v
                          , NULL);
     gtk_widget_show (check_button);
     gtk_box_pack_start (GTK_BOX (hbox_show), check_button, TRUE, TRUE, 0);
-    
+
     g_signal_connect (G_OBJECT (check_button), "toggled",
                       G_CALLBACK  (mov_show_path_callback),
                       mgp);
@@ -3941,7 +3941,7 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_gui_stuff *mgp, gboolean v
                          , NULL);
     gtk_widget_show (check_button);
     gtk_box_pack_start (GTK_BOX (hbox_show), check_button, TRUE, TRUE, 0);
-    
+
     g_signal_connect (G_OBJECT (check_button), "toggled",
                       G_CALLBACK  (mov_show_cursor_callback),
                       mgp);
@@ -3956,7 +3956,7 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_gui_stuff *mgp, gboolean v
                          , NULL);
     //XX gtk_widget_show (check_button);
     gtk_box_pack_start (GTK_BOX (hbox_show), check_button, TRUE, TRUE, 0);
-    
+
     g_signal_connect (G_OBJECT (check_button), "toggled",
                       G_CALLBACK  (mov_show_grid_callback),
                       mgp);
@@ -3970,12 +3970,12 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_gui_stuff *mgp, gboolean v
                          , NULL);
     gtk_widget_show (check_button);
     gtk_box_pack_start (GTK_BOX (hbox_show), check_button, TRUE, TRUE, 0);
-    
+
     g_signal_connect (G_OBJECT (check_button), "toggled",
                       G_CALLBACK  (mov_instant_apply_callback),
                       mgp);
 
-   
+
     gtk_table_attach(GTK_TABLE(pv_table), hbox_show, 0, 1, 1, 2,
                      0, 0, 16, 0);
   }
@@ -4015,7 +4015,7 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_gui_stuff *mgp, gboolean v
                                 , aspect_frame
                                 );
   da_widget = mgp->pv_ptr->da_widget;
-  
+
   g_object_set_data( G_OBJECT(da_widget), "mgp", mgp);
   gtk_widget_set_events( GTK_WIDGET(da_widget), PREVIEW_MASK );
   g_signal_connect_after( G_OBJECT(da_widget), "expose_event",
@@ -4089,7 +4089,7 @@ mov_path_prevw_preview_init ( t_mov_gui_stuff *mgp )
     if(gap_debug) printf ("mov_path_prevw_preview_init:"
                           " before gap_pview_render_from_image drawable_id:%d\n"
 			  , (int)mgp->drawable->drawable_id);
-    image_id = gimp_drawable_image_id(mgp->drawable->drawable_id);
+    image_id = gimp_drawable_get_image(mgp->drawable->drawable_id);
     gap_pview_render_from_image(mgp->pv_ptr, image_id);
   }
 }
@@ -4152,7 +4152,7 @@ mov_path_prevw_draw ( t_mov_gui_stuff *mgp, gint update )
       }
       /*if(gap_debug) printf ("fg.pixel (%d)\n", (int)fg.pixel); */
 
-        
+
       gdk_gc_set_foreground (mgp->pv_ptr->da_widget->style->black_gc, &fg);
 
       p_points_to_tab(mgp);
@@ -4162,7 +4162,7 @@ mov_path_prevw_draw ( t_mov_gui_stuff *mgp, gint update )
 	   gdk_draw_line (mgp->pv_ptr->da_widget->window,
 			  mgp->pv_ptr->da_widget->style->black_gc,
 			  (pvals->point[l_idx].p_x    * mgp->pwidth) / mgp->dwidth,
-			  (pvals->point[l_idx].p_y    * mgp->pheight) / mgp->dheight, 
+			  (pvals->point[l_idx].p_y    * mgp->pheight) / mgp->dheight,
 			  (pvals->point[l_idx +1].p_x * mgp->pwidth) / mgp->dwidth,
 			  (pvals->point[l_idx +1].p_y * mgp->pheight) / mgp->dheight
 			  );
@@ -4220,10 +4220,10 @@ static void
 mov_instant_int_adjustment_update(GtkObject *obj, gpointer val)
 {
   t_mov_gui_stuff *mgp;
-  
+
   gimp_int_adjustment_update(GTK_ADJUSTMENT(obj), val);
-  
-  
+
+
   mgp = g_object_get_data( G_OBJECT(obj), "mgp" );
   mov_set_instant_apply_request(mgp);
 }  /* end mov_instant_int_adjustment_update */
@@ -4232,9 +4232,9 @@ static void
 mov_instant_double_adjustment_update(GtkObject *obj, gpointer val)
 {
   t_mov_gui_stuff *mgp;
-  
+
   gimp_double_adjustment_update(GTK_ADJUSTMENT(obj), val);
-  
+
   mgp = g_object_get_data( G_OBJECT(obj), "mgp" );
   mov_set_instant_apply_request(mgp);
 }  /* end mov_instant_double_adjustment_update */
@@ -4259,8 +4259,8 @@ mov_path_keycolorbutton_clicked( GimpColorButton *widget,
   if(widget->dialog)
   {
     /* WORKAROUND:
-     *  we dont need the coloresction dialog for the keycolor_button, 
-     *  because only the Bluebox Dioalog Window should open 
+     *  we dont need the coloresction dialog for the keycolor_button,
+     *  because only the Bluebox Dioalog Window should open
      *  when the keycolor_button is clicked.
      *  The coloresction dialog is opened by
      *  the standard "clicked" signal handler of the GimpColorButton Widget.
@@ -4268,7 +4268,7 @@ mov_path_keycolorbutton_clicked( GimpColorButton *widget,
      *
      *  because i have no idea how to remove the standard signal handler
      *  i used this Workaround, that simply destroys the unwanted dialog
-     *  immediate after its creation. 
+     *  immediate after its creation.
      *  (this works fine, but the coloresction dialog may filcker up for a very short time)
      */
     gtk_widget_destroy(widget->dialog);
@@ -4277,14 +4277,14 @@ mov_path_keycolorbutton_clicked( GimpColorButton *widget,
 
   if(mgp)
   {
-    if((pvals->bbp_pv) 
+    if((pvals->bbp_pv)
     && (pvals->src_layer_id >= 0)
     && (pvals->src_image_id >= 0))
     {
       /* use the current source layer for The Blubox Dialog
        * but do not perform changes here.
        */
-    
+
       pvals->bbp_pv->image_id = pvals->src_image_id;
       pvals->bbp_pv->drawable_id = pvals->src_layer_id;
       pvals->bbp_pv->layer_id = pvals->src_layer_id;
@@ -4292,7 +4292,7 @@ mov_path_keycolorbutton_clicked( GimpColorButton *widget,
       pvals->bbp_pv->run_mode = GIMP_RUN_INTERACTIVE;
 
       gap_bluebox_dialog(pvals->bbp_pv);
-   
+
       if(mgp->shell == NULL)
       {
         /* the MovePath Main Window was closed
@@ -4309,7 +4309,7 @@ mov_path_keycolorbutton_clicked( GimpColorButton *widget,
 	gtk_main_quit();
         return;
       }
-   
+
       if(pvals->bbp == NULL)
       {
         pvals->bbp = gap_bluebox_bbp_new(-1);
@@ -4318,14 +4318,14 @@ mov_path_keycolorbutton_clicked( GimpColorButton *widget,
 	  return;
 	}
       }
-      
+
       /* if Blubox dialog was left with OK button get values for rendering */
       if(pvals->bbp_pv->run_flag)
       {
         memcpy(&pvals->bbp->vals, &pvals->bbp_pv->vals, sizeof(GapBlueboxVals));
       }
 
-      gimp_color_button_set_color(widget, &pvals->bbp->vals.keycolor);     
+      gimp_color_button_set_color(widget, &pvals->bbp->vals.keycolor);
       mov_set_instant_apply_request(mgp);
 
     }
@@ -4354,7 +4354,7 @@ mov_path_keycolorbutton_changed( GimpColorButton *widget,
     mov_set_instant_apply_request(mgp);
   }
 }  /* end mov_path_keycolorbutton_changed */
-			      
+
 /*
  *  mov_path_xy_adjustment_update
  */
@@ -4368,7 +4368,7 @@ mov_path_x_adjustment_update( GtkWidget *widget,
 
   mgp = (t_mov_gui_stuff *)data;
   if(mgp == NULL) return;
-  
+
   old_val = mgp->p_x;
   gimp_int_adjustment_update(GTK_ADJUSTMENT(widget), &mgp->p_x);
   if( old_val != mgp->p_x )
@@ -4391,7 +4391,7 @@ mov_path_y_adjustment_update( GtkWidget *widget,
 
   mgp = (t_mov_gui_stuff *)data;
   if(mgp == NULL) return;
-  
+
   old_val = mgp->p_y;
   gimp_int_adjustment_update(GTK_ADJUSTMENT(widget), &mgp->p_y);
   if( old_val != mgp->p_y )
@@ -4453,14 +4453,14 @@ mov_selmode_menu_callback (GtkWidget *widget, gpointer   client_data)
   gboolean l_sensitive;
   GtkWidget *spinbutton;
   t_mov_gui_stuff *mgp;
-  
+
   pvals->src_selmode = (gint)client_data;
 
   mgp = g_object_get_data( G_OBJECT(widget), "mgp" );
   if(mgp == NULL) return;
 
   l_sensitive = TRUE;
-  if(pvals->src_selmode == GAP_MOV_SEL_IGNORE) 
+  if(pvals->src_selmode == GAP_MOV_SEL_IGNORE)
   {
     l_sensitive = FALSE;
   }
@@ -4507,7 +4507,7 @@ mov_path_resize_adjustment_update( GtkObject *obj, gdouble *val)
   }
 }  /* end mov_path_resize_adjustment_update */
 
-static void 
+static void
 mov_path_tween_steps_adjustment_update ( GtkObject *obj, gint *val)
 {
   t_mov_gui_stuff *mgp;
@@ -4522,7 +4522,7 @@ mov_path_tween_steps_adjustment_update ( GtkObject *obj, gint *val)
   {
     mov_tweenlayer_sensitivity(mgp);
   }
-  
+
 }  /* end mov_path_tween_steps_adjustment_update */
 
 
@@ -4595,19 +4595,19 @@ mov_path_prevw_preview_events ( GtkWidget *widget,
   * for slower machines it once was better to paint just the cross cursor,
   * and refresh the path lines only at
   * button press and release events.
-  * 2003.07.12 hof: 
+  * 2003.07.12 hof:
   *    since we use a drawing_area that is repainted at each expose
   *    event, we MUST force painting of the PATH_LINE.
   *    (if we dont, the pathline disappears completely until the mouse
   *     button is released)
   *    The gap_pview_da repaint is faster than the old render_preview procedure
-  *    so it may work even for slower machines now. 
+  *    so it may work even for slower machines now.
   */
   upd_flag = CURSOR | PATH_LINE;
-  /* upd_flag = CURSOR; */ 
-       
+  /* upd_flag = CURSOR; */
+
   mouse_button = 0;
-  
+
   switch (event->type)
     {
     case GDK_EXPOSE:
@@ -4624,7 +4624,7 @@ mov_path_prevw_preview_events ( GtkWidget *widget,
     mbuttons:
       mgp->curx = bevent->x;
       mgp->cury = bevent->y;
-      upd_flag = CURSOR | PATH_LINE;    
+      upd_flag = CURSOR | PATH_LINE;
       goto mouse;
 
     case GDK_MOTION_NOTIFY:
@@ -4642,14 +4642,14 @@ mov_path_prevw_preview_events ( GtkWidget *widget,
           *   and only if Path is visible
           */
          p_points_to_tab(mgp);
-         mgp->p_x = mgp->curx * mgp->dwidth / mgp->pwidth;     
+         mgp->p_x = mgp->curx * mgp->dwidth / mgp->pwidth;
          mgp->p_y = mgp->cury * mgp->dheight / mgp->pheight;
          p_pick_nearest_point(mgp->p_x, mgp->p_y);
          p_point_refresh(mgp);
       }
       else
       {
-         mgp->p_x = mgp->curx * mgp->dwidth / mgp->pwidth;     
+         mgp->p_x = mgp->curx * mgp->dwidth / mgp->pwidth;
          mgp->p_y = mgp->cury * mgp->dheight / mgp->pheight;
          p_points_to_tab(mgp);
          mov_path_prevw_cursor_update( mgp );
@@ -4659,8 +4659,8 @@ mov_path_prevw_preview_events ( GtkWidget *widget,
       gtk_adjustment_set_value (mgp->x_adj,
 				(gfloat)mgp->p_x);
       gtk_adjustment_set_value (mgp->y_adj,
-				(gfloat)mgp->p_y);    
-      
+				(gfloat)mgp->p_y);
+
       mgp->in_call = FALSE;
       break;
 
@@ -4690,7 +4690,7 @@ p_chk_keyframes_OLD(t_mov_gui_stuff *mgp)
   gchar *l_err_lbltext;
   static GapArrButtonArg  b_argv[2];
   static gint  keychk_locked = FALSE;
- 
+
   p_points_to_tab(mgp);
 
   l_err_lbltext = gap_mov_exec_chk_keyframes(pvals);
@@ -4700,7 +4700,7 @@ p_chk_keyframes_OLD(t_mov_gui_stuff *mgp)
     if(!keychk_locked)
     {
       gint l_rc;
-      
+
       keychk_locked = TRUE;
       gap_arr_arg_init(&argv[0], GAP_ARR_WGT_LABEL);
       argv[0].label_txt = _("Can't operate with current controlpoint or keyframe settings");
@@ -4714,12 +4714,12 @@ p_chk_keyframes_OLD(t_mov_gui_stuff *mgp)
       b_argv[1].but_val  = FALSE;
 
       l_rc = gap_arr_std_dialog( _("Move Path Controlpointcheck"),
-                                   _("Errors:"), 
+                                   _("Errors:"),
                                    ARGC_ERRWINDOW, argv,
 				   2,    b_argv, TRUE);
 
       if(mgp->shell == NULL) { gtk_main_quit (); return FALSE; }
-      
+
       if(l_rc)
       {
 	 /* Reset all keyframes */
@@ -4732,10 +4732,10 @@ p_chk_keyframes_OLD(t_mov_gui_stuff *mgp)
       }
       keychk_locked = FALSE;
     }
-    
+
     g_free(l_err_lbltext);
     return(FALSE);
-    
+
   }
   g_free(l_err_lbltext);
   return(TRUE);
@@ -4754,7 +4754,7 @@ static gint
 p_chk_keyframes(t_mov_gui_stuff *mgp)
 {
   gchar *l_err_lbltext;
- 
+
   p_points_to_tab(mgp);
 
   l_err_lbltext = gap_mov_exec_chk_keyframes(pvals);
@@ -4768,7 +4768,7 @@ p_chk_keyframes(t_mov_gui_stuff *mgp)
              ,l_err_lbltext );
     g_free(l_err_lbltext);
     return(FALSE);
-    
+
   }
   g_free(l_err_lbltext);
   return(TRUE);
@@ -4777,7 +4777,7 @@ p_chk_keyframes(t_mov_gui_stuff *mgp)
 /* ============================================================================
  * p_get_flattened_drawable
  *   flatten the given image and return pointer to the
- *   (only) remaining drawable. 
+ *   (only) remaining drawable.
  * ============================================================================
  */
 GimpDrawable *
@@ -4794,28 +4794,28 @@ p_get_flattened_drawable(gint32 image_id)
 /* ============================================================================
  *   add the selected source layer to the temp. preview image
  *   (modified accordung to current settings)
- *   then flatten the temporary preview image, 
- *   and return pointer to the (only) remaining drawable. 
+ *   then flatten the temporary preview image,
+ *   and return pointer to the (only) remaining drawable.
  * ============================================================================
  */
 
-GimpDrawable * 
+GimpDrawable *
 p_get_prevw_drawable (t_mov_gui_stuff *mgp)
 {
   GapMovCurrent l_curr;
   gint      l_nlayers;
- 
+
 
   /* check if we have a source layer (to add to the preview) */
   if((pvals->src_layer_id >= 0) && (pvals->src_image_id >= 0))
   {
     p_points_to_tab(mgp);
-    
+
     if(!gap_image_is_alive(pvals->src_image_id))
     {
       mov_refresh_src_layer_menu(mgp);
     }
-    
+
     /* calculate current settings */
     l_curr.dst_frame_nr    = 0;
 
@@ -4825,14 +4825,14 @@ p_get_prevw_drawable (t_mov_gui_stuff *mgp)
     l_curr.currWidth     = (gdouble)mgp->w_resize;
     l_curr.currHeight    = (gdouble)mgp->h_resize;
     l_curr.currRotation  = (gdouble)mgp->rotation;
-    l_curr.currTTLX      = (gdouble)mgp->ttlx; 
-    l_curr.currTTLY      = (gdouble)mgp->ttly; 
-    l_curr.currTTRX      = (gdouble)mgp->ttrx; 
-    l_curr.currTTRY      = (gdouble)mgp->ttry; 
-    l_curr.currTBLX      = (gdouble)mgp->tblx; 
-    l_curr.currTBLY      = (gdouble)mgp->tbly; 
-    l_curr.currTBRX      = (gdouble)mgp->tbrx; 
-    l_curr.currTBRY      = (gdouble)mgp->tbry; 
+    l_curr.currTTLX      = (gdouble)mgp->ttlx;
+    l_curr.currTTLY      = (gdouble)mgp->ttly;
+    l_curr.currTTRX      = (gdouble)mgp->ttrx;
+    l_curr.currTTRY      = (gdouble)mgp->ttry;
+    l_curr.currTBLX      = (gdouble)mgp->tblx;
+    l_curr.currTBLY      = (gdouble)mgp->tbly;
+    l_curr.currTBRX      = (gdouble)mgp->tbrx;
+    l_curr.currTBRY      = (gdouble)mgp->tbry;
     l_curr.currSelFeatherRadius = (gdouble)mgp->sel_feather_radius;
 
     l_curr.src_layer_idx   = 0;
@@ -4842,7 +4842,7 @@ p_get_prevw_drawable (t_mov_gui_stuff *mgp)
     {
       l_curr.src_last_layer  = l_nlayers -1;
       /* findout index of src_layer_id */
-      for(l_curr.src_layer_idx = 0; 
+      for(l_curr.src_layer_idx = 0;
           l_curr.src_layer_idx  < l_nlayers;
           l_curr.src_layer_idx++)
       {
@@ -4860,7 +4860,7 @@ p_get_prevw_drawable (t_mov_gui_stuff *mgp)
      {
        gint32        l_sel_channel_id;
        gboolean      l_all_empty;
-      
+
        l_all_empty = FALSE;
        if(gimp_selection_is_empty(pvals->src_image_id))
        {
@@ -4871,21 +4871,21 @@ p_get_prevw_drawable (t_mov_gui_stuff *mgp)
      }
     }
 
-    
-    /* set offsets (in cur_ptr) 
-     *  according to handle_mode and src_img dimension (pvals) 
+
+    /* set offsets (in cur_ptr)
+     *  according to handle_mode and src_img dimension (pvals)
      */
     gap_mov_exec_set_handle_offsets(pvals,  &l_curr);
-    
+
     /* render: add source layer to (temporary) preview image */
     gap_mov_render_render(pvals->tmp_image_id, pvals, &l_curr);
 
     if(l_curr.src_layers != NULL) g_free(l_curr.src_layers);
-    l_curr.src_layers = NULL;    
+    l_curr.src_layers = NULL;
   }
 
   mov_check_valid_src_layer(mgp);
-  
+
   /* flatten image, and get the (only) resulting drawable */
   return(p_get_flattened_drawable(pvals->tmp_image_id));
 
@@ -4916,7 +4916,7 @@ mov_set_waiting_cursor(t_mov_gui_stuff *mgp)
 
   gdk_window_set_cursor(GTK_WIDGET(mgp->shell)->window, mgp->cursor_wait);
   gdk_flush();
-  
+
   /* g_main_context_iteration makes sure that waiting cursor is displayed */
   while(g_main_context_iteration(NULL, FALSE));
 
@@ -4931,7 +4931,7 @@ static void
 mov_set_active_cursor(t_mov_gui_stuff *mgp)
 {
   if(mgp == NULL) return;
-  
+
   gdk_window_set_cursor(GTK_WIDGET(mgp->shell)->window, mgp->cursor_acitve);
   gdk_flush();
 }  /* end mov_set_active_cursor */
@@ -5036,12 +5036,12 @@ p_mov_spinbutton_new(GtkTable *table
   return(adj);
 }  /* end p_mov_spinbutton_new */
 
- 
+
 /* --------------------------
  * mov_fit_initial_shell_window
  * --------------------------
  */
-static void 
+static void
 mov_fit_initial_shell_window(t_mov_gui_stuff *mgp)
 {
   gint width;
@@ -5074,7 +5074,7 @@ mov_shell_window_size_allocate (GtkWidget       *widget,
    {
      return;
    }
-   
+
    if(gap_debug) printf("mov_shell_window_size_allocate: START  shell_alloc: w:%d h:%d \n"
                            , (int)allocation->width
                            , (int)allocation->height
@@ -5094,8 +5094,8 @@ mov_shell_window_size_allocate (GtkWidget       *widget,
        /* dont allow shrink below initial size */
        mov_fit_initial_shell_window(mgp);
      }
-   }  			   
-}  /* end mov_shell_window_size_allocate */ 
+   }
+}  /* end mov_shell_window_size_allocate */
 
 /* --------------------------------
  * mov_pview_size_allocate_callback
@@ -5132,7 +5132,7 @@ mov_pview_size_allocate_callback(GtkWidget *widget
   if(mgp->pv_ptr->da_widget == NULL)           { return; }
   if(mgp->pv_ptr->da_widget->window == NULL)   { return; }
 
-  
+
   /* fit preview into allocated width and adjust the height */
   pwidth = allocation->width - PREVIEW_BORDER_X;
   pheight =  (pwidth * mgp->dheight) / MAX(mgp->dwidth,1);
@@ -5145,7 +5145,7 @@ mov_pview_size_allocate_callback(GtkWidget *widget
   }
 
   psize = MAX(pwidth, pheight);
-  
+
   if ((allocation->width - PREVIEW_BORDER_X < PREVIEW_SIZE)
   ||  (allocation->height - PREVIEW_BORDER_Y < PREVIEW_SIZE)
   ||  (pwidth < mgp->pwidth)    /* TOTAL SHRINK WORKAROUND */
@@ -5153,12 +5153,12 @@ mov_pview_size_allocate_callback(GtkWidget *widget
   )
   {
     /* do not allow shrinks smaller than PREVIEW_SIZE */
-    if ( mgp->dwidth > mgp->dheight ) 
+    if ( mgp->dwidth > mgp->dheight )
     {
       pheight = mgp->dheight * PREVIEW_SIZE / mgp->dwidth;
       pwidth = PREVIEW_SIZE;
-    } 
-    else 
+    }
+    else
     {
       pwidth = mgp->dwidth * PREVIEW_SIZE / mgp->dheight;
       pheight = PREVIEW_SIZE;
@@ -5167,7 +5167,7 @@ mov_pview_size_allocate_callback(GtkWidget *widget
     ignore_inital_cnt = 1;
     fit_initial = TRUE;
   }
-  
+
   actual_check_size = (GAP_MOV_CHECK_SIZE * psize) / PREVIEW_SIZE;
 
   if(gap_debug)
@@ -5190,17 +5190,17 @@ mov_pview_size_allocate_callback(GtkWidget *widget
     if(gap_debug) printf("RET\n");
     return;
   }
-  
+
   mgp->pwidth = pwidth;
   mgp->pheight = pheight;
-  
+
   gap_pview_set_size(mgp->pv_ptr
                   , mgp->pwidth
                   , mgp->pheight
                   , actual_check_size
                   );
   mov_upvw_callback (NULL, mgp);
-  
+
   if(fit_initial)
   {
     mov_fit_initial_shell_window(mgp);

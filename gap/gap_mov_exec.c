@@ -2018,7 +2018,7 @@ p_check_move_path_params(GapMovData *mov_data)
   }
   else if(gimp_drawable_is_layer(mov_data->val_ptr->src_layer_id))
   {
-     mov_data->val_ptr->src_image_id = gimp_layer_get_image_id(mov_data->val_ptr->src_layer_id);
+     mov_data->val_ptr->src_image_id = gimp_drawable_get_image(mov_data->val_ptr->src_layer_id);
   }
   else
   {

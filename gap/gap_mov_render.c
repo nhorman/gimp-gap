@@ -203,7 +203,7 @@ p_mov_apply_bluebox(gint32 layer_id
 
   if(val_ptr->bbp)
   {
-    val_ptr->bbp->image_id = gimp_layer_get_image_id(layer_id);
+    val_ptr->bbp->image_id = gimp_drawable_get_image(layer_id);
     val_ptr->bbp->drawable_id = layer_id;
     val_ptr->bbp->layer_id = layer_id;
     val_ptr->bbp->run_mode = GIMP_RUN_NONINTERACTIVE;

@@ -162,7 +162,7 @@ gap_bluebox_bbp_new(gint32 layer_id)
   bbp->image_filename = NULL;
   if(layer_id >= 0)
   {
-    bbp->image_id = gimp_layer_get_image_id(layer_id);
+    bbp->image_id = gimp_drawable_get_image(layer_id);
     bbp->image_filename = g_strdup(gimp_image_get_filename(bbp->image_id));
   }
   bbp->run_mode = GIMP_RUN_NONINTERACTIVE;
