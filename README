@@ -39,11 +39,6 @@ Requires:
 		    ##  --enable-mp3lame
 		    
 		    
-		    If you want create videos with gimp-gap
-		    you should install those libs
-		    and configure gimp-gap with
-		    
-		    --enable_gva_libavformat
 		    
  - libmpeg3   1.5.4
                     libmpeg3 is an additional library for
@@ -74,12 +69,6 @@ Requires:
 		    cp i686/libmpeg3.a /usr/local/lib
 		    
 		    
-		    
-		    If you want to extract frames form DVD typical .IFO
-		    files you should install libmpeg3 and configure
-		    gimp-gap with 
-
-		    -- enable_gva_libmpeg3
 		    
  - xvid       1.0.0
                    The free XVID Codec is used for MPEG4 encoding
