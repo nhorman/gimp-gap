@@ -86,7 +86,7 @@ typedef struct GapAnimInfo {
 } GapAnimInfo;
 
 /* procedures used in other gap*.c files */
-int          gap_lib_file_exists(char *fname);
+int          gap_lib_file_exists(const char *fname);
 char*        gap_lib_searchpath_for_exefile(const char *exefile, const char *path);
 int          gap_lib_file_copy(char *fname, char *fname_copy);
 void         gap_lib_free_ainfo(GapAnimInfo **ainfo);

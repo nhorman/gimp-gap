@@ -1,3 +1,30 @@
+2003-11-09  Wolfgang Hofer <hof@gimp.org>
+	
+	Filtermacro implementation and some bugfixes.
+
+	The user can pick the filtercalls (PDB-name and last_values buffer)
+	of the current session and record them in Filtermacro scripts
+	for later use (in the same or in other sessions)
+	WARNING:
+	- filtermacro scripts are restricted to plug-ins that are able to run with LAST_VALUES.
+	- filtermacro scripts are machine dependent 
+	  and may refuse to run (or even crash) at playback on other machines.
+	  (depending on byte order, padding, and such things)
+	- filtermacro scripts are a temporary solution,
+	  but support will be removed in the future.
+	  (Gimp may have real Macro support then)
+	- filtermacro scripts are useful for animations
+	  they can be used like a single filter in "Filter All Layers"
+	  or in the 'Frames Modify' Feature.
+	
+	gap/gap_dbbrowser_utils.c [.h] # use title_txt (no hardcoded window title), fixed close callbacks
+	gap/gap_lib.c [.h]             # use const char 
+	gap/gap_vin.c [.h]             # use const char
+
+	gap/gap_fmac_main.c            # New Module: Filtermacro Script handling
+	gap/Makefile.am                # updated to copile the new module gap_fmac_main
+	po/POTFILES.in                 # added new file
+	
 2003-11-05  Wolfgang Hofer <hof@gimp.org>
         removed 'Import Layers' Plug-In from gimp-gap. 
 	(This plug-in will be placed somwhere else in the GIMP source tree.
@@ -5,7 +32,7 @@
 	happened on my local machine only)
 
 	gap/gap_main.c               # updated main version
-        gap/gap_layer_copy.c [.h]    # removed that file
+        gap/gap_imp_layer_main.c     # removed that file
 
 2003-11-04  Wolfgang Hofer <hof@gimp.org>
 		    gimprc:

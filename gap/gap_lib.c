@@ -209,7 +209,7 @@ gap_lib_strdup_del_underscore(char *name)
  * ============================================================================
  */
 int
-gap_lib_file_exists(char *fname)
+gap_lib_file_exists(const char *fname)
 {
   struct stat  l_stat_buf;
   long         l_len;

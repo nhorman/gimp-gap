@@ -129,7 +129,6 @@ static void         dialog_button_2_callback     (GtkWidget *widget,
                                                   dbbrowser_t* dbbrowser);
 static void         dialog_button_3_callback     (GtkWidget *widget,
                                                   dbbrowser_t* dbbrowser);
-static gchar*       p_get_plugin_menupath        (const gchar *name);
 static void         p_create_action_area_buttons (dbbrowser_t *dbbrowser,
                 				  char *button_1_txt,
                 				  char *button_2_txt
@@ -171,7 +170,7 @@ gap_db_browser_dialog(char *title_txt,
 
   dbbrowser->dialog = gtk_dialog_new ();
   
-  gtk_window_set_title (GTK_WINDOW (dbbrowser->dialog), _("Animated Filter Apply"));
+  gtk_window_set_title (GTK_WINDOW (dbbrowser->dialog), title_txt);
   gtk_window_set_position (GTK_WINDOW (dbbrowser->dialog), GTK_WIN_POS_MOUSE);
   g_signal_connect (dbbrowser->dialog, "destroy",
                     G_CALLBACK (dialog_close_callback), dbbrowser);
@@ -371,6 +370,7 @@ p_create_action_area_buttons(dbbrowser_t *dbbrowser,
 			G_CALLBACK (dialog_button_1_callback), dbbrowser );
     gtk_table_attach (GTK_TABLE (table), dbbrowser->app_const_button,
 		    0, 1, row, row + 1, GTK_FILL, GTK_FILL, 0, 6);
+    gtk_widget_set_sensitive (dbbrowser->app_const_button, FALSE);
     gtk_widget_show (dbbrowser->app_const_button);
   } else dbbrowser->app_const_button = NULL;
 
@@ -382,6 +382,7 @@ p_create_action_area_buttons(dbbrowser_t *dbbrowser,
 			G_CALLBACK (dialog_button_2_callback), dbbrowser );
     gtk_table_attach (GTK_TABLE (table), dbbrowser->app_vary_button,
 		    1, 2, row, row + 1, GTK_FILL, GTK_FILL, 0, 6);
+    gtk_widget_set_sensitive (dbbrowser->app_vary_button, FALSE);
     gtk_widget_show (dbbrowser->app_vary_button);
   } else dbbrowser->app_vary_button = NULL;
 
@@ -414,6 +415,10 @@ procedure_select_callback (GtkTreeSelection *sel,
 			  1, &func,
 			  -1);
       dialog_select (dbbrowser, func);
+      if(dbbrowser->app_const_button)
+      {
+        gtk_widget_set_sensitive (dbbrowser->app_const_button, TRUE);
+      }
       g_free (func);
     }
 }
@@ -446,7 +451,7 @@ dialog_select (dbbrowser_t *dbbrowser,
   g_free (dbbrowser->selected_return_vals);
 
   g_free (dbbrowser->selected_menu_path); 
-  dbbrowser->selected_menu_path = p_get_plugin_menupath(proc_name);
+  dbbrowser->selected_menu_path = gap_db_get_plugin_menupath(proc_name);
   if(dbbrowser->selected_menu_path == NULL)
     dbbrowser->selected_menu_path = g_strdup(_("** not available **"));
     
@@ -717,8 +722,22 @@ static void
 dialog_close_callback (GtkWidget   *widget, 
 		       dbbrowser_t *dbbrowser)
 {
-      /* we are in the plug_in : kill the gtk application */
+  GtkWidget *dlg;
+  
+  if(dbbrowser)
+  {
+    dlg = dbbrowser->dialog;
+    dbbrowser->dialog = NULL;
+    if(dlg)
+    {
+      gtk_widget_destroy (GTK_WIDGET (dlg));  /* close & destroy dialog window */
       gtk_main_quit ();
+    }
+  }
+  else
+  {
+    gtk_main_quit ();
+  }
 }
 
 /* GAP dialog_num_button_callback (end of the dialog) */
@@ -726,14 +745,17 @@ static void
 dialog_num_button_callback (dbbrowser_t* dbbrowser, 
 		            gint button_nr)
 {
-  if (dbbrowser->selected_proc_name==NULL) return;
+  if (dbbrowser->selected_proc_name==NULL) 
+  {
+    return;
+  }
 
   strcpy(dbbrowser->result->selected_proc_name, dbbrowser->selected_proc_name);
   dbbrowser->result->button_nr = button_nr;
   
   gtk_widget_hide(dbbrowser->dialog);
-  gtk_widget_destroy(dbbrowser->dialog);
-  gtk_main_quit ();
+  dialog_close_callback(NULL, dbbrowser);
+  
 }  /* end dialog_num_button_callback */
 
 
@@ -850,7 +872,7 @@ dialog_search_callback (GtkWidget   *widget,
         {
 	  gchar *menu_path;
 	  
- 	  menu_path = p_get_plugin_menupath(proc_list[i]);
+ 	  menu_path = gap_db_get_plugin_menupath(proc_list[i]);
 	  if(menu_path)
 	    {
 	      if(pattern)
@@ -978,8 +1000,8 @@ GParamType2char (GimpPDBArgType t)
  *  return menupath if name was found
  *  the caller should g_free the rturned string.
  */
-static gchar*
-p_get_plugin_menupath (const gchar *search_text)
+gchar*
+gap_db_get_plugin_menupath (const gchar *search_text)
 {
   static GimpParam *return_vals = NULL;
   static gboolean initialized = FALSE;
@@ -1042,5 +1064,5 @@ p_get_plugin_menupath (const gchar *search_text)
   /* gimp_destroy_params (return_vals, nreturn_vals); */
 
   return (menu_path);
-}  /* end p_get_plugin_menupath */
+}  /* end gap_db_get_plugin_menupath */
 

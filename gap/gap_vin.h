@@ -79,7 +79,7 @@ char *gap_vin_alloc_name(char *basename);
 int   gap_vin_set_common(GapVinVideoInfo *vin_ptr, char *basename);
 int   gap_vin_set_common_onion(GapVinVideoInfo *vin_ptr, char *basename);
 GapVinVideoInfo *gap_vin_get_all(char *basename);
-GapVinTextFileLines * gap_vin_load_textfile(char *filename);
+GapVinTextFileLines * gap_vin_load_textfile(const char *filename);
 void  gap_vin_free_textfile_lines(GapVinTextFileLines *txf_ptr_root);
 
 

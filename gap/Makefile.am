@@ -53,6 +53,7 @@ libexec_PROGRAMS = \
 	gap_bluebox		\
 	gap_plugins		\
 	gap_filter		\
+	gap_fmac		\
 	$(GAP_FRONTENDS)	\
 	gap_name2layer		\
 	gap_navigator_dialog	\
@@ -108,6 +109,21 @@ gap_filter_SOURCES = \
 	gap_filter_iterators.c	\
 	gap_filter_iterators.h	\
 	gap_filter_main.c	\
+	gap_filter_pdb.c	\
+	gap_filter_pdb.h	\
+	gap_lastvaldesc.c	\
+	gap_lastvaldesc.h	\
+	gap_libgimpgap.h	
+
+gap_fmac_SOURCES = \
+	gap_dbbrowser_utils.c	\
+	gap_dbbrowser_utils.h	\
+	gap_filter.h		\
+	gap_filter_codegen.c	\
+	gap_filter_foreach.c	\
+	gap_filter_iterators.c	\
+	gap_filter_iterators.h	\
+	gap_fmac_main.c	\
 	gap_filter_pdb.c	\
 	gap_filter_pdb.h	\
 	gap_lastvaldesc.c	\
@@ -174,6 +190,10 @@ gap_plugins_LDADD = \
 	$(GIMP_LIBS)
 
 gap_filter_LDADD = \
+	$(LIBGIMPGAP)\
+	$(GIMP_LIBS)
+
+gap_fmac_LDADD = \
 	$(LIBGIMPGAP)\
 	$(GIMP_LIBS)
 

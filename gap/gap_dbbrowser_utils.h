@@ -57,5 +57,8 @@ gap_db_browser_dialog (char *title_txt,
                        GapDbBrowserResult  *result,
 		       gint32                   image_id);
 
+gchar*
+gap_db_get_plugin_menupath        (const gchar *name);
+
 
 #endif

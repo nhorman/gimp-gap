@@ -261,7 +261,7 @@ gap_vin_free_textfile_lines(GapVinTextFileLines *txf_ptr_root)
  * return NULL if file not found or empty.
  */
 GapVinTextFileLines *
-gap_vin_load_textfile(char *filename)
+gap_vin_load_textfile(const char *filename)
 {
   FILE *l_fp;
   GapVinTextFileLines *txf_ptr;
