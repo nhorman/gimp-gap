@@ -9,9 +9,8 @@
 # (using other server api than wavplayer's API)  
 #
 
-scriptdatadir = $(GAPLIBDIR)
-
-scriptdata_DATA = audioconvert_to_wav.sh
+libexecdir = $(GAPLIBDIR)
+libexec_SCRIPTS = audioconvert_to_wav.sh
 
 noinst_LIBRARIES = libwavplayclient.a
 
@@ -20,25 +19,25 @@ AM_CPPFLAGS = \
 
 INCLUDES = \
 	-I$(top_srcdir)	\
-	$(GLIB_CFLAGS) \
-	$(GIMP_CFLAGS) \
+	$(GLIB_CFLAGS)	\
+	$(GIMP_CFLAGS)	\
 	-I$(includedir)
 
 
 libwavplayclient_a_SOURCES = \
-	wpc_client.c		\
-	wpc_lib.h		\
-	wpc_msg.c		\
-	wpc_procterm.c		\
+	wpc_client.c	\
+	wpc_lib.h	\
+	wpc_msg.c	\
+	wpc_procterm.c	\
 	wpc_wavfile.c
 
 EXTRA_DIST = \
-	client.h		\
-	client.c		\
-	msg.c			\
-	procterm.c		\
-	wavfile.c		\
-	wavfile.h		\
-	wavplay.h		\
-	README			\
-	$(scriptdata_DATA)
+	README		\
+	client.h	\
+	client.c	\
+	msg.c		\
+	procterm.c	\
+	wavfile.c	\
+	wavfile.h	\
+	wavplay.h
+

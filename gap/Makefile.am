@@ -23,10 +23,6 @@ libexec_PROGRAMS = \
 	gap_player		\
         gap_onion
 
-EXTRA_PROGRAMS = \
-	gap_frontends
-
-
 gap_plugins_SOURCES = \
 	gap-intl.h		\
 	gap_arr_dialog.c	\
