@@ -569,6 +569,8 @@ run(const gchar *name
   if (sizeof(pid_t) == gimp_get_data_size(PLUGIN_NAME))
   {
     gimp_get_data(PLUGIN_NAME, &l_navid_pid);
+
+#ifndef G_OS_WIN32
     if(l_navid_pid != 0)
     {
        /* kill  with signal 0 checks only if the process is alive (no signal is sent)
@@ -580,6 +582,7 @@ run(const gchar *name
          l_rc = -1;    
       }
     }
+#endif
   }
 
   if(l_rc == 0)

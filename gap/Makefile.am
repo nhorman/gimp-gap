@@ -6,13 +6,18 @@ scriptdatadir = $(GIMP_DATA_DIR)/scripts
 
 scriptdata_DATA = sel-to-anim-img.scm
 
-WAVPLAYCLEINTL = $(top_builddir)/libwavplayclient/libwavplayclient.a
+if GAP_UNIX_FRONTENDS
+GAP_FRONTENDS = gap_frontends
+endif
 
+if GAP_AUDIO_SUPPORT
+WAVPLAYCLIENT = $(top_builddir)/libwavplayclient/libwavplayclient.a
+endif
 
 libexec_PROGRAMS = \
 	gap_plugins		\
 	gap_filter		\
-	$(GAP_UNIX_FRONTENDS)	\
+	$(GAP_FRONTENDS)	\
 	gap_name2layer		\
 	gap_navigator_dialog	\
 	gap_player		\
@@ -223,7 +228,7 @@ gap_onion_SOURCES = \
 	gap_vin.h
 
 AM_CPPFLAGS = \
-	-D$(GAP_AUDIOSUPPORT) -DLOCALEDIR=\""$(LOCALEDIR)"\"
+	-DLOCALEDIR=\""$(LOCALEDIR)"\"
 
 INCLUDES = \
 	-I$(top_srcdir)	\
@@ -236,7 +241,7 @@ LDADD = \
 
 
 gap_player_LDADD = \
-	$(WAVPLAYCLEINTL) \
+	$(WAVPLAYCLIENT)\
 	$(GIMP_LIBS)
 
 EXTRA_DIST = \
@@ -244,7 +249,7 @@ EXTRA_DIST = \
 	README_developers					\
 	TESTPROT_iter_ALT					\
 	gimplastvaldesc.c					\
-	gimplastvaldesc.h					\	
+	gimplastvaldesc.h					\
 	iter_ALT/README_iter_subdirs				\
 	iter_ALT/gen/plug_in_CML_explorer_iter_ALT.inc		\
 	iter_ALT/gen/plug_in_alpha2color_iter_ALT.inc		\

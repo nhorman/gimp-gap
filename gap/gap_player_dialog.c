@@ -47,7 +47,9 @@
  *  (2003/06/21)  v1.3.15a   hof: created
  */
 
-/* define GAP_DISABLE_WAV_AUDIOSUPPORT will disable all audiostuff at compiletime */
+/* undefining GAP_ENABLE_AUDIO_SUPPORT will disable all audio stuff
+ *  at compiletime
+ */
 
 #include "config.h"
 
@@ -80,7 +82,7 @@
 extern int gap_debug;  /* 1 == print debug infos , 0 dont print debug infos */
 int cmdopt_x = 0;				/* Debug option flag */
 
-#ifndef GAP_DISABLE_WAV_AUDIOSUPPORT
+#ifdef GAP_ENABLE_AUDIO_SUPPORT
 
 #include "wpc_lib.h"   /* headerfile for libwavplayclient (preferred) */
 
@@ -414,7 +416,7 @@ p_create_wav_dialog(t_global_params *gpp)
 static void
 p_audio_shut_server(t_global_params *gpp)
 {
-#ifndef GAP_DISABLE_WAV_AUDIOSUPPORT
+#ifdef GAP_ENABLE_AUDIO_SUPPORT
   /* if (gap_debug) printf("p_audio_shut_server\n"); */
   if(gpp->audio_status > AUSTAT_NONE)
   {
@@ -433,7 +435,7 @@ p_audio_shut_server(t_global_params *gpp)
 static void
 p_audio_resync(t_global_params *gpp)
 {
-#ifndef GAP_DISABLE_WAV_AUDIOSUPPORT
+#ifdef GAP_ENABLE_AUDIO_SUPPORT
   if(gpp->audio_resync < 1)
   {
     gpp->audio_resync = 1 + (gpp->speed / 5);
@@ -450,7 +452,7 @@ p_audio_resync(t_global_params *gpp)
 static void
 p_audio_stop(t_global_params *gpp)
 {
-#ifndef GAP_DISABLE_WAV_AUDIOSUPPORT
+#ifdef GAP_ENABLE_AUDIO_SUPPORT
   /* if (gap_debug) printf("p_audio_stop\n"); */
   if(gpp->audio_status > AUSTAT_NONE)
   {
@@ -468,7 +470,7 @@ p_audio_stop(t_global_params *gpp)
 static void
 p_audio_init(t_global_params *gpp)
 {
-#ifndef GAP_DISABLE_WAV_AUDIOSUPPORT
+#ifdef GAP_ENABLE_AUDIO_SUPPORT
   /* if (gap_debug) printf("p_audio_init\n"); */
   if(gpp->audio_samples > 0)       /* audiofile has samples (seems to be a valid audiofile) */
   {
@@ -630,7 +632,7 @@ p_print_and_clear_audiolabels(t_global_params *gpp)
 static void
 p_audio_filename_changed(t_global_params *gpp)
 {
-#ifndef GAP_DISABLE_WAV_AUDIOSUPPORT
+#ifdef GAP_ENABLE_AUDIO_SUPPORT
   int fd;
   int rc;
   int channels;				/* Channels recorded in this wav file */
@@ -692,7 +694,7 @@ p_audio_filename_changed(t_global_params *gpp)
 static void
 p_audio_start_play(t_global_params *gpp)
 {
-#ifndef GAP_DISABLE_WAV_AUDIOSUPPORT
+#ifdef GAP_ENABLE_AUDIO_SUPPORT
   gdouble offset_start_sec;
   gint32  offset_start_samples;
   gdouble flt_samplerate;
@@ -772,7 +774,7 @@ p_audio_start_play(t_global_params *gpp)
 static void
 p_audio_startup_server(t_global_params *gpp)
 {
-#ifndef GAP_DISABLE_WAV_AUDIOSUPPORT
+#ifdef GAP_ENABLE_AUDIO_SUPPORT
   const char *cp;
   gboolean wavplay_server_found;
   
@@ -2415,7 +2417,7 @@ p_fit_shell_window(t_global_params *gpp)
    * and may be too small for other languages and/or fonts
    */
   width =  MAX(gpp->pv_ptr->pv_width, 256) + 272;
-#ifndef GAP_DISABLE_WAV_AUDIOSUPPORT
+#ifdef GAP_ENABLE_AUDIO_SUPPORT
   height = MAX(gpp->pv_ptr->pv_height, 256) + 178;
 #else
   height = MAX(gpp->pv_ptr->pv_height, 256) + 128;
@@ -2985,10 +2987,12 @@ on_audio_volume_spinbutton_changed             (GtkEditable     *editable,
   {
     gpp->audio_volume = (gdouble)GTK_ADJUSTMENT(gpp->audio_volume_spinbutton_adj)->value;
 
+#ifdef GAP_ENABLE_AUDIO_SUPPORT
     if(gpp->audio_status >= AUSTAT_PLAYING)
     {
       apcl_volume(gpp->audio_volume, 0, p_audio_errfunc);
     }
+#endif
   }
 
 }  /* end on_audio_volume_spinbutton_changed */
@@ -3062,7 +3066,7 @@ static void
 on_audio_create_copy_button_clicked (GtkButton       *button,
                                gpointer         user_data)
 {
-#ifndef GAP_DISABLE_WAV_AUDIOSUPPORT
+#ifdef GAP_ENABLE_AUDIO_SUPPORT
   t_global_params *gpp;
   const char *cp;
   char  *envAUDIOCONVERT_TO_WAV;
@@ -3735,7 +3739,7 @@ p_create_player_window (t_global_params *gpp)
   frame0 = gtk_frame_new (gpp->ainfo_ptr->basename);
   gtk_widget_show (frame0);
 
-#ifndef GAP_DISABLE_WAV_AUDIOSUPPORT
+#ifdef GAP_ENABLE_AUDIO_SUPPORT
   frame0a = p_new_audioframe (gpp);
   gtk_widget_show (frame0a);
   

@@ -1,3 +1,16 @@
+2003-09-22  Sven Neumann  <sven@gimp.org>
+
+	* configure.in: redone the checks for audio support and build of
+	unix frontends. Moved the output to the end and introduced
+	automake conditionals.
+
+	* gap/Makefile.am
+	* gap/gap_player_dialog.c: changed accordingly.
+
+	* Makefile.am: build the libwavclient directory conditionally.
+
+	* gap/gap_navigator_dialog.c (run): cannot use kill() on WIN32.
+
 2003-09-15  Wolfgang Hofer <hof@gimp.org>
         bugfix attempt for #122220 (gap_frontends require UNIX to run)
 
