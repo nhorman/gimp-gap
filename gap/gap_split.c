@@ -131,7 +131,7 @@ p_split_image(GapAnimInfo *ainfo_ptr,
 
        if(only_visible)
        {
-          if (! gimp_layer_get_visible(l_src_layer_id))
+          if (! gimp_drawable_get_visible(l_src_layer_id))
           {
              /* skip invisible layers in only_visible Mode */
              continue;
@@ -156,7 +156,7 @@ p_split_image(GapAnimInfo *ainfo_ptr,
        /* add the copied layer to current destination image */
         gimp_image_add_layer(l_new_image_id, l_cp_layer_id, 0);
         gimp_layer_set_offsets(l_cp_layer_id, l_src_offset_x, l_src_offset_y);
-        gimp_layer_set_visible(l_cp_layer_id, TRUE);
+        gimp_drawable_set_visible(l_cp_layer_id, TRUE);
 
        /* delete alpha channel ? */
        if (no_alpha == TRUE)

@@ -34,7 +34,7 @@
 
 #include "config.h"
 
-/* SYTEM (UNIX) includes */ 
+/* SYTEM (UNIX) includes */
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -77,7 +77,7 @@ static void  p_mov_transform_perspective(gint32 layer_id
                   , guint        *new_width
                   , guint        *new_height
                   );
-		  
+
 
 
 #define BOUNDS(a,x,y)  ((a < x) ? x : ((a > y) ? y : a))
@@ -108,12 +108,12 @@ p_mov_selection_handling(gint32 orig_layer_id
   gint l_width;
   gint l_height;
   gint32 l_tmp_layer_id;
-  
+
   static gint32 display_id = -1;
 
   if(val_ptr->tmpsel_image_id < 0)
   {
-    return; 
+    return;
   }
   if(!gimp_drawable_has_alpha(orig_layer_id))
   {
@@ -123,7 +123,7 @@ p_mov_selection_handling(gint32 orig_layer_id
   drawable =  gimp_drawable_get (orig_layer_id);
   l_width = drawable->width;
   l_height = drawable->height;
-  
+
   l_tmp_layer_id = gimp_layer_new(val_ptr->tmpsel_image_id, "dummy",
                                  l_width, l_height,
 				  GIMP_RGBA_IMAGE,
@@ -131,7 +131,7 @@ p_mov_selection_handling(gint32 orig_layer_id
                                  GIMP_NORMAL_MODE);
   gimp_image_add_layer(val_ptr->tmpsel_image_id, l_tmp_layer_id, 0);
   gimp_layer_set_offsets(l_tmp_layer_id, src_offset_x, src_offset_y);
-  gimp_selection_none(val_ptr->tmpsel_image_id);  
+  gimp_selection_none(val_ptr->tmpsel_image_id);
 
   gap_layer_copy_picked_channel(l_tmp_layer_id, 3  /* dst_pick is the alpha channel */
                                ,orig_layer_id, (drawable->bpp -1)
@@ -146,7 +146,7 @@ p_mov_selection_handling(gint32 orig_layer_id
     gimp_selection_feather(val_ptr->tmpsel_image_id, cur_ptr->currSelFeatherRadius);
   }
   gimp_selection_invert(val_ptr->tmpsel_image_id);
-  
+
   if(!gimp_selection_is_empty(val_ptr->tmpsel_image_id))
   {
     /* clear invers selected pixels to set unselected pixels transparent
@@ -156,7 +156,7 @@ p_mov_selection_handling(gint32 orig_layer_id
      * But in that case we want all pixels to keep the origial alpha channel
      */
     gimp_edit_clear(l_tmp_layer_id);
-  
+
     /* copy alpha channel form dummy back to original */
     gap_layer_copy_picked_channel(orig_layer_id, (drawable->bpp -1)
                                ,l_tmp_layer_id, 3 /* dst_pick is the alpha channel */
@@ -173,10 +173,10 @@ p_mov_selection_handling(gint32 orig_layer_id
     }
     return;
   }
-  
+
   /* delete dummy layer */
   gimp_image_remove_layer(val_ptr->tmpsel_image_id, l_tmp_layer_id);
-   
+
 }  /* end p_mov_selection_handling  */
 
 
@@ -200,7 +200,7 @@ p_mov_apply_bluebox(gint32 layer_id
      */
     val_ptr->bbp = gap_bluebox_bbp_new(layer_id);;
   }
-  
+
   if(val_ptr->bbp)
   {
     val_ptr->bbp->image_id = gimp_layer_get_image_id(layer_id);
@@ -208,9 +208,9 @@ p_mov_apply_bluebox(gint32 layer_id
     val_ptr->bbp->layer_id = layer_id;
     val_ptr->bbp->run_mode = GIMP_RUN_NONINTERACTIVE;
     val_ptr->bbp->run_flag = TRUE;
-   
+
     gap_bluebox_apply(val_ptr->bbp);
-  }  
+  }
 }  /* end p_mov_apply_bluebox  */
 
 
@@ -261,7 +261,7 @@ p_mov_transform_perspective(gint32 layer_id
   height = gimp_drawable_height(layer_id);
   w2 = width / 2.0;
   h2 = height / 2.0;
-  
+
   /* apply transform factors curT### to all 4 corners */
   x0 = w2 - (cur_ptr->currTTLX * w2);
   y0 = h2 - (cur_ptr->currTTLY * h2);
@@ -274,7 +274,7 @@ p_mov_transform_perspective(gint32 layer_id
 
   neww = MAX((x1 - x0), (x3 - x2));
   newh = MAX((y2 - y0), (y3 - y1));
-  
+
   if(gap_debug)
   {
     printf("** p_mov_transform_perspective:\n");
@@ -309,7 +309,7 @@ p_mov_transform_perspective(gint32 layer_id
           ,(float)newh
 	  );
   }
-  
+
   gimp_perspective  (layer_id,
 		      TRUE,        /* always use interpolation for good quality */
 		      x0,
@@ -320,7 +320,7 @@ p_mov_transform_perspective(gint32 layer_id
 		      y2,
 		      x3,
 		      y3);
-			  
+
   *resized_flag = 1;
   *new_width = neww;
   *new_height = newh;
@@ -345,11 +345,11 @@ gap_mov_render_render(gint32 image_id, GapMovValues *val_ptr, GapMovCurrent *cur
   guint        l_orig_width;
   guint        l_orig_height;
   gint         l_resized_flag;
-  gboolean     l_interpolation;   
+  gboolean     l_interpolation;
   gint         lx1, ly1, lx2, ly2;
   guint        l_image_width;
   guint        l_image_height;
- 
+
   if(gap_debug) printf("gap_mov_render_render: frame/layer: %ld/%ld  X=%f, Y=%f\n"
                 "       Width=%f Height=%f\n"
                 "       Opacity=%f  Rotate=%f  clip_to_img = %d force_visibility = %d\n"
@@ -403,16 +403,16 @@ gap_mov_render_render(gint32 image_id, GapMovValues *val_ptr, GapMovCurrent *cur
   if(l_cp_layer_id < 0)
   {
      return -1;
-  }  
+  }
 
-  gimp_image_add_layer(image_id, l_cp_layer_id, 
+  gimp_image_add_layer(image_id, l_cp_layer_id,
                        val_ptr->dst_layerstack);
 
   if(gap_debug) printf("gap_mov_render_render: after add layer\n");
 
   if(val_ptr->src_force_visible)
   {
-     gimp_layer_set_visible(l_cp_layer_id, TRUE);
+     gimp_drawable_set_visible(l_cp_layer_id, TRUE);
   }
 
   /* check for layermask */
@@ -444,7 +444,7 @@ gap_mov_render_render(gint32 image_id, GapMovValues *val_ptr, GapMovCurrent *cur
   {
     p_mov_apply_bluebox (l_cp_layer_id, val_ptr, cur_ptr);
   }
-  
+
   if(val_ptr->src_selmode != GAP_MOV_SEL_IGNORE)
   {
     p_mov_selection_handling (l_cp_layer_id
@@ -454,7 +454,7 @@ gap_mov_render_render(gint32 image_id, GapMovValues *val_ptr, GapMovCurrent *cur
 			     , cur_ptr
 			     );
   }
-  
+
   if((cur_ptr->currWidth * cur_ptr->currHeight) > (100.0 * 100.0))
   {
      /* have to scale layer (enlarge) */
@@ -463,7 +463,7 @@ gap_mov_render_render(gint32 image_id, GapMovValues *val_ptr, GapMovCurrent *cur
      l_new_width  = (l_orig_width  * cur_ptr->currWidth) / 100;
      l_new_height = (l_orig_height * cur_ptr->currHeight) / 100;
      gimp_layer_scale(l_cp_layer_id, l_new_width, l_new_height, 0);
-     
+
      /* do 4-point perspective stuff (after enlarge) */
      p_mov_transform_perspective(l_cp_layer_id
                        , val_ptr
@@ -483,7 +483,7 @@ gap_mov_render_render(gint32 image_id, GapMovValues *val_ptr, GapMovCurrent *cur
                        , &l_new_width
                        , &l_new_height
                        );
-     
+
     if((cur_ptr->currWidth  > 100.01) || (cur_ptr->currWidth < 99.99)
     || (cur_ptr->currHeight > 100.01) || (cur_ptr->currHeight < 99.99))
     {
@@ -505,11 +505,11 @@ gap_mov_render_render(gint32 image_id, GapMovValues *val_ptr, GapMovCurrent *cur
     /* have to rotate the layer (rotation also changes size as needed) */
     gap_pdb_gimp_rotate_degree(l_cp_layer_id, l_interpolation, cur_ptr->currRotation);
 
-    
+
     l_new_width  = gimp_drawable_width(l_cp_layer_id);
     l_new_height = gimp_drawable_height(l_cp_layer_id);
   }
-  
+
   if(l_resized_flag == 1)
   {
      /* adjust offsets according to handle and change of size */
@@ -534,11 +534,11 @@ gap_mov_render_render(gint32 image_id, GapMovValues *val_ptr, GapMovCurrent *cur
            break;
      }
   }
-  
+
   /* calculate offsets in destination image */
   l_offset_x = (cur_ptr->currX - cur_ptr->l_handleX) + l_src_offset_x;
   l_offset_y = (cur_ptr->currY - cur_ptr->l_handleY) + l_src_offset_y;
-  
+
   /* modify coordinate offsets of the copied layer within dest. image */
   gimp_layer_set_offsets(l_cp_layer_id, l_offset_x, l_offset_y);
 
@@ -547,7 +547,7 @@ gap_mov_render_render(gint32 image_id, GapMovValues *val_ptr, GapMovCurrent *cur
   {
      l_image_width = gimp_image_width(image_id);
      l_image_height = gimp_image_height(image_id);
-     
+
      lx1 = BOUNDS (l_offset_x, 0, (gint32)l_image_width);
      ly1 = BOUNDS (l_offset_y, 0, (gint32)l_image_height);
      lx2 = BOUNDS ((gint32)(l_new_width + l_offset_x), 0, (gint32)l_image_width);
@@ -555,7 +555,7 @@ gap_mov_render_render(gint32 image_id, GapMovValues *val_ptr, GapMovCurrent *cur
 
      l_new_width = lx2 - lx1;
      l_new_height = ly2 - ly1;
-     
+
      if (l_new_width && l_new_height)
      {
        gimp_layer_resize(l_cp_layer_id, l_new_width, l_new_height,
@@ -568,7 +568,7 @@ gap_mov_render_render(gint32 image_id, GapMovValues *val_ptr, GapMovCurrent *cur
         * instead of removing we make the layer small and move him outside
         * the image.
         * (that helps to keep the layerstack position of the inserted layer(s)
-        * constant in all handled video frames) 
+        * constant in all handled video frames)
         */
        gimp_layer_resize(l_cp_layer_id, 2, 2, -3, -3);
      }
@@ -580,7 +580,7 @@ gap_mov_render_render(gint32 image_id, GapMovValues *val_ptr, GapMovCurrent *cur
      gint32  l_trc_layer_id;
      GimpMergeType l_mergemode;
      gdouble       l_opacity_initial;
-     
+
      l_mergemode = GIMP_EXPAND_AS_NECESSARY;
      if(val_ptr->clip_to_img)
      {
@@ -588,14 +588,14 @@ gap_mov_render_render(gint32 image_id, GapMovValues *val_ptr, GapMovCurrent *cur
      }
 
      /* apply descending opacity for all previous added objects
-      * (that are all collected in the val_ptr->trace_layer_id, that is the only layer in 
+      * (that are all collected in the val_ptr->trace_layer_id, that is the only layer in
       * the trace_image)
       */
      gimp_layer_set_opacity(val_ptr->trace_layer_id, val_ptr->trace_opacity_desc);
-     
+
      l_opacity_initial = (val_ptr->trace_opacity_initial * cur_ptr->currOpacity) / 100.0;
      l_opacity_initial = CLAMP(l_opacity_initial, 0.0, 100.0);
-     
+
      l_trc_layer_id = gap_layer_copy_to_dest_image(val_ptr->trace_image_id,     /* the dest image */
                                    l_cp_layer_id,                  /* the layer to copy */
                                    l_opacity_initial,
@@ -608,9 +608,9 @@ gap_mov_render_render(gint32 image_id, GapMovValues *val_ptr, GapMovCurrent *cur
      /* merge the newly added l_trc_layer_id down to one tracelayer again */
      val_ptr->trace_layer_id = gap_image_merge_visible_layers(val_ptr->trace_image_id, l_mergemode);
   }
-  
+
   if(gap_debug) printf("GAP gap_mov_render_render: exit OK\n");
-  
+
   return 0;
 }	/* end gap_mov_render_render */
 
@@ -628,10 +628,10 @@ gap_mov_render_render(gint32 image_id, GapMovValues *val_ptr, GapMovCurrent *cur
  */
 gint
 gap_mov_render_fetch_src_frame(GapMovValues *pvals,  gint32 wanted_frame_nr)
-{  
+{
   GapAnimInfo  *l_ainfo_ptr;
   GapAnimInfo  *l_old_ainfo_ptr;
- 
+
   if(gap_debug)
   {
      printf("gap_mov_render_fetch_src_frame: START src_image_id: %d wanted_frame_nr:%d"
@@ -642,12 +642,12 @@ gap_mov_render_fetch_src_frame(GapMovValues *pvals,  gint32 wanted_frame_nr)
             , (int)pvals->cache_frame_number
             );
   }
-  
+
   if(pvals->src_image_id < 0)
   {
-     return -1;  
+     return -1;
   }
-   
+
   if((pvals->src_image_id != pvals->cache_src_image_id)
   || (wanted_frame_nr != pvals->cache_frame_number))
   {
@@ -678,7 +678,7 @@ gap_mov_render_fetch_src_frame(GapMovValues *pvals,  gint32 wanted_frame_nr)
            gap_lib_free_ainfo(&l_ainfo_ptr);
 	}
 	else
-	{           
+	{
            /* update cached ainfo  if source image has changed
 	    * (either by id or by its basename)
 	    */
@@ -687,7 +687,7 @@ gap_mov_render_fetch_src_frame(GapMovValues *pvals,  gint32 wanted_frame_nr)
            gap_lib_free_ainfo(&l_old_ainfo_ptr);
 	}
      }
-     
+
      if ((wanted_frame_nr == pvals->cache_ainfo_ptr->curr_frame_nr)
      ||  (wanted_frame_nr < 0))
      {
@@ -722,11 +722,11 @@ gap_mov_render_fetch_src_frame(GapMovValues *pvals,  gint32 wanted_frame_nr)
        }
 
      }
-  
+
      gimp_image_undo_disable (pvals->cache_tmp_image_id);
-     
+
      pvals->cache_tmp_layer_id = gap_image_merge_visible_layers(pvals->cache_tmp_image_id, GIMP_EXPAND_AS_NECESSARY);
-     
+
 
      /* check if we are generating an anim preview
       * where we must Scale (down) the src image to preview size
@@ -770,12 +770,12 @@ gap_mov_render_fetch_src_frame(GapMovValues *pvals,  gint32 wanted_frame_nr)
 
      pvals->cache_src_image_id = pvals->src_image_id;
      pvals->cache_frame_number = wanted_frame_nr;
-     
+
   }
 
-  
 
-  return 0; /* OK */    
+
+  return 0; /* OK */
 }	/* end gap_mov_render_fetch_src_frame */
 
 
@@ -795,18 +795,18 @@ gap_mov_render_create_or_replace_tempsel_image(gint32 channel_id
                   )
 {
   GimpDrawable *drawable;
-  
+
   if(val_ptr->tmpsel_image_id >= 0)
   {
     gimp_image_delete(val_ptr->tmpsel_image_id);
   }
-  
+
   drawable = gimp_drawable_get (channel_id);
   val_ptr->tmpsel_image_id = gimp_image_new(drawable->width
                                            ,drawable->height
 					   ,GIMP_RGB
 					   );
-  
+
   gimp_selection_all(val_ptr->tmpsel_image_id);
   val_ptr->tmpsel_channel_id = gimp_selection_save(val_ptr->tmpsel_image_id);
 

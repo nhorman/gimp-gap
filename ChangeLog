@@ -1,3 +1,16 @@
+2003-12-03  Sven Neumann  <sven@gimp.org>
+
+	* gap/gap_bluebox.c
+	* gap/gap_filter_foreach.c
+	* gap/gap_layer_copy.c
+	* gap/gap_match.c
+	* gap/gap_mod_layer.c
+	* gap/gap_mov_exec.c
+	* gap/gap_mov_render.c
+	* gap/gap_onion_base.c
+	* gap/gap_range_ops.c
+	* gap/gap_split.c: follow latest libgimp API changes.
+
 2003-11-28  Sven Neumann  <sven@gimp.org>
 
 	* configure.in: added missing AC_PROG_INTLTOOL.

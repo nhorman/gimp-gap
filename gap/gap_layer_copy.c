@@ -30,13 +30,13 @@
  * version 0.98.00 1998.11.26   hof: added channel copy
  * version         1998.11.26   hof: bugfix have to copy the layer's layer_mask too.
  *                                          type check of destination image
- * version 0.96.00              hof: bugfix memory leak (must set src_tile to unref after use) 
+ * version 0.96.00              hof: bugfix memory leak (must set src_tile to unref after use)
  * version 0.93.01              hof: when creating the destination layer
- *                                   add alpha channel if needed in extra call 
+ *                                   add alpha channel if needed in extra call
  * version 0.90.00;             hof: 1.st (pre) release
  */
- 
-/* SYTEM (UNIX) includes */ 
+
+/* SYTEM (UNIX) includes */
 #include "string.h"
 /* GIMP includes */
 /* GAP includes */
@@ -62,19 +62,19 @@ gint32 gap_layer_copy_to_dest_image (gint32 dst_image_id,
                         gint *src_offset_y )
 {
   gint32 l_new_layer_id;
-  gint32 l_ret_id;     
+  gint32 l_ret_id;
   char  *l_name;
 
   if(gap_debug) printf("GAP gap_layer_copy_to_dest_image: START\n");
 
   l_ret_id = -1;       /* prepare error retcode -1 */
   l_name = NULL;
-  
-  opacity = CLAMP(opacity, 0.0, 100.0);
-  
-  l_name = gimp_layer_get_name(src_layer_id);
 
-  /* copy the layer */  
+  opacity = CLAMP(opacity, 0.0, 100.0);
+
+  l_name = gimp_drawable_get_name(src_layer_id);
+
+  /* copy the layer */
   l_new_layer_id = gap_pdb_gimp_layer_new_from_drawable(src_layer_id, dst_image_id);
 
   if(l_new_layer_id >= 0)
@@ -88,14 +88,14 @@ gint32 gap_layer_copy_to_dest_image (gint32 dst_image_id,
     /* findout the offsets of the original layer within the source Image */
     gimp_drawable_offsets(src_layer_id, src_offset_x, src_offset_y );
 
-    gimp_layer_set_name(l_new_layer_id, l_name);
+    gimp_drawable_set_name(l_new_layer_id, l_name);
     gimp_layer_set_opacity(l_new_layer_id, opacity);
     gimp_layer_set_mode(l_new_layer_id, mode);
 
 
     l_ret_id = l_new_layer_id;  /* all done OK */
   }
-    
+
   if(l_name != NULL) { g_free (l_name); }
 
   if(gap_debug) printf("GAP gap_layer_copy_to_dest_image: ret %d\n", (int)l_ret_id);
@@ -109,14 +109,14 @@ gint32 gap_layer_copy_to_dest_image (gint32 dst_image_id,
  * -----------------------
  *  copy src_layer 1:1 on top of the layerstack at dst_image_id,
  *    return the id of the new created layer (the copy)
- *    
- * NOTES: 
+ *
+ * NOTES:
  * -  source layer MUST have same type as the destination image
  *   (you cant copy INDEXED or GRAY src_layers to RGB images and so on..)
  * - if the src_layer has no alpha channel,
  *   an alpha_channel is added to the copied layer.
  */
-gint32 
+gint32
 gap_layer_copy_to_image (gint32 dst_image_id, gint32 src_layer_id)
 {
   gint32 l_new_layer_id;
@@ -161,7 +161,7 @@ gap_layer_copy_to_image (gint32 dst_image_id, gint32 src_layer_id)
   {
      return -1;
   }
-  
+
   if(! gimp_drawable_has_alpha(l_new_layer_id))
   {
      /* have to add alpha channel */
@@ -189,8 +189,8 @@ p_copy_rgn_render_region (const GimpPixelRgn *srcPR
   guint    row;
   guchar* src  = srcPR->data;
   guchar* dest = dstPR->data;
-  
-  
+
+
   for (row = 0; row < dstPR->h; row++)
   {
       memcpy(dest, src, dstPR->w * dstPR->bpp);
@@ -204,7 +204,7 @@ p_copy_rgn_render_region (const GimpPixelRgn *srcPR
 /* ============================================================================
  * gap_layer_copy_content
  * - source and dest must be the same size and type
- * - selections are ignored 
+ * - selections are ignored
  *   (the full drawable content is copied without use of the shadow buffer)
  * ============================================================================
  */
@@ -216,10 +216,10 @@ gap_layer_copy_content (gint32 dst_drawable_id, gint32 src_drawable_id)
   GimpDrawable *dst_drawable;
   guint   row;
   gpointer  pr;
- 
+
   src_drawable = gimp_drawable_get (src_drawable_id);
   dst_drawable = gimp_drawable_get (dst_drawable_id);
-  
+
   if((src_drawable->width  != dst_drawable->width)
   || (src_drawable->height != dst_drawable->height)
   || (src_drawable->bpp    != dst_drawable->bpp))
@@ -237,7 +237,7 @@ gap_layer_copy_content (gint32 dst_drawable_id, gint32 src_drawable_id)
 	   );
     return FALSE;
   }
-  
+
   gimp_pixel_rgn_init (&srcPR, src_drawable, 0, 0
                       , src_drawable->width, src_drawable->height
 		      , FALSE     /* dirty */
@@ -248,7 +248,7 @@ gap_layer_copy_content (gint32 dst_drawable_id, gint32 src_drawable_id)
 		      , TRUE      /* dirty */
 		      , FALSE     /* shadow */
 		       );
-  
+
 
   for (pr = gimp_pixel_rgns_register (2, &srcPR, &dstPR);
        pr != NULL;
@@ -256,7 +256,7 @@ gap_layer_copy_content (gint32 dst_drawable_id, gint32 src_drawable_id)
   {
       p_copy_rgn_render_region (&srcPR, &dstPR);
   }
-  
+
   gimp_drawable_flush (dst_drawable);
   return TRUE;
 }  /* end gap_layer_copy_content */
@@ -277,7 +277,7 @@ p_pick_rgn_render_region (const GimpPixelRgn *srcPR
   guint    row;
   guchar* src  = srcPR->data;
   guchar* dest = dstPR->data;
-  
+
   for (row = 0; row < dstPR->h; row++)
     {
 	guchar* l_src  = src;
@@ -306,7 +306,7 @@ p_pick_rgn_render_region (const GimpPixelRgn *srcPR
  *
  *   to copy a Selection Mask (bpp=1) src_drawable into a GRAY_ALPHA (bpp=2) dst_drawable
  *   you can call this procedure with src_channel_pick = 0, dst_channel_pick = 1
- 
+
  * - source and dest must be the same size
  * - src_channel_pick selects the src channel and must be less than src bpp
  * - dst_channel_pick selects the src channel and must be less than src bpp
@@ -322,10 +322,10 @@ gap_layer_copy_picked_channel (gint32 dst_drawable_id,  guint dst_channel_pick
   GimpDrawable *dst_drawable;
   gint    x1, y1, x2, y2;
   gpointer  pr;
- 
+
   src_drawable = gimp_drawable_get (src_drawable_id);
   dst_drawable = gimp_drawable_get (dst_drawable_id);
-  
+
   if((src_drawable->width  != dst_drawable->width)
   || (src_drawable->height != dst_drawable->height)
   || (src_channel_pick     >= src_drawable->bpp)
@@ -348,7 +348,7 @@ gap_layer_copy_picked_channel (gint32 dst_drawable_id,  guint dst_channel_pick
   gimp_drawable_mask_bounds (dst_drawable_id, &x1, &y1, &x2, &y2);
 
 
-  
+
   gimp_pixel_rgn_init (&srcPR, src_drawable, x1, y1
                       , (x2 - x1), (y2 - y1)
 		      , FALSE     /* dirty */
@@ -370,7 +370,7 @@ gap_layer_copy_picked_channel (gint32 dst_drawable_id,  guint dst_channel_pick
       * (because the un-picked channelbytes would be uninitialized
       *  otherwise)
       */
-     
+
      gimp_pixel_rgn_init (&origPR, dst_drawable, x1, y1
                       ,  (x2 - x1), (y2 - y1)
 		      , FALSE    /* dirty */
@@ -386,7 +386,7 @@ gap_layer_copy_picked_channel (gint32 dst_drawable_id,  guint dst_channel_pick
 	  pr = gimp_pixel_rgns_process (pr))
      {
 	 p_copy_rgn_render_region (&origPR, &shadowPR);
-     } 
+     }
   }
 
   for (pr = gimp_pixel_rgns_register (2, &srcPR, &dstPR);
@@ -395,17 +395,17 @@ gap_layer_copy_picked_channel (gint32 dst_drawable_id,  guint dst_channel_pick
   {
       p_pick_rgn_render_region (&srcPR, &dstPR, src_channel_pick, dst_channel_pick);
   }
- 
+
   /*  update the processed region  */
   gimp_drawable_flush (dst_drawable);
-  
+
   if(shadow)
   {
     gimp_drawable_merge_shadow (dst_drawable_id, TRUE);
   }
   gimp_drawable_update (dst_drawable_id, x1, y1, (x2 - x1), (y2 - y1));
- 
- 
+
+
   return TRUE;
 }  /* end gap_layer_copy_picked_channel */
 
