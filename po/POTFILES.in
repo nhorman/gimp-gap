@@ -1,5 +1,6 @@
 # Files from the gimp-gap distribution which have already been
 # marked to allow runtime translation of messages
+
 gap/gap_arr_dialog.c
 gap/gap_base_ops.c
 gap/gap_bluebox.c
@@ -14,6 +15,9 @@ gap/gap_lib.c
 gap/gap_lock.c
 gap/gap_main.c
 gap/gap_mod_layer.c
+gap/gap_morph_dialog.c
+gap/gap_morph_exec.c
+gap/gap_morph_main.c
 gap/gap_mov_dialog.c
 gap/gap_mov_exec.c
 gap/gap_mpege.c
@@ -29,7 +33,22 @@ gap/gap_range_ops.c
 gap/gap_resi_dialog.c
 gap/gap_split.c
 gap/gap_stock.c
-gap/gap_wr_opacity.c
+gap/gap_story_dialog.c
+gap/gap_story_file.c
+gap/gap_story_main.c
+gap/gap_story_properties.c
+gap/gap_vex_dialog.c
+gap/gap_vex_exec.c
+gap/gap_vex_main.c
 gap/gap_wr_color_curve.c
-gap/gap_wr_color_levels.c
 gap/gap_wr_color_huesat.c
+gap/gap_wr_color_levels.c
+gap/gap_wr_opacity.c
+libgapvidutil/gap_gve_story.c
+vid_common/gap_cme_gui.c
+vid_common/gap_cme_main.c
+vid_enc_avi/gap_enc_avi_gui.c
+vid_enc_avi/gap_enc_avi_main.c
+vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c
+vid_enc_ffmpeg/gap_enc_ffmpeg_main.c
+vid_enc_single/gap_enc_singleframes_main.c
