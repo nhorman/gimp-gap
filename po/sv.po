@@ -8,8 +8,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gimp-gap\n"
-"POT-Creation-Date: 2003-08-21 19:16+0200\n"
-"PO-Revision-Date: 2003-08-21 19:17+0200\n"
+"POT-Creation-Date: 2003-08-22 02:57+0200\n"
+"PO-Revision-Date: 2003-08-22 02:58+0200\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -677,7 +677,7 @@ msgstr ""
 
 #: gap/gap_lib.c:1236
 msgid "Save Flattened"
-msgstr "Spara utplattad"
+msgstr "Spara tillplattad"
 
 #: gap/gap_lib.c:1238
 msgid "Save As Is"
@@ -1830,6 +1830,8 @@ msgid ""
 "Generate parameterfile for mpeg2encode 1.2\n"
 "(MPEG-2 Video Encoder.)\n"
 msgstr ""
+"Generera parameterfil för mpeg2encode 1.2\n"
+"(MPEG-2-videokodare).\n"
 
 #: gap/gap_mpege.c:440
 msgid "MPEG-type:"
@@ -1853,30 +1855,40 @@ msgid ""
 "\n"
 "WARNING: mpeg_encode does not support Fileformat "
 msgstr ""
+"\n"
+"VARNING: mpeg_encode stöder inte filformatet "
 
 #: gap/gap_mpege.c:1030
 msgid ""
 "\n"
 "ERROR: width not a multiple of 16"
 msgstr ""
+"\n"
+"FEL: bredden är inte en multipel av 16"
 
 #: gap/gap_mpege.c:1031
 msgid ""
 "\n"
 "ERROR: height not a multiple of 16"
 msgstr ""
+"\n"
+"FEL: höjden är inte en multipel av 16"
 
 #: gap/gap_mpege.c:1037
 msgid ""
 "\n"
 "WARNING: mpeg2encode does not support Fileformat "
 msgstr ""
+"\n"
+"VARNING: mpeg2encode stöder inte filformatet "
 
 #: gap/gap_mpege.c:1042
 msgid ""
 "\n"
 "ERROR: invoked from a single image, animframe required"
 msgstr ""
+"\n"
+"FEL: startad från en enstaka bild, animationsbildruta krävs"
 
 #: gap/gap_name2layer_main.c:170
 msgid "<Image>/Video/Filename to Layer..."
@@ -1937,7 +1949,7 @@ msgstr "Skapa lager:"
 
 #: gap/gap_name2layer_main.c:502
 msgid "ON: Create a new layer, OFF: Render on active Drawable"
-msgstr ""
+msgstr "PÅ: Skapa ett nytt lager, AV: Rendera på aktiv ritbar yta"
 
 #: gap/gap_name2layer_main.c:512
 msgid "Render Filename to Layer"
@@ -1952,12 +1964,16 @@ msgid ""
 "Playback\n"
 "<Shift> Make Tempimage and do Layeranimation Playback"
 msgstr ""
+"Uppspelning\n"
+"<Skift> Skapa temporär bild och utför lageranimationsuppspelning"
 
 #: gap/gap_navigator_dialog.c:416
 msgid ""
 "Smart Update Thumbnails\n"
 "<Shift> forced upd"
 msgstr ""
+"Smart uppdatering av miniatyrbilder\n"
+"<Skift> tvingad uppdatering"
 
 #: gap/gap_navigator_dialog.c:421
 msgid "Duplicate selected Frames"
@@ -1976,12 +1992,16 @@ msgid ""
 "Goto prev Frame\n"
 "<Shift> use timezoom stepsize"
 msgstr ""
+"Gå till föregående bildruta\n"
+"<Skift> använd tidszoomsstegstorlek"
 
 #: gap/gap_navigator_dialog.c:443
 msgid ""
 "Goto next Frame\n"
 "<Shift> use timezoom stepsize"
 msgstr ""
+"Gå till nästa bildruta\n"
+"<Skift> använd tidszoomsstegstorlek"
 
 #: gap/gap_navigator_dialog.c:448
 msgid "Goto last Frame"
@@ -2001,6 +2021,8 @@ msgid ""
 "The Selected %d Frame(s) will be deleted\n"
 "There will be no UNDO for this Operation\n"
 msgstr ""
+"De markerade %d bildrutorna kommer att tas bort\n"
+"Dessa åtgärder kommer inte att kunna ångras\n"
 
 #: gap/gap_navigator_dialog.c:716
 msgid "Error while positioning to Frame. Video Paste Operaton Failed"
@@ -2025,6 +2047,10 @@ msgid ""
 "a Thumbnail Filesze other than 'No Thumbnails'\n"
 "in the Environment Section of the Preferences Dialog"
 msgstr ""
+"För miniatyrbildsuppdateringen måste du välja\n"
+"en miniatyrbildsfilstorlek som inte är \"Inga\n"
+"miniatyrbilder\" i inställningsdialogens\n"
+"miljösektion"
 
 #. menu_item copy
 #: gap/gap_navigator_dialog.c:3693
@@ -2110,10 +2136,12 @@ msgid ""
 "ON: Far Neighbour Frames have the higher Opacity, OFF: Near Neighbour Frames "
 "have the higher Opacity"
 msgstr ""
+"PÅ: Grannbildrutor långt borta har högre opacitet, AV: Nära grannbildrutor "
+"har högre opacitet"
 
 #: gap/gap_onion_dialog.c:996
 msgid "Number of Onionskin Layers to create in the handled Frame."
-msgstr ""
+msgstr "Antal lökskalslager att skapa i den hanterade bildrutan."
 
 #: gap/gap_onion_dialog.c:999
 msgid "Frame Reference:"
@@ -2129,7 +2157,7 @@ msgstr "Cyklisk"
 
 #: gap/gap_onion_dialog.c:1030
 msgid "ON: foldback next Frame of last is first"
-msgstr ""
+msgstr "PÅ: vik tillbaka nästa bildruta om sista är första"
 
 #: gap/gap_onion_dialog.c:1033
 msgid "Stackposition:"
@@ -2145,11 +2173,11 @@ msgstr "Från toppen"
 
 #: gap/gap_onion_dialog.c:1064
 msgid "ON: 0 is on Top, OFF: 0 is on Bottom"
-msgstr ""
+msgstr "PÅ: 0 är överst, AV: 0 är nederst"
 
 #: gap/gap_onion_dialog.c:1089
 msgid "Opacity of 1.st Onionskin Layer (0 is transparent, 100 full opaque)"
-msgstr ""
+msgstr "Opacitet för första lökskalslagret (0 är transparent, 100 helt opakt)"
 
 #: gap/gap_onion_dialog.c:1107
 msgid "Descending Opacity for 2.nd Onionskin Layer"
@@ -2166,6 +2194,7 @@ msgstr "Ignorera bakgrundslager:"
 #: gap/gap_onion_dialog.c:1144
 msgid "exclude N BG-Layers (use 0 if you dont want to exclude any Layer)"
 msgstr ""
+"exkludera N bakgrundslager (använd 0 om du inte vill exkludera något lager)"
 
 #: gap/gap_onion_dialog.c:1147
 msgid "Select Mode:"
@@ -2182,15 +2211,15 @@ msgstr "Markeringsalternativ:"
 
 #: gap/gap_onion_dialog.c:1239
 msgid "ON: case sensitive pattern, OFF ignore case"
-msgstr ""
+msgstr "PÅ: skiftlägeskänsligt mönster, AV ignorera skiftläge"
 
 #: gap/gap_onion_dialog.c:1246
 msgid "ON: Select NON-matching Layers, OFF: Select matching Layers"
-msgstr ""
+msgstr "PÅ: Välj ICKE-matchande lager, AV: Välj matchande lager"
 
 #: gap/gap_onion_dialog.c:1262
 msgid "Select Layernames by Pattern (depends on Mode and Options)"
-msgstr ""
+msgstr "Välj lagernamn efter mönster (beror på läge och alternativ)"
 
 #: gap/gap_onion_dialog.c:1269
 #, c-format
@@ -2211,6 +2240,9 @@ msgid ""
 "(works on Framechanges via VCR Navigator and Goto Ops\n"
 "in the Video Menu -- but not on explicite Load from the File menu"
 msgstr ""
+"PÅ: Automatiskt skapande/ersättning av lökskalslager\n"
+"(fungerar på bildruteändringar via VCR-navigatör och Gå till-åtgärder\n"
+"i Video-menyn -- men inte vid explicit inläsning från Arkiv-menyn"
 
 #: gap/gap_onion_dialog.c:1303
 msgid "Auto Delete before Save"
@@ -2223,6 +2255,10 @@ msgid ""
 "in the Video Menu -- but not on explicite Save from the File menu\n"
 "use this if Onionskinlayers should not appear in Thumbnailfiles)"
 msgstr ""
+"PÅ: Automatisk borttagning av lökskalslager\n"
+"(fungerar på bildruteändringar via VCR-navigatör och Gå till-åtgärder\n"
+"i Video-menyn -- men inte vid explicit sparande från Arkiv-menyn\n"
+"använd detta om lökskalslager inte visas i minatyrbildsfiler)"
 
 #: gap/gap_onion_dialog.c:1332
 msgid ""
@@ -2267,6 +2303,11 @@ msgid ""
 "delete them manually using the menu Video/OnionSkin/make or Video/OnionSkin/"
 "delete or call the Procedures "
 msgstr ""
+"Denna insticksmodul är det grafiska konfigurationsgränssnittet för löklager. "
+"Lökskalslager visar vanligtvis föregående (eller nästa) bildruta i videon i "
+"den aktuella bildrutan. Lökskalslager skapas inte automatiskt. Du måste "
+"skapa eller ta bort den manuellt genom att använda menyn Video/Lökskal/Skapa "
+"eller Video/Lökskal/Ta bort eller anropa procedurerna "
 
 #: gap/gap_onion_main.c:149
 msgid " "
@@ -2278,7 +2319,7 @@ msgstr "  Konfigurationen kan sparas i gimprc-parameterfilen."
 
 #: gap/gap_onion_main.c:155
 msgid "<Image>/Video/Onionskin/Configuration..."
-msgstr ""
+msgstr "<Image>/Video/Lökskal/Konfiguration..."
 
 #: gap/gap_onion_main.c:162
 msgid "This plugin creates or replaces Onionskin Layer(s)"
@@ -2292,6 +2333,12 @@ msgid ""
 "depends on the configuration settings made by Video/Onionskin/Config or call "
 "of the plugin: "
 msgstr ""
+"Denna insticksmodul skapar eller uppdaterar lökskalslager i den aktuella "
+"videobildrutan. Lökskalslager visar vanligtvis föregående (eller nästa) "
+"bildruta i videon. Vid första anrop i den aktuella bildrutan. Denna "
+"insticksmodul kör endast ICKE-INTERAKTIVT. Den beror på "
+"konfigurationsinställningarna som görs av Video/Lökskal/Konfiguration eller "
+"anropet av insticksmodulen: "
 
 #: gap/gap_onion_main.c:168
 msgid "  if no configuration is found, default settings are used"
@@ -2310,6 +2357,8 @@ msgid ""
 "This plugin removes Onion Skin Layers from the current Videoframe. Onion "
 "Layer(s) usually do show previous (or next) frame(s) of the video."
 msgstr ""
+"Denna insticksmodul tar bort lökskalslager från den aktuella videobildrutan. "
+"Löklager visar vanligtvis föregående (eller nästa) bildruta i videon."
 
 #: gap/gap_onion_main.c:188
 msgid "<Image>/Video/Onionskin/Delete"
@@ -2324,6 +2373,8 @@ msgid ""
 "This plugin sets visibility for all onionskin Layers in the current "
 "Videoframe."
 msgstr ""
+"Denna insticksmodul ställer in synlighet för alla lökskalslager i den "
+"aktuella videobildrutan."
 
 #: gap/gap_onion_main.c:201
 msgid "<Image>/Video/Onionskin/Toggle Visibility"
@@ -2407,7 +2458,7 @@ msgstr "Storlek"
 
 #: gap/gap_player_dialog.c:2426
 msgid "Toggle Size 128/256, SHIFT: Set 1:1 full image Size"
-msgstr ""
+msgstr "Växla storleken 128/256, SKIFT: Ställ in 1:1 full bildstorlek"
 
 #: gap/gap_player_dialog.c:2444
 msgid "Video Preview Size (pixels)"
@@ -2415,7 +2466,7 @@ msgstr "Videoförhandsgranskningsstorlek (bildpunkter)"
 
 #: gap/gap_player_dialog.c:2474
 msgid "ON: Play in endless Loop, OFF: Play only once"
-msgstr ""
+msgstr "PÅ: Spela i oändlig slinga, AV: Spela endast en gång"
 
 #: gap/gap_player_dialog.c:2483
 msgid "Play Selection only"
@@ -2423,11 +2474,11 @@ msgstr "Spela endast markering"
 
 #: gap/gap_player_dialog.c:2488
 msgid "ON: Play Selection only, OFF: Play all frames"
-msgstr ""
+msgstr "PÅ: Spela endast markering, AV: Spela alla bildrutor"
 
 #: gap/gap_player_dialog.c:2502
 msgid "ON: Play alternating forward/backward"
-msgstr ""
+msgstr "PÅ: Spela alternerande framåt/bakåt"
 
 #: gap/gap_player_dialog.c:2511
 msgid "Use Thumbnails"
@@ -2436,6 +2487,7 @@ msgstr "Använd miniatyrbilder"
 #: gap/gap_player_dialog.c:2516
 msgid "ON: use thumbnails when available, OFF: read full sized frames"
 msgstr ""
+"PÅ: använd miniatyrbilder om tillgängliga, AV: läs bildrutor i full storlek"
 
 #: gap/gap_player_dialog.c:2526
 msgid "Exact Timing"
@@ -2444,6 +2496,8 @@ msgstr "Exakt tidtagning"
 #: gap/gap_player_dialog.c:2531
 msgid "ON: skip frames to hold exact timing, OFF: disable frame skipping"
 msgstr ""
+"PÅ: hoppa över bildrutor för att hålla exakt tidtagning, AV: inaktivera "
+"överhoppning av bildrutor"
 
 #. the status label
 #: gap/gap_player_dialog.c:2542
@@ -2456,7 +2510,7 @@ msgstr "Starta uppspelning"
 
 #: gap/gap_player_dialog.c:2585
 msgid "Pause (Goto Selection Start/Active/End if not playing)"
-msgstr ""
+msgstr "Gör paus (Gå till markeringens start/aktiv/slut om inte spelandes)"
 
 #: gap/gap_player_dialog.c:2594
 msgid "Start Reverse Playback"
@@ -2568,6 +2622,8 @@ msgid ""
 "Name of a cutom palette\n"
 "(is ignored if Palette Type is not custom)"
 msgstr ""
+"Namn på en anpassad palett\n"
+"(ignoreras om palettyp inte är anpassad)"
 
 #: gap/gap_range_ops.c:368
 msgid "Remove Unused"
@@ -2578,6 +2634,8 @@ msgid ""
 "Remove unused or double colors\n"
 "(is ignored if Palette Type is not custom)"
 msgstr ""
+"Ta bort oanvända eller dubbla färger\n"
+"(ignoreras om palettyp inte är anpassad)"
 
 #: gap/gap_range_ops.c:374
 msgid "Number of Colors"
@@ -2588,6 +2646,8 @@ msgid ""
 "Number of resulting Colors\n"
 "(ignored if Palette Type is not Generate optimal palette)"
 msgstr ""
+"Antal resulterande färger\n"
+"(ignoreras om palettyp inte är generera optimala paletter)"
 
 #: gap/gap_range_ops.c:382
 msgid "Dither Options"
@@ -2631,6 +2691,9 @@ msgid ""
 "Select destination fileformat by extension\n"
 "optionally convert imagetype\n"
 msgstr ""
+"\n"
+"Välj destinationsfilnamn efter ändelse\n"
+"valfritt konvertera bildtyp\n"
 
 #: gap/gap_range_ops.c:489
 msgid "Basename:"
@@ -2641,6 +2704,8 @@ msgid ""
 "basename of the resulting frames\n"
 "(0001.ext is added)"
 msgstr ""
+"basnamn för de resulterande bildrutorna\n"
+"(0001.ext läggs till)"
 
 #: gap/gap_range_ops.c:495 gap/gap_split.c:251
 msgid "Extension:"
@@ -2651,6 +2716,8 @@ msgid ""
 "extension of resulting frames\n"
 "(is also used to define Fileformat)"
 msgstr ""
+"ändelse för de resulterande bildrutorna\n"
+"(används också för att definiera filformat)"
 
 #: gap/gap_range_ops.c:502
 msgid "Imagetype:"
@@ -2661,16 +2728,20 @@ msgid ""
 "Convert to, or keep imagetype\n"
 "(most fileformats can't handle all types)"
 msgstr ""
+"Konvertera till, eller behåll bildtyp\n"
+"(de flesta filformaten kan inte hantera alla typer)"
 
 #: gap/gap_range_ops.c:509 gap/gap_split.c:266
 msgid "Flatten:"
-msgstr "Platta ut:"
+msgstr "Platta till:"
 
 #: gap/gap_range_ops.c:510
 msgid ""
 "Flatten all resulting frames\n"
 "(most fileformats need flattened frames)"
 msgstr ""
+"Platta till alla resulterande bildrutor\n"
+"(de flesta filformaten behöver tillplattade bildrutor)"
 
 #: gap/gap_range_ops.c:515
 msgid "Convert Frames to other Formats"
@@ -2694,7 +2765,7 @@ msgstr "Klippt efter understa lagret"
 
 #: gap/gap_range_ops.c:596
 msgid "Flattened image"
-msgstr "Utplattad bild"
+msgstr "Tillplattad bild"
 
 #: gap/gap_range_ops.c:597
 msgid ""
@@ -2740,6 +2811,9 @@ msgid ""
 "0, 4-5, 8\n"
 "where 0 == Top-layer"
 msgstr ""
+"välj lagerstackpositioner.\n"
+"0, 4-5, 8\n"
+"där 0 == topplager"
 
 #: gap/gap_range_ops.c:615
 msgid ""
@@ -2747,10 +2821,13 @@ msgid ""
 "0, 4-5, 8\n"
 "where 0 == BG-layer"
 msgstr ""
+"välj lagerstackpositioner.\n"
+"0, 4-5, 8\n"
+"där 0 == bakgrundslager"
 
 #: gap/gap_range_ops.c:616
 msgid "select all visible Layers"
-msgstr ""
+msgstr "markera alla synliga lager"
 
 #: gap/gap_range_ops.c:645
 msgid "Layer Basename:"
@@ -2761,14 +2838,16 @@ msgid ""
 "Basename for all Layers\n"
 "[######] is replaced by frame number"
 msgstr ""
+"Basnamn för alla lager\n"
+"[######] ersatts med bildrutenummer"
 
 #: gap/gap_range_ops.c:664
 msgid "Layer Mergemode:"
-msgstr ""
+msgstr "Lagersammanslagningsläge:"
 
 #: gap/gap_range_ops.c:671
 msgid "Exclude BG-Layer"
-msgstr ""
+msgstr "Exkludera bakgrundslager"
 
 #: gap/gap_range_ops.c:672
 msgid ""
@@ -2779,27 +2858,27 @@ msgstr ""
 
 #: gap/gap_range_ops.c:702
 msgid "Use all unselected Layers"
-msgstr ""
+msgstr "Använd alla omarkerade lager"
 
 #: gap/gap_range_ops.c:776
 msgid "Creating Layer-Animated Image..."
-msgstr ""
+msgstr "Skapar lageranimerad bild..."
 
 #: gap/gap_range_ops.c:998
 msgid "Frames to Image"
-msgstr ""
+msgstr "Bildrutor till bild"
 
 #: gap/gap_range_ops.c:999
 msgid "Create Multilayer-Image from Frames"
-msgstr ""
+msgstr "Skapa flerlagerbild från bildrutor"
 
 #: gap/gap_range_ops.c:1157
 msgid "Flattening Frames..."
-msgstr ""
+msgstr "Platta till bildrutor..."
 
 #: gap/gap_range_ops.c:1158
 msgid "Converting Frames..."
-msgstr ""
+msgstr "Konverterar bildrutor..."
 
 #: gap/gap_range_ops.c:1313
 msgid ""
@@ -2810,32 +2889,32 @@ msgstr ""
 
 #: gap/gap_range_ops.c:1444
 msgid "Cropping all Animation Frames..."
-msgstr ""
+msgstr "Beskär alla animationsbildrutor..."
 
 #: gap/gap_range_ops.c:1447
 msgid "Resizing all Animation Frames..."
-msgstr ""
+msgstr "Ändrar storlek på alla animationsbildrutor..."
 
 #: gap/gap_range_ops.c:1450
 msgid "Scaling all Animation Frames..."
-msgstr ""
+msgstr "Skalar alla animationsbildrutor..."
 
 #: gap/gap_range_ops.c:1540
 msgid "Flatten Frames"
-msgstr ""
+msgstr "Platta till bildrutor"
 
 #: gap/gap_range_ops.c:1606
 #, c-format
 msgid "Removing Layer (pos:%ld) from Frames..."
-msgstr ""
+msgstr "Tar bort lager (pos:%ld) från bildrutor..."
 
 #: gap/gap_range_ops.c:1727
 msgid "Delete Layers in Frames"
-msgstr ""
+msgstr "Ta bort lager i bildrutor"
 
 #: gap/gap_range_ops.c:1728
 msgid "Select Frame Range & Position"
-msgstr ""
+msgstr "Välj bildruteintervall och position"
 
 #: gap/gap_resi_dialog.c:594
 msgid "Scale Frames"
@@ -2880,7 +2959,7 @@ msgstr "Centrera vertikalt"
 
 #: gap/gap_split.c:104
 msgid "Splitting into Frames..."
-msgstr "Deelar upp i bildrutor..."
+msgstr "Delar upp i bildrutor..."
 
 #: gap/gap_split.c:192
 msgid ""
@@ -2896,18 +2975,23 @@ msgid ""
 "%s\n"
 "(%s_0001.%s)\n"
 msgstr ""
+"%s\n"
+"%s\n"
+"(%s_0001.%s)\n"
 
 #: gap/gap_split.c:243
 msgid "Make a frame (diskfile) from each Layer"
-msgstr ""
+msgstr "Gör en bildruta (diskfil) från varje lager"
 
 #: gap/gap_split.c:244
 msgid "frames are named: base_nr.extension"
-msgstr ""
+msgstr "bildrutor får namnet: basnr.ändelse"
 
 #: gap/gap_split.c:252
 msgid "extension of resulting frames (is also used to define Fileformat)"
 msgstr ""
+"ändelse för resulterande bildrutor (används också för att definiera "
+"filformat)"
 
 #: gap/gap_split.c:259
 msgid "Inverse Order:"
@@ -2915,13 +2999,15 @@ msgstr "Omvänd ordning:"
 
 #: gap/gap_split.c:260
 msgid "Start frame 0001 at Top Layer"
-msgstr ""
+msgstr "Starta bildruta 0001 som topplager"
 
 #: gap/gap_split.c:267
 msgid ""
 "Remove Alpha Channel in resulting Frames. Transparent parts are filled with "
 "BG color."
 msgstr ""
+"Ta bort alfakanalen i resulterande bildrutor. Transparenta delar fylls med "
+"bakgrundsfärg."
 
 #: gap/gap_split.c:273
 msgid "Only Visible:"
@@ -2931,10 +3017,12 @@ msgstr "Endast synliga:"
 msgid ""
 "ON: Handle only visible Layers, OFF: handle all Layers and force visibiblity"
 msgstr ""
+"PÅ: Hantera endast synliga lager, AV: hantera alla lager och tvinga synlighet"
 
 #: gap/gap_split.c:282
 msgid "How many digits to use for the framenumber filenamwpart"
 msgstr ""
+"Hur många siffror som ska användas för filnamnsdelen med bildrutenummer"
 
 #: gap/gap_split.c:294
 msgid "Split Image into Frames"
@@ -2957,11 +3045,11 @@ msgstr "Lägg till punkt"
 
 #: gap/gap_stock.c:43
 msgid "Anim Preview"
-msgstr ""
+msgstr "Animationsförhandsgranskning"
 
 #: gap/gap_stock.c:44
 msgid "Delete All Points"
-msgstr ""
+msgstr "Ta bort alla punkter"
 
 #: gap/gap_stock.c:45
 msgid "Delete Point"
@@ -2998,6 +3086,30 @@ msgstr "Återställ punkt"
 #: gap/gap_stock.c:56
 msgid "Rotate Follow"
 msgstr "Rotera följ"
+
+#~ msgid ""
+#~ "For the Thumbnail update you have to select\n"
+#~ "a Thumbnail Filesize other than 'No Thumbnails'\n"
+#~ "in the Environment Section of the Preferences Dialog"
+#~ msgstr ""
+#~ "För miniatyrbildsuppdateringen måste du välja\n"
+#~ "en miniatyrbildsfilstorlek som inte är \"Inga\n"
+#~ "miniatyrbilder\" i inställningsdialogens\n"
+#~ "miljösektion"
+
+#~ msgid "ON: foldback next Frame if last is first"
+#~ msgstr "PÅ: vik tillbaka nästa bildruta om sista är första"
+
+#~ msgid ""
+#~ "Name of a custom palette\n"
+#~ "(is ignored if Palette Type is not custom)"
+#~ msgstr ""
+#~ "Namn på en anpassad palett\n"
+#~ "(ignoreras om palettyp inte är anpassad)"
+
+#~ msgid "How many digits to use for the framenumber filenamepart"
+#~ msgstr ""
+#~ "Hur många siffror som ska användas för filnamnsdelen med bildrutenummer"
 
 #~ msgid "Setting"
 #~ msgstr "Inställning"
