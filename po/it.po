@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: gimp 2.0.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2004-04-10 21:35+0200\n"
-"PO-Revision-Date: 2004-03-31 16:26+0200\n"
+"PO-Revision-Date: 2004-04-13 13:44+0200\n"
 "Last-Translator: Marco Ciampa <ciampix@libero.it>\n"
 "Language-Team: gimp.linux.it\n"
 "MIME-Version: 1.0\n"
@@ -3671,6 +3671,9 @@ msgid ""
 "does not point to an executable program\n"
 "the current value is: %s\n"
 msgstr ""
+"ATTENZIONE: la variabile ambiente %s\n"
+"non indica un programma eseguibile\n"
+"il valore corrente è: %s\n"
 
 #: gap/gap_player_dialog.c:3116
 #, c-format
@@ -3678,6 +3681,8 @@ msgid ""
 "ERROR: The external program for audioconversion is not executable.\n"
 "Filename: '%s'\n"
 msgstr ""
+"ERRORE: il programma esterno per la conversione audio non è eseguibile.\n"
+"Nomefile: '%s'\n"
 
 #: gap/gap_player_dialog.c:3136
 msgid "Creating audiofile - please wait"
@@ -3685,7 +3690,7 @@ msgstr "Creazione file audio - attendere"
 
 #: gap/gap_player_dialog.c:3287
 msgid "Select Audiofile"
-msgstr ""
+msgstr "Selezione file audio"
 
 #. audiofile label
 #: gap/gap_player_dialog.c:3359
@@ -3694,11 +3699,11 @@ msgstr "File audio:"
 
 #: gap/gap_player_dialog.c:3371
 msgid "Enter an audiofile. The file must be in RIFF WAVE fileformat."
-msgstr ""
+msgstr "Inserire un file audio. Il file deve essere in formato WAVE RIFF."
 
 #: gap/gap_player_dialog.c:3385
 msgid "Open audiofile selection browser dialog window"
-msgstr ""
+msgstr "Apri la finestra di dialogo per la selezione dei file audio"
 
 #. Volume
 #: gap/gap_player_dialog.c:3397
@@ -3719,6 +3724,8 @@ msgid ""
 "ON: Play button plays video + audio.\n"
 "OFF: Play video silently"
 msgstr ""
+"ACCESO: il bottone play esegue sia video che audio\n"
+"SPENTO: il bottone play esegue solo il video"
 
 #. Sample Offset
 #: gap/gap_player_dialog.c:3437
@@ -3747,7 +3754,7 @@ msgstr "Copia come file wave"
 msgid ""
 "Create a copy from audiofile as RIFF WAVE audiofile and use the copy for "
 "audio playback"
-msgstr ""
+msgstr "Crea una copia da un file audio come file WAVE RIFF e usa la copia per l'esecuzione dell'audio"
 
 #. Audio Offset Length (mm:ss:msec)
 #: gap/gap_player_dialog.c:3507
@@ -3799,28 +3806,28 @@ msgstr "Opzioni audio"
 #: gap/gap_player_dialog.c:3787
 msgid ""
 "Click: go to frame, Ctrl-Click: set 'From Frame', Alt-Click: set 'To Frame'"
-msgstr ""
+msgstr "Clic: va al frame, ctrl-clic: imposta 'da frame', alt-clic: imposta 'a frame'"
 
 #: gap/gap_player_dialog.c:3860
 msgid "Start framenumber of selection range"
-msgstr ""
+msgstr "Comincia il numero frame della selezione"
 
 #: gap/gap_player_dialog.c:3877
 msgid "End framenumber of selection range"
-msgstr ""
+msgstr "Finisce il numero frame della selezione"
 
 #. the framenr button
 #: gap/gap_player_dialog.c:3891
 msgid "FrameNr"
-msgstr "FrameNr:"
+msgstr "FrameNr"
 
 #: gap/gap_player_dialog.c:3896
 msgid "Load this frame into the calling image"
-msgstr ""
+msgstr "Carica questa frame nell'immagine chiamante"
 
 #: gap/gap_player_dialog.c:3914
 msgid "The currently displayed frame number"
-msgstr ""
+msgstr "Il numero frame correntemente visualizzato"
 
 #. the time position
 #: gap/gap_player_dialog.c:3921
@@ -3834,7 +3841,7 @@ msgstr "Velocità"
 
 #: gap/gap_player_dialog.c:3957
 msgid "Reset playback speed to original (or previous) value"
-msgstr ""
+msgstr "Reimposta la velocità di esecuzione al valore originale (o precedente)"
 
 #: gap/gap_player_dialog.c:3977
 msgid "Current playback speed (frames/sec)"
