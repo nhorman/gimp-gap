@@ -40,6 +40,10 @@
  */
 
 /* revision history:
+ * gimp    1.3.12a; 2003/05/01  hof: merge into CVS-gimp-gap project
+ * gimp    1.3.11a; 2003/01/18  hof: merged in changes of the gap_vid_enc project
+ *                                   - added WGT_OPT_ENTRY (entry comined with Optionmenu) and WGT_DEFAULT_BUTTON
+ * gimp    1.3.4a;  2002/03/12  hof: ported to gtk+-2.0.0
  * gimp    1.1.17b; 2000/01/26  hof: 
  * version 0.96.03; 1998/08/15  hof: p_arr_gtk_init 
  * version 0.96.00; 1998/07/09  hof: 1.st release 
@@ -68,6 +72,8 @@ typedef enum
   ,WGT_FILESEL
   ,WGT_LABEL_LEFT
   ,WGT_LABEL_RIGHT
+  ,WGT_OPT_ENTRY
+  ,WGT_DEFAULT_BUTTON
 } t_gap_widget;
 
 typedef int (*t_action_func) ( gpointer action_data);
@@ -104,7 +110,7 @@ typedef struct {
   gint     int_ret;
   gint     int_ret_lim;  /* for private (arr_dialog.c) use only */
 
-  /* uncontraint lower /upper limit for WGT_FLT_PAIR and WGT_INT_PAIR */
+  /* unconstraint lower /upper limit for WGT_FLT_PAIR and WGT_INT_PAIR */
   gfloat   umin;
   gfloat   umax;
   gfloat   pagestep;
@@ -126,10 +132,19 @@ typedef struct {
   char    *text_buf_ret;
   GtkWidget  *text_filesel; /* for private (arr_dialog.c) use only */
   GtkWidget  *text_entry;   /* for private (arr_dialog.c) use only */
+  GtkWidget  *check_button;   /* for private (arr_dialog.c) use only */
+  GtkWidget  *option_menu;    /* for private (arr_dialog.c) use only */
+  GtkWidget  *adjustment;     /* for private (arr_dialog.c) use only */
 
   /* action_ fileds are used for WGT_ACT_BUTTON */
   t_action_func action_functon;  
   gpointer      action_data;  
+  
+  /* flag is FALSE while the dialog is built
+   * and goes to TRUE if all widgets are there and ready for user interaction
+   * (used in some callbacks to prevent too to early fire)
+   */
+  gboolean  widget_locked;
 
 } t_arr_arg;
 
@@ -169,7 +184,5 @@ gint     p_array_std_dialog  (char     *title_txt,
                           int       b_argc,
                           t_but_arg b_argv[],
                           gint      b_def_val);
-                               
-gint     p_arr_gtk_init(gint flag);
 
 #endif

@@ -25,6 +25,9 @@
  */
 
 /* revision history:
+ * 1.3.12a  2003/05/02   hof: merge into CVS-gimp-gap project, added gap_renumber, upto 6digit framenumber support
+ * 1.3.11a  2003/01/18   hof: added p_gap_check_save_needed
+ * 1.1.35a; 2002/04/21   hof: gap locking (moved to gap_lock.h)
  * 1.1.29a; 2000/11/23   hof: gap locking (changed to procedures and placed here)
  * 1.1.20a; 2000/04/25   hof: new: p_get_video_paste_name p_clear_video_paste
  * 1.1.14a; 2000/01/02   hof: new: p_get_frame_nr
@@ -62,14 +65,6 @@
 
 #endif /* !G_OS_WIN32 */
 
-typedef struct
-{
-    char   key[50];
-    long   lock;        /* 0 ... NOT Locked, 1 ... locked */
-    gint32 image_id;
-    gint32 pid;
-} t_gap_lockdata;
-
 typedef struct t_anim_info {
    gint32      image_id;
    char        *basename;    /* may include path */
@@ -91,7 +86,7 @@ typedef struct t_anim_info {
 int          p_file_exists(char *fname);
 int          p_file_copy(char *fname, char *fname_copy);
 void         p_free_ainfo(t_anim_info **ainfo);
-char*        p_alloc_basename(char *imagename, long *number);
+char*        p_alloc_basename(const char *imagename, long *number);
 char*        p_alloc_extension(char *imagename);
 t_anim_info* p_alloc_ainfo(gint32 image_id, GimpRunMode run_mode);
 int          p_dir_ainfo(t_anim_info *ainfo_ptr);
@@ -102,7 +97,10 @@ int    p_save_named_frame (gint32 image_id, char *sav_name);
 int    p_load_named_frame (gint32 image_id, char *lod_name);
 gint32 p_load_image (char *lod_name);
 gint32 p_save_named_image(gint32 image_id, char *sav_name, GimpRunMode run_mode);
+char*  p_alloc_fname_fixed_digits(char *basename, long nr, char *extension, long digits);
 char*  p_alloc_fname(char *basename, long nr, char *extension);
+char*  p_alloc_fname6(char *basename, long nr, char *extension, long default_digits);
+gboolean p_exists_frame_nr(t_anim_info *ainfo_ptr, long nr, long *l_has_digits);
 char*  p_gzip (char *orig_name, char *new_name, char *zip);
 char*  p_strdup_add_underscore(char *name);
 char*  p_strdup_del_underscore(char *name);
@@ -114,29 +112,34 @@ int   p_image_file_copy(char *fname, char *fname_copy);
 
 /* animation menu fuctions provided by gap_lib.c */
 
-int gap_next(GimpRunMode run_mode, gint32 image_id);
-int gap_prev(GimpRunMode run_mode, gint32 image_id);
-int gap_first(GimpRunMode run_mode, gint32 image_id);
-int gap_last(GimpRunMode run_mode, gint32 image_id);
-int gap_goto(GimpRunMode run_mode, gint32 image_id, int nr);
+gint32 gap_next(GimpRunMode run_mode, gint32 image_id);
+gint32 gap_prev(GimpRunMode run_mode, gint32 image_id);
+gint32 gap_first(GimpRunMode run_mode, gint32 image_id);
+gint32 gap_last(GimpRunMode run_mode, gint32 image_id);
+gint32 gap_goto(GimpRunMode run_mode, gint32 image_id, int nr);
 
-int gap_dup(GimpRunMode run_mode, gint32 image_id, int nr, long range_from, long range_to);
-int gap_del(GimpRunMode run_mode, gint32 image_id, int nr);
-int gap_exchg(GimpRunMode run_mode, gint32 image_id, int nr);
-int gap_shift(GimpRunMode run_mode, gint32 image_id, int nr, long range_from, long range_to);
+gint32 gap_dup(GimpRunMode run_mode, gint32 image_id, int nr, long range_from, long range_to);
+gint32 gap_del(GimpRunMode run_mode, gint32 image_id, int nr);
+gint32 gap_exchg(GimpRunMode run_mode, gint32 image_id, int nr);
+gint32 gap_shift(GimpRunMode run_mode, gint32 image_id, int nr, long range_from, long range_to);
+gint32 gap_renumber(GimpRunMode run_mode, gint32 image_id,
+            long start_frame_nr, long digits);
+
 
 void p_msg_win(GimpRunMode run_mode, char *msg);
 gchar *p_get_video_paste_name(void);
 gint32 p_vid_edit_clear(void);
 gint32 p_vid_edit_framecount(void);
 gint   gap_vid_edit_copy(GimpRunMode run_mode, gint32 image_id, long range_from, long range_to);
-gint   gap_vid_edit_paste(GimpRunMode run_mode, gint32 image_id, long paste_mode);
+gint32 gap_vid_edit_paste(GimpRunMode run_mode, gint32 image_id, long paste_mode);
 gint32 p_getpid(void);
 gint   p_pid_is_alive(gint32 pid);
 
-gint   p_gap_lock_is_locked(gint32 image_id, GimpRunMode run_mode);
-void   p_gap_lock_set(gint32 image_id);
-void   p_gap_lock_remove(gint32 image_id);
+gboolean p_gap_lock_is_locked(gint32 image_id, GimpRunMode run_mode);
+void     p_gap_lock_set(gint32 image_id);
+void     p_gap_lock_remove(gint32 image_id);
+
+gboolean p_gap_check_save_needed(gint32 image_id);
 
 
 #define  VID_PASTE_REPLACE         0

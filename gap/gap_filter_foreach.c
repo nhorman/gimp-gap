@@ -28,6 +28,9 @@
  */
 
 /* revision history:
+ * gimp   1.3.12a;  2003/05/02  hof: merge into CVS-gimp-gap project
+ * gimp   1.3.8a;   2002/09/21  hof: gap_lastvaldesc
+ * gimp   1.3.4b;   2002/03/24  hof: support COMMON_ITERATOR
  * 1.1.29b; 2000/11/30   hof: use g_snprintf
  * 1.1.28a; 2000/11/05   hof: check for GIMP_PDB_SUCCESS (not for FALSE)
  * version 0.97.00              hof: - modul splitted (2.nd part is now gap_filter_pdb.c)
@@ -60,6 +63,7 @@
 #include "libgimp/gimp.h"
 
 /* GAP includes */
+#include "gap_lastvaldesc.h"
 #include "gap_arr_dialog.h"
 #include "gap_filter.h"
 #include "gap_filter_pdb.h"
@@ -252,6 +256,7 @@ int p_foreach_multilayer(GimpRunMode run_mode, gint32 image_id,
   int         *l_visible_tab;
   char         l_step_backup_file[120];
   gint         l_pit_rc;
+  gint         l_count;
   
   l_rc = 0;
   l_plugin_data_len = 0;
@@ -270,7 +275,7 @@ int p_foreach_multilayer(GimpRunMode run_mode, gint32 image_id,
 
 
   /* check for matching Iterator PluginProcedures */
-  l_plugin_iterator =  p_get_iterator_proc(plugin_name);
+  l_plugin_iterator =  p_get_iterator_proc(plugin_name, &l_count);
 
   l_percentage = 0.0;  
   if(run_mode == GIMP_RUN_INTERACTIVE)
@@ -471,18 +476,32 @@ int p_foreach_multilayer(GimpRunMode run_mode, gint32 image_id,
 
           if((l_plugin_iterator != NULL) && (apply_mode == PTYP_VARYING_LINEAR ))
           {
-              /* call plugin-specific iterator, to modify
+              /* call plugin-specific iterator (or the common iterator), to modify
                * the plugin's last_values
                */
              if(gap_debug) fprintf(stderr, "DEBUG: calling iterator %s  current step:%d\n",
 	                             l_plugin_iterator, (int)l_idx);
-             l_params = gimp_run_procedure (l_plugin_iterator,
+             if(strcmp(l_plugin_iterator, GIMP_PLUGIN_GAP_COMMON_ITER) == 0)
+             {
+               l_params = gimp_run_procedure (l_plugin_iterator,
+			           &l_retvals,
+			           GIMP_PDB_INT32,   GIMP_RUN_NONINTERACTIVE,
+			           GIMP_PDB_INT32,   l_nlayers -1,      /* total steps  */
+			           GIMP_PDB_FLOAT,   (gdouble)l_idx,    /* current step */
+			           GIMP_PDB_INT32,   l_plugin_data_len, /* length of stored data struct */
+                                   GIMP_PDB_STRING,  plugin_name,       /* the common iterator needs the plugin name as additional param */
+			           GIMP_PDB_END);
+             }
+             else
+             {
+               l_params = gimp_run_procedure (l_plugin_iterator,
 			           &l_retvals,
 			           GIMP_PDB_INT32,   GIMP_RUN_NONINTERACTIVE,
 			           GIMP_PDB_INT32,   l_nlayers -1,      /* total steps  */
 			           GIMP_PDB_FLOAT,   (gdouble)l_idx,    /* current step */
 			           GIMP_PDB_INT32,   l_plugin_data_len, /* length of stored data struct */
 			           GIMP_PDB_END);
+             }                                     
              if (l_params[0].data.d_status != GIMP_PDB_SUCCESS) 
              { 
                fprintf(stderr, "ERROR: iterator %s  failed\n", l_plugin_iterator);
@@ -555,18 +574,12 @@ gint gap_proc_anim_apply(GimpRunMode run_mode, gint32 image_id, char *plugin_nam
                                  p_constraint_proc,
                                  p_constraint_proc_sel1,
                                  p_constraint_proc_sel2,
-                                 &l_browser_result,
-				 TRUE   /* call gtk_init */
-			  ) 
+                                 &l_browser_result) 
       < 0)
     {
       if(gap_debug) fprintf(stderr, "DEBUG: gap_db_browser_dialog cancelled\n");
       return -1;
     }
-    
-    p_arr_gtk_init(FALSE); /* disable the initial gtk_init in gap_arr_dialog's
-                            * (gtk_init was done by the browser dialog)
-			    */
     
     strcpy(plugin_name, l_browser_result.selected_proc_name);
     if(l_browser_result.button_nr == 1) l_apply_mode = PTYP_VARYING_LINEAR;

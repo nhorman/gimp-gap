@@ -27,7 +27,10 @@
  */
 
 /* revision history:
- * 1.1.28a; 2000/11/05   hof: check for GIMP_PDB_SUCCESS (not for FALSE)
+ * gimp   1.3.12a; 2003/05/02   hof: merge into CVS-gimp-gap project, re-added support of iter_ALT procedures
+ * gimp   1.3.8a;  2002/09/21   hof: gap_lastvaldesc
+ * gimp   1.3.4b;  2002/03/24   hof: p_get_iterator_proc supports COMMON_ITERATOR, removed support of iter_ALT procedures
+ * gimp   1.1.28a; 2000/11/05   hof: check for GIMP_PDB_SUCCESS (not for FALSE)
  * version gimp 1.1.17b  2000.02.22  hof: - removed limit PLUGIN_DATA_SIZE
  *                                        - removed support for old gimp 1.0.x PDB-interface.
  * version 0.97.00                   hof: - created module (as extract gap_filter_foreach)
@@ -50,6 +53,7 @@
 #include "libgimp/gimp.h"
 
 /* GAP includes */
+#include "gap_lastvaldesc.h"
 #include "gap_arr_dialog.h"
 #include "gap_filter.h"
 #include "gap_filter_pdb.h"
@@ -335,14 +339,57 @@ gint p_procedure_available(char  *proc_name, t_proc_type ptype)
 
 
 /* ============================================================================
- * p_get_iterator_proc
- *   check the PDB for Iterator Procedures (suffix "_Iterator" or "_Iterator_ALT"
- * return Pointer to the name of the Iterator Procedure
- *        or NULL if not found
+ * p_count_iterable_params
+ *   Count iterable Parameters in the last_values_description.
  * ============================================================================
  */
+gint
+p_count_iterable_params(gchar *key_description, gint   desc_size)
+{
+  GimpLastvalDescType *lastval_desc_arr;
+  gint                 l_idx;
+  gint                 arg_cnt;
+  gint                 l_count;
 
-char * p_get_iterator_proc(char *plugin_name)
+  l_count  = 0;
+  lastval_desc_arr = g_malloc(desc_size);
+  arg_cnt = desc_size / sizeof(GimpLastvalDescType);
+  gimp_get_data(key_description, lastval_desc_arr);
+
+  for(l_idx = 0; l_idx < arg_cnt; l_idx++)
+  {
+    if(lastval_desc_arr[l_idx].lastval_type == GIMP_LASTVAL_END)
+    {
+      break;
+    }
+    if(lastval_desc_arr[l_idx].iter_flag == GIMP_ITER_TRUE
+    && lastval_desc_arr[l_idx].lastval_type > GIMP_LASTVAL_STRUCT_END)
+    {
+      l_count++;
+    }
+  }
+  /* if (gap_debug) */ printf("p_count_iterable_params: %s COUNT: %d\n", key_description, (int)l_count);
+  return (l_count);
+}
+
+/* ============================================================================
+ * p_get_iterator_proc
+ *   check the PDB for Iterator Procedures in the following order:
+ *   1.) a PDB procedurename with suffix "_Iterator"  or
+ *   2.) search for a description of LAST_VALUES buffer in file
+ *         (and set all available descriptions in memory,
+ *          to speed up further searches in this session)
+ *   3.) a PDB procedurename with suffix "_Iterator_ALT"
+ * return Pointer to the name of the Iterator Procedure
+ *        or NULL if not found
+ *
+ * The name of the common iterator procedure "plug_in_gap_COMMON_ITERATOR"
+ * is returned for
+ * the case when the description of LAST_VALUES buffer is available
+ * and there is no individual Iterator Procedure.
+ * ============================================================================
+ */
+char * p_get_iterator_proc(char *plugin_name, gint *count)
 {
   char      *l_plugin_iterator;
 
@@ -353,21 +400,57 @@ char * p_get_iterator_proc(char *plugin_name)
   if(p_procedure_available(l_plugin_iterator, PTYP_ITERATOR) < 0)
   {
      g_free(l_plugin_iterator);
-     l_plugin_iterator = g_strdup_printf("%s_Iterator_ALT", plugin_name);
-     
-     /* check for alternative Iterator   _Iterator_ALT
-      * for now i made some Iterator Plugins using the ending _ALT,
-      * If New plugins were added or existing ones were updated
-      * the Authors should supply original _Iterator Procedures
-      * to be used instead of my Hacked versions without name conflicts.
-      */
-     if(p_procedure_available(l_plugin_iterator, PTYP_ITERATOR) < 0)
+     l_plugin_iterator = NULL;
+     *count = 0;
+
      {
-        /* both iterator names are not available */
-        g_free(l_plugin_iterator);
-        l_plugin_iterator = NULL;
+        gchar *l_key_description;
+        gint   l_desc_size;
+        
+        /* read all last value descriptions from file and set data in memory */
+        gimp_lastval_desc_update();
+
+        /* check for a description of LAST_VALUES buffer (we use a COMMON ITERATOR if available) */
+        l_key_description = gimp_lastval_desc_keyname (plugin_name);
+        l_desc_size = gimp_get_data_size(l_key_description);
+        
+        if(l_desc_size > 0)
+        {
+          *count = p_count_iterable_params(l_key_description, l_desc_size);
+          l_plugin_iterator = g_strdup(GIMP_PLUGIN_GAP_COMMON_ITER);
+        }
+        g_free(l_key_description);
+        
+        if(l_plugin_iterator == NULL)
+        {
+          l_plugin_iterator = g_strdup_printf("%s_Iterator_ALT", plugin_name);
+
+          /* check for alternative Iterator   _Iterator_ALT
+           * for gimp-1.3.x i made some Iterator Plugins using the ending _ALT,
+           * If New plugins were added or existing ones were updated
+           * the Authors should supply original _Iterator Procedures
+           * to be used instead of my Hacked versions without name conflicts.
+           *  _Iterator_ALT procedures should be replaced by common iterator in future gimp releases
+           */
+          if(p_procedure_available(l_plugin_iterator, PTYP_ITERATOR) < 0)
+          {
+             /* no iterator available */
+             g_free(l_plugin_iterator);
+             l_plugin_iterator = NULL;
+          }
+          else
+          {
+            *count = 1;
+          }
+        }
      }
   }
+  else
+  {
+    *count = 1;
+  }
+
+ if(gap_debug) printf("p_get_iterator_proc: END  %s %s\n", plugin_name, l_plugin_iterator);
   
   return (l_plugin_iterator);
 }	/* end p_get_iterator_proc */
@@ -376,7 +459,7 @@ char * p_get_iterator_proc(char *plugin_name)
 /* ============================================================================
  * constraint procedures
  *
- * aer responsible for:
+ * are responsible for:
  * - sensitivity of the dbbrowser's Apply Buttons
  * - filter for dbbrowser's listbox
  * ============================================================================
@@ -412,16 +495,21 @@ int p_constraint_proc_sel1(gchar *proc_name)
 int p_constraint_proc_sel2(gchar *proc_name)
 {
   char *l_plugin_iterator;
-  int l_rc;
+  int   l_rc;
+  gint  l_count;
   
   l_rc = p_constraint_proc_sel1(proc_name);
   if(l_rc != 0)
   {
-    l_plugin_iterator =  p_get_iterator_proc(proc_name);
+    l_plugin_iterator =  p_get_iterator_proc(proc_name, &l_count);
     if(l_plugin_iterator != NULL)
     {
        g_free(l_plugin_iterator);
-       return 1;    /* 1 .. set "Apply Varying" Button sensitive */
+       if(l_count > 0)
+       {
+         /* Plug-In has Iterator and is able to iterate at least 1 Parameter */
+         return 1;    /* 1 .. set "Apply Varying" Button sensitive */
+       }
     }
   }
   
@@ -431,6 +519,8 @@ int p_constraint_proc_sel2(gchar *proc_name)
 int p_constraint_proc(gchar *proc_name)
 {
   int l_rc;
+  char *l_plugin_iterator;
+  gint  l_count;
 
   if(strncmp(proc_name, "file", 4) == 0)
   {
@@ -448,9 +538,17 @@ int p_constraint_proc(gchar *proc_name)
 
   if(l_rc < 0)
   {
-     /* Do not add, Plugin not available or wrong type */
+     /* Do not add, Plug-in not available or wrong type */
      return 0;
   }
+ 
+  l_plugin_iterator =  p_get_iterator_proc(proc_name, &l_count);
+  if(l_plugin_iterator == NULL)
+  {
+     /* do not add Plug-In without Iterator or Common Iterator */
+     return 0;
+  }
+  g_free(l_plugin_iterator);
 
   return 1;    /* 1 add the plugin procedure */
 }

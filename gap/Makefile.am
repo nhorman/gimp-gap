@@ -10,11 +10,8 @@ libexec_PROGRAMS = \
 	gap_plugins		\
 	gap_filter		\
 	gap_frontends		\
-	gap_navigator_dialog	\
-	$(GAP_DECODE_MPEG)
+	gap_navigator_dialog
 
-EXTRA_PROGRAMS = \
-	gap_decode_mpeg
 
 gap_plugins_SOURCES = \
 	gap-intl.h		\
@@ -22,15 +19,17 @@ gap_plugins_SOURCES = \
 	gap_arr_dialog.h	\
 	gap_dbbrowser_utils.c	\
 	gap_dbbrowser_utils.h	\
-	gap_exchange_image.c	\
-	gap_exchange_image.h	\
 	gap_filter_codegen.c	\
 	gap_filter_pdb.c	\
 	gap_filter_pdb.h	\
 	gap_layer_copy.c	\
 	gap_layer_copy.h 	\
+	gap_lastvaldesc.c	\
+	gap_lastvaldesc.h	\
 	gap_lib.c		\
 	gap_lib.h		\
+	gap_lock.c		\
+	gap_lock.h		\
 	gap_main.c		\
 	gap_match.c		\
 	gap_match.h		\
@@ -40,16 +39,14 @@ gap_plugins_SOURCES = \
 	gap_mov_dialog.h	\
 	gap_mov_exec.c		\
 	gap_mov_exec.h		\
+	gap_navi_activtable.c	\
+	gap_navi_activtable.h	\
 	gap_pdb_calls.c		\
 	gap_pdb_calls.h		\
 	gap_range_ops.c		\
 	gap_range_ops.h		\
-	gap_resi_dialog.c	\
-	gap_resi_dialog.h	\
 	gap_split.c		\
-	gap_split.h		\
-	resize.c		\
-	resize.h
+	gap_split.h
 
 gap_filter_SOURCES = \
 	gap_arr_dialog.c	\
@@ -64,6 +61,8 @@ gap_filter_SOURCES = \
 	gap_filter_main.c	\
 	gap_filter_pdb.c	\
 	gap_filter_pdb.h	\
+	gap_lastvaldesc.c	\
+	gap_lastvaldesc.h	\
 	gap_pdb_calls.c		\
 	gap_pdb_calls.h
 
@@ -72,36 +71,31 @@ gap_frontends_SOURCES = \
 	gap_arr_dialog.h	\
 	gap_decode_xanim.c	\
 	gap_decode_xanim.h	\
-	gap_exchange_image.c	\
-	gap_exchange_image.h	\
 	gap_frontends_main.c	\
 	gap_layer_copy.c	\
 	gap_layer_copy.h 	\
 	gap_lib.c		\
 	gap_lib.h		\
+	gap_lock.c		\
+	gap_lock.h		\
 	gap_match.c		\
 	gap_match.h		\
 	gap_mpege.c		\
 	gap_mpege.h		\
-	gap_pdb_calls.c		\
-	gap_pdb_calls.h
-
-gap_decode_mpeg_SOURCES = \
-	gap_arr_dialog.c	\
-	gap_arr_dialog.h	\
-	gap_decode_mpeg_main.c	\
+	gap_navi_activtable.c	\
+	gap_navi_activtable.h	\
 	gap_pdb_calls.c		\
 	gap_pdb_calls.h
 
 gap_navigator_dialog_SOURCES = \
 	gap_arr_dialog.c	\
 	gap_arr_dialog.h	\
-	gap_exchange_image.c    \
-	gap_exchange_image.h	\
 	gap_layer_copy.c        \
 	gap_layer_copy.h        \
 	gap_lib.c		\
 	gap_lib.h		\
+	gap_navi_activtable.c	\
+	gap_navi_activtable.h	\
 	gap_navigator_dialog.c	\
 	gap_pdb_calls.c		\
 	gap_pdb_calls.h
@@ -117,9 +111,6 @@ INCLUDES = \
 LDADD = \
 	$(GIMP_LIBS)
 
-gap_decode_mpeg_LDADD = \
-	$(LIBMPEG)	\
-	$(GIMP_LIBS)
 
 EXTRA_DIST = \
 	README							\

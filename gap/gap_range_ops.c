@@ -32,6 +32,11 @@
  */
 
 /* revision history
+ * 1.3.12a; 2003/05/01   hof: merge into CVS-gimp-gap project
+ * 1.3.11a; 2003/01/18   hof: Conditional frame save, added Default Button (p_anim_sizechange_dialog)
+ * 1.3.5a;  2002/04/20   hof: API cleanup
+ * 1.3.5a;  2002/04/06   hof: p_type_convert: use only gimp-1.3.5 supported dither modes (removed GIMP_NODESTRUCT_DITHER)
+ * 1.3.4a;  2002/03/12   hof: removed calls to old resize widget
  * 1.1.28a; 2000/11/05   hof: check for GIMP_PDB_SUCCESS (not for FALSE)
  * 1.1.24a  2000/07/01   hof: bugfix: flatten of singlelayer images has to remove alpha channel
  * 1.1.17b  2000/02/26   hof: bugfixes
@@ -82,9 +87,9 @@
 #include "gap_pdb_calls.h"
 #include "gap_match.h"
 #include "gap_arr_dialog.h"
-#include "gap_resi_dialog.h"
 #include "gap_mod_layer.h"
 #include "gap_range_ops.h"
+
 
 extern      int gap_debug; /* ==0  ... dont print debug infos */
 
@@ -104,7 +109,7 @@ p_anim_sizechange_dialog(t_anim_info *ainfo_ptr, t_gap_asiz asiz_mode,
                long *size_x, long *size_y, 
                long *offs_x, long *offs_y)
 {
-  static t_arr_arg  argv[4];
+  static t_arr_arg  argv[5];
   gint   cnt;
   gchar *title;
   gchar *hline;
@@ -124,6 +129,8 @@ p_anim_sizechange_dialog(t_anim_info *ainfo_ptr, t_gap_asiz asiz_mode,
   argv[0].umin      = 1;
   argv[0].umax      = 10000;
   argv[0].int_ret   = l_width;
+  argv[0].has_default = TRUE;
+  argv[0].int_default = l_width;
   
   p_init_arr_arg(&argv[1], WGT_INT_PAIR);
   argv[1].label_txt = _("New Height:");
@@ -133,6 +140,8 @@ p_anim_sizechange_dialog(t_anim_info *ainfo_ptr, t_gap_asiz asiz_mode,
   argv[1].umin       = 1;
   argv[1].umax       = 10000;
   argv[1].int_ret   = l_height;
+  argv[1].has_default = TRUE;
+  argv[1].int_default = l_height;
   
   p_init_arr_arg(&argv[2], WGT_INT_PAIR);
   argv[2].label_txt = _("Offset X:");
@@ -142,7 +151,9 @@ p_anim_sizechange_dialog(t_anim_info *ainfo_ptr, t_gap_asiz asiz_mode,
   argv[2].umin       = 0;
   argv[2].umax       = 10000;
   argv[2].int_ret   = 0;
-  
+  argv[2].has_default = TRUE;
+  argv[2].int_default = 0;
+ 
   p_init_arr_arg(&argv[3], WGT_INT_PAIR);
   argv[3].label_txt = _("Offset Y:");
   argv[3].constraint = FALSE;
@@ -151,6 +162,9 @@ p_anim_sizechange_dialog(t_anim_info *ainfo_ptr, t_gap_asiz asiz_mode,
   argv[3].umin       = 0;
   argv[3].umax       = 10000;
   argv[3].int_ret   = 0;
+  argv[3].has_default = TRUE;
+  argv[3].int_default = 0;
+
 
   switch(asiz_mode)
   {
@@ -178,24 +192,30 @@ p_anim_sizechange_dialog(t_anim_info *ainfo_ptr, t_gap_asiz asiz_mode,
       cnt = 2;
       break;
   }
+
+  p_init_arr_arg(&argv[cnt], WGT_DEFAULT_BUTTON);
+  argv[cnt].label_txt =  _("Reset");                /* should use GIMP_STOCK_RESET if possible */
+  argv[cnt].help_txt  = _("Reset Parameters to Original Size");
+
+  cnt++;
   
   if(0 != p_chk_framerange(ainfo_ptr))   return -1;
 
-  /* array dialog can handle all asiz_mode type (and is already prepared for)
-   * BUT: RESIZE and SCALE should use the same dialogs as used in gimp
-   *      on single Images.
-   *      Therfore I made a procedure p_resi_dialog
+  /* array dialog is a primitive GUI to CROP SCALE or RESIZE Frames.
+   * In gimp-1.2 GAP used a copy of the old gimp RESIZE and SCALE dialog-widget code.
+   *   (removed this old code:  gap_resi_dialog.h/.c  resize.h/.c 
+   *    that did not not run with gtk+-2.0.0)
    */
-  if(asiz_mode == ASIZ_CROP)
-  {
-    l_rc = p_array_dialog(title, hline, cnt, argv);
-    g_free (hline);
+  l_rc = p_array_dialog(title, hline, cnt, argv);
+  g_free (hline);
     
-      *size_x = (long)(argv[0].int_ret);
-      *size_y = (long)(argv[1].int_ret);
-      *offs_x = (long)(argv[2].int_ret);
-      *offs_y = (long)(argv[3].int_ret);
+  *size_x = (long)(argv[0].int_ret);
+  *size_y = (long)(argv[1].int_ret);
+  *offs_x = (long)(argv[2].int_ret);
+  *offs_y = (long)(argv[3].int_ret);
 
+   if(asiz_mode == ASIZ_CROP)
+   {
       /* Clip size down to image borders */      
       if((*size_x + *offs_x) > l_width)
       {
@@ -205,13 +225,7 @@ p_anim_sizechange_dialog(t_anim_info *ainfo_ptr, t_gap_asiz asiz_mode,
       {
         *size_y = l_height - *offs_y;
       }
-  }
-  else
-  {
-    l_rc = p_resi_dialog(ainfo_ptr->image_id, asiz_mode, title,
-                         size_x, size_y, offs_x, offs_y);
-  }
-  
+   }
 
   if(l_rc == TRUE)
   {
@@ -386,16 +400,16 @@ p_convert_indexed_dialog(gint32 *dest_colors, gint32 *dest_dither,
       switch(argv[4].radio_ret)
       {
         case 3: 
-           *dest_dither = GIMP_NO_DITHER;
+           *dest_dither = GIMP_NO_DITHER;  /* 0 */
            break;
         case 2: 
-           *dest_dither = GIMP_FIXED_DITHER;
+           *dest_dither = GIMP_FIXED_DITHER; /* 3 */
            break;
         case 1: 
-           *dest_dither = GIMP_FSLOWBLEED_DITHER;
+           *dest_dither = GIMP_FSLOWBLEED_DITHER; /* 2 */
            break;
         default:
-           *dest_dither = GIMP_FS_DITHER;
+           *dest_dither = GIMP_FS_DITHER;  /* 1 */
            break;
       }
 
@@ -988,7 +1002,10 @@ gint32 gap_range_to_multilayer(GimpRunMode run_mode, gint32 image_id,
 
       if(l_rc >= 0)
       {
-         l_rc = p_save_named_frame(ainfo_ptr->image_id, ainfo_ptr->old_filename);
+         if(p_gap_check_save_needed(ainfo_ptr->image_id))
+         {
+           l_rc = p_save_named_frame(ainfo_ptr->image_id, ainfo_ptr->old_filename);
+         }
          if(l_rc >= 0)
          {
            new_image_id = p_frames_to_multilayer(ainfo_ptr, l_from, l_to, 
@@ -1016,42 +1033,54 @@ static int
 p_type_convert(gint32 image_id, GimpImageBaseType dest_type, gint32 dest_colors, gint32 dest_dither,
 	       gint32 palette_type, gint32  alpha_dither, gint32  remove_unused,  char *palette)
 {
-  GimpParam     *l_params;
-  gint        l_retvals;
-  int         l_rc;
+  gboolean  l_rc;
+  gboolean  l_alpha_dither;
+  gboolean  l_remove_unused;
+  GimpConvertDitherType     l_dither_type;
+  GimpConvertPaletteType    l_palette_type;
 
-  l_rc = 0;
-  l_params = NULL;
+  l_rc = TRUE;
 
   switch(dest_type)
   {
     case GIMP_INDEXED:
       if(gap_debug) fprintf(stderr, "DEBUG: p_type_convert to INDEXED ncolors=%d, palette_type=%d palette_name=%s'\n",
                                    (int)dest_colors, (int)palette_type, palette);
-      l_params = gimp_run_procedure ("gimp_convert_indexed",
-			           &l_retvals,
-			           GIMP_PDB_IMAGE,    image_id,
-			           GIMP_PDB_INT32,    dest_dither,      /* value 1== floyd-steinberg */
-			           GIMP_PDB_INT32,    palette_type,     /* value 0: MAKE_PALETTE, 2: WEB_PALETTE 4:CUSTOM_PALETTE */
-			           GIMP_PDB_INT32,    dest_colors,
-			           GIMP_PDB_INT32,    alpha_dither,
-			           GIMP_PDB_INT32,    remove_unused,
-			           GIMP_PDB_STRING,   palette,         /* name of custom palette */			           
-			           GIMP_PDB_END);
+
+      switch(dest_dither)
+      {
+         case 1:   l_dither_type = GIMP_FS_DITHER; break;
+         case 2:   l_dither_type = GIMP_FSLOWBLEED_DITHER; break;
+         case 3:   l_dither_type =  GIMP_FIXED_DITHER; break;
+         default:  l_dither_type = GIMP_NO_DITHER; break;          
+      }
+      switch(palette_type)
+      {
+         case 1:   l_palette_type = GIMP_REUSE_PALETTE; break;
+         case 2:   l_palette_type = GIMP_WEB_PALETTE; break;
+         case 3:   l_palette_type = GIMP_MONO_PALETTE; break;
+         case 4:   l_palette_type = GIMP_CUSTOM_PALETTE; break;
+         default:  l_palette_type = GIMP_MAKE_PALETTE; break;          
+      }
+      l_alpha_dither = (alpha_dither != 0);
+      l_remove_unused = (remove_unused != 0);
+      
+      l_rc  = gimp_convert_indexed(image_id,
+			           l_dither_type,
+			           l_palette_type,   /* value 0: MAKE_PALETTE, 2: WEB_PALETTE 4:CUSTOM_PALETTE */
+			           dest_colors,
+			           l_alpha_dither,
+			           l_remove_unused,
+			           palette          /* name of custom palette */			           
+			           );
       break;
     case GIMP_GRAY:
       if(gap_debug) fprintf(stderr, "DEBUG: p_type_convert to GRAY'\n");
-      l_params = gimp_run_procedure ("gimp_convert_grayscale",
-			           &l_retvals,
-			           GIMP_PDB_IMAGE,    image_id,
-			           GIMP_PDB_END);
+      l_rc = gimp_convert_grayscale(image_id);
       break;
     case GIMP_RGB:
       if(gap_debug) fprintf(stderr, "DEBUG: p_type_convert to RGB'\n");
-      l_params = gimp_run_procedure ("gimp_convert_rgb",
-			           &l_retvals,
-			           GIMP_PDB_IMAGE,    image_id,
-			           GIMP_PDB_END);
+      l_rc = gimp_convert_rgb(image_id);
       break;
     default:
       if(gap_debug) fprintf(stderr, "DEBUG: p_type_convert AS_IT_IS (dont convert)'\n");
@@ -1060,12 +1089,8 @@ p_type_convert(gint32 image_id, GimpImageBaseType dest_type, gint32 dest_colors,
   }
 
 
-  if (l_params[0].data.d_status != GIMP_PDB_SUCCESS) 
-  {  l_rc = -1;
-  }
-  
-  g_free(l_params);
-  return (l_rc);
+  if (l_rc) return 0;
+  return -1;
 }	/* end p_type_convert */
 
 /* ============================================================================
@@ -1076,12 +1101,16 @@ p_type_convert(gint32 image_id, GimpImageBaseType dest_type, gint32 dest_colors,
  *   if save_proc_name == NULL
  *   then   use xcf save (and flatten image)
  *          and new_basename and new_extension
+ *   else
+ *          save in specified fileformat
+ *          and return image_id of the frame with lowest frame number
+ *          (all other frames were deleted after successful save)
  *
- * returns   value >= 0 if all is ok 
+ * returns   value >= 0 if all is ok
  *           (or -1 on error)
  * ============================================================================
  */
-static int
+static gint32
 p_frames_convert(t_anim_info *ainfo_ptr,
                  long range_from, long range_to,
                  char *save_proc_name, char *new_basename, char *new_extension,
@@ -1091,6 +1120,7 @@ p_frames_convert(t_anim_info *ainfo_ptr,
 {
   GimpRunMode l_run_mode;
   gint32  l_tmp_image_id;
+  gint32  l_start_image_id;
   long    l_cur_frame_nr;
   long    l_step, l_begin, l_end;
   gint    l_nlayers;
@@ -1098,7 +1128,7 @@ p_frames_convert(t_anim_info *ainfo_ptr,
   gint32 *l_layers_list;
   gdouble l_percentage, l_percentage_step;
   char   *l_sav_name;
-  int     l_rc;
+  gint32  l_rc;
   gint    l_overwrite_mode;
   static  t_but_arg  l_argv[3];
  
@@ -1106,6 +1136,7 @@ p_frames_convert(t_anim_info *ainfo_ptr,
   l_rc = 0;
   l_overwrite_mode = 0;
   l_percentage = 0.0;
+  l_start_image_id = -1;
   l_run_mode  = ainfo_ptr->run_mode;
   if(ainfo_ptr->run_mode == GIMP_RUN_INTERACTIVE)
   { 
@@ -1249,6 +1280,13 @@ p_frames_convert(t_anim_info *ainfo_ptr,
           
           }
  
+          gimp_image_set_filename(l_tmp_image_id, l_sav_name);
+          
+          if(l_cur_frame_nr == MIN(range_from, range_to))
+          {
+            l_start_image_id = l_tmp_image_id;
+          }
+ 
           if(l_overwrite_mode < 0)  { l_rc = -1; }
           else
           {
@@ -1271,8 +1309,11 @@ p_frames_convert(t_anim_info *ainfo_ptr,
        }
     }
 
-    /* destroy the tmp image */
-    gimp_image_delete(l_tmp_image_id);
+    if(l_start_image_id != l_tmp_image_id)
+    {
+      /* destroy the tmp image */
+      gimp_image_delete(l_tmp_image_id);
+    }
 
     if(ainfo_ptr->run_mode == GIMP_RUN_INTERACTIVE)
     { 
@@ -1280,11 +1321,29 @@ p_frames_convert(t_anim_info *ainfo_ptr,
       gimp_progress_update (l_percentage);
     }
 
-    /* advance to next frame */
-    if((l_cur_frame_nr == l_end) || (l_rc < 0))
-       break;
-    l_cur_frame_nr += l_step;
 
+    /* break on error */
+    if(l_rc < 0)
+    {
+      break;
+    }
+    
+    /* break at last handled frame */
+    if(l_cur_frame_nr == l_end)
+    {
+       if(save_proc_name == NULL)
+       {
+          l_rc = 0;
+       }
+       else
+       {
+         l_rc = l_start_image_id;
+       }
+       break;
+    }
+
+    /* advance to next frame */
+    l_cur_frame_nr += l_step;
   }
 
 
@@ -1305,35 +1364,26 @@ int p_image_sizechange(gint32 image_id,
                long offs_x, long offs_y
 )
 {
-  GimpParam     *l_params;
-  gint        l_retvals;
+  gboolean  l_rc;
+
+
+printf("size_x:%d  size_y: %d\n", (int)size_x , (int)size_y );
 
   switch(asiz_mode)
   {
     case ASIZ_CROP:
-      l_params = gimp_run_procedure ("gimp_crop",
-			         &l_retvals,
-			         GIMP_PDB_IMAGE,    image_id,
-			         GIMP_PDB_INT32,    size_x,
-			         GIMP_PDB_INT32,    size_y,
-			         GIMP_PDB_INT32,    offs_x,
-			         GIMP_PDB_INT32,    offs_y,
-			         GIMP_PDB_END);
+      l_rc = gimp_image_crop(image_id, size_x, size_y, offs_x, offs_y);
       break;
     case ASIZ_RESIZE:
-      gimp_image_resize(image_id, (guint)size_x, (guint)size_y, (gint)offs_x, (gint)offs_y);
+      l_rc = gimp_image_resize(image_id, size_x, size_y, offs_x, offs_y);
       break;
     default:
-      l_params = gimp_run_procedure ("gimp_image_scale",
-			         &l_retvals,
-			         GIMP_PDB_IMAGE,    image_id,
-			         GIMP_PDB_INT32,    size_x,
-			         GIMP_PDB_INT32,    size_y,
-			         GIMP_PDB_END);
+      l_rc = gimp_image_scale(image_id, size_x, size_y);
       break;
   }
 
-  return 0;
+  if(l_rc) return 0;
+  return -1;
 }	/* end p_image_sizechange */
 
 /* ============================================================================
@@ -1440,10 +1490,14 @@ gint32 p_anim_sizechange(t_anim_info *ainfo_ptr,
 
 /* ============================================================================
  * gap_range_flatten
+ *
+ * return image_id (of the new loaded current frame) on success
+ *        or -1 on errors
  * ============================================================================
  */
-int    gap_range_flatten(GimpRunMode run_mode, gint32 image_id,
-                         long range_from, long range_to)
+gint32
+gap_range_flatten(GimpRunMode run_mode, gint32 image_id,
+                 long range_from, long range_to)
 {
   int    l_rc;
   long   l_from, l_to;
@@ -1471,17 +1525,27 @@ int    gap_range_flatten(GimpRunMode run_mode, gint32 image_id,
 
       if(l_rc >= 0)
       {
-         l_rc = p_save_named_frame(ainfo_ptr->image_id, ainfo_ptr->old_filename);
+         if(p_gap_check_save_needed(ainfo_ptr->image_id))
+         {
+           l_rc = p_save_named_frame(ainfo_ptr->image_id, ainfo_ptr->old_filename);
+         }
          if(l_rc >= 0)
          {
            l_rc = p_frames_convert(ainfo_ptr, l_from, l_to, NULL, NULL, NULL, 1, 0,0,0, 0,0,0, ""); 
-           p_load_named_frame(ainfo_ptr->image_id, ainfo_ptr->old_filename);
+           if(l_rc >= 0)
+           {
+             l_rc = p_load_named_frame(ainfo_ptr->image_id, ainfo_ptr->old_filename);
+           }
          }
       }
     }
     p_free_ainfo(&ainfo_ptr);
   }
   
+  if(l_rc < 0)
+  {
+    return -1;
+  }
   return(l_rc);    
 }	/* end gap_range_flatten */
 
@@ -1611,9 +1675,13 @@ p_frames_layer_del(t_anim_info *ainfo_ptr,
 
 /* ============================================================================
  * gap_range_layer_del
+ *
+ * return image_id (of the new loaded current frame) on success
+ *        or -1 on errors
  * ============================================================================
  */
-int gap_range_layer_del(GimpRunMode run_mode, gint32 image_id,
+gint32
+gap_range_layer_del(GimpRunMode run_mode, gint32 image_id,
                          long range_from, long range_to, long position)
 {
   int    l_rc;
@@ -1646,17 +1714,27 @@ int gap_range_layer_del(GimpRunMode run_mode, gint32 image_id,
 
       if(l_rc >= 0)
       {
-         l_rc = p_save_named_frame(ainfo_ptr->image_id, ainfo_ptr->old_filename);
+         if(p_gap_check_save_needed(ainfo_ptr->image_id))
+         {
+           l_rc = p_save_named_frame(ainfo_ptr->image_id, ainfo_ptr->old_filename);
+         }
          if(l_rc >= 0)
          {
            l_rc = p_frames_layer_del(ainfo_ptr, l_from, l_to, l_position);
-           p_load_named_frame(ainfo_ptr->image_id, ainfo_ptr->old_filename);
+           if(l_rc >= 0)
+           {
+             l_rc = p_load_named_frame(ainfo_ptr->image_id, ainfo_ptr->old_filename);
+           }
          }
       }
     }
     p_free_ainfo(&ainfo_ptr);
   }
   
+  if(l_rc < 0)
+  {
+    return -1;
+  }
   return(l_rc);    
 }	/* end gap_range_layer_del */
 
@@ -1664,9 +1742,13 @@ int gap_range_layer_del(GimpRunMode run_mode, gint32 image_id,
 /* ============================================================================
  * gap_range_conv
  *   convert frame range to any gimp supported fileformat
+ *
+ * return image_id of the first (or last) of the converted frame images
+ *        or -1 on errors
  * ============================================================================
  */
-gint32 gap_range_conv(GimpRunMode run_mode, gint32 image_id,
+gint32
+gap_range_conv(GimpRunMode run_mode, gint32 image_id,
                       long range_from, long range_to,
                       long       flatten,
                       GimpImageBaseType dest_type,
@@ -1772,6 +1854,10 @@ gint32 gap_range_conv(GimpRunMode run_mode, gint32 image_id,
 				    l_remove_unused,
 				    l_palette);
             g_free(l_basename_ptr);
+            if((l_rc >= 0)  &&  (run_mode == GIMP_RUN_INTERACTIVE))
+            {
+               gimp_display_new(l_rc);
+            }
          }
       }
     }
@@ -1819,7 +1905,10 @@ int gap_anim_sizechange(GimpRunMode run_mode, t_gap_asiz asiz_mode, gint32 image
 
       if(l_rc >= 0)
       {
-         l_rc = p_save_named_frame(ainfo_ptr->image_id, ainfo_ptr->old_filename);
+         if(p_gap_check_save_needed(ainfo_ptr->image_id))
+         {
+           l_rc = p_save_named_frame(ainfo_ptr->image_id, ainfo_ptr->old_filename);
+         }
          if(l_rc >= 0)
          {
            /* we have to resize the current anim frame image in gimp's ram
@@ -1840,7 +1929,7 @@ int gap_anim_sizechange(GimpRunMode run_mode, t_gap_asiz asiz_mode, gint32 image
            }
            /* p_load_named_frame(ainfo_ptr->image_id, ainfo_ptr->old_filename); */
            /* dont need to reload, because the same sizechange operation was
-            * applied both to ram-image and dikfile
+            * applied both to ram-image and discfile
             *
             * But we must clear all undo steps. 
             * (If the user could undo the sizechange on the current image,

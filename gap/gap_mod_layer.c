@@ -28,6 +28,11 @@
  */
 
 /* revision history:
+ * gimp   1.3.12a;   2003/05/01  hof: merge into CVS-gimp-gap project
+ * gimp   1.3.11a;   2003/01/18  hof: Conditional framesave
+ * gimp   1.3.8a;    2002/09/21  hof: gap_lastvaldesc
+ * gimp   1.3.4b;    2002/03/24  hof: support COMMON_ITERATOR
+ * gimp   1.3.4a;    2002/03/12  hof: replaced private pdb-wrappers
  * gimp   1.1.29b;   2000/11/30  hof: use g_snprintf
  * gimp   1.1.28a;   2000/11/05  hof: check for GIMP_PDB_SUCCESS (not for FALSE)
  * gimp   1.1.6;     1999/06/21  hof: bugix: wrong iterator total_steps and direction
@@ -49,6 +54,7 @@
 #include "libgimp/gimp.h"
 
 /* GAP includes */
+#include "gap_lastvaldesc.h"
 #include "gap_arr_dialog.h"
 #include "gap_filter.h"
 #include "gap_filter_pdb.h"
@@ -581,10 +587,10 @@ p_apply_action(gint32 image_id,
           gimp_layer_set_visible(l_layer_id, FALSE);
 	  break;
         case ACM_SET_LINKED:
-          l_rc = p_layer_set_linked (l_layer_id, TRUE);
+          gimp_layer_set_linked(l_layer_id, TRUE);
 	  break;
         case ACM_SET_UNLINKED:
-          l_rc = p_layer_set_linked (l_layer_id, FALSE);
+          gimp_layer_set_linked(l_layer_id, FALSE);
 	  break;
         case ACM_RAISE:
 	  p_raise_layer(image_id, l_layer_id, layli_ptr, nlayers);
@@ -650,34 +656,20 @@ p_do_filter_dialogs(t_anim_info *ainfo_ptr,
   int      l_rc;
   int      l_idx;
   static char l_key_from[512];
-  static gint l_gtk_init = TRUE;   /* gkt_init at 1.st call */
-
-  if(ainfo_ptr->run_mode == GIMP_RUN_INTERACTIVE)
-  { 
-    l_gtk_init = FALSE;  /* gtk_init was done in 1.st modify dialog before */
-  }
-
 
   /* GAP-PDB-Browser Dialog */
   /* ---------------------- */
   if(gap_db_browser_dialog( _("Select Filter for Animated frames-apply"),
-                                 _("Apply Constant"),
-                                 _("Apply Varying"),
-                                 p_constraint_proc,
-                                 p_constraint_proc_sel1,
-                                 p_constraint_proc_sel2,
-                                 &l_browser_result,
-				 l_gtk_init   /* do not call gtk_init */
-			  ) 
-    < 0)
+                            _("Apply Constant"),
+                            _("Apply Varying"),
+                            p_constraint_proc,
+                            p_constraint_proc_sel1,
+                            p_constraint_proc_sel2,
+                            &l_browser_result) < 0)
   {
       if(gap_debug) fprintf(stderr, "DEBUG: gap_db_browser_dialog cancelled\n");
       return -1;
   }
-    
-  p_arr_gtk_init(FALSE); /* disable the initial gtk_init in gap_arr_dialog's
-                          * (gtk_init was done before)
-                          */
 
   strncpy(filter_procname, l_browser_result.selected_proc_name, filt_len-1);
   filter_procname[filt_len-1] = '\0';
@@ -878,6 +870,7 @@ p_frames_modify(t_anim_info *ainfo_ptr,
   gint       l_total_steps;
   t_apply_mode  l_apply_mode;
   char         *l_last_frame_filename;
+  gint          l_count;
 
   
 
@@ -1025,7 +1018,7 @@ p_frames_modify(t_anim_info *ainfo_ptr,
       /* check for matching Iterator PluginProcedures */
       if(l_apply_mode == PTYP_VARYING_LINEAR )
       {
-        l_plugin_iterator =  p_get_iterator_proc(&l_filter_procname[0]);
+        l_plugin_iterator =  p_get_iterator_proc(&l_filter_procname[0], &l_count);
       }
     }
 
@@ -1077,13 +1070,27 @@ p_frames_modify(t_anim_info *ainfo_ptr,
          */
        if(gap_debug) fprintf(stderr, "DEBUG: calling iterator %s  current frame:%d\n",
         		       l_plugin_iterator, (int)l_cur_frame_nr);
-       l_params = gimp_run_procedure (l_plugin_iterator,
+       if(strcmp(l_plugin_iterator, GIMP_PLUGIN_GAP_COMMON_ITER) == 0)
+       {
+         l_params = gimp_run_procedure (l_plugin_iterator,
+		           &l_retvals,
+		           GIMP_PDB_INT32,   GIMP_RUN_NONINTERACTIVE,
+		           GIMP_PDB_INT32,   l_total_steps,      /* total steps  */
+		           GIMP_PDB_FLOAT,   (gdouble)l_cur_step,    /* current step */
+		           GIMP_PDB_INT32,   l_plugin_data_len, /* length of stored data struct */
+                           GIMP_PDB_STRING,  &l_filter_procname[0],       /* the common iterator needs the plugin name as additional param */
+			   GIMP_PDB_END);
+       }
+       else
+       {
+         l_params = gimp_run_procedure (l_plugin_iterator,
 	  		     &l_retvals,
 	  		     GIMP_PDB_INT32,   GIMP_RUN_NONINTERACTIVE,
 	  		     GIMP_PDB_INT32,   l_total_steps,          /* total steps  */
 	  		     GIMP_PDB_FLOAT,   (gdouble)l_cur_step,    /* current step */
 	  		     GIMP_PDB_INT32,   l_plugin_data_len, /* length of stored data struct */
 	  		     GIMP_PDB_END);
+       }
        if (l_params[0].data.d_status != GIMP_PDB_SUCCESS) 
        { 
          fprintf(stderr, "ERROR: iterator %s  failed\n", l_plugin_iterator);
@@ -1199,7 +1206,10 @@ gint gap_mod_layer(GimpRunMode run_mode, gint32 image_id,
 
       if(l_rc >= 0)
       {
-         l_rc = p_save_named_frame(ainfo_ptr->image_id, ainfo_ptr->old_filename);
+         if(p_gap_check_save_needed(ainfo_ptr->image_id))
+         {
+           l_rc = p_save_named_frame(ainfo_ptr->image_id, ainfo_ptr->old_filename);
+         }
          if(l_rc >= 0)
          {
            l_rc = p_frames_modify(ainfo_ptr, l_from, l_to,

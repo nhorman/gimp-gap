@@ -36,6 +36,8 @@
  */
 
 /* revision history
+ * 1.3.12a; 2003/05/02   hof: merge into CVS-gimp-gap project, 6digit framenumbers
+ * 1.3.11a; 2003/01/18   hof: Default Value button for GUI dialog 
  * 1.1.11b; 1999/11/20   hof: Changed menunames AnimFrames to Video in menu hints
  * 1.1.8a;  1999/08/31   hof: accept anim framenames without underscore '_'
  * 0.99.00; 1999/03/15   hof: prepared for win/dos filename conventions
@@ -211,7 +213,7 @@ int p_mpege_info(t_anim_info *ainfo_ptr, char *errlist, t_gap_mpeg_encoder encod
 static
 int p_mpege_dialog(t_anim_info *ainfo_ptr, t_mpg_par *mp_ptr, t_gap_mpeg_encoder encoder)
 {
-  static t_arr_arg  argv[15];
+  static t_arr_arg  argv[16];
   static t_but_arg  b_argv[3];
   gint   l_rc;
   gint   l_idx;
@@ -260,6 +262,8 @@ int p_mpege_dialog(t_anim_info *ainfo_ptr, t_mpg_par *mp_ptr, t_gap_mpeg_encoder
   argv[1].int_min   = (gint)ainfo_ptr->first_frame_nr;
   argv[1].int_max   = (gint)ainfo_ptr->last_frame_nr;
   argv[1].int_ret   = (gint)ainfo_ptr->curr_frame_nr;
+  argv[1].has_default = TRUE;
+  argv[1].int_default = (gint)ainfo_ptr->curr_frame_nr;
 
   p_init_arr_arg(&argv[2], WGT_INT_PAIR);
   argv[2].constraint = TRUE;
@@ -268,6 +272,8 @@ int p_mpege_dialog(t_anim_info *ainfo_ptr, t_mpg_par *mp_ptr, t_gap_mpeg_encoder
   argv[2].int_min   = (gint)ainfo_ptr->first_frame_nr;
   argv[2].int_max   = (gint)ainfo_ptr->last_frame_nr;
   argv[2].int_ret   = (gint)ainfo_ptr->last_frame_nr;
+  argv[2].has_default = TRUE;
+  argv[2].int_default = (gint)ainfo_ptr->last_frame_nr;
 
   p_init_arr_arg(&argv[3], WGT_OPTIONMENU);
   argv[3].label_txt = _("Framerate :");
@@ -275,6 +281,8 @@ int p_mpege_dialog(t_anim_info *ainfo_ptr, t_mpg_par *mp_ptr, t_gap_mpeg_encoder
   argv[3].radio_argc = 8;
   argv[3].radio_argv = frate_args;
   argv[3].radio_ret  = 4;
+  argv[3].has_default = TRUE;
+  argv[3].radio_default  = 4;
 
   p_init_arr_arg(&argv[4], WGT_INT_PAIR);
   argv[4].constraint = FALSE;
@@ -287,6 +295,8 @@ int p_mpege_dialog(t_anim_info *ainfo_ptr, t_mpg_par *mp_ptr, t_gap_mpeg_encoder
   argv[4].umin      = 100;
   argv[4].entry_width = 80;
   argv[4].pagestep  = 1000000;
+  argv[4].has_default = TRUE;
+  argv[4].int_default = 3000000;
 
   if(encoder == MPEG_ENCODE) l_idx = 12;
   else                       l_idx = 7;
@@ -315,6 +325,12 @@ int p_mpege_dialog(t_anim_info *ainfo_ptr, t_mpg_par *mp_ptr, t_gap_mpeg_encoder
   argv[l_idx].text_buf_len = sizeof(l_startscript);
   argv[l_idx].text_buf_ret = &l_startscript[0];
 
+
+  l_idx++;
+  p_init_arr_arg(&argv[l_idx], WGT_DEFAULT_BUTTON);
+  argv[l_idx].label_txt = _("Default");
+  argv[l_idx].help_txt  = _("Reset all Parameters to Default Values");
+
   if(encoder == MPEG_ENCODE)
   {
      argv[0].label_txt = _("Generate parameterfile for mpeg_encode 1.5\n(the freely distributed Berkeley MPEG-1 Video  Encoder.)\n");
@@ -324,6 +340,8 @@ int p_mpege_dialog(t_anim_info *ainfo_ptr, t_mpg_par *mp_ptr, t_gap_mpeg_encoder
      argv[5].label_txt = _("Constant Bitrate :");
      argv[5].help_txt  = _("Iqnore I/P/QSCALE values and use constant bit-rate)");
      argv[5].int_ret   = 1;
+     argv[5].has_default = TRUE;
+     argv[5].int_default = 1;
 
      g_snprintf (l_pattern, MBUF_SIZE, "IBBPBBPBBPBBPBBP");
      p_init_arr_arg(&argv[6], WGT_TEXT);
@@ -332,6 +350,8 @@ int p_mpege_dialog(t_anim_info *ainfo_ptr, t_mpg_par *mp_ptr, t_gap_mpeg_encoder
      argv[6].help_txt  = _("How to encode MPEG framesequence (I/P/B frames)");
      argv[6].text_buf_len = sizeof(l_pattern);
      argv[6].text_buf_ret = &l_pattern[0];
+     argv[6].has_default = TRUE;
+     argv[6].text_buf_default = g_strdup("IBBPBBPBBPBBPBBP");
 
      p_init_arr_arg(&argv[7], WGT_INT_PAIR);
      argv[7].constraint = TRUE;
@@ -340,6 +360,8 @@ int p_mpege_dialog(t_anim_info *ainfo_ptr, t_mpg_par *mp_ptr, t_gap_mpeg_encoder
      argv[7].int_min   = 1;
      argv[7].int_max   = 31;
      argv[7].int_ret   = 2;
+     argv[7].has_default = TRUE;
+     argv[7].int_default = 2;
 
      p_init_arr_arg(&argv[8], WGT_INT_PAIR);
      argv[8].constraint = TRUE;
@@ -348,6 +370,8 @@ int p_mpege_dialog(t_anim_info *ainfo_ptr, t_mpg_par *mp_ptr, t_gap_mpeg_encoder
      argv[8].int_min   = 1;
      argv[8].int_max   = 31;
      argv[8].int_ret   = 5;
+     argv[8].has_default = TRUE;
+     argv[8].int_default = 5;
 
      p_init_arr_arg(&argv[9], WGT_INT_PAIR);
      argv[9].constraint = TRUE;
@@ -356,6 +380,8 @@ int p_mpege_dialog(t_anim_info *ainfo_ptr, t_mpg_par *mp_ptr, t_gap_mpeg_encoder
      argv[9].int_min   = 1;
      argv[9].int_max   = 31;
      argv[9].int_ret   = 9;
+     argv[9].has_default = TRUE;
+     argv[9].int_default = 9;
 
 
      p_init_arr_arg(&argv[10], WGT_OPTIONMENU);
@@ -364,6 +390,8 @@ int p_mpege_dialog(t_anim_info *ainfo_ptr, t_mpg_par *mp_ptr, t_gap_mpeg_encoder
      argv[10].radio_argc = 3;
      argv[10].radio_argv = psearch_args;
      argv[10].radio_ret  = 1;
+     argv[10].has_default = TRUE;
+     argv[10].radio_default  = 1;
 
      p_init_arr_arg(&argv[11], WGT_OPTIONMENU);
      argv[11].label_txt = _("B-Search :");
@@ -371,10 +399,12 @@ int p_mpege_dialog(t_anim_info *ainfo_ptr, t_mpg_par *mp_ptr, t_gap_mpeg_encoder
      argv[11].radio_argc = 3;
      argv[11].radio_argv = bsearch_args;
      argv[11].radio_ret  = 1;
+     argv[11].has_default = TRUE;
+     argv[11].radio_default  = 1;
 
      l_rc =  p_array_std_dialog( _("Gen MPEG_ENCODE Parameters"),
                                 _("Encode Values"),
-                                 15,   argv,      /* widget array */
+                                 16,   argv,      /* widget array */
                                  3,    b_argv,    /* button array */
                                  0);
 
@@ -397,6 +427,8 @@ int p_mpege_dialog(t_anim_info *ainfo_ptr, t_mpg_par *mp_ptr, t_gap_mpeg_encoder
      argv[5].radio_argv = mpeg_args;
      argv[5].radio_help_argv = mpeg_help;
      argv[5].radio_ret  = 1;
+     argv[5].has_default = TRUE;
+     argv[5].radio_default  = 1;
 
 
 
@@ -406,13 +438,15 @@ int p_mpege_dialog(t_anim_info *ainfo_ptr, t_mpg_par *mp_ptr, t_gap_mpeg_encoder
      argv[6].radio_argc = 5;
      argv[6].radio_argv = video_args;
      argv[6].radio_ret  = 1;
+     argv[6].has_default = TRUE;
+     argv[6].radio_default  = 1;
 
 
      argv[3].radio_argc = 5; /* framerates above 30 ar not allowed in mpeg2encode */
 
      l_rc =  p_array_std_dialog( _("Gen MPEG2ENCODE Parameters"),
                                  _("Encode Values"),
-                                 10,   argv,      /* widget array */
+                                 11,   argv,      /* widget array */
                                  3,    b_argv,    /* button array */
                                  0);
      mp_ptr->mpegtype    = argv[5].radio_ret;
@@ -550,7 +584,7 @@ int p_mpeg2encode_gen_parfile(t_anim_info *ainfo_ptr, t_mpg_par *mp_ptr)
     fprintf(l_fp, "MPEG-2 stream %s frames/sec\n", mp_ptr->framerate);
   }
   
-  fprintf(l_fp, "%s%%04d   /* name of source files */\n", ainfo_ptr->basename);
+  fprintf(l_fp, "%s%%06d   /* name of source files */\n", ainfo_ptr->basename);
 
   fprintf(l_fp, "-         /* name of reconstructed images (\"-\": don't store) */\n");
   fprintf(l_fp, "-         /* name of intra quant matrix file     (\"-\": default matrix) */\n");
@@ -806,7 +840,7 @@ int p_mpeg_encode_gen_parfile(t_anim_info *ainfo_ptr, t_mpg_par *mp_ptr)
   fprintf(l_fp, "#\n");
   fprintf(l_fp, "#\n");
 
-  fprintf(l_fp, "%s*.%s  [%04d-%04d]\n", l_basename_ptr
+  fprintf(l_fp, "%s*.%s  [%06d-%06d]\n", l_basename_ptr
                                        , mp_ptr->ext
                                        , mp_ptr->from
                                        , mp_ptr->to);

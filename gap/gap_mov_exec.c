@@ -26,6 +26,10 @@
  */
 
 /* revision history:
+ * gimp    1.3.12a; 2003/05/01  hof: merge into CVS-gimp-gap project
+ * gimp    1.3.11a; 2003/01/18  hof: Conditional framesave
+ * gimp    1.3.5a;  2002/04/20  hof: api cleanup (dont use gimp_drawable_set_image)
+ * gimp    1.3.4a;  2002/03/12  hof: removed private pdb-wrappers
  * gimp    1.1.29b; 2000/11/20  hof: FRAME based Stepmodes, bugfixes for path calculation
  * gimp    1.1.23a; 2000/06/03  hof: bugfix anim_preview < 100% did not work
  *                                   (the layer tattoos in a duplicated image may differ from the original !!)
@@ -133,19 +137,12 @@ p_mov_call_render(t_mov_data *mov_ptr, t_mov_current *cur_ptr, gint apv_layersta
 
        if((mov_ptr->val_ptr->apv_scalex != 100.0) || (mov_ptr->val_ptr->apv_scaley != 100.0))
        {
-         GimpParam     *l_params;
-         gint        l_retvals;
 	 gint32      l_size_x, l_size_y;
        
          l_size_x = (gimp_image_width(l_tmp_image_id) * mov_ptr->val_ptr->apv_scalex) / 100;
          l_size_y = (gimp_image_height(l_tmp_image_id) * mov_ptr->val_ptr->apv_scaley) / 100;
        
-         l_params = gimp_run_procedure ("gimp_image_scale",
-			         &l_retvals,
-			         GIMP_PDB_IMAGE,    l_tmp_image_id,
-			         GIMP_PDB_INT32,    l_size_x,
-			         GIMP_PDB_INT32,    l_size_y,
-			         GIMP_PDB_END);
+         gimp_image_scale (l_tmp_image_id, l_size_x, l_size_y);
        }
     }
     
@@ -181,10 +178,9 @@ p_mov_call_render(t_mov_data *mov_ptr, t_mov_current *cur_ptr, gint apv_layersta
 				 ((gint)(gimp_image_base_type(l_tmp_image_id)) * 2),
                                  100.0,     /* Opacity full opaque */     
                                  0);        /* NORMAL */
-         gimp_image_add_layer(l_tmp_image_id, l_layer_id, 0);
-	 gimp_layer_set_offsets(l_layer_id, -1, -1);
-        l_layer_id = gimp_image_flatten(l_tmp_image_id);
-	
+        gimp_image_add_layer(l_tmp_image_id, l_layer_id, 0);
+        gimp_layer_set_offsets(l_layer_id, -1, -1);
+        l_layer_id = gimp_image_flatten(l_tmp_image_id);	
       }
       gimp_layer_add_alpha(l_layer_id);
       
@@ -196,20 +192,28 @@ p_mov_call_render(t_mov_data *mov_ptr, t_mov_current *cur_ptr, gint apv_layersta
       }
 
       /* set layername (including delay for the framerate) */
-      l_name = g_strdup_printf("frame_%04d (%dms)"
+      l_name = g_strdup_printf("frame_%06d (%dms)"
                               , (int) cur_ptr->dst_frame_nr
                               , (int)(1000/mov_ptr->val_ptr->apv_framerate));
       gimp_layer_set_name(l_layer_id, l_name);
       g_free(l_name);
       
-      /* remove (its only) layer from source */
-      gimp_image_remove_layer(l_tmp_image_id, l_layer_id);
+      {
+        gint32  l_new_layer_id;
+        gint    l_src_offset_x, l_src_offset_y;
 
-      /* and set the dst_image as it's new Master */
-      p_gimp_drawable_set_image(l_layer_id, mov_ptr->val_ptr->apv_mlayer_image);
+        /* copy the layer from the temp image to the anim preview multilayer image */
+        l_new_layer_id = p_my_layer_copy(mov_ptr->val_ptr->apv_mlayer_image,
+                                         l_layer_id,
+                                         100.0,       /* opacity full */
+                                         0,           /* NORMAL */
+                                         &l_src_offset_x,
+                                         &l_src_offset_y
+                                         );
 
-      /* add the layer to the anim preview multilayer image */
-      gimp_image_add_layer (mov_ptr->val_ptr->apv_mlayer_image, l_layer_id, apv_layerstack);
+        /* add the layer to the anim preview multilayer image */
+        gimp_image_add_layer (mov_ptr->val_ptr->apv_mlayer_image, l_new_layer_id, apv_layerstack);
+      }
     }
     else l_rc = -1;
   }
@@ -788,8 +792,6 @@ p_mov_anim_preview(t_mov_values *pvals_orig, t_anim_info *ainfo_ptr, gint previe
   gint32      l_tmp_image_id;
   gint32      l_tmp_frame_id;
   gint32      l_mlayer_image_id;
-  GimpParam     *l_params;
-  gint        l_retvals;
   GimpImageBaseType  l_type;
   guint       l_width, l_height;
   gint32      l_stackpos;
@@ -840,12 +842,7 @@ p_mov_anim_preview(t_mov_values *pvals_orig, t_anim_info *ainfo_ptr, gint previe
 
       l_size_x = MAX(1, (gimp_image_width(l_tmp_image_id) * l_pvals->apv_scalex) / 100);
       l_size_y = MAX(1, (gimp_image_height(l_tmp_image_id) * l_pvals->apv_scaley) / 100);
-      l_params = gimp_run_procedure ("gimp_image_scale",
-  		                   &l_retvals,
-			           GIMP_PDB_IMAGE,    l_tmp_image_id,
-			           GIMP_PDB_INT32,    l_size_x,
-			           GIMP_PDB_INT32,    l_size_y,
-			           GIMP_PDB_END);
+      gimp_image_scale(l_tmp_image_id, l_size_x, l_size_y);
 
        /* findout the src_layer id in the scaled copy by stackpos index */
        l_pvals->src_layer_id = -1;
@@ -936,12 +933,7 @@ p_mov_anim_preview(t_mov_values *pvals_orig, t_anim_info *ainfo_ptr, gint previe
       {
 	l_size_x = (gimp_image_width(l_tmp_frame_id) * l_pvals->apv_scalex) / 100;
 	l_size_y = (gimp_image_height(l_tmp_frame_id) * l_pvals->apv_scaley) / 100;
-	l_params = gimp_run_procedure ("gimp_image_scale",
-  		                   &l_retvals,
-			           GIMP_PDB_IMAGE,    l_tmp_frame_id,
-			           GIMP_PDB_INT32,    l_size_x,
-			           GIMP_PDB_INT32,    l_size_y,
-			           GIMP_PDB_END);
+	gimp_image_scale(l_tmp_frame_id, l_size_x, l_size_y);
       }
       g_free(l_filename);
       break;
@@ -1498,9 +1490,12 @@ p_check_move_path_params(t_mov_data *mov_data)
 
 /* ============================================================================
  * gap_move_path
+ *
+ * return image_id (of the new loaded current frame) on success
+ *        or -1 on errors
  * ============================================================================
  */
-int
+gint32
 gap_move_path(GimpRunMode run_mode, gint32 image_id, t_mov_values *pvals, gchar *pointfile
              , gint rotation_follow , gint32 startangle)
 {
@@ -1561,13 +1556,18 @@ gap_move_path(GimpRunMode run_mode, gint32 image_id, t_mov_values *pvals, gchar 
 
         if(l_rc >= 0)
         {
-           l_rc = p_save_named_frame(ainfo_ptr->image_id, ainfo_ptr->old_filename);
+           if(p_gap_check_save_needed(ainfo_ptr->image_id))
+           {
+             l_rc = p_save_named_frame(ainfo_ptr->image_id, ainfo_ptr->old_filename);
+           }
            if(l_rc >= 0)
            {
               l_rc = p_mov_execute(&l_mov_data);
-           
-              /* go back to the frame_nr where move operation was started from */
-              p_load_named_frame(ainfo_ptr->image_id, ainfo_ptr->old_filename);
+              if (l_rc >= 0)
+              {
+                /* go back to the frame_nr where move operation was started from */
+                l_rc = p_load_named_frame(ainfo_ptr->image_id, ainfo_ptr->old_filename);
+              }
            }
         }
 
@@ -1586,6 +1586,11 @@ gap_move_path(GimpRunMode run_mode, gint32 image_id, t_mov_values *pvals, gchar 
     }
 
     p_free_ainfo(&ainfo_ptr);
+  }
+
+  if (l_rc < 0)
+  {
+    return -1;
   }
   
   return(l_rc);    

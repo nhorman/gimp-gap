@@ -34,12 +34,13 @@
    0.08  26th sept 97  by Thomas NOEL <thomas@minet.net> )
 */
 
+#include "config.h"
+
 #include <stdlib.h>
 #include <string.h>
 
-#include "config.h"
-#include "gtk/gtk.h"
-#include "libgimp/gimp.h"
+#include <libgimp/gimp.h>
+#include <libgimp/gimpui.h>
 
 #include "gap_filter.h"
 #include "gap_dbbrowser_utils.h"
@@ -60,30 +61,18 @@ gap_db_browser_dialog(char *title_txt,
                       t_constraint_func        constraint_func,
                       t_constraint_func        constraint_func_sel1,
                       t_constraint_func        constraint_func_sel2,
-                      t_gap_db_browse_result  *result,
-		      gint                     init_gtk_flag)
+                      t_gap_db_browse_result  *result)
   /* create the dialog box */
 {
-  gchar **l_argsv;
-  gint    l_argsc;
-  
   dbbrowser_t* dbbrowser;
   
   GtkWidget *button;
   GtkWidget *hbox,*searchhbox,*vbox;
   GtkWidget *label;
   
-  l_argsc = 1;
-  l_argsv = g_new (gchar *, 1);
-  l_argsv[0] = g_strdup ( _("GAP Animated Filter apply"));
+  gimp_ui_init ("gap-animated-filter-apply", FALSE);
 
-  if (init_gtk_flag)
-  {
-    /* gtk init (should be called only once in a plugin-process) */
-    gtk_init (&l_argsc, &l_argsv);
-  }
-
-  dbbrowser = (gpointer)g_malloc(sizeof(dbbrowser_t));
+  dbbrowser = g_new (dbbrowser_t, 1);
 
   /* store pointers to gap constraint procedures */  
   dbbrowser->constraint_func      = constraint_func;
@@ -664,7 +653,8 @@ dialog_search_callback (GtkWidget *widget,
   int i, j;
   int i_added;
   dbbrowser_t* dbbrowser = data;
-  gchar *func_name, *label, *query_text;
+  gchar *func_name, *label;
+  const gchar *query_text;
   GString *query;
 
   gtk_clist_freeze(GTK_CLIST(dbbrowser->clist));

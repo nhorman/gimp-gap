@@ -1,12 +1,7 @@
 /* my_layer_copy.h
  * 1997.11.06 hof (Wolfgang Hofer)
- *
- *
- *  this procedure works similar to gimp_layer_copy(src_id);
- *  ==> gimp_layer_copy works only for layers within the same image !!
- *  ==> Workaround:
- *      p_my_layer_copy is my 'private' version of layercopy
- *      that can copy layers from another image of the same type.
+ *      p_my_layer_copy 
+ *        can copy layers from a drawable in another image.
  *
  * returns the id of the new layer
  *      and the offests of the original within the source image
@@ -30,6 +25,8 @@
  */
 
 /* revision history:
+ * version 1.3.5a  2002.04.20   hof: use gimp_layer_new_from_drawable (API cleanup, requries gimp.1.3.6)
+ *                                   removed channel_copy
  * version 0.98.00 1998.11.26   hof: added channel copy
  * version 0.90.00;             hof: 1.st (pre) release
  */
@@ -51,8 +48,5 @@ gint32 p_my_layer_copy (gint32 dst_image_id,
                         GimpLayerModeEffects mode,
                         gint *src_offset_x,
                         gint *src_offset_y );
-
-gint32 p_my_channel_copy (gint32 dst_image_id,
-                        gint32 src_channel_id);
 
 #endif

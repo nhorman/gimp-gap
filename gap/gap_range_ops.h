@@ -25,6 +25,7 @@
  */
 
 /* revision history:
+ * 1.3.5a;  2002/04/20   hof: API cleanup
  * 1.1.10a; 1999/10/22   hof: extended dither options in gap_range_conv
  * 0.97.00; 1998/10/19   hof: extended gap_range_to_multilayer layer seletion
  * 0.96.03; 1998/08/31   hof: gap_range_to_multilayer: all params available
@@ -64,14 +65,14 @@ gint32 gap_range_to_multilayer(GimpRunMode run_mode,
 			     gint32 sel_invert, char *sel_pattern
 			     );
 
-int gap_range_flatten(GimpRunMode run_mode,
+gint32 gap_range_flatten(GimpRunMode run_mode,
                              gint32 image_id,
                              long range_from, long range_to);
-int gap_range_layer_del(GimpRunMode run_mode,
+gint32 gap_range_layer_del(GimpRunMode run_mode,
                              gint32 image_id,
                              long range_from, long range_to, long position);
 
-int gap_range_conv(GimpRunMode run_mode,
+gint32 gap_range_conv(GimpRunMode run_mode,
                              gint32 image_id,
                              long   range_from, long range_to, 
                              long   flatten,

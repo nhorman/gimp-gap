@@ -21,6 +21,8 @@
  */
 
 /* revision history:
+ * version 1.3.5a  2002.04.20   hof: use gimp_layer_new_from_drawable (API cleanup, requries gimp.1.3.6)
+ *                                   removed channel_copy
  * version 0.99.00 1999.03.03   hof: use the regular gimp_layer_copy and gimp_channel_copy
  *                                   (removed private variant)
  * version 0.98.00 1998.11.26   hof: added channel copy
@@ -58,7 +60,6 @@ gint32 p_my_layer_copy (gint32 dst_image_id,
   gint32 l_new_layer_id;
   gint32 l_ret_id;     
   char  *l_name;
-  GimpImageType  l_src_type;
 
   if(gap_debug) printf("GAP p_my_layer_copy: START\n");
 
@@ -69,49 +70,27 @@ gint32 p_my_layer_copy (gint32 dst_image_id,
   if(opacity < 0.0)   opacity = 0.0;
   
   l_name = gimp_layer_get_name(src_layer_id);
-  l_src_type   = gimp_drawable_type(src_layer_id);
-
-  switch(l_src_type)
-  {
-    case GIMP_RGB_IMAGE:         /* 0 */
-    case GIMP_RGBA_IMAGE:        /* 1 */
-       if(gimp_image_base_type(dst_image_id) != GIMP_RGB) { return -1; }
-       break;
-    case GIMP_GRAY_IMAGE:        /* 2 */
-    case GIMP_GRAYA_IMAGE:       /* 3 */
-       if(gimp_image_base_type(dst_image_id) != GIMP_GRAY) { return -1; }
-       break;
-    case GIMP_INDEXED_IMAGE:     /* 4 */
-    case GIMP_INDEXEDA_IMAGE:    /* 5 */
-       if(gimp_image_base_type(dst_image_id) != GIMP_INDEXED) { return -1; }
-       break;
-  }
-
 
   /* copy the layer */  
-  l_new_layer_id = gimp_layer_copy(src_layer_id);
+  l_new_layer_id = p_gimp_layer_new_from_drawable(src_layer_id, dst_image_id);
 
   if(l_new_layer_id >= 0)
   {
-    if(p_gimp_drawable_set_image(l_new_layer_id, dst_image_id) >= 0)
+    if(! gimp_drawable_has_alpha(l_new_layer_id))
     {
-        if(! gimp_drawable_has_alpha(l_new_layer_id))
-        {
-           /* have to add alpha channel */
-           gimp_layer_add_alpha(l_new_layer_id);
-        }
-
-        /* findout the offsets of the original layer within the source Image */
-        gimp_drawable_offsets(src_layer_id, src_offset_x, src_offset_y );
-
-        gimp_layer_set_name(l_new_layer_id, l_name);
-        gimp_layer_set_opacity(l_new_layer_id, opacity);
-        gimp_layer_set_mode(l_new_layer_id, mode);
-
-
-        l_ret_id = l_new_layer_id;  /* all done OK */
+       /* have to add alpha channel */
+       gimp_layer_add_alpha(l_new_layer_id);
     }
 
+    /* findout the offsets of the original layer within the source Image */
+    gimp_drawable_offsets(src_layer_id, src_offset_x, src_offset_y );
+
+    gimp_layer_set_name(l_new_layer_id, l_name);
+    gimp_layer_set_opacity(l_new_layer_id, opacity);
+    gimp_layer_set_mode(l_new_layer_id, mode);
+
+
+    l_ret_id = l_new_layer_id;  /* all done OK */
   }
     
   if(l_name != NULL) { g_free (l_name); }
@@ -120,42 +99,3 @@ gint32 p_my_layer_copy (gint32 dst_image_id,
 
   return l_ret_id;
 }	/* end p_my_layer_copy */
-
-
-/* ============================================================================
- * p_my_channel_copy
- *   copy a channel to dst_IMAGE
- * ============================================================================
- */
-gint32 p_my_channel_copy (gint32 dst_image_id,
-                          gint32 src_channel_id)
-{
-  gint32 l_new_channel_id;
-  gint32 l_ret_id;     
-  char  *l_name;
-
-  if(gap_debug) printf("GAP :p_my_channel_copy START\n");
-
-  l_ret_id = -1;       /* prepare error retcode -1 */
-  l_name = NULL;
-  
-  /* create new channel in destination image */
-  l_name = gimp_channel_get_name(src_channel_id);
-
-  /* copy the channel */
-  l_new_channel_id = gimp_channel_copy(src_channel_id);
-  if(l_new_channel_id >= 0)
-  {
-    if(p_gimp_drawable_set_image(l_new_channel_id, dst_image_id) >= 0)
-    {
-        gimp_channel_set_name(l_new_channel_id, l_name);
-        l_ret_id = l_new_channel_id;  /* all done OK */  
-    }
-  }
-  
-  if(l_name != NULL) { g_free (l_name); }
-
-  if(gap_debug) printf("GAP :p_my_channel_copy id=%d\n", (int)l_ret_id);
-
-  return l_ret_id;
-}	/* end p_my_channel_copy */

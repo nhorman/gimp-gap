@@ -38,6 +38,13 @@
  */
 
 /* revision history:
+ * gimp    1.3.12a; 2003/05/03  hof: merge into CVS-gimp-gap project, replace gimp_help_init by _gimp_help_init
+ * gimp    1.3.11a; 2003/01/18  hof: merged in changes of the gap_vid_enc project
+ *                                   - added WGT_OPT_ENTRY (entry comined with Optionmenu) and WGT_DEFAULT_BUTTON
+ * gimp    1.3.4a;  2002/03/12  hof: ported to gtk+-2.0.0
+ *                                   radio_create_value (prevent fire callback to early, needed in new gtk)
+ *                                   bugfix: optionmenu_create_value active menu entry now can have any position
+ *                                   (dont change menuorder any longer, where active item was placed 1st)
  * gimp    1.1.17b; 2000/01/26  hof: bugfix gimp_help_init
  *                                   use gimp_scale_entry_new for WGT_FLT_PAIR, WGT_INT_PAIR
  * gimp    1.1.17a; 2000/02/20  hof: use gimp_help_set_help_data for tooltips
@@ -57,7 +64,7 @@
  *                                   (re-implementation of gap_sld_dialog.c)
  */
 
-#include <config.h>
+#include "config.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -72,9 +79,7 @@
 
 /* private includes */
 #include "gap_arr_dialog.h"
-
 #include "gap-intl.h"
-
 
 typedef void (*t_entry_cb_func) (GtkWidget *widget, t_arr_arg *arr_ptr);
 
@@ -89,8 +94,11 @@ typedef struct {
   gint run;
 } t_arr_interface;
 
-
-static gint g_first_call = TRUE;
+typedef struct
+{
+  t_arr_arg *argv;
+  gint       argc;
+}   t_all_arr_args;
 
 static t_arr_interface g_arrint =
 {
@@ -133,19 +141,9 @@ static void   optionmenu_create_value    (char *title, GtkTable *table, int row,
 static void   pair_int_create_value     (gchar *title, GtkTable *table, gint row, t_arr_arg *arr_ptr);
 static void   pair_flt_create_value     (gchar *title, GtkTable *table, gint row, t_arr_arg *arr_ptr);
 
+static void   default_button_cb           (GtkWidget *widget, t_all_arr_args *arr_all);
+static void   default_button_create_value (char *title, GtkTable *table, int row, t_arr_arg *arr_ptr, t_all_arr_args *arr_all);
 
-gint
-p_arr_gtk_init(gint flag)
-{
-  gint l_prev_value;
-
-  l_prev_value = g_first_call;
-  if(flag == TRUE) g_first_call = TRUE;
-  else             g_first_call = FALSE;
-  
-  return (l_prev_value);
-  
-}
 
 
 static void
@@ -180,21 +178,20 @@ entry_create_value(char *title, GtkTable *table, int row, t_arr_arg *arr_ptr,
     gtk_widget_show(label);
 
     entry = gtk_entry_new();
-    gtk_widget_set_usize(entry, arr_ptr->entry_width, 0);
+    gtk_widget_set_size_request(entry, arr_ptr->entry_width, -1);
     gtk_entry_set_text(GTK_ENTRY(entry), init_txt);
-    gtk_signal_connect(GTK_OBJECT(entry), "changed",
-		       (GtkSignalFunc) entry_update_cb,
-		       arr_ptr);
     gtk_table_attach(GTK_TABLE(table), entry, 1, 2, row, row + 1, GTK_FILL, GTK_FILL | GTK_EXPAND, 4, 0);
     if(arr_ptr->help_txt != NULL)
     { 
        gimp_help_set_help_data(entry, arr_ptr->help_txt,NULL);
     }
     gtk_widget_show(entry);
+    g_signal_connect(G_OBJECT(entry), "changed",
+		     G_CALLBACK (entry_update_cb),
+		     arr_ptr);
     
     arr_ptr->text_entry = entry;
 }
-
 
 /* --------------------------
  * LABEL
@@ -224,6 +221,116 @@ label_create_value(char *title, GtkTable *table, int row, t_arr_arg *arr_ptr, gf
 
     gtk_widget_show(label);
 }
+
+/* --------------------------
+ * DEFAULT_BUTTON
+ * --------------------------
+ */
+
+static void
+default_button_create_value(char *title, GtkTable *table, int row, t_arr_arg *arr_ptr, t_all_arr_args *arr_all)
+{
+    GtkWidget *button;
+
+    button = gtk_button_new_from_stock (title);    /*button = gtk_button_new_with_label (title);*/
+    
+    gtk_widget_show(button);
+    g_signal_connect (G_OBJECT (button), "clicked",
+		      G_CALLBACK(default_button_cb),
+		      arr_all);
+
+    gtk_table_attach(table, button, 0, 3, row, row + 1, GTK_FILL, 0, 0, 0);
+    if(arr_ptr->help_txt != NULL)
+    { 
+       gimp_help_set_help_data(button, arr_ptr->help_txt,NULL);
+    }
+}  /* end default_button_create_value */
+
+static void
+default_button_cb(GtkWidget *widget,  t_all_arr_args *arr_all)
+{
+  gint l_idx;
+  t_arr_arg  *arr_ptr;
+  char       *buf;
+  char       *fmt;
+
+  if(arr_all == NULL)
+  {
+    return;
+  }
+  
+  for(l_idx = 0; l_idx < arr_all->argc; l_idx++)
+  {
+     arr_ptr = &arr_all->argv[l_idx];
+     buf = NULL;
+ 
+     if(!arr_ptr->has_default)
+     {
+       continue;
+     }
+     
+     switch(arr_ptr->widget_type)
+     {
+        case WGT_TEXT:
+        case WGT_OPT_ENTRY:
+          if((arr_ptr->text_buf_ret != NULL) && (arr_ptr->text_buf_default))
+          {
+             strncpy(arr_ptr->text_buf_ret, arr_ptr->text_buf_default, arr_ptr->text_buf_len -1);
+             buf = g_strdup(arr_ptr->text_buf_default);
+          }
+	  if(arr_ptr->widget_type == WGT_OPT_ENTRY)
+	  {
+            arr_ptr->radio_ret = arr_ptr->radio_default;
+            gtk_option_menu_set_history (GTK_OPTION_MENU (arr_ptr->option_menu), arr_ptr->radio_ret);
+	  }
+	  break;
+        case WGT_FLT_PAIR:
+        case WGT_FLT:  
+          arr_ptr->flt_ret = arr_ptr->flt_default;
+	  fmt = g_strdup_printf("%%.%df", arr_ptr->flt_digits);
+          buf = g_strdup_printf(fmt, arr_ptr->flt_ret);
+          g_free(fmt);  
+          if(arr_ptr->adjustment)
+          {
+            gtk_adjustment_set_value (GTK_ADJUSTMENT (arr_ptr->adjustment), (gfloat)arr_ptr->flt_default);
+          }
+	  break;
+        case WGT_INT_PAIR:
+        case WGT_INT:
+          arr_ptr->int_ret = arr_ptr->int_default;
+          buf = g_strdup_printf("%d", arr_ptr->int_ret);
+          if(arr_ptr->adjustment)
+          {
+            gtk_adjustment_set_value (GTK_ADJUSTMENT (arr_ptr->adjustment), (gfloat)arr_ptr->int_default);
+          }
+ 	  break;
+        case WGT_TOGGLE:
+          arr_ptr->int_ret = arr_ptr->int_default;
+	  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (arr_ptr->check_button),
+				arr_ptr->int_default);
+ 	  break;
+        case WGT_RADIO:
+          arr_ptr->radio_ret = arr_ptr->radio_default;
+	  if (gap_debug) printf("ERROR: default for WGT_RADIO not impemented\n");
+ 	  break;
+        case WGT_OPTIONMENU:
+         arr_ptr->radio_ret = arr_ptr->radio_default;
+         gtk_option_menu_set_history (GTK_OPTION_MENU (arr_ptr->option_menu), arr_ptr->radio_ret);
+         break;
+        default :
+         break;
+     }   /* end switch */
+
+     if(buf != NULL)
+     {
+       if(arr_ptr->text_entry != NULL)
+       {
+         gtk_entry_set_text(GTK_ENTRY(arr_ptr->text_entry), buf);
+       }
+       g_free(buf);
+     }
+  }      /* end for */
+}  /* end default_button_cb */
 
 /* --------------------------
  * FILESEL
@@ -264,22 +371,22 @@ filesel_open_cb(GtkWidget *widget, t_arr_arg *arr_ptr)
 
   gtk_window_set_position (GTK_WINDOW (filesel), GTK_WIN_POS_MOUSE);
 
-  gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION (filesel)->ok_button),
-		      "clicked", (GtkSignalFunc) filesel_ok_cb,
-		      arr_ptr);
-  gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION (filesel)->cancel_button),
-		      "clicked", (GtkSignalFunc) filesel_close_cb,
-		      arr_ptr);
-
-  /* "destroy" has to be the last signal, 
-   * (otherwise the other callbacks are never called)
-   */
-  gtk_signal_connect (GTK_OBJECT (filesel), "destroy",
-		      (GtkSignalFunc) filesel_close_cb,
-		      arr_ptr);
   gtk_file_selection_set_filename (GTK_FILE_SELECTION (filesel),
 				   arr_ptr->text_buf_ret);
   gtk_widget_show (filesel);
+
+  g_signal_connect (G_OBJECT (filesel), "destroy",
+		    G_CALLBACK (filesel_close_cb),
+		    arr_ptr);
+
+  g_signal_connect (G_OBJECT (GTK_FILE_SELECTION (filesel)->ok_button),
+		   "clicked",
+                    G_CALLBACK (filesel_ok_cb),
+		    arr_ptr);
+  g_signal_connect (G_OBJECT (GTK_FILE_SELECTION (filesel)->cancel_button),
+		   "clicked",
+                    G_CALLBACK (filesel_close_cb),
+		    arr_ptr);
 }
 
 
@@ -293,12 +400,12 @@ filesel_create_value(char *title, GtkTable *table, int row, t_arr_arg *arr_ptr)
     
   /* Button  to invoke filebrowser */  
   button = gtk_button_new_with_label ( _("File-Browser"));
-  gtk_signal_connect (GTK_OBJECT (button), "clicked",
-		      (GtkSignalFunc) filesel_open_cb,
-		      arr_ptr);
   gtk_table_attach( GTK_TABLE(table), button, 2, 3, row, row +1,
 		    0, 0, 0, 0 );
   gtk_widget_show (button);
+  g_signal_connect (G_OBJECT (button), "clicked",
+		    G_CALLBACK (filesel_open_cb),
+		    arr_ptr);
     
 }
 
@@ -419,9 +526,6 @@ toggle_create_value(char *title, GtkTable *table, int row, t_arr_arg *arr_ptr)
   /* check button */
   check_button = gtk_check_button_new_with_label (l_togg_txt);
   gtk_table_attach ( GTK_TABLE (table), check_button, 1, 3, row, row+1, GTK_FILL, 0, 0, 0);
-  gtk_signal_connect (GTK_OBJECT (check_button), "toggled",
-                      (GtkSignalFunc) toggle_update_cb,
-                       arr_ptr);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (check_button),
 				arr_ptr->int_ret);
   if(arr_ptr->help_txt != NULL)
@@ -429,6 +533,12 @@ toggle_create_value(char *title, GtkTable *table, int row, t_arr_arg *arr_ptr)
      gimp_help_set_help_data(check_button, arr_ptr->help_txt,NULL);
   }
   gtk_widget_show (check_button);
+
+  arr_ptr->check_button = check_button;
+
+  g_signal_connect (G_OBJECT (check_button), "toggled",
+                    G_CALLBACK (toggle_update_cb),
+                    arr_ptr);
 }
 
 
@@ -441,14 +551,29 @@ static void
 radio_update_cb (GtkWidget *widget, t_radio_arg *radio_ptr)
 {
   if(radio_ptr->arr_ptr == NULL) return;
+  if(radio_ptr->arr_ptr->widget_locked) return;
   if((radio_ptr->arr_ptr->widget_type != WGT_RADIO)
-  && (radio_ptr->arr_ptr->widget_type != WGT_OPTIONMENU))
+  && (radio_ptr->arr_ptr->widget_type != WGT_OPTIONMENU)
+  && (radio_ptr->arr_ptr->widget_type != WGT_OPT_ENTRY))
   {
     return;
   }
-
+  
   radio_ptr->arr_ptr->int_ret = radio_ptr->radio_index;
   radio_ptr->arr_ptr->radio_ret = radio_ptr->radio_index;
+  if(gap_debug) printf("radio_update_cb: radio_ret %d\n", (int)radio_ptr->arr_ptr->radio_ret );
+
+  if((radio_ptr->arr_ptr->widget_type == WGT_OPT_ENTRY)
+  && (radio_ptr->arr_ptr->radio_argv != NULL))
+  {
+    gtk_entry_set_text(GTK_ENTRY(radio_ptr->arr_ptr->text_entry), radio_ptr->arr_ptr->radio_argv[radio_ptr->radio_index]);
+
+    strncpy(radio_ptr->arr_ptr->text_buf_ret,
+          radio_ptr->arr_ptr->radio_argv[radio_ptr->radio_index],
+          radio_ptr->arr_ptr->text_buf_len -1);
+    radio_ptr->arr_ptr->text_buf_ret[radio_ptr->arr_ptr->text_buf_len -1] = '\0';
+
+  }
 }
 
 static void
@@ -462,10 +587,13 @@ radio_create_value(char *title, GtkTable *table, int row, t_arr_arg *arr_ptr)
   char      *l_radio_txt;
   char      *l_radio_help_txt;
   gint       l_radio_pressed;
+  gint       l_int_ret_initial_value;
+
 
   t_radio_arg   *radio_ptr;
 
-
+  l_int_ret_initial_value = arr_ptr->radio_ret;
+  
   label = gtk_label_new(title);
   gtk_misc_set_alignment(GTK_MISC(label), 1.0, 0.0);
   gtk_table_attach( GTK_TABLE (table), label, 0, 1, row, row+1, GTK_FILL, GTK_FILL, 0, 0);
@@ -473,7 +601,6 @@ radio_create_value(char *title, GtkTable *table, int row, t_arr_arg *arr_ptr)
 
   /* radio_table */
   radio_table = gtk_table_new (arr_ptr->radio_argc, 2, FALSE);
-
 
   for(l_idy=0; l_idy < arr_ptr->radio_argc; l_idy++)
   {
@@ -501,12 +628,8 @@ radio_create_value(char *title, GtkTable *table, int row, t_arr_arg *arr_ptr)
      if(gap_debug) printf("radio_create_value: %02d %s\n", l_idy, l_radio_txt);
     
      radio_button = gtk_radio_button_new_with_label ( radio_group, l_radio_txt );
-     radio_group = gtk_radio_button_group ( GTK_RADIO_BUTTON (radio_button) );  
+     radio_group = gtk_radio_button_get_group ( GTK_RADIO_BUTTON (radio_button) );  
      gtk_table_attach ( GTK_TABLE (radio_table), radio_button, 0, 2, l_idy, l_idy+1, GTK_FILL | GTK_EXPAND, 0, 0, 0);
-
-     gtk_signal_connect ( GTK_OBJECT (radio_button), "toggled",
-		         (GtkSignalFunc) radio_update_cb,
-		          radio_ptr);
 
      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radio_button), 
 				   l_radio_pressed);
@@ -515,12 +638,26 @@ radio_create_value(char *title, GtkTable *table, int row, t_arr_arg *arr_ptr)
        gimp_help_set_help_data(radio_button, l_radio_help_txt, NULL);
      }
      gtk_widget_show (radio_button);
+
+     g_signal_connect ( G_OBJECT (radio_button), "toggled",
+		        G_CALLBACK (radio_update_cb),
+		        radio_ptr);
   }
 
   
   /* attach radio_table */
   gtk_table_attach ( GTK_TABLE (table), radio_table, 1, 3, row, row+1, GTK_FILL | GTK_EXPAND, 0, 0, 0);
   gtk_widget_show (radio_table);
+
+  /* the new gtk always calls the callback procedure of the 1st radio item,
+   * if the 1.st item (with index 0) is not the selected one,
+   * and the user makes no further selection
+   * 0 would be returned as result (but this is wrong and not the expected value)
+   * WORKAROUND:
+   * copy initial value to int_ret 
+   */
+  arr_ptr->int_ret = l_int_ret_initial_value;
+  arr_ptr->radio_ret = l_int_ret_initial_value;
 }
 
 
@@ -534,25 +671,48 @@ static void
 optionmenu_create_value(char *title, GtkTable *table, int row, t_arr_arg *arr_ptr)
 {
   GtkWidget *label;
+  GtkWidget *entry;
   GtkWidget  *option_menu;
   GtkWidget  *menu;
   GtkWidget  *menu_item;
   gint       l_idx;
   gint       l_idy;
   char      *l_radio_txt;
-  gint       l_radio_pressed;
+  gint       l_col;
 
   t_radio_arg *l_menu_ptr;
   
   /* label */
+  l_col = 0;
   label = gtk_label_new(title);
   gtk_misc_set_alignment(GTK_MISC(label), 1.0, 0.5);
-  gtk_table_attach( GTK_TABLE (table), label, 0, 1, row, row+1, GTK_FILL, GTK_FILL, 0, 0);
+  gtk_table_attach( GTK_TABLE (table), label, l_col, l_col+1, row, row+1, GTK_FILL, GTK_FILL, 0, 0);
   gtk_widget_show(label);
 
+  /* entry */
+  if(arr_ptr->widget_type == WGT_OPT_ENTRY)
+  {
+    l_col++;
+    entry = gtk_entry_new();
+    gtk_widget_set_usize(entry, arr_ptr->entry_width, 0);
+    gtk_entry_set_text(GTK_ENTRY(entry), arr_ptr->text_buf_ret);
+    gtk_table_attach(GTK_TABLE(table), entry, l_col, l_col+1, row, row + 1, GTK_FILL, GTK_FILL | GTK_EXPAND, 4, 0);
+    if(arr_ptr->help_txt != NULL)
+    { 
+       gimp_help_set_help_data(entry, arr_ptr->help_txt,NULL);
+    }
+    gtk_widget_show(entry);
+    g_signal_connect(G_OBJECT(entry), "changed",
+		     G_CALLBACK(text_entry_update_cb),
+                     arr_ptr);
+    
+    arr_ptr->text_entry = entry;
+  }
+
   /* optionmenu */
+  l_col++;
   option_menu = gtk_option_menu_new();
-  gtk_table_attach(GTK_TABLE(table), option_menu, 1, 2, row, row +1,
+  gtk_table_attach(GTK_TABLE(table), option_menu, l_col, l_col+1, row, row +1,
 		   GTK_FILL, GTK_FILL, 0, 0);
   gtk_widget_show(option_menu);
 
@@ -564,43 +724,40 @@ optionmenu_create_value(char *title, GtkTable *table, int row, t_arr_arg *arr_pt
   /* menu (filled with items in loop) */
   menu = gtk_menu_new ();
 
-  /* outer loop is done to ensure that the initial "pressed" value
-   * is the first entry in the optionmenu
-   */
-  for(l_idx=0; l_idx < 2; l_idx++)
+  l_idx=0;
+  for(l_idy=0; l_idy < arr_ptr->radio_argc; l_idy++)
   {
-    for(l_idy=0; l_idy < arr_ptr->radio_argc; l_idy++)
-    {
-       if(arr_ptr->radio_ret == l_idy) l_radio_pressed  = TRUE;
-       else                            l_radio_pressed  = FALSE;
+     if(arr_ptr->radio_ret == l_idy) 
+     {
+       l_idx = l_idy; 
+     }
 
-       if( ((l_radio_pressed == TRUE) && (l_idx == 0))
-       ||  ((l_radio_pressed == FALSE) && (l_idx == 1)))
-       {
-           l_radio_txt = "null";
-          if (arr_ptr->radio_argv != NULL)
-          {
-             if (arr_ptr->radio_argv[l_idy] != NULL)
-                 l_radio_txt = arr_ptr->radio_argv[l_idy];
-          }
-          l_menu_ptr   = g_malloc0(sizeof(t_radio_arg));
-          l_menu_ptr->radio_index  = l_idy;
-          l_menu_ptr->arr_ptr  = arr_ptr;
+     l_radio_txt = "null";
+     if (arr_ptr->radio_argv != NULL)
+     {
+        if (arr_ptr->radio_argv[l_idy] != NULL)
+            l_radio_txt = arr_ptr->radio_argv[l_idy];
+     }
+     l_menu_ptr   = g_malloc0(sizeof(t_radio_arg));
+     l_menu_ptr->radio_index  = l_idy;
+     l_menu_ptr->arr_ptr  = arr_ptr;
 
 
-          menu_item = gtk_menu_item_new_with_label (l_radio_txt);
-          gtk_container_add (GTK_CONTAINER (menu), menu_item);
+     menu_item = gtk_menu_item_new_with_label (l_radio_txt);
+     gtk_container_add (GTK_CONTAINER (menu), menu_item);
 
-          gtk_signal_connect (GTK_OBJECT (menu_item), "activate",
-			      (GtkSignalFunc) radio_update_cb,
-			      l_menu_ptr);
-          gtk_widget_show (menu_item);
-      }
-    }
+     gtk_widget_show (menu_item);
+
+     g_signal_connect (G_OBJECT (menu_item), "activate",
+                       G_CALLBACK (radio_update_cb),
+                       l_menu_ptr);
   }
 
   gtk_option_menu_set_menu(GTK_OPTION_MENU(option_menu), menu);
   gtk_widget_show(option_menu);
+  gtk_option_menu_set_history (GTK_OPTION_MENU (option_menu), l_idx);
+  
+  arr_ptr->option_menu = option_menu;
 
 }
 
@@ -644,9 +801,10 @@ pair_flt_create_value(gchar *title, GtkTable *table, gint row, t_arr_arg *arr_pt
 		        arr_ptr->help_txt,                /* tooltip */
 		        NULL);                            /* privatetip */
 
-  gtk_signal_connect (GTK_OBJECT (adj), "value_changed",
-		      GTK_SIGNAL_FUNC (gimp_double_adjustment_update),
-		      &arr_ptr->flt_ret);
+  g_signal_connect (G_OBJECT (adj), "value_changed",
+		    G_CALLBACK (gimp_double_adjustment_update),
+		    &arr_ptr->flt_ret);
+  arr_ptr->adjustment = (GtkWidget *)adj;                
 }
 
 /* --------------------------
@@ -687,10 +845,11 @@ pair_int_create_value(gchar *title, GtkTable *table, gint row, t_arr_arg *arr_pt
 		        arr_ptr->help_txt,                /* tooltip */
 		        NULL);                            /* privatetip */
 
-  gtk_signal_connect (GTK_OBJECT (adj), "value_changed",
-		      GTK_SIGNAL_FUNC (gimp_int_adjustment_update),
-		      &arr_ptr->int_ret);
+  g_signal_connect (G_OBJECT (adj), "value_changed",
+		    G_CALLBACK (gimp_int_adjustment_update),
+		    &arr_ptr->int_ret);
 
+  arr_ptr->adjustment = (GtkWidget *)adj;                
 }
 
 
@@ -704,19 +863,17 @@ pair_int_create_value(gchar *title, GtkTable *table, gint row, t_arr_arg *arr_pt
  * ============================================================================
  */
 gint p_array_std_dialog(char *title_txt,
-                    char *frame_txt,
-                    int        argc,
-                    t_arr_arg  argv[],
-                    int        b_argc,
-                    t_but_arg  b_argv[],
-                    gint       b_def_val)
+                        char *frame_txt,
+                        int        argc,
+                        t_arr_arg  argv[],
+                        int        b_argc,
+                        t_but_arg  b_argv[],
+                        gint       b_def_val)
 {
   GtkWidget *hbbox;
   GtkWidget *button;
   GtkWidget *frame;
   GtkWidget *table;
-  gchar **l_argsv;
-  gint    l_argsc;
   gint    l_idx;
   gint    l_ok_value;
   char   *l_label_txt;
@@ -737,28 +894,20 @@ gint p_array_std_dialog(char *title_txt,
     return (g_arrint.run);
   }
 
-  /* gtk init (only once in a plugin-process) */
-  if (g_first_call == TRUE)
-  {
-     l_argsc = 1;
-     l_argsv = g_new (gchar *, 1);
-     l_argsv[0] = g_strdup ("gap_std_dialog");
-     gtk_init (&l_argsc, &l_argsv);
-     g_first_call = FALSE;
-  }
+  gimp_ui_init ("gap_std_dialog", FALSE);
 
   /* dialog */
   g_arrint.dlg = gtk_dialog_new ();
   gtk_window_set_title (GTK_WINDOW (g_arrint.dlg), title_txt);
   gtk_window_set_position (GTK_WINDOW (g_arrint.dlg), GTK_WIN_POS_MOUSE);
-  gtk_signal_connect (GTK_OBJECT (g_arrint.dlg), "destroy",
-		      (GtkSignalFunc) arr_close_callback,
-		      NULL);
+  g_signal_connect (G_OBJECT (g_arrint.dlg), "destroy",
+		    G_CALLBACK (arr_close_callback),
+		    NULL);
 
   gtk_container_set_border_width (GTK_CONTAINER (GTK_DIALOG (g_arrint.dlg)->action_area), 2);
   gtk_box_set_homogeneous (GTK_BOX (GTK_DIALOG (g_arrint.dlg)->action_area), FALSE);
   hbbox = gtk_hbutton_box_new ();
-  gtk_button_box_set_spacing (GTK_BUTTON_BOX (hbbox), 4);
+  gtk_box_set_spacing (GTK_BOX (hbbox), 4);
   gtk_box_pack_end (GTK_BOX (GTK_DIALOG (g_arrint.dlg)->action_area), hbbox, FALSE, FALSE, 0);
   gtk_widget_show (hbbox);
 
@@ -766,15 +915,21 @@ gint p_array_std_dialog(char *title_txt,
   for(l_idx = 0; l_idx < b_argc; l_idx++)
   {
 
-     if(b_argv[l_idx].but_txt == NULL)  button = gtk_button_new_from_stock ( GTK_STOCK_OK);
-     else                               button = gtk_button_new_from_stock (b_argv[l_idx].but_txt);
+     if(b_argv[l_idx].but_txt == NULL)  
+     {
+       button = gtk_button_new_from_stock (GTK_STOCK_OK);
+     }
+     else
+     {
+       button = gtk_button_new_from_stock (b_argv[l_idx].but_txt);
+     }
      GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
-     gtk_signal_connect (GTK_OBJECT (button), "clicked",
-		         (GtkSignalFunc) but_array_callback,
-		         &b_argv[l_idx].but_val);
      gtk_box_pack_start (GTK_BOX (hbbox), button, FALSE, FALSE, 0);
      if( b_argv[l_idx].but_val == b_def_val ) gtk_widget_grab_default (button);
      gtk_widget_show (button);
+     g_signal_connect (G_OBJECT (button), "clicked",
+		       G_CALLBACK (but_array_callback),
+		       &b_argv[l_idx].but_val);
      
   }
 
@@ -783,12 +938,12 @@ gint p_array_std_dialog(char *title_txt,
      /* if no buttons are specified use one CLOSE button per default */
      button = gtk_button_new_from_stock ( GTK_STOCK_CLOSE);
      GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
-     gtk_signal_connect (GTK_OBJECT (button), "clicked",
-                         (GtkSignalFunc) but_array_callback,
-                          &l_ok_value);
      gtk_box_pack_start (GTK_BOX (hbbox), button, TRUE, TRUE, 0);
      gtk_widget_grab_default (button);
      gtk_widget_show (button);
+     g_signal_connect (G_OBJECT (button), "clicked",
+                       G_CALLBACK (but_array_callback),
+                       &l_ok_value);
   }
 
   /*  parameter settings  */
@@ -810,6 +965,7 @@ gint p_array_std_dialog(char *title_txt,
     for(l_idx = 0; l_idx < argc; l_idx++)
     {
        arr_ptr = &argv[l_idx];
+       arr_ptr->widget_locked = TRUE;
 
        if(arr_ptr->label_txt == NULL)  l_label_txt = _("Value:");
        else                            l_label_txt = arr_ptr->label_txt;
@@ -829,6 +985,7 @@ gint p_array_std_dialog(char *title_txt,
             radio_create_value(l_label_txt, GTK_TABLE(table), (l_idx + 1),  arr_ptr);
             break;
          case WGT_OPTIONMENU:
+         case WGT_OPT_ENTRY:
             optionmenu_create_value(l_label_txt, GTK_TABLE(table), (l_idx + 1),  arr_ptr);
             break;
          case WGT_FILESEL:
@@ -855,11 +1012,21 @@ gint p_array_std_dialog(char *title_txt,
          case WGT_ACT_BUTTON:
             printf ("WGT_ACT_BUTTON not implemented yet, widget type ignored\n");
             break;
+         case WGT_DEFAULT_BUTTON:
+	    {
+	      t_all_arr_args arr_all;
+	    
+	      arr_all.argc = argc;
+	      arr_all.argv = argv;
+              default_button_create_value(l_label_txt, GTK_TABLE(table), (l_idx + 1), arr_ptr, &arr_all);
+	    }
+            break;
          default:     /* undefined widget type */
             printf ("Unknown widget type %d ignored\n", arr_ptr->widget_type);
             break;
 
        }   /* end switch */
+       arr_ptr->widget_locked = FALSE;
     }      /* end for */
   }
 
@@ -895,6 +1062,7 @@ gint p_array_std_dialog(char *title_txt,
              printf("INT  %s : %d\n",  l_label_txt, arr_ptr->int_ret);
              break;
           case WGT_TEXT:
+          case WGT_OPT_ENTRY:
           case WGT_FILESEL:
              printf("TEXT  %s : %s\n",  l_label_txt, arr_ptr->text_buf_ret);
              break;
@@ -912,7 +1080,7 @@ gint p_array_std_dialog(char *title_txt,
   }
   
   return (g_arrint.run);
-}	/* end p_array_dialog */
+}	/* end p_array_std_dialog */
 
 
 
@@ -927,6 +1095,15 @@ void     p_init_arr_arg  (t_arr_arg *arr_ptr,
    arr_ptr->constraint  = TRUE;
    arr_ptr->has_default = FALSE;
    arr_ptr->text_entry  = NULL;
+   arr_ptr->text_buf_len     = 0;
+   arr_ptr->text_buf_default = NULL;
+   arr_ptr->text_buf_ret     = NULL;
+
+   arr_ptr->text_filesel = NULL;
+   arr_ptr->text_entry = NULL;
+   arr_ptr->check_button = NULL;
+   arr_ptr->option_menu = NULL;
+   arr_ptr->adjustment = NULL;
 
    switch(widget_type)
    {
@@ -967,6 +1144,7 @@ void     p_init_arr_arg  (t_arr_arg *arr_ptr,
         break;
      case WGT_RADIO:
      case WGT_OPTIONMENU:
+     case WGT_OPT_ENTRY:
         arr_ptr->widget_type = widget_type;
         arr_ptr->radio_argc    = 0;
         arr_ptr->radio_default = 0;
@@ -986,6 +1164,9 @@ void     p_init_arr_arg  (t_arr_arg *arr_ptr,
         arr_ptr->widget_type = widget_type;
         arr_ptr->action_functon = NULL;
         arr_ptr->action_data    = NULL;
+        break;
+     case WGT_DEFAULT_BUTTON:
+        arr_ptr->widget_type = widget_type;
         break;
      default:     /* Calling error: undefined widget type */
         arr_ptr->widget_type = WGT_LABEL;

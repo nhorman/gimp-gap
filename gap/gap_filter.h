@@ -72,8 +72,7 @@ gap_db_browser_dialog (char *title_txt,
                        t_constraint_func        constraint_func,
                        t_constraint_func        constraint_func_sel1,
                        t_constraint_func        constraint_func_sel2,
-                       t_gap_db_browse_result  *result,
-		       gint                     init_gtk_flag);
+                       t_gap_db_browse_result  *result);
 
 /* ------------------------
  * gap_filter_codegen.h

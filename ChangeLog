@@ -1,0 +1,234 @@
+2003-05-09  Sven Neumann  <sven@gimp.org>
+
+	Merged a large patch from Wolfang Hofer.
+
+	Did some cleanup after applying the patch:
+        - Removed all calls to _gimp_help_init().
+	- Replaced all calls to gtk_init() with gimp_ui_init().
+	- Added back G*_DISABLE_DEPRECATED to the CPPFLAGS.
+	- Replaced newly added deprecated code with non-deprecated
+	  variants.
+
+------- Wolfgang Hofer  2003.05.03 -------
+
+Removed Files: 
+  # (those files are no longer part of GAP, dont include them in distributions
+  # but keep them in CVS for older GAP versions)
+
+  gap/gap_resi_dialog.c
+  gap/gap_resi_dialog.h
+  gap/resize.c
+  gap/resize.h
+  gap/gap_exchange_image.c
+  gap/gap_exchange_image.h
+  gap/gap_decode_mpeg_main.c
+
+Removed Dir:
+  gap/gimp_1.0.2_src
+  
+ 
+
+New Files:
+  gap/gap_lock.c
+  gap/gap_lock.h
+  gap/gap_lastvaldesc.c
+  gap/gap_lastvaldesc.h
+  gap/gimplastvaldesc.c
+  gap/gimplastvaldesc.h
+  
+------- 
+
+------------------
+Porting Change Log
+__________________
+
+2003.05.03
+
+x- filter all layers
+  o- gimplastvaldesc will not be added to libgimp in gimp-1.3.x
+     need more general solution for gimp 2.0
+  x- add the old Iterator_ALT stuff (that was removed in the current port)
+     - still need to check all interfaces
+
+?- Tooltips does not work because gimp_help_init was removed ( was renamed to _gimp_help_init)
+     gap_std_dialog (pid:2252): Gtk-CRITICAL **: file gtktooltips.c: line 244 (gtk_tooltips_set_tip): assertion `GTK_IS_TOOLTIPS (tooltips)' failed
+
+   i changed gap to use _gimp_help_init instead of  gimp_help_init to keep 
+   to keep calls to gimp_help_set_help_data working with gimp-1.3.12 . 
+
+   ==> maybe this has to be changed because the name _gimp_help_init does not sound like a public interface ??,
+       another idea to fix that, is to remove all calls to gimp_help_set_help_data
+       and use native gtk_tooltips instead.
+   (i also tried to use gimp_widgets_init but this did not work
+    becuse it sometimes will be called twice.
+    leads to crash in MovePath-> Animated preview where more dialog windows
+    (MovePath dialog and array_dialog) are opened.
+
+x- merge in (upto)6-digit framenumber support feature (from gap_vid_enc project)
+x- implement renumber feature
+x- merge in existing gap port into gimp-gap CVS version provided by sven   
+x- Remove  gap_decode_mpeg  (gap_decode_mpeg_main.c)
+
+   The obsolete plug-in gap_decode_mpeg uses the old unmaintained libmpeg
+   and crashed in most of the tests...
+
+   
+
+
+2003.04.xx
+ ------------------------------------
+ GAP has moved to a seperate CVS project. "gimp-gap"
+ Automake Makefiles configuration was created by Sven.
+ The old GAP sourcecode (that was part of gimp-1.2.x) 
+ with its complete history was used to create the new project.
+ Sven did some little modifications (gap-intl.h) to comiple standalone with gimp-1.3.x
+ ------------------------------------
+
+2003.01.19
+ x- use gimp_directory  (replace gimp_gimprc_query for "gimp_dir")
+ 
+ x- GAP conditional save (based on gimp_image_is_dirty)
+     The USER can turn ON unconditional Save (old behavior)
+     by adding the following Line to .gimp-1.3/gimprc file:
+
+      (video-unconditional-frame-save "yes")
+      
+ x- gap_arr_dialog   merged in changes of the gap_vid_enc project
+                     added WGT_OPT_ENTRY (entry comined with Optionmenu) and WGT_DEFAULT_BUTTON
+  
+2002.09.21
+ x- added gap_lastvaldesc
+     (as wrapper for gimplastvaldesc that may (or may not) be part of libgimp
+      depending on HAVE_LASTVALDESC_H )
+
+2002.04.21
+  API cleanup 
+
+  x- redesign of gap_locking
+     The new gap_locking uses a locktable with only one identifier 
+     (used in gimp_set_data) and overwrites unused records in the locktable.
+     
+     (the old algorithm used the image_id with constant prefix as Locking key.
+     But with the new methode gimp_displays_reconnect the image_id changes on
+     each image exchange, and would leave a lot of useless locks.)
+
+  x- removed all calls to gimp_drawable_set_image (obsolete)
+    and use p_gimp_layer_new_from_drawable to copy layers from other images.
+    (as recommanded by mitch -- see #77508 )
+  
+  x- GAP VCR Navigator must notice changes of the active_image_id
+
+
+
+2002.03.23
+
+ x- removed iter_ALT (subdir and all iter_ALT PDB Procedures, were replaced by Common Iterator)
+ 
+ x- removed 
+    gap_filter_codegen.c  (old codegeneraor stuff for iter_ALT procedures)
+    gap_exchange_image.h .c  (now using gimp_displays_reconnect -- see #77508)
+
+
+ x- gap_decode_xanim.c  (merged in bugfix 1.2.2c from stable branch; xanim call fails if . not in PATH or no write permission for current dir)
+
+
+2002.03.12  gap-1.3.4_pre09
+
+ x- Bugreport #74485: GAP crashes the GIMP-1.3.4 in the final call of gimp_displays_flush
+
+    ==> The layer stealing strategy does not use clean API
+        and will be replaced by a new clean Concept.
+
+
+
+-------------------------------------------------------------
+
+Open Bugs/TODO's
+
+
+    
+- array_dialog
+    - default button should use STOCK button and should move to button box where cancel, ok buttons are located.
+
+
+- gap_navigator_dialog.c 
+     port not finished yet  using: #undef  GTK_DISABLE_DEPRECATED
+
+     the code yet has some workarounds and needs much more work/redesign
+      - relace polling by event handling (if possible)
+      - needs a list widget that can handle thousands of thumbnails
+        (should only render the visible part)
+      - selction of items does not work correct
+      - .xvpics thumbnails have very low quality
+        (thumbnails in jpeg could give better quality with same diskspace usage.)
+
+
+
+- gap_mov_dialog.c 
+
+   -  port not finished yet  using: #undef  GTK_DISABLE_DEPRECATED
+     (needs port to a new preview widget -- not yet available ?) )
+   - layout needs some redesign
+   - using icons provided by jakub steiner
+
+
+
+
+
+x- gap_array_dialog:
+   x- text entry widget (filebrowser)  is displayed as line
+     (cant enter text, dont shows selected files from browser)
+   x- same problem for single text entry
+     
+   o- add features (merge default feature from gap_vid_enc project)
+      ==> New feature not needed here
+
+x- frames_to_image does not work.
+   ==> error found in gap_array_dialog
+       radio Button shows default "All Visible" (item6)
+       but returns Pattern equal Layername (item0)
+       if no explicite selection is clicked !!!
+   
+       (the new gtk fires radio button callback to early !)
+       see gap_array_dialog.c:radio_create_value
+       for workaround
+
+
+
+- mov_path_dialog:
+  x- rotate follow button  is not clickable (active) and does not WORK
+    ==> new GLIB/GTK calls only the 1.st signal function for button_press_event
+        (the old GTK 1.2 gtk_signal_connect did fire both callback functions)
+        g_signal_connect "button_press_event"  
+        g_signal_connect  "clicked"
+  
+  
+  - show path checkbox  --> SOMETIMES crashes plug-in when clicked (cant reproduce)
+  - update preview fails if Rotate is not 0 !! and ?? not reproduceable any more
+    POPUP "Unable to cut or copy because the selected region is empty"
+     AnimPreview can do rotation
+     
+
+
+x- crop (array dialog seems OK, but does not work -- no crop is done !!)
+     ==> PDB name  changed gimp_crop   to gimp_image_crop
+
+
+o- scale and resize dialog  endless loop ? (hangs if contraint flag on)
+  ==> no longer support for copy of old gimp scale/resize widget
+ 
+      temporary use array dialog for CROP/SCALE/RESIZE
+      until gimp provides widget
+  
+
+x- scale and resize does not work !
+     ==> apply limit width/heigth down to image_size only for crop.
+     
+    
+
+x- gap_pdb_calls.c and other gap sources
+   removed lots of duplicate PDB wrappers that are available
+   in libgimp too.
+   (those wrappers are old code and were needed in gimp-1.0
+    or earlier releases)
+

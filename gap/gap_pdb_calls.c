@@ -23,6 +23,9 @@
  */
 
 /* revision history:
+ * version 1.3.5a;  2002/04/20  hof: p_gimp_layer_new_from_drawable. (removed set_drabale)
+ * version 1.3.4a;  2002/03/12  hof: removed duplicate wrappers that are available in libgimp too.
+ * version 1.2.2b;  2001/12/09  hof: wrappers for tattoo procedures
  * version 1.1.16a; 2000/02/05  hof: path lockedstaus
  * version 1.1.15b; 2000/01/30  hof: image parasites
  * version 1.1.15a; 2000/01/26  hof: pathes
@@ -51,7 +54,8 @@ extern int gap_debug;
  * ============================================================================
  */
 
-gint p_pdb_procedure_available(char *proc_name)
+gint 
+p_pdb_procedure_available(char *proc_name)
 {
    /* Note: It would be nice to call "gimp_layer_get_linked" direct,
     *       but there is not such an Interface in gimp 0.99.16
@@ -100,485 +104,84 @@ gint p_pdb_procedure_available(char *proc_name)
 
 /* ---------------------- PDB procedure calls  -------------------------- */
 
-/* ============================================================================
- * p_get_gimp_selection_bounds
- *   
- * ============================================================================
- */
-gint
-p_get_gimp_selection_bounds (gint32 image_id, gint32 *x1, gint32 *y1, gint32 *x2, gint32 *y2)
-{
-   static char     *l_get_sel_bounds_proc = "gimp_selection_bounds";
-   GimpParam          *return_vals;
-   int              nreturn_vals;
 
-   return_vals = gimp_run_procedure (l_get_sel_bounds_proc,
-                                 &nreturn_vals,
-                                 GIMP_PDB_IMAGE, image_id,
-                                 GIMP_PDB_END);
-
-   if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
-   {
-      *x1 = return_vals[2].data.d_int32;
-      *y1 = return_vals[3].data.d_int32;
-      *x2 = return_vals[4].data.d_int32;
-      *y2 = return_vals[5].data.d_int32;
-      return(return_vals[1].data.d_int32);
-   }
-   printf("GAP: Error: PDB call of %s failed staus=%d\n", 
-          l_get_sel_bounds_proc, (int)return_vals[0].data.d_status);
-   return(FALSE);
-}	/* end p_get_gimp_selection_bounds */
-
-/* ============================================================================
- * p_gimp_selection_load
- *   
- * ============================================================================
- */
-gint
-p_gimp_selection_load (gint32 channel_id)
-{
-   static char     *l_sel_load = "gimp_selection_load";
-   GimpParam          *return_vals;
-   int              nreturn_vals;
-
-   return_vals = gimp_run_procedure (l_sel_load,
-                                 &nreturn_vals,
-                                 GIMP_PDB_CHANNEL, channel_id,
-                                 GIMP_PDB_END);
-
-   if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
-   {
-      return(TRUE);
-   }
-   printf("GAP: Error: PDB call of %s failed status=%d\n", 
-          l_sel_load, (int)return_vals[0].data.d_status);
-   return(FALSE);
-}	/* end p_gimp_selection_load */
-
-
-/* ============================================================================
- * p_layer_set_linked
- *   set linked state of the layer
- * ============================================================================
- */
-int
-p_layer_set_linked (gint32 layer_id, gint32 new_state)
-{
-   static char     *l_set_linked_proc = "gimp_layer_set_linked";
-   GimpParam          *return_vals;
-   int              nreturn_vals;
-
-   return_vals = gimp_run_procedure (l_set_linked_proc,
-                                 &nreturn_vals,
-                                 GIMP_PDB_LAYER, layer_id,
-                                 GIMP_PDB_INT32, new_state,  /* TRUE or FALSE */
-                                 GIMP_PDB_END);
-
-   if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
-   {
-      return (0);
-   }
-   printf("GAP: Error: p_layer_set_linked to state %d failed\n",(int)new_state);
-   return(-1);
-}	/* end p_layer_set_linked */
-
-/* ============================================================================
- * p_layer_get_linked
- *   
- * ============================================================================
- */
-
-gint p_layer_get_linked(gint32 layer_id)
-{
-  static char     *l_get_linked_proc = "gimp_layer_get_linked";
-  GimpParam *return_vals;
-  int nreturn_vals;
-  gint32 is_linked;
-
-  is_linked = FALSE;
-  return_vals = gimp_run_procedure (l_get_linked_proc,
-                                    &nreturn_vals,
-                                    GIMP_PDB_LAYER, layer_id,
-                                    GIMP_PDB_END);
-
-  if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
-  {
-    is_linked = return_vals[1].data.d_int32;
-  }
-  gimp_destroy_params (return_vals, nreturn_vals);
-
-  return is_linked;
-}
-
-/* ============================================================================
- * p_gimp_image_floating_sel_attached_to
- *   
- * ============================================================================
- */
-
-gint32 p_gimp_image_floating_sel_attached_to(gint32 image_id)
-{
-   static char     *l_fsel_attached_to_proc = "gimp_image_floating_sel_attached_to";
-   GimpParam          *return_vals;
-   int              nreturn_vals;
-
-   return_vals = gimp_run_procedure (l_fsel_attached_to_proc,
-                                 &nreturn_vals,
-                                 GIMP_PDB_IMAGE, image_id,
-                                 GIMP_PDB_END);
-
-   if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
-   {
-      return(return_vals[1].data.d_drawable);
-   }
-   printf("GAP: Error: PDB call of %s failed\n", l_fsel_attached_to_proc);
-   return(-1);
-}	/* end p_gimp_image_floating_sel_attached_to */
-
-/* ============================================================================
- * p_gimp_floating_sel_attach
- *   
- * ============================================================================
- */
-
-gint   p_gimp_floating_sel_attach(gint32 layer_id, gint32 drawable_id)
-{
-   static char     *l_fsel_attach_proc = "gimp_floating_sel_attach";
-   GimpParam          *return_vals;
-   int              nreturn_vals;
-
-   return_vals = gimp_run_procedure (l_fsel_attach_proc,
-                                 &nreturn_vals,
-                                 GIMP_PDB_LAYER,    layer_id,
-                                 GIMP_PDB_DRAWABLE, drawable_id,
-                                 GIMP_PDB_END);
-
-   if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
-   {
-      return (0);
-   }
-   printf("GAP: Error: PDB call of %s failed\n", l_fsel_attach_proc);
-   return(-1);
-}	/* end p_gimp_floating_sel_attach */
-
-/* ============================================================================
- * p_gimp_floating_sel_rigor
- *   
- * ============================================================================
- */
-
-gint   p_gimp_floating_sel_rigor(gint32 layer_id, gint32 undo)
-{
-   static char     *l_fsel_rigor_proc = "gimp_floating_sel_rigor";
-   GimpParam          *return_vals;
-   int              nreturn_vals;
-
-   return_vals = gimp_run_procedure (l_fsel_rigor_proc,
-                                 &nreturn_vals,
-                                 GIMP_PDB_LAYER, layer_id,
-                                 GIMP_PDB_INT32, undo,
-                                 GIMP_PDB_END);
-
-   if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
-   {
-      return (0);
-   }
-   printf("GAP: Error: PDB call of %s failed\n", l_fsel_rigor_proc);
-   return(-1);
-}	/* end p_gimp_floating_sel_rigor */
-
-/* ============================================================================
- * p_gimp_floating_sel_relax
- *   
- * ============================================================================
- */
-
-gint   p_gimp_floating_sel_relax(gint32 layer_id, gint32 undo)
-{
-   static char     *l_fsel_relax_proc = "gimp_floating_sel_relax";
-   GimpParam          *return_vals;
-   int              nreturn_vals;
-
-   return_vals = gimp_run_procedure (l_fsel_relax_proc,
-                                 &nreturn_vals,
-                                 GIMP_PDB_LAYER, layer_id,
-                                 GIMP_PDB_INT32, undo,
-                                 GIMP_PDB_END);
-
-   if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
-   {
-      return (0);
-   }
-   printf("GAP: Error: PDB call of %s failed\n", l_fsel_relax_proc);
-   return(-1);
-}	/* end p_gimp_floating_sel_relax */
 
 
 
 
 /* ============================================================================
- * p_gimp_image_add_guide
- *   
- * ============================================================================
- */
-
-gint32   p_gimp_image_add_guide(gint32 image_id, gint32 position, gint32 orientation)
-{
-   static char     *l_add_guide_proc;
-   GimpParam          *return_vals;
-   int              nreturn_vals;
-
-   if (orientation == GIMP_ORIENTATION_VERTICAL)
-   {
-     l_add_guide_proc = "gimp_image_add_vguide";
-   }
-   else
-   {
-     l_add_guide_proc = "gimp_image_add_hguide";
-   }
-
-   return_vals = gimp_run_procedure (l_add_guide_proc,
-                                 &nreturn_vals,
-                                 GIMP_PDB_IMAGE, image_id,
-                                 GIMP_PDB_INT32, position,
-                                 GIMP_PDB_END);
-
-   if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
-   {
-      return(return_vals[1].data.d_int32);  /* return the guide ID */
-   }
-   printf("GAP: Error: PDB call of %s failed\n", l_add_guide_proc);
-   return(-1);
-}	/* end p_gimp_image_add_guide */
-
-/* ============================================================================
- * p_gimp_image_findnext_guide
- *
- * This procedure takes an image and a guide_id as input and finds the guide_id
- * of the successor of the given guide_id in the image's Guide list.
- * If the supplied guide_id is 0, the procedure will return the first Guide.
- * The procedure will return 0 if given the final guide_id as an argument 
- * or the image has no guides.
- *   
- * ============================================================================
- */
-
-gint32   p_gimp_image_findnext_guide(gint32 image_id, gint32 guide_id)
-{
-   static char     *l_findnext_guide_proc = "gimp_image_find_next_guide";
-   GimpParam          *return_vals;
-   int              nreturn_vals;
-
-   return_vals = gimp_run_procedure (l_findnext_guide_proc,
-                                 &nreturn_vals,
-                                 GIMP_PDB_IMAGE, image_id,
-                                 GIMP_PDB_INT32, guide_id,
-                                 GIMP_PDB_END);
-
-   if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
-   {
-      return(return_vals[1].data.d_int32);  /* return the next guide ID */
-   }
-   printf("GAP: Error: PDB call of %s failed\n", l_findnext_guide_proc);
-   return(-1);
-}	/* end p_gimp_image_findnext_guide */
-
-
-
-/* ============================================================================
- * p_gimp_image_get_guide_position
- *
- * ============================================================================
- */
-
-gint32   p_gimp_image_get_guide_position(gint32 image_id, gint32 guide_id)
-{
-   static char     *l_get_guide_pos_proc = "gimp_image_get_guide_position";
-   GimpParam          *return_vals;
-   int              nreturn_vals;
-
-   return_vals = gimp_run_procedure (l_get_guide_pos_proc,
-                                 &nreturn_vals,
-                                 GIMP_PDB_IMAGE, image_id,
-                                 GIMP_PDB_INT32, guide_id,
-                                 GIMP_PDB_END);
-
-   if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
-   {
-      return(return_vals[1].data.d_int32);  /* return the guide position */
-   }
-   printf("GAP: Error: PDB call of %s failed\n", l_get_guide_pos_proc);
-   return(-1);
-}	/* end p_gimp_image_get_guide_position */
-
-
-/* ============================================================================
- * p_gimp_image_get_guide_orientation
- *
- * ============================================================================
- */
-
-gint32   p_gimp_image_get_guide_orientation(gint32 image_id, gint32 guide_id)
-{
-   static char     *l_get_guide_pos_orient = "gimp_image_get_guide_orientation";
-   GimpParam          *return_vals;
-   int              nreturn_vals;
-
-   return_vals = gimp_run_procedure (l_get_guide_pos_orient,
-                                 &nreturn_vals,
-                                 GIMP_PDB_IMAGE, image_id,
-                                 GIMP_PDB_INT32, guide_id,
-                                 GIMP_PDB_END);
-
-   if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
-   {
-      return(return_vals[1].data.d_int32);  /* return the guide orientation */
-   }
-   printf("GAP: Error: PDB call of %s failed\n", l_get_guide_pos_orient);
-   return(-1);
-}	/* end p_gimp_image_get_guide_orientation */
-
-
-/* ============================================================================
- * p_gimp_image_delete_guide
- *   
- * ============================================================================
- */
-
-gint32   p_gimp_image_delete_guide(gint32 image_id, gint32 guide_id)
-{
-   static char     *l_delete_guide_proc = "gimp_image_delete_guide";
-   GimpParam          *return_vals;
-   int              nreturn_vals;
-
-   return_vals = gimp_run_procedure (l_delete_guide_proc,
-                                 &nreturn_vals,
-                                 GIMP_PDB_IMAGE, image_id,
-                                 GIMP_PDB_INT32, guide_id,
-                                 GIMP_PDB_END);
-
-   if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
-   {
-      return(return_vals[1].data.d_int32);  /* return the next guide ID */
-   }
-   printf("GAP: Error: PDB call of %s failed\n", l_delete_guide_proc);
-   return(-1);
-}	/* end p_gimp_image_delete_guide */
-
-
-/* ============================================================================
- * p_gimp_selection_none
- *   
- * ============================================================================
- */
-
-gint   p_gimp_selection_none(gint32 image_id)
-{
-   static char     *l_sel_none_proc = "gimp_selection_none";
-   GimpParam          *return_vals;
-   int              nreturn_vals;
-
-   return_vals = gimp_run_procedure (l_sel_none_proc,
-                                 &nreturn_vals,
-                                 GIMP_PDB_IMAGE,    image_id,
-                                 GIMP_PDB_END);
-
-   if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
-   {
-      return (0);
-   }
-   printf("GAP: Error: PDB call of %s failed\n", l_sel_none_proc);
-   return(-1);
-}	/* end p_gimp_selection_none */
-
-
-/* ============================================================================
- * p_gimp_rotate
+ * p_gimp_rotate_degree
  *  PDB call of 'gimp_rotate'
  * ============================================================================
  */
 
-gint p_gimp_rotate(gint32 drawable_id, gint32 interpolation, gdouble angle_deg)
+gint32
+p_gimp_rotate_degree(gint32 drawable_id, gboolean interpolation, gdouble angle_deg)
 {
-   static char     *l_rotate_proc = "gimp_rotate";
-   GimpParam          *return_vals;
-   int              nreturn_vals;
    gdouble          l_angle_rad;
 
    l_angle_rad = (angle_deg * 3.14159) / 180.0;
+   return(gimp_rotate(drawable_id, interpolation, l_angle_rad));
+   
+}  /* end p_gimp_rotate_degree */
 
-   return_vals = gimp_run_procedure (l_rotate_proc,
-                                          &nreturn_vals,
-                                          GIMP_PDB_DRAWABLE, drawable_id,
-			                  GIMP_PDB_INT32, interpolation,
-			                  GIMP_PDB_FLOAT, l_angle_rad,
-                                          GIMP_PDB_END);
-   if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
-   {
-      return(0);
-   }
-   return (-1);
-
-}  /* end p_gimp_rotate */
 
 
 /* ============================================================================
- * p_gimp_drawable_set_image
+ * p_gimp_displays_reconnect
  *   
  * ============================================================================
  */
 
-gint   p_gimp_drawable_set_image(gint32 drawable_id, gint32 image_id)
+gboolean
+p_gimp_displays_reconnect(gint32 old_image_id, gint32 new_image_id)
 {
-   static char     *l_drawable_set_img_proc = "gimp_drawable_set_image";
+   static char     *l_called_proc = "gimp_displays_reconnect";
    GimpParam          *return_vals;
    int              nreturn_vals;
 
-   return_vals = gimp_run_procedure (l_drawable_set_img_proc,
+   return_vals = gimp_run_procedure (l_called_proc,
                                  &nreturn_vals,
-                                 GIMP_PDB_DRAWABLE,  drawable_id,
-                                 GIMP_PDB_IMAGE,     image_id,
+                                 GIMP_PDB_IMAGE,  old_image_id,
+                                 GIMP_PDB_IMAGE,  new_image_id,
                                  GIMP_PDB_END);
 
    if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
    {
-      return (0);
+      return (TRUE);   /* OK */
    }
-   printf("GAP: Error: PDB call of %s failed\n", l_drawable_set_img_proc);
-   return(-1);
-}	/* end p_gimp_drawable_set_image */
+   printf("GAP: Error: PDB call of %s failed\n", l_called_proc);
+   return(FALSE);
+}	/* end p_gimp_displays_reconnect */
+
+
 
 /* ============================================================================
- * p_gimp_gimprc_query
+ * p_gimp_layer_new_from_drawable
  *   
  * ============================================================================
  */
-char*
-p_gimp_gimprc_query(char *key)
+
+gint32
+p_gimp_layer_new_from_drawable(gint32 drawable_id, gint32 dst_image_id)
 {
-  GimpParam *return_vals;
-  gint nreturn_vals;
-  char *value;
+   static char     *l_called_proc = "gimp_layer_new_from_drawable";
+   GimpParam          *return_vals;
+   int              nreturn_vals;
 
-  return_vals = gimp_run_procedure ("gimp_gimprc_query",
-				    &nreturn_vals,
-				    GIMP_PDB_STRING, key,
-				    GIMP_PDB_END);
+   return_vals = gimp_run_procedure (l_called_proc,
+                                 &nreturn_vals,
+                                 GIMP_PDB_DRAWABLE,  drawable_id,
+                                 GIMP_PDB_IMAGE,     dst_image_id,
+                                 GIMP_PDB_END);
 
-  value = NULL;
-  if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
-  {
-      if(return_vals[1].data.d_string != NULL)
-      {
-        value = g_strdup(return_vals[1].data.d_string);
-      }
-  }
-  gimp_destroy_params (return_vals, nreturn_vals);
-
-  return(value);
-}
-
+   if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
+   {
+      return (return_vals[1].data.d_int32);   /* return the resulting layer_id */
+   }
+   printf("GAP: Error: PDB call of %s failed\n", l_called_proc);
+   return(-1);
+}	/* end p_gimp_layer_new_from_drawable */
 
 /* ============================================================================
  * p_gimp_file_save_thumbnail
@@ -670,260 +273,6 @@ gint   p_gimp_image_thumbnail(gint32 image_id, gint32 width, gint32 height,
    return(-1);
 }	/* end p_gimp_image_thumbnail */
 
-
-/* ============================================================================
- * p_gimp_path_set_points
- *   
- * ============================================================================
- */
-
-gint
-p_gimp_path_set_points(gint32 image_id, char *name,
-                       gint32 path_type, gint32 num_points, gdouble *path_points)
-{
-   static char     *l_called_proc = "gimp_path_set_points";
-   GimpParam          *return_vals;
-   int              nreturn_vals;
-
-   return_vals = gimp_run_procedure (l_called_proc,
-                                 &nreturn_vals,
-                                 GIMP_PDB_IMAGE,  image_id,
-                                 GIMP_PDB_STRING, name,
-                                 GIMP_PDB_INT32,  path_type,
-                                 GIMP_PDB_INT32,  num_points,
-                                 GIMP_PDB_FLOATARRAY, path_points,
-                                 GIMP_PDB_END);
-
-   if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
-   {
-      return(0);  /* OK */
-   }
-   printf("GAP: Error: PDB call of %s failed\n", l_called_proc);
-   return(-1);
-}	/* end p_gimp_path_set_points */
-
-
-
-/* ============================================================================
- * p_gimp_path_get_points
- *   
- * ============================================================================
- */
-gdouble *
-p_gimp_path_get_points(gint32 image_id, char *name,
-                       gint32 *path_type, gint32 *path_closed, gint32 *num_points)
-{
-   static char     *l_called_proc = "gimp_path_get_points";
-   GimpParam          *return_vals;
-   int              nreturn_vals;
-
-   return_vals = gimp_run_procedure (l_called_proc,
-                                 &nreturn_vals,
-                                 GIMP_PDB_IMAGE, image_id,
-                                 GIMP_PDB_STRING, name,
-                                 GIMP_PDB_END);
-
-   if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
-   {
-      *path_type = return_vals[1].data.d_int32;
-      *path_closed = return_vals[2].data.d_int32;
-      *num_points = return_vals[3].data.d_int32;
-      return(return_vals[4].data.d_floatarray); /* OK return path points */
-   }
-   printf("GAP: Error: PDB call of %s failed\n", l_called_proc);
-   *num_points = 0;
-   return(NULL);
-}	/* end p_gimp_path_get_points */
-
-/* ============================================================================
- * p_gimp_path_delete
- *   
- * ============================================================================
- */
-
-gint
-p_gimp_path_delete(gint32 image_id, char *name)
-{
-   static char     *l_called_proc = "gimp_path_delete";
-   GimpParam          *return_vals;
-   int              nreturn_vals;
-
-   return_vals = gimp_run_procedure (l_called_proc,
-                                 &nreturn_vals,
-                                 GIMP_PDB_IMAGE, image_id,
-                                 GIMP_PDB_STRING, name,
-                                 GIMP_PDB_END);
-
-   if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
-   {
-      return (0);
-   }
-   printf("GAP: Error: PDB call of %s failed\n", l_called_proc);
-   return(-1);
-}	/* end p_gimp_path_delete */
-
-
-/* ============================================================================
- * p_gimp_path_list
- *   
- * ============================================================================
- */
-
-char **
-p_gimp_path_list(gint32 image_id, gint32 *num_paths)
-{
-   static char     *l_called_proc = "gimp_path_list";
-   GimpParam          *return_vals;
-   int              nreturn_vals;
-
-   return_vals = gimp_run_procedure (l_called_proc,
-                                 &nreturn_vals,
-                                 GIMP_PDB_IMAGE, image_id,
-                                 GIMP_PDB_END);
-
-   if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
-   {
-      *num_paths = return_vals[1].data.d_int32;
-      return(return_vals[2].data.d_stringarray);  /* OK, return path names */
-   }
-   printf("GAP: Error: PDB call of %s failed\n", l_called_proc);
-   *num_paths = 0;
-   return(NULL);
-}	/* end p_gimp_path_list */
-
-/* ============================================================================
- * p_gimp_path_get_current
- *   
- * ============================================================================
- */
-
-char *
-p_gimp_path_get_current(gint32 image_id)
-{
-   static char     *l_called_proc = "gimp_path_get_current";
-   GimpParam          *return_vals;
-   int              nreturn_vals;
-
-   return_vals = gimp_run_procedure (l_called_proc,
-                                 &nreturn_vals,
-                                 GIMP_PDB_IMAGE, image_id,
-                                 GIMP_PDB_END);
-
-   if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
-   {
-      return(g_strdup(return_vals[1].data.d_string)); /* OK */
-   }
-   printf("GAP: Error: PDB call of %s failed\n", l_called_proc);
-   return(NULL);
-}	/* end p_gimp_path_get_current */
-
-/* ============================================================================
- * p_gimp_path_set_current
- *   
- * ============================================================================
- */
-
-gint
-p_gimp_path_set_current(gint32 image_id, char *name)
-{
-   static char     *l_called_proc = "gimp_path_set_current";
-   GimpParam          *return_vals;
-   int              nreturn_vals;
-
-   return_vals = gimp_run_procedure (l_called_proc,
-                                 &nreturn_vals,
-                                 GIMP_PDB_IMAGE, image_id,
-                                 GIMP_PDB_STRING, name,
-                                 GIMP_PDB_END);
-
-   if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
-   {
-      return(0); /* OK */
-   }
-   printf("GAP: Error: PDB call of %s failed\n", l_called_proc);
-   return(-1);
-}	/* end p_gimp_path_set_current */
-
-/* ============================================================================
- * p_gimp_path_get_locked
- *   
- * ============================================================================
- */
-gint32
-p_gimp_path_get_locked(gint32 image_id, gchar *name)
-{
-   static gchar    *l_called_proc = "gimp_path_get_locked";
-   GimpParam          *return_vals;
-   int              nreturn_vals;
-
-   return_vals = gimp_run_procedure (l_called_proc,
-                                 &nreturn_vals,
-                                 GIMP_PDB_IMAGE, image_id,
-                                 GIMP_PDB_STRING, name,
-                                 GIMP_PDB_END);
-
-   if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
-   {
-      return(return_vals[1].data.d_int32); /* OK */
-   }
-   printf("GAP: Error: PDB call of %s failed\n", l_called_proc);
-   return(FALSE);
-}	/* end p_gimp_path_get_locked */
-
-/* ============================================================================
- * p_gimp_path_set_locked
- *   
- * ============================================================================
- */
-gint
-p_gimp_path_set_locked(gint32 image_id, gchar *name, gint32 lockstatus)
-{
-   static gchar    *l_called_proc = "gimp_path_set_locked";
-   GimpParam          *return_vals;
-   int              nreturn_vals;
-
-   return_vals = gimp_run_procedure (l_called_proc,
-                                 &nreturn_vals,
-                                 GIMP_PDB_IMAGE, image_id,
-                                 GIMP_PDB_STRING, name,
-                                 GIMP_PDB_INT32, lockstatus,
-                                 GIMP_PDB_END);
-
-   if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
-   {
-      return(0); /* OK */
-   }
-   printf("GAP: Error: PDB call of %s failed\n", l_called_proc);
-   return(-1);
-}	/* end p_gimp_path_set_locked */
-
-/* ============================================================================
- * p_gimp_image_parasite_list
- * ============================================================================
- */
-
-gchar **
-p_gimp_image_parasite_list (gint32 image_id, gint32 *num_parasites)
-{
-   static gchar    *l_procname = "gimp_image_parasite_list";
-   GimpParam          *return_vals;
-   int              nreturn_vals;
-
-   return_vals = gimp_run_procedure (l_procname,
-                                    &nreturn_vals,
-                                    GIMP_PDB_IMAGE,  image_id,
-                                    GIMP_PDB_END);
-                                    
-   if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
-   {
-      *num_parasites = return_vals[1].data.d_int32;
-      return(return_vals[2].data.d_stringarray);    /* OK, return name list */
-   }
-   printf("GAP: Error: PDB call of %s failed\n", l_procname);
-
-   *num_parasites = 0;
-   return(NULL);
-}	/* end p_gimp_image_parasite_list */
 
 
 /* ============================================================================

@@ -83,8 +83,6 @@ p_resi_dialog (gint32 image_id, t_gap_asiz asiz_mode, char *title_text,
                long *size_x, long *size_y, 
                long *offs_x, long *offs_y)
 {
-  gchar **l_argsv;
-  gint    l_argsc;
   gint   l_width;
   gint   l_height;
   t_res_int  l_resint;
@@ -101,12 +99,7 @@ p_resi_dialog (gint32 image_id, t_gap_asiz asiz_mode, char *title_text,
   l_width  = gimp_image_width(image_id);
   l_height = gimp_image_height(image_id);
 
-  /* gtk init */
-  l_argsc = 1;
-  l_argsv = g_new (gchar *, 1);
-  l_argsv[0] = g_strdup ("gap_res_dialog");
-  
-  gtk_init (&l_argsc, &l_argsv);
+  gimp_ui_init ("gap_res_dialog", FALSE);
 
   /*  the ImageResize structure  */
   image_resize = (ImageResize *) g_malloc (sizeof (ImageResize));

@@ -8,6 +8,7 @@
  *                                with varying settings for all
  *                                layers within one Image.
  * - query   registration of gap_foreach Procedure
+ *                        and for the COMMON Iterator Procedures
  *                        and for all Iterator_ALT Procedures
  * - run     invoke the gap_foreach procedure by its PDB name
  * 
@@ -43,12 +44,16 @@
 #include "gap-intl.h"
 #include "libgimp/gimp.h"
 
+
 /* GAP includes */
+#include "gap_lastvaldesc.h"
 #include "gap_filter.h"
 
-static char *gap_filter_version = "0.92.01; 2000/11/30";
+static char *gap_filter_version = "1.3.12a; 2003/05/02";
 
 /* revision history:
+ * gimp   1.3.12a;  2003/05/02  hof: merge into CVS-gimp-gap project
+ * gimp   1.3.4b;   2002/03/24  hof: support COMMON_ITERATOR, removed support of iter_ALT Procedures
  * 2000/11/30 v1.1.29b:  hof: new e-mail adress
  * version 0.92.00              hof: set gap_debug from environment 
  * version 0.91.01; Tue Dec 23  hof: 1.st (pre) release
@@ -94,6 +99,18 @@ query ()
   static GimpParamDef *return_vals = NULL;
   static int nreturn_vals = 0;
 
+
+  static GimpParamDef args_com_iter[] =
+  {
+    {GIMP_PDB_INT32, "run_mode", "non-interactive"},
+    {GIMP_PDB_INT32, "total_steps", "total number of steps (# of layers-1 to apply the related plug-in)"},
+    {GIMP_PDB_FLOAT, "current_step", "current (for linear iterations this is the layerstack position, otherwise some value inbetween)"},
+    {GIMP_PDB_INT32, "len_struct", "length of stored data structure with id is equal to the plug_in  proc_name"},
+    {GIMP_PDB_STRING, "plugin_name", "name of the plugin (used as keyname to access LAST_VALUES buffer)"},
+  };
+
+  INIT_I18N();
+
   gimp_install_procedure("plug_in_gap_layers_run_animfilter",
 			 "This plugin calls another plugin for each layer of an image, varying its settings (to produce animated effects). The called plugin must work on a single drawable and must be able to GIMP_RUN_WITH_LAST_VALS",
 			 "",
@@ -106,10 +123,23 @@ query ()
 			 G_N_ELEMENTS (args_foreach), nreturn_vals,
 			 args_foreach, return_vals);
 
+  /* ------------------ Common Iterator ------------------------------ */
+
+  gimp_install_procedure(GIMP_PLUGIN_GAP_COMMON_ITER,
+			 "This extension calculates the modified values in the LAST_VALUES buffer named by plugin_name for one iterationstep",
+			 "",
+			 "Wolfgang Hofer",
+			 "Wolfgang Hofer",
+			 "Feb. 2002",
+			 NULL,    /* do not appear in menus */
+			 NULL,
+			 GIMP_EXTENSION,
+			 G_N_ELEMENTS (args_com_iter), nreturn_vals,
+			 args_com_iter, return_vals);
+
   /* ------------------ ALTernative Iterators ------------------------------ */
 
   gap_query_iterators_ALT();
-
 			 
 }	/* end query */
 
@@ -150,6 +180,7 @@ run (char    *name,
 
   INIT_I18N ();
 
+
   if(gap_debug) fprintf(stderr, "\n\ngap_filter_main: debug name = %s\n", name);
   
   if (strcmp (name, "plug_in_gap_layers_run_animfilter") == 0)
@@ -182,6 +213,17 @@ run (char    *name,
                       l_plugin_name, sizeof(l_plugin_name));
       }
   }
+  else if(strcmp (name, GIMP_PLUGIN_GAP_COMMON_ITER) == 0)
+  {
+      if ((run_mode == GIMP_RUN_NONINTERACTIVE) && (n_params == 5))
+      {
+        total_steps  =  param[1].data.d_int32;
+        current_step =  param[2].data.d_float;
+        len_struct   =  param[3].data.d_int32;
+        l_rc = gap_common_iterator(param[4].data.d_string, run_mode, total_steps, current_step, len_struct);
+      }
+      else status = GIMP_PDB_CALLING_ERROR;
+  }
   else
   {
       if ((run_mode == GIMP_RUN_NONINTERACTIVE) && (n_params == 4))
@@ -193,7 +235,10 @@ run (char    *name,
                                       run_mode,
                                       total_steps, current_step, len_struct);
       }
-      else status = GIMP_PDB_CALLING_ERROR;
+      else
+      {
+        status = GIMP_PDB_CALLING_ERROR;
+      }
   }
 
  if(l_rc < 0)
