@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: gimp 2.0.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2004-10-06 15:39+0200\n"
-"PO-Revision-Date: 2004-10-07 14:41+0200\n"
+"PO-Revision-Date: 2004-10-07 16:48+0200\n"
 "Last-Translator: Marco Ciampa <ciampix@libero.it>\n"
 "Language-Team: gimp.linux.it\n"
 "MIME-Version: 1.0\n"
@@ -1936,12 +1936,12 @@ msgstr ""
 #: gap/gap_morph_dialog.c:3727
 msgid ""
 "Load morph workpoints from file. SHIFT-click: define filename of Pointset B"
-msgstr ""
+msgstr "Carica punti di lavoro morph da file. Maiusc-Clic: definisce un nome file per il set di punti B"
 
 #: gap/gap_morph_dialog.c:3739
 msgid ""
 "Save morph workpoints to file. SHIFT-click: define filename of Pointset B"
-msgstr ""
+msgstr "Salva i punti di lavoro morph su file. Maiusc-Clic: definisce un nome file per il set di punti B"
 
 #. the tween_steps label
 #: gap/gap_morph_dialog.c:3751
@@ -1953,16 +1953,16 @@ msgid ""
 "Number of layers to create or modify. Steps refers to N layers under the "
 "destination layer. Steps is ignored if render mode is warp and source and "
 "destination are different layers of the same image"
-msgstr ""
+msgstr "Numero di livelli da cerare o modificare. Passi si riferisce a N livelli sotto il livello di destinazione. Passi è ignorato se la modalità di render è warp e se sorgente e destinazione sono livelli differenti della stessa immagine"
 
 #. the pointcolor colorbutton
 #: gap/gap_morph_dialog.c:3783
 msgid "Pointcolor"
-msgstr ""
+msgstr "Punto colore"
 
 #: gap/gap_morph_dialog.c:3791
 msgid "Set color for the morph workpoints"
-msgstr ""
+msgstr "Imposta il colore per i punti di lavoro morph"
 
 #. the currentcolor colorbutton
 #: gap/gap_morph_dialog.c:3802
@@ -1982,7 +1982,7 @@ msgstr "Crea livelli"
 msgid ""
 "ON: Create specified number of tween layers. OFF: Operate on existing layers "
 "below the destination layer"
-msgstr ""
+msgstr "Acceso: crea il numero specificato di livelli intermedi. Spento: opera sui livelli esistenti sotto il livello di destinazione"
 
 #. the multiple pointsets checkbutton
 #: gap/gap_morph_dialog.c:3846
@@ -2572,19 +2572,19 @@ msgstr "Elimina punto di controllo corrente"
 #: gap/gap_mov_dialog.c:2996
 msgid ""
 "Show previous controlpoint. Hold down the shift key to follow keyframes."
-msgstr ""
+msgstr "Mostra il punto di controllo precedente. Tenere premuto il tasto Maiusc per seguire le frame chiave."
 
 #: gap/gap_mov_dialog.c:3009
 msgid "Show next controlpoint. Hold down the shift key to follow keyframes."
-msgstr ""
+msgstr "Mostra il punto di controllo successivo. Tenere premuto il tasto Maiusc per seguire le frame chiave."
 
 #: gap/gap_mov_dialog.c:3024
 msgid "Show first controlpoint. Hold down the shift key to follow keyframes."
-msgstr ""
+msgstr "Mostra il primo punto di controllo. Tenere premuto il tasto Maiusc per seguire le frame chiave."
 
 #: gap/gap_mov_dialog.c:3037
 msgid "Show last controlpoint. Hold down the shift key to follow keyframes."
-msgstr ""
+msgstr "Mostra l'ultimo punto di controllo. Tenere premuto il tasto Maiusc per seguire le frame chiave."
 
 #: gap/gap_mov_dialog.c:3052
 msgid "Reset the current controlpoint to default values"
@@ -4083,7 +4083,7 @@ msgstr "Pronto"
 
 #: gap/gap_player_dialog.c:1861 gap/gap_story_dialog.c:3376
 msgid "Creating Index"
-msgstr ""
+msgstr "Creazione indice"
 
 #: gap/gap_player_dialog.c:1869
 #, c-format
@@ -5066,24 +5066,26 @@ msgid ""
 "** ERROR: Storyboard parser reported:\n"
 "%s\n"
 msgstr ""
+"** ERRORE: l'analizzatore dello storyboard ha riportato:\n"
+"%s\n"
 
 #: gap/gap_story_dialog.c:1454
 msgid "Load Storyboard"
-msgstr ""
+msgstr "Carica storyboard"
 
 #: gap/gap_story_dialog.c:1458
 msgid "Load Cliplist"
-msgstr ""
+msgstr "Carica elenco clip"
 
 #: gap/gap_story_dialog.c:1496
 msgid "Save Storyboard file"
-msgstr ""
+msgstr "Salva il file storyboard"
 
 #: gap/gap_story_dialog.c:2470
 msgid ""
 "GIMP-GAP is compiled without videoapi support. Therfore thumbnails for "
 "videoframes can not be displayed."
-msgstr ""
+msgstr "GIMP-GAP è stato compilato senza supporto videoapi: le miniature delle frame non potranno essere visualizzate."
 
 #: gap/gap_story_dialog.c:2553
 #, c-format
@@ -5163,7 +5165,7 @@ msgstr "Esci dallo storyboard"
 
 #: gap/gap_story_dialog.c:3129 gap/gap_story_dialog.c:3130
 msgid "Storyboard unsaved changes"
-msgstr ""
+msgstr "Cambiamenti nello storyboard non salvati"
 
 #. The dialog and main vbox
 #. XXXXXXXXXXX Start of the STORYBOARD widgets  XXXXXXXXXXXX
@@ -5207,11 +5209,11 @@ msgstr "Incolla una clip dopo l'ultimo elemento (selezionato)"
 
 #: gap/gap_story_dialog.c:4238
 msgid "Playback storyboard file. SHIFT: Play only selected clips"
-msgstr ""
+msgstr "Esecuzione del file storyboard. Maiusc: esegue solo le clip selezionate"
 
 #: gap/gap_story_dialog.c:4247
 msgid "Playback cliplist. SHIFT: Play only selected clips"
-msgstr ""
+msgstr "Esecuzione elenco clip. Maiusc: esegue solo le clip selezionate"
 
 #. gtk_widget_show (entry);
 #. Row label
@@ -5259,7 +5261,7 @@ msgstr "Ripristina i parametri alla dimensione predefinita"
 
 #: gap/gap_story_dialog.c:4679
 msgid "Master Properties"
-msgstr ""
+msgstr "Proprietà Master"
 
 #: gap/gap_story_file.c:345 gap/gap_story_file.c:379
 msgid "internal error"
@@ -5268,20 +5270,20 @@ msgstr "errore interno"
 #: gap/gap_story_file.c:1242
 #, c-format
 msgid "illegal number: %s (valid range is %d upto %d)\n"
-msgstr ""
+msgstr "numero illegale: %s (il campo valido è da %d a %d)\n"
 
 #: gap/gap_story_file.c:1281
 #, c-format
 msgid "illegal number: %s (valid range is %.3f upto %.3f)"
-msgstr ""
+msgstr "numero illegale: %s (il campo valido è da %.3f a %.3f)"
 
 #: gap/gap_story_file.c:1383
 msgid "same parameter used more than once"
-msgstr ""
+msgstr "salva i parametri usati più di una volta"
 
 #: gap/gap_story_file.c:1395
 msgid "conflict: positional parameter shadows named parameter"
-msgstr ""
+msgstr "conflitto: parametro posizionale maschera parametro nominativo"
 
 #: gap/gap_story_file.c:1443
 #, c-format
@@ -5289,18 +5291,20 @@ msgid ""
 "Header not found!\n"
 "(line 1 must start with:  %s or %s"
 msgstr ""
+"Header non trovato!\n"
+"(linea 1 deve cominciare con:  %s o %s"
 
 #: gap/gap_story_file.c:1666
 #, c-format
 msgid "illegal keyword: %s (expected keywords are: width, height, both, none"
-msgstr ""
+msgstr "parola chiave illegale: %s (le parole chiavi permesse sono: width, height, both, none"
 
 #: gap/gap_story_file.c:1693
 #, c-format
 msgid ""
 "illegal keyword: %s (expected keywords are: keep_proportions, "
 "change_proportions"
-msgstr ""
+msgstr "parola chiave illegale: %s (le parole chiavi permesse sono: keep_proportions, change_proportions"
 
 #. unsupported lines raise an error for files without correct Header
 #.
@@ -5309,14 +5313,14 @@ msgstr ""
 #.
 #: gap/gap_story_file.c:2089 gap/gap_story_file.c:2096
 msgid "Unsupported line was igonored"
-msgstr ""
+msgstr "La linea non supportata è stata ignorata"
 
 #: gap/gap_story_file.c:2267
 #, c-format
 msgid ""
 "the passed filename %s has irrelevant content or could not be opened by the "
 "parser"
-msgstr ""
+msgstr "il nome file passato %s aveva contenuto irrilevante o non era apribile per dall'analizzatore"
 
 #: gap/gap_story_main.c:152
 msgid "<Image>/Video/Storyboard..."
@@ -5324,7 +5328,7 @@ msgstr "<Image>/Video/Storyboard..."
 
 #: gap/gap_story_properties.c:411
 msgid "Automatic scene detection operates only on cliptypes MOVIE and FRAMES"
-msgstr ""
+msgstr "Il rilevamento automatico della scena opera solo su tipi di clip MOVIE e FRAME"
 
 #: gap/gap_story_properties.c:418
 msgid ""
@@ -5388,8 +5392,9 @@ msgid "Find Scene End"
 msgstr "Trova la fine della scena"
 
 #: gap/gap_story_properties.c:1633 gap/gap_story_properties.c:1644
+#, fuzzy
 msgid "Aoto Scene Split"
-msgstr ""
+msgstr "Taglio scena Aoto"
 
 #. the cliptype label
 #: gap/gap_story_properties.c:1676
@@ -5461,7 +5466,7 @@ msgstr "Deinterlaccia:"
 
 #: gap/gap_story_properties.c:1836
 msgid "Read videoframes 1:1 without de-interlace filter"
-msgstr ""
+msgstr "Leggi frame video 1:1 senza il filtro di deinterlacciamento"
 
 #. radio button delace_mode odd
 #: gap/gap_story_properties.c:1845
@@ -5470,7 +5475,7 @@ msgstr "Dispari"
 
 #: gap/gap_story_properties.c:1853
 msgid "Apply odd-lines filter when reading videoframes"
-msgstr ""
+msgstr "Applica filtro alle linee dispari durante la lettura dei frame video"
 
 #. radio button delace_mode even
 #: gap/gap_story_properties.c:1862
@@ -5479,7 +5484,7 @@ msgstr "Pari"
 
 #: gap/gap_story_properties.c:1870
 msgid "Apply even-lines filter when reading videoframes"
-msgstr ""
+msgstr "Applica filtro alle linee pari durante la lettura dei frame video"
 
 #: gap/gap_story_properties.c:1895
 msgid ""
@@ -5493,7 +5498,7 @@ msgstr "Pingpong:"
 
 #: gap/gap_story_properties.c:1927
 msgid "ON: Play clip in pingpong mode"
-msgstr ""
+msgstr "ACCESO: esegue clip in modalità pingpong"
 
 #: gap/gap_story_properties.c:1938
 msgid "Stepsize:"
@@ -5583,7 +5588,7 @@ msgstr "..."
 
 #: gap/gap_vex_dialog.c:1817
 msgid "Select video using file browser"
-msgstr ""
+msgstr "Seleziona video utilizzando la finestra di selezione file"
 
 #. MMX sometimes gives unusable results, and therefore is always OFF
 #. * checkbox is not needed
@@ -5641,7 +5646,7 @@ msgstr "Decodificatore:"
 msgid ""
 "leave empty or select your preferred decoder (libmpeg3, libavformat, "
 "quicktime4linux)"
-msgstr ""
+msgstr "lasciare in bianco o selezionare il decodificatore preferito (libmpeg3, libavformat, quicktime4linux)"
 
 #: gap/gap_vex_dialog.c:2011
 msgid "(none, automatic)"
@@ -5996,22 +6001,22 @@ msgstr "pronto"
 #: libgapvidutil/gap_gve_story.c:2102
 #, c-format
 msgid "file not found:  %s for audioinput"
-msgstr ""
+msgstr "file non trovato:  %s per l'input audio"
 
 #: libgapvidutil/gap_gve_story.c:2246 libgapvidutil/gap_gve_story.c:2358
 #, c-format
 msgid "cant use file:  %s as audioinput"
-msgstr ""
+msgstr "impossibile usare il file:  %s come file input audio"
 
 #: libgapvidutil/gap_gve_story.c:2259 libgapvidutil/gap_gve_story.c:2639
 #, c-format
 msgid "ERROR file: %s is not a supported videoformat"
-msgstr ""
+msgstr "ERRORE file: %s non è un formato video supportato"
 
 #: libgapvidutil/gap_gve_story.c:2664
 #, c-format
 msgid "loading error on animimage:  %s"
-msgstr ""
+msgstr "errore nel caricare immagine animata: %s"
 
 #: libgapvidutil/gap_gve_story.c:2682
 #, c-format
@@ -6028,9 +6033,8 @@ msgid "No Frames or Images found ...."
 msgstr "Non è stata trovata nessuna immagine o frame..."
 
 #: libgapvidutil/gap_gve_story.c:4527
-#, fuzzy
 msgid "Seek Inputvideoframe..."
-msgstr "Scala tutti i frame video..."
+msgstr "Avanzamento frame video input..."
 
 #: libgapvidutil/gap_gve_story.c:4532
 msgid "Continue Encoding..."
@@ -7413,23 +7417,22 @@ msgid "bits (the one which needs fewest bits)"
 msgstr ""
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1714
-#, fuzzy
 msgid "rate distoration"
-msgstr "Saturazione"
+msgstr ""
 
 #. the GOP label
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1726
 msgid "GOP:"
-msgstr ""
+msgstr "GOP:"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1740
 msgid "Group of picture size"
-msgstr ""
+msgstr "Ampiezza di gruppi di immagini"
 
 #. Flags label
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1744
 msgid "Flags:"
-msgstr ""
+msgstr "Flag:"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1769
 msgid "Intra Only"
@@ -7445,7 +7448,7 @@ msgstr "Codifica intra avanzata"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1783
 msgid "activate intra frame coding (only h263+ CODEC)"
-msgstr ""
+msgstr "attiva codifica intra frame (solo CODEC h263+)"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1789
 msgid "Unlimited motion vector"
@@ -7453,7 +7456,7 @@ msgstr "Vettore di moto illimitato"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1794
 msgid "enable unlimited motion vector (only h263+ CODEC)"
-msgstr ""
+msgstr "abilita vettore di moto illimitato (solo CODEC h263+)"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1799
 msgid "B frames"
@@ -7469,7 +7472,7 @@ msgstr "4 vettori di moto"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1814
 msgid "use four motion vector by macroblock (only MPEG-4 CODEC)"
-msgstr ""
+msgstr "usa quattro vettori di movimento dal macroblocco (solo CODEC MPEG-4)"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1819
 msgid "Partitioning"
@@ -7516,28 +7519,27 @@ msgstr "Opzioni avanzate"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1876
 msgid "qblur:                 "
-msgstr ""
+msgstr "sfoc q:"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1883
 msgid "qcomp:"
-msgstr ""
+msgstr "comp q:"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1892
 msgid "rc-init-cplx:"
-msgstr ""
+msgstr "cmpl-iniz-cd:"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1899
 msgid "b-qfactor:"
-msgstr ""
+msgstr "fattore b-q:"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1906
 msgid "i-qfactor:"
-msgstr ""
+msgstr "fattore i-q:"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1913
-#, fuzzy
 msgid "b-qoffset:"
-msgstr "Spostamento:"
+msgstr "spostamento b-q:"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1920
 msgid "i-qoffset:"
@@ -7561,47 +7563,47 @@ msgstr "Ampiezza buffer:"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1961
 msgid "video quantiser scale blur (VBR)"
-msgstr ""
+msgstr "sfocatura a scala di quantizzazione video (VBR)"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1969
 msgid "video quantiser scale compression (VBR)"
-msgstr ""
+msgstr "compressione a scala di quantizzazione video (VBR)"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1977
 msgid "initial complexity for 1-pass encoding"
-msgstr ""
+msgstr "complessità iniziale per la codifica a 1 passo"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1985
 msgid "qp factor between p and b frames"
-msgstr ""
+msgstr "fattore qp fra frame p e b"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1993
 msgid "qp factor between p and i frames"
-msgstr ""
+msgstr "fattore qp fra frame p e i"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2001
 msgid "qp offset between p and b frames"
-msgstr ""
+msgstr "spostamento qp fra frame pe b"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2009
 msgid "qp offset between p and i frames"
-msgstr ""
+msgstr "spostamento qp fra frame p e i"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2017
 msgid "set video bitrate tolerance (in kbit/s)"
-msgstr ""
+msgstr "imposta tolleranza bitrate video (in kbit/s)"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2025
 msgid "set max video bitrate tolerance (in kbit/s)"
-msgstr ""
+msgstr "imposta massima tolleranza bitrate video (in kbit/s)"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2033
 msgid "set min video bitrate tolerance (in kbit/s)"
-msgstr ""
+msgstr "imposta minima tolleranza bitrate video (in kbit/s)"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2041
 msgid "set ratecontrol buffere size (in kbit)"
-msgstr ""
+msgstr "imposta buffer di controllo velocità (in kbit)"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2043
 msgid "strictness:"
