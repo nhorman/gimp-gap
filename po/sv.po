@@ -8,8 +8,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gimp-gap\n"
-"POT-Creation-Date: 2003-09-09 12:05+0200\n"
-"PO-Revision-Date: 2003-09-09 12:05+0200\n"
+"POT-Creation-Date: 2003-09-16 23:38+0200\n"
+"PO-Revision-Date: 2003-09-16 23:38+0200\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -17,29 +17,29 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Button  to invoke fontbrowser
-#: gap/gap_arr_dialog.c:401
+#: gap/gap_arr_dialog.c:427
 msgid "Font Browser"
 msgstr "Typsnittsbläddrare"
 
 #. Button  to invoke filebrowser
-#: gap/gap_arr_dialog.c:482 gap/gap_player_dialog.c:3013
+#: gap/gap_arr_dialog.c:508 gap/gap_player_dialog.c:3404
 msgid "File Browser"
 msgstr "Filbläddrare"
 
 #. parameter settings
-#: gap/gap_arr_dialog.c:1079
+#: gap/gap_arr_dialog.c:1105
 msgid "Enter Values"
 msgstr "Ange värden"
 
-#: gap/gap_arr_dialog.c:1099 gap/gap_arr_dialog.c:1216
+#: gap/gap_arr_dialog.c:1125 gap/gap_arr_dialog.c:1242
 msgid "Value:"
 msgstr "Värde:"
 
-#: gap/gap_arr_dialog.c:1396
+#: gap/gap_arr_dialog.c:1425
 msgid "Press Button"
 msgstr "Tryck på knapp"
 
-#: gap/gap_arr_dialog.c:1397
+#: gap/gap_arr_dialog.c:1426
 msgid "Select"
 msgstr "Markera"
 
@@ -152,8 +152,8 @@ msgstr "Ändra bildrutedensitet"
 #. the start frame scale_entry
 #. table col, row
 #: gap/gap_base_ops.c:1210 gap/gap_base_ops.c:1362 gap/gap_base_ops.c:1560
-#: gap/gap_decode_xanim.c:229 gap/gap_mod_layer.c:165 gap/gap_mov_dialog.c:567
-#: gap/gap_mpege.c:285 gap/gap_onion_dialog.c:899 gap/gap_player_dialog.c:3410
+#: gap/gap_decode_xanim.c:240 gap/gap_mod_layer.c:165 gap/gap_mov_dialog.c:567
+#: gap/gap_mpege.c:285 gap/gap_onion_dialog.c:899 gap/gap_player_dialog.c:3844
 #: gap/gap_range_ops.c:281 gap/gap_range_ops.c:471 gap/gap_range_ops.c:630
 msgid "From Frame:"
 msgstr "Från bildruta:"
@@ -165,8 +165,8 @@ msgstr "Det påverkade intervallet börjar vid detta bildrutenumret"
 #. the end frame scale_entry
 #. table col, row
 #: gap/gap_base_ops.c:1218 gap/gap_base_ops.c:1370 gap/gap_base_ops.c:1568
-#: gap/gap_decode_xanim.c:239 gap/gap_mod_layer.c:173 gap/gap_mov_dialog.c:582
-#: gap/gap_mpege.c:295 gap/gap_onion_dialog.c:906 gap/gap_player_dialog.c:3417
+#: gap/gap_decode_xanim.c:250 gap/gap_mod_layer.c:173 gap/gap_mov_dialog.c:582
+#: gap/gap_mpege.c:295 gap/gap_onion_dialog.c:906 gap/gap_player_dialog.c:3851
 #: gap/gap_range_ops.c:288 gap/gap_range_ops.c:479 gap/gap_range_ops.c:638
 msgid "To Frame:"
 msgstr "Till bildruta:"
@@ -306,83 +306,99 @@ msgstr "Numrera om bildrutor"
 msgid "Renumber Frames 2nd Pass"
 msgstr "Numrera om bildrutor andra passet"
 
-#: gap/gap_dbbrowser_utils.c:88
-msgid "Animated Filter apply (init)"
-msgstr "Tillämpning av animerat filter (initiering)"
-
-#: gap/gap_dbbrowser_utils.c:139
-msgid "Search:"
-msgstr "Sök:"
-
-#: gap/gap_dbbrowser_utils.c:167
-msgid "Gen Code by name"
-msgstr "Generera kod efter namn"
-
-#: gap/gap_dbbrowser_utils.c:176
-msgid "Search by Name"
-msgstr "Sök efter namn"
-
-#: gap/gap_dbbrowser_utils.c:184
-msgid "Search by Blurb"
-msgstr "Sök efter sammanfattning"
-
-#. show the name
-#: gap/gap_dbbrowser_utils.c:326
-msgid "Name:"
-msgstr "Namn:"
-
-#. show the description
-#: gap/gap_dbbrowser_utils.c:343
-msgid "Blurb:"
-msgstr "Sammanfattning:"
-
-#: gap/gap_dbbrowser_utils.c:365
-msgid "In:"
-msgstr "In:"
-
-#: gap/gap_dbbrowser_utils.c:411
-msgid "Out:"
-msgstr "Ut:"
-
-#: gap/gap_dbbrowser_utils.c:460
-msgid "Help:"
-msgstr "Hjälp:"
-
-#. show the author & the copyright
-#: gap/gap_dbbrowser_utils.c:498
-msgid "Author:"
-msgstr "Författare:"
-
-#: gap/gap_dbbrowser_utils.c:513
-msgid "Date:"
-msgstr "Datum:"
-
-#: gap/gap_dbbrowser_utils.c:528
-msgid "Copyright:"
-msgstr "Copyright:"
-
-#: gap/gap_dbbrowser_utils.c:668
-msgid "Animated Filter apply (by name - please wait)"
-msgstr "Tillämpning av animerat filter (efter namn - var vänlig vänta)"
-
-#: gap/gap_dbbrowser_utils.c:692
-msgid "Animated Filter apply (by blurb - please wait)"
-msgstr "Tillämpning av animerat filter (efter blurb - var vänlig vänta)"
-
-#: gap/gap_dbbrowser_utils.c:700
-msgid "Animated Filter apply (please wait)"
-msgstr "Tillämpning av animerat filter (var vänlig vänta)"
-
-#: gap/gap_dbbrowser_utils.c:747 gap/gap_filter_foreach.c:167
+#: gap/gap_dbbrowser_utils.c:170 gap/gap_filter_foreach.c:167
 #: gap/gap_mod_layer.c:295
 msgid "Animated Filter apply"
 msgstr "Tillämpning av animerat filter"
 
-#: gap/gap_decode_xanim.c:121
+#: gap/gap_dbbrowser_utils.c:227
+msgid "_Search:"
+msgstr "_Sök:"
+
+#: gap/gap_dbbrowser_utils.c:322
+msgid "Gen Code by name"
+msgstr "Generera kod efter namn"
+
+#. Button Search by Name
+#: gap/gap_dbbrowser_utils.c:334
+msgid "Search by Name"
+msgstr "Sök efter namn"
+
+#. Button Search by Blurb
+#: gap/gap_dbbrowser_utils.c:343
+msgid "Search by Blurb"
+msgstr "Sök efter sammanfattning"
+
+#. Button Search by Menupath
+#: gap/gap_dbbrowser_utils.c:352
+msgid "Search by Menu Path"
+msgstr "Sök efter menysökväg"
+
+#: gap/gap_dbbrowser_utils.c:447
+msgid "** not available **"
+msgstr "** inte tillgänglig **"
+
+#: gap/gap_dbbrowser_utils.c:480
+msgid "Name:"
+msgstr "Namn:"
+
+#: gap/gap_dbbrowser_utils.c:488
+msgid "Blurb:"
+msgstr "Sammanfattning:"
+
+#: gap/gap_dbbrowser_utils.c:499
+msgid "Menu Path:"
+msgstr "Menysökväg:"
+
+#: gap/gap_dbbrowser_utils.c:513
+msgid "In:"
+msgstr "In:"
+
+#: gap/gap_dbbrowser_utils.c:561
+msgid "Out:"
+msgstr "Ut:"
+
+#: gap/gap_dbbrowser_utils.c:615
+msgid "Help:"
+msgstr "Hjälp:"
+
+#: gap/gap_dbbrowser_utils.c:633
+msgid "Author:"
+msgstr "Författare:"
+
+#: gap/gap_dbbrowser_utils.c:641
+msgid "Date:"
+msgstr "Datum:"
+
+#: gap/gap_dbbrowser_utils.c:649
+msgid "Copyright:"
+msgstr "Copyright:"
+
+#: gap/gap_dbbrowser_utils.c:782
+msgid "Searching by name - please wait"
+msgstr "Söker efter namn - var vänlig vänta"
+
+#: gap/gap_dbbrowser_utils.c:805
+msgid "Searching by blurb - please wait"
+msgstr "Söker efter sammanfattning - var vänlig vänta"
+
+#: gap/gap_dbbrowser_utils.c:817
+msgid "Searching by menupath - please wait"
+msgstr "Söker efter menysökväg - var vänlig vänta"
+
+#: gap/gap_dbbrowser_utils.c:821
+msgid "Searching - please wait"
+msgstr "Söker - var vänlig vänta"
+
+#: gap/gap_dbbrowser_utils.c:913
+msgid "No matches"
+msgstr "Inga träffar"
+
+#: gap/gap_decode_xanim.c:132
 msgid "Requirements to run the xanim based video split"
 msgstr "Krav för körande av xanim-baserad videodelning"
 
-#: gap/gap_decode_xanim.c:133
+#: gap/gap_decode_xanim.c:144
 msgid ""
 "xanim 2.80.0 exporting edition (the loki version)\n"
 "must be installed somewhere in your PATH\n"
@@ -392,7 +408,7 @@ msgstr ""
 "måste vara installerad någonstans i din sökväg (PATH)\n"
 "du kan hämta xanim-exportversionen på:\n"
 
-#: gap/gap_decode_xanim.c:156
+#: gap/gap_decode_xanim.c:167
 msgid ""
 "if your xanim exporting edition is not in your PATH or is not named xanim\n"
 "you have to set Environment variable GAP_XANIM_PROG\n"
@@ -402,19 +418,19 @@ msgstr ""
 "namnet xanim måste du ställa in miljövariabeln GAP_XANIM_PROG\n"
 "till din xanim-exportversionsprogram och starta om gimp"
 
-#: gap/gap_decode_xanim.c:167
+#: gap/gap_decode_xanim.c:178
 msgid "An ERROR occured while trying to call xanim:"
 msgstr "Ett FEL inträffade då xanim skulle anropas:"
 
-#: gap/gap_decode_xanim.c:186
+#: gap/gap_decode_xanim.c:197
 msgid "XANIM Information"
 msgstr "XANIM-information"
 
-#: gap/gap_decode_xanim.c:219
+#: gap/gap_decode_xanim.c:230
 msgid "Video:"
 msgstr "Video:"
 
-#: gap/gap_decode_xanim.c:220
+#: gap/gap_decode_xanim.c:231
 msgid ""
 "Name of a videofile to READ by xanim.\n"
 "Frames are extracted from the videofile\n"
@@ -426,19 +442,19 @@ msgstr ""
 "och skrivs till separata diskfiler.\n"
 "xanim-exportversion krävs."
 
-#: gap/gap_decode_xanim.c:230
+#: gap/gap_decode_xanim.c:241
 msgid "Framenumber of 1st frame to extract"
 msgstr "Bildrutenummer för första bildrutan att extrahera"
 
-#: gap/gap_decode_xanim.c:240
+#: gap/gap_decode_xanim.c:251
 msgid "Framenumber of last frame to extract"
 msgstr "Bildrutenummer för sista bildrutan att extrahera"
 
-#: gap/gap_decode_xanim.c:249
+#: gap/gap_decode_xanim.c:260
 msgid "Framenames:"
 msgstr "Bildrutenamn:"
 
-#: gap/gap_decode_xanim.c:250
+#: gap/gap_decode_xanim.c:261
 msgid ""
 "Basename for the AnimFrames to write on disk\n"
 "(framenumber and extension is added)"
@@ -447,11 +463,11 @@ msgstr ""
 "(bildrutenamn och ändelse läggs till)"
 
 # src/sidebar.c:115
-#: gap/gap_decode_xanim.c:257
+#: gap/gap_decode_xanim.c:268
 msgid "Format"
 msgstr "Format"
 
-#: gap/gap_decode_xanim.c:258
+#: gap/gap_decode_xanim.c:269
 msgid ""
 "Fileformat for the extracted AnimFrames\n"
 "(xcf is extracted as ppm and converted to xcf)"
@@ -459,19 +475,19 @@ msgstr ""
 "Filformatet för de extraherade animerade bildrutorna\n"
 "(xcf extraheras som ppm och konverteras till xcf)"
 
-#: gap/gap_decode_xanim.c:265
+#: gap/gap_decode_xanim.c:276
 msgid "Extract Frames"
 msgstr "Extrahera bildrutor"
 
-#: gap/gap_decode_xanim.c:266
+#: gap/gap_decode_xanim.c:277
 msgid "Enable extraction of Frames"
 msgstr "Aktivera extrahering av bildrutor"
 
-#: gap/gap_decode_xanim.c:270
+#: gap/gap_decode_xanim.c:281
 msgid "Extract Audio"
 msgstr "Extrahera ljud"
 
-#: gap/gap_decode_xanim.c:271
+#: gap/gap_decode_xanim.c:282
 msgid ""
 "Enable extraction of audio to raw audiofile\n"
 "(frame range limits are ignored for audio)"
@@ -479,11 +495,11 @@ msgstr ""
 "Aktivera extrahering av ljud till rå ljudfil\n"
 "(bildruteintervallsgränser ignoreras för ljud)"
 
-#: gap/gap_decode_xanim.c:276
+#: gap/gap_decode_xanim.c:287
 msgid "Jpeg Quality:"
 msgstr "Jpeg-kvalitet:"
 
-#: gap/gap_decode_xanim.c:277
+#: gap/gap_decode_xanim.c:288
 msgid ""
 "Quality for resulting Jpeg frames\n"
 "(is ignored when other formats are used)"
@@ -493,19 +509,19 @@ msgstr ""
 
 # data/ui/nautilus-gtranslator-view-ui.xml.h:1 src/dialogs.c:732
 # src/menus.c:276
-#: gap/gap_decode_xanim.c:288
+#: gap/gap_decode_xanim.c:299
 msgid "Open"
 msgstr "Öppna"
 
-#: gap/gap_decode_xanim.c:289
+#: gap/gap_decode_xanim.c:300
 msgid "Open the 1st one of the extracted frames"
 msgstr "Öppna den första av de extraherade bildrutorna"
 
-#: gap/gap_decode_xanim.c:293
+#: gap/gap_decode_xanim.c:304
 msgid "Run asynchronously"
 msgstr "Kör asynkront"
 
-#: gap/gap_decode_xanim.c:294
+#: gap/gap_decode_xanim.c:305
 msgid ""
 "Run xanim asynchronously and delete unwanted frames\n"
 "(out of the specified range) while xanim is still running"
@@ -514,7 +530,7 @@ msgstr ""
 "(utanför det angivna intervallet) under tiden xanim\n"
 "fortfarande körs"
 
-#: gap/gap_decode_xanim.c:299
+#: gap/gap_decode_xanim.c:310
 msgid ""
 "\n"
 "Warning: xanim 2.80 has only limited MPEG support.\n"
@@ -524,31 +540,32 @@ msgstr ""
 "Varning: xanim 2.80 har endast begränsat stöd för MPEG.\n"
 "De flesta bildrutor (typ P och B) kommer att hoppas över."
 
-#: gap/gap_decode_xanim.c:302
+#: gap/gap_decode_xanim.c:313
 msgid "Split any Xanim readable Video to Frames"
 msgstr "Dela eventuell Xanim-läsbar video till bildrutor"
 
-#: gap/gap_decode_xanim.c:303 gap/gap_range_ops.c:1541
+#: gap/gap_decode_xanim.c:314 gap/gap_range_ops.c:1541
 msgid "Select Frame Range"
 msgstr "Välj bildruteintervall"
 
-#: gap/gap_decode_xanim.c:342 gap/gap_range_ops.c:1285
+#: gap/gap_decode_xanim.c:353 gap/gap_range_ops.c:1285
 msgid "Overwrite Frame"
 msgstr "Skriv över bildrutor"
 
-#: gap/gap_decode_xanim.c:344 gap/gap_range_ops.c:1287
+#: gap/gap_decode_xanim.c:355 gap/gap_range_ops.c:1287
 msgid "Overwrite All"
 msgstr "Skriv över allt"
 
-#: gap/gap_decode_xanim.c:352 gap/gap_lib.c:1325 gap/gap_range_ops.c:1292
+#: gap/gap_decode_xanim.c:363 gap/gap_lib.c:1325 gap/gap_player_dialog.c:312
+#: gap/gap_range_ops.c:1292
 msgid "GAP Question"
 msgstr "GAP-fråga"
 
-#: gap/gap_decode_xanim.c:353
+#: gap/gap_decode_xanim.c:364
 msgid "File already exists"
 msgstr "Filen finns redan"
 
-#: gap/gap_decode_xanim.c:569
+#: gap/gap_decode_xanim.c:580
 #, c-format
 msgid ""
 "can't find any extracted frames,\n"
@@ -559,33 +576,33 @@ msgstr ""
 "%s\n"
 "kanske xanim misslyckades eller avbröts"
 
-#: gap/gap_decode_xanim.c:594
+#: gap/gap_decode_xanim.c:605
 #, c-format
 msgid "frames are not extracted, because overwrite of %s was cancelled"
 msgstr ""
 "bildrutorna har inte extraherats eftersom överskrivningen av %s avbröts"
 
-#: gap/gap_decode_xanim.c:604
+#: gap/gap_decode_xanim.c:615
 #, c-format
 msgid "failed to overwrite %s (check permissions ?)"
 msgstr "misslyckades med att skriva över %s (kontrollera rättigheter?)"
 
-#: gap/gap_decode_xanim.c:626
+#: gap/gap_decode_xanim.c:637
 #, c-format
 msgid "failed to write %s (check permissions ?)"
 msgstr "misslyckades med att skriva %s (kontrollera rättigheter?)"
 
-#: gap/gap_decode_xanim.c:753
+#: gap/gap_decode_xanim.c:764
 #, c-format
 msgid "could not execute %s (check if xanim is installed)"
 msgstr "kunde inte köra %s (kontrollera om xanim är installerat)"
 
-#: gap/gap_decode_xanim.c:761
+#: gap/gap_decode_xanim.c:772
 #, c-format
 msgid "%s does not look like xanim"
 msgstr "%s ser inte ut som xanim"
 
-#: gap/gap_decode_xanim.c:786
+#: gap/gap_decode_xanim.c:797
 #, c-format
 msgid ""
 "The xanim program on your system \"%s\"\n"
@@ -594,7 +611,7 @@ msgstr ""
 "xanim-programmet på ditt system \"%s\"\n"
 "stöder inte exportflaggorna Ea, Ee, Eq"
 
-#: gap/gap_decode_xanim.c:793
+#: gap/gap_decode_xanim.c:804
 #, c-format
 msgid ""
 "The xanim program on your system \"%s\"\n"
@@ -603,12 +620,12 @@ msgstr ""
 "xanim-programmet på ditt system \"%s\"\n"
 "stöder inte export av enstaka bildrutor"
 
-#: gap/gap_decode_xanim.c:1061
+#: gap/gap_decode_xanim.c:1072
 #, c-format
 msgid "videofile %s not existent or empty\n"
 msgstr "videofilen %s finns inte eller är tom\n"
 
-#: gap/gap_decode_xanim.c:1114
+#: gap/gap_decode_xanim.c:1125
 #, c-format
 msgid ""
 "could not create %s directory\n"
@@ -617,11 +634,11 @@ msgstr ""
 "kunde inte skapa katalogen %s\n"
 "(krävs för xanim-bildruteexport)"
 
-#: gap/gap_decode_xanim.c:1125
+#: gap/gap_decode_xanim.c:1136
 msgid "extracting frames..."
 msgstr "extraherar bildrutor..."
 
-#: gap/gap_decode_xanim.c:1150
+#: gap/gap_decode_xanim.c:1161
 #, c-format
 msgid ""
 "could not start xanim process\n"
@@ -630,7 +647,7 @@ msgstr ""
 "kunde inte starta xanim-process\n"
 "(program=%s)"
 
-#: gap/gap_decode_xanim.c:1171
+#: gap/gap_decode_xanim.c:1182
 msgid ""
 "can't find any extracted frames,\n"
 "xanim has failed or was cancelled"
@@ -638,11 +655,11 @@ msgstr ""
 "kan inte hitta några extraherade bildrutor,\n"
 "xanim har misslyckats eller avbrutits"
 
-#: gap/gap_decode_xanim.c:1190
+#: gap/gap_decode_xanim.c:1201
 msgid "renaming frames..."
 msgstr "byter namn på bildrutor..."
 
-#: gap/gap_decode_xanim.c:1195
+#: gap/gap_decode_xanim.c:1206
 msgid "converting frames..."
 msgstr "konverterar bildrutor..."
 
@@ -1048,7 +1065,7 @@ msgstr ""
 msgid "Frames Modify"
 msgstr "Bildrutemodifiering"
 
-#: gap/gap_mod_layer.c:230
+#: gap/gap_mod_layer.c:230 gap/gap_player_dialog.c:395
 msgid "Settings"
 msgstr "Inställningar"
 
@@ -1156,7 +1173,7 @@ msgid "Center"
 msgstr "Mittpunkt"
 
 #. the playback mode checkbuttons
-#: gap/gap_mov_dialog.c:303 gap/gap_player_dialog.c:3610
+#: gap/gap_mov_dialog.c:303 gap/gap_player_dialog.c:4044
 msgid "Loop"
 msgstr "Slinga"
 
@@ -1172,7 +1189,7 @@ msgstr "En gång"
 msgid "OnceReverse"
 msgstr "En gång baklänges"
 
-#: gap/gap_mov_dialog.c:307 gap/gap_player_dialog.c:3638
+#: gap/gap_mov_dialog.c:307 gap/gap_player_dialog.c:4072
 msgid "PingPong"
 msgstr "Ping-pong"
 
@@ -2243,7 +2260,8 @@ msgstr "Markera allt"
 msgid "Select None"
 msgstr "Markera ingen"
 
-#: gap/gap_navigator_dialog.c:3780
+#. Video Length (frames)
+#: gap/gap_navigator_dialog.c:3780 gap/gap_player_dialog.c:3643
 msgid "Videoframes:"
 msgstr "Videobildrutor:"
 
@@ -2540,7 +2558,7 @@ msgid "Removing Onionskin Layers..."
 msgstr "Tar bort lökskalslager..."
 
 #. Format the message
-#: gap/gap_player_dialog.c:258
+#: gap/gap_player_dialog.c:267
 #, c-format
 msgid ""
 "Problem with audioplayback\n"
@@ -2551,7 +2569,73 @@ msgstr ""
 "audiolib rapporterade:\n"
 "%s"
 
-#: gap/gap_player_dialog.c:314
+#: gap/gap_player_dialog.c:295
+#, c-format
+msgid ""
+"Directory '%s'\n"
+"already exists"
+msgstr ""
+"Katalogen \"%s\"\n"
+"finns redan"
+
+#: gap/gap_player_dialog.c:300
+#, c-format
+msgid ""
+"File '%s'\n"
+"already exists"
+msgstr ""
+"Filen \"%s\"\n"
+"finns redan"
+
+#: gap/gap_player_dialog.c:301
+msgid "Overwrite"
+msgstr "Skriv över"
+
+#: gap/gap_player_dialog.c:313
+msgid "File Overwrite Warning"
+msgstr "Varning för filöverskrivning"
+
+#: gap/gap_player_dialog.c:344
+msgid "Audiosource:"
+msgstr "Ljudkälla:"
+
+#: gap/gap_player_dialog.c:355
+msgid "Wavefile:"
+msgstr "Wave-fil:"
+
+#: gap/gap_player_dialog.c:357
+msgid "Name of Wavefile to create as copy in RIFF WAVE Format"
+msgstr "Namn på Wave-fil att skapa som kopia i RIFF WAVE-format"
+
+#: gap/gap_player_dialog.c:364
+msgid "Resample:"
+msgstr "Omsampla:"
+
+#: gap/gap_player_dialog.c:365
+msgid ""
+"ON: Resample the copy at specified Samplerate, OFF: use original Samplerate"
+msgstr ""
+"PÅ: Omsampla kopian vid angiven samplingshastighet, AV: använd ursprunglig "
+"samplingshastighet"
+
+#. Samplerate
+#: gap/gap_player_dialog.c:372 gap/gap_player_dialog.c:3585
+msgid "Samplerate:"
+msgstr "Samplingshastighet:"
+
+#: gap/gap_player_dialog.c:373
+msgid ""
+"Target Audio Samperate in Samples/sec\n"
+"(ignored if Resample is OFF)"
+msgstr ""
+"Målljudsamplingshastighet i samplingar/sek\n"
+"(ignoreras om Omsampla är AV)"
+
+#: gap/gap_player_dialog.c:394
+msgid "Copy Audiofile as Wavefile"
+msgstr "Kopiera ljudfil som Wave-fil"
+
+#: gap/gap_player_dialog.c:479
 msgid ""
 "Failure to start the wavplay server is fatal.\n"
 "Please check the executability of the 'wavplay' command.\n"
@@ -2563,29 +2647,29 @@ msgstr ""
 "Om du har installerat wavplay-binärfilen någonstans\n"
 "kan du ange miljövariabeln WAVPLAYPATH innan gimp startas\n"
 
-#: gap/gap_player_dialog.c:371
+#: gap/gap_player_dialog.c:542
 msgid "Audio Delay"
 msgstr "Ljudfördröjning"
 
-#: gap/gap_player_dialog.c:383
+#: gap/gap_player_dialog.c:554
 msgid "Syncron"
 msgstr "Synkron"
 
-#: gap/gap_player_dialog.c:387
+#: gap/gap_player_dialog.c:558
 msgid "Audio Skipped"
 msgstr "Ljud överhoppat"
 
-#: gap/gap_player_dialog.c:399
+#: gap/gap_player_dialog.c:570
 #, c-format
 msgid "%d (at %.4f frames/sec)"
 msgstr "%d (vid %.4f bildrutor/sek)"
 
-#: gap/gap_player_dialog.c:476
+#: gap/gap_player_dialog.c:664
 #, c-format
 msgid "Error at reading WAV header from file '%s'"
 msgstr "Fel vid läsning av WAV-huvud från filen \"%s\""
 
-#: gap/gap_player_dialog.c:605
+#: gap/gap_player_dialog.c:797
 #, c-format
 msgid ""
 "WARNING: your gimprc file configuration for the wavplay audio server\n"
@@ -2596,7 +2680,7 @@ msgstr ""
 "till ett körbart program\n"
 "det konfigurerade värdet för %s är: %s\n"
 
-#: gap/gap_player_dialog.c:626
+#: gap/gap_player_dialog.c:818 gap/gap_player_dialog.c:3118
 #, c-format
 msgid ""
 "WARNING: the environment variable %s\n"
@@ -2607,7 +2691,7 @@ msgstr ""
 "pekar inte till ett körbart program\n"
 "det aktuella värdet är: %s\n"
 
-#: gap/gap_player_dialog.c:662
+#: gap/gap_player_dialog.c:854
 #, c-format
 msgid ""
 "NO Audiosupport available\n"
@@ -2625,65 +2709,89 @@ msgstr ""
 "innan du startar GIMP"
 
 #. pending timer_go_job gets useless, since we start playback now
-#: gap/gap_player_dialog.c:1083 gap/gap_player_dialog.c:1528
+#: gap/gap_player_dialog.c:1276 gap/gap_player_dialog.c:1743
 msgid "Playing"
 msgstr "Spelar"
 
 #. the status value label
-#: gap/gap_player_dialog.c:1120 gap/gap_player_dialog.c:3691
+#: gap/gap_player_dialog.c:1313 gap/gap_player_dialog.c:4125
 msgid "Ready"
 msgstr "Redo"
 
-#: gap/gap_player_dialog.c:1511
+#: gap/gap_player_dialog.c:1726
 msgid "SKIP"
 msgstr "HOPPA ÖVER"
 
-#: gap/gap_player_dialog.c:1540
+#: gap/gap_player_dialog.c:1755
 #, c-format
 msgid "Delay %.2f"
 msgstr "Fördröj %.2f"
 
-#: gap/gap_player_dialog.c:2925
+#: gap/gap_player_dialog.c:3096
+#, c-format
+msgid ""
+"WARNING: your gimprc file configuration for the audioconverter Script\n"
+"does not point to an executable program\n"
+"the configured value for %s is: %s\n"
+msgstr ""
+"VARNING: din gimprc-filkonfiguration för ljudkonverterarskriptet pekar inte\n"
+"till ett körbart program\n"
+"det konfigurerade värdet för %s är: %s\n"
+
+#: gap/gap_player_dialog.c:3136
+#, c-format
+msgid ""
+"ERROR: external program for audioconversion not available\n"
+"you should install: '%s'\n"
+msgstr ""
+"FEL: externt program för ljudkonvertering inte tillgängligt\n"
+"du bör installera: \"%s\"\n"
+
+#: gap/gap_player_dialog.c:3157
+msgid "Creating Audiofile - Please Wait"
+msgstr "Skapar ljudfil - Var vänlig vänta"
+
+#: gap/gap_player_dialog.c:3308
 msgid "Select Audiofile"
 msgstr "Välj ljudfil"
 
 #. audiofile label
-#: gap/gap_player_dialog.c:2989
+#: gap/gap_player_dialog.c:3380
 msgid "Audiofile:"
 msgstr "Ljudfil:"
 
-#: gap/gap_player_dialog.c:3001
+#: gap/gap_player_dialog.c:3392
 msgid "Enter an Audiofile. (the file must be in RIFF WAVE Fileformat)"
 msgstr "Ange en ljudfil (filen måste vara i RIFF WAVE-filformat)."
 
-#: gap/gap_player_dialog.c:3015
+#: gap/gap_player_dialog.c:3406
 msgid "Open Audiofile selection Browserdialog"
 msgstr "Öppna bläddrardialogen för ljudfilsval"
 
 #. Volume
-#: gap/gap_player_dialog.c:3027
+#: gap/gap_player_dialog.c:3418
 msgid "Volume:"
 msgstr "Volym:"
 
-#: gap/gap_player_dialog.c:3047
+#: gap/gap_player_dialog.c:3438
 msgid "Audio Volume"
 msgstr "Ljudvolym"
 
 #. check button
-#: gap/gap_player_dialog.c:3053
+#: gap/gap_player_dialog.c:3444
 msgid "Enable"
 msgstr "Aktivera"
 
-#: gap/gap_player_dialog.c:3057
+#: gap/gap_player_dialog.c:3448
 msgid "ON: Play Button plays Video + Audio, OFF: Play silent"
 msgstr "PÅ: Spelaknappen spelar video + ljud, AV: Spela tyst"
 
 #. Sample Offset
-#: gap/gap_player_dialog.c:3066
+#: gap/gap_player_dialog.c:3457
 msgid "Offset:"
 msgstr "Avstånd:"
 
-#: gap/gap_player_dialog.c:3086
+#: gap/gap_player_dialog.c:3477
 msgid ""
 "Audio Offset in frames at Original Videoplayback speed\n"
 "(a value of 0 starts audio and video at synchron time\n"
@@ -2703,161 +2811,174 @@ msgstr ""
 "med varaktigheten för 10 bildrutor\n"
 "(vid ursprunglig videouppspelningshastighet)"
 
-#: gap/gap_player_dialog.c:3102
+#: gap/gap_player_dialog.c:3493
 msgid "Reset Offset and Volume"
 msgstr "Återställ avstånd och volym"
 
+#. create wavfile button
+#: gap/gap_player_dialog.c:3504
+msgid "Copy As Wavfile"
+msgstr "Kopiera som Wav-fil"
+
+#: gap/gap_player_dialog.c:3506
+msgid ""
+"Create a copy from Audiofile as RIFF WAVE Audiofile\n"
+"and use the copy for Audio Playback"
+msgstr ""
+"Skapa en kopia från ljudfilen som RIFF WAVE-ljudfil\n"
+"och använd kopian för ljuduppspelning"
+
 #. Audio Offset Length (mm:ss:msec)
-#: gap/gap_player_dialog.c:3121
+#: gap/gap_player_dialog.c:3526
 msgid "Offsettime:"
 msgstr "Avståndstid:"
 
 #. Total Audio Length (mm:ss:msec)
-#: gap/gap_player_dialog.c:3135
+#: gap/gap_player_dialog.c:3540
 msgid "Audiotime:"
 msgstr "Ljudtid:"
 
 #. Length (frames)
-#: gap/gap_player_dialog.c:3150
+#: gap/gap_player_dialog.c:3555
 msgid "Audioframes:"
 msgstr "Ljudrutor:"
 
 #. Length (Samples)
-#: gap/gap_player_dialog.c:3165
+#: gap/gap_player_dialog.c:3570
 msgid "Samples:"
 msgstr "Samplingar:"
 
-#. Samplerate
-#: gap/gap_player_dialog.c:3180
-msgid "Samplerate:"
-msgstr "Samplingshastighet:"
-
 #. Cannels
-#: gap/gap_player_dialog.c:3194
+#: gap/gap_player_dialog.c:3599
 msgid "Cannels:"
 msgstr "Kanaler:"
 
 #. Bits
-#: gap/gap_player_dialog.c:3208
+#: gap/gap_player_dialog.c:3613
 msgid "Bits/Sample:"
 msgstr "Bitar/sampling:"
 
-#: gap/gap_player_dialog.c:3290
+#. Total Video Length (mm:ss:msec)
+#: gap/gap_player_dialog.c:3628
+msgid "Videotime:"
+msgstr "Videotid:"
+
+#: gap/gap_player_dialog.c:3724
 msgid "Videoframe Playback"
 msgstr "Uppspelning av videobildrutor"
 
-#: gap/gap_player_dialog.c:3308
+#: gap/gap_player_dialog.c:3742
 msgid "Video Options"
 msgstr "Videoalternativ"
 
-#: gap/gap_player_dialog.c:3309
+#: gap/gap_player_dialog.c:3743
 msgid "Audio Options"
 msgstr "Ljudalternativ"
 
-#: gap/gap_player_dialog.c:3366
+#: gap/gap_player_dialog.c:3800
 msgid "Click: go to frame, Ctrl-Click: set From Frame, Alt-Click: set To Frame"
 msgstr ""
 "Klick: gå till bildruta, Ctrl-Klick: ställ in från bildruta, Alt-Klick: "
 "ställ in till bildruta"
 
-#: gap/gap_player_dialog.c:3435
+#: gap/gap_player_dialog.c:3869
 msgid "Start Framenumber of Selection Range"
 msgstr "Startbildrutenummer i markeringsintervall"
 
-#: gap/gap_player_dialog.c:3451
+#: gap/gap_player_dialog.c:3885
 msgid "End Framenumber of Selection Range"
 msgstr "Slutbildrutenummer i markeringsintervall"
 
 #. the framenr button
-#: gap/gap_player_dialog.c:3464
+#: gap/gap_player_dialog.c:3898
 msgid "FrameNr"
 msgstr "Bildrutenummer"
 
-#: gap/gap_player_dialog.c:3469
+#: gap/gap_player_dialog.c:3903
 msgid "Load this Frame into the calling image"
 msgstr "Läs in denna bildruta i den anropande bilden"
 
-#: gap/gap_player_dialog.c:3487
+#: gap/gap_player_dialog.c:3921
 msgid "Displayed Frame Nr"
 msgstr "Visat bildrutenummer"
 
 #. the time position
-#: gap/gap_player_dialog.c:3494
+#: gap/gap_player_dialog.c:3928
 msgid "Timepos:"
 msgstr "Tidspos:"
 
 #. the origspeed_button
-#: gap/gap_player_dialog.c:3523
+#: gap/gap_player_dialog.c:3957
 msgid "Speed"
 msgstr "Hastighet"
 
-#: gap/gap_player_dialog.c:3528
+#: gap/gap_player_dialog.c:3962
 msgid "Reset Playback Speed to original (or previous) Value"
 msgstr ""
 "Återställ uppspelningshastighet till ursprungligt (eller föregående) värde"
 
-#: gap/gap_player_dialog.c:3548
+#: gap/gap_player_dialog.c:3982
 msgid "Current Playbackspeed (frames/sec)"
 msgstr "Aktuell uppspelningshastighet (bildrutor/sek)"
 
 #. the size button
-#: gap/gap_player_dialog.c:3561
+#: gap/gap_player_dialog.c:3995
 msgid "Size"
 msgstr "Storlek"
 
-#: gap/gap_player_dialog.c:3567
+#: gap/gap_player_dialog.c:4001
 msgid "Toggle Size 128/256, SHIFT: Set 1:1 full image Size"
 msgstr "Växla storleken 128/256, SKIFT: Ställ in 1:1 full bildstorlek"
 
-#: gap/gap_player_dialog.c:3585
+#: gap/gap_player_dialog.c:4019
 msgid "Video Preview Size (pixels)"
 msgstr "Videoförhandsgranskningsstorlek (bildpunkter)"
 
-#: gap/gap_player_dialog.c:3615
+#: gap/gap_player_dialog.c:4049
 msgid "ON: Play in endless Loop, OFF: Play only once"
 msgstr "PÅ: Spela i oändlig slinga, AV: Spela endast en gång"
 
-#: gap/gap_player_dialog.c:3624
+#: gap/gap_player_dialog.c:4058
 msgid "Play Selection only"
 msgstr "Spela endast markering"
 
-#: gap/gap_player_dialog.c:3629
+#: gap/gap_player_dialog.c:4063
 msgid "ON: Play Selection only, OFF: Play all frames"
 msgstr "PÅ: Spela endast markering, AV: Spela alla bildrutor"
 
-#: gap/gap_player_dialog.c:3643
+#: gap/gap_player_dialog.c:4077
 msgid "ON: Play alternating forward/backward"
 msgstr "PÅ: Spela alternerande framåt/bakåt"
 
-#: gap/gap_player_dialog.c:3652
+#: gap/gap_player_dialog.c:4086
 msgid "Use Thumbnails"
 msgstr "Använd miniatyrbilder"
 
-#: gap/gap_player_dialog.c:3657
+#: gap/gap_player_dialog.c:4091
 msgid "ON: use thumbnails when available, OFF: read full sized frames"
 msgstr ""
 "PÅ: använd miniatyrbilder om tillgängliga, AV: läs bildrutor i full storlek"
 
-#: gap/gap_player_dialog.c:3667
+#: gap/gap_player_dialog.c:4101
 msgid "Exact Timing"
 msgstr "Exakt tidtagning"
 
-#: gap/gap_player_dialog.c:3672
+#: gap/gap_player_dialog.c:4106
 msgid "ON: skip frames to hold exact timing, OFF: disable frame skipping"
 msgstr ""
 "PÅ: hoppa över bildrutor för att hålla exakt tidtagning, AV: inaktivera "
 "överhoppning av bildrutor"
 
 #. the status label
-#: gap/gap_player_dialog.c:3683
+#: gap/gap_player_dialog.c:4117
 msgid "Status:"
 msgstr "Status:"
 
-#: gap/gap_player_dialog.c:3716
+#: gap/gap_player_dialog.c:4150
 msgid "Start Playback"
 msgstr "Starta uppspelning"
 
-#: gap/gap_player_dialog.c:3726
+#: gap/gap_player_dialog.c:4160
 msgid ""
 "Pause if playing (Any Mouseboutton)\n"
 "Goto Selection Start/Active/End (Left/Middle/Right Button) if not playing"
@@ -2866,15 +2987,15 @@ msgstr ""
 "Gå till markeringens start/aktiv/slut (vänstra/mittersta/högra knappen) om "
 "inte spelandes"
 
-#: gap/gap_player_dialog.c:3736
+#: gap/gap_player_dialog.c:4170
 msgid "Start Reverse Playback"
 msgstr "Starta baklängesuppspelning"
 
-#: gap/gap_player_dialog.c:3745
+#: gap/gap_player_dialog.c:4179
 msgid "Close Window"
 msgstr "Stäng fönster"
 
-#: gap/gap_player_main.c:197
+#: gap/gap_player_main.c:207
 msgid "<Image>/Video/Playback..."
 msgstr "<Image>/Video/Uppspelning..."
 
@@ -3460,6 +3581,67 @@ msgstr "Återställ punkt"
 #: gap/gap_stock.c:56
 msgid "Rotate Follow"
 msgstr "Rotera följ"
+
+#~ msgid "Search:"
+#~ msgstr "Sök:"
+
+#~ msgid "Name"
+#~ msgstr "Namn"
+
+#~ msgid "Blurb"
+#~ msgstr "Sammanfattning"
+
+#~ msgid "Menu Path"
+#~ msgstr "Menysökväg"
+
+#~ msgid "Help"
+#~ msgstr "Hjälp"
+
+#~ msgid "Author"
+#~ msgstr "Författare"
+
+#~ msgid "Date"
+#~ msgstr "Datum"
+
+#~ msgid "Copyright"
+#~ msgstr "Copyright"
+
+#~ msgid "Searching by menu path - please wait"
+#~ msgstr "Söker efter menysökväg - var vänlig vänta"
+
+#~ msgid "Searching"
+#~ msgstr "Söker"
+
+#~ msgid "Directory '%s' already exists"
+#~ msgstr "Katalogen \"%s\" finns redan"
+
+#~ msgid "File '%s' already exists"
+#~ msgstr "Filen \"%s\" finns redan"
+
+#~ msgid ""
+#~ "Target Audio Samplerate in Samples/sec\n"
+#~ "(ignored if Resample is OFF)"
+#~ msgstr ""
+#~ "Målljudsamplingshastighet i samplingar/sek\n"
+#~ "(ignoreras om Omsampla är AV)"
+
+#~ msgid "Creating Audiofile"
+#~ msgstr "Skapar ljudfil"
+
+#~ msgid "Please Wait"
+#~ msgstr "Var vänlig vänta"
+
+#~ msgid "Copy As Wavefile"
+#~ msgstr "Kopiera som Wave-fil"
+
+#~ msgid "Copy as"
+#~ msgstr "Kopiera som"
+
+#~ msgid "Animated Filter apply (init)"
+#~ msgstr "Tillämpning av animerat filter (initiering)"
+
+#~ msgid "Animated Filter apply (please wait)"
+#~ msgstr "Tillämpning av animerat filter (var vänlig vänta)"
 
 #~ msgid "Audiofile"
 #~ msgstr "Ljudfil"
