@@ -1,3 +1,12 @@
+2003-11-15  Wolfgang Hofer <hof@gimp.org>
+	bugfixes:Playback: SizeButton + SHIFT resulted in Overlapping
+	         Widget arrangement.
+		 Filtermacro: Buttons sensitivity now depends
+		              on valid filtermacro scriptfile name.
+	gap/gap_fmac_main.c
+	gap/gap_player_dialog.c
+	gap/README
+	
 2003-11-09  Wolfgang Hofer <hof@gimp.org>
 	
 	Filtermacro implementation and some bugfixes.

@@ -28,6 +28,7 @@
  */
 
 /* Revision history
+ *  (2003/11/15)  v1.3.22c   hof: bugfix: SHIFT size button
  *  (2003/11/01)  v1.3.21d   hof: cleanup messages
  *  (2003/10/14)  v1.3.20d   hof: sourcecode cleanup
  *  (2003/10/06)  v1.3.20d   hof: bugfix: changed shell_window resize handling
@@ -2392,6 +2393,7 @@ on_size_button_button_press_event  (GtkWidget       *widget,
                                     gpointer         user_data)
 {
   GapPlayerMainGlobalParams *gpp;
+  gboolean fit_initial_flag;
 
 
   if(gap_debug) printf("\nON_SIZE_BUTTON_BUTTON_PRESS_EVENT START\n");
@@ -2401,8 +2403,10 @@ on_size_button_button_press_event  (GtkWidget       *widget,
   {
     return FALSE;
   }
-  p_disconnect_resize_handler(gpp);
 
+  p_disconnect_resize_handler(gpp);
+  fit_initial_flag = TRUE;
+  
   if ((bevent->state & GDK_SHIFT_MASK)
   &&  (bevent->type == GDK_BUTTON_PRESS)
   &&  (gpp->ainfo_ptr))
@@ -2411,6 +2415,7 @@ on_size_button_button_press_event  (GtkWidget       *widget,
     gpp->pv_pixelsize = CLAMP(MAX(gpp->ainfo_ptr->width, gpp->ainfo_ptr->height)
                        , GAP_PLAYER_MIN_SIZE
                        , GAP_PLAYER_MAX_SIZE);
+    fit_initial_flag = FALSE;
   }
   else
   {
@@ -2438,7 +2443,15 @@ on_size_button_button_press_event  (GtkWidget       *widget,
                             );                            
   
 
-  p_fit_initial_shell_window(gpp);
+  if(fit_initial_flag)
+  {
+    p_fit_initial_shell_window(gpp);
+  }
+  else
+  {
+    p_fit_shell_window(gpp);
+  }
+
   p_connect_resize_handler(gpp);
 
   return FALSE;

@@ -38,6 +38,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <errno.h>
 
 /* GIMP includes */
 #include "gtk/gtk.h"
@@ -55,9 +56,10 @@
 #include "gap_dbbrowser_utils.h"
 #include "gap_lastvaldesc.h"
 
-static char *gap_fmac_version = "1.3.22b; 2003/11/09";
+static char *gap_fmac_version = "1.3.22c; 2003/11/12";
 
 /* revision history:
+ * gimp   1.3.22c;  2003/11/12  hof: button sensitivity
  * gimp   1.3.22b;  2003/11/09  hof: created (based on old unpublished patches for gimp-1.2)
  */
 
@@ -86,6 +88,10 @@ typedef struct
   gint              selected_number;
   GtkWidget        *file_entry;
   GtkWidget        *filesel;
+  GtkWidget        *ok_button;
+  GtkWidget        *add_button;
+  GtkWidget        *delete_button;
+  GtkWidget        *delete_all_button;
   
   gchar             filtermacro_file[FMAC_FILE_LENGTH];
   gint32            image_id;
@@ -110,6 +116,7 @@ static void  p_filesel_ok_callback(GtkWidget *widget, fmac_globalparams_t *gpp);
 static void  p_file_entry_update_callback(GtkWidget *widget, fmac_globalparams_t *gpp);
 static void  p_filesel_close_callback(GtkWidget *widget, fmac_globalparams_t *gpp);
 static void  p_create_action_area_buttons(fmac_globalparams_t *gpp);
+static void  p_setbutton_sensitivity(fmac_globalparams_t *gpp);
 
 static gboolean  p_chk_filtermacro_file(const char *filtermacro_file);
 static void      p_print_and_free_msg(char *msg, GimpRunMode run_mode);
@@ -829,7 +836,8 @@ p_tree_fill (fmac_globalparams_t *gpp)
   
   gtk_tree_model_get_iter_root (GTK_TREE_MODEL (gpp->store), &iter);
   gtk_tree_selection_select_iter (gpp->sel, &iter);
-  
+
+  p_setbutton_sensitivity  (gpp);
 }  /* end p_tree_fill */
 
 
@@ -853,6 +861,7 @@ p_create_action_area_buttons(fmac_globalparams_t *gpp)
 
   /* Button Delete All */
   button = gtk_button_new_with_label (_("Delete All"));
+  gpp->delete_all_button = button;
   gtk_box_pack_start (GTK_BOX (hbox), button, TRUE, TRUE, 0);
   gimp_help_set_help_data(button
                           ,_("Delete the filtermacro scriptfile")
@@ -865,6 +874,7 @@ p_create_action_area_buttons(fmac_globalparams_t *gpp)
 
   /* Button Delete */
   button = gtk_button_new_with_label (_("Delete"));
+  gpp->delete_button = button;
   gtk_box_pack_start (GTK_BOX (hbox), button, TRUE, TRUE, 0);
   gimp_help_set_help_data(button
                           ,_("Delete the selected filtercall")
@@ -877,6 +887,7 @@ p_create_action_area_buttons(fmac_globalparams_t *gpp)
 
   /* Button Add */
   button = gtk_button_new_with_label (_("Add"));
+  gpp->add_button = button;
   gtk_box_pack_start (GTK_BOX (hbox), button, TRUE, TRUE, 0);
   gimp_help_set_help_data(button
                           ,_("Open PDB-browser window to add a new filter "
@@ -909,6 +920,7 @@ p_create_action_area_buttons(fmac_globalparams_t *gpp)
 
   /* Button OK */
   button = gtk_button_new_from_stock ( GTK_STOCK_OK);
+  gpp->ok_button = button;
   GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
   gtk_box_pack_start (GTK_BOX (hbox), button, TRUE, TRUE, 0);
   gimp_help_set_help_data(button
@@ -920,8 +932,40 @@ p_create_action_area_buttons(fmac_globalparams_t *gpp)
                    );
   gtk_widget_show (button);
 
+  p_setbutton_sensitivity(gpp);
+  
 }  /* end p_create_action_area_buttons */
 
+
+/* ----------------------------
+ * p_setbutton_sensitivity
+ * ----------------------------
+ */
+static void  
+p_setbutton_sensitivity(fmac_globalparams_t *gpp)
+{
+  gboolean sensitive_1;
+  gboolean sensitive_2;
+  
+  sensitive_1 = FALSE;
+  sensitive_2 = FALSE;
+
+  if((gpp->filtermacro_file[0] != '\0')
+  && (gpp->filtermacro_file[0] != ' '))
+  {
+    sensitive_2 = TRUE;
+    if(p_chk_filtermacro_file(gpp->filtermacro_file))
+    {
+      sensitive_1 = TRUE;
+    }
+  }
+  
+  gtk_widget_set_sensitive(gpp->ok_button, sensitive_1);
+  gtk_widget_set_sensitive(gpp->delete_all_button, sensitive_1);
+  gtk_widget_set_sensitive(gpp->delete_button, sensitive_1);
+  gtk_widget_set_sensitive(gpp->add_button, sensitive_2);
+  
+}  /* end p_setbutton_sensitivity */
 
 /* ----------------------------
  * p_close_callback
@@ -1064,7 +1108,17 @@ p_add_callback (GtkWidget *widget, fmac_globalparams_t *gpp)
   {
     if(gpp->filtermacro_file[0] != '\0')
     {
-      p_fmac_add_filter(gpp->filtermacro_file, gpp->image_id);
+      gint l_rc;
+
+      errno = 0;
+      l_rc = p_fmac_add_filter(gpp->filtermacro_file, gpp->image_id);
+      
+      if((l_rc < 0) && (errno != 0))
+      {
+        g_message(_("ERROR: Could not write filtermacro script\n"
+	        "filename: '%s'\n%s")
+	       ,gpp->filtermacro_file, g_strerror (errno));
+      }
     }
     p_tree_fill (gpp);
   }

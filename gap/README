@@ -1,4 +1,4 @@
-Project gap "GIMP Animation Package"   05. Nov. 2003  (pre)release 1.3.22a
+Project gap "GIMP Animation Package"   15. Nov. 2003  (pre)release 1.3.22c
 
 --------------------------------------------------------------------
 Introduction
@@ -210,6 +210,9 @@ Here is a short overview whats new in GIMP-GAP:
    (thumbnailfiles in png fileformat in $HOME/.thumbnails
     that allows better quality than the old .xvpics thumbnail standard)
  
+ - filtermacro scriptfiles
+   assemble filtermacro scriptfiles by picking filtercalls from the
+   current session and execute them later all together at one drawable.
  
  - gimp-gap now uses the preferences value save always/only on changes
    (gimprc keyword "trust-dirty-flag")
@@ -1775,6 +1778,62 @@ How to use
 - How to write (or generate) animated plug-ins:
       (see file: README_devlopers)
 
+- Filtermacro scripts:
+- --------------------
+
+    Start from Menu:
+
+      "<Image>/Filters/Filtermacro"
+
+    WARNINGS:
+    - fltermacro scripts are a temporary solution. Support may be removed
+      in future releases of gimp-gap. 
+    - filtermacros are restricted to plug-ins that are able to run with LAST_VALUES.
+    - filtermacro scriptfiles are machine dependent, plug-in version dependent, 
+      and may not work in the expected way or even crash at execution on other machines
+      or on execution with newer versions of the recorded filter plug-ins.
+
+  Filename:
+    Name of the filtermacro scriptfile.
+
+  Delete All button:
+    Delete the filtermacro scriptfile.
+
+  Delete button:
+    Delete the currently selected filtercall from the filtermacro scriptfile.
+
+  Add
+    Add a new filtercall to the filtermacro scriptfile.
+    This button opens a PDB browser dialog window,
+    where you can select filters that have been already used
+    within the current GIMP-session.
+    The PDB browser will show only filters that can
+    operate on a drawable and have stored the parameters
+    of the last run (in the current Session)
+
+  Cancel
+    Close the window.
+
+  OK
+    Close the window and apply all the filtercalls
+    that are listed in the filtermacro scriptfile
+    with their recorded parameters to the
+    current drawable.
+    (this is the drawable from where the 'Filter Macro' dialog
+    was invoked from)
+
+
+  Tip:
+  Filtermacro execution can be used in the same way as a single
+  filtercall, together with the
+    'Filter All Layers'  and the 
+    'Frames Modify'      
+  features of gimp-gap. This way you can apply a set of filtercalls
+  on all layers of a multilyer image
+  (or on all selected layers in multiple frames)
+  at once 
+
+
 --------------------------------------------------------------------
 Video Configuration (gimprc)
 --------------------------------------------------------------------
@@ -1832,6 +1891,7 @@ Internal PDB names and menu names of GIMP-GAP plug-ins
 ======================================================
 
   plug_in_bluebox                     "<Image>/Video/Bluebox"
+  plug_in_filter_macro                "<Image>/Filters/Filtermacro"
   plug_in_gap_anim_crop               "<Image>/Video/Frames Crop"
   plug_in_gap_anim_resize             "<Image>/Video/Frames Resize"
   plug_in_gap_anim_scale              "<Image>/Video/Frames Scale"
