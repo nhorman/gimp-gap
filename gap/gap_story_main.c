@@ -109,9 +109,6 @@ static GapStbMainGlobalParams global_params =
 , NULL        /*  GtkWidget *menu_item_cll_properties */
 , NULL        /*  GtkWidget *menu_item_cll_encode */
 , NULL        /*  GtkWidget *menu_item_cll_close */
-
-
-   
 };
 
 

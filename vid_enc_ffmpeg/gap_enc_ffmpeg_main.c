@@ -87,13 +87,13 @@
 #include "avcodec.h"
 
 
-// #if FFMPEG_VERSION_INT ==  0x000408
-// #define HAVE_OLD_FFMPEG_0408
-// #else
-// #undef  HAVE_OLD_FFMPEG_0408
-// #endif
-
+#if FFMPEG_VERSION_INT ==  0x000408
 #define HAVE_OLD_FFMPEG_0408
+#else
+#undef  HAVE_OLD_FFMPEG_0408
+#endif
+
+//#define HAVE_OLD_FFMPEG_0408
 
 
 static char *gap_enc_ffmpeg_version = "2.1.0a; 2004/11/06";

@@ -21,14 +21,14 @@
 #ifdef ENABLE_GVA_LIBAVFORMAT
 #include "avformat.h"
 
-// #if FFMPEG_VERSION_INT ==  0x000408
-// #define HAVE_OLD_FFMPEG_0408
-// #else
-// #undef  HAVE_OLD_FFMPEG_0408
-// #endif
-
-
+#if FFMPEG_VERSION_INT ==  0x000408
 #define HAVE_OLD_FFMPEG_0408
+#else
+#undef  HAVE_OLD_FFMPEG_0408
+#endif
+
+
+//#define HAVE_OLD_FFMPEG_0408
 
 /* -------------------------
  * API READ extension FFMPEG
@@ -644,6 +644,9 @@ p_wrapper_ffmpeg_get_next_frame(t_GVA_Handle *gvahand)
 
     /* if (gap_debug) printf("before avcodec_decode_video: inbuf_ptr:%d inbuf_len:%d\n", (int)handle->inbuf_ptr, (int)handle->inbuf_len); */
 
+#ifndef HAVE_OLD_FFMPEG_0408
+    avcodec_get_frame_defaults(&handle->big_picture_yuv);
+#endif
 
     /* decode a frame. return -1 if error, otherwise return the number of
      * bytes used. If no frame could be decompressed, *got_picture_ptr is

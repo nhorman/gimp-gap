@@ -20,6 +20,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 /* revision history:
+ * version 2.1.0a;  2005/01/22  hof: copy/cut/paste handling via keys (ctrl-c, ctrl-x, ctrl-v) 
  * version 2.1.0a;  2004/12/05  hof: added global layout properties dialog 
  * version 1.3.27a; 2004/03/15  hof: videothumbnails are kept in memory
  *                                   for the startframes in all MOVIE clips
@@ -42,6 +43,7 @@
 #include <gtk/gtk.h>
 #include <libgimp/gimp.h>
 #include <libgimp/gimpui.h>
+#include <gdk/gdkkeysyms.h>
 
 #include "gap_story_main.h"
 #include "gap_story_dialog.h"
@@ -156,6 +158,10 @@ static void     p_selection_add(GapStbFrameWidget *fw);
 static void     p_selection_extend(GapStbFrameWidget *fw);
 static void     p_selection_replace(GapStbFrameWidget *fw);
 
+static gboolean p_cut_copy_sensitive (GapStoryBoard *stb);
+static gboolean p_paste_sensitive (GapStbMainGlobalParams *sgpp
+                   ,GapStoryBoard *stb
+		   );
 static void     p_tabw_sensibility (GapStbMainGlobalParams *sgpp
                    ,GapStoryBoard *stb
 		   ,GapStbTabWidgets *tabw);
@@ -251,6 +257,12 @@ static void    p_prefetch_vthumbs (GapStbMainGlobalParams *sgpp
 		   );
 
 
+static void     p_tabw_set_focus_to_first_fw(GapStbTabWidgets *tabw);
+static gboolean p_tabw_key_press_event_cb ( GtkWidget *widget
+                    , GdkEvent  *event
+		    , GapStbTabWidgets *tabw
+		    );
+
 static void    story_dlg_response (GtkWidget *widget,
                  gint       response_id,
                  GapStbMainGlobalParams *sgpp);
@@ -270,7 +282,6 @@ static void     p_create_button_bar(GapStbTabWidgets *tabw
 	           ,gint32 mount_vs_col
 		   ,gint32 mount_vs_row
 		   );
-
 
 /* -----------------------------
  * p_thumbsize_to_index
@@ -404,6 +415,10 @@ p_new_stb_tab_widgets(GapStbMainGlobalParams *sgpp, GapStoryMasterType type)
     tabw->pw = NULL;
     tabw->fw_tab = NULL;
     tabw->fw_tab_size = 0;  /* start up with empty fw table of 0 elements */
+    tabw->master_dlg_open = FALSE;
+    tabw->otone_dlg_open = FALSE;
+    tabw->story_id_at_prev_paste = -1;
+    
     tabw->sgpp = sgpp;
   }
   return(tabw);
@@ -575,6 +590,7 @@ p_frame_widget_init_empty (GapStbTabWidgets *tabw, GapStbFrameWidget *fw)
   fw->sgpp = tabw->sgpp;
 
   fw->vbox = gtk_vbox_new (FALSE, 0);
+  GTK_WIDGET_SET_FLAGS(fw->vbox, GTK_CAN_FOCUS);
 
   /* the vox2  */
   fw->vbox2 = gtk_vbox_new (FALSE, 0);
@@ -583,6 +599,7 @@ p_frame_widget_init_empty (GapStbTabWidgets *tabw, GapStbFrameWidget *fw)
    * used to handle selection events
    */
   fw->event_box = gtk_event_box_new ();
+
   gtk_container_add (GTK_CONTAINER (fw->event_box), fw->vbox2);
   gtk_widget_set_events (fw->event_box, GDK_BUTTON_PRESS_MASK);
   g_signal_connect (G_OBJECT (fw->event_box), "button_press_event",
@@ -1969,11 +1986,7 @@ p_frame_widget_preview_events_cb (GtkWidget *widget,
 
   if(fw == NULL)
   {
-//    fw = (GapStbFrameWidget *) g_object_get_data (G_OBJECT (widget), "frame_widget");
-//    if(fw == NULL)
-//    {
       return FALSE;
-//    }
   }
 
   if ((fw->stb_elem_refptr == NULL)
@@ -1988,11 +2001,13 @@ p_frame_widget_preview_events_cb (GtkWidget *widget,
     case GDK_2BUTTON_PRESS:
       if(gap_debug) printf("p_frame_widget_preview_events_cb GDK_2BUTTON_PRESS (doubleclick)\n");
       p_single_clip_playback(fw);
+      gtk_widget_grab_focus (fw->vbox);
       return TRUE;
 
     case GDK_BUTTON_PRESS:
       bevent = (GdkEventButton *) event;
 
+      gtk_widget_grab_focus (fw->vbox);
       if(gap_debug) printf("p_frame_widget_preview_events_cb GDK_BUTTON_PRESS button:%d seq_nr:%d widget:%d  da_wgt:%d\n"
                               , (int)bevent->button
                               , (int)fw->seq_nr
@@ -2235,6 +2250,15 @@ p_tabw_edit_paste_cb ( GtkWidget *w
   if(stb_dst)
   {
     story_id = gap_story_find_last_selected(stb_dst);
+    if(story_id < 0)
+    {
+      story_id = tabw->story_id_at_prev_paste;
+    }
+    else
+    {
+      tabw->story_id_at_prev_paste = story_id;
+    }
+    
     p_tabw_edit_paste_at_story_id(sgpp
                                ,stb_dst
 			       ,tabw
@@ -2276,8 +2300,8 @@ p_tabw_edit_paste_at_story_id (GapStbMainGlobalParams  *sgpp
 		      );
     gap_story_free_storyboard(&stb_sel_dup);
   }
-  //
-  printf("p_tabw_edit_paste_at_story_id: TODO: check if pasted elem is off screen and scroll if TRUE\n");
+
+  // printf("p_tabw_edit_paste_at_story_id: TODO: check if pasted elem is off screen and scroll if TRUE\n");
 
 
   /* refresh storyboard layout and thumbnail list widgets */
@@ -2507,6 +2531,61 @@ p_selection_replace(GapStbFrameWidget *fw)
 
 
 /* -----------------------------
+ * p_cut_copy_sensitive
+ * -----------------------------
+ */
+static gboolean
+p_cut_copy_sensitive (GapStoryBoard *stb)
+{
+  gboolean l_sensitive_cc;
+  
+  l_sensitive_cc = FALSE;
+  
+  if(stb)
+  {
+    GapStoryElem      *stb_elem;
+ 
+    /* check if there is at least one selected element */
+    for(stb_elem = stb->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
+    {
+      if(stb_elem->selected)
+       {
+        l_sensitive_cc = TRUE;
+	break;
+      }
+    }
+  }
+  
+  return (l_sensitive_cc);
+  
+}  /* end p_cut_copy_sensitive */
+
+
+/* -----------------------------
+ * p_paste_sensitive
+ * -----------------------------
+ */
+static gboolean
+p_paste_sensitive (GapStbMainGlobalParams *sgpp
+                   ,GapStoryBoard *stb
+		   )
+{
+  if(stb)
+  {
+    /* check if there is at least one elem in the paste buffer */
+    if(sgpp->curr_selection)
+    {
+      if(sgpp->curr_selection->stb_elem)
+      {
+        return(TRUE);
+      }
+    }
+  }
+  return(FALSE);
+}  /* end p_paste_sensitive */
+
+
+/* -----------------------------
  * p_tabw_sensibility
  * -----------------------------
  */
@@ -2534,31 +2613,8 @@ p_tabw_sensibility (GapStbMainGlobalParams *sgpp
   if(tabw->save_button)  gtk_widget_set_sensitive(tabw->save_button, l_sensitive);
   if(tabw->play_button)  gtk_widget_set_sensitive(tabw->play_button, l_sensitive);
  
-  l_sensitive  = FALSE;
-  l_sensitive_cc = FALSE;
-  if(stb)
-  {
-    GapStoryElem      *stb_elem;
- 
-    /* check if there is at least one elem in the paste buffer */
-    if(sgpp->curr_selection)
-    {
-      if(sgpp->curr_selection->stb_elem)
-      {
-        l_sensitive  = TRUE;
-      }
-    }
-    
-    /* check if there is at least one selected element */
-    for(stb_elem = stb->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
-    {
-      if(stb_elem->selected)
-       {
-        l_sensitive_cc = TRUE;
-	break;
-      }
-    }
-  }
+  l_sensitive  = p_paste_sensitive(sgpp, stb);
+  l_sensitive_cc = p_cut_copy_sensitive(stb);
 
   if(tabw->edit_paste_button) gtk_widget_set_sensitive(tabw->edit_paste_button, l_sensitive);
 
@@ -4667,6 +4723,138 @@ gap_story_dlg_fetch_vthumb_no_store(GapStbMainGlobalParams *sgpp
 
 
 
+/* -----------------------------------
+ * p_tabw_set_focus_to_first_fw
+ * -----------------------------------
+ */
+static void
+p_tabw_set_focus_to_first_fw(GapStbTabWidgets *tabw)
+{
+  GapStbFrameWidget *fw;
+
+  if(tabw == NULL) { return; }
+
+  if(tabw->fw_tab_size > 0)
+  {
+    fw = tabw->fw_tab[0];
+    gtk_widget_grab_focus (fw->vbox);
+  }
+  
+}  /* end p_tabw_set_focus_to_first_fw */
+
+/* -----------------------------------
+ * p_tabw_key_press_event_cb
+ * -----------------------------------
+ * handling of ctrl-c, ctrl-x, ctrl-v, ctrl-z keys
+ * pressed when focus is somewhere in the tabw frame_with_name.
+ */
+static gboolean
+p_tabw_key_press_event_cb ( GtkWidget *widget
+                    , GdkEvent  *event
+		    , GapStbTabWidgets *tabw
+		    )
+{
+  gint keyval;
+  gboolean sensitive;
+  gboolean ctrl_modifier;
+  GapStbMainGlobalParams *sgpp;
+  GapStoryBoard *stb;
+  GdkEventKey   *kevent;
+
+  if(gap_debug) printf("p_tabw_key_press_event_cb : tabw:%d\n", (int)tabw);
+  
+  if(tabw == NULL)
+  {
+    return (FALSE);
+  }
+  sgpp = (GapStbMainGlobalParams *)tabw->sgpp;
+  stb = p_tabw_get_stb_ptr(tabw);
+  
+  ctrl_modifier = FALSE;
+
+  switch (event->type)
+  {
+    case GDK_KEY_PRESS:
+      kevent =  (GdkEventKey *) event;
+
+      if(kevent->state & GDK_CONTROL_MASK)
+      {
+        ctrl_modifier = TRUE;
+      }
+      keyval = (gint)kevent->keyval;
+      if(gap_debug) 
+      {
+        printf("KEY Press : val:%d  ctrl_modifier:%d\n", (int)keyval, (int)ctrl_modifier);
+      }
+      switch (keyval)
+      {
+        case GDK_C:
+        case GDK_c:
+	  if(ctrl_modifier)
+	  {
+	    if(gap_debug) printf("GDK_C: copy\n");
+	    sensitive = p_cut_copy_sensitive(stb);
+	    if(sensitive)
+	    {
+	      p_tabw_edit_copy_cb(NULL, tabw);
+	    }
+	    return(TRUE);
+	  }
+	  break;
+        case GDK_V:
+        case GDK_v:
+	  if(ctrl_modifier)
+	  {
+	    if(gap_debug) printf("GDK_V: paste\n");
+	    sensitive = p_paste_sensitive(sgpp, stb);
+	    if(sensitive)
+	    {
+	      p_tabw_edit_paste_cb(NULL, tabw);
+	      
+	      /* after paste focus is lost
+	       * force setting focus at 1st widget in the fw_tab
+	       * to catch the release event of the v-key
+	       */
+	      p_tabw_set_focus_to_first_fw(tabw);
+	    }
+	    return(TRUE);
+	  }
+	  break;
+        case GDK_X:
+        case GDK_x:
+	  if(ctrl_modifier)
+	  {
+	    if(gap_debug) printf("GDK_X: cut\n");
+	    sensitive = p_cut_copy_sensitive(stb);
+	    if(sensitive)
+	    {
+	      p_tabw_edit_cut_cb(NULL, tabw);
+	    }
+	    return(TRUE);
+	  }
+	  break;
+        case GDK_Z:
+        case GDK_z:
+	  if(ctrl_modifier)
+	  {
+	    if(gap_debug) printf("GDK_Z: undo\n");
+	    
+	    /* undo not implemented yet */
+	    return(TRUE);
+	  }
+	  break;
+      }
+      break;
+ 
+    default:
+      /*  do nothing  */
+      break;
+  }
+
+  return FALSE;
+}  /* end p_tabw_key_press_event_cb */
+
+
 
 /* ---------------------------------
  * story_dlg_response
@@ -5156,6 +5344,7 @@ gap_storyboard_dialog(GapStbMainGlobalParams *sgpp)
   GtkWidget  *player_frame;
   GtkWidget  *table;
   GtkWidget  *menu_bar;
+  GtkWidget  *frame_event_box;
 
   /* Init UI  */
   gimp_ui_init ("storyboard", FALSE);
@@ -5218,7 +5407,6 @@ gap_storyboard_dialog(GapStbMainGlobalParams *sgpp)
 
   sgpp->win_prop_dlg_open = FALSE;
 
-
   /*  The dialog and main vbox  */
   /* the help_id is passed as NULL to avoid creation of the HELP button
    * (the Help Button would be the only button in the action area and results
@@ -5264,10 +5452,19 @@ gap_storyboard_dialog(GapStbMainGlobalParams *sgpp)
 
   /* XXXXXXXXXXX Start of the CLIPLIST widgets  XXXXXXXXXXXX */
   
+
+  /* the frame_event_box (to catch key events) */
+  frame_event_box = gtk_event_box_new ();
+  gtk_widget_show (frame_event_box);
+  gtk_widget_set_events (frame_event_box
+                        , GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK);
+
   /* the clp_frame */
   clp_frame = gimp_frame_new ( _("Cliplist") );
   gtk_frame_set_shadow_type (GTK_FRAME (clp_frame) ,GTK_SHADOW_ETCHED_IN);
-  gtk_box_pack_start (GTK_BOX (hbox), clp_frame, TRUE, TRUE, 0);
+  gtk_container_add (GTK_CONTAINER (frame_event_box ), clp_frame);
+
+  gtk_box_pack_start (GTK_BOX (hbox), frame_event_box, TRUE, TRUE, 0);
   gtk_widget_show (clp_frame);
 
   /* the clp_vbox */
@@ -5285,6 +5482,11 @@ gap_storyboard_dialog(GapStbMainGlobalParams *sgpp)
   sgpp->cll_widgets = p_new_stb_tab_widgets(sgpp, GAP_STB_MASTER_TYPE_CLIPLIST);
   sgpp->cll_widgets->mount_table = table;
   sgpp->cll_widgets->frame_with_name = clp_frame;
+
+  g_signal_connect (G_OBJECT (frame_event_box), "key_press_event",
+                    G_CALLBACK (p_tabw_key_press_event_cb),
+                    sgpp->cll_widgets);
+
 
   /* create CLIPLIST Table widgets */
   p_recreate_tab_widgets( sgpp->cll
@@ -5316,11 +5518,18 @@ gap_storyboard_dialog(GapStbMainGlobalParams *sgpp)
   /* XXXXXXXXXXX Start of the STORYBOARD widgets  XXXXXXXXXXXX */
 
 
+  /* the frame_event_box (to catch key events) */
+  frame_event_box = gtk_event_box_new ();
+  gtk_widget_show (frame_event_box);
+  gtk_widget_set_events (frame_event_box
+                        , GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK);
 
   /* the stb_frame */
   stb_frame = gimp_frame_new ( _("Storyboard") );
   gtk_frame_set_shadow_type (GTK_FRAME (stb_frame) ,GTK_SHADOW_ETCHED_IN);
-  gtk_box_pack_start (GTK_BOX (vbox), stb_frame, TRUE, TRUE, 0);
+  gtk_container_add (GTK_CONTAINER (frame_event_box ), stb_frame);
+
+  gtk_box_pack_start (GTK_BOX (vbox), frame_event_box, TRUE, TRUE, 0);
   gtk_widget_show (stb_frame);
 
   /* the stb_vbox */
@@ -5339,7 +5548,9 @@ gap_storyboard_dialog(GapStbMainGlobalParams *sgpp)
   sgpp->stb_widgets = p_new_stb_tab_widgets(sgpp, GAP_STB_MASTER_TYPE_STORYBOARD);
   sgpp->stb_widgets->mount_table = table;
   sgpp->stb_widgets->frame_with_name = stb_frame;
-
+  g_signal_connect (G_OBJECT (frame_event_box), "key_press_event",
+                    G_CALLBACK (p_tabw_key_press_event_cb),
+                    sgpp->stb_widgets);
 
 
   /* create STORYBOARD Table widgets */
@@ -5748,4 +5959,5 @@ p_tabw_master_prop_dialog(GapStbTabWidgets *tabw, gboolean new_flag)
   tabw->master_dlg_open  = FALSE;
   
 }  /* end p_tabw_master_prop_dialog */
+
 

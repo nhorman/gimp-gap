@@ -155,6 +155,8 @@ typedef struct GapStbTabWidgets  /* nickname: tabw */
   gint32 thumb_height;
   gint32 rowpage;
 
+  gint32    story_id_at_prev_paste;
+
   gboolean  master_dlg_open;
   gboolean  otone_dlg_open;
 
@@ -253,8 +255,6 @@ typedef struct GapStbMainGlobalParams  /* nickname: sgpp */
   GtkWidget *menu_item_cll_audio_otone;
   GtkWidget *menu_item_cll_encode;
   GtkWidget *menu_item_cll_close;
-  
-
 } GapStbMainGlobalParams;
 
 
