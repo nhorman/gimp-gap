@@ -521,7 +521,7 @@ p_call_player_widget(GapVexMainGlobalParams *gpp
     if((gpp->plp->shell_window == NULL) 
     && (gpp->plp->docking_container == NULL))
     {
-      /*if(gap_debug)*/ printf("Player shell has gone, force Reopen now\n");
+      if(gap_debug) printf("Player shell has gone, force Reopen now\n");
 
       gap_player_dlg_cleanup(gpp->plp);
       g_free(gpp->plp);
@@ -1710,7 +1710,7 @@ p_align_widget_columns(GtkWidget **wgt_array, gint max_elements)
   {
     GtkRequisition  requisition;
     gtk_widget_size_request(wgt_array[ii], &requisition);
-    //if(gap_debug)
+    if(gap_debug)
     {
       printf("WIDGET[%02d].width: %d\n"
           ,(int)ii
@@ -2324,7 +2324,7 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
   gtk_widget_show (mw__spinbutton_basenum);
   gtk_widget_set_usize (mw__spinbutton_basenum, SPIN_WIDTH_LARGE, -2);
   gtk_box_pack_start (GTK_BOX (hbox2), mw__spinbutton_basenum, FALSE, FALSE, 0);
-  gimp_help_set_help_data (mw__spinbutton_basenum, _("Famenumber for 1st extracted frame (use 0 for keeping original framenumbers)"), NULL);
+  gimp_help_set_help_data (mw__spinbutton_basenum, _("Framenumber for 1st extracted frame (use 0 for keeping original framenumbers)"), NULL);
 
   /* dummy label to fill up the hbox2 */
   label = gtk_label_new (" ");

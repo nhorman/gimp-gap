@@ -177,7 +177,7 @@ gap_cme_gui_check_gui_thread_is_active(GapCmeGlobalParams *gpp)
      /* only one of the threads (Master or GUI thread) can use the PDB Interface (or call gimp_xxx procedures)
       * If 2 threads are talking to the gimp main app parallel it comes to crash.
       */
-     /*if(gap_debug)*/ printf("MASTER: GUI thread %d is already active\n", (int)gpp->val.gui_proc_tid);
+     if(gap_debug) printf("MASTER: GUI thread %d is already active\n", (int)gpp->val.gui_proc_tid);
      if(l_gap_message_open == FALSE)
      {
        l_gap_message_open = TRUE;
@@ -206,11 +206,11 @@ gap_cme_gui_pdb_call_encoder_gui_plugin(GapCmeGlobalParams *gpp)
 
   /* start a thread for asynchron PDB call of the gui_ procedure
    */
-  /*if(gap_debug)*/ printf("MASTER: Before pthread_create\n");
+  if(gap_debug) printf("MASTER: Before pthread_create\n");
 
   pthread_create(&gpp->val.gui_proc_tid, NULL, (void*)gap_cme_gui_pthread_async_pdb_call, NULL);
 
-  /*if(gap_debug)*/ printf("MASTER: After pthread_create\n");
+  if(gap_debug) printf("MASTER: After pthread_create\n");
 #else
   /* if threads are not used simply call the procedure
    * (the common GUI window is not refreshed until the called gui_proc ends)
@@ -748,7 +748,7 @@ p_print_storyboard_text_label(GapCmeGlobalParams *gpp, char *msg)
         "assemble a video from a list of single images,\n"
         "frameranges, videoclips, gif animations or audiofiles.\n"
         "the frames are organized in tracks,\n"
-        "and allow fadeing, scale and move\n"
+        "and allow fading, scale and move\n"
         "operations between the tracks.\n"
         "(see STORYBOARD_FILE_DOC.txt for details)")
         );
@@ -1259,9 +1259,9 @@ p_storybord_job_finished(GapCmeGlobalParams *gpp, t_global_stb *gstb)
    if(gpp->val.gui_proc_tid != 0)
    {
       /* wait until thread exits */
-      printf("p_storybord_job_finished: before pthread_join\n");
+      if(gap_debug) printf("p_storybord_job_finished: before pthread_join\n");
       pthread_join(gpp->val.gui_proc_tid, 0);
-      printf("p_storybord_job_finished: after pthread_join\n");
+      if(gap_debug) printf("p_storybord_job_finished: after pthread_join\n");
       gpp->val.gui_proc_tid = 0;
    }
 #endif

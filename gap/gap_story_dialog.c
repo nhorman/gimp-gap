@@ -1072,7 +1072,7 @@ p_story_call_player(GapStbMainGlobalParams *sgpp
 
   if(sgpp->plp == NULL)
   {
-printf("p_story_call_player: 1.st start\n");
+    if(gap_debug) printf("p_story_call_player: 1.st start\n");
 
     /* 1. START mode */
     sgpp->plp = (GapPlayerMainGlobalParams *)g_malloc0(sizeof(GapPlayerMainGlobalParams));
@@ -1128,7 +1128,7 @@ printf("p_story_call_player: 1.st start\n");
   }
   else
   {
-printf("p_story_call_player: RE start\n");
+    if(gap_debug) printf("p_story_call_player: RE start\n");
     /* RESTART mode */
     gap_player_dlg_restart(sgpp->plp
                       , TRUE               /* gboolean autostart */
@@ -1670,7 +1670,6 @@ p_tabw_load_file_cb ( GtkWidget *w
   GtkWidget *filesel = NULL;
   gboolean   drop_unsaved_changes = TRUE;
 
-printf("##### (1) p_tabw_load_file_cb tabw->filesel:%d\n", (int)tabw->filesel );
   if(tabw->filesel != NULL)
   {
      gtk_window_present(GTK_WINDOW(tabw->filesel));
@@ -3840,7 +3839,7 @@ p_tabw_update_frame_label (GapStbTabWidgets *tabw, GapStbMainGlobalParams *sgpp)
     lower_limit = 1.0;
     upper_limit = l_max_rowpage + page_size;
 
-    //if(gap_debug)
+    if(gap_debug)
     {
       printf("\n######rowpage_vscale_adj : %d  tabw->rows:%d\n", (int)l_max_rowpage ,(int)tabw->rows);
       printf("lower_limit %f\n", (float)lower_limit );
@@ -4686,7 +4685,7 @@ p_recreate_tab_widgets(GapStoryBoard *stb
 		       ,GapStbMainGlobalParams *sgpp
 		      )
 {
-  /*if(gap_debug)*/ printf("p_recreate_tab_widgets:START stb:%d tabw:%d\n", (int)stb ,(int)tabw);
+  if(gap_debug) printf("p_recreate_tab_widgets:START stb:%d tabw:%d\n", (int)stb ,(int)tabw);
 
   if(tabw)
   {
@@ -4756,7 +4755,7 @@ p_recreate_tab_widgets(GapStoryBoard *stb
       l_act_elems = gap_story_count_active_elements(stb, 1 /* track */ );   
     }
 
-    /*if(gap_debug)*/ printf("p_recreate_tab_widgets: rows:%d cols:%d\n", (int)tabw->rows ,(int)tabw->cols );
+    if(gap_debug) printf("p_recreate_tab_widgets: rows:%d cols:%d\n", (int)tabw->rows ,(int)tabw->cols );
     
     table = gtk_table_new (tabw->rows, tabw->cols, TRUE);
     gtk_widget_show (table);

@@ -727,7 +727,7 @@ p_edit_paste_call(gint32 paste_mode)
   {
     gimp_destroy_params(return_vals, nreturn_vals);
     gap_arr_msg_win(GIMP_RUN_INTERACTIVE
-             ,_("Error while positioning to frame. Video paste operaton failed")
+             ,_("Error while positioning to frame. Video paste operation failed")
              );
     return;
   }

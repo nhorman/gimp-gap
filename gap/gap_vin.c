@@ -608,8 +608,13 @@ gap_vin_get_all_keylist(t_keylist *keylist, GapVinVideoInfo *vin_ptr, char *base
                       gint32   l_idx;
                       
                       val_ptr = (gchar *)keyptr->val_ptr;
+		      while(txf_ptr->line[l_len] == ' ')
+		      {
+		        l_len++;  /* skip spaces between keyword and starting quote */
+		      }
                       if(txf_ptr->line[l_len] == '"')
                       {
+		        l_len++;  /* skip starting quote */
                         esc_flag = FALSE;
                         for(l_idx=0; l_idx < MIN(4000-l_len, keyptr->len); l_idx++)
                         {
@@ -635,7 +640,6 @@ gap_vin_get_all_keylist(t_keylist *keylist, GapVinVideoInfo *vin_ptr, char *base
                         }
                       }
                       *val_ptr = '\0';
-                      
                    }
                    break;
                  default:

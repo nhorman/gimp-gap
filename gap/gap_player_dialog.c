@@ -1948,18 +1948,22 @@ p_open_videofile(GapPlayerMainGlobalParams *gpp
     }
   }
 
-printf("PLAYER: open START\n");
-if(l_preferred_decoder) 
-{
-  printf("PLAYER: (decoder:%s)\n", l_preferred_decoder);
-}
+  /*
+   * printf("PLAYER: open START\n");
+   * if(l_preferred_decoder) 
+   * {
+   *   printf("PLAYER: (decoder:%s)\n", l_preferred_decoder);
+   * }
+   */
   gpp->gvahand =  GVA_open_read_pref(filename
 	                          , seltrack
 				  , 1 /* aud_track */
 				  , l_preferred_decoder
 				  , FALSE  /* use MMX if available (disable_mmx == FALSE) */
 				  );
-printf("PLAYER: open gpp->gvahand:%d\n", (int)gpp->gvahand);
+
+  /*printf("PLAYER: open gpp->gvahand:%d\n", (int)gpp->gvahand);*/
+
   if(gpp->gvahand)
   {
     gpp->gva_videofile = g_strdup(filename);
@@ -1969,7 +1973,9 @@ printf("PLAYER: open gpp->gvahand:%d\n", (int)gpp->gvahand);
     gpp->gvahand->progress_cb_user_data = gpp;
     gpp->gvahand->fptr_progress_callback = p_vid_progress_callback;
 
-printf("PLAYER: open fptr_progress_callback FPTR:%d\n", (int)gpp->gvahand->fptr_progress_callback);
+    /* printf("PLAYER: open fptr_progress_callback FPTR:%d\n"
+     *       , (int)gpp->gvahand->fptr_progress_callback);
+     */
 
     /* set decoder name as progress idle text */
     {
@@ -2029,11 +2035,15 @@ printf("PLAYER: open fptr_progress_callback FPTR:%d\n", (int)gpp->gvahand->fptr_
 	/* while videoindex creation show cancel button and hide play/stop buttons */
 	gtk_widget_hide (gpp->play_n_stop_hbox);
 	gtk_widget_show (gpp->cancel_vindex_button);
-  printf("PLAYER: open before GVA_count_frames\n");
+
+        /* printf("PLAYER: open before GVA_count_frames\n"); */
+	
 	gpp->vindex_creation_is_running = TRUE;
 	GVA_count_frames(gpp->gvahand);
 	gpp->vindex_creation_is_running = FALSE;
-  printf("PLAYER: open after GVA_count_frames\n");
+
+        /* printf("PLAYER: open after GVA_count_frames\n"); */
+	
 	gtk_widget_hide (gpp->cancel_vindex_button);
 	gtk_widget_show (gpp->play_n_stop_hbox);
 
@@ -2059,7 +2069,7 @@ printf("PLAYER: open fptr_progress_callback FPTR:%d\n", (int)gpp->gvahand->fptr_
     }
 
   }
-printf("PLAYER: open END\n");
+/* printf("PLAYER: open END\n"); */
 #endif
   
 }  /* end p_open_videofile */
@@ -2857,7 +2867,7 @@ on_timer_playback(GapPlayerMainGlobalParams *gpp)
               * until we are in time again
               */
              l_frame_dropped = TRUE;
-             printf("DROP (SKIP) frame\n");
+             /* printf("DROP (SKIP) frame\n"); */
              gtk_label_set_text ( GTK_LABEL(gpp->status_label), _("Skip"));
            }
            else
@@ -5298,7 +5308,7 @@ p_create_player_window (GapPlayerMainGlobalParams *gpp)
     && (gpp->docking_container == NULL))
     {
       gimp_help_set_help_data (framenr_1_button
-                              , _("Click: Set current framenr as selction range start 'From Frame',\n"
+                              , _("Click: Set current framenr as selection range start 'From Frame',\n"
 			          "SHIFT-Click: load this frame into the calling image")
 			      , NULL);
     }
@@ -5309,7 +5319,7 @@ p_create_player_window (GapPlayerMainGlobalParams *gpp)
        * in this case there is no special SHIFT-click function available
        */
       gimp_help_set_help_data (framenr_1_button
-                              , _("Set current framenr as selction range start 'From Frame'")
+                              , _("Set current framenr as selection range start 'From Frame'")
 			      , NULL);
     }
     
@@ -5325,7 +5335,7 @@ p_create_player_window (GapPlayerMainGlobalParams *gpp)
     && (gpp->docking_container == NULL))
     {
       gimp_help_set_help_data (framenr_2_button
-                              , _("Click: Set current framenr as selction range end 'To Frame',\n"
+                              , _("Click: Set current framenr as selection range end 'To Frame',\n"
 			          "SHIFT-Click: load this frame into the calling image")
 			      , NULL);
     }
@@ -5336,7 +5346,7 @@ p_create_player_window (GapPlayerMainGlobalParams *gpp)
        * in this case there is no special SHIFT-click function available
        */
       gimp_help_set_help_data (framenr_2_button
-                              , _("Set current framenr as selction range end 'To Frame'")
+                              , _("Set current framenr as selection range end 'To Frame'")
 			      , NULL);
     }
   }
@@ -5766,7 +5776,7 @@ p_create_player_window (GapPlayerMainGlobalParams *gpp)
     help_button = gtk_button_new_from_stock (GTK_STOCK_HELP);
     gtk_widget_show (help_button);
     gtk_box_pack_start (GTK_BOX (play_n_stop_hbox), help_button, FALSE, TRUE, 0);
-    gimp_help_set_help_data (help_button, _("Shop help page"), NULL);
+    gimp_help_set_help_data (help_button, _("Show help page"), NULL);
     g_signal_connect (G_OBJECT (help_button), "clicked",
                 	G_CALLBACK (on_help_button_clicked),
                 	gpp);
@@ -5982,7 +5992,7 @@ gap_player_dlg_restart(GapPlayerMainGlobalParams *gpp
   gint32 l_end_frame;
   gint32 l_curr_frame;
 
-  /*if(gap_debug) */ printf("gap_player_dlg_restart: START begin_frame:%d end_frame:%d\n", (int)begin_frame, (int)end_frame);
+  if(gap_debug) printf("gap_player_dlg_restart: START begin_frame:%d end_frame:%d\n", (int)begin_frame, (int)end_frame);
 
   reverse_play = FALSE;
   if(begin_frame > end_frame)

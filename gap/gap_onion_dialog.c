@@ -820,8 +820,8 @@ p_init_main_dialog_widgets(GapOnionMainGlobalParams *gpp)
   /* put initial values to the widgets */
 
   p_init_spinbuttons(gpp);
-  p_init_entries(gpp);
   p_init_combos(gpp);
+  p_init_entries(gpp);
   p_init_togglebuttons(gpp);
   p_init_sensitive(gpp);
 
@@ -1565,7 +1565,18 @@ gap_onion_dlg_onion_cfg_dialog(GapOnionMainGlobalParams *gpp)
 
   if(gap_debug) printf("gap_onion_dlg_onion_cfg_dialog: Before create_oni__dialog\n");
 
-  gpp->main_dialog = create_oni__dialog(gpp);
+  {
+    gint32 l_ref_mode;
+    gint32 l_select_mode;
+    
+    l_ref_mode = gpp->vin.ref_mode;
+    l_select_mode = gpp->vin.select_mode;
+
+    gpp->main_dialog = create_oni__dialog(gpp);
+
+    gpp->vin.ref_mode = l_ref_mode;
+    gpp->vin.select_mode = l_select_mode;
+  }
 
   if(gap_debug) printf("gap_onion_dlg_onion_cfg_dialog: After create_oni__dialog\n");
 

@@ -842,11 +842,11 @@ p_gva_worker_close(t_GVA_Handle  *gvahand)
 
     if(dec_elem)
     {
-      /*if(gap_debug)*/ printf("GVA: p_gva_worker_close: before CLOSE %s with decoder:%s\n", gvahand->filename,  dec_elem->decoder_name);
+      if(gap_debug) printf("GVA: p_gva_worker_close: before CLOSE %s with decoder:%s\n", gvahand->filename,  dec_elem->decoder_name);
 
       (*dec_elem->fptr_close)(gvahand);
 
-      /*if(gap_debug)*/ printf("GVA: p_gva_worker_close: after CLOSE %s with decoder:%s\n", gvahand->filename,  dec_elem->decoder_name);
+      if(gap_debug) printf("GVA: p_gva_worker_close: after CLOSE %s with decoder:%s\n", gvahand->filename,  dec_elem->decoder_name);
 
       if(gvahand->filename)
       {
@@ -859,7 +859,7 @@ p_gva_worker_close(t_GVA_Handle  *gvahand)
     }
   }
 
-  /*if(gap_debug)*/ printf("GVA: p_gva_worker_close: END\n");
+  if(gap_debug) printf("GVA: p_gva_worker_close: END\n");
 }  /* end p_gva_worker_close */
 
 
@@ -1198,7 +1198,7 @@ p_gva_worker_open_read(const char *filename, gint32 vid_track, gint32 aud_track
 
       if(strcmp(preferred_decoder, dec_elem->decoder_name) == 0)
       {
-        /*if(gap_debug)*/ printf("GVA: check sig %s with preferred decoder:%s\n", filename, dec_elem->decoder_name);
+        if(gap_debug) printf("GVA: check sig %s with preferred decoder:%s\n", filename, dec_elem->decoder_name);
 
 
         /* call the decoder specific check sig function */
@@ -1219,7 +1219,7 @@ p_gva_worker_open_read(const char *filename, gint32 vid_track, gint32 aud_track
     {
       int l_flag;
 
-      /*if(gap_debug)*/ printf("GVA: check sig %s with decoder:%s\n", filename, dec_elem->decoder_name);
+      if(gap_debug) printf("GVA: check sig %s with decoder:%s\n", filename, dec_elem->decoder_name);
 
 
       /* call the decoder specific check sig function */
@@ -1242,9 +1242,11 @@ p_gva_worker_open_read(const char *filename, gint32 vid_track, gint32 aud_track
   /* call decoder specific wrapper for open_read Procedure */
   dec_elem = (t_GVA_DecoderElem *)gvahand->dec_elem;
 
-  /*if(gap_debug)*/ printf("GVA: p_gva_worker_open_read: before OPEN %s with decoder:%s\n", filename,  dec_elem->decoder_name);
+  if(gap_debug) printf("GVA: p_gva_worker_open_read: before OPEN %s with decoder:%s\n", filename,  dec_elem->decoder_name);
+
   (*dec_elem->fptr_open_read)(gvahand->filename, gvahand);
-  /*if(gap_debug)*/ printf("GVA: p_gva_worker_open_read: after OPEN %s with decoder:%s\n", filename,  dec_elem->decoder_name);
+
+  if(gap_debug) printf("GVA: p_gva_worker_open_read: after OPEN %s with decoder:%s\n", filename,  dec_elem->decoder_name);
 
 
   if (gvahand->decoder_handle == NULL)
@@ -1266,7 +1268,7 @@ p_gva_worker_open_read(const char *filename, gint32 vid_track, gint32 aud_track
   gvahand->vid_track = CLAMP(gvahand->vid_track, 0, gvahand->vtracks-1);
   gvahand->aud_track = CLAMP(gvahand->aud_track, 0, gvahand->atracks-1);
 
-  /*if(gap_debug)*/ printf("END OF p_gva_worker_open_read: vtracks:%d atracks:%d\n", (int)gvahand->vtracks, (int)gvahand->atracks );
+  if(gap_debug) printf("END OF p_gva_worker_open_read: vtracks:%d atracks:%d\n", (int)gvahand->vtracks, (int)gvahand->atracks );
 
   return (gvahand);
 }   /* end p_gva_worker_open_read */

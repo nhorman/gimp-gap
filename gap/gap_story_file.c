@@ -1428,7 +1428,7 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
 // printf("%s   ii:%d (END)\n", l_record_key, (int)ii);
   }
  
-  /*if(gap_debug) */
+  if(gap_debug)
   { 
     for(ii=0; ii < GAP_MAX_STB_PARAMS_PER_LINE; ii++)
     {

@@ -1,3 +1,19 @@
+2004-12-22  Wolfgang Hofer <hof@gimp.org>
+	-fixed some bugs in message texts (reported by popolon via mail)
+	-fixed bug scanning strings from _vin.gap files
+	 and initialise errors for combo boxes in the Onionskin
+	 configuration dialog (fix for #161620)
+	- removed/disabled debug output printf statements
+
+	* gap/gap_navigator_dialog.c
+	* gap/gap_player_dialog.c
+	* gap/gap_vex_dialog.c
+	* vid_common/gap_cme_gui.c
+	* vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c
+	
+	* gap/gap_onion_dialog.c
+	* gap/gap_vin.c
+	
 2004-12-12  Wolfgang Hofer <hof@gimp.org>
 	reorganized and updated available doc files
 	and added some of the missing docs.

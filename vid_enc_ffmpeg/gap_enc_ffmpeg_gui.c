@@ -1419,7 +1419,7 @@ p_create_expert_algortihms_frame (GapGveFFMpegGlobalParams *gpp)
   /* the MB_DECISION combo */
   combo = gimp_int_combo_box_new (_("simple (use mb_cmp)"),                      GAP_GVE_FFMPEG_MB_DECISION_00_SIMPLE,
                                   _("bits (the one which needs fewest bits)"),   GAP_GVE_FFMPEG_MB_DECISION_01_BITS,
-                                  _("rate distoration"),                         GAP_GVE_FFMPEG_MB_DECISION_02_RD,
+                                  _("rate distortion"),                         GAP_GVE_FFMPEG_MB_DECISION_02_RD,
                                   NULL);
 
   gpp->ff_mb_decision_combo = combo;
@@ -2276,8 +2276,8 @@ p_create_file_comment_frame (GapGveFFMpegGlobalParams *gpp)
   row++;
 
   /* the filecomment_label lable */  
-  label = gtk_label_new (_("\nText Tags will be inserted in the\n"
-                                          "resulting Video for all non blank entry widgets."));
+  label = gtk_label_new (_("\nText tags will be inserted in the\n"
+                           "resulting video for all non blank entry fields."));
   gtk_widget_show (label);
   gtk_table_attach (GTK_TABLE (table6), label, 1, 2, row, row+1,
                     (GtkAttachOptions) (GTK_FILL),

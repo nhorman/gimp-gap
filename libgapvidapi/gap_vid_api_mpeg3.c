@@ -164,7 +164,7 @@ p_wrapper_mpeg3_open_read(char *in_filename, t_GVA_Handle *gvahand)
   {
     handle->main_handle = mpeg3_open(filename);
 
-printf("GVA: oooooo OPEN handle->main_handle:%d\n", (int)handle->main_handle);
+//printf("GVA: oooooo OPEN handle->main_handle:%d\n", (int)handle->main_handle);
 
     if(handle->main_handle)
     {
@@ -226,9 +226,12 @@ printf("GVA: oooooo OPEN handle->main_handle:%d\n", (int)handle->main_handle);
       }
       else
       {
-        /*if(gap_debug)*/ printf("GVA: mpeg3 Open problems attempt:%d\n", (int)repeat_count);
+        if(gap_debug) printf("GVA: mpeg3 Open problems attempt:%d\n", (int)repeat_count);
+
         mpeg3_close(handle->main_handle);  /* workaround: close and try open another time */
-        /*if(gap_debug)*/ printf("GVA: mpeg3 after close attempt:%d\n", (int)repeat_count);
+
+        if(gap_debug) printf("GVA: mpeg3 after close attempt:%d\n", (int)repeat_count);
+
 	handle->main_handle = NULL;
         mpeg3_check_sig(filename);
         mpeg3_check_sig("dummy");
@@ -274,28 +277,19 @@ p_wrapper_mpeg3_close(t_GVA_Handle *gvahand)
 {
   t_GVA_mpeg3 *handle;
 
-printf(" ## 1 ## p_wrapper_mpeg3_close\n");
   handle = (t_GVA_mpeg3 *)gvahand->decoder_handle;
   
-printf(" ## 2 ## p_wrapper_mpeg3_close\n");
   if(handle)
   {
-printf(" ## 3 ## p_wrapper_mpeg3_close main_handle:%d\n", (int)handle->main_handle);
     if(handle->main_handle)
     {
-printf(" ## 4 ## p_wrapper_mpeg3_close handle->main_handle:%d\n", (int)handle->main_handle);
       mpeg3_close(handle->main_handle);
-printf(" ## 5 ## p_wrapper_mpeg3_close\n");
     }
-printf(" ## 6 ## p_wrapper_mpeg3_close raw_handle: %d\n", (int)handle->raw_handle);
     if(handle->raw_handle) 
     { 
-printf(" ## 7 ## p_wrapper_mpeg3_close\n");
       mpeg3_close(handle->raw_handle);
-printf(" ## 8 ## p_wrapper_mpeg3_close\n");
     }
   }
-printf(" ## 9 ## p_wrapper_mpeg3_close\n");
 }  /* end p_wrapper_mpeg3_close */
 
 
