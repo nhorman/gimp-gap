@@ -1964,13 +1964,16 @@ run (const gchar *name
 
  if(l_rc_image < 0)
  {
+    if(gap_debug) printf("gap_main: return GIMP_PDB_EXECUTION_ERROR\n");
     status = GIMP_PDB_EXECUTION_ERROR;
  }
  else
  {
+    if(gap_debug) printf("gap_main: return OK\n");
     /* most gap_plug-ins return an image_id in values[1] */
     if (values[1].type == GIMP_PDB_IMAGE)
     {
+      if(gap_debug) printf("gap_main: return image_id:%d\n", (int)l_rc_image);
       values[1].data.d_int32 = l_rc_image;  /* return image id  of the resulting (current frame) image */
     }
  }

@@ -1,0 +1,2423 @@
+/* gap_vid_api.c
+ *
+ * This API (GAP Video Api) provides basic READ functions to access
+ * Videoframes of some sopported Videoformats.
+ *
+ * ------------------------
+ * API READ movie frames
+ * ------------------------
+ *
+ * video decoder libraries can be turned on (conditional compile)
+ * by define the following:
+ *
+ *  ENABLE_GVA_LIBMPEG3
+ *  ENABLE_GVA_LIBQUICKTIME
+ *  ENABLE_GVA_LIBAVFORMAT
+ *  ENABLE_GVA_GIMP
+ *
+ * this is done via options passed to the configure script in the
+ * gap main directory. the configure script saaves the
+ * selected configuration as #define statements in the config.h file
+ *
+ * ---   API master Procedures
+ * gap_api_vid.c
+ *
+ * --- the library dependent wrapper modules
+ * ---  (the modules are included and compiled
+ * ---   as one unit with this main api sourcefile.
+ *       this helps to keep the number of external symbols small)
+ *        
+ * gap_api_vid_quicktime.h
+ * gap_api_vid_quicktime.c
+ * gap_api_vid_mpeg3.h
+ * gap_api_vid_mpeg3.c
+ * gap_api_vid_avi.h
+ * gap_api_vid_avi.c
+ * ---------------------------------------------
+ */
+
+/* API access for GIMP-GAP frame sequences needs no external
+ * libraries and is always enabled
+ * (there is no configuration parameter for this "decoder" implementation)
+ */
+#define ENABLE_GVA_GIMP 1
+
+/* ------------------------------------------------
+ * revision history
+ *
+ * 2004.04.25     (hof)  integration into gimp-gap, using config.h
+ * 2004.02.28     (hof)  added procedures GVA_frame_to_buffer, GVA_delace_frame
+ */
+
+#include <config.h>
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <gtk/gtk.h>
+#include <libgimp/gimp.h>
+
+extern      int gap_debug; /* ==0  ... dont print debug infos */
+
+#include "gap_vid_api.h"
+#include "gap_vid_api_util.c"
+#include "gap_vid_api_vidindex.c"
+
+t_GVA_DecoderElem  *GVA_global_decoder_list = NULL;
+
+
+/* max threshold for row mix algorithm (used for deinterlacing frames)
+ * (510*510) + (256+256+256)
+ */
+#define MIX_MAX_THRESHOLD  260865
+
+static void                      p_alloc_rowpointers(t_GVA_Handle *gvahand, t_GVA_Frame_Cache_Elem  *fc_ptr);
+static t_GVA_Frame_Cache_Elem *  p_new_frame_cache_elem(t_GVA_Handle *gvahand);
+static void                      p_drop_next_frame_cache_elem(t_GVA_Frame_Cache *fcache);
+static void                      p_drop_frame_cache(t_GVA_Handle *gvahand);
+static gint32                    p_build_frame_cache(t_GVA_Handle *gvahand, gint32 frames_to_keep_cahed);
+static gdouble                   p_guess_total_frames(t_GVA_Handle *gvahand);
+
+static void                      p_register_all_decoders(void);
+static void                      p_gva_worker_close(t_GVA_Handle  *gvahand);
+static t_GVA_RetCode             p_gva_worker_get_next_frame(t_GVA_Handle  *gvahand);
+static t_GVA_RetCode             p_gva_worker_seek_frame(t_GVA_Handle  *gvahand, gdouble pos, t_GVA_PosUnit pos_unit);
+static t_GVA_RetCode             p_gva_worker_seek_audio(t_GVA_Handle  *gvahand, gdouble pos, t_GVA_PosUnit pos_unit);
+static t_GVA_RetCode             p_gva_worker_get_audio(t_GVA_Handle  *gvahand
+        			    ,gint16 *output_i            /* preallocated buffer large enough for samples * siezeof gint16 */
+        			    ,gint32 channel              /* audiochannel 1 upto n */
+        			    ,gdouble samples             /* number of samples to read */
+        			    ,t_GVA_AudPos mode_flag      /* specify the position where to start reading audio from */
+        			    );
+static t_GVA_RetCode             p_gva_worker_count_frames(t_GVA_Handle  *gvahand);
+static t_GVA_RetCode             p_gva_worker_get_video_chunk(t_GVA_Handle  *gvahand
+                        	    , gint32 frame_nr
+                        	    , unsigned char *chunk
+                        	    , gint32 *size
+                        	    , gint32 max_size);
+static t_GVA_Handle *            p_gva_worker_open_read(const char *filename, gint32 vid_track, gint32 aud_track
+                		    ,const char *preferred_decoder
+                		    ,gboolean disable_mmx
+                		    );
+
+/* ---------------------------
+ * GVA_percent_2_frame
+ * ---------------------------
+ * 0.0%     returns frame #1
+ * 100.0 %  returns frame #total_frames
+ */
+gint32
+GVA_percent_2_frame(gint32 total_frames, gdouble percent)
+{
+  gint32 framenr;
+  gdouble ffrnr;
+  ffrnr = 1.5 + (percent / 100.0) * MAX(((gdouble)total_frames -1), 0);
+  framenr = (gint32)ffrnr;
+
+  if(gap_debug) printf("GVA_percent_2_frame  %f  #:%d\n", (float)percent, (int)framenr );
+
+  return(framenr);
+}  /* end GVA_percent_2_frame */
+
+/* ---------------------------
+ * GVA_frame_2_percent
+ * ---------------------------
+ */
+gdouble
+GVA_frame_2_percent(gint32 total_frames, gdouble framenr)
+{
+  gdouble percent;
+
+  percent = 100.0 * ((gdouble)MAX((framenr -1),0) /  MAX((gdouble)(total_frames -1) ,1.0));
+
+  if(gap_debug) printf("GVA_frame_2_percent  %f  #:%d\n", (float)percent, (int)framenr );
+
+  return(CLAMP(percent, 0.0, 100.0));
+}  /* end GVA_frame_2_percent */
+
+
+/* ---------------------------
+ * GVA_frame_2_secs
+ * ---------------------------
+ */
+gdouble
+GVA_frame_2_secs(gdouble framerate, gint32 framenr)
+{
+  gdouble secs;
+
+  secs = ((gdouble)framenr  /  MAX(framerate, 1.0) );
+
+  if(gap_debug) printf("GVA_frame_2_secs  %f  #:%d\n", (float)secs, (int)framenr );
+
+  return(secs);
+}  /* end GVA_frame_2_secs */
+
+
+/* ---------------------------
+ * GVA_frame_2_samples
+ * ---------------------------
+ */
+gdouble
+GVA_frame_2_samples(gdouble framerate, gint32 samplerate, gint32 framenr)
+{
+  gdouble samples;
+
+  samples = ((gdouble)framenr  /  MAX(framerate, 1.0) ) * (gdouble)samplerate;
+
+  if(gap_debug) printf("GVA_frame_2_samples  %f  #:%d\n", (float)samples, (int)framenr );
+
+  return(samples);
+}  /* end GVA_frame_2_samples */
+
+
+
+/* XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX BEGIN fcache procedures */
+
+/* ----------------------------------------------------
+ * GVA_debug_print_fcache
+ * ----------------------------------------------------
+ */
+void
+GVA_debug_print_fcache(t_GVA_Handle *gvahand)
+{
+  t_GVA_Frame_Cache *fcache;
+  t_GVA_Frame_Cache_Elem  *fc_ptr;
+
+
+  printf("GVA_debug_print_fcache: START\n" );
+
+
+  fcache = &gvahand->fcache;
+  if(fcache->fc_current)
+  {
+    gint ii;
+
+    printf("frame_cache_size: %d\n", (int)fcache->frame_cache_size);
+
+    fc_ptr = (t_GVA_Frame_Cache_Elem  *)fcache->fc_current;
+    for(ii=0; ii < fcache->frame_cache_size; ii++)
+    {
+       printf("  [%d]  ID:%d framenumber: %d  (my_adr: %d  next:%d  prev:%d)\n"
+             , (int)ii
+             , (int)fc_ptr->id
+             , (int)fc_ptr->framenumber
+             , (int)fc_ptr
+             , (int)fc_ptr->next
+             , (int)fc_ptr->prev
+             );
+
+      fc_ptr = (t_GVA_Frame_Cache_Elem  *)fc_ptr->prev;
+
+      if(fcache->fc_current == fc_ptr)
+      {
+        printf("STOP, we are back at startpoint of the ringlist\n\n");
+        return;
+      }
+      if(fc_ptr == NULL)
+      {
+        printf("internal error, ringlist is broken !!!!!!!!!\n\n");
+        return;
+      }
+    }
+    printf("internal error, too many elements found (maybe ringlist is not linked properly !!\n\n");
+    return;
+  }
+
+  printf("fcache is empty (no current element found)\n");
+
+}  /* end GVA_debug_print_fcache */
+
+
+/* ------------------------------
+ * p_alloc_rowpointers
+ * ------------------------------
+ * allocate frame_data buffer (for RGB or RGBA imagedata)
+ * and  row pointers for each row
+ * We must allocate 4 extra bytes in the last output_row.
+ * This is scratch area for the MMX routines used by some decoder libs.
+ */
+static void
+p_alloc_rowpointers(t_GVA_Handle *gvahand, t_GVA_Frame_Cache_Elem  *fc_ptr)
+{
+    int ii, wwidth, wheight, bpp;
+
+    wwidth  = MAX(gvahand->width, 2);
+    wheight = MAX(gvahand->height, 2);
+    bpp = gvahand->frame_bpp;
+
+    fc_ptr->frame_data = g_malloc(wwidth * wheight * bpp + 4);
+    fc_ptr->row_pointers = g_malloc(sizeof(unsigned char*) * wheight);
+
+    /* init row pointers */
+    for(ii = 0; ii < wheight; ii++)
+    {
+      fc_ptr->row_pointers[ii] = &fc_ptr->frame_data[ii * wwidth * bpp];
+    }
+}  /* end p_alloc_rowpointers */
+
+
+/* ----------------------------------------------------
+ * p_new_frame_cache_elem
+ * ----------------------------------------------------
+ */
+static t_GVA_Frame_Cache_Elem *
+p_new_frame_cache_elem(t_GVA_Handle *gvahand)
+{
+  t_GVA_Frame_Cache_Elem  *fc_ptr;
+
+
+  fc_ptr = g_malloc0(sizeof(t_GVA_Frame_Cache_Elem));
+  gvahand->fcache.max_fcache_id++;
+  fc_ptr->id = gvahand->fcache.max_fcache_id;
+  fc_ptr->framenumber = -1;    /* marker for unused element, framedata is allocated but not initialized */
+  fc_ptr->prev = fc_ptr;
+  fc_ptr->next = fc_ptr;
+
+  p_alloc_rowpointers(gvahand, fc_ptr);
+
+  return (fc_ptr);
+}  /* end p_new_frame_cache_elem */
+
+
+
+/* ----------------------------------------------------
+ * p_drop_next_frame_cache_elem
+ * ----------------------------------------------------
+ * drop the next (== oldest) element of the frame cache list
+ */
+static void
+p_drop_next_frame_cache_elem(t_GVA_Frame_Cache *fcache)
+{
+  t_GVA_Frame_Cache_Elem  *fc_ptr;
+
+  if(fcache)
+  {
+    if(fcache->fc_current)
+    {
+      fc_ptr = (t_GVA_Frame_Cache_Elem  *)fcache->fc_current->next;
+      if(fc_ptr)
+      {
+        if(gap_debug) printf("p_drop_next_frame_cache_elem framenumber:%d\n", (int)fc_ptr->framenumber);
+
+        if(fc_ptr != fcache->fc_current)
+        {
+          t_GVA_Frame_Cache_Elem  *fc_nxt;
+
+          /* the ring still has 2 or more elements
+           * we must update prev pointer of the next element
+           * and next pointer of the previous element
+           */
+          fc_nxt = (t_GVA_Frame_Cache_Elem  *)fc_ptr->next;
+          fcache->fc_current->next = fc_nxt;
+          fc_nxt->prev = fcache->fc_current;
+        }
+        else
+        {
+          /* we are dropping the last element, set fc_current pointer to NULL */
+          fcache->fc_current = NULL;
+        }
+
+        g_free(fc_ptr->frame_data);
+        g_free(fc_ptr->row_pointers);
+        g_free(fc_ptr);
+      }
+    }
+  }
+}  /* end p_drop_next_frame_cache_elem */
+
+
+/* ----------------------------------------------------
+ * p_drop_frame_cache
+ * ----------------------------------------------------
+ */
+static void
+p_drop_frame_cache(t_GVA_Handle *gvahand)
+{
+  t_GVA_Frame_Cache *fcache;
+
+  if(gap_debug)  printf("p_drop_frame_cache START\n");
+  fcache = &gvahand->fcache;
+  if(fcache)
+  {
+    while(fcache->fc_current)
+    {
+      p_drop_next_frame_cache_elem(fcache);
+    }
+  }
+  if(gap_debug) printf("p_drop_frame_cache END\n");
+
+}  /* end p_drop_frame_cache */
+
+
+/* ----------------------------------------------------
+ * p_build_frame_cache
+ * ----------------------------------------------------
+ * the frame cache is a double linked ringlist.
+ * this procedure creates such a list (if we have none)
+ * or changes the (existing) ringlist to the desired number of elements.
+ * this is done by dropping the oldest elements (if we already have to much)
+ * or adding new elements (if we have not enough elements)
+ *
+ * if the fcache does not exist (if fcache gvahand->fcache.fc_current == NULL)
+ * it will be created.
+ * the pointers
+ *    gvahand->frame_data
+ *    gvahand->row_pointers
+ * are set to point at the 1.st (current) fcache element in that case.
+ */
+static gint32
+p_build_frame_cache(t_GVA_Handle *gvahand, gint32 frames_to_keep_cahed)
+{
+  t_GVA_Frame_Cache *fcache;
+  t_GVA_Frame_Cache_Elem  *fc_ptr;
+
+  fcache = &gvahand->fcache;
+  fcache->frame_cache_size = 0;
+  if(fcache->fc_current)
+  {
+    fcache->frame_cache_size = 1;
+    fc_ptr = (t_GVA_Frame_Cache_Elem  *)fcache->fc_current->next;
+    while(fcache->fc_current != fc_ptr)
+    {
+      fcache->frame_cache_size++;
+      fc_ptr = (t_GVA_Frame_Cache_Elem  *)fc_ptr->next;
+      if(fc_ptr == NULL)
+      {
+         printf("API internal ERROR (frame cache is not linked as ring)\n");
+         exit(1);
+      }
+    }
+
+    /* if cache is greater than wanted size drop the oldest (next)
+     * elements until we have desired number of elements
+     */
+    while(fcache->frame_cache_size > frames_to_keep_cahed)
+    {
+      p_drop_next_frame_cache_elem(fcache);
+      fcache->frame_cache_size--;
+    }
+  }
+  else
+  {
+    /* create the 1st element, ring-linked to itself */
+    fc_ptr = p_new_frame_cache_elem(gvahand);
+    fc_ptr->prev = fc_ptr;
+    fc_ptr->next = fc_ptr;
+    fcache->fc_current = fc_ptr;
+    gvahand->frame_data = fc_ptr->frame_data;
+    gvahand->row_pointers = fc_ptr->row_pointers;
+    fcache->frame_cache_size = 1;
+  }
+
+  /* if current cache is smaller than requested, add the missing elements */
+  while(fcache->frame_cache_size < frames_to_keep_cahed)
+  {
+    t_GVA_Frame_Cache_Elem  *fc_nxt;
+
+    /* add a new element after the current element in the pointerring
+     */
+    fc_nxt = (t_GVA_Frame_Cache_Elem  *)fcache->fc_current->next;
+
+    fc_ptr = p_new_frame_cache_elem(gvahand);
+    fc_ptr->prev = fcache->fc_current;
+    fc_ptr->next = fc_nxt;
+    fc_nxt->prev = fc_ptr;
+    fcache->fc_current->next = fc_ptr;
+
+    fcache->frame_cache_size++;
+  }
+
+  return(fcache->frame_cache_size);
+
+}  /* end p_build_frame_cache */
+
+
+/* ------------------------------------
+ * GVA_set_fcache_size
+ * ------------------------------------
+ */
+void
+GVA_set_fcache_size(t_GVA_Handle *gvahand
+                 ,gint32 frames_to_keep_cahed
+                 )
+{
+  if(gvahand->fcache.fcache_locked)
+  {
+    printf("GVA_set_fcache_size: IGNORED "
+           "because fcache is locked by running SEEK_FRAME or GET_NEXT FRAME)\n");
+    return;  /* dont touch the fcache while locked */
+  }
+  
+  if ((frames_to_keep_cahed > 0)
+  &&  (frames_to_keep_cahed <= GVA_MAX_FCACHE_SIZE))
+  {
+      /* re-adjust fcache size as desired by calling program */
+      p_build_frame_cache(gvahand, frames_to_keep_cahed);
+  }
+  else
+  {
+    printf("GVA_set_fcache_size: size must be an integer > 0 and <= %d (value %d is ignored)\n"
+          , (int)GVA_MAX_FCACHE_SIZE
+          , (int)frames_to_keep_cahed);
+  }
+}  /* end GVA_set_fcache_size */
+
+
+
+/* ------------------------------------
+ * GVA_search_fcache
+ * ------------------------------------
+ * search the frame cache for given framenumber
+ * and set the pointers
+ *  gvahand->fc_frame_data
+ *  gvahand->fc_row_pointers
+ *
+ * to point to the disired frame in the frame cache.
+ * please note: if framenumber is not found,
+ *              the pointers are set to the current frame
+ *
+ * RETURN: GVA_RET_OK (0) if OK,
+ *         GVA_RET_EOF (1) if framenumber not found in fcache, or fcache LOCKED
+ *         GVA_RET_ERROR on other errors
+ */
+t_GVA_RetCode
+GVA_search_fcache(t_GVA_Handle *gvahand
+                 ,gint32 framenumber
+                 )
+{
+  t_GVA_Frame_Cache *fcache;
+  t_GVA_Frame_Cache_Elem  *fc_ptr;
+
+
+  if(gap_debug) printf("GVA_search_fcache: search for framenumber: %d\n", (int)framenumber );
+  if(gvahand->fcache.fcache_locked)
+  {
+    return(GVA_RET_EOF);  /* dont touch the fcache while locked */
+  }
+
+  /* init with framedata of current frame
+   * (for the case that framenumber not available in fcache)
+   */
+  gvahand->fc_frame_data = gvahand->frame_data;
+  gvahand->fc_row_pointers = gvahand->row_pointers;
+
+  fcache = &gvahand->fcache;
+  if(fcache->fc_current)
+  {
+    fc_ptr = (t_GVA_Frame_Cache_Elem  *)fcache->fc_current;
+    while(1 == 1)
+    {
+      if(framenumber == fc_ptr->framenumber)
+      {
+        if(fc_ptr->framenumber >= 0)
+        {
+          gvahand->fc_frame_data = fc_ptr->frame_data;  /* framedata of cached frame */
+          gvahand->fc_row_pointers = fc_ptr->row_pointers;
+
+          return(GVA_RET_OK);  /* OK */
+        }
+      }
+
+      /* try to get framedata from fcache ringlist,
+       * by stepping backwards the frames that were read before
+       */
+      fc_ptr = (t_GVA_Frame_Cache_Elem  *)fc_ptr->prev;
+
+      if(fcache->fc_current == fc_ptr)
+      {
+        return (GVA_RET_EOF);  /* STOP, we are back at startpoint of the ringlist */
+      }
+      if(fc_ptr == NULL)
+      {
+        return (GVA_RET_ERROR);  /* internal error, ringlist is broken */
+      }
+    }
+  }
+
+  /* ringlist not found */
+  return (GVA_RET_ERROR);
+
+}  /* end GVA_search_fcache */
+
+
+/* ------------------------------------
+ * GVA_search_fcache_by_index
+ * ------------------------------------
+ * search the frame cache backwards by given index
+ * where index 0 is the current frame,
+ *       index 1 is the prev handled frame
+ *       (dont use negative indexes !!)
+ * and set the pointers
+ *  gvahand->fc_frame_data
+ *  gvahand->fc_row_pointers
+ *
+ * to point to the disired frame in the frame cache.
+ * please note: if framenumber is not found,
+ *              the pointers are set to the current frame
+ *
+ * RETURN: GVA_RET_OK (0) if OK,
+ *         GVA_RET_EOF (1) if framenumber not found in fcache, or fcache LOCKED
+ *         GVA_RET_ERROR on other errors
+ */
+t_GVA_RetCode
+GVA_search_fcache_by_index(t_GVA_Handle *gvahand
+                 ,gint32 index
+                 ,gint32 *framenumber
+                 )
+{
+  t_GVA_Frame_Cache *fcache;
+  t_GVA_Frame_Cache_Elem  *fc_ptr;
+
+
+  if(gap_debug) printf("GVA_search_fcache_by_index: search for INDEX: %d\n", (int)index );
+  if(gvahand->fcache.fcache_locked)
+  {
+    return(GVA_RET_EOF);  /* dont touch the fcache while locked */
+  }
+
+  /* init with framedata of current frame
+   * (for the case that framenumber not available in fcache)
+   */
+  *framenumber = -1;
+  gvahand->fc_frame_data = gvahand->frame_data;
+  gvahand->fc_row_pointers = gvahand->row_pointers;
+
+  fcache = &gvahand->fcache;
+  if(fcache->fc_current)
+  {
+    gint32 ii;
+
+    fc_ptr = (t_GVA_Frame_Cache_Elem  *)fcache->fc_current;
+    for(ii=0; 1==1; ii++)
+    {
+      if(index == ii)
+      {
+        *framenumber = fc_ptr->framenumber;
+        if(fc_ptr->framenumber < 0)
+        {
+          if(gap_debug) printf("GVA_search_fcache_by_index: INDEX: %d  NOT FOUND (fnum < 0) ###########\n", (int)index );
+          return (GVA_RET_EOF);
+        }
+        gvahand->fc_frame_data = fc_ptr->frame_data;  /* framedata of cached frame */
+        gvahand->fc_row_pointers = fc_ptr->row_pointers;
+
+        if(gap_debug) printf("GVA_search_fcache_by_index: fnum; %d INDEX: %d  FOUND ;;;;;;;;;;;;;;;;;;\n", (int)*framenumber, (int)index );
+        return(GVA_RET_OK);  /* OK */
+      }
+
+      /* try to get framedata from fcache ringlist,
+       * by stepping backwards the frames that were read before
+       */
+      fc_ptr = (t_GVA_Frame_Cache_Elem  *)fc_ptr->prev;
+
+      if(fcache->fc_current == fc_ptr)
+      {
+        if(gap_debug) printf("GVA_search_fcache_by_index: INDEX: %d  NOT FOUND (ring done) ************\n", (int)index );
+        return (GVA_RET_EOF);  /* STOP, we are back at startpoint of the ringlist */
+      }
+      if(fc_ptr == NULL)
+      {
+        return (GVA_RET_ERROR);  /* internal error, ringlist is broken */
+      }
+    }
+  }
+
+  /* ringlist not found */
+  return (GVA_RET_ERROR);
+
+}  /* end GVA_search_fcache_by_index */
+
+
+
+/* --------------------
+ * p_guess_total_frames
+ * --------------------
+ */
+static gdouble
+p_guess_total_frames(t_GVA_Handle *gvahand)
+{
+  gdouble l_guess;
+  gdouble l_guess_framesize;
+  gint    l_len;
+
+  if(gap_debug) printf ("p_guess_total_frames START\n");
+  
+  if(gvahand->filename == NULL)
+  {
+    if(gap_debug) printf ("p_guess_total_frames gvahand->filename: IS NULL\n");
+    return(1);
+  }
+
+  if(gap_debug) printf ("p_guess_total_frames gvahand->filename:%s\n", gvahand->filename);
+  l_len = strlen(gvahand->filename);
+  if(l_len > 4)
+  {
+    const char *suffix;
+    
+    suffix = gvahand->filename + (l_len - 4);
+    if((strcmp(suffix, ".ifo") == 0)
+    || (strcmp(suffix, ".IFO") == 0))
+    {
+      /* for .ifo files it is not a good idea to guess the number
+       * of frames from the filesize.
+       * .ifo are typically used on DVD to referre to a set of .vob files
+       * that makes up the whole movie.
+       * without parsing the .ifo file we can not guess the number of
+       * total frames of the whole movie.
+       * This primitive workaround assumes a constant number of frames
+       */
+      if(gap_debug) printf ("p_guess_total_frames .ifo using fix total_frames 30000\n");
+      return (30000.0);
+    }
+  }
+
+  /* very unprecise guess total frames by checking the filesize
+   * and assume compression 1/50 per compressed frame.
+   * - compression rate 1/40 is a common value, but may differ heavily depending
+   *   depending on the used codec and its quality settings.
+   * - audiotracks are ignored for this guess
+   * - we need a guess to update the percentage_done used for progress indication)
+   */
+  l_guess_framesize = (gvahand->width * gvahand->height * 3) / 50.0;
+  l_guess = (gdouble)p_get_filesize(gvahand->filename) / (l_guess_framesize * MAX(gvahand->vtracks, 1.0)) ;
+
+  if(gap_debug) printf ("p_guess_total_frames GUESS total_frames: %d\n", (int)l_guess);
+  return(l_guess);
+
+}  /* end p_guess_total_frames */
+
+/* --------------------------------------------------------------------------------------
+ * --------------------------------------- FILE(S) gap_api_vid_DECODERTYPE.c Starts here
+ * --------------------------------------------------------------------------------------
+ */
+
+
+
+/* ----------------------------------------------
+ * WRAPPER PROCEDURES for built in Video Decoders
+ * ----------------------------------------------
+ */
+
+
+/* ================================================ FFMPEG
+ * FFMPEG (libavformat libavcodec)                  FFMPEG
+ * ================================================ FFMPEG
+ * ================================================ FFMPEG
+ */
+#ifdef ENABLE_GVA_LIBAVFORMAT
+#include "avformat.h"
+#include "gap_vid_api_ffmpeg.c"
+#endif  /* ENABLE_GVA_LIBAVFORMAT */
+
+/* ================================================ GIMP-GAP
+ * gimp (singleframe access via gap/gimp)           GIMP-GAP
+ * ================================================ GIMP-GAP
+ * ================================================ GIMP-GAP
+ */
+#ifdef ENABLE_GVA_GIMP
+#include "gap_vid_api_gimp.c"
+#endif  /* ENABLE_GVA_GIMP */
+
+/* ================================================ QUICKTIME
+ * quicktime                                        QUICKTIME
+ * ================================================ QUICKTIME
+ * ================================================ QUICKTIME
+ */
+#ifdef ENABLE_GVA_LIBQUICKTIME
+#include "gap_vid_api_quicktime.c"
+#endif  /* ENABLE_GVA_LIBQUICKTIME */
+
+
+
+/* ================================================  LIBMEG3
+ * libmpeg3                                          LIBMEG3
+ * ================================================  LIBMEG3
+ * ================================================  LIBMEG3
+ */
+ 
+#ifdef ENABLE_GVA_LIBMPEG3
+#include "gap_vid_api_mpeg3toc.c"
+#include "gap_vid_api_mpeg3.c"
+#endif   /* ENABLE_GVA_LIBMPEG3 */
+
+
+
+
+
+/* ###############################################################################
+ * ###############################################################################
+ * ###############################################################################
+ * ###############################################################################
+ *
+ *
+ * --------------------------------------------------------------------------------------
+ * ---------------------------- API.c starts here
+ * --------------------------------------------------------------------------------------
+ */
+
+
+/* ---------------------------
+ * p_register_all_decoders
+ * ---------------------------
+ * build the GVA_global_decoder_list
+ * with one element for each available decoder
+ */
+static void
+p_register_all_decoders(void)
+{
+  t_GVA_DecoderElem  *dec_elem;
+
+  /* register all internal decoders */
+  GVA_global_decoder_list = NULL;
+
+#ifdef ENABLE_GVA_GIMP
+  dec_elem = p_gimp_new_dec_elem();
+  if(dec_elem)
+  {
+     dec_elem->next = GVA_global_decoder_list;
+     GVA_global_decoder_list = dec_elem;
+  }
+#endif
+
+#ifdef ENABLE_GVA_LIBQUICKTIME
+  dec_elem = p_quicktime_new_dec_elem();
+  if(dec_elem)
+  {
+     dec_elem->next = GVA_global_decoder_list;
+     GVA_global_decoder_list = dec_elem;
+  }
+#endif
+
+#ifdef ENABLE_GVA_LIBAVFORMAT
+  p_ffmpeg_init();
+  dec_elem = p_ffmpeg_new_dec_elem();
+  if(dec_elem)
+  {
+     dec_elem->next = GVA_global_decoder_list;
+     GVA_global_decoder_list = dec_elem;
+  }
+#endif
+
+#ifdef ENABLE_GVA_LIBMPEG3
+  dec_elem = p_mpeg3_new_dec_elem();
+  if(dec_elem)
+  {
+     dec_elem->next = GVA_global_decoder_list;
+     GVA_global_decoder_list = dec_elem;
+  }
+#endif
+
+}  /* end p_register_all_decoders */
+
+/* ---------------------------
+ * p_gva_worker_xxx Procedures
+ * ---------------------------
+ *
+ * call decoder specific methodes
+ *  for
+ *   - close a videofile.
+ *   - seek position of a frame
+ *   - get frame (into pre allocated frame_data) and advance pos to next frame
+ *
+ */
+
+/* --------------------------
+ * p_gva_worker_close
+ * --------------------------
+ */
+static void
+p_gva_worker_close(t_GVA_Handle  *gvahand)
+{
+  if(gvahand)
+  {
+    t_GVA_DecoderElem *dec_elem;
+
+
+    dec_elem = (t_GVA_DecoderElem *)gvahand->dec_elem;
+
+    if(dec_elem)
+    {
+      /*if(gap_debug)*/ printf("GVA: p_gva_worker_close: before CLOSE %s with decoder:%s\n", gvahand->filename,  dec_elem->decoder_name);
+
+      (*dec_elem->fptr_close)(gvahand);
+
+      /*if(gap_debug)*/ printf("GVA: p_gva_worker_close: after CLOSE %s with decoder:%s\n", gvahand->filename,  dec_elem->decoder_name);
+
+      if(gvahand->filename)
+      {
+	 g_free(gvahand->filename);
+	 gvahand->filename = NULL;
+      }
+
+      /* free image buffer and row_pointers */
+      p_drop_frame_cache(gvahand);
+    }
+  }
+
+  /*if(gap_debug)*/ printf("GVA: p_gva_worker_close: END\n");
+}  /* end p_gva_worker_close */
+
+
+/* ---------------------------
+ * p_gva_worker_get_next_frame
+ * ---------------------------
+ */
+static t_GVA_RetCode
+p_gva_worker_get_next_frame(t_GVA_Handle  *gvahand)
+{
+  t_GVA_Frame_Cache *fcache;
+  t_GVA_RetCode l_rc;
+
+  l_rc = GVA_RET_ERROR;
+  if(gvahand)
+  {
+    t_GVA_DecoderElem *dec_elem;
+
+    dec_elem = (t_GVA_DecoderElem *)gvahand->dec_elem;
+
+    if(dec_elem)
+    {
+      if(dec_elem->fptr_get_next_frame == NULL)
+      {
+         printf("p_gva_worker_get_next_frame: Method not implemented in decoder %s\n", dec_elem->decoder_name);
+         return(GVA_RET_ERROR);
+      }
+
+      fcache = &gvahand->fcache;
+      fcache->fcache_locked = TRUE;
+      if(fcache->fc_current)
+      {
+        /* if fcache framenumber is negative, we can reuse
+	 * that EMPTY element without advance
+	 */
+        if(fcache->fc_current->framenumber >= 0)
+	{
+          /* advance current write position to next element in the fcache ringlist */
+          fcache->fc_current = fcache->fc_current->next;
+          fcache->fc_current->framenumber = -1;
+          gvahand->frame_data = fcache->fc_current->frame_data;
+          gvahand->row_pointers = fcache->fc_current->row_pointers;
+	}
+
+        /* CALL decoder specific implementation of GET_NEXT_FRAME procedure */
+        l_rc = (*dec_elem->fptr_get_next_frame)(gvahand);
+
+        if (l_rc == GVA_RET_OK)
+        {
+          fcache->fc_current->framenumber = gvahand->current_frame_nr;
+        }
+      }
+      fcache->fcache_locked = FALSE;
+    }
+  }
+  return(l_rc);
+}  /* end p_gva_worker_get_next_frame */
+
+
+/* --------------------------
+ * p_gva_worker_seek_frame
+ * --------------------------
+ */
+static t_GVA_RetCode
+p_gva_worker_seek_frame(t_GVA_Handle  *gvahand, gdouble pos, t_GVA_PosUnit pos_unit)
+{
+  t_GVA_Frame_Cache *fcache;
+  t_GVA_RetCode l_rc;
+
+  l_rc = GVA_RET_ERROR;
+  if(gvahand)
+  {
+    t_GVA_DecoderElem *dec_elem;
+
+    dec_elem = (t_GVA_DecoderElem *)gvahand->dec_elem;
+
+    if(dec_elem)
+    {
+      if(dec_elem->fptr_seek_frame == NULL)
+      {
+         printf("p_gva_worker_seek_frame: Method not implemented in decoder %s\n", dec_elem->decoder_name);
+         return(GVA_RET_ERROR);
+      }
+      fcache = &gvahand->fcache;
+      fcache->fcache_locked = TRUE;
+      if(fcache->fc_current)
+      {
+        /* if fcache framenumber is negative, we can reuse
+	 * that EMPTY element without advance
+	 */
+        if(fcache->fc_current->framenumber >= 0)
+	{
+          /* advance current write position to next element in the fcache ringlist
+	   * Some of the seek procedure implementations do dummy reads
+	   * therefore we provide a fcache element, but leave the
+	   * framenumber -1 because this element is invalid in most cases
+	   */
+          fcache->fc_current = fcache->fc_current->next;
+          fcache->fc_current->framenumber = -1;
+          gvahand->frame_data = fcache->fc_current->frame_data;
+          gvahand->row_pointers = fcache->fc_current->row_pointers;
+	}
+      }
+	
+      /* CALL decoder specific implementation of SEEK_FRAME procedure */
+      l_rc = (*dec_elem->fptr_seek_frame)(gvahand, pos, pos_unit);
+      fcache->fcache_locked = FALSE;
+    }
+  }
+  return(l_rc);
+}  /* end p_gva_worker_seek_frame */
+
+
+/* --------------------------
+ * p_gva_worker_seek_audio
+ * --------------------------
+ */
+static t_GVA_RetCode
+p_gva_worker_seek_audio(t_GVA_Handle  *gvahand, gdouble pos, t_GVA_PosUnit pos_unit)
+{
+  t_GVA_RetCode l_rc;
+
+  l_rc = GVA_RET_ERROR;
+  if(gvahand)
+  {
+    t_GVA_DecoderElem *dec_elem;
+
+    dec_elem = (t_GVA_DecoderElem *)gvahand->dec_elem;
+
+    if(dec_elem)
+    {
+      if(dec_elem->fptr_seek_audio == NULL)
+      {
+         printf("p_gva_worker_seek_audio: Method not implemented in decoder %s\n", dec_elem->decoder_name);
+         return(GVA_RET_ERROR);
+      }
+      l_rc = (*dec_elem->fptr_seek_audio)(gvahand, pos, pos_unit);
+    }
+  }
+  return(l_rc);
+}  /* end p_gva_worker_seek_audio */
+
+
+/* --------------------------
+ * p_gva_worker_get_audio
+ * --------------------------
+ */
+static t_GVA_RetCode
+p_gva_worker_get_audio(t_GVA_Handle  *gvahand
+             ,gint16 *output_i            /* preallocated buffer large enough for samples * siezeof gint16 */
+             ,gint32 channel              /* audiochannel 1 upto n */
+             ,gdouble samples             /* number of samples to read */
+             ,t_GVA_AudPos mode_flag      /* specify the position where to start reading audio from */
+             )
+{
+  t_GVA_RetCode l_rc;
+
+  l_rc = GVA_RET_ERROR;
+  if(gvahand)
+  {
+    t_GVA_DecoderElem *dec_elem;
+
+    dec_elem = (t_GVA_DecoderElem *)gvahand->dec_elem;
+
+    if(dec_elem)
+    {
+      if(dec_elem->fptr_get_audio == NULL)
+      {
+         printf("p_gva_worker_get_audio: Method not implemented in decoder %s\n", dec_elem->decoder_name);
+         return(GVA_RET_ERROR);
+      }
+      l_rc = (*dec_elem->fptr_get_audio)(gvahand
+                                 ,output_i
+                                 ,channel
+                                 ,samples
+                                 ,mode_flag
+                                 );
+    }
+  }
+  return(l_rc);
+}  /* end p_gva_worker_get_audio */
+
+
+/* --------------------------
+ * p_gva_worker_count_frames
+ * --------------------------
+ */
+static t_GVA_RetCode
+p_gva_worker_count_frames(t_GVA_Handle  *gvahand)
+{
+  t_GVA_RetCode l_rc;
+
+  l_rc = GVA_RET_ERROR;
+  if(gvahand)
+  {
+    t_GVA_DecoderElem *dec_elem;
+
+    dec_elem = (t_GVA_DecoderElem *)gvahand->dec_elem;
+
+    if(dec_elem)
+    {
+      if(dec_elem->fptr_count_frames == NULL)
+      {
+         printf("p_gva_worker_count_frames: Method not implemented in decoder %s\n", dec_elem->decoder_name);
+         return(GVA_RET_ERROR);
+      }
+      l_rc = (*dec_elem->fptr_count_frames)(gvahand);
+    }
+  }
+  return(l_rc);
+}  /* end p_gva_worker_count_frames */
+
+
+/* ----------------------------
+ * p_gva_worker_get_video_chunk
+ * ----------------------------
+ */
+static t_GVA_RetCode
+p_gva_worker_get_video_chunk(t_GVA_Handle  *gvahand
+                            , gint32 frame_nr
+                            , unsigned char *chunk
+                            , gint32 *size
+                            , gint32 max_size)
+{
+  t_GVA_RetCode l_rc;
+
+  l_rc = GVA_RET_ERROR;
+  if(gvahand)
+  {
+    t_GVA_DecoderElem *dec_elem;
+
+    dec_elem = (t_GVA_DecoderElem *)gvahand->dec_elem;
+
+    if(dec_elem)
+    {
+      if(dec_elem->fptr_get_video_chunk == NULL)
+      {
+         printf("p_gva_worker_get_video_chunk: Method not implemented in decoder %s\n", dec_elem->decoder_name);
+         return(GVA_RET_ERROR);
+      }
+      l_rc =  (*dec_elem->fptr_get_video_chunk)(gvahand
+                                               , frame_nr
+                                               , chunk
+                                               , size
+                                               , max_size
+                                               );
+    }
+  }
+  return(l_rc);
+}  /* end p_gva_worker_get_video_chunk */
+
+
+/* --------------------------
+ * p_gva_worker_open_read
+ * --------------------------
+ *
+ * open a videofile for reading.
+ * this procedure tries to findout a compatible
+ * decoder for the videofile.
+ * if a compatible decoder is available,
+ * a t_GVA_Handle Structure (with informations
+ * about the video and the decoder) is returned.
+ * NULL is returned, if none of the known decoders
+ * can read the videofile.
+ *
+ * in case of successful open a buffer for one uncompressed RGBA frame
+ * and row_pointers are allocated automatically.
+ * (and will be freed automatically by the close procedure)
+ */
+static t_GVA_Handle *
+p_gva_worker_open_read(const char *filename, gint32 vid_track, gint32 aud_track
+                      ,const char *preferred_decoder
+                      ,gboolean disable_mmx
+                      )
+{
+  t_GVA_Handle       *gvahand;
+  t_GVA_DecoderElem  *dec_elem;
+
+  gvahand = g_malloc0(sizeof(t_GVA_Handle));
+  gvahand->dec_elem = NULL;  /* init no decoder found */
+  gvahand->decoder_handle = NULL;
+  gvahand->vid_track = MAX(vid_track -1, 0);
+  gvahand->aud_track = MAX(aud_track -1, 0);
+  gvahand->vtracks = 0;
+  gvahand->atracks = 0;
+  gvahand->progress_cb_user_data = NULL;
+  gvahand->fptr_progress_callback = NULL;
+  gvahand->frame_data = NULL;
+  gvahand->row_pointers = NULL;
+  gvahand->fc_frame_data = NULL;
+  gvahand->fc_row_pointers = NULL;
+  gvahand->fcache.fc_current = NULL;
+  gvahand->fcache.frame_cache_size = 0;
+  gvahand->fcache.max_fcache_id = 0;
+  gvahand->fcache.fcache_locked = FALSE;
+  gvahand->image_id = -1;
+  gvahand->layer_id = -1;
+  gvahand->disable_mmx = disable_mmx;
+  gvahand->dirty_seek = FALSE;
+  gvahand->emulate_seek = FALSE;
+  gvahand->create_vindex = FALSE;
+  gvahand->vindex = NULL;
+  gvahand->mtime = 0;
+
+  gvahand->do_gimp_progress = FALSE;          /* WARNING: dont try to set this TRUE if you call the API from a pthread !! */
+  gvahand->all_frames_counted = FALSE;
+  gvahand->all_samples_counted = FALSE;
+  gvahand->cancel_operation = FALSE;
+  gvahand->filename = g_strdup(filename);
+  gvahand->current_frame_nr = 0;
+  gvahand->current_seek_nr = 1;
+  gvahand->current_sample = 1.0;
+  gvahand->reread_sample_pos = 1.0;
+  gvahand->audio_playtime_sec = 0.0;
+  gvahand->total_aud_samples = 0;
+  gvahand->samplerate = 0;
+  gvahand->audio_cannels = 0;
+  gvahand->percentage_done = 0.0;
+  gvahand->frame_counter = 0;
+  gvahand->pthread_save = TRUE;  /* default for most decoder libs */
+
+  if(GVA_global_decoder_list == NULL)
+  {
+    p_register_all_decoders();
+  }
+
+  if(preferred_decoder)
+  {
+    /* if the caller provided a preferred_decoder name
+     * we check that decoder as 1.st one, before checking the full decoder list
+     */
+    for(dec_elem = GVA_global_decoder_list; dec_elem != NULL; dec_elem = dec_elem->next)
+    {
+      int l_flag;
+
+      if(strcmp(preferred_decoder, dec_elem->decoder_name) == 0)
+      {
+        /*if(gap_debug)*/ printf("GVA: check sig %s with preferred decoder:%s\n", filename, dec_elem->decoder_name);
+
+
+        /* call the decoder specific check sig function */
+        l_flag = (*dec_elem->fptr_check_sig)(gvahand->filename);
+        if (l_flag == 1)
+        {
+           gvahand->dec_elem = dec_elem;
+           break;
+        }
+      }
+    }
+  }
+
+  if(gvahand->dec_elem == NULL)
+  {
+    /* try to find a decoder that can decode the videofile */
+    for(dec_elem = GVA_global_decoder_list; dec_elem != NULL; dec_elem = dec_elem->next)
+    {
+      int l_flag;
+
+      /*if(gap_debug)*/ printf("GVA: check sig %s with decoder:%s\n", filename, dec_elem->decoder_name);
+
+
+      /* call the decoder specific check sig function */
+      l_flag = (*dec_elem->fptr_check_sig)(gvahand->filename);
+      if (l_flag == 1)
+      {
+         gvahand->dec_elem = dec_elem;
+         break;
+      }
+    }
+  }
+
+  if(gvahand->dec_elem == NULL)
+  {
+      printf("GVA: File %s is NOT a supported Videoformat\n", filename);
+      g_free(gvahand);
+      return NULL;
+  }
+
+  /* call decoder specific wrapper for open_read Procedure */
+  dec_elem = (t_GVA_DecoderElem *)gvahand->dec_elem;
+
+  /*if(gap_debug)*/ printf("GVA: p_gva_worker_open_read: before OPEN %s with decoder:%s\n", filename,  dec_elem->decoder_name);
+  (*dec_elem->fptr_open_read)(gvahand->filename, gvahand);
+  /*if(gap_debug)*/ printf("GVA: p_gva_worker_open_read: after OPEN %s with decoder:%s\n", filename,  dec_elem->decoder_name);
+
+
+  if (gvahand->decoder_handle == NULL)
+  {
+      printf("Open Videofile %s FAILED\n", filename);
+      g_free(gvahand);
+      return NULL;
+  }
+
+  /* allocate buffer for one frame (use minimal size 2x2 if no videotrack is present) */
+  if(gvahand)
+  {
+    /* allocate frame_data and row_pointers for one frame (minimal cachesize 1 == no chaching)
+     * (calling apps may request bigger cache after successful open)
+     */
+    p_build_frame_cache(gvahand, 1);
+  }
+
+  gvahand->vid_track = CLAMP(gvahand->vid_track, 0, gvahand->vtracks-1);
+  gvahand->aud_track = CLAMP(gvahand->aud_track, 0, gvahand->atracks-1);
+
+  /*if(gap_debug)*/ printf("END OF p_gva_worker_open_read: vtracks:%d atracks:%d\n", (int)gvahand->vtracks, (int)gvahand->atracks );
+
+  return (gvahand);
+}   /* end p_gva_worker_open_read */
+
+
+
+/* ------------------------------------
+ * Public GVA API functions
+ * ------------------------------------
+ */
+t_GVA_Handle *
+GVA_open_read_pref(const char *filename, gint32 vid_track, gint32 aud_track
+                 ,const char *preferred_decoder
+                 ,gboolean disable_mmx
+                 )
+{
+  t_GVA_Handle *handle;
+
+  if(gap_debug) printf("GVA_open_read_pref: START\n");
+  if((gap_debug) && (preferred_decoder)) printf("GVA_open_read_pref: preferred_decoder: %s\n", preferred_decoder);
+
+  handle = p_gva_worker_open_read(filename, vid_track, aud_track
+                                 ,preferred_decoder
+                                 ,disable_mmx
+                                 );
+
+  if(gap_debug) printf("GVA_open_read_pref: END handle:%d\n", (int)handle);
+
+  return(handle);
+}
+
+t_GVA_Handle *
+GVA_open_read(const char *filename, gint32 vid_track, gint32 aud_track)
+{
+  t_GVA_Handle *handle;
+  char   *l_env_preferred_decoder;
+
+  if(gap_debug) printf("GVA_open_read: START\n");
+
+  l_env_preferred_decoder = g_strdup(g_getenv("GVA_PREFERRED_DECODER"));
+
+  handle = p_gva_worker_open_read(filename, vid_track, aud_track
+                                 ,l_env_preferred_decoder    /* NULL or preferred_decoder */
+                                 ,FALSE   /* disable_mmx==FALSE (use MMX if available) */
+                                 );
+  if(l_env_preferred_decoder)
+  {
+    g_free(l_env_preferred_decoder);
+  }
+
+  if(gap_debug) printf("GVA_open_read: END handle:%d\n", (int)handle);
+
+  return(handle);
+}
+
+void
+GVA_close(t_GVA_Handle  *gvahand)
+{
+  if(gap_debug) printf("GVA_close: START handle:%d\n", (int)gvahand);
+  p_gva_worker_close(gvahand);
+  if(gap_debug) printf("GVA_close: END\n");
+}
+
+t_GVA_RetCode
+GVA_get_next_frame(t_GVA_Handle  *gvahand)
+{
+  t_GVA_RetCode l_rc;
+
+  if(gap_debug) printf("GVA_get_next_frame: START handle:%d\n", (int)gvahand);
+  l_rc = p_gva_worker_get_next_frame(gvahand);
+  if(gap_debug) printf("GVA_get_next_frame: END rc:%d\n", (int)l_rc);
+
+  return(l_rc);
+}
+
+t_GVA_RetCode
+GVA_seek_frame(t_GVA_Handle  *gvahand, gdouble pos, t_GVA_PosUnit pos_unit)
+{
+  t_GVA_RetCode l_rc;
+
+  if(gap_debug) printf("GVA_seek_frame: START handle:%d, pos%.4f unit:%d\n", (int)gvahand, (float)pos, (int)pos_unit);
+  l_rc = p_gva_worker_seek_frame(gvahand, pos, pos_unit);
+  if(gap_debug) printf("GVA_seek_frame: END rc:%d\n", (int)l_rc);
+
+  return(l_rc);
+}
+
+t_GVA_RetCode
+GVA_seek_audio(t_GVA_Handle  *gvahand, gdouble pos, t_GVA_PosUnit pos_unit)
+{
+  t_GVA_RetCode l_rc;
+
+  if(gap_debug) printf("GVA_seek_audio: START handle:%d\n", (int)gvahand);
+  l_rc = p_gva_worker_seek_audio(gvahand, pos, pos_unit);
+  if(gap_debug) printf("GVA_seek_audio: END rc:%d\n", (int)l_rc);
+
+  return(l_rc);
+}
+
+t_GVA_RetCode
+GVA_get_audio(t_GVA_Handle  *gvahand
+             ,gint16 *output_i            /* preallocated buffer large enough for samples * siezeof gint16 */
+             ,gint32 channel              /* audiochannel 1 upto n */
+             ,gdouble samples             /* number of samples to read */
+             ,t_GVA_AudPos mode_flag      /* specify the position where to start reading audio from */
+             )
+{
+  t_GVA_RetCode l_rc;
+
+  if(gap_debug) printf("GVA_get_audio: START handle:%d, ch:%d samples:%d mod:%d\n", (int)gvahand, (int)channel, (int)samples, (int)mode_flag);
+  l_rc = p_gva_worker_get_audio(gvahand
+                               ,output_i
+                               ,channel
+                               ,samples
+                               ,mode_flag
+                               );
+  if(gap_debug) printf("GVA_get_audio: END rc:%d\n", (int)l_rc);
+
+  return(l_rc);
+}
+
+t_GVA_RetCode
+GVA_count_frames(t_GVA_Handle  *gvahand)
+{
+  t_GVA_RetCode l_rc;
+
+  if(gap_debug) printf("GVA_count_frames: START handle:%d\n", (int)gvahand);
+  l_rc = p_gva_worker_count_frames(gvahand);
+  if(gap_debug) printf("GVA_count_frames: END rc:%d\n", (int)l_rc);
+
+  return(l_rc);
+}
+
+t_GVA_RetCode
+GVA_get_video_chunk(t_GVA_Handle  *gvahand
+                   , gint32 frame_nr
+                   , unsigned char *chunk
+                   , gint32 *size
+                   , gint32 max_size)
+{
+  t_GVA_RetCode l_rc;
+
+  if(gap_debug) printf("GVA_get_video_chunk: START handle:%d, chunk addr:%d (max_size:%d) frame_nr:%d\n"
+                      , (int)gvahand
+                      , (int)chunk
+                      , (int)max_size
+                      , (int)frame_nr
+                      );
+  l_rc = p_gva_worker_get_video_chunk(gvahand, frame_nr, chunk, size, max_size);
+  if(gap_debug) printf("GVA_get_video_chunk: END rc:%d size:%d\n", (int)l_rc, (int)*size);
+
+  return(l_rc);
+}
+
+
+gboolean
+GVA_has_video_chunk_proc(t_GVA_Handle  *gvahand)
+{
+  gboolean l_rc;
+
+  if(gap_debug) printf("GVA_has_video_chunk_proc: START handle:%d\n", (int)gvahand);
+
+  l_rc = FALSE;
+  if(gvahand)
+  {
+    t_GVA_DecoderElem *dec_elem;
+
+    dec_elem = (t_GVA_DecoderElem *)gvahand->dec_elem;
+
+    if(dec_elem)
+    {
+      if(dec_elem->fptr_get_video_chunk != NULL)
+      {
+         l_rc = TRUE;
+      }
+    }
+  }
+  if(gap_debug) printf("GVA_has_video_chunk_proc: END rc:%d\n", (int)l_rc);
+
+  return(l_rc);
+}
+
+/* -------------------------------------------------------------------------
+ * Converter Procedures (Framebuffer <--> GIMP
+ * -------------------------------------------------------------------------
+ */
+
+
+/* ----------------------------------
+ * GVA_gimp_image_to_rowbuffer
+ * ----------------------------------
+ * transfer a gimp image to GVA rowbuffer (gvahand->frame_data)
+ * please note that the image will be
+ * - flattened
+ * - converted to RGB
+ * - scaled to GVA framesize
+ * if needed.
+ */
+t_GVA_RetCode
+GVA_gimp_image_to_rowbuffer(t_GVA_Handle *gvahand, gint32 image_id)
+{
+  GimpPixelRgn pixel_rgn;
+  GimpDrawable *drawable;
+  gint32 l_layer_id;
+  gint          l_nlayers;
+  gint32       *l_layers_list;
+
+  if(gap_debug) printf("GVA_gimp_image_to_rowbuffer image_id: %d\n", (int)image_id);
+
+  l_layer_id = -1;
+  l_layers_list = gimp_image_get_layers(image_id, &l_nlayers);
+  if(l_layers_list != NULL)
+  {
+    l_layer_id = l_layers_list[0];
+    g_free (l_layers_list);
+  }
+  else
+  {
+    printf("GVA_gimp_image_to_rowbuffer: No Layer found, image_id:%d\n", (int)image_id);
+    return(GVA_RET_ERROR);
+  }
+
+  drawable = gimp_drawable_get (l_layer_id);
+
+  /* flatten image if needed (more layers or layer with alpha channel) */
+  if((l_nlayers > 1 ) || (drawable->bpp == 4)  || (drawable->bpp ==2))
+  {
+     if(gap_debug) printf("GVA_gimp_image_to_rowbuffer: FLATTEN Image\n");
+
+     l_layer_id = gimp_image_flatten(image_id);
+     drawable = gimp_drawable_get (l_layer_id);
+  }
+
+  /* convert TO RGB if needed */
+  if(gimp_image_base_type(image_id) != GIMP_RGB)
+  {
+     if(gap_debug) printf("GVA_gimp_image_to_rowbuffer: convert TO_RGB\n");
+     gimp_image_convert_rgb(image_id);
+  }
+
+  /* ensure unique imagesize for all frames */
+  if((gimp_image_width(image_id) != gvahand->width)
+  ||  (gimp_image_height(image_id) != gvahand->height))
+  {
+    if(gap_debug) printf("GVA_gimp_image_to_rowbuffer: SCALING Image\n");
+    gimp_image_scale(image_id, gvahand->width, gvahand->height);
+  }
+
+  /* now we have an image with one RGB layer
+   * and copy all pixelrows to gvahand->frame_data at once.
+   */
+  gimp_pixel_rgn_init (&pixel_rgn, drawable, 0, 0
+                      , drawable->width, drawable->height
+		      , FALSE     /* dirty */
+		      , FALSE     /* shadow */
+		       );
+  gimp_pixel_rgn_get_rect (&pixel_rgn, gvahand->frame_data
+                          , 0
+			  , 0
+                          , gvahand->width
+                          , gvahand->height);
+
+  if (gap_debug)  printf("DEBUG: after copy data rows \n");
+
+
+  return(GVA_RET_OK); /* return the newly created layer_id (-1 on error) */
+}  /* end GVA_gimp_image_to_rowbuffer */
+
+
+
+
+/* ------------------------------------
+ * p_check_image_is_alive
+ * ------------------------------------
+ * return TRUE  if OK (image is still valid)
+ * return FALSE if image is NOT valid
+ */
+static gboolean
+p_check_image_is_alive(gint32 image_id)
+{
+  gint32 *images;
+  gint    nimages;
+  gint    l_idi;
+  gint    l_found;
+
+  if(image_id < 0)
+  {
+     return FALSE;
+  }
+
+  images = gimp_image_list(&nimages);
+  l_idi = nimages -1;
+  l_found = FALSE;
+  while((l_idi >= 0) && images)
+  {
+    if(image_id == images[l_idi])
+    {
+          l_found = TRUE;
+          break;
+    }
+    l_idi--;
+  }
+  if(images) g_free(images);
+  if(l_found)
+  {
+    return TRUE;  /* OK */
+  }
+
+  if(gap_debug)
+  {
+    printf("p_check_image_is_alive: image_id %d is not VALID\n", (int)image_id);
+  }
+  return FALSE ;   /* INVALID image id */
+}  /* end p_check_image_is_alive */
+
+
+/* ------------------------------------
+ * p_mix_rows
+ * ------------------------------------
+ * mix 2 input pixelrows (prev_row, next_row)
+ * to one resulting pixelrow (mixed_row)
+ * All pixelrows must have same width and bpp
+ */
+static inline void
+p_mix_rows( gint32 width
+          , gint32 bpp
+          , gint32 row_bytewidth
+          , gint32 mix_threshold   /* 0 <= mix_threshold <= 33554432 (256*256*256*2) */
+          , guchar *prev_row
+          , guchar *next_row
+          , guchar *mixed_row
+          )
+{
+  if((bpp <3)  || (mix_threshold >= MIX_MAX_THRESHOLD))
+  {
+    gint32 l_idx;
+
+    /* simple mix all bytes */
+    for(l_idx=0; l_idx < row_bytewidth; l_idx++)
+    {
+      mixed_row[l_idx] = (prev_row[l_idx] + next_row[l_idx]) / 2;
+    }
+  }
+  else
+  {
+    gint32 l_col;
+
+    /* color threshold mix */
+    for(l_col=0; l_col < width; l_col++)
+    {
+      gint16 r1, g1, b1, a1;
+      gint16 r2, g2, b2, a2;
+      gint16 dr, db;
+      gint32 fhue, fval;
+
+      r1 = prev_row[0];
+      g1 = prev_row[1];
+      b1 = prev_row[2];
+
+      r2 = next_row[0];
+      g2 = next_row[1];
+      b2 = next_row[2];
+
+      dr = abs((r1 - g1) - (r2 - g2));
+      db = abs((g1 - b1) - (g2 - b2));
+      fval = abs(r1 - r2) + abs(g1 - g2) + abs(b1 - b2);    /* brightness difference */
+      fhue = dr *  db;
+
+      /* check hue failure and brightness failure against threshold */
+      if((fhue + fval) < mix_threshold)
+      {
+        /* smooth mix */
+        mixed_row[0] = (r1 + r2) / 2;
+        mixed_row[1] = (g1 + g2) / 2;
+        mixed_row[2] = (b1 + b2) / 2;
+      }
+      else
+      {
+        /* hard, no mix */
+        mixed_row[0] = r1;
+        mixed_row[1] = g1;
+        mixed_row[2] = b1;
+      }
+
+      if(bpp == 4)
+      {
+        a1   = prev_row[3];
+        a2   = next_row[3];
+        mixed_row[4] = (a1 + a2) / 2;
+      }
+
+      prev_row += bpp;
+      next_row += bpp;
+      mixed_row += bpp;
+    }
+  }
+}  /* end p_mix_rows */
+
+
+
+/* ------------------------------------
+ * GVA_delace_frame
+ * ------------------------------------
+ * create a deinterlaced copy of the current frame
+ * (the one where gvahand->fc_row_pointers are referring to)
+ *
+ * IN: gvahand  videohandle
+ * IN: do_scale  FALSE: deliver frame at original size (ignore bpp, width and height parameters)
+ *               TRUE: deliver frame at size specified by width, height, bpp
+ *                     scaling is done fast in low quality 
+ * IN: deinterlace   0: no deinterlace, 1 pick odd lines, 2 pick even lines
+ * IN: threshold     0.0 hard, 1.0 smooth interpolation at deinterlacing
+ *                   threshold is ignored if do_scaing == TRUE
+ *
+ * return databuffer, Pixels are stored in the RGB colormdel
+ *                    the data buffer must be g_free'd by the calling program
+ */
+guchar *
+GVA_delace_frame(t_GVA_Handle *gvahand
+                , gint32 deinterlace
+                , gdouble threshold
+		)
+{
+    guchar *l_framedata_copy;
+    guchar *l_row_ptr_dest;
+    gint32  l_row;
+    gint32  l_interpolate_flag;
+    gint32  l_row_bytewidth;
+    gint32  l_threshold;
+    gint32  l_mix_threshold;
+
+    if(gvahand->fc_row_pointers == NULL)
+    {
+      return (NULL);
+    }
+    l_row_bytewidth = gvahand->width * gvahand->frame_bpp;
+    l_framedata_copy = g_malloc(l_row_bytewidth * gvahand->height);
+
+
+    l_interpolate_flag = 0;
+    if (deinterlace == 1)
+    {
+      l_interpolate_flag = 1;
+    }
+    
+    /* expand threshold range from 0.0-1.0  to 0 - MIX_MAX_THRESHOLD */
+    threshold = CLAMP(threshold, 0.0, 1.0);
+    l_threshold = (gdouble)MIX_MAX_THRESHOLD * (threshold * threshold * threshold);
+    l_mix_threshold = CLAMP((gint32)l_threshold, 0, MIX_MAX_THRESHOLD);
+
+    l_row_ptr_dest = l_framedata_copy;
+    for(l_row = 0; l_row < gvahand->height; l_row++)
+    {
+      if ((l_row & 1) == l_interpolate_flag)
+      {
+        if(l_row == 0)
+        {
+           /* we have no prvious row, so we just copy the next row */
+           memcpy(l_row_ptr_dest, gvahand->fc_row_pointers[1],  l_row_bytewidth);
+        }
+        else
+        {
+          if(l_row == gvahand->height -1)
+          {
+            /* we have no next row, so we just copy the prvious row */
+            memcpy(l_row_ptr_dest, gvahand->fc_row_pointers[gvahand->height -2],  l_row_bytewidth);
+          }
+          else
+          {
+            /* we have both prev and next row within valid range
+             * and can calculate an interpolated row
+             */
+            p_mix_rows ( gvahand->width
+                         , gvahand->frame_bpp
+                         , l_row_bytewidth
+                         , l_mix_threshold
+                         , gvahand->fc_row_pointers[l_row -1]
+                         , gvahand->fc_row_pointers[l_row +1]
+                         , l_row_ptr_dest
+                         );
+          }
+        }
+      }
+      else
+      {
+        /* copy original row */
+        memcpy(l_row_ptr_dest, gvahand->fc_row_pointers[l_row],  l_row_bytewidth);
+      }
+      l_row_ptr_dest += l_row_bytewidth;
+
+    }
+
+    return(l_framedata_copy);
+}  /* end GVA_delace_frame */
+
+
+
+
+
+/* ------------------------------------
+ * GVA_frame_to_gimp_layer_2
+ * ------------------------------------
+ * transfer frame imagedata from buffer   (gvahand->frame_data or fcache)
+ * to gimp image.                         (gvahand->image_id)
+ * IN/OUT:
+ *   *image_id    ... pointer to image id
+ * IN:
+ *   old_layer_id ...  -1 dont care about old layer(s) of the image
+ *                        (you may use -1 if the image has no layer)
+ *   delete_mode  ...  TRUE: delete old_layer_id
+ *                     FALSE: keep old_layer_id, but set invisible
+ *                            (use this to build mulitlayer images)
+ *   deinterlace  ...  0 ..NO, deliver image as it is
+ *                     1 .. deinterlace using odd lines and interpolate the even lines
+ *                     2 .. deinterlace using even lines and interpolate the odd lines
+ *   threshold    ...  0.0 <= threshold <= 1.0
+ *                          threshold is used only for interpolation when deinterlace != 0
+ *                          - big thresholds do smooth mix
+ *                          - small thresholds keep hard edges (does not mix different colors)
+ *                          - threshold 0 does not mix at all and uses only one inputcolor
+ * RETURN: layer_id of the newly created layer,
+ *         -2 if framenumber not found in fcache
+ *         -1 on other errors
+ *
+ */
+gint32
+GVA_frame_to_gimp_layer_2(t_GVA_Handle *gvahand
+                , gint32 *image_id
+                , gint32 old_layer_id
+                , gboolean delete_mode
+                , gint32 framenumber
+                , gint32 deinterlace
+                , gdouble threshold
+                )
+{
+  gchar *layername;
+  GimpPixelRgn pixel_rgn;
+  GimpDrawable *drawable;
+  gint32 l_new_layer_id;
+  gint32 l_threshold;
+  gint32 l_mix_threshold;
+
+  static gchar *odd_even_tab[8] = {"\0", "_odd", "_even", "_odd", "_even", "\0", "\0", "\0" };
+
+
+  if(gap_debug) printf("GVA_frame_to_gimp_layer_2 framenumber: %d\n", (int)framenumber);
+  l_new_layer_id = -1;
+  if (GVA_search_fcache(gvahand, framenumber) != GVA_RET_OK)
+  {
+     if(gap_debug) printf("frame %d not found in fcache!  %d\n", (int)framenumber , (int)gvahand->current_frame_nr );
+
+     return (-2);
+  }
+
+  /* expand threshold range from 0.0-1.0  to 0 - MIX_MAX_THRESHOLD */
+  threshold = CLAMP(threshold, 0.0, 1.0);
+  l_threshold = (gdouble)MIX_MAX_THRESHOLD * (threshold * threshold * threshold);
+  l_mix_threshold = CLAMP((gint32)l_threshold, 0, MIX_MAX_THRESHOLD);
+
+
+  if(p_check_image_is_alive(*image_id))
+  {
+     /* reuse existing image for next frame */
+     if((gvahand->width  != gimp_image_width(*image_id))
+     || (gvahand->height != gimp_image_height(*image_id)))
+     {
+       /* resize to image to framesize */
+       gimp_image_resize(*image_id
+                       , gvahand->width
+		       , gvahand->height
+		       , 0
+		       , 0);
+     }
+  }
+  else
+  {
+     *image_id = gimp_image_new (gvahand->width, gvahand->height, GIMP_RGB);
+     if (gap_debug)  printf("DEBUG: after gimp_image_new\n");
+     gimp_image_undo_disable(*image_id);
+
+     old_layer_id = -1;
+  }
+
+  gimp_image_undo_disable(*image_id);
+
+  if(gvahand->framerate > 0)
+  {
+    gint   delay;
+
+    delay = 1000 / gvahand->framerate;
+    layername = g_strdup_printf("Frame%05d%s (%dms)", (int)framenumber, odd_even_tab[deinterlace & 7], (int)delay);
+  }
+  else
+  {
+    layername = g_strdup_printf("Frame%05d%s", (int)framenumber, odd_even_tab[deinterlace & 7]);
+  }
+
+  if(gvahand->frame_bpp == 4)
+  {
+    l_new_layer_id = gimp_layer_new (*image_id
+                                    , layername
+                                    , gvahand->width
+                                    , gvahand->height
+                                    , GIMP_RGBA_IMAGE
+				    , 100.0, GIMP_NORMAL_MODE);
+  }
+  else
+  {
+    l_new_layer_id = gimp_layer_new (*image_id
+                                    , layername
+                                    , gvahand->width
+                                    , gvahand->height
+                                    , GIMP_RGB_IMAGE
+				    , 100.0, GIMP_NORMAL_MODE);
+  }
+  g_free(layername);
+
+  drawable = gimp_drawable_get (l_new_layer_id);
+
+  /* copy data rows
+   *  libmpeg3 data rows (retrieved in mode MPEG3_RGB888)
+   *  can be used 1:1 by gimp_pixel_rgn_set_rect on layertypes GIMP_RGB_IMAGE
+   *
+   */
+  if (gap_debug)
+  {  printf("DEBUG: before copy data rows gvahand->height=%d  gvahand->width=%d\n"
+            , (int)gvahand->height
+            ,(int)gvahand->width);
+  }
+
+  /* Fill in the alpha channel (for RGBA mode)
+   * libmpeg3 uses 0 for opaque alpha (that is full transparent in gimp terms)
+   *
+   * for playback it is faster to run libmpeg3 with bpp=3
+   * and do not use alpha channel at all.
+   * (or add alpha channel later but only if we are building a multilayer image)
+   */
+  if(gvahand->frame_bpp == 4)
+  {
+     gint i;
+
+      if (gap_debug)  printf("DEBUG: FILL In the ALPHA CHANNEL\n");
+      for (i=(gvahand->width * gvahand->height)-1; i>=0; i--)
+      {
+  	 gvahand->fc_frame_data[3+(i*4)] = 255;
+      }
+  }
+
+
+  gimp_pixel_rgn_init (&pixel_rgn, drawable, 0, 0
+                      , drawable->width, drawable->height
+		      , TRUE      /* dirty */
+		      , FALSE     /* shadow */
+		       );
+  if ((deinterlace == 0) || (gvahand->height < 2))
+  {
+    gimp_pixel_rgn_set_rect (&pixel_rgn, gvahand->fc_frame_data
+                          , 0
+			  , 0
+                          , gvahand->width
+                          , gvahand->height);
+  }
+  else
+  {
+    guchar *l_framedata_copy;
+    
+    l_framedata_copy = GVA_delace_frame(gvahand
+                                       ,deinterlace
+				       ,threshold
+				       );
+    if(l_framedata_copy)
+    {
+      gimp_pixel_rgn_set_rect (&pixel_rgn, l_framedata_copy
+                            , 0
+			    , 0
+                            , gvahand->width
+                            , gvahand->height);
+      g_free(l_framedata_copy);
+    }
+  }
+
+  if (gap_debug)  printf("DEBUG: after copy data rows (NO SHADOW)\n");
+
+  gimp_drawable_flush (drawable);
+
+/*
+ * gimp_drawable_merge_shadow (drawable->id, TRUE);
+ * gimp_drawable_detach (drawable);
+ */
+
+  /* what to do with old layer ? */
+  if(old_layer_id >= 0)
+  {
+    if(delete_mode)
+    {
+      gimp_image_remove_layer(*image_id, old_layer_id);
+    }
+    else
+    {
+      /* we are collecting layers in one multilayer image,
+       * so do not delete previous added layer, but
+       * only set invisible
+       */
+      gimp_drawable_set_visible(old_layer_id, FALSE);
+    }
+  }
+
+
+  /* add new layer on top of the layerstack */
+  gimp_image_add_layer (*image_id, l_new_layer_id, 0);
+  gimp_drawable_set_visible(l_new_layer_id, TRUE);
+
+  /* clear undo stack */
+  gimp_image_undo_enable(*image_id);
+  gimp_image_undo_disable(*image_id);
+
+
+
+  /* debug code to display a copy of the image */
+  /*
+   * {
+   *   gint32 dup_id;
+   *
+   *  dup_id = gimp_image_duplicate(*image_id);
+   *  printf("API: DUP_IMAGE_ID: %d\n", (int) dup_id);
+   *  gimp_display_new(dup_id);
+   * }
+   */
+
+
+  return(l_new_layer_id); /* return the newly created layer_id (-1 on error) */
+}  /* end GVA_frame_to_gimp_layer_2 */
+
+
+/* ------------------------------------
+ * GVA_fcache_to_gimp_image
+ * ------------------------------------
+ * copy the GVA framecache to one GIMP multilayer image
+ * limited by min_framenumber, max_framenumber.
+ * use limitvalue(s) -1 if you want all cached frames without limit.
+ *
+ * returns image_id of the new created gimp image (or -1 on errors)
+ */
+gint32
+GVA_fcache_to_gimp_image(t_GVA_Handle *gvahand
+                , gint32 min_framenumber
+                , gint32 max_framenumber
+                , gint32 deinterlace
+                , gdouble threshold
+                )
+{
+  t_GVA_Frame_Cache *fcache;
+  t_GVA_Frame_Cache_Elem  *fc_ptr;
+  t_GVA_Frame_Cache_Elem  *fc_minframe;
+  gint32   image_id;
+  gint32   layer_id;
+  gboolean delete_mode;
+
+  image_id = -1;
+  layer_id = -1;
+  delete_mode = TRUE;
+
+  fcache = &gvahand->fcache;
+
+  /* search the fcache element with smallest positve framenumber */
+  fc_minframe = NULL;
+  if(fcache->fc_current)
+  {
+    fc_ptr = (t_GVA_Frame_Cache_Elem  *)fcache->fc_current;
+    while(1 == 1)
+    {
+      if(fc_ptr->framenumber >= 0)
+      {
+        if(fc_minframe)
+        {
+          if(fc_ptr->framenumber < fc_minframe->framenumber)
+          {
+            fc_minframe = fc_ptr;
+          }
+        }
+        else
+        {
+            fc_minframe = fc_ptr;
+        }
+      }
+
+      fc_ptr = (t_GVA_Frame_Cache_Elem  *)fc_ptr->prev;
+
+      if(fcache->fc_current == fc_ptr)
+      {
+        break;  /* STOP, we are back at startpoint of the ringlist */
+      }
+      if(fc_ptr == NULL)
+      {
+        break;  /* internal error, ringlist is broken */
+      }
+    }
+  }
+
+  if(fc_minframe)
+  {
+    fc_ptr = (t_GVA_Frame_Cache_Elem  *)fc_minframe;
+    while(1 == 1)
+    {
+      if((fc_ptr->framenumber >= min_framenumber)
+      &&((fc_ptr->framenumber <= max_framenumber) || (max_framenumber < 0))
+      && (fc_ptr->framenumber >= 0))
+      {
+          GVA_frame_to_gimp_layer_2(gvahand
+                  , &image_id
+                  , layer_id
+                  , delete_mode
+                  , fc_ptr->framenumber
+                  , deinterlace
+                  , threshold
+                  );
+           delete_mode = FALSE;  /* keep old layers */
+      }
+
+      /* step from fc_minframe forward in the fcache ringlist,
+       * until we are back at fc_minframe
+       */
+      fc_ptr = (t_GVA_Frame_Cache_Elem  *)fc_ptr->next;
+
+      if(fc_minframe == fc_ptr)
+      {
+        return (image_id);  /* STOP, we are back at startpoint of the ringlist */
+      }
+      if(fc_ptr == NULL)
+      {
+        return (image_id);  /* internal error, ringlist is broken */
+      }
+    }
+  }
+
+  return image_id;
+}  /* end GVA_fcache_to_gimp_image */
+
+
+/* ------------------------------------
+ * GVA_frame_to_gimp_layer
+ * ------------------------------------
+ */
+t_GVA_RetCode
+GVA_frame_to_gimp_layer(t_GVA_Handle *gvahand
+                , gboolean delete_mode
+                , gint32 framenumber
+                , gint32 deinterlace
+                , gdouble threshold
+                )
+{
+  t_GVA_RetCode l_rc;
+
+  if(gap_debug)
+  {
+    printf("GVA_frame_to_gimp_layer: START framenumber:%d image_id:%d layer_id: %d\n"
+            , (int)framenumber
+            , (int)gvahand->image_id
+            , (int)gvahand->layer_id
+            );
+  }
+  gvahand->layer_id =
+  GVA_frame_to_gimp_layer_2(gvahand
+                , &gvahand->image_id
+                , gvahand->layer_id
+                , delete_mode
+                , framenumber
+                , deinterlace
+                , threshold
+                );
+  if(gvahand->layer_id < 0)
+  {
+    l_rc = GVA_RET_ERROR;
+  }
+  else
+  {
+    l_rc = GVA_RET_OK;
+  }
+
+  if(gap_debug)
+  {
+    printf("GVA_frame_to_gimp_layer: END RC:%d framenumber:%d image_id:%d layer_id: %d\n"
+            , (int)l_rc
+            , (int)framenumber
+            , (int)gvahand->image_id
+            , (int)gvahand->layer_id
+            );
+  }
+
+  return(l_rc);
+}  /* end GVA_frame_to_gimp_layer */
+
+
+
+/* ------------------------------------
+ * GVA_frame_to_buffer
+ * ------------------------------------
+ *  HINT:
+ *  for the calling program it is easier to call
+ * 	GVA_fetch_frame_to_buffer
+ *
+ * IN: gvahand  videohandle
+ * IN: do_scale  FALSE: deliver frame at original size (ignore bpp, width and height parameters)
+ *               TRUE: deliver frame at size specified by width, height, bpp
+ *                     scaling is done fast in low quality 
+ * IN: framenumber   The wanted framenumber
+ *                   return NULL if the wanted framnumber is not in the fcache
+ *                   In this case the calling program should fetch the wanted frame.
+ *                   This can be done by calling:
+ *                      GVA_seek_frame(gvahand, framenumber, GVA_UPOS_FRAMES);
+ *                      GVA_get_next_frame(gvahand);
+ *                   after successful fetch call GVA_frame_to_buffer once again.
+ *                   The wanted framnumber should be found in the cache now.
+ * IN: deinterlace   0: no deinterlace, 1 pick odd lines, 2 pick even lines
+ * IN: threshold     0.0 hard, 1.0 smooth interpolation at deinterlacing
+ *                   threshold is ignored if do_scaing == TRUE
+ * IN/OUT: bpp       accept 3 or 4 (ignored if do_scale == FALSE)
+ * IN/OUT: width     accept with >=1 and <= original video with (ignored if do_scale == FALSE)
+ * IN/OUT: height    accept height >=1 and <= original video height (ignored if do_scale == FALSE)
+ *
+ * return databuffer, Pixels are stored in the RGB colormdel
+ *                    the data buffer must be g_free'd by the calling program
+ */
+guchar *
+GVA_frame_to_buffer(t_GVA_Handle *gvahand
+                , gboolean do_scale
+                , gint32 framenumber
+                , gint32 deinterlace
+                , gdouble threshold
+		, gint32 *bpp
+		, gint32 *width
+		, gint32 *height
+                )
+{
+  gint32  frame_size;
+  guchar *frame_data;
+
+  frame_data = NULL;
+  
+  if (GVA_search_fcache(gvahand, framenumber) != GVA_RET_OK)
+  {
+     if(gap_debug) printf("frame %d not found in fcache!  %d\n", (int)framenumber , (int)gvahand->current_frame_nr );
+
+     return (NULL);
+  }
+
+
+
+  if(do_scale)
+  {
+    guchar	 *src_row, *src, *dest;
+    gint	 row, col;
+    gint32       deinterlace_mask;
+    gint         *arr_src_col;
+
+    if(gap_debug) printf("GVA_frame_to_buffer: DO_SCALE\n");
+    /* for safety: width and height must be set to useful values
+     * (dont accept bigger values than video size or values less than 1 pixel)
+     */
+    if((*width < 1) || (*width > gvahand->width))
+    {
+      *width = gvahand->width;
+    }
+    if((*height < 1) || (*height > gvahand->height))
+    {
+      *height = gvahand->height;
+    }
+
+    *bpp = CLAMP(*bpp, 3, 4);
+   
+    frame_size = (*width) * (*bpp) * (*height);
+    if(*bpp < 4)
+    {
+      /* add extra scratch byte, because the following loop
+       * always writes 4 byte per pixel
+       * (no check for bpp for performance reasons)
+       */
+      frame_size++;
+    }
+    frame_data = g_malloc(frame_size);
+    if(frame_data == NULL)
+    {
+      return (NULL);
+    }
+    if(deinterlace == 0)
+    {
+      deinterlace_mask = 0xffffffff;
+    }
+    else
+    {
+      /* mask is applied on row number to eliminate odd rownumbers */
+      deinterlace_mask = 0x7ffffffe;
+    }
+
+    /* array of column fetch indexes for quick access
+     * to the source pixels. (The source row may be larger or smaller than pwidth)
+     */
+    arr_src_col = g_new ( gint, (*width) );                   /* column fetch indexes foreach preview col */
+    if(arr_src_col)
+    {
+      for ( col = 0; col < (*width); col++ )
+      {
+	arr_src_col[ col ] = ( col * gvahand->width / (*width) ) * gvahand->frame_bpp;
+      }
+
+      dest = frame_data;
+      /* copy row by row */
+      for ( row = 0; row < *height; row++ )
+      {
+	  src_row = gvahand->fc_row_pointers[(row * gvahand->height / (*height)) & deinterlace_mask];
+	  for ( col = 0; col < (*width); col++ )
+	  {
+	      src = &src_row[ arr_src_col[col] ];
+	      dest[0] = src[0];
+	      dest[1] = src[1];
+	      dest[2] = src[2];
+	      dest[3] = 255;
+	      dest += (*bpp);
+	  }
+      }
+      g_free(arr_src_col);
+    }
+
+  }
+  else
+  {
+    *bpp = gvahand->frame_bpp;
+    *width = gvahand->width;
+    *height = gvahand->height;
+    frame_size = (*width) * (*height) * (*bpp);
+ 
+
+
+      
+    if ((deinterlace == 0) || (gvahand->height < 2))
+    {
+      if(gap_debug) printf("GVA_frame_to_buffer: MEMCPY\n");
+      frame_data = g_malloc(frame_size);
+      if(frame_data == NULL)
+      {
+	return (NULL);
+      }
+      memcpy(frame_data, gvahand->fc_frame_data, frame_size);
+    }
+    else
+    {
+      frame_data = GVA_delace_frame(gvahand
+                                   ,deinterlace
+				   ,threshold
+				   );
+      if(frame_data == NULL)
+      {
+	return (NULL);
+      }
+    }
+
+    /* Fill in the alpha channel (for RGBA mode)
+     * libmpeg3 uses 0 for opaque alpha (that is full transparent in gimp terms)
+     *
+     * normally the libmpeg3 decoder is used with with RGB mode (bpp==3)
+     * and does not use alpha channel at all.
+     */
+    if(*bpp == 4)
+    {
+       gint i;
+
+	if (gap_debug)  printf("DEBUG: FILL In the ALPHA CHANNEL\n");
+	for (i=((*width) * (*height))-1; i>=0; i--)
+	{
+  	   frame_data[3+(i*4)] = 255;
+	}
+    }
+  }
+
+  return(frame_data);
+  
+}	/* end GVA_frame_to_buffer */
+
+
+/* ------------------------------------
+ * GVA_fetch_frame_to_buffer
+ * ------------------------------------
+ * This procedure does fetch the specified framenumber from a videofile
+ * and returns a buffer of RGB (or RGBA) encoded pixeldata.
+ * (it does first search the API internal framecache,
+ *  then tries to read from the videofile (if not found in the framecahe)
+ *
+ * the returned data is a (optional downscaled) copy of the API internal frame data
+ * and must be g_free'd by the calling program after use.
+ *
+ * IN: gvahand  videohandle
+ * IN: do_scale  FALSE: deliver frame at original size (ignore bpp, width and height parameters)
+ *               TRUE: deliver frame at size specified by width, height, bpp
+ *                     scaling is done fast in low quality 
+ * IN: framenumber   The wanted framenumber
+ *                   return NULL if the wanted framnumber could not be read.
+ * IN: deinterlace   0: no deinterlace, 1 pick odd lines, 2 pick even lines
+ * IN: threshold     0.0 hard, 1.0 smooth interpolation at deinterlacing
+ *                   threshold is ignored if do_scaing == TRUE
+ *                   (this parameter is ignored if deinterlace == 0)
+ * IN/OUT: bpp       accept 3 or 4 (ignored if do_scale == FALSE)
+ * IN/OUT: width     accept with >=1 and <= original video with (ignored if do_scale == FALSE)
+ * IN/OUT: height    accept height >=1 and <= original video height (ignored if do_scale == FALSE)
+ *
+ * return databuffer, Pixels are stored in the RGB colormdel
+ *                   NULL is returned if the frame could not be fetched
+ *                        (in case of ERRORS or End of File reasons)
+ */
+guchar *
+GVA_fetch_frame_to_buffer(t_GVA_Handle *gvahand
+                , gboolean do_scale
+                , gint32 framenumber
+                , gint32 deinterlace
+                , gdouble threshold
+		, gint32 *bpp
+		, gint32 *width
+		, gint32 *height
+                )
+{
+  guchar *frame_data;
+  t_GVA_RetCode  l_rc;
+
+  /* check if the wanted framenr is available in the GVA framecache */
+  frame_data = GVA_frame_to_buffer(gvahand
+             , do_scale
+             , framenumber
+             , deinterlace
+             , threshold
+	     , bpp
+	     , width
+	     , height
+             );
+
+  if(frame_data == NULL)
+  {
+    if(framenumber != gvahand->current_frame_nr +1)
+    {
+      l_rc = GVA_seek_frame(gvahand, framenumber, GVA_UPOS_FRAMES);
+    }
+
+    l_rc = GVA_get_next_frame(gvahand);
+
+    if(l_rc == GVA_RET_OK)
+    {
+      frame_data = GVA_frame_to_buffer(gvahand
+                 , do_scale
+                 , framenumber
+                 , deinterlace
+                 , threshold
+		 , bpp
+		 , width
+		 , height
+                 );
+    }
+  }
+  return(frame_data);
+
+}  /* end GVA_fetch_frame_to_buffer */

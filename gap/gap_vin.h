@@ -22,6 +22,7 @@
  */
 
 /* revision history:
+ * version 2.1.0a;  2004/06/03  hof: added onionskin setting ref_mode
  * version 1.3.16c; 2003/07/09  hof: support onionskin settings in video_info files
  * version 1.3.14a; 2003/05/24  hof: created (splitted off from gap_pdb_calls module)
  */
@@ -42,6 +43,7 @@ typedef struct GapVinVideoInfo {
    
    
   gint32  num_olayers;      /* Number of Onion Layers  1 .. 10 Default: 1 */
+  gint32  ref_mode;         /* 0: NORMAL, 1:BIDRIECTIONAL_SINGLE 2:BIDRIECTIONAL_DOUBLE */
   gint32  ref_delta;        /* Reference Frame Delta:  +- 1 ... n  Default: -1 */
   gint32  ref_cycle;        /* Reference is Cycle   : TRUE/FALSE   Default: TRUE
                              *    TRUE .. last frame has frame 0 as next frame

@@ -42,6 +42,7 @@
 
 #include "gap_player_main.h"
 #include "gap_player_dialog.h"
+#include "gap_story_file.h"
 #include "gap_pview_da.h"
 
 #include "gap-intl.h"
@@ -59,10 +60,21 @@ int gap_debug = 0;  /* 1 == print debug infos , 0 dont print debug infos */
 
 static GapPlayerMainGlobalParams global_params =
 {
-  GIMP_RUN_INTERACTIVE
+  TRUE        /* standalone_mode */
+, GIMP_RUN_INTERACTIVE
 , -1          /* gint32  image_id */
+, NULL        /* gchar        *imagename */
+, -1          /* gint32  imagewidth */
+, -1          /* gint32  imageheight */
 , NULL        /* GapAnimInfo *ainfo_ptr */
-  
+, NULL        /* GapAnimInfo *stb_ptr */
+, NULL        /* t_GVA_Handle *gvahand */
+, NULL        /* gchar *gva_videofile */
+, -1                       /* gint32  mtrace_image_id */
+, GAP_PLAYER_MTRACE_OFF    /* mtrace_mode */
+, NULL                     /* GapPlayerSetRangeFptr fptr_set_range */      
+, NULL                     /* gpointer user_data_ptr */      
+
 , FALSE       /*  gboolean   autostart */
 , TRUE        /*  gboolean   use_thumbnails */
 , TRUE        /*  gboolean   exact_timing */
@@ -71,6 +83,8 @@ static GapPlayerMainGlobalParams global_params =
 , TRUE        /*  gboolean   play_loop */
 , FALSE       /*  gboolean   play_pingpong */
 , FALSE       /*  gboolean   play_backward */
+, FALSE       /*  gboolean   cancel_video_api */
+, FALSE       /*  gboolean   gva_lock */
 
 , -1          /*  gint32     play_timertag */
 
@@ -97,28 +111,45 @@ static GapPlayerMainGlobalParams global_params =
   
 , NULL        /*  GapPView   *pv_ptr */
 , NULL        /*  GtkWidget *shell_window */
+, NULL        /*  GtkWidget *docking_container */
+, NULL        /*  GtkWidget *frame_with_name */
 , NULL        /*  GtkObject *from_spinbutton_adj */
 , NULL        /*  GtkObject *to_spinbutton_adj */
 , NULL        /*  GtkObject *framenr_spinbutton_adj */
 , NULL        /*  GtkObject *speed_spinbutton_adj */
 , NULL        /*  GtkObject *size_spinbutton_adj */
    
+, NULL        /*  GtkWidget *progress_bar */
 , NULL        /*  GtkWidget *status_label */
 , NULL        /*  GtkWidget *timepos_label */
 , NULL        /*  GtkWidget *resize_box */
 , NULL        /*  GtkWidget *size_spinbutton */
+, NULL        /*  GtkWidget *from_button */
+, NULL        /*  GtkWidget *to_button */
+
+, NULL        /*  GtkWidget *use_thumb_checkbutton */
+, NULL        /*  GtkWidget *exact_timing_checkbutton */
+, NULL        /*  GtkWidget *pinpong_checkbutton */
+, NULL        /*  GtkWidget *selonly_checkbutton */
+, NULL        /*  GtkWidget *loop_checkbutton */
 
 , NULL        /*  Gtimer    *gtimer */
 , 0.0         /*  gdouble   cycle_time_secs  */
 , 0.0         /*  gdouble   rest_secs  */
 , 0.0         /*  gdouble   delay_secs  */
 , 0.0         /*  gdouble   framecnt  */
+, 1           /*  gint32    seltrack  */
+, 0.0         /*  gdouble   delace  */
+, NULL        /*  gchar    *preferred_decoder */
+, FALSE       /*  gboolean  force_open_as_video */
+, FALSE       /*  gboolean  have_progress_bar */
+, NULL        /*  gchar    *progress_bar_idle_txt */
 , 0           /*  gint32    resize_handler_id */
 , 0           /*  gint32    old_resize_width */
 , 0           /*  gint32    old_resize_height */
-, TRUE        /*  gboolean  gpp_startup */
-, -1          /*  gint32    gpp_shell_initial_width */
-, -1          /*  gint32    gpp_shell_initial_height */
+, TRUE        /*  gboolean  startup */
+, -1          /*  gint32    shell_initial_width */
+, -1          /*  gint32    shell_initial_height */
 
 , FALSE       /* audio_enable */
 , 0           /* audio_resync */
@@ -333,6 +364,7 @@ run (const gchar *name,          /* name of plugin */
     
     gpp->image_id = image_id;
     gpp->run_mode = run_mode;
+    gpp->stb_ptr  = NULL;
     gap_player_dlg_playback_dialog(gpp);
   
     /* Store variable states for next run */

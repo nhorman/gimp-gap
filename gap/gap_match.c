@@ -159,7 +159,7 @@ int gap_match_number(gint32 layer_idx, const char *pattern)
    l_num = -1; l_range_start = -1;
    for(l_ptr = pattern; 1 == 1; l_ptr++)
    {
-      if(isdigit(*l_ptr))
+      if(g_ascii_isdigit(*l_ptr))
       {
          l_digit_buff[l_idx] = *l_ptr;   /* collect digits here */
          l_idx++;

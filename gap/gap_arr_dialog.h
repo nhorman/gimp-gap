@@ -91,8 +91,8 @@ typedef struct {
   GapArrWidget widget_type;
 
   /* common fields for all widget types */
-  char    *label_txt;
-  char    *help_txt;
+  const char    *label_txt;
+  const char    *help_txt;
   gint     entry_width;  /* for all Widgets with  an entry */
   gint     scale_width;  /* for the Widgets with a scale */
   gint     constraint;   /* TRUE: check for min/max values */
@@ -164,38 +164,38 @@ typedef struct {
 void     gap_arr_arg_init  (GapArrArg *arr_ptr,
                           gint       widget_type);
  
-gint     gap_arr_ok_cancel_dialog  (char     *title_txt,
-                          char     *frame_txt,
+gint     gap_arr_ok_cancel_dialog  (const char     *title_txt,
+                          const char     *frame_txt,
                           int       argc,
                           GapArrArg argv[]);
 
-long     gap_arr_slider_dialog(char *title_txt,
-                         char *frame_txt,
-                         char *label_txt,
-                         char *tooltip_txt,
+long     gap_arr_slider_dialog(const char *title_txt,
+                         const char *frame_txt,
+                         const char *label_txt,
+                         const char *tooltip_txt,
                          long min, long max, long curr, long constraint);
 
 
 
-gint     gap_arr_buttons_dialog (char *title_txt,
-                         char *frame_txt,
+gint     gap_arr_buttons_dialog (const char *title_txt,
+                         const char *frame_txt,
                          int        b_argc,
                          GapArrButtonArg  b_argv[],
                          gint       b_def_val);
 
 
-gint     gap_arr_std_dialog  (char     *title_txt,
-                          char     *frame_txt,
+gint     gap_arr_std_dialog  (const char     *title_txt,
+                          const char     *frame_txt,
                           int       argc,
                           GapArrArg argv[],
                           int       b_argc,
                           GapArrButtonArg b_argv[],
                           gint      b_def_val);
 
-gboolean gap_arr_confirm_dialog(char *msg_txt, char *title_txt, char *frame_txt);
+gboolean gap_arr_confirm_dialog(const char *msg_txt, const char *title_txt, const char *frame_txt);
 
 gboolean gap_arr_overwrite_file_dialog(const char *filename);
 
-void gap_arr_msg_win(GimpRunMode run_mode, char *msg);
+void gap_arr_msg_win(GimpRunMode run_mode, const char *msg);
 
 #endif

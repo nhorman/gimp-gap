@@ -25,6 +25,7 @@
  */
 
 /* revision history:
+ * 2.1.0a   2004/04/18   hof: added gap_lib_fprintf_gdouble
  * 1.3.26a  2004/02/29   hof: ainfo.type changed from long to GapLibAinfoType
  * 1.3.26a  2004/02/01   hof: added: gap_lib_alloc_ainfo_from_name
  * 1.3.19a  2003/09/06   hof: added gap_lib_searchpath_for_exefile
@@ -136,7 +137,6 @@ long  gap_lib_get_frame_nr_from_name(char *fname);
 int   gap_lib_image_file_copy(char *fname, char *fname_copy);
 
 
-void gap_arr_msg_win(GimpRunMode run_mode, char *msg);
 gchar *gap_lib_get_video_paste_name(void);
 gint32 gap_vid_edit_clear(void);
 gint32 gap_vid_edit_framecount(void);
@@ -151,6 +151,8 @@ int      gap_lib_rename_frame(GapAnimInfo *ainfo_ptr, long from_nr, long to_nr);
 int      gap_lib_delete_frame(GapAnimInfo *ainfo_ptr, long nr);
 gint32   gap_lib_replace_image(GapAnimInfo *ainfo_ptr);
 
+void     gap_lib_fprintf_gdouble(FILE *fp, gdouble value, gint digits, gint precision_digits, const char *pfx);
+gint     gap_lib_sscan_flt_numbers(gchar *buf, gdouble *farr, gint farr_max);
 
 #define  GAP_VID_PASTE_REPLACE         0
 #define  GAP_VID_PASTE_INSERT_BEFORE   1

@@ -1,4 +1,68 @@
-Here is a short overview whats new in GIMP-GAP 2.0
+Here is a short overview whats new in GIMP-GAP-2.1:
+(compared to gimp-gap release 2.0.2)
+
+WARNING: *** 
+please note that GIMP-GAP-2.1 is an UNSTABLE developers
+version only. Some of the new features are just partly implemented
+and may crash or deliver unexpected results. 
+
+
+
+- Videoapi (GVA) for read access in videofiles (.mpg, .avi ....)
+  (frames and audio)
+
+- Videoextract Plug-In
+   extract frames and/or audio samples
+   from a videofile, based on the GAP Video API (GVA))
+
+- Storyboard dialog to create and edit
+  Videocliplists (Storyboard text files)
+  usable for Encoding Videofiles
+  with the new Master Videoencoder plug-in.
+
+- Player can run in as widget
+  in the storyboard dialog and the videoextract plug-in.
+
+- The Player can trace the displayed frames
+  in a multilayer image.
+
+- Storyboard and Player
+  can optional use the GAP Video API (GVA)
+  to access frames in videofiles (.mpg, .avi ....)
+
+- Master Videoencoder plug-in
+  This is a Common GUI
+  Encode GAP framesequences or STORYBOARD files
+  to one videofile, including audio.
+  The user can select all registered
+  Video Encoder plug-ins.
+  
+- Videoencoder Plug-ins
+   AVI Encoder         (based on avilib, codecs: RAW, JPG, XVID)
+   FFMPEG Encoder      (based on ffmpeg-0.4.8, handles many MPEG based
+                        videoformats and codecs,
+                        see ffmpeg docs for detailed information)
+   QUICKTIME Encoder   (based on quicktime4linux)
+   SINGLEFRAME Encoder (generate GIMP-GAP typical frame sequences
+                        as output. This may be useful
+                        to convert STORYBAORD Files to frame sequences)
+
+- Morph Plug-in
+  generate tween layers with metamorphose transformations
+  from source layer to destination layer
+  The user can set controlpoints for the warp part of the
+  transformation to track details.
+
+- Extended Onionskin Configuration
+  allows now bidirectional references.
+  (refer to frames +n and -n in the same frame)
+
+-------------------------------
+old news
+-------------------------------
+
+
+Here is a short overview whats new in GIMP-GAP-2.0.2:
 (compared to the gap version that once was part of gimp-1.2.x release)
 
  - new bluebox plug-in makes selected color transparent.

@@ -1,3 +1,167 @@
+2004-06-12  Wolfgang Hofer <hof@gimp.org>
+	Added new features for GIMP-GAP-2.1 
+	(some of the new features and dialogs are not completely implemented yet
+	and need more testing and better GUI support)
+	
+	
+	- Added Storyboard dialog. 
+	  helps to assemble clips and images to one resulting video.
+	
+	- Integrated GVE (the unpublished version of Gap Viedeo Encoder Project)
+	  into GIMP-GAP.
+
+	- Added new video extract plug-in
+	  (the sources were moved from the unpublished GVE sourcetree
+	   to the gimp-gap surcetree and were ported to gimp-2.0 / gtk+-2.2
+	   now using the player_widget for video range selection
+	   )
+	  
+	  
+	- GAP Video API (GVA) for videofile read access. (video and audio)
+
+	- introdoced new gimprc parameter:
+	    (video-max-frames-keep-cached "500")
+	  to configure the video API internal framecachesize.
+
+        - Extended the Player for Storyboard Level 1 Fileplayback
+	- New Player features
+	  - added a scale widget..
+	  this helps to change framnr postion in BIG-STEPS
+	  and gives a better overview of the current position.	  
+	  - Snaphot to Multilayer image 
+	   SHIFT Play use original size,
+	   CTRL Play at preview size
+	   + ALT force Creation of new Snapshot image
+	   Click on preview creates Mtrace Image of current frame.
+	  - added basic videofile playback support 
+    	  (just frames, no audio)
+	  extended GapAnimInfo struct for videofile support
+	  (GapLibAinfoType, seltrack, delace, density)
+
+	- Morph Plug-In: for creating tween layers by morph or warp
+	  transformations, based on workpoints.
+	  (workpoints are entered via GUI and optional saved to file)
+
+	- renamed p_fprintf_gdouble => gap_lib_fprintf_gdouble
+	- renamed p_sscan_flt_numbers => gap_lib_sscan_flt_numbers
+	- added onionskin ref_modes 
+	  (Feature request by Benjamin McKenzie)
+
+        Changed Files:
+	--------------
+        * NEWS
+	* configure.in
+	* Makefile.am
+	* gap/Makefile.am
+	* gap/README
+	* gap/gap_arr_dialog.c [.h]   # use const char for const stringparams
+	* gap/gap_base_ops.c
+	* gap/gap_bluebox_main.c
+	* gap/gap_lib.c [.h]
+	* gap/gap_player_main.c [.h]
+	* gap/gap_match.c
+	* gap/gap_mov_exec.c [.h]
+	* gap/gap_navigator_dialog.c
+	* gap/gap_onion_base.c [.h]
+	* gap/gap_onion_dialog.c
+	* gap/gap_onion_main.c [.h]
+	* gap/gap_player_dialog.c [.h]
+	* gap/gap_player_main.c [.h]
+	* gap/gap_layer_copy.c [.h]
+	* gap/gap_resi_dialog.c
+	* gap/gap_vin.c [.h]
+	* gap/gap_wr_color_curve.c
+	* gap/gap_wr_color_huesat.c
+	* gap/gap_wr_color_levels.c
+	
+	
+	Created news Source Modules (in existing directories):
+	----------------------------
+	* gap_audio_util.c [.h]
+	* gap/gap_audio_wav.c [.h]
+	* gap/gap_file_util.c [.h]
+	* gap/gap_morph_dialog.c [.h]
+	* gap/gap_morph_exec.c [.h]
+	* gap/gap_morph_main.c [.h]
+	
+	* gap/gap_story_dialog.c [.h]
+	* gap/gap_story_file.c [.h]
+	* gap/gap_story_main.c [.h]
+	* gap/gap_story_properties.c [.h]
+	* gap/gap_story_syntax.c [.h]
+	* gap/gap_vex_dialog.c [.h]
+	* gap/gap_vex_exec.c [.h]
+	* gap/gap_vex_main.c [.h]
+
+	* gap/gap-dup-continue.scm   
+	 
+	Created news Source Directories:
+	-------------------------------
+	* doc/*
+	* libgapvidapi/*
+	* libgapvidutil/*
+	* vid_enc_avi/*
+	* vid_enc_ffmpeg/*
+	* vid_enc_single/*
+
+	Created news Source Modules (in the new directories):
+	----------------------------
+	libgapvidapi/Makefile.am
+	libgapvidapi/example.c
+	libgapvidapi/gap_vid_api.c
+	libgapvidapi/gap_vid_api.h
+	libgapvidapi/gap_vid_api_ffmpeg.c
+	libgapvidapi/gap_vid_api_gimp.c
+	libgapvidapi/gap_vid_api_mpeg3.c
+	libgapvidapi/gap_vid_api_mpeg3toc.c
+	libgapvidapi/gap_vid_api_quicktime.c
+	libgapvidapi/gap_vid_api_util.c
+	libgapvidapi/gap_vid_api_vidindex.c
+
+	libgapvidutil/Makefile.am
+	libgapvidutil/gap_gve_jpeg.c
+	libgapvidutil/gap_gve_jpeg.h
+	libgapvidutil/gap_gve_misc_util.c
+	libgapvidutil/gap_gve_misc_util.h
+	libgapvidutil/gap_gve_raw.c
+	libgapvidutil/gap_gve_raw.h
+	libgapvidutil/gap_gve_sox.c
+	libgapvidutil/gap_gve_sox.h
+	libgapvidutil/gap_gve_story.c
+	libgapvidutil/gap_gve_story.h
+	libgapvidutil/gap_gve_xvid.c
+	libgapvidutil/gap_gve_xvid.h
+	libgapvidutil/gap_gvetypes.h
+	libgapvidutil/gap_libgapvidutil.h
+
+	vid_common/Makefile.am
+	vid_common/gap_cme_callbacks.c
+	vid_common/gap_cme_callbacks.h
+	vid_common/gap_cme_gui.c
+	vid_common/gap_cme_gui.h
+	vid_common/gap_cme_main.c
+	vid_common/gap_cme_main.h
+
+	vid_enc_avi/Makefile.am
+	vid_enc_avi/README.avilib
+	vid_enc_avi/avilib.c
+	vid_enc_avi/avilib.h
+	vid_enc_avi/gap_enc_avi_gui.c
+	vid_enc_avi/gap_enc_avi_gui.h
+	vid_enc_avi/gap_enc_avi_main.c
+	vid_enc_avi/gap_enc_avi_main.h
+
+	vid_enc_ffmpeg/Makefile.am
+	vid_enc_ffmpeg/gap_enc_ffmpeg_callbacks.c
+	vid_enc_ffmpeg/gap_enc_ffmpeg_callbacks.h
+	vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c
+	vid_enc_ffmpeg/gap_enc_ffmpeg_gui.h
+	vid_enc_ffmpeg/gap_enc_ffmpeg_main.c
+	vid_enc_ffmpeg/gap_enc_ffmpeg_main.h
+
+	vid_enc_single/Makefile.am
+	vid_enc_single/gap_enc_singleframes_main.c
+
 2004-05-10  Sven Neumann  <sven@gimp.org>
 
 	* Made 2.0.2 release.

@@ -639,12 +639,20 @@ p_dup(GapAnimInfo *ainfo_ptr, long cnt, long range_from, long range_to)
    ainfo_ptr->frame_cnt += l_cnt2;
    ainfo_ptr->last_frame_nr = ainfo_ptr->first_frame_nr + ainfo_ptr->frame_cnt -1;
 
-   /* load from the "new" current frame */   
-   if(ainfo_ptr->new_filename != NULL) g_free(ainfo_ptr->new_filename);
-   ainfo_ptr->new_filename = gap_lib_alloc_fname(ainfo_ptr->basename,
-                                      ainfo_ptr->curr_frame_nr,
-                                      ainfo_ptr->extension);
-   return (gap_lib_load_named_frame(ainfo_ptr->image_id, ainfo_ptr->new_filename));
+   /* load from the "new" current frame */
+   /* hof: the current frame stays the same after duplicating frames.
+    * therefore we can skip the reload here.
+    * (reload failed at the gimp_displays_reconnect call, when invoked from script-fu
+    *  in NONINTERACTIVE mode, dont know why ?)
+    */
+    
+   /* if(ainfo_ptr->new_filename != NULL) g_free(ainfo_ptr->new_filename);
+    *ainfo_ptr->new_filename = gap_lib_alloc_fname(ainfo_ptr->basename,
+    *                                   ainfo_ptr->curr_frame_nr,
+    *                                   ainfo_ptr->extension);
+    * return (gap_lib_load_named_frame(ainfo_ptr->image_id, ainfo_ptr->new_filename)); 
+    */
+   return (ainfo_ptr->image_id);
 }        /* end p_dup */
 
 /* ============================================================================

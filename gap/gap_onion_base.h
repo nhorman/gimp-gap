@@ -60,6 +60,9 @@
 #define GAP_ONION_VISI_TRUE    1
 #define GAP_ONION_VISI_TOGGLE  2
 
+#define GAP_ONION_REFMODE_NORMAL   0
+#define GAP_ONION_REFMODE_BIDRIECTIONAL_SINGLE   1
+#define GAP_ONION_REFMODE_BIDRIECTIONAL_DOUBLE   2
 
 typedef struct GapOnionBaseParasite_data {
    long         timestamp;      /* UTC timecode of creation time */

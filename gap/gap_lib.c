@@ -26,6 +26,7 @@
  */
 
 /* revision history:
+ * 2.1.0a   2004/04/18   hof: added gap_lib_fprintf_gdouble
  * 1.3.26a  2004/02/01   hof: added: gap_lib_alloc_ainfo_from_name
  * 1.3.25a  2004/01/20   hof: - removed xvpics support (gap_lib_get_video_paste_name)
  * 1.3.21e  2003/11/04   hof: - gimprc
@@ -2431,3 +2432,68 @@ gap_vid_edit_paste(GimpRunMode run_mode, gint32 image_id, long paste_mode)
 
   return(rc);
 }       /* end gap_vid_edit_paste */
+
+
+/* --------------------------------
+ * gap_lib_fprintf_gdouble
+ * --------------------------------
+ * print prefix and gdouble value to file
+ * (always use "." as decimalpoint, independent of LOCALE language settings)
+ */
+void
+gap_lib_fprintf_gdouble(FILE *fp, gdouble value, gint digits, gint precision_digits, const char *pfx)
+{
+  gchar l_dbl_str[G_ASCII_DTOSTR_BUF_SIZE];
+  gchar l_fmt_str[20];
+  gint  l_len;
+
+  g_snprintf(l_fmt_str, sizeof(l_fmt_str), "%%.%df", (int)precision_digits);
+  g_ascii_formatd(l_dbl_str, sizeof(l_dbl_str), l_fmt_str, value);
+
+  fprintf(fp, "%s", pfx);
+
+  /* make leading blanks */
+  l_len = strlen(l_dbl_str) - (digits + 1 +  precision_digits);
+  while(l_len < 0)
+  {
+    fprintf(fp, " ");
+    l_len++;
+  }
+  fprintf(fp, "%s", l_dbl_str);
+}  /* end gap_lib_fprintf_gdouble */
+
+
+/* ============================================================================
+ * gap_lib_sscan_flt_numbers
+ * ============================================================================
+ * scan the blank seperated buffer for 2 integer and 13 float numbers.
+ * always use "." as decimalpoint in the float numbers regardless to LANGUAGE settings
+ * return a counter that tells how many numbers were scanned successfully
+ */
+gint
+gap_lib_sscan_flt_numbers(gchar   *buf
+                  , gdouble *farr
+		  , gint     farr_max
+		  )
+{
+  gint  l_cnt;
+  gchar *nptr;
+  gchar *endptr;
+
+  l_cnt =0;
+  nptr  = buf;
+  while(l_cnt < farr_max)
+  {
+    endptr = nptr;
+    farr[l_cnt] = g_ascii_strtod(nptr, &endptr);
+    if(nptr == endptr)
+    {
+      break;  /* pointer was not advanced because no valid floatnumber was scanned */
+    }
+    nptr = endptr;
+
+    l_cnt++;  /* count successful scans */
+  }
+
+  return (l_cnt);
+}  /* end gap_lib_sscan_flt_numbers */

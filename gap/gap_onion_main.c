@@ -33,6 +33,7 @@
 
 
 /* revision history:
+ * version 2.1.0a;  2004/06/03   hof: added onionskin ref_mode parameter
  * version 1.3.17a; 2003.07.29   hof: param types GimpPlugInInfo.run procedure
  * version 1.3.16c; 2003.07.12   hof: Onionsettings scope changes from gimp-session
  *                                    to permanent per animation (stored in video_info file=.
@@ -48,7 +49,7 @@
 #include <gap_onion_dialog.h>
 
 
-static char *gap_onion_version = "1.3.17a; 2003/07/29";
+static char *gap_onion_version = "2.1.0a; 2004/06/03";
 
 
 /* ------------------------
@@ -101,6 +102,7 @@ GimpPlugInInfo PLUG_IN_INFO =
     {GIMP_PDB_INT32, "asc_opacity", "TRUE..farest neighbour frame has highest opacity, FALSE: nearest has highest opacity"},
     {GIMP_PDB_INT32, "auto_create", "TRUE..automatic creation/replacing of onionskinlayers after GAP controlled load"},
     {GIMP_PDB_INT32, "auto_delete", "TRUE..automatic delete of onionskinlayers before GAP controlled save"},
+    {GIMP_PDB_INT32, "ref_mode", "Reference Mode:  0:NORMAL, 1:BIDIRECTIONAL_SINGLE, 2:BIDIRECTIONAL_DOUBLE "},
   };
   static int nargs_onion_cfg = G_N_ELEMENTS(args_onion_cfg);
 
@@ -140,8 +142,8 @@ query ()
   gimp_install_procedure(GAP_PLUGIN_NAME_ONION_CFG,
                          "This plugin sets Configuration for Onion Layers in Videofames",
                          "This plugin is the configuration GUI for Onion layers."
-                         " Onion Layer(s) usually do show previous (or next) frame(s)"
-                         " of the video in the current frame."
+                         " Onion Layer(s) usually do show previous and/ or next frame(s)"
+                         " of the video in the current frame, depending on ref_mode parameter"
                          " Onion Layers are not created automatically. You have to create or delete them manually"
                          " using the menu Video/OnionSkin/make or Video/OnionSkin/delete or call the Procedures "
                          GAP_PLUGIN_NAME_ONION_APPLY " "
@@ -320,6 +322,7 @@ run(const gchar *name
           gpp->vin.auto_replace_after_load = param[19].data.d_int32;
           gpp->vin.auto_delete_before_save = param[20].data.d_int32;
           gpp->vin.onionskin_auto_enable   = TRUE;
+          gpp->vin.ref_mode          = param[21].data.d_int32;
         }
       }
       else if(gpp->run_mode != GIMP_RUN_INTERACTIVE)

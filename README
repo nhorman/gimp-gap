@@ -1,11 +1,92 @@
-This is a stable release of the GIMP Video menu 2.0.
+This is a prerelease version 2.1.0 of the GIMP Video menu.
 
-The GIMP-GAP (GIMP Animation Package) is a collection of Plug-Ins to
-extend GIMP 2.0 with capabilities to edit and create Animations as
-sequences of single frames.
+The GIMP-GAP (GIMP Animation Package) is a collection of Plug-Ins
+to extend the GIMP with capabilities to edit and create
+Animations as sequences of single frames.
 
 
-Requires: - gimp version 2.0.0 or later
+Requires:
+=========
+ - gimp 2.0.0 or higher (stable release)
+
+ Optional libs for decode/encode videofiles:
+
+ - ffmpeg     0.4.8 (libavformat 0.4.8 and libavcodec 0.4.8)
+                    libavformat and libavcodec build up the basic
+		    videofile support for many MPEG based fileformats
+		    both for read and write access 
+		    (decode and encode video and audio).
+		    
+		    You can get ffmpeg at:
+		       http://ffmpeg.sourceforge.net
+		       
+		    Please install FFMPEG's libraries
+		     - libavformat
+		     - libavcodec
+		    that are needed for linking with the Gimp Video API
+
+		    To install those libs you must use the configure option
+
+		     --enable-shared   
+
+		    (that is normally OFF by default)
+
+
+		    cd ffmpeg
+		    ./configure --enable-shared --disable-mmx --enable-a52
+		       
+		    
+		    If you want create videos with gimp-gap
+		    you should install those libs
+		    and configure gimp-gap with
+		    
+		    --enable_gva_libavformat
+		    
+ - libmpeg3   1.5.4
+                    libmpeg3 is an additional library for
+		    reading (decode) frames and audio from MPEG files
+		    (VCD, DVD)
+		    You can get libmpeg3 at:
+		        http://www.heroinewarrior.com/download.php3
+			
+		    Note: the original has no installation support,
+		    you may prefere libmpeg3 rpm packages provided by SuSE
+		    or other LINUX distributors.
+		    
+		    To install the original, you must firts compile the library 
+		    (see the included docs and Makefile).
+		    Then copy all header files
+		    to /usr/local/include and the library to /usr/local/lib.
+		    
+		    mkdir /usr/local/include/libmpeg3
+		    mkdir /usr/local/include/libmpeg3/audio
+		    mkdir /usr/local/include/libmpeg3/video
+		    
+		    cd libmpeg3  # the directory that was created by extracting the tarball
+                    cp *.h  	  /usr/local/include/libmpeg3
+		    cp audio/*.h  /usr/local/include/libmpeg3/audio
+		    cp video/*.h  /usr/local/include/libmpeg3/video	    
+		    
+		    # copy the lib (directory i686 depends on machine architecture)
+		    cp i686/libmpeg3.a /usr/local/lib
+		    
+		    
+		    
+		    If you want to extract frames form DVD typical .IFO
+		    files you should install libmpeg3 and configure
+		    gimp-gap with 
+
+		    -- enable_gva_libmpeg3
+		    
+ - xvid       1.0.0
+                   The free XVID Codec is used for MPEG4 encoding
+		   with the gimp-gap AVI fileformat encoding plug-in.
+		   (the FFMPEG libs have built in MPEG4 support
+		   and do not depend on XVID Codec)
+		 
+		   You can get the xvid codec at:
+		       http://www.xvid.org/downloads.html
+
 
 For installation instructions, see the file INSTALL.
 

@@ -22,6 +22,7 @@
  */
 
 /* revision history:
+ * version 1.3.25c; 2004/01/26  hof: support for storyboard level1 playback
  * version 1.3.14c; 2003/06/09  hof: created
  */
 
@@ -30,6 +31,24 @@
 
 #include "libgimp/gimp.h"
 #include "gap_player_main.h"
+
+void    gap_player_dlg_create(GapPlayerMainGlobalParams *gpp);
+void    gap_player_dlg_cleanup(GapPlayerMainGlobalParams *gpp);
+void    gap_player_dlg_restart(GapPlayerMainGlobalParams *gpp
+                      , gboolean autostart
+		      , gint32   image_id
+		      , char *imagename
+		      , gint32 imagewidth
+		      , gint32 imageheight
+		      , GapStoryBoard *stb_ptr
+		      , gint32 begin_frame
+		      , gint32 end_frame
+		      , gboolean play_selection_only
+		      , gint32 seltrack
+		      , gdouble delace
+		      , gchar    *preferred_decoder
+		      , gboolean  force_open_as_video
+		      );
 
 void    gap_player_dlg_playback_dialog(GapPlayerMainGlobalParams *gpp);
 

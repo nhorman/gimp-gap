@@ -22,6 +22,7 @@
  */
 
 /* revision history:
+ * version 1.3.26d; 2004/01/28  hof: mtrace_mode
  * version 1.3.20d; 2003/10/06  hof: new gpp struct members for resize behaviour
  * version 1.3.19a; 2003/09/07  hof: audiosupport (based on wavplay, for UNIX only),
  * version 1.3.15a; 2003/06/21  hof: created
@@ -36,14 +37,53 @@
 #include <libgimp/gimp.h>
 #include <libgimp/gimpui.h>
 #include "gap_pview_da.h"
+#include "gap_story_file.h"
+
+#ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
+#include "gap_vid_api.h"
+#else
+#ifndef GAP_STUBTYPE_GVA_HANDLE
+typedef gpointer t_GVA_Handle;
+#define GAP_STUBTYPE_GVA_HANDLE
+#endif
+#endif
 
 #define MAX_AUDIOFILE_LEN 1024
 
+typedef enum {
+    GAP_PLAYER_MTRACE_OFF
+   ,GAP_PLAYER_MTRACE_IMG_SIZE
+   ,GAP_PLAYER_MTRACE_PV_SIZE
+  } GapPlayerMtraceType;
+
+typedef struct GapPlayerAddClip {
+  gpointer       user_data_ptr;   /* sgpp */
+  GapAnimInfo   *ainfo_ptr;
+  gint32         range_from;
+  gint32         range_to;
+  } GapPlayerAddClip;
+
+/* Function Typedefs */
+typedef  void           (*GapPlayerSetRangeFptr)(GapPlayerAddClip *plac_ptr);
+
 typedef struct GapPlayerMainGlobalParams {
+  gboolean     standalone_mode;
   GimpRunMode  run_mode;
   gint32       image_id;
+  gchar        *imagename;
+  gint32       imagewidth;
+  gint32       imageheight;
 
   GapAnimInfo *ainfo_ptr;
+  GapStoryBoard *stb_ptr;
+  t_GVA_Handle  *gvahand;
+  gchar         *gva_videofile;
+
+  gint32                mtrace_image_id;    /* multilayer image trace image id */ 
+  GapPlayerMtraceType   mtrace_mode;        /* Init GAP_PLAYER_MTRACE_OFF */
+  
+  GapPlayerSetRangeFptr fptr_set_range;     /* procedure to callback at set range */
+  gpointer              user_data_ptr;      /* userdata for the callback procedure */ 
   
   gboolean   autostart;
   gboolean   use_thumbnails;
@@ -53,6 +93,8 @@ typedef struct GapPlayerMainGlobalParams {
   gboolean   play_loop;
   gboolean   play_pingpong;
   gboolean   play_backward;
+  gboolean   cancel_video_api;
+  gboolean   gva_lock;
 
   gint32     play_timertag;
 
@@ -81,22 +123,39 @@ typedef struct GapPlayerMainGlobalParams {
   /* GUI widget pointers */
   GapPView   *pv_ptr;
   GtkWidget *shell_window;  
+  GtkWidget *docking_container;    /* NULL if not docked, or vbox to contain player */
+  GtkWidget *frame_with_name;  
   GtkObject *from_spinbutton_adj;
   GtkObject *to_spinbutton_adj;
   GtkObject *framenr_spinbutton_adj;
   GtkObject *speed_spinbutton_adj;
   GtkObject *size_spinbutton_adj;
+  GtkWidget *from_button;
+  GtkWidget *to_button;
 
+  GtkWidget *progress_bar;
   GtkWidget *status_label;
   GtkWidget *timepos_label;
   GtkWidget *resize_box;
   GtkWidget *size_spinbutton;
+
+  GtkWidget *use_thumb_checkbutton;
+  GtkWidget *exact_timing_checkbutton;
+  GtkWidget *pinpong_checkbutton;
+  GtkWidget *selonly_checkbutton;
+  GtkWidget *loop_checkbutton;
 
   GTimer    *gtimer;
   gdouble   cycle_time_secs;
   gdouble   rest_secs;
   gdouble   delay_secs;
   gdouble   framecnt;
+  gint32    seltrack;
+  gdouble   delace;
+  gchar    *preferred_decoder;
+  gboolean  force_open_as_video;
+  gboolean  have_progress_bar;
+  gchar    *progress_bar_idle_txt;
   
   gint32    resize_handler_id;
   gint32    old_resize_width;

@@ -24,6 +24,9 @@
  */
 
 /* revision history:
+ * version 2.1.0a;  2004/06/03   hof: added onionskin setting ref_mode
+ * version 2.1.0a;  2004.04.10   hof: callbacks now directly use GapOnionMainGlobalParams *gpp
+ *                                    rather than gpointer
  * version 1.3.16c; 2003.07.12   hof: bugfixes, added parameter asc_opacity
  * version 1.3.16b; 2003.07.06   hof: bugfixes, added parameter asc_opacity
  *                                    minor tooltip Helptexts changes
@@ -53,11 +56,17 @@
 
 #define ENC_MENU_ITEM_INDEX_KEY "gap_enc_menu_item_index"
 #define MAX_SELECT_MODE_ARRAY_ELEMENTS 7
+#define MAX_REF_MODE_ARRAY_ELEMENTS 3
 
 
 extern int gap_debug;
 
 gint  gtab_select_modes[MAX_SELECT_MODE_ARRAY_ELEMENTS] =  { 0, 1, 2, 3, 4, 5, 6 };
+gint  gtab_ref_modes[MAX_REF_MODE_ARRAY_ELEMENTS] = 
+  { GAP_ONION_REFMODE_NORMAL                /* 0 */
+  , GAP_ONION_REFMODE_BIDRIECTIONAL_SINGLE  /* 1 */
+  , GAP_ONION_REFMODE_BIDRIECTIONAL_DOUBLE  /* 2 */
+  };
 
 
 static void
@@ -70,101 +79,101 @@ p_init_main_dialog_widgets(GapOnionMainGlobalParams *gpp);
  */
 static void
 on_oni__spinbutton_range_from_changed  (GtkEditable     *editable,
-                                        gpointer         user_data);
+                                        GapOnionMainGlobalParams *gpp);
 
 static void
 on_oni__spinbutton_range_to_changed    (GtkEditable     *editable,
-                                        gpointer         user_data);
+                                        GapOnionMainGlobalParams *gpp);
 
 static void
 on_oni__spinbutton_num_olayers_changed (GtkEditable     *editable,
-                                        gpointer         user_data);
+                                        GapOnionMainGlobalParams *gpp);
 
 static void
 on_oni__spinbutton_ref_delta_changed   (GtkEditable     *editable,
-                                        gpointer         user_data);
+                                        GapOnionMainGlobalParams *gpp);
 
 static void
 on_oni__checkbutton_ref_cycle_toggled (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
+                                       GapOnionMainGlobalParams *gpp);
 
 static void
 on_oni__spinbutton_stack_pos_changed   (GtkEditable     *editable,
-                                        gpointer         user_data);
+                                        GapOnionMainGlobalParams *gpp);
 
 static void
 on_oni__checkbutton_stack_top_toggled  (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
+                                        GapOnionMainGlobalParams *gpp);
 
 static void
 on_oni__checkbutton_asc_opacity_toggled  (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
+                                          GapOnionMainGlobalParams *gpp);
 
 static void
 on_oni__spinbutton_opacity_changed     (GtkEditable     *editable,
-                                        gpointer         user_data);
+                                        GapOnionMainGlobalParams *gpp);
 
 static void
 on_oni__spinbutton_opacity_delta_changed
                                         (GtkEditable     *editable,
-                                        gpointer         user_data);
+                                         GapOnionMainGlobalParams *gpp);
 
 static void
 on_oni__spinbutton_ignore_botlayers_changed
                                         (GtkEditable     *editable,
-                                        gpointer         user_data);
+                                         GapOnionMainGlobalParams *gpp);
 
 static void
 on_oni__entry_select_string_changed    (GtkEditable     *editable,
-                                        gpointer         user_data);
+                                        GapOnionMainGlobalParams *gpp);
 
 static void
 on_oni__checkbutton_select_case_toggled
                                         (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
+                                         GapOnionMainGlobalParams *gpp);
 
 static void
 on_oni__checkbutton_select_invert_toggled
                                         (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
+                                         GapOnionMainGlobalParams *gpp);
 
 static void
 on_oni__button_default_clicked         (GtkButton       *button,
-                                        gpointer         user_data);
+                                        GapOnionMainGlobalParams *gpp);
 
 static void
 on_oni__button_cancel_clicked          (GtkButton       *button,
-                                        gpointer         user_data);
+                                        GapOnionMainGlobalParams *gpp);
 
 static void
 on_oni__button_close_clicked          (GtkButton       *button,
-                                        gpointer         user_data);
+                                       GapOnionMainGlobalParams *gpp);
 
 static void
 on_oni__button_set_clicked             (GtkButton       *button,
-                                        gpointer         user_data);
+                                        GapOnionMainGlobalParams *gpp);
 
 static void
 on_oni__button_delete_clicked          (GtkButton       *button,
-                                        gpointer         user_data);
+                                        GapOnionMainGlobalParams *gpp);
 
 static void
 on_oni__button_apply_clicked           (GtkButton       *button,
-                                        gpointer         user_data);
+                                        GapOnionMainGlobalParams *gpp);
 
 static void
 on_oni__dialog_destroy                 (GtkObject       *object,
-                                        gpointer         user_data);
+                                        GapOnionMainGlobalParams *gpp);
 
 
 
 static void
 on_oni__checkbutton_auto_replace_toggled  (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
+                                        GapOnionMainGlobalParams *gpp);
 
 static void
 on_oni__checkbutton_auto_delete_toggled  (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
+                                        GapOnionMainGlobalParams *gpp);
 
 
 
@@ -205,12 +214,10 @@ p_init_sensitive(GapOnionMainGlobalParams *gpp)
 
 static void
 on_oni__optionmenu_select_mode (GtkWidget     *wgt_item,
-                           gpointer       user_data)
+                           GapOnionMainGlobalParams *gpp)
 {
-  GapOnionMainGlobalParams *gpp;
   gint       l_idx;
 
- gpp = (GapOnionMainGlobalParams*)user_data;
  if(gap_debug) printf("CB: on_oni__optionmenu_select_mode\n");
 
  if(gpp == NULL) return;
@@ -227,15 +234,33 @@ on_oni__optionmenu_select_mode (GtkWidget     *wgt_item,
 }
 
 
+static void
+on_oni__optionmenu_ref_mode (GtkWidget     *wgt_item,
+                           GapOnionMainGlobalParams *gpp)
+{
+  gint       l_idx;
+
+ if(gap_debug) printf("CB: on_oni__optionmenu_ref_mode\n");
+
+ if(gpp == NULL) return;
+
+ l_idx = (gint) g_object_get_data (G_OBJECT (wgt_item), ENC_MENU_ITEM_INDEX_KEY);
+
+ if(gap_debug) printf("CB: on_oni__optionmenu_ref_mode index: %d\n", (int)l_idx);
+ if((l_idx >= MAX_REF_MODE_ARRAY_ELEMENTS) || (l_idx < 1))
+ {
+    l_idx = 0;
+ }
+ gpp->vin.ref_mode = gtab_ref_modes[l_idx];
+}
 
 static void
 on_oni__spinbutton_range_from_changed  (GtkEditable     *editable,
-                                        gpointer         user_data)
+                                        GapOnionMainGlobalParams *gpp)
 {
- GapOnionMainGlobalParams *gpp;
+ ;
   GtkAdjustment *adj;
 
-  gpp = (GapOnionMainGlobalParams*)user_data;
   if(gap_debug) printf("CB: on_oni__spinbutton_range_from_changed\n");
 
   if(gpp == NULL) return;
@@ -252,12 +277,10 @@ on_oni__spinbutton_range_from_changed  (GtkEditable     *editable,
 
 static void
 on_oni__spinbutton_range_to_changed    (GtkEditable     *editable,
-                                        gpointer         user_data)
+                                        GapOnionMainGlobalParams *gpp)
 {
- GapOnionMainGlobalParams *gpp;
   GtkAdjustment *adj;
 
-  gpp = (GapOnionMainGlobalParams*)user_data;
   if(gap_debug) printf("CB: on_oni__spinbutton_range_to_changed\n");
 
   if(gpp == NULL) return;
@@ -274,12 +297,10 @@ on_oni__spinbutton_range_to_changed    (GtkEditable     *editable,
 
 static void
 on_oni__spinbutton_num_olayers_changed (GtkEditable     *editable,
-                                        gpointer         user_data)
+                                        GapOnionMainGlobalParams *gpp)
 {
- GapOnionMainGlobalParams *gpp;
-   GtkAdjustment *adj;
+  GtkAdjustment *adj;
 
-  gpp = (GapOnionMainGlobalParams*)user_data;
   if(gap_debug) printf("CB: on_oni__spinbutton_num_olayers_changed\n");
 
   if(gpp == NULL) return;
@@ -296,12 +317,10 @@ on_oni__spinbutton_num_olayers_changed (GtkEditable     *editable,
 
 static void
 on_oni__spinbutton_ref_delta_changed   (GtkEditable     *editable,
-                                        gpointer         user_data)
+                                        GapOnionMainGlobalParams *gpp)
 {
- GapOnionMainGlobalParams *gpp;
   GtkAdjustment *adj;
 
-  gpp = (GapOnionMainGlobalParams*)user_data;
   if(gap_debug) printf("CB: on_oni__spinbutton_ref_delta_changed\n");
 
   if(gpp == NULL) return;
@@ -318,10 +337,8 @@ on_oni__spinbutton_ref_delta_changed   (GtkEditable     *editable,
 
 static void
 on_oni__checkbutton_ref_cycle_toggled (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
+                                       GapOnionMainGlobalParams *gpp)
 {
- GapOnionMainGlobalParams *gpp;
- gpp = (GapOnionMainGlobalParams*)user_data;
  if(gap_debug) printf("CB: on_oni__checkbutton_ref_cycle_toggled\n");
 
  if(gpp)
@@ -340,12 +357,10 @@ on_oni__checkbutton_ref_cycle_toggled (GtkToggleButton *togglebutton,
 
 static void
 on_oni__spinbutton_stack_pos_changed   (GtkEditable     *editable,
-                                        gpointer         user_data)
+                                        GapOnionMainGlobalParams *gpp)
 {
- GapOnionMainGlobalParams *gpp;
   GtkAdjustment *adj;
 
-  gpp = (GapOnionMainGlobalParams*)user_data;
   if(gap_debug) printf("CB: on_oni__spinbutton_stack_pos_changed\n");
 
   if(gpp == NULL) return;
@@ -362,10 +377,8 @@ on_oni__spinbutton_stack_pos_changed   (GtkEditable     *editable,
 
 static void
 on_oni__checkbutton_stack_top_toggled  (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
+                                        GapOnionMainGlobalParams *gpp)
 {
- GapOnionMainGlobalParams *gpp;
- gpp = (GapOnionMainGlobalParams*)user_data;
  if(gap_debug) printf("CB: on_oni__checkbutton_stack_top_toggled\n");
 
  if(gpp)
@@ -384,10 +397,8 @@ on_oni__checkbutton_stack_top_toggled  (GtkToggleButton *togglebutton,
 
 static void
 on_oni__checkbutton_asc_opacity_toggled  (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
+                                          GapOnionMainGlobalParams *gpp)
 {
- GapOnionMainGlobalParams *gpp;
- gpp = (GapOnionMainGlobalParams*)user_data;
  if(gap_debug) printf("CB: on_oni__checkbutton_asc_opacity_toggled\n");
 
  if(gpp)
@@ -405,12 +416,10 @@ on_oni__checkbutton_asc_opacity_toggled  (GtkToggleButton *togglebutton,
 
 static void
 on_oni__spinbutton_opacity_changed     (GtkEditable     *editable,
-                                        gpointer         user_data)
+                                        GapOnionMainGlobalParams *gpp)
 {
- GapOnionMainGlobalParams *gpp;
   GtkAdjustment *adj;
 
-  gpp = (GapOnionMainGlobalParams*)user_data;
   if(gap_debug) printf("CB: on_oni__spinbutton_opacity_changed\n");
 
   if(gpp == NULL) return;
@@ -429,12 +438,10 @@ on_oni__spinbutton_opacity_changed     (GtkEditable     *editable,
 static void
 on_oni__spinbutton_opacity_delta_changed
                                         (GtkEditable     *editable,
-                                        gpointer         user_data)
+                                         GapOnionMainGlobalParams *gpp)
 {
- GapOnionMainGlobalParams *gpp;
   GtkAdjustment *adj;
 
-  gpp = (GapOnionMainGlobalParams*)user_data;
   if(gap_debug) printf("CB: on_oni__spinbutton_opacity_delta_changed\n");
 
   if(gpp == NULL) return;
@@ -452,12 +459,10 @@ on_oni__spinbutton_opacity_delta_changed
 static void
 on_oni__spinbutton_ignore_botlayers_changed
                                         (GtkEditable     *editable,
-                                        gpointer         user_data)
+                                         GapOnionMainGlobalParams *gpp)
 {
- GapOnionMainGlobalParams *gpp;
   GtkAdjustment *adj;
 
-  gpp = (GapOnionMainGlobalParams*)user_data;
   if(gap_debug) printf("CB: on_oni__spinbutton_ignore_botlayers_changed\n");
 
   if(gpp == NULL) return;
@@ -474,11 +479,9 @@ on_oni__spinbutton_ignore_botlayers_changed
 
 static void
 on_oni__entry_select_string_changed    (GtkEditable     *editable,
-                                        gpointer         user_data)
+                                        GapOnionMainGlobalParams *gpp)
 {
- GapOnionMainGlobalParams *gpp;
- gpp = (GapOnionMainGlobalParams*)user_data;
- if(gap_debug) printf("CB: on_oni__entry_select_string_changed\n");
+if(gap_debug) printf("CB: on_oni__entry_select_string_changed\n");
 
  if(gpp)
  {
@@ -491,10 +494,8 @@ on_oni__entry_select_string_changed    (GtkEditable     *editable,
 static void
 on_oni__checkbutton_select_case_toggled
                                         (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
+                                         GapOnionMainGlobalParams *gpp)
 {
- GapOnionMainGlobalParams *gpp;
- gpp = (GapOnionMainGlobalParams*)user_data;
  if(gap_debug) printf("CB: on_oni__checkbutton_select_case_toggled\n");
 
  if(gpp)
@@ -514,10 +515,8 @@ on_oni__checkbutton_select_case_toggled
 static void
 on_oni__checkbutton_select_invert_toggled
                                         (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
+                                         GapOnionMainGlobalParams *gpp)
 {
- GapOnionMainGlobalParams *gpp;
- gpp = (GapOnionMainGlobalParams*)user_data;
  if(gap_debug) printf("CB: on_oni__checkbutton_select_invert_toggled\n");
 
  if(gpp)
@@ -536,10 +535,8 @@ on_oni__checkbutton_select_invert_toggled
 
 static void
 on_oni__button_default_clicked         (GtkButton       *button,
-                                        gpointer         user_data)
+                                        GapOnionMainGlobalParams *gpp)
 {
- GapOnionMainGlobalParams *gpp;
- gpp = (GapOnionMainGlobalParams*)user_data;
  if(gap_debug) printf("CB: on_oni__button_default_clicked gpp: %d\n", (int)gpp);
 
  if(gpp)
@@ -552,10 +549,8 @@ on_oni__button_default_clicked         (GtkButton       *button,
 
 static void
 on_oni__button_cancel_clicked          (GtkButton       *button,
-                                        gpointer         user_data)
+                                        GapOnionMainGlobalParams *gpp)
 {
- GapOnionMainGlobalParams *gpp;
- gpp = (GapOnionMainGlobalParams*)user_data;
  if(gap_debug) printf("CB: on_oni__button_cancel_clicked\n");
 
  if(gpp)
@@ -568,10 +563,8 @@ on_oni__button_cancel_clicked          (GtkButton       *button,
 
 static void
 on_oni__button_close_clicked             (GtkButton       *button,
-                                        gpointer         user_data)
+                                         GapOnionMainGlobalParams *gpp)
 {
- GapOnionMainGlobalParams *gpp;
- gpp = (GapOnionMainGlobalParams*)user_data;
  if(gap_debug) printf("CB: on_oni__button_close_clicked\n");
 
  if(gpp)
@@ -585,10 +578,8 @@ on_oni__button_close_clicked             (GtkButton       *button,
 
 static void
 on_oni__button_set_clicked             (GtkButton       *button,
-                                        gpointer         user_data)
+                                        GapOnionMainGlobalParams *gpp)
 {
- GapOnionMainGlobalParams *gpp;
- gpp = (GapOnionMainGlobalParams*)user_data;
  if(gap_debug) printf("CB: on_oni__button_set_clicked\n");
 
  if(gpp)
@@ -604,10 +595,8 @@ on_oni__button_set_clicked             (GtkButton       *button,
 
 static void
 on_oni__button_delete_clicked          (GtkButton       *button,
-                                        gpointer         user_data)
+                                        GapOnionMainGlobalParams *gpp)
 {
- GapOnionMainGlobalParams *gpp;
- gpp = (GapOnionMainGlobalParams*)user_data;
  if(gap_debug) printf("CB: on_oni__button_delete_clicked\n");
 
  if(gpp)
@@ -621,10 +610,8 @@ on_oni__button_delete_clicked          (GtkButton       *button,
 
 static void
 on_oni__button_apply_clicked           (GtkButton       *button,
-                                        gpointer         user_data)
+                                        GapOnionMainGlobalParams *gpp)
 {
- GapOnionMainGlobalParams *gpp;
- gpp = (GapOnionMainGlobalParams*)user_data;
  if(gap_debug) printf("CB: on_oni__button_apply_clicked\n");
 
  if(gpp)
@@ -639,10 +626,8 @@ on_oni__button_apply_clicked           (GtkButton       *button,
 
 static void
 on_oni__dialog_destroy                 (GtkObject       *object,
-                                        gpointer         user_data)
+                                        GapOnionMainGlobalParams *gpp)
 {
- GapOnionMainGlobalParams *gpp;
- gpp = (GapOnionMainGlobalParams*)user_data;
  if(gap_debug) printf("CB: on_oni__dialog_destroy\n");
 
  gtk_main_quit ();
@@ -651,10 +636,8 @@ on_oni__dialog_destroy                 (GtkObject       *object,
 
 static void
 on_oni__checkbutton_auto_replace_toggled  (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
+                                        GapOnionMainGlobalParams *gpp)
 {
- GapOnionMainGlobalParams *gpp;
- gpp = (GapOnionMainGlobalParams*)user_data;
  if(gap_debug) printf("CB: on_oni__checkbutton_auto_replace_toggled\n");
 
  if(gpp)
@@ -673,10 +656,8 @@ on_oni__checkbutton_auto_replace_toggled  (GtkToggleButton *togglebutton,
 
 static void
 on_oni__checkbutton_auto_delete_toggled  (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
+                                        GapOnionMainGlobalParams *gpp)
 {
- GapOnionMainGlobalParams *gpp;
- gpp = (GapOnionMainGlobalParams*)user_data;
  if(gap_debug) printf("CB: on_oni__checkbutton_auto_delete_toggled\n");
 
  if(gpp)
@@ -716,6 +697,12 @@ p_init_optionmenus(GapOnionMainGlobalParams *gpp)
                              , gtab_select_modes
                              , gpp->vin.select_mode
                              , MAX_SELECT_MODE_ARRAY_ELEMENTS
+                             );
+ p_init_optionmenu_actual_idx( gpp
+                             , gpp->oni__optionmenu_ref_mode
+                             , gtab_ref_modes
+                             , gpp->vin.ref_mode
+                             , MAX_REF_MODE_ARRAY_ELEMENTS
                              );
 }
 
@@ -833,7 +820,7 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
   GtkWidget *table2;
   GtkWidget *table3;
 
-  GtkWidget *label1;
+  GtkWidget *label;
   GtkWidget *label2;
   GtkWidget *label3;
   GtkWidget *label4;
@@ -845,6 +832,8 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
   GtkWidget *label10;
 
   GtkWidget *glade_menuitem;
+  GtkWidget *oni__optionmenu_ref_mode;
+  GtkWidget *oni__optionmenu_ref_mode_menu;
   GtkWidget *oni__optionmenu_select_mode;
   GtkWidget *oni__optionmenu_select_mode_menu;
 
@@ -874,6 +863,8 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
   GtkWidget *oni__button_close;
   GtkWidget *oni__button_delete;
   GtkWidget *oni__button_apply;
+  
+  gint tab1_row;
 
 
 
@@ -951,31 +942,74 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
   gtk_box_pack_start (GTK_BOX (dialog_vbox1), frame1, TRUE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (frame1), 2);
 
-  table1 = gtk_table_new (7, 3, FALSE);
+  table1 = gtk_table_new (8, 3, FALSE);
   gtk_widget_show (table1);
   gtk_container_add (GTK_CONTAINER (frame1), table1);
   gtk_container_set_border_width (GTK_CONTAINER (table1), 4);
   gtk_table_set_row_spacings (GTK_TABLE (table1), 2);
   gtk_table_set_col_spacings (GTK_TABLE (table1), 2);
 
-  label1 = gtk_label_new (_("Onionskin Layers:"));
-  gtk_widget_show (label1);
-  gtk_table_attach (GTK_TABLE (table1), label1, 0, 1, 0, 1,
+  tab1_row = 0;
+
+  label = gtk_label_new (_("Reference Mode:"));
+  gtk_widget_show (label);
+  gtk_table_attach (GTK_TABLE (table1), label, 0, 1, tab1_row, tab1_row+1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_misc_set_alignment (GTK_MISC (label1), 0, 0.5);
+  gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 
 
 
-  oni__checkbutton_asc_opacity = gtk_check_button_new_with_label (_("Ascending Opacity"));
-  gtk_widget_show (oni__checkbutton_asc_opacity);
-  gtk_table_attach (GTK_TABLE (table1), oni__checkbutton_asc_opacity, 2, 3, 0, 1,
+  oni__optionmenu_ref_mode = gtk_option_menu_new ();
+  gtk_widget_show (oni__optionmenu_ref_mode);
+  gtk_table_attach (GTK_TABLE (table1), oni__optionmenu_ref_mode, 1, 3, tab1_row, tab1_row+1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gimp_help_set_help_data(oni__checkbutton_asc_opacity
-                         , _("ON: Far neighbour frames have the higher opacity.\n"
-			     "OFF: Near neighbour frames have the higher opacity.")
+  gimp_help_set_help_data(oni__optionmenu_ref_mode
+                         , _("Reference Modes determines stepsequence:\n"
+			     " normal: +1,+2,+3,+4,+5,+6\n"
+			     " bilinear single: +1,-2,+3,-4,+5,-6\n"
+			     " bilinear double: +1,-1,+2,-2,+3,-3\n"
+			     " (stepsize is set by frame reference parameter)")
                          , NULL);
+
+  oni__optionmenu_ref_mode_menu = gtk_menu_new ();
+  glade_menuitem = gtk_menu_item_new_with_label (_("Normal"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (oni__optionmenu_ref_mode_menu), glade_menuitem);
+        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
+                          G_CALLBACK (on_oni__optionmenu_ref_mode),
+                          (gpointer)gpp);
+        g_object_set_data (G_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY, (gpointer)0);
+
+  glade_menuitem = gtk_menu_item_new_with_label (_("Bidiriectional (single)"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (oni__optionmenu_ref_mode_menu), glade_menuitem);
+        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
+                          G_CALLBACK (on_oni__optionmenu_ref_mode),
+                          (gpointer)gpp);
+        g_object_set_data (G_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY, (gpointer)1);
+
+  glade_menuitem = gtk_menu_item_new_with_label (_("Bidiriectional (double)"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (oni__optionmenu_ref_mode_menu), glade_menuitem);
+        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
+                          G_CALLBACK (on_oni__optionmenu_ref_mode),
+                          (gpointer)gpp);
+        g_object_set_data (G_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY, (gpointer)2);
+
+  gtk_option_menu_set_menu (GTK_OPTION_MENU (oni__optionmenu_ref_mode), oni__optionmenu_ref_mode_menu);
+  gtk_option_menu_set_history (GTK_OPTION_MENU (oni__optionmenu_ref_mode), 0);
+
+
+  tab1_row++;
+  label = gtk_label_new (_("Onionskin Layers:"));
+  gtk_widget_show (label);
+  gtk_table_attach (GTK_TABLE (table1), label, 0, 1, tab1_row, tab1_row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+
 
 
 
@@ -990,16 +1024,30 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
                       0                    /* digits */
                       );
   gtk_widget_show (oni__spinbutton_num_olayers);
-  gtk_table_attach (GTK_TABLE (table1), oni__spinbutton_num_olayers, 1, 2, 0, 1,
+  gtk_table_attach (GTK_TABLE (table1), oni__spinbutton_num_olayers, 1, 2, tab1_row, tab1_row+1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gimp_help_set_help_data(oni__spinbutton_num_olayers
                          , _("Number of onionskin layers to create in the handled frame.")
                          , NULL);
 
+
+
+  oni__checkbutton_asc_opacity = gtk_check_button_new_with_label (_("Ascending Opacity"));
+  gtk_widget_show (oni__checkbutton_asc_opacity);
+  gtk_table_attach (GTK_TABLE (table1), oni__checkbutton_asc_opacity, 2, 3, tab1_row, tab1_row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gimp_help_set_help_data(oni__checkbutton_asc_opacity
+                         , _("ON: Far neighbour frames have the higher opacity.\n"
+			     "OFF: Near neighbour frames have the higher opacity.")
+                         , NULL);
+
+  tab1_row++;
+
   label2 = gtk_label_new (_("Frame Reference:"));
   gtk_widget_show (label2);
-  gtk_table_attach (GTK_TABLE (table1), label2, 0, 1, 1, 2,
+  gtk_table_attach (GTK_TABLE (table1), label2, 0, 1, tab1_row, tab1_row+1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label2), 0, 0.5);
@@ -1015,25 +1063,28 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
                       0                    /* digits */
                       );
   gtk_widget_show (oni__spinbutton_ref_delta);
-  gtk_table_attach (GTK_TABLE (table1), oni__spinbutton_ref_delta, 1, 2, 1, 2,
+  gtk_table_attach (GTK_TABLE (table1), oni__spinbutton_ref_delta, 1, 2, tab1_row, tab1_row+1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gimp_help_set_help_data(oni__spinbutton_ref_delta
-                         , _("-1 is previous frame, +1 is next frame")
+                         , _("reference stepsize where -1 is previous frame, +1 is next frame."
+			     " (stepsequence is built together with reference mode parameter)")
                          , NULL);
 
   oni__checkbutton_ref_cycle = gtk_check_button_new_with_label (_("Cyclic"));
   gtk_widget_show (oni__checkbutton_ref_cycle);
-  gtk_table_attach (GTK_TABLE (table1), oni__checkbutton_ref_cycle, 2, 3, 1, 2,
+  gtk_table_attach (GTK_TABLE (table1), oni__checkbutton_ref_cycle, 2, 3, tab1_row, tab1_row+1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gimp_help_set_help_data(oni__checkbutton_ref_cycle
                          , _("ON: Next frame of last is first and vice versa.")
                          , NULL);
 
+  tab1_row++;
+
   label3 = gtk_label_new (_("Stackposition:"));
   gtk_widget_show (label3);
-  gtk_table_attach (GTK_TABLE (table1), label3, 0, 1, 2, 3,
+  gtk_table_attach (GTK_TABLE (table1), label3, 0, 1, tab1_row, tab1_row+1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label3), 0, 0.5);
@@ -1049,7 +1100,7 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
                       0                    /* digits */
                       );
   gtk_widget_show (oni__spinbutton_stack_pos);
-  gtk_table_attach (GTK_TABLE (table1), oni__spinbutton_stack_pos, 1, 2, 2, 3,
+  gtk_table_attach (GTK_TABLE (table1), oni__spinbutton_stack_pos, 1, 2, tab1_row, tab1_row+1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gimp_help_set_help_data(oni__spinbutton_stack_pos
@@ -1058,17 +1109,18 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
 
   oni__checkbutton_stack_top = gtk_check_button_new_with_label (_("From Top"));
   gtk_widget_show (oni__checkbutton_stack_top);
-  gtk_table_attach (GTK_TABLE (table1), oni__checkbutton_stack_top, 2, 3, 2, 3,
+  gtk_table_attach (GTK_TABLE (table1), oni__checkbutton_stack_top, 2, 3, tab1_row, tab1_row+1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gimp_help_set_help_data(oni__checkbutton_stack_top
                          , _("ON: 0 is top of stack (in front).\n"
 			     "OFF: 0 is bottom of stack (in background).")
                          , NULL);
+  tab1_row++;
 
   label4 = gtk_label_new (_("Opacity:"));
   gtk_widget_show (label4);
-  gtk_table_attach (GTK_TABLE (table1), label4, 0, 1, 3, 4,
+  gtk_table_attach (GTK_TABLE (table1), label4, 0, 1, tab1_row, tab1_row+1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label4), 0, 0.5);
@@ -1084,7 +1136,7 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
                       1                    /* digits */
                       );
   gtk_widget_show (oni__spinbutton_opacity);
-  gtk_table_attach (GTK_TABLE (table1), oni__spinbutton_opacity, 1, 2, 3, 4,
+  gtk_table_attach (GTK_TABLE (table1), oni__spinbutton_opacity, 1, 2, tab1_row, tab1_row+1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gimp_help_set_help_data(oni__spinbutton_opacity
@@ -1102,16 +1154,19 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
                       1                    /* digits */
                       );
   gtk_widget_show (oni__spinbutton_opacity_delta);
-  gtk_table_attach (GTK_TABLE (table1), oni__spinbutton_opacity_delta, 2, 3, 3, 4,
+  gtk_table_attach (GTK_TABLE (table1), oni__spinbutton_opacity_delta, 2, 3, tab1_row, tab1_row+1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gimp_help_set_help_data(oni__spinbutton_opacity_delta
                          , _("Descending opacity for 2.nd onionskin layer")
                          , NULL);
 
+  tab1_row++;
+
+
   frame2 = gtk_frame_new (_("Layer Selection"));
   gtk_widget_show (frame2);
-  gtk_table_attach (GTK_TABLE (table1), frame2, 0, 3, 4, 5,
+  gtk_table_attach (GTK_TABLE (table1), frame2, 0, 3, tab1_row, tab1_row+1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
   gtk_container_set_border_width (GTK_CONTAINER (frame2), 2);
@@ -1161,61 +1216,62 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
   gimp_help_set_help_data(oni__optionmenu_select_mode
                          , _("Modes how to use select pattern")
                          , NULL);
+
   oni__optionmenu_select_mode_menu = gtk_menu_new ();
   glade_menuitem = gtk_menu_item_new_with_label (_("Pattern is equal to layername"));
   gtk_widget_show (glade_menuitem);
-  gtk_menu_shell_append (GTK_MENU_SHELL (oni__optionmenu_select_mode_menu), glade_menuitem);
-        g_signal_connect (glade_menuitem, "activate",
+  gtk_menu_append (GTK_MENU (oni__optionmenu_select_mode_menu), glade_menuitem);
+        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
                           G_CALLBACK (on_oni__optionmenu_select_mode),
-                          gpp);
+                          (gpointer)gpp);
         g_object_set_data (G_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY, (gpointer)0);
 
   glade_menuitem = gtk_menu_item_new_with_label (_("Pattern is start of layername"));
   gtk_widget_show (glade_menuitem);
-  gtk_menu_shell_append (GTK_MENU_SHELL (oni__optionmenu_select_mode_menu), glade_menuitem);
-        g_signal_connect (glade_menuitem, "activate",
+  gtk_menu_append (GTK_MENU (oni__optionmenu_select_mode_menu), glade_menuitem);
+        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
                           G_CALLBACK (on_oni__optionmenu_select_mode),
-                          gpp);
+                          (gpointer)gpp);
         g_object_set_data (G_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY, (gpointer)1);
 
   glade_menuitem = gtk_menu_item_new_with_label (_("Pattern is end of layername"));
   gtk_widget_show (glade_menuitem);
-  gtk_menu_shell_append (GTK_MENU_SHELL (oni__optionmenu_select_mode_menu), glade_menuitem);
-        g_signal_connect (glade_menuitem, "activate",
+  gtk_menu_append (GTK_MENU (oni__optionmenu_select_mode_menu), glade_menuitem);
+        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
                           G_CALLBACK (on_oni__optionmenu_select_mode),
-                          gpp);
+                          (gpointer)gpp);
         g_object_set_data (G_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY, (gpointer)2);
 
   glade_menuitem = gtk_menu_item_new_with_label (_("Pattern is a part of layername"));
   gtk_widget_show (glade_menuitem);
-  gtk_menu_shell_append (GTK_MENU_SHELL (oni__optionmenu_select_mode_menu), glade_menuitem);
-        g_signal_connect (glade_menuitem, "activate",
+  gtk_menu_append (GTK_MENU (oni__optionmenu_select_mode_menu), glade_menuitem);
+        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
                           G_CALLBACK (on_oni__optionmenu_select_mode),
-                          gpp);
+                          (gpointer)gpp);
         g_object_set_data (G_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY, (gpointer)3);
 
   glade_menuitem = gtk_menu_item_new_with_label (_("Pattern is a list of layerstack numbers"));
   gtk_widget_show (glade_menuitem);
-  gtk_menu_shell_append (GTK_MENU_SHELL (oni__optionmenu_select_mode_menu), glade_menuitem);
-        g_signal_connect (glade_menuitem, "activate",
+  gtk_menu_append (GTK_MENU (oni__optionmenu_select_mode_menu), glade_menuitem);
+        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
                           G_CALLBACK (on_oni__optionmenu_select_mode),
-                          gpp);
+                          (gpointer)gpp);
         g_object_set_data (G_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY, (gpointer)4);
 
   glade_menuitem = gtk_menu_item_new_with_label (_("Pattern is a list of reverse layerstack numbers"));
   gtk_widget_show (glade_menuitem);
-  gtk_menu_shell_append (GTK_MENU_SHELL (oni__optionmenu_select_mode_menu), glade_menuitem);
-        g_signal_connect (glade_menuitem, "activate",
+  gtk_menu_append (GTK_MENU (oni__optionmenu_select_mode_menu), glade_menuitem);
+        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
                           G_CALLBACK (on_oni__optionmenu_select_mode),
-                          gpp);
+                          (gpointer)gpp);
         g_object_set_data (G_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY, (gpointer)5);
 
   glade_menuitem = gtk_menu_item_new_with_label (_("All visible (ignore pattern)"));
   gtk_widget_show (glade_menuitem);
-  gtk_menu_shell_append (GTK_MENU_SHELL (oni__optionmenu_select_mode_menu), glade_menuitem);
-        g_signal_connect (glade_menuitem, "activate",
+  gtk_menu_append (GTK_MENU (oni__optionmenu_select_mode_menu), glade_menuitem);
+        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
                           G_CALLBACK (on_oni__optionmenu_select_mode),
-                          gpp);
+                          (gpointer)gpp);
         g_object_set_data (G_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY, (gpointer)6);
 
   gtk_option_menu_set_menu (GTK_OPTION_MENU (oni__optionmenu_select_mode), oni__optionmenu_select_mode_menu);
@@ -1267,6 +1323,8 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
                          , NULL);
 
 
+  tab1_row++;
+
   {
      char *lbl_txt;
 
@@ -1276,19 +1334,21 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
      g_free(lbl_txt);
   }
   gtk_widget_show (oni__button_set);
-  gtk_table_attach (GTK_TABLE (table1), oni__button_set, 0, 3, 5, 6,
+  gtk_table_attach (GTK_TABLE (table1), oni__button_set, 0, 3, tab1_row, tab1_row+1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 2, 0);
   gimp_help_set_help_data(oni__button_set
                          , _("Set onionskin parameters for the current video")
                          , NULL);
 
+  tab1_row++;
+  
   {
      GtkWidget *auto_table;
 
      auto_table = gtk_table_new (1, 2, TRUE);
      gtk_widget_show (auto_table);
-     gtk_table_attach (GTK_TABLE (table1), auto_table, 0, 3, 6, 7,
+     gtk_table_attach (GTK_TABLE (table1), auto_table, 0, 3, tab1_row, tab1_row+1,
                       (GtkAttachOptions) (GTK_FILL),
                       (GtkAttachOptions) (0), 2, 0);
 
@@ -1445,6 +1505,7 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
    * (for use in callbacks outside of this procedure)
    */
   gpp->oni__entry_select_string         = oni__entry_select_string;
+  gpp->oni__optionmenu_ref_mode         = oni__optionmenu_ref_mode;
   gpp->oni__optionmenu_select_mode      = oni__optionmenu_select_mode;
   gpp->oni__spinbutton_ignore_botlayers = oni__spinbutton_ignore_botlayers;
   gpp->oni__spinbutton_num_olayers      = oni__spinbutton_num_olayers;

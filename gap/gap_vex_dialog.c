@@ -1,0 +1,2457 @@
+/*
+ * gap_vex_dialog.c
+ *   A GIMP / GAP Plugin to extract frames and/or audio from Videofiles
+ *
+ *   This is a special kind of File Load Plugin,
+ *     based on gap_vid_api (GVA)  (an API to read various Videoformats/CODECS)
+ */
+
+/*
+ * Changelog:
+ * 2004/04/10 v2.1.0:   integrated sourcecode into gimp-gap project
+ */
+
+/*
+ * Copyright
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
+
+#include <config.h>
+
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <string.h>
+
+#include <gdk/gdkkeysyms.h>
+#include <gtk/gtk.h>
+
+#include "gap_vex_main.h"
+#include "gap_vex_dialog.h"
+
+#include "gap-intl.h"
+
+/* GAP_ENABLE_VIDEOAPI_SUPPORT (1) */
+#ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
+
+#define ENC_MENU_ITEM_INDEX_KEY "gap_enc_menu_item_index"
+
+#define SPIN_WIDTH_SMALL 40
+#define SPIN_WIDTH_LARGE 80
+
+#define INDENT_PIXELS 4
+
+/* -------- GUI TOOL PROCEDURES -----------*/
+static void        p_update_range_widgets(GapVexMainGlobalParams *gpp);
+static void        p_update_wgt_sensitivity(GapVexMainGlobalParams *gpp);
+static void        p_init_mw__main_window_widgets (GapVexMainGlobalParams *gpp);
+static void        p_call_player_widget(GapVexMainGlobalParams *gpp
+				       , char *imagename
+				       , gint32 imagewidth
+				       , gint32 imageheight
+				       , gint32 begin_frame
+				       , gint32 end_frame
+				       , gint32 seltrack
+				       , gdouble delace
+				       , gboolean docked_mode
+				       );		   
+static void        p_vex_set_range_cb(GapPlayerAddClip *plac_ptr);
+static void        p_check_videofile(GapVexMainGlobalParams *gpp);
+
+/* -------- GUI CALLBACK PROCEDURES -----------*/
+static void        on_mw_response (GtkWidget *widget,
+                		   gint       response_id,
+                		   GapVexMainGlobalParams *gpp);
+
+static void        on_mw__optionmenu_preferred_decoder  (GtkWidget     *wgt_item,
+                           GapVexMainGlobalParams *gpp);
+static void        on_mw__optionmenu_deinterlace  (GtkWidget     *wgt_item,
+                           GapVexMainGlobalParams *gpp);
+
+static void        on_mw__checkbutton_disable_mmx_toggled (GtkToggleButton *togglebutton,
+                                        GapVexMainGlobalParams *gpp);
+static void        on_mw__spinbutton_begin_frame_changed  (GtkEditable     *editable,
+                                        GapVexMainGlobalParams *gpp);
+static void        on_mw__spinbutton_end_frame_changed    (GtkEditable     *editable,
+                                        GapVexMainGlobalParams *gpp);
+static void        on_mw__spinbutton_videotrack_changed   (GtkEditable     *editable,
+                                        GapVexMainGlobalParams *gpp);
+static void        on_mw__spinbutton_audiotrack_changed   (GtkEditable     *editable,
+                                        GapVexMainGlobalParams *gpp);
+static void        on_mw__entry_video_changed             (GtkEditable     *editable,
+                                        GapVexMainGlobalParams *gpp);
+static void        on_mw__button_video_clicked            (GtkButton       *button,
+                                        GapVexMainGlobalParams *gpp);
+static void        on_mw__entry_basename_changed          (GtkEditable     *editable,
+                                        GapVexMainGlobalParams *gpp);
+static void        on_mw__button_basename_clicked         (GtkButton       *button,
+                                        GapVexMainGlobalParams *gpp);
+static void        on_mw__entry_extension_changed         (GtkEditable     *editable,
+                                        GapVexMainGlobalParams *gpp);
+static void        on_mw__spinbutton_basenum_changed      (GtkEditable     *editable,
+                                        GapVexMainGlobalParams *gpp);
+static void        on_mw__entry_audiofile_changed         (GtkEditable     *editable,
+                                        GapVexMainGlobalParams *gpp);
+static void        on_mw__button_audiofile_clicked        (GtkButton       *button,
+                                        GapVexMainGlobalParams *gpp);
+static void        on_mw__checkbutton_multilayer_toggled  (GtkToggleButton *togglebutton,
+                                        GapVexMainGlobalParams *gpp);
+static void        on_mw__button_vrange_dialog_clicked    (GtkButton       *button,
+                                        GapVexMainGlobalParams *gpp);
+static void        on_mw__button_vrange_docked_clicked    (GtkButton       *button,
+                                        GapVexMainGlobalParams *gpp);
+static void        on_mw__entry_preferred_decoder_changed (GtkEditable     *editable,
+                                        GapVexMainGlobalParams *gpp);
+static void        on_mw__checkbutton_exact_seek_toggled  (GtkToggleButton *togglebutton,
+                                        GapVexMainGlobalParams *gpp);
+static void        on_mw__spinbutton_delace_threshold_changed
+                                        (GtkEditable     *editable,
+                                        GapVexMainGlobalParams *gpp);
+static void        on_mw__spinbutton_fn_digits_changed    (GtkEditable     *editable,
+                                        GapVexMainGlobalParams *gpp);
+
+
+
+static void        on_fsv__fileselection_destroy          (GtkObject       *object,
+                                        GapVexMainGlobalParams *gpp);
+static void        on_fsv__button_OK_clicked              (GtkButton       *button,
+                                        GapVexMainGlobalParams *gpp);
+static void        on_fsv__button_cancel_clicked          (GtkButton       *button,
+                                        GapVexMainGlobalParams *gpp);
+static void        on_fsb__fileselection_destroy          (GtkObject       *object,
+                                        GapVexMainGlobalParams *gpp);
+static void        on_fsb__button_OK_clicked              (GtkButton       *button,
+                                        GapVexMainGlobalParams *gpp);
+static void        on_fsb__button_cancel_clicked          (GtkButton       *button,
+                                        GapVexMainGlobalParams *gpp);
+static void        on_fsa__fileselection_destroy          (GtkObject       *object,
+                                        GapVexMainGlobalParams *gpp);
+static void        on_fsa__button_OK_clicked              (GtkButton       *button,
+                                        GapVexMainGlobalParams *gpp);
+static void        on_fsa__button_cancel_clicked          (GtkButton       *button,
+                                        GapVexMainGlobalParams *gpp);
+
+
+/* -------- GUI DIALOG Creationg PROCEDURES -----------*/
+static GtkWidget* create_fsv__fileselection (GapVexMainGlobalParams *gpp);
+static GtkWidget* create_fsb__fileselection (GapVexMainGlobalParams *gpp);
+static GtkWidget* create_fsa__fileselection (GapVexMainGlobalParams *gpp);
+
+/* PUBLIC: gap_vex_dlg_create_mw__main_window */
+
+
+
+
+
+/* ------------------------
+ * gap_vex_dlg_init_gpp
+ * ------------------------
+ */
+void
+gap_vex_dlg_init_gpp (GapVexMainGlobalParams *gpp)
+{
+ if(gap_debug) printf("INIT: init_global params\n");
+
+ /* set initial values in val */
+
+ g_snprintf(gpp->val.videoname, sizeof(gpp->val.videoname), "TEST.MPG");
+ g_snprintf(gpp->val.basename, sizeof(gpp->val.basename), "frame_");
+ g_snprintf(gpp->val.extension, sizeof(gpp->val.extension), ".xcf");
+ g_snprintf(gpp->val.audiofile, sizeof(gpp->val.audiofile), "frame.wav");
+ gpp->val.basenum = 0;
+ gpp->val.fn_digits = 6;
+ gpp->val.preferred_decoder[0] = '\0';
+ gpp->val.deinterlace = 0;
+ gpp->val.delace_threshold = 1.0;
+ gpp->val.exact_seek = 1;
+
+ gpp->val.begin_frame = 1.0;
+ gpp->val.end_frame = 1.0;
+ gpp->val.videotrack = 1;
+ gpp->val.audiotrack = 1;
+
+ gpp->val.multilayer = 0;
+ gpp->val.disable_mmx = 0;
+ gpp->val.pos_unit = 0;   /* unit FRAMES */
+
+ gpp->plp = NULL;
+ gpp->in_player_call = FALSE;
+ gpp->video_width = 320;
+ gpp->video_height = 200;
+ 
+ gpp->val.image_ID = -1;
+}  /* end gap_vex_dlg_init_gpp */
+
+/* ----------------------------
+ * gap_vex_dlg_overwrite_dialog
+ * ----------------------------
+ * check if filename already exists.
+ * if file exists and we are running interactive
+ *     Ask the user what to do in an overwrite dialog window.
+ *   in non interactive runmode the parameter overwrite_mode
+ *   is used for overwrite permission.
+ *
+ * return -1 overwrite is NOT allowed, calling program should skip write (and exit)
+ *         0 OVERWRITE permission for one file
+ *         1 OVERWRITE permission for all files
+ */
+gint
+gap_vex_dlg_overwrite_dialog(GapVexMainGlobalParams *gpp, gchar *filename, gint overwrite_mode)
+{
+  static  GapArrButtonArg  l_argv[3];
+  static  GapArrArg  argv[1];
+
+  if(gap_lib_file_exists(filename))
+
+  if(g_file_test(filename, G_FILE_TEST_EXISTS))
+  {
+    if (overwrite_mode < 1)
+    {
+       gchar *msg;
+       gint l_rc;
+       
+       l_argv[0].but_txt  = _("Overwrite File");
+       l_argv[0].but_val  = 0;
+       l_argv[1].but_txt  = _("Overwrite All");
+       l_argv[1].but_val  = 1;
+       l_argv[2].but_txt  = GTK_STOCK_CANCEL;
+       l_argv[2].but_val  = -1;
+
+       gap_arr_arg_init(&argv[0], GAP_ARR_WGT_LABEL);
+       argv[0].label_txt = filename;
+    
+       msg = g_strdup_printf(_("File: %s already exists"), filename);
+       l_rc = gap_arr_std_dialog ( _("Overwrite")
+                                 , msg
+				 ,  1, argv
+				 , 3, l_argv
+				 , -1
+				 );
+       g_free(msg);
+       return(l_rc);
+    }
+  }
+  return (overwrite_mode);
+}  /* end gap_vex_dlg_overwrite_dialog */
+
+
+/* ------------------------
+ * p_update_range_widgets
+ * ------------------------
+ */
+static void
+p_update_range_widgets(GapVexMainGlobalParams *gpp)
+{
+  GtkAdjustment *adj;
+
+  adj = GTK_ADJUSTMENT(gpp->mw__spinbutton_begin_frame_adj);
+  gtk_adjustment_set_value(adj, (gfloat)gpp->val.begin_frame);
+
+  adj = GTK_ADJUSTMENT(gpp->mw__spinbutton_end_frame_adj);
+  gtk_adjustment_set_value(adj, (gfloat)gpp->val.end_frame);
+
+}  /* end p_update_range_widgets */
+
+
+/* ------------------------
+ * p_update_wgt_sensitivity
+ * ------------------------
+ */
+static void
+p_update_wgt_sensitivity(GapVexMainGlobalParams *gpp)
+{
+  gboolean   sensitive;
+
+
+  if(gap_debug) printf("p_update_wgt_sensitivity : START\n");
+  if(gap_debug) printf("  chk_is_compatible_videofile :%d\n", (int)gpp->val.chk_is_compatible_videofile);
+  if(gap_debug) printf("  chk_vtracks :%d\n", (int)gpp->val.chk_vtracks);
+  if(gap_debug) printf("  chk_atracks :%d\n", (int)gpp->val.chk_atracks);
+  if(gap_debug) printf("  videotrack :%d\n", (int)gpp->val.videotrack);
+
+  if((gpp->val.chk_is_compatible_videofile)
+  && ((gpp->val.videotrack > 0) || (gpp->val.audiotrack > 0))  )
+  {
+      sensitive = TRUE;
+  }
+  else
+  {
+      sensitive = FALSE;
+  }
+  if(gpp->mw__button_OK)
+  {
+    gtk_widget_set_sensitive(gpp->mw__button_OK, sensitive);
+  }
+
+
+  if(gpp->val.chk_is_compatible_videofile)
+  {
+      sensitive = TRUE;
+  }
+  else
+  {
+      sensitive = FALSE;
+  }
+  gtk_widget_set_sensitive(gpp->mw__spinbutton_begin_frame, sensitive);
+  gtk_widget_set_sensitive(gpp->mw__spinbutton_end_frame, sensitive);
+  gtk_widget_set_sensitive(gpp->mw__button_vrange_dialog, sensitive);
+  gtk_widget_set_sensitive(gpp->mw__button_vrange_docked, sensitive);
+  gtk_widget_set_sensitive(gpp->mw__spinbutton_videotrack, sensitive);
+  gtk_widget_set_sensitive(gpp->mw__spinbutton_audiotrack, sensitive);
+
+
+  if((gpp->val.videotrack > 0)
+  && (gpp->val.chk_vtracks > 0)
+  && (gpp->val.chk_is_compatible_videofile))
+  {
+      sensitive = TRUE;
+  }
+  else
+  {
+      sensitive = FALSE;
+  }
+  gtk_widget_set_sensitive(gpp->mw__entry_basename, sensitive);
+  gtk_widget_set_sensitive(gpp->mw__button_basename, sensitive);
+  gtk_widget_set_sensitive(gpp->mw__entry_extension, sensitive);
+  gtk_widget_set_sensitive(gpp->mw__spinbutton_basenum, sensitive);
+  gtk_widget_set_sensitive(gpp->mw__spinbutton_fn_digits, sensitive);
+
+
+
+  if((gpp->val.audiotrack > 0)
+  && (gpp->val.chk_atracks > 0)
+  && (gpp->val.chk_is_compatible_videofile))
+  {
+      sensitive = TRUE;
+  }
+  else
+  {
+      sensitive = FALSE;
+  }
+  gtk_widget_set_sensitive(gpp->mw__entry_audiofile, sensitive);
+  gtk_widget_set_sensitive(gpp->mw__button_audiofile, sensitive);
+
+  if(gpp->val.deinterlace != 0)
+  {
+      sensitive = TRUE;
+  }
+  else
+  {
+      sensitive = FALSE;
+  }
+  gtk_widget_set_sensitive(gpp->mw__spinbutton_delace_threshold, sensitive);
+
+
+  p_update_range_widgets(gpp);
+
+}  /* end p_update_wgt_sensitivity */
+
+
+
+/* ------------------------------
+ * p_init_mw__main_window_widgets
+ * ------------------------------
+ */
+static void
+p_init_mw__main_window_widgets (GapVexMainGlobalParams *gpp)
+{
+  GtkWidget *wgt;
+  GtkAdjustment *adj;
+  GtkEntry *entry;
+
+ if(gap_debug) printf("INIT: init_mw__main_window_widgets\n");
+
+ /* put initial values to the widgets */
+ adj = GTK_ADJUSTMENT(gpp->mw__spinbutton_videotrack_adj);
+ gtk_adjustment_set_value(adj, (gfloat)gpp->val.videotrack);
+
+ adj = GTK_ADJUSTMENT(gpp->mw__spinbutton_audiotrack_adj);
+ gtk_adjustment_set_value(adj, (gfloat)gpp->val.audiotrack);
+
+ adj = GTK_ADJUSTMENT(gpp->mw__spinbutton_basenum_adj);
+ gtk_adjustment_set_value(adj, (gfloat)gpp->val.basenum);
+
+ adj = GTK_ADJUSTMENT(gpp->mw__spinbutton_fn_digits_adj);
+ gtk_adjustment_set_value(adj, (gfloat)gpp->val.fn_digits);
+
+ adj = GTK_ADJUSTMENT(gpp->mw__spinbutton_delace_threshold_adj);
+ gtk_adjustment_set_value(adj, (gfloat)gpp->val.delace_threshold);
+
+
+ entry = GTK_ENTRY(gpp->mw__entry_video);
+ gtk_entry_set_text(entry, gpp->val.videoname);
+
+ entry = GTK_ENTRY(gpp->mw__entry_basename);
+ gtk_entry_set_text(entry, gpp->val.basename);
+
+ entry = GTK_ENTRY(gpp->mw__entry_extension);
+ gtk_entry_set_text(entry, gpp->val.extension);
+
+ entry = GTK_ENTRY(gpp->mw__entry_audiofile);
+ gtk_entry_set_text(entry, gpp->val.audiofile);
+
+
+ entry = GTK_ENTRY(gpp->mw__entry_preferred_decoder);
+ gtk_entry_set_text(entry, gpp->val.preferred_decoder);
+
+
+ wgt = gpp->mw__checkbutton_multilayer;
+ gtk_toggle_button_set_state (GTK_TOGGLE_BUTTON (wgt),
+                              gpp->val.multilayer );
+
+ wgt = gpp->mw__checkbutton_disable_mmx;
+ gtk_toggle_button_set_state (GTK_TOGGLE_BUTTON (wgt),
+                              gpp->val.disable_mmx );
+
+ wgt = gpp->mw__checkbutton_exact_seek;
+ gtk_toggle_button_set_state (GTK_TOGGLE_BUTTON (wgt),
+                              gpp->val.exact_seek );
+
+ p_update_range_widgets(gpp);
+ p_update_wgt_sensitivity(gpp);
+}  /* end p_init_mw__main_window_widgets */
+
+
+
+/* -----------------------------
+ * p_vex_set_range_cb
+ * -----------------------------
+ * Player Callback procedure
+ * to set range widgets
+ */
+static void
+p_vex_set_range_cb(GapPlayerAddClip *plac_ptr)
+{
+  GapVexMainGlobalParams *gpp;
+  gpp = (GapVexMainGlobalParams *)plac_ptr->user_data_ptr;
+
+  if(gap_debug)
+  {
+    printf("p_vex_set_range_cb:\n");
+    printf("  FROM : %d\n", (int)plac_ptr->range_from);
+    printf("  TO : %d\n", (int)plac_ptr->range_to);
+  }
+  
+  if(gpp == NULL)
+  {
+    return;
+  }
+
+  gpp->val.begin_frame = MIN(plac_ptr->range_from, plac_ptr->range_to);
+  gpp->val.end_frame = MAX(plac_ptr->range_from, plac_ptr->range_to);
+  p_update_range_widgets(gpp);
+  
+}  /* end p_vex_set_range_cb */
+
+
+/* -----------------------------
+ * p_call_player_widget
+ * -----------------------------
+ * IN: imagename of one frame to playback in normal mode (or the name of a videofile)
+ *
+ * IN: begin_frame  use -1 to start play from  1.st frame
+ * IN: end_frame    use -1 to start play until last frame
+ *
+ * Call the Player
+ * If it is the 1.st call or the player window has closed since last call 
+ *    create the player widget
+ * else 
+ *    reset the player widget
+ */
+static void    
+p_call_player_widget(GapVexMainGlobalParams *gpp
+		   , char *imagename
+		   , gint32 imagewidth
+		   , gint32 imageheight
+		   , gint32 begin_frame
+		   , gint32 end_frame
+		   , gint32 seltrack
+		   , gdouble delace
+		   , gboolean docked_mode
+		   )
+{
+  if(gpp->in_player_call)
+  {
+    /* this procedure is already active, and locked against
+     * calls while busy
+     */
+    return;
+  }
+
+  gpp->in_player_call = TRUE;
+  
+ 
+  if(gpp->plp)
+  {
+    if(gpp->plp->shell_window != NULL)
+    {
+       gtk_window_present(GTK_WINDOW(gpp->plp->shell_window));
+    }
+
+    if((gpp->plp->shell_window == NULL) 
+    && (gpp->plp->docking_container == NULL))
+    {
+      /*if(gap_debug)*/ printf("Player shell has gone, force Reopen now\n");
+
+      gap_player_dlg_cleanup(gpp->plp);
+      g_free(gpp->plp);
+      gpp->plp = NULL;
+    }
+  }
+
+  if(gpp->plp == NULL)
+  {
+printf("p_call_player_widget: 1.st start\n");
+
+    /* 1. START mode */
+    gpp->plp = (GapPlayerMainGlobalParams *)g_malloc0(sizeof(GapPlayerMainGlobalParams));
+
+    if(gpp->plp)
+    {
+      gpp->plp->standalone_mode = FALSE;  /* player acts as widget and does not call gtk_main_quit */
+
+      if(docked_mode)
+      {
+        gtk_widget_show(gpp->mw__player_frame);
+        gpp->plp->docking_container = gpp->mw__player_frame;  /* player is docked */
+      }
+      else
+      {
+        gpp->plp->docking_container = NULL;  /* player has own window (not docked) */
+      }
+
+      gpp->plp->autostart = FALSE;
+      gpp->plp->use_thumbnails = FALSE;
+      gpp->plp->exact_timing = FALSE;
+      gpp->plp->play_selection_only = FALSE;
+      gpp->plp->play_loop = FALSE;
+      gpp->plp->play_pingpong = FALSE;
+      gpp->plp->play_backward = FALSE;
+
+      gpp->plp->stb_ptr = NULL;
+      gpp->plp->image_id = -1;     /* have no image_id, operate on videofile */
+      gpp->plp->imagename = NULL;
+      if(imagename)
+      {
+        gpp->plp->imagename = g_strdup(imagename);
+      }
+      gpp->plp->imagewidth = imagewidth;
+      gpp->plp->imageheight = imageheight;
+
+      gpp->plp->play_current_framenr = 0;
+      gpp->plp->begin_frame = begin_frame;
+      gpp->plp->end_frame = end_frame;
+
+      gpp->plp->fptr_set_range = p_vex_set_range_cb;
+      gpp->plp->user_data_ptr = gpp;
+      gpp->plp->seltrack = seltrack;
+      gpp->plp->delace = delace;
+      gpp->plp->preferred_decoder = g_strdup(gpp->val.preferred_decoder);
+      gpp->plp->force_open_as_video = TRUE;   /* TRUE: try video open even for unknown videofile extensions */
+      gpp->plp->have_progress_bar = TRUE;
+      
+printf("BEFORE gap_player_dlg_create\n");
+//gap_debug = TRUE;
+      gap_player_dlg_create(gpp->plp);
+printf("AFTER gap_player_dlg_create\n");
+
+    }
+  }
+  else
+  {
+printf("p_call_player_widget: RE start\n");
+    /* RESTART mode */
+    gap_player_dlg_restart(gpp->plp
+                      , FALSE              /* gboolean autostart */
+		      , -1                 /* have no image_id, operate on videofile */
+		      , imagename
+		      , imagewidth
+		      , imageheight
+		      , NULL               /* have no storyboard */
+		      , begin_frame
+		      , end_frame
+		      , FALSE              /* gboolean play_selection_only */
+		      , seltrack
+		      , delace
+		      , gpp->val.preferred_decoder
+		      , TRUE               /* force_open_as_video */
+		      );
+  }
+  
+  if(gpp->plp)
+  {
+    if((gpp->plp->from_button) 
+    && (gpp->plp->to_button))
+    {
+      gimp_help_set_help_data (gpp->plp->from_button
+                              , _("Set range to extract")
+			      , NULL);
+      gimp_help_set_help_data (gpp->plp->to_button
+                              , _("Set range to extract")
+			      , NULL);
+    }
+  }
+  gpp->in_player_call = FALSE;
+}  /* end p_call_player_widget */
+
+
+
+/* -------------------
+ * p_check_videofile
+ * -------------------
+ * check videofile compatibility 
+ * and get some information about the file
+ */
+static void
+p_check_videofile(GapVexMainGlobalParams *gpp)
+{
+  t_GVA_Handle   *gvahand;
+  GtkLabel       *lbl;
+  char           *active_decoder;
+
+  gpp->val.chk_is_compatible_videofile = FALSE;
+  gpp->val.chk_vtracks = 0;
+  gpp->val.chk_atracks = 0;
+  gpp->val.chk_total_frames = 0;
+  
+  active_decoder = NULL;
+
+  if(g_file_test(gpp->val.videoname, G_FILE_TEST_EXISTS))
+  {
+    if(gap_debug) printf("p_check_videofile: %s vid_track:%d aud_track:%d\n", gpp->val.videoname, (int)gpp->val.videotrack, (int)gpp->val.audiotrack );
+
+    gvahand = GVA_open_read_pref(gpp->val.videoname
+                           ,gpp->val.videotrack
+                           ,gpp->val.audiotrack
+                           ,gpp->val.preferred_decoder
+                           , FALSE  /* use MMX if available (disable_mmx == FALSE) */
+                           );
+    if(gvahand)
+    {
+       gpp->val.chk_is_compatible_videofile = TRUE;
+       gpp->val.chk_vtracks = gvahand->vtracks;
+       gpp->val.chk_atracks = gvahand->atracks;
+       gpp->val.chk_total_frames = gvahand->total_frames;
+       gpp->video_width = gvahand->width;
+       gpp->video_height = gvahand->height;
+       
+
+       if(gvahand->dec_elem)
+       {
+         t_GVA_DecoderElem *dec_elem;
+
+         dec_elem = (t_GVA_DecoderElem *)gvahand->dec_elem;
+
+         if(dec_elem->decoder_name)
+         {
+           active_decoder = g_strdup(dec_elem->decoder_name);
+         }
+
+         /* if(dec_elem->decoder_description) */
+       }
+       
+       GVA_close(gvahand);
+    }
+  }
+
+
+  /* update label active decoder */
+  lbl = GTK_LABEL(gpp->mw__label_active_decoder);
+  if(active_decoder)
+  {
+     gtk_label_set_text(lbl, active_decoder);
+     g_free(active_decoder);
+     active_decoder = NULL;
+  }
+  else
+  {
+     gtk_label_set_text(lbl, "*******");
+  }
+
+  p_update_wgt_sensitivity(gpp);
+  
+}  /* end p_check_videofile */
+
+
+/* ---------------------------------
+ * on_mw_response
+ * ---------------------------------
+ */
+static void
+on_mw_response (GtkWidget *widget,
+                 gint       response_id,
+                 GapVexMainGlobalParams *gpp)
+{
+  GtkWidget *dialog;
+
+  if(gpp)
+  {
+   gpp->val.run = FALSE;
+  }
+
+  switch (response_id)
+  {
+    case GTK_RESPONSE_OK:
+      if(gpp)
+      {
+        gpp->val.run = TRUE;
+      }
+
+    default:
+      dialog = NULL;
+      if(gpp)
+      {
+        dialog = gpp->mw__main_window;
+	if(dialog)
+	{
+          gpp->mw__main_window = NULL;
+          gtk_widget_destroy (dialog);
+	}
+      }
+      gtk_main_quit ();
+      break;
+  }
+}  /* end on_mw_response */
+
+/* -----------------------------------
+ * on_mw__optionmenu_preferred_decoder
+ * -----------------------------------
+ */
+static void
+on_mw__optionmenu_preferred_decoder  (GtkWidget     *wgt_item,
+                           GapVexMainGlobalParams *gpp)
+{
+  GtkEntry *entry;
+  gint       l_idx;
+  const char *preferred_decoder;
+
+ if(gap_debug) printf("CB: on_mw__optionmenu_preferred_decoder\n");
+
+ if(gpp == NULL) return;
+
+ l_idx = (gint) g_object_get_data (G_OBJECT (wgt_item), ENC_MENU_ITEM_INDEX_KEY);
+
+ preferred_decoder = "\0";
+ if(gap_debug) printf("CB: on_mw__optionmenu_preferred_decoder index: %d\n", (int)l_idx);
+ switch(l_idx)
+ {
+   case GAP_VEX_DECODER_NONE:
+     preferred_decoder = "\0";
+     break;
+   case GAP_VEX_DECODER_LIBMPEG3:
+     preferred_decoder = "libmpeg3";
+     break;
+   case GAP_VEX_DECODER_QUICKTIME:
+     preferred_decoder = "quicktime4linux";
+     break;
+   case GAP_VEX_DECODER_LIBAVFORMAT:
+     preferred_decoder = "libavformat";
+     break;
+ }
+ g_snprintf(gpp->val.preferred_decoder, sizeof(gpp->val.preferred_decoder)
+               , preferred_decoder
+               );
+ entry = GTK_ENTRY(gpp->mw__entry_preferred_decoder);
+ gtk_entry_set_text(entry, preferred_decoder);
+
+}  /* end on_mw__optionmenu_preferred_decoder */
+
+
+/* ------------------------------
+ * on_mw__optionmenu_deinterlace
+ * ------------------------------
+ */
+static void
+on_mw__optionmenu_deinterlace  (GtkWidget     *wgt_item,
+                           GapVexMainGlobalParams *gpp)
+{
+  gint       l_idx;
+  gboolean   sensitive;
+
+ if(gap_debug) printf("CB: on_mw__optionmenu_deinterlace\n");
+
+ if(gpp == NULL) return;
+
+ l_idx = (gint) g_object_get_data (G_OBJECT (wgt_item), ENC_MENU_ITEM_INDEX_KEY);
+ 
+ if(gap_debug) printf("CB: on_mw__optionmenu_deinterlace index: %d\n", (int)l_idx);
+
+ gpp->val.deinterlace = l_idx;
+
+ if(gpp->val.deinterlace != 0)
+ {
+      sensitive = TRUE;
+ }
+ else
+ {
+      sensitive = FALSE;
+ }
+ 
+ gtk_widget_set_sensitive(gpp->mw__spinbutton_delace_threshold, sensitive);
+
+}  /* end on_mw__optionmenu_deinterlace */
+
+
+/* --------------------------------
+ * on_mw__checkbutton_disable_mmx_toggled
+ * --------------------------------
+ */
+static void
+on_mw__checkbutton_disable_mmx_toggled
+                                        (GtkToggleButton *togglebutton,
+                                        GapVexMainGlobalParams *gpp)
+{
+ GtkWidget *wgt;
+
+ if(gap_debug) printf("CB: on_mw__checkbutton_disable_mmx_toggled\n");
+ if(gpp == NULL) return;
+
+ wgt = gpp->mw__checkbutton_disable_mmx;
+
+ if (GTK_TOGGLE_BUTTON (wgt)->active)
+ {
+    gpp->val.disable_mmx = TRUE;
+ }
+ else
+ {
+    gpp->val.disable_mmx = FALSE;
+ }
+}
+
+/* --------------------------------
+ * on_mw__spinbutton_begin_frame_changed
+ * --------------------------------
+ */
+static void
+on_mw__spinbutton_begin_frame_changed   (GtkEditable     *editable,
+                                        GapVexMainGlobalParams *gpp)
+{
+  GtkAdjustment *adj;
+
+  if(gap_debug) printf("CB: on_mw__spinbutton_begin_frame_changed\n");
+  if(gpp == NULL) return;
+
+  adj = GTK_ADJUSTMENT(gpp->mw__spinbutton_begin_frame_adj);
+
+  if(gap_debug) printf("spin value: %f\n", (float)adj->value );
+
+  if((gdouble)adj->value != gpp->val.begin_frame)
+  {
+    gpp->val.begin_frame = (gdouble)adj->value;
+  }
+}
+
+
+/* --------------------------------
+ * on_mw__spinbutton_end_frame_changed
+ * --------------------------------
+ */
+static void
+on_mw__spinbutton_end_frame_changed   (GtkEditable     *editable,
+                                        GapVexMainGlobalParams *gpp)
+{
+  GtkAdjustment *adj;
+
+  if(gap_debug) printf("CB: on_mw__spinbutton_end_frame_changed\n");
+  if(gpp == NULL) return;
+
+  adj = GTK_ADJUSTMENT(gpp->mw__spinbutton_end_frame_adj);
+
+  if(gap_debug) printf("spin value: %f\n", (float)adj->value );
+
+  if((gdouble)adj->value != gpp->val.end_frame)
+  {
+    gpp->val.end_frame = (gdouble)adj->value;
+  }
+}
+
+
+/* ------------------------------------
+ * on_mw__spinbutton_videotrack_changed
+ * ------------------------------------
+ */
+static void
+on_mw__spinbutton_videotrack_changed   (GtkEditable     *editable,
+                                        GapVexMainGlobalParams *gpp)
+{
+  GtkAdjustment *adj;
+
+ if(gap_debug) printf("CB: on_mw__spinbutton_videotrack_changed\n");
+ if(gpp == NULL) return;
+
+ if(gpp->mw__spinbutton_videotrack_adj)
+ {
+   adj = GTK_ADJUSTMENT(gpp->mw__spinbutton_videotrack_adj);
+
+   if(gap_debug) printf("videotrack spin value: %f\n", (float)adj->value );
+
+   if((gint)adj->value != gpp->val.videotrack)
+   {
+     gpp->val.videotrack = (gint)adj->value;
+     if((gpp->val.chk_is_compatible_videofile == TRUE)
+     &&(gpp->val.videotrack > gpp->val.chk_vtracks))
+     {
+       /* if we have a valid videofile constraint videotracks to available tracks */
+       gtk_adjustment_set_value(adj, (gfloat)gpp->val.chk_vtracks );
+     }
+     p_update_wgt_sensitivity(gpp);
+   }
+ }
+}
+
+
+/* --------------------------------
+ * on_mw__spinbutton_audiotrack_changed
+ * --------------------------------
+ */
+static void
+on_mw__spinbutton_audiotrack_changed   (GtkEditable     *editable,
+                                        GapVexMainGlobalParams *gpp)
+{
+  GtkAdjustment *adj;
+
+ if(gap_debug) printf("CB: on_mw__spinbutton_audiotrack_changed\n");
+ if(gpp == NULL) return;
+
+ if(gpp->mw__spinbutton_audiotrack_adj)
+ {
+   adj = GTK_ADJUSTMENT(gpp->mw__spinbutton_audiotrack_adj);
+
+   if(gap_debug) printf("audiotrack spin value: %f\n", (float)adj->value );
+
+   if((gint)adj->value != gpp->val.audiotrack)
+   {
+     gpp->val.audiotrack = (gint)adj->value;
+     if((gpp->val.chk_is_compatible_videofile == TRUE)
+     &&(gpp->val.audiotrack > gpp->val.chk_atracks))
+     {
+       /* if we have a valid videofile constraint audiotracks to available tracks */
+       gtk_adjustment_set_value(adj, (gfloat)gpp->val.chk_atracks );
+     }
+     p_update_wgt_sensitivity(gpp);
+   }
+ }
+}
+
+
+
+/* --------------------------------
+ * on_mw__entry_video_changed
+ * --------------------------------
+ */
+static void
+on_mw__entry_video_changed             (GtkEditable     *editable,
+                                        GapVexMainGlobalParams *gpp)
+{
+ if(gap_debug) printf("CB: on_mw__entry_video_changed\n");
+ if(gpp == NULL) return;
+
+ if(gpp->mw__entry_video)
+ {
+    g_snprintf(gpp->val.videoname, sizeof(gpp->val.videoname), "%s"
+              , gtk_entry_get_text(GTK_ENTRY(gpp->mw__entry_video)));
+    p_check_videofile(gpp);
+ }
+}
+
+/* --------------------------------
+ * on_mw__button_video_clicked
+ * --------------------------------
+ */
+static void
+on_mw__button_video_clicked            (GtkButton       *button,
+                                        GapVexMainGlobalParams *gpp)
+{
+ if(gap_debug) printf("CB: on_mw__button_video_clicked\n");
+ if(gpp == NULL) return;
+
+ if(gpp->fsv__fileselection == NULL)
+ {
+   gpp->fsv__fileselection = create_fsv__fileselection(gpp);
+   gtk_file_selection_set_filename (GTK_FILE_SELECTION (gpp->fsv__fileselection),
+				    gpp->val.videoname);
+
+   gtk_widget_show (gpp->fsv__fileselection);
+ }
+ else
+ {
+   gtk_window_present(GTK_WINDOW(gpp->fsv__fileselection));
+ }
+}
+
+
+/* --------------------------------
+ * on_mw__entry_basename_changed
+ * --------------------------------
+ */
+static void
+on_mw__entry_basename_changed          (GtkEditable     *editable,
+                                        GapVexMainGlobalParams *gpp)
+{
+ if(gap_debug) printf("CB: on_mw__entry_basename_changed\n");
+ if(gpp == NULL) return;
+
+ if(gpp->mw__entry_basename)
+ {
+    g_snprintf(gpp->val.basename, sizeof(gpp->val.basename), "%s"
+              , gtk_entry_get_text(GTK_ENTRY(gpp->mw__entry_basename)));
+ }
+}
+
+
+/* --------------------------------
+ * on_mw__button_basename_clicked
+ * --------------------------------
+ */
+static void
+on_mw__button_basename_clicked         (GtkButton       *button,
+                                        GapVexMainGlobalParams *gpp)
+{
+ if(gap_debug) printf("CB: on_mw__button_basename_clicked\n");
+ if(gpp == NULL) return;
+
+ if(gpp->fsb__fileselection == NULL)
+ {
+   gpp->fsb__fileselection = create_fsb__fileselection(gpp);
+   gtk_file_selection_set_filename (GTK_FILE_SELECTION (gpp->fsb__fileselection),
+				    gpp->val.basename);
+
+   gtk_widget_show (gpp->fsb__fileselection);
+ }
+ else
+ {
+   gtk_window_present(GTK_WINDOW(gpp->fsb__fileselection));
+ }
+}
+
+
+/* --------------------------------
+ * on_mw__entry_extension_changed
+ * --------------------------------
+ */
+static void
+on_mw__entry_extension_changed         (GtkEditable     *editable,
+                                        GapVexMainGlobalParams *gpp)
+{
+ if(gap_debug) printf("CB: on_mw__entry_extension_changed\n");
+ if(gpp == NULL) return;
+
+ if(gpp->mw__entry_extension)
+ {
+    g_snprintf(gpp->val.extension, sizeof(gpp->val.extension), "%s"
+              , gtk_entry_get_text(GTK_ENTRY(gpp->mw__entry_extension)));
+ }
+}
+
+
+/* --------------------------------
+ * on_mw__spinbutton_basenum_changed
+ * --------------------------------
+ */
+static void
+on_mw__spinbutton_basenum_changed      (GtkEditable     *editable,
+                                        GapVexMainGlobalParams *gpp)
+{
+  GtkAdjustment *adj;
+
+ if(gap_debug) printf("CB: on_mw__spinbutton_basenum_changed\n");
+ if(gpp == NULL) return;
+
+ if(gpp->mw__spinbutton_basenum_adj)
+ {
+   adj = GTK_ADJUSTMENT(gpp->mw__spinbutton_basenum_adj);
+
+   if(gap_debug) printf("basenum spin value: %f\n", (float)adj->value );
+
+   if((gint)adj->value != gpp->val.basenum)
+   {
+     gpp->val.basenum = (gint)adj->value;
+   }
+ }
+}
+
+/* --------------------------------
+ * on_mw__entry_audiofile_changed
+ * --------------------------------
+ */
+static void
+on_mw__entry_audiofile_changed         (GtkEditable     *editable,
+                                        GapVexMainGlobalParams *gpp)
+{
+ if(gap_debug) printf("CB: on_mw__entry_audiofile_changed\n");
+ if(gpp == NULL) return;
+
+ if(gpp->mw__entry_audiofile)
+ {
+    g_snprintf(gpp->val.audiofile, sizeof(gpp->val.audiofile), "%s"
+              , gtk_entry_get_text(GTK_ENTRY(gpp->mw__entry_audiofile)));
+ }
+}
+
+
+
+/* --------------------------------
+ * on_mw__button_audiofile_clicked
+ * --------------------------------
+ */
+static void
+on_mw__button_audiofile_clicked        (GtkButton       *button,
+                                        GapVexMainGlobalParams *gpp)
+{
+ if(gap_debug) printf("CB: on_mw__button_audiofile_clicked\n");
+ if(gpp == NULL) return;
+
+ if(gpp->fsa__fileselection == NULL)
+ {
+   gpp->fsa__fileselection = create_fsa__fileselection(gpp);
+   gtk_file_selection_set_filename (GTK_FILE_SELECTION (gpp->fsa__fileselection),
+				    gpp->val.audiofile);
+
+   gtk_widget_show (gpp->fsa__fileselection);
+ }
+ else
+ {
+   gtk_window_present(GTK_WINDOW(gpp->fsa__fileselection));
+ }
+}
+
+/* --------------------------------
+ * on_mw__checkbutton_multilayer_toggled
+ * --------------------------------
+ */
+static void
+on_mw__checkbutton_multilayer_toggled  (GtkToggleButton *togglebutton,
+                                        GapVexMainGlobalParams *gpp)
+{
+ GtkWidget *wgt;
+
+ if(gap_debug) printf("CB: on_mw__checkbutton_multilayer_toggled\n");
+ if(gpp == NULL) return;
+
+ wgt = gpp->mw__checkbutton_multilayer;
+
+ if (GTK_TOGGLE_BUTTON (wgt)->active)
+ {
+    gpp->val.multilayer = TRUE;
+ }
+ else
+ {
+    gpp->val.multilayer = FALSE;
+ }
+}
+
+
+/* --------------------------------
+ * on_mw__button_vrange_dialog_clicked
+ * --------------------------------
+ */
+static void
+on_mw__button_vrange_dialog_clicked             (GtkButton       *button,
+                                                 GapVexMainGlobalParams *gpp)
+{
+ gdouble delace;
+
+ delace = gpp->val.deinterlace;
+ if(delace == GAP_VEX_DELACE_ODD_X2)
+ {
+   delace = GAP_VEX_DELACE_ODD;
+ }
+ if(delace == GAP_VEX_DELACE_EVEN_X2)
+ {
+   delace = GAP_VEX_DELACE_EVEN;
+ }
+ delace += CLAMP(gpp->val.delace_threshold, 0.0, 0.9999);
+ 
+ 
+ if(gap_debug) printf("CB: on_mw__button_vrange_dialog_clicked\n");
+ if(gpp == NULL) return;
+
+ p_call_player_widget(gpp
+		   ,gpp->val.videoname
+		   ,gpp->video_width
+		   ,gpp->video_height
+		   , gpp->val.begin_frame
+		   , gpp->val.end_frame
+		   , gpp->val.videotrack
+		   , delace
+ // TODO: support more parameters:
+ //                , gpp->val.preferred_decoder
+                   , FALSE                      /* docked_mode */
+ 		   );
+}
+
+
+/* --------------------------------
+ * on_mw__button_vrange_docked_clicked
+ * --------------------------------
+ */
+static void
+on_mw__button_vrange_docked_clicked             (GtkButton       *button,
+                                                 GapVexMainGlobalParams *gpp)
+{
+ gdouble delace;
+
+ delace = gpp->val.deinterlace;
+ if(delace == GAP_VEX_DELACE_ODD_X2)
+ {
+   delace = GAP_VEX_DELACE_ODD;
+ }
+ if(delace == GAP_VEX_DELACE_EVEN_X2)
+ {
+   delace = GAP_VEX_DELACE_EVEN;
+ }
+ delace += CLAMP(gpp->val.delace_threshold, 0.0, 0.9999);
+ 
+ 
+ if(gap_debug) printf("CB: on_mw__button_vrange_docked_clicked\n");
+ if(gpp == NULL) return;
+
+ p_call_player_widget(gpp
+		   ,gpp->val.videoname
+		   ,gpp->video_width
+		   ,gpp->video_height
+		   , gpp->val.begin_frame
+		   , gpp->val.end_frame
+		   , gpp->val.videotrack
+		   , delace
+ // TODO: support more parameters:
+ //                , gpp->val.preferred_decoder
+                   , TRUE                      /* docked_mode */
+ 		   );
+}
+
+/* --------------------------------
+ * on_mw__entry_preferred_decoder_changed
+ * --------------------------------
+ */
+static void
+on_mw__entry_preferred_decoder_changed (GtkEditable     *editable,
+                                        GapVexMainGlobalParams *gpp)
+{
+  const char *preferred_decoder;
+  GtkEntry *entry;
+
+ if(gap_debug) printf("CB: on_mw__entry_preferred_decoder_changed\n");
+ if(gpp == NULL) return;
+
+ entry = GTK_ENTRY(gpp->mw__entry_preferred_decoder);
+ if(entry)
+ {
+    preferred_decoder = gtk_entry_get_text(entry);
+    g_snprintf(gpp->val.preferred_decoder, sizeof(gpp->val.preferred_decoder), "%s"
+              , preferred_decoder);
+    p_check_videofile(gpp);
+ }
+
+}
+
+
+/* --------------------------------
+ * on_mw__checkbutton_exact_seek_toggled
+ * --------------------------------
+ */
+static void
+on_mw__checkbutton_exact_seek_toggled  (GtkToggleButton *togglebutton,
+                                        GapVexMainGlobalParams *gpp)
+{
+ GtkWidget *wgt;
+
+ if(gap_debug) printf("CB: on_mw__checkbutton_exact_seek_toggled\n");
+ if(gpp == NULL) return;
+
+ wgt = gpp->mw__checkbutton_exact_seek;
+
+ if (GTK_TOGGLE_BUTTON (wgt)->active)
+ {
+    gpp->val.exact_seek = TRUE;
+ }
+ else
+ {
+    gpp->val.exact_seek = FALSE;
+ }
+}
+
+/* --------------------------------
+ * on_mw__spinbutton_delace_threshold_changed
+ * --------------------------------
+ */
+static void
+on_mw__spinbutton_delace_threshold_changed
+                                        (GtkEditable     *editable,
+                                        GapVexMainGlobalParams *gpp)
+{
+  GtkAdjustment *adj;
+
+ if(gap_debug) printf("CB: on_mw__spinbutton_delace_threshold_changed\n");
+ if(gpp == NULL) return;
+
+ if(gpp->mw__spinbutton_delace_threshold_adj)
+ {
+   adj = GTK_ADJUSTMENT(gpp->mw__spinbutton_delace_threshold_adj);
+
+   if(gap_debug) printf("spin value: %f\n", (float)adj->value );
+
+   if((gdouble)adj->value != gpp->val.delace_threshold)
+   {
+     gpp->val.delace_threshold = (gdouble)adj->value;
+   }
+ }
+
+}
+
+
+
+/* --------------------------------
+ * on_mw__spinbutton_fn_digits_changed
+ * --------------------------------
+ */
+static void
+on_mw__spinbutton_fn_digits_changed    (GtkEditable     *editable,
+                                        GapVexMainGlobalParams *gpp)
+{
+  GtkAdjustment *adj;
+
+ if(gap_debug) printf("CB: on_mw__spinbutton_fn_digits_changed\n");
+ if(gpp == NULL) return;
+
+ if(gpp->mw__spinbutton_fn_digits_adj)
+ {
+   adj = GTK_ADJUSTMENT(gpp->mw__spinbutton_fn_digits_adj);
+
+   if(gap_debug) printf("spin value: %f\n", (float)adj->value );
+
+   if((gint32)adj->value != gpp->val.fn_digits)
+   {
+     gpp->val.fn_digits = (gint32)adj->value;
+   }
+ }
+}
+
+
+
+/* XXXXXXXXXXXXXXXXXXXXXXXXX  Videofile Select XXXXXXXXXXXXXXXXXXXXXXX FSV */
+
+
+/* --------------------------------
+ * on_fsv__fileselection_destroy
+ * --------------------------------
+ */
+static void
+on_fsv__fileselection_destroy          (GtkObject       *object,
+                                        GapVexMainGlobalParams *gpp)
+{
+ if(gap_debug) printf("CB: on_fsv__fileselection_destroy\n");
+ if(gpp == NULL) return;
+
+ gpp->fsv__fileselection = NULL;
+}
+
+/* --------------------------------
+ * on_fsv__button_OK_clicked
+ * --------------------------------
+ */
+static void
+on_fsv__button_OK_clicked              (GtkButton       *button,
+                                        GapVexMainGlobalParams *gpp)
+{
+  const gchar *filename;
+  GtkEntry *entry;
+
+ if(gap_debug) printf("CB: on_fsv__button_OK_clicked\n");
+ if(gpp == NULL) return;
+
+
+ if(gpp->fsv__fileselection)
+ {
+   filename =  gtk_file_selection_get_filename (GTK_FILE_SELECTION (gpp->fsv__fileselection));
+   g_snprintf(gpp->val.videoname, sizeof(gpp->val.videoname), "%s"
+             ,filename);
+   entry = GTK_ENTRY(gpp->mw__entry_video);
+   if(entry)
+   {
+      gtk_entry_set_text(entry, filename);
+      p_update_wgt_sensitivity(gpp);
+   }
+   on_fsv__button_cancel_clicked(NULL, (gpointer)gpp);
+ }
+}
+
+/* --------------------------------
+ * on_fsv__button_cancel_clicked
+ * --------------------------------
+ */
+static void
+on_fsv__button_cancel_clicked          (GtkButton       *button,
+                                        GapVexMainGlobalParams *gpp)
+{
+ if(gap_debug) printf("CB: on_fsv__button_cancel_clicked\n");
+ if(gpp == NULL) return;
+
+ if(gpp->fsv__fileselection)
+ {
+   gtk_widget_destroy(gpp->fsv__fileselection);
+   gpp->fsv__fileselection = NULL;
+ }
+}
+
+/* XXXXXXXXXXXXXXXXXXXXXXXXX  Basename Fileselect  XXXXXXXXXXXXXXXXXXXXXXX FSB */
+
+/* --------------------------------
+ * on_fsb__fileselection_destroy
+ * --------------------------------
+ */
+static void
+on_fsb__fileselection_destroy          (GtkObject       *object,
+                                        GapVexMainGlobalParams *gpp)
+{
+ if(gap_debug) printf("CB: on_fsb__fileselection_destroy\n");
+ if(gpp == NULL) return;
+
+ gpp->fsb__fileselection = NULL;
+}
+
+
+/* --------------------------------
+ * on_fsb__button_OK_clicked
+ * --------------------------------
+ */
+static void
+on_fsb__button_OK_clicked              (GtkButton       *button,
+                                        GapVexMainGlobalParams *gpp)
+{
+  GtkEntry *entry;
+  const gchar *filename;
+
+ if(gap_debug) printf("CB: on_fsb__button_OK_clicked\n");
+ if(gpp == NULL) return;
+
+ if(gpp->fsb__fileselection)
+ {
+   filename =  gtk_file_selection_get_filename (GTK_FILE_SELECTION (gpp->fsb__fileselection));
+   g_snprintf(gpp->val.basename, sizeof(gpp->val.basename), "%s"
+             , filename);
+   entry = GTK_ENTRY(gpp->mw__entry_basename);
+   if(entry)
+   {
+      gtk_entry_set_text(entry, filename);
+   }
+   on_fsb__button_cancel_clicked(NULL, (gpointer)gpp);
+ }
+}
+
+
+/* --------------------------------
+ * on_fsb__button_cancel_clicked
+ * --------------------------------
+ */
+static void
+on_fsb__button_cancel_clicked          (GtkButton       *button,
+                                        GapVexMainGlobalParams *gpp)
+{
+ if(gap_debug) printf("CB: on_fsb__button_cancel_clicked\n");
+ if(gpp == NULL) return;
+
+ if(gpp->fsb__fileselection)
+ {
+   gtk_widget_destroy(gpp->fsb__fileselection);
+   gpp->fsb__fileselection = NULL;
+ }
+}
+
+/* XXXXXXXXXXXXXXXXXXXXXXXXX  Audio Fileselect  XXXXXXXXXXXXXXXXXXXXXXX FSA */
+
+/* --------------------------------
+ * on_fsa__fileselection_destroy
+ * --------------------------------
+ */
+static void
+on_fsa__fileselection_destroy          (GtkObject       *object,
+                                        GapVexMainGlobalParams *gpp)
+{
+ if(gap_debug) printf("CB: on_fsa__fileselection_destroy\n");
+ if(gpp == NULL) return;
+
+ gpp->fsa__fileselection = NULL;
+}
+
+
+/* --------------------------------
+ * on_fsa__button_OK_clicked
+ * --------------------------------
+ */
+static void
+on_fsa__button_OK_clicked              (GtkButton       *button,
+                                        GapVexMainGlobalParams *gpp)
+{
+  const gchar *filename;
+  GtkEntry *entry;
+
+ if(gap_debug) printf("CB: on_fsa__button_OK_clicked\n");
+ if(gpp == NULL) return;
+
+ if(gpp->fsa__fileselection)
+ {
+   filename =  gtk_file_selection_get_filename (GTK_FILE_SELECTION (gpp->fsa__fileselection));
+   g_snprintf(gpp->val.audiofile, sizeof(gpp->val.audiofile), "%s"
+             , filename);
+   entry = GTK_ENTRY(gpp->mw__entry_audiofile);
+   if(entry)
+   {
+      gtk_entry_set_text(entry, filename);
+   }
+   on_fsa__button_cancel_clicked(NULL, (gpointer)gpp);
+ }
+}
+
+
+/* --------------------------------
+ * on_fsa__button_cancel_clicked
+ * --------------------------------
+ */
+static void
+on_fsa__button_cancel_clicked          (GtkButton       *button,
+                                        GapVexMainGlobalParams *gpp)
+{
+ if(gap_debug) printf("CB: on_fsa__button_cancel_clicked\n");
+ if(gpp == NULL) return;
+
+ if(gpp->fsa__fileselection)
+ {
+   gtk_widget_destroy(gpp->fsa__fileselection);
+   gpp->fsa__fileselection = NULL;
+ }
+}
+
+
+
+
+
+
+/* ----------------------------------
+ * create_fsv__fileselection
+ * ----------------------------------
+ * videofile selection dialog
+ */
+static GtkWidget*
+create_fsv__fileselection (GapVexMainGlobalParams *gpp)
+{
+  GtkWidget *fsv__fileselection;
+  GtkWidget *fsv__button_OK;
+  GtkWidget *fsv__button_cancel;
+
+  fsv__fileselection = gtk_file_selection_new (_("Select input videofile"));
+  gtk_container_set_border_width (GTK_CONTAINER (fsv__fileselection), 10);
+
+  fsv__button_OK = GTK_FILE_SELECTION (fsv__fileselection)->ok_button;
+  gtk_widget_show (fsv__button_OK);
+  GTK_WIDGET_SET_FLAGS (fsv__button_OK, GTK_CAN_DEFAULT);
+
+  fsv__button_cancel = GTK_FILE_SELECTION (fsv__fileselection)->cancel_button;
+  gtk_widget_show (fsv__button_cancel);
+  GTK_WIDGET_SET_FLAGS (fsv__button_cancel, GTK_CAN_DEFAULT);
+
+  g_signal_connect (G_OBJECT (fsv__fileselection), "destroy",
+                      G_CALLBACK (on_fsv__fileselection_destroy),
+                      gpp);
+  g_signal_connect (G_OBJECT (fsv__button_OK), "clicked",
+                      G_CALLBACK (on_fsv__button_OK_clicked),
+                      gpp);
+  g_signal_connect (G_OBJECT (fsv__button_cancel), "clicked",
+                      G_CALLBACK (on_fsv__button_cancel_clicked),
+                      gpp);
+
+  gtk_widget_grab_default (fsv__button_cancel);
+  return fsv__fileselection;
+}  /* end create_fsv__fileselection */
+
+
+/* ----------------------------------
+ * create_fsb__fileselection
+ * ----------------------------------
+ * basename (for extracted frames) selection dialog
+ */
+static GtkWidget*
+create_fsb__fileselection (GapVexMainGlobalParams *gpp)
+{
+  GtkWidget *fsb__fileselection;
+  GtkWidget *fsb__button_OK;
+  GtkWidget *fsb__button_cancel;
+
+  fsb__fileselection = gtk_file_selection_new (_("Select basename for frame(s)"));
+  gtk_container_set_border_width (GTK_CONTAINER (fsb__fileselection), 10);
+
+  fsb__button_OK = GTK_FILE_SELECTION (fsb__fileselection)->ok_button;
+  gtk_widget_show (fsb__button_OK);
+  GTK_WIDGET_SET_FLAGS (fsb__button_OK, GTK_CAN_DEFAULT);
+
+  fsb__button_cancel = GTK_FILE_SELECTION (fsb__fileselection)->cancel_button;
+  gtk_widget_show (fsb__button_cancel);
+  GTK_WIDGET_SET_FLAGS (fsb__button_cancel, GTK_CAN_DEFAULT);
+
+  g_signal_connect (G_OBJECT (fsb__fileselection), "destroy",
+                      G_CALLBACK (on_fsb__fileselection_destroy),
+                      gpp);
+  g_signal_connect (G_OBJECT (fsb__button_OK), "clicked",
+                      G_CALLBACK (on_fsb__button_OK_clicked),
+                      gpp);
+  g_signal_connect (G_OBJECT (fsb__button_cancel), "clicked",
+                      G_CALLBACK (on_fsb__button_cancel_clicked),
+                      gpp);
+
+  gtk_widget_grab_default (fsb__button_cancel);
+  return fsb__fileselection;
+}  /* end create_fsb__fileselection */
+
+
+/* ----------------------------------
+ * create_fsa__fileselection
+ * ----------------------------------
+ * audiofile selection dialog
+ */
+static GtkWidget*
+create_fsa__fileselection (GapVexMainGlobalParams *gpp)
+{
+  GtkWidget *fsa__fileselection;
+  GtkWidget *fsa__button_OK;
+  GtkWidget *fsa__button_cancel;
+
+  fsa__fileselection = gtk_file_selection_new (_("Select Audiofilename"));
+  gtk_container_set_border_width (GTK_CONTAINER (fsa__fileselection), 10);
+
+  fsa__button_OK = GTK_FILE_SELECTION (fsa__fileselection)->ok_button;
+  gtk_widget_show (fsa__button_OK);
+  GTK_WIDGET_SET_FLAGS (fsa__button_OK, GTK_CAN_DEFAULT);
+
+  fsa__button_cancel = GTK_FILE_SELECTION (fsa__fileselection)->cancel_button;
+  gtk_widget_show (fsa__button_cancel);
+  GTK_WIDGET_SET_FLAGS (fsa__button_cancel, GTK_CAN_DEFAULT);
+
+  g_signal_connect (G_OBJECT (fsa__fileselection), "destroy",
+                      G_CALLBACK (on_fsa__fileselection_destroy),
+                      gpp);
+  g_signal_connect (G_OBJECT (fsa__button_OK), "clicked",
+                      G_CALLBACK (on_fsa__button_OK_clicked),
+                      gpp);
+  g_signal_connect (G_OBJECT (fsa__button_cancel), "clicked",
+                      G_CALLBACK (on_fsa__button_cancel_clicked),
+                      gpp);
+
+  gtk_widget_grab_default (fsa__button_cancel);
+  return fsa__fileselection;
+}  /* end create_fsa__fileselection */
+
+/* endif GAP_ENABLE_VIDEOAPI_SUPPORT (1) */
+#endif 
+
+
+/* ----------------------------------
+ * gap_vex_dlg_create_mw__main_window
+ * ----------------------------------
+ * create the main window for video extract plug-in
+ */
+GtkWidget*
+gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
+{
+  GtkWidget *mw__main_window;
+  GtkWidget *mw__dialog_vbox1;
+  GtkWidget *mw__vbox1;
+  GtkWidget *mw__frame1;
+  GtkWidget *mw__vbox2;
+  GtkWidget *mw__table1;
+  GtkWidget *mw__label_video;
+  GtkWidget *mw__checkbutton_disable_mmx;
+  GtkWidget *mw__entry_video;
+  GtkWidget *mw__button_vrange_dialog;
+  GtkWidget *mw__button_vrange_docked;
+  GtkWidget *mw__button_video;
+  GtkWidget *mw__optionmenu_preferred_decoder;
+  GtkWidget *mw__optionmenu_preferred_decoder_menu;
+  GtkWidget *mw__label_active_decoder;
+  GtkWidget *mw__entry_preferred_decoder;
+  GtkObject *mw__spinbutton_audiotrack_adj;
+  GtkWidget *mw__spinbutton_audiotrack;
+  GtkObject *mw__spinbutton_videotrack_adj;
+  GtkWidget *mw__spinbutton_videotrack;
+  GtkObject *mw__spinbutton_end_frame_adj;
+  GtkWidget *mw__spinbutton_end_frame;
+  GtkObject *mw__spinbutton_begin_frame_adj;
+  GtkWidget *mw__spinbutton_begin_frame;
+  GtkWidget *mw__checkbutton_exact_seek;
+  GtkWidget *mw__frame2;
+  GtkWidget *mw__vbox10;
+  GtkWidget *mw__table10;
+  GtkWidget *mw__label_basename;
+  GtkWidget *mw__entry_basename;
+  GtkWidget *mw__button_basename;
+  GtkWidget *mw__label_extension;
+  GtkObject *mw__spinbutton_basenum_adj;
+  GtkWidget *mw__spinbutton_basenum;
+  GtkWidget *mw__label_audifile;
+  GtkWidget *mw__entry_audiofile;
+  GtkWidget *mw__button_audiofile;
+  GtkWidget *mw__hbox11;
+  GtkWidget *mw__checkbutton_multilayer;
+  GtkWidget *mw__optionmenu_deinterlace;
+  GtkWidget *mw__optionmenu_deinterlace_menu;
+  GtkObject *mw__spinbutton_delace_threshold_adj;
+  GtkWidget *mw__spinbutton_delace_threshold;
+  GtkWidget *mw__entry_extension;
+  GtkObject *mw__spinbutton_fn_digits_adj;
+  GtkWidget *mw__spinbutton_fn_digits;
+  GtkWidget *mw__button_OK;
+  GtkWidget *mw__player_frame;
+  GtkWidget *mw__main_hbox;
+  GtkWidget *label1;
+  GtkWidget *label2;
+  GtkWidget *label3;
+  GtkWidget *label4;
+  GtkWidget *label5;
+  GtkWidget *label6;
+  GtkWidget *label7;
+  GtkWidget *label8;
+  GtkWidget *label;
+  GtkWidget *hbox2;
+  GtkWidget *glade_menuitem;
+
+  mw__main_window = NULL;
+
+#ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
+
+  mw__main_window = gimp_dialog_new (_("Extract Videoframes"),
+                         "plug_in_gap_extract_video",
+                         NULL, 0,
+			 gimp_standard_help_func, "plug_in_gap_extract_video.html",
+
+			 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+			 GTK_STOCK_OK,     GTK_RESPONSE_OK,
+			 NULL);
+
+  g_signal_connect (G_OBJECT (mw__main_window), "response",
+                    G_CALLBACK (on_mw_response),
+                    gpp);
+
+
+  mw__dialog_vbox1 = GTK_DIALOG (mw__main_window)->vbox;
+  gtk_widget_show (mw__dialog_vbox1);
+
+  mw__main_hbox = gtk_hbox_new (FALSE, 0);
+  gtk_widget_show (mw__main_hbox);
+  gtk_box_pack_start (GTK_BOX (mw__dialog_vbox1), mw__main_hbox, TRUE, TRUE, 0);
+
+ 
+
+
+  mw__vbox1 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_show (mw__vbox1);
+  gtk_box_pack_start (GTK_BOX (mw__main_hbox), mw__vbox1, TRUE, TRUE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (mw__vbox1), 5);
+
+
+  /* XXXXXXXXXXX Player Frame  XXXXXXXXXXXX */
+  /* the player_frame */
+  mw__player_frame = gtk_frame_new ( _("Select Videorange") );
+  gtk_frame_set_shadow_type (GTK_FRAME (mw__player_frame) ,GTK_SHADOW_ETCHED_IN);
+  gtk_box_pack_start (GTK_BOX (mw__main_hbox), mw__player_frame, TRUE, TRUE, 0);
+
+  /* gtk_widget_show (mw__player_frame); */  /* not yet, show the widget later */
+
+
+
+
+
+  mw__frame1 = gtk_frame_new (_("Input Video selection"));
+  gtk_widget_show (mw__frame1);
+  gtk_box_pack_start (GTK_BOX (mw__vbox1), mw__frame1, TRUE, TRUE, 0);
+
+  mw__vbox2 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_show (mw__vbox2);
+  gtk_container_add (GTK_CONTAINER (mw__frame1), mw__vbox2);
+  gtk_container_set_border_width (GTK_CONTAINER (mw__vbox2), 4);
+
+  mw__table1 = gtk_table_new (7, 3, FALSE);
+  gtk_widget_show (mw__table1);
+  gtk_box_pack_start (GTK_BOX (mw__vbox2), mw__table1, TRUE, TRUE, 2);
+  gtk_table_set_row_spacings (GTK_TABLE (mw__table1), 1);
+  gtk_table_set_col_spacings (GTK_TABLE (mw__table1), 1);
+
+
+  /* the videofile label */
+  mw__label_video = gtk_label_new (_("Videofilename:"));
+  gtk_widget_show (mw__label_video);
+  gtk_misc_set_alignment (GTK_MISC (mw__label_video), 1.0, 0.0);
+  gtk_table_attach (GTK_TABLE (mw__table1), mw__label_video, 0, 1, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), INDENT_PIXELS, 0);
+
+
+  /* the videofile entry */
+  mw__entry_video = gtk_entry_new ();
+  gtk_widget_show (mw__entry_video);
+  gtk_table_attach (GTK_TABLE (mw__table1), mw__entry_video, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 3, 1);
+  gtk_widget_set_usize (mw__entry_video, 300, -2);
+  gimp_help_set_help_data (mw__entry_video, _("Name of videofile (used as inputfile)"), NULL);
+
+
+  /* the videofile button (that invokes fileselection dialog) */
+  mw__button_video = gtk_button_new_with_label (_("..."));
+  gtk_widget_show (mw__button_video);
+  gtk_table_attach (GTK_TABLE (mw__table1), mw__button_video, 2, 3, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 3, 1);
+  gtk_widget_set_usize (mw__button_video, 60, -2);
+  gimp_help_set_help_data (mw__button_video, _("Select video using file browser"), NULL);
+
+
+
+  /* MMX sometimes gives unusable results, and therefore is always OFF
+   * checkbox is not needed
+   */
+  mw__checkbutton_disable_mmx = gtk_check_button_new_with_label (_("Disable MMX"));
+  /*  gtk_widget_show (mw__checkbutton_disable_mmx); */
+  gtk_table_attach (GTK_TABLE (mw__table1), mw__checkbutton_disable_mmx, 2, 3, 3, 4,
+                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_widget_set_usize (mw__checkbutton_disable_mmx, 100, -2);
+  gimp_help_set_help_data (mw__checkbutton_disable_mmx, _("Turn off MMX (MMX is faster but lossy on low bitrate streams)"), NULL);
+
+  /* the videoextract range from label */
+  label1 = gtk_label_new (_("From Frame:"));
+  gtk_misc_set_alignment (GTK_MISC (label1), 1.0, 0.0);
+  gtk_widget_show (label1);
+  gtk_table_attach (GTK_TABLE (mw__table1), label1, 0, 1, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), INDENT_PIXELS, 0);
+
+
+  /* from spinbutton */
+
+  hbox2 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_show (hbox2);
+  gtk_table_attach (GTK_TABLE (mw__table1), hbox2, 1, 2, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  mw__spinbutton_begin_frame_adj = gtk_adjustment_new (1, 1, 999999, 1, 10, 10);
+  mw__spinbutton_begin_frame = gtk_spin_button_new (GTK_ADJUSTMENT (mw__spinbutton_begin_frame_adj), 1, 0);
+  gtk_widget_show (mw__spinbutton_begin_frame);
+  gtk_widget_set_usize (mw__spinbutton_begin_frame, SPIN_WIDTH_LARGE, -2);
+  gtk_box_pack_start (GTK_BOX (hbox2), mw__spinbutton_begin_frame, FALSE, FALSE, 3);
+  gimp_help_set_help_data (mw__spinbutton_begin_frame, _("Frame number of 1.st frame to extract"), NULL);
+
+  /* dummy label to fill up the hbox2 */
+  label = gtk_label_new (" ");
+  gtk_widget_show (label);
+  gtk_box_pack_start (GTK_BOX (hbox2), label, TRUE, TRUE, 0);
+
+
+
+  /* the videoextract range to label */
+  label2 = gtk_label_new (_("To Frame:"));
+  gtk_widget_show (label2);
+  gtk_misc_set_alignment (GTK_MISC (label2), 1.0, 0);
+  gtk_table_attach (GTK_TABLE (mw__table1), label2, 0, 1, 2, 3,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), INDENT_PIXELS, 0);
+
+
+  /* to spinbutton */
+
+  hbox2 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_show (hbox2);
+  gtk_table_attach (GTK_TABLE (mw__table1), hbox2, 1, 2, 2, 3,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  mw__spinbutton_end_frame_adj = gtk_adjustment_new (1, 1, 999999, 1, 10, 10);
+  mw__spinbutton_end_frame = gtk_spin_button_new (GTK_ADJUSTMENT (mw__spinbutton_end_frame_adj), 1, 0);
+  gtk_widget_show (mw__spinbutton_end_frame);
+  gtk_box_pack_start (GTK_BOX (hbox2), mw__spinbutton_end_frame, FALSE, FALSE, 3);
+  gtk_widget_set_usize (mw__spinbutton_end_frame, SPIN_WIDTH_LARGE, -2);
+  gimp_help_set_help_data (mw__spinbutton_end_frame, _("Frame number of last frame to extract (0 == use last frame)"), NULL);
+
+  /* dummy label to fill up the hbox2 */
+  label = gtk_label_new (" ");
+  gtk_widget_show (label);
+  gtk_box_pack_start (GTK_BOX (hbox2), label, TRUE, TRUE, 0);
+
+
+
+
+
+  /* the videorange button (that invokes the player for video range selection) */
+  mw__button_vrange_dialog = gtk_button_new_with_label (_("VideoRange"));
+  gtk_widget_show (mw__button_vrange_dialog);
+  gtk_table_attach (GTK_TABLE (mw__table1), mw__button_vrange_dialog, 2, 3, 1, 2,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gimp_help_set_help_data (mw__button_vrange_dialog, _("Open visual video range selection window"), NULL);
+
+
+
+  /* the videorange button (that invokes the player for video range selection in docked mode) */
+  mw__button_vrange_docked = gtk_button_new_with_label (_("VideoRange"));
+  gtk_widget_show (mw__button_vrange_docked);
+  gtk_table_attach (GTK_TABLE (mw__table1), mw__button_vrange_docked, 2, 3, 2, 3,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gimp_help_set_help_data (mw__button_vrange_docked, _("visual video range selection (docked mode)"), NULL);
+
+
+
+
+  /* the videotrack to label */
+  label3 = gtk_label_new (_("Videotrack:"));
+  gtk_widget_show (label3);
+  gtk_misc_set_alignment (GTK_MISC (label3), 1.0, 0);
+  gtk_table_attach (GTK_TABLE (mw__table1), label3, 0, 1, 3, 4,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), INDENT_PIXELS, 0);
+
+
+
+  /* videotrack spinbutton */
+
+  hbox2 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_show (hbox2);
+  gtk_table_attach (GTK_TABLE (mw__table1), hbox2, 1, 2, 3, 4,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+
+  mw__spinbutton_videotrack_adj = gtk_adjustment_new (1, 0, 100, 1, 10, 10);
+  mw__spinbutton_videotrack = gtk_spin_button_new (GTK_ADJUSTMENT (mw__spinbutton_videotrack_adj), 1, 0);
+  gtk_widget_show (mw__spinbutton_videotrack);
+  gtk_widget_set_usize (mw__spinbutton_videotrack, SPIN_WIDTH_SMALL, -2);
+  gtk_box_pack_start (GTK_BOX (hbox2), mw__spinbutton_videotrack, FALSE, FALSE, 3);
+  gimp_help_set_help_data (mw__spinbutton_videotrack, _("Videotrack number (0 == extract no frames)"), NULL);
+
+  /* dummy label to fill up the hbox2 */
+  label = gtk_label_new (" ");
+  gtk_widget_show (label);
+  gtk_box_pack_start (GTK_BOX (hbox2), label, TRUE, TRUE, 0);
+
+
+
+  /* the audiotrack to label */
+  label4 = gtk_label_new (_("Audiotrack:"));
+  gtk_widget_show (label4);
+  gtk_misc_set_alignment (GTK_MISC (label4), 1.0, 0);
+  gtk_table_attach (GTK_TABLE (mw__table1), label4, 0, 1, 4, 5,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), INDENT_PIXELS, 0);
+
+
+
+  /* audiotrack spinbutton */
+
+  hbox2 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_show (hbox2);
+  gtk_table_attach (GTK_TABLE (mw__table1), hbox2, 1, 2, 4, 5,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+
+  mw__spinbutton_audiotrack_adj = gtk_adjustment_new (0, 0, 100, 1, 10, 10);
+  mw__spinbutton_audiotrack = gtk_spin_button_new (GTK_ADJUSTMENT (mw__spinbutton_audiotrack_adj), 1, 0);
+  gtk_widget_show (mw__spinbutton_audiotrack);
+  gtk_widget_set_usize (mw__spinbutton_audiotrack, SPIN_WIDTH_SMALL, -2);
+  gtk_box_pack_start (GTK_BOX (hbox2), mw__spinbutton_audiotrack, FALSE, FALSE, 3);
+  gimp_help_set_help_data (mw__spinbutton_audiotrack, _("Audiotrack number (0 == extract no audio)"), NULL);
+
+  /* dummy label to fill up the hbox2 */
+  label = gtk_label_new (" ");
+  gtk_widget_show (label);
+  gtk_box_pack_start (GTK_BOX (hbox2), label, TRUE, TRUE, 0);
+
+
+
+
+  /* the (preferred) Decoder label */
+
+  label5 = gtk_label_new (_("Decoder:"));
+  gtk_widget_show (label5);
+  gtk_misc_set_alignment (GTK_MISC (label5), 1.0, 0);
+  gtk_table_attach (GTK_TABLE (mw__table1), label5, 0, 1, 5, 6,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), INDENT_PIXELS, 0);
+
+
+
+  mw__entry_preferred_decoder = gtk_entry_new ();
+  gtk_widget_show (mw__entry_preferred_decoder);
+  gtk_table_attach (GTK_TABLE (mw__table1), mw__entry_preferred_decoder, 1, 2, 5, 6,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_widget_set_usize (mw__entry_preferred_decoder, 158, -2);
+  gimp_help_set_help_data (mw__entry_preferred_decoder, _("leave empty or select your preferred decoder (libmpeg3, libavformat, quicktime4linux)"), NULL);
+
+
+
+  /* the menu to select the preferred decoder */
+  mw__optionmenu_preferred_decoder = gtk_option_menu_new ();
+  gtk_widget_show (mw__optionmenu_preferred_decoder);
+  gtk_table_attach (GTK_TABLE (mw__table1), mw__optionmenu_preferred_decoder, 2, 3, 5, 6,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_widget_set_usize (mw__optionmenu_preferred_decoder, 120, -2);
+  mw__optionmenu_preferred_decoder_menu = gtk_menu_new ();
+  glade_menuitem = gtk_menu_item_new_with_label (_("(none, automatic)"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (mw__optionmenu_preferred_decoder_menu), glade_menuitem);
+        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
+                          G_CALLBACK (on_mw__optionmenu_preferred_decoder),
+                          (gpointer)gpp);
+        g_object_set_data (G_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY, (gpointer)GAP_VEX_DECODER_NONE);
+  glade_menuitem = gtk_menu_item_new_with_label (_("libmpeg3"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (mw__optionmenu_preferred_decoder_menu), glade_menuitem);
+        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
+                          G_CALLBACK (on_mw__optionmenu_preferred_decoder),
+                          (gpointer)gpp);
+        g_object_set_data (G_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY, (gpointer)GAP_VEX_DECODER_LIBMPEG3);
+  glade_menuitem = gtk_menu_item_new_with_label (_("quicktime4linux"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (mw__optionmenu_preferred_decoder_menu), glade_menuitem);
+        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
+                          G_CALLBACK (on_mw__optionmenu_preferred_decoder),
+                          (gpointer)gpp);
+        g_object_set_data (G_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY, (gpointer)GAP_VEX_DECODER_QUICKTIME);
+  glade_menuitem = gtk_menu_item_new_with_label (_("libavformat"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (mw__optionmenu_preferred_decoder_menu), glade_menuitem);
+        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
+                          G_CALLBACK (on_mw__optionmenu_preferred_decoder),
+                          (gpointer)gpp);
+        g_object_set_data (G_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY, (gpointer)GAP_VEX_DECODER_LIBAVFORMAT);
+  gtk_option_menu_set_menu (GTK_OPTION_MENU (mw__optionmenu_preferred_decoder), mw__optionmenu_preferred_decoder_menu);
+
+
+
+  /* the (Active) Decoder Label(s) */
+
+  label6 = gtk_label_new (_("Active Decoder:"));
+  gtk_widget_show (label6);
+  gtk_misc_set_alignment (GTK_MISC (label6), 1.0, 0);
+  gtk_table_attach (GTK_TABLE (mw__table1), label6, 0, 1, 6, 7,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), INDENT_PIXELS, 0);
+
+
+  mw__label_active_decoder = gtk_label_new (_("****"));
+  gtk_widget_show (mw__label_active_decoder);
+  gtk_table_attach (GTK_TABLE (mw__table1), mw__label_active_decoder, 1, 2, 6, 7,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  /* gtk_widget_set_usize (mw__label_active_decoder, 120, -2); */
+  gtk_misc_set_padding (GTK_MISC (mw__label_active_decoder), 4, 0);
+  gtk_misc_set_alignment (GTK_MISC (mw__label_active_decoder), 0, 0.0);
+
+
+
+
+
+  /* OLD percentage based seek is no longer supported
+   * and the videoapi always should deliver exact frame positions now
+   * (therefore the mw__checkbutton_exact_seek widget is not needed any longer)
+   */
+  mw__checkbutton_exact_seek = gtk_check_button_new_with_label (_("Exact"));
+  /* gtk_widget_show (mw__checkbutton_exact_seek); */
+  gtk_table_attach (GTK_TABLE (mw__table1), mw__checkbutton_exact_seek, 2, 3, 4, 5,
+                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_widget_set_usize (mw__checkbutton_exact_seek, 100, -2);
+  gimp_help_set_help_data (mw__checkbutton_exact_seek, _("ON is slow but exact, OFF does seek faster but may not give exact framenumbers"), NULL);
+
+
+
+
+
+
+  mw__frame2 = gtk_frame_new (_("Output"));
+  gtk_widget_show (mw__frame2);
+  gtk_box_pack_start (GTK_BOX (mw__vbox1), mw__frame2, TRUE, TRUE, 0);
+
+  mw__vbox10 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_show (mw__vbox10);
+  gtk_container_add (GTK_CONTAINER (mw__frame2), mw__vbox10);
+  gtk_container_set_border_width (GTK_CONTAINER (mw__vbox10), 4);
+
+  mw__table10 = gtk_table_new (4, 3, FALSE);
+  gtk_widget_show (mw__table10);
+  gtk_box_pack_start (GTK_BOX (mw__vbox10), mw__table10, TRUE, TRUE, 0);
+
+
+  /* the basename label */
+  mw__label_basename = gtk_label_new (_("Basename:"));
+  gtk_widget_show (mw__label_basename);
+  gtk_misc_set_alignment (GTK_MISC (mw__label_basename), 1.0, 0);
+  gtk_table_attach (GTK_TABLE (mw__table10), mw__label_basename, 0, 1, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), INDENT_PIXELS, 0);
+
+  /* the basename entry */
+  mw__entry_basename = gtk_entry_new ();
+  gtk_widget_show (mw__entry_basename);
+  gtk_table_attach (GTK_TABLE (mw__table10), mw__entry_basename, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 3, 1);
+  gimp_help_set_help_data (mw__entry_basename, _("Basename for extracted frames (framenr and extension is added)"), NULL);
+  gtk_entry_set_text (GTK_ENTRY (mw__entry_basename), _("frame_"));
+
+  /* the basename button (that invokes the fileselection dialog) */
+  mw__button_basename = gtk_button_new_with_label (_("..."));
+  gtk_widget_show (mw__button_basename);
+  gtk_table_attach (GTK_TABLE (mw__table10), mw__button_basename, 2, 3, 0, 1,
+                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (0), 3, 1);
+  gtk_widget_set_usize (mw__button_basename, 60, -2);
+  gimp_help_set_help_data (mw__button_basename, _("Use filebrowser to select basename for extracted frames"), NULL);
+
+
+
+
+  /* widgets to handle the output framenumber part */
+
+  /* the framenumber digits label */
+  label7 = gtk_label_new (_("Digits:"));
+  gtk_widget_show (label7);
+  gtk_misc_set_alignment (GTK_MISC (label7), 1.0, 0);
+  gtk_table_attach (GTK_TABLE (mw__table10), label7, 0, 1, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), INDENT_PIXELS, 0);
+
+
+
+  /* the framenumber digits spinbutton */
+
+  hbox2 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_show (hbox2);
+  gtk_table_attach (GTK_TABLE (mw__table10), hbox2, 1, 2, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+
+  mw__spinbutton_fn_digits_adj = gtk_adjustment_new (1, 1, 6, 1, 10, 10);
+  mw__spinbutton_fn_digits = gtk_spin_button_new (GTK_ADJUSTMENT (mw__spinbutton_fn_digits_adj), 1, 0);
+  gtk_widget_show (mw__spinbutton_fn_digits);
+  gtk_widget_set_usize (mw__spinbutton_fn_digits, SPIN_WIDTH_SMALL, -2);
+  gtk_box_pack_start (GTK_BOX (hbox2), mw__spinbutton_fn_digits, FALSE, FALSE, 3);
+  gimp_help_set_help_data (mw__spinbutton_fn_digits, _("Digits to use for framenumber part in filenames (use 1 if you dont want leading zeroes)"), NULL);
+
+  /* dummy label to fill up the hbox2 */
+  label = gtk_label_new (" ");
+  gtk_widget_show (label);
+  gtk_box_pack_start (GTK_BOX (hbox2), label, TRUE, TRUE, 0);
+
+
+
+  /* the basenum spinbutton (set framenumber for  the 1st extracted frame) */
+  mw__spinbutton_basenum_adj = gtk_adjustment_new (0, 0, 10000, 1, 10, 10);
+  mw__spinbutton_basenum = gtk_spin_button_new (GTK_ADJUSTMENT (mw__spinbutton_basenum_adj), 1, 0);
+  gtk_widget_show (mw__spinbutton_basenum);
+  gtk_table_attach (GTK_TABLE (mw__table10), mw__spinbutton_basenum, 2, 3, 1, 2,
+                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_widget_set_usize (mw__spinbutton_basenum, 60, -2);
+  gimp_help_set_help_data (mw__spinbutton_basenum, _("Famenumber for 1st extracted frame (use 0 for original framenumbers)"), NULL);
+
+
+
+
+  /* the extension label */
+  mw__label_extension = gtk_label_new (_("Extension:"));
+  gtk_widget_show (mw__label_extension);
+  gtk_misc_set_alignment (GTK_MISC (mw__label_extension), 1.0, 0);
+  gtk_table_attach (GTK_TABLE (mw__table10), mw__label_extension, 0, 1, 2, 3,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), INDENT_PIXELS, 0);
+
+
+  /* the extension entry (fileextension for output frames) */
+  hbox2 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_show (hbox2);
+  gtk_table_attach (GTK_TABLE (mw__table10), hbox2, 1, 2, 2, 3,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  mw__entry_extension = gtk_entry_new ();
+  gtk_widget_show (mw__entry_extension);
+  gtk_widget_set_usize (mw__entry_extension, SPIN_WIDTH_LARGE, -2);
+  gtk_box_pack_start (GTK_BOX (hbox2), mw__entry_extension, FALSE, FALSE, 3);
+  gimp_help_set_help_data (mw__entry_extension, _("Extension of extracted frames (.xcf, .jpg, .ppm)"), NULL);
+  gtk_entry_set_text (GTK_ENTRY (mw__entry_extension), _(".xcf"));
+
+  /* dummy label to fill up the hbox2 */
+  label = gtk_label_new (" ");
+  gtk_widget_show (label);
+  gtk_box_pack_start (GTK_BOX (hbox2), label, TRUE, TRUE, 0);
+
+
+
+
+  /* the deinterlace Mode label */
+  label8 = gtk_label_new (_("Mode:"));
+  gtk_widget_show (label8);
+  gtk_misc_set_alignment (GTK_MISC (label8), 1.0, 0);
+  gtk_table_attach (GTK_TABLE (mw__table10), label8, 0, 1, 3, 4,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), INDENT_PIXELS, 0);
+
+
+  mw__hbox11 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_show (mw__hbox11);
+  gtk_table_attach (GTK_TABLE (mw__table10), mw__hbox11, 1, 2, 3, 4,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+
+
+  /* the multilayer checkbox (decide if extract writes to frames on disc or to one image) */
+  mw__checkbutton_multilayer = gtk_check_button_new_with_label (_("Create only one multilayer Image"));
+  gtk_widget_show (mw__checkbutton_multilayer);
+  gtk_box_pack_start (GTK_BOX (mw__hbox11), mw__checkbutton_multilayer, FALSE, FALSE, 0);
+  gimp_help_set_help_data (mw__checkbutton_multilayer
+                          , _("On: extracted frames are stored in one multilayer image"
+			      "Off: extracted frames are written to frame files on disc")
+			  , NULL);
+
+
+
+  /* the deinterlace optionmenu */
+  mw__optionmenu_deinterlace = gtk_option_menu_new ();
+  gtk_widget_show (mw__optionmenu_deinterlace);
+  gtk_box_pack_start (GTK_BOX (mw__hbox11), mw__optionmenu_deinterlace, TRUE, TRUE, 0);
+  gimp_help_set_help_data (mw__optionmenu_deinterlace, _("Deinterlace splits each extracted frame in 2 frames"), NULL);
+  mw__optionmenu_deinterlace_menu = gtk_menu_new ();
+
+  glade_menuitem = gtk_menu_item_new_with_label (_("normal"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (mw__optionmenu_deinterlace_menu), glade_menuitem);
+        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
+                          G_CALLBACK (on_mw__optionmenu_deinterlace),
+                          (gpointer)gpp);
+        g_object_set_data (G_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY
+	                  , (gpointer)GAP_VEX_DELACE_NONE);
+  glade_menuitem = gtk_menu_item_new_with_label (_("deinterlace (odd lines only)"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (mw__optionmenu_deinterlace_menu), glade_menuitem);
+        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
+                          G_CALLBACK (on_mw__optionmenu_deinterlace),
+                          (gpointer)gpp);
+        g_object_set_data (G_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY
+                          , (gpointer)GAP_VEX_DELACE_ODD);
+  glade_menuitem = gtk_menu_item_new_with_label (_("deinterlace (even lines only)"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (mw__optionmenu_deinterlace_menu), glade_menuitem);
+        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
+                          G_CALLBACK (on_mw__optionmenu_deinterlace),
+                          (gpointer)gpp);
+        g_object_set_data (G_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY
+	                  , (gpointer)GAP_VEX_DELACE_EVEN);
+  glade_menuitem = gtk_menu_item_new_with_label (_("deinterlace framesx2 (odd 1st)"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (mw__optionmenu_deinterlace_menu), glade_menuitem);
+        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
+                          G_CALLBACK (on_mw__optionmenu_deinterlace),
+                          (gpointer)gpp);
+        g_object_set_data (G_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY
+	                  , (gpointer)GAP_VEX_DELACE_ODD_X2);
+  glade_menuitem = gtk_menu_item_new_with_label (_("deinterlace framesx2 (even 1st)"));
+  gtk_widget_show (glade_menuitem);
+  gtk_menu_append (GTK_MENU (mw__optionmenu_deinterlace_menu), glade_menuitem);
+        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
+                          G_CALLBACK (on_mw__optionmenu_deinterlace),
+                          (gpointer)gpp);
+        g_object_set_data (G_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY
+	                  , (gpointer)GAP_VEX_DELACE_EVEN_X2);
+  gtk_option_menu_set_menu (GTK_OPTION_MENU (mw__optionmenu_deinterlace), mw__optionmenu_deinterlace_menu);
+
+  /* the deinterlace threshold spinbutton */
+  mw__spinbutton_delace_threshold_adj = gtk_adjustment_new (0, 0, 1, 0.01, 0.1, 0.1);
+  mw__spinbutton_delace_threshold = gtk_spin_button_new (GTK_ADJUSTMENT (mw__spinbutton_delace_threshold_adj), 1, 2);
+  gtk_widget_show (mw__spinbutton_delace_threshold);
+  gtk_table_attach (GTK_TABLE (mw__table10), mw__spinbutton_delace_threshold, 2, 3, 2, 3,
+                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_widget_set_usize (mw__spinbutton_delace_threshold, 60, -2);
+  gimp_help_set_help_data (mw__spinbutton_delace_threshold, _("0.0 .. no interpolation, 1.0 smooth interpolation at deinterlacing"), NULL);
+
+
+
+  /* the output audiofile label */
+  mw__label_audifile = gtk_label_new (_("Audiofile:"));
+  gtk_widget_show (mw__label_audifile);
+  gtk_misc_set_alignment (GTK_MISC (mw__label_audifile), 1.0, 0);
+  gtk_table_attach (GTK_TABLE (mw__table10), mw__label_audifile, 0, 1, 4, 5,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), INDENT_PIXELS, 0);
+
+  /* the output audiofile entry */
+  mw__entry_audiofile = gtk_entry_new ();
+  gtk_widget_show (mw__entry_audiofile);
+  gtk_table_attach (GTK_TABLE (mw__table10), mw__entry_audiofile, 1, 2, 4, 5,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gimp_help_set_help_data (mw__entry_audiofile, _("Name for extracted audio (audio is written in RIFF WAV format)"), NULL);
+  gtk_entry_set_text (GTK_ENTRY (mw__entry_audiofile), _("frame.wav"));
+
+  /* the output audiofile button (that invokes the fileselection dialog) */
+  mw__button_audiofile = gtk_button_new_with_label (_("..."));
+  gtk_widget_show (mw__button_audiofile);
+  gtk_table_attach (GTK_TABLE (mw__table10), mw__button_audiofile, 2, 3, 4, 5,
+                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_widget_set_usize (mw__button_audiofile, 60, -2);
+  gimp_help_set_help_data (mw__button_audiofile, _("Use filebrowser to select audiofilename"), NULL);
+
+
+  mw__button_OK = NULL;
+  if(mw__button_OK)
+  {
+    gimp_help_set_help_data (mw__button_OK, _("Start extraction"), NULL);
+  }
+
+
+
+
+  g_signal_connect (G_OBJECT (mw__checkbutton_disable_mmx), "toggled",
+                      G_CALLBACK (on_mw__checkbutton_disable_mmx_toggled),
+                      gpp);
+  g_signal_connect (G_OBJECT (mw__entry_video), "changed",
+                      G_CALLBACK (on_mw__entry_video_changed),
+                      gpp);
+  g_signal_connect (G_OBJECT (mw__button_vrange_dialog), "clicked",
+                      G_CALLBACK (on_mw__button_vrange_dialog_clicked),
+                      gpp);
+  g_signal_connect (G_OBJECT (mw__button_vrange_docked), "clicked",
+                      G_CALLBACK (on_mw__button_vrange_docked_clicked),
+                      gpp);
+  g_signal_connect (G_OBJECT (mw__button_video), "clicked",
+                      G_CALLBACK (on_mw__button_video_clicked),
+                      gpp);
+  g_signal_connect (G_OBJECT (mw__entry_preferred_decoder), "changed",
+                      G_CALLBACK (on_mw__entry_preferred_decoder_changed),
+                      gpp);
+  g_signal_connect (G_OBJECT (mw__spinbutton_audiotrack), "changed",
+                      G_CALLBACK (on_mw__spinbutton_audiotrack_changed),
+                      gpp);
+  g_signal_connect (G_OBJECT (mw__spinbutton_videotrack), "changed",
+                      G_CALLBACK (on_mw__spinbutton_videotrack_changed),
+                      gpp);
+  g_signal_connect (G_OBJECT (mw__spinbutton_end_frame), "changed",
+                      G_CALLBACK (on_mw__spinbutton_end_frame_changed),
+                      gpp);
+  g_signal_connect (G_OBJECT (mw__spinbutton_begin_frame), "changed",
+                      G_CALLBACK (on_mw__spinbutton_begin_frame_changed),
+                      gpp);
+  g_signal_connect (G_OBJECT (mw__checkbutton_exact_seek), "toggled",
+                      G_CALLBACK (on_mw__checkbutton_exact_seek_toggled),
+                      gpp);
+  g_signal_connect (G_OBJECT (mw__entry_basename), "changed",
+                      G_CALLBACK (on_mw__entry_basename_changed),
+                      gpp);
+  g_signal_connect (G_OBJECT (mw__button_basename), "clicked",
+                      G_CALLBACK (on_mw__button_basename_clicked),
+                      gpp);
+  g_signal_connect (G_OBJECT (mw__spinbutton_basenum), "changed",
+                      G_CALLBACK (on_mw__spinbutton_basenum_changed),
+                      gpp);
+  g_signal_connect (G_OBJECT (mw__entry_audiofile), "changed",
+                      G_CALLBACK (on_mw__entry_audiofile_changed),
+                      gpp);
+  g_signal_connect (G_OBJECT (mw__button_audiofile), "clicked",
+                      G_CALLBACK (on_mw__button_audiofile_clicked),
+                      gpp);
+  g_signal_connect (G_OBJECT (mw__checkbutton_multilayer), "toggled",
+                      G_CALLBACK (on_mw__checkbutton_multilayer_toggled),
+                      gpp);
+  g_signal_connect (G_OBJECT (mw__spinbutton_delace_threshold), "changed",
+                      G_CALLBACK (on_mw__spinbutton_delace_threshold_changed),
+                      gpp);
+  g_signal_connect (G_OBJECT (mw__entry_extension), "changed",
+                      G_CALLBACK (on_mw__entry_extension_changed),
+                      gpp);
+  g_signal_connect (G_OBJECT (mw__spinbutton_fn_digits), "changed",
+                      G_CALLBACK (on_mw__spinbutton_fn_digits_changed),
+                      gpp);
+
+
+  /* copy widget pointers to global parameter
+   * (for use in callbacks outside of this procedure)
+   */
+  gpp->mw__checkbutton_disable_mmx             = mw__checkbutton_disable_mmx;
+  gpp->mw__entry_video                         = mw__entry_video;
+  gpp->mw__button_vrange_dialog                = mw__button_vrange_dialog;
+  gpp->mw__button_vrange_docked                = mw__button_vrange_docked;
+  gpp->mw__button_video                        = mw__button_video;
+  gpp->mw__optionmenu_preferred_decoder        = mw__optionmenu_preferred_decoder;
+  gpp->mw__optionmenu_preferred_decoder_menu   = mw__optionmenu_preferred_decoder_menu;
+  gpp->mw__label_active_decoder                = mw__label_active_decoder;
+  gpp->mw__entry_preferred_decoder             = mw__entry_preferred_decoder;
+  gpp->mw__spinbutton_audiotrack_adj           = mw__spinbutton_audiotrack_adj;
+  gpp->mw__spinbutton_audiotrack               = mw__spinbutton_audiotrack;
+  gpp->mw__spinbutton_videotrack_adj           = mw__spinbutton_videotrack_adj;
+  gpp->mw__spinbutton_videotrack               = mw__spinbutton_videotrack;
+  gpp->mw__spinbutton_end_frame_adj            = mw__spinbutton_end_frame_adj;
+  gpp->mw__spinbutton_end_frame                = mw__spinbutton_end_frame;
+  gpp->mw__spinbutton_begin_frame_adj          = mw__spinbutton_begin_frame_adj;
+  gpp->mw__spinbutton_begin_frame              = mw__spinbutton_begin_frame;
+  gpp->mw__checkbutton_exact_seek              = mw__checkbutton_exact_seek;
+  gpp->mw__entry_extension                     = mw__entry_extension;
+  gpp->mw__entry_basename                      = mw__entry_basename;
+  gpp->mw__button_basename                     = mw__button_basename;
+  gpp->mw__spinbutton_basenum_adj              = mw__spinbutton_basenum_adj;
+  gpp->mw__spinbutton_basenum                  = mw__spinbutton_basenum;
+  gpp->mw__entry_audiofile                     = mw__entry_audiofile;
+  gpp->mw__button_audiofile                    = mw__button_audiofile;
+  gpp->mw__checkbutton_multilayer              = mw__checkbutton_multilayer;
+  gpp->mw__optionmenu_deinterlace              = mw__optionmenu_deinterlace;
+  gpp->mw__optionmenu_deinterlace_menu         = mw__optionmenu_deinterlace_menu;
+  gpp->mw__spinbutton_delace_threshold_adj     = mw__spinbutton_delace_threshold_adj;
+  gpp->mw__spinbutton_delace_threshold         = mw__spinbutton_delace_threshold;
+  gpp->mw__spinbutton_fn_digits_adj            = mw__spinbutton_fn_digits_adj;
+  gpp->mw__spinbutton_fn_digits                = mw__spinbutton_fn_digits;
+  gpp->mw__button_OK                           = mw__button_OK;
+  gpp->mw__player_frame                        = mw__player_frame;
+  p_init_mw__main_window_widgets(gpp);
+  
+/* endif GAP_ENABLE_VIDEOAPI_SUPPORT (2) */
+#endif 
+
+  return mw__main_window;
+}  /* end gap_vex_dlg_create_mw__main_window */
+
+
+
+/* ----------------------------------
+ * gap_vex_dlg_main_dialog
+ * ----------------------------------
+ */
+void
+gap_vex_dlg_main_dialog (GapVexMainGlobalParams *gpp)
+{
+  gimp_ui_init ("gap_video_extract", FALSE);
+  gap_stock_init();
+  
+  gpp->fsv__fileselection = NULL;
+  gpp->fsb__fileselection = NULL;
+  gpp->fsa__fileselection = NULL;
+  gpp->mw__main_window = gap_vex_dlg_create_mw__main_window (gpp);
+  gtk_widget_show (gpp->mw__main_window);
+
+  gtk_main ();
+
+  if(gap_debug) printf("A F T E R gtk_main\n");
+}  /* end gap_vex_dlg_main_dialog */

@@ -19,7 +19,7 @@ p_usage()
    echo "  $SCRIPTNAME --in kodachrome.mp3 --out kodachrome.wav"
    echo ""
    echo " " 
-   echo "example2: (keep original samplerate)"
+   echo "example2: (set samplerate)"
    echo "  $SCRIPTNAME --in kodachrome.mp3 --out kodachrome.wav --resample 44100"
    echo ""
    echo ""

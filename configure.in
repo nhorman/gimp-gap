@@ -1,40 +1,32 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_PREREQ(2.54)
-
-m4_define([gap_major_version], [2])
-m4_define([gap_minor_version], [0])
-m4_define([gap_micro_version], [2])
-m4_define([gap_real_version],
-          [gap_major_version.gap_minor_version.gap_micro_version])
-m4_define([gap_version], [gap_real_version])
-
-# For overriding the version string. Comment out if not needed.
-# m4_define([gap_version], [2.0.0])
-
-
-AC_INIT([GIMP Animation Package], [gap_version],
-        [http://bugzilla.gnome.org/enter_bug.cgi?product=gimp-gap],
-	[gimp-gap])
-
-AC_CONFIG_SRCDIR([gap/gap_main.c])
-
-AM_INIT_AUTOMAKE(no-define)
+AC_PREREQ(2.52)
+AC_INIT(configure.in)
 AM_CONFIG_HEADER(config.h)
 
+GAP_MAJOR_VERSION=2
+GAP_MINOR_VERSION=1
+GAP_MICRO_VERSION=0
+GAP_VERSION=$GAP_MAJOR_VERSION.$GAP_MINOR_VERSION.$GAP_MICRO_VERSION
 
-AC_DEFINE_UNQUOTED(GAP_MAJOR_VERSION, gap_major_version,
-	           [gimp-gap major release number])
-AC_DEFINE_UNQUOTED(GAP_MINOR_VERSION, gap_minor_version,
-	           [gimp-gap minor release number])
-AC_DEFINE_UNQUOTED(GAP_MICRO_VERSION, gap_micro_version,
-                   [gimp-gap micro release number])
+VERSION=$GAP_VERSION
+
+AC_SUBST(GAP_MAJOR_VERSION)
+AC_SUBST(GAP_MINOR_VERSION)
+AC_SUBST(GAP_MICRO_VERSION)
+AC_SUBST(GAP_VERSION)
+	
+AC_DEFINE_UNQUOTED(GAP_MAJOR_VERSION, $GAP_MAJOR_VERSION, [gimp-gap major release number])
+AC_DEFINE_UNQUOTED(GAP_MINOR_VERSION, $GAP_MINOR_VERSION, [gimp-gap minor release number])
+AC_DEFINE_UNQUOTED(GAP_MICRO_VERSION, $GAP_MICRO_VERSION, [gimp-gap micro release number])
 
 
 GETTEXT_PACKAGE=gimp20-gap
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE",
                    [The gettext translation domain.])
+
+AM_INIT_AUTOMAKE(gimp-gap, $VERSION)
 
 AM_MAINTAINER_MODE
 
@@ -63,10 +55,11 @@ AC_SUBST(GIMP_DATA_DIR)
 AC_SUBST(GIMP_PLUGIN_DIR)
 
 
+
 dnl Test for unix-frontends
-AC_ARG_ENABLE(unix_frontends,
-              [  --disable-unix-frontends      don't build with UNIX specific
-                                frontends for xanim and mpeg encoders])
+dnl -----------------------
+AC_ARG_ENABLE(unixfrontends,
+              [  --disable-unix-frontends     don't build with UNIX specific frontends for xanim and mpeg encoders])
   if test "x$enable_unix_frontends" != "xno"; then
     frontends_warning="
 gimp-gap is configured with Linux/UNIX specific frontends for xanim
@@ -83,9 +76,202 @@ not be built. This is OK for non Linux/UNIX users.
 AM_CONDITIONAL(GAP_UNIX_FRONTENDS, test "x$enable_unix_frontends" != "xno")
 
 
+
+
+dnl Test for videoapisupport
+dnl ------------------------
+AC_ARG_ENABLE(videoapisupport,
+              [  --disable-videoapi-support   don't build with videoapi support])
+  if test "x$enable_videoapi_support" != "xno"; then
+        videoapi_warning="
+gimp-gap is configured with videoapi (libgapvidapi.a)
+the videoapi is in expermintal state and allows read access from videofiles (mpeg, avi...)
+in the storyboard and video_extract plug-ins.
+"
+    AC_DEFINE(GAP_ENABLE_VIDEOAPI_SUPPORT, 1, [Define to 1 to enable audio support])
+  else
+        videoapi_warning="
+gimp-gap is configured without video API (libgapvidapi.a)
+there will be NO access to videofiles (mpeg, avi...) in the storyboard plug-in
+and the videoextract plug-in will not work at all.
+You may want to try the experimental video API and run configure with
+the --enable-videoapi-support option.
+"
+
+  fi
+
+AM_CONDITIONAL(GAP_VIDEOAPI_SUPPORT, test "x$enable_videoapi_support" != "xno")
+
+
+
+dnl Test for video libavformat (FFMPEG)
+dnl ------------------------
+dnl the ffmpeg libs are both used as decoder implementations in the GAP Video API (GVA)
+dnl and in the ffmpeg videoencoder  plug-in
+dnl ffmpeg should compile on many operating systems, including UNIX and WINDOWS systems
+dnl
+AC_ARG_ENABLE(libavformat,
+              [  --disable-gva-libavformat    don't build with libavformat])
+  if test "x$enable_gva_libavformat" != "xno"; then
+    dnl
+    dnl hof: TODO: here we should check for both libavformat 0.4.8 and libavcodec 0.4.8
+    dnl the temporary workaround uses the hardcoded default /usr/local/include/ffmpeg
+    dnl
+    AC_DEFINE(ENABLE_GVA_LIBAVFORMAT, 1, [Define to 1 to enable compile and link with libavformat])
+    GAP_VLIBS_FFMPEG=" -lavcodec -lavformat"
+    GAP_VINCS_FFMPEG=" -I/usr/local/include/ffmpeg"
+  else
+        vid_ffmpeg_warning="
+gimp-gap is configured without libavformat
+this reduces the number of supported videoformats both for read and write access.
+libavformat and libavcodec are part of ffmpeg-0.4.8.
+You can get ffmpeg at: http://ffmpeg.sourceforge.net
+"
+        GAP_VLIBS_FFMPEG=" "
+        GAP_VINCS_FFMPEG=" "
+
+  fi
+
+AM_CONDITIONAL(ENABLE_GVA_LIBAVFORMAT_SUPPORT, test "x$enable_gva_libavformat" != "xno")
+
+
+dnl Test for video libmpeg3
+dnl ------------------------
+dnl libmpeg3 is used in one of the decoder implementations in the GAP Video API (GVA)
+dnl as far as i know this lib is available only on UNIX systems
+dnl
+AC_ARG_ENABLE(libmpeg3,
+              [  --disable-gva-libmpeg3       don't build with libmpeg3])
+  if test "x$enable_gva_libmpeg3" != "xno"; then
+      dnl dnl the AC_CHECK_LIB macro did not work
+      dnl dnl   (always prints the warning, even with correct libmpeg3 installed)
+      dnl dnl   therefore it is commented out ...
+      dnl     AC_CHECK_LIB(mpeg3, mpeg3_major, 
+      dnl       [AC_DEFINE(ENABLE_GVA_LIBMPEG3, 1,
+      dnl 		 [Define to 1 to enable  compile and link with libmpeg3.])
+      dnl       GAP_VLIBS_MPEG3=" -lmpeg3"
+      dnl       GAP_VINCS_MPEG3=" -I/usr/local/include/libmpeg3 -I/usr/local/include/libmpeg3/audio -I/usr/local/include/libmpeg3/video"
+      dnl       ],
+      dnl       [GAP_VLIBS_MPEG3=" "
+      dnl        GAP_VINCS_MPEG3=" "
+      dnl        AC_MSG_WARN(*** gimp-gap builds without the libmpeg3 based videodecoder (libmpeg3 library not found, or version less than 1.5.4) ***)
+      dnl       ])
+      dnl
+      dnl hof: TODO: here we should check for libmpeg3-1.5.4
+      dnl      i think the function mpeg3_major was added to libmpeg3 in version 1.5.4
+      dnl the original tarball from http:www.heroinewarrior.com of libmpeg3-1.5.4
+      dnl comes without installation help for the library and its headers.
+      dnl but (some ?) LINUX distributors provide installation rpm packages for libmpeg3
+      dnl currently i have no up-to-date rpm package of libmpeg3-1.5.4
+      dnl This workaround uses the hardcoded path /usr/local/include/libmpeg3
+      dnl to find the header files.
+      dnl The older libmpeg3-1.5 rpm package from my SuSE 8.2 distribution is NOT compatible
+      dnl with the new API, and has limited functions -- AC3 is turned off --
+      dnl (For now I dont know exactly how to check for the correct libmpeg3 name and version,
+      dnl  this code will probably work only for my private machine) 
+      dnl
+      AC_DEFINE(ENABLE_GVA_LIBMPEG3, 1, [Define to 1 to enable compile and link with libmpeg3])
+      GAP_VLIBS_MPEG3=" -lmpeg3"
+      GAP_VINCS_MPEG3=" -I/usr/local/include/libmpeg3 -I/usr/local/include/libmpeg3/audio -I/usr/local/include/libmpeg3/video"
+  else
+    if test "x$enable_videoapi_support" != "xno"; then
+        vid_mpeg3_warning="
+gimp-gap is configured without libmpeg3
+this reduces the number of supported videoformats for read access.
+You can get libmpeg3 at: http://www.heroinewarrior.com/download.php3
+"
+      GAP_VLIBS_MPEG3=" "
+      GAP_VINCS_MPEG3=" "
+    fi
+  fi
+
+AM_CONDITIONAL(ENABLE_GVA_LIBMPEG3_SUPPORT, test "x$enable_gva_libmpeg3" != "xno")
+
+
+
+dnl Test for XVID codec
+dnl ------------------------
+dnl the xvid codec lib is used in the AVI videoencoder plug-in for MPEG4 support
+dnl xvid should compile on many operating systems, including UNIX and WINDOWS systems
+dnl (ffmpeg has its own builtin MPEG4 codec implementation and does not depend on this codec)
+dnl
+AC_ARG_ENABLE(libxvidcore,
+              [  --disable-libxvidcore    don't build with libxvidcore])
+  if test "x$enable_libxvidcore" != "xno"; then
+    dnl
+    dnl hof: TODO: here we should check for libxvidcore 1.0.0
+    dnl the temporary workaround uses the hardcoded default /usr/local/include
+    dnl
+    AC_DEFINE(ENABLE_LIBXVIDCORE, 1, [Define to 1 to enable compile and link with libavformat])
+    GAP_VLIBS_XVIDCORE=" -lxvidcore"
+    GAP_VINCS_XVIDCORE=" -I/usr/local/include"
+  else
+        vid_xvidcore_warning="
+gimp-gap is configured without libxvidcore
+the AVI encoder plug-in is built without MPEG4 support.
+You can get the xvid codec at:  http://www.xvid.org/downloads.html
+"
+        GAP_VLIBS_XVIDCORE=" "
+        GAP_VINCS_XVIDCORE=" "
+
+  fi
+
+AM_CONDITIONAL(ENABLE_LIBXVIDCORE_SUPPORT, test "x$enable_libxvidcore" != "xno")
+
+
+
+dnl Test for video libquicktime (QUICKTIME4LINUX)
+dnl ---------------------------
+dnl WARNING: libquicktime is in experimental state and probably will be removed later
+dnl 
+AC_ARG_ENABLE(libquicktime,
+              [  --disable-gva-libquicktime   don't build with libquicktime])
+  if test "x$enable_gva_libquicktime" != "xno"; then
+    dnl
+    dnl hof: TODO linking with quicktime not finished yet
+    dnl      the current video API once worked with old quicktime libs
+    dnl      the new quicktime4linux comes with ffmpeg as subset but did not
+    dnl      even compile on my machine. therefore this version of gimp-gap has NO QUICKTIME support
+    dnl AC_DEFINE(ENABLE_GVA_LIBQUICKTIME, 1, [Define to 1 to enable compile and link with libquicktime])
+    GAP_VLIBS_QUICKTIME=" "
+    GAP_VINCS_QUICKTIME=" "
+    vid_quicktime_warning="
+gimp-gap libquicktime support is NOT fully implemented 
+and currently does not even compile (forced option --disable-gva-libquicktime)
+"
+  else
+    GAP_VLIBS_QUICKTIME=" "
+    GAP_VINCS_QUICKTIME=" "
+
+  fi
+
+AM_CONDITIONAL(ENABLE_GVA_LIBQUICKTIME_SUPPORT, test "x$enable_gva_libquicktime" != "xno")
+
+
+
+
+AC_SUBST(GAP_VLIBS_FFMPEG)
+AC_SUBST(GAP_VINCS_FFMPEG)
+AC_SUBST(GAP_VLIBS_MPEG3)
+AC_SUBST(GAP_VINCS_MPEG3)
+AC_SUBST(GAP_VLIBS_QUICKTIME)
+AC_SUBST(GAP_VINCS_QUICKTIME)
+AC_SUBST(GAP_VLIBS_XVIDCORE)
+AC_SUBST(GAP_VINCS_XVIDCORE)
+
+
+GAPVIDEOAPI_EXTLIBS="$GAP_VLIBS_FFMPEG $GAP_VLIBS_MPEG3 $GAP_VLIBS_QUICKTIME -lpng -lz -lpthread -lglib -ldl -lm"
+GAPVIDEOAPI_EXTINCS="$GAP_VINCS_FFMPEG $GAP_VINCS_MPEG3 $GAP_VINCS_QUICKTIME"
+AC_SUBST(GAPVIDEOAPI_EXTLIBS)
+AC_SUBST(GAPVIDEOAPI_EXTINCS)
+
+
+
+
 dnl Test for audiosupport
-AC_ARG_ENABLE(audio_support,
-              [  --disable-audio-support       don't build with audio support])
+dnl ------------------------
+AC_ARG_ENABLE(audiosupport,
+              [  --disable-audio-support      don't build with audio support])
   if test "x$enable_audio_support" != "xno"; then
     AC_CHECK_PROG(WAVPLAY_SERVER, wavplay, yes, no)
       if test $WAVPLAY_SERVER = no; then
@@ -103,18 +289,20 @@ AM_CONDITIONAL(GAP_AUDIO_SUPPORT, test "x$enable_audio_support" != "xno")
 
 dnl optional compile preview widget with GDK-pixbuf support
 dnl 
-AC_ARG_ENABLE(gdkpixbuf_preview,
-              [  --enable-gdkpixbuf-preview    use GdkPixbuf thumbnail rendering (default=no)])
-  if test "x$enable_gdkpixbuf_preview" = "xyes"; then
-    AC_DEFINE(GAP_PVIEW_USE_GDK_PIXBUF_RENDERING, 1,
-              [use GDK for Pixbuf rendering in gap preview widget])
+AC_ARG_ENABLE(gdkpixbuf,
+              [  --enable-gdkpixbuf-pview     use GdkPixbuf thumbnail rendering (default=no)])
+  if test "x$enable_gdkpixbuf_pview" = "xyes"; then
+    AC_DEFINE(GAP_PVIEW_USE_GDK_PIXBUF_RENDERING, 1, [use Gdk for Pixbuf rendering in gap preview widget])
   fi
 
 
-GAPLIBDIR=${libdir}/$PACKAGE-gap_major_version.gap_minor_version
 
 
-ALL_LINGUAS="az ca cs da de el en_CA en_GB es fi fr hr hu it ja ko lt ml nl nn no pl pt pt_BR ru sk sl sr sr@Latn sv tr uk zh_CN zh_TW"
+
+GAPLIBDIR=${libdir}/$PACKAGE-$GAP_MAJOR_VERSION.$GAP_MINOR_VERSION
+
+
+ALL_LINGUAS="az ca cs da de el en_GB es fi fr hr hu it ja ko lt ml nl nn no pl pt pt_BR ru sk sl sr sr@Latn sv tr uk zh_CN zh_TW"
 
 AC_PROG_INTLTOOL
 AM_GLIB_GNU_GETTEXT
@@ -132,23 +320,7 @@ if test "x$GCC" = "xyes"; then
 fi
 changequote([,])dnl
 
-
-####################################################
-# Default to disable deprecated GTK+ stuff for 2.2.x
-####################################################
-
-AC_MSG_CHECKING([if GTK+ is version 2.3.0 or newer])
-if $PKG_CONFIG --atleast-version=2.3.0 gtk+-2.0; then
-  have_gtk_2_3=yes
-else
-  have_gtk_2_3=no
-fi
-AC_MSG_RESULT($have_gtk_2_3)
-
-if test "x$have_gtk_2_3" != "xyes"; then
-  CPPFLAGS="${CPPFLAGS} -DG_DISABLE_DEPRECATED -DGDK_PIXBUF_DISABLE_DEPRECATED -DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED"
-fi
-
+CPPFLAGS="$CPPFLAGS -DG_DISABLE_DEPRECATED -DGDK_DISABLE_DEPRECATED"
 
 AC_SUBST(GAPLIBDIR)
 AC_SUBST(LOCALEDIR)
@@ -158,7 +330,13 @@ Makefile
 images/Makefile
 gap/Makefile
 libwavplayclient/Makefile
+libgapvidapi/Makefile
+libgapvidutil/Makefile
+vid_common/Makefile
+vid_enc_avi/Makefile
+vid_enc_ffmpeg/Makefile
+vid_enc_single/Makefile
 po/Makefile.in
 ])
 
-AC_MSG_RESULT($frontends_warning $audio_warning)
+AC_MSG_RESULT($frontends_warning $audio_warning $videoapi_warning $vid_ffmpeg_warning $vid_mpeg3_warning $vid_quicktime_warning)

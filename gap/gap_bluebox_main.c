@@ -63,8 +63,8 @@ int gap_debug = 0;
 static GimpParamDef args_bluebox[] =
   {
     {GIMP_PDB_INT32, "run_mode", "Interactive"},
-    {GIMP_PDB_IMAGE, "image", "(unused)"},
-    {GIMP_PDB_DRAWABLE, "drawable", "(unused)"},
+    {GIMP_PDB_IMAGE, "image", "the image"},
+    {GIMP_PDB_DRAWABLE, "drawable", "the drawable"},
 
     {GIMP_PDB_COLOR, "keycolor",    "Select Pixels to be treansparent by this KeyColor" },
     {GIMP_PDB_INT32, "thres_mode",  "0 .. use the 3 threshold values for RGB\n"

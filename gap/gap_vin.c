@@ -23,6 +23,7 @@
  */
 
 /* revision history:
+ * version 2.1.0a;  2004/06/03  hof: added onionskin setting ref_mode
  * version 1.3.25b; 2004/01/23  hof: bugfix: gap_vin_load_textfile set correct line_nr
  * version 1.3.18b; 2003/08/23  hof: gap_vin_get_all: force timezoom value >= 1 (0 results in divison by zero)
  * version 1.3.18a; 2003/08/23  hof: bugfix: gap_vin_get_all must clear (g_malloc0) vin_ptr struct at creation
@@ -196,6 +197,7 @@ p_set_onion_keywords(t_keylist *keylist, GapVinVideoInfo *vin_ptr)
    p_set_keyword(keylist, "(onion_auto_replace_after_load ", &vin_ptr->auto_replace_after_load, GAP_VIN_GBOOLEAN, 0, "\0");
    p_set_keyword(keylist, "(onion_auto_delete_before_save ", &vin_ptr->auto_delete_before_save, GAP_VIN_GBOOLEAN, 0, "\0");
    p_set_keyword(keylist, "(onion_number_of_layers ", &vin_ptr->num_olayers, GAP_VIN_GINT32, 0, "\0");
+   p_set_keyword(keylist, "(onion_ref_mode ", &vin_ptr->ref_mode, GAP_VIN_GINT32, 0, "\0");
    p_set_keyword(keylist, "(onion_ref_delta ", &vin_ptr->ref_delta, GAP_VIN_GINT32, 0, "\0");
    p_set_keyword(keylist, "(onion_ref_cycle ", &vin_ptr->ref_cycle, GAP_VIN_GBOOLEAN, 0, "\0");
    p_set_keyword(keylist, "(onion_stack_pos ", &vin_ptr->stack_pos, GAP_VIN_GINT32, 0, "\0");

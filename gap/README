@@ -1,26 +1,26 @@
-Project gap "GIMP Animation Package" version 2.0
+Project gap "GIMP Animation Package"   17. Jan. 2004  (pre)release 1.3.24a
 
 --------------------------------------------------------------------
 Introduction
 --------------------------------------------------------------------
 
-The GIMP is a great program for creating and manipulating pixelbased
-images of many types. The plug-in concept and the procedural database
+The GIMP is a great program for creating and manipulating
+pixelbased images of many types. The plug-in concept and the procedural database
 allows programmers to extend the GIMP's functions in many ways.
 
 In the GIMP there are some plug-in's supporting animation features,
-based on layers where each layer of the image is considered as one
-frame of the animation.  GIMP-GAP is a collection of plug-ins that
-extends the GIMP's animation capabilities by supporting the creation
-of more complex animations.
+based on layers where each layer of the image is considered as one frame
+of the animation.
+GIMP-GAP is a collection of plug-ins that extends the GIMP's animation capabilities
+by supporting the creation of more complex animations.
 
 Idea:
 	With the help of the GIMP-GAP plug-in collection
 	GIMP can operate on a series of images as if they were
 	a single one.
 	Each frame of an animation can have multiple layers.
-	The user can step from frame to frame by pressing an accelerator
-	key or can do image manipulations that are propagated automatically
+	The user can step from frame to frame by pressing an accelerator key
+	or can do image manipulations that are propagated automatically
 	to a selected range of frames.
 
 	Layeranimated images can be combined with frames (multiple images)
@@ -31,9 +31,8 @@ Idea:
 Concept:
 	An animation consists of a series of images of the same size & type
 	(frames).
-	The concept of GIMP-GAP is to store each frame seperate on
-        disk, using a filename convention that includes the frame number
-        and extension.
+	The concept of GIMP-GAP is to store each frame seperate on disk, using a filename
+	convention that includes the frame number and extension.
 
 	Example: film_000001.xcf, 
 	         film_000002.xcf
@@ -45,8 +44,8 @@ Concept:
 
 	Sound is not supported in this concept, but will be handled
 	as sperate audiofiles at encoding time or in the playback module.
-	The playback framerate and other common information about the
-	animation are stored in an extra videoinfo textfile
+	The playback framerate and other common information about the animation
+	are stored in an extra videoinfo textfile
 	         film_vin.gap
 	
 	This requires a lot of diskspace but offers much more flexibility
@@ -76,10 +75,10 @@ Concept:
 	software MPEG video encoder programs.
 	(mpeg_encode and mpeg2encode)
 	
-	On UNIX platforms GIMP-GAP also provides an XANIM frontend to
-	load frames from multimedia fileformats (avi, quicktime, ....)
-	based on the XANIM multimedia player. please note that XANIM is
-	old and unmaintained software.
+	On UNIX platforms GIMP-GAP also provides an XANIM frontend to load frames
+	from multimedia fileformats
+	(avi, quicktime, ....) based on the XANIM multimedia player.
+	please note that XANIM is old unmaintained software.
 	
 	
 Onionskin Layers
@@ -103,15 +102,14 @@ and does not compile/run with GIMP-1.2.x or older GIMP versions.
     
   Notes:
    
-   - GIMP 1.1.4 upto GIMP-1.2.x have included older versions of GIMP-GAP
-     as standard plug-in (named gap) with no need of extra installation.
+   - GIMP 1.1.4 upto GIMP-1.2.x have included older versions of GIMP-GAP as standard 
+     plug-in (named gap) with no need of extra installation.
 
 
    - GIMP-GAP provides frontend dialogs for:
       - mpeg_encode (V1.5R2)
       - mpeg2encode (V1.2)
-      - xanim 2.80.1 exporting edition (with the extensions from loki
-        entertainment)
+      - xanim 2.80.1 exporting edition (with the extensions from loki entertainment)
 
      The frontends and the external programs need UNIX environment to run.
       
@@ -121,16 +119,14 @@ and does not compile/run with GIMP-1.2.x or older GIMP versions.
        xanim 2.80.1 (loki)
      on your system.
 
-   - The GIMP-GAP playback module provides audiosupport for audiofiles
-     in RIFF WAV format. The audiosupport is based on wavplay (tested with
-     version 1.4).
+   - The GIMP-GAP playback module provides audiosupport for audiofiles in  RIFF WAV format.
+     The audiosupport is based on wavplay (tested with version 1.4).
      
      If you want to have audiosupport you must install wavplay
      and configure and compile gimp-gap without the
      configure option --disable-audiosupport
      
-     As far as i know, wavplay is available only for LINUX, but i may
-     be wrong...
+     As far as i know, wavplay is available only for LINUX, but i may be wrong..
      
      The GIMP-GAP playback module further provides a button for converting
      other audiofile formats to RIFF WAV.
@@ -139,8 +135,7 @@ and does not compile/run with GIMP-1.2.x or older GIMP versions.
       - sox
       - lame
      
-   - There is no need to install all those external programs to
-     compile GIMP-GAP.
+   - There is no need to install all those external programs to compile GIMP-GAP.
 
 --------------------------------------------------------------------
 Supported Videoformats

@@ -119,6 +119,7 @@ typedef struct {
   GtkWidget *main_dialog;
 
   GtkWidget  *oni__entry_select_string;
+  GtkWidget  *oni__optionmenu_ref_mode;
   GtkWidget  *oni__optionmenu_select_mode;
   GtkWidget  *oni__spinbutton_ignore_botlayers;
   GtkWidget  *oni__spinbutton_num_olayers;

@@ -26,6 +26,8 @@
  */
 
 /* revision history:
+ * gimp    2.1.0a   2004/04/18  hof: moved procedures fprintf_gdouble and sscan_flt_numbers
+ *                                   to gap_lib.c module
  * gimp    1.3.21c; 2003/10/23  hof: bugfix: trace_layer was not initialized (must be cleared at creation)
  * gimp    1.3.20d; 2003/10/14  hof: new: implemented missing parts for trace and tween_layer processing
  * gimp    1.3.20c; 2003/09/29  hof: new features: perspective transformation, step_speed_factor,
@@ -57,11 +59,10 @@
 
 /* GIMP includes */
 #include "gtk/gtk.h"
-#include "config.h"
-#include "gap-intl.h"
 #include "libgimp/gimp.h"
 
 /* GAP includes */
+#include "gap-intl.h"
 #include "gap_layer_copy.h"
 #include "gap_lib.h"
 #include "gap_image.h"
@@ -79,7 +80,6 @@ static void p_mov_advance_src_frame(GapMovCurrent *cur_ptr, GapMovValues  *pvals
 static long   p_mov_execute(GapMovData *mov_ptr);
 static gdouble  p_calc_angle(gint p1x, gint p1y, gint p2x, gint p2y);
 static gdouble  p_rotatate_less_than_180(gdouble angle, gdouble angle_new, gint *turns);
-static void     p_fprintf_gdouble(FILE *fp, gdouble value, gint digits, gint precision_digits, const char *pfx);
 
 
 /* ============================================================================
@@ -1402,35 +1402,6 @@ gap_mov_exec_conv_keyframe_to_abs(gint rel_keyframe, GapMovValues *pvals)
 }
 
 
-/* --------------------------------
- * p_fprintf_gdouble
- * --------------------------------
- * print prefix and gdouble value to file
- * (always use "." as decimalpoint, independent of LOCALE language settings)
- */
-static void
-p_fprintf_gdouble(FILE *fp, gdouble value, gint digits, gint precision_digits, const char *pfx)
-{
-  gchar l_dbl_str[G_ASCII_DTOSTR_BUF_SIZE];
-  gchar l_fmt_str[20];
-  gint  l_len;
-
-  g_snprintf(l_fmt_str, sizeof(l_fmt_str), "%%.%df", (int)precision_digits);
-  g_ascii_formatd(l_dbl_str, sizeof(l_dbl_str), l_fmt_str, value);
-
-  fprintf(fp, "%s", pfx);
-
-  /* make leading blanks */
-  l_len = strlen(l_dbl_str) - (digits + 1 +  precision_digits);
-  while(l_len < 0)
-  {
-    fprintf(fp, " ");
-    l_len++;
-  }
-  fprintf(fp, "%s", l_dbl_str);
-}  /* end p_fprintf_gdouble */
-
-
 /* ============================================================================
  * gap_mov_exec_gap_save_pointfile
  * ============================================================================
@@ -1459,11 +1430,11 @@ gap_mov_exec_gap_save_pointfile(char *filename, GapMovValues *pvals)
                     , (int)pvals->point[l_idx].p_x
                     , (int)pvals->point[l_idx].p_y
                     );
-      p_fprintf_gdouble(l_fp, pvals->point[l_idx].w_resize, 3, 3, " ");
-      p_fprintf_gdouble(l_fp, pvals->point[l_idx].h_resize, 3, 3, " ");
-      p_fprintf_gdouble(l_fp, pvals->point[l_idx].opacity,  3, 3, " ");
-      p_fprintf_gdouble(l_fp, pvals->point[l_idx].rotation, 3, 3, " ");
-      p_fprintf_gdouble(l_fp, pvals->point[l_idx].sel_feather_radius, 3, 3, " ");
+      gap_lib_fprintf_gdouble(l_fp, pvals->point[l_idx].w_resize, 3, 3, " ");
+      gap_lib_fprintf_gdouble(l_fp, pvals->point[l_idx].h_resize, 3, 3, " ");
+      gap_lib_fprintf_gdouble(l_fp, pvals->point[l_idx].opacity,  3, 3, " ");
+      gap_lib_fprintf_gdouble(l_fp, pvals->point[l_idx].rotation, 3, 3, " ");
+      gap_lib_fprintf_gdouble(l_fp, pvals->point[l_idx].sel_feather_radius, 3, 3, " ");
 
       num_optional_params = 0;
 
@@ -1492,17 +1463,17 @@ gap_mov_exec_gap_save_pointfile(char *filename, GapMovValues *pvals)
       if(num_optional_params >= 8)
       {
         fprintf(l_fp, " ");
-        p_fprintf_gdouble(l_fp, pvals->point[l_idx].ttlx, 2, 3, " ");
-        p_fprintf_gdouble(l_fp, pvals->point[l_idx].ttly, 2, 3, " ");
+        gap_lib_fprintf_gdouble(l_fp, pvals->point[l_idx].ttlx, 2, 3, " ");
+        gap_lib_fprintf_gdouble(l_fp, pvals->point[l_idx].ttly, 2, 3, " ");
         fprintf(l_fp, " ");
-        p_fprintf_gdouble(l_fp, pvals->point[l_idx].ttrx, 2, 3, " ");
-        p_fprintf_gdouble(l_fp, pvals->point[l_idx].ttry, 2, 3, " ");
+        gap_lib_fprintf_gdouble(l_fp, pvals->point[l_idx].ttrx, 2, 3, " ");
+        gap_lib_fprintf_gdouble(l_fp, pvals->point[l_idx].ttry, 2, 3, " ");
         fprintf(l_fp, " ");
-        p_fprintf_gdouble(l_fp, pvals->point[l_idx].tblx, 2, 3, " ");
-        p_fprintf_gdouble(l_fp, pvals->point[l_idx].tbly, 2, 3, " ");
+        gap_lib_fprintf_gdouble(l_fp, pvals->point[l_idx].tblx, 2, 3, " ");
+        gap_lib_fprintf_gdouble(l_fp, pvals->point[l_idx].tbly, 2, 3, " ");
         fprintf(l_fp, " ");
-        p_fprintf_gdouble(l_fp, pvals->point[l_idx].tbrx, 2, 3, " ");
-        p_fprintf_gdouble(l_fp, pvals->point[l_idx].tbry, 2, 3, " ");
+        gap_lib_fprintf_gdouble(l_fp, pvals->point[l_idx].tbrx, 2, 3, " ");
+        gap_lib_fprintf_gdouble(l_fp, pvals->point[l_idx].tbry, 2, 3, " ");
       }
 
       /* conditional write keyframe */
@@ -1521,42 +1492,8 @@ gap_mov_exec_gap_save_pointfile(char *filename, GapMovValues *pvals)
     return 0;
   }
   return -1;
-}
+}  /* end gap_mov_exec_gap_save_pointfile */
 
-/* ============================================================================
- * p_sscan_flt_numbers
- * ============================================================================
- * scan the blank seperated buffer for 2 integer and 13 float numbers.
- * always use "." as decimalpoint in the float numbers regardless to LANGUAGE settings
- * return a counter that tells how many numbers were scanned successfully
- */
-static gint
-p_sscan_flt_numbers(gchar   *buf
-                  , gdouble *farr
-		  , gint     farr_max
-		  )
-{
-  gint  l_cnt;
-  gchar *nptr;
-  gchar *endptr;
-
-  l_cnt =0;
-  nptr  = buf;
-  while(l_cnt < farr_max)
-  {
-    endptr = nptr;
-    farr[l_cnt] = g_ascii_strtod(nptr, &endptr);
-    if(nptr == endptr)
-    {
-      break;  /* pointer was not advanced because no valid floatnumber was scanned */
-    }
-    nptr = endptr;
-
-    l_cnt++;  /* count successful scans */
-  }
-
-  return (l_cnt);
-}  /* end p_sscan_flt_numbers */
 
 
 /* ============================================================================
@@ -1597,7 +1534,7 @@ gap_mov_exec_gap_load_pointfile(char *filename, GapMovValues *pvals)
        /* check if line empty or comment only (starts with '#') */
        if((*l_ptr != '#') && (*l_ptr != '\n') && (*l_ptr != '\0'))
        {
-         l_cnt = p_sscan_flt_numbers(l_ptr, &l_farr[0], MAX_NUMVALUES_PER_LINE);
+         l_cnt = gap_lib_sscan_flt_numbers(l_ptr, &l_farr[0], MAX_NUMVALUES_PER_LINE);
 	 l_i1 = (gint)l_farr[0];
 	 l_i2 = (gint)l_farr[1];
          if(l_idx == -1)
@@ -1700,7 +1637,7 @@ gap_mov_exec_gap_load_pointfile(char *filename, GapMovValues *pvals)
     }
   }
   return (l_rc);
-}
+}  /* end gap_mov_exec_gap_load_pointfile */
 
 
 /* ============================================================================

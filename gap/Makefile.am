@@ -4,7 +4,7 @@ libexecdir = $(GIMP_PLUGIN_DIR)/plug-ins
 
 scriptdatadir = $(GIMP_DATA_DIR)/scripts
 
-scriptdata_DATA = sel-to-anim-img.scm
+scriptdata_DATA = sel-to-anim-img.scm  gap-dup-continue.scm
 
 if GAP_UNIX_FRONTENDS
 GAP_FRONTENDS = gap_frontends
@@ -12,6 +12,11 @@ endif
 
 if GAP_AUDIO_SUPPORT
 WAVPLAYCLIENT = $(top_builddir)/libwavplayclient/libwavplayclient.a
+endif
+
+if GAP_VIDEOAPI_SUPPORT
+GAPVIDEOAPI = $(top_builddir)/libgapvidapi/libgapvidapi.a  $(GAPVIDEOAPI_EXTLIBS)
+INC_GAPVIDEOAPI = -I$(top_builddir)/libgapvidapi $(GAPVIDEOAPI_EXTINCS)
 endif
 
 LIBGIMPGAP = libgimpgap.a
@@ -22,6 +27,12 @@ libgimpgap_a_SOURCES = \
 	gap-intl.h		\
 	gap_arr_dialog.c	\
 	gap_arr_dialog.h	\
+	gap_audio_util.c	\
+	gap_audio_util.h	\
+	gap_audio_wav.c		\
+	gap_audio_wav.h		\
+	gap_file_util.c		\
+	gap_file_util.h		\
 	gap_image.c		\
 	gap_image.h		\
 	gap_layer_copy.c	\
@@ -55,10 +66,13 @@ libexec_PROGRAMS = \
 	gap_filter		\
 	gap_fmac		\
 	$(GAP_FRONTENDS)	\
+        gap_morph		\
 	gap_name2layer		\
 	gap_navigator_dialog	\
 	gap_player		\
         gap_onion		\
+        gap_storyboard		\
+        gap_video_extract	\
 	gap_wr_color_curve	\
 	gap_wr_color_levels	\
 	gap_wr_color_huesat	\
@@ -142,6 +156,18 @@ gap_frontends_SOURCES = \
 	gap_mpege.h		\
 	gap_libgimpgap.h	
 
+#  gap_morph_SOURCES: gap_mov_exec.h should be removed when finished coding
+gap_morph_SOURCES = \
+	gap_morph_main.c	\
+	gap_morph_main.h	\
+	gap_morph_exec.c	\
+	gap_morph_exec.h	\
+	gap_morph_dialog.c	\
+	gap_morph_dialog.h	\
+	gap_mov_dialog.h	\
+	gap_mov_exec.h		\
+	gap_libgimpgap.h	
+
 gap_name2layer_SOURCES = \
 	gap_lastvaldesc.c	\
 	gap_lastvaldesc.h	\
@@ -159,6 +185,10 @@ gap_player_SOURCES = \
 	gap_player_main.h	\
 	gap_player_dialog.c	\
 	gap_player_dialog.h	\
+	gap_story_file.h	\
+	gap_story_file.c	\
+	gap_story_syntax.h	\
+	gap_story_syntax.c	\
 	gap_libgimpgap.h	
 
 
@@ -169,6 +199,38 @@ gap_onion_SOURCES = \
 	gap_onion_dialog.h	\
 	gap_onion_worker.c	\
 	gap_onion_worker.h	\
+	gap_libgimpgap.h	
+
+gap_storyboard_SOURCES = \
+	gap_story_main.c	\
+	gap_story_main.h	\
+	gap_story_file.c	\
+	gap_story_file.h	\
+	gap_story_dialog.c	\
+	gap_story_dialog.h	\
+	gap_story_properties.c	\
+	gap_story_properties.h	\
+	gap_story_syntax.h	\
+	gap_story_syntax.c	\
+	gap_player_main.h	\
+	gap_player_dialog.c	\
+	gap_player_dialog.h	\
+	gap_libgimpgap.h	
+
+gap_video_extract_SOURCES = \
+	gap_vex_main.c		\
+	gap_vex_main.h		\
+	gap_vex_exec.c		\
+	gap_vex_exec.h		\
+	gap_vex_dialog.c	\
+	gap_vex_dialog.h	\
+	gap_story_file.h	\
+	gap_story_file.c	\
+	gap_story_syntax.h	\
+	gap_story_syntax.c	\
+	gap_player_main.h	\
+	gap_player_dialog.c	\
+	gap_player_dialog.h	\
 	gap_libgimpgap.h	
 
 gap_wr_opacity_SOURCES = \
@@ -196,6 +258,7 @@ AM_CPPFLAGS = \
 INCLUDES = \
 	-I$(top_srcdir)	\
 	-I$(top_srcdir)/libwavplayclient	\
+	$(INC_GAPVIDEOAPI)	\
 	$(GIMP_CFLAGS)	\
 	-I$(includedir)
 
@@ -208,10 +271,13 @@ gap_plugins_LDADD =          $(LIBGIMPGAP) $(GIMP_LIBS)
 gap_filter_LDADD =           $(LIBGIMPGAP) $(GIMP_LIBS)
 gap_fmac_LDADD =             $(LIBGIMPGAP) $(GIMP_LIBS)
 gap_frontends_LDADD =        $(LIBGIMPGAP) $(GIMP_LIBS)
+gap_morph_LDADD =            $(LIBGIMPGAP) $(GIMP_LIBS)
 gap_name2layer_LDADD =       $(LIBGIMPGAP) $(GIMP_LIBS)
 gap_navigator_dialog_LDADD = $(LIBGIMPGAP) $(GIMP_LIBS)
-gap_player_LDADD =           $(LIBGIMPGAP) $(GIMP_LIBS) $(WAVPLAYCLIENT)
+gap_player_LDADD =           $(LIBGIMPGAP) $(GIMP_LIBS) $(WAVPLAYCLIENT) $(GAPVIDEOAPI)
 gap_onion_LDADD =            $(LIBGIMPGAP) $(GIMP_LIBS)
+gap_storyboard_LDADD =       $(LIBGIMPGAP) $(GIMP_LIBS) $(WAVPLAYCLIENT) $(GAPVIDEOAPI)
+gap_video_extract_LDADD =    $(LIBGIMPGAP) $(GIMP_LIBS) $(WAVPLAYCLIENT) $(GAPVIDEOAPI)
 gap_wr_opacity_LDADD =       $(LIBGIMPGAP) $(GIMP_LIBS)
 gap_wr_color_curve_LDADD =   $(LIBGIMPGAP) $(GIMP_LIBS)
 gap_wr_color_levels_LDADD =  $(LIBGIMPGAP) $(GIMP_LIBS)

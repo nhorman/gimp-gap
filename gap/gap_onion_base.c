@@ -24,6 +24,7 @@
  */
 
 /* revision history:
+ * version 2.1.0a;   2004/06/03   hof: added onionskin ref_mode
  * version 1.3.16c;  2003.07.08   hof: created (as extract of the gap_onion_worker.c module)
  */
 
@@ -265,6 +266,9 @@ gap_onion_base_onionskin_apply(gpointer gpp
              , GapOnionBaseFptrFindFrameInImageCache fptr_find_frame_in_img_cache
              , gboolean use_cache)
 {
+  gint32        l_nr;
+  gint32        l_sign;
+  
   gint32        l_onr;
   gint32        l_ign;
   gint32        l_idx;
@@ -286,6 +290,7 @@ gap_onion_base_onionskin_apply(gpointer gpp
   {
      printf("gap_onion_base_onionskin_apply: START\n");
      printf("  num_olayers: %d\n",   (int)vin_ptr->num_olayers);
+     printf("  ref_mode:  %d\n",     (int)vin_ptr->ref_mode);
      printf("  ref_delta: %d\n",     (int)vin_ptr->ref_delta);
      printf("  ref_cycle: %d\n",     (int)vin_ptr->ref_cycle);
      printf("  stack_pos: %d\n",     (int)vin_ptr->stack_pos);
@@ -323,21 +328,39 @@ gap_onion_base_onionskin_apply(gpointer gpp
   l_opacity = vin_ptr->opacity;
   l_new_filename = NULL;
   l_frame_nr = ainfo_curr_frame_nr;
+  l_sign = -1;
   for(l_onr=1; l_onr <= vin_ptr->num_olayers; l_onr++)
   {
     /* find out reference frame number */
+
     if(vin_ptr->asc_opacity)
     {
        /* process far neigbours first to give them the highest configured opacity value */
-       l_frame_nr = ainfo_curr_frame_nr
-                  + (vin_ptr->ref_delta * ((1+ vin_ptr->num_olayers) - l_onr));
+       l_nr = (1+ vin_ptr->num_olayers) - l_onr;
     }
     else
     {
        /* process near neigbours first to give them the highest configured opacity value */
-       l_frame_nr = ainfo_curr_frame_nr
-                  + (vin_ptr->ref_delta * l_onr);
+       l_nr = l_onr;
     }
+ 
+    /* find out reference frame number */
+    switch(vin_ptr->ref_mode)
+    {
+      case GAP_ONION_REFMODE_BIDRIECTIONAL_SINGLE:
+        l_sign *= -1; /* toggle sign between -1 and +1 */
+        break;
+      case GAP_ONION_REFMODE_BIDRIECTIONAL_DOUBLE:
+        l_sign *= -1; /* toggle sign between -1 and +1 */
+	l_nr = 1 + ((l_nr -1) / 2);
+        break;
+      case GAP_ONION_REFMODE_NORMAL:
+        l_sign = 1;  /* normal mode: always force sign of +1 */
+      default:
+        break;
+    }
+ 
+    l_frame_nr = ainfo_curr_frame_nr + (l_sign * (vin_ptr->ref_delta * l_nr));
 
 
     if(!vin_ptr->ref_cycle)

@@ -804,8 +804,8 @@ radio_create_value(char *title, GtkTable *table, int row, GapArrArg *arr_ptr)
   GtkWidget *radio_button;
   GSList    *radio_group = NULL;
   gint       l_idy;
-  char      *l_radio_txt;
-  char      *l_radio_help_txt;
+  char       *l_radio_txt;
+  const char *l_radio_help_txt;
   gint       l_radio_pressed;
   gint       l_int_ret_initial_value;
 
@@ -1099,8 +1099,8 @@ pair_int_create_value(gchar *title, GtkTable *table, gint row, GapArrArg *arr_pt
  *   The Dialog has an Action Area with OK and CANCEL Buttons.
  * ============================================================================
  */
-gint gap_arr_std_dialog(char *title_txt,
-                        char *frame_txt,
+gint gap_arr_std_dialog(const char *title_txt,
+                        const char *frame_txt,
                         int        argc,
                         GapArrArg  argv[],
                         int        b_argc,
@@ -1171,9 +1171,9 @@ gint gap_arr_std_dialog(char *title_txt,
        arr_ptr = &argv[l_idx];
        arr_ptr->widget_locked = TRUE;
 
-       if(arr_ptr->label_txt == NULL)  l_label_txt = _("Value:");
-       else                            l_label_txt = arr_ptr->label_txt;
-
+       if(arr_ptr->label_txt == NULL)  l_label_txt = g_strdup(_("Value:"));
+       else                            l_label_txt = g_strdup(arr_ptr->label_txt);
+       
        switch(arr_ptr->widget_type)
        {
          case GAP_ARR_WGT_FLT_PAIR:
@@ -1234,6 +1234,8 @@ gint gap_arr_std_dialog(char *title_txt,
 
        }   /* end switch */
        arr_ptr->widget_locked = FALSE;
+              
+       g_free(l_label_txt);
     }      /* end for */
   }
 
@@ -1288,8 +1290,8 @@ gint gap_arr_std_dialog(char *title_txt,
      {
         arr_ptr = &argv[l_idx];
 
-        if(arr_ptr->label_txt == NULL)  l_label_txt = _("Value:");
-        else                            l_label_txt = arr_ptr->label_txt;
+        if(arr_ptr->label_txt == NULL)  l_label_txt = g_strdup(_("Value:"));
+        else                            l_label_txt = g_strdup(arr_ptr->label_txt);
         arr_ptr = &argv[l_idx];
         
         printf("%02d  ", l_idx);
@@ -1320,7 +1322,7 @@ gint gap_arr_std_dialog(char *title_txt,
              break;
 
         }
-
+        g_free(l_label_txt);
      }
   }
   
@@ -1434,8 +1436,8 @@ void     gap_arr_arg_init  (GapArrArg *arr_ptr,
  */
 
 
-gint gap_arr_ok_cancel_dialog(char *title_txt,
-                    char *frame_txt,
+gint gap_arr_ok_cancel_dialog(const char *title_txt,
+                    const char *frame_txt,
                     int        argc,
                     GapArrArg  argv[])
 {
@@ -1463,8 +1465,8 @@ gint gap_arr_ok_cancel_dialog(char *title_txt,
  */
 
 
-gint gap_arr_buttons_dialog(char *title_txt,
-                         char   *msg_txt,
+gint gap_arr_buttons_dialog(const char *title_txt,
+                         const char   *msg_txt,
                          int        b_argc,
                          GapArrButtonArg  b_argv[],
                          gint       b_def_val)
@@ -1498,10 +1500,12 @@ gint gap_arr_buttons_dialog(char *title_txt,
  * ============================================================================
  */
 
-long gap_arr_slider_dialog(char *title, char *frame, char *label, char *tooltip,
+long gap_arr_slider_dialog(const char *title, const char *frame,
+                     const char *label, const char *tooltip,
                      long min, long max, long curr, long constraint)
 {
   static GapArrArg  argv[1];
+  gboolean l_rc;
   
   gap_arr_arg_init(&argv[0], GAP_ARR_WGT_INT_PAIR);
   argv[0].label_txt = label;
@@ -1514,7 +1518,9 @@ long gap_arr_slider_dialog(char *title, char *frame, char *label, char *tooltip,
   argv[0].int_step   = 1;
   argv[0].int_ret    = (gint)curr;
   
-  if(TRUE == gap_arr_ok_cancel_dialog(title, frame, 1, argv))
+  l_rc = gap_arr_ok_cancel_dialog(title, frame, 1, argv);
+  
+  if(l_rc == TRUE)
   {    return (long)(argv[0].int_ret);
   }
   else return -1;
@@ -1526,7 +1532,7 @@ long gap_arr_slider_dialog(char *title, char *frame, char *label, char *tooltip,
  * ------------------------
  */
 gboolean
-gap_arr_confirm_dialog(char *msg_txt, char *title_txt, char *frame_txt)
+gap_arr_confirm_dialog(const char *msg_txt, const char *title_txt, const char *frame_txt)
 {
   static GapArrButtonArg  l_but_argv[2];
   static GapArrArg  l_argv[1];
@@ -1575,7 +1581,7 @@ gap_arr_confirm_dialog(char *msg_txt, char *title_txt, char *frame_txt)
                                   ,G_N_ELEMENTS(l_but_argv), l_but_argv
                                   ,-1  /* default value is Cancel */
                                   );
-      
+
   if(l_continue == 0)
   {
     return TRUE;  /* OK pressed */
@@ -1648,7 +1654,7 @@ gap_arr_overwrite_file_dialog(const char *filename)
  */
 
 void
-gap_arr_msg_win(GimpRunMode run_mode, char *msg)
+gap_arr_msg_win(GimpRunMode run_mode, const char *msg)
 {
   static GapArrButtonArg  l_argv[1];
   int               l_argc;  
@@ -1670,4 +1676,3 @@ gap_arr_msg_win(GimpRunMode run_mode, char *msg)
     }
   }
 }    /* end  gap_arr_msg_win */
-
