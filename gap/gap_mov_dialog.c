@@ -30,6 +30,8 @@
  */
 
 /* revision history:
+ * gimp    1.3.16c; 2003/07/12  hof: removed deprecated GtkKPreview widget (replaced by drawing_area based gap_pview_da calls)
+ *                                   cursor crosslines ar now switchable (show_cursor flag)
  * gimp    1.3.15a; 2003/06/21  hof: attempt to remove some deprecated calls (no success)
  * gimp    1.3.14b; 2003/06/03  hof: added gap_stock_init
  *                                   replaced mov_gtk_button_new_with_pixmap  by  gtk_button_new_from_stock
@@ -78,11 +80,6 @@
 #include <math.h>
 #include <time.h>
 
-#ifdef __GNUC__
-#warning GTK_DISABLE_DEPRECATED
-#endif
-#undef GTK_DISABLE_DEPRECATED
-
 /* GIMP includes */
 #include "gtk/gtk.h"
 #include "gap-intl.h"
@@ -99,6 +96,7 @@
 #include "gap_vin.h"
 #include "gap_arr_dialog.h"
 
+#include "gap_pview_da.h"
 #include "gap_stock.h"
 
 
@@ -114,6 +112,8 @@ extern      int gap_debug; /* ==0  ... dont print debug infos */
 #define CURSOR        0x2
 #define PATH_LINE     0x4
 #define ALL	      0xf
+
+#define GAP_MOV_CHECK_SIZE 8
 
 /*  event masks for the preview widget */
 #define PREVIEW_MASK   GDK_EXPOSURE_MASK | \
@@ -139,16 +139,14 @@ typedef struct
   GimpDrawable	*drawable;
   gint		dwidth, dheight;
   gint		bpp;
-  GtkWidget	*preview;
+  t_pview       *pv_ptr;
   GimpPixelRgn	 src_rgn;
-  gint           PixelRgnIsInitialized;
   gint           show_path;
+  gint           show_cursor;
   gint           startup;
 
   gint		pwidth, pheight;
-  gint		cursor;
   gint		curx, cury;		 /* x,y of cursor in preview */
-  gint		oldx, oldy;
 
   GtkWidget     *filesel;
   GtkAdjustment *x_adj;
@@ -263,6 +261,7 @@ static void mov_handmode_menu_callback  (GtkWidget *, gpointer);
 static void mov_stepmode_menu_callback  (GtkWidget *, gpointer);
 static void mov_gint_toggle_callback    (GtkWidget *, gpointer);
 static void mov_show_path_callback      (GtkWidget *, gpointer);
+static void mov_show_cursor_callback      (GtkWidget *, gpointer);
 
 
 /*  the option menu items -- the paint modes  */
@@ -351,9 +350,10 @@ long      p_move_dialog    (t_mov_data *mov_ptr)
     return -1;
   }
   path_ptr->show_path = TRUE;
+  path_ptr->show_cursor = TRUE;
   path_ptr->startup = TRUE;
   path_ptr->keyframe_adj = NULL;
-  path_ptr->PixelRgnIsInitialized = FALSE;
+  path_ptr->pv_ptr = NULL;
   
   pvals = mov_ptr->val_ptr;
 
@@ -642,7 +642,16 @@ mov_dialog ( GimpDrawable *drawable, t_mov_path_preview *path_ptr,
 
 
   gtk_widget_show (dlg);
+  gtk_widget_realize(path_ptr->shell);
+
   path_ptr->startup = FALSE;
+
+  p_pview_set_size(path_ptr->pv_ptr
+                  , path_ptr->pwidth
+                  , path_ptr->pheight
+                  , GAP_MOV_CHECK_SIZE
+                  );
+  mov_path_prevw_preview_init(path_ptr);
 
   gtk_main ();
   gdk_flush ();
@@ -753,7 +762,7 @@ mov_upvw_callback (GtkWidget *widget,
 
            path_ptr->old_preview_frame_nr = path_ptr->preview_frame_nr;
 
-           gtk_widget_queue_draw(path_ptr->preview);
+           gtk_widget_queue_draw(path_ptr->pv_ptr->da_widget);
 	   mov_path_prevw_draw ( path_ptr, CURSOR | PATH_LINE );
            gdk_flush();  
 
@@ -1435,23 +1444,40 @@ mov_gint_toggle_callback(GtkWidget *w, gpointer   client_data)
 }
 
 static void
+mov_show_path_or_cursor(t_mov_path_preview *path_ptr)
+{
+  if(path_ptr == NULL) return;
+  if(path_ptr->startup) return;
+  if(path_ptr->pv_ptr == NULL) return;
+  if(path_ptr->pv_ptr->da_widget == NULL) return;
+  if(path_ptr->drawable == NULL) return;
+  
+  p_point_refresh(path_ptr);
+  mov_path_prevw_draw ( path_ptr, CURSOR | PATH_LINE );
+  gtk_widget_queue_draw(path_ptr->pv_ptr->da_widget);
+  gdk_flush();  
+}
+
+static void
 mov_show_path_callback(GtkWidget *widget, gpointer   client_data)
 {
   t_mov_path_preview *path_ptr;
   
   path_ptr = (t_mov_path_preview *)client_data;
   mov_gint_toggle_callback(widget, &path_ptr->show_path);
-
-  if(path_ptr == NULL) return;
-  if(path_ptr->startup) return;
-  if(path_ptr->preview == NULL) return;
-  if(path_ptr->drawable == NULL) return;
-  
-  p_point_refresh(path_ptr);
-  mov_path_prevw_draw ( path_ptr, CURSOR | PATH_LINE );
-  gtk_widget_queue_draw(path_ptr->preview);
-  gdk_flush();  
+  mov_show_path_or_cursor(path_ptr);
 }
+
+static void
+mov_show_cursor_callback(GtkWidget *widget, gpointer   client_data)
+{
+  t_mov_path_preview *path_ptr;
+  
+  path_ptr = (t_mov_path_preview *)client_data;
+  mov_gint_toggle_callback(widget, &path_ptr->show_cursor);
+  mov_show_path_or_cursor(path_ptr);
+}
+
 
 /* ============================================================================
  * procedures to handle POINTS - TABLE
@@ -1755,8 +1781,8 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_path_preview *path_ptr)
   GtkWidget	 *hbox;
   GtkWidget	 *table;
   GtkWidget	 *label;
-  GtkWidget	 *pframe;
-  GtkWidget	 *preview;
+  GtkWidget	 *aspect_frame;
+  GtkWidget	 *da_widget;
   GtkWidget      *button_table;
   GtkWidget      *pv_table;
   GtkWidget      *pv_sub_table;
@@ -1772,11 +1798,8 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_path_preview *path_ptr)
   path_ptr->bpp	   = gimp_drawable_bpp(drawable->drawable_id);
   if ( gimp_drawable_has_alpha(drawable->drawable_id) )
     path_ptr->bpp--;
-  path_ptr->cursor = FALSE;
   path_ptr->curx = 0;
   path_ptr->cury = 0;
-  path_ptr->oldx = 0;
-  path_ptr->oldy = 0;
   path_ptr->in_call = TRUE;  /* to avoid side effects while initialization */
 
   /* the frame */
@@ -1944,12 +1967,30 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_path_preview *path_ptr)
   gtk_box_pack_start (GTK_BOX (hbox), pv_table, TRUE, TRUE, 0);
   gtk_widget_show( pv_table );
 
-  /* frame (shadow_in) that contains preview */
-  pframe = gtk_frame_new ( NULL );
-  gtk_frame_set_shadow_type( GTK_FRAME( pframe ), GTK_SHADOW_IN );
-  gtk_table_attach( GTK_TABLE(pv_table), pframe, 0, 1, 0, 1,
+
+  /*
+   * Resize the greater one of dwidth and dheight to PREVIEW_SIZE
+   */
+  if ( path_ptr->dwidth > path_ptr->dheight ) 
+  {
+    path_ptr->pheight = path_ptr->dheight * PREVIEW_SIZE / path_ptr->dwidth;
+    path_ptr->pwidth = PREVIEW_SIZE;
+  } 
+  else 
+  {
+    path_ptr->pwidth = path_ptr->dwidth * PREVIEW_SIZE / path_ptr->dheight;
+    path_ptr->pheight = PREVIEW_SIZE;
+  }
+
+  /* aspect_frame is the CONTAINER for the preview drawing area */
+  aspect_frame = gtk_aspect_frame_new (NULL   /* without label */
+                                      , 0.5   /* xalign center */
+                                      , 0.5   /* yalign center */
+                                      , path_ptr->pwidth / path_ptr->pheight     /* ratio */
+                                      , TRUE  /* obey_child */
+                                      );
+  gtk_table_attach( GTK_TABLE(pv_table), aspect_frame, 0, 1, 0, 1,
 		    0, 0, 0, 0 );
-  gtk_widget_show(pframe);
 
 
   /* the preview sub table (2 rows) */
@@ -1976,53 +2017,28 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_path_preview *path_ptr)
 		    0, 0, 0, 0 );
   gtk_widget_show (pv_sub_table);
 
-
-  /* PREVIEW */
-  path_ptr->preview = preview = gtk_preview_new( path_ptr->bpp==3 ? GTK_PREVIEW_COLOR : GTK_PREVIEW_GRAYSCALE );
-  g_object_set_data( G_OBJECT(preview), "path_ptr", path_ptr);
-  gtk_widget_set_events( GTK_WIDGET(preview), PREVIEW_MASK );
-  g_signal_connect_after( G_OBJECT(preview), "expose_event",
+  /* PREVIEW DRAWING AREA */
+  path_ptr->pv_ptr = p_pview_new(path_ptr->pwidth
+                                , path_ptr->pheight
+                                , GAP_MOV_CHECK_SIZE
+                                , aspect_frame
+                                );
+  da_widget = path_ptr->pv_ptr->da_widget;
+  
+  g_object_set_data( G_OBJECT(da_widget), "path_ptr", path_ptr);
+  gtk_widget_set_events( GTK_WIDGET(da_widget), PREVIEW_MASK );
+  g_signal_connect_after( G_OBJECT(da_widget), "expose_event",
 		          G_CALLBACK (mov_path_prevw_preview_expose),
 		          path_ptr );
-  g_signal_connect( G_OBJECT(preview), "event",
+  g_signal_connect( G_OBJECT(da_widget), "event",
 		    G_CALLBACK  (mov_path_prevw_preview_events),
 		    path_ptr );
-  gtk_container_add( GTK_CONTAINER( pframe ), path_ptr->preview );
+  gtk_container_add( GTK_CONTAINER( aspect_frame ), da_widget);
+  gtk_widget_show(da_widget);
+  gtk_widget_show(aspect_frame);
 
-  /*
-   * Resize the greater one of dwidth and dheight to PREVIEW_SIZE
-   */
-  if ( path_ptr->dwidth > path_ptr->dheight ) {
-    path_ptr->pheight = path_ptr->dheight * PREVIEW_SIZE / path_ptr->dwidth;
-    path_ptr->pwidth = PREVIEW_SIZE;
-  } else {
-    path_ptr->pwidth = path_ptr->dwidth * PREVIEW_SIZE / path_ptr->dheight;
-    path_ptr->pheight = PREVIEW_SIZE;
-  }
 
-  gtk_widget_show(preview);
 
-  /* port to gtk+-2.0.0
-   * gtk_widget_set_size_request needs an already allocated parent window to work
-   * properly.
-   * gtk_widget_realize should force allocation of the window
-   *  ==> but still does not work ??
-   *      continue using the DEPRECATED but working gtk_preview_size procedure
-   *      until i find out whats wrong 
-   */
-
-/*
-   gtk_widget_realize(path_ptr->shell);
-   gtk_widget_realize(path_ptr->master_vbox);
-   gtk_widget_realize(frame);
-   gtk_widget_realize(vbox);
-   gtk_widget_realize(table);
-   gtk_widget_realize(preview);
-   gtk_widget_set_size_request(preview, path_ptr->pwidth, path_ptr->pheight );
-*/   
-
-   gtk_preview_size( GTK_PREVIEW( preview ), path_ptr->pwidth, path_ptr->pheight );
-  
   
 
   /* Draw the contents of preview, that is saved in the preview widget */
@@ -2058,22 +2074,52 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_path_preview *path_ptr)
 		    G_CALLBACK  (mov_padd_callback),
 		    path_ptr);
 
-  /* toggle clip_to_image */
-  check_button = gtk_check_button_new_with_label ( _("Show Path"));
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (check_button),
-				path_ptr->show_path);
-  gimp_help_set_help_data(check_button,
-                       _("Show Path Lines and enable "
-                         "pick/drag with left button "
-                         "or move with right button")
-                       , NULL);
-  gtk_widget_show (check_button);
-  g_signal_connect (G_OBJECT (check_button), "toggled",
-                    G_CALLBACK  (mov_show_path_callback),
-                    path_ptr);
-  gtk_table_attach(GTK_TABLE(button_table), check_button, 1, 2, row, row+1,
-                   0, 0, 0, 0);
+  /* hbox_show block */
+  {
+    GtkWidget *hbox_show;
+    GtkWidget *frame_show;
+    
+    frame_show = gtk_frame_new ( _("Show"));
+    gtk_frame_set_shadow_type (GTK_FRAME (frame_show), GTK_SHADOW_ETCHED_IN);
+    gtk_widget_show (frame_show);
+   
+    hbox_show = gtk_hbox_new (FALSE, 3);
+    gtk_widget_show (hbox_show);
+    gtk_container_add (GTK_CONTAINER (frame_show), hbox_show);
+    
+    /* toggle Show path */
+    check_button = gtk_check_button_new_with_label ( _("Path"));
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (check_button),
+				  path_ptr->show_path);
+    gimp_help_set_help_data(check_button,
+                         _("Show Path Lines and enable "
+                           "pick/drag with left button "
+                           "or move with right button")
+                         , NULL);
+    gtk_widget_show (check_button);
+    gtk_box_pack_start (GTK_BOX (hbox_show), check_button, TRUE, TRUE, 0);
+    
+    g_signal_connect (G_OBJECT (check_button), "toggled",
+                      G_CALLBACK  (mov_show_path_callback),
+                      path_ptr);
 
+    /* toggle Show cursor */
+    check_button = gtk_check_button_new_with_label ( _("Cursor"));
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (check_button),
+				  path_ptr->show_cursor);
+    gimp_help_set_help_data(check_button,
+                         _("Show Cursor Crosslines")
+                         , NULL);
+    gtk_widget_show (check_button);
+    gtk_box_pack_start (GTK_BOX (hbox_show), check_button, TRUE, TRUE, 0);
+    
+    g_signal_connect (G_OBJECT (check_button), "toggled",
+                      G_CALLBACK  (mov_show_cursor_callback),
+                      path_ptr);
+
+    gtk_table_attach(GTK_TABLE(button_table), frame_show, 1, 2, row, row+1,
+                     0, 0, 0, 0);
+  }
   row++;
 
   button = gtk_button_new_from_stock ( GAP_STOCK_INSERT_POINT );
@@ -2244,7 +2290,6 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_path_preview *path_ptr)
 
   mov_path_prevw_cursor_update( path_ptr );
 
-  path_ptr->cursor = FALSE;    /* Make sure that the cursor has not been drawn */
   path_ptr->in_call = FALSE;   /* End of initialization */
   if(gap_debug) printf("pvals path_ptr=%d,%d\n", path_ptr->p_x, path_ptr->p_y );
   if(gap_debug) printf("path_ptr cur=%d,%d\n", path_ptr->curx, path_ptr->cury );
@@ -2259,8 +2304,6 @@ mov_path_prevw_destroy ( GtkWidget *widget,
   g_free( path_ptr );
 }
 
-static void render_preview ( GtkWidget *preview, GimpPixelRgn *srcrgn );
-
 /* ============================================================================
  *  mov_path_prevw_preview_init
  *    Initialize preview
@@ -2271,113 +2314,18 @@ static void render_preview ( GtkWidget *preview, GimpPixelRgn *srcrgn );
 static void
 mov_path_prevw_preview_init ( t_mov_path_preview *path_ptr )
 {
-  gimp_pixel_rgn_init ( &path_ptr->src_rgn, path_ptr->drawable, 0, 0,
-			path_ptr->dwidth, path_ptr->dheight, FALSE, FALSE );
-  path_ptr->PixelRgnIsInitialized = TRUE;
-  render_preview( path_ptr->preview, &path_ptr->src_rgn );
-}
+  gint32  image_id;
 
 
-/* ============================================================================
- * render_preview
- *		Preview Rendering Util routine
- * ============================================================================
- */
+  if(gap_debug) printf ("mov_path_prevw_preview_init:  START\n");
 
-#define CHECKWIDTH 8
-#define LIGHTCHECK 192
-#define DARKCHECK  128
-#ifndef OPAQUE
-#define OPAQUE	   255
-#endif
-
-static void
-render_preview ( GtkWidget *preview, GimpPixelRgn *srcrgn )
-{
-  guchar	 *src_row, *dest_row, *src, *dest;
-  gint		 row, col;
-  gint		 dwidth, dheight, pwidth, pheight;
-  gint		 *src_col;
-  gint		 bpp, alpha, has_alpha, b;
-  guchar	 check;
-
-  dwidth  = srcrgn->w;
-  dheight = srcrgn->h;
-  if( GTK_PREVIEW(preview)->buffer )
-    {
-      pwidth  = GTK_PREVIEW(preview)->buffer_width;
-      pheight = GTK_PREVIEW(preview)->buffer_height;
-    }
-  else
-    {
-      pwidth  = preview->requisition.width;
-      pheight = preview->requisition.height;
-    }
-
-  bpp = srcrgn->bpp;
-  alpha = bpp;
-  has_alpha = gimp_drawable_has_alpha( srcrgn->drawable->drawable_id );
-  if( has_alpha ) alpha--;
-
-  if(gap_debug)
+  if(path_ptr->pv_ptr)
   {
-    printf("render_preview: %d %d %d", bpp, alpha, has_alpha);
-    printf(" (%d %d %d %d)\n", dwidth, dheight, pwidth, pheight);
+    if(gap_debug) printf ("mov_path_prevw_preview_init: before p_pview_render_from_image\n");
+    image_id = gimp_drawable_image_id(path_ptr->drawable->drawable_id);
+    p_pview_render_from_image(path_ptr->pv_ptr, image_id);
   }
-  
-  src_row = g_new ( guchar, dwidth * bpp );
-  dest_row = g_new ( guchar, pwidth * bpp );
-  src_col = g_new ( gint, pwidth );
-
-  for ( col = 0; col < pwidth; col++ )
-    src_col[ col ] = ( col * dwidth / pwidth ) * bpp;
-
-  for ( row = 0; row < pheight; row++ )
-    {
-      gimp_pixel_rgn_get_row ( srcrgn, src_row,
-			       0, row * dheight / pheight, dwidth );
-      dest = dest_row;
-      for ( col = 0; col < pwidth; col++ )
-	{
-	  src = &src_row[ src_col[col] ];
-	  if( !has_alpha || src[alpha] == OPAQUE )
-	    {
-	      /* no alpha channel or opaque -- simple way */
-	      for ( b = 0; b < alpha; b++ )
-		dest[b] = src[b];
-	    }
-	  else
-	    {
-	      /* more or less transparent */
-	      if( ( col % (CHECKWIDTH*2) < CHECKWIDTH ) ^
-		  ( row % (CHECKWIDTH*2) < CHECKWIDTH ) )
-		check = LIGHTCHECK;
-	      else
-		check = DARKCHECK;
-
-	      if ( src[alpha] == 0 )
-		{
-		  /* full transparent -- check */
-		  for ( b = 0; b < alpha; b++ )
-		    dest[b] = check;
-		}
-	      else
-		{
-		  /* middlemost transparent -- mix check and src */
-		  for ( b = 0; b < alpha; b++ )
-		    dest[b] = ( src[b]*src[alpha] + check*(OPAQUE-src[alpha]) ) / OPAQUE;
-		}
-	    }
-	  dest += alpha;
-	}
-      gtk_preview_draw_row( GTK_PREVIEW( preview ), dest_row,
-			    0, row, pwidth );
-    }
-
-  g_free ( src_col );
-  g_free ( src_row );
-  g_free ( dest_row );
-}	/* end render_preview */
+}
 
 /* ============================================================================
  * mov_path_prevw_draw
@@ -2392,93 +2340,115 @@ mov_path_prevw_draw ( t_mov_path_preview *path_ptr, gint update )
 {
   gint     l_idx;
   GdkColor fg;
+  GdkColormap *cmap;
   GimpRGB  foreground;
   guchar   l_red, l_green, l_blue;
 
-  if( update & PREVIEW )
-    {
-      path_ptr->cursor = FALSE;
-      if(gap_debug) printf("draw-preview\n");
-    }
+  if(gap_debug) printf("mov_path_prevw_draw: START update:%d\n", (int)update);
 
+  if(path_ptr->pv_ptr == NULL)
+  {
+    return;
+  }
+  if(path_ptr->pv_ptr->da_widget==NULL)
+  {
+    return;
+  }
+
+  if(gap_debug) printf("mov_path_prevw_draw: p_pview_repaint\n");
+  p_pview_repaint(path_ptr->pv_ptr);
 
   /* alternate cross cursor OR path graph */
 
   if((path_ptr->show_path)
   && ( pvals != NULL )
   && (update & PATH_LINE))
-    {
-      if(gap_debug) printf("draw-preview re-render for PATH draw\n");
-      if((path_ptr->PixelRgnIsInitialized)
-      && (path_ptr->preview))
-      {
-         /* redraw the preview
-          * (to clear path lines and cross cursor)
-          */
-         gtk_widget_queue_draw(path_ptr->preview);
-      }
+  {
+      /* redraw the preview
+       * (to clear path lines and cross cursor)
+       */
  
+     
       gimp_palette_get_foreground (&foreground);
       gimp_rgb_get_uchar (&foreground, &l_red, &l_green, &l_blue);
-      fg.pixel = gdk_rgb_xpixel_from_rgb ((l_red << 16) | (l_green << 8) | l_blue);
+
+      cmap = gtk_widget_get_colormap(path_ptr->pv_ptr->da_widget);
+      fg.red   = (l_red   << 8) | l_red;
+      fg.green = (l_green << 8) | l_green;
+      fg.blue  = (l_blue  << 8) | l_blue;
+
+      /*if(gap_debug) printf ("fg.r/g/b (%d %d %d)\n", (int)fg.red ,(int)fg.green, (int)fg.blue); */
+
+      if(cmap)
+      {
+         gdk_colormap_alloc_color(cmap
+                              , &fg
+                              , FALSE   /* writeable */
+                              , TRUE   /* best_match */
+                              );
+      }
+      /*if(gap_debug) printf ("fg.pixel (%d)\n", (int)fg.pixel); */
+
         
-      gdk_gc_set_foreground (path_ptr->preview->style->black_gc, &fg);
+      gdk_gc_set_foreground (path_ptr->pv_ptr->da_widget->style->black_gc, &fg);
 
       p_points_to_tab(path_ptr);
       for(l_idx = 0; l_idx < pvals->point_idx_max; l_idx++)
         {
            /* draw the path line(s) */
-	   gdk_draw_line (path_ptr->preview->window,
-			  path_ptr->preview->style->black_gc,
+	   gdk_draw_line (path_ptr->pv_ptr->da_widget->window,
+			  path_ptr->pv_ptr->da_widget->style->black_gc,
 			  (pvals->point[l_idx].p_x    * path_ptr->pwidth) / path_ptr->dwidth,
 			  (pvals->point[l_idx].p_y    * path_ptr->pheight) / path_ptr->dheight, 
 			  (pvals->point[l_idx +1].p_x * path_ptr->pwidth) / path_ptr->dwidth,
 			  (pvals->point[l_idx +1].p_y * path_ptr->pheight) / path_ptr->dheight
 			  );
            /* draw the path point(s) */
-	   gdk_draw_arc (path_ptr->preview->window, path_ptr->preview->style->black_gc, TRUE,
+	   gdk_draw_arc (path_ptr->pv_ptr->da_widget->window, path_ptr->pv_ptr->da_widget->style->black_gc, TRUE,
 			    (pvals->point[l_idx +1].p_x  * path_ptr->pwidth / path_ptr->dwidth) -RADIUS,
 			    (pvals->point[l_idx +1].p_y  * path_ptr->pheight / path_ptr->dheight) -RADIUS,
 			    RADIUS * 2, RADIUS * 2, 0, 23040);
         }
         /* draw the start point */
-	gdk_draw_arc (path_ptr->preview->window, path_ptr->preview->style->black_gc, TRUE,
+	gdk_draw_arc (path_ptr->pv_ptr->da_widget->window, path_ptr->pv_ptr->da_widget->style->black_gc, TRUE,
 		     (pvals->point[0].p_x * path_ptr->pwidth / path_ptr->dwidth) -RADIUS,
 		     (pvals->point[0].p_y * path_ptr->pheight / path_ptr->dheight) -RADIUS,
 		     RADIUS * 2, RADIUS * 2, 0, 23040);
 
         /* restore black gc */
-        fg.pixel = gdk_rgb_xpixel_from_rgb (0);
-        gdk_gc_set_foreground (path_ptr->preview->style->black_gc, &fg);
-    }
+        fg.red   = 0;
+        fg.green = 0;
+        fg.blue  = 0;
+        if(cmap)
+        {
+          gdk_colormap_alloc_color(cmap
+                                , &fg
+                                , FALSE   /* writeable */
+                                , TRUE   /* best_match */
+                                );
+        }
 
+        gdk_gc_set_foreground (path_ptr->pv_ptr->da_widget->style->black_gc, &fg);
+  }
 
-  if( update & CURSOR )
-    {
-      if(gap_debug) printf("draw-cursor %d old=%d,%d cur=%d,%d\n",
-	     path_ptr->cursor, path_ptr->oldx, path_ptr->oldy, path_ptr->curx, path_ptr->cury);
-      gdk_gc_set_function ( path_ptr->preview->style->black_gc, GDK_INVERT);
-      if( path_ptr->cursor )
-	{
-	  gdk_draw_line ( path_ptr->preview->window,
-			  path_ptr->preview->style->black_gc,
-			  path_ptr->oldx, 1, path_ptr->oldx, path_ptr->pheight-1 );
-	  gdk_draw_line ( path_ptr->preview->window,
-			  path_ptr->preview->style->black_gc,
-			  1, path_ptr->oldy, path_ptr->pwidth-1, path_ptr->oldy );
-	}
-      gdk_draw_line ( path_ptr->preview->window,
-		      path_ptr->preview->style->black_gc,
+  /* draw CURSOR */
+  if(path_ptr->show_cursor)
+  {
+      if(gap_debug) printf("mov_path_prevw_draw: draw-cursor cur=%d,%d\n"
+             , path_ptr->curx
+             , path_ptr->cury
+             );
+      gdk_gc_set_function ( path_ptr->pv_ptr->da_widget->style->black_gc, GDK_INVERT);
+
+      gdk_draw_line ( path_ptr->pv_ptr->da_widget->window,
+		      path_ptr->pv_ptr->da_widget->style->black_gc,
 		      path_ptr->curx, 1, path_ptr->curx, path_ptr->pheight-1 );
-      gdk_draw_line ( path_ptr->preview->window,
-		      path_ptr->preview->style->black_gc,
+      gdk_draw_line ( path_ptr->pv_ptr->da_widget->window,
+		      path_ptr->pv_ptr->da_widget->style->black_gc,
 		      1, path_ptr->cury, path_ptr->pwidth-1, path_ptr->cury );
       /* current position of cursor is updated */
-      path_ptr->oldx = path_ptr->curx;
-      path_ptr->oldy = path_ptr->cury;
-      path_ptr->cursor = TRUE;
-      gdk_gc_set_function ( path_ptr->preview->style->black_gc, GDK_COPY);
-    }
+      gdk_gc_set_function ( path_ptr->pv_ptr->da_widget->style->black_gc, GDK_COPY);
+  }
 }
 
 
@@ -2561,11 +2531,16 @@ mov_path_prevw_preview_expose( GtkWidget *widget,
 
   path_ptr = g_object_get_data( G_OBJECT(widget), "path_ptr" );
 
-  if((!path_ptr->PixelRgnIsInitialized)
+  if((path_ptr->pv_ptr == NULL)
   || (path_ptr->in_call))
-    {
+  {
        return FALSE;
-    }
+  }
+
+  if(path_ptr->pv_ptr->da_widget == NULL)
+  {
+       return FALSE;
+  }
 
   path_ptr->in_call = TRUE;
   mov_path_prevw_draw( path_ptr, ALL );
@@ -2593,12 +2568,19 @@ mov_path_prevw_preview_events ( GtkWidget *widget,
  /* HINT:
   * smooth update of both CURSOR and PATH_LINE
   * on every mousemove works fine on machines with 300MHz.
-  * for slower machines it is better to paint just the cross cursor,
+  * for slower machines it once was better to paint just the cross cursor,
   * and refresh the path lines only at
-  * button press and release events
+  * button press and release events.
+  * 2003.07.12 hof: 
+  *    since we use a drawing_area that is repainted at each expose
+  *    event, we MUST force painting of the PATH_LINE.
+  *    (if we dont, the pathline disappears completely until the mouse
+  *     button is released)
+  *    The gap_pview_da repaint is faster than the old render_preview procedure
+  *    so it may work even for slower machines now. 
   */
-  /* upd_flag = CURSOR | PATH_LINE; */
-  upd_flag = CURSOR;
+  upd_flag = CURSOR | PATH_LINE;
+  /* upd_flag = CURSOR; */ 
        
   mouse_button = 0;
   

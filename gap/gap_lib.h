@@ -25,6 +25,7 @@
  */
 
 /* revision history:
+ * 1.3.16c  2003/07/07   hof: extend ainfo  onion_triggers
  * 1.3.14a  2003/05/27   hof: moved basic gap operations to new module gap_base_ops
  * 1.3.12a  2003/05/02   hof: merge into CVS-gimp-gap project, added gap_renumber, upto 6digit framenumber support
  * 1.3.11a  2003/01/18   hof: added p_gap_check_save_needed

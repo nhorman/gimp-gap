@@ -1,3 +1,32 @@
+2003-07-12 Wolfgang Hofer <hof@gimp.org>
+     Onionskin Configuration Dialog:
+     added Close Button, Auto Create after Load, Auto Delete before Save
+     (suggestions from Richard Van Den Boom),
+     Scope of Onionskin Settings changed from "Global for GIMP Session"
+     to "Permanent for the current Animation"
+     (Settings are now stored in the *_vin.gap files)
+          
+     Some Internal Reorganisations, more general video_info file handling
+     (added processing of the onionskin Settings here)  
+     
+     Bugfixes Navigator Dialog: video paste now working again,
+                                scale slider now reflects visible size
+                                del_button, dup_button sensitvity depends on selections
+     
+     * gap/gap_onion_base.c [.h]   (newly created modules, spliited of from gap_onion_worker)
+     * gap/gap_onion_worker.c [.h]
+     * gap/gap_onion_main.c [.h]
+     * gap/gap_onion_dialog.c
+     * gap/gap_lib.c [.h]
+     * gap/gap_vin.c [.h]
+     
+     * gap/gap_navigator_dialog.c
+     * gap/gap_arr_dialog.c
+     * gap/gap_mov_dialog.c    // removed deprecated GtkKPreview widget (replaced by drawing_area based gap_pview_da calls)
+
+     * gap/README:          updated GAP-specific gimpc config
+     * gap/Makefile.am
+     
 2003-07-07  Sven Neumann  <sven@gimp.org>
 
 	* gap/README_developers: updated the example code. It was still

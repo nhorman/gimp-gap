@@ -33,6 +33,7 @@
 
 
 /* revision history:
+ * 1.3.16c; 2003/07/09   hof: splitted off gap_onion_base.h
  * 1.3.14a; 2003/05/22   hof: integration into gimp-gap-1.3.14
  * 1.3.12a; 2003/05/03   hof: started port to gimp-1.3  /gtk+2.2
  * version 1.2.2a;  2001.12.10   hof: created
@@ -62,6 +63,8 @@
 #include <gap_lock.h>
 #include <gap_layer_copy.h>
 
+#include <gap_onion_base.h>
+#include <gap_vin.h>
 
 
 #define GAP_PLUGIN_NAME_ONION_CFG   "plug_in_gap_onionskin_configuration"
@@ -83,19 +86,6 @@
  * that is the reason why MAKE and DEL names do not contain "gap"
  */
 
-#define GAP_ONION_PARASITE_NAME     "gap_onion_skin_layer"
-
-#define GAP_ONION_VISI_FALSE   0
-#define GAP_ONION_VISI_TRUE    1
-#define GAP_ONION_VISI_TOGGLE  2
-
-
-typedef struct t_onion_parasite_data {
-   long         timestamp;      /* UTC timecode of creation time */
-   gint32       tattoo;         /* unique tattoo */
-} t_onion_parasite_data;
-
-
 typedef struct t_ainfo {
    long         first_frame_nr;
    long         last_frame_nr;
@@ -113,39 +103,12 @@ typedef struct t_img_cache {
    gint32       layer_id[GAP_ONION_CACHE_SIZE];
 } t_img_cache;
 
-typedef struct {
- /* configuration values for onion layers */
-  gint32  num_olayers;      /* Number of Onion Layers  1 .. 10 Default: 1 */
-  gint32  ref_delta;        /* Reference Frame Delta:  +- 1 ... n  Default: -1 */
-  gint32  ref_cycle;        /* Reference is Cycle   : TRUE/FALSE   Default: TRUE
-                             *    TRUE .. last frame has frame 0 as next frame
-                             */
-  gint32  stack_pos;        /* Place OnionLayer(s) on Stackposition 0..n Default: 1 */
-  gint32  stack_top;        /* TRUE Stack Position is relative from TOP
-                             * FALSE Stack Position is relative from Bottom (Default: FALSE) */
-  gdouble opacity;          /* OnionOpacity: 0.0..100.0%  Default: 50 % */
-  gdouble opacity_delta;    /* OnionOpacityDelta: 0..100%  Default: 80 %
-                             * (2nd Layer has 80% of 50%)
-                             */
-  gint32  ignore_botlayers; /* Ignore N Bottom Sourcelayers Default: 1
-                             *  (0 .. Onion Layer is built from all Src Layers)
-                             *  (2 .. Layers are ignored,  Background and next layer)
-                             */
-  gint32  select_mode;       /* Mode how to identify a layer: -1 Pattern off,  0-3 by layername 0=equal, 1=prefix, 2=suffix, 3=contains */
-  gint32  select_case;
-  gint32  select_invert;
-  gchar   select_string[512];
 
+
+typedef struct {
+  t_video_info  vin;
   gint    run;
-  gint32  farn_opaque;     /* TRUE: the far neighbour frames have higher opacity
-                            * FALSE: near neighbour frames have higher opacity (DEFAULT)
-                            */
 
-} t_values;
-
-
-typedef struct {
-  t_values    val;
   t_ainfo     ainfo;
   t_img_cache cache;
   gint32  range_from;
@@ -169,7 +132,9 @@ typedef struct {
   GtkWidget  *oni__checkbutton_select_case;
   GtkWidget  *oni__checkbutton_select_invert;
   GtkWidget  *oni__checkbutton_stack_top;
-  GtkWidget  *oni__checkbutton_farn_opaque;
+  GtkWidget  *oni__checkbutton_asc_opacity;
+  GtkWidget  *oni__checkbutton_auto_replace;
+  GtkWidget  *oni__checkbutton_auto_delete;
 
   GtkObject  *oni__spinbutton_ignore_botlayers_adj;
   GtkObject  *oni__spinbutton_num_olayers_adj;

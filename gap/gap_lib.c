@@ -26,6 +26,8 @@
  */
 
 /* revision history:
+ * 1.3.16c  2003/07/12   hof: - triggers for automatic onionskinlayer create and remove
+ *                              bugfix gap_vid_edit_paste
  * 1.3.14a  2003/05/27   hof: - moved basic gap operations to new module gap_base_ops
  *                            - moved procedures for thumbnail handling to gap_thumbnail
  *                            - conditional save now depends on
@@ -122,6 +124,8 @@
 #include "gap_lock.h"
 #include "gap_navi_activtable.h"
 #include "gap_thumbnail.h"
+#include "gap_vin.h"
+#include "gap_onion_base.h"
 
 
 extern      int gap_debug; /* ==0  ... dont print debug infos */
@@ -130,7 +134,7 @@ extern      int gap_debug; /* ==0  ... dont print debug infos */
 /* forward  working procedures */
 /* ------------------------------------------ */
 
-static int          p_save_old_frame(t_anim_info *ainfo_ptr);
+static int          p_save_old_frame(t_anim_info *ainfo_ptr, t_video_info *vin_ptr);
 static int          p_decide_save_as(gint32 image_id, char *sav_name);
 
 
@@ -1506,13 +1510,21 @@ p_save_named_frame(gint32 image_id, char *sav_name)
  * ============================================================================
  */
 int
-p_save_old_frame(t_anim_info *ainfo_ptr)
+p_save_old_frame(t_anim_info *ainfo_ptr, t_video_info *vin_ptr)
 {
   /* SAVE of old image image if it has unsaved changes
    * (or if Unconditional frame save is forced by gimprc setting)
    */ 
   if(p_gap_check_save_needed(ainfo_ptr->image_id))
   {
+    /* check and peroform automatic onionskinlayer remove */
+    if(vin_ptr)
+    {
+      if((vin_ptr->auto_delete_before_save) && (vin_ptr->onionskin_auto_enable))
+      {
+        p_onionskin_delete(ainfo_ptr->image_id);
+      }
+    }
     return (p_save_named_frame(ainfo_ptr->image_id, ainfo_ptr->old_filename));
   }
   return 0;
@@ -1640,6 +1652,11 @@ p_load_named_frame (gint32 old_image_id, char *lod_name)
 gint32
 p_replace_image(t_anim_info *ainfo_ptr)
 {
+  gint32 image_id;
+  t_video_info *vin_ptr;
+  gboolean  do_onionskin_crate;
+  
+  do_onionskin_crate  = FALSE;
   if(ainfo_ptr->new_filename != NULL) g_free(ainfo_ptr->new_filename);
   ainfo_ptr->new_filename = p_alloc_fname(ainfo_ptr->basename,
                                       ainfo_ptr->frame_nr,
@@ -1650,13 +1667,58 @@ p_replace_image(t_anim_info *ainfo_ptr)
   if(0 == p_file_exists(ainfo_ptr->new_filename ))
      return -1;
 
-  if(p_save_old_frame(ainfo_ptr) <0)
+  vin_ptr = p_get_video_info(ainfo_ptr->basename);
+  if(p_save_old_frame(ainfo_ptr, vin_ptr) < 0)
   {
+    if(vin_ptr)
+    {
+      g_free(vin_ptr);
+    }
     return -1;
   }
  
-  return(p_load_named_frame(ainfo_ptr->image_id, ainfo_ptr->new_filename));
+  if((vin_ptr->auto_replace_after_load) && (vin_ptr->onionskin_auto_enable))
+  {
+    do_onionskin_crate  = TRUE;
+    
+    /* check if directoryscan is needed */
+    if((ainfo_ptr->first_frame_nr < 0)
+    || (ainfo_ptr->last_frame_nr < 0))
+    {
+       /* perform directoryscan to findout first_frame_nr and last_frame_nr
+        * that is needed for onionskin creation
+        */
+       p_dir_ainfo(ainfo_ptr);
+    }
+  }
+ 
+  image_id = p_load_named_frame(ainfo_ptr->image_id, ainfo_ptr->new_filename);
 
+  /* check and peroform automatic onionskinlayer creation */
+  if(vin_ptr)
+  {
+    if(do_onionskin_crate)
+    {
+       /* create onionskinlayers without keeping the handled images cached
+        * (passing NULL pointers for the chaching structures and functions)
+        */
+       p_onionskin_apply(NULL         /* dummy pointer gpp */
+             , image_id               /* apply on the newly loaded image_id */
+             , vin_ptr
+             , ainfo_ptr->frame_nr        /* the new current frame_nr */
+             , ainfo_ptr->first_frame_nr
+             , ainfo_ptr->last_frame_nr
+             , ainfo_ptr->basename
+             , ainfo_ptr->extension
+             , NULL                    /* fptr_add_img_to_cache */
+             , NULL                    /* fptr_find_frame_in_img_cache */
+             , FALSE                   /* use_cache */
+             );
+    }
+    g_free(vin_ptr);
+  }
+
+  return(image_id);
 }	/* end p_replace_image */
 
 
@@ -1936,8 +1998,11 @@ gap_vid_edit_paste(GimpRunMode run_mode, gint32 image_id, long paste_mode)
   l_cnt2 = p_vid_edit_framecount();
   if(gap_debug)
   {
-    printf("gap_vid_edit_paste: paste_mode %d found %d frames to paste\n"
-           , (int)paste_mode, (int)l_cnt2);
+    printf("gap_vid_edit_paste: paste_mode %d found %d frames to paste, image_id: %d\n"
+           , (int)paste_mode
+           , (int)l_cnt2
+           , (int)image_id
+           );
   }
   if (l_cnt2 < 1)
   {
@@ -1953,6 +2018,17 @@ gap_vid_edit_paste(GimpRunMode run_mode, gint32 image_id, long paste_mode)
   if (0 != p_dir_ainfo(ainfo_ptr))
   {
      return (-1);
+  }
+
+  if(gap_debug)
+  {
+    printf("gap_vid_edit_paste: ainfo: basename: %s, extension:%s  curr:%d first:%d last: %d\n"
+           , ainfo_ptr->basename
+           , ainfo_ptr->extension
+           , (int) ainfo_ptr->curr_frame_nr
+           , (int) ainfo_ptr->first_frame_nr
+           , (int) ainfo_ptr->last_frame_nr
+           );
   }
 
   rc = 0;
@@ -2010,6 +2086,9 @@ gap_vid_edit_paste(GimpRunMode run_mode, gint32 image_id, long paste_mode)
      l_fname_copy = g_strdup_printf("%s%06ld.xcf", l_basename, (long)l_frame_nr);
 
      l_tmp_image_id = p_load_image(l_fname_copy);
+     
+     /* delete onionskin layers (if there are any) before paste */
+     p_onionskin_delete(l_tmp_image_id);
      
      /* check size and resize if needed */
      if((gimp_image_width(l_tmp_image_id) != gimp_image_width(image_id))
@@ -2079,28 +2158,63 @@ gap_vid_edit_paste(GimpRunMode run_mode, gint32 image_id, long paste_mode)
              break;
         }
      }
+
+     if(gap_debug) printf("DEBUG: before p_save_named_frame l_fname:%s l_tmp_image_id:%d'\n"
+                      , l_fname
+                      , (int) l_tmp_image_id);
+
+     gimp_image_set_filename (l_tmp_image_id, l_fname);
      rc = p_save_named_frame(l_tmp_image_id, l_fname);
+
      gimp_image_delete(l_tmp_image_id);
+
      g_free(l_fname);
      g_free(l_fname_copy);
 
      l_dst_frame_nr++;
   }
   
-  if((rc >= 0)  && (paste_mode != VID_PASTE_INSERT_AFTER))
+  if(paste_mode == VID_PASTE_INSERT_AFTER)
   {
-    /* load from the "new" current frame */   
-    if(ainfo_ptr->new_filename != NULL) g_free(ainfo_ptr->new_filename);
-    ainfo_ptr->new_filename = p_alloc_fname(ainfo_ptr->basename,
-                                      ainfo_ptr->curr_frame_nr,
-                                      ainfo_ptr->extension);
-    rc = p_load_named_frame(ainfo_ptr->image_id, ainfo_ptr->new_filename);
+    /* we pasted successful after the current image,
+     * keep the calling image_id as active image_id return value
+     */
+    if(rc >= 0)
+    {
+      rc = image_id;
+    }
   }
   else
   {
-    rc = -1;
+    if(rc >= 0)
+    {
+      /* load from the "new" current frame */   
+      if(ainfo_ptr->new_filename != NULL) g_free(ainfo_ptr->new_filename);
+
+      ainfo_ptr->new_filename = p_alloc_fname(ainfo_ptr->basename,
+                                      ainfo_ptr->curr_frame_nr,
+                                      ainfo_ptr->extension);
+
+      if(gap_debug)  printf("gap_vid_edit_paste: before load: %s basename: %s, extension:%s  curr:%d first:%d last: %d\n"
+           , ainfo_ptr->new_filename
+           , ainfo_ptr->basename
+           , ainfo_ptr->extension
+           , (int) ainfo_ptr->curr_frame_nr
+           , (int) ainfo_ptr->first_frame_nr
+           , (int) ainfo_ptr->last_frame_nr
+           );
+
+      rc = p_load_named_frame(ainfo_ptr->image_id, ainfo_ptr->new_filename);
+    }
   }
-  
+
+  if(rc < 0)
+  {
+      rc = -1;
+  }
+
+  if(gap_debug)  printf("gap_vid_edit_paste: rc: %d\n", (int)rc);
+
   p_free_ainfo(&ainfo_ptr);
   
   return(rc);

@@ -199,7 +199,7 @@ p_gimp_file_save_thumbnail(gint32 image_id, char* filename)
    GimpParam          *return_vals;
    int              nreturn_vals;
 
-   /*if(gap_debug) printf("p_gimp_file_save_thumbnail: image_id:%d  %s\n", (int)image_id, filename); */
+   /*if(gap_debug) printf("p_gimp_file_save_thumbnail: image_id:%d  %s\n", (int)image_id, filename);*/
 
    return_vals = gimp_run_procedure (l_called_proc,
                                  &nreturn_vals,

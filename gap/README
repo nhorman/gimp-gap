@@ -1,4 +1,4 @@
-Project gap "Gimp Animation Package"   18. Jun 2003  release 1.3.14c
+Project gap "Gimp Animation Package"   12. Jul 2003  (pre)release 1.3.16c
 
 --------------------------------------------------------------------
 Introduction
@@ -1202,6 +1202,28 @@ How to use
 - How to write (or generate) Animated Plug-Ins:
       (see file: README_devlopers)
 
+--------------------------------------------------------------------
+Video Configuration (gimprc)
+--------------------------------------------------------------------
+
+There are optional Configuration Values for the GAP Video Plug-Ins.
+Those Values are stored in your personal gimprc file (located in $HOME/.gimp-1.3/gimprc)
+or in the system-wide gimprc file (usually located at /usr/local/etc/gimp/1.3/gimprc)
+
+If you edit gimprc files by hand, you must do this before you startup gimp.
+
+
+# there are 2 Values to define direcory and basename
+# for Video Copy/Cut/Paste operations      
+(video-paste-dir "/home/hof/gap_video_paste_dir")
+(video-paste-basename "gap_video_paste_")
+
+# the video-confirm-frame-delete can have values "yes" or "no"
+# where "no" does not show the confirm dialog windows when the user
+# tries to delete animation frames of the video.
+# (default is "yes")
+(video-confirm-frame-delete "yes")
+ 
 
 =============================================
 Plug-In's included in release gap 1.3.15:

@@ -48,21 +48,25 @@ DESCRIPTION:
     
     APPLY:
     The apply button creates onion layers in the selected range
-    of frames and sets the values for this gimp session.
+    of frames and sets the values for the handled Animation.
 
     DELETE:
     The delete button removes onion layers in the selected range
-    of frames and sets the values for this gimp session.
+    of frames and sets the values for the handled Animaton.
     
 
-    SET:
-    This button sets the values for the current
-    gimp session (without changing any frame).
+    CLOSE:
+    This button Closes the window and sets the values for the current
+    handled Animation, without changing any frame.
     
     
     DEFAULT:
     Load hardcoded defaults (does not set anything)
     
+
+    SET for <name_of_the_current_animation>:
+    This button sets the values for the current
+    handled Animation.
     
     
     Onionskin Layers:
@@ -152,6 +156,29 @@ DESCRIPTION:
              the copy should not be deleted.
              If you have gimp-1.2.2 the copy will be deleted too,
              because there is a bug in the gimp video base functions.
+
+  
+  Auto Create after Load
+       ON: Force automatic Creation (or Replacement) of Onionskin Layer(s)
+           on GAP controlled Framechanges.
+  Auto Delete before Save
+       ON: Force automatic Delete of Onionskin Layer(s)
+           on GAP controlled Framechanges.
+
+           GAP controlled Framechanges are GoTo Operations in the Video Menu
+           or in The Video/VCR Navigator Dialog or in the Video/Playback
+           dialogs.
+
+
+  Restrictions:
+   - The Onionskin automatic does NOT work if you load a frame
+     via the File Menu, or othe implicite file load/save operations.
+   
+   - Onionskin Layers are restricted to Imagefortmats that can store
+     multiple layers, layer parasites and tattoos.
+
+     GIMP's native format XCF is rcommanded.
+ 
 
 
 *) Cross-Fading Example

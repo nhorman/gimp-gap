@@ -376,8 +376,6 @@ p_copy_png_thumb(char *filename_src, char *filename_dst)
 
   if(gap_debug) printf("p_copy_png_thumb: START S:%s D:%s\n",filename_src , filename_dst);
 
-  gimp_ui_init ("gap_thn", FALSE);
-
   if(thumb_dir == NULL)
   {
     p_gap_init_thumb_dirs();

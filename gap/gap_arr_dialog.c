@@ -38,7 +38,7 @@
  */
 
 /* revision history:
- * gimp    1.3.16b; 2003/07/04  hof: new p_confirm_dialog
+ * gimp    1.3.16c; 2003/07/12  hof: new p_confirm_dialog
  * gimp    1.3.15a; 2003/06/21  hof: textspacing
  * gimp    1.3.14b; 2003/06/03  hof: added gap_stock_init
  * gimp    1.3.14a; 2003/05/19  hof: GUI standard (OK ist rightmost button)
@@ -81,7 +81,6 @@
 #include "gtk/gtk.h"
 #include "libgimp/gimp.h"
 #include "libgimp/gimpui.h"
-#include "libgimp/gimp.h"
 
 /* private includes */
 #include "gap_arr_dialog.h"
@@ -1458,7 +1457,7 @@ p_confirm_dialog(char *msg_txt, char *title_txt, char *frame_txt)
   if(value_string)
   {
 
-     /*if(gap_debug)*/ printf("video-confirm-frame-delete: %s\n", value_string);
+     if(gap_debug) printf("video-confirm-frame-delete: %s\n", value_string);
 
      /* check if gimprc preferences value no disables confirmation dialog */
      if((*value_string == 'n') || (*value_string == 'N'))
@@ -1469,7 +1468,7 @@ p_confirm_dialog(char *msg_txt, char *title_txt, char *frame_txt)
   }
   else
   {
-     /*if(gap_debug)*/ printf("NOT found in gimprc: video-confirm-frame-delete:\n (CONFIRM default yes is used)");
+     if(gap_debug) printf("NOT found in gimprc: video-confirm-frame-delete:\n (CONFIRM default yes is used)");
   }
 
   if(!l_confirm)

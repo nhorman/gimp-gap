@@ -38,9 +38,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-static char *gap_main_version =  "1.3.16b; 2003/07/04";
+static char *gap_main_version =  "1.3.16c; 2003/07/09";
 
 /* revision history:
+ * gimp    1.3.16c; 2003/07/09  hof: - updated main version,
  * gimp    1.3.16b; 2003/07/04  hof: - added frame_density plugin, updated main version,
  * gimp    1.3.15a; 2003/06/21  hof: - updated main version,
  * gimp    1.3.14a; 2003/05/27  hof: include gap_base_ops.h
@@ -95,6 +96,7 @@ static char *gap_main_version =  "1.3.16b; 2003/07/04";
 /* GIMP includes */
 #include "gtk/gtk.h"
 #include "libgimp/gimp.h"
+#include "libgimp/gimpui.h"
 
 /* GAP includes */
 #include "gap_lib.h"

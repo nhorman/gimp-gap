@@ -24,7 +24,8 @@
  */
 
 /* revision history:
- * version 1.3.16b; 2003.07.06   hof: bugfixes, added parameter farn_opaque
+ * version 1.3.16c; 2003.07.12   hof: bugfixes, added parameter asc_opacity
+ * version 1.3.16b; 2003.07.06   hof: bugfixes, added parameter asc_opacity
  *                                    minor tooltip Helptexts changes
  * version 1.3.14a; 2003.05.24   hof: created
  */ 
@@ -96,7 +97,7 @@ on_oni__checkbutton_stack_top_toggled  (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
 
 static void
-on_oni__checkbutton_farn_opaque_toggled  (GtkToggleButton *togglebutton,
+on_oni__checkbutton_asc_opacity_toggled  (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
 
 static void
@@ -136,6 +137,10 @@ on_oni__button_cancel_clicked          (GtkButton       *button,
                                         gpointer         user_data);
 
 static void
+on_oni__button_close_clicked          (GtkButton       *button,
+                                        gpointer         user_data);
+
+static void
 on_oni__button_set_clicked             (GtkButton       *button,
                                         gpointer         user_data);
 
@@ -153,6 +158,14 @@ on_oni__dialog_destroy                 (GtkObject       *object,
 
 
 
+static void
+on_oni__checkbutton_auto_replace_toggled  (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+static void
+on_oni__checkbutton_auto_delete_toggled  (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
 
 
 
@@ -169,7 +182,7 @@ p_init_sensitive(t_global_params *gpp)
   gboolean  l_sensitive;
 
   l_sensitive = TRUE;
-  if(gpp->val.select_mode > 3)
+  if(gpp->vin.select_mode > 3)
   {
     /* insensitive for select modes (4,5,6) that are lists of stacknumbers or all_visible layers */
     l_sensitive = FALSE;
@@ -180,7 +193,7 @@ p_init_sensitive(t_global_params *gpp)
   gtk_widget_set_sensitive(wgt, l_sensitive);
 
   l_sensitive = TRUE;
-  if(gpp->val.select_mode == 6)
+  if(gpp->vin.select_mode == 6)
   {
      /* the pattern entry is insensitive if all_visible layers (6) is selected */
      l_sensitive = FALSE;
@@ -209,7 +222,7 @@ on_oni__optionmenu_select_mode (GtkWidget     *wgt_item,
  {
     l_idx = 0;
  }
- gpp->val.select_mode = gtab_select_modes[l_idx];
+ gpp->vin.select_mode = gtab_select_modes[l_idx];
  p_init_sensitive(gpp);
 }
 
@@ -274,9 +287,9 @@ on_oni__spinbutton_num_olayers_changed (GtkEditable     *editable,
 
   if(gap_debug) printf("spin value: %f\n", (float)adj->value );
 
-  if((gdouble)adj->value != gpp->val.num_olayers)
+  if((gdouble)adj->value != gpp->vin.num_olayers)
   {
-    gpp->val.num_olayers = (gdouble)adj->value;
+    gpp->vin.num_olayers = (gdouble)adj->value;
   }
 }
 
@@ -296,9 +309,9 @@ on_oni__spinbutton_ref_delta_changed   (GtkEditable     *editable,
 
   if(gap_debug) printf("spin value: %f\n", (float)adj->value );
 
-  if((gdouble)adj->value != gpp->val.ref_delta)
+  if((gdouble)adj->value != gpp->vin.ref_delta)
   {
-    gpp->val.ref_delta = (gdouble)adj->value;
+    gpp->vin.ref_delta = (gdouble)adj->value;
   }
 }
 
@@ -315,11 +328,11 @@ on_oni__checkbutton_ref_cycle_toggled (GtkToggleButton *togglebutton,
  {
     if (togglebutton->active)
     {
-       gpp->val.ref_cycle = TRUE;
+       gpp->vin.ref_cycle = TRUE;
     }
     else
     {
-       gpp->val.ref_cycle = FALSE;
+       gpp->vin.ref_cycle = FALSE;
     }
  }
 }
@@ -340,9 +353,9 @@ on_oni__spinbutton_stack_pos_changed   (GtkEditable     *editable,
 
   if(gap_debug) printf("spin value: %f\n", (float)adj->value );
 
-  if((gdouble)adj->value != gpp->val.stack_pos)
+  if((gdouble)adj->value != gpp->vin.stack_pos)
   {
-    gpp->val.stack_pos = (gdouble)adj->value;
+    gpp->vin.stack_pos = (gdouble)adj->value;
   }
 }
 
@@ -359,33 +372,33 @@ on_oni__checkbutton_stack_top_toggled  (GtkToggleButton *togglebutton,
  {
     if (togglebutton->active)
     {
-       gpp->val.stack_top = TRUE;
+       gpp->vin.stack_top = TRUE;
     }
     else
     {
-       gpp->val.stack_top = FALSE;
+       gpp->vin.stack_top = FALSE;
     }
  }
 }
 
 
 static void
-on_oni__checkbutton_farn_opaque_toggled  (GtkToggleButton *togglebutton,
+on_oni__checkbutton_asc_opacity_toggled  (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
  t_global_params *gpp;
  gpp = (t_global_params*)user_data;
- if(gap_debug) printf("CB: on_oni__checkbutton_farn_opaque_toggled\n");
+ if(gap_debug) printf("CB: on_oni__checkbutton_asc_opacity_toggled\n");
 
  if(gpp)
  {
     if (togglebutton->active)
     {
-       gpp->val.farn_opaque = TRUE;
+       gpp->vin.asc_opacity = TRUE;
     }
     else
     {
-       gpp->val.farn_opaque = FALSE;
+       gpp->vin.asc_opacity = FALSE;
     }
  }
 }
@@ -404,11 +417,11 @@ on_oni__spinbutton_opacity_changed     (GtkEditable     *editable,
 
   adj = GTK_ADJUSTMENT(gpp->oni__spinbutton_opacity_adj);
 
-  /*if(gap_debug)*/ printf("spin value: %f\n", (float)adj->value );
+  if(gap_debug) printf("spin value: %f\n", (float)adj->value );
 
-  if((gdouble)adj->value != gpp->val.opacity)
+  if((gdouble)adj->value != gpp->vin.opacity)
   {
-    gpp->val.opacity = (gdouble)adj->value;
+    gpp->vin.opacity = (gdouble)adj->value;
   }
 }
 
@@ -429,9 +442,9 @@ on_oni__spinbutton_opacity_delta_changed
 
   if(gap_debug) printf("spin value: %f\n", (float)adj->value );
 
-  if((gdouble)adj->value != gpp->val.opacity_delta)
+  if((gdouble)adj->value != gpp->vin.opacity_delta)
   {
-    gpp->val.opacity_delta = (gdouble)adj->value;
+    gpp->vin.opacity_delta = (gdouble)adj->value;
   }
 }
 
@@ -452,9 +465,9 @@ on_oni__spinbutton_ignore_botlayers_changed
 
   if(gap_debug) printf("spin value: %f\n", (float)adj->value );
 
-  if((gdouble)adj->value != gpp->val.ignore_botlayers)
+  if((gdouble)adj->value != gpp->vin.ignore_botlayers)
   {
-    gpp->val.ignore_botlayers = (gdouble)adj->value;
+    gpp->vin.ignore_botlayers = (gdouble)adj->value;
   }
 }
 
@@ -469,7 +482,7 @@ on_oni__entry_select_string_changed    (GtkEditable     *editable,
 
  if(gpp)
  {
-    g_snprintf(gpp->val.select_string, sizeof(gpp->val.select_string), "%s"
+    g_snprintf(gpp->vin.select_string, sizeof(gpp->vin.select_string), "%s"
               , gtk_entry_get_text(GTK_ENTRY(editable)));
  }
 }
@@ -488,11 +501,11 @@ on_oni__checkbutton_select_case_toggled
  {
     if (togglebutton->active)
     {
-       gpp->val.select_case = TRUE;
+       gpp->vin.select_case = TRUE;
     }
     else
     {
-       gpp->val.select_case = FALSE;
+       gpp->vin.select_case = FALSE;
     }
  }
 }
@@ -511,11 +524,11 @@ on_oni__checkbutton_select_invert_toggled
  {
     if (togglebutton->active)
     {
-       gpp->val.select_invert = TRUE;
+       gpp->vin.select_invert = TRUE;
     }
     else
     {
-       gpp->val.select_invert = FALSE;
+       gpp->vin.select_invert = FALSE;
     }
  }
 }
@@ -547,12 +560,28 @@ on_oni__button_cancel_clicked          (GtkButton       *button,
 
  if(gpp)
  {
-   gpp->val.run = GAP_ONION_RUN_CANCEL;
+   gpp->run = GAP_ONION_RUN_CANCEL;
    gtk_widget_destroy (gpp->main_dialog);
  }
  gtk_main_quit ();
 }
 
+static void
+on_oni__button_close_clicked             (GtkButton       *button,
+                                        gpointer         user_data)
+{
+ t_global_params *gpp;
+ gpp = (t_global_params*)user_data;
+ if(gap_debug) printf("CB: on_oni__button_close_clicked\n");
+
+ if(gpp)
+ {
+   p_set_data_onion_cfg(gpp, GAP_PLUGIN_NAME_ONION_CFG);
+   gpp->run = GAP_ONION_RUN_CANCEL;
+   gtk_widget_destroy (gpp->main_dialog);
+ }
+ gtk_main_quit ();
+}
 
 static void
 on_oni__button_set_clicked             (GtkButton       *button,
@@ -564,13 +593,9 @@ on_oni__button_set_clicked             (GtkButton       *button,
 
  if(gpp)
  {
-   if(gap_debug) printf("  opacity:%f dlta:%f\n", (float)gpp->val.opacity, (float)gpp->val.opacity_delta );
-   
-   /* gpp->val.run = GAP_ONION_RUN_SET; */
-   /* gtk_widget_destroy (gpp->main_dialog); */
+   if(gap_debug) printf("  opacity:%f dlta:%f\n", (float)gpp->vin.opacity, (float)gpp->vin.opacity_delta );
    
    /* set does not close the dialog and is processed immediate now */
-   
    p_set_data_onion_cfg(gpp, GAP_PLUGIN_NAME_ONION_CFG);
  }
  /* gtk_main_quit (); */
@@ -587,7 +612,7 @@ on_oni__button_delete_clicked          (GtkButton       *button,
 
  if(gpp)
  {
-   gpp->val.run = GAP_ONION_RUN_DELETE;
+   gpp->run = GAP_ONION_RUN_DELETE;
    gtk_widget_destroy (gpp->main_dialog);
  }
  gtk_main_quit ();
@@ -605,7 +630,7 @@ on_oni__button_apply_clicked           (GtkButton       *button,
  if(gpp)
  {
    p_set_data_onion_cfg(gpp, GAP_PLUGIN_NAME_ONION_CFG);
-   gpp->val.run = GAP_ONION_RUN_APPLY;
+   gpp->run = GAP_ONION_RUN_APPLY;
    gtk_widget_destroy (gpp->main_dialog);
  }
  gtk_main_quit ();
@@ -624,7 +649,48 @@ on_oni__dialog_destroy                 (GtkObject       *object,
 
 }
 
+static void
+on_oni__checkbutton_auto_replace_toggled  (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+ t_global_params *gpp;
+ gpp = (t_global_params*)user_data;
+ if(gap_debug) printf("CB: on_oni__checkbutton_auto_replace_toggled\n");
 
+ if(gpp)
+ {
+    if (togglebutton->active)
+    {
+       gpp->vin.auto_replace_after_load = TRUE;
+    }
+    else
+    {
+       gpp->vin.auto_replace_after_load = FALSE;
+    }
+ }
+}
+
+
+static void
+on_oni__checkbutton_auto_delete_toggled  (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+ t_global_params *gpp;
+ gpp = (t_global_params*)user_data;
+ if(gap_debug) printf("CB: on_oni__checkbutton_auto_delete_toggled\n");
+
+ if(gpp)
+ {
+    if (togglebutton->active)
+    {
+       gpp->vin.auto_delete_before_save = TRUE;
+    }
+    else
+    {
+       gpp->vin.auto_delete_before_save = FALSE;
+    }
+ }
+}
 
 static void
 p_init_optionmenu_actual_idx(t_global_params *gpp, GtkWidget *wgt, gint *gtab_ptr, gint val, gint maxidx)
@@ -648,7 +714,7 @@ p_init_optionmenus(t_global_params *gpp)
  p_init_optionmenu_actual_idx( gpp
                              , gpp->oni__optionmenu_select_mode
                              , gtab_select_modes
-                             , gpp->val.select_mode
+                             , gpp->vin.select_mode
                              , MAX_SELECT_MODE_ARRAY_ELEMENTS
                              );
 }
@@ -662,7 +728,7 @@ p_init_entries(t_global_params *gpp)
   if(gap_debug) printf("p_init_utl_widgets\n");
 
   entry = GTK_ENTRY(gpp->oni__entry_select_string);
-  gtk_entry_set_text(entry, gpp->val.select_string);
+  gtk_entry_set_text(entry, gpp->vin.select_string);
 }
 
 
@@ -685,22 +751,22 @@ p_init_spinbuttons(t_global_params *gpp)
 
 
   adj = GTK_ADJUSTMENT(gpp->oni__spinbutton_num_olayers_adj);
-  gtk_adjustment_set_value(adj, (gfloat)gpp->val.num_olayers);
+  gtk_adjustment_set_value(adj, (gfloat)gpp->vin.num_olayers);
 
   adj = GTK_ADJUSTMENT(gpp->oni__spinbutton_ref_delta_adj);
-  gtk_adjustment_set_value(adj, (gfloat)gpp->val.ref_delta);
+  gtk_adjustment_set_value(adj, (gfloat)gpp->vin.ref_delta);
 
   adj = GTK_ADJUSTMENT(gpp->oni__spinbutton_stack_pos_adj);
-  gtk_adjustment_set_value(adj, (gfloat)gpp->val.stack_pos);
+  gtk_adjustment_set_value(adj, (gfloat)gpp->vin.stack_pos);
 
   adj = GTK_ADJUSTMENT(gpp->oni__spinbutton_opacity_adj);
-  gtk_adjustment_set_value(adj, (gfloat)gpp->val.opacity);
+  gtk_adjustment_set_value(adj, (gfloat)gpp->vin.opacity);
 
   adj = GTK_ADJUSTMENT(gpp->oni__spinbutton_opacity_delta_adj);
-  gtk_adjustment_set_value(adj, (gfloat)gpp->val.opacity_delta);
+  gtk_adjustment_set_value(adj, (gfloat)gpp->vin.opacity_delta);
 
   adj = GTK_ADJUSTMENT(gpp->oni__spinbutton_ignore_botlayers_adj);
-  gtk_adjustment_set_value(adj, (gfloat)gpp->val.ignore_botlayers);
+  gtk_adjustment_set_value(adj, (gfloat)gpp->vin.ignore_botlayers);
 }
 
 static void
@@ -709,19 +775,26 @@ p_init_togglebuttons(t_global_params *gpp)
   GtkWidget *wgt;
 
   wgt = gpp->oni__checkbutton_ref_cycle;
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (wgt), gpp->val.ref_cycle);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (wgt), gpp->vin.ref_cycle);
 
   wgt = gpp->oni__checkbutton_stack_top;
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (wgt), gpp->val.stack_top);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (wgt), gpp->vin.stack_top);
 
-  wgt = gpp->oni__checkbutton_farn_opaque;
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (wgt), gpp->val.farn_opaque);
+  wgt = gpp->oni__checkbutton_asc_opacity;
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (wgt), gpp->vin.asc_opacity);
 
   wgt = gpp->oni__checkbutton_select_case;
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (wgt), gpp->val.select_case);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (wgt), gpp->vin.select_case);
 
   wgt = gpp->oni__checkbutton_select_invert;
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (wgt), gpp->val.select_invert);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (wgt), gpp->vin.select_invert);
+
+
+  wgt = gpp->oni__checkbutton_auto_replace;
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (wgt), gpp->vin.auto_replace_after_load);
+
+  wgt = gpp->oni__checkbutton_auto_delete;
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (wgt), gpp->vin.auto_delete_before_save);
 }
 
 static void
@@ -782,17 +855,23 @@ create_oni__dialog (t_global_params *gpp)
   GtkWidget *oni__checkbutton_ref_cycle;
   GtkWidget *oni__spinbutton_stack_pos;
   GtkWidget *oni__checkbutton_stack_top;
-  GtkWidget *oni__checkbutton_farn_opaque;
+  GtkWidget *oni__checkbutton_asc_opacity;
   GtkWidget *oni__spinbutton_opacity;
   GtkWidget *oni__spinbutton_opacity_delta;
   GtkWidget *oni__spinbutton_ignore_botlayers;
   GtkWidget *oni__checkbutton_select_case;
   GtkWidget *oni__checkbutton_select_invert;
   GtkWidget *oni__entry_select_string;
+
+  GtkWidget *oni__checkbutton_auto_replace;
+  GtkWidget *oni__checkbutton_auto_delete;
+
+
   GtkWidget *oni__button_default;
   GtkWidget *dialog_action_area1;
   GtkWidget *oni__button_cancel;
   GtkWidget *oni__button_set;
+  GtkWidget *oni__button_close;
   GtkWidget *oni__button_delete;
   GtkWidget *oni__button_apply;
 
@@ -872,7 +951,7 @@ create_oni__dialog (t_global_params *gpp)
   gtk_box_pack_start (GTK_BOX (dialog_vbox1), frame1, TRUE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (frame1), 2);
 
-  table1 = gtk_table_new (6, 3, FALSE);
+  table1 = gtk_table_new (7, 3, FALSE);
   gtk_widget_show (table1);
   gtk_container_add (GTK_CONTAINER (frame1), table1);
   gtk_container_set_border_width (GTK_CONTAINER (table1), 4);
@@ -888,12 +967,12 @@ create_oni__dialog (t_global_params *gpp)
 
 
 
-  oni__checkbutton_farn_opaque = gtk_check_button_new_with_label (_("Ascending Opacity"));
-  gtk_widget_show (oni__checkbutton_farn_opaque);
-  gtk_table_attach (GTK_TABLE (table1), oni__checkbutton_farn_opaque, 2, 3, 0, 1,
+  oni__checkbutton_asc_opacity = gtk_check_button_new_with_label (_("Ascending Opacity"));
+  gtk_widget_show (oni__checkbutton_asc_opacity);
+  gtk_table_attach (GTK_TABLE (table1), oni__checkbutton_asc_opacity, 2, 3, 0, 1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gimp_help_set_help_data(oni__checkbutton_farn_opaque
+  gimp_help_set_help_data(oni__checkbutton_asc_opacity
                          , _("ON: Far Neighbour Frames have the higher Opacity, OFF: Near Neighbour Frames have the higher Opacity")
                          , NULL);
 
@@ -1184,14 +1263,56 @@ create_oni__dialog (t_global_params *gpp)
                          , NULL);
 
 
-  oni__button_set = gtk_button_new_with_label (_("Set"));
+  {
+     char *lbl_txt;
+
+     lbl_txt = g_strdup_printf(_("Set for: %s"), &gpp->ainfo.basename[0]);
+
+     oni__button_set = gtk_button_new_with_label (lbl_txt);
+     g_free(lbl_txt);
+  }
   gtk_widget_show (oni__button_set);
   gtk_table_attach (GTK_TABLE (table1), oni__button_set, 0, 3, 5, 6,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 2, 0);
   gimp_help_set_help_data(oni__button_set
-                         , _("Set Onionskin Parameters for the current GIMP Session")
+                         , _("Set Onionskin Parameters for the current Video")
                          , NULL);
+
+  {
+     GtkWidget *auto_table;
+     
+     auto_table = gtk_table_new (1, 2, TRUE);
+     gtk_widget_show (auto_table);
+     gtk_table_attach (GTK_TABLE (table1), auto_table, 0, 3, 6, 7,
+                      (GtkAttachOptions) (GTK_FILL),
+                      (GtkAttachOptions) (0), 2, 0);
+     
+     oni__checkbutton_auto_replace = gtk_check_button_new_with_label (_("Auto Create after Load"));
+     gtk_widget_show (oni__checkbutton_auto_replace);
+     gimp_help_set_help_data(oni__checkbutton_auto_replace
+                         , _("ON: Automatic Creation/Replacement of Onionskinlayer(s)\n"
+                             "(works on Framechanges via VCR Navigator and Goto Ops\n"
+                             "in the Video Menu -- but not on explicite Load from the File menu")
+                         , NULL);
+     gtk_table_attach (GTK_TABLE (auto_table), oni__checkbutton_auto_replace,
+                       0, 1, 0, 1,
+                       (GtkAttachOptions) (GTK_FILL),
+                       (GtkAttachOptions) (GTK_FILL), 0, 0);
+  
+     oni__checkbutton_auto_delete = gtk_check_button_new_with_label (_("Auto Delete before Save"));
+     gtk_widget_show (oni__checkbutton_auto_delete);
+     gimp_help_set_help_data(oni__checkbutton_auto_delete
+                         , _("ON: Automatic Delete  of Onionskinlayer(s)\n"
+                             "(on Framechanges via VCR Navigator and Goto Ops\n"
+                             "in the Video Menu -- but not on explicite Save from the File menu\n"
+                             "use this if Onionskinlayers should not appear in Thumbnailfiles)")
+                         , NULL);
+     gtk_table_attach (GTK_TABLE (auto_table), oni__checkbutton_auto_delete,
+                       1, 2, 0, 1,
+                       (GtkAttachOptions) (GTK_FILL),
+                       (GtkAttachOptions) (GTK_FILL), 0, 0);
+  }
 
   dialog_action_area1 = GTK_DIALOG (oni__dialog)->action_area;
   gtk_widget_show (dialog_action_area1);
@@ -1218,6 +1339,13 @@ create_oni__dialog (t_global_params *gpp)
                          , _("Remove all Onionskin Layers in all Frames of the the selected Framerange")
                          , NULL);
 
+  oni__button_close = gtk_button_new_from_stock (GTK_STOCK_CLOSE);
+  gtk_widget_show (oni__button_close);
+  gtk_box_pack_end (GTK_BOX (hbox1), oni__button_close, FALSE, FALSE, 2);
+  gimp_help_set_help_data(oni__button_close
+                         , _("Close Window without creating or deleting any Onionskin Layers\n"
+                             "but store current Settings")
+                         , NULL);
 
   oni__button_cancel = gtk_button_new_from_stock (GTK_STOCK_CANCEL);
   gtk_widget_show (oni__button_cancel);
@@ -1258,8 +1386,8 @@ create_oni__dialog (t_global_params *gpp)
   g_signal_connect (G_OBJECT (oni__checkbutton_stack_top), "toggled",
                       G_CALLBACK (on_oni__checkbutton_stack_top_toggled),
                       gpp);
-  g_signal_connect (G_OBJECT (oni__checkbutton_farn_opaque), "toggled",
-                      G_CALLBACK (on_oni__checkbutton_farn_opaque_toggled),
+  g_signal_connect (G_OBJECT (oni__checkbutton_asc_opacity), "toggled",
+                      G_CALLBACK (on_oni__checkbutton_asc_opacity_toggled),
                       gpp);
   g_signal_connect (G_OBJECT (gpp->oni__spinbutton_opacity_adj), "value_changed",
                       G_CALLBACK (on_oni__spinbutton_opacity_changed),
@@ -1279,6 +1407,15 @@ create_oni__dialog (t_global_params *gpp)
   g_signal_connect (G_OBJECT (oni__entry_select_string), "changed",
                       G_CALLBACK (on_oni__entry_select_string_changed),
                       gpp);
+
+  g_signal_connect (G_OBJECT (oni__checkbutton_auto_replace), "toggled",
+                      G_CALLBACK (on_oni__checkbutton_auto_replace_toggled),
+                      gpp);
+  g_signal_connect (G_OBJECT (oni__checkbutton_auto_delete), "toggled",
+                      G_CALLBACK (on_oni__checkbutton_auto_delete_toggled),
+                      gpp);
+
+
   g_signal_connect (G_OBJECT (oni__button_default), "clicked",
                       G_CALLBACK (on_oni__button_default_clicked),
                       gpp);
@@ -1288,13 +1425,15 @@ create_oni__dialog (t_global_params *gpp)
   g_signal_connect (G_OBJECT (oni__button_set), "clicked",
                       G_CALLBACK (on_oni__button_set_clicked),
                       gpp);
+  g_signal_connect (G_OBJECT (oni__button_close), "clicked",
+                      G_CALLBACK (on_oni__button_close_clicked),
+                      gpp);
   g_signal_connect (G_OBJECT (oni__button_delete), "clicked",
                       G_CALLBACK (on_oni__button_delete_clicked),
                       gpp);
   g_signal_connect (G_OBJECT (oni__button_apply), "clicked",
                       G_CALLBACK (on_oni__button_apply_clicked),
                       gpp);
-
 
 
 
@@ -1315,8 +1454,9 @@ create_oni__dialog (t_global_params *gpp)
   gpp->oni__checkbutton_select_case     = oni__checkbutton_select_case;
   gpp->oni__checkbutton_select_invert   = oni__checkbutton_select_invert;
   gpp->oni__checkbutton_stack_top       = oni__checkbutton_stack_top;
-  gpp->oni__checkbutton_farn_opaque     = oni__checkbutton_farn_opaque;
-
+  gpp->oni__checkbutton_asc_opacity     = oni__checkbutton_asc_opacity;
+  gpp->oni__checkbutton_auto_replace    = oni__checkbutton_auto_replace;
+  gpp->oni__checkbutton_auto_delete     = oni__checkbutton_auto_delete;
 
   return oni__dialog;
 }  /* end create_oni__dialog */
@@ -1330,22 +1470,26 @@ create_oni__dialog (t_global_params *gpp)
 void
 p_init_default_values(t_global_params *gpp)
 {
-          gpp->val.num_olayers        = 2;
-          gpp->val.ref_delta          = -1;
-          gpp->val.ref_cycle          = FALSE;
-          gpp->val.stack_pos          = 1;
-          gpp->val.stack_top          = FALSE;
-          gpp->val.farn_opaque        = FALSE;
-          gpp->val.opacity            = 80.0;
-          gpp->val.opacity_delta      = 80.0;
-          gpp->val.ignore_botlayers   = 1;
-          gpp->val.select_mode        = MTCH_ALL_VISIBLE;  /* MTCH_ANYWHERE, MTCH_ALL_VISIBLE */
-          gpp->val.select_case        = 0;     /* 0 .. ignore case, 1..case sensitve */
-          gpp->val.select_invert      = 0;     /* 0 .. no invert, 1 ..invert */
-          gpp->val.select_string[0] = '\0';
+          gpp->vin.onionskin_auto_enable = TRUE;
+          gpp->vin.auto_replace_after_load = FALSE;
+          gpp->vin.auto_delete_before_save = FALSE;
+
+          gpp->vin.num_olayers        = 2;
+          gpp->vin.ref_delta          = -1;
+          gpp->vin.ref_cycle          = FALSE;
+          gpp->vin.stack_pos          = 1;
+          gpp->vin.stack_top          = FALSE;
+          gpp->vin.asc_opacity        = FALSE;
+          gpp->vin.opacity            = 80.0;
+          gpp->vin.opacity_delta      = 80.0;
+          gpp->vin.ignore_botlayers   = 1;
+          gpp->vin.select_mode        = MTCH_ALL_VISIBLE;  /* MTCH_ANYWHERE, MTCH_ALL_VISIBLE */
+          gpp->vin.select_case        = 0;     /* 0 .. ignore case, 1..case sensitve */
+          gpp->vin.select_invert      = 0;     /* 0 .. no invert, 1 ..invert */
+          gpp->vin.select_string[0] = '\0';
 /*
-          g_snprintf(&gpp->val.select_string[0]
-                    , sizeof(gpp->val.select_string)
+          g_snprintf(&gpp->vin.select_string[0]
+                    , sizeof(gpp->vin.select_string)
                     ,"pasted"
                     );
 */
@@ -1378,14 +1522,14 @@ p_onion_cfg_dialog(t_global_params *gpp)
   p_init_main_dialog_widgets(gpp);
   gtk_widget_show (gpp->main_dialog);
 
-  gpp->val.run = 0; /* GAP_ONION_RUN_CANCEL */
+  gpp->run = 0; /* GAP_ONION_RUN_CANCEL */
   gtk_main ();
 
-  if(gap_debug) printf("p_onion_cfg_dialog: A F T E R gtk_main run:%d\n", (int)gpp->val.run);
+  if(gap_debug) printf("p_onion_cfg_dialog: A F T E R gtk_main run:%d\n", (int)gpp->run);
 
   gpp->main_dialog = NULL;
 
-  if(gpp->val.run)
+  if(gpp->run)
   {
     return 0;
   }

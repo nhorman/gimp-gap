@@ -26,6 +26,7 @@
  */
 
 /* revision history:
+ * gimp    1.3.16c; 2003/07/12  hof: bugfixes (vscale slider reflects pagesize), del_button,dup_button sensitivity
  * gimp    1.3.16b; 2003/07/02  hof: selection highlight bugfix (using gtk_widget_modify_bg)
  * gimp    1.3.16a; 2003/06/29  hof: redesign: replaced scrolled_window by table that fits the visible window height
  *                                   and a vertical scale to manage scrolling.
@@ -274,6 +275,8 @@ typedef struct NaviDialog
   GtkObject     *framerate_adj;
   GtkObject     *timezoom_adj;
   GtkWidget     *framerange_number_label;
+  GtkWidget     *del_button;
+  GtkWidget     *dup_button;
   gint           waiting_cursor;
   GdkCursor     *cursor_wait;
   GdkCursor     *cursor_acitve;
@@ -313,6 +316,7 @@ static gint navi_images_menu_constrain (gint32 image_id, gint32 drawable_id, gpo
 static void navi_images_menu_callback  (gint32 id, gpointer data);
 static void navi_update_after_goto(void);
 static void navi_ops_menu_set_sensitive(void);
+static void navi_ops_buttons_set_sensitive(void);
 
 static void navi_pviews_reset(void);
 static void navi_dialog_thumb_update_callback(GtkWidget *w, gpointer   data);
@@ -647,7 +651,8 @@ navi_constrain_dyn_topframenr(gint32 frame_nr)
 
   l_frame_nr = CLAMP(l_frame_nr
                     , naviD->ainfo_ptr->first_frame_nr   
-                    , naviD->ainfo_ptr->last_frame_nr
+                    , MAX(naviD->ainfo_ptr->first_frame_nr
+                         , (1 + naviD->ainfo_ptr->last_frame_nr - naviD->dyn_rows))
                     );
   return (l_frame_nr);
 }  /* end navi_constrain_dyn_topframenr */
@@ -687,7 +692,7 @@ p_edit_paste_call(gint32 paste_mode)
     return;  /* invalid frame_nr do not paste here */
   }
 
-  /*if(gap_debug)*/ printf("p_edit_paste_call: paste_at_frame:%d active_image_id:%d\n"
+  if(gap_debug) printf("p_edit_paste_call: paste_at_frame:%d active_image_id:%d\n"
    , (int)naviD->paste_at_frame
    , (int)naviD->active_imageid
    );
@@ -702,9 +707,15 @@ p_edit_paste_call(gint32 paste_mode)
                                GIMP_PDB_END);
   if (return_vals[0].data.d_status != GIMP_PDB_SUCCESS)
   {
-     naviD->active_imageid = return_vals[1].data.d_image;
-     g_free(return_vals);
+    g_free(return_vals);
+    p_msg_win(GIMP_RUN_INTERACTIVE
+             ,_("Error while positioning to Frame. Video Paste Operaton Failed")
+             );
+    return;
   }
+
+  naviD->active_imageid = return_vals[1].data.d_image;
+  g_free(return_vals);
 
 
   return_vals = gimp_run_procedure ("plug_in_gap_video_edit_paste",
@@ -714,8 +725,17 @@ p_edit_paste_call(gint32 paste_mode)
                                       GIMP_PDB_DRAWABLE, -1,  /* dummy */
                                       GIMP_PDB_INT32,    paste_mode,
                                       GIMP_PDB_END);
-   g_free(return_vals);
-   navi_update_after_goto();                                 
+  if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
+  {
+    naviD->active_imageid = return_vals[1].data.d_image;
+  }
+  else
+  {
+    p_msg_win(GIMP_RUN_INTERACTIVE, _("Video Paste Operaton Failed"));
+  }
+  
+  g_free(return_vals);
+  navi_update_after_goto();                                 
 
 }  /* end p_edit_paste_call */
 
@@ -758,6 +778,7 @@ navi_sel_all_callback (GtkWidget *w,  gpointer   client_data)
   navi_add_sel_range_list(naviD->ainfo_ptr->first_frame_nr
                          ,naviD->ainfo_ptr->last_frame_nr);
   navi_debug_print_sel_range();
+  navi_ops_buttons_set_sensitive();
   navi_frames_timing_update();
 }
 
@@ -766,6 +787,7 @@ navi_sel_none_callback (GtkWidget *w,  gpointer   client_data)
 {
   navi_drop_sel_range_list();
   navi_debug_print_sel_range();
+  navi_ops_buttons_set_sensitive();
   navi_frames_timing_update();
 }
 
@@ -781,8 +803,10 @@ navi_vid_copy_and_cut(gint cut_flag)
    SelectedRange *range_list;
    SelectedRange *range_list2;
    GimpParam          *return_vals;
-   int              nreturn_vals;
+   int                 nreturn_vals;
+   gboolean            vid_copy_ok;
 
+  vid_copy_ok = TRUE;
   if(gap_debug) printf("navi_dialog_vid_copy_callback\n");
     
   if(naviD->sel_range_list)
@@ -810,10 +834,22 @@ navi_vid_copy_and_cut(gint cut_flag)
                                    GIMP_PDB_INT32,    range_list->from,
                                    GIMP_PDB_INT32,    range_list->to,
                                   GIMP_PDB_END);
+       if (return_vals[0].data.d_status != GIMP_PDB_SUCCESS)
+       {
+         vid_copy_ok = FALSE;
+       }
+       g_free(return_vals);
+       
+       if(!vid_copy_ok)
+       {
+         p_msg_win(GIMP_RUN_INTERACTIVE, _("Video Copy (or Cut) Operation failed"));
+         break;
+       }
+       
        range_list = range_list->next;
     }
 
-    if(cut_flag)
+    if((cut_flag) && (vid_copy_ok))
     {
       range_list2 = navi_get_last_range_list(naviD->sel_range_list);
       while(range_list2)
@@ -845,11 +881,15 @@ navi_vid_copy_and_cut(gint cut_flag)
                                      GIMP_PDB_DRAWABLE, -1,  /* dummy */
                                      GIMP_PDB_INT32,    1 + (range_list2->to - range_list2->from), /* number of frames to delete */
                                     GIMP_PDB_END);
-            if (return_vals[0].data.d_status != GIMP_PDB_SUCCESS)
+            if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
             {
               naviD->active_imageid = return_vals[1].data.d_image;
             }
             g_free(return_vals);
+         }
+         else
+         {
+            p_msg_win(GIMP_RUN_INTERACTIVE, _("Video Cut Operation failed"));
          }
 
         range_list2 = range_list2->prev;
@@ -1143,6 +1183,7 @@ navi_images_menu_callback  (gint32 image_id, gpointer data)
     {
       navi_reload_ainfo(image_id);
       navi_dialog_update(NUPD_FRAME_NR_CHANGED | NUPD_PREV_LIST);
+      navi_drop_sel_range_list();
       navi_scroll_to_current_frame_nr();
     }
 
@@ -1162,6 +1203,25 @@ navi_set_waiting_cursor(void)
 
   naviD->waiting_cursor = TRUE;
   gdk_window_set_cursor(GTK_WIDGET(naviD->shell)->window, naviD->cursor_wait);
+  
+
+  /* FIXME: I could not see any waiting cursor, even with
+   *        the following attempts to show that thing ?
+   */
+
+  /* 1.st attempt */
+  /* while(g_main_context_iteration(NULL, FALSE)); */
+  /* gdk_flush(); */
+
+
+  /* 2.nd attempt */
+  /* while (g_main_context_pending (NULL))
+   * {
+   *   g_main_context_iteration (NULL, FALSE);
+   * }
+   * gdk_flush();
+   */
+  
 }  /* end navi_set_waiting_cursor */
 
 /* ---------------------------------
@@ -1200,7 +1260,8 @@ navi_scroll_to_current_frame_nr(void)
      return;
   }
 
-  naviD->dyn_topframenr = naviD->ainfo_ptr->curr_frame_nr;
+  navi_dyn_adj_set_limits();
+  naviD->dyn_topframenr = navi_constrain_dyn_topframenr(naviD->ainfo_ptr->curr_frame_nr);
 
   /* fetch and render all thumbnail_previews in the dyn table */
   navi_refresh_dyn_table(naviD->dyn_topframenr);
@@ -1444,6 +1505,29 @@ navi_ops_menu_set_sensitive(void)
   }
 }       /* end navi_ops_menu_set_sensitive */
 
+
+/* ---------------------------------
+ * navi_ops_buttons_set_sensitive
+ * ---------------------------------
+ */
+static void
+navi_ops_buttons_set_sensitive(void)
+{
+  if(naviD == NULL)
+  {
+    return;
+  }
+  if(naviD->sel_range_list)
+  {
+     if(naviD->del_button) gtk_widget_set_sensitive(naviD->del_button, TRUE);
+     if(naviD->dup_button) gtk_widget_set_sensitive(naviD->dup_button, TRUE);
+  }
+  else
+  {
+     if(naviD->del_button) gtk_widget_set_sensitive(naviD->del_button, FALSE);
+     if(naviD->dup_button) gtk_widget_set_sensitive(naviD->dup_button, FALSE);
+  }
+}       /* end navi_ops_buttons_set_sensitive */
 
 /* ---------------------------------
  * navi_pviews_reset
@@ -1866,7 +1950,7 @@ navi_dialog_goto_callback(gint32 dst_framenr)
                                     GIMP_PDB_DRAWABLE, -1,  /* dummy */
                                     GIMP_PDB_INT32,    dst_framenr,
                                     GIMP_PDB_END);
-   if (return_vals[0].data.d_status != GIMP_PDB_SUCCESS)
+   if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
    {
       naviD->active_imageid = return_vals[1].data.d_image;
    }
@@ -1894,7 +1978,7 @@ navi_dialog_vcr_goto_first_callback(GtkWidget *w, gpointer   data)
                                     GIMP_PDB_IMAGE,    naviD->active_imageid,
                                     GIMP_PDB_DRAWABLE, -1,  /* dummy */
                                     GIMP_PDB_END);
-   if (return_vals[0].data.d_status != GIMP_PDB_SUCCESS)
+   if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
    {
       naviD->active_imageid = return_vals[1].data.d_image;
    }
@@ -1921,7 +2005,7 @@ navi_dialog_vcr_goto_prev_callback(GtkWidget *w, gpointer   data)
                                     GIMP_PDB_IMAGE,    naviD->active_imageid,
                                     GIMP_PDB_DRAWABLE, -1,  /* dummy */
                                     GIMP_PDB_END);
-   if (return_vals[0].data.d_status != GIMP_PDB_SUCCESS)
+   if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
    {
       naviD->active_imageid = return_vals[1].data.d_image;
    }
@@ -2473,6 +2557,7 @@ frame_widget_preview_events (GtkWidget *widget,
          navi_debug_print_sel_range();
       }
 
+      navi_ops_buttons_set_sensitive();
       navi_frames_timing_update();  /* this is also for refresh of the selection state */
       break;
 
@@ -2816,6 +2901,7 @@ navi_drop_sel_range_list2(void)
     g_free(range_item);
   }
   naviD->sel_range_list = NULL;
+  navi_ops_buttons_set_sensitive();
 }  /* end navi_drop_sel_range_list2 */
 
 static void
@@ -3275,7 +3361,7 @@ navi_dyn_adj_changed_callback(GtkWidget *wgt, gpointer data)
   gint32  dyn_topframenr;
   if(naviD == NULL) { return; }
   
-  adj_intval = GTK_ADJUSTMENT(naviD->dyn_adj)->value;
+  adj_intval = (gint32)(GTK_ADJUSTMENT(naviD->dyn_adj)->value + 0.5);
   if(gap_debug) printf("navi_dyn_adj_changed_callback: adj_intval:%d dyn_topframenr:%d\n", (int)adj_intval, (int)naviD->dyn_topframenr);
 
   GTK_ADJUSTMENT(naviD->dyn_adj)->value = adj_intval;
@@ -3301,6 +3387,9 @@ navi_dyn_adj_set_limits(void)
 {
   gdouble upper_limit;
   gdouble lower_limit;
+  gdouble page_increment;
+  gdouble page_size;
+  gdouble value;
   gint32 frame_cnt_zoomed;
   
   if(naviD == NULL) { return; }
@@ -3315,10 +3404,27 @@ navi_dyn_adj_set_limits(void)
     frame_cnt_zoomed++;
   }
   lower_limit = 1.0;
-  upper_limit = lower_limit + MAX((frame_cnt_zoomed - naviD->dyn_rows), 0);
+  upper_limit = lower_limit + frame_cnt_zoomed;
+  page_size = (gdouble)naviD->dyn_rows;
+  page_increment = (gdouble)((gint32)page_size);
+
+  value = GTK_ADJUSTMENT(naviD->dyn_adj)->value;
+
+  if(gap_debug)
+  {
+    printf("\n cnt_zoomed : %d  dyn_rows:%d\n", (int)frame_cnt_zoomed ,(int)naviD->dyn_rows);
+    printf("lower_limit %f\n", (float)lower_limit );
+    printf("upper_limit %f\n", (float)upper_limit );
+    printf("page_size %f\n", (float) page_size);
+    printf("page_increment %f\n", (float)page_increment );
+    printf("value              %f\n", (float)value );
+  }
   
   GTK_ADJUSTMENT(naviD->dyn_adj)->lower = lower_limit;
   GTK_ADJUSTMENT(naviD->dyn_adj)->upper = upper_limit;
+  GTK_ADJUSTMENT(naviD->dyn_adj)->page_increment = page_increment;
+  GTK_ADJUSTMENT(naviD->dyn_adj)->value = MIN(value, upper_limit);
+  GTK_ADJUSTMENT(naviD->dyn_adj)->page_size = page_size;
   
 }  /* end navi_dyn_adj_set_limits */
 
@@ -3527,6 +3633,8 @@ navi_dialog_create (GtkWidget* shell, gint32 image_id)
   g_snprintf(frame_nr_to_char, sizeof(frame_nr_to_char), "0000 - 0000");
   naviD = g_new (NaviDialog, 1);
   /* init the global naviD structure */
+  naviD->del_button = NULL;
+  naviD->dup_button = NULL;
   naviD->dyn_adj = NULL;         /* disable procedure navi_dyn_adj_set_limits before this widget is created  */
   naviD->sel_range_list = NULL;  /* startup without selection */
   naviD->prev_selected_framnr = -1;
@@ -3934,6 +4042,20 @@ ops_button_box_new (GtkWidget     *parent,
                                             GTK_ICON_SIZE_BUTTON);
           gtk_container_add (GTK_CONTAINER (button), image);
           gtk_widget_show (image);
+          
+          /* need to know del_button and dup_button
+           * for setting sensitive when selection was made
+           */
+          if(ops_button->callback == OPS_BUTTON_FUNC(navi_dialog_frames_delete_frame_callback))
+          {
+            gtk_widget_set_sensitive(button, FALSE);
+            naviD->del_button = button;
+          }
+          if(ops_button->callback == OPS_BUTTON_FUNC(navi_dialog_frames_duplicate_frame_callback))
+          {
+            gtk_widget_set_sensitive(button, FALSE);
+            naviD->dup_button = button;
+          }
           break;
         case OPS_BUTTON_RADIO :
           button = gtk_radio_button_new (group);

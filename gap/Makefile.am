@@ -48,8 +48,12 @@ gap_plugins_SOURCES = \
 	gap_mov_render.h	\
 	gap_navi_activtable.c	\
 	gap_navi_activtable.h	\
+	gap_onion_base.c	\
+	gap_onion_base.h	\
 	gap_pdb_calls.c		\
 	gap_pdb_calls.h		\
+	gap_pview_da.c		\
+	gap_pview_da.h		\
 	gap_range_ops.c		\
 	gap_range_ops.h		\
 	gap_resi_dialog.c	\
@@ -103,6 +107,8 @@ gap_frontends_SOURCES = \
 	gap_mpege.h		\
 	gap_navi_activtable.c	\
 	gap_navi_activtable.h	\
+	gap_onion_base.c	\
+	gap_onion_base.h	\
 	gap_pdb_calls.c		\
 	gap_pdb_calls.h		\
 	gap_thumbnail.c		\
@@ -128,9 +134,13 @@ gap_navigator_dialog_SOURCES = \
 	gap_layer_copy.h        \
 	gap_lib.c		\
 	gap_lib.h		\
+	gap_match.c		\
+	gap_match.h		\
 	gap_navi_activtable.c	\
 	gap_navi_activtable.h	\
 	gap_navigator_dialog.c	\
+	gap_onion_base.c	\
+	gap_onion_base.h	\
 	gap_pdb_calls.c		\
 	gap_pdb_calls.h		\
 	gap_pview_da.c		\
@@ -151,8 +161,12 @@ gap_player_SOURCES = \
 	gap_layer_copy.h        \
 	gap_lib.c		\
 	gap_lib.h		\
+	gap_match.c		\
+	gap_match.h		\
 	gap_navi_activtable.c	\
 	gap_navi_activtable.h	\
+	gap_onion_base.c	\
+	gap_onion_base.h	\
 	gap_player_main.c	\
 	gap_player_main.h	\
 	gap_player_dialog.c	\
@@ -179,6 +193,8 @@ gap_onion_SOURCES = \
 	gap_onion_dialog.h	\
 	gap_onion_worker.c	\
 	gap_onion_worker.h	\
+	gap_onion_base.c	\
+	gap_onion_base.h	\
 	gap_layer_copy.c        \
 	gap_layer_copy.h        \
 	gap_lib.c		\

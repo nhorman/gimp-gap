@@ -33,18 +33,21 @@
 
 
 /* revision history:
- * version 1.3.16b; 2003.07.06   hof: new parameter farn_opaque (for cross-fading support)
+ * version 1.3.16c; 2003.07.12   hof: Onionsettings scope changes from gimp-session
+ *                                    to permanent per animation (stored in video_info file=.
+ * version 1.3.16b; 2003.07.06   hof: new parameter asc_opacity (for cross-fading support)
  * version 1.3.14a; 2003.05.24   hof: integration into gimp-gap-1.3.14
  * version 1.3.12a; 2003.05.03   hof: started port to gimp-1.3 / gtk+2.2
  * version 1.2.2a;  2001.11.20   hof: created
  */
 
 #include <gap_onion_main.h>
+#include <gap_onion_base.h>
 #include <gap_onion_worker.h>
 #include <gap_onion_dialog.h>
 
 
-static char *gap_onion_version = "1.3.16b; 2003/07/06";
+static char *gap_onion_version = "1.3.16c; 2003/07/09";
 
 
 /* ------------------------
@@ -91,9 +94,11 @@ GimpPlugInInfo PLUG_IN_INFO =
     {GIMP_PDB_INT32, "range_from", "first affected frame (ignored if run is not 2 or 3)"},
     {GIMP_PDB_INT32, "range_to", "last affected frame (ignored if run is not 2 or 3)"},
     {GIMP_PDB_INT32, "run", "0 .. do nothing, 1..set params for this session, 2..set and create or replace onionlayers for selected framerange  3..delete onionlayers from selected famerange "},
-    {GIMP_PDB_INT32, "farn_opaque", "TRUE..farest neighbour frame has highest opacity, FALSE: nearest has highest opacity"},
+    {GIMP_PDB_INT32, "asc_opacity", "TRUE..farest neighbour frame has highest opacity, FALSE: nearest has highest opacity"},
+    {GIMP_PDB_INT32, "auto_create", "TRUE..automatic creation/replacing of onionskinlayers after GAP controlled load"},
+    {GIMP_PDB_INT32, "auto_delete", "TRUE..automatic delete of onionskinlayers before GAP controlled save"},
   };
-  static int nargs_onion_cfg = sizeof(args_onion_cfg) / sizeof(args_onion_cfg[0]);
+  static int nargs_onion_cfg = G_N_ELEMENTS(args_onion_cfg);
 
   static GimpParamDef args_onion_visi[] =
   {
@@ -102,7 +107,7 @@ GimpPlugInInfo PLUG_IN_INFO =
     {GIMP_PDB_DRAWABLE, "drawable", "Input drawable (unused)"},
     {GIMP_PDB_INT32, "visible_mode", "0: set invisible 1: set visible 2: toggle visibility"},
   };
-  static int nargs_onion_visi = sizeof(args_onion_visi) / sizeof(args_onion_visi[0]);
+  static int nargs_onion_visi = G_N_ELEMENTS(args_onion_visi);
 
   static GimpParamDef args_onion_std[] =
   {
@@ -110,7 +115,7 @@ GimpPlugInInfo PLUG_IN_INFO =
     {GIMP_PDB_IMAGE, "image", "Input image (the current videoframe)"},
     {GIMP_PDB_DRAWABLE, "drawable", "Input drawable (unused)"},
   };
-  static int nargs_onion_std = sizeof(args_onion_std) / sizeof(args_onion_std[0]);
+  static int nargs_onion_std = G_N_ELEMENTS(args_onion_std);
 
   static GimpParamDef *return_vals = NULL;
   static int nreturn_vals = 0;
@@ -242,9 +247,7 @@ run (char    *name,
 
 
   p_init_default_values(gpp); /* init with default values */
-  p_get_data_onion_cfg(gpp);  /* get current params (if there are any) */
 
-  gpp->cache.count = 0;    /* start with empty image cache */
 
   /* get image_ID */
   gpp->image_ID    = param[1].data.d_image;
@@ -266,6 +269,12 @@ run (char    *name,
 
   /* get animinfo */
   p_plug_in_gap_get_animinfo(gpp->image_ID, &gpp->ainfo);
+  p_get_data_onion_cfg(gpp);  /* get current params (if there are any) */
+
+  gpp->vin.onionskin_auto_enable = TRUE;
+  gpp->cache.count = 0;    /* start with empty image cache */
+  gpp->image_ID    = param[1].data.d_image;
+
   gpp->range_from            = gpp->ainfo.curr_frame_nr;
   gpp->range_to              = gpp->ainfo.last_frame_nr;
 
@@ -283,28 +292,31 @@ run (char    *name,
         }
         else
         {
-          gpp->val.num_olayers        = param[3].data.d_int32;
-          gpp->val.ref_delta          = param[4].data.d_int32;
-          gpp->val.ref_cycle          = param[5].data.d_int32;
-          gpp->val.stack_pos          = param[6].data.d_int32;
-          gpp->val.stack_top          = param[7].data.d_int32;
-          gpp->val.opacity            = param[8].data.d_float;
-          gpp->val.opacity_delta      = param[9].data.d_float;
-          gpp->val.ignore_botlayers   = param[10].data.d_int32;
-          gpp->val.select_mode        = param[11].data.d_int32;
-          gpp->val.select_case        = param[12].data.d_int32;
-          gpp->val.select_invert      = param[13].data.d_int32;
+          gpp->vin.num_olayers        = param[3].data.d_int32;
+          gpp->vin.ref_delta          = param[4].data.d_int32;
+          gpp->vin.ref_cycle          = param[5].data.d_int32;
+          gpp->vin.stack_pos          = param[6].data.d_int32;
+          gpp->vin.stack_top          = param[7].data.d_int32;
+          gpp->vin.opacity            = param[8].data.d_float;
+          gpp->vin.opacity_delta      = param[9].data.d_float;
+          gpp->vin.ignore_botlayers   = param[10].data.d_int32;
+          gpp->vin.select_mode        = param[11].data.d_int32;
+          gpp->vin.select_case        = param[12].data.d_int32;
+          gpp->vin.select_invert      = param[13].data.d_int32;
           if (param[14].data.d_string != NULL)
           {
-            g_snprintf(&gpp->val.select_string[0]
-                      , sizeof(gpp->val.select_string)
+            g_snprintf(&gpp->vin.select_string[0]
+                      , sizeof(gpp->vin.select_string)
                       , "%s", param[14].data.d_string
                       );
           }
           gpp->range_from            = param[15].data.d_int32;
           gpp->range_to              = param[16].data.d_int32;
-          gpp->val.run               = param[17].data.d_int32;
-          gpp->val.farn_opaque       = param[18].data.d_int32;
+          gpp->run                   = param[17].data.d_int32;
+          gpp->vin.asc_opacity       = param[18].data.d_int32;
+          gpp->vin.auto_replace_after_load = param[19].data.d_int32;
+          gpp->vin.auto_delete_before_save = param[20].data.d_int32;
+          gpp->vin.onionskin_auto_enable   = TRUE;
         }
       }
       else if(gpp->run_mode != GIMP_RUN_INTERACTIVE)
@@ -321,14 +333,27 @@ run (char    *name,
          }
          if (l_rc >= 0)
          {
-           if(gpp->val.run != GAP_ONION_RUN_CANCEL)
+           if(gpp->run != GAP_ONION_RUN_CANCEL)
            {
+             /* disable both automatic onionskin triggers by disabling 
+              * the master switch
+              * while applying onionskin to a range of frames.
+              * (this prevents from creating onionskins twice per image.
+              *  automatic delete is also not done in that case because it makes no
+              *  sense when the user explicitly wants to create onionskin layers
+              *  in the processed range)
+              */
+             gpp->vin.onionskin_auto_enable   = FALSE;
              l_rc = p_set_data_onion_cfg(gpp, GAP_PLUGIN_NAME_ONION_CFG);
            }
-           if((gpp->val.run == GAP_ONION_RUN_APPLY)
-           || (gpp->val.run == GAP_ONION_RUN_DELETE))
+           if((gpp->run == GAP_ONION_RUN_APPLY)
+           || (gpp->run == GAP_ONION_RUN_DELETE))
            {
+             /* do ONIONSKIN processing for all the frames in selected Range */
              l_rc = p_onion_range(gpp);
+             
+             gpp->vin.onionskin_auto_enable   = TRUE;
+             l_rc = p_set_data_onion_cfg(gpp, GAP_PLUGIN_NAME_ONION_CFG);
            }
          }
       }
