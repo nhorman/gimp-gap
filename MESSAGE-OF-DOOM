@@ -1,6 +1,0 @@
-This used to be part of the GIMP source tree, but has been moved into
-it's own CVS module.
-
-Please use bugzilla productname gimp-gap for bugreports.
-
-   http://bugzilla.gnome.org/enter_bug.cgi?product=gimp-gap

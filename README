@@ -1,8 +1,8 @@
-This is a prerelease version 1.3.25 of the GIMP Video menu.
+This is a prerelease version of the GIMP Video menu 2.0.
 
-The GIMP-GAP (GIMP Animation Package) is a collection of Plug-Ins
-to extend the GIMP with capabilities to edit and create
-Animations as sequences of single frames.
+The GIMP-GAP (GIMP Animation Package) is a collection of Plug-Ins to
+extend the GIMP with capabilities to edit and create Animations as
+sequences of single frames.
 
 
 Requires: - gimp version 2.0pre2 or later

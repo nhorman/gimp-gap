@@ -28,9 +28,9 @@
 
 /* revision history:
  * 1.3.25a  2004/01/21   hof: removed xvpics support (GIMP-2.0 has no more xvpics support too)
- *                            added gap_thumb_file_load_pixbuf_thumbnail, 
+ *                            added gap_thumb_file_load_pixbuf_thumbnail,
  *                            gap_thumb_file_load_thumbnail: removed flattening
- * 1.3.24a  2004/01/16   hof: make use of libgimpthumb (see also feature request #113033) 
+ * 1.3.24a  2004/01/16   hof: make use of libgimpthumb (see also feature request #113033)
  *                            to replace old private thumnail handling code
  * 1.3.17a  2003/07/28   hof: G_N_ELEMENTS is unsigned
  * 1.3.14b  2003/06/03   hof: check only for thumbnail-size "none" (suggested by sven see #113033)
@@ -39,8 +39,8 @@
  */
 
 #include "config.h"
- 
-/* SYSTEM (UNIX) includes */ 
+
+/* SYSTEM (UNIX) includes */
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -113,7 +113,7 @@ p_gap_thumb_init(void)
     printf("p_gap_thumb_init: call of gimp_thumb_init FAILED!\n");
     gap_thumb_initialized = FALSE;
   }
-  
+
 
 }  /* end p_gap_thumb_init */
 
@@ -174,7 +174,7 @@ p_gap_filename_to_uri(const char *filename)
  *   tEXt::Thumb::X-GIMP::Layers
  *
  * The Tag
- *   tEXt::Software   
+ *   tEXt::Software
  * is set to "gap-<MAJOR_VERSION>.<MINOR_VERSION>"
  *
  * Please note that the image (filename_dst) must have been already created
@@ -248,7 +248,7 @@ p_copy_png_thumb(char *filename_src, char *filename_dst)
             {
 	      gint  l_width, l_height, l_num_layers;
 	      gchar *l_type_str;
-	      
+
               if(gap_debug) printf("p_copy_png_thumb: pixbuf: %d\n", (int)pixbuf);
 
 	      l_width = 1;
@@ -285,8 +285,8 @@ p_copy_png_thumb(char *filename_src, char *filename_dst)
         		      "image-num-layers", l_num_layers,
         		      NULL);
 	      }
-	      
-	    
+
+
               gimp_thumbnail_save_thumb(thumbnail
 		                         , pixbuf
 					 , global_creator_software
@@ -324,7 +324,7 @@ p_copy_png_thumb(char *filename_src, char *filename_dst)
  * checking gimprc for "thumbnail-size" (GIMP native, values:  "none", "normal", "large"
  *
  */
-char *   
+char *
 gap_thumb_gimprc_query_thumbnailsave(void)
 {
   if(global_thumbnail_mode)
@@ -349,7 +349,7 @@ gap_thumb_gimprc_query_thumbnailsave(void)
  * keyword "thumbnail-size" values:  "none"
  * is checked.
  */
-gboolean   
+gboolean
 gap_thumb_thumbnailsave_is_on(void)
 {
   if(global_thumbnail_mode == NULL)
@@ -384,7 +384,7 @@ gap_thumb_thumbnailsave_is_on(void)
  *
  * Conditional Thubnail save Procedure
  */
-gboolean   
+gboolean
 gap_thumb_cond_gimp_file_save_thumbnail(gint32 image_id, char* filename)
 {
   if (!gap_thumb_thumbnailsave_is_on())
@@ -419,16 +419,16 @@ gap_thumb_file_delete_thumbnail(char *filename)
   {
     p_gap_thumb_init();
   }
-  
+
   uri = p_gap_filename_to_uri(filename);
-  
+
   if(uri)
   {
     GEnumClass *enum_class;
     GEnumValue *enum_value;
     guint       ii;
 
-    /* check and remove thumbnail files for new thumbnail standard 
+    /* check and remove thumbnail files for new thumbnail standard
      * (for all 3 directories
      *   ~/.thumbnails/.normal
      *   ~/.thumbnails/.large
@@ -446,15 +446,15 @@ gap_thumb_file_delete_thumbnail(char *filename)
       png_thumb_full = gimp_thumb_name_from_uri (uri, enum_value->value);
       if(png_thumb_full)
       {
-        if(gap_lib_file_exists(png_thumb_full) == 1) 
-        {  
+        if(gap_lib_file_exists(png_thumb_full) == 1)
+        {
           if (gap_debug) printf ("gap_thumb_file_delete_thumbnail: png_thumb_full: %s\n", png_thumb_full);
           remove(png_thumb_full);
         }
         g_free(png_thumb_full);
       }
     }
-    
+
     g_free(uri);
   }
 }  /* end gap_thumb_file_delete_thumbnail */
@@ -481,7 +481,7 @@ gap_thumb_file_copy_thumbnail(char *filename_src, char *filename_dst)
 
   /* copy (and update) the PNG thumbnail file(s) */
   p_copy_png_thumb(filename_src, filename_dst);
-      
+
 }  /* end gap_thumb_file_copy_thumbnail */
 
 
@@ -508,7 +508,7 @@ gap_thumb_file_rename_thumbnail(char *filename_src, char *filename_dst)
   }
 
   gap_thumb_file_delete_thumbnail(filename_src);
-  
+
 }  /* end gap_thumb_file_rename_thumbnail */
 
 
@@ -519,14 +519,14 @@ gap_thumb_file_rename_thumbnail(char *filename_src, char *filename_dst)
  *
  * IN: filename of the image (whos thumbnail is to load)
  *
- * I/O: th_width, th_height  as hint what thumbnail size to load 
+ * I/O: th_width, th_height  as hint what thumbnail size to load
  *                            (normal == 128 or large == 256)
  *                            for the case that both sizes are available.
  *                            The values for width and height of the thumbnaildata
  *                            are returned in th_width, th_height
  * OUT: th_bpp               bytes per pixel
  *                            The returned value in th_bpp tells the caller
- *                            how many bytes per pixels are used in the returned th_data buffer. 
+ *                            how many bytes per pixels are used in the returned th_data buffer.
  *                             (gimp-2.0 PNG Thumbnails usually have th_bpp==4)
  * RET: pixbuf              The returned GdkPixbuf structure.
  *                            the caller is responsible to free the returned Pixbuf
@@ -548,12 +548,12 @@ gap_thumb_file_load_pixbuf_thumbnail(char* filename
   if(gap_debug) printf("gap_thumb_file_load_pixbuf_thumbnail:  %s\n", filename);
 
   pixbuf = NULL;
-  
+
   if(!gap_thumb_initialized)
   {
     p_gap_thumb_init();
   }
-   
+
   thumbnail = gimp_thumbnail_new();
   if(thumbnail)
   {
@@ -614,16 +614,16 @@ gap_thumb_file_load_pixbuf_thumbnail(char* filename
  *
  * IN: filename of the image (whos thumbnail is to load)
  *
- * I/O: th_width, th_height  as hint what thumbnail size to load 
+ * I/O: th_width, th_height  as hint what thumbnail size to load
  *                            (normal == 128 or large == 256)
  *                            for the case that both sizes are available.
  *                            The values for width and height of the thumbnaildata
  *                            are returned in th_width, th_height
  * OUT: th_bpp               bytes per pixel
  *                            The returned value in th_bpp tells the caller
- *                            how many bytes per pixels are used in the returned th_data buffer. 
+ *                            how many bytes per pixels are used in the returned th_data buffer.
  *                             (gimp-2.0 PNG Thumbnails usually have th_bpp==4)
- * OUT: th_data_count       The total number of bytes in the returned th_data buffer. 
+ * OUT: th_data_count       The total number of bytes in the returned th_data buffer.
  * OUT: th_data             The returned pixeldata buffer.
  *
  */
@@ -632,10 +632,8 @@ gboolean
 gap_thumb_file_load_thumbnail(char* filename, gint32 *th_width, gint32 *th_height,
                            gint32 *th_data_count, gint32 *th_bpp, unsigned char **th_data)
 {
-  GdkPixbuf          *pixbuf     = NULL;
-  GError             *error = NULL;
-  GimpThumbSize       wanted_size;
-  gboolean            rc;
+  GdkPixbuf *pixbuf;
+  gboolean   rc;
 
   if(gap_debug) printf("gap_thumb_file_load_thumbnail:  %s\n", filename);
 
@@ -679,7 +677,7 @@ gap_thumb_file_load_thumbnail(char* filename, gint32 *th_width, gint32 *th_heigh
       }
     }
 
-    g_object_unref(pixbuf);       
+    g_object_unref(pixbuf);
   }
 
   return (rc);
