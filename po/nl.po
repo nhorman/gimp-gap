@@ -1,0 +1,2635 @@
+# Dutch translation of The GIMP's plug-in strings.
+# Copyright (C) 2001 Free Software Foundation, Inc.
+# Branko Collin <collin@xs4all.nl>, 2001.
+msgid ""
+msgstr ""
+"Project-Id-Version: gimp 1.2.3\n"
+"POT-Creation-Date: 2003-03-25 02:00+0100\n"
+"PO-Revision-Date: 2002-03-03 04:00+0100\n"
+"Last-Translator: Branko Collin <collin@xs4all.nl>\n"
+"Language-Team: Dutch <vertaling@nl.linux.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Button  to invoke filebrowser
+#: gap/gap_arr_dialog.c:293
+msgid "File-Browser"
+msgstr "Bestandsverkenner"
+
+#. parameter settings
+#: gap/gap_arr_dialog.c:793
+msgid "Enter Values"
+msgstr "Geef waarden in"
+
+# What is the Dutch translation of this phrase?
+#: gap/gap_arr_dialog.c:812
+msgid "Value:"
+msgstr "Value:"
+
+#: gap/gap_arr_dialog.c:878
+msgid "Value: "
+msgstr "Waarde:"
+
+#: gap/gap_arr_dialog.c:1040
+msgid "Press Button"
+msgstr "Klik op knop"
+
+#: gap/gap_arr_dialog.c:1041
+msgid "Select"
+msgstr "Selecteer"
+
+#: gap/gap_dbbrowser_utils.c:76
+msgid "GAP Animated Filter apply"
+msgstr "GAP geanimeerd filter toepassen"
+
+#: gap/gap_dbbrowser_utils.c:97
+msgid "Animated Filter apply (init)"
+msgstr "Geanimeerd filter toepassen (initialisatie)"
+
+#: gap/gap_dbbrowser_utils.c:148
+msgid "Search:"
+msgstr "Zoeken:"
+
+#: gap/gap_dbbrowser_utils.c:176
+msgid "Gen Code by name"
+msgstr "Gencode op naam"
+
+#: gap/gap_dbbrowser_utils.c:185
+msgid "Search by Name"
+msgstr "Zoeken op naam"
+
+#: gap/gap_dbbrowser_utils.c:193
+msgid "Search by Blurb"
+msgstr "Zoeken op omschrijving"
+
+#. show the name
+#: gap/gap_dbbrowser_utils.c:335
+msgid "Name:"
+msgstr "Naam:"
+
+#. show the description
+#: gap/gap_dbbrowser_utils.c:352
+msgid "Blurb:"
+msgstr "Omschrijving:"
+
+#: gap/gap_dbbrowser_utils.c:374
+msgid "In:"
+msgstr "In:"
+
+#: gap/gap_dbbrowser_utils.c:420
+msgid "Out:"
+msgstr "Uit:"
+
+#: gap/gap_dbbrowser_utils.c:469
+msgid "Help:"
+msgstr "Help:"
+
+#. show the author & the copyright
+#: gap/gap_dbbrowser_utils.c:507
+msgid "Author:"
+msgstr "Auteur:"
+
+#: gap/gap_dbbrowser_utils.c:522
+msgid "Date:"
+msgstr "Datum:"
+
+#: gap/gap_dbbrowser_utils.c:537
+msgid "Copyright:"
+msgstr "Copyright:"
+
+#: gap/gap_dbbrowser_utils.c:676
+msgid "Animated Filter apply (by name - please wait)"
+msgstr "Geanimeerd filter toepassen (op naam - wacht a.u.b.)"
+
+#: gap/gap_dbbrowser_utils.c:700
+msgid "Animated Filter apply (by blurb - please wait)"
+msgstr "Geanimeerd filter toepassen (op tekst - wacht a.u.b.)"
+
+#: gap/gap_dbbrowser_utils.c:708
+msgid "Animated Filter apply (please wait)"
+msgstr "Geanimeerd filter toepassen (wacht a.u.b.)"
+
+#: gap/gap_dbbrowser_utils.c:755 gap/gap_filter_foreach.c:163
+#: gap/gap_mod_layer.c:287
+msgid "Animated Filter apply"
+msgstr "Geanimeerd filter toepassen"
+
+#: gap/gap_decode_mpeg_main.c:102
+msgid "<Image>/Video/Split Video to Frames"
+msgstr "<Image>/Video/Video in frames opdelen"
+
+#: gap/gap_decode_mpeg_main.c:103
+msgid "<Toolbox>/Xtns/Split Video to Frames"
+msgstr "<Toolbox>/Extra's/Video in frames opdelen"
+
+#: gap/gap_decode_mpeg_main.c:176
+msgid "<Image>/Video/Split Video to Frames/MPEG1"
+msgstr "<Image>/Video/Video in frames opdelen/MPEG1"
+
+#: gap/gap_decode_mpeg_main.c:189
+msgid "<Toolbox>/Xtns/Split Video to Frames/MPEG1"
+msgstr "<Toolbox>/Extra's/Video in frames opdelen/MPEG1"
+
+#: gap/gap_decode_mpeg_main.c:332 gap/gap_decode_xanim.c:337
+#: gap/gap_range_ops.c:1240
+msgid "Overwrite Frame"
+msgstr "Frame overschrijven"
+
+#: gap/gap_decode_mpeg_main.c:334 gap/gap_decode_xanim.c:339
+#: gap/gap_range_ops.c:1242
+msgid "Overwrite All"
+msgstr "Alles overschrijven"
+
+#: gap/gap_decode_mpeg_main.c:342 gap/gap_decode_xanim.c:347
+#: gap/gap_lib.c:1036 gap/gap_range_ops.c:1247
+msgid "GAP Question"
+msgstr "GAP-vraag"
+
+#: gap/gap_decode_mpeg_main.c:343 gap/gap_decode_xanim.c:348
+msgid "File already exists"
+msgstr "Bestand bestaat al"
+
+#: gap/gap_decode_mpeg_main.c:437
+msgid "Decoding MPEG Movie..."
+msgstr "MPEG-film decoderen..."
+
+#: gap/gap_decode_mpeg_main.c:642
+msgid "Video"
+msgstr "Video"
+
+#: gap/gap_decode_mpeg_main.c:643
+msgid ""
+"Name of the MPEG1 videofile to READ.\n"
+"Frames are extracted from the videofile\n"
+"and written to seperate diskfiles.\n"
+"Audiotracks in the videofile are ignored."
+msgstr ""
+"Naam van het te lezen MPEG1-videobestand.\n"
+"Frames worden uit het videobestand gehaald\n"
+"en geschreven naar aparte schijfbestanden.\n"
+"Audiotracks in het videobestanden worden genegeerd."
+
+#: gap/gap_decode_mpeg_main.c:652 gap/gap_decode_xanim.c:224
+#: gap/gap_lib.c:2120 gap/gap_lib.c:2315 gap/gap_range_ops.c:253
+#: gap/gap_range_ops.c:602
+msgid "From:"
+msgstr "Van:"
+
+#: gap/gap_decode_mpeg_main.c:653 gap/gap_decode_xanim.c:225
+msgid "Framenumber of 1st frame to extract"
+msgstr "Framenummer van het 1e te lezen frame"
+
+#: gap/gap_decode_mpeg_main.c:662 gap/gap_decode_xanim.c:234
+#: gap/gap_lib.c:2128 gap/gap_lib.c:2323 gap/gap_range_ops.c:260
+#: gap/gap_range_ops.c:610
+msgid "To:"
+msgstr "Naar:"
+
+#: gap/gap_decode_mpeg_main.c:663 gap/gap_decode_xanim.c:235
+msgid "Framenumber of last frame to extract"
+msgstr "Framenummer van het laatste te lezen frame"
+
+#: gap/gap_decode_mpeg_main.c:672 gap/gap_decode_xanim.c:244
+msgid "Framenames:"
+msgstr "Framenamen:"
+
+#: gap/gap_decode_mpeg_main.c:673
+msgid ""
+"Basename for the AnimFrames to write on disk\n"
+"(framenumber and .xcf is added)"
+msgstr ""
+"Basisnaam voor de naar schijf te schrijven frames\n"
+"(framenummer en .xcf worden toegevoegd)"
+
+#: gap/gap_decode_mpeg_main.c:680 gap/gap_decode_xanim.c:283
+msgid "Open"
+msgstr "Openen"
+
+#: gap/gap_decode_mpeg_main.c:681 gap/gap_decode_xanim.c:284
+msgid "Open the 1st one of the extracted frames"
+msgstr "Open het 1e van de ingelezen frames"
+
+#: gap/gap_decode_mpeg_main.c:685
+msgid ""
+"\n"
+"WARNING: Do not attempt to split other files than MPEG1 videos.\n"
+"Before you proceed, you should save all open images."
+msgstr ""
+"\n"
+"Waarschuwing: probeer niet andere bestanden dan MPEG1-videos\n"
+"op te delen. Voor u verdergaat, moet u eerst alle geopende\n"
+"afbeeldingen opslaan."
+
+#: gap/gap_decode_mpeg_main.c:688
+msgid "Split MPEG1 Video to Frames"
+msgstr "MPEG1-video in frames opdelen"
+
+#: gap/gap_decode_mpeg_main.c:689 gap/gap_decode_xanim.c:298
+#: gap/gap_range_ops.c:1462
+msgid "Select Frame Range"
+msgstr "Selecteer framebereik"
+
+#: gap/gap_decode_xanim.c:114
+msgid "Conditions to run the xanim based video split"
+msgstr "Voorwaarden om een op xanim gebaseerde video-opdeling uit te voeren"
+
+# What meaning of 'export' is used here?
+#: gap/gap_decode_xanim.c:122
+msgid "1.) xanim 2.80.0 exporting edition (the loki version)"
+msgstr "1.) xanim 2.80.0, uitvoeruitvoering, (de loki-versie)"
+
+#: gap/gap_decode_xanim.c:126
+msgid "    must be installed somewhere in your PATH"
+msgstr "    moet ergens in uw PATH staan"
+
+#: gap/gap_decode_xanim.c:130
+msgid "    you can get xanim exporting edition at"
+msgstr "    u kunt deze uitvoering van xanim verkrijgen bij"
+
+# What meaning of 'export' is used here?
+#: gap/gap_decode_xanim.c:146
+msgid ""
+"2.) if your xanim exporting edition is not in your PATH or is not named xanim"
+msgstr ""
+"2.) als uw xanimuitvoer-uitvoering niet in uw PATH staat of niet xanim heet"
+
+#: gap/gap_decode_xanim.c:150
+msgid "    you have to set Environment variable GAP_XANIM_PROG "
+msgstr "    moet u uw omgevingsvariable GAP_XANIM_PROG instellen "
+
+#: gap/gap_decode_xanim.c:154
+msgid "    to your xanim exporting program and restart gimp"
+msgstr "    naar uw xanim-uitvoerend programma en GIMP opnieuw starten"
+
+#: gap/gap_decode_xanim.c:162
+msgid "An ERROR occured while trying to call xanim:"
+msgstr "Een fout deed zich voor bij het proberen aanroepen van xanim:"
+
+#: gap/gap_decode_xanim.c:181
+msgid "XANIM Information"
+msgstr "XANIM-informatie"
+
+#: gap/gap_decode_xanim.c:214
+msgid "Video:"
+msgstr "Video:"
+
+#: gap/gap_decode_xanim.c:215
+msgid ""
+"Name of a videofile to READ by xanim.\n"
+"Frames are extracted from the videofile\n"
+"and written to separate diskfiles.\n"
+"xanim exporting edition is required."
+msgstr ""
+"Naam van een door xanim te lezen videobestand.\n"
+"Frames worden uit het videobestand gehaald\n"
+"en geschreven naar aparte schijfbestanden.\n"
+"De xanimversie die kan exporteren is nodig."
+
+#: gap/gap_decode_xanim.c:245
+msgid ""
+"Basename for the AnimFrames to write on disk\n"
+"(framenumber and extension is added)"
+msgstr ""
+"Basisnaam voor de naar schijf te schrijven frames\n"
+"(framenummer en extensie worden toegevoegd)"
+
+# Verb or noun? I cannot check this function
+#: gap/gap_decode_xanim.c:252
+msgid "Format"
+msgstr "Formaat"
+
+#: gap/gap_decode_xanim.c:253
+msgid ""
+"Fileformat for the extracted AnimFrames\n"
+"(xcf is extracted as ppm and converted to xcf)"
+msgstr ""
+"Bestandsformaat voor de opgehaalde frames\n"
+"(xcf wordt opgehaald als ppm en naar xcf geconverteerd)"
+
+#: gap/gap_decode_xanim.c:260
+msgid "Extract Frames"
+msgstr "Haal frames op"
+
+#: gap/gap_decode_xanim.c:261
+msgid "Enable extraction of Frames"
+msgstr "Schakel ophalen van frames in"
+
+#: gap/gap_decode_xanim.c:265
+msgid "Extract Audio"
+msgstr "Haal geluid op"
+
+#: gap/gap_decode_xanim.c:266
+msgid ""
+"Enable extraction of audio to raw audiofile\n"
+"(frame range limits are ignored for audio)"
+msgstr ""
+"Schakel het kopiëren van geluid naar een onbewerkt geluidsbestand\n"
+"in (framebereiklimieten worden genegeerd voor geluid)"
+
+#: gap/gap_decode_xanim.c:271
+msgid "Jpeg Quality:"
+msgstr "JPEG-kwaliteit:"
+
+#: gap/gap_decode_xanim.c:272
+msgid ""
+"Quality for resulting Jpeg frames\n"
+"(is ignored when other formats are used)"
+msgstr ""
+"Kwaliteit voor resulterende JPEG-frames\n"
+"(genegeerd als een andere formaat wordt gebruikt\n"
+")"
+
+#: gap/gap_decode_xanim.c:288
+msgid "Run asynchronously"
+msgstr "Asynchroon"
+
+#: gap/gap_decode_xanim.c:289
+msgid ""
+"Run xanim asynchronously and delete unwanted frames\n"
+"(out of the specified range) while xanim is still running"
+msgstr ""
+"Run xanim asynchroon en wis ongewenste frames (uit het\n"
+"opgegeven bereik) terwijl xanim nog steeds loopt"
+
+#: gap/gap_decode_xanim.c:294
+msgid ""
+"\n"
+"Warning: xanim 2.80 has only limited MPEG support.\n"
+"Most of the frames (type P and B) will be skipped."
+msgstr ""
+"\n"
+"Waarschuwing: xanim 2.80 ondersteunt MPEG slechts in beperkte\n"
+"mate. De meeste frames (type P en B) worden overgeslagen."
+
+#: gap/gap_decode_xanim.c:297
+msgid "Split any Xanim readable Video to Frames"
+msgstr "Splits elke voor Xanim leesbare video op in frames"
+
+#: gap/gap_decode_xanim.c:540
+#, c-format
+msgid ""
+"can't find any extracted frames,\n"
+"%s\n"
+"maybe xanim has failed or was cancelled"
+msgstr ""
+"kan geen opgehaalde frames vinden,\n"
+"%s\n"
+"mischien slaagde xanim niet of werd het gestopt"
+
+#: gap/gap_decode_xanim.c:565
+#, c-format
+msgid "frames are not extracted, because overwrite of %s was cancelled"
+msgstr ""
+"frames worden niet opgehaald, omdat overschrijven van %s was geannuleerd"
+
+#: gap/gap_decode_xanim.c:575
+#, c-format
+msgid "failed to overwrite %s (check permissions ?)"
+msgstr "overschrijven %s niet gelukt (controleer permissies?)"
+
+#: gap/gap_decode_xanim.c:597
+#, c-format
+msgid "failed to write %s (check permissions ?)"
+msgstr "%s schrijven niet gelukt (controleer permissies?)"
+
+#: gap/gap_decode_xanim.c:723
+#, c-format
+msgid "could not execute %s (check if xanim is installed)"
+msgstr "kon %s niet uitvoeren (is xanim geïnstalleerd?)"
+
+#: gap/gap_decode_xanim.c:731
+#, c-format
+msgid "%s does not look like xanim"
+msgstr "%s lijkt niet op xanim"
+
+#: gap/gap_decode_xanim.c:755
+#, c-format
+msgid ""
+"The xanim program on your system \"%s\"\n"
+"does not support the exporting options Ea, Ee, Eq"
+msgstr ""
+"Het xanim-programma op uw systeem \"%s\"\n"
+"ondersteunt de exportopties Ea, Ee en Eq niet"
+
+#: gap/gap_decode_xanim.c:762
+#, c-format
+msgid ""
+"The xanim program on your system \"%s\"\n"
+"does not support exporting of single frames"
+msgstr ""
+"Het xanim-programma op uw systeem \"%s\"\n"
+"ondersteunt niet het exporteren van losse frames"
+
+#: gap/gap_decode_xanim.c:1025
+#, c-format
+msgid "videofile %s not existent or empty\n"
+msgstr "videobestand %s bestaat niet of is leeg\n"
+
+#: gap/gap_decode_xanim.c:1078
+#, c-format
+msgid ""
+"could not create %s directory\n"
+"(that is required for xanim frame export)"
+msgstr ""
+"kon map %s niet aanmaken\n"
+"(nodig voor exporteren van xanim-frames)"
+
+#: gap/gap_decode_xanim.c:1089
+msgid "extracting frames..."
+msgstr "frames ophalen..."
+
+#: gap/gap_decode_xanim.c:1114
+#, c-format
+msgid ""
+"could not start xanim process\n"
+"(program=%s)"
+msgstr ""
+"kon xanim-proces niet starten\n"
+"(programma=%s)"
+
+#: gap/gap_decode_xanim.c:1135
+msgid ""
+"can't find any extracted frames,\n"
+"xanim has failed or was cancelled"
+msgstr ""
+"kan geen opgehaalde frames vinden,\n"
+"xanim slaagde niet of was geannuleerd"
+
+#: gap/gap_decode_xanim.c:1154
+msgid "renaming frames..."
+msgstr "frames hernoemen..."
+
+#: gap/gap_decode_xanim.c:1159
+msgid "converting frames..."
+msgstr "frames converteren..."
+
+#: gap/gap_filter_foreach.c:126
+msgid "backup to file"
+msgstr "back-up naar bestand"
+
+#. pixel
+#: gap/gap_filter_foreach.c:128
+msgid "Make backup of the image after each step"
+msgstr "Maak een back-up van de afbeelding na elke stap"
+
+#: gap/gap_filter_foreach.c:132 gap/gap_mod_layer.c:262
+msgid "Continue"
+msgstr "Doorgaan"
+
+#: gap/gap_filter_foreach.c:136
+#, c-format
+msgid "Skip %d"
+msgstr "Sla %d over"
+
+# Is 'end-settings' a name?
+#: gap/gap_filter_foreach.c:155 gap/gap_mod_layer.c:281
+#, c-format
+msgid ""
+"2nd call of %s\n"
+"(define end-settings)"
+msgstr ""
+"2e aanroep van %s\n"
+"(definieer eindinstellingen)"
+
+#: gap/gap_filter_foreach.c:159
+#, c-format
+msgid ""
+"Non-Interactive call of %s\n"
+"(for all layers in between)"
+msgstr ""
+"Niet-interactieve aanroep van %s\n"
+"(voor alle tussenliggende lagen)"
+
+#: gap/gap_filter_foreach.c:278
+msgid "Applying Filter to all Layers..."
+msgstr "Filter op alle lagen toepassen..."
+
+#: gap/gap_filter_foreach.c:552
+msgid "Select Filter for Animated apply"
+msgstr "Selecteer filter voor geanimeerd toepassen"
+
+#: gap/gap_filter_foreach.c:553 gap/gap_mod_layer.c:664
+msgid "Apply Constant"
+msgstr "Constante toepassen"
+
+#: gap/gap_filter_foreach.c:554 gap/gap_mod_layer.c:665
+msgid "Apply Varying"
+msgstr "Gevarieerd toepassen"
+
+#: gap/gap_filter_main.c:105
+msgid "<Image>/Filters/Filter all Layers..."
+msgstr "<Image>/Filters/Filter alle Lagen..."
+
+#: gap/gap_frontends_main.c:125
+msgid "<Image>/Video/Split Video to Frames/Any XANIM readable..."
+msgstr "<Image>/Video/Video splitsen naar frames/Elke XANIM-readable..."
+
+#: gap/gap_frontends_main.c:137
+msgid "<Toolbox>/Xtns/Split Video to Frames/Any XANIM readable..."
+msgstr "<Toolbox>/Extra's/Video splitsen naar frames/Elke XANIM-readable..."
+
+#: gap/gap_frontends_main.c:149
+msgid "<Image>/Video/Encode/MPEG1..."
+msgstr "<Image>/Video/Coderen/MPEG1..."
+
+#: gap/gap_frontends_main.c:162
+msgid "<Image>/Video/Encode/MPEG2..."
+msgstr "<Image>/Video/Coderen/MPEG2..."
+
+#: gap/gap_lib.c:243
+msgid "GAP Message"
+msgstr "GAP-boodschap"
+
+#: gap/gap_lib.c:905
+msgid ""
+"OPERATION CANCELLED.\n"
+"Current frame changed while dialog was open."
+msgstr ""
+"OPERATIE GEANNULEERD.\n"
+"Huidig frame is veranderd terwijl dialoogvenster open was."
+
+#: gap/gap_lib.c:927 gap/gap_lib.c:2192
+msgid ""
+"OPERATION CANCELLED.\n"
+"GAP plug-ins only work with filenames\n"
+"that end in numbers like _0001.xcf.\n"
+"==> Rename your image, then try again."
+msgstr ""
+"OPERATIE GEANNULEERD.\n"
+"GAP-plugins werken alleen met bestands-\n"
+"namen die op _0001.xcf eindigen.\n"
+"==> Hernoem uw afbeelding en probeer het\n"
+"    dan nog eens."
+
+#: gap/gap_lib.c:1014
+msgid ""
+"You are using a file format != xcf\n"
+"Save Operations may result\n"
+"in loss of layer information."
+msgstr ""
+"U gebruikt niet het XCF-bestandsformaat\n"
+"Opslaan kan resulteren in het verlies\n"
+"van laaginformatie."
+
+#: gap/gap_lib.c:1030
+msgid "Save Flattened"
+msgstr "Opslaan geplet"
+
+#: gap/gap_lib.c:1032
+msgid "Save As Is"
+msgstr "Opslaan als Is"
+
+#: gap/gap_lib.c:1507 gap/gap_lib.c:1631 gap/gap_lib.c:1710 gap/gap_lib.c:1717
+#: gap/gap_lib.c:1724 gap/gap_lib.c:1807 gap/gap_lib.c:1829 gap/gap_lib.c:2734
+#, c-format
+msgid "Error: could not rename frame %ld to %ld"
+msgstr "Fout: kon frame niet hernoemen van %ld naar %ld"
+
+#: gap/gap_lib.c:1570
+#, c-format
+msgid "Error: could not save frame %s"
+msgstr "Fout: kon frame %s niet opslaan"
+
+#: gap/gap_lib.c:1619
+msgid "Duplicating frames..."
+msgstr "Frames dupliceren..."
+
+#: gap/gap_lib.c:1795
+msgid "Renumber Framesequence..."
+msgstr "Framereeks hernummeren..."
+
+#: gap/gap_lib.c:1981
+#, c-format
+msgid "Goto Frame (%ld/%ld)"
+msgstr "Ga naar frame (%ld/%ld)"
+
+#: gap/gap_lib.c:1984
+#, c-format
+msgid "Destination Frame Number (%ld  - %ld)"
+msgstr "Nummer van bestemmingsframe (%ld - %ld)"
+
+#: gap/gap_lib.c:1988 gap/gap_lib.c:2065 gap/gap_lib.c:2269
+msgid "Number:"
+msgstr "Nummer:"
+
+#: gap/gap_lib.c:2049
+#, c-format
+msgid "Delete Frames (%ld/%ld)"
+msgstr "Frames verwijderen (%ld/%ld"
+
+#: gap/gap_lib.c:2052
+#, c-format
+msgid "Delete Frames from %ld to (number)"
+msgstr "Frames verwijderen van %ld tot (nummer)"
+
+#: gap/gap_lib.c:2115
+#, c-format
+msgid "Duplicate Frames (%ld/%ld)"
+msgstr "Frames dupliceren (%ld/%ld)"
+
+#: gap/gap_lib.c:2125
+msgid "Source Range starts at this framenumber"
+msgstr "Bronbereik begint bij dit framenummer"
+
+#: gap/gap_lib.c:2133
+msgid "Source Range ends at this framenumber"
+msgstr "Bronbereik eindigt bij dit framenummer"
+
+#: gap/gap_lib.c:2136
+msgid "N times:"
+msgstr "N maal:"
+
+#: gap/gap_lib.c:2143
+msgid ""
+"Copy selected Range n-times  \n"
+"(you may type in Values > 99)"
+msgstr ""
+"Kopieer geselecteerd bereik n maal  \n"
+"(u kunt waarden opgeven > 99)"
+
+#: gap/gap_lib.c:2146
+msgid "Duplicate Frame Range"
+msgstr "Framebereik dupliceren"
+
+#: gap/gap_lib.c:2264
+#, c-format
+msgid "Exchange current Frame (%ld)"
+msgstr "Huidige frame verwisselen (%ld)"
+
+#: gap/gap_lib.c:2268
+msgid "With Frame (number)"
+msgstr "Met frame (nummer)"
+
+#: gap/gap_lib.c:2310
+#, c-format
+msgid "Framesequence Shift (%ld/%ld)"
+msgstr "Framereeks verschuiven (%ld/%ld)"
+
+#: gap/gap_lib.c:2320
+msgid "Affected Range starts at this framenumber"
+msgstr "Beïnvloed bereik begint op dit framenummer"
+
+#: gap/gap_lib.c:2328
+msgid "Affected Range ends at this framenumber"
+msgstr "Beïnvloed bereik eindigt op dit framenummer"
+
+#: gap/gap_lib.c:2331
+msgid "N-Shift:"
+msgstr "N-verschuiving:"
+
+#: gap/gap_lib.c:2336
+msgid ""
+"Renumber the affected framesequence     \n"
+"(numbers are shifted in circle by N)"
+msgstr ""
+"Hernummer de beïnvloedde framereeks        \n"
+"(nummers worden in cirkel verschoven met N)"
+
+#: gap/gap_lib.c:2338
+msgid "Framesequence shift"
+msgstr "Framereeksverschuiving"
+
+#: gap/gap_lib.c:2946
+#, c-format
+msgid ""
+"Can't execute more than 1 Video Function\n"
+"on the same AnimFrame Image at the same time\n"
+"LOCK ID:%s\n"
+msgstr ""
+"Kan niet meer dan één videofunctie op dezelfde\n"
+"AnimFrame-afbeelding tegelijkertijd uitvoeren\n"
+"LOCK ID:%s\n"
+
+#: gap/gap_main.c:476
+msgid "<Image>/Video/Goto/Next Frame"
+msgstr "<Image>/Video/Ga naar/Volgend frame"
+
+#: gap/gap_main.c:488
+msgid "<Image>/Video/Goto/Previous Frame"
+msgstr "<Image>/Video/Ga naar/Vorig frame"
+
+#: gap/gap_main.c:500
+msgid "<Image>/Video/Goto/First Frame"
+msgstr "<Image>/Video/Ga naar/Eerste frame"
+
+#: gap/gap_main.c:512
+msgid "<Image>/Video/Goto/Last Frame"
+msgstr "<Image>/Video/Ga naar/Laatste frame"
+
+#: gap/gap_main.c:524
+msgid "<Image>/Video/Goto/Any Frame..."
+msgstr "<Image>/Video/Ga naar/Willekeurig frame..."
+
+#: gap/gap_main.c:536
+msgid "<Image>/Video/Delete Frames..."
+msgstr "<Image>/Video/Verwijder frames..."
+
+#: gap/gap_main.c:548
+msgid "<Image>/Video/Duplicate Frames..."
+msgstr "<Image>/Video/Dupliceer frames..."
+
+#: gap/gap_main.c:560
+msgid "<Image>/Video/Exchange Frame..."
+msgstr "<Image>Video/Verwissel frame..."
+
+#: gap/gap_main.c:572
+msgid "<Image>/Video/Move Path..."
+msgstr "<Image>Video/Bewegingspad..."
+
+#: gap/gap_main.c:643
+msgid "<Image>/Video/Frames to Image..."
+msgstr "<Image>Video/Frames naar afbeelding..."
+
+#: gap/gap_main.c:655
+msgid "<Image>/Video/Frames Flatten..."
+msgstr "<Image>Video/Frames pletten..."
+
+#: gap/gap_main.c:667
+msgid "<Image>/Video/Frames LayerDel..."
+msgstr "<Image>Video/Frames LaagDel..."
+
+#: gap/gap_main.c:691
+msgid "<Image>/Video/Frames Convert..."
+msgstr "<Image>Video/Frames converteren..."
+
+#: gap/gap_main.c:703
+msgid "<Image>/Video/Frames Resize..."
+msgstr "<Image>Video/Frames herschalen..."
+
+#: gap/gap_main.c:715
+msgid "<Image>/Video/Frames Crop..."
+msgstr "<Image>Video/Frames snijden..."
+
+#: gap/gap_main.c:727
+msgid "<Image>/Video/Frames Scale..."
+msgstr "<Image>Video/Frames schalen..."
+
+#: gap/gap_main.c:739
+msgid "<Image>/Video/Split Image to Frames..."
+msgstr "<Image>Video/Afbeelding opdelen in frames..."
+
+#: gap/gap_main.c:752
+msgid "<Image>/Video/Framesequence Shift..."
+msgstr "<Image>Video/Framereeks verschuiven..."
+
+#: gap/gap_main.c:764
+msgid "<Image>/Video/Frames Modify..."
+msgstr "<Image>Video/Frames aanpassen..."
+
+#. Layer select modes
+#: gap/gap_mod_layer.c:84 gap/gap_range_ops.c:574
+msgid "Pattern is equal to LayerName"
+msgstr "Patroon is gelijk aan laagnaam"
+
+#: gap/gap_mod_layer.c:85 gap/gap_range_ops.c:575
+msgid "Pattern is Start of LayerName"
+msgstr "Patroon is begin van laagnaam"
+
+#: gap/gap_mod_layer.c:86 gap/gap_range_ops.c:576
+msgid "Pattern is End of Layername"
+msgstr "Patroon is eind van laagnaam"
+
+#: gap/gap_mod_layer.c:87 gap/gap_range_ops.c:577
+msgid "Pattern is a Part of LayerName"
+msgstr "Patroon is deel van laagnaam"
+
+#: gap/gap_mod_layer.c:88 gap/gap_range_ops.c:578
+msgid "Pattern is LayerstackNumber List"
+msgstr "Patroon is lijst van Laagstapelnummer"
+
+#: gap/gap_mod_layer.c:89 gap/gap_range_ops.c:579
+msgid "Pattern is REVERSE-stack List"
+msgstr "Patroon lijst van omgekeerde stapel"
+
+#: gap/gap_mod_layer.c:90 gap/gap_range_ops.c:580
+msgid "All Visible (ignore Pattern)"
+msgstr "Allemaal zichtbaar (negeer patroon)"
+
+#: gap/gap_mod_layer.c:92
+msgid "Select all Layers where Layername is equal to Pattern"
+msgstr "Selecteer alle lagen waarvan laagnaam gelijk is aan patroon"
+
+#: gap/gap_mod_layer.c:93
+msgid "Select all Layers where Layername starts with Pattern"
+msgstr "Selecteer alle lagen waarvan laagnaam begint met patroon"
+
+#: gap/gap_mod_layer.c:94
+msgid "Select all Layers where Layername ends up with Pattern"
+msgstr "Selecteer alle lagen waarvan laagnaam eindigt op laagnaam"
+
+#: gap/gap_mod_layer.c:95
+msgid "Select all Layers where Layername contains Pattern"
+msgstr "Selecteer alle lagen waarvan laagnaam patroon bevat"
+
+#: gap/gap_mod_layer.c:96
+msgid ""
+"Select Layerstack positions.\n"
+"0, 4-5, 8\n"
+"where 0 == Top-layer"
+msgstr ""
+"Selecteer laagstapelposities.\n"
+"0, 4-5, 8\n"
+"waar 0 gelijk is aan Top-laag"
+
+#: gap/gap_mod_layer.c:97
+msgid ""
+"Select Layerstack positions.\n"
+"0, 4-5, 8\n"
+"where 0 == BG-layer"
+msgstr ""
+"Selecteer laagstapelposities.\n"
+"0, 4-5, 8\n"
+"waar 0 gelijk is aan AG-laag"
+
+#: gap/gap_mod_layer.c:98
+msgid "Select all visible Layers"
+msgstr "Selecteer alle zichtbare lagen"
+
+#. action items what to do with the selected layer(s)
+#: gap/gap_mod_layer.c:102
+msgid "Set Layer(s) visible"
+msgstr "Stel laag of lagen in op zichtbaar"
+
+#: gap/gap_mod_layer.c:103
+msgid "Set Layer(s) invisible"
+msgstr "Stel laag of lagen in op onzichtbaar"
+
+#: gap/gap_mod_layer.c:104
+msgid "Set Layer(s) linked"
+msgstr "Stel laag of lagen in op gekoppeld"
+
+#: gap/gap_mod_layer.c:105
+msgid "Set Layer(s) unlinked"
+msgstr "Stel laag of lagen in op ongekoppeld"
+
+#: gap/gap_mod_layer.c:106
+msgid "Raise Layer(s)"
+msgstr "Laag of lagen omhoog"
+
+#: gap/gap_mod_layer.c:107
+msgid "Lower Layer(s)"
+msgstr "Laag of lagen omlaag"
+
+#: gap/gap_mod_layer.c:108
+msgid "Merge Layer(s) expand as necessary"
+msgstr "La(a)g(en) samenvoegen waar nodig"
+
+#: gap/gap_mod_layer.c:109
+msgid "Merge Layer(s) clipped to image"
+msgstr "La(a)g(en) samenvoegen naar afbeelding gesneden"
+
+#: gap/gap_mod_layer.c:110
+msgid "Merge Layer(s) clipped to bg-layer"
+msgstr "La(a)g(en) samenvoegen naar AG-laag gesneden"
+
+#: gap/gap_mod_layer.c:111
+msgid "Apply filter on Layer(s)"
+msgstr "Pas filter toe op laag of lagen"
+
+#: gap/gap_mod_layer.c:112
+msgid "Duplicate Layer(s)"
+msgstr "Dupliceer laag of lagen"
+
+#: gap/gap_mod_layer.c:113
+msgid "Delete Layer(s)"
+msgstr "Verwijder laag of lagen"
+
+#: gap/gap_mod_layer.c:114
+msgid "Rename Layer(s)"
+msgstr "Hernoem laag of lagen"
+
+#: gap/gap_mod_layer.c:153
+msgid ""
+"Perform function on one or more Layer(s)\n"
+"in all frames of the selected frame range\n"
+msgstr ""
+"Voer functie uit op een of meer lagen\n"
+"in alle frames of het geselecteerde framebereik\n"
+
+#: gap/gap_mod_layer.c:157 gap/gap_mpege.c:258 gap/gap_range_ops.c:443
+msgid "From Frame:"
+msgstr "Van frame:"
+
+#: gap/gap_mod_layer.c:158 gap/gap_mpege.c:259 gap/gap_range_ops.c:444
+#: gap/gap_range_ops.c:603
+msgid "first handled frame"
+msgstr "eerste behandelde frame"
+
+#: gap/gap_mod_layer.c:165 gap/gap_range_ops.c:451
+msgid "To Frame:"
+msgstr "Naar frame:"
+
+#: gap/gap_mod_layer.c:166 gap/gap_mpege.c:267 gap/gap_range_ops.c:452
+#: gap/gap_range_ops.c:611
+msgid "last handled frame"
+msgstr "laatste behandelde frame"
+
+#: gap/gap_mod_layer.c:174 gap/gap_range_ops.c:650
+msgid "Select Layer(s):"
+msgstr "Selecteer laag of lagen:"
+
+#: gap/gap_mod_layer.c:184 gap/gap_range_ops.c:659
+msgid "Select Pattern:"
+msgstr "Selecteer patroon:"
+
+#. pixel
+#: gap/gap_mod_layer.c:186 gap/gap_range_ops.c:661
+msgid ""
+"String to identify layer names    \n"
+"or layerstack position numbers\n"
+"0,3-5"
+msgstr ""
+"String om laagnamen te identificeren\n"
+"of laagstapelpositienummers\n"
+"0,3-5"
+
+#: gap/gap_mod_layer.c:192 gap/gap_range_ops.c:667
+msgid "Case sensitive"
+msgstr "Hoofdlettergevoelig"
+
+#: gap/gap_mod_layer.c:193 gap/gap_range_ops.c:668
+msgid "Lowercase and UPPERCASE letters are considered as different"
+msgstr "Hoofdletters en kleine letters worden als verschillend beschouwd"
+
+#: gap/gap_mod_layer.c:198 gap/gap_range_ops.c:673
+msgid "Invert Selection"
+msgstr "Keer selectie om"
+
+#: gap/gap_mod_layer.c:199
+msgid "Perform actions on all unselected Layers"
+msgstr "Voer acties uit op alle ongeselecteerde lagen"
+
+#: gap/gap_mod_layer.c:204
+msgid "Function:"
+msgstr "Functie:"
+
+#. argv[7].radio_help_argv = action_help
+#: gap/gap_mod_layer.c:208
+msgid "Function to be performed on all selected layers"
+msgstr "Functie om uit te voeren op alle geselecteerde lagen"
+
+#: gap/gap_mod_layer.c:214
+msgid "New Layername:"
+msgstr "Nieuwe laagnaam:"
+
+#. pixel
+#: gap/gap_mod_layer.c:216
+msgid ""
+"New Layername for all handled layers \n"
+"[####] is replaced by frame number\n"
+"(is used on function rename only)"
+msgstr ""
+"Nieuwe laagnaam voor alle behandelde lagen\n"
+"[####] wordt vervangen door frame nummer\n"
+"(wordt alleen gebruikt op hernoemen functie)"
+
+#: gap/gap_mod_layer.c:221
+msgid "Frames Modify"
+msgstr "Frames aanpassen"
+
+#: gap/gap_mod_layer.c:222
+msgid "Settings"
+msgstr "Instellingen"
+
+#: gap/gap_mod_layer.c:285
+#, c-format
+msgid ""
+"Non-Interactive call of %s\n"
+"(for all selected layers)"
+msgstr ""
+"Niet-interactieve aanroep van %s\n"
+"(voor alle geselecteerde lagen)"
+
+#. GAP-PDB-Browser Dialog
+#. ----------------------
+#: gap/gap_mod_layer.c:663
+msgid "Select Filter for Animated frames-apply"
+msgstr "Selecteer filter voor toepassen geannimeerde frames"
+
+#: gap/gap_mod_layer.c:805
+msgid "GAP Modify: No layer selected in last handled frame"
+msgstr "GAP-aanpassen: geen laag geselecteerd in laatste behandelde frame"
+
+#: gap/gap_mod_layer.c:891
+msgid "Modifying Frames/Layer(s)..."
+msgstr "Aanpassen frames/lagen..."
+
+#: gap/gap_mod_layer.c:972
+msgid "No selected Layer in start frame"
+msgstr "Geen geselecteerde laag in startframe"
+
+#: gap/gap_mov_dialog.c:262
+msgid "Normal"
+msgstr "Normaal"
+
+#: gap/gap_mov_dialog.c:263
+msgid "Dissolve"
+msgstr "Oplossen"
+
+#: gap/gap_mov_dialog.c:264
+msgid "Multiply"
+msgstr "Vermenigvuldigen"
+
+#: gap/gap_mov_dialog.c:265
+msgid "Screen"
+msgstr "Scherm"
+
+#: gap/gap_mov_dialog.c:266
+msgid "Overlay"
+msgstr "Op elkaar"
+
+#: gap/gap_mov_dialog.c:267
+msgid "Difference"
+msgstr "Verschil"
+
+#: gap/gap_mov_dialog.c:268
+msgid "Addition"
+msgstr "Som"
+
+#: gap/gap_mov_dialog.c:269
+msgid "Subtract"
+msgstr "Aftrekken"
+
+#: gap/gap_mov_dialog.c:270
+msgid "Darken Only"
+msgstr "Enkel donkerder maken"
+
+#: gap/gap_mov_dialog.c:271
+msgid "Lighten Only"
+msgstr "Enkel lichter maken"
+
+# What is the Dutch translation of the term 'Hue'?
+#: gap/gap_mov_dialog.c:272
+msgid "Hue"
+msgstr "Hue"
+
+# What is the Dutch translation of the term 'Saturation'?
+#: gap/gap_mov_dialog.c:273
+msgid "Saturation"
+msgstr "Saturation"
+
+#: gap/gap_mov_dialog.c:274
+msgid "Color"
+msgstr "Kleur"
+
+# What is the Dutch translation of the term 'Value'?
+#: gap/gap_mov_dialog.c:275
+msgid "Value"
+msgstr "Value"
+
+#: gap/gap_mov_dialog.c:282
+msgid "Left  Top"
+msgstr "Links boven"
+
+#: gap/gap_mov_dialog.c:283
+msgid "Left  Bottom"
+msgstr "Links onder"
+
+#: gap/gap_mov_dialog.c:284
+msgid "Right Top"
+msgstr "Rechts boven"
+
+#: gap/gap_mov_dialog.c:285
+msgid "Right Bottom"
+msgstr "Rechts onder"
+
+#: gap/gap_mov_dialog.c:286
+msgid "Center"
+msgstr "Midden"
+
+#: gap/gap_mov_dialog.c:294
+msgid "Loop"
+msgstr "Herhaal"
+
+#: gap/gap_mov_dialog.c:295
+msgid "Loop Reverse"
+msgstr "Omgekeerde lus"
+
+#: gap/gap_mov_dialog.c:296
+msgid "Once"
+msgstr "Eenmalig"
+
+#: gap/gap_mov_dialog.c:297
+msgid "OnceReverse"
+msgstr "Eenmalig omgekeerd"
+
+#: gap/gap_mov_dialog.c:298
+msgid "PingPong"
+msgstr "Heen en weer"
+
+#: gap/gap_mov_dialog.c:299
+msgid "None"
+msgstr "Geen"
+
+#: gap/gap_mov_dialog.c:300
+msgid "Frame Loop"
+msgstr "Framelus"
+
+#: gap/gap_mov_dialog.c:301
+msgid "Frame Loop Reverse"
+msgstr "Omgekeerde framelus"
+
+#: gap/gap_mov_dialog.c:302
+msgid "Frame Once"
+msgstr "Frame eenmalig"
+
+#: gap/gap_mov_dialog.c:303
+msgid "Frame OnceReverse"
+msgstr "Frame eenmalig omgekeerd"
+
+#: gap/gap_mov_dialog.c:304
+msgid "Frame PingPong"
+msgstr "Frame heen en weer"
+
+#: gap/gap_mov_dialog.c:305
+msgid "Frame None"
+msgstr "Frame geen"
+
+#: gap/gap_mov_dialog.c:468
+msgid "Move Path"
+msgstr "Bewegingspad"
+
+#: gap/gap_mov_dialog.c:492
+msgid "Update Preview"
+msgstr "Vooruitblik vernieuwen"
+
+#: gap/gap_mov_dialog.c:499
+msgid "Show PreviewFrame with Selected SrcLayer at current Controlpoint"
+msgstr ""
+"Toon vooruitblikframe met geselecteerde bronlaag op huidig controlepunt"
+
+#: gap/gap_mov_dialog.c:503
+msgid "Anim Preview"
+msgstr "Animatievooruitblik"
+
+#: gap/gap_mov_dialog.c:510
+msgid "Generate Animated Preview as multilayer image"
+msgstr "Toon animatievooruitblik als een meerlaagse afbeelding"
+
+#. parameter settings
+#: gap/gap_mov_dialog.c:523
+msgid "Copy moving source-layer(s) into frames"
+msgstr "Kopieer bewegende bronla(a)g(en) naar frames"
+
+#. the start frame scale_entry
+#. table col, row
+#: gap/gap_mov_dialog.c:556
+msgid "Start Frame:"
+msgstr "Startframe:"
+
+#. label text
+#. scalesize spinsize
+#. value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:564
+msgid "First handled frame"
+msgstr "Eerst bewerkte frame"
+
+#. the end frame scale_entry
+#. table col, row
+#: gap/gap_mov_dialog.c:571
+msgid "End Frame:"
+msgstr "Eindframe:"
+
+#. label text
+#. scalesize spinsize
+#. value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:579
+msgid "Last handled frame"
+msgstr "Laatste bewerkte frame"
+
+#. the Preview Frame scale_entry
+#. table col, row
+#: gap/gap_mov_dialog.c:586
+msgid "Preview Frame:"
+msgstr "Vooruitblikframe:"
+
+#. label text
+#. scalesize spinsize
+#. value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:594
+msgid "Frame to show when UpdPreview button is pressed"
+msgstr ""
+"Te tonen frame als de knop voor het verversen van de vooruitblik is ingedrukt"
+
+#. the Layerstack scale_entry
+#. table col, row
+#: gap/gap_mov_dialog.c:602 gap/gap_range_ops.c:267
+msgid "Layerstack:"
+msgstr "Laagstapel:"
+
+#. label text
+#. scalesize spinsize
+#. value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:610
+msgid ""
+"How to insert SrcLayer into the Dst. Frame's Layerstack\n"
+"0 means on top i.e. in front"
+msgstr ""
+"Hoe bronlaag in de laagstapel van de doelframe in te voegen\n"
+"0 betekent bovenaan / aan de voorkant"
+
+#. toggle force visibility
+#: gap/gap_mov_dialog.c:622
+msgid "Force visibility"
+msgstr "Dwing zichtbaarheid af"
+
+#: gap/gap_mov_dialog.c:629
+msgid "Force visibility for all copied Src-Layers"
+msgstr "Dwing zichtbaarheid af voor alle gekopieerde bronlagen"
+
+#. toggle clip_to_image
+#: gap/gap_mov_dialog.c:635
+msgid "Clip To Frame"
+msgstr "Snij naar frame"
+
+#: gap/gap_mov_dialog.c:642
+msgid "Clip all copied Src-Layers at Frame Boundaries"
+msgstr "Snij alle gekopieerde bronlagen naar framegrenzen"
+
+#: gap/gap_mov_dialog.c:690
+msgid ""
+"No Source Image was selected\n"
+"(Please open a 2nd Image of the same type before opening Move Path)"
+msgstr ""
+"Geen bronafbeelding was geselecteerd\n"
+"(Open a.u.b. een tweede afbeelding van hetzelfde type voor u het "
+"bewegingspad opent)"
+
+#: gap/gap_mov_dialog.c:786
+msgid "Object on empty frames"
+msgstr "Object op lege frames"
+
+#: gap/gap_mov_dialog.c:787
+msgid "Object on one frame"
+msgstr "Object op één frame"
+
+#: gap/gap_mov_dialog.c:788
+msgid "Exact Object on frames"
+msgstr "Nauwkeurig object op frames"
+
+#: gap/gap_mov_dialog.c:818
+msgid "Anim Preview Mode"
+msgstr "Animatievooruitblikstand"
+
+#: gap/gap_mov_dialog.c:826
+msgid "Scale Preview"
+msgstr "Schaal vooruitblik"
+
+#: gap/gap_mov_dialog.c:827
+msgid "Scale down size of the generated animated preview (in %)"
+msgstr "Verklein de geanimeerde vooruitblik (in %)"
+
+#: gap/gap_mov_dialog.c:835
+msgid "Framerate"
+msgstr "Framesnelheid"
+
+#: gap/gap_mov_dialog.c:836
+msgid "Framerate to use in the animated preview in frames/sec"
+msgstr ""
+"Framesnelheid te gebruiken voor de geanimeerde vooruitblik in frames/sec"
+
+#: gap/gap_mov_dialog.c:850
+msgid "Copy to Video Buffer"
+msgstr "Kopieer naar videobuffer"
+
+#: gap/gap_mov_dialog.c:851
+msgid ""
+"Save all single frames of animated preview to video buffer\n"
+"(configured in gimprc by video-paste-dir and video-paste-basename)"
+msgstr ""
+"Sla alle losse frames van de geanimeerde vooruitblik op in videobuffer\n"
+"(geconfigureerd in gimprc door video-paste-dir en video-paste-basename)"
+
+#: gap/gap_mov_dialog.c:856
+msgid "Move Path Animated Preview"
+msgstr "Bewegingspad geanimeerde vooruitblik"
+
+#: gap/gap_mov_dialog.c:857
+msgid "Options"
+msgstr "Opties"
+
+#: gap/gap_mov_dialog.c:902
+msgid "Generate Animated Preview failed\n"
+msgstr "Genereren geanimeerde vooruitblik mislukte\n"
+
+#. filesel is already open
+#: gap/gap_mov_dialog.c:1187
+msgid "Load Path Points from file"
+msgstr "Laad padpunten uit bestand"
+
+#. filesel is already open
+#: gap/gap_mov_dialog.c:1223
+msgid "Save Path Points to file"
+msgstr "Sla padpunten op in bestand"
+
+#: gap/gap_mov_dialog.c:1552
+#, c-format
+msgid "Current Point: [ %3d ] of [ %3d ]"
+msgstr "Huidig punt: [ %3d ] van [ %3d ]"
+
+#: gap/gap_mov_dialog.c:1638
+msgid "Source Select"
+msgstr "Bronselectie"
+
+#. Source Layer menu
+#: gap/gap_mov_dialog.c:1654
+msgid "Source Image/Layer:"
+msgstr "Bronafbeelding/-laag:"
+
+#: gap/gap_mov_dialog.c:1664
+msgid "Source Object to insert into Frame Range"
+msgstr "Bronobject om in framebereik in te voegen"
+
+#. Paintmode menu
+#: gap/gap_mov_dialog.c:1679
+msgid "Mode:"
+msgstr "Modus:"
+
+#: gap/gap_mov_dialog.c:1688
+msgid "Paintmode"
+msgstr "Schildermodus"
+
+#. Loop Stepmode menu
+#: gap/gap_mov_dialog.c:1703
+msgid "Stepmode:"
+msgstr "Stapmodus:"
+
+#: gap/gap_mov_dialog.c:1721
+msgid "How to fetch the next SrcLayer at the next handled frame"
+msgstr "Hoe de volgende bronlaag bij het volgende bewerkte frame op te halen"
+
+#. Source Image Handle menu
+#: gap/gap_mov_dialog.c:1727
+msgid "Handle:"
+msgstr "Handvat:"
+
+#: gap/gap_mov_dialog.c:1745
+msgid "How to place the SrcLayer at Controlpoint Coordinates"
+msgstr "Hoe de bronlaag te plaatsen op de controlepuntcoördinaten"
+
+#. to avoid side effects while initialization
+#. the frame
+#: gap/gap_mov_dialog.c:1799
+msgid "Move Path Preview"
+msgstr "Bewegingspad vooruitblik"
+
+#. X
+#. table col, row
+#: gap/gap_mov_dialog.c:1822
+msgid "X:"
+msgstr "X:"
+
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:1831
+msgid "X Coordinate"
+msgstr "X-coördinaat"
+
+#. Y
+#. table col, row
+#: gap/gap_mov_dialog.c:1840
+msgid "Y:"
+msgstr "Y:"
+
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:1849
+msgid "Y Coordinate"
+msgstr "Y-coördinaat"
+
+#. Widht Scale
+#. table col, row
+#: gap/gap_mov_dialog.c:1858
+msgid "Width:"
+msgstr "Breedte:"
+
+#. label text
+#. scalesize spinsize
+#. value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:1866
+msgid "Scale Source Layer's Width in percent"
+msgstr "Schaal breedte van bronlaag in procent"
+
+#. Height Scale
+#. table col, row
+#: gap/gap_mov_dialog.c:1875
+msgid "Height:"
+msgstr "Hoogte:"
+
+#. label text
+#. scalesize spinsize
+#. value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:1883
+msgid "Scale SrcLayer's Height in percent"
+msgstr "Schaal hoogte van bronlaag in procent"
+
+#. Opacity
+#. table col, row
+#: gap/gap_mov_dialog.c:1892
+msgid "Opacity:"
+msgstr "Ondoorzichtigheid:"
+
+#. label text
+#. scalesize spinsize
+#. value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:1900
+msgid "SrcLayer's Opacity in percent"
+msgstr "Ondoorzichtigheid van bronlaag in procent"
+
+#. Rotation
+#. table col, row
+#: gap/gap_mov_dialog.c:1909
+msgid "Rotate:"
+msgstr "Draai:"
+
+#. label text
+#. scalesize spinsize
+#. value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:1917
+msgid "Rotate SrcLayer (in degree)"
+msgstr "Draai bronlaag (in graden)"
+
+#. Keyframe
+#. table col, row
+#: gap/gap_mov_dialog.c:1927
+msgid "Keyframe:"
+msgstr "Sleutelframe:"
+
+#. label text
+#. scalesize spinsize
+#. value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:1935
+msgid ""
+"Fix Controlpoint to Keyframe number\n"
+"(0 == No Keyframe)"
+msgstr ""
+"Bevestig controlepunt aan sleutelframe nr.\n"
+"(0 == geen sleutelframe)"
+
+#: gap/gap_mov_dialog.c:2010
+msgid "Add Point"
+msgstr "Voeg punt toe"
+
+#: gap/gap_mov_dialog.c:2018
+msgid ""
+"Add Controlpoint at end\n"
+"(the last Point is duplicated)"
+msgstr ""
+"Voeg controlepunt aan eind toe\n"
+"(het laatste punt wordt gedupliceerd)"
+
+#. toggle clip_to_image
+#: gap/gap_mov_dialog.c:2023
+msgid "Show Path"
+msgstr "Toon pad"
+
+#: gap/gap_mov_dialog.c:2030
+msgid ""
+"Show Path Lines and enable pick/drag with left button or move with right "
+"button"
+msgstr ""
+"Toon padlijnen en schakel kiezen/slepen in met de linkermuisknop of bewegen "
+"met de rechtermuisknop"
+
+#: gap/gap_mov_dialog.c:2040
+msgid "Insert Point"
+msgstr "Punt invoegen"
+
+#: gap/gap_mov_dialog.c:2048
+msgid ""
+"Insert Controlpoint\n"
+"(the current Point is duplicated)"
+msgstr ""
+"Voeg controlepunt in\n"
+"(het huidige punt wordt gedupliceerd)"
+
+#: gap/gap_mov_dialog.c:2052
+msgid "Delete Point"
+msgstr "Punt wissen"
+
+#: gap/gap_mov_dialog.c:2060
+msgid "Delete current Controlpoint"
+msgstr "Wis huidige controlepunt"
+
+#: gap/gap_mov_dialog.c:2066
+msgid "Prev Point"
+msgstr "Vorige punt"
+
+#: gap/gap_mov_dialog.c:2074
+msgid "Show Previous Controlpoint"
+msgstr "Toon vorige controlepunt"
+
+#: gap/gap_mov_dialog.c:2078
+msgid "Next Point"
+msgstr "Volgende punt"
+
+#: gap/gap_mov_dialog.c:2086
+msgid "Show Next Controlpoint"
+msgstr "Toon volgende controlepunt"
+
+#: gap/gap_mov_dialog.c:2092
+msgid "First Point"
+msgstr "Eerste punt"
+
+#: gap/gap_mov_dialog.c:2100
+msgid "Show First Controlpoint"
+msgstr "Toon eerste controlepunt"
+
+#: gap/gap_mov_dialog.c:2104
+msgid "Last Point"
+msgstr "Laatste punt"
+
+#: gap/gap_mov_dialog.c:2112
+msgid "Show Last Controlpoint"
+msgstr "Toon laatste controlepunt"
+
+#: gap/gap_mov_dialog.c:2118
+msgid "Clear Point"
+msgstr "Wis punt"
+
+#: gap/gap_mov_dialog.c:2126
+msgid "Reset the current Controlpoint to default Values"
+msgstr "Stel het huidige controlepunt in op standaard waarden"
+
+#: gap/gap_mov_dialog.c:2130
+msgid "Clear All Points"
+msgstr "Wis alle punten"
+
+#: gap/gap_mov_dialog.c:2138
+msgid ""
+"Reset all Controlpoints to default Values but dont change the path (X/Y "
+"Values)"
+msgstr ""
+"Stel alle controlepunten in op standaard waarden, maar verander niet het pad "
+"(X/Y-waarden)"
+
+#: gap/gap_mov_dialog.c:2145
+msgid "Rotate Follow"
+msgstr "Draai volg"
+
+#: gap/gap_mov_dialog.c:2156
+msgid ""
+"Set Rotation for all Controlpoints to follow the shape of the path.\n"
+"(Shift: use Rotation of contolpoint 1 as offset)"
+msgstr ""
+"Stel draaiing voor alle controlepunten in om de vorm van het pad te\n"
+"volgen. (Shift: gebruik draaiing van controlepunt 1 als beginstand)"
+
+#: gap/gap_mov_dialog.c:2163
+msgid "Delete All Points"
+msgstr "Wis alle punten"
+
+#: gap/gap_mov_dialog.c:2171
+msgid "Delete all Controlpoints"
+msgstr "Wis alle controlepunten"
+
+#: gap/gap_mov_dialog.c:2178
+msgid "Load Points"
+msgstr "Laad punten"
+
+#: gap/gap_mov_dialog.c:2186
+msgid "Load Controlpoints from file"
+msgstr "Laad controlepunten uit bestand"
+
+#: gap/gap_mov_dialog.c:2190
+msgid "Save Points"
+msgstr "Sla punten op"
+
+#: gap/gap_mov_dialog.c:2198
+msgid "Save Controlpoints to file"
+msgstr "Sla controlepunten op in bestand"
+
+#: gap/gap_mov_dialog.c:2658
+msgid ""
+"Can't operate with current Controlpoint\n"
+"or Keyframe settings"
+msgstr ""
+"Kan niet werken met huidige controlepunt-\n"
+"of sleutelframe-instellingen"
+
+#: gap/gap_mov_dialog.c:2665
+msgid "Reset Keyframes"
+msgstr "Stel sleutelframes opnieuw in"
+
+#: gap/gap_mov_dialog.c:2670
+msgid "Move Path Controlpointcheck"
+msgstr "Controle van beweginspad van controlepunt"
+
+#: gap/gap_mov_dialog.c:2671
+msgid "Errors:"
+msgstr "Fouten:"
+
+#: gap/gap_mov_exec.c:444
+msgid ""
+"No Source Image was selected.\n"
+"Please open a 2nd Image of the same type before opening Move Path."
+msgstr ""
+"Geen bronafbeelding geselecteerd.\n"
+"Open een tweede afbeelding van hetzelfde type voor u het bewegingspad opent."
+
+#: gap/gap_mov_exec.c:455
+msgid "Copying Layers into Frames..."
+msgstr "Lagen naar frames kopiëren"
+
+#: gap/gap_mov_exec.c:459
+msgid "Generating Animated Preview..."
+msgstr "Geanimeerde vooruitblik genereren..."
+
+#: gap/gap_mov_exec.c:1376
+#, c-format
+msgid ""
+"\n"
+"Error: Keyframe %d at point [%d] higher or equal than last handled frame"
+msgstr ""
+"\n"
+"Fout: sleutelframe %d op punt [%d] groter of gelijk aan laatste bewerkte "
+"frame"
+
+#: gap/gap_mov_exec.c:1384
+#, c-format
+msgid ""
+"\n"
+"Error: Keyframe %d at point [%d] leaves not enough space (frames)\n"
+"for the previous controlpoints"
+msgstr ""
+"\n"
+"Fout: sleutelframe %d op punt [%d] laat niet genoeg ruimte\n"
+"over (frames) voor de voorgaande controlepunten."
+
+#: gap/gap_mov_exec.c:1394
+#, c-format
+msgid ""
+"\n"
+"Error: Keyframe %d is not in sequence at point [%d]"
+msgstr ""
+"\n"
+"Fout: sleutelframe %d is niet uitgelijnd op punt [%d]"
+
+#: gap/gap_mov_exec.c:1412
+#, c-format
+msgid ""
+"\n"
+"Error: controlpoint [%d] is out of handled framerange"
+msgstr ""
+"\n"
+"Fout: controlepunt [%d] ligt buiten het te bewerken framebereik"
+
+#: gap/gap_mov_exec.c:1426
+#, c-format
+msgid ""
+"\n"
+"Error: more controlpoints (%d) than handled frames (%d)\n"
+"please reduce controlpoints or select more frames"
+msgstr ""
+"\n"
+"Fout: meer controlepunten (%d) dan bewerkte frames (%d)\n"
+"Verminder het aantal controlepunten of selecteer meer frames."
+
+#: gap/gap_mpege.c:111
+msgid "Conditions to run mpeg_encode 1.5:"
+msgstr "Voorwaarden om mpeg_encode 1.5 uit te voeren:"
+
+#: gap/gap_mpege.c:114
+msgid "Conditions to run mpeg2encode 1.2:"
+msgstr "Voorwaarden om mpeg2encode 1.2 uit te voeren:"
+
+#: gap/gap_mpege.c:124
+msgid "1.) mpeg_encode 1.5 must be installed"
+msgstr "1) mpeg_encode 1.5 moet geïnstalleerd zijn"
+
+#: gap/gap_mpege.c:127
+msgid "1.) mpeg2encode 1.2 must be installed"
+msgstr "1) mpeg2encode 1.2 moet geïnstalleerd zijn"
+
+#: gap/gap_mpege.c:132
+msgid "    you can get mpeg_encode at"
+msgstr "    u kunt mpeg_encode verkrijgen op"
+
+#: gap/gap_mpege.c:135
+msgid "    you can get mpeg2encode at http://www.mpeg.org/MSSG"
+msgstr "    u kunt mpeg2encode verkrijgen op http://www.mpeg.org/MSSG"
+
+#: gap/gap_mpege.c:140
+msgid "    ftp://mm-ftp.cs.berkeley.edu/pub/multimedia/mpeg/bmt1r1.tar.gz"
+msgstr "    ftp://mm-ftp.cs.berkeley.edu/pub/multimedia/mpeg/bmt1r1.tar.gz"
+
+#: gap/gap_mpege.c:143
+msgid "   or at ftp://ftp.mpeg.org/pub/mpeg/mssg "
+msgstr "   of op  ftp://ftp.mpeg.org/pub/mpeg/mssg "
+
+#: gap/gap_mpege.c:148
+msgid "2.) You need a series of single Images on disk (AnimFrames)"
+msgstr "2) U heeft een serie losse afbeeldingen op schijf nodig (AnimFrames)"
+
+#: gap/gap_mpege.c:152
+msgid "    all with fileformat JPEG (or YUV or PNM or PPM)"
+msgstr "    alle met bestandsformaat JPEG (of YUV of PNM of PPM)"
+
+#: gap/gap_mpege.c:155
+msgid "   all with fileformat PPM (or YUV)"
+msgstr "   alle met bestandsformaat PPM (of YUV)"
+
+#: gap/gap_mpege.c:160
+msgid "    (use 'Frames Convert' from the Video Menu"
+msgstr "    (gebruik 'Frames converteren' uit het Video-menu"
+
+#: gap/gap_mpege.c:164
+msgid "    or 'Split Image to Frames' from the Video Menu)"
+msgstr "    of 'Afbeelding opdelen in frames' uit het Video-menu)"
+
+#: gap/gap_mpege.c:168
+msgid "3.) All Images must have the same size,"
+msgstr "3) Alle afbeeldingen moeten dezelfde grootte zijn,"
+
+#: gap/gap_mpege.c:175
+msgid "    width and height must be a multiple of 16"
+msgstr "    breedte en hoogte moeten een meervoud van 16 zijn"
+
+#: gap/gap_mpege.c:179
+msgid "    (use Scale or Crop from the Video Menu)"
+msgstr "    (gebruik Schalen of Snijden uit het Video-menu)"
+
+#: gap/gap_mpege.c:194
+msgid "MPEG_ENCODE Information"
+msgstr "MPEG_ENCODE-informatie"
+
+#: gap/gap_mpege.c:231
+msgid "generate MPEG1 (ISO/IEC 11172-2) stream"
+msgstr "genereer MPEG1-stroom (ISO/IEC 11172-2)"
+
+#: gap/gap_mpege.c:232
+msgid "generate MPEG2 (ISO/IEC DIS 13818-2) stream"
+msgstr "genereer MPEG2-stroom (ISO/IEC DIS 13818-2)"
+
+#: gap/gap_mpege.c:242
+msgid "GenParams"
+msgstr "GenParams"
+
+#: gap/gap_mpege.c:244
+msgid "Gen + Encode"
+msgstr "Gen + Encode"
+
+#: gap/gap_mpege.c:266
+msgid "To   Frame:"
+msgstr "Naar frame:"
+
+#: gap/gap_mpege.c:273
+msgid "Framerate :"
+msgstr "Framesnelheid:"
+
+#: gap/gap_mpege.c:274
+msgid "framerate in frames/second"
+msgstr "framesnelheid in frames/seconde"
+
+#: gap/gap_mpege.c:281
+msgid "Bitrate:"
+msgstr "Bitratio:"
+
+#: gap/gap_mpege.c:282
+msgid ""
+"used for constant bitrates (bit/sec)                  \n"
+"(low rate gives good compression + bad quality)"
+msgstr ""
+"gebruikt voor constante bitratio's (bit/sec)         \n"
+"(laag zorgt voor goede compressie en slechte kwaliteit)"
+
+#: gap/gap_mpege.c:296
+msgid "Outputfile:"
+msgstr "Uitvoerbestand:"
+
+#. pixel
+#: gap/gap_mpege.c:298
+msgid "Name of the resulting MPEG outputfile"
+msgstr "Naam van het resulterende MPEG-uitvoerbestand"
+
+#: gap/gap_mpege.c:304
+msgid "Paramfile:"
+msgstr "Parambestand:"
+
+#. pixel
+#: gap/gap_mpege.c:306
+msgid ""
+"Name of the Encoder-Parameterfile\n"
+"(is generated)"
+msgstr "Naam van het codeerderparameterbestand"
+
+#: gap/gap_mpege.c:312
+msgid "Startscript:"
+msgstr "Startscript:"
+
+#. pixel
+#: gap/gap_mpege.c:314
+msgid ""
+"Name of the Startscript           \n"
+"(is generated/executed)"
+msgstr ""
+"Naam van het startscript    \n"
+"(wordt gegenereerd/uitgevoerd)"
+
+#: gap/gap_mpege.c:320
+msgid ""
+"Generate parameterfile for mpeg_encode 1.5\n"
+"(the freely distributed Berkeley MPEG-1 Video  Encoder.)\n"
+msgstr ""
+"Genereer parameterbestand voor mpeg_encode 1.5\n"
+"(de vrij verspreide MPEG-1-videocodeerder van Berkeley.)\n"
+
+#: gap/gap_mpege.c:324
+msgid "Constant Bitrate :"
+msgstr "Constante bitratio:"
+
+#: gap/gap_mpege.c:325
+msgid "Iqnore I/P/QSCALE values and use constant bit-rate)"
+msgstr "Negeer I/P/QSCALE-waarden en gebruik een constante bitratio"
+
+#: gap/gap_mpege.c:330
+msgid "Pattern:"
+msgstr "Patroon:"
+
+#. pixel
+#: gap/gap_mpege.c:332
+msgid "How to encode MPEG framesequence (I/P/B frames)"
+msgstr "How een MPEG-frameserie te coderen (I/P/B-frames)"
+
+#: gap/gap_mpege.c:338
+msgid "IQSCALE:"
+msgstr "IQSCALE:"
+
+#: gap/gap_mpege.c:339
+msgid ""
+"Quality scale for I-Frames                       \n"
+"(1 = best quality, 31 = best comression)"
+msgstr ""
+"Kwaliteitsschaal voor I-frames           \n"
+"(1 = beste kwaliteit, 31 = beste compressie)"
+
+#: gap/gap_mpege.c:346
+msgid "PQSCALE:"
+msgstr "PQSCALE:"
+
+#: gap/gap_mpege.c:347
+msgid ""
+"Quality scale for P-Frames                  \n"
+"(1 = best quality, 31 = best comression)"
+msgstr ""
+"Kwaliteitsschaal voor P-frames           \n"
+"(1 = beste kwaliteit, 31 = beste compressie)"
+
+#: gap/gap_mpege.c:354
+msgid "BQSCALE:"
+msgstr "BQSCALE:"
+
+#: gap/gap_mpege.c:355
+msgid ""
+"Quality scale for B-Frames                  \n"
+"(1 = best quality, 31 = best comression)"
+msgstr ""
+"Kwaliteitsschaal voor B-frames           \n"
+"(1 = beste kwaliteit, 31 = beste compressie)"
+
+#: gap/gap_mpege.c:362
+msgid "P-Search :"
+msgstr "P-zoeken:"
+
+#: gap/gap_mpege.c:363
+msgid "Search Algorithmus used for P-frames"
+msgstr "Zoekalgoritme van P-frames"
+
+#: gap/gap_mpege.c:369
+msgid "B-Search :"
+msgstr "B-zoeken:"
+
+#: gap/gap_mpege.c:370
+msgid "Search Algorithmus used for B-frames"
+msgstr "Zoekalgoritme van B-frames"
+
+#: gap/gap_mpege.c:375
+msgid "Gen MPEG_ENCODE Parameters"
+msgstr "Gen MPEG_ENCODE-parameters"
+
+#: gap/gap_mpege.c:376 gap/gap_mpege.c:414
+msgid "Encode Values"
+msgstr "Waarden coderen"
+
+#: gap/gap_mpege.c:392
+msgid ""
+"Generate parameterfile for mpeg2encode 1.2\n"
+"(MPEG-2 Video  Encoder.)\n"
+msgstr ""
+"Genereer parameterbestand voor mpeg2encode 1.2\n"
+"(MPEG-2-videocodeerder.)\n"
+
+#: gap/gap_mpege.c:395
+msgid "MPEG-type :"
+msgstr "MPEG-type:"
+
+#: gap/gap_mpege.c:404
+msgid "Videoformat :"
+msgstr "Videoformaat:"
+
+#: gap/gap_mpege.c:405
+msgid "Videoformat"
+msgstr "Videoformaat"
+
+#. framerates above 30 ar not allowed in mpeg2encode
+#: gap/gap_mpege.c:413
+msgid "Gen MPEG2ENCODE Parameters"
+msgstr "Gen MPEG2ENCODE-parameters"
+
+#: gap/gap_mpege.c:978
+msgid ""
+"\n"
+"WARNING: mpeg_encode does not support Fileformat "
+msgstr ""
+"\n"
+"WAARSCHUWING: mpeg_encode ondersteunt dit bestandsformaat niet"
+
+#: gap/gap_mpege.c:981
+msgid ""
+"\n"
+"ERROR: width not a multiple of 16"
+msgstr ""
+"\n"
+"FOUT: breedte is geen meervoud van 16"
+
+#: gap/gap_mpege.c:982
+msgid ""
+"\n"
+"ERROR: height not a multiple of 16"
+msgstr ""
+"\n"
+"FOUT: hoogte is geen meervoud van 16"
+
+#: gap/gap_mpege.c:988
+msgid ""
+"\n"
+"WARNING: mpeg2encode does not support Fileformat "
+msgstr ""
+"\n"
+"WAARSCHUWING: mpeg2encode ondersteunt dit bestandsformaat niet"
+
+#: gap/gap_mpege.c:993
+msgid ""
+"\n"
+"ERROR: invoked from a single image, animframe required"
+msgstr ""
+"\n"
+"FOUT: aangeroepen vanuit een enkel bestand, animframe benodigd"
+
+#: gap/gap_navigator_dialog.c:366
+msgid ""
+"Playback         \n"
+"<Shift> optimized"
+msgstr ""
+"Afspelen         \n"
+"<Shift> geoptimaliseerd"
+
+#: gap/gap_navigator_dialog.c:371
+msgid ""
+"Smart Update .xvpics\n"
+"<Shift> forced upd"
+msgstr ""
+"Slim vernieuwe .xvpics\n"
+"<Shift> gedwongen vern."
+
+#: gap/gap_navigator_dialog.c:376
+msgid "Duplicate selected Frames"
+msgstr "Dupliceer geselecteerde frames"
+
+#: gap/gap_navigator_dialog.c:380
+msgid "Delete selected Frames"
+msgstr "Verwijder geselecteerde frames"
+
+#: gap/gap_navigator_dialog.c:389
+msgid "Goto 1st Frame"
+msgstr "Ga naar eerste frame"
+
+#: gap/gap_navigator_dialog.c:393
+msgid ""
+"Goto prev Frame\n"
+"<Shift> use timezoom stepsize"
+msgstr ""
+"Naar vorige frame\n"
+"<Shift> gebruik stapgrootte van tijdzoom"
+
+#: gap/gap_navigator_dialog.c:398
+msgid ""
+"Goto next Frame\n"
+"<Shift> use timezoom stepsize"
+msgstr ""
+"Naar volgende frame\n"
+"<Shift> gebruik stapgrootte van tijdzoom"
+
+#: gap/gap_navigator_dialog.c:403
+msgid "Goto last Frame"
+msgstr "Naar laatste frame"
+
+#: gap/gap_navigator_dialog.c:460
+msgid "<Image>/Video/VCR Navigator..."
+msgstr "<Image>/Video/Videonavigator..."
+
+#: gap/gap_navigator_dialog.c:523
+msgid "Cant open two or more Video Navigator Windows."
+msgstr "Kan niet twee of meer videonavigatorvensters openen."
+
+#. menu_item copy
+#: gap/gap_navigator_dialog.c:2877
+msgid "Copy"
+msgstr "Kopiëren"
+
+#. menu_item cut
+#: gap/gap_navigator_dialog.c:2887
+msgid "Cut"
+msgstr "Knippen"
+
+#. menu_item paste before
+#: gap/gap_navigator_dialog.c:2897
+msgid "Paste before"
+msgstr "Plakken voor"
+
+#. menu_item copy
+#: gap/gap_navigator_dialog.c:2907
+msgid "Paste after"
+msgstr "Plakken na"
+
+#. menu_item copy
+#: gap/gap_navigator_dialog.c:2917
+msgid "Paste replace"
+msgstr "Vervangend plakken"
+
+#. menu_item copy
+#: gap/gap_navigator_dialog.c:2927
+msgid "Clear Video Buffer"
+msgstr "Maak videobuffer leeg"
+
+#: gap/gap_navigator_dialog.c:2952
+msgid "Videoframes:"
+msgstr "Videoframes:"
+
+#: gap/gap_navigator_dialog.c:2967
+msgid "Framerate:"
+msgstr "Framesnelheid:"
+
+#: gap/gap_navigator_dialog.c:2990
+msgid "Timezoom:"
+msgstr "Tijdzoom:"
+
+#. The main shell
+#: gap/gap_navigator_dialog.c:3074
+msgid "Video Navigator"
+msgstr "Videonavigator"
+
+#: gap/gap_range_ops.c:120
+msgid "New Width:"
+msgstr "Nieuwe breedte:"
+
+#: gap/gap_range_ops.c:129
+msgid "New Height:"
+msgstr "Nieuwe hoogte:"
+
+#: gap/gap_range_ops.c:138
+msgid "Offset X:"
+msgstr "Verspringing X:"
+
+#: gap/gap_range_ops.c:147
+msgid "Offset Y:"
+msgstr "Verspringing Y:"
+
+#: gap/gap_range_ops.c:158
+msgid "Crop AnimFrames (all)"
+msgstr "Snij (alle) AnimFrames"
+
+#: gap/gap_range_ops.c:159
+#, c-format
+msgid "Crop (original %dx%d)"
+msgstr "Snij (origineel %dx%d)"
+
+#: gap/gap_range_ops.c:169
+msgid "Resize AnimFrames (all)"
+msgstr "Herschaal (alle) AnimFrames"
+
+#: gap/gap_range_ops.c:170
+#, c-format
+msgid "Resize (original %dx%d)"
+msgstr "Herschaal (origineel %dx%d)"
+
+#: gap/gap_range_ops.c:176
+msgid "Scale AnimFrames (all)"
+msgstr "Schaal (alle) AnimFrames"
+
+#: gap/gap_range_ops.c:177
+#, c-format
+msgid "Scale (original %dx%d)"
+msgstr "Schaal (origineel %dx%d)"
+
+#: gap/gap_range_ops.c:308
+msgid "Generate Optimal Palette"
+msgstr "Genereer optimaal palet"
+
+#: gap/gap_range_ops.c:309
+msgid "WEB Palette"
+msgstr "WEB-palet"
+
+#: gap/gap_range_ops.c:310
+msgid "Use Custom Palette"
+msgstr "Gebruik eigen palet"
+
+#: gap/gap_range_ops.c:311
+msgid "Use Black/White (1-Bit) Palette"
+msgstr "Gebruik zwart-witpalet (1-bits)"
+
+# What is the Dutch translation of the term 'dithering'?
+#: gap/gap_range_ops.c:313
+msgid "Floyd-Steinberg Color Dithering (Normal)"
+msgstr "Floyd-Steinberg-kleurendithering (normaal)"
+
+# What is the Dutch translation of the term 'dithering'?
+#: gap/gap_range_ops.c:314
+msgid "Floyd-Steinberg Color Dithering (Reduced Color Bleeding)"
+msgstr "Floyd-Steinberg-kleurendithering (verminderde kleuruitloop)"
+
+# What is the Dutch translation of the term 'dithering'?
+#: gap/gap_range_ops.c:315
+msgid "Positioned Color Dithering"
+msgstr "Gepositioneerde kleurendithering"
+
+# What is the Dutch translation of the term 'dithering'?
+#: gap/gap_range_ops.c:316
+msgid "No Color Dithering"
+msgstr "Geen kleurendithering"
+
+#: gap/gap_range_ops.c:327
+msgid "Palette Type"
+msgstr "Palettype"
+
+#: gap/gap_range_ops.c:334
+msgid "Custom Palette"
+msgstr "Aangepast palet"
+
+#: gap/gap_range_ops.c:335
+msgid ""
+"Name of a cutom palette\n"
+"(is ignored if Palette Type is not custom)"
+msgstr ""
+"Naam van een aangepast palet\n"
+"(wordt genegeerd als palettype niet Aangepast is)"
+
+#: gap/gap_range_ops.c:340
+msgid "Remove Unused"
+msgstr "Verwijder ongebruikte"
+
+#: gap/gap_range_ops.c:341
+msgid ""
+"Remove unused or double colors\n"
+"(is ignored if Palette Type is not custom)"
+msgstr ""
+"Verwijder ongebruikte of dubbele kleuren\n"
+"(wordt genegeerd als palettype niet Aangepast is)"
+
+#: gap/gap_range_ops.c:346
+msgid "Number of Colors"
+msgstr "Aantal kleuren"
+
+#: gap/gap_range_ops.c:347
+msgid ""
+"Number of resulting Colors\t\t \n"
+"(ignored if Palette Type is not Generate optimal palette)"
+msgstr ""
+"Aantal resulterende kleuren\t\t \n"
+"(genegeerd als palettype niet Genereer Optimaal Palet is)"
+
+# What is the Dutch translation of the term 'Dither'?
+#: gap/gap_range_ops.c:354
+msgid "Dither Options"
+msgstr "Dither-opties"
+
+#: gap/gap_range_ops.c:361
+msgid "Enable transparency"
+msgstr "Transparantie inschakelen"
+
+#: gap/gap_range_ops.c:362
+msgid "Enable dithering of transparency"
+msgstr "Dithering of transparantie inschakelen"
+
+#: gap/gap_range_ops.c:365
+msgid "Convert Frames to Indexed"
+msgstr "Frames naar geïndexeerd omzetten"
+
+# What is the Dutch translation of the term 'dithering'?
+#: gap/gap_range_ops.c:366
+msgid "Palette and Dither Settings"
+msgstr "Palet- en ditherinstellingen"
+
+#: gap/gap_range_ops.c:431
+msgid "Keep Type"
+msgstr "Behoud type"
+
+#: gap/gap_range_ops.c:432
+msgid "Convert to RGB"
+msgstr "Omzetten naar RGB"
+
+#: gap/gap_range_ops.c:433
+msgid "Convert to Gray"
+msgstr "Omzetten naar Grijswaarden"
+
+#: gap/gap_range_ops.c:434
+msgid "Convert to Indexed"
+msgstr "Omzetten naar geïndexeerd"
+
+#: gap/gap_range_ops.c:458
+msgid ""
+"\n"
+"Select destination fileformat by extension\n"
+"optionally convert imagetype\n"
+msgstr ""
+"\n"
+"Selecteer doelbestandsformaat op extensie\n"
+"eventueel afbeeldingstype omzetten\n"
+
+#: gap/gap_range_ops.c:461
+msgid "Basename:"
+msgstr "Basisnaam:"
+
+#: gap/gap_range_ops.c:462
+msgid ""
+"basename of the resulting frames       \n"
+"(0001.ext is added)"
+msgstr ""
+"basisnaam van de resulterende frames        \n"
+"(0001.ext wordt toegevoegd)"
+
+#: gap/gap_range_ops.c:467 gap/gap_split.c:235
+msgid "Extension:"
+msgstr "Extensie:"
+
+#: gap/gap_range_ops.c:468
+msgid ""
+"extension of resulting frames       \n"
+"(is also used to define Fileformat)"
+msgstr ""
+"extensie van de resulterende frames       \n"
+"(wordt ook gebruikt om het bestandsformaat te bepalen)"
+
+#: gap/gap_range_ops.c:474
+msgid "Imagetype:"
+msgstr "Afbeeldingstype:"
+
+#: gap/gap_range_ops.c:475
+msgid ""
+"Convert to, or keep imagetype           \n"
+"(most fileformats can't handle all types)"
+msgstr ""
+"Omzetten naar, of behoud afbeeldignstype          \n"
+"(de meeste bestandsformaten kunnen niet alle typen aan)"
+
+#: gap/gap_range_ops.c:481 gap/gap_split.c:246
+msgid "Flatten:"
+msgstr "Pletten:"
+
+#: gap/gap_range_ops.c:482
+msgid ""
+"Flatten all resulting frames               \n"
+"(most fileformats need flattened frames)"
+msgstr ""
+"Plet alle resulterende frames               \n"
+"(de meeste bestandsformaten hebben geplette frames nodig)"
+
+#: gap/gap_range_ops.c:487
+msgid "Convert Frames to other Formats"
+msgstr "Frames omzetten naar andere formaten"
+
+#: gap/gap_range_ops.c:488
+msgid "Convert Settings"
+msgstr "Omzettingsinstellingen"
+
+#: gap/gap_range_ops.c:565
+msgid "Expand as necessary"
+msgstr "Uitbreiden waar nodig"
+
+#: gap/gap_range_ops.c:566
+msgid "Clipped to image"
+msgstr "Naar afbeelding gesneden"
+
+#: gap/gap_range_ops.c:567
+msgid "Clipped to bottom layer"
+msgstr "Naar onderste laag gesneden"
+
+#: gap/gap_range_ops.c:568
+msgid "Flattened image"
+msgstr "Geplette afbeelding"
+
+#: gap/gap_range_ops.c:569
+msgid ""
+"Resulting Layer Size is made of the outline-rectangle \n"
+"of all visible layers (may differ from frame to frame)"
+msgstr ""
+"Resulterende laaggroote is gemaakt van de omsluitende rechthoek \n"
+"van alle zichtbare lagen (kan van laag tot laag verschillen)"
+
+#: gap/gap_range_ops.c:570
+msgid "Resulting Layer Size is the frame size"
+msgstr "Resulterende laaggrootte is de framegrootte"
+
+#: gap/gap_range_ops.c:571
+msgid ""
+"Resulting Layer Size is the size of the bottom layer\n"
+"(may differ from frame to frame)"
+msgstr ""
+"Resulterende laaggrootte is de grootte van de onderste laag\n"
+"(kan van laag tot laag verschillen)"
+
+#: gap/gap_range_ops.c:572
+msgid ""
+"Resulting Layer Size is the frame size     \n"
+"transparent parts are filled with BG color"
+msgstr ""
+"Resulterende laaggroote is de framegrootte     \n"
+"transparante delen worden met de AG-kleur gevuld"
+
+#: gap/gap_range_ops.c:582
+msgid "select all Layers where Layername is equal to Pattern"
+msgstr "selecteer alle lagen waarvan de naam gelijk is aan Patroon"
+
+#: gap/gap_range_ops.c:583
+msgid "select all Layers where Layername starts with Pattern"
+msgstr "selecteer alle lagen waarvan de naam begint met Patroon"
+
+#: gap/gap_range_ops.c:584
+msgid "select all Layers where Layername ends up with Pattern"
+msgstr "selecteer alle lagen waarvan de naam eindigt op Patroon"
+
+#: gap/gap_range_ops.c:585
+msgid "select all Layers where Layername contains Pattern"
+msgstr "selecteer alle lagen waarvan de naam Patroon bevat"
+
+#: gap/gap_range_ops.c:586
+msgid ""
+"select Layerstack positions.\n"
+"0, 4-5, 8\n"
+"where 0 == Top-layer"
+msgstr ""
+"selecteer laagstapelposities.\n"
+"0, 4-5, 8\n"
+"waar 0 == toplaag"
+
+#: gap/gap_range_ops.c:587
+msgid ""
+"select Layerstack positions.\n"
+"0, 4-5, 8\n"
+"where 0 == BG-layer"
+msgstr ""
+"selecteer laagstapelposities.\n"
+"0, 4-5, 8\n"
+"waar 0 == AG-laag"
+
+#: gap/gap_range_ops.c:588
+msgid "select all visible Layers"
+msgstr "selecteer alle zichtbare lagen"
+
+#: gap/gap_range_ops.c:617
+msgid "Layer Basename:"
+msgstr "Laagbasisnaam:"
+
+#: gap/gap_range_ops.c:618
+msgid ""
+"Basename for all Layers    \n"
+"[####] is replaced by frame number"
+msgstr ""
+"Basisnaam voor alle lagen     \n"
+"[####] wordt vervangen door laagnummer"
+
+#: gap/gap_range_ops.c:636
+msgid "Layer Mergemode:"
+msgstr "Laagsamenvoegmodus:"
+
+#: gap/gap_range_ops.c:643
+msgid "Exclude BG-Layer"
+msgstr "Sluit AG-laag uit"
+
+#: gap/gap_range_ops.c:644
+msgid ""
+"Exclude the BG-Layers    \n"
+"in all handled frames\n"
+"regardless to selection"
+msgstr ""
+"Sluit de AG-lagen uit\n"
+"in alle behandelde frames,\n"
+"ongeacht de selectie"
+
+#: gap/gap_range_ops.c:674
+msgid "Use all unselected Layers"
+msgstr "Gebruik alle ongeselecteerde lagen"
+
+#: gap/gap_range_ops.c:748
+msgid "Creating Layer-Animated Image..."
+msgstr "Laaggeannimeerde afbeelding maken..."
+
+#: gap/gap_range_ops.c:970
+msgid "Frames to Image"
+msgstr "Frames naar afbeelding"
+
+#: gap/gap_range_ops.c:971
+msgid "Create Multilayer-Image from Frames"
+msgstr "Maak meerlaagse afbeelding uit frames"
+
+#: gap/gap_range_ops.c:1112
+msgid "Flattening Frames..."
+msgstr "Frames pletten..."
+
+#: gap/gap_range_ops.c:1113
+msgid "Converting Frames..."
+msgstr "Frames converteren..."
+
+#: gap/gap_range_ops.c:1261
+msgid ""
+"Convert Frames: SAVE operation FAILED.\n"
+"Desired save plugin can't handle type\n"
+"or desired save plugin not available."
+msgstr ""
+"Frames converteren: OPSLAAN mislukte.\n"
+"Gewenste opslagplug-in kan type niet aan\n"
+"of de plug-in is niet beschikbaar."
+
+#: gap/gap_range_ops.c:1369
+msgid "Cropping all Animation Frames..."
+msgstr "Alle animatieframes snijden..."
+
+#: gap/gap_range_ops.c:1372
+msgid "Resizing all Animation Frames..."
+msgstr "Alle animatieframes herschalen..."
+
+#: gap/gap_range_ops.c:1375
+msgid "Scaling all Animation Frames..."
+msgstr "Alle animatieframes schalen..."
+
+#: gap/gap_range_ops.c:1461
+msgid "Flatten Frames"
+msgstr "Plet frames"
+
+#: gap/gap_range_ops.c:1517
+#, c-format
+msgid "Removing Layer (pos:%ld) from Frames..."
+msgstr "Laag verwijderen (pos:%ld) uit frames..."
+
+#: gap/gap_range_ops.c:1634
+msgid "Delete Layers in Frames"
+msgstr "Verwijder laag in frames"
+
+# 'position' of 'frame position'?
+#: gap/gap_range_ops.c:1635
+msgid "Select Frame Range & Position"
+msgstr "Selecteer framebereik en postitie"
+
+#: gap/gap_split.c:101
+msgid "Splitting into Frames..."
+msgstr "In frames opdelen..."
+
+#: gap/gap_split.c:176
+msgid ""
+"Split Frames: SAVE operation FAILED.\n"
+"desired save plugin can't handle type\n"
+"or desired save plugin not available."
+msgstr ""
+"Splits frames: OPSLAAN MISLUKTE.\n"
+"gewenste opslagplug-in kan type niet aan\n"
+"of gewenste opslagplug-in niet beschikbaar."
+
+#: gap/gap_split.c:226
+#, c-format
+msgid ""
+"%s\n"
+"%s\n"
+"(%s_0001.%s)\n"
+msgstr ""
+"%s\n"
+"%s\n"
+"(%s_0001.%s)\n"
+
+#: gap/gap_split.c:227
+msgid "Make a frame (diskfile) from each Layer"
+msgstr "Maak een frame (schijfbestand) van elke laag"
+
+#: gap/gap_split.c:228
+msgid "frames are named: base_nr.extension"
+msgstr "frames krijgen naam: basis_nr.extensie"
+
+#: gap/gap_split.c:236
+msgid "extension of resulting frames (is also used to define Fileformat)"
+msgstr ""
+"extensie van resulterende frames (wordt ook gebruikt om bestandsformaat te "
+"bepalen)"
+
+#: gap/gap_split.c:241
+msgid "Inverse Order:"
+msgstr "Omgekeerde volgorde:"
+
+#: gap/gap_split.c:242
+msgid "Start frame 0001 at Top Layer"
+msgstr "Begin frame 0001 met bovenste laag"
+
+#: gap/gap_split.c:247
+msgid ""
+"Remove Alpha Channel in resulting Frames. Transparent parts are filled with "
+"BG color."
+msgstr ""
+"Verwijder alphakanaal in resulterende frames. Transparante gedeeltes worden "
+"met AG-kleur gevuld."
+
+#: gap/gap_split.c:250
+msgid "Split Image into Frames"
+msgstr "Deel afbeelding op in frames"
+
+#: gap/gap_split.c:251
+msgid "Split Settings"
+msgstr "Instellingen van Opdelen"
+
+#: gap/gap_split.c:298
+msgid ""
+"OPERATION CANCELLED.\n"
+"This image is already an AnimFrame.\n"
+"Try again on a Duplicate (Image/Duplicate)."
+msgstr ""
+"BEWERKING GEANNULEERD.\n"
+"Deze afbeelding is al een AnimFrame.\n"
+"Probeer het nog eens op een kopie (Afbeelding/Dupliceren)."
+
+#: gap/resize.c:107
+msgid "Scale"
+msgstr "Schalen"
+
+#: gap/resize.c:111
+msgid "Resize"
+msgstr "Herschalen"
+
+#: gap/resize.c:127
+msgid "New width:"
+msgstr "Nieuwe breedte:"
+
+#: gap/resize.c:144
+msgid "New height:"
+msgstr "Nieuwe hoogte:"
+
+#: gap/resize.c:161
+msgid "X ratio:"
+msgstr "X-ratio"
+
+#: gap/resize.c:178
+msgid "Y ratio:"
+msgstr "Y-ratio:"
+
+#: gap/resize.c:197
+msgid "X Offset:"
+msgstr "X-verspringing:"
+
+#: gap/resize.c:214
+msgid "Y Offset:"
+msgstr "Y-verspringing:"
+
+#. the constrain toggle button
+#: gap/resize.c:231
+msgid "Constrain Ratio"
+msgstr "Ratio beperken"

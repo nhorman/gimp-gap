@@ -1,0 +1,2624 @@
+# Slovak translation of gimp-std-plugins
+# Slovenský preklad gimp-std-plugins
+# Copyright (C) 1999 Free Software Foundation, Inc.
+# Zdenko Podobný <zdpo@mailbox.sk>, 2002.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gimp-std-plugins 1.2.2\n"
+"POT-Creation-Date: 2003-03-25 02:00+0100\n"
+"PO-Revision-Date: 2002-02-27 16:27+0100\n"
+"Last-Translator: Zdenko Podobný <zdpo@mailbox.sk>\n"
+"Language-Team: Slovak <sk-i18n@lists.linux.sk>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO-8859-2\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 0.9.5\n"
+
+#. Button  to invoke filebrowser
+#: gap/gap_arr_dialog.c:293
+msgid "File-Browser"
+msgstr "Prehliadaè súborov"
+
+#. parameter settings
+#: gap/gap_arr_dialog.c:793
+msgid "Enter Values"
+msgstr "Vlo¾i» hodnoty"
+
+#: gap/gap_arr_dialog.c:812
+msgid "Value:"
+msgstr "Hodnota:"
+
+#: gap/gap_arr_dialog.c:878
+msgid "Value: "
+msgstr "Hodnota: "
+
+#: gap/gap_arr_dialog.c:1040
+msgid "Press Button"
+msgstr "Stlaèi» tlaèítko"
+
+#: gap/gap_arr_dialog.c:1041
+msgid "Select"
+msgstr "Výber"
+
+#: gap/gap_dbbrowser_utils.c:76
+msgid "GAP Animated Filter apply"
+msgstr "Pou¾i» animovaný filter GAP"
+
+#: gap/gap_dbbrowser_utils.c:97
+msgid "Animated Filter apply (init)"
+msgstr "Pou¾i» animovaný filter (inicializácia)"
+
+#: gap/gap_dbbrowser_utils.c:148
+msgid "Search:"
+msgstr "Hµada»"
+
+#: gap/gap_dbbrowser_utils.c:176
+msgid "Gen Code by name"
+msgstr "Generova» kód podµa mena"
+
+#: gap/gap_dbbrowser_utils.c:185
+msgid "Search by Name"
+msgstr "Hµada» podµa názvu"
+
+#: gap/gap_dbbrowser_utils.c:193
+msgid "Search by Blurb"
+msgstr "Hµadanie podµa zálo¾ky"
+
+#. show the name
+#: gap/gap_dbbrowser_utils.c:335
+msgid "Name:"
+msgstr "Názov:"
+
+#. show the description
+#: gap/gap_dbbrowser_utils.c:352
+msgid "Blurb:"
+msgstr "Zálo¾ka:"
+
+#: gap/gap_dbbrowser_utils.c:374
+msgid "In:"
+msgstr "Dnu:"
+
+#: gap/gap_dbbrowser_utils.c:420
+msgid "Out:"
+msgstr "Von:"
+
+#: gap/gap_dbbrowser_utils.c:469
+msgid "Help:"
+msgstr "Pomocník:"
+
+#. show the author & the copyright
+#: gap/gap_dbbrowser_utils.c:507
+msgid "Author:"
+msgstr "Autor:"
+
+#: gap/gap_dbbrowser_utils.c:522
+msgid "Date:"
+msgstr "Dátum:"
+
+#: gap/gap_dbbrowser_utils.c:537
+msgid "Copyright:"
+msgstr "Copyright:"
+
+#: gap/gap_dbbrowser_utils.c:676
+msgid "Animated Filter apply (by name - please wait)"
+msgstr "Pou¾i» animovaný filter (podµa mena - prosím èakajte)"
+
+#: gap/gap_dbbrowser_utils.c:700
+msgid "Animated Filter apply (by blurb - please wait)"
+msgstr "Pou¾i» animovaný filter (podµa zálo¾ky - prosím èakajte)"
+
+#: gap/gap_dbbrowser_utils.c:708
+msgid "Animated Filter apply (please wait)"
+msgstr "Pou¾i» animovaný filter (prosím èakajte)"
+
+#: gap/gap_dbbrowser_utils.c:755 gap/gap_filter_foreach.c:163
+#: gap/gap_mod_layer.c:287
+msgid "Animated Filter apply"
+msgstr "Pou¾i» animovaný filter"
+
+#: gap/gap_decode_mpeg_main.c:102
+msgid "<Image>/Video/Split Video to Frames"
+msgstr "<Image>/Video/Rozdeli» video do snímok"
+
+#: gap/gap_decode_mpeg_main.c:103
+msgid "<Toolbox>/Xtns/Split Video to Frames"
+msgstr "<Toolbox>/Roz¹./Rozdeli» video do snímok"
+
+#: gap/gap_decode_mpeg_main.c:176
+msgid "<Image>/Video/Split Video to Frames/MPEG1"
+msgstr "<Image>/Video/Rozdeli» video do snímok/MPEG1"
+
+#: gap/gap_decode_mpeg_main.c:189
+msgid "<Toolbox>/Xtns/Split Video to Frames/MPEG1"
+msgstr "<Toolbox>/Roz¹./Rozdeli» video do snímok/MPEG1"
+
+#: gap/gap_decode_mpeg_main.c:332 gap/gap_decode_xanim.c:337
+#: gap/gap_range_ops.c:1240
+msgid "Overwrite Frame"
+msgstr "Prepísa» snímku"
+
+#: gap/gap_decode_mpeg_main.c:334 gap/gap_decode_xanim.c:339
+#: gap/gap_range_ops.c:1242
+msgid "Overwrite All"
+msgstr "Prepísa» v¹etko"
+
+#: gap/gap_decode_mpeg_main.c:342 gap/gap_decode_xanim.c:347
+#: gap/gap_lib.c:1036 gap/gap_range_ops.c:1247
+msgid "GAP Question"
+msgstr "GAP otázka"
+
+#: gap/gap_decode_mpeg_main.c:343 gap/gap_decode_xanim.c:348
+msgid "File already exists"
+msgstr "Súbor u¾ existuje"
+
+#: gap/gap_decode_mpeg_main.c:437
+msgid "Decoding MPEG Movie..."
+msgstr "Dekódujem MPEG film..."
+
+#: gap/gap_decode_mpeg_main.c:642
+msgid "Video"
+msgstr "Video"
+
+#: gap/gap_decode_mpeg_main.c:643
+msgid ""
+"Name of the MPEG1 videofile to READ.\n"
+"Frames are extracted from the videofile\n"
+"and written to seperate diskfiles.\n"
+"Audiotracks in the videofile are ignored."
+msgstr ""
+"Názov MPEG1 videosúbora na èítanie.\n"
+"Snímky sú extrahované z videosúbora\n"
+"a zapisované do oddelených diskových súborov.\n"
+"Audiostopy vo videosúbore sú ignorované."
+
+#: gap/gap_decode_mpeg_main.c:652 gap/gap_decode_xanim.c:224
+#: gap/gap_lib.c:2120 gap/gap_lib.c:2315 gap/gap_range_ops.c:253
+#: gap/gap_range_ops.c:602
+msgid "From:"
+msgstr "Od:"
+
+#: gap/gap_decode_mpeg_main.c:653 gap/gap_decode_xanim.c:225
+msgid "Framenumber of 1st frame to extract"
+msgstr "Èíslo prvej snímky na extrahovanie"
+
+#: gap/gap_decode_mpeg_main.c:662 gap/gap_decode_xanim.c:234
+#: gap/gap_lib.c:2128 gap/gap_lib.c:2323 gap/gap_range_ops.c:260
+#: gap/gap_range_ops.c:610
+msgid "To:"
+msgstr "Do:"
+
+#: gap/gap_decode_mpeg_main.c:663 gap/gap_decode_xanim.c:235
+msgid "Framenumber of last frame to extract"
+msgstr "Èíslo poslednej snímky na extrahovanie"
+
+#: gap/gap_decode_mpeg_main.c:672 gap/gap_decode_xanim.c:244
+msgid "Framenames:"
+msgstr "Názvy snímok:"
+
+#: gap/gap_decode_mpeg_main.c:673
+msgid ""
+"Basename for the AnimFrames to write on disk\n"
+"(framenumber and .xcf is added)"
+msgstr ""
+"Základný názov pre zápis snímok animácie na disk\n"
+"(èíslo snímky a .xcf bude pridané)"
+
+#: gap/gap_decode_mpeg_main.c:680 gap/gap_decode_xanim.c:283
+msgid "Open"
+msgstr "Otvori»"
+
+#: gap/gap_decode_mpeg_main.c:681 gap/gap_decode_xanim.c:284
+msgid "Open the 1st one of the extracted frames"
+msgstr "Otvori» prvé z extrahovaných snímok"
+
+#: gap/gap_decode_mpeg_main.c:685
+msgid ""
+"\n"
+"WARNING: Do not attempt to split other files than MPEG1 videos.\n"
+"Before you proceed, you should save all open images."
+msgstr ""
+"\n"
+"VAROVANIE: Nepokú¹ajte sa rozdeli» iné súbory ako MPEG1 video.\n"
+"Skôr ako budete pokraèova», mali by ste ulo¾i» v¹etky obrázky."
+
+#: gap/gap_decode_mpeg_main.c:688
+msgid "Split MPEG1 Video to Frames"
+msgstr "Rozdeli» MPEG1 video do snímok"
+
+#: gap/gap_decode_mpeg_main.c:689 gap/gap_decode_xanim.c:298
+#: gap/gap_range_ops.c:1462
+msgid "Select Frame Range"
+msgstr "Výber rozsahu snímok"
+
+#: gap/gap_decode_xanim.c:114
+msgid "Conditions to run the xanim based video split"
+msgstr "Podmienky na spustenie rozdelenia videa zalo¾eného na xanim"
+
+#: gap/gap_decode_xanim.c:122
+msgid "1.) xanim 2.80.0 exporting edition (the loki version)"
+msgstr "1.) xanim 2.80.0 exportujúce vydanie (loki verzia)"
+
+#: gap/gap_decode_xanim.c:126
+msgid "    must be installed somewhere in your PATH"
+msgstr "    musí by» nain¹talované nikde vo va¹ej PATH"
+
+#: gap/gap_decode_xanim.c:130
+msgid "    you can get xanim exporting edition at"
+msgstr "    exportujúcu edíciu xanim mô¾ete získa» na"
+
+#: gap/gap_decode_xanim.c:146
+msgid ""
+"2.) if your xanim exporting edition is not in your PATH or is not named xanim"
+msgstr ""
+"2.) ak va¹a exportujúca verzia xanim nie je vo va¹ej PATH alebo nie je "
+"pomenovaná ako xanim"
+
+#: gap/gap_decode_xanim.c:150
+msgid "    you have to set Environment variable GAP_XANIM_PROG "
+msgstr "    musíte nastavi» premennú prostredia GAP_XANIM_PROG "
+
+#: gap/gap_decode_xanim.c:154
+msgid "    to your xanim exporting program and restart gimp"
+msgstr "    k vá¹mu exportujúcemu programu xanim a znovu spusti» gimp"
+
+#: gap/gap_decode_xanim.c:162
+msgid "An ERROR occured while trying to call xanim:"
+msgstr "Poèas volania xanim sa vyskytla chyba:"
+
+#: gap/gap_decode_xanim.c:181
+msgid "XANIM Information"
+msgstr "XANIM informácie"
+
+#: gap/gap_decode_xanim.c:214
+msgid "Video:"
+msgstr "Video:"
+
+#: gap/gap_decode_xanim.c:215
+msgid ""
+"Name of a videofile to READ by xanim.\n"
+"Frames are extracted from the videofile\n"
+"and written to separate diskfiles.\n"
+"xanim exporting edition is required."
+msgstr ""
+"Názov videosúbora na èítanie programom xanim.\n"
+"Snímky sú extrahované z video súbora\n"
+"a zapisované do oddelených diskových súborov.\n"
+"Vy¾aduje exportujúcu edíciu xanim"
+
+#: gap/gap_decode_xanim.c:245
+msgid ""
+"Basename for the AnimFrames to write on disk\n"
+"(framenumber and extension is added)"
+msgstr ""
+"Základný názov animovaných snímok pre zápis na disk.\n"
+"(èíslo snímky a prípona bude pridaná)"
+
+#: gap/gap_decode_xanim.c:252
+msgid "Format"
+msgstr "Formát"
+
+#: gap/gap_decode_xanim.c:253
+msgid ""
+"Fileformat for the extracted AnimFrames\n"
+"(xcf is extracted as ppm and converted to xcf)"
+msgstr ""
+"Súborový formát pre extrahované animované snímky\n"
+"(xcf je extrahované ako ppm a konvertované do xcf)"
+
+#: gap/gap_decode_xanim.c:260
+msgid "Extract Frames"
+msgstr "Extrahova» snímky"
+
+#: gap/gap_decode_xanim.c:261
+msgid "Enable extraction of Frames"
+msgstr "Povoli» extrakciu snímok"
+
+#: gap/gap_decode_xanim.c:265
+msgid "Extract Audio"
+msgstr "Extrahova» audio"
+
+#: gap/gap_decode_xanim.c:266
+msgid ""
+"Enable extraction of audio to raw audiofile\n"
+"(frame range limits are ignored for audio)"
+msgstr ""
+"Povolí extrahovanie zvuku do raw audio súboru\n"
+"(limity pre rozsah snímok sú pre audio ignorované)"
+
+#: gap/gap_decode_xanim.c:271
+msgid "Jpeg Quality:"
+msgstr "Jpeg kvalita:"
+
+#: gap/gap_decode_xanim.c:272
+msgid ""
+"Quality for resulting Jpeg frames\n"
+"(is ignored when other formats are used)"
+msgstr ""
+"Kvalita výsledných Jpeg snímok\n"
+"(je ignorovaná keï sa pou¾ije iný formát)"
+
+#: gap/gap_decode_xanim.c:288
+msgid "Run asynchronously"
+msgstr "Spusti» asynchrónne"
+
+#: gap/gap_decode_xanim.c:289
+msgid ""
+"Run xanim asynchronously and delete unwanted frames\n"
+"(out of the specified range) while xanim is still running"
+msgstr ""
+"Spustí xanim asynchrónne a zma¾e ne¾iadúce snímky\n"
+"(mimo urèený rozsah) poèas behu xanim"
+
+#: gap/gap_decode_xanim.c:294
+msgid ""
+"\n"
+"Warning: xanim 2.80 has only limited MPEG support.\n"
+"Most of the frames (type P and B) will be skipped."
+msgstr ""
+"\n"
+"Varovanie: xanim 2.80 ma iba limitovanú podporu MPEG.\n"
+"Väè¹ina snímok (typ P a B) bude preskoèená."
+
+#: gap/gap_decode_xanim.c:297
+msgid "Split any Xanim readable Video to Frames"
+msgstr "Rozdeli» video èitateµné programom Xanim do snímok"
+
+#: gap/gap_decode_xanim.c:540
+#, c-format
+msgid ""
+"can't find any extracted frames,\n"
+"%s\n"
+"maybe xanim has failed or was cancelled"
+msgstr ""
+"nemô¾em nájs» ¾iadne extrahované snímky,\n"
+"%s\n"
+"mo¾no xanim spadol alebo bol preru¹ený"
+
+#: gap/gap_decode_xanim.c:565
+#, c-format
+msgid "frames are not extracted, because overwrite of %s was cancelled"
+msgstr "snímky nie sú extrahované, preto¾e prepisovanie %s bolo preru¹ené"
+
+#: gap/gap_decode_xanim.c:575
+#, c-format
+msgid "failed to overwrite %s (check permissions ?)"
+msgstr "nepodarilo sa prepísa» %s (skontrolovali ste prístupové práva?)"
+
+#: gap/gap_decode_xanim.c:597
+#, c-format
+msgid "failed to write %s (check permissions ?)"
+msgstr "nepodarilo sa zapísa» do %s (skontrolovali ste prístupové práva?)"
+
+#: gap/gap_decode_xanim.c:723
+#, c-format
+msgid "could not execute %s (check if xanim is installed)"
+msgstr "nie je mo¾né spusti» %s (skontrolujte, èi je xanim nain¹talovaný)"
+
+#: gap/gap_decode_xanim.c:731
+#, c-format
+msgid "%s does not look like xanim"
+msgstr "Nezdá sa, ¾e %s je xanim"
+
+#: gap/gap_decode_xanim.c:755
+#, c-format
+msgid ""
+"The xanim program on your system \"%s\"\n"
+"does not support the exporting options Ea, Ee, Eq"
+msgstr ""
+"Program xanim, ktorý máte vo svojom systéme \"%s\"\n"
+"nepodporuje exportné voµby Ea, Ee, Eq"
+
+#: gap/gap_decode_xanim.c:762
+#, c-format
+msgid ""
+"The xanim program on your system \"%s\"\n"
+"does not support exporting of single frames"
+msgstr ""
+"Program xanim, ktorý máte vo svojom systéme \"%s\"\n"
+"nepodporuje exportné jednotlivých snímky"
+
+#: gap/gap_decode_xanim.c:1025
+#, c-format
+msgid "videofile %s not existent or empty\n"
+msgstr "video súbor %s neexistuje alebo je prázdny\n"
+
+#: gap/gap_decode_xanim.c:1078
+#, c-format
+msgid ""
+"could not create %s directory\n"
+"(that is required for xanim frame export)"
+msgstr ""
+"Nie je mo¾né vytvori» prieèinok %s\n"
+"(ktorý vy¾aduje xanim pri exporte snímok)"
+
+#: gap/gap_decode_xanim.c:1089
+msgid "extracting frames..."
+msgstr "extrahujem snímky..."
+
+#: gap/gap_decode_xanim.c:1114
+#, c-format
+msgid ""
+"could not start xanim process\n"
+"(program=%s)"
+msgstr ""
+"nie je mo¾né zaèa» xanim proces\n"
+"(program=%s)"
+
+#: gap/gap_decode_xanim.c:1135
+msgid ""
+"can't find any extracted frames,\n"
+"xanim has failed or was cancelled"
+msgstr ""
+"nie je mo¾né nájs» ¾iadne extrahované snímky,\n"
+"xanim zlyhal, alebo bol preru¹ený"
+
+#: gap/gap_decode_xanim.c:1154
+msgid "renaming frames..."
+msgstr "mením názvy snímok..."
+
+#: gap/gap_decode_xanim.c:1159
+msgid "converting frames..."
+msgstr "konvetujem snímky..."
+
+#: gap/gap_filter_foreach.c:126
+msgid "backup to file"
+msgstr "zálohovanie do súboru"
+
+#. pixel
+#: gap/gap_filter_foreach.c:128
+msgid "Make backup of the image after each step"
+msgstr "Vytvori» zálohu obrázka po ka¾dom kroku"
+
+#: gap/gap_filter_foreach.c:132 gap/gap_mod_layer.c:262
+msgid "Continue"
+msgstr "Pokraèova»"
+
+#: gap/gap_filter_foreach.c:136
+#, c-format
+msgid "Skip %d"
+msgstr "Preskoèi» %d"
+
+#: gap/gap_filter_foreach.c:155 gap/gap_mod_layer.c:281
+#, c-format
+msgid ""
+"2nd call of %s\n"
+"(define end-settings)"
+msgstr ""
+"2. volanie z %s\n"
+"(definuje koncové nastavenie)"
+
+#: gap/gap_filter_foreach.c:159
+#, c-format
+msgid ""
+"Non-Interactive call of %s\n"
+"(for all layers in between)"
+msgstr ""
+"Neinteraktívne volanie %s\n"
+"(na v¹etky vrstvy rozsahu)"
+
+#: gap/gap_filter_foreach.c:278
+msgid "Applying Filter to all Layers..."
+msgstr "Aplikujem filter na v¹etky vrstvy..."
+
+#: gap/gap_filter_foreach.c:552
+msgid "Select Filter for Animated apply"
+msgstr "Výber filtra pre animované pou¾itie"
+
+#: gap/gap_filter_foreach.c:553 gap/gap_mod_layer.c:664
+msgid "Apply Constant"
+msgstr "Kon¹tantné"
+
+#: gap/gap_filter_foreach.c:554 gap/gap_mod_layer.c:665
+msgid "Apply Varying"
+msgstr "Premenlivé pou¾itie"
+
+#: gap/gap_filter_main.c:105
+msgid "<Image>/Filters/Filter all Layers..."
+msgstr "<Image>/Filtre/Filter pre v¹etky vrstvy..."
+
+#: gap/gap_frontends_main.c:125
+msgid "<Image>/Video/Split Video to Frames/Any XANIM readable..."
+msgstr ""
+"<Image>/Video/Rozdeli» video do snímok/Akékoµvek spracovateµné XANIMom..."
+
+#: gap/gap_frontends_main.c:137
+msgid "<Toolbox>/Xtns/Split Video to Frames/Any XANIM readable..."
+msgstr ""
+"<Toolbox>/Roz¹./Rozdeli» video do snímok/Akékoµvek spracovateµné XANIMom..."
+
+#: gap/gap_frontends_main.c:149
+msgid "<Image>/Video/Encode/MPEG1..."
+msgstr "<Image>/Video/Kódovanie/MPEG1..."
+
+#: gap/gap_frontends_main.c:162
+msgid "<Image>/Video/Encode/MPEG2..."
+msgstr "<Image>/Video/Kódovanie/MPEG2..."
+
+#: gap/gap_lib.c:243
+msgid "GAP Message"
+msgstr "GAP správa"
+
+#: gap/gap_lib.c:905
+msgid ""
+"OPERATION CANCELLED.\n"
+"Current frame changed while dialog was open."
+msgstr ""
+"OPERÁCIA ZRU©ENÁ.\n"
+"Aktuálna snímka bola zmenené poèas otvárania dialógu."
+
+#: gap/gap_lib.c:927 gap/gap_lib.c:2192
+msgid ""
+"OPERATION CANCELLED.\n"
+"GAP plug-ins only work with filenames\n"
+"that end in numbers like _0001.xcf.\n"
+"==> Rename your image, then try again."
+msgstr ""
+"OPERÁCIA ZRU©ENÁ.\n"
+"GAP zásuvný modul pracuje iba s názvami súborov,\n"
+"ktoré konèia na èíslo ako napr. _0001.xcf.\n"
+"==> Premenujte svoj obrázok a potom skúste znova."
+
+#: gap/gap_lib.c:1014
+msgid ""
+"You are using a file format != xcf\n"
+"Save Operations may result\n"
+"in loss of layer information."
+msgstr ""
+"Pou¾ívanie iný formát ako xcf\n"
+"Operácie zápisu mô¾u spôsobi»,\n"
+"¾e stratíte informácie o vrstvách."
+
+#: gap/gap_lib.c:1030
+msgid "Save Flattened"
+msgstr "Ulo¾i» zlúèené"
+
+#: gap/gap_lib.c:1032
+msgid "Save As Is"
+msgstr "Ulo¾í ako, je"
+
+#: gap/gap_lib.c:1507 gap/gap_lib.c:1631 gap/gap_lib.c:1710 gap/gap_lib.c:1717
+#: gap/gap_lib.c:1724 gap/gap_lib.c:1807 gap/gap_lib.c:1829 gap/gap_lib.c:2734
+#, c-format
+msgid "Error: could not rename frame %ld to %ld"
+msgstr "Chyba: nie je mo¾né premenova» snímku %ld na %ld"
+
+#: gap/gap_lib.c:1570
+#, c-format
+msgid "Error: could not save frame %s"
+msgstr "Chyba: nie je mo¾né ulo¾i» snímku %s"
+
+#: gap/gap_lib.c:1619
+msgid "Duplicating frames..."
+msgstr "Duplikujem snímky..."
+
+#: gap/gap_lib.c:1795
+msgid "Renumber Framesequence..."
+msgstr "Preèíslujem sekvenciu snímok..."
+
+#: gap/gap_lib.c:1981
+#, c-format
+msgid "Goto Frame (%ld/%ld)"
+msgstr "Prejs» na snímku (%ld/%ld)"
+
+#: gap/gap_lib.c:1984
+#, c-format
+msgid "Destination Frame Number (%ld  - %ld)"
+msgstr "Cieµové èíslo snímky (%ld  - %ld)"
+
+#: gap/gap_lib.c:1988 gap/gap_lib.c:2065 gap/gap_lib.c:2269
+msgid "Number:"
+msgstr "Poèet:"
+
+#: gap/gap_lib.c:2049
+#, c-format
+msgid "Delete Frames (%ld/%ld)"
+msgstr "Zmaza» snímky (%ld/%ld)"
+
+#: gap/gap_lib.c:2052
+#, c-format
+msgid "Delete Frames from %ld to (number)"
+msgstr "Zmaza» snímky od %ld po (èíslo)"
+
+#: gap/gap_lib.c:2115
+#, c-format
+msgid "Duplicate Frames (%ld/%ld)"
+msgstr "Duplikovanie snímok (%ld/%ld)"
+
+#: gap/gap_lib.c:2125
+msgid "Source Range starts at this framenumber"
+msgstr "Zdrojový rozsah zaèína na tomto èísle snímky"
+
+#: gap/gap_lib.c:2133
+msgid "Source Range ends at this framenumber"
+msgstr "Zdrojový rozsah konèí na tomto èísle snímky"
+
+#: gap/gap_lib.c:2136
+msgid "N times:"
+msgstr "N krát:"
+
+#: gap/gap_lib.c:2143
+msgid ""
+"Copy selected Range n-times  \n"
+"(you may type in Values > 99)"
+msgstr ""
+"Kopíruje zvolený rozsah n-krát  \n"
+"(je mo¾né vlo¾i» hodnoty > 99)"
+
+#: gap/gap_lib.c:2146
+msgid "Duplicate Frame Range"
+msgstr "Duplikova» rozsah snímok"
+
+#: gap/gap_lib.c:2264
+#, c-format
+msgid "Exchange current Frame (%ld)"
+msgstr "Zameni» aktuálnu snímku (%ld)"
+
+#: gap/gap_lib.c:2268
+msgid "With Frame (number)"
+msgstr "So snímkou (èíslo)"
+
+#: gap/gap_lib.c:2310
+#, c-format
+msgid "Framesequence Shift (%ld/%ld)"
+msgstr "Posun sekvencie snímok (%ld/%ld)"
+
+#: gap/gap_lib.c:2320
+msgid "Affected Range starts at this framenumber"
+msgstr "Ovplyvnený rozsah zaèína na tejto snímke"
+
+#: gap/gap_lib.c:2328
+msgid "Affected Range ends at this framenumber"
+msgstr "Ovplyvnený rozsah konèí na tejto snímke"
+
+#: gap/gap_lib.c:2331
+msgid "N-Shift:"
+msgstr "N-posun:"
+
+#: gap/gap_lib.c:2336
+msgid ""
+"Renumber the affected framesequence     \n"
+"(numbers are shifted in circle by N)"
+msgstr ""
+"Preèíslovanie ovlyvnenej sekvencie snímok     \n"
+"(èísla sú cyklicky posunuté o N)"
+
+#: gap/gap_lib.c:2338
+msgid "Framesequence shift"
+msgstr "Posunutie sekvencie snímok"
+
+#: gap/gap_lib.c:2946
+#, c-format
+msgid ""
+"Can't execute more than 1 Video Function\n"
+"on the same AnimFrame Image at the same time\n"
+"LOCK ID:%s\n"
+msgstr ""
+"Nie je mo¾né spusti» viac ako len jednu video funkciu\n"
+"na tú istú snímku animácie v tom istom èase\n"
+"ID uzamknutia:%s\n"
+
+#: gap/gap_main.c:476
+msgid "<Image>/Video/Goto/Next Frame"
+msgstr "<Image>/Video/Prejs»/Na ïal¹iu snímku"
+
+#: gap/gap_main.c:488
+msgid "<Image>/Video/Goto/Previous Frame"
+msgstr "<Image>/Video/Prejs»/Na prechádzajúcu snímku"
+
+#: gap/gap_main.c:500
+msgid "<Image>/Video/Goto/First Frame"
+msgstr "<Image>/Video/Prejs»/Na prvú snímku"
+
+#: gap/gap_main.c:512
+msgid "<Image>/Video/Goto/Last Frame"
+msgstr "<Image>/Video/Prejs»/Na poslednú snímku"
+
+#: gap/gap_main.c:524
+msgid "<Image>/Video/Goto/Any Frame..."
+msgstr "<Image>/Video/Prejs»/Na ktorúkoµvek snímku"
+
+#: gap/gap_main.c:536
+msgid "<Image>/Video/Delete Frames..."
+msgstr "<Image>/Video/Zmaza» snímky..."
+
+#: gap/gap_main.c:548
+msgid "<Image>/Video/Duplicate Frames..."
+msgstr "<Image>/Video/Duplikova» snímky..."
+
+#: gap/gap_main.c:560
+msgid "<Image>/Video/Exchange Frame..."
+msgstr "<Image>/Video/Vymeni» snímky..."
+
+#: gap/gap_main.c:572
+msgid "<Image>/Video/Move Path..."
+msgstr "<Image>/Video/Cesta presunu..."
+
+#: gap/gap_main.c:643
+msgid "<Image>/Video/Frames to Image..."
+msgstr "<Image>/Video/Snímky do obrázku..."
+
+#: gap/gap_main.c:655
+msgid "<Image>/Video/Frames Flatten..."
+msgstr "<Image>/Video/Zlúèi» snímky..."
+
+#: gap/gap_main.c:667
+msgid "<Image>/Video/Frames LayerDel..."
+msgstr "<Image>/Video/Zmaza» vrstvu snímok..."
+
+#: gap/gap_main.c:691
+msgid "<Image>/Video/Frames Convert..."
+msgstr "<Image>/Video/Konvertova» snímky..."
+
+#: gap/gap_main.c:703
+msgid "<Image>/Video/Frames Resize..."
+msgstr "<Image>/Video/Zmeni» veµkos» plochy..."
+
+#: gap/gap_main.c:715
+msgid "<Image>/Video/Frames Crop..."
+msgstr "<Image>/Video/Orezanie snímok..."
+
+#: gap/gap_main.c:727
+msgid "<Image>/Video/Frames Scale..."
+msgstr "<Image>/Video/Zmeni» veµkos» snímok"
+
+#: gap/gap_main.c:739
+msgid "<Image>/Video/Split Image to Frames..."
+msgstr "<Image>/Video/Rozdeli» obrázok do snímok..."
+
+#: gap/gap_main.c:752
+msgid "<Image>/Video/Framesequence Shift..."
+msgstr "<Image>/Video/Posun sekvencie snímok..."
+
+#: gap/gap_main.c:764
+msgid "<Image>/Video/Frames Modify..."
+msgstr "<Image>/Video/Upravi» snímky..."
+
+#. Layer select modes
+#: gap/gap_mod_layer.c:84 gap/gap_range_ops.c:574
+msgid "Pattern is equal to LayerName"
+msgstr "Vzorka je zhodná sa názvom vrstvy"
+
+#: gap/gap_mod_layer.c:85 gap/gap_range_ops.c:575
+msgid "Pattern is Start of LayerName"
+msgstr "Vzorka je zaèiatok názvu vrstvy"
+
+#: gap/gap_mod_layer.c:86 gap/gap_range_ops.c:576
+msgid "Pattern is End of Layername"
+msgstr "Vzorka je koniec názvu vrstvy"
+
+#: gap/gap_mod_layer.c:87 gap/gap_range_ops.c:577
+msgid "Pattern is a Part of LayerName"
+msgstr "Vzorka je èas» názvu vrstvy"
+
+#: gap/gap_mod_layer.c:88 gap/gap_range_ops.c:578
+msgid "Pattern is LayerstackNumber List"
+msgstr "Vzorka je zoznam èísiel zásobníka vrstiev"
+
+#: gap/gap_mod_layer.c:89 gap/gap_range_ops.c:579
+msgid "Pattern is REVERSE-stack List"
+msgstr "Vzorka je zoznam obráteného zásobníka"
+
+#: gap/gap_mod_layer.c:90 gap/gap_range_ops.c:580
+msgid "All Visible (ignore Pattern)"
+msgstr "V¹etko viditeµné (ignorovanie vzorky)"
+
+#: gap/gap_mod_layer.c:92
+msgid "Select all Layers where Layername is equal to Pattern"
+msgstr "Zvolí v¹etky vrstvy, ktorých názov je zhodný so vzorkou"
+
+#: gap/gap_mod_layer.c:93
+msgid "Select all Layers where Layername starts with Pattern"
+msgstr "Zvolí v¹etky vrstvy, ktorých názov zaèína vzorkou"
+
+#: gap/gap_mod_layer.c:94
+msgid "Select all Layers where Layername ends up with Pattern"
+msgstr "Zvolí v¹etky vrstvy, ktorých názov konèí vzorkou"
+
+#: gap/gap_mod_layer.c:95
+msgid "Select all Layers where Layername contains Pattern"
+msgstr "Zvolí v¹etky vrstvy, ktorých názov obsahuje vzorku"
+
+#: gap/gap_mod_layer.c:96
+msgid ""
+"Select Layerstack positions.\n"
+"0, 4-5, 8\n"
+"where 0 == Top-layer"
+msgstr ""
+"Zvolí pozíciu v zásobníku vrstiev.\n"
+"0, 4-5, 8\n"
+"kde 0 == horná vrstva"
+
+#: gap/gap_mod_layer.c:97
+msgid ""
+"Select Layerstack positions.\n"
+"0, 4-5, 8\n"
+"where 0 == BG-layer"
+msgstr ""
+"Zvolí pozíciu v zásobníku vrstiev.\n"
+"0, 4-5, 8\n"
+"kde 0 == vrstva pozadia"
+
+#: gap/gap_mod_layer.c:98
+msgid "Select all visible Layers"
+msgstr "Vybra» v¹etky viditeµné vrstvy"
+
+#. action items what to do with the selected layer(s)
+#: gap/gap_mod_layer.c:102
+msgid "Set Layer(s) visible"
+msgstr "Nastavi» vrstvy ako viditeµné"
+
+#: gap/gap_mod_layer.c:103
+msgid "Set Layer(s) invisible"
+msgstr "Nastavi» vrstvy ako neviditeµné"
+
+#: gap/gap_mod_layer.c:104
+msgid "Set Layer(s) linked"
+msgstr "Nastavi» vrstvy ako spojené"
+
+#: gap/gap_mod_layer.c:105
+msgid "Set Layer(s) unlinked"
+msgstr "Nastavi» vrstvy ako rozpojené"
+
+#: gap/gap_mod_layer.c:106
+msgid "Raise Layer(s)"
+msgstr "Posunú» vrstvu vy¹¹ie"
+
+#: gap/gap_mod_layer.c:107
+msgid "Lower Layer(s)"
+msgstr "Posunú» vrstvu ni¾¹ie"
+
+#: gap/gap_mod_layer.c:108
+msgid "Merge Layer(s) expand as necessary"
+msgstr "Spoji» vrstvy roz¹írené podµa potreby"
+
+#: gap/gap_mod_layer.c:109
+msgid "Merge Layer(s) clipped to image"
+msgstr "Spoji» vrstvy orezané podµa obrázka"
+
+#: gap/gap_mod_layer.c:110
+msgid "Merge Layer(s) clipped to bg-layer"
+msgstr "Spoji» vrstvy orezané podµa vrstvy pozadia"
+
+#: gap/gap_mod_layer.c:111
+msgid "Apply filter on Layer(s)"
+msgstr "Pou¾i» filter na vrstvy"
+
+#: gap/gap_mod_layer.c:112
+msgid "Duplicate Layer(s)"
+msgstr "Duplikova» vrstvy"
+
+#: gap/gap_mod_layer.c:113
+msgid "Delete Layer(s)"
+msgstr "Zmaza» vrstvy"
+
+#: gap/gap_mod_layer.c:114
+msgid "Rename Layer(s)"
+msgstr "Premenova» vrstvy"
+
+#: gap/gap_mod_layer.c:153
+msgid ""
+"Perform function on one or more Layer(s)\n"
+"in all frames of the selected frame range\n"
+msgstr ""
+"Vykonáva funkciu na jednej alebo viacerých vrstvách\n"
+"vo v¹etkých snímkach vybraného rozsahu snímok\n"
+
+#: gap/gap_mod_layer.c:157 gap/gap_mpege.c:258 gap/gap_range_ops.c:443
+msgid "From Frame:"
+msgstr "Od snímky:"
+
+#: gap/gap_mod_layer.c:158 gap/gap_mpege.c:259 gap/gap_range_ops.c:444
+#: gap/gap_range_ops.c:603
+msgid "first handled frame"
+msgstr "prvá spracovaná snímka"
+
+#: gap/gap_mod_layer.c:165 gap/gap_range_ops.c:451
+msgid "To Frame:"
+msgstr "Po snímku:"
+
+#: gap/gap_mod_layer.c:166 gap/gap_mpege.c:267 gap/gap_range_ops.c:452
+#: gap/gap_range_ops.c:611
+msgid "last handled frame"
+msgstr "posledná spracovaná snímka"
+
+#: gap/gap_mod_layer.c:174 gap/gap_range_ops.c:650
+msgid "Select Layer(s):"
+msgstr "Výber vrstiev:"
+
+#: gap/gap_mod_layer.c:184 gap/gap_range_ops.c:659
+msgid "Select Pattern:"
+msgstr "Výber vzorky:"
+
+#. pixel
+#: gap/gap_mod_layer.c:186 gap/gap_range_ops.c:661
+msgid ""
+"String to identify layer names    \n"
+"or layerstack position numbers\n"
+"0,3-5"
+msgstr ""
+"Re»azec na identifikáciu názvov vrstiev    \n"
+"alebo èíslo pozície v zásobníku vrstiev\n"
+"0,3-5"
+
+#: gap/gap_mod_layer.c:192 gap/gap_range_ops.c:667
+msgid "Case sensitive"
+msgstr "Rozli¹ova» veµkos» písmen"
+
+#: gap/gap_mod_layer.c:193 gap/gap_range_ops.c:668
+msgid "Lowercase and UPPERCASE letters are considered as different"
+msgstr "Malé a VE¥KÉ písmená sa rozli¹ujú"
+
+#: gap/gap_mod_layer.c:198 gap/gap_range_ops.c:673
+msgid "Invert Selection"
+msgstr "Obráti» výber"
+
+#: gap/gap_mod_layer.c:199
+msgid "Perform actions on all unselected Layers"
+msgstr "Vykonanie akcií na v¹etkých nevybraných vrstvách"
+
+#: gap/gap_mod_layer.c:204
+msgid "Function:"
+msgstr "Funkcia:"
+
+#. argv[7].radio_help_argv = action_help
+#: gap/gap_mod_layer.c:208
+msgid "Function to be performed on all selected layers"
+msgstr "Funkcia sa vykoná na v¹etkých vybraných vrstvách"
+
+#: gap/gap_mod_layer.c:214
+msgid "New Layername:"
+msgstr "Nový názov vrstvy:"
+
+#. pixel
+#: gap/gap_mod_layer.c:216
+msgid ""
+"New Layername for all handled layers \n"
+"[####] is replaced by frame number\n"
+"(is used on function rename only)"
+msgstr ""
+"Nový názov vrstvy pre v¹etky spracovávané vrstvy \n"
+"[####] je nahradené èíslom snímky\n"
+"(pou¾ije sa iba vo funkcií premenovanie)"
+
+#: gap/gap_mod_layer.c:221
+msgid "Frames Modify"
+msgstr "Úprava políèok"
+
+#: gap/gap_mod_layer.c:222
+msgid "Settings"
+msgstr "Nastavenie"
+
+#: gap/gap_mod_layer.c:285
+#, c-format
+msgid ""
+"Non-Interactive call of %s\n"
+"(for all selected layers)"
+msgstr ""
+"Neinteraktívne volanie %s\n"
+"(pre v¹etky zvolené vrstvy)"
+
+#. GAP-PDB-Browser Dialog
+#. ----------------------
+#: gap/gap_mod_layer.c:663
+msgid "Select Filter for Animated frames-apply"
+msgstr "Výber filtra pre pou¾itie na animované snímky"
+
+#: gap/gap_mod_layer.c:805
+msgid "GAP Modify: No layer selected in last handled frame"
+msgstr ""
+"Úprava GAP: V poslednej spracovávanej vrstve nie je zvolená ¾iadna vrstva"
+
+#: gap/gap_mod_layer.c:891
+msgid "Modifying Frames/Layer(s)..."
+msgstr "Modifikujú sa snímky/vrstvy..."
+
+#: gap/gap_mod_layer.c:972
+msgid "No selected Layer in start frame"
+msgstr "Nie je zvolená ¾iadna vrstva v poèiatoènom políèku"
+
+#: gap/gap_mov_dialog.c:262
+msgid "Normal"
+msgstr "Normálne"
+
+#: gap/gap_mov_dialog.c:263
+msgid "Dissolve"
+msgstr "Rozpustenie"
+
+#: gap/gap_mov_dialog.c:264
+msgid "Multiply"
+msgstr "Vynásobi»"
+
+#: gap/gap_mov_dialog.c:265
+msgid "Screen"
+msgstr "Obrazovka"
+
+#: gap/gap_mov_dialog.c:266
+msgid "Overlay"
+msgstr "Prekrytie"
+
+#: gap/gap_mov_dialog.c:267
+msgid "Difference"
+msgstr "Rozdiely"
+
+#: gap/gap_mov_dialog.c:268
+msgid "Addition"
+msgstr "Súèet"
+
+#: gap/gap_mov_dialog.c:269
+msgid "Subtract"
+msgstr "Rozdiel"
+
+#: gap/gap_mov_dialog.c:270
+msgid "Darken Only"
+msgstr "Len stmavnutie"
+
+#: gap/gap_mov_dialog.c:271
+msgid "Lighten Only"
+msgstr "Len zosvetlenie"
+
+#: gap/gap_mov_dialog.c:272
+msgid "Hue"
+msgstr "Odtieò"
+
+#: gap/gap_mov_dialog.c:273
+msgid "Saturation"
+msgstr "Sýtos»"
+
+#: gap/gap_mov_dialog.c:274
+msgid "Color"
+msgstr "Farba"
+
+#: gap/gap_mov_dialog.c:275
+msgid "Value"
+msgstr "Jas"
+
+#: gap/gap_mov_dialog.c:282
+msgid "Left  Top"
+msgstr "¥avý horný"
+
+#: gap/gap_mov_dialog.c:283
+msgid "Left  Bottom"
+msgstr "¥avý dolný"
+
+#: gap/gap_mov_dialog.c:284
+msgid "Right Top"
+msgstr "Pravý horný"
+
+#: gap/gap_mov_dialog.c:285
+msgid "Right Bottom"
+msgstr "Pravý dolný"
+
+#: gap/gap_mov_dialog.c:286
+msgid "Center"
+msgstr "V strede"
+
+#: gap/gap_mov_dialog.c:294
+msgid "Loop"
+msgstr "Sluèka"
+
+#: gap/gap_mov_dialog.c:295
+msgid "Loop Reverse"
+msgstr "Spätná sluèka"
+
+#: gap/gap_mov_dialog.c:296
+msgid "Once"
+msgstr "Raz"
+
+#: gap/gap_mov_dialog.c:297
+msgid "OnceReverse"
+msgstr "Raz dozadu"
+
+#: gap/gap_mov_dialog.c:298
+msgid "PingPong"
+msgstr "Tam a spä»"
+
+#: gap/gap_mov_dialog.c:299
+msgid "None"
+msgstr "®iadna"
+
+#: gap/gap_mov_dialog.c:300
+msgid "Frame Loop"
+msgstr "Snímka sluèky"
+
+#: gap/gap_mov_dialog.c:301
+msgid "Frame Loop Reverse"
+msgstr "Snímka spätnej sluèky"
+
+#: gap/gap_mov_dialog.c:302
+msgid "Frame Once"
+msgstr "Snímka raz"
+
+#: gap/gap_mov_dialog.c:303
+msgid "Frame OnceReverse"
+msgstr "Snímka raz dozadu"
+
+#: gap/gap_mov_dialog.c:304
+msgid "Frame PingPong"
+msgstr "Snímka tam a spä»"
+
+#: gap/gap_mov_dialog.c:305
+msgid "Frame None"
+msgstr "Snímka nièoho"
+
+#: gap/gap_mov_dialog.c:468
+msgid "Move Path"
+msgstr "Cesta presunu"
+
+#: gap/gap_mov_dialog.c:492
+msgid "Update Preview"
+msgstr "Aktualizova» náhµad"
+
+#: gap/gap_mov_dialog.c:499
+msgid "Show PreviewFrame with Selected SrcLayer at current Controlpoint"
+msgstr ""
+"Zobrazi» políèko náhµadu so zvolenou zdrojovou vrstvou v aktuálnom riadiacom "
+"bode"
+
+#: gap/gap_mov_dialog.c:503
+msgid "Anim Preview"
+msgstr "Animovaný náhµad"
+
+#: gap/gap_mov_dialog.c:510
+msgid "Generate Animated Preview as multilayer image"
+msgstr "Generova» animovaný náhµad ako viacvrstvový obrázok"
+
+#. parameter settings
+#: gap/gap_mov_dialog.c:523
+msgid "Copy moving source-layer(s) into frames"
+msgstr "Kopírova» presun zdrojovej vrstvy do snímok"
+
+#. the start frame scale_entry
+#. table col, row
+#: gap/gap_mov_dialog.c:556
+msgid "Start Frame:"
+msgstr "Poèiatoèná snímka:"
+
+#. label text
+#. scalesize spinsize
+#. value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:564
+msgid "First handled frame"
+msgstr "Prvá spracovávaná snímka"
+
+#. the end frame scale_entry
+#. table col, row
+#: gap/gap_mov_dialog.c:571
+msgid "End Frame:"
+msgstr "Koneèná snímka"
+
+#. label text
+#. scalesize spinsize
+#. value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:579
+msgid "Last handled frame"
+msgstr "Posledná spracovávaná snímka"
+
+#. the Preview Frame scale_entry
+#. table col, row
+#: gap/gap_mov_dialog.c:586
+msgid "Preview Frame:"
+msgstr "Snímka náhµadu:"
+
+#. label text
+#. scalesize spinsize
+#. value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:594
+msgid "Frame to show when UpdPreview button is pressed"
+msgstr ""
+"Snímka, ktorá sa uká¾e, ak je stlaèené tlaèítko na aktualizáciu náhµadu"
+
+#. the Layerstack scale_entry
+#. table col, row
+#: gap/gap_mov_dialog.c:602 gap/gap_range_ops.c:267
+msgid "Layerstack:"
+msgstr "Zásobník vrstiev:"
+
+#. label text
+#. scalesize spinsize
+#. value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:610
+msgid ""
+"How to insert SrcLayer into the Dst. Frame's Layerstack\n"
+"0 means on top i.e. in front"
+msgstr ""
+"Spôsob vlo¾enia zdrojovej vrstvy do zásobníka vrstiev cieµa\n"
+"0 znamená navrch, t.j. dopredu"
+
+#. toggle force visibility
+#: gap/gap_mov_dialog.c:622
+msgid "Force visibility"
+msgstr "Vnúti» viditeµnos»"
+
+#: gap/gap_mov_dialog.c:629
+msgid "Force visibility for all copied Src-Layers"
+msgstr "Vnúti» viditeµnos» v¹etkým kopírovaným zdrojovým vrstvám"
+
+#. toggle clip_to_image
+#: gap/gap_mov_dialog.c:635
+msgid "Clip To Frame"
+msgstr "Oreza» podµa snímky"
+
+#: gap/gap_mov_dialog.c:642
+msgid "Clip all copied Src-Layers at Frame Boundaries"
+msgstr "Oreza» v¹etky kopírované zdrojové vrstvy podµa okrajov snímky"
+
+#: gap/gap_mov_dialog.c:690
+msgid ""
+"No Source Image was selected\n"
+"(Please open a 2nd Image of the same type before opening Move Path)"
+msgstr ""
+"Nebol zvolený zdrojový obrázok\n"
+"(Zvoµte prosím druhý obrázok rovnakého typu pred otvorením Cesty presunu)"
+
+#: gap/gap_mov_dialog.c:786
+msgid "Object on empty frames"
+msgstr "Objekt v prázdnych snímkach"
+
+#: gap/gap_mov_dialog.c:787
+msgid "Object on one frame"
+msgstr "Objekt v jednej snímke"
+
+#: gap/gap_mov_dialog.c:788
+msgid "Exact Object on frames"
+msgstr "Presné objekty na snímkach"
+
+#: gap/gap_mov_dialog.c:818
+msgid "Anim Preview Mode"
+msgstr "Re¾im animovaného náhµadu"
+
+#: gap/gap_mov_dialog.c:826
+msgid "Scale Preview"
+msgstr "Zmena veµkosti náhµadu"
+
+#: gap/gap_mov_dialog.c:827
+msgid "Scale down size of the generated animated preview (in %)"
+msgstr "Zmen¹i» veµkos» generovaného animovaného náhµadu (v %)"
+
+#: gap/gap_mov_dialog.c:835
+msgid "Framerate"
+msgstr "Frekvencia snímok"
+
+#: gap/gap_mov_dialog.c:836
+msgid "Framerate to use in the animated preview in frames/sec"
+msgstr "Frekvencia snímok v animovanom náhµade v snímkach/sekundu"
+
+#: gap/gap_mov_dialog.c:850
+msgid "Copy to Video Buffer"
+msgstr "Kopírova» do video zásobníka"
+
+#: gap/gap_mov_dialog.c:851
+msgid ""
+"Save all single frames of animated preview to video buffer\n"
+"(configured in gimprc by video-paste-dir and video-paste-basename)"
+msgstr ""
+"Ulo¾i» v¹etky jednotlivé snímky animovaného náhµadu do video zásobníka\n"
+"(nastavené v gimprc pomocou video-paste-dir a video-paste-basename)"
+
+#: gap/gap_mov_dialog.c:856
+msgid "Move Path Animated Preview"
+msgstr "Cesta posunu animovaného náhµadu"
+
+#: gap/gap_mov_dialog.c:857
+msgid "Options"
+msgstr "Mo¾nosti"
+
+#: gap/gap_mov_dialog.c:902
+msgid "Generate Animated Preview failed\n"
+msgstr "Generovanie animované náhµadu zlyhalo\n"
+
+#. filesel is already open
+#: gap/gap_mov_dialog.c:1187
+msgid "Load Path Points from file"
+msgstr "Naèíta» body cesty zo súboru"
+
+#. filesel is already open
+#: gap/gap_mov_dialog.c:1223
+msgid "Save Path Points to file"
+msgstr "Zápis bodov cesty do súboru"
+
+#: gap/gap_mov_dialog.c:1552
+#, c-format
+msgid "Current Point: [ %3d ] of [ %3d ]"
+msgstr "Aktuálny bod: [ %3d ] z [ %3d ]"
+
+#: gap/gap_mov_dialog.c:1638
+msgid "Source Select"
+msgstr "Výber zdroja:"
+
+#. Source Layer menu
+#: gap/gap_mov_dialog.c:1654
+msgid "Source Image/Layer:"
+msgstr "Zdrojový obrázok/vrstva:"
+
+#: gap/gap_mov_dialog.c:1664
+msgid "Source Object to insert into Frame Range"
+msgstr "Zdrojový objekt na vlo¾enie do rozsahu snímok"
+
+#. Paintmode menu
+#: gap/gap_mov_dialog.c:1679
+msgid "Mode:"
+msgstr "Re¾im:"
+
+#: gap/gap_mov_dialog.c:1688
+msgid "Paintmode"
+msgstr "Re¾im kreslenia"
+
+#. Loop Stepmode menu
+#: gap/gap_mov_dialog.c:1703
+msgid "Stepmode:"
+msgstr "Re¾im krokovania:"
+
+#: gap/gap_mov_dialog.c:1721
+msgid "How to fetch the next SrcLayer at the next handled frame"
+msgstr ""
+"Spôsob vyvolania nasledujúcej zdrojovej vrstvy na ïal¹ej spracovávanej snímke"
+
+#. Source Image Handle menu
+#: gap/gap_mov_dialog.c:1727
+msgid "Handle:"
+msgstr "Ovládanie:"
+
+#: gap/gap_mov_dialog.c:1745
+msgid "How to place the SrcLayer at Controlpoint Coordinates"
+msgstr "Spôsob umiestnenia zdrojovej vrstvy na súradnice riadiaceho bodu"
+
+#. to avoid side effects while initialization
+#. the frame
+#: gap/gap_mov_dialog.c:1799
+msgid "Move Path Preview"
+msgstr "Náhµad na cestu posunu"
+
+#. X
+#. table col, row
+#: gap/gap_mov_dialog.c:1822
+msgid "X:"
+msgstr "X:"
+
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:1831
+msgid "X Coordinate"
+msgstr "Súradnica X"
+
+#. Y
+#. table col, row
+#: gap/gap_mov_dialog.c:1840
+msgid "Y:"
+msgstr "Y:"
+
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:1849
+msgid "Y Coordinate"
+msgstr "Súradnica Y"
+
+#. Widht Scale
+#. table col, row
+#: gap/gap_mov_dialog.c:1858
+msgid "Width:"
+msgstr "©írka:"
+
+#. label text
+#. scalesize spinsize
+#. value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:1866
+msgid "Scale Source Layer's Width in percent"
+msgstr "Zmena ¹írka zdrojovej vrstvy v percentách"
+
+#. Height Scale
+#. table col, row
+#: gap/gap_mov_dialog.c:1875
+msgid "Height:"
+msgstr "Vý¹ka:"
+
+#. label text
+#. scalesize spinsize
+#. value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:1883
+msgid "Scale SrcLayer's Height in percent"
+msgstr "Zmena vý¹ky zdrojovej vrstvy v percentách"
+
+#. Opacity
+#. table col, row
+#: gap/gap_mov_dialog.c:1892
+msgid "Opacity:"
+msgstr "Krytie:"
+
+#. label text
+#. scalesize spinsize
+#. value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:1900
+msgid "SrcLayer's Opacity in percent"
+msgstr "Krytie zdrojovej vrstvy v percentách"
+
+#. Rotation
+#. table col, row
+#: gap/gap_mov_dialog.c:1909
+msgid "Rotate:"
+msgstr "Otoèi»:"
+
+#. label text
+#. scalesize spinsize
+#. value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:1917
+msgid "Rotate SrcLayer (in degree)"
+msgstr "Otoèenie zdrojovej vrstvy (v stupòoch)"
+
+#. Keyframe
+#. table col, row
+#: gap/gap_mov_dialog.c:1927
+msgid "Keyframe:"
+msgstr "Kµúèová snímka:"
+
+#. label text
+#. scalesize spinsize
+#. value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:1935
+msgid ""
+"Fix Controlpoint to Keyframe number\n"
+"(0 == No Keyframe)"
+msgstr ""
+"Upevnenie riadiaceho bodu podµa èísla kµúèovej snímky\n"
+"(0 == bez kµúèovej snímky)"
+
+#: gap/gap_mov_dialog.c:2010
+msgid "Add Point"
+msgstr "Prida» bod"
+
+#: gap/gap_mov_dialog.c:2018
+msgid ""
+"Add Controlpoint at end\n"
+"(the last Point is duplicated)"
+msgstr ""
+"Prida» riadiaci bod na koniec\n"
+"(posledný bod je zduplikovaný)"
+
+#. toggle clip_to_image
+#: gap/gap_mov_dialog.c:2023
+msgid "Show Path"
+msgstr "Zobrazi» cestu"
+
+#: gap/gap_mov_dialog.c:2030
+msgid ""
+"Show Path Lines and enable pick/drag with left button or move with right "
+"button"
+msgstr ""
+"Zobrazi» cestu a povoli» chytenie/»ahanie µavým tlaèítkom alebo presun "
+"pravým tlaèítkom"
+
+#: gap/gap_mov_dialog.c:2040
+msgid "Insert Point"
+msgstr "Vlo¾i» bod"
+
+#: gap/gap_mov_dialog.c:2048
+msgid ""
+"Insert Controlpoint\n"
+"(the current Point is duplicated)"
+msgstr ""
+"Vlo¾i» riadiaci bod\n"
+"(aktuálny bod je zduplikovaný)"
+
+#: gap/gap_mov_dialog.c:2052
+msgid "Delete Point"
+msgstr "Zmaza» bod"
+
+#: gap/gap_mov_dialog.c:2060
+msgid "Delete current Controlpoint"
+msgstr "Zmaza» aktuálny riadiaci bod"
+
+#: gap/gap_mov_dialog.c:2066
+msgid "Prev Point"
+msgstr "Predchádzajúci bod"
+
+#: gap/gap_mov_dialog.c:2074
+msgid "Show Previous Controlpoint"
+msgstr "Zobrazi» predchádzajúci bod"
+
+#: gap/gap_mov_dialog.c:2078
+msgid "Next Point"
+msgstr "Nasledujúci bod"
+
+#: gap/gap_mov_dialog.c:2086
+msgid "Show Next Controlpoint"
+msgstr "Zobrazi» nasledujúci riadiaci bod"
+
+#: gap/gap_mov_dialog.c:2092
+msgid "First Point"
+msgstr "Prvý bod"
+
+#: gap/gap_mov_dialog.c:2100
+msgid "Show First Controlpoint"
+msgstr "Zobrazi» prvý riadiaci bod"
+
+#: gap/gap_mov_dialog.c:2104
+msgid "Last Point"
+msgstr "Posledný bod"
+
+#: gap/gap_mov_dialog.c:2112
+msgid "Show Last Controlpoint"
+msgstr "Zobrazi» posledný riadiaci bod"
+
+#: gap/gap_mov_dialog.c:2118
+msgid "Clear Point"
+msgstr "Zmaza» bod"
+
+#: gap/gap_mov_dialog.c:2126
+msgid "Reset the current Controlpoint to default Values"
+msgstr "Nastaví aktuálny riadiaci bod na ¹tandardnú hodnotu"
+
+#: gap/gap_mov_dialog.c:2130
+msgid "Clear All Points"
+msgstr "Zmaza» v¹etky body"
+
+#: gap/gap_mov_dialog.c:2138
+msgid ""
+"Reset all Controlpoints to default Values but dont change the path (X/Y "
+"Values)"
+msgstr ""
+"Nastaví v¹etky riadiace body na ¹tandardné hodnoty, ale nezmení cestu "
+"(hodnoty X/Y"
+
+#: gap/gap_mov_dialog.c:2145
+msgid "Rotate Follow"
+msgstr "Sledova» otoèenie"
+
+#: gap/gap_mov_dialog.c:2156
+msgid ""
+"Set Rotation for all Controlpoints to follow the shape of the path.\n"
+"(Shift: use Rotation of contolpoint 1 as offset)"
+msgstr ""
+"Nastaví otoèenie pre v¹etky riadiace body, aby sledovali tvar cesty.\n"
+"(Shift: pou¾ije otoèenie riadiaceho bodu 1 ako posun)"
+
+#: gap/gap_mov_dialog.c:2163
+msgid "Delete All Points"
+msgstr "Zmaza» v¹etky body"
+
+#: gap/gap_mov_dialog.c:2171
+msgid "Delete all Controlpoints"
+msgstr "Zmaza» v¹etky riadiace body"
+
+#: gap/gap_mov_dialog.c:2178
+msgid "Load Points"
+msgstr "Naèíta» body"
+
+#: gap/gap_mov_dialog.c:2186
+msgid "Load Controlpoints from file"
+msgstr "Naèíta» riadiace body zo súboru"
+
+#: gap/gap_mov_dialog.c:2190
+msgid "Save Points"
+msgstr "Ulo¾i» body"
+
+#: gap/gap_mov_dialog.c:2198
+msgid "Save Controlpoints to file"
+msgstr "Ulo¾i» riadiace body do súboru"
+
+#: gap/gap_mov_dialog.c:2658
+msgid ""
+"Can't operate with current Controlpoint\n"
+"or Keyframe settings"
+msgstr ""
+"Nie je mo¾né pracova» s aktuálnymi riadiacimi bodmi\n"
+"alebo nastaveniami kµúèových snímok"
+
+#: gap/gap_mov_dialog.c:2665
+msgid "Reset Keyframes"
+msgstr "Obnovi» kµúcové snímky"
+
+#: gap/gap_mov_dialog.c:2670
+msgid "Move Path Controlpointcheck"
+msgstr "Kontrola riadiacich bodov cesty presunu"
+
+#: gap/gap_mov_dialog.c:2671
+msgid "Errors:"
+msgstr "Chyby:"
+
+#: gap/gap_mov_exec.c:444
+msgid ""
+"No Source Image was selected.\n"
+"Please open a 2nd Image of the same type before opening Move Path."
+msgstr ""
+"Nebol vybraný zdrojový obrázok.\n"
+"Otvorte prosím druhý obrázok toho istého typu pre otvorením Cesty presunu."
+
+#: gap/gap_mov_exec.c:455
+msgid "Copying Layers into Frames..."
+msgstr "Kopíruje vrstvy do snímok..."
+
+#: gap/gap_mov_exec.c:459
+msgid "Generating Animated Preview..."
+msgstr "Generujem animovaný náhµad..."
+
+#: gap/gap_mov_exec.c:1376
+#, c-format
+msgid ""
+"\n"
+"Error: Keyframe %d at point [%d] higher or equal than last handled frame"
+msgstr ""
+"\n"
+"Chyba: Kµúèová snímka %d v bode [%d] väè¹ia alebo rovná poslednej obslu¾nej "
+"snímke"
+
+#: gap/gap_mov_exec.c:1384
+#, c-format
+msgid ""
+"\n"
+"Error: Keyframe %d at point [%d] leaves not enough space (frames)\n"
+"for the previous controlpoints"
+msgstr ""
+"\n"
+"Chyba: Kµúèová snímka %d v bode [%d] nenecháva dostatoèný priestor (snímky)\n"
+"pre predchádzajúce riadiace body"
+
+#: gap/gap_mov_exec.c:1394
+#, c-format
+msgid ""
+"\n"
+"Error: Keyframe %d is not in sequence at point [%d]"
+msgstr ""
+"\n"
+"Chyba: Kµúèová snímka %d nie je v sekvencií v bode [%d]"
+
+#: gap/gap_mov_exec.c:1412
+#, c-format
+msgid ""
+"\n"
+"Error: controlpoint [%d] is out of handled framerange"
+msgstr ""
+"\n"
+"Chyba: Riadiaci bod [%d] je mimo obslu¾ný rozsah snímok"
+
+#: gap/gap_mov_exec.c:1426
+#, c-format
+msgid ""
+"\n"
+"Error: more controlpoints (%d) than handled frames (%d)\n"
+"please reduce controlpoints or select more frames"
+msgstr ""
+"\n"
+"Chyba: Viac riadiacich bodov (%d) ne¾ obsluhujúcich snímok (%d),\n"
+"zredukujte prosím riadiace body alebo vyberte viac snímok"
+
+#: gap/gap_mpege.c:111
+msgid "Conditions to run mpeg_encode 1.5:"
+msgstr "Podmienky pre spustenie mpeg2encode 1.5:"
+
+#: gap/gap_mpege.c:114
+msgid "Conditions to run mpeg2encode 1.2:"
+msgstr "Podmienky pre spustenie mpeg2encode 1.2:"
+
+#: gap/gap_mpege.c:124
+msgid "1.) mpeg_encode 1.5 must be installed"
+msgstr "1.) mpeg_encode 1.5 musí by» nain¹talované"
+
+#: gap/gap_mpege.c:127
+msgid "1.) mpeg2encode 1.2 must be installed"
+msgstr "1.) mpeg2encode 1.2 musí by» nain¹talované"
+
+#: gap/gap_mpege.c:132
+msgid "    you can get mpeg_encode at"
+msgstr "    mpeg_encode mô¾ete získa na"
+
+#: gap/gap_mpege.c:135
+msgid "    you can get mpeg2encode at http://www.mpeg.org/MSSG"
+msgstr "    mpeg2encode mô¾ete získa» na http://www.mpeg.org/MSSG"
+
+#: gap/gap_mpege.c:140
+msgid "    ftp://mm-ftp.cs.berkeley.edu/pub/multimedia/mpeg/bmt1r1.tar.gz"
+msgstr "    ftp://mm-ftp.cs.berkeley.edu/pub/multimedia/mpeg/bmt1r1.tar.gz"
+
+#: gap/gap_mpege.c:143
+msgid "   or at ftp://ftp.mpeg.org/pub/mpeg/mssg "
+msgstr "   alebo na ftp://ftp.mpeg.org/pub/mpeg/mssg "
+
+#: gap/gap_mpege.c:148
+msgid "2.) You need a series of single Images on disk (AnimFrames)"
+msgstr "2.) Potrebujete sériu jednotlivých obrázkov na disku (snímky animácie)"
+
+#: gap/gap_mpege.c:152
+msgid "    all with fileformat JPEG (or YUV or PNM or PPM)"
+msgstr "   v¹etko vo formáte JPEG (alebo YUV alebo PNM alebo PPM)"
+
+#: gap/gap_mpege.c:155
+msgid "   all with fileformat PPM (or YUV)"
+msgstr "   v¹etko vo formáte PPM (alebo YUV)"
+
+#: gap/gap_mpege.c:160
+msgid "    (use 'Frames Convert' from the Video Menu"
+msgstr "    (pou¾i» 'Konvertova» snímky' z ponuky Video)"
+
+#: gap/gap_mpege.c:164
+msgid "    or 'Split Image to Frames' from the Video Menu)"
+msgstr "    alebo 'Rozdeli» obrázok do snímok' z ponuky Video)"
+
+#: gap/gap_mpege.c:168
+msgid "3.) All Images must have the same size,"
+msgstr "3.) V¹etky obrázky musia ma» rovnakú veµkos»,"
+
+#: gap/gap_mpege.c:175
+msgid "    width and height must be a multiple of 16"
+msgstr "    ¹írka a vý¹ka musia by» násobkami 16"
+
+#: gap/gap_mpege.c:179
+msgid "    (use Scale or Crop from the Video Menu)"
+msgstr "    (pou¾i» mierku alebo orez z ponuky Video)"
+
+#: gap/gap_mpege.c:194
+msgid "MPEG_ENCODE Information"
+msgstr "MPEG_ENCODE informácie"
+
+#: gap/gap_mpege.c:231
+msgid "generate MPEG1 (ISO/IEC 11172-2) stream"
+msgstr "generova» MPEG1 tok (ISO/IEC 11172-2)"
+
+#: gap/gap_mpege.c:232
+msgid "generate MPEG2 (ISO/IEC DIS 13818-2) stream"
+msgstr "generova» MPEG2 tok (ISO/IEC DIS 13818-2)"
+
+#: gap/gap_mpege.c:242
+msgid "GenParams"
+msgstr "Parametre generovania"
+
+#: gap/gap_mpege.c:244
+msgid "Gen + Encode"
+msgstr "Generovanie + kódovanie"
+
+#: gap/gap_mpege.c:266
+msgid "To   Frame:"
+msgstr "Po   snímku:"
+
+#: gap/gap_mpege.c:273
+msgid "Framerate :"
+msgstr "Frekvencia snímok:"
+
+#: gap/gap_mpege.c:274
+msgid "framerate in frames/second"
+msgstr "frekvencia v snímkach za sekundu"
+
+#: gap/gap_mpege.c:281
+msgid "Bitrate:"
+msgstr "Bitová frekvencia"
+
+#: gap/gap_mpege.c:282
+msgid ""
+"used for constant bitrates (bit/sec)                  \n"
+"(low rate gives good compression + bad quality)"
+msgstr ""
+"pou¾ité pre kon¹tantnú bitovú frekvenciu (bit/s)                  \n"
+"(nízka hodnota poskytuje dobrú kompresiu a zlú kvalitu)"
+
+#: gap/gap_mpege.c:296
+msgid "Outputfile:"
+msgstr "Výstupný súbor:"
+
+#. pixel
+#: gap/gap_mpege.c:298
+msgid "Name of the resulting MPEG outputfile"
+msgstr "Názov výsledného MPEG súboru"
+
+#: gap/gap_mpege.c:304
+msgid "Paramfile:"
+msgstr "Parametrický súbor:"
+
+#. pixel
+#: gap/gap_mpege.c:306
+msgid ""
+"Name of the Encoder-Parameterfile\n"
+"(is generated)"
+msgstr ""
+"Názov parametrického súbora enkodera\n"
+"(je generovaný)"
+
+#: gap/gap_mpege.c:312
+msgid "Startscript:"
+msgstr "©tartovací skript:"
+
+#. pixel
+#: gap/gap_mpege.c:314
+msgid ""
+"Name of the Startscript           \n"
+"(is generated/executed)"
+msgstr ""
+"Názov ¹tartovacieho skriptu           \n"
+"(je generované/spustené)"
+
+#: gap/gap_mpege.c:320
+msgid ""
+"Generate parameterfile for mpeg_encode 1.5\n"
+"(the freely distributed Berkeley MPEG-1 Video  Encoder.)\n"
+msgstr ""
+"Generova» parametrický súbor pre mpeg_encode 1.5\n"
+"(voµne ¹íriteµný Berkeley MPEG-1 Video  Encoder.)\n"
+
+#: gap/gap_mpege.c:324
+msgid "Constant Bitrate :"
+msgstr "Kon¹tantná bitová frekvencia :"
+
+#: gap/gap_mpege.c:325
+msgid "Iqnore I/P/QSCALE values and use constant bit-rate)"
+msgstr ""
+"Ignorova» hodnoty mierky kvality I/P a pou¾i» kon¹tantnú bitovú frekvenciu"
+
+#: gap/gap_mpege.c:330
+msgid "Pattern:"
+msgstr "Vzorka:"
+
+#. pixel
+#: gap/gap_mpege.c:332
+msgid "How to encode MPEG framesequence (I/P/B frames)"
+msgstr "Ako kódova» MPEG sekvenciu snímok (I/P/B snímky)"
+
+#: gap/gap_mpege.c:338
+msgid "IQSCALE:"
+msgstr "I-K_mierka:"
+
+#: gap/gap_mpege.c:339
+msgid ""
+"Quality scale for I-Frames                       \n"
+"(1 = best quality, 31 = best comression)"
+msgstr ""
+"Mierka kvality pre I-snímky                       \n"
+"(1 = najlep¹ia kvalita, 31 = najlep¹ia kompresia)"
+
+#: gap/gap_mpege.c:346
+msgid "PQSCALE:"
+msgstr "P-K_mierka:"
+
+#: gap/gap_mpege.c:347
+msgid ""
+"Quality scale for P-Frames                  \n"
+"(1 = best quality, 31 = best comression)"
+msgstr ""
+"Mierka kvality pre P-snímky                  \n"
+"(1 = najlep¹ia kvalita, 31 = najlep¹ia kompresia)"
+
+#: gap/gap_mpege.c:354
+msgid "BQSCALE:"
+msgstr "B-K_mierka:"
+
+#: gap/gap_mpege.c:355
+msgid ""
+"Quality scale for B-Frames                  \n"
+"(1 = best quality, 31 = best comression)"
+msgstr ""
+"Mierka kvality pre B-snímky                  \n"
+"(1 = najlep¹ia kvalita, 31 = najlep¹ia kompresia)"
+
+#: gap/gap_mpege.c:362
+msgid "P-Search :"
+msgstr "P-vyhµadávanie :"
+
+#: gap/gap_mpege.c:363
+msgid "Search Algorithmus used for P-frames"
+msgstr "Vyhµadávací algoritmus pre P-snímky"
+
+#: gap/gap_mpege.c:369
+msgid "B-Search :"
+msgstr "B-vyhµadávanie :"
+
+#: gap/gap_mpege.c:370
+msgid "Search Algorithmus used for B-frames"
+msgstr "Vyhµadávací algoritmus pre B-snímky"
+
+#: gap/gap_mpege.c:375
+msgid "Gen MPEG_ENCODE Parameters"
+msgstr "Parametre generovania MPEG_ENCODE"
+
+#: gap/gap_mpege.c:376 gap/gap_mpege.c:414
+msgid "Encode Values"
+msgstr "Hodnoty kódovania"
+
+#: gap/gap_mpege.c:392
+msgid ""
+"Generate parameterfile for mpeg2encode 1.2\n"
+"(MPEG-2 Video  Encoder.)\n"
+msgstr ""
+"Generova» parametrický súbor pre mpeg2encode 1.2\n"
+"(MPEG-2 Video  Encoder.)\n"
+
+#: gap/gap_mpege.c:395
+msgid "MPEG-type :"
+msgstr "Typ MPEG :"
+
+#: gap/gap_mpege.c:404
+msgid "Videoformat :"
+msgstr "Videoformát :"
+
+#: gap/gap_mpege.c:405
+msgid "Videoformat"
+msgstr "Videoformát"
+
+#. framerates above 30 ar not allowed in mpeg2encode
+#: gap/gap_mpege.c:413
+msgid "Gen MPEG2ENCODE Parameters"
+msgstr "Parametre generovania MPEG2ENCODE"
+
+#: gap/gap_mpege.c:978
+msgid ""
+"\n"
+"WARNING: mpeg_encode does not support Fileformat "
+msgstr ""
+"\n"
+"VAROVANIE: mpeg_encode nepodporuje formát súboru "
+
+#: gap/gap_mpege.c:981
+msgid ""
+"\n"
+"ERROR: width not a multiple of 16"
+msgstr ""
+"\n"
+"VAROVANIE: ¹írka nie je násobkom 16"
+
+#: gap/gap_mpege.c:982
+msgid ""
+"\n"
+"ERROR: height not a multiple of 16"
+msgstr ""
+"\n"
+"VAROVANIE: vý¹ka nie je násobkom 16"
+
+#: gap/gap_mpege.c:988
+msgid ""
+"\n"
+"WARNING: mpeg2encode does not support Fileformat "
+msgstr ""
+"\n"
+"VAROVANIE: mpeg2encode nepodporuje formát súboru "
+
+#: gap/gap_mpege.c:993
+msgid ""
+"\n"
+"ERROR: invoked from a single image, animframe required"
+msgstr ""
+"\n"
+"CHYBA: volané z jedného obrázku, vy¾adované sú snímky animácie"
+
+#: gap/gap_navigator_dialog.c:366
+msgid ""
+"Playback         \n"
+"<Shift> optimized"
+msgstr ""
+"Prehrávanie         \n"
+"<Shift> optimalizované"
+
+#: gap/gap_navigator_dialog.c:371
+msgid ""
+"Smart Update .xvpics\n"
+"<Shift> forced upd"
+msgstr ""
+"Inteligentná aktualizácia .xvpics\n"
+"<Shift> ju vnúti"
+
+#: gap/gap_navigator_dialog.c:376
+msgid "Duplicate selected Frames"
+msgstr "Duplikova» oznaèené snímky"
+
+#: gap/gap_navigator_dialog.c:380
+msgid "Delete selected Frames"
+msgstr "Zmaza» oznaèené snímky"
+
+#: gap/gap_navigator_dialog.c:389
+msgid "Goto 1st Frame"
+msgstr "Prejs» na prvú snímku"
+
+#: gap/gap_navigator_dialog.c:393
+msgid ""
+"Goto prev Frame\n"
+"<Shift> use timezoom stepsize"
+msgstr ""
+"Prejs» na predchádzajúcu snímku\n"
+"<Shift> pou¾i» krok èasovej lupy"
+
+#: gap/gap_navigator_dialog.c:398
+msgid ""
+"Goto next Frame\n"
+"<Shift> use timezoom stepsize"
+msgstr ""
+"Prejs» na nasledujúcu snímku\n"
+"<Shift> pou¾i» krok èasovej lupy"
+
+#: gap/gap_navigator_dialog.c:403
+msgid "Goto last Frame"
+msgstr "Prejs» na poslednú snímku"
+
+#: gap/gap_navigator_dialog.c:460
+msgid "<Image>/Video/VCR Navigator..."
+msgstr "<Image>/Video/VCR navigátor..."
+
+#: gap/gap_navigator_dialog.c:523
+msgid "Cant open two or more Video Navigator Windows."
+msgstr "Nie je mo¾né otvori» dva alebo viac okien Video navigátora."
+
+#. menu_item copy
+#: gap/gap_navigator_dialog.c:2877
+msgid "Copy"
+msgstr "Kopírova»"
+
+#. menu_item cut
+#: gap/gap_navigator_dialog.c:2887
+msgid "Cut"
+msgstr "Vystrihnú»"
+
+#. menu_item paste before
+#: gap/gap_navigator_dialog.c:2897
+msgid "Paste before"
+msgstr "Vlo¾i» pred"
+
+#. menu_item copy
+#: gap/gap_navigator_dialog.c:2907
+msgid "Paste after"
+msgstr "Vlo¾i» po"
+
+#. menu_item copy
+#: gap/gap_navigator_dialog.c:2917
+msgid "Paste replace"
+msgstr "Vlo¾i» nahradi»"
+
+#. menu_item copy
+#: gap/gap_navigator_dialog.c:2927
+msgid "Clear Video Buffer"
+msgstr "Vymaza» video zásobník"
+
+#: gap/gap_navigator_dialog.c:2952
+msgid "Videoframes:"
+msgstr "Video snímky:"
+
+#: gap/gap_navigator_dialog.c:2967
+msgid "Framerate:"
+msgstr "Frekvencia snímok:"
+
+#: gap/gap_navigator_dialog.c:2990
+msgid "Timezoom:"
+msgstr "Èasová lupa:"
+
+#. The main shell
+#: gap/gap_navigator_dialog.c:3074
+msgid "Video Navigator"
+msgstr "Video navigátor"
+
+#: gap/gap_range_ops.c:120
+msgid "New Width:"
+msgstr "Nová ¹írka:"
+
+#: gap/gap_range_ops.c:129
+msgid "New Height:"
+msgstr "Nová vý¹ka:"
+
+#: gap/gap_range_ops.c:138
+msgid "Offset X:"
+msgstr "Posun X:"
+
+#: gap/gap_range_ops.c:147
+msgid "Offset Y:"
+msgstr "Posun Y:"
+
+#: gap/gap_range_ops.c:158
+msgid "Crop AnimFrames (all)"
+msgstr "Orezanie snímok animácie (v¹etkých)"
+
+#: gap/gap_range_ops.c:159
+#, c-format
+msgid "Crop (original %dx%d)"
+msgstr "Oreza» (pôvodne %dx%d)"
+
+#: gap/gap_range_ops.c:169
+msgid "Resize AnimFrames (all)"
+msgstr "Zmena veµkos» snímiek animácie (v¹etkých)"
+
+#: gap/gap_range_ops.c:170
+#, c-format
+msgid "Resize (original %dx%d)"
+msgstr "Zmena veµkosti plochy (pôvodne %dx%d)"
+
+#: gap/gap_range_ops.c:176
+msgid "Scale AnimFrames (all)"
+msgstr "Veµkos» snímok animácie (v¹etkých)"
+
+#: gap/gap_range_ops.c:177
+#, c-format
+msgid "Scale (original %dx%d)"
+msgstr "Veµkos» (pôvodne %dx%d)"
+
+#: gap/gap_range_ops.c:308
+msgid "Generate Optimal Palette"
+msgstr "Generova» optimálnu paletu"
+
+#: gap/gap_range_ops.c:309
+msgid "WEB Palette"
+msgstr "Webová paleta"
+
+#: gap/gap_range_ops.c:310
+msgid "Use Custom Palette"
+msgstr "Pou¾i» vlastnú paletu"
+
+#: gap/gap_range_ops.c:311
+msgid "Use Black/White (1-Bit) Palette"
+msgstr "Pou¾i» èiernobielu (1-bitovú) paletu"
+
+#: gap/gap_range_ops.c:313
+msgid "Floyd-Steinberg Color Dithering (Normal)"
+msgstr "Floyd-Steinbergov rozptyl (normálny)"
+
+#: gap/gap_range_ops.c:314
+msgid "Floyd-Steinberg Color Dithering (Reduced Color Bleeding)"
+msgstr "Floyd-Steinbergov rozptyl (zní¾ený odber farieb)"
+
+#: gap/gap_range_ops.c:315
+msgid "Positioned Color Dithering"
+msgstr "Polohovaný rozptyl farieb"
+
+#: gap/gap_range_ops.c:316
+msgid "No Color Dithering"
+msgstr "Bez rozptylu farieb"
+
+#: gap/gap_range_ops.c:327
+msgid "Palette Type"
+msgstr "Typ palety"
+
+#: gap/gap_range_ops.c:334
+msgid "Custom Palette"
+msgstr "Vlastná paleta"
+
+#: gap/gap_range_ops.c:335
+msgid ""
+"Name of a cutom palette\n"
+"(is ignored if Palette Type is not custom)"
+msgstr ""
+"Názov vlastnej palety\n"
+"(je ignorované, ak typ palety nie je \"Vlastná\")"
+
+#: gap/gap_range_ops.c:340
+msgid "Remove Unused"
+msgstr "Odstráni» nepou¾ité"
+
+#: gap/gap_range_ops.c:341
+msgid ""
+"Remove unused or double colors\n"
+"(is ignored if Palette Type is not custom)"
+msgstr ""
+"Odstráni nepou¾ité alebo zdvojené farby\n"
+"(je ignorované, ak typ paleta nie je \"Vlastná\")"
+
+#: gap/gap_range_ops.c:346
+msgid "Number of Colors"
+msgstr "Poèet farieb"
+
+#: gap/gap_range_ops.c:347
+msgid ""
+"Number of resulting Colors\t\t \n"
+"(ignored if Palette Type is not Generate optimal palette)"
+msgstr ""
+"Poèet výsledných farieb\t\t \n"
+"(ignorované, ak typ palety nie je \"Generova» optimálnu paletu\")"
+
+#: gap/gap_range_ops.c:354
+msgid "Dither Options"
+msgstr "Voµby rozptylu"
+
+#: gap/gap_range_ops.c:361
+msgid "Enable transparency"
+msgstr "Povoli» priesvitnos»"
+
+#: gap/gap_range_ops.c:362
+msgid "Enable dithering of transparency"
+msgstr "Povoli» rozptyl priesvitnosti"
+
+#: gap/gap_range_ops.c:365
+msgid "Convert Frames to Indexed"
+msgstr "Konvertova» snímky na indexované"
+
+#: gap/gap_range_ops.c:366
+msgid "Palette and Dither Settings"
+msgstr "Nastavenia palety a rozptylu"
+
+#: gap/gap_range_ops.c:431
+msgid "Keep Type"
+msgstr "Zachova» typ"
+
+#: gap/gap_range_ops.c:432
+msgid "Convert to RGB"
+msgstr "Konverzia do RGB"
+
+#: gap/gap_range_ops.c:433
+msgid "Convert to Gray"
+msgstr "Konverzia do ©edi"
+
+#: gap/gap_range_ops.c:434
+msgid "Convert to Indexed"
+msgstr "Konverzia na indexované"
+
+#: gap/gap_range_ops.c:458
+msgid ""
+"\n"
+"Select destination fileformat by extension\n"
+"optionally convert imagetype\n"
+msgstr ""
+"\n"
+"Výber cieµového formátu súbora podµa prípony\n"
+"voliteµné konvertuje typ obrázku\n"
+
+#: gap/gap_range_ops.c:461
+msgid "Basename:"
+msgstr "Základný názov"
+
+#: gap/gap_range_ops.c:462
+msgid ""
+"basename of the resulting frames       \n"
+"(0001.ext is added)"
+msgstr ""
+"základný názov výsledných snímok       \n"
+"(0001.prípona bude pridané)"
+
+#: gap/gap_range_ops.c:467 gap/gap_split.c:235
+msgid "Extension:"
+msgstr "Prípona:"
+
+#: gap/gap_range_ops.c:468
+msgid ""
+"extension of resulting frames       \n"
+"(is also used to define Fileformat)"
+msgstr ""
+"roz¹írenie výsledných snímok       \n"
+"(je tie¾ pou¾ité pri definovaní formátu súboru)"
+
+#: gap/gap_range_ops.c:474
+msgid "Imagetype:"
+msgstr "Typ obrázku:"
+
+#: gap/gap_range_ops.c:475
+msgid ""
+"Convert to, or keep imagetype           \n"
+"(most fileformats can't handle all types)"
+msgstr ""
+"Konvertova» alebo zachova» typ obrázku           \n"
+"(väè¹ina formátov nevie spracova» v¹etky typy)"
+
+#: gap/gap_range_ops.c:481 gap/gap_split.c:246
+msgid "Flatten:"
+msgstr "Zlúèi»:"
+
+#: gap/gap_range_ops.c:482
+msgid ""
+"Flatten all resulting frames               \n"
+"(most fileformats need flattened frames)"
+msgstr ""
+"Zlúèi» v¹etky výsledné políèka               \n"
+"(väè¹ina formátov vy¾aduje zlúèené políèka)"
+
+#: gap/gap_range_ops.c:487
+msgid "Convert Frames to other Formats"
+msgstr "Konvertovanie snímok do iného formátu"
+
+#: gap/gap_range_ops.c:488
+msgid "Convert Settings"
+msgstr "Nastavenie konverzie"
+
+#: gap/gap_range_ops.c:565
+msgid "Expand as necessary"
+msgstr "Zväè¹i» podµa potreby"
+
+#: gap/gap_range_ops.c:566
+msgid "Clipped to image"
+msgstr "Pripnú» k obrázku"
+
+#: gap/gap_range_ops.c:567
+msgid "Clipped to bottom layer"
+msgstr "Pripnú» k spodnej vrstvy"
+
+#: gap/gap_range_ops.c:568
+msgid "Flattened image"
+msgstr "Zlúèený obraz"
+
+#: gap/gap_range_ops.c:569
+msgid ""
+"Resulting Layer Size is made of the outline-rectangle \n"
+"of all visible layers (may differ from frame to frame)"
+msgstr ""
+"Výsledná veµkos» vrstvy je vytvorená z obrysu obdå¾nika \n"
+"zo v¹etkých viditeµných (mô¾e by» pre ka¾dú snímku rôzna)"
+
+#: gap/gap_range_ops.c:570
+msgid "Resulting Layer Size is the frame size"
+msgstr "Výsledná veµkos» vrstvy je veµkos» snímky"
+
+#: gap/gap_range_ops.c:571
+msgid ""
+"Resulting Layer Size is the size of the bottom layer\n"
+"(may differ from frame to frame)"
+msgstr ""
+"Výsledná veµkos» vrstvy je veµkos» spodnej vrstvy\n"
+"(mô¾e by» pre ka¾dú snímku rôzna)"
+
+#: gap/gap_range_ops.c:572
+msgid ""
+"Resulting Layer Size is the frame size     \n"
+"transparent parts are filled with BG color"
+msgstr ""
+"Výsledná veµkos» vrstvy je veµkos» snímky,     \n"
+"priesvitné èasti sú vyplnené farbou pozadia"
+
+#: gap/gap_range_ops.c:582
+msgid "select all Layers where Layername is equal to Pattern"
+msgstr "oznaèi» v¹etky vrstvy, kde názov vrstvy je rovnaký so vzorkou"
+
+#: gap/gap_range_ops.c:583
+msgid "select all Layers where Layername starts with Pattern"
+msgstr "oznaèi» v¹etky vrstvy, kde názov vrstvy zaèína vzorkou"
+
+#: gap/gap_range_ops.c:584
+msgid "select all Layers where Layername ends up with Pattern"
+msgstr "oznaèi» v¹etky vrstvy, kde názov vrstvy konèí vzorkou"
+
+#: gap/gap_range_ops.c:585
+msgid "select all Layers where Layername contains Pattern"
+msgstr "oznaèi» v¹etky vrstvy, ktoré obsahujú vzorku"
+
+#: gap/gap_range_ops.c:586
+msgid ""
+"select Layerstack positions.\n"
+"0, 4-5, 8\n"
+"where 0 == Top-layer"
+msgstr ""
+"výber pozície v zásobníku vrstiev\n"
+"0, 4-5, 8\n"
+"kde 0 == horná vrstva"
+
+#: gap/gap_range_ops.c:587
+msgid ""
+"select Layerstack positions.\n"
+"0, 4-5, 8\n"
+"where 0 == BG-layer"
+msgstr ""
+"výber pozície v zásobníku vrstiev\n"
+"0, 4-5, 8\n"
+"kde 0 == spodná vrstva-pozadie"
+
+#: gap/gap_range_ops.c:588
+msgid "select all visible Layers"
+msgstr "oznaèi» v¹etky viditeµné vrstvy"
+
+#: gap/gap_range_ops.c:617
+msgid "Layer Basename:"
+msgstr "Základ názvu vrstvy:"
+
+#: gap/gap_range_ops.c:618
+msgid ""
+"Basename for all Layers    \n"
+"[####] is replaced by frame number"
+msgstr ""
+"Základ názvu v¹etkých vrstiev    \n"
+"[####] je zamenené za èíslo políèka"
+
+#: gap/gap_range_ops.c:636
+msgid "Layer Mergemode:"
+msgstr "Re¾im zluèovania vrstiev:"
+
+#: gap/gap_range_ops.c:643
+msgid "Exclude BG-Layer"
+msgstr "Vylúèi» vrstvu pozadia"
+
+#: gap/gap_range_ops.c:644
+msgid ""
+"Exclude the BG-Layers    \n"
+"in all handled frames\n"
+"regardless to selection"
+msgstr ""
+"Vynechá spodnú vrstvu    \n"
+"vo v¹etkých spracovávaných snímkach\n"
+"bez ohµadu na výber"
+
+#: gap/gap_range_ops.c:674
+msgid "Use all unselected Layers"
+msgstr "Pou¾i» na v¹etky nevybrané vrstvy"
+
+#: gap/gap_range_ops.c:748
+msgid "Creating Layer-Animated Image..."
+msgstr "Vytváram vrstvami animovaný obrázok..."
+
+#: gap/gap_range_ops.c:970
+msgid "Frames to Image"
+msgstr "Snímky do obrázku"
+
+#: gap/gap_range_ops.c:971
+msgid "Create Multilayer-Image from Frames"
+msgstr "Vytvori» zo snímok viacvrstvový obrázok"
+
+#: gap/gap_range_ops.c:1112
+msgid "Flattening Frames..."
+msgstr "Zluèujem snímky..."
+
+#: gap/gap_range_ops.c:1113
+msgid "Converting Frames..."
+msgstr "Vykonáva sa konverzia snímok..."
+
+#: gap/gap_range_ops.c:1261
+msgid ""
+"Convert Frames: SAVE operation FAILED.\n"
+"Desired save plugin can't handle type\n"
+"or desired save plugin not available."
+msgstr ""
+"Konverzia snímok: Operácia UKLADNIA ZLYHALA.\n"
+"Po¾adovaný modul pre zápis nevie spracova» typ\n"
+"alebo modul pre zápis nie je k dispozícií."
+
+#: gap/gap_range_ops.c:1369
+msgid "Cropping all Animation Frames..."
+msgstr "Orezávajú sa v¹etky snímky animácie..."
+
+#: gap/gap_range_ops.c:1372
+msgid "Resizing all Animation Frames..."
+msgstr "Mení sa veµkos» plochy v¹etkých snímok animácie..."
+
+#: gap/gap_range_ops.c:1375
+msgid "Scaling all Animation Frames..."
+msgstr "Mení sa veµkos» v¹etkých snímok animácie..."
+
+#: gap/gap_range_ops.c:1461
+msgid "Flatten Frames"
+msgstr "Zlúèi» snímky"
+
+#: gap/gap_range_ops.c:1517
+#, c-format
+msgid "Removing Layer (pos:%ld) from Frames..."
+msgstr "Odstraòujem vrstvu (poz.:%ld) zo snímok..."
+
+#: gap/gap_range_ops.c:1634
+msgid "Delete Layers in Frames"
+msgstr "Zmaza» vrstvy v snímkach"
+
+#: gap/gap_range_ops.c:1635
+msgid "Select Frame Range & Position"
+msgstr "Vybra» rozsah snímok a pozíciu"
+
+#: gap/gap_split.c:101
+msgid "Splitting into Frames..."
+msgstr "Rozdeµujem do snímok..."
+
+#: gap/gap_split.c:176
+msgid ""
+"Split Frames: SAVE operation FAILED.\n"
+"desired save plugin can't handle type\n"
+"or desired save plugin not available."
+msgstr ""
+"Rozdelenie do snímok: operácia ULO®ENIA ZLYHALA.\n"
+"Po¾adovaný modul pre zápis nevie spracova» typ\n"
+"alebo modul pre zápis nie je k dispozícií."
+
+#: gap/gap_split.c:226
+#, c-format
+msgid ""
+"%s\n"
+"%s\n"
+"(%s_0001.%s)\n"
+msgstr ""
+"%s\n"
+"%s\n"
+"(%s_0001.%s)\n"
+
+#: gap/gap_split.c:227
+msgid "Make a frame (diskfile) from each Layer"
+msgstr "Vytvori» snímku (diskový súbor) z ka¾dej vrstvy"
+
+#: gap/gap_split.c:228
+msgid "frames are named: base_nr.extension"
+msgstr "snímky sú nazvané: základ_è.prípona"
+
+#: gap/gap_split.c:236
+msgid "extension of resulting frames (is also used to define Fileformat)"
+msgstr "prípona výsledných snímok (je tie¾ pou¾itá na urèenie formátu súbora)"
+
+#: gap/gap_split.c:241
+msgid "Inverse Order:"
+msgstr "Opaèné poradie:"
+
+#: gap/gap_split.c:242
+msgid "Start frame 0001 at Top Layer"
+msgstr "Poèiatoèná snímka 0001 na hornej vrstve"
+
+#: gap/gap_split.c:247
+msgid ""
+"Remove Alpha Channel in resulting Frames. Transparent parts are filled with "
+"BG color."
+msgstr ""
+"Odstráni alfa kanál vo výsledných snímkach. Priesvitné èasti budú vyplnené s "
+"farbou pozadia."
+
+#: gap/gap_split.c:250
+msgid "Split Image into Frames"
+msgstr "Rozdeli» obrázok do snímok"
+
+#: gap/gap_split.c:251
+msgid "Split Settings"
+msgstr "Nastavenia rozdelenia"
+
+#: gap/gap_split.c:298
+msgid ""
+"OPERATION CANCELLED.\n"
+"This image is already an AnimFrame.\n"
+"Try again on a Duplicate (Image/Duplicate)."
+msgstr ""
+"OPERÁCIA JE ZRU©ENÁ.\n"
+"Tento obrázok je u¾ snímkou animácie.\n"
+"Skúste znova na duplikáte (Obrázok/Duplikova»)."
+
+#: gap/resize.c:107
+msgid "Scale"
+msgstr "Veµkos»"
+
+#: gap/resize.c:111
+msgid "Resize"
+msgstr "Zmena rozmerov"
+
+#: gap/resize.c:127
+msgid "New width:"
+msgstr "Nová ¹írka:"
+
+#: gap/resize.c:144
+msgid "New height:"
+msgstr "Nová vý¹ka:"
+
+#: gap/resize.c:161
+msgid "X ratio:"
+msgstr "Pomer X:"
+
+#: gap/resize.c:178
+msgid "Y ratio:"
+msgstr "Pomer Y:"
+
+#: gap/resize.c:197
+msgid "X Offset:"
+msgstr "X posun:"
+
+#: gap/resize.c:214
+msgid "Y Offset:"
+msgstr "Y posun:"
+
+#. the constrain toggle button
+#: gap/resize.c:231
+msgid "Constrain Ratio"
+msgstr "Vnútený pomer"

@@ -1,0 +1,2635 @@
+# Copyright (C) 2000 Free Software Foundation, Inc.
+# Softcatala <tradgnome@softcatala.org>, 2000-2002
+# Jordi Jover, jordijn@softcatala.org	
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gimp-plugins 1.2.2\n"
+"POT-Creation-Date: 2003-03-25 02:00+0100\n"
+"PO-Revision-Date: 2002-05-29 23:44+0200\n"
+"Last-Translator: Softcatalà <tradgnome@softcatala.org>\n"
+"Language-Team: Catalan\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Button  to invoke filebrowser
+#: gap/gap_arr_dialog.c:293
+msgid "File-Browser"
+msgstr "Fitxer del Navegador"
+
+#. parameter settings
+#: gap/gap_arr_dialog.c:793
+msgid "Enter Values"
+msgstr "Entra els valors"
+
+#: gap/gap_arr_dialog.c:812
+msgid "Value:"
+msgstr "Valor:"
+
+#: gap/gap_arr_dialog.c:878
+msgid "Value: "
+msgstr "Valor: "
+
+#: gap/gap_arr_dialog.c:1040
+msgid "Press Button"
+msgstr "Prem el botó"
+
+#: gap/gap_arr_dialog.c:1041
+msgid "Select"
+msgstr "Selecciona"
+
+#: gap/gap_dbbrowser_utils.c:76
+msgid "GAP Animated Filter apply"
+msgstr "Aplica el filtre animat del GAP"
+
+#: gap/gap_dbbrowser_utils.c:97
+msgid "Animated Filter apply (init)"
+msgstr "Aplica el filtre animat (inici)"
+
+#: gap/gap_dbbrowser_utils.c:148
+msgid "Search:"
+msgstr "Cerca:"
+
+#: gap/gap_dbbrowser_utils.c:176
+msgid "Gen Code by name"
+msgstr "Codi generador per nom"
+
+#: gap/gap_dbbrowser_utils.c:185
+msgid "Search by Name"
+msgstr "Cerca per nom"
+
+#: gap/gap_dbbrowser_utils.c:193
+msgid "Search by Blurb"
+msgstr "Cerca per ressenya"
+
+#. show the name
+#: gap/gap_dbbrowser_utils.c:335
+msgid "Name:"
+msgstr "Nom:"
+
+#. show the description
+#: gap/gap_dbbrowser_utils.c:352
+msgid "Blurb:"
+msgstr "Ressenya:"
+
+#: gap/gap_dbbrowser_utils.c:374
+msgid "In:"
+msgstr "Dins:"
+
+#: gap/gap_dbbrowser_utils.c:420
+msgid "Out:"
+msgstr "Fora:"
+
+#: gap/gap_dbbrowser_utils.c:469
+msgid "Help:"
+msgstr "Ajuda:"
+
+#. show the author & the copyright
+#: gap/gap_dbbrowser_utils.c:507
+msgid "Author:"
+msgstr "Autor:"
+
+#: gap/gap_dbbrowser_utils.c:522
+msgid "Date:"
+msgstr "Data:"
+
+#: gap/gap_dbbrowser_utils.c:537
+msgid "Copyright:"
+msgstr "Copyright:"
+
+#: gap/gap_dbbrowser_utils.c:676
+msgid "Animated Filter apply (by name - please wait)"
+msgstr "Aplica el filtre animat (per nom - si us plau, espereu)"
+
+#: gap/gap_dbbrowser_utils.c:700
+msgid "Animated Filter apply (by blurb - please wait)"
+msgstr "Aplica el filtre animat (per ressenya - si us plau, espereu)"
+
+#: gap/gap_dbbrowser_utils.c:708
+msgid "Animated Filter apply (please wait)"
+msgstr "Aplica el filtre animat (si us plau, espereu)"
+
+#: gap/gap_dbbrowser_utils.c:755 gap/gap_filter_foreach.c:163
+#: gap/gap_mod_layer.c:287
+msgid "Animated Filter apply"
+msgstr "Aplica el filtre animat"
+
+#: gap/gap_decode_mpeg_main.c:102
+msgid "<Image>/Video/Split Video to Frames"
+msgstr "<Image>/Vídeo/Divideix el vídeo en marcs"
+
+#: gap/gap_decode_mpeg_main.c:103
+msgid "<Toolbox>/Xtns/Split Video to Frames"
+msgstr "<Toolbox>/Xtns/Divideix el vídeo en marcs"
+
+#: gap/gap_decode_mpeg_main.c:176
+msgid "<Image>/Video/Split Video to Frames/MPEG1"
+msgstr "<Image>/Vídeo/Divideix el vídeo en marcs/MPEG1"
+
+#: gap/gap_decode_mpeg_main.c:189
+msgid "<Toolbox>/Xtns/Split Video to Frames/MPEG1"
+msgstr "<Toolbox>/Xtns/Divideix el vídeo en marcs/MPEG1"
+
+#: gap/gap_decode_mpeg_main.c:332 gap/gap_decode_xanim.c:337
+#: gap/gap_range_ops.c:1240
+msgid "Overwrite Frame"
+msgstr "Sobreescriu el marc"
+
+#: gap/gap_decode_mpeg_main.c:334 gap/gap_decode_xanim.c:339
+#: gap/gap_range_ops.c:1242
+msgid "Overwrite All"
+msgstr "Sobreescriu-ho tot"
+
+#: gap/gap_decode_mpeg_main.c:342 gap/gap_decode_xanim.c:347
+#: gap/gap_lib.c:1036 gap/gap_range_ops.c:1247
+msgid "GAP Question"
+msgstr "Pregunta GAP"
+
+#: gap/gap_decode_mpeg_main.c:343 gap/gap_decode_xanim.c:348
+msgid "File already exists"
+msgstr "El fitxer ja existeix"
+
+#: gap/gap_decode_mpeg_main.c:437
+msgid "Decoding MPEG Movie..."
+msgstr "S'està descodificant la pel·lícula MPEG..."
+
+#: gap/gap_decode_mpeg_main.c:642
+msgid "Video"
+msgstr "Vídeo"
+
+#: gap/gap_decode_mpeg_main.c:643
+msgid ""
+"Name of the MPEG1 videofile to READ.\n"
+"Frames are extracted from the videofile\n"
+"and written to seperate diskfiles.\n"
+"Audiotracks in the videofile are ignored."
+msgstr ""
+"Nom del fitxer de vídeo MPEG1 que s'ha de LLEGIR.\n"
+"Els marcs s'han extret del fitxer de vídeo\n"
+"i s'han escrit en fitxers de disc diferents.\n"
+"Les pistes d'àudio del fitxer de vídeo s'han ignorat."
+
+#: gap/gap_decode_mpeg_main.c:652 gap/gap_decode_xanim.c:224
+#: gap/gap_lib.c:2120 gap/gap_lib.c:2315 gap/gap_range_ops.c:253
+#: gap/gap_range_ops.c:602
+msgid "From:"
+msgstr "Des de:"
+
+#: gap/gap_decode_mpeg_main.c:653 gap/gap_decode_xanim.c:225
+msgid "Framenumber of 1st frame to extract"
+msgstr "Nombre de marcs del 1r marc a extreure"
+
+#: gap/gap_decode_mpeg_main.c:662 gap/gap_decode_xanim.c:234
+#: gap/gap_lib.c:2128 gap/gap_lib.c:2323 gap/gap_range_ops.c:260
+#: gap/gap_range_ops.c:610
+msgid "To:"
+msgstr "A:"
+
+#: gap/gap_decode_mpeg_main.c:663 gap/gap_decode_xanim.c:235
+msgid "Framenumber of last frame to extract"
+msgstr "Nombre de marcs del darrer marc a extreure"
+
+#: gap/gap_decode_mpeg_main.c:672 gap/gap_decode_xanim.c:244
+msgid "Framenames:"
+msgstr "Noms dels marcs:"
+
+#: gap/gap_decode_mpeg_main.c:673
+msgid ""
+"Basename for the AnimFrames to write on disk\n"
+"(framenumber and .xcf is added)"
+msgstr ""
+"Nom de la base dels marcs animats que s'ha d'escriure al disc\n"
+"(el número del marc i el .xcf ja s'ha afegit)"
+
+#: gap/gap_decode_mpeg_main.c:680 gap/gap_decode_xanim.c:283
+msgid "Open"
+msgstr "Obre"
+
+#: gap/gap_decode_mpeg_main.c:681 gap/gap_decode_xanim.c:284
+msgid "Open the 1st one of the extracted frames"
+msgstr "Obre el primer dels marcs extrets"
+
+#: gap/gap_decode_mpeg_main.c:685
+msgid ""
+"\n"
+"WARNING: Do not attempt to split other files than MPEG1 videos.\n"
+"Before you proceed, you should save all open images."
+msgstr ""
+"\n"
+"AVÍS: No proveu de dividir altres fitxers que no siguin vídeos MPEG1.\n"
+"Abans de fer-ho, hauríeu d'obrir totes les imatges."
+
+#: gap/gap_decode_mpeg_main.c:688
+msgid "Split MPEG1 Video to Frames"
+msgstr "Divideix el vídeo MPEG1 en marcs"
+
+#: gap/gap_decode_mpeg_main.c:689 gap/gap_decode_xanim.c:298
+#: gap/gap_range_ops.c:1462
+msgid "Select Frame Range"
+msgstr "Seleccioneu l'abast dels marcs"
+
+#: gap/gap_decode_xanim.c:114
+msgid "Conditions to run the xanim based video split"
+msgstr "Condicions per executar la divisió del vídeo basada en xanim"
+
+#: gap/gap_decode_xanim.c:122
+msgid "1.) xanim 2.80.0 exporting edition (the loki version)"
+msgstr "1.) xanim 2.80.0, edició per exportar (la versió loki)"
+
+#: gap/gap_decode_xanim.c:126
+msgid "    must be installed somewhere in your PATH"
+msgstr "    s'ha d'instal·lar en algun lloc del CAMÍ"
+
+#: gap/gap_decode_xanim.c:130
+msgid "    you can get xanim exporting edition at"
+msgstr "    podeu obtenir l'edició per exportar de l'xanim a"
+
+#: gap/gap_decode_xanim.c:146
+msgid ""
+"2.) if your xanim exporting edition is not in your PATH or is not named xanim"
+msgstr ""
+"2.) si la vostra edició per exportar de l'xanim no és al CAMÍ o no es diu "
+"xanim"
+
+#: gap/gap_decode_xanim.c:150
+msgid "    you have to set Environment variable GAP_XANIM_PROG "
+msgstr "    heu de determinar l'entorn variable GAP_XANIM_PROG "
+
+#: gap/gap_decode_xanim.c:154
+msgid "    to your xanim exporting program and restart gimp"
+msgstr "    al programa d'exportació de l'xanim i reinicia el gimp"
+
+#: gap/gap_decode_xanim.c:162
+msgid "An ERROR occured while trying to call xanim:"
+msgstr "S'ha produït un ERROR en intentar cridar l'xanim:"
+
+#: gap/gap_decode_xanim.c:181
+msgid "XANIM Information"
+msgstr "Informació de l'XANIM"
+
+#: gap/gap_decode_xanim.c:214
+msgid "Video:"
+msgstr "Vídeo:"
+
+#: gap/gap_decode_xanim.c:215
+#, fuzzy
+msgid ""
+"Name of a videofile to READ by xanim.\n"
+"Frames are extracted from the videofile\n"
+"and written to separate diskfiles.\n"
+"xanim exporting edition is required."
+msgstr ""
+"Nom del fitxer de vídeo que s'ha de LLEGIR amb l'xanim.\n"
+"Els marcs s'extreuen del fitxer de vídeo\n"
+"i s'escriuen en fitxers de disc separats.\n"
+"És necessària l'edició per exportar de l'xanim."
+
+#: gap/gap_decode_xanim.c:245
+msgid ""
+"Basename for the AnimFrames to write on disk\n"
+"(framenumber and extension is added)"
+msgstr ""
+"Nom de la base per als marcs animats que s'han d'escriure al disc\n"
+"(el número de marc i l'extensió ja s'han afegit)"
+
+#: gap/gap_decode_xanim.c:252
+msgid "Format"
+msgstr "Format"
+
+#: gap/gap_decode_xanim.c:253
+msgid ""
+"Fileformat for the extracted AnimFrames\n"
+"(xcf is extracted as ppm and converted to xcf)"
+msgstr ""
+"Format de fitxer per als marcs animats extrets\n"
+"(el xcf s'extreu com a ppm i es converteix a xcf)"
+
+#: gap/gap_decode_xanim.c:260
+msgid "Extract Frames"
+msgstr "Extreu els marcs"
+
+#: gap/gap_decode_xanim.c:261
+msgid "Enable extraction of Frames"
+msgstr "Habilita l'extracció de marcs"
+
+#: gap/gap_decode_xanim.c:265
+msgid "Extract Audio"
+msgstr "Extreu l'àudio"
+
+#: gap/gap_decode_xanim.c:266
+msgid ""
+"Enable extraction of audio to raw audiofile\n"
+"(frame range limits are ignored for audio)"
+msgstr ""
+"Habilita l'extracció de l'àudio als fitxers d'àudio en brut\n"
+"(l'àudio ignora l'abast dels límits del marc)"
+
+#: gap/gap_decode_xanim.c:271
+msgid "Jpeg Quality:"
+msgstr "Qualitat Jpeg:"
+
+#: gap/gap_decode_xanim.c:272
+msgid ""
+"Quality for resulting Jpeg frames\n"
+"(is ignored when other formats are used)"
+msgstr ""
+"Qualitat per als marcs Jpeg resultants\n"
+"(s'ignora quan s'han fet servir altres formats)"
+
+#: gap/gap_decode_xanim.c:288
+msgid "Run asynchronously"
+msgstr "Executa-ho asincrònicament"
+
+#: gap/gap_decode_xanim.c:289
+msgid ""
+"Run xanim asynchronously and delete unwanted frames\n"
+"(out of the specified range) while xanim is still running"
+msgstr ""
+"Executa l'xanim asincrònicament i suprimeix els marcs no desitjats\n"
+"(fora de l'abast especificat) mentre l'xanim encara s'està executant"
+
+#: gap/gap_decode_xanim.c:294
+msgid ""
+"\n"
+"Warning: xanim 2.80 has only limited MPEG support.\n"
+"Most of the frames (type P and B) will be skipped."
+msgstr ""
+"\n"
+"Avís: l'xanim 2.80 només té limitat el suport MPEG.\n"
+"La majoria de marcs (tipus P i B) s'ometran."
+
+#: gap/gap_decode_xanim.c:297
+msgid "Split any Xanim readable Video to Frames"
+msgstr "Divideix qualsevol vídeo Xanim llegible en marcs"
+
+#: gap/gap_decode_xanim.c:540
+#, c-format
+msgid ""
+"can't find any extracted frames,\n"
+"%s\n"
+"maybe xanim has failed or was cancelled"
+msgstr ""
+"no es poden trobar els marcs extrets,\n"
+"%s\n"
+"potser l'xanim ha fallat o s'ha cancel·lat"
+
+#: gap/gap_decode_xanim.c:565
+#, c-format
+msgid "frames are not extracted, because overwrite of %s was cancelled"
+msgstr ""
+"els marcs no s'han extret perquè la sobreescriptura de %s s'havia cancel·lat"
+
+#: gap/gap_decode_xanim.c:575
+#, c-format
+msgid "failed to overwrite %s (check permissions ?)"
+msgstr ""
+"S'ha produït un error en sobreescriure %s (voleu comprovar els permisos?)"
+
+#: gap/gap_decode_xanim.c:597
+#, c-format
+msgid "failed to write %s (check permissions ?)"
+msgstr "S'ha produït un error en escriure %s  (voleu comprovar els permisos?)"
+
+#: gap/gap_decode_xanim.c:723
+#, c-format
+msgid "could not execute %s (check if xanim is installed)"
+msgstr "no s'ha pogut executar %s (comproveu si l'xanim està instal·lat)"
+
+#: gap/gap_decode_xanim.c:731
+#, c-format
+msgid "%s does not look like xanim"
+msgstr "%s no sembla l'xanim"
+
+#: gap/gap_decode_xanim.c:755
+#, c-format
+msgid ""
+"The xanim program on your system \"%s\"\n"
+"does not support the exporting options Ea, Ee, Eq"
+msgstr ""
+"El programa xanim del vostre sistema \"%s\"\n"
+"no permet les opcions d'exportar Ea, Ee, Eq"
+
+#: gap/gap_decode_xanim.c:762
+#, c-format
+msgid ""
+"The xanim program on your system \"%s\"\n"
+"does not support exporting of single frames"
+msgstr ""
+"El programa xanim del vostre sistema \"%s\"\n"
+"no permet exportar marcs sols"
+
+#: gap/gap_decode_xanim.c:1025
+#, c-format
+msgid "videofile %s not existent or empty\n"
+msgstr "el fitxer de vídeo %s no existeix o està buit\n"
+
+#: gap/gap_decode_xanim.c:1078
+#, c-format
+msgid ""
+"could not create %s directory\n"
+"(that is required for xanim frame export)"
+msgstr ""
+"no s'ha pogut crear el directori %s\n"
+"(que és necessari per exportar el marc xanim)"
+
+#: gap/gap_decode_xanim.c:1089
+msgid "extracting frames..."
+msgstr "s'estan extraient els marcs..."
+
+#: gap/gap_decode_xanim.c:1114
+#, c-format
+msgid ""
+"could not start xanim process\n"
+"(program=%s)"
+msgstr ""
+"no s'ha pogut iniciar el procésb xanim\n"
+"(programa=%s)"
+
+#: gap/gap_decode_xanim.c:1135
+msgid ""
+"can't find any extracted frames,\n"
+"xanim has failed or was cancelled"
+msgstr ""
+"no es poden trobar els marcs extrets,\n"
+"l'xanim ha fallat o s'ha cancel·lat"
+
+#: gap/gap_decode_xanim.c:1154
+msgid "renaming frames..."
+msgstr "s'està canviant el nom dels marcs..."
+
+#: gap/gap_decode_xanim.c:1159
+msgid "converting frames..."
+msgstr "s'estan convertint els marcs..."
+
+#: gap/gap_filter_foreach.c:126
+msgid "backup to file"
+msgstr "còpia de seguretat al fitxer"
+
+#. pixel
+#: gap/gap_filter_foreach.c:128
+msgid "Make backup of the image after each step"
+msgstr "Fes una còpia de seguretat de la imatge després de cada pas"
+
+#: gap/gap_filter_foreach.c:132 gap/gap_mod_layer.c:262
+msgid "Continue"
+msgstr "Continua"
+
+#: gap/gap_filter_foreach.c:136
+#, c-format
+msgid "Skip %d"
+msgstr "Omet %d"
+
+#: gap/gap_filter_foreach.c:155 gap/gap_mod_layer.c:281
+#, c-format
+msgid ""
+"2nd call of %s\n"
+"(define end-settings)"
+msgstr ""
+"Segona crida de %s\n"
+"(defineix el final dels paràmetres)"
+
+#: gap/gap_filter_foreach.c:159
+#, c-format
+msgid ""
+"Non-Interactive call of %s\n"
+"(for all layers in between)"
+msgstr ""
+"Crida no interactiva de %s\n"
+"(per a totes les capes d'entremig)"
+
+#: gap/gap_filter_foreach.c:278
+msgid "Applying Filter to all Layers..."
+msgstr "S'està aplicant un filtre a totes les capes..."
+
+#: gap/gap_filter_foreach.c:552
+msgid "Select Filter for Animated apply"
+msgstr "Selecciona el filtre per a l'animació aplicada"
+
+#: gap/gap_filter_foreach.c:553 gap/gap_mod_layer.c:664
+msgid "Apply Constant"
+msgstr "Aplicació constant"
+
+#: gap/gap_filter_foreach.c:554 gap/gap_mod_layer.c:665
+msgid "Apply Varying"
+msgstr "Aplicació variable"
+
+#: gap/gap_filter_main.c:105
+msgid "<Image>/Filters/Filter all Layers..."
+msgstr "<Image>/Filtres/Filtra totes les capes..."
+
+#: gap/gap_frontends_main.c:125
+msgid "<Image>/Video/Split Video to Frames/Any XANIM readable..."
+msgstr "<Image>/Vídeo/Divideix el vídeo en marcs/Qualsevol XANIM llegible..."
+
+#: gap/gap_frontends_main.c:137
+msgid "<Toolbox>/Xtns/Split Video to Frames/Any XANIM readable..."
+msgstr "<Toolbox>/Xtns/Divideix el vídeo en marcs/Qualsevol XANIM llegible..."
+
+#: gap/gap_frontends_main.c:149
+msgid "<Image>/Video/Encode/MPEG1..."
+msgstr "<Image>/Vídeo/Codifica/MPEG1..."
+
+#: gap/gap_frontends_main.c:162
+msgid "<Image>/Video/Encode/MPEG2..."
+msgstr "<Image>/Vídeo/Codifica/MPEG2..."
+
+#: gap/gap_lib.c:243
+msgid "GAP Message"
+msgstr "Missatge GAP"
+
+#: gap/gap_lib.c:905
+msgid ""
+"OPERATION CANCELLED.\n"
+"Current frame changed while dialog was open."
+msgstr ""
+"L'OPERACIÓ S'HA CANCEL·LAT.\n"
+"El marc actual ha canviat mentre el diàleg estava obert."
+
+#: gap/gap_lib.c:927 gap/gap_lib.c:2192
+#, fuzzy
+msgid ""
+"OPERATION CANCELLED.\n"
+"GAP plug-ins only work with filenames\n"
+"that end in numbers like _0001.xcf.\n"
+"==> Rename your image, then try again."
+msgstr ""
+"L'OPERACIÓ S'HA CANCEL·LAT.\n"
+"Els connectors GAP només funcionen amb noms de fitxer\n"
+"que acabin en _0001.xcf.\n"
+"==>  Torneu a anomenar la imatge, després torneu-ho a intentar."
+
+#: gap/gap_lib.c:1014
+msgid ""
+"You are using a file format != xcf\n"
+"Save Operations may result\n"
+"in loss of layer information."
+msgstr ""
+"Esteu fent servir un format de fitxer != xcf\n"
+"El fet de desar les operacions pot comportar\n"
+"perdre informació de les capes."
+
+#: gap/gap_lib.c:1030
+msgid "Save Flattened"
+msgstr "Desa el format complet"
+
+#: gap/gap_lib.c:1032
+msgid "Save As Is"
+msgstr "Desa tal com és"
+
+#: gap/gap_lib.c:1507 gap/gap_lib.c:1631 gap/gap_lib.c:1710 gap/gap_lib.c:1717
+#: gap/gap_lib.c:1724 gap/gap_lib.c:1807 gap/gap_lib.c:1829 gap/gap_lib.c:2734
+#, c-format
+msgid "Error: could not rename frame %ld to %ld"
+msgstr "S'ha produït un error: no s'ha pogut reanomenar el marc %ld en %ld"
+
+#: gap/gap_lib.c:1570
+#, fuzzy, c-format
+msgid "Error: could not save frame %s"
+msgstr "S'ha produït un error: no s'ha pogut reanomenar el marc %ld en %ld"
+
+#: gap/gap_lib.c:1619
+msgid "Duplicating frames..."
+msgstr "S'estan duplicant els marcs..."
+
+#: gap/gap_lib.c:1795
+msgid "Renumber Framesequence..."
+msgstr "Renumera la seqüència de marcs..."
+
+#: gap/gap_lib.c:1981
+#, c-format
+msgid "Goto Frame (%ld/%ld)"
+msgstr "Vés al marc (%ld/%ld)"
+
+#: gap/gap_lib.c:1984
+#, c-format
+msgid "Destination Frame Number (%ld  - %ld)"
+msgstr "Número de destinació del marc (%ld - %ld)"
+
+#: gap/gap_lib.c:1988 gap/gap_lib.c:2065 gap/gap_lib.c:2269
+msgid "Number:"
+msgstr "Número:"
+
+#: gap/gap_lib.c:2049
+#, c-format
+msgid "Delete Frames (%ld/%ld)"
+msgstr "Suprimeix els marcs (%ld/%ld)"
+
+#: gap/gap_lib.c:2052
+#, c-format
+msgid "Delete Frames from %ld to (number)"
+msgstr "Suprimeix els marcs des de %ld a (número)"
+
+#: gap/gap_lib.c:2115
+#, c-format
+msgid "Duplicate Frames (%ld/%ld)"
+msgstr "Duplica els marcs (%ld/%ld)"
+
+#: gap/gap_lib.c:2125
+msgid "Source Range starts at this framenumber"
+msgstr "L'abast de la font comença en aquest número de marc"
+
+#: gap/gap_lib.c:2133
+msgid "Source Range ends at this framenumber"
+msgstr "L'abast de la fonmt acaba en aquest número de marc"
+
+#: gap/gap_lib.c:2136
+msgid "N times:"
+msgstr "N vegades:"
+
+#: gap/gap_lib.c:2143
+msgid ""
+"Copy selected Range n-times  \n"
+"(you may type in Values > 99)"
+msgstr ""
+"Copia l'abast seleccionat n vegades  \n"
+"(hi heu de posar valors > 99)"
+
+#: gap/gap_lib.c:2146
+msgid "Duplicate Frame Range"
+msgstr "Duplica l'abast del marc"
+
+#: gap/gap_lib.c:2264
+#, c-format
+msgid "Exchange current Frame (%ld)"
+msgstr "Canvia el marc actual (%ld)"
+
+#: gap/gap_lib.c:2268
+msgid "With Frame (number)"
+msgstr "Amb el marc (número)"
+
+#: gap/gap_lib.c:2310
+#, c-format
+msgid "Framesequence Shift (%ld/%ld)"
+msgstr "Decalatge de la seqüència de marcs (%ld/%ld)"
+
+#: gap/gap_lib.c:2320
+msgid "Affected Range starts at this framenumber"
+msgstr "L'abast afectat comença en aquest número de marc"
+
+#: gap/gap_lib.c:2328
+msgid "Affected Range ends at this framenumber"
+msgstr "L'abast afectat acaba en aquest número de marc"
+
+#: gap/gap_lib.c:2331
+msgid "N-Shift:"
+msgstr "N Decalatges:"
+
+#: gap/gap_lib.c:2336
+msgid ""
+"Renumber the affected framesequence     \n"
+"(numbers are shifted in circle by N)"
+msgstr ""
+"Torna a numerar la seqüència de marcs afectada     \n"
+"(els números decalen en cercle per N)"
+
+#: gap/gap_lib.c:2338
+msgid "Framesequence shift"
+msgstr "Decalatge de la seqüència de marcs"
+
+#: gap/gap_lib.c:2946
+#, c-format
+msgid ""
+"Can't execute more than 1 Video Function\n"
+"on the same AnimFrame Image at the same time\n"
+"LOCK ID:%s\n"
+msgstr ""
+"No es pot executar alhora més d'una funció de\n"
+"vídeo en la mateixa imatge de marc animat\n"
+"IDENTIFICADOR DE BLOCATGE:%s\n"
+
+#: gap/gap_main.c:476
+msgid "<Image>/Video/Goto/Next Frame"
+msgstr "<Image>/Vídeo/Vés a/Marc següent"
+
+#: gap/gap_main.c:488
+msgid "<Image>/Video/Goto/Previous Frame"
+msgstr "<Image>/Vídeo/Vés a/Marc anterior"
+
+#: gap/gap_main.c:500
+msgid "<Image>/Video/Goto/First Frame"
+msgstr "<Image>/Vídeo/Vés a/Primer marc"
+
+#: gap/gap_main.c:512
+msgid "<Image>/Video/Goto/Last Frame"
+msgstr "<Image>/Vídeo/Vés a/Darrer marc"
+
+#: gap/gap_main.c:524
+msgid "<Image>/Video/Goto/Any Frame..."
+msgstr "<Image>/Vídeo/Vés a/Qualsevol marc..."
+
+#: gap/gap_main.c:536
+msgid "<Image>/Video/Delete Frames..."
+msgstr "<Image>/Vídeo/Suprimeix marc..."
+
+#: gap/gap_main.c:548
+msgid "<Image>/Video/Duplicate Frames..."
+msgstr "<Image>/Vídeo/Duplica els marcs..."
+
+#: gap/gap_main.c:560
+msgid "<Image>/Video/Exchange Frame..."
+msgstr "<Image>/Vídeo/Intercanvia el marc..."
+
+#: gap/gap_main.c:572
+msgid "<Image>/Video/Move Path..."
+msgstr "<Image>/Vídeo/Mou el camí..."
+
+#: gap/gap_main.c:643
+msgid "<Image>/Video/Frames to Image..."
+msgstr "<Image>/Vídeo/Marcs a la imatge..."
+
+#: gap/gap_main.c:655
+msgid "<Image>/Video/Frames Flatten..."
+msgstr "<Image>/Vídeo/Marcs complets..."
+
+#: gap/gap_main.c:667
+msgid "<Image>/Video/Frames LayerDel..."
+msgstr "<Image>/Vídeo/Marcs SupCapes..."
+
+#: gap/gap_main.c:691
+msgid "<Image>/Video/Frames Convert..."
+msgstr "<Image>/Vídeo/Converteix marcs..."
+
+#: gap/gap_main.c:703
+msgid "<Image>/Video/Frames Resize..."
+msgstr "<Image>/Vídeo/Redimensiona els marcs..."
+
+#: gap/gap_main.c:715
+msgid "<Image>/Video/Frames Crop..."
+msgstr "<Image>/Vídeo/Escapça els marcs..."
+
+#: gap/gap_main.c:727
+msgid "<Image>/Video/Frames Scale..."
+msgstr "<Image>/Vídeo/Redueix els marcs..."
+
+#: gap/gap_main.c:739
+msgid "<Image>/Video/Split Image to Frames..."
+msgstr "<Image>/Vídeo/Divideix la imatge en marcs..."
+
+#: gap/gap_main.c:752
+msgid "<Image>/Video/Framesequence Shift..."
+msgstr "<Image>/Vídeo/Decala la seqüència de marcs..."
+
+#: gap/gap_main.c:764
+msgid "<Image>/Video/Frames Modify..."
+msgstr "<Image>/Vídeo/Modifica els marcs..."
+
+#. Layer select modes
+#: gap/gap_mod_layer.c:84 gap/gap_range_ops.c:574
+msgid "Pattern is equal to LayerName"
+msgstr "El patró és igual al nom de la capa"
+
+#: gap/gap_mod_layer.c:85 gap/gap_range_ops.c:575
+msgid "Pattern is Start of LayerName"
+msgstr "El patró és l'inici del nom de la capa"
+
+#: gap/gap_mod_layer.c:86 gap/gap_range_ops.c:576
+msgid "Pattern is End of Layername"
+msgstr "El patró és el final del nom de la capa"
+
+#: gap/gap_mod_layer.c:87 gap/gap_range_ops.c:577
+msgid "Pattern is a Part of LayerName"
+msgstr "El patró és part del nom de la capa"
+
+#: gap/gap_mod_layer.c:88 gap/gap_range_ops.c:578
+msgid "Pattern is LayerstackNumber List"
+msgstr "El patró és la llista del nombre de piles de les capes"
+
+#: gap/gap_mod_layer.c:89 gap/gap_range_ops.c:579
+msgid "Pattern is REVERSE-stack List"
+msgstr "El patró és la llista de piles INVERSES de les capes"
+
+#: gap/gap_mod_layer.c:90 gap/gap_range_ops.c:580
+msgid "All Visible (ignore Pattern)"
+msgstr "Tot visible (ignora el patró)"
+
+#: gap/gap_mod_layer.c:92
+msgid "Select all Layers where Layername is equal to Pattern"
+msgstr "Selecciona totes les capes quan el nom de capa és igual al patró"
+
+#: gap/gap_mod_layer.c:93
+msgid "Select all Layers where Layername starts with Pattern"
+msgstr "Selecciona totes les capes quan el nom de la capa comença amb el patró"
+
+#: gap/gap_mod_layer.c:94
+msgid "Select all Layers where Layername ends up with Pattern"
+msgstr "Selecciona totes les capes quan el nom de la capa acaba amb el patró"
+
+#: gap/gap_mod_layer.c:95
+msgid "Select all Layers where Layername contains Pattern"
+msgstr "Selecciona totes les capes quan el nom de capa conté el patró"
+
+#: gap/gap_mod_layer.c:96
+msgid ""
+"Select Layerstack positions.\n"
+"0, 4-5, 8\n"
+"where 0 == Top-layer"
+msgstr ""
+"Selecciona les posicions de les piles de capes.\n"
+"0, 4-5, 8\n"
+"quan 0 == Capa superior"
+
+#: gap/gap_mod_layer.c:97
+msgid ""
+"Select Layerstack positions.\n"
+"0, 4-5, 8\n"
+"where 0 == BG-layer"
+msgstr ""
+"Selecciona les posicions de les piles de capes.\n"
+"0, 4-5, 8\n"
+"quan 0 == Capa de fons"
+
+#: gap/gap_mod_layer.c:98
+msgid "Select all visible Layers"
+msgstr "Selecciona totes les capes visibles"
+
+#. action items what to do with the selected layer(s)
+#: gap/gap_mod_layer.c:102
+msgid "Set Layer(s) visible"
+msgstr "Determina la(es) capa(es) visible(s)"
+
+#: gap/gap_mod_layer.c:103
+msgid "Set Layer(s) invisible"
+msgstr "Determina la(es) capa(es) invisible(s)"
+
+#: gap/gap_mod_layer.c:104
+msgid "Set Layer(s) linked"
+msgstr "Determina la(es) capa(es) enllaçada(es)"
+
+#: gap/gap_mod_layer.c:105
+msgid "Set Layer(s) unlinked"
+msgstr "Determina la(es) capa(es) no enllaçada(es)"
+
+#: gap/gap_mod_layer.c:106
+msgid "Raise Layer(s)"
+msgstr "Posa relleu a la(es) capa(es)"
+
+#: gap/gap_mod_layer.c:107
+msgid "Lower Layer(s)"
+msgstr "Capa(es) inferior(s)"
+
+#: gap/gap_mod_layer.c:108
+msgid "Merge Layer(s) expand as necessary"
+msgstr "Expandeix la combinació de la(es) capa(es) com sigui necessària"
+
+#: gap/gap_mod_layer.c:109
+msgid "Merge Layer(s) clipped to image"
+msgstr "Refosa de la(es) capa(es) enganxada a la imatge"
+
+#: gap/gap_mod_layer.c:110
+msgid "Merge Layer(s) clipped to bg-layer"
+msgstr "Refosa de la(es) capa(es) enganxada a la capa de fons"
+
+#: gap/gap_mod_layer.c:111
+msgid "Apply filter on Layer(s)"
+msgstr "Aplica el filtre a la(es) capa(es)"
+
+#: gap/gap_mod_layer.c:112
+msgid "Duplicate Layer(s)"
+msgstr "Duplica la(es) capa(es)"
+
+#: gap/gap_mod_layer.c:113
+msgid "Delete Layer(s)"
+msgstr "Suprimeix la(es) capa(es)"
+
+#: gap/gap_mod_layer.c:114
+msgid "Rename Layer(s)"
+msgstr "Reanomena la(es) capa(es)"
+
+#: gap/gap_mod_layer.c:153
+msgid ""
+"Perform function on one or more Layer(s)\n"
+"in all frames of the selected frame range\n"
+msgstr ""
+"Realitza la funció en una o més capes\n"
+"en tots els marcs de l'abast dels marc seleccionat\n"
+
+#: gap/gap_mod_layer.c:157 gap/gap_mpege.c:258 gap/gap_range_ops.c:443
+msgid "From Frame:"
+msgstr "Des del marc:"
+
+#: gap/gap_mod_layer.c:158 gap/gap_mpege.c:259 gap/gap_range_ops.c:444
+#: gap/gap_range_ops.c:603
+msgid "first handled frame"
+msgstr "primer marc manejat"
+
+#: gap/gap_mod_layer.c:165 gap/gap_range_ops.c:451
+msgid "To Frame:"
+msgstr "Al marc:"
+
+#: gap/gap_mod_layer.c:166 gap/gap_mpege.c:267 gap/gap_range_ops.c:452
+#: gap/gap_range_ops.c:611
+msgid "last handled frame"
+msgstr "darrer marc manejat"
+
+#: gap/gap_mod_layer.c:174 gap/gap_range_ops.c:650
+msgid "Select Layer(s):"
+msgstr "Seleccioneu capa(es):"
+
+#: gap/gap_mod_layer.c:184 gap/gap_range_ops.c:659
+msgid "Select Pattern:"
+msgstr "Seleccioneu patró:"
+
+#. pixel
+#: gap/gap_mod_layer.c:186 gap/gap_range_ops.c:661
+msgid ""
+"String to identify layer names    \n"
+"or layerstack position numbers\n"
+"0,3-5"
+msgstr ""
+"Cadena per identificar els noms de les capes    \n"
+"o els números de posició de les piles de capes\n"
+"0,3-5"
+
+#: gap/gap_mod_layer.c:192 gap/gap_range_ops.c:667
+msgid "Case sensitive"
+msgstr "Sensible a les majúscules"
+
+#: gap/gap_mod_layer.c:193 gap/gap_range_ops.c:668
+msgid "Lowercase and UPPERCASE letters are considered as different"
+msgstr "Les MAJÚSCULES i les minúscules es consideren diferents"
+
+#: gap/gap_mod_layer.c:198 gap/gap_range_ops.c:673
+msgid "Invert Selection"
+msgstr "Inverteix la selecció"
+
+#: gap/gap_mod_layer.c:199
+msgid "Perform actions on all unselected Layers"
+msgstr "Realitza accions en totes les capes no seleccionades"
+
+#: gap/gap_mod_layer.c:204
+msgid "Function:"
+msgstr "Funció:"
+
+#. argv[7].radio_help_argv = action_help
+#: gap/gap_mod_layer.c:208
+msgid "Function to be performed on all selected layers"
+msgstr "Funció a realitzar en totes les capes seleccionades"
+
+#: gap/gap_mod_layer.c:214
+msgid "New Layername:"
+msgstr "Nom de capa nou:"
+
+#. pixel
+#: gap/gap_mod_layer.c:216
+msgid ""
+"New Layername for all handled layers \n"
+"[####] is replaced by frame number\n"
+"(is used on function rename only)"
+msgstr ""
+"Nom de capa nou per a les capes manejades \n"
+"[####] és substitueix pel número de marc\n"
+"[es fa servir només en la funció Reanomena)"
+
+#: gap/gap_mod_layer.c:221
+msgid "Frames Modify"
+msgstr "Modifca els marcs"
+
+#: gap/gap_mod_layer.c:222
+msgid "Settings"
+msgstr "Paràmetres"
+
+#: gap/gap_mod_layer.c:285
+#, c-format
+msgid ""
+"Non-Interactive call of %s\n"
+"(for all selected layers)"
+msgstr ""
+"Crida no-interactiva de %s\n"
+"(per a totes les capes seleccionades)"
+
+#. GAP-PDB-Browser Dialog
+#. ----------------------
+#: gap/gap_mod_layer.c:663
+msgid "Select Filter for Animated frames-apply"
+msgstr "Seleccioneu el filtre per a l'animació de l'aplicació dels marcs"
+
+#: gap/gap_mod_layer.c:805
+msgid "GAP Modify: No layer selected in last handled frame"
+msgstr ""
+"Modifica el GAP: no hi havia cap capa seleccionada en el darrer marc manejat"
+
+#: gap/gap_mod_layer.c:891
+msgid "Modifying Frames/Layer(s)..."
+msgstr "S'esan modificant els marcs/capa(es)..."
+
+#: gap/gap_mod_layer.c:972
+msgid "No selected Layer in start frame"
+msgstr "No hi ha cap capa seleccionada en el marc d'inici"
+
+#: gap/gap_mov_dialog.c:262
+msgid "Normal"
+msgstr "Normal"
+
+#: gap/gap_mov_dialog.c:263
+msgid "Dissolve"
+msgstr "Dissol"
+
+#: gap/gap_mov_dialog.c:264
+msgid "Multiply"
+msgstr "Multiplica"
+
+#: gap/gap_mov_dialog.c:265
+msgid "Screen"
+msgstr "Pantalla"
+
+#: gap/gap_mov_dialog.c:266
+msgid "Overlay"
+msgstr "Superposa"
+
+#: gap/gap_mov_dialog.c:267
+msgid "Difference"
+msgstr "Diferència"
+
+#: gap/gap_mov_dialog.c:268
+msgid "Addition"
+msgstr "Suma"
+
+#: gap/gap_mov_dialog.c:269
+msgid "Subtract"
+msgstr "Resta"
+
+#: gap/gap_mov_dialog.c:270
+msgid "Darken Only"
+msgstr "Només enfosqueix"
+
+#: gap/gap_mov_dialog.c:271
+msgid "Lighten Only"
+msgstr "Només aclareix"
+
+#: gap/gap_mov_dialog.c:272
+msgid "Hue"
+msgstr "Tinta"
+
+#: gap/gap_mov_dialog.c:273
+msgid "Saturation"
+msgstr "Saturació"
+
+#: gap/gap_mov_dialog.c:274
+msgid "Color"
+msgstr "Color"
+
+#: gap/gap_mov_dialog.c:275
+msgid "Value"
+msgstr "Valor"
+
+#: gap/gap_mov_dialog.c:282
+msgid "Left  Top"
+msgstr "Esquerra   Dalt"
+
+#: gap/gap_mov_dialog.c:283
+msgid "Left  Bottom"
+msgstr "Esquerra   Baix"
+
+#: gap/gap_mov_dialog.c:284
+msgid "Right Top"
+msgstr "Dreta Dalt"
+
+#: gap/gap_mov_dialog.c:285
+msgid "Right Bottom"
+msgstr "Dreta Baix"
+
+#: gap/gap_mov_dialog.c:286
+msgid "Center"
+msgstr "Centre"
+
+#: gap/gap_mov_dialog.c:294
+msgid "Loop"
+msgstr "Bucle"
+
+#: gap/gap_mov_dialog.c:295
+msgid "Loop Reverse"
+msgstr "Inverteix el bucle"
+
+#: gap/gap_mov_dialog.c:296
+msgid "Once"
+msgstr "Una vegada"
+
+#: gap/gap_mov_dialog.c:297
+msgid "OnceReverse"
+msgstr "Inverteix una vegada"
+
+#: gap/gap_mov_dialog.c:298
+msgid "PingPong"
+msgstr "PingPong"
+
+#: gap/gap_mov_dialog.c:299
+msgid "None"
+msgstr "Cap"
+
+#: gap/gap_mov_dialog.c:300
+msgid "Frame Loop"
+msgstr "Bucle del marc"
+
+#: gap/gap_mov_dialog.c:301
+msgid "Frame Loop Reverse"
+msgstr "Inverteix el bucle del marc"
+
+#: gap/gap_mov_dialog.c:302
+msgid "Frame Once"
+msgstr "Marc una vegada"
+
+#: gap/gap_mov_dialog.c:303
+msgid "Frame OnceReverse"
+msgstr "Inverteix el marc una vegada"
+
+#: gap/gap_mov_dialog.c:304
+msgid "Frame PingPong"
+msgstr "Marc PingPong"
+
+#: gap/gap_mov_dialog.c:305
+msgid "Frame None"
+msgstr "Sense marc"
+
+#: gap/gap_mov_dialog.c:468
+msgid "Move Path"
+msgstr "Mou el camí"
+
+#: gap/gap_mov_dialog.c:492
+msgid "Update Preview"
+msgstr "Actualitza la visualització prèvia"
+
+#: gap/gap_mov_dialog.c:499
+msgid "Show PreviewFrame with Selected SrcLayer at current Controlpoint"
+msgstr ""
+"Mostra el marc de visualització prèvia amb la capa Src seleccionada al punt "
+"de control actual"
+
+#: gap/gap_mov_dialog.c:503
+msgid "Anim Preview"
+msgstr "Anima la visualització prèvia"
+
+#: gap/gap_mov_dialog.c:510
+msgid "Generate Animated Preview as multilayer image"
+msgstr ""
+"Genera una visualització prèvia animada com a imatge de reproducció múltiple"
+
+#. parameter settings
+#: gap/gap_mov_dialog.c:523
+msgid "Copy moving source-layer(s) into frames"
+msgstr "Copia la(es) capa(es) de font mòbils als marcs"
+
+#. the start frame scale_entry
+#. table col, row
+#: gap/gap_mov_dialog.c:556
+msgid "Start Frame:"
+msgstr "Inicia el marc:"
+
+#. label text
+#. scalesize spinsize
+#. value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:564
+msgid "First handled frame"
+msgstr "Primer marc manejat"
+
+#. the end frame scale_entry
+#. table col, row
+#: gap/gap_mov_dialog.c:571
+msgid "End Frame:"
+msgstr "Acaba el marc:"
+
+#. label text
+#. scalesize spinsize
+#. value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:579
+msgid "Last handled frame"
+msgstr "Darrer marc manejat"
+
+#. the Preview Frame scale_entry
+#. table col, row
+#: gap/gap_mov_dialog.c:586
+msgid "Preview Frame:"
+msgstr "Previsualitza el marc:"
+
+#. label text
+#. scalesize spinsize
+#. value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:594
+msgid "Frame to show when UpdPreview button is pressed"
+msgstr "Marc que s'ha de mostrar quan premeu el botó de previsualització Upd"
+
+#. the Layerstack scale_entry
+#. table col, row
+#: gap/gap_mov_dialog.c:602 gap/gap_range_ops.c:267
+msgid "Layerstack:"
+msgstr "Pila de capes:"
+
+#. label text
+#. scalesize spinsize
+#. value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:610
+msgid ""
+"How to insert SrcLayer into the Dst. Frame's Layerstack\n"
+"0 means on top i.e. in front"
+msgstr ""
+"Com es fa per inserir la capa Src a les diferents piles de capes d'un marc\n"
+"El 0 vol dir 'a la part de dalt', p.e., davant"
+
+#. toggle force visibility
+#: gap/gap_mov_dialog.c:622
+msgid "Force visibility"
+msgstr "Força la visibilitat"
+
+#: gap/gap_mov_dialog.c:629
+msgid "Force visibility for all copied Src-Layers"
+msgstr "Força la visibilitat per a totes les capes Src copiades"
+
+#. toggle clip_to_image
+#: gap/gap_mov_dialog.c:635
+msgid "Clip To Frame"
+msgstr "Adjunta al marc"
+
+#: gap/gap_mov_dialog.c:642
+msgid "Clip all copied Src-Layers at Frame Boundaries"
+msgstr "Adjunta totes les capes Src copiades als límits del marc"
+
+#: gap/gap_mov_dialog.c:690
+msgid ""
+"No Source Image was selected\n"
+"(Please open a 2nd Image of the same type before opening Move Path)"
+msgstr ""
+"No heu seleccionat cap imatge font\n"
+"(Si us plau, obriu una segona imatge del mateix tipus abans d'obrir Mou el "
+"camí)"
+
+#: gap/gap_mov_dialog.c:786
+msgid "Object on empty frames"
+msgstr "Objecte dins dels marcs buits"
+
+#: gap/gap_mov_dialog.c:787
+msgid "Object on one frame"
+msgstr "Objecte dins d'un marc"
+
+#: gap/gap_mov_dialog.c:788
+msgid "Exact Object on frames"
+msgstr "Objecte exacte dins dels marcs"
+
+#: gap/gap_mov_dialog.c:818
+msgid "Anim Preview Mode"
+msgstr "Anima el mode de previsualització"
+
+#: gap/gap_mov_dialog.c:826
+msgid "Scale Preview"
+msgstr "Redueix la visualització prèvia"
+
+#: gap/gap_mov_dialog.c:827
+msgid "Scale down size of the generated animated preview (in %)"
+msgstr "Redueix la mida de la visualització prèvia generada (en %)"
+
+#: gap/gap_mov_dialog.c:835
+msgid "Framerate"
+msgstr "Velocitat del marc"
+
+#: gap/gap_mov_dialog.c:836
+msgid "Framerate to use in the animated preview in frames/sec"
+msgstr ""
+"Velocitat del marc a usar en las visualitzacions prèvies animades en marcs/"
+"seg"
+
+#: gap/gap_mov_dialog.c:850
+msgid "Copy to Video Buffer"
+msgstr "Copia a la memòria intermèdia del vídeo"
+
+#: gap/gap_mov_dialog.c:851
+msgid ""
+"Save all single frames of animated preview to video buffer\n"
+"(configured in gimprc by video-paste-dir and video-paste-basename)"
+msgstr ""
+"Desa tots els marcs sols de les visualitzacions prèvies animades a la "
+"memòria intermèdia del vídeo\n"
+"(configurat en gimprc per video-paste-dir i video-paste-basename)"
+
+#: gap/gap_mov_dialog.c:856
+msgid "Move Path Animated Preview"
+msgstr "Mou el camí de la visualització prèvia animada"
+
+#: gap/gap_mov_dialog.c:857
+msgid "Options"
+msgstr "Opcions"
+
+#: gap/gap_mov_dialog.c:902
+msgid "Generate Animated Preview failed\n"
+msgstr "S'ha produït un error en generar la visualització prèvia animada\n"
+
+#. filesel is already open
+#: gap/gap_mov_dialog.c:1187
+msgid "Load Path Points from file"
+msgstr "Carrega els punts del camí del fitxer"
+
+#. filesel is already open
+#: gap/gap_mov_dialog.c:1223
+msgid "Save Path Points to file"
+msgstr "Desa els punts del camí al fitxer"
+
+#: gap/gap_mov_dialog.c:1552
+#, c-format
+msgid "Current Point: [ %3d ] of [ %3d ]"
+msgstr "Punt actual: [ %3d ] de [ %3d ]"
+
+#: gap/gap_mov_dialog.c:1638
+msgid "Source Select"
+msgstr "Selecció de font"
+
+#. Source Layer menu
+#: gap/gap_mov_dialog.c:1654
+msgid "Source Image/Layer:"
+msgstr "Font de la imatge/capa:"
+
+#: gap/gap_mov_dialog.c:1664
+msgid "Source Object to insert into Frame Range"
+msgstr "Objecte font a inserir en l'abast del marc"
+
+#. Paintmode menu
+#: gap/gap_mov_dialog.c:1679
+msgid "Mode:"
+msgstr "Mode:"
+
+#: gap/gap_mov_dialog.c:1688
+msgid "Paintmode"
+msgstr "Mode pinta"
+
+#. Loop Stepmode menu
+#: gap/gap_mov_dialog.c:1703
+msgid "Stepmode:"
+msgstr "Mode pas"
+
+#: gap/gap_mov_dialog.c:1721
+msgid "How to fetch the next SrcLayer at the next handled frame"
+msgstr "Com es fa per recollir la següent capa Src en el següent marc manejat"
+
+#. Source Image Handle menu
+#: gap/gap_mov_dialog.c:1727
+msgid "Handle:"
+msgstr "Maneja:"
+
+#: gap/gap_mov_dialog.c:1745
+msgid "How to place the SrcLayer at Controlpoint Coordinates"
+msgstr ""
+"Com es fa per col·locar la capa Src a les coordenades del punt de control"
+
+#. to avoid side effects while initialization
+#. the frame
+#: gap/gap_mov_dialog.c:1799
+msgid "Move Path Preview"
+msgstr "Mou la visualització prèvia del marc"
+
+#. X
+#. table col, row
+#: gap/gap_mov_dialog.c:1822
+msgid "X:"
+msgstr "X:"
+
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:1831
+msgid "X Coordinate"
+msgstr "Coordenada X"
+
+#. Y
+#. table col, row
+#: gap/gap_mov_dialog.c:1840
+msgid "Y:"
+msgstr "Y:"
+
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:1849
+msgid "Y Coordinate"
+msgstr "Coordenada Y"
+
+#. Widht Scale
+#. table col, row
+#: gap/gap_mov_dialog.c:1858
+msgid "Width:"
+msgstr "Amplada:"
+
+#. label text
+#. scalesize spinsize
+#. value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:1866
+msgid "Scale Source Layer's Width in percent"
+msgstr "Redueix l'amplada de la capa font en percentatge"
+
+#. Height Scale
+#. table col, row
+#: gap/gap_mov_dialog.c:1875
+msgid "Height:"
+msgstr "Alçada:"
+
+#. label text
+#. scalesize spinsize
+#. value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:1883
+msgid "Scale SrcLayer's Height in percent"
+msgstr "Redueix l'alçada de la capa Src en percentatge"
+
+#. Opacity
+#. table col, row
+#: gap/gap_mov_dialog.c:1892
+msgid "Opacity:"
+msgstr "Opacitat:"
+
+#. label text
+#. scalesize spinsize
+#. value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:1900
+msgid "SrcLayer's Opacity in percent"
+msgstr "Opacitat de la capa Src en percentatge"
+
+#. Rotation
+#. table col, row
+#: gap/gap_mov_dialog.c:1909
+msgid "Rotate:"
+msgstr "Rota:"
+
+#. label text
+#. scalesize spinsize
+#. value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:1917
+msgid "Rotate SrcLayer (in degree)"
+msgstr "Rota la capa Src (en graus)"
+
+#. Keyframe
+#. table col, row
+#: gap/gap_mov_dialog.c:1927
+msgid "Keyframe:"
+msgstr "Marc clau:"
+
+#. label text
+#. scalesize spinsize
+#. value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:1935
+msgid ""
+"Fix Controlpoint to Keyframe number\n"
+"(0 == No Keyframe)"
+msgstr ""
+"Fixa el punt de control al número del marc clau\n"
+"(0 == no hi ha marc clau)"
+
+#: gap/gap_mov_dialog.c:2010
+msgid "Add Point"
+msgstr "Afegeix un punt"
+
+#: gap/gap_mov_dialog.c:2018
+msgid ""
+"Add Controlpoint at end\n"
+"(the last Point is duplicated)"
+msgstr ""
+"Afegeix un punt de control al final\n"
+"(el darrer punt està duplicat)"
+
+#. toggle clip_to_image
+#: gap/gap_mov_dialog.c:2023
+msgid "Show Path"
+msgstr "Mostra el camí"
+
+#: gap/gap_mov_dialog.c:2030
+msgid ""
+"Show Path Lines and enable pick/drag with left button or move with right "
+"button"
+msgstr ""
+"Mostra les línies del camí i habilita Tria/Arrossega amb el botó de "
+"l'esquerra o mou-les amb el de la dreta "
+
+#: gap/gap_mov_dialog.c:2040
+msgid "Insert Point"
+msgstr "Insereix un punt"
+
+#: gap/gap_mov_dialog.c:2048
+msgid ""
+"Insert Controlpoint\n"
+"(the current Point is duplicated)"
+msgstr ""
+"Insereix un punt de control\n"
+"(el punt actual està duplicat)"
+
+#: gap/gap_mov_dialog.c:2052
+msgid "Delete Point"
+msgstr "Suprimeix el punt"
+
+#: gap/gap_mov_dialog.c:2060
+msgid "Delete current Controlpoint"
+msgstr "Suprimeix el punt de control actual"
+
+#: gap/gap_mov_dialog.c:2066
+msgid "Prev Point"
+msgstr "Punt anterior"
+
+#: gap/gap_mov_dialog.c:2074
+msgid "Show Previous Controlpoint"
+msgstr "Mostra el punt de control anterior"
+
+#: gap/gap_mov_dialog.c:2078
+msgid "Next Point"
+msgstr "Punt següent"
+
+#: gap/gap_mov_dialog.c:2086
+msgid "Show Next Controlpoint"
+msgstr "Mostra el següent punt de control"
+
+#: gap/gap_mov_dialog.c:2092
+msgid "First Point"
+msgstr "Primer punt"
+
+#: gap/gap_mov_dialog.c:2100
+msgid "Show First Controlpoint"
+msgstr "Mostra el primer punt de control"
+
+#: gap/gap_mov_dialog.c:2104
+msgid "Last Point"
+msgstr "Darrer punt"
+
+#: gap/gap_mov_dialog.c:2112
+msgid "Show Last Controlpoint"
+msgstr "Mostra el darrer punt de control"
+
+#: gap/gap_mov_dialog.c:2118
+msgid "Clear Point"
+msgstr "Esborra el punt"
+
+#: gap/gap_mov_dialog.c:2126
+msgid "Reset the current Controlpoint to default Values"
+msgstr "Reinicia el punt de control actual als valors per defecte"
+
+#: gap/gap_mov_dialog.c:2130
+msgid "Clear All Points"
+msgstr "Esborra tots els punts"
+
+#: gap/gap_mov_dialog.c:2138
+msgid ""
+"Reset all Controlpoints to default Values but dont change the path (X/Y "
+"Values)"
+msgstr ""
+"Reinicia tots els punts de control als valors per defecte però no canviïs el "
+"camí (valors X/Y)"
+
+#: gap/gap_mov_dialog.c:2145
+msgid "Rotate Follow"
+msgstr "Segueix la rotació"
+
+#: gap/gap_mov_dialog.c:2156
+msgid ""
+"Set Rotation for all Controlpoints to follow the shape of the path.\n"
+"(Shift: use Rotation of contolpoint 1 as offset)"
+msgstr ""
+"Estableix la rotació per a tots els punts de control per seguir la forma del "
+"camí.\n"
+"(Maj: fes servir la rotació del punt de control 1 com a desplaçament)"
+
+#: gap/gap_mov_dialog.c:2163
+msgid "Delete All Points"
+msgstr "Suprimeix tots els punts"
+
+#: gap/gap_mov_dialog.c:2171
+msgid "Delete all Controlpoints"
+msgstr "Suprimeix tots els punts de control"
+
+#: gap/gap_mov_dialog.c:2178
+msgid "Load Points"
+msgstr "Carrega els punts"
+
+#: gap/gap_mov_dialog.c:2186
+msgid "Load Controlpoints from file"
+msgstr "Carrega els punts de control del fitxer"
+
+#: gap/gap_mov_dialog.c:2190
+msgid "Save Points"
+msgstr "Desa els punts"
+
+#: gap/gap_mov_dialog.c:2198
+msgid "Save Controlpoints to file"
+msgstr "Desa els punts de control al fitxer"
+
+#: gap/gap_mov_dialog.c:2658
+msgid ""
+"Can't operate with current Controlpoint\n"
+"or Keyframe settings"
+msgstr ""
+"No es pot operar amb el punt de control actual\n"
+"o els paràmetres del marc clau"
+
+#: gap/gap_mov_dialog.c:2665
+msgid "Reset Keyframes"
+msgstr "Reinicia els marcs clau"
+
+#: gap/gap_mov_dialog.c:2670
+msgid "Move Path Controlpointcheck"
+msgstr "Mou el camí per revisar el punt de control"
+
+#: gap/gap_mov_dialog.c:2671
+msgid "Errors:"
+msgstr "Errors:"
+
+#: gap/gap_mov_exec.c:444
+msgid ""
+"No Source Image was selected.\n"
+"Please open a 2nd Image of the same type before opening Move Path."
+msgstr ""
+"No heu seleccionat cap imatge font.\n"
+"Si us plau, obriu una segona imatge del mateix tipus abans d'obrir Mou el "
+"camí."
+
+#: gap/gap_mov_exec.c:455
+msgid "Copying Layers into Frames..."
+msgstr "S'estan copiant les capes als marcs..."
+
+#: gap/gap_mov_exec.c:459
+msgid "Generating Animated Preview..."
+msgstr "S'està generant una visualització prèvia animada..."
+
+#: gap/gap_mov_exec.c:1376
+#, c-format
+msgid ""
+"\n"
+"Error: Keyframe %d at point [%d] higher or equal than last handled frame"
+msgstr ""
+"\n"
+"Error: el marc clau %d al punt [%d] és més alt o igual que el darrer marc "
+"manejat"
+
+#: gap/gap_mov_exec.c:1384
+#, c-format
+msgid ""
+"\n"
+"Error: Keyframe %d at point [%d] leaves not enough space (frames)\n"
+"for the previous controlpoints"
+msgstr ""
+"\n"
+"Error: el marc clau %d al punt [%d] no deixa prou espai (marcs)\n"
+"per als punts de control previs"
+
+#: gap/gap_mov_exec.c:1394
+#, c-format
+msgid ""
+"\n"
+"Error: Keyframe %d is not in sequence at point [%d]"
+msgstr ""
+"\n"
+"Error: el marc clau %d no és en seqüència al punt [%d]"
+
+#: gap/gap_mov_exec.c:1412
+#, c-format
+msgid ""
+"\n"
+"Error: controlpoint [%d] is out of handled framerange"
+msgstr ""
+"\n"
+"Error: el punt de control [%d] està fora de l'abast del marc manejat"
+
+#: gap/gap_mov_exec.c:1426
+#, c-format
+msgid ""
+"\n"
+"Error: more controlpoints (%d) than handled frames (%d)\n"
+"please reduce controlpoints or select more frames"
+msgstr ""
+"\n"
+"Error: hi ha més punts de control (%d) que marcs manejats (%d).\n"
+"Si us plau, reduïu els punts de control o seleccioneu més marcs"
+
+#: gap/gap_mpege.c:111
+msgid "Conditions to run mpeg_encode 1.5:"
+msgstr "Condicions per executar mpeg_encode 1.5:"
+
+#: gap/gap_mpege.c:114
+msgid "Conditions to run mpeg2encode 1.2:"
+msgstr "Condicions per executar mpeg2encode 1.2:"
+
+#: gap/gap_mpege.c:124
+msgid "1.) mpeg_encode 1.5 must be installed"
+msgstr "1.) Ha d'estar instal·lat mpeg_encode 1.5"
+
+#: gap/gap_mpege.c:127
+msgid "1.) mpeg2encode 1.2 must be installed"
+msgstr "1.) Ha d'estar instal·lat mpeg2encode 1.2"
+
+#: gap/gap_mpege.c:132
+msgid "    you can get mpeg_encode at"
+msgstr "    podeu obtenir mpeg_encode a"
+
+#: gap/gap_mpege.c:135
+msgid "    you can get mpeg2encode at http://www.mpeg.org/MSSG"
+msgstr "    podeu obtenir mpeg2encode a http://www.mpeg.org/MSSG"
+
+#: gap/gap_mpege.c:140
+msgid "    ftp://mm-ftp.cs.berkeley.edu/pub/multimedia/mpeg/bmt1r1.tar.gz"
+msgstr "    ftp://mm-ftp.cs.berkeley.edu/pub/multimedia/mpeg/bmt1r1.tar.gz"
+
+#: gap/gap_mpege.c:143
+msgid "   or at ftp://ftp.mpeg.org/pub/mpeg/mssg "
+msgstr "   o a ftp://ftp.mpeg.org/pub/mpeg/mssg "
+
+#: gap/gap_mpege.c:148
+msgid "2.) You need a series of single Images on disk (AnimFrames)"
+msgstr "2.) Necessiteu una sèrie d'imatges senzilles al disk (Marcs animats)"
+
+#: gap/gap_mpege.c:152
+msgid "    all with fileformat JPEG (or YUV or PNM or PPM)"
+msgstr "    tot amb format de fitxer JPEG (o YUV o PNM o PPM)"
+
+#: gap/gap_mpege.c:155
+msgid "   all with fileformat PPM (or YUV)"
+msgstr "   tot amb format de fitxer PPM (o YUV)"
+
+#: gap/gap_mpege.c:160
+msgid "    (use 'Frames Convert' from the Video Menu"
+msgstr "    (fes servir Convertiu els marcs del menú de vídeo"
+
+#: gap/gap_mpege.c:164
+msgid "    or 'Split Image to Frames' from the Video Menu)"
+msgstr "    o Divideix la imatge en marcs del menú de vídeo)"
+
+#: gap/gap_mpege.c:168
+msgid "3.) All Images must have the same size,"
+msgstr "3.) Totes les imatges han de tenir la mateixa mida,"
+
+#: gap/gap_mpege.c:175
+msgid "    width and height must be a multiple of 16"
+msgstr "    l'amplada i l'alçada han de ser múltiples de 16"
+
+#: gap/gap_mpege.c:179
+msgid "    (use Scale or Crop from the Video Menu)"
+msgstr "     (feu servir Redueix o Escapça del menú de vídeo)"
+
+#: gap/gap_mpege.c:194
+msgid "MPEG_ENCODE Information"
+msgstr "Informació MPEG_ENCODE"
+
+#: gap/gap_mpege.c:231
+msgid "generate MPEG1 (ISO/IEC 11172-2) stream"
+msgstr "genera un corrent MPEG1 (ISO/IEC 11172-2)"
+
+#: gap/gap_mpege.c:232
+msgid "generate MPEG2 (ISO/IEC DIS 13818-2) stream"
+msgstr "genera un corrent MPEG2 (ISO/IEC DIS 13818-2)"
+
+#: gap/gap_mpege.c:242
+msgid "GenParams"
+msgstr "Paràmetres de generació"
+
+#: gap/gap_mpege.c:244
+msgid "Gen + Encode"
+msgstr "Generació + codificació"
+
+#: gap/gap_mpege.c:266
+msgid "To   Frame:"
+msgstr "Al   Marc:"
+
+#: gap/gap_mpege.c:273
+msgid "Framerate :"
+msgstr "Velocitat de marc :"
+
+#: gap/gap_mpege.c:274
+msgid "framerate in frames/second"
+msgstr "velocitat de marc en marcs/segon"
+
+#: gap/gap_mpege.c:281
+msgid "Bitrate:"
+msgstr "Velocitat de bits:"
+
+#: gap/gap_mpege.c:282
+msgid ""
+"used for constant bitrates (bit/sec)                  \n"
+"(low rate gives good compression + bad quality)"
+msgstr ""
+"es fa servir per a les velocitats de bits constants (bit/"
+"seg)                  \n"
+"(una velocitat comporta una bona compressió + mala qualitat)"
+
+#: gap/gap_mpege.c:296
+msgid "Outputfile:"
+msgstr "Fitxer de sortida:"
+
+#. pixel
+#: gap/gap_mpege.c:298
+msgid "Name of the resulting MPEG outputfile"
+msgstr "Nom del fitxer de sortida MPEG resultant"
+
+#: gap/gap_mpege.c:304
+msgid "Paramfile:"
+msgstr "Paràmetres de fitxer:"
+
+#. pixel
+#: gap/gap_mpege.c:306
+msgid ""
+"Name of the Encoder-Parameterfile\n"
+"(is generated)"
+msgstr ""
+"Nom del codificador de paràmetres de fitxer\n"
+"(s'ha generat)"
+
+#: gap/gap_mpege.c:312
+msgid "Startscript:"
+msgstr "Inici de la seqüència:"
+
+#. pixel
+#: gap/gap_mpege.c:314
+msgid ""
+"Name of the Startscript           \n"
+"(is generated/executed)"
+msgstr ""
+"Nom de l'inici de seqüència           \n"
+"(s'ha generat/executat)"
+
+#: gap/gap_mpege.c:320
+msgid ""
+"Generate parameterfile for mpeg_encode 1.5\n"
+"(the freely distributed Berkeley MPEG-1 Video  Encoder.)\n"
+msgstr ""
+"Genera els paràmetres del fitxer per mpeg_encode 1.5\n"
+"(el codificador de vídeo MPEG-1 de lliure distribució de Berkeley.)\n"
+
+#: gap/gap_mpege.c:324
+msgid "Constant Bitrate :"
+msgstr "Velocitat de bits constant :"
+
+#: gap/gap_mpege.c:325
+msgid "Iqnore I/P/QSCALE values and use constant bit-rate)"
+msgstr ""
+"Ignora els valors I/P/QSCALE i fes servir una velocitat de bits constant"
+
+#: gap/gap_mpege.c:330
+msgid "Pattern:"
+msgstr "Patró:"
+
+#. pixel
+#: gap/gap_mpege.c:332
+msgid "How to encode MPEG framesequence (I/P/B frames)"
+msgstr "Com es fa per codificar la seqüència de marcs MPEG (marcs I/P/B)"
+
+#: gap/gap_mpege.c:338
+msgid "IQSCALE:"
+msgstr "IQSCALE:"
+
+#: gap/gap_mpege.c:339
+msgid ""
+"Quality scale for I-Frames                       \n"
+"(1 = best quality, 31 = best comression)"
+msgstr ""
+"Reducció de qualitat per als marcs I                       \n"
+"(1 = qualitat màxima, 31 = millor compressió)"
+
+#: gap/gap_mpege.c:346
+msgid "PQSCALE:"
+msgstr "PQSCALE:"
+
+#: gap/gap_mpege.c:347
+msgid ""
+"Quality scale for P-Frames                  \n"
+"(1 = best quality, 31 = best comression)"
+msgstr ""
+"Reducció de la qualitat per als marcs P                  \n"
+"(1 = qualitat màxima, 31 = millor compressió)"
+
+#: gap/gap_mpege.c:354
+msgid "BQSCALE:"
+msgstr "BQSCALE"
+
+#: gap/gap_mpege.c:355
+msgid ""
+"Quality scale for B-Frames                  \n"
+"(1 = best quality, 31 = best comression)"
+msgstr ""
+"Reducció de la qualitat per als marcs B                  \n"
+"(1 = qualitat màxima, 31 = millor compressió)"
+
+#: gap/gap_mpege.c:362
+#, fuzzy
+msgid "P-Search :"
+msgstr "Cerca P :"
+
+#: gap/gap_mpege.c:363
+msgid "Search Algorithmus used for P-frames"
+msgstr "Cerca l'algoritme que es fa servir per als marcs P"
+
+#: gap/gap_mpege.c:369
+msgid "B-Search :"
+msgstr "Cerca B :"
+
+#: gap/gap_mpege.c:370
+msgid "Search Algorithmus used for B-frames"
+msgstr "Cerca l'algoritme que es fa servir per als marcs B"
+
+#: gap/gap_mpege.c:375
+msgid "Gen MPEG_ENCODE Parameters"
+msgstr "Genera els paràmetres MPEG_ENCODE"
+
+#: gap/gap_mpege.c:376 gap/gap_mpege.c:414
+msgid "Encode Values"
+msgstr "Codifica els valors"
+
+#: gap/gap_mpege.c:392
+msgid ""
+"Generate parameterfile for mpeg2encode 1.2\n"
+"(MPEG-2 Video  Encoder.)\n"
+msgstr ""
+"Genera els paràmetres de fitxer per a mpeg2encode 1.2\n"
+"(Codificador de vídeo MPEG-2.)\n"
+
+#: gap/gap_mpege.c:395
+msgid "MPEG-type :"
+msgstr "Tipus MPEG :"
+
+#: gap/gap_mpege.c:404
+msgid "Videoformat :"
+msgstr "Format de vídeo :"
+
+#: gap/gap_mpege.c:405
+msgid "Videoformat"
+msgstr "Format de vídeo"
+
+#. framerates above 30 ar not allowed in mpeg2encode
+#: gap/gap_mpege.c:413
+msgid "Gen MPEG2ENCODE Parameters"
+msgstr "Genera els paràmetres MPEG2ENCODE"
+
+#: gap/gap_mpege.c:978
+msgid ""
+"\n"
+"WARNING: mpeg_encode does not support Fileformat "
+msgstr ""
+"\n"
+"AVÍS: mpeg_encode no permet el fitxer de format "
+
+#: gap/gap_mpege.c:981
+msgid ""
+"\n"
+"ERROR: width not a multiple of 16"
+msgstr ""
+"\n"
+"ERROR: l'amplada no és múltiple de 16"
+
+#: gap/gap_mpege.c:982
+msgid ""
+"\n"
+"ERROR: height not a multiple of 16"
+msgstr ""
+"\n"
+"ERROR: l'alçada no és múltiple de 16"
+
+#: gap/gap_mpege.c:988
+msgid ""
+"\n"
+"WARNING: mpeg2encode does not support Fileformat "
+msgstr ""
+"\n"
+"AVÍS: mpeg2encode no permet el fitxer de format "
+
+#: gap/gap_mpege.c:993
+msgid ""
+"\n"
+"ERROR: invoked from a single image, animframe required"
+msgstr ""
+"\n"
+"ERROR: si el crideu des d'una imatge sola, necessiteu un marc animat"
+
+#: gap/gap_navigator_dialog.c:366
+msgid ""
+"Playback         \n"
+"<Shift> optimized"
+msgstr ""
+"Playback         \n"
+"El <decalatge> està optimitzat"
+
+#: gap/gap_navigator_dialog.c:371
+msgid ""
+"Smart Update .xvpics\n"
+"<Shift> forced upd"
+msgstr ""
+"Actualització intel·ligent .xvpics\n"
+"El <decalatge> ha forçat l'actualització"
+
+#: gap/gap_navigator_dialog.c:376
+msgid "Duplicate selected Frames"
+msgstr "Duplica els marcs seleccionats"
+
+#: gap/gap_navigator_dialog.c:380
+msgid "Delete selected Frames"
+msgstr "Suprimeix els marcs seleccionats"
+
+# plug-ins/gap/gap_navigatorits constant_dialog.c:391
+#: gap/gap_navigator_dialog.c:389
+msgid "Goto 1st Frame"
+msgstr "Vés al primer marc"
+
+#: gap/gap_navigator_dialog.c:393
+msgid ""
+"Goto prev Frame\n"
+"<Shift> use timezoom stepsize"
+msgstr ""
+"Vés al marc anterior\n"
+"El <decalatge> fa servir la mida del pas del zoom temporal"
+
+#: gap/gap_navigator_dialog.c:398
+msgid ""
+"Goto next Frame\n"
+"<Shift> use timezoom stepsize"
+msgstr ""
+"Vés al marc següent\n"
+"El <decalatge> fa servir la mida del pas del zoom temporal"
+
+#: gap/gap_navigator_dialog.c:403
+msgid "Goto last Frame"
+msgstr "Vés al darrer marc"
+
+#: gap/gap_navigator_dialog.c:460
+msgid "<Image>/Video/VCR Navigator..."
+msgstr "<Image>/Vídeo/Navegador VCR..."
+
+#: gap/gap_navigator_dialog.c:523
+msgid "Cant open two or more Video Navigator Windows."
+msgstr "No es poden obrir dues o més finestres del navegador."
+
+#. menu_item copy
+#: gap/gap_navigator_dialog.c:2877
+msgid "Copy"
+msgstr "Copia"
+
+#. menu_item cut
+#: gap/gap_navigator_dialog.c:2887
+msgid "Cut"
+msgstr "Retalla"
+
+#. menu_item paste before
+#: gap/gap_navigator_dialog.c:2897
+msgid "Paste before"
+msgstr "Enganxa abans"
+
+#. menu_item copy
+#: gap/gap_navigator_dialog.c:2907
+msgid "Paste after"
+msgstr "Enganxa després"
+
+#. menu_item copy
+#: gap/gap_navigator_dialog.c:2917
+msgid "Paste replace"
+msgstr "Substitueix el que s'ha enganxat"
+
+#. menu_item copy
+#: gap/gap_navigator_dialog.c:2927
+msgid "Clear Video Buffer"
+msgstr "Neteja la memòria intermèdia del vídeo"
+
+#: gap/gap_navigator_dialog.c:2952
+msgid "Videoframes:"
+msgstr "Marcs de vídeo:"
+
+#: gap/gap_navigator_dialog.c:2967
+msgid "Framerate:"
+msgstr "Velocitat dels marcs:"
+
+#: gap/gap_navigator_dialog.c:2990
+msgid "Timezoom:"
+msgstr "Zoom temporal:"
+
+#. The main shell
+#: gap/gap_navigator_dialog.c:3074
+msgid "Video Navigator"
+msgstr "Navegador de vídeo"
+
+#: gap/gap_range_ops.c:120
+msgid "New Width:"
+msgstr "Amplada nova:"
+
+#: gap/gap_range_ops.c:129
+msgid "New Height:"
+msgstr "Alçada nova:"
+
+#: gap/gap_range_ops.c:138
+msgid "Offset X:"
+msgstr "Desplaçament de X:"
+
+#: gap/gap_range_ops.c:147
+msgid "Offset Y:"
+msgstr "Desplaçament de Y:"
+
+#: gap/gap_range_ops.c:158
+msgid "Crop AnimFrames (all)"
+msgstr "Escapça els marcs animats (tots)"
+
+#: gap/gap_range_ops.c:159
+#, c-format
+msgid "Crop (original %dx%d)"
+msgstr "Escapça (%dx%d original)"
+
+#: gap/gap_range_ops.c:169
+msgid "Resize AnimFrames (all)"
+msgstr "Redimensiona els marcs animats (tots)"
+
+#: gap/gap_range_ops.c:170
+#, c-format
+msgid "Resize (original %dx%d)"
+msgstr "Redimensiona (%dx%d original)"
+
+#: gap/gap_range_ops.c:176
+msgid "Scale AnimFrames (all)"
+msgstr "Redueix els marcs animats (tots)"
+
+#: gap/gap_range_ops.c:177
+#, c-format
+msgid "Scale (original %dx%d)"
+msgstr "Redueix (%dx%d original)"
+
+#: gap/gap_range_ops.c:308
+msgid "Generate Optimal Palette"
+msgstr "Genera una paleta òptima"
+
+#: gap/gap_range_ops.c:309
+msgid "WEB Palette"
+msgstr "Paleta web"
+
+#: gap/gap_range_ops.c:310
+msgid "Use Custom Palette"
+msgstr "Fes servir la paleta personalitzada"
+
+#: gap/gap_range_ops.c:311
+msgid "Use Black/White (1-Bit) Palette"
+msgstr "Fes servir la paleta en blanc i negre (1 bit)"
+
+#: gap/gap_range_ops.c:313
+msgid "Floyd-Steinberg Color Dithering (Normal)"
+msgstr "Tramat de color Floyd-Steinberg (normal)"
+
+#: gap/gap_range_ops.c:314
+msgid "Floyd-Steinberg Color Dithering (Reduced Color Bleeding)"
+msgstr "Tramat de color Floyd-Steinberg (Color a sang reduït)"
+
+#: gap/gap_range_ops.c:315
+msgid "Positioned Color Dithering"
+msgstr "Tramat de color posicionat"
+
+#: gap/gap_range_ops.c:316
+msgid "No Color Dithering"
+msgstr "Sense tramat de color"
+
+#: gap/gap_range_ops.c:327
+msgid "Palette Type"
+msgstr "Tipus de paleta"
+
+#: gap/gap_range_ops.c:334
+msgid "Custom Palette"
+msgstr "Paleta personalitzada"
+
+#: gap/gap_range_ops.c:335
+msgid ""
+"Name of a cutom palette\n"
+"(is ignored if Palette Type is not custom)"
+msgstr ""
+"Nom de la paleta personalitzada\n"
+"(s'ignora si no s'ha personalitzat el tipus de paleta)"
+
+#: gap/gap_range_ops.c:340
+msgid "Remove Unused"
+msgstr "Suprimeix els que no s'han emprat"
+
+#: gap/gap_range_ops.c:341
+msgid ""
+"Remove unused or double colors\n"
+"(is ignored if Palette Type is not custom)"
+msgstr ""
+"Suprimeix els colors no emprats o dobles\n"
+"(s'ignora si no s'ha personalitzat el tipus de paleta)"
+
+#: gap/gap_range_ops.c:346
+msgid "Number of Colors"
+msgstr "Nombre de colors"
+
+#: gap/gap_range_ops.c:347
+msgid ""
+"Number of resulting Colors\t\t \n"
+"(ignored if Palette Type is not Generate optimal palette)"
+msgstr ""
+"Nombre de colors resultants\t\t \n"
+"(s'ignora si el tipus de paleta no és genera d'una paleta òptima)"
+
+#: gap/gap_range_ops.c:354
+msgid "Dither Options"
+msgstr "Opcions de tramat"
+
+#: gap/gap_range_ops.c:361
+msgid "Enable transparency"
+msgstr "Habilita la transparència"
+
+#: gap/gap_range_ops.c:362
+msgid "Enable dithering of transparency"
+msgstr "Habilita el tramat de la transparència"
+
+#: gap/gap_range_ops.c:365
+msgid "Convert Frames to Indexed"
+msgstr "Converteix els marcs en indexats"
+
+#: gap/gap_range_ops.c:366
+msgid "Palette and Dither Settings"
+msgstr "Paràmetres de la paleta i del tramat"
+
+#: gap/gap_range_ops.c:431
+msgid "Keep Type"
+msgstr "Conserva el tipus"
+
+#: gap/gap_range_ops.c:432
+msgid "Convert to RGB"
+msgstr "Converteix a RGB"
+
+#: gap/gap_range_ops.c:433
+msgid "Convert to Gray"
+msgstr "Converteix a gris"
+
+#: gap/gap_range_ops.c:434
+msgid "Convert to Indexed"
+msgstr "Converteix a indexat"
+
+#: gap/gap_range_ops.c:458
+msgid ""
+"\n"
+"Select destination fileformat by extension\n"
+"optionally convert imagetype\n"
+msgstr ""
+"\n"
+"Seleccioneu el format de fitxer de destí per extensió\n"
+"opcionalment, convertiu el tipus d'imatge\n"
+
+#: gap/gap_range_ops.c:461
+msgid "Basename:"
+msgstr "Nom base:"
+
+#: gap/gap_range_ops.c:462
+msgid ""
+"basename of the resulting frames       \n"
+"(0001.ext is added)"
+msgstr ""
+"nom base dels marcs resultants       \n"
+"(s'hi afegeix 0001.ext)"
+
+#: gap/gap_range_ops.c:467 gap/gap_split.c:235
+msgid "Extension:"
+msgstr "Extensió:"
+
+#: gap/gap_range_ops.c:468
+msgid ""
+"extension of resulting frames       \n"
+"(is also used to define Fileformat)"
+msgstr ""
+"extensió dels marcs resultants       \n"
+"(també es fa servir per definir el format de fitxer)"
+
+#: gap/gap_range_ops.c:474
+msgid "Imagetype:"
+msgstr "Tipus d'imatge:"
+
+#: gap/gap_range_ops.c:475
+msgid ""
+"Convert to, or keep imagetype           \n"
+"(most fileformats can't handle all types)"
+msgstr ""
+"Convertiu o conserveu el tipus d'imatge           \n"
+"(la majoria de formats de fitxer no poden manejar tots els tipus)"
+
+#: gap/gap_range_ops.c:481 gap/gap_split.c:246
+msgid "Flatten:"
+msgstr "Complet:"
+
+#: gap/gap_range_ops.c:482
+msgid ""
+"Flatten all resulting frames               \n"
+"(most fileformats need flattened frames)"
+msgstr ""
+"Completa tots els marcs resultants               \n"
+"(la majoria de formats de fitxer necessiten marcs complets)"
+
+#: gap/gap_range_ops.c:487
+msgid "Convert Frames to other Formats"
+msgstr "Converteix els marcs en altres formats"
+
+#: gap/gap_range_ops.c:488
+msgid "Convert Settings"
+msgstr "Converteix els paràmetres"
+
+#: gap/gap_range_ops.c:565
+msgid "Expand as necessary"
+msgstr "Expandeix tant com sigui necessari"
+
+#: gap/gap_range_ops.c:566
+msgid "Clipped to image"
+msgstr "Adjuntat a la imatge"
+
+#: gap/gap_range_ops.c:567
+msgid "Clipped to bottom layer"
+msgstr "Adjuntat a la capa inferior"
+
+#: gap/gap_range_ops.c:568
+msgid "Flattened image"
+msgstr "Imatge completa"
+
+#: gap/gap_range_ops.c:569
+msgid ""
+"Resulting Layer Size is made of the outline-rectangle \n"
+"of all visible layers (may differ from frame to frame)"
+msgstr ""
+"La mida de la capa resultant està feta del contorn del rectangle \n"
+"de totes les capes visibles (pot diferir de marc a marc)"
+
+#: gap/gap_range_ops.c:570
+msgid "Resulting Layer Size is the frame size"
+msgstr "La mida de la capa resultant és la mida del marc"
+
+#: gap/gap_range_ops.c:571
+msgid ""
+"Resulting Layer Size is the size of the bottom layer\n"
+"(may differ from frame to frame)"
+msgstr ""
+"La mida de la capa resultant és la mida de la capa inferior\n"
+"(pot diferir de marc a marc)"
+
+#: gap/gap_range_ops.c:572
+msgid ""
+"Resulting Layer Size is the frame size     \n"
+"transparent parts are filled with BG color"
+msgstr ""
+"La mida de la capa resultant és la mida del marc      \n"
+"les parts transparents que s'omplen de color blau i verd"
+
+#: gap/gap_range_ops.c:582
+msgid "select all Layers where Layername is equal to Pattern"
+msgstr "selecciona totes les capes amb el mateix nom que el patró"
+
+#: gap/gap_range_ops.c:583
+msgid "select all Layers where Layername starts with Pattern"
+msgstr "selecciona totes les capes que comencen com el patró"
+
+#: gap/gap_range_ops.c:584
+msgid "select all Layers where Layername ends up with Pattern"
+msgstr "selecciona totes les capes que acaben com el patró"
+
+#: gap/gap_range_ops.c:585
+msgid "select all Layers where Layername contains Pattern"
+msgstr "selecciona totes les capes que continguin en el nom el del patró"
+
+#: gap/gap_range_ops.c:586
+msgid ""
+"select Layerstack positions.\n"
+"0, 4-5, 8\n"
+"where 0 == Top-layer"
+msgstr ""
+"selecciona les posicions de la pila de capes.\n"
+"0, 4-5, 8\n"
+"on 0 == capa de dalt"
+
+#: gap/gap_range_ops.c:587
+msgid ""
+"select Layerstack positions.\n"
+"0, 4-5, 8\n"
+"where 0 == BG-layer"
+msgstr ""
+"selecciona les posicions de la pila de capes.\n"
+"0, 4-5, 8\n"
+"on 0 == capa BG"
+
+#: gap/gap_range_ops.c:588
+msgid "select all visible Layers"
+msgstr "selecciona totes les capes visibles"
+
+#: gap/gap_range_ops.c:617
+msgid "Layer Basename:"
+msgstr "Nom bàsic de la capa:"
+
+#: gap/gap_range_ops.c:618
+msgid ""
+"Basename for all Layers    \n"
+"[####] is replaced by frame number"
+msgstr ""
+"Nom bàsic de totes les capes    \n"
+"on es substitueix [####] pel número de marc"
+
+#: gap/gap_range_ops.c:636
+msgid "Layer Mergemode:"
+msgstr "Mode de refosa de capes:"
+
+#: gap/gap_range_ops.c:643
+msgid "Exclude BG-Layer"
+msgstr "Exclou les capes blau i verda"
+
+#: gap/gap_range_ops.c:644
+msgid ""
+"Exclude the BG-Layers    \n"
+"in all handled frames\n"
+"regardless to selection"
+msgstr ""
+"Exclou les capes blau i verda    \n"
+"en tots els marcs gestionats\n"
+"sense tenirt en compte la selecció"
+
+#: gap/gap_range_ops.c:674
+msgid "Use all unselected Layers"
+msgstr "Fes servir totes les capes no seleccionades"
+
+#: gap/gap_range_ops.c:748
+msgid "Creating Layer-Animated Image..."
+msgstr "S'està creant una capa d'una imatge animada..."
+
+#: gap/gap_range_ops.c:970
+msgid "Frames to Image"
+msgstr "Marcs a la imatge"
+
+#: gap/gap_range_ops.c:971
+msgid "Create Multilayer-Image from Frames"
+msgstr "Crea una imatge de múltiples capes des dels marcs"
+
+#: gap/gap_range_ops.c:1112
+msgid "Flattening Frames..."
+msgstr "S'estan completant els marcs..."
+
+#: gap/gap_range_ops.c:1113
+msgid "Converting Frames..."
+msgstr "S'estan convertint els marcs..."
+
+#: gap/gap_range_ops.c:1261
+msgid ""
+"Convert Frames: SAVE operation FAILED.\n"
+"Desired save plugin can't handle type\n"
+"or desired save plugin not available."
+msgstr ""
+"En convertir els marcs: S'ha produït un error en l'operació de desar.\n"
+"El connector per desar que voleu no pot manejar aquest tipus\n"
+"o bé no està disponible."
+
+#: gap/gap_range_ops.c:1369
+msgid "Cropping all Animation Frames..."
+msgstr "S'estan escapçant tots els marcs d'animació..."
+
+#: gap/gap_range_ops.c:1372
+msgid "Resizing all Animation Frames..."
+msgstr "S'estan redimensionant tots els marcs d'animació..."
+
+#: gap/gap_range_ops.c:1375
+msgid "Scaling all Animation Frames..."
+msgstr "S'estan reduïnt tots els marcs d'animació..."
+
+#: gap/gap_range_ops.c:1461
+msgid "Flatten Frames"
+msgstr "Completa els marcs"
+
+#: gap/gap_range_ops.c:1517
+#, c-format
+msgid "Removing Layer (pos:%ld) from Frames..."
+msgstr "S'està suprimint la capa (pos:%ld) dels marcs..."
+
+#: gap/gap_range_ops.c:1634
+msgid "Delete Layers in Frames"
+msgstr "Suprimeix les capes als marcs"
+
+#: gap/gap_range_ops.c:1635
+msgid "Select Frame Range & Position"
+msgstr "Selecciona l'abast i la posició del marc"
+
+#: gap/gap_split.c:101
+msgid "Splitting into Frames..."
+msgstr "S'està dividint en marcs..."
+
+#: gap/gap_split.c:176
+msgid ""
+"Split Frames: SAVE operation FAILED.\n"
+"desired save plugin can't handle type\n"
+"or desired save plugin not available."
+msgstr ""
+"En dividir els marcs: S'ha produït un error en l'operació de desar.\n"
+"El connector per desar no pot manejar aquest tipus\n"
+"o bé no està disponible."
+
+#: gap/gap_split.c:226
+#, c-format
+msgid ""
+"%s\n"
+"%s\n"
+"(%s_0001.%s)\n"
+msgstr ""
+"%s\n"
+"%s\n"
+"(%s_0001.%s)\n"
+
+#: gap/gap_split.c:227
+msgid "Make a frame (diskfile) from each Layer"
+msgstr "Fes un marc (fitxer de disc) de cada capa"
+
+#: gap/gap_split.c:228
+msgid "frames are named: base_nr.extension"
+msgstr "els marcs es diuen: base_nr.extensió"
+
+#: gap/gap_split.c:236
+msgid "extension of resulting frames (is also used to define Fileformat)"
+msgstr ""
+"extensió dels marcs resultants (també es fa servir per definir el format del "
+"fitxer)"
+
+#: gap/gap_split.c:241
+msgid "Inverse Order:"
+msgstr "Ordre invers:"
+
+#: gap/gap_split.c:242
+msgid "Start frame 0001 at Top Layer"
+msgstr "Inicia el marc 0001 a la capa superior"
+
+#: gap/gap_split.c:247
+msgid ""
+"Remove Alpha Channel in resulting Frames. Transparent parts are filled with "
+"BG color."
+msgstr ""
+"Suprimeix el canal alfa en els marcs resultants. Les parts transparents "
+"s'omplen amb verd o blau."
+
+#: gap/gap_split.c:250
+msgid "Split Image into Frames"
+msgstr "Divideix les imatges en marcs"
+
+#: gap/gap_split.c:251
+msgid "Split Settings"
+msgstr "Divideix els paràmetres"
+
+#: gap/gap_split.c:298
+msgid ""
+"OPERATION CANCELLED.\n"
+"This image is already an AnimFrame.\n"
+"Try again on a Duplicate (Image/Duplicate)."
+msgstr ""
+"L'OPERACIÓ S'HA CANCEL·LAT.\n"
+"Aquesta imatge ja és un marc animat.\n"
+"Torneu-ho a intentar en un duplicat (imatge/duplicat)."
+
+#: gap/resize.c:107
+msgid "Scale"
+msgstr "Redueix"
+
+#: gap/resize.c:111
+msgid "Resize"
+msgstr "Redimensiona"
+
+#: gap/resize.c:127
+msgid "New width:"
+msgstr "Nova amplada:"
+
+#: gap/resize.c:144
+msgid "New height:"
+msgstr "Nova alçada:"
+
+#: gap/resize.c:161
+msgid "X ratio:"
+msgstr "Ràtio X:"
+
+#: gap/resize.c:178
+msgid "Y ratio:"
+msgstr "Ràtio Y:"
+
+#: gap/resize.c:197
+msgid "X Offset:"
+msgstr "Desplaçament en X:"
+
+#: gap/resize.c:214
+msgid "Y Offset:"
+msgstr "Desplaçament en Y:"
+
+#. the constrain toggle button
+#: gap/resize.c:231
+msgid "Constrain Ratio"
+msgstr "Restringeix la ràtio"

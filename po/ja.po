@@ -1,0 +1,2613 @@
+# GIMP plug-ins message translation table
+# Copyright (C) 1999-2001 Free Software Foundation, Inc.
+# SHIRASAKI Yasuhiro <yasuhiro@gnome.gr.jp>, 1999-2002.
+# Takashi Kido <yositaka@yd5.so-net.ne.jp>, 2000.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gimp 1.2\n"
+"POT-Creation-Date: 2003-03-25 02:00+0100\n"
+"PO-Revision-Date: 2002-05-05 17:46+0900\n"
+"Last-Translator: 白崎 泰弘 <yasuhiro@gnome.gr.jp>\n"
+"Language-Team: Japanese <translation@gnome.gr.jp>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=EUC-JP\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Button  to invoke filebrowser
+#: gap/gap_arr_dialog.c:293
+msgid "File-Browser"
+msgstr "ファイルブラウザ"
+
+#. parameter settings
+#: gap/gap_arr_dialog.c:793
+msgid "Enter Values"
+msgstr "値を入力"
+
+#: gap/gap_arr_dialog.c:812
+msgid "Value:"
+msgstr "明度:"
+
+#: gap/gap_arr_dialog.c:878
+msgid "Value: "
+msgstr "値: "
+
+#: gap/gap_arr_dialog.c:1040
+msgid "Press Button"
+msgstr "押しボタン"
+
+#: gap/gap_arr_dialog.c:1041
+msgid "Select"
+msgstr "選択"
+
+#: gap/gap_dbbrowser_utils.c:76
+msgid "GAP Animated Filter apply"
+msgstr "GAP 動画フィルタ適用"
+
+#: gap/gap_dbbrowser_utils.c:97
+msgid "Animated Filter apply (init)"
+msgstr "動画フィルタ適用 (初期)"
+
+#: gap/gap_dbbrowser_utils.c:148
+msgid "Search:"
+msgstr "検索:"
+
+#: gap/gap_dbbrowser_utils.c:176
+msgid "Gen Code by name"
+msgstr "名前で元コードを検索"
+
+#: gap/gap_dbbrowser_utils.c:185
+msgid "Search by Name"
+msgstr "名前で検索"
+
+#: gap/gap_dbbrowser_utils.c:193
+msgid "Search by Blurb"
+msgstr "説明で検索"
+
+#. show the name
+#: gap/gap_dbbrowser_utils.c:335
+msgid "Name:"
+msgstr "名称:"
+
+#. show the description
+#: gap/gap_dbbrowser_utils.c:352
+msgid "Blurb:"
+msgstr "説明:"
+
+#: gap/gap_dbbrowser_utils.c:374
+msgid "In:"
+msgstr "入力:"
+
+#: gap/gap_dbbrowser_utils.c:420
+msgid "Out:"
+msgstr "出力:"
+
+#: gap/gap_dbbrowser_utils.c:469
+msgid "Help:"
+msgstr "ヘルプ:"
+
+#. show the author & the copyright
+#: gap/gap_dbbrowser_utils.c:507
+msgid "Author:"
+msgstr "作者:"
+
+#: gap/gap_dbbrowser_utils.c:522
+msgid "Date:"
+msgstr "日付:"
+
+#: gap/gap_dbbrowser_utils.c:537
+msgid "Copyright:"
+msgstr "著作権表示:"
+
+#: gap/gap_dbbrowser_utils.c:676
+msgid "Animated Filter apply (by name - please wait)"
+msgstr "動画フィルタ適用 (名前で - お待ち下さい)"
+
+#: gap/gap_dbbrowser_utils.c:700
+msgid "Animated Filter apply (by blurb - please wait)"
+msgstr "動画フィルタ適用 (説明で - お待ち下さい)"
+
+#: gap/gap_dbbrowser_utils.c:708
+msgid "Animated Filter apply (please wait)"
+msgstr "動画フィルタ適用 (お待ち下さい)"
+
+#: gap/gap_dbbrowser_utils.c:755 gap/gap_filter_foreach.c:163
+#: gap/gap_mod_layer.c:287
+msgid "Animated Filter apply"
+msgstr "動画フィルタ適用"
+
+#: gap/gap_decode_mpeg_main.c:102
+msgid "<Image>/Video/Split Video to Frames"
+msgstr "<Image>/動画/フレームに分割"
+
+#: gap/gap_decode_mpeg_main.c:103
+msgid "<Toolbox>/Xtns/Split Video to Frames"
+msgstr "<Toolbox>/拡張/フレームに分割"
+
+#: gap/gap_decode_mpeg_main.c:176
+msgid "<Image>/Video/Split Video to Frames/MPEG1"
+msgstr "<Image>/動画/フレームに分割/MPEG1"
+
+#: gap/gap_decode_mpeg_main.c:189
+msgid "<Toolbox>/Xtns/Split Video to Frames/MPEG1"
+msgstr "<Toolbox>/拡張/フレームに分割/MPEG1"
+
+#: gap/gap_decode_mpeg_main.c:332 gap/gap_decode_xanim.c:337
+#: gap/gap_range_ops.c:1240
+msgid "Overwrite Frame"
+msgstr "フレームを上書き"
+
+#: gap/gap_decode_mpeg_main.c:334 gap/gap_decode_xanim.c:339
+#: gap/gap_range_ops.c:1242
+msgid "Overwrite All"
+msgstr "全て上書き"
+
+#: gap/gap_decode_mpeg_main.c:342 gap/gap_decode_xanim.c:347
+#: gap/gap_lib.c:1036 gap/gap_range_ops.c:1247
+msgid "GAP Question"
+msgstr "GAP 質問"
+
+#: gap/gap_decode_mpeg_main.c:343 gap/gap_decode_xanim.c:348
+msgid "File already exists"
+msgstr "ファイルは既に存在します"
+
+#: gap/gap_decode_mpeg_main.c:437
+msgid "Decoding MPEG Movie..."
+msgstr "MPEG 動画をデコードしています..."
+
+#: gap/gap_decode_mpeg_main.c:642
+msgid "Video"
+msgstr "ビデオ"
+
+#: gap/gap_decode_mpeg_main.c:643
+msgid ""
+"Name of the MPEG1 videofile to READ.\n"
+"Frames are extracted from the videofile\n"
+"and written to seperate diskfiles.\n"
+"Audiotracks in the videofile are ignored."
+msgstr ""
+"読み込む MPEG1 動画ファイルの名前です.\n"
+"動画ファイルから各フレームを取り出して\n"
+"個々にディスク上のファイルに書き出します.\n"
+"動画ファイル中の音声トラックは無視されます."
+
+#: gap/gap_decode_mpeg_main.c:652 gap/gap_decode_xanim.c:224
+#: gap/gap_lib.c:2120 gap/gap_lib.c:2315 gap/gap_range_ops.c:253
+#: gap/gap_range_ops.c:602
+msgid "From:"
+msgstr "最初:"
+
+#: gap/gap_decode_mpeg_main.c:653 gap/gap_decode_xanim.c:225
+msgid "Framenumber of 1st frame to extract"
+msgstr "最初に取り出すフレーム番号"
+
+#: gap/gap_decode_mpeg_main.c:662 gap/gap_decode_xanim.c:234
+#: gap/gap_lib.c:2128 gap/gap_lib.c:2323 gap/gap_range_ops.c:260
+#: gap/gap_range_ops.c:610
+msgid "To:"
+msgstr "宛:"
+
+#: gap/gap_decode_mpeg_main.c:663 gap/gap_decode_xanim.c:235
+msgid "Framenumber of last frame to extract"
+msgstr "最後に取り出すフレーム番号"
+
+#: gap/gap_decode_mpeg_main.c:672 gap/gap_decode_xanim.c:244
+msgid "Framenames:"
+msgstr "フレーム名:"
+
+#: gap/gap_decode_mpeg_main.c:673
+msgid ""
+"Basename for the AnimFrames to write on disk\n"
+"(framenumber and .xcf is added)"
+msgstr ""
+"ディスクに書く動画フレームの Basename.\n"
+"(フレーム番号と .xcf が付けられます)"
+
+#: gap/gap_decode_mpeg_main.c:680 gap/gap_decode_xanim.c:283
+msgid "Open"
+msgstr "開く"
+
+#: gap/gap_decode_mpeg_main.c:681 gap/gap_decode_xanim.c:284
+msgid "Open the 1st one of the extracted frames"
+msgstr "取り出されたフレームの最初のものを開く"
+
+#: gap/gap_decode_mpeg_main.c:685
+msgid ""
+"\n"
+"WARNING: Do not attempt to split other files than MPEG1 videos.\n"
+"Before you proceed, you should save all open images."
+msgstr ""
+"\n"
+"警告: MPEG1 動画以外のファイルを分割しないで下さい.\n"
+"続行する前に作業中の全ての画像を保存して下さい."
+
+#: gap/gap_decode_mpeg_main.c:688
+msgid "Split MPEG1 Video to Frames"
+msgstr "MPEG1 動画をフレームに分割"
+
+#: gap/gap_decode_mpeg_main.c:689 gap/gap_decode_xanim.c:298
+#: gap/gap_range_ops.c:1462
+msgid "Select Frame Range"
+msgstr "フレーム範囲選択"
+
+#: gap/gap_decode_xanim.c:114
+msgid "Conditions to run the xanim based video split"
+msgstr "xanim による画像分割に必要な設定"
+
+#: gap/gap_decode_xanim.c:122
+msgid "1.) xanim 2.80.0 exporting edition (the loki version)"
+msgstr "1.) xanim 2.80.0 国際版 (loki バージョン)"
+
+#: gap/gap_decode_xanim.c:126
+msgid "    must be installed somewhere in your PATH"
+msgstr "    が PATH の通ったところにインストールされていること"
+
+#: gap/gap_decode_xanim.c:130
+msgid "    you can get xanim exporting edition at"
+msgstr "    国際版の xanim は以下の場所で手に入れられます"
+
+#: gap/gap_decode_xanim.c:146
+msgid ""
+"2.) if your xanim exporting edition is not in your PATH or is not named xanim"
+msgstr ""
+"2.) xanim が国際版でなかったり PATH が通ってなかったり xanim という名前ではな"
+"い場合"
+
+#: gap/gap_decode_xanim.c:150
+msgid "    you have to set Environment variable GAP_XANIM_PROG "
+msgstr "    環境変数 GAP_XANIM_PROG が国際版 xanim を指すようにして"
+
+#: gap/gap_decode_xanim.c:154
+msgid "    to your xanim exporting program and restart gimp"
+msgstr "    gimp を再起動して下さい"
+
+#: gap/gap_decode_xanim.c:162
+msgid "An ERROR occured while trying to call xanim:"
+msgstr "xanim 呼び出し中にエラー発生"
+
+#: gap/gap_decode_xanim.c:181
+msgid "XANIM Information"
+msgstr "XANIM 情報"
+
+#: gap/gap_decode_xanim.c:214
+msgid "Video:"
+msgstr "動画:"
+
+#: gap/gap_decode_xanim.c:215
+msgid ""
+"Name of a videofile to READ by xanim.\n"
+"Frames are extracted from the videofile\n"
+"and written to separate diskfiles.\n"
+"xanim exporting edition is required."
+msgstr ""
+"xanim で読み込む動画ファイル名です.\n"
+"各フレームを xanim を用いて読みだし,\n"
+"それぞれ別のファイルに書き出します.\n"
+"xanim は国際版でなければなりません."
+
+#: gap/gap_decode_xanim.c:245
+msgid ""
+"Basename for the AnimFrames to write on disk\n"
+"(framenumber and extension is added)"
+msgstr ""
+"ディスクに書き出す動画フレームの Basename です.\n"
+"(フレーム番号と拡張子が付け加えられます)"
+
+#: gap/gap_decode_xanim.c:252
+msgid "Format"
+msgstr "形式"
+
+#: gap/gap_decode_xanim.c:253
+msgid ""
+"Fileformat for the extracted AnimFrames\n"
+"(xcf is extracted as ppm and converted to xcf)"
+msgstr ""
+"抽出する動画のファイル形式です.\n"
+"(xcf を指定すると ppm で抽出して xcf に変換します)"
+
+#: gap/gap_decode_xanim.c:260
+msgid "Extract Frames"
+msgstr "フレーム抽出"
+
+#: gap/gap_decode_xanim.c:261
+msgid "Enable extraction of Frames"
+msgstr "フレーム取り出しを有効にする"
+
+#: gap/gap_decode_xanim.c:265
+msgid "Extract Audio"
+msgstr "音声抽出"
+
+#: gap/gap_decode_xanim.c:266
+msgid ""
+"Enable extraction of audio to raw audiofile\n"
+"(frame range limits are ignored for audio)"
+msgstr ""
+"音声を raw 音声ファイルに取り出します\n"
+"(フレーム範囲指定は無視されます)"
+
+#: gap/gap_decode_xanim.c:271
+msgid "Jpeg Quality:"
+msgstr "JPEG 品質:"
+
+#: gap/gap_decode_xanim.c:272
+msgid ""
+"Quality for resulting Jpeg frames\n"
+"(is ignored when other formats are used)"
+msgstr ""
+"出力 JPEG フレームの品質です\n"
+"(他の形式の場合は無視されます)"
+
+#: gap/gap_decode_xanim.c:288
+msgid "Run asynchronously"
+msgstr "非同期実行"
+
+#: gap/gap_decode_xanim.c:289
+msgid ""
+"Run xanim asynchronously and delete unwanted frames\n"
+"(out of the specified range) while xanim is still running"
+msgstr ""
+"xanim を非同期実行し xanim が実行中でも指定した\n"
+"範囲外の不要なフレームを削除する."
+
+#: gap/gap_decode_xanim.c:294
+msgid ""
+"\n"
+"Warning: xanim 2.80 has only limited MPEG support.\n"
+"Most of the frames (type P and B) will be skipped."
+msgstr ""
+"\n"
+"警告: xanim 2.80 は限定された MPEG サポートしか行いません.\n"
+"P や B タイプのフレームは無視されます."
+
+#: gap/gap_decode_xanim.c:297
+msgid "Split any Xanim readable Video to Frames"
+msgstr "Xanim で読める動画ファイルをフレームに分割する"
+
+#: gap/gap_decode_xanim.c:540
+#, c-format
+msgid ""
+"can't find any extracted frames,\n"
+"%s\n"
+"maybe xanim has failed or was cancelled"
+msgstr ""
+"抽出したフレーム %s\n"
+"が見つかりません.\n"
+"xanim が転んだかキャンセルされた可能性があります"
+
+#: gap/gap_decode_xanim.c:565
+#, c-format
+msgid "frames are not extracted, because overwrite of %s was cancelled"
+msgstr "%s の上書きがキャンセルされたため, フレームは抽出されませんでした."
+
+#: gap/gap_decode_xanim.c:575
+#, c-format
+msgid "failed to overwrite %s (check permissions ?)"
+msgstr "%s の上書き失敗 (許可されていますか?)"
+
+#: gap/gap_decode_xanim.c:597
+#, c-format
+msgid "failed to write %s (check permissions ?)"
+msgstr "%s の書き込み失敗 (許可されていますか?)"
+
+#: gap/gap_decode_xanim.c:723
+#, c-format
+msgid "could not execute %s (check if xanim is installed)"
+msgstr "%s を実行できません (xanim は導入されていますか?)"
+
+#: gap/gap_decode_xanim.c:731
+#, c-format
+msgid "%s does not look like xanim"
+msgstr "%s は xanim ではないようです"
+
+#: gap/gap_decode_xanim.c:755
+#, c-format
+msgid ""
+"The xanim program on your system \"%s\"\n"
+"does not support the exporting options Ea, Ee, Eq"
+msgstr ""
+"あなたのシステムの xanim である \"%s\" は\n"
+"エクスポートオプション Ea, Ee, Eq が使えないようです."
+
+#: gap/gap_decode_xanim.c:762
+#, c-format
+msgid ""
+"The xanim program on your system \"%s\"\n"
+"does not support exporting of single frames"
+msgstr ""
+"あなたのシステムの xanim である \"%s\" は\n"
+"単一フレームのエクスポートができないようです."
+
+#: gap/gap_decode_xanim.c:1025
+#, c-format
+msgid "videofile %s not existent or empty\n"
+msgstr "動画ファイル %s は存在しないか空のようです\n"
+
+#: gap/gap_decode_xanim.c:1078
+#, c-format
+msgid ""
+"could not create %s directory\n"
+"(that is required for xanim frame export)"
+msgstr ""
+"xanim によるフレーム抽出に必要な\n"
+"%s ディレクトリが作れません"
+
+#: gap/gap_decode_xanim.c:1089
+msgid "extracting frames..."
+msgstr "フレームを抽出しています..."
+
+#: gap/gap_decode_xanim.c:1114
+#, c-format
+msgid ""
+"could not start xanim process\n"
+"(program=%s)"
+msgstr ""
+"xanim プロセスを開始できません\n"
+"(プログラム=%s) "
+
+#: gap/gap_decode_xanim.c:1135
+msgid ""
+"can't find any extracted frames,\n"
+"xanim has failed or was cancelled"
+msgstr ""
+"抽出したフレームが見つかりません,\n"
+"xanim の実行に失敗したかキャンセルされました."
+
+#: gap/gap_decode_xanim.c:1154
+msgid "renaming frames..."
+msgstr "フレーム名を変更しています..."
+
+#: gap/gap_decode_xanim.c:1159
+msgid "converting frames..."
+msgstr "フレームを変換しています..."
+
+#: gap/gap_filter_foreach.c:126
+msgid "backup to file"
+msgstr "ファイルにバックアップ"
+
+#. pixel
+#: gap/gap_filter_foreach.c:128
+msgid "Make backup of the image after each step"
+msgstr "各過程の毎にバックアップ画像を作る"
+
+#: gap/gap_filter_foreach.c:132 gap/gap_mod_layer.c:262
+msgid "Continue"
+msgstr "続ける"
+
+#: gap/gap_filter_foreach.c:136
+#, c-format
+msgid "Skip %d"
+msgstr "スキップ %d"
+
+#: gap/gap_filter_foreach.c:155 gap/gap_mod_layer.c:281
+#, c-format
+msgid ""
+"2nd call of %s\n"
+"(define end-settings)"
+msgstr ""
+"%s の2度目の呼び出し\n"
+"(終了設定の定義)"
+
+#: gap/gap_filter_foreach.c:159
+#, c-format
+msgid ""
+"Non-Interactive call of %s\n"
+"(for all layers in between)"
+msgstr ""
+"%s の非インタラクティブ呼び出し\n"
+"(全ての中間レイヤーに対して)"
+
+#: gap/gap_filter_foreach.c:278
+msgid "Applying Filter to all Layers..."
+msgstr "全てのレイヤーにフィルタを適用しています..."
+
+#: gap/gap_filter_foreach.c:552
+msgid "Select Filter for Animated apply"
+msgstr "変化させつつ適用するフィルタを選択"
+
+#: gap/gap_filter_foreach.c:553 gap/gap_mod_layer.c:664
+msgid "Apply Constant"
+msgstr "一様に適用"
+
+#: gap/gap_filter_foreach.c:554 gap/gap_mod_layer.c:665
+msgid "Apply Varying"
+msgstr "変化させつつ適用"
+
+#: gap/gap_filter_main.c:105
+msgid "<Image>/Filters/Filter all Layers..."
+msgstr "<Image>/フィルタ/全レイヤーに適用..."
+
+#: gap/gap_frontends_main.c:125
+msgid "<Image>/Video/Split Video to Frames/Any XANIM readable..."
+msgstr "<Image>/動画/フレームに分割/XANIM で読み込めるもの全て..."
+
+#: gap/gap_frontends_main.c:137
+msgid "<Toolbox>/Xtns/Split Video to Frames/Any XANIM readable..."
+msgstr "<Toolbox>/拡張/フレームに分割/XANIM で読み込めるもの全て..."
+
+#: gap/gap_frontends_main.c:149
+msgid "<Image>/Video/Encode/MPEG1..."
+msgstr "<Image>/動画/エンコード/MPEG1..."
+
+#: gap/gap_frontends_main.c:162
+msgid "<Image>/Video/Encode/MPEG2..."
+msgstr "<Image>/動画/エンコード/MPEG2..."
+
+#: gap/gap_lib.c:243
+msgid "GAP Message"
+msgstr "GAP メッセージ"
+
+#: gap/gap_lib.c:905
+msgid ""
+"OPERATION CANCELLED.\n"
+"Current frame changed while dialog was open."
+msgstr ""
+"操作はキャンセルされました.\n"
+"ダイアログが開かれている間に現在のフレームに変更が加えられました."
+
+#: gap/gap_lib.c:927 gap/gap_lib.c:2192
+msgid ""
+"OPERATION CANCELLED.\n"
+"GAP plug-ins only work with filenames\n"
+"that end in numbers like _0001.xcf.\n"
+"==> Rename your image, then try again."
+msgstr ""
+"操作はキャンセルされました.\n"
+"GAP-プラグインは _0001.xcf で終わる\n"
+"ファイル名に対してのみ動作します.\n"
+"==> 画像名を変更してからやり直して下さい."
+
+#: gap/gap_lib.c:1014
+msgid ""
+"You are using a file format != xcf\n"
+"Save Operations may result\n"
+"in loss of layer information."
+msgstr ""
+"xcf ではないファイル形式を選択しています\n"
+"保存した場合にレイヤー情報が失われる\n"
+"可能性があります"
+
+#: gap/gap_lib.c:1030
+msgid "Save Flattened"
+msgstr "統合して保存"
+
+#: gap/gap_lib.c:1032
+msgid "Save As Is"
+msgstr "そのまま保存"
+
+#: gap/gap_lib.c:1507 gap/gap_lib.c:1631 gap/gap_lib.c:1710 gap/gap_lib.c:1717
+#: gap/gap_lib.c:1724 gap/gap_lib.c:1807 gap/gap_lib.c:1829 gap/gap_lib.c:2734
+#, c-format
+msgid "Error: could not rename frame %ld to %ld"
+msgstr "エラー: フレーム %ld から %ld を名称変更できません"
+
+#: gap/gap_lib.c:1570
+#, c-format
+msgid "Error: could not save frame %s"
+msgstr "エラー: フレーム %s を保存できませんでした"
+
+#: gap/gap_lib.c:1619
+msgid "Duplicating frames..."
+msgstr "フレームを複製しています..."
+
+#: gap/gap_lib.c:1795
+msgid "Renumber Framesequence..."
+msgstr "フレームを並べ直しています..."
+
+#: gap/gap_lib.c:1981
+#, c-format
+msgid "Goto Frame (%ld/%ld)"
+msgstr "指定フレームへ移動 (%ld/%ld)"
+
+#: gap/gap_lib.c:1984
+#, c-format
+msgid "Destination Frame Number (%ld  - %ld)"
+msgstr "宛先フレーム番号 (%ld - %ld)"
+
+#: gap/gap_lib.c:1988 gap/gap_lib.c:2065 gap/gap_lib.c:2269
+msgid "Number:"
+msgstr "番号:"
+
+#: gap/gap_lib.c:2049
+#, c-format
+msgid "Delete Frames (%ld/%ld)"
+msgstr "フレーム削除 (%ld/%ld)"
+
+#: gap/gap_lib.c:2052
+#, c-format
+msgid "Delete Frames from %ld to (number)"
+msgstr "削除するフレームは %ld から"
+
+#: gap/gap_lib.c:2115
+#, c-format
+msgid "Duplicate Frames (%ld/%ld)"
+msgstr "フレーム複製 (%ld/%ld)"
+
+#: gap/gap_lib.c:2125
+msgid "Source Range starts at this framenumber"
+msgstr "元範囲はこのフレームから開始"
+
+#: gap/gap_lib.c:2133
+msgid "Source Range ends at this framenumber"
+msgstr "元範囲がこのフレームで終り"
+
+#: gap/gap_lib.c:2136
+msgid "N times:"
+msgstr "回数:"
+
+#: gap/gap_lib.c:2143
+msgid ""
+"Copy selected Range n-times  \n"
+"(you may type in Values > 99)"
+msgstr ""
+"選択範囲を n 回コピー  \n"
+"(99 より大きい回数)"
+
+#: gap/gap_lib.c:2146
+msgid "Duplicate Frame Range"
+msgstr "複製するフレーム範囲"
+
+#: gap/gap_lib.c:2264
+#, c-format
+msgid "Exchange current Frame (%ld)"
+msgstr "現在のフレーム (%ld) と交換"
+
+#: gap/gap_lib.c:2268
+msgid "With Frame (number)"
+msgstr "するフレーム番号は"
+
+#: gap/gap_lib.c:2310
+#, c-format
+msgid "Framesequence Shift (%ld/%ld)"
+msgstr "フレーム並びずらし (%ld/%ld)"
+
+#: gap/gap_lib.c:2320
+msgid "Affected Range starts at this framenumber"
+msgstr "適用する範囲はこのフレームから開始"
+
+#: gap/gap_lib.c:2328
+msgid "Affected Range ends at this framenumber"
+msgstr "適用する範囲はこのフレームで終り"
+
+#: gap/gap_lib.c:2331
+msgid "N-Shift:"
+msgstr "ずらす量:"
+
+#: gap/gap_lib.c:2336
+msgid ""
+"Renumber the affected framesequence     \n"
+"(numbers are shifted in circle by N)"
+msgstr ""
+"適用部分のフレーム並びを再割り付け    \n"
+"(番号はずらし量分ずれる)"
+
+#: gap/gap_lib.c:2338
+msgid "Framesequence shift"
+msgstr "フレーム並びずらし"
+
+#: gap/gap_lib.c:2946
+#, c-format
+msgid ""
+"Can't execute more than 1 Video Function\n"
+"on the same AnimFrame Image at the same time\n"
+"LOCK ID:%s\n"
+msgstr ""
+"同一の動画フレーム画像について同時に多数の\n"
+"動画機能をあてはめることは出来ません\n"
+"LOCK ID:%s\n"
+
+#: gap/gap_main.c:476
+msgid "<Image>/Video/Goto/Next Frame"
+msgstr "<Image>/動画/移動/次のフレーム"
+
+#: gap/gap_main.c:488
+msgid "<Image>/Video/Goto/Previous Frame"
+msgstr "<Image>/動画/移動/前のフレーム"
+
+#: gap/gap_main.c:500
+msgid "<Image>/Video/Goto/First Frame"
+msgstr "<Image>/動画/移動/最初のフレーム"
+
+#: gap/gap_main.c:512
+msgid "<Image>/Video/Goto/Last Frame"
+msgstr "<Image>/動画/移動/最後のフレーム"
+
+#: gap/gap_main.c:524
+msgid "<Image>/Video/Goto/Any Frame..."
+msgstr "<Image>/動画/移動/指定したフレーム..."
+
+#: gap/gap_main.c:536
+msgid "<Image>/Video/Delete Frames..."
+msgstr "<Image>/動画/フレーム削除..."
+
+#: gap/gap_main.c:548
+msgid "<Image>/Video/Duplicate Frames..."
+msgstr "<Image>/動画/フレーム複製..."
+
+#: gap/gap_main.c:560
+msgid "<Image>/Video/Exchange Frame..."
+msgstr "<Image>/動画/フレーム交換..."
+
+#: gap/gap_main.c:572
+msgid "<Image>/Video/Move Path..."
+msgstr "<Image>/動画/パス移動..."
+
+#: gap/gap_main.c:643
+msgid "<Image>/Video/Frames to Image..."
+msgstr "<Image>/動画/フレームを画像に..."
+
+#: gap/gap_main.c:655
+msgid "<Image>/Video/Frames Flatten..."
+msgstr "<Image>/動画/フレーム統合..."
+
+#: gap/gap_main.c:667
+msgid "<Image>/Video/Frames LayerDel..."
+msgstr "<Image>/動画/フレームレイヤー削除..."
+
+#: gap/gap_main.c:691
+msgid "<Image>/Video/Frames Convert..."
+msgstr "<Image>/動画/フレーム変換..."
+
+#: gap/gap_main.c:703
+msgid "<Image>/Video/Frames Resize..."
+msgstr "<Image>/動画/フレームサイズ変更..."
+
+#: gap/gap_main.c:715
+msgid "<Image>/Video/Frames Crop..."
+msgstr "<Image>/動画/フレーム切り抜き..."
+
+#: gap/gap_main.c:727
+msgid "<Image>/Video/Frames Scale..."
+msgstr "<Image>/動画/フレーム拡大縮小..."
+
+#: gap/gap_main.c:739
+msgid "<Image>/Video/Split Image to Frames..."
+msgstr "<Image>/動画/画像をフレームに分割..."
+
+#: gap/gap_main.c:752
+msgid "<Image>/Video/Framesequence Shift..."
+msgstr "<Image>/動画/フレーム並びずらし..."
+
+#: gap/gap_main.c:764
+msgid "<Image>/Video/Frames Modify..."
+msgstr "<Image>/動画/フレーム修正..."
+
+#. Layer select modes
+#: gap/gap_mod_layer.c:84 gap/gap_range_ops.c:574
+msgid "Pattern is equal to LayerName"
+msgstr "パターンはレイヤー名に等しい"
+
+#: gap/gap_mod_layer.c:85 gap/gap_range_ops.c:575
+msgid "Pattern is Start of LayerName"
+msgstr "パターンはレイヤー名で始まる"
+
+#: gap/gap_mod_layer.c:86 gap/gap_range_ops.c:576
+msgid "Pattern is End of Layername"
+msgstr "パターンはレイヤー名で終わる"
+
+#: gap/gap_mod_layer.c:87 gap/gap_range_ops.c:577
+msgid "Pattern is a Part of LayerName"
+msgstr "パターンはレイヤー名の一部分"
+
+#: gap/gap_mod_layer.c:88 gap/gap_range_ops.c:578
+msgid "Pattern is LayerstackNumber List"
+msgstr "パターンはレイヤースタック番号リスト"
+
+#: gap/gap_mod_layer.c:89 gap/gap_range_ops.c:579
+msgid "Pattern is REVERSE-stack List"
+msgstr "パターンは逆転スタックリスト"
+
+#: gap/gap_mod_layer.c:90 gap/gap_range_ops.c:580
+msgid "All Visible (ignore Pattern)"
+msgstr "可視レイヤー全て (パターン無視)"
+
+#: gap/gap_mod_layer.c:92
+msgid "Select all Layers where Layername is equal to Pattern"
+msgstr "レイヤー名がパターンと等しい全てのレイヤーを選ぶ"
+
+#: gap/gap_mod_layer.c:93
+msgid "Select all Layers where Layername starts with Pattern"
+msgstr "レイヤー名がパターンから始まる全てのレイヤーを選ぶ"
+
+#: gap/gap_mod_layer.c:94
+msgid "Select all Layers where Layername ends up with Pattern"
+msgstr "レイヤー名がパターンで終わる全てのレイヤーを選ぶ"
+
+#: gap/gap_mod_layer.c:95
+msgid "Select all Layers where Layername contains Pattern"
+msgstr "レイヤー名がパターンを含む全てのレイヤーを選ぶ"
+
+#: gap/gap_mod_layer.c:96
+msgid ""
+"Select Layerstack positions.\n"
+"0, 4-5, 8\n"
+"where 0 == Top-layer"
+msgstr ""
+"レイヤースタック位置を選ぶ..\n"
+"0, 4-5, 8\n"
+"0 == 最上層レイヤー"
+
+#: gap/gap_mod_layer.c:97
+msgid ""
+"Select Layerstack positions.\n"
+"0, 4-5, 8\n"
+"where 0 == BG-layer"
+msgstr ""
+"レイヤースタック位置を選ぶ.\n"
+"0, 4-5, 8\n"
+"0 == 背景レイヤー"
+
+#: gap/gap_mod_layer.c:98
+msgid "Select all visible Layers"
+msgstr "可視レイヤーを全て選ぶ"
+
+#. action items what to do with the selected layer(s)
+#: gap/gap_mod_layer.c:102
+msgid "Set Layer(s) visible"
+msgstr "レイヤーを可視状態に"
+
+#: gap/gap_mod_layer.c:103
+msgid "Set Layer(s) invisible"
+msgstr "レイヤーを不可視状態に"
+
+#: gap/gap_mod_layer.c:104
+msgid "Set Layer(s) linked"
+msgstr "レイヤーをリンクする"
+
+#: gap/gap_mod_layer.c:105
+msgid "Set Layer(s) unlinked"
+msgstr "レイヤをリンクしない"
+
+#: gap/gap_mod_layer.c:106
+msgid "Raise Layer(s)"
+msgstr "レイヤーを上げる"
+
+#: gap/gap_mod_layer.c:107
+msgid "Lower Layer(s)"
+msgstr "レイヤーを下げる"
+
+#: gap/gap_mod_layer.c:108
+msgid "Merge Layer(s) expand as necessary"
+msgstr "必要に応じて拡大したレイヤーを結合"
+
+#: gap/gap_mod_layer.c:109
+msgid "Merge Layer(s) clipped to image"
+msgstr "画像に切り取られたレイヤーを結合"
+
+#: gap/gap_mod_layer.c:110
+msgid "Merge Layer(s) clipped to bg-layer"
+msgstr "背景に切り取られたレイヤーを結合"
+
+#: gap/gap_mod_layer.c:111
+msgid "Apply filter on Layer(s)"
+msgstr "レイヤーにフィルターを適用"
+
+#: gap/gap_mod_layer.c:112
+msgid "Duplicate Layer(s)"
+msgstr "レイヤーを複製する"
+
+#: gap/gap_mod_layer.c:113
+msgid "Delete Layer(s)"
+msgstr "レイヤーを削除する"
+
+#: gap/gap_mod_layer.c:114
+msgid "Rename Layer(s)"
+msgstr "レイヤーの名称変更"
+
+#: gap/gap_mod_layer.c:153
+msgid ""
+"Perform function on one or more Layer(s)\n"
+"in all frames of the selected frame range\n"
+msgstr ""
+"選択されたフレーム範囲内の全てのフレームで\n"
+"一つ以上のレイヤーに対して機能を実行する\n"
+
+#: gap/gap_mod_layer.c:157 gap/gap_mpege.c:258 gap/gap_range_ops.c:443
+msgid "From Frame:"
+msgstr "元フレーム:"
+
+#: gap/gap_mod_layer.c:158 gap/gap_mpege.c:259 gap/gap_range_ops.c:444
+#: gap/gap_range_ops.c:603
+msgid "first handled frame"
+msgstr "最初に扱われるフレーム"
+
+#: gap/gap_mod_layer.c:165 gap/gap_range_ops.c:451
+msgid "To Frame:"
+msgstr "宛フレーム:"
+
+#: gap/gap_mod_layer.c:166 gap/gap_mpege.c:267 gap/gap_range_ops.c:452
+#: gap/gap_range_ops.c:611
+msgid "last handled frame"
+msgstr "最後に扱われるフレーム"
+
+#: gap/gap_mod_layer.c:174 gap/gap_range_ops.c:650
+msgid "Select Layer(s):"
+msgstr "レイヤー選択:"
+
+#: gap/gap_mod_layer.c:184 gap/gap_range_ops.c:659
+msgid "Select Pattern:"
+msgstr "パターン選択:"
+
+#. pixel
+#: gap/gap_mod_layer.c:186 gap/gap_range_ops.c:661
+msgid ""
+"String to identify layer names    \n"
+"or layerstack position numbers\n"
+"0,3-5"
+msgstr ""
+"レイヤーの名前を区別する文字列    \n"
+"またはレイヤースタック位置の番号\n"
+"0,3-5"
+
+#: gap/gap_mod_layer.c:192 gap/gap_range_ops.c:667
+msgid "Case sensitive"
+msgstr "大文字と小文字を区別する"
+
+#: gap/gap_mod_layer.c:193 gap/gap_range_ops.c:668
+msgid "Lowercase and UPPERCASE letters are considered as different"
+msgstr "小文字と大文字の文字は異なる物だとみなす"
+
+#: gap/gap_mod_layer.c:198 gap/gap_range_ops.c:673
+msgid "Invert Selection"
+msgstr "選択領域反転"
+
+#: gap/gap_mod_layer.c:199
+msgid "Perform actions on all unselected Layers"
+msgstr "全ての非選択レイヤーにアクションを行う"
+
+#: gap/gap_mod_layer.c:204
+msgid "Function:"
+msgstr "機能:"
+
+#. argv[7].radio_help_argv = action_help
+#: gap/gap_mod_layer.c:208
+msgid "Function to be performed on all selected layers"
+msgstr "全ての選択したレイヤーに実行される機能"
+
+#: gap/gap_mod_layer.c:214
+msgid "New Layername:"
+msgstr "新規レイヤー名"
+
+#. pixel
+#: gap/gap_mod_layer.c:216
+msgid ""
+"New Layername for all handled layers \n"
+"[####] is replaced by frame number\n"
+"(is used on function rename only)"
+msgstr ""
+"取り扱う全レイヤーのための新規レイヤー名\n"
+"[####] はフレーム番号によって置きかえられる\n"
+"(名前変更だけのための機能として使われる)"
+
+#: gap/gap_mod_layer.c:221
+msgid "Frames Modify"
+msgstr "フレーム修正"
+
+#: gap/gap_mod_layer.c:222
+msgid "Settings"
+msgstr "設定"
+
+#: gap/gap_mod_layer.c:285
+#, c-format
+msgid ""
+"Non-Interactive call of %s\n"
+"(for all selected layers)"
+msgstr ""
+"ノンインタラクティブは %s を呼び出しました\n"
+"(全ての非選択レイヤーのために)"
+
+#. GAP-PDB-Browser Dialog
+#. ----------------------
+#: gap/gap_mod_layer.c:663
+msgid "Select Filter for Animated frames-apply"
+msgstr "動画フレームに適用するフィルタの選択"
+
+#: gap/gap_mod_layer.c:805
+msgid "GAP Modify: No layer selected in last handled frame"
+msgstr "GAP 修正: 選択した最後に扱うフレームにはレイヤーがありません"
+
+#: gap/gap_mod_layer.c:891
+msgid "Modifying Frames/Layer(s)..."
+msgstr "フレーム/レイヤーの修正中..."
+
+#: gap/gap_mod_layer.c:972
+msgid "No selected Layer in start frame"
+msgstr "開始フレームのレイヤーが選択されていません"
+
+#: gap/gap_mov_dialog.c:262
+msgid "Normal"
+msgstr "標準"
+
+#: gap/gap_mov_dialog.c:263
+msgid "Dissolve"
+msgstr "消算"
+
+#: gap/gap_mov_dialog.c:264
+msgid "Multiply"
+msgstr "乗算"
+
+#: gap/gap_mov_dialog.c:265
+msgid "Screen"
+msgstr "スクリーン"
+
+#: gap/gap_mov_dialog.c:266
+msgid "Overlay"
+msgstr "オーバーレイ"
+
+#: gap/gap_mov_dialog.c:267
+msgid "Difference"
+msgstr "差分"
+
+#: gap/gap_mov_dialog.c:268
+msgid "Addition"
+msgstr "加算"
+
+#: gap/gap_mov_dialog.c:269
+msgid "Subtract"
+msgstr "減算"
+
+#: gap/gap_mov_dialog.c:270
+msgid "Darken Only"
+msgstr "比較(暗)"
+
+#: gap/gap_mov_dialog.c:271
+msgid "Lighten Only"
+msgstr "比較(明)"
+
+#: gap/gap_mov_dialog.c:272
+msgid "Hue"
+msgstr "色相"
+
+#: gap/gap_mov_dialog.c:273
+msgid "Saturation"
+msgstr "彩度"
+
+#: gap/gap_mov_dialog.c:274
+msgid "Color"
+msgstr "カラー"
+
+#: gap/gap_mov_dialog.c:275
+msgid "Value"
+msgstr "明度"
+
+#: gap/gap_mov_dialog.c:282
+msgid "Left  Top"
+msgstr "左上"
+
+#: gap/gap_mov_dialog.c:283
+msgid "Left  Bottom"
+msgstr "左"
+
+#: gap/gap_mov_dialog.c:284
+msgid "Right Top"
+msgstr "左下"
+
+#: gap/gap_mov_dialog.c:285
+msgid "Right Bottom"
+msgstr "右"
+
+#: gap/gap_mov_dialog.c:286
+msgid "Center"
+msgstr "中央"
+
+#: gap/gap_mov_dialog.c:294
+msgid "Loop"
+msgstr "ループ"
+
+#: gap/gap_mov_dialog.c:295
+msgid "Loop Reverse"
+msgstr "逆ループ"
+
+#: gap/gap_mov_dialog.c:296
+msgid "Once"
+msgstr "一回"
+
+#: gap/gap_mov_dialog.c:297
+msgid "OnceReverse"
+msgstr "逆一回"
+
+#: gap/gap_mov_dialog.c:298
+msgid "PingPong"
+msgstr "双方向"
+
+#: gap/gap_mov_dialog.c:299
+msgid "None"
+msgstr "なし"
+
+#: gap/gap_mov_dialog.c:300
+msgid "Frame Loop"
+msgstr "フレームループ"
+
+#: gap/gap_mov_dialog.c:301
+msgid "Frame Loop Reverse"
+msgstr "逆フレームループ"
+
+#: gap/gap_mov_dialog.c:302
+msgid "Frame Once"
+msgstr "一フレーム"
+
+#: gap/gap_mov_dialog.c:303
+msgid "Frame OnceReverse"
+msgstr "フレームを逆に一回"
+
+#: gap/gap_mov_dialog.c:304
+msgid "Frame PingPong"
+msgstr "フレームピンポン"
+
+#: gap/gap_mov_dialog.c:305
+msgid "Frame None"
+msgstr "フレーム無し"
+
+#: gap/gap_mov_dialog.c:468
+msgid "Move Path"
+msgstr "パス移動"
+
+#: gap/gap_mov_dialog.c:492
+msgid "Update Preview"
+msgstr "プレビュー更新"
+
+#: gap/gap_mov_dialog.c:499
+msgid "Show PreviewFrame with Selected SrcLayer at current Controlpoint"
+msgstr "現在のコントロールポイントがある元レイヤーでプレビューフレームを表示"
+
+#: gap/gap_mov_dialog.c:503
+msgid "Anim Preview"
+msgstr "動画プレビュー"
+
+#: gap/gap_mov_dialog.c:510
+msgid "Generate Animated Preview as multilayer image"
+msgstr "複数枚レイヤー画像として動画プレビューを生成する"
+
+#. parameter settings
+#: gap/gap_mov_dialog.c:523
+msgid "Copy moving source-layer(s) into frames"
+msgstr "移動するソースレイヤーをフレームにコピー"
+
+#. the start frame scale_entry
+#. table col, row
+#: gap/gap_mov_dialog.c:556
+msgid "Start Frame:"
+msgstr "開始フレーム"
+
+#. label text
+#. scalesize spinsize
+#. value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:564
+msgid "First handled frame"
+msgstr "最初に扱うフレーム"
+
+#. the end frame scale_entry
+#. table col, row
+#: gap/gap_mov_dialog.c:571
+msgid "End Frame:"
+msgstr "終了フレーム"
+
+#. label text
+#. scalesize spinsize
+#. value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:579
+msgid "Last handled frame"
+msgstr "最後に扱うフレーム"
+
+#. the Preview Frame scale_entry
+#. table col, row
+#: gap/gap_mov_dialog.c:586
+msgid "Preview Frame:"
+msgstr "プレビューフレーム:"
+
+#. label text
+#. scalesize spinsize
+#. value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:594
+msgid "Frame to show when UpdPreview button is pressed"
+msgstr "プレビュー更新ボタンが押された時に表示するフレーム"
+
+#. the Layerstack scale_entry
+#. table col, row
+#: gap/gap_mov_dialog.c:602 gap/gap_range_ops.c:267
+msgid "Layerstack:"
+msgstr "レイヤースタック:"
+
+#. label text
+#. scalesize spinsize
+#. value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:610
+msgid ""
+"How to insert SrcLayer into the Dst. Frame's Layerstack\n"
+"0 means on top i.e. in front"
+msgstr ""
+"元レイヤーを Dst に挿入する方法. フレームのレイヤースタック\n"
+"0 というのは一番上, つまり最前面です"
+
+#. toggle force visibility
+#: gap/gap_mov_dialog.c:622
+msgid "Force visibility"
+msgstr "強制的に表示する"
+
+#: gap/gap_mov_dialog.c:629
+msgid "Force visibility for all copied Src-Layers"
+msgstr "コピーされた元レイヤーを全て強制的に表示する"
+
+#. toggle clip_to_image
+#: gap/gap_mov_dialog.c:635
+msgid "Clip To Frame"
+msgstr "フレームにクリップ"
+
+#: gap/gap_mov_dialog.c:642
+msgid "Clip all copied Src-Layers at Frame Boundaries"
+msgstr "コピーされた元レイヤー全てをフレーム境界にクリップ"
+
+#: gap/gap_mov_dialog.c:690
+msgid ""
+"No Source Image was selected\n"
+"(Please open a 2nd Image of the same type before opening Move Path)"
+msgstr ""
+"元画像が選択されていません\n"
+"(パス移動を開く前に同じ種類の画像をもう一つ開いてください)"
+
+#: gap/gap_mov_dialog.c:786
+msgid "Object on empty frames"
+msgstr "空フレームオブジェクト"
+
+#: gap/gap_mov_dialog.c:787
+msgid "Object on one frame"
+msgstr "一つのフレームオブジェクト"
+
+#: gap/gap_mov_dialog.c:788
+msgid "Exact Object on frames"
+msgstr "フレームは正確なオブジェクト"
+
+#: gap/gap_mov_dialog.c:818
+msgid "Anim Preview Mode"
+msgstr "動画プレビューモード"
+
+#: gap/gap_mov_dialog.c:826
+msgid "Scale Preview"
+msgstr "縮小プレビュー"
+
+#: gap/gap_mov_dialog.c:827
+msgid "Scale down size of the generated animated preview (in %)"
+msgstr "作成する動画プレビューのサイズを縮小する (% で)"
+
+#: gap/gap_mov_dialog.c:835
+msgid "Framerate"
+msgstr "フレームレート"
+
+#: gap/gap_mov_dialog.c:836
+msgid "Framerate to use in the animated preview in frames/sec"
+msgstr "動画プレビューで フレーム/秒 として使われるフレームレート"
+
+#: gap/gap_mov_dialog.c:850
+msgid "Copy to Video Buffer"
+msgstr "ビデオバッファにコピー"
+
+#: gap/gap_mov_dialog.c:851
+msgid ""
+"Save all single frames of animated preview to video buffer\n"
+"(configured in gimprc by video-paste-dir and video-paste-basename)"
+msgstr ""
+"全ての動画プレビューのフレームそれぞれをビデオバッファに保存する\n"
+"(video-paste-dir と video-paste-basename によって gimprc で設定される)"
+
+#: gap/gap_mov_dialog.c:856
+msgid "Move Path Animated Preview"
+msgstr "パス移動動画プレビュー"
+
+#: gap/gap_mov_dialog.c:857
+msgid "Options"
+msgstr "オプション"
+
+#: gap/gap_mov_dialog.c:902
+msgid "Generate Animated Preview failed\n"
+msgstr "最適動画プレビュー生成失敗\n"
+
+#. filesel is already open
+#: gap/gap_mov_dialog.c:1187
+msgid "Load Path Points from file"
+msgstr "ファイルからパス端点の読み込み"
+
+#. filesel is already open
+#: gap/gap_mov_dialog.c:1223
+msgid "Save Path Points to file"
+msgstr "ファイルにパス端点を保存"
+
+#: gap/gap_mov_dialog.c:1552
+#, c-format
+msgid "Current Point: [ %3d ] of [ %3d ]"
+msgstr "現在の端点 : [ %3d ] 中 [ %3d ]"
+
+#: gap/gap_mov_dialog.c:1638
+msgid "Source Select"
+msgstr "元選択"
+
+#. Source Layer menu
+#: gap/gap_mov_dialog.c:1654
+msgid "Source Image/Layer:"
+msgstr "元画像/レイヤー:"
+
+#: gap/gap_mov_dialog.c:1664
+msgid "Source Object to insert into Frame Range"
+msgstr "フレーム間に挿入する元オブジェクト"
+
+#. Paintmode menu
+#: gap/gap_mov_dialog.c:1679
+msgid "Mode:"
+msgstr "モード:"
+
+#: gap/gap_mov_dialog.c:1688
+msgid "Paintmode"
+msgstr "描画モード"
+
+#. Loop Stepmode menu
+#: gap/gap_mov_dialog.c:1703
+msgid "Stepmode:"
+msgstr "ステップモード:"
+
+#: gap/gap_mov_dialog.c:1721
+msgid "How to fetch the next SrcLayer at the next handled frame"
+msgstr "次に扱うフレームが次の元レイヤーを取ってくる方法"
+
+#. Source Image Handle menu
+#: gap/gap_mov_dialog.c:1727
+msgid "Handle:"
+msgstr "扱い:"
+
+#: gap/gap_mov_dialog.c:1745
+msgid "How to place the SrcLayer at Controlpoint Coordinates"
+msgstr "元レイヤーのコントロールポイント座標の配置方法"
+
+#. to avoid side effects while initialization
+#. the frame
+#: gap/gap_mov_dialog.c:1799
+msgid "Move Path Preview"
+msgstr "パス移動プレビュー"
+
+#. X
+#. table col, row
+#: gap/gap_mov_dialog.c:1822
+msgid "X:"
+msgstr "X:"
+
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:1831
+msgid "X Coordinate"
+msgstr "X 座標"
+
+#. Y
+#. table col, row
+#: gap/gap_mov_dialog.c:1840
+msgid "Y:"
+msgstr "Y:"
+
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:1849
+msgid "Y Coordinate"
+msgstr "Y 座標"
+
+#. Widht Scale
+#. table col, row
+#: gap/gap_mov_dialog.c:1858
+msgid "Width:"
+msgstr "幅:"
+
+#. label text
+#. scalesize spinsize
+#. value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:1866
+msgid "Scale Source Layer's Width in percent"
+msgstr "元レイヤーの幅を％で拡大縮小"
+
+#. Height Scale
+#. table col, row
+#: gap/gap_mov_dialog.c:1875
+msgid "Height:"
+msgstr "高さ:"
+
+#. label text
+#. scalesize spinsize
+#. value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:1883
+msgid "Scale SrcLayer's Height in percent"
+msgstr "元レイヤーの高さを％で拡大縮小"
+
+#. Opacity
+#. table col, row
+#: gap/gap_mov_dialog.c:1892
+msgid "Opacity:"
+msgstr "不透明度:"
+
+#. label text
+#. scalesize spinsize
+#. value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:1900
+msgid "SrcLayer's Opacity in percent"
+msgstr "％で元レイヤーの不透明度"
+
+#. Rotation
+#. table col, row
+#: gap/gap_mov_dialog.c:1909
+msgid "Rotate:"
+msgstr "回転:"
+
+#. label text
+#. scalesize spinsize
+#. value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:1917
+msgid "Rotate SrcLayer (in degree)"
+msgstr "元レイヤーの回転 (角度)"
+
+#. Keyframe
+#. table col, row
+#: gap/gap_mov_dialog.c:1927
+msgid "Keyframe:"
+msgstr "キーフレーム:"
+
+#. label text
+#. scalesize spinsize
+#. value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:1935
+msgid ""
+"Fix Controlpoint to Keyframe number\n"
+"(0 == No Keyframe)"
+msgstr ""
+"コントロールポイントをキーフレーム番号で修正\n"
+"(0 == キーフレーム無し)"
+
+#: gap/gap_mov_dialog.c:2010
+msgid "Add Point"
+msgstr "端点追加"
+
+#: gap/gap_mov_dialog.c:2018
+msgid ""
+"Add Controlpoint at end\n"
+"(the last Point is duplicated)"
+msgstr ""
+"最後にコントロールポイントを追加します\n"
+"(最後の端点が複製される)"
+
+#. toggle clip_to_image
+#: gap/gap_mov_dialog.c:2023
+msgid "Show Path"
+msgstr "パス表示"
+
+#: gap/gap_mov_dialog.c:2030
+msgid ""
+"Show Path Lines and enable pick/drag with left button or move with right "
+"button"
+msgstr ""
+"パス線を表示して左ボタンで選択/ドラッグまたは右ボタンで移動できるようにします"
+
+#: gap/gap_mov_dialog.c:2040
+msgid "Insert Point"
+msgstr "端点挿入"
+
+#: gap/gap_mov_dialog.c:2048
+msgid ""
+"Insert Controlpoint\n"
+"(the current Point is duplicated)"
+msgstr ""
+"コントロールポイントを挿入します\n"
+"(現在の端点が複製される)"
+
+#: gap/gap_mov_dialog.c:2052
+msgid "Delete Point"
+msgstr "端点削除"
+
+#: gap/gap_mov_dialog.c:2060
+msgid "Delete current Controlpoint"
+msgstr "現在のコントロールポイントを削除します"
+
+#: gap/gap_mov_dialog.c:2066
+msgid "Prev Point"
+msgstr "前の端点"
+
+#: gap/gap_mov_dialog.c:2074
+msgid "Show Previous Controlpoint"
+msgstr "前のコントロールポイントを表示します"
+
+#: gap/gap_mov_dialog.c:2078
+msgid "Next Point"
+msgstr "次の端点"
+
+#: gap/gap_mov_dialog.c:2086
+msgid "Show Next Controlpoint"
+msgstr "次のコントロールポイントを表示します"
+
+#: gap/gap_mov_dialog.c:2092
+msgid "First Point"
+msgstr "先頭の端点"
+
+#: gap/gap_mov_dialog.c:2100
+msgid "Show First Controlpoint"
+msgstr "最初のコントロールポイントを表示します"
+
+#: gap/gap_mov_dialog.c:2104
+msgid "Last Point"
+msgstr "最後の端点"
+
+#: gap/gap_mov_dialog.c:2112
+msgid "Show Last Controlpoint"
+msgstr "最後のコントロールポイントを表示します"
+
+#: gap/gap_mov_dialog.c:2118
+msgid "Clear Point"
+msgstr "端点クリア"
+
+#: gap/gap_mov_dialog.c:2126
+msgid "Reset the current Controlpoint to default Values"
+msgstr "現在のコントロールポイントを標準値にリセットします"
+
+#: gap/gap_mov_dialog.c:2130
+msgid "Clear All Points"
+msgstr "全端点クリア"
+
+#: gap/gap_mov_dialog.c:2138
+msgid ""
+"Reset all Controlpoints to default Values but dont change the path (X/Y "
+"Values)"
+msgstr ""
+"全てのコントロールポイントを標準値にリセットしますがパス (X/Y 値) は変えませ"
+"ん"
+
+#: gap/gap_mov_dialog.c:2145
+msgid "Rotate Follow"
+msgstr "回転追跡"
+
+#: gap/gap_mov_dialog.c:2156
+msgid ""
+"Set Rotation for all Controlpoints to follow the shape of the path.\n"
+"(Shift: use Rotation of contolpoint 1 as offset)"
+msgstr ""
+"全てのコントロールポイントがパスの形状に添うようにします.\n"
+"(Shift: コントロールポイント 1 の回転をオフセットとして使います)"
+
+#: gap/gap_mov_dialog.c:2163
+msgid "Delete All Points"
+msgstr "全端点の削除"
+
+#: gap/gap_mov_dialog.c:2171
+msgid "Delete all Controlpoints"
+msgstr "全てのコントロールポイントを削除します"
+
+#: gap/gap_mov_dialog.c:2178
+msgid "Load Points"
+msgstr "端点読み込み"
+
+#: gap/gap_mov_dialog.c:2186
+msgid "Load Controlpoints from file"
+msgstr "コントロールポイントをファイルから読み込みます"
+
+#: gap/gap_mov_dialog.c:2190
+msgid "Save Points"
+msgstr "端点保存"
+
+#: gap/gap_mov_dialog.c:2198
+msgid "Save Controlpoints to file"
+msgstr "コントロールポイントをファイルに保存します"
+
+#: gap/gap_mov_dialog.c:2658
+msgid ""
+"Can't operate with current Controlpoint\n"
+"or Keyframe settings"
+msgstr ""
+"現在のコントロールポイントかキーフレームの設定では\n"
+"操作することができません"
+
+#: gap/gap_mov_dialog.c:2665
+msgid "Reset Keyframes"
+msgstr "キーフレームリセット"
+
+#: gap/gap_mov_dialog.c:2670
+msgid "Move Path Controlpointcheck"
+msgstr "パス移動コントロールポイントチェック"
+
+#: gap/gap_mov_dialog.c:2671
+msgid "Errors:"
+msgstr "エラー:"
+
+#: gap/gap_mov_exec.c:444
+msgid ""
+"No Source Image was selected.\n"
+"Please open a 2nd Image of the same type before opening Move Path."
+msgstr ""
+"元画像が選択されていません.\n"
+"パス移動を開く前に同じ型の 2 番目の画像を開いて下さい."
+
+#: gap/gap_mov_exec.c:455
+msgid "Copying Layers into Frames..."
+msgstr "レイヤーをフレームにコピーしています..."
+
+#: gap/gap_mov_exec.c:459
+msgid "Generating Animated Preview..."
+msgstr "動画プレビューを生成しています..."
+
+#: gap/gap_mov_exec.c:1376
+#, c-format
+msgid ""
+"\n"
+"Error: Keyframe %d at point [%d] higher or equal than last handled frame"
+msgstr ""
+"\n"
+"エラー: キーフレーム %d の端点 [%d] は最終フレームよりも高過ぎるか同等です"
+
+#: gap/gap_mov_exec.c:1384
+#, c-format
+msgid ""
+"\n"
+"Error: Keyframe %d at point [%d] leaves not enough space (frames)\n"
+"for the previous controlpoints"
+msgstr ""
+"\n"
+"エラー: キーフレーム %d の端点 [%d] には前のコントロールポイントのための\n"
+"十分な空間 (フレーム) がありません"
+
+#: gap/gap_mov_exec.c:1394
+#, c-format
+msgid ""
+"\n"
+"Error: Keyframe %d is not in sequence at point [%d]"
+msgstr ""
+"\n"
+"エラー: キーフレーム %d は連続した端点 [%d] ではありません"
+
+#: gap/gap_mov_exec.c:1412
+#, c-format
+msgid ""
+"\n"
+"Error: controlpoint [%d] is out of handled framerange"
+msgstr ""
+"\n"
+"エラー: コントロールポイント [%d] フレーム範囲の扱いを超えています"
+
+#: gap/gap_mov_exec.c:1426
+#, c-format
+msgid ""
+"\n"
+"Error: more controlpoints (%d) than handled frames (%d)\n"
+"please reduce controlpoints or select more frames"
+msgstr ""
+"\n"
+"エラー:  コントロールポイント (%d) が扱うフレーム (%d) よりも多いので\n"
+"コントロールポイントを減らすかもっと多くのフレームを選んで下さい"
+
+#: gap/gap_mpege.c:111
+msgid "Conditions to run mpeg_encode 1.5:"
+msgstr "mpeg_encode 1.5 を実行するには:"
+
+#: gap/gap_mpege.c:114
+msgid "Conditions to run mpeg2encode 1.2:"
+msgstr "mpeg2encode 1.2 を実行するには:"
+
+#: gap/gap_mpege.c:124
+msgid "1.) mpeg_encode 1.5 must be installed"
+msgstr "1.) mpeg_encode 1.5 がインストール済みである"
+
+#: gap/gap_mpege.c:127
+msgid "1.) mpeg2encode 1.2 must be installed"
+msgstr "1.) mpeg2encode 1.2 がインストール済みである"
+
+#: gap/gap_mpege.c:132
+msgid "    you can get mpeg_encode at"
+msgstr "    mpeg_encode はここで入手可能"
+
+#: gap/gap_mpege.c:135
+msgid "    you can get mpeg2encode at http://www.mpeg.org/MSSG"
+msgstr "    mpeg2encode はここで入手可能 http://www.mpeg.org/MSSG"
+
+#: gap/gap_mpege.c:140
+msgid "    ftp://mm-ftp.cs.berkeley.edu/pub/multimedia/mpeg/bmt1r1.tar.gz"
+msgstr "    ftp://mm-ftp.cs.berkeley.edu/pub/multimedia/mpeg/bmt1r1.tar.gz"
+
+#: gap/gap_mpege.c:143
+msgid "   or at ftp://ftp.mpeg.org/pub/mpeg/mssg "
+msgstr "    または ftp://ftp.mpeg.org/pub/mpeg/mssg "
+
+#: gap/gap_mpege.c:148
+msgid "2.) You need a series of single Images on disk (AnimFrames)"
+msgstr "2.) ディスクに一続きの画像 (動画フレーム) が必要"
+
+#: gap/gap_mpege.c:152
+msgid "    all with fileformat JPEG (or YUV or PNM or PPM)"
+msgstr "    全てのファイル形式が JPRG (または YUV か PNM か PPM)"
+
+#: gap/gap_mpege.c:155
+msgid "   all with fileformat PPM (or YUV)"
+msgstr "    全てのファイル形式が PPM (または YUV)"
+
+#: gap/gap_mpege.c:160
+msgid "    (use 'Frames Convert' from the Video Menu"
+msgstr "    (動画メニューの 'フレーム変換' を使うか"
+
+#: gap/gap_mpege.c:164
+msgid "    or 'Split Image to Frames' from the Video Menu)"
+msgstr "    動画メニューの '画像をフレームに分割' を使う)"
+
+#: gap/gap_mpege.c:168
+msgid "3.) All Images must have the same size,"
+msgstr "3.) 全ての画像は同じサイズである必要があり,"
+
+#: gap/gap_mpege.c:175
+msgid "    width and height must be a multiple of 16"
+msgstr "    幅と高さが 16 の倍数である必要があります"
+
+#: gap/gap_mpege.c:179
+msgid "    (use Scale or Crop from the Video Menu)"
+msgstr "    (動画メニューの拡大縮小か切り抜きを使う)"
+
+#: gap/gap_mpege.c:194
+msgid "MPEG_ENCODE Information"
+msgstr "MPEG エンコード情報"
+
+#: gap/gap_mpege.c:231
+msgid "generate MPEG1 (ISO/IEC 11172-2) stream"
+msgstr "MPEG1 (ISO/IEC 11172-2) ストリームの生成"
+
+#: gap/gap_mpege.c:232
+msgid "generate MPEG2 (ISO/IEC DIS 13818-2) stream"
+msgstr "MPEG2 (ISO/IEC DIS 13818-2) ストリームの生成"
+
+#: gap/gap_mpege.c:242
+msgid "GenParams"
+msgstr "パラメータ生成"
+
+#: gap/gap_mpege.c:244
+msgid "Gen + Encode"
+msgstr "生成 + エンコード"
+
+#: gap/gap_mpege.c:266
+msgid "To   Frame:"
+msgstr "宛フレーム:"
+
+#: gap/gap_mpege.c:273
+msgid "Framerate :"
+msgstr "フレームレート :"
+
+#: gap/gap_mpege.c:274
+msgid "framerate in frames/second"
+msgstr "フレーム/秒のフレームレート"
+
+#: gap/gap_mpege.c:281
+msgid "Bitrate:"
+msgstr "ビットレート:"
+
+#: gap/gap_mpege.c:282
+msgid ""
+"used for constant bitrates (bit/sec)                  \n"
+"(low rate gives good compression + bad quality)"
+msgstr ""
+"一定のビットレートを使用する (ビット/秒)              \n"
+"(低いレートは圧縮良好 + 低品質を与える)"
+
+#: gap/gap_mpege.c:296
+msgid "Outputfile:"
+msgstr "出力ファイル:"
+
+#. pixel
+#: gap/gap_mpege.c:298
+msgid "Name of the resulting MPEG outputfile"
+msgstr "生成する MPEG 出力ファイルの名前"
+
+#: gap/gap_mpege.c:304
+msgid "Paramfile:"
+msgstr "パラメータファイル:"
+
+#. pixel
+#: gap/gap_mpege.c:306
+msgid ""
+"Name of the Encoder-Parameterfile\n"
+"(is generated)"
+msgstr ""
+"エンコーダーパラメータファイルの名前\n"
+"(が生成される)"
+
+#: gap/gap_mpege.c:312
+msgid "Startscript:"
+msgstr "開始スクリプト:"
+
+#. pixel
+#: gap/gap_mpege.c:314
+msgid ""
+"Name of the Startscript           \n"
+"(is generated/executed)"
+msgstr ""
+"開始スクリプトの名前              \n"
+"(が生成される/実行される)"
+
+#: gap/gap_mpege.c:320
+msgid ""
+"Generate parameterfile for mpeg_encode 1.5\n"
+"(the freely distributed Berkeley MPEG-1 Video  Encoder.)\n"
+msgstr ""
+"mpeg_encode 1.5 のためのパラメータファイルの生成\n"
+"(配布フリーな Berkeley MPEG-1 動画エンコーダー.)\n"
+
+#: gap/gap_mpege.c:324
+msgid "Constant Bitrate :"
+msgstr "固定ビットレート :"
+
+#: gap/gap_mpege.c:325
+msgid "Iqnore I/P/QSCALE values and use constant bit-rate)"
+msgstr "I/P/Q 拡大縮小値を無視して固定ビットレートを使う"
+
+#: gap/gap_mpege.c:330
+msgid "Pattern:"
+msgstr "パターン:"
+
+#. pixel
+#: gap/gap_mpege.c:332
+msgid "How to encode MPEG framesequence (I/P/B frames)"
+msgstr "MPEG フレームシーケンスのエンコード方法 (I/P/B フレーム)"
+
+#: gap/gap_mpege.c:338
+msgid "IQSCALE:"
+msgstr "I 品質拡大縮小:"
+
+#: gap/gap_mpege.c:339
+msgid ""
+"Quality scale for I-Frames                       \n"
+"(1 = best quality, 31 = best comression)"
+msgstr ""
+"I-フレームの品質拡大縮小                         \n"
+"(1 = 最高品質, 31 = 圧縮最大)"
+
+#: gap/gap_mpege.c:346
+msgid "PQSCALE:"
+msgstr "P 品質拡大縮小:"
+
+#: gap/gap_mpege.c:347
+msgid ""
+"Quality scale for P-Frames                  \n"
+"(1 = best quality, 31 = best comression)"
+msgstr ""
+"P-フレームの品質拡大縮小                    \n"
+"(1 = 最高品質, 31 = 圧縮最大)"
+
+#: gap/gap_mpege.c:354
+msgid "BQSCALE:"
+msgstr "B 品質拡大縮小:"
+
+#: gap/gap_mpege.c:355
+msgid ""
+"Quality scale for B-Frames                  \n"
+"(1 = best quality, 31 = best comression)"
+msgstr ""
+"B-フレームの品質拡大縮小                    \n"
+"(1 = 最高品質, 31 = 圧縮最大)"
+
+#: gap/gap_mpege.c:362
+msgid "P-Search :"
+msgstr "P-検索 :"
+
+#: gap/gap_mpege.c:363
+msgid "Search Algorithmus used for P-frames"
+msgstr "P-フレームで使われるアルゴリズムの検索"
+
+#: gap/gap_mpege.c:369
+msgid "B-Search :"
+msgstr "B-検索 :"
+
+#: gap/gap_mpege.c:370
+msgid "Search Algorithmus used for B-frames"
+msgstr "B-フレームで使われるアルゴリズムの検索"
+
+#: gap/gap_mpege.c:375
+msgid "Gen MPEG_ENCODE Parameters"
+msgstr "MPEG_ENCODE パラメータ生成"
+
+#: gap/gap_mpege.c:376 gap/gap_mpege.c:414
+msgid "Encode Values"
+msgstr "エンコード値"
+
+#: gap/gap_mpege.c:392
+msgid ""
+"Generate parameterfile for mpeg2encode 1.2\n"
+"(MPEG-2 Video  Encoder.)\n"
+msgstr ""
+"mpeg2encode 1.2 のためのパラメータファイルの生成\n"
+"(MPEG-2 動画エンコーダー.)\n"
+
+#: gap/gap_mpege.c:395
+msgid "MPEG-type :"
+msgstr "MPEG 種:"
+
+#: gap/gap_mpege.c:404
+msgid "Videoformat :"
+msgstr "動画形式 :"
+
+#: gap/gap_mpege.c:405
+msgid "Videoformat"
+msgstr "動画形式"
+
+#. framerates above 30 ar not allowed in mpeg2encode
+#: gap/gap_mpege.c:413
+msgid "Gen MPEG2ENCODE Parameters"
+msgstr "MPEG2ENCODE パラメータ生成"
+
+#: gap/gap_mpege.c:978
+msgid ""
+"\n"
+"WARNING: mpeg_encode does not support Fileformat "
+msgstr ""
+"\n"
+"警告: mpeg_encode が 対応しないファイル形式 "
+
+#: gap/gap_mpege.c:981
+msgid ""
+"\n"
+"ERROR: width not a multiple of 16"
+msgstr ""
+"\n"
+"エラー: 幅が 16 の倍数ではありません"
+
+#: gap/gap_mpege.c:982
+msgid ""
+"\n"
+"ERROR: height not a multiple of 16"
+msgstr ""
+"\n"
+"エラー: 高さが 16 の倍数ではありません"
+
+#: gap/gap_mpege.c:988
+msgid ""
+"\n"
+"WARNING: mpeg2encode does not support Fileformat "
+msgstr ""
+"\n"
+"警告: mpeg2encode が対応しないファイル形式 "
+
+#: gap/gap_mpege.c:993
+msgid ""
+"\n"
+"ERROR: invoked from a single image, animframe required"
+msgstr ""
+"\n"
+"エラー: 一枚の画像が呼び出されました, 動画フレームが必要です"
+
+#: gap/gap_navigator_dialog.c:366
+msgid ""
+"Playback         \n"
+"<Shift> optimized"
+msgstr ""
+"プレイバック     \n"
+"<Shift> 最適化"
+
+#: gap/gap_navigator_dialog.c:371
+msgid ""
+"Smart Update .xvpics\n"
+"<Shift> forced upd"
+msgstr ""
+"すぐに .xvpics を更新\n"
+"<Shift> で強制更新"
+
+#: gap/gap_navigator_dialog.c:376
+msgid "Duplicate selected Frames"
+msgstr "選択したフレームを複製"
+
+#: gap/gap_navigator_dialog.c:380
+msgid "Delete selected Frames"
+msgstr "選択したフレームを削除"
+
+#: gap/gap_navigator_dialog.c:389
+msgid "Goto 1st Frame"
+msgstr "最初のフレームへ"
+
+#: gap/gap_navigator_dialog.c:393
+msgid ""
+"Goto prev Frame\n"
+"<Shift> use timezoom stepsize"
+msgstr ""
+"前のフレームに移動\n"
+"<Shift> 時間拡大ステップサイズを使用"
+
+#: gap/gap_navigator_dialog.c:398
+msgid ""
+"Goto next Frame\n"
+"<Shift> use timezoom stepsize"
+msgstr ""
+"次のフレームに移動\n"
+"<Shift> 時間拡大ステップサイズを使用<"
+
+#: gap/gap_navigator_dialog.c:403
+msgid "Goto last Frame"
+msgstr "最後のフレームへ"
+
+#: gap/gap_navigator_dialog.c:460
+msgid "<Image>/Video/VCR Navigator..."
+msgstr "<Image>/動画/VCR ナビゲータ..."
+
+#: gap/gap_navigator_dialog.c:523
+msgid "Cant open two or more Video Navigator Windows."
+msgstr "2 つ以上のビデオナビゲータウィンドウは開けません."
+
+#. menu_item copy
+#: gap/gap_navigator_dialog.c:2877
+msgid "Copy"
+msgstr "コピー"
+
+#. menu_item cut
+#: gap/gap_navigator_dialog.c:2887
+msgid "Cut"
+msgstr "カット"
+
+#. menu_item paste before
+#: gap/gap_navigator_dialog.c:2897
+msgid "Paste before"
+msgstr "前にペースト"
+
+#. menu_item copy
+#: gap/gap_navigator_dialog.c:2907
+msgid "Paste after"
+msgstr "後ろにペースト"
+
+#. menu_item copy
+#: gap/gap_navigator_dialog.c:2917
+msgid "Paste replace"
+msgstr "置き換えてペースト"
+
+#. menu_item copy
+#: gap/gap_navigator_dialog.c:2927
+msgid "Clear Video Buffer"
+msgstr "ビデオバッファのクリア"
+
+#: gap/gap_navigator_dialog.c:2952
+msgid "Videoframes:"
+msgstr "ビデオフレーム:"
+
+#: gap/gap_navigator_dialog.c:2967
+msgid "Framerate:"
+msgstr "フレームレート:"
+
+#: gap/gap_navigator_dialog.c:2990
+msgid "Timezoom:"
+msgstr "時間ズーム:"
+
+#. The main shell
+#: gap/gap_navigator_dialog.c:3074
+msgid "Video Navigator"
+msgstr "動画ナビゲータ"
+
+#: gap/gap_range_ops.c:120
+msgid "New Width:"
+msgstr "新しい幅:"
+
+#: gap/gap_range_ops.c:129
+msgid "New Height:"
+msgstr "新しい高さ:"
+
+#: gap/gap_range_ops.c:138
+msgid "Offset X:"
+msgstr "X オフセット:"
+
+#: gap/gap_range_ops.c:147
+msgid "Offset Y:"
+msgstr "Y オフセット:"
+
+#: gap/gap_range_ops.c:158
+msgid "Crop AnimFrames (all)"
+msgstr "動画フレーム切り抜き (全部)"
+
+#: gap/gap_range_ops.c:159
+#, c-format
+msgid "Crop (original %dx%d)"
+msgstr "切り抜き (原画 %dx%d)"
+
+#: gap/gap_range_ops.c:169
+msgid "Resize AnimFrames (all)"
+msgstr "動画フレームサイズ変更 (全部)"
+
+#: gap/gap_range_ops.c:170
+#, c-format
+msgid "Resize (original %dx%d)"
+msgstr "サイズ変更 (原画 %dx%d)"
+
+#: gap/gap_range_ops.c:176
+msgid "Scale AnimFrames (all)"
+msgstr "動画フレーム拡大縮小 (全部)"
+
+#: gap/gap_range_ops.c:177
+#, c-format
+msgid "Scale (original %dx%d)"
+msgstr "拡大縮小 (原画 %dx%d)"
+
+#: gap/gap_range_ops.c:308
+msgid "Generate Optimal Palette"
+msgstr "最適パレットを生成する"
+
+#: gap/gap_range_ops.c:309
+msgid "WEB Palette"
+msgstr "Web パレット"
+
+#: gap/gap_range_ops.c:310
+msgid "Use Custom Palette"
+msgstr "カスタムパレットを使う"
+
+#: gap/gap_range_ops.c:311
+msgid "Use Black/White (1-Bit) Palette"
+msgstr "白黒 (1-ビット) パレットを使う"
+
+#: gap/gap_range_ops.c:313
+msgid "Floyd-Steinberg Color Dithering (Normal)"
+msgstr "フロイド・スタインバーグ色ディザリング (普通)"
+
+#: gap/gap_range_ops.c:314
+msgid "Floyd-Steinberg Color Dithering (Reduced Color Bleeding)"
+msgstr "フロイド・スタインバーグ色ディザリング (色混合減少)"
+
+#: gap/gap_range_ops.c:315
+msgid "Positioned Color Dithering"
+msgstr "ポジション色ディザリング"
+
+#: gap/gap_range_ops.c:316
+msgid "No Color Dithering"
+msgstr "色ディザリング無し"
+
+#: gap/gap_range_ops.c:327
+msgid "Palette Type"
+msgstr "パレット型"
+
+#: gap/gap_range_ops.c:334
+msgid "Custom Palette"
+msgstr "カスタムパレット"
+
+#: gap/gap_range_ops.c:335
+msgid ""
+"Name of a cutom palette\n"
+"(is ignored if Palette Type is not custom)"
+msgstr ""
+"カスタムパレットの名前\n"
+"(パレット型がカスタムではないと無視される)"
+
+#: gap/gap_range_ops.c:340
+msgid "Remove Unused"
+msgstr "未使用の色を取り除く"
+
+#: gap/gap_range_ops.c:341
+msgid ""
+"Remove unused or double colors\n"
+"(is ignored if Palette Type is not custom)"
+msgstr ""
+"未使用か重複している色を取り除く\n"
+"(パレット型がカスタムではないと無視される)"
+
+#: gap/gap_range_ops.c:346
+msgid "Number of Colors"
+msgstr "色数"
+
+#: gap/gap_range_ops.c:347
+msgid ""
+"Number of resulting Colors\t\t \n"
+"(ignored if Palette Type is not Generate optimal palette)"
+msgstr ""
+"最終的な色の数\t\t \n"
+"(パレット型が一般的な最適パレットではないと無視される)"
+
+#: gap/gap_range_ops.c:354
+msgid "Dither Options"
+msgstr "ディザリングオプション"
+
+#: gap/gap_range_ops.c:361
+msgid "Enable transparency"
+msgstr "透明有効"
+
+#: gap/gap_range_ops.c:362
+msgid "Enable dithering of transparency"
+msgstr "透明のディザリングを有効にする"
+
+#: gap/gap_range_ops.c:365
+msgid "Convert Frames to Indexed"
+msgstr "フレームをインデックスに変換"
+
+#: gap/gap_range_ops.c:366
+msgid "Palette and Dither Settings"
+msgstr "パレットとディザリングの設定:"
+
+#: gap/gap_range_ops.c:431
+msgid "Keep Type"
+msgstr "そのまま"
+
+#: gap/gap_range_ops.c:432
+msgid "Convert to RGB"
+msgstr "RGB 画像に変換:"
+
+#: gap/gap_range_ops.c:433
+msgid "Convert to Gray"
+msgstr "グレースケール画像に変換:"
+
+#: gap/gap_range_ops.c:434
+msgid "Convert to Indexed"
+msgstr "インデックス画像に変換:"
+
+#: gap/gap_range_ops.c:458
+msgid ""
+"\n"
+"Select destination fileformat by extension\n"
+"optionally convert imagetype\n"
+msgstr ""
+"\n"
+"画像型変換オプションとして拡張子に\n"
+"よって目当てのファイル形式を選びます\n"
+
+#: gap/gap_range_ops.c:461
+msgid "Basename:"
+msgstr "ベース名:"
+
+#: gap/gap_range_ops.c:462
+msgid ""
+"basename of the resulting frames       \n"
+"(0001.ext is added)"
+msgstr ""
+"生成フレームのベース名                 \n"
+"(0001.ext が追加される)"
+
+#: gap/gap_range_ops.c:467 gap/gap_split.c:235
+msgid "Extension:"
+msgstr "拡張子:"
+
+#: gap/gap_range_ops.c:468
+msgid ""
+"extension of resulting frames       \n"
+"(is also used to define Fileformat)"
+msgstr ""
+"生成フレームの拡張子                \n"
+"(ファイル形式を定義するためにも使われる)"
+
+#: gap/gap_range_ops.c:474
+msgid "Imagetype:"
+msgstr "画像種:"
+
+#: gap/gap_range_ops.c:475
+msgid ""
+"Convert to, or keep imagetype           \n"
+"(most fileformats can't handle all types)"
+msgstr ""
+"変換するか, 画像種をそのままに          \n"
+"(ほとんどのファイル形式は全ての型を扱えない)"
+
+#: gap/gap_range_ops.c:481 gap/gap_split.c:246
+msgid "Flatten:"
+msgstr "統合:"
+
+#: gap/gap_range_ops.c:482
+msgid ""
+"Flatten all resulting frames               \n"
+"(most fileformats need flattened frames)"
+msgstr ""
+"生成フレーム全てを統合する                 \n"
+"(ほとんどのファイル形式は統合されたフレームが必要)"
+
+#: gap/gap_range_ops.c:487
+msgid "Convert Frames to other Formats"
+msgstr "フレームを他形式に変換"
+
+#: gap/gap_range_ops.c:488
+msgid "Convert Settings"
+msgstr "変換設定"
+
+#: gap/gap_range_ops.c:565
+msgid "Expand as necessary"
+msgstr "必要に応じて拡大"
+
+#: gap/gap_range_ops.c:566
+msgid "Clipped to image"
+msgstr "画像の切り抜き"
+
+#: gap/gap_range_ops.c:567
+msgid "Clipped to bottom layer"
+msgstr "最下レイヤーの切り抜き"
+
+#: gap/gap_range_ops.c:568
+msgid "Flattened image"
+msgstr "画像統合"
+
+#: gap/gap_range_ops.c:569
+msgid ""
+"Resulting Layer Size is made of the outline-rectangle \n"
+"of all visible layers (may differ from frame to frame)"
+msgstr ""
+"レイヤーサイズは全可視レイヤーの輪郭を変えたもの\n"
+"(フレームからフレーム間で違っているかもしれない)"
+
+#: gap/gap_range_ops.c:570
+msgid "Resulting Layer Size is the frame size"
+msgstr "レイヤーサイズはフレームサイズになる"
+
+#: gap/gap_range_ops.c:571
+msgid ""
+"Resulting Layer Size is the size of the bottom layer\n"
+"(may differ from frame to frame)"
+msgstr ""
+"レイヤーサイズは一番下のレイヤの大きさになる\n"
+"(フレームからフレーム間で違っているかもしれない)"
+
+#: gap/gap_range_ops.c:572
+msgid ""
+"Resulting Layer Size is the frame size     \n"
+"transparent parts are filled with BG color"
+msgstr ""
+"レイヤーサイズは透明な部分が背景色で塗りつ\n"
+"ぶされたフレームサイズになる"
+
+#: gap/gap_range_ops.c:582
+msgid "select all Layers where Layername is equal to Pattern"
+msgstr "レイヤー名がパターンに等しい全てのレイヤーを選ぶ"
+
+#: gap/gap_range_ops.c:583
+msgid "select all Layers where Layername starts with Pattern"
+msgstr "レイヤー名がパターンで始まる全てのレイヤーを選ぶ"
+
+#: gap/gap_range_ops.c:584
+msgid "select all Layers where Layername ends up with Pattern"
+msgstr "レイヤー名がパターンで終わる全てのレイヤーを選ぶ"
+
+#: gap/gap_range_ops.c:585
+msgid "select all Layers where Layername contains Pattern"
+msgstr "レイヤー名がパターンを含む全てのレイヤーを選ぶ"
+
+#: gap/gap_range_ops.c:586
+msgid ""
+"select Layerstack positions.\n"
+"0, 4-5, 8\n"
+"where 0 == Top-layer"
+msgstr ""
+"レイヤースタック位置で選ぶ.\n"
+"0, 4-5, 8\n"
+"0 == 最上層レイヤー"
+
+#: gap/gap_range_ops.c:587
+msgid ""
+"select Layerstack positions.\n"
+"0, 4-5, 8\n"
+"where 0 == BG-layer"
+msgstr ""
+"レイヤースタック位置で選ぶ.\n"
+"0, 4-5, 8\n"
+"0 == 背景レイヤー"
+
+#: gap/gap_range_ops.c:588
+msgid "select all visible Layers"
+msgstr "全ての可視レイヤーを選択"
+
+#: gap/gap_range_ops.c:617
+msgid "Layer Basename:"
+msgstr "レイヤー基本名:"
+
+#: gap/gap_range_ops.c:618
+msgid ""
+"Basename for all Layers    \n"
+"[####] is replaced by frame number"
+msgstr ""
+"全てのレイヤーの基本名     \n"
+"[####] はフレーム番号で置き換えられる"
+
+#: gap/gap_range_ops.c:636
+msgid "Layer Mergemode:"
+msgstr "レイヤー結合モード:"
+
+#: gap/gap_range_ops.c:643
+msgid "Exclude BG-Layer"
+msgstr "背景レイヤーを除く"
+
+#: gap/gap_range_ops.c:644
+msgid ""
+"Exclude the BG-Layers    \n"
+"in all handled frames\n"
+"regardless to selection"
+msgstr ""
+"選択とは無関係に         \n"
+"全対象フレームの\n"
+"背景を取り除く"
+
+#: gap/gap_range_ops.c:674
+msgid "Use all unselected Layers"
+msgstr "全ての非選択レイヤーを使う"
+
+#: gap/gap_range_ops.c:748
+msgid "Creating Layer-Animated Image..."
+msgstr "レイヤー-動画画像の作成中..."
+
+#: gap/gap_range_ops.c:970
+msgid "Frames to Image"
+msgstr "フレームを画像に"
+
+#: gap/gap_range_ops.c:971
+msgid "Create Multilayer-Image from Frames"
+msgstr "フレームから複数画像を作成する"
+
+#: gap/gap_range_ops.c:1112
+msgid "Flattening Frames..."
+msgstr "フレームを統合しています..."
+
+#: gap/gap_range_ops.c:1113
+msgid "Converting Frames..."
+msgstr "フレームを変換しています..."
+
+#: gap/gap_range_ops.c:1261
+msgid ""
+"Convert Frames: SAVE operation FAILED.\n"
+"Desired save plugin can't handle type\n"
+"or desired save plugin not available."
+msgstr ""
+"フレーム変換: 保存操作は失敗しました.\n"
+"要求した保存プラグインがこの型を扱えないか\n"
+"要求した保存プラグインが利用可能ではありません."
+
+#: gap/gap_range_ops.c:1369
+msgid "Cropping all Animation Frames..."
+msgstr "全動画フレームを切り抜いています..."
+
+#: gap/gap_range_ops.c:1372
+msgid "Resizing all Animation Frames..."
+msgstr "全動画フレームの大きさを変更しています..."
+
+#: gap/gap_range_ops.c:1375
+msgid "Scaling all Animation Frames..."
+msgstr "全動画フレームを拡大縮小しています..."
+
+#: gap/gap_range_ops.c:1461
+msgid "Flatten Frames"
+msgstr "フレーム統合"
+
+#: gap/gap_range_ops.c:1517
+#, c-format
+msgid "Removing Layer (pos:%ld) from Frames..."
+msgstr "フレームからレイヤー (位置:%ld) を取り除いています..."
+
+#: gap/gap_range_ops.c:1634
+msgid "Delete Layers in Frames"
+msgstr "フレームのレイヤー削除"
+
+#: gap/gap_range_ops.c:1635
+msgid "Select Frame Range & Position"
+msgstr "フレーム範囲 & 位置の選択"
+
+#: gap/gap_split.c:101
+msgid "Splitting into Frames..."
+msgstr "フレームに分割しています..."
+
+#: gap/gap_split.c:176
+msgid ""
+"Split Frames: SAVE operation FAILED.\n"
+"desired save plugin can't handle type\n"
+"or desired save plugin not available."
+msgstr ""
+"フレーム分割: 保存操作は失敗しました.\n"
+"要求された保存プラグインがこの型を扱えないか\n"
+"要求された保存プラグインが利用可能でありません."
+
+#: gap/gap_split.c:226
+#, c-format
+msgid ""
+"%s\n"
+"%s\n"
+"(%s_0001.%s)\n"
+msgstr ""
+"%s\n"
+"%s\n"
+"(%s_0001.%s)\n"
+
+#: gap/gap_split.c:227
+msgid "Make a frame (diskfile) from each Layer"
+msgstr "それぞれのレイヤーからフレーム (ディスクファイル) を作成"
+
+#: gap/gap_split.c:228
+msgid "frames are named: base_nr.extension"
+msgstr "フレームの名前は: 基本名_番号.拡張子"
+
+#: gap/gap_split.c:236
+msgid "extension of resulting frames (is also used to define Fileformat)"
+msgstr "生成フレームの拡張子 (ファイル形式の定義ためにも使われる)"
+
+#: gap/gap_split.c:241
+msgid "Inverse Order:"
+msgstr "逆順:"
+
+#: gap/gap_split.c:242
+msgid "Start frame 0001 at Top Layer"
+msgstr "001 フレームを最上層レイヤーとして始める"
+
+#: gap/gap_split.c:247
+msgid ""
+"Remove Alpha Channel in resulting Frames. Transparent parts are filled with "
+"BG color."
+msgstr ""
+"生成フレームからアルファチャンネルを取り除く. 透明な部分は背景色で塗りつぶさ"
+"れる."
+
+#: gap/gap_split.c:250
+msgid "Split Image into Frames"
+msgstr "画像をフレームに分割"
+
+#: gap/gap_split.c:251
+msgid "Split Settings"
+msgstr "分割設定"
+
+#: gap/gap_split.c:298
+msgid ""
+"OPERATION CANCELLED.\n"
+"This image is already an AnimFrame.\n"
+"Try again on a Duplicate (Image/Duplicate)."
+msgstr ""
+"操作は取り消されました.\n"
+"画像は既に動画フレームになっています.\n"
+"複製してからもう一度試して下さい (画像/複製)."
+
+#: gap/resize.c:107
+msgid "Scale"
+msgstr "拡大縮小"
+
+#: gap/resize.c:111
+msgid "Resize"
+msgstr "サイズ変更"
+
+#: gap/resize.c:127
+msgid "New width:"
+msgstr "新しい幅:"
+
+#: gap/resize.c:144
+msgid "New height:"
+msgstr "新しい高さ:"
+
+#: gap/resize.c:161
+msgid "X ratio:"
+msgstr "比率 X:"
+
+#: gap/resize.c:178
+msgid "Y ratio:"
+msgstr "比率 Y:"
+
+#: gap/resize.c:197
+msgid "X Offset:"
+msgstr "X オフセット:"
+
+#: gap/resize.c:214
+msgid "Y Offset:"
+msgstr "Y オフセット:"
+
+#. the constrain toggle button
+#: gap/resize.c:231
+msgid "Constrain Ratio"
+msgstr "縦横比固定"

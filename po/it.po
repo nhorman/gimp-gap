@@ -1,0 +1,2569 @@
+# This is the Italian catalog for the standard GIMP Plugins.
+# Copyright (C) 1999 Free Software Foundation, Inc.
+# Daniele Medri <madrid@linux.it>
+msgid ""
+msgstr ""
+"Project-Id-Version: gimp 1.1.29\n"
+"POT-Creation-Date: 2003-03-25 02:00+0100\n"
+"PO-Revision-Date: 2000-11-06 13:11+01:00\n"
+"Last-Translator: Daniele Medri <madrid@linux.it>\n"
+"Language-Team: gimp.linux.it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Date: sab ott  2 05:46:51 CEST 1999\n"
+"From: Daniele Medri <madrid@linux.it>\n"
+"Xgettext-Options: --default-domain=gimp --directory=.. --add-comments --"
+"keyword=_ --keyword=N_ --files-from=./POTFILES.in\n"
+"Files: app/about_dialog.c app/main.c app/menus.c app/regex.c\n"
+
+#. Button  to invoke filebrowser
+#: gap/gap_arr_dialog.c:293
+msgid "File-Browser"
+msgstr "Browser file"
+
+#. parameter settings
+#: gap/gap_arr_dialog.c:793
+msgid "Enter Values"
+msgstr "Digita valori"
+
+#: gap/gap_arr_dialog.c:812
+msgid "Value:"
+msgstr "Valore:"
+
+#: gap/gap_arr_dialog.c:878
+msgid "Value: "
+msgstr "Valore: "
+
+#: gap/gap_arr_dialog.c:1040
+msgid "Press Button"
+msgstr "Premi bottone"
+
+#: gap/gap_arr_dialog.c:1041
+msgid "Select"
+msgstr "Seleziona"
+
+#: gap/gap_dbbrowser_utils.c:76
+msgid "GAP Animated Filter apply"
+msgstr "Applica filtro GAP"
+
+#: gap/gap_dbbrowser_utils.c:97
+msgid "Animated Filter apply (init)"
+msgstr "Applica filtro Animazione (inizio)"
+
+#: gap/gap_dbbrowser_utils.c:148
+msgid "Search:"
+msgstr "Cerca:"
+
+#: gap/gap_dbbrowser_utils.c:176
+msgid "Gen Code by name"
+msgstr "Genera Codice per nome"
+
+#: gap/gap_dbbrowser_utils.c:185
+msgid "Search by Name"
+msgstr "Ricerca per nome"
+
+#: gap/gap_dbbrowser_utils.c:193
+msgid "Search by Blurb"
+msgstr "Ricerca per blurb"
+
+#. show the name
+#: gap/gap_dbbrowser_utils.c:335
+msgid "Name:"
+msgstr "Nome:"
+
+#. show the description
+#: gap/gap_dbbrowser_utils.c:352
+msgid "Blurb:"
+msgstr "Blurb:"
+
+#: gap/gap_dbbrowser_utils.c:374
+msgid "In:"
+msgstr "Ingresso:"
+
+#: gap/gap_dbbrowser_utils.c:420
+msgid "Out:"
+msgstr "Uscita:"
+
+#: gap/gap_dbbrowser_utils.c:469
+msgid "Help:"
+msgstr "Aiuto:"
+
+#. show the author & the copyright
+#: gap/gap_dbbrowser_utils.c:507
+msgid "Author:"
+msgstr "Autore:"
+
+#: gap/gap_dbbrowser_utils.c:522
+msgid "Date:"
+msgstr "Data:"
+
+#: gap/gap_dbbrowser_utils.c:537
+msgid "Copyright:"
+msgstr "Copyright:"
+
+#: gap/gap_dbbrowser_utils.c:676
+msgid "Animated Filter apply (by name - please wait)"
+msgstr "Applica filtro animazione (per nome - attendere)"
+
+#: gap/gap_dbbrowser_utils.c:700
+msgid "Animated Filter apply (by blurb - please wait)"
+msgstr "Applica filtro animazione (per blurb - attendere)"
+
+#: gap/gap_dbbrowser_utils.c:708
+msgid "Animated Filter apply (please wait)"
+msgstr "Applica filtro animazione (attendere)"
+
+#: gap/gap_dbbrowser_utils.c:755 gap/gap_filter_foreach.c:163
+#: gap/gap_mod_layer.c:287
+msgid "Animated Filter apply"
+msgstr "Applica filtro animazione"
+
+#: gap/gap_decode_mpeg_main.c:102
+msgid "<Image>/Video/Split Video to Frames"
+msgstr "<Image>/Video/Dividi l'immagine in Frame"
+
+#: gap/gap_decode_mpeg_main.c:103
+msgid "<Toolbox>/Xtns/Split Video to Frames"
+msgstr "<Toolbox>/Xtns/Dividi l'immagine in Frame"
+
+#: gap/gap_decode_mpeg_main.c:176
+msgid "<Image>/Video/Split Video to Frames/MPEG1"
+msgstr "<Image>/Video/Dividi l'immagine in Frame/MPEG1"
+
+#: gap/gap_decode_mpeg_main.c:189
+msgid "<Toolbox>/Xtns/Split Video to Frames/MPEG1"
+msgstr "<Toolbox>/Xtns/Dividi l'immagine in Frame/MPEG1"
+
+#: gap/gap_decode_mpeg_main.c:332 gap/gap_decode_xanim.c:337
+#: gap/gap_range_ops.c:1240
+msgid "Overwrite Frame"
+msgstr "Sovrascrivi frame"
+
+#: gap/gap_decode_mpeg_main.c:334 gap/gap_decode_xanim.c:339
+#: gap/gap_range_ops.c:1242
+msgid "Overwrite All"
+msgstr "Sovrascrivi tutti"
+
+#: gap/gap_decode_mpeg_main.c:342 gap/gap_decode_xanim.c:347
+#: gap/gap_lib.c:1036 gap/gap_range_ops.c:1247
+msgid "GAP Question"
+msgstr "GAP Domanda"
+
+#: gap/gap_decode_mpeg_main.c:343 gap/gap_decode_xanim.c:348
+msgid "File already exists"
+msgstr "File esistente"
+
+#: gap/gap_decode_mpeg_main.c:437
+msgid "Decoding MPEG Movie..."
+msgstr "Decoding filmato MPEG..."
+
+#: gap/gap_decode_mpeg_main.c:642
+msgid "Video"
+msgstr "Video"
+
+#: gap/gap_decode_mpeg_main.c:643
+msgid ""
+"Name of the MPEG1 videofile to READ.\n"
+"Frames are extracted from the videofile\n"
+"and written to seperate diskfiles.\n"
+"Audiotracks in the videofile are ignored."
+msgstr ""
+
+#: gap/gap_decode_mpeg_main.c:652 gap/gap_decode_xanim.c:224
+#: gap/gap_lib.c:2120 gap/gap_lib.c:2315 gap/gap_range_ops.c:253
+#: gap/gap_range_ops.c:602
+msgid "From:"
+msgstr "Da :"
+
+#: gap/gap_decode_mpeg_main.c:653 gap/gap_decode_xanim.c:225
+msgid "Framenumber of 1st frame to extract"
+msgstr ""
+
+#: gap/gap_decode_mpeg_main.c:662 gap/gap_decode_xanim.c:234
+#: gap/gap_lib.c:2128 gap/gap_lib.c:2323 gap/gap_range_ops.c:260
+#: gap/gap_range_ops.c:610
+msgid "To:"
+msgstr "A:"
+
+#: gap/gap_decode_mpeg_main.c:663 gap/gap_decode_xanim.c:235
+msgid "Framenumber of last frame to extract"
+msgstr ""
+
+#: gap/gap_decode_mpeg_main.c:672 gap/gap_decode_xanim.c:244
+msgid "Framenames:"
+msgstr "Nomi frame:"
+
+#: gap/gap_decode_mpeg_main.c:673
+msgid ""
+"Basename for the AnimFrames to write on disk\n"
+"(framenumber and .xcf is added)"
+msgstr ""
+
+#: gap/gap_decode_mpeg_main.c:680 gap/gap_decode_xanim.c:283
+msgid "Open"
+msgstr "Apri"
+
+#: gap/gap_decode_mpeg_main.c:681 gap/gap_decode_xanim.c:284
+#, fuzzy
+msgid "Open the 1st one of the extracted frames"
+msgstr "Applica un 3x3 blurring convolution kernel alla figura specificata."
+
+#: gap/gap_decode_mpeg_main.c:685
+msgid ""
+"\n"
+"WARNING: Do not attempt to split other files than MPEG1 videos.\n"
+"Before you proceed, you should save all open images."
+msgstr ""
+
+#: gap/gap_decode_mpeg_main.c:688
+msgid "Split MPEG1 Video to Frames"
+msgstr "Dividi filmato MPEG1 in Frame"
+
+#: gap/gap_decode_mpeg_main.c:689 gap/gap_decode_xanim.c:298
+#: gap/gap_range_ops.c:1462
+msgid "Select Frame Range"
+msgstr "Seleziona serie di frame"
+
+#: gap/gap_decode_xanim.c:114
+msgid "Conditions to run the xanim based video split"
+msgstr ""
+
+#: gap/gap_decode_xanim.c:122
+msgid "1.) xanim 2.80.0 exporting edition (the loki version)"
+msgstr ""
+
+#: gap/gap_decode_xanim.c:126
+msgid "    must be installed somewhere in your PATH"
+msgstr ""
+
+#: gap/gap_decode_xanim.c:130
+#, fuzzy
+msgid "    you can get xanim exporting edition at"
+msgstr "    potete scaricare mpeg_encode da"
+
+#: gap/gap_decode_xanim.c:146
+msgid ""
+"2.) if your xanim exporting edition is not in your PATH or is not named xanim"
+msgstr ""
+
+#: gap/gap_decode_xanim.c:150
+msgid "    you have to set Environment variable GAP_XANIM_PROG "
+msgstr ""
+
+#: gap/gap_decode_xanim.c:154
+msgid "    to your xanim exporting program and restart gimp"
+msgstr ""
+
+#: gap/gap_decode_xanim.c:162
+msgid "An ERROR occured while trying to call xanim:"
+msgstr ""
+
+#: gap/gap_decode_xanim.c:181
+msgid "XANIM Information"
+msgstr "XANIM Informazioni"
+
+#: gap/gap_decode_xanim.c:214
+msgid "Video:"
+msgstr "Video:"
+
+#: gap/gap_decode_xanim.c:215
+msgid ""
+"Name of a videofile to READ by xanim.\n"
+"Frames are extracted from the videofile\n"
+"and written to separate diskfiles.\n"
+"xanim exporting edition is required."
+msgstr ""
+
+#: gap/gap_decode_xanim.c:245
+msgid ""
+"Basename for the AnimFrames to write on disk\n"
+"(framenumber and extension is added)"
+msgstr ""
+
+#: gap/gap_decode_xanim.c:252
+msgid "Format"
+msgstr "Formato"
+
+#: gap/gap_decode_xanim.c:253
+msgid ""
+"Fileformat for the extracted AnimFrames\n"
+"(xcf is extracted as ppm and converted to xcf)"
+msgstr ""
+
+#: gap/gap_decode_xanim.c:260
+msgid "Extract Frames"
+msgstr "Estrazione frame"
+
+#: gap/gap_decode_xanim.c:261
+msgid "Enable extraction of Frames"
+msgstr "Attiva estrazione frame"
+
+#: gap/gap_decode_xanim.c:265
+msgid "Extract Audio"
+msgstr "Estrazione audio"
+
+#: gap/gap_decode_xanim.c:266
+msgid ""
+"Enable extraction of audio to raw audiofile\n"
+"(frame range limits are ignored for audio)"
+msgstr ""
+
+#: gap/gap_decode_xanim.c:271
+msgid "Jpeg Quality:"
+msgstr "Qualità Jpeg:"
+
+#: gap/gap_decode_xanim.c:272
+msgid ""
+"Quality for resulting Jpeg frames\n"
+"(is ignored when other formats are used)"
+msgstr ""
+
+#: gap/gap_decode_xanim.c:288
+msgid "Run asynchronously"
+msgstr ""
+
+#: gap/gap_decode_xanim.c:289
+msgid ""
+"Run xanim asynchronously and delete unwanted frames\n"
+"(out of the specified range) while xanim is still running"
+msgstr ""
+
+#: gap/gap_decode_xanim.c:294
+msgid ""
+"\n"
+"Warning: xanim 2.80 has only limited MPEG support.\n"
+"Most of the frames (type P and B) will be skipped."
+msgstr ""
+
+#: gap/gap_decode_xanim.c:297
+#, fuzzy
+msgid "Split any Xanim readable Video to Frames"
+msgstr "Dividi Immagine in Frame"
+
+#: gap/gap_decode_xanim.c:540
+#, c-format
+msgid ""
+"can't find any extracted frames,\n"
+"%s\n"
+"maybe xanim has failed or was cancelled"
+msgstr ""
+
+#: gap/gap_decode_xanim.c:565
+#, c-format
+msgid "frames are not extracted, because overwrite of %s was cancelled"
+msgstr ""
+
+#: gap/gap_decode_xanim.c:575
+#, c-format
+msgid "failed to overwrite %s (check permissions ?)"
+msgstr ""
+
+#: gap/gap_decode_xanim.c:597
+#, c-format
+msgid "failed to write %s (check permissions ?)"
+msgstr ""
+
+#: gap/gap_decode_xanim.c:723
+#, c-format
+msgid "could not execute %s (check if xanim is installed)"
+msgstr "non è possibile eseguire %s (verificate se xanim è installato)"
+
+#: gap/gap_decode_xanim.c:731
+#, c-format
+msgid "%s does not look like xanim"
+msgstr ""
+
+#: gap/gap_decode_xanim.c:755
+#, c-format
+msgid ""
+"The xanim program on your system \"%s\"\n"
+"does not support the exporting options Ea, Ee, Eq"
+msgstr ""
+
+#: gap/gap_decode_xanim.c:762
+#, c-format
+msgid ""
+"The xanim program on your system \"%s\"\n"
+"does not support exporting of single frames"
+msgstr ""
+
+#: gap/gap_decode_xanim.c:1025
+#, c-format
+msgid "videofile %s not existent or empty\n"
+msgstr ""
+
+#: gap/gap_decode_xanim.c:1078
+#, c-format
+msgid ""
+"could not create %s directory\n"
+"(that is required for xanim frame export)"
+msgstr ""
+"non è possibile creare la directory %s\n"
+"(questa è richiesta per l'esportazione frame di xanim)"
+
+#: gap/gap_decode_xanim.c:1089
+msgid "extracting frames..."
+msgstr "estrazione frame..."
+
+#: gap/gap_decode_xanim.c:1114
+#, c-format
+msgid ""
+"could not start xanim process\n"
+"(program=%s)"
+msgstr ""
+"non è possibile avviare il processo xanim\n"
+"(programma=%s)"
+
+#: gap/gap_decode_xanim.c:1135
+msgid ""
+"can't find any extracted frames,\n"
+"xanim has failed or was cancelled"
+msgstr ""
+"non è possibile trovare nessun frame estratto,\n"
+"xanim ha fallito o erano cancellati"
+
+#: gap/gap_decode_xanim.c:1154
+msgid "renaming frames..."
+msgstr "rinominazione frame..."
+
+#: gap/gap_decode_xanim.c:1159
+msgid "converting frames..."
+msgstr "conversione frame..."
+
+#: gap/gap_filter_foreach.c:126
+msgid "backup to file"
+msgstr "backup in file"
+
+#. pixel
+#: gap/gap_filter_foreach.c:128
+msgid "Make backup of the image after each step"
+msgstr "Fai un backup dell'immagine ad ogni passo"
+
+#: gap/gap_filter_foreach.c:132 gap/gap_mod_layer.c:262
+msgid "Continue"
+msgstr "Continua"
+
+#: gap/gap_filter_foreach.c:136
+#, c-format
+msgid "Skip %d"
+msgstr ""
+
+#: gap/gap_filter_foreach.c:155 gap/gap_mod_layer.c:281
+#, c-format
+msgid ""
+"2nd call of %s\n"
+"(define end-settings)"
+msgstr ""
+"2° richiamo di %s\n"
+"(definisci settaggi finali)"
+
+#: gap/gap_filter_foreach.c:159
+#, c-format
+msgid ""
+"Non-Interactive call of %s\n"
+"(for all layers in between)"
+msgstr ""
+"Chiamata non-interattiva di %s\n"
+"(per tutti i livelli compresi)"
+
+#: gap/gap_filter_foreach.c:278
+msgid "Applying Filter to all Layers..."
+msgstr "Applicazione filtri su tutti i livelli..."
+
+#: gap/gap_filter_foreach.c:552
+msgid "Select Filter for Animated apply"
+msgstr "Seleziona filtri per animazioni"
+
+#: gap/gap_filter_foreach.c:553 gap/gap_mod_layer.c:664
+msgid "Apply Constant"
+msgstr "Applica costante"
+
+#: gap/gap_filter_foreach.c:554 gap/gap_mod_layer.c:665
+msgid "Apply Varying"
+msgstr ""
+
+#: gap/gap_filter_main.c:105
+msgid "<Image>/Filters/Filter all Layers..."
+msgstr "<Image>/Filtri/Animazioni/Filtra tutti i livelli..."
+
+#: gap/gap_frontends_main.c:125
+msgid "<Image>/Video/Split Video to Frames/Any XANIM readable..."
+msgstr "<Image>/Video/Dividi il video in frame/leggibile da XANIM..."
+
+#: gap/gap_frontends_main.c:137
+msgid "<Toolbox>/Xtns/Split Video to Frames/Any XANIM readable..."
+msgstr "<Toolbox>/Xtns/Dividi il video in frame/leggibile da XANIM..."
+
+#: gap/gap_frontends_main.c:149
+msgid "<Image>/Video/Encode/MPEG1..."
+msgstr "<Image>/Video/Encode/MPEG1..."
+
+#: gap/gap_frontends_main.c:162
+msgid "<Image>/Video/Encode/MPEG2..."
+msgstr "<Image>/Video/Encode/MPEG2..."
+
+#: gap/gap_lib.c:243
+msgid "GAP Message"
+msgstr "Messaggio GAP"
+
+#: gap/gap_lib.c:905
+msgid ""
+"OPERATION CANCELLED.\n"
+"Current frame changed while dialog was open."
+msgstr ""
+"OPERAZIONE CANCELLATA.\n"
+"Il frame corrente è cambiato durante l'apertura della finestra di dialogo."
+
+#: gap/gap_lib.c:927 gap/gap_lib.c:2192
+#, fuzzy
+msgid ""
+"OPERATION CANCELLED.\n"
+"GAP plug-ins only work with filenames\n"
+"that end in numbers like _0001.xcf.\n"
+"==> Rename your image, then try again."
+msgstr ""
+"OPERAZIONE CANCELLATA.\n"
+"Il plugin GAP gestisce unicamente nomi file\n"
+"che terminano con _0001.xcf.\n"
+"==> Rinominare l'immagine e riprovare."
+
+#: gap/gap_lib.c:1014
+msgid ""
+"You are using a file format != xcf\n"
+"Save Operations may result\n"
+"in loss of layer information."
+msgstr ""
+"State utilizzando un formato file diverso da XCF\n"
+"L'operazione di salvataggio può risultare in una\n"
+"perdita di informazioni per livelli."
+
+#: gap/gap_lib.c:1030
+msgid "Save Flattened"
+msgstr "Salva appiattita"
+
+#: gap/gap_lib.c:1032
+msgid "Save As Is"
+msgstr "Salva come è"
+
+#: gap/gap_lib.c:1507 gap/gap_lib.c:1631 gap/gap_lib.c:1710 gap/gap_lib.c:1717
+#: gap/gap_lib.c:1724 gap/gap_lib.c:1807 gap/gap_lib.c:1829 gap/gap_lib.c:2734
+#, c-format
+msgid "Error: could not rename frame %ld to %ld"
+msgstr ""
+
+#: gap/gap_lib.c:1570
+#, fuzzy, c-format
+msgid "Error: could not save frame %s"
+msgstr "Errore: impossibie aprire \"%s\""
+
+#: gap/gap_lib.c:1619
+msgid "Duplicating frames..."
+msgstr "Duplicazione frame..."
+
+#: gap/gap_lib.c:1795
+msgid "Renumber Framesequence..."
+msgstr "Rinumerazione della sequenza frame..."
+
+#: gap/gap_lib.c:1981
+#, c-format
+msgid "Goto Frame (%ld/%ld)"
+msgstr "Vai al frame (%ld/%ld)"
+
+#: gap/gap_lib.c:1984
+#, c-format
+msgid "Destination Frame Number (%ld  - %ld)"
+msgstr "Destinazione frame numero (%ld - %ld)"
+
+#: gap/gap_lib.c:1988 gap/gap_lib.c:2065 gap/gap_lib.c:2269
+msgid "Number:"
+msgstr "Numero:"
+
+#: gap/gap_lib.c:2049
+#, c-format
+msgid "Delete Frames (%ld/%ld)"
+msgstr "Elimina frame (%ld/%ld)"
+
+#: gap/gap_lib.c:2052
+#, c-format
+msgid "Delete Frames from %ld to (number)"
+msgstr "Elimina frame da %ld a (numero)"
+
+#: gap/gap_lib.c:2115
+#, c-format
+msgid "Duplicate Frames (%ld/%ld)"
+msgstr "Duplica frame (%ld/%ld)"
+
+#: gap/gap_lib.c:2125
+msgid "Source Range starts at this framenumber"
+msgstr "Il campo di azione parte da questo numero di frame"
+
+#: gap/gap_lib.c:2133
+msgid "Source Range ends at this framenumber"
+msgstr "Il campo di azione termina a questo numero di frame"
+
+#: gap/gap_lib.c:2136
+msgid "N times:"
+msgstr "# volte:"
+
+#: gap/gap_lib.c:2143
+msgid ""
+"Copy selected Range n-times  \n"
+"(you may type in Values > 99)"
+msgstr ""
+"Copia il campo selezionato n-volte \n"
+"(è possibile digitare valori maggiori di 99)"
+
+#: gap/gap_lib.c:2146
+msgid "Duplicate Frame Range"
+msgstr "Duplica il campo dei frame"
+
+#: gap/gap_lib.c:2264
+#, c-format
+msgid "Exchange current Frame (%ld)"
+msgstr ""
+
+#: gap/gap_lib.c:2268
+msgid "With Frame (number)"
+msgstr "Con frame (numero)"
+
+#: gap/gap_lib.c:2310
+#, c-format
+msgid "Framesequence Shift (%ld/%ld)"
+msgstr "Spostamento sequenza frame (%ld/%ld)"
+
+#: gap/gap_lib.c:2320
+msgid "Affected Range starts at this framenumber"
+msgstr "Il campo affetto parte da questo numero di frame"
+
+#: gap/gap_lib.c:2328
+msgid "Affected Range ends at this framenumber"
+msgstr "Il campo affetto finisce in questo numero di frame"
+
+#: gap/gap_lib.c:2331
+msgid "N-Shift:"
+msgstr "N-Shift:"
+
+#: gap/gap_lib.c:2336
+msgid ""
+"Renumber the affected framesequence     \n"
+"(numbers are shifted in circle by N)"
+msgstr ""
+"Rinumerazione della sequenza frame affetta\n"
+"(numeri traslati in circolo di N)"
+
+#: gap/gap_lib.c:2338
+msgid "Framesequence shift"
+msgstr "Traslazione sequenza frame"
+
+#: gap/gap_lib.c:2946
+#, c-format
+msgid ""
+"Can't execute more than 1 Video Function\n"
+"on the same AnimFrame Image at the same time\n"
+"LOCK ID:%s\n"
+msgstr ""
+
+#: gap/gap_main.c:476
+msgid "<Image>/Video/Goto/Next Frame"
+msgstr "<Image>/Video/Posizione/Frame successivo"
+
+#: gap/gap_main.c:488
+msgid "<Image>/Video/Goto/Previous Frame"
+msgstr "<Image>/Video/Posizione/Frame precedente"
+
+#: gap/gap_main.c:500
+msgid "<Image>/Video/Goto/First Frame"
+msgstr "<Image>/Video/Posizione/Frame iniziale"
+
+#: gap/gap_main.c:512
+msgid "<Image>/Video/Goto/Last Frame"
+msgstr "<Image>/Video/Posizione/Frame finale"
+
+#: gap/gap_main.c:524
+msgid "<Image>/Video/Goto/Any Frame..."
+msgstr "<Image>/Video/Posizione/Singolo Frame..."
+
+#: gap/gap_main.c:536
+msgid "<Image>/Video/Delete Frames..."
+msgstr "<Image>/Video/Elimina frame..."
+
+#: gap/gap_main.c:548
+msgid "<Image>/Video/Duplicate Frames..."
+msgstr "<Image>/Video/Duplica frame..."
+
+#: gap/gap_main.c:560
+msgid "<Image>/Video/Exchange Frame..."
+msgstr "<Image>/Video/Sostituisci frame..."
+
+#: gap/gap_main.c:572
+msgid "<Image>/Video/Move Path..."
+msgstr "<Image>/Video/Muovi tracciato..."
+
+#: gap/gap_main.c:643
+msgid "<Image>/Video/Frames to Image..."
+msgstr "<Image>/Video/Frame a immagine..."
+
+#: gap/gap_main.c:655
+msgid "<Image>/Video/Frames Flatten..."
+msgstr "<Image>/Video/Frame appiattiti..."
+
+#: gap/gap_main.c:667
+msgid "<Image>/Video/Frames LayerDel..."
+msgstr "<Image>/Video/Elimina livelli dei frame..."
+
+#: gap/gap_main.c:691
+msgid "<Image>/Video/Frames Convert..."
+msgstr "<Image>/Video/Converti frame..."
+
+#: gap/gap_main.c:703
+msgid "<Image>/Video/Frames Resize..."
+msgstr "<Image>/Video/Ridimensiona frame..."
+
+#: gap/gap_main.c:715
+msgid "<Image>/Video/Frames Crop..."
+msgstr "<Image>/Video/Ritaglia frame..."
+
+#: gap/gap_main.c:727
+msgid "<Image>/Video/Frames Scale..."
+msgstr "<Image>/Video/Scala frame..."
+
+#: gap/gap_main.c:739
+msgid "<Image>/Video/Split Image to Frames..."
+msgstr "<Image>/Video/Dividi l'immagine in frame..."
+
+#: gap/gap_main.c:752
+msgid "<Image>/Video/Framesequence Shift..."
+msgstr "<Image>/Video/Traslazione sequenza frame..."
+
+#: gap/gap_main.c:764
+msgid "<Image>/Video/Frames Modify..."
+msgstr "<Image>/Video/Modifica frame..."
+
+#. Layer select modes
+#: gap/gap_mod_layer.c:84 gap/gap_range_ops.c:574
+msgid "Pattern is equal to LayerName"
+msgstr "Il pattern è uguale al nome-livello"
+
+#: gap/gap_mod_layer.c:85 gap/gap_range_ops.c:575
+msgid "Pattern is Start of LayerName"
+msgstr "Il pattern è la parte iniziale del nome-livello"
+
+#: gap/gap_mod_layer.c:86 gap/gap_range_ops.c:576
+msgid "Pattern is End of Layername"
+msgstr "Il pattern è la parte finale del nome-livello"
+
+#: gap/gap_mod_layer.c:87 gap/gap_range_ops.c:577
+msgid "Pattern is a Part of LayerName"
+msgstr "Il pattern è una parte del nome-livello"
+
+#: gap/gap_mod_layer.c:88 gap/gap_range_ops.c:578
+msgid "Pattern is LayerstackNumber List"
+msgstr "Il pattern è il numero Stack di livello in lista"
+
+#: gap/gap_mod_layer.c:89 gap/gap_range_ops.c:579
+msgid "Pattern is REVERSE-stack List"
+msgstr "Il pattern è l'INVERSO dello stack in lista"
+
+#: gap/gap_mod_layer.c:90 gap/gap_range_ops.c:580
+msgid "All Visible (ignore Pattern)"
+msgstr "Tutti visibili (ignora pattern)"
+
+#: gap/gap_mod_layer.c:92
+msgid "Select all Layers where Layername is equal to Pattern"
+msgstr "Seleziona tutti i livelli dove i nome-livello sono uguali al pattern"
+
+#: gap/gap_mod_layer.c:93
+msgid "Select all Layers where Layername starts with Pattern"
+msgstr "Seleziona tutti i livelli dove i nome-livello iniziano con il pattern"
+
+#: gap/gap_mod_layer.c:94
+msgid "Select all Layers where Layername ends up with Pattern"
+msgstr "Seleziona tutti i livelli dove il nome-livello termina con il pattern"
+
+#: gap/gap_mod_layer.c:95
+msgid "Select all Layers where Layername contains Pattern"
+msgstr "Seleziona tutti i livelli dove il nome-livello contiene il pattern"
+
+#: gap/gap_mod_layer.c:96
+msgid ""
+"Select Layerstack positions.\n"
+"0, 4-5, 8\n"
+"where 0 == Top-layer"
+msgstr ""
+"Seleziona la posizione di stack del livello.\n"
+"0, 4-5, 8\n"
+"dove 0 == livello superiore"
+
+#: gap/gap_mod_layer.c:97
+msgid ""
+"Select Layerstack positions.\n"
+"0, 4-5, 8\n"
+"where 0 == BG-layer"
+msgstr ""
+"Seleziona la posizione di stack del livello.\n"
+"0, 4-5, 8\n"
+"dove 0 == livello di sfondo"
+
+#: gap/gap_mod_layer.c:98
+msgid "Select all visible Layers"
+msgstr "Seleziona tutti i livelli visibili"
+
+#. action items what to do with the selected layer(s)
+#: gap/gap_mod_layer.c:102
+msgid "Set Layer(s) visible"
+msgstr "Rendi livello(i) visibili"
+
+#: gap/gap_mod_layer.c:103
+msgid "Set Layer(s) invisible"
+msgstr "Rendi livello(i) non visibili"
+
+#: gap/gap_mod_layer.c:104
+msgid "Set Layer(s) linked"
+msgstr "Rendi livello(i) collegati"
+
+#: gap/gap_mod_layer.c:105
+msgid "Set Layer(s) unlinked"
+msgstr "Rendi livello(i) non collegati"
+
+#: gap/gap_mod_layer.c:106
+msgid "Raise Layer(s)"
+msgstr "Alza livello(i)"
+
+#: gap/gap_mod_layer.c:107
+msgid "Lower Layer(s)"
+msgstr "Abbassa livello(i)"
+
+#: gap/gap_mod_layer.c:108
+msgid "Merge Layer(s) expand as necessary"
+msgstr "Incolla livello(i) espandi se necessario"
+
+#: gap/gap_mod_layer.c:109
+msgid "Merge Layer(s) clipped to image"
+msgstr "Incolla livello(i) aggiungendolo all'immagine"
+
+#: gap/gap_mod_layer.c:110
+msgid "Merge Layer(s) clipped to bg-layer"
+msgstr "Incolla livello(i) aggiungendolo al livello di sfondo"
+
+#: gap/gap_mod_layer.c:111
+msgid "Apply filter on Layer(s)"
+msgstr "Applica filtro al livello(i)"
+
+#: gap/gap_mod_layer.c:112
+msgid "Duplicate Layer(s)"
+msgstr "Duplica livello(i)"
+
+#: gap/gap_mod_layer.c:113
+msgid "Delete Layer(s)"
+msgstr "Elimina livello(i)"
+
+#: gap/gap_mod_layer.c:114
+msgid "Rename Layer(s)"
+msgstr "Rinomina livello(i)"
+
+#: gap/gap_mod_layer.c:153
+msgid ""
+"Perform function on one or more Layer(s)\n"
+"in all frames of the selected frame range\n"
+msgstr ""
+"Performa funzione su uno o più livelli\n"
+"su tutti i frame del campo selezionato\n"
+
+#: gap/gap_mod_layer.c:157 gap/gap_mpege.c:258 gap/gap_range_ops.c:443
+msgid "From Frame:"
+msgstr "Dal frame:"
+
+#: gap/gap_mod_layer.c:158 gap/gap_mpege.c:259 gap/gap_range_ops.c:444
+#: gap/gap_range_ops.c:603
+msgid "first handled frame"
+msgstr "primo frame gestito"
+
+#: gap/gap_mod_layer.c:165 gap/gap_range_ops.c:451
+msgid "To Frame:"
+msgstr "Al frame:"
+
+#: gap/gap_mod_layer.c:166 gap/gap_mpege.c:267 gap/gap_range_ops.c:452
+#: gap/gap_range_ops.c:611
+msgid "last handled frame"
+msgstr "ultimo frame gestito"
+
+#: gap/gap_mod_layer.c:174 gap/gap_range_ops.c:650
+msgid "Select Layer(s):"
+msgstr "Seleziona livello(i):"
+
+#: gap/gap_mod_layer.c:184 gap/gap_range_ops.c:659
+msgid "Select Pattern:"
+msgstr "Seleziona pattern:"
+
+#. pixel
+#: gap/gap_mod_layer.c:186 gap/gap_range_ops.c:661
+msgid ""
+"String to identify layer names    \n"
+"or layerstack position numbers\n"
+"0,3-5"
+msgstr ""
+"Stringa per identificare il nome livello \n"
+"o il numero di posizione dello stack di livello\n"
+"0,3-5"
+
+#: gap/gap_mod_layer.c:192 gap/gap_range_ops.c:667
+msgid "Case sensitive"
+msgstr "Case sensitive"
+
+#: gap/gap_mod_layer.c:193 gap/gap_range_ops.c:668
+msgid "Lowercase and UPPERCASE letters are considered as different"
+msgstr "Le lettere minoscole/maiuscole sono considerate differenti"
+
+#: gap/gap_mod_layer.c:198 gap/gap_range_ops.c:673
+msgid "Invert Selection"
+msgstr "Inverti selezione"
+
+#: gap/gap_mod_layer.c:199
+msgid "Perform actions on all unselected Layers"
+msgstr "Compie azioni su tutti i livelli non selezionati"
+
+#: gap/gap_mod_layer.c:204
+msgid "Function:"
+msgstr "Funzione:"
+
+#. argv[7].radio_help_argv = action_help
+#: gap/gap_mod_layer.c:208
+msgid "Function to be performed on all selected layers"
+msgstr "Funzione da eseguire su tutti i livelli selezionati"
+
+#: gap/gap_mod_layer.c:214
+msgid "New Layername:"
+msgstr "Nuovo nome livello:"
+
+#. pixel
+#: gap/gap_mod_layer.c:216
+msgid ""
+"New Layername for all handled layers \n"
+"[####] is replaced by frame number\n"
+"(is used on function rename only)"
+msgstr ""
+"Nuovo nome-livello per tutti i livelli in esame\n"
+"[####] è sostituito dal numero del frame\n"
+"(è utilizzato nella funzione rinomina solamente)"
+
+#: gap/gap_mod_layer.c:221
+msgid "Frames Modify"
+msgstr "Modifica frame"
+
+#: gap/gap_mod_layer.c:222
+msgid "Settings"
+msgstr "Configurazioni"
+
+#: gap/gap_mod_layer.c:285
+#, c-format
+msgid ""
+"Non-Interactive call of %s\n"
+"(for all selected layers)"
+msgstr ""
+"Chiamata non-interattiva di %s\n"
+"(per tutti i livelli selezionati)"
+
+#. GAP-PDB-Browser Dialog
+#. ----------------------
+#: gap/gap_mod_layer.c:663
+msgid "Select Filter for Animated frames-apply"
+msgstr "Seleziona filtro da applicare al frame animazione"
+
+#: gap/gap_mod_layer.c:805
+msgid "GAP Modify: No layer selected in last handled frame"
+msgstr "Modifica GAP: nessun livello selezionato dall'ultima operazione"
+
+#: gap/gap_mod_layer.c:891
+msgid "Modifying Frames/Layer(s)..."
+msgstr "Modifica frame/livello(i)..."
+
+#: gap/gap_mod_layer.c:972
+msgid "No selected Layer in start frame"
+msgstr "Nessun livello selezionato nel frame di partenza"
+
+#: gap/gap_mov_dialog.c:262
+msgid "Normal"
+msgstr "Normale"
+
+#: gap/gap_mov_dialog.c:263
+msgid "Dissolve"
+msgstr "Dissolvenza"
+
+#: gap/gap_mov_dialog.c:264
+msgid "Multiply"
+msgstr "Multiplo"
+
+#: gap/gap_mov_dialog.c:265
+msgid "Screen"
+msgstr "Screen"
+
+#: gap/gap_mov_dialog.c:266
+msgid "Overlay"
+msgstr "Sovrapposta"
+
+#: gap/gap_mov_dialog.c:267
+msgid "Difference"
+msgstr "Differenza"
+
+#: gap/gap_mov_dialog.c:268
+msgid "Addition"
+msgstr "Addizione"
+
+#: gap/gap_mov_dialog.c:269
+msgid "Subtract"
+msgstr "Sottrazione"
+
+#: gap/gap_mov_dialog.c:270
+msgid "Darken Only"
+msgstr "Toni scuri"
+
+#: gap/gap_mov_dialog.c:271
+msgid "Lighten Only"
+msgstr "Toni chiari"
+
+#: gap/gap_mov_dialog.c:272
+msgid "Hue"
+msgstr "Tonalità"
+
+#: gap/gap_mov_dialog.c:273
+msgid "Saturation"
+msgstr "Saturazione"
+
+#: gap/gap_mov_dialog.c:274
+msgid "Color"
+msgstr "Colore"
+
+#: gap/gap_mov_dialog.c:275
+msgid "Value"
+msgstr "Valore"
+
+#: gap/gap_mov_dialog.c:282
+msgid "Left  Top"
+msgstr "Sinistra alto"
+
+#: gap/gap_mov_dialog.c:283
+msgid "Left  Bottom"
+msgstr "Sinistra basso"
+
+#: gap/gap_mov_dialog.c:284
+msgid "Right Top"
+msgstr "Destra alto"
+
+#: gap/gap_mov_dialog.c:285
+msgid "Right Bottom"
+msgstr "Destra basso"
+
+#: gap/gap_mov_dialog.c:286
+msgid "Center"
+msgstr "Centro"
+
+#: gap/gap_mov_dialog.c:294
+msgid "Loop"
+msgstr "Ciclo continuo"
+
+#: gap/gap_mov_dialog.c:295
+msgid "Loop Reverse"
+msgstr "Ciclo continuo inverso"
+
+#: gap/gap_mov_dialog.c:296
+msgid "Once"
+msgstr "Normale"
+
+#: gap/gap_mov_dialog.c:297
+msgid "OnceReverse"
+msgstr "Normale invertito"
+
+#: gap/gap_mov_dialog.c:298
+msgid "PingPong"
+msgstr "PingPong"
+
+#: gap/gap_mov_dialog.c:299
+msgid "None"
+msgstr "Nessuna"
+
+#: gap/gap_mov_dialog.c:300
+#, fuzzy
+msgid "Frame Loop"
+msgstr "Frame %d"
+
+#: gap/gap_mov_dialog.c:301
+#, fuzzy
+msgid "Frame Loop Reverse"
+msgstr "Ciclo continuo inverso"
+
+#: gap/gap_mov_dialog.c:302
+#, fuzzy
+msgid "Frame Once"
+msgstr "Framerate :"
+
+#: gap/gap_mov_dialog.c:303
+#, fuzzy
+msgid "Frame OnceReverse"
+msgstr "Normale invertito"
+
+#: gap/gap_mov_dialog.c:304
+#, fuzzy
+msgid "Frame PingPong"
+msgstr "PingPong"
+
+#: gap/gap_mov_dialog.c:305
+#, fuzzy
+msgid "Frame None"
+msgstr "Framerate :"
+
+#: gap/gap_mov_dialog.c:468
+msgid "Move Path"
+msgstr "Muovi tracciato"
+
+#: gap/gap_mov_dialog.c:492
+msgid "Update Preview"
+msgstr "Aggiorna anteprima"
+
+#: gap/gap_mov_dialog.c:499
+msgid "Show PreviewFrame with Selected SrcLayer at current Controlpoint"
+msgstr ""
+
+#: gap/gap_mov_dialog.c:503
+msgid "Anim Preview"
+msgstr "Anteprima animazione"
+
+#: gap/gap_mov_dialog.c:510
+msgid "Generate Animated Preview as multilayer image"
+msgstr "Genera anteprima immagine come immagine multilivello"
+
+#. parameter settings
+#: gap/gap_mov_dialog.c:523
+msgid "Copy moving source-layer(s) into frames"
+msgstr ""
+
+#. the start frame scale_entry
+#. table col, row
+#: gap/gap_mov_dialog.c:556
+msgid "Start Frame:"
+msgstr "Frame iniziale:"
+
+#. label text
+#. scalesize spinsize
+#. value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:564
+msgid "First handled frame"
+msgstr "Primo frame gestito"
+
+#. the end frame scale_entry
+#. table col, row
+#: gap/gap_mov_dialog.c:571
+msgid "End Frame:"
+msgstr "Frame finale:"
+
+#. label text
+#. scalesize spinsize
+#. value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:579
+msgid "Last handled frame"
+msgstr "Ultimo frame gestito"
+
+#. the Preview Frame scale_entry
+#. table col, row
+#: gap/gap_mov_dialog.c:586
+msgid "Preview Frame:"
+msgstr "Anteprima frame:"
+
+#. label text
+#. scalesize spinsize
+#. value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:594
+msgid "Frame to show when UpdPreview button is pressed"
+msgstr ""
+"Frame da mostrare quando il bottone di aggiornamento anteprima viene premuto"
+
+#. the Layerstack scale_entry
+#. table col, row
+#: gap/gap_mov_dialog.c:602 gap/gap_range_ops.c:267
+msgid "Layerstack:"
+msgstr "Stack di livello:"
+
+#. label text
+#. scalesize spinsize
+#. value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:610
+msgid ""
+"How to insert SrcLayer into the Dst. Frame's Layerstack\n"
+"0 means on top i.e. in front"
+msgstr ""
+
+#. toggle force visibility
+#: gap/gap_mov_dialog.c:622
+msgid "Force visibility"
+msgstr "Forza visibilità"
+
+#: gap/gap_mov_dialog.c:629
+msgid "Force visibility for all copied Src-Layers"
+msgstr ""
+
+#. toggle clip_to_image
+#: gap/gap_mov_dialog.c:635
+msgid "Clip To Frame"
+msgstr "Aggiungi al frame"
+
+#: gap/gap_mov_dialog.c:642
+msgid "Clip all copied Src-Layers at Frame Boundaries"
+msgstr ""
+
+#: gap/gap_mov_dialog.c:690
+msgid ""
+"No Source Image was selected\n"
+"(Please open a 2nd Image of the same type before opening Move Path)"
+msgstr ""
+
+#: gap/gap_mov_dialog.c:786
+#, fuzzy
+msgid "Object on empty frames"
+msgstr "Definizione:"
+
+#: gap/gap_mov_dialog.c:787
+msgid "Object on one frame"
+msgstr ""
+
+#: gap/gap_mov_dialog.c:788
+#, fuzzy
+msgid "Exact Object on frames"
+msgstr "Numeri di colori"
+
+#: gap/gap_mov_dialog.c:818
+#, fuzzy
+msgid "Anim Preview Mode"
+msgstr "Dimensione anteprima"
+
+#: gap/gap_mov_dialog.c:826
+#, fuzzy
+msgid "Scale Preview"
+msgstr "Anteprima Immagine"
+
+#: gap/gap_mov_dialog.c:827
+msgid "Scale down size of the generated animated preview (in %)"
+msgstr ""
+
+#: gap/gap_mov_dialog.c:835
+#, fuzzy
+msgid "Framerate"
+msgstr "Framerate :"
+
+#: gap/gap_mov_dialog.c:836
+msgid "Framerate to use in the animated preview in frames/sec"
+msgstr ""
+
+#: gap/gap_mov_dialog.c:850
+msgid "Copy to Video Buffer"
+msgstr ""
+
+#: gap/gap_mov_dialog.c:851
+msgid ""
+"Save all single frames of animated preview to video buffer\n"
+"(configured in gimprc by video-paste-dir and video-paste-basename)"
+msgstr ""
+
+#: gap/gap_mov_dialog.c:856
+#, fuzzy
+msgid "Move Path Animated Preview"
+msgstr "Muovi Anteprima Tracciato"
+
+#: gap/gap_mov_dialog.c:857
+msgid "Options"
+msgstr "Opzioni"
+
+#: gap/gap_mov_dialog.c:902
+#, fuzzy
+msgid "Generate Animated Preview failed\n"
+msgstr "Anteprima In Tempo Reale"
+
+#. filesel is already open
+#: gap/gap_mov_dialog.c:1187
+msgid "Load Path Points from file"
+msgstr "Carica punti tracciato dal file"
+
+#. filesel is already open
+#: gap/gap_mov_dialog.c:1223
+msgid "Save Path Points to file"
+msgstr "Salva punti tracciato nel file"
+
+#: gap/gap_mov_dialog.c:1552
+#, c-format
+msgid "Current Point: [ %3d ] of [ %3d ]"
+msgstr ""
+
+#: gap/gap_mov_dialog.c:1638
+msgid "Source Select"
+msgstr "Selezione Sorgente"
+
+#. Source Layer menu
+#: gap/gap_mov_dialog.c:1654
+#, fuzzy
+msgid "Source Image/Layer:"
+msgstr "Immagine sorgente/Livello:"
+
+#: gap/gap_mov_dialog.c:1664
+#, fuzzy
+msgid "Source Object to insert into Frame Range"
+msgstr "Oggetto sorgente da inserire dentro al campo Frame"
+
+#. Paintmode menu
+#: gap/gap_mov_dialog.c:1679
+msgid "Mode:"
+msgstr "Modalità:"
+
+#: gap/gap_mov_dialog.c:1688
+msgid "Paintmode"
+msgstr "Modalità di Disegno"
+
+#. Loop Stepmode menu
+#: gap/gap_mov_dialog.c:1703
+msgid "Stepmode:"
+msgstr "Modalità di movimento:"
+
+#: gap/gap_mov_dialog.c:1721
+msgid "How to fetch the next SrcLayer at the next handled frame"
+msgstr ""
+
+#. Source Image Handle menu
+#: gap/gap_mov_dialog.c:1727
+msgid "Handle:"
+msgstr "Valore:"
+
+#: gap/gap_mov_dialog.c:1745
+msgid "How to place the SrcLayer at Controlpoint Coordinates"
+msgstr ""
+
+#. to avoid side effects while initialization
+#. the frame
+#: gap/gap_mov_dialog.c:1799
+msgid "Move Path Preview"
+msgstr "Muovi Anteprima Tracciato"
+
+#. X
+#. table col, row
+#: gap/gap_mov_dialog.c:1822
+msgid "X:"
+msgstr "X:"
+
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:1831
+#, fuzzy
+msgid "X Coordinate"
+msgstr "Colorazione"
+
+#. Y
+#. table col, row
+#: gap/gap_mov_dialog.c:1840
+msgid "Y:"
+msgstr "Y:"
+
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:1849
+#, fuzzy
+msgid "Y Coordinate"
+msgstr "Colorazione"
+
+#. Widht Scale
+#. table col, row
+#: gap/gap_mov_dialog.c:1858
+msgid "Width:"
+msgstr "Larghezza:"
+
+#. label text
+#. scalesize spinsize
+#. value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:1866
+msgid "Scale Source Layer's Width in percent"
+msgstr ""
+
+#. Height Scale
+#. table col, row
+#: gap/gap_mov_dialog.c:1875
+msgid "Height:"
+msgstr "Altezza:"
+
+#. label text
+#. scalesize spinsize
+#. value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:1883
+msgid "Scale SrcLayer's Height in percent"
+msgstr ""
+
+#. Opacity
+#. table col, row
+#: gap/gap_mov_dialog.c:1892
+msgid "Opacity:"
+msgstr "Opacità:"
+
+#. label text
+#. scalesize spinsize
+#. value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:1900
+#, fuzzy
+msgid "SrcLayer's Opacity in percent"
+msgstr "Definizione circolo in percentuale:"
+
+#. Rotation
+#. table col, row
+#: gap/gap_mov_dialog.c:1909
+#, fuzzy
+msgid "Rotate:"
+msgstr "Data: "
+
+#. label text
+#. scalesize spinsize
+#. value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:1917
+msgid "Rotate SrcLayer (in degree)"
+msgstr ""
+
+#. Keyframe
+#. table col, row
+#: gap/gap_mov_dialog.c:1927
+#, fuzzy
+msgid "Keyframe:"
+msgstr "Formato video :"
+
+#. label text
+#. scalesize spinsize
+#. value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
+#: gap/gap_mov_dialog.c:1935
+msgid ""
+"Fix Controlpoint to Keyframe number\n"
+"(0 == No Keyframe)"
+msgstr ""
+
+#: gap/gap_mov_dialog.c:2010
+msgid "Add Point"
+msgstr "Aggiunti Punti"
+
+#: gap/gap_mov_dialog.c:2018
+#, fuzzy
+msgid ""
+"Add Controlpoint at end\n"
+"(the last Point is duplicated)"
+msgstr ""
+"Aggiungi punto di controllo alla fine\n"
+"(l'ultimo punto è duplicato)"
+
+#. toggle clip_to_image
+#: gap/gap_mov_dialog.c:2023
+#, fuzzy
+msgid "Show Path"
+msgstr "Muovi Tracciato"
+
+#: gap/gap_mov_dialog.c:2030
+msgid ""
+"Show Path Lines and enable pick/drag with left button or move with right "
+"button"
+msgstr ""
+
+#: gap/gap_mov_dialog.c:2040
+msgid "Insert Point"
+msgstr "Inserisci punti"
+
+#: gap/gap_mov_dialog.c:2048
+#, fuzzy
+msgid ""
+"Insert Controlpoint\n"
+"(the current Point is duplicated)"
+msgstr ""
+"Aggiungi punto di controllo alla fine\n"
+"(l'ultimo punto è duplicato)"
+
+#: gap/gap_mov_dialog.c:2052
+#, fuzzy
+msgid "Delete Point"
+msgstr "Elimina punti"
+
+#: gap/gap_mov_dialog.c:2060
+#, fuzzy
+msgid "Delete current Controlpoint"
+msgstr "Mostra il Punto Successivo"
+
+#: gap/gap_mov_dialog.c:2066
+msgid "Prev Point"
+msgstr "Punto Precedente"
+
+#: gap/gap_mov_dialog.c:2074
+msgid "Show Previous Controlpoint"
+msgstr "Mostra il precedente punto di controllo"
+
+#: gap/gap_mov_dialog.c:2078
+msgid "Next Point"
+msgstr "Punto Successivo"
+
+#: gap/gap_mov_dialog.c:2086
+msgid "Show Next Controlpoint"
+msgstr "Mostra il Punto Successivo"
+
+#: gap/gap_mov_dialog.c:2092
+msgid "First Point"
+msgstr "Primo punto"
+
+#: gap/gap_mov_dialog.c:2100
+msgid "Show First Controlpoint"
+msgstr "Mostra il primo punto di controllo"
+
+#: gap/gap_mov_dialog.c:2104
+msgid "Last Point"
+msgstr "Ultimo punto"
+
+#: gap/gap_mov_dialog.c:2112
+msgid "Show Last Controlpoint"
+msgstr "Mostra l'ultimo punto di controllo"
+
+#: gap/gap_mov_dialog.c:2118
+msgid "Clear Point"
+msgstr "Pulisci punti"
+
+#: gap/gap_mov_dialog.c:2126
+#, fuzzy
+msgid "Reset the current Controlpoint to default Values"
+msgstr ""
+"Cancella i punti di controllo \n"
+"al punto di controllo di base"
+
+#: gap/gap_mov_dialog.c:2130
+#, fuzzy
+msgid "Clear All Points"
+msgstr "Annulla punti"
+
+#: gap/gap_mov_dialog.c:2138
+msgid ""
+"Reset all Controlpoints to default Values but dont change the path (X/Y "
+"Values)"
+msgstr ""
+
+#: gap/gap_mov_dialog.c:2145
+#, fuzzy
+msgid "Rotate Follow"
+msgstr "Ruota: "
+
+#: gap/gap_mov_dialog.c:2156
+msgid ""
+"Set Rotation for all Controlpoints to follow the shape of the path.\n"
+"(Shift: use Rotation of contolpoint 1 as offset)"
+msgstr ""
+
+#: gap/gap_mov_dialog.c:2163
+msgid "Delete All Points"
+msgstr "Elimina tutti i punti"
+
+#: gap/gap_mov_dialog.c:2171
+msgid "Delete all Controlpoints"
+msgstr "Elimina tutti i punti di controllo"
+
+#: gap/gap_mov_dialog.c:2178
+msgid "Load Points"
+msgstr "Carica punti"
+
+#: gap/gap_mov_dialog.c:2186
+msgid "Load Controlpoints from file"
+msgstr "Carica Controllo Punti da file"
+
+#: gap/gap_mov_dialog.c:2190
+msgid "Save Points"
+msgstr "Salva punti"
+
+#: gap/gap_mov_dialog.c:2198
+msgid "Save Controlpoints to file"
+msgstr "Salva punti di controllo in file"
+
+#: gap/gap_mov_dialog.c:2658
+#, fuzzy
+msgid ""
+"Can't operate with current Controlpoint\n"
+"or Keyframe settings"
+msgstr ""
+"Cancella i punti di controllo \n"
+"al punto di controllo di base"
+
+#: gap/gap_mov_dialog.c:2665
+#, fuzzy
+msgid "Reset Keyframes"
+msgstr "Annulla a Valori Base"
+
+#: gap/gap_mov_dialog.c:2670
+#, fuzzy
+msgid "Move Path Controlpointcheck"
+msgstr "Mostra il Punto Successivo"
+
+#: gap/gap_mov_dialog.c:2671
+msgid "Errors:"
+msgstr ""
+
+#: gap/gap_mov_exec.c:444
+msgid ""
+"No Source Image was selected.\n"
+"Please open a 2nd Image of the same type before opening Move Path."
+msgstr ""
+
+#: gap/gap_mov_exec.c:455
+#, fuzzy
+msgid "Copying Layers into Frames..."
+msgstr "Copia Livelli dentro ai Frame .."
+
+#: gap/gap_mov_exec.c:459
+#, fuzzy
+msgid "Generating Animated Preview..."
+msgstr "Anteprima In Tempo Reale"
+
+#: gap/gap_mov_exec.c:1376
+#, c-format
+msgid ""
+"\n"
+"Error: Keyframe %d at point [%d] higher or equal than last handled frame"
+msgstr ""
+
+#: gap/gap_mov_exec.c:1384
+#, c-format
+msgid ""
+"\n"
+"Error: Keyframe %d at point [%d] leaves not enough space (frames)\n"
+"for the previous controlpoints"
+msgstr ""
+
+#: gap/gap_mov_exec.c:1394
+#, c-format
+msgid ""
+"\n"
+"Error: Keyframe %d is not in sequence at point [%d]"
+msgstr ""
+
+#: gap/gap_mov_exec.c:1412
+#, c-format
+msgid ""
+"\n"
+"Error: controlpoint [%d] is out of handled framerange"
+msgstr ""
+
+#: gap/gap_mov_exec.c:1426
+#, c-format
+msgid ""
+"\n"
+"Error: more controlpoints (%d) than handled frames (%d)\n"
+"please reduce controlpoints or select more frames"
+msgstr ""
+
+#: gap/gap_mpege.c:111
+msgid "Conditions to run mpeg_encode 1.5:"
+msgstr "Condizioni per lanciare mpeg_encode 1.5:"
+
+#: gap/gap_mpege.c:114
+msgid "Conditions to run mpeg2encode 1.2:"
+msgstr "Condizioni per lanciare mpeg_encode 1.2:"
+
+#: gap/gap_mpege.c:124
+msgid "1.) mpeg_encode 1.5 must be installed"
+msgstr "1.) mpeg_encode 1.5 dev'essere installato"
+
+#: gap/gap_mpege.c:127
+msgid "1.) mpeg2encode 1.2 must be installed"
+msgstr "1.) mpeg2_encode 1.2 dev'essere installato"
+
+#: gap/gap_mpege.c:132
+msgid "    you can get mpeg_encode at"
+msgstr "    potete scaricare mpeg_encode da"
+
+#: gap/gap_mpege.c:135
+msgid "    you can get mpeg2encode at http://www.mpeg.org/MSSG"
+msgstr "     potete scaricare mpeg2encode da http://www.mpeg.org/MSSG"
+
+#: gap/gap_mpege.c:140
+msgid "    ftp://mm-ftp.cs.berkeley.edu/pub/multimedia/mpeg/bmt1r1.tar.gz"
+msgstr "    ftp://mm-ftp.cs.berkeley.edu/pub/multimedia/mpeg/bmt1r1.tar.gz"
+
+#: gap/gap_mpege.c:143
+msgid "   or at ftp://ftp.mpeg.org/pub/mpeg/mssg "
+msgstr "   o da ftp://ftp.mpeg.org/pub/mpeg/mssg "
+
+#: gap/gap_mpege.c:148
+msgid "2.) You need a series of single Images on disk (AnimFrames)"
+msgstr ""
+"2.) Avete bisogno di una serie di singole immagini sul disco (AnimFrames)"
+
+#: gap/gap_mpege.c:152
+msgid "    all with fileformat JPEG (or YUV or PNM or PPM)"
+msgstr "    tutti del formato JPEG (o YUV o PNM o PPM)"
+
+#: gap/gap_mpege.c:155
+msgid "   all with fileformat PPM (or YUV)"
+msgstr "   tutti del formato PPM (o YUV)"
+
+#: gap/gap_mpege.c:160
+#, fuzzy
+msgid "    (use 'Frames Convert' from the Video Menu"
+msgstr "     (utilizza 'Conversione Frame' dal menù di AnimFrames"
+
+#: gap/gap_mpege.c:164
+#, fuzzy
+msgid "    or 'Split Image to Frames' from the Video Menu)"
+msgstr "    o 'Dividi Immagine in Frame' dal menù di AnimFrames)"
+
+#: gap/gap_mpege.c:168
+msgid "3.) All Images must have the same size,"
+msgstr "3.) Tutte le immagini devono avere la stessa dimensione,"
+
+#: gap/gap_mpege.c:175
+msgid "    width and height must be a multiple of 16"
+msgstr "    larghezza ed altezza devono essere un ultiplo di 16"
+
+#: gap/gap_mpege.c:179
+#, fuzzy
+msgid "    (use Scale or Crop from the Video Menu)"
+msgstr "    (utilizza lo strumento Scala e Taglierina dal menù di AnimFrame)"
+
+#: gap/gap_mpege.c:194
+msgid "MPEG_ENCODE Information"
+msgstr "Informazioni MPEG_ENCODE"
+
+#: gap/gap_mpege.c:231
+msgid "generate MPEG1 (ISO/IEC 11172-2) stream"
+msgstr "genera MPEG1 (ISO/IEC 11172-2) stream"
+
+#: gap/gap_mpege.c:232
+msgid "generate MPEG2 (ISO/IEC DIS 13818-2) stream"
+msgstr "genera MPEG2 (ISO/IEC DIS 13818-2) stream"
+
+#: gap/gap_mpege.c:242
+msgid "GenParams"
+msgstr "Genera parametri"
+
+#: gap/gap_mpege.c:244
+#, fuzzy
+msgid "Gen + Encode"
+msgstr "Uuencode"
+
+#: gap/gap_mpege.c:266
+msgid "To   Frame:"
+msgstr "Al   Frame:"
+
+#: gap/gap_mpege.c:273
+msgid "Framerate :"
+msgstr "Framerate :"
+
+#: gap/gap_mpege.c:274
+msgid "framerate in frames/second"
+msgstr "framerate in frame/secondo"
+
+#: gap/gap_mpege.c:281
+msgid "Bitrate:"
+msgstr "Bitrate:"
+
+#: gap/gap_mpege.c:282
+msgid ""
+"used for constant bitrates (bit/sec)                  \n"
+"(low rate gives good compression + bad quality)"
+msgstr ""
+
+#: gap/gap_mpege.c:296
+msgid "Outputfile:"
+msgstr "File di Uscita"
+
+#. pixel
+#: gap/gap_mpege.c:298
+msgid "Name of the resulting MPEG outputfile"
+msgstr ""
+
+#: gap/gap_mpege.c:304
+msgid "Paramfile:"
+msgstr "File Parametri:"
+
+#. pixel
+#: gap/gap_mpege.c:306
+msgid ""
+"Name of the Encoder-Parameterfile\n"
+"(is generated)"
+msgstr ""
+
+#: gap/gap_mpege.c:312
+msgid "Startscript:"
+msgstr "Script di partenza:"
+
+#. pixel
+#: gap/gap_mpege.c:314
+msgid ""
+"Name of the Startscript           \n"
+"(is generated/executed)"
+msgstr "Nome dello script di partenza:(è generato/eseguito)"
+
+#: gap/gap_mpege.c:320
+msgid ""
+"Generate parameterfile for mpeg_encode 1.5\n"
+"(the freely distributed Berkeley MPEG-1 Video  Encoder.)\n"
+msgstr ""
+
+#: gap/gap_mpege.c:324
+msgid "Constant Bitrate :"
+msgstr "Bitrate costante :"
+
+#: gap/gap_mpege.c:325
+msgid "Iqnore I/P/QSCALE values and use constant bit-rate)"
+msgstr ""
+
+#: gap/gap_mpege.c:330
+msgid "Pattern:"
+msgstr "Pattern:"
+
+#. pixel
+#: gap/gap_mpege.c:332
+msgid "How to encode MPEG framesequence (I/P/B frames)"
+msgstr "Come encodare una sequenza MPEG (I/P/B frame)"
+
+#: gap/gap_mpege.c:338
+msgid "IQSCALE:"
+msgstr "IQSCALE:"
+
+#: gap/gap_mpege.c:339
+msgid ""
+"Quality scale for I-Frames                       \n"
+"(1 = best quality, 31 = best comression)"
+msgstr ""
+
+#: gap/gap_mpege.c:346
+msgid "PQSCALE:"
+msgstr "PQSCALE:"
+
+#: gap/gap_mpege.c:347
+msgid ""
+"Quality scale for P-Frames                  \n"
+"(1 = best quality, 31 = best comression)"
+msgstr ""
+
+#: gap/gap_mpege.c:354
+msgid "BQSCALE:"
+msgstr "BQSCALE:"
+
+#: gap/gap_mpege.c:355
+msgid ""
+"Quality scale for B-Frames                  \n"
+"(1 = best quality, 31 = best comression)"
+msgstr ""
+
+#: gap/gap_mpege.c:362
+msgid "P-Search :"
+msgstr "P-Ricerca :"
+
+#: gap/gap_mpege.c:363
+msgid "Search Algorithmus used for P-frames"
+msgstr "Ricerca Algoritmo utilizzato per P-frame"
+
+#: gap/gap_mpege.c:369
+msgid "B-Search :"
+msgstr "B-Ricerca :"
+
+#: gap/gap_mpege.c:370
+msgid "Search Algorithmus used for B-frames"
+msgstr ""
+
+#: gap/gap_mpege.c:375
+msgid "Gen MPEG_ENCODE Parameters"
+msgstr "Genera parametri MPEG_ENCODE"
+
+#: gap/gap_mpege.c:376 gap/gap_mpege.c:414
+msgid "Encode Values"
+msgstr "Encoda valori"
+
+#: gap/gap_mpege.c:392
+msgid ""
+"Generate parameterfile for mpeg2encode 1.2\n"
+"(MPEG-2 Video  Encoder.)\n"
+msgstr ""
+
+#: gap/gap_mpege.c:395
+msgid "MPEG-type :"
+msgstr "Tipo MPEG :"
+
+#: gap/gap_mpege.c:404
+msgid "Videoformat :"
+msgstr "Formato video :"
+
+#: gap/gap_mpege.c:405
+msgid "Videoformat"
+msgstr "Formato video"
+
+#. framerates above 30 ar not allowed in mpeg2encode
+#: gap/gap_mpege.c:413
+msgid "Gen MPEG2ENCODE Parameters"
+msgstr "Genera parametri MPEG2ENCODE"
+
+#: gap/gap_mpege.c:978
+msgid ""
+"\n"
+"WARNING: mpeg_encode does not support Fileformat "
+msgstr ""
+"\n"
+"ATTENZIONE: mpeg_encode non supporta il formato file "
+
+#: gap/gap_mpege.c:981
+msgid ""
+"\n"
+"ERROR: width not a multiple of 16"
+msgstr ""
+"\n"
+"ERRORE: larghezza non multipla di 16"
+
+#: gap/gap_mpege.c:982
+msgid ""
+"\n"
+"ERROR: height not a multiple of 16"
+msgstr ""
+"\n"
+"ERRORE: altezza non multipla di 16"
+
+#: gap/gap_mpege.c:988
+msgid ""
+"\n"
+"WARNING: mpeg2encode does not support Fileformat "
+msgstr ""
+"\n"
+"ATTENZIONE: mpeg2encode non supporta il formato file "
+
+#: gap/gap_mpege.c:993
+msgid ""
+"\n"
+"ERROR: invoked from a single image, animframe required"
+msgstr ""
+"\n"
+"ERRORE: invocato da una singola immagine, richiesto animframe"
+
+#: gap/gap_navigator_dialog.c:366
+msgid ""
+"Playback         \n"
+"<Shift> optimized"
+msgstr ""
+
+#: gap/gap_navigator_dialog.c:371
+msgid ""
+"Smart Update .xvpics\n"
+"<Shift> forced upd"
+msgstr ""
+
+#: gap/gap_navigator_dialog.c:376
+#, fuzzy
+msgid "Duplicate selected Frames"
+msgstr "Utilizza tutti i livelli non selezionati"
+
+#: gap/gap_navigator_dialog.c:380
+#, fuzzy
+msgid "Delete selected Frames"
+msgstr "Utilizza tutti i livelli non selezionati"
+
+#: gap/gap_navigator_dialog.c:389
+#, fuzzy
+msgid "Goto 1st Frame"
+msgstr "Al   Frame:"
+
+#: gap/gap_navigator_dialog.c:393
+msgid ""
+"Goto prev Frame\n"
+"<Shift> use timezoom stepsize"
+msgstr ""
+
+#: gap/gap_navigator_dialog.c:398
+msgid ""
+"Goto next Frame\n"
+"<Shift> use timezoom stepsize"
+msgstr ""
+
+#: gap/gap_navigator_dialog.c:403
+#, fuzzy
+msgid "Goto last Frame"
+msgstr "Frame Iniziale:"
+
+#: gap/gap_navigator_dialog.c:460
+#, fuzzy
+msgid "<Image>/Video/VCR Navigator..."
+msgstr "<Image>/AnimFrames/Muovi Tracciato"
+
+#: gap/gap_navigator_dialog.c:523
+msgid "Cant open two or more Video Navigator Windows."
+msgstr ""
+
+#. menu_item copy
+#: gap/gap_navigator_dialog.c:2877
+msgid "Copy"
+msgstr "Copia"
+
+#. menu_item cut
+#: gap/gap_navigator_dialog.c:2887
+msgid "Cut"
+msgstr ""
+
+#. menu_item paste before
+#: gap/gap_navigator_dialog.c:2897
+msgid "Paste before"
+msgstr ""
+
+#. menu_item copy
+#: gap/gap_navigator_dialog.c:2907
+#, fuzzy
+msgid "Paste after"
+msgstr "Pattern:"
+
+#. menu_item copy
+#: gap/gap_navigator_dialog.c:2917
+#, fuzzy
+msgid "Paste replace"
+msgstr "Interlaccia"
+
+#. menu_item copy
+#: gap/gap_navigator_dialog.c:2927
+msgid "Clear Video Buffer"
+msgstr ""
+
+#: gap/gap_navigator_dialog.c:2952
+#, fuzzy
+msgid "Videoframes:"
+msgstr "Formato video :"
+
+#: gap/gap_navigator_dialog.c:2967
+#, fuzzy
+msgid "Framerate:"
+msgstr "Framerate :"
+
+#: gap/gap_navigator_dialog.c:2990
+msgid "Timezoom:"
+msgstr ""
+
+#. The main shell
+#: gap/gap_navigator_dialog.c:3074
+msgid "Video Navigator"
+msgstr ""
+
+#: gap/gap_range_ops.c:120
+#, fuzzy
+msgid "New Width:"
+msgstr "Nuova Larghezza:"
+
+#: gap/gap_range_ops.c:129
+#, fuzzy
+msgid "New Height:"
+msgstr "Nuova Altezza:"
+
+#: gap/gap_range_ops.c:138
+#, fuzzy
+msgid "Offset X:"
+msgstr "Offset:"
+
+#: gap/gap_range_ops.c:147
+#, fuzzy
+msgid "Offset Y:"
+msgstr "Offset:"
+
+#: gap/gap_range_ops.c:158
+msgid "Crop AnimFrames (all)"
+msgstr "Taglia AnimFrames (tutti)"
+
+#: gap/gap_range_ops.c:159
+#, c-format
+msgid "Crop (original %dx%d)"
+msgstr "Taglia (originale %dx%d)"
+
+#: gap/gap_range_ops.c:169
+msgid "Resize AnimFrames (all)"
+msgstr "Ridimensiona AnimFrame (tutti)"
+
+#: gap/gap_range_ops.c:170
+#, c-format
+msgid "Resize (original %dx%d)"
+msgstr "Ridimensiona (originale %dx%d)"
+
+#: gap/gap_range_ops.c:176
+msgid "Scale AnimFrames (all)"
+msgstr "Scala AnimFrame (tutti)"
+
+#: gap/gap_range_ops.c:177
+#, c-format
+msgid "Scale (original %dx%d)"
+msgstr "Scala (originale %dx%d)"
+
+#: gap/gap_range_ops.c:308
+msgid "Generate Optimal Palette"
+msgstr ""
+
+#: gap/gap_range_ops.c:309
+msgid "WEB Palette"
+msgstr ""
+
+#: gap/gap_range_ops.c:310
+#, fuzzy
+msgid "Use Custom Palette"
+msgstr "Verde"
+
+#: gap/gap_range_ops.c:311
+msgid "Use Black/White (1-Bit) Palette"
+msgstr ""
+
+#: gap/gap_range_ops.c:313
+msgid "Floyd-Steinberg Color Dithering (Normal)"
+msgstr ""
+
+#: gap/gap_range_ops.c:314
+msgid "Floyd-Steinberg Color Dithering (Reduced Color Bleeding)"
+msgstr ""
+
+#: gap/gap_range_ops.c:315
+msgid "Positioned Color Dithering"
+msgstr ""
+
+#: gap/gap_range_ops.c:316
+#, fuzzy
+msgid "No Color Dithering"
+msgstr "Colorazione"
+
+#: gap/gap_range_ops.c:327
+msgid "Palette Type"
+msgstr ""
+
+#: gap/gap_range_ops.c:334
+msgid "Custom Palette"
+msgstr ""
+
+#: gap/gap_range_ops.c:335
+msgid ""
+"Name of a cutom palette\n"
+"(is ignored if Palette Type is not custom)"
+msgstr ""
+
+#: gap/gap_range_ops.c:340
+#, fuzzy
+msgid "Remove Unused"
+msgstr "Normale Invertita"
+
+#: gap/gap_range_ops.c:341
+msgid ""
+"Remove unused or double colors\n"
+"(is ignored if Palette Type is not custom)"
+msgstr ""
+
+#: gap/gap_range_ops.c:346
+msgid "Number of Colors"
+msgstr "Numero di colori"
+
+#: gap/gap_range_ops.c:347
+msgid ""
+"Number of resulting Colors\t\t \n"
+"(ignored if Palette Type is not Generate optimal palette)"
+msgstr ""
+
+#: gap/gap_range_ops.c:354
+#, fuzzy
+msgid "Dither Options"
+msgstr "Opzioni Ulteriori"
+
+#: gap/gap_range_ops.c:361
+#, fuzzy
+msgid "Enable transparency"
+msgstr "Trasparenza"
+
+#: gap/gap_range_ops.c:362
+msgid "Enable dithering of transparency"
+msgstr ""
+
+#: gap/gap_range_ops.c:365
+#, fuzzy
+msgid "Convert Frames to Indexed"
+msgstr "Converti i frame ad altri formati"
+
+#: gap/gap_range_ops.c:366
+#, fuzzy
+msgid "Palette and Dither Settings"
+msgstr "Disegna il grafico delle configurazioni"
+
+#: gap/gap_range_ops.c:431
+#, fuzzy
+msgid "Keep Type"
+msgstr "Tipo Mappa"
+
+#: gap/gap_range_ops.c:432
+#, fuzzy
+msgid "Convert to RGB"
+msgstr "Conversione a RGB"
+
+#: gap/gap_range_ops.c:433
+#, fuzzy
+msgid "Convert to Gray"
+msgstr "Conversione a RGB"
+
+#: gap/gap_range_ops.c:434
+#, fuzzy
+msgid "Convert to Indexed"
+msgstr "Converti i frame ad altri formati"
+
+#: gap/gap_range_ops.c:458
+msgid ""
+"\n"
+"Select destination fileformat by extension\n"
+"optionally convert imagetype\n"
+msgstr ""
+
+#: gap/gap_range_ops.c:461
+msgid "Basename:"
+msgstr "Nome base:"
+
+#: gap/gap_range_ops.c:462
+msgid ""
+"basename of the resulting frames       \n"
+"(0001.ext is added)"
+msgstr ""
+
+#: gap/gap_range_ops.c:467 gap/gap_split.c:235
+msgid "Extension:"
+msgstr "Estensione:"
+
+#: gap/gap_range_ops.c:468
+msgid ""
+"extension of resulting frames       \n"
+"(is also used to define Fileformat)"
+msgstr ""
+
+#: gap/gap_range_ops.c:474
+#, fuzzy
+msgid "Imagetype:"
+msgstr "Tipo Immagine :"
+
+#: gap/gap_range_ops.c:475
+msgid ""
+"Convert to, or keep imagetype           \n"
+"(most fileformats can't handle all types)"
+msgstr ""
+
+#: gap/gap_range_ops.c:481 gap/gap_split.c:246
+#, fuzzy
+msgid "Flatten:"
+msgstr "Appiattisci :"
+
+#: gap/gap_range_ops.c:482
+msgid ""
+"Flatten all resulting frames               \n"
+"(most fileformats need flattened frames)"
+msgstr ""
+
+#: gap/gap_range_ops.c:487
+msgid "Convert Frames to other Formats"
+msgstr "Converti i frame ad altri formati"
+
+#: gap/gap_range_ops.c:488
+#, fuzzy
+msgid "Convert Settings"
+msgstr "Converti configurazioni :"
+
+#: gap/gap_range_ops.c:565
+msgid "Expand as necessary"
+msgstr "Espandi se necessario"
+
+#: gap/gap_range_ops.c:566
+msgid "Clipped to image"
+msgstr "Aggiungi all'immagine"
+
+#: gap/gap_range_ops.c:567
+msgid "Clipped to bottom layer"
+msgstr "Aggiungi al livello in basso"
+
+#: gap/gap_range_ops.c:568
+msgid "Flattened image"
+msgstr "Appiattisci immagine"
+
+#: gap/gap_range_ops.c:569
+msgid ""
+"Resulting Layer Size is made of the outline-rectangle \n"
+"of all visible layers (may differ from frame to frame)"
+msgstr ""
+
+#: gap/gap_range_ops.c:570
+msgid "Resulting Layer Size is the frame size"
+msgstr ""
+
+#: gap/gap_range_ops.c:571
+msgid ""
+"Resulting Layer Size is the size of the bottom layer\n"
+"(may differ from frame to frame)"
+msgstr ""
+
+#: gap/gap_range_ops.c:572
+msgid ""
+"Resulting Layer Size is the frame size     \n"
+"transparent parts are filled with BG color"
+msgstr ""
+
+#: gap/gap_range_ops.c:582
+msgid "select all Layers where Layername is equal to Pattern"
+msgstr "seleziona tutti i livelli dove i NomeLivello sono uguali a dei Pattern"
+
+#: gap/gap_range_ops.c:583
+msgid "select all Layers where Layername starts with Pattern"
+msgstr "seleziona tutti i Livelli dove i NomeLivello partono con dei Pattern"
+
+#: gap/gap_range_ops.c:584
+msgid "select all Layers where Layername ends up with Pattern"
+msgstr "seleziona tutti i Livelli dove il NomeLivello termina con il Pattern"
+
+#: gap/gap_range_ops.c:585
+msgid "select all Layers where Layername contains Pattern"
+msgstr "seleziona tutti i livelli dove il NomeLivello contiene il Pattern"
+
+#: gap/gap_range_ops.c:586
+msgid ""
+"select Layerstack positions.\n"
+"0, 4-5, 8\n"
+"where 0 == Top-layer"
+msgstr ""
+"seleziona la posizione di Stack del Livello.\n"
+"0, 4-5, 8\n"
+"dove 0 == Livello Superiore"
+
+#: gap/gap_range_ops.c:587
+msgid ""
+"select Layerstack positions.\n"
+"0, 4-5, 8\n"
+"where 0 == BG-layer"
+msgstr ""
+"seleziona la posizione di Stack del Livello.\n"
+"0, 4-5, 8\n"
+"dove 0 == Livello di Sfondo"
+
+#: gap/gap_range_ops.c:588
+msgid "select all visible Layers"
+msgstr "seleziona tutti i livelli visibili"
+
+#: gap/gap_range_ops.c:617
+msgid "Layer Basename:"
+msgstr "Nome base del Livello:"
+
+#: gap/gap_range_ops.c:618
+msgid ""
+"Basename for all Layers    \n"
+"[####] is replaced by frame number"
+msgstr ""
+
+#: gap/gap_range_ops.c:636
+#, fuzzy
+msgid "Layer Mergemode:"
+msgstr "Modalità di incollamento Livello :"
+
+#: gap/gap_range_ops.c:643
+msgid "Exclude BG-Layer"
+msgstr "Escludi livello di Sfondo"
+
+#: gap/gap_range_ops.c:644
+msgid ""
+"Exclude the BG-Layers    \n"
+"in all handled frames\n"
+"regardless to selection"
+msgstr ""
+
+#: gap/gap_range_ops.c:674
+msgid "Use all unselected Layers"
+msgstr "Utilizza tutti i livelli non selezionati"
+
+#: gap/gap_range_ops.c:748
+msgid "Creating Layer-Animated Image..."
+msgstr ""
+
+#: gap/gap_range_ops.c:970
+msgid "Frames to Image"
+msgstr "Frame ad immagine"
+
+#: gap/gap_range_ops.c:971
+msgid "Create Multilayer-Image from Frames"
+msgstr "Create una immagine multi-livello da frame"
+
+#: gap/gap_range_ops.c:1112
+#, fuzzy
+msgid "Flattening Frames..."
+msgstr "Appiattimento Frame .."
+
+#: gap/gap_range_ops.c:1113
+#, fuzzy
+msgid "Converting Frames..."
+msgstr "Conversione Frame .."
+
+#: gap/gap_range_ops.c:1261
+msgid ""
+"Convert Frames: SAVE operation FAILED.\n"
+"Desired save plugin can't handle type\n"
+"or desired save plugin not available."
+msgstr ""
+
+#: gap/gap_range_ops.c:1369
+#, fuzzy
+msgid "Cropping all Animation Frames..."
+msgstr "Ritaglio di tutti i Frame dell'animazione .."
+
+#: gap/gap_range_ops.c:1372
+#, fuzzy
+msgid "Resizing all Animation Frames..."
+msgstr "Ridimensione di tutti i Frame dell'animazione .."
+
+#: gap/gap_range_ops.c:1375
+#, fuzzy
+msgid "Scaling all Animation Frames..."
+msgstr "Scalatura di tutti i Frame dell'animazione .."
+
+#: gap/gap_range_ops.c:1461
+msgid "Flatten Frames"
+msgstr "Frame appiattiti"
+
+#: gap/gap_range_ops.c:1517
+#, fuzzy, c-format
+msgid "Removing Layer (pos:%ld) from Frames..."
+msgstr "Copia Livelli dentro ai Frame .."
+
+#: gap/gap_range_ops.c:1634
+msgid "Delete Layers in Frames"
+msgstr "Elimina Livelli nei Frame"
+
+#: gap/gap_range_ops.c:1635
+msgid "Select Frame Range & Position"
+msgstr "Seleziona Campo Frame e Posizione"
+
+#: gap/gap_split.c:101
+#, fuzzy
+msgid "Splitting into Frames..."
+msgstr "Divisione in Frame .."
+
+#: gap/gap_split.c:176
+msgid ""
+"Split Frames: SAVE operation FAILED.\n"
+"desired save plugin can't handle type\n"
+"or desired save plugin not available."
+msgstr ""
+
+#: gap/gap_split.c:226
+#, c-format
+msgid ""
+"%s\n"
+"%s\n"
+"(%s_0001.%s)\n"
+msgstr ""
+"%s\n"
+"%s\n"
+"(%s_0001.%s)\n"
+
+#: gap/gap_split.c:227
+msgid "Make a frame (diskfile) from each Layer"
+msgstr "Crea un frame (file su disco) da ogni Livello"
+
+#: gap/gap_split.c:228
+msgid "frames are named: base_nr.extension"
+msgstr ""
+
+#: gap/gap_split.c:236
+msgid "extension of resulting frames (is also used to define Fileformat)"
+msgstr ""
+
+#: gap/gap_split.c:241
+#, fuzzy
+msgid "Inverse Order:"
+msgstr "Ordine Inverso :"
+
+#: gap/gap_split.c:242
+msgid "Start frame 0001 at Top Layer"
+msgstr ""
+
+#: gap/gap_split.c:247
+msgid ""
+"Remove Alpha Channel in resulting Frames. Transparent parts are filled with "
+"BG color."
+msgstr ""
+
+#: gap/gap_split.c:250
+msgid "Split Image into Frames"
+msgstr "Dividi Immagine in Frame"
+
+#: gap/gap_split.c:251
+#, fuzzy
+msgid "Split Settings"
+msgstr "Settaggi di Divisione :"
+
+#: gap/gap_split.c:298
+msgid ""
+"OPERATION CANCELLED.\n"
+"This image is already an AnimFrame.\n"
+"Try again on a Duplicate (Image/Duplicate)."
+msgstr ""
+
+#: gap/resize.c:107
+msgid "Scale"
+msgstr "Scala"
+
+#: gap/resize.c:111
+msgid "Resize"
+msgstr "Ridimensiona"
+
+#: gap/resize.c:127
+msgid "New width:"
+msgstr "Nuova larghezza:"
+
+#: gap/resize.c:144
+msgid "New height:"
+msgstr "Nuova altezza:"
+
+#: gap/resize.c:161
+msgid "X ratio:"
+msgstr "X rapporto:"
+
+#: gap/resize.c:178
+msgid "Y ratio:"
+msgstr "Y rapporto:"
+
+#: gap/resize.c:197
+msgid "X Offset:"
+msgstr "X offset"
+
+#: gap/resize.c:214
+msgid "Y Offset:"
+msgstr "Y offset"
+
+#. the constrain toggle button
+#: gap/resize.c:231
+msgid "Constrain Ratio"
+msgstr "Rapporto di Ridimensionamento"
