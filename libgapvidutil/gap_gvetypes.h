@@ -50,7 +50,7 @@
 
 
 
-#define GAP_VENC_NUM_STANDARD_PARAM 15
+#define GAP_VENC_NUM_STANDARD_PARAM 16
 
 /* SYTEM (UNIX) includes */
 #include <stdlib.h>
@@ -79,6 +79,14 @@
 
 #define GAP_GVE_MENU_ITEM_INDEX_KEY "gap_enc_menu_item_index"
 
+typedef enum
+{
+   GAP_RNGTYPE_FRAMES
+  ,GAP_RNGTYPE_LAYER
+  ,GAP_RNGTYPE_STORYBOARD
+} GapGveTypeInputRange;
+
+
 
 typedef struct GapGveEncList {
   gchar       vid_enc_plugin[80];
@@ -103,6 +111,7 @@ typedef struct GapGveCommonValues {                     /* nick: cval */
   gchar   extension[50];
   GapGveEncList ecp_sel;
 
+  GapGveTypeInputRange input_mode;
   gint32  range_from;
   gint32  range_to;
   gdouble framerate;

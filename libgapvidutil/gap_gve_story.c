@@ -203,7 +203,7 @@ static char *   p_fetch_framename   (GapGveStoryFrameRangeElem *frn_list
                             , gint32 track
                             , GapGveStoryFrameType *frn_type
                             , char **filtermacro_file
-                            , gint32   *layerstack_index  /* used only for ANIMIMAGE, -1 for all other types */
+                            , gint32   *localframe_index  /* used only for ANIMIMAGE and videoclip, -1 for all other types */
                             , gboolean *keep_proportions
                             , gboolean *fit_width
                             , gboolean *fit_height
@@ -218,11 +218,11 @@ static char *   p_fetch_framename   (GapGveStoryFrameRangeElem *frn_list
                             , gdouble *move_y        /* output -1.0 upto 1.0 where 0.0 is centered */
                             , GapGveStoryFrameRangeElem **frn_elem_ptr  /* OUT pointer to the relevant framerange element */
                            );
-static char *   p_make_abspath_filename(char *filename, char *storyboard_file);
+static char *   p_make_abspath_filename(const char *filename, const char *storyboard_file);
 static void     p_extract_audiopart(t_GVA_Handle *gvahand, char *wavfilename, long samples_to_read);
 static GapGveStoryAudioRangeElem * p_new_audiorange_element(GapGveStoryAudioType  aud_type
                       ,gint32 track
-                      ,char *audiofile
+                      ,const char *audiofile
                       ,gint32  master_samplerate
                       ,gdouble play_from_sec
                       ,gdouble play_to_sec
@@ -233,8 +233,8 @@ static GapGveStoryAudioRangeElem * p_new_audiorange_element(GapGveStoryAudioType
                       ,gdouble fade_out_sec
                       ,char *util_sox
                       ,char *util_sox_options
-                      ,char *storyboard_file  /* IN: NULL if no storyboard file is used */
-                      ,char *preferred_decoder
+                      ,const char *storyboard_file  /* IN: NULL if no storyboard file is used */
+                      ,const char *preferred_decoder
                       ,GapGveStoryAudioRangeElem *known_aud_list /* NULL or list of already known ranges */
                       ,GapGveStoryErrors *sterr           /* element to store Error/Warning report */
                       ,gint32 seltrack      /* IN: select audiotrack number 1 upto 99 for GAP_AUT_MOVIE */
@@ -242,13 +242,13 @@ static GapGveStoryAudioRangeElem * p_new_audiorange_element(GapGveStoryAudioType
 static GapGveStoryFrameRangeElem *  p_new_framerange_element(
                            GapGveStoryFrameType  frn_type
                           ,gint32 track
-                          ,char *basename       /* basename or full imagename  for frn_type GAP_FRN_IMAGE */
-                          ,char *ext            /* NULL for frn_type GAP_FRN_IMAGE */
+                          ,const char *basename       /* basename or full imagename  for frn_type GAP_FRN_IMAGE */
+                          ,const char *ext            /* NULL for frn_type GAP_FRN_IMAGE */
                           ,gint32  frame_from   /* IN: use -1 for first, 99999999 for last */
                           ,gint32  frame_to     /* IN: use -1 for first, 99999999 for last */
-                          ,char *storyboard_file  /* IN: NULL if no storyboard file is used */
-                          ,char *preferred_decoder  /* IN: NULL if no preferred_decoder is specified */
-                          ,char *filtermacro_file  /* IN: NULL, or name of the macro file */
+                          ,const char *storyboard_file  /* IN: NULL if no storyboard file is used */
+                          ,const char *preferred_decoder  /* IN: NULL if no preferred_decoder is specified */
+                          ,const char *filtermacro_file  /* IN: NULL, or name of the macro file */
                           ,GapGveStoryFrameRangeElem *frn_list /* NULL or list of already known ranges */
                           ,GapGveStoryErrors *sterr          /* element to store Error/Warning report */
                           ,gint32 seltrack      /* IN: select videotrack number 1 upto 99 for GAP_FRN_MOVIE */
@@ -275,7 +275,7 @@ static void       p_set_vtrack_attributes(GapGveStoryFrameRangeElem *frn_elem
                        ,GapGveStoryVTrackArray *vtarr
                       );
 static void       p_parse_storyboard_line(char *storyboard_line
-                      , char *storyboard_file
+                      , const char *storyboard_file
                       , gint32  frame_from
                       , gint32  frame_to
                       , GapGveStoryVTrackArray *vtarr
@@ -283,7 +283,7 @@ static void       p_parse_storyboard_line(char *storyboard_line
                       , GapGveStoryVidHandle *vidhand
                       );
 static GapGveStoryFrameRangeElem *  p_framerange_list_from_storyboard(
-                           char *storyboard_file
+                           const char *storyboard_file
                           ,gint32  frame_from
                           ,gint32  frame_to
                           ,gint32 *frame_count
@@ -295,13 +295,15 @@ static GapGveStoryVidHandle * p_open_video_handle_private(    gboolean ignore_au
                       , gdouble  *progress_ptr
                       , char *status_msg
                       , gint32 status_msg_len
-                      , char *storyboard_file
-                      , char *basename
-                      , char *ext
+                      , const char *storyboard_file
+                      , const char *basename
+                      , const char *ext
                       , gint32  frame_from
                       , gint32  frame_to
                       , gint32 *frame_count   /* output total frame_count , or 0 on failure */
                       , gboolean do_gimp_progress
+		      , GapGveTypeInputRange input_mode
+		      , const char *imagename
                       );
 static gint32     p_exec_filtermacro(gint32 image_id, gint32 layer_id, char *filtermacro_file);
 static gint32     p_transform_and_add_layer( gint32 comp_image_id
@@ -1673,7 +1675,7 @@ p_fetch_framename(GapGveStoryFrameRangeElem *frn_list
                  , gint32 track
                  , GapGveStoryFrameType *frn_type
                  , char **filtermacro_file
-                 , gint32   *layerstack_index  /* used for ANIMIMAGE and VIDEOFILES, -1 for all other types */
+                 , gint32   *localframe_index  /* used for ANIMIMAGE and VIDEOFILES, -1 for all other types */
                  , gboolean *keep_proportions
                  , gboolean *fit_width
                  , gboolean *fit_height
@@ -1706,7 +1708,7 @@ p_fetch_framename(GapGveStoryFrameRangeElem *frn_list
   *scale_y = 1.0;
   *move_x  = 0.0;
   *move_y  = 0.0;
-  *layerstack_index = -1;
+  *localframe_index = -1;
   *frn_type = GAP_FRN_SILENCE;
   *keep_proportions = FALSE;
   *fit_width        = TRUE;
@@ -1748,12 +1750,12 @@ p_fetch_framename(GapGveStoryFrameRangeElem *frn_list
         if(frn_elem->frn_type == GAP_FRN_ANIMIMAGE )
         {
           l_framename = g_strdup(frn_elem->basename);   /* use 1:1 basename for ainimated single images */
-          *layerstack_index = l_fnr;                    /* local frame number is index in the layerstack */
+          *localframe_index = l_fnr;                    /* local frame number is index in the layerstack */
         }
         if(frn_elem->frn_type == GAP_FRN_MOVIE )
         {
           l_framename = g_strdup(frn_elem->basename);   /* use 1:1 basename for videofiles */
-          *layerstack_index = l_fnr;                    /* local frame number is the wanted video frame number */
+          *localframe_index = l_fnr;                    /* local frame number is the wanted video frame number */
         }
         if(frn_elem->frn_type == GAP_FRN_FRAMES)
         {
@@ -1830,7 +1832,7 @@ p_fetch_framename(GapGveStoryFrameRangeElem *frn_list
        , (float)*scale_y
        , (float)*move_x
        , (float)*move_y
-       , (int)*layerstack_index
+       , (int)*localframe_index
        );
   }
 
@@ -1847,7 +1849,7 @@ p_fetch_framename(GapGveStoryFrameRangeElem *frn_list
  * if false: prefix filename with path from storyboard file.
  */
 static char *
-p_make_abspath_filename(char *filename, char *storyboard_file)
+p_make_abspath_filename(const char *filename, const char *storyboard_file)
 {
     gboolean l_path_is_relative;
     char    *l_storyboard_path;
@@ -2041,7 +2043,7 @@ p_extract_audiopart(t_GVA_Handle *gvahand, char *wavfilename, long samples_to_re
 static GapGveStoryAudioRangeElem *
 p_new_audiorange_element(GapGveStoryAudioType  aud_type
                       ,gint32 track
-                      ,char *audiofile
+                      ,const char *audiofile
                       ,gint32  master_samplerate
                       ,gdouble play_from_sec
                       ,gdouble play_to_sec
@@ -2052,8 +2054,8 @@ p_new_audiorange_element(GapGveStoryAudioType  aud_type
                       ,gdouble fade_out_sec
                       ,char *util_sox
                       ,char *util_sox_options
-                      ,char *storyboard_file  /* IN: NULL if no storyboard file is used */
-                      ,char *preferred_decoder
+                      ,const char *storyboard_file  /* IN: NULL if no storyboard file is used */
+                      ,const char *preferred_decoder
                       ,GapGveStoryAudioRangeElem *known_aud_list /* NULL or list of already known ranges */
                       ,GapGveStoryErrors *sterr           /* element to store Error/Warning report */
                       ,gint32 seltrack      /* IN: select audiotrack number 1 upto 99 for GAP_AUT_MOVIE */
@@ -2451,13 +2453,13 @@ p_new_audiorange_element(GapGveStoryAudioType  aud_type
 static GapGveStoryFrameRangeElem *
 p_new_framerange_element(GapGveStoryFrameType  frn_type
                       ,gint32 track
-                      ,char *basename       /* basename or full imagename  for frn_type GAP_FRN_IMAGE */
-                      ,char *ext            /* NULL for frn_type GAP_FRN_IMAGE and GAP_FRN_MOVIE */
+                      ,const char *basename       /* basename or full imagename  for frn_type GAP_FRN_IMAGE */
+                      ,const char *ext            /* NULL for frn_type GAP_FRN_IMAGE and GAP_FRN_MOVIE */
                       ,gint32  frame_from   /* IN: use -1 for first, 99999999 for last */
                       ,gint32  frame_to     /* IN: use -1 for first, 99999999 for last */
-                      ,char *storyboard_file  /* IN: NULL if no storyboard file is used */
-                      ,char *preferred_decoder  /* IN: NULL if no preferred_decoder is specified */
-                      ,char *filtermacro_file  /* IN: NULL, or name of the macro file */
+                      ,const char *storyboard_file  /* IN: NULL if no storyboard file is used */
+                      ,const char *preferred_decoder  /* IN: NULL if no preferred_decoder is specified */
+                      ,const char *filtermacro_file  /* IN: NULL, or name of the macro file */
                       ,GapGveStoryFrameRangeElem *frn_list /* NULL or list of already known ranges */
                       ,GapGveStoryErrors *sterr           /* element to store Error/Warning report */
                       ,gint32 seltrack      /* IN: select videotrack number 1 upto 99 for GAP_FRN_MOVIE */
@@ -3596,7 +3598,7 @@ p_set_vtrack_attributes(GapGveStoryFrameRangeElem *frn_elem
  */
 static void
 p_parse_storyboard_line(char *storyboard_line
-                      , char *storyboard_file
+                      , const char *storyboard_file
                       , gint32  frame_from
                       , gint32  frame_to
                       , GapGveStoryVTrackArray *vtarr
@@ -4365,7 +4367,7 @@ p_parse_storyboard_line(char *storyboard_line
  * return the framerange_list (scanned from storyboard_file)
  */
 static GapGveStoryFrameRangeElem *
-p_framerange_list_from_storyboard(char *storyboard_file
+p_framerange_list_from_storyboard(const char *storyboard_file
                       ,gint32  frame_from
                       ,gint32  frame_to
                       ,gint32 *frame_count
@@ -4593,13 +4595,15 @@ p_open_video_handle_private(    gboolean ignore_audio
                       , gdouble  *progress_ptr
                       , char *status_msg
                       , gint32 status_msg_len
-                      , char *storyboard_file
-                      , char *basename
-                      , char *ext
+                      , const char *storyboard_file
+                      , const char *basename
+                      , const char *ext
                       , gint32  frame_from
                       , gint32  frame_to
                       , gint32 *frame_count   /* output total frame_count , or 0 on failure */
                       , gboolean do_gimp_progress
+		      , GapGveTypeInputRange input_mode
+		      , const char *imagename
                       )
 {
   GapGveStoryVidHandle *vidhand;
@@ -4640,7 +4644,7 @@ p_open_video_handle_private(    gboolean ignore_audio
   global_monitor_image_id = -1;
   *frame_count = 0;
 
-  if(storyboard_file)
+  if((storyboard_file) && (input_mode == GAP_RNGTYPE_STORYBOARD))
   {
     if(*storyboard_file != '\0')
     {
@@ -4653,36 +4657,13 @@ p_open_video_handle_private(    gboolean ignore_audio
   }
 
   if((vidhand->frn_list == NULL)
-  && (basename)
-  && (ext))
+  && (input_mode == GAP_RNGTYPE_LAYER)
+  && (imagename))
   {
-    gboolean l_is_singleimage;
-    char *l_animimage;
-
-    l_is_singleimage = TRUE;
-
-
-    l_animimage = g_strdup_printf("%s%6d%s", basename, (int)frame_from, ext);
-    if(g_file_test(l_animimage, G_FILE_TEST_EXISTS))
-    {
-      l_is_singleimage = FALSE;
-    }
-    else
-    {
-      g_free(l_animimage);
-      l_animimage = g_strdup_printf("%s%s", basename, ext);
-      if(!g_file_test(l_animimage, G_FILE_TEST_EXISTS))
-      {
-        l_is_singleimage = FALSE;
-      }
-    }
-
-    if(l_is_singleimage)
-    {
       /* add element for animimage (one multilayer image) */
       frn_elem = p_new_framerange_element(GAP_FRN_ANIMIMAGE
                                          , 1           /* track */
-                                         , l_animimage
+                                         , imagename
                                          , NULL
                                          , MIN(frame_from, frame_to)
                                          , MAX(frame_to,   frame_from)
@@ -4706,8 +4687,13 @@ p_open_video_handle_private(    gboolean ignore_audio
         frn_elem->frame_to++;
       }
       vidhand->frn_list = frn_elem;
-    }
-    else
+  }
+  
+  if((vidhand->frn_list == NULL)
+  && (basename)
+  && (ext))
+  {
+    if(input_mode == GAP_RNGTYPE_FRAMES)
     {
       /* element for framerange */
       frn_elem = p_new_framerange_element(GAP_FRN_FRAMES
@@ -4750,7 +4736,6 @@ p_open_video_handle_private(    gboolean ignore_audio
       vidhand->frn_list->frames_to_handle = frn_elem->frame_first -1;
       vidhand->frn_list->next = frn_elem;
     }
-    g_free(l_animimage);
   }
 
   /* p_free_stb_error(vidhand->sterr); */
@@ -4778,9 +4763,11 @@ gap_gve_story_open_extended_video_handle(    gboolean ignore_audio
                       , gdouble  *progress_ptr
                       , char *status_msg
                       , gint32 status_msg_len
-                      , char *storyboard_file
-                      , char *basename
-                      , char *ext
+		      , GapGveTypeInputRange input_mode
+		      , const char *imagename
+                      , const char *storyboard_file
+                      , const char *basename
+                      , const char *ext
                       , gint32  frame_from
                       , gint32  frame_to
                       , gint32 *frame_count   /* output total frame_count , or 0 on failure */
@@ -4798,6 +4785,8 @@ gap_gve_story_open_extended_video_handle(    gboolean ignore_audio
                             ,frame_to
                             ,frame_count
                             ,FALSE          /* DONT do_gimp_progress */
+			    ,input_mode
+			    ,imagename
                             )
 
          );
@@ -4823,15 +4812,25 @@ gap_gve_story_open_extended_video_handle(    gboolean ignore_audio
  * return framerange list
  */
 GapGveStoryVidHandle *
-gap_gve_story_open_vid_handle(char *storyboard_file
-                      , char *basename
-                      , char *ext
+gap_gve_story_open_vid_handle(GapGveTypeInputRange input_mode
+                      , gint32 image_id
+		      , const char *storyboard_file
+                      , const char *basename
+                      , const char *ext
                       , gint32  frame_from
                       , gint32  frame_to
                       , gint32 *frame_count   /* output total frame_count , or 0 on failure */
                       )
 {
-  return(p_open_video_handle_private( TRUE         /* ignore_audio */
+  GapGveStoryVidHandle *l_vidhand;
+  char *imagename;
+
+  imagename = NULL;
+  if(image_id >= 0)
+  {
+    imagename = gimp_image_get_filename(image_id);
+  }
+  l_vidhand = p_open_video_handle_private( TRUE         /* ignore_audio */
                             , FALSE        /* dont ignore_video */
                             , NULL         /* progress_ptr */
                             , NULL         /* status_msg */
@@ -4843,9 +4842,15 @@ gap_gve_story_open_vid_handle(char *storyboard_file
                             ,frame_to
                             ,frame_count
                             ,TRUE          /* do_gimp_progress */
-                            )
+			    ,input_mode
+			    ,imagename
+                            );
 
-         );
+  if(imagename)
+  {
+    g_free(imagename);
+  }
+  return(l_vidhand);
 }
 
 
@@ -5338,7 +5343,7 @@ gap_gve_story_fetch_composite_image(GapGveStoryVidHandle *vidhand
   gint32        l_layer_id;
   gint          l_nlayers;
   gint32       *l_layers_list;
-  gint32        l_layerstack_index;
+  gint32        l_localframe_index;
   gboolean      l_keep_proportions;
   gboolean      l_fit_width;
   gboolean      l_fit_height;
@@ -5370,7 +5375,7 @@ gap_gve_story_fetch_composite_image(GapGveStoryVidHandle *vidhand
                  , l_track
                  , &l_frn_type
                  , &l_trak_filtermacro_file
-                 , &l_layerstack_index   /* used only for ANIMIMAGE and Videoframe Number, -1 for all other types */
+                 , &l_localframe_index   /* used only for ANIMIMAGE and Videoframe Number, -1 for all other types */
                  , &l_keep_proportions
                  , &l_fit_width
                  , &l_fit_height
@@ -5427,13 +5432,13 @@ gap_gve_story_fetch_composite_image(GapGveStoryVidHandle *vidhand
                l_layers_list = gimp_image_get_layers(l_orig_image_id, &l_nlayers);
                if(l_layers_list != NULL)
                {
-                  if(l_layerstack_index < l_nlayers)
+                  if(l_localframe_index < l_nlayers)
                   {
                      gint32 l_fsel_layer_id;
 
-                     gimp_drawable_set_visible(l_layers_list[l_layerstack_index], TRUE);
-                     p_layer_resize_to_imagesize(l_layers_list[l_layerstack_index]);
-                     gimp_edit_copy(l_layers_list[l_layerstack_index]);
+                     gimp_drawable_set_visible(l_layers_list[l_localframe_index], TRUE);
+                     p_layer_resize_to_imagesize(l_layers_list[l_localframe_index]);
+                     gimp_edit_copy(l_layers_list[l_localframe_index]);
                      l_fsel_layer_id = gimp_edit_paste(l_layer_id, FALSE);  /* FALSE paste clear selection */
                      gimp_floating_sel_anchor(l_fsel_layer_id);
                   }
@@ -5518,14 +5523,14 @@ gap_gve_story_fetch_composite_image(GapGveStoryVidHandle *vidhand
 
                   /* attempt to read frame from the GVA API internal framecache */
 
-                  /* printf("\nST: before  GVA_debug_print_fcache (2) #:%d\n", (int)l_layerstack_index );
+                  /* printf("\nST: before  GVA_debug_print_fcache (2) #:%d\n", (int)l_localframe_index );
                    * GVA_debug_print_fcache(l_frn_elem->gvahand);
-                   * printf("ST: before  GVA_frame_to_gimp_layer (2) attempt cache read  #:%d\n", (int)l_layerstack_index );
+                   * printf("ST: before  GVA_frame_to_gimp_layer (2) attempt cache read  #:%d\n", (int)l_localframe_index );
                    */
 
                   l_fcr = GVA_frame_to_gimp_layer(l_frn_elem->gvahand
                                     , TRUE                 /* delete_mode */
-                                    , l_layerstack_index   /* framenumber */
+                                    , l_localframe_index   /* framenumber */
                                     , l_deinterlace
                                     , l_threshold
                                     );
@@ -5533,14 +5538,14 @@ gap_gve_story_fetch_composite_image(GapGveStoryVidHandle *vidhand
                   if (l_fcr != GVA_RET_OK)
                   {
                     /* if no success, we try explicite read that frame  */
-                    if(l_frn_elem->gvahand->current_seek_nr != l_layerstack_index)
+                    if(l_frn_elem->gvahand->current_seek_nr != l_localframe_index)
                     {
-                      if(((l_frn_elem->gvahand->current_seek_nr + VID_FRAMES_TO_KEEP_CACHED) > l_layerstack_index)
-                      &&  (l_frn_elem->gvahand->current_seek_nr < l_layerstack_index ) )
+                      if(((l_frn_elem->gvahand->current_seek_nr + VID_FRAMES_TO_KEEP_CACHED) > l_localframe_index)
+                      &&  (l_frn_elem->gvahand->current_seek_nr < l_localframe_index ) )
                       {
                         /* near forward seek is performed by dummyreads to fill up the framecache
                          */
-                        while(l_frn_elem->gvahand->current_seek_nr < l_layerstack_index)
+                        while(l_frn_elem->gvahand->current_seek_nr < l_localframe_index)
                         {
                           GVA_get_next_frame(l_frn_elem->gvahand);
                         }
@@ -5549,9 +5554,9 @@ gap_gve_story_fetch_composite_image(GapGveStoryVidHandle *vidhand
                       {
                         if(vidhand->do_gimp_progress)
                         {
-                           gimp_progress_init(_("Seek Inputviedoframe..."));
+                           gimp_progress_init(_("Seek Inputvideoframe..."));
                         }
-                        GVA_seek_frame(l_frn_elem->gvahand, (gdouble)l_layerstack_index, GVA_UPOS_FRAMES);
+                        GVA_seek_frame(l_frn_elem->gvahand, (gdouble)l_localframe_index, GVA_UPOS_FRAMES);
                         if(vidhand->do_gimp_progress)
                         {
                            gimp_progress_init(_("Continue Encoding..."));
@@ -5563,7 +5568,7 @@ gap_gve_story_fetch_composite_image(GapGveStoryVidHandle *vidhand
                     {
                       GVA_frame_to_gimp_layer(l_frn_elem->gvahand
                                       , TRUE   /* delete_mode */
-                                      , l_layerstack_index   /* framenumber */
+                                      , l_localframe_index   /* framenumber */
                                       , l_deinterlace
                                       , l_threshold
                                       );
@@ -5808,7 +5813,7 @@ gap_gve_story_fetch_composite_image_or_chunk(GapGveStoryVidHandle *vidhand
   GapGveStoryFrameRangeElem *l_frn_elem;
   GapGveStoryFrameRangeElem *l_frn_elem_2;
 
-  gint32        l_layerstack_index;
+  gint32        l_localframe_index;
   gint32        l_video_frame_nr;
   gboolean      l_keep_proportions;
   gboolean      l_fit_width;
@@ -5864,7 +5869,7 @@ gap_gve_story_fetch_composite_image_or_chunk(GapGveStoryVidHandle *vidhand
                    , l_track
                    , &l_frn_type
                    , &l_trak_filtermacro_file
-                   , &l_layerstack_index   /* used only for ANIMIMAGE and Videoframe Number, -1 for all other types */
+                   , &l_localframe_index   /* used only for ANIMIMAGE and Videoframe Number, -1 for all other types */
                    , &l_keep_proportions
                    , &l_fit_width
                    , &l_fit_height
@@ -5905,7 +5910,7 @@ gap_gve_story_fetch_composite_image_or_chunk(GapGveStoryVidHandle *vidhand
                  if(gap_debug) printf("gap_gve_story_fetch_composite_image_or_chunk:  video:%s\n", l_framename);
                  l_videofile_name = g_strdup(l_framename);
                  l_videofile = l_videofile_name;
-                 l_video_frame_nr = l_layerstack_index;
+                 l_video_frame_nr = l_localframe_index;
                  l_frn_elem = l_frn_elem_2;
                }
                else

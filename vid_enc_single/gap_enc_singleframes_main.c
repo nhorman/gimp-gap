@@ -28,6 +28,7 @@
  */
 
 /* revision history:
+ * version 2.1.0b;  2004.08.08   hof: new param input_mode, 6-digits for numberpart.
  * version 1.2.2b;  2002.11.24   hof: created
  */
 
@@ -139,6 +140,9 @@ query ()
     {GIMP_PDB_INT32, "use_rest", "0 == use default values for encoder specific params, 1 == use encoder specific params"},
     {GIMP_PDB_STRING, "filtermacro_file", "macro to apply on each handled frame. (textfile with filter plugin names and LASTVALUE bufferdump"},
     {GIMP_PDB_STRING, "storyboard_file", "textfile with list of one or more framesequences"},
+    {GIMP_PDB_INT32,  "input_mode", "0 ... image is one of the frames to encode, range_from/to params refere to numberpart of the other frameimages on disc. \n"
+                                    "1 ... image is multilayer, range_from/to params refere to layer index. \n"
+				    "2 ... image is ignored, input is specified by storyboard_file parameter."},
   };
   static int nargs_single_enc = sizeof(args_single_enc) / sizeof(args_single_enc[0]);
 
@@ -298,7 +302,7 @@ run (const gchar *name,          /* name of plugin */
                      "writes single frames instead of one videofile\n"
                      "the fileformat of the frames is derived from the\n"
                      "extension of the video name, frames are named\n"
-                     "video name plus 4-digit number + extension"
+                     "video name plus 6-digit number + extension"
                      )
                   );
       }
@@ -394,6 +398,7 @@ run (const gchar *name,          /* name of plugin */
       gpp->val.vid_width  = gimp_image_width(gpp->val.image_ID) - (gimp_image_width(gpp->val.image_ID) % 16);
       gpp->val.vid_height = gimp_image_height(gpp->val.image_ID) - (gimp_image_height(gpp->val.image_ID) % 16);
       gpp->val.vid_format = VID_FMT_NTSC;
+      gpp->val.input_mode = GAP_RNGTYPE_FRAMES;
 
       g_free(l_base);
 
@@ -427,6 +432,7 @@ run (const gchar *name,          /* name of plugin */
         }
         if (param[13].data.d_string[0] != '\0') { g_snprintf(gpp->val.filtermacro_file, sizeof(gpp->val.filtermacro_file), "%s", param[13].data.d_string); }
         if (param[14].data.d_string[0] != '\0') { g_snprintf(gpp->val.storyboard_file, sizeof(gpp->val.storyboard_file), "%s", param[14].data.d_string); }
+        if (param[15].data.d_int32 >= 0) { gpp->val.input_mode   =    param[15].data.d_int32; }
       }
 
       if (values[0].data.d_status == GIMP_PDB_SUCCESS)
@@ -512,7 +518,7 @@ p_singleframe_encode_dialog(GapGveSingleGlobalParams *gpp)
  * p_build_format_from_framename
  * ----------------------------------------------------
  *   IN:   framename_0001.jpg
- *   OUT:  framename_%04d.jpg
+ *   OUT:  framename_%06d.jpg
  */
 gchar *
 p_build_format_from_framename(gchar *framename)
@@ -584,9 +590,9 @@ p_build_format_from_framename(gchar *framename)
   }
 
   /* if(l_idx_numlen > 0) l_fmtnum = g_strdup_printf("%%0%dd", (int)l_idx_numlen);
-   * else                 l_fmtnum = g_strdup("_%04d");
+   * else                 l_fmtnum = g_strdup("_%06d");
    */
-  l_fmtnum = g_strdup("_%04d");  /* always use 4digit framenumbers */
+  l_fmtnum = g_strdup("_%06d");  /* always use 6digit framenumbers */
 
   if(l_ext_ptr)
   {
@@ -638,6 +644,7 @@ p_singleframe_encode(GapGveSingleGlobalParams *gpp)
      printf("  vid_height: %d\n", (int)gpp->val.vid_height);
      printf("  image_ID: %d\n", (int)gpp->val.image_ID);
      printf("  storyboard_file: %s\n", gpp->val.storyboard_file);
+     printf("  input_mode: %d\n", gpp->val.input_mode);
   }
 
   l_out_frame_nr = 0;
@@ -651,8 +658,10 @@ p_singleframe_encode(GapGveSingleGlobalParams *gpp)
 
   /* make list of frameranges */
   { gint32 l_total_framecount;
-  l_vidhand = gap_gve_story_open_vid_handle (gpp->val.storyboard_file
-                                       ,gpp->ainfo.basename
+  l_vidhand = gap_gve_story_open_vid_handle (gpp->val.input_mode
+                                       ,gpp->val.image_ID
+				       ,gpp->val.storyboard_file
+				       ,gpp->ainfo.basename
                                        ,gpp->ainfo.extension
                                        ,gpp->val.range_from
                                        ,gpp->val.range_to

@@ -28,6 +28,7 @@
  */
 
 /* revision history:
+ * gimp   2.1.0b;    2004/08/11  hof: new action_modes "Copy layermask from layer above/below"
  * gimp   1.3.25a;   2004/01/21  hof: message text fixes (# 132030)
  * gimp   1.3.24a;   2004/01/17  hof: added Layermask Handling
  * gimp   1.3.20d;   2003/09/20  hof: sourcecode cleanup,
@@ -115,7 +116,7 @@ int p_layer_modify_dialog(GapAnimInfo *ainfo_ptr,
                                   };
 
   /* action items what to do with the selected layer(s) */
-  static char *action_args[32]= { N_("Set layer(s) visible"),
+  static char *action_args[34]= { N_("Set layer(s) visible"),
                                   N_("Set layer(s) invisible"),
                                   N_("Set layer(s) linked"),
                                   N_("Set layer(s) unlinked"),
@@ -146,7 +147,9 @@ int p_layer_modify_dialog(GapAnimInfo *ainfo_ptr,
 				  N_("Add layermask from selection"),
 				  N_("Add layermask from bw copy"),
 				  N_("Delete layermask"),
-				  N_("Apply layermask")
+				  N_("Apply layermask"),
+				  N_("Copy layermask from layer above"),
+				  N_("Copy layermask from layer below")
                                   };
 
 
@@ -349,6 +352,50 @@ p_pitstop_dialog(gint text_flag, char *filter_procname)
 }	/* end p_pitstop_dialog */
 
 
+/* ---------------------------------
+ * p_get_nb_layer_id
+ * ---------------------------------
+ * get layer_id of the neigbour layer /above or below)
+ * the specified ref_layer
+ * with the nb_ref parameter of -1 the neigbour layer one above is picked
+ *                            , +1 selects the neigbour one below
+ * return -1 if there is no such a neigbourlayer
+ */
+gint32
+p_get_nb_layer_id(gint32 image_id, gint32 ref_layer_id, gint32 nb_ref)
+{
+  gint          l_nlayers;
+  gint32       *l_layers_list;
+  gint32        l_nb_layer_id;
+  gint32        l_idx;
+  gint32        l_nb_idx;
+
+  l_nb_layer_id = -1;
+  
+  l_layers_list = gimp_image_get_layers(image_id, &l_nlayers);
+  if(l_layers_list != NULL)
+  {
+    for(l_idx = 0; l_idx < l_nlayers; l_idx++)
+    {
+      if(l_layers_list[l_idx] == ref_layer_id)
+      {
+        l_nb_idx = l_idx + nb_ref;
+	if((l_nb_idx >= 0) && (l_nb_idx < l_nlayers))
+	{
+	  l_nb_layer_id = l_layers_list[l_nb_idx];
+	}
+        break;
+      }
+    }
+  
+    g_free (l_layers_list);
+  }
+
+  return (l_nb_layer_id);
+}  /* end p_get_nb_layer_id */
+
+
+
 /* ============================================================================
  * gap_mod_get_1st_selected
  *   return index of the 1.st selected layer
@@ -444,19 +491,26 @@ gap_mod_alloc_layli(gint32 image_id, gint32 *l_sel_cnt, gint *nlayers,
 static void
 p_raise_layer (gint32 image_id, gint32 layer_id, GapModLayliElem * layli_ptr, gint nlayers)
 {
-  if(! gimp_drawable_has_alpha (layer_id)) return; /* has no alpha channel */
-
   if(layli_ptr[0].layer_id == layer_id)  return;   /* is already on top */
 
+  if(! gimp_drawable_has_alpha (layer_id))
+  {
+    /* implicite add an alpha channel before we try to raise */
+    gimp_layer_add_alpha(layer_id);
+  }
   gimp_image_raise_layer(image_id, layer_id);
 }	/* end p_raise_layer */
 
 static void
 p_lower_layer (gint32 image_id, gint32 layer_id, GapModLayliElem * layli_ptr, gint nlayers)
 {
-  if(! gimp_drawable_has_alpha (layer_id)) return; /* has no alpha channel */
-
   if(layli_ptr[nlayers-1].layer_id == layer_id)  return;   /* is already on bottom */
+
+  if(! gimp_drawable_has_alpha (layer_id))
+  {
+    /* implicite add an alpha channel before we try to lower */
+    gimp_layer_add_alpha(layer_id);
+  }
 
   if(nlayers > 1)
   {
@@ -464,7 +518,8 @@ p_lower_layer (gint32 image_id, gint32 layer_id, GapModLayliElem * layli_ptr, gi
     && (! gimp_drawable_has_alpha (layli_ptr[nlayers-1].layer_id)))
     {
       /* the layer is one step above a "bottom-layer without alpha" */
-      return;
+      /* implicite add an alpha channel before we try to lower */
+      gimp_layer_add_alpha(layli_ptr[nlayers-1].layer_id);
     }
   }
 
@@ -844,6 +899,63 @@ p_apply_action(gint32 image_id,
 	  if(gimp_layer_get_mask(l_layer_id) >= 0)
 	  {
 	    gimp_layer_remove_mask (l_layer_id, GIMP_MASK_APPLY);
+	  }
+	  break;
+        case GAP_MOD_ACM_LMASK_COPY_FROM_UPPER_LMASK:
+        case GAP_MOD_ACM_LMASK_COPY_FROM_LOWER_LMASK:
+	  /* create black mask per default */
+	  if(gimp_layer_get_mask(l_layer_id) >= 0)
+	  {
+	    gimp_layer_remove_mask (l_layer_id, GIMP_MASK_APPLY);
+	  }
+	  l_layermask_id = gimp_layer_create_mask(l_layer_id, GIMP_ADD_BLACK_MASK);
+	  gimp_layer_add_mask(l_layer_id, l_layermask_id);
+	  /* get layermask_id from upper neigbour layer (if there is any) */
+	  if(l_layermask_id >= 0)
+	  {
+	    gint32 l_nb_mask_id;
+	    gint32 l_nb_layer_id;
+	    gint32 l_nb_ref;
+	    gint32 l_fsel_layer_id;
+	    gint32 l_nb_had_layermask;
+	    
+	    l_nb_ref = 1;
+            if(action_mode == GAP_MOD_ACM_LMASK_COPY_FROM_UPPER_LMASK)
+	    {
+	      l_nb_ref = -1;
+	    }
+	    l_nb_layer_id = p_get_nb_layer_id(image_id, l_layer_id, l_nb_ref);
+	    if(l_nb_layer_id >= 0)
+	    {
+	      l_nb_mask_id = gimp_layer_get_mask(l_nb_layer_id);
+	      l_nb_had_layermask = TRUE;
+	      if(l_nb_mask_id < 0)
+	      {
+	        /* the referenced neigbour layer had no layermask
+		 * in this case we create one as bw-copy temporary
+		 */
+	        l_nb_had_layermask = FALSE;
+		l_nb_mask_id = gimp_layer_create_mask(l_nb_layer_id, GIMP_ADD_COPY_MASK);
+	        gimp_layer_add_mask(l_nb_layer_id, l_nb_mask_id);
+	      }
+	      
+	      if(l_nb_mask_id >= 0)
+	      {
+	        /* the referenced neigbour layer has a layermask
+		 * we can copy from this mask now
+		 */
+		gimp_selection_none(image_id);
+		gimp_edit_copy(l_nb_mask_id);
+		l_fsel_layer_id = gimp_edit_paste(l_layermask_id, FALSE);
+		gimp_floating_sel_anchor(l_fsel_layer_id);
+		
+		if(l_nb_had_layermask == FALSE)
+		{
+		  /* remove the temporary created layermask in the neigbour layer */
+		  gimp_layer_remove_mask (l_nb_layer_id, GIMP_MASK_DISCARD);
+		}
+	      }
+	    }
 	  }
 	  break;
         default:

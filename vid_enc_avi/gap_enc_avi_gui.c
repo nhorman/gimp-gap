@@ -453,6 +453,8 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
         g_object_set_data (G_OBJECT (menuitem), GAP_GVE_MENU_ITEM_INDEX_KEY
                           , (gpointer)GAP_AVI_VIDCODEC_01_RAW);
   gtk_widget_show (menuitem);
+
+#ifdef ENABLE_LIBXVIDCORE
   gtk_menu_append (GTK_MENU (optionmenu_codec_menu), menuitem);
   menuitem = gtk_menu_item_new_with_label (_("XVID"));
         g_signal_connect (G_OBJECT (menuitem), "activate",
@@ -461,6 +463,7 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
         g_object_set_data (G_OBJECT (menuitem), GAP_GVE_MENU_ITEM_INDEX_KEY
                           , (gpointer)GAP_AVI_VIDCODEC_02_XVID);
   gtk_widget_show (menuitem);
+#endif
   gtk_menu_append (GTK_MENU (optionmenu_codec_menu), menuitem);
 
   gtk_option_menu_set_menu (GTK_OPTION_MENU (optionmenu_codec), optionmenu_codec_menu);
@@ -688,6 +691,7 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
   gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
 
 
+#ifdef ENABLE_LIBXVIDCORE
 
   /* the notebook page for XVID Codec options */
   /* ----------------------------------------- */
@@ -954,7 +958,7 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
                     , _("XVID codec algoritm presets where 0==low quality(fast) 6==best(slow)")
                     , NULL);
 
-
+#endif
 
 
 

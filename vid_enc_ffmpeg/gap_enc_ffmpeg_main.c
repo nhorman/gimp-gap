@@ -261,6 +261,9 @@ query ()
                                  },
     {GIMP_PDB_STRING, "filtermacro_file", "macro to apply on each handled frame. (textfile with filter plugin names and LASTVALUE bufferdump"},
     {GIMP_PDB_STRING, "storyboard_file", "textfile with list of one or more framesequences"},
+    {GIMP_PDB_INT32,  "input_mode", "0 ... image is one of the frames to encode, range_from/to params refere to numberpart of the other frameimages on disc. \n"
+                                    "1 ... image is multilayer, range_from/to params refere to layer index. \n"
+				    "2 ... image is ignored, input is specified by storyboard_file parameter."},
   };
   static int nargs_ffmpeg_enc = sizeof(args_ffmpeg_enc) / sizeof(args_ffmpeg_enc[0]);
 
@@ -657,6 +660,7 @@ run (const gchar      *name,
       gpp->val.vid_width  = gimp_image_width(gpp->val.image_ID) - (gimp_image_width(gpp->val.image_ID) % 16);
       gpp->val.vid_height = gimp_image_height(gpp->val.image_ID) - (gimp_image_height(gpp->val.image_ID) % 16);
       gpp->val.vid_format = VID_FMT_NTSC;
+      gpp->val.input_mode = GAP_RNGTYPE_FRAMES;
 
       g_free(l_base);
 
@@ -690,6 +694,7 @@ run (const gchar      *name,
         }
         if (param[13].data.d_string[0] != '\0') { g_snprintf(gpp->val.filtermacro_file, sizeof(gpp->val.filtermacro_file), "%s", param[13].data.d_string); }
         if (param[14].data.d_string[0] != '\0') { g_snprintf(gpp->val.storyboard_file, sizeof(gpp->val.storyboard_file), "%s", param[14].data.d_string); }
+        if (param[15].data.d_int32 >= 0) { gpp->val.input_mode   =    param[15].data.d_int32; }
       }
 
       if (values[0].data.d_status == GIMP_PDB_SUCCESS)
@@ -1720,6 +1725,7 @@ p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
      printf("  vid_height: %d\n", (int)gpp->val.vid_height);
      printf("  image_ID: %d\n", (int)gpp->val.image_ID);
      printf("  storyboard_file: %s\n\n", gpp->val.storyboard_file);
+     printf("  input_mode: %d\n", gpp->val.input_mode);
 
      printf("  acodec_name: %s\n", epp->acodec_name);
      printf("  vcodec_name: %s\n", epp->vcodec_name);
@@ -1731,8 +1737,10 @@ p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
 
   /* make list of frameranges (input frames to feed the encoder) */
   { gint32 l_total_framecount;
-  l_vidhand = gap_gve_story_open_vid_handle (gpp->val.storyboard_file
-                                       ,gpp->ainfo.basename
+  l_vidhand = gap_gve_story_open_vid_handle (gpp->val.input_mode
+                                       ,gpp->val.image_ID
+				       ,gpp->val.storyboard_file
+				       ,gpp->ainfo.basename
                                        ,gpp->ainfo.extension
                                        ,gpp->val.range_from
                                        ,gpp->val.range_to

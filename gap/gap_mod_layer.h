@@ -74,6 +74,9 @@
 #define	 GAP_MOD_ACM_LMASK_DELETE     30
 #define	 GAP_MOD_ACM_LMASK_APPLY      31
 
+#define	 GAP_MOD_ACM_LMASK_COPY_FROM_UPPER_LMASK   32
+#define	 GAP_MOD_ACM_LMASK_COPY_FROM_LOWER_LMASK   33
+
 typedef struct
 {
   gint32 layer_id;

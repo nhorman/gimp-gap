@@ -447,7 +447,7 @@ gap_story_new_elem(GapStoryVideoType record_type)
     stb_elem->basename = NULL;
     stb_elem->ext = NULL;
     stb_elem->seltrack = 1;
-    stb_elem->exact_seek = 1;
+    stb_elem->exact_seek = 0;
     stb_elem->delace = 0.0;
     stb_elem->filtermacro_file = NULL;
     stb_elem->from_frame = 1;

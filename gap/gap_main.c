@@ -555,6 +555,8 @@ GimpPlugInInfo PLUG_IN_INFO =
 				    ", 29:add bw copy as layermask"
 				    ", 30:delete layermask"
 				    ", 31:apply layermask"
+				    ", 32:copy layermask from layer above"
+				    ", 33:copy layermask from layer below"
 				    },
     {GIMP_PDB_INT32, "select_mode", "Mode how to identify a layer: 0-3 by layername 0=equal, 1=prefix, 2=suffix, 3=contains, 4=layerstack_numberslist, 5=inv_layerstack, 6=all_visible"},
     {GIMP_PDB_INT32, "select_case", "0: ignore case 1: select_string is case sensitive"},

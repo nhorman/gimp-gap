@@ -94,7 +94,6 @@
 #define GAP_VID_ENC_MONITOR           "GAP_VID_ENC_MONITOR"
 
 
-
 typedef enum
 {
    GAP_FRN_SILENCE
@@ -370,9 +369,11 @@ gboolean gap_gve_story_fetch_composite_image_or_chunk(GapGveStoryVidHandle *vidh
                  );
 
 GapGveStoryVidHandle *  gap_gve_story_open_vid_handle(
-                           char *storyboard_file
-                          ,char *basename
-                          ,char *ext
+			   GapGveTypeInputRange input_mode
+			  ,gint32 image_id 
+                          ,const char *storyboard_file
+                          ,const char *basename
+                          ,const char *ext
                           ,gint32  frame_from
                           ,gint32  frame_to
                           ,gint32 *frame_count   /* output total frame_count , or 0 on failure */
@@ -384,9 +385,11 @@ GapGveStoryVidHandle *  gap_gve_story_open_extended_video_handle(
                           ,gdouble  *progress_ptr
                           ,char *status_msg
                           ,gint32 status_msg_len
-                          ,char *storyboard_file
-                          ,char *basename
-                          ,char *ext
+			  ,GapGveTypeInputRange input_mode
+                          ,const char *imagename
+                          ,const char *storyboard_file
+                          ,const char *basename
+                          ,const char *ext
                           ,gint32  frame_from
                           ,gint32  frame_to
                           ,gint32 *frame_count   /* output total frame_count , or 0 on failure */

@@ -35,6 +35,8 @@
 
 
 /* revision history:
+ * version 2.1.0b;  2004.08.08   hof: new encoder standard parameter: input_mode 
+ *                                    without this param it was not clear how to encode the passed image (FRAMES or multilayer image)
  * version 2.1.0a;  2004.05.06   hof: integration into gimp-gap project
  * version 1.2.2c;  2003.01.09   hof: allow video encoding of multilayer images
  *                                    (image must be saved before the encoder call)
@@ -136,6 +138,9 @@ query ()
                                },
     {GIMP_PDB_STRING,   "filtermacro_file", "macro to apply on each handled frame. (textfile with filter plugin names and LASTVALUE bufferdump"},
     {GIMP_PDB_STRING,   "storyboard_file", "textfile with list of one or more images, framesequences, videoclips or audioclips (see storyboard docs for more information)"},
+    {GIMP_PDB_INT32,    "input_mode", "0 ... image is one of the frames to encode, range_from/to params refere to numberpart of the other frameimages on disc. \n"
+                                      "1 ... image is multilayer, range_from/to params refere to layer index. \n"
+				      "2 ... image is ignored, input is specified by storyboard_file parameter."},
   };
   static int nargs_qt_enc = sizeof(args_qt_enc) / sizeof(args_qt_enc[0]);
 
@@ -227,6 +232,7 @@ p_call_encoder_procedure(GapCmeGlobalParams *gpp)
      printf("  l_use_encoderspecific_params: %d\n", (int)l_use_encoderspecific_params);
      printf("  filtermacro_file: %s\n", gpp->val.filtermacro_file);
      printf("  storyboard_file: %s\n", gpp->val.storyboard_file);
+     printf("  input_mode: %d\n", gpp->val.input_mode);
   }
 
   if(FALSE == gimp_procedural_db_proc_info (gpp->val.ecp_sel.vid_enc_plugin,
@@ -275,6 +281,7 @@ p_call_encoder_procedure(GapCmeGlobalParams *gpp)
                      GIMP_PDB_INT32,  l_use_encoderspecific_params,
                      GIMP_PDB_STRING, gpp->val.filtermacro_file,
                      GIMP_PDB_STRING, gpp->val.storyboard_file,
+                     GIMP_PDB_INT32,  gpp->val.input_mode,
                      GIMP_PDB_END);
   if(l_params[0].data.d_status == GIMP_PDB_SUCCESS)
   {
@@ -379,6 +386,7 @@ run (const gchar *name,          /* name of plugin */
       gpp->val.vid_width  = gimp_image_width(gpp->val.image_ID);
       gpp->val.vid_height = gimp_image_height(gpp->val.image_ID);
       gpp->val.vid_format = VID_FMT_NTSC;
+      gpp->val.input_mode = GAP_RNGTYPE_FRAMES;
 
       /* g_snprintf(gpp->val.ecp_sel.vid_enc_plugin, sizeof(gpp->val.ecp_sel.vid_enc_plugin), "%s", GAP_PLUGIN_NAME_MPG1_ENCODE); */
       gpp->val.ecp_sel.vid_enc_plugin[0] = '\0';
@@ -403,6 +411,7 @@ run (const gchar *name,          /* name of plugin */
            g_snprintf(gpp->val.ecp_sel.vid_enc_plugin, sizeof(gpp->val.ecp_sel.vid_enc_plugin), "%s", param[12].data.d_string);
            g_snprintf(gpp->val.filtermacro_file, sizeof(gpp->val.filtermacro_file), "%s", param[13].data.d_string);
            g_snprintf(gpp->val.storyboard_file, sizeof(gpp->val.storyboard_file), "%s", param[14].data.d_string);
+           if (param[15].data.d_int32 >= 0) { gpp->val.input_mode  =   param[15].data.d_int32; }
        }
       }
       else if(gpp->val.run_mode != GIMP_RUN_INTERACTIVE)

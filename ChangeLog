@@ -1,3 +1,50 @@
+2004-08-28  Wolfgang Hofer <hof@gimp.org>
+	fixed compile errors when configured with  --disable-libxvidcore option
+	(undefined reference to `gap_gve_xvid_algorithm_preset'  # reported by sven)
+
+	* vid_enc_avi/gap_enc_avi_main.c
+	* vid_enc_avi/gap_enc_avi_gui.c
+	
+2004-08-14  Wolfgang Hofer <hof@gimp.org>
+	feature: MovePath point navigation hold SHIFT key
+	for automatic following keyframes in the preview
+	when instant_apply is on.
+	(procedure mov_follow_keyframe)
+	
+	* gap/gap_mov_dialog.c
+2004-08-13  Wolfgang Hofer <hof@gimp.org>
+	bugfix: video extract plug-in: values typed into spinbutton widgets
+	via keyboard are not respected at extract. 
+	(g_signal_connect to "value_changed" rather than "changed" signal)
+	* gap/gap_vex_dialog.c
+
+2004-08-11  Wolfgang Hofer <hof@gimp.org>
+	Added new Functions to Modify Frames plug-in
+	    "Copy layermask from layer above"
+	    "Copy layermask from layer below"
+	* gap/gap_mod_layer.c [.h]
+	* gap/gap_main.c
+	
+2004-08-10  Wolfgang Hofer <hof@gimp.org>
+	Bugfix: make Load/Save Pathpoint work again.
+	(this bug was introduced with the changes on 2004/04/18 
+	 where gtk_window_present was used in the wrong callbacks too)
+	* gap/gap_mov_dialog.c
+	
+2004-08-08  Wolfgang Hofer <hof@gimp.org>
+	added input_mode parameter to the standard encoder PDB API
+	enum GapGveTypeInputRange: GAP_RNGTYPE_FRAMES, GAP_RNGTYPE_LAYER, GAP_RNGTYPE_STORYBOARD
+	this was needed because until now the encoder had to guess 
+	how to interpret an image (as FRAME sequence or as Multilayer image)
+	
+	* vid_common/gap_cme_main.c
+	* vid_common/gap_cme_gui.c
+	* libgapvidutil/gap_gvetypes.h
+	* libgapvidutil/gap_gve_story.c [h]
+	* vid_enc_single/gap_enc_singleframes_main.c
+	* vid_enc_ffmpeg/gap_enc_ffmpeg_main.c
+	* vid_enc_avi/gap_enc_avi_main.c
+
 2004-07-18  Wolfgang Hofer <hof@gimp.org>
 	Morph: fixed bug for layer mixing.
 	added p_mix_layers procedure to mix all channels r,g,b,a with current mix factor.

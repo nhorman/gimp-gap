@@ -2344,16 +2344,16 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
   g_signal_connect (G_OBJECT (mw__entry_preferred_decoder), "changed",
                       G_CALLBACK (on_mw__entry_preferred_decoder_changed),
                       gpp);
-  g_signal_connect (G_OBJECT (mw__spinbutton_audiotrack), "changed",
+  g_signal_connect (G_OBJECT (mw__spinbutton_audiotrack), "value_changed",
                       G_CALLBACK (on_mw__spinbutton_audiotrack_changed),
                       gpp);
-  g_signal_connect (G_OBJECT (mw__spinbutton_videotrack), "changed",
+  g_signal_connect (G_OBJECT (mw__spinbutton_videotrack), "value_changed",
                       G_CALLBACK (on_mw__spinbutton_videotrack_changed),
                       gpp);
-  g_signal_connect (G_OBJECT (mw__spinbutton_end_frame), "changed",
+  g_signal_connect (G_OBJECT (mw__spinbutton_end_frame), "value_changed",
                       G_CALLBACK (on_mw__spinbutton_end_frame_changed),
                       gpp);
-  g_signal_connect (G_OBJECT (mw__spinbutton_begin_frame), "changed",
+  g_signal_connect (G_OBJECT (mw__spinbutton_begin_frame), "value_changed",
                       G_CALLBACK (on_mw__spinbutton_begin_frame_changed),
                       gpp);
   g_signal_connect (G_OBJECT (mw__checkbutton_exact_seek), "toggled",
@@ -2365,7 +2365,7 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
   g_signal_connect (G_OBJECT (mw__button_basename), "clicked",
                       G_CALLBACK (on_mw__button_basename_clicked),
                       gpp);
-  g_signal_connect (G_OBJECT (mw__spinbutton_basenum), "changed",
+  g_signal_connect (G_OBJECT (mw__spinbutton_basenum), "value_changed",
                       G_CALLBACK (on_mw__spinbutton_basenum_changed),
                       gpp);
   g_signal_connect (G_OBJECT (mw__entry_audiofile), "changed",
@@ -2377,13 +2377,13 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
   g_signal_connect (G_OBJECT (mw__checkbutton_multilayer), "toggled",
                       G_CALLBACK (on_mw__checkbutton_multilayer_toggled),
                       gpp);
-  g_signal_connect (G_OBJECT (mw__spinbutton_delace_threshold), "changed",
+  g_signal_connect (G_OBJECT (mw__spinbutton_delace_threshold), "value_changed",
                       G_CALLBACK (on_mw__spinbutton_delace_threshold_changed),
                       gpp);
   g_signal_connect (G_OBJECT (mw__entry_extension), "changed",
                       G_CALLBACK (on_mw__entry_extension_changed),
                       gpp);
-  g_signal_connect (G_OBJECT (mw__spinbutton_fn_digits), "changed",
+  g_signal_connect (G_OBJECT (mw__spinbutton_fn_digits), "value_changed",
                       G_CALLBACK (on_mw__spinbutton_fn_digits_changed),
                       gpp);
 

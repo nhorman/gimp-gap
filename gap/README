@@ -1191,6 +1191,8 @@ How to use
        "Add layermask from bw copy",
        "Delete layermask",
        "Apply layermask"
+       "Copy layermask from layer above"
+       "Copy layermask from layer below"
 
 
     The Functions 
@@ -1200,6 +1202,19 @@ How to use
        "Intersect Selection",
     take the Selection from the initial (invoking) frame and combines it
     with existing selections in all the other handled frames.
+
+    The Functions 
+       "Copy layermask from layer above"
+       "Copy layermask from layer below"
+    create Layermasks in the selected layer(s) in all handled frames by copying from the 
+    neigbour layer above (or below) the specified layer(s).
+    If there is no such neigbour layer, a black (full transparent) layermask
+    will be created for the slected layer(s).
+    If the neigbour layer has no layermask, the mask will be create as black and white copy
+    of the neigbour layer.
+    The layermask is placed at the center of the selected (destination) layer.
+    If the neigbour layer is smaller than the selected layer,
+    the uncovered border of the created layermask is created full transparent.
 
     The Functions:
 	"Duplicate Layer(s)"
