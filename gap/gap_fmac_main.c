@@ -6,7 +6,7 @@
  * This Module contains:
  * - filtermacros
  *
- * the GIMP-GAP filtermacro implementation introduces 
+ * the GIMP-GAP filtermacro implementation introduces
  * LIMITED macro features into GIMP-1.3.x
  *
  * WARNING:
@@ -34,7 +34,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/* SYTEM (UNIX) includes */ 
+/* SYTEM (UNIX) includes */
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -92,12 +92,12 @@ typedef struct
   GtkWidget        *add_button;
   GtkWidget        *delete_button;
   GtkWidget        *delete_all_button;
-  
+
   gchar             filtermacro_file[FMAC_FILE_LENGTH];
   gint32            image_id;
   gint32            drawable_id;
   gboolean          run_flag;
-  
+
 }  fmac_globalparams_t;    /* gpp */
 
 
@@ -157,14 +157,14 @@ static void
 query ()
 {
   static gchar             filtermacro_file[FMAC_FILE_LENGTH];
-  
+
   static GimpLastvalDef lastvals[] =
   {
     GIMP_LASTVALDEF_ARRAY           (GIMP_ITER_FALSE,  filtermacro_file, "filtermacro_scriptname"),
     GIMP_LASTVALDEF_GCHAR           (GIMP_ITER_FALSE,  filtermacro_file[0], "filtermacro_scriptname"),
   };
-  
-  
+
+
   static GimpParamDef args_fmac_dialog[] =
   {
     {GIMP_PDB_INT32, "run_mode", "Interactive"},
@@ -222,7 +222,7 @@ run(const gchar *name
   gint32     image_id;
   gint32     drawable_id;
   char     *filtermacro_file;
-  
+
   gint32      l_rc;
   const char *l_env;
 
@@ -246,7 +246,7 @@ run(const gchar *name
 
 
   if(gap_debug) fprintf(stderr, "\n\ngap_filter_main: debug name = %s\n", name);
-  
+
   if (strcmp (name, PLUG_IN_NAME_FMAC) == 0)
   {
       if (run_mode == GIMP_RUN_INTERACTIVE)
@@ -269,7 +269,7 @@ run(const gchar *name
 	else
 	{
 	  gint l_len;
-	  
+
 	  l_len = gimp_get_data_size(PLUG_IN_NAME_FMAC);
 	  if(l_len > 0)
 	  {
@@ -281,7 +281,7 @@ run(const gchar *name
 	    filtermacro_file = g_strdup("\0");
 	  }
 	}
-	
+
 	if(status == GIMP_PDB_SUCCESS)
 	{
           l_rc = gap_fmac_execute(run_mode, image_id, drawable_id, filtermacro_file);
@@ -297,8 +297,8 @@ run(const gchar *name
  {
     status = GIMP_PDB_EXECUTION_ERROR;
  }
- 
-  
+
+
  if (run_mode != GIMP_RUN_NONINTERACTIVE)
     gimp_displays_flush();
 
@@ -316,10 +316,10 @@ run(const gchar *name
 static gboolean
 p_chk_filtermacro_file(const char *filtermacro_file)
 {
-  FILE *l_fp; 
+  FILE *l_fp;
   char         l_buf[400];
   gboolean l_rc;
-  
+
   l_buf[0] = '\0';
   l_rc = FALSE;
   l_fp = fopen(filtermacro_file, "r");
@@ -333,7 +333,7 @@ p_chk_filtermacro_file(const char *filtermacro_file)
     }
     fclose(l_fp);
   }
-  
+
   return l_rc;
 }  /* end p_chk_filtermacro_file */
 
@@ -358,7 +358,7 @@ p_print_and_free_msg(char *msg, GimpRunMode run_mode)
 /* ----------------------------
  * p_get_gap_filter_data_string
  * ----------------------------
- *   return a textstring with the plugin_name 
+ *   return a textstring with the plugin_name
  *   and its values as textstring
  *   that has format like this:
  *      "plug_in_name" len hexbyte1 hexbyte2 .......\n
@@ -368,7 +368,7 @@ p_print_and_free_msg(char *msg, GimpRunMode run_mode)
  * return data_string or  NULL pointer if nothing was found.
  *        the returned data_string should be g_free'd by the caller (if it was not NULL)
  */
-static gchar * 
+static gchar *
 p_get_gap_filter_data_string(const char *plugin_name)
 {
   gint plugin_data_len;
@@ -392,7 +392,7 @@ p_get_gap_filter_data_string(const char *plugin_name)
         plugin_data = g_malloc0(plugin_data_len);
         gimp_get_data(plugin_name, plugin_data);
 
-        /* build the textstring, starting with quoted plug_in name and decimal datalength field 
+        /* build the textstring, starting with quoted plug_in name and decimal datalength field
          */
         l_str_tmp = g_strdup_printf("\"%s\" %4d ", plugin_name, (int)plugin_data_len);
 
@@ -415,7 +415,7 @@ p_get_gap_filter_data_string(const char *plugin_name)
 
         data_string = l_str;
         g_free(plugin_data);
-      
+
    }
 
    return (data_string);
@@ -427,7 +427,7 @@ p_get_gap_filter_data_string(const char *plugin_name)
  * p_fmac_add_filter_to_file
  * -------------------------
  */
-static gint 
+static gint
 p_fmac_add_filter_to_file(const char *filtermacro_file, const char *plugin_name)
 {
   FILE  *fp;
@@ -452,11 +452,11 @@ p_fmac_add_filter_to_file(const char *filtermacro_file, const char *plugin_name)
   {
     fp = fopen(filtermacro_file, "a");
   }
-  
+
   if (fp)
   {
     char *data_string;
-    
+
     data_string = p_get_gap_filter_data_string(plugin_name);
     if(data_string)
     {
@@ -479,11 +479,11 @@ p_fmac_add_filter_to_file(const char *filtermacro_file, const char *plugin_name)
  *  current GIMP-session) to the end of thefiltermacro_file
  */
 
-static gint 
+static gint
 p_fmac_add_filter(const char *filtermacro_file, gint32 image_id)
 {
   GapDbBrowserResult   l_browser_result;
-  
+
   if(gap_db_browser_dialog( _("Select Filtercalls of Current GIMP Session")
                           , NULL            /* dont use the 1.st action button at all */
                           , _("Add Filter")
@@ -492,13 +492,13 @@ p_fmac_add_filter(const char *filtermacro_file, gint32 image_id)
                           , p_fmac_pdb_constraint_proc_sel2
                           , &l_browser_result
                           , image_id
-			  ) 
+			  )
     < 0)
   {
     if(gap_debug) printf("DEBUG: gap_db_browser_dialog cancelled\n");
     return -1;
   }
-  
+
   return(p_fmac_add_filter_to_file(filtermacro_file, l_browser_result.selected_proc_name));
 
 }  /* end p_fmac_add_filter */
@@ -508,7 +508,7 @@ p_fmac_add_filter(const char *filtermacro_file, gint32 image_id)
 /* ---------------
  * gap_fmac_dialog
  * ---------------
- *  create and perform the flitermacro dialog 
+ *  create and perform the flitermacro dialog
  */
 gint
 gap_fmac_dialog(GimpRunMode run_mode, gint32 image_id, gint32 drawable_id)
@@ -529,26 +529,26 @@ gap_fmac_dialog(GimpRunMode run_mode, gint32 image_id, gint32 drawable_id)
   gpp->run_flag = FALSE;
   gpp->filtermacro_file[0] = '\0';
   gpp->selected_number = -1;
-  
+
   /* probably get filtermacro_file (form a previous call in the same GIMP-session) */
   gimp_get_data(PLUG_IN_NAME_FMAC, gpp->filtermacro_file);
-  
+
   gpp->filesel = NULL;
   gpp->image_id = image_id;
   gpp->drawable_id = drawable_id;
-  
+
   /* the dialog box */
   gpp->dialog = gtk_dialog_new ();
-  
+
   gtk_window_set_title (GTK_WINDOW (gpp->dialog), _("Filter Macro Script"));
   gtk_window_set_position (GTK_WINDOW (gpp->dialog), GTK_WIN_POS_MOUSE);
   g_signal_connect (gpp->dialog, "destroy",
                     G_CALLBACK (p_close_callback), gpp);
 
   /* vbox : the list and the search entry */
-  
+
   vbox = gtk_vbox_new (FALSE, 4);
-  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (gpp->dialog)->vbox), 
+  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (gpp->dialog)->vbox),
 		      vbox, TRUE, TRUE, 0);
   gtk_widget_show (vbox);
 
@@ -560,15 +560,15 @@ gap_fmac_dialog(GimpRunMode run_mode, gint32 image_id, gint32 drawable_id)
 
   gtk_box_pack_start (GTK_BOX (vbox), table, FALSE, FALSE, 0);
   gtk_widget_show (table);
-  
+
   row = 0;
-  
+
   /* label */
   label = gtk_label_new(_("Filename:"));
   gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
   gtk_table_attach(GTK_TABLE(table), label, 0, 1, row, row + 1, 0, 0, 0, 0);
   gtk_widget_show(label);
- 
+
   /* entry */
   entry = gtk_entry_new();
   gpp->file_entry = entry;
@@ -583,7 +583,7 @@ gap_fmac_dialog(GimpRunMode run_mode, gint32 image_id, gint32 drawable_id)
 		   G_CALLBACK (p_file_entry_update_callback),
 		   gpp);
 
-  /* Button  to invoke filebrowser */  
+  /* Button  to invoke filebrowser */
   button = gtk_button_new_with_label ( _("File Browser"));
   gimp_help_set_help_data(button
                          , _("Open filebrowser window to select a filename")
@@ -594,9 +594,9 @@ gap_fmac_dialog(GimpRunMode run_mode, gint32 image_id, gint32 drawable_id)
   g_signal_connect (G_OBJECT (button), "clicked",
 		    G_CALLBACK (p_filebrowser_button_callback),
 		    gpp);
- 
+
   /* list : list in a scrolled_win */
-  
+
   scrolled_window = gtk_scrolled_window_new (NULL, NULL);
   gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolled_window),
 				       GTK_SHADOW_IN);
@@ -655,7 +655,7 @@ gap_fmac_dialog(GimpRunMode run_mode, gint32 image_id, gint32 drawable_id)
   if(gpp->filtermacro_file[0] != '\0')
   {
     gimp_set_data(PLUG_IN_NAME_FMAC, gpp->filtermacro_file, FMAC_FILE_LENGTH);
-    
+
     if(gpp->run_flag)
     {
       /* if(gap_debug) */ printf("gap_fmac_dialog: RUN image_id:%d drawable_id:%d, filtermacro_file:%s\n"
@@ -686,7 +686,7 @@ p_get_filtername(const char *line)
   {
     gchar *filtername;
     gchar *ptr;
-    
+
     filtername = g_strdup(&line[1]);
     ptr = filtername;
     while(ptr)
@@ -709,7 +709,7 @@ p_get_filtername(const char *line)
  * ----------------------------
  * fill filternames into the treeview
  */
-static void 
+static void
 p_procedure_select_callback (GtkTreeSelection *sel, fmac_globalparams_t *gpp)
 {
   GtkTreeIter  iter;
@@ -736,7 +736,7 @@ p_procedure_select_callback (GtkTreeSelection *sel, fmac_globalparams_t *gpp)
  * ----------------------------
  * fill filternames into the treeview
  */
-static void 
+static void
 p_tree_fill (fmac_globalparams_t *gpp)
 {
   GtkTreeIter   iter;
@@ -765,7 +765,7 @@ p_tree_fill (fmac_globalparams_t *gpp)
       parse_file = TRUE;
     }
   }
-  
+
   if(parse_file)
   {
     txf_ptr_root = gap_vin_load_textfile(gpp->filtermacro_file);
@@ -779,7 +779,7 @@ p_tree_fill (fmac_globalparams_t *gpp)
          gchar *numtxt;
          gchar *label;
 	 gchar *menu_path;
-	 
+
          menu_path = gap_db_get_plugin_menupath(pdb_name);
 	 if(menu_path == NULL)
 	 {
@@ -787,7 +787,7 @@ p_tree_fill (fmac_globalparams_t *gpp)
 	 }
          label = g_strdup_printf("%3d.", (int)count_elem +1);
          numtxt = g_strdup_printf("%d", (int)count_elem);
-	 
+
          gtk_list_store_append (gpp->store, &iter);
          gtk_list_store_set (gpp->store, &iter
     		            ,0, numtxt            /* internal invisible number starting at 0 */
@@ -808,11 +808,11 @@ p_tree_fill (fmac_globalparams_t *gpp)
       gap_vin_free_textfile_lines(txf_ptr_root);
     }
   }
-  
+
   if (count_elem == 0)
   {
     gtk_list_store_append (gpp->store, &iter);
-    
+
     if((p_chk_filtermacro_file(gpp->filtermacro_file))
     || (gap_lib_file_exists(gpp->filtermacro_file) == 0 ))
     {
@@ -833,7 +833,7 @@ p_tree_fill (fmac_globalparams_t *gpp)
 		            ,-1);
     }
   }
-  
+
   gtk_tree_model_get_iter_root (GTK_TREE_MODEL (gpp->store), &iter);
   gtk_tree_selection_select_iter (gpp->sel, &iter);
 
@@ -844,7 +844,7 @@ p_tree_fill (fmac_globalparams_t *gpp)
 /* ----------------------------
  * p_create_action_area_buttons
  * ----------------------------
- *  create action area buttons for the flitermacro dialog 
+ *  create action area buttons for the flitermacro dialog
  */
 static void
 p_create_action_area_buttons(fmac_globalparams_t *gpp)
@@ -933,7 +933,7 @@ p_create_action_area_buttons(fmac_globalparams_t *gpp)
   gtk_widget_show (button);
 
   p_setbutton_sensitivity(gpp);
-  
+
 }  /* end p_create_action_area_buttons */
 
 
@@ -941,12 +941,12 @@ p_create_action_area_buttons(fmac_globalparams_t *gpp)
  * p_setbutton_sensitivity
  * ----------------------------
  */
-static void  
+static void
 p_setbutton_sensitivity(fmac_globalparams_t *gpp)
 {
   gboolean sensitive_1;
   gboolean sensitive_2;
-  
+
   sensitive_1 = FALSE;
   sensitive_2 = FALSE;
 
@@ -959,23 +959,23 @@ p_setbutton_sensitivity(fmac_globalparams_t *gpp)
       sensitive_1 = TRUE;
     }
   }
-  
+
   gtk_widget_set_sensitive(gpp->ok_button, sensitive_1);
   gtk_widget_set_sensitive(gpp->delete_all_button, sensitive_1);
   gtk_widget_set_sensitive(gpp->delete_button, sensitive_1);
   gtk_widget_set_sensitive(gpp->add_button, sensitive_2);
-  
+
 }  /* end p_setbutton_sensitivity */
 
 /* ----------------------------
  * p_close_callback
  * ----------------------------
  */
-static void  
+static void
 p_close_callback (GtkWidget *widget, fmac_globalparams_t *gpp)
 {
   GtkWidget *dlg;
-  
+
   if(gpp)
   {
     dlg = gpp->dialog;
@@ -1027,7 +1027,7 @@ p_delete_callback (GtkWidget *widget, fmac_globalparams_t *gpp)
     {
 
       if(gap_debug) printf("p_delete_callback: selected_number:%d\n", (int)gpp->selected_number);
-      
+
       if(gpp->selected_number >= 0)
       {
         GapVinTextFileLines *txf_ptr;
@@ -1036,7 +1036,7 @@ p_delete_callback (GtkWidget *widget, fmac_globalparams_t *gpp)
         gchar *label;
         FILE  *fp;
 	gboolean copy_line;
-	
+
 	/* rewrite the filtermacro file
 	 * without the line that corresponds to gpp->selected_number
 	 */
@@ -1059,9 +1059,9 @@ p_delete_callback (GtkWidget *widget, fmac_globalparams_t *gpp)
 	      g_free(label);
 	      count_elem++;
 	    }
-	    
+
 	    if(gap_debug) printf("%4d  %s", (int)count_elem, txf_ptr->line);
-	    
+
 	    if(copy_line)
 	    {
 	      fprintf(fp, "%s", txf_ptr->line);
@@ -1073,7 +1073,7 @@ p_delete_callback (GtkWidget *widget, fmac_globalparams_t *gpp)
 	{
 	  gap_vin_free_textfile_lines(txf_ptr_root);
 	}
-	
+
       }
     }
     p_tree_fill (gpp);
@@ -1112,7 +1112,7 @@ p_add_callback (GtkWidget *widget, fmac_globalparams_t *gpp)
 
       errno = 0;
       l_rc = p_fmac_add_filter(gpp->filtermacro_file, gpp->image_id);
-      
+
       if((l_rc < 0) && (errno != 0))
       {
         g_message(_("ERROR: Could not write filtermacro script\n"
@@ -1134,7 +1134,7 @@ p_filebrowser_button_callback (GtkWidget *widget, fmac_globalparams_t *gpp)
   GtkWidget *filesel;
 
   if(gpp->filesel != NULL) return;  /* filesel is already open */
-  
+
   filesel = gtk_file_selection_new ( _("Select Filtermacro Scriptfile"));
   gpp->filesel = filesel;
 
@@ -1149,12 +1149,12 @@ p_filebrowser_button_callback (GtkWidget *widget, fmac_globalparams_t *gpp)
 		  "clicked",
                    G_CALLBACK (p_filesel_close_callback),
 	           gpp);
-	             
+
   gtk_file_selection_set_filename (GTK_FILE_SELECTION (filesel),
 				   gpp->filtermacro_file);
 
   gtk_widget_show (filesel);
-  /* "destroy" has to be the last signal, 
+  /* "destroy" has to be the last signal,
    * (otherwise the other callbacks are never called)
    */
   g_signal_connect (G_OBJECT (filesel), "destroy",
@@ -1225,7 +1225,7 @@ p_file_entry_update_callback(GtkWidget *widget,
  * p_fmac_pdb_constraint_proc_sel1
  * ---------------------------------
  */
-static int 
+static int
 p_fmac_pdb_constraint_proc(gchar *proc_name, gint32 image_id)
 {
   int l_rc;
@@ -1247,7 +1247,7 @@ p_fmac_pdb_constraint_proc(gchar *proc_name, gint32 image_id)
      /* Do not add the filtermacro plugin itself */
      return 0;
   }
-  
+
   l_rc = gap_filt_pdb_procedure_available(proc_name, GAP_PTYP_CAN_OPERATE_ON_DRAWABLE);
 
   if(l_rc < 0)
@@ -1256,7 +1256,7 @@ p_fmac_pdb_constraint_proc(gchar *proc_name, gint32 image_id)
      return 0;
   }
 
- 
+
   return(p_fmac_pdb_constraint_proc_sel1(proc_name, image_id));
 }
 
@@ -1264,7 +1264,7 @@ p_fmac_pdb_constraint_proc(gchar *proc_name, gint32 image_id)
  * p_fmac_pdb_constraint_proc_sel1
  * ---------------------------------
  */
-static int 
+static int
 p_fmac_pdb_constraint_proc_sel1(gchar *proc_name, gint32 image_id)
 {
   char *data_string;
@@ -1284,7 +1284,7 @@ p_fmac_pdb_constraint_proc_sel1(gchar *proc_name, gint32 image_id)
  * p_fmac_pdb_constraint_proc_sel2
  * ---------------------------------
  */
-static int 
+static int
 p_fmac_pdb_constraint_proc_sel2(gchar *proc_name, gint32 image_id)
 {
   return (p_fmac_pdb_constraint_proc_sel1 (proc_name, image_id));
@@ -1296,7 +1296,7 @@ p_fmac_pdb_constraint_proc_sel2(gchar *proc_name, gint32 image_id)
  * p_fmac_execute
  * ----------------
  */
-gint 
+gint
 p_fmac_execute(GimpRunMode run_mode, gint32 image_id, gint32 drawable_id, const char *filtermacro_file)
 {
   int      l_rc;
@@ -1313,8 +1313,8 @@ p_fmac_execute(GimpRunMode run_mode, gint32 image_id, gint32 drawable_id, const 
 
   GapVinTextFileLines *txf_ptr;
   GapVinTextFileLines *txf_ptr_root;
-  
-  
+
+
   l_lastvalues_bck_buffer = NULL;
   l_bck_len = 0;
 
@@ -1330,7 +1330,7 @@ p_fmac_execute(GimpRunMode run_mode, gint32 image_id, gint32 drawable_id, const 
   for(txf_ptr = txf_ptr_root; txf_ptr != NULL; txf_ptr = (GapVinTextFileLines *) txf_ptr->next)
   {
     gchar *l_buf;
-    
+
     l_buf = txf_ptr->line;
 
      /* handle lines starting with double quotes */
@@ -1368,7 +1368,7 @@ p_fmac_execute(GimpRunMode run_mode, gint32 image_id, gint32 drawable_id, const 
                                        "recorded size: %d"
                                       , l_plugin_name
                                       , (int)l_bck_len
-                                      , (int)l_data_len                                       
+                                      , (int)l_data_len
                                       );
               p_print_and_free_msg(l_msg, run_mode);
               gap_vin_free_textfile_lines(txf_ptr_root);
@@ -1377,17 +1377,17 @@ p_fmac_execute(GimpRunMode run_mode, gint32 image_id, gint32 drawable_id, const 
            l_lastvalues_bck_buffer = g_malloc0(l_bck_len);
            gimp_get_data (l_plugin_name, l_lastvalues_bck_buffer);
          }
-      
+
          if(gap_debug) printf("p_fmac_execute: ##l_data_len:%d\n", (int)l_data_len);
-         
-         
+
+
          l_lastvalues_data_buffer = g_malloc0(l_data_len);
          l_scan_ptr = l_scan_ptr2;
          for(l_idx=0; l_idx < l_data_len;l_idx++)
          {
             l_data_byte = strtol(l_scan_ptr, &l_scan_ptr2, 16);
             /* if(gap_debug) printf("p_fmac_execute: l_data_byte:%d\n", (int)l_data_byte); */
-            
+
             if ((l_data_byte < 0) || (l_data_byte > 255) || (l_scan_ptr == l_scan_ptr2))
             {
               g_free(l_lastvalues_data_buffer);
@@ -1404,7 +1404,7 @@ p_fmac_execute(GimpRunMode run_mode, gint32 image_id, gint32 drawable_id, const 
       }
 
       if(gap_debug) printf("p_fmac_execute: # before p_call_plugin: image_id:%d drawable_id:%d\n", (int)image_id ,(int)drawable_id );
-      
+
       /* check for the Plugin */
       l_rc = gap_filt_pdb_procedure_available(l_plugin_name, GAP_PTYP_CAN_OPERATE_ON_DRAWABLE);
       if(l_rc < 0)
@@ -1428,7 +1428,7 @@ p_fmac_execute(GimpRunMode run_mode, gint32 image_id, gint32 drawable_id, const 
          gap_vin_free_textfile_lines(txf_ptr_root);
          return -1;
       }
-      
+
       if(l_lastvalues_bck_buffer)
       {
         gimp_set_data(l_plugin_name, l_lastvalues_bck_buffer, l_bck_len);
@@ -1436,7 +1436,7 @@ p_fmac_execute(GimpRunMode run_mode, gint32 image_id, gint32 drawable_id, const 
         l_lastvalues_bck_buffer = NULL;
       }
 
-    }     
+    }
 
   }
 
@@ -1444,7 +1444,7 @@ p_fmac_execute(GimpRunMode run_mode, gint32 image_id, gint32 drawable_id, const 
   {
     gap_vin_free_textfile_lines(txf_ptr_root);
   }
- 
+
   return 0;
 }  /* end p_fmac_execute */
 
@@ -1454,13 +1454,13 @@ p_fmac_execute(GimpRunMode run_mode, gint32 image_id, gint32 drawable_id, const 
  * gap_fmac_execute
  * ----------------
  */
-gint 
+gint
 gap_fmac_execute(GimpRunMode run_mode, gint32 image_id, gint32 drawable_id, const char *filtermacro_file)
 {
   gint l_rc;
- 
-  gimp_undo_push_group_start(image_id);
+
+  gimp_image_undo_group_start(image_id);
   l_rc = p_fmac_execute(run_mode, image_id,  drawable_id, filtermacro_file);
-  gimp_undo_push_group_end(image_id);
+  gimp_image_undo_group_end(image_id);
   return (l_rc);
 }

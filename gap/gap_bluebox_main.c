@@ -32,7 +32,7 @@
 static char *gap_bluebox_version = "1.3.20d; 2003/10/14";
 
 
-/* SYTEM (UNIX) includes */ 
+/* SYTEM (UNIX) includes */
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -64,7 +64,7 @@ static GimpParamDef args_bluebox[] =
     {GIMP_PDB_INT32, "run_mode", "Interactive"},
     {GIMP_PDB_IMAGE, "image", "(unused)"},
     {GIMP_PDB_DRAWABLE, "drawable", "(unused)"},
-    
+
     {GIMP_PDB_COLOR, "keycolor",    "Select Pixels to be treansparent by this KeyColor" },
     {GIMP_PDB_INT32, "thres_mode",  "0 .. use the 3 threshold values for RGB\n"
                                     "1 .. use the 3 threshold values for HSV\n"
@@ -124,7 +124,7 @@ MAIN ()
  */
 static void
 query ()
-{  
+{
   static GapBlueboxVals bbox_vals;  /* this structure is only used as structure model
                                      * for common iterator procedure registration
                                      */
@@ -150,7 +150,7 @@ query ()
 
   static GimpParamDef *return_vals = NULL;
   static int nreturn_vals = 0;
-  
+
   gimp_plugin_domain_register (GETTEXT_PACKAGE, LOCALEDIR);
 
 
@@ -171,7 +171,7 @@ query ()
 			 "The Thresholds operate on RGB or HSV Colormodel,\n"
 			 "depending on the thres_mode Parameter.\n"
 			 "The Selection by Keycolor can be Smoothed (by feather_radius)\n"
-			 "and/or extended by a grow value." 
+			 "and/or extended by a grow value."
 			 ,
                          "Wolfgang Hofer (hof@gimp.org)",
                          "Wolfgang Hofer",
@@ -196,12 +196,12 @@ run(const gchar *name
    , GimpParam **return_vals)
 {
   const gchar *l_env;
-  
+
   static GimpParam values[2];
   GimpRunMode run_mode;
   GimpPDBStatusType status = GIMP_PDB_SUCCESS;
   GapBlueboxGlobalParams  *bbp;
-   
+
   gint32     l_rc;
 
   *nreturn_vals = 1;
@@ -222,12 +222,12 @@ run(const gchar *name
   bbp->run_mode = param[0].data.d_int32;
   bbp->image_id = param[1].data.d_image;
 
-  gimp_undo_push_group_start (bbp->image_id);
+  gimp_image_undo_group_start (bbp->image_id);
 
   gap_bluebox_init_default_vals(bbp);
 
   if(gap_debug) printf("\n\ngap_bluebox main: debug name = %s\n", name);
-  
+
   if (strcmp (name, GAP_BLUEBOX_PLUGIN_NAME) == 0)
   {
       switch (run_mode)
@@ -297,11 +297,11 @@ run(const gchar *name
       gimp_set_data (GAP_BLUEBOX_DATA_KEY_VALS, &bbp->vals, sizeof (bbp->vals));
     }
   }
-  gimp_undo_push_group_end (bbp->image_id);
+  gimp_image_undo_group_end (bbp->image_id);
 
   /* ---------- return handling --------- */
 
- 
+
   values[0].type = GIMP_PDB_STATUS;
   values[0].data.d_status = status;
 }  /* end run */

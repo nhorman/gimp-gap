@@ -1,3 +1,10 @@
+2003-12-08  Sven Neumann  <sven@gimp.org>
+
+	* gap/gap_bluebox_main.c
+	* gap/gap_fmac_main.c
+	* gap/gap_name2layer_main.c:
+	s/gimp_undo_push_group/gimp_image_undo_group/
+
 2003-12-04  Sven Neumann  <sven@gimp.org>
 
 	* gap/gap_lib.c
