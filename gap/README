@@ -5,37 +5,38 @@ Introduction
 --------------------------------------------------------------------
 
 The GIMP is a great Program for creating and manipulating
-Pixelbased Images of many types. The Plugin Concept and the Procedural Database
-allows Programmers to extend the Gimp's Functions in many ways.
+Pixelbased Images of many types. The Plug-In Concept and the Procedural Database
+allows Programmers to extend the GIMP's Functions in many ways.
 
-For now there are some Plugins that supports Animation Features,
-based on Layers. Each Layer of the Image is considered as one frame
+There are some Plug-In's suppoting Animation Features,
+based on Layers where each Layer of the Image is considered as one frame
 of the Animation.
-GAP is a collection of Plugins that extends the GIMP's animation capabilities
+GAP is a collection of Plug-Ins that extends the GIMP's animation capabilities
 by supporting the creation of more complex animations.
 (Additional Informations about the GAP can be found in the GimpUserManual 1.0.0
  Chapter Advanced Animation)
 
 Idea:
-	With some little changes to the gimp-core and a few new plug-ins
-	gimp can operate on a series of images as if they were
+	With the Help of the GAP Plug-In collection
+	GIMP can operate on a series of images as if they were
 	a single one.
 	Each frame of an Animation can have multiple Layers.
 	The user can step from frame to frame by pressing an Accelerator Key.
 
 	Layeranimated Images can be combined with frames (multiple images)
-	as I  have done in "Move Path" Plugin  (see below).
+	as you can see in the "Move Path" Plug-In
+        or converted to frames and vice-versa. 
 	
 Concept:
-	An animation consists of a series of Images of the same size & Type
+	An animation consists of a series of Images of the same Size & Type
 	(Frames).
 	In my Concept each Frame is stored seperate on Disk, using a filename
 	convention that includes the frame Number and extension.
 
-	Example: film_0001.xcf, 
-	         film_0002.xcf
+	Example: film_000001.xcf, 
+	         film_000002.xcf
 	         ..
-	         film_0012.xcf
+	         film_000012.xcf
 	
 	gimp's xcf Fileformat should be used to store the frames,
 	so that each frame can have more Layers.
@@ -67,7 +68,9 @@ Concept:
 	(avi, quicktime, ....) based on the famous xanim multimedia player.
 	see the file README_xanim_hack for more details.
 	
-	
+Onionskin Layers
+        GAP does support Onionskin Layers, this features are described
+        in the file README_onion.txt	
 
 --------------------------------------------------------------------
 Installation
@@ -135,15 +138,6 @@ Write (encode)
 How to use
 --------------------------------------------------------------------
 
-WebTip:	My GIMP-page http://pages.hotbot.com/arts/hof/index.html
-	contains an illustrated GAP-tutorial, some demo-animations
-	and other plugins.
-	
-	The chapter "Advanced Animation" in the Gimp User Manual 1.0
-	(by Karin & Olof Kylander) also describes GAP with many
-	Illustrations.
-
-
 
 - Creating multiple frames (AnimFrames)
 - -------------------------------------
@@ -209,7 +203,17 @@ WebTip:	My GIMP-page http://pages.hotbot.com/arts/hof/index.html
    The VCR Navigator Dialog shows a thumbnail view, frame_number and
    time (mm:ss:msec) of the frames in a scrollable listbox.
    framerate:
-     You can set the global framerate for all frames here.
+     You can set the global Framerate for all frames here.
+  
+     (Note: changing the Framerate in the VCR_Naviagtor
+            Dialog Window does not change the Number of Frames.
+            Therefore the motion does speed up or slow down
+            at Playback. If You want to keep your Motion
+            speed constant at increased Framerate use the
+            Change Framedensity Tool to create the requested additional
+            Frames)
+            
+
    timezoom:
      with timezoom you tell the VCR Navigator Dialog Window
      to display every n-th frame only, to get an overview
@@ -240,6 +244,8 @@ WebTip:	My GIMP-page http://pages.hotbot.com/arts/hof/index.html
       paste after
       paste replace
       clear pastebuffer
+      select all
+      select none
       
       cut and copy
          is sensitive if any frame is selected,
@@ -477,7 +483,7 @@ WebTip:	My GIMP-page http://pages.hotbot.com/arts/hof/index.html
           (<Image>/Video/Move Path)
 
 
-      For this Plugin you need a series of frames
+      For this Plug-In you need a series of frames
       and one single image (that may have more layers).
 
       - The Source Image must be opened in the gimp
@@ -487,7 +493,7 @@ WebTip:	My GIMP-page http://pages.hotbot.com/arts/hof/index.html
       - The Source Image must be from the same type (RGB, INDEXED ..) as
         the destination frame.
 
-        In other words: To run the 'Move Path' Plugin you have to open at
+        In other words: To run the 'Move Path' Plug-In you have to open at
                         least 2 Images of the same type.      
       
       
@@ -687,7 +693,7 @@ WebTip:	My GIMP-page http://pages.hotbot.com/arts/hof/index.html
 	to get an idea how the Inserted moving Object
 	will look like. The Animated Preview is generated
 	as Multilayer Image and the Filter/Animation/Playback
-	Plugin is started on that Multilayer Image.
+	Plug-In is started on that Multilayer Image.
 	
 	The Button opens a Dialog Window, where you can
 	enter options for the animated preview.
@@ -879,6 +885,62 @@ WebTip:	My GIMP-page http://pages.hotbot.com/arts/hof/index.html
     layerstack [3]                   background                       
     
 
+- Change Framedensity
+- ---------------------------------
+
+  Changing the Framedensity results in duplicating Frames
+  for growing Framedensity, and will delete Frames
+  for shrinking the Density.
+
+  This feature is used to change the Target Framerate.
+
+  Example:
+  If you have created an Animation with Framerate of 8 Frames/sec
+  and want to change to a Target Framerate of 24 Frames/sec
+  You should call the FrameDensity Plug-In with a Densityfactor
+  of 3 and GrowingDensity Mode.
+
+  This makes 2 Copies for each of the Frames in the selected Range.
+  If you use Playback at the old 8 Frames/sec rate the Motion
+  is 3 times slower now. With the new Rate of 24 Frames/sec
+  the Motion is the same speed as before. 
+
+  The Animation before the Framedensity Change (frames 1-9):
+
+     01 02 03 04 05 06 07 08 09   (original framenumber)
+
+  The Animation after Framedensity Change at GrowingMode and Factor 3
+  and limited to a Framerange from Frame 3 to Frame 8:
+
+     01 02 03 04 05  06 07 08 09 10 11  12 13 14   15 16 17 18 19 20 21   (new framenumber)
+     01 02 03 03 03  04 04 04 05 05 05  06 06 06   07 07 07 08 08 08 09   (original framenumner)
+               +  +      +  +     +  +      +  +       +  +     +  +   
+
+  Tip:
+     To get Smooth Motion in the Resulting Frames you may create 
+     2 Onionskin Layers per Frame (For the Range FromFrame 03 ToFrame 20)
+     using a Setting that blends in the next 2 Frames (FrameReference +1) 
+     at Stackposition 0 FromTop of the Layerstack
+     with Opacity of 66% and 50% and without Ignoring any BG_layer(s).
+     
+     That way you get a Cross-Fading Effect with smoother motion
+     when played with 24 Frames/sec
+
+     You can find Onionskin in this Menu:
+     <Image>/Video/Onionskin/Configuration
+    
+     
+  Densityfactors are limited to Values from 1.0 upto 100.0.
+  Float values are supported.
+  
+
+  If You want to change from 30 Frames/sec down to 15 Frames/sec
+  then use a Densityfactor of 2 and ShrinkingDensity Mode (Growing switched off).
+  
+  This will DELETE every 2.nd Frame.
+  
+  There is NO UNDO, so use this feature very cerefully.
+
 
 
 - Saving frames to Videofiles:
@@ -964,7 +1026,7 @@ WebTip:	My GIMP-page http://pages.hotbot.com/arts/hof/index.html
      in your multilayered image.
      (menu: File/New,  menu: <image>/Video/Duplicate)
      
-     Then use the "Move Path" Plugin ( menu: <image>/Video/Move Path)
+     Then use the "Move Path" Plug-In ( menu: <image>/Video/Move Path)
      to copy the layers to all your frames.
      Use 2 Points with both X=0, Y=0, Opacity=100%, Width=100%, Height=100%,
      select the 1.st Layer of your multilayer Image as Source,
@@ -1006,7 +1068,7 @@ WebTip:	My GIMP-page http://pages.hotbot.com/arts/hof/index.html
 
       
 - NO UNDO
-      There is no Undo for the AnimFrame Plugins.
+      There is no Undo for the GAP Video Plug-Ins.
       Note: If you step to the next frame (menu: <image>/Video/Goto Next)
             the current frame is saved to disk and the next frame
             is loaded into the image. 
@@ -1015,18 +1077,18 @@ WebTip:	My GIMP-page http://pages.hotbot.com/arts/hof/index.html
       Tip: "undo" for Move Path
          You can Delete the Layers at desired Layerstackposition
          (0 == on top) by (menu: <image>/Video/Frames LayerDel)
-         So you can remove all the Layers inserted by "Move Path" plugin.
+         So you can remove all the Layers inserted by "Move Path" Plug-In.
 
 - About Locks
-   All the GAP Plugins are using a lock.
-   This lock disables to run other gap-plugins (or the same plugin twice)
+   All the GAP Plug-Ins are using a lock.
+   This lock disables to run other gap-Plug-Ins (or the same Plug-In twice)
    on the same image at the same time,
-   while the current GAP-plugin is working on that frame.
+   while the current GAP-Plug-In is working on that frame.
    
    GAP keeps a locktable (for the current session) that contains
-   the image_id's of all images currently locked by gap_plugins.
+   the image_id's of all images currently locked by GAP-Plug-Ins.
 
-   If you cancel a running GAP-plugin with the Cancel Button
+   If you cancel a running GAP-Plug-In with the Cancel Button
    in the progress window,
    or kill it from your Operating Sytem the lock may remain.
    (This should only happen to WINDOWS users, for UNIX users
@@ -1042,7 +1104,7 @@ WebTip:	My GIMP-page http://pages.hotbot.com/arts/hof/index.html
   (menu: File/Open "img_000001.xcf"
    menu: File/Open "img_000002.xcf")
   
-  In this constellation both gap plugins may concurrent 
+  In this constellation both gap Plug-Ins may concurrent 
   in save/load to/from the same file.
   Example:
      call from "img_000001.xcf" Video->Delete Frames (range 000001 to 000003)
@@ -1071,25 +1133,25 @@ WebTip:	My GIMP-page http://pages.hotbot.com/arts/hof/index.html
   
   You'll get a window similar to the PDB-Browser, that shows
   all available Plug-Ins in a listbox (and informations about
-  the selected Plugin on the right side).
+  the selected Plug-In on the right side).
 
   Note: The Listbox does not show the full PDB.
-        (Plugins without RunMode, Image, Drawable Parameters
+        (Plug-Ins without RunMode, Image, Drawable Parameters
          are never listed here, regardless to your wildcard selection)
   
-  Select one of the listed Plugins and press one of the Buttons:
+  Select one of the listed Plug-Ins and press one of the Buttons:
 
   "Apply Varying":
-      The selected Plugin is called 2 times in Interactive mode,
+      The selected Plug-In is called 2 times in Interactive mode,
       1. for the backround Layer
       2. for the Top Layer.
       
       For all further Layers, the Plug-In will work non-interactive
       with the Iterated Inbetween Values.
-      Therefore the plugin must have an _Iterator or _Iterator_ALT
+      Therefore the Plug-In must have an _Iterator or _Iterator_ALT
       procedure, to modify the "last stored values"
        
-      (GAP provides such procedures for more than 50 existing plugins)
+      (GAP provides such procedures for more than 50 existing Plug-Ins)
       
       If the Iterator Procedure is not available, the
       "Apply Varying" Button is set insensitive on the selected procedure.
@@ -1105,7 +1167,7 @@ WebTip:	My GIMP-page http://pages.hotbot.com/arts/hof/index.html
             (an animation sequence as the user might expect)             
   
   "Apply Constant":
-      The selected Plugin is called 2 times in Interactive mode,
+      The selected Plug-In is called 2 times in Interactive mode,
       For all further Layers, the Plug-In will work non-interactive
       using the last stored values.
 
@@ -1119,7 +1181,7 @@ WebTip:	My GIMP-page http://pages.hotbot.com/arts/hof/index.html
   Then it invokes the animated call of Plug-In Filters (optional)
   on the generated new Image.
 
-  Note: - Some Plugins may not work correct or crash when called
+  Note: - Some Plug-Ins may not work correct or crash when called
           in NON_INTERACTIVE mode. (see TESTPROT_iter_ALT)
         
         - Some Pugin's in your PDB can have earlier or later versions
@@ -1130,19 +1192,19 @@ WebTip:	My GIMP-page http://pages.hotbot.com/arts/hof/index.html
                
           when using the "Apply Varying" Button.
           In that case you can try to generate the needed _Iterator Procedure
-          for your Plugins current Interface by yourself.
+          for your Plug-Ins current Interface by yourself.
           (see file: README_devlopers)
         
-        - The wr_trans plugin collection (available in the Plugin Registry)
-          provides plugin interfaces for animated calls of the GIMP's transformer
+        - The wr_trans Plug-In collection (available in the Plug-In Registry)
+          provides Plug-In interfaces for animated calls of the GIMP's transformer
           Tools. (Rotate, Scale, Shear, Perspective)
 
-- How to write (or generate) Animated Plugins:
+- How to write (or generate) Animated Plug-Ins:
       (see file: README_devlopers)
 
 
 =============================================
-plugin's included in release gap 1.3.15:
+Plug-In's included in release gap 1.3.15:
 =============================================
 
   plug_in_gap_next

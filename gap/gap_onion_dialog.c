@@ -24,6 +24,8 @@
  */
 
 /* revision history:
+ * version 1.3.16b; 2003.07.06   hof: bugfixes, added parameter farn_opaque
+ *                                    minor tooltip Helptexts changes
  * version 1.3.14a; 2003.05.24   hof: created
  */ 
 
@@ -91,6 +93,10 @@ on_oni__spinbutton_stack_pos_changed   (GtkEditable     *editable,
 
 static void
 on_oni__checkbutton_stack_top_toggled  (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+static void
+on_oni__checkbutton_farn_opaque_toggled  (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
 
 static void
@@ -214,25 +220,20 @@ on_oni__spinbutton_range_from_changed  (GtkEditable     *editable,
                                         gpointer         user_data)
 {
  t_global_params *gpp;
-  GtkWidget *wgt;
   GtkAdjustment *adj;
 
- gpp = (t_global_params*)user_data;
- if(gap_debug) printf("CB: on_oni__spinbutton_range_from_changed\n");
+  gpp = (t_global_params*)user_data;
+  if(gap_debug) printf("CB: on_oni__spinbutton_range_from_changed\n");
 
- if(gpp == NULL) return;
- wgt = gpp->oni__spinbutton_range_from;
- if(wgt)
- {
-   adj = gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(wgt));
+  if(gpp == NULL) return;
+  adj = GTK_ADJUSTMENT(gpp->oni__spinbutton_range_from_adj);
 
-   if(gap_debug) printf("spin value: %f\n", (float)adj->value );
+  if(gap_debug) printf("spin value: %f\n", (float)adj->value );
 
-   if((gdouble)adj->value != gpp->range_from)
-   {
-     gpp->range_from = (gdouble)adj->value;
-   }
- }
+  if((gdouble)adj->value != gpp->range_from)
+  {
+    gpp->range_from = (gdouble)adj->value;
+  }
 }
 
 
@@ -241,25 +242,20 @@ on_oni__spinbutton_range_to_changed    (GtkEditable     *editable,
                                         gpointer         user_data)
 {
  t_global_params *gpp;
-  GtkWidget *wgt;
   GtkAdjustment *adj;
 
- gpp = (t_global_params*)user_data;
- if(gap_debug) printf("CB: on_oni__spinbutton_range_to_changed\n");
+  gpp = (t_global_params*)user_data;
+  if(gap_debug) printf("CB: on_oni__spinbutton_range_to_changed\n");
 
- if(gpp == NULL) return;
- wgt = gpp->oni__spinbutton_range_to;
- if(wgt)
- {
-   adj = gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(wgt));
+  if(gpp == NULL) return;
+  adj = GTK_ADJUSTMENT(gpp->oni__spinbutton_range_to_adj);
 
-   if(gap_debug) printf("spin value: %f\n", (float)adj->value );
+  if(gap_debug) printf("spin value: %f\n", (float)adj->value );
 
-   if((gdouble)adj->value != gpp->range_to)
-   {
-     gpp->range_to = (gdouble)adj->value;
-   }
- }
+  if((gdouble)adj->value != gpp->range_to)
+  {
+    gpp->range_to = (gdouble)adj->value;
+  }
 }
 
 
@@ -268,25 +264,20 @@ on_oni__spinbutton_num_olayers_changed (GtkEditable     *editable,
                                         gpointer         user_data)
 {
  t_global_params *gpp;
-  GtkWidget *wgt;
-  GtkAdjustment *adj;
+   GtkAdjustment *adj;
 
- gpp = (t_global_params*)user_data;
- if(gap_debug) printf("CB: on_oni__spinbutton_num_olayers_changed\n");
+  gpp = (t_global_params*)user_data;
+  if(gap_debug) printf("CB: on_oni__spinbutton_num_olayers_changed\n");
 
- if(gpp == NULL) return;
- wgt = gpp->oni__spinbutton_num_olayers;
- if(wgt)
- {
-   adj = gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(wgt));
+  if(gpp == NULL) return;
+  adj = GTK_ADJUSTMENT(gpp->oni__spinbutton_num_olayers_adj);
 
-   if(gap_debug) printf("spin value: %f\n", (float)adj->value );
+  if(gap_debug) printf("spin value: %f\n", (float)adj->value );
 
-   if((gdouble)adj->value != gpp->val.num_olayers)
-   {
-     gpp->val.num_olayers = (gdouble)adj->value;
-   }
- }
+  if((gdouble)adj->value != gpp->val.num_olayers)
+  {
+    gpp->val.num_olayers = (gdouble)adj->value;
+  }
 }
 
 
@@ -295,25 +286,20 @@ on_oni__spinbutton_ref_delta_changed   (GtkEditable     *editable,
                                         gpointer         user_data)
 {
  t_global_params *gpp;
-  GtkWidget *wgt;
   GtkAdjustment *adj;
 
- gpp = (t_global_params*)user_data;
- if(gap_debug) printf("CB: on_oni__spinbutton_ref_delta_changed\n");
+  gpp = (t_global_params*)user_data;
+  if(gap_debug) printf("CB: on_oni__spinbutton_ref_delta_changed\n");
 
- if(gpp == NULL) return;
- wgt = gpp->oni__spinbutton_ref_delta;
- if(wgt)
- {
-   adj = gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(wgt));
+  if(gpp == NULL) return;
+  adj = GTK_ADJUSTMENT(gpp->oni__spinbutton_ref_delta_adj);
 
-   if(gap_debug) printf("spin value: %f\n", (float)adj->value );
+  if(gap_debug) printf("spin value: %f\n", (float)adj->value );
 
-   if((gdouble)adj->value != gpp->val.ref_delta)
-   {
-     gpp->val.ref_delta = (gdouble)adj->value;
-   }
- }
+  if((gdouble)adj->value != gpp->val.ref_delta)
+  {
+    gpp->val.ref_delta = (gdouble)adj->value;
+  }
 }
 
 
@@ -344,25 +330,20 @@ on_oni__spinbutton_stack_pos_changed   (GtkEditable     *editable,
                                         gpointer         user_data)
 {
  t_global_params *gpp;
-  GtkWidget *wgt;
   GtkAdjustment *adj;
 
- gpp = (t_global_params*)user_data;
- if(gap_debug) printf("CB: on_oni__spinbutton_stack_pos_changed\n");
+  gpp = (t_global_params*)user_data;
+  if(gap_debug) printf("CB: on_oni__spinbutton_stack_pos_changed\n");
 
- if(gpp == NULL) return;
- wgt = gpp->oni__spinbutton_stack_pos;
- if(wgt)
- {
-   adj = gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(wgt));
+  if(gpp == NULL) return;
+  adj = GTK_ADJUSTMENT(gpp->oni__spinbutton_stack_pos_adj);
 
-   if(gap_debug) printf("spin value: %f\n", (float)adj->value );
+  if(gap_debug) printf("spin value: %f\n", (float)adj->value );
 
-   if((gdouble)adj->value != gpp->val.stack_pos)
-   {
-     gpp->val.stack_pos = (gdouble)adj->value;
-   }
- }
+  if((gdouble)adj->value != gpp->val.stack_pos)
+  {
+    gpp->val.stack_pos = (gdouble)adj->value;
+  }
 }
 
 
@@ -389,29 +370,46 @@ on_oni__checkbutton_stack_top_toggled  (GtkToggleButton *togglebutton,
 
 
 static void
+on_oni__checkbutton_farn_opaque_toggled  (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+ t_global_params *gpp;
+ gpp = (t_global_params*)user_data;
+ if(gap_debug) printf("CB: on_oni__checkbutton_farn_opaque_toggled\n");
+
+ if(gpp)
+ {
+    if (togglebutton->active)
+    {
+       gpp->val.farn_opaque = TRUE;
+    }
+    else
+    {
+       gpp->val.farn_opaque = FALSE;
+    }
+ }
+}
+
+static void
 on_oni__spinbutton_opacity_changed     (GtkEditable     *editable,
                                         gpointer         user_data)
 {
  t_global_params *gpp;
-  GtkWidget *wgt;
   GtkAdjustment *adj;
 
- gpp = (t_global_params*)user_data;
- if(gap_debug) printf("CB: on_oni__spinbutton_opacity_changed\n");
+  gpp = (t_global_params*)user_data;
+  if(gap_debug) printf("CB: on_oni__spinbutton_opacity_changed\n");
 
- if(gpp == NULL) return;
- wgt = gpp->oni__spinbutton_opacity;
- if(wgt)
- {
-   adj = gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(wgt));
+  if(gpp == NULL) return;
 
-   if(gap_debug) printf("spin value: %f\n", (float)adj->value );
+  adj = GTK_ADJUSTMENT(gpp->oni__spinbutton_opacity_adj);
 
-   if((gdouble)adj->value != gpp->val.opacity)
-   {
-     gpp->val.opacity = (gdouble)adj->value;
-   }
- }
+  /*if(gap_debug)*/ printf("spin value: %f\n", (float)adj->value );
+
+  if((gdouble)adj->value != gpp->val.opacity)
+  {
+    gpp->val.opacity = (gdouble)adj->value;
+  }
 }
 
 
@@ -421,25 +419,20 @@ on_oni__spinbutton_opacity_delta_changed
                                         gpointer         user_data)
 {
  t_global_params *gpp;
-  GtkWidget *wgt;
   GtkAdjustment *adj;
 
- gpp = (t_global_params*)user_data;
- if(gap_debug) printf("CB: on_oni__spinbutton_opacity_delta_changed\n");
+  gpp = (t_global_params*)user_data;
+  if(gap_debug) printf("CB: on_oni__spinbutton_opacity_delta_changed\n");
 
- if(gpp == NULL) return;
- wgt = gpp->oni__spinbutton_opacity_delta;
- if(wgt)
- {
-   adj = gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(wgt));
+  if(gpp == NULL) return;
+  adj = GTK_ADJUSTMENT(gpp->oni__spinbutton_opacity_delta_adj);
 
-   if(gap_debug) printf("spin value: %f\n", (float)adj->value );
+  if(gap_debug) printf("spin value: %f\n", (float)adj->value );
 
-   if((gdouble)adj->value != gpp->val.opacity_delta)
-   {
-     gpp->val.opacity_delta = (gdouble)adj->value;
-   }
- }
+  if((gdouble)adj->value != gpp->val.opacity_delta)
+  {
+    gpp->val.opacity_delta = (gdouble)adj->value;
+  }
 }
 
 
@@ -449,25 +442,20 @@ on_oni__spinbutton_ignore_botlayers_changed
                                         gpointer         user_data)
 {
  t_global_params *gpp;
-  GtkWidget *wgt;
   GtkAdjustment *adj;
 
- gpp = (t_global_params*)user_data;
- if(gap_debug) printf("CB: on_oni__spinbutton_ignore_botlayers_changed\n");
+  gpp = (t_global_params*)user_data;
+  if(gap_debug) printf("CB: on_oni__spinbutton_ignore_botlayers_changed\n");
 
- if(gpp == NULL) return;
- wgt = gpp->oni__spinbutton_ignore_botlayers;
- if(wgt)
- {
-   adj = gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(wgt));
+  if(gpp == NULL) return;
+  adj = GTK_ADJUSTMENT(gpp->oni__spinbutton_ignore_botlayers_adj);
 
-   if(gap_debug) printf("spin value: %f\n", (float)adj->value );
+  if(gap_debug) printf("spin value: %f\n", (float)adj->value );
 
-   if((gdouble)adj->value != gpp->val.ignore_botlayers)
-   {
-     gpp->val.ignore_botlayers = (gdouble)adj->value;
-   }
- }
+  if((gdouble)adj->value != gpp->val.ignore_botlayers)
+  {
+    gpp->val.ignore_botlayers = (gdouble)adj->value;
+  }
 }
 
 
@@ -576,6 +564,8 @@ on_oni__button_set_clicked             (GtkButton       *button,
 
  if(gpp)
  {
+   if(gap_debug) printf("  opacity:%f dlta:%f\n", (float)gpp->val.opacity, (float)gpp->val.opacity_delta );
+   
    /* gpp->val.run = GAP_ONION_RUN_SET; */
    /* gtk_widget_destroy (gpp->main_dialog); */
    
@@ -614,6 +604,7 @@ on_oni__button_apply_clicked           (GtkButton       *button,
 
  if(gpp)
  {
+   p_set_data_onion_cfg(gpp, GAP_PLUGIN_NAME_ONION_CFG);
    gpp->val.run = GAP_ONION_RUN_APPLY;
    gtk_widget_destroy (gpp->main_dialog);
  }
@@ -634,63 +625,6 @@ on_oni__dialog_destroy                 (GtkObject       *object,
 }
 
 
-/* ----------------------------
- * 
- * ----------------------------
- */
-
-
-///* add callback functions for optionmenu widgets */
-//
-//static void
-//p_set_menu_item_callbacks(GtkWidget *w, GtkSignalFunc cb_fun, gpointer data)
-//{
-//  GList     *wgt_children;
-//  GtkWidget *opt_menu;
-//  GtkWidget *wgt_child;
-//  gint       l_idx;
-//
-//  opt_menu =  gtk_option_menu_get_menu(GTK_OPTION_MENU(w));
-//  if(opt_menu == NULL)
-//  {
-//    if(gap_debug) printf("p_set_menu_item_callbacks: widget is no GTK_OPTION_MENU\n");
-//    return;
-//  }
-//
-//  l_idx = 0;
-//  wgt_children = gtk_container_children(GTK_CONTAINER (opt_menu));
-//  while(wgt_children)
-//  {
-//     wgt_child = (GtkWidget *)wgt_children->data;
-//     if(wgt_child != NULL)
-//     {
-//        /* if(gap_debug) printf("p_set_menu_item_callbacks: wgt_child found %x\n", (int)wgt_child); */
-//     }
-//     if(GTK_IS_MENU_ITEM(wgt_child))
-//     {
-//
-//        /* if(gap_debug) printf("p_set_menu_item_callbacks: wgt_child IS_MENU_ITEM\n"); */
-//
-//        g_signal_connect (G_OBJECT (wgt_child), "activate",
-//                        G_CALLBACK (cb_fun),
-//                        data);
-//        gtk_object_set_data (GTK_OBJECT (wgt_child), ENC_MENU_ITEM_INDEX_KEY, (gpointer) l_idx);
-//
-//      l_idx++;
-//     }
-//     wgt_children = (GList *) g_slist_next (wgt_children);
-//   }
-//}
-
-
-//static void
-//p_set_option_menu_callbacks(t_global_params *gpp)
-//{
-//  GtkWidget *wgt;
-//
-//  wgt = gpp->oni__optionmenu_select_mode;
-//  p_set_menu_item_callbacks(wgt, (GtkSignalFunc) on_oni__optionmenu_select_mode, (gpointer)gpp);
-//}
 
 static void
 p_init_optionmenu_actual_idx(t_global_params *gpp, GtkWidget *wgt, gint *gtab_ptr, gint val, gint maxidx)
@@ -735,46 +669,37 @@ p_init_entries(t_global_params *gpp)
 static void
 p_init_spinbuttons(t_global_params *gpp)
 {
-  GtkWidget *wgt;
   GtkAdjustment *adj;
 
   if(gap_debug) printf("p_init_spinbuttons\n");
 
-  wgt = gpp->oni__spinbutton_range_from;
-  adj = gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(wgt));
+  adj = GTK_ADJUSTMENT(gpp->oni__spinbutton_range_from_adj);
   adj->lower = (gfloat) gpp->ainfo.first_frame_nr;
   adj->upper = (gfloat) gpp->ainfo.last_frame_nr;
   gtk_adjustment_set_value(adj, (gfloat)gpp->range_from);
 
-  wgt = gpp->oni__spinbutton_range_to;
-  adj = gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(wgt));
+  adj = GTK_ADJUSTMENT(gpp->oni__spinbutton_range_to_adj);
   adj->lower = (gfloat) gpp->ainfo.first_frame_nr;
   adj->upper = (gfloat) gpp->ainfo.last_frame_nr;
   gtk_adjustment_set_value(adj, (gfloat)gpp->range_to);
 
 
-  wgt = gpp->oni__spinbutton_num_olayers;
-  adj = gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(wgt));
+  adj = GTK_ADJUSTMENT(gpp->oni__spinbutton_num_olayers_adj);
   gtk_adjustment_set_value(adj, (gfloat)gpp->val.num_olayers);
 
-  wgt = gpp->oni__spinbutton_ref_delta;
-  adj = gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(wgt));
+  adj = GTK_ADJUSTMENT(gpp->oni__spinbutton_ref_delta_adj);
   gtk_adjustment_set_value(adj, (gfloat)gpp->val.ref_delta);
 
-  wgt = gpp->oni__spinbutton_stack_pos;
-  adj = gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(wgt));
+  adj = GTK_ADJUSTMENT(gpp->oni__spinbutton_stack_pos_adj);
   gtk_adjustment_set_value(adj, (gfloat)gpp->val.stack_pos);
 
-  wgt = gpp->oni__spinbutton_opacity;
-  adj = gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(wgt));
+  adj = GTK_ADJUSTMENT(gpp->oni__spinbutton_opacity_adj);
   gtk_adjustment_set_value(adj, (gfloat)gpp->val.opacity);
 
-  wgt = gpp->oni__spinbutton_opacity_delta;
-  adj = gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(wgt));
+  adj = GTK_ADJUSTMENT(gpp->oni__spinbutton_opacity_delta_adj);
   gtk_adjustment_set_value(adj, (gfloat)gpp->val.opacity_delta);
 
-  wgt = gpp->oni__spinbutton_ignore_botlayers;
-  adj = gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(wgt));
+  adj = GTK_ADJUSTMENT(gpp->oni__spinbutton_ignore_botlayers_adj);
   gtk_adjustment_set_value(adj, (gfloat)gpp->val.ignore_botlayers);
 }
 
@@ -788,6 +713,9 @@ p_init_togglebuttons(t_global_params *gpp)
 
   wgt = gpp->oni__checkbutton_stack_top;
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (wgt), gpp->val.stack_top);
+
+  wgt = gpp->oni__checkbutton_farn_opaque;
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (wgt), gpp->val.farn_opaque);
 
   wgt = gpp->oni__checkbutton_select_case;
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (wgt), gpp->val.select_case);
@@ -847,23 +775,16 @@ create_oni__dialog (t_global_params *gpp)
   GtkWidget *oni__optionmenu_select_mode;
   GtkWidget *oni__optionmenu_select_mode_menu;
   
-  GtkObject *oni__spinbutton_range_from_adj;
   GtkWidget *oni__spinbutton_range_from;
-  GtkObject *oni__spinbutton_range_to_adj;
   GtkWidget *oni__spinbutton_range_to;
-  GtkObject *oni__spinbutton_num_olayers_adj;
   GtkWidget *oni__spinbutton_num_olayers;
-  GtkObject *oni__spinbutton_ref_delta_adj;
   GtkWidget *oni__spinbutton_ref_delta;
   GtkWidget *oni__checkbutton_ref_cycle;
-  GtkObject *oni__spinbutton_stack_pos_adj;
   GtkWidget *oni__spinbutton_stack_pos;
   GtkWidget *oni__checkbutton_stack_top;
-  GtkObject *oni__spinbutton_opacity_adj;
+  GtkWidget *oni__checkbutton_farn_opaque;
   GtkWidget *oni__spinbutton_opacity;
-  GtkObject *oni__spinbutton_opacity_delta_adj;
   GtkWidget *oni__spinbutton_opacity_delta;
-  GtkObject *oni__spinbutton_ignore_botlayers_adj;
   GtkWidget *oni__spinbutton_ignore_botlayers;
   GtkWidget *oni__checkbutton_select_case;
   GtkWidget *oni__checkbutton_select_invert;
@@ -910,8 +831,16 @@ create_oni__dialog (t_global_params *gpp)
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label10), 0, 0.5);
 
-  oni__spinbutton_range_from_adj = gtk_adjustment_new (1, 0, 9999, 1, 10, 10);
-  oni__spinbutton_range_from = gtk_spin_button_new (GTK_ADJUSTMENT (oni__spinbutton_range_from_adj), 1, 0);
+  oni__spinbutton_range_from = gimp_spin_button_new (&gpp->oni__spinbutton_range_from_adj,  /* return value (the adjustment) */
+                      1,     /* initial_val */
+                      0.0,                  /* umin */
+                      99999.0,              /* umax */
+                      1.0,                  /* sstep */
+                      10.0,                /* pagestep */
+                      10.0,                 /* page_size */
+                      1.0,                 /* climb_rate */
+                      0                    /* digits */
+                      );
   gimp_help_set_help_data(oni__spinbutton_range_from
                          , _("First handled frame")
                          , NULL);
@@ -920,8 +849,16 @@ create_oni__dialog (t_global_params *gpp)
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 2, 0);
 
-  oni__spinbutton_range_to_adj = gtk_adjustment_new (1, 0, 9999, 1, 10, 10);
-  oni__spinbutton_range_to = gtk_spin_button_new (GTK_ADJUSTMENT (oni__spinbutton_range_to_adj), 1, 0);
+  oni__spinbutton_range_to = gimp_spin_button_new (&gpp->oni__spinbutton_range_to_adj,  /* return value (the adjustment) */
+                      1,     /* initial_val */
+                      0.0,                  /* umin */
+                      99999.0,              /* umax */
+                      1.0,                  /* sstep */
+                      10.0,                /* pagestep */
+                      10.0,                 /* page_size */
+                      1.0,                 /* climb_rate */
+                      0                    /* digits */
+                      );
   gimp_help_set_help_data(oni__spinbutton_range_to
                          , _("Last handled frame")
                          , NULL);
@@ -949,14 +886,35 @@ create_oni__dialog (t_global_params *gpp)
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label1), 0, 0.5);
 
-  oni__spinbutton_num_olayers_adj = gtk_adjustment_new (2, 1, 20, 1, 10, 10);
-  oni__spinbutton_num_olayers = gtk_spin_button_new (GTK_ADJUSTMENT (oni__spinbutton_num_olayers_adj), 1, 0);
+
+
+  oni__checkbutton_farn_opaque = gtk_check_button_new_with_label (_("Ascending Opacity"));
+  gtk_widget_show (oni__checkbutton_farn_opaque);
+  gtk_table_attach (GTK_TABLE (table1), oni__checkbutton_farn_opaque, 2, 3, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gimp_help_set_help_data(oni__checkbutton_farn_opaque
+                         , _("ON: Far Neighbour Frames have the higher Opacity, OFF: Near Neighbour Frames have the higher Opacity")
+                         , NULL);
+
+
+
+  oni__spinbutton_num_olayers = gimp_spin_button_new (&gpp->oni__spinbutton_num_olayers_adj,  /* return value (the adjustment) */
+                      2,     /* initial_val */
+                      1.0,                  /* umin */
+                      20.0,                 /* umax */
+                      1.0,                  /* sstep */
+                      10.0,                 /* pagestep */
+                      10.0,                 /* page_size */
+                      1.0,                 /* climb_rate */
+                      0                    /* digits */
+                      );
   gtk_widget_show (oni__spinbutton_num_olayers);
   gtk_table_attach (GTK_TABLE (table1), oni__spinbutton_num_olayers, 1, 2, 0, 1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gimp_help_set_help_data(oni__spinbutton_num_olayers
-                         , _("number of onionskin layers to create in handled frame.")
+                         , _("Number of Onionskin Layers to create in the handled Frame.")
                          , NULL);
 
   label2 = gtk_label_new (_("Frame Reference :"));
@@ -966,14 +924,22 @@ create_oni__dialog (t_global_params *gpp)
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label2), 0, 0.5);
 
-  oni__spinbutton_ref_delta_adj = gtk_adjustment_new (-1, -100, 100, 1, 10, 10);
-  oni__spinbutton_ref_delta = gtk_spin_button_new (GTK_ADJUSTMENT (oni__spinbutton_ref_delta_adj), 1, 0);
+  oni__spinbutton_ref_delta = gimp_spin_button_new (&gpp->oni__spinbutton_ref_delta_adj,  /* return value (the adjustment) */
+                      -1,     /* initial_val */
+                      -100.0,               /* umin */
+                      100.0,                 /* umax */
+                      1.0,                  /* sstep */
+                      10.0,                 /* pagestep */
+                      10.0,                 /* page_size */
+                      1.0,                 /* climb_rate */
+                      0                    /* digits */
+                      );
   gtk_widget_show (oni__spinbutton_ref_delta);
   gtk_table_attach (GTK_TABLE (table1), oni__spinbutton_ref_delta, 1, 2, 1, 2,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gimp_help_set_help_data(oni__spinbutton_ref_delta
-                         , _("-1 is previous frame, +1 is next frame")
+                         , _("-1 is previous Frame, +1 is next Frame")
                          , NULL);
 
   oni__checkbutton_ref_cycle = gtk_check_button_new_with_label (_("Cyclic"));
@@ -982,7 +948,7 @@ create_oni__dialog (t_global_params *gpp)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gimp_help_set_help_data(oni__checkbutton_ref_cycle
-                         , _("ON: foldback next frame of last is first")
+                         , _("ON: foldback next Frame of last is first")
                          , NULL);
 
   label3 = gtk_label_new (_("Stackposition :"));
@@ -992,14 +958,22 @@ create_oni__dialog (t_global_params *gpp)
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label3), 0, 0.5);
 
-  oni__spinbutton_stack_pos_adj = gtk_adjustment_new (1, 0, 100, 1, 10, 10);
-  oni__spinbutton_stack_pos = gtk_spin_button_new (GTK_ADJUSTMENT (oni__spinbutton_stack_pos_adj), 1, 0);
+  oni__spinbutton_stack_pos = gimp_spin_button_new (&gpp->oni__spinbutton_stack_pos_adj,  /* return value (the adjustment) */
+                      1,     /* initial_val */
+                      0.0,                   /* umin */
+                      500.0,                 /* umax */
+                      1.0,                  /* sstep */
+                      10.0,                 /* pagestep */
+                      10.0,                 /* page_size */
+                      1.0,                 /* climb_rate */
+                      0                    /* digits */
+                      );
   gtk_widget_show (oni__spinbutton_stack_pos);
   gtk_table_attach (GTK_TABLE (table1), oni__spinbutton_stack_pos, 1, 2, 2, 3,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gimp_help_set_help_data(oni__spinbutton_stack_pos
-                         , _("Stackposition where to place onion layers")
+                         , _("Stackposition where to place Onionskin Layer(s)")
                          , NULL);
 
   oni__checkbutton_stack_top = gtk_check_button_new_with_label (_("From Top"));
@@ -1008,7 +982,7 @@ create_oni__dialog (t_global_params *gpp)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gimp_help_set_help_data(oni__checkbutton_stack_top
-                         , _("ON: 0 is on top, OFF: 0 is on bottom")
+                         , _("ON: 0 is on Top, OFF: 0 is on Bottom")
                          , NULL);
 
   label4 = gtk_label_new (_("Opacity :"));
@@ -1018,24 +992,40 @@ create_oni__dialog (t_global_params *gpp)
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label4), 0, 0.5);
 
-  oni__spinbutton_opacity_adj = gtk_adjustment_new (80, 0, 100, 1, 10, 10);
-  oni__spinbutton_opacity = gtk_spin_button_new (GTK_ADJUSTMENT (oni__spinbutton_opacity_adj), 1, 1);
+  oni__spinbutton_opacity = gimp_spin_button_new (&gpp->oni__spinbutton_opacity_adj,  /* return value (the adjustment) */
+                      80,     /* initial_val */
+                      0.0,                   /* umin */
+                      100.0,                 /* umax */
+                      1.0,                  /* sstep */
+                      10.0,                 /* pagestep */
+                      10.0,                 /* page_size */
+                      1.0,                 /* climb_rate */
+                      1                    /* digits */
+                      );
   gtk_widget_show (oni__spinbutton_opacity);
   gtk_table_attach (GTK_TABLE (table1), oni__spinbutton_opacity, 1, 2, 3, 4,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gimp_help_set_help_data(oni__spinbutton_opacity
-                         , _("Opacity of 1.st onionskin layer (0 is transparent, 100 full opaque)")
+                         , _("Opacity of 1.st Onionskin Layer (0 is transparent, 100 full opaque)")
                          , NULL);
 
-  oni__spinbutton_opacity_delta_adj = gtk_adjustment_new (80, 0, 100, 1, 10, 10);
-  oni__spinbutton_opacity_delta = gtk_spin_button_new (GTK_ADJUSTMENT (oni__spinbutton_opacity_delta_adj), 1, 1);
+  oni__spinbutton_opacity_delta = gimp_spin_button_new (&gpp->oni__spinbutton_opacity_delta_adj,  /* return value (the adjustment) */
+                      80,     /* initial_val */
+                      0.0,                   /* umin */
+                      100.0,                 /* umax */
+                      1.0,                  /* sstep */
+                      10.0,                 /* pagestep */
+                      10.0,                 /* page_size */
+                      1.0,                 /* climb_rate */
+                      1                    /* digits */
+                      );
   gtk_widget_show (oni__spinbutton_opacity_delta);
   gtk_table_attach (GTK_TABLE (table1), oni__spinbutton_opacity_delta, 2, 3, 3, 4,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gimp_help_set_help_data(oni__spinbutton_opacity_delta
-                         , _("Descending Opacity for 2.nd onionskin layer")
+                         , _("Descending Opacity for 2.nd Onionskin Layer")
                          , NULL);
 
   frame2 = gtk_frame_new (_("Layer Selection "));
@@ -1057,14 +1047,22 @@ create_oni__dialog (t_global_params *gpp)
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label5), 0, 0.5);
 
-  oni__spinbutton_ignore_botlayers_adj = gtk_adjustment_new (1, 0, 100, 1, 10, 10);
-  oni__spinbutton_ignore_botlayers = gtk_spin_button_new (GTK_ADJUSTMENT (oni__spinbutton_ignore_botlayers_adj), 1, 0);
+  oni__spinbutton_ignore_botlayers = gimp_spin_button_new (&gpp->oni__spinbutton_ignore_botlayers_adj,  /* return value (the adjustment) */
+                      1,     /* initial_val */
+                      0.0,                   /* umin */
+                      100.0,                 /* umax */
+                      1.0,                  /* sstep */
+                      10.0,                 /* pagestep */
+                      10.0,                 /* page_size */
+                      1.0,                 /* climb_rate */
+                      0                    /* digits */
+                      );
   gtk_widget_show (oni__spinbutton_ignore_botlayers);
   gtk_table_attach (GTK_TABLE (table2), oni__spinbutton_ignore_botlayers, 1, 2, 0, 1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gimp_help_set_help_data(oni__spinbutton_ignore_botlayers
-                         , _("exclude N BG-Layers (0 ")
+                         , _("exclude N BG-Layers (use 0 if you dont want to exclude any Layer)")
                          , NULL);
 
   label7 = gtk_label_new (_("Select Mode :"));
@@ -1166,7 +1164,7 @@ create_oni__dialog (t_global_params *gpp)
   gtk_widget_show (oni__checkbutton_select_invert);
   gtk_box_pack_start (GTK_BOX (hbox2), oni__checkbutton_select_invert, FALSE, TRUE, 0);
   gimp_help_set_help_data(oni__checkbutton_select_invert
-                         , _("ON: Select NON-matching layers, OFF: Select matching layers")
+                         , _("ON: Select NON-matching Layers, OFF: Select matching Layers")
                          , NULL);
 
   label6 = gtk_label_new (_("Select Pattern :"));
@@ -1192,7 +1190,7 @@ create_oni__dialog (t_global_params *gpp)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 2, 0);
   gimp_help_set_help_data(oni__button_set
-                         , _("Set Onionskin parameters for the current gimp session")
+                         , _("Set Onionskin Parameters for the current GIMP Session")
                          , NULL);
 
   dialog_action_area1 = GTK_DIALOG (oni__dialog)->action_area;
@@ -1210,14 +1208,14 @@ create_oni__dialog (t_global_params *gpp)
   gtk_widget_show (oni__button_apply);
   gtk_box_pack_end (GTK_BOX (hbox1), oni__button_apply, FALSE, FALSE, 2);
   gimp_help_set_help_data(oni__button_apply
-                         , _("Create or replace onionskin layer in all frames of the selected framerange")
+                         , _("Create or replace Onionskin Layer in all Frames of the selected Framerange")
                          , NULL);
 
   oni__button_delete = gtk_button_new_from_stock (GTK_STOCK_DELETE);
   gtk_widget_show (oni__button_delete);
   gtk_box_pack_end (GTK_BOX (hbox1), oni__button_delete, FALSE, FALSE, 2);
   gimp_help_set_help_data(oni__button_delete
-                         , _("remove all onionlayers in all frames of the the selected framerange")
+                         , _("Remove all Onionskin Layers in all Frames of the the selected Framerange")
                          , NULL);
 
 
@@ -1225,7 +1223,7 @@ create_oni__dialog (t_global_params *gpp)
   gtk_widget_show (oni__button_cancel);
   gtk_box_pack_end (GTK_BOX (hbox1), oni__button_cancel, FALSE, FALSE, 2);
   gimp_help_set_help_data(oni__button_cancel
-                         , _("Exit without any action")
+                         , _("Exit without any Action")
                          , NULL);
 
   oni__button_default = gtk_button_new_from_stock (GIMP_STOCK_RESET);
@@ -1239,34 +1237,37 @@ create_oni__dialog (t_global_params *gpp)
   g_signal_connect (G_OBJECT (oni__dialog), "destroy",
                       G_CALLBACK (on_oni__dialog_destroy),
                       gpp);
-  g_signal_connect (G_OBJECT (oni__spinbutton_range_from), "changed",
+  g_signal_connect (G_OBJECT (gpp->oni__spinbutton_range_from_adj), "value_changed",
                       G_CALLBACK (on_oni__spinbutton_range_from_changed),
                       gpp);
-  g_signal_connect (G_OBJECT (oni__spinbutton_range_to), "changed",
+  g_signal_connect (G_OBJECT (gpp->oni__spinbutton_range_to_adj), "value_changed",
                       G_CALLBACK (on_oni__spinbutton_range_to_changed),
                       gpp);
-  g_signal_connect (G_OBJECT (oni__spinbutton_num_olayers), "changed",
+  g_signal_connect (G_OBJECT (gpp->oni__spinbutton_num_olayers_adj), "value_changed",
                       G_CALLBACK (on_oni__spinbutton_num_olayers_changed),
                       gpp);
-  g_signal_connect (G_OBJECT (oni__spinbutton_ref_delta), "changed",
+  g_signal_connect (G_OBJECT (gpp->oni__spinbutton_ref_delta_adj), "value_changed",
                       G_CALLBACK (on_oni__spinbutton_ref_delta_changed),
                       gpp);
   g_signal_connect (G_OBJECT (oni__checkbutton_ref_cycle), "toggled",
                       G_CALLBACK (on_oni__checkbutton_ref_cycle_toggled),
                       gpp);
-  g_signal_connect (G_OBJECT (oni__spinbutton_stack_pos), "changed",
+  g_signal_connect (G_OBJECT (gpp->oni__spinbutton_stack_pos_adj), "value_changed",
                       G_CALLBACK (on_oni__spinbutton_stack_pos_changed),
                       gpp);
   g_signal_connect (G_OBJECT (oni__checkbutton_stack_top), "toggled",
                       G_CALLBACK (on_oni__checkbutton_stack_top_toggled),
                       gpp);
-  g_signal_connect (G_OBJECT (oni__spinbutton_opacity), "changed",
+  g_signal_connect (G_OBJECT (oni__checkbutton_farn_opaque), "toggled",
+                      G_CALLBACK (on_oni__checkbutton_farn_opaque_toggled),
+                      gpp);
+  g_signal_connect (G_OBJECT (gpp->oni__spinbutton_opacity_adj), "value_changed",
                       G_CALLBACK (on_oni__spinbutton_opacity_changed),
                       gpp);
-  g_signal_connect (G_OBJECT (oni__spinbutton_opacity_delta), "changed",
+  g_signal_connect (G_OBJECT (gpp->oni__spinbutton_opacity_delta_adj), "value_changed",
                       G_CALLBACK (on_oni__spinbutton_opacity_delta_changed),
                       gpp);
-  g_signal_connect (G_OBJECT (oni__spinbutton_ignore_botlayers), "changed",
+  g_signal_connect (G_OBJECT (gpp->oni__spinbutton_ignore_botlayers_adj), "value_changed",
                       G_CALLBACK (on_oni__spinbutton_ignore_botlayers_changed),
                       gpp);
   g_signal_connect (G_OBJECT (oni__checkbutton_select_case), "toggled",
@@ -1314,6 +1315,7 @@ create_oni__dialog (t_global_params *gpp)
   gpp->oni__checkbutton_select_case     = oni__checkbutton_select_case;
   gpp->oni__checkbutton_select_invert   = oni__checkbutton_select_invert;
   gpp->oni__checkbutton_stack_top       = oni__checkbutton_stack_top;
+  gpp->oni__checkbutton_farn_opaque     = oni__checkbutton_farn_opaque;
 
 
   return oni__dialog;
@@ -1333,6 +1335,7 @@ p_init_default_values(t_global_params *gpp)
           gpp->val.ref_cycle          = FALSE;
           gpp->val.stack_pos          = 1;
           gpp->val.stack_top          = FALSE;
+          gpp->val.farn_opaque        = FALSE;
           gpp->val.opacity            = 80.0;
           gpp->val.opacity_delta      = 80.0;
           gpp->val.ignore_botlayers   = 1;

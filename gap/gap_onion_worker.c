@@ -24,6 +24,7 @@
  */
 
 /* revision history:
+ * version 1.3.16b; 2003.07.06   hof: bugfixes, added parameter farn_opaque
  * version 1.3.14a; 2003.05.24   hof: integration into gimp-gap-1.3.14
  * version 1.2.2a;  2001.11.24   hof: created
  */
@@ -297,7 +298,7 @@ p_plug_in_gap_get_animinfo(gint32 image_ID, t_ainfo *ainfo)
 gint
 p_set_data_onion_cfg(t_global_params *gpp, char *key)
 {
-  if(gap_debug) printf("p_set_data_onion_cfg: START\n");
+  if(gap_debug) printf("p_set_data_onion_cfg: START opacity:%f dlta:%f\n", (float)gpp->val.opacity, (float)gpp->val.opacity_delta );
 
   gimp_set_data(key, gpp, sizeof(t_global_params));
 
@@ -314,7 +315,7 @@ gint
 p_get_data_onion_cfg(t_global_params *gpp)
 {
   gint l_par_size;
-  if(gap_debug) printf("p_get_data_onion_cfg: START\n");
+  if(gap_debug) printf("p_get_data_onion_cfg: START opacity: %f\n", (float)gpp->val.opacity);
 
   /* try to read configuration params */
   l_par_size = gimp_get_data_size(GAP_PLUGIN_NAME_ONION_CFG);
@@ -330,6 +331,7 @@ p_get_data_onion_cfg(t_global_params *gpp)
                         , GAP_PLUGIN_NAME_ONION_CFG
                         , (int)l_par_size);
   }
+  if(gap_debug) printf("p_get_data_onion_cfg: END opacity:%f dlta:%f\n", (float)gpp->val.opacity, (float)gpp->val.opacity_delta );
   return 0;
 }       /* end p_get_data_onion_cfg */
 
@@ -534,6 +536,7 @@ p_onion_apply(t_global_params *gpp, gboolean use_cache)
      printf("  ignore_botlayers: %d\n", (int)gpp->val.ignore_botlayers);
      printf("  image_ID: %d\n",      (int)gpp->image_ID);
      printf("  use_cache: %d\n",     (int)use_cache);
+     printf("  farn_opaque: %d\n",   (int)gpp->val.farn_opaque);
   }
 
   /* delete onion layers (if there are old ones) */
@@ -554,10 +557,23 @@ p_onion_apply(t_global_params *gpp, gboolean use_cache)
   l_opacity = gpp->val.opacity;
   l_new_filename = NULL;
   l_frame_nr = gpp->ainfo.curr_frame_nr;
-  for(l_onr=0; l_onr < gpp->val.num_olayers; l_onr++)
+  for(l_onr=1; l_onr <= gpp->val.num_olayers; l_onr++)
   {
     /* find out reference frame number */
-    l_frame_nr += gpp->val.ref_delta;
+    if(gpp->val.farn_opaque)
+    {
+       /* process far neigbours first to give them the highest configured opacity value */
+       l_frame_nr = gpp->ainfo.curr_frame_nr 
+                  + (gpp->val.ref_delta * ((1+ gpp->val.num_olayers) - l_onr));
+    }
+    else
+    {
+       /* process near neigbours first to give them the highest configured opacity value */
+       l_frame_nr = gpp->ainfo.curr_frame_nr 
+                  + (gpp->val.ref_delta * l_onr);
+    }
+    
+    
     if(!gpp->val.ref_cycle)
     {
       if((l_frame_nr < gpp->ainfo.first_frame_nr)
@@ -708,12 +724,22 @@ p_onion_apply(t_global_params *gpp, gboolean use_cache)
          gimp_layer_add_alpha(l_new_layer_id);
       }
 
+
+
+       if(gap_debug) printf("ONL:p_onion_apply  l_onr:%d, framenr:%d, layerstack:%d opacity:%f\n"
+       , (int)l_onr
+       , (int)l_frame_nr
+       , (int)l_layerstack
+       , (float)l_opacity
+       );
+
+
       /* add the layer to current frame at desired stackposition  */
       gimp_image_add_layer (gpp->image_ID, l_new_layer_id, l_layerstack);
       gimp_layer_set_offsets(l_new_layer_id, l_src_offset_x, l_src_offset_y);
 
       /* set layername */
-      l_name = g_strdup_printf(_("onionskin_%04d"), (int) l_frame_nr);
+      l_name = g_strdup_printf(_("onionskin_%06d"), (int) l_frame_nr);
       gimp_layer_set_name(l_new_layer_id, l_name);
       g_free(l_name);
 
@@ -737,6 +763,7 @@ p_onion_apply(t_global_params *gpp, gboolean use_cache)
 
     /* stackposition for next onion layer */
     l_layerstack++;
+
     if(l_new_filename) { g_free(l_new_filename); l_new_filename = NULL; };
 
   }

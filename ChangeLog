@@ -1,3 +1,47 @@
+2003-07-07  Sven Neumann  <sven@gimp.org>
+
+	* gap/README_developers: updated the example code. It was still
+	refering to GIMP-1.0 API.
+
+2003-07-06 Wolfgang Hofer <hof@gimp.org>
+      bugfixes in onionskinlayer non-interactive PDB api, 
+      bugfixes in onionskinlayer dialog  
+      spinbutton values were ignored when typed into the entry 
+       (connect to "value_changed" of the ajustment 
+        rather than "changed" of spinbutton)
+      added new parameter farn_opaque for ascending opacity.
+      (useful for cross-fading)
+      
+      gap/gap_onion_main.c [.h]
+      gap/gap_onion_worker.c
+
+2003-07-04 Wolfgang Hofer <hof@gimp.org>
+      bugfixes in the Navigator Dialog
+       - Smart Thumbnail update
+       - drop cached thumbnails (deafult icons) after Thumbnail update
+      * gap/gap_navigator_dialog.c
+      
+2003-07-04 Wolfgang Hofer <hof@gimp.org>
+       new Feature Change Framedensity
+       Confirm Dialog for Frame Delete Operations
+
+       should depend on new gimprc Paramter:
+          (video-confirm-frame-delete no)  // defaults to yes.
+          
+          ==> does not work. (gimprc was edited by hand)
+              ?? maybe gimprc does not support foreign keywords
+                 (unknown to the gimp-core) any longer
+       
+       * gap/gap_main.c
+       * gap/gap_bae_ops.c [.h]
+       * gap/gap_arr_dialog.c [.h]
+
+2003-07-02 Wolfgang Hofer <hof@gimp.org>
+        Navigator Dialog: bugfix for highlighting of selected items.
+        minor Tooltips helptext fixes
+        * gap/gap_navigator_dialog.c
+        * gap_onion_dialog.c
+
 2003-06-30  Abel Cheung  <maddog@linux.org.hk>
 
 	* configure.in: Added "hr" "it" "lt" "nn" "ro" "sl" "zh_CN" to ALL_LINGUAS.

@@ -137,6 +137,9 @@ typedef struct {
   gchar   select_string[512];
 
   gint    run;
+  gint32  farn_opaque;     /* TRUE: the far neighbour frames have higher opacity
+                            * FALSE: near neighbour frames have higher opacity (DEFAULT)
+                            */
 
 } t_values;
 
@@ -166,7 +169,16 @@ typedef struct {
   GtkWidget  *oni__checkbutton_select_case;
   GtkWidget  *oni__checkbutton_select_invert;
   GtkWidget  *oni__checkbutton_stack_top;
+  GtkWidget  *oni__checkbutton_farn_opaque;
 
+  GtkObject  *oni__spinbutton_ignore_botlayers_adj;
+  GtkObject  *oni__spinbutton_num_olayers_adj;
+  GtkObject  *oni__spinbutton_opacity_adj;
+  GtkObject  *oni__spinbutton_opacity_delta_adj;
+  GtkObject  *oni__spinbutton_range_from_adj;
+  GtkObject  *oni__spinbutton_range_to_adj;
+  GtkObject  *oni__spinbutton_ref_delta_adj;
+  GtkObject  *oni__spinbutton_stack_pos_adj;
 } t_global_params;
 
 extern t_global_params global_params;

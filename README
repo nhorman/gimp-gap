@@ -1,14 +1,14 @@
 Please note this is an UNSTABLE developers Version of the Video menu
-Plug-In Package GAP.
+Plug-In Package GAP. (GIMP Animation Package)
 
 It is ment as Information for GIMP-developers only, and should lead to
-a stable Version usable with the next planed stable GIMP 1.4 release.
+a stable Version usable with the next planned stable GIMP release.
 
 The stable Version of GAP is part of the stable GIMP-1.2 release.
 
-Latest is:  gap-1.3.14a_pre36.tgz
+Latest is:  gap-1.3.16b_pre60.tgz
 
-Requires: - gimp 1.3.14 (unstable developers version)
+Requires: - gimp 1.3.16 (unstable developers version)
 
           - optional Patch for libgimp lastvalues registrations
             for the common iterator

@@ -376,6 +376,8 @@ p_copy_png_thumb(char *filename_src, char *filename_dst)
 
   if(gap_debug) printf("p_copy_png_thumb: START S:%s D:%s\n",filename_src , filename_dst);
 
+  gimp_ui_init ("gap_thn", FALSE);
+
   if(thumb_dir == NULL)
   {
     p_gap_init_thumb_dirs();
@@ -391,7 +393,6 @@ p_copy_png_thumb(char *filename_src, char *filename_dst)
   {
     return;
   }
-
 
   /* copy thumbnail files in the normal and large subdirs 
    * start at index 1 because the .fail subdir is not copied
@@ -416,7 +417,6 @@ p_copy_png_thumb(char *filename_src, char *filename_dst)
   
           if(pixbuf)
           {
-
              option_uri = p_gap_filename_to_uri(filename_dst);
              option_desc = g_strdup_printf ("Thumbnail of %s", option_uri);
              
@@ -536,7 +536,6 @@ p_gimp_file_copy_thumbnail(char *filename_src, char *filename_dst)
   char          *l_src_xvpics_thumb;
   char          *l_dst_xvpics_thumb;
 
-
   if (!p_thumbnailsave_is_on())
   {
     return;
@@ -559,7 +558,7 @@ p_gimp_file_copy_thumbnail(char *filename_src, char *filename_dst)
     g_free(l_src_xvpics_thumb);
   }
 
-  /* copy (and update) the PNG thumbnail file(s) */
+ /* copy (and update) the PNG thumbnail file(s) */
   p_copy_png_thumb(filename_src, filename_dst);
       
 }  /* end p_gimp_file_copy_thumbnail */

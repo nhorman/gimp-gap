@@ -8,7 +8,7 @@ First of all:
    the plugin must be able to operate on a single Drawable,
                               ----------------------------
    further it must be able to run with last_values and in interactive mode.
-                              --------------------        -----------                                
+                              --------------------        -----------
    
    For the Animated Plugin Call we need an Iterator Procedure.
    This Procedure is named like the Plugin with the extension "_Iterator".
@@ -120,26 +120,26 @@ Example Code:
 
 query()
 {
-  static GParamDef args_plugin[] =
+  static GimpParamDef args_plugin[] =
   {
     {PARAM_INT32, "run_mode", "non-interactive"},
     {PARAM_IMAGE, "image", "the image"},
     {PARAM_DRAWABLE, "drawable", "the drawable"},
     {PARAM_INT32, "value", "my_parameter value"},
   };
-  static int nargs_plugin = sizeof(args_plugin) / sizeof(args_plugin[0]);
+  static gint nargs_plugin = G_N_ELEMENTS (args_plugin);
 
-  static GParamDef args_iter[] =
+  static GimpParamDef args_iter[] =
   {
     {PARAM_INT32, "run_mode", "non-interactive"},
     {PARAM_INT32, "total_steps", "total number of steps (# of layers-1 to apply the related plug-in)"},
     {PARAM_FLOAT, "current_step", "current (for linear iterations this is the layerstack position, otherwise some value inbetween)"},
     {PARAM_INT32, "len_struct", "length of stored data structure with id is equal to the plug_in  proc_name"},
   };
-  static int nargs_iter = sizeof(args_iter) / sizeof(args_iter[0]);
+  static gint nargs_iter = G_N_ELEMENTS (args_iter);
 
-  static GParamDef *return_vals = NULL;
-  static int nreturn_vals = 0;
+  static GimpParamDef *return_vals = NULL;
+  static gint nreturn_vals = 0;
 
   gimp_install_procedure("plug_in_XXXX,
 			 "plug_in_XXXX can do ....",
@@ -162,7 +162,7 @@ query()
 			 "Date",
 			 NULL,    /* do not appear in menus */
 			 NULL,
-			 PROC_EXTENSION,
+			 GIMP_PLUGIN,
 			 nargs_iter, nreturn_vals,
 			 args_iter, return_vals);
 }
@@ -184,27 +184,27 @@ static void p_delta_long(long *val, long val_from, long val_to, gint32 total_ste
 
 
 static void
-run (char    *name,
-     int      n_params,
-     GParam  *param,
-     int     *nreturn_vals,
-     GParam **return_vals)
+run (const gchar      *name,
+     gint              n_params,
+     const GimpParam  *param,
+     gint             *nreturn_vals,
+     GimpParam       **return_vals)
 {
-  static GParam values[1];
-  GStatusType status = STATUS_SUCCESS;
-  GRunModeType run_mode;
-  gint32  len_struct;
-  gint32  total_steps;
-  gdouble current_step;
+  static GimpParam   values[1];
+  GimpPDBStatusType  status = GIMP_PDB_SUCCESS;
+  GimpRunMode        run_mode;
+  gint32             len_struct;
+  gint32             total_steps;
+  gdouble            current_step;
 
-  long    pval;                  /* plug_in_XXXX has one parameter of type long */
-  long   *pval_from, *pval_to;   /* values for 1.st and last layer
-                                  * when they were processed by "plug_in_gap_layers_run_animfilter"
-                                  */
+  long    pval;                 /* plug_in_XXXX has one parameter of type long */
+  long   *pval_from, *pval_to;  /* values for 1.st and last layer
+                                 * when they were processed by "plug_in_gap_layers_run_animfilter"
+                                 */
 
   *nreturn_vals = 1;
   *return_vals = values;
-   values[0].type = PARAM_STATUS;
+  values[0].type = GIMP_PDB_STATUS;
  
   
   run_mode = param[0].data.d_int32;
@@ -219,7 +219,7 @@ run (char    *name,
        * "plug_in_gap_layers_run_animfilter"
        * (always run noninteractive)
        */
-      if ((run_mode == RUN_NONINTERACTIVE) && (n_params == 4))
+      if ((run_mode == GIMP_RUN_NONINTERACTIVE) && (n_params == 4))
       {
         total_steps  =  param[1].data.d_int32;
         current_step =  param[2].data.d_float;
@@ -238,14 +238,13 @@ run (char    *name,
 
           gimp_set_data("plug_in_XXXX", &pval, sizeof(pval));
         }
-        else status = STATUS_CALLING_ERROR;
+        else status = GIMP_PDB_CALLING_ERROR;
       }
-      else status = STATUS_CALLING_ERROR;
+      else status = GIMP_PDB_CALLING_ERROR;
   }
 
-   values[0].type = PARAM_STATUS;
-   values[0].type = PARAM_STATUS;
-
+   values[0].type = GIMP_PDB_STATUS;
+   values[0].data.d_status = status;
 }
 
 

@@ -38,9 +38,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-static char *gap_main_version =  "1.3.15a; 2003/06/21";
+static char *gap_main_version =  "1.3.16b; 2003/07/04";
 
 /* revision history:
+ * gimp    1.3.16b; 2003/07/04  hof: - added frame_density plugin, updated main version,
  * gimp    1.3.15a; 2003/06/21  hof: - updated main version,
  * gimp    1.3.14a; 2003/05/27  hof: include gap_base_ops.h
  *                                   Split Image To frame: added parameter "digits" and "only_visible"
@@ -185,6 +186,18 @@ GimpPlugInInfo PLUG_IN_INFO =
     {GIMP_PDB_INT32, "range_to", "frame nr to stop (can be lower than range_from)"},
   };
   static int nargs_dup = G_N_ELEMENTS (args_dup);
+
+  static GimpParamDef args_density[] =
+  {
+    {GIMP_PDB_INT32, "run_mode", "Interactive, non-interactive"},
+    {GIMP_PDB_IMAGE, "image", "Input image (current one of the Anim Frames)"},
+    {GIMP_PDB_DRAWABLE, "drawable", "Input drawable (unused)"},
+    {GIMP_PDB_INT32, "range_from", "frame nr to start"},
+    {GIMP_PDB_INT32, "range_to", "frame nr to stop"},
+    {GIMP_PDB_FLOAT, "density_factor", "valid value is 1 upto 100 (where 1.0 has no effect)"},
+    {GIMP_PDB_INT32, "density_grow", "TRUE: number of frames in the sel. range is multiplied by density factor (does duplicate frames), FALSE: nuber is divided by density factor (this does delete frames)"},
+  };
+  static int nargs_density = G_N_ELEMENTS (args_density);
 
   static GimpParamDef args_exchg[] =
   {
@@ -596,6 +609,23 @@ query ()
 			 nargs_dup, nreturn_std,
 			 args_dup, return_std);
 
+  gimp_install_procedure("plug_in_gap_density",
+			 "This plugin changes the number of frames (density) on disk to match a"
+			 " new target framerate that is densty_factor times higher"
+			 " than the origianl framerate."
+			 " (or 1/density_factor lower if density_grow is FALSE)"
+			 " changing of density results in duplicating (or deleting)"
+			 " of frames on disk",
+			 "",
+			 "Wolfgang Hofer (hof@gimp.org)",
+			 "Wolfgang Hofer",
+			 gap_main_version,
+			 N_("<Image>/Video/Frames Density..."),
+			 "RGB*, INDEXED*, GRAY*",
+			 GIMP_PLUGIN,
+			 nargs_dup, nreturn_std,
+			 args_dup, return_std);
+
   gimp_install_procedure("plug_in_gap_exchg",
 			 "This plugin exchanges content of the current with destination frame.",
 			 "",
@@ -990,6 +1020,16 @@ run (char    *name,
   lock_image_id = image_id;
 
 
+  /* gimp_ui_init is sometimes needed even in NON-Interactive
+   * runmodes.
+   * because thumbnail handling uses the procedure gdk_pixbuf_new_from_file
+   * that will crash if not initialized
+   * so better init always, just to be on the save side.
+   * (most diaolgs do init a 2.nd time but this worked well)
+   */
+  gimp_ui_init ("gap_main", FALSE);
+
+
   /* ---------------------------
    * NON-LOCKING gap_plugins
    * ---------------------------
@@ -1225,6 +1265,29 @@ run (char    *name,
 
         l_rc_image = gap_dup(run_mode, image_id, nr, range_from, range_to );
 
+      }
+  }
+  else if (strcmp (name, "plug_in_gap_density") == 0)
+  {
+     gdouble density_factor;
+     gboolean density_grow;
+     
+      if (run_mode == GIMP_RUN_NONINTERACTIVE)
+      {
+        if (n_params != nargs_density)
+        {
+          status = GIMP_PDB_CALLING_ERROR;
+        }
+      }
+
+      if (status == GIMP_PDB_SUCCESS)
+      {
+        range_from      = param[3].data.d_int32;  /* frame nr to start */	
+        range_to        = param[4].data.d_int32;  /* frame nr to stop  */	
+        density_factor  = param[5].data.d_float;
+        density_grow    = param[6].data.d_int32;
+
+        l_rc_image = gap_density(run_mode, image_id, range_from, range_to, density_factor, density_grow);
       }
   }
   else if (strcmp (name, "plug_in_gap_exchg") == 0)

@@ -38,6 +38,7 @@
  */
 
 /* revision history:
+ * gimp    1.3.16b; 2003/07/04  hof: new p_confirm_dialog
  * gimp    1.3.15a; 2003/06/21  hof: textspacing
  * gimp    1.3.14b; 2003/06/03  hof: added gap_stock_init
  * gimp    1.3.14a; 2003/05/19  hof: GUI standard (OK ist rightmost button)
@@ -1437,3 +1438,68 @@ long p_slider_dialog(char *title, char *frame, char *label, char *tooltip,
   }
   else return -1;
 }	/* end p_slider_dialog */
+
+
+/* ------------------------
+ * p_confirm_dialog
+ * ------------------------
+ */
+gboolean
+p_confirm_dialog(char *msg_txt, char *title_txt, char *frame_txt)
+{
+  static t_but_arg  l_but_argv[2];
+  static t_arr_arg  l_argv[1];
+  gboolean          l_continue;
+  gboolean          l_confirm;
+  char *value_string;
+
+  l_confirm = TRUE;
+  value_string = gimp_gimprc_query("video-confirm-frame-delete");
+  if(value_string)
+  {
+
+     /*if(gap_debug)*/ printf("video-confirm-frame-delete: %s\n", value_string);
+
+     /* check if gimprc preferences value no disables confirmation dialog */
+     if((*value_string == 'n') || (*value_string == 'N'))
+     {
+       l_confirm = FALSE;
+     }
+     g_free(value_string);
+  }
+  else
+  {
+     /*if(gap_debug)*/ printf("NOT found in gimprc: video-confirm-frame-delete:\n (CONFIRM default yes is used)");
+  }
+
+  if(!l_confirm)
+  {
+    /* automatic confirmed OK (dialog is disabled) */
+    return TRUE;  
+  }
+
+  
+  l_but_argv[0].but_txt  = GTK_STOCK_CANCEL;
+  l_but_argv[0].but_val  = -1;
+  l_but_argv[1].but_txt  = GTK_STOCK_OK;
+  l_but_argv[1].but_val  = 0;
+
+
+  p_init_arr_arg(&l_argv[0], WGT_LABEL);
+  l_argv[0].label_txt = msg_txt;
+
+  l_continue = p_array_std_dialog (title_txt
+                                  ,frame_txt
+                                  ,G_N_ELEMENTS(l_argv),     l_argv
+                                  ,G_N_ELEMENTS(l_but_argv), l_but_argv
+                                  ,-1  /* default value is Cancel */
+                                  );
+      
+  if(l_continue == 0)
+  {
+    return TRUE;  /* OK pressed */
+  }
+  
+  return FALSE;
+
+}  /* end p_confirm_dialog */

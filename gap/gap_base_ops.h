@@ -25,6 +25,7 @@
  */
 
 /* revision history:
+ * 1.3.16b; 2003/07/03   hof: added gap_density
  * 1.3.14a  2003/05/24   hof: created (module was splitted off from gap_lib)
  */
 
@@ -41,6 +42,7 @@ gint32 gap_first(GimpRunMode run_mode, gint32 image_id);
 gint32 gap_last(GimpRunMode run_mode, gint32 image_id);
 gint32 gap_goto(GimpRunMode run_mode, gint32 image_id, int nr);
 
+gint32 gap_density(GimpRunMode run_mode, gint32 image_id, long range_from, long range_to, gdouble density_factor, gboolean density_grow);
 gint32 gap_dup(GimpRunMode run_mode, gint32 image_id, int nr, long range_from, long range_to);
 gint32 gap_del(GimpRunMode run_mode, gint32 image_id, int nr);
 gint32 gap_exchg(GimpRunMode run_mode, gint32 image_id, int nr);

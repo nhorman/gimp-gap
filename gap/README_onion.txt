@@ -2,7 +2,7 @@
 README_onionskin
 
 REQUIRED:
-  gimp 1.3.14
+  gimp 1.3.16
 
 INSTALLATION:
   # the onionskin module was integrated into the gimp-gap basepackage
@@ -102,6 +102,18 @@ DESCRIPTION:
                80% of the opacity of the 1.st onionlayer,
                The 3.rd with 80% of the 2.nd  and so on...
  
+    Ascending Opacity (Togglebutton):
+         ON: the farest handled Neighbour Frame has the
+             highest Opacity (the Primary Opcaty defined above)
+             This may be used to create cross-fading effects.
+             (*) see cross-fading example settings below.
+             
+         OFF: the nearest handled Neighbour Frame has the
+              highest Opacity, Opacity is descending
+              for the other frames at farer distance.
+              This should be used for regular Onionskin usage.
+
+ 
     Options how to merge the previous Layer into one
     Onionlayer:
   
@@ -140,4 +152,43 @@ DESCRIPTION:
              the copy should not be deleted.
              If you have gimp-1.2.2 the copy will be deleted too,
              because there is a bug in the gimp video base functions.
+
+
+*) Cross-Fading Example
+
+   With special Onionskin  Settings you can get Cross Fading Effects.
+   
+   An animation was created with a Framerate of 8 f/sec
+   and should playback on a target rate of 24 f/sec
+   
+   As 1.st step you need to duplicate all the frames in a way like this:
+   
+   01  02  03  04 ...            original squence
+   
+   01  02 03   04 05 06   07 08 09   10 11 12 ....   new numbers
+   01  01 01   02 02 02   03 03 03   04 04 04 ....   (old original numbers)
+   
+   Use the Menu  <Image>/Video/Frames Density... for this task.
+   
+
+   To to improve smoothness, you can use Onionskin Layers
+   to show 1 and 2 frames ahead on top of the Layerstack.
+   
+   In The 2.nd Step You create Onionskin Layers in all resulting Frames
+   with the following Settings:
+   
+   Onionskin Layers: 2      Ascending Opacity: ON
+   Frame Reference:  1      Cyclic:            OFF
+   Stackposition:    0      From Top:          ON
+   Opacity:          66.6   50.0
+   
+   Ignore BG-layer(s): 0        // do not ignore any Layer
+   
+   From Frame: 1
+   To Frame  : the last frame of your animation
   
+
+
+  When you wan equally balanced Opacity
+  you should use Opacity 1/3 for each frame
+  33.3 %, 100%

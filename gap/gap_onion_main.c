@@ -33,6 +33,7 @@
 
 
 /* revision history:
+ * version 1.3.16b; 2003.07.06   hof: new parameter farn_opaque (for cross-fading support)
  * version 1.3.14a; 2003.05.24   hof: integration into gimp-gap-1.3.14
  * version 1.3.12a; 2003.05.03   hof: started port to gimp-1.3 / gtk+2.2
  * version 1.2.2a;  2001.11.20   hof: created
@@ -43,7 +44,7 @@
 #include <gap_onion_dialog.h>
 
 
-static char *gap_onion_version = "1.3.14a; 2003/05/24";
+static char *gap_onion_version = "1.3.16b; 2003/07/06";
 
 
 /* ------------------------
@@ -90,6 +91,7 @@ GimpPlugInInfo PLUG_IN_INFO =
     {GIMP_PDB_INT32, "range_from", "first affected frame (ignored if run is not 2 or 3)"},
     {GIMP_PDB_INT32, "range_to", "last affected frame (ignored if run is not 2 or 3)"},
     {GIMP_PDB_INT32, "run", "0 .. do nothing, 1..set params for this session, 2..set and create or replace onionlayers for selected framerange  3..delete onionlayers from selected famerange "},
+    {GIMP_PDB_INT32, "farn_opaque", "TRUE..farest neighbour frame has highest opacity, FALSE: nearest has highest opacity"},
   };
   static int nargs_onion_cfg = sizeof(args_onion_cfg) / sizeof(args_onion_cfg[0]);
 
@@ -296,12 +298,13 @@ run (char    *name,
           {
             g_snprintf(&gpp->val.select_string[0]
                       , sizeof(gpp->val.select_string)
-                      , "%s", param[15].data.d_string
+                      , "%s", param[14].data.d_string
                       );
           }
-          gpp->val.run               = param[15].data.d_int32;
-          gpp->range_from            = param[16].data.d_int32;
-          gpp->range_to              = param[17].data.d_int32;
+          gpp->range_from            = param[15].data.d_int32;
+          gpp->range_to              = param[16].data.d_int32;
+          gpp->val.run               = param[17].data.d_int32;
+          gpp->val.farn_opaque       = param[18].data.d_int32;
         }
       }
       else if(gpp->run_mode != GIMP_RUN_INTERACTIVE)

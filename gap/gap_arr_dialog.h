@@ -40,6 +40,7 @@
  */
 
 /* revision history:
+ * gimp    1.3.16b; 2003/07/04  hof: new p_confirm_dialog
  * gimp    1.3.14a; 2003/05/15  hof: new WGT_FONTSEL
  * gimp    1.3.12a; 2003/05/01  hof: merge into CVS-gimp-gap project
  * gimp    1.3.11a; 2003/01/18  hof: merged in changes of the gap_vid_enc project
@@ -187,5 +188,7 @@ gint     p_array_std_dialog  (char     *title_txt,
                           int       b_argc,
                           t_but_arg b_argv[],
                           gint      b_def_val);
+
+gboolean p_confirm_dialog(char *msg_txt, char *title_txt, char *frame_txt);
 
 #endif

@@ -1,10 +1,10 @@
-/* gap_lib.c
+/* gap_base_ops.c
  * 1997.11.18 hof (Wolfgang Hofer)
  *
  * GAP ... Gimp Animation Plugins
  *
  * basic Videomenu functions:
- *   Delete, Duplicate, Exchange, Shift 
+ *   Delete, Duplicate, Density, Exchange, Shift 
  *   Next, Prev, First, Last, Goto
  * 
  *
@@ -28,6 +28,7 @@
  */
 
 /* revision history:
+ * 1.3.16b; 2003/07/04   hof: added gap_density, confirm dialog for frame deleting operations
  * 1.3.15a  2003/06/21   hof: textspacing
  * 1.3.14a  2003/05/27   hof: created (module was splitted off from gap_lib)
  */
@@ -55,7 +56,355 @@
 
 
 extern      int gap_debug; /* ==0  ... dont print debug infos */
+
+
+/* ------------------------
+ * p_density_shrink
+ * ------------------------
+ * shrink framedensity in the selected range (range_from - range_to)
+ * by density_factor (is used as divisor here).
+ * a value of 2.0 results in deleting half of the frames 
+ * (by deleting every 2.nd frame in the affected range)
+ * the range will playback with double speed when using the original framerate.
+ */
+static gint32
+p_density_shrink(t_anim_info *ainfo_ptr
+         , gdouble density_factor
+         , long range_from, long range_to)
+{
+   gint32  l_lo, l_hi;
+   gint32  l_framenr;
+   gint32  l_last_kept_nr;
+   gdouble    l_percentage, l_percentage_step;
+
+
+   if(ainfo_ptr->run_mode == GIMP_RUN_INTERACTIVE)
+   {
+     gimp_progress_init(_("Density-Deleting frames..."));
+   }
+
+   l_percentage = 0.0;  
+   l_percentage_step = 1.0 / (gdouble)(ainfo_ptr->last_frame_nr - range_from);
+
+   l_framenr = range_from;
+   l_last_kept_nr = -1;
+   /* rename and delete loop */
+   for(l_hi = range_from; l_hi <= range_to; l_hi++)
+   {
+     gdouble l_fnr;
+     
+     /* l_lo is the source framenumber in the (time) shrinked variant */
+     l_fnr = ((gdouble)(l_hi - range_from) / density_factor);
+     l_lo = range_from + (gint32)l_fnr;
+     
+     if(gap_debug) printf("p_density_shrink: (ren/dup loop) l_lo: %d  l_hi:%d last_kept:%d framenr:%d\n"
+                         , (int)l_lo
+                         , (int)l_hi
+                         , (int)l_last_kept_nr
+                         , (int)l_framenr
+                         );
+     
+     if(l_lo == l_last_kept_nr)
+     {
+        /* 2 or more frames would result in the the same framenr
+         * (in the shrinked range)
+         * in this case we must delete this frame(s)
+         */
+        p_delete_frame(ainfo_ptr, l_hi);
+     }
+     else
+     {
+       if(l_hi != l_framenr)
+       {
+         if(0 != p_rename_frame(ainfo_ptr, l_hi, l_framenr))
+         {
+           gchar *tmp_errtxt;
+           tmp_errtxt = g_strdup_printf(_("Error: could not rename frame %d to %d"), (int)l_hi, (int)l_framenr);
+           p_msg_win(ainfo_ptr->run_mode, tmp_errtxt);
+           g_free(tmp_errtxt);
+           return -1;
+         }
+       }
+       l_last_kept_nr = l_framenr;
+       l_framenr++;
+     }
+     
+     /* update progress for INTERACTIVE processing */
+     if(ainfo_ptr->run_mode == GIMP_RUN_INTERACTIVE)
+     { 
+        l_percentage += l_percentage_step;
+        gimp_progress_update (l_percentage);
+     }
+   }
+
+   /* down_shift rename loop 
+    * (framenumber higher than range_to are renamed with lower numbers
+    *  to close up the leak in the numberspace that was
+    *  left in the 1.loop when frames were deleted.)
+    */
+   l_lo = l_framenr;
+   l_hi = range_to +1; 
+   while(l_hi <= ainfo_ptr->last_frame_nr  )
+   {
+     if(0 != p_rename_frame(ainfo_ptr, l_hi, l_lo))
+     {
+        gchar *tmp_errtxt;
+        tmp_errtxt = g_strdup_printf(_("Error: could not rename frame %d to %d"), (int)l_hi, (int)l_lo);
+        p_msg_win(ainfo_ptr->run_mode, tmp_errtxt);
+        g_free(tmp_errtxt);
+        return -1;
+     }
+
+     if(ainfo_ptr->run_mode == GIMP_RUN_INTERACTIVE)
+     { 
+        l_percentage += l_percentage_step;
+        gimp_progress_update (l_percentage);
+     }
+
+     l_hi++;
+     l_lo++;
+   }
+
+   l_lo--;  /* this is the new last framenumber */
+   
+   /* recalculate last and total frames */
+   ainfo_ptr->frame_cnt -= (ainfo_ptr->last_frame_nr - l_lo);
+   ainfo_ptr->last_frame_nr = l_lo;
+
+   return 0;  /* OK */
+   
+}  /* end p_density_shrink */
+
+
+/* ------------------------
+ * p_density_grow
+ * ------------------------
+ * grow framedensity in the selected range (range_from - range_to)
+ * by density_factor.
+ * a value of 2.0 results in duplicating 
+ * all frames within the range.
+ * the range will playback with half speed when using the original framerate.
+ */
+static gint32
+p_density_grow(t_anim_info *ainfo_ptr
+         , gdouble density_factor
+         , long range_from, long range_to)
+{
+   gint32  l_lo, l_hi;
+   gint32  l_alias_lo;
+   gint32  l_alias_nr;
+   gint32  src_range_size;
+   gint32  copied_frames;
+   gdouble target_range_fsize;
+   gdouble    l_percentage, l_percentage_step;
+
+   if(ainfo_ptr->run_mode == GIMP_RUN_INTERACTIVE)
+   {
+     gimp_progress_init(_("Density-Duplicating frames..."));
+   }
+
+   src_range_size = 1 + (range_to - range_from);
+   target_range_fsize = (gdouble)(src_range_size) * density_factor;
+   copied_frames = (gint)(target_range_fsize) - src_range_size;
+   
+   l_percentage = 0.0;  
+   l_percentage_step = 1.0 / (gdouble)((gint32)target_range_fsize
+                                      + (ainfo_ptr->last_frame_nr - range_to));
+
+   /* up_shift rename loop 
+    * (framenumber higher than range_to are renamed with higher numbers
+    *  to get free numberspace for the duplicates that will be created
+    *  in the 2.nd loop)
+    */
+   l_lo   = ainfo_ptr->last_frame_nr;
+   while(l_lo > range_to )
+   {
+     l_hi   = l_lo + copied_frames;
+     if(0 != p_rename_frame(ainfo_ptr, l_lo, l_hi))
+     {
+        gchar *tmp_errtxt;
+        tmp_errtxt = g_strdup_printf(_("Error: could not rename frame %d to %d"), (int)l_lo, (int)l_hi);
+        p_msg_win(ainfo_ptr->run_mode, tmp_errtxt);
+        g_free(tmp_errtxt);
+        return -1;
+     }
+
+     if(ainfo_ptr->run_mode == GIMP_RUN_INTERACTIVE)
+     { 
+        l_percentage += l_percentage_step;
+        gimp_progress_update (l_percentage);
+     }
+
+     l_lo--;
+   }
  
+ 
+   l_alias_lo = -1;
+   l_alias_nr = -1;
+
+   /* rename and duplicate loop */
+   for(l_hi = range_to + copied_frames; l_hi >= range_from; l_hi--)
+   {
+     gdouble l_flo;
+     
+     /* pick the source framenumber (l_lo) */
+     l_flo = ((gdouble)(l_hi - range_from) / density_factor);
+     l_lo = range_from + (gint32)l_flo;
+     
+     if(gap_debug) printf("p_density_grow: (ren/dup loop) l_lo: %d  l_hi:%d\n", (int)l_lo, (int)l_hi);
+     
+     if(l_lo == l_alias_lo)
+     {
+        gchar *l_alias_name;
+        gchar *l_dup_name;
+        
+        /* the source framenumber (l_lo) was already renamed
+         * to l_alias_nr. we must create a copy in that case
+         * where the new framenumber (l_alias_nr) is the source framenumber
+         */
+        l_alias_name = p_alloc_fname(ainfo_ptr->basename, l_alias_nr, ainfo_ptr->extension);  
+        l_dup_name = p_alloc_fname(ainfo_ptr->basename, l_hi, ainfo_ptr->extension);
+        if((l_dup_name != NULL) && (l_alias_name != NULL))
+        {
+           p_image_file_copy(l_alias_name, l_dup_name);
+           g_free(l_dup_name);
+           g_free(l_alias_name);
+        }
+     }
+     else
+     {
+       if(l_lo != l_hi)
+       {
+         if(0 != p_rename_frame(ainfo_ptr, l_lo, l_hi))
+         {
+           gchar *tmp_errtxt;
+           tmp_errtxt = g_strdup_printf(_("Error: could not rename frame %d to %d"), (int)l_lo, (int)l_hi);
+           p_msg_win(ainfo_ptr->run_mode, tmp_errtxt);
+           g_free(tmp_errtxt);
+           return -1;
+         }
+       }
+       l_alias_lo = l_lo;
+       l_alias_nr = l_hi;
+     }
+     
+     /* update progress for INTERACTIVE processing */
+     if(ainfo_ptr->run_mode == GIMP_RUN_INTERACTIVE)
+     { 
+        l_percentage += l_percentage_step;
+        gimp_progress_update (l_percentage);
+     }
+   }
+
+   /* recalculate last and total frames */
+   ainfo_ptr->frame_cnt += copied_frames;
+   ainfo_ptr->last_frame_nr += copied_frames;
+   
+   return 0;  /* OK */
+
+}  /* end p_density_grow */
+
+
+
+/* ------------------------
+ * p_density
+ * ------------------------
+ * change the frame density by duplicating all frames within
+ * the selected range (density_factor times)
+ * or by deleting 100/density_factor Percent of the frames.
+ * Depending on the density_grow flag.
+ *
+ * all following frames are renamed (renumbered up by cnt) 
+ * current frame is duplicated (cnt) times
+ *
+ * return image_id (of the new loaded frame) on success
+ *        or -1 on errors
+ */
+static gint32
+p_density(t_anim_info *ainfo_ptr
+         , long range_from
+         , long range_to
+         , gdouble density_factor
+         , gboolean density_grow
+         )
+{
+   gint32 l_rc;
+   char *l_curr_name;
+
+   l_rc = -1;
+   if(gap_debug) printf("p_density from:%d to:%d density: %.4f grow:%d extension:%s: basename:%s frame_cnt:%d\n"
+                         , (int)range_from
+                         , (int)range_to
+                         , (float)density_factor
+                         , (int)density_grow
+                         , ainfo_ptr->extension
+                         , ainfo_ptr->basename
+                         , (int)ainfo_ptr->frame_cnt);
+
+   if(density_factor <= 1.0) return -1;
+
+   l_curr_name = p_alloc_fname(ainfo_ptr->basename, ainfo_ptr->curr_frame_nr, ainfo_ptr->extension);
+   if(l_curr_name == NULL)
+   {
+     return -1;
+   }
+   
+   if(p_gap_check_save_needed(ainfo_ptr->image_id))
+   {
+     /* save current frame  */   
+     if(p_save_named_frame(ainfo_ptr->image_id, l_curr_name) < 0)
+     {
+       gchar *tmp_errtxt;
+       tmp_errtxt = g_strdup_printf(_("Error: could not save frame %s"), l_curr_name);
+       p_msg_win(ainfo_ptr->run_mode, tmp_errtxt);
+       g_free(tmp_errtxt);
+       g_free(l_curr_name);
+       return -1;
+     }
+   }
+
+   /* use a new name (000001.xcf Konvention) */ 
+   gimp_image_set_filename (ainfo_ptr->image_id, l_curr_name);
+   g_free(l_curr_name);
+
+   /* clip range */
+   if(range_from > ainfo_ptr->last_frame_nr)  range_from = ainfo_ptr->last_frame_nr;
+   if(range_to   > ainfo_ptr->last_frame_nr)  range_to   = ainfo_ptr->last_frame_nr;
+   if(range_from < ainfo_ptr->first_frame_nr) range_from = ainfo_ptr->first_frame_nr;
+   if(range_to   < ainfo_ptr->first_frame_nr) range_to   = ainfo_ptr->first_frame_nr;
+
+
+   if(density_grow)
+   {
+     l_rc = p_density_grow(ainfo_ptr
+                            , density_factor
+                            , range_from
+                            , range_to
+                            );
+   }
+   else
+   {
+     l_rc = p_density_shrink(ainfo_ptr
+                            , density_factor
+                            , range_from
+                            , range_to
+                            );
+   }
+   
+   if(l_rc < 0)
+   {
+     return(-1);
+   }
+   
+   /* load from the "new" current frame */
+   ainfo_ptr->curr_frame_nr = range_from;
+   if(ainfo_ptr->new_filename != NULL) g_free(ainfo_ptr->new_filename);
+   ainfo_ptr->new_filename = p_alloc_fname(ainfo_ptr->basename,
+                                      ainfo_ptr->curr_frame_nr,
+                                      ainfo_ptr->extension);
+   return (p_load_named_frame(ainfo_ptr->image_id, ainfo_ptr->new_filename));
+}        /* end p_density */
+
 
 
 /* ============================================================================
@@ -653,6 +1002,33 @@ gap_goto(GimpRunMode run_mode, gint32 image_id, int nr)
   return(rc);    
 }	/* end gap_goto */
 
+
+/* ------------------------
+ * p_delete_confirm_dialog
+ * ------------------------
+ */
+static gboolean
+p_delete_confirm_dialog(t_anim_info *ainfo_ptr, long range_from, long range_to)
+{
+  gchar *msg_txt;
+  gboolean l_rc;
+  
+  msg_txt = g_strdup_printf(_("Frames %d - %d will be deleted\n"
+                    "There will be no UNDO for this Operation\n")
+                   , (int)range_from
+                   , (int)range_to
+                 );
+  l_rc = p_confirm_dialog(msg_txt
+                         , _("Confirm Frame Delete")   /* title_txt */
+                         , _("Confirm Frame Delete")   /* frame_txt */
+                         );
+  g_free(msg_txt);
+
+  return (l_rc);
+  
+}  /* end p_delete_confirm_dialog */
+
+
 /* ============================================================================
  * gap_del
  * ============================================================================
@@ -706,6 +1082,14 @@ gap_del(GimpRunMode run_mode, gint32 image_id, int nr)
         if(l_cnt >= 0)
         {
            l_cnt = 1 + l_cnt - ainfo_ptr->curr_frame_nr;
+           
+           /* ask the user to confirm delete (there is no undo) */
+           if(!p_delete_confirm_dialog(ainfo_ptr
+                                     ,ainfo_ptr->curr_frame_nr
+                                     ,ainfo_ptr->curr_frame_nr + (l_cnt -1)))
+           {
+              l_cnt = -1;  /* Canceled by confirm dialog */
+           }
         } 
         if(0 != p_chk_framechange(ainfo_ptr))
         {
@@ -732,6 +1116,230 @@ gap_del(GimpRunMode run_mode, gint32 image_id, int nr)
   return(rc);    
 
 }	/* end gap_del */
+
+
+
+
+
+
+
+/* ------------------------
+ * p_density_confirm_dialog
+ * ------------------------
+ */
+static gboolean
+p_density_confirm_dialog(t_anim_info *ainfo_ptr, long range_from, long range_to
+                , gdouble density_factor, gboolean density_grow)
+{
+  gchar *msg_txt;
+  gdouble new_total_frames;
+  gdouble l_src_range_size;
+  gdouble l_target_range_size;
+  gboolean l_rc;
+  
+  msg_txt = NULL;
+  l_src_range_size = 1+ range_to - range_from;
+  
+  if(density_grow)
+  {
+    l_target_range_size = l_src_range_size * density_factor;
+    new_total_frames = (gdouble)ainfo_ptr->frame_cnt
+                     - l_src_range_size
+                     + l_target_range_size
+                     ;
+                      
+    msg_txt =              
+    g_strdup_printf(_("Frames in the Range: %d - %d will be duplicated %.4f times\n"
+                      "This will increase the total number of frames from %d up to %d\n"
+                      "There will be no UNDO for this Operation\n")
+                   , (int)range_from
+                   , (int)range_to
+                   , (float)density_factor
+                   , (int)ainfo_ptr->frame_cnt
+                   , (int)new_total_frames
+                    );
+  }
+  else
+  {
+    l_target_range_size = l_src_range_size / density_factor;
+    new_total_frames = (gdouble)ainfo_ptr->frame_cnt
+                     - l_src_range_size
+                     + l_target_range_size
+                     ;
+    msg_txt =              
+    g_strdup_printf(_("%.04f Percent of the Frames in the Range: %d - %d\n"
+                      "will be DELETED\n" 
+                      "This will decrease the total number of frames from %d down to %d\n"
+                      "There will be no UNDO for this Operation\n")
+                   , (float)100.0 - (100.0 / l_src_range_size * l_target_range_size)
+                   , (int)range_from
+                   , (int)range_to
+                   , (int)ainfo_ptr->frame_cnt
+                   , (int)new_total_frames
+                    );
+  }
+
+  l_rc = p_confirm_dialog(msg_txt
+                         , _("Confirm Framedensity Change")   /* title_txt */
+                         , _("Confirm Framedensity Change")   /* frame_txt */
+                         );
+  g_free(msg_txt);
+
+  return (l_rc);
+
+}  /* end p_density_confirm_dialog */
+
+
+/* -----------------
+ * p_density_dialog
+ * -----------------
+ */
+static gboolean
+p_density_dialog(t_anim_info *ainfo_ptr, long *range_from, long *range_to
+                , gdouble *density_factor, gboolean *density_grow)
+{
+  static t_arr_arg  argv[4];
+  gchar            *l_title;
+  gint              l_rci;
+  gboolean          l_rc;
+
+  l_title = g_strdup_printf (_("Change Frames Density"));
+
+  p_init_arr_arg(&argv[0], WGT_INT_PAIR);
+  argv[0].label_txt = _("From:");
+  argv[0].constraint = TRUE;
+  argv[0].int_min   = (gint)ainfo_ptr->first_frame_nr;
+  argv[0].int_max   = (gint)ainfo_ptr->last_frame_nr;
+  argv[0].int_ret   = (gint)ainfo_ptr->curr_frame_nr;
+  argv[0].help_txt  = _("Affected Range starts at this framenumber");
+
+  p_init_arr_arg(&argv[1], WGT_INT_PAIR);
+  argv[1].label_txt = _("To:");
+  argv[1].constraint = TRUE;
+  argv[1].int_min   = (gint)ainfo_ptr->first_frame_nr;
+  argv[1].int_max   = (gint)ainfo_ptr->last_frame_nr;
+  argv[1].int_ret   = (gint)ainfo_ptr->last_frame_nr;
+  argv[1].help_txt  = _("Affected Range ends at this framenumber");
+    
+  p_init_arr_arg(&argv[2], WGT_FLT_PAIR);
+  argv[2].label_txt = _("Density:");
+  argv[2].constraint = FALSE;
+  argv[2].flt_min   = 1.0;
+  argv[2].flt_max   = 10.0;
+  argv[2].flt_step  = 0.1;
+  argv[2].pagestep  = 1.0;
+  argv[2].flt_ret   = 2;
+  argv[2].flt_digits = 4;
+  argv[2].umin      = 1.0;
+  argv[2].umax      = 100.0;
+  argv[2].help_txt  = _("Density Factor for Density grow (or Divisor for shrink)");
+
+  p_init_arr_arg(&argv[3], WGT_TOGGLE);
+  argv[3].label_txt = _("Density Grow");
+  argv[3].help_txt  = _("ON: Duplicate Frames to get a target rate that is Density * Originalrate\n"
+                        "OFF: Delete Frames to get a target rate that is Originalrate/Density");
+  argv[3].int_ret   = 1;
+
+
+  l_rci = p_array_dialog(l_title, _("Change Frames Density"),  4, argv);
+  g_free (l_title);
+
+  if(l_rci)
+  {
+    *range_from = (long)MIN(argv[0].int_ret, argv[1].int_ret);
+    *range_to   = (long)MAX(argv[1].int_ret, argv[0].int_ret);
+    *density_factor = (gdouble)(argv[2].flt_ret);
+    *density_grow = (gboolean)(argv[3].int_ret);
+
+    if ((*density_factor > 1.0) && (ainfo_ptr->run_mode != GIMP_RUN_NONINTERACTIVE))
+    {
+      l_rc = p_density_confirm_dialog(ainfo_ptr
+                                        , *range_from
+                                        , *range_to
+                                        , *density_factor
+                                        , *density_grow
+                                        );
+       return l_rc;
+    }
+    return TRUE;
+  }
+  
+  return FALSE;
+  
+}       /* end p_density_dialog */
+
+
+/* ============================================================================
+ * gap_density
+ * ============================================================================
+ */
+gint32 
+gap_density(GimpRunMode run_mode, gint32 image_id
+           , long range_from, long range_to
+           , gdouble density_factor, gboolean density_grow)
+{
+  int l_rci;
+  t_anim_info *ainfo_ptr;
+
+  long           l_from, l_to;
+  gdouble        l_density_factor;
+  gboolean       l_density_grow;
+  gboolean       l_rc;
+
+  l_rci = -1;
+  l_rc = FALSE;
+  ainfo_ptr = p_alloc_ainfo(image_id, run_mode);
+  if(ainfo_ptr != NULL)
+  {
+    if (0 == p_dir_ainfo(ainfo_ptr))
+    {
+      if(run_mode == GIMP_RUN_INTERACTIVE)
+      {
+         if(0 != p_chk_framechange(ainfo_ptr)) { l_density_factor = -1.0; }
+         else
+         {
+           if(*ainfo_ptr->extension == '\0' && ainfo_ptr->frame_cnt == 0)
+           {
+             /* density was called on a frame without extension and without framenumer in its name
+              * (typical for new created images named like 'Untitled' (or 'Unbenannt' for german GUI or .. in other languages)
+              */
+               p_msg_win(ainfo_ptr->run_mode,
+                       _("OPERATION CANCELLED.\n"
+                         "GAP plug-ins only work with filenames\n"
+                         "that end in numbers like _000001.xcf.\n"
+                         "==> Rename your image, then try again."));
+               return -1;
+           }
+           l_rc = p_density_dialog(ainfo_ptr, &l_from, &l_to, &l_density_factor, &l_density_grow);
+         }
+
+         if((0 != p_chk_framechange(ainfo_ptr)) || (!l_rc))
+         {
+            l_density_factor = -1.0;
+         }
+                
+      }
+      else
+      {
+        l_from = range_from;
+        l_to   = range_to;
+        l_density_factor = density_factor;
+        l_density_grow = density_grow;
+      }
+ 
+      if(l_density_factor > 1.0)
+      {
+         /* change density by duplicating or deleting frames (on disk) */
+         l_rci = p_density(ainfo_ptr, l_from, l_to, l_density_factor, l_density_grow);
+      }
+
+    }
+    p_free_ainfo(&ainfo_ptr);
+  }
+  
+  return(l_rci);    
+
+}       /* end gap_density */
 
 
 /* ============================================================================
