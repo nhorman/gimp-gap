@@ -25,6 +25,7 @@
  */
 
 /* revision history:
+ * 1.3.14a; 2003/05/25   hof: added digits parameter
  * 0.96.00; 1998/07/03   hof: 1.st releas
  */
 
@@ -39,7 +40,10 @@ int gap_split_image(GimpRunMode run_mode,
                              gint32     image_id,
                              gint32     inverse_order,
                              gint32     no_alpha,
-                             char      *extension);
+                             char      *extension,
+                             gint32     only_visible,
+                             gint32     digits
+                             );
 
 
 #endif

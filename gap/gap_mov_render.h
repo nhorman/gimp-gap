@@ -1,10 +1,10 @@
-/* gap_resi_dialog.h
- * 1998.07.01 hof (Wolfgang Hofer)
+/* gap_mov_render.h
+ * 1997.11.06 hof (Wolfgang Hofer)
  *
  * GAP ... Gimp Animation Plugins
  *
- * This Module contains the resize and scale Dialog for AnimFrames.
- * (It just is a shell to call Gimp's resize / scale Dialog )
+ * Render utility Procedures for GAP MovePath
+ *
  */
 /* The GIMP -- an image manipulation program
  * Copyright (C) 1995 Spencer Kimball and Peter Mattis
@@ -23,25 +23,18 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
+#ifndef _GAP_MOV_RENDER_H
+#define _GAP_MOV_RENDER_H
 
-/* revision history
- * gimp    1.3.14a; 2003/05/18  hof: reincarnation of gap_resi_dialog.h
- * 0.96.00; 1998/07/01   hof: first release
+/* revision history:
+ * gimp    1.3.14a; 2003/05/24  hof: created (splitted off from gap_mov_dialog)
  */
-
-#ifndef _RESI_DIALOG_H
-#define _RESI_DIALOG_H
  
-/* GIMP includes */
-#include "gtk/gtk.h"
-#include "libgimp/gimp.h"
 
-/* GAP includes */
-#include "gap_range_ops.h"
+#include "gap_mov_dialog.h"
 
-gint p_resi_dialog (gint32 image_id, 
-                    t_gap_asiz asiz_mode,
-                    char *title_text,
-                    long *size_x, long *size_y, 
-                    long *offs_x, long *offs_y);
+gint   p_mov_render(gint32 image_id, t_mov_values *val_ptr, t_mov_current *cur_ptr);
+gint32 p_get_flattened_layer (gint32 image_id, GimpMergeType mergemode);
+gint   p_mov_fetch_src_frame(t_mov_values *pvals,  gint32 wanted_frame_nr);
+
 #endif

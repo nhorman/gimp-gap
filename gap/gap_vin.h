@@ -1,10 +1,7 @@
-/* gap_resi_dialog.h
- * 1998.07.01 hof (Wolfgang Hofer)
+/*  gap_vin.h
  *
- * GAP ... Gimp Animation Plugins
- *
- * This Module contains the resize and scale Dialog for AnimFrames.
- * (It just is a shell to call Gimp's resize / scale Dialog )
+ *  This module handles GAP video info files (_vin.gap)
+ *  _vin.gap files store global informations about an animation
  */
 /* The GIMP -- an image manipulation program
  * Copyright (C) 1995 Spencer Kimball and Peter Mattis
@@ -24,24 +21,30 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/* revision history
- * gimp    1.3.14a; 2003/05/18  hof: reincarnation of gap_resi_dialog.h
- * 0.96.00; 1998/07/01   hof: first release
+/* revision history:
+ * version 1.3.14a; 2003/05/24  hof: created (splitted off from gap_pdb_calls module)
  */
 
-#ifndef _RESI_DIALOG_H
-#define _RESI_DIALOG_H
- 
-/* GIMP includes */
-#include "gtk/gtk.h"
+#ifndef _GAP_VIN_H
+#define _GAP_VIN_H
+
 #include "libgimp/gimp.h"
 
-/* GAP includes */
-#include "gap_range_ops.h"
+typedef struct t_video_info {
+   gdouble     framerate;    /* playback rate in frames per second */
+   gint32      timezoom;
+} t_video_info;
 
-gint p_resi_dialog (gint32 image_id, 
-                    t_gap_asiz asiz_mode,
-                    char *title_text,
-                    long *size_x, long *size_y, 
-                    long *offs_x, long *offs_y);
+
+typedef struct t_textfile_lines {
+   char    *line;
+   gint32   line_nr;
+   void    *next;
+} t_textfile_lines;
+
+
+char *p_alloc_video_info_name(char *basename);
+int   p_set_video_info(t_video_info *vin_ptr, char *basename);
+t_video_info *p_get_video_info(char *basename);
+
 #endif

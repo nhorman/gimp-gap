@@ -70,6 +70,8 @@
 
 
 /* revision history:
+ * gimp    1.3.14a; 2003/05/27  hof: replaced old workaround procedure readXVThumb by legal API gimp_file_load_thumbnail
+ *                                   replaced scale widgets by spinbuttons
  * gimp    1.3.12a; 2003/05/03  hof: merge into CVS-gimp-gap project
  *                                   6digit framenumbers, replace gimp_help_init by _gimp_help_init
  * gimp    1.3.5a;  2002/04/21  hof: handle changing image_id of the active_image (navi_reload_ainfo)
@@ -80,7 +82,7 @@
  * version 1.1.14a; 2000.01.08   hof: 1st release
  */
 
-static char *gap_navigator_version = "1.3.12a; 2003/05/01";
+static char *gap_navigator_version = "1.3.14a; 2003/05/27";
 
 
 /* SYTEM (UNIX) includes */ 
@@ -91,6 +93,7 @@ static char *gap_navigator_version = "1.3.12a; 2003/05/01";
 #include <signal.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <locale.h>
 
 #ifdef __GNUC__
 #warning GTK_DISABLE_DEPRECATED
@@ -182,16 +185,7 @@ GtkWidget * ops_button_box_new (GtkWidget     *parent,
 /* GAP includes */
 #include "gap_lib.h"
 #include "gap_pdb_calls.h"
-
-/* Note:
- *  the PDB call of gimp_file_load_thumbnail has a bug in gimp-1.1.14.
- *  As workaround i use a copy of gimp-1.1.14/app/fileops.c:readXVThumb
- *  to read .xvpics correct directly from file (this is also the faster way)
- */
-guchar* readXVThumb (const gchar  *fnam,
-	     gint         *w,
-	     gint         *h,
-	     gchar       **imginfo /* caller frees if != NULL */);
+#include "gap_vin.h"
 
 /*  some definitions used in all dialogs  */
 #define PREVIEW_EVENT_MASK (GDK_EXPOSURE_MASK | GDK_BUTTON_PRESS_MASK | \
@@ -395,7 +389,7 @@ static OpsButton frames_ops_buttons[] =
     "#playback",
     NULL, 0 },
   { update_xpm, OPS_BUTTON_FUNC (navi_dialog_thumb_update_callback), navi_dialog_update_ext_callbacks,
-    N_("Smart Update .xvpics\n"
+    N_("Smart Update Thumbnails\n"
        "<Shift> forced upd"),
     "#update",
     NULL, 0 },
@@ -478,6 +472,8 @@ query ()
 
   static GimpParamDef *return_vals = NULL;
   static int nreturn_vals = 0;
+  
+  INIT_I18N();
 
 
   gimp_install_procedure(PLUGIN_NAME,
@@ -517,6 +513,8 @@ run (char    *name,
   nr = 0;
   l_rc = 0;
 
+  INIT_I18N();
+  setlocale (LC_NUMERIC, "C");
 
   l_env = g_getenv("GAP_DEBUG");
   if(l_env != NULL)
@@ -765,7 +763,7 @@ navi_get_preview_size(void)
   value_string = gimp_gimprc_query("video-preview-size");
   if(value_string == NULL)
   {
-    value_string = gimp_gimprc_query("preview-size");
+    value_string = gimp_gimprc_query("layer-preview-size");
   }
   
   if(value_string)
@@ -782,8 +780,14 @@ navi_get_preview_size(void)
 	preview_size = 48;
       else if (strcmp (value_string, "large") == 0)
 	preview_size = 64;
-      else if (strcmp (value_string, "huge") == 0)
+      else if (strcmp (value_string, "extra-large") == 0)
 	preview_size = 128;
+      else if (strcmp (value_string, "huge") == 0)
+	preview_size = 160;
+      else if (strcmp (value_string, "enormous") == 0)
+	preview_size = 192;
+      else if (strcmp (value_string, "gigantic") == 0)
+	preview_size = 256;
       else
 	preview_size = atol(value_string);
 	
@@ -1347,9 +1351,6 @@ navi_thumb_update(gint update_all)
   gint   l_upd_flag;
   gint   l_any_upd_flag;
   char  *l_image_filename;
-  char  *l_thumb_filename;
-  struct stat  l_stat_thumb;
-  struct stat  l_stat_image;
   
   if(naviD == NULL) return;
   if(naviD->ainfo_ptr == NULL) return;
@@ -1361,30 +1362,12 @@ navi_thumb_update(gint update_all)
   {
      l_upd_flag = TRUE;
      l_image_filename = p_alloc_fname(naviD->ainfo_ptr->basename, l_frame_nr, naviD->ainfo_ptr->extension);
-     l_thumb_filename = p_alloc_fname_thumbnail(l_image_filename);
-     
      
      if(!update_all)
      {
-       if (0 == stat(l_thumb_filename, &l_stat_thumb))
+       if (p_gimp_file_has_valid_thumbnail(l_image_filename))
        {
-          /* thumbnail filename exists */
-         if(S_ISREG(l_stat_thumb.st_mode))
-         {
-	    /* and is a regular file */
-            if (0 == stat(l_image_filename, &l_stat_image))
-	    {
-	       if(l_stat_image.st_mtime < l_stat_thumb.st_mtime)
-	       {
-	         /* time of last modification of image is older (less)
-		  * than last modification of the thumbnail
-		  * So we can skip the thumbnail Update for this frame
-		  */
-                 l_upd_flag = FALSE;
-	       }
-	    }
-	 }
-       
+         l_upd_flag = FALSE;
        }
      }
 
@@ -1398,7 +1381,6 @@ navi_thumb_update(gint update_all)
      }
      
      if(l_image_filename) g_free(l_image_filename);
-     if(l_thumb_filename) g_free(l_thumb_filename);
   }
   
   if(l_any_upd_flag  )
@@ -2155,6 +2137,7 @@ render_preview (GtkWidget *preview_widget, FrameWidget *fw)
    gint32  l_ofs_thpixel;
    gint32  l_th_width;
    gint32  l_th_height;
+   gint32  l_th_data_count;
    gint32  l_thumb_rowstride;
    gint32  l_pv_width;
    gint32  l_pv_height;
@@ -2164,12 +2147,11 @@ render_preview (GtkWidget *preview_widget, FrameWidget *fw)
    char   *l_filename;
    gint    l_rc;
    guchar *l_raw_thumb;
-   gchar  *l_tname;
-   gchar   *imginfo = NULL;
-   struct stat  l_stat_thumb;
+   /* gchar  *l_tname; */
+   /* struct stat  l_stat_thumb; */
 
 
-   if(gap_debug) printf("render_preview (quick)\n");
+   if(gap_debug) printf("render_preview (std)\n");
 
    l_rc = FALSE;
    l_raw_thumb = NULL;
@@ -2179,26 +2161,24 @@ render_preview (GtkWidget *preview_widget, FrameWidget *fw)
    {
      /* if this is the currently open image
       * we first write the thumbnail to disc
-      * so we get an up to date version in the following readXVThumb call
+      * so we get an up to date version in the following p_gimp_file_load_thumbnail call
       */
       l_rc = render_current_preview(preview_widget, fw);
       return(l_rc);
    }
    
    l_filename = p_alloc_fname(naviD->ainfo_ptr->basename, fw->frame_nr, naviD->ainfo_ptr->extension);
-   l_tname = p_alloc_fname_thumbnail(l_filename);
+   /* l_tname = p_alloc_fname_thumbnail(l_filename); */
 
     
-   if (0 == stat(l_tname, &l_stat_thumb))
+   /* if (0 == stat(l_tname, &l_stat_thumb)) */
    {
-     fw->thumb_timestamp  = l_stat_thumb.st_mtime;
-     l_raw_thumb = readXVThumb (l_tname, &l_th_width, &l_th_height, &imginfo);
+     /* fw->thumb_timestamp  = l_stat_thumb.st_mtime; */
+     p_gimp_file_load_thumbnail(l_filename, &l_th_width, &l_th_height, &l_th_data_count, &l_raw_thumb);
+     
+     
      if(fw->thumb_filename) g_free(fw->thumb_filename);
-     fw->thumb_filename = l_tname;    
-   }
-   else
-   {
-     g_free(l_tname);
+     fw->thumb_filename = NULL; /* l_tname; */
    }
 
    l_pv_width = naviD->image_width;
@@ -2207,11 +2187,11 @@ render_preview (GtkWidget *preview_widget, FrameWidget *fw)
    l_rowbuf = g_malloc(PREVIEW_BPP * l_pv_width);
    if(l_rowbuf == NULL) return(l_rc);
       
-   if(l_raw_thumb != NULL)
+   if((l_raw_thumb != NULL) && (l_th_data_count > 0))
    {
      l_xscale = (gdouble)l_th_width / (gdouble)l_pv_width;
      l_yscale = (gdouble)l_th_height / (gdouble)l_pv_height;
-     l_thumb_rowstride = l_th_width; /* raw thumb data BPP is 1 */
+     l_thumb_rowstride = l_th_width * 3; /* raw thumb data BPP is 3 */
 
     /* render preview */
     for(l_y = 0; l_y < l_pv_height; l_y++)
@@ -2223,12 +2203,12 @@ render_preview (GtkWidget *preview_widget, FrameWidget *fw)
        for(l_x = 0; l_x < l_pv_width; l_x++)
        {
 	   l_ofd = (l_xscale * (gdouble)l_x) + 0.5;
-	   l_ofx = (gint32)(l_ofd);  /* raw thumb data BPP is 1 */
+	   l_ofx = (gint32)(l_ofd) * 3;  /* raw thumb data BPP is 3 */
 	   l_ofs_thpixel =  l_ofy + l_ofx;
 
-          *l_ptr    = ((l_raw_thumb[l_ofs_thpixel]>>5)*255)/7;
-	   l_ptr[1] = (((l_raw_thumb[l_ofs_thpixel]>>2)&7)*255)/7;
-	   l_ptr[2] = (((l_raw_thumb[l_ofs_thpixel])&3)*255)/3;
+           l_ptr[0] = l_raw_thumb[l_ofs_thpixel];
+	   l_ptr[1] = l_raw_thumb[l_ofs_thpixel +1];
+	   l_ptr[2] = l_raw_thumb[l_ofs_thpixel +2];
 
           l_ptr += PREVIEW_BPP;
        }
@@ -2355,7 +2335,7 @@ frame_widget_preview_redraw (FrameWidget *frame_widget)
     }
     else
     {
-      /* frame has no thumbnail (.xvpics), render a default icon */
+      /* frame has no thumbnail, render a default icon */
       render_no_preview (widget, *pixmap);
     }
   }
@@ -2594,7 +2574,7 @@ navid_thumb_timestamp_check(void)
       {
         /* always redraw the currently opened frame
 	 * (the render procedure uses gimp's internal chached thumbnaildata
-	 * so the timestamp of the .xvpics thumbnailfile does not matter here)
+	 * so the timestamp of the thumbnailfile does not matter here)
 	 */
         gtk_widget_queue_draw(fw->frame_preview);
         continue;
@@ -2641,7 +2621,7 @@ navi_dialog_update(gint32 update_flag)
 
      /* we must force a rebuild of the list of frame_widgets
       * if any frames were deleteted or are created 
-      * (outside of the naviagator)
+      * (outside of the navigator)
       */
      if(naviD->ainfo_ptr)
      {
@@ -2896,8 +2876,9 @@ navi_dialog_create (GtkWidget* shell, gint32 image_id)
   GtkWidget *util_box;
   GtkWidget *button_box;
   GtkWidget *label;
-  GtkWidget *slider;
+  GtkWidget *spinbutton;
   GtkWidget *menu_item;
+  GtkObject *adj;
   char  *l_basename;
   char frame_nr_to_char[20];
 
@@ -3040,7 +3021,7 @@ navi_dialog_create (GtkWidget* shell, gint32 image_id)
   gtk_widget_show (util_box);
 
 
-  /*  framerate scale  */
+  /*  framerate spinbutton  */
   naviD->framerate_box = util_box = gtk_hbox_new (FALSE, 1);
   gtk_box_pack_start (GTK_BOX (vbox), util_box, FALSE, FALSE, 0);
 
@@ -3048,22 +3029,29 @@ navi_dialog_create (GtkWidget* shell, gint32 image_id)
   gtk_box_pack_start (GTK_BOX (util_box), label, FALSE, FALSE, 2);
   gtk_widget_show (label);
 
-  naviD->framerate_data =
-    GTK_ADJUSTMENT (gtk_adjustment_new (naviD->vin_ptr->framerate, 1.0, 100.0, 1.0, 1.0, 0.0));
-  slider = gtk_hscale_new (naviD->framerate_data);
-  gtk_range_set_update_policy (GTK_RANGE (slider), GTK_UPDATE_DELAYED); /* GTK_UPDATE_CONTINUOUS */
-  gtk_scale_set_value_pos (GTK_SCALE (slider), GTK_POS_RIGHT);
-  gtk_box_pack_start (GTK_BOX (util_box), slider, TRUE, TRUE, 0);
+  spinbutton = gimp_spin_button_new (&adj,  /* return value (the adjustment) */
+		      naviD->vin_ptr->framerate,     /* initial_val */
+		      1.0,                  /* umin */
+		      100.0,                /* umax */
+		      1.0,                  /* sstep */
+		      10.0,                /* pagestep */
+		      0.0,                 /* page_size */
+		      1.0,                 /* climb_rate */
+		      1                    /* digits */
+                      );
+  naviD->framerate_data = adj;
+
+  gtk_box_pack_start (GTK_BOX (util_box), spinbutton, TRUE, TRUE, 0);
   g_signal_connect (G_OBJECT (naviD->framerate_data), "value_changed",
 		    G_CALLBACK (navi_framerate_scale_update),
 		    naviD);
-  gtk_widget_show (slider);
+  gtk_widget_show (spinbutton);
 
-  gimp_help_set_help_data (slider, NULL, "#framerate_scale");
+  gimp_help_set_help_data (spinbutton, _("Set Framerate in Frames/sec"), NULL);
 
   gtk_widget_show (util_box);
 
-  /*  timezoom scale  */
+  /*  timezoom spinbutton  */
   naviD->timezoom_box = util_box = gtk_hbox_new (FALSE, 1);
   gtk_box_pack_start (GTK_BOX (vbox), util_box, FALSE, FALSE, 0);
 
@@ -3071,18 +3059,25 @@ navi_dialog_create (GtkWidget* shell, gint32 image_id)
   gtk_box_pack_start (GTK_BOX (util_box), label, FALSE, FALSE, 2);
   gtk_widget_show (label);
 
-  naviD->timezoom_data =
-    GTK_ADJUSTMENT (gtk_adjustment_new ((gdouble)naviD->vin_ptr->timezoom, 1.0, 100.0, 1.0, 1.0, 0.0));
-  slider = gtk_hscale_new (naviD->timezoom_data);
-  gtk_range_set_update_policy (GTK_RANGE (slider), GTK_UPDATE_DELAYED);
-  gtk_scale_set_value_pos (GTK_SCALE (slider), GTK_POS_RIGHT);
-  gtk_box_pack_start (GTK_BOX (util_box), slider, TRUE, TRUE, 0);
+  spinbutton = gimp_spin_button_new (&adj,  /* return value (the adjustment) */
+		      naviD->vin_ptr->framerate,     /* initial_val */
+		      1.0,                  /* umin */
+		      100.0,                /* umax */
+		      1.0,                  /* sstep */
+		      10.0,                /* pagestep */
+		      0.0,                 /* page_size */
+		      1.0,                 /* climb_rate */
+		      0                    /* digits */
+                      );
+
+  naviD->timezoom_data = adj;
+  gtk_box_pack_start (GTK_BOX (util_box), spinbutton, TRUE, TRUE, 0);
   g_signal_connect (G_OBJECT (naviD->timezoom_data), "value_changed",
 		    G_CALLBACK (navi_timezoom_scale_update),
 		    naviD);
-  gtk_widget_show (slider);
+  gtk_widget_show (spinbutton);
 
-  gimp_help_set_help_data (slider, NULL, "#timezoom_scale");
+  gimp_help_set_help_data (spinbutton, _("Show only every N.th frame"), NULL);
 
   gtk_widget_show (util_box);
 
@@ -3144,6 +3139,7 @@ int  gap_navigator(gint32 image_id)
   if(gap_debug) fprintf(stderr, "\nSTARTing gap_navigator_dialog\n");
 
   gimp_ui_init ("gap_navigator", FALSE);
+
 
   /*  The main shell */
   shell = gimp_dialog_new (_("Video Navigator"), "gap_navigator",
@@ -3216,95 +3212,6 @@ int  gap_navigator(gint32 image_id)
  * XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
  */
 
-
-/* ---------------------------------------  start copy of gimp-1.1.14/app/fileops.c readXVThumb */
-/* The readXVThumb function source may be re-used under
-   the XFree86-style license. <adam@gimp.org> */
-guchar*
-readXVThumb (const gchar  *fnam,
-	     gint         *w,
-	     gint         *h,
-	     gchar       **imginfo /* caller frees if != NULL */)
-{
-  FILE *fp;
-  const gchar *P7_332 = "P7 332";
-  gchar P7_buf[7];
-  gchar linebuf[200];
-  guchar *buf;
-  gint twofivefive;
-  void *ptr;
-
-  *w = *h = 0;
-  *imginfo = NULL;
-
-  fp = fopen (fnam, "rb");
-  if (!fp)
-    return (NULL);
-
-  fread (P7_buf, 6, 1, fp);
-
-  if (strncmp(P7_buf, P7_332, 6)!=0)
-    {
-      g_warning("Thumbnail doesn't have the 'P7 332' header.");
-      fclose(fp);
-      return(NULL);
-    }
-
-  /*newline*/
-  fread (P7_buf, 1, 1, fp);
-
-  do
-    {
-      ptr = fgets(linebuf, 199, fp);
-      if ((strncmp(linebuf, "#IMGINFO:", 9) == 0) &&
-	  (linebuf[9] != '\0') &&
-	  (linebuf[9] != '\n'))
-	{
-	  if (linebuf[strlen(linebuf)-1] == '\n')
-	    linebuf[strlen(linebuf)-1] = '\0';
-
-	  if (linebuf[9] != '\0')
-	    {
-	      if (*imginfo)
-		g_free(*imginfo);
-	      *imginfo = g_strdup (&linebuf[9]);
-	    }
-	}
-    }
-  while (ptr && linebuf[0]=='#'); /* keep throwing away comment lines */
-
-  if (!ptr)
-    {
-      /* g_warning("Thumbnail ended - not an image?"); */
-      fclose(fp);
-      return(NULL);
-    }
-
-  sscanf(linebuf, "%d %d %d\n", w, h, &twofivefive);
-
-  if (twofivefive!=255)
-    {
-      g_warning("Thumbnail is of funky depth.");
-      fclose(fp);
-      return(NULL);
-    }
-
-  if ((*w)<1 || (*h)<1 || (*w)>80 || (*h)>60)
-    {
-      g_warning ("Thumbnail size bad.  Corrupted?");
-      fclose(fp);
-      return (NULL);
-    }
-
-  buf = g_malloc((*w)*(*h));
-
-  fread(buf, (*w)*(*h), 1, fp);
-  
-  fclose(fp);
-  
-  return(buf);
-}
-/* ---------------------------------------  end copy of  gimp-1.1.14/app/fileops.c readXVThumb */
 
 
 /* ---------------------------------------  start copy of gimp-1.1.14/app/ops_buttons.c */

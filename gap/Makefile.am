@@ -10,13 +10,17 @@ libexec_PROGRAMS = \
 	gap_plugins		\
 	gap_filter		\
 	gap_frontends		\
-	gap_navigator_dialog
+	gap_name2layer		\
+	gap_navigator_dialog	\
+        gap_onion
 
 
 gap_plugins_SOURCES = \
 	gap-intl.h		\
 	gap_arr_dialog.c	\
 	gap_arr_dialog.h	\
+	gap_base_ops.c	\
+	gap_base_ops.h	\
 	gap_dbbrowser_utils.c	\
 	gap_dbbrowser_utils.h	\
 	gap_filter_codegen.c	\
@@ -39,14 +43,22 @@ gap_plugins_SOURCES = \
 	gap_mov_dialog.h	\
 	gap_mov_exec.c		\
 	gap_mov_exec.h		\
+	gap_mov_render.c	\
+	gap_mov_render.h	\
 	gap_navi_activtable.c	\
 	gap_navi_activtable.h	\
 	gap_pdb_calls.c		\
 	gap_pdb_calls.h		\
 	gap_range_ops.c		\
 	gap_range_ops.h		\
+	gap_resi_dialog.c	\
+	gap_resi_dialog.h	\
 	gap_split.c		\
-	gap_split.h
+	gap_split.h		\
+	gap_thumbnail.c		\
+	gap_thumbnail.h		\
+	gap_vin.c		\
+	gap_vin.h
 
 gap_filter_SOURCES = \
 	gap_arr_dialog.c	\
@@ -64,7 +76,9 @@ gap_filter_SOURCES = \
 	gap_lastvaldesc.c	\
 	gap_lastvaldesc.h	\
 	gap_pdb_calls.c		\
-	gap_pdb_calls.h
+	gap_pdb_calls.h		\
+	gap_vin.c		\
+	gap_vin.h
 
 gap_frontends_SOURCES = \
 	gap_arr_dialog.c	\
@@ -85,7 +99,18 @@ gap_frontends_SOURCES = \
 	gap_navi_activtable.c	\
 	gap_navi_activtable.h	\
 	gap_pdb_calls.c		\
-	gap_pdb_calls.h
+	gap_pdb_calls.h		\
+	gap_thumbnail.c		\
+	gap_thumbnail.h		\
+	gap_vin.c		\
+	gap_vin.h
+
+gap_name2layer_SOURCES = \
+	gap_arr_dialog.c	\
+	gap_arr_dialog.h	\
+	gap_lastvaldesc.c	\
+	gap_lastvaldesc.h	\
+	gap_name2layer_main.c
 
 gap_navigator_dialog_SOURCES = \
 	gap_arr_dialog.c	\
@@ -98,7 +123,37 @@ gap_navigator_dialog_SOURCES = \
 	gap_navi_activtable.h	\
 	gap_navigator_dialog.c	\
 	gap_pdb_calls.c		\
-	gap_pdb_calls.h
+	gap_pdb_calls.h		\
+	gap_thumbnail.c		\
+	gap_thumbnail.h		\
+	gap_vin.c		\
+	gap_vin.h
+
+gap_onion_SOURCES = \
+	gap_arr_dialog.c	\
+	gap_arr_dialog.h	\
+	gap_onion_main.c	\
+	gap_onion_main.h	\
+	gap_onion_dialog.c	\
+	gap_onion_dialog.h	\
+	gap_onion_worker.c	\
+	gap_onion_worker.h	\
+	gap_layer_copy.c        \
+	gap_layer_copy.h        \
+	gap_lib.c		\
+	gap_lib.h		\
+	gap_lock.c		\
+	gap_lock.h		\
+	gap_navi_activtable.c	\
+	gap_navi_activtable.h	\
+	gap_match.c		\
+	gap_match.h		\
+	gap_pdb_calls.c		\
+	gap_pdb_calls.h		\
+	gap_thumbnail.c		\
+	gap_thumbnail.h		\
+	gap_vin.c		\
+	gap_vin.h
 
 AM_CPPFLAGS = \
 	-DLOCALEDIR=\""$(LOCALEDIR)"\"

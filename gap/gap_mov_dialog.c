@@ -30,6 +30,9 @@
  */
 
 /* revision history:
+ * gimp    1.3.14a; 2003/05/24  hof: moved render procedures to module gap_mov_render
+ *                                   placed OK button right.
+ *                                   added pixmaps (thanks to Jakub Steiner for providing the pixmaps)
  * gimp    1.3.12a; 2003/05/03  hof: merge into CVS-gimp-gap project, replace gimp_help_init by _gimp_help_init
  * gimp    1.3.4b;  2002/03/15  hof: temp. reverted setting of preview widget size.
  * gimp    1.3.4;   2002/03/12  hof: ported to gtk+-2.0.0
@@ -62,6 +65,8 @@
  * version 0.90.00; 1997.12.14  hof: 1.st (pre) release
  */
 
+#include "config.h"
+
 /* SYTEM (UNIX) includes */ 
 #include <stdio.h>
 #include <string.h>
@@ -76,7 +81,6 @@
 
 /* GIMP includes */
 #include "gtk/gtk.h"
-#include "config.h"
 #include "gap-intl.h"
 #include "libgimp/gimp.h"
 #include "libgimp/gimpui.h"
@@ -86,13 +90,30 @@
 #include "gap_lib.h"
 #include "gap_mov_exec.h"
 #include "gap_mov_dialog.h"
+#include "gap_mov_render.h"
 #include "gap_pdb_calls.h"
+#include "gap_vin.h"
 #include "gap_arr_dialog.h"
- 
-/* Some useful macros */
+
+
+#include <pixmaps/add-point.xpm>
+#include <pixmaps/anim-preview.xpm>
+#include <pixmaps/insert-point.xpm>
+#include <pixmaps/reset-point.xpm>
+#include <pixmaps/reset-all-points.xpm>
+#include <pixmaps/delete-all-points.xpm>
+#include <pixmaps/delete-point.xpm>
+#include <pixmaps/first-point.xpm>
+#include <pixmaps/last-point.xpm>
+#include <pixmaps/next-point.xpm>
+#include <pixmaps/prev-point.xpm>
+#include <pixmaps/rotate-follow.xpm>
+#include <pixmaps/source-image.xpm>
+#include <pixmaps/stepmode.xpm>
 
 extern      int gap_debug; /* ==0  ... dont print debug infos */
 
+/* Some useful macros */
 #define ENTRY_WIDTH 60
 #define SCALE_WIDTH 125
 #define PREVIEW_SIZE 256
@@ -162,12 +183,11 @@ typedef struct
  	
   gint          in_call;
   char         *pointfile_name;
-} t_mov_path_preview;
 
-typedef struct {
-  t_mov_path_preview *path_ptr;
-  GtkWidget          *dlg;
-} t_ok_data;
+  gint                first_nr;
+  gint                last_nr;
+  GtkWidget          *shell;
+} t_mov_path_preview;
 
 
 /* p_buildmenu Structures */
@@ -252,6 +272,7 @@ static void mov_stepmode_menu_callback  (GtkWidget *, gpointer);
 static void mov_gint_toggle_callback    (GtkWidget *, gpointer);
 static void mov_show_path_callback      (GtkWidget *, gpointer);
 
+static GtkWidget * mov_gtk_button_new_with_pixmap (char* label_text, GtkWidget *shell, char **pixmap_data);
 
 /*  the option menu items -- the paint modes  */
 static MenuItem option_paint_items[] =
@@ -444,7 +465,6 @@ mov_dialog ( GimpDrawable *drawable, t_mov_path_preview *path_ptr,
   GtkWidget *src_sel_frame;
   GtkWidget *check_button;
   GtkObject *adj;
-  t_ok_data  ok_data;
 
   if(gap_debug) printf("GAP-DEBUG: START mov_dialog\n");
 
@@ -452,8 +472,10 @@ mov_dialog ( GimpDrawable *drawable, t_mov_path_preview *path_ptr,
 
   /* dialog */
   dlg = gtk_dialog_new ();
-  ok_data.dlg = dlg;
-  ok_data.path_ptr = path_ptr;
+  path_ptr->shell = dlg;
+  path_ptr->first_nr = first_nr;
+  path_ptr->last_nr = last_nr;
+  
   gtk_window_set_title (GTK_WINDOW (dlg), _("Move Path"));
   gtk_window_set_position (GTK_WINDOW (dlg), GTK_WIN_POS_MOUSE);
   g_signal_connect (G_OBJECT (dlg), "destroy",
@@ -469,16 +491,17 @@ mov_dialog ( GimpDrawable *drawable, t_mov_path_preview *path_ptr,
   gtk_box_pack_end (GTK_BOX (GTK_DIALOG (dlg)->action_area), hbbox, FALSE, FALSE, 0);
   gtk_widget_show (hbbox);
       
-  button = gtk_button_new_from_stock ( GTK_STOCK_OK);
+
+  button = gtk_button_new_from_stock ( GTK_STOCK_CANCEL);
   GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
   gtk_box_pack_start (GTK_BOX (hbbox), button, TRUE, TRUE, 0);
-  gtk_widget_grab_default (button);
   gtk_widget_show (button);
-  g_signal_connect (G_OBJECT (button), "clicked",
-		    G_CALLBACK  (mov_ok_callback),
-		    &ok_data);
+  g_signal_connect_swapped (G_OBJECT (button), "clicked",
+			   G_CALLBACK (gtk_widget_destroy),
+			   dlg);
 
-  button = gtk_button_new_with_label ( _("Update Preview"));
+  /* button = gtk_button_new_with_label ( _("Update Preview")); */
+  button = gtk_button_new_from_stock ( GTK_STOCK_REFRESH );
   GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
   gtk_box_pack_start (GTK_BOX (hbbox), button, TRUE, TRUE, 0);
   gimp_help_set_help_data(button,
@@ -489,7 +512,7 @@ mov_dialog ( GimpDrawable *drawable, t_mov_path_preview *path_ptr,
 		    G_CALLBACK  (mov_upvw_callback),
 		    path_ptr);
 
-  button = gtk_button_new_with_label ( _("Anim Preview"));
+  button = mov_gtk_button_new_with_pixmap (  _("Anim Preview"), path_ptr->shell, anim_preview_xpm);
   GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
   gtk_box_pack_start (GTK_BOX (hbbox), button, TRUE, TRUE, 0);
   gimp_help_set_help_data(button,
@@ -500,13 +523,15 @@ mov_dialog ( GimpDrawable *drawable, t_mov_path_preview *path_ptr,
 		    G_CALLBACK (mov_apv_callback),
 		    path_ptr);
 
-  button = gtk_button_new_from_stock ( GTK_STOCK_CANCEL);
+
+  button = gtk_button_new_from_stock ( GTK_STOCK_OK);
   GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
   gtk_box_pack_start (GTK_BOX (hbbox), button, TRUE, TRUE, 0);
+  gtk_widget_grab_default (button);
   gtk_widget_show (button);
-  g_signal_connect_swapped (G_OBJECT (button), "clicked",
-			   G_CALLBACK (gtk_widget_destroy),
-			   dlg);
+  g_signal_connect (G_OBJECT (button), "clicked",
+		    G_CALLBACK  (mov_ok_callback),
+		    path_ptr);
 
   /*  parameter settings  */
   frame = gtk_frame_new ( _("Copy moving source-layer(s) into frames"));
@@ -569,25 +594,9 @@ mov_dialog ( GimpDrawable *drawable, t_mov_path_preview *path_ptr,
   g_signal_connect (G_OBJECT (adj), "value_changed",
 		    G_CALLBACK (gimp_int_adjustment_update),
 		    &pvals->dst_range_end);
-
-  /* the Preview Frame scale_entry */
-  adj = gimp_scale_entry_new( GTK_TABLE (table), 0, 2,        /* table col, row */
-			  _("Preview Frame:"),                /* label text */
-			  SCALE_WIDTH, ENTRY_WIDTH,           /* scalesize spinsize */
-			  (gfloat)path_ptr->preview_frame_nr, /* value */
-			  (gfloat)first_nr, (gfloat)last_nr,  /* lower, upper */
-			  1, 10,                              /* step, page */
-			  0,                                  /* digits */
-			  TRUE,                               /* constrain */
-			  (gfloat)first_nr, (gfloat)last_nr,  /* lower, upper (unconstrained) */
-			  _("Frame to show when UpdPreview button is pressed"),
-			  NULL);                              /* tooltip privatetip */
-  g_signal_connect (G_OBJECT (adj), "value_changed",
-		    G_CALLBACK (gimp_int_adjustment_update),
-		    &path_ptr->preview_frame_nr);
 			  
   /* the Layerstack scale_entry */
-  adj = gimp_scale_entry_new( GTK_TABLE (table), 0, 3,        /* table col, row */
+  adj = gimp_scale_entry_new( GTK_TABLE (table), 0, 2,        /* table col, row */
 			  _("Layerstack:"),                   /* label text */
 			  SCALE_WIDTH, ENTRY_WIDTH,           /* scalesize spinsize */
 			  (gfloat)pvals->dst_layerstack,      /* value */
@@ -647,7 +656,8 @@ mov_dialog ( GimpDrawable *drawable, t_mov_path_preview *path_ptr,
   if(gap_debug) printf("GAP-DEBUG: END mov_dialog\n");
 
   return mov_int.run;
-}
+}  /* end mov_dialog */
+
 
 /* ============================================================================
  * implementation of CALLBACK procedures
@@ -665,10 +675,9 @@ static void
 mov_ok_callback (GtkWidget *widget,
 		      gpointer	 data)
 {
-  t_ok_data   *ok_data_ptr;
+  t_mov_path_preview   *path_ptr;
 
-  ok_data_ptr = data;
-
+  path_ptr = data;
 
   if(pvals != NULL)
   {
@@ -682,7 +691,7 @@ mov_ok_callback (GtkWidget *widget,
     }
   }
 
-  if(!p_chk_keyframes(ok_data_ptr->path_ptr))
+  if(!p_chk_keyframes(path_ptr))
   {
     return;
   }
@@ -694,9 +703,9 @@ mov_ok_callback (GtkWidget *widget,
     /* if we have only one point duplicate that point
      * (move algorithm needs at least 2 points)
      */
-    mov_padd_callback(NULL, ok_data_ptr->path_ptr);
+    mov_padd_callback(NULL, path_ptr);
   }
-  gtk_widget_destroy (ok_data_ptr->dlg);
+  gtk_widget_destroy (path_ptr->shell);
 }
 
 static void
@@ -1732,6 +1741,94 @@ mov_src_sel_create()
   return frame;
 }	/* end mov_src_sel_create */
 
+/* ============================================================================
+ * mov_gtk_button_new_with_pixmap
+ * ============================================================================
+ * create button with pixmap and label
+ * both pixmap_data and label are optional (pass NULL iif you dont need one of them)
+ * return the newly created button widget
+ */
+
+static GtkWidget *
+mov_gtk_button_new_with_pixmap (char* label_text, GtkWidget *shell, char **pixmap_data)
+{
+  GtkWidget      *label;
+  GtkWidget      *button;
+  GtkWidget      *pixmap_widget;
+  GdkPixmap      *pixmap;
+  GdkBitmap      *mask;
+  /* GtkStyle       *style; */
+  GdkColormap    *colormap;
+
+  label = NULL;
+  pixmap_widget = NULL;
+  
+  button = gtk_button_new ();
+
+  if (label_text)
+  { 
+    label = gtk_label_new ( label_text );
+  }
+
+  if(pixmap_data)
+  {
+    /* style = gtk_widget_get_style (shell);
+     * printf("style: %d\n", (int)style);
+     * colormap = gtk_widget_get_colormap (shell);
+     * pixmap = gdk_pixmap_create_from_xpm_d (shell->window,
+     *                                        &mask,
+     *					     &style->bg[GTK_STATE_NORMAL],
+     *				     pixmap_data
+     *                                    );
+     */
+     colormap = gtk_widget_get_colormap (shell);
+     pixmap = gdk_pixmap_colormap_create_from_xpm_d (NULL,
+                                             colormap,
+                                             &mask,
+					     NULL,
+					     pixmap_data
+                                            );
+     if(pixmap == NULL)
+     {
+       printf("could not create pixmap for label: %s\n", label_text);
+     }
+     else
+     {
+       pixmap_widget = gtk_pixmap_new (pixmap, mask);
+     }
+
+   }
+   if(pixmap_widget) 
+   {
+     GtkWidget *hbox;
+
+     hbox = gtk_hbox_new (FALSE, 6);
+
+     gtk_box_pack_start (GTK_BOX (hbox), pixmap_widget, FALSE, FALSE, 0);
+     if(label)
+     {
+       gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+       gtk_widget_show (label);
+     }
+
+     gtk_widget_show (pixmap_widget);
+     gtk_widget_show (hbox);
+
+     gtk_container_add (GTK_CONTAINER (button), hbox);
+   }
+   else
+   {
+     if(label)
+     {
+       gtk_widget_show (label);
+
+       gtk_container_add (GTK_CONTAINER (button), label);
+     }
+   }
+
+  return(button);
+}  /* end mov_gtk_button_new_with_pixmap */
+
 
 /* ============================================================================
  * Create new path_preview Frame, and return it (GtkFrame).
@@ -1757,10 +1854,12 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_path_preview *path_ptr)
   GtkWidget	 *preview;
   GtkWidget      *button_table;
   GtkWidget      *pv_table;
+  GtkWidget      *pv_sub_table;
   GtkWidget      *button;
   GtkWidget      *check_button;
   GtkObject      *adj;
   gint           row;
+
 
   path_ptr->drawable = drawable;
   path_ptr->dwidth   = gimp_drawable_width(drawable->drawable_id );
@@ -1927,8 +2026,8 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_path_preview *path_ptr)
   gtk_widget_show (hbox);
   gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
 
-  /* the preview table (1 rows) */
-  pv_table = gtk_table_new ( 1, 1, FALSE );
+  /* the preview table (2 rows) */
+  pv_table = gtk_table_new ( 2, 1, FALSE );
   gtk_container_set_border_width (GTK_CONTAINER (pv_table), 2 );
   gtk_table_set_row_spacings (GTK_TABLE (pv_table), 2);
   gtk_table_set_col_spacings (GTK_TABLE (pv_table), 4);
@@ -1939,6 +2038,32 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_path_preview *path_ptr)
   gtk_frame_set_shadow_type( GTK_FRAME( pframe ), GTK_SHADOW_IN );
   gtk_table_attach( GTK_TABLE(pv_table), pframe, 0, 1, 0, 1,
 		    0, 0, 0, 0 );
+
+
+  /* the preview sub table (2 rows) */
+  pv_sub_table = gtk_table_new ( 1, 3, FALSE );
+
+  /* the Preview Frame scale_entry */
+  adj = gimp_scale_entry_new( GTK_TABLE (pv_sub_table), 0, 1,     /* table col, row */
+			  _("Preview Frame:"),                /* label text */
+			  SCALE_WIDTH, ENTRY_WIDTH,           /* scalesize spinsize */
+			  (gfloat)path_ptr->preview_frame_nr, /* value */
+			  (gfloat)path_ptr->first_nr,         /* lower */
+			  (gfloat)path_ptr->last_nr,          /* upper */
+			  1, 10,                              /* step, page */
+			  0,                                  /* digits */
+			  TRUE,                               /* constrain */
+			  (gfloat)path_ptr->first_nr,         /* lower (unconstrained)*/
+			  (gfloat)path_ptr->last_nr,          /* upper (unconstrained)*/
+			  _("Frame to show when UpdPreview button is pressed"),
+			  NULL);                              /* tooltip privatetip */
+  g_signal_connect (G_OBJECT (adj), "value_changed",
+		    G_CALLBACK (gimp_int_adjustment_update),
+		    &path_ptr->preview_frame_nr);
+  gtk_table_attach( GTK_TABLE(pv_table), pv_sub_table, 0, 1, 1, 2,
+		    0, 0, 0, 0 );
+  gtk_widget_show (pv_sub_table);
+
 
   /* PREVIEW */
   path_ptr->preview = preview = gtk_preview_new( path_ptr->bpp==3 ? GTK_PREVIEW_COLOR : GTK_PREVIEW_GRAYSCALE );
@@ -1991,7 +2116,7 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_path_preview *path_ptr)
 
   row++;
 
-  button = gtk_button_new_with_label ( _("Add Point"));
+  button = mov_gtk_button_new_with_pixmap ( _("Add Point"), path_ptr->shell, add_point_xpm);
   GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
   gtk_table_attach( GTK_TABLE(button_table), button, 0, 1, row, row+1,
 		    GTK_FILL, 0, 0, 0 );
@@ -2021,7 +2146,7 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_path_preview *path_ptr)
 
   row++;
 
-  button = gtk_button_new_with_label ( _("Insert Point"));
+  button = mov_gtk_button_new_with_pixmap ( _("Insert Point"), path_ptr->shell, insert_point_xpm);
   GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
   gtk_table_attach( GTK_TABLE(button_table), button, 0, 1, row, row+1,
 		    GTK_FILL, 0, 0, 0 );
@@ -2033,7 +2158,7 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_path_preview *path_ptr)
 		    G_CALLBACK (mov_pins_callback),
 		    path_ptr);
 
-  button = gtk_button_new_with_label ( _("Delete Point"));
+  button = mov_gtk_button_new_with_pixmap ( _("Delete Point"), path_ptr->shell, delete_point_xpm);
   GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
   gtk_table_attach( GTK_TABLE(button_table), button, 1, 2, row, row+1,
 		    GTK_FILL, 0, 0, 0 );
@@ -2047,7 +2172,7 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_path_preview *path_ptr)
 
   row++;
 
-  button = gtk_button_new_with_label ( _("Prev Point"));
+  button = mov_gtk_button_new_with_pixmap ( _("Prev Point"), path_ptr->shell, prev_point_xpm);
   GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
   gtk_table_attach( GTK_TABLE(button_table), button, 0, 1, row, row+1,
 		    GTK_FILL, 0, 0, 0 );
@@ -2059,7 +2184,7 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_path_preview *path_ptr)
 		    G_CALLBACK (mov_pprev_callback),
 		    path_ptr);
 
-  button = gtk_button_new_with_label ( _("Next Point"));
+  button = mov_gtk_button_new_with_pixmap ( _("Next Point"), path_ptr->shell, next_point_xpm);
   GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
   gtk_table_attach( GTK_TABLE(button_table), button, 1, 2, row, row+1,
 		    GTK_FILL, 0, 0, 0 );
@@ -2073,7 +2198,7 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_path_preview *path_ptr)
 
   row++;
 
-  button = gtk_button_new_with_label ( _("First Point"));
+  button = mov_gtk_button_new_with_pixmap ( _("First Point"), path_ptr->shell, first_point_xpm);
   GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
   gtk_table_attach( GTK_TABLE(button_table), button, 0, 1, row, row+1,
 		    GTK_FILL, 0, 0, 0 );
@@ -2085,7 +2210,7 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_path_preview *path_ptr)
 		    G_CALLBACK (mov_pfirst_callback),
 		    path_ptr);
 
-  button = gtk_button_new_with_label ( _("Last Point"));
+  button = mov_gtk_button_new_with_pixmap ( _("Last Point"), path_ptr->shell, last_point_xpm);
   GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
   gtk_table_attach( GTK_TABLE(button_table), button, 1, 2, row, row+1,
 		    GTK_FILL, 0, 0, 0 );
@@ -2099,7 +2224,7 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_path_preview *path_ptr)
 
   row++;
 
-  button = gtk_button_new_with_label ( _("Clear Point"));
+  button = mov_gtk_button_new_with_pixmap ( _("Reset Point"), path_ptr->shell, reset_point_xpm);
   GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
   gtk_table_attach( GTK_TABLE(button_table), button, 0, 1, row, row+1,
 		    GTK_FILL, 0, 0, 0 );
@@ -2111,7 +2236,7 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_path_preview *path_ptr)
 		    G_CALLBACK (mov_pclr_callback),
 		    path_ptr);
 
-  button = gtk_button_new_with_label ( _("Clear All Points"));
+  button = mov_gtk_button_new_with_pixmap ( _("Reset All Points"), path_ptr->shell, reset_all_points_xpm);
   GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
   gtk_table_attach( GTK_TABLE(button_table), button, 1, 2, row, row+1,
 		    GTK_FILL, 0, 0, 0 );
@@ -2126,7 +2251,7 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_path_preview *path_ptr)
 
   row++;
 
-  button = gtk_button_new_with_label ( _("Rotate Follow"));
+  button = mov_gtk_button_new_with_pixmap ( _("Rotate Follow"), path_ptr->shell, rotate_follow_xpm);
   GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
   gtk_table_attach( GTK_TABLE(button_table), button, 0, 1, row, row+1,
 		    GTK_FILL, 0, 0, 0 );
@@ -2140,7 +2265,7 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_path_preview *path_ptr)
 		    G_CALLBACK (mov_prot_follow_callback),
 		    path_ptr);
 
-  button = gtk_button_new_with_label ( _("Delete All Points"));
+  button = mov_gtk_button_new_with_pixmap ( _("Delete All Points"), path_ptr->shell, delete_all_points_xpm);
   GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
   gtk_table_attach( GTK_TABLE(button_table), button, 1, 2, row, row+1,
 		    GTK_FILL, 0, 0, 0 );
@@ -2155,7 +2280,8 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_path_preview *path_ptr)
   
   row++;
 
-  button = gtk_button_new_with_label ( _("Load Points"));
+  /*button = gtk_button_new_with_label ( _("Load Points")); */
+  button = gtk_button_new_from_stock (GTK_STOCK_OPEN );
   GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
   gtk_table_attach( GTK_TABLE(button_table), button, 0, 1, row, row+1,
 		    GTK_FILL, 0, 0, 0 );
@@ -2167,7 +2293,8 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_path_preview *path_ptr)
 		    G_CALLBACK (mov_pload_callback),
 		    path_ptr);
 
-  button = gtk_button_new_with_label ( _("Save Points"));
+  /* button = gtk_button_new_with_label ( _("Save Points")); */
+  button = gtk_button_new_from_stock ( GTK_STOCK_SAVE );
   GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
   gtk_table_attach( GTK_TABLE(button_table), button, 1, 2, row, row+1,
 		    GTK_FILL, 0, 0, 0 );
@@ -2195,7 +2322,7 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_path_preview *path_ptr)
   if(gap_debug) printf("pvals path_ptr=%d,%d\n", path_ptr->p_x, path_ptr->p_y );
   if(gap_debug) printf("path_ptr cur=%d,%d\n", path_ptr->curx, path_ptr->cury );
   return frame;
-}
+}  /* end mov_path_prevw_create */
 
 static void
 mov_path_prevw_destroy ( GtkWidget *widget,
@@ -2673,44 +2800,6 @@ p_chk_keyframes(t_mov_path_preview *path_ptr)
   return(TRUE);
 }	/* end p_chk_keyframes */
 
-/* ============================================================================
- * p_get_flattened_layer
- *   flatten the given image and return pointer to the
- *   (only) remaining drawable. 
- * ============================================================================
- */
-gint32
-p_get_flattened_layer(gint32 image_id, GimpMergeType mergemode)
-{
-  GimpImageBaseType l_type;
-  guint   l_width, l_height;
-  gint32  l_layer_id;
- 
-  /* get info about the image */
-  l_width  = gimp_image_width(image_id);
-  l_height = gimp_image_height(image_id);
-  l_type   = gimp_image_base_type(image_id);
-
-  l_type   = (l_type * 2); /* convert from GimpImageBaseType to GimpImageType */
-
-  /* add 2 full transparent dummy layers at top
-   * (because gimp_image_merge_visible_layers complains
-   * if there are less than 2 visible layers)
-   */
-  l_layer_id = gimp_layer_new(image_id, "dummy",
-                                 l_width, l_height,  l_type,
-                                 0.0,       /* Opacity full transparent */     
-                                 0);        /* NORMAL */
-  gimp_image_add_layer(image_id, l_layer_id, 0);
-
-  l_layer_id = gimp_layer_new(image_id, "dummy",
-                                 10, 10,  l_type,
-                                 0.0,       /* Opacity full transparent */     
-                                 0);        /* NORMAL */
-  gimp_image_add_layer(image_id, l_layer_id, 0);
-
-  return gimp_image_merge_visible_layers (image_id, mergemode);
-}	/* end p_get_flattened_layer */
 
 /* ============================================================================
  * p_get_flattened_drawable
@@ -2775,7 +2864,7 @@ p_get_prevw_drawable (t_mov_path_preview *path_ptr)
     }
     if(pvals->src_stepmode >= GAP_STEP_FRAME)
     {
-      p_fetch_src_frame (pvals, -1);  /* negative value fetches the selected frame number */
+      p_mov_fetch_src_frame (pvals, -1);  /* negative value fetches the selected frame number */
     }  
 
     
@@ -2844,223 +2933,6 @@ void p_set_handle_offsets(t_mov_values *val_ptr, t_mov_current *cur_ptr)
    }
 }	/* end p_set_handle_offsets */
 
-
-#define BOUNDS(a,x,y)  ((a < x) ? x : ((a > y) ? y : a))
-
-/* ============================================================================
- * p_mov_render
- * insert current source layer into image
- *    at current settings (position, size opacity ...)
- * ============================================================================
- */
-
-  /*  why dont use: l_cp_layer_id = gimp_layer_copy(src_id);
-   *  ==> Sorry this procedure works only for layers within the same image !!
-   *  Workaround:
-   *    use my 'private' version of layercopy
-   */
-
-gint
-p_mov_render(gint32 image_id, t_mov_values *val_ptr, t_mov_current *cur_ptr)
-{
-  gint32       l_cp_layer_id;
-  gint32       l_cp_layer_mask_id;
-  gint         l_offset_x, l_offset_y;            /* new offsets within dest. image */
-  gint         l_src_offset_x, l_src_offset_y;    /* layeroffsets as they were in src_image */
-  guint        l_new_width;
-  guint        l_new_height;
-  guint        l_orig_width;
-  guint        l_orig_height;
-  gint         l_resized_flag;
-  gboolean     l_interpolation;   
-  gint          lx1, ly1, lx2, ly2;
-  guint        l_image_width;
-  guint        l_image_height;
- 
-  if(gap_debug) printf("p_mov_render: frame/layer: %ld/%ld  X=%f, Y=%f\n"
-                "       Width=%f Height=%f\n"
-                "       Opacity=%f  Rotate=%f  clip_to_img = %d force_visibility = %d\n"
-                "       src_stepmode = %d\n",
-                     cur_ptr->dst_frame_nr, cur_ptr->src_layer_idx,
-                     cur_ptr->currX, cur_ptr->currY,
-                     cur_ptr->currWidth,
-                     cur_ptr->currHeight,
-                     cur_ptr->currOpacity,
-                     cur_ptr->currRotation,
-                     val_ptr->clip_to_img,
-                     val_ptr->src_force_visible,
-		     val_ptr->src_stepmode);
-
-  if(val_ptr->src_stepmode < GAP_STEP_FRAME)
-  {
-    if(gap_debug) 
-    {
-      printf("p_mov_render: Before p_my_layer_copy image_id:%d src_layer_id:%d\n"
-              ,(int)image_id, (int)cur_ptr->src_layers[cur_ptr->src_layer_idx]);
-    }
-    /* make a copy of the current source layer
-     * (using current opacity  & paintmode values)
-     */
-     l_cp_layer_id = p_my_layer_copy(image_id,
-                                   cur_ptr->src_layers[cur_ptr->src_layer_idx],
-                                   cur_ptr->currOpacity,
-                                   val_ptr->src_paintmode,
-                                   &l_src_offset_x,
-                                   &l_src_offset_y);
-  }
-  else
-  {
-    if(gap_debug) 
-    {
-      printf("p_mov_render: Before p_my_layer_copy image_id:%d cache_tmp_layer_id:%d\n"
-              ,(int)image_id, (int)val_ptr->cache_tmp_layer_id);
-    }
-     /* for FRAME based stepmodes use the flattened layer in the cahed frame image */
-     l_cp_layer_id = p_my_layer_copy(image_id,
-                                   val_ptr->cache_tmp_layer_id,
-                                   cur_ptr->currOpacity,
-                                   val_ptr->src_paintmode,
-                                   &l_src_offset_x,
-                                   &l_src_offset_y);
-  }
-
-
-  /* add the copied layer to current destination image */
-  if(gap_debug) printf("p_mov_render: after layer copy layer_id=%d\n", (int)l_cp_layer_id);
-  if(l_cp_layer_id < 0)
-  {
-     return -1;
-  }  
-
-  gimp_image_add_layer(image_id, l_cp_layer_id, 
-                       val_ptr->dst_layerstack);
-
-  if(gap_debug) printf("p_mov_render: after add layer\n");
-
-  if(val_ptr->src_force_visible)
-  {
-     gimp_layer_set_visible(l_cp_layer_id, TRUE);
-  }
-
-  /* check for layermask */
-  l_cp_layer_mask_id = gimp_layer_get_mask_id(l_cp_layer_id);
-  if(l_cp_layer_mask_id >= 0)
-  {
-     /* apply the layermask
-      *   some transitions (especially rotate) can't operate proper on
-      *   layers with masks !
-      *   (tests with gimp_rotate resulted in trashed images,
-      *    even if the mask was rotated too)
-      */
-      gimp_image_remove_layer_mask(image_id, l_cp_layer_id, 0 /* 0==APPLY */ );
-  }
-
-  /* remove selection (if there is one)
-   *   if there is a selection transitions (gimp_rotate)
-   *   will create new layer and do not operate on l_cp_layer_id
-   */
-  gimp_selection_none(image_id);
-
-  l_resized_flag = 0;
-  l_orig_width  = gimp_drawable_width(l_cp_layer_id);
-  l_orig_height = gimp_drawable_height(l_cp_layer_id);
-  l_new_width  = l_orig_width;
-  l_new_height = l_orig_height;
-  
-  if((cur_ptr->currWidth  > 100.01) || (cur_ptr->currWidth < 99.99)
-  || (cur_ptr->currHeight > 100.01) || (cur_ptr->currHeight < 99.99))
-  {
-     /* have to scale layer */
-     l_resized_flag = 1;
-
-     l_new_width  = (l_orig_width  * cur_ptr->currWidth) / 100;
-     l_new_height = (l_orig_height * cur_ptr->currHeight) / 100;
-     gimp_layer_scale(l_cp_layer_id, l_new_width, l_new_height, 0);
-     
-  }
-
-  if((cur_ptr->currRotation  > 0.5) || (cur_ptr->currRotation < -0.5))
-  {
-    l_resized_flag = 1;
-    l_interpolation = TRUE;  /* rotate always with smoothing option turned on */
-
-    /* have to rotate the layer (rotation also changes size as needed) */
-    p_gimp_rotate_degree(l_cp_layer_id, l_interpolation, cur_ptr->currRotation);
-
-    
-    l_new_width  = gimp_drawable_width(l_cp_layer_id);
-    l_new_height = gimp_drawable_height(l_cp_layer_id);
-  }
-  
-  if(l_resized_flag == 1)
-  {
-     /* adjust offsets according to handle and change of size */
-     switch(val_ptr->src_handle)
-     {
-        case GAP_HANDLE_LEFT_BOT:
-           l_src_offset_y += ((gint)l_orig_height - (gint)l_new_height);
-           break;
-        case GAP_HANDLE_RIGHT_TOP:
-           l_src_offset_x += ((gint)l_orig_width - (gint)l_new_width);
-           break;
-        case GAP_HANDLE_RIGHT_BOT:
-           l_src_offset_x += ((gint)l_orig_width - (gint)l_new_width);
-           l_src_offset_y += ((gint)l_orig_height - (gint)l_new_height);
-           break;
-        case GAP_HANDLE_CENTER:
-           l_src_offset_x += (((gint)l_orig_width - (gint)l_new_width) / 2);
-           l_src_offset_y += (((gint)l_orig_height - (gint)l_new_height) / 2);
-           break;
-        case GAP_HANDLE_LEFT_TOP:
-        default:
-           break;
-     }
-  }
-  
-  /* calculate offsets in destination image */
-  l_offset_x = (cur_ptr->currX - cur_ptr->l_handleX) + l_src_offset_x;
-  l_offset_y = (cur_ptr->currY - cur_ptr->l_handleY) + l_src_offset_y;
-  
-  /* modify coordinate offsets of the copied layer within dest. image */
-  gimp_layer_set_offsets(l_cp_layer_id, l_offset_x, l_offset_y);
-
-  /* clip the handled layer to image size if desired */
-  if(val_ptr->clip_to_img != 0)
-  {
-     l_image_width = gimp_image_width(image_id);
-     l_image_height = gimp_image_height(image_id);
-     
-     lx1 = BOUNDS (l_offset_x, 0, l_image_width);
-     ly1 = BOUNDS (l_offset_y, 0, l_image_height);
-     lx2 = BOUNDS ((l_new_width + l_offset_x), 0, l_image_width);
-     ly2 = BOUNDS ((l_new_height + l_offset_y), 0, l_image_height);
-
-     l_new_width = lx2 - lx1;
-     l_new_height = ly2 - ly1;
-     
-     if (l_new_width && l_new_height)
-     {
-       gimp_layer_resize(l_cp_layer_id, l_new_width, l_new_height,
-			-(lx1 - l_offset_x),
-			-(ly1 - l_offset_y));
-     }
-     else
-     {
-       /* no part of the layer is inside of the current frame (this image)
-        * instead of removing we make the layer small and move him outside
-        * the image.
-        * (that helps to keep the layerstack position of the inserted layer(s)
-        * constant in all handled anim_frames) 
-        */
-       gimp_layer_resize(l_cp_layer_id, 2, 2, -3, -3);
-     }
-  }
-
-  if(gap_debug) printf("GAP p_mov_render: exit OK\n");
-  
-  return 0;
-}	/* end p_mov_render */
-
 /* ============================================================================
  * p_buildmenu
  *    build menu widget for all Items passed in the MenuItems Parameter
@@ -3096,142 +2968,3 @@ p_buildmenu (MenuItem            *items)
 
   return menu;
 }	/* end p_buildmenu */
-
-/* ============================================================================
- * p_fetch_src_frame
- *   fetch the requested AnimFrame SourceImage into cache_tmp_image_id
- *   and
- *    - reduce all visible layer to one layer (cache_tmp_layer_id)
- *    - (scale to animated preview size if called for AnimPreview )
- *    - reuse cached image (for subsequent calls for the same framenumber
- *      of the same source image -- for  GAP_STEP_FRAME_NONE
- *    - never load current frame number from diskfile (use duplicate of the src_image)
- *  returns 0 (OK) or -1 (on Errors)
- * ============================================================================
- */
-gint
-p_fetch_src_frame(t_mov_values *pvals,  gint32 wanted_frame_nr)
-{  
-  t_anim_info  *l_ainfo_ptr;
-  t_anim_info  *l_old_ainfo_ptr;
-
-  if(gap_debug)
-  {
-     printf("p_fetch_src_frame: START src_image_id: %d wanted_frame_nr:%d"
-            " cache_src_image_id:%d cache_frame_number:%d\n"
-            , (int)pvals->src_image_id
-            , (int)wanted_frame_nr
-            , (int)pvals->cache_src_image_id
-            , (int)pvals->cache_frame_number
-            );
-  }
-  
-  if(pvals->src_image_id < 0)
-  {
-     return -1;  
-  }
- 
-  if((pvals->src_image_id != pvals->cache_src_image_id)
-  || (wanted_frame_nr != pvals->cache_frame_number))
-  {
-     if(pvals->cache_tmp_image_id >= 0)
-     {
-        if(gap_debug)
-	{
-	   printf("p_fetch_src_frame: DELETE cache_tmp_image_id:%d\n",
-	            (int)pvals->cache_tmp_image_id);
-        }
-        /* destroy the cached frame image */
-        gimp_image_delete(pvals->cache_tmp_image_id);
-	pvals->cache_tmp_image_id = -1;
-     }
-
-     l_ainfo_ptr =  p_alloc_ainfo(pvals->src_image_id, GIMP_RUN_NONINTERACTIVE);
-
-     if(pvals->cache_ainfo_ptr == NULL)
-     {
-       pvals->cache_ainfo_ptr =  l_ainfo_ptr;
-     }
-     else
-     {
-        if ((pvals->src_image_id == pvals->cache_src_image_id)
-	&&  (strcmp(pvals->cache_ainfo_ptr->basename, l_ainfo_ptr->basename) == 0))
-	{
-           pvals->cache_ainfo_ptr->curr_frame_nr =  l_ainfo_ptr->curr_frame_nr;
-           p_free_ainfo(&l_ainfo_ptr);
-	}
-	else
-	{           
-           /* update cached ainfo  if source image has changed
-	    * (either by id or by its basename)
-	    */
-           l_old_ainfo_ptr = pvals->cache_ainfo_ptr;
-           pvals->cache_ainfo_ptr = l_ainfo_ptr;
-           p_free_ainfo(&l_old_ainfo_ptr);
-	}
-     }
-     
-     if ((wanted_frame_nr == pvals->cache_ainfo_ptr->curr_frame_nr)
-     ||  (wanted_frame_nr < 0))
-     {
-        /* always take the current source frame from the already opened image
-	 * not only for speedup reasons. (the diskfile may contain non actual imagedata)
-	 */
-        pvals->cache_tmp_image_id = gimp_image_duplicate(pvals->src_image_id);
-        wanted_frame_nr = pvals->cache_ainfo_ptr->curr_frame_nr;
-     }
-     else
-     {
-       /* build the source framename */
-       if(pvals->cache_ainfo_ptr->new_filename != NULL)
-       {
-         g_free(pvals->cache_ainfo_ptr->new_filename);
-       }
-       pvals->cache_ainfo_ptr->new_filename = p_alloc_fname(pvals->cache_ainfo_ptr->basename,
-                                	wanted_frame_nr,
-                                	pvals->cache_ainfo_ptr->extension);
-       if(pvals->cache_ainfo_ptr->new_filename == NULL)
-       {
-          printf("gap: error got no source frame filename\n");
-          return -1;
-       }
-
-       /* load the wanted source frame */
-       pvals->cache_tmp_image_id =  p_load_image(pvals->cache_ainfo_ptr->new_filename);
-       if(pvals->cache_tmp_image_id < 0)
-       {
-          printf("gap: load error on src image %s\n", pvals->cache_ainfo_ptr->new_filename);
-          return -1;
-       }
-
-     }
-     
-     pvals->cache_tmp_layer_id = p_get_flattened_layer(pvals->cache_tmp_image_id, GIMP_EXPAND_AS_NECESSARY);
-     
-
-     /* check if we are generating an anim preview
-      * where we must Scale (down) the src image to preview size
-      */
-     if ((pvals->apv_mlayer_image >= 0)
-     &&  ((pvals->apv_scalex != 100.0) || (pvals->apv_scaley != 100.0)))
-     {
-       gint32      l_size_x, l_size_y;
-
-       if(gap_debug)
-       {
-          printf("p_fetch_src_frame: Scale for Animpreview apv_scalex %f apv_scaley %f\n"
-                 , (float)pvals->apv_scalex, (float)pvals->apv_scaley );
-       }
-
-       l_size_x = (gimp_image_width(pvals->cache_tmp_image_id) * pvals->apv_scalex) / 100;
-       l_size_y = (gimp_image_height(pvals->cache_tmp_image_id) * pvals->apv_scaley) / 100;
-       gimp_image_scale(pvals->cache_tmp_image_id, l_size_x, l_size_y);
-     }
-         
-     pvals->cache_src_image_id = pvals->src_image_id;
-     pvals->cache_frame_number = wanted_frame_nr;
-  }
-
-  return 0; /* OK */    
-}	/* end p_fetch_src_frame */
-

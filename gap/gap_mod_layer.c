@@ -28,6 +28,7 @@
  */
 
 /* revision history:
+ * gimp   1.3.14a;   2003/05/17  hof: placed OK button right.
  * gimp   1.3.12a;   2003/05/01  hof: merge into CVS-gimp-gap project
  * gimp   1.3.11a;   2003/01/18  hof: Conditional framesave
  * gimp   1.3.8a;    2002/09/21  hof: gap_lastvaldesc
@@ -149,11 +150,11 @@ int p_layer_modify_dialog(t_anim_info *ainfo_ptr,
 
   l_rc = -1;
   
-  /* the 3 Action Buttons */
-    b_argv[0].but_txt  = GTK_STOCK_OK;
-    b_argv[0].but_val  = 0;
-    b_argv[1].but_txt  = GTK_STOCK_CANCEL;
-    b_argv[1].but_val  = -1;
+  /* the 2 Action Buttons */
+    b_argv[0].but_txt  = GTK_STOCK_CANCEL;
+    b_argv[0].but_val  = -1;
+    b_argv[1].but_txt  = GTK_STOCK_OK;
+    b_argv[1].but_val  = 0;
   
   p_init_arr_arg(&argv[0], WGT_LABEL);
   argv[0].label_txt = _("Perform function on one or more Layer(s)\nin all frames of the selected frame range\n");

@@ -38,6 +38,9 @@
  */
 
 /* revision history:
+ * gimp    1.3.14a; 2003/05/19  hof: GUI standard (OK ist rightmost button)
+ *                                   changed WGT_INT, and WGT_FLT from entry to spinbutton
+ *                                   added WGT_FONTSEL
  * gimp    1.3.12a; 2003/05/03  hof: merge into CVS-gimp-gap project, replace gimp_help_init by _gimp_help_init
  * gimp    1.3.11a; 2003/01/18  hof: merged in changes of the gap_vid_enc project
  *                                   - added WGT_OPT_ENTRY (entry comined with Optionmenu) and WGT_DEFAULT_BUTTON
@@ -126,9 +129,7 @@ static void   filesel_ok_cb              (GtkWidget *widget, t_arr_arg *arr_ptr)
 static void   filesel_open_cb            (GtkWidget *widget, t_arr_arg *arr_ptr);
 static void   filesel_create_value       (char *title, GtkTable *table, int row, t_arr_arg *arr_ptr);
 
-static void   int_entry_update_cb        (GtkWidget *widget, t_arr_arg *arr_ptr);
 static void   int_create_value           (char *title, GtkTable *table, int row, t_arr_arg *arr_ptr);
-static void   flt_entry_update_cb        (GtkWidget *widget, t_arr_arg *arr_ptr);
 static void   flt_create_value           (char *title, GtkTable *table, int row, t_arr_arg *arr_ptr);
 
 static void   toggle_update_cb           (GtkWidget *widget, t_arr_arg *arr_ptr);
@@ -142,7 +143,7 @@ static void   pair_int_create_value     (gchar *title, GtkTable *table, gint row
 static void   pair_flt_create_value     (gchar *title, GtkTable *table, gint row, t_arr_arg *arr_ptr);
 
 static void   default_button_cb           (GtkWidget *widget, t_all_arr_args *arr_all);
-static void   default_button_create_value (char *title, GtkTable *table, int row, t_arr_arg *arr_ptr, t_all_arr_args *arr_all);
+static void   default_button_create_value (char *title, GtkWidget *hbox, t_arr_arg *arr_ptr, t_all_arr_args *arr_all);
 
 
 
@@ -228,18 +229,20 @@ label_create_value(char *title, GtkTable *table, int row, t_arr_arg *arr_ptr, gf
  */
 
 static void
-default_button_create_value(char *title, GtkTable *table, int row, t_arr_arg *arr_ptr, t_all_arr_args *arr_all)
+default_button_create_value(char *title, GtkWidget *hbox, t_arr_arg *arr_ptr, t_all_arr_args *arr_all)
 {
     GtkWidget *button;
 
-    button = gtk_button_new_from_stock (title);    /*button = gtk_button_new_with_label (title);*/
+    button = gtk_button_new_from_stock (GIMP_STOCK_RESET);    /*button = gtk_button_new_with_label (title);*/
     
     gtk_widget_show(button);
     g_signal_connect (G_OBJECT (button), "clicked",
 		      G_CALLBACK(default_button_cb),
 		      arr_all);
+ 
+    gtk_box_pack_start (GTK_BOX (hbox), button, TRUE, TRUE, 0);
 
-    gtk_table_attach(table, button, 0, 3, row, row + 1, GTK_FILL, 0, 0, 0);
+    /* gtk_table_attach(table, button, 0, 3, row, row + 1, GTK_FILL, 0, 0, 0); */
     if(arr_ptr->help_txt != NULL)
     { 
        gimp_help_set_help_data(button, arr_ptr->help_txt,NULL);
@@ -272,6 +275,7 @@ default_button_cb(GtkWidget *widget,  t_all_arr_args *arr_all)
      switch(arr_ptr->widget_type)
      {
         case WGT_TEXT:
+        case WGT_FONTSEL:
         case WGT_OPT_ENTRY:
           if((arr_ptr->text_buf_ret != NULL) && (arr_ptr->text_buf_default))
           {
@@ -332,6 +336,76 @@ default_button_cb(GtkWidget *widget,  t_all_arr_args *arr_all)
   }      /* end for */
 }  /* end default_button_cb */
 
+
+/* --------------------------
+ * FONTSEL
+ * --------------------------
+ */
+
+static void
+p_font_callback   (gchar    *name
+		  ,gboolean  dialog_closing
+		  ,gpointer  user_data)
+{
+  t_arr_arg *arr_ptr;
+  
+  if(gap_debug) printf("p_font_callback: %s  closing:%d\n", name, (int)dialog_closing);
+
+  arr_ptr = (t_arr_arg *)user_data;
+  if(arr_ptr)
+  {
+    g_snprintf(arr_ptr->text_buf_ret, arr_ptr->text_buf_len, "%s", name);
+    gtk_entry_set_text(GTK_ENTRY(arr_ptr->text_entry), arr_ptr->text_buf_ret);
+  }
+  
+  if(dialog_closing)
+  {
+    arr_ptr->text_fontsel = NULL;
+  }
+}
+                  
+
+static void
+fontsel_open_cb(GtkWidget *widget, t_arr_arg *arr_ptr)
+{
+  gchar *fontsel;
+
+  if(arr_ptr->text_fontsel != NULL) return;  /* fontsel is already open */
+
+  fontsel = gimp_interactive_selection_font (arr_ptr->label_txt  /*    *dialogname */
+                                 , arr_ptr->text_buf_ret   /*    *font_name */
+                                 , (GimpRunFontCallback) p_font_callback
+                                 , arr_ptr                /* gpointer   data */
+                                 );
+
+  arr_ptr->text_fontsel = (GtkWidget*)fontsel;
+}
+
+
+static void
+fontsel_create_value(char *title, GtkTable *table, int row, t_arr_arg *arr_ptr)
+{
+  GtkWidget *button;
+
+  entry_create_value(title, table, row, arr_ptr, text_entry_update_cb, arr_ptr->text_buf_ret);
+  gtk_widget_set_sensitive(arr_ptr->text_entry ,FALSE);
+  arr_ptr->text_fontsel = NULL;
+    
+  /* Button  to invoke fontbrowser */  
+  button = gtk_button_new_with_label ( _("Font-Browser"));
+  gtk_table_attach( GTK_TABLE(table), button, 2, 3, row, row +1,
+		    0, 0, 0, 0 );
+  if(arr_ptr->help_txt != NULL)
+  { 
+       gimp_help_set_help_data(button, arr_ptr->help_txt,NULL);
+  }
+  gtk_widget_show (button);
+  g_signal_connect (G_OBJECT (button), "clicked",
+		    G_CALLBACK (fontsel_open_cb),
+		    arr_ptr);   
+}
+
+
 /* --------------------------
  * FILESEL
  * --------------------------
@@ -339,7 +413,7 @@ default_button_cb(GtkWidget *widget,  t_all_arr_args *arr_all)
 static void
 filesel_close_cb(GtkWidget *widget, t_arr_arg *arr_ptr)
 {
-  if(arr_ptr->text_filesel == NULL) return;  /* filesel is already open */
+  if(arr_ptr->text_filesel == NULL) return;  /* filesel is already closed */
 
   gtk_widget_destroy(GTK_WIDGET(arr_ptr->text_filesel));
   arr_ptr->text_filesel = NULL;
@@ -349,7 +423,7 @@ filesel_ok_cb(GtkWidget *widget, t_arr_arg *arr_ptr)
 {
   const gchar *filename;
 
-  if(arr_ptr->text_filesel == NULL) return;  /* filesel is already open */
+  if(arr_ptr->text_filesel == NULL) return;  /* filesel is already closed */
 
   filename = gtk_file_selection_get_filename (GTK_FILE_SELECTION (arr_ptr->text_filesel));
   strncpy(arr_ptr->text_buf_ret, filename, arr_ptr->text_buf_len -1);
@@ -417,6 +491,7 @@ static void
 text_entry_update_cb(GtkWidget *widget, t_arr_arg *arr_ptr)
 {
   if((arr_ptr->widget_type != WGT_TEXT)
+  && (arr_ptr->widget_type != WGT_FONTSEL)
   && (arr_ptr->widget_type != WGT_FILESEL))
   {
     return;
@@ -436,54 +511,135 @@ text_create_value(char *title, GtkTable *table, int row, t_arr_arg *arr_ptr)
 
 
 /* --------------------------
- * INT
+ * SPIN  (INT and FLT)
  * --------------------------
  */
 
 static void
-int_entry_update_cb(GtkWidget *widget, t_arr_arg *arr_ptr)
+spin_create_value(char *title, GtkTable *table, int row, t_arr_arg *arr_ptr
+                , gboolean int_flag
+                , gdouble un_min
+                , gdouble un_max
+                )
 {
-  if(arr_ptr->widget_type != WGT_INT) return;
+  GtkWidget *label;
+  GtkWidget *spinbutton;
+  GtkObject *adj;
+  GtkWidget *hbox1;
+  GtkWidget *label2;
 
-  arr_ptr->int_ret = atol(gtk_entry_get_text(GTK_ENTRY(widget)));
-}
+  gdouble     umin, umax;
+  gdouble     sstep;
+  gdouble     initial_val;
+  gint        l_digits;
 
+  label = gtk_label_new(title);
+  gtk_misc_set_alignment(GTK_MISC(label), 1.0, 0.5);
+  gtk_table_attach(table, label, 0, 1, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
+  gtk_widget_show(label);
+
+  if(int_flag)
+  {
+    sstep = arr_ptr->int_step;
+    initial_val = (gdouble)   arr_ptr->int_ret;
+    l_digits = 0;
+  }
+  else
+  {
+    sstep = arr_ptr->flt_step;
+    initial_val = (gdouble)   arr_ptr->flt_ret;
+    l_digits = arr_ptr->flt_digits;
+  }
+  
+  if(arr_ptr->constraint)
+  {
+    umin = un_min;
+    umax = un_max;
+  }
+  else
+  {
+    umin = arr_ptr->umin;
+    umax = arr_ptr->umax;
+  }
+
+  hbox1 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_show (hbox1);
+
+  spinbutton = gimp_spin_button_new (&adj,  /* return value */
+		      initial_val,
+		      umin,
+		      umax,
+		      sstep,
+		      (gdouble)   arr_ptr->pagestep,
+		      0.0,                 /* page_size */
+		      1.0,                 /* climb_rate */
+		      l_digits              /* digits */
+                      );
+ 
+  gtk_widget_set_size_request(spinbutton, arr_ptr->entry_width, -1);
+  gtk_widget_show (spinbutton);
+
+  label2 = gtk_label_new(" ");
+  gtk_widget_show(label2);
+
+  gtk_box_pack_start (GTK_BOX (hbox1), spinbutton, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (hbox1), label2, TRUE, TRUE, 0);
+
+  gtk_table_attach(GTK_TABLE(table), hbox1, 1, 2, row, row + 1, GTK_FILL, GTK_FILL, 4, 0);
+  if(arr_ptr->help_txt != NULL)
+  { 
+     gimp_help_set_help_data(spinbutton, arr_ptr->help_txt,NULL);
+  }
+  gtk_widget_show(spinbutton);
+
+  if(int_flag)
+  {
+    g_signal_connect
+	(G_OBJECT (adj), "value_changed",
+	 G_CALLBACK (gimp_int_adjustment_update),
+	 &arr_ptr->int_ret);
+  }
+  else
+  {
+    g_signal_connect
+	(G_OBJECT (adj), "value_changed",
+	 G_CALLBACK (gimp_double_adjustment_update),
+	 &arr_ptr->flt_ret);
+  }
+  
+    
+  arr_ptr->adjustment = (GtkWidget *)adj;                
+}  /* end spin_create_value */
+
+
+/* --------------------------
+ * INT
+ * --------------------------
+ */
 static void
 int_create_value(char *title, GtkTable *table, int row, t_arr_arg *arr_ptr)
 {
-    char       *buf;
-
-    buf = g_strdup_printf("%d", arr_ptr->int_ret);
-    entry_create_value(title, table, row, arr_ptr,  int_entry_update_cb, buf);
-    g_free(buf);
+  spin_create_value(title, table, row, arr_ptr
+                   , TRUE  /* int_flag */
+                   , (gdouble) arr_ptr->int_min
+                   , (gdouble) arr_ptr->int_max
+                   );
 }
-
 /* --------------------------
  * FLOAT
  * --------------------------
  */
 
 static void
-flt_entry_update_cb(GtkWidget *widget, t_arr_arg *arr_ptr)
-{
-  if(arr_ptr->widget_type != WGT_FLT) return;
-
-  arr_ptr->flt_ret = atof(gtk_entry_get_text(GTK_ENTRY(widget)));
-}
-
-static void
 flt_create_value(char *title, GtkTable *table, int row, t_arr_arg *arr_ptr)
 {
-    char       *buf;
-    char       *fmt;
-    
-    /* fmt should result something like "%.2f"  */ 
-    fmt = g_strdup_printf("%%.%df", arr_ptr->flt_digits);
-    buf = g_strdup_printf(fmt, arr_ptr->flt_ret);
-    entry_create_value(title, table, row, arr_ptr,  flt_entry_update_cb, buf);
-    g_free(fmt);
-    g_free(buf);
+  spin_create_value(title, table, row, arr_ptr
+                   , FALSE  /* int_flag */
+                   , (gdouble) arr_ptr->flt_min
+                   , (gdouble) arr_ptr->flt_max
+                   );
 }
+
 
 /* --------------------------
  * TOGGLE
@@ -911,40 +1067,6 @@ gint p_array_std_dialog(char *title_txt,
   gtk_box_pack_end (GTK_BOX (GTK_DIALOG (g_arrint.dlg)->action_area), hbbox, FALSE, FALSE, 0);
   gtk_widget_show (hbbox);
 
-  /*  Action area  */
-  for(l_idx = 0; l_idx < b_argc; l_idx++)
-  {
-
-     if(b_argv[l_idx].but_txt == NULL)  
-     {
-       button = gtk_button_new_from_stock (GTK_STOCK_OK);
-     }
-     else
-     {
-       button = gtk_button_new_from_stock (b_argv[l_idx].but_txt);
-     }
-     GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
-     gtk_box_pack_start (GTK_BOX (hbbox), button, FALSE, FALSE, 0);
-     if( b_argv[l_idx].but_val == b_def_val ) gtk_widget_grab_default (button);
-     gtk_widget_show (button);
-     g_signal_connect (G_OBJECT (button), "clicked",
-		       G_CALLBACK (but_array_callback),
-		       &b_argv[l_idx].but_val);
-     
-  }
-
-  if(b_argc < 1)
-  {
-     /* if no buttons are specified use one CLOSE button per default */
-     button = gtk_button_new_from_stock ( GTK_STOCK_CLOSE);
-     GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
-     gtk_box_pack_start (GTK_BOX (hbbox), button, TRUE, TRUE, 0);
-     gtk_widget_grab_default (button);
-     gtk_widget_show (button);
-     g_signal_connect (G_OBJECT (button), "clicked",
-                       G_CALLBACK (but_array_callback),
-                       &l_ok_value);
-  }
 
   /*  parameter settings  */
   if (frame_txt == NULL)   frame = gtk_frame_new ( _("Enter Values"));
@@ -991,6 +1113,9 @@ gint p_array_std_dialog(char *title_txt,
          case WGT_FILESEL:
             filesel_create_value(l_label_txt, GTK_TABLE(table), (l_idx + 1),  arr_ptr);
             break;
+         case WGT_FONTSEL:
+            fontsel_create_value(l_label_txt, GTK_TABLE(table), (l_idx + 1),  arr_ptr);
+            break;
          case WGT_TEXT:
             text_create_value(l_label_txt, GTK_TABLE(table), (l_idx + 1),  arr_ptr);
             break;
@@ -1018,7 +1143,7 @@ gint p_array_std_dialog(char *title_txt,
 	    
 	      arr_all.argc = argc;
 	      arr_all.argv = argv;
-              default_button_create_value(l_label_txt, GTK_TABLE(table), (l_idx + 1), arr_ptr, &arr_all);
+              default_button_create_value(l_label_txt, hbbox, arr_ptr, &arr_all);
 	    }
             break;
          default:     /* undefined widget type */
@@ -1029,6 +1154,43 @@ gint p_array_std_dialog(char *title_txt,
        arr_ptr->widget_locked = FALSE;
     }      /* end for */
   }
+
+
+  /*  Action area  */
+  for(l_idx = 0; l_idx < b_argc; l_idx++)
+  {
+
+     if(b_argv[l_idx].but_txt == NULL)  
+     {
+       button = gtk_button_new_from_stock (GTK_STOCK_OK);
+     }
+     else
+     {
+       button = gtk_button_new_from_stock (b_argv[l_idx].but_txt);
+     }
+     GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
+     gtk_box_pack_start (GTK_BOX (hbbox), button, FALSE, FALSE, 0);
+     if( b_argv[l_idx].but_val == b_def_val ) gtk_widget_grab_default (button);
+     gtk_widget_show (button);
+     g_signal_connect (G_OBJECT (button), "clicked",
+		       G_CALLBACK (but_array_callback),
+		       &b_argv[l_idx].but_val);
+     
+  }
+
+  if(b_argc < 1)
+  {
+     /* if no buttons are specified use one CLOSE button per default */
+     button = gtk_button_new_from_stock ( GTK_STOCK_CLOSE);
+     GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
+     gtk_box_pack_start (GTK_BOX (hbbox), button, TRUE, TRUE, 0);
+     gtk_widget_grab_default (button);
+     gtk_widget_show (button);
+     g_signal_connect (G_OBJECT (button), "clicked",
+                       G_CALLBACK (but_array_callback),
+                       &l_ok_value);
+  }
+
 
   gtk_widget_show (frame);
   if(argc > 0)  {  gtk_widget_show (table); }
@@ -1064,6 +1226,7 @@ gint p_array_std_dialog(char *title_txt,
           case WGT_TEXT:
           case WGT_OPT_ENTRY:
           case WGT_FILESEL:
+          case WGT_FONTSEL:
              printf("TEXT  %s : %s\n",  l_label_txt, arr_ptr->text_buf_ret);
              break;
           case WGT_RADIO:
@@ -1099,6 +1262,7 @@ void     p_init_arr_arg  (t_arr_arg *arr_ptr,
    arr_ptr->text_buf_default = NULL;
    arr_ptr->text_buf_ret     = NULL;
 
+   arr_ptr->text_fontsel = NULL;
    arr_ptr->text_filesel = NULL;
    arr_ptr->text_entry = NULL;
    arr_ptr->check_button = NULL;
@@ -1153,11 +1317,13 @@ void     p_init_arr_arg  (t_arr_arg *arr_ptr,
         arr_ptr->radio_help_argv = NULL;
         break;
      case WGT_TEXT:
+     case WGT_FONTSEL:
      case WGT_FILESEL:
         arr_ptr->widget_type = widget_type;
         arr_ptr->text_buf_len     = 0;
         arr_ptr->text_buf_default = NULL;
         arr_ptr->text_buf_ret     = NULL;
+        arr_ptr->text_fontsel     = NULL;
         arr_ptr->text_filesel     = NULL;
         break;
      case WGT_ACT_BUTTON:
@@ -1189,10 +1355,10 @@ gint p_array_dialog(char *title_txt,
 {
     static t_but_arg  b_argv[2];
 
-    b_argv[0].but_txt  = GTK_STOCK_OK;
-    b_argv[0].but_val  = TRUE;
-    b_argv[1].but_txt  = GTK_STOCK_CANCEL;
-    b_argv[1].but_val  = FALSE;
+    b_argv[1].but_txt  = GTK_STOCK_OK;
+    b_argv[1].but_val  = TRUE;
+    b_argv[0].but_txt  = GTK_STOCK_CANCEL;
+    b_argv[0].but_val  = FALSE;
   
     return( p_array_std_dialog(title_txt,
                        frame_txt,

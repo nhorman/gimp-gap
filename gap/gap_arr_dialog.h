@@ -40,6 +40,7 @@
  */
 
 /* revision history:
+ * gimp    1.3.14a; 2003/05/15  hof: new WGT_FONTSEL
  * gimp    1.3.12a; 2003/05/01  hof: merge into CVS-gimp-gap project
  * gimp    1.3.11a; 2003/01/18  hof: merged in changes of the gap_vid_enc project
  *                                   - added WGT_OPT_ENTRY (entry comined with Optionmenu) and WGT_DEFAULT_BUTTON
@@ -74,6 +75,7 @@ typedef enum
   ,WGT_LABEL_RIGHT
   ,WGT_OPT_ENTRY
   ,WGT_DEFAULT_BUTTON
+  ,WGT_FONTSEL       
 } t_gap_widget;
 
 typedef int (*t_action_func) ( gpointer action_data);
@@ -130,6 +132,7 @@ typedef struct {
   gint     text_buf_len;         /* common length for init, default and ret text_buffers */
   char    *text_buf_default;
   char    *text_buf_ret;
+  GtkWidget  *text_fontsel; /* for private (arr_dialog.c) use only */
   GtkWidget  *text_filesel; /* for private (arr_dialog.c) use only */
   GtkWidget  *text_entry;   /* for private (arr_dialog.c) use only */
   GtkWidget  *check_button;   /* for private (arr_dialog.c) use only */

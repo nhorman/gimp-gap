@@ -1,10 +1,9 @@
-/* gap_resi_dialog.h
- * 1998.07.01 hof (Wolfgang Hofer)
+/* gap_onion_dialog.h
+ * 2003.05.22 hof (Wolfgang Hofer)
  *
  * GAP ... Gimp Animation Plugins
  *
- * This Module contains the resize and scale Dialog for AnimFrames.
- * (It just is a shell to call Gimp's resize / scale Dialog )
+ * This Module contains GAP Onionskin GUI Procedures
  */
 /* The GIMP -- an image manipulation program
  * Copyright (C) 1995 Spencer Kimball and Peter Mattis
@@ -24,24 +23,16 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/* revision history
- * gimp    1.3.14a; 2003/05/18  hof: reincarnation of gap_resi_dialog.h
- * 0.96.00; 1998/07/01   hof: first release
- */
-
-#ifndef _RESI_DIALOG_H
-#define _RESI_DIALOG_H
+/* revision history:
+ * version 1.3.14a; 2003.05.22   hof: created
+ */ 
  
-/* GIMP includes */
-#include "gtk/gtk.h"
-#include "libgimp/gimp.h"
+#ifndef _GAP_ONION_DIALOG_H
+#define _GAP_ONION_DIALOG_H
 
-/* GAP includes */
-#include "gap_range_ops.h"
+#include "gap_onion_main.h"
 
-gint p_resi_dialog (gint32 image_id, 
-                    t_gap_asiz asiz_mode,
-                    char *title_text,
-                    long *size_x, long *size_y, 
-                    long *offs_x, long *offs_y);
+void   p_init_default_values(t_global_params *gpp);
+gint   p_onion_cfg_dialog(t_global_params *gpp);
+
 #endif

@@ -1,10 +1,10 @@
-/* gap_resi_dialog.h
- * 1998.07.01 hof (Wolfgang Hofer)
+/* gap_onion_worker.h
+ * 2003.05.22 hof (Wolfgang Hofer)
  *
  * GAP ... Gimp Animation Plugins
  *
- * This Module contains the resize and scale Dialog for AnimFrames.
- * (It just is a shell to call Gimp's resize / scale Dialog )
+ * This Module contains ONION Skin Layers worker Procedures
+ *
  */
 /* The GIMP -- an image manipulation program
  * Copyright (C) 1995 Spencer Kimball and Peter Mattis
@@ -24,24 +24,27 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/* revision history
- * gimp    1.3.14a; 2003/05/18  hof: reincarnation of gap_resi_dialog.h
- * 0.96.00; 1998/07/01   hof: first release
+
+/* revision history:
+ * 1.3.14a; 2003/05/22   hof: integration into gimp-gap-1.3.14
+ * 1.3.12a; 2003/05/03   hof: started port to gimp-1.3  /gtk+2.2
+ * version 1.2.2a;  2001.12.10   hof: created
  */
 
-#ifndef _RESI_DIALOG_H
-#define _RESI_DIALOG_H
- 
-/* GIMP includes */
-#include "gtk/gtk.h"
-#include "libgimp/gimp.h"
+#ifndef _GAP_ONION_WORKER_H
+#define _GAP_ONION_WORKER_H
 
-/* GAP includes */
-#include "gap_range_ops.h"
+#include <gap_onion_main.h>
 
-gint p_resi_dialog (gint32 image_id, 
-                    t_gap_asiz asiz_mode,
-                    char *title_text,
-                    long *size_x, long *size_y, 
-                    long *offs_x, long *offs_y);
+/* onion_worker procedures */
+gint    p_set_data_onion_cfg(t_global_params *gpp, char *key);
+gint    p_get_data_onion_cfg(t_global_params *gpp);
+gint    p_onion_range(t_global_params *gpp);
+gint    p_onion_apply(t_global_params *gpp, gboolean use_cache);
+gint    p_onion_delete(t_global_params *gpp);
+gint    p_onion_visibility(t_global_params *gpp, gint visi_mode);
+
+void    p_plug_in_gap_get_animinfo(gint32 image_ID, t_ainfo *ainfo);
+
 #endif
+

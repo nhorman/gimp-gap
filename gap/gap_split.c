@@ -26,6 +26,8 @@
  */
 
 /* revision history
+ * 1.3.14a; 2003/05/25   hof: bugfix: defaultname for unnamed image
+ *                            added digits and only_visible parameter
  * 1.1.28a; 2000/10/29   hof: subsequent save calls use GIMP_RUN_WITH_LAST_VALS
  * 1.1.9a;  1999/09/21   hof: bugfix GIMP_RUN_NONINTERACTIVE mode did not work
  * 1.1.8a;  1999/08/31   hof: accept anim framenames without underscore '_'
@@ -74,7 +76,7 @@ extern      int gap_debug; /* ==0  ... dont print debug infos */
 static int
 p_split_image(t_anim_info *ainfo_ptr,
               char *new_extension,
-              gint invers, gint no_alpha)
+              gint invers, gint no_alpha, gint only_visible, gint digits)
 {
   GimpImageBaseType l_type;
   guint   l_width, l_height;
@@ -90,6 +92,7 @@ p_split_image(t_anim_info *ainfo_ptr,
   char   *l_str;
   gint32  l_rc;
   int     l_idx;
+  int     l_framenumber;
   long    l_layer_idx;
 
   if(gap_debug) printf("DEBUG: p_split_image inv:%d no_alpha:%d ext:%s\n", (int)invers, (int)no_alpha, new_extension);
@@ -112,18 +115,28 @@ p_split_image(t_anim_info *ainfo_ptr,
   {
     l_percentage_step = 1.0 / (l_nlayers);
 
+    l_framenumber = 1;
     for(l_idx = 0; l_idx < l_nlayers; l_idx++)
     {
        if(l_new_image_id >= 0)
        {
           /* destroy the tmp image (it was saved to disk before) */
           gimp_image_delete(l_new_image_id);
-      }
+       }
        
        if(invers == TRUE) l_layer_idx = l_idx;
        else               l_layer_idx = (l_nlayers - 1 ) - l_idx;
 
        l_src_layer_id = l_layers_list[l_layer_idx];
+       
+       if(only_visible)
+       {
+          if (! gimp_layer_get_visible(l_src_layer_id))
+          {
+             /* skip invisible layers in only_visible Mode */
+             continue;
+          }
+       }
 
        /* create new image */
        l_new_image_id =  gimp_image_new(l_width, l_height,l_type);
@@ -143,6 +156,7 @@ p_split_image(t_anim_info *ainfo_ptr,
        /* add the copied layer to current destination image */
         gimp_image_add_layer(l_new_image_id, l_cp_layer_id, 0);
         gimp_layer_set_offsets(l_cp_layer_id, l_src_offset_x, l_src_offset_y);
+        gimp_layer_set_visible(l_cp_layer_id, TRUE);
      
        /* delete alpha channel ? */
        if (no_alpha == TRUE)
@@ -161,9 +175,11 @@ p_split_image(t_anim_info *ainfo_ptr,
        
        /* build the name for output image */
        l_str = p_strdup_add_underscore(ainfo_ptr->basename);
-       l_sav_name = p_alloc_fname(l_str,
-                                  (l_idx +1),       /* start at 1 (not at 0) */
-                                  new_extension);
+       l_sav_name = p_alloc_fname6(l_str,
+                                  l_framenumber,       /* start at 1 (not at 0) */
+                                  new_extension,
+                                  digits);
+       l_framenumber++;
        g_free(l_str);
        if(l_sav_name != NULL)
        {
@@ -218,9 +234,9 @@ p_split_image(t_anim_info *ainfo_ptr,
  * ============================================================================
  */
 static long
-p_split_dialog(t_anim_info *ainfo_ptr, gint *inverse_order, gint *no_alpha, char *extension, gint len_ext)
+p_split_dialog(t_anim_info *ainfo_ptr, gint *inverse_order, gint *no_alpha, char *extension, gint len_ext, gint *only_visible, gint *digits)
 {
-  static t_arr_arg  argv[4];
+  static t_arr_arg  argv[7];
   gchar   *buf;
   
   buf = g_strdup_printf (_("%s\n%s\n(%s_0001.%s)\n"),
@@ -236,24 +252,54 @@ p_split_dialog(t_anim_info *ainfo_ptr, gint *inverse_order, gint *no_alpha, char
   argv[1].help_txt  = _("extension of resulting frames (is also used to define Fileformat)");
   argv[1].text_buf_len = len_ext;
   argv[1].text_buf_ret = extension;
+  argv[1].has_default = TRUE;
+  argv[1].text_buf_default = ".xcf";
 
   p_init_arr_arg(&argv[2], WGT_TOGGLE);
   argv[2].label_txt = _("Inverse Order:");
   argv[2].help_txt  = _("Start frame 0001 at Top Layer");
   argv[2].int_ret   = 0;
+  argv[2].has_default = TRUE;
+  argv[2].int_default = 0;
 
   p_init_arr_arg(&argv[3], WGT_TOGGLE);
   argv[3].label_txt = _("Flatten:");
   argv[3].help_txt  = _("Remove Alpha Channel in resulting Frames. Transparent parts are filled with BG color.");
   argv[3].int_ret   = 0;
+  argv[3].has_default = TRUE;
+  argv[3].int_default = 0;
+
+  p_init_arr_arg(&argv[4], WGT_TOGGLE);
+  argv[4].label_txt = _("Only Visible:");
+  argv[4].help_txt  = _("ON: Handle only visible Layers, OFF: handle all Layers and force visibiblity");
+  argv[4].int_ret   = 0;
+  argv[4].has_default = TRUE;
+  argv[4].int_default = 0;
+
+  p_init_arr_arg(&argv[5], WGT_INT);
+  argv[5].constraint = TRUE;
+  argv[5].label_txt = _("Digits :");
+  argv[5].help_txt  = _("How many digits to use for the framenumber filenamwpart");
+  argv[5].int_min   = (gint)1;
+  argv[5].int_max   = (gint)6;
+  argv[5].int_ret   = (gint)6;
+  argv[5].entry_width = 60;
+  argv[5].has_default = TRUE;
+  argv[5].int_default = 6;
+
+  p_init_arr_arg(&argv[6], WGT_DEFAULT_BUTTON);
+  argv[6].label_txt = _("Default");
+  argv[6].help_txt  = _("Reset all Parameters to Default Values");
 
   if(TRUE == p_array_dialog( _("Split Image into Frames"),
 			     _("Split Settings"), 
-			     4, argv))
+			     7, argv))
   {
     g_free (buf);
     *inverse_order = argv[2].int_ret;
     *no_alpha      = argv[3].int_ret;
+    *only_visible  = argv[4].int_ret;
+    *digits        = argv[5].int_ret;
     return 0;
   }
   else
@@ -273,13 +319,19 @@ int gap_split_image(GimpRunMode run_mode,
                       gint32     image_id,
                       gint32     inverse_order,
                       gint32     no_alpha,
-                      char      *extension)
+                      char      *extension,
+                      gint32     only_visible,
+                      gint32     digits
+                      )
 
 {
   gint32  l_new_image_id;
   gint32  l_rc;
   gint32  l_inverse_order;
   gint32  l_no_alpha;
+  gint32  l_only_visible;
+  gint32  l_digits;
+  char   *l_imagename;
   
   t_anim_info *ainfo_ptr;
   char l_extension[32];
@@ -287,12 +339,21 @@ int gap_split_image(GimpRunMode run_mode,
   strcpy(l_extension, ".xcf");
 
   l_rc = -1;
+  
+  /* force a default name without framenumber part for unnamed images */
+  l_imagename = gimp_image_get_filename(image_id);
+  if(l_imagename == NULL)
+  {
+    gimp_image_set_filename(image_id, "frame_.xcf");
+  }
+  
   ainfo_ptr = p_alloc_ainfo(image_id, run_mode);
   if(ainfo_ptr != NULL)
   {
     if (0 == p_dir_ainfo(ainfo_ptr))
     {
-      if(ainfo_ptr->frame_cnt != 0)
+      if((ainfo_ptr->frame_cnt != 0)
+      && (l_imagename != NULL))
       {
          p_msg_win(run_mode,
            _("OPERATION CANCELLED.\n"
@@ -304,13 +365,22 @@ int gap_split_image(GimpRunMode run_mode,
       {
         if(run_mode == GIMP_RUN_INTERACTIVE)
         {
-           l_rc = p_split_dialog (ainfo_ptr, &l_inverse_order, &l_no_alpha, &l_extension[0], sizeof(l_extension));
+           l_rc = p_split_dialog (ainfo_ptr
+                                 , &l_inverse_order
+                                 , &l_no_alpha
+                                 , &l_extension[0]
+                                 , sizeof(l_extension)
+                                 , &l_only_visible
+                                 , &l_digits
+                                 );
         }
         else
         {
            l_rc = 0;
            l_inverse_order  =  inverse_order;
            l_no_alpha       =  no_alpha;
+           l_only_visible   =  only_visible;
+           l_digits         =  digits;
            strncpy(l_extension, extension, sizeof(l_extension) -1);
            l_extension[sizeof(l_extension) -1] = '\0';
 
@@ -321,7 +391,10 @@ int gap_split_image(GimpRunMode run_mode,
            l_new_image_id = p_split_image(ainfo_ptr,
                                l_extension,
                                l_inverse_order,
-                               l_no_alpha);
+                               l_no_alpha,
+                               l_only_visible,
+                               l_digits
+                               );
            
            /* create a display for the new created image
             * (it is the first or the last frame of the 

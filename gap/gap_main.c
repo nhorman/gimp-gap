@@ -38,9 +38,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-static char *gap_main_version =  "1.3.12a; 2003/05/03";
+static char *gap_main_version =  "1.3.14a; 2003/05/27";
 
 /* revision history:
+ * gimp    1.3.14a; 2003/05/27  hof: include gap_base_ops.h
+ *                                   Split Image To frame: added parameter "digits" and "only_visible"
  * gimp    1.3.12a; 2003/05/03  hof: merge into CVS-gimp-gap project, updated main version, added gap_renumber
  * gimp    1.3.11a; 2003/01/19  hof: - updated main version,
  * gimp    1.3.5a;  2002/04/21  hof: - updated main version,
@@ -94,6 +96,7 @@ static char *gap_main_version =  "1.3.12a; 2003/05/03";
 
 /* GAP includes */
 #include "gap_lib.h"
+#include "gap_base_ops.h"
 #include "gap_lock.h"
 #include "gap_match.h"
 #include "gap_range_ops.h"
@@ -102,6 +105,7 @@ static char *gap_main_version =  "1.3.12a; 2003/05/03";
 #include "gap_mod_layer.h"
 #include "gap_arr_dialog.h"
 #include "gap_pdb_calls.h"
+#include "gap_vin.h"
 
 #include "gap-intl.h"
 
@@ -399,6 +403,8 @@ GimpPlugInInfo PLUG_IN_INFO =
     {GIMP_PDB_INT32, "inverse_order", "True/False"},
     {GIMP_PDB_INT32, "no_alpha", "True: remove alpha channel(s) in the destination frames"},
     {GIMP_PDB_STRING, "extension", "extension for the destination filetype (jpg, tif ...or any other gimp supported type)"},
+    {GIMP_PDB_INT32, "only visible", "ON: Handle only visible layers, OFF: Handle all layers and force visibility"},
+    {GIMP_PDB_INT32, "digits", "Number of digits for the number part in the frames filenames"},
   };
   static int nargs_split = G_N_ELEMENTS (args_split);
 
@@ -1569,6 +1575,9 @@ run (char    *name,
   }
   else if (strcmp (name, "plug_in_gap_split") == 0)
   {
+      gint32 l_digits;
+      gint32 l_only_visible;
+      
       *nreturn_vals = nreturn_split +1;
       l_rc_image = -1;
       if (run_mode == GIMP_RUN_NONINTERACTIVE)
@@ -1588,9 +1597,11 @@ run (char    *name,
       {
         inverse_order = param[3].data.d_int32;
         no_alpha      = param[4].data.d_int32;
+        l_only_visible= param[6].data.d_int32;
+        l_digits      = param[7].data.d_int32;
 
         l_rc_image = gap_split_image(run_mode, image_id, 
-                              inverse_order, no_alpha, l_extension);
+                              inverse_order, no_alpha, l_extension, l_only_visible, l_digits);
 
       }
       /* IMAGE ID is filled at end (same as in standard  return handling) */

@@ -32,6 +32,7 @@
  */
 
 /* revision history
+ * 1.3.14a; 2003/05/18   hof: again using gap_resi_dialog (now based on GimpOffsetArea widget)
  * 1.3.12a; 2003/05/01   hof: merge into CVS-gimp-gap project
  * 1.3.11a; 2003/01/18   hof: Conditional frame save, added Default Button (p_anim_sizechange_dialog)
  * 1.3.5a;  2002/04/20   hof: API cleanup
@@ -87,8 +88,10 @@
 #include "gap_pdb_calls.h"
 #include "gap_match.h"
 #include "gap_arr_dialog.h"
+#include "gap_resi_dialog.h"
 #include "gap_mod_layer.h"
 #include "gap_range_ops.h"
+#include "gap_vin.h"
 
 
 extern      int gap_debug; /* ==0  ... dont print debug infos */
@@ -201,18 +204,18 @@ p_anim_sizechange_dialog(t_anim_info *ainfo_ptr, t_gap_asiz asiz_mode,
   
   if(0 != p_chk_framerange(ainfo_ptr))   return -1;
 
-  /* array dialog is a primitive GUI to CROP SCALE or RESIZE Frames.
-   * In gimp-1.2 GAP used a copy of the old gimp RESIZE and SCALE dialog-widget code.
-   *   (removed this old code:  gap_resi_dialog.h/.c  resize.h/.c 
-   *    that did not not run with gtk+-2.0.0)
-   */
-  l_rc = p_array_dialog(title, hline, cnt, argv);
-  g_free (hline);
+  if(1==0)
+  {
+    /* array dialog is a primitive GUI to CROP SCALE or RESIZE Frames.
+     * In gimp-1.2 GAP used a copy of the old gimp RESIZE and SCALE dialog-widget code.
+     */
+    l_rc = p_array_dialog(title, hline, cnt, argv);
     
-  *size_x = (long)(argv[0].int_ret);
-  *size_y = (long)(argv[1].int_ret);
-  *offs_x = (long)(argv[2].int_ret);
-  *offs_y = (long)(argv[3].int_ret);
+    *size_x = (long)(argv[0].int_ret);
+    *size_y = (long)(argv[1].int_ret);
+    *offs_x = (long)(argv[2].int_ret);
+    *offs_y = (long)(argv[3].int_ret);
+
 
    if(asiz_mode == ASIZ_CROP)
    {
@@ -226,6 +229,15 @@ p_anim_sizechange_dialog(t_anim_info *ainfo_ptr, t_gap_asiz asiz_mode,
         *size_y = l_height - *offs_y;
       }
    }
+  }
+  else
+  {
+    /* better GUI (analog to GIMP-core) is not finished YET  */
+    l_rc = p_resi_dialog(ainfo_ptr->image_id, asiz_mode, title,
+                         size_x, size_y, offs_x, offs_y);
+  }
+ 
+  g_free (hline);
 
   if(l_rc == TRUE)
   {
@@ -1366,8 +1378,19 @@ int p_image_sizechange(gint32 image_id,
 {
   gboolean  l_rc;
 
+  if(gap_debug)
+  {
+    printf("p_image_sizechange: image_id: %d\n", (int)image_id);
 
-printf("size_x:%d  size_y: %d\n", (int)size_x , (int)size_y );
+    printf("size_x:%d  size_y: %d\n", (int)size_x , (int)size_y );
+    printf("size_x:%d  size_y: %d\n", (int)size_x , (int)size_y );
+
+    if(asiz_mode != ASIZ_SCALE)
+    {
+           printf("offs_x: %d\n", (int)offs_x);
+           printf("offs_y: %d\n", (int)offs_y);
+    }
+  }
 
   switch(asiz_mode)
   {

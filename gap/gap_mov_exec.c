@@ -26,6 +26,7 @@
  */
 
 /* revision history:
+ * gimp    1.3.14a; 2003/05/24  hof: rename p_fetch_src_frame to p_mov_fetch_src_frame
  * gimp    1.3.12a; 2003/05/01  hof: merge into CVS-gimp-gap project
  * gimp    1.3.11a; 2003/01/18  hof: Conditional framesave
  * gimp    1.3.5a;  2002/04/20  hof: api cleanup (dont use gimp_drawable_set_image)
@@ -390,7 +391,7 @@ p_mov_advance_src_frame(t_mov_current *cur_ptr, t_mov_values  *pvals)
 
     }
     
-    p_fetch_src_frame(pvals, cur_ptr->src_frame_idx);
+    p_mov_fetch_src_frame(pvals, cur_ptr->src_frame_idx);
   }
 }	/* end  p_advance_src_frame */
 
@@ -581,7 +582,7 @@ p_mov_execute(t_mov_data *mov_ptr)
      /* for FRAME stepmodes we use flattened Sorce frames
       * (instead of one multilayer source image )
       */
-     p_fetch_src_frame (val_ptr, -1);  /* negative value fetches the selected frame number */
+     p_mov_fetch_src_frame (val_ptr, -1);  /* negative value fetches the selected frame number */
      cur_ptr->src_frame_idx = val_ptr->cache_ainfo_ptr->curr_frame_nr;
      
      if((val_ptr->cache_ainfo_ptr->first_frame_nr < 0)

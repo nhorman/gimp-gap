@@ -3,7 +3,7 @@
  *
  * GAP ... Gimp Animation Plugins
  *
- * basic anim functions
+ * basic GAP types and utility procedures
  *
  */
 /* The GIMP -- an image manipulation program
@@ -25,6 +25,7 @@
  */
 
 /* revision history:
+ * 1.3.14a  2003/05/27   hof: moved basic gap operations to new module gap_base_ops
  * 1.3.12a  2003/05/02   hof: merge into CVS-gimp-gap project, added gap_renumber, upto 6digit framenumber support
  * 1.3.11a  2003/01/18   hof: added p_gap_check_save_needed
  * 1.1.35a; 2002/04/21   hof: gap locking (moved to gap_lock.h)
@@ -107,23 +108,7 @@ char*  p_strdup_del_underscore(char *name);
 
 long  p_get_frame_nr(gint32 image_id);
 long  p_get_frame_nr_from_name(char *fname);
-char *p_alloc_fname_thumbnail(char *name);
 int   p_image_file_copy(char *fname, char *fname_copy);
-
-/* animation menu fuctions provided by gap_lib.c */
-
-gint32 gap_next(GimpRunMode run_mode, gint32 image_id);
-gint32 gap_prev(GimpRunMode run_mode, gint32 image_id);
-gint32 gap_first(GimpRunMode run_mode, gint32 image_id);
-gint32 gap_last(GimpRunMode run_mode, gint32 image_id);
-gint32 gap_goto(GimpRunMode run_mode, gint32 image_id, int nr);
-
-gint32 gap_dup(GimpRunMode run_mode, gint32 image_id, int nr, long range_from, long range_to);
-gint32 gap_del(GimpRunMode run_mode, gint32 image_id, int nr);
-gint32 gap_exchg(GimpRunMode run_mode, gint32 image_id, int nr);
-gint32 gap_shift(GimpRunMode run_mode, gint32 image_id, int nr, long range_from, long range_to);
-gint32 gap_renumber(GimpRunMode run_mode, gint32 image_id,
-            long start_frame_nr, long digits);
 
 
 void p_msg_win(GimpRunMode run_mode, char *msg);
@@ -140,6 +125,10 @@ void     p_gap_lock_set(gint32 image_id);
 void     p_gap_lock_remove(gint32 image_id);
 
 gboolean p_gap_check_save_needed(gint32 image_id);
+
+int      p_rename_frame(t_anim_info *ainfo_ptr, long from_nr, long to_nr);
+int      p_delete_frame(t_anim_info *ainfo_ptr, long nr);
+gint32   p_replace_image(t_anim_info *ainfo_ptr);
 
 
 #define  VID_PASTE_REPLACE         0

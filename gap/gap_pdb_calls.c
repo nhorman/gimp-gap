@@ -23,6 +23,7 @@
  */
 
 /* revision history:
+ * version 1.3.14a; 2003/05/24  hof: moved vin Procedures to gap_vin module
  * version 1.3.5a;  2002/04/20  hof: p_gimp_layer_new_from_drawable. (removed set_drabale)
  * version 1.3.4a;  2002/03/12  hof: removed duplicate wrappers that are available in libgimp too.
  * version 1.2.2b;  2001/12/09  hof: wrappers for tattoo procedures
@@ -196,6 +197,8 @@ p_gimp_file_save_thumbnail(gint32 image_id, char* filename)
    GimpParam          *return_vals;
    int              nreturn_vals;
 
+   /*if(gap_debug) printf("p_gimp_file_save_thumbnail: image_id:%d  %s\n", (int)image_id, filename); */
+
    return_vals = gimp_run_procedure (l_called_proc,
                                  &nreturn_vals,
                                  GIMP_PDB_IMAGE,     image_id,
@@ -223,6 +226,8 @@ p_gimp_file_load_thumbnail(char* filename, gint32 *th_width, gint32 *th_height,
    static char     *l_called_proc = "gimp_file_load_thumbnail";
    GimpParam          *return_vals;
    int              nreturn_vals;
+
+printf("p_gimp_file_load_thumbnail:  %s\n", filename);
 
    *th_data = NULL;
    return_vals = gimp_run_procedure (l_called_proc,
@@ -273,87 +278,3 @@ gint   p_gimp_image_thumbnail(gint32 image_id, gint32 width, gint32 height,
    return(-1);
 }	/* end p_gimp_image_thumbnail */
 
-
-
-/* ============================================================================
- * Procedures to get/set the video_info_file 
- * ============================================================================
- */
-
-char *
-p_alloc_video_info_name(char *basename)
-{
-  char *l_str;
-
-  if(basename == NULL)
-  {
-    return(NULL);
-  }
-
-  l_str = g_strdup_printf("%svin.gap", basename);
-  return(l_str);
-}
-
-int
-p_set_video_info(t_video_info *vin_ptr, char *basename)
-{
-  FILE *l_fp;
-  char  *l_vin_filename;
-  int   l_rc;
-    
-  l_rc = -1;
-  l_vin_filename = p_alloc_video_info_name(basename);
-  if(l_vin_filename)
-  {
-      l_fp = fopen(l_vin_filename, "w");
-      if(l_fp)
-      {
-         fprintf(l_fp, "# GIMP / GAP Videoinfo file\n");
-         fprintf(l_fp, "(framerate %f) # 1.0 upto 100.0 frames per sec\n", (float)vin_ptr->framerate);
-         fprintf(l_fp, "(timezoom %d)  # 1 upto 100 frames\n", (int)vin_ptr->timezoom );
-         fclose(l_fp);
-         l_rc = 0;
-       }
-       g_free(l_vin_filename);
-  }
-  return(l_rc);
-}
-
-t_video_info *
-p_get_video_info(char *basename)
-{
-  FILE *l_fp;
-  char  *l_vin_filename;
-  t_video_info *l_vin_ptr;
-  char         l_buf[4000];
-  int   l_len;
-  
-  l_vin_ptr = g_malloc(sizeof(t_video_info));
-  l_vin_ptr->timezoom = 1;
-  l_vin_ptr->framerate = 24.0;
-  
-  l_vin_filename = p_alloc_video_info_name(basename);
-  if(l_vin_filename)
-  {
-     l_fp = fopen(l_vin_filename, "r");
-     if(l_fp)
-     {
-       while(NULL != fgets(l_buf, 4000-1, l_fp))
-       {
- 	  l_len = strlen("(framerate ");
-	  if(strncmp(l_buf, "(framerate ", l_len) == 0)
-	  {
-	     l_vin_ptr->framerate = atof(&l_buf[l_len]);
-	  }
-	  l_len = strlen("(timezoom ");
-	  if (strncmp(l_buf, "(timezoom ", l_len ) == 0)
-	  {
-	     l_vin_ptr->timezoom = atol(&l_buf[l_len]);
-	  }
-       }
-       fclose(l_fp);
-     }
-     g_free(l_vin_filename);
-  }
-  return(l_vin_ptr);
-}

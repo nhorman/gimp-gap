@@ -27,6 +27,7 @@
 #define _GAP_MOV_DIALOG_H
 
 /* revision history:
+ * gimp    1.3.14a; 2003/05/24  hof: moved render procedures to module gap_mov_render
  * gimp    1.1.29b; 2000/11/19  hof: new feature: FRAME based Stepmodes, 
  *                                   increased controlpoint Limit GAP_MOV_MAX_POINT (from 256 -> 1024)
  * gimp    1.1.20a; 2000/04/25  hof: support for keyframes, anim_preview
@@ -162,8 +163,5 @@ typedef struct {
 
 long  p_move_dialog (t_mov_data *mov_ptr);
 void  p_set_handle_offsets(t_mov_values *val_ptr, t_mov_current *cur_ptr);
-int   p_mov_render(gint32 image_id, t_mov_values *val_ptr, t_mov_current *cur_ptr);
-gint32 p_get_flattened_layer (gint32 image_id, GimpMergeType mergemode);
-gint   p_fetch_src_frame(t_mov_values *pvals,  gint32 wanted_frame_nr);
 
 #endif

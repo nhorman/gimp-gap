@@ -21,6 +21,7 @@
  */
 
 /* revision history:
+ * version 1.3.14a; 2003/05/24  hof: moved vin Procedures to gap_vin module
  * version 1.3.5a;  2002/04/20  hof: p_gimp_layer_new_from_drawable. (removed set_drabale)
  * version 1.3.4a;  2002/03/12  hof: removed duplicate wrappers that are available in libgimp too.
  * version 1.2.2b;  2001/12/09  hof: wrappers for tattoo procedures
@@ -37,12 +38,6 @@
 
 #include "libgimp/gimp.h"
 
-typedef struct t_video_info {
-   gdouble     framerate;    /* playback rate in frames per second */
-   gint32      timezoom;
-} t_video_info;
-
-
 gint p_pdb_procedure_available(char *proc_name);
 
 gint32 p_gimp_rotate_degree(gint32 drawable_id, gboolean interpolation, gdouble angle_deg);
@@ -57,7 +52,4 @@ gint   p_gimp_image_thumbnail(gint32 image_id, gint32 width, gint32 height,
                               gint32 *th_width, gint32 *th_height, gint32 *th_bpp,
 			      gint32 *th_data_count, unsigned char **th_data);
 
-char *p_alloc_video_info_name(char *basename);
-int   p_set_video_info(t_video_info *vin_ptr, char *basename);
-t_video_info *p_get_video_info(char *basename);
 #endif
