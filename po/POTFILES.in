@@ -15,6 +15,7 @@ gap/gap_lib.c
 gap/gap_lock.c
 gap/gap_main.c
 gap/gap_mod_layer.c
+gap/gap_mod_layer_dialog.c
 gap/gap_morph_dialog.c
 gap/gap_morph_exec.c
 gap/gap_morph_main.c
@@ -44,6 +45,8 @@ gap/gap_wr_color_curve.c
 gap/gap_wr_color_huesat.c
 gap/gap_wr_color_levels.c
 gap/gap_wr_opacity.c
+libgapvidapi/gap_vid_api_mpeg3.c
+libgapvidapi/gap_vid_api_vidindex.c
 libgapvidutil/gap_gve_story.c
 vid_common/gap_cme_gui.c
 vid_common/gap_cme_main.c
