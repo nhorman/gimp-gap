@@ -6,6 +6,133 @@ scriptdatadir = $(gimpdatadir)/scripts
 
 scriptdata_DATA = sel-to-anim-img.scm
 
+libexec_PROGRAMS = \
+	gap_plugins		\
+	gap_filter		\
+	gap_frontends		\
+	gap_navigator_dialog	\
+	$(GAP_DECODE_MPEG)
+
+EXTRA_PROGRAMS = \
+	gap_decode_mpeg
+
+gap_plugins_SOURCES = \
+	gap-intl.h		\
+	gap_arr_dialog.c	\
+	gap_arr_dialog.h	\
+	gap_dbbrowser_utils.c	\
+	gap_dbbrowser_utils.h	\
+	gap_exchange_image.c	\
+	gap_exchange_image.h	\
+	gap_filter_codegen.c	\
+	gap_filter_pdb.c	\
+	gap_filter_pdb.h	\
+	gap_layer_copy.c	\
+	gap_layer_copy.h 	\
+	gap_lib.c		\
+	gap_lib.h		\
+	gap_main.c		\
+	gap_match.c		\
+	gap_match.h		\
+	gap_mod_layer.c		\
+	gap_mod_layer.h		\
+	gap_mov_dialog.c	\
+	gap_mov_dialog.h	\
+	gap_mov_exec.c		\
+	gap_mov_exec.h		\
+	gap_pdb_calls.c		\
+	gap_pdb_calls.h		\
+	gap_range_ops.c		\
+	gap_range_ops.h		\
+	gap_resi_dialog.c	\
+	gap_resi_dialog.h	\
+	gap_split.c		\
+	gap_split.h		\
+	resize.c		\
+	resize.h
+
+gap_filter_SOURCES = \
+	gap_arr_dialog.c	\
+	gap_arr_dialog.h	\
+	gap_dbbrowser_utils.c	\
+	gap_dbbrowser_utils.h	\
+	gap_filter.h		\
+	gap_filter_codegen.c	\
+	gap_filter_foreach.c	\
+	gap_filter_iterators.c	\
+	gap_filter_iterators.h	\
+	gap_filter_main.c	\
+	gap_filter_pdb.c	\
+	gap_filter_pdb.h	\
+	gap_pdb_calls.c		\
+	gap_pdb_calls.h
+
+gap_frontends_SOURCES = \
+	gap_arr_dialog.c	\
+	gap_arr_dialog.h	\
+	gap_decode_xanim.c	\
+	gap_decode_xanim.h	\
+	gap_exchange_image.c	\
+	gap_exchange_image.h	\
+	gap_frontends_main.c	\
+	gap_layer_copy.c	\
+	gap_layer_copy.h 	\
+	gap_lib.c		\
+	gap_lib.h		\
+	gap_match.c		\
+	gap_match.h		\
+	gap_mpege.c		\
+	gap_mpege.h		\
+	gap_pdb_calls.c		\
+	gap_pdb_calls.h
+
+gap_decode_mpeg_SOURCES = \
+	gap_arr_dialog.c	\
+	gap_arr_dialog.h	\
+	gap_decode_mpeg_main.c	\
+	gap_pdb_calls.c		\
+	gap_pdb_calls.h
+
+gap_navigator_dialog_SOURCES = \
+	gap_arr_dialog.c	\
+	gap_arr_dialog.h	\
+	gap_exchange_image.c    \
+	gap_exchange_image.h	\
+	gap_layer_copy.c        \
+	gap_layer_copy.h        \
+	gap_lib.c		\
+	gap_lib.h		\
+	gap_navigator_dialog.c	\
+	gap_pdb_calls.c		\
+	gap_pdb_calls.h
+
+AM_CPPFLAGS = \
+	-DLOCALEDIR=\""$(LOCALEDIR)"\"
+
+INCLUDES = \
+	-I$(top_srcdir)	\
+	$(GTK_CFLAGS)	\
+	-I$(includedir)
+
+LDADD = \
+	$(top_builddir)/libgimp/libgimpui-$(LT_RELEASE).la		\
+	$(top_builddir)/libgimpwidgets/libgimpwidgets-$(LT_RELEASE).la	\
+	$(top_builddir)/libgimp/libgimp-$(LT_RELEASE).la		\
+	$(top_builddir)/libgimpcolor/libgimpcolor-$(LT_RELEASE).la	\
+	$(top_builddir)/libgimpbase/libgimpbase-$(LT_RELEASE).la	\
+	$(GTK_LIBS)							\
+	$(INTLLIBS)
+
+gap_decode_mpeg_LDADD = \
+	$(top_builddir)/libgimp/libgimpui-$(LT_RELEASE).la		\
+	$(top_builddir)/libgimpwidgets/libgimpwidgets-$(LT_RELEASE).la	\
+	$(top_builddir)/libgimp/libgimp-$(LT_RELEASE).la		\
+	$(top_builddir)/libgimpcolor/libgimpcolor-$(LT_RELEASE).la	\
+	$(top_builddir)/libgimpbase/libgimpbase-$(LT_RELEASE).la	\
+	$(LIBMPEG)							\
+	$(GTK_LIBS)							\
+	$(INTLLIBS)
+
 EXTRA_DIST = \
 	README							\
 	README_developers					\
@@ -96,126 +223,3 @@ EXTRA_DIST = \
 	iter_ALT/old/plug_in_universal_filter_iter_ALT.inc	\
 	iter_ALT/old/plug_in_warp_iter_ALT.inc			\
 	$(scriptdata_DATA)
-
-libexec_PROGRAMS = \
-	gap_plugins		\
-	gap_filter		\
-	gap_frontends		\
-	gap_navigator_dialog	\
-	$(GAP_DECODE_MPEG)
-
-EXTRA_PROGRAMS = \
-	gap_decode_mpeg
-
-gap_plugins_SOURCES = \
-	gap_main.c		\
-	gap_mov_exec.c		\
-	gap_mov_exec.h		\
-	gap_range_ops.c		\
-	gap_range_ops.h		\
-	gap_arr_dialog.c	\
-	gap_arr_dialog.h	\
-	gap_mov_dialog.c	\
-	gap_mov_dialog.h	\
-	gap_layer_copy.c	\
-	gap_layer_copy.h 	\
-	gap_split.c		\
-	gap_split.h		\
-	gap_resi_dialog.c	\
-	gap_resi_dialog.h	\
-	gap_mod_layer.c		\
-	gap_mod_layer.h		\
-	gap_filter_pdb.c	\
-	gap_filter_pdb.h	\
-	gap_filter_codegen.c	\
-	gap_dbbrowser_utils.c	\
-	gap_dbbrowser_utils.h	\
-	gap_match.c		\
-	gap_match.h		\
-	gap_lib.c		\
-	gap_lib.h		\
-	gap_exchange_image.c	\
-	gap_exchange_image.h	\
-	gap_pdb_calls.c		\
-	gap_pdb_calls.h		\
-	resize.c		\
-	resize.h
-
-gap_filter_SOURCES = \
-	gap_filter_main.c	\
-	gap_dbbrowser_utils.c	\
-	gap_dbbrowser_utils.h	\
-	gap_filter_foreach.c	\
-	gap_filter_iterators.c	\
-	gap_filter_iterators.h	\
-	gap_filter_pdb.c	\
-	gap_filter_pdb.h	\
-	gap_filter_codegen.c	\
-	gap_arr_dialog.c	\
-	gap_arr_dialog.h	\
-	gap_pdb_calls.c		\
-	gap_pdb_calls.h		\
-	gap_filter.h
-
-gap_frontends_SOURCES = \
-	gap_frontends_main.c	\
-	gap_arr_dialog.c	\
-	gap_arr_dialog.h	\
-	gap_layer_copy.c	\
-	gap_layer_copy.h 	\
-	gap_match.c		\
-	gap_match.h		\
-	gap_lib.c		\
-	gap_lib.h		\
-	gap_exchange_image.c	\
-	gap_exchange_image.h	\
-	gap_pdb_calls.c		\
-	gap_pdb_calls.h		\
-	gap_mpege.c		\
-	gap_mpege.h		\
-	gap_decode_xanim.c	\
-	gap_decode_xanim.h
-
-gap_decode_mpeg_SOURCES = \
-	gap_decode_mpeg_main.c	\
-	gap_arr_dialog.c	\
-	gap_arr_dialog.h	\
-	gap_pdb_calls.c		\
-	gap_pdb_calls.h
-
-gap_navigator_dialog_SOURCES = \
-	gap_navigator_dialog.c	\
-	gap_lib.c		\
-	gap_lib.h		\
-	gap_arr_dialog.c	\
-	gap_arr_dialog.h	\
-	gap_pdb_calls.c		\
-	gap_pdb_calls.h		\
-	gap_layer_copy.c        \
-	gap_layer_copy.h        \
-	gap_exchange_image.c    \
-	gap_exchange_image.h
-
-INCLUDES = \
-	-I$(top_srcdir)	\
-	$(GTK_CFLAGS)	\
-	-I$(includedir)
-
-LDADD = \
-	$(top_builddir)/libgimp/libgimpui-$(LT_RELEASE).la		\
-	$(top_builddir)/libgimpwidgets/libgimpwidgets-$(LT_RELEASE).la	\
-	$(top_builddir)/libgimp/libgimp-$(LT_RELEASE).la		\
-	$(top_builddir)/libgimpcolor/libgimpcolor-$(LT_RELEASE).la	\
-	$(top_builddir)/libgimpbase/libgimpbase-$(LT_RELEASE).la	\
-	$(GTK_LIBS)							\
-	$(INTLLIBS)
-
-gap_decode_mpeg_LDADD = \
-	$(top_builddir)/libgimp/libgimpui-$(LT_RELEASE).la		\
-	$(top_builddir)/libgimpwidgets/libgimpwidgets-$(LT_RELEASE).la	\
-	$(top_builddir)/libgimp/libgimp-$(LT_RELEASE).la		\
-	$(top_builddir)/libgimpcolor/libgimpcolor-$(LT_RELEASE).la	\
-	$(top_builddir)/libgimpbase/libgimpbase-$(LT_RELEASE).la	\
-	$(LIBMPEG)							\
-	$(GTK_LIBS)							\
-	$(INTLLIBS)

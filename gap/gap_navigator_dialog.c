@@ -90,7 +90,6 @@ static char *gap_navigator_version = "1.1.29b; 2000/11/30";
 /* GIMP includes */
 #include <gtk/gtk.h>
 #include "config.h"
-#include <libgimp/stdplugins-intl.h>
 #include <libgimp/gimp.h>
 #include <libgimp/gimpui.h>
 
@@ -103,6 +102,8 @@ static char *gap_navigator_version = "1.1.29b; 2000/11/30";
 #include <pixmaps/next.xpm>
 #include <pixmaps/first.xpm>
 #include <pixmaps/last.xpm>
+
+#include "gap-intl.h"
 
 /*
  *   OpsButton  is not available for plugins in libgimp 1.1.14

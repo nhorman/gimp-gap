@@ -41,13 +41,15 @@
 #include "gtk/gtk.h"
 #include "libgimp/gimp.h"
 
-#include "libgimp/stdplugins-intl.h"
 #include "gap_filter.h"
 #include "gap_dbbrowser_utils.h"
 
 /* FIXME: remove usage of the 'broken' GtkText */
 #define GTK_ENABLE_BROKEN
 #include <gtk/gtktext.h>
+
+#include "gap-intl.h"
+
 
 extern int gap_debug;
 

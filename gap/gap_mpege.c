@@ -51,7 +51,7 @@
 /* GIMP includes */
 #include "gtk/gtk.h"
 #include "config.h"
-#include "libgimp/stdplugins-intl.h"
+#include "gap-intl.h"
 #include "libgimp/gimp.h"
 
 /* GAP includes */

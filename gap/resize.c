@@ -20,7 +20,7 @@
 #include <stdlib.h>
 #include <gtk/gtk.h>
 #include "config.h"
-#include "libgimp/stdplugins-intl.h"
+#include "gap-intl.h"
 #include "resize.h"
 
 #define EVENT_MASK  GDK_EXPOSURE_MASK | GDK_BUTTON_PRESS_MASK

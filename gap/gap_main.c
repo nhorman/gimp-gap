@@ -74,16 +74,16 @@ static char *gap_main_version =  "1.1.29b; 2000/11/30";
  * version 0.90.00;             hof: 1.st (pre) release
  */
  
+#include "config.h"
+
 /* SYTEM (UNIX) includes */ 
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 
 /* GIMP includes */
-#include "gtk/gtk.h"
-#include "config.h"
-#include "libgimp/stdplugins-intl.h"
-#include "libgimp/gimp.h"
+#include <gtk/gtk.h>
+#include <libgimp/gimp.h>
 
 /* GAP includes */
 #include "gap_lib.h"
@@ -94,6 +94,8 @@ static char *gap_main_version =  "1.1.29b; 2000/11/30";
 #include "gap_mod_layer.h"
 #include "gap_arr_dialog.h"
 #include "gap_pdb_calls.h"
+
+#include "gap-intl.h"
 
 /* ------------------------
  * global gap DEBUG switch
@@ -1034,11 +1036,7 @@ run (char    *name,
   /* set LOCK on current image (for all gap_plugins) */
   p_gap_lock_set(lock_image_id);
    
-  if (run_mode == GIMP_RUN_NONINTERACTIVE) {
-    INIT_I18N();
-  } else {
-    INIT_I18N_UI();
-  }
+  INIT_I18N();
 
   /* ---------------------------
    * LOCKING gap_plugins

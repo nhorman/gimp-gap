@@ -68,11 +68,13 @@
 #include "gtk/gtk.h"
 #include "libgimp/gimp.h"
 #include "libgimp/gimpui.h"
-#include "libgimp/stdplugins-intl.h"
 #include "libgimp/gimp.h"
 
 /* private includes */
 #include "gap_arr_dialog.h"
+
+#include "gap-intl.h"
+
 
 typedef void (*t_entry_cb_func) (GtkWidget *widget, t_arr_arg *arr_ptr);
 
