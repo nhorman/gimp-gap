@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gimp-gap.HEAD.es\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-07-18 03:50+0200\n"
-"PO-Revision-Date: 2003-07-18 10:42+0200\n"
+"POT-Creation-Date: 2003-07-21 19:50+0200\n"
+"PO-Revision-Date: 2003-07-21 22:37+0200\n"
 "Last-Translator: Francisco Javier F. Serrador <serrador@arrakis.es>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -192,6 +192,10 @@ msgid ""
 "ON: Duplicate Frames to get a target rate that is Density * Originalrate\n"
 "OFF: Delete Frames to get a target rate that is Originalrate/Density"
 msgstr ""
+"Activado: Fotogramas duplicados para obtener una tasa objetivo que sea "
+"Densidad * TasaOriginal\n"
+"Desactivado: Borrar fotogramas para obtener una tasa objetivo que es "
+"TasaOriginal/Densidad"
 
 #: gap/gap_base_ops.c:1307 gap/gap_base_ops.c:1434 gap/gap_lib.c:1131
 msgid ""
@@ -394,6 +398,9 @@ msgid ""
 "you have to set Environment variable GAP_XANIM_PROG\n"
 "to your xanim exporting program and restart gimp"
 msgstr ""
+"si su xanim edición exportación no está en su PATH o no se llama xanim\n"
+"tiene que establecer la variable de entorno GAP_XANIM_PROG\n"
+"a su porograma de exportación xanim y reiniciar El Gimp"
 
 #: gap/gap_decode_xanim.c:166
 msgid "An ERROR occured while trying to call xanim:"
@@ -439,7 +446,7 @@ msgid ""
 "(framenumber and extension is added)"
 msgstr ""
 "Nombre base de los fotogramas a escribir en disco\n"
-"(Se añade nº de cuadro y extensión)"
+"(Se añade nº de cuadro y añadido)"
 
 #: gap/gap_decode_xanim.c:256
 msgid "Format"
@@ -1811,6 +1818,10 @@ msgid ""
 "(use 'Frames Convert' from the Video Menu\n"
 "or 'Split Image to Frames' from the Video Menu)"
 msgstr ""
+"Necesita una serie de Imáquenes sencillas en disco (AnimFrames)\n"
+"todos con formato JPEG (o YUV o PNM o PPM)\n"
+"(use «Convertir fotogramas» desde el menú de Vídeo\n"
+"o «Dividir imagen en fotogramas» desde el menú de Vídeo)"
 
 #: gap/gap_mpege.c:188
 msgid ""
@@ -1818,6 +1829,9 @@ msgid ""
 "width and height must be a multiple of 16\n"
 "(use Scale or Crop from the Video Menu)"
 msgstr ""
+"Todas las imágenes deben tener el mismo tamaño,\n"
+"la anchura y altura deben ser múltiplos de 16\n"
+"(use Escalar o Recortar desde el menú Video)"
 
 #: gap/gap_mpege.c:195
 msgid "All Images must have the same size,"
@@ -2081,9 +2095,8 @@ msgid "Select Fontname)"
 msgstr "Seleccione nombre de tipografía)"
 
 #: gap/gap_name2layer_main.c:460
-#, fuzzy
 msgid "Fontsize:"
-msgstr "Tamaño de tipografía :"
+msgstr "Tamaño de tipografía:"
 
 #: gap/gap_name2layer_main.c:461
 msgid "Fontsize in pixels"
@@ -2196,11 +2209,11 @@ msgstr ""
 
 #: gap/gap_navigator_dialog.c:712
 msgid "Error while positioning to Frame. Video Paste Operaton Failed"
-msgstr ""
+msgstr "Error al posicionarse en el fotograma. La operación de pegado de vídeo ha fallado"
 
 #: gap/gap_navigator_dialog.c:734
 msgid "Video Paste Operaton Failed"
-msgstr ""
+msgstr "La operación de pegado de vídeo ha fallado"
 
 #: gap/gap_navigator_dialog.c:845
 msgid "Video Copy (or Cut) Operation failed"
@@ -2216,6 +2229,10 @@ msgid ""
 "a Thumbnail Filesze other than 'No Thumbnails'\n"
 "in the Environment Section of the Preferences Dialog"
 msgstr ""
+"Para la actualización de miniaturas tiene que seleccionar\n"
+"un tamaño de archivo para miniaturas distinto a \n"
+"«Sin miniaturas» en la sección de entorno del diálogo \n"
+"de preferencias"
 
 #. menu_item copy
 #: gap/gap_navigator_dialog.c:3689
@@ -2374,11 +2391,11 @@ msgstr "Opciones de selección:"
 
 #: gap/gap_onion_dialog.c:1239
 msgid "ON: case sensitive pattern, OFF ignore case"
-msgstr ""
+msgstr "Activado: Patrón sensible a capitalización, Desactivado: ignorar capitalización"
 
 #: gap/gap_onion_dialog.c:1246
 msgid "ON: Select NON-matching Layers, OFF: Select matching Layers"
-msgstr ""
+msgstr "Activado: Seleccionar capas no coincidentes, Desactivado: Seleccionar capas coincidentes"
 
 #: gap/gap_onion_dialog.c:1262
 msgid "Select Layernames by Pattern (depends on Mode and Options)"
@@ -2403,6 +2420,10 @@ msgid ""
 "(works on Framechanges via VCR Navigator and Goto Ops\n"
 "in the Video Menu -- but not on explicite Load from the File menu"
 msgstr ""
+"Activado: Creación/Reemplazo automático de capas de papel cebolla\n"
+"(funciona en cambios de fotograma via Navegador VCR y operaciones "
+"ir a en el menú vídeo -- pero no en Carga explícita desde el menú de "
+"archivo"
 
 #: gap/gap_onion_dialog.c:1303
 msgid "Auto Delete before Save"
@@ -2415,6 +2436,11 @@ msgid ""
 "in the Video Menu -- but not on explicite Save from the File menu\n"
 "use this if Onionskinlayers should not appear in Thumbnailfiles)"
 msgstr ""
+"Activado: Borrar automáticamente las capas de papel cebolla\n"
+"(En cambios del fotograma via Navegador VCR y operaciones Ir a\n"
+"en el menú de vídeo -- pero no en Guardar explícito desde el menú \n"
+"de Archivo. Use esto si las capas de papel cebolla no deben aparecer\n"
+"en los ficheros de miniaturas)."
 
 #: gap/gap_onion_dialog.c:1332
 msgid "Create or replace Onionskin Layer in all Frames of the selected Framerange"
@@ -2433,6 +2459,8 @@ msgid ""
 "Close Window without creating or deleting any Onionskin Layers\n"
 "but store current Settings"
 msgstr ""
+"Cerrar ventana sin crear o borrar ninguna de las capas de papel cebolla\n"
+"pero almacenando los ajustes actuales"
 
 #: gap/gap_onion_dialog.c:1354
 msgid "Exit without any Action"
@@ -2445,6 +2473,8 @@ msgstr "Restablecer la configuración preestablecida"
 #: gap/gap_onion_main.c:139
 msgid "This plugin sets Configuration for Onion Layers in Videofames"
 msgstr ""
+"Esta añadido establece la configuración para las capas de papel cebolla en "
+"los fotogramas de vídeo."
 
 #: gap/gap_onion_main.c:140
 msgid ""
@@ -2469,7 +2499,7 @@ msgstr "<Image>/Vídeo/Papel cebolla/Configuración..."
 
 #: gap/gap_onion_main.c:158
 msgid "This plugin creates or replaces Onionskin Layer(s)"
-msgstr ""
+msgstr "Este añadido crea o reemplaza capa(s) de papel cebolla"
 
 #: gap/gap_onion_main.c:159
 msgid ""
@@ -2479,6 +2509,11 @@ msgid ""
 "depends on the configuration settings made by Video/Onionskin/Config or call "
 "of the plugin: "
 msgstr ""
+"Este añadido crea o actualiza capas de papel cebolla en el fotograma de vídeo actual. "
+"Las capas de palel cebolla normalmente muestran fotogramas anteriores o siguientes "
+"del vídeo. En la primera llamada en el fotograma actual. Este añadido se ejecuta en "
+"modo NO INTERACTIVO únicamente. Depende de los ajustes de configuración realizados "
+"por Video/Papel cebolla/Configuración o la llamada del añadido: "
 
 #: gap/gap_onion_main.c:164
 msgid "  if no configuration is found, default settings are used"
@@ -2490,13 +2525,16 @@ msgstr "<Image>/Vídeo/Papel cebolla/Crear o reemplazar"
 
 #: gap/gap_onion_main.c:177
 msgid "This plugin removes OnionSkin Layer(s)"
-msgstr "Esta extensión elimina capa(s) de papel cebolla"
+msgstr "Esta añadido elimina capa(s) de papel cebolla"
 
 #: gap/gap_onion_main.c:178
 msgid ""
 "This plugin removes Onion Skin Layers from the current Videoframe. Onion "
 "Layer(s) usually do show previous (or next) frame(s) of the video."
 msgstr ""
+"Este añadido elimina las capas de papel cebolla del fotograma actual. Las capas "
+"de papel cebolla normalmente muestran fotogramas anteriores o siguientes "
+"del vídeo."
 
 #: gap/gap_onion_main.c:184
 msgid "<Image>/Video/Onionskin/Delete"
@@ -2504,13 +2542,15 @@ msgstr "<Image>/Vídeo/Papel cebolla/Borrar"
 
 #: gap/gap_onion_main.c:192
 msgid "This plugin toggles visibility of OnionSkin Layer(s)"
-msgstr ""
+msgstr "Este añadido cambia la visibilidad de las capas de papel cebolla"
 
 #: gap/gap_onion_main.c:193
 msgid ""
 "This plugin sets visibility for all onionskin Layers in the current "
 "Videoframe."
 msgstr ""
+"Este añadido establece la visibilidad para todos las capas de papel cebolla en el "
+"fotograma de vídeo actual."
 
 #: gap/gap_onion_main.c:197
 msgid "<Image>/Video/Onionskin/Toggle Visibility"
@@ -2594,7 +2634,7 @@ msgstr "Tamaño"
 
 #: gap/gap_player_dialog.c:2425
 msgid "Toggle Size 128/256, SHIFT: Set 1:1 full image Size"
-msgstr ""
+msgstr "Cambiar tamaño 128/256, DESPLAZAMIENTO: Establecer tamaño de imagen completo 1:1"
 
 #: gap/gap_player_dialog.c:2443
 msgid "Video Preview Size (pixels)"
@@ -2602,7 +2642,7 @@ msgstr "Tamaño de previsualización del vídeo (píxeles)"
 
 #: gap/gap_player_dialog.c:2473
 msgid "ON: Play in endless Loop, OFF: Play only once"
-msgstr ""
+msgstr "Activado: Reproducir en un bucle sin fin, Desactivado: Reproducir sólo una vez"
 
 #: gap/gap_player_dialog.c:2482
 msgid "Play Selection only"
@@ -2610,11 +2650,11 @@ msgstr "Reproducir sólo la selección"
 
 #: gap/gap_player_dialog.c:2487
 msgid "ON: Play Selection only, OFF: Play all frames"
-msgstr ""
+msgstr "Activado: Reproducir sñolo la selección, Desactivado: reproducir todos los fotogramas"
 
 #: gap/gap_player_dialog.c:2501
 msgid "ON: Play alternating forward/backward"
-msgstr ""
+msgstr "Activado: Reproducir altenando adelante/atrás"
 
 #: gap/gap_player_dialog.c:2510
 msgid "Use Thumbnails"
@@ -2622,7 +2662,7 @@ msgstr "Usar miniaturas"
 
 #: gap/gap_player_dialog.c:2515
 msgid "ON: use thumbnails when available, OFF: read full sized frames"
-msgstr ""
+msgstr "Activado: Usar miniaturas cuando estén disponibles, Desactivado: leer fotogramas a tamaño completo"
 
 #: gap/gap_player_dialog.c:2525
 msgid "Exact Timing"
@@ -2630,7 +2670,7 @@ msgstr "Temporización exacta"
 
 #: gap/gap_player_dialog.c:2530
 msgid "ON: skip frames to hold exact timing, OFF: disable frame skipping"
-msgstr ""
+msgstr "Activado: Saltar fotogramas para mantener un tiempo exacto, Desactivdo: desactivar salto de fotogramas"
 
 # //R NI IDEA DE QUÉ ES ÉSTO
 #. the status label
@@ -2826,7 +2866,7 @@ msgid ""
 "optionally convert imagetype\n"
 msgstr ""
 "\n"
-"Seleccione formato de archivo destino mediante la extensión.\n"
+"Seleccione formato de archivo destino mediante la añadido.\n"
 "Opcionalmente convierta el tipo de imagen\n"
 
 #: gap/gap_range_ops.c:488
@@ -2850,7 +2890,7 @@ msgid ""
 "extension of resulting frames\n"
 "(is also used to define Fileformat)"
 msgstr ""
-"extensión de los fotogramas resultantes\n"
+"añadido de los fotogramas resultantes\n"
 "(también se usa para definir el formato de archivo)"
 
 #: gap/gap_range_ops.c:501
