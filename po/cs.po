@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gimp-gap VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-07-05 04:15+0200\n"
-"PO-Revision-Date: 2003-07-05 11:41+0200\n"
+"POT-Creation-Date: 2003-07-08 12:17+0200\n"
+"PO-Revision-Date: 2003-07-08 20:06+0200\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,118 +16,179 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Button  to invoke fontbrowser
-#: gap/gap_arr_dialog.c:398
+#: gap/gap_arr_dialog.c:399
 msgid "Font-Browser"
 msgstr "Prohlížeč písem"
 
 #. Button  to invoke filebrowser
-#: gap/gap_arr_dialog.c:479
+#: gap/gap_arr_dialog.c:480
 msgid "File-Browser"
 msgstr "Prohlížeč souborů"
 
 #. parameter settings
-#: gap/gap_arr_dialog.c:1076
+#: gap/gap_arr_dialog.c:1077
 msgid "Enter Values"
 msgstr "Zadání hodnot"
 
-#: gap/gap_arr_dialog.c:1096 gap/gap_arr_dialog.c:1213
+#: gap/gap_arr_dialog.c:1097 gap/gap_arr_dialog.c:1214
 msgid "Value:"
 msgstr "Jas:"
 
-#: gap/gap_arr_dialog.c:1393
+#: gap/gap_arr_dialog.c:1394
 msgid "Press Button"
 msgstr "Tlak na tlačítko"
 
-#: gap/gap_arr_dialog.c:1394
+#: gap/gap_arr_dialog.c:1395
 msgid "Select"
 msgstr "Výběr"
 
-#: gap/gap_base_ops.c:113 gap/gap_base_ops.c:245 gap/gap_base_ops.c:330
-#: gap/gap_base_ops.c:337 gap/gap_base_ops.c:344 gap/gap_base_ops.c:432
-#: gap/gap_base_ops.c:454 gap/gap_lib.c:1993
-#, c-format
-msgid "Error: could not rename frame %ld to %ld"
-msgstr "Chyba: nelze přejmenovat políčko %ld na %ld"
+#: gap/gap_base_ops.c:83
+msgid "Density-Deleting frames..."
+msgstr "Hustota-Odstraňuji políčka..."
 
-#: gap/gap_base_ops.c:183
+#: gap/gap_base_ops.c:122 gap/gap_base_ops.c:152 gap/gap_base_ops.c:226
+#: gap/gap_base_ops.c:281
+#, c-format
+msgid "Error: could not rename frame %d to %d"
+msgstr "Chyba: nemohu přejmenovat políčko %d na %d"
+
+#: gap/gap_base_ops.c:203
+msgid "Density-Duplicating frames..."
+msgstr "Hustota-Duplikuji políčka..."
+
+#: gap/gap_base_ops.c:358 gap/gap_base_ops.c:532
 #, c-format
 msgid "Error: could not save frame %s"
 msgstr "Chyba: nelze zapsat políčko %s"
 
-#: gap/gap_base_ops.c:233
+#: gap/gap_base_ops.c:462 gap/gap_base_ops.c:594 gap/gap_base_ops.c:679
+#: gap/gap_base_ops.c:686 gap/gap_base_ops.c:693 gap/gap_base_ops.c:781
+#: gap/gap_base_ops.c:803 gap/gap_lib.c:1993
+#, c-format
+msgid "Error: could not rename frame %ld to %ld"
+msgstr "Chyba: nelze přejmenovat políčko %ld na %ld"
+
+#: gap/gap_base_ops.c:582
 msgid "Duplicating frames..."
 msgstr "Duplikují se políčka..."
 
-#: gap/gap_base_ops.c:420
+#: gap/gap_base_ops.c:769
 msgid "Renumber Framesequence..."
 msgstr "Přečíslovat sled políček..."
 
-#: gap/gap_base_ops.c:612
+#: gap/gap_base_ops.c:961
 #, c-format
 msgid "Goto Frame (%ld/%ld)"
 msgstr "Jít na políčko (%ld/%ld)"
 
-#: gap/gap_base_ops.c:615
+#: gap/gap_base_ops.c:964
 #, c-format
 msgid "Destination Frame Number (%ld - %ld)"
 msgstr "Číslo cílového políčka (%ld - %ld)"
 
-#: gap/gap_base_ops.c:619 gap/gap_base_ops.c:697 gap/gap_base_ops.c:904
+#: gap/gap_base_ops.c:968 gap/gap_base_ops.c:1073 gap/gap_base_ops.c:1512
 msgid "Number:"
 msgstr "Počet:"
 
-#: gap/gap_base_ops.c:681
+#: gap/gap_base_ops.c:1016
+#, c-format
+msgid ""
+"Frames %d - %d will be deleted\n"
+"There will be no UNDO for this Operation\n"
+msgstr ""
+"Políčka %d - %d budou odstraněna\n"
+"Tuto operaci NELZE vrátit zpět\n"
+
+#. title_txt
+#: gap/gap_base_ops.c:1022 gap/gap_base_ops.c:1023
+#: gap/gap_navigator_dialog.c:624 gap/gap_navigator_dialog.c:625
+msgid "Confirm Frame Delete"
+msgstr "Potvrzení odstranění políček"
+
+#: gap/gap_base_ops.c:1057
 #, c-format
 msgid "Delete Frames (%ld/%ld)"
 msgstr "Smazat políčka (%ld/%ld)"
 
-#: gap/gap_base_ops.c:684
+#: gap/gap_base_ops.c:1060
 #, c-format
 msgid "Delete Frames from %ld to (number)"
 msgstr "Smazání políček od %ld do (číslo)"
 
-#: gap/gap_base_ops.c:748
+#: gap/gap_base_ops.c:1152
 #, c-format
-msgid "Duplicate Frames (%ld/%ld)"
-msgstr "Duplikovat políčka (%ld/%ld)"
+msgid ""
+"Frames in the Range: %d - %d will be duplicated %.4f times\n"
+"This will increase the total number of frames from %d up to %d\n"
+"There will be no UNDO for this Operation\n"
+msgstr ""
+"Políčka v rozsahu: %d - %d budou duplikována %.4f-krát<\n"
+"To zvýší celkový počet políček z %d na %d\n"
+"Tuto operaci NELZE vrátit zpět\n"
 
-#: gap/gap_base_ops.c:753 gap/gap_base_ops.c:951 gap/gap_decode_xanim.c:228
-#: gap/gap_player_dialog.c:2268 gap/gap_range_ops.c:280
-#: gap/gap_range_ops.c:629
+#: gap/gap_base_ops.c:1170
+#, c-format
+msgid ""
+"%.04f Percent of the Frames in the Range: %d - %d\n"
+"will be DELETED\n"
+"This will decrease the total number of frames from %d down to %d\n"
+"There will be no UNDO for this Operation\n"
+msgstr ""
+"%.04f procent políček v rozsahu %d - %d\n"
+"bude ODSTRANĚNO\n"
+"To sníží celkový počet políček z %d na %d\n"
+"Tuto operaci NELZE vrátit zpět\n"
+
+#. title_txt
+#: gap/gap_base_ops.c:1183 gap/gap_base_ops.c:1184
+msgid "Confirm Framedensity Change"
+msgstr "Potvrzení změny hustoty políček"
+
+#: gap/gap_base_ops.c:1206 gap/gap_base_ops.c:1244
+msgid "Change Frames Density"
+msgstr "Změnit hustotu políček"
+
+#: gap/gap_base_ops.c:1209 gap/gap_base_ops.c:1361 gap/gap_base_ops.c:1559
+#: gap/gap_decode_xanim.c:228 gap/gap_player_dialog.c:2268
+#: gap/gap_range_ops.c:280 gap/gap_range_ops.c:629
 msgid "From:"
 msgstr "Z:"
 
-#: gap/gap_base_ops.c:758
-msgid "Source Range starts at this framenumber"
-msgstr "Na tomto políčku je začátek zdrojového rozsahu"
+#: gap/gap_base_ops.c:1214 gap/gap_base_ops.c:1564
+msgid "Affected Range starts at this framenumber"
+msgstr "Dotčený rozsah začíná na tomto políčku"
 
-#: gap/gap_base_ops.c:761 gap/gap_base_ops.c:959 gap/gap_decode_xanim.c:238
-#: gap/gap_player_dialog.c:2275 gap/gap_range_ops.c:287
-#: gap/gap_range_ops.c:637
+#: gap/gap_base_ops.c:1217 gap/gap_base_ops.c:1369 gap/gap_base_ops.c:1567
+#: gap/gap_decode_xanim.c:238 gap/gap_player_dialog.c:2275
+#: gap/gap_range_ops.c:287 gap/gap_range_ops.c:637
 msgid "To:"
 msgstr "Do:"
 
-#: gap/gap_base_ops.c:766
-msgid "Source Range ends at this framenumber"
-msgstr "Na tomto políčku je konec zdrojového rozsahu"
+#: gap/gap_base_ops.c:1222 gap/gap_base_ops.c:1572
+msgid "Affected Range ends at this framenumber"
+msgstr "Dotčený rozsah končí na tomto políčku"
 
-#: gap/gap_base_ops.c:769
-msgid "N times:"
-msgstr "Nkrát:"
+#: gap/gap_base_ops.c:1225
+msgid "Density:"
+msgstr "Hustota:"
 
-#: gap/gap_base_ops.c:776
+#: gap/gap_base_ops.c:1235
+msgid "Density Factor for Density grow (or Divisor for shrink)"
+msgstr "Činitel hustoty pro zvýšení hustoty (nebo delitel pro snížení)"
+
+#: gap/gap_base_ops.c:1238
+msgid "Density Grow"
+msgstr "Zvýšení hustoty"
+
+#: gap/gap_base_ops.c:1239
 msgid ""
-"Copy selected Range n-times\n"
-"(you may type in Values > 99)"
+"ON: Duplicate Frames to get a target rate that is Density * Originalrate\n"
+"OFF: Delete Frames to get a target rate that is Originalrate/Density"
 msgstr ""
-"Kopírovat zvolený rozsah n-krát\n"
-"(můžete zadat hodnoty > 99)"
+"ZAPNUTO: Duplikovat políčka pro získání cílové frekvence Hustota * Původnífrekvence\n"
+"VYPNUTO: Odstranit políčka pro získání cílové frekvence Původnífrekvence/Hustota"
 
-#: gap/gap_base_ops.c:779
-msgid "Duplicate Frame Range"
-msgstr "Duplikovat rozsah políček"
-
-#: gap/gap_base_ops.c:826 gap/gap_lib.c:1127
+#: gap/gap_base_ops.c:1307 gap/gap_base_ops.c:1434 gap/gap_lib.c:1127
 msgid ""
 "OPERATION CANCELLED.\n"
 "GAP plug-ins only work with filenames\n"
@@ -139,33 +200,54 @@ msgstr ""
 "které končí čísly, např. _000001.xcf.\n"
 "==> Přejmenujte obrázek a zkuste to znovu."
 
-#: gap/gap_base_ops.c:899
+#: gap/gap_base_ops.c:1356
+#, c-format
+msgid "Duplicate Frames (%ld/%ld)"
+msgstr "Duplikovat políčka (%ld/%ld)"
+
+#: gap/gap_base_ops.c:1366
+msgid "Source Range starts at this framenumber"
+msgstr "Na tomto políčku je začátek zdrojového rozsahu"
+
+#: gap/gap_base_ops.c:1374
+msgid "Source Range ends at this framenumber"
+msgstr "Na tomto políčku je konec zdrojového rozsahu"
+
+#: gap/gap_base_ops.c:1377
+msgid "N times:"
+msgstr "Nkrát:"
+
+#: gap/gap_base_ops.c:1384
+msgid ""
+"Copy selected Range n-times\n"
+"(you may type in Values > 99)"
+msgstr ""
+"Kopírovat zvolený rozsah n-krát\n"
+"(můžete zadat hodnoty > 99)"
+
+#: gap/gap_base_ops.c:1387
+msgid "Duplicate Frame Range"
+msgstr "Duplikovat rozsah políček"
+
+#: gap/gap_base_ops.c:1507
 #, c-format
 msgid "Exchange current Frame (%ld)"
 msgstr "Zaměnit aktuální políčko (%ld)"
 
-#: gap/gap_base_ops.c:903
+#: gap/gap_base_ops.c:1511
 msgid "With Frame (number)"
 msgstr "S políčkem (číslo)"
 
-#: gap/gap_base_ops.c:946
+#: gap/gap_base_ops.c:1554
 #, c-format
 msgid "Framesequence Shift (%ld/%ld)"
 msgstr "Posun sekvence políček (%ld/%ld)"
 
-#: gap/gap_base_ops.c:956
-msgid "Affected Range starts at this framenumber"
-msgstr "Dotčený rozsah začíná na tomto políčku"
-
-#: gap/gap_base_ops.c:964
-msgid "Affected Range ends at this framenumber"
-msgstr "Dotčený rozsah končí na tomto políčku"
-
-#: gap/gap_base_ops.c:967
+#: gap/gap_base_ops.c:1575
 msgid "N-Shift:"
 msgstr "N-posun:"
 
-#: gap/gap_base_ops.c:972
+#: gap/gap_base_ops.c:1580
 msgid ""
 "Renumber the affected framesequence\n"
 "(numbers are shifted in circle by N)"
@@ -173,40 +255,40 @@ msgstr ""
 "Přečíslovat dotyčnou sekvenci políček\n"
 "(čísla jsou posunuta cyklicky o N)"
 
-#: gap/gap_base_ops.c:974
+#: gap/gap_base_ops.c:1582
 msgid "Framesequence shift"
 msgstr "Posunout sekvenci políček"
 
-#: gap/gap_base_ops.c:1059
+#: gap/gap_base_ops.c:1667
 #, c-format
 msgid "Renumber Frames (%ld)"
 msgstr "Přečíslovat políčka (%ld)"
 
-#: gap/gap_base_ops.c:1063
+#: gap/gap_base_ops.c:1671
 msgid "Start Frame Number:"
 msgstr "Číslo počátečního políčka:"
 
-#: gap/gap_base_ops.c:1068
+#: gap/gap_base_ops.c:1676
 msgid "New Framenumber for the 1.st frame"
 msgstr "Nové Číslo prvního políčka"
 
-#: gap/gap_base_ops.c:1071
+#: gap/gap_base_ops.c:1679
 msgid "Digits:"
 msgstr "Číslice:"
 
-#: gap/gap_base_ops.c:1076
+#: gap/gap_base_ops.c:1684
 msgid "How many digits to use for the framenumber filenamepart"
 msgstr "Kolik čísli použít pro číslo políčka jako část názvu souboru"
 
-#: gap/gap_base_ops.c:1080
+#: gap/gap_base_ops.c:1688
 msgid "Renumber Frames"
 msgstr "Přečíslovat políčka"
 
-#: gap/gap_base_ops.c:1189
+#: gap/gap_base_ops.c:1797
 msgid "renumber frames"
 msgstr "přečíslovat políčka"
 
-#: gap/gap_base_ops.c:1229
+#: gap/gap_base_ops.c:1837
 msgid "renumber frames 2nd pass"
 msgstr "přečíslovat políčka, druhý průchod"
 
@@ -658,112 +740,116 @@ msgstr ""
 "najednou na stejném animačním políčku\n"
 "Zamykám IMAGE_ID:%d\n"
 
-#: gap/gap_main.c:521
+#: gap/gap_main.c:534
 msgid "<Image>/Video/Goto/Next Frame"
 msgstr "<Image>/Video/Skok/Následující políčko"
 
-#: gap/gap_main.c:533
+#: gap/gap_main.c:546
 msgid "<Image>/Video/Goto/Previous Frame"
 msgstr "<Image>/Video/Skok/Předchozí políčko"
 
-#: gap/gap_main.c:545
+#: gap/gap_main.c:558
 msgid "<Image>/Video/Goto/First Frame"
 msgstr "<Image>/Video/Skok/První políčko"
 
-#: gap/gap_main.c:557
+#: gap/gap_main.c:570
 msgid "<Image>/Video/Goto/Last Frame"
 msgstr "<Image>/Video/Skok/Poslední políčko"
 
-#: gap/gap_main.c:569
+#: gap/gap_main.c:582
 msgid "<Image>/Video/Goto/Any Frame..."
 msgstr "<Image>/Video/Skok/Zadané políčko..."
 
-#: gap/gap_main.c:581
+#: gap/gap_main.c:594
 msgid "<Image>/Video/Delete Frames..."
 msgstr "<Image>/Video/Smazat políčka..."
 
-#: gap/gap_main.c:593
+#: gap/gap_main.c:606
 msgid "<Image>/Video/Duplicate Frames..."
 msgstr "<Image>/Video/Duplikovat políčka..."
 
-#: gap/gap_main.c:605
+#: gap/gap_main.c:623
+msgid "<Image>/Video/Frames Density..."
+msgstr "<Image>/Video/Hustota políček..."
+
+#: gap/gap_main.c:635
 msgid "<Image>/Video/Exchange Frame..."
 msgstr "<Image>/Video/Vyměnit políčka..."
 
-#: gap/gap_main.c:617
+#: gap/gap_main.c:647
 msgid "<Image>/Video/Move Path..."
 msgstr "<Image>/Video/Cesta přesunu..."
 
-#: gap/gap_main.c:688
+#: gap/gap_main.c:718
 msgid "<Image>/Video/Frames to Image..."
 msgstr "<Image>/Video/Políčka do obrázku..."
 
-#: gap/gap_main.c:700
+#: gap/gap_main.c:730
 msgid "<Image>/Video/Frames Flatten..."
 msgstr "<Image>/Video/Sloučit políčka..."
 
-#: gap/gap_main.c:712
+#: gap/gap_main.c:742
 msgid "<Image>/Video/Frames LayerDel..."
 msgstr "<Image>/Video/Smazat vrstvu políček..."
 
-#: gap/gap_main.c:736
+#: gap/gap_main.c:766
 msgid "<Image>/Video/Frames Convert..."
 msgstr "<Image>/Video/Převést políčka..."
 
-#: gap/gap_main.c:748
+#: gap/gap_main.c:778
 msgid "<Image>/Video/Frames Resize..."
 msgstr "<Image>/Video/Změnit plátno políček..."
 
-#: gap/gap_main.c:760
+#: gap/gap_main.c:790
 msgid "<Image>/Video/Frames Crop..."
 msgstr "<Image>/Video/Ořiznout políčka..."
 
-#: gap/gap_main.c:772
+#: gap/gap_main.c:802
 msgid "<Image>/Video/Frames Scale..."
 msgstr "<Image>/Video/Změnit velikost políček..."
 
-#: gap/gap_main.c:784
+#: gap/gap_main.c:814
 msgid "<Image>/Video/Split Image to Frames..."
 msgstr "<Image>/Video/Rozdělit obrázek do políček..."
 
-#: gap/gap_main.c:797
+#: gap/gap_main.c:827
 msgid "<Image>/Video/Framesequence Shift..."
 msgstr "<Image>/Video/Posun sledu políček..."
 
-#: gap/gap_main.c:809
+#: gap/gap_main.c:839
 msgid "<Image>/Video/Frames Renumber..."
 msgstr "<Image>/Video/Přečíslovat políčka..."
 
-#: gap/gap_main.c:821
+#: gap/gap_main.c:851
 msgid "<Image>/Video/Frames Modify..."
 msgstr "<Image>/Video/Změna políček..."
 
 #. Layer select modes
-#: gap/gap_mod_layer.c:92 gap/gap_onion_dialog.c:1086 gap/gap_range_ops.c:601
+#: gap/gap_mod_layer.c:92 gap/gap_onion_dialog.c:1084 gap/gap_range_ops.c:601
 msgid "Pattern is equal to LayerName"
 msgstr "Vzorek je shodný se jménem vrstvy"
 
-#: gap/gap_mod_layer.c:93 gap/gap_onion_dialog.c:1094 gap/gap_range_ops.c:602
+#: gap/gap_mod_layer.c:93 gap/gap_onion_dialog.c:1092 gap/gap_range_ops.c:602
 msgid "Pattern is Start of LayerName"
 msgstr "Vzorek je počátek jména vrstvy"
 
-#: gap/gap_mod_layer.c:94 gap/gap_onion_dialog.c:1102 gap/gap_range_ops.c:603
+#: gap/gap_mod_layer.c:94 gap/gap_onion_dialog.c:1100 gap/gap_range_ops.c:603
 msgid "Pattern is End of Layername"
 msgstr "Vzorek je konec jména vrstvy"
 
-#: gap/gap_mod_layer.c:95 gap/gap_onion_dialog.c:1110 gap/gap_range_ops.c:604
+#: gap/gap_mod_layer.c:95 gap/gap_onion_dialog.c:1108 gap/gap_range_ops.c:604
 msgid "Pattern is a Part of LayerName"
 msgstr "Vzorek je část jména vrstvy"
 
-#: gap/gap_mod_layer.c:96 gap/gap_onion_dialog.c:1118 gap/gap_range_ops.c:605
+#: gap/gap_mod_layer.c:96 gap/gap_onion_dialog.c:1116 gap/gap_range_ops.c:605
 msgid "Pattern is LayerstackNumber List"
 msgstr "Vzorek je seznam čísel zásobníku vrstev"
 
-#: gap/gap_mod_layer.c:97 gap/gap_onion_dialog.c:1126 gap/gap_range_ops.c:606
+#: gap/gap_mod_layer.c:97 gap/gap_onion_dialog.c:1124 gap/gap_range_ops.c:606
 msgid "Pattern is REVERSE-stack List"
 msgstr "Vzorek je seznam OBRÁCENÉHO zásobníku"
 
-#: gap/gap_mod_layer.c:98 gap/gap_onion_dialog.c:1134 gap/gap_range_ops.c:607
+#: gap/gap_mod_layer.c:98 gap/gap_onion_dialog.c:1132 gap/gap_range_ops.c:607
 msgid "All Visible (ignore Pattern)"
 msgstr "Všechny viditelné (ignorovat vzorek)"
 
@@ -913,7 +999,7 @@ msgstr "Citlivost velikost písmen"
 msgid "Lowercase and UPPERCASE letters are considered as different"
 msgstr "Malá a VELKÁ písmena jsou rozlišována"
 
-#: gap/gap_mod_layer.c:206 gap/gap_onion_dialog.c:1165 gap/gap_range_ops.c:700
+#: gap/gap_mod_layer.c:206 gap/gap_onion_dialog.c:1163 gap/gap_range_ops.c:700
 msgid "Invert Selection"
 msgstr "Invertovat výběr"
 
@@ -1139,7 +1225,7 @@ msgstr "Počáteční políčko:"
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: gap/gap_mov_dialog.c:574 gap/gap_onion_dialog.c:916
+#: gap/gap_mov_dialog.c:574 gap/gap_onion_dialog.c:845
 msgid "First handled frame"
 msgstr "První zpracované políčko"
 
@@ -1157,7 +1243,7 @@ msgstr "Koncové políčko:"
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: gap/gap_mov_dialog.c:589 gap/gap_onion_dialog.c:926
+#: gap/gap_mov_dialog.c:589 gap/gap_onion_dialog.c:863
 msgid "Last handled frame"
 msgstr "Poslední zpracované políčko"
 
@@ -1726,7 +1812,7 @@ msgstr "Parametry generování"
 msgid "Gen + Encode"
 msgstr "Generování + kódování"
 
-#: gap/gap_mpege.c:293 gap/gap_navigator_dialog.c:3547
+#: gap/gap_mpege.c:293 gap/gap_navigator_dialog.c:3684
 msgid "Framerate:"
 msgstr "Frekvence políček:"
 
@@ -2009,7 +2095,7 @@ msgstr "Vykreslit název souboru do vrstvy"
 msgid "Settings :"
 msgstr "Nastavení :"
 
-#: gap/gap_navigator_dialog.c:402
+#: gap/gap_navigator_dialog.c:406
 msgid ""
 "Playback\n"
 "<Shift> Make Tempimage and do Layeranimation Playback"
@@ -2017,7 +2103,7 @@ msgstr ""
 "Přehrávání\n"
 "<Shift> Vytvořit dočasný obrázek a provést přehrávání animace vrstvy"
 
-#: gap/gap_navigator_dialog.c:407
+#: gap/gap_navigator_dialog.c:411
 msgid ""
 "Smart Update Thumbnails\n"
 "<Shift> forced upd"
@@ -2025,19 +2111,19 @@ msgstr ""
 "Chytrá aktualizace náhledů\n"
 "<Shift> vnucená aktualizace"
 
-#: gap/gap_navigator_dialog.c:412
+#: gap/gap_navigator_dialog.c:416
 msgid "Duplicate selected Frames"
 msgstr "Duplikovat vybraná políčka"
 
-#: gap/gap_navigator_dialog.c:416
+#: gap/gap_navigator_dialog.c:420
 msgid "Delete selected Frames"
 msgstr "Smazat vybraná políčka"
 
-#: gap/gap_navigator_dialog.c:425
+#: gap/gap_navigator_dialog.c:429
 msgid "Goto 1st Frame"
 msgstr "Jít na první políčko"
 
-#: gap/gap_navigator_dialog.c:429
+#: gap/gap_navigator_dialog.c:433
 msgid ""
 "Goto prev Frame\n"
 "<Shift> use timezoom stepsize"
@@ -2045,7 +2131,7 @@ msgstr ""
 "Jít na předchozí políčko\n"
 "<Shift> použít krok časové lupy"
 
-#: gap/gap_navigator_dialog.c:434
+#: gap/gap_navigator_dialog.c:438
 msgid ""
 "Goto next Frame\n"
 "<Shift> use timezoom stepsize"
@@ -2053,221 +2139,249 @@ msgstr ""
 "Jít na následující políčko\n"
 "<Shift> použít krok časové lupy"
 
-#: gap/gap_navigator_dialog.c:439
+#: gap/gap_navigator_dialog.c:443
 msgid "Goto last Frame"
 msgstr "Jít na poslední políčko"
 
-#: gap/gap_navigator_dialog.c:504
+#: gap/gap_navigator_dialog.c:508
 msgid "<Image>/Video/VCR Navigator..."
 msgstr "<Image>/Video/Video navigátor..."
 
-#: gap/gap_navigator_dialog.c:565
+#: gap/gap_navigator_dialog.c:569
 msgid "Cant open two or more Video Navigator Windows."
 msgstr "Nelze otevřít dvě a více oken Video navigátoru."
 
+#: gap/gap_navigator_dialog.c:619
+#, c-format
+msgid ""
+"The Selected %d Frame(s) will be deleted\n"
+"There will be no UNDO for this Operation\n"
+msgstr ""
+"Vybraných %d políček bude odstraněno\n"
+"Tuto operaci NELZE vráti zpět\n"
+
+#: gap/gap_navigator_dialog.c:1503
+msgid ""
+"For the Thumbnail update you have to select\n"
+"a Thumbnail Filesze other than 'No Thumbnails'\n"
+"in the Environment Section of the Preferences Dialog"
+msgstr ""
+"Pro aktualizaci náhledů musíte vybrat\n"
+"velikost náhledů jinou než 'Žádné náhledy'\n"
+"v sekci Prostředí dialogu Nastavení"
+
 #. menu_item copy
-#: gap/gap_navigator_dialog.c:3444
+#: gap/gap_navigator_dialog.c:3581
 msgid "Copy"
 msgstr "Kopírovat"
 
 #. menu_item cut
-#: gap/gap_navigator_dialog.c:3454
+#: gap/gap_navigator_dialog.c:3591
 msgid "Cut"
 msgstr "Vyříznout"
 
 #. menu_item paste before
-#: gap/gap_navigator_dialog.c:3463
+#: gap/gap_navigator_dialog.c:3600
 msgid "Paste before"
 msgstr "Vložit předem"
 
 #. menu_item copy
-#: gap/gap_navigator_dialog.c:3472
+#: gap/gap_navigator_dialog.c:3609
 msgid "Paste after"
 msgstr "Vložit potom"
 
 #. menu_item copy
-#: gap/gap_navigator_dialog.c:3481
+#: gap/gap_navigator_dialog.c:3618
 msgid "Paste replace"
 msgstr "Vložit výměnou"
 
 #. menu_item copy
-#: gap/gap_navigator_dialog.c:3490
+#: gap/gap_navigator_dialog.c:3627
 msgid "Clear Video Buffer"
 msgstr "Vymazat video buffer"
 
 #. menu_item Select All
-#: gap/gap_navigator_dialog.c:3500
+#: gap/gap_navigator_dialog.c:3637
 msgid "Select All"
 msgstr "Vybrat vše"
 
 #. menu_item Select None
-#: gap/gap_navigator_dialog.c:3509
+#: gap/gap_navigator_dialog.c:3646
 msgid "Select None"
 msgstr "Zrušit výběr"
 
-#: gap/gap_navigator_dialog.c:3532
+#: gap/gap_navigator_dialog.c:3669
 msgid "Videoframes:"
 msgstr "Video políčka:"
 
-#: gap/gap_navigator_dialog.c:3569
+#: gap/gap_navigator_dialog.c:3706
 msgid "Set Framerate in Frames/sec"
 msgstr "Nastavit frekvenci políček v políčkách/s"
 
-#: gap/gap_navigator_dialog.c:3577
+#: gap/gap_navigator_dialog.c:3714
 msgid "Timezoom:"
 msgstr "Časová lupa:"
 
-#: gap/gap_navigator_dialog.c:3599
+#: gap/gap_navigator_dialog.c:3736
 msgid "Show only every N.th frame"
 msgstr "Zobrazovat je každé N-té políčko"
 
 #. The main shell
-#: gap/gap_navigator_dialog.c:3696
+#: gap/gap_navigator_dialog.c:3833
 msgid "Video Navigator"
 msgstr "Video navigátor"
 
-#: gap/gap_onion_dialog.c:882
+#: gap/gap_onion_dialog.c:803
 msgid "Onionskin Configuration"
 msgstr "Nastavení Onionskin"
 
-#: gap/gap_onion_dialog.c:899
+#: gap/gap_onion_dialog.c:820
 msgid "From Frame : "
 msgstr "Z políčka : "
 
-#: gap/gap_onion_dialog.c:906
+#: gap/gap_onion_dialog.c:827
 msgid "To Frame :"
 msgstr "Do políčka :"
 
-#: gap/gap_onion_dialog.c:945
+#: gap/gap_onion_dialog.c:882
 msgid "Onionskin Layers :"
 msgstr "Vrstvy Onionskin :"
 
-#: gap/gap_onion_dialog.c:959
-msgid "number of onionskin layers to create in handled frame."
-msgstr "Počet vrstev onionskin, které vytvořit ve zpracovávaném políčku."
+#: gap/gap_onion_dialog.c:891
+msgid "Ascending Opacity"
+msgstr "Vzrůstající krytí"
 
-#: gap/gap_onion_dialog.c:962
+#: gap/gap_onion_dialog.c:897
+msgid ""
+"ON: Far Neighbour Frames have the higher Opacity, OFF: Near Neighbour Frames "
+"have the higher Opacity"
+msgstr "Zapnuto: Vzdálenější sousední políčka mají vyšší krytí, VYPNUTO: Bližší sousední políčka mají vyšší krytí "
+
+#: gap/gap_onion_dialog.c:917
+msgid "Number of Onionskin Layers to create in the handled Frame."
+msgstr "Počet vrstev Onionskin, které vytvořit ve zpracovávaném políčku."
+
+#: gap/gap_onion_dialog.c:920
 msgid "Frame Reference :"
 msgstr "Odkaz na políčko :"
 
-#: gap/gap_onion_dialog.c:976
-msgid "-1 is previous frame, +1 is next frame"
+#: gap/gap_onion_dialog.c:942
+msgid "-1 is previous Frame, +1 is next Frame"
 msgstr "-1 je předchozí políčko, +1 je následující políčko"
 
-#: gap/gap_onion_dialog.c:979
+#: gap/gap_onion_dialog.c:945
 msgid "Cyclic"
 msgstr "Cyklické"
 
-#: gap/gap_onion_dialog.c:985
-msgid "ON: foldback next frame of last is first"
+#: gap/gap_onion_dialog.c:951
+msgid "ON: foldback next Frame of last is first"
 msgstr "ZAPNUTO: po posledním políčku následuje první"
 
-#: gap/gap_onion_dialog.c:988
+#: gap/gap_onion_dialog.c:954
 msgid "Stackposition :"
 msgstr "Umístění v zásobníku :"
 
-#: gap/gap_onion_dialog.c:1002
-msgid "Stackposition where to place onion layers"
-msgstr "Umístění v zásobníku, kam umístit vrstvy cibule"
+#: gap/gap_onion_dialog.c:976
+msgid "Stackposition where to place Onionskin Layer(s)"
+msgstr "Umístění v zásobníku, kam umístit vrstvy Onionskin"
 
-#: gap/gap_onion_dialog.c:1005
+#: gap/gap_onion_dialog.c:979
 msgid "From Top"
 msgstr "Shora"
 
-#: gap/gap_onion_dialog.c:1011
-msgid "ON: 0 is on top, OFF: 0 is on bottom"
+#: gap/gap_onion_dialog.c:985
+msgid "ON: 0 is on Top, OFF: 0 is on Bottom"
 msgstr "ZAPNUTO: 0 je nahoře, VYPNUTO: 0 je dole"
 
-#: gap/gap_onion_dialog.c:1014
+#: gap/gap_onion_dialog.c:988
 msgid "Opacity :"
 msgstr "Krytí :"
 
+#: gap/gap_onion_dialog.c:1010
+msgid "Opacity of 1.st Onionskin Layer (0 is transparent, 100 full opaque)"
+msgstr "Krytí první vrstvy Onionskin (0 je průhledná, 100 plné krytí)"
+
 #: gap/gap_onion_dialog.c:1028
-msgid "Opacity of 1.st onionskin layer (0 is transparent, 100 full opaque)"
-msgstr "Krytí první vrstvy onionsin (0 je průhledná, 100 plné krytí)"
+msgid "Descending Opacity for 2.nd Onionskin Layer"
+msgstr "Snížení průhlednosti pro druhou vrstvu Onionskin"
 
-#: gap/gap_onion_dialog.c:1038
-msgid "Descending Opacity for 2.nd onionskin layer"
-msgstr "Snížení průhlednosti pro druhou vrstvu onionskin"
-
-#: gap/gap_onion_dialog.c:1041
+#: gap/gap_onion_dialog.c:1031
 msgid "Layer Selection "
 msgstr "Výběr vrstvy "
 
-#: gap/gap_onion_dialog.c:1053
+#: gap/gap_onion_dialog.c:1043
 msgid "Ignore BG-layer(s) : "
 msgstr "Ignorovat vrstvy pozadí :"
 
-#: gap/gap_onion_dialog.c:1067
-msgid "exclude N BG-Layers (0 "
-msgstr "vyloučit N vstev pozadí (0 "
+#: gap/gap_onion_dialog.c:1065
+msgid "exclude N BG-Layers (use 0 if you dont want to exclude any Layer)"
+msgstr "vyjmout N vrstev pozadí (použijte 0, pokud nechcete vyjmout žádnou vrstvu)"
 
-#: gap/gap_onion_dialog.c:1070
+#: gap/gap_onion_dialog.c:1068
 msgid "Select Mode :"
 msgstr "Výběr režimu :"
 
-#: gap/gap_onion_dialog.c:1083
+#: gap/gap_onion_dialog.c:1081
 msgid "Modes how to use Select Pattern"
 msgstr "Režimy, jak používat Výběr vzorku"
 
-#: gap/gap_onion_dialog.c:1145
+#: gap/gap_onion_dialog.c:1143
 msgid "Select Options :"
 msgstr "Možnosti výběru :"
 
-#: gap/gap_onion_dialog.c:1158
+#: gap/gap_onion_dialog.c:1156
 msgid "Case sensitve"
 msgstr "Rozlišovat velikost písmen"
 
-#: gap/gap_onion_dialog.c:1162
+#: gap/gap_onion_dialog.c:1160
 msgid "ON: case sensitive pattern, OFF ignore case"
 msgstr ""
 "Zapnuto: vzorek rozlišuje velikostpísmen, OFF: ignorovat velikost písmen"
 
-#: gap/gap_onion_dialog.c:1169
-msgid "ON: Select NON-matching layers, OFF: Select matching layers"
+#: gap/gap_onion_dialog.c:1167
+msgid "ON: Select NON-matching Layers, OFF: Select matching Layers"
 msgstr ""
 "ZAPNUTO: vybrat NEodpovídající vrstvy, VYPNUTO: Vybrat odpovídající vrstvy"
 
-#: gap/gap_onion_dialog.c:1172
+#: gap/gap_onion_dialog.c:1170
 msgid "Select Pattern :"
 msgstr "Výběr vzorku :"
 
-#: gap/gap_onion_dialog.c:1185
+#: gap/gap_onion_dialog.c:1183
 msgid "Select Layernames by Pattern (depends on Mode and Options)"
 msgstr "Vybrat názvy vrstev podle vzorku (záleží na režimu a nastavení)"
 
-#: gap/gap_onion_dialog.c:1189
+#: gap/gap_onion_dialog.c:1187
 msgid "Set"
 msgstr "Nastavit"
 
-#: gap/gap_onion_dialog.c:1195
-msgid "Set Onionskin parameters for the current gimp session"
-msgstr "Nastavit parametry Onionskin pro aktuální sezení gimpu"
+#: gap/gap_onion_dialog.c:1193
+msgid "Set Onionskin Parameters for the current GIMP Session"
+msgstr "Nastavit parametry Onionskin pro aktuální sezení GIMPu"
 
-#: gap/gap_onion_dialog.c:1213
+#: gap/gap_onion_dialog.c:1211
 msgid ""
-"Create or replace onionskin layer in all frames of the selected framerange"
-msgstr ""
-"Vytvořit nebo nahradit vrstvu onionskin na všech políčkách ze zvoleného "
-"rozsahu"
+"Create or replace Onionskin Layer in all Frames of the selected Framerange"
+msgstr "Vytvořit nebo nahradit vrstvu Onionskin na všech políčkách ze zvoleného rozsahu"
 
-#: gap/gap_onion_dialog.c:1220
-msgid "remove all onionlayers in all frames of the the selected framerange"
-msgstr "odstranit všechny vrsvty cibule ze všech políček ze zvoleného rozsahu"
+#: gap/gap_onion_dialog.c:1218
+msgid ""
+"Remove all Onionskin Layers in all Frames of the the selected Framerange"
+msgstr "odstranit všechny vrstvy Onionskin ze všech políček ze zvoleného rozsahu"
 
-#: gap/gap_onion_dialog.c:1228
-msgid "Exit without any action"
+#: gap/gap_onion_dialog.c:1226
+msgid "Exit without any Action"
 msgstr "Ukončit bez akce"
 
-#: gap/gap_onion_dialog.c:1235
+#: gap/gap_onion_dialog.c:1233
 msgid "Reset to Default Settings"
 msgstr "Obnovit implicitní nastavení"
 
-#: gap/gap_onion_main.c:132
+#: gap/gap_onion_main.c:134
 msgid "This plugin sets Configuration for Onion Layers in Videofames"
 msgstr "Tento modul nastavuje nastavení vrstev cibule v políčkách videa"
 
-#: gap/gap_onion_main.c:133
+#: gap/gap_onion_main.c:135
 msgid ""
 "This plugin is the configuration GUI for Onion layers. Onion Layer(s) "
 "usually do show previous (or next) frame(s) of the video in the current "
@@ -2281,23 +2395,23 @@ msgstr ""
 "odstranit ručně pomocí menu Video/OnionSkin/vytvořit nebo Video/OnionSkin/"
 "odstranit nebo zavolat procedury "
 
-#: gap/gap_onion_main.c:138
+#: gap/gap_onion_main.c:140
 msgid " "
 msgstr " "
 
-#: gap/gap_onion_main.c:139
+#: gap/gap_onion_main.c:141
 msgid "  The configuration can be saved in the gimprc parameter file."
 msgstr " Nastavení může být uloženo v souboru parametrů gimprc."
 
-#: gap/gap_onion_main.c:144
+#: gap/gap_onion_main.c:146
 msgid "<Image>/Video/Onionskin/Configuration..."
 msgstr "<Image>/Video/Onionskin/Nastavení..."
 
-#: gap/gap_onion_main.c:151
+#: gap/gap_onion_main.c:153
 msgid "This plugin creates or replaces Onionskin Layer(s)"
 msgstr "Tento modul vytváří nebo nahrazuje vrstvy cibule"
 
-#: gap/gap_onion_main.c:152
+#: gap/gap_onion_main.c:154
 msgid ""
 "This plugin creates or updates Onionskin Layers in the current Videoframe. "
 "Onion Layer(s) usually do show previous (or next) frame(s) of the video. At "
@@ -2311,19 +2425,19 @@ msgstr ""
 "NEINTERAKTIVNĚ. Závisí na nastaveních provedených ve Video/Onionskin/"
 "Nastavení nebo volání modulu: "
 
-#: gap/gap_onion_main.c:157
+#: gap/gap_onion_main.c:159
 msgid "  if no configuration is found, default settings are used"
 msgstr "  pokud není nalezen konfigurace, jsou použita implicitní nastavení"
 
-#: gap/gap_onion_main.c:162
+#: gap/gap_onion_main.c:164
 msgid "<Image>/Video/Onionskin/Create or Replace"
 msgstr "<Image>/Video/Onionskin/Vytvořit nebo nahradit"
 
-#: gap/gap_onion_main.c:170
+#: gap/gap_onion_main.c:172
 msgid "This plugin removes OnionSkin Layer(s)"
 msgstr "Tento modul odstraňuje vrstvy OnionSkin"
 
-#: gap/gap_onion_main.c:171
+#: gap/gap_onion_main.c:173
 msgid ""
 "This plugin removes Onion Skin Layers from the current Videoframe. Onion "
 "Layer(s) usually do show previous (or next) frame(s) of the video."
@@ -2331,15 +2445,15 @@ msgstr ""
 "Tento modul odstraňuje vrstvy cibule z aktuálního políčka videa. Vrstvy "
 "cibuleobvykle zobrazují předchozí (nebo následující) políčka videa."
 
-#: gap/gap_onion_main.c:177
+#: gap/gap_onion_main.c:179
 msgid "<Image>/Video/Onionskin/Delete"
 msgstr "<Image>/Video/Onionskin/Odstranit"
 
-#: gap/gap_onion_main.c:185
+#: gap/gap_onion_main.c:187
 msgid "This plugin toggles visibility of OnionSkin Layer(s)"
 msgstr "Tento modul přepíná viditelnost vrstev OnionSkin"
 
-#: gap/gap_onion_main.c:186
+#: gap/gap_onion_main.c:188
 msgid ""
 "This plugin sets visibility for all onionskin Layers in the current "
 "Videoframe."
@@ -2347,21 +2461,21 @@ msgstr ""
 "Tento modul nastavuje viditelnost všech vrstev onionskin v aktuálním políčku "
 "videa."
 
-#: gap/gap_onion_main.c:190
+#: gap/gap_onion_main.c:192
 msgid "<Image>/Video/Onionskin/Toggle Visibility"
 msgstr "<Image>/Video/Onionskin/Přepnout viditelnost"
 
 #. set layername
-#: gap/gap_onion_worker.c:716
+#: gap/gap_onion_worker.c:742
 #, c-format
-msgid "onionskin_%04d"
-msgstr "onionskin_%04d"
+msgid "onionskin_%06d"
+msgstr "onionskin_%06d"
 
-#: gap/gap_onion_worker.c:791
+#: gap/gap_onion_worker.c:818
 msgid "Creating Onionskin Layers..."
 msgstr "Vytvářím vrstvy onionskin..."
 
-#: gap/gap_onion_worker.c:795
+#: gap/gap_onion_worker.c:822
 msgid "Removing Onionskin Layers..."
 msgstr "Odstraňuji vrstvy onionskin..."
 
