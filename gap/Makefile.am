@@ -1,8 +1,8 @@
 ## Process this file with automake to produce Makefile.in
 
-libexecdir = $(gimpplugindir)/plug-ins
+libexecdir = $(GIMP_PLUGIN_DIR)/plug-ins
 
-scriptdatadir = $(gimpdatadir)/scripts
+scriptdatadir = $(GIMP_DATA_DIR)/scripts
 
 scriptdata_DATA = sel-to-anim-img.scm
 
