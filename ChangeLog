@@ -1,3 +1,8 @@
+2003-07-30  Sven Neumann  <sven@gimp.org>
+
+	* configure.in: use AM_PATH_GIMP_2_0, changed gettext domain to
+	gimp20-gap.
+
 2003-07-14  Wolfgang Hofer <hof@gimp.org>
         Minor fixes: compiler warnings signed/unsigned comparisons,
 	types of parameters in the GimpPlugInInfo.run procedure
