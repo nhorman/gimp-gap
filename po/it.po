@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: gimp 2.0.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2004-10-06 15:39+0200\n"
-"PO-Revision-Date: 2004-10-07 10:18+0200\n"
+"PO-Revision-Date: 2004-10-07 14:14+0200\n"
 "Last-Translator: Marco Ciampa <ciampix@libero.it>\n"
 "Language-Team: gimp.linux.it\n"
 "MIME-Version: 1.0\n"
@@ -1529,14 +1529,12 @@ msgid "Apply layermask"
 msgstr "Applica maschera di livello"
 
 #: gap/gap_mod_layer.c:151
-#, fuzzy
 msgid "Copy layermask from layer above"
-msgstr "Aggiungi maschera di canale dall'alfa"
+msgstr "Copia maschera di livello dal livello sopra"
 
 #: gap/gap_mod_layer.c:152
-#, fuzzy
 msgid "Copy layermask from layer below"
-msgstr "Aggiungi maschera di canale dall'alfa"
+msgstr "Copia maschera di livello dal livello sotto"
 
 #: gap/gap_mod_layer.c:202
 msgid ""
@@ -1663,46 +1661,45 @@ msgid "No selected layer in start frame"
 msgstr "Nessun livello selezionato nel frame di partenza"
 
 #: gap/gap_morph_dialog.c:2495
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Failed to write morph workpointfile\n"
 "filename: '%s':\n"
 "%s"
 msgstr ""
-"Fallita la scrittura del file dei punti di controllo\n"
+"Fallita la scrittura del file dei punti di lavoro morph\n"
 "nomefile: '%s':\n"
 "%s"
 
 #: gap/gap_morph_dialog.c:2524
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "ERROR: Could not open morph workpoints\n"
 "filename: '%s'\n"
 "%s"
 msgstr ""
-"ERRORE: impossibile aprire i punti di controllo\n"
+"ERRORE: impossibile aprire i punti di lavoro morph\n"
 "nomefile: '%s'\n"
 "%s"
 
 #: gap/gap_morph_dialog.c:2530
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "ERROR: Could not read morph workpoints\n"
 "filename: '%s'\n"
 "(Is not a valid morph workpoint file)"
 msgstr ""
-"ERRORE: impossibile leggere i punti di controllo\n"
+"ERRORE: impossibile leggere i punti di lavoro morph\n"
 "nomefile: '%s'\n"
-"(non è un file di punti di controllo valido)"
+"(non è un file di punti di lavoro morph valido)"
 
 #: gap/gap_morph_dialog.c:2582
-#, fuzzy
 msgid "Save Morph Workpointfile"
-msgstr "Salva punti di controllo in file"
+msgstr "Salva file dei punti di lavoro morph"
 
 #: gap/gap_morph_dialog.c:2586
 msgid "Load Morph Workpointfile"
-msgstr "Carica il file dei punti di morph"
+msgstr "Carica file dei punti di lavoro morph"
 
 #: gap/gap_morph_dialog.c:2899
 msgid "Edit Mode:"
@@ -1830,9 +1827,8 @@ msgid "Point:"
 msgstr "Punto:"
 
 #: gap/gap_morph_dialog.c:3284
-#, fuzzy
 msgid "Number of the current point"
-msgstr "Elimina punto di controllo corrente"
+msgstr "Numero del punto di corrente"
 
 #. the number_of_points label
 #: gap/gap_morph_dialog.c:3290
@@ -1862,9 +1858,8 @@ msgid "ShapePoints:"
 msgstr "Puntiforma:"
 
 #: gap/gap_morph_dialog.c:3575
-#, fuzzy
 msgid "Number of workpoints to create when Shape button is pressed"
-msgstr "Frame da mostrare quando il bottone 'aggiornamento' viene premuto"
+msgstr "Numero dei punti di lavoro da creare quando il bottone Forma viene premuto"
 
 #. Shape Button
 #: gap/gap_morph_dialog.c:3581
@@ -5416,9 +5411,8 @@ msgstr "Da:"
 #. constrain
 #. lower/upper unconstrained
 #: gap/gap_story_properties.c:1733
-#, fuzzy
 msgid "framenumber of the first frame in the clip range"
-msgstr "Nuovo numero frame per il primo frame"
+msgstr "numero frame per il primo frame nel campo clip"
 
 #: gap/gap_story_properties.c:1755
 msgid "To:"
@@ -5430,9 +5424,8 @@ msgstr "A:"
 #. constrain
 #. lower/upper unconstrained
 #: gap/gap_story_properties.c:1762
-#, fuzzy
 msgid "framenumber of the last frame in the clip range"
-msgstr "Numero frame dell'ultimo frame da estrarre"
+msgstr "numero frame dell'ultimo frame nel campo clip"
 
 #: gap/gap_story_properties.c:1774
 msgid "Loops:"
@@ -5495,9 +5488,8 @@ msgstr ""
 
 #. pingpong
 #: gap/gap_story_properties.c:1911
-#, fuzzy
 msgid "Pingpong:"
-msgstr "Ping pong"
+msgstr "Pingpong:"
 
 #: gap/gap_story_properties.c:1927
 msgid "ON: Play clip in pingpong mode"
@@ -5619,17 +5611,17 @@ msgid "VideoRange"
 msgstr "Campo video"
 
 #: gap/gap_vex_dialog.c:1902
-#, fuzzy
 msgid "Open visual video range selection window"
-msgstr "Apri la finestra di dialogo per la selezione dei file audio"
+msgstr "Apri la finestra per la selezione visuale del campo video"
 
 #: gap/gap_vex_dialog.c:1912
+#, fuzzy
 msgid "visual video range selection (docked mode)"
-msgstr ""
+msgstr "selezione visuale campo video (modalità dock)"
 
 #: gap/gap_vex_dialog.c:1940
 msgid "Videotrack number (0 == extract no frames)"
-msgstr ""
+msgstr "Traccia video numero (0 == non estrarre frame)"
 
 #. the audiotrack to label
 #: gap/gap_vex_dialog.c:1950
@@ -5695,20 +5687,16 @@ msgid "Output"
 msgstr "Uscita"
 
 #: gap/gap_vex_dialog.c:2111
-#, fuzzy
 msgid "Basename for extracted frames (framenr and extension is added)"
-msgstr ""
-"Corpo del nome del file per il frame video da scrivere su disco. Viene "
-"aggiunta l'estensione ed il numero di frame."
+msgstr "Nome base dei file per le frame estratte. (viene aggiunta l'estensione ed il numero di frame)"
 
 #: gap/gap_vex_dialog.c:2112
 msgid "frame_"
 msgstr "frame_"
 
 #: gap/gap_vex_dialog.c:2121
-#, fuzzy
 msgid "Use filebrowser to select basename for extracted frames"
-msgstr "Apri la finestra di gestione file per selezionare un nome file"
+msgstr "Apri la finestra di gestione file per selezionare un nome base file per le frame estratte"
 
 #: gap/gap_vex_dialog.c:2152
 msgid ""
@@ -5730,9 +5718,8 @@ msgstr ".xcf"
 
 #. the multilayer checkbox (decide if extract writes to frames on disc or to one image)
 #: gap/gap_vex_dialog.c:2222
-#, fuzzy
 msgid "Create only one multilayer Image"
-msgstr "Create una immagine multi-livello da frame"
+msgstr "Create solo una immagine multi-livello"
 
 #: gap/gap_vex_dialog.c:2226
 msgid ""
@@ -5757,9 +5744,8 @@ msgid "deinterlace (even lines only)"
 msgstr "deinterlaccia (solo linee pari)"
 
 #: gap/gap_vex_dialog.c:2263
-#, fuzzy
 msgid "deinterlace framesx2 (odd 1st)"
-msgstr "deinterlaccia"
+msgstr "deinterlaccia framesx2 (prima dispari)"
 
 #: gap/gap_vex_dialog.c:2271
 msgid "deinterlace framesx2 (even 1st)"
@@ -5770,27 +5756,24 @@ msgid "0.0 .. no interpolation, 1.0 smooth interpolation at deinterlacing"
 msgstr ""
 
 #: gap/gap_vex_dialog.c:2307
-#, fuzzy
 msgid "Name for extracted audio (audio is written in RIFF WAV format)"
-msgstr "Nome del file wave da creare come copia in formato RIFF WAVE"
+msgstr "Nome dell'audio estratto (l'audio viene scritto in formato RIFF WAV)"
 
 #: gap/gap_vex_dialog.c:2308
 msgid "frame.wav"
 msgstr "frame.wav"
 
 #: gap/gap_vex_dialog.c:2317
-#, fuzzy
 msgid "Use filebrowser to select audiofilename"
-msgstr "Apri la finestra di gestione file per selezionare un nome file"
+msgstr "Apri la finestra di gestione file per selezionare un file audio"
 
 #: gap/gap_vex_dialog.c:2323
 msgid "Start extraction"
 msgstr "Comincia estrazione"
 
 #: gap/gap_vex_exec.c:392
-#, fuzzy
 msgid "Seek Frame Position..."
-msgstr "Seleziona campo frame e posizione nella pila"
+msgstr "Vai alla posizione frame..."
 
 #: gap/gap_vex_exec.c:445
 msgid "Extracting Frames..."
@@ -5805,14 +5788,12 @@ msgid "Extracting Audio..."
 msgstr "Estrazione audio..."
 
 #: gap/gap_vex_main.c:180
-#, fuzzy
 msgid "<Image>/Video/Split Video to Frames/Extract Videorange"
-msgstr "<Image>/Video/Dividi il video in frame/leggibile da XANIM..."
+msgstr "<Image>/Video/Dividi il video in frame/Estrai campo video"
 
 #: gap/gap_vex_main.c:200
-#, fuzzy
 msgid "<Toolbox>/Xtns/Split Video to Frames/Extract Videorange"
-msgstr "<Toolbox>/Xtns/Dividi il video in frame/leggibile da XANIM..."
+msgstr "<Toolbox>/Xtns/Dividi il video in frame/Estrai campo video"
 
 #: gap/gap_vex_main.c:258
 msgid "MAIN_TST"
@@ -6053,7 +6034,7 @@ msgstr "Scala tutti i frame video..."
 
 #: libgapvidutil/gap_gve_story.c:4532
 msgid "Continue Encoding..."
-msgstr ""
+msgstr "Continua la codifica..."
 
 #: vid_common/gap_cme_gui.c:142
 msgid "GAP Message"
@@ -6061,7 +6042,7 @@ msgstr "Messaggio GAP"
 
 #: vid_common/gap_cme_gui.c:165
 msgid "Encoder specific Parameter Window still open"
-msgstr ""
+msgstr "La finestra dei parametri specifici per la codifica è ancora aperta"
 
 #: vid_common/gap_cme_gui.c:412
 msgid "no description available"
@@ -6088,9 +6069,8 @@ msgid "UNKNOWN (using sox)"
 msgstr "SCONOSCIUTO (uso di sox)"
 
 #: vid_common/gap_cme_gui.c:1018
-#, fuzzy
 msgid "Storyframe"
-msgstr "Frame chiave:"
+msgstr "Frame storia"
 
 #: vid_common/gap_cme_gui.c:1021
 msgid "Layer"
@@ -6295,13 +6275,12 @@ msgid "Master Videoencoder"
 msgstr ""
 
 #: vid_common/gap_cme_gui.c:2213
-#, fuzzy
 msgid "Video Encode Options"
-msgstr "Opzioni video"
+msgstr "Opzioni codifica video"
 
 #: vid_common/gap_cme_gui.c:2259
 msgid "Width of the output video (pixels)"
-msgstr ""
+msgstr "Ampiezza dell'uscita video (pixel)"
 
 #: vid_common/gap_cme_gui.c:2267
 msgid "Height of the output video (pixels)"
@@ -6548,9 +6527,8 @@ msgid "Convert audiofile to tmpfile"
 msgstr "Converti file audio in filetmp"
 
 #: vid_common/gap_cme_gui.c:2807
-#, fuzzy
 msgid "Select input audiofile via browser"
-msgstr "Selezione file audio"
+msgstr "Selezione file audio di ingresso"
 
 #: vid_common/gap_cme_gui.c:2822
 msgid "Audiotool:"
@@ -6603,13 +6581,12 @@ msgid ""
 msgstr ""
 
 #: vid_common/gap_cme_gui.c:2879
-#, fuzzy
 msgid "Audio Tool Configuration"
-msgstr "Configurazione cartavelina"
+msgstr "Configurazione strumenti audio"
 
 #: vid_common/gap_cme_gui.c:2883
 msgid "Encoding Extras"
-msgstr ""
+msgstr "Extra alla codifica"
 
 #: vid_common/gap_cme_gui.c:2892
 msgid "Macrofile:"
@@ -6726,19 +6703,18 @@ msgid ""
 msgstr ""
 
 #: vid_common/gap_cme_main.c:166
-#, fuzzy
 msgid "<Image>/Video/Encode/Master Videoencoder"
-msgstr "<Image>/Video/Encode/MPEG2..."
+msgstr "<Image>/Video/Codifica/Codifica video Master"
 
 #: vid_common/gap_cme_main.c:250
 #, c-format
 msgid "Required Plugin %s not available"
-msgstr ""
+msgstr "Il plugin richiesto %s non è disponibile"
 
 #: vid_common/gap_cme_main.c:294
 #, c-format
 msgid "Call of Required Plugin %s failed"
-msgstr ""
+msgstr "La chiamata al plugin richiesto %s è fallita"
 
 #: vid_enc_avi/gap_enc_avi_gui.c:390
 msgid "AVI Video Encode Parameters"
@@ -6976,14 +6952,12 @@ msgid ""
 msgstr ""
 
 #: vid_enc_avi/gap_enc_avi_main.c:605
-#, fuzzy
 msgid "AVI encoding options"
-msgstr "Opzioni video"
+msgstr "Opzioni codifica AVI"
 
 #: vid_enc_avi/gap_enc_avi_main.c:609
-#, fuzzy
 msgid "CODEC Name:"
-msgstr "Nome PDB:"
+msgstr "Nome CODEC:"
 
 #: vid_enc_avi/gap_enc_avi_main.c:610
 msgid "4 char codec code name. One of: RGB (raw uncompressed) JPEG,  XVID"
@@ -6991,7 +6965,7 @@ msgstr ""
 
 #: vid_enc_avi/gap_enc_avi_main.c:618
 msgid "Don't recode"
-msgstr ""
+msgstr "Non ricodificare"
 
 #: vid_enc_avi/gap_enc_avi_main.c:619
 msgid ""
@@ -7061,9 +7035,8 @@ msgid "for XVID Codec  max distance for keyframes (I-frames) "
 msgstr ""
 
 #: vid_enc_avi/gap_enc_avi_main.c:724
-#, fuzzy
 msgid "quality:"
-msgstr "Qualità Jpeg:"
+msgstr "qualità:"
 
 #: vid_enc_avi/gap_enc_avi_main.c:725
 msgid ""
@@ -7100,9 +7073,8 @@ msgid ""
 msgstr ""
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:800
-#, fuzzy
 msgid "Select File"
-msgstr "Seleziona tutto"
+msgstr "Seleziona file"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:979
 msgid "FFMPEG Video Encode Parameters"
@@ -7124,42 +7096,39 @@ msgid "OOPS do not change Params"
 msgstr ""
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1031
-#, fuzzy
 msgid "DivX VBR Default"
-msgstr "Predefinito"
+msgstr "Predefinito DivX VBR"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1039
 msgid "DivX VBR, Best Quality"
-msgstr ""
+msgstr "DivX VBR, migliore qualità"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1047
 msgid "DivX VBR, Low Quality"
-msgstr ""
+msgstr "DivX VBR, bassa qualità"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1055
 msgid "MPEG1 fixed Rate (VCD)"
-msgstr ""
+msgstr "MPEG1 a tasso fisso (VCD)"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1063
 msgid "MPEG1 VBR, Best Quality"
-msgstr ""
+msgstr "MPEG1 VBR, migliore qualità"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1071
 msgid "MPEG2 VBR (DVD)"
-msgstr ""
+msgstr "MPEG2 VBR (DVD)"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1079
-#, fuzzy
 msgid "Real Video"
-msgstr "Video:"
+msgstr "Real Video:"
 
 #. ==================
 #. the parmeter frame
 #. ==================
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1107
-#, fuzzy
 msgid "Parameter Values"
-msgstr "Digita valori"
+msgstr "Valori parametri"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1117
 msgid "FFMpeg Basic Encoder Options"
@@ -7167,9 +7136,8 @@ msgstr ""
 
 #. the notebook page label for basic options
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1123
-#, fuzzy
 msgid "Basic Options"
-msgstr "Opzioni"
+msgstr "Opzioni di base"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1135
 msgid "Fileformat:           "
@@ -7201,9 +7169,8 @@ msgstr ""
 
 #. the audio bitrate label
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1200
-#, fuzzy
 msgid "Audio Bitrate:"
-msgstr "Bitrate:"
+msgstr "Bitrate audio:"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1214
 msgid "Audio bitrate in kBit/sec"
@@ -7271,9 +7238,8 @@ msgstr ""
 
 #. the video bitrate label
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1345
-#, fuzzy
 msgid "Video Bitrate:"
-msgstr "Bitrate:"
+msgstr "Bitrate video:"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1359
 msgid "Video bitrate kBit/sec"
@@ -7281,9 +7247,8 @@ msgstr ""
 
 #. the qscale label
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1362
-#, fuzzy
 msgid "qscale:"
-msgstr "Ricampiona:"
+msgstr "qscale:"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1376
 msgid "use fixed video quantiser scale (VBR) (0=const Bitrate)"
@@ -7366,9 +7331,8 @@ msgid "6 x1"
 msgstr ""
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1540
-#, fuzzy
 msgid "Select algorithm for DCT"
-msgstr "Cerca algoritmo usato per le frame B"
+msgstr "Seleziona algoritmo per DCT"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1544
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1604
@@ -7376,61 +7340,60 @@ msgid "0 auto"
 msgstr ""
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1552
-#, fuzzy
 msgid "1 fast int"
-msgstr "Ultimo punto"
+msgstr "1 int veloci"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1560
 msgid "2 int"
-msgstr ""
+msgstr "2 int"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1568
 msgid "3 mmx"
-msgstr ""
+msgstr "3 mmx"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1576
 msgid "4 mlib"
-msgstr ""
+msgstr "4 mlib"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1584
 msgid "5 altivec"
-msgstr ""
+msgstr "5 altivec"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1600
 msgid "Select algorithm for IDCT"
-msgstr ""
+msgstr "Seleziona algoritmo per IDCT"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1612
 msgid "1 int"
-msgstr ""
+msgstr "1 int"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1620
 msgid "2 simple"
-msgstr ""
+msgstr "2 semplice"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1628
 msgid "3 simple mmx"
-msgstr ""
+msgstr "3 semplice mmx"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1636
 msgid "4 libmpeg2mmx"
-msgstr ""
+msgstr "4 libmpeg2mmx"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1644
 msgid "5 ps2"
-msgstr ""
+msgstr "5 ps2"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1652
 msgid "6 mlib"
-msgstr ""
+msgstr "6 mlib"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1660
 msgid "7 arm"
-msgstr ""
+msgstr "7 arm"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1668
 msgid "8 altivec"
-msgstr ""
+msgstr "8 altivec"
 
 #. the MB_DECISION label
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1680
@@ -7469,18 +7432,16 @@ msgid "Flags:"
 msgstr ""
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1769
-#, fuzzy
 msgid "Intra Only"
-msgstr "Applica istantaneamente"
+msgstr "Solo intra"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1774
 msgid "use only intra frames (I)"
-msgstr ""
+msgstr "usa solo frame intra (I)"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1778
-#, fuzzy
 msgid "Advanced intra coding"
-msgstr "Configurazione avanzata"
+msgstr "Codifica intra avanzata"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1783
 msgid "activate intra frame coding (only h263+ CODEC)"
@@ -7488,24 +7449,23 @@ msgstr ""
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1789
 msgid "Unlimited motion vector"
-msgstr ""
+msgstr "Vettore di moto illimitato"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1794
 msgid "enable unlimited motion vector (only h263+ CODEC)"
 msgstr ""
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1799
-#, fuzzy
 msgid "B frames"
-msgstr "Ritaglia i frame"
+msgstr "frame B"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1804
 msgid "use B frames (only MPEG-4 CODEC)"
-msgstr ""
+msgstr "usa frame B (solo CODEC MPEG-4)"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1809
 msgid "4 Motion Vectors"
-msgstr ""
+msgstr "4 vettori di moto"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1814
 msgid "use four motion vector by macroblock (only MPEG-4 CODEC)"
@@ -7513,33 +7473,31 @@ msgstr ""
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1819
 msgid "Partitioning"
-msgstr ""
+msgstr "Partizionamento"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1824
 msgid "use data partitioning (only MPEG-4 CODEC)"
-msgstr ""
+msgstr "usa il partizionamento dati (solo CODEC MPEG-4)"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1829
-#, fuzzy
 msgid "Bitexact"
-msgstr "Bitrate:"
+msgstr "Bit esatti"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1834
 msgid "only use bit exact algorithms (for codec testing)"
-msgstr ""
+msgstr "usa solo algoritmi bit esatti (per il test della codifica)"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1839
-#, fuzzy
 msgid "Set Aspectratio"
-msgstr "Rapporto di ridimensionamento"
+msgstr "Imposta rapporto dimensioni"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1844
 msgid "store aspectratio information (width/height) in the output video"
-msgstr ""
+msgstr "memorizza le informazioni sul rapporto dimensioni (larghezza/altezza) nel video in uscita"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1849
 msgid "Dont Recode"
-msgstr ""
+msgstr "Non ricodificare"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1854
 msgid ""
@@ -7549,13 +7507,12 @@ msgstr ""
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1858
 msgid "FFMpeg Expert Encoder Options"
-msgstr ""
+msgstr "Opzioni avanzate codifica FFMpeg"
 
 #. the notebook page label for expert encoder options
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1864
-#, fuzzy
 msgid "Expert Options"
-msgstr "Opzioni di dithering"
+msgstr "Opzioni avanzate"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1876
 msgid "qblur:                 "
