@@ -3,6 +3,9 @@ Makefile
 .deps
 _libs
 .libs
+gap_morph
+gap_storyboard
+gap_video_extract
 gap_bluebox
 gap_decode_mpeg
 gap_filter

@@ -1,3 +1,7 @@
+2004-06-14  Sven Neumann  <sven@gimp.org>
+
+	* configure.in: some minor cleanup, still doesn't compile for me.
+
 2004-06-12  Wolfgang Hofer <hof@gimp.org>
 	Added new features for GIMP-GAP-2.1 
 	(some of the new features and dialogs are not completely implemented yet

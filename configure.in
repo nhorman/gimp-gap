@@ -85,17 +85,17 @@ AC_ARG_ENABLE(videoapisupport,
   if test "x$enable_videoapi_support" != "xno"; then
         videoapi_warning="
 gimp-gap is configured with videoapi (libgapvidapi.a)
-the videoapi is in expermintal state and allows read access from videofiles (mpeg, avi...)
-in the storyboard and video_extract plug-ins.
+   The videoapi is in expermintal state and allows read access from
+   videofiles (mpeg, avi...) in the storyboard and video_extract plug-ins.
 "
     AC_DEFINE(GAP_ENABLE_VIDEOAPI_SUPPORT, 1, [Define to 1 to enable audio support])
   else
         videoapi_warning="
 gimp-gap is configured without video API (libgapvidapi.a)
-there will be NO access to videofiles (mpeg, avi...) in the storyboard plug-in
-and the videoextract plug-in will not work at all.
-You may want to try the experimental video API and run configure with
-the --enable-videoapi-support option.
+   There will be NO access to videofiles (mpeg, avi...) in the storyboard
+   plug-in and the videoextract plug-in will not work at all.
+   You may want to try the experimental video API and run configure with
+   the --enable-videoapi-support option.
 "
 
   fi
@@ -123,9 +123,9 @@ AC_ARG_ENABLE(libavformat,
   else
         vid_ffmpeg_warning="
 gimp-gap is configured without libavformat
-this reduces the number of supported videoformats both for read and write access.
-libavformat and libavcodec are part of ffmpeg-0.4.8.
-You can get ffmpeg at: http://ffmpeg.sourceforge.net
+   This reduces the number of supported videoformats both for read and write
+   access. libavformat and libavcodec are part of ffmpeg-0.4.8.
+   You can get ffmpeg at: http://ffmpeg.sourceforge.net
 "
         GAP_VLIBS_FFMPEG=" "
         GAP_VINCS_FFMPEG=" "
@@ -170,15 +170,16 @@ AC_ARG_ENABLE(libmpeg3,
       dnl (For now I dont know exactly how to check for the correct libmpeg3 name and version,
       dnl  this code will probably work only for my private machine) 
       dnl
-      AC_DEFINE(ENABLE_GVA_LIBMPEG3, 1, [Define to 1 to enable compile and link with libmpeg3])
+      AC_DEFINE(ENABLE_GVA_LIBMPEG3, 1,
+         [Define to 1 to enable compile and link with libmpeg3])
       GAP_VLIBS_MPEG3=" -lmpeg3"
       GAP_VINCS_MPEG3=" -I/usr/local/include/libmpeg3 -I/usr/local/include/libmpeg3/audio -I/usr/local/include/libmpeg3/video"
   else
     if test "x$enable_videoapi_support" != "xno"; then
         vid_mpeg3_warning="
 gimp-gap is configured without libmpeg3
-this reduces the number of supported videoformats for read access.
-You can get libmpeg3 at: http://www.heroinewarrior.com/download.php3
+   This reduces the number of supported videoformats for read access.
+   You can get libmpeg3 at: http://www.heroinewarrior.com/download.php3
 "
       GAP_VLIBS_MPEG3=" "
       GAP_VINCS_MPEG3=" "
@@ -196,7 +197,7 @@ dnl xvid should compile on many operating systems, including UNIX and WINDOWS sy
 dnl (ffmpeg has its own builtin MPEG4 codec implementation and does not depend on this codec)
 dnl
 AC_ARG_ENABLE(libxvidcore,
-              [  --disable-libxvidcore    don't build with libxvidcore])
+              [  --disable-libxvidcore        don't build with libxvidcore])
   if test "x$enable_libxvidcore" != "xno"; then
     dnl
     dnl hof: TODO: here we should check for libxvidcore 1.0.0
@@ -208,8 +209,8 @@ AC_ARG_ENABLE(libxvidcore,
   else
         vid_xvidcore_warning="
 gimp-gap is configured without libxvidcore
-the AVI encoder plug-in is built without MPEG4 support.
-You can get the xvid codec at:  http://www.xvid.org/downloads.html
+   The AVI encoder plug-in is built without MPEG4 support.
+   You can get the xvid codec at:  http://www.xvid.org/downloads.html
 "
         GAP_VLIBS_XVIDCORE=" "
         GAP_VINCS_XVIDCORE=" "
