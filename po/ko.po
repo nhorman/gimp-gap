@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gimp-plug-ins 1.1.10\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-04-30 20:46+0200\n"
+"POT-Creation-Date: 2004-05-10 21:26+0200\n"
 "PO-Revision-Date: 1999-10-13 05:33:05+0900\n"
 "Last-Translator: Young-Boo Park <DIRBOO@hitel.net>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -183,7 +183,7 @@ msgstr ""
 #. table col, row
 #: gap/gap_base_ops.c:1214 gap/gap_base_ops.c:1366 gap/gap_base_ops.c:1569
 #: gap/gap_decode_xanim.c:249 gap/gap_mod_layer.c:204
-#: gap/gap_mov_dialog.c:3154 gap/gap_mpege.c:285 gap/gap_onion_dialog.c:899
+#: gap/gap_mov_dialog.c:3168 gap/gap_mpege.c:285 gap/gap_onion_dialog.c:899
 #: gap/gap_player_dialog.c:3832 gap/gap_range_ops.c:285
 #: gap/gap_range_ops.c:478 gap/gap_range_ops.c:669
 msgid "From Frame:"
@@ -198,7 +198,7 @@ msgstr "영향을 미친 범위는 이 프레임번호에서 시작됩니다"
 #. table col, row
 #: gap/gap_base_ops.c:1222 gap/gap_base_ops.c:1374 gap/gap_base_ops.c:1577
 #: gap/gap_decode_xanim.c:259 gap/gap_mod_layer.c:212
-#: gap/gap_mov_dialog.c:3172 gap/gap_mpege.c:295 gap/gap_onion_dialog.c:906
+#: gap/gap_mov_dialog.c:3186 gap/gap_mpege.c:295 gap/gap_onion_dialog.c:906
 #: gap/gap_player_dialog.c:3840 gap/gap_range_ops.c:293
 #: gap/gap_range_ops.c:486 gap/gap_range_ops.c:677
 #, fuzzy
@@ -348,7 +348,7 @@ msgid "Renumber Frames 2nd Pass"
 msgstr "프레임차례 번호를 다시 메기는 중 .."
 
 #. toggle bluebox
-#: gap/gap_bluebox.c:247 gap/gap_mov_dialog.c:2647
+#: gap/gap_bluebox.c:247 gap/gap_mov_dialog.c:2661
 #, fuzzy
 msgid "Bluebox"
 msgstr "커버설명 :"
@@ -360,7 +360,7 @@ msgstr ""
 
 #. the keycolor label
 #. keycolor label
-#: gap/gap_bluebox.c:284 gap/gap_mov_dialog.c:2663
+#: gap/gap_bluebox.c:284 gap/gap_mov_dialog.c:2677
 msgid "Keycolor:"
 msgstr ""
 
@@ -458,7 +458,7 @@ msgstr ""
 
 #. button
 #. the preview frame
-#: gap/gap_bluebox.c:442 gap/gap_mov_dialog.c:3835
+#: gap/gap_bluebox.c:442 gap/gap_mov_dialog.c:3849
 #, fuzzy
 msgid "Preview"
 msgstr "미리보기"
@@ -1686,207 +1686,207 @@ msgstr "프레임/계층 변경중 .."
 msgid "No selected layer in start frame"
 msgstr "시작 프레임에서 선택된 계층이 없습니다.\n"
 
-#: gap/gap_mov_dialog.c:405
+#: gap/gap_mov_dialog.c:408
 msgid "Normal"
 msgstr "보통"
 
-#: gap/gap_mov_dialog.c:406
+#: gap/gap_mov_dialog.c:409
 msgid "Dissolve"
 msgstr "분해"
 
-#: gap/gap_mov_dialog.c:408
+#: gap/gap_mov_dialog.c:411
 msgid "Multiply"
 msgstr "배로 증가"
 
-#: gap/gap_mov_dialog.c:409
+#: gap/gap_mov_dialog.c:412
 msgid "Divide"
 msgstr ""
 
-#: gap/gap_mov_dialog.c:410
+#: gap/gap_mov_dialog.c:413
 msgid "Screen"
 msgstr "스크린"
 
-#: gap/gap_mov_dialog.c:411
+#: gap/gap_mov_dialog.c:414
 msgid "Overlay"
 msgstr "겹치기"
 
-#: gap/gap_mov_dialog.c:413
+#: gap/gap_mov_dialog.c:416
 #, fuzzy
 msgid "Dodge"
 msgstr "모드:"
 
-#: gap/gap_mov_dialog.c:414
+#: gap/gap_mov_dialog.c:417
 #, fuzzy
 msgid "Burn"
 msgstr "커버설명 :"
 
-#: gap/gap_mov_dialog.c:415
+#: gap/gap_mov_dialog.c:418
 msgid "Hard Light"
 msgstr ""
 
-#: gap/gap_mov_dialog.c:416
+#: gap/gap_mov_dialog.c:419
 msgid "Soft Light"
 msgstr ""
 
-#: gap/gap_mov_dialog.c:417
+#: gap/gap_mov_dialog.c:420
 msgid "Grain Extract"
 msgstr ""
 
-#: gap/gap_mov_dialog.c:418
+#: gap/gap_mov_dialog.c:421
 msgid "Grain Merge"
 msgstr ""
 
-#: gap/gap_mov_dialog.c:420
+#: gap/gap_mov_dialog.c:423
 msgid "Difference"
 msgstr "차이점"
 
-#: gap/gap_mov_dialog.c:421
+#: gap/gap_mov_dialog.c:424
 msgid "Addition"
 msgstr "추가"
 
-#: gap/gap_mov_dialog.c:422
+#: gap/gap_mov_dialog.c:425
 msgid "Subtract"
 msgstr "빼기"
 
-#: gap/gap_mov_dialog.c:423
+#: gap/gap_mov_dialog.c:426
 msgid "Darken Only"
 msgstr "오직 어둡게"
 
-#: gap/gap_mov_dialog.c:424
+#: gap/gap_mov_dialog.c:427
 msgid "Lighten Only"
 msgstr "오직 라이트만"
 
-#: gap/gap_mov_dialog.c:426
+#: gap/gap_mov_dialog.c:429
 msgid "Hue"
 msgstr "색도"
 
-#: gap/gap_mov_dialog.c:427
+#: gap/gap_mov_dialog.c:430
 msgid "Saturation"
 msgstr "채도"
 
-#: gap/gap_mov_dialog.c:428
+#: gap/gap_mov_dialog.c:431
 msgid "Color"
 msgstr "색상"
 
-#: gap/gap_mov_dialog.c:429
+#: gap/gap_mov_dialog.c:432
 msgid "Value"
 msgstr "값"
 
-#: gap/gap_mov_dialog.c:431
+#: gap/gap_mov_dialog.c:434
 #, fuzzy
 msgid "Keep Paintmode"
 msgstr "페인트모드"
 
-#: gap/gap_mov_dialog.c:438
+#: gap/gap_mov_dialog.c:441
 msgid "Left  Top"
 msgstr "왼쪽  위"
 
-#: gap/gap_mov_dialog.c:439
+#: gap/gap_mov_dialog.c:442
 msgid "Left  Bottom"
 msgstr "왼쪽  아래"
 
-#: gap/gap_mov_dialog.c:440
+#: gap/gap_mov_dialog.c:443
 msgid "Right Top"
 msgstr "오른쪽 위"
 
-#: gap/gap_mov_dialog.c:441
+#: gap/gap_mov_dialog.c:444
 msgid "Right Bottom"
 msgstr "오른쪽 아래"
 
-#: gap/gap_mov_dialog.c:442
+#: gap/gap_mov_dialog.c:445
 msgid "Center"
 msgstr "중간"
 
 #. the playback mode checkbuttons
-#: gap/gap_mov_dialog.c:450 gap/gap_player_dialog.c:4039
+#: gap/gap_mov_dialog.c:453 gap/gap_player_dialog.c:4039
 msgid "Loop"
 msgstr "루프"
 
-#: gap/gap_mov_dialog.c:451
+#: gap/gap_mov_dialog.c:454
 msgid "Loop Reverse"
 msgstr "역 루프"
 
-#: gap/gap_mov_dialog.c:452
+#: gap/gap_mov_dialog.c:455
 msgid "Once"
 msgstr "한 번"
 
-#: gap/gap_mov_dialog.c:453
+#: gap/gap_mov_dialog.c:456
 #, fuzzy
 msgid "Once Reverse"
 msgstr "거꾸로 한번"
 
-#: gap/gap_mov_dialog.c:454
+#: gap/gap_mov_dialog.c:457
 #, fuzzy
 msgid "Ping Pong"
 msgstr "핑퐁"
 
-#: gap/gap_mov_dialog.c:455
+#: gap/gap_mov_dialog.c:458
 msgid "None"
 msgstr "없음"
 
-#: gap/gap_mov_dialog.c:456
+#: gap/gap_mov_dialog.c:459
 #, fuzzy
 msgid "Frame Loop"
 msgstr "프레임 %d"
 
-#: gap/gap_mov_dialog.c:457
+#: gap/gap_mov_dialog.c:460
 #, fuzzy
 msgid "Frame Loop Reverse"
 msgstr "역 루프"
 
-#: gap/gap_mov_dialog.c:458
+#: gap/gap_mov_dialog.c:461
 #, fuzzy
 msgid "Frame Once"
 msgstr "프레임 율 :"
 
-#: gap/gap_mov_dialog.c:459
+#: gap/gap_mov_dialog.c:462
 #, fuzzy
 msgid "Frame Once Reverse"
 msgstr "거꾸로 한번"
 
-#: gap/gap_mov_dialog.c:460
+#: gap/gap_mov_dialog.c:463
 #, fuzzy
 msgid "Frame Ping Pong"
 msgstr "핑퐁"
 
-#: gap/gap_mov_dialog.c:461
+#: gap/gap_mov_dialog.c:464
 #, fuzzy
 msgid "Frame None"
 msgstr "프레임 율 :"
 
-#: gap/gap_mov_dialog.c:671
+#: gap/gap_mov_dialog.c:674
 msgid "Move Path"
 msgstr "경로 이동"
 
-#: gap/gap_mov_dialog.c:701
+#: gap/gap_mov_dialog.c:704
 #, fuzzy
 msgid "Show preview frame with selected source layer at current controlpoint"
 msgstr ""
 "현재 컨트롤 포인트에서 선택된       \n"
 "원래 계층을 가지고 미리보기 보여주기"
 
-#: gap/gap_mov_dialog.c:712
+#: gap/gap_mov_dialog.c:715
 #, fuzzy
 msgid "Generate animated preview as multilayer image"
 msgstr "계층-움직임(animate) 이미지 생성 중 .."
 
 #. parameter settings
-#: gap/gap_mov_dialog.c:730
+#: gap/gap_mov_dialog.c:733
 msgid "Copy moving source-layer(s) into frames"
 msgstr "프레임에서 이동중인 원래 계층 복사"
 
 #. the frame
-#: gap/gap_mov_dialog.c:757 gap/gap_mov_dialog.c:2454
+#: gap/gap_mov_dialog.c:760 gap/gap_mov_dialog.c:2468
 msgid "Source Select"
 msgstr "소스 선택"
 
 #. the frame
-#: gap/gap_mov_dialog.c:765 gap/gap_mov_dialog.c:2626
+#: gap/gap_mov_dialog.c:768 gap/gap_mov_dialog.c:2640
 #, fuzzy
 msgid "Advanced Settings"
 msgstr "바꾸기 설정 :"
 
-#: gap/gap_mov_dialog.c:823
+#: gap/gap_mov_dialog.c:837
 #, fuzzy
 msgid ""
 "No source image was selected.\n"
@@ -1895,80 +1895,80 @@ msgstr ""
 "선택되어진 원본 이미지 없음\n"
 "(경로 이동을 하기 전에 같은 유형의 두번째 이미지를 열어주세요)"
 
-#: gap/gap_mov_dialog.c:1003
+#: gap/gap_mov_dialog.c:1017
 #, fuzzy
 msgid "Object on empty frames"
 msgstr "깊이(depth):"
 
-#: gap/gap_mov_dialog.c:1004
+#: gap/gap_mov_dialog.c:1018
 msgid "Object on one frame"
 msgstr ""
 
-#: gap/gap_mov_dialog.c:1005
+#: gap/gap_mov_dialog.c:1019
 #, fuzzy
 msgid "Exact object on frames"
 msgstr "채널 추출"
 
-#: gap/gap_mov_dialog.c:1036
+#: gap/gap_mov_dialog.c:1050
 #, fuzzy
 msgid "Anim Preview Mode:"
 msgstr "미리보기 크기"
 
-#: gap/gap_mov_dialog.c:1058
+#: gap/gap_mov_dialog.c:1072
 #, fuzzy
 msgid "Scale Preview:"
 msgstr "이미지 미리보기"
 
-#: gap/gap_mov_dialog.c:1059
+#: gap/gap_mov_dialog.c:1073
 msgid "Scale down size of the generated animated preview (in %)"
 msgstr ""
 
-#: gap/gap_mov_dialog.c:1069 gap/gap_mpege.c:304
+#: gap/gap_mov_dialog.c:1083 gap/gap_mpege.c:304
 #: gap/gap_navigator_dialog.c:3803
 #, fuzzy
 msgid "Framerate:"
 msgstr "프레임 율 :"
 
-#: gap/gap_mov_dialog.c:1070
+#: gap/gap_mov_dialog.c:1084
 msgid "Framerate to use in the animated preview in frames/sec"
 msgstr ""
 
-#: gap/gap_mov_dialog.c:1086
+#: gap/gap_mov_dialog.c:1100
 msgid "Copy to Video Buffer:"
 msgstr ""
 
-#: gap/gap_mov_dialog.c:1087
+#: gap/gap_mov_dialog.c:1101
 msgid ""
 "Save all single frames of animated preview to video buffer.(configured in "
 "gimprc by video-paste-dir and video-paste-basename)"
 msgstr ""
 
-#: gap/gap_mov_dialog.c:1094 gap/gap_mpege.c:356 gap/gap_name2layer_main.c:513
-#: gap/gap_split.c:296 gap/gap_wr_opacity.c:349
+#: gap/gap_mov_dialog.c:1108 gap/gap_mpege.c:356 gap/gap_name2layer_main.c:510
+#: gap/gap_split.c:296 gap/gap_wr_opacity.c:344
 msgid "Default"
 msgstr ""
 
-#: gap/gap_mov_dialog.c:1095 gap/gap_mpege.c:357 gap/gap_name2layer_main.c:514
+#: gap/gap_mov_dialog.c:1109 gap/gap_mpege.c:357 gap/gap_name2layer_main.c:511
 #: gap/gap_split.c:297
 #, fuzzy
 msgid "Reset all parameters to default values"
 msgstr " 초기값으로 재설정"
 
-#: gap/gap_mov_dialog.c:1097
+#: gap/gap_mov_dialog.c:1111
 #, fuzzy
 msgid "Move Path Animated Preview"
 msgstr "경로 이동 미리보기"
 
-#: gap/gap_mov_dialog.c:1098
+#: gap/gap_mov_dialog.c:1112
 msgid "Options"
 msgstr "옵션"
 
-#: gap/gap_mov_dialog.c:1150
+#: gap/gap_mov_dialog.c:1164
 #, fuzzy
 msgid "Generation of animated preview failed"
 msgstr "계층-움직임(animate) 이미지 생성 중 .."
 
-#: gap/gap_mov_dialog.c:1269
+#: gap/gap_mov_dialog.c:1283
 #, c-format
 msgid ""
 "Unsupported pathtype %d found in path:\n"
@@ -1977,29 +1977,29 @@ msgid ""
 "'%s'"
 msgstr ""
 
-#: gap/gap_mov_dialog.c:1342
+#: gap/gap_mov_dialog.c:1356
 #, c-format
 msgid ""
 "No path found in the image:\n"
 "'%s'"
 msgstr ""
 
-#: gap/gap_mov_dialog.c:1604
+#: gap/gap_mov_dialog.c:1618
 #, fuzzy
 msgid "Load Path Points from File"
 msgstr "파일에서 포인트 경로 읽기"
 
-#: gap/gap_mov_dialog.c:1645
+#: gap/gap_mov_dialog.c:1659
 #, fuzzy
 msgid "Save Path Points to File"
 msgstr "파일에서 포인트 경로 저장"
 
-#: gap/gap_mov_dialog.c:2286
+#: gap/gap_mov_dialog.c:2300
 #, c-format
 msgid "Current Point: [ %3d ] of [ %3d ]"
 msgstr ""
 
-#: gap/gap_mov_dialog.c:2365
+#: gap/gap_mov_dialog.c:2379
 #, c-format
 msgid ""
 "ERROR: Could not open controlpoints\n"
@@ -2007,7 +2007,7 @@ msgid ""
 "%s"
 msgstr ""
 
-#: gap/gap_mov_dialog.c:2371
+#: gap/gap_mov_dialog.c:2385
 #, c-format
 msgid ""
 "ERROR: Could not read controlpoints\n"
@@ -2015,7 +2015,7 @@ msgid ""
 "(Is not a valid controlpoint file)"
 msgstr ""
 
-#: gap/gap_mov_dialog.c:2402
+#: gap/gap_mov_dialog.c:2416
 #, c-format
 msgid ""
 "Failed to write controlpointfile\n"
@@ -2024,32 +2024,32 @@ msgid ""
 msgstr ""
 
 #. Source Layer menu
-#: gap/gap_mov_dialog.c:2464
+#: gap/gap_mov_dialog.c:2478
 #, fuzzy
 msgid "Source Image/Layer:"
 msgstr "소스이미지/계층:"
 
-#: gap/gap_mov_dialog.c:2474
+#: gap/gap_mov_dialog.c:2488
 #, fuzzy
 msgid "Source object to insert into destination frames of the specified range"
 msgstr "프레임범위안에 삽입하기 위한 원본 개체"
 
 #. Paintmode menu
-#: gap/gap_mov_dialog.c:2485 gap/gap_name2layer_main.c:445
-#: gap/gap_wr_opacity.c:337
+#: gap/gap_mov_dialog.c:2499 gap/gap_name2layer_main.c:442
+#: gap/gap_wr_opacity.c:332
 msgid "Mode:"
 msgstr "모드:"
 
-#: gap/gap_mov_dialog.c:2494
+#: gap/gap_mov_dialog.c:2508
 msgid "Paintmode"
 msgstr "페인트모드"
 
 #. Loop Stepmode menu (Label)
-#: gap/gap_mov_dialog.c:2513
+#: gap/gap_mov_dialog.c:2527
 msgid "Stepmode:"
 msgstr "단계모드:"
 
-#: gap/gap_mov_dialog.c:2546
+#: gap/gap_mov_dialog.c:2560
 #, fuzzy
 msgid "How to fetch the next source layer at the next handled frame"
 msgstr ""
@@ -2058,7 +2058,7 @@ msgstr ""
 
 #. StepSpeedFactor
 #. table col, row
-#: gap/gap_mov_dialog.c:2552
+#: gap/gap_mov_dialog.c:2566
 msgid "SpeedFactor:"
 msgstr ""
 
@@ -2070,7 +2070,7 @@ msgstr ""
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: gap/gap_mov_dialog.c:2560
+#: gap/gap_mov_dialog.c:2574
 msgid ""
 "Source and target frames step synchron at value 1.0. A value of 0.5 will "
 "step the source half time slower.One source step is done only at every 2.nd "
@@ -2078,45 +2078,45 @@ msgid ""
 msgstr ""
 
 #. Source Image Handle menu
-#: gap/gap_mov_dialog.c:2572
+#: gap/gap_mov_dialog.c:2586
 msgid "Handle:"
 msgstr "조절:"
 
-#: gap/gap_mov_dialog.c:2592
+#: gap/gap_mov_dialog.c:2606
 #, fuzzy
 msgid "How to place the Source layer at controlpoint coordinates"
 msgstr ""
 "대등한 컨트롤포인트에서 원본   \n"
 "계층을 위치하는 방법"
 
-#: gap/gap_mov_dialog.c:2651
+#: gap/gap_mov_dialog.c:2665
 msgid ""
 "Apply the bluebox filter on the moving object(s). The bluebox filter makes "
 "the keycolor transparent."
 msgstr ""
 
 #. keycolor button
-#: gap/gap_mov_dialog.c:2675
+#: gap/gap_mov_dialog.c:2689
 msgid "Move Path Bluebox Keycolor"
 msgstr ""
 
-#: gap/gap_mov_dialog.c:2691
+#: gap/gap_mov_dialog.c:2705
 msgid ""
 "Open dialog window to set parameters and keycolor for the bluebox filter"
 msgstr ""
 
 #. toggle Tracelayer
-#: gap/gap_mov_dialog.c:2709 gap/gap_mov_exec.c:927
+#: gap/gap_mov_dialog.c:2723 gap/gap_mov_exec.c:927
 msgid "Tracelayer"
 msgstr ""
 
-#: gap/gap_mov_dialog.c:2713
+#: gap/gap_mov_dialog.c:2727
 msgid "Create an additional trace layer in all handled frames"
 msgstr ""
 
 #. TraceOpacityInitial
 #. table col, row
-#: gap/gap_mov_dialog.c:2725
+#: gap/gap_mov_dialog.c:2739
 #, fuzzy
 msgid "TraceOpacity1:"
 msgstr "불투명도 [%d]: "
@@ -2129,13 +2129,13 @@ msgstr "불투명도 [%d]: "
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: gap/gap_mov_dialog.c:2733
+#: gap/gap_mov_dialog.c:2747
 msgid "Initial opacity of the trace layer"
 msgstr ""
 
 #. TraceOpacityDescending
 #. table col, row
-#: gap/gap_mov_dialog.c:2743
+#: gap/gap_mov_dialog.c:2757
 #, fuzzy
 msgid "TraceOpacity2:"
 msgstr "불투명도 [%d]: "
@@ -2148,13 +2148,13 @@ msgstr "불투명도 [%d]: "
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: gap/gap_mov_dialog.c:2751
+#: gap/gap_mov_dialog.c:2765
 msgid "Descending opacity of the trace layer"
 msgstr ""
 
 #. TweenSteps
 #. table col, row
-#: gap/gap_mov_dialog.c:2763
+#: gap/gap_mov_dialog.c:2777
 msgid "Tweensteps:"
 msgstr ""
 
@@ -2166,7 +2166,7 @@ msgstr ""
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: gap/gap_mov_dialog.c:2771
+#: gap/gap_mov_dialog.c:2785
 msgid ""
 "Calculate n steps between 2 frames. The rendered tween steps are collected "
 "in a tween layer that will be added to the handeld destination frames. If "
@@ -2176,7 +2176,7 @@ msgstr ""
 
 #. TweenOpacityInitial
 #. table col, row
-#: gap/gap_mov_dialog.c:2786
+#: gap/gap_mov_dialog.c:2800
 #, fuzzy
 msgid "TweenOpacity1:"
 msgstr "불투명도 [%d]: "
@@ -2189,13 +2189,13 @@ msgstr "불투명도 [%d]: "
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: gap/gap_mov_dialog.c:2794
+#: gap/gap_mov_dialog.c:2808
 msgid "Initial opacity of the tween layer"
 msgstr ""
 
 #. TweenOpacityDescending
 #. table col, row
-#: gap/gap_mov_dialog.c:2803
+#: gap/gap_mov_dialog.c:2817
 #, fuzzy
 msgid "TweenOpacity2:"
 msgstr "불투명도 [%d]: "
@@ -2208,89 +2208,89 @@ msgstr "불투명도 [%d]: "
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: gap/gap_mov_dialog.c:2811
+#: gap/gap_mov_dialog.c:2825
 msgid "Descending opacity of the tween layer"
 msgstr ""
 
 #. the frame
-#: gap/gap_mov_dialog.c:2847
+#: gap/gap_mov_dialog.c:2861
 #, fuzzy
 msgid "Edit Controlpoints"
 msgstr "다음 컨트롤포인트 보여주기"
 
-#: gap/gap_mov_dialog.c:2866
+#: gap/gap_mov_dialog.c:2880
 #, fuzzy
 msgid "Add controlpoint at end. The last controlpoint is duplicated."
 msgstr ""
 "끝에 컨트롤포인트 추가        \n"
 "(마지막 포인트가 복사되어짐)"
 
-#: gap/gap_mov_dialog.c:2879
+#: gap/gap_mov_dialog.c:2893
 msgid ""
 "Delete all controlpoints, and replace them with a copy of all anchorpoints "
 "of the current path from the image where 'MovePath' was invoked from"
 msgstr ""
 
-#: gap/gap_mov_dialog.c:2896
+#: gap/gap_mov_dialog.c:2910
 #, fuzzy
 msgid "Insert controlpoint. The current controlpoint is duplicated."
 msgstr ""
 "끝에 컨트롤포인트 추가        \n"
 "(마지막 포인트가 복사되어짐)"
 
-#: gap/gap_mov_dialog.c:2909
+#: gap/gap_mov_dialog.c:2923
 #, fuzzy
 msgid "Delete current controlpoint"
 msgstr "다음 컨트롤포인트 보여주기"
 
-#: gap/gap_mov_dialog.c:2924
+#: gap/gap_mov_dialog.c:2938
 #, fuzzy
 msgid "Show previous controlpoint"
 msgstr "앞 컨트롤포인트 보여주기"
 
-#: gap/gap_mov_dialog.c:2937
+#: gap/gap_mov_dialog.c:2951
 #, fuzzy
 msgid "Show next controlpoint"
 msgstr "다음 컨트롤포인트 보여주기"
 
-#: gap/gap_mov_dialog.c:2952
+#: gap/gap_mov_dialog.c:2966
 #, fuzzy
 msgid "Show first controlpoint"
 msgstr "다음 컨트롤포인트 보여주기"
 
-#: gap/gap_mov_dialog.c:2965
+#: gap/gap_mov_dialog.c:2979
 #, fuzzy
 msgid "Show last controlpoint"
 msgstr "다음 컨트롤포인트 보여주기"
 
-#: gap/gap_mov_dialog.c:2980
+#: gap/gap_mov_dialog.c:2994
 #, fuzzy
 msgid "Reset the current controlpoint to default values"
 msgstr " 초기값으로 재설정"
 
-#: gap/gap_mov_dialog.c:2993
+#: gap/gap_mov_dialog.c:3007
 msgid ""
 "Reset all controlpoints to default values but dont change the path (X/Y "
 "values)"
 msgstr ""
 
-#: gap/gap_mov_dialog.c:3009
+#: gap/gap_mov_dialog.c:3023
 msgid ""
 "Set rotation for all controlpoints to follow the shape of the path. Hold "
 "down the shift key to use rotation of contolpoint 1 as offset."
 msgstr ""
 
-#: gap/gap_mov_dialog.c:3024
+#: gap/gap_mov_dialog.c:3038
 #, fuzzy
 msgid "Delete all controlpoints"
 msgstr "다음 컨트롤포인트 보여주기"
 
-#: gap/gap_mov_dialog.c:3040
+#: gap/gap_mov_dialog.c:3054
 #, fuzzy
 msgid "Load controlpoints from file"
 msgstr "파일에서 컨트롤 포인트 읽기"
 
-#: gap/gap_mov_dialog.c:3053
+#: gap/gap_mov_dialog.c:3067
 #, fuzzy
 msgid "Save controlpoints to file"
 msgstr "파일에 컨트롤포인트 저장"
@@ -2305,7 +2305,7 @@ msgstr "파일에 컨트롤포인트 저장"
 #. constrain
 #. lower, (unconstrained)
 #. upper (unconstrained)
-#: gap/gap_mov_dialog.c:3164
+#: gap/gap_mov_dialog.c:3178
 #, fuzzy
 msgid "First handled destination frame"
 msgstr "첫번째 조절된 프레임"
@@ -2320,14 +2320,14 @@ msgstr "첫번째 조절된 프레임"
 #. constrain
 #. lower, (unconstrained)
 #. upper (unconstrained)
-#: gap/gap_mov_dialog.c:3182
+#: gap/gap_mov_dialog.c:3196
 #, fuzzy
 msgid "Last handled destination frame"
 msgstr "마지막 조절된 프레임"
 
 #. the Layerstack scale_entry
 #. table col, row
-#: gap/gap_mov_dialog.c:3190 gap/gap_range_ops.c:301
+#: gap/gap_mov_dialog.c:3204 gap/gap_range_ops.c:301
 msgid "Layerstack:"
 msgstr "계층스택:"
 
@@ -2339,7 +2339,7 @@ msgstr "계층스택:"
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: gap/gap_mov_dialog.c:3198
+#: gap/gap_mov_dialog.c:3212
 #, fuzzy
 msgid ""
 "How to insert source layer into the layerstack of the destination frames. "
@@ -2350,20 +2350,20 @@ msgstr ""
 "방법"
 
 #. toggle force visibility
-#: gap/gap_mov_dialog.c:3213
+#: gap/gap_mov_dialog.c:3227
 msgid "Force Visibility"
 msgstr ""
 
-#: gap/gap_mov_dialog.c:3217
+#: gap/gap_mov_dialog.c:3231
 msgid "Force visibility for all copied source layers"
 msgstr ""
 
 #. toggle clip_to_image
-#: gap/gap_mov_dialog.c:3227
+#: gap/gap_mov_dialog.c:3241
 msgid "Clip To Frame"
 msgstr "프레임 잘라내기"
 
-#: gap/gap_mov_dialog.c:3231
+#: gap/gap_mov_dialog.c:3245
 #, fuzzy
 msgid "Clip all copied source layers at destination frame boundaries"
 msgstr ""
@@ -2371,13 +2371,13 @@ msgstr ""
 "원래계층을 잘라내기"
 
 #. the frame
-#: gap/gap_mov_dialog.c:3265
+#: gap/gap_mov_dialog.c:3279
 msgid "Modify Size Opacity and Rotation"
 msgstr ""
 
 #. Width Scale
 #. table col, row
-#: gap/gap_mov_dialog.c:3282
+#: gap/gap_mov_dialog.c:3296
 msgid "Width:"
 msgstr "넓이:"
 
@@ -2389,7 +2389,7 @@ msgstr "넓이:"
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: gap/gap_mov_dialog.c:3290
+#: gap/gap_mov_dialog.c:3304
 #, fuzzy
 msgid "Scale source layer's width in percent"
 msgstr ""
@@ -2398,7 +2398,7 @@ msgstr ""
 
 #. Height Scale
 #. table col, row
-#: gap/gap_mov_dialog.c:3300 gap/gap_resi_dialog.c:646
+#: gap/gap_mov_dialog.c:3314 gap/gap_resi_dialog.c:646
 #: gap/gap_resi_dialog.c:674
 msgid "Height:"
 msgstr "높이:"
@@ -2411,14 +2411,14 @@ msgstr "높이:"
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: gap/gap_mov_dialog.c:3308
+#: gap/gap_mov_dialog.c:3322
 #, fuzzy
 msgid "Scale source layer's height in percent"
 msgstr ""
 "퍼센트로 원본 계층의\n"
 "높이 스케일"
 
-#: gap/gap_mov_dialog.c:3325 gap/gap_resi_dialog.c:784
+#: gap/gap_mov_dialog.c:3339 gap/gap_resi_dialog.c:784
 #, fuzzy
 msgid "Constrain aspect ratio"
 msgstr "억제 비율"
@@ -2428,8 +2428,8 @@ msgstr "억제 비율"
 #.
 #. Opacity
 #. table col, row
-#: gap/gap_mov_dialog.c:3334 gap/gap_onion_dialog.c:1069
-#: gap/gap_wr_opacity.c:326
+#: gap/gap_mov_dialog.c:3348 gap/gap_onion_dialog.c:1069
+#: gap/gap_wr_opacity.c:321
 #, fuzzy
 msgid "Opacity:"
 msgstr "불투명도 [%d]: "
@@ -2442,7 +2442,7 @@ msgstr "불투명도 [%d]: "
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: gap/gap_mov_dialog.c:3342
+#: gap/gap_mov_dialog.c:3356
 #, fuzzy
 msgid "Set the source layer's opacity in percent"
 msgstr ""
@@ -2451,7 +2451,7 @@ msgstr ""
 
 #. Rotation
 #. table col, row
-#: gap/gap_mov_dialog.c:3352
+#: gap/gap_mov_dialog.c:3366
 #, fuzzy
 msgid "Rotate:"
 msgstr "회전하기"
@@ -2464,19 +2464,19 @@ msgstr "회전하기"
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: gap/gap_mov_dialog.c:3360
+#: gap/gap_mov_dialog.c:3374
 #, fuzzy
 msgid "Rotate source layer (in degree)"
 msgstr "원본계층 회전 (각도로)"
 
 #. the frame
-#: gap/gap_mov_dialog.c:3394
+#: gap/gap_mov_dialog.c:3408
 msgid "Transformfactors X/Y for the 4 corners"
 msgstr ""
 
 #. ttlx transformfactor
 #. table col, row
-#: gap/gap_mov_dialog.c:3413
+#: gap/gap_mov_dialog.c:3427
 msgid "x1:"
 msgstr ""
 
@@ -2488,13 +2488,13 @@ msgstr ""
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: gap/gap_mov_dialog.c:3421
+#: gap/gap_mov_dialog.c:3435
 msgid "Transformfactor for upper left corner X coordinate"
 msgstr ""
 
 #. ttly transformfactor
 #. table col, row
-#: gap/gap_mov_dialog.c:3432
+#: gap/gap_mov_dialog.c:3446
 msgid "y1:"
 msgstr ""
 
@@ -2506,13 +2506,13 @@ msgstr ""
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: gap/gap_mov_dialog.c:3440
+#: gap/gap_mov_dialog.c:3454
 msgid "Transformfactor for upper left corner Y coordinate"
 msgstr ""
 
 #. ttrx transformfactor
 #. table col, row
-#: gap/gap_mov_dialog.c:3451
+#: gap/gap_mov_dialog.c:3465
 msgid "x2:"
 msgstr ""
 
@@ -2524,13 +2524,13 @@ msgstr ""
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: gap/gap_mov_dialog.c:3459
+#: gap/gap_mov_dialog.c:3473
 msgid "Transformfactor for upper right corner X coordinate"
 msgstr ""
 
 #. ttry transformfactor
 #. table col, row
-#: gap/gap_mov_dialog.c:3469
+#: gap/gap_mov_dialog.c:3483
 msgid "y2:"
 msgstr ""
 
@@ -2542,13 +2542,13 @@ msgstr ""
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: gap/gap_mov_dialog.c:3477
+#: gap/gap_mov_dialog.c:3491
 msgid "Transformfactor for upper right corner Y coordinate"
 msgstr ""
 
 #. tblx transformfactor
 #. table col, row
-#: gap/gap_mov_dialog.c:3487
+#: gap/gap_mov_dialog.c:3501
 msgid "x3:"
 msgstr ""
 
@@ -2560,7 +2560,7 @@ msgstr ""
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: gap/gap_mov_dialog.c:3495
+#: gap/gap_mov_dialog.c:3509
 msgid "Transformfactor for lower left corner X coordinate"
 msgstr ""
 
@@ -2568,7 +2568,7 @@ msgstr ""
 #. table col, row
 #. tbry transformfactor
 #. table col, row
-#: gap/gap_mov_dialog.c:3505 gap/gap_mov_dialog.c:3541
+#: gap/gap_mov_dialog.c:3519 gap/gap_mov_dialog.c:3555
 msgid "y3:"
 msgstr ""
 
@@ -2580,13 +2580,13 @@ msgstr ""
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: gap/gap_mov_dialog.c:3513
+#: gap/gap_mov_dialog.c:3527
 msgid "Transformfactor for lower left corner Y coordinate"
 msgstr ""
 
 #. tbrx transformfactor
 #. table col, row
-#: gap/gap_mov_dialog.c:3523
+#: gap/gap_mov_dialog.c:3537
 msgid "x4:"
 msgstr ""
 
@@ -2598,7 +2598,7 @@ msgstr ""
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: gap/gap_mov_dialog.c:3531
+#: gap/gap_mov_dialog.c:3545
 msgid "Transformfactor for lower right corner X coordinate"
 msgstr ""
 
@@ -2610,34 +2610,34 @@ msgstr ""
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: gap/gap_mov_dialog.c:3549
+#: gap/gap_mov_dialog.c:3563
 msgid "Transformfactor for lower right corner Y coordinate"
 msgstr ""
 
-#: gap/gap_mov_dialog.c:3581
+#: gap/gap_mov_dialog.c:3595
 msgid "Ignore selection (in all source images)"
 msgstr ""
 
-#: gap/gap_mov_dialog.c:3582
+#: gap/gap_mov_dialog.c:3596
 msgid "Use selection (from initial source image)"
 msgstr ""
 
-#: gap/gap_mov_dialog.c:3583
+#: gap/gap_mov_dialog.c:3597
 msgid "Use selections (from all source images)"
 msgstr ""
 
 #. the frame
-#: gap/gap_mov_dialog.c:3590
+#: gap/gap_mov_dialog.c:3604
 msgid "Pixel Selction Handling"
 msgstr ""
 
-#: gap/gap_mov_dialog.c:3611
+#: gap/gap_mov_dialog.c:3625
 msgid "How to handle selections in the source image"
 msgstr ""
 
 #. ttlx transformfactor
 #. table col, row
-#: gap/gap_mov_dialog.c:3629
+#: gap/gap_mov_dialog.c:3643
 #, fuzzy
 msgid "Selection Feather Radius:"
 msgstr "프레임 범위 선택"
@@ -2650,7 +2650,7 @@ msgstr "프레임 범위 선택"
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: gap/gap_mov_dialog.c:3637
+#: gap/gap_mov_dialog.c:3651
 msgid "Feather radius in pixels (for smoothing selection(s))"
 msgstr ""
 
@@ -2658,33 +2658,33 @@ msgstr ""
 #. table col, row
 #. gtk_container_add (GTK_CONTAINER (abox), table3);
 #. the x/y offest labels
-#: gap/gap_mov_dialog.c:3731 gap/gap_name2layer_main.c:476
+#: gap/gap_mov_dialog.c:3745 gap/gap_name2layer_main.c:473
 #: gap/gap_resi_dialog.c:819
 msgid "X:"
 msgstr "X:"
 
 #. lower, upper (unconstrained)
-#: gap/gap_mov_dialog.c:3740
+#: gap/gap_mov_dialog.c:3754
 #, fuzzy
 msgid "X coordinate"
 msgstr "컬러링"
 
 #. Y
 #. table col, row
-#: gap/gap_mov_dialog.c:3749 gap/gap_name2layer_main.c:487
+#: gap/gap_mov_dialog.c:3763 gap/gap_name2layer_main.c:484
 #: gap/gap_resi_dialog.c:728 gap/gap_resi_dialog.c:825
 msgid "Y:"
 msgstr "Y:"
 
 #. lower, upper (unconstrained)
-#: gap/gap_mov_dialog.c:3758
+#: gap/gap_mov_dialog.c:3772
 #, fuzzy
 msgid "Y coordinate"
 msgstr "컬러링"
 
 #. Keyframe
 #. table col, row
-#: gap/gap_mov_dialog.c:3767
+#: gap/gap_mov_dialog.c:3781
 #, fuzzy
 msgid "Keyframe:"
 msgstr "비디오형식 :"
@@ -2697,74 +2697,74 @@ msgstr "비디오형식 :"
 #. digits
 #. constrain
 #. lower, upper (unconstrained)
-#: gap/gap_mov_dialog.c:3775
+#: gap/gap_mov_dialog.c:3789
 msgid "Fix controlpoint to keyframe number where 0 == no keyframe"
 msgstr ""
 
-#: gap/gap_mov_dialog.c:3801
+#: gap/gap_mov_dialog.c:3815
 #, fuzzy
 msgid "Scale and Modify"
 msgstr "프레임 변경"
 
-#: gap/gap_mov_dialog.c:3807
+#: gap/gap_mov_dialog.c:3821
 msgid "Perspective"
 msgstr ""
 
-#: gap/gap_mov_dialog.c:3814
+#: gap/gap_mov_dialog.c:3828
 msgid "Selection Handling"
 msgstr ""
 
 #. startup with RED pathline color
-#: gap/gap_mov_dialog.c:3931
+#: gap/gap_mov_dialog.c:3945
 msgid "Pathline Color Picker"
 msgstr ""
 
-#: gap/gap_mov_dialog.c:3938
+#: gap/gap_mov_dialog.c:3952
 msgid "Select the color that is used to draw pathlines in the preview"
 msgstr ""
 
 #. toggle Show path
-#: gap/gap_mov_dialog.c:3950
+#: gap/gap_mov_dialog.c:3964
 #, fuzzy
 msgid "Path"
 msgstr "경로 이동"
 
-#: gap/gap_mov_dialog.c:3954
+#: gap/gap_mov_dialog.c:3968
 msgid ""
 "Show path lines and enable pick/drag with left button or move with right "
 "button"
 msgstr ""
 
 #. toggle Show cursor
-#: gap/gap_mov_dialog.c:3968
+#: gap/gap_mov_dialog.c:3982
 msgid "Cursor"
 msgstr ""
 
-#: gap/gap_mov_dialog.c:3972
+#: gap/gap_mov_dialog.c:3986
 msgid "Show cursor crosslines"
 msgstr ""
 
 #. toggle Show Grid
-#: gap/gap_mov_dialog.c:3983
+#: gap/gap_mov_dialog.c:3997
 msgid "Grid"
 msgstr ""
 
-#: gap/gap_mov_dialog.c:3987
+#: gap/gap_mov_dialog.c:4001
 msgid "Show source layer as gridlines"
 msgstr ""
 
 #. toggle Instant Apply
-#: gap/gap_mov_dialog.c:3997
+#: gap/gap_mov_dialog.c:4011
 msgid "Instant Apply"
 msgstr ""
 
-#: gap/gap_mov_dialog.c:4001
+#: gap/gap_mov_dialog.c:4015
 msgid "Update the preview automatically"
 msgstr ""
 
 #. the Preview Frame Number
 #. table col, row
-#: gap/gap_mov_dialog.c:4020
+#: gap/gap_mov_dialog.c:4034
 #, fuzzy
 msgid "Frame:"
 msgstr "프레임으로:"
@@ -2779,33 +2779,33 @@ msgstr "프레임으로:"
 #. constrain
 #. lower (unconstrained)
 #. upper (unconstrained)
-#: gap/gap_mov_dialog.c:4030
+#: gap/gap_mov_dialog.c:4044
 #, fuzzy
 msgid "Frame to show when 'Refresh' button is pressed"
 msgstr ""
 "Upd미리보기 버튼을 누르면 프레임을\n"
 "보여줍니다."
 
-#: gap/gap_mov_dialog.c:4738
+#: gap/gap_mov_dialog.c:4757
 #, fuzzy
 msgid "Can't operate with current controlpoint or keyframe settings"
 msgstr " 초기값으로 재설정"
 
-#: gap/gap_mov_dialog.c:4743
+#: gap/gap_mov_dialog.c:4762
 #, fuzzy
 msgid "Reset Keyframes"
 msgstr " 초기값으로 재설정"
 
-#: gap/gap_mov_dialog.c:4748
+#: gap/gap_mov_dialog.c:4767
 #, fuzzy
 msgid "Move Path Controlpointcheck"
 msgstr "다음 컨트롤포인트 보여주기"
 
-#: gap/gap_mov_dialog.c:4749
+#: gap/gap_mov_dialog.c:4768
 msgid "Errors:"
 msgstr ""
 
-#: gap/gap_mov_dialog.c:4796
+#: gap/gap_mov_dialog.c:4815
 #, fuzzy, c-format
 msgid ""
 "Can't operate with current controlpoint\n"
@@ -3168,67 +3168,67 @@ msgstr ""
 "\n"
 "애러: 싱글 이미지에서 발생되어서, 움직이는 프레임이 요구했습니다."
 
-#: gap/gap_name2layer_main.c:171
+#: gap/gap_name2layer_main.c:168
 #, fuzzy
 msgid "<Image>/Video/Filename to Layer..."
 msgstr "<Image>/움직이는 프레임/이미지로 프레임"
 
-#: gap/gap_name2layer_main.c:446
+#: gap/gap_name2layer_main.c:443
 msgid "Modes to choose entire filename or just parts of the filename"
 msgstr ""
 
-#: gap/gap_name2layer_main.c:455
+#: gap/gap_name2layer_main.c:452
 #, fuzzy
 msgid "Fontname:"
 msgstr "회전하기"
 
 #. pixel
-#: gap/gap_name2layer_main.c:457
+#: gap/gap_name2layer_main.c:454
 #, fuzzy
 msgid "Select Fontname)"
 msgstr "프레임 범위 선택"
 
-#: gap/gap_name2layer_main.c:465
+#: gap/gap_name2layer_main.c:462
 msgid "Fontsize:"
 msgstr ""
 
-#: gap/gap_name2layer_main.c:466
+#: gap/gap_name2layer_main.c:463
 msgid "Fontsize in pixels"
 msgstr ""
 
-#: gap/gap_name2layer_main.c:477
+#: gap/gap_name2layer_main.c:474
 msgid "Position X-offset in pixels"
 msgstr ""
 
-#: gap/gap_name2layer_main.c:488
+#: gap/gap_name2layer_main.c:485
 msgid "Position Y-offset in pixels"
 msgstr ""
 
-#: gap/gap_name2layer_main.c:497
+#: gap/gap_name2layer_main.c:494
 msgid "Antialias:"
 msgstr ""
 
-#: gap/gap_name2layer_main.c:498
+#: gap/gap_name2layer_main.c:495
 msgid "Use antialias"
 msgstr ""
 
-#: gap/gap_name2layer_main.c:504
+#: gap/gap_name2layer_main.c:501
 #, fuzzy
 msgid "Create Layer:"
 msgstr "계층 삭제"
 
-#: gap/gap_name2layer_main.c:505
+#: gap/gap_name2layer_main.c:502
 msgid ""
 "ON: Create a new layer.\n"
 "OFF: Render on active drawable."
 msgstr ""
 
-#: gap/gap_name2layer_main.c:516
+#: gap/gap_name2layer_main.c:513
 #, fuzzy
 msgid "Render Filename to Layer"
 msgstr "계층 이름바꾸기"
 
-#: gap/gap_name2layer_main.c:517 gap/gap_wr_opacity.c:353
+#: gap/gap_name2layer_main.c:514 gap/gap_wr_opacity.c:348
 #, fuzzy
 msgid "Settings :"
 msgstr "설정"
@@ -4690,27 +4690,27 @@ msgstr "포인트 재설정"
 msgid "Rotate Follow"
 msgstr "회전하기"
 
-#: gap/gap_wr_opacity.c:144
+#: gap/gap_wr_opacity.c:139
 #, fuzzy
 msgid "<Image>/Video/Layer/Set Layer Opacity..."
 msgstr "<Image>/움직이는 프레임/프레임 계층 지우기"
 
-#: gap/gap_wr_opacity.c:327
+#: gap/gap_wr_opacity.c:322
 msgid "New opacity value where 0 is transparent and 100.0 is opaque"
 msgstr ""
 
-#: gap/gap_wr_opacity.c:338
+#: gap/gap_wr_opacity.c:333
 msgid ""
 "Modes set opacity or change the old opacity value by adding, subtracting or "
 "multiply by the supplied new value"
 msgstr ""
 
-#: gap/gap_wr_opacity.c:350
+#: gap/gap_wr_opacity.c:345
 #, fuzzy
 msgid "Reset all Parameters to Default Values"
 msgstr " 초기값으로 재설정"
 
-#: gap/gap_wr_opacity.c:352
+#: gap/gap_wr_opacity.c:347
 #, fuzzy
 msgid "Set Layer Opacity"
 msgstr "계층을 연결되게 설정"

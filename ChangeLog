@@ -1,5 +1,9 @@
 2004-05-10  Sven Neumann  <sven@gimp.org>
 
+	* Made 2.0.2 release.
+
+2004-05-10  Sven Neumann  <sven@gimp.org>
+
 	* configure.in: only disable the deprecated glib/gdk-pixbuf/gtk+
 	APIs when compiling against gtk+-2.2.
 
