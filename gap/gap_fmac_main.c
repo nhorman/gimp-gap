@@ -187,16 +187,18 @@ query ()
 
   gimp_install_procedure(PLUG_IN_NAME_FMAC,
 			 "This plug-in can create and execute filtermacro scriptfiles",
-			 "This plug-in allows the user to pick one or more filters\n"
-			 "that have already been called before in the current Gimp session.\n"
-			 "The internal PDB-name of the picked filter is stored in a filtermacro scriptfile,\n"
-			 "along with the parameter buffer that was used at the last call.\n"
-			 "You can execute a filtermacro scriptfile on the Input drawable \n"
-			 "(in the current or in any further Gimp session)."
-			 "The non-interactive API is limited to filtermacro script execution\n"
-			 "and does not allow creation or modification of filtermacro scripts\n"
-			 "WARNING: filtermacro scriptfiles are a temporary solution.\n"
-			 "They are machine dependent. Support may stop in future gimp versions.",
+			 "This plug-in allows the user to pick one or more filters "
+			 "that have already been called before in the current Gimp session. "
+			 "The internal PDB-name of the picked filter is stored in a "
+                         "filtermacro scriptfile, along with the parameter buffer that was "
+                         "used at the last call.\n"
+			 "You can execute a filtermacro scriptfile on the Input drawable "
+			 "(in the current or in any further Gimp session). "
+			 "The non-interactive API is limited to filtermacro script execution "
+			 "and does not allow creation or modification of filtermacro scripts "
+			 "WARNING: filtermacro scriptfiles are a temporary solution. "
+			 "They are machine dependent. Support may be dropped in future gimp "
+                         "versions.",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
 			 gap_fmac_version,

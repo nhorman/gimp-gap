@@ -425,7 +425,7 @@ gap_mov_render_render(gint32 image_id, GapMovValues *val_ptr, GapMovCurrent *cur
       *   (tests with gimp_rotate resulted in trashed images,
       *    even if the mask was rotated too)
       */
-      gimp_image_remove_layer_mask(image_id, l_cp_layer_id, 0 /* 0==APPLY */ );
+      gimp_layer_remove_mask (l_cp_layer_id, GIMP_MASK_APPLY);
   }
 
   /* remove selection (if there is one)

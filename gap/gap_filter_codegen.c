@@ -4,26 +4,29 @@
  *
  * This Module contains:
  * - GAP_filter  codegenerator procedures for _iterator_ALT procedures
- * 
+ *
  * Note: this code is only used in debug mode,
  *       (for developers (Hackers) to generate code templates
  *       for _iterator_ALT  or _Iterator procedures.)
  */
 
 /* revision history:
- * 1.3.17a;  2003/07/29  hof: param types of GimpPlugInInfo.run procedure follow gimp.1.3.17 changes
+ *
+ * 1.3.17a; 2003/07/29 hof: param types of GimpPlugInInfo.run
+ *                          procedure follow gimp.1.3.17 changes
  * 1.1.29b;  2000/11/30  hof: used g_snprintf
  * version 0.99.00  1999.03.14  hof: Codegeneration of File ./gen_filter_iter_code.c
  *                                   splittet into single Files XX_iter_ALT.inc
  *                                   bugfixes in code generation
- * version 0.95.04  1998.06.12  hof: p_delta_drawable (enable use of layerstack anims in drawable iteration)
+ * version 0.95.04  1998.06.12  hof: p_delta_drawable (enable use of layerstack anims
+ *                                   in drawable iteration)
  * version 0.93.00              hof: generate Iterator Source
  *                                   in one single file (per plugin), ready to compile
  * version 0.91.01; Tue Dec 23  hof: 1.st (pre) release
  */
 #include "config.h"
- 
-/* SYTEM (UNIX) includes */ 
+
+/* SYTEM (UNIX) includes */
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
@@ -49,13 +52,13 @@ void gap_codegen_remove_codegen_files()
 {
    remove(GEN_FORWARDFILE_NAME);
    remove(GEN_TABFILE_NAME);
-   
+
    printf("overwrite  file: %s\n", GEN_FORWARDFILE_NAME);
    printf("overwrite  file: %s\n", GEN_TABFILE_NAME);
 }
 
 
-static char* 
+static char*
 p_type_to_string(GimpPDBArgType t)
 {
   switch (t) {
@@ -106,7 +109,7 @@ static void
 p_clean_name(char *name, char *clean_name)
 {
   char *l_ptr;
-  
+
   l_ptr = clean_name;
   while(*name != '\0')
   {
@@ -152,7 +155,7 @@ gint gap_codegen_gen_code_iter_ALT(char  *proc_name)
 {
   FILE             *l_fp;
   gint              l_idx;
-  
+
   gint              l_nparams;
   gint              l_nreturn_vals;
   GimpPDBProcType   l_proc_type;
@@ -164,7 +167,7 @@ gint gap_codegen_gen_code_iter_ALT(char  *proc_name)
   GimpParamDef     *l_params;
   GimpParamDef     *l_return_vals;
   gint              l_rc;
-  
+
   gchar             l_filename[512];
   gchar             l_gendate[30];
   gchar             l_clean_proc_name[256];
@@ -173,7 +176,7 @@ gint gap_codegen_gen_code_iter_ALT(char  *proc_name)
 
   l_rc = 0;
   p_get_gendate(&l_gendate[0], sizeof(l_gendate));
-  
+
   /* Query the gimp application's procedural database
    *  regarding a particular procedure.
    */
@@ -208,16 +211,16 @@ gint gap_codegen_gen_code_iter_ALT(char  *proc_name)
        fprintf(l_fp, "/* ----------------------------------------------------------------------\n");
        fprintf(l_fp, " * p_%s_iter_ALT \n", l_clean_proc_name);
        fprintf(l_fp, " * ----------------------------------------------------------------------\n");
-       fprintf(l_fp, " */\n");            
+       fprintf(l_fp, " */\n");
        fprintf(l_fp, "gint p_%s_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble current_step, gint32 len_struct) \n", l_clean_proc_name);
-       fprintf(l_fp, "{\n");               
+       fprintf(l_fp, "{\n");
        fprintf(l_fp, "    typedef struct t_%s_Vals \n", l_clean_proc_name);
-       fprintf(l_fp, "    {\n");       
+       fprintf(l_fp, "    {\n");
 
        for(l_idx = 3; l_idx < l_nparams; l_idx++)
        {
          p_clean_name(l_params[l_idx].name, &l_clean_par_name[0]);
-         
+
          fprintf(l_fp, "      %s %s;\n",
                p_type_to_string(l_params[l_idx].type), l_clean_par_name);
        }
@@ -226,11 +229,11 @@ gint gap_codegen_gen_code_iter_ALT(char  *proc_name)
        fprintf(l_fp, "    t_%s_Vals  buf, *buf_from, *buf_to; \n", l_clean_proc_name);
        fprintf(l_fp, "\n");
        fprintf(l_fp, "    if(len_struct != sizeof(t_%s_Vals)) \n", l_clean_proc_name);
-       fprintf(l_fp, "    {\n");             
+       fprintf(l_fp, "    {\n");
        fprintf(l_fp, "      fprintf(stderr, \"ERROR: p_\%s_iter_ALT  stored Data missmatch in size %%d != %%d\\n\",   \n", l_clean_proc_name);
        fprintf(l_fp, "                       (int)len_struct, sizeof(t_%s_Vals) ); \n", l_clean_proc_name);
        fprintf(l_fp, "      return -1;  /* ERROR */ \n");
-       fprintf(l_fp, "    }\n");               
+       fprintf(l_fp, "    }\n");
        fprintf(l_fp, "\n");
        fprintf(l_fp, "    gimp_get_data(\"%s_ITER_FROM\", g_plugin_data_from); \n", l_clean_proc_name);
        fprintf(l_fp, "    gimp_get_data(\"%s_ITER_TO\",   g_plugin_data_to); \n", l_clean_proc_name);
@@ -279,8 +282,8 @@ gint gap_codegen_gen_code_iter_ALT(char  *proc_name)
        fprintf(l_fp, "\n");
        fprintf(l_fp, "    return 0; /* OK */\n");
        fprintf(l_fp, "}\n");
-       
-       
+
+
        fclose(l_fp);
      }
 
@@ -298,7 +301,7 @@ gint gap_codegen_gen_code_iter_ALT(char  *proc_name)
   {
      return -1;
   }
-  
+
   gap_codegen_gen_code_iterator(proc_name);
 
   return l_rc;
@@ -345,7 +348,7 @@ gint gap_codegen_gen_code_iterator(char  *proc_name)
 {
   FILE             *l_fp;
   gint              l_idx;
-  
+
   gint              l_nparams;
   gint              l_nreturn_vals;
   GimpPDBProcType   l_proc_type;
@@ -357,7 +360,7 @@ gint gap_codegen_gen_code_iterator(char  *proc_name)
   GimpParamDef     *l_params;
   GimpParamDef     *l_return_vals;
   gint              l_rc;
-  
+
   gchar             l_filename[512];
   gchar             l_gendate[30];
   gchar             l_clean_proc_name[256];
@@ -365,7 +368,7 @@ gint gap_codegen_gen_code_iterator(char  *proc_name)
 
   l_rc = 0;
   p_get_gendate(&l_gendate[0], sizeof(l_gendate));
-  
+
   /* Query the gimp application's procedural database
    *  regarding a particular procedure.
    */
@@ -391,8 +394,8 @@ gint gap_codegen_gen_code_iterator(char  *proc_name)
      if (l_params[0].type !=  GIMP_PDB_INT32)    { l_rc = -1;  }
      if (l_params[1].type !=  GIMP_PDB_IMAGE)    { l_rc = -1;  }
      if (l_params[2].type !=  GIMP_PDB_DRAWABLE) { l_rc = -1;  }
-     
-     
+
+
      g_snprintf(l_filename, sizeof(l_filename), "%s_iter.c", l_clean_proc_name);
 
      l_fp = fopen(l_filename, "w");
@@ -416,7 +419,7 @@ gint gap_codegen_gen_code_iterator(char  *proc_name)
        fprintf(l_fp, " *    (via \"Filter all Layers\" using \"Apply Varying\" Button)\n");
        fprintf(l_fp, " *\n");
        fprintf(l_fp, " *    When you get this Error, you should change this generated code.\n");
-       fprintf(l_fp, " *  \n");  
+       fprintf(l_fp, " *  \n");
        fprintf(l_fp, " */\n");
        fprintf(l_fp, "\n");
        fprintf(l_fp, "/* SYTEM (UNIX) includes */ \n");
@@ -569,11 +572,11 @@ gint gap_codegen_gen_code_iterator(char  *proc_name)
        fprintf(l_fp, "/* ----------------------------------------------------------------------\n");
        fprintf(l_fp, " * p_%s_iter \n", l_clean_proc_name);
        fprintf(l_fp, " * ----------------------------------------------------------------------\n");
-       fprintf(l_fp, " */\n");            
+       fprintf(l_fp, " */\n");
        fprintf(l_fp, "gint p_%s_iter(GimpRunMode run_mode, gint32 total_steps, gdouble current_step, gint32 len_struct) \n", l_clean_proc_name);
-       fprintf(l_fp, "{\n");               
+       fprintf(l_fp, "{\n");
        fprintf(l_fp, "    typedef struct t_%s_Vals \n", l_clean_proc_name);
-       fprintf(l_fp, "    {\n");       
+       fprintf(l_fp, "    {\n");
 
        for(l_idx = 3; l_idx < l_nparams; l_idx++)
        {
@@ -587,11 +590,11 @@ gint gap_codegen_gen_code_iterator(char  *proc_name)
        fprintf(l_fp, "    t_%s_Vals  buf, buf_from, buf_to; \n", l_clean_proc_name);
        fprintf(l_fp, "\n");
        fprintf(l_fp, "    if(len_struct != sizeof(t_%s_Vals)) \n", l_clean_proc_name);
-       fprintf(l_fp, "    {\n");             
+       fprintf(l_fp, "    {\n");
        fprintf(l_fp, "      fprintf(stderr, \"ERROR: p_\%s_iter  stored Data missmatch in size %%d != %%d\\n\",   \n", l_clean_proc_name);
        fprintf(l_fp, "                       (int)len_struct, sizeof(t_%s_Vals) ); \n", l_clean_proc_name);
        fprintf(l_fp, "      return -1;  /* ERROR */ \n");
-       fprintf(l_fp, "    }\n");               
+       fprintf(l_fp, "    }\n");
        fprintf(l_fp, "\n");
        fprintf(l_fp, "    gimp_get_data(\"%s_ITER_FROM\", &buf_from); \n", l_clean_proc_name);
        fprintf(l_fp, "    gimp_get_data(\"%s_ITER_TO\",   &buf_to); \n", l_clean_proc_name);
@@ -726,8 +729,8 @@ gint gap_codegen_gen_code_iterator(char  *proc_name)
        fprintf(l_fp, "}\n");
 
 
-       
-       
+
+
        fclose(l_fp);
      }
 
@@ -745,7 +748,7 @@ gint gap_codegen_gen_code_iterator(char  *proc_name)
   {
      return -1;
   }
-  
+
 
   return l_rc;
 }	/* gap_codegen_gen_code_iterator */

@@ -36,6 +36,7 @@ typedef enum
    GAP_BLUBOX_THRES_RGB        
   ,GAP_BLUBOX_THRES_HSV
   ,GAP_BLUBOX_THRES_VAL
+  ,GAP_BLUBOX_THRES_ALL
 } GapBlueboxThresMode;
 
 #include "libgimp/gimp.h"
@@ -102,6 +103,7 @@ typedef struct GapBlueboxGlobalParams {
   GtkWidget *thres_rgb_toggle;  
   GtkWidget *thres_hsv_toggle;  
   GtkWidget *thres_val_toggle;  
+  GtkWidget *thres_all_toggle;  
   GdkCursor *cursor_wait;
   GdkCursor *cursor_acitve;
 

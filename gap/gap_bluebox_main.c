@@ -26,10 +26,11 @@
  */
 
 /* revision history:
+ * gimp    1.3.23b; 2003/12/06  hof: added mode GAP_BLUBOX_THRES_ALL
  * gimp    1.3.20d; 2003/10/14  hof: creation
  */
 
-static char *gap_bluebox_version = "1.3.20d; 2003/10/14";
+static char *gap_bluebox_version = "1.3.23b; 2003/12/06";
 
 
 /* SYTEM (UNIX) includes */
@@ -68,14 +69,15 @@ static GimpParamDef args_bluebox[] =
     {GIMP_PDB_COLOR, "keycolor",    "Select Pixels to be treansparent by this KeyColor" },
     {GIMP_PDB_INT32, "thres_mode",  "0 .. use the 3 threshold values for RGB\n"
                                     "1 .. use the 3 threshold values for HSV\n"
-				    "2 .. use only one simple Threshold"},
+				    "2 .. use only one simple Threshold\n"
+				    "3 .. use all 6 threshold values for HSV and RGB"},
     {GIMP_PDB_FLOAT, "thres_r", "threshold value 0.0 upto 1.0 for RED value   (ignored in thers_modes 1 and 2)"},
     {GIMP_PDB_FLOAT, "thres_g", "threshold value 0.0 upto 1.0 for GREEN value (ignored in thers_modes 1 and 2)"},
     {GIMP_PDB_FLOAT, "thres_b", "threshold value 0.0 upto 1.0 for BLUE value  (ignored in thers_modes 1 and 2)"},
     {GIMP_PDB_FLOAT, "thres_h", "threshold value 0.0 upto 1.0 for HUE value         (ignored in thers_modes 0 and 2)"},
     {GIMP_PDB_FLOAT, "thres_s", "threshold value 0.0 upto 1.0 for SATURATION value  (ignored in thers_modes 0 and 2)"},
     {GIMP_PDB_FLOAT, "thres_v", "threshold value 0.0 upto 1.0 for BRIGHTNESS  value (ignored in thers_modes 0 and 2)"},
-    {GIMP_PDB_FLOAT, "thres", "threshold value 0.0 upto 1.0 (ignored in thers_modes 0 and 1)"},
+    {GIMP_PDB_FLOAT, "thres", "threshold value 0.0 upto 1.0 (ignored in thers_modes 0, 1 and 3)"},
     {GIMP_PDB_FLOAT, "tolerance", "alpha tolerance value 0.0 upto 1.0\n"
                                   "0.0 makes hard pixel selection by color threshold(s)\n"
 				  "greater values allow more or less variable Alpha Values\n"
@@ -162,17 +164,16 @@ query ()
                              lastvals);
 
   gimp_install_procedure(GAP_BLUEBOX_PLUGIN_NAME,
-                         "The Bluebox Effectfilter makes the specified color transparent",
-                         "This Plug-In Selects Pixels in the specified Drawable by Keycolor\n"
-			 "and makes the Selected Pixels transparent.\n"
-			 "If there is a Selection at calling time, then operate only\n"
-			 "on Pixels that are already selected (where selection value is > 0)\n"
-			 "The Slection by Color follows Threshold Values\n"
-			 "The Thresholds operate on RGB or HSV Colormodel,\n"
-			 "depending on the thres_mode Parameter.\n"
-			 "The Selection by Keycolor can be Smoothed (by feather_radius)\n"
-			 "and/or extended by a grow value."
-			 ,
+                         "The bluebox effectfilter makes the specified color transparent",
+                         "This plug-in selects pixels in the specified drawable by keycolor "
+  			 "and makes the Selected Pixels transparent. "
+			 "If there is a selection at calling time, then operate only "
+  			 "on Pixels that are already selected (where selection value is > 0) "
+ 			 "The Slection by color follows threshold values "
+ 			 "The thresholds operate on RGB or HSV colormodel, "
+ 			 "depending on the thres_mode parameter. "
+ 			 "The selection by keycolor can be smoothed (by feather_radius) "
+  			 "and/or extended by a grow value.",
                          "Wolfgang Hofer (hof@gimp.org)",
                          "Wolfgang Hofer",
                          gap_bluebox_version,

@@ -1,3 +1,23 @@
+2003-12-10  Sven Neumann  <sven@gimp.org>
+
+	* configure.in: check for GIMP >= 1.3.24.
+
+	* gap/gap_bluebox_main.c (query)
+	* gap/gap_fmac_main.c (query): removed newlines from PDB help
+	strings.
+
+	* gap/gap_mov_render.c (gap_mov_render_render): use
+	gimp_layer_remove_mask() instead of gimp_image_remove_layer_mask().
+
+2003-12-06  Wolfgang Hofer <hof@gimp.org>
+
+	Preprared NEWS and README files for prerelease
+	Bluebox: Additional mode with both HSV and RGB thresholds
+
+	* gap/gap_main.c    # updated internal main version
+	* gap/gap_bluebox.c [h]
+	* gap/gap_bluebox_main.c
+
 2003-12-08  Sven Neumann  <sven@gimp.org>
 
 	* gap/gap_bluebox_main.c

@@ -1,0 +1,68 @@
+Here is a short overview whats new in GIMP-GAP-1.3.23:
+(compared to the gap version that once was part of gimp-1.2.x release)
+
+ - new bluebox plug-in makes selected color transparent.
+
+ - new features for the "MovePath" plug-in
+   - animated perspective transformations
+   - optional respect selected areas of the moving source object
+     (with animated adjustable feather_radius)
+   - integrated bluebox filter can be applied to the moving source object
+   - tracelayer creation
+     collects all scenes from start to current frame in one tracelayer.
+   - tween processing for fast moving objects.
+     collects scenes between 2 frames in the tweenlayer.
+   - grab controlpoints from current GIMP-path
+   - dynamic resize of the preview to follow current windowsize.
+   - optional instant apply for the preview
+
+ - playback for video frames to give a motionpreview
+   in thumbnail quality.
+   On linux the playback has audiosupport to play a wavefile
+   synchron with the videoframes
+
+ - the onionskin plug-ins are now integrated to gimp-gap.
+   onionskin layer(s) usually do show previous (or next) frame(s)
+   of the video in the current frame.
+
+ - new features in "frames to multilayer image" plug-in
+   optional respect selection(s) in the sourceframes
+
+ - new features in "frames modify" plug-in
+   - new functions to
+     set/delete/invert selection in all handled frames
+ 
+ - renumber plug-in for renaming frames (on disk) 
+   you can set a new starting number for the first frame
+   and define how much digits (leading zeroes)
+   to use for the framenumber part.
+ 
+ - change framedensity
+   useful for changing the framerate without changing the
+   playback speed. duplicates frames to get higher density
+   or deletes frames to reduce density.
+ 
+ - render filename (or just the number part) to layer
+
+ - support of the open thumbnail standard
+   (thumbnailfiles in png fileformat in $HOME/.thumbnails
+    that allows better quality than the old .xvpics thumbnail standard)
+ 
+ - filtermacro scriptfiles
+   assemble filtermacro scriptfiles by picking filtercalls from the
+   current session and execute them later all together at one drawable.
+ 
+ - gimp-gap now uses the preferences value save always/only on changes
+   (gimprc keyword "trust-dirty-flag")
+   for unconditional/conditional implicite save operations
+   when stepping from frame to frame.
+
+ - vcr-navigator internal changes
+   (now handles unlimited number of frames)
+
+ - some minor layout changes.
+
+ - internal reorganisations/cleanup of the sourcecode
+   including porting to new GIMP-2.0 and GTK+2.2 api.
+ 
+

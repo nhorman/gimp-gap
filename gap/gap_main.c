@@ -7,7 +7,7 @@
  * - MAIN of the most GAP_Plugins
  * - query   registration of GAP Procedures (Video Menu) in the PDB
  * - run     invoke the selected GAP procedure by its PDB name
- * 
+ *
  *
  * GAP provides Animation Functions for the gimp,
  * working on a series of Images stored on disk in gimps .xcf Format.
@@ -38,15 +38,16 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-static char *gap_main_version =  "1.3.22a; 2003/11/05";
+static char *gap_main_version =  "1.3.23b; 2003/12/06";
 
 /* revision history:
+ * gimp    1.3.23b; 2003/12/06  hof: - updated main version
  * gimp    1.3.22a; 2003/10/09  hof: - updated main version
  * gimp    1.3.21a; 2003/10/09  hof: - updated main version
  * gimp    1.3.20d; 2003/10/09  hof: - bluebox filter for movepath
  * gimp    1.3.20d; 2003/10/09  hof: - sourcecode cleanup
  * gimp    1.3.20d; 2003/10/06  hof: - updates for move path extended non-interactive PDB API
- * gimp    1.3.20c; 2003/09/28  hof: - updates for move path 
+ * gimp    1.3.20c; 2003/09/28  hof: - updates for move path
  * gimp    1.3.20b; 2003/09/20  hof: - updated main version
  * gimp    1.3.17b; 2003/07/31  hof: - updated main version, message text fixes for translators (# 118392)
  * gimp    1.3.17a; 2003/07/29  hof: - updated main version,
@@ -82,7 +83,7 @@ static char *gap_main_version =  "1.3.22a; 2003/11/05";
  * version 0.96.03; 1998/08/31  hof: updated main version,
  *                                         gap_range_to_multilayer now returns image_id
  *                                         gap_split_image now returns image_id
- * version 0.96.02; 1998/08/05  hof: updated main version, 
+ * version 0.96.02; 1998/08/05  hof: updated main version,
  *                                   added gap_shift
  * version 0.96.00; 1998/06/27  hof: added gap animation sizechange plugins
  *                                         gap_split_image
@@ -91,14 +92,14 @@ static char *gap_main_version =  "1.3.22a; 2003/11/05";
  *                                   added flatten_mode to plugin: gap_range_to_multilayer
  * version 0.94.00; 1998/04/25  hof: updated main version
  * version 0.93.01; 1998/02/03  hof:
- * version 0.92.00;             hof: set gap_debug from environment 
- * version 0.91.00; 1997/12/22  hof: 
+ * version 0.92.00;             hof: set gap_debug from environment
+ * version 0.91.00; 1997/12/22  hof:
  * version 0.90.00;             hof: 1.st (pre) release
  */
- 
+
 #include "config.h"
- 
-/* SYTEM (UNIX) includes */ 
+
+/* SYTEM (UNIX) includes */
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -159,7 +160,7 @@ GimpPlugInInfo PLUG_IN_INFO =
     {GIMP_PDB_DRAWABLE, "drawable", "Input drawable (unused)"},
   };
   static int nargs_std = G_N_ELEMENTS (args_std);
-  
+
   static GimpParamDef return_std[] =
   {
     { GIMP_PDB_IMAGE, "curr_frame_image", "the resulting current frame image id" }
@@ -352,7 +353,7 @@ GimpPlugInInfo PLUG_IN_INFO =
     { GIMP_PDB_STRING,     "pointfile",         "a file with contolpoints (readable text file with one line per controlpoint)"},
   };
   static int nargs_mov_path_ext2 = G_N_ELEMENTS (args_mov_path_ext2);
-    
+
 
 
   static GimpParamDef args_f2multi[] =
@@ -440,7 +441,7 @@ GimpPlugInInfo PLUG_IN_INFO =
   };
   static int nargs_rconv2 = G_N_ELEMENTS (args_rconv2);
 
-  
+
   static GimpParamDef return_rconv[] =
   {
     { GIMP_PDB_IMAGE, "frame_image", "the image_id of the converted frame with lowest frame numer (of the converted range)" }
@@ -746,7 +747,7 @@ query ()
 			 "  this Tweenlayer is added below the moving Obect in all handled destination Frames\n"
 			 "See also (plug_in_gap_move_path, plug_in_gap_move)",
 			 (int)GAP_MOV_MAX_POINT);
-			 
+
   gimp_install_procedure("plug_in_gap_move_path_ext",
 			 "This plugin copies layer(s) from one sourceimage or source animation to multiple frames on disk,\n"
 			 "with varying position, size, perspective and opacity.\n"
@@ -761,7 +762,7 @@ query ()
 			 nargs_mov_path_ext, nreturn_std,
 			 args_mov_path_ext, return_std);
   g_free(l_help_str);
- 
+
   gimp_install_procedure("plug_in_gap_move_path_ext2",
 			 "This plugin copies layer(s) from one sourceimage or source animation to multiple frames on disk,\n"
 			 "with varying position, size, perspective and opacity.\n"
@@ -1008,7 +1009,7 @@ query ()
 			 GIMP_PLUGIN,
 			 nargs_setrate, nreturn_nothing,
 			 args_setrate, return_nothing);
-			 
+
 }	/* end query */
 
 
@@ -1021,7 +1022,7 @@ run (const gchar *name
     , GimpParam **return_vals)
 {
   const char *l_env;
-  
+
   char        l_extension[32];
   char        l_sel_str[MAX_LAYERNAME];
   char        l_layername[MAX_LAYERNAME];
@@ -1049,11 +1050,11 @@ run (const gchar *name
   gint32     inverse_order;
   gint32     no_alpha;
   long       framerate;
-#define      FRAME_BASENAME_LEN   256  
+#define      FRAME_BASENAME_LEN   256
   char       frame_basename[FRAME_BASENAME_LEN];
   gint32     sel_mode, sel_case, sel_invert;
   gint32     selection_mode;
-   
+
   gint32     l_rc_image;
 
   /* init std return values status and image (as used in most of the gap plug-ins) */
@@ -1090,7 +1091,7 @@ run (const gchar *name
   }
 
   if(gap_debug) fprintf(stderr, "\n\ngap_main: debug name = %s\n", name);
-  
+
   image_id = param[1].data.d_image;
   lock_image_id = image_id;
 
@@ -1123,13 +1124,13 @@ run (const gchar *name
       {
           status = GIMP_PDB_EXECUTION_ERROR;
       }
- 
-  
+
+
       /* return the new generated image_id */
       *nreturn_vals = nreturn_ainfo +1;
 
       values[0].data.d_status = status;
-      
+
       values[1].type = GIMP_PDB_INT32;
       values[2].type = GIMP_PDB_INT32;
       values[3].type = GIMP_PDB_INT32;
@@ -1137,7 +1138,7 @@ run (const gchar *name
       values[5].type = GIMP_PDB_STRING;
       values[6].type = GIMP_PDB_STRING;
       values[7].type = GIMP_PDB_FLOAT;
-      
+
       if(ainfo_ptr != NULL)
       {
         values[1].data.d_int32  = ainfo_ptr->first_frame_nr;
@@ -1147,7 +1148,7 @@ run (const gchar *name
         values[5].data.d_string = g_strdup(ainfo_ptr->basename);
         values[6].data.d_string = g_strdup(ainfo_ptr->extension);
         values[7].data.d_float  = -1.0;
-        
+
         vin_ptr = gap_vin_get_all(ainfo_ptr->basename);
         if(vin_ptr != NULL)
         {
@@ -1160,7 +1161,7 @@ run (const gchar *name
   {
       GapAnimInfo *ainfo_ptr;
       GapVinVideoInfo *vin_ptr;
- 
+
       *nreturn_vals = nreturn_nothing +1;
 
       if (n_params != nargs_setrate)
@@ -1192,12 +1193,12 @@ run (const gchar *name
           }
         }
       }
-  
+
      values[0].data.d_status = status;
      return;
   }
 
-  
+
 
   /* ---------------------------
    * check for LOCKS
@@ -1213,7 +1214,7 @@ run (const gchar *name
 
   /* set LOCK on current image (for all gap_plugins) */
   gap_lock_set_lock(lock_image_id);
-   
+
   INIT_I18N();
 
   /* ---------------------------
@@ -1329,13 +1330,13 @@ run (const gchar *name
         nr       = param[3].data.d_int32;  /* how often to copy current frame */
         if (n_params > 5)
         {
-           range_from = param[4].data.d_int32;  /* frame nr to start */	
-           range_to   = param[5].data.d_int32;  /* frame nr to stop  */	
+           range_from = param[4].data.d_int32;  /* frame nr to start */
+           range_to   = param[5].data.d_int32;  /* frame nr to stop  */
         }
         else
         {
-           range_from = -1;	
-           range_to   = -1;	
+           range_from = -1;
+           range_to   = -1;
         }
 
         l_rc_image = gap_base_dup(run_mode, image_id, nr, range_from, range_to );
@@ -1346,7 +1347,7 @@ run (const gchar *name
   {
      gdouble density_factor;
      gboolean density_grow;
-     
+
       if (run_mode == GIMP_RUN_NONINTERACTIVE)
       {
         if (n_params != nargs_density)
@@ -1357,8 +1358,8 @@ run (const gchar *name
 
       if (status == GIMP_PDB_SUCCESS)
       {
-        range_from      = param[3].data.d_int32;  /* frame nr to start */	
-        range_to        = param[4].data.d_int32;  /* frame nr to stop  */	
+        range_from      = param[3].data.d_int32;  /* frame nr to start */
+        range_to        = param[4].data.d_int32;  /* frame nr to stop  */
         density_factor  = param[5].data.d_float;
         density_grow    = param[6].data.d_int32;
 
@@ -1384,7 +1385,7 @@ run (const gchar *name
   else if (strcmp (name, "plug_in_gap_move") == 0)
   {
       GapMovValues *pvals;
-           
+
       pvals = g_new (GapMovValues, 1);
       if (run_mode == GIMP_RUN_NONINTERACTIVE)
       {
@@ -1406,7 +1407,7 @@ run (const gchar *name
       gint          l_numpoints;
       gint          l_rotation_follow;
       gint32        l_startangle;
-      
+
       pointfile = NULL;
       pvals = g_new (GapMovValues, 1);
       l_rotation_follow = 0;
@@ -1440,7 +1441,7 @@ run (const gchar *name
       pvals->tween_steps = 0;
       pvals->tween_opacity_initial = 80.0;
       pvals->tween_opacity_desc = 80.0;
-      
+
       if (run_mode == GIMP_RUN_NONINTERACTIVE)
       {
         if ( ((n_params != nargs_mov_path_ext)  && (strcmp (name, "plug_in_gap_move_path_ext")  == 0))
@@ -1463,7 +1464,7 @@ run (const gchar *name
 
            l_rotation_follow        = param[12].data.d_int32;
            l_startangle             = param[13].data.d_float;
-	   
+
            pvals->step_speed_factor      = param[14].data.d_float;
 	   pvals->tween_steps            = param[15].data.d_int32;
 	   pvals->tween_opacity_initial  = param[16].data.d_float;
@@ -1473,7 +1474,7 @@ run (const gchar *name
 	   pvals->trace_opacity_desc     = param[20].data.d_float;
 	   pvals->src_apply_bluebox      = param[21].data.d_int32;
 	   pvals->src_selmode            = param[22].data.d_int32;
-	   
+
 	   if (strcmp (name, "plug_in_gap_move_path_ext")  == 0)
 	   {
 	      /* "plug_in_gap_move_path_ext" passes controlpoints as array parameters */
@@ -1494,7 +1495,7 @@ run (const gchar *name
 	      ||  (l_numpoints != param[51].data.d_int32)
 	      ||  (l_numpoints != param[53].data.d_int32))
 	      {
-	        printf("plug_in_gap_move_path_ext: CallingError: different numbers in the controlpoint array argc parameters\n"); 
+	        printf("plug_in_gap_move_path_ext: CallingError: different numbers in the controlpoint array argc parameters\n");
                 status = GIMP_PDB_CALLING_ERROR;
 	      }
 	      else
@@ -1546,7 +1547,7 @@ run (const gchar *name
       *nreturn_vals = nreturn_f2multi + 1;
       l_rc_image = -1;
       selection_mode = GAP_RANGE_OPS_SEL_IGNORE;
-      
+
       if (run_mode == GIMP_RUN_NONINTERACTIVE)
       {
         if ((n_params != 7) && (n_params != 9) && (n_params != nargs_f2multi))
@@ -1557,14 +1558,14 @@ run (const gchar *name
 
       if (status == GIMP_PDB_SUCCESS)
       {
-        range_from = param[3].data.d_int32;  /* frame nr to start */	
-        range_to   = param[4].data.d_int32;  /* frame nr to stop  */	
+        range_from = param[3].data.d_int32;  /* frame nr to start */
+        range_to   = param[4].data.d_int32;  /* frame nr to stop  */
         mode       = param[5].data.d_int32;  /* { expand-as-necessary(0), CLIP-TO_IMG(1), CLIP-TO-BG-LAYER(2), FLATTEN(3)} */
         nr         = param[6].data.d_int32;  /* { BG_NOT_VISIBLE (0), BG_VISIBLE(1)} */
         /* old interface: use default values for framerate and frame_basename */
         framerate = 50;
         strcpy(frame_basename, "frame");
-	
+
 	sel_mode = GAP_MTCH_ALL_VISIBLE;
 	sel_invert = FALSE;
 	sel_case   = TRUE;
@@ -1611,8 +1612,8 @@ run (const gchar *name
 
       if (status == GIMP_PDB_SUCCESS)
       {
-        range_from = param[3].data.d_int32;  /* frame nr to start */	
-        range_to   = param[4].data.d_int32;  /* frame nr to stop  */	
+        range_from = param[3].data.d_int32;  /* frame nr to start */
+        range_to   = param[4].data.d_int32;  /* frame nr to stop  */
 
         l_rc_image = gap_range_flatten(run_mode, image_id, range_from, range_to);
 
@@ -1630,15 +1631,15 @@ run (const gchar *name
 
       if (status == GIMP_PDB_SUCCESS)
       {
-        range_from = param[3].data.d_int32;  /* frame nr to start */	
-        range_to   = param[4].data.d_int32;  /* frame nr to stop  */	
+        range_from = param[3].data.d_int32;  /* frame nr to start */
+        range_to   = param[4].data.d_int32;  /* frame nr to stop  */
         nr         = param[5].data.d_int32;  /* layerstack position (0 == on top) */
 
         l_rc_image = gap_range_layer_del(run_mode, image_id, range_from, range_to, nr);
 
       }
   }
-  else if ((strcmp (name, "plug_in_gap_range_convert") == 0) 
+  else if ((strcmp (name, "plug_in_gap_range_convert") == 0)
        ||  (strcmp (name, "plug_in_gap_range_convert2") == 0))
   {
       *nreturn_vals = nreturn_rconv +1;
@@ -1674,8 +1675,8 @@ run (const gchar *name
       if (status == GIMP_PDB_SUCCESS)
       {
         image_id    = param[1].data.d_image;
-        range_from  = param[3].data.d_int32;  /* frame nr to start */	
-        range_to    = param[4].data.d_int32;  /* frame nr to stop  */	
+        range_from  = param[3].data.d_int32;  /* frame nr to start */
+        range_to    = param[4].data.d_int32;  /* frame nr to stop  */
         nr          = param[5].data.d_int32;  /* flatten (0 == no , 1 == flatten) */
         dest_type   = param[6].data.d_int32;
         dest_colors = param[7].data.d_int32;
@@ -1703,8 +1704,8 @@ run (const gchar *name
 
       if (status == GIMP_PDB_SUCCESS)
       {
-        new_width  = param[3].data.d_int32;	
-        new_height = param[4].data.d_int32;	
+        new_width  = param[3].data.d_int32;
+        new_height = param[4].data.d_int32;
         offs_x     = param[5].data.d_int32;
         offs_y     = param[6].data.d_int32;
 
@@ -1725,8 +1726,8 @@ run (const gchar *name
 
       if (status == GIMP_PDB_SUCCESS)
       {
-        new_width  = param[3].data.d_int32;	
-        new_height = param[4].data.d_int32;	
+        new_width  = param[3].data.d_int32;
+        new_height = param[4].data.d_int32;
         offs_x     = param[5].data.d_int32;
         offs_y     = param[6].data.d_int32;
 
@@ -1747,8 +1748,8 @@ run (const gchar *name
 
       if (status == GIMP_PDB_SUCCESS)
       {
-        new_width  = param[3].data.d_int32;	
-        new_height = param[4].data.d_int32;	
+        new_width  = param[3].data.d_int32;
+        new_height = param[4].data.d_int32;
 
         l_rc_image = gap_range_anim_sizechange(run_mode, GAP_ASIZ_SCALE, image_id,
                                    new_width, new_height, 0, 0);
@@ -1759,7 +1760,7 @@ run (const gchar *name
   {
       gint32 l_digits;
       gint32 l_only_visible;
-      
+
       *nreturn_vals = nreturn_split +1;
       l_rc_image = -1;
       if (run_mode == GIMP_RUN_NONINTERACTIVE)
@@ -1782,7 +1783,7 @@ run (const gchar *name
         l_only_visible= param[6].data.d_int32;
         l_digits      = param[7].data.d_int32;
 
-        l_rc_image = gap_split_image(run_mode, image_id, 
+        l_rc_image = gap_split_image(run_mode, image_id,
                               inverse_order, no_alpha, l_extension, l_only_visible, l_digits);
 
       }
@@ -1803,8 +1804,8 @@ run (const gchar *name
       if (status == GIMP_PDB_SUCCESS)
       {
         nr       = param[3].data.d_int32;  /* how many framenumbers to shift the framesequence */
-        range_from = param[4].data.d_int32;  /* frame nr to start */	
-        range_to   = param[5].data.d_int32;  /* frame nr to stop  */	
+        range_from = param[4].data.d_int32;  /* frame nr to start */
+        range_to   = param[5].data.d_int32;  /* frame nr to stop  */
 
         l_rc_image = gap_base_shift(run_mode, image_id, nr, range_from, range_to );
 
@@ -1813,8 +1814,8 @@ run (const gchar *name
   else if (strcmp (name, "plug_in_gap_renumber") == 0)
   {
       gint32 digits;
-     
-      digits = 6;   
+
+      digits = 6;
       if (run_mode == GIMP_RUN_NONINTERACTIVE)
       {
         if (n_params != nargs_renumber)
@@ -1826,7 +1827,7 @@ run (const gchar *name
       if (status == GIMP_PDB_SUCCESS)
       {
         nr       = param[3].data.d_int32;  /* new start framenumber of the 1.st frame in the framesequence */
-        digits   = param[4].data.d_int32;  /* digits to use for framenumber part in the filename(s) */	
+        digits   = param[4].data.d_int32;  /* digits to use for framenumber part in the filename(s) */
 
         l_rc_image = gap_base_renumber(run_mode, image_id, nr, digits);
 
@@ -1842,8 +1843,8 @@ run (const gchar *name
 
       if (status == GIMP_PDB_SUCCESS)
       {
-        range_from = param[3].data.d_int32;  /* frame nr to start */	
-        range_to   = param[4].data.d_int32;  /* frame nr to stop  */	
+        range_from = param[3].data.d_int32;  /* frame nr to start */
+        range_to   = param[4].data.d_int32;  /* frame nr to stop  */
 
         l_rc_image = gap_vid_edit_copy(run_mode, image_id, range_from, range_to );
       }
@@ -1902,8 +1903,8 @@ run (const gchar *name
 
       if (status == GIMP_PDB_SUCCESS)
       {
-        range_from = param[3].data.d_int32;  /* frame nr to start */	
-        range_to   = param[4].data.d_int32;  /* frame nr to stop  */	
+        range_from = param[3].data.d_int32;  /* frame nr to start */
+        range_to   = param[4].data.d_int32;  /* frame nr to stop  */
         nr         = param[5].data.d_int32;    /* action_nr */
         sel_mode   = param[6].data.d_int32;
         sel_case   = param[7].data.d_int32;
@@ -1930,11 +1931,11 @@ run (const gchar *name
       values[1].data.d_int32 = l_rc_image;  /* return image id  of the resulting (current frame) image */
     }
  }
-  
+
  if (run_mode != GIMP_RUN_NONINTERACTIVE)
  {
     if(gap_debug) printf("gap_main BEFORE gimp_displays_flush\n");
- 
+
     gimp_displays_flush();
 
     if(gap_debug) printf("gap_main AFTER gimp_displays_flush\n");

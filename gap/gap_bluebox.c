@@ -26,6 +26,7 @@
  */
 
 /* revision history:
+ * gimp    1.3.23b; 2003/12/06  hof: added mode GAP_BLUBOX_THRES_ALL
  * gimp    1.3.23a; 2003/11/26  hof: follow API changes for gimp_dialog_new
  * gimp    1.3.20d; 2003/10/14  hof: creation
  */
@@ -104,9 +105,10 @@ static void       p_color_update_callback(GtkWidget *widget, gpointer val);
 static void       p_radio_thres_RGB_callback(GtkWidget *widget, GapBlueboxGlobalParams *bbp);
 static void       p_radio_thres_HSV_callback(GtkWidget *widget, GapBlueboxGlobalParams *bbp);
 static void       p_radio_thres_VAL_callback(GtkWidget *widget, GapBlueboxGlobalParams *bbp);
+static void       p_radio_thres_ALL_callback(GtkWidget *widget, GapBlueboxGlobalParams *bbp);
 static void       p_radio_create_thres_mode(GtkWidget *table, int row, int col, GapBlueboxGlobalParams *bbp);
-static void       p_thres_table_RGB_create(GapBlueboxGlobalParams *bbp);
-static void       p_thres_table_HSV_create(GapBlueboxGlobalParams *bbp);
+static void       p_thres_table_RGB_create(GapBlueboxGlobalParams *bbp, gint row);
+static void       p_thres_table_HSV_create(GapBlueboxGlobalParams *bbp, gint row);
 static void       p_thres_table_VAL_create(GapBlueboxGlobalParams *bbp);
 static GtkWidget *p_thres_table_create_or_replace(GapBlueboxGlobalParams *bbp);
 
@@ -535,6 +537,10 @@ p_reset_callback(GtkWidget *w, GapBlueboxGlobalParams *bbp)
     radio_active = (bbp->vals.thres_mode == GAP_BLUBOX_THRES_VAL);
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (bbp->thres_val_toggle)
 				  ,radio_active);
+
+    radio_active = (bbp->vals.thres_mode == GAP_BLUBOX_THRES_ALL);
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (bbp->thres_all_toggle)
+				  ,radio_active);
   }
 
 }  /* end p_reset_callback */
@@ -587,6 +593,7 @@ p_quit_callback(GtkWidget *w, GapBlueboxGlobalParams *bbp)
        bbp->thres_rgb_toggle = NULL;
        bbp->thres_hsv_toggle = NULL;
        bbp->thres_val_toggle = NULL;
+       bbp->thres_all_toggle = NULL;
 
        /* p_quit_callback is the signal handler for the "destroy"
 	* signal of the shell window.
@@ -813,6 +820,20 @@ p_radio_thres_VAL_callback(GtkWidget *widget, GapBlueboxGlobalParams *bbp)
 }  /* end p_radio_thres_VAL_callback */
 
 /* ---------------------------------
+ * p_radio_thres_ALL_callback
+ * ---------------------------------
+ */
+static void
+p_radio_thres_ALL_callback(GtkWidget *widget, GapBlueboxGlobalParams *bbp)
+{
+  if((bbp) && (GTK_TOGGLE_BUTTON (widget)->active))
+  {
+    bbp->vals.thres_mode = GAP_BLUBOX_THRES_ALL;
+    p_thres_table_create_or_replace(bbp);
+  }
+}  /* end p_radio_thres_ALL_callback */
+
+/* ---------------------------------
  * p_radio_create_thres_mode
  * ---------------------------------
  */
@@ -832,7 +853,7 @@ p_radio_create_thres_mode(GtkWidget *table, int row, int col, GapBlueboxGlobalPa
   gtk_widget_show(label);
 
   /* radio_table */
-  radio_table = gtk_table_new (1, 3, FALSE);
+  radio_table = gtk_table_new (1, 4, FALSE);
 
   l_idx = 0;
   /* radio button thres_mode RGB */
@@ -894,6 +915,26 @@ p_radio_create_thres_mode(GtkWidget *table, int row, int col, GapBlueboxGlobalPa
 		     bbp);
 
 
+  l_idx = 3;
+
+  /* radio button thres_mode ALL */
+  radio_button = gtk_radio_button_new_with_label ( radio_group, _("ALL") );
+  radio_group = gtk_radio_button_get_group ( GTK_RADIO_BUTTON (radio_button) );  
+  gtk_table_attach ( GTK_TABLE (radio_table), radio_button, l_idx, l_idx+1, 0, 1
+                   , GTK_FILL | GTK_EXPAND, 0, 0, 0);
+  bbp->thres_val_toggle = radio_button;
+
+  l_radio_pressed = (bbp->vals.thres_mode == GAP_BLUBOX_THRES_VAL);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radio_button), 
+				   l_radio_pressed);
+  gimp_help_set_help_data(radio_button, _("Use both HSV and RGB threshold values"), NULL);
+
+  gtk_widget_show (radio_button);
+  g_signal_connect ( G_OBJECT (radio_button), "toggled",
+		     G_CALLBACK (p_radio_thres_ALL_callback),
+		     bbp);
+ 
+
   /* attach radio_table */
   gtk_table_attach ( GTK_TABLE (table), radio_table, col+1, col+3, row, row+1, GTK_FILL | GTK_EXPAND, 0, 0, 0);
   gtk_widget_show (radio_table);
@@ -907,13 +948,11 @@ p_radio_create_thres_mode(GtkWidget *table, int row, int col, GapBlueboxGlobalPa
  * ---------------------------------
  */
 static void
-p_thres_table_RGB_create(GapBlueboxGlobalParams *bbp)
+p_thres_table_RGB_create(GapBlueboxGlobalParams *bbp, gint row)
 {
   GtkObject *adj;
-  gint row;
 
-  row = 0;
-  adj = gimp_scale_entry_new (GTK_TABLE (bbp->thres_table), 0, row++,
+  adj = gimp_scale_entry_new (GTK_TABLE (bbp->thres_table), 0, row,
 			      _("Threshold R:"), SCALE_WIDTH, SPIN_BUTTON_WIDTH,
 			      bbp->vals.thres_r,
 			      0.0, 1.0,       /* lower/upper */
@@ -930,7 +969,7 @@ p_thres_table_RGB_create(GapBlueboxGlobalParams *bbp)
 
   row++;
 
-  adj = gimp_scale_entry_new (GTK_TABLE (bbp->thres_table), 0, row++,
+  adj = gimp_scale_entry_new (GTK_TABLE (bbp->thres_table), 0, row,
 			      _("Threshold G:"), SCALE_WIDTH, SPIN_BUTTON_WIDTH,
 			      bbp->vals.thres_g,
 			      0.0, 1.0,       /* lower/upper */
@@ -948,7 +987,7 @@ p_thres_table_RGB_create(GapBlueboxGlobalParams *bbp)
 
   row++;
 
-  adj = gimp_scale_entry_new (GTK_TABLE (bbp->thres_table), 0, row++,
+  adj = gimp_scale_entry_new (GTK_TABLE (bbp->thres_table), 0, row,
 			      _("Threshold B:"), SCALE_WIDTH, SPIN_BUTTON_WIDTH,
 			      bbp->vals.thres_b,
 			      0.0, 1.0,       /* lower/upper */
@@ -971,13 +1010,11 @@ p_thres_table_RGB_create(GapBlueboxGlobalParams *bbp)
  * ---------------------------------
  */
 static void
-p_thres_table_HSV_create(GapBlueboxGlobalParams *bbp)
+p_thres_table_HSV_create(GapBlueboxGlobalParams *bbp, gint row)
 {
   GtkObject *adj;
-  gint row;
 
-  row = 0;
-  adj = gimp_scale_entry_new (GTK_TABLE (bbp->thres_table), 0, row++,
+  adj = gimp_scale_entry_new (GTK_TABLE (bbp->thres_table), 0, row,
 			      _("Threshold H:"), SCALE_WIDTH, SPIN_BUTTON_WIDTH,
 			      bbp->vals.thres_h,
 			      0.0, 1.0,       /* lower/upper */
@@ -994,7 +1031,7 @@ p_thres_table_HSV_create(GapBlueboxGlobalParams *bbp)
 
   row++;
 
-  adj = gimp_scale_entry_new (GTK_TABLE (bbp->thres_table), 0, row++,
+  adj = gimp_scale_entry_new (GTK_TABLE (bbp->thres_table), 0, row,
 			      _("Threshold S:"), SCALE_WIDTH, SPIN_BUTTON_WIDTH,
 			      bbp->vals.thres_s,
 			      0.0, 1.0,       /* lower/upper */
@@ -1012,7 +1049,7 @@ p_thres_table_HSV_create(GapBlueboxGlobalParams *bbp)
 
   row++;
 
-  adj = gimp_scale_entry_new (GTK_TABLE (bbp->thres_table), 0, row++,
+  adj = gimp_scale_entry_new (GTK_TABLE (bbp->thres_table), 0, row,
 			      _("Threshold V:"), SCALE_WIDTH, SPIN_BUTTON_WIDTH,
 			      bbp->vals.thres_v,
 			      0.0, 1.0,       /* lower/upper */
@@ -1086,13 +1123,17 @@ p_thres_table_create_or_replace(GapBlueboxGlobalParams *bbp)
  switch(bbp->vals.thres_mode)
  {
    case GAP_BLUBOX_THRES_RGB:
-     p_thres_table_RGB_create(bbp);
+     p_thres_table_RGB_create(bbp, 0);
      break;
    case GAP_BLUBOX_THRES_HSV:
-     p_thres_table_HSV_create(bbp);
+     p_thres_table_HSV_create(bbp, 0);
      break;
    case GAP_BLUBOX_THRES_VAL:
      p_thres_table_VAL_create(bbp);
+     break;
+   case GAP_BLUBOX_THRES_ALL:
+     p_thres_table_HSV_create(bbp, 0);
+     p_thres_table_RGB_create(bbp, 3);
      break;
  }
 
@@ -1327,6 +1368,9 @@ p_pixel_render_alpha (GimpRGB       *src,
        break;
      case GAP_BLUBOX_THRES_VAL:
        col_diff = p_check_VAL_thres(src, bbp);
+       break;
+     case GAP_BLUBOX_THRES_ALL:
+       col_diff = MAX(p_check_HSV_thres(src, bbp), p_check_RGB_thres(src, bbp));
        break;
    }
    if(col_diff < 1.0)
@@ -1592,7 +1636,8 @@ gap_bluebox_apply(GapBlueboxGlobalParams *bbp)
 
 
 
-  if(bbp->vals.thres_mode == GAP_BLUBOX_THRES_HSV)
+  if((bbp->vals.thres_mode == GAP_BLUBOX_THRES_HSV)
+  || (bbp->vals.thres_mode == GAP_BLUBOX_THRES_ALL))
   {
     gimp_rgb_to_hsv(&bbp->vals.keycolor, &bbp->key_hsv);
   }
