@@ -8,13 +8,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gimp-gap\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-04-08 18:03-0400\n"
+"POT-Creation-Date: 2004-04-10 21:35+0200\n"
 "PO-Revision-Date: 2004-04-08 18:16-0400\n"
 "Last-Translator: Adam Weinberger <adamw@gnome.org>\n"
 "Language-Team: English/Canada <adamw@FreeBSD.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit"
+"Content-Transfer-Encoding: 8bit\n"
 
 #. Button  to invoke fontbrowser
 #: gap/gap_arr_dialog.c:455
@@ -367,6 +367,11 @@ msgstr "Bluebox Colour Picker"
 msgid "Alpha Tolerance:"
 msgstr "Alpha Tolerance:"
 
+#. lower/upper
+#. step, page
+#. digits
+#. constrain
+#. lower/upper unconstrained
 #: gap/gap_bluebox.c:321
 msgid ""
 "Sharp pixel selection by color with 0.0. Greater values than 0 makes "
@@ -381,6 +386,11 @@ msgstr ""
 msgid "Source Alpha:"
 msgstr "Source Alpha:"
 
+#. lower/upper
+#. step, page
+#. digits
+#. constrain
+#. lowr/upper unconstrained
 #: gap/gap_bluebox.c:340
 msgid "Affect only pixels with alpha >= source alpha where 1.0 is full opaque"
 msgstr "Affect only pixels with alpha >= source alpha where 1.0 is full opaque"
@@ -389,6 +399,11 @@ msgstr "Affect only pixels with alpha >= source alpha where 1.0 is full opaque"
 msgid "Target Alpha:"
 msgstr "Target Alpha:"
 
+#. lower/upper
+#. step, page
+#. digits
+#. constrain
+#. lowr/upper unconstrained
 #: gap/gap_bluebox.c:358
 msgid ""
 "Set alpha of affected pixel to target alpha where 0.0 is full transparent"
@@ -1555,6 +1570,7 @@ msgstr ""
 "Layer Name\n"
 " or Channel Name:"
 
+#. pixel
 #: gap/gap_mod_layer.c:263
 msgid ""
 "Layer (or channel) name for all handled layers (or channels),\n"
@@ -1941,6 +1957,14 @@ msgstr "How to fetch the next source layer at the next handled frame"
 msgid "SpeedFactor:"
 msgstr "SpeedFactor:"
 
+#. label text
+#. scalesize spinsize
+#. initial value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
 #: gap/gap_mov_dialog.c:2529
 msgid ""
 "Source and target frames step synchron at value 1.0. A value of 0.5 will "
@@ -2030,6 +2054,14 @@ msgstr "Descending opacity of the trace layer"
 msgid "Tweensteps:"
 msgstr "Tweensteps:"
 
+#. label text
+#. scalesize spinsize
+#. initial value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
 #: gap/gap_mov_dialog.c:2740
 msgid ""
 "Calculate n steps between 2 frames. The rendered tween steps are collected "
@@ -2185,6 +2217,14 @@ msgstr "Last handled destination frame"
 msgid "Layerstack:"
 msgstr "Layerstack:"
 
+#. label text
+#. scalesize spinsize
+#. value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
 #: gap/gap_mov_dialog.c:3167
 msgid ""
 "How to insert source layer into the layerstack of the destination frames. "
@@ -3982,7 +4022,8 @@ msgstr "Remove Unused"
 
 #: gap/gap_range_ops.c:376
 msgid "Remove unused or double colors (ignored if palette type is not custom)"
-msgstr "Remove unused or double colours (ignored if palette type is not custom)"
+msgstr ""
+"Remove unused or double colours (ignored if palette type is not custom)"
 
 #: gap/gap_range_ops.c:381
 msgid "Number of Colors"
@@ -4219,6 +4260,7 @@ msgstr ""
 "Exclude the background layer in all handled frames, regardless to the other "
 "settings of layer selection."
 
+#. pixel
 #: gap/gap_range_ops.c:729
 msgid ""
 "String to identify layer(s) by name or by layerstack position numbers. "
@@ -4641,4 +4683,3 @@ msgstr "Lightness:"
 #: gap/gap_wr_color_huesat.c:688
 msgid "Saturation:"
 msgstr "Saturation:"
-

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gimp 2.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-31 16:28+0200\n"
+"POT-Creation-Date: 2004-04-10 21:35+0200\n"
 "PO-Revision-Date: 2004-03-31 16:26+0200\n"
 "Last-Translator: Marco Ciampa <ciampix@libero.it>\n"
 "Language-Team: gimp.linux.it\n"
@@ -372,6 +372,11 @@ msgstr "Saggiatore colore bluebox"
 msgid "Alpha Tolerance:"
 msgstr "Tolleranza alfa:"
 
+#. lower/upper
+#. step, page
+#. digits
+#. constrain
+#. lower/upper unconstrained
 #: gap/gap_bluebox.c:321
 msgid ""
 "Sharp pixel selection by color with 0.0. Greater values than 0 makes "
@@ -386,6 +391,11 @@ msgstr ""
 msgid "Source Alpha:"
 msgstr "Sorgente alfa:"
 
+#. lower/upper
+#. step, page
+#. digits
+#. constrain
+#. lowr/upper unconstrained
 #: gap/gap_bluebox.c:340
 msgid "Affect only pixels with alpha >= source alpha where 1.0 is full opaque"
 msgstr ""
@@ -396,6 +406,11 @@ msgstr ""
 msgid "Target Alpha:"
 msgstr "Obbiettivo alfa:"
 
+#. lower/upper
+#. step, page
+#. digits
+#. constrain
+#. lowr/upper unconstrained
 #: gap/gap_bluebox.c:358
 msgid ""
 "Set alpha of affected pixel to target alpha where 0.0 is full transparent"
@@ -1568,6 +1583,7 @@ msgstr ""
 "Nome livello\n"
 " o nome canale:"
 
+#. pixel
 #: gap/gap_mod_layer.c:263
 msgid ""
 "Layer (or channel) name for all handled layers (or channels),\n"
@@ -1958,6 +1974,14 @@ msgstr "Come prelevare il prossimo livello sorgente al prossimo frame gestito"
 msgid "SpeedFactor:"
 msgstr "Fattore di velocità:"
 
+#. label text
+#. scalesize spinsize
+#. initial value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
 #: gap/gap_mov_dialog.c:2529
 msgid ""
 "Source and target frames step synchron at value 1.0. A value of 0.5 will "
@@ -2048,6 +2072,14 @@ msgstr "Opacità discendente per il livello traccia"
 msgid "Tweensteps:"
 msgstr "Passi intermedi:"
 
+#. label text
+#. scalesize spinsize
+#. initial value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
 #: gap/gap_mov_dialog.c:2740
 msgid ""
 "Calculate n steps between 2 frames. The rendered tween steps are collected "
@@ -2205,6 +2237,14 @@ msgstr "Ultimo frame di destinazione gestito"
 msgid "Layerstack:"
 msgstr "Stack di livello:"
 
+#. label text
+#. scalesize spinsize
+#. value
+#. lower, upper
+#. step, page
+#. digits
+#. constrain
+#. lower, upper (unconstrained)
 #: gap/gap_mov_dialog.c:3167
 msgid ""
 "How to insert source layer into the layerstack of the destination frames. "
@@ -4199,6 +4239,7 @@ msgid ""
 "settings of layer selection."
 msgstr ""
 
+#. pixel
 #: gap/gap_range_ops.c:729
 msgid ""
 "String to identify layer(s) by name or by layerstack position numbers. "

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gimp CVS\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-25 19:48-0500\n"
+"POT-Creation-Date: 2004-04-10 21:35+0200\n"
 "PO-Revision-Date: 2004-03-25 16:09-0500\n"
 "Last-Translator: Gareth Owen <gowen72@yahoo.com>\n"
 "Language-Team: \n"
@@ -20,6 +20,7 @@ msgid "Font Browser"
 msgstr "Font Browser"
 
 #. Button  to invoke filebrowser
+#. audiofile button (fileselect invoker)
 #: gap/gap_arr_dialog.c:536 gap/gap_fmac_main.c:594
 #: gap/gap_player_dialog.c:3383
 msgid "File Browser"
@@ -350,6 +351,7 @@ msgid "Select By Color"
 msgstr "Select By Colour"
 
 #. the keycolor label
+#. keycolor label
 #: gap/gap_bluebox.c:284 gap/gap_mov_dialog.c:2632
 msgid "Keycolor:"
 msgstr "Keycolour:"
@@ -449,6 +451,7 @@ msgid "ON: Keep preview image up to date"
 msgstr "ON: Keep preview image up to date"
 
 #. button
+#. the preview frame
 #: gap/gap_bluebox.c:442 gap/gap_mov_dialog.c:3804
 msgid "Preview"
 msgstr "Preview"
@@ -2429,6 +2432,8 @@ msgstr "Transformfactor for lower left corner X coordinate"
 
 #. tbly transformfactor
 #. table col, row
+#. tbry transformfactor
+#. table col, row
 #: gap/gap_mov_dialog.c:3474 gap/gap_mov_dialog.c:3510
 msgid "y3:"
 msgstr "y3:"
@@ -2516,6 +2521,8 @@ msgstr "Feather radius in pixels (for smoothing selection(s))"
 
 #. X
 #. table col, row
+#. gtk_container_add (GTK_CONTAINER (abox), table3);
+#. the x/y offest labels
 #: gap/gap_mov_dialog.c:3700 gap/gap_name2layer_main.c:476
 #: gap/gap_resi_dialog.c:819
 msgid "X:"
@@ -4591,6 +4598,7 @@ msgid "Channel:"
 msgstr "Channel:"
 
 #. Channel the radio buttons
+#. Hue Mode the radio buttons
 #: gap/gap_wr_color_levels.c:635 gap/gap_wr_color_huesat.c:632
 msgid "Master"
 msgstr "Master"
