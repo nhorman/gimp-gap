@@ -1,3 +1,7 @@
+2003-12-04  Sven Neumann  <sven@gimp.org>
+
+	* gap/gap_mod_layer.c: s/layer_set_linked/drawable_set_linked/
+
 2003-12-03  Sven Neumann  <sven@gimp.org>
 
 	* gap/gap_bluebox.c

@@ -622,10 +622,10 @@ p_apply_action(gint32 image_id,
           gimp_drawable_set_visible(l_layer_id, FALSE);
 	  break;
         case GAP_MOD_ACM_SET_LINKED:
-          gimp_layer_set_linked(l_layer_id, TRUE);
+          gimp_drawable_set_linked(l_layer_id, TRUE);
 	  break;
         case GAP_MOD_ACM_SET_UNLINKED:
-          gimp_layer_set_linked(l_layer_id, FALSE);
+          gimp_drawable_set_linked(l_layer_id, FALSE);
 	  break;
         case GAP_MOD_ACM_RAISE:
 	  p_raise_layer(image_id, l_layer_id, layli_ptr, nlayers);
