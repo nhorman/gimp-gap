@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: gimp 2.0.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2004-10-06 15:39+0200\n"
-"PO-Revision-Date: 2004-10-07 14:14+0200\n"
+"PO-Revision-Date: 2004-10-07 14:41+0200\n"
 "Last-Translator: Marco Ciampa <ciampix@libero.it>\n"
 "Language-Team: gimp.linux.it\n"
 "MIME-Version: 1.0\n"
@@ -5749,7 +5749,7 @@ msgstr "deinterlaccia framesx2 (prima dispari)"
 
 #: gap/gap_vex_dialog.c:2271
 msgid "deinterlace framesx2 (even 1st)"
-msgstr ""
+msgstr "deinterlaccia framesx2 (prima pari)"
 
 #: gap/gap_vex_dialog.c:2289
 msgid "0.0 .. no interpolation, 1.0 smooth interpolation at deinterlacing"
@@ -5968,25 +5968,25 @@ msgstr "Imposta opacità livello"
 #: libgapvidutil/gap_gve_story.c:555
 #, c-format
 msgid "encoding_video_frame_%06d"
-msgstr ""
+msgstr "codifica_video_frame_%06d"
 
 #: libgapvidutil/gap_gve_story.c:1210
 #, c-format
 msgid "cant load:  %s to memory"
-msgstr ""
+msgstr "impossibile caricare:  %s in memoria"
 
 #: libgapvidutil/gap_gve_story.c:1514
 msgid "checking audio peaks"
-msgstr ""
+msgstr "controllo picchi audio"
 
 #: libgapvidutil/gap_gve_story.c:1536
 msgid "writing composite audiofile"
-msgstr ""
+msgstr "scrittura file audio composito"
 
 #: libgapvidutil/gap_gve_story.c:1549
 #, c-format
 msgid "cant write audio to file: %s "
-msgstr ""
+msgstr "impossibile scrivere l'audio su file: %s"
 
 #: libgapvidutil/gap_gve_story.c:1556 vid_common/gap_cme_gui.c:1191
 #: vid_common/gap_cme_gui.c:1350
@@ -6016,12 +6016,12 @@ msgstr ""
 #: libgapvidutil/gap_gve_story.c:2682
 #, c-format
 msgid "imagefile not found:  %s"
-msgstr ""
+msgstr "file immagine non trovato:  %s"
 
 #: libgapvidutil/gap_gve_story.c:2793
 #, c-format
 msgid "no framefile(s) found at:  %s"
-msgstr ""
+msgstr "nessun file frame trovato su:  %s"
 
 #: libgapvidutil/gap_gve_story.c:3469
 msgid "No Frames or Images found ...."
@@ -7540,27 +7540,24 @@ msgid "b-qoffset:"
 msgstr "Spostamento:"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1920
-#, fuzzy
 msgid "i-qoffset:"
-msgstr "Spostamento:"
+msgstr "i-qoffset:"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1927
-#, fuzzy
 msgid "Bitrate Tol:"
-msgstr "Bitrate:"
+msgstr "Bitrate Tol:"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1934
 msgid "Maxrate Tol:"
-msgstr ""
+msgstr "Maxrate Tol:"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1941
-#, fuzzy
 msgid "Minrate Tol:"
-msgstr "Bitrate:"
+msgstr "Minrate Tol:"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1948
 msgid "Bufsize:"
-msgstr ""
+msgstr "Ampiezza buffer:"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1961
 msgid "video quantiser scale blur (VBR)"
@@ -7607,13 +7604,12 @@ msgid "set ratecontrol buffere size (in kbit)"
 msgstr ""
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2043
-#, fuzzy
 msgid "strictness:"
-msgstr "Luminosità:"
+msgstr "aderenza:"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2056
 msgid "how strictly to follow the standards"
-msgstr ""
+msgstr "quanto essere aderenti agli standard"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2058
 msgid "mb-qmin:"
@@ -7638,28 +7634,27 @@ msgstr ""
 #. the notebook page label for 2 Pass Expert settings
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2095
 msgid "Expert 2Pass"
-msgstr ""
+msgstr "2Passo esperto"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2109
 msgid "Pass Logfile:        "
-msgstr ""
+msgstr "File log passo:"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2121
 msgid "The pass logfile is only used as workfile for 2-pass encoding"
-msgstr ""
+msgstr "Il file di log passo viene usato come file di lavoro per la codifica a 2 passi"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2128
-#, fuzzy
 msgid "Select pass logfile via file browser"
-msgstr "Seleziona tutti i livelli visibili"
+msgstr "Seleziona il file di log passo con la finestra di selezione file"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2130
 msgid "2 Pass Encoding"
-msgstr ""
+msgstr "Codifica a 2 passi"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2135
 msgid "Activate 2 pass encoding when set"
-msgstr ""
+msgstr "Attiva la codifica a due passi se selezionata"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2145
 msgid "FFMpeg File Comment settings"
@@ -7668,11 +7663,11 @@ msgstr ""
 #. the notebook page label for file comment settings
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2151
 msgid "File Comment"
-msgstr ""
+msgstr "Commento sul file"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2164
 msgid "Title:                  "
-msgstr ""
+msgstr "Titolo:"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2216
 msgid ""
@@ -7680,6 +7675,9 @@ msgid ""
 "Text Tags will be inserted in the\n"
 "resulting Video for all non blank entry widgets.  "
 msgstr ""
+"\n"
+"Le etichette di testo saranno inserite\n"
+"nel video risultante per tutti i campi non vuoti della finestra.  "
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:352
 msgid "ffmpeg video encoding for anim frames. Menu: @FFMPEG@"
