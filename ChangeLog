@@ -1,3 +1,7 @@
+2004-10-27  Sven Neumann  <sven@gimp.org>
+
+	* libgapvidapi/gap_vid_api-intl.h: forgot to add this file to CVS.
+
 2004-10-16  Wolfgang Hofer <hof@gimp.org>
 	bugfix: Frames Modify plug-in
 	Function: Add layermask from selection
