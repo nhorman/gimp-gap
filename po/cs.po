@@ -1,4 +1,4 @@
-# Czech translation of GIMP plugins 1.2.3.
+# Czech translation of gimp-gap
 # Copyright (C) 2001 Free Software Foundation, Inc.
 # Stanislav Brabec <utx@penguin.cz>, 1999-2001.
 # Miloslav Trmac <mitr@volny.cz>, 2003.
@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gimp-gap VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-12-12 14:30+0100\n"
-"PO-Revision-Date: 2003-12-12 18:35+0100\n"
+"POT-Creation-Date: 2004-01-21 03:47+0100\n"
+"PO-Revision-Date: 2004-01-21 17:29+0100\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -21,8 +21,9 @@ msgid "Font Browser"
 msgstr "Prohlížeč písem"
 
 #. Button  to invoke filebrowser
+#. audiofile button (fileselect invoker)
 #: gap/gap_arr_dialog.c:536 gap/gap_fmac_main.c:589
-#: gap/gap_player_dialog.c:3360
+#: gap/gap_player_dialog.c:3372
 msgid "File Browser"
 msgstr "Prohlížeč souborů"
 
@@ -126,7 +127,7 @@ msgstr "Políčka %d - %d budou odstraněna. Tuto operaci nelze vrátit zpět."
 
 #. title_txt
 #: gap/gap_base_ops.c:1025 gap/gap_base_ops.c:1026
-#: gap/gap_navigator_dialog.c:638 gap/gap_navigator_dialog.c:639
+#: gap/gap_navigator_dialog.c:640 gap/gap_navigator_dialog.c:641
 msgid "Confirm Frame Delete"
 msgstr "Potvrzení odstranění políček"
 
@@ -182,9 +183,9 @@ msgstr "Změnit hustotu políček"
 #. the start frame scale_entry
 #. table col, row
 #: gap/gap_base_ops.c:1214 gap/gap_base_ops.c:1366 gap/gap_base_ops.c:1569
-#: gap/gap_decode_xanim.c:248 gap/gap_mod_layer.c:193
+#: gap/gap_decode_xanim.c:248 gap/gap_mod_layer.c:203
 #: gap/gap_mov_dialog.c:3122 gap/gap_mpege.c:284 gap/gap_onion_dialog.c:899
-#: gap/gap_player_dialog.c:3806 gap/gap_range_ops.c:284
+#: gap/gap_player_dialog.c:3818 gap/gap_range_ops.c:284
 #: gap/gap_range_ops.c:477 gap/gap_range_ops.c:668
 msgid "From Frame:"
 msgstr "Výchozí políčko:"
@@ -196,9 +197,9 @@ msgstr "Dotčený rozsah začíná na tomto políčku"
 #. the end frame scale_entry
 #. table col, row
 #: gap/gap_base_ops.c:1222 gap/gap_base_ops.c:1374 gap/gap_base_ops.c:1577
-#: gap/gap_decode_xanim.c:258 gap/gap_mod_layer.c:201
+#: gap/gap_decode_xanim.c:258 gap/gap_mod_layer.c:211
 #: gap/gap_mov_dialog.c:3140 gap/gap_mpege.c:294 gap/gap_onion_dialog.c:906
-#: gap/gap_player_dialog.c:3814 gap/gap_range_ops.c:292
+#: gap/gap_player_dialog.c:3826 gap/gap_range_ops.c:292
 #: gap/gap_range_ops.c:485 gap/gap_range_ops.c:676
 msgid "To Frame:"
 msgstr "Koncové políčko:"
@@ -350,6 +351,7 @@ msgid "Select By Color"
 msgstr "Vybrat podle barvy"
 
 #. the keycolor label
+#. keycolor label
 #: gap/gap_bluebox.c:284 gap/gap_mov_dialog.c:2631
 msgid "Keycolor:"
 msgstr "Klíčová barva"
@@ -450,6 +452,7 @@ msgid "ON: Keep preview image up to date"
 msgstr "ZAPNUTO: Udržovat obrázek náhledu aktuální"
 
 #. button
+#. the preview frame
 #: gap/gap_bluebox.c:442 gap/gap_mov_dialog.c:3803
 msgid "Preview"
 msgstr "Náhled"
@@ -981,7 +984,7 @@ msgstr "Zálohovat do souboru"
 msgid "Make backup of the image after each step"
 msgstr "Vytvořit zálohu obrázku po každém kroku"
 
-#: gap/gap_filter_foreach.c:136 gap/gap_mod_layer.c:306
+#: gap/gap_filter_foreach.c:136 gap/gap_mod_layer.c:316
 msgid "Continue"
 msgstr "Pokračovat"
 
@@ -990,7 +993,7 @@ msgstr "Pokračovat"
 msgid "Skip %d"
 msgstr "Přeskočit %d"
 
-#: gap/gap_filter_foreach.c:159 gap/gap_mod_layer.c:325
+#: gap/gap_filter_foreach.c:159 gap/gap_mod_layer.c:335
 #, c-format
 msgid ""
 "2nd call of %s\n"
@@ -1008,7 +1011,7 @@ msgstr ""
 "Neinteraktivní volání %s\n"
 "(na všechny vrstvy rozsahu)"
 
-#: gap/gap_filter_foreach.c:167 gap/gap_mod_layer.c:331
+#: gap/gap_filter_foreach.c:167 gap/gap_mod_layer.c:341
 msgid "Animated Filter Apply"
 msgstr "Použít animovaný filtr"
 
@@ -1020,11 +1023,11 @@ msgstr "Aplikuji filtr na všechny vrstvy..."
 msgid "Select Filter for Animated Apply"
 msgstr "Zvolte filtr pro animované použití"
 
-#: gap/gap_filter_foreach.c:570 gap/gap_mod_layer.c:808
+#: gap/gap_filter_foreach.c:570 gap/gap_mod_layer.c:884
 msgid "Apply Constant"
 msgstr "Konstantní užití"
 
-#: gap/gap_filter_foreach.c:571 gap/gap_mod_layer.c:809
+#: gap/gap_filter_foreach.c:571 gap/gap_mod_layer.c:885
 msgid "Apply Varying"
 msgstr "Proměnné užití"
 
@@ -1117,11 +1120,14 @@ msgid ""
 "current session and have setup the internal buffer with the parameter "
 "settings of the last call"
 msgstr ""
-"Otevřít okno prohlížeče PDB pro přidání nového filtru do souboru skriptu makra filtru.\n"
+"Otevřít okno prohlížeče PDB pro přidání nového filtru do souboru skriptu "
+"makra filtru.\n"
 "Důležité:\n"
-"Prohlížeč PDB zobrazuje jen filtry, které již byly v aktuálním sezená použity a nastavily interní buffer s nastaveními parametrů z posledníhoi spuštění"
+"Prohlížeč PDB zobrazuje jen filtry, které již byly v aktuálním sezená "
+"použity a nastavily interní buffer s nastaveními parametrů z posledníhoi "
+"spuštění"
 
-#: gap/gap_fmac_main.c:915 gap/gap_player_dialog.c:4152
+#: gap/gap_fmac_main.c:915 gap/gap_player_dialog.c:4164
 msgid "Close window"
 msgstr "Zavřít okno"
 
@@ -1220,136 +1226,136 @@ msgstr ""
 "najednou na stejném políčku videa.\n"
 "Zamykám image_id:%d\n"
 
-#: gap/gap_main.c:600
+#: gap/gap_main.c:641
 msgid "<Image>/Video/Go To/Next Frame"
 msgstr "<Image>/Video/Skok/Následující políčko"
 
-#: gap/gap_main.c:612
+#: gap/gap_main.c:653
 msgid "<Image>/Video/Go To/Previous Frame"
 msgstr "<Image>/Video/Skok/Předchozí políčko"
 
-#: gap/gap_main.c:624
+#: gap/gap_main.c:665
 msgid "<Image>/Video/Go To/First Frame"
 msgstr "<Image>/Video/Skok/První políčko"
 
-#: gap/gap_main.c:636
+#: gap/gap_main.c:677
 msgid "<Image>/Video/Go To/Last Frame"
 msgstr "<Image>/Video/Skok/Poslední políčko"
 
-#: gap/gap_main.c:648
+#: gap/gap_main.c:689
 msgid "<Image>/Video/Go To/Any Frame..."
 msgstr "<Image>/Video/Skok/Libovolné políčko..."
 
-#: gap/gap_main.c:660
+#: gap/gap_main.c:701
 msgid "<Image>/Video/Delete Frames..."
 msgstr "<Image>/Video/Smazat políčka..."
 
-#: gap/gap_main.c:672
+#: gap/gap_main.c:713
 msgid "<Image>/Video/Duplicate Frames..."
 msgstr "<Image>/Video/Duplikovat políčka..."
 
-#: gap/gap_main.c:689
+#: gap/gap_main.c:730
 msgid "<Image>/Video/Frames Density..."
 msgstr "<Image>/Video/Hustota políček..."
 
-#: gap/gap_main.c:701
+#: gap/gap_main.c:742
 msgid "<Image>/Video/Exchange Frame..."
 msgstr "<Image>/Video/Vyměnit políčka..."
 
-#: gap/gap_main.c:713
+#: gap/gap_main.c:754
 msgid "<Image>/Video/Move Path..."
 msgstr "<Image>/Video/Cesta přesunu..."
 
-#: gap/gap_main.c:793
+#: gap/gap_main.c:834
 msgid "<Image>/Video/Frames to Image..."
 msgstr "<Image>/Video/Políčka do obrázku..."
 
-#: gap/gap_main.c:805
+#: gap/gap_main.c:846
 msgid "<Image>/Video/Frames Flatten..."
 msgstr "<Image>/Video/Sloučit políčka..."
 
-#: gap/gap_main.c:817
+#: gap/gap_main.c:858
 msgid "<Image>/Video/Frames Layer Delete..."
 msgstr "<Image>/Video/Odstranit vrstvu políček..."
 
-#: gap/gap_main.c:841
+#: gap/gap_main.c:882
 msgid "<Image>/Video/Frames Convert..."
 msgstr "<Image>/Video/Převést políčka..."
 
-#: gap/gap_main.c:853
+#: gap/gap_main.c:894
 msgid "<Image>/Video/Frames Resize..."
 msgstr "<Image>/Video/Změnit plátno políček..."
 
-#: gap/gap_main.c:865
+#: gap/gap_main.c:906
 msgid "<Image>/Video/Frames Crop..."
 msgstr "<Image>/Video/Ořiznout políčka..."
 
-#: gap/gap_main.c:877
+#: gap/gap_main.c:918
 msgid "<Image>/Video/Frames Scale..."
 msgstr "<Image>/Video/Změnit velikost políček..."
 
-#: gap/gap_main.c:889
+#: gap/gap_main.c:930
 msgid "<Image>/Video/Split Image to Frames..."
 msgstr "<Image>/Video/Rozdělit obrázek do políček..."
 
-#: gap/gap_main.c:902
+#: gap/gap_main.c:943
 msgid "<Image>/Video/Frame Sequence Shift..."
 msgstr "<Image>/Video/Posun sledu políček..."
 
-#: gap/gap_main.c:914
+#: gap/gap_main.c:955
 msgid "<Image>/Video/Frames Renumber..."
 msgstr "<Image>/Video/Přečíslovat políčka..."
 
-#: gap/gap_main.c:926
+#: gap/gap_main.c:967
 msgid "<Image>/Video/Frames Modify..."
 msgstr "<Image>/Video/Změna políček..."
 
 #. Layer select modes
-#: gap/gap_mod_layer.c:98 gap/gap_range_ops.c:619
+#: gap/gap_mod_layer.c:99 gap/gap_range_ops.c:619
 msgid "Pattern is equal to layer name"
 msgstr "Vzorek je shodný s názvem vrstvy"
 
-#: gap/gap_mod_layer.c:99 gap/gap_range_ops.c:620
+#: gap/gap_mod_layer.c:100 gap/gap_range_ops.c:620
 msgid "Pattern is start of layer name"
 msgstr "Vzorek je počátek názvu vrstvy"
 
-#: gap/gap_mod_layer.c:100 gap/gap_range_ops.c:621
+#: gap/gap_mod_layer.c:101 gap/gap_range_ops.c:621
 msgid "Pattern is end of layer name"
 msgstr "Vzorek je konec názvu vrstvy"
 
-#: gap/gap_mod_layer.c:101 gap/gap_range_ops.c:622
+#: gap/gap_mod_layer.c:102 gap/gap_range_ops.c:622
 msgid "Pattern is a part of layer name"
 msgstr "Vzorek je část názvu vrstvy"
 
-#: gap/gap_mod_layer.c:102 gap/gap_onion_dialog.c:1197 gap/gap_range_ops.c:623
+#: gap/gap_mod_layer.c:103 gap/gap_onion_dialog.c:1197 gap/gap_range_ops.c:623
 msgid "Pattern is a list of layerstack numbers"
 msgstr "Vzorek je seznam čísel zásobníku vrstev"
 
-#: gap/gap_mod_layer.c:103 gap/gap_onion_dialog.c:1205 gap/gap_range_ops.c:624
+#: gap/gap_mod_layer.c:104 gap/gap_onion_dialog.c:1205 gap/gap_range_ops.c:624
 msgid "Pattern is a list of reverse layerstack numbers"
 msgstr "Vzorek je seznam čísel obráceného zásobníku vrstev"
 
-#: gap/gap_mod_layer.c:104 gap/gap_onion_dialog.c:1213 gap/gap_range_ops.c:625
+#: gap/gap_mod_layer.c:105 gap/gap_onion_dialog.c:1213 gap/gap_range_ops.c:625
 msgid "All visible (ignore pattern)"
 msgstr "Všechny viditelné (ignorovat vzorek)"
 
-#: gap/gap_mod_layer.c:106
+#: gap/gap_mod_layer.c:107
 msgid "Select all layers where layer name is equal to pattern"
 msgstr "Zvolí všechny vrstvy, pro které je vzorek shodný s názvem vrstvy"
 
-#: gap/gap_mod_layer.c:107
+#: gap/gap_mod_layer.c:108
 msgid "Select all layers where layer name starts with pattern"
 msgstr "Zvolí všechny vrstvy, pro které je vzorek počátkem názvu vrstvy"
 
-#: gap/gap_mod_layer.c:108
+#: gap/gap_mod_layer.c:109
 msgid "Select all layers where layer name ends up with pattern"
 msgstr "Zvolí všechny vrstvy, pro které je vzorek koncem názvu vrstvy"
 
-#: gap/gap_mod_layer.c:109
+#: gap/gap_mod_layer.c:110
 msgid "Select all layers where layer name contains pattern"
 msgstr "Zvolí všechny vrstvy, jejichž název obsahuje vzorek"
 
-#: gap/gap_mod_layer.c:110 gap/gap_range_ops.c:631
+#: gap/gap_mod_layer.c:111 gap/gap_range_ops.c:631
 msgid ""
 "Select layerstack positions where 0 is the top layer.\n"
 "Example: 0, 4-5, 8"
@@ -1357,7 +1363,7 @@ msgstr ""
 "Zvolí pozice v zásobníku vrstev, kde 0 je vrchní vrstva.\n"
 "Příklad: 0, 4-5, 8"
 
-#: gap/gap_mod_layer.c:111 gap/gap_range_ops.c:632
+#: gap/gap_mod_layer.c:112 gap/gap_range_ops.c:632
 msgid ""
 "Select layerstack positions where 0 is the background layer.\n"
 "Example: 0, 4-5, 8"
@@ -1365,104 +1371,140 @@ msgstr ""
 "Zvolí pozice v zásobníku vrstev, kde 0 je vrstva pozadí.\n"
 "Příklad: 0, 4-5, 8"
 
-#: gap/gap_mod_layer.c:112 gap/gap_range_ops.c:633
+#: gap/gap_mod_layer.c:113 gap/gap_range_ops.c:633
 msgid "Select all visible layers"
 msgstr "Vybrat všechny viditelné vrstvy"
 
 #. action items what to do with the selected layer(s)
-#: gap/gap_mod_layer.c:116
+#: gap/gap_mod_layer.c:117
 msgid "Set layer(s) visible"
 msgstr "Nastavit vrstvy viditelné"
 
-#: gap/gap_mod_layer.c:117
+#: gap/gap_mod_layer.c:118
 msgid "Set layer(s) invisible"
 msgstr "Nastavit vrstvy neviditelné"
 
-#: gap/gap_mod_layer.c:118
+#: gap/gap_mod_layer.c:119
 msgid "Set layer(s) linked"
 msgstr "Nastavit vrstvy spojené"
 
-#: gap/gap_mod_layer.c:119
+#: gap/gap_mod_layer.c:120
 msgid "Set layer(s) unlinked"
 msgstr "Nastavit vrstvy rozpojené"
 
-#: gap/gap_mod_layer.c:120
+#: gap/gap_mod_layer.c:121
 msgid "Raise layer(s)"
 msgstr "Vrstvy výš"
 
-#: gap/gap_mod_layer.c:121
+#: gap/gap_mod_layer.c:122
 msgid "Lower layer(s)"
 msgstr "Vrstvy níž"
 
-#: gap/gap_mod_layer.c:122
+#: gap/gap_mod_layer.c:123
 msgid "Merge layer(s) expand as necessary"
 msgstr "Spojit vrstvy rozšířené podle potřeby"
 
-#: gap/gap_mod_layer.c:123
+#: gap/gap_mod_layer.c:124
 msgid "Merge layer(s) clipped to image"
 msgstr "Spojit vrstvy oříznuté podle obrázku"
 
-#: gap/gap_mod_layer.c:124
+#: gap/gap_mod_layer.c:125
 msgid "Merge layer(s) clipped to bg-layer"
 msgstr "Spojit vrstvy oříznuté podle vrstvy pozadí"
 
-#: gap/gap_mod_layer.c:125
+#: gap/gap_mod_layer.c:126
 msgid "Apply filter on layer(s)"
 msgstr "Použít filtr na vrstvy"
 
-#: gap/gap_mod_layer.c:126
+#: gap/gap_mod_layer.c:127
 msgid "Duplicate layer(s)"
 msgstr "Duplikovat vrstvy"
 
-#: gap/gap_mod_layer.c:127
+#: gap/gap_mod_layer.c:128
 msgid "Delete layer(s)"
 msgstr "Odstranit vrstvy"
 
-#: gap/gap_mod_layer.c:128
+#: gap/gap_mod_layer.c:129
 msgid "Rename layer(s)"
 msgstr "Přejmenovat vrstvy"
 
-#: gap/gap_mod_layer.c:129
+#: gap/gap_mod_layer.c:130
 msgid "Replace selection"
 msgstr "Nahradit výběr"
 
-#: gap/gap_mod_layer.c:130
+#: gap/gap_mod_layer.c:131
 msgid "Add selection"
 msgstr "Přidat výběr"
 
-#: gap/gap_mod_layer.c:131
+#: gap/gap_mod_layer.c:132
 msgid "Subtract selection"
 msgstr "Odečíst výběr"
 
-#: gap/gap_mod_layer.c:132
+#: gap/gap_mod_layer.c:133
 msgid "Intersect selection"
 msgstr "Proniknout výběr"
 
-#: gap/gap_mod_layer.c:133
+#: gap/gap_mod_layer.c:134
 msgid "Selection none"
 msgstr "Žádný výběr"
 
-#: gap/gap_mod_layer.c:134
+#: gap/gap_mod_layer.c:135
 msgid "Selection all"
 msgstr "Výběr všeho"
 
-#: gap/gap_mod_layer.c:135
+#: gap/gap_mod_layer.c:136
 msgid "Selection invert"
 msgstr "Invertovat výběr"
 
-#: gap/gap_mod_layer.c:136
+#: gap/gap_mod_layer.c:137
 msgid "Save selection to channel"
 msgstr "Uložit výběr do kanálu"
 
-#: gap/gap_mod_layer.c:137
+#: gap/gap_mod_layer.c:138
 msgid "Load selection from channel"
 msgstr "Načíst výběr z kanálu"
 
-#: gap/gap_mod_layer.c:138
+#: gap/gap_mod_layer.c:139
 msgid "Delete channel (by name)"
 msgstr "Odstranit kanál (podle názvu)"
 
-#: gap/gap_mod_layer.c:188
+#: gap/gap_mod_layer.c:140
+msgid "Add alpha channel"
+msgstr "Přidat alfa kanál"
+
+#: gap/gap_mod_layer.c:141
+msgid "Add white layermask (opaque)"
+msgstr "Přidat bílou masku vrstvy (neprůhlednou)"
+
+#: gap/gap_mod_layer.c:142
+msgid "Add black layermask (transparent)"
+msgstr "Přidat černou masku vrstvy (průhlednou)"
+
+#: gap/gap_mod_layer.c:143
+msgid "Add layermask from alpha"
+msgstr "Přidat masku vrstvy z alfy"
+
+#: gap/gap_mod_layer.c:144
+msgid "Add layermask transfer from alpha"
+msgstr "Přidat přenos masky vrstvy z alfy"
+
+#: gap/gap_mod_layer.c:145
+msgid "Add layermask from selection"
+msgstr "Přidat masku vrstvy z výběru"
+
+#: gap/gap_mod_layer.c:146
+msgid "Add layermask from bw copy"
+msgstr "Přidat masku vrstvy z černobílé kopie"
+
+#: gap/gap_mod_layer.c:147
+msgid "Delete layermask"
+msgstr "Odstranit maku vrstvy"
+
+#: gap/gap_mod_layer.c:148
+msgid "Apply layermask"
+msgstr "Použít masku vrstvy"
+
+#: gap/gap_mod_layer.c:198
 msgid ""
 "Perform function on one or more layer(s)\n"
 "in all frames of the selected frame range\n"
@@ -1470,58 +1512,58 @@ msgstr ""
 "Provést funkci na jedné nebo více vrstvách\n"
 "na všech políčkách ze zvoleného rozsahu\n"
 
-#: gap/gap_mod_layer.c:194 gap/gap_mpege.c:285 gap/gap_onion_dialog.c:924
+#: gap/gap_mod_layer.c:204 gap/gap_mpege.c:285 gap/gap_onion_dialog.c:924
 #: gap/gap_range_ops.c:285 gap/gap_range_ops.c:478 gap/gap_range_ops.c:669
 msgid "First handled frame"
 msgstr "První zpracované políčko"
 
-#: gap/gap_mod_layer.c:202 gap/gap_mpege.c:295 gap/gap_onion_dialog.c:942
+#: gap/gap_mod_layer.c:212 gap/gap_mpege.c:295 gap/gap_onion_dialog.c:942
 #: gap/gap_range_ops.c:293 gap/gap_range_ops.c:486 gap/gap_range_ops.c:677
 msgid "Last handled frame"
 msgstr "Poslední zpracované políčko"
 
-#: gap/gap_mod_layer.c:210 gap/gap_range_ops.c:717
+#: gap/gap_mod_layer.c:220 gap/gap_range_ops.c:717
 msgid "Layer Selection:"
 msgstr "Výběr vrstvy:"
 
-#: gap/gap_mod_layer.c:220 gap/gap_range_ops.c:726
+#: gap/gap_mod_layer.c:230 gap/gap_range_ops.c:726
 msgid "Layer Pattern:"
 msgstr "Vzorek vrstvy:"
 
 #. pixel
-#: gap/gap_mod_layer.c:222
+#: gap/gap_mod_layer.c:232
 msgid ""
 "String to identify layer names or layerstack position numbers. Example: 0,3-5"
 msgstr ""
 "Řetězec k identifikaci jmen vrstev nebo čísel pozice v zásobníku vrstev. "
 "Příklad: 0,3-5"
 
-#: gap/gap_mod_layer.c:228 gap/gap_onion_dialog.c:1237
+#: gap/gap_mod_layer.c:238 gap/gap_onion_dialog.c:1237
 msgid "Case sensitive"
 msgstr "Citlivost velikost písmen"
 
-#: gap/gap_mod_layer.c:229 gap/gap_range_ops.c:736
+#: gap/gap_mod_layer.c:239 gap/gap_range_ops.c:736
 msgid "Lowercase and uppercase letters are considered as different"
 msgstr "Malá a velká písmena jsou rozlišována"
 
-#: gap/gap_mod_layer.c:234
+#: gap/gap_mod_layer.c:244
 msgid "Invert Layer Selection"
 msgstr "Invertovat výběr vrstev"
 
-#: gap/gap_mod_layer.c:235
+#: gap/gap_mod_layer.c:245
 msgid "Perform actions on all unselected layers"
 msgstr "Provést akce na všech nevybraných vrstvách"
 
-#: gap/gap_mod_layer.c:240
+#: gap/gap_mod_layer.c:250
 msgid "Function:"
 msgstr "Funkce:"
 
 #. argv[7].radio_help_argv = action_help
-#: gap/gap_mod_layer.c:244
+#: gap/gap_mod_layer.c:254
 msgid "Function to be performed on all selected layers"
 msgstr "Funkce, kterou provést na všech vybraných vrstvách"
 
-#: gap/gap_mod_layer.c:250
+#: gap/gap_mod_layer.c:260
 msgid ""
 "New Layer\n"
 " or Channel Name:"
@@ -1530,7 +1572,7 @@ msgstr ""
 "vrstvy nebo kanálu:"
 
 #. pixel
-#: gap/gap_mod_layer.c:252
+#: gap/gap_mod_layer.c:262
 msgid ""
 "Layer (or channel) name for all handled layers (or channels),\n"
 "where the string '[######]' is replaced by the frame number.\n"
@@ -1550,15 +1592,15 @@ msgstr ""
 " Načíst výběr z kanálu\n"
 " Odstranit kanál (podle názvu)"
 
-#: gap/gap_mod_layer.c:265
+#: gap/gap_mod_layer.c:275
 msgid "Frames Modify"
 msgstr "Úpravy políček"
 
-#: gap/gap_mod_layer.c:266 gap/gap_player_dialog.c:357
+#: gap/gap_mod_layer.c:276 gap/gap_player_dialog.c:358
 msgid "Settings"
 msgstr "Nastavení"
 
-#: gap/gap_mod_layer.c:329
+#: gap/gap_mod_layer.c:339
 #, c-format
 msgid ""
 "Non-Interactive call of %s\n"
@@ -1569,20 +1611,20 @@ msgstr ""
 
 #. GAP-PDB-Browser Dialog
 #. ----------------------
-#: gap/gap_mod_layer.c:807
+#: gap/gap_mod_layer.c:883
 msgid "Select Filter for Animated Apply on Frames"
 msgstr "Vyberte filtr pro animované použití na políčka"
 
-#: gap/gap_mod_layer.c:943
+#: gap/gap_mod_layer.c:1019
 msgid "GAP Modify: No layer selected in last handled frame"
 msgstr ""
 "Modifikace GAP: V posledním zpracovaném políčku není zvolena žádná vrstva"
 
-#: gap/gap_mod_layer.c:1030
+#: gap/gap_mod_layer.c:1106
 msgid "Modifying frames/layer(s)..."
 msgstr "Modifikuji políčka/vrstvy..."
 
-#: gap/gap_mod_layer.c:1111
+#: gap/gap_mod_layer.c:1187
 msgid "No selected layer in start frame"
 msgstr "Není vybrána vrstva v počátečním políčku"
 
@@ -1663,7 +1705,7 @@ msgid "Center"
 msgstr "Střed"
 
 #. the playback mode checkbuttons
-#: gap/gap_mov_dialog.c:435 gap/gap_player_dialog.c:4013
+#: gap/gap_mov_dialog.c:435 gap/gap_player_dialog.c:4025
 msgid "Loop"
 msgstr "Smyčka"
 
@@ -1773,7 +1815,7 @@ msgid "Scale down size of the generated animated preview (in %)"
 msgstr "Zmenšení velikosti generovaného animovaného náhledu (v %)"
 
 #: gap/gap_mov_dialog.c:1054 gap/gap_mpege.c:303
-#: gap/gap_navigator_dialog.c:3772
+#: gap/gap_navigator_dialog.c:3795
 msgid "Framerate:"
 msgstr "Frekvence políček:"
 
@@ -1794,7 +1836,7 @@ msgstr ""
 "(nakonfigurováno v gimprc pomocí video-paste-dir a video-paste-basename)"
 
 #: gap/gap_mov_dialog.c:1079 gap/gap_mpege.c:355 gap/gap_name2layer_main.c:513
-#: gap/gap_split.c:296
+#: gap/gap_split.c:296 gap/gap_wr_opacity.c:348
 msgid "Default"
 msgstr "Implicitní"
 
@@ -1896,6 +1938,7 @@ msgstr "Zdrojový objekt ke vložení do určeného rozsahu cílových políček
 
 #. Paintmode menu
 #: gap/gap_mov_dialog.c:2453 gap/gap_name2layer_main.c:445
+#: gap/gap_wr_opacity.c:336
 msgid "Mode:"
 msgstr "Režim:"
 
@@ -2268,6 +2311,7 @@ msgstr "Omezit poměr"
 #. Opacity
 #. table col, row
 #: gap/gap_mov_dialog.c:3302 gap/gap_onion_dialog.c:1069
+#: gap/gap_wr_opacity.c:325
 msgid "Opacity:"
 msgstr "Krytí:"
 
@@ -2398,6 +2442,8 @@ msgstr "Transformační faktor pro souřadnici X levého dolního rohu"
 
 #. tbly transformfactor
 #. table col, row
+#. tbry transformfactor
+#. table col, row
 #: gap/gap_mov_dialog.c:3473 gap/gap_mov_dialog.c:3509
 msgid "y3:"
 msgstr "y3:"
@@ -2486,6 +2532,8 @@ msgstr ""
 
 #. X
 #. table col, row
+#. gtk_container_add (GTK_CONTAINER (abox), table3);
+#. the x/y offest labels
 #: gap/gap_mov_dialog.c:3699 gap/gap_name2layer_main.c:476
 #: gap/gap_resi_dialog.c:819
 msgid "X:"
@@ -3055,11 +3103,11 @@ msgstr ""
 msgid "Render Filename to Layer"
 msgstr "Vykreslit název souboru do vrstvy"
 
-#: gap/gap_name2layer_main.c:517
+#: gap/gap_name2layer_main.c:517 gap/gap_wr_opacity.c:352
 msgid "Settings :"
 msgstr "Nastavení :"
 
-#: gap/gap_navigator_dialog.c:413
+#: gap/gap_navigator_dialog.c:415
 msgid ""
 "Playback\n"
 "<Shift> converts the selected frames to temporary image and do "
@@ -3069,7 +3117,7 @@ msgstr ""
 "<Shift> převede vybraná políčka do dočasného obrázku a provede přehrávání "
 "animace vrstvy v dočasném obrázku"
 
-#: gap/gap_navigator_dialog.c:419
+#: gap/gap_navigator_dialog.c:421
 msgid ""
 "Smart update thumbnails\n"
 "<Shift> forced thumbnail update for all frames"
@@ -3077,19 +3125,19 @@ msgstr ""
 "Chytrá aktualizace náhledů\n"
 "<Shift> vnucená aktualizace náhledů pro všechna políčka"
 
-#: gap/gap_navigator_dialog.c:424
+#: gap/gap_navigator_dialog.c:426
 msgid "Duplicate selected frames"
 msgstr "Duplikovat vybraná políčka"
 
-#: gap/gap_navigator_dialog.c:428
+#: gap/gap_navigator_dialog.c:430
 msgid "Delete selected frames"
 msgstr "Odstranit vybraná políčka"
 
-#: gap/gap_navigator_dialog.c:437
+#: gap/gap_navigator_dialog.c:439
 msgid "Goto first frame"
 msgstr "Jít na první políčko"
 
-#: gap/gap_navigator_dialog.c:441
+#: gap/gap_navigator_dialog.c:443
 msgid ""
 "Goto prev frame\n"
 "<Shift> use timezoom stepsize"
@@ -3097,7 +3145,7 @@ msgstr ""
 "Jít na předchozí políčko\n"
 "<Shift> použít krok časové lupy"
 
-#: gap/gap_navigator_dialog.c:446
+#: gap/gap_navigator_dialog.c:448
 msgid ""
 "Goto next frame\n"
 "<Shift> use timezoom stepsize"
@@ -3105,19 +3153,19 @@ msgstr ""
 "Jít na následující políčko\n"
 "<Shift> použít krok časové lupy"
 
-#: gap/gap_navigator_dialog.c:451
+#: gap/gap_navigator_dialog.c:453
 msgid "Goto last frame"
 msgstr "Jít na poslední políčko"
 
-#: gap/gap_navigator_dialog.c:519
+#: gap/gap_navigator_dialog.c:521
 msgid "<Image>/Video/VCR Navigator..."
 msgstr "<Image>/Video/Video navigátor..."
 
-#: gap/gap_navigator_dialog.c:582
+#: gap/gap_navigator_dialog.c:584
 msgid "Cant open two or more video navigator windows."
 msgstr "Nemohu otevřít dvě nebo více oken navigátoru videa."
 
-#: gap/gap_navigator_dialog.c:633
+#: gap/gap_navigator_dialog.c:635
 #, c-format
 msgid ""
 "The selected %d frame(s) will be deleted.\n"
@@ -3126,23 +3174,23 @@ msgstr ""
 "Vybraných %d políček bude odstraněno.\n"
 "Tuto operaci nelze vrátit zpět\n"
 
-#: gap/gap_navigator_dialog.c:722
+#: gap/gap_navigator_dialog.c:724
 msgid "Error while positioning to frame. Video paste operaton failed"
 msgstr "Chyba při přesunu na políčko. Operace vložení videa selhala"
 
-#: gap/gap_navigator_dialog.c:744
+#: gap/gap_navigator_dialog.c:746
 msgid "Video paste operaton failed"
 msgstr "Operace vložení videa selhala"
 
-#: gap/gap_navigator_dialog.c:855
+#: gap/gap_navigator_dialog.c:857
 msgid "Video copy (or cut) operation failed"
 msgstr "Operace kopírování (nebo vyjmutí) videa selhala"
 
-#: gap/gap_navigator_dialog.c:902
+#: gap/gap_navigator_dialog.c:904
 msgid "Video cut operation failed"
 msgstr "Operace vyjmutí videa selhala"
 
-#: gap/gap_navigator_dialog.c:1583
+#: gap/gap_navigator_dialog.c:1585
 msgid ""
 "For the thumbnail update you have to select\n"
 "a thumbnail filesize other than 'No Thumbnails'\n"
@@ -3153,64 +3201,64 @@ msgstr ""
 "v sekci Prostředí dialogu Nastavení"
 
 #. menu_item copy
-#: gap/gap_navigator_dialog.c:3669
+#: gap/gap_navigator_dialog.c:3692
 msgid "Copy"
 msgstr "Kopírovat"
 
 #. menu_item cut
-#: gap/gap_navigator_dialog.c:3679
+#: gap/gap_navigator_dialog.c:3702
 msgid "Cut"
 msgstr "Vyříznout"
 
 #. menu_item paste before
-#: gap/gap_navigator_dialog.c:3688
+#: gap/gap_navigator_dialog.c:3711
 msgid "Paste Before"
 msgstr "Vložit před"
 
 #. menu_item copy
-#: gap/gap_navigator_dialog.c:3697
+#: gap/gap_navigator_dialog.c:3720
 msgid "Paste After"
 msgstr "Vložit za"
 
 #. menu_item copy
-#: gap/gap_navigator_dialog.c:3706
+#: gap/gap_navigator_dialog.c:3729
 msgid "Paste Replace"
 msgstr "Vložit výměnou"
 
 #. menu_item copy
-#: gap/gap_navigator_dialog.c:3715
+#: gap/gap_navigator_dialog.c:3738
 msgid "Clear Video Buffer"
 msgstr "Vymazat video buffer"
 
 #. menu_item Select All
-#: gap/gap_navigator_dialog.c:3725
+#: gap/gap_navigator_dialog.c:3748
 msgid "Select All"
 msgstr "Vybrat vše"
 
 #. menu_item Select None
-#: gap/gap_navigator_dialog.c:3734
+#: gap/gap_navigator_dialog.c:3757
 msgid "Select None"
 msgstr "Zrušit výběr"
 
 #. Video Length (frames)
-#: gap/gap_navigator_dialog.c:3757 gap/gap_player_dialog.c:3601
+#: gap/gap_navigator_dialog.c:3780 gap/gap_player_dialog.c:3613
 msgid "Videoframes:"
 msgstr "Video políčka:"
 
-#: gap/gap_navigator_dialog.c:3794
+#: gap/gap_navigator_dialog.c:3817
 msgid "Set framerate in frames/sec"
 msgstr "Nastavit frekvenci políček v políčkách/s"
 
-#: gap/gap_navigator_dialog.c:3802
+#: gap/gap_navigator_dialog.c:3825
 msgid "Timezoom:"
 msgstr "Časová lupa:"
 
-#: gap/gap_navigator_dialog.c:3824
+#: gap/gap_navigator_dialog.c:3847
 msgid "Show only every N.th frame"
 msgstr "Zobrazovat je každé N-té políčko"
 
 #. The main shell
-#: gap/gap_navigator_dialog.c:3920
+#: gap/gap_navigator_dialog.c:3943
 msgid "Video Navigator"
 msgstr "Video navigátor"
 
@@ -3452,7 +3500,7 @@ msgid "Removing onionskin layers..."
 msgstr "Odstraňuji vrstvy onionskin..."
 
 #. Format the message
-#: gap/gap_player_dialog.c:284
+#: gap/gap_player_dialog.c:285
 #, c-format
 msgid ""
 "Problem with audioplayback. The audiolib reported:\n"
@@ -3461,24 +3509,24 @@ msgstr ""
 "Problém s přehráváním zvuku. audiolib ohlásila:\n"
 "%s"
 
-#: gap/gap_player_dialog.c:305
+#: gap/gap_player_dialog.c:306
 msgid "Audiosource:"
 msgstr "Zdroj zvuku:"
 
-#: gap/gap_player_dialog.c:316
+#: gap/gap_player_dialog.c:317
 msgid "Wavefile:"
 msgstr "Soubor zvuku:"
 
-#: gap/gap_player_dialog.c:318
+#: gap/gap_player_dialog.c:319
 msgid "Name of wavefile to create as copy in RIFF WAVE format"
 msgstr ""
 "Název zvukového souboru, který vytvořit jako kopii ve formátu RIFF WAVE"
 
-#: gap/gap_player_dialog.c:325
+#: gap/gap_player_dialog.c:326
 msgid "Resample:"
 msgstr "Převzorkovat:"
 
-#: gap/gap_player_dialog.c:326
+#: gap/gap_player_dialog.c:327
 msgid ""
 "ON: Resample the copy at specified samplerate.\n"
 "OFF: Use original samplerate"
@@ -3487,21 +3535,21 @@ msgstr ""
 "VYPNUTO: použít původní vzorkovací frekvenci"
 
 #. Audio Samplerate
-#: gap/gap_player_dialog.c:334 gap/gap_player_dialog.c:3543
+#: gap/gap_player_dialog.c:335 gap/gap_player_dialog.c:3555
 msgid "Samplerate:"
 msgstr "Vzorkovací frekvence:"
 
-#: gap/gap_player_dialog.c:335
+#: gap/gap_player_dialog.c:336
 msgid "Target audio samperate in samples/sec. Ignored if resample is off)"
 msgstr ""
 "Cílová vzorkovací frekvence ve vzorcích/s. Ignorována, je-li Převzorkovat "
 "vypnuto."
 
-#: gap/gap_player_dialog.c:356
+#: gap/gap_player_dialog.c:357
 msgid "Copy Audiofile as Wavefile"
 msgstr "Zkopírovat soubor zvuku"
 
-#: gap/gap_player_dialog.c:441
+#: gap/gap_player_dialog.c:442
 msgid ""
 "Failure to start the wavplay server is fatal.\n"
 "Please check the executability of the 'wavplay' command.\n"
@@ -3513,29 +3561,29 @@ msgstr ""
 "Pokud jste někam nainstalovali spustitelný soubor wavplay,\n"
 "můžete nastavit proměnnou prostředí WAVPLAYPATH před spuštěním gimpu\n"
 
-#: gap/gap_player_dialog.c:504
+#: gap/gap_player_dialog.c:505
 msgid "Audio Delay"
 msgstr "Zvuk zpožděn"
 
-#: gap/gap_player_dialog.c:516
+#: gap/gap_player_dialog.c:517
 msgid "Syncron"
 msgstr "Synchronní"
 
-#: gap/gap_player_dialog.c:520
+#: gap/gap_player_dialog.c:521
 msgid "Audio Skipped"
 msgstr "Zvuk přeskočen"
 
-#: gap/gap_player_dialog.c:532
+#: gap/gap_player_dialog.c:533
 #, c-format
 msgid "%d (at %.4f frames/sec)"
 msgstr "%d (při %.4f políčkách/s)"
 
-#: gap/gap_player_dialog.c:626
+#: gap/gap_player_dialog.c:627
 #, c-format
 msgid "Error at reading WAV header from file '%s'"
 msgstr "Chyba při čtení hlavičky WAV ze souboru '%s'"
 
-#: gap/gap_player_dialog.c:759
+#: gap/gap_player_dialog.c:760
 #, c-format
 msgid ""
 "WARNING: your gimprc file configuration for the wavplay audio server\n"
@@ -3546,7 +3594,7 @@ msgstr ""
 "neukazuje na spustitelný program\n"
 "nastavená hodnota pro %s je: %s\n"
 
-#: gap/gap_player_dialog.c:780
+#: gap/gap_player_dialog.c:781
 #, c-format
 msgid ""
 "WARNING: the environment variable %s\n"
@@ -3557,7 +3605,7 @@ msgstr ""
 "neukazuje na spustitelný program\n"
 "aktuální hodnota je: %s\n"
 
-#: gap/gap_player_dialog.c:816
+#: gap/gap_player_dialog.c:817
 #, c-format
 msgid ""
 "No audiosupport available\n"
@@ -3575,25 +3623,25 @@ msgstr ""
 "souboru před spuštěním GIMPu"
 
 #. pending timer_go_job gets useless, since we start playback now
-#: gap/gap_player_dialog.c:1191 gap/gap_player_dialog.c:1658
+#: gap/gap_player_dialog.c:1192 gap/gap_player_dialog.c:1670
 msgid "Playing"
 msgstr "Přehrávám"
 
 #. the status value label
-#: gap/gap_player_dialog.c:1228 gap/gap_player_dialog.c:4098
+#: gap/gap_player_dialog.c:1229 gap/gap_player_dialog.c:4110
 msgid "Ready"
 msgstr "Připraven"
 
-#: gap/gap_player_dialog.c:1641
+#: gap/gap_player_dialog.c:1653
 msgid "Skip"
 msgstr "Přeskočit"
 
-#: gap/gap_player_dialog.c:1670
+#: gap/gap_player_dialog.c:1682
 #, c-format
 msgid "Delay %.2f"
 msgstr "Zpoždění %.2f"
 
-#: gap/gap_player_dialog.c:3052
+#: gap/gap_player_dialog.c:3064
 #, c-format
 msgid ""
 "WARNING: Your gimprc file configuration for the audioconverter script\n"
@@ -3604,7 +3652,7 @@ msgstr ""
 "neukazuje na spustitelný program\n"
 "nastavená hodnota pro %s je: %s\n"
 
-#: gap/gap_player_dialog.c:3074
+#: gap/gap_player_dialog.c:3086
 #, c-format
 msgid ""
 "WARNING: The environment variable %s\n"
@@ -3615,7 +3663,7 @@ msgstr ""
 "neukazuje na spustitelný program\n"
 "aktuální hodnota je: %s\n"
 
-#: gap/gap_player_dialog.c:3093
+#: gap/gap_player_dialog.c:3105
 #, c-format
 msgid ""
 "ERROR: The external program for audioconversion is not executable.\n"
@@ -3624,42 +3672,42 @@ msgstr ""
 "CHYBA: Externí program pro konverzi zvuku není spustitelný.\n"
 "Název souboru: '%s'\n"
 
-#: gap/gap_player_dialog.c:3113
+#: gap/gap_player_dialog.c:3125
 msgid "Creating audiofile - please wait"
 msgstr "Vytvářím soubor zvuku - čekejte prosím"
 
-#: gap/gap_player_dialog.c:3264
+#: gap/gap_player_dialog.c:3276
 msgid "Select Audiofile"
 msgstr "Vybrat soubor zvuku"
 
 #. audiofile label
-#: gap/gap_player_dialog.c:3336
+#: gap/gap_player_dialog.c:3348
 msgid "Audiofile:"
 msgstr "Soubor zvuku:"
 
-#: gap/gap_player_dialog.c:3348
+#: gap/gap_player_dialog.c:3360
 msgid "Enter an audiofile. The file must be in RIFF WAVE fileformat."
 msgstr "Zadejte soubor zvuku. Soubor musí být ve formátu RIFF WAVE."
 
-#: gap/gap_player_dialog.c:3362
+#: gap/gap_player_dialog.c:3374
 msgid "Open audiofile selection browser dialog window"
 msgstr "Otevřít okno dialogu procházení výběru souboru zvuku"
 
 #. Volume
-#: gap/gap_player_dialog.c:3374
+#: gap/gap_player_dialog.c:3386
 msgid "Volume:"
 msgstr "Hlasitost:"
 
-#: gap/gap_player_dialog.c:3394
+#: gap/gap_player_dialog.c:3406
 msgid "Audio Volume"
 msgstr "Hlasitost zvuku"
 
 #. check button
-#: gap/gap_player_dialog.c:3400
+#: gap/gap_player_dialog.c:3412
 msgid "Enable"
 msgstr "Povolit"
 
-#: gap/gap_player_dialog.c:3404
+#: gap/gap_player_dialog.c:3416
 msgid ""
 "ON: Play button plays video + audio.\n"
 "OFF: Play video silently"
@@ -3668,11 +3716,11 @@ msgstr ""
 "VYPNUTO: Přehrávat video potichu"
 
 #. Sample Offset
-#: gap/gap_player_dialog.c:3414
+#: gap/gap_player_dialog.c:3426
 msgid "Offset:"
 msgstr "Posun:"
 
-#: gap/gap_player_dialog.c:3434
+#: gap/gap_player_dialog.c:3446
 msgid ""
 "Audio offset in frames at original video playback speed. A value of 0 starts "
 "audio and video at synchron time. A value of -10 will play frame 1 up to "
@@ -3686,16 +3734,16 @@ msgstr ""
 "přeskočí počáteční část zvuku o délce odpovídající trvání deseti políček při "
 "původní rychlosti přehrávání videa."
 
-#: gap/gap_player_dialog.c:3450
+#: gap/gap_player_dialog.c:3462
 msgid "Reset offset and volume"
 msgstr "Vynulovat posun a hlasitost"
 
 #. create wavfile button
-#: gap/gap_player_dialog.c:3461
+#: gap/gap_player_dialog.c:3473
 msgid "Copy As Wavfile"
 msgstr "Zkopírovat jako soubor zvuku"
 
-#: gap/gap_player_dialog.c:3463
+#: gap/gap_player_dialog.c:3475
 msgid ""
 "Create a copy from audiofile as RIFF WAVE audiofile and use the copy for "
 "audio playback"
@@ -3704,112 +3752,112 @@ msgstr ""
 "přehrávání zvuku"
 
 #. Audio Offset Length (mm:ss:msec)
-#: gap/gap_player_dialog.c:3484
+#: gap/gap_player_dialog.c:3496
 msgid "Offsettime:"
 msgstr "Čas posunu:"
 
 #. Total Audio Length (mm:ss:msec)
-#: gap/gap_player_dialog.c:3498
+#: gap/gap_player_dialog.c:3510
 msgid "Audiotime:"
 msgstr "Čas zvuku:"
 
 #. Length (frames)
-#: gap/gap_player_dialog.c:3513
+#: gap/gap_player_dialog.c:3525
 msgid "Audioframes:"
 msgstr "Políčka zvuku:"
 
 #. Audiolength (Samples)
-#: gap/gap_player_dialog.c:3528
+#: gap/gap_player_dialog.c:3540
 msgid "Samples:"
 msgstr "Vzorky:"
 
 #. Audio Channels
-#: gap/gap_player_dialog.c:3557
+#: gap/gap_player_dialog.c:3569
 msgid "Channels:"
 msgstr "Kanály:"
 
 #. Bits per Audio Sample
-#: gap/gap_player_dialog.c:3571
+#: gap/gap_player_dialog.c:3583
 msgid "Bits/Sample:"
 msgstr "Bity/vzorek:"
 
 #. Total Video Length (mm:ss:msec)
-#: gap/gap_player_dialog.c:3586
+#: gap/gap_player_dialog.c:3598
 msgid "Videotime:"
 msgstr "Délka videa:"
 
-#: gap/gap_player_dialog.c:3683
+#: gap/gap_player_dialog.c:3695
 msgid "Videoframe Playback"
 msgstr "Přehrávání políček videa"
 
-#: gap/gap_player_dialog.c:3703
+#: gap/gap_player_dialog.c:3715
 msgid "Video Options"
 msgstr "Volby videa"
 
-#: gap/gap_player_dialog.c:3704
+#: gap/gap_player_dialog.c:3716
 msgid "Audio Options"
 msgstr "Volby zvuku"
 
-#: gap/gap_player_dialog.c:3761
+#: gap/gap_player_dialog.c:3773
 msgid ""
 "Click: go to frame, Ctrl-Click: set 'From Frame', Alt-Click: set 'To Frame'"
 msgstr ""
 "Kliknutí: přejít na políčko, Ctrl-kliknutí: nastavit 'od políčka', Alt-"
 "kliknutí: nastavit 'po políčko'"
 
-#: gap/gap_player_dialog.c:3834
+#: gap/gap_player_dialog.c:3846
 msgid "Start framenumber of selection range"
 msgstr "Číslo počátečního políčka vybraného rozsahu"
 
-#: gap/gap_player_dialog.c:3851
+#: gap/gap_player_dialog.c:3863
 msgid "End framenumber of selection range"
 msgstr "Číslo koncového políčka vybraného rozsahu"
 
 #. the framenr button
-#: gap/gap_player_dialog.c:3865
+#: gap/gap_player_dialog.c:3877
 msgid "FrameNr"
 msgstr "Č. políčka"
 
-#: gap/gap_player_dialog.c:3870
+#: gap/gap_player_dialog.c:3882
 msgid "Load this frame into the calling image"
 msgstr "Načíst toto políčko do volajícího obrázku"
 
-#: gap/gap_player_dialog.c:3888
+#: gap/gap_player_dialog.c:3900
 msgid "The currently displayed frame number"
 msgstr "Číslo aktuálně zobrazovaného políčka"
 
 #. the time position
-#: gap/gap_player_dialog.c:3895
+#: gap/gap_player_dialog.c:3907
 msgid "Timepos:"
 msgstr "Časová pozice:"
 
 #. the origspeed_button
-#: gap/gap_player_dialog.c:3926
+#: gap/gap_player_dialog.c:3938
 msgid "Speed"
 msgstr "Rychlost"
 
-#: gap/gap_player_dialog.c:3931
+#: gap/gap_player_dialog.c:3943
 msgid "Reset playback speed to original (or previous) value"
 msgstr "Vrátit rychlost přehrávání na původní (nebo předchozí) hodnotu"
 
-#: gap/gap_player_dialog.c:3951
+#: gap/gap_player_dialog.c:3963
 msgid "Current playback speed (frames/sec)"
 msgstr "Aktuální rychlost přehrávání (políček/s)"
 
 #. the size button
-#: gap/gap_player_dialog.c:3965
+#: gap/gap_player_dialog.c:3977
 msgid "Size"
 msgstr "Velikost"
 
-#: gap/gap_player_dialog.c:3972
+#: gap/gap_player_dialog.c:3984
 msgid "Toggle size 128/256. <Shift> Set 1:1 full image size"
 msgstr "Přepnout velikost 128/256, <Shift> Nastavit plnou velikost obrázku 1:1"
 
-#: gap/gap_player_dialog.c:3991
+#: gap/gap_player_dialog.c:4003
 msgid "Video preview size (pixels)"
 msgstr "Velikost náhledu obrázku (pixely)"
 
-#: gap/gap_player_dialog.c:4018
+#: gap/gap_player_dialog.c:4030
 msgid ""
 "ON: Play in endless loop.\n"
 "OFF: Play only once"
@@ -3817,11 +3865,11 @@ msgstr ""
 "ZAPNUTO: Přehrávat v nekonečné smyčce.\n"
 "VYPNUTO: Přehrávat jen jednou"
 
-#: gap/gap_player_dialog.c:4028
+#: gap/gap_player_dialog.c:4040
 msgid "Play selection only"
 msgstr "Přehrávat jen výběr"
 
-#: gap/gap_player_dialog.c:4033
+#: gap/gap_player_dialog.c:4045
 msgid ""
 "ON: Play selection only.\n"
 "OFF: Play all frames"
@@ -3829,19 +3877,19 @@ msgstr ""
 "ZAPNUTO: Přehrávat jen výběr.\n"
 "VYPNUTO: Přehrávat všechna políčka"
 
-#: gap/gap_player_dialog.c:4043
+#: gap/gap_player_dialog.c:4055
 msgid "Ping pong"
 msgstr "Tam a zpět"
 
-#: gap/gap_player_dialog.c:4048
+#: gap/gap_player_dialog.c:4060
 msgid "ON: Play alternating forward/backward"
 msgstr "ZAPNUTO: Přehrávat střídavě vpřed/vzad"
 
-#: gap/gap_player_dialog.c:4057
+#: gap/gap_player_dialog.c:4069
 msgid "Use thumbnails"
 msgstr "Používat náhledy"
 
-#: gap/gap_player_dialog.c:4062
+#: gap/gap_player_dialog.c:4074
 msgid ""
 "ON: Use thumbnails when available.\n"
 "OFF: Read full sized frames"
@@ -3849,11 +3897,11 @@ msgstr ""
 "ZAPNUTO: Používat náhledy, pokud jsou k dispozici.\n"
 "VYPNUTO: Číst políčka v plné velikosti"
 
-#: gap/gap_player_dialog.c:4073
+#: gap/gap_player_dialog.c:4085
 msgid "Exact timing"
 msgstr "Přesné časování"
 
-#: gap/gap_player_dialog.c:4078
+#: gap/gap_player_dialog.c:4090
 msgid ""
 "ON: Skip frames to hold exact timing.\n"
 "OFF: Disable frame skipping"
@@ -3862,15 +3910,15 @@ msgstr ""
 "VYPNUTO: Zakázat přeskakování políček"
 
 #. the status label
-#: gap/gap_player_dialog.c:4090
+#: gap/gap_player_dialog.c:4102
 msgid "Status:"
 msgstr "Stav:"
 
-#: gap/gap_player_dialog.c:4123
+#: gap/gap_player_dialog.c:4135
 msgid "Start playback"
 msgstr "Začít přehrávání"
 
-#: gap/gap_player_dialog.c:4133
+#: gap/gap_player_dialog.c:4145
 msgid ""
 "Pause if playing (any mouseboutton). Go to selection start/active/end (left/"
 "middle/right mousebutton) if not playing"
@@ -3879,7 +3927,7 @@ msgstr ""
 "aktivní/konec výběru, pokud se nepřehrává (levé/prostřední/pravé tlačítko "
 "myši)"
 
-#: gap/gap_player_dialog.c:4143
+#: gap/gap_player_dialog.c:4155
 msgid "Start reverse playback"
 msgstr "Začít přehrávání pozpátku"
 
@@ -4498,6 +4546,165 @@ msgstr "Smazat bod"
 #: gap/gap_stock.c:58
 msgid "Rotate Follow"
 msgstr "Sledovat rotací"
+
+#: gap/gap_wr_opacity.c:143
+msgid "<Image>/Video/Layer/Set Layer Opacity..."
+msgstr "<Image>/Video/Vrstva/Nastavit krytí vrstvy..."
+
+#: gap/gap_wr_opacity.c:326
+msgid "New opacity value where 0 is transparent and 100.0 is opaque"
+msgstr "Nová hodnota krytí, kde 0 je průhledná, a 100.0 je plné krytí"
+
+#: gap/gap_wr_opacity.c:337
+msgid ""
+"Modes set opacity or change the old opacty value by adding, subtracting or "
+"multiply by the supplied new value"
+msgstr "Režimy nastavují krytí nebo mění hodnotu krytí přičítáním, odčítáním nebo násobením zadanou novou hodnotou"
+
+#: gap/gap_wr_opacity.c:349
+msgid "Reset all Parameters to Default Values"
+msgstr "Nastavit všechny parametry na implicitní hodnoty"
+
+#: gap/gap_wr_opacity.c:351
+msgid "Set Layer Opacity"
+msgstr "Nastavit krytí vrstvy"
+
+#: gap/gap_wr_color_curve.c:394
+#, c-format
+msgid "Unable to open file %s"
+msgstr "Nemohu otevřít soubor %s"
+
+#: gap/gap_wr_color_curve.c:525
+msgid "<Image>/Video/Layer/Colors/CurvesFile..."
+msgstr "<Image>/Video/Vrstva/SouborKřivek..."
+
+#. filesel is already open
+#: gap/gap_wr_color_curve.c:785
+msgid "Load color curve from file"
+msgstr "Načíst barevnou křivku ze souboru"
+
+#. The dialog and main vbox
+#: gap/gap_wr_color_curve.c:877
+msgid "CurvesFile"
+msgstr "SouborKřivek"
+
+#. The Load button
+#: gap/gap_wr_color_curve.c:904
+msgid "Load Curve"
+msgstr "Načíst křivku"
+
+#: gap/gap_wr_color_curve.c:911
+msgid ""
+"Load curve from a GIMP curve file (that was saved with the GIMP's color "
+"curve tool)"
+msgstr "Načíst křivku ze souboru křivky GIMP (uloženého nástrojem barevné křivky GIMPu)"
+
+#: gap/gap_wr_color_levels.c:268
+msgid "<Image>/Video/Layer/Colors/Levels..."
+msgstr "<Image>/Video/Vrstva/Barvy/Úrovně..."
+
+#. The dialog1 and main vbox
+#: gap/gap_wr_color_levels.c:583
+msgid "Color Levels"
+msgstr "Úrovně barev"
+
+#. the frame
+#: gap/gap_wr_color_levels.c:610
+msgid "Color Levels  Adjustments "
+msgstr "Úpravy úrovní barev"
+
+#. Channel the label
+#: gap/gap_wr_color_levels.c:626
+msgid "Channel:"
+msgstr "Kanál:"
+
+#. Channel the radio buttons
+#. Hue Mode the radio buttons
+#: gap/gap_wr_color_levels.c:633 gap/gap_wr_color_huesat.c:630
+msgid "Master"
+msgstr "Hlavní"
+
+#: gap/gap_wr_color_levels.c:638 gap/gap_wr_color_huesat.c:635
+msgid "Red"
+msgstr "Červená"
+
+#: gap/gap_wr_color_levels.c:643 gap/gap_wr_color_huesat.c:645
+msgid "Green"
+msgstr "Zelená"
+
+#: gap/gap_wr_color_levels.c:648 gap/gap_wr_color_huesat.c:655
+msgid "Blue"
+msgstr "Modrá"
+
+#: gap/gap_wr_color_levels.c:653
+msgid "Alpha"
+msgstr "Alfa"
+
+#: gap/gap_wr_color_levels.c:665
+msgid "Low Input:"
+msgstr ""
+
+#: gap/gap_wr_color_levels.c:672
+#, fuzzy
+msgid "High Input:"
+msgstr "Výška:"
+
+#: gap/gap_wr_color_levels.c:679
+msgid "Gamma:"
+msgstr "Gama:"
+
+#: gap/gap_wr_color_levels.c:686
+#, fuzzy
+msgid "Low Output:"
+msgstr "Výstupní soubor:"
+
+#: gap/gap_wr_color_levels.c:693
+#, fuzzy
+msgid "High Output:"
+msgstr "Výška:"
+
+#: gap/gap_wr_color_huesat.c:259
+msgid "<Image>/Video/Layer/Colors/Hue-Saturation..."
+msgstr "<Image>/Video/Vrstva/Barvy/Odstín-sytost..."
+
+#. The dialog1 and main vbox
+#: gap/gap_wr_color_huesat.c:568
+msgid "Hue-Saturation"
+msgstr "Odstín-sytost"
+
+#. the frame
+#: gap/gap_wr_color_huesat.c:603
+msgid "Hue / Lightness / Saturation Adjustments "
+msgstr "Úpravy odstínu / světlosti / sytosti"
+
+#. Hue Mode the label
+#: gap/gap_wr_color_huesat.c:622
+msgid "Hue Mode:"
+msgstr "Režim odstínu:"
+
+#: gap/gap_wr_color_huesat.c:640
+msgid "Yellow"
+msgstr "Žlutá"
+
+#: gap/gap_wr_color_huesat.c:650
+msgid "Cyan"
+msgstr "Modrozelená"
+
+#: gap/gap_wr_color_huesat.c:660
+msgid "Magenta"
+msgstr "Fialová"
+
+#: gap/gap_wr_color_huesat.c:672
+msgid "Hue:"
+msgstr "Odstín:"
+
+#: gap/gap_wr_color_huesat.c:679
+msgid "Lightness:"
+msgstr "Světlost"
+
+#: gap/gap_wr_color_huesat.c:686
+msgid "Saturation:"
+msgstr "Sytost:"
 
 #~ msgid "GAP Message"
 #~ msgstr "Zpráva GAP"
