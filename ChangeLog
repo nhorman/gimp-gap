@@ -1,3 +1,8 @@
+2004-02-14  Sven Neumann  <sven@gimp.org>
+
+	* gap/gap_player_dialog.c (p_create_player_window): declare
+	variables only when they are being used.
+
 2004-02-12  Sven Neumann  <sven@gimp.org>
 
 	* configure.in: cosmetics.
