@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gimp-gap VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-06-17 03:31+0200\n"
-"PO-Revision-Date: 2004-06-17 12:35+0200\n"
+"POT-Creation-Date: 2004-06-18 03:24+0200\n"
+"PO-Revision-Date: 2004-06-18 20:23+0200\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1702,7 +1702,10 @@ msgstr "Nastavit"
 msgid ""
 "Click: pick and drag point at cursor or create new point SHIFT-Click: force "
 "create new point Alt-Click: disable drag Right-Click: delete point at cursor"
-msgstr "Kliknutí: uchopit a přetáhnout bod pod kurzorem nebo vytvořit nový bod SHIFT-kliknutí: vnutit vytváření nového bodu Alt-kliknutí: zakázat přetahování kliknutí pravým tlačítkem: odstranit bod pod kurzorem"
+msgstr ""
+"Kliknutí: uchopit a přetáhnout bod pod kurzorem nebo vytvořit nový bod SHIFT-"
+"kliknutí: vnutit vytváření nového bodu Alt-kliknutí: zakázat přetahování "
+"kliknutí pravým tlačítkem: odstranit bod pod kurzorem"
 
 #. radio button MOVE
 #: gap/gap_morph_dialog.c:2383
@@ -1713,7 +1716,10 @@ msgstr "Přesunout"
 msgid ""
 "Click: drag next point SHIFT-Click: force create new point Alt-Click: "
 "disable drag Right-Click: delete point at cursor"
-msgstr "Kliknutí: přetáhnout bod SHIFT-kliknutí: vnutit vytáření nového bodu Alt-kliknutí: zakázat přetahování kliknutí pravým tlačítkem: odstranit bod pod kurzorem"
+msgstr ""
+"Kliknutí: přetáhnout bod SHIFT-kliknutí: vnutit vytáření nového bodu Alt-"
+"kliknutí: zakázat přetahování kliknutí pravým tlačítkem: odstranit bod pod "
+"kurzorem"
 
 #: gap/gap_morph_dialog.c:2418
 msgid "Click: delete next point"
@@ -4944,7 +4950,9 @@ msgstr ""
 msgid ""
 "GIMP-GAP is compiled without videoapi support. Therfore thumbnails for "
 "videoframes can not be displayed."
-msgstr "GIMP-GAP je přeložen bez podpory videoapi. Náhledy políček videa proto nelze zobrazit."
+msgstr ""
+"GIMP-GAP je přeložen bez podpory videoapi. Náhledy políček videa proto nelze "
+"zobrazit."
 
 #: gap/gap_story_dialog.c:2518
 #, fuzzy, c-format
@@ -5172,7 +5180,8 @@ msgstr "Nepodporovaný řádek byl ignorován"
 msgid ""
 "the passed filename %s has irrelevant content or could not be opened by the "
 "parser"
-msgstr "zadaný název souboru %s má nepodstatný obsah nebo jej parser nemůže otevřít"
+msgstr ""
+"zadaný název souboru %s má nepodstatný obsah nebo jej parser nemůže otevřít"
 
 #: gap/gap_story_main.c:152
 #, fuzzy
@@ -5187,13 +5196,17 @@ msgstr "Automatická detekce scény pracuje jen na typech klipů FILM a POLÍČK
 msgid ""
 "Scene detection depends on video thumbnails. Please enable videothumbnails "
 "(in the Windows Menu)"
-msgstr "Detekce scény závisí na náhledech videa. Povolte prosím náhledy videa (v menu Okna)"
+msgstr ""
+"Detekce scény závisí na náhledech videa. Povolte prosím náhledy videa (v "
+"menu Okna)"
 
 #: gap/gap_story_properties.c:475 gap/gap_story_properties.c:538
 msgid ""
 "Scene detection for cliptype FRAMES depends on thumbnails. Please create "
 "thumbnails for your frames and then try again."
-msgstr "Detekce scény pro typ klipu POLÍČKA závisí na náhledech. Vytvořte prosím náhledy políček a zkuste to znovu."
+msgstr ""
+"Detekce scény pro typ klipu POLÍČKA závisí na náhledech. Vytvořte prosím "
+"náhledy políček a zkuste to znovu."
 
 #: gap/gap_story_properties.c:1203
 msgid "Set Image or Frame Filename"
@@ -5345,7 +5358,8 @@ msgstr "Používat při čtení políček videa filtr sudých řádků"
 #: gap/gap_story_properties.c:1856
 msgid ""
 "deinterlacing threshold: 0.0 no interpolation 0.999 smooth interpolation"
-msgstr "práh eliminace prokládání: 0.0 žádná interpolace 0.999 hladká interpolace"
+msgstr ""
+"práh eliminace prokládání: 0.0 žádná interpolace 0.999 hladká interpolace"
 
 #. pingpong
 #: gap/gap_story_properties.c:1872
@@ -5448,7 +5462,8 @@ msgstr "Zakázat MMX"
 
 #: gap/gap_vex_dialog.c:1830
 msgid "Turn off MMX (MMX is faster but lossy on low bitrate streams)"
-msgstr "Vypnout MMX (MMX je rychlejší, ale ztrátové na proudech s nízkou bitrate)"
+msgstr ""
+"Vypnout MMX (MMX je rychlejší, ale ztrátové na proudech s nízkou bitrate)"
 
 #: gap/gap_vex_dialog.c:1854
 #, fuzzy
@@ -5499,7 +5514,9 @@ msgstr "Dekodér:"
 msgid ""
 "leave empty or select your preferred decoder (libmpeg3, libavformat, "
 "quicktime4linux)"
-msgstr "nechte prázdné nebo zvolte váš preferovaný dekodér (libmpeg3, libavformat, quicktime4linux)"
+msgstr ""
+"nechte prázdné nebo zvolte váš preferovaný dekodér (libmpeg3, libavformat, "
+"quicktime4linux)"
 
 #: gap/gap_vex_dialog.c:2011
 msgid "(none, automatic)"
@@ -5540,7 +5557,9 @@ msgstr "Přesné"
 msgid ""
 "ON is slow but exact, OFF does seek faster but may not give exact "
 "framenumbers"
-msgstr "ZAPNUTO je pomalé, ale přesné, VYPNUTO hledá rychleji, ale možná nezíská přesná čísla políček"
+msgstr ""
+"ZAPNUTO je pomalé, ale přesné, VYPNUTO hledá rychleji, ale možná nezíská "
+"přesná čísla políček"
 
 #: gap/gap_vex_dialog.c:2083 vid_common/gap_cme_gui.c:2998
 #, fuzzy
@@ -5568,11 +5587,14 @@ msgstr "Otevřít okno prohlížeče souborů pro výběr názvu souboru"
 msgid ""
 "Digits to use for framenumber part in filenames (use 1 if you dont want "
 "leading zeroes)"
-msgstr "Počet číslic, které používat pro část názvů souborů s číslem políčka (použijte 1, pokud nechcete na začátku nuly)"
+msgstr ""
+"Počet číslic, které používat pro část názvů souborů s číslem políčka "
+"(použijte 1, pokud nechcete na začátku nuly)"
 
 #: gap/gap_vex_dialog.c:2169
 msgid "Famenumber for 1st extracted frame (use 0 for original framenumbers)"
-msgstr "Číslo prvního extrahovaného políčka (použijte 0 pro původní čísla políček)"
+msgstr ""
+"Číslo prvního extrahovaného políčka (použijte 0 pro původní čísla políček)"
 
 #: gap/gap_vex_dialog.c:2194
 msgid "Extension of extracted frames (.xcf, .jpg, .ppm)"
@@ -5592,7 +5614,9 @@ msgstr "Vytvořit z políček vícevrstevný obrázek"
 msgid ""
 "On: extracted frames are stored in one multilayer imageOff: extracted frames "
 "are written to frame files on disc"
-msgstr "Zapnuto: extrahovaná políčka jsou uložena v jednom obrázku s více vrstvami Vypnut: extrahovaná políčka jsou zapsána na soubory políček na disk"
+msgstr ""
+"Zapnuto: extrahovaná políčka jsou uložena v jednom obrázku s více vrstvami "
+"Vypnut: extrahovaná políčka jsou zapsána na soubory políček na disk"
 
 #: gap/gap_vex_dialog.c:2236
 msgid "Deinterlace splits each extracted frame in 2 frames"
@@ -5621,7 +5645,8 @@ msgstr "eliminovat políčka×2 (první sudé)"
 
 #: gap/gap_vex_dialog.c:2289
 msgid "0.0 .. no interpolation, 1.0 smooth interpolation at deinterlacing"
-msgstr "0.0 .. žádná interpolace, 1.0 hladká interpolace při eliminaci prokládání"
+msgstr ""
+"0.0 .. žádná interpolace, 1.0 hladká interpolace při eliminaci prokládání"
 
 #: gap/gap_vex_dialog.c:2307
 #, fuzzy
@@ -5941,7 +5966,8 @@ msgid ""
 "bottom"
 msgstr ""
 "neplatné číslo rozsahu: %s\n"
-"(platný rozsah je kladné číslo nebo jedno z klíčových slov first, last, top, bottom"
+"(platný rozsah je kladné číslo nebo jedno z klíčových slov first, last, top, "
+"bottom"
 
 #: libgapvidutil/gap_gve_story.c:3467
 #, c-format
@@ -5964,14 +5990,18 @@ msgstr ""
 #: libgapvidutil/gap_gve_story.c:3900
 #, c-format
 msgid "illegal keyword: %s (expected keywords are: width, height, both, none"
-msgstr "neplatné klíčové slovo: %s (očekávaná klíčová slova jsou width, height, both, none"
+msgstr ""
+"neplatné klíčové slovo: %s (očekávaná klíčová slova jsou width, height, "
+"both, none"
 
 #: libgapvidutil/gap_gve_story.c:3932
 #, c-format
 msgid ""
 "illegal keyword: %s (expected keywords are: keep_proportions, "
 "change_proportions"
-msgstr "neplatné klíčové slovo: %s (očekávaná klíčová slova jsou keep_proportions, change_proportions"
+msgstr ""
+"neplatné klíčové slovo: %s (očekávaná klíčová slova jsou keep_proportions, "
+"change_proportions"
 
 #: libgapvidutil/gap_gve_story.c:4315
 msgid "Line is not supported and will be ignored"
@@ -6453,7 +6483,9 @@ msgstr "Vstup zvuku"
 
 #: vid_common/gap_cme_gui.c:2656
 msgid "Name of audiofile (.wav 16 bit mono or stereo samples preferred)"
-msgstr "Název souboru zvuku (preferováno .wav, šestnáctibitové mono nebo stereo vzorky)"
+msgstr ""
+"Název souboru zvuku (preferováno .wav, šestnáctibitové mono nebo stereo "
+"vzorky)"
 
 #: vid_common/gap_cme_gui.c:2664 vid_common/gap_cme_gui.c:2786
 msgid "WAV, 16 Bit stereo, rate: 44100"
@@ -6573,7 +6605,8 @@ msgstr "název nástroje zvuku (něco jako sox, s nebo bez cesty)"
 
 #: vid_common/gap_cme_gui.c:2871
 msgid "Options to call the audiotool ($IN, $OUT $RATE are replaced)"
-msgstr "Přepínače, se kterými volat nástroj zvuku ($IN, $OUT, $RATE jsou nahrazeny)"
+msgstr ""
+"Přepínače, se kterými volat nástroj zvuku ($IN, $OUT, $RATE jsou nahrazeny)"
 
 #: vid_common/gap_cme_gui.c:2875
 msgid ""
@@ -6588,6 +6621,16 @@ msgid ""
 "b) Desired Samplerate does not match the\n"
 "     rate in the .wav file"
 msgstr ""
+"Nastavení nástroje zvuku (např. sox v UNIXu).\n"
+"\n"
+"$IN .. je nahrazeno vstupním souborem zvuku\n"
+"$OUT .. je nahrazeno souborem zvuku s příponou  _tmp.wav\n"
+"$RATE .. je nahrazeno vzorkovací frekvencí v bajtech/s\n"
+"\n"
+"Tento nástroj se volá pro převody zvuku pokud\n"
+"a) vstupní soubor zvuku není v šestnáctibitovém formátu WAV\n"
+"b) požadovaná vzorkovací frekvence neodpovídá rekvenci\n"
+"     v souboru .wav"
 
 #: vid_common/gap_cme_gui.c:2883
 msgid "Audio Tool Configuration"
@@ -6603,11 +6646,11 @@ msgstr "Soubor makra:"
 
 #: vid_common/gap_cme_gui.c:2908
 msgid "optional filtermacro file to be performed on each handled frame "
-msgstr ""
+msgstr "nepovinné makro filtru, které provést na každém obsluhovaném políčku "
 
 #: vid_common/gap_cme_gui.c:2916
 msgid "select macrofile via browser"
-msgstr ""
+msgstr "vybrat soubor makra prohlížečem"
 
 #: vid_common/gap_cme_gui.c:2918
 msgid "Storyboard File:"
@@ -6626,36 +6669,40 @@ msgid ""
 "Debug\n"
 "Flat File:"
 msgstr ""
+"Ladění\n"
+"plochý soubor:"
 
 #: vid_common/gap_cme_gui.c:2952
 msgid ""
 "optional Save each composite frame to JPEG file, before it is passed to the "
 "encoder"
-msgstr ""
+msgstr "nepovinné Uložit každé složené políčko do souboru JPEG před předáním enkodéru"
 
 #: vid_common/gap_cme_gui.c:2954
 msgid ""
 "Debug\n"
 "Multilayer File:"
 msgstr ""
+"Ladění\n"
+"Soubor s více vrstvami:"
 
 #: vid_common/gap_cme_gui.c:2967
 msgid ""
 "optional save each composite multilayer frame to XJT file, before flattening "
 "and executing macro"
-msgstr ""
+msgstr "nepovinné uložit každé složené políčko s více vrstvami do souboru XJT před zploštěním a spuštěním makra"
 
 #: vid_common/gap_cme_gui.c:2969
 msgid "Monitor"
-msgstr ""
+msgstr "Sledovat"
 
 #: vid_common/gap_cme_gui.c:2976
 msgid "Monitor Frames while Encoding"
-msgstr ""
+msgstr "Sledovat políčka při kódování"
 
 #: vid_common/gap_cme_gui.c:2981
 msgid "Show each frame before passed to encoder"
-msgstr ""
+msgstr "Zobrazit každé políčko před předání enkodéru"
 
 #: vid_common/gap_cme_gui.c:2983
 msgid ""
@@ -6676,11 +6723,11 @@ msgstr "Video:"
 
 #: vid_common/gap_cme_gui.c:3014
 msgid "Name of output videofile"
-msgstr ""
+msgstr "Název výstupního souboru videa"
 
 #: vid_common/gap_cme_gui.c:3020
 msgid "Select output videofile via browser"
-msgstr ""
+msgstr "Vybrat výstupní soubor videa prohlížečem"
 
 #: vid_common/gap_cme_gui.c:3022
 msgid "status"
@@ -6688,11 +6735,11 @@ msgstr "stav"
 
 #: vid_common/gap_cme_gui.c:3031
 msgid "READY"
-msgstr ""
+msgstr "PŘIPRAVEN"
 
 #: vid_common/gap_cme_main.c:148
 msgid "This plugin is the master dialog for video + audio encoding"
-msgstr ""
+msgstr "Tento modul je hlavní dialog pro kódování videa a zvuku"
 
 #: vid_common/gap_cme_main.c:149
 msgid ""
@@ -6709,23 +6756,22 @@ msgid ""
 msgstr ""
 
 #: vid_common/gap_cme_main.c:161
-#, fuzzy
 msgid "<Image>/Video/Encode/Master Videoencoder"
-msgstr "<Image>/Video/Kódování/MPEG2..."
+msgstr "<Image>/Video/Kódování/Hlavní enkodér videa"
 
 #: vid_common/gap_cme_main.c:244
 #, c-format
 msgid "Required Plugin %s not available"
-msgstr ""
+msgstr "Vyžadovaný modul %s není k dispozici"
 
 #: vid_common/gap_cme_main.c:287
 #, c-format
 msgid "Call of Required Plugin %s failed"
-msgstr ""
+msgstr "Volání vyžadovaného modulu %s selhalo"
 
 #: vid_enc_avi/gap_enc_avi_gui.c:390
 msgid "AVI Video Encode Parameters"
-msgstr ""
+msgstr "Parametry kódování videa AVI"
 
 #. the Video CODEC label
 #: vid_enc_avi/gap_enc_avi_gui.c:422 vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1142
@@ -6763,13 +6809,13 @@ msgstr "RAW PCM"
 #. the APP0 Marker label
 #: vid_enc_avi/gap_enc_avi_gui.c:488 vid_enc_avi/gap_enc_avi_main.c:732
 msgid "APP0 Marker:"
-msgstr ""
+msgstr "Značka APP0:"
 
 #: vid_enc_avi/gap_enc_avi_gui.c:507
 msgid ""
 "Write APP0 Marker for each encoded frame. (The APP0 marker is evaluated by "
 "some windows programs for AVIs"
-msgstr ""
+msgstr "Zapsat pro každé kódované políčko značku APP0. (Značku APP0 vyhodnocují některé programy pro AVI pro Windows "
 
 #. the notebook page for JPEG Codec options
 #. -----------------------------------------
@@ -6799,22 +6845,22 @@ msgstr ""
 #. the interlace label
 #: vid_enc_avi/gap_enc_avi_gui.c:577
 msgid "Interlace:"
-msgstr ""
+msgstr "Prokládat:"
 
 #: vid_enc_avi/gap_enc_avi_gui.c:598 vid_enc_avi/gap_enc_avi_main.c:618
 msgid "Generate interlaced JPEGs (two frames for odd/even lines)"
-msgstr ""
+msgstr "Generovat prokládané JPEGy (dvě políčka pro liché/sudé řádky)"
 
 #. the odd frames first label
 #: vid_enc_avi/gap_enc_avi_gui.c:605
 msgid "Odd Frames first:"
-msgstr ""
+msgstr "Lichá políčka první:"
 
 #: vid_enc_avi/gap_enc_avi_gui.c:625 vid_enc_avi/gap_enc_avi_main.c:624
 msgid ""
 "Check if you want the odd frames to be coded first (only for interlaced "
 "JPEGs)"
-msgstr ""
+msgstr "Zaškrtněte, pokud chcete, aby byla lichá políčka kódována první (jen pro prokládané JPEGy)"
 
 #. the jpeg quality label
 #. the xvid quality label
@@ -6824,7 +6870,7 @@ msgstr "Kvalita:"
 
 #: vid_enc_avi/gap_enc_avi_gui.c:656
 msgid "The quality setting of the encoded JPEG frames (100=best quality)"
-msgstr ""
+msgstr "Nastavení kvality kódovaných políček JPEG (100=nejlepší kvalita)"
 
 #. the notebook page for RAW Codec options
 #. -----------------------------------------
@@ -6844,6 +6890,9 @@ msgid ""
 "The resulting videoframes will be\n"
 "uncompressed."
 msgstr ""
+"Kodek RAW nemá žádné volby kódování.\n"
+"Výsledná políčka videa budou\n"
+"nekomprimovaná."
 
 #. the notebook page for XVID Codec options
 #. -----------------------------------------
@@ -6863,7 +6912,7 @@ msgstr "KBitová rychlost:"
 
 #: vid_enc_avi/gap_enc_avi_gui.c:739 vid_enc_avi/gap_enc_avi_main.c:647
 msgid "Kilobitrate for XVID Codec (1 = 1000 Bit/sec) -1 for default"
-msgstr ""
+msgstr "Kilobitrate pro kodek XVID (1 = 1000 bitů/s) -1 pro implicitní"
 
 #. the xvid Reaction Delay label
 #: vid_enc_avi/gap_enc_avi_gui.c:746
@@ -6873,16 +6922,16 @@ msgstr "Zvuk zpožděn"
 
 #: vid_enc_avi/gap_enc_avi_gui.c:770
 msgid "reaction delay factor (-1 for default)"
-msgstr ""
+msgstr "činitel zpoždění reakce (-1 pro implicitní)"
 
 #. the xvid AVG Period label
 #: vid_enc_avi/gap_enc_avi_gui.c:777
 msgid "AVG Period:"
-msgstr ""
+msgstr "Doba prům.:"
 
 #: vid_enc_avi/gap_enc_avi_gui.c:801
 msgid "averaging period (-1 for default)"
-msgstr ""
+msgstr "doba průměrování (-1 pro implicitní)"
 
 #. the xvid Buffer label
 #: vid_enc_avi/gap_enc_avi_gui.c:808
@@ -6892,42 +6941,42 @@ msgstr "Popis:"
 
 #: vid_enc_avi/gap_enc_avi_gui.c:832
 msgid "Buffersize (-1 for default)"
-msgstr ""
+msgstr "Velikost bufferu (-1 pro implicitní)"
 
 #. the xvid max_quantizer label
 #: vid_enc_avi/gap_enc_avi_gui.c:839
 msgid "Max Quantizer:"
-msgstr ""
+msgstr "Max kvantovač:"
 
 #: vid_enc_avi/gap_enc_avi_gui.c:863
 msgid "upper limit for quantize Range 1 == BEST Quality"
-msgstr ""
+msgstr "horní limit pro rozsah kvantování 1 == NEJLEPŠÍ kvalita"
 
 #. the xvid min_quantizer label
 #: vid_enc_avi/gap_enc_avi_gui.c:869
 msgid "Min Quantizer:"
-msgstr ""
+msgstr "Min kvantovač:"
 
 #: vid_enc_avi/gap_enc_avi_gui.c:893
 msgid "lower limit for quantize Range 1 == BEST Quality"
-msgstr ""
+msgstr "dolní limit pro rozsah kvantování 1 == NEJLEPŠÍ kvalita"
 
 #. the xvid max_key_interval label
 #: vid_enc_avi/gap_enc_avi_gui.c:900
 msgid "Key Interval:"
-msgstr ""
+msgstr "Interval klíčů:"
 
 #: vid_enc_avi/gap_enc_avi_gui.c:924
 msgid "max distance for keyframes (I-frames)"
-msgstr ""
+msgstr "maximální vzdálenost klíčových snímků (I-snímků)"
 
 #: vid_enc_avi/gap_enc_avi_gui.c:954
 msgid "XVID codec algoritm presets where 0==low quality(fast) 6==best(slow)"
-msgstr ""
+msgstr "Přednastavení algoritmu kodeku XVID, kde 0==nízká kvalita(rychlé) 6==nejlepší(pomalé)"
 
 #: vid_enc_avi/gap_enc_avi_main.c:211
 msgid "avi video encoding for anim frames. Menu: @AVI@"
-msgstr ""
+msgstr "kódování videa avi pro políčka animace. Menu: @AVI@"
 
 #: vid_enc_avi/gap_enc_avi_main.c:212
 msgid ""
@@ -7549,33 +7598,31 @@ msgstr "Volby rozptylu"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1876
 msgid "qblur:                 "
-msgstr ""
+msgstr "qblur:                 "
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1883
 msgid "qcomp:"
-msgstr ""
+msgstr "qcomp:"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1892
 msgid "rc-init-cplx:"
-msgstr ""
+msgstr "rc-init-cplx:"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1899
 msgid "b-qfactor:"
-msgstr ""
+msgstr "b-qfactor:"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1906
 msgid "i-qfactor:"
-msgstr ""
+msgstr "i-qfactor:"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1913
-#, fuzzy
 msgid "b-qoffset:"
 msgstr "b-qoffset:"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1920
-#, fuzzy
 msgid "i-qoffset:"
-msgstr "Posun:"
+msgstr "i-qoffset:"
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1927
 #, fuzzy
