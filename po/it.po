@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: gimp 2.0.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2004-04-10 21:35+0200\n"
-"PO-Revision-Date: 2004-04-13 13:44+0200\n"
+"PO-Revision-Date: 2004-04-19 23:26+0200\n"
 "Last-Translator: Marco Ciampa <ciampix@libero.it>\n"
 "Language-Team: gimp.linux.it\n"
 "MIME-Version: 1.0\n"
@@ -3216,6 +3216,9 @@ msgid ""
 "a thumbnail filesize other than 'No Thumbnails'\n"
 "in the environment section of the preferences dialog"
 msgstr ""
+"Per l'aggiornamento delle miniature devi selezionare una\n"
+"dimensione delle miniature diversa da 'No Thumbnails' nella\n"
+"sezione ambiente della finestra di dialogo delle preferenze"
 
 #. menu_item copy
 #: gap/gap_navigator_dialog.c:3700
@@ -3366,7 +3369,7 @@ msgstr "Ignora i livelli di sfondo:"
 #: gap/gap_onion_dialog.c:1146
 msgid ""
 "Exclude N background layers. Use 0 if you dont want to exclude any layer."
-msgstr ""
+msgstr "Escudi N livelli di sfondo. Usare 0 se non si vuole escudere nessun livello."
 
 #: gap/gap_onion_dialog.c:1149
 msgid "Select Mode:"
@@ -3443,7 +3446,7 @@ msgid ""
 "ON: Automatic creation/replacement of onionskin layer(s). Works on frame "
 "changes via 'VCR Navigator' and go to operations in the video menu -- but "
 "not on explicite load from the file menu."
-msgstr ""
+msgstr "ACCESO: creazione/rimpiazzo automatico dei livelli cartavelina. Lavora sui cambiamenti di frame attraverso il 'Navigatore VCR' e va alle operazioni nel menu video -- ma non su caricamento esplicito dal file menu."
 
 #: gap/gap_onion_dialog.c:1307
 msgid "Auto delete before save"
@@ -3455,7 +3458,7 @@ msgid ""
 "Navigator' and go to operations in the video menu -- but not on explicite "
 "save from the file menu. Use this option if you dont want onionskin layers "
 "to appear in thumbnail files."
-msgstr ""
+msgstr "ACCESO: cancellazione automatica dei livelli cartavelina. Lavora sui cambiamenti di frame attraverso il 'Navigatore VCR' e va alle operazioni nel menu video -- ma non su un salvataggio esplicito dal file menu. Usa quest'opzione se vuoi veder apparire i livelli cartavelina nei file miniatura."
 
 #: gap/gap_onion_dialog.c:1336
 msgid ""
@@ -3739,7 +3742,7 @@ msgid ""
 "frame 9 silently and start audio at frame 10. A value of 10 starts audio at "
 "frame 1, but skips the audio begin part in a length that is equal to the "
 "duration of 10 frames at original video playback speed."
-msgstr ""
+msgstr "Spostamento audio nei frame alla velocità di esecuzione del video originale. Con un valore di 0, l'audio ed il video partono sincronizzati. Con un valore di -10 verranno eseguiti i frame dall'1 al 9 in silenzio e l'audio partirà al frame 10. Con un valore di 10 parte l'audio al frame 1 ma salta la parte di audio della durata di 10 frame alla velocità di esecuzione del video."
 
 #: gap/gap_player_dialog.c:3473
 msgid "Reset offset and volume"
@@ -3845,7 +3848,7 @@ msgstr "Reimposta la velocità di esecuzione al valore originale (o precedente)"
 
 #: gap/gap_player_dialog.c:3977
 msgid "Current playback speed (frames/sec)"
-msgstr ""
+msgstr "Velocità corrente di esecuzione (frame/sec)"
 
 #. the size button
 #: gap/gap_player_dialog.c:3991
@@ -3854,27 +3857,31 @@ msgstr "Dimensione"
 
 #: gap/gap_player_dialog.c:3998
 msgid "Toggle size 128/256. <Shift> Set 1:1 full image size"
-msgstr ""
+msgstr "Alterna ampiezza 128/256. <Maiusc> imposta 1:1 piena ampiezza immagine"
 
 #: gap/gap_player_dialog.c:4017
 msgid "Video preview size (pixels)"
-msgstr ""
+msgstr "Ampiezza anteprima immagine (punti)"
 
 #: gap/gap_player_dialog.c:4044
 msgid ""
 "ON: Play in endless loop.\n"
 "OFF: Play only once"
 msgstr ""
+"ACCESO: esecuzione a ciclo continuo.\n"
+"SPENTO: esecuzione singola"
 
 #: gap/gap_player_dialog.c:4054
 msgid "Play selection only"
-msgstr ""
+msgstr "Esegui solo la selezione"
 
 #: gap/gap_player_dialog.c:4059
 msgid ""
 "ON: Play selection only.\n"
 "OFF: Play all frames"
 msgstr ""
+"ACCESO: esegui solo la selezione.\n"
+"SPENTO: esegui tutti i frame"
 
 #: gap/gap_player_dialog.c:4069
 msgid "Ping pong"
@@ -3882,17 +3889,19 @@ msgstr "Ping pong"
 
 #: gap/gap_player_dialog.c:4074
 msgid "ON: Play alternating forward/backward"
-msgstr ""
+msgstr "ACCESO: esegui alternativamente avanti/indietro"
 
 #: gap/gap_player_dialog.c:4083
 msgid "Use thumbnails"
-msgstr ""
+msgstr "Usa miniature"
 
 #: gap/gap_player_dialog.c:4088
 msgid ""
 "ON: Use thumbnails when available.\n"
 "OFF: Read full sized frames"
 msgstr ""
+"ACCESO: usa miniature se disponibili.\n"
+"SPENTO: leggi i frame a grandezza naturale"
 
 #: gap/gap_player_dialog.c:4099
 msgid "Exact timing"
@@ -3902,7 +3911,7 @@ msgstr "Temporizzazione esatta"
 msgid ""
 "ON: Skip frames to hold exact timing.\n"
 "OFF: Disable frame skipping"
-msgstr ""
+msgstr "ACCESA: "
 
 #. the status label
 #: gap/gap_player_dialog.c:4116
@@ -3917,7 +3926,7 @@ msgstr "Inizia l'esecuzione"
 msgid ""
 "Pause if playing (any mouseboutton). Go to selection start/active/end (left/"
 "middle/right mousebutton) if not playing"
-msgstr ""
+msgstr "Pausa se in esecuzione (qualsiasi tasto del mouse). Va alla selezione di partenza/attiva/finale (bottone di sinistra/centrale/destra del mouse) se non in esecuzione"
 
 #: gap/gap_player_dialog.c:4169
 msgid "Start reverse playback"
@@ -4048,7 +4057,7 @@ msgstr "Numero di colori"
 msgid ""
 "Number of resulting colors (ignored if palette type is not generate optimal "
 "palette)"
-msgstr ""
+msgstr "Numero di colori risultanti (ignorata se il tipo di tavolozza non è una tavolozza generata ottimale)"
 
 #: gap/gap_range_ops.c:389
 msgid "Dither Options"
@@ -4094,7 +4103,7 @@ msgstr "Nome base:"
 msgid ""
 "basename of the resulting frames. The number part and extension (000001.ext) "
 "is added automatically to all converted frames."
-msgstr ""
+msgstr "nomebase dei frame risultanti. La parte numerica e l'estensione (000001.ext) viene aggiunta automaticamente a tutti i frame convertiti."
 
 #: gap/gap_range_ops.c:503 gap/gap_split.c:253
 msgid "Extension:"
@@ -4106,7 +4115,7 @@ msgid ""
 "Please note that fileformats differ in capabilities to store informations "
 "for multiple layers and other things.Some fileformats may require converting "
 "to another imagetype and/or flattening the frames."
-msgstr ""
+msgstr "L'estensione dei frame risultanti viene usata anche per definire il formato del file. Notare che i formati file variano nelle capacità di contenere informazioni per livelli multipli o altre cose. Alcuni formati posso necessitare di una conversione in un altro formato immagine e/o un appiattimento dei frame."
 
 #: gap/gap_range_ops.c:514
 msgid "Imagetype:"
@@ -4117,7 +4126,7 @@ msgid ""
 "Convert to another imagetype, or keep imagetype as it is. Most fileformats "
 "can't handle all types and may require a conversion.Example: GIF can not "
 "handle RGB and requires convert to indexed imagetype."
-msgstr ""
+msgstr "Converti in un'altro tipo di immagine o mantieni l'immagine così com'è. Molti formati di immagine non riescono a gestirne tutti i tipi e possono necessitare di una conversione. Esempio: i GIF non possono gestire RGB e necessitano di una conversione in immagine indicizzata."
 
 #: gap/gap_range_ops.c:523 gap/gap_split.c:269
 msgid "Flatten:"
@@ -4129,7 +4138,7 @@ msgid ""
 "layers and need flattened frames (flattening does melt down all layers to "
 "one composite layer).Example: JPEG can not handle multiple layers and "
 "requires flattened frames."
-msgstr ""
+msgstr "Appiattisci tutti i frame risultanti. Molti formati non possono gestire livelli multipli ed è necessario appiattire i frame (l'appiattimento fonde insieme tutti i livelli in un livello composito). Esempio: JPEG non può gestire i livelli multipli e necessita dell'appiattimento dei frame."
 
 #: gap/gap_range_ops.c:531
 msgid "Convert Frames to other Formats"
@@ -4159,23 +4168,23 @@ msgstr "Appiattisci immagine"
 msgid ""
 "Resulting layer size is made of the outline-rectangle of all visible layers "
 "(may differ from frame to frame)"
-msgstr ""
+msgstr "L'ampiezza del livello risultante è fatta del rettangolo esterno di tutti i livelli visibili (possono essere diversi da frame a frame)"
 
 #: gap/gap_range_ops.c:615
 msgid "Resulting layer size is the frame size"
-msgstr ""
+msgstr "L'ampiezza del livello risultante è l'ampiezza del frame"
 
 #: gap/gap_range_ops.c:616
 msgid ""
 "Resulting layer size is the size of the bottom layer (may differ from frame "
 "to frame)"
-msgstr ""
+msgstr "L'ampiezza del livello risultante è l'ampiezza del livello in fondo (può variare da frame a frame)"
 
 #: gap/gap_range_ops.c:617
 msgid ""
 "Resulting layer size is the frame size transparent parts are filled with "
 "background color"
-msgstr ""
+msgstr "L'ampiezza del livello risultante è l'ampiezza delle parti trasparenti del frame riempite del colore di sfondo"
 
 #: gap/gap_range_ops.c:628
 msgid "Select all layers where layername is equal to pattern"
@@ -4208,19 +4217,19 @@ msgstr "Frame specifico"
 
 #: gap/gap_range_ops.c:642
 msgid "Pick layers at full size. Ignore all pixel selections in all frames"
-msgstr ""
+msgstr "Prendi i livelli a piena ampiezza. Ignora tutte le selezioni punti in tutti i frame"
 
 #: gap/gap_range_ops.c:644
 msgid ""
 "Pick only the selected pixels. Use the selection from the invoking frame as "
 "fixed selection in all handled frames."
-msgstr ""
+msgstr "Prendi solo i punti selezionati. Usa la selezione dal frame invocante come selezione fissa in tutti i frame gestiti."
 
 #: gap/gap_range_ops.c:647
 msgid ""
 "Pick only the selected pixels. Use the individual selection as it is in each "
 "handled frame."
-msgstr ""
+msgstr "Prendi sili i punti selezionati. Usa la selezione individuale così com'è per ogni frame gestito."
 
 #: gap/gap_range_ops.c:684
 msgid "Layer Basename:"
@@ -4230,7 +4239,7 @@ msgstr "Nome base del Livello:"
 msgid ""
 "Basename for all layers where the string '[######]' is replaced by the frame "
 "number"
-msgstr ""
+msgstr "Nomebase per tutti i livelli dove la stringa '[######]' è rimpiazzata dal numero di frame"
 
 #: gap/gap_range_ops.c:703
 msgid "Layer Mergemode:"
@@ -4244,7 +4253,7 @@ msgstr "Escludi livello di sfondo:"
 msgid ""
 "Exclude the background layer in all handled frames, regardless to the other "
 "settings of layer selection."
-msgstr ""
+msgstr "Escludi il livello di sfondo in tutti i frame gestiti, indifferentemente dalle altre impostazioni della selezione livelli."
 
 #. pixel
 #: gap/gap_range_ops.c:729
@@ -4293,6 +4302,9 @@ msgid ""
 "Desired save plugin can't handle type\n"
 "or desired save plugin not available."
 msgstr ""
+"Converti frame: operazione di salvataggio fallita.\n"
+"Il plugin di salvataggio desiderato non può gestire\n"
+"il tipo o il plugin di salvataggio non è disponibile."
 
 #: gap/gap_range_ops.c:1549
 msgid "Cropping all video frames..."
@@ -4370,6 +4382,9 @@ msgid ""
 "desired save plugin can't handle type\n"
 "or desired save plugin not available."
 msgstr ""
+"Dividi frame: operazione di salvataggio fallita.\n"
+"Il plugin di salvataggio non può gestire il tipo\n"
+"o il plugin di salvataggio non è disponibile."
 
 #: gap/gap_split.c:242
 #, c-format
@@ -4381,12 +4396,18 @@ msgid ""
 "\n"
 "%s000001.%s\n"
 msgstr ""
+"Crea un frame (file su disco) per ogni livello.\n"
+"I frame vengono etichettati in questo modo:\n"
+"<nomebase><numeroframe>.<estensione>\n"
+"Il primo frame, nel caso attuale, avrà nome\n"
+"\n"
+"%s000001.%s\n"
 
 #: gap/gap_split.c:254
 msgid ""
 "Extension of resulting frames. The extension is also used to define "
 "fileformat."
-msgstr ""
+msgstr "Estensione per tutti i frame risultanti. L'estensione viene usata anche per definire il formato del file."
 
 #: gap/gap_split.c:261
 msgid "Inverse Order:"
@@ -4397,6 +4418,8 @@ msgid ""
 "ON: Start with frame 000001 at top layer.\n"
 "OFF: Start with frame 000001 at background layer."
 msgstr ""
+"ACCESO: comincia con il frame 000001 al livello in cima.\n"
+"SPENTO: comincia con il frame 000001 al livello in fondo."
 
 #: gap/gap_split.c:270
 msgid ""
@@ -4404,6 +4427,8 @@ msgid ""
 "with the background color.\n"
 "OFF: Layers in the resulting frames keep their alpha channel."
 msgstr ""
+"ACCESO: rimuovi il canale alfa nei frame risultanti. Le parti trasparenti sono riempite con il colore di sfondo.\n"
+"SPENTO: il livelli nei frame risultanti sono mantenuti con i canali alfa."
 
 #: gap/gap_split.c:277
 msgid "Only Visible:"
@@ -4414,10 +4439,12 @@ msgid ""
 "ON: Handle only visible layers.\n"
 "OFF: handle all layers and force visibiblity"
 msgstr ""
+"ACCESO: gestisci solo livelli visibili.\n"
+"SPENTO: gestisci tutti i livelli e forza la visibilità"
 
 #: gap/gap_split.c:287
 msgid "How many digits to use for the framenumber filename part"
-msgstr ""
+msgstr "Quante cifre usare per il numero frame nel nome del file"
 
 #: gap/gap_split.c:299
 msgid "Split Image into Frames"
@@ -4487,7 +4514,7 @@ msgstr "Reimposta punto"
 
 #: gap/gap_stock.c:58
 msgid "Rotate Follow"
-msgstr ""
+msgstr "Segue rotazione"
 
 #: gap/gap_wr_opacity.c:144
 msgid "<Image>/Video/Layer/Set Layer Opacity..."
@@ -4495,13 +4522,13 @@ msgstr "<Image>/Video/Livelli/Imposta opacità livello..."
 
 #: gap/gap_wr_opacity.c:327
 msgid "New opacity value where 0 is transparent and 100.0 is opaque"
-msgstr ""
+msgstr "Nuovo valore di opacità dove 0 è trasparente e 100.0 è opaco"
 
 #: gap/gap_wr_opacity.c:338
 msgid ""
 "Modes set opacity or change the old opacity value by adding, subtracting or "
 "multiply by the supplied new value"
-msgstr ""
+msgstr "Imposta l'opacità o cambia il vecchio valore di opacità aggiungendo, sottraendo o moltiplicando per il nuovo valore fornito."
 
 #: gap/gap_wr_opacity.c:350
 msgid "Reset all Parameters to Default Values"
