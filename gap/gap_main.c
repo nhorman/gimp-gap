@@ -533,7 +533,8 @@ static void
 query ()
 {
   gchar *l_help_str;
-  INIT_I18N();
+
+  gimp_plugin_domain_register (GETTEXT_PACKAGE, LOCALEDIR);
 
   gimp_install_procedure("plug_in_gap_next",
 			 "This plugin exchanges current image with (next nubered) image from disk.",

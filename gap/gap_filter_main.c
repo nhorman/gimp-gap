@@ -115,7 +115,7 @@ query ()
     {GIMP_PDB_STRING, "plugin_name", "name of the plugin (used as keyname to access LAST_VALUES buffer)"},
   };
 
-  INIT_I18N();
+  gimp_plugin_domain_register (GETTEXT_PACKAGE, LOCALEDIR);
 
   gimp_install_procedure("plug_in_gap_layers_run_animfilter",
 			 "This plugin calls another plugin for each layer of an image, varying its settings (to produce animated effects). The called plugin must work on a single drawable and must be able to GIMP_RUN_WITH_LAST_VALS",

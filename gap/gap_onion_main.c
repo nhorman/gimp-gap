@@ -135,9 +135,7 @@ MAIN ()
 static void
 query ()
 {
-
-
-  INIT_I18N();
+  gimp_plugin_domain_register (GETTEXT_PACKAGE, LOCALEDIR);
 
   gimp_install_procedure(GAP_PLUGIN_NAME_ONION_CFG,
              _("This plugin sets Configuration for Onion Layers in Videofames"),
@@ -247,8 +245,8 @@ run(const gchar *name
   if(gap_debug) fprintf(stderr, "\n\ngap_onion_main: debug name = %s\n", name);
 
   gpp->run_mode = param[0].data.d_int32;
-  INIT_I18N();
 
+  INIT_I18N();
 
   p_init_default_values(gpp); /* init with default values */
 

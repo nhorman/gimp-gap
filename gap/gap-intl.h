@@ -1,6 +1,10 @@
 #ifndef __GAP_INTL_H__
 #define __GAP_INTL_H__
 
+#ifndef GETTEXT_PACKAGE
+#error "config.h must be included prior to gap-intl.h"
+#endif
+
 #include <libintl.h>
 
 #define _(String) gettext (String)

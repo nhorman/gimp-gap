@@ -144,8 +144,7 @@ static void query (void)
   };
 
 
-  INIT_I18N();
-
+  gimp_plugin_domain_register (GETTEXT_PACKAGE, LOCALEDIR);
 
   global_number_in_args = G_N_ELEMENTS (in_args);
   global_number_out_args = G_N_ELEMENTS(out_args);

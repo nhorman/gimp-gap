@@ -224,6 +224,7 @@ gap_onion_SOURCES = \
 	gap_vin.h
 
 AM_CPPFLAGS = \
+	-DGAPLIBDIR=\""$(GAPLIBDIR)"\"	\
 	-DLOCALEDIR=\""$(LOCALEDIR)"\"
 
 INCLUDES = \

@@ -1,3 +1,25 @@
+2003-10-15  Sven Neumann  <sven@gimp.org>
+
+        Fixed translation of menu entries (reported in bug #124600):
+
+	* configure.in: don't add GAPLIBDIR to CPPFLAGS here...
+
+	* gap/Makefile.am: ... but include it here in AM_CPPFLAGS.
+
+	* gap/gap-intl.h: bail out if config.h hasn't been included earlier.
+
+	* gap/gap_filter_main.c
+	* gap/gap_frontends_main.c
+	* gap/gap_main.c
+	* gap/gap_name2layer_main.c
+	* gap/gap_navigator_dialog.c
+	* gap/gap_onion_base.c
+	* gap/gap_onion_main.c
+	* gap/gap_pdb_calls.c
+	* gap/gap_player_main.c: no need to call INIT_I18N() in query()
+	functions. Call gimp_plugin_domain_register() before registering
+	procedure with menu entries.
+
 2003-09-30  Sven Neumann  <sven@gimp.org>
 
 	* gap/gap_match.c (p_match_number): added a missing const qualifier,

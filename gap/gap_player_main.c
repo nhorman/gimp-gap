@@ -194,7 +194,7 @@ MAIN ()
 
 static void query (void)
 {
-  INIT_I18N();
+  gimp_plugin_domain_register (GETTEXT_PACKAGE, LOCALEDIR);
 
   /* the actual installation of the plugin */
   gimp_install_procedure (PLUG_IN_NAME,

@@ -27,6 +27,8 @@
  * version 1.3.16c;  2003.07.08   hof: created (as extract of the gap_onion_worker.c module)
  */
 
+#include "config.h"
+
 /* SYTEM (UNIX) includes */
 #include <stdlib.h>
 #include <stdio.h>
@@ -34,7 +36,6 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-/* #include <locale.h> */
 #include <gap-intl.h>
 
 #include <gtk/gtk.h>

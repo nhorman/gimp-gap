@@ -505,9 +505,8 @@ query ()
 
   static GimpParamDef *return_vals = NULL;
   static int nreturn_vals = 0;
-  
-  INIT_I18N();
 
+  gimp_plugin_domain_register (GETTEXT_PACKAGE, LOCALEDIR);
 
   gimp_install_procedure(PLUGIN_NAME,
                          "GAP video navigator dialog",

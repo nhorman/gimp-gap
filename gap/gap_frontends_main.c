@@ -118,6 +118,7 @@ query ()
   static GimpParamDef *return_vals = NULL;
   static int nreturn_vals = 0;
 
+  gimp_plugin_domain_register (GETTEXT_PACKAGE, LOCALEDIR);
 
   gimp_install_procedure("plug_in_gap_xanim_decode",
 			 "This plugin calls xanim to split any video to anim frames. (xanim exporting edition must be installed on your system)",

@@ -46,7 +46,6 @@
 
 /* GAP includes */
 #include "gap_pdb_calls.h"
-#include "gap-intl.h"
 
 extern int gap_debug;
 
