@@ -133,7 +133,7 @@ typedef struct {
   gint     text_buf_len;         /* common length for init, default and ret text_buffers */
   char    *text_buf_default;
   char    *text_buf_ret;
-  GtkWidget  *text_fontsel; /* for private (arr_dialog.c) use only */
+  const gchar  *text_fontsel; /* for private (arr_dialog.c) use only */
   GtkWidget  *text_filesel; /* for private (arr_dialog.c) use only */
   GtkWidget  *text_entry;   /* for private (arr_dialog.c) use only */
   GtkWidget  *check_button;   /* for private (arr_dialog.c) use only */

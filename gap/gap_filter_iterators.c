@@ -55,6 +55,7 @@
  */
 
 /* Change Log:
+ * gimp     1.3.17a; 2003/07/29  hof: fixed signed/unsigned comparison warnings
  * gimp     1.3.12a; 2003/05/02  hof: merge into CVS-gimp-gap project, added iter_ALT Procedures again
  * gimp   1.3.8a;    2002/09/21  hof: gap_lastvaldesc
  * gimp   1.3.5a;    2002/04/14  hof: removed Stuctured Iterators (Material, Light ..)
@@ -266,7 +267,7 @@ static void p_delta_float(float *val, float val_from, float val_to, gint32 total
 static void p_delta_color(t_color *val, t_color *val_from, t_color *val_to, gint32 total_steps, gdouble current_step)
 {
     double     delta;
-    int l_idx;
+    guint l_idx;
 
     if(total_steps < 1) return;
     
@@ -284,7 +285,7 @@ static void p_delta_color(t_color *val, t_color *val_from, t_color *val_to, gint
 static void p_delta_gint_color(t_gint_color *val, t_gint_color *val_from, t_gint_color *val_to, gint32 total_steps, gdouble current_step)
 {
     double     delta;
-    int l_idx;
+    guint l_idx;
 
     if(total_steps < 1) return;
     
@@ -1222,7 +1223,7 @@ static void p_install_proc_iter_ALT(char *name)
 
 void gap_query_iterators_ALT()
 {
-  int l_idx;
+  guint l_idx;
   for(l_idx = 0; l_idx < MAX_ITER_ALT; l_idx++)
   {
      p_install_proc_iter_ALT (g_iter_ALT_tab[l_idx].proc_name);
@@ -1234,10 +1235,10 @@ void gap_query_iterators_ALT()
  * ---------------------------------------------------------------------- 
  */
 
-gint gap_run_iterators_ALT(char *name, GimpRunMode run_mode, gint32 total_steps, gdouble current_step, gint32 len_struct)
+gint gap_run_iterators_ALT(const char *name, GimpRunMode run_mode, gint32 total_steps, gdouble current_step, gint32 len_struct)
 {
   gint l_rc;
-  int l_idx;
+  guint l_idx;
   char *l_name;
   int   l_cut;
 

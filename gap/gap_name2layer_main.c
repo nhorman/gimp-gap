@@ -23,6 +23,7 @@
  */
 
 /* Revision history
+ *  (2003/06/21)  v1.3.17a   hof: types in GimpPlugInInfo.run procedure
  *  (2003/06/21)  v1.3.15a   hof: bugfix: MenuPath is language dependent string
  *  (2003/05/15)  v1.0       hof: created
  */
@@ -45,7 +46,7 @@
 /* Defines */
 #define PLUG_IN_NAME        "plug_in_name2layer"
 #define PLUG_IN_PRINT_NAME  "Name to Layer"
-#define PLUG_IN_VERSION     "v1.3.15 (2003/06/21)"
+#define PLUG_IN_VERSION     "v1.3.17 (2003/07/29)"
 #define PLUG_IN_IMAGE_TYPES "RGB*, INDEXED*, GRAY*"
 #define PLUG_IN_AUTHOR      "Wolfgang Hofer (hof@gimp.org)"
 #define PLUG_IN_COPYRIGHT   "Wolfgang Hofer"
@@ -87,11 +88,12 @@ static NamlValues g_namlvals =
 
 
 static void  query (void);
-static void  run (char *name,
-                  int nparams,            /* number of parameters passed in */
-                  GimpParam * param,         /* parameters passed in */
-                  int *nreturn_vals,      /* number of parameters returned */
-                  GimpParam ** return_vals); /* parameters to be returned */
+static void  run (const gchar *name,          /* name of plugin */
+     gint nparams,               /* number of in-paramters */
+     const GimpParam * param,    /* in-parameters */
+     gint *nreturn_vals,         /* number of out-parameters */
+     GimpParam ** return_vals);  /* out-parameters */
+
 static gint  p_Naml (gint32 image_id, gint32 drawable_id);
 static gint  Naml_dialog (void);
 
@@ -176,11 +178,11 @@ static void query (void)
 }
 
 static void
-run (char *name,                /* name of plugin */
-     int nparams,               /* number of in-paramters */
-     GimpParam * param,            /* in-parameters */
-     int *nreturn_vals,         /* number of out-parameters */
-     GimpParam ** return_vals)     /* out-parameters */
+run (const gchar *name,          /* name of plugin */
+     gint nparams,               /* number of in-paramters */
+     const GimpParam * param,    /* in-parameters */
+     gint *nreturn_vals,         /* number of out-parameters */
+     GimpParam ** return_vals)   /* out-parameters */
 {
   char       *l_env;
   gint32      image_id = -1;

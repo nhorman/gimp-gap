@@ -77,8 +77,11 @@ static char *gap_main_version =  "1.1.29b; 2000/11/25";
 int gap_debug = 0;
 
 static void query(void);
-static void run(char *name, int nparam, GimpParam *param,
-                int *nretvals, GimpParam **retvals);
+static void run(const gchar *name
+              , gint n_params
+	      , const GimpParam *param
+              , gint *nreturn_vals
+	      , GimpParam **return_vals);
 
 GimpPlugInInfo PLUG_IN_INFO =
 {
@@ -170,12 +173,11 @@ query ()
 
 
 
-static void
-run (char    *name,
-     int      n_params,
-     GimpParam  *param,
-     int     *nreturn_vals,
-     GimpParam **return_vals)
+static void run(const gchar *name
+              , gint n_params
+	      , const GimpParam *param
+              , gint *nreturn_vals
+	      , GimpParam **return_vals)
 {
   const char *l_env;
   

@@ -33,6 +33,7 @@
 
 
 /* revision history:
+ * version 1.3.17a; 2003.07.29   hof: param types GimpPlugInInfo.run procedure
  * version 1.3.16c; 2003.07.12   hof: Onionsettings scope changes from gimp-session
  *                                    to permanent per animation (stored in video_info file=.
  * version 1.3.16b; 2003.07.06   hof: new parameter asc_opacity (for cross-fading support)
@@ -47,7 +48,7 @@
 #include <gap_onion_dialog.h>
 
 
-static char *gap_onion_version = "1.3.16c; 2003/07/09";
+static char *gap_onion_version = "1.3.17a; 2003/07/29";
 
 
 /* ------------------------
@@ -63,8 +64,11 @@ t_global_params global_params;
 
 
 static void query(void);
-static void run(char *name, int nparam, GimpParam *param,
-                int *nretvals, GimpParam **retvals);
+static void run(const gchar *name
+              , gint n_params
+	      , const GimpParam *param
+              , gint *nreturn_vals
+	      , GimpParam **return_vals);
 
 GimpPlugInInfo PLUG_IN_INFO =
 {
@@ -213,11 +217,11 @@ query ()
 #endif
 
 static void
-run (char    *name,
-     int      n_params,
-     GimpParam  *param,
-     int     *nreturn_vals,
-     GimpParam **return_vals)
+run(const gchar *name
+   , gint n_params
+   , const GimpParam *param
+   , gint *nreturn_vals
+   , GimpParam **return_vals)
 {
   t_global_params *gpp;
 

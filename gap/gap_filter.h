@@ -45,7 +45,7 @@ gint gap_proc_anim_apply(GimpRunMode run_mode, gint32 image_id, char *l_plugin_n
 
 /* Hacked Iterators for some existing Plugins */
 
-gint gap_run_iterators_ALT(char *name, GimpRunMode run_mode, gint32 total_steps, gdouble current_step, gint32 len_struct);
+gint gap_run_iterators_ALT(const char *name, GimpRunMode run_mode, gint32 total_steps, gdouble current_step, gint32 len_struct);
 void gap_query_iterators_ALT();
 
 /* ------------------------

@@ -38,9 +38,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-static char *gap_main_version =  "1.3.16c; 2003/07/09";
+static char *gap_main_version =  "1.3.17a; 2003/07/29";
 
 /* revision history:
+ * gimp    1.3.17a; 2003/07/29  hof: - updated main version,
+ *                                   - param types GimpPlugInInfo.run procedure
  * gimp    1.3.16c; 2003/07/09  hof: - updated main version,
  * gimp    1.3.16b; 2003/07/04  hof: - added frame_density plugin, updated main version,
  * gimp    1.3.15a; 2003/06/21  hof: - updated main version,
@@ -127,8 +129,11 @@ int gap_debug = 0;
 
 
 static void query(void);
-static void run(char *name, int nparam, GimpParam *param,
-                int *nretvals, GimpParam **retvals);
+static void run(const gchar *name
+              , gint n_params
+	      , const GimpParam *param
+              , gint *nreturn_vals
+	      , GimpParam **return_vals);
 
 GimpPlugInInfo PLUG_IN_INFO =
 {
@@ -942,11 +947,11 @@ query ()
 
 
 static void
-run (char    *name,
-     int      n_params,
-     GimpParam  *param,
-     int     *nreturn_vals,
-     GimpParam **return_vals)
+run (const gchar *name
+    , gint n_params
+    , const GimpParam *param
+    , gint *nreturn_vals
+    , GimpParam **return_vals)
 {
   const char *l_env;
   

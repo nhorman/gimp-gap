@@ -38,6 +38,7 @@
  */
 
 /* revision history:
+ * gimp    1.3.17a; 2003/07/28  hof: gimp_interactive_selection_font was renamed to:  gimp_font_select_new
  * gimp    1.3.16c; 2003/07/12  hof: new p_confirm_dialog
  * gimp    1.3.15a; 2003/06/21  hof: textspacing
  * gimp    1.3.14b; 2003/06/03  hof: added gap_stock_init
@@ -371,17 +372,17 @@ p_font_callback   (gchar    *name
 static void
 fontsel_open_cb(GtkWidget *widget, t_arr_arg *arr_ptr)
 {
-  gchar *fontsel;
+  const gchar *fontsel;
 
   if(arr_ptr->text_fontsel != NULL) return;  /* fontsel is already open */
 
-  fontsel = gimp_interactive_selection_font (arr_ptr->label_txt  /*    *dialogname */
+  fontsel = gimp_font_select_new (arr_ptr->label_txt       /*    *dialogname */
                                  , arr_ptr->text_buf_ret   /*    *font_name */
                                  , (GimpRunFontCallback) p_font_callback
-                                 , arr_ptr                /* gpointer   data */
+                                 , arr_ptr                 /* gpointer   data */
                                  );
 
-  arr_ptr->text_fontsel = (GtkWidget*)fontsel;
+  arr_ptr->text_fontsel = fontsel;
 }
 
 

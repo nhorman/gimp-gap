@@ -1,3 +1,20 @@
+2003-07-14  Wolfgang Hofer <hof@gimp.org>
+        Minor fixes: compiler warnings signed/unsigned comparisons,
+	types of parameters in the GimpPlugInInfo.run procedure
+	changed to fit gimp-1.3.17
+	gimp_interactive_selection_font was renamed to:  gimp_font_select_new
+        * gap/gap_main.c
+        * gap/gap_arr_dialog.c [.h]
+	* gap/gap_filter_iterators.c
+	* gap/gap_filter_main.c
+	* gap/gap_filter.h	
+	* gap/gap_timeconv.c
+        * gap/gap_frontends_main.c
+	* gap/gap_name2layer_main.c
+	* gap/gap_navigator_dialog.c
+	* gap/gap_onion_main.c
+	* gap/gap_player_main.c
+	
 2003-07-14  Sven Neumann  <sven@gimp.org>
 
 	* gap/gap_mpege.c

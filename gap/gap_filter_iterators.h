@@ -47,4 +47,7 @@ typedef struct t_iter_ALT_tab
   t_iter_ALT_func  proc_func;
 } t_iter_ALT_tab;
 
+
+gint    gap_common_iterator(const char *c_keyname, GimpRunMode run_mode, gint32 total_steps, gdouble current_step, gint32 len_struct);
+
 #endif

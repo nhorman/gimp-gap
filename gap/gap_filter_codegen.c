@@ -11,6 +11,7 @@
  */
 
 /* revision history:
+ * 1.3.17a;  2003/07/29  hof: param types of GimpPlugInInfo.run procedure follow gimp.1.3.17 changes
  * 1.1.29b;  2000/11/30  hof: used g_snprintf
  * version 0.99.00  1999.03.14  hof: Codegeneration of File ./gen_filter_iter_code.c
  *                                   splittet into single Files XX_iter_ALT.inc
@@ -432,7 +433,7 @@ gint p_gen_code_iter(char  *proc_name)
        fprintf(l_fp, "typedef struct { gint color[3]; }   t_gint_color; \n");
        fprintf(l_fp, "\n");
        fprintf(l_fp, "static void query(void); \n");
-       fprintf(l_fp, "static void run(char *name, int nparam, GimpParam *param, int *nretvals, GimpParam **retvals); \n");
+       fprintf(l_fp, "static void run(const gchar *name, gint nparam, const GimpParam *param, gint *nretvals, GimpParam **retvals); \n");
        fprintf(l_fp, "\n");
        fprintf(l_fp, "GimpPlugInInfo PLUG_IN_INFO = \n");
        fprintf(l_fp, "{\n");
@@ -684,10 +685,10 @@ gint p_gen_code_iter(char  *proc_name)
        fprintf(l_fp, "\n");
        fprintf(l_fp, "\n");
        fprintf(l_fp, "static void\n");
-       fprintf(l_fp, "run (char    *name,\n");
-       fprintf(l_fp, "     int      n_params,\n");
-       fprintf(l_fp, "     GimpParam  *param,\n");
-       fprintf(l_fp, "     int     *nreturn_vals,\n");
+       fprintf(l_fp, "run (const gchar    *name,\n");
+       fprintf(l_fp, "     gint      n_params,\n");
+       fprintf(l_fp, "     const GimpParam  *param,\n");
+       fprintf(l_fp, "     gint     *nreturn_vals,\n");
        fprintf(l_fp, "     GimpParam **return_vals)\n");
        fprintf(l_fp, "{\n");
        fprintf(l_fp, "  static GimpParam values[1];\n");

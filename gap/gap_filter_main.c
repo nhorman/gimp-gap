@@ -48,8 +48,9 @@
 /* GAP includes */
 #include "gap_lastvaldesc.h"
 #include "gap_filter.h"
+#include "gap_filter_iterators.h"
 
-static char *gap_filter_version = "1.3.12a; 2003/05/02";
+static char *gap_filter_version = "1.3.17a; 2003/07/29";
 
 /* revision history:
  * gimp   1.3.12a;  2003/05/02  hof: merge into CVS-gimp-gap project
@@ -72,8 +73,11 @@ int gap_debug = 0;
 
 
 static void query(void);
-static void run(char *name, int nparam, GimpParam *param,
-                int *nretvals, GimpParam **retvals);
+static void run(const gchar *name
+              , gint n_params
+	      , const GimpParam *param
+              , gint *nreturn_vals
+	      , GimpParam **return_vals);
 
 GimpPlugInInfo PLUG_IN_INFO =
 {
@@ -145,11 +149,11 @@ query ()
 
 
 static void
-run (char    *name,
-     int      n_params,
-     GimpParam  *param,
-     int     *nreturn_vals,
-     GimpParam **return_vals)
+run(const gchar *name
+   , gint n_params
+   , const GimpParam *param
+   , gint *nreturn_vals
+   , GimpParam **return_vals)
 {
 #define  MAX_PLUGIN_NAME_LEN  256
 

@@ -70,11 +70,11 @@ p_conv_framenr_to_timestr( gint32 framenr, gdouble framerate, gchar *txt, gint t
     tsec = (tmsec / 1000) % 60;
     tmin = tmsec / 60000;
     
-    txt = g_snprintf(txt, txt_size,"%02d:%02d:%03d"
+    g_snprintf(txt, txt_size,"%02d:%02d:%03d"
               , (int)tmin, (int)tsec, (int)tms);
   }
   else
-  { txt = g_snprintf(txt, txt_size, "??:??:???");
+  { g_snprintf(txt, txt_size, "??:??:???");
   }
 
 }  /* end p_conv_framenr_to_timestr */

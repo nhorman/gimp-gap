@@ -31,6 +31,7 @@
  */
 
 /* revision history:
+ * 1.3.17a  2003/07/28   hof: G_N_ELEMENTS is unsigned
  * 1.3.14b  2003/06/03   hof: check only for thumbnail-size "none" (suggested by sven see #113033)
  *                            removed p_gimp_file_has_valid_thumbnail
  * 1.3.14a  2003/05/27   hof: created
@@ -125,7 +126,7 @@ static char *          p_alloc_xvpics_thumbname(char *name);
 static void
 p_gap_init_thumb_dirs(void)
 {
-  gint ii;
+  guint ii;
 
   thumb_dir = g_build_filename (g_get_home_dir(), ".thumbnails", NULL);
 
@@ -372,7 +373,7 @@ p_copy_png_thumb(char *filename_src, char *filename_dst)
   const gchar        *option_h_str;
   const gchar        *option_type_str;
   const gchar        *option_l_str;
-  gint               ii;
+  guint               ii;
 
   if(gap_debug) printf("p_copy_png_thumb: START S:%s D:%s\n",filename_src , filename_dst);
 
@@ -467,7 +468,7 @@ void
 p_gimp_file_delete_thumbnail(char *filename)
 {
   char        *xvpics_thumb;
-  gint ii;
+  guint ii;
   gchar       *png_thumb;
   gchar       *png_thumb_full;
 

@@ -22,6 +22,7 @@
  */
 
 /* Revision history
+ * version 1.3.16a; 2003/06/26  hof: param types GimpPlugInInfo.run procedure
  * version 1.3.16a; 2003/06/26  hof: updated version
  * version 1.3.15a; 2003/06/21  hof: created
  */
@@ -45,7 +46,7 @@
 /* Defines */
 #define PLUG_IN_NAME        "plug_in_gap_videoframes_player"
 #define PLUG_IN_PRINT_NAME  "Videopreview Player"
-#define PLUG_IN_VERSION     "v1.3.16 (2003/06/26)"
+#define PLUG_IN_VERSION     "v1.3.17 (2003/07/29)"
 #define PLUG_IN_IMAGE_TYPES "RGB*, INDEXED*, GRAY*"
 #define PLUG_IN_AUTHOR      "Wolfgang Hofer (hof@gimp.org)"
 #define PLUG_IN_COPYRIGHT   "Wolfgang Hofer"
@@ -116,10 +117,10 @@ static t_global_params global_params =
 
 
 static void  query (void);
-static void  run (char *name,
-                  int nparams,            /* number of parameters passed in */
-                  GimpParam * param,         /* parameters passed in */
-                  int *nreturn_vals,      /* number of parameters returned */
+static void  run (const gchar *name,
+                  gint nparams,              /* number of parameters passed in */
+                  const GimpParam * param,   /* parameters passed in */
+                  gint *nreturn_vals,        /* number of parameters returned */
                   GimpParam ** return_vals); /* parameters to be returned */
 
 
@@ -177,11 +178,11 @@ static void query (void)
 }
 
 static void
-run (char *name,                /* name of plugin */
-     int nparams,               /* number of in-paramters */
-     GimpParam * param,            /* in-parameters */
-     int *nreturn_vals,         /* number of out-parameters */
-     GimpParam ** return_vals)     /* out-parameters */
+run (const gchar *name,          /* name of plugin */
+     gint nparams,               /* number of in-paramters */
+     const GimpParam * param,    /* in-parameters */
+     gint *nreturn_vals,         /* number of out-parameters */
+     GimpParam ** return_vals)   /* out-parameters */
 {
   char       *l_env;
   gint32      image_id = -1;

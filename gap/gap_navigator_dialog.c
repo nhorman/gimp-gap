@@ -26,6 +26,7 @@
  */
 
 /* revision history:
+ * gimp    1.3.17a; 2003/07/29  hof: param types GimpPlugInInfo.run procedure
  * gimp    1.3.16c; 2003/07/12  hof: bugfixes (vscale slider reflects pagesize), del_button,dup_button sensitivity
  * gimp    1.3.16b; 2003/07/02  hof: selection highlight bugfix (using gtk_widget_modify_bg)
  * gimp    1.3.16a; 2003/06/29  hof: redesign: replaced scrolled_window by table that fits the visible window height
@@ -86,7 +87,7 @@
  * version 1.1.14a; 2000.01.08   hof: 1st release
  */
 
-static char *gap_navigator_version = "1.3.16a; 2003/06/29";
+static char *gap_navigator_version = "1.3.17a; 2003/07/29";
 
 
 /* SYTEM (UNIX) includes */ 
@@ -465,8 +466,11 @@ int gap_debug = 0;
 
 
 static void query(void);
-static void run(char *name, int nparam, GimpParam *param,
-                int *nretvals, GimpParam **retvals);
+static void run(const gchar *name
+              , gint n_params
+	      , const GimpParam *param
+              , gint *nreturn_vals
+	      , GimpParam **return_vals);
 
 GimpPlugInInfo PLUG_IN_INFO =
 {
@@ -522,11 +526,11 @@ query ()
  * ---------------------------------
  */
 static void
-run (char    *name,
-     int      n_params,
-     GimpParam  *param,
-     int     *nreturn_vals,
-     GimpParam **return_vals)
+run(const gchar *name
+   , gint n_params
+   , const GimpParam *param
+   , gint *nreturn_vals
+   , GimpParam **return_vals)
 {
   gint32       l_active_image;
   const gchar *l_env;
