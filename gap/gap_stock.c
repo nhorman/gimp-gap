@@ -38,18 +38,12 @@ static GtkStockItem gap_stock_items[] =
   {  GAP_STOCK_ANIM_PREVIEW       , N_("Anim Preview"),      0, 0, NULL },
   {  GAP_STOCK_DELETE_ALL_POINTS  , N_("Delete All Points"), 0, 0, NULL },
   {  GAP_STOCK_DELETE_POINT       , N_("Delete Point"),      0, 0, NULL },
-  {  GAP_STOCK_DELETE             , NULL,                    0, 0, NULL },
-  {  GAP_STOCK_DUPLICATE          , NULL,                    0, 0, NULL },
   {  GAP_STOCK_FIRST_POINT        , N_("First Point"),       0, 0, NULL },
-  {  GAP_STOCK_FIRST              , NULL,                    0, 0, NULL },
   {  GAP_STOCK_INSERT_POINT       , N_("Insert Point"),      0, 0, NULL },
   {  GAP_STOCK_LAST_POINT         , N_("Last Point"),        0, 0, NULL },
-  {  GAP_STOCK_LAST               , NULL,                    0, 0, NULL },
   {  GAP_STOCK_NEXT_POINT         , N_("Next Point"),        0, 0, NULL },
-  {  GAP_STOCK_NEXT               , NULL,                    0, 0, NULL },
   {  GAP_STOCK_PLAY               , NULL,                    0, 0, NULL },
   {  GAP_STOCK_PREV_POINT         , N_("Prev Point"),        0, 0, NULL },
-  {  GAP_STOCK_PREV               , NULL,                    0, 0, NULL },
   {  GAP_STOCK_RESET_ALL_POINTS   , N_("Reset All Points"),  0, 0, NULL },
   {  GAP_STOCK_RESET_POINT        , N_("Reset Point"),       0, 0, NULL },
   {  GAP_STOCK_ROTATE_FOLLOW      , N_("Rotate Follow"),     0, 0, NULL },
@@ -102,18 +96,12 @@ gap_stock_init (void)
   add_stock_icon (GAP_STOCK_ANIM_PREVIEW       , GTK_ICON_SIZE_BUTTON, gap_anim_preview);
   add_stock_icon (GAP_STOCK_DELETE_ALL_POINTS  , GTK_ICON_SIZE_BUTTON, gap_delete_all_points);
   add_stock_icon (GAP_STOCK_DELETE_POINT       , GTK_ICON_SIZE_BUTTON, gap_delete_point);
-  add_stock_icon (GAP_STOCK_DELETE             , GTK_ICON_SIZE_BUTTON, gap_delete);
-  add_stock_icon (GAP_STOCK_DUPLICATE          , GTK_ICON_SIZE_BUTTON, gap_duplicate);
   add_stock_icon (GAP_STOCK_FIRST_POINT        , GTK_ICON_SIZE_BUTTON, gap_first_point);
-  add_stock_icon (GAP_STOCK_FIRST              , GTK_ICON_SIZE_BUTTON, gap_first);
   add_stock_icon (GAP_STOCK_INSERT_POINT       , GTK_ICON_SIZE_BUTTON, gap_insert_point);
   add_stock_icon (GAP_STOCK_LAST_POINT         , GTK_ICON_SIZE_BUTTON, gap_last_point);
-  add_stock_icon (GAP_STOCK_LAST               , GTK_ICON_SIZE_BUTTON, gap_last);
   add_stock_icon (GAP_STOCK_NEXT_POINT         , GTK_ICON_SIZE_BUTTON, gap_next_point);
-  add_stock_icon (GAP_STOCK_NEXT               , GTK_ICON_SIZE_BUTTON, gap_next);
   add_stock_icon (GAP_STOCK_PLAY               , GTK_ICON_SIZE_BUTTON, gap_play);
   add_stock_icon (GAP_STOCK_PREV_POINT         , GTK_ICON_SIZE_BUTTON, gap_prev_point);
-  add_stock_icon (GAP_STOCK_PREV               , GTK_ICON_SIZE_BUTTON, gap_prev);
   add_stock_icon (GAP_STOCK_RESET_ALL_POINTS   , GTK_ICON_SIZE_BUTTON, gap_reset_all_points);
   add_stock_icon (GAP_STOCK_RESET_POINT        , GTK_ICON_SIZE_BUTTON, gap_reset_point);
   add_stock_icon (GAP_STOCK_ROTATE_FOLLOW      , GTK_ICON_SIZE_BUTTON, gap_rotate_follow);

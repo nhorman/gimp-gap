@@ -1,3 +1,21 @@
+2003-06-04  Sven Neumann  <sven@gimp.org>
+
+	* gap/gap_navigator_dialog.c
+	* gap/gap_stock.[ch]: use GIMP and GTK+ stock icons instead of
+	duplicating them.
+
+	* images/Makefile.am
+	* images/gap-delete.png
+	* images/gap-duplicate.png
+	* images/gap-first.png
+	* images/gap-last.png
+	* images/gap-next.png
+	* images/gap-prev.png: removed duplicates of GIMP and GTK+ stock
+	icons.
+
+	* images/gap-*.png: replaced with versions from Jimmac's web-site
+	that have full transparency.
+
 2003-06-03 Wolfgang Hofer <hof@gimp.org>
       - switched to PNG stock-icons 
           added gap_stock.c [.h]

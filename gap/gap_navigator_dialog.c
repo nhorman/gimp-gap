@@ -109,21 +109,7 @@ static char *gap_navigator_version = "1.3.14a; 2003/05/27";
 #include <libgimp/gimp.h>
 #include <libgimp/gimpui.h>
 
-
 #include "gap_stock.h"
-
-/*
-#include <pixmaps/update.xpm>
-#include <pixmaps/play.xpm>
-#include <pixmaps/duplicate.xpm>
-#include <pixmaps/delete.xpm>
-
-#include <pixmaps/prev.xpm>
-#include <pixmaps/next.xpm>
-#include <pixmaps/first.xpm>
-#include <pixmaps/last.xpm>
-*/
-
 
 #include "gap_navi_activtable.h"
 
@@ -400,11 +386,11 @@ static OpsButton frames_ops_buttons[] =
        "<Shift> forced upd"),
     "#update",
     NULL, 0 },
-  { GAP_STOCK_DUPLICATE, OPS_BUTTON_FUNC (navi_dialog_frames_duplicate_frame_callback), NULL,
+  { GIMP_STOCK_DUPLICATE, OPS_BUTTON_FUNC (navi_dialog_frames_duplicate_frame_callback), NULL,
     N_("Duplicate selected Frames"),
     "#duplicate",
     NULL, 0 },
-  { GAP_STOCK_DELETE, OPS_BUTTON_FUNC (navi_dialog_frames_delete_frame_callback), NULL,
+  { GTK_STOCK_DELETE, OPS_BUTTON_FUNC (navi_dialog_frames_delete_frame_callback), NULL,
     N_("Delete selected Frames"),
     "#delete",
     NULL, 0 },
@@ -413,21 +399,21 @@ static OpsButton frames_ops_buttons[] =
 
 static OpsButton vcr_ops_buttons[] =
 {
-  { GAP_STOCK_FIRST, OPS_BUTTON_FUNC (navi_dialog_vcr_goto_first_callback), NULL,
+  { GTK_STOCK_GOTO_FIRST, OPS_BUTTON_FUNC (navi_dialog_vcr_goto_first_callback), NULL,
     N_("Goto 1st Frame"),
     "#goto_first",
     NULL, 0 },
-  { GAP_STOCK_PREV, OPS_BUTTON_FUNC (navi_dialog_vcr_goto_prev_callback), navi_dialog_vcr_goto_prev_ext_callbacks,
+  { GTK_STOCK_GO_BACK, OPS_BUTTON_FUNC (navi_dialog_vcr_goto_prev_callback), navi_dialog_vcr_goto_prev_ext_callbacks,
     N_("Goto prev Frame\n"
        "<Shift> use timezoom stepsize"),
     "#goto_previous",
     NULL, 0 },
-  { GAP_STOCK_NEXT, OPS_BUTTON_FUNC (navi_dialog_vcr_goto_next_callback), navi_dialog_vcr_goto_next_ext_callbacks,
+  { GTK_STOCK_GO_FORWARD, OPS_BUTTON_FUNC (navi_dialog_vcr_goto_next_callback), navi_dialog_vcr_goto_next_ext_callbacks,
     N_("Goto next Frame\n"
        "<Shift> use timezoom stepsize"),
     "#goto_next",
     NULL, 0 },
-  { GAP_STOCK_LAST, OPS_BUTTON_FUNC (navi_dialog_vcr_goto_last_callback), NULL,
+  { GTK_STOCK_GOTO_LAST, OPS_BUTTON_FUNC (navi_dialog_vcr_goto_last_callback), NULL,
     N_("Goto last Frame"),
     "#goto_last",
     NULL, 0 },
@@ -3254,6 +3240,7 @@ ops_button_box_new (GtkWidget     *parent,
 		    OpsButtonType  ops_type)   
 {
   GtkWidget *button;
+  GtkWidget *image;
   GtkWidget *button_box;
   GSList    *group = NULL;
   
@@ -3266,7 +3253,11 @@ ops_button_box_new (GtkWidget     *parent,
       switch (ops_type)
 	{
 	case OPS_BUTTON_NORMAL :
-	  button = gtk_button_new_from_stock (ops_button->stock_id);
+	  button = gtk_button_new ();
+          image = gtk_image_new_from_stock (ops_button->stock_id,
+                                            GTK_ICON_SIZE_BUTTON);
+          gtk_container_add (GTK_CONTAINER (button), image);
+          gtk_widget_show (image);
 	  break;
 	case OPS_BUTTON_RADIO :
 	  button = gtk_radio_button_new (group);
