@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gimp 1.2.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-04-01 03:36+0200\n"
-"PO-Revision-Date: 2004-04-02 20:58+0200\n"
+"POT-Creation-Date: 2004-04-08 03:22+0200\n"
+"PO-Revision-Date: 2004-04-08 17:58+0200\n"
 "Last-Translator: Tino Meinen <a.t.meinen@chello.nl>\n"
 "Language-Team: Dutch <vertaling@nl.linux.org>\n"
 "MIME-Version: 1.0\n"
@@ -2055,7 +2055,10 @@ msgid ""
 "Source and target frames step synchron at value 1.0. A value of 0.5 will "
 "step the source half time slower.One source step is done only at every 2.nd "
 "target frame."
-msgstr "Bron en doelframes stapsynchronisatie op waarde 1.0.  Een waarde van 0.5 zal de bron half zo langzaam doen voortgaan. Een stap van de bron wordt gedaan bij elke tweede stap van het doelframe."
+msgstr ""
+"Bron en doelframes stapsynchronisatie op waarde 1.0.  Een waarde van 0.5 zal "
+"de bron half zo langzaam doen voortgaan. Een stap van de bron wordt gedaan "
+"bij elke tweede stap van het doelframe."
 
 #. Source Image Handle menu
 #: gap/gap_mov_dialog.c:2541
@@ -2209,7 +2212,10 @@ msgstr ""
 msgid ""
 "Delete all controlpoints, and replace them with a copy of all anchorpoints "
 "of the current path from the image where 'MovePath' was invoked from"
-msgstr "Alle controlepunten verwijderen en vervangen door een kopie van alle ankerpunten van het huidige pad uit de afbeelding vanwaaruit 'Bewegingspad' werd aangeroepen"
+msgstr ""
+"Alle controlepunten verwijderen en vervangen door een kopie van alle "
+"ankerpunten van het huidige pad uit de afbeelding vanwaaruit 'Bewegingspad' "
+"werd aangeroepen"
 
 #: gap/gap_mov_dialog.c:2865
 msgid "Insert controlpoint. The current controlpoint is duplicated."
@@ -2251,7 +2257,10 @@ msgstr ""
 msgid ""
 "Set rotation for all controlpoints to follow the shape of the path. Hold "
 "down the shift key to use rotation of contolpoint 1 as offset."
-msgstr "Stel draaiing voor alle controlepunten in om de vorm van het pad te volgen. Houdt de shift-toets ingedruikt om te draaien ten opzichte van controlepunt 1."
+msgstr ""
+"Stel draaiing voor alle controlepunten in om de vorm van het pad te volgen. "
+"Houdt de shift-toets ingedruikt om te draaien ten opzichte van controlepunt "
+"1."
 
 # verwijderen
 #: gap/gap_mov_dialog.c:2993
@@ -3196,7 +3205,8 @@ msgid ""
 "layeranimation playback on the temporary image"
 msgstr ""
 "Afspelen\n"
-"<Shift> converteert de geselecteerde frames naar een tijdelijke afbeelding en voert een laag-animatie uit op de tijdelijke afbeelding"
+"<Shift> converteert de geselecteerde frames naar een tijdelijke afbeelding "
+"en voert een laag-animatie uit op de tijdelijke afbeelding"
 
 #: gap/gap_navigator_dialog.c:424
 msgid ""
@@ -3516,7 +3526,10 @@ msgid ""
 "ON: Automatic creation/replacement of onionskin layer(s). Works on frame "
 "changes via 'VCR Navigator' and go to operations in the video menu -- but "
 "not on explicite load from the file menu."
-msgstr "AAN: Automatische aanmaak/vervanging van uienschil lagen. Werkt op frame-veranderingen via 'VCR Navigator' en 'ga naar' bewerkingen in het video-menu -- maar niet op expliciete laad-opdrachten vanuit het menu: bestand"
+msgstr ""
+"AAN: Automatische aanmaak/vervanging van uienschil lagen. Werkt op frame-"
+"veranderingen via 'VCR Navigator' en 'ga naar' bewerkingen in het video-menu "
+"-- maar niet op expliciete laad-opdrachten vanuit het menu: bestand"
 
 #: gap/gap_onion_dialog.c:1307
 msgid "Auto delete before save"
@@ -3528,7 +3541,12 @@ msgid ""
 "Navigator' and go to operations in the video menu -- but not on explicite "
 "save from the file menu. Use this option if you dont want onionskin layers "
 "to appear in thumbnail files."
-msgstr "AAN: Automatisch verwijderen van uienschil lagen. Werkt op frame-veranderingen via 'VCR Navigator' en 'ga naar' bewerkingen in het video-menu -- maar niet op expliciete opslaan-opdrachten vanuit het menu: bestand.  Gebruik deze optie als u geen uienschil lagen wilt zien in miniatuurbestanden."
+msgstr ""
+"AAN: Automatisch verwijderen van uienschil lagen. Werkt op frame-"
+"veranderingen via 'VCR Navigator' en 'ga naar' bewerkingen in het video-menu "
+"-- maar niet op expliciete opslaan-opdrachten vanuit het menu: bestand.  "
+"Gebruik deze optie als u geen uienschil lagen wilt zien in "
+"miniatuurbestanden."
 
 #: gap/gap_onion_dialog.c:1336
 msgid ""
@@ -3645,6 +3663,10 @@ msgid ""
 "If you have installed the wavplay executeable somewhere\n"
 "you can set the Environmentvariable WAVPLAYPATH before gimp startup\n"
 msgstr ""
+"Het opstarten van de wavplay server is niet gelukt. Dit is fataal.\n"
+"Controleer of de opdracht: 'wavplay' uitvoerbaar is.\n"
+"Indien u het programma wavplay ergens heeft geïnstalleerd, kunt u\n"
+"de omgevingsvariabele WAVPLAYPATH instellen voordat u gimp opstart\n"
 
 #: gap/gap_player_dialog.c:507
 msgid "Audio Delay"
@@ -3735,7 +3757,8 @@ msgid ""
 "does not point to an executable program\n"
 "the configured value for %s is: %s\n"
 msgstr ""
-"WAARSCHUWING: Uw gimprc-bestand configuratie voor het audioconverteer script\n"
+"WAARSCHUWING: Uw gimprc-bestand configuratie voor het audioconverteer "
+"script\n"
 "wijst niet naar een uitvoerbaar programma\n"
 "de geconfigureerde waarde voor %s is: %s\n"
 
@@ -3820,7 +3843,7 @@ msgid ""
 "frame 9 silently and start audio at frame 10. A value of 10 starts audio at "
 "frame 1, but skips the audio begin part in a length that is equal to the "
 "duration of 10 frames at original video playback speed."
-msgstr ""
+msgstr "Verschuiving van de audio in frames bij normale afspeelsnelheid van de video. Bij een waarde van 0 starten de audio en video tegelijkertijd op het synchronisatiepunt. Bij een waarde van -10 wordt frame 1 tot 9 geluidloos afgespeeld, en start de audio bij frame 10. Bij een waarde van 10 start de audio wel bij frame 1 maar slaat het begin van de audio over; en wel een hoeveelheid die gelijk is aan de duur van 10 frames bij normale afspeelsnelheid van de video."
 
 #: gap/gap_player_dialog.c:3473
 msgid "Reset offset and volume"
@@ -3835,7 +3858,9 @@ msgstr "Kopiëren als Wav-bestand"
 msgid ""
 "Create a copy from audiofile as RIFF WAVE audiofile and use the copy for "
 "audio playback"
-msgstr "Een kopie aanmaken van het audiobestand als RIFF WAVE audiobestand en deze kopie gebruiken bij het afspelen"
+msgstr ""
+"Een kopie aanmaken van het audiobestand als RIFF WAVE audiobestand en deze "
+"kopie gebruiken bij het afspelen"
 
 #. Audio Offset Length (mm:ss:msec)
 #: gap/gap_player_dialog.c:3507
@@ -3888,7 +3913,9 @@ msgstr "Audio-opties"
 #: gap/gap_player_dialog.c:3787
 msgid ""
 "Click: go to frame, Ctrl-Click: set 'From Frame', Alt-Click: set 'To Frame'"
-msgstr "Klikken: ga naar frame, Ctrl-klikken: instellen 'Vanaf frame', Alt-klikken: instellen 'Naar frame'"
+msgstr ""
+"Klikken: ga naar frame, Ctrl-klikken: instellen 'Vanaf frame', Alt-klikken: "
+"instellen 'Naar frame'"
 
 #: gap/gap_player_dialog.c:3860
 msgid "Start framenumber of selection range"
@@ -3938,7 +3965,8 @@ msgstr "Afmeting"
 
 #: gap/gap_player_dialog.c:3998
 msgid "Toggle size 128/256. <Shift> Set 1:1 full image size"
-msgstr "Schakelen tussen afmetingen (128/256). <Shift> stelt afmeting in op 1:1"
+msgstr ""
+"Schakelen tussen afmetingen (128/256). <Shift> stelt afmeting in op 1:1"
 
 #: gap/gap_player_dialog.c:4017
 msgid "Video preview size (pixels)"
@@ -4010,7 +4038,9 @@ msgstr "Afspelen starten"
 msgid ""
 "Pause if playing (any mouseboutton). Go to selection start/active/end (left/"
 "middle/right mousebutton) if not playing"
-msgstr "Pauzeren indien wordt afgespeeld (elke muisknop). Ga naar begin/actieve/einde selectie (linker/middel/rechter muisknop) indien niet wordt afgespeeld"
+msgstr ""
+"Pauzeren indien wordt afgespeeld (elke muisknop). Ga naar begin/actieve/"
+"einde selectie (linker/middel/rechter muisknop) indien niet wordt afgespeeld"
 
 #: gap/gap_player_dialog.c:4169
 msgid "Start reverse playback"
@@ -4213,18 +4243,19 @@ msgid ""
 "Please note that fileformats differ in capabilities to store informations "
 "for multiple layers and other things.Some fileformats may require converting "
 "to another imagetype and/or flattening the frames."
-msgstr ""
+msgstr "De extensie van de resulterende frames wordt ook gebruikt om het bestandsformaat te bepalen. Let op dat bestandsformaten kunnen verschillen in de mogelijkheid om informatie op te slaan over verschillende lagen en andere zaken. Bepaalde bestandsformaten vereisen dat de frames worden geconverteerd naar een ander bestandsformaat of worden geplet."
 
 #: gap/gap_range_ops.c:514
 msgid "Imagetype:"
 msgstr "Afbeeldingstype:"
 
+# engels taalfout: can not handle RGB en requires convert to indexed imagetype
 #: gap/gap_range_ops.c:515
 msgid ""
 "Convert to another imagetype, or keep imagetype as it is. Most fileformats "
 "can't handle all types and may require a conversion.Example: GIF can not "
 "handle RGB and requires convert to indexed imagetype."
-msgstr ""
+msgstr "Converteren naar een anders afbeeldingstype, of het bestaande afbeeldingstype behouden. De meeste bestandsformaten kunnen niet alle typen behandelen en vereisen mogelijk een conversie. Bijvoorbeeld: GIF kan niet omgaan met RGB en vereist een omzetting naar afbeeldingstype met index."
 
 #: gap/gap_range_ops.c:523 gap/gap_split.c:269
 msgid "Flatten:"
@@ -4236,7 +4267,7 @@ msgid ""
 "layers and need flattened frames (flattening does melt down all layers to "
 "one composite layer).Example: JPEG can not handle multiple layers and "
 "requires flattened frames."
-msgstr "draaiing van"
+msgstr "Alle resulterende frames pletten. De meeste bestandsformaten kunnen niet omgaan met meerdere lagen en hebben geplette frames nodig. Het pletten heeft wel tot gevolg dat alle lagen worden samengesmolten tot een composiete laag. Bijvoorbeeld: JPEG kan niet omgaan met meerdere lagen en vereist geplette frames."
 
 #: gap/gap_range_ops.c:531
 msgid "Convert Frames to other Formats"
@@ -4266,7 +4297,9 @@ msgstr "Geplette afbeelding"
 msgid ""
 "Resulting layer size is made of the outline-rectangle of all visible layers "
 "(may differ from frame to frame)"
-msgstr "Resulterende laaggroote is gemaakt van de omsluitende rechthoek van alle zichtbare lagen (kan van laag tot laag verschillen)"
+msgstr ""
+"Resulterende laaggroote is gemaakt van de omsluitende rechthoek van alle "
+"zichtbare lagen (kan van laag tot laag verschillen)"
 
 #: gap/gap_range_ops.c:615
 msgid "Resulting layer size is the frame size"
@@ -4276,13 +4309,17 @@ msgstr "Resulterende laaggrootte is de framegrootte"
 msgid ""
 "Resulting layer size is the size of the bottom layer (may differ from frame "
 "to frame)"
-msgstr "Resulterende laaggrootte is de grootte van de onderste laag (kan van laag tot laag verschillen)"
+msgstr ""
+"Resulterende laaggrootte is de grootte van de onderste laag (kan van laag "
+"tot laag verschillen)"
 
 #: gap/gap_range_ops.c:617
 msgid ""
 "Resulting layer size is the frame size transparent parts are filled with "
 "background color"
-msgstr "Resulterende laaggroote is de framegrootte, transparante delen worden met de AG-kleur gevuld"
+msgstr ""
+"Resulterende laaggroote is de framegrootte, transparante delen worden met de "
+"AG-kleur gevuld"
 
 #: gap/gap_range_ops.c:628
 msgid "Select all layers where layername is equal to pattern"
@@ -4317,19 +4354,25 @@ msgstr "Frame specifiek"
 
 #: gap/gap_range_ops.c:642
 msgid "Pick layers at full size. Ignore all pixel selections in all frames"
-msgstr "Lagen op volledige grootte gebruiken. Alle beeldpuntselecties in alle frames negeren"
+msgstr ""
+"Lagen op volledige grootte gebruiken. Alle beeldpuntselecties in alle frames "
+"negeren"
 
 #: gap/gap_range_ops.c:644
 msgid ""
 "Pick only the selected pixels. Use the selection from the invoking frame as "
 "fixed selection in all handled frames."
-msgstr "Alleen de geselecteerde beeldpunten gebruiken. De selectie van het aanroepende frame gebruiken als vaste selectie in alle behandelde frames."
+msgstr ""
+"Alleen de geselecteerde beeldpunten gebruiken. De selectie van het "
+"aanroepende frame gebruiken als vaste selectie in alle behandelde frames."
 
 #: gap/gap_range_ops.c:647
 msgid ""
 "Pick only the selected pixels. Use the individual selection as it is in each "
 "handled frame."
-msgstr "Alleen de geselecteerde beeldpunten gebruiken. De individuele selectie van ieder behandelde frame apart gebruiken."
+msgstr ""
+"Alleen de geselecteerde beeldpunten gebruiken. De individuele selectie van "
+"ieder behandelde frame apart gebruiken."
 
 # laag-basisnaam
 #: gap/gap_range_ops.c:684
@@ -4340,7 +4383,9 @@ msgstr "Laagbasisnaam:"
 msgid ""
 "Basename for all layers where the string '[######]' is replaced by the frame "
 "number"
-msgstr "Basisnaam voor alle lagen waarbij de tekenreeks '[######]' wordt vervangen door het laagnummer"
+msgstr ""
+"Basisnaam voor alle lagen waarbij de tekenreeks '[######]' wordt vervangen "
+"door het laagnummer"
 
 #: gap/gap_range_ops.c:703
 msgid "Layer Mergemode:"
@@ -4354,7 +4399,9 @@ msgstr "AG-laag uitsluiten:"
 msgid ""
 "Exclude the background layer in all handled frames, regardless to the other "
 "settings of layer selection."
-msgstr "De achtergrondlaag uitsluiten in alle behandelde frames, ongeacht de andere instellingen van de laagselectie."
+msgstr ""
+"De achtergrondlaag uitsluiten in alle behandelde frames, ongeacht de andere "
+"instellingen van de laagselectie."
 
 #. pixel
 #: gap/gap_range_ops.c:729
@@ -4514,7 +4561,9 @@ msgstr ""
 msgid ""
 "Extension of resulting frames. The extension is also used to define "
 "fileformat."
-msgstr "Extensie van resulterende frames. De extensie wordt ook gebruikt om het bestandsformaat te bepalen."
+msgstr ""
+"Extensie van resulterende frames. De extensie wordt ook gebruikt om het "
+"bestandsformaat te bepalen."
 
 #: gap/gap_split.c:261
 msgid "Inverse Order:"
@@ -4534,7 +4583,8 @@ msgid ""
 "with the background color.\n"
 "OFF: Layers in the resulting frames keep their alpha channel."
 msgstr ""
-"AAN: Alphakanaal in resulterende frames vewijderen. Transparante gedeeltes worden met achtergrondkleur gevuld.\n"
+"AAN: Alphakanaal in resulterende frames vewijderen. Transparante gedeeltes "
+"worden met achtergrondkleur gevuld.\n"
 "UIT: Lagen in de resulterende frames behouden hun alphakanaal."
 
 #: gap/gap_split.c:277
@@ -4631,14 +4681,13 @@ msgstr "<Image>/Video/Laag/Ondoorzichtigheid van laag instellen..."
 
 #: gap/gap_wr_opacity.c:327
 msgid "New opacity value where 0 is transparent and 100.0 is opaque"
-msgstr ""
-"Nieuwe ondoorzichtigheid waarbij 0 transparant is en 100.0 ondoorzichtig"
+msgstr "Nieuwe ondoorzichtigheid waarbij 0 transparant betekent en 100.0 ondoorzichtig"
 
 #: gap/gap_wr_opacity.c:338
 msgid ""
 "Modes set opacity or change the old opacity value by adding, subtracting or "
 "multiply by the supplied new value"
-msgstr ""
+msgstr "Modus stelt de ondoorzichtigheid in of past de oude waarde aan door optellen, aftrekken of vermenigvuldigen van de gegeven nieuwe waarde"
 
 #: gap/gap_wr_opacity.c:350
 msgid "Reset all Parameters to Default Values"
