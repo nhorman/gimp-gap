@@ -105,6 +105,7 @@
 #include "gap_arr_dialog.h"
 #include "gap_story_file.h"
 #include "gap_layer_copy.h"
+#include "gap_onion_base.h"
 
 
 #include "gap-intl.h"
@@ -1374,12 +1375,23 @@ p_reload_ainfo_ptr(GapPlayerMainGlobalParams *gpp, gint32 image_id)
       vin_ptr = gap_vin_get_all(gpp->ainfo_ptr->basename);
 
 
+      gpp->onion_delete = FALSE;
       gpp->original_speed = 24.0;
       if(vin_ptr)
       {
         if(vin_ptr->framerate > 0.0)
 	{
           gpp->original_speed = vin_ptr->framerate;
+	}
+
+        /* check if automatic onionskin layer removal is turned on */
+        if((vin_ptr->auto_delete_before_save) 
+	&& (vin_ptr->onionskin_auto_enable))
+	{
+	  /* yes, in this case the player must show the active image
+	   * without onionskin layers
+	   */
+	  gpp->onion_delete = TRUE;
 	}
       }
       if(vin_ptr)
@@ -2453,7 +2465,23 @@ p_display_frame(GapPlayerMainGlobalParams *gpp, gint32 framenr)
     {
       if(framenr_is_the_active_image)
       {
-	 gap_pdb_gimp_image_thumbnail(gpp->image_id
+	 gint32 l_tmp_image_id;
+	 
+	 l_tmp_image_id = -1;
+	 
+         /* check if automatic onionskin layer removal is turned on */
+         if(gpp->onion_delete)
+	 {
+	   /* check if image has visible onionskin layers */
+	   if(gap_onion_image_has_oinonlayers(gpp->image_id, TRUE /* only visible*/))
+	   {
+	     l_tmp_image_id = gap_onion_base_image_duplicate(gpp->image_id);
+	   }
+	 }
+	 
+	 if(l_tmp_image_id == -1)
+	 {
+	   gap_pdb_gimp_image_thumbnail(gpp->image_id
                             , gpp->pv_width
                             , gpp->pv_height
                             , &l_th_width
@@ -2462,6 +2490,22 @@ p_display_frame(GapPlayerMainGlobalParams *gpp, gint32 framenr)
 			    , &l_th_data_count
                             , &l_th_data
                             );
+	 }
+	 else
+	 {
+	   gap_onion_base_onionskin_delete(l_tmp_image_id);
+	   gap_pdb_gimp_image_thumbnail(l_tmp_image_id
+                          , gpp->pv_width
+                          , gpp->pv_height
+                          , &l_th_width
+                          , &l_th_height
+                          , &l_th_bpp
+			  , &l_th_data_count
+                          , &l_th_data
+                          );
+	   gimp_image_delete(l_tmp_image_id);
+	 }
+      
       }
       else
       {
@@ -2536,7 +2580,19 @@ p_display_frame(GapPlayerMainGlobalParams *gpp, gint32 framenr)
       /* got no thumbnail data, must use the full image */
       if(framenr_is_the_active_image)
       {
-	l_image_id = gimp_image_duplicate(gpp->image_id);
+        /* check if automatic onionskin layer removal is turned on
+	 * (in this case the player must display the image without
+	 * onionskin layers)
+	 */
+        if(gpp->onion_delete)
+	{
+	  l_image_id = gap_onion_base_image_duplicate(gpp->image_id);
+          gap_onion_base_onionskin_delete(l_image_id);
+	}
+	else
+	{
+	  l_image_id = gimp_image_duplicate(gpp->image_id);
+	}
       }
       else
       {
@@ -3764,6 +3820,7 @@ p_fit_initial_shell_window(GapPlayerMainGlobalParams *gpp)
 
   if(gpp == NULL)                   { return; }
   if(gpp->shell_initial_width < 0)  { return; }
+  if(gpp->shell_window == NULL)     { return; }
 
   width = gpp->shell_initial_width;
   height = gpp->shell_initial_height;
@@ -3783,6 +3840,7 @@ p_fit_shell_window(GapPlayerMainGlobalParams *gpp)
   gint width;
   gint height;
 
+  if(gpp->shell_window == NULL)     { return; }
   if((gpp->pv_ptr->pv_width <= GAP_STANDARD_PREVIEW_SIZE)
   && (gpp->pv_ptr->pv_height <= GAP_STANDARD_PREVIEW_SIZE))
   {
@@ -6200,6 +6258,7 @@ gap_player_dlg_create(GapPlayerMainGlobalParams *gpp)
   }
  
   gpp->startup = TRUE;
+  gpp->onion_delete = FALSE;
   gpp->shell_initial_width = -1;
   gpp->shell_initial_height = -1;
 

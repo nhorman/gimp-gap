@@ -26,6 +26,7 @@
  */
 
 /* revision history:
+ * gimp    2.1.0a;  2005/03/12  hof: added radio buttons for active layer tracking
  * gimp    2.1.0a;  2004/11/04  hof: replaced deprecated option_menu by gimp_image_combo_box_new
  * gimp    2.1.0a;  2004/06/26  hof: #144649 use NULL for the default cursor as active_cursor
  * gimp    1.3.26a; 2004/01/30  hof: navi_pviews_reset: use the procedure gap_pview_drop_repaint_buffers rather than g_free the pixmap
@@ -309,6 +310,10 @@ typedef struct NaviDialog
   OpenFrameImages *OpenFrameImagesList;
   int              OpenFrameImagesCount;
   gint32       item_height;
+
+  GtkWidget     *acl_trace_off_toggle;
+  GtkWidget     *acl_trace_by_name_toggle;
+  GtkWidget     *acl_trace_by_pos_toggle;
 } NaviDialog;
 
 
@@ -385,6 +390,12 @@ static void            navi_dyn_adj_set_pos(void);
 static void            navi_dyn_adj_set_limits(void);
 static void            navi_frame_widget_init_empty (FrameWidget *fw);
 static int             navi_dyn_table_set_size(gint win_height);
+
+static void       p_set_acl_tracking_radio_buttons(NaviDialog *naviD);
+static void       p_set_acl_tracking_mode(NaviDialog *naviD, gint32 acl_tracking_mode);
+static void       p_acl_tracking_off_callback(GtkWidget *widget, NaviDialog *naviD);
+static void       p_acl_tracking_by_name_callback(GtkWidget *widget, NaviDialog *naviD);
+static void       p_acl_tracking_by_pos_callback(GtkWidget *widget, NaviDialog *naviD);
 
 
 
@@ -1155,7 +1166,7 @@ navi_reload_ainfo(gint32 image_id)
     naviD->vin_ptr = gap_vin_get_all(naviD->ainfo_ptr->basename);
     gtk_adjustment_set_value(GTK_ADJUSTMENT(naviD->framerate_adj), (gfloat)naviD->vin_ptr->framerate);
     gtk_adjustment_set_value(GTK_ADJUSTMENT(naviD->timezoom_adj), (gfloat)naviD->vin_ptr->timezoom);
-
+    p_set_acl_tracking_radio_buttons(naviD);
   }
 }  /* end navi_reload_ainfo */
 
@@ -3416,7 +3427,7 @@ navi_dyn_adj_set_pos(void)
   if(naviD == NULL) { return; }
 
 
-  GTK_ADJUSTMENT(naviD->dyn_adj)->value = adj_intval;
+  adj_intval = GTK_ADJUSTMENT(naviD->dyn_adj)->value;
 
   topval = (naviD->dyn_topframenr - naviD->ainfo_ptr->first_frame_nr)
                / naviD->vin_ptr->timezoom;
@@ -3692,6 +3703,202 @@ navi_dyn_table_set_size(gint win_height)
 } /* end navi_dyn_table_set_size */
 
 
+
+/* ---------------------------------
+ * p_set_acl_tracking_radio_buttons
+ * ---------------------------------
+ */
+static void
+p_set_acl_tracking_radio_buttons(NaviDialog *naviD)
+{
+  GtkWidget *radio_button;
+  
+  radio_button = naviD->acl_trace_off_toggle;
+  if(naviD->vin_ptr)
+  {
+    switch(naviD->vin_ptr->active_layer_tracking)
+    {
+      case GAP_ACTIVE_LAYER_TRACKING_BY_NAME:
+        radio_button = naviD->acl_trace_by_name_toggle;
+        break;
+      case GAP_ACTIVE_LAYER_TRACKING_BY_STACKPOS:
+        radio_button = naviD->acl_trace_by_pos_toggle;
+        break;
+      default:
+        radio_button = naviD->acl_trace_off_toggle;
+        break;
+    }
+  }
+  if(radio_button)
+  {
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radio_button), TRUE);
+  }
+}  /* end p_set_acl_tracking_radio_buttons */
+
+/* ---------------------------------
+ * p_set_acl_tracking_mode
+ * ---------------------------------
+ */
+static void
+p_set_acl_tracking_mode(NaviDialog *naviD, gint32 acl_tracking_mode)
+{
+  if(acl_tracking_mode != naviD->vin_ptr->active_layer_tracking)
+  {
+     naviD->vin_ptr->active_layer_tracking = acl_tracking_mode;
+     if(naviD->ainfo_ptr)
+     {
+       /* write new framerate to video info file */
+       gap_vin_set_common(naviD->vin_ptr, naviD->ainfo_ptr->basename);
+     }
+  }
+}  /* end p_set_acl_tracking_mode */
+
+
+/* ---------------------------------
+ * p_acl_tracking_off_callback
+ * ---------------------------------
+ */
+static void
+p_acl_tracking_off_callback(GtkWidget *widget, NaviDialog *naviD)
+{
+  if((naviD) && (GTK_TOGGLE_BUTTON (widget)->active))
+  {
+    p_set_acl_tracking_mode(naviD, GAP_ACTIVE_LAYER_TRACKING_OFF);
+  }
+}  /* end p_acl_tracking_off_callback */
+
+
+/* ---------------------------------
+ * p_acl_tracking_by_name_callback
+ * ---------------------------------
+ */
+static void
+p_acl_tracking_by_name_callback(GtkWidget *widget, NaviDialog *naviD)
+{
+  if((naviD) && (GTK_TOGGLE_BUTTON (widget)->active))
+  {
+    p_set_acl_tracking_mode(naviD, GAP_ACTIVE_LAYER_TRACKING_BY_NAME);
+  }
+}  /* end p_acl_tracking_by_name_callback */
+
+
+/* ---------------------------------
+ * p_acl_tracking_by_pos_callback
+ * ---------------------------------
+ */
+static void
+p_acl_tracking_by_pos_callback(GtkWidget *widget, NaviDialog *naviD)
+{
+  if((naviD) && (GTK_TOGGLE_BUTTON (widget)->active))
+  {
+    p_set_acl_tracking_mode(naviD, GAP_ACTIVE_LAYER_TRACKING_BY_STACKPOS);
+  }
+}  /* end p_acl_tracking_by_pos_callback */
+
+
+/* ---------------------------------
+ * p_create_acl_tracking_widgets
+ * ---------------------------------
+ */
+GtkWidget *
+p_create_acl_tracking_widgets(NaviDialog *naviD)
+{
+  GtkWidget *label;
+  GtkWidget *util_box;
+  GtkWidget *radio_table;
+  GtkWidget *radio_button;
+  GSList    *radio_group = NULL;
+  gint      l_idx;
+  gboolean  l_radio_pressed;
+  
+  
+  util_box = gtk_hbox_new (FALSE, 1);  
+
+  /* the active layer tracking label */  
+  label = gtk_label_new (_("AL-Tracking:"));
+  gtk_box_pack_start (GTK_BOX (util_box), label, FALSE, FALSE, 2);
+  gtk_widget_show (label);
+
+
+  /* radio_table */
+  radio_table = gtk_table_new (1, 3, FALSE);
+
+  l_idx = 0;
+  /* radio button active layer tracking OFF */
+  radio_button = gtk_radio_button_new_with_label ( radio_group, _("OFF") );
+  radio_group = gtk_radio_button_get_group ( GTK_RADIO_BUTTON (radio_button) );
+  gtk_table_attach ( GTK_TABLE (radio_table), radio_button, l_idx, l_idx+1
+                   , 0, 1, GTK_FILL | GTK_EXPAND, 0, 0, 0);
+  naviD->acl_trace_off_toggle = radio_button;
+
+  l_radio_pressed = TRUE;
+  if(naviD->vin_ptr)
+  {
+    l_radio_pressed = (naviD->vin_ptr->active_layer_tracking == GAP_ACTIVE_LAYER_TRACKING_OFF);
+  }
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radio_button),
+				   l_radio_pressed);
+  gimp_help_set_help_data(radio_button, _("Disable active layer tracking"), NULL);
+
+  gtk_widget_show (radio_button);
+  g_signal_connect ( G_OBJECT (radio_button), "toggled",
+		     G_CALLBACK (p_acl_tracking_off_callback),
+		     naviD);
+
+  l_idx = 1;
+
+  /* radio button thres_mode HSV */
+  radio_button = gtk_radio_button_new_with_label ( radio_group, _("Name") );
+  radio_group = gtk_radio_button_get_group ( GTK_RADIO_BUTTON (radio_button) );
+  gtk_table_attach ( GTK_TABLE (radio_table), radio_button, l_idx, l_idx+1, 0, 1
+                   , GTK_FILL | GTK_EXPAND, 0, 0, 0);
+  naviD->acl_trace_by_name_toggle = radio_button;
+
+  l_radio_pressed = FALSE;
+  if(naviD->vin_ptr)
+  {
+    l_radio_pressed = (naviD->vin_ptr->active_layer_tracking == GAP_ACTIVE_LAYER_TRACKING_BY_NAME);
+  }
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radio_button),
+				   l_radio_pressed);
+  gimp_help_set_help_data(radio_button, _("enable tracking of the active layer by name at framechanges"), NULL);
+
+  gtk_widget_show (radio_button);
+  g_signal_connect ( G_OBJECT (radio_button), "toggled",
+		     G_CALLBACK (p_acl_tracking_by_name_callback),
+		     naviD);
+
+
+  l_idx = 2;
+
+  /* radio button thres_mode VAL */
+  radio_button = gtk_radio_button_new_with_label ( radio_group, _("Pos") );
+  radio_group = gtk_radio_button_get_group ( GTK_RADIO_BUTTON (radio_button) );
+  gtk_table_attach ( GTK_TABLE (radio_table), radio_button, l_idx, l_idx+1, 0, 1
+                   , GTK_FILL | GTK_EXPAND, 0, 0, 0);
+  naviD->acl_trace_by_pos_toggle = radio_button;
+
+  l_radio_pressed = FALSE;
+  if(naviD->vin_ptr)
+  {
+    l_radio_pressed = (naviD->vin_ptr->active_layer_tracking == GAP_ACTIVE_LAYER_TRACKING_BY_STACKPOS);
+  }
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radio_button),
+				   l_radio_pressed);
+  gimp_help_set_help_data(radio_button, _("enable tracking of the active layer by stack position at framechanges"), NULL);
+
+  gtk_widget_show (radio_button);
+  g_signal_connect ( G_OBJECT (radio_button), "toggled",
+		     G_CALLBACK (p_acl_tracking_by_pos_callback),
+		     naviD);
+
+  gtk_box_pack_start (GTK_BOX (util_box), radio_table, FALSE, FALSE, 2);
+  gtk_widget_show (radio_table);
+  
+  return(util_box);
+}  /* end p_create_acl_tracking_widgets */
+
+
 /* ------------------------
  * navi_dialog_create
  * ------------------------
@@ -3723,6 +3930,9 @@ navi_dialog_create (GtkWidget* shell, gint32 image_id)
   /* init the global naviD structure */
   naviD->del_button = NULL;
   naviD->dup_button = NULL;
+  naviD->acl_trace_off_toggle = NULL;
+  naviD->acl_trace_by_name_toggle = NULL;
+  naviD->acl_trace_by_pos_toggle = NULL;
   naviD->dyn_adj = NULL;         /* disable procedure navi_dyn_adj_set_limits before this widget is created  */
   naviD->sel_range_list = NULL;  /* startup without selection */
   naviD->prev_selected_framnr = -1;
@@ -3853,6 +4063,12 @@ navi_dialog_create (GtkWidget* shell, gint32 image_id)
                         naviD);
       naviD->sel_none_menu_item = menu_item;
   gtk_widget_show (naviD->ops_menu);
+
+
+  /* radio button box for active layer tracking */
+  util_box = p_create_acl_tracking_widgets(naviD);
+  gtk_box_pack_start (GTK_BOX (vbox), util_box, FALSE, FALSE, 0);
+  gtk_widget_show (util_box);
 
 
   /*  the Framerange label */

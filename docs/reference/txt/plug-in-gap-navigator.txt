@@ -8,16 +8,36 @@ VCR Navigator
    The VCR Navigator dialog shows a thumbnail view, frame_number and
    time (mm:ss:msec) of the frames in a scrollable listbox.
 
+   AL-Tracking:
+     Tracking of the active layer can enhance the workflow
+     when stepping from frame to frame. This feature tries
+     to find a layer in the newly loaded frame that matches
+     with the active layer of the previously
+     displayed frame (by name or stackposition) and set the
+     active layer to that matching layer automatically.
+
+     Radio buttons 
+     "OFF"   ... disable tracking of active layer
+     "Name"  ... enable tracking of active layer by name.
+                 Layernames are compared from left to right
+		 and the layer whith the most matching 
+		 layername characters is selected.
+		 If there are more layers with same amount of matching chars
+		 case sensitivity, stringlength and stackposition are taken
+		 into account too.
+     "Pos"   ... enable tracking of active layer by stackposition
+                 where positions of onionskin layers are not counted.
+
    framerate:
      You can set the global framerate for all frames here.
 
-     (Note: changing the framerate in the VCR Naviagtor
+     Note: changing the framerate in the VCR Naviagtor
             dialog window does not change the number of frames.
             Therefore the motion does speed up or slow down
             at playback. If you want to keep your motion
             speed constant at increased framerate use the
-            "Frames Density" tool to create the requested additional
-            frames.)
+            "Frames Density" tool to create (or delete)
+	    the requested additional frames.
 
    timezoom:
      with timezoom you tell the VCR Navigator dialog window

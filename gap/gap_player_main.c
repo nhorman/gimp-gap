@@ -189,6 +189,7 @@ static GapPlayerMainGlobalParams global_params =
 , NULL        /* play_n_stop_hbox */
 , NULL        /* cancel_vindex_button */
 , NULL        /* help_id */
+, FALSE       /* onion_delete */
 };
 
 

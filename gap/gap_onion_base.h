@@ -99,6 +99,8 @@ gint    gap_onion_base_onionskin_apply(gpointer gpp
              , gboolean use_cache
              );
 
+gboolean gap_onion_image_has_oinonlayers(gint32 image_id, gboolean only_visible);
+gint32   gap_onion_base_image_duplicate(gint32 image_id);
 
 #endif
 

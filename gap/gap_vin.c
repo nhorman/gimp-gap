@@ -184,6 +184,7 @@ p_set_master_keywords(t_keylist *keylist, GapVinVideoInfo *vin_ptr)
 {
    p_set_keyword(keylist, "(framerate ", &vin_ptr->framerate, GAP_VIN_GDOUBLE, 0, "# 1.0 upto 100.0 frames per sec");
    p_set_keyword(keylist, "(timezoom ", &vin_ptr->timezoom,   GAP_VIN_GINT32, 0, "# 1 upto 100 frames");
+   p_set_keyword(keylist, "(active_layer_tracking ", &vin_ptr->active_layer_tracking,   GAP_VIN_GINT32, 0, "# 0:OFF 1 by name 2 by stackpos");
 }  /* end p_set_master_keywords */
 
 /* --------------------------
@@ -535,6 +536,7 @@ gap_vin_get_all_keylist(t_keylist *keylist, GapVinVideoInfo *vin_ptr, char *base
   /* init wit defaults (for the case where no video_info file available) */
   l_vin_ptr->timezoom = 1;
   l_vin_ptr->framerate = 24.0;
+  l_vin_ptr->active_layer_tracking = GAP_ACTIVE_LAYER_TRACKING_OFF;
   
   l_vin_ptr->onionskin_auto_enable = TRUE;
   l_vin_ptr->auto_replace_after_load = FALSE;

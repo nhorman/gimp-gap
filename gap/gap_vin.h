@@ -32,9 +32,15 @@
 
 #include "libgimp/gimp.h"
 
+#define GAP_ACTIVE_LAYER_TRACKING_OFF          0
+#define GAP_ACTIVE_LAYER_TRACKING_BY_NAME      1
+#define GAP_ACTIVE_LAYER_TRACKING_BY_STACKPOS  2
+
 typedef struct GapVinVideoInfo {
   gdouble     framerate;    /* playback rate in frames per second */
   gint32      timezoom;
+
+  gint32      active_layer_tracking;
 
   /* stuff for onionskin layers */
   gboolean onionskin_auto_enable;     /* master switch for onionskin load/save triggers */

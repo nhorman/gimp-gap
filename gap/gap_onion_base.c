@@ -284,6 +284,7 @@ gap_onion_base_onionskin_apply(gpointer gpp
   gint        l_nlayers;
   gdouble     l_opacity;
   char       *l_layername;
+  gint32      l_active_layer;
 
 
   if(gap_debug)
@@ -310,6 +311,22 @@ gap_onion_base_onionskin_apply(gpointer gpp
 
   }
 
+  /* keep information about the active_layer
+   * (needed for restore after onionskin layers were recreated)
+   */
+  l_active_layer = gimp_image_get_active_layer(image_id);
+  if(l_active_layer >= 0)
+  {
+    if(gap_onion_base_check_is_onion_layer(l_active_layer))
+    {
+      /* no need to remember the active layer, because
+       * it is an onionskin layer that will be deleted
+       * before recreation
+       */
+      l_active_layer = -1;
+    }
+  }
+  
   /* delete onion layers (if there are old ones) */
   gap_onion_base_onionskin_delete(image_id);
 
@@ -565,7 +582,123 @@ gap_onion_base_onionskin_apply(gpointer gpp
     if(l_new_filename) { g_free(l_new_filename); l_new_filename = NULL; };
 
   }
+
+  if(l_active_layer >= 0)
+  {
+    gimp_image_set_active_layer(image_id, l_active_layer);
+  }
+
   if(gap_debug) printf("gap_onion_base_onionskin_apply: END\n\n");
 
   return 0;
 }       /* end gap_onion_base_onionskin_apply */
+
+
+/* ----------------------------------
+ * gap_onion_image_has_oinonlayers
+ * ----------------------------------
+ * check if image has onionskin layers
+ * IN: only_visible TRUE check only for visible onionskin layers
+ *                  FALSE check for all onionskin layers
+ */
+gboolean
+gap_onion_image_has_oinonlayers(gint32 image_id, gboolean only_visible)
+{
+  gint32     *l_layers_list;
+  gint        l_nlayers;
+  gint        l_idx;
+  gint        l_is_onion;
+  gint32      l_layer_id;
+  gboolean    l_has_onion;
+
+  if(gap_debug)
+  {
+     printf("gap_onion_image_has_oinonlayers: START only_visible: %d image_id: %d\n"
+            , (int)only_visible
+	    , (int)image_id
+	    );
+  }
+
+  l_has_onion = FALSE;
+
+  l_layers_list = gimp_image_get_layers(image_id, &l_nlayers);
+  if(l_layers_list)
+  {
+    for(l_idx=0;l_idx < l_nlayers;l_idx++)
+    {
+      l_layer_id = l_layers_list[l_idx];
+      l_is_onion = gap_onion_base_check_is_onion_layer(l_layer_id);
+
+      if(l_is_onion)
+      {
+        if (only_visible)
+	{
+	  if(gimp_drawable_get_visible(l_layer_id))
+	  {
+            l_has_onion = TRUE;
+	    break;
+	  }
+	}
+	else
+        {
+          l_has_onion = TRUE;
+	  break;
+        }
+      }
+    }
+    
+    g_free(l_layers_list);
+  }
+  return (l_has_onion);
+
+}  /* end gap_onion_image_has_oinonlayers */
+
+
+/* ---------------------------------
+ * gap_onion_base_image_duplicate
+ * ---------------------------------
+ * duplicate the image 
+ * and mark onionskin layers in the copy 
+ */
+gint32
+gap_onion_base_image_duplicate(gint32 image_id)
+{
+  gint32 dup_image_id;
+  
+  dup_image_id = gimp_image_duplicate(image_id);
+  if(dup_image_id >= 0)
+  {
+    gint32     *l_layers_list;
+    gint32     *l_dup_layers_list;
+    gint        l_nlayers;
+    gint        l_dup_nlayers;
+    gint        l_idx;
+    gint        l_is_onion;
+    gint32      l_layer_id;
+    gboolean    l_has_onion;
+    
+    l_layers_list = gimp_image_get_layers(image_id, &l_nlayers);
+    l_dup_layers_list = gimp_image_get_layers(dup_image_id, &l_dup_nlayers);
+
+    if((l_layers_list) 
+    && (l_dup_layers_list))
+    {
+      for(l_idx=0;l_idx < MIN(l_nlayers, l_dup_nlayers);l_idx++)
+      {
+	l_layer_id = l_layers_list[l_idx];
+	l_is_onion = gap_onion_base_check_is_onion_layer(l_layer_id);
+
+	if(l_is_onion)
+	{
+	  gap_onion_base_mark_as_onionlayer(l_dup_layers_list[l_idx]);
+	}
+      }
+
+      g_free(l_layers_list);
+      g_free(l_dup_layers_list);
+    }
+    
+  }
+  
+  return(dup_image_id);
+}  /* end gap_onion_base_image_duplicate */

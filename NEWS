@@ -35,18 +35,17 @@ and may crash or deliver unexpected results.
   to access frames in videofiles (.mpg, .avi ....)
 
 - Master Videoencoder plug-in
-  This is a Common GUI
-  Encode GAP framesequences or STORYBOARD files
+  This is a Common GUI to
+  encode GAP framesequences or STORYBOARD files
   to one videofile, including audio.
   The user can select all registered
   Video Encoder plug-ins.
   
 - Videoencoder Plug-ins
    AVI Encoder         (based on avilib, codecs: RAW, JPG, XVID)
-   FFMPEG Encoder      (based on ffmpeg-0.4.8, handles many MPEG based
+   FFMPEG Encoder      (based on ffmpeg, handles many MPEG based
                         videoformats and codecs,
                         see ffmpeg docs for detailed information)
-   QUICKTIME Encoder   (based on quicktime4linux)
    SINGLEFRAME Encoder (generate GIMP-GAP typical frame sequences
                         as output. This may be useful
                         to convert STORYBAORD Files to frame sequences)
@@ -64,6 +63,11 @@ and may crash or deliver unexpected results.
 - Added new functions to modify frames plug-in
    "Copy layermask from layer above"
    "Copy layermask from layer below"
+
+- Active layer tracking by name or stackposition.
+   This feature tries to set the active layer at framechanges
+   in the new loaded frame by matching layername (or stackposition)
+   to the active layer of the previously displayed frame.
 
 -------------------------------
 old news

@@ -1,3 +1,43 @@
+2005-03-12  Wolfgang Hofer <hof@gimp.org>
+
+        - bugfix: #169311
+	 Player must not display onionskin layers for the current image
+	 when the Option "Auto delete before save" is ON.
+	
+	- bugfix: #169320 
+	 when automatic onionskinlayer creation is turned on
+	 store active_layer before the onionskin layers are added
+	 and restore active_layer before save. 
+	 Without this fix one of the added onionskin layers is
+	 stored as the active layer in the saved file.
+	 This did break the workflow when the frame is loaded later on.
+
+	 new feature:
+	 tracking of the active_layer by name (as described in bug #169320)
+	 and by layerstack position can be configured in the VCR Navigator dialog
+	 (The configuration value is stored in the _vin.gap file.
+	  therefore the scope is permanent per animation and independent
+	  from automatic onionskin layer creation)
+
+	  (active_layer_tracking 0) # 0: OFF 1: by name  2: by stackposition
+	
+	- bugfix: when Player is used as widget 
+	  in another dialog, its shell_window is null.
+	  dont try to handle resize for shell_window when its a NULL pointer.
+
+	  fixes warnings like that:
+	  (storyboard:24245): Gtk-CRITICAL **: file gtkwindow.c: line 3044
+	    (gtk_window_set_default_size): assertion `GTK_IS_WINDOW (window)' failed
+
+	* gap/gap_player_dialog.c
+	* gap/gap_onion_base.c [.h]
+	* gap/gap_lib.c
+	* gap/gap_player_main.c [.h]
+	* gap/gap_vin.c [.h]
+	* gap/gap_navigator_dialog.c
+	* docs/reference/txt/plug-in-gap-navigator.txt
+	* NEWS
+
 2005-03-05  Wolfgang Hofer <hof@gimp.org>
 	- ffmpeg-CVS (snapshot from 2005.03.02) based encoder:
 	  initalize values for the encoder options that are new
