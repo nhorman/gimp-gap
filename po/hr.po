@@ -1,11 +1,11 @@
 # Translation of gimp-gap to Croatian
 # Copyright (C) Croatian team
-# Translators: Automatski Prijevod <>,Denis Lackovic <delacko@fly.srk.fer.hr>,
+# Translators: Antun Krasic <butch@gawab.com>,Automatski Prijevod <>,Boris Tudan <boris.tudan@ka.htnet.hr>,Denis Lackovic <delacko@fly.srk.fer.hr>,Vedran Vyroubal <vedran.vyroubal@inet.hr>,
 msgid ""
 msgstr ""
 "Project-Id-Version: gimp-gap 0\n"
 "POT-Creation-Date: 2003-11-06 18:07+0100\n"
-"PO-Revision-Date: 2003-11-07 18:41+CET\n"
+"PO-Revision-Date: 2003-11-10 16:50+CET\n"
 "Last-Translator: auto\n"
 "Language-Team: Croatian <lokalizacija@linux.hr>\n"
 "MIME-Version: 1.0\n"
@@ -174,6 +174,10 @@ msgid ""
 "This will decrease the total number of frames from %d down to %d\n"
 "There will be no UNDO for this Operation\n"
 msgstr ""
+"%.04f Postotak okvira u obujmu %d - %d\n"
+"će biti OBRISANO\n"
+"Ovoće smanjiti ukupan broj okvira sa %d na %d\n"
+"Za ovu operaciju ne postoji UNDO.\n"
 
 #. title_txt
 #: gap/gap_base_ops.c:1188 gap/gap_base_ops.c:1189
@@ -2149,7 +2153,7 @@ msgstr ""
 #.  table col, row
 #: gap/gap_mov_dialog.c:3396
 msgid "x1:"
-msgstr ""
+msgstr "x1:"
 
 #. label text
 #.  scalesize spinsize
@@ -2167,7 +2171,7 @@ msgstr ""
 #.  table col, row
 #: gap/gap_mov_dialog.c:3415
 msgid "y1:"
-msgstr ""
+msgstr "y1:"
 
 #. label text
 #.  scalesize spinsize
@@ -3219,7 +3223,7 @@ msgstr " "
 
 #: gap/gap_onion_main.c:148
 msgid "  The configuration can be saved in the gimprc parameter file."
-msgstr ""
+msgstr "Konfiguracije može biti spremljena u gimprc datoteku parametara. "
 
 #: gap/gap_onion_main.c:153
 #, fuzzy
@@ -3241,7 +3245,7 @@ msgstr ""
 
 #: gap/gap_onion_main.c:166
 msgid "  if no configuration is found, default settings are used"
-msgstr ""
+msgstr "ako niti jedna konfiguracija nije pronađena, koriste se predefinirane postavke "
 
 #: gap/gap_onion_main.c:171
 #, fuzzy
@@ -3355,7 +3359,7 @@ msgstr ""
 #: gap/gap_player_dialog.c:529
 #, c-format
 msgid "%d (at %.4f frames/sec)"
-msgstr ""
+msgstr "%d (na %.4f sličica/sek)"
 
 #: gap/gap_player_dialog.c:623
 #, c-format
