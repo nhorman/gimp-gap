@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: gimp 2.0.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2004-10-09 16:25+0200\n"
-"PO-Revision-Date: 2004-10-09 22:55+0200\n"
+"PO-Revision-Date: 2004-10-10 00:46+0200\n"
 "Last-Translator: Marco Ciampa <ciampix@libero.it>\n"
 "Language-Team: gimp.linux.it\n"
 "MIME-Version: 1.0\n"
@@ -8005,7 +8005,7 @@ msgid ""
 "wav) file. .wav files can be mono (1) or stereo (2channels) audiodata and "
 "must be 16bit uncompressed. IMPORTANT:  Non-interactive callers should first "
 "call \""
-msgstr ""
+msgstr "Questo plugin esegue la codifica video di frame animate usando libavformat (conosciuto anche come codificatore FFMPEG). I dati audio (opzionali) devono essere in formato RIFF WAVE (.wav) a 16 bit non compressi e possono essere mono(1) o stereo (2 canali). IMPORTANTE: chiamate non interattive devono prima chiamare \""
 
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:378
 msgid "Set Parameters for GAP ffmpeg video encoder Plugin"
@@ -8044,7 +8044,7 @@ msgstr "Codifica video FFMPEG .."
 
 #: vid_enc_single/gap_enc_singleframes_main.c:180
 msgid "singleframes video encoding for anim frames. Menu: @SINGLEFRAMES@"
-msgstr ""
+msgstr "codifica video a frame singola per frame animate. Menu: @SINGLEFRAMES@"
 
 #: vid_enc_single/gap_enc_singleframes_main.c:181
 msgid ""
@@ -8054,29 +8054,29 @@ msgid ""
 "\". the names of the output frame(s) are same as the parameter \"videofile\" "
 "but the framenumber part is replaced by the current framenumber (or added "
 "automatic if videofile has no number part) audiodata is ignored. A  call of\""
-msgstr ""
+msgstr "Questo plugin ha un'API da codificatore video ma scrive una serie di singole frame invece che un unico file video. Il tipo di file delle frame di uscita è derivato dall'estensione. L'estensione è la parte suffisso del parametro \"file video\". I nomi delle frame in uscita sono gli stessi del parametro \"file video\" ma in numero di frame viene rimpiazzato dal numero di frame corrente (o aggiunto automaticamente se il file video non ha una parte numerica) i dati audio sono ignorati. Una chiamata di \""
 
 #: vid_enc_single/gap_enc_singleframes_main.c:190
 msgid ""
 "\" to set encoder specific paramters, is not required because this release "
 "of the singleframe encoder has NO encoder specific paramters"
-msgstr ""
+msgstr "\" per impostare i parametri specifici del codificatore non sono richiesti dato che questa versione del codificatore della frame singola NON ha parametri specifici"
 
 #: vid_enc_single/gap_enc_singleframes_main.c:205
 msgid "Set Parameters for GAP singleframes video encoder Plugins"
-msgstr ""
+msgstr "Imposta i parametri per il plugin codificatore video a singola frame"
 
 #: vid_enc_single/gap_enc_singleframes_main.c:206
 msgid "This plugin sets singleframes specific video encoding parameters."
-msgstr ""
+msgstr "Questo plugin imposta i parametri specifici per la codifica video a frame singola."
 
 #: vid_enc_single/gap_enc_singleframes_main.c:219
 msgid "Get GUI Parameters for GAP singleframes video encoder"
-msgstr ""
+msgstr "Imposta i parametri GUI per il codificatore a frame singola GAP"
 
 #: vid_enc_single/gap_enc_singleframes_main.c:220
 msgid "This plugin returns singleframes encoder specific parameters."
-msgstr ""
+msgstr "Questo plugin restituisce i parametri specifici per il codificatore a frame singola."
 
 #: vid_enc_single/gap_enc_singleframes_main.c:301
 msgid ""
@@ -8086,11 +8086,17 @@ msgid ""
 "extension of the video name, frames are named\n"
 "video name plus 6-digit number + extension"
 msgstr ""
+"Questo codificatore a frame singola\n"
+"scrive i frame singoli invece di un file video.\n"
+"Il formato video delle frame è derivato\n"
+"dall'estensione del nome del video; le frame\n"
+"prendono il nome dal nome del video + un numero\n"
+"a 6 cifre + estensione."
 
 #: vid_enc_single/gap_enc_singleframes_main.c:511
 msgid "the Singleframe Encoder has no encoder specific Parameters"
-msgstr ""
+msgstr "il codificatore a frame singola non ha parametri specifici"
 
 #: vid_enc_single/gap_enc_singleframes_main.c:680
 msgid "Singleframes Video Encoding .."
-msgstr ""
+msgstr "Codifica video a frame singola .."
