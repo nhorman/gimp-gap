@@ -1,5 +1,9 @@
 2003-12-04  Sven Neumann  <sven@gimp.org>
 
+	* gap/gap_mov_render.c: s/gimp_layer_mask/gimp_layer_get_mask/
+
+2003-12-04  Sven Neumann  <sven@gimp.org>
+
 	* gap/gap_bluebox.c
 	* gap/gap_filter_iterators.c
 	* gap/gap_mov_dialog.c

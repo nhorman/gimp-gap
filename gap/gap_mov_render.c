@@ -416,7 +416,7 @@ gap_mov_render_render(gint32 image_id, GapMovValues *val_ptr, GapMovCurrent *cur
   }
 
   /* check for layermask */
-  l_cp_layer_mask_id = gimp_layer_mask(l_cp_layer_id);
+  l_cp_layer_mask_id = gimp_layer_get_mask(l_cp_layer_id);
   if(l_cp_layer_mask_id >= 0)
   {
      /* apply the layermask
