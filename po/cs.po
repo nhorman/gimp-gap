@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gimp-gap VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-07-16 15:19+0200\n"
-"PO-Revision-Date: 2004-07-16 17:38+0200\n"
+"POT-Creation-Date: 2004-08-08 19:23+0200\n"
+"PO-Revision-Date: 2004-08-08 23:13+0200\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -25,7 +25,7 @@ msgstr "Prohlížeč písem"
 #. audiofile button (fileselect invoker)
 #. the filesel invoker button
 #: gap/gap_arr_dialog.c:540 gap/gap_fmac_main.c:594
-#: gap/gap_player_dialog.c:4505 gap/gap_story_properties.c:1676
+#: gap/gap_player_dialog.c:4505 gap/gap_story_properties.c:1714
 msgid "File Browser"
 msgstr "Prohlížeč souborů"
 
@@ -1113,7 +1113,7 @@ msgstr "Odstranit soubor skriptu makra filtru"
 
 #. Button Delete
 #. radio button DELETE
-#: gap/gap_fmac_main.c:883 gap/gap_morph_dialog.c:2964
+#: gap/gap_fmac_main.c:883 gap/gap_morph_dialog.c:2965
 msgid "Delete"
 msgstr "Odstranit"
 
@@ -1642,7 +1642,7 @@ msgstr "Modifikuji políčka/vrstvy..."
 msgid "No selected layer in start frame"
 msgstr "Není vybrána vrstva v počátečním políčku"
 
-#: gap/gap_morph_dialog.c:2494
+#: gap/gap_morph_dialog.c:2495
 #, fuzzy, c-format
 msgid ""
 "Failed to write morph workpointfile\n"
@@ -1653,7 +1653,7 @@ msgstr ""
 "název souboru: '%s':\n"
 "%s"
 
-#: gap/gap_morph_dialog.c:2523
+#: gap/gap_morph_dialog.c:2524
 #, fuzzy, c-format
 msgid ""
 "ERROR: Could not open morph workpoints\n"
@@ -1664,7 +1664,7 @@ msgstr ""
 "název souboru: '%s'\n"
 "%s"
 
-#: gap/gap_morph_dialog.c:2529
+#: gap/gap_morph_dialog.c:2530
 #, fuzzy, c-format
 msgid ""
 "ERROR: Could not read morph workpoints\n"
@@ -1675,26 +1675,26 @@ msgstr ""
 "název souboru: '%s'\n"
 "(není to platný soubor řídicích bodů)"
 
-#: gap/gap_morph_dialog.c:2581
+#: gap/gap_morph_dialog.c:2582
 #, fuzzy
 msgid "Save Morph Workpointfile"
 msgstr "Uložit řídicí body do souboru"
 
-#: gap/gap_morph_dialog.c:2585
+#: gap/gap_morph_dialog.c:2586
 #, fuzzy
 msgid "Load Morph Workpointfile"
 msgstr "Načíst řídicí body ze souboru"
 
-#: gap/gap_morph_dialog.c:2898
+#: gap/gap_morph_dialog.c:2899
 msgid "Edit Mode:"
 msgstr "Režim úprav:"
 
 #. radio button SET
-#: gap/gap_morph_dialog.c:2912
+#: gap/gap_morph_dialog.c:2913
 msgid "Set"
 msgstr "Nastavit"
 
-#: gap/gap_morph_dialog.c:2921
+#: gap/gap_morph_dialog.c:2922
 msgid ""
 "Click: pick and drag point at cursor or create new point SHIFT-Click: force "
 "create new point Alt-Click: disable drag Right-Click: delete point at cursor"
@@ -1704,11 +1704,11 @@ msgstr ""
 "kliknutí pravým tlačítkem: odstranit bod pod kurzorem"
 
 #. radio button MOVE
-#: gap/gap_morph_dialog.c:2938
+#: gap/gap_morph_dialog.c:2939
 msgid "Move"
 msgstr "Přesunout"
 
-#: gap/gap_morph_dialog.c:2947
+#: gap/gap_morph_dialog.c:2948
 msgid ""
 "Click: drag next point SHIFT-Click: force create new point Alt-Click: "
 "disable drag Right-Click: delete point at cursor"
@@ -1717,60 +1717,60 @@ msgstr ""
 "kliknutí: zakázat přetahování kliknutí pravým tlačítkem: odstranit bod pod "
 "kurzorem"
 
-#: gap/gap_morph_dialog.c:2973
+#: gap/gap_morph_dialog.c:2974
 msgid "Click: delete next point"
 msgstr "Kliknutí: odstranit následující bod"
 
 #. radio button ZOOM
-#: gap/gap_morph_dialog.c:2986
+#: gap/gap_morph_dialog.c:2987
 msgid "Zoom"
 msgstr "Zvětšení"
 
-#: gap/gap_morph_dialog.c:2995
+#: gap/gap_morph_dialog.c:2996
 msgid "Click: zoom in, CTRL-click: zoom out"
 msgstr "Kliknutí: zvětšit, CTRL-kliknutí: zmenšit"
 
 #. radio button SHOW
-#: gap/gap_morph_dialog.c:3009
+#: gap/gap_morph_dialog.c:3010
 msgid "Show"
 msgstr "Zobrazit"
 
-#: gap/gap_morph_dialog.c:3018
+#: gap/gap_morph_dialog.c:3019
 msgid "Click: show warp pick koordinates in the source window"
 msgstr ""
 
-#: gap/gap_morph_dialog.c:3049
+#: gap/gap_morph_dialog.c:3050
 msgid "Render Mode:"
 msgstr "Režim vykreslování:"
 
 #. radio button MORPH
-#: gap/gap_morph_dialog.c:3062
+#: gap/gap_morph_dialog.c:3063
 msgid "Morph"
 msgstr ""
 
-#: gap/gap_morph_dialog.c:3071
+#: gap/gap_morph_dialog.c:3072
 msgid "Render morph transition (warp forward, warp backward and cross fade)"
 msgstr ""
 
 #. radio button WARP
-#: gap/gap_morph_dialog.c:3084
+#: gap/gap_morph_dialog.c:3085
 msgid "Warp"
 msgstr ""
 
-#: gap/gap_morph_dialog.c:3093
+#: gap/gap_morph_dialog.c:3094
 msgid "Render forward warp transitions only"
 msgstr ""
 
 #. the layer seletion optionmenu
-#: gap/gap_morph_dialog.c:3147
+#: gap/gap_morph_dialog.c:3148
 msgid "Layer:"
 msgstr "Vrstva:"
 
-#: gap/gap_morph_dialog.c:3161
+#: gap/gap_morph_dialog.c:3162
 msgid "Select the source layer"
 msgstr "Zvolte zdrojovou vrstvu"
 
-#: gap/gap_morph_dialog.c:3167
+#: gap/gap_morph_dialog.c:3168
 msgid "Select the destination layer "
 msgstr "Zvolte cílovou vrstvu "
 
@@ -1779,12 +1779,12 @@ msgstr "Zvolte cílovou vrstvu "
 #. table col, row
 #. gtk_container_add (GTK_CONTAINER (abox), table3);
 #. the x/y offest labels
-#: gap/gap_morph_dialog.c:3181 gap/gap_mov_dialog.c:3746
+#: gap/gap_morph_dialog.c:3182 gap/gap_mov_dialog.c:3746
 #: gap/gap_name2layer_main.c:473 gap/gap_resi_dialog.c:819
 msgid "X:"
 msgstr "X:"
 
-#: gap/gap_morph_dialog.c:3203
+#: gap/gap_morph_dialog.c:3204
 #, fuzzy
 msgid "Morphpoint X koordinate"
 msgstr "Souřadnice X"
@@ -1792,156 +1792,159 @@ msgstr "Souřadnice X"
 #. the y koordinate label
 #. Y
 #. table col, row
-#: gap/gap_morph_dialog.c:3212 gap/gap_mov_dialog.c:3764
+#: gap/gap_morph_dialog.c:3213 gap/gap_mov_dialog.c:3764
 #: gap/gap_name2layer_main.c:484 gap/gap_resi_dialog.c:728
 #: gap/gap_resi_dialog.c:825
 msgid "Y:"
 msgstr "Y:"
 
-#: gap/gap_morph_dialog.c:3235
+#: gap/gap_morph_dialog.c:3236
 #, fuzzy
 msgid "Morphpoint Y koordinate"
 msgstr "Souřadnice Y"
 
 #. Fit Zoom Button
-#: gap/gap_morph_dialog.c:3243
-#, fuzzy
+#: gap/gap_morph_dialog.c:3244
 msgid "Fit Zoom"
-msgstr "Zvětšení"
+msgstr "Přizpůsobit zvětšení"
 
-#: gap/gap_morph_dialog.c:3247
+#: gap/gap_morph_dialog.c:3248
 msgid "Show the whole layer. (by adjusting zoom to fit into preview)."
 msgstr "Zobrazit celou vrstvu (upravením zvětšení, aby se vešla do náhledu)."
 
 #. there is just one total_points display (always in the dst frame)
 #. the current Point label
-#: gap/gap_morph_dialog.c:3271
+#: gap/gap_morph_dialog.c:3261
 msgid "Point:"
 msgstr "Bod:"
 
-#: gap/gap_morph_dialog.c:3294
+#: gap/gap_morph_dialog.c:3284
 msgid "Number of the current point"
 msgstr "Číslo aktuálního bodu"
 
 #. the number_of_points label
-#: gap/gap_morph_dialog.c:3300
+#: gap/gap_morph_dialog.c:3290
 msgid "of total:"
 msgstr "z:"
 
 #. the number_of_points label
-#: gap/gap_morph_dialog.c:3308
+#: gap/gap_morph_dialog.c:3298
 msgid "001"
 msgstr "001"
 
-#: gap/gap_morph_dialog.c:3446
+#: gap/gap_morph_dialog.c:3436
 msgid "Morph / Warp"
 msgstr ""
 
-#: gap/gap_morph_dialog.c:3529
+#: gap/gap_morph_dialog.c:3519
 msgid "Source"
 msgstr "Zdroj"
 
-#: gap/gap_morph_dialog.c:3544
+#: gap/gap_morph_dialog.c:3534
 msgid "Destination"
 msgstr "Cíl"
 
 #. the nubner of ShapePoints label
-#: gap/gap_morph_dialog.c:3563
+#: gap/gap_morph_dialog.c:3553
 msgid "ShapePoints:"
 msgstr "BodyTvaru:"
 
-#: gap/gap_morph_dialog.c:3585
+#: gap/gap_morph_dialog.c:3575
 msgid "Number of workpoints to create when Shape button is pressed"
 msgstr "Počet pracovních bodů, které vytvořit, když je stisknuto tlačítko Tvar"
 
 #. Shape Button
-#: gap/gap_morph_dialog.c:3591
+#: gap/gap_morph_dialog.c:3581
 msgid "Shape"
 msgstr "Tvar"
 
-#: gap/gap_morph_dialog.c:3595
+#: gap/gap_morph_dialog.c:3585
 msgid ""
 "Create N workpoints following the outline shape of the layer.(the shape "
 "detection is looking for non-transparent pixels).SHIFT-click: adds the new "
 "points and keeps the old points"
-msgstr "Vytvořit N pracovních bodů podél okraje vrstvy (detekce okraje hledá neprůhlední pixely). SHIFT-kliknutí: přidá nové body a zadchová staré body"
+msgstr ""
+"Vytvořit N pracovních bodů podél okraje vrstvy (detekce okraje hledá "
+"neprůhlední pixely). SHIFT-kliknutí: přidá nové body a zadchová staré body"
 
 #. the show lines checkbutton
-#: gap/gap_morph_dialog.c:3610
+#: gap/gap_morph_dialog.c:3600
 msgid "Lines"
 msgstr "Úsečky"
 
-#: gap/gap_morph_dialog.c:3619
+#: gap/gap_morph_dialog.c:3609
 msgid "Show movement vector lines in the destination preview"
 msgstr "Zobrazovat v náhledu cíle úsečky vektoru pohybu"
 
 #. Swap Windows Button
-#: gap/gap_morph_dialog.c:3624
+#: gap/gap_morph_dialog.c:3614
 msgid "Swap"
 msgstr "Prohodit"
 
-#: gap/gap_morph_dialog.c:3628
+#: gap/gap_morph_dialog.c:3618
 msgid "Exchange source and destination"
 msgstr "Prohodit zdroj a cíl"
 
 #. the deform affect radius label
-#: gap/gap_morph_dialog.c:3639
+#: gap/gap_morph_dialog.c:3629
 msgid "Radius:"
 msgstr "Poloměr:"
 
-#: gap/gap_morph_dialog.c:3661
+#: gap/gap_morph_dialog.c:3651
 msgid ""
 "Deform radius in pixels. Each workpoint causes a move-deform operation "
 "within this affect radius."
-msgstr "Poloměr deformace v pixelech. Každý pracovní bod způsobuje operaci deformace přesunem v tomto poloměru."
+msgstr ""
+"Poloměr deformace v pixelech. Každý pracovní bod způsobuje operaci deformace "
+"přesunem v tomto poloměru."
 
 #. the deform intensity label
-#: gap/gap_morph_dialog.c:3671
+#: gap/gap_morph_dialog.c:3661
 msgid "Intensity:"
 msgstr "Intenzita:"
 
-#: gap/gap_morph_dialog.c:3694
+#: gap/gap_morph_dialog.c:3684
 msgid "Deform intensity."
 msgstr "Intenzita deformace."
 
 #. the use_intensity checkbutton
-#: gap/gap_morph_dialog.c:3702
+#: gap/gap_morph_dialog.c:3692
 msgid "Use Intensity"
 msgstr "Používat intenzitu"
 
-#: gap/gap_morph_dialog.c:3712
+#: gap/gap_morph_dialog.c:3702
 msgid ""
-"ON: deform descending by power of intensity from workpoint (full) to radius "
-"(zero).OFF: linear deform inside the radius"
-msgstr "ZAPNUTO: deformovat podle intenzity od pracovního bodu (plně) k poloměru (nula). VYPNUTO: v poloměru deformovat lineárně"
+"ON: Descending deform action from workpoint (full) to radius (zero). Descend "
+"by power of intensity.OFF: Linear deform action inside the radius"
+msgstr "ZAPNUTO: deformovat sestupně od pracovního bodu (plně) k poloměru (nula). Klesat podle intenzity. VYPNUTO: V poloměru deformovat lineárně"
 
-#. the use_fast_wp_selection checkbutton
+#. the use_quality_wp_selection checkbutton
+#: gap/gap_morph_dialog.c:3707
+msgid "Quality"
+msgstr "Kvalita"
+
 #: gap/gap_morph_dialog.c:3717
-msgid "Fast"
-msgstr "Rychlé"
+msgid ""
+"ON: Use quality workpoint selection algorithm.OFF: Use fast workpoint "
+"selection algorithm."
+msgstr "ZAPNUTO: Používat kvalitní algoritmus pro výběr pracovních bodů VYPNUTO: používat rychlý algoritmus pro výběr pracovních bodů"
 
 #: gap/gap_morph_dialog.c:3727
-msgid ""
-"ON: use fast workpoint selection algorithm.OFF: use quality workpoint "
-"selection algorithm."
-msgstr "ZAPNUTO: používat rychlý algoritmus pro výběr pracovních bodů VYPNUTO: používat kvalitní algoritmus pro výběr pracovních bodů"
-
-#: gap/gap_morph_dialog.c:3737
 msgid ""
 "Load morph workpoints from file. SHIFT-click: define filename of Pointset B"
 msgstr ""
 
-#: gap/gap_morph_dialog.c:3749
+#: gap/gap_morph_dialog.c:3739
 msgid ""
 "Save morph workpoints to file. SHIFT-click: define filename of Pointset B"
 msgstr ""
 
 #. the tween_steps label
-#: gap/gap_morph_dialog.c:3761
+#: gap/gap_morph_dialog.c:3751
 msgid "Steps:"
 msgstr "Kroky:"
 
-#: gap/gap_morph_dialog.c:3783
+#: gap/gap_morph_dialog.c:3773
 msgid ""
 "Number of layers to create or modify. Steps refers to N layers under the "
 "destination layer. Steps is ignored if render mode is warp and source and "
@@ -1949,41 +1952,41 @@ msgid ""
 msgstr ""
 
 #. the pointcolor colorbutton
-#: gap/gap_morph_dialog.c:3793
+#: gap/gap_morph_dialog.c:3783
 msgid "Pointcolor"
 msgstr "Barva bodu"
 
-#: gap/gap_morph_dialog.c:3801
+#: gap/gap_morph_dialog.c:3791
 msgid "Set color for the morph workpoints"
 msgstr ""
 
 #. the currentcolor colorbutton
-#: gap/gap_morph_dialog.c:3812
+#: gap/gap_morph_dialog.c:3802
 msgid "Current Pointcolor"
 msgstr "Aktuální barva bodu"
 
-#: gap/gap_morph_dialog.c:3820
+#: gap/gap_morph_dialog.c:3810
 #, fuzzy
 msgid "Set color for the current morph workpoint"
 msgstr "Odstranit aktuální řídicí bod"
 
 #. the create tween checkbutton
-#: gap/gap_morph_dialog.c:3840
+#: gap/gap_morph_dialog.c:3830
 msgid "Create Layers"
 msgstr "Vytvořit vrstvy"
 
-#: gap/gap_morph_dialog.c:3850
+#: gap/gap_morph_dialog.c:3840
 msgid ""
 "ON: Create specified number of tween layers. OFF: Operate on existing layers "
 "below the destination layer"
 msgstr ""
 
 #. the multiple pointsets checkbutton
-#: gap/gap_morph_dialog.c:3856
+#: gap/gap_morph_dialog.c:3846
 msgid "Multiple Pointsets"
 msgstr "Více sad bodů"
 
-#: gap/gap_morph_dialog.c:3866
+#: gap/gap_morph_dialog.c:3856
 msgid ""
 "ON: use 2 or more pointsets from file. Please create and save the pointsets "
 "first, using filenames with a 2-digit numberpart before the extension "
@@ -1991,7 +1994,10 @@ msgid ""
 "first and last pointset\n"
 "OFF: use current set of workpoints"
 msgstr ""
-"ZAPNUTO: použít dvě nebo více sad bodů ze souboru. Nejdříve prosím vytvořte a uložte sady bodů se jmény souborů s dvoucifernou číselnou částí před přípnou (ponts_01.txt, points_02.txt, points_03.txt), pak otevřete a SHIFT otevřete první a poslední sadu bodů\n"
+"ZAPNUTO: použít dvě nebo více sad bodů ze souboru. Nejdříve prosím vytvořte "
+"a uložte sady bodů se jmény souborů s dvoucifernou číselnou částí před "
+"přípnou (ponts_01.txt, points_02.txt, points_03.txt), pak otevřete a SHIFT "
+"otevřete první a poslední sadu bodů\n"
 "VYPNUTO: použít aktuální sadu pracovních bodů"
 
 #. the lower workpoint label
@@ -2004,17 +2010,17 @@ msgstr "Sada bodů A:"
 msgid "Pointset B:"
 msgstr "Sada bodů B:"
 
-#: gap/gap_morph_exec.c:2250
+#: gap/gap_morph_exec.c:2582
 #, fuzzy
 msgid "creating morph tween layers..."
 msgstr "Vytvářím vrstvy onionskin..."
 
-#: gap/gap_morph_exec.c:2254
+#: gap/gap_morph_exec.c:2586
 #, fuzzy
 msgid "creating warp tween layers..."
 msgstr "Vytvářím vrstvy onionskin..."
 
-#: gap/gap_morph_main.c:388
+#: gap/gap_morph_main.c:146
 #, fuzzy
 msgid "<Image>/Video/Morph..."
 msgstr "<Image>/Video/Cesta přesunu..."
@@ -2152,7 +2158,7 @@ msgid "Ping Pong"
 msgstr "Tam a zpět"
 
 #. radio button delace_mode None
-#: gap/gap_mov_dialog.c:459 gap/gap_story_properties.c:1789
+#: gap/gap_mov_dialog.c:459 gap/gap_story_properties.c:1828
 msgid "None"
 msgstr "Nic"
 
@@ -5118,12 +5124,12 @@ msgstr ""
 "%s"
 
 #: gap/gap_story_dialog.c:2917
-msgid "Windows"
-msgstr "Okna"
+msgid "Global"
+msgstr "Globální"
 
 #. the frame
 #: gap/gap_story_dialog.c:2919 gap/gap_story_dialog.c:2976
-#: gap/gap_story_dialog.c:3039 gap/gap_story_properties.c:1623
+#: gap/gap_story_dialog.c:3039 gap/gap_story_properties.c:1661
 msgid "Properties"
 msgstr "Vlastnosti"
 
@@ -5273,29 +5279,29 @@ msgstr "Vrátit parametry na implicitní velikost"
 msgid "Master Properties"
 msgstr ""
 
-#: gap/gap_story_file.c:281 gap/gap_story_file.c:315
+#: gap/gap_story_file.c:336 gap/gap_story_file.c:370
 msgid "internal error"
 msgstr "interní chyba"
 
-#: gap/gap_story_file.c:1146
+#: gap/gap_story_file.c:1202
 #, c-format
 msgid "illegal number: %s (valid range is %d upto %d)\n"
 msgstr "neplatné číslo: %s (platný rozsah je %d až %d)\n"
 
-#: gap/gap_story_file.c:1185
+#: gap/gap_story_file.c:1241
 #, c-format
 msgid "illegal number: %s (valid range is %.3f upto %.3f)"
 msgstr "neplatné číslo: %s (platný rozsah je %.3f až %.3f)"
 
-#: gap/gap_story_file.c:1284
+#: gap/gap_story_file.c:1340
 msgid "same parameter used more than once"
 msgstr "stejný parametr použit více než jednou"
 
-#: gap/gap_story_file.c:1296
+#: gap/gap_story_file.c:1352
 msgid "conflict: positional parameter shadows named parameter"
 msgstr "konflikt: poziční parametr zastiňuje pojmenovaný parametr"
 
-#: gap/gap_story_file.c:1344
+#: gap/gap_story_file.c:1400
 #, c-format
 msgid ""
 "Header not found!\n"
@@ -5309,11 +5315,11 @@ msgstr ""
 #. accept unsupported lines (with just a warning)
 #. * because the file has correct Header
 #.
-#: gap/gap_story_file.c:1565 gap/gap_story_file.c:1572
+#: gap/gap_story_file.c:1625 gap/gap_story_file.c:1632
 msgid "Unsupported line was igonored"
 msgstr "Nepodporovaný řádek byl ignorován"
 
-#: gap/gap_story_file.c:1743
+#: gap/gap_story_file.c:1803
 #, c-format
 msgid ""
 "the passed filename %s has irrelevant content or could not be opened by the "
@@ -5326,11 +5332,11 @@ msgstr ""
 msgid "<Image>/Video/Storyboard..."
 msgstr "<Image>/Video/Přehrávání..."
 
-#: gap/gap_story_properties.c:409
+#: gap/gap_story_properties.c:411
 msgid "Automatic scene detection operates only on cliptypes MOVIE and FRAMES"
 msgstr "Automatická detekce scény pracuje jen na typech klipů FILM a POLÍČKA"
 
-#: gap/gap_story_properties.c:416
+#: gap/gap_story_properties.c:418
 msgid ""
 "Scene detection depends on video thumbnails. Please enable videothumbnails "
 "(in the Windows Menu)"
@@ -5338,7 +5344,7 @@ msgstr ""
 "Detekce scény závisí na náhledech videa. Povolte prosím náhledy videa (v "
 "menu Okna)"
 
-#: gap/gap_story_properties.c:475 gap/gap_story_properties.c:538
+#: gap/gap_story_properties.c:477 gap/gap_story_properties.c:540
 msgid ""
 "Scene detection for cliptype FRAMES depends on thumbnails. Please create "
 "thumbnails for your frames and then try again."
@@ -5346,71 +5352,71 @@ msgstr ""
 "Detekce scény pro typ klipu POLÍČKA závisí na náhledech. Vytvořte prosím "
 "náhledy políček a zkuste to znovu."
 
-#: gap/gap_story_properties.c:1203
+#: gap/gap_story_properties.c:1205
 msgid "Set Image or Frame Filename"
 msgstr "Nastavit název souboru obrázku nebo políčka"
 
-#: gap/gap_story_properties.c:1281
+#: gap/gap_story_properties.c:1283
 msgid "EMPTY"
 msgstr "PRÁZDNÉ"
 
-#: gap/gap_story_properties.c:1284
+#: gap/gap_story_properties.c:1286
 msgid "COLOR"
 msgstr "BARVA"
 
-#: gap/gap_story_properties.c:1287
+#: gap/gap_story_properties.c:1289
 msgid "SINGLE-IMAGE"
 msgstr "JEDEN-OBRÁZEK"
 
-#: gap/gap_story_properties.c:1291
+#: gap/gap_story_properties.c:1293
 msgid "ANIM-IMAGE"
 msgstr "ANIMOVANÝ-OBRÁZEK"
 
-#: gap/gap_story_properties.c:1295
+#: gap/gap_story_properties.c:1297
 msgid "FRAME-IMAGES"
 msgstr "OBRÁZKY-POLÍČEK"
 
-#: gap/gap_story_properties.c:1300
+#: gap/gap_story_properties.c:1302
 msgid "MOVIE"
 msgstr "FILM"
 
-#: gap/gap_story_properties.c:1303
+#: gap/gap_story_properties.c:1305
 msgid "COMMENT"
 msgstr "POZNÁMKA"
 
-#: gap/gap_story_properties.c:1306
+#: gap/gap_story_properties.c:1308
 msgid "** UNKNOWN **"
 msgstr "** NEZNÁMÉ **"
 
-#: gap/gap_story_properties.c:1344
+#: gap/gap_story_properties.c:1357
 #, c-format
 msgid "%d (frames)"
 msgstr "%d (políček)"
 
-#: gap/gap_story_properties.c:1589 gap/gap_story_properties.c:1601
+#: gap/gap_story_properties.c:1627 gap/gap_story_properties.c:1639
 msgid "Clip Properties"
 msgstr "Vlastnosti klipu"
 
-#: gap/gap_story_properties.c:1594 gap/gap_story_properties.c:1605
+#: gap/gap_story_properties.c:1632 gap/gap_story_properties.c:1643
 msgid "Find Scene End"
 msgstr "Najít konec scény"
 
 # FIXME: S/Aoto/Auto/
-#: gap/gap_story_properties.c:1595 gap/gap_story_properties.c:1606
+#: gap/gap_story_properties.c:1633 gap/gap_story_properties.c:1644
 msgid "Aoto Scene Split"
 msgstr "Automatické rozdělení scény"
 
 #. the cliptype label
-#: gap/gap_story_properties.c:1638
+#: gap/gap_story_properties.c:1676
 msgid "Clip Type:"
 msgstr "Typ klipu:"
 
 #. the filename label
-#: gap/gap_story_properties.c:1653
+#: gap/gap_story_properties.c:1691
 msgid "File:"
 msgstr "Soubor:"
 
-#: gap/gap_story_properties.c:1688
+#: gap/gap_story_properties.c:1726
 msgid "From:"
 msgstr "Od:"
 
@@ -5419,11 +5425,11 @@ msgstr "Od:"
 #. digits
 #. constrain
 #. lower/upper unconstrained
-#: gap/gap_story_properties.c:1695
+#: gap/gap_story_properties.c:1733
 msgid "framenumber of the first frame in the clip range"
 msgstr "číslo prvního políčka v rozsahu klipu"
 
-#: gap/gap_story_properties.c:1717
+#: gap/gap_story_properties.c:1755
 msgid "To:"
 msgstr "Do:"
 
@@ -5432,11 +5438,11 @@ msgstr "Do:"
 #. digits
 #. constrain
 #. lower/upper unconstrained
-#: gap/gap_story_properties.c:1724
+#: gap/gap_story_properties.c:1762
 msgid "framenumber of the last frame in the clip range"
 msgstr "číslo posledního políčka v rozsahu klipu"
 
-#: gap/gap_story_properties.c:1735
+#: gap/gap_story_properties.c:1774
 msgid "Loops:"
 msgstr "Opakování:"
 
@@ -5445,12 +5451,12 @@ msgstr "Opakování:"
 #. digits
 #. constrain
 #. lower/upper unconstrained
-#: gap/gap_story_properties.c:1742
+#: gap/gap_story_properties.c:1781
 msgid "number of loops (how often to play the framerange)"
 msgstr "počet opakování (jak často přehrávat rozsah políček)"
 
 #. the videotrack to label
-#: gap/gap_story_properties.c:1753 gap/gap_vex_dialog.c:1918
+#: gap/gap_story_properties.c:1792 gap/gap_vex_dialog.c:1918
 msgid "Videotrack:"
 msgstr "Stopa videa:"
 
@@ -5459,59 +5465,75 @@ msgstr "Stopa videa:"
 #. digits
 #. constrain
 #. lower/upper unconstrained
-#: gap/gap_story_properties.c:1760
+#: gap/gap_story_properties.c:1799
 msgid "select input videotrack(most videofiles have just 1 track)"
 msgstr "zvolte vstupní stopu videa (většina souborů videa má jen 1 stopu)"
 
 #. the Deinterlace Mode label
-#: gap/gap_story_properties.c:1771
+#: gap/gap_story_properties.c:1810
 msgid "Deinterlace:"
 msgstr "Eliminovat prokládání:"
 
-#: gap/gap_story_properties.c:1797
+#: gap/gap_story_properties.c:1836
 msgid "Read videoframes 1:1 without de-interlace filter"
 msgstr "Číst políčka videa 1:1 bez filtru pro eliminaci prokládání"
 
 #. radio button delace_mode odd
-#: gap/gap_story_properties.c:1806
+#: gap/gap_story_properties.c:1845
 msgid "Odd"
 msgstr "Liché"
 
-#: gap/gap_story_properties.c:1814
+#: gap/gap_story_properties.c:1853
 msgid "Apply odd-lines filter when reading videoframes"
 msgstr "Používat při čtení políček videa filtr lichých řádků"
 
 #. radio button delace_mode even
-#: gap/gap_story_properties.c:1823
+#: gap/gap_story_properties.c:1862
 msgid "Even"
 msgstr "Sudé"
 
-#: gap/gap_story_properties.c:1831
+#: gap/gap_story_properties.c:1870
 msgid "Apply even-lines filter when reading videoframes"
 msgstr "Používat při čtení políček videa filtr sudých řádků"
 
-#: gap/gap_story_properties.c:1856
+#: gap/gap_story_properties.c:1895
 msgid ""
 "deinterlacing threshold: 0.0 no interpolation 0.999 smooth interpolation"
 msgstr ""
 "práh eliminace prokládání: 0.0 žádná interpolace 0.999 hladká interpolace"
 
 #. pingpong
-#: gap/gap_story_properties.c:1872
+#: gap/gap_story_properties.c:1911
 msgid "Pingpong:"
 msgstr "Pingpong:"
 
-#: gap/gap_story_properties.c:1888
+#: gap/gap_story_properties.c:1927
 msgid "ON: Play clip in pingpong mode"
 msgstr "ZAPNUTO: Přehrávat klip v režimu pingpong"
 
+#: gap/gap_story_properties.c:1938
+msgid "Stepsize:"
+msgstr "Velikost kroku:"
+
+#. lower/upper
+#. step, page
+#. digits
+#. constrain
+#. lower/upper unconstrained
+#: gap/gap_story_properties.c:1945
+msgid ""
+"Stepsize density. Use 1.0 for normal 1:1 frame by frame steps. a value of "
+"0.5 shows each input frame 2 times. a value of 2.0 shows only every 2.nd "
+"input frame"
+msgstr "Hustota velikosti kroku. Použijte 1.0 pro normální kroky 1:1 políčko po políčku, hodnota 0.5 zobrazuje každé vstupní políčko dvakrát. hodnota 2.0 zobrazuje jen každé druhé vstupní políčko"
+
 #. the duration label
-#: gap/gap_story_properties.c:1900
+#: gap/gap_story_properties.c:1958
 msgid "Duration:"
 msgstr "Trvání:"
 
 #. the comment label
-#: gap/gap_story_properties.c:1989 vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2185
+#: gap/gap_story_properties.c:2047 vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2185
 msgid "Comment:"
 msgstr "Poznámka:"
 
@@ -5975,65 +5997,65 @@ msgstr "Nastavit všechny parametry na implicitní hodnoty"
 msgid "Set Layer Opacity"
 msgstr "Nastavit krytí vrstvy"
 
-#: libgapvidutil/gap_gve_story.c:578
+#: libgapvidutil/gap_gve_story.c:581
 #, c-format
 msgid "encoding_video_frame_%06d"
 msgstr "encoding_video_frame_%06d"
 
-#: libgapvidutil/gap_gve_story.c:1233
+#: libgapvidutil/gap_gve_story.c:1236
 #, c-format
 msgid "cant load:  %s to memory"
 msgstr "nemohu načíst: %s do paměti"
 
-#: libgapvidutil/gap_gve_story.c:1537
+#: libgapvidutil/gap_gve_story.c:1540
 msgid "checking audio peaks"
 msgstr "kontroluji vrcholy zvuku"
 
-#: libgapvidutil/gap_gve_story.c:1559
+#: libgapvidutil/gap_gve_story.c:1562
 msgid "writing composite audiofile"
 msgstr "zapisuji složený soubor zvuku"
 
-#: libgapvidutil/gap_gve_story.c:1572
+#: libgapvidutil/gap_gve_story.c:1575
 #, c-format
 msgid "cant write audio to file: %s "
 msgstr "nemohu zapsat zvuk do sobuoru: %s "
 
-#: libgapvidutil/gap_gve_story.c:1579 vid_common/gap_cme_gui.c:1197
+#: libgapvidutil/gap_gve_story.c:1582 vid_common/gap_cme_gui.c:1197
 #: vid_common/gap_cme_gui.c:1356
 msgid "ready"
 msgstr "připraven"
 
-#: libgapvidutil/gap_gve_story.c:2121
+#: libgapvidutil/gap_gve_story.c:2128
 #, c-format
 msgid "file not found:  %s for audioinput"
 msgstr "soubor nenalezen: %s pro vstup zvuku"
 
-#: libgapvidutil/gap_gve_story.c:2265 libgapvidutil/gap_gve_story.c:2377
+#: libgapvidutil/gap_gve_story.c:2272 libgapvidutil/gap_gve_story.c:2384
 #, c-format
 msgid "cant use file:  %s as audioinput"
 msgstr "nemohu použít soubor: %s jako vstup zvuku"
 
-#: libgapvidutil/gap_gve_story.c:2278 libgapvidutil/gap_gve_story.c:2654
+#: libgapvidutil/gap_gve_story.c:2285 libgapvidutil/gap_gve_story.c:2665
 #, c-format
 msgid "ERROR file: %s is not a supported videoformat"
 msgstr "CHYBA soubor: %s není v podporovaném formátu videa"
 
-#: libgapvidutil/gap_gve_story.c:2679
+#: libgapvidutil/gap_gve_story.c:2690
 #, c-format
 msgid "loading error on animimage:  %s"
 msgstr "chyba při načítání animovaného obrázku: %s"
 
-#: libgapvidutil/gap_gve_story.c:2697
+#: libgapvidutil/gap_gve_story.c:2708
 #, c-format
 msgid "imagefile not found:  %s"
 msgstr "soubor obrázku nenalezen: %s"
 
-#: libgapvidutil/gap_gve_story.c:2808
+#: libgapvidutil/gap_gve_story.c:2819
 #, c-format
 msgid "no framefile(s) found at:  %s"
 msgstr "nenalezeny žádné soubory políček v: %s"
 
-#: libgapvidutil/gap_gve_story.c:3212
+#: libgapvidutil/gap_gve_story.c:3237
 #, c-format
 msgid ""
 "illegal number: %s (valid range is %d upto %d)\n"
@@ -6042,16 +6064,16 @@ msgstr ""
 "neplatné číslo: %s (platný rozsah je %d až %d)\n"
 " používám implicitní hodnotu %d"
 
-#: libgapvidutil/gap_gve_story.c:3251
+#: libgapvidutil/gap_gve_story.c:3276
 #, c-format
 msgid ""
-"illegal number: %s (valid range is %.3f upto %.3f)\n"
+"Illegal number: %s (valid range is %.3f upto %.3f)\n"
 " using default value %.3f"
 msgstr ""
-"neplatné číslo: %s (platný rozsah je %.3f až %.3f)\n"
-" používám implicitní hodnotu %3f"
+"Neplatné číslo: %s (platný rozsah je %.3f až %.3f)\n"
+" používám implicitní hodnotu %.3f"
 
-#: libgapvidutil/gap_gve_story.c:3302
+#: libgapvidutil/gap_gve_story.c:3327
 #, c-format
 msgid ""
 "illegal tracknumber: %s (valid range is 0 upto %d)\n"
@@ -6060,7 +6082,7 @@ msgstr ""
 "neplatné číslo stopy: %s (platný rozsah je 0 až %d)\n"
 " používám implicitní stopu 0"
 
-#: libgapvidutil/gap_gve_story.c:3368
+#: libgapvidutil/gap_gve_story.c:3393
 #, c-format
 msgid ""
 "illegal rangenumber: %s\n"
@@ -6071,7 +6093,7 @@ msgstr ""
 "(platný rozsah je kladné číslo nebo jedno z klíčových slov first, last, top, "
 "bottom"
 
-#: libgapvidutil/gap_gve_story.c:3467
+#: libgapvidutil/gap_gve_story.c:3492
 #, c-format
 msgid ""
 "illegal item: %s (expected one of the keywords: normal pingpong)\n"
@@ -6080,7 +6102,7 @@ msgstr ""
 "neplatná položka: %s (očekáváno jedno z klíčových slov normal pingpong)\n"
 " používám implicitní normal"
 
-#: libgapvidutil/gap_gve_story.c:3651
+#: libgapvidutil/gap_gve_story.c:3679
 #, c-format
 msgid ""
 "Header not found!\n"
@@ -6089,14 +6111,14 @@ msgstr ""
 "Hlavička nenalezena!\n"
 "(řádek 1 musí začínat s %s)"
 
-#: libgapvidutil/gap_gve_story.c:3900
+#: libgapvidutil/gap_gve_story.c:3929
 #, c-format
 msgid "illegal keyword: %s (expected keywords are: width, height, both, none"
 msgstr ""
 "neplatné klíčové slovo: %s (očekávaná klíčová slova jsou width, height, "
 "both, none"
 
-#: libgapvidutil/gap_gve_story.c:3932
+#: libgapvidutil/gap_gve_story.c:3961
 #, c-format
 msgid ""
 "illegal keyword: %s (expected keywords are: keep_proportions, "
@@ -6105,24 +6127,24 @@ msgstr ""
 "neplatné klíčové slovo: %s (očekávaná klíčová slova jsou keep_proportions, "
 "change_proportions"
 
-#: libgapvidutil/gap_gve_story.c:4315
+#: libgapvidutil/gap_gve_story.c:4353
 msgid "Line is not supported and will be ignored"
 msgstr "Řádek není podporován a bude ignorován"
 
-#: libgapvidutil/gap_gve_story.c:4417
+#: libgapvidutil/gap_gve_story.c:4455
 #, c-format
 msgid "PARSING %d: %s"
 msgstr "ZPRACOVÁVÁM %d: %s"
 
-#: libgapvidutil/gap_gve_story.c:4457
+#: libgapvidutil/gap_gve_story.c:4495
 msgid "No Frames or Images found ...."
 msgstr "Nenalezeno žádné políčko ani obrázek ...."
 
-#: libgapvidutil/gap_gve_story.c:5511
+#: libgapvidutil/gap_gve_story.c:5552
 msgid "Seek Inputviedoframe..."
 msgstr "Přejít na políčko vstupního videa..."
 
-#: libgapvidutil/gap_gve_story.c:5516
+#: libgapvidutil/gap_gve_story.c:5557
 msgid "Continue Encoding..."
 msgstr "Pokračovat v kódování"
 
@@ -7967,6 +7989,12 @@ msgstr "Kodér Singleframe nemá parametry specifické pro kodér"
 #: vid_enc_single/gap_enc_singleframes_main.c:671
 msgid "Singleframes Video Encoding .."
 msgstr "Kódování videa singleframes .."
+
+#~ msgid "Fast"
+#~ msgstr "Rychlé"
+
+#~ msgid "Windows"
+#~ msgstr "Okna"
 
 #~ msgid ""
 #~ "This plugin is the configuration GUI for Onion layers. Onion Layer(s) "
