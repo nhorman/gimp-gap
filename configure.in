@@ -132,7 +132,23 @@ if test "x$GCC" = "xyes"; then
 fi
 changequote([,])dnl
 
-CPPFLAGS="$CPPFLAGS -DG_DISABLE_DEPRECATED -DGDK_DISABLE_DEPRECATED"
+
+####################################################
+# Default to disable deprecated GTK+ stuff for 2.2.x
+####################################################
+
+AC_MSG_CHECKING([if GTK+ is version 2.3.0 or newer])
+if $PKG_CONFIG --atleast-version=2.3.0 gtk+-2.0; then
+  have_gtk_2_3=yes
+else
+  have_gtk_2_3=no
+fi
+AC_MSG_RESULT($have_gtk_2_3)
+
+if test "x$have_gtk_2_3" != "xyes"; then
+  CPPFLAGS="${CPPFLAGS} -DG_DISABLE_DEPRECATED -DGDK_PIXBUF_DISABLE_DEPRECATED -DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED"
+fi
+
 
 AC_SUBST(GAPLIBDIR)
 AC_SUBST(LOCALEDIR)

@@ -605,7 +605,7 @@ gap_resi_dialog (gint32 image_id, GapRangeOpsAsiz asiz_mode, char *title_text,
   main_vbox = gtk_vbox_new (FALSE, 4);
   gtk_container_set_border_width (GTK_CONTAINER (main_vbox), 4);
   /* gtk_container_add (GTK_CONTAINER (GTK_DIALOG (res_private->shell)->vbox), main_vbox);
-   */                
+   */
   gtk_box_pack_start (GTK_BOX (GTK_DIALOG (res_private->shell)->vbox), main_vbox, TRUE, TRUE, 0);
 
   /* button hbox */
@@ -613,7 +613,7 @@ gap_resi_dialog (gint32 image_id, GapRangeOpsAsiz asiz_mode, char *title_text,
   gtk_box_set_homogeneous (GTK_BOX (GTK_DIALOG (res_private->shell)->action_area), FALSE);
 
   hbbox = gtk_hbutton_box_new ();
-  gtk_button_box_set_spacing (GTK_BUTTON_BOX (hbbox), 4);
+  gtk_box_set_spacing (GTK_BOX (hbbox), 4);
   gtk_box_pack_end (GTK_BOX (GTK_DIALOG (res_private->shell)->action_area), hbbox, FALSE, FALSE, 0);
   gtk_widget_show (hbbox);
 

@@ -215,7 +215,7 @@ on_oni__optionmenu_select_mode (GtkWidget     *wgt_item,
 
  if(gpp == NULL) return;
 
- l_idx = (gint) gtk_object_get_data (GTK_OBJECT (wgt_item), ENC_MENU_ITEM_INDEX_KEY);
+ l_idx = (gint) g_object_get_data (G_OBJECT (wgt_item), ENC_MENU_ITEM_INDEX_KEY);
 
  if(gap_debug) printf("CB: on_oni__optionmenu_select_mode index: %d\n", (int)l_idx);
  if((l_idx >= MAX_SELECT_MODE_ARRAY_ELEMENTS) || (l_idx < 1))
@@ -1164,59 +1164,59 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
   oni__optionmenu_select_mode_menu = gtk_menu_new ();
   glade_menuitem = gtk_menu_item_new_with_label (_("Pattern is equal to layername"));
   gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (oni__optionmenu_select_mode_menu), glade_menuitem);
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
+  gtk_menu_shell_append (GTK_MENU_SHELL (oni__optionmenu_select_mode_menu), glade_menuitem);
+        g_signal_connect (glade_menuitem, "activate",
                           G_CALLBACK (on_oni__optionmenu_select_mode),
-                          (gpointer)gpp);
-        gtk_object_set_data (GTK_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY, (gpointer)0);
+                          gpp);
+        g_object_set_data (G_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY, (gpointer)0);
 
   glade_menuitem = gtk_menu_item_new_with_label (_("Pattern is start of layername"));
   gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (oni__optionmenu_select_mode_menu), glade_menuitem);
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
+  gtk_menu_shell_append (GTK_MENU_SHELL (oni__optionmenu_select_mode_menu), glade_menuitem);
+        g_signal_connect (glade_menuitem, "activate",
                           G_CALLBACK (on_oni__optionmenu_select_mode),
-                          (gpointer)gpp);
-        gtk_object_set_data (GTK_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY, (gpointer)1);
+                          gpp);
+        g_object_set_data (G_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY, (gpointer)1);
 
   glade_menuitem = gtk_menu_item_new_with_label (_("Pattern is end of layername"));
   gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (oni__optionmenu_select_mode_menu), glade_menuitem);
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
+  gtk_menu_shell_append (GTK_MENU_SHELL (oni__optionmenu_select_mode_menu), glade_menuitem);
+        g_signal_connect (glade_menuitem, "activate",
                           G_CALLBACK (on_oni__optionmenu_select_mode),
-                          (gpointer)gpp);
-        gtk_object_set_data (GTK_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY, (gpointer)2);
+                          gpp);
+        g_object_set_data (G_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY, (gpointer)2);
 
   glade_menuitem = gtk_menu_item_new_with_label (_("Pattern is a part of layername"));
   gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (oni__optionmenu_select_mode_menu), glade_menuitem);
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
+  gtk_menu_shell_append (GTK_MENU_SHELL (oni__optionmenu_select_mode_menu), glade_menuitem);
+        g_signal_connect (glade_menuitem, "activate",
                           G_CALLBACK (on_oni__optionmenu_select_mode),
-                          (gpointer)gpp);
-        gtk_object_set_data (GTK_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY, (gpointer)3);
+                          gpp);
+        g_object_set_data (G_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY, (gpointer)3);
 
   glade_menuitem = gtk_menu_item_new_with_label (_("Pattern is a list of layerstack numbers"));
   gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (oni__optionmenu_select_mode_menu), glade_menuitem);
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
+  gtk_menu_shell_append (GTK_MENU_SHELL (oni__optionmenu_select_mode_menu), glade_menuitem);
+        g_signal_connect (glade_menuitem, "activate",
                           G_CALLBACK (on_oni__optionmenu_select_mode),
-                          (gpointer)gpp);
-        gtk_object_set_data (GTK_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY, (gpointer)4);
+                          gpp);
+        g_object_set_data (G_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY, (gpointer)4);
 
   glade_menuitem = gtk_menu_item_new_with_label (_("Pattern is a list of reverse layerstack numbers"));
   gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (oni__optionmenu_select_mode_menu), glade_menuitem);
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
+  gtk_menu_shell_append (GTK_MENU_SHELL (oni__optionmenu_select_mode_menu), glade_menuitem);
+        g_signal_connect (glade_menuitem, "activate",
                           G_CALLBACK (on_oni__optionmenu_select_mode),
-                          (gpointer)gpp);
-        gtk_object_set_data (GTK_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY, (gpointer)5);
+                          gpp);
+        g_object_set_data (G_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY, (gpointer)5);
 
   glade_menuitem = gtk_menu_item_new_with_label (_("All visible (ignore pattern)"));
   gtk_widget_show (glade_menuitem);
-  gtk_menu_append (GTK_MENU (oni__optionmenu_select_mode_menu), glade_menuitem);
-        g_signal_connect (G_OBJECT (glade_menuitem), "activate",
+  gtk_menu_shell_append (GTK_MENU_SHELL (oni__optionmenu_select_mode_menu), glade_menuitem);
+        g_signal_connect (glade_menuitem, "activate",
                           G_CALLBACK (on_oni__optionmenu_select_mode),
-                          (gpointer)gpp);
-        gtk_object_set_data (GTK_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY, (gpointer)6);
+                          gpp);
+        g_object_set_data (G_OBJECT (glade_menuitem), ENC_MENU_ITEM_INDEX_KEY, (gpointer)6);
 
   gtk_option_menu_set_menu (GTK_OPTION_MENU (oni__optionmenu_select_mode), oni__optionmenu_select_mode_menu);
   gtk_option_menu_set_history (GTK_OPTION_MENU (oni__optionmenu_select_mode), 6);

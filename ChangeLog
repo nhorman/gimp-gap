@@ -1,3 +1,15 @@
+2004-05-10  Sven Neumann  <sven@gimp.org>
+
+	* configure.in: only disable the deprecated glib/gdk-pixbuf/gtk+
+	APIs when compiling against gtk+-2.2.
+
+	* gap/gap_navigator_dialog.c
+	* gap/gap_onion_dialog.c
+	* gap/gap_resi_dialog.c
+	* gap/gap_wr_color_curve.c
+	* gap/gap_wr_color_huesat.c
+	* gap/gap_wr_color_levels.c: don't use deprecated GTK+ calls.
+
 2004-05-06  Wolfgang Hofer <hof@gimp.org>
 
 	- bugfix: static init variables 
