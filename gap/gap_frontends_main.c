@@ -128,7 +128,7 @@ query ()
 			 G_N_ELEMENTS (args_xanim), nreturn_vals,
 			 args_xanim, return_vals);
 
-  gimp_install_procedure("extension_gap_xanim_decode",
+  gimp_install_procedure("plug_in_gap_xanim_decode_toolbox",
 			 "This plugin calls xanim to split any video to anim frames. (xanim exporting edition must be installed on your system)",
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
@@ -136,7 +136,7 @@ query ()
 			 gap_main_version,
 			 N_("<Toolbox>/Xtns/Split Video to Frames/Any XANIM readable..."),
 			 NULL,
-			 GIMP_EXTENSION,
+			 GIMP_PLUGIN,
 			 G_N_ELEMENTS (args_xanim_ext), nreturn_vals,
 			 args_xanim_ext, return_vals);
 
@@ -208,7 +208,7 @@ run (char    *name,
 
   if(gap_debug) fprintf(stderr, "\n\ngap_main: debug name = %s\n", name);
 
-  if (strcmp (name, "extension_gap_xanim_decode") != 0)
+  if (strcmp (name, "plug_in_gap_xanim_decode") != 0)
   {
     image_id = param[1].data.d_image;
     lock_image_id = image_id;
@@ -228,7 +228,7 @@ run (char    *name,
   }
   
   if ((strcmp (name, "plug_in_gap_xanim_decode") == 0)
-  ||  (strcmp (name, "extension_gap_xanim_decode") == 0))
+  ||  (strcmp (name, "plug_in_gap_xanim_decode_toolbox") == 0))
   {
       if (run_mode == GIMP_RUN_NONINTERACTIVE)
       {
@@ -309,7 +309,7 @@ run (char    *name,
   values[0].type = GIMP_PDB_STATUS;
   values[0].data.d_status = status;
 
-  if (strcmp (name, "extension_gap_xanim_decode") != 0)
+  if (strcmp (name, "plug_in_gap_xanim_decode_toolbox") != 0)
   {
     /* remove LOCK on this image for all gap_plugins */
      p_gap_lock_remove(lock_image_id);

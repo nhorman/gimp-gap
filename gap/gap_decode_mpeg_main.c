@@ -180,7 +180,7 @@ query ()
                           G_N_ELEMENTS (load_return_vals),
                           load_args, load_return_vals);
 
-  gimp_install_procedure ("extension_gap_decode_mpeg",
+  gimp_install_procedure ("plug_in_gap_decode_mpeg_toolbox",
                           "Split MPEG1 movies into animframes and load 1st frame",
                           "Split MPEG1 movies into single frames (image files on disk) and load 1st frame. audio tracks are ignored",
                           "Wolfgang Hofer (hof@gimp.org)",
@@ -188,7 +188,7 @@ query ()
                           "2000/11/30",
                           N_("<Toolbox>/Xtns/Split Video to Frames/MPEG1"),
 			  NULL,
-                          GIMP_EXTENSION,
+                          GIMP_PLUGIN,
                           G_N_ELEMENTS (ext_args),
                           G_N_ELEMENTS (load_return_vals),
                           ext_args, load_return_vals);
@@ -222,7 +222,7 @@ run (char    *name,
   run_mode = param[0].data.d_int32;
 
   if ((strcmp (name, "plug_in_gap_decode_mpeg") == 0) 
-  ||  (strcmp (name, "extension_gap_decode_mpeg") == 0))
+  ||  (strcmp (name, "plug_in_gap_decode_mpeg_toolbox") == 0))
   {
     l_filename[0] = '\0';
     strcpy(&l_frames_basename[0], "frame_");

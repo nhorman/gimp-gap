@@ -301,7 +301,7 @@ gint p_procedure_available(char  *proc_name, t_proc_type ptype)
      {
         case PTYP_ITERATOR:
            /* check exactly for Input Parametertypes (common to all Iterators) */
-           if (l_proc_type != GIMP_EXTENSION )     { l_rc = -1; break; }
+           if (l_proc_type != GIMP_PLUGIN )     { l_rc = -1; break; }
            if (l_nparams  != 4)                    { l_rc = -1; break; }
            if (l_params[0].type != GIMP_PDB_INT32)    { l_rc = -1; break; }
            if (l_params[1].type != GIMP_PDB_INT32)    { l_rc = -1; break; }

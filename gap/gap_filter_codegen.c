@@ -660,7 +660,7 @@ gint p_gen_code_iter(char  *proc_name)
        fprintf(l_fp, "  static GimpParamDef *return_vals = NULL;\n");
        fprintf(l_fp, "  static int nreturn_vals = 0;\n");
        fprintf(l_fp, "\n");
-       fprintf(l_fp, "  g_snprintf(l_blurb_text, sizeof(l_blurb_text), \"This extension calculates the modified values for one iterationstep for the call of %s\");\n", l_clean_proc_name);
+       fprintf(l_fp, "  g_snprintf(l_blurb_text, sizeof(l_blurb_text), \"This procedure calculates the modified values for one iterationstep for the call of %s\");\n", l_clean_proc_name);
        fprintf(l_fp, "\n");
        fprintf(l_fp, "  gimp_install_procedure(\"%s_Iterator\",\n", l_clean_proc_name);
        fprintf(l_fp, "                         l_blurb_text,\n");
@@ -670,7 +670,7 @@ gint p_gen_code_iter(char  *proc_name)
        fprintf(l_fp, "                         \"%s\",\n", l_gendate);                   /* generation date */
        fprintf(l_fp, "                         NULL,    /* do not appear in menus */\n");
        fprintf(l_fp, "                         NULL,\n");
-       fprintf(l_fp, "                         GIMP_EXTENSION,\n");
+       fprintf(l_fp, "                         GIMP_PLUGIN,\n");
        fprintf(l_fp, "                         nargs_iter, nreturn_vals,\n");
        fprintf(l_fp, "                         args_iter, return_vals);\n");
        fprintf(l_fp, "\n");

@@ -126,14 +126,14 @@ query ()
   /* ------------------ Common Iterator ------------------------------ */
 
   gimp_install_procedure(GIMP_PLUGIN_GAP_COMMON_ITER,
-			 "This extension calculates the modified values in the LAST_VALUES buffer named by plugin_name for one iterationstep",
+			 "This procedure calculates the modified values in the LAST_VALUES buffer named by plugin_name for one iterationstep",
 			 "",
 			 "Wolfgang Hofer",
 			 "Wolfgang Hofer",
 			 "Feb. 2002",
 			 NULL,    /* do not appear in menus */
 			 NULL,
-			 GIMP_EXTENSION,
+			 GIMP_PLUGIN,
 			 G_N_ELEMENTS (args_com_iter), nreturn_vals,
 			 args_com_iter, return_vals);
 

@@ -1202,7 +1202,7 @@ static void p_install_proc_iter_ALT(char *name)
   static int nreturn_vals = 0;
 
   l_iter_proc_name = g_strdup_printf("%s_Iterator_ALT", name);
-  l_blurb_text = g_strdup_printf("This extension calculates the modified values for one iterationstep for the call of %s", name);
+  l_blurb_text = g_strdup_printf("This procedure calculates the modified values for one iterationstep for the call of %s", name);
   
   gimp_install_procedure(l_iter_proc_name,
 			 l_blurb_text,
@@ -1212,7 +1212,7 @@ static void p_install_proc_iter_ALT(char *name)
 			 "Feb. 2000",
 			 NULL,    /* do not appear in menus */
 			 NULL,
-			 GIMP_EXTENSION,
+			 GIMP_PLUGIN,
 			 G_N_ELEMENTS (args_iter), nreturn_vals,
 			 args_iter, return_vals);
 
