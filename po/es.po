@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gimp-gap.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-09-09 11:57+0200\n"
-"PO-Revision-Date: 2003-09-09 19:54+0200\n"
+"POT-Creation-Date: 2003-09-10 12:00+0200\n"
+"PO-Revision-Date: 2003-09-10 19:58+0200\n"
 "Last-Translator: Francisco Javier F. Serrador <serrador@arrakis.es>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -2621,6 +2621,9 @@ msgid ""
 "does not point to an executable program\n"
 "the configured value for %s is: %s\n"
 msgstr ""
+"ATENCIÓN: su archivo de configuración gimprc para el servidor de sonido wavplay\n"
+"no apunta a un programa ejecutable\n"
+"el valor configurado para %s es: %s\n"
 
 #: gap/gap_player_dialog.c:626
 #, c-format
@@ -2629,6 +2632,9 @@ msgid ""
 "does not point to an executable program\n"
 "the current value is: %s\n"
 msgstr ""
+"ATENCIÓN: la variable de entorno %s\n"
+"no apunta a un programa ejecutable\n"
+"el valor actual es: %s\n"
 
 #: gap/gap_player_dialog.c:662
 #, c-format
@@ -2640,6 +2646,12 @@ msgid ""
 "or set environment variable %s to the name of the executable\n"
 "before you start GIMP"
 msgstr ""
+"NO hay soporte de sonido disponible\n"
+"el archivo ejecutable del servidor de sonido «%s» no se ha encontrado.\n"
+"Si ha instalado «%s»\n"
+"debería añadir el directorio de intalación a su variable PATH\n"
+"o establecer la variable de entorno %s con el combre del ejecutable\n"
+"antes de iniciar El GIMP"
 
 #. pending timer_go_job gets useless, since we start playback now
 #: gap/gap_player_dialog.c:1083 gap/gap_player_dialog.c:1528
@@ -2693,7 +2705,9 @@ msgstr "Habilitar"
 
 #: gap/gap_player_dialog.c:3057
 msgid "ON: Play Button plays Video + Audio, OFF: Play silent"
-msgstr "Activado: El botón de «Play» reproduce Vídeo+Audio, Desactivado: Reproduce en silencio"
+msgstr ""
+"Activado: El botón de «Play» reproduce Vídeo+Audio, Desactivado: Reproduce "
+"en silencio"
 
 #. Sample Offset
 #: gap/gap_player_dialog.c:3066
@@ -2711,6 +2725,15 @@ msgid ""
 "equal to the duration of 10 frames\n"
 "(at original video playback speed)"
 msgstr ""
+"El desplazamiento del sonido en fotogramas a la "
+"valocidad de reproducción de vídeo original\n"
+"(un valor de 0 inicia el sonido y el vídeo a la vez, \n"
+"un valor de -10 reproducirá los fotogramas 0 a 9 en\n"
+"silencio e iniciará el sonido en el fotograma 10\n"
+"un valor de 10 iniciará el sonido en el fotograma 1,\n"
+"pero salta el comienzo de la reproducción del sonido\n"
+"en una longitud equivalente a la duración de 10\n"
+"fotogramas."
 
 #: gap/gap_player_dialog.c:3102
 msgid "Reset Offset and Volume"
@@ -2765,7 +2788,9 @@ msgstr "Opciones de sonido"
 
 #: gap/gap_player_dialog.c:3366
 msgid "Click: go to frame, Ctrl-Click: set From Frame, Alt-Click: set To Frame"
-msgstr "Pulsar: ir al fortograma, Ctrl-pulsar: Establecer fotograma de inicial, alt-Pulsar: Establecer fotograma final"
+msgstr ""
+"Pulsar: ir al fortograma, Ctrl-pulsar: Establecer fotograma de inicial, alt-"
+"Pulsar: Establecer fotograma final"
 
 #: gap/gap_player_dialog.c:3435
 msgid "Start Framenumber of Selection Range"
@@ -2878,7 +2903,8 @@ msgid ""
 "Goto Selection Start/Active/End (Left/Middle/Right Button) if not playing"
 msgstr ""
 "Pausa si está reproduciendo (Cualquier botón de ratón)\n"
-"Ir a la selección de Inicio/Activa/Final (botón izquierdo/central/derecho) se no se está reproduciendo"
+"Ir a la selección de Inicio/Activa/Final (botón izquierdo/central/derecho) "
+"se no se está reproduciendo"
 
 #: gap/gap_player_dialog.c:3736
 msgid "Start Reverse Playback"
