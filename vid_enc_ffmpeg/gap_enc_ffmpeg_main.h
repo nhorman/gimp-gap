@@ -32,6 +32,25 @@
 #include <config.h>
 #include "gap_gvetypes.h"
 
+
+/* Includes for encoder specific extra LIBS */
+#include "avformat.h"
+#include "avcodec.h"
+
+
+#undef HAVE_FULL_FFMPEG
+
+#if FFMPEG_VERSION_INT ==  0x000408
+#define HAVE_OLD_FFMPEG_0408
+#else
+#undef  HAVE_OLD_FFMPEG_0408
+#if LIBAVCODEC_BUILD >= 4744
+#define HAVE_FULL_FFMPEG
+#endif
+#endif
+
+
+
 #define GAP_HELP_ID_FFMPEG_PARAMS         "plug-in-gap-encpar-ffmpeg"
 #define GAP_PLUGIN_NAME_FFMPEG_PARAMS     "plug_in_gap_encpar_ffmpeg"
 #define GAP_PLUGIN_NAME_FFMPEG_ENCODE     "plug_in_gap_enc_ffmpeg"
@@ -121,7 +140,7 @@ typedef struct {
   gint32  video_bitrate;
   gint32  gop_size;
   gint32  intra;
-  gint32  qscale;
+  gdouble qscale;       /* changed from int to float with ffmpeg 0.4.9pre1 */
   gint32  qmin;
   gint32  qmax;
   gint32  qdiff;
@@ -160,6 +179,75 @@ typedef struct {
   gdouble factor_aspect_ratio;  /* 0.0 == auto detect from pixelsizes */
   /* extras */
   gboolean dont_recode_flag;
+
+
+  /* new params (introduced with ffmpeg 0.4.9pre1) */
+  gint32   thread_count;
+  gint32   mb_cmp;
+  gint32   ildct_cmp;
+  gint32   sub_cmp;
+  gint32   cmp;
+  gint32   pre_cmp;
+  gint32   pre_me;
+  gdouble  lumi_mask;
+  gdouble  dark_mask;
+  gdouble  scplx_mask;
+  gdouble  tcplx_mask;
+  gdouble  p_mask;
+  gint32   qns;
+
+  gint32 use_ss;
+  gint32 use_aiv;
+  gint32 use_obmc;
+  gint32 use_loop;
+  gint32 use_alt_scan;
+  gint32 use_trell;
+  gint32 use_mv0;
+  gint32 do_normalize_aqp;
+  gint32 use_scan_offset;
+  gint32 closed_gop;
+  gint32 use_qpel;
+  gint32 use_qprd;
+  gint32 use_cbprd;
+  gint32 do_interlace_dct;
+  gint32 do_interlace_me;
+  gint32 video_lmin;
+  gint32 video_lmax;
+  gint32 video_lelim;
+  gint32 video_celim;
+  gint32 video_intra_quant_bias;
+  gint32 video_inter_quant_bias;
+  gint32 me_threshold;
+  gint32 mb_threshold;
+  gint32 intra_dc_precision;
+  gint32 error_rate;
+  gint32 noise_reduction;
+  gint32 sc_threshold;
+  gint32 me_range;
+  gint32 coder;
+  gint32 context;
+  gint32 predictor;
+  gint32 nsse_weight;
+  gint32 subpel_quality;
+
+
+  /* new parms (found CVS version 2005.03.02 == LIBAVCODEC_BUILD 4744 ) */
+  gint32 strict_gop;
+  gint32 no_output;
+  gint32 video_mb_lmin;
+  gint32 video_mb_lmax;
+
+  gint32 video_profile;
+  gint32 video_level;
+  gint32 frame_skip_threshold;
+  gint32 frame_skip_factor;
+  gint32 frame_skip_exp;
+  gint32 frame_skip_cmp;
+
+  gint32  mux_rate;
+  gint32  mux_packet_size;
+  gdouble mux_preload;
+  gdouble mux_max_delay;
 
 } GapGveFFMpegValues;
 

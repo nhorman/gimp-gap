@@ -274,7 +274,6 @@ static void       p_set_vtrack_attributes(GapGveStoryFrameRangeElem *frn_elem
                       );
 static void       p_storyboard_analyze(GapStoryBoard *stb
                       , GapGveStoryVTrackArray *vtarr
-                      , GapGveStoryFrameRangeElem *frn_known_list
                       , GapGveStoryVidHandle *vidhand
                       );
 static GapGveStoryFrameRangeElem *  p_framerange_list_from_storyboard(
@@ -3239,7 +3238,6 @@ p_set_vtrack_attributes(GapGveStoryFrameRangeElem *frn_elem
 static void
 p_storyboard_analyze(GapStoryBoard *stb
                       , GapGveStoryVTrackArray *vtarr
-                      , GapGveStoryFrameRangeElem *frn_known_list
                       , GapGveStoryVidHandle *vidhand
                       )
 {
@@ -3251,6 +3249,7 @@ p_storyboard_analyze(GapStoryBoard *stb
   GapGveStoryFrameRangeElem *frn_list;
   GapGveStoryFrameRangeElem *frn_pinglist;
   GapGveStoryErrors         *sterr;
+  GapGveStoryFrameRangeElem *frn_known_list;
 
   gint32 l_track;
   gint   l_idx;
@@ -3299,7 +3298,8 @@ p_storyboard_analyze(GapStoryBoard *stb
   for(stb_elem = stb->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
   {
     l_track    = stb_elem->track;
-    
+    frn_known_list  = vidhand->frn_list;
+  
     switch(stb_elem->record_type)
     {
       case GAP_STBREC_ATT_OPACITY:
@@ -3693,7 +3693,6 @@ p_framerange_list_from_storyboard(const char *storyboard_file
 	 */
         p_storyboard_analyze(stb
                             ,vtarr
-                            ,vidhand->frn_list
                             ,vidhand
                             );
       }

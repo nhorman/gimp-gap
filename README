@@ -13,9 +13,10 @@ Requires:
 
  - ffmpeg     0.4.8 (libavformat 0.4.8 and libavcodec 0.4.8)
  		    
-		    ffmpeg-0.4.9pre1 and some later CVS snapshots until 02/2005
+		    ffmpeg-0.4.9pre1 and some later CVS snapshots 2005.03.02
+		    (LIBAVCODEC_BUILD   >=  4744)
 		    of ffmpeg were also successfully tested to work with gimp-gap.
-		    But if you are using more recent CVS snapshots of ffmpeg it may
+		    But if you are using CVS snapshots of ffmpeg it may
 		    not work properly together with gimp-gap or even fail to compile.
 		    
                     libavformat and libavcodec build up the basic

@@ -1,3 +1,51 @@
+2005-03-05  Wolfgang Hofer <hof@gimp.org>
+	- ffmpeg-CVS (snapshot from 2005.03.02) based encoder:
+	  initalize values for the encoder options that are new
+	  in this ffmpeg CVS snapshot
+
+	  this fixes "buffer underflow" errors that were reported 
+	  (more than once per encoded frame) to stdout 
+	  by the encoder while executing av_write_frame.
+
+	  GAP provides now explicite support for ffmpeg library versions:
+	     0.4.8     (stable)
+	     0.4.9pre1 (latest official)
+	     CVS Snapshots equal or newer than 2005.03.02
+	     (identified by LIBAVCODEC_BUILD       4744
+	      GAP internal marked as #define HAVE_FULL_FFMPEG)
+	  
+	  (GUI support to edit the new options is still missing)
+	
+	- bugfix: Storyboard processing. 
+	  skipping the analyze of already known video elements
+	  did not work and made processing slower.
+	
+	* vid_enc_ffmpeg/gap_enc_ffmpeg_main.c [.h]
+	* vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c
+	* libgapvidutil/gap_gve_story.c
+	
+2005-02-27  Wolfgang Hofer <hof@gimp.org>
+        - bugfix (attempt) ffmpeg-0.4.9 frame aspect handling at encoding
+	    did not work. 
+	    (the bugfix follows the code of ffmpeg.c without understanding
+	     but seems to work)
+	    
+	    BUT: aspect detection at read access does not work with ffmpeg-0.4.9
+	    (dont know why, seems to be a bug in ffmpeg-0.4.9)
+	    
+	- bugfix:  lossless MPEG cut with ffmpeg-0.4.9 based encoder:
+	   workaround encodes a dummy frame 
+	   for each 1:1 copied frame to keep codec internal handled
+	   timestamps and picturenumbers up to date.
+	   (newer versions of ffmpeg do require ascending timestamsps
+	    and will not work if the codec is completely bypassed
+	    for those frames.)
+	   
+	   lossles mpeg cut now works with both ffmpeg-0.4.8  ffmpeg-0.4.9
+	   and more recent ffmpeg CVS snapshots.
+
+	* vid_enc_ffmpeg/gap_enc_ffmpeg_main.c
+
 2005-02-19  Wolfgang Hofer <hof@gimp.org>
 	- bugfix: STORYBOARD processing fixed crash that happened
 	  sometimes after creating the composite audiofile.

@@ -1149,8 +1149,13 @@ p_create_basic_options_frame (GapGveFFMpegGlobalParams *gpp)
 
  
   /* the qscale spinbutton */
+#ifdef HAVE_OLD_FFMPEG_0408
   adj = gtk_adjustment_new (0, 0, 31, 1, 10, 10);
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
+#else
+  adj = gtk_adjustment_new (0, 0, 255, 1, 10, 10);
+  spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 2);
+#endif  
   gpp->ff_qscale_spinbutton_adj = adj;
   gpp->ff_qscale_spinbutton     = spinbutton;
 
@@ -1162,7 +1167,7 @@ p_create_basic_options_frame (GapGveFFMpegGlobalParams *gpp)
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_ADJ, (gpointer)adj);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
   g_signal_connect (G_OBJECT (spinbutton), "changed",
-                      G_CALLBACK (on_ff_gint32_spinbutton_changed),
+                      G_CALLBACK (on_ff_gdouble_spinbutton_changed),
                       &gpp->evl.qscale);
 
   row++;
