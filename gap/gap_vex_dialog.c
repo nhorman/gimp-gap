@@ -175,7 +175,7 @@ gap_vex_dlg_init_gpp (GapVexMainGlobalParams *gpp)
  g_snprintf(gpp->val.extension, sizeof(gpp->val.extension), ".xcf");
  g_snprintf(gpp->val.audiofile, sizeof(gpp->val.audiofile), "frame.wav");
  gpp->val.basenum = 0;
- gpp->val.fn_digits = 6;
+ gpp->val.fn_digits = GAP_LIB_DEFAULT_DIGITS;
  gpp->val.preferred_decoder[0] = '\0';
  gpp->val.deinterlace = 0;
  gpp->val.delace_threshold = 1.0;
@@ -2253,7 +2253,7 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
                     (GtkAttachOptions) (0), 0, 0);
 
 
-  mw__spinbutton_fn_digits_adj = gtk_adjustment_new (1, 1, 6, 1, 10, 10);
+  mw__spinbutton_fn_digits_adj = gtk_adjustment_new (1, 1, GAP_LIB_MAX_DIGITS, 1, 10, 10);
   mw__spinbutton_fn_digits = gtk_spin_button_new (GTK_ADJUSTMENT (mw__spinbutton_fn_digits_adj), 1, 0);
   gtk_widget_show (mw__spinbutton_fn_digits);
   gtk_widget_set_usize (mw__spinbutton_fn_digits, SPIN_WIDTH_SMALL, -2);

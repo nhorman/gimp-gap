@@ -1,0 +1,212 @@
+"plug-in-gap-storyboard-edit"
+
+Storyboard Dialog
+
+    Start from Menu:
+      <Image>/Video/Storyboard  (has HelpMenu, no Button)
+
+
+  A storyboard file is a textfile that can be used to
+  assemble many videoclips, single images and frame sequences 
+  to one resulting video.
+  (see STORYBOARD_FILE_DOC.txt for more information
+  about storyboard file syntax and usage)
+  
+  
+  The storyboard dialog is a visual tool that allows creation 
+  and editing of simple storyboard files.
+  
+  the storyboard editor window is organized into 3 regions
+  - cliplist
+  - storyboard
+  - playback preview
+  
+  Cliplist and storyboard have the same capabilities to edit
+  storyboard files. The general idea is to have 2 files
+  open at the same time, where the cliplist usually
+  acts as collection of available clips,
+  and the storyboard is the destination where the
+  resulting video is assembled.
+  
+  Copy, cut and paste of Clips between cliplist and
+  storyboard is supported. There are corresponding buttons
+  and menu entries both for the storyboard and the cliplist.
+
+  There are playback buttons in the  storyboard and the cliplist.
+  Those buttons play the entire list in the playback motion preview.
+  When the SHIFT key is pressed while those buttons are clicked, 
+  the playback is restricted to the selected clips of the list.
+
+
+Creating new storyboard file and clips:
+  1.) Use the menu item "New" in the storyboard menu
+      to create a new storyboard file.
+  
+      This opens the popup dialog window for the storyboard
+      master properties, where you specify a filename,
+      size in pixels and framerate settings.
+      Decoder: here you can specify preferred decoder library
+      (libavformat or libmeg3) for videofile read access.
+
+      (you may change those properties later any time too,
+      using storyboard menu "Properties")
+    
+  3.) Create a new clip.
+      Use the storyboard menu "Create Clip" to add a new clip.
+      This opens the "Clip Properties" popup dialog window,
+      where you can specify a filename.
+      The Clip Type is detected automatically (depending on the file) as:
+      MOVIE
+      FRAME-IMAGES
+      SINGLE-IMAGE
+      
+      ## refere to description of the "Clip Properties" popup dialog window.
+      ## (plug-in-gap-storyboard-clip-prop.txt) ##
+      
+      
+      If you want to add clips that are parts of videos
+      or frameranges that are already used in the storyboard
+      you can select the clip (start and end frame) 
+      in the playback motion preview and add it from there
+      by pressing the buttons 'From Frame' or 'To Frame'
+  
+
+
+  Following functions on the thumbnails in the storyboard and cliplist
+  can be activated via mouse clicks:
+
+  Single Click on a clip thumbnail toggles selection state of the clip.
+    All other clips are deselcted.
+    With the modifier Keys CTRL and SHIFT you can keep and extend
+    existing selections.
+  
+  Double click on a clip thumbnail
+    starts the playback of this clip.
+    
+  Click with the right mousebutton on a clip thumbnail
+    to open the properties popup dialog for this clip.
+
+
+The Playback Preview
+  This area of the window provides a motion preview
+  for a single clip or for parts or the entire clip sequence
+  of the storyboard. 
+  The headline of the playback area
+  shows
+  
+    "STB: <name of the storyboard file>" 
+      to indicate storyboard playback, the Prefix changes to
+
+    "VIDEO:" or
+    "FRAMES:"
+  
+  when single clips are played. Depending on the type of the clip,
+  that may be a sequence of frames or a selected range
+  out of an already encoded videofile.
+
+  Creating Clips via Playback
+    Select the desired range of frame in the spinbutton widgets right 
+    next to the "From Frame" and "To Frame" buttons in the Playback preview.
+    Then press "From Frame:" button to add the selected range as new
+    clip.
+    Pressing the "To Frame:" button adds the clip with inverse range.
+  
+    new clips are added after the last clip in the cliplist.
+    (if no cliplist is opened the clip will be added
+    to the storyboard)
+  
+    Limits: Creating Clips via Playback
+          does not work when playback is in storyboard mode.
+          (STB: name of the storyboard file)
+
+
+  For more details on the playback related widgets
+  see the chapter 
+  ##### refere to Player description (plug-in-gap-videoframes-player.txt) #####
+
+
+Creating clips via automatic scene change detection.
+  You may add the full range of a longer video as one single clip
+  and then automatically split this long clip into more short clips.
+  Therefore click on the thumbnail of the long clip to open
+  the Clip Properties dialog.
+  In the Clip Properties dialog you find the button "Auto Scene Split".
+  This will scann the selected range, and create new clips on every significant
+  scene change.
+
+  ### refere to chapter Clip Properties dialog #######
+  ## (plug-in-gap-storyboard-clip-prop.txt) ##
+
+
+The Global Menu:
+
+  - Properties
+      Opens a popup dialog window where you can
+      specify layout properties (e.g. thumbnailsize, rows and columns)
+      of the storyboard editor main window.     
+      
+  - Videothumbnails
+      Render videothumbnails when checked.
+      Videothumbnails are built at runtime in memory
+      for all frames that are startframes of clips from
+      type Movie.
+      Using Videoindexes is strongly recommanded for fast
+      frame access.
+      Thumbnails for frame images are not affected here.
+  - Exit
+      Close the storyboard edit window.
+      This will close both storyboard and cliplist.
+  
+The Cliplist and Storyboard Menu
+(Both Menus include the same features)
+  
+  - New
+      Create a new storyboard file. This opens a popup dialog
+      where you can enter filename and properties 
+      of the new storyboard file.
+  - Open
+      Open an existing storyboard file.
+  - Save
+      Save the storyboard (or cliplist)
+      as textfile to disc.an existing storyboard file.
+  - Save As
+      Save the storyboard (or cliplist)
+      as new file.
+  - Playback
+      Playback motion preview of entire 
+  - Properties
+      Open the properties pop-up dialog window,
+      where you can specify master properties 
+      (e.g. master size and framerate)
+      of the storyboard (cliplist)
+  - Create Clip
+      Create a new clip. This opens a popup dialog
+      where you can enter the properties of the clip.
+  - Toggle Unit
+      Defines the small description text below the
+      thumbnail of a clip.
+      The toggle changes between the following settings:
+      - Clip Number only
+      - Clip Number + Framenumber
+      - Clip Number + Timestamp (mm:ss:msec)
+  - Encode
+      Call the master videoencoder dialog for
+      storyboard based encoding.
+      (this menu entry is insensitive 
+       if there are unsaved changes)
+  - Close
+      Close the storyboard (Cliplist).
+  
+
+
+Limits:  
+  In GIMP-GAP release 2.2 the storyboard dialog
+  does not support the full storyboard syntax.
+
+  - audiotracks are not supported.
+  - multiple video tracks are not supported.
+  - transformations are not supported.
+
+  Keep in mind that the video encoders can
+  already handle all those features,
+  if they are added via a text editor.

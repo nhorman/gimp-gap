@@ -280,14 +280,14 @@ printf(" ## 1 ## p_wrapper_mpeg3_close\n");
 printf(" ## 2 ## p_wrapper_mpeg3_close\n");
   if(handle)
   {
-printf(" ## 3 ## p_wrapper_mpeg3_close\n");
+printf(" ## 3 ## p_wrapper_mpeg3_close main_handle:%d\n", (int)handle->main_handle);
     if(handle->main_handle)
     {
 printf(" ## 4 ## p_wrapper_mpeg3_close handle->main_handle:%d\n", (int)handle->main_handle);
       mpeg3_close(handle->main_handle);
 printf(" ## 5 ## p_wrapper_mpeg3_close\n");
     }
-printf(" ## 6 ## p_wrapper_mpeg3_close\n");
+printf(" ## 6 ## p_wrapper_mpeg3_close raw_handle: %d\n", (int)handle->raw_handle);
     if(handle->raw_handle) 
     { 
 printf(" ## 7 ## p_wrapper_mpeg3_close\n");

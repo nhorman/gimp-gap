@@ -1,0 +1,105 @@
+"plug-in-gap-navigator"
+
+VCR Navigator
+
+   Start from menu:
+     <Image>/Video/VCR Navigator
+
+   The VCR Navigator dialog shows a thumbnail view, frame_number and
+   time (mm:ss:msec) of the frames in a scrollable listbox.
+
+   framerate:
+     You can set the global framerate for all frames here.
+
+     (Note: changing the framerate in the VCR Naviagtor
+            dialog window does not change the number of frames.
+            Therefore the motion does speed up or slow down
+            at playback. If you want to keep your motion
+            speed constant at increased framerate use the
+            "Frames Density" tool to create the requested additional
+            frames.)
+
+   timezoom:
+     with timezoom you tell the VCR Navigator dialog window
+     to display every n-th frame only, to get an overview
+     if there are many frames.
+
+     Framerate and timezoom values are stored in
+      a gap video info file named:
+      <framebasename>_vin.gap
+
+   Double click with left mousebutton on a frame in the listbox
+   performs a goto operation, which loads the clicked
+   frame as current frame.
+
+   Single click with left mousebutton
+      selecets one frame (deselecting all others)
+   Ctrl  click with left mousebutton
+      selecets one frame (additional to the current selection)
+   Shift click with left mousebutton
+      selects a range of frames.
+
+   Click with right mousebutton
+     brings up a pop-up menu
+
+   Pop-up menu
+      copy,
+      cut
+      paste before
+      paste after
+      paste replace
+      clear pastebuffer
+      select all
+      select none
+
+      cut and copy
+         is sensitive if any frame is selected,
+      paste and clear pastebuffer
+         is sensitive if video paste buffer contains
+	 at least one frame.
+
+      This menu enables you to cut, copy and paste the selected
+      frames even between different videos.
+      Size and type of the handled frames are converted at pasting
+      if needed.
+      The palette of the current frame is used for the
+      pasted frames when the destination type is INDEXED.
+
+      There are 3 types of paste:
+        before:
+	   Insert frames before the current frame.
+	   Use this mode if you want to insert frames
+	   before the first frame.
+	after:
+	   Insert frames after the current frame.
+	   Use this mode if you want to insert frames
+	   after the last frame.
+	replace:
+	   Replace frames beginning at the current frame
+	   with the frames from the video paste buffer,
+	   and does overwrite existing frames.
+
+      If there are selected frames in the VCR Navigator
+      dialog window, the current frame is set to
+      the first selected frame and the paste opration
+      is releted to the first selected frame
+
+      The paste buffer is located in the filesystem
+      and can be configured in the gimprc file:
+
+       (video-paste-dir "/home/hof/gap_video_paste_dir")
+       (video-paste-basename "gap_video_paste_")
+
+    The duplicate button in the VCR Navigator dialog
+    duplicates the selected frames immediate into
+    the current video, without writing to the
+    video paste buffer.
+
+    The delete button in the VCR Navigator dialog
+    deletes the selected frames without writing to the
+    video paste buffer.
+
+    IMPORTANT NOTE:
+       There is no undo for GIMP-GAP operations,
+       and the deleted frames can not be restored.
+

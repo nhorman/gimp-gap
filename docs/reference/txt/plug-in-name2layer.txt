@@ -1,0 +1,56 @@
+"plug-in-name2layer"                  
+
+Render Filename to Layer
+
+  Start from Menu:
+       <Image>/Video/Filename to Layer...
+
+  This plug-in renders the filename of the image
+  or just the number part of the filename onto the image.
+  If the parameter create_new_layer is 0, the filename is rendered 
+  to the active drawable (the layer that was active when
+  this plug-in was invoked).
+  Otherwise a new textlayer is created.
+  
+  Mode:
+    "Number Only"     ... render just the number part
+    "Filename"        ... render the filename without directory path
+    "Path/Filename"   ... render the filename including the directory path
+    
+  Fontname:
+    Entry for the Fontname
+    
+  Fontsize:
+    Fontsize in pixels
+    
+  X:
+    Position x offset in pixels
+    
+  Y:
+    Position y offset in pixels
+    
+  Antialias:
+    ON: Use Antialiasing
+    OFF: No Antialiasing
+    
+  Create Layer:
+    ON: Create a new layer,
+    OFF: Render on the active drawable
+
+
+  Tip:
+  To create framenumbers in all of your frames
+  you can use the "Modify Frames" (<Image>/Video/Frames Modify) feature
+  and choose "Apply filter on Layer(s)" as function.
+  In the next dialog step, the GIMP-GAP DB-Browser window
+  select "plug_in_gap_renumber" as filter name.
+  (this is the internal PDB-Name of the "Render Filename to Layer" plug-in)
+  
+  Then choose "Apply constant" in the DB-Browser window.
+  This should open the "Render Filename to Layer" dialog window
+  (only for the first frame) where you can adjust the settings.
+  Choose "Number Only" mode for rendering only the framenumber part,
+  and "Create Layer" checkbutton turned on if you want the number to be created
+  as seperate layer.
+  With "Create Layer" turned off the number will be rendered on (all)
+  the layer(s) that were selected in the initial "Modify Frames" dialog window.  

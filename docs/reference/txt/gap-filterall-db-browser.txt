@@ -1,0 +1,86 @@
+"gap-filterall-db-browser"
+ 
+Animated calls of plug-in filters:
+
+  Start from Menu:
+     <Image>/Filters/Filter all Layers   
+     <Image>/Script-Fu/Animators/Sel To AnimImage
+     
+ 
+  First of all, you need a multilayered Image.
+  You can use "<Image>/Video/Frames to Image"
+  to create one from a series of frames,
+  or duplicate the backround layer of a single layered image
+  (Press Ctrl-C within the layers dialog window N-times)
+
+  Then call "Filter all Layers" from wihin the multilayer image.
+  You'll get a window similar to the PDB-Browser, that shows
+  all available plug-ins in a listbox (and informations about
+  the selected plug-in on the right side).
+
+  Note: The listbox does not show the full PDB, but
+        only those plug-ins that are capable to run under control
+	of the "Filter all Layers" plug-in.
+  
+  Select one of the listed plug-ins and press one of the buttons:
+
+  "Apply Varying":
+      The selected plug-in is called 2 times in interactive mode,
+      1. for the backround layer
+      2. for the top layer.
+      
+      For all further layers, the plug-in will work non-interactive
+      with the iterated inbetween values.
+      Therefore the plug-in must have an "_Iterator" or "_Iterator_ALT"
+      procedure, to modify the "last stored values"
+       
+      (GIMP-GAP provides such procedures for more than 50 existing plug-ins)
+      
+      If the iterator procedure is not available, the
+      "Apply Varying" button is set insensitive on the selected procedure.
+      
+      Note:
+            It is possible to iterate values of the type PARAM_DRAWABLE,
+            (such as the BumpMap in plug_in_bump_map:
+            You may use a layerstack-animated Image as animated Bump-map)
+            This will only work, if from and to values are layers within the same image.
+            The iteration is done on the layerstackindex in that case.
+            and the inbetween values for the non-interactive filtercalls
+            will be the layers between the from and to layerstackindex.
+            (an animation sequence as the user might expect)             
+  
+  "Apply Constant":
+      The selected plug-in is called only once in interactive mode,
+      For all further layers, the plug-in will work non-interactive
+      using the last stored values.
+
+
+  The script sel-to-anim-img.scm simplifies the creation of animated
+  images. Invoke the script from:
+
+             "<Image>/Script-Fu/Animators/Sel To AnimImage"
+             
+  The script creates a new image with n copies of the current selection.
+  Then it invokes the animated call of plug-in filters (optional)
+  on the generated new image.
+
+  Notes:
+    - Some plug-ins may not work correct or crash when called
+      in NON_INTERACTIVE mode. (see TESTPROT_iter_ALT)
+
+    - Some plug-ins have options to create new layers or images.
+      This does not work when they are invoked
+      under control of the "Filter all Layers" plug-in.
+      You should turn such options off in that case.
+        
+    - Some pug-in's in your PDB can have earlier or later versions
+      If their interfaces were changed and does not match with the
+      interface version of the iterator procedure
+      you get the message:(in the shell window)
+        
+          ERROR: xxxx_Iterator stored Data missmatch in size N != M
+               
+      when using the "Apply Varying" button.
+      In that case you can try to generate the needed _Iterator procedure
+      for your plug-ins current interface by yourself.
+      (see file: README_devlopers)

@@ -1,0 +1,414 @@
+"plug-in-gap-move-path"
+
+Move Path (make things move)
+
+      Start from Menu:
+          (<Image>/Video/Move Path)
+
+
+      For this plug-in you need a series of frames (destination video frames)
+      and one single image or another series of frames. (source object or moving object)
+      If you use a single image as source object all the layers in it
+      can be used as source frames.
+      
+      The source frames are copied into the destination frames.
+      Those copies can be transformed in many ways, using controlpoints
+      and appears as one new layer in each handled destination frame.
+      The X/Y controlpoint coordinates affects the offest of the copied new layer
+      in the destination frame(s). All controlpoints build up a path
+      that defines how the copied new layer moves within the destination frames.
+
+      Preconditions:      
+
+      - The source image must be opened in the GIMP
+      - The source image must be another Image than the destination frame
+        (if you really want to copy layers from destination frame
+         to destination frame(s) you have to duplicate it first)
+      - The source image must be from the same type (RGB, INDEXED ..) as
+        the destination frame.
+
+        In other words: To run the 'Move Path' plug-in you have to open at
+                        least 2 images of the same type.      
+      
+      
+            
+      The selected layer(s) of the source image or frame 
+         is (are) copied into the selected range of frames.
+         Each handled frame recieves exactly one copy of the selected layer
+         from the source image, where the copy will be modified by
+         transformations such as scaling, changing transparency and more,
+         according to the controlpoint settings.
+         
+      If you use stepmodes "Loop", "Loop Reverse", "Once", "OnceReverse" or "PingPong"
+        the layers of the source image are stepped through,
+        and the next handled frame recieves the next
+        layer from the source image's layerstack.
+        
+        For the frame based stepmodes ("Frame Loop", "Frame PingPong" ...)
+        the selected source(layer) should be a layer of another video frame.
+        In the frame based stepmodes the source object is considered
+        as video frames and stepping is done from frame to frame
+        (and not from layer to layer)
+        The inserted layer is always a copy of one frame of the
+        source object animation (no matter which source layer was selected)
+        where all the visible source layers are merged to build up the moving object.
+        
+        The frame based modes can be used to mix videos with many frames,
+        because there is no need to convert one of the videos to
+        a multilayer image.
+	
+	If you use a normal image (that is not a video frame) as source
+	for the frame based stepmodes it acts like an animation with 
+	only one frame.
+        
+      The "Step Speed" factor
+        decides how fast to step through the source object,
+        in relation to the target frames. 
+        With factor 1.0 source and target will step synchron.
+        Factor 0.5 slows down the source steps to half speed.
+        The same source layer is copied into 2 frames,
+        before the advance to the next source layer is done.
+        
+        The "Step Speed" factor is not relevant for the 
+        stepmodes "None" and "FrameNone".
+
+      Selection Handling
+        The "Move Path" plug-in can ignore or respect selections (selected Areas)
+        in the source image (or source frame(s))
+        The Optionmenu Modes are:.
+         - "Ignore Selection (in all Source Images)"
+              Ignores all selections.
+         - "Use Selection (from Initial Source Image)"
+              Takes the selection from the initial source image (or frame)
+              and applies it to all handled copies.
+              This makes all unselected pixels of the moving object
+              transparent. You can get smooth edges
+              depending on the feather_radius settings in the controlpoints.
+         - "Use Selections (from all Source Images)"
+              Uses all selections in all source frames.
+              The source frames without selections are handled
+              as if all pixels were selected.
+              This mode is only relevant for the frame based stepmodes, 
+             "Frame Loop", "Frame Once", "Frame Loop Reverse",
+             "Frame OnceReverse", "Frame PingPong"
+               
+      
+      
+      The copies of the source layer(s) were modified by transitions
+        with varying parameters.
+        Parameters:
+       - SourceLayer (depends on Stepmode)
+        - Position (X/Y)
+        - Size Scaling (Width/Height)
+        - Opacity
+        - Rotation (angle from -360 to +360 degrees)
+        - Selection Feather Radius (in Pixels)
+           the feather radius controls how much to smooth the edges of the selections
+           (this is only relevant for source selection handling modes other than
+           "Ignore Selection")
+        - Perspective Transformation (transformation factors for X/Y of the 4 Corner Points)
+
+           Perspective transformation factors are scaling factors
+           that are applied to the coordinates of the 4 corners.
+           If all 8 Coordinates have the value 1.0 no scaling is done
+           and the result is the same as the original.
+           Scaling with factor 0 moves the affected (x or y) coordinate to the middle.
+           Factor 2.0 applied to Coorinate moves it outwards by half of the
+           original width (for X coordinates)
+           or hlaf height (for Y coordinates).
+
+                 1/1                       1/1
+                  +------------+------------+
+                  |            |            |
+                  |  x1/y1     |    x2/y2   |
+                  | 0.5/0.5    |   0.5/0.5  |
+                  |    o...............o    |
+                  |   .        |        .   |
+                  |  .         |         .  |
+                  | .          |0.0       . |
+                  +------------+------------+
+                 .|            |            |.
+                . |            |            | .
+               .  |            |            |  .
+              .   |            |            |   .
+             .    |            |            |    .
+            .     |            |            |     .
+           .      |            |            |      .
+          .       +------------+------------+       .
+         .       1/1                       1/1       .
+        .                                             .
+       o...............................................o
+     1.5/1.5                                          1.5/1.5
+      x3/y3                                            x4/y4
+
+
+
+      The controlpoint parameters were changed linear from one starting
+      controlpoint to the next controlpoint.
+      Per default the move path has only only 1 controlpoint.
+      (So the source layers(s) are copied to all frames of the framerange
+       at constant position, size and opacity)
+      If you want your source layers to move, grow, rotate or to fade (in or out)
+      you have to add one more controlpoints (limited to 1024) to define a path.
+
+      The affected range is selected by  start frame - end frame.
+      Each affected frame recieves exactly one copy of the (current)
+      source layer adjusted to the current controlpoint prameters.
+      The layerstack defines if the pasted copy appears
+      in the foreground (0 == on top) or below other layers that are
+      already in the frame.
+      With the toggle button 'Clip To Frame' the the copied layer
+      is clipped to the destination frames image width and height.
+       
+      With the frame number in the preview frame you can select the 
+      frame number to display in the preview.
+      You have to press the "UpdPreview" button for explicite
+      update of the preview.
+
+     Controlpoints:
+       The move path is defined by contolpoints.
+       Only the current cotrolpoint is displyed with all
+       its values.
+
+       If checkbutton "Show Path" is on, all the controlpoints
+       are shown in the preview window, connected with pathlines.
+       Furter it enables picking controlpoints
+       and draging controlpoint koordinates (X/Y)
+       in the preview with the left mousebutton.
+       With the right mousebutton you always drag
+       the coordinates of the current controlpoint
+       (without picking other controlpoints)
+       
+
+       There are controlpoint edit buttons to
+          "Add Point"
+	  "Insert Point"  "Delete Point"
+
+       With the Buttons
+          "Prev Point"    "Next Point"
+	  "First Point"   "Last Point"
+          you can step from controlpoint to controlpoint,
+	  and make other controlpoint to the curremt controlpoint.
+	  
+       "Reset Point"  "Reset All Points"
+          does reset width, height and opacity of the controlpoint to 100%
+          , perspective factors to 1.0 (no perspective tansformation)
+	  and rotation to 0 degree, 
+	  but leaves the path (X/Y values) unchanged.
+	
+       "Delete All Points"
+          removes all controlpoints.
+	  
+       "Rotate Follow"
+          Calculate rotate values for all controlpoints
+	  to follow the path.
+	  An object moving along a horizontal line 
+	  from left to right results in an angle of 0 degree.
+	  (or a multiple of 360 degress if the path
+	   builds circular loops)
+	  A vertical Move from top to bottom gives 90 degrees.
+	  
+	  SHIFT: If this button is clicked while the
+	  Shift Key is pressed, a fix rotation offset
+	  is added to all the calculated rotation values.
+	  The rotation offset is taken from the current
+	  rotate value of controlpint 1.
+	  
+	  If an object moves from right to left
+	  the calculated angle is 180 degree and the object
+	  appears upside down. 
+	  With a startoffset of 180 (or -180)
+	  you can compensate this effect.
+	  
+       "Save Points"
+          saves your controlpoints to file
+
+       "Load Points"
+          loads controlpoints from file
+         
+
+      The "Instant Apply" checkbox
+         does automatic update of the preview when checked.
+         The automatic update needs much CPU and IO power
+         especially when big images are used as source and/or destination
+         or those images have many layers.
+         (dont use the instant_apply on slow machines.)
+      
+      Tips:
+         - with the UpdPreview Button (or "Instant Apply" checkbox)
+           you can blend in the
+           selected layer of the source image.
+           If you want to adjust position it may be useful to see
+           the background.
+           Therfore you can make the source image
+           transparent (modify the opacity value) or
+           put the sourcelayer below the background
+           (set the layerstack to higher value)
+           Then pres UpdPreview button again.
+         
+         - Whats wrong if the "UpdPreview" was pressed, 
+           but the preview does not show the source object ?
+           - maybe the source object is an invisible layer.
+             (if the "Force Visibility" checkbox is turned ON
+              invisible Layers should become visible).
+           - maybe the current opacity setting is 0% (or nearly 0%)
+           - maybe the current X and/or Y position are outside
+             the image
+           - maybe the current scaling factors are 0% (or nearly 0%)
+             and the result is only 1x1 pixel or smaller
+           - maybe the source object has only fully transparent pixels
+
+         
+         - If you let your objects (source layers) rotatate,
+           perform perspective transformations or
+           change their size, set handle mode to 'Center'.
+           
+           If you use another handle mode you may get unwanted
+           moves of your object, caused by resizing.
+           
+         
+         - Speed:
+	   If no keyframes are set,
+           the "Move Path" plug-in alternates the settings linear from
+           controlpoint to controlpoint, so things move (or happen) in constant speed
+           between 2 controlpoints.
+           
+           If you want to make accelerated moving obcets, you'll
+           have to set more controlpoints with growing distances.
+           
+           Example:
+           
+           [1] [2]  [3]   [4]    [5]     [6]
+            +---+----+-----+------+-------+
+
+           The affected range has 25 frames, and you have set 6 points
+           with growing distances in one straight line and without
+           specifiying keyframes for those points.
+           That gives 5 frames (== equal time) for each part of the path,
+           but each part has another length. This results in different
+           (growing) speeds for each part of the path.
+           
+           
+           
+    - Keyframes
+        
+	Keyframes can be used optional, to fix a controlpoint
+	to the given frame number. The first and last controlpoints
+	are implicite keyframes, always fixed to start or end
+	frame number. (The keyframe entry is set insensitive
+	on the first and last contolpoint)
+	With the help of keyframes you can control exactly
+	when things should happen.
+	
+	Use a value of 0 in the keyframe entry if you dont want
+	to fix a controlpoint to a keyframe.
+	
+	Keyframes are shown as absolute frame number
+	in the "Move Path" dialog window, but they
+	are saved as relative values in the
+	pointfile.
+	(if start frame = 5
+	 and a keyframe is displayed as 7
+	 the keyframe is internally stored as 2 (7 - 5)
+	 
+     - Checking Controlpoints
+        - The check is done at "OK", and "Anim Preview"
+	  button,
+	  If errors are detected, they are shown
+	  in a pop-up window and the action is not performed.
+        - The number of cntrolpoints is now checked
+	  against the number of affected frames.
+	  (You can't have more controlpoints than frames)
+	- If keyframes are used, they must be in
+	  (ascending or descending) sequence
+	 
+          
+     - AnimPreview
+        With this button you can generate an animated preview
+	to get an idea how the inserted moving object
+	will look like. The animated preview is generated
+	as multilayer image and the Filter/Animation/Playback
+	plug-in is started on that multilayer image.
+	
+	The button opens a dialog window, where you can
+	enter options for the animated preview.
+	
+	- Object on empty frames
+	    renders quick on empty frames (filled with background color)
+	    (scale down speeds up rendering time)
+	- Object on one frame
+	    renders quick on one frame (preview frame)
+	    (scale down speeds up rendering time)
+	- Exact Object on frames
+	    renders slow, but exactly on the selected framerange.
+	    (scale down increases rendering time)
+
+        - Scale Preview
+	    Optional you can scale down the animated preview
+	    size (100% downto 5%)
+	    
+	- Framerate
+	    The framerate is used in the generated 
+	    multilayer image only.
+	    
+	- Copy to Video Buffer   
+	  Optional you can copy the preview frames
+	  to the video buffer
+	  (can be pasted in the GIMP-GAP VCR Navigator)
+    
+    - Force visibility
+         If this checkbutton is set, all source layerobjects
+	 are set visible when they are copied into frames.
+
+
+    "Move Path" advanced settings
+    --------------------------
+    
+    - Bluebox
+         With the bluebox check_button you can apply the bluebox filter effect
+         on the moving object, that makes the keycolor transparent.
+
+    - The Keycolor button
+         Opens a dialog window where you can set all the parameters
+         of the bluebox filter.
+         If clicked with the right mouse button you can grab the keycolor
+         from thhe current FG/BG color (in the GIMP main window)
+         
+    
+    - Tracelayer
+         a trace layer shows all positions of the moving object
+	 from begin until the position of the previous frame.
+	 Positions in virtual frames (tweens) are also included
+	 in the trace layer.
+	 If descending Opacity is used, the trace is fading out
+	 at the older (previous) Positions of the moving object.
+    
+    -Tweensteps
+        This feature is for rendering fast moving Objects.
+
+        The "MovePath" plug-in can calculate the moving object for virtual frames (tweens)
+        beetween real frames. You can control this by setting tween_steps
+        to a value greater than 0.
+        In that case the "MovePath" plug-in creates an additional layer
+        (the "Tweenlayer") and inserts that tween layer below the
+        stackpostion of the current moving object in the next real frame.
+        The tween layer shows the moving object at the positions of
+        all virtual frames beetween two real frames.
+	
+        Example: The selected frame range is 10 frames and
+        the tweensteps value is 2. In this case 28 steps
+        are processed internal. 10 real frames + 18 virtual frames
+        (2 virtual beetween each real frame)
+        Use descending opacity to fade out tweens.
+        The tween nearest to the real frame is drawn with the initial
+	opacity value, the other tweens are reduced more and more
+	if descending opacity is less than 100%.
+	With tweens and opacity settings you can produce motion-blur effects
+	for fast moving objects.
+
+        If both tween processing and trace layer are active, the
+	"Tweenlayer" is added, but set invisible.
+	This is done because the trace layer contains already all the tween steps.
+	A visible tween layer would produce unwanted increase
+	of the total opacity of the moving object in the composite view.
+

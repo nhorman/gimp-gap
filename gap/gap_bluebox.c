@@ -26,6 +26,7 @@
  */
 
 /* revision history:
+ * gimp    2.1.0a;  2004/11/29  hof: #159593
  * gimp    2.1.0a;  2004/06/26  hof: #144649 use NULL for the default cursor as active_cursor
  * gimp    1.3.23b; 2003/12/06  hof: added mode GAP_BLUBOX_THRES_ALL
  * gimp    1.3.23a; 2003/11/26  hof: follow API changes for gimp_dialog_new
@@ -321,7 +322,7 @@ gap_bluebox_create_dialog (GapBlueboxGlobalParams *bbp)
 			      TRUE,           /* constrain */
 			      0.0, 1.0,       /* lower/upper unconstrained */
 			      _("Sharp pixel selection by color with 0.0. Greater values than 0 "
-			        "makes selection with more or less varaible alpha value depending "
+			        "makes selection with more or less variable alpha value depending "
 				"on difference to the keycolor"), NULL);
   bbp->tolerance_adj = adj;
   g_object_set_data(G_OBJECT(adj), "bbp", bbp);

@@ -1,0 +1,18 @@
+"plug-in-gap-range-flatten"
+
+Flatten Frames
+
+    Start from Menu:
+      <Image>/Video/Frames Flatten
+
+    This feature flattens all the frames in the range
+    specified via "From Frame" and "To Frames".
+
+    Warning:    
+    Flattening melts down all layers to one resulting
+    background layer and replaces transparent regions
+    with the background color.
+    (because flattening removes the alpha cahnnel)
+    this is done in all handled frames.
+    
+    

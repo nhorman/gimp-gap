@@ -1,0 +1,14 @@
+"plug-in-gap-storyboard-player"
+
+Player invoked from storyboard dialog editor plug-in
+
+  (the player hides the HELP Button in case when
+   invoked from the storyboard editor dialog,
+   because the player is part of the storyboard editor window
+   and has its own help menu item)
+   
+
+
+  For more details on the playback related widgets
+  see the chapter 
+  ##### refere to Player description (plug-in-gap-videoframes-player.txt) #####

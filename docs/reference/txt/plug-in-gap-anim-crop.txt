@@ -1,0 +1,41 @@
+"plug-in-gap-anim-crop"
+
+Crop Video Frames
+
+    Start from Menu:
+             <Image>/Video/Frames Crop
+	     
+    With the video crop feature you can crop 
+    all frame images in a sequence of numbered frames.
+    Load one of the frames and invoke this plug-in from the loaded frame,
+    adjust the settings as you like and the plug-in will
+    crop all other frames downto the selected size when OK is pressed.
+    (the parts of the frames outside the cropping rectangles are
+    will be lost after this operation)
+    
+    Current width and height are displayed as information.
+    With "New Width" and  "New Height" you can specify the
+    desired new size in pixels.
+    
+    When the "Reset" button is pressed, the new width and 
+    new height values are reset to current values.
+    
+    With X/Y ratio values you can specify new size as factor,
+    A value of 0.5 crops down to half size.
+    
+    The chain button keeps image proportions constant when active.
+    With inactive chain button (symbol changes to broken chain)
+    width and height may be changed independent.
+    
+Offset
+    X and Y offset values (in pixels) for placing the
+    image within the new canvas size.
+    there are buttons for independent centering horizontal and vertical.
+
+    There is also a visual control widget where you can
+    arrange the position of the current image size within
+    the new image size via dragging with the mouse.
+    This updates the offsets according to the desired position.
+    The new (reduced) image size is shown as smaller black
+    outlined rectangle.
+    

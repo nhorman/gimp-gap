@@ -1,0 +1,86 @@
+"plug-in-bluebox"
+
+Blubox Filter
+
+    Start from Menu:
+       <Image>/Video/Bluebox
+
+    The bluebox filter makes the selected keycolor transparent.
+    The bluebox filter operates on a single layer that must be of RGB(A) type.
+    (INDEXED and GRAY images are not supported)
+    
+    Keycolor:
+      This colorbutton shows the wanted keycolor. Pixels that are similar
+      to this color can be set more or less transparent by the bluebox filter.
+      You can define the detection of similar colors by Threshold(s) in
+      4 different ways depending on threshold mode:
+      
+    Threshold Mode:
+      HSV ..... has 3 seperate thresholds for hue, saturation and value
+                and operates in the HSV colormodel.
+      RGB ..... has 3 seperate thresholds for red, green and blue channels
+                and operates in the RGB colormodel
+      VALUE ... has only one single threshold for the maximum difference
+                of red, green, and blue channels and operates in the RGB colormodel.
+      ALL ..... has 6 seperate thresholds for HSV and RGB
+
+    Thresholds
+      All thresholds have the range from 0.0 to 1.0
+      where 0.0 has no tolerance the compared channel (requires exact match)
+      and 1.0 allows the maximum tolerance (all values will match)
+
+       
+    Alpha Tolerance:
+      Alpha tolerance value 0.0 upto 1.0
+      where 0.0 makes hard pixel selection by color threshold(s)
+      greater values allow more or less variable transparency (alpha channel values)
+      for the selected pixels within the threshold(s)
+      depending on their difference to the keycolor.
+      Pixels with color equal or near the keycolor appear more transparent
+      than pixels with more color differnce.
+      Pixels with color differences bigger than the threshold(s)
+      are not affected by the "Alpha Tolerance" setting.
+
+    
+    Source Alpha:
+      Select only pixels with alpha channel >= source_alpha
+      where 0.0 is full transparent, 1.0 is full opaque.
+      Normally this is set to 0.2 to protect the alpha_channel
+      of pixels that are already transparent against changes
+      by the bluebox filter.
+      
+    Target Alpha:
+      Control the minimum alpha value for the selected pixels.
+      where 0.0 sets a full selected pixel (== matching with keycolor)
+      to full transparent,
+      0.5 sets a full selected pixel to half transparent
+      and 1.0 to full opaque.
+      
+    Feather Edges:
+      Enable smoothing the selection using the feather radius.
+      
+    Feather Radius:
+      Feather radius in pixels, makes the selection smooth.
+      (this is done internally by applying a blur filter on the 
+       selection that was built by keycolor, threshold(s) alpha tolerance,
+       shrink/grow and target alpha settings)
+   
+    Shrink/Grow:
+      Grow or shrink the selection in pixels,
+      where negative values are for shrinking the selection
+      (that was built by keycolor, threshold(s) alpha tolerance,
+       and target alpha settings)  
+    
+    
+    The bluebox filter creates an image for preview of the effect.
+    This image contains an (optinal scaled) copy of the original layer.
+    
+    Automatic Preview:
+      When checked perform automatical update of the preview image 
+      on all changes of the parameter settings.
+    
+    Preview Button:
+      Create or update the preview image.
+    
+    Previewsize:
+      Set size of the preview image in percent of the original.

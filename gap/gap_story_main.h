@@ -214,6 +214,21 @@ typedef struct GapStbMainGlobalParams  /* nickname: sgpp */
   gboolean           auto_vthumb_refresh_canceled;
   gboolean           in_player_call;
 
+  /* layout values
+   * those values are used for LAST_VALUES runmode at startup only
+   * rendering uses the values in the tabw structures
+   */
+  gboolean                win_prop_dlg_open;
+  GapStoryElemDisplayMode cll_edmode;
+  gint32                  cll_cols;
+  gint32                  cll_rows;
+  gint32                  cll_thumbsize;
+  GapStoryElemDisplayMode stb_edmode;
+  gint32                  stb_cols;
+  gint32                  stb_rows;
+  gint32                  stb_thumbsize;
+  /* end layout values */
+
   GtkWidget *shell_window;  
   GtkWidget *player_frame;  
 

@@ -242,13 +242,25 @@ p_split_dialog(GapAnimInfo *ainfo_ptr, gint *inverse_order, gint *no_alpha, char
 {
   static GapArrArg  argv[8];
   gchar   *buf;
+  gchar   *extptr;
+  
+  extptr = extension;
+  if(extptr)
+  {
+    if(*extptr == '.')
+    {
+      extptr++;
+    }
+  }
 
   buf = g_strdup_printf (_("Make a frame (diskfile) from each layer.\n"
 			   "Frames are named in the style:\n"
 			   "<basename><framenumber>.<extension>\n"
 			   "The first frame for the current case gets the name\n\n"
-			   "%s000001.%s\n"),
-			 ainfo_ptr->basename, extension);
+			   "%s000001.%s\n")
+			 ,ainfo_ptr->basename
+			 ,extptr
+			 );
 
   gap_arr_arg_init(&argv[0], GAP_ARR_WGT_LABEL);
   argv[0].label_txt = &buf[0];

@@ -79,6 +79,17 @@ static GapStbMainGlobalParams global_params =
 , FALSE       /*  gboolean           auto_vthumb */
 , FALSE       /*  gboolean           auto_vthumb_refresh_canceled */
 , FALSE       /*  gboolean           in_player_call */
+
+, FALSE       /*  gboolean           win_prop_dlg_open */
+, GAP_STB_EDMO_SEQUENCE_NUMBER   /*  gint32             cll_edmode */
+, 5                              /*  gint32 cll_cols  */
+, 6                              /*  gint32 cll_rows  */
+, 66                             /*  gint32 cll_thumbsize */
+, GAP_STB_EDMO_FRAME_NUMBER      /*  gint32 stb_edmode */
+, 12                             /*  gint32 stb_cols  */
+, 2                              /*  gint32 stb_rows  */
+, 66                             /*  gint32 stb_thumbsize */
+
 , NULL        /*  GtkWidget *shell_window */
 
 , NULL        /*  GtkWidget *menu_item_win_vthumbs */

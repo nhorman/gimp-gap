@@ -908,6 +908,8 @@ gap_base_first(GimpRunMode run_mode, gint32 image_id)
   int rc;
   GapAnimInfo *ainfo_ptr;
 
+gap_debug=TRUE;
+
   rc = -1;
   ainfo_ptr = gap_lib_alloc_ainfo(image_id, run_mode);
   if(ainfo_ptr != NULL)
@@ -1715,8 +1717,8 @@ p_renumber_dialog(GapAnimInfo *ainfo_ptr, long *start_frame_nr, long *digits)
   argv[1].label_txt = _("Digits:");
   argv[1].constraint = TRUE;
   argv[1].int_min   = 1;
-  argv[1].int_max   = 6;
-  argv[1].int_ret   = 6;
+  argv[1].int_max   = GAP_LIB_MAX_DIGITS;
+  argv[1].int_ret   = GAP_LIB_DEFAULT_DIGITS;
   argv[1].help_txt  = _("How many digits to use for the framenumber in the filename");
     
   gap_arr_arg_init(&argv[2], GAP_ARR_WGT_HELP_BUTTON);

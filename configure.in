@@ -111,7 +111,7 @@ dnl and in the ffmpeg videoencoder  plug-in
 dnl ffmpeg should compile on many operating systems, including UNIX and WINDOWS systems
 dnl
 AC_ARG_ENABLE(libavformat,
-              [  --disable-libavformat    don't build with libavformat])
+              [  --disable-libavformat        don't build with libavformat/libavcodec])
   if test "x$enable_libavformat" != "xno"; then
     dnl
     dnl hof: TODO: here we should check for both libavformat 0.4.8 and libavcodec 0.4.8
@@ -148,7 +148,7 @@ dnl libmpeg3 is used in one of the decoder implementations in the GAP Video API 
 dnl as far as i know this lib is available only on UNIX systems
 dnl
 AC_ARG_ENABLE(libmpeg3,
-              [  --disable-libmpeg3       don't build with libmpeg3])
+              [  --disable-libmpeg3           don't build with libmpeg3])
   if test "x$enable_libmpeg3" != "xno"; then
       dnl dnl the AC_CHECK_LIB macro did not work
       dnl dnl   (always prints the warning, even with correct libmpeg3 installed)
@@ -233,7 +233,7 @@ dnl ---------------------------
 dnl WARNING: libquicktime is in experimental state and probably will be removed later
 dnl 
 AC_ARG_ENABLE(libquicktime,
-              [  --disable-libquicktime   don't build with libquicktime])
+              [  --disable-libquicktime       don't build with libquicktime])
   if test "x$enable_libquicktime" != "xno"; then
     dnl
     dnl hof: TODO linking with quicktime not finished yet

@@ -1650,7 +1650,7 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
 
                          ,GIMP_STOCK_RESET, GAP_STORY_RESPONSE_RESET
                          ,_("Find Scene End"), GAP_STORY_RESPONSE_SCENE_END
-                         ,_("Aoto Scene Split"), GAP_STORY_RESPONSE_SCENE_SPLIT
+                         ,_("Auto Scene Split"), GAP_STORY_RESPONSE_SCENE_SPLIT
                          ,GTK_STOCK_CLOSE,  GTK_RESPONSE_CLOSE
                          ,NULL);
   }
@@ -1661,7 +1661,7 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
                          ,gimp_standard_help_func, GAP_STORY_CLIP_PROP_HELP_ID
 
                          ,_("Find Scene End"), GAP_STORY_RESPONSE_SCENE_END
-                         ,_("Aoto Scene Split"), GAP_STORY_RESPONSE_SCENE_SPLIT
+                         ,_("Auto Scene Split"), GAP_STORY_RESPONSE_SCENE_SPLIT
                          ,GTK_STOCK_CLOSE,  GTK_RESPONSE_CLOSE
                          ,NULL);
   }
@@ -1731,7 +1731,7 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
   pw->pw_filename_entry = entry;
 
   /* the filesel invoker button */
-  button = gtk_button_new_with_label ( _("File Browser"));
+  button = gtk_button_new_with_label ("...");
   gtk_table_attach_defaults (GTK_TABLE(table), button, 2, 3, row, row+1);
   g_signal_connect(G_OBJECT(button), "clicked",
                      G_CALLBACK(p_pw_filesel_button_cb),
@@ -1805,6 +1805,55 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
   g_signal_connect (adj, "value_changed",
                     G_CALLBACK (p_pw_gint32_adjustment_callback),
                     &pw->stb_elem_refptr->nloop);
+
+
+  row++;
+  /* pingpong */
+  label = gtk_label_new(_("Pingpong:"));
+  gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
+  gtk_table_attach(GTK_TABLE (table), label, 0, 1, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
+  gtk_widget_show(label);
+
+
+  /* check button */
+  check_button = gtk_check_button_new_with_label (" ");
+  gtk_table_attach ( GTK_TABLE (table), check_button, 1, 2, row, row+1, GTK_FILL, 0, 0, 0);
+  {
+    gboolean pingpong_state;
+    
+    pingpong_state = (pw->stb_elem_refptr->playmode == GAP_STB_PM_PINGPONG);
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (check_button), pingpong_state);
+                                
+  }                             
+  gimp_help_set_help_data(check_button, _("ON: Play clip in pingpong mode"), NULL);
+  gtk_widget_show(check_button);
+  pw->pingpong_toggle = check_button;
+  g_signal_connect (G_OBJECT (check_button), "toggled",
+                    G_CALLBACK (p_pw_pingpong_toggle_update_callback),
+                    pw);
+
+
+
+  row++;
+  /* the step_density spinbutton */
+  adj = gimp_scale_entry_new (GTK_TABLE (pw->master_table), 0, row++,
+                              _("Stepsize:"), PW_SCALE_WIDTH, PW_SPIN_BUTTON_WIDTH,
+                              pw->stb_elem_refptr->step_density,
+                              0.125, 8.0,     /* lower/upper */
+                              0.125, 0.5,     /* step, page */
+                              6,              /* digits */
+                              TRUE,           /* constrain */
+                              0.125, 8.0,     /* lower/upper unconstrained */
+                              _("Stepsize density. Use 1.0 for normal 1:1 frame by frame steps. "
+                                "a value of 0.5 shows each input frame 2 times. "
+                                "a value of 2.0 shows only every 2.nd input frame"), NULL);
+  pw->pw_spinbutton_step_density_adj = adj;
+  g_object_set_data(G_OBJECT(adj), "pw", pw);
+  g_signal_connect (adj, "value_changed",
+                    G_CALLBACK (p_step_density_spinbutton_cb),
+                    pw);
+
+
 
   row++;
   /* the seltrack spinbutton */
@@ -1925,52 +1974,6 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
     }
   }
   
-  row++;
-
-  /* pingpong */
-  label = gtk_label_new(_("Pingpong:"));
-  gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
-  gtk_table_attach(GTK_TABLE (table), label, 0, 1, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
-  gtk_widget_show(label);
-
-
-  /* check button */
-  check_button = gtk_check_button_new_with_label (" ");
-  gtk_table_attach ( GTK_TABLE (table), check_button, 1, 2, row, row+1, GTK_FILL, 0, 0, 0);
-  {
-    gboolean pingpong_state;
-    
-    pingpong_state = (pw->stb_elem_refptr->playmode == GAP_STB_PM_PINGPONG);
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (check_button), pingpong_state);
-                                
-  }                             
-  gimp_help_set_help_data(check_button, _("ON: Play clip in pingpong mode"), NULL);
-  gtk_widget_show(check_button);
-  pw->pingpong_toggle = check_button;
-  g_signal_connect (G_OBJECT (check_button), "toggled",
-                    G_CALLBACK (p_pw_pingpong_toggle_update_callback),
-                    pw);
-
-  row++;
-
-  /* the step_density spinbutton */
-  adj = gimp_scale_entry_new (GTK_TABLE (pw->master_table), 0, row++,
-                              _("Stepsize:"), PW_SCALE_WIDTH, PW_SPIN_BUTTON_WIDTH,
-                              pw->stb_elem_refptr->step_density,
-                              0.125, 8.0,     /* lower/upper */
-                              0.125, 0.5,     /* step, page */
-                              6,              /* digits */
-                              TRUE,           /* constrain */
-                              0.125, 8.0,     /* lower/upper unconstrained */
-                              _("Stepsize density. Use 1.0 for normal 1:1 frame by frame steps. "
-                                "a value of 0.5 shows each input frame 2 times. "
-                                "a value of 2.0 shows only every 2.nd input frame"), NULL);
-  pw->pw_spinbutton_step_density_adj = adj;
-  g_object_set_data(G_OBJECT(adj), "pw", pw);
-  g_signal_connect (adj, "value_changed",
-                    G_CALLBACK (p_step_density_spinbutton_cb),
-                    pw);
-
   row++;
 
 

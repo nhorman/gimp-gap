@@ -1,0 +1,151 @@
+"plug-in-gap-modify"
+
+
+Modify Frames
+
+    Start from Menu:
+       <Image>/Video/Frames Modify
+    
+    The GIMP-GAP plug-in 'Frames Modify' provides the feature to 
+    perform functions on one ore more selected layer(s) in all frames
+    of the selected frame range.
+  
+    Layer Selection:
+      
+      The layers can be selected by (parts of) their name, or by their
+      layerstack numbers.
+      The selection is contolled via the LayerPattern entry,
+      the case sensitivity toggle and the radio buttons.
+      
+      The toggle button "Invert Layer Selection" inverts the selection.
+      
+      Some of the available funtions affect the image
+      and do not allow layer selection.
+
+
+    
+    The Function menu:
+       Layer Attributes
+	 "Set Layer(s) visible",
+	 "Set Layer(s) invisible",
+	 "Set Layer(s) linked",
+	 "Set Layer(s) unlinked),
+       Layer Stackposition
+	 "Raise Layer(s)",
+	 "Lower Layer(s)",
+       Merge Layers
+	 "Merge Layer(s) expand as necessary",
+	 "Merge Layer(s) clipped to image",
+	 "Merge Layer(s) clipped to bg-layer",
+       Selection
+	 "Replace Selection",
+	 "Add Selection",
+	 "Subtract Selection",
+	 "Intersect Selection",
+	 "Selection None",
+	 "Selection All",
+	 "Selection Invert",
+	 "Save Selection to Channel",
+	 "Load Selection from Channel",
+	 "Delete Channel (by Name)"
+       Layer Mask
+	 "Add white layermask (opaque)",
+	 "Add black layermask (transparent)",
+	 "Add layermask from alpha",
+	 "Add layermask transfer from alpha",
+	 "Add layermask from selection",
+	 "Add layermask from bw copy",
+	 "Delete layermask",
+	 "Apply layermask"
+	 "Copy layermask from layer above"
+	 "Copy layermask from layer below"
+       
+       
+      "Apply filter on Layer(s)",
+      "Duplicate Layer(s)",
+      "Delete Layer(s)",
+      "Rename Layer(s)",
+      "Add alpha channel",
+
+
+    The Functions 
+       "Replace Selection",
+       "Add Selection",
+       "Subtract Selection",
+       "Intersect Selection",
+ 
+      take the Selection from the initial (invoking) frame and combines it
+      with existing selections in all the other handled frames.
+
+    The Functions 
+       "Copy layermask from layer above"
+       "Copy layermask from layer below"
+
+      create Layermasks in the selected layer(s) in all handled frames by copying from the 
+      neigbour layer above (or below) the specified layer(s).
+      If there is no such neigbour layer, a black (full transparent) layermask
+      will be created for the slected layer(s).
+      If the neigbour layer has no layermask, the mask will be create as black and white copy
+      of the neigbour layer.
+      The layermask is placed at the center of the selected (destination) layer.
+      If the neigbour layer is smaller than the selected layer,
+      the uncovered border of the created layermask is created full transparent.
+
+    The Functions:
+      "Duplicate Layer(s)"
+      "Rename Layer(s)"
+      "Save Selection to Channel"
+      "Load Selection from Channel"
+      "Delete Channel (by Name)"
+      
+      require a Name in the Entry field "New Layer Name"
+      (the name of this entry changes to "New Channel Name"
+      when dealing with channels)
+
+    
+    The function 
+      "Apply filter on Layer(s)"
+      
+       brings up a dialog window whe started via pressing the OK button.
+       this dialog is similar to the PDB-Browser, where you can select 
+       one of the available filters.
+
+       If you use the PDB-Browser's button "Apply Varying", the
+       filterparameters will slightly change in each handled frame
+       from start to end.
+
+       - If there is more than one selected layer in a frame
+         each of the selected layers within the same frame
+         will be processed with the same filter parameter values.
+    
+         (for more information see chapter 'Animated calls of Plug-In Filters' below)
+ 
+
+
+    It is a good idea to use the same layerstack structure in all
+    your frames. Another hint is that you assign useful names to
+    your layers. that should be done consequent for all frames.
+    
+    Example 1 (useful Layertack structure/names)
+    
+    
+                    film_000001.xcf    film_000002.xcf  ....  film_000010.xcf       
+    ---------------------------------------------------------------------
+    
+    layerstack [0]  mouse_01         mouse_02              mouse_10
+    layerstack [1]  cat_01           cat_02                cat_10
+    layerstack [2]  tree_01          tree_02               tree_10
+    layerstack [3]  background       background            background
+    
+
+    
+    Example 2 (not recommanded)
+    
+    
+                    film_000001.xcf    film_000002.xcf  ....  film_000010.xcf       
+    ---------------------------------------------------------------------
+    
+    layerstack [0]  tree             layer                 mouse_10
+    layerstack [1]  bg               layer                 cat_10
+    layerstack [2]                   layer                 background 
+    layerstack [3]                   background                       

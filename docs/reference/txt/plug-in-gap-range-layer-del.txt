@@ -1,0 +1,22 @@
+"plug-in-gap-range-layer-del"
+
+Delete Layers in Frames
+
+    Start from Menu:
+         <Image>/Video/Frames Layer Delete
+
+    This feature deletes one layer that is specified
+    by its layerstack number where 0 refers to top of the
+    layerstack.
+    
+    This is done in all handled frame images specified
+    by "From Frame" and "To Frame".
+    
+    
+    Note:
+    The "Frames Modify" feature provides a more sophisticetd
+    way to pick and delete layers in a specified framerange.
+    
+    ## refere to (plug-in-gap-modify.txt)
+
+    

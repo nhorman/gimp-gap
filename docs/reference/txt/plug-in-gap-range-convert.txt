@@ -1,0 +1,57 @@
+"plug-in-gap-range-convert"
+
+Frames Convert
+
+   Start from Menu:
+       <Image>/Video/Frames Convert
+
+   Converts multiple frames from one fileformat to another.
+    
+   Basename:
+      Name of one destination frame without the frame number part and without the
+      extension.
+      
+   Extension:
+      Extension of the destination frames. The extension also defines the
+      fileformat.
+      
+   Imagetype:
+      Keep Type
+      Convert to RGB
+      Convert to Gray
+      Convert to Indexed
+      
+   Flatten:
+      Merge all layers if checked. This check_button should be turned on
+      for destination fileformats that can not store multiple layers.
+ 
+   Example1:
+      
+      If your source frames are XCF-images of imagetype RGB with the names:
+       img_000001.xcf
+       img_000002.xcf
+       img_000003.xcf
+
+      and you want to convert to JPEG's named
+        /tmp/scratch_000001.jpg
+        /tmp/scratch_000002.jpg
+        /tmp/scratch_000003.jpg
+
+      you need the following convert settings:
+        From Frame: 1
+	To Frame:   3
+	Basename:   /tmp/scratch_
+	Extension:  .jpg
+	Imagetype:  Keep Type
+	Flatten:    ON (checked)
+      
+
+   Example2:
+      
+      To convert from RGB JPEG fileformat (.jpg) to GIF (.gif)
+      you have to set the destination imagetype "Convert to Indexed",
+      because the GIF fileformat can not handle RGB, only GRAY and INDEXED)
+              
+      Convert to INDEXED reduces the number of colors
+      downto 256 (or less).
+

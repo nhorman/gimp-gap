@@ -1,0 +1,45 @@
+"plug-in-gap-shift"
+
+Frame Sequence Shift
+
+    Start from Menu:
+        <Image>/Video/Framesequence Shift
+
+    This feature does cycic reordering the sequence
+    of the frames in the affected range.
+    The affected range is specified with "From Frame"
+    and "To Frame".
+    
+    The "N-Shift specifies positive or negative
+    offsets for the number part in the frame names.
+    
+Example:
+    
+    Assume tere are 20 frames:
+      pic_000001.xcf
+      pic_000002.xcf
+   
+      pic_000020.xcf
+     
+    After applying the Frame Sequence Shift" with settings:
+
+      From Frame: 5
+      To Frame:   15
+      N-Shift:    2
+      
+      
+   the affected frames are renumbered as shown here:
+
+      old name            new name
+      ----------------------------------
+      pic_000005.xcf  ==> pic_000007.xcf
+      pic_000006.xcf  ==> pic_000008.xcf
+      pic_000007.xcf  ==> pic_000009.xcf
+      pic_000008.xcf  ==> pic_000010.xcf
+      pic_000009.xcf  ==> pic_000011.xcf
+      pic_000010.xcf  ==> pic_000012.xcf
+      pic_000011.xcf  ==> pic_000013.xcf
+      pic_000012.xcf  ==> pic_000014.xcf
+      pic_000013.xcf  ==> pic_000015.xcf
+      pic_000014.xcf  ==> pic_000005.xcf
+      pic_000015.xcf  ==> pic_000006.xcf

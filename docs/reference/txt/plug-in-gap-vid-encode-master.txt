@@ -1,0 +1,177 @@
+"plug-in-gap-vid-encode-master"
+
+Master Videoencoder
+
+    Start from Menu:
+       <Image>/Video/Encode/Master Encoder
+
+
+    The master videoencoder dialog provides videofile encoding
+    features for:
+
+    - Frame sequences
+    - Multilayer Images
+    - Storyboard files
+
+    The master videoencoder is the dialog window from where
+    all available GIMP-GAP video encoders are started.
+    GIMP-GAP video encoders are implemented as GIMP
+    plug-ins.
+    If GIMP-GAP-2.2 was configured fully and was successfully built
+    it provides the FFMPEG encoder, the AVI1 encoder
+    and the SINGLEFRAMES encoder.
+
+    
+Output
+    In the "Video" entry you specify the filename for the
+    the videofile that should be written.
+ 
+ 
+Video Options:
+    Input Mode radio buttons
+       here you can select the type of input that should be encoded
+       as videofile.
+       
+       Frames
+         Encode a Framesequence, where one of the
+	 frames is the current image where the master video encoder
+	 ws invoked from.
+	 
+       Layers
+         Encode layers of the current image.
+
+       Storyboard
+         Encode clips that are defined via a storyboard file.
+	 Therefore the name of the storyboard file must be specified
+	 (in the "Extras" tab)
+	 If the master videoencoder is started from the storyboard editor,
+	 thie name of the storyboard_file is already selected.
+	 
+
+    From Frame (Layer/Storyframe)
+    To Frame   (Layer/Storyframe)
+       with these spinbuttons you can specify the range of
+       frames (or layers or storboard frames) that should
+       be included in the resulting video.
+       
+       Depending on the input mode the name changes
+       to "Frame", "Layer" or "Storyframe".
+           
+    Width  and
+    Height
+       with these spinbuttons you can specify the size
+       of the resulting videoframes in pixels.
+       The combo box on the right provides some
+       commonly used videosizes as preset value pairs for
+       both the width and the height widgets.
+
+    Framerate
+       Here you can specify the framerate in frames per second.
+       The framerate controls the playback speed of the resulting videofile.
+       The combo box on the right provides some common 
+       used framerate values.
+    
+    Videonorm combobox.
+       Set the videonorm for the resulting video.
+	 NTSC
+	 PAL
+
+    Encoder "Parameters"
+      The encoder parameters button invokes the 
+      encoder specific parameter popup dialog window.
+      
+    Encoder combo box
+      Here you can select one of the registered videoencoder
+      plug-ins.
+
+
+
+Audio Options:
+    Audiofile:
+      Specify the name of an audiofile.
+      
+    Samplerate:
+      Here you can specify the audio target samplerate that should 
+      be used in the resulting videofile. 
+      (samplerate is measured in in samples per second)
+      
+      The combo box provides some common used samplerate values.
+      
+      If the target samplerate is different form the original
+      samplerate in the specified audiofile a audiofile conversion
+      must be done.
+      Press the button "Audioconvert" to perform this
+      conversion.
+      This may take a while and then displays the name
+      of the generated audiofile as Tempfile.
+      The line below the tempfile shows information
+      about the generated temporary audiofile and
+      the audioplaytime in mm:ss:msec format.
+      
+Audio Tool Configuration
+    All the video encoder plug-ins are designed to accept 16-Bit mono 
+    or stereo WAV Files as audioinput.
+
+    The master videoencoder tries to convert other audiofileformats
+    and samplerates before it passes the audiodata
+    to one of the video encoder plug-ins. This converion is handled
+    via an external audiotool program.
+    The name of this program and its options can be configured here.
+ 
+    Audiotool:
+      By default sox is used as the audiotool to perform audio
+      conversions.
+      sox can handle many audioformats, but can not read MP3 audiofiles.
+
+    Options:  
+      "$IN"  -w -r $RATE "$OUT" resample
+
+      Here you can specify the options that will be passed
+      to the external audiotool program.
+      
+    Save button
+      Save current audiotool configuration as parameters in your
+      gimprc file.
+    Load button
+      Load audiotool configuration from gimprc parameters.
+    Default button
+      Restore to hardcoded audiotool configuration presets.
+
+Extras
+    Macrofile:
+      Here you can specify a filtermacro file, that should be performed
+      on each handled frame at encoding time on the fly.
+      
+      
+      (Note: filtermacros are limited and not real macros.
+       the GIMP-GAP specific filtermacros are recorded
+       filternames and parametervalues restricted to the supported filters,
+       such as color curves, sharpen, blur and many more ...
+       )
+
+      
+    Stroybard File:
+      Here you can specify the name of a storyboard file.
+      When a valid storyboard file is entered the file
+      will be checked. If errors are detected
+      they are reported as text below the storyboard file entry widget.
+
+      If the storyboard file check is ok, the text will be a report about
+      the properties and tracks found in the file.
+      Further the Input Mode (in the Video Options notebook tab) 
+      is set to "Storyboard".
+      If the Storyboard has an audiopart as well, the resulting audiotrack
+      will be mixed, and the resulting file will be inserted
+      in the "Audiofile:" entry at the Audio Options notebook tab.
+      
+    Monitor Frames while Encoding checkbutton
+      will create an image during the encoding process and
+      replaces its content each time a new frame is passed to the
+      encoding engine.
+      (you may close that image any time you want, to stop
+       monitoring)
+    
+    Debug Flat File:
+    Debug Multilayer File:
+    
+    

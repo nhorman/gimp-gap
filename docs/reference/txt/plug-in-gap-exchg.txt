@@ -1,0 +1,12 @@
+"plug-in-gap-exchg"
+
+
+Exchange Current Frame
+
+    Start from Menu:
+        <Image>/Video/Exchange Frame
+
+
+    This feature exchanges the current frame with the
+    frame specified by "Number".
+    

@@ -512,7 +512,7 @@ GimpPlugInInfo PLUG_IN_INFO =
     {GIMP_PDB_IMAGE, "image", "Input image (current one of the video frames)"},
     {GIMP_PDB_DRAWABLE, "drawable", "Input drawable (unused)"},
     {GIMP_PDB_INT32, "nr", "start frame number for the first frame (usual value is 1)"},
-    {GIMP_PDB_INT32, "digits", "how many digits to use for the framenumber part (1 upto 6)"},
+    {GIMP_PDB_INT32, "digits", "how many digits to use for the framenumber part (1 upto 8)"},
   };
   static int nargs_renumber = G_N_ELEMENTS (args_renumber);
 
@@ -1860,7 +1860,7 @@ run (const gchar *name
   {
       gint32 digits;
 
-      digits = 6;
+      digits = GAP_LIB_DEFAULT_DIGITS;
       if (run_mode == GIMP_RUN_NONINTERACTIVE)
       {
         if (n_params != nargs_renumber)

@@ -125,7 +125,7 @@ query ()
     { GIMP_PDB_INT32, "exact_seek", "0: NO (enable faster seek ops if available), 1: YES use only sequential read ops, will find exact framenumbers" },
     { GIMP_PDB_INT32, "deinterlace", "0: NO, 1: deinterlace odd rows only, 2: deinterlace even rows only, 3: deinterlace split into 2 frames where odd rows-frame is 1st, 4: deinterlace split into 2 frames where even rows-frame is 1st)" },
     { GIMP_PDB_FLOAT, "delace_threshold", "0.0 .. no interpolation, 1.0 smooth interpolation at deinterlacing" },
-    { GIMP_PDB_INT32, "fn_digits", "1 <= fn_digits <= 6, number of digits to use in framenames (use 1 if you dont want leading zeroes) " },
+    { GIMP_PDB_INT32, "fn_digits", "1 <= fn_digits <= 8, number of digits to use in framenames (use 1 if you dont want leading zeroes) " },
   };
   static GimpParamDef load_return_vals[] =
   {
@@ -157,7 +157,7 @@ query ()
     { GIMP_PDB_INT32, "exact_seek", "0: NO (enable faster seek ops if available), 1: YES use only sequential read ops, will find exact framenumbers" },
     { GIMP_PDB_INT32, "deinterlace", "0: NO, 1: deinterlace odd rows only, 2: deinterlace even rows only, 3: deinterlace split into 2 frames where odd rows-frame is 1st, 4: deinterlace split into 2 frames where even rows-frame is 1st)" },
     { GIMP_PDB_FLOAT, "delace_threshold", "0.0 .. no interpolation, 1.0 smooth interpolation at deinterlacing" },
-    { GIMP_PDB_INT32, "fn_digits", "1 <= fn_digits <= 6, number of digits to use in framenames (use 1 if you dont want leading zeroes) " },
+    { GIMP_PDB_INT32, "fn_digits", "1 <= fn_digits <= 8, number of digits to use in framenames (use 1 if you dont want leading zeroes) " },
   };
   static int next_args = sizeof (ext_args) / sizeof (ext_args[0]);
 

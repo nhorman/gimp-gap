@@ -1,3 +1,126 @@
+2004-12-12  Wolfgang Hofer <hof@gimp.org>
+	reorganized and updated available doc files
+	and added some of the missing docs.
+	(there are still some chapters left to do..)
+	Splitted the large gap/README textfile into plug-in related
+	subfiles (using the HELP_ID's + .txt as name)
+	
+	* README
+	* gap/README
+	
+	# NEWLY added doc files:
+	* docs/reference/txt/INTRODUCTION.txt
+	* docs/reference/txt/STORYBOARD_FILE_DOC.txt
+	* docs/reference/txt/gap-filterall-db-browser.txt
+	* docs/reference/txt/gap_gimprc_params.txt
+	* docs/reference/txt/plug-in-bluebox.txt
+	* docs/reference/txt/plug-in-filter-macro.txt
+	* docs/reference/txt/plug-in-gap-anim-crop.txt
+	* docs/reference/txt/plug-in-gap-anim-resize.txt
+	* docs/reference/txt/plug-in-gap-anim-scale.txt
+	* docs/reference/txt/plug-in-gap-del.txt
+	* docs/reference/txt/plug-in-gap-density.txt
+	* docs/reference/txt/plug-in-gap-dup.txt
+	* docs/reference/txt/plug-in-gap-exchg.txt
+	* docs/reference/txt/plug-in-gap-extract-player.txt
+	* docs/reference/txt/plug-in-gap-extract-video.txt
+	* docs/reference/txt/plug-in-gap-modify.txt
+	* docs/reference/txt/plug-in-gap-morph.txt
+	* docs/reference/txt/plug-in-gap-move-path.txt
+	* docs/reference/txt/plug-in-gap-mpeg-encode.txt
+	* docs/reference/txt/plug-in-gap-mpeg2encode.txt
+	* docs/reference/txt/plug-in-gap-mplayer-decode.txt
+	* docs/reference/txt/plug-in-gap-navigator.txt
+	* docs/reference/txt/plug-in-gap-onionskin-configuration.txt
+	* docs/reference/txt/plug-in-gap-range-convert.txt
+	* docs/reference/txt/plug-in-gap-range-flatten.txt
+	* docs/reference/txt/plug-in-gap-range-layer-del.txt
+	* docs/reference/txt/plug-in-gap-range-to-multilayer.txt
+	* docs/reference/txt/plug-in-gap-renumber.txt
+	* docs/reference/txt/plug-in-gap-shift.txt
+	* docs/reference/txt/plug-in-gap-split.txt
+	* docs/reference/txt/plug-in-gap-storyboard-clip-prop.txt
+	* docs/reference/txt/plug-in-gap-storyboard-edit.txt
+	* docs/reference/txt/plug-in-gap-storyboard-player.txt
+	* docs/reference/txt/plug-in-gap-vid-encode-master.txt
+	* docs/reference/txt/plug-in-gap-videoframes-player.txt
+	* docs/reference/txt/plug-in-gap-xanim-decode.txt
+	* docs/reference/txt/plug-in-name2layer.txt
+
+	* docs/howto/txt/HOWTO-do-lossless-MPEG-cut.txt 
+	* docs/howto/txt/HOWTO-write-animated-plug-ins.txt   
+	
+	
+2004-12-06  Wolfgang Hofer <hof@gimp.org>
+	Added frontend fro MPlayer based videoframe extracted plug-in.
+	MPlayer offers support to read from many videoformats.
+	
+	This offers access to much more videoformats than the already existing 
+	ffmpeg/libmeg3 based video extract plug-in, but does not
+	allow precise frame positioning. There is also no visual
+	positioning provided in the plug-in. 
+	
+	an optional gimprc parameter (mplayer_prog "/usr/local/bin/mplayer")
+	can be used if mplayer is installed, but is not found in
+	the directories specified in the PATH environment variable.
+	
+	* gap/Makefile.am
+	* gap/gap_frontends_main.c
+	* gap/gap_decode_xanim.c
+	* gap/gap_decode_mplayer.c [.h]    # NEWLY ADDED FILES
+	* po/POTFILES.in
+		
+2004-12-04  Wolfgang Hofer <hof@gimp.org>
+        Storyboard: Shorten frame header texts (if filenamepart gets too long)
+	
+	* gap/gap_story_dialog.c
+	* gap/gap_story_main.c [.h]
+	* gap/gap_lib.c [.h]
+	* gap/gap_player_dialog.c
+	
+2004-12-02  Wolfgang Hofer <hof@gimp.org>
+	Storyboard: prefetch videothumbnail previews all at once
+	and show advance in the progress bar
+	(when activated via Menu)
+
+	Storyboard: implemented the missing dialog pop-up for Global/Properties
+	for selecting Layout Presets.
+	
+	* gap/gap_story_dialog.c
+	* gap/gap_story_main.c [.h]
+	
+2004-11-29  Wolfgang Hofer <hof@gimp.org>
+	message text fixed (#159593)
+	* gap/gap_bluebox.c
+	
+2004-11-28  Wolfgang Hofer <hof@gimp.org>
+	- gap changed limit for framenumberdigits from 6 to 8
+	  now use define GAP_LIB_MAX_DIGITS 
+	  and allow frames with basename part is NULL
+	   e.g.  framenames looking like that:
+	    
+	    00000001.png
+	    00000002.png
+	    
+	  this was done to be compatible with mplayer's frame extracting feature
+	  (mplayer-1.0pre5 uses 8 digits for the extracted frames
+	   where the frames are just numberpart and extension)
+
+	* gap/gap_lib.c  [.h]
+	* gap/gap_base_ops.c
+	* gap/gap_main.c
+	* gap/gap_vex_dialog.c
+	* gap/gap_vex_main.c
+	* libgapvidapi/gap_vid_api_util.c
+	
+	
+	
+2004-11-23  Wolfgang Hofer <hof@gimp.org>
+	bugfix: storyboard dialog asked for videoindex creation permission
+	        even if a valid videoindex is available
+        * gap/gap_story_dialog.c
+	* gap/gap_arr_dialog.c
+		
 2004-11-18  Wolfgang Hofer <hof@gimp.org>
 	- tested plug-ins of the gimp-2.2pre1 release
 	  for animated "filter all layers" capabilites,

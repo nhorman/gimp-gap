@@ -1,0 +1,167 @@
+"plug-in-gap-extract-video"
+
+
+
+Extract Videorange
+
+  Start from Menu:
+     <Image>/Video/Split Video to Frames/Extract Videorange
+
+
+  The extract videorange dialog provides features
+  to extract a selected range of frames 
+  and/or audio from a videofile. It offers frame exact positioning
+  and visual controlled range picking.
+  
+Input Video Selection:
+
+  The widgets in this area are used to specify
+  the source videofile.
+  
+
+  Videofilename entry:
+    Here you can enter the name of your source videofile.
+
+    Some of the common used videofileformats are
+    supported. Typical extensions for videofiles are
+       .avi
+       .mov
+       .mpg
+       .mpeg
+       .vob
+       .ifo
+      
+    For a detailed list of supported videofileformats / codecs
+    see ffmpeg and libmpeg3 documentation. 
+
+  From Frame:
+  To Frame:
+    Here you can specify the range of frames that
+    should be extracted.
+    
+    If you want to extract all frames of the video
+    and dont know the total number of frames,
+    use 999999 in the "To Frame" widget.
+    
+    The "Video Range" button opens a playback
+    preview where you can view the video and
+    set the range under visual control.
+  
+  Videotrack:
+    Here you can select the video track,
+    if the specified videofile has more than one 
+    videotrack.
+    (such as multiangle DVD stuff)
+    
+    Select videotrack 0 to ignore video.
+    (in this case no frames are extracted)
+
+  Audiotrack:
+    Here you can select the audio track,
+    if the specified videofile has more than one 
+    audiotrack.
+    (such as multilingual DVD stuff)
+    
+    Select audiotrack 0 to ignore audio.
+    (in this case no audiodata is extracted)
+
+
+  
+  Decoder:
+    In this widget you can specify a preferred
+    videodecoder.
+    Use one of the values
+    "(none, automatic)"
+    "libavformat"
+    "libmpeg3"
+    provided in the combo-box to the right.
+    
+    Normally you dont need this widget.
+    But some videofiles may cause problems
+    (even crashes at open attempt)
+    with one of the decoders.
+    In such cases it could help to set
+    another decoder that may be able
+    to read the same videofile.
+    
+    In case where the specified decoder does not
+    recognize your videofile as supported
+    fileformat, another decoders will be tried
+    automatically.    
+    
+    If a compatible decoder for the videofile was found
+    its name is displayed as the Active Decoder.
+
+Output:
+
+  Mode:
+    If the "Create only one multilayer image"
+    checkbutton is ON
+    only one GIMP-Image will be created in RAM.
+    All the extracted frames are added as layers
+    to this newly created image.
+    
+    (Dont use this option if you want extract
+    a huge amount of frames)
+    
+    In the other mode (OFF) the extracted frames
+    are written as sequence of numered frame
+    images in GIMP-GAP typical style.
+    
+    The Name of those frame images is controlled
+    by the entry widgets:
+    
+      Basename
+      Digits
+      Extension
+    
+    where the digits control how many digits to use
+    for the framenumber part and the extension
+    does automatically define the image fileformat.
+
+
+
+  Framenr 1:
+    Here you can specify the framenumberpart
+    for the 1.st extracted frame.
+    A value of 0 will use the original framenumber
+    of the input video.
+    
+    
+  Deinterlace:
+    The frame extraction has a built in deinterlace filter.
+    Interlaced frames are built up of 2 half pictures,
+    where the even lines build the one half and the odd lines
+    build the other half picture.
+    The deinterlace filter builds the extracted frame
+    by picking only the lines of one of the half pictures
+    and replaceng the lines of the other half picture
+    by more or less smooth mixing the upper and lower neighbour lines.
+    The mix is controlled with the spinbutton value
+    where 1.0 is a smooth mix, and 0.0 takes just one of the
+    neighbour lines without mixing.
+    That way the deinterlaced frames have same height as the
+    originals.
+
+    The Deinterlace combo-box options are:
+    
+    "no deinterlace"
+        Turn off the deinterlace filter and extract frames
+        1:1 as they were read from the videofile.
+    
+    "deinterlace (odd lines only)"
+        Extract the half-picture that is represented by odd lines
+    "deinterlace (even lines only)"   
+        Extract the half-picture that is represented by even lines
+    "deinterlace frames x 2 (odd 1st)"
+        Extract both half-pictures starting with the odd one.
+        1 frames in the video gives 2 frame images on disc in that case.
+    "deinterlace frames x 2 (even 1st)"
+        Extract both half-pictures starting with the even one.
+        1 frames in the video gives 2 frame images on disc in that case.
+        
+    
+  Audiofile:
+    The filename for the extracted audiodata.
+    Audiodata is always written in RIFF WAVE Fileformat.
+  

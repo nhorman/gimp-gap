@@ -1,0 +1,118 @@
+"plug-in-gap-mplayer-decode"
+
+MPLayer based extract
+
+    Start from Menu:
+	<Image>/Video/Split Video to Frames/MPLayer based extract
+        <Toolbox>/Xtns/Split Video to Frames/MPLayer based extract
+
+    Extract frames and/or audio from a videofile.    
+    This feature is only available on UNIX systems and is 
+    a frontend for the mediaplayer program mplayer.
+
+    For that feature GIMP-GAP must be configured and compiled 
+    with the configure option:
+        --enable-unix-frontends
+	  
+    
+    Further it is required that mplayer is installed on your system
+    at run time.
+    (GIMP_GAP was tested with mplayer-1.0pre5).
+    
+    
+    MPlayer does support many videofileformats amd codecs and offers
+    access to more vidoefiles than the other GIMP-GAP video extract
+    features. But it does not provide frame exact positioning.
+       
+
+  Input Video:
+    Here you can enter the name of an input videofile.
+    The "..." button opens a filebrowser popup dialog
+    where you can select a filename.
+    
+  Start Time:
+    Start time of the selected range in format HH:MM:SS.
+
+    Note:
+    MPlayer always extracts the 1.st frame of the video too
+    regardless if you start at 00:00:00 or not.
+    
+  Frames:
+    Number of frames to extract. If the video has less frames than
+    specified here, extract will stop at the last available frame.
+    
+  Videotrack:
+    Here you can select the number of the input videotrack.
+    Most videos have just one videotrack.
+    Some DVD videos have multiple angle view where the different
+    angles are represented by 2 or more videotracks.
+    Use a videotrack value 0 to ignore videoframes.
+    
+  Audiotrack:
+    Here you can select the number of the input audiotrack.
+    Most videos have just one audiotrack.
+    Some DVD videos have multiple language support where the different
+    languages are represented by 2 or more audiotracks.
+    Use a audiotrack value 0 to ignore audiotracks.
+  
+  Output Audio:
+    Filename for the extracted audio wave file to write.
+    (ignored if audiotrack is 0, or if the input video
+    has no audiopart)
+
+  Framenames:
+    Basenamepart for the extracted frames to write.
+    The 6-digit numberpart and the extension (.png, .jpeg .xcf)
+    are added for each extracted frame.
+  
+  Format:
+    Imagefileformat for the extracted frames.
+      JPEG
+      PNG
+      XCF
+      
+    Note: XCF fileformat is not directly supported by mplayer.
+          In this case the ectracted frames are created in PNG
+	  imagefileformat and converted to the GIMP's native 
+	  XCF fileformat automatically.
+	  You should use Png Compression 0 in that case
+	  for faster opration.
+  
+  Png Compression:
+    Compression for extracted PNG frames
+    where 0 is uncompressed (fastest)
+    and 9 is best compression.
+    Png Compression is ignored if format JPEG is used.
+    
+  Jpeg Quality:
+    Quality of the frames where 100 is best quality (but largest filesize)
+  Jpeg Optimize:
+    Optimization factor [0-100]
+  Jpeg Smooth:
+    Smooth factor [0-100]
+  Jpeg Progressive:
+    Specify standard or progressive JPEG.
+  Jpeg Baseline:
+    Specify use of baseline or not.
+
+    The Jpeg options are ignored if another format than JPEG
+    is selected.
+    
+  Silent:
+    ON: tell mplayer to ignore video audio when no track
+        is selcted.
+    OFF: mplayer plays unselected video /audio (where track is 0)
+        on standard devices.
+	E.g. if audiotrack is 0, you will hear the audio track,
+	     if videotrack is 0, the corresponding frames will
+	     be visible at audioextract.
+
+  Open:
+    Open the 1.st extracted frame when extracting is done.
+    
+  Asynchron:
+    ON: Run mplayer as asynchron process and try to show
+        progress on base of the already extracted frames.
+    OFF: call mplayer as synchron process.
+        (progress for the extracting step is not possible in that case)
+    

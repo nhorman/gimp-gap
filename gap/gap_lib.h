@@ -109,6 +109,11 @@ typedef struct GapAnimInfo {
 } GapAnimInfo;
 
 /* procedures used in other gap*.c files */
+char *       gap_lib_shorten_filename(const char *prefix
+                        ,const char *filename
+			,const char *suffix
+			,gint32 max_chars
+			);
 int          gap_lib_file_exists(const char *fname);
 char*        gap_lib_searchpath_for_exefile(const char *exefile, const char *path);
 int          gap_lib_file_copy(char *fname, char *fname_copy);
@@ -157,6 +162,9 @@ gint     gap_lib_sscan_flt_numbers(gchar *buf, gdouble *farr, gint farr_max);
 #define  GAP_VID_PASTE_REPLACE         0
 #define  GAP_VID_PASTE_INSERT_BEFORE   1
 #define  GAP_VID_PASTE_INSERT_AFTER    2
+
+#define  GAP_LIB_MAX_DIGITS     8
+#define  GAP_LIB_DEFAULT_DIGITS 6
 
 #endif
 

@@ -159,6 +159,8 @@ gap_fmac_SOURCES = \
 	gap_libgimpgap.h	
 
 gap_frontends_SOURCES = \
+	gap_decode_mplayer.c	\
+	gap_decode_mplayer.h	\
 	gap_decode_xanim.c	\
 	gap_decode_xanim.h	\
 	gap_frontends_main.c	\

@@ -572,7 +572,7 @@ filesel_create_value(char *title, GtkTable *table, int row, GapArrArg *arr_ptr)
   arr_ptr->text_filesel = NULL;
     
   /* Button  to invoke filebrowser */  
-  button = gtk_button_new_with_label ( _("File Browser"));
+  button = gtk_button_new_with_label ( "..." );
   gtk_table_attach( GTK_TABLE(table), button, 2, 3, row, row +1,
 		    0, 0, 0, 0 );
   gtk_widget_show (button);
@@ -1876,6 +1876,9 @@ p_check_vindex_file(const char *vindex_file)
  * not the full path if parent directories are invalid too)
  *
  * return TRUE : OK, permission to create videoindex
+ *               (for already existing videoindex 
+ *                TRUE is returned if gimprc settings
+ *                permit videoindex creation)
  *        FALSE: user has cancelled, dont create videoindex
  */
 gboolean

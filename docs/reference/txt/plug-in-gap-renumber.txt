@@ -1,0 +1,44 @@
+"plug-in-gap-renumber"
+
+Renumber Frames
+
+  Start from Menu:
+       <Image>/Video/Frames Renumber
+
+  This plug-in renumbers all frames (discfiles) of a video.
+  
+  First Frame Number:
+     Enter the new number for the first frame in this
+     entry field.
+     All frames of video are renumbered, starting at this
+     number.
+ 
+  Digits:
+    Here you can enter how many digits (1 up to 8) to use for your frame
+    numbers. Framenumbers are fileld up with leading zeros to the
+    specified number of digits.
+    Framenumbers that are greater than the specified number of digits
+    will use more digits than specified, but are built without leading zeroes.
+    If you choose 1 your framenumbers are built without
+    any leading zeroes at all.
+
+
+  If the frames are numbered in a non-continous way, you can
+  make them continous with this plug-ins.
+  (Most other GIMP-GAP features do not accept non-continous numbered frames)
+
+  Example:
+    you have the frames:
+       film_0001.xcf
+       film_0007.xcf
+       film_0008.xcf
+
+  After running the renumber feature with settings
+    First Frame Number: 4
+    Digits: 6
+ 
+    the frames will be renumbered as:
+ 
+       film_000004.xcf     # old name was film_0001.xcf
+       film_000005.xcf     # old name was film_0007.xcf
+       film_000006.xcf     # old name was film_0008.xcf

@@ -1,0 +1,110 @@
+"plug-in-gap-storyboard-clip-prop"
+
+
+Clip Properties (Storyboard)
+
+    The clip properties dialog window is used to
+    create new clips and to view and update properties
+    of existing clips in a storyboard file.
+    It is a popup dialog of the storyboard editor
+
+    ## refere to Storyboard Dialog
+    ## (plug-in-gap-storyboard-edit.txt)
+
+    File:
+      Clips use a filename to refere to a videofile or to 
+      a frame imagefile on disk.
+      The button "..." opens a filebrowser dialog window
+      where you can select the filename.
+
+      The Clip Type is detected automatically (depending on the file) as:
+	MOVIE
+	FRAME-IMAGES
+	SINGLE-IMAGE
+
+    From:
+    To:
+      Here you can enter the selected frame range for the clip.
+      (those widgets are disabled when file referes to a single image)
+      
+    Loops:
+      Here you can specify the number of loops, where a value of 2
+      shows the selected range of frames two times in a loop.
+ 
+    Pingpong:
+      The Pingpong checkbutton plays the selected range forward
+      and backwards.
+      If the selected range is from 1 to 5
+      the clip is played as sequence  1, 2, 3, 4, 5, 4, 3, 2
+      
+    Stepsize:
+      With the stepsize density you can affect the playback speed
+      individual per clip without changing the master framerate
+      of the storyboard file.
+      Values greater than one results in skipping input frames
+      and will speed up the clip.
+      Values less than one does show some frames twice
+      and does slow down the clip.
+      
+      For normal playback of the clip use stepsize value 1.0.      
+      
+      
+    Videotrack:
+      Here you can select the number of the input videotrack.
+      Most videos have just one track.
+      Some DVD videos have multiple angle view where the different
+      angles are represented by 2 or more videotracks.
+      Note: 
+        the videotrack is only available for clip type MOVIE.
+    
+    Deinterlace:
+      Deinterlacing is selected via radio buttons.
+      Fetching frames out of already encoded videofiles
+      has a built in deinterlace filter.
+      Interlaced frames are built up of 2 half pictures,
+      where the even lines build the one half and the odd lines
+      build the other half picture.
+      The deinterlace filter builds the extracted frame
+      by picking only the lines of one of the half pictures
+      and replaceng the lines of the other half picture
+      by more or less smooth mixing the upper and lower neighbour lines.
+      The mix is controlled with the spinbutton value
+      where 1.0 is a smooth mix, and 0.0 takes just one of the
+      neighbour lines without mixing.
+      That way the deinterlaced frames have same height as the
+      originals.
+      
+      The deinterlace radio buttons are:
+    
+      "None"
+          Turn off the deinterlace filter and read frames
+          1:1 as they are found in the videofile.
+
+      "Odd"
+          Extract the half-picture that is represented by odd lines
+      "Even"
+          Extract the half-picture that is represented by even lines
+	
+      Note: 
+        the deinterlace filter is only available for clip type
+        MOVIE.
+
+    Duration:
+      Information about the duration of the clip in frames
+      and playtime in format mm:ss:msec
+      
+    Comment:
+      An optional comment text on the clip.
+
+Find Scene End
+    This button checks the frames in the defined range
+    between "From" and "To" for significant changes
+    and sets the "To" value to the first detected scene change.
+    
+Auto Scene Split
+    The button "Auto Scene Split" will scann all the frames 
+    in the selected range and create new clips on every significant
+    scene change. The new clips are added at end of the storyboard.
+    (or cliplist)
+    You may stop the scan any time with the "Close" button.
+    

@@ -71,7 +71,7 @@ p_alloc_fname(char *basename, long nr, char *extension)
   l_fname = (char *)g_malloc(l_len);
 
     l_digits_used = 6;
-    if(nr < 100000)
+    if(nr < 10000000)
     {
        /* try to figure out if the frame numbers are in
         * 4-digit style, with leading zeroes  "frame_0001.xcf"
@@ -86,6 +86,22 @@ p_alloc_fname(char *basename, long nr, char *extension)
          if (g_file_test(l_fname, G_FILE_TEST_EXISTS))
          {
             l_digits_used = 6;
+            break;
+         }
+
+         /* check if frame is on disk with 8-digit style framenumber */
+         g_snprintf(l_fname, l_len, "%s%08ld%s", basename, l_nr_chk, extension);
+         if (g_file_test(l_fname, G_FILE_TEST_EXISTS))
+         {
+            l_digits_used = 8;
+            break;
+         }
+
+         /* check if frame is on disk with 7-digit style framenumber */
+         g_snprintf(l_fname, l_len, "%s%07ld%s", basename, l_nr_chk, extension);
+         if (g_file_test(l_fname, G_FILE_TEST_EXISTS))
+         {
+            l_digits_used = 7;
             break;
          }
 
@@ -144,7 +160,7 @@ p_alloc_fname(char *basename, long nr, char *extension)
     }
     else
     {
-      /* numbers > 100000 have 6 digits or more */
+      /* numbers > 10000000 have 9 digits or more */
       l_digits_used = 0;
     }
 
@@ -153,6 +169,10 @@ p_alloc_fname(char *basename, long nr, char *extension)
   switch(l_digits_used)
   {
     case 6:  l_fname = g_strdup_printf("%s%06ld%s", basename, nr, extension);
+             break;
+    case 8:  l_fname = g_strdup_printf("%s%08ld%s", basename, nr, extension);
+             break;
+    case 7:  l_fname = g_strdup_printf("%s%07ld%s", basename, nr, extension);
              break;
     case 5:  l_fname = g_strdup_printf("%s%05ld%s", basename, nr, extension);
              break;

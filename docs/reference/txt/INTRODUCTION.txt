@@ -1,0 +1,336 @@
+Project gap "GIMP Animation Package"   08. Dect. 2004  (pre)release 2.1.0
+
+--------------------------------------------------------------------
+Introduction
+--------------------------------------------------------------------
+
+The GIMP is a great program for creating and manipulating
+pixelbased images of many types. 
+The plug-in concept and the procedural database
+allows programmers to extend the GIMP's functions in many ways.
+
+In the GIMP there are some plug-in's supporting animation features,
+based on layers where each layer of the image is considered as one frame
+of the animation.
+GIMP-GAP is a collection of plug-ins that extends the 
+GIMP's animation capabilities
+by supporting the creation of more complex animations.
+
+Idea:
+	With the help of the GIMP-GAP plug-in collection
+	GIMP can operate on a series of images as if they were
+	a single one.
+	Each frame of an animation can have multiple layers.
+	The user can step from frame to frame by pressing an accelerator key
+	or can do image manipulations that are propagated automatically
+	to a selected range of frames.
+
+	Layeranimated images can be combined with frames (multiple images)
+	as you can see in the "Move Path" plug-in
+        or converted to frames and vice-versa. 
+
+	
+General:
+	An animation consists of a series of images of the same size & type
+	(frames).
+	The concept of GIMP-GAP is to store each frame seperate on disk, using a filename
+	convention that includes the frame number and extension.
+
+	Example: film_000001.xcf, 
+	         film_000002.xcf
+	         ..
+	         film_000012.xcf
+	
+	GIMP's xcf fileformat should be used to store the frames,
+	so that each frame can have more layers.
+
+	Sound is not supported in this concept, but will be handled
+	as sperate audiofiles at encoding time or in the playback module.
+	The playback framerate and other common information about the animation
+	are stored in an extra videoinfo textfile
+	         film_vin.gap
+	
+	This requires a lot of diskspace but offers much more flexibility
+	while working on the animation.
+
+	To save diskspace you may optional use gziped xcf frames
+	(takes extra time to un/compress) by using the extension .xcfgz
+	(gzip has to be installed on your system to do that)
+	If you can accept lossy compression you may also use 
+	the xjt fileformat to store your frames on jpeg based compression.
+	The curent implementation of the xjt fileformat
+	is restricted to UNIX operating systems.
+
+Input from videofile:
+	GIMP-GAP has features to access both audio and frames in
+	already encoded videofiles.
+	
+	On way to deal with such videofiles is to extract
+	the frames. Each frame can be stored as numbered frame
+	image on disk in that case. GIMP-GAP has a built in
+	video extracting plug-in (based on ffmpeg and libmeg3).
+	
+	## refere to (plug-in-gap-extract-video.txt) ##
+	
+	On UNIX platforms GIMP-GAP also provides frontends
+	for the videoplayers 
+	- mplayer
+	- xanim
+	those players are capable to extract frames from
+	common videofiel formats (avi, mpeg, quicktime, ....) .
+	Please note that xanim is old unmaintained software.
+	The frontend for xanim is still there and may even work if
+	you still have xanim exporting edition.
+	But mplayer is the better choice.
+
+	## refere to (plug-in-gap-mplayer-decode.txt) ##
+	## refere to (plug-in-gap-xanim-decode.txt) ##
+
+	The other methode can read the frames from one or more
+	videofiles and pass them to one of the GIMP-GAP video encoders
+	without the need to store the frames separately.
+	This methode requires a storyboard file.
+	The storyboard file describes
+	how to assemble videoclips, images and audiofiles
+	to one resulting output video.
+
+Output to videofile:
+
+        GIMP-GAP provides video encoder plug-ins
+        to save a series of input frame images or videoclips
+        as videofile.
+        This process is called encoding an usually 
+        does compresses the processed frames and audiodata.
+
+        GIMP-GAP encoder plug-ins can operate on
+        a series of numbered frame images or storyboard files
+        as input (encoding on the fly).
+        	
+	Another option is to convert the frames to one multilayerd image
+	that can be saved as MNG animation, animated-GIF
+	(or, in the future in other animation formats 
+	when other load/save modules were added to the GIMP)
+
+	GIMP-GAP provides automated fileformat conversions for
+	the frames of an animation. 
+	This conversions offer a way to use external
+	video encoder programs.
+	All GIMP-supported imagefileformats may be used.
+	
+	On UNIX Platforms GIMP-GAP provides frontend dialog interfaces for
+	external software MPEG video encoder programs.
+	(mpeg_encode and mpeg2encode)
+	This methode and both encoders are old.
+	External encoders can NOT directly encode storyboard files,
+	and typically want input as series of single frames in PPM format.
+	This need much diskspace and extra time for converting
+	frames to PPM.
+	## refere to (plug-in-gap-mpeg-encode.txt) ##
+	## refere to (plug-in-gap-mpeg2encode.txt) ##
+
+The Storyboard:
+        Storyboards are useful for the creation and cutting of longer videos.
+        GIMP-GAP provides the storyboard dialog to create and edit
+        simple storyboard files.
+        Storyboard files are textfiles and can be compared with playlists
+        for videoclips, images and audioclips.
+        
+        In this release the storyboard dialog is limited to simple storyboard
+        features without soundsupport. 
+        For encoding videos via storyboard files the soundsupport is
+        already implemented and there are some more features available.
+        
+        See docs/reference/txt/STORYBOARD_FILE_DOC.txt 
+	for the complete Syntax description.
+        
+
+Morphing:
+        Morphing can be used to render frames
+        between 2 scenes.
+        ** Morphing is  still an experimental feature and not fully documented yet **
+	
+	## refere to (plug-in-gap-morph.txt) ##
+	
+Onionskin Layers
+        GIMP-GAP does support onionskin layers.
+	
+	## refere to (plug-in-gap-onionskin-configuration.txt) ##
+	
+	
+	
+
+
+
+--------------------------------------------------------------------
+How to use
+--------------------------------------------------------------------
+
+
+- Creating multiple frames (video frames)
+- ---------------------------------------
+
+   - from an existing single image
+	Save your image as XCF file.  (<Image>/File/Save as)
+	use a name that ends up in _000001.xcf (or _000001.xcfgz)
+
+	Then duplicate your image (<Image>/Video/Duplicate)
+	You'll be asked how much copies you need.
+	(Note: all copies are stored on disk immediate
+               without explicite save)
+
+    - from an existing layeranimated multilayer image
+	use
+            <Image>/Video/Split Img to frames
+
+	This will create frames, a series of images on disk,
+	with a name that ends up in _000001.xcf).
+	Optional you may use other extensions. (.xcfgz, .jpg ...)
+
+	WARNING: The extension defines the fileformat
+                 of the frames. Most of the other formats
+                 (than GIMP's .xcf format) can not save
+                 multilayer frames, or frames with alpha channels.
+
+   - from outside the GIMP
+	You may rename and copy existing XCF images
+	according to the frame naming conventions.
+	<img>_000001.xcf
+	<img>_000002.xcf
+	...
+	Then load (only one of them) into the GIMP.
+
+
+- Navigation (Goto)
+- ------------------
+      It is recommanded to define some accelerator keys for quick
+      walk through the frames.
+      Here are my settings (excerpt from my $HOME/.gimp/menurc )
+
+      (menu-path "<Image>/Video/Goto/First Frame" "<control><alt>1")
+      (menu-path "<Image>/Video/Goto/Prev Frame" "<alt>1")
+      (menu-path "<Image>/Video/Goto/Next Frame" "<alt>2")
+      (menu-path "<Image>/Video/Goto/Any Frame" "<alt>3")
+      (menu-path "<Image>/Video/Goto/Last Frame" "<control><alt>2")
+      
+      Alternatives:
+      - You may open the GIMP-GAP videoplayer
+        (menu-path: <Image>/Video/Playback...)
+        and use the player for visual positioning 
+        (use the FrameNr Button or the GO-Button array for that task)
+      
+      - You may open the GIMP-GAP video navigator dialog
+        (menu-path: <Image>/Video/VCR Navigator)
+
+
+- Main render features
+----------------------
+
+ GIMP-GAP provides features for rendering moving objects
+ and for automated modifying of multilple frames.
+
+ ## refere to (plug-in-gap-move-path.txt) ##
+ ## refere to (plug-in-gap-modify.txt) ##
+
+      
+      
+- NO UNDO:
+- --------
+  There is no Undo for the video frame based GIMP-GAP video plug-ins.
+  If you step to the next frame (menu: <image>/Video/Goto Next)
+  the current frame is saved to disk and the next frame
+  is loaded into the image. 
+  All undo steps were cleared at this time.
+
+
+- About Locks
+- -----------
+
+   All the GIMP-GAP plug-ins are using a lock.
+   This lock disables to run other GIMP-GAP plug-ins (or the same plug-in twice)
+   on the same image at the same time,
+   while the current GIMP-GAP plug-in is working on that frame.
+   
+   GIMP-GAP keeps a locktable (for the current session) that contains
+   the image_id's of all images currently locked by GIMP-GAP plug-ins.
+
+   If you cancel a running GIMP-GAP plug-in with the cancel button
+   in the progress window,
+   or kill it from your operating sytem the lock may remain.
+   (This should only happen to WINDOWS users, for UNIX users
+    locks are checked for dead process ids)
+
+   To unlock you can save the current frame image,
+   close all views to that image, then reload the frame image.
+   (or quit and restart the GIMP)
+
+  WARNING:
+  It is not recommanded to open more than one frame of
+  an animation at the same time.
+  (menu: File/Open "img_000001.xcf"
+   menu: File/Open "img_000002.xcf")
+  
+  In this constellation both gap plug-ins may concurrent 
+  in save/load to/from the same file.
+  Example:
+     call from "img_000001.xcf" Video/Delete Frames (range 000001 to 000003)
+           now img_000004.xcf is renamed to img_000001.xcf
+               img_000005.xcf is renamed to img_000002.xcf
+ 
+     then  
+     call from "img_000002.xcf" Video/Goto First
+            the img_000002.xcf (its old content) is saved,
+                             overwiting wht was img_000004.xcf before.
+  If you make the 2.nd call while the 1.st one is in progress,
+  you may trash your frames (2 writers on one file) and/or crash
+  your GIMP session.
+
+
+
+
+======================================================
+Internal PDB names and menu names of GIMP-GAP plug-ins
+======================================================
+
+  plug_in_bluebox                     "<Image>/Video/Bluebox"
+  plug_in_filter_macro                "<Image>/Filters/Filtermacro"
+  plug_in_gap_anim_crop               "<Image>/Video/Frames Crop"
+  plug_in_gap_anim_resize             "<Image>/Video/Frames Resize"
+  plug_in_gap_anim_scale              "<Image>/Video/Frames Scale"
+  plug_in_gap_del                     "<Image>/Video/Delete Frames"
+  plug_in_gap_density                 "<Image>/Video/Frames Density"
+  plug_in_gap_dup                     "<Image>/Video/Duplicate Frames"
+  plug_in_gap_exchg                   "<Image>/Video/Exchange Frame"
+  plug_in_gap_first                   "<Image>/Video/Goto First"
+  plug_in_gap_goto                    "<Image>/Video/Goto Any"
+  plug_in_gap_last                    "<Image>/Video/Goto Last"
+  plug_in_gap_layers_run_animfilter   "<Image>/Filters/Filter all Layers"
+  plug_in_gap_modify                  "<Image>/Video/Frames Modify"
+  plug_in_gap_move                    "<Image>/Video/Move Path"
+  plug_in_gap_mpeg2encode             "<Image>/Video/Encode/MPEG2 (mpeg2encode)"
+  plug_in_gap_mpeg_encode             "<Image>/Video/Encode/MPEG1 (mpeg_encode)"
+  plug_in_gap_navigator               "<Image>/Video/VCR Navigator"
+  plug_in_gap_next                    "<Image>/Video/Goto Next"
+  plug_in_gap_onionskin_configuration "<Image>/Video/Onionskin/Configuration"
+  plug_in_gap_prev                    "<Image>/Video/Goto Prev"
+  plug_in_gap_range_convert           "<Image>/Video/Frames Convert"
+  plug_in_gap_range_flatten           "<Image>/Video/Frames Flatten"
+  plug_in_gap_range_layer_del         "<Image>/Video/Frames LayerDel"
+  plug_in_gap_range_to_multilayer     "<Image>/Video/Frames to Image"
+  plug_in_gap_renumber                "<Image>/Video/Frames Renumber"
+  plug_in_gap_shift                   "<Image>/Video/Framesequence Shift"
+  plug_in_gap_split                   "<Image>/Video/Split Img to Frames"
+  plug_in_gap_videoframes_player      "<Image>/Video/Playback"
+  plug_in_gap_mplayer_decode          "<Image>/Video/Split Video to Frames/MPlayer based extract"
+  plug_in_gap_mplayer_decode_toolbox  "<Toolbox>/Xtns/Split Video to Frames/MPlayer based extract"
+  plug_in_gap_xanim_decode            "<Image>/Video/Split Video to Frames/XANIM based extract"
+  plug_in_gap_xanim_decode_toolbox    "<Toolbox>/Xtns/Split Video to Frames/XANIM based extract"
+
+  script-fu-selection-to-anim-image   "<Image>->Script-Fu->Animators->Sel To AnimImage"
+
+  plug_in_gap_get_animinfo            ** NON_INTERACTIVE batchscript API
+  plug_in_gap_move_path_ext           ** NON_INTERACTIVE batchscript API
+  plug_in_gap_move_path_ext2          ** NON_INTERACTIVE batchscript API using a controlpoint file
+  plug_in_gap_set_framerate           ** NON_INTERACTIVE batchscript API
+  plug_in_gap_video_edit_clear        ** NON_INTERACTIVE batchscript API
+  plug_in_gap_video_edit_copy         ** NON_INTERACTIVE batchscript API
+  plug_in_gap_video_edit_paste        ** NON_INTERACTIVE batchscript API

@@ -1,0 +1,29 @@
+"plug-in-gap-extract-player"
+
+
+Player invoked from videoextract plug-in
+
+
+  The player is titled as "Select Videorange" in this case, because
+  it operates as visual range selection tool here.
+
+  The selected range in the player is linked with the selected range
+  in the "Input Video selection" section.
+  The range is specified by the spinbuttons "From Frame" and "To Frame".
+  Changes of the range in the players range are immediate propagated
+  to the range in the "Input Video selection" section, that is
+  relevant for extracting frames.
+  Note: This is an unidirectional link. 
+        Changes in the "Input Video selection" section are not
+	propagated to the players range.
+
+
+
+  For more details on the playback related widgets
+  see the chapter 
+  ##### refere to Player description (plug-in-gap-videoframes-player.txt) #####
+
+  (the player hides the HELP Button in case when
+   invoked from the videoextract as part of the "Extract Video" window
+   because this window has its own help button.
+   But the HELP button is shown when the player is invoked as separate window)

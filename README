@@ -82,7 +82,69 @@ Requires:
 
 For installation instructions, see the file INSTALL.
 
-For information about GIMP-GAP details please read the file gap/README.
+For information about GIMP-GAP details please read the files
+in docs/reference/txt/INTRODUCTION.txt
+
+
+Additional Installation Notes
+=============================
+
+This version of GIMP-GAP is a seperated Package since GIMP-1.3.x
+and does not compile/run with GIMP-1.2.x or older GIMP versions.
+
+  ./autogen.sh   # includes the ./configure call
+  make
+  make install
+
+    
+  Notes:
+   
+   - GIMP 1.1.4 upto GIMP-1.2.x have included older versions of GIMP-GAP 
+     as standard plug-in (named gap) with no need of extra installation.
+
+
+   - GIMP-GAP provides frontend dialogs for:
+      - mplayer 1.0
+      - xanim 2.80.1 exporting edition (with the extensions from loki entertainment)
+      - mpeg_encode (V1.5R2)
+      - mpeg2encode (V1.2)
+      
+
+     The frontends and the external programs need UNIX environment to run.
+     The programs mpeg2encode, mpeg_encode, and xanim
+     are old and you may not need them at all since GIMP-GAP-2.2
+     provides improved alternatives for all of them.
+     
+     But it is higly recommanded to install the program mplayer.
+     MPlayer does support very much videofileformats.
+     
+     
+     If you like to use that stuff, you should install
+       mplayer
+       xanim 2.80.1 (loki)
+       mpeg_encode and mpeg_play
+       mpeg2encode and mpeg2decode
+     on your system.
+
+   - The GIMP-GAP playback module provides audiosupport for audiofiles in  RIFF WAV format.
+     The audiosupport is based on wavplay (tested with version 1.4).
+     
+     If you want to have audiosupport you must install wavplay
+     and configure and compile gimp-gap without the
+     configure option --disable-audiosupport
+     
+     As far as i know, wavplay is available only for LINUX, but i may be wrong..
+     
+     The GIMP-GAP playback module further provides a button for converting
+     other audiofile formats to RIFF WAV.
+     If you want to use that feature the external following programs
+     must be installed:
+      - sox
+      - lame
+     
+   - There is no need to install all those external programs to compile GIMP-GAP.
+
+
 
 
 Bugs

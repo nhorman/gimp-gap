@@ -1,0 +1,325 @@
+"plug-in-gap-videoframes-player"
+
+Playback
+
+    Start from Menu:
+      <Image>/Video/Playback...
+
+    This player does playback of your video frames.
+    Along with the video frames you can also do playback of an audiofile.
+    The player is a tool that should help to give a motionpreview
+    and allows visible positioning for the animation designer.
+
+    There is NO direct support for playback of videoformats (like MPEG, AVI, ....)
+    Internally the player can handle access the frames (but no audio) in videofiles
+    when invoked from the video extract dialog or from the storyboard dialog.
+
+
+Video Options:
+
+    - Play (>) button
+        Start the playback,
+        or switch to forward play if already playing reversed.
+
+    - PlayReverse (<) button
+        Start the reversed playback,
+        or switch to reversed play if already playing forward.
+
+	SHIFT click on the "Play" or "PlayReverse" button creates
+	a snapshot image and adds all the frames that are played
+	as new layers to this image to trace the playback.
+	(see chapter Creating a snapshot image below)
+	
+
+    - Pause button (||)
+        Stop playback,
+        or go to fist frame of the selcted frame range if not playing.
+        Go to the end of selected frame range if right mousebutton was used.
+        or go to the active framenr if the middle mouse button was used.
+        (the active framenumber is the one that is currently
+        loaded in the GIMP image window from where you invoked the player)
+
+    - The GO button array
+         the 50 blank buttons above the preview build up the GO button array,
+         This tool is for positioning and manual speedcontrol.
+
+         Move the mousepointer over those buttons to display
+         frames in sequence as fast as you move the mouse.
+         Moving right is forward, left is backward.
+	 
+	 Click on one of the GO-buttons loads the current frame
+	 into the invoking frame image.
+	 CTRL-Click sets the current frame as start of the range,
+	 ALT-Click sets the current frame as end of the range.
+
+         Tip:
+           The positioning is done relative to the point where the
+           mouse entered the GO button array.
+           If you reached the leftmost GO button at framenr 50
+           and want to go more backwards (to framenr 35),
+           just move the Mouse outside the GO button array (up or down)
+           and then enter again from the right side,
+           and continue moving to the left, but now
+           keeping the mouse inside the GO button array
+           until the desired frame (Nr. 35) is reached.
+
+
+         Tip: For efficient use of the GO buttons the "Use Thumbnails"
+          checkbutton should be turned ON.
+          Further all of the frames should have thumbnail files.
+
+          Even fast machines may have problems to deliver
+          full sized multilayer frames in time.
+          (depending on size of the frames, number of layers
+           and IO performance of your hardware)
+
+
+   - "Frame" "Nr" buttons and spinbutton
+        The current framenumber position is shown in the spinbutton
+	right to those buttons.
+
+        The timepos: mm:ss:sec displays below shows the same current 
+	position as Minutes:Secons:Microseconds
+
+        (The time calculation is always based on the original speed.
+         This is the framerate of your animation as found in the _vin.gap file.
+         You can change the framerate in the VCR Navigator window)
+	
+        A mouseclick on the "Frame" button sets the start of the range
+	to the current position. 
+	
+	A click on the "Nr" button sets the end of the range
+	to the current position. 
+
+        You can load the frame (the number that is currently on the players display)
+        into the active image window when you SHIFT click
+	on the "Frame" or on the "Nr" button.
+
+        Alternative you can also click on one of the GO buttons,
+        or on the players display to reload the active image with
+        the desired frame.
+
+
+   - "From Frame" and "Frame To"  buttons and spinbuttons:
+        Here you can select a framerange by entering
+        the begin and end framenumber.
+	
+	The buttons to the left of the spinbuttons print
+	out the description of the selected range in
+	storyboard file syntax notation.
+	
+	Note:
+	When the player is invoked via the storyboard editor
+	(it usually becomes part of the storyboard editors dialog window)
+	you can add the selected range as new clip at end of the
+	cliplist by pressing those "From Frame" or "To Frame" buttons,
+	where "To Frame" means backward playback of the clip.
+	
+
+
+    - Speed button
+         Reset Speed to the original (the framerate of your Animation)
+         (a 2.nd click goes back to the previous enters Speed)
+
+    - Speed spinbutton
+         Here you can enter the desired playback speed.
+         The available range is 1 upto 250 frames/sec.
+
+         Please note that 250 frames/sec may not be reached on
+         most machines.
+         If the exact_timing checkbutton is ON,
+         the 250.th frame will be reached in time (after 1 second),
+         but if your machine can handle only 25 frames in one second
+         you will see just frame 10, 20, 30, 40, .... , 230, 240, 250
+
+    - Size button
+         Set the standard thumbail size
+         There are two standard sizes
+            "normal" 128 Pixels
+            "large"  256 Pixels
+         this button toggles between both sizes.
+         If you hold the SHIFT key wihle clicking the size button,
+         the preview is scaled to 1:1 original framesize.
+
+
+    - Loop checkbutton:
+         Plays in loop if ON, otherwise play once and then stop.
+
+    - Selection only
+         Play only frames within the selected range.
+         if not checked (OFF) play all frames.
+
+    - PingPong
+         Play alternating backward/forward
+
+    - Use Thumbnails
+         use thumbnail files if available.
+         Both the PNG based open thumbnails standard
+         and the older .xvpics based thumbnail files
+         are supported.
+
+         Thumbnail based playback has reduced quality.
+         If there are just .xvpics thumbnail files
+         the quality is very miserable.
+
+         The full original frame images are read in case when
+         no thumbnail file is available,
+         (Note:
+           It also does create the thumbnail file in such a case,
+           but this is only done, if the preferences setting
+           permits creation of normal (or large) thumbnail files)
+
+           No thumbnail data is written when the playback reads the
+           frames directly from a videofile.
+
+         )
+
+
+         If the "Use Thumbnails" checkbutton is switched OFF
+         the player always reads the full original sized frame images
+
+         Playback with full frame image read mode
+         is very slow, even on fast machines,
+         but gives the original quality.
+
+    - Exact Timing
+         if this checkbutton is ON (the checked state)
+         the player tries to keep the frametiming
+         as exact as possible. if your machine
+         is not fast enough one or more frames
+         of the sequence are not displayed (dropped)
+         and the next frame is diplayed in time.
+
+         if this checkbutton is OFF
+         all frames are displayed.
+         this leads to more and more growing delay
+         depending on the the power of your machine.
+
+
+Creating a snapshot image:
+      A click on the displayed frame creates an image and adds
+      the current frame as new layer to this snapshot image.
+      The size of the snapshot image depends on the "Use thumbnails" checkbutton.
+      OFF: Original framesize is used.
+      ON: thumbnail size is used.
+      
+      if the snapshot image is already there (on subsequent clicks on the
+      displayed frame) the displayed frame is added to the top
+      of the layerstack in this snapshot image.
+      (it will be scaled to snapshot image size if necessary).
+      
+      you can close the snapshot image any time you want, to force
+      recreation at next time.
+      
+      The snapshot image can also be created and automatically
+      filled with layers that are snapshots of all the frames that
+      are shown while playback is running.
+      This motion snapshot tracing feature is activated
+      when you hlod the SHIFT key while you click on the 
+      "Play" (>) or "PlayReverse" (<) button.
+
+      Warning:
+	It is recommanded to turn on the "Play selection only" checkbutton,
+	and to turn off both the "Loop" checkbutton and the 
+	"Exact timing" checkbutton in that case.
+	
+	Exact timing would skip most of the frames, and loop
+	produces endless number of frames and may lead to strange
+	behaviour or crashes when no more memory is available.
+      
+      
+      
+      Note: this feature is also available when the player is
+            invoked from the video extract plug-in or 
+	    from the storyboard editor dialog and may then
+	    be used to pick images out of videofiles.
+
+
+Audio Options:
+     NOTE: The audio options are not existent in the WINDOWS version
+           (eg. when compiled with --disable-audiosupport.)
+
+    - Audiofile:
+        Here you can specify the audiofile. (you may also use the "FileBrowser" button)
+
+    - Volume:
+        *** Volume control is not implemented yet ***
+	The "Enable" checkbox can turn ON/OFF audio playback.
+
+    - Offset
+        Here you can shift the audiostart against the video startframe.
+	An offset value 0 will start auduio at the first frame.
+	Negative offsets will start audio with a delay of n frames.
+	Positive offsets will skip the beginning of the audiofile.
+	The skipped duration is equal to the time it takes to play n frames
+	at original framerate.
+
+	The "Offset" label shows the audio shift in unit Minutes:Secs:Millisecs.
+	The "Audiotime" label shows the total playing time of the audiofile
+	(without taking care of the offset shifts)
+
+	The "Audioframes" label shows the total playing time of the audiofile
+	in unit frames where frames are played at the original
+	framerate of the video frames.
+
+	The ohter labels show informations about the audiofile.
+	- Nuber of Samples
+	- Samplerate  (in Samples / Sec)
+	- Channles    (usual 2 for stereo)
+	- Bits/Sample
+
+	If no valid audiofile was specified, all values are filled with 0.
+
+     - Copy As Wavfile
+        This button provides conversion of audiofile formats to RIFF WAV.
+	It opens a subdialog where the name of the wavfile can be entered
+	and where you can optional specify a new samplerate if you want
+	to resample down to lower samplerates.
+
+	IMPORTANT NOTE:
+	- You need the external programs sox and lame to run that feature,
+	  because the provided converter script audioconvert_to_wav.sh
+	  is based on that programs.
+	- If you have another external audio converter program, you can configure
+	  GIMP-GAP to use that program rather than the standard converter script
+	  audioconvert_to_wav.sh
+
+	  The preferred way is to edit your gimprc file and add a line
+	  like this on:
+	  (audioconvert_program "/usr/local/bin/my_private_audioconverter")
+
+          The 2nd way is to set an Environmentvariable:
+	  export AUDIOCONVERT_TO_WAV=/usr/local/bin/my_private_audioconverter
+
+
+Some notes on the audiosupport:
+    - The audio playback checks for the existence of the wavplay audioserver executable
+      file in your gimprc file
+        (wavplaypath  "/usr/X11R6/bin/wavplay")
+      then checks the environment variable
+         WAVPLAYPATH=/usr/X11R6/bin/wavplay
+      and finally searches an executable named wavplay in all directories
+      defined by your PATH environment variable.
+
+    - Audiosupport can be completely turned off at compiletime.
+      If Audiosupport was enabled at compiletime, The playback dialog window
+      contains a notebook widget tab named "Audio Options"
+
+    - Audio is always turned off, while frames are played backwards.
+    - The audioplayback samplerate tries to follow the videospeed.
+      If videoframes are played at the original speed, audio is played
+      at the normal samplerate.
+      If video speed is too fast audio may not follow synchron.
+    - If the "Excact Timing" checkbox is off (unchecked) video and audio
+      will not play synchron !
+
+
+Tip:
+  If you want to create thumbnails from frames under visual control
+  you can use the player to do that. Therefore you have to enable image
+  thumbnails in the general GIMP preferences environment settings.
+  
+  Then simply playback from 1.st until last frame with "Use thumbnails"
+  checkbutton turned on and "exact timing" checkbutton turned off.
+  This creates the thumbnails while the frames are displayed.
+  

@@ -1,0 +1,31 @@
+"plug-in-gap-del"
+
+Delete Frames
+
+    Start from Menu:
+        <Image>/Video/Delete Frames
+
+    This feature deletes frames.
+    this is done starting at the current frame number
+    (inclusive) until the specified frame number (inclusive).
+
+    The current frame number is shown in the headline
+    text "Delete frames from <current framenr> to (number)
+
+    There is no undo for this operation, so please use
+    it with care.
+    
+    Notes: 
+      Normally there is a confirmation dialog before
+      the frames are deleted.
+      
+      The confirmation dialog is configuration dependent
+      and can be supressed by adding this configuration
+      parameter to your gimprc file:
+
+      # the video-confirm-frame-delete can have values "yes" or "no"
+      # where "no" does not show the confirm dialog windows when the user
+      # tries to delete video frames of the video.
+      # (default is "yes")
+      (video-confirm-frame-delete "no")
+

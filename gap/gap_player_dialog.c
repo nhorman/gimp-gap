@@ -814,7 +814,7 @@ p_audio_startup_server(GapPlayerMainGlobalParams *gpp)
    */
   
   /* check gimprc for the wavplay audio server: */
-  if ( (cp = gimp_gimprc_query("wavplaypath")) != NULL )
+  if ( (cp = gimp_gimprc_query("wavplay_prog")) != NULL )
   {
     env_WAVPLAYPATH = g_strdup(cp);		/* Environment overrides compiled in default for WAVPLAYPATH */
     if(g_file_test (env_WAVPLAYPATH, G_FILE_TEST_IS_EXECUTABLE) )
@@ -826,7 +826,7 @@ p_audio_startup_server(GapPlayerMainGlobalParams *gpp)
       g_message(_("WARNING: your gimprc file configuration for the wavplay audio server\n"
              "does not point to an executable program\n"
 	     "the configured value for %s is: %s\n")
-	     , "wavplaypath"
+	     , "wavplay_prog"
 	     , env_WAVPLAYPATH
 	     );
     }
@@ -1643,14 +1643,18 @@ p_update_pviewsize(GapPlayerMainGlobalParams *gpp)
 static void
 p_set_frame_with_name_label(GapPlayerMainGlobalParams *gpp)
 {
+#define MAX_CHARS 60
   char *frame_title;
+
 
   frame_title = NULL;
   if(gpp->stb_ptr)
   {
     /* shortname prefix to indicate that displayed filename is from type storyboard file */
-    frame_title = g_strdup_printf(_("STB: %s")
-			, gpp->stb_ptr->storyboardfile
+    frame_title = gap_lib_shorten_filename(_("STB:")   /* prefix short for storyboard */
+                        ,gpp->stb_ptr->storyboardfile  /* filenamepart */
+			,NULL                          /* suffix */
+			,MAX_CHARS
 			);
   }
   else
@@ -1660,9 +1664,11 @@ p_set_frame_with_name_label(GapPlayerMainGlobalParams *gpp)
       if(gpp->ainfo_ptr->ainfo_type == GAP_AINFO_MOVIE)
       {
 	/* shortname prefix to indicate that displayed filename is a single videofile */
-	frame_title = g_strdup_printf(_("VIDEO: %s")
-			    , gpp->ainfo_ptr->basename
-			    );
+        frame_title = gap_lib_shorten_filename(_("VIDEO:")   /* prefix short for storyboard */
+                        ,gpp->ainfo_ptr->basename            /* filenamepart */
+			,NULL                                /* suffix */
+			,MAX_CHARS
+			);
       }
     }
   }
@@ -1670,9 +1676,11 @@ p_set_frame_with_name_label(GapPlayerMainGlobalParams *gpp)
   if(frame_title == NULL)
   {
       /* shortname prefix to indicate that displayed filename is basename of the frames */
-      frame_title = g_strdup_printf(_("FRAMES: %s")
-			  , gpp->ainfo_ptr->basename
-			  );
+      frame_title = gap_lib_shorten_filename(_("FRAMES:")    /* prefix short for storyboard */
+                        ,gpp->ainfo_ptr->basename            /* filenamepart */
+			,NULL                                /* suffix */
+			,MAX_CHARS
+			);
   }
   
   gtk_frame_set_label (GTK_FRAME (gpp->frame_with_name)
@@ -4710,7 +4718,7 @@ p_new_audioframe(GapPlayerMainGlobalParams *gpp)
 
 
   /* audiofile button (fileselect invoker) */
-  button = gtk_button_new_with_label ( _("File Browser"));
+  button = gtk_button_new_with_label ( "...");
   gtk_widget_show (button);
   gimp_help_set_help_data(button, _("Open audiofile selection browser dialog window"),NULL);
   gtk_table_attach(GTK_TABLE(table1), button, 2, 3, row, row + 1,

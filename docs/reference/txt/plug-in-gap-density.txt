@@ -1,0 +1,72 @@
+"plug-in-gap-density"
+
+Change Frame Density
+
+  Start from Menu:
+       <Image>/Video/Frames Density
+
+  Changing the frame density results in duplicating frames
+  for increasing frame density, and will delete frames
+  for decreasing the density.
+
+  This feature is used to change the target framerate and can be
+  useful for mixing videos with different framerates without
+  changes of the playback speed.
+  
+
+
+  Example:
+  If you have created an animation with framerate of 8 frames/sec
+  and want to change to a target framerate of 24 frames/sec.
+  you should call the "Frame Density" plug-in with a density factor
+  of 3 and increasing density mode.
+
+  This makes 2 copies for each of the frames in the selected range.
+  If you use playback at the old 8 frames/sec rate the motion
+  is 3 times slower now. With the new Rate of 24 frames/sec
+  the motion is the same speed as before. 
+
+  The animation before the frame density change (frames 1-9):
+
+     01 02 03 04 05 06 07 08 09   (original framenumber)
+
+  The animation after frame density change at growing mode and factor 3
+  and limited to a frame range from frame 3 to frame 8:
+
+     01 02 03 04 05  06 07 08 09 10 11  12 13 14   15 16 17 18 19 20 21   (new framenumber)
+     01 02 03 03 03  04 04 04 05 05 05  06 06 06   07 07 07 08 08 08 09   (original framenumner)
+               +  +      +  +     +  +      +  +       +  +     +  +   
+
+
+  Tip:
+    If you use storybard based encoding you can set the stepsize 
+    parameter for clips that should be encoded with other target framerates.
+    That way you dont need to duplicate or drop your source frames.
+
+  Tip:
+     To get smooth motion in the resulting frames you may create 
+     2 onionskin layers per frame (for the range "FromFrame" 03 "ToFrame" 20)
+     using a setting that blends in the next 2 frames ("FrameReference" +1) 
+     at stackposition 0 FromTop of the layerstack
+     with opacity of 66% and 50% and without ignoring any background layer(s).
+     
+     That way you get a cross-fading effect with smoother motion
+     when played with 24 frames/sec
+
+     You can find onionskin in this menu:
+     <Image>/Video/Onionskin/Configuration
+    
+     
+  Density factors are limited to values from 1.0 upto 100.0.
+  float values are supported.
+  
+
+  If you want to change from 30 frames/sec down to 15 frames/sec
+  then use a density factor of 2 and decreasing density mode
+  (increasing/growing mode switched off).
+  
+  This will delete every 2.nd frame.
+  
+  There is no undo, so use this feature very carefully.
+  
+ 

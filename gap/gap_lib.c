@@ -26,6 +26,7 @@
  */
 
 /* revision history:
+ * 2.1.0a   2004/12/04   hof: added gap_lib_shorten_filename
  * 2.1.0a   2004/04/18   hof: added gap_lib_fprintf_gdouble
  * 1.3.26a  2004/02/01   hof: added: gap_lib_alloc_ainfo_from_name
  * 1.3.25a  2004/01/20   hof: - removed xvpics support (gap_lib_get_video_paste_name)
@@ -141,6 +142,118 @@ static int          p_save_old_frame(GapAnimInfo *ainfo_ptr, GapVinVideoInfo *vi
 static int          p_decide_save_as(gint32 image_id, const char *sav_name, const char *final_sav_name);
 static gint32       p_lib_save_named_image2(gint32 image_id, const char *sav_name, GimpRunMode run_mode, gboolean enable_thumbnailsave);
 static char*        p_gzip (char *orig_name, char *new_name, char *zip);
+
+/* -----------------------------
+ * gap_lib_shorten_filename
+ * -----------------------------
+ * resulting string is built from prefix filename  and suffix
+ *    filename will be shortened when
+ *    prefix + " " + filename + " " + suffix 
+ *    is longer then max_chars.
+ * examples:
+ *    gap_lib_shorten_filenam("prefix", "this_is_a_very_long_filename", NULL, 20)
+ *    returns:  "prefix ...g_filename"
+ *
+ *    gap_lib_shorten_filenam("prefix", "shortname", NULL, 20)
+ *    returns:  "prefix shortname"
+ *
+ * the caller is responsible to g_free the returned string
+ */
+char *
+gap_lib_shorten_filename(const char *prefix
+                        ,const char *filename
+			,const char *suffix
+			,gint32 max_chars
+			)
+{
+  gint len_prefix;
+  gint len_fname;
+  gint len;
+  const char *pfx;
+  const char *fnam;
+  char       *ret_string;
+  
+  len_prefix = 0;
+  len_fname = 0;
+  ret_string = NULL;
+  pfx = prefix;
+  if(prefix)
+  {
+    len_prefix = strlen(prefix);
+    if((len_prefix + 10) > max_chars)
+    {
+      pfx = NULL;
+      len_prefix = 0;
+    }
+    else
+    {
+      len_prefix++;  /* for the space between prefix and fname */
+    }
+  }
+
+  
+  if(filename)
+  {
+    fnam = NULL;
+    
+    if(suffix)
+    {
+      fnam = g_strdup_printf("%s %s", filename, suffix);
+    }
+    else
+    {
+      fnam = g_strdup(filename);
+    }
+
+
+    len_fname = strlen(fnam);
+    if((len_fname + len_prefix) <= max_chars)
+    {
+      if(pfx)
+      {
+        ret_string = g_strdup_printf("%s %s"
+	                            ,pfx
+				    ,fnam
+				    );
+      }
+      else
+      {
+        ret_string = g_strdup_printf("%s"
+				    ,fnam
+				    );
+      }
+    }
+    else
+    {
+      gint fname_idx;
+      gint len_rest;
+      
+      len_rest = (max_chars - len_prefix - 3);
+      fname_idx = len_fname - len_rest;
+      
+      if(pfx)
+      {
+        ret_string = g_strdup_printf("%s ...%s"
+	                            ,pfx
+				    ,&fnam[fname_idx]
+				    );
+      }
+      else
+      {
+        ret_string = g_strdup_printf("...%s"
+				    ,&fnam[fname_idx]
+				    );
+      }
+    }
+ 
+    g_free(fnam);
+    return (ret_string);
+     
+  }
+
+  ret_string = g_strdup(prefix);
+  return(ret_string);
+}  /* end gap_lib_shorten_filename */			
 
 
 /* ============================================================================
@@ -483,14 +596,13 @@ gap_lib_alloc_basename(const char *imagename, long *number)
   l_ptr = &l_fname[strlen(l_fname)];
   if(l_ptr != l_fname) l_ptr--;
   l_idx = 1;
-  while(l_ptr != l_fname)
+  while(TRUE)
   {
     if((*l_ptr >= '0') && (*l_ptr <= '9'))
     {
       *number += ((*l_ptr - '0') * l_idx);
        l_idx = l_idx * 10;
       *l_ptr = '\0';
-       l_ptr--;
     }
     else
     {
@@ -503,6 +615,12 @@ gap_lib_alloc_basename(const char *imagename, long *number)
        */
        break;
     }
+    if(l_ptr == l_fname)
+    {
+      break;
+    }
+
+    l_ptr--;
   }
 
   if(gap_debug) printf("DEBUG gap_lib_alloc_basename  result:'%s'\n", l_fname);
@@ -571,6 +689,10 @@ gap_lib_alloc_fname_fixed_digits(char *basename, long nr, char *extension, long 
 
   switch(digits)
   {
+    case 8:  l_fname = g_strdup_printf("%s%08ld%s", basename, nr, extension);
+             break;
+    case 7:  l_fname = g_strdup_printf("%s%07ld%s", basename, nr, extension);
+             break;
     case 6:  l_fname = g_strdup_printf("%s%06ld%s", basename, nr, extension);
              break;
     case 5:  l_fname = g_strdup_printf("%s%05ld%s", basename, nr, extension);
@@ -604,13 +726,13 @@ gap_lib_alloc_fname(char *basename, long nr, char *extension)
   {
     const char   *l_env;
 
-    default_digits = 6;
+    default_digits = GAP_LIB_DEFAULT_DIGITS;
 
     l_env = g_getenv("GAP_FRAME_DIGITS");
     if(l_env != NULL)
     {
       default_digits = atol(l_env);
-      default_digits = CLAMP(default_digits, 1 , 6);
+      default_digits = CLAMP(default_digits, 1 , GAP_LIB_MAX_DIGITS);
     }
   }
 
@@ -654,7 +776,7 @@ gap_lib_alloc_fname6(char *basename, long nr, char *extension, long default_digi
   l_fname = (char *)g_malloc(l_len);
 
     l_digits_used = default_digits;
-    if(nr < 100000)
+    if(nr < 10000000)
     {
        /* try to figure out if the frame numbers are in
         * 6-digit style, with leading zeroes  "frame_000001.xcf"
@@ -665,7 +787,9 @@ gap_lib_alloc_fname6(char *basename, long nr, char *extension, long default_digi
 
        while(l_nr_chk >= 0)
        {
-         /* check if frame is on disk with 6-digit style framenumber */
+         /* check if frame is on disk with 6-digit style framenumber
+	  * (we check 6-digit style first because this is the GAP default style)
+	  */
          g_snprintf(l_fname, l_len, "%s%06ld%s", basename, l_nr_chk, extension);
          if (gap_lib_file_exists(l_fname))
          {
@@ -673,6 +797,25 @@ gap_lib_alloc_fname6(char *basename, long nr, char *extension, long default_digi
             break;
          }
 
+         /* check if frame is on disk with 8-digit style framenumber */
+         g_snprintf(l_fname, l_len, "%s%08ld%s", basename, l_nr_chk, extension);
+         if (gap_lib_file_exists(l_fname))
+         {
+            l_digits_used = 8;
+            break;
+         }
+
+         /* check if frame is on disk with 7-digit style framenumber */
+         g_snprintf(l_fname, l_len, "%s%07ld%s", basename, l_nr_chk, extension);
+         if (gap_lib_file_exists(l_fname))
+         {
+            l_digits_used = 7;
+            break;
+         }
+	 
+
+
+	 
          /* check if frame is on disk with 4-digit style framenumber */
          g_snprintf(l_fname, l_len, "%s%04ld%s", basename, l_nr_chk, extension);
          if (gap_lib_file_exists(l_fname))
@@ -728,7 +871,7 @@ gap_lib_alloc_fname6(char *basename, long nr, char *extension, long default_digi
     }
     else
     {
-      /* numbers > 100000 have 6 digits or more */
+      /* numbers > 10000000 have 9 digits or more */
       l_digits_used = 0;
     }
 
@@ -737,6 +880,10 @@ gap_lib_alloc_fname6(char *basename, long nr, char *extension, long default_digi
   switch(l_digits_used)
   {
     case 6:  l_fname = g_strdup_printf("%s%06ld%s", basename, nr, extension);
+             break;
+    case 8:  l_fname = g_strdup_printf("%s%08ld%s", basename, nr, extension);
+             break;
+    case 7:  l_fname = g_strdup_printf("%s%07ld%s", basename, nr, extension);
              break;
     case 5:  l_fname = g_strdup_printf("%s%05ld%s", basename, nr, extension);
              break;
@@ -774,7 +921,7 @@ gap_lib_exists_frame_nr(GapAnimInfo *ainfo_ptr, long nr, long *l_has_digits)
   l_len = (strlen(ainfo_ptr->basename)  + strlen(ainfo_ptr->extension) + 10);
   l_fname = (char *)g_malloc(l_len);
 
-  l_digits_used = 6;
+  l_digits_used = GAP_LIB_DEFAULT_DIGITS;
   l_nr_chk = nr;
 
   while(l_nr_chk >= 0)
@@ -791,6 +938,35 @@ gap_lib_exists_frame_nr(GapAnimInfo *ainfo_ptr, long nr, long *l_has_digits)
         break;
      }
 
+     /* check if frame is on disk with 8-digit style framenumber */
+     g_snprintf(l_fname, l_len, "%s%08ld%s", ainfo_ptr->basename, l_nr_chk, ainfo_ptr->extension);
+     if (gap_lib_file_exists(l_fname))
+     {
+        l_digits_used = 8;
+        if(l_nr_chk == nr)
+        {
+          l_exists = TRUE;
+        }
+        break;
+     }
+
+     /* check if frame is on disk with 7-digit style framenumber */
+     g_snprintf(l_fname, l_len, "%s%07ld%s", ainfo_ptr->basename, l_nr_chk, ainfo_ptr->extension);
+     if (gap_lib_file_exists(l_fname))
+     {
+        l_digits_used = 7;
+        if(l_nr_chk == nr)
+        {
+          l_exists = TRUE;
+        }
+        break;
+     }
+     
+     
+     
+     
+     
+     
      /* check if frame is on disk with 4-digit style framenumber */
      g_snprintf(l_fname, l_len, "%s%04ld%s", ainfo_ptr->basename, l_nr_chk, ainfo_ptr->extension);
      if (gap_lib_file_exists(l_fname))

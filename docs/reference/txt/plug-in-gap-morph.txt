@@ -1,0 +1,33 @@
+"plug-in-gap-morph"
+
+
+Morph /Warp
+
+    Start from Menu:
+        <Image>/Video/Morph
+
+
+    This plug-in provides metamorphose transformation and
+    warp deformations, depending on the selected render mode.
+   
+    Warning: this plug-in is still in experimental state.
+             it may change in future releases.    
+
+Morphing:
+    Morphing takes a source layer and a destination layer
+    as input and creates the steps inbetween (as newly added layers)
+    to transform the source layer into the destination layer.
+    
+    
+    The warp transformation is controlled by a set of movement vectors. 
+    A movement vector is shown in form of 2 corrensponding points
+    (start point in the source layer, the corresponding
+    end point in the destination layer)
+    When the checkbutton "lines" is ON, vectors are displayed as lines
+    in the destination layer.
+
+    Points are created via mouse click in the source or destination
+    layer preview and can be picked and dragged with the mouse.
+
+ 
+    ## documentation to be continued .....

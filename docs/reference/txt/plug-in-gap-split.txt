@@ -1,0 +1,52 @@
+"plug-in-gap-split"
+
+
+Split Image into Frames
+
+    Start from Menu:
+        <Image>/Video/Split Img to Frames
+
+
+    This feature splits a multilayer image into frames.
+    Usually each one of the layers will be stored as
+    separate frame image on disk. The name of the
+    frame images on disk is built from the image name,
+    the framenumberpart and the extension.
+    
+    Note:
+      This feature does not operate on images that
+      have already a numberpart in the imagename.
+      If you want to split such images, you should
+      make a duplicate (Menu: <Image>/Image/Duplicate)
+      or rename the image and then try again n the duplicate
+      (or the renamed image)
+      
+    
+
+    Extension:
+      The extension defines the last part of the resulting
+      framenames. Further it defines the image fileformat.
+      Normally .xcf is used to store the frames in 
+      the GIMP's native fileformat XCF.
+
+      
+ 
+ 
+    Inverse Order:
+      ON: start with frame 000001 at top layer.
+      OFF: start with frame 000001 at background layer.
+      
+    Flatten:
+      ON: Flatten all resulting frames. Flattening replaces
+          transparent parts by the background color.
+	  (flattening removes the alpha channel that is
+	   normally used to store transparency)
+      OFF: keep layers 1:1 as they are in the original image.
+      
+    Only Visible:
+      ON: affect only the visible layers and ignore invisble layers.
+      OFF: affect all layers.
+      
+    Digits:
+      How many digits to use for the numberpart of
+      the resulting frames.

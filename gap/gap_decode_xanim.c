@@ -25,6 +25,7 @@
  *     - xanim              2.80 exporting edition with extensions from loki entertainment.
  *                          set environment GAP_XANIM_PROG to configure where to find xanim
  *                          (default: search xanim in your PATH)
+ *     - cd                 (UNIX command)
  *     - grep               (UNIX command)
  *     - rm                 (UNIX command is used to delete by wildcard (expanded by /bin/sh)
  *                                and to delete a directory with all files
@@ -48,6 +49,7 @@
  */
 
 /* revision history
+ * gimp    2.1.0;   2004/12/06  hof: use g_file_test(dir, G_FILE_TEST_IS_DIR) to check for directory
  * gimp    1.3.26c; 2004/03/09  hof: bugfix (gimp_destroy_params)
  * gimp    1.3.20a; 2003/09/15  hof: should fix compile problems on WIN32 (#122220)
  *                                   (but will not run at WIN OS)
@@ -102,8 +104,8 @@ extern      int gap_debug; /* ==0  ... dont print debug infos */
 static char *global_xanim_input_dir = NULL;
 static char *global_xanim_working_dir = NULL;
 
-gchar global_xanim_prog[500];
-gchar *global_errlist = NULL;
+static gchar global_xanim_prog[500];
+static gchar *global_errlist = NULL;
 
 gint32  global_delete_number;
 /* fileformats supported by gap_decode_xanim */
@@ -319,7 +321,7 @@ p_xanim_dialog   (gint32 *first_frame,
   argv[12].help_id = GAP_XANIM_HELP_ID;
 
    
-  if(TRUE == gap_arr_ok_cancel_dialog(_("Split any Xanim readable Video to Frames"), 
+  if(TRUE == gap_arr_ok_cancel_dialog(_("Xanim based extract (DEPRECATED)"), 
 			    _("Select Frame Range"), XADIALOG_NUM_ARGS, argv))
   {
      if(argv[1].int_ret < argv[2].int_ret )
@@ -397,27 +399,8 @@ p_build_gap_framename(char *framename, gint32 sizeof_framename, gint32 frame_nr,
    g_snprintf(framename, sizeof_framename, "%s%06d.%s", basename, (int)frame_nr, ext);
 }
 
-int
-p_is_directory(char *fname)
-{
-  struct stat  l_stat_buf;
 
-  /* get File status */
-  if (0 != stat(fname, &l_stat_buf))
-  {
-    /* stat error (file does not exist) */
-    return(0);
-  }
-  
-  if(S_ISDIR(l_stat_buf.st_mode))
-  {
-    return(1);
-  }
-    
-  return(0);
-}	/* end p_is_directory  */
-
-void
+static void
 p_dirname(char *fname)
 {
   int l_idx;
@@ -889,7 +872,7 @@ p_start_xanim_process(gint32 first_frame, gint32 last_frame,
 
      /* asynchron start */
      remove(l_xanim_pidfile);   
-     /* generate a shelscript */
+     /* generate a shellscript */
      l_fp = fopen(l_xanim_startscript, "w+");
      if (l_fp != NULL)
      {
@@ -1115,7 +1098,7 @@ gap_xanim_decode(GimpRunMode run_mode)
     if (extract_video)
     {
          /* for the frames we need a directory named "input" */
-         if (p_is_directory(global_xanim_input_dir))
+         if (g_file_test(global_xanim_input_dir, G_FILE_TEST_IS_DIR))
          {
            /* the input directory already exists,
             * remove frames
@@ -1128,7 +1111,7 @@ gap_xanim_decode(GimpRunMode run_mode)
             /* create input directory (needed by xanim to store the frames) */
             gap_file_mkdir(global_xanim_input_dir, GAP_FILE_MKDIR_MODE);
 
-            if (p_is_directory(global_xanim_input_dir))
+            if (g_file_test(global_xanim_input_dir, G_FILE_TEST_IS_DIR))
             {
               l_input_dir_created_by_myself = TRUE;
             }
@@ -1203,7 +1186,7 @@ gap_xanim_decode(GimpRunMode run_mode)
        p_dirname(l_dst_dir);
        if (*l_dst_dir != '\0')
        {
-	 if ( !p_is_directory(l_dst_dir) )
+	 if ( !g_file_test(l_dst_dir, G_FILE_TEST_IS_DIR) )
 	 {
             gap_file_mkdir (l_dst_dir, GAP_FILE_MKDIR_MODE);
 	 }

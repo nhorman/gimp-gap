@@ -1,0 +1,47 @@
+"plug-in-gap-dup"
+
+Make Duplicates of Frame Range
+
+    Start from Menu:
+        <Image>/Video/Duplicate Frames
+
+    
+    This feature duplicates the specified range of frames
+    N-times.
+    The duplicated frames are inserted after the current
+    frame (the frame from where this plug-in was invoked)
+    
+    When this plug-in is started, the settings 
+    "From Frame", "To Frame" and "N times"
+    are initialized in a way that it will duplicate
+    the current frame once.
+
+Example:
+    when the current frame is 2 out of 5 frames
+    and we apply the settings:
+      From Farem: 2
+      To Frame:   4
+      N times:    2
+    
+    As result 6 frames will be inserted after frame 2.
+    The inserted frame sequence is made as copy of
+    the frames (referring to the old frame numbers):
+
+      pic_000001.xcf
+      pic_000002.xcf
+      
+      /* the newly inserted frames */
+      pic_000003.xcf   (copy of old pic_000002.xcf)
+      pic_000004.xcf   (copy of old pic_000003.xcf)
+      pic_000005.xcf   (copy of old pic_000004.xcf)
+      pic_000006.xcf   (copy of old pic_000002.xcf)
+      pic_000007.xcf   (copy of old pic_000003.xcf)
+      pic_000008.xcf   (copy of old pic_000004.xcf)
+
+      /* the renamed remaining frames */
+      pic_000009.xcf   (renamed src was frame number 3)
+      pic_000010.xcf   (renamed src was frame number 4)
+      pic_000011.xcf   (renamed src was frame number 5)
+      
+
+   

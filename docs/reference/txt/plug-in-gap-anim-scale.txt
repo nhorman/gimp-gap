@@ -1,0 +1,43 @@
+"plug-in-gap-anim-scale"
+
+Scale Video Frames
+
+    Start from Menu:
+             <Image>/Video/Frames Scale
+	     
+    With the video scale feature you can scale 
+    all frame images in a sequence of numbered frames.
+
+    Load one of the frames and invoke this plug-in from the loaded frame,
+    adjust the settings as you like and the plug-in will
+    scale all other frames to the selected size when OK is pressed.
+    
+    Current width and height are displayed as information.
+    With "New Width" and  "New Height" you can specify the
+    desired new size in pixels.
+    
+    When the "Reset" button is pressed, the new width and 
+    new height values are reset to current values.
+    
+    With X/Y ratio values you can specify new size as factor,
+    A value of 2.0 results in double saize while 0.5 sacles down
+    to half size.
+    
+    The chain button keeps image proportions constant when active.
+    With inactive chain button (symbol changes to broken chain)
+    width and height may be changed independent.
+ 
+ 
+    Note:
+    GIMP provides different methods for scaling images.
+    You can configure the desired methode in the GIMP
+    Preferences dialog at "Tool Options"
+    where you can select different methods for scaling.
+
+      - None (fastest)
+      - Linear
+      - Cubic (best)
+    
+    This plug-in uses the configured methode from the
+    preferences menu.
+    

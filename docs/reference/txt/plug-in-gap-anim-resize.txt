@@ -1,0 +1,36 @@
+"plug-in-gap-anim-resize"
+
+Resize Video Frames
+
+    Start from Menu:
+             <Image>/Video/Frames Resize
+	     
+    With the video rezize feature you can change the canvas size for 
+    all frame images in a sequence of numbered frames.
+    Load one of the frames and invoke this plug-in from the loaded frame,
+    adjust the settings as you like and the plug-in will
+    apply the new canvas size to all other frames when OK is pressed.
+    
+    Current width and height are displayed as information.
+    With "New Width" and  "New Height" you can specify the
+    desired new size in pixels.
+    
+    When the "Reset" button is pressed, the new width and 
+    new height values are reset to current values.
+    
+    With X/Y ratio values you can specify new size as factor.
+    A value of 2 gives double size, 0.5 half size.
+    
+    The chain button keeps canvas proportions constant when active.
+    With inactive chain button (symbol changes to broken chain)
+    width and height may be changed independent.
+    
+Offset
+    X and Y offset values (in pixels) for placing the
+    image within the new canvas size.
+    there are buttons for independent centering horizontal and vertical.
+
+    There is also a visual control widget where you can
+    arrange the position of the image on the new canvas size
+    via dragging with the mouse and updates the offsets
+    according to the desired position.

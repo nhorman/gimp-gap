@@ -597,7 +597,7 @@ gap_fmac_dialog(GimpRunMode run_mode, gint32 image_id, gint32 drawable_id)
 		   gpp);
 
   /* Button  to invoke filebrowser */
-  button = gtk_button_new_with_label ( _("File Browser"));
+  button = gtk_button_new_with_label ("...");
   gimp_help_set_help_data(button
                          , _("Open filebrowser window to select a filename")
                          ,NULL);

@@ -20,6 +20,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 /* revision history:
+ * version 2.1.0a;  2004/12/05  hof: added global layout properties dialog 
  * version 1.3.27a; 2004/03/15  hof: videothumbnails are kept in memory
  *                                   for the startframes in all MOVIE clips
  *                                   (common list for both storyboard and cliplist)
@@ -65,10 +66,22 @@
 extern int gap_debug;  /* 1 == print debug infos , 0 dont print debug infos */
 static gint32 global_stb_video_id = 0;
 
+#define STB_THSIZE_LARGE  88
+#define STB_THSIZE_MEDIUM 66
+#define STB_THSIZE_SMALL  44
+
+#define STB_THIDX_LARGE  0
+#define STB_THIDX_MEDIUM 1
+#define STB_THIDX_SMALL  2
+
+
 typedef void (*GapStbMenuCallbackFptr)(GtkWidget *widget, GapStbMainGlobalParams *sgpp);
 
+static gint32   p_thumbsize_to_index (gint32 thumbsize);
+static gint32   p_index_to_thumbsize (gint32 thindex);
 
-static GapStoryBoard *p_tabw_get_stb_ptr (GapStbTabWidgets *tabw);
+static GapStoryBoard    *  p_tabw_get_stb_ptr (GapStbTabWidgets *tabw);
+static void                p_set_layout_preset(GapStbMainGlobalParams *sgpp);
 static GapStbTabWidgets *  p_new_stb_tab_widgets(GapStbMainGlobalParams *sgpp
                                                 , GapStoryMasterType type);
 static void     p_render_all_frame_widgets (GapStbTabWidgets *tabw);
@@ -108,7 +121,7 @@ static void     p_player_stb_mode_cb (GtkWidget *w, GdkEventButton  *bevent, Gap
 static void     p_player_img_mode_cb (GtkWidget *w, GapStbMainGlobalParams *sgpp);
 static void     p_cancel_button_cb (GtkWidget *w, GapStbMainGlobalParams *sgpp);
 
-static void     p_tabw_master_prop_dialog(GapStbTabWidgets *tabw);
+static void     p_tabw_master_prop_dialog(GapStbTabWidgets *tabw, gboolean new_flag);
 static void     p_tabw_add_elem (GapStbTabWidgets *tabw, GapStbMainGlobalParams *sgpp, GapStoryBoard *stb_dst);
 
 
@@ -229,6 +242,9 @@ GapVThumbElem *   p_fetch_vthumb_elem(GapStbMainGlobalParams *sgpp
 		   ,const char *preferred_decoder
 		   );
 
+static void    p_prefetch_vthumbs (GapStbMainGlobalParams *sgpp
+                   , GapStoryBoard *stb
+		   );
 
 
 static void    story_dlg_response (GtkWidget *widget,
@@ -250,6 +266,50 @@ static void     p_create_button_bar(GapStbTabWidgets *tabw
 	           ,gint32 mount_vs_col
 		   ,gint32 mount_vs_row
 		   );
+
+
+
+/* -----------------------------
+ * p_thumbsize_to_index
+ * -----------------------------
+ */
+static gint32
+p_thumbsize_to_index (gint32 thumbsize)
+{
+  if(thumbsize >= STB_THSIZE_LARGE)
+  {
+    return (STB_THIDX_LARGE);
+  }
+
+  if(thumbsize >= STB_THSIZE_MEDIUM)
+  {
+    return (STB_THIDX_MEDIUM);
+  }
+
+  return (STB_THIDX_SMALL);
+}  /* end p_thumbsize_to_index */
+
+
+/* -----------------------------
+ * p_index_to_thumbsize
+ * -----------------------------
+ */
+static gint32
+p_index_to_thumbsize (gint32 thindex)
+{
+  if(thindex == STB_THIDX_LARGE)
+  {
+    return (STB_THSIZE_LARGE);
+  }
+
+  if(thindex == STB_THIDX_MEDIUM)
+  {
+    return (STB_THSIZE_MEDIUM);
+  }
+
+  return (STB_THSIZE_SMALL);
+}  /* end p_index_to_thumbsize */
+
 
 
 /* -----------------------------
@@ -306,21 +366,17 @@ p_new_stb_tab_widgets(GapStbMainGlobalParams *sgpp, GapStoryMasterType type)
     tabw->type = type;
     if(type == GAP_STB_MASTER_TYPE_STORYBOARD)
     {
-      tabw->cols = 10;
-      tabw->rows = 2;
-      tabw->thumbsize = 88;
+      sgpp->stb_widgets = tabw;
+      p_set_layout_preset(sgpp);
       tabw->filename_refptr = sgpp->storyboard_filename;
       tabw->filename_maxlen = sizeof(sgpp->storyboard_filename);
-      tabw->edmode = GAP_STB_EDMO_FRAME_NUMBER;
     }
     else
     {
+      sgpp->cll_widgets = tabw;
+      p_set_layout_preset(sgpp);
       tabw->filename_refptr = sgpp->cliplist_filename;
       tabw->filename_maxlen = sizeof(sgpp->cliplist_filename);
-      tabw->cols = 5;
-      tabw->rows = 4;
-      tabw->thumbsize = 88;
-      tabw->edmode = GAP_STB_EDMO_SEQUENCE_NUMBER;
     }
     tabw->filesel = NULL;
     tabw->filename_entry = NULL;
@@ -353,6 +409,45 @@ p_new_stb_tab_widgets(GapStbMainGlobalParams *sgpp, GapStoryMasterType type)
 
 
 /* -----------------------------
+ * p_set_layout_preset
+ * -----------------------------
+ */
+static void
+p_set_layout_preset(GapStbMainGlobalParams *sgpp)
+{
+  GapStbTabWidgets *tabw;
+  
+  if(sgpp)
+  {
+    tabw = sgpp->stb_widgets;
+    if(tabw)
+    {
+      tabw->cols = sgpp->stb_cols;
+      tabw->rows = sgpp->stb_rows;
+      tabw->thumbsize = sgpp->stb_thumbsize;
+      tabw->edmode = GAP_STB_EDMO_FRAME_NUMBER;
+      if(tabw->thumbsize <= STB_THSIZE_SMALL)
+      {
+	/* for smaller thumbnail sizes show only the sequence number
+	 * (there is no space for the framenumber
+	 */
+	tabw->edmode = GAP_STB_EDMO_SEQUENCE_NUMBER;
+      }
+    }
+
+    tabw = sgpp->cll_widgets;
+    if(tabw)
+    {
+      tabw->cols = sgpp->cll_cols;
+      tabw->rows = sgpp->cll_rows;
+      tabw->thumbsize = sgpp->cll_thumbsize;
+      tabw->edmode = GAP_STB_EDMO_SEQUENCE_NUMBER;
+    }
+  }
+}  /* end p_set_layout_preset */
+		   
+
+/* -----------------------------
  * p_render_all_frame_widgets
  * -----------------------------
  * assign frame_filename and stb_elem_refptr
@@ -370,7 +465,10 @@ p_render_all_frame_widgets (GapStbTabWidgets *tabw)
   gint32 l_act_elems = 0;
   
 
-//printf("(1) START p_render_all_frame_widgets\n");
+  if(gap_debug)
+  {
+    printf("(1) START p_render_all_frame_widgets\n");
+  }
 
   if(tabw == NULL)
   {
@@ -396,15 +494,23 @@ p_render_all_frame_widgets (GapStbTabWidgets *tabw)
   {
     seq_nr++;
 
-//printf("(2) p_render_all_frame_widgets act_elems: %d ii:%d  seq_nr: %d\n"
-//	       , (int)l_act_elems
-//               , (int)ii
-//	       , (int)seq_nr
-//	        );
+    if(gap_debug)
+    {
+      printf("(2) p_render_all_frame_widgets act_elems: %d ii:%d  seq_nr: %d\n"
+ 	    , (int)l_act_elems
+            , (int)ii
+	    , (int)seq_nr
+            );
+    }
 
     fw = tabw->fw_tab[ii];
-//printf("(3) p_render_all_frame_widgets fw: %d\n", (int)fw );
-//printf("(4) p_render_all_frame_widgets fw->frame_filename: %d\n", (int)&fw->frame_filename );
+    
+    if(gap_debug)
+    {
+      printf("(3) p_render_all_frame_widgets fw: %d\n", (int)fw );
+      printf("(4) p_render_all_frame_widgets fw->frame_filename: %d\n", (int)&fw->frame_filename );
+    }
+    
     if(fw->frame_filename)
     {
       g_free(fw->frame_filename);
@@ -466,10 +572,10 @@ p_frame_widget_init_empty (GapStbTabWidgets *tabw, GapStbFrameWidget *fw)
   fw->tabw = tabw;
   fw->sgpp = tabw->sgpp;
 
-  fw->vbox = gtk_vbox_new (FALSE, 1);
+  fw->vbox = gtk_vbox_new (FALSE, 0);
 
   /* the vox2  */
-  fw->vbox2 = gtk_vbox_new (FALSE, 1);
+  fw->vbox2 = gtk_vbox_new (FALSE, 0);
 
   /* Create an EventBox (container for labels and the preview drawing_area)
    * used to handle selection events
@@ -481,17 +587,17 @@ p_frame_widget_init_empty (GapStbTabWidgets *tabw, GapStbFrameWidget *fw)
                     G_CALLBACK (p_frame_widget_preview_events_cb),
                     fw);
 
-  gtk_box_pack_start (GTK_BOX (fw->vbox), fw->event_box, FALSE, FALSE, 1);
+  gtk_box_pack_start (GTK_BOX (fw->vbox), fw->event_box, FALSE, FALSE, 0);
 
 
   /*  The frame preview  */
   alignment = gtk_alignment_new (0.5, 0.5, 0.0, 0.0);
-  gtk_box_pack_start (GTK_BOX (fw->vbox2), alignment, FALSE, FALSE, 2);
+  gtk_box_pack_start (GTK_BOX (fw->vbox2), alignment, FALSE, FALSE, 1);
   gtk_widget_show (alignment);
 
   l_check_size = tabw->thumbsize / 16;
-  fw->pv_ptr = gap_pview_new( tabw->thumb_width + 4
-                            , tabw->thumb_height + 4
+  fw->pv_ptr = gap_pview_new( tabw->thumb_width + 0
+                            , tabw->thumb_height + 0
                             , l_check_size
                             , NULL   /* no aspect_frame is used */
                             );
@@ -509,13 +615,50 @@ p_frame_widget_init_empty (GapStbTabWidgets *tabw, GapStbFrameWidget *fw)
 
   /*  the key label */
   fw->key_label = gtk_label_new ("key");
-  gtk_box_pack_start (GTK_BOX (fw->hbox), fw->key_label, FALSE, FALSE, 2);
+  gtk_box_pack_start (GTK_BOX (fw->hbox), fw->key_label, FALSE, FALSE, 0);
   gtk_widget_show (fw->key_label);
 
   /*  the frame timing label */
   fw->val_label = gtk_label_new ("val");
   gtk_box_pack_start (GTK_BOX (fw->hbox), fw->val_label, FALSE, FALSE, 2);
+
+  if(tabw->thumbsize >= STB_THSIZE_LARGE)
+  {
+    gimp_label_set_attributes (GTK_LABEL (fw->key_label)
+                              ,PANGO_ATTR_SCALE,  PANGO_SCALE_MEDIUM
+			      ,PANGO_ATTR_WEIGHT, PANGO_WEIGHT_BOLD
+                              ,-1);
+    gimp_label_set_attributes (GTK_LABEL (fw->val_label)
+                              ,PANGO_ATTR_SCALE,  PANGO_SCALE_MEDIUM
+                              ,-1);
+  }
+  else
+  {
+    if(tabw->thumbsize >= STB_THSIZE_MEDIUM)
+    {
+      gimp_label_set_attributes (GTK_LABEL (fw->key_label)
+                        	,PANGO_ATTR_SCALE,  PANGO_SCALE_SMALL
+				,PANGO_ATTR_WEIGHT, PANGO_WEIGHT_BOLD
+                        	,-1);
+      gimp_label_set_attributes (GTK_LABEL (fw->val_label)
+                        	,PANGO_ATTR_SCALE,  PANGO_SCALE_SMALL
+                        	,-1);
+    }
+    else
+    {
+      gimp_label_set_attributes (GTK_LABEL (fw->key_label)
+                        	,PANGO_ATTR_SCALE,  PANGO_SCALE_X_SMALL
+				,PANGO_ATTR_WEIGHT, PANGO_WEIGHT_BOLD
+                        	,-1);
+      gimp_label_set_attributes (GTK_LABEL (fw->val_label)
+                        	,PANGO_ATTR_SCALE,  PANGO_SCALE_X_SMALL
+                        	,-1);
+    }
+  }
+  
+  gtk_widget_show (fw->key_label);
   gtk_widget_show (fw->val_label);
+
 
 
   gtk_widget_show (fw->hbox);
@@ -556,7 +699,7 @@ p_frame_widget_render (GapStbFrameWidget *fw)
     
      tabw = (GapStbTabWidgets *)fw->tabw;
      
-     l_txt = g_strdup_printf("[%d]", (int)fw->seq_nr);
+     l_txt = g_strdup_printf("%d.", (int)fw->seq_nr);
      gtk_label_set_text ( GTK_LABEL(fw->key_label), l_txt);
      g_free(l_txt);
      
@@ -637,7 +780,7 @@ p_frame_widget_render (GapStbFrameWidget *fw)
        if(!l_th_data_was_grabbed)
        {
 	 /* the gap_pview_render_from_buf procedure can grab the l_th_data
-	  * instead of making a ptivate copy for later use on repaint demands.
+	  * instead of making a private copy for later use on repaint demands.
 	  * if such a grab happened it returns TRUE.
 	  * (this is done for optimal performance reasons)
 	  * in such a case the caller must NOT free the src_data (l_th_data) !!!
@@ -1455,16 +1598,28 @@ static void
 p_filesel_tabw_load_ok_cb (GtkWidget *widget
 		   ,GapStbTabWidgets *tabw)
 {
+  GapStbMainGlobalParams *sgpp;
+  
+  sgpp = (GapStbMainGlobalParams *)tabw->sgpp;  
+  sgpp->auto_vthumb_refresh_canceled = FALSE;
   if(p_filesel_tabw_ok(widget, tabw))
   {
     /* (re)load storyboard from new filename */
     if(tabw->type == GAP_STB_MASTER_TYPE_STORYBOARD)
     {
-      p_storyboard_reload(tabw->sgpp);
+      p_storyboard_reload(sgpp);
+      if(sgpp->auto_vthumb)
+      {
+        p_prefetch_vthumbs(sgpp, sgpp->stb);
+      }
     }
     else
     {
-      p_cliplist_reload(tabw->sgpp);
+      p_cliplist_reload(sgpp);
+      if(sgpp->auto_vthumb)
+      {
+        p_prefetch_vthumbs(sgpp, sgpp->cll);
+      }
     }
   }
 }  /* end p_filesel_tabw_load_ok_cb */
@@ -2607,9 +2762,202 @@ p_menu_win_help_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
 static void
 p_menu_win_properties_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
 {
-  if(gap_debug) printf("p_menu_win_properties_cb\n");
+  static GapArrArg  argv[9];
+  static char *radio_args[3];
+  gint l_ii;
+  gint l_cll_cols_idx;
+  gint l_cll_rows_idx;
+  gint l_cll_thumbsize_idx;
+  gint l_stb_cols_idx;
+  gint l_stb_rows_idx;
+  gint l_stb_thumbsize_idx;
+  gboolean l_rc;
 
+
+  if(gap_debug) printf("p_menu_win_properties_cb\n");
+  
+  if(sgpp->win_prop_dlg_open)
+  {
+    g_message(_("Global Layout Properties dialog already open"));
+    return;
+  }
+
+  sgpp->win_prop_dlg_open = TRUE;
+
+  radio_args[STB_THIDX_LARGE]  = _("large");
+  radio_args[STB_THIDX_MEDIUM] = _("medium");
+  radio_args[STB_THIDX_SMALL]  = _("small");
+
+  /* Cliplist layout settings */
+  l_ii = 0;
+  gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_LABEL_LEFT);
+  argv[l_ii].label_txt = _("Cliplist Layout:");
+
+  l_ii++;
+  l_cll_thumbsize_idx = l_ii;
+  gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_RADIO);
+  argv[l_ii].label_txt = _("Thumbnail Size:");
+  argv[l_ii].help_txt  = _("Thumbnail size in the cliplist");
+  argv[l_ii].radio_argc  =  G_N_ELEMENTS(radio_args);
+  argv[l_ii].radio_argv = radio_args;
+  argv[l_ii].radio_ret  = p_thumbsize_to_index(sgpp->cll_thumbsize);
+  argv[l_ii].has_default = TRUE;
+  argv[l_ii].radio_default = STB_THIDX_MEDIUM;
+
+  l_ii++; l_cll_cols_idx = l_ii;
+  gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_INT);
+  argv[l_ii].constraint = TRUE;
+  argv[l_ii].label_txt = _("Columns:");
+  argv[l_ii].help_txt  = _("columns in the cliplist");
+  argv[l_ii].int_min   = (gint)4;
+  argv[l_ii].int_max   = (gint)15;
+  argv[l_ii].int_ret   = (gint)sgpp->cll_cols;
+  argv[l_ii].has_default = TRUE;
+  argv[l_ii].int_default = (gint)6;
+
+  l_ii++; l_cll_rows_idx = l_ii;
+  gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_INT);
+  argv[l_ii].constraint = TRUE;
+  argv[l_ii].label_txt = _("Rows:");
+  argv[l_ii].help_txt  = _("rows in the cliplist");
+  argv[l_ii].int_min   = (gint)1;
+  argv[l_ii].int_max   = (gint)10;
+  argv[l_ii].int_ret   = (gint)sgpp->cll_rows;
+  argv[l_ii].has_default = TRUE;
+  argv[l_ii].int_default = (gint)6;
+
+
+
+  /* Storyboard layout settings */
+  l_ii++;
+  gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_LABEL_LEFT);
+  argv[l_ii].label_txt = _("Storyboard Layout:");
+
+  l_ii++;
+  l_stb_thumbsize_idx = l_ii;
+  gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_RADIO);
+  argv[l_ii].label_txt = _("Thumbnail Size:");
+  argv[l_ii].help_txt  = _("Thumbnail size in the storyboard list");
+  argv[l_ii].radio_argc  =  G_N_ELEMENTS(radio_args);
+  argv[l_ii].radio_argv = radio_args;
+  argv[l_ii].radio_ret  = p_thumbsize_to_index(sgpp->stb_thumbsize);
+  argv[l_ii].has_default = TRUE;
+  argv[l_ii].radio_default = STB_THIDX_MEDIUM;
+
+  l_ii++; l_stb_cols_idx = l_ii;
+  gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_INT);
+  argv[l_ii].constraint = TRUE;
+  argv[l_ii].label_txt = _("Columns:");
+  argv[l_ii].help_txt  = _("columns in the storyboard list");
+  argv[l_ii].int_min   = (gint)10;
+  argv[l_ii].int_max   = (gint)30;
+  argv[l_ii].int_ret   = (gint)sgpp->stb_cols;
+  argv[l_ii].has_default = TRUE;
+  argv[l_ii].int_default = (gint)15;
+
+  l_ii++; l_stb_rows_idx = l_ii;
+  gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_INT);
+  argv[l_ii].constraint = TRUE;
+  argv[l_ii].label_txt = _("Rows:");
+  argv[l_ii].help_txt  = _("rows in the storyboard list");
+  argv[l_ii].int_min   = (gint)1;
+  argv[l_ii].int_max   = (gint)5;
+  argv[l_ii].int_ret   = (gint)sgpp->stb_rows;
+  argv[l_ii].has_default = TRUE;
+  argv[l_ii].int_default = (gint)2;
+
+
+  /* the reset to default button */
+  l_ii++;
+  gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_DEFAULT_BUTTON);
+  argv[l_ii].label_txt = _("Default");
+  argv[l_ii].help_txt  = _("Use the standard built in layout settings");
+  
+  l_rc = gap_arr_ok_cancel_dialog( _("Global Layout Properties")
+                                 , _("Settings")
+				 ,G_N_ELEMENTS(argv), argv
+				 );
+  sgpp->win_prop_dlg_open = FALSE;
+
+  if(l_rc == TRUE)
+  {
+    gint32 cll_thumbsize;
+    gint32 stb_thumbsize;
+    
+    cll_thumbsize = p_index_to_thumbsize(argv[l_cll_thumbsize_idx].radio_ret);
+    stb_thumbsize = p_index_to_thumbsize(argv[l_stb_thumbsize_idx].radio_ret);
+    
+    if((sgpp->cll_thumbsize  != cll_thumbsize)
+    || (sgpp->stb_thumbsize  != stb_thumbsize)
+    || (sgpp->cll_cols != argv[l_cll_cols_idx].int_ret)
+    || (sgpp->stb_cols != argv[l_stb_cols_idx].int_ret)
+    || (sgpp->cll_rows != argv[l_cll_rows_idx].int_ret)
+    || (sgpp->stb_rows != argv[l_stb_rows_idx].int_ret)
+    )
+    {
+      GapStbTabWidgets *tabw;
+      GapStoryBoard    *stb_dst;
+      gint min_width;
+      gint min_height;
+      
+      /* apply the new layout settings */
+      sgpp->cll_thumbsize  = cll_thumbsize;
+      sgpp->stb_thumbsize  = stb_thumbsize;
+      sgpp->cll_cols = argv[l_cll_cols_idx].int_ret;
+      sgpp->stb_cols = argv[l_stb_cols_idx].int_ret;
+      sgpp->cll_rows = argv[l_cll_rows_idx].int_ret;
+      sgpp->stb_rows = argv[l_stb_rows_idx].int_ret;
+    
+      p_set_layout_preset(sgpp);
+      
+      /* refresh */
+      if(sgpp->stb_widgets)
+      {
+        stb_dst = (GapStoryBoard *)sgpp->stb;
+        tabw = sgpp->stb_widgets;
+	
+	if((stb_dst) && (tabw))
+	{
+	  /* refresh storyboard layout and thumbnail list widgets */
+	  p_recreate_tab_widgets( stb_dst
+                        	 ,tabw
+				 ,tabw->mount_col
+				 ,tabw->mount_row
+				 ,sgpp
+				 );
+	  p_render_all_frame_widgets(sgpp->stb_widgets);
+	}
+      }
+      if(sgpp->cll_widgets)
+      {
+	stb_dst = (GapStoryBoard *)sgpp->cll;
+	tabw = sgpp->cll_widgets;
+
+	if((stb_dst) && (tabw))
+	{
+	  /* refresh storyboard layout and thumbnail list widgets */
+	  p_recreate_tab_widgets( stb_dst
+                        	 ,tabw
+				 ,tabw->mount_col
+				 ,tabw->mount_row
+				 ,sgpp
+				 );
+	  p_render_all_frame_widgets(sgpp->cll_widgets);
+	}
+      }
+      
+      /* shrink shell window to minimal size
+       * note: this does not shrink downto 320 x 200 (is just a dummy size)
+       * but shrinks as much as possible.
+       */
+      min_width = 320;
+      min_height = 200;
+      gtk_window_resize (GTK_WINDOW(sgpp->shell_window), min_width, min_height);
+
+    }
+  }
 }  /* end p_menu_win_properties_cb */ 
+
 
 
 /* -----------------------------
@@ -2629,12 +2977,22 @@ p_menu_win_vthumbs_toggle_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
                   "Therfore thumbnails for videoframes can not be displayed."));
 #endif
       sgpp->auto_vthumb = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(sgpp->menu_item_win_vthumbs));
+
+      sgpp->auto_vthumb_refresh_canceled = FALSE;
       if(sgpp->stb_widgets)
       {
+        if(sgpp->auto_vthumb)
+	{
+	  p_prefetch_vthumbs(sgpp, sgpp->stb);
+	}
 	p_render_all_frame_widgets(sgpp->stb_widgets);
       }
       if(sgpp->cll_widgets)
       {
+        if(sgpp->auto_vthumb)
+	{
+          p_prefetch_vthumbs(sgpp, sgpp->cll);
+	}
 	p_render_all_frame_widgets(sgpp->cll_widgets);
       }
     }
@@ -2661,7 +3019,7 @@ p_menu_cll_new_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
   {
     sgpp->cll = gap_story_new_story_board(NULL);
     sgpp->cll->master_type = GAP_STB_MASTER_TYPE_CLIPLIST;
-    p_tabw_master_prop_dialog(sgpp->cll_widgets);
+    p_tabw_master_prop_dialog(sgpp->cll_widgets, TRUE /* new_flag */);
 
   }
 }  /* end p_menu_cll_new_cb */ 
@@ -2747,7 +3105,7 @@ static void
 p_menu_cll_properties_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
 {
   if(gap_debug) printf("p_menu_cll_properties_cb\n");
-  p_tabw_master_prop_dialog(sgpp->cll_widgets);
+  p_tabw_master_prop_dialog(sgpp->cll_widgets, FALSE);
 }  /* end p_menu_cll_properties_cb */ 
 
 /* -----------------------------
@@ -2844,7 +3202,7 @@ p_menu_stb_new_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
   {
     sgpp->stb = gap_story_new_story_board(NULL);
     sgpp->stb->master_type = GAP_STB_MASTER_TYPE_STORYBOARD;
-    p_tabw_master_prop_dialog(sgpp->stb_widgets);
+    p_tabw_master_prop_dialog(sgpp->stb_widgets, TRUE /* new_flag */);
   }
 }  /* end p_menu_stb_new_cb */ 
 
@@ -2930,7 +3288,7 @@ static void
 p_menu_stb_properties_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
 {
   if(gap_debug) printf("p_menu_stb_properties_cb\n");
-  p_tabw_master_prop_dialog(sgpp->stb_widgets);
+  p_tabw_master_prop_dialog(sgpp->stb_widgets, FALSE);
 }  /* end p_menu_stb_properties_cb */ 
 
 /* -----------------------------
@@ -3381,13 +3739,22 @@ p_tabw_update_frame_label (GapStbTabWidgets *tabw, GapStbMainGlobalParams *sgpp)
     gchar *l_fil_txt = NULL;
     gchar *l_mod_txt = NULL;
     gchar *l_txt = NULL;
+    gint   l_max_chars;
 
     l_fil_txt = g_strdup(" ");
     l_mod_txt = g_strdup(" ");
+    l_max_chars = 70;
 
     if(tabw->type == GAP_STB_MASTER_TYPE_STORYBOARD)
     {
-      l_hdr_txt = g_strdup(_("Storyboard"));
+      l_hdr_txt = g_strdup(_("Storyboard:"));
+
+      /* the max_chars for the cliplist header text 
+       * is just a guess how much characters
+       * would fit when the default font is used.
+       * correct calculation would be more complex.
+       */
+      l_max_chars = 160;
       if(sgpp->stb)
       {
         g_free(l_fil_txt);
@@ -3401,7 +3768,22 @@ p_tabw_update_frame_label (GapStbTabWidgets *tabw, GapStbMainGlobalParams *sgpp)
     }
     else
     {
-      l_hdr_txt = g_strdup(_("Cliplist"));
+      l_hdr_txt = g_strdup(_("Cliplist:"));
+
+      /* the max_chars for the cliplist is just a guess 
+       * dependent on thumbnail size and columns in the layout.
+       * the layout space is limited here
+       * because the extra space is requred for the player window.
+       * correct calculation would be complex
+       * and would have to respect current fontsize, NLS settings, 
+       * and something more ...
+       */
+      l_max_chars = 70;
+      if(sgpp->cll_cols <= 4)
+      {
+        l_max_chars = 55;
+      }
+
       if(sgpp->cll)
       {
         g_free(l_fil_txt);
@@ -3413,11 +3795,11 @@ p_tabw_update_frame_label (GapStbTabWidgets *tabw, GapStbMainGlobalParams *sgpp)
 	}
       }
     }
-    l_txt = g_strdup_printf("%s: %s %s"
-                           ,l_hdr_txt
-			   ,l_fil_txt
-			   ,l_mod_txt
-			   );
+    l_txt = gap_lib_shorten_filename(l_hdr_txt  /* prefix */
+                        ,l_fil_txt              /* filenamepart */
+			,l_mod_txt              /* suffix */
+			,l_max_chars
+			);
     gtk_frame_set_label (GTK_FRAME (tabw->frame_with_name), l_txt);
 
     g_free(l_hdr_txt);
@@ -3572,6 +3954,7 @@ p_open_videofile(GapStbMainGlobalParams *sgpp
 {
 #ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
   gboolean vindex_permission;
+  gboolean l_have_valid_vindex;
   char *vindex_file;
   char *create_vindex_msg;
   
@@ -3615,10 +3998,26 @@ p_open_videofile(GapStbMainGlobalParams *sgpp
 
     sgpp->cancel_video_api = FALSE;
 
-    /* check for permission to create a videoindex file */
-    vindex_permission = gap_arr_create_vindex_permission(sgpp->gva_videofile, vindex_file);
+    l_have_valid_vindex = FALSE;
+    vindex_permission = FALSE;
+
+    if(sgpp->gvahand->vindex)
+    {
+      if(sgpp->gvahand->vindex->total_frames > 0)
+      {
+        l_have_valid_vindex = TRUE;
+      }
+    }
     
-    if(vindex_permission)
+    
+    if(l_have_valid_vindex == FALSE)
+    {
+      /* check for permission to create a videoindex file */
+      vindex_permission = gap_arr_create_vindex_permission(sgpp->gva_videofile, vindex_file);
+    }
+     
+    if((l_have_valid_vindex == FALSE) 
+    && (vindex_permission))
     {
 printf("STORY: DEBUG: create vidindex start\n");
       if(sgpp->progress_bar)
@@ -4012,6 +4411,88 @@ p_fetch_vthumb_elem(GapStbMainGlobalParams *sgpp
 }  /* end p_fetch_vthumb_elem */
 
 
+/* -----------------------------
+ * p_prefetch_vthumbs
+ * -----------------------------
+ * this procedure does a prefetch of all
+ * videoframes that are start frame in of a storyboard_element 
+ * with type GAP_STBREC_VID_MOVIE
+ * the fetch causes creation of all the vthumbs
+ */
+static void
+p_prefetch_vthumbs (GapStbMainGlobalParams *sgpp, GapStoryBoard *stb)
+{
+  GapStoryElem  *stb_elem;
+  GapVThumbElem *vthumb;
+  gint32         l_total;
+  gint32         l_count;
+  
+
+  if(stb == NULL)
+  {
+    return;
+  }
+  
+  l_total = 0;
+  for(stb_elem = stb->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
+  {
+    if(stb_elem->record_type == GAP_STBREC_VID_MOVIE)
+    {
+      l_total++;
+    }
+  }
+
+  l_count = 0;
+  for(stb_elem = stb->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
+  {
+    if(stb_elem->record_type == GAP_STBREC_VID_MOVIE)
+    {
+      gchar  *msg;
+
+      if(sgpp->cancel_video_api)
+      {
+	if(sgpp->progress_bar)
+	{
+	  gtk_progress_bar_set_text(GTK_PROGRESS_BAR(sgpp->progress_bar), 
+	                           _("videothumbnail cancelled"));
+	  gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(sgpp->progress_bar), 0);
+	}
+        return;
+      }
+
+      l_count++;
+      vthumb = p_fetch_vthumb_elem(sgpp
+        	  ,stb_elem->orig_filename
+		  ,stb_elem->from_frame
+		  ,stb_elem->seltrack
+		  ,gap_story_get_preferred_decoder(stb, stb_elem)
+		  );
+      if(sgpp->progress_bar)
+      {
+         msg = g_strdup_printf(_("Fetching videothumbnail for clip: %d (out of %d)")
+	                      ,(int)l_count
+			      ,(int)l_total
+			      );
+	 gtk_progress_bar_set_text(GTK_PROGRESS_BAR(sgpp->progress_bar), msg);
+         gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(sgpp->progress_bar)
+	                              ,(gdouble)l_count / (gdouble)l_total
+				      );
+	 /* g_main_context_iteration makes sure that
+	  *  gtk does refresh widgets,  and react on events while the videoapi
+	  *  is busy with searching for the next frame.
+	  */
+	 while(g_main_context_iteration(NULL, FALSE));
+      }
+    }
+  }
+
+  if(sgpp->progress_bar)
+  {
+    gtk_progress_bar_set_text(GTK_PROGRESS_BAR(sgpp->progress_bar), "");
+    gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(sgpp->progress_bar), 0);
+  }
+    
+}  /* end p_prefetch_vthumbs */
 
 
 /* ------------------------------
@@ -4680,6 +5161,7 @@ gap_storyboard_dialog(GapStbMainGlobalParams *sgpp)
   sgpp->auto_vthumb = FALSE;
   sgpp->auto_vthumb_refresh_canceled = FALSE;
 
+  sgpp->cll_widgets = NULL;
   sgpp->menu_item_cll_save = NULL;
   sgpp->menu_item_cll_save_as = NULL;
   sgpp->menu_item_cll_add_clip = NULL;
@@ -4687,12 +5169,16 @@ gap_storyboard_dialog(GapStbMainGlobalParams *sgpp)
   sgpp->menu_item_cll_properties = NULL;
   sgpp->menu_item_cll_close = NULL;
 
+  sgpp->stb_widgets = NULL;
   sgpp->menu_item_stb_save = NULL;
   sgpp->menu_item_stb_save_as = NULL;
   sgpp->menu_item_stb_add_clip = NULL;
   sgpp->menu_item_stb_playback = NULL;
   sgpp->menu_item_stb_properties = NULL;
   sgpp->menu_item_stb_close = NULL;
+
+  sgpp->win_prop_dlg_open = FALSE;
+
 
   /*  The dialog and main vbox  */
   /* the help_id is passed as NULL to avoid creation of the HELP button
@@ -4712,8 +5198,8 @@ gap_storyboard_dialog(GapStbMainGlobalParams *sgpp)
                     sgpp);
 
   /* the vbox */
-  vbox = gtk_vbox_new (FALSE, 2);
-  gtk_container_set_border_width (GTK_CONTAINER (vbox), 2);
+  vbox = gtk_vbox_new (FALSE, 0);
+  // gtk_container_set_border_width (GTK_CONTAINER (vbox), 2);
   gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox), vbox,
 		      TRUE, TRUE, 0);
   gtk_widget_show (vbox);
@@ -4842,17 +5328,9 @@ gap_storyboard_dialog(GapStbMainGlobalParams *sgpp)
 
 
   /*  The Video ProgressBar */
-
   {
     GtkWidget *button;
     GtkWidget *progress_bar;
-
-    button = gtk_button_new_with_label (_("Cancel"));  
-    gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 0);
-    gtk_widget_show (button);
-    g_signal_connect (G_OBJECT (button), "clicked",
-		    G_CALLBACK (p_cancel_button_cb),
-		    sgpp);
      
      
     progress_bar = gtk_progress_bar_new ();
@@ -4862,6 +5340,14 @@ gap_storyboard_dialog(GapStbMainGlobalParams *sgpp)
     gtk_box_pack_start (GTK_BOX (hbox), progress_bar, TRUE, TRUE, 0);
   
     sgpp->progress_bar = progress_bar;
+
+
+    button = gtk_button_new_with_label (_("Cancel"));  
+    gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 0);
+    gtk_widget_show (button);
+    g_signal_connect (G_OBJECT (button), "clicked",
+		    G_CALLBACK (p_cancel_button_cb),
+		    sgpp);
   }
 
 
@@ -4898,7 +5384,7 @@ gap_storyboard_dialog(GapStbMainGlobalParams *sgpp)
  * // TODO:  replace this arr_dialog by scaling widget (see gap_resi_dialog.c)
  */
 static void
-p_tabw_master_prop_dialog(GapStbTabWidgets *tabw)
+p_tabw_master_prop_dialog(GapStbTabWidgets *tabw, gboolean new_flag)
 {
   static GapArrArg  argv[6];
   static char *radio_args[4]  = { N_("automatic"), "libmpeg3", "libavformat", "quicktime4linux" };
@@ -4912,6 +5398,8 @@ p_tabw_master_prop_dialog(GapStbTabWidgets *tabw)
   gint32   l_master_width;
   gint32   l_master_height;
   gchar    buf_preferred_decoder[60];
+  gchar   *label_txt;
+  gboolean l_rc;
 
   stb_dst = p_tabw_get_stb_ptr (tabw);
   if(stb_dst == NULL) { return; }
@@ -4921,29 +5409,46 @@ p_tabw_master_prop_dialog(GapStbTabWidgets *tabw)
   tabw->master_dlg_open  = TRUE;
   
   gap_story_get_master_size(stb_dst, &l_master_width, &l_master_height);
-			 
+
+  label_txt = NULL;
   l_ii = 0; l_ii_width = l_ii;
-  gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_FILESEL);
-  argv[l_ii].label_txt = _("Name:");
-  argv[l_ii].entry_width = 250;       /* pixel */
-  if(tabw == sgpp->stb_widgets)
+  if(new_flag)
   {
-    argv[l_ii].help_txt  = _("Name of the Storyboardfile");
-    argv[l_ii].text_buf_len = sizeof(sgpp->storyboard_filename);
-    argv[l_ii].text_buf_ret = &sgpp->storyboard_filename[0];
+    gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_FILESEL);
+    argv[l_ii].label_txt = _("Name:");
+    argv[l_ii].entry_width = 250;       /* pixel */
+    if(tabw == sgpp->stb_widgets)
+    {
+      argv[l_ii].help_txt  = _("Name of the Storyboardfile");
+      argv[l_ii].text_buf_len = sizeof(sgpp->storyboard_filename);
+      argv[l_ii].text_buf_ret = &sgpp->storyboard_filename[0];
+    }
+    else
+    {
+      argv[l_ii].help_txt  = _("Name of the Cliplistfile");
+      argv[l_ii].text_buf_len = sizeof(sgpp->cliplist_filename);
+      argv[l_ii].text_buf_ret = &sgpp->cliplist_filename[0];
+    }
   }
   else
   {
-    argv[l_ii].help_txt  = _("Name of the Cliplistfile");
-    argv[l_ii].text_buf_len = sizeof(sgpp->cliplist_filename);
-    argv[l_ii].text_buf_ret = &sgpp->cliplist_filename[0];
+    gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_LABEL_LEFT);
+    if(tabw == sgpp->stb_widgets)
+    {
+      label_txt = g_strdup_printf(_("Name: %s"), sgpp->storyboard_filename);
+    }
+    else
+    {
+      label_txt = g_strdup_printf(_("Name: %s"), sgpp->cliplist_filename);
+    }
+    argv[l_ii].label_txt = label_txt;
   }
 
   l_ii++; l_ii_width = l_ii;
   gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_INT_PAIR);
   argv[l_ii].constraint = TRUE;
   argv[l_ii].label_txt = _("Width:");
-  argv[l_ii].help_txt  = _("Width in pixels");
+  argv[l_ii].help_txt  = _("Master width of the resulting video in pixels");
   argv[l_ii].int_min   = (gint)1;
   argv[l_ii].int_max   = (gint)9999;
   argv[l_ii].int_ret   = (gint)l_master_width;
@@ -4954,7 +5459,7 @@ p_tabw_master_prop_dialog(GapStbTabWidgets *tabw)
   gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_INT_PAIR);
   argv[l_ii].constraint = TRUE;
   argv[l_ii].label_txt = _("Height:");
-  argv[l_ii].help_txt  = _("Height in pixels)");
+  argv[l_ii].help_txt  = _("Master height of the resulting video in pixels)");
   argv[l_ii].int_min   = (gint)1;
   argv[l_ii].int_max   = (gint)9999;
   argv[l_ii].int_ret   = (gint)l_master_height;
@@ -5012,9 +5517,14 @@ p_tabw_master_prop_dialog(GapStbTabWidgets *tabw)
   argv[l_ii].label_txt =  _("Reset");                /* should use GIMP_STOCK_RESET if possible */
   argv[l_ii].help_txt  = _("Reset parameters to default size");
 
-  if(TRUE == gap_arr_ok_cancel_dialog( _("Master Properties"),
+  l_rc = gap_arr_ok_cancel_dialog( _("Master Properties"),
                                  _("Settings"), 
-                                  G_N_ELEMENTS(argv), argv))
+                                  G_N_ELEMENTS(argv), argv);
+  if(label_txt)
+  {
+    g_free(label_txt);
+  }
+  if(l_rc)			 
   {
      stb_dst->master_width = (gint32)(argv[l_ii_width].int_ret);
      stb_dst->master_height = (gint32)(argv[l_ii_height].int_ret);

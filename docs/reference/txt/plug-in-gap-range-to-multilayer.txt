@@ -1,0 +1,103 @@
+"plug-in-gap-range-to-multilayer"
+
+Frames to Image
+    Start from Menu:
+       <image>/Video/Frames to Image
+
+    Convert frames to one multilayered image.
+          
+    The selected source range of frames is copied into one
+    new created multilayered destination Image.
+    Each frame results in one layer in the destination image.
+    (or nothing if the source frame has no selected layer)
+    
+    With the layer basename you can choose a name for the resulting
+    layers in the destination Image. The string [####] is replaced
+    by the frame number. 
+       Example: my_layer_[##]  results in: my_layer_01, my_layer_02 .... 
+    
+    Layer Mergemode:
+      - Extend as necessary   Build a destination layer by merging
+                              selected layers of one source frame.
+                              The destination layer's size will be
+                              the outline-rectangle of all selected
+                              layers.
+                              
+      - Clipped to image      Build a destination layer by merging 
+                              selected layers of one source frame.
+                              The destination layer's size will be
+                              the image size.
+                              
+      - Clipped to bottom layer  Build a destination layer by merging
+                              selected layers of one sourceframe.
+                              The destination layer's size will be
+                              the size of the lowest selected layer.
+                              
+      - Flattened image       Build destination layer by flattening
+                              the source layers copied from one source frame.
+                              There will be no transparent parts
+                              in the destination layers.
+                              The destination layer's size will be
+                              the image size.
+    
+    With the 'Exclude BG-Layer' checkbutton pressed,
+    the background layers of all the source frames are excluded
+    from the copy, regardless if they are selected or not.
+    Otherwise background layers are handled like all other layers.
+   
+    (If you are using flatten mode 'Flatten' the background color will fill all
+     transparent parts of the resulting destination layer(s).)
+
+    Layer Selection:
+    ----------------
+    Here you can select which layer(s) of a frame is(are) used
+    to build the destination layer.
+    
+    Select Layer(s):
+       Pattern is equal to layer name
+       Pattern is start of layer name
+       Pattern is end of layer name
+       Pattern is a part of layer name
+           With these settings you can select layers
+           by their layername.
+           (All layers with a layer name matching the select pattern
+           are selected).
+        
+       Pattern is layerstack number list
+           Layers are selected by their layerstack position,
+           where 0 is the top layer.
+           The pattern is a list of layerstack numbers or
+           number ranges. (0-3 matches to the upper 4 layers)       
+       Pattern is reverse-stack list"
+           Here you can specify layerstack numbers in reverse order.
+           (where 0 is the background layer)
+           
+       All Visible (ignore pattern)
+           All visible layers are selected.
+           (The select pattern is ignored)
+       
+    Select Pattern:
+       String to identify a layer. It can be a part of the layer name
+       or a list of layerstack numbers (like this one: "0, 2-5, 9")
+       depending on your choice in select layer(s) above.
+    Case Sensitive:
+       Lowercase and upppercase letters are considered as equal
+       if this checkbutton is set to off.
+    Invert Selection:
+       Select all unselected layers.
+    Pixel Selection:
+       How to handle selected areas in the handled frame range.
+       "Ignore"
+           Ignore all selections in all handled frames
+       "Initial Frame"
+           Use only one selection from the first handled frame,
+           All unselected areas are set to transparent in the
+           resulting multilayer image.
+           All the resulting layers in the generated multilayer image
+           are shaped by the initial selection.
+       "Frame specific"
+           Use selections from all handled frames.
+           (Frames without any selection are handled as if all pixels were selected)
+           All unselected areas are set to transparent in the
+           resulting multilayer image.
+

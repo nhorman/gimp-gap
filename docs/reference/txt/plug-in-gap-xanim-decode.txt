@@ -1,0 +1,82 @@
+"plug-in-gap-xanim-decode"
+
+XANIM based extract
+
+    Start from Menu:
+	<Image>/Video/Split Video to Frames/XANIM based extract
+        <Toolbox>/Xtns/Split Video to Frames/XANIM based extract
+
+    WARNING:
+    This feature is deprecated, because XANIM is old unmaintained software.
+    If you still have XANIM 2.80 exporting edition it may still work.
+    If not it is not worth to make efforts to get it working
+    because GIMP-GAP has frontend support for MPLayer and built-in
+    support for video extract based on FFMPEG / libmpeg3.
+
+
+    Extract frames and/or audio from a videofile.    
+    This feature is only available on UNIX systems and is 
+    a frontend for the xanim player.
+
+    For that feature GIMP-GAP must be configured and compiled 
+    with the configure option:
+        --enable-unix-frontends
+ 
+    Further it is required that xanim is installed on your system
+    at run time.
+    (GIMP_GAP was tested with xanim-2.80 exporting edition).
+
+  Video:
+    Here you can enter the name of an input videofile.
+    The "..." button opens a filebrowser popup dialog
+    where you can select a filename.
+ 
+  From Frame:
+    Framenumber of the 1.st frame to extract.
+    
+  To Frame:
+    Framenumber of the last frame to extract.
+
+  Framenames:
+    Basenamepart for the extracted frames to write.
+    The 6-digit numberpart and the extension (.ppm, .jpeg .xcf)
+    are added for each extracted frame.
+       
+  
+  Format:
+    Imagefileformat for the extracted frames.
+      JPEG
+      PPM
+      XCF
+      
+    Note: XCF fileformat is not directly supported by xanim.
+          In this case the ectracted frames are created in PPM
+	  imagefileformat and converted to the GIMP's native 
+	  XCF fileformat automatically.
+
+  Extract Frames:
+    ON: extract frames.
+    OFF: dont extract frames.
+    
+  Extract Audio:
+    ON: extract audiopart.
+    OFF: dont extract audiopart if there is one.
+    
+  Jpeg Quality:
+    Quality of the frames where 100 is best quality (but largest filesize)
+
+  Open:
+    Open the 1.st extracted frame when extracting is done.
+    
+  Asynchron:
+    xanim is not able to start extracting at the specified "From Frame"
+    offset. Therefore this frontend automatically deletes unwanted frames
+    that are extracted by xanim per default.
+    
+    ON: Run xanim as asynchron process and try to delete unwanted
+        frames while xanim is running and kill the xanim process
+	after the last wanted "To Frame" framenumber was extracted.
+
+    OFF: call xanim as synchron process
+        and delete unwanted frames when xanim process has finished.
+  
