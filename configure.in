@@ -6,7 +6,7 @@ AM_CONFIG_HEADER(config.h)
 
 GAP_MAJOR_VERSION=1
 GAP_MINOR_VERSION=3
-GAP_MICRO_VERSION=24
+GAP_MICRO_VERSION=25
 GAP_VERSION=$GAP_MAJOR_VERSION.$GAP_MINOR_VERSION.$GAP_MICRO_VERSION
 
 VERSION=$GAP_VERSION
@@ -88,6 +88,17 @@ be installed at runtime.
   fi
 
 AM_CONDITIONAL(GAP_AUDIO_SUPPORT, test "x$enable_audio_support" != "xno")
+
+dnl optional compile preview widget with GDK-pixbuf support
+dnl 
+AC_ARG_ENABLE(gdkpixbuf,
+              [  --enable-gdkpixbuf-pview     use GdkPixbuf thumbnail rendering (default=no)])
+  if test "x$enable_gdkpixbuf_pview" = "xyes"; then
+    AC_DEFINE(GAP_PVIEW_USE_GDK_PIXBUF_RENDERING, 1, [use Gdk for Pixbuf rendering in gap preview widget])
+  fi
+
+
+
 
 
 GAPLIBDIR=${libdir}/$PACKAGE-$GAP_MAJOR_VERSION.$GAP_MINOR_VERSION

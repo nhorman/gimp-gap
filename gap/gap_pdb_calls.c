@@ -23,6 +23,7 @@
  */
 
 /* revision history:
+ * version 1.3.25a; 2004/01/20  hof: removed gap_pdb_gimp_file_load_thumbnail
  * version 1.3.14c; 2003/06/15  hof: take care of gimp_image_thumbnail 128x128 sizelimit
  * version 1.3.14b; 2003/06/03  hof: gboolean retcode for thumbnail procedures
  * version 1.3.14a; 2003/05/24  hof: moved vin Procedures to gap_vin module
@@ -219,42 +220,12 @@ gap_pdb_gimp_file_save_thumbnail(gint32 image_id, char* filename)
    return(FALSE);
 }	/* end gap_pdb_gimp_file_save_thumbnail */
 
+
 /* ============================================================================
- * gap_pdb_gimp_file_load_thumbnail
+ * gap_pdb_gimp_image_thumbnail
  *   
  * ============================================================================
  */
-
-gboolean
-gap_pdb_gimp_file_load_thumbnail(char* filename, gint32 *th_width, gint32 *th_height,
-                           gint32 *th_data_count,  unsigned char **th_data)
-{
-   static char     *l_called_proc = "gimp_file_load_thumbnail";
-   GimpParam          *return_vals;
-   int              nreturn_vals;
-
-   if(gap_debug) printf("gap_pdb_gimp_file_load_thumbnail:  %s\n", filename);
-
-   *th_data = NULL;
-   return_vals = gimp_run_procedure (l_called_proc,
-                                 &nreturn_vals,
- 				 GIMP_PDB_STRING,    filename,
-                                 GIMP_PDB_END);
-
-   if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
-   {
-      *th_width = return_vals[1].data.d_int32;
-      *th_height = return_vals[2].data.d_int32;
-      *th_data_count = return_vals[3].data.d_int32;
-      *th_data = (unsigned char *)return_vals[4].data.d_int8array;
-      return (TRUE); /* OK */
-   }
-   if(gap_debug) printf("GAP: Error: PDB call of %s failed\n", l_called_proc);
-   return(FALSE);
-}	/* end gap_pdb_gimp_file_load_thumbnail */
-
-
-
 gboolean
 gap_pdb_gimp_image_thumbnail(gint32 image_id, gint32 width, gint32 height,
                               gint32 *th_width, gint32 *th_height, gint32 *th_bpp,

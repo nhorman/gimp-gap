@@ -36,6 +36,7 @@
  */
 
 /* revision history
+ * 1.3.25a; 2004/01/21   hof: message text fixes for translators (# 132030)
  * 1.3.19a; 2003/09/07   hof: message text fixes for translators (# 121145)
  * 1.3.17b; 2003/07/31   hof: message text fixes for translators (# 118392)
  * 1.3.16a; 2003/06/25   hof: no textsplitting across multiple lables (for translation)
@@ -380,7 +381,7 @@ int p_mpege_dialog(GapAnimInfo *ainfo_ptr, t_mpg_par *mp_ptr, GapMpegEncoderType
      gap_arr_arg_init(&argv[7], GAP_ARR_WGT_INT_PAIR);
      argv[7].constraint = TRUE;
      argv[7].label_txt = _("IQSCALE:");
-     argv[7].help_txt  = _("Quality scale for I-frames\n(1 = best quality, 31 = best comression)");
+     argv[7].help_txt  = _("Quality scale for I-frames\n(1 = best quality, 31 = best compression)");
      argv[7].int_min   = 1;
      argv[7].int_max   = 31;
      argv[7].int_ret   = 2;
@@ -390,7 +391,7 @@ int p_mpege_dialog(GapAnimInfo *ainfo_ptr, t_mpg_par *mp_ptr, GapMpegEncoderType
      gap_arr_arg_init(&argv[8], GAP_ARR_WGT_INT_PAIR);
      argv[8].constraint = TRUE;
      argv[8].label_txt = _("PQSCALE:");
-     argv[8].help_txt  = _("Quality scale for P-frames\n(1 = best quality, 31 = best comression)");
+     argv[8].help_txt  = _("Quality scale for P-frames\n(1 = best quality, 31 = best compression)");
      argv[8].int_min   = 1;
      argv[8].int_max   = 31;
      argv[8].int_ret   = 5;
@@ -400,7 +401,7 @@ int p_mpege_dialog(GapAnimInfo *ainfo_ptr, t_mpg_par *mp_ptr, GapMpegEncoderType
      gap_arr_arg_init(&argv[9], GAP_ARR_WGT_INT_PAIR);
      argv[9].constraint = TRUE;
      argv[9].label_txt = _("BQSCALE:");
-     argv[9].help_txt  = _("Quality scale for B-frames\n(1 = best quality, 31 = best comression)");
+     argv[9].help_txt  = _("Quality scale for B-frames\n(1 = best quality, 31 = best compression)");
      argv[9].int_min   = 1;
      argv[9].int_max   = 31;
      argv[9].int_ret   = 9;

@@ -26,6 +26,7 @@
  */
 
 /* revision history:
+ * 1.3.25a  2004/01/21   hof: added gap_thumb_file_load_pixbuf_thumbnail
  * 1.3.24a  2004/01/16   hof: added gap_thumb_file_load_thumbnail
  * 1.3.14b  2003/06/03   hof: removed p_gimp_file_has_valid_thumbnail
  * 1.3.14a  2003/05/27   hof: created
@@ -71,4 +72,8 @@ gboolean          gap_thumb_file_load_thumbnail(char* filename
 					       , unsigned char **th_data);
 
 
+GdkPixbuf *       gap_thumb_file_load_pixbuf_thumbnail(char* filename
+                                    , gint32 *th_width
+				    , gint32 *th_height
+                                    , gint32 *th_bpp);
 #endif

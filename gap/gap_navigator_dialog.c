@@ -26,6 +26,8 @@
  */
 
 /* revision history:
+ * gimp    1.3.25a; 2004/01/21  hof: gap_thumb_file_load_thumbnail now returns th_data with th_bpp == 4
+ *                                   (the flatten capabilities were removed) 
  * gimp    1.3.24a; 2004/01/17  hof: bugfix: call of plug_in_gap_range_to_multilayer needs regionselect_mode
  *                                   use faster procedure gap_thumb_file_load_thumbnail to load thumbnaildata
  * gimp    1.3.23a; 2003/11/26  hof: follow API changes for gimp_dialog_new
@@ -1615,7 +1617,6 @@ navi_thumb_update(gboolean update_all)
         */
        l_th_width = naviD->preview_size;
        l_th_height = naviD->preview_size;
-       l_th_bpp = 3;   /* force flatten th_data from RGBA to RBG */
       
        l_raw_thumb = NULL;
        if(TRUE == gap_thumb_file_load_thumbnail(l_image_filename
@@ -2399,7 +2400,6 @@ navi_render_preview (FrameWidget *fw)
 	  */
 	 l_th_width = naviD->preview_size;
 	 l_th_height = naviD->preview_size;
-	 l_th_bpp = 3;   /* force flatten th_data from RGBA to RBG */
          gap_thumb_file_load_thumbnail(l_frame_filename
                                    , &l_th_width
                                    , &l_th_height

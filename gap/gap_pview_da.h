@@ -22,6 +22,7 @@
  */
 
 /* revision history:
+ * version 1.3.25a; 2004/01/21  hof: added gap_pview_render_from_pixbuf 
  * version 1.3.16a; 2003/06/27  hof: use aspect_frame instead of simple frame, added gap_pview_render_default_icon
  * version 1.3.14c; 2003/06/12  hof: created
  */
@@ -46,11 +47,14 @@ typedef struct GapPView
   gint    pv_height;          /* Preview Height in pixels */
   gint    pv_bpp;             /* BPP of the preview currently always 3 */
   gint    pv_check_size;      /* size of the cheks in pixels */
+  gboolean use_pixbuf_repaint;
   gboolean use_pixmap_repaint;
   guchar *pv_area_data;       /* buffer to hold RGB image in preview size */
   GdkPixmap *pixmap;          /* alternative pixmap buffer */
+  GdkPixbuf *pixbuf;          /* alternative pixbuf buffer */
 } GapPView;
 
+void       gap_pview_render_from_pixbuf (GapPView *pv_ptr, GdkPixbuf *src_pixbuf);
 
 gboolean   gap_pview_render_from_buf (GapPView *pv_ptr
                  , guchar *src_data

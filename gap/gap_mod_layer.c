@@ -28,6 +28,7 @@
  */
 
 /* revision history:
+ * gimp   1.3.25a;   2004/01/21  hof: message text fixes (# 132030)
  * gimp   1.3.24a;   2004/01/17  hof: added Layermask Handling
  * gimp   1.3.20d;   2003/09/20  hof: sourcecode cleanup,
  *                                    added new Actionmodes for Selction handling
@@ -257,7 +258,7 @@ int p_layer_modify_dialog(GapAnimInfo *ainfo_ptr,
   /* a new name for the handled Layer(s) */
   *new_layername = '\0';
   gap_arr_arg_init(&argv[8], GAP_ARR_WGT_TEXT);
-  argv[8].label_txt = _("New Layer\n or Channel Name:");
+  argv[8].label_txt = _("Layer Name\n or Channel Name:");
   argv[8].entry_width = 140;       /* pixel */
   argv[8].help_txt  = _("Layer (or channel) name for all handled layers (or channels),\n"
                         "where the string '[######]' is replaced by the frame number.\n"

@@ -26,6 +26,7 @@
  */
 
 /* revision history:
+ * 1.3.25a  2004/01/20   hof: - removed xvpics support (gap_lib_get_video_paste_name)
  * 1.3.21e  2003/11/04   hof: - gimprc
  * 1.3.18a  2003/08/23   hof: - all gap_debug messages to stdout (do not mix with stderr)
  *                            - do not save thumbnails in p_decide_save_as because it saves
@@ -1925,18 +1926,13 @@ gap_lib_get_video_paste_name(void)
   gchar *l_dir;
   gchar *l_basename;
   gchar *l_video_name;
-  gchar *l_dir_thumb;
 
   l_dir = p_get_video_paste_dir();
   l_basename = p_get_video_paste_basename();
   l_video_name = g_strdup_printf("%s%s%s", l_dir, G_DIR_SEPARATOR_S, l_basename);
-  l_dir_thumb = g_strdup_printf("%s%s%s", l_dir, G_DIR_SEPARATOR_S, ".xvpics");
-
-  mkdir (l_dir_thumb, 0755);
 
   g_free(l_dir);
   g_free(l_basename);
-  g_free(l_dir_thumb);
 
   if(gap_debug) printf("gap_lib_get_video_paste_name: %s\n", l_video_name);
   return(l_video_name);

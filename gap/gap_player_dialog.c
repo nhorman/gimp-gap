@@ -28,6 +28,8 @@
  */
 
 /* Revision history
+ *  (2004/01/22)  v1.3.25a   hof: performance tuning: use gap_thumb_file_load_pixbuf_thumbnail
+ *  (2004/01/19)  v1.3.24b   hof: bugfix: spinbutton callbacks must connect to "value_changed" signal
  *  (2004/01/16)  v1.3.22c   hof: use gap_thumb_file_load_thumbnail (for faster thumb loading) 
  *  (2003/11/15)  v1.3.22c   hof: bugfix: SHIFT size button
  *  (2003/11/01)  v1.3.21d   hof: cleanup messages
@@ -1254,10 +1256,12 @@ p_display_frame(GapPlayerMainGlobalParams *gpp, gint32 framenr)
    gint32  l_th_bpp;
    guchar *l_th_data;
    gboolean framenr_is_the_active_image;
+   GdkPixbuf *pixbuf;
 
   /*if(gap_debug) printf("p_display_frame START: framenr:%d\n", (int)framenr);*/
 
   l_th_data = NULL;
+  pixbuf = NULL;
   l_th_bpp = 3;
   
   l_filename = gap_lib_alloc_fname(gpp->ainfo_ptr->basename, framenr, gpp->ainfo_ptr->extension);
@@ -1282,80 +1286,87 @@ p_display_frame(GapPlayerMainGlobalParams *gpp, gint32 framenr)
     {
       /* init preferred width and height
        * (as hint for the thumbnail loader to decide
-       *  if thumbnail is to fetch from normal or large thumbnail director
+       *  if thumbnail is to fetch from normal or large thumbnail directory
        *  just for the case when both sizes are available)
        */
       l_th_width = gpp->pv_width;
       l_th_height = gpp->pv_height;
-      l_th_bpp = 3;   /* force flatten th_data from RGBA to RBG */
       
-      gap_thumb_file_load_thumbnail(l_filename
-                                , &l_th_width, &l_th_height
-                                , &l_th_data_count
-				, &l_th_bpp
-				, &l_th_data);
+      pixbuf = gap_thumb_file_load_pixbuf_thumbnail(l_filename
+                                    , &l_th_width, &l_th_height
+				    , &l_th_bpp
+                                    );
+				    
     }
   }
 
-  if (l_th_data)
+  if(pixbuf)
   {
-    gboolean l_th_data_was_grabbed;
-
-    l_th_data_was_grabbed = gap_pview_render_from_buf (gpp->pv_ptr
-                 , l_th_data
-                 , l_th_width
-                 , l_th_height
-                 , l_th_bpp
-                 , TRUE         /* allow_grab_src_data */
-                 );
-    if(l_th_data_was_grabbed)
-    {
-      /* the gap_pview_render_from_buf procedure can grab the l_th_data
-       * instead of making a ptivate copy for later use on repaint demands.
-       * if such a grab happened it returns TRUE.
-       * (this is done for optimal performance reasons)
-       * in such a case the caller must NOT free the src_data (l_th_data) !!!
-       */
-      l_th_data = NULL;
-    }
-
+    gap_pview_render_from_pixbuf (gpp->pv_ptr, pixbuf);
+    g_object_unref(pixbuf);
   }
   else
   {
-    gint32  l_image_id;
-     
-    /* got no thumbnail data, must use the full image */
-    if(framenr_is_the_active_image)
+    if (l_th_data)
     {
-      l_image_id = gimp_image_duplicate(gpp->image_id);
+      gboolean l_th_data_was_grabbed;
+
+      l_th_data_was_grabbed = gap_pview_render_from_buf (gpp->pv_ptr
+                   , l_th_data
+                   , l_th_width
+                   , l_th_height
+                   , l_th_bpp
+                   , TRUE         /* allow_grab_src_data */
+                   );
+      if(l_th_data_was_grabbed)
+      {
+	/* the gap_pview_render_from_buf procedure can grab the l_th_data
+	 * instead of making a ptivate copy for later use on repaint demands.
+	 * if such a grab happened it returns TRUE.
+	 * (this is done for optimal performance reasons)
+	 * in such a case the caller must NOT free the src_data (l_th_data) !!!
+	 */
+	l_th_data = NULL;
+      }
+
     }
     else
     {
-      l_image_id = gap_lib_load_image(l_filename);
+      gint32  l_image_id;
 
-      if (l_image_id < 0)
+      /* got no thumbnail data, must use the full image */
+      if(framenr_is_the_active_image)
       {
-        /* could not read the image
-         * one reason could be, that frames were deleted while this plugin is active
-         * so we stop playback,
-         * and try to reload informations about all frames
-         */
-        if(gap_debug) printf("LOAD IMAGE_ID: %s failed\n", l_filename);
-        p_keep_track_of_active_master_image(gpp);
+	l_image_id = gimp_image_duplicate(gpp->image_id);
       }
+      else
+      {
+	l_image_id = gap_lib_load_image(l_filename);
+
+	if (l_image_id < 0)
+	{
+          /* could not read the image
+           * one reason could be, that frames were deleted while this plugin is active
+           * so we stop playback,
+           * and try to reload informations about all frames
+           */
+          if(gap_debug) printf("LOAD IMAGE_ID: %s failed\n", l_filename);
+          p_keep_track_of_active_master_image(gpp);
+	}
+      }
+
+      /* there is no need for undo on this scratch image
+       * so we turn undo off for performance reasons
+       */
+      gimp_image_undo_disable (l_image_id);
+
+      gap_pview_render_from_image (gpp->pv_ptr, l_image_id);
+      if(gpp->use_thumbnails)
+      {
+	gap_thumb_cond_gimp_file_save_thumbnail(l_image_id, l_filename);
+      }
+      gimp_image_delete(l_image_id);
     }
-    
-    /* there is no need for undo on this scratch image
-     * so we turn undo off for performance reasons
-     */
-    gimp_image_undo_disable (l_image_id);
-    
-    gap_pview_render_from_image (gpp->pv_ptr, l_image_id);
-    if(gpp->use_thumbnails)
-    {
-      gap_thumb_cond_gimp_file_save_thumbnail(l_image_id, l_filename);
-    }
-    gimp_image_delete(l_image_id);
   }
   
 
@@ -3404,7 +3415,7 @@ p_new_audioframe(GapPlayerMainGlobalParams *gpp)
   gpp->audio_volume_spinbutton_adj = adj;
   gtk_table_attach(GTK_TABLE(table1), spinbutton, 1, 2, row, row + 1, GTK_FILL, GTK_FILL, 4, 0);
   gimp_help_set_help_data(spinbutton, _("Audio Volume"),NULL);
-  g_signal_connect (G_OBJECT (spinbutton), "changed",
+  g_signal_connect (G_OBJECT (spinbutton), "value_changed",
                       G_CALLBACK (on_audio_volume_spinbutton_changed),
                       gpp);
  
@@ -3452,7 +3463,7 @@ p_new_audioframe(GapPlayerMainGlobalParams *gpp)
 			     "equal to the duration of 10 frames "
 			     "at original video playback speed.")
 			 ,NULL);
-  g_signal_connect (G_OBJECT (spinbutton), "changed",
+  g_signal_connect (G_OBJECT (spinbutton), "value_changed",
                       G_CALLBACK (on_audio_frame_offset_spinbutton_changed),
                       gpp);
 
@@ -3844,7 +3855,7 @@ p_create_player_window (GapPlayerMainGlobalParams *gpp)
 		     0, 0);
   gtk_widget_set_size_request (from_spinbutton, 80, -1);
   gimp_help_set_help_data (from_spinbutton, _("Start framenumber of selection range"), NULL);
-  g_signal_connect (G_OBJECT (from_spinbutton), "changed",
+  g_signal_connect (G_OBJECT (from_spinbutton), "value_changed",
                       G_CALLBACK (on_from_spinbutton_changed),
                       gpp);
 
@@ -3861,7 +3872,7 @@ p_create_player_window (GapPlayerMainGlobalParams *gpp)
 		     0, 0);
   gtk_widget_set_size_request (to_spinbutton, 80, -1);
   gimp_help_set_help_data (to_spinbutton, _("End framenumber of selection range"), NULL);
-  g_signal_connect (G_OBJECT (to_spinbutton), "changed",
+  g_signal_connect (G_OBJECT (to_spinbutton), "value_changed",
                       G_CALLBACK (on_to_spinbutton_changed),
                       gpp);
 
@@ -3898,7 +3909,7 @@ p_create_player_window (GapPlayerMainGlobalParams *gpp)
                     (GtkAttachOptions) (0), 0, 0);
   gtk_widget_set_size_request (framenr_spinbutton, 80, -1);
   gimp_help_set_help_data (framenr_spinbutton, _("The currently displayed frame number"), NULL);
-  g_signal_connect (G_OBJECT (framenr_spinbutton), "changed",
+  g_signal_connect (G_OBJECT (framenr_spinbutton), "value_changed",
                       G_CALLBACK (on_framenr_spinbutton_changed),
                       gpp);
 
@@ -3968,7 +3979,7 @@ p_create_player_window (GapPlayerMainGlobalParams *gpp)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (GTK_FILL),
 		    0, 0);
-  g_signal_connect (G_OBJECT (speed_spinbutton), "changed",
+  g_signal_connect (G_OBJECT (speed_spinbutton), "value_changed",
                       G_CALLBACK (on_speed_spinbutton_changed),
                       gpp);
 

@@ -22,6 +22,7 @@
  */
 
 /* Revision history
+ * 1.3.25a; 2004/01/21   hof: message text fixes (# 132030)
  *  (2004/01/15)  v1.0       hof: created
  */
 
@@ -112,7 +113,7 @@ static void query (void)
                   { GIMP_PDB_IMAGE,    "image", "Input image" },
                   { GIMP_PDB_DRAWABLE, "drawable", "Input drawable ()"},
                   { GIMP_PDB_FLOAT,    "opacity", "0.0 (full transparent) upto 100.0 (full opaque)"},
-                  { GIMP_PDB_INT32,    "mode", "0..set opacity, 1..ADD opacty to old opacity value, 2..subtract opacity from old opacity value, 3..multiply"},
+                  { GIMP_PDB_INT32,    "mode", "0..set opacity, 1..ADD opacity to old opacity value, 2..subtract opacity from old opacity value, 3..multiply"},
   };
 
 
@@ -334,7 +335,7 @@ p_opa_dialog(void)
 
   ii++; gap_arr_arg_init(&argv[ii], GAP_ARR_WGT_OPTIONMENU); ii_mode = ii;
   argv[ii].label_txt = _("Mode:");
-  argv[ii].help_txt  = _("Modes set opacity or change the old opacty value by adding, subtracting or multiply by the supplied new value");
+  argv[ii].help_txt  = _("Modes set opacity or change the old opacity value by adding, subtracting or multiply by the supplied new value");
   argv[ii].radio_argc  = VR_MODELIST_SIZE;
   argv[ii].radio_argv = radio_modes;
   argv[ii].radio_ret  = 0;

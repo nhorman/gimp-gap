@@ -27,6 +27,9 @@
  */
 
 /* revision history:
+ * 1.3.25a  2004/01/21   hof: removed xvpics support (GIMP-2.0 has no more xvpics support too)
+ *                            added gap_thumb_file_load_pixbuf_thumbnail, 
+ *                            gap_thumb_file_load_thumbnail: removed flattening
  * 1.3.24a  2004/01/16   hof: make use of libgimpthumb (see also feature request #113033) 
  *                            to replace old private thumnail handling code
  * 1.3.17a  2003/07/28   hof: G_N_ELEMENTS is unsigned
@@ -81,14 +84,7 @@ static gchar   *global_creator_software = NULL;       /* gimp-1.3 */
 static void            p_gap_thumb_init(void);
 static gchar *         p_gap_filename_to_uri(const char *filename);
 
-static char *          p_alloc_xvpics_thumbname(char *name);
 static void            p_copy_png_thumb(char *filename_src, char *filename_dst);
-
-#define MIX_CHANNEL(b, a, m)  (((a * m) + (b * (255 - m))) / 255)
-#define THUMB_BG_GRAY1 80
-#define THUMB_BG_GRAY2 180
-#define THUMB_BG_CECK_SIZE 8
-
 
 /* --------------------------------
  * p_gap_thumb_init
@@ -154,45 +150,6 @@ p_gap_filename_to_uri(const char *filename)
 
 
 
-
-/* ------------------------
- * p_alloc_xvpics_thumbname
- * ------------------------
- *   return the thumbnail name (in .xvpics subdir)
- *   for the given filename
- */
-char *
-p_alloc_xvpics_thumbname(char *name)
-{
-  int   l_len;
-  int   l_len2;
-  int   l_idx;
-  char *l_str;
-  
-  if(name == NULL)
-  {
-    return(g_strdup("\0"));
-  }
-
-  l_len = strlen(name);
-  l_len2 = l_len + 10;
-  l_str = g_malloc(l_len2);
-  strcpy(l_str, name);
-  if(l_len > 0)
-  {
-     for(l_idx = l_len -1; l_idx > 0; l_idx--)
-     {
-        if((name[l_idx] == G_DIR_SEPARATOR) || (name[l_idx] == DIR_ROOT))
-        {
-           l_idx++;
-           break;
-        }
-     }
-     g_snprintf(&l_str[l_idx], l_len2 - l_idx, ".xvpics%s%s", G_DIR_SEPARATOR_S, &name[l_idx]);      
-  }
-  if(gap_debug) printf("p_alloc_xvpics_thumbname: thumbname=%s:\n", l_str );
-  return(l_str);
-}  /* end p_alloc_xvpics_thumbname */
 
 
 /* ------------------------------
@@ -448,28 +405,15 @@ gap_thumb_cond_gimp_file_save_thumbnail(gint32 image_id, char* filename)
  * this procedure is usual called immediate after
  * an imagefile was deleted on disc.
  * it removes all thumbnail files for filename
- * both in the old .xvpics standard and in the new PNG standard.
  */
 void
 gap_thumb_file_delete_thumbnail(char *filename)
 {
-  char        *xvpics_thumb;
   gchar       *uri;
   gchar       *png_thumb_full;
 
   if(gap_debug) printf("gap_thumb_file_delete_thumbnail: START :%s\n",filename);
 
-  /* check and remove thumbnail file for old .xvpics standard */  
-  xvpics_thumb = p_alloc_xvpics_thumbname(filename);
-  if(xvpics_thumb)
-  {
-    if(gap_lib_file_exists(xvpics_thumb) == 1) 
-    {  
-       if(gap_debug) fprintf(stderr, "\nDEBUG gap_lib_delete_frame: %s\n", xvpics_thumb);
-       remove(xvpics_thumb);
-    }
-    g_free(xvpics_thumb);
-  }
 
   if(!gap_thumb_initialized)
   {
@@ -524,38 +468,18 @@ gap_thumb_file_delete_thumbnail(char *filename)
  *
  * if thumbnail saving is turned on (in gimprc)
  * the existing thumbnail(s) are copied or renamed to match
- * the destination file for both the old .xvpics and the new PNG standard.
+ * the destination file for the PNG thumbnail standard.
  *
  */
 void
 gap_thumb_file_copy_thumbnail(char *filename_src, char *filename_dst)
 {
-  char          *l_src_xvpics_thumb;
-  char          *l_dst_xvpics_thumb;
-
   if (!gap_thumb_thumbnailsave_is_on())
   {
     return;
   }
 
-  /* check for thumbnail file for old .xvpics standard */  
-  l_src_xvpics_thumb = p_alloc_xvpics_thumbname(filename_src);
-  if(l_src_xvpics_thumb)
-  {
-    if(gap_lib_file_exists(l_src_xvpics_thumb) == 1) 
-    {  
-       l_dst_xvpics_thumb = p_alloc_xvpics_thumbname(filename_dst);
-       if(l_dst_xvpics_thumb)
-       {
-         /* copy the .xvpics thumbnail file */
-         gap_lib_file_copy(l_src_xvpics_thumb, l_dst_xvpics_thumb);
-         g_free(l_dst_xvpics_thumb);
-       }
-    }
-    g_free(l_src_xvpics_thumb);
-  }
-
- /* copy (and update) the PNG thumbnail file(s) */
+  /* copy (and update) the PNG thumbnail file(s) */
   p_copy_png_thumb(filename_src, filename_dst);
       
 }  /* end gap_thumb_file_copy_thumbnail */
@@ -569,35 +493,16 @@ gap_thumb_file_copy_thumbnail(char *filename_src, char *filename_dst)
  *
  * if thumbnail saving is turned on (in gimprc)
  * the existing thumbnail(s) are copied or renamed to match
- * the destination file for both the old .xvpics and the new PNG standard.
+ * the destination file for the PNG thumbnail standard.
  *
  * The Old Thumnail(s) are deleted (unconditional)
  */
 void
 gap_thumb_file_rename_thumbnail(char *filename_src, char *filename_dst)
 {
-  char          *l_src_xvpics_thumb;
-  char          *l_dst_xvpics_thumb;
 
   if (gap_thumb_thumbnailsave_is_on())
   {
-    /* check for thumbnail file for old .xvpics standard */  
-    l_src_xvpics_thumb = p_alloc_xvpics_thumbname(filename_src);
-    if(l_src_xvpics_thumb)
-    {
-      if(gap_lib_file_exists(l_src_xvpics_thumb) == 1) 
-      {  
-         l_dst_xvpics_thumb = p_alloc_xvpics_thumbname(filename_dst);
-         if(l_dst_xvpics_thumb)
-         {
-           /* rename the .xvpics thumbnail file */
-           rename(l_src_xvpics_thumb, l_dst_xvpics_thumb);
-           g_free(l_dst_xvpics_thumb);
-         }
-      }
-      g_free(l_src_xvpics_thumb);
-    }
-    
     /* copy (and update) the PNG thumbnail file(s) */
     p_copy_png_thumb(filename_src, filename_dst);
   }
@@ -607,14 +512,10 @@ gap_thumb_file_rename_thumbnail(char *filename_src, char *filename_dst)
 }  /* end gap_thumb_file_rename_thumbnail */
 
 
-/* -----------------------------
- * gap_thumb_file_load_thumbnail
- * -----------------------------
- * load thumbnail data as RGB data
- * 1.) try direct load PNG thumbnail files as GDK pixbuf data via libgimpthumb
- * 2.) try the GIMP PDB procedure gimp_file_load_thumbnail
- *       just for old .xvpics thumbnail support
- *       the PDB Procedure always delivers RGB data (th_bpp == 3)
+/* ---------------------------------------
+ * gap_thumb_file_load_pixbuf_thumbnail
+ * ---------------------------------------
+ * load thumbnail data as GdkPixbuf data
  *
  * IN: filename of the image (whos thumbnail is to load)
  *
@@ -623,41 +524,31 @@ gap_thumb_file_rename_thumbnail(char *filename_src, char *filename_dst)
  *                            for the case that both sizes are available.
  *                            The values for width and height of the thumbnaildata
  *                            are returned in th_width, th_height
- * I/O: th_bpp               If a PNG Thumbnail is available the returned th_data
- *                            can have an alpha channel. (th_bpp == 4)
- *                            The caller can set th_bpp to a value of 3
- *                            to force th_data to RGB. (in that case the alpha
- *                            channel is removed, and transparent parts are replaced
- *                            by the GIMP typical check board backgrond).
- *                            if the caller sets *th_bpp to a value of 4 the returned
- *                            data may have alpha (depending on the thumbnail filedata)
+ * OUT: th_bpp               bytes per pixel
  *                            The returned value in th_bpp tells the caller
  *                            how many bytes per pixels are used in the returned th_data buffer. 
- * OUT: th_data_count       The total number of bytes in the returned th_data buffer. 
- * OUT: th_data             The returned pixeldata buffer.
+ *                             (gimp-2.0 PNG Thumbnails usually have th_bpp==4)
+ * RET: pixbuf              The returned GdkPixbuf structure.
+ *                            the caller is responsible to free the returned Pixbuf
+ *                            by calling g_object_unref(pixbuf)
  *
- * allow to recieve 
- *                            and the caller allows the returned allow the caller must supply a                            
  */
 
-gboolean
-gap_thumb_file_load_thumbnail(char* filename, gint32 *th_width, gint32 *th_height,
-                           gint32 *th_data_count, gint32 *th_bpp, unsigned char **th_data)
+GdkPixbuf *
+gap_thumb_file_load_pixbuf_thumbnail(char* filename
+                                    , gint32 *th_width
+				    , gint32 *th_height
+                                    , gint32 *th_bpp)
 {
-  static char     *l_called_proc = "gimp_file_load_thumbnail";
-
-
   GimpThumbnail *thumbnail;
-  GdkPixbuf          *pixbuf     = NULL;
+  GdkPixbuf          *pixbuf;
   GError             *error = NULL;
   GimpThumbSize       wanted_size;
-  gboolean            rc;
 
-  if(gap_debug) printf("gap_thumb_file_load_thumbnail:  %s\n", filename);
+  if(gap_debug) printf("gap_thumb_file_load_pixbuf_thumbnail:  %s\n", filename);
 
-  *th_data = NULL;
-  rc = FALSE;
-
+  pixbuf = NULL;
+  
   if(!gap_thumb_initialized)
   {
     p_gap_thumb_init();
@@ -687,12 +578,13 @@ gap_thumb_file_load_thumbnail(char* filename, gint32 *th_width, gint32 *th_heigh
       width = gdk_pixbuf_get_width(pixbuf);
       height = gdk_pixbuf_get_height(pixbuf);
       nchannels = gdk_pixbuf_get_n_channels(pixbuf);
-      pix_data = gdk_pixbuf_get_pixels(pixbuf);
-      has_alpha = gdk_pixbuf_get_has_alpha(pixbuf);
-      rowstride = gdk_pixbuf_get_rowstride(pixbuf);
 
       if(gap_debug)
       {
+        pix_data = gdk_pixbuf_get_pixels(pixbuf);
+        has_alpha = gdk_pixbuf_get_has_alpha(pixbuf);
+        rowstride = gdk_pixbuf_get_rowstride(pixbuf);
+
 	printf("gap_thumb_file_load_thumbnail:\n");
 	printf(" width: %d\n", (int)width );
 	printf(" height: %d\n", (int)height );
@@ -704,134 +596,90 @@ gap_thumb_file_load_thumbnail(char* filename, gint32 *th_width, gint32 *th_heigh
 
       *th_width = width;
       *th_height = height;
+      *th_bpp = nchannels;
 
-      /* check if we have RGB or RGBA pixeldata,
-       * (Note: GIMP-2.0 uses always RGBA for the PNG thumbnails, even for imagetype GRAY)
-       */
-      if(pix_data)
-      {
-        if ((nchannels == 4) && (*th_bpp == 3))
-	{
-	  register guchar *src;
-	  register guchar *dest;
-	  register guchar  alpha;
-	  gint   row, col;
-	  gint     ii;
-	  
-
-          /* Flatten alpha channel, bacause the caller wants just RGB thumbnail data */
-          *th_bpp = 3;
-          *th_data_count =  *th_bpp * width * height;
-	  
-          *th_data = g_malloc(*th_data_count);
-	  dest = *th_data;
-          src = pix_data;
-	  for(row=0; row < height; row++)
-	  {
-            if ((row / THUMB_BG_CECK_SIZE) & 1) { ii = 0;}
-            else                            { ii = THUMB_BG_CECK_SIZE; }
-	    
-	    for(col=0; col < width; col++)
-	    {
-	      alpha = src[3];
-	      if(alpha == 255)
-	      {
-        	    *(dest++) = src[0];
-        	    *(dest++) = src[1];
-        	    *(dest++) = src[2];
-	      }
-	      else
-	      {
-                if(((col+ii) / THUMB_BG_CECK_SIZE) & 1)
-		{
-		  if(alpha ==0)
-		  {
-        	    *(dest++) = THUMB_BG_GRAY1;
-        	    *(dest++) = THUMB_BG_GRAY1;
-        	    *(dest++) = THUMB_BG_GRAY1;
-		  }
-		  else
-		  {
-        	    *(dest++) = MIX_CHANNEL (THUMB_BG_GRAY1, src[0], alpha);
-        	    *(dest++) = MIX_CHANNEL (THUMB_BG_GRAY1, src[1], alpha);
-        	    *(dest++) = MIX_CHANNEL (THUMB_BG_GRAY1, src[2], alpha);
-		  }
-		}
-		else
-		{
-		  if(alpha ==0)
-		  {
-        	    *(dest++) = THUMB_BG_GRAY2;
-        	    *(dest++) = THUMB_BG_GRAY2;
-        	    *(dest++) = THUMB_BG_GRAY2;
-		  }
-		  else
-		  {
-        	    *(dest++) = MIX_CHANNEL (THUMB_BG_GRAY2, src[0], alpha);
-        	    *(dest++) = MIX_CHANNEL (THUMB_BG_GRAY2, src[1], alpha);
-        	    *(dest++) = MIX_CHANNEL (THUMB_BG_GRAY2, src[2], alpha);
-		  }
-		}
-		
-		
-	      }
-	      src += nchannels;
-	      
-	    }
-	  }
-	  rc = TRUE; /* OK */
- 	}
-	else
-	{
-	  if ((nchannels == 3) || (nchannels == 4))
-	  {
-            *th_bpp = nchannels;
-            *th_data_count =  *th_bpp * width * height;
-            *th_data = g_malloc(*th_data_count);
-	    memcpy(*th_data, pix_data, *th_data_count);
-	    rc = TRUE; /* OK */
-	  }
-	}
-      }
-
-      g_object_unref(pixbuf);       
     }
     g_free(thumbnail);
   }
 
-  if(!rc)
+  return (pixbuf);
+
+}	/* end gap_thumb_file_load_pixbuf_thumbnail */
+
+/* -----------------------------
+ * gap_thumb_file_load_thumbnail
+ * -----------------------------
+ * load thumbnail data as RGB data
+ * from PNG thumbnail files
+ *
+ * IN: filename of the image (whos thumbnail is to load)
+ *
+ * I/O: th_width, th_height  as hint what thumbnail size to load 
+ *                            (normal == 128 or large == 256)
+ *                            for the case that both sizes are available.
+ *                            The values for width and height of the thumbnaildata
+ *                            are returned in th_width, th_height
+ * OUT: th_bpp               bytes per pixel
+ *                            The returned value in th_bpp tells the caller
+ *                            how many bytes per pixels are used in the returned th_data buffer. 
+ *                             (gimp-2.0 PNG Thumbnails usually have th_bpp==4)
+ * OUT: th_data_count       The total number of bytes in the returned th_data buffer. 
+ * OUT: th_data             The returned pixeldata buffer.
+ *
+ */
+
+gboolean
+gap_thumb_file_load_thumbnail(char* filename, gint32 *th_width, gint32 *th_height,
+                           gint32 *th_data_count, gint32 *th_bpp, unsigned char **th_data)
+{
+  GdkPixbuf          *pixbuf     = NULL;
+  GError             *error = NULL;
+  GimpThumbSize       wanted_size;
+  gboolean            rc;
+
+  if(gap_debug) printf("gap_thumb_file_load_thumbnail:  %s\n", filename);
+
+  *th_data = NULL;
+  rc = FALSE;
+
+  pixbuf = gap_thumb_file_load_pixbuf_thumbnail(filename
+                                    , th_width
+				    , th_height
+                                    , th_bpp);
+
+  if(pixbuf)
   {
-    GimpParam       *return_vals;
-    int              nreturn_vals;
+    int nchannels;
+    int rowstride;
+    int width;
+    int height;
+    guchar *pix_data;
 
-    /* start a 2.nd try to load thumbnail via GIMP PDB
-     * this is slower, but also supports the old .xvpics
-     * thumbnail style
+    width = gdk_pixbuf_get_width(pixbuf);
+    height = gdk_pixbuf_get_height(pixbuf);
+    nchannels = gdk_pixbuf_get_n_channels(pixbuf);
+    pix_data = gdk_pixbuf_get_pixels(pixbuf);
+    rowstride = gdk_pixbuf_get_rowstride(pixbuf);
+
+
+    *th_width = width;
+    *th_height = height;
+
+    /* check if we have RGB or RGBA pixeldata,
+     * (Note: GIMP-2.0 uses always RGBA for the PNG thumbnails, even for imagetype GRAY)
      */
-
-    /*if(gap_debug)*/
+    if(pix_data)
     {
-       printf("gap_thumb_file_load_thumbnail: 2-nd TRY via PDB\n");
+      if ((nchannels == 3) || (nchannels == 4))
+      {
+        *th_data_count =  rowstride * height;
+        *th_data = g_malloc(*th_data_count);
+	memcpy(*th_data, pix_data, *th_data_count);
+	rc = TRUE; /* OK */
+      }
     }
 
-    return_vals = gimp_run_procedure (l_called_proc,
-                                  &nreturn_vals,
- 				  GIMP_PDB_STRING,    filename,
-                                  GIMP_PDB_END);
-
-    if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
-    {
-       *th_width = return_vals[1].data.d_int32;
-       *th_height = return_vals[2].data.d_int32;
-       *th_data_count = return_vals[3].data.d_int32;
-       *th_data = (unsigned char *)return_vals[4].data.d_int8array;
-       *th_bpp = 3;  /* always fixed to 3 when using the PDB call */
-       rc = TRUE; /* OK */
-    }
-    else
-    {
-      if(gap_debug) printf("GAP: Error: PDB call of %s failed\n", l_called_proc);
-    }
+    g_object_unref(pixbuf);       
   }
 
   return (rc);

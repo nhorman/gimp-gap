@@ -1,3 +1,71 @@
+2004-01-22  Wolfgang Hofer <hof@gimp.org>
+	- removed xvpics support
+	- added pixbuf support for rendering of the GAP preview widget.
+	   Two variants of gap_pview_render_from_pixbuf are implemented.
+
+	   with 
+	     ./autogen.sh --enable-gdkpixbuf-pview
+	     (calls ./configure --enable-gdkpixbuf-pview)
+	     
+	   you may compile gap_pview_da.c to use the GDK-pixbuf
+	   procedures for scaling 
+	   (may be of interest if your machine has GDK
+	    supported hardware acceleration
+	    but i dont know if this will speed up thumbnailbased playback)
+	   
+	   Here are the results of my performance Test:
+	       Environment:
+	         Linux 2.4.20, Pentium IV 2600 MHZ Cpu, 1GB Ram
+		 nVidia Gforce4 Ti 4200 
+	   
+	       Player Settings:
+		 Size: tested with square frames 128, 256, 512 pixel
+		 Loop: On
+		 UseThumbnails: On
+		 ExactTiming: On
+		 NO Audioplayback
+
+	       Increase Speed until the Player prints out the text:
+	       "DROP (SKIP) frame" to stdout.
+
+
+	       GAP-internal Scaling:                         
+	       Widget Size: 512x512   82 frames/sec
+	       Widget Size: 256x256  136 frames/sec
+	       Widget Size: 128x128  180 frames/sec    (1:1)
+
+	       GDK pixbuf Scaling with GDK_INTERP_NEAREST
+	       (configured with --enable-gdkpixbuf
+	        compiled with -DGAP_PVIEW_USE_GDK_PIXBUF_RENDERING )
+	       Widget Size: 512x512   37 frames/sec
+	       Widget Size: 256x256   98 frames/sec
+	       Widget Size: 128x128  160 frames/sec    (1:1)
+	
+	* configure.in
+	* gap/gap_lib.c
+        * gap/gap_thumbnail.c
+	* gap/gap_pdb_calls.c [.h]
+	* gap/gap_pview_da.c [.h]
+        * gap/gap_player_dialog.c
+	* gap/gap_navigator_dialog.c
+	
+2004-01-21  Wolfgang Hofer <hof@gimp.org>
+	fixed some typo's (that were repoted in #132030)
+
+	* gap/gap_mod_layer.c
+	* gap/gap_mpege.c
+	* gap/gap_range_ops.c
+	* gap/gap_wr_opacity.c
+	
+2004-01-19  Wolfgang Hofer <hof@gimp.org>
+	bugfix: in Playback Dialog
+	callback procedures for the player's spinbutton widgets
+	(from_spinbutton, to_spinbutton and framenr_spinbutton ...)
+	must connect to "value_changed" rather than "changed" signal
+	to immediate accept the values typed in by keyboard.
+	
+        * gap/gap_player_dialog.c
+
 2004-01-19  Sven Neumann  <sven@gimp.org>
 
 	* configure.in: fixed installation path for plug-ins and scripts
@@ -9,7 +77,7 @@
 
 	* configure.in
 	* gap/Makefile.am: fixed libgimpthumb issues and some other
-	oddities that Wolfgang as workarounds.
+	oddities that Wolfgang did as workarounds.
 
 2004-01-17  Wolfgang Hofer <hof@gimp.org>
 

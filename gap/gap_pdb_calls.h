@@ -21,6 +21,7 @@
  */
 
 /* revision history:
+ * version 1.3.25a; 2004/01/20  hof: removed gap_pdb_gimp_file_load_thumbnail
  * version 1.3.14b; 2003/06/03  hof: gboolean retcode for thumbnail procedures
  * version 1.3.14a; 2003/05/24  hof: moved vin Procedures to gap_vin module
  * version 1.3.5a;  2002/04/20  hof: gap_pdb_gimp_layer_new_from_drawable. (removed set_drabale)
@@ -47,7 +48,6 @@ gboolean gap_pdb_gimp_displays_reconnect(gint32 old_image_id, gint32 new_image_i
 gint32   gap_pdb_gimp_layer_new_from_drawable(gint32 drawable_id, gint32 dst_image_id);
 
 gboolean   gap_pdb_gimp_file_save_thumbnail(gint32 image_id, char* filename);
-gboolean   gap_pdb_gimp_file_load_thumbnail(char* filename, gint32 *th_width, gint32 *th_height, gint32 *th_data_count, unsigned char **th_data);
 
 gboolean   gap_pdb_gimp_image_thumbnail(gint32 image_id, gint32 width, gint32 height,
                               gint32 *th_width, gint32 *th_height, gint32 *th_bpp,

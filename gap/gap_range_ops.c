@@ -32,6 +32,7 @@
  */
 
 /* revision history
+ * 1.3.25a; 2004/01/21   hof: message text fixes (# 132030)
  * 1.3.20d; 2003/10/09   hof: sourcecode cleanup,
  *                            extended p_frames_to_multilayer to handle selected regions
  * 1.3.17b; 2003/07/31   hof: message text fixes for translators (# 118392)
@@ -298,7 +299,7 @@ p_range_dialog(GapAnimInfo *ainfo_ptr,
 
   gap_arr_arg_init(&argv[2], GAP_ARR_WGT_INT_PAIR);
   argv[2].label_txt = _("Layerstack:");
-  argv[2].help_txt  = _("Layerstack postition where 0 is the top layer");
+  argv[2].help_txt  = _("Layerstack position where 0 is the top layer");
   argv[2].constraint = FALSE;
   argv[2].int_min   = 0;
   argv[2].int_max   = 99;
@@ -366,7 +367,7 @@ p_convert_indexed_dialog(gint32 *dest_colors, gint32 *dest_dither,
 
   gap_arr_arg_init(&argv[1], GAP_ARR_WGT_TEXT);
   argv[1].label_txt = _("Custom Palette");
-  argv[1].help_txt  = _("Name of a cutom palette (ignored if palette type is not custom)");
+  argv[1].help_txt  = _("Name of a custom palette (ignored if palette type is not custom)");
   argv[1].text_buf_len = len_palette;
   argv[1].text_buf_ret = palette;
 
@@ -504,7 +505,7 @@ p_convert_dialog(GapAnimInfo *ainfo_ptr,
                         "Please note that fileformats differ in capabilities to store informations for "
 			"multiple layers and other things."
 			"Some fileformats may require converting to another imagetype "
-			"and/or falttening the frames.");
+			"and/or flattening the frames.");
   argv[4].text_buf_len = len_ext;
   argv[4].text_buf_ret = extension;
 
@@ -513,7 +514,7 @@ p_convert_dialog(GapAnimInfo *ainfo_ptr,
   argv[5].label_txt = _("Imagetype:");
   argv[5].help_txt  = _("Convert to another imagetype, or keep imagetype as it is. "
                         "Most fileformats can't handle all types and may require a conversion."
-			"Example: GIF can not handle RGB and requires conert to indexed imagetype.");
+			"Example: GIF can not handle RGB and requires convert to indexed imagetype.");
   argv[5].radio_argc  = 4;
   argv[5].radio_argv = radio_args;
   argv[5].radio_ret  = 0;

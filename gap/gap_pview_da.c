@@ -23,6 +23,7 @@
  */
 
 /* revision history:
+ * version 1.3.25a; 2004/01/22  hof: added gap_pview_render_from_pixbuf 
  * version 1.3.24a; 2004/01/17  hof: speed up gap_pview_render_from_buf 
  *                                   faster rendering of fully opaque pixels
  *                                   for buffers with alpha channel
@@ -50,6 +51,9 @@ extern int gap_debug;  /* 1 == print debug infos , 0 dont print debug infos */
 #define PREVIEW_BG_GRAY1 80
 #define PREVIEW_BG_GRAY2 180
 
+#define PREVIEW_BG_GRAY1_GDK 0x505050
+#define PREVIEW_BG_GRAY2_GDK 0xb4b4b4
+
 /* ------------------------------
  * gap_pview_reset
  * ------------------------------
@@ -61,6 +65,7 @@ gap_pview_reset(GapPView *pv_ptr)
   if(pv_ptr->src_col) g_free(pv_ptr->src_col);
   if(pv_ptr->pv_area_data)  g_free(pv_ptr->pv_area_data);
   if(pv_ptr->pixmap)        g_object_unref(pv_ptr->pixmap);
+  if(pv_ptr->pixbuf)        g_object_unref(pv_ptr->pixbuf);
 
   pv_ptr->src_col = NULL;
   pv_ptr->pv_area_data = NULL;
@@ -68,6 +73,10 @@ gap_pview_reset(GapPView *pv_ptr)
   pv_ptr->src_bpp = 0;
   pv_ptr->src_rowstride = 0;
   pv_ptr->use_pixmap_repaint = FALSE;
+  pv_ptr->use_pixbuf_repaint = FALSE;
+  pv_ptr->pixmap = NULL;
+  pv_ptr->pixbuf = NULL;
+  
 } /* end gap_pview_reset */
 
 
@@ -127,7 +136,9 @@ gap_pview_new(gint pv_width, gint pv_height, gint pv_check_size, GtkWidget *aspe
   pv_ptr->aspect_frame = aspect_frame;
   gap_pview_set_size(pv_ptr, pv_width, pv_height, pv_check_size);
   pv_ptr->use_pixmap_repaint = FALSE;
+  pv_ptr->use_pixbuf_repaint = FALSE;
   pv_ptr->pixmap = NULL;
+  pv_ptr->pixbuf = NULL;
 
   return(pv_ptr);
 }  /* end gap_pview_new */
@@ -143,6 +154,28 @@ gap_pview_repaint(GapPView *pv_ptr)
   if(pv_ptr == NULL) { return; }
   if(pv_ptr->da_widget == NULL) { return; }
   if(pv_ptr->da_widget->window == NULL) { return; }
+
+  if((pv_ptr->pixbuf != NULL)
+  && (pv_ptr->use_pixbuf_repaint))
+  {
+    gdk_draw_pixbuf(
+                     pv_ptr->da_widget->window
+		   , pv_ptr->da_widget->style->white_gc
+                   , pv_ptr->pixbuf
+                   , 0                         /*  gint src_x  */
+                   , 0                         /*  gint src_y  */
+                   , 0                         /*  gint dest_x */
+                   , 0                         /*  gint dest_y */
+                   , pv_ptr->pv_width
+                   , pv_ptr->pv_height
+                   , GDK_RGB_DITHER_NORMAL
+                   , 0                         /* gint x_dither_offset */
+                   , 0                         /* gint y_dither_offset */
+		   );
+    return;
+  }
+  
+  
   if((pv_ptr->pv_area_data != NULL)
   && (!pv_ptr->use_pixmap_repaint))
   {
@@ -223,6 +256,7 @@ gap_pview_render_from_buf (GapPView *pv_ptr
    * to use the pv_area_data rather than the pixmap for refresh
    */
   pv_ptr->use_pixmap_repaint = FALSE;
+  pv_ptr->use_pixbuf_repaint = FALSE;
 
   /* check for col and area_data buffers (allocate if needed) */
   if ((pv_ptr->src_col == NULL)
@@ -374,8 +408,12 @@ gap_pview_render_from_buf (GapPView *pv_ptr
         {
           src = &src_row[ pv_ptr->src_col[col] ];
           alpha = src[ofs_alpha];
-	  if(alpha == 255)
+	  if(alpha > 244)
 	  {
+	    /* copy full (or nearly full opaque) pixels 1:1
+	     * without MIXING with checkerboard background.
+	     * (speeds up rendering of opaque pixels)
+	     */
             *(dest++) = src[0];
             *(dest++) = src[ofs_green];
             *(dest++) = src[ofs_blue];
@@ -384,15 +422,33 @@ gap_pview_render_from_buf (GapPView *pv_ptr
 	  {
             if(((col+ii) / pv_ptr->pv_check_size) & 1)
             {
-              *(dest++) = MIX_CHANNEL (PREVIEW_BG_GRAY1, src[0], alpha);
-              *(dest++) = MIX_CHANNEL (PREVIEW_BG_GRAY1, src[ofs_green], alpha);
-              *(dest++) = MIX_CHANNEL (PREVIEW_BG_GRAY1, src[ofs_blue], alpha);
+	      if(alpha < 10)
+	      {
+        	*(dest++) = PREVIEW_BG_GRAY1;
+        	*(dest++) = PREVIEW_BG_GRAY1;
+        	*(dest++) = PREVIEW_BG_GRAY1;
+	      }
+	      else
+	      {
+        	*(dest++) = MIX_CHANNEL (PREVIEW_BG_GRAY1, src[0], alpha);
+        	*(dest++) = MIX_CHANNEL (PREVIEW_BG_GRAY1, src[ofs_green], alpha);
+        	*(dest++) = MIX_CHANNEL (PREVIEW_BG_GRAY1, src[ofs_blue], alpha);
+	      }
             }
             else
             {
-              *(dest++) = MIX_CHANNEL (PREVIEW_BG_GRAY2, src[0], alpha);
-              *(dest++) = MIX_CHANNEL (PREVIEW_BG_GRAY2, src[ofs_green], alpha);
-              *(dest++) = MIX_CHANNEL (PREVIEW_BG_GRAY2, src[ofs_blue], alpha);
+	      if(alpha < 10)
+	      {
+        	*(dest++) = PREVIEW_BG_GRAY2;
+        	*(dest++) = PREVIEW_BG_GRAY2;
+        	*(dest++) = PREVIEW_BG_GRAY2;
+	      }
+	      else
+	      {
+                *(dest++) = MIX_CHANNEL (PREVIEW_BG_GRAY2, src[0], alpha);
+                *(dest++) = MIX_CHANNEL (PREVIEW_BG_GRAY2, src[ofs_green], alpha);
+                *(dest++) = MIX_CHANNEL (PREVIEW_BG_GRAY2, src[ofs_blue], alpha);
+	      }
             }
 	  }
         }
@@ -522,6 +578,7 @@ gap_pview_render_default_icon(GapPView   *pv_ptr)
    * to use the pixmap rather than pv_area_data for refresh
    */
   pv_ptr->use_pixmap_repaint = TRUE;
+  pv_ptr->use_pixbuf_repaint = FALSE;
   
   if(pv_ptr->pixmap)
   {
@@ -605,7 +662,165 @@ gap_pview_render_default_icon(GapPView   *pv_ptr)
 }  /* end gap_pview_render_default_icon */
 
 
+#ifdef GAP_PVIEW_USE_GDK_PIXBUF_RENDERING
 
+/* ------------------------------
+ * gap_pview_render_from_pixbuf (slow)
+ * ------------------------------
+ * render drawing_area widget from src_pixbuf buffer
+ * scaling and flattening against checkerboard background
+ * is done implicite using GDK-pixbuf procedures
+ *            
+ * Thumbnails at size 128 rendered to Widget Size 256x256 pixels
+ * at my Pentium IV 2600 MHZ
+ * can be Played at Speed of  98 Frames/sec without dropping frames.
+ *
+ * The other Implementation without GDK-pixbuf procedures
+ * is faster (at least on my machine), therefore GAP_PVIEW_USE_GDK_PIXBUF_RENDERING
+ * is NOT defined per default.
+ */
+void
+gap_pview_render_from_pixbuf (GapPView *pv_ptr, GdkPixbuf *src_pixbuf)
+{
+  static int l_checksize_tab[17] = { 2, 4, 8, 8, 16, 16, 16, 32, 32, 32, 32, 32, 32, 64, 64, 64, 64 };
+  int l_check_size;
 
+  /* printf("gap_pview_render_from_pixbuf --- USE GDK-PIXBUF procedures\n"); */
+  
+  if(pv_ptr == NULL) { return; }
+  if(pv_ptr->da_widget == NULL) { return; }
+  if(pv_ptr->da_widget->window == NULL)
+  { 
+    printf("gap_pview_render_from_pixbuf: drawing_area window pointer is NULL, cant render\n");
+    return ;
+  }
 
+  if(src_pixbuf == NULL)
+  {
+    printf("gap_pview_render_from_pixbuf: src_pixbuf is NULL, cant render\n");
+    return ;
+  }
+
+  /* clear flag to let gap_pview_repaint procedure know
+   * to use the pixbuf rather than pv_area_data or pixmap for refresh
+   */
+  pv_ptr->use_pixmap_repaint = FALSE;
+  pv_ptr->use_pixbuf_repaint = TRUE;
+
+  /* l_check_size must be a power of 2 (using fixed size for 1.st test) */
+  l_check_size = l_checksize_tab[MIN((pv_ptr->pv_check_size >> 2), 8)];
+  if(pv_ptr->pixbuf)
+  {
+    /* free old (refresh) pixbuf if there is one */
+    g_object_unref(pv_ptr->pixbuf);
+  }
+  
+  /* scale and flatten the pixbuf */
+  pv_ptr->pixbuf = gdk_pixbuf_composite_color_simple(
+                	 src_pixbuf
+                      , (int) pv_ptr->pv_width
+                      , (int) pv_ptr->pv_height
+                      , GDK_INTERP_NEAREST
+                      , 255                          /* overall_alpha */
+                      , (int)l_check_size            /* power of 2 required */
+                      , PREVIEW_BG_GRAY1_GDK
+                      , PREVIEW_BG_GRAY2_GDK
+		      );
+  if(gap_debug)
+  {
+    int nchannels;
+    int rowstride;
+    int width;
+    int height;
+    guchar *pix_data;
+    gboolean has_alpha;
+
+    width = gdk_pixbuf_get_width(pv_ptr->pixbuf);
+    height = gdk_pixbuf_get_height(pv_ptr->pixbuf);
+    nchannels = gdk_pixbuf_get_n_channels(pv_ptr->pixbuf);
+    pix_data = gdk_pixbuf_get_pixels(pv_ptr->pixbuf);
+    has_alpha = gdk_pixbuf_get_has_alpha(pv_ptr->pixbuf);
+    rowstride = gdk_pixbuf_get_rowstride(pv_ptr->pixbuf);
+
+    printf("gap_pview_render_from_pixbuf (AFTER SCALE/FLATTEN):\n");
+    printf(" l_check_size: %d (%d)\n", (int)l_check_size, pv_ptr->pv_check_size);
+    printf(" width: %d\n", (int)width );
+    printf(" height: %d\n", (int)height );
+    printf(" nchannels: %d\n", (int)nchannels );
+    printf(" pix_data: %d\n", (int)pix_data );
+    printf(" has_alpha: %d\n", (int)has_alpha );
+    printf(" rowstride: %d\n", (int)rowstride );
+  }
+
+  gdk_draw_pixbuf(
+                     pv_ptr->da_widget->window
+		   , pv_ptr->da_widget->style->white_gc
+                   , pv_ptr->pixbuf
+                   , 0                         /*  gint src_x  */
+                   , 0                         /*  gint src_y  */
+                   , 0                         /*  gint dest_x */
+                   , 0                         /*  gint dest_y */
+                   , pv_ptr->pv_width
+                   , pv_ptr->pv_height
+                   , GDK_RGB_DITHER_NORMAL
+                   , 0                         /* gint x_dither_offset */
+                   , 0                         /* gint y_dither_offset */
+		   );
+}       /* end gap_pview_render_from_pixbuf */
+
+#else
+
+/* ------------------------------
+ * gap_pview_render_from_pixbuf (fast)
+ * ------------------------------
+ * render drawing_area widget from src_pixbuf buffer.
+ * 
+ * scaling and flattening against checkerboard background
+ * is done by calling gap_pview_render_from_buf.
+ *
+ * The scaling in gap_pview_render_from_buf is optimized for speed
+ * especially when both src and dest sizes are the same as in the
+ * previous call.
+ *
+ * 
+ * Thumbnails at size 128 rendered to Widget Size 256x256 pixels
+ * at my Pentium IV 2600 MHZ
+ * can be Played at Speed of  136 Frames/sec without dropping frames
+ *
+ */
+void
+gap_pview_render_from_pixbuf (GapPView *pv_ptr, GdkPixbuf *src_pixbuf)
+{
+  /* printf("gap_pview_render_from_pixbuf >>NO<< USE OF GDK-PIXBUF procedures\n"); */
+
+  if(src_pixbuf == NULL)
+  {
+    printf("gap_pview_render_from_pixbuf: src_pixbuf is NULL, cant render\n");
+    return ;
+  }
+  else
+  {
+    int nchannels;
+    int width;
+    int height;
+    guchar *pix_data;
+
+    width = gdk_pixbuf_get_width(src_pixbuf);
+    height = gdk_pixbuf_get_height(src_pixbuf);
+    nchannels = gdk_pixbuf_get_n_channels(src_pixbuf);
+    pix_data = gdk_pixbuf_get_pixels(src_pixbuf);
+     
+    gap_pview_render_from_buf(pv_ptr
+                             , pix_data
+			     , width
+			     , height
+			     , nchannels
+			     , FALSE                             /* DONT allow_grab_src_data */
+			     );
+  }
+  
+
+}       /* end gap_pview_render_from_pixbuf */
+
+#endif
 
