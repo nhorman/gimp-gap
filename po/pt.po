@@ -10,9 +10,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 2.6\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-11-30 20:13+0000\n"
-"PO-Revision-Date: 2003-11-28 23:50+0000\n"
+"Report-Msgid-Bugs-To: Duarte Loreto <happyguy_pt@hotmail.com>\n"
+"POT-Creation-Date: 2003-12-13 01:29+0000\n"
+"PO-Revision-Date: 2003-12-13 01:35+0000\n"
 "Last-Translator: Duarte Loreto <happyguy_pt@hotmail.com>\n"
 "Language-Team: Portuguese <gnome_pt@yahoogroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -25,7 +25,8 @@ msgid "Font Browser"
 msgstr "Browser Fontes"
 
 #. Button  to invoke filebrowser
-#: gap/gap_arr_dialog.c:536 gap/gap_player_dialog.c:3360
+#: gap/gap_arr_dialog.c:536 gap/gap_fmac_main.c:589
+#: gap/gap_player_dialog.c:3360
 msgid "File Browser"
 msgstr "Browser Ficheiros"
 
@@ -345,26 +346,26 @@ msgid "Renumber Frames 2nd Pass"
 msgstr "Renumerar Frames 2ª Passagem"
 
 #. toggle bluebox
-#: gap/gap_bluebox.c:245 gap/gap_mov_dialog.c:2615
+#: gap/gap_bluebox.c:247 gap/gap_mov_dialog.c:2615
 msgid "Bluebox"
 msgstr "CaixaAzul"
 
 #. the frame
-#: gap/gap_bluebox.c:267
+#: gap/gap_bluebox.c:269
 msgid "Select By Color"
 msgstr "Seleccionar Por Cor"
 
 #. the keycolor label
-#: gap/gap_bluebox.c:282 gap/gap_mov_dialog.c:2631
+#: gap/gap_bluebox.c:284 gap/gap_mov_dialog.c:2631
 msgid "Keycolor:"
 msgstr "Cor chave:"
 
 #. the keycolor button
-#: gap/gap_bluebox.c:288
+#: gap/gap_bluebox.c:290
 msgid "Bluebox Color Picker"
 msgstr "Selector Cores CaixaAzul"
 
-#: gap/gap_bluebox.c:312
+#: gap/gap_bluebox.c:314
 msgid "Alpha Tolerance:"
 msgstr "Tolerância Alfa:"
 
@@ -373,7 +374,7 @@ msgstr "Tolerância Alfa:"
 #. digits
 #. constrain
 #. lower/upper unconstrained
-#: gap/gap_bluebox.c:319
+#: gap/gap_bluebox.c:321
 msgid ""
 "Sharp pixel selection by color with 0.0. Greater values than 0 makes "
 "selection with more or less varaible alpha value depending on difference to "
@@ -383,7 +384,7 @@ msgstr ""
 "originam selecções com mais ou menos valor variável alfa dependendo da "
 "diferença para a cor chave"
 
-#: gap/gap_bluebox.c:331
+#: gap/gap_bluebox.c:333
 msgid "Source Alpha:"
 msgstr "Alfa Origem:"
 
@@ -392,12 +393,12 @@ msgstr "Alfa Origem:"
 #. digits
 #. constrain
 #. lowr/upper unconstrained
-#: gap/gap_bluebox.c:338
+#: gap/gap_bluebox.c:340
 msgid "Affect only pixels with alpha >= source alpha where 1.0 is full opaque"
 msgstr ""
 "Afectar apenas pixeis com alfa >= alfa origem onde 1.0 é completamente opaco"
 
-#: gap/gap_bluebox.c:349
+#: gap/gap_bluebox.c:351
 msgid "Target Alpha:"
 msgstr "Alfa Destino:"
 
@@ -406,22 +407,22 @@ msgstr "Alfa Destino:"
 #. digits
 #. constrain
 #. lowr/upper unconstrained
-#: gap/gap_bluebox.c:356
+#: gap/gap_bluebox.c:358
 msgid ""
 "Set alpha of affected pixel to target alpha where 0.0 is full transparent"
 msgstr ""
 "Definir alfa dos pixeis afectados para o alfa destino onde 0.0 é "
 "completamente transparente"
 
-#: gap/gap_bluebox.c:367
+#: gap/gap_bluebox.c:369
 msgid "Feather Edges:"
 msgstr "Esbater Margens:"
 
-#: gap/gap_bluebox.c:377
+#: gap/gap_bluebox.c:379
 msgid "ON: Feather edges using feather radius"
 msgstr "ACTIVO: Esbater margens utilizando raio de esbatimento"
 
-#: gap/gap_bluebox.c:387
+#: gap/gap_bluebox.c:389
 msgid "Feather Radius:"
 msgstr "Raio Esbatimento:"
 
@@ -430,11 +431,11 @@ msgstr "Raio Esbatimento:"
 #. digits
 #. constrain
 #. lowr/upper unconstrained
-#: gap/gap_bluebox.c:394
+#: gap/gap_bluebox.c:396
 msgid "Feather radius for smoothing the alpha channel"
 msgstr "Raio de esbatimento para suavizar o canal alfa"
 
-#: gap/gap_bluebox.c:404
+#: gap/gap_bluebox.c:406
 msgid "Shrink/Grow:"
 msgstr "Encolher/Crescer:"
 
@@ -443,28 +444,28 @@ msgstr "Encolher/Crescer:"
 #. digits
 #. constrain
 #. lowr/upper unconstrained
-#: gap/gap_bluebox.c:411
+#: gap/gap_bluebox.c:413
 msgid "Grow selection in pixels (use negative values for shrink)"
 msgstr "Crescer selecção em pixeis (utilize valores negativos para encolher)"
 
-#: gap/gap_bluebox.c:420
+#: gap/gap_bluebox.c:422
 msgid "Automatic Preview:"
 msgstr "Antevisão Automática:"
 
-#: gap/gap_bluebox.c:431
+#: gap/gap_bluebox.c:433
 msgid "ON: Keep preview image up to date"
 msgstr "ACTIVA: Manter imagem de antevisão actualizada"
 
 #. button
-#: gap/gap_bluebox.c:440 gap/gap_mov_dialog.c:3803
+#: gap/gap_bluebox.c:442 gap/gap_mov_dialog.c:3803
 msgid "Preview"
 msgstr "Antevisão"
 
-#: gap/gap_bluebox.c:443
+#: gap/gap_bluebox.c:445
 msgid "Show preview as seperate image"
 msgstr "Apresentar antevisão como imagem separada"
 
-#: gap/gap_bluebox.c:451
+#: gap/gap_bluebox.c:453
 msgid "Previewsize:"
 msgstr "Tamanho antevisão:"
 
@@ -473,42 +474,51 @@ msgstr "Tamanho antevisão:"
 #. digits
 #. constrain
 #. lowr/upper unconstrained
-#: gap/gap_bluebox.c:458
+#: gap/gap_bluebox.c:460
 msgid "Size of the preview image in percent of the original"
 msgstr "Tamanho da imagem de antevisão em percentagem da original"
 
-#: gap/gap_bluebox.c:829
+#: gap/gap_bluebox.c:850
 msgid "Threshold Mode:"
 msgstr "Modo Tolerância:"
 
 #. radio button thres_mode RGB
-#: gap/gap_bluebox.c:839
+#: gap/gap_bluebox.c:860
 msgid "RGB"
 msgstr "RGB"
 
-#: gap/gap_bluebox.c:848
+#: gap/gap_bluebox.c:869
 msgid "Apply thresholds in the RGB colormodel"
 msgstr "Aplicar tolerância no modelo de cor RGB"
 
 #. radio button thres_mode HSV
-#: gap/gap_bluebox.c:859
+#: gap/gap_bluebox.c:880
 msgid "HSV"
 msgstr "HSV"
 
-#: gap/gap_bluebox.c:868
+#: gap/gap_bluebox.c:889
 msgid "Apply thresholds in the HSV colormodel"
 msgstr "Aplicar tolerância no modelo de cor HSV"
 
 #. radio button thres_mode VAL
-#: gap/gap_bluebox.c:880
+#: gap/gap_bluebox.c:901
 msgid "VALUE"
 msgstr "VALOR"
 
-#: gap/gap_bluebox.c:889
+#: gap/gap_bluebox.c:910
 msgid "Use single threshold value"
 msgstr "Utilizar valor de tolerância único"
 
-#: gap/gap_bluebox.c:917
+#. radio button thres_mode ALL
+#: gap/gap_bluebox.c:921
+msgid "ALL"
+msgstr "TUDO"
+
+#: gap/gap_bluebox.c:930
+msgid "Use both HSV and RGB threshold values"
+msgstr "Utilizar valores de tolerância HSV e RGB"
+
+#: gap/gap_bluebox.c:956
 msgid "Threshold R:"
 msgstr "Tolerância R:"
 
@@ -517,11 +527,11 @@ msgstr "Tolerância R:"
 #. digits
 #. constrain
 #. lowr/upper unconstrained
-#: gap/gap_bluebox.c:924
+#: gap/gap_bluebox.c:963
 msgid "Threshold for red channel"
 msgstr "Tolerância para canal vermelho"
 
-#: gap/gap_bluebox.c:934
+#: gap/gap_bluebox.c:973
 msgid "Threshold G:"
 msgstr "Tolerância G:"
 
@@ -530,11 +540,11 @@ msgstr "Tolerância G:"
 #. digits
 #. constrain
 #. lowr/upper unconstrained
-#: gap/gap_bluebox.c:941
+#: gap/gap_bluebox.c:980
 msgid "Threshold for green channel"
 msgstr "Tolerância para canal verde"
 
-#: gap/gap_bluebox.c:952
+#: gap/gap_bluebox.c:991
 msgid "Threshold B:"
 msgstr "Tolerância B:"
 
@@ -543,11 +553,11 @@ msgstr "Tolerância B:"
 #. digits
 #. constrain
 #. lowr/upper unconstrained
-#: gap/gap_bluebox.c:959
+#: gap/gap_bluebox.c:998
 msgid "Threshold for blue channel"
 msgstr "Tolerância para canal azul"
 
-#: gap/gap_bluebox.c:981
+#: gap/gap_bluebox.c:1018
 msgid "Threshold H:"
 msgstr "Tolerância H:"
 
@@ -556,11 +566,11 @@ msgstr "Tolerância H:"
 #. digits
 #. constrain
 #. lowr/upper unconstrained
-#: gap/gap_bluebox.c:988
+#: gap/gap_bluebox.c:1025
 msgid "Threshold for hue"
 msgstr "Tolerância para matiz"
 
-#: gap/gap_bluebox.c:998
+#: gap/gap_bluebox.c:1035
 msgid "Threshold S:"
 msgstr "Tolerância S:"
 
@@ -569,11 +579,11 @@ msgstr "Tolerância S:"
 #. digits
 #. constrain
 #. lowr/upper unconstrained
-#: gap/gap_bluebox.c:1005
+#: gap/gap_bluebox.c:1042
 msgid "Threshold for saturation"
 msgstr "Tolerância para saturação"
 
-#: gap/gap_bluebox.c:1016
+#: gap/gap_bluebox.c:1053
 msgid "Threshold V:"
 msgstr "Tolerância V:"
 
@@ -582,11 +592,11 @@ msgstr "Tolerância V:"
 #. digits
 #. constrain
 #. lowr/upper unconstrained
-#: gap/gap_bluebox.c:1023
+#: gap/gap_bluebox.c:1060
 msgid "Threshold for value"
 msgstr "Tolerância para valor"
 
-#: gap/gap_bluebox.c:1045
+#: gap/gap_bluebox.c:1082
 msgid "Threshold:"
 msgstr "Tolerância:"
 
@@ -595,39 +605,39 @@ msgstr "Tolerância:"
 #. digits
 #. constrain
 #. lowr/upper unconstrained
-#: gap/gap_bluebox.c:1052
+#: gap/gap_bluebox.c:1089
 msgid "Common color threshold"
 msgstr "Tolerância cor comum"
 
-#: gap/gap_bluebox.c:1435
+#: gap/gap_bluebox.c:1479
 #, c-format
 msgid "Error: Image '%s' not found"
 msgstr "Erro: Imagem '%s' não foi encontrada"
 
-#: gap/gap_bluebox.c:1443
+#: gap/gap_bluebox.c:1487
 msgid "Error: Bluebox effect operates only on layers"
 msgstr "Erro: Efeito CaixaAzul apenas opera sobre camadas"
 
-#: gap/gap_bluebox.c:1452
+#: gap/gap_bluebox.c:1496
 msgid "Error: Bluebox effect operates only on RGB layers"
 msgstr "Erro: Efeito CaixaAzul apenas opera sobre camadas RGB"
 
-#: gap/gap_bluebox.c:1536
+#: gap/gap_bluebox.c:1580
 msgid "BlueboxPreview.xcf"
 msgstr "AntevisaoCaixaAzul.xcf"
 
-#: gap/gap_bluebox.c:1537
+#: gap/gap_bluebox.c:1581
 msgid "Previewlayer"
 msgstr "Camada antevisão"
 
 #. at 1.st call create a mastercopy of the original layer
 #. * and scale to preview size
 #.
-#: gap/gap_bluebox.c:1566
+#: gap/gap_bluebox.c:1610
 msgid "Masterlayer"
 msgstr "Camada principal"
 
-#: gap/gap_bluebox_main.c:179
+#: gap/gap_bluebox_main.c:180
 msgid "<Image>/Video/Bluebox ..."
 msgstr "<Image>/Vídeo/CaixaAzul ..."
 
@@ -1014,21 +1024,146 @@ msgstr "Aplicar Filtro Animado"
 msgid "Applying filter to all layers..."
 msgstr "A aplicar filtro a todas as camadas..."
 
-#: gap/gap_filter_foreach.c:570
+#: gap/gap_filter_foreach.c:569
 msgid "Select Filter for Animated Apply"
 msgstr "Seleccionar filtro para aplicação animada"
 
-#: gap/gap_filter_foreach.c:571 gap/gap_mod_layer.c:808
+#: gap/gap_filter_foreach.c:570 gap/gap_mod_layer.c:808
 msgid "Apply Constant"
 msgstr "Aplicar Constante"
 
-#: gap/gap_filter_foreach.c:572 gap/gap_mod_layer.c:809
+#: gap/gap_filter_foreach.c:571 gap/gap_mod_layer.c:809
 msgid "Apply Varying"
 msgstr "Aplicar Variante"
 
 #: gap/gap_filter_main.c:126
 msgid "<Image>/Filters/Filter all Layers..."
 msgstr "<Image>/Filtros/Filtrar todas Camadas..."
+
+#: gap/gap_fmac_main.c:205
+msgid "<Image>/Filters/Filtermacro..."
+msgstr "<Image>/Filtros/Macro Filtros..."
+
+#: gap/gap_fmac_main.c:489
+msgid "Select Filtercalls of Current GIMP Session"
+msgstr "Seleccionar Chamadas Filtro da Sessão GIMP Actual"
+
+#. dont use the 1.st action button at all
+#: gap/gap_fmac_main.c:491
+msgid "Add Filter"
+msgstr "Adicionar Filtro"
+
+#: gap/gap_fmac_main.c:545
+msgid "Filter Macro Script"
+msgstr "Script Macro de Filtros"
+
+#. label
+#: gap/gap_fmac_main.c:569
+msgid "Filename:"
+msgstr "Ficheiro:"
+
+#: gap/gap_fmac_main.c:581
+msgid "Name of the filtermacro scriptfile"
+msgstr "Nome do ficheiro de script de macro de filtros"
+
+#: gap/gap_fmac_main.c:591
+msgid "Open filebrowser window to select a filename"
+msgstr "Abrir janela de procura de ficheiro para seleccionar ficheiro"
+
+#: gap/gap_fmac_main.c:618
+msgid "Nr"
+msgstr "Nº"
+
+#: gap/gap_fmac_main.c:624
+msgid "PDB Name"
+msgstr "Nome PDB"
+
+#: gap/gap_fmac_main.c:630
+msgid "Menu Path"
+msgstr "Caminho Menu"
+
+#: gap/gap_fmac_main.c:788
+msgid "** No menu path available **"
+msgstr "** Nenhum caminho de menu disponível **"
+
+#: gap/gap_fmac_main.c:824
+msgid "** Empty **"
+msgstr "** Vazio **"
+
+#: gap/gap_fmac_main.c:833
+msgid "** File is not a filtermacro **"
+msgstr "** Ficheiro não é macro de filtros **"
+
+#. Button Delete All
+#: gap/gap_fmac_main.c:865
+msgid "Delete All"
+msgstr "Apagar Todos"
+
+#: gap/gap_fmac_main.c:869
+msgid "Delete the filtermacro scriptfile"
+msgstr "Apagar o ficheiro de script de macro de filtros"
+
+#. Button Delete
+#: gap/gap_fmac_main.c:878
+msgid "Delete"
+msgstr "Apagar"
+
+#: gap/gap_fmac_main.c:882
+msgid "Delete the selected filtercall"
+msgstr "Apagar as chamadas de filtro seleccionadas"
+
+#. Button Add
+#: gap/gap_fmac_main.c:891
+msgid "Add"
+msgstr "Adicionar"
+
+#: gap/gap_fmac_main.c:895
+msgid ""
+"Open PDB-browser window to add a new filter to the filtermacro scriptfile.\n"
+"Important:\n"
+"The PDB-browser shows only filters that have already been used in the "
+"current session and have setup the internal buffer with the parameter "
+"settings of the last call"
+msgstr ""
+"Abrir janela de procura PDB para adicionar um novo filtro ao ficheiro de "
+"macro de filtros.\n"
+"Importante:\n"
+"A procura PDB apenas mostra filtros que já foram utilizados na sessão actual "
+"e definiram o buffer interno com configurações de parâmetros da última "
+"invocação"
+
+#: gap/gap_fmac_main.c:915 gap/gap_player_dialog.c:4152
+msgid "Close window"
+msgstr "Fechar janela"
+
+#: gap/gap_fmac_main.c:929
+msgid "Apply filtermacro script on current drawable and close window"
+msgstr "Aplicar script de macro de filtro no desenho actual e fechar janela"
+
+#: gap/gap_fmac_main.c:1120
+#, c-format
+msgid ""
+"ERROR: Could not write filtermacro script\n"
+"filename: '%s'\n"
+"%s"
+msgstr ""
+"ERRO: Incapaz de escrever ficheiro de macro de filtro\n"
+"ficheiro: '%s'\n"
+"%s"
+
+#. filesel is already open
+#: gap/gap_fmac_main.c:1140
+msgid "Select Filtermacro Scriptfile"
+msgstr "Seleccionar Ficheiro de Script de Macro de Filtro"
+
+#: gap/gap_fmac_main.c:1414
+#, c-format
+msgid ""
+"Plug-in not available or has wrong type\n"
+"plug-in name: '%s'"
+msgstr ""
+"Plug-in indisponível ou tem o tipo incorrecto\n"
+"nome de plug-in: '%s'"
 
 #: gap/gap_frontends_main.c:130
 msgid "<Image>/Video/Split Video to Frames/Any XANIM readable..."
@@ -1096,87 +1231,87 @@ msgstr ""
 "de vídeo na mesma frame de vídeo simultaneamente.\n"
 "A trancar image_id:%d\n"
 
-#: gap/gap_main.c:599
+#: gap/gap_main.c:600
 msgid "<Image>/Video/Go To/Next Frame"
 msgstr "<Image>/Vídeo/Ir Para/Frame Seguinte"
 
-#: gap/gap_main.c:611
+#: gap/gap_main.c:612
 msgid "<Image>/Video/Go To/Previous Frame"
 msgstr "<Image>/Vídeo/Ir Para/Frame Anterior"
 
-#: gap/gap_main.c:623
+#: gap/gap_main.c:624
 msgid "<Image>/Video/Go To/First Frame"
 msgstr "<Image>/Vídeo/Ir Para/Primeira Frame"
 
-#: gap/gap_main.c:635
+#: gap/gap_main.c:636
 msgid "<Image>/Video/Go To/Last Frame"
 msgstr "<Image>/Vídeo/Ir Para/Última Frame"
 
-#: gap/gap_main.c:647
+#: gap/gap_main.c:648
 msgid "<Image>/Video/Go To/Any Frame..."
 msgstr "<Image>/Vídeo/Ir Para/Qualquer Frame..."
 
-#: gap/gap_main.c:659
+#: gap/gap_main.c:660
 msgid "<Image>/Video/Delete Frames..."
 msgstr "<Image>/Vídeo/Remover Frames..."
 
-#: gap/gap_main.c:671
+#: gap/gap_main.c:672
 msgid "<Image>/Video/Duplicate Frames..."
 msgstr "<Image>/Vídeo/Duplicar Frames..."
 
-#: gap/gap_main.c:688
+#: gap/gap_main.c:689
 msgid "<Image>/Video/Frames Density..."
 msgstr "<Image>/Vídeo/Densidade Frames..."
 
-#: gap/gap_main.c:700
+#: gap/gap_main.c:701
 msgid "<Image>/Video/Exchange Frame..."
 msgstr "<Image>/Vídeo/Trocar Frame..."
 
-#: gap/gap_main.c:712
+#: gap/gap_main.c:713
 msgid "<Image>/Video/Move Path..."
 msgstr "<Image>/Vídeo/Caminho Movimento..."
 
-#: gap/gap_main.c:792
+#: gap/gap_main.c:793
 msgid "<Image>/Video/Frames to Image..."
 msgstr "<Image>/Vídeo/Frames para Imagem..."
 
-#: gap/gap_main.c:804
+#: gap/gap_main.c:805
 msgid "<Image>/Video/Frames Flatten..."
 msgstr "<Image>/Vídeo/Alisar Frames..."
 
-#: gap/gap_main.c:816
+#: gap/gap_main.c:817
 msgid "<Image>/Video/Frames Layer Delete..."
 msgstr "<Image>/Vídeo/Remover Camada Frames..."
 
-#: gap/gap_main.c:840
+#: gap/gap_main.c:841
 msgid "<Image>/Video/Frames Convert..."
 msgstr "<Image>/Vídeo/Converter Frames..."
 
-#: gap/gap_main.c:852
+#: gap/gap_main.c:853
 msgid "<Image>/Video/Frames Resize..."
 msgstr "<Image>/Vídeo/Redimensionar Frames..."
 
-#: gap/gap_main.c:864
+#: gap/gap_main.c:865
 msgid "<Image>/Video/Frames Crop..."
 msgstr "<Image>/Vídeo/Cortar Frames..."
 
-#: gap/gap_main.c:876
+#: gap/gap_main.c:877
 msgid "<Image>/Video/Frames Scale..."
 msgstr "<Image>/Vídeo/Escalar Frames..."
 
-#: gap/gap_main.c:888
+#: gap/gap_main.c:889
 msgid "<Image>/Video/Split Image to Frames..."
 msgstr "<Image>/Vídeo/Dividir Imagem em Frames..."
 
-#: gap/gap_main.c:901
+#: gap/gap_main.c:902
 msgid "<Image>/Video/Frame Sequence Shift..."
 msgstr "<Image>/Vídeo/Transferência Sequência Frames..."
 
-#: gap/gap_main.c:913
+#: gap/gap_main.c:914
 msgid "<Image>/Video/Frames Renumber..."
 msgstr "<Image>/Vídeo/Renumerar Frames..."
 
-#: gap/gap_main.c:925
+#: gap/gap_main.c:926
 msgid "<Image>/Video/Frames Modify..."
 msgstr "<Image>/Vídeo/Modificar Frames..."
 
@@ -3093,7 +3228,7 @@ msgid "Video Navigator"
 msgstr "Navegador Vídeo"
 
 #. set layername
-#: gap/gap_onion_base.c:516
+#: gap/gap_onion_base.c:515
 #, c-format
 msgid "onionskin_%06d"
 msgstr "onionskin_%06d"
@@ -3764,10 +3899,6 @@ msgstr ""
 #: gap/gap_player_dialog.c:4143
 msgid "Start reverse playback"
 msgstr "Iniciar reprodução em inverso"
-
-#: gap/gap_player_dialog.c:4152
-msgid "Close window"
-msgstr "Fechar janela"
 
 #: gap/gap_player_main.c:211
 msgid "<Image>/Video/Playback..."
