@@ -2099,7 +2099,7 @@ p_display_frame(GapPlayerMainGlobalParams *gpp, gint32 framenr)
         l_filename = gap_story_get_filename_from_elem_nr(stb_ret->stb_elem
                                                 , stb_ret->ret_framenr
 	 				       );
-        if(stb_ret->stb_elem->record_type == GAP_STBV_MOVIE)
+        if(stb_ret->stb_elem->record_type == GAP_STBREC_VID_MOVIE)
         {
 	   if(l_filename)
 	   {

@@ -57,6 +57,10 @@ and may crash or deliver unexpected results.
   allows now bidirectional references.
   (refer to frames +n and -n in the same frame)
 
+- Added new functions to modify frames plug-in
+   "Copy layermask from layer above"
+   "Copy layermask from layer below"
+
 -------------------------------
 old news
 -------------------------------

@@ -4,13 +4,16 @@ libexecdir = $(GIMP_PLUGIN_DIR)/plug-ins
 
 scriptdatadir = $(GIMP_DATA_DIR)/scripts
 
+# we depend on libavformat / ibavcodec to build that encoder
+# (without those libs the ffmpeg encoder can not be built at all)
+if ENABLE_GVA_LIBAVFORMAT_SUPPORT
 
 if GAP_VIDEOAPI_SUPPORT
 GAPVIDEOAPI = -L$(top_builddir)/libgapvidapi -lgapvidapi  $(GAPVIDEOAPI_EXTLIBS)
 INC_GAPVIDEOAPI = -I$(top_builddir)/libgapvidapi $(GAPVIDEOAPI_EXTINCS)
 endif
 
-LIBGIMPGAP = -L$(top_builddir)/gap -lgimpgap
+LIBGIMPGAP = -L$(top_builddir)/gap -lgimpgap -lgapstory
 INC_LIBGIMPGAP = -I$(top_builddir)/gap
 
 LIBGAPVIDUTIL  = -L$(top_builddir)/libgapvidutil -lgapvidutil
@@ -50,3 +53,5 @@ LDADD = $(GIMP_LIBS)
 #       (if those libs appear before LIBGAPVIDUTIL the linker can not resolve those references.
 
 gap_vid_enc_ffmpeg_LDADD =  $(GIMP_LIBS) $(LIBGAPVIDUTIL) $(LIBGIMPGAP) $(GAPVIDEOAPI)
+
+endif

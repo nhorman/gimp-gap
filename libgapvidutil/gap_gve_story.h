@@ -39,6 +39,7 @@
 
 #include "libgimp/gimp.h"
 #include "gap_vid_api.h"
+#include "gap_story_file.h"
 
 /* G_DIR_SEPARATOR (is defined in glib.h if you have glib-1.2.0 or later) */
 #ifdef G_OS_WIN32
@@ -59,8 +60,6 @@
 
 #endif /* !G_OS_WIN32 */
 
-
-#define STORYBOARD_MAX_VID_TRACKS 20
 
 /* record keynames in Storyboard files */
 #define STORYBOARD_HEADER                "STORYBOARDFILE"
@@ -279,7 +278,7 @@ typedef struct GapGveStoryVTrackAttrElem
 
 typedef struct GapGveStoryVTrackArray
 {
-  GapGveStoryVTrackAttrElem attr[STORYBOARD_MAX_VID_TRACKS];
+  GapGveStoryVTrackAttrElem attr[GAP_STB_MAX_VID_TRACKS];
   gint32 max_tracknum;
 } GapGveStoryVTrackArray;  /* used for storyboard processing */
 

@@ -24,7 +24,7 @@
  *                                   for the startframes in all MOVIE clips
  *                                   (common list for both storyboard and cliplist)
  *                                   Need define GAP_ENABLE_VIDEOAPI_SUPPORT
- *                                   to handle thumbnails for cliptype GAP_STBV_MOVIE
+ *                                   to handle thumbnails for cliptype GAP_STBREC_VID_MOVIE
  * version 1.3.25a; 2004/02/22  hof: created
  */
 
@@ -573,7 +573,7 @@ p_frame_widget_render (GapStbFrameWidget *fw)
    l_th_width = 128;
    l_th_height = 128;
 
-   if(fw->stb_elem_refptr->record_type == GAP_STBV_MOVIE)
+   if(fw->stb_elem_refptr->record_type == GAP_STBREC_VID_MOVIE)
    {
      guchar *l_th_data;
      /*if(gap_debug) printf("RENDER: p_frame_widget_render MOVIE Thumbnail\n"); */
@@ -747,7 +747,7 @@ p_story_set_range_cb(GapPlayerAddClip *plac_ptr)
 
       if(stb_dst)
       {
-        stb_elem = gap_story_new_elem(GAP_STBV_UNKNOWN);
+        stb_elem = gap_story_new_elem(GAP_STBREC_VID_UNKNOWN);
 	if(stb_elem)
 	{
           gap_story_upd_elem_from_filename(stb_elem, plac_ptr->ainfo_ptr->old_filename);
@@ -758,7 +758,7 @@ p_story_set_range_cb(GapPlayerAddClip *plac_ptr)
 	  {
 	    if(plac_ptr->ainfo_ptr->ainfo_type == GAP_AINFO_MOVIE)
 	    {
-	      stb_elem->record_type = GAP_STBV_MOVIE;
+	      stb_elem->record_type = GAP_STBREC_VID_MOVIE;
 	      stb_elem->seltrack    = plac_ptr->ainfo_ptr->seltrack;
 	      stb_elem->exact_seek  = 1;
 	      stb_elem->delace      = plac_ptr->ainfo_ptr->delace;
@@ -1244,7 +1244,7 @@ p_tabw_add_elem (GapStbTabWidgets *tabw, GapStbMainGlobalParams *sgpp, GapStoryB
   if(tabw == NULL)    { return; }
   if(stb_dst == NULL) { return; }
 
-  stb_elem = gap_story_new_elem(GAP_STBV_IMAGE);
+  stb_elem = gap_story_new_elem(GAP_STBREC_VID_IMAGE);
   /* stb_elem->orig_filename = g_strdup("empty.xcf"); */
   stb_elem->from_frame = 1;
   stb_elem->to_frame = 1;

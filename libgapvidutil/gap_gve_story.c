@@ -1,16 +1,3 @@
-// TODO: p_fetch_string  enable out_keyword
-//       when the parser is extend for named parameters support
-//       the current implementation just accepts parameter names in strings
-//       both in new style   key:value
-//       and old style       value=key
-//       but still requires each parameter on its fixed position
-//  there is a second parser module for STORYBOARD files
-//  in the gimp-gap (2.1.0) sourcetree (gap/gap_story_file.c)
-//  that already can handle named parameters,
-//  (but does not yet support the full level2 syntax)
-//
-//  there are plans to use only this other parser in the future... (hof)
-
 /* gap_gve_story.c
  *
  *  GAP video encoder tool procedures for STORYBOARD file based video encoding
@@ -18,6 +5,8 @@
  */
 
 /*
+ * 2004.09.12  hof  - replaced parser by the newer one from libgapstory.a
+ *                    (the new parser supports named parameters)
  * 2004.07.24  hof  - added step_density parameter
  * 2004.05.17  hof  - integration into gimp-gap project
  *                    Info: gimp-gap has already another storyboard parser module
@@ -84,6 +73,7 @@
 #include "gap_audio_wav.h"
 #include "gap_gve_sox.h"
 #include "gap_vid_api.h"
+#include "gap_story_file.h"
 #include "gap_gve_story.h"
 
 /*************************************************************
@@ -258,34 +248,16 @@ static GapGveStoryFrameRangeElem *  p_new_framerange_element(
                            );
 static void       p_add_frn_list(GapGveStoryVidHandle *vidhand, GapGveStoryFrameRangeElem *frn_elem);
 static void       p_add_aud_list(GapGveStoryVidHandle *vidhand, GapGveStoryAudioRangeElem *aud_elem);
-static void       p_flip_dir_seperators(char *ptr);
-static char *     p_fetch_string(char **scan_ptr
-                     //         ,char **out_keyword
-                     );
-static gboolean   p_num_has_dot(char *ptr);
-static gint32     p_scan_gint32_limit(char *ptr, gint32 default_value, gint32 min, gint32 max, GapGveStoryErrors *sterr);
-static gdouble    p_scan_gdouble_limit(char *ptr, gdouble default_value, gdouble min, gdouble max, GapGveStoryErrors *sterr);
-static gdouble    p_scan_gdouble(char *ptr, gdouble default_value);
-static gint32     p_scan_track(char *ptr, gint32 max_tracknum, GapGveStoryErrors *sterr);
-static gint32     p_scan_fromto(char *ptr, gint32 default_value, GapGveStoryVidHandle *vidhand);
-static gint32     p_scan_gint32_time(char *ptr, gint32 default_value, gint32 min, gint32 max, GapGveStoryVidHandle *vidhand);
-static gdouble    p_scan_gdouble_time(char *ptr, gdouble default_value, gdouble min, gdouble max, GapGveStoryVidHandle *vidhand);
-static gint32     p_scan_pingpong(char *ptr, GapGveStoryErrors *sterr);
 static void       p_set_vtrack_attributes(GapGveStoryFrameRangeElem *frn_elem
                        ,GapGveStoryVTrackArray *vtarr
                       );
-static void       p_parse_storyboard_line(char *storyboard_line
-                      , const char *storyboard_file
-                      , gint32  frame_from
-                      , gint32  frame_to
+static void       p_storyboard_analyze(GapStoryBoard *stb
                       , GapGveStoryVTrackArray *vtarr
                       , GapGveStoryFrameRangeElem *frn_known_list
                       , GapGveStoryVidHandle *vidhand
                       );
 static GapGveStoryFrameRangeElem *  p_framerange_list_from_storyboard(
                            const char *storyboard_file
-                          ,gint32  frame_from
-                          ,gint32  frame_to
                           ,gint32 *frame_count
                           ,GapGveStoryVidHandle *vidhand
                           );
@@ -1047,7 +1019,7 @@ p_find_min_max_vid_tracknumbers(GapGveStoryFrameRangeElem *frn_list
 {
   GapGveStoryFrameRangeElem *frn_elem;
 
-  *lowest_tracknr = STORYBOARD_MAX_VID_TRACKS;
+  *lowest_tracknr = GAP_STB_MAX_VID_TRACKS;
   *highest_tracknr = -1;
 
   for(frn_elem = frn_list; frn_elem != NULL; frn_elem = (GapGveStoryFrameRangeElem *)frn_elem->next)
@@ -1082,7 +1054,7 @@ p_find_min_max_aud_tracknumbers(GapGveStoryAudioRangeElem *aud_list
 {
   GapGveStoryAudioRangeElem *aud_elem;
 
-  *lowest_tracknr = STORYBOARD_MAX_VID_TRACKS;
+  *lowest_tracknr = GAP_STB_MAX_VID_TRACKS;
   *highest_tracknr = -1;
 
   for(aud_elem = aud_list; aud_elem != NULL; aud_elem = (GapGveStoryAudioRangeElem *)aud_elem->next)
@@ -2966,539 +2938,7 @@ p_add_aud_list(GapGveStoryVidHandle *vidhand, GapGveStoryAudioRangeElem *aud_ele
 }  /* end p_add_aud_list */
 
 
-/* ----------------------------------------------------
- * p_flip_dir_separators
- * ----------------------------------------------------
- * Replace all / and \ characters by G_DIR_SEPARATOR
- */
-static void
-p_flip_dir_seperators(char *ptr)
-{
-  while(ptr)
-  {
-    if((*ptr == '\\') || (*ptr == '/'))
-    {
-      *ptr = G_DIR_SEPARATOR;
-    }
-    if(*ptr == '\0')
-    {
-      break;
-    }
-    ptr++;
-  }
-}  /* end p_flip_dir_seperators */
 
-
-// TODO: p_fetch_string  enable out_keyword
-//       when the parser is extend for named parameters support
-/* ----------------------------------------------------
- * p_fetch_string
- * ----------------------------------------------------
- * scan a whitespace terminated word or a string
- * optional enclosed in "double quotes" from a buffer
- * located at *scan_ptr
- * and set *scan_ptr to the character after the scanned string
- *
- * The returned string is the fetched value part of the string
- * without quotes, terminated with \0.
- * if the string has leading or trailing keyword, the keyword
- * is stripped off, and delivered as additional output parameter.
- * - Both the returned string and the out_keyword
- *   must be freed by the  caller after usage.
- * - if the scan_ptr is at end of the line, the returned string
- *   will contain only the terminating \0 byte.
- * Further output:
- *   keyword  (NULL if no keyword is present)
- *   else deliver keyword part that mybe specified in 2 ways:
- *     KEYWORD:valuestring
- *     KEYWORD:"c:\valuestring"
- *     valuestring=KEYWORD       ## this is old deprecated style
- *     if the string has keywords both in new and old style
- *     then ignore the old styled keyword
- */
-static char *
-p_fetch_string(char **scan_ptr
-//              ,char **out_keyword
-              )
-{
-  guint  l_char1_idx;
-  guint  l_start_idx;
-  guint  l_end_idx;
-  gint   l_key1_idx;
-  gint   l_key2_idx;
-  guint  l_len;
-  gulong l_size;
-  guint  l_idx;
-  char *buff;
-  char *keyword;
-  char *ret_string;
-  char l_termchar;
-  gboolean l_enable_end_idx;
-
-  buff = *scan_ptr;
-
-//  *out_keyword = NULL;
-  keyword = NULL;
-
-  /* if(gap_debug) printf("p_fetch_string buff START, buff:%s:\n", buff); */
-
-  /* skip leading whitespaces */
-  for(l_idx=0;l_idx<4000;l_idx++)
-  {
-    if((buff[l_idx] != ' ') && (buff[l_idx] != '\t'))
-    {
-      break;
-    }
-  }
-
-  l_key1_idx = -1;
-  l_key2_idx = -1;
-  l_termchar = ' ';
-  l_char1_idx = l_idx;
-  if (buff[l_idx] == '"')
-  {
-    l_termchar = '"';
-    l_idx++;
-  }
-  l_start_idx = l_idx;
-  l_end_idx   = l_start_idx + 1;
-  l_enable_end_idx = TRUE;
-
-  /* search for end of the string (termchar or newline, tab or zero) */
-  for( ;l_idx<4000;l_idx++)
-  {
-    if((buff[l_idx] == l_termchar)
-    || (buff[l_idx] == '\t')
-    || (buff[l_idx] == '\n')
-    || (buff[l_idx] == '\0')
-    )
-    {
-      /* check if end is already set */
-      if(l_enable_end_idx)
-      {
-        l_end_idx = l_idx;
-        l_enable_end_idx = FALSE;
-      }
-
-      if (buff[l_idx] != '"')
-      {
-        break;
-      }
-      /* continue scann after doublequotes (until EOL or whitespace) */
-      l_termchar = ' ';
-    }
-    if(l_termchar != '"')
-    {
-      if((buff[l_idx] == ':')
-      && (l_key1_idx < 0))
-      {
-        /* have a leading keyword (== named parameter) */
-        l_key1_idx = l_idx;
-        l_len = l_idx - l_char1_idx;
-        l_size = l_len +1;   /* for the \0 byte at end of string */
-
-        keyword = g_malloc(l_size);
-        memcpy(keyword, &buff[l_char1_idx], l_len );
-        keyword[l_len] = '\0';
-
-        l_start_idx = l_idx + 1;
-        if(buff[l_start_idx] == '"')
-        {
-          l_termchar = '"';
-          l_start_idx++;
-          l_idx++;
-        }
-        l_end_idx   = l_start_idx + 1;
-        l_enable_end_idx = TRUE;
-      }
-      if((buff[l_idx] == '=')
-      && (l_key2_idx < 0))
-      {
-        /* have a trailing keyword (== named parameter old deprecated style) */
-        l_key2_idx = l_idx;
-        l_end_idx = l_idx;
-        l_enable_end_idx = FALSE;
-      }
-    }
-  }
-
-  l_len = l_end_idx - l_start_idx;
-  l_size = l_len +1;   /* for the \0 byte at end of string */
-
-  /* copy the string */
-  ret_string = g_malloc(l_size);
-
-  if(ret_string)
-  {
-    if(l_len > 0)
-    {
-      memcpy(ret_string, &buff[l_start_idx], l_len );
-    }
-    ret_string[l_len] = '\0';
-  }
-
-  if((l_key2_idx >= 0)
-  && (keyword == NULL))
-  {
-    /* deliver keyword (old sytle) */
-    l_len = l_idx - (l_key2_idx +1);
-    l_size = l_len +1;   /* for the \0 byte at end of string */
-    keyword = g_malloc(l_size);
-    memcpy(keyword, &buff[l_key2_idx+1], l_len );
-    keyword[l_len] = '\0';
-  }
-
-
-  /* advance scan position */
-  *scan_ptr = &buff[l_idx];
-
-  if(gap_debug)
-  {
-    printf("p_fetch_string:return:%s: start:%d end:%d\n"
-          , ret_string
-          , (int)l_start_idx
-          , (int)l_end_idx
-          );
-    if(keyword)
-    {
-      printf("p_fetch_string: keyword:%s  key1_idx:%d, key2_idx:%d\n"
-          , keyword
-          , (int)l_key1_idx
-          , (int)l_key2_idx
-          );
-    }
-    else
-    {
-      printf("p_fetch_string: keyword: IS NULL  key1_idx:%d, key2_idx:%d\n"
-          , (int)l_key1_idx
-          , (int)l_key2_idx
-          );
-    }
-  }
-
-//  *out_keyword = keyword;
-  if(keyword)
-  {
-    g_free(keyword);
-  }
-  return (ret_string);
-}       /* end p_fetch_string */
-
-
-/* --------------------------------
- * p_num_has_dot
- * --------------------------------
- */
-static gboolean
-p_num_has_dot(char *ptr)
-{
-  while(ptr)
-  {
-     if(*ptr == '.')
-     {
-       return TRUE;
-     }
-     if((*ptr < '0') || (*ptr > '9'))
-     {
-       return FALSE;
-     }
-     ptr++;
-  }
-  return FALSE;
-}  /* end p_num_has_dot */
-
-
-/* --------------------------------
- * p_scan_gint32_limit
- * --------------------------------
- */
-static gint32
-p_scan_gint32_limit(char *ptr, gint32 default_value, gint32 min, gint32 max, GapGveStoryErrors *sterr)
-{
-  char *l_errtxt;
-  char *l_end_ptr;
-  long   l_num;
-
-
-  if(ptr)
-  {
-    if(*ptr != '\0')
-    {
-      l_end_ptr = ptr;
-      l_num = strtol(ptr, &l_end_ptr, 10);
-      if (ptr != l_end_ptr)
-      {
-         if((l_num >= min) && (l_num <= max))
-         {
-           return ((gint32)l_num);
-         }
-      }
-
-      if(sterr)
-      {
-        l_errtxt = g_strdup_printf(_("illegal number: %s (valid range is %d upto %d)\n using default value %d")
-                                  , ptr, (int)min, (int)max, (int)default_value);
-        p_set_stb_warning(sterr, l_errtxt);
-        g_free(l_errtxt);
-      }
-    }
-  }
-  return (default_value);
-}  /* end p_scan_gint32_limit */
-
-
-/* --------------------------------
- * p_scan_gdouble_limit
- * --------------------------------
- */
-static gdouble
-p_scan_gdouble_limit(char *ptr, gdouble default_value, gdouble min, gdouble max, GapGveStoryErrors *sterr)
-{
-  char *l_errtxt;
-  char *l_end_ptr;
-  double l_num;
-
-
-  if(ptr)
-  {
-    if(*ptr != '\0')
-    {
-      l_end_ptr = ptr;
-      l_num = g_ascii_strtod(ptr, &l_end_ptr);
-      if (ptr != l_end_ptr)
-      {
-         if((l_num >= min) && (l_num <= max))
-         {
-           return ((gdouble)l_num);
-         }
-      }
-
-      if(sterr)
-      {
-        l_errtxt = g_strdup_printf(_("Illegal number: %s (valid range is %.3f upto %.3f)\n using default value %.3f")
-                                  , ptr, (float)min, (float)max, (float)default_value);
-        p_set_stb_warning(sterr, l_errtxt);
-        g_free(l_errtxt);
-      }
-    }
-
-  }
-  return (default_value);
-}  /* end p_scan_gdouble_limit */
-
-/* --------------------------------
- * p_scan_gdouble
- * --------------------------------
- */
-static gdouble
-p_scan_gdouble(char *ptr, gdouble default_value)
-{
-  return(p_scan_gdouble_limit(ptr, default_value, -999999.999, 999999.999, NULL));
-}  /* end p_scan_gdouble */
-
-
-/* --------------------------------
- * p_scan_track
- * --------------------------------
- */
-static gint32
-p_scan_track(char *ptr, gint32 max_tracknum, GapGveStoryErrors *sterr)
-{
-  char *l_end_ptr;
-  long   l_num;
-  char *l_errtxt;
-  char *l_illegal;
-
-
-  l_illegal = "(NULL)";
-
-  if(ptr)
-  {
-    l_illegal = ptr;
-    l_end_ptr = ptr;
-    l_num = strtol(ptr, &l_end_ptr, 10);
-    if (ptr != l_end_ptr)
-    {
-       if((l_num >= 0) && (l_num <= max_tracknum))
-       {
-         return ((gint32)l_num);
-       }
-    }
-  }
-
-  l_errtxt = g_strdup_printf(_("illegal tracknumber: %s (valid range is 0 upto %d)\n using default track 0")
-                            , l_illegal, (int)max_tracknum);
-  p_set_stb_warning(sterr, l_errtxt);
-  g_free(l_errtxt);
-
-  return (0);
-}  /* end p_scan_track */
-
-/* --------------------------------
- * p_scan_fromto
- * --------------------------------
- */
-static gint32
-p_scan_fromto(char *ptr, gint32 default_value, GapGveStoryVidHandle *vidhand)
-{
-  char *l_end_ptr;
-  long   l_num;
-  char *l_errtxt;
-  char *l_illegal;
-
-
-  l_illegal = "(NULL)";
-
-  if(ptr)
-  {
-    l_illegal = ptr;
-
-    if ( (strncmp(ptr, "first", strlen("first")) == 0)
-    ||   (strncmp(ptr, "FIRST", strlen("FIRST")) == 0)
-    ||   (strncmp(ptr, "top",   strlen("top")) == 0)
-    ||   (strncmp(ptr, "TOP",   strlen("TOP")) == 0) )
-    {
-      return (0);
-    }
-
-    if ( (strncmp(ptr, "last", strlen("last")) == 0)
-    ||   (strncmp(ptr, "LAST", strlen("LAST")) == 0)
-    ||   (strncmp(ptr, "bot",  strlen("bot")) == 0)
-    ||   (strncmp(ptr, "BOT",  strlen("BOT")) == 0) )
-    {
-      return (999999);
-    }
-
-    l_end_ptr = ptr;
-    if(p_num_has_dot(ptr) == TRUE)
-    {
-      double l_dnum;
-
-      /* unit is considered as secs */
-      l_dnum = g_ascii_strtod(ptr, &l_end_ptr);
-      l_num = round(vidhand->master_framerate * l_dnum);
-    }
-    else
-    {
-      /* unit is considered as frames */
-      l_num = strtol(ptr, &l_end_ptr, 10);
-    }
-    if (ptr != l_end_ptr)
-    {
-       if(l_num >= 0)
-       {
-         return ((gint32)l_num);
-       }
-    }
-  }
-
-  l_errtxt = g_strdup_printf(_("illegal rangenumber: %s\n(valid range is positive number, or one of the keywords: first,last,top,bottom")
-                            , l_illegal);
-  p_set_stb_warning(vidhand->sterr, l_errtxt);
-  g_free(l_errtxt);
-
-  return (default_value);
-}  /* end p_scan_fromto */
-
-
-/* --------------------------------
- * p_scan_gint32_time
- * --------------------------------
- */
-static gint32
-p_scan_gint32_time(char *ptr, gint32 default_value, gint32 min, gint32 max, GapGveStoryVidHandle *vidhand)
-{
-    if(p_num_has_dot(ptr) == TRUE)
-    {
-      double l_dnum;
-      l_dnum = p_scan_gdouble_limit(ptr
-                                   , (gdouble)round(vidhand->master_framerate * default_value)
-                                   , (gdouble)round(vidhand->master_framerate * min)
-                                   , (gdouble)round(vidhand->master_framerate * max)
-                                   , vidhand->sterr
-                                   );
-      return ((gint32)round(vidhand->master_framerate * l_dnum));
-    }
-    else
-    {
-      return(p_scan_gint32_limit(ptr
-                                ,default_value
-                                ,min
-                                ,max
-                                ,vidhand->sterr
-                                ));
-    }
-}  /* end p_scan_gint32_time */
-
-
-
-/* --------------------------------
- * p_scan_gdouble_time
- * --------------------------------
- */
-static gdouble
-p_scan_gdouble_time(char *ptr, gdouble default_value, gdouble min, gdouble max, GapGveStoryVidHandle *vidhand)
-{
-    if(p_num_has_dot(ptr) == TRUE)
-    {
-      double l_dnum;
-      l_dnum = p_scan_gdouble_limit(ptr
-                                   , default_value
-                                   , min
-                                   , max
-                                   , vidhand->sterr
-                                   );
-      return ((gdouble)l_dnum);
-    }
-    else
-    {
-      gint32 l_num;
-      l_num = p_scan_gint32_limit(ptr
-                                ,(gint32)(default_value * vidhand->master_framerate)
-                                ,(gint32)(min           * vidhand->master_framerate)
-                                ,(gint32)(max           * vidhand->master_framerate)
-                                ,vidhand->sterr
-                                );
-       return(l_num / MAX(1,vidhand->master_framerate));
-    }
-}  /* end p_scan_gdouble_time */
-
-
-/* --------------------------------
- * p_scan_pingpong
- * --------------------------------
- * return 1 for normal mode
- * return 2 for pingpong mode
- */
-static gint32
-p_scan_pingpong(char *ptr, GapGveStoryErrors *sterr)
-{
-  char *l_errtxt;
-
-  if(ptr)
-  {
-    if(*ptr != '\0')
-    {
-      if ((strncmp(ptr, "pingpong", strlen("pingpong")) == 0)
-      ||  (strncmp(ptr, "PINGPONG", strlen("PINGPONG")) == 0))
-      {
-        return(2);  /* add range twice (normal + inverted for pingpong mode) */
-      }
-
-      if ((strncmp(ptr, "normal", strlen("normal")) == 0)
-      ||  (strncmp(ptr, "NORMAL", strlen("NORMAL")) == 0))
-      {
-        return(1);  /* add range once  (normal) */
-      }
-
-      l_errtxt = g_strdup_printf(_("illegal item: %s (expected one of the keywords: normal pingpong)\n using default normal")
-                              , ptr);
-      p_set_stb_warning(sterr, l_errtxt);
-      g_free(l_errtxt);
-    }
-  }
-  return (1);
-}  /* end p_scan_pingpong */
 
 /* ----------------------------------------------------
  * p_set_vtrack_attributes
@@ -3588,774 +3028,342 @@ p_set_vtrack_attributes(GapGveStoryFrameRangeElem *frn_elem
 
 
 /* ----------------------------------------------------
- * p_parse_storyboard_line
+ * p_storyboard_analyze
  * ----------------------------------------------------
- * this procedure checks the storyboard_line for known keywords
- * and scanns the keyword dependant items.
- * then adds one (or more) elements to the
- * corresponding rangelist (audio or frames)
- *
+ * this procedure checks the storyboard in RAM (GapStoryBoard *stb)
+ * and converts all elements to the
+ * corresponding rangelist structures (audio or frames or attr tables)
  */
 static void
-p_parse_storyboard_line(char *storyboard_line
-                      , const char *storyboard_file
-                      , gint32  frame_from
-                      , gint32  frame_to
+p_storyboard_analyze(GapStoryBoard *stb
                       , GapGveStoryVTrackArray *vtarr
                       , GapGveStoryFrameRangeElem *frn_known_list
                       , GapGveStoryVidHandle *vidhand
                       )
 {
+  GapStoryElem *stb_elem;
+  char *storyboard_file;
+
+  GapGveStoryAudioRangeElem *aud_elem;
   GapGveStoryFrameRangeElem *frn_elem;
   GapGveStoryFrameRangeElem *frn_list;
-  GapGveStoryFrameRangeElem *frn_listend;
   GapGveStoryFrameRangeElem *frn_pinglist;
-  GapGveStoryErrors        *sterr;
-  GapGveStoryFrameType        l_frn_type;
+  GapGveStoryErrors         *sterr;
 
-  char *l_scan_ptr;
-  char *l_track_ptr;
-  char *l_basename_ptr;
-  char *l_ext_ptr;
-  char *l_from_ptr;
-  char *l_to_ptr;
-  char *l_pingpong_ptr;
-  char *l_dur_ptr;
-  char *l_key_ptr;
-  char *l_macro_ptr;
-  char *l_seltrack_ptr;
-  char *l_exact_seek_ptr;
-  char *l_delace_ptr;
-  char *l_stepsize_ptr;
-  gint32 l_frame_from;
-  gint32 l_frame_to;
-  gint32 l_dur;
   gint32 l_track;
-  gint32 l_seltrack;
   gint   l_idx;
-  gint   l_pingpong;
-  gboolean l_add_range;
-  gint32  l_exact_seek;
-  gdouble l_delace;
-  gdouble l_step_density;
 
   sterr=vidhand->sterr;
   frn_list = NULL;
-  frn_listend = NULL;
-  l_add_range = FALSE;
-  l_frn_type = GAP_FRN_ANIMIMAGE;
-  l_macro_ptr = NULL;
-  l_seltrack_ptr = NULL;
-  l_exact_seek_ptr = NULL;
-  l_delace_ptr = NULL;
-  l_seltrack = 1;
-  l_exact_seek = 1;
-  l_delace = 0.0;
-  l_step_density = 1.0;
-  l_pingpong = 1;   /* normal mode */
 
-  l_scan_ptr = storyboard_line;
-  sterr->currline = storyboard_line;
+  storyboard_file = stb->storyboardfile;
 
-  l_basename_ptr = NULL;
-  l_ext_ptr = NULL;
-  l_frame_from = 0;
-  l_frame_to = 0;
-  l_dur = 0;
-  l_track = 0;
-  
-  l_key_ptr      = p_fetch_string(&l_scan_ptr);
-  l_track_ptr    = p_fetch_string(&l_scan_ptr);
-  l_from_ptr     = p_fetch_string(&l_scan_ptr);
-  l_to_ptr       = p_fetch_string(&l_scan_ptr);
-  l_dur_ptr      = p_fetch_string(&l_scan_ptr);
-
-  /* check STORYBOARD_HEADER */
-  if(sterr->curr_nr == 1)
+  /* copy Master informations: */
+  vidhand->master_width     = stb->master_width;
+  vidhand->master_height    = stb->master_height;
+  vidhand->master_framerate = stb->master_framerate;
+  vidhand->preferred_decoder = NULL;
+  if(stb->preferred_decoder)
   {
-    if ((strcmp(l_key_ptr, STORYBOARD_HEADER) != 0)
-    &&  (strcmp(l_key_ptr, CLIPLISTFILE_HEADER) != 0))
+    vidhand->preferred_decoder = g_strdup(stb->preferred_decoder);
+  }
+  vidhand->master_volume = stb->master_volume;
+  vidhand->master_samplerate = stb->master_samplerate;
+
+
+  /* Loop foreach Element in the STB */
+  for(stb_elem = stb->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
+  {
+    l_track    = stb_elem->track;
+    
+    switch(stb_elem->record_type)
     {
-       char *l_errtxt;
-
-       l_errtxt = g_strdup_printf(_("Header not found!\n(line 1 must start with:  %s"),  STORYBOARD_HEADER);
-       p_set_stb_error(sterr, l_errtxt);
-       g_free(l_errtxt);
-    }
-    return;
-  }
-
-  if ((l_key_ptr == NULL)
-  ||  (*storyboard_line == '\n')
-  ||  (*storyboard_line == '\0'))
-  {
-    return;   /* ignore blank lines */
-  }
-
-  if(*l_key_ptr == '#')
-  {
-    return;   /* ignore comment lines */
-  }
-
-  /* Master informations: STORYBOARD_VID_MASTER_SIZE */
-  if (strcmp(l_key_ptr, STORYBOARD_VID_MASTER_SIZE) == 0)
-  {
-      vidhand->master_width     = p_scan_gint32_limit(l_track_ptr, 0, 1, 999999, sterr);
-      vidhand->master_height    = p_scan_gint32_limit(l_from_ptr, 0, 1, 999999, sterr);
-      return;  /* master RECORD does not create frame range elements */
-  }
-  /* Master informations: STORYBOARD_VID_MASTER_FRAMERATE */
-  if (strcmp(l_key_ptr, STORYBOARD_VID_MASTER_FRAMERATE) == 0)
-  {
-      vidhand->master_framerate = p_scan_gdouble_limit(l_track_ptr, 24.0, 0.1, 999.9, sterr);
-      return;  /* master RECORD does not create frame range elements */
-  }
-  /* Master informations: STORYBOARD_VID_PREFERRED_DECODER */
-  if (strcmp(l_key_ptr, STORYBOARD_VID_PREFERRED_DECODER) == 0)
-  {
-      if(l_track_ptr)
-      {
-        if(vidhand->preferred_decoder)
+      case GAP_STBREC_ATT_OPACITY:
+        vtarr->attr[l_track].opacity_from = stb_elem->att_value_from;
+        vtarr->attr[l_track].opacity_to   = stb_elem->att_value_to;
+        vtarr->attr[l_track].opacity_dur  = stb_elem->att_value_dur;
+        break;
+      case GAP_STBREC_ATT_ZOOM_X:
+        vtarr->attr[l_track].scale_x_from = stb_elem->att_value_from;
+        vtarr->attr[l_track].scale_x_to   = stb_elem->att_value_to;
+        vtarr->attr[l_track].scale_x_dur  = stb_elem->att_value_dur;
+        break;
+      case GAP_STBREC_ATT_ZOOM_Y:
+        vtarr->attr[l_track].scale_y_from = stb_elem->att_value_from;
+        vtarr->attr[l_track].scale_y_to   = stb_elem->att_value_to;
+        vtarr->attr[l_track].scale_y_dur  = stb_elem->att_value_dur;
+        break;
+      case GAP_STBREC_ATT_MOVE_X:
+        vtarr->attr[l_track].move_x_from  = stb_elem->att_value_from;
+        vtarr->attr[l_track].move_x_to    = stb_elem->att_value_to;
+        vtarr->attr[l_track].move_x_dur   = stb_elem->att_value_dur;
+        break;
+      case GAP_STBREC_ATT_MOVE_Y:
+        vtarr->attr[l_track].move_y_from  = stb_elem->att_value_from;
+        vtarr->attr[l_track].move_y_to    = stb_elem->att_value_to;
+        vtarr->attr[l_track].move_y_dur   = stb_elem->att_value_dur;
+        break;
+      case GAP_STBREC_ATT_FIT_SIZE:
+        vtarr->attr[l_track].fit_width        = stb_elem->att_fit_width;
+        vtarr->attr[l_track].fit_height       = stb_elem->att_fit_height;
+        vtarr->attr[l_track].keep_proportions = stb_elem->att_keep_proportions;
+        break;
+      case GAP_STBREC_VID_SILENCE:
+        if(!vidhand->ignore_video)
         {
-          g_free(vidhand->preferred_decoder);
-        }
-        vidhand->preferred_decoder = g_strdup(l_track_ptr);
-      }
-      return;  /* master RECORD does not create frame range elements */
-  }
-
-  /* Master informations: STORYBOARD_AUD_MASTER_VOLUME */
-  if (strcmp(l_key_ptr, STORYBOARD_AUD_MASTER_VOLUME) == 0)
-  {
-      vidhand->master_volume = p_scan_gdouble_limit(l_track_ptr, 0, 0, 10, sterr);
-      return;  /* master RECORD does not create frame range elements */
-  }
-
-  /* Master informations: STORYBOARD_AUD_MASTER_SAMPLERATE */
-  if (strcmp(l_key_ptr, STORYBOARD_AUD_MASTER_SAMPLERATE) == 0)
-  {
-      vidhand->master_samplerate = p_scan_gint32_limit(l_track_ptr, 0, 1, 999999, sterr);
-      return;  /* master RECORD does not create frame range elements */
-  }
-
-  /* check VID_* ATTRIUTE Records -----------------------------------  */
-  if (l_track_ptr != NULL && l_from_ptr != NULL)
-  {
-    l_track    = p_scan_track(l_track_ptr, vtarr->max_tracknum, sterr);
-
-    /* ATTRIBUTE: STORYBOARD_VID_OPACITY */
-    if (strcmp(l_key_ptr, STORYBOARD_VID_OPACITY) == 0)
-    {
-      vtarr->attr[l_track].opacity_from = p_scan_gdouble_limit(l_from_ptr, 1.0, 0.0, 1.0, sterr);
-      vtarr->attr[l_track].opacity_to   = p_scan_gdouble_limit(l_to_ptr, vtarr->attr[l_track].opacity_from, 0.0, 1.0, sterr);
-      vtarr->attr[l_track].opacity_dur  = p_scan_gint32_time(l_dur_ptr, 0, 0, 999999, vidhand);
-
-      return;  /* attribute RECORD does not create frame range elements */
-    }
-
-    /* ATTRIBUTE: STORYBOARD_VID_ZOOM_X */
-    if (strcmp(l_key_ptr, STORYBOARD_VID_ZOOM_X) == 0)
-    {
-      vtarr->attr[l_track].scale_x_from = p_scan_gdouble_limit(l_from_ptr, 1.0, 0.0001, 999.9, sterr);
-      vtarr->attr[l_track].scale_x_to   = p_scan_gdouble_limit(l_to_ptr, vtarr->attr[l_track].scale_x_from, 0.0001, 999.9, sterr);
-      vtarr->attr[l_track].scale_x_dur  = p_scan_gint32_time(l_dur_ptr, 0, 0, 999999, vidhand);
-
-      return;  /* attribute RECORD does not create frame range elements */
-    }
-
-
-    /* ATTRIBUTE: STORYBOARD_VID_ZOOM_Y */
-    if (strcmp(l_key_ptr, STORYBOARD_VID_ZOOM_Y) == 0)
-    {
-      vtarr->attr[l_track].scale_y_from = p_scan_gdouble_limit(l_from_ptr, 1.0, 0.0001, 999.9, sterr);
-      vtarr->attr[l_track].scale_y_to   = p_scan_gdouble_limit(l_to_ptr, vtarr->attr[l_track].scale_y_from, 0.0001, 999.9, sterr);
-      vtarr->attr[l_track].scale_y_dur  = p_scan_gint32_time(l_dur_ptr, 0, 0, 999999, vidhand);
-
-      return;  /* attribute RECORD does not create frame range elements */
-    }
-
-    /* ATTRIBUTE: STORYBOARD_VID_MOVE_X */
-    if (strcmp(l_key_ptr, STORYBOARD_VID_MOVE_X) == 0)
-    {
-      vtarr->attr[l_track].move_x_from = p_scan_gdouble(l_from_ptr, 0.0);
-      vtarr->attr[l_track].move_x_to   = p_scan_gdouble(l_to_ptr, vtarr->attr[l_track].move_x_from);
-      vtarr->attr[l_track].move_x_dur  = p_scan_gint32_time(l_dur_ptr, 0, 0, 999999, vidhand);
-
-      return;  /* attribute RECORD does not create frame range elements */
-    }
-
-    /* ATTRIBUTE: STORYBOARD_VID_MOVE_Y */
-    if (strcmp(l_key_ptr, STORYBOARD_VID_MOVE_Y) == 0)
-    {
-      vtarr->attr[l_track].move_y_from = p_scan_gdouble(l_from_ptr, 0.0);
-      vtarr->attr[l_track].move_y_to   = p_scan_gdouble(l_to_ptr, vtarr->attr[l_track].move_y_from);
-      vtarr->attr[l_track].move_y_dur  = p_scan_gint32_time(l_dur_ptr, 0, 0, 999999, vidhand);
-
-      return;  /* attribute RECORD does not create frame range elements */
-    }
-
-    /* ATTRIBUTE: STORYBOARD_VID_SILENCE */
-    if (strcmp(l_key_ptr, STORYBOARD_VID_SILENCE) == 0)
-    {
-      gdouble              l_wait_untiltime_sec;
-
-      if(vidhand->ignore_video)
-      {
-        return;
-      }
-
-      l_dur                = p_scan_gint32_time(l_from_ptr, 1, 1, 999999, vidhand); /* use 3. scanned word, silence has no from to */
-      l_wait_untiltime_sec = p_scan_gdouble_time(l_to_ptr, 0, 0, 99999, vidhand);
-
-      /* add framerange element for the current storyboard_file line */
-      frn_elem = p_new_framerange_element(GAP_FRN_SILENCE
-                                         , l_track
-                                         , NULL            /* basename   */
-                                         , NULL            /* extension  */
-                                         , 1               /* frame_from */
-                                         , l_dur           /* frame_to   */
-                                         , storyboard_file
-                                         , NULL            /* preferred_decoder */
-                                         , NULL
-                                         , frn_known_list
-                                         , sterr
-                                         , 1              /* seltrack */
-                                         , 1              /* exact_seek*/
-                                         , 0.0            /* delace */
-					 , 1.0            /* step_density */
-                                         );
-      if(frn_elem)
-      {
-        vtarr->attr[l_track].frame_count += frn_elem->frames_to_handle;
-        p_set_vtrack_attributes(frn_elem, vtarr);
-        frn_elem->wait_untiltime_sec = l_wait_untiltime_sec;
-        frn_elem->wait_untilframes = l_wait_untiltime_sec * vidhand->master_framerate;
-        p_add_frn_list(vidhand, frn_elem);
-      }
-      return;
-    }
-
-    /* ATTRIBUTE: STORYBOARD_AUD_SILENCE */
-    if (strcmp(l_key_ptr, STORYBOARD_AUD_SILENCE) == 0)
-    {
-      GapGveStoryAudioRangeElem *aud_elem;
-      gdouble              l_dur_sec;
-      gdouble              l_wait_untiltime_sec;
-
-      if(vidhand->ignore_audio)
-      {
-        return;
-      }
-
-      l_dur_sec            = p_scan_gdouble_time(l_from_ptr, 0, 0, 99999, vidhand); /* use 3. scanned word, silence has no from to */
-      l_wait_untiltime_sec = p_scan_gdouble_time(l_to_ptr, 0, 0, 99999, vidhand);
-
-      /* add audiorange element for the current storyboard_file line */
-      aud_elem = p_new_audiorange_element(GAP_AUT_SILENCE
-                                         , l_track
-                                         , NULL
-                                         , vidhand->master_samplerate
-                                         , 0              /* from_sec     */
-                                         , l_dur_sec      /* to_sec       */
-                                         , 0.0            /* vol_start    */
-                                         , 0.0            /* volume       */
-                                         , 0.0            /* vol_end      */
-                                         , 0.0            /* fade_in_sec  */
-                                         , 0.0            /* fade_out_sec */
-                                         , vidhand->util_sox
-                                         , vidhand->util_sox_options
-                                         , storyboard_file
-                                         , vidhand->preferred_decoder
-                                         , vidhand->aud_list  /* known audio range elements */
-                                         , sterr
-                                         , 1              /* seltrack */
-                                         );
-      if(aud_elem)
-      {
-         aud_elem->wait_untiltime_sec = l_wait_untiltime_sec;
-         aud_elem->wait_until_samples = l_wait_untiltime_sec * aud_elem->samplerate;
-         p_add_aud_list(vidhand, aud_elem);
-      }
-      return;
-    }
-
-    /* ATTRIBUTE: STORYBOARD_VID_FIT_SIZE */
-    if (strcmp(l_key_ptr, STORYBOARD_VID_FIT_SIZE) == 0)
-    {
-      if(vidhand->ignore_video)
-      {
-        return;
-      }
-      vtarr->attr[l_track].fit_width = TRUE;
-      vtarr->attr[l_track].fit_height = TRUE;
-      vtarr->attr[l_track].keep_proportions = FALSE;
-
-      if(l_from_ptr)
-      {
-        if(*l_from_ptr != '\0')
-        {
-          if((strncmp(l_from_ptr, "none", strlen("none")) ==0)
-          || (strncmp(l_from_ptr, "NONE", strlen("NONE")) ==0))
+          /* add framerange element for the current storyboard_file line */
+          frn_elem = p_new_framerange_element(GAP_FRN_SILENCE
+                                             , l_track
+                                             , NULL            /* basename   */
+                                             , NULL            /* extension  */
+                                             , 1               /* frame_from */
+                                             , stb_elem->nloop /* frame_to   */
+                                             , storyboard_file
+                                             , NULL            /* preferred_decoder */
+                                             , NULL
+                                             , frn_known_list
+                                             , sterr
+                                             , 1              /* seltrack */
+                                             , 1              /* exact_seek*/
+                                             , 0.0            /* delace */
+					     , 1.0            /* step_density */
+                                             );
+          if(frn_elem)
           {
-            vtarr->attr[l_track].fit_width = FALSE;
-            vtarr->attr[l_track].fit_height = FALSE;
+            vtarr->attr[l_track].frame_count += frn_elem->frames_to_handle;
+            p_set_vtrack_attributes(frn_elem, vtarr);
+            frn_elem->wait_untiltime_sec = stb_elem->vid_wait_untiltime_sec;
+            frn_elem->wait_untilframes = stb_elem->vid_wait_untiltime_sec * vidhand->master_framerate;
+            p_add_frn_list(vidhand, frn_elem);
+          }
+        }
+        break;
+      case GAP_STBREC_VID_COLOR:
+        if(!vidhand->ignore_video)
+        {
+          /* add framerange element for the current storyboard_file line */
+          frn_elem = p_new_framerange_element(GAP_FRN_COLOR
+                                             , l_track
+                                             , NULL
+                                             , NULL            /* extension  */
+                                             , 1               /* frame_from */
+                                             , stb_elem->nloop /* frame_to   */
+                                             , storyboard_file
+                                             , NULL            /* referred_decoder */
+                                             , NULL
+                                             , frn_known_list
+                                             , sterr
+                                             , 1              /* seltrack */
+                                             , 1              /* exact_seek*/
+                                             , 0.0            /* delace */
+					     , 1.0            /* step_density */
+                                             );
+          if(frn_elem)
+          {
+            frn_elem->red                = CLAMP(stb_elem->color_red   * 255, 0 ,255);
+            frn_elem->green              = CLAMP(stb_elem->color_green * 255, 0 ,255);
+            frn_elem->blue               = CLAMP(stb_elem->color_blue  * 255, 0 ,255);
+            frn_elem->alpha              = CLAMP(stb_elem->color_alpha * 255, 0 ,255);
+            vtarr->attr[l_track].frame_count += frn_elem->frames_to_handle;
+            p_set_vtrack_attributes(frn_elem, vtarr);
+            p_add_frn_list(vidhand, frn_elem);
+          }
+        }
+        break;
+      case GAP_STBREC_VID_IMAGE:
+        if(!vidhand->ignore_video)
+        {
+          /* add framerange element for the current storyboard_file line */
+          frn_elem = p_new_framerange_element(GAP_FRN_IMAGE
+                                             , l_track
+                                             , stb_elem->orig_filename
+                                             , NULL            /* extension  */
+                                             , 1               /* frame_from */
+                                             , stb_elem->nloop /* frame_to   */
+                                             , storyboard_file
+                                             , vidhand->preferred_decoder
+                                             , stb_elem->filtermacro_file
+                                             , frn_known_list
+                                             , sterr
+                                             , 1              /* seltrack */
+                                             , 1              /* exact_seek*/
+                                             , 0.0            /* delace */
+					     , 1.0            /* step_density */
+                                             );
+          if(frn_elem)
+          {
+            vtarr->attr[l_track].frame_count += frn_elem->frames_to_handle;
+            p_set_vtrack_attributes(frn_elem, vtarr);
+            p_add_frn_list(vidhand, frn_elem);
+          }
+        }
+        break;
+      case GAP_STBREC_VID_ANIMIMAGE:
+      case GAP_STBREC_VID_FRAMES:
+      case GAP_STBREC_VID_MOVIE:
+        if(!vidhand->ignore_video)
+        {
+           GapGveStoryFrameType        l_frn_type;
+           gint32   l_repcnt;
+           gint32   l_sub_from;
+           gint32   l_sub_to;
+           gint     l_pingpong;
+           char    *l_file_or_basename;
+           char    *l_ext_ptr;
+          
+           l_ext_ptr = NULL;
+           l_file_or_basename = stb_elem->orig_filename;
+           l_pingpong = 1;
+           if(stb_elem->playmode == GAP_STB_PM_PINGPONG)
+           {
+             l_pingpong = 2;
+           }
+           
+           l_frn_type = GAP_FRN_ANIMIMAGE;
+           switch(stb_elem->record_type)
+           {
+             case GAP_STBREC_VID_ANIMIMAGE:
+               l_frn_type = GAP_FRN_ANIMIMAGE;
+               l_file_or_basename = stb_elem->orig_filename;
+               break;
+             case GAP_STBREC_VID_FRAMES:
+               l_frn_type = GAP_FRN_FRAMES;
+               l_ext_ptr = stb_elem->ext;
+               l_file_or_basename = stb_elem->basename;
+               break;
+             case GAP_STBREC_VID_MOVIE:
+               l_frn_type = GAP_FRN_MOVIE;
+               l_file_or_basename = stb_elem->orig_filename;
+               break;
+	     default:
+	       break;  /* should never be reached */
+           }
+
+           frn_pinglist = frn_known_list;
+           /* expand element according to pingpong and nloop settings  */
+           for(l_repcnt=0; l_repcnt < stb_elem->nloop; l_repcnt++)
+           {
+             l_sub_from = stb_elem->from_frame;
+             l_sub_to   = stb_elem->to_frame;
+             for(l_idx=0; l_idx < l_pingpong; l_idx++)
+             {
+               /* add framerange element for the current storyboard_file line */
+               frn_elem = p_new_framerange_element( l_frn_type
+                                                  , l_track
+                                                  , l_file_or_basename
+                                                  , l_ext_ptr
+                                                  , l_sub_from
+                                                  , l_sub_to
+                                                  , storyboard_file
+                                                  , vidhand->preferred_decoder
+                                                  , stb_elem->filtermacro_file
+                                                  , frn_pinglist
+                                                  , sterr
+                                                  , stb_elem->seltrack
+                                                  , stb_elem->exact_seek
+                                                  , stb_elem->delace
+						  , stb_elem->step_density
+                                                  );
+               if(frn_elem)
+               {
+                 vtarr->attr[l_track].frame_count += frn_elem->frames_to_handle;
+                 p_set_vtrack_attributes(frn_elem, vtarr);
+                 p_add_frn_list(vidhand, frn_elem);
+
+                 frn_pinglist = frn_list;
+
+                 /* prepare for pingpong mode with inverted range, omitting the start/end frames */
+                 l_sub_from = frn_elem->frame_to   - frn_elem->delta;
+                 l_sub_to   = frn_elem->frame_from + frn_elem->delta;
+               }
+             }
+           }
+
+
+        }
+        break;
+      case GAP_STBREC_AUD_SILENCE:
+        if(!vidhand->ignore_audio)
+        {
+          /* add audiorange element for the current storyboard_file line */
+          aud_elem = p_new_audiorange_element(GAP_AUT_SILENCE
+                                             , l_track
+                                             , NULL
+                                             , vidhand->master_samplerate
+                                             , 0              /* from_sec     */
+                                             , stb_elem->aud_play_to_sec      /* to_sec       */
+                                             , 0.0            /* vol_start    */
+                                             , 0.0            /* volume       */
+                                             , 0.0            /* vol_end      */
+                                             , 0.0            /* fade_in_sec  */
+                                             , 0.0            /* fade_out_sec */
+                                             , vidhand->util_sox
+                                             , vidhand->util_sox_options
+                                             , storyboard_file
+                                             , vidhand->preferred_decoder
+                                             , vidhand->aud_list  /* known audio range elements */
+                                             , sterr
+                                             , 1              /* seltrack */
+                                             );
+          if(aud_elem)
+          {
+             aud_elem->wait_untiltime_sec = stb_elem->aud_wait_untiltime_sec;
+             aud_elem->wait_until_samples = stb_elem->aud_wait_untiltime_sec * aud_elem->samplerate;
+             p_add_aud_list(vidhand, aud_elem);
+          }
+        }
+        break;
+      case GAP_STBREC_AUD_SOUND:
+      case GAP_STBREC_AUD_MOVIE:
+        if(!vidhand->ignore_audio)
+        {
+          GapGveStoryAudioType  l_aud_type;
+          gint     l_rix;
+
+          if(stb_elem->record_type == GAP_STBREC_AUD_SOUND)
+          {
+            l_aud_type = GAP_AUT_AUDIOFILE;
           }
           else
           {
-            if((strncmp(l_from_ptr, "both", strlen("both")) ==0)
-            || (strncmp(l_from_ptr, "BOTH", strlen("BOTH")) ==0))
-            {
-              vtarr->attr[l_track].fit_width = TRUE;
-              vtarr->attr[l_track].fit_height = TRUE;
-            }
-            else
-            {
-              if((strncmp(l_from_ptr, "width", strlen("width")) ==0)
-              || (strncmp(l_from_ptr, "WIDTH", strlen("WIDTH")) ==0))
-              {
-                vtarr->attr[l_track].fit_width = TRUE;
-                vtarr->attr[l_track].fit_height = FALSE;
-              }
-              else
-              {
-                if((strncmp(l_from_ptr, "height", strlen("height")) ==0)
-                || (strncmp(l_from_ptr, "HEIGHT", strlen("HEIGHT")) ==0))
-                {
-                  vtarr->attr[l_track].fit_width = FALSE;
-                  vtarr->attr[l_track].fit_height = TRUE;
-                }
-                else
-                {
-                   char *l_errtxt;
-
-                   l_errtxt = g_strdup_printf(_("illegal keyword: %s (expected keywords are: width, height, both, none")
-                                             , l_from_ptr);
-                   p_set_stb_warning(sterr, l_errtxt);
-                   g_free(l_errtxt);
-
-                }
-              }
-            }
+            l_aud_type = GAP_AUT_MOVIE;
           }
-        }
-      }
 
-      if(l_to_ptr)
-      {
-        if(*l_to_ptr != '\0')
-        {
-          if((strncmp(l_to_ptr, "keep_prop", strlen("keep_prop")) ==0)
-          || (strncmp(l_to_ptr, "KEEP_PROP", strlen("KEEP_PROP")) ==0))
+          for(l_rix=0; l_rix < stb_elem->nloop; l_rix++)
           {
-            vtarr->attr[l_track].keep_proportions = TRUE;
-          }
-          else
-          {
-            if((strncmp(l_to_ptr, "change_prop", strlen("change_prop")) ==0)
-            || (strncmp(l_to_ptr, "CHANGE_PROP", strlen("CHANGE_PROP")) ==0))
-            {
-              vtarr->attr[l_track].keep_proportions = FALSE;
-            }
-            else
-            {
-                   char *l_errtxt;
-
-                   l_errtxt = g_strdup_printf(_("illegal keyword: %s (expected keywords are: keep_proportions, change_proportions")
-                                             , l_to_ptr);
-                   p_set_stb_warning(sterr, l_errtxt);
-                   g_free(l_errtxt);
-            }
-          }
-        }
-      }
-
-      return;  /* attribute RECORD does not create frame range elements */
-    }
-
-  }  /* end check VID_* ATTRIUTE Records -------------------------  */
-
-
-  /* AUDIO: STORYBOARD_AUD_PLAY_MOVIE  */
-  if ((strcmp(l_key_ptr, STORYBOARD_AUD_PLAY_MOVIE) == 0)
-  ||  (strcmp(l_key_ptr, STORYBOARD_AUD_PLAY_SOUND) == 0))
-  {
-    GapGveStoryAudioType  l_aud_type;
-    char    *l_filename_ptr;
-    char    *l_from_sec_ptr;
-    char    *l_to_sec_ptr;
-    char    *l_volume_ptr;
-    char    *l_fade_in_sec_ptr;
-    char    *l_vol_start_ptr;
-    char    *l_fade_out_sec_ptr;
-    char    *l_vol_end_ptr;
-    gdouble  l_from_sec;
-    gdouble  l_to_sec;
-    gdouble  l_volume;
-    gdouble  l_fade_in_sec;
-    gdouble  l_vol_start;
-    gdouble  l_fade_out_sec;
-    gdouble  l_vol_end;
-    gint     l_rix;
-    GapGveStoryAudioRangeElem *aud_elem;
-
-
-    if(vidhand->ignore_audio)
-    {
-      return;
-    }
-
-    if(strcmp(l_key_ptr, STORYBOARD_AUD_PLAY_SOUND) == 0)
-    {
-      l_aud_type = GAP_AUT_AUDIOFILE;
-    }
-    else
-    {
-      l_aud_type = GAP_AUT_MOVIE;
-    }
-
-    l_scan_ptr         = storyboard_line;
-    l_key_ptr          = p_fetch_string(&l_scan_ptr);
-    l_track_ptr        = p_fetch_string(&l_scan_ptr);
-    l_filename_ptr     = p_fetch_string(&l_scan_ptr);
-    l_from_sec_ptr     = p_fetch_string(&l_scan_ptr);
-    l_to_sec_ptr       = p_fetch_string(&l_scan_ptr);
-    l_volume_ptr       = p_fetch_string(&l_scan_ptr);
-    l_fade_in_sec_ptr  = p_fetch_string(&l_scan_ptr);
-    l_vol_start_ptr    = p_fetch_string(&l_scan_ptr);
-    l_fade_out_sec_ptr = p_fetch_string(&l_scan_ptr);
-    l_vol_end_ptr      = p_fetch_string(&l_scan_ptr);
-    l_dur_ptr          = p_fetch_string(&l_scan_ptr);
-    l_seltrack_ptr     = p_fetch_string(&l_scan_ptr);
-
-    if (l_track_ptr != NULL)
-    {
-      l_track         = p_scan_track(l_track_ptr, vtarr->max_tracknum, sterr);
-      l_from_sec      = p_scan_gdouble_time(l_from_sec_ptr,     0.0,    0.0, 9999.9, vidhand);
-      l_to_sec        = p_scan_gdouble_time(l_to_sec_ptr,       9999.9, 0.0, 9999.9, vidhand);
-      l_volume        = p_scan_gdouble_limit(l_volume_ptr,       1.0, 0.0, 10.0, sterr);
-      l_fade_in_sec   = p_scan_gdouble_time(l_fade_in_sec_ptr,  0.0, 0.0, 9999.9, vidhand);
-      l_vol_start     = p_scan_gdouble_limit(l_vol_start_ptr,    0.0, 0.0, 10.0, sterr);
-      l_fade_out_sec  = p_scan_gdouble_time(l_fade_out_sec_ptr, 0.0, 0.0, 9999.9, vidhand);
-      l_vol_end       = p_scan_gdouble_limit(l_vol_end_ptr,      0.0, 0.0, 10.0, sterr);
-      l_dur           = p_scan_gint32_limit(l_dur_ptr,           1, 1, 999999, sterr);
-      l_seltrack      = p_scan_gint32_limit(l_seltrack_ptr,      1, 1, 99, sterr);
-
-      for(l_rix=0; l_rix < l_dur; l_rix++)
-      {
-        /* add audiorange element for the current storyboard_file line */
-        aud_elem = p_new_audiorange_element(l_aud_type  /* GAP_AUT_MOVIE or GAP_AUT_AUDIOFILE */
+            /* add audiorange element for the current storyboard_file line */
+            aud_elem = p_new_audiorange_element(l_aud_type  /* GAP_AUT_MOVIE or GAP_AUT_AUDIOFILE */
                                            , l_track
-                                           , l_filename_ptr
+                                           , stb_elem->aud_filename
                                            , vidhand->master_samplerate
-                                           , l_from_sec
-                                           , l_to_sec
-                                           , l_vol_start
-                                           , l_volume
-                                           , l_vol_end
-                                           , l_fade_in_sec
-                                           , l_fade_out_sec
+                                           , stb_elem->aud_play_from_sec
+                                           , stb_elem->aud_play_to_sec
+                                           , stb_elem->aud_volume_start
+                                           , stb_elem->aud_volume
+                                           , stb_elem->aud_volume_end
+                                           , stb_elem->aud_fade_in_sec
+                                           , stb_elem->aud_fade_out_sec
                                            , vidhand->util_sox
                                            , vidhand->util_sox_options
                                            , storyboard_file
                                            , vidhand->preferred_decoder
                                            , vidhand->aud_list  /* known audio range elements */
                                            , sterr
-                                           , l_seltrack
+                                           , stb_elem->aud_seltrack
                                            );
-        if(aud_elem)
-        {
-           p_add_aud_list(vidhand, aud_elem);
+            if(aud_elem)
+            {
+              p_add_aud_list(vidhand, aud_elem);
+            }
+	  }
         }
-      }
-      return;
+        break;
+      default:
+        break;
     }
-  }  /* end STORYBOARD_AUD_PLAY_MOVIE or STORYBOARD_AUD_PLAY_SOUND */
+  }  /* END Loop foreach Element in the STB */
 
-
-  /* FRAMES: STORYBOARD_VID_PLAY_COLOR  */
-  if (strcmp(l_key_ptr, STORYBOARD_VID_PLAY_COLOR) == 0)
-  {
-    gint32 l_red;
-    gint32 l_green;
-    gint32 l_blue;
-    gint32 l_alpha;
-    char  *l_red_ptr;
-    char  *l_green_ptr;
-    char  *l_blue_ptr;
-    char  *l_alpha_ptr;
-
-    if(vidhand->ignore_video)
-    {
-      return;
-    }
-
-    l_scan_ptr = storyboard_line;
-    l_key_ptr      = p_fetch_string(&l_scan_ptr);
-    l_track_ptr    = p_fetch_string(&l_scan_ptr);
-    l_red_ptr      = p_fetch_string(&l_scan_ptr);
-    l_green_ptr    = p_fetch_string(&l_scan_ptr);
-    l_blue_ptr     = p_fetch_string(&l_scan_ptr);
-    l_alpha_ptr    = p_fetch_string(&l_scan_ptr);
-    l_dur_ptr      = p_fetch_string(&l_scan_ptr);
-
-    if (l_track_ptr != NULL)
-    {
-      l_track  = p_scan_track(l_track_ptr, vtarr->max_tracknum, sterr);
-      l_red    = p_scan_gdouble_limit(l_red_ptr,   0.0, 0.0, 1.0, sterr);
-      l_green  = p_scan_gdouble_limit(l_green_ptr, 0.0, 0.0, 1.0, sterr);
-      l_blue   = p_scan_gdouble_limit(l_blue_ptr,  0.0, 0.0, 1.0, sterr);
-      l_alpha  = p_scan_gdouble_limit(l_alpha_ptr, 1.0, 0.0, 1.0, sterr);
-      l_dur    = p_scan_gint32_time(l_dur_ptr, 1, 1, 999999, vidhand);
-
-      /* add framerange element for the current storyboard_file line */
-      frn_elem = p_new_framerange_element(GAP_FRN_COLOR
-                                         , l_track
-                                         , NULL
-                                         , NULL            /* extension  */
-                                         , 1               /* frame_from */
-                                         , l_dur           /* frame_to   */
-                                         , storyboard_file
-                                         , NULL            /* referred_decoder */
-                                         , NULL
-                                         , frn_known_list
-                                         , sterr
-                                         , 1              /* seltrack */
-                                         , 1              /* exact_seek*/
-                                         , 0.0            /* delace */
-					 , 1.0            /* step_density */
-                                         );
-      if(frn_elem)
-      {
-        frn_elem->red                = CLAMP(l_red   * 255, 0 ,255);
-        frn_elem->green              = CLAMP(l_green * 255, 0 ,255);
-        frn_elem->blue               = CLAMP(l_blue  * 255, 0 ,255);
-        frn_elem->alpha              = CLAMP(l_alpha * 255, 0 ,255);
-        vtarr->attr[l_track].frame_count += frn_elem->frames_to_handle;
-        p_set_vtrack_attributes(frn_elem, vtarr);
-        p_add_frn_list(vidhand, frn_elem);
-      }
-      return;
-    }
-  }  /* end STORYBOARD_VID_PLAY_COLOR */
-
-  /* FRAMES: STORYBOARD_VID_PLAY_IMAGE  */
-  if (strcmp(l_key_ptr, STORYBOARD_VID_PLAY_IMAGE) == 0)
-  {
-    if(vidhand->ignore_video)
-    {
-      return;
-    }
-
-    l_scan_ptr = storyboard_line;
-    l_key_ptr      = p_fetch_string(&l_scan_ptr);
-    l_track_ptr    = p_fetch_string(&l_scan_ptr);
-    l_basename_ptr = p_fetch_string(&l_scan_ptr);
-    l_dur_ptr      = p_fetch_string(&l_scan_ptr);
-    l_macro_ptr    = p_fetch_string(&l_scan_ptr);
-    p_flip_dir_seperators(l_macro_ptr);
-
-    if (l_track_ptr != NULL && l_basename_ptr != NULL )
-    {
-      p_flip_dir_seperators(l_basename_ptr);
-      l_track     = p_scan_track(l_track_ptr, vtarr->max_tracknum, sterr);
-      l_dur       = p_scan_gint32_time(l_dur_ptr, 1, 1, 999999, vidhand);
-
-      /* add framerange element for the current storyboard_file line */
-      frn_elem = p_new_framerange_element(GAP_FRN_IMAGE
-                                         , l_track
-                                         , l_basename_ptr
-                                         , NULL            /* extension  */
-                                         , 1               /* frame_from */
-                                         , l_dur           /* frame_to   */
-                                         , storyboard_file
-                                         , vidhand->preferred_decoder
-                                         , l_macro_ptr
-                                         , frn_known_list
-                                         , sterr
-                                         , 1              /* seltrack */
-                                         , 1              /* exact_seek*/
-                                         , 0.0            /* delace */
-					 , 1.0            /* step_density */
-                                         );
-      if(frn_elem)
-      {
-        vtarr->attr[l_track].frame_count += frn_elem->frames_to_handle;
-        p_set_vtrack_attributes(frn_elem, vtarr);
-        p_add_frn_list(vidhand, frn_elem);
-      }
-      return;
-    }
-  }  /* end VID_PLAY_IMAGE */
-
-  /* FRAMES: STORYBOARD_VID_PLAY_FRAMES */
-  if (strcmp(l_key_ptr, STORYBOARD_VID_PLAY_FRAMES) == 0)
-  {
-    if(vidhand->ignore_video)
-    {
-      return;
-    }
-
-    l_frn_type = GAP_FRN_FRAMES;
-
-    l_scan_ptr = storyboard_line;
-    l_key_ptr      = p_fetch_string(&l_scan_ptr);
-    l_track_ptr    = p_fetch_string(&l_scan_ptr);
-    l_basename_ptr = p_fetch_string(&l_scan_ptr);
-    l_ext_ptr      = p_fetch_string(&l_scan_ptr);
-    l_from_ptr     = p_fetch_string(&l_scan_ptr);
-    l_to_ptr       = p_fetch_string(&l_scan_ptr);
-    l_pingpong_ptr = p_fetch_string(&l_scan_ptr);
-    l_dur_ptr      = p_fetch_string(&l_scan_ptr);
-    l_stepsize_ptr = p_fetch_string(&l_scan_ptr);
-    l_macro_ptr    = p_fetch_string(&l_scan_ptr);
-    p_flip_dir_seperators(l_macro_ptr);
-
-    if (l_track_ptr != NULL && l_basename_ptr != NULL && l_ext_ptr != NULL)
-    {
-      p_flip_dir_seperators(l_basename_ptr);
-      l_track      = p_scan_track(l_track_ptr, vtarr->max_tracknum, sterr);
-      l_frame_from = p_scan_fromto(l_from_ptr, 1, vidhand);
-      l_frame_to   = p_scan_fromto(l_to_ptr, 999999, vidhand);
-      l_dur        = p_scan_gint32_limit(l_dur_ptr, 1, 1, 999999, sterr);       /* repeat count */
-      l_step_density = p_scan_gdouble_limit(l_stepsize_ptr, 1.0, 0.125, 99.99, sterr);       /* stepsize */
-
-      l_pingpong   = p_scan_pingpong(l_pingpong_ptr, sterr);
-      l_add_range = TRUE;
-    }
-  }   /* end VID_PLAY_FRAMES */
-
-
-  /* FRAMES: STORYBOARD_VID_PLAY_ANIMIMAGE */
-  if (strcmp(l_key_ptr, STORYBOARD_VID_PLAY_ANIMIMAGE) == 0)
-  {
-    if(vidhand->ignore_video)
-    {
-      return;
-    }
-
-    l_frn_type = GAP_FRN_ANIMIMAGE;
-    l_scan_ptr = storyboard_line;
-    l_key_ptr      = p_fetch_string(&l_scan_ptr);
-    l_track_ptr    = p_fetch_string(&l_scan_ptr);
-    l_basename_ptr = p_fetch_string(&l_scan_ptr);
-    l_from_ptr     = p_fetch_string(&l_scan_ptr);
-    l_to_ptr       = p_fetch_string(&l_scan_ptr);
-    l_pingpong_ptr = p_fetch_string(&l_scan_ptr);
-    l_dur_ptr      = p_fetch_string(&l_scan_ptr);
-    l_stepsize_ptr = p_fetch_string(&l_scan_ptr);
-    l_macro_ptr    = p_fetch_string(&l_scan_ptr);
-    p_flip_dir_seperators(l_macro_ptr);
-
-    l_ext_ptr = NULL;
-    if (l_track_ptr != NULL && l_basename_ptr != NULL)
-    {
-      p_flip_dir_seperators(l_basename_ptr);
-      l_track      = p_scan_track(l_track_ptr, vtarr->max_tracknum, sterr);
-      l_frame_from = p_scan_fromto(l_from_ptr, 0, vidhand);
-      l_frame_to   = p_scan_fromto(l_to_ptr, 999999, vidhand);
-      l_dur        = p_scan_gint32_limit(l_dur_ptr, 1, 1, 999999, sterr);       /* repeat count */
-      l_step_density = p_scan_gdouble_limit(l_stepsize_ptr, 1.0, 0.125, 99.99, sterr);       /* stepsize */
-
-      l_pingpong = p_scan_pingpong(l_pingpong_ptr, sterr);
-      l_add_range = TRUE;
-    }
-  }   /* end STORYBOARD_VID_PLAY_ANIMIMAGE */
-
-  /* FRAMES: STORYBOARD_VID_PLAY_MOVIE */
-  if (strcmp(l_key_ptr, STORYBOARD_VID_PLAY_MOVIE) == 0)
-  {
-    if(vidhand->ignore_video)
-    {
-      return;
-    }
-
-    l_frn_type = GAP_FRN_MOVIE;
-    l_scan_ptr = storyboard_line;
-    l_key_ptr        = p_fetch_string(&l_scan_ptr);
-    l_track_ptr      = p_fetch_string(&l_scan_ptr);
-    l_basename_ptr   = p_fetch_string(&l_scan_ptr);
-    l_from_ptr       = p_fetch_string(&l_scan_ptr);
-    l_to_ptr         = p_fetch_string(&l_scan_ptr);
-    l_pingpong_ptr   = p_fetch_string(&l_scan_ptr);
-    l_dur_ptr        = p_fetch_string(&l_scan_ptr);
-    l_seltrack_ptr   = p_fetch_string(&l_scan_ptr);
-    l_exact_seek_ptr = p_fetch_string(&l_scan_ptr);
-    l_delace_ptr     = p_fetch_string(&l_scan_ptr);
-    l_stepsize_ptr   = p_fetch_string(&l_scan_ptr);
-    l_macro_ptr      = p_fetch_string(&l_scan_ptr);
-    p_flip_dir_seperators(l_macro_ptr);
-
-    l_ext_ptr = NULL;
-    if (l_track_ptr != NULL && l_basename_ptr != NULL)
-    {
-      p_flip_dir_seperators(l_basename_ptr);
-      l_track      = p_scan_track(l_track_ptr, vtarr->max_tracknum, sterr);
-      l_frame_from = p_scan_fromto(l_from_ptr, 0, vidhand);
-      l_frame_to   = p_scan_fromto(l_to_ptr, 999999, vidhand);
-      l_dur        = p_scan_gint32_limit(l_dur_ptr, 1, 1, 999999, sterr);       /* repeat count */
-      l_seltrack   = p_scan_gint32_limit(l_dur_ptr, 1, 1, 99, sterr);       /* select (video input) track */
-
-      l_pingpong = p_scan_pingpong(l_pingpong_ptr, sterr);
-      l_exact_seek = p_scan_gint32_limit(l_exact_seek_ptr, 1, 0, 1, sterr);       /* exact seek mode */
-      l_delace = p_scan_gdouble_limit(l_delace_ptr, 0.0, 0.0, 2.999999, sterr);       /* deinterlace mode */
-      l_step_density = p_scan_gdouble_limit(l_stepsize_ptr, 1.0, 0.125, 99.99, sterr);       /* stepsize */
-      l_add_range = TRUE;
-    }
-  }   /* end STORYBOARD_VID_PLAY_MOVIE */
-
-  /* add N element normal or pingpong mode */
-  if (l_add_range)
-  {
-    gint32   l_repcnt;
-    gint32   l_sub_from;
-    gint32   l_sub_to;
-
-
-    frn_pinglist = frn_known_list;
-    for(l_repcnt=0; l_repcnt < l_dur; l_repcnt++)
-    {
-      l_sub_from = l_frame_from;
-      l_sub_to   = l_frame_to;
-      for(l_idx=0; l_idx < l_pingpong; l_idx++)
-      {
-        /* add framerange element for the current storyboard_file line */
-        frn_elem = p_new_framerange_element( l_frn_type
-                                           , l_track
-                                           , l_basename_ptr
-                                           , l_ext_ptr
-                                           , l_sub_from
-                                           , l_sub_to
-                                           , storyboard_file
-                                           , vidhand->preferred_decoder
-                                           , l_macro_ptr
-                                           , frn_pinglist
-                                           , sterr
-                                           , l_seltrack
-                                           , l_exact_seek
-                                           , l_delace
-					   , l_step_density
-                                           );
-        if(frn_elem)
-        {
-          vtarr->attr[l_track].frame_count += frn_elem->frames_to_handle;
-          p_set_vtrack_attributes(frn_elem, vtarr);
-          p_add_frn_list(vidhand, frn_elem);
-
-          frn_pinglist = frn_list;
-
-          /* prepare for pingpong mode with inverted range, omitting the start/end frames */
-          l_sub_from = frn_elem->frame_to   - frn_elem->delta;
-          l_sub_to   = frn_elem->frame_from + frn_elem->delta;
-        }
-      }
-    }
-  }
-  else
-  {
-     p_set_stb_error(sterr, _("Line is not supported and will be ignored"));
-  }
-
-}       /* end p_parse_storyboard_line */
+}       /* end p_storyboard_analyze */
 
 
 /* ----------------------------------------------------
@@ -4368,23 +3376,19 @@ p_parse_storyboard_line(char *storyboard_line
  */
 static GapGveStoryFrameRangeElem *
 p_framerange_list_from_storyboard(const char *storyboard_file
-                      ,gint32  frame_from
-                      ,gint32  frame_to
                       ,gint32 *frame_count
                       ,GapGveStoryVidHandle *vidhand
                       )
 {
   GapGveStoryVTrackArray        vtarray;
   GapGveStoryVTrackArray       *vtarr;
-  GapGveStoryErrors        *sterr;
-  FILE *l_fp;
-  char l_buff[4000];
+  GapGveStoryErrors            *sterr;
   gint   l_idx;
 
   sterr=vidhand->sterr;
   *frame_count = 0;
   vtarr = &vtarray;
-  vtarr->max_tracknum = STORYBOARD_MAX_VID_TRACKS -1;
+  vtarr->max_tracknum = GAP_STB_MAX_VID_TRACKS -1;
 
   /* clear video track attribute settings for all tracks */
   for(l_idx=0; l_idx <= vtarr->max_tracknum; l_idx++)
@@ -4411,72 +3415,40 @@ p_framerange_list_from_storyboard(const char *storyboard_file
     vtarr->attr[l_idx].move_y_dur    = 0;
   }
 
-  l_fp = fopen(storyboard_file, "r");
-  if(l_fp)
+
+
+  /* PARSE the storyboard file, loading its elements into
+   * a list of type GapStoryBoard into RAM
+   */
   {
-    gint l_rest;
-    gint l_lastchar;
-    char *buff_ptr;
-
-    l_rest = sizeof(l_buff) -1;
-    sterr->currline = &l_buff[0];
-    buff_ptr = &l_buff[0];
-
-    memset(l_buff, 0, sizeof(l_buff));
-
-    while(NULL != fgets(buff_ptr, l_rest, l_fp))
+    GapStoryBoard *stb;
+    
+    /* load the storyboard structure from file */
+    stb = gap_story_parse(storyboard_file);
+    if(stb)
     {
-      gboolean l_line_complete;
-      sterr->curr_nr++;  /* count line numbers */
-
-      l_lastchar = strlen(l_buff) -1;
-      l_line_complete = TRUE;
-
-      /* check for escaped newline (continued long line) */
-      if(l_lastchar >= 2)
+      if(stb->errtext != NULL)
       {
-         if(l_buff[l_lastchar] == '\n')
-         {
-            if (l_buff[l_lastchar-1] == '\\')
-            {
-               /* concat with next line */
-               l_buff[l_lastchar-1] = ' ';
-               buff_ptr= &l_buff[l_lastchar];
-               l_rest =  sizeof(l_buff) - l_lastchar;
-               l_line_complete = FALSE;
-            }
-         }
+	/* report the 1.st error */
+	sterr->curr_nr  = stb->errline_nr;
+	sterr->currline = stb->errline;
+        p_set_stb_error(sterr, stb->errtext);
       }
-
-      if(l_line_complete)
+      else
       {
-        if(gap_debug) printf("storybord_ line: before PARSE: %s\n", l_buff);
-
-        if(vidhand->status_msg)
-        {
-          g_snprintf(vidhand->status_msg, vidhand->status_msg_len, _("PARSING %d: %s"), (int)sterr->curr_nr, l_buff);
-        }
-
-        p_parse_storyboard_line(l_buff
-                               ,storyboard_file
-                               ,frame_from
-                               ,frame_to
-                               ,vtarr
-                               ,vidhand->frn_list
-                               ,vidhand
-                               );
-       if(gap_debug) printf("storybord_ line: after PARSE\n");
-
-       l_rest = sizeof(l_buff) -1;
-       buff_ptr = &l_buff[0];
-     }
-     if((sterr->curr_nr == 1) && (sterr->errtext))
-     {
-       break;   /* stop, if 1.line has error (no haeder was found) !! */
-     }
+        /* analyze the stb list and transform this list
+	 * to vidhand->frn_list and vidhand->aud_list
+	 */
+        p_storyboard_analyze(stb
+                            ,vtarr
+                            ,vidhand->frn_list
+                            ,vidhand
+                            );
+      }
+      gap_story_free_storyboard(&stb);
     }
-    fclose(l_fp);
   }
+
 
   if(vidhand->frn_list)
   {
@@ -4649,8 +3621,6 @@ p_open_video_handle_private(    gboolean ignore_audio
     if(*storyboard_file != '\0')
     {
       vidhand->frn_list = p_framerange_list_from_storyboard(storyboard_file
-                                                  , frame_from
-                                                  , frame_to
                                                   , frame_count
                                                   , vidhand);
     }
@@ -5368,7 +4338,7 @@ gap_gve_story_fetch_composite_image(GapGveStoryVidHandle *vidhand
   /* reverse order, has the effect, that track 0 is processed as last track
    * and will be put on top of the layerstack
    */
-  for(l_track = MIN(STORYBOARD_MAX_VID_TRACKS, l_track_max); l_track >= MAX(0, l_track_min); l_track--)
+  for(l_track = MIN(GAP_STB_MAX_VID_TRACKS, l_track_max); l_track >= MAX(0, l_track_min); l_track--)
   {
     l_framename = p_fetch_framename(vidhand->frn_list
                  , master_frame_nr /* starts at 1 */
@@ -5862,7 +4832,7 @@ gap_gve_story_fetch_composite_image_or_chunk(GapGveStoryVidHandle *vidhand
      * (that possibly could be fetched as comressed videoframe_chunk
      *  and passed 1:1 to the calling encoder)
      */
-    for(l_track = MIN(STORYBOARD_MAX_VID_TRACKS, l_track_max); l_track >= MAX(0, l_track_min); l_track--)
+    for(l_track = MIN(GAP_STB_MAX_VID_TRACKS, l_track_max); l_track >= MAX(0, l_track_min); l_track--)
     {
       l_framename = p_fetch_framename(vidhand->frn_list
                    , master_frame_nr /* starts at 1 */

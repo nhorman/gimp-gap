@@ -1,4 +1,4 @@
-STORYBOARD_FILES           2004.07.26:
+STORYBOARD_FILES           2004.09.12:
 
 
 WARNING:
@@ -17,14 +17,7 @@ Expect there will be changes until the first stable release.
 //          - none of the audio features (AUD_xx)
 //          - video is limited to one track
 //          - no video attributes (effects) VID_OPACITY, VID_ZOOM, VID_MOVE)
-// - Named Parameters:
-//   - key:value parameter style is accepted,
-//     but (only for encoding) the order of parameter is still fixed 
-//     (the parser use din the encoder still needs positional parameters)
-//   - the STORYBOARD dialog accepts position independent named parameters (has a new parser)
-//     FILES  saved with the STORYBOARD dialog always write the parameters in the
-//     required postional order for the encoder.
-
+// - currently there is no support for symbolic ranges (first, last, top or bottom) 
 
 General
 -------
@@ -83,26 +76,7 @@ in the style:
 
 item values may have a comment suffix starting with =
 if no parametername key prefix is specified the fixed order of items
-is assumed.
-
-
-items that specify a duration or a timestamp can have
-unit FRAMES or SECONDS dependig on the way how the
-value is written.
-Here are some Examples:
-
-     7    ..... 7 FRAMES
-   007    ..... 7 FRAMES
-     7.0  ..... 7 Seconds (same as 168 frames for a framerate of 24 fps (7 * framerate))
-
-  File Example:
-
-   VID_MASTER_FRAMERATE   frames_per_sec:24.0
-   VID_PLAY_FRAMES        track:1   animframes_  .xcf   2  1.5
-
-   Play the framerange from frame number 2:    animframes_0002.xcf
-   until frame number 36 (1.5 sec * 24.0 fps)  animframes_0036.xcf
-
+is assumed. items must not contain blanks.
 
 
 Overview of supported RECORD TYPES:
@@ -137,6 +111,7 @@ VID_PLAY_FRAMES    track:1  base:"basename" ext:.jpg  from:0001 to:0099  mode:{p
 VID_PLAY_IMAGE     track:1  file:"image_filename"    nloops:1 macro:"macro_filename"
 VID_PLAY_COLOR     track:1  red:0.0 green:1.0 blue:0.0 alpha:1.0   nloops:1
 VID_SILENCE        track:1                                         nloops:1  wait_until_sec:0.0
+
 # video attributes
 VID_OPACITY        track:1  opacity_from:0.0     opacity_to:1.0     nframes:10
 VID_ZOOM_X         track:1  zoom_x_from:0.1      zoom_x_to:10.0     nframes:10
@@ -160,7 +135,6 @@ AUD_PLAY_MOVIE     track:1  file:"videofile" start_sec:0.0 end_sec:10.2 \
                              nloops:1 \
                              1=selecttrack
 AUD_SILENCE        track:1  duration_sec:0.0  wait_until_sec:10.2
-AUD_TRACK          track:1  {on | off}
 
 
 

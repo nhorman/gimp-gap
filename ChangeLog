@@ -1,3 +1,34 @@
+2004-09-12  Wolfgang Hofer <hof@gimp.org>
+
+	Use the same (new) Parser both for storyboard encoding
+	and for storyboard dialog module.
+	Therefore the new parser was extended for the full level2 syntax.
+	The storyboard dialog is still restricted to level1 and can not
+	handle audio, multiple tracks and the effect attributes.
+	The new parser supports named parameters and introduces the
+	new static library libgapstory.a
+	(the old one was limited to positional parameters)
+	* gap/gap_lib.h
+	* gap/gap_story_file.c [.h]
+	* gap/gap_player_dialog.c
+	* gap/gap_story_dialog.c
+	* gap/gap_story_properties.c
+	* libgapvidutil/gap_gve_story.c [.h]
+	
+	* gap/gap_libgapstory.h     ## NEWLY created file
+	* gap/Makefile.am
+	* vid_common/Makefile.am
+	* vid_enc_avi/Makefile.am
+	* vid_enc_ffmpeg/Makefile.am
+	* vid_enc_single/Makefile.am
+	
+2004-09-11  Wolfgang Hofer <hof@gimp.org>
+
+	FFMPEG based encoder must not be built when configured with 
+	--disable-libavformat
+
+	* vid_enc_ffmpeg/Makefile.am
+
 2004-09-07  Sven Neumann  <sven@gimp.org>
 
 	* configure.in

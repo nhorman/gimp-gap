@@ -71,7 +71,7 @@
 
 #endif /* !G_OS_WIN32 */
 
-/* GapLibAinfoType enum values are subset of GapStoryVideoType
+/* GapLibAinfoType enum values are subset of GapStoryRecordType
  * from the sourcefile gap_story_file.h
  */
 typedef enum

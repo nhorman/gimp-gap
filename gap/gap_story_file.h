@@ -35,22 +35,35 @@
 #include "gap_story_syntax.h"
 
 
+#define GAP_STB_MAX_VID_TRACKS 20
+#define GAP_STB_MAX_AUD_TRACKS 99
 
 
-/* GapStoryVideoType enum values are superset of GapLibAinfoType
+/* GapStoryRecordType enum values are superset of GapLibAinfoType
  * from the sourcefile gap_lib.h
  */
   typedef enum
   {
-     GAP_STBV_SILENCE
-    ,GAP_STBV_COLOR        
-    ,GAP_STBV_IMAGE        
-    ,GAP_STBV_ANIMIMAGE        
-    ,GAP_STBV_FRAMES       
-    ,GAP_STBV_MOVIE 
-    ,GAP_STBV_COMMENT
-    ,GAP_STBV_UNKNOWN
-  } GapStoryVideoType;
+     GAP_STBREC_VID_SILENCE
+    ,GAP_STBREC_VID_COLOR        
+    ,GAP_STBREC_VID_IMAGE        
+    ,GAP_STBREC_VID_ANIMIMAGE        
+    ,GAP_STBREC_VID_FRAMES       
+    ,GAP_STBREC_VID_MOVIE 
+    ,GAP_STBREC_VID_COMMENT
+    ,GAP_STBREC_VID_UNKNOWN
+
+    ,GAP_STBREC_AUD_SILENCE
+    ,GAP_STBREC_AUD_SOUND
+    ,GAP_STBREC_AUD_MOVIE
+
+    ,GAP_STBREC_ATT_OPACITY  
+    ,GAP_STBREC_ATT_ZOOM_X   
+    ,GAP_STBREC_ATT_ZOOM_Y   
+    ,GAP_STBREC_ATT_MOVE_X   
+    ,GAP_STBREC_ATT_MOVE_Y   
+    ,GAP_STBREC_ATT_FIT_SIZE 
+  } GapStoryRecordType;
 
   typedef enum
   {
@@ -70,7 +83,7 @@
     gint32                 story_id;
     gint32                 story_orig_id;
     gboolean               selected;
-    GapStoryVideoType      record_type;
+    GapStoryRecordType     record_type;
     GapStoryVideoPlaymode  playmode;
     gint32                 track;
     
@@ -99,6 +112,35 @@
 			    * 0.5 use each frame twice (half speed at same framerate)
 			    */
     gint32 file_line_nr;   /* line Number in the storyboard file */
+
+    /* new members for level2 VID Record types */
+    gdouble  vid_wait_untiltime_sec;
+    gdouble  color_red;
+    gdouble  color_green;
+    gdouble  color_blue;
+    gdouble  color_alpha;
+           
+    /* new members for attribute Record types */
+    gboolean att_keep_proportions;
+    gboolean att_fit_width;
+    gboolean att_fit_height;
+
+    gdouble  att_value_from;
+    gdouble  att_value_to;
+    gint32   att_value_dur;        /* number of frames to change from -> to value */
+
+    /* new members for Audio Record types */
+    char     *aud_filename;
+    gint32   aud_seltrack;          /* selected audiotrack in a videofile (for GAP_AUT_MOVIE) */
+    gdouble  aud_wait_untiltime_sec;
+    gdouble  aud_play_from_sec;
+    gdouble  aud_play_to_sec;
+    gdouble  aud_volume_start;
+    gdouble  aud_volume;
+    gdouble  aud_volume_end;
+    gdouble  aud_fade_in_sec;
+    gdouble  aud_fade_out_sec;
+ 
     struct GapStoryElem  *comment;
     struct GapStoryElem  *next;
   } GapStoryElem;
@@ -111,6 +153,8 @@
      gint32         master_width;
      gint32         master_height;
      gdouble        master_framerate;
+     gint32         master_samplerate;
+     gdouble        master_volume;
 
      gint32         layout_cols;
      gint32         layout_rows;
@@ -156,7 +200,7 @@ GapStoryElem *      gap_story_elem_find_by_story_id(GapStoryBoard *stb, gint32 s
 
 
 gboolean            gap_story_save(GapStoryBoard *stb, const char *filename);
-GapStoryElem *      gap_story_new_elem(GapStoryVideoType record_type);
+GapStoryElem *      gap_story_new_elem(GapStoryRecordType record_type);
 void                gap_story_upd_elem_from_filename(GapStoryElem *stb_elem,  const char *filename);
 gboolean            gap_story_filename_is_videofile_by_ext(const char *filename);
 gboolean            gap_story_filename_is_videofile(const char *filename);

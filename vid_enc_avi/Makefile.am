@@ -10,7 +10,7 @@ GAPVIDEOAPI = $(top_builddir)/libgapvidapi/libgapvidapi.a  $(GAPVIDEOAPI_EXTLIBS
 INC_GAPVIDEOAPI = -I$(top_builddir)/libgapvidapi $(GAPVIDEOAPI_EXTINCS)
 endif
 
-LIBGIMPGAP = $(top_builddir)/gap/libgimpgap.a
+LIBGIMPGAP =  -L$(top_builddir)/gap  -lgimpgap -lgapstory
 INC_LIBGIMPGAP = -I$(top_builddir)/gap
 
 LIBGAPVIDUTIL  = $(top_builddir)/libgapvidutil/libgapvidutil.a

@@ -405,14 +405,14 @@ p_pw_auto_scene_split(GapStbPropWidget *pw, gboolean all_scenes)
   {
     return;
   }
-  if((stb_elem->record_type != GAP_STBV_MOVIE)
-  && (stb_elem->record_type != GAP_STBV_FRAMES))
+  if((stb_elem->record_type != GAP_STBREC_VID_MOVIE)
+  && (stb_elem->record_type != GAP_STBREC_VID_FRAMES))
   {
     g_message(_("Automatic scene detection operates only "
                 "on cliptypes MOVIE and FRAMES"));
     return;
   }
-  if ((stb_elem->record_type == GAP_STBV_MOVIE)
+  if ((stb_elem->record_type == GAP_STBREC_VID_MOVIE)
   &&  (sgpp->auto_vthumb == FALSE))
   {
     g_message(_("Scene detection depends on video thumbnails. "
@@ -441,7 +441,7 @@ p_pw_auto_scene_split(GapStbPropWidget *pw, gboolean all_scenes)
   diff_diff_threshold = GAP_STORY_SCENE_DIFF_DIFF_THRESHOLD;
   sum_diff = 0;
   num_diff = 0;
-  if(stb_elem->record_type == GAP_STBV_MOVIE)
+  if(stb_elem->record_type == GAP_STBREC_VID_MOVIE)
   {
     prev_th_data = gap_story_dlg_fetch_vthumb(sgpp
               ,stb_elem->orig_filename
@@ -500,7 +500,7 @@ p_pw_auto_scene_split(GapStbPropWidget *pw, gboolean all_scenes)
      *  therefore we add only vthumbs of the startframes of a new scene)
      * 
      */
-    if(stb_elem->record_type == GAP_STBV_MOVIE)
+    if(stb_elem->record_type == GAP_STBREC_VID_MOVIE)
     {
       th_data = gap_story_dlg_fetch_vthumb_no_store(sgpp
               ,stb_elem->orig_filename
@@ -648,7 +648,7 @@ printf("AUTO SCENE NEW_ELEM linked to list: drop:%d, video_id:%d\n"
      ,(int)video_id
      );
 
-	if((stb_elem->record_type == GAP_STBV_MOVIE)
+	if((stb_elem->record_type == GAP_STBREC_VID_MOVIE)
 	&& (drop_th_data)
 	&& (video_id >= 0))
 	{
@@ -667,7 +667,7 @@ printf("AUTO SCENE ADD VTHUMB:\n");
 				  ,sgpp
 				  );
 	}
-	if(stb_elem->record_type != GAP_STBV_MOVIE)
+	if(stb_elem->record_type != GAP_STBREC_VID_MOVIE)
 	{
 	   /* refresh storyboard layout and thumbnail list widgets */
 	   gap_story_dlg_recreate_tab_widgets(pw->tabw
@@ -684,7 +684,7 @@ printf("AUTO SCENE ADD VTHUMB:\n");
        * are not start of a scene
        * or were not already in the vthum list before
        */
-      if(stb_elem->record_type == GAP_STBV_MOVIE)
+      if(stb_elem->record_type == GAP_STBREC_VID_MOVIE)
       {
         g_free(prev_th_data);
       }
@@ -695,7 +695,7 @@ printf("AUTO SCENE ADD VTHUMB:\n");
       }
       prev_th_data = NULL;
     }		      
-    if(stb_elem->record_type == GAP_STBV_MOVIE)
+    if(stb_elem->record_type == GAP_STBREC_VID_MOVIE)
     {
       prev_th_data = th_data;
     }
@@ -746,7 +746,7 @@ p_pv_pview_render_immediate (GapStbPropWidget *pw)
    l_th_width = 128;
    l_th_height = 128;
 
-   if(pw->stb_elem_refptr->record_type == GAP_STBV_MOVIE)
+   if(pw->stb_elem_refptr->record_type == GAP_STBREC_VID_MOVIE)
    {
      guchar *l_th_data;
      /* if(gap_debug) printf("RENDER: p_pv_pview_render MOVIE Thumbnail\n"); */
@@ -929,7 +929,7 @@ printf("GO_JOB: go_job_framenr: %d\n", (int)pw->go_job_framenr );
 static void
 p_pv_pview_render (GapStbPropWidget *pw)
 {
-   if(pw->stb_elem_refptr->record_type != GAP_STBV_MOVIE)
+   if(pw->stb_elem_refptr->record_type != GAP_STBREC_VID_MOVIE)
    {
      p_pv_pview_render_immediate(pw);
      return;
@@ -1029,7 +1029,7 @@ printf("PROP AINFO CHECK\n");
   l_lower = 1;
   l_upper = 99999; /* default for unknown total_frames */
   
-  if(pw->stb_elem_refptr->record_type == GAP_STBV_FRAMES)
+  if(pw->stb_elem_refptr->record_type == GAP_STBREC_VID_FRAMES)
   {
     ainfo_ptr = gap_lib_alloc_ainfo_from_name(filename, GIMP_RUN_NONINTERACTIVE);
     if(ainfo_ptr)
@@ -1046,11 +1046,11 @@ printf("PROP AINFO CHECK\n");
   }
   else
   {
-    if(pw->stb_elem_refptr->record_type == GAP_STBV_MOVIE)
+    if(pw->stb_elem_refptr->record_type == GAP_STBREC_VID_MOVIE)
     {
       GapStoryVideoElem *velem;
 
-printf("PROP AINFO CHECK --> GAP_STBV_MOVIE\n");
+printf("PROP AINFO CHECK --> GAP_STBREC_VID_MOVIE\n");
       velem = gap_story_dlg_get_velem(pw->sgpp
                            ,pw->stb_elem_refptr->orig_filename
 			   ,pw->stb_elem_refptr->seltrack
@@ -1242,7 +1242,7 @@ p_pw_comment_entry_update_cb(GtkWidget *widget, GapStbPropWidget *pw)
   
   if(pw->stb_elem_refptr->comment == NULL)
   {
-    pw->stb_elem_refptr->comment = gap_story_new_elem(GAP_STBV_COMMENT);
+    pw->stb_elem_refptr->comment = gap_story_new_elem(GAP_STBREC_VID_COMMENT);
   }
 
   if(pw->stb_elem_refptr->comment)
@@ -1279,29 +1279,29 @@ p_pw_update_info_labels(GapStbPropWidget *pw)
   l_mov_sensitive = FALSE;
   switch(pw->stb_elem_refptr->record_type)
   {
-    case GAP_STBV_SILENCE:
+    case GAP_STBREC_VID_SILENCE:
       gtk_label_set_text ( GTK_LABEL(pw->cliptype_label), _("EMPTY"));
       break;
-    case GAP_STBV_COLOR:
+    case GAP_STBREC_VID_COLOR:
       gtk_label_set_text ( GTK_LABEL(pw->cliptype_label), _("COLOR"));
       break;
-    case GAP_STBV_IMAGE:
+    case GAP_STBREC_VID_IMAGE:
       gtk_label_set_text ( GTK_LABEL(pw->cliptype_label), _("SINGLE-IMAGE"));
       break;
-    case GAP_STBV_ANIMIMAGE:
+    case GAP_STBREC_VID_ANIMIMAGE:
       l_sensitive = TRUE;
       gtk_label_set_text ( GTK_LABEL(pw->cliptype_label), _("ANIM-IMAGE"));
       break;
-    case GAP_STBV_FRAMES:
+    case GAP_STBREC_VID_FRAMES:
       l_sensitive = TRUE;
       gtk_label_set_text ( GTK_LABEL(pw->cliptype_label), _("FRAME-IMAGES"));
       break;
-    case GAP_STBV_MOVIE:
+    case GAP_STBREC_VID_MOVIE:
       l_sensitive = TRUE;
       l_mov_sensitive = TRUE;
       gtk_label_set_text ( GTK_LABEL(pw->cliptype_label), _("MOVIE"));
       break;
-    case GAP_STBV_COMMENT:
+    case GAP_STBREC_VID_COMMENT:
       gtk_label_set_text ( GTK_LABEL(pw->cliptype_label), _("COMMENT"));
       break;
     default:
@@ -2072,8 +2072,8 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
 
   if(pw->stb_elem_refptr)
   {
-    if((pw->stb_elem_refptr->record_type == GAP_STBV_FRAMES)
-    || (pw->stb_elem_refptr->record_type == GAP_STBV_MOVIE))
+    if((pw->stb_elem_refptr->record_type == GAP_STBREC_VID_FRAMES)
+    || (pw->stb_elem_refptr->record_type == GAP_STBREC_VID_MOVIE))
     {
       /* for framerange clips constraint from / to spinbuttons */
       p_pw_check_ainfo_range(pw, pw->stb_elem_refptr->orig_filename);
