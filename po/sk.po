@@ -1,3 +1,4 @@
+# Slovak translation of 
 # Slovak translation of gimp-gap.HEAD.pot
 # Copyright (C) 1999,2003, 2004 Free Software Foundation, Inc.
 # Zdenko Podobný <zdpo@mailbox.sk>, 2002, 2003, 2004.
@@ -5,16 +6,16 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gimp-gap.HEAD\n"
+"Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-02-14 14:35+0100\n"
-"PO-Revision-Date: 2004-01-24 13:12+0100\n"
+"POT-Creation-Date: 2004-03-10 14:39+0100\n"
+"PO-Revision-Date: 2004-03-10 20:26+0100\n"
 "Last-Translator: Zdenko Podobný <zdpo@mailbox.sk>\n"
 "Language-Team: Slovak <sk-i18n@lists.linux.sk>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.2beta3\n"
+"X-Generator: KBabel 1.3\n"
 
 #. Button  to invoke fontbrowser
 #: gap/gap_arr_dialog.c:455
@@ -23,7 +24,7 @@ msgstr "Prehliadač písma"
 
 #. Button  to invoke filebrowser
 #. audiofile button (fileselect invoker)
-#: gap/gap_arr_dialog.c:536 gap/gap_fmac_main.c:589
+#: gap/gap_arr_dialog.c:536 gap/gap_fmac_main.c:594
 #: gap/gap_player_dialog.c:3383
 msgid "File Browser"
 msgstr "Prehliadač súborov"
@@ -122,8 +123,7 @@ msgstr "Prejsť na toto číslo snímky"
 
 #: gap/gap_base_ops.c:1019
 #, c-format
-msgid ""
-"Frames %d - %d will be deleted. There will be no undo for this operation."
+msgid "Frames %d - %d will be deleted. There will be no undo for this operation."
 msgstr "Snímky %d - %d budú zmazané. Túto operáciu nebude možné vrátiť späť."
 
 #. title_txt
@@ -144,8 +144,7 @@ msgstr "Zmazať snímky od %ld po (číslo)"
 
 #: gap/gap_base_ops.c:1077
 #, c-format
-msgid ""
-"Delete frames starting at current number %d up to this number (inclusive)"
+msgid "Delete frames starting at current number %d up to this number (inclusive)"
 msgstr "Odstrániť snímky od aktuálneho čísla %d až do tohoto čísla (vrátane)"
 
 #: gap/gap_base_ops.c:1157
@@ -283,8 +282,7 @@ msgstr "Zameniť aktuálnu snímku (%ld)"
 
 #: gap/gap_base_ops.c:1515
 #, c-format
-msgid ""
-"Exchange the current frame %d with the frame that has the number entered here"
+msgid "Exchange the current frame %d with the frame that has the number entered here"
 msgstr "Vymeniť aktuálnu snímku %d so snímkou s týmto číslom"
 
 #: gap/gap_base_ops.c:1519
@@ -304,8 +302,7 @@ msgstr "N-posun:"
 msgid ""
 "Renumber the affected frame sequence (numbers are shifted in circle by N "
 "steps)"
-msgstr ""
-"Prečíslovanie ovplyvnenej sekvencie snímok (čísla sú cyklicky posunuté o N)"
+msgstr "Prečíslovanie ovplyvnenej sekvencie snímok (čísla sú cyklicky posunuté o N)"
 
 #: gap/gap_base_ops.c:1592
 msgid "Frame Sequence Shift"
@@ -390,8 +387,7 @@ msgstr "Zdrojová alfa:"
 #. lowr/upper unconstrained
 #: gap/gap_bluebox.c:340
 msgid "Affect only pixels with alpha >= source alpha where 1.0 is full opaque"
-msgstr ""
-"Ovplyvňovať iba body s alfou >= zdrojová alfa, kde 1.0 je úplne nepriesvitné"
+msgstr "Ovplyvňovať iba body s alfou >= zdrojová alfa, kde 1.0 je úplne nepriesvitné"
 
 #: gap/gap_bluebox.c:351
 msgid "Target Alpha:"
@@ -403,10 +399,8 @@ msgstr "Cieľová alfa:"
 #. constrain
 #. lowr/upper unconstrained
 #: gap/gap_bluebox.c:358
-msgid ""
-"Set alpha of affected pixel to target alpha where 0.0 is full transparent"
-msgstr ""
-"Nastaviť alfa ovplyvnených bodov na cieľovú alfu, kde 0.0 je úplne priesvitné"
+msgid "Set alpha of affected pixel to target alpha where 0.0 is full transparent"
+msgstr "Nastaviť alfa ovplyvnených bodov na cieľovú alfu, kde 0.0 je úplne priesvitné"
 
 #: gap/gap_bluebox.c:369
 msgid "Feather Edges:"
@@ -822,10 +816,8 @@ msgid "Jpeg Quality:"
 msgstr "Jpeg kvalita:"
 
 #: gap/gap_decode_xanim.c:296
-msgid ""
-"Quality for resulting jpeg frames. (is ignored when other formats are used)"
-msgstr ""
-"Kvalita výsledných Jpeg snímok (je ignorovaná, keď sa použije iný formát)."
+msgid "Quality for resulting jpeg frames. (is ignored when other formats are used)"
+msgstr "Kvalita výsledných Jpeg snímok (je ignorovaná, keď sa použije iný formát)."
 
 #: gap/gap_decode_xanim.c:307
 msgid "Open"
@@ -1034,84 +1026,84 @@ msgstr "Premenlivé použitie"
 msgid "<Image>/Filters/Filter all Layers..."
 msgstr "<Image>/Filtre/Filter pre všetky vrstvy..."
 
-#: gap/gap_fmac_main.c:205
+#: gap/gap_fmac_main.c:206
 msgid "<Image>/Filters/Filtermacro..."
 msgstr "<Image>/Filtre/Makro filtra..."
 
-#: gap/gap_fmac_main.c:489
+#: gap/gap_fmac_main.c:494
 msgid "Select Filtercalls of Current GIMP Session"
 msgstr "Vyberte volanie filtrov z aktuálneho sedenia GIMPu"
 
 #. dont use the 1.st action button at all
-#: gap/gap_fmac_main.c:491
+#: gap/gap_fmac_main.c:496
 msgid "Add Filter"
 msgstr "Pridať filter"
 
-#: gap/gap_fmac_main.c:545
+#: gap/gap_fmac_main.c:550
 msgid "Filter Macro Script"
 msgstr "Skript makra filtrovanie"
 
 #. label
-#: gap/gap_fmac_main.c:569
+#: gap/gap_fmac_main.c:574
 msgid "Filename:"
 msgstr "Názov súboru:"
 
-#: gap/gap_fmac_main.c:581
+#: gap/gap_fmac_main.c:586
 msgid "Name of the filtermacro scriptfile"
 msgstr "Názov súboru skriptu makra filtrovania"
 
-#: gap/gap_fmac_main.c:591
+#: gap/gap_fmac_main.c:596
 msgid "Open filebrowser window to select a filename"
 msgstr "Otvoriť okno prehliadača súborov pre výber názvu súboru"
 
-#: gap/gap_fmac_main.c:618
+#: gap/gap_fmac_main.c:623
 msgid "Nr"
 msgstr "č."
 
-#: gap/gap_fmac_main.c:624
+#: gap/gap_fmac_main.c:629
 msgid "PDB Name"
 msgstr "PDB Názov:"
 
-#: gap/gap_fmac_main.c:630
+#: gap/gap_fmac_main.c:635
 msgid "Menu Path"
 msgstr "Cesta v ponuke"
 
-#: gap/gap_fmac_main.c:788
+#: gap/gap_fmac_main.c:793
 msgid "** No menu path available **"
 msgstr "** Cesta v ponuke nie je k dispozícií **"
 
-#: gap/gap_fmac_main.c:824
+#: gap/gap_fmac_main.c:829
 msgid "** Empty **"
 msgstr "** Prázdny **"
 
-#: gap/gap_fmac_main.c:833
+#: gap/gap_fmac_main.c:838
 msgid "** File is not a filtermacro **"
 msgstr "** Súbor nie je makro filtrovania **"
 
 #. Button Delete All
-#: gap/gap_fmac_main.c:865
+#: gap/gap_fmac_main.c:870
 msgid "Delete All"
 msgstr "Odstrániť všetko"
 
-#: gap/gap_fmac_main.c:869
+#: gap/gap_fmac_main.c:874
 msgid "Delete the filtermacro scriptfile"
 msgstr "Odstrániť súbor skriptu makra filtrov"
 
 #. Button Delete
-#: gap/gap_fmac_main.c:878
+#: gap/gap_fmac_main.c:883
 msgid "Delete"
 msgstr "Zmazať"
 
-#: gap/gap_fmac_main.c:882
+#: gap/gap_fmac_main.c:887
 msgid "Delete the selected filtercall"
 msgstr "Zmazať označené volania filtrov"
 
 #. Button Add
-#: gap/gap_fmac_main.c:891
+#: gap/gap_fmac_main.c:896
 msgid "Add"
 msgstr "Pridať"
 
-#: gap/gap_fmac_main.c:895
+#: gap/gap_fmac_main.c:900
 msgid ""
 "Open PDB-browser window to add a new filter to the filtermacro scriptfile.\n"
 "Important:\n"
@@ -1126,15 +1118,15 @@ msgstr ""
 "použité a nastavili interný buffer s nastavením parametrov z posledného "
 "spustenia."
 
-#: gap/gap_fmac_main.c:915 gap/gap_player_dialog.c:4178
+#: gap/gap_fmac_main.c:920 gap/gap_player_dialog.c:4178
 msgid "Close window"
 msgstr "Zatvoriť okno"
 
-#: gap/gap_fmac_main.c:929
+#: gap/gap_fmac_main.c:934
 msgid "Apply filtermacro script on current drawable and close window"
 msgstr "Použiť skript makra filtrov na aktuálne okno a zavrieť ho"
 
-#: gap/gap_fmac_main.c:1120
+#: gap/gap_fmac_main.c:1125
 #, c-format
 msgid ""
 "ERROR: Could not write filtermacro script\n"
@@ -1146,11 +1138,11 @@ msgstr ""
 "%s"
 
 #. filesel is already open
-#: gap/gap_fmac_main.c:1140
+#: gap/gap_fmac_main.c:1145
 msgid "Select Filtermacro Scriptfile"
 msgstr "Vyberte súbor skriptu makra fillter"
 
-#: gap/gap_fmac_main.c:1414
+#: gap/gap_fmac_main.c:1419
 #, c-format
 msgid ""
 "Plug-in not available or has wrong type\n"
@@ -1165,8 +1157,7 @@ msgstr "<Image>/Video/Rozdeliť video do snímok/Akékoľvek čitateľné XANIMo
 
 #: gap/gap_frontends_main.c:142
 msgid "<Toolbox>/Xtns/Split Video to Frames/Any XANIM readable..."
-msgstr ""
-"<Toolbox>/Rozš./Rozdeliť video do snímok/Akékoľvek spracovateľné XANIMom..."
+msgstr "<Toolbox>/Rozš./Rozdeliť video do snímok/Akékoľvek spracovateľné XANIMom..."
 
 #: gap/gap_frontends_main.c:154
 msgid "<Image>/Video/Encode/MPEG1..."
@@ -1532,8 +1523,7 @@ msgstr "Vzorka vrstvy:"
 
 #. pixel
 #: gap/gap_mod_layer.c:233
-msgid ""
-"String to identify layer names or layerstack position numbers. Example: 0,3-5"
+msgid "String to identify layer names or layerstack position numbers. Example: 0,3-5"
 msgstr ""
 "Reťazec na identifikáciu názvov vrstiev alebo číslo pozície v zásobníku "
 "vrstiev. Príklad: 0,3-5"
@@ -1564,13 +1554,12 @@ msgid "Function to be performed on all selected layers"
 msgstr "Funkcia sa vykoná na všetkých vybraných vrstvách"
 
 #: gap/gap_mod_layer.c:261
-#, fuzzy
 msgid ""
 "Layer Name\n"
 " or Channel Name:"
 msgstr ""
-"Nový názov\n"
-"vrstvy alebo kanála:"
+"Názov vrstvy\n"
+"alebo kanála:"
 
 #. pixel
 #: gap/gap_mod_layer.c:263
@@ -1618,8 +1607,7 @@ msgstr "Výber filtra pre animované použitie na snímkach"
 
 #: gap/gap_mod_layer.c:1020
 msgid "GAP Modify: No layer selected in last handled frame"
-msgstr ""
-"Úprava GAP: V poslednej spracovávanej vrstve nie je zvolená žiadna vrstva"
+msgstr "Úprava GAP: V poslednej spracovávanej vrstve nie je zvolená žiadna vrstva"
 
 #: gap/gap_mod_layer.c:1107
 msgid "Modifying frames/layer(s)..."
@@ -1955,8 +1943,7 @@ msgstr "Režim krokovania:"
 
 #: gap/gap_mov_dialog.c:2514
 msgid "How to fetch the next source layer at the next handled frame"
-msgstr ""
-"Spôsob vyvolania nasledujúcej zdrojovej vrstvy na ďalšej spracovávanej snímke"
+msgstr "Spôsob vyvolania nasledujúcej zdrojovej vrstvy na ďalšej spracovávanej snímke"
 
 #. StepSpeedFactor
 #. table col, row
@@ -2003,8 +1990,7 @@ msgid "Move Path Bluebox Keycolor"
 msgstr ""
 
 #: gap/gap_mov_dialog.c:2659
-msgid ""
-"Open dialog window to set parameters and keycolor for the bluebox filter"
+msgid "Open dialog window to set parameters and keycolor for the bluebox filter"
 msgstr ""
 
 #. toggle Tracelayer
@@ -2900,8 +2886,7 @@ msgstr "Konštantná bitová frekvencia:"
 
 #: gap/gap_mpege.c:366
 msgid "Iqnore I/P/QSCALE values and use constant bit-rate)"
-msgstr ""
-"Ignorovať hodnoty mierky kvality I/P a použiť konštantnú bitovú frekvenciu"
+msgstr "Ignorovať hodnoty mierky kvality I/P a použiť konštantnú bitovú frekvenciu"
 
 #: gap/gap_mpege.c:373
 msgid "Pattern:"
@@ -2917,7 +2902,6 @@ msgid "IQSCALE:"
 msgstr "IQSCALE:"
 
 #: gap/gap_mpege.c:384
-#, fuzzy
 msgid ""
 "Quality scale for I-frames\n"
 "(1 = best quality, 31 = best compression)"
@@ -2930,7 +2914,6 @@ msgid "PQSCALE:"
 msgstr "PQSCALE:"
 
 #: gap/gap_mpege.c:394
-#, fuzzy
 msgid ""
 "Quality scale for P-frames\n"
 "(1 = best quality, 31 = best compression)"
@@ -2943,7 +2926,6 @@ msgid "BQSCALE:"
 msgstr "BQSCALE:"
 
 #: gap/gap_mpege.c:404
-#, fuzzy
 msgid ""
 "Quality scale for B-frames\n"
 "(1 = best quality, 31 = best compression)"
@@ -3339,10 +3321,8 @@ msgid "Ignore BG-layer(s):"
 msgstr "Ignorovať vrstvy pozadia:"
 
 #: gap/gap_onion_dialog.c:1146
-msgid ""
-"Exclude N background layers. Use 0 if you dont want to exclude any layer."
-msgstr ""
-"Okrem N vrstiev pozadia. Použite 0, ak nechcete vynechať žiadnu vrstvu."
+msgid "Exclude N background layers. Use 0 if you dont want to exclude any layer."
+msgstr "Okrem N vrstiev pozadia. Použite 0, ak nechcete vynechať žiadnu vrstvu."
 
 #: gap/gap_onion_dialog.c:1149
 msgid "Select Mode:"
@@ -3448,10 +3428,8 @@ msgstr ""
 "rozsahu"
 
 #: gap/gap_onion_dialog.c:1343
-msgid ""
-"Remove all onionskin layers in all frames of the the selected frame range"
-msgstr ""
-"Odstrániť všetky vrstvy onionskin vo všetkých snímkach zo zvoleného rozsahu"
+msgid "Remove all onionskin layers in all frames of the the selected frame range"
+msgstr "Odstrániť všetky vrstvy onionskin vo všetkých snímkach zo zvoleného rozsahu"
 
 #: gap/gap_onion_dialog.c:1350
 msgid ""
@@ -3792,8 +3770,7 @@ msgid "Audio Options"
 msgstr "Audio nastavenia"
 
 #: gap/gap_player_dialog.c:3787
-msgid ""
-"Click: go to frame, Ctrl-Click: set 'From Frame', Alt-Click: set 'To Frame'"
+msgid "Click: go to frame, Ctrl-Click: set 'From Frame', Alt-Click: set 'To Frame'"
 msgstr ""
 "Kliknutie: prejsť na políčko, Ctrl-kliknutie: nastaviť 'Od políčka', Alt-"
 "kliknutie: nastaviť 'Po políčko'"
@@ -3981,7 +3958,6 @@ msgid "Reset parameters to original size"
 msgstr "Nastaviť parametre na pôvodnú veľkosť"
 
 #: gap/gap_range_ops.c:302
-#, fuzzy
 msgid "Layerstack position where 0 is the top layer"
 msgstr "Pozícia v zásobníku vrstiev, kde 0 je najvyššia vrstva"
 
@@ -4026,7 +4002,6 @@ msgid "Custom Palette"
 msgstr "Vlastná paleta"
 
 #: gap/gap_range_ops.c:370
-#, fuzzy
 msgid "Name of a custom palette (ignored if palette type is not custom)"
 msgstr "Názov vlastnej palety (je ignorované, ak typ palety nie je 'Vlastná')"
 
@@ -4105,7 +4080,6 @@ msgid "Extension:"
 msgstr "Prípona:"
 
 #: gap/gap_range_ops.c:504
-#, fuzzy
 msgid ""
 "The extension of resulting frames is also used to define the fileformat. "
 "Please note that fileformats differ in capabilities to store informations "
@@ -4122,13 +4096,12 @@ msgid "Imagetype:"
 msgstr "Typ obrázku:"
 
 #: gap/gap_range_ops.c:515
-#, fuzzy
 msgid ""
 "Convert to another imagetype, or keep imagetype as it is. Most fileformats "
 "can't handle all types and may require a conversion.Example: GIF can not "
 "handle RGB and requires convert to indexed imagetype."
 msgstr ""
-"Konvertovať na iný typ obrázku alebo ponechať súčasný typ obrázka. Väčšina "
+"Konvertovať na iný typ obrázka alebo ponechať súčasný typ obrázka. Väčšina "
 "formátov súborov nevie spracovávať všetky typy a môže vyžadovať prevod. "
 "Príklad: GIF nevie spracovať RGB a vyžaduje konverziu do indexovaného typu "
 "obrázku."
@@ -4432,8 +4405,7 @@ msgstr ""
 msgid ""
 "Extension of resulting frames. The extension is also used to define "
 "fileformat."
-msgstr ""
-"Prípona výsledných snímok. Prípona sa tiež použije na určenie formátu súboru."
+msgstr "Prípona výsledných snímok. Prípona sa tiež použije na určenie formátu súboru."
 
 #: gap/gap_split.c:261
 msgid "Inverse Order:"
@@ -4700,3 +4672,4 @@ msgstr "Svetlosť:"
 #: gap/gap_wr_color_huesat.c:686
 msgid "Saturation:"
 msgstr "Sýtosť:"
+
