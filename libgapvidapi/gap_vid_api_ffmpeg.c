@@ -1372,8 +1372,6 @@ p_wrapper_ffmpeg_count_frames(t_GVA_Handle *gvahand)
   copy_gvahand->vindex = vindex;
   handle = (t_GVA_ffmpeg*)copy_gvahand->decoder_handle;
 
-  // printf("p_wrapper_ffmpeg_count_frames: ## 10 ## handle:%d\n", (int)handle);
-  
   if(handle)
   {
     if(vindex)
@@ -1714,7 +1712,7 @@ p_ff_open_input(char *filename, t_GVA_Handle *gvahand, t_GVA_ffmpeg*  handle, gb
 	          gvahand->aspect_ratio = av_q2d (acc->sample_aspect_ratio);
 		  break;
 	      }
-	      //if(gap_debug)
+	      if(gap_debug)
 	      {
 	        printf("FF ASPECT: dtg_active_format:%d  num:%d den:%d\n"
 		      ,(int)acc->dtg_active_format

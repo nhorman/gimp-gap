@@ -1,3 +1,24 @@
+2005-04-09  Wolfgang Hofer <hof@gimp.org>
+
+	- disabled some hardcoded debug output.
+	- MovePath: new feature for advanced reset and grabbing a gimp path.
+	  When The SHIFT Key is held down while the "Grab Path" button is pressed
+	  the path is grabbed in a way that results in one controlpoint
+	  per handled frame. 
+	  The moving object may follow the bezier path in more precise
+	  manner (not just straight lines between the anchor points),
+	  when the move path operation affects many frames.
+
+	* libgapvidapi/gap_vid_api_ffmpeg.c
+	* libgapvidapi/gap_vid_api_util.c
+	* vid_enc_single/gap_enc_singleframes_main.c
+	* libgapvidutil/gap_gve_story.c
+	* gap/gap_mov_dialog.c
+	* gap/gap_morph_dialog.c
+	* docs/reference/txt/plug-in-gap-move-path.txt
+	* NEWS
+
+
 2005-04-04  Wolfgang Hofer <hof@gimp.org>
 	2005-04-04:
 	- replaced some deprecated calls

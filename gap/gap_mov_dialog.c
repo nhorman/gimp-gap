@@ -271,6 +271,7 @@ static void        p_point_refresh           (t_mov_gui_stuff *mgp);
 static void        p_pick_nearest_point      (gint px, gint py);
 static void        p_reset_points            ();
 static void        p_clear_one_point         (gint idx);
+static void        p_mix_one_point(gint idx, gint ref1, gint ref2, gdouble mix_factor);
 static void        p_load_points             (char *filename);
 static void        p_save_points             (char *filename, t_mov_gui_stuff *mgp);
 
@@ -314,8 +315,16 @@ static gint	   mov_path_prevw_preview_expose ( GtkWidget *widget, GdkEvent *even
 static gint	   mov_path_prevw_preview_events ( GtkWidget *widget, GdkEvent *event );
 static gint        p_chk_keyframes(t_mov_gui_stuff *mgp);
 
+static gdouble     mov_get_path_length (gint32 image_id);
+static void        mov_grab_bezier_path(t_mov_gui_stuff *mgp);
+static void        mov_grab_anchorpoints_path(t_mov_gui_stuff *mgp
+                                             ,gint num_path_point_details
+					     ,gdouble *points_details
+					     );
+
+
 static void	mov_padd_callback        (GtkWidget *widget,gpointer data);
-static void	mov_pgrab_callback       (GtkWidget *widget,gpointer data);
+static void	mov_pgrab_callback       (GtkWidget *widget,GdkEventButton *bevent,gpointer data);
 static void	mov_pins_callback        (GtkWidget *widget,gpointer data);
 static void	mov_pdel_callback        (GtkWidget *widget,gpointer data);
 static void     mov_follow_keyframe      (t_mov_gui_stuff *mgp);
@@ -325,7 +334,7 @@ static void     mov_pfirst_callback      (GtkWidget *widget,GdkEventButton *beve
 static void     mov_plast_callback       (GtkWidget *widget,GdkEventButton *bevent,gpointer data);
 static void	mov_pdel_all_callback    (GtkWidget *widget,gpointer data);
 static void	mov_pclr_callback        (GtkWidget *widget,gpointer data);
-static void	mov_pclr_all_callback    (GtkWidget *widget,gpointer data);
+static void	mov_pclr_all_callback    (GtkWidget *widget,GdkEventButton *bevent,gpointer data);
 static void	mov_prot_follow_callback (GtkWidget *widget,GdkEventButton *bevent,gpointer data);
 static void     mov_pload_callback       (GtkWidget *widget,gpointer data);
 static void     mov_psave_callback       (GtkWidget *widget,gpointer data);
@@ -1159,159 +1168,308 @@ p_copy_point(gint to_idx, gint from_idx)
 }
 
 
+/* ------------------------
+ * mov_get_path_length
+ * ------------------------
+ * get length of the path by checking
+ * koords in steps of 1 pixel length.
+ * at end the gimp_path_get_point_at_dist procedure
+ * will return zero values for x,y and slope
+ */
+
+static gdouble
+mov_get_path_length (gint32 image_id)
+{
+  gint             x_point;
+  gint             y_point;
+  gdouble          max_distance;
+  gdouble          distance;
+  gdouble          slope;
+
+  if(gap_debug) printf("mov_get_path_length\n");
+
+  max_distance = 0.0;
+  for(distance = 0.0; distance < 90000; distance += 1)
+  {
+    x_point = gimp_path_get_point_at_dist (image_id
+                        	  , distance
+				  , &y_point
+				  , &slope
+				  );
+
+    if((x_point == 0)
+    && (y_point == 0)
+    && (slope == 0.0))
+    {
+      break;
+    }
+    max_distance = distance;
+  }
+
+  if(gap_debug)
+  {
+    printf("mov_get_path_length max_distance: %f\n", (float)max_distance);
+  }
+
+  return(max_distance);
+  
+}  /* end mov_get_path_length */
+
+
+/* --------------------------
+ * mov_grab_bezier_path
+ * --------------------------
+ * grab the bezier path divided in 
+ * straight lines and assign them to N-controlpoints.
+ * this procedure uses the number of frames to be handled
+ * as the wanted number of contolpoints.
+ * (but constrain to the maximum allowed number of contolpoints)
+ */
+static void
+mov_grab_bezier_path(t_mov_gui_stuff *mgp)
+{
+  gint32 image_id;
+  gint             x_point;
+  gint             y_point;
+  gint             num_lines;
+  gint             num_points;
+  gdouble          max_distance;
+  gdouble          distance;
+  gdouble          slope;
+  gdouble          step_length;
+  gint             l_ii;
+  
+
+  image_id = mgp->ainfo_ptr->image_id;
+  step_length = 1.0;
+
+  num_points = 1 + abs(pvals->dst_range_end - pvals->dst_range_start);
+  num_points = MIN((GAP_MOV_MAX_POINT-2), num_points);
+  num_lines = num_points -1;
+  
+  if(num_lines > 0)
+  {
+    max_distance = mov_get_path_length(image_id);
+    step_length = max_distance / ((gdouble)num_lines);
+  }
+  
+  distance   = 0.0;
+  
+  for(l_ii=0; l_ii < num_points ; l_ii++)
+  {
+    x_point = gimp_path_get_point_at_dist (image_id
+                        	, distance
+				, &y_point
+				, &slope
+				);
+    if(gap_debug)
+    {
+      printf("PATH distance: %.3f, X:%03d Y: %03d slope:%.3f\n"
+            , (float)distance
+	    , (int)x_point
+	    , (int)y_point
+            , (float)slope
+	    );
+    }
+
+    pvals->point_idx_max = l_ii;
+    p_clear_one_point(l_ii);
+    pvals->point[l_ii].p_x = x_point;
+    pvals->point[l_ii].p_y = y_point;
+
+    distance += step_length;
+  }
+  
+}  /* end mov_grab_bezier_path */
+
+
+/* --------------------------
+ * mov_grab_anchorpoints_path
+ * --------------------------
+ * grab the bezier path divided in 
+ * straight lines and assign them to N-controlpoints.
+ * this procedure uses the number of frames to be handled
+ * as the wanted number of contolpoints.
+ * (but constrain to the maximum allowed number of contolpoints)
+ */
+static void
+mov_grab_anchorpoints_path(t_mov_gui_stuff *mgp,
+                           gint num_path_point_details,
+			   gdouble *points_details
+			   )
+{
+    gint l_ii;
+    gint l_ti;
+    gint l_idx;
+    gint    point_x;
+    gint    point_y;
+    gint    point_type;
+
+    point_x = 0;
+    point_y = 0;
+    l_ti = 0;
+    l_idx = 0;
+    l_ii = 0;
+
+    while(l_idx < GAP_MOV_MAX_POINT -2)
+    {
+      if(gap_debug)
+      {
+       printf("Point[%03d]: detail: %3.3f\n"
+	  , (int)l_ii
+          , (float)points_details[l_ii]
+	  );
+      }
+
+      point_type = -44;    /* private marker for the last point that usually is delivered without type detail */
+      switch (l_ti)
+      {
+	case 0:  point_x = (gint)points_details[l_ii]; break;
+	case 1:  point_y = (gint)points_details[l_ii]; break;
+	case 2:  point_type = (gint)points_details[l_ii]; break;
+      }
+
+      l_ti++;
+      l_ii++;
+      if((l_ti > 2) || (l_ii == num_path_point_details))
+      {
+        if(gap_debug)
+	{
+	  printf("\n");
+	}
+
+	l_ti=0;
+
+	/* this implemenatation just fetches the BEZIER_ANCHOR points
+	 * and ignores BEZIER_CONTROL (type 2 points)
+	 * and ignores BEZIER_MOVE (type 3 points)
+	 */
+
+	if((point_type == 1)  /* 1 == BEZIER_ANCHOR */
+	|| (point_type == -44))
+	{
+          if(gap_debug)
+	  {
+	    printf("x:%d y:%d: type:%d\n\n"
+	                         ,(int)point_x
+	                         ,(int)point_y
+	                         ,(int)point_type
+				 );
+	  }
+
+	  pvals->point_idx_max = l_idx;
+	  p_clear_one_point(l_idx);
+          pvals->point[l_idx].p_x = point_x;
+          pvals->point[l_idx].p_y = point_y;
+	  l_idx++;
+	}
+      }
+      if (l_ii >= num_path_point_details)
+      {
+	break;
+      }
+    }
+    
+    if(gap_debug)
+    {
+      printf("\n");
+    }
+    
+    
+}  /* end mov_grab_anchorpoints_path */
+
+
+
 static void
 mov_pgrab_callback (GtkWidget *widget,
-		      gpointer	 data)
+		    GdkEventButton *bevent,
+		    gpointer data)
 {
   t_mov_gui_stuff *mgp = data;
   gint32 image_id;
+  gchar *pathname;
 
-  /*if(gap_debug)*/ printf("mov_pgrab_callback\n");
+  if(gap_debug) printf("mov_pgrab_callback\n");
 
   /* get the image where MovePath was invoked from */
   image_id = mgp->ainfo_ptr->image_id;
 
-  /* gimp_path_get_point_at_dist would be nice to use,
-   * but just prints out:
-   * (gimp-1.3:2128): Gimp-PDB-WARNING **: FIXME: path_get_point_at_dist() is unimplemented
-   */
-  if(1==0)
+  pathname = gimp_path_get_current(image_id);
+  if(pathname)
   {
-    gint             x_point;
-    gint             y_point;
-    gdouble          distance;
-    gdouble          gradient;
-    for(distance = 0.0; distance < 10; distance += 1.0)
+    gint pathtype;
+    gint path_closed;
+    gint num_path_point_details;
+    gdouble *points_details;
+
+    points_details = NULL;
+    path_closed = -44;
+
+    if(gap_debug)
     {
-      gimp_path_get_point_at_dist (image_id
-                        	  , distance
-				  , &y_point
-				  , &gradient
-				  );
-      printf("PATH distance: %.3f, X:%03d Y: %03d gradient:%.3f\n"
-            , (float)distance
-	    , (int)x_point
-	    , (int)y_point
-            , (float)gradient
-	    );
+      printf("pathname :%s\n", pathname);
     }
-  }
+    pathtype = gimp_path_get_points(image_id
+                                   ,pathname
+				   ,&path_closed
+				   ,&num_path_point_details
+				   ,&points_details
+				   );
 
-  if(1==1)
-  {
-    gchar *pathname;
-
-    pathname = gimp_path_get_current(image_id);
-    if(pathname)
+    if(gap_debug)
     {
-      gint l_ii;
-      gint l_ti;
-      gint l_idx;
-      gint pathtype;
-      gint path_closed;
-      gint num_path_point_details;
-      gdouble *points_details;
-      gint    point_x;
-      gint    point_y;
-      gint    point_type;
-
-      points_details = NULL;
-      path_closed = -44;
-
-      /*if(gap_debug)*/ printf("pathname :%s\n", pathname);
-      pathtype = gimp_path_get_points(image_id
-                                     ,pathname
-				     ,&path_closed
-				     ,&num_path_point_details
-				     ,&points_details
-				     );
-
       printf("pathtype:%d path_closed flag :%d\n"
             , (int)pathtype
 	    , (int)path_closed
 	    );
+    }
 
-      if((pathtype != 1) || (path_closed == -44))
-      {
-        g_message(_("Unsupported pathtype %d found in path:\n"
-	            "'%s'\n"
-		    "in the Image:\n"
-	            "'%s'")
-		,(int)pathtype
-		,pathname
-		,mgp->ainfo_ptr->old_filename
-		);
-        return;
-      }
-      point_x = 0;
-      point_y = 0;
-      l_ti = 0;
-      l_idx = 0;
-      l_ii = 0;
-      while(l_idx < GAP_MOV_MAX_POINT -2)
-      {
-        /*if(gap_debug)*/ printf("Point[%03d]: detail: %3.3f\n"
-	    , (int)l_ii
-            , (float)points_details[l_ii]
-	    );
-	point_type = -44;    /* private marker for the last point that usually is delivered without type detail */
-        switch (l_ti)
-	{
-	  case 0:  point_x = (gint)points_details[l_ii]; break;
-	  case 1:  point_y = (gint)points_details[l_ii]; break;
-	  case 2:  point_type = (gint)points_details[l_ii]; break;
-	}
-
-	l_ti++;
-	l_ii++;
-	if((l_ti > 2) || (l_ii == num_path_point_details))
-	{
-          /*if(gap_debug)*/ printf("\n");
-
-	  l_ti=0;
-
-	  /* this implemenatation just fetches the BEZIER_ANCHOR points
-	   * and ignores BEZIER_CONTROL (type 2 points)
-	   * and ignores BEZIER_MOVE (type 3 points)
-	   */
-
-	  if((point_type == 1)  /* 1 == BEZIER_ANCHOR */
-	  || (point_type == -44))
-	  {
-            /*if(gap_debug)*/ printf("x:%d y:%d: type:%d\n\n"
-	                           ,(int)point_x
-	                           ,(int)point_y
-	                           ,(int)point_type
-				   );
-
-	    pvals->point_idx_max = l_idx;
-	    p_clear_one_point(l_idx);
-            pvals->point[l_idx].p_x = point_x;
-            pvals->point[l_idx].p_y = point_y;
-	    l_idx++;
-	  }
-	}
-	if (l_ii >= num_path_point_details)
-	{
-	  break;
-	}
-      }
-      /*if(gap_debug)*/printf("\n");
-
-      g_free(points_details);
-
-      pvals->point_idx = 0;
-      p_point_refresh(mgp);
-      mov_set_instant_apply_request(mgp);
+    if((pathtype != 1) || (path_closed == -44))
+    {
+      g_message(_("Unsupported pathtype %d found in path:\n"
+	          "'%s'\n"
+		  "in the Image:\n"
+	          "'%s'")
+	      ,(int)pathtype
+	      ,pathname
+	      ,mgp->ainfo_ptr->old_filename
+	      );
+      return;
+    }
+    
+    
+    
+    if(bevent->state & GDK_SHIFT_MASK)
+    {
+      /* When SHIFT Key was pressed
+       * the path will be divided in n-parts to get
+       * one controlpoint per handled frame.
+       */
+      mov_grab_bezier_path(mgp);
     }
     else
     {
-      g_message(_("No path found in the image:\n"
-	          "'%s'")
-		,mgp->ainfo_ptr->old_filename
-		);
+      mov_grab_anchorpoints_path(mgp
+                                ,num_path_point_details
+				,points_details
+				);
     }
+    
+
+    g_free(points_details);
+
+    pvals->point_idx = 0;
+    p_point_refresh(mgp);
+    mov_set_instant_apply_request(mgp);
   }
+  else
+  {
+    g_message(_("No path found in the image:\n"
+	        "'%s'")
+	      ,mgp->ainfo_ptr->old_filename
+	      );
+  }
+
 }  /* end mov_pgrab_callback */
 
 
@@ -1539,17 +1697,50 @@ mov_pdel_all_callback (GtkWidget *widget,
 
 static void
 mov_pclr_all_callback (GtkWidget *widget,
+                      GdkEventButton *bevent,
 		      gpointer	 data)
 {
   gint l_idx;
+  gint l_ref_idx1;
+  gint l_ref_idx2;
   t_mov_gui_stuff *mgp = data;
+  gdouble          mix_factor;
 
   if(gap_debug) printf("mov_pclr_all_callback\n");
 
-  for(l_idx = 0; l_idx <= pvals->point_idx_max; l_idx++)
+  if(bevent->state & GDK_SHIFT_MASK)
   {
-    p_clear_one_point(l_idx);
+    for(l_idx = 1; l_idx <= pvals->point_idx_max; l_idx++)
+    {
+      mix_factor = 0.0;
+      l_ref_idx1 = 0;
+      l_ref_idx2 = 0;
+      
+      p_mix_one_point(l_idx, l_ref_idx1, l_ref_idx2, mix_factor);
+    }
   }
+  else
+  {
+    if(bevent->state & GDK_CONTROL_MASK)
+    {
+      for(l_idx = 1; l_idx <= pvals->point_idx_max -1; l_idx++)
+      {
+	mix_factor = (gdouble)l_idx / (gdouble)pvals->point_idx_max;
+	l_ref_idx1 = 0;
+	l_ref_idx2 = pvals->point_idx_max;
+
+	p_mix_one_point(l_idx, l_ref_idx1, l_ref_idx2, mix_factor);
+      }
+    }
+    else
+    {
+      for(l_idx = 0; l_idx <= pvals->point_idx_max; l_idx++)
+      {
+	p_clear_one_point(l_idx);
+      }
+    }
+  }
+
   p_point_refresh(mgp);
   mov_set_instant_apply_request(mgp);
 }
@@ -1859,8 +2050,11 @@ mov_imglayer_menu_callback(GtkWidget *widget, t_mov_gui_stuff *mgp)
   l_image_id = gimp_drawable_get_image(id);
   if(!gap_image_is_alive(l_image_id))
   {
-    /*if(gap_debug)*/ printf("mov_imglayer_menu_callback: NOT ALIVE image_id=%d layer_id=%d\n",
+     if(gap_debug)
+     {
+       printf("mov_imglayer_menu_callback: NOT ALIVE image_id=%d layer_id=%d\n",
          (int)l_image_id, (int)id);
+     }
      return;
   }
 
@@ -2365,6 +2559,48 @@ p_clear_one_point(gint idx)
     pvals->point[idx].keyframe_abs = 0;   /* 0: controlpoint is not fixed to keyframe */
   }
 }	/* end p_clear_one_point */
+
+
+/* --------------------------
+ * p_mix_one_point
+ * --------------------------
+ * calculate settings for one point by mixing
+ * the settings of 2 reference points.
+ * All settings EXCEPT the position are affected
+ */
+void
+p_mix_one_point(gint idx, gint ref1, gint ref2, gdouble mix_factor)
+{
+#define MIX_VALUE(factor, a, b) ((a * (1.0 - factor)) +  (b * factor))
+
+  if((idx >= 0) 
+  && (idx <= pvals->point_idx_max)
+  && (ref1 >= 0)
+  && (ref1 <= pvals->point_idx_max)
+  && (ref2 >= 0)
+  && (ref2 <= pvals->point_idx_max)
+  )
+  {
+    pvals->point[idx].opacity  = MIX_VALUE(mix_factor, pvals->point[ref1].opacity,   pvals->point[ref2].opacity);
+    pvals->point[idx].w_resize = MIX_VALUE(mix_factor, pvals->point[ref1].w_resize,  pvals->point[ref2].w_resize);
+    pvals->point[idx].h_resize = MIX_VALUE(mix_factor, pvals->point[ref1].h_resize,  pvals->point[ref2].h_resize);
+    pvals->point[idx].rotation = MIX_VALUE(mix_factor, pvals->point[ref1].rotation,  pvals->point[ref2].rotation);
+
+    pvals->point[idx].ttlx      = MIX_VALUE(mix_factor, pvals->point[ref1].ttlx,  pvals->point[ref2].ttlx);
+    pvals->point[idx].ttly      = MIX_VALUE(mix_factor, pvals->point[ref1].ttly,  pvals->point[ref2].ttly);
+    pvals->point[idx].ttrx      = MIX_VALUE(mix_factor, pvals->point[ref1].ttrx,  pvals->point[ref2].ttrx);
+    pvals->point[idx].ttry      = MIX_VALUE(mix_factor, pvals->point[ref1].ttry,  pvals->point[ref2].ttry);
+    pvals->point[idx].tblx      = MIX_VALUE(mix_factor, pvals->point[ref1].tblx,  pvals->point[ref2].tblx);
+    pvals->point[idx].tbly      = MIX_VALUE(mix_factor, pvals->point[ref1].tbly,  pvals->point[ref2].tbly);
+    pvals->point[idx].tbrx      = MIX_VALUE(mix_factor, pvals->point[ref1].tbrx,  pvals->point[ref2].tbrx);
+    pvals->point[idx].tbry      = MIX_VALUE(mix_factor, pvals->point[ref1].tbry,  pvals->point[ref2].tbry);
+
+    pvals->point[idx].sel_feather_radius = MIX_VALUE(mix_factor, pvals->point[ref1].sel_feather_radius,  pvals->point[ref2].sel_feather_radius);
+
+    pvals->point[idx].keyframe = 0;   /* 0: controlpoint is not fixed to keyframe */
+    pvals->point[idx].keyframe_abs = 0;   /* 0: controlpoint is not fixed to keyframe */
+  }
+}	/* end p_mix_one_point */
 
 
 /* ============================================================================
@@ -2922,10 +3158,12 @@ mov_edit_button_box_create (t_mov_gui_stuff *mgp)
   gimp_help_set_help_data(button,
                        _("Delete all controlpoints, and replace them with "
 		         "a copy of all anchorpoints of the current path "
-		         "from the image where 'MovePath' was invoked from")
+		         "from the image where 'MovePath' was invoked from."
+			 "Hold Shift key to create contolpoints foreach handled frame, "
+			 "following the bezier path")
                        , NULL);
   gtk_widget_show (button);
-  g_signal_connect (G_OBJECT (button), "clicked",
+  g_signal_connect (G_OBJECT (button), "button_press_event",
 		    G_CALLBACK  (mov_pgrab_callback),
 		    mgp);
 
@@ -3035,10 +3273,15 @@ mov_edit_button_box_create (t_mov_gui_stuff *mgp)
 		    GTK_FILL, 0, 0, 0 );
   gimp_help_set_help_data(button,
                        _("Reset all controlpoints to default values "
-		         "but dont change the path (X/Y values)")
+		         "but dont change the path (X/Y values). "
+			 "Hold down the shift key to copy settings "
+			 "of point1 into all other points. "
+			 "Holding down the ctrl key spreads a mix of "
+			 "the settings of point1 and the last point "
+			 "into the other points inbetween.")
                        , NULL);
   gtk_widget_show (button);
-  g_signal_connect (G_OBJECT (button), "clicked",
+  g_signal_connect (G_OBJECT (button), "button_press_event",
 		    G_CALLBACK (mov_pclr_all_callback),
 		    mgp);
 

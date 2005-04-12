@@ -69,6 +69,17 @@ and may crash or deliver unexpected results.
    in the new loaded frame by matching layername (or stackposition)
    to the active layer of the previously displayed frame.
 
+- Move-Path Plug-in:
+  Additional methode for converting gimp-bezier paths to GIMP-GAP
+  contolpoints in the MovePath tool.
+  (SHIFT Grab Path allows smoother match to the bezier curve
+   depending on the number of handled frames)
+  
+  Multiple functions of the "Reset All Points" button.
+  SHIFT: copy settings of the 1.st controlpoint to all other controlpoints
+  CTRL:  mix settings of 1.st and last controlpoint into the 
+  other controlpoints inbetween.
+
 -------------------------------
 old news
 -------------------------------

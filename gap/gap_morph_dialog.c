@@ -2338,10 +2338,13 @@ p_imglayer_menu_callback(GtkWidget *widget, GapMorphSubWin *swp)
 static gint
 p_imglayer_constrain(gint32 image_id, gint32 drawable_id, gpointer data)
 {
-  /*if(gap_debug)*/ printf("GAP-DEBUG: p_imglayer_constrain PROCEDURE image_id:%d drawable_id:%d\n"
+  if(gap_debug)
+  {
+    printf("GAP-DEBUG: p_imglayer_constrain PROCEDURE image_id:%d drawable_id:%d\n"
                           ,(int)image_id
                           ,(int)drawable_id
                           );
+  }
 
   if(drawable_id < 0)
   {

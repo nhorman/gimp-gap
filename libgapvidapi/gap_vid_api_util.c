@@ -393,14 +393,14 @@ GVA_util_fix_mpg_timecode(unsigned char *buffer
       second = code >> 13 & 0x3f;
       frame = code >> 7 & 0x3f;
 
-      /*if(gap_debug)*/ printf("Timecode old: %02d:%02d:%02d:%02d ", hour, minute, second, frame);
+      if(gap_debug) printf("Timecode old: %02d:%02d:%02d:%02d ", hour, minute, second, frame);
 
       if((hour == 0)
       && (minute == 0)
       && (second == 0)
       && (frame == 0))
       {
-        /*if(gap_debug)*/ printf("\n");
+        if(gap_debug) printf("\n");
       }
       else
       {
@@ -418,7 +418,7 @@ GVA_util_fix_mpg_timecode(unsigned char *buffer
 	buffer[l_idx + 2] = ((second & 0x7) << 5) | (frame >> 1);
 	buffer[l_idx + 3] = (code & 0x7f) | ((frame & 0x1) << 7);
 
-	/*if(gap_debug)*/ printf("new: %02d:%02d:%02d:%02d\n", hour, minute, second, frame);
+	if(gap_debug) printf("new: %02d:%02d:%02d:%02d\n", hour, minute, second, frame);
       }
 
       break;

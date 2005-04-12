@@ -5354,10 +5354,9 @@ gap_gve_story_fetch_composite_image_or_chunk(GapGveStoryVidHandle *vidhand
 	      last_videofile = g_strdup(l_videofile);
 	      last_fetch_was_compressed_chunk = TRUE;
 	      
-	      /*if(gap_debug)*/
+	      if(gap_debug)
 	      {
 	        printf("\nReuse I-FRAME at %06d,", (int)master_frame_nr);
-	        //printf(" Reuse I-FRAME Chunk  at %06d\n", (int)master_frame_nr);
 	      }
               return(TRUE);
 	    }
@@ -5375,7 +5374,8 @@ gap_gve_story_fetch_composite_image_or_chunk(GapGveStoryVidHandle *vidhand
 		{
                   last_video_frame_nr = l_video_frame_nr;
 		  last_fetch_was_compressed_chunk = TRUE;
-		  /*if(gap_debug)*/
+
+		  if(gap_debug)
 		  {
 	            printf("P,");
 	            // printf(" Reuse P-FRAME Chunk  at %06d\n", (int)master_frame_nr);
@@ -5467,7 +5467,8 @@ gap_gve_story_fetch_composite_image_or_chunk(GapGveStoryVidHandle *vidhand
 		  {
                     last_video_frame_nr = l_video_frame_nr;
 		    last_fetch_was_compressed_chunk = TRUE;
-		    /*if(gap_debug)*/
+
+		    if(gap_debug)
 		    {
 		      if (l_frame_type == GVA_MPGFRAME_B_TYPE)
 		      {

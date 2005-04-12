@@ -653,7 +653,7 @@ p_singleframe_encode(GapGveSingleGlobalParams *gpp)
 
   l_frame_fmt = p_build_format_from_framename(gpp->val.videoname);
 
-  printf("singleframes will be saved with filename: %s\n", l_frame_fmt);
+  if(gap_debug) printf("singleframes will be saved with filename: %s\n", l_frame_fmt);
 
 
   /* make list of frameranges */
@@ -718,11 +718,18 @@ p_singleframe_encode(GapGveSingleGlobalParams *gpp)
        gchar    *l_sav_name;
 
        l_sav_name = g_strdup_printf(l_frame_fmt, (int)l_out_frame_nr);
-       /* if(gap_debug) */ printf("SAVING: %s\n", l_sav_name);
+       if(gpp->val.run_mode == GIMP_RUN_INTERACTIVE)
+       {
+         char *l_msg;
+	 
+	 l_msg = g_strdup_printf(_("SAVING: %s\n"), l_sav_name);
+         gimp_progress_init(l_msg);
+         g_free(l_msg);
+       }
 
        if(!gimp_file_save(l_save_runmode, l_tmp_image_id, l_layer_id, l_sav_name,  l_sav_name))
        {
-         printf("** Save of file %s FAILED !\n", l_sav_name);
+         g_message(_("** Save FAILED on file\n%s"), l_sav_name);
          l_rc = -1;
        }
        g_free(l_sav_name);

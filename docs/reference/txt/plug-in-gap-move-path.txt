@@ -184,6 +184,20 @@ Move Path (make things move)
           "Add Point"
 	  "Insert Point"  "Delete Point"
 
+       The Button "Grab Path"
+          deletes all controlpoints and replaces them
+	  with all anchor points of the vector based gimp path
+	  in the invoker image (the image from where the MovePath
+	  was started).
+	  
+	  If you hold down the SHIFT key while you press the 
+	  "Grab Path" button, the conversion to controlpoints
+	  tries to follow the vector based path along the bezier curve.
+	  This is done by creating a controlpoint per handled frame
+	  The more controlpoints are used, the closer
+	  you get to the original vector based bezier path
+	  with the moving object.
+
        With the Buttons
           "Prev Point"    "Next Point"
 	  "First Point"   "Last Point"
@@ -195,6 +209,17 @@ Move Path (make things move)
           , perspective factors to 1.0 (no perspective tansformation)
 	  and rotation to 0 degree, 
 	  but leaves the path (X/Y values) unchanged.
+
+
+          The "Reset All Points" button has multiple functions
+	  controlled by holding down a modifyer key:
+	  
+          - Holding down the shift key copies the setting
+	    of point1 into all other points. (except X/Y values)
+	  
+          - Holding down the ctrl key spreads a mix of
+	    the settings of point1 and the last point
+	    into the other points inbetween. (except X/Y values)
 	
        "Delete All Points"
           removes all controlpoints.
