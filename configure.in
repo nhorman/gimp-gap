@@ -45,9 +45,6 @@ AC_CHECK_FUNCS(bind_textdomain_codeset)
 
 PKG_CHECK_MODULES(GIMP, gimp-2.0 >= 2.2.0 gimpui-2.0 >= 2.2.0 gimpthumb-2.0)
 
-AC_SUBST(GIMP_CFLAGS)
-AC_SUBST(GIMP_LIBS)
-
 GIMP_DATA_DIR=`$PKG_CONFIG gimp-2.0 --variable=gimpdatadir`
 GIMP_PLUGIN_DIR=`$PKG_CONFIG gimp-2.0 --variable=gimplibdir`
 
@@ -389,7 +386,6 @@ dnl
 dnl  fi
 
 AM_CONDITIONAL(ENABLE_GVA_LIBQUICKTIME_SUPPORT, test "x$enable_libquicktime" != "xno")
-
 
 
 AC_SUBST(GAP_VLIBS_FFMPEG)
