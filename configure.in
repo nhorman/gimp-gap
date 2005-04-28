@@ -5,7 +5,7 @@ AC_INIT(configure.in)
 AM_CONFIG_HEADER(config.h)
 
 GAP_MAJOR_VERSION=2
-GAP_MINOR_VERSION=1
+GAP_MINOR_VERSION=2
 GAP_MICRO_VERSION=0
 GAP_VERSION=$GAP_MAJOR_VERSION.$GAP_MINOR_VERSION.$GAP_MICRO_VERSION
 
@@ -108,7 +108,7 @@ dnl ffmpeg should compile on many operating systems, including UNIX and WINDOWS 
 dnl
 dnl the current gimp-gap preferes static linking with ffmpeg (versions 0.4.8 upto recent CVS versions)
 dnl therefore the ffmpeg sourcetree should be specified --with-ffmpegdir=DIR
-dnl ffmpeg installation is not required in that case, but the libraries 
+dnl a permanent ffmpeg installation is not required in that case, but the libraries 
 dnl   libavformat.a and libavcodec.a
 dnl must be already built there. 
 dnl
@@ -183,19 +183,32 @@ AC_ARG_ENABLE(libavformat,
       dnl
       dnl
     else
-      if test -d "/usr/local/include/ffmpeg"; then
-        GAP_VINCS_FFMPEG=" -I/usr/local/include/ffmpeg"
-      else
-        if test -d "/usr/include/ffmpeg"; then
-          GAP_VINCS_FFMPEG=" -I/usr/include/ffmpeg"
-	else
-          vid_ffmpeg_warning="
-** ffmpeg include directory not found at:       
-/usr/local/include/ffmpeg
-/usr/include/ffmpeg
+      if eval "test x$with_ffmpegsrcdir != x"; then
+         vid_ffmpeg_warning="
+** ffmpeg sourcetree was not found at:       
+$FFMPEG_DIR
 you can get the ffmpeg tarball at:
 http://ffmpeg.sourceforge.net.
 "
+      else
+        if test -d "/usr/local/include/ffmpeg"; then
+          GAP_VINCS_FFMPEG=" -I/usr/local/include/ffmpeg"
+        else
+          if test -d "/usr/include/ffmpeg"; then
+            GAP_VINCS_FFMPEG=" -I/usr/include/ffmpeg"
+	  else
+            vid_ffmpeg_warning="
+** ffmpeg include directory not found at:       
+/usr/local/include/ffmpeg
+/usr/include/ffmpeg
+you can get the ffmpeg libs at:
+http://packages.debian.org/unstable/libdevel/libavcodec-dev
+http://packages.debian.org/unstable/libdevel/libavformat-dev
+or
+alternative you can get the ffmpeg tarball at:
+http://ffmpeg.sourceforge.net.
+"
+	  fi
 	fi
       fi
 
@@ -250,14 +263,15 @@ AC_ARG_ENABLE(libmpeg3,
     dnl the original tarball from http:www.heroinewarrior.com of libmpeg3-1.5.4
     dnl comes without installation help for the library and its headers.
     dnl but (some ?) LINUX distributors provide installation rpm packages for libmpeg3
-    dnl currently i have no up-to-date rpm package of libmpeg3-1.5.4
     dnl
-    dnl The older libmpeg3-1.5 rpm package from my SuSE 8.2 distribution is NOT compatible
-    dnl with the new API, and has limited functions -- AC3 is turned off --
+    dnl some older libmpeg3-1.5 rpm packages (from my SuSE 8.2 distribution) are NOT compatible
+    dnl with the new API, and have limited functions -- AC3 is turned off --
+    dnl other packages (like the current debian) disable CSS decrytion.
     dnl
-    dnl the simplest solution to face those problems
-    dnl is to include the sourcetree of the libmpeg3-1.5.4 library
-    dnl in the gimp-gap tree and link statically.
+    dnl one solution to face those problems
+    dnl is to get the tarball with the full sourcetree of the libmpeg3-1.5.4 library
+    dnl configure and make the libmpeg3 from sourcetree
+    dnl and then link statically by specifying the option --with-libmpeg3srcdir.
     dnl
     dnl libmpeg3 needs the assembler nasm to compile
     dnl and checks this requirement in its configuration script.
@@ -289,28 +303,39 @@ please first build the library. Therefore you may run ./configure and make at DI
     else
       GAP_VLIBS_MPEG3=" "
       GAP_VINCS_MPEG3=" "
-      dnl check for typic libmpeg3 installation (debian)
-      dnl the debian release of libmpeg3 was built with disabled CSS option
-      dnl and does not permit reading of CSS encrypted DVD .vob files.
-      if test -f "/usr/local/include/libmpeg3.h"; then
-        LMPEG3_IDIR="/usr/local/include"
-        LMPEG3_A="/usr/local/lib/libmpeg3.a"
-        GAP_VLIBS_MPEG3=" $LMPEG3_A "
-        GAP_VINCS_MPEG3=" -I$LMPEG3_IDIR -I$LMPEG3_IDIR/audio -I$LMPEG3_IDIR/video "
-      elif test -f "/usr/include/libmpeg3.h"; then
-        LMPEG3_IDIR="/usr/include"
-        LMPEG3_A="/usr/lib/libmpeg3.a"
-        GAP_VLIBS_MPEG3=" $LMPEG3_A "
-        GAP_VINCS_MPEG3=" -I$LMPEG3_IDIR -I$LMPEG3_IDIR/audio -I$LMPEG3_IDIR/video "
-      else
+      if eval "test x$with_libmpeg3srcdir != x"; then
         vid_mpeg3_warning="
 ** libmpeg3 sourcetree was not found. at:
    $LMPEG3_DIR
-CVS users can get the required tarball libmpeg3-$REQ_LIBMPEG3_VERSION at:
+You can get the required tarball libmpeg3-$REQ_LIBMPEG3_VERSION at:
 http://www.heroinewarrior.com/download.php3
 "
+      else
+        dnl check for typic libmpeg3 installation (debian)
+        dnl the debian release of libmpeg3 was built with disabled CSS option
+        dnl and does not permit reading of CSS encrypted DVD .vob files.
+        if test -f "/usr/local/include/libmpeg3.h"; then
+          LMPEG3_IDIR="/usr/local/include"
+          LMPEG3_A="/usr/local/lib/libmpeg3.a"
+          GAP_VLIBS_MPEG3=" $LMPEG3_A "
+          GAP_VINCS_MPEG3=" -I$LMPEG3_IDIR -I$LMPEG3_IDIR/audio -I$LMPEG3_IDIR/video "
+        elif test -f "/usr/include/libmpeg3.h"; then
+          LMPEG3_IDIR="/usr/include"
+          LMPEG3_A="/usr/lib/libmpeg3.a"
+          GAP_VLIBS_MPEG3=" $LMPEG3_A "
+          GAP_VINCS_MPEG3=" -I$LMPEG3_IDIR -I$LMPEG3_IDIR/audio -I$LMPEG3_IDIR/video "
+        else
+          vid_mpeg3_warning="
+** libmpeg3 header files were not found. at:
+  /usr/local/include
+  /usr/include
+You can get libmpeg3 at
+http://packages.debian.org/unstable/libdevel/libmpeg3-dev
+alternative you can get the source tarball libmpeg3-$REQ_LIBMPEG3_VERSION at:
+http://www.heroinewarrior.com/download.php3
+"
+	fi
       fi
-
     fi  
   else
     if test "x$enable_videoapi_support" != "xno"; then
@@ -480,6 +505,11 @@ vid_enc_avi/Makefile
 vid_enc_ffmpeg/Makefile
 vid_enc_single/Makefile
 po/Makefile.in
+docs/Makefile
+docs/howto/Makefile
+docs/howto/txt/Makefile
+docs/reference/Makefile
+docs/reference/txt/Makefile
 ])
 
 AC_MSG_RESULT($frontends_warning $audio_warning $videoapi_warning $vid_ffmpeg_warning $vid_mpeg3_warning $vid_quicktime_warning)

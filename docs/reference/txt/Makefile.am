@@ -1,0 +1,45 @@
+## Process this file with automake to produce Makefile.in
+
+EXTRA_DIST = \
+	INTRODUCTION.txt			\
+	STORYBOARD_FILE_DOC.txt			\
+	gap-filterall-db-browser.txt		\
+	gap_gimprc_params.txt			\
+	plug-in-bluebox.txt			\
+	plug-in-filter-macro.txt		\
+	plug-in-gap-anim-crop.txt		\
+	plug-in-gap-anim-resize.txt		\
+	plug-in-gap-anim-scale.txt		\
+	plug-in-gap-del.txt			\
+	plug-in-gap-density.txt			\
+	plug-in-gap-dup.txt			\
+	plug-in-gap-exchg.txt			\
+	plug-in-gap-extract-player.txt		\
+	plug-in-gap-extract-video.txt		\
+	plug-in-gap-modify.txt			\
+	plug-in-gap-morph.txt			\
+	plug-in-gap-move-path.txt		\
+	plug-in-gap-mpeg-encode.txt		\
+	plug-in-gap-mpeg2encode.txt		\
+	plug-in-gap-mplayer-decode.txt		\
+	plug-in-gap-navigator.txt		\
+	plug-in-gap-onionskin-configuration.txt	\
+	plug-in-gap-range-convert.txt		\
+	plug-in-gap-range-flatten.txt		\
+	plug-in-gap-range-layer-del.txt		\
+	plug-in-gap-range-to-multilayer.txt	\
+	plug-in-gap-renumber.txt		\
+	plug-in-gap-shift.txt			\
+	plug-in-gap-split.txt			\
+	plug-in-gap-storyboard-clip-prop.txt	\
+	plug-in-gap-storyboard-edit.txt		\
+	plug-in-gap-storyboard-gen-otone.txt	\
+	plug-in-gap-storyboard-master-prop.txt	\
+	plug-in-gap-storyboard-player.txt	\
+	plug-in-gap-vid-encode-master.txt	\
+	plug-in-gap-videoframes-player.txt	\
+	plug-in-gap-xanim-decode.txt		\
+	plug-in-name2layer.txt			\
+	plug-in-wr-color-levels.txt		\
+	plug-in-wr-curves.txt			\
+	plug-in-wr-huesat.txt

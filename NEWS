@@ -1,10 +1,5 @@
-Here is a short overview whats new in GIMP-GAP-2.1:
+Here is a short overview whats new in GIMP-GAP-2.2.0:
 (compared to gimp-gap release 2.0.2)
-
-WARNING: *** 
-please note that GIMP-GAP-2.1 is an UNSTABLE developers
-version only. Some of the new features are just partly implemented
-and may crash or deliver unexpected results. 
 
 
 - support upto 8 framenumber digits for frame images (mplayer style)

@@ -1,4 +1,4 @@
-This is a prerelease version 2.1.0 of the GIMP Video menu.
+This is a release version 2.2.0 of the GIMP Video menu.
 
 The GIMP-GAP (GIMP Animation Package) is a collection of Plug-Ins
 to extend the GIMP with capabilities to edit and create
@@ -153,6 +153,49 @@ example:
 
 After successful installation of gimp-gap you may
 remove the libmpeg3 and ffmpeg sourcedirectories.
+
+
+Dynamic linking with ffmpeg already installed
+=============================================
+
+this requires that the ffmpeg include files and libavformat libavcodec
+are installed at in the directories:
+  /usr/local/include/ffmpeg
+  /usr/local/lib
+
+or
+
+  /usr/include/ffmpeg
+  /usr/lib
+
+You can get the ffmpeg libs at:
+  http://packages.debian.org/unstable/libdevel/libavcodec-dev
+  http://packages.debian.org/unstable/libdevel/libavformat-dev
+
+
+Linking with libmpeg3 already installed 
+=======================================
+
+this requires that the libmpeg3 include files and libmpeg3.a
+are installed at in the directories:
+  /usr/local/include
+  /usr/local/include/audio
+  /usr/local/include/video
+  
+  /usr/local/lib/libmpeg3.a
+
+or
+
+  /usr/include/
+  /usr/include/audio
+  /usr/include/video
+
+  /usr/lib/libmpeg3.a
+
+
+You can get libmpeg3 at:
+http://packages.debian.org/unstable/libdevel/libmpeg3-dev
+
 
 
 

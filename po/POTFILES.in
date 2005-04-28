@@ -55,4 +55,6 @@ vid_enc_avi/gap_enc_avi_gui.c
 vid_enc_avi/gap_enc_avi_main.c
 vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c
 vid_enc_ffmpeg/gap_enc_ffmpeg_main.c
+vid_enc_ffmpeg/gap_enc_ffmpeg_callbacks.c
+vid_enc_ffmpeg/gap_enc_ffmpeg_par.c
 vid_enc_single/gap_enc_singleframes_main.c

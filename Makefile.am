@@ -21,7 +21,7 @@ VID_ENC_AVI=vid_enc_avi
 endif
 
 
-SUBDIRS = images $(LIBWAVCLIENT) $(LIBGAPVIDAPI) gap po \
+SUBDIRS = images $(LIBWAVCLIENT) $(LIBGAPVIDAPI) gap po docs \
 	$(LIBGAPVIDUTIL) 	\
 	$(VID_COMMON)		\
 	$(VID_ENC_AVI) 		\

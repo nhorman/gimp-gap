@@ -1,3 +1,22 @@
+2005-04-17  Wolfgang Hofer <hof@gimp.org>
+
+	- added docs/*/txt/*.txt files as EXTRA_DIST stuff
+	  (created Makefile.am in the docs subdir)
+	  and some minor fixes to make distdir work
+	- added missing filenames to POTFILES.in 
+	  (thanks to Marcel Telka for pointing that out)
+	   vid_enc_ffmpeg/gap_enc_ffmpeg_callbacks.c
+           vid_enc_ffmpeg/gap_enc_ffmpeg_par.c
+
+
+	* README
+	* NEWS
+	* Makefile.am
+	* gap/Makefile.am
+	* configure.in
+	* po/ChangeLog
+	* po/POTFILES.in
+	
 2005-04-13  Sven Neumann  <sven@gimp.org>
 
 	* autogen.sh: updated; require automake >= 1.7.

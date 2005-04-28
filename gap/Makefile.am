@@ -348,6 +348,7 @@ EXTRA_DIST = \
 	iter_ALT/mod/plug_in_lighting_iter_ALT.inc		\
 	iter_ALT/mod/plug_in_map_object_iter_ALT.inc		\
 	iter_ALT/mod/plug_in_maze_iter_ALT.inc			\
+	iter_ALT/mod/plug_in_neon_iter_ALT.inc			\
 	iter_ALT/mod/plug_in_nlfilt_iter_ALT.inc		\
 	iter_ALT/mod/plug_in_nova_iter_ALT.inc			\
 	iter_ALT/mod/plug_in_oilify_iter_ALT.inc		\
@@ -383,7 +384,6 @@ EXTRA_DIST = \
 	iter_ALT/old/plug_in_julia_iter_ALT.inc			\
 	iter_ALT/old/plug_in_magic_eye_iter_ALT.inc		\
 	iter_ALT/old/plug_in_mandelbrot_iter_ALT.inc		\
-	iter_ALT/old/plug_in_neon_iter_ALT.inc		\
 	iter_ALT/old/plug_in_randomize_iter_ALT.inc		\
 	iter_ALT/old/plug_in_refract_iter_ALT.inc		\
 	iter_ALT/old/plug_in_struc_iter_ALT.inc			\
