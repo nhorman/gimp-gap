@@ -84,6 +84,7 @@ libexec_PROGRAMS = \
 	gap_wr_color_curve	\
 	gap_wr_color_levels	\
 	gap_wr_color_huesat	\
+	gap_wr_trans		\
 	gap_wr_opacity
 
 gap_bluebox_SOURCES = \
@@ -242,6 +243,12 @@ gap_wr_opacity_SOURCES = \
 	gap_wr_opacity.c	\
 	gap_libgimpgap.h	
 
+gap_wr_trans_SOURCES = \
+	gap_lastvaldesc.c	\
+	gap_lastvaldesc.h	\
+	gap_wr_trans.c	\
+	gap_libgimpgap.h	
+
 gap_wr_color_curve_SOURCES = \
 	gap_wr_color_curve.c	\
 	gap_libgimpgap.h	
@@ -282,6 +289,7 @@ gap_onion_LDADD =            $(LIBGIMPGAP) $(GIMP_LIBS)
 gap_storyboard_LDADD =       $(LIBGIMPGAP) $(GIMP_LIBS) ${LIBGAPSTORY} $(WAVPLAYCLIENT) $(GAPVIDEOAPI)
 gap_video_extract_LDADD =    $(LIBGIMPGAP) $(GIMP_LIBS) ${LIBGAPSTORY} $(WAVPLAYCLIENT) $(GAPVIDEOAPI)
 gap_wr_opacity_LDADD =       $(LIBGIMPGAP) $(GIMP_LIBS)
+gap_wr_trans_LDADD =         $(LIBGIMPGAP) $(GIMP_LIBS)
 gap_wr_color_curve_LDADD =   $(LIBGIMPGAP) $(GIMP_LIBS)
 gap_wr_color_levels_LDADD =  $(LIBGIMPGAP) $(GIMP_LIBS)
 gap_wr_color_huesat_LDADD =  $(LIBGIMPGAP) $(GIMP_LIBS)

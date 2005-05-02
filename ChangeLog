@@ -1,3 +1,13 @@
+2005-05-01  Wolfgang Hofer <hof@gimp.org>
+	- added new wrappers to support layer transformations
+	  (flipping and simple rotate)
+	  for the useage in animated filtercalls and filtermacro.
+	  
+	* gap/Makefile.am
+	* gap/gap_wr_trans.c    # new file
+	* gap/.cvsignore
+	* po/POTFILES.in
+	 
 2005-04-17  Wolfgang Hofer <hof@gimp.org>
 
 	- added docs/*/txt/*.txt files as EXTRA_DIST stuff

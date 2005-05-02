@@ -46,6 +46,7 @@ gap/gap_wr_color_curve.c
 gap/gap_wr_color_huesat.c
 gap/gap_wr_color_levels.c
 gap/gap_wr_opacity.c
+gap/gap_wr_trans.c
 libgapvidapi/gap_vid_api_mpeg3.c
 libgapvidapi/gap_vid_api_vidindex.c
 libgapvidutil/gap_gve_story.c
