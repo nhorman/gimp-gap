@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gimp-gap\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-04-13 01:46-0400\n"
-"PO-Revision-Date: 2005-04-13 20:40-0400\n"
+"POT-Creation-Date: 2005-05-04 01:29-0400\n"
+"PO-Revision-Date: 2005-05-04 20:40-0400\n"
 "Last-Translator: Adam Weinberger <adamw@gnome.org>\n"
 "Language-Team: Canadian English <adamw@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -6728,6 +6728,37 @@ msgstr "Reset all Parameters to Default Values"
 msgid "Set Layer Opacity"
 msgstr "Set Layer Opacity"
 
+#: ../gap/gap_wr_trans.c:168
+msgid "<Image>/Video/Layer/Transform/Flip Horizontal"
+msgstr "<Image>/Video/Layer/Transform/Flip Horizontal"
+
+#: ../gap/gap_wr_trans.c:185
+msgid "<Image>/Video/Layer/Transform/Flip Vertical"
+msgstr "<Image>/Video/Layer/Transform/Flip Vertical"
+
+#: ../gap/gap_wr_trans.c:202
+msgid "<Image>/Video/Layer/Transform/Rotate 90 degrees CW"
+msgstr "<Image>/Video/Layer/Transform/Rotate 90 degrees CW"
+
+#: ../gap/gap_wr_trans.c:220
+msgid "<Image>/Video/Layer/Transform/Rotate 180 degrees"
+msgstr "<Image>/Video/Layer/Transform/Rotate 180 degrees"
+
+#: ../gap/gap_wr_trans.c:237
+msgid "<Image>/Video/Layer/Transform/Rotate 90 degrees CCW"
+msgstr "<Image>/Video/Layer/Transform/Rotate 90 degrees CCW"
+
+#: ../gap/gap_wr_trans.c:354
+#, c-format
+msgid ""
+"The plug-in %s\n"
+"operates only on layers\n"
+"(but was called on mask or channel)"
+msgstr ""
+"The plug-in %s\n"
+"operates only on layers\n"
+"(but was called on mask or channel)"
+
 #: ../libgapvidapi/gap_vid_api_mpeg3.c:829
 #, c-format
 msgid ""
@@ -9080,6 +9111,28 @@ msgstr "FFMPEG initializing for video encoding..."
 #, c-format
 msgid "FFMPEG encoding frame %d (%d)"
 msgstr "FFMPEG encoding frame %d (%d)"
+
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_callbacks.c:705
+msgid "Save ffmpeg-encoder parameters"
+msgstr "Save ffmpeg-encoder parameters"
+
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_callbacks.c:709
+msgid "Load ffmpeg-encoder parameters"
+msgstr "Load ffmpeg-encoder parameters"
+
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_par.c:202
+#, c-format
+msgid ""
+"Could not read ffmpeg video encoder parameters from file:\n"
+"%s"
+msgstr ""
+"Could not read ffmpeg video encoder parameters from file:\n"
+"%s"
+
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_par.c:286
+#, c-format
+msgid "Could not save ffmpeg video encoder parameterfile:'%s'%s"
+msgstr "Could not save ffmpeg video encoder parameterfile:'%s'%s"
 
 #: ../vid_enc_single/gap_enc_singleframes_main.c:180
 msgid "singleframes video encoding for anim frames. Menu: @SINGLEFRAMES@"
