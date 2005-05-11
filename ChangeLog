@@ -1,3 +1,7 @@
+2005-05-11  Iñaki Larrañaga  <dooteo@euskalgnu.org>
+
+	* configure.in: Added "eu" (Basque) to ALL_LINGUAS.
+
 2005-05-01  Wolfgang Hofer <hof@gimp.org>
 	- added new wrappers to support layer transformations
 	  (flipping and simple rotate)
