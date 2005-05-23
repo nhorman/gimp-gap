@@ -1,3 +1,20 @@
+2005-05-22  Wolfgang Hofer <hof@gimp.org>
+	- some of the mplayer options (-aofile  -jpeg -z) of the mplayer version 1.0pre5
+	  dont work with mplayer version 1.0pre7 (dont know about pre6 release)
+	  
+	  i updated to the new options, but added a checkbox labeled Mplayer1.0pre5
+	  in the dialog of the mplayer based frame extract plug-in
+	  that still allows switching back to the old options
+	  (you need this only in case you still run  mplayer version 1.0pre5)
+	  
+	  examples of the new option syntax:
+	  
+	  mplayer -vo png:z=9 -ss 00:00:14 -frames 25  videoinput.rm
+	  mplayer -vo jpeg:quality=92:smooth=70 -ss 00:00:14 -frames 150  videoinput.rm
+	  
+  
+	* gap/gap_decode_mplayer.c [.h]
+
 2005-05-11  Iñaki Larrañaga  <dooteo@euskalgnu.org>
 
 	* configure.in: Added "eu" (Basque) to ALL_LINGUAS.

@@ -17,7 +17,8 @@
  *   It uses programs and commands that are NOT available
  *   on other Operating Systems (Win95, NT, XP ...)
  *
- *     - mplayer            MPlayer 1.0 (the best mediaplayer for linux)
+ *     - mplayer            MPlayer 1.0pre5 or MPlayer 1.0pre7 
+ *                          (the best mediaplayer for linux)
  *                          set environment GAP_MPLAYER_PROG to configure where to find mplayer
  *                          (default: search mplayer in your PATH)
  *     - cd                 (UNIX command)
@@ -43,6 +44,7 @@
  */
 
 /* revision history
+ * gimp-gap    2.1;     2005/05/22  hof: support MPlayer1.0pre7 (has new calling options)
  * gimp-gap    2.1;     2004/11/29  hof: created
  */
 
@@ -50,6 +52,8 @@
 /*
  *    Here is a list of the mplayer 1.0 extracting related options
  *    that were used in this frontend.
+ *    Please Note: Options changed incompatible from 1.0pre5 to 1.0pre7 release,
+ *                 the old MPlayer1.0pre5 options can be selected via dialog.
  * 
  *    -ss <time> (see -sb option too)
  * 		    Seek to given time position.
@@ -68,7 +72,7 @@
  *    -vo jpeg
  *       set video output to jpeg device (this device saves jpeg frames to disc)
  * 
- *    -jpeg <option1:option2:...> (-vo jpeg only)
+ *    -jpeg <option1:option2:...> (-vo jpeg only)  # old syntax for Mplayer1.0pre5
  * 	      Specify options for the JPEG output.
  * 	      Available options are:
  * 
@@ -84,7 +88,7 @@
  * 			    Quality factor [0-100]
  * 		    outdir=<value>
  * 			    Directory to save the JPEG files
- *    -z <0-9> (-vo png only)
+ *    -z <0-9> (-vo png only)   # old syntax for Mplayer1.0pre5
  *		    Specifies compression level for PNG output.
  *			  0    no compression
  *			  9    max compression
@@ -96,11 +100,10 @@
  *               found below.
  * 
  *  
- *    -ao pcn
+ *    -ao pcm -aofile <filename>   # syntax for MPlayer 1.0pre5
+ *    -ao pcm:file=<filename>      # syntax for MPlayer 1.0pre7 or latest CVS
  *       set audiooutput to pcm device (writes PCM wavefiles to disc)
  *  
- *    -aofile <filename>
- * 		    Filename for -ao pcm.
  * 
  *    -aid <id> (also see -alang option)
  * 		    Select audio channel [MPEG: 0-31 AVI/OGM: 1-99 ASF/
@@ -116,7 +119,8 @@
  *		    Do not play/encode video.
  *
  *    
- *    examples:
+ *    examples (MPlayer 1.0pre5):
+ *    -----------------------
  *      mplayer  -ss 00:00:14 -frames 200 -ao pcm -aofile extracted_audio.wav  videoinput.rm
  *      
  *        ==> extracts wav file named audiodump.wav
@@ -127,6 +131,27 @@
  *    
  *         00000001.jpg
  * 	..
+ *      mplayer -vo png -ss 00:00:14 -frames 25 -z 9 videoinput.rm  
+ * 
+ *        ==> extracts 25 png frames in best compression starting at second 13
+ *    
+ *         00000001.jpg
+ * 	..
+ *    examples (MPlayer 1.0pre7  or latest CVS):
+ *    -----------------------
+ *      mplayer  -ss 00:00:14 -frames 200 -ao pcm:file=extracted_audio.wav  videoinput.rm
+ *      
+ *        ==> extracts wav file named audiodump.wav
+ * 
+ *      mplayer -vo jpeg:quality=92:smooth=70 -ss 00:00:14 -frames 150  videoinput.rm  
+ * 
+ *        ==> extracts 150 jpeg frames starting at second 13   WARNING does not work yet
+ *    
+ *         00000001.jpg
+ * 	..
+ *
+ *      mplayer -vo png:z=9 -ss 00:00:14 -frames 25  videoinput.mpg 
+ *        ==> extracts 25 png frames in best compression starting at second 13   WARNING does not work yet
  */
 
 
@@ -358,7 +383,7 @@ p_mplayer_dialog   (GapMPlayerParams *gpp)
 {
 #define MPDIALOG_SMALL_ENTRY_WIDTH 80
 #define MPDIALOG_LARGE_ENTRY_WIDTH 250
-#define MPDIALOG_NUM_ARGS 21
+#define MPDIALOG_NUM_ARGS 22
   static GapArrArg  argv[MPDIALOG_NUM_ARGS];
   static char *radio_args[3]  = { "XCF", "PNG", "JPEG" };
   
@@ -379,6 +404,7 @@ p_mplayer_dialog   (GapMPlayerParams *gpp)
   gint ii_autoload;
   gint ii_silent;
   gint ii_async;
+  gint ii_old_syntax;
 
   err_msg_buffer[0] = '\0';
   g_snprintf(buf_start_time, sizeof(buf_start_time), "%02d:%02d:%02d"
@@ -571,6 +597,14 @@ p_mplayer_dialog   (GapMPlayerParams *gpp)
   argv[ii].help_txt  = _("Run the mplayer as asynchroh process");
   argv[ii].int_ret   = gpp->run_mplayer_asynchron;
 
+
+  ii++; ii_old_syntax = ii;
+  gap_arr_arg_init(&argv[ii], GAP_ARR_WGT_TOGGLE);
+  argv[ii].label_txt = _("MPlayer 1.0pre5:");
+  argv[ii].help_txt  = _("on: use deprecated options for mplayer 1.0pre5 off: use options for newer mplayer"
+                        " (newer mplayer 1.0pre7 has changed options incompatible)");
+  argv[ii].int_ret   = gpp->use_old_mplayer1_syntax;
+
   ii++;
   gap_arr_arg_init(&argv[ii], GAP_ARR_WGT_HELP_BUTTON);
   argv[ii].help_id = GAP_MPLAYER_HELP_ID;
@@ -600,10 +634,11 @@ p_mplayer_dialog   (GapMPlayerParams *gpp)
      gpp->jpg_progressive   = (gint32)(argv[ii_jpg_progressive].int_ret);
      gpp->jpg_baseline      = (gint32)(argv[ii_jpg_baseline].int_ret);
      
-     gpp->img_format        = (GapMPlayerFormats)(argv[ii_img_format].int_ret);
+     gpp->img_format        = (GapMPlayerFormats)(argv[ii_img_format].radio_ret);
      gpp->silent            = (gboolean)(argv[ii_silent].int_ret);
      gpp->autoload          = (gboolean)(argv[ii_autoload].int_ret);
      gpp->run_mplayer_asynchron  = (gboolean)(argv[ii_async].int_ret);
+     gpp->use_old_mplayer1_syntax  = (gboolean)(argv[ii_old_syntax].int_ret);
 
      params_ok = TRUE;
      if(!g_file_test(gpp->video_filename, G_FILE_TEST_EXISTS))
@@ -1191,7 +1226,15 @@ p_start_mplayer_process(GapMPlayerParams *gpp)
       * to RIFF wave formated audiofiles on disc.
       * the -aofile option defines the filename for the wav file.
       */
-     strcat(l_cmd, "-ao pcm -aofile '");
+     if(gpp->use_old_mplayer1_syntax)
+     {
+       strcat(l_cmd, "-ao pcm -aofile '");  // deprecated syntax
+     }
+     else
+     {
+       strcat(l_cmd, "-ao pcm:file='");
+     }
+     
      if(gpp->audio_filename[0] == '\0')
      {
        strcat(l_cmd, gpp->video_filename);
@@ -1231,11 +1274,23 @@ p_start_mplayer_process(GapMPlayerParams *gpp)
      switch(gpp->img_format)
      { 
        case MPENC_JPEG:
-          g_snprintf(l_buf, sizeof(l_buf), "jpeg -jpeg quality=%d:optimize=%d:smooth=%d"
+          if(gpp->use_old_mplayer1_syntax)
+          {
+            g_snprintf(l_buf, sizeof(l_buf), "jpeg -jpeg quality=%d:optimize=%d:smooth=%d"
 	            ,(int)gpp->jpg_quality
 	            ,(int)gpp->jpg_optimize
 	            ,(int)gpp->jpg_smooth
                     );
+          }
+	  else
+	  {
+            g_snprintf(l_buf, sizeof(l_buf), "jpeg:quality=%d:optimize=%d:smooth=%d"
+	            ,(int)gpp->jpg_quality
+	            ,(int)gpp->jpg_optimize
+	            ,(int)gpp->jpg_smooth
+                    );
+	  }
+	  
 	  strcat(l_cmd, l_buf);
 	  
           if(gpp->jpg_progressive)
@@ -1258,9 +1313,18 @@ p_start_mplayer_process(GapMPlayerParams *gpp)
           break;
        case MPENC_PNG:
        default:
-          g_snprintf(l_buf, sizeof(l_buf), "png -z %d"
+          if(gpp->use_old_mplayer1_syntax)
+          {
+            g_snprintf(l_buf, sizeof(l_buf), "png -z %d"
 	            ,(int)gpp->png_compression
                     );
+	  }
+	  else
+	  {
+            g_snprintf(l_buf, sizeof(l_buf), "png:z=%d"
+	            ,(int)gpp->png_compression
+                    );
+	  }
           strcat(l_cmd, l_buf);   /* other formats extract as png, 
 	                           * and may need further processing for convert 
 				   */
@@ -1321,7 +1385,7 @@ p_start_mplayer_process(GapMPlayerParams *gpp)
 	 /* fprintf(l_fp, "exit $MPLAYER_PID\n"); */
 	 fclose(l_fp);
 
-         /* set ececte permissions for the generated shellscript */
+         /* set execute permissions for the generated shellscript */
 	 gap_file_chmod(l_mplayer_startscript, GAP_FILE_MKDIR_MODE);
      }
 
@@ -1552,6 +1616,13 @@ gap_mplayer_decode(GapMPlayerParams *gpp)
          {
             gap_file_mkdir (l_dst_dir, GAP_FILE_MKDIR_MODE);
          }
+       }
+
+       if(gap_debug)
+       {
+         printf("## img_format: %d ", gpp->img_format);
+         printf("extension:%s:", extension);
+         printf("extension2:%s:\n", extension2);
        }
 
        if(strcmp(extension, &extension2[1]) == 0)

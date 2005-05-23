@@ -74,6 +74,8 @@ typedef struct GapMPlayerParams    /* nick: gpp */
    
    gchar              *mplayer_prog;
    gchar              *mplayer_working_dir;
+
+   gboolean            use_old_mplayer1_syntax;
 } GapMPlayerParams;       
 
 
