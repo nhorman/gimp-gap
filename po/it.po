@@ -16,8 +16,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gimp 2.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-04-25 17:41+0200\n"
-"PO-Revision-Date: 2005-04-25 19:03+0200\n"
+"POT-Creation-Date: 2005-06-06 16:22+0200\n"
+"PO-Revision-Date: 2005-06-06 16:34+0200\n"
 "Last-Translator: Marco Ciampa <ciampix@libero.it>\n"
 "Language-Team: gimp.linux.it\n"
 "MIME-Version: 1.0\n"
@@ -66,7 +66,7 @@ msgstr "Il file '%s' esiste già"
 msgid "Overwrite"
 msgstr "Sovrascrivi"
 
-#: ../gap/gap_arr_dialog.c:1820 ../gap/gap_decode_mplayer.c:665
+#: ../gap/gap_arr_dialog.c:1820 ../gap/gap_decode_mplayer.c:700
 #: ../gap/gap_decode_xanim.c:374 ../gap/gap_range_ops.c:1437
 msgid "GAP Question"
 msgstr "GAP Domanda"
@@ -806,11 +806,11 @@ msgstr "Estensione di GIMP"
 msgid "Temporary Procedure"
 msgstr "Procedura temporanea"
 
-#: ../gap/gap_decode_mplayer.c:198
+#: ../gap/gap_decode_mplayer.c:223
 msgid "Requirements to run the mplayer based video split"
 msgstr "Prerequisiti per l'esecuzione dello split video basato su mplayer"
 
-#: ../gap/gap_decode_mplayer.c:210
+#: ../gap/gap_decode_mplayer.c:235
 msgid ""
 "mplayer 1.0 must be installed somewhere in your PATH\n"
 "you can get mplayer exporting edition at:\n"
@@ -818,7 +818,7 @@ msgstr ""
 "mplayer 1.0 deve essere installato da qualche parte nel PATH\n"
 "Puoi trovare la versione di esportazione di mplayer su:\n"
 
-#: ../gap/gap_decode_mplayer.c:229
+#: ../gap/gap_decode_mplayer.c:254
 msgid ""
 "if your mplayer is not in your PATH or is not named mplayer\n"
 "you have to set environment variable GAP_MPLAYER_PROG\n"
@@ -828,19 +828,19 @@ msgstr ""
 "è necessario impostare la variabile di ambiente GAP_MPLAYER_PROG\n"
 "al programma mplayer e riavviare gimp"
 
-#: ../gap/gap_decode_mplayer.c:240
+#: ../gap/gap_decode_mplayer.c:265
 msgid "An error occured while trying to call mplayer:"
 msgstr "Errore durante la chiamata di mplayer:"
 
-#: ../gap/gap_decode_mplayer.c:260
+#: ../gap/gap_decode_mplayer.c:285
 msgid "mplayer Information"
 msgstr "Informazioni su mplayer"
 
-#: ../gap/gap_decode_mplayer.c:400
+#: ../gap/gap_decode_mplayer.c:426
 msgid "Input Video:"
 msgstr "Video in ingresso:"
 
-#: ../gap/gap_decode_mplayer.c:401
+#: ../gap/gap_decode_mplayer.c:427
 msgid ""
 "Name of a videofile to read by mplayer. Frames are extracted from the "
 "videofile and written to separate diskfiles. mplayer 1.0 is required."
@@ -849,46 +849,46 @@ msgstr ""
 "video e scritti in file su disco separati. È necessaria la versione 1.0 di "
 "mplayer."
 
-#: ../gap/gap_decode_mplayer.c:418
+#: ../gap/gap_decode_mplayer.c:444
 msgid "Start Time:"
 msgstr "Tempo iniziale:"
 
-#: ../gap/gap_decode_mplayer.c:419
+#: ../gap/gap_decode_mplayer.c:445
 msgid "sart time HH:MM:SS where to begin extract"
 msgstr "tempo iniziale HH:MM:SS dove cominciare ad estrarre"
 
-#: ../gap/gap_decode_mplayer.c:428
+#: ../gap/gap_decode_mplayer.c:454
 msgid "Frames:"
 msgstr "Frame:"
 
-#: ../gap/gap_decode_mplayer.c:429
+#: ../gap/gap_decode_mplayer.c:455
 msgid "Number of frames to extract"
 msgstr "Numero di frame da estrarre"
 
 #. the videotrack to label
-#: ../gap/gap_decode_mplayer.c:440 ../gap/gap_story_properties.c:1858
+#: ../gap/gap_decode_mplayer.c:466 ../gap/gap_story_properties.c:1858
 #: ../gap/gap_vex_dialog.c:2069
 msgid "Videotrack:"
 msgstr "Traccia video:"
 
-#: ../gap/gap_decode_mplayer.c:441
+#: ../gap/gap_decode_mplayer.c:467
 msgid "Number of videotrack to extract. (0 == ignore video)"
 msgstr "Numero di tracce video da estrarre. (0 == ignora video)"
 
 #. the audiotrack to label
-#: ../gap/gap_decode_mplayer.c:452 ../gap/gap_vex_dialog.c:2103
+#: ../gap/gap_decode_mplayer.c:478 ../gap/gap_vex_dialog.c:2103
 msgid "Audiotrack:"
 msgstr "Traccia audio:"
 
-#: ../gap/gap_decode_mplayer.c:453
+#: ../gap/gap_decode_mplayer.c:479
 msgid "Number of audiotrack to extract. (0 == ignore audio)"
 msgstr "Numero tracce audio da estrarre (0 == ignora l'audio)."
 
-#: ../gap/gap_decode_mplayer.c:465
+#: ../gap/gap_decode_mplayer.c:491
 msgid "Output Audio:"
 msgstr "Audio di uscita:"
 
-#: ../gap/gap_decode_mplayer.c:466
+#: ../gap/gap_decode_mplayer.c:492
 msgid ""
 "Filename for the extracted audiodata. Audiodata is written in RIFF WAV "
 "fileformat (but only if audiotrack >= 1)"
@@ -896,11 +896,11 @@ msgstr ""
 "Nome file dei dati audio estratti. I dati audio verranno scritti in formato "
 "RIFF WAV (ma solo se le tracce audio sono >= 1)"
 
-#: ../gap/gap_decode_mplayer.c:475 ../gap/gap_decode_xanim.c:266
+#: ../gap/gap_decode_mplayer.c:501 ../gap/gap_decode_xanim.c:266
 msgid "Framenames:"
 msgstr "Nomi frame:"
 
-#: ../gap/gap_decode_mplayer.c:476 ../gap/gap_decode_xanim.c:267
+#: ../gap/gap_decode_mplayer.c:502 ../gap/gap_decode_xanim.c:267
 msgid ""
 "Basename for the video frames to write on disk. Framenumber and extension is "
 "added."
@@ -908,11 +908,11 @@ msgstr ""
 "Corpo del nome del file per il frame video da scrivere su disco. Viene "
 "aggiunta l'estensione ed il numero di frame."
 
-#: ../gap/gap_decode_mplayer.c:485
+#: ../gap/gap_decode_mplayer.c:511
 msgid "Format:"
 msgstr "Formato:"
 
-#: ../gap/gap_decode_mplayer.c:486
+#: ../gap/gap_decode_mplayer.c:512
 msgid ""
 "Image fileformat for the extracted video frames. (xcf is extracted as png "
 "and converted to xcf)"
@@ -920,11 +920,11 @@ msgstr ""
 "Formato file per i frame video estratti. (l'xcf viene estratto come png e "
 "convertito in xcf)"
 
-#: ../gap/gap_decode_mplayer.c:495
+#: ../gap/gap_decode_mplayer.c:521
 msgid "Png Compression:"
 msgstr "Compressione png:"
 
-#: ../gap/gap_decode_mplayer.c:496
+#: ../gap/gap_decode_mplayer.c:522
 msgid ""
 "Compression for resulting png frames where 0 is uncopressed (fast), 9 is "
 "max. compression (this option is ignored when JPEG format is used)"
@@ -933,11 +933,11 @@ msgstr ""
 "9 è la massima compressione (quest'opzione viene ignorata quando viene usato "
 "il formato JPEG)"
 
-#: ../gap/gap_decode_mplayer.c:505 ../gap/gap_decode_xanim.c:293
+#: ../gap/gap_decode_mplayer.c:531 ../gap/gap_decode_xanim.c:293
 msgid "Jpeg Quality:"
 msgstr "Qualità Jpeg:"
 
-#: ../gap/gap_decode_mplayer.c:506
+#: ../gap/gap_decode_mplayer.c:532
 msgid ""
 "Quality for resulting jpeg frames where 100 is best quality(is ignored when "
 "other formats are used)"
@@ -945,47 +945,47 @@ msgstr ""
 "Qualità per i frame risultanti dove 100 è la migliore qualità (ignorato se "
 "vengono usati altri formati)"
 
-#: ../gap/gap_decode_mplayer.c:516
+#: ../gap/gap_decode_mplayer.c:542
 msgid "Jpeg Optimize:"
 msgstr "Jpeg ottimizzato:"
 
-#: ../gap/gap_decode_mplayer.c:517
+#: ../gap/gap_decode_mplayer.c:543
 msgid "optimization factor(is ignored when other formats are used)"
 msgstr "Fattore di ottimizzazione (ignorato se vengono usati altri formati)"
 
-#: ../gap/gap_decode_mplayer.c:527
+#: ../gap/gap_decode_mplayer.c:553
 msgid "Jpeg Smooth:"
 msgstr "Jpeg sfumato:"
 
-#: ../gap/gap_decode_mplayer.c:528
+#: ../gap/gap_decode_mplayer.c:554
 msgid "Smooth factor(is ignored when other formats are used)"
 msgstr "Fattore di sfumatura (ignorato se vengono usati altri formati)"
 
-#: ../gap/gap_decode_mplayer.c:538
+#: ../gap/gap_decode_mplayer.c:564
 msgid "Jpeg Progressive:"
 msgstr "Jpeg progressivo:"
 
-#: ../gap/gap_decode_mplayer.c:539
+#: ../gap/gap_decode_mplayer.c:565
 msgid ""
 "Enable progressive jpeg encoding(is ignored when other formats are used)"
 msgstr ""
 "Abilita la codifica progressiva jpeg (ignorato se vengono usati altri "
 "formati)"
 
-#: ../gap/gap_decode_mplayer.c:545
+#: ../gap/gap_decode_mplayer.c:571
 msgid "Jpeg Baseline:"
 msgstr "Jpeg base:"
 
-#: ../gap/gap_decode_mplayer.c:546
+#: ../gap/gap_decode_mplayer.c:572
 msgid "Enable baseline jpeg encoding(is ignored when other formats are used)"
 msgstr ""
 "Abilita la codifica base jpeg (ignorato se vengono usati altri formati)"
 
-#: ../gap/gap_decode_mplayer.c:557
+#: ../gap/gap_decode_mplayer.c:583
 msgid "Silent"
 msgstr "Silenzioso"
 
-#: ../gap/gap_decode_mplayer.c:558
+#: ../gap/gap_decode_mplayer.c:584
 msgid ""
 "use -nosound (-novideo) in case audiotrack (videotrack) is 0.\n"
 "mplayer will operate silent and faster."
@@ -993,56 +993,66 @@ msgstr ""
 "usa -nosound (-novideo) nel caso la traccia audio (video) sia 0.\n"
 "mplayer opererà silenzioso e più velocemente."
 
-#: ../gap/gap_decode_mplayer.c:564 ../gap/gap_decode_xanim.c:305
+#: ../gap/gap_decode_mplayer.c:590 ../gap/gap_decode_xanim.c:305
 msgid "Open"
 msgstr "Apri"
 
-#: ../gap/gap_decode_mplayer.c:565 ../gap/gap_decode_xanim.c:306
+#: ../gap/gap_decode_mplayer.c:591 ../gap/gap_decode_xanim.c:306
 msgid "Open the 1st one of the extracted frames"
 msgstr "Apri il primo dei frame estratti"
 
-#: ../gap/gap_decode_mplayer.c:570
+#: ../gap/gap_decode_mplayer.c:596
 msgid "Asynchron"
 msgstr "Asincrono"
 
-#: ../gap/gap_decode_mplayer.c:571
+#: ../gap/gap_decode_mplayer.c:597
 msgid "Run the mplayer as asynchroh process"
 msgstr "Esegui l'mplayer come processo asincrono"
 
-#: ../gap/gap_decode_mplayer.c:580
+#: ../gap/gap_decode_mplayer.c:603
+msgid "MPlayer 1.0pre5:"
+msgstr "MPlayer 1.0pre5:"
+
+#: ../gap/gap_decode_mplayer.c:604
+msgid ""
+"on: use deprecated options for mplayer 1.0pre5 off: use options for newer "
+"mplayer (newer mplayer 1.0pre7 has changed options incompatible)"
+msgstr "acceso: usa opzioni deprecate per mplayer 1.0pre5 spento: usa opzioni per il nuovo mplayer (la nuova versione di mplayer 1.0pre7 ha cambiato le opzioni in maniera incompatibile)"
+
+#: ../gap/gap_decode_mplayer.c:614
 msgid "MPlayer based extract"
 msgstr "Estrazione basata su MPlayer"
 
-#: ../gap/gap_decode_mplayer.c:581 ../gap/gap_decode_xanim.c:325
+#: ../gap/gap_decode_mplayer.c:615 ../gap/gap_decode_xanim.c:325
 #: ../gap/gap_range_ops.c:1686
 msgid "Select Frame Range"
 msgstr "Seleziona serie di frame"
 
-#: ../gap/gap_decode_mplayer.c:613 ../gap/gap_decode_mplayer.c:1429
+#: ../gap/gap_decode_mplayer.c:648 ../gap/gap_decode_mplayer.c:1493
 #, c-format
 msgid "videofile %s not existent\n"
 msgstr "il file video %s non esiste\n"
 
-#: ../gap/gap_decode_mplayer.c:622
+#: ../gap/gap_decode_mplayer.c:657
 #, c-format
 msgid "Illegal starttime %s"
 msgstr "Tempo di inizio illegale %s"
 
-#: ../gap/gap_decode_mplayer.c:655 ../gap/gap_decode_xanim.c:364
+#: ../gap/gap_decode_mplayer.c:690 ../gap/gap_decode_xanim.c:364
 #: ../gap/gap_range_ops.c:1430
 msgid "Overwrite Frame"
 msgstr "Sovrascrivi frame"
 
-#: ../gap/gap_decode_mplayer.c:657 ../gap/gap_decode_xanim.c:366
+#: ../gap/gap_decode_mplayer.c:692 ../gap/gap_decode_xanim.c:366
 #: ../gap/gap_range_ops.c:1432 ../gap/gap_vex_dialog.c:231
 msgid "Overwrite All"
 msgstr "Sovrascrivi tutti"
 
-#: ../gap/gap_decode_mplayer.c:666 ../gap/gap_decode_xanim.c:375
+#: ../gap/gap_decode_mplayer.c:701 ../gap/gap_decode_xanim.c:375
 msgid "File already exists"
 msgstr "File esistente"
 
-#: ../gap/gap_decode_mplayer.c:935
+#: ../gap/gap_decode_mplayer.c:970
 #, c-format
 msgid ""
 "can't find any extracted frames,\n"
@@ -1053,22 +1063,22 @@ msgstr ""
 "%s\n"
 "forse mplayer ha fallito o è stato interrotto"
 
-#: ../gap/gap_decode_mplayer.c:960 ../gap/gap_decode_xanim.c:601
+#: ../gap/gap_decode_mplayer.c:995 ../gap/gap_decode_xanim.c:601
 #, c-format
 msgid "frames are not extracted, because overwrite of %s was cancelled"
 msgstr "frame non estratti perché la sovrascrittura di %s è stata interrotta"
 
-#: ../gap/gap_decode_mplayer.c:970 ../gap/gap_decode_xanim.c:611
+#: ../gap/gap_decode_mplayer.c:1005 ../gap/gap_decode_xanim.c:611
 #, c-format
 msgid "failed to overwrite %s (check permissions ?)"
 msgstr "fallita la sovrascrittura di %s (controllati i permessi?)"
 
-#: ../gap/gap_decode_mplayer.c:992 ../gap/gap_decode_xanim.c:633
+#: ../gap/gap_decode_mplayer.c:1027 ../gap/gap_decode_xanim.c:633
 #, c-format
 msgid "failed to write %s (check permissions ?)"
 msgstr "fallita la scrittura di %s (controllati i permessi?)"
 
-#: ../gap/gap_decode_mplayer.c:1036
+#: ../gap/gap_decode_mplayer.c:1071
 #, c-format
 msgid ""
 "WARNING: your gimprc file configuration for the mediaplayer\n"
@@ -1079,7 +1089,7 @@ msgstr ""
 "non punta ad un file eseguibile\n"
 "il valore configurato per %s è: %s\n"
 
-#: ../gap/gap_decode_mplayer.c:1057 ../gap/gap_player_dialog.c:848
+#: ../gap/gap_decode_mplayer.c:1092 ../gap/gap_player_dialog.c:848
 #, c-format
 msgid ""
 "WARNING: the environment variable %s\n"
@@ -1091,16 +1101,16 @@ msgstr ""
 "il valore corrente è %s\n"
 
 #. ERROR
-#: ../gap/gap_decode_mplayer.c:1083
+#: ../gap/gap_decode_mplayer.c:1118
 #, c-format
 msgid "The mediaplayer executable file '%s' was not found."
 msgstr "Il file eseguibile del lettore multimediale '%s' non è stato trovato"
 
-#: ../gap/gap_decode_mplayer.c:1419
+#: ../gap/gap_decode_mplayer.c:1483
 msgid "Exit, neither video nor audio track was selected"
 msgstr "Uscita, non è stata selezionata né una traccia video né una audio"
 
-#: ../gap/gap_decode_mplayer.c:1477
+#: ../gap/gap_decode_mplayer.c:1541
 #, c-format
 msgid ""
 "could not create %s directory\n"
@@ -1109,15 +1119,15 @@ msgstr ""
 "non è possibile creare la directory %s\n"
 "(richiesta per l'esportazione frame mplayer)"
 
-#: ../gap/gap_decode_mplayer.c:1490 ../gap/gap_decode_xanim.c:1132
+#: ../gap/gap_decode_mplayer.c:1554 ../gap/gap_decode_xanim.c:1132
 msgid "Extracting frames..."
 msgstr "Estrazione frame..."
 
-#: ../gap/gap_decode_mplayer.c:1494
+#: ../gap/gap_decode_mplayer.c:1558
 msgid "Extracting audio..."
 msgstr "Estrazione audio..."
 
-#: ../gap/gap_decode_mplayer.c:1512
+#: ../gap/gap_decode_mplayer.c:1576
 #, c-format
 msgid ""
 "could not start mplayer process\n"
@@ -1126,7 +1136,7 @@ msgstr ""
 "non è possibile avviare il processo mplayer\n"
 "(programma=%s)"
 
-#: ../gap/gap_decode_mplayer.c:1540
+#: ../gap/gap_decode_mplayer.c:1604
 msgid ""
 "can't find any extracted frames,\n"
 "mplayer has failed or was cancelled"
@@ -1134,11 +1144,11 @@ msgstr ""
 "non è possibile trovare nessun frame estratto,\n"
 "mplayer ha fallito o è stato interrotto"
 
-#: ../gap/gap_decode_mplayer.c:1559 ../gap/gap_decode_xanim.c:1197
+#: ../gap/gap_decode_mplayer.c:1630 ../gap/gap_decode_xanim.c:1197
 msgid "Renaming frames..."
 msgstr "Rinomina frame..."
 
-#: ../gap/gap_decode_mplayer.c:1569 ../gap/gap_decode_xanim.c:1202
+#: ../gap/gap_decode_mplayer.c:1640 ../gap/gap_decode_xanim.c:1202
 #: ../gap/gap_range_ops.c:1303
 msgid "Converting frames..."
 msgstr "Conversione frame .."
@@ -3035,7 +3045,11 @@ msgid ""
 "of the current path from the image where 'MovePath' was invoked from.Hold "
 "Shift key to create contolpoints foreach handled frame, following the bezier "
 "path"
-msgstr "Elimina tutti i punti di controllo e rimpiazzali con una copia di tutti i punti àncora del tracciato corrente dall'immagine da dove 'Spostatracciato' è stata invocata. Tenere premuto il tasto Maiusc per creare i punti di controllo per ogni frame gestito, seguendo il tracciato bezier"
+msgstr ""
+"Elimina tutti i punti di controllo e rimpiazzali con una copia di tutti i "
+"punti àncora del tracciato corrente dall'immagine da dove 'Spostatracciato' "
+"è stata invocata. Tenere premuto il tasto Maiusc per creare i punti di "
+"controllo per ogni frame gestito, seguendo il tracciato bezier"
 
 #: ../gap/gap_mov_dialog.c:3178
 msgid "Insert controlpoint. The current controlpoint is duplicated."
@@ -6827,6 +6841,37 @@ msgstr "Reimposta tutti i parametri ai valori predefiniti"
 msgid "Set Layer Opacity"
 msgstr "Imposta opacità livello"
 
+#: ../gap/gap_wr_trans.c:168
+msgid "<Image>/Video/Layer/Transform/Flip Horizontal"
+msgstr "<Image>/Video/Livelli/Trasforma/Rifletti orizzontalmente"
+
+#: ../gap/gap_wr_trans.c:185
+msgid "<Image>/Video/Layer/Transform/Flip Vertical"
+msgstr "<Image>/Video/Livelli/Trasforma/Rifletti verticalmente"
+
+#: ../gap/gap_wr_trans.c:202
+msgid "<Image>/Video/Layer/Transform/Rotate 90 degrees CW"
+msgstr "<Image>/Video/Livelli/Trasforma/Ruota di 90° in senso orario"
+
+#: ../gap/gap_wr_trans.c:220
+msgid "<Image>/Video/Layer/Transform/Rotate 180 degrees"
+msgstr "<Image>/Video/Livelli/Trasforma/Ruota di 180°"
+
+#: ../gap/gap_wr_trans.c:237
+msgid "<Image>/Video/Layer/Transform/Rotate 90 degrees CCW"
+msgstr "<Image>/Video/Livelli/Trasforma/Ruota di 90° in senso antiorario"
+
+#: ../gap/gap_wr_trans.c:354
+#, c-format
+msgid ""
+"The plug-in %s\n"
+"operates only on layers\n"
+"(but was called on mask or channel)"
+msgstr ""
+"Il plug-in %s\n"
+"opera sono su livelli\n"
+"(ma è stato chiamato su una maschera o su un canale)"
+
 #: ../libgapvidapi/gap_vid_api_mpeg3.c:829
 #, c-format
 msgid ""
@@ -8720,7 +8765,8 @@ msgstr "Blocco sovrapposto"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2334
 msgid "enable use overlapped block motion compensation (only h263+ CODEC)"
-msgstr "abilita la compensazione del moto blocco sovrapposto (solo CODEC h263+)"
+msgstr ""
+"abilita la compensazione del moto blocco sovrapposto (solo CODEC h263+)"
 
 #. the quarter pel checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2345
@@ -8747,7 +8793,8 @@ msgstr "Usa qprd"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2386
 msgid "use rate distortion optimization for qp selection"
-msgstr "usa l'ottimizzazione della frequenza di distorsione per la selezione qp"
+msgstr ""
+"usa l'ottimizzazione della frequenza di distorsione per la selezione qp"
 
 #. the Use cbprd checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2395
@@ -8767,7 +8814,9 @@ msgstr "Usa MV0"
 msgid ""
 "try to encode each MB with MV=<0,0> and choose the better one (has no effect "
 "if mbd=0)"
-msgstr "prova a codificare ogni MB con MV=<0,0> e scegli il migliore (non ha effetto se mbd=0)"
+msgstr ""
+"prova a codificare ogni MB con MV=<0,0> e scegli il migliore (non ha effetto "
+"se mbd=0)"
 
 #. the Use Normalize checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2430
@@ -9126,7 +9175,12 @@ msgid ""
 "wav) file. .wav files can be mono (1) or stereo (2channels) audiodata and "
 "must be 16bit uncompressed. IMPORTANT:  Non-interactive callers should first "
 "call \""
-msgstr "Questo plugin esegue la codifica video di frame animati usando libavformat (conosciuto anche come codificatore FFMPEG). I dati audio (opzionali) devono essere in formato RIFF WAVE (.wav) a 16 bit non compressi e possono essere mono(1) o stereo (2 canali). IMPORTANTE: nell'uso non interattivo è necessario prima chiamare \""
+msgstr ""
+"Questo plugin esegue la codifica video di frame animati usando libavformat "
+"(conosciuto anche come codificatore FFMPEG). I dati audio (opzionali) devono "
+"essere in formato RIFF WAVE (.wav) a 16 bit non compressi e possono essere "
+"mono(1) o stereo (2 canali). IMPORTANTE: nell'uso non interattivo è "
+"necessario prima chiamare \""
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:360
 msgid "Set Parameters for GAP ffmpeg video encoder Plugin"
@@ -9137,7 +9191,11 @@ msgid ""
 "This plugin sets ffmpeg specific video encoding parameters. Non-interactive "
 "callers must provide a parameterfile, Interactive calls provide a dialog "
 "window to specify and optionally save the parameters."
-msgstr "Questo plugin imposta i parametri specifici per la codifica video ffmpeg. Le chiamate non interattive devono fornire un file di parametri mentre le chiamate interattive provocano la presentazione di una finestra di dialogo per la selezione dei parametri che ne permette anche il salvataggio."
+msgstr ""
+"Questo plugin imposta i parametri specifici per la codifica video ffmpeg. Le "
+"chiamate non interattive devono fornire un file di parametri mentre le "
+"chiamate interattive provocano la presentazione di una finestra di dialogo "
+"per la selezione dei parametri che ne permette anche il salvataggio."
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:376
 msgid "Get GUI Parameters for GAP ffmpeg video encoder"
@@ -9198,6 +9256,28 @@ msgstr "Inizializzazione FFMPEG per la codifica video .."
 #, c-format
 msgid "FFMPEG encoding frame %d (%d)"
 msgstr "Codifica video FFMPEG frame %d (%d)"
+
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_callbacks.c:705
+msgid "Save ffmpeg-encoder parameters"
+msgstr "Salva i parametri di codifica ffmpeg"
+
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_callbacks.c:709
+msgid "Load ffmpeg-encoder parameters"
+msgstr "Carica i parametri di codifica ffmpeg"
+
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_par.c:202
+#, c-format
+msgid ""
+"Could not read ffmpeg video encoder parameters from file:\n"
+"%s"
+msgstr ""
+"Impossibile leggere i parametri del codificatore video ffmpeg da file.\n"
+"%s"
+
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_par.c:286
+#, c-format
+msgid "Could not save ffmpeg video encoder parameterfile:'%s'%s"
+msgstr "Impossibile salvare il file parametri della codifica video ffmpeg:'%s'%s"
 
 #: ../vid_enc_single/gap_enc_singleframes_main.c:180
 msgid "singleframes video encoding for anim frames. Menu: @SINGLEFRAMES@"
