@@ -2,15 +2,15 @@
 # Copyright (C) 1999-2003 Free Software Foundation, Inc.
 # Sven Neumann <sven@gimp.org>, 2004.
 # Hendrik Brandt <heb@gnome-de.org>, 2004.
-# 
+# Hendrik Richter <hendi@gnome-de.org>, 2005. 
 # 
 msgid ""
 msgstr ""
 "Project-Id-Version: gimp-gap HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-04-07 16:42+0200\n"
-"PO-Revision-Date: 2005-04-07 17:22+0200\n"
-"Last-Translator: Hendrik Brandt <heb@gnome-de.org>\n"
+"PO-Revision-Date: 2005-07-04 17:52+0200\n"
+"Last-Translator: Hendrik Richter <hendi@gnome-de.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -271,7 +271,7 @@ msgstr ""
 #: gap/gap_base_ops.c:1261
 #, fuzzy
 msgid "Increase Density"
-msgstr "Gross-/Kleinschreibung beachten"
+msgstr "Groß-/Kleinschreibung beachten"
 
 #: gap/gap_base_ops.c:1262
 msgid ""
@@ -2137,7 +2137,7 @@ msgid ""
 "String to identify layer names or layerstack position numbers. Example: 0,3-5"
 msgstr ""
 "String, mit dem Ebenennamen indentifiziert werden\n"
-"oder Positionsnummern im Ebenestapel\n"
+"oder Positionsnummern im Ebenenstapel\n"
 "0,3-5"
 
 #. +++++++++++++++++++++++++
@@ -2428,9 +2428,8 @@ msgstr ""
 # kürzer ? TODO
 #. the deform intensity label
 #: gap/gap_morph_dialog.c:3682
-#, fuzzy
 msgid "Intensity:"
-msgstr "Gross-/Kleinschreibung beachten"
+msgstr "Intensität:"
 
 #: gap/gap_morph_dialog.c:3705
 msgid "Deform intensity."
@@ -2439,9 +2438,8 @@ msgstr ""
 # kürzer ? TODO
 #. the use_intensity checkbutton
 #: gap/gap_morph_dialog.c:3713
-#, fuzzy
 msgid "Use Intensity"
-msgstr "Gross-/Kleinschreibung beachten"
+msgstr "Intensität verwenden"
 
 #: gap/gap_morph_dialog.c:3723
 msgid ""
@@ -3152,7 +3150,7 @@ msgid ""
 "Set rotation for all controlpoints to follow the shape of the path. Hold "
 "down the shift key to use rotation of contolpoint 1 as offset."
 msgstr ""
-"Setze die Rotation aller Kontrollpunkte so, daß sie der From des Pfades "
+"Setze die Rotation aller Kontrollpunkte so, dass sie der From des Pfades "
 "folgen. (Shift: Benutze Rotation von Kontrollpunkt 1 als Versatz)"
 
 #: gap/gap_mov_dialog.c:3068
@@ -3719,12 +3717,12 @@ msgstr ""
 #: gap/gap_mpege.c:125
 #, fuzzy
 msgid "Requirements to run mpeg2encode 1.2:"
-msgstr "Vorraussetzungen für mpeg2encode 1.2:"
+msgstr "Voraussetzungen für mpeg2encode 1.2:"
 
 #: gap/gap_mpege.c:129
 #, fuzzy
 msgid "Requirements to run mpeg_encode 1.5:"
-msgstr "Vorraussetzungen für mpeg_encode 1.5:"
+msgstr "Voraussetzungen für mpeg_encode 1.5:"
 
 #: gap/gap_mpege.c:145
 #, fuzzy, c-format
@@ -5408,7 +5406,7 @@ msgstr "Ebenenkombinationsmodus:"
 #: gap/gap_range_ops.c:740
 #, fuzzy
 msgid "Exclude BG-Layer:"
-msgstr "HG-Ebene ausschliessen"
+msgstr "HG-Ebene ausschließen"
 
 #: gap/gap_range_ops.c:741
 #, fuzzy
@@ -5417,7 +5415,7 @@ msgid ""
 "settings of layer selection."
 msgstr ""
 "HG-Ebenen in allen\n"
-"bearbeiteten Frames ausschliessen\n"
+"bearbeiteten Frames ausschließen\n"
 "(Auswahl wird nicht beachtet)"
 
 #: gap/gap_range_ops.c:748
@@ -5433,14 +5431,14 @@ msgid ""
 "Example: 0,3-5"
 msgstr ""
 "String, mit dem Ebenennamen indentifiziert werden\n"
-"oder Positionsnummern im Ebenestapel\n"
+"oder Positionsnummern im Ebenenstapel\n"
 "0,3-5"
 
 # kürzer ? TODO
 #: gap/gap_range_ops.c:766
 #, fuzzy
 msgid "Case sensitive:"
-msgstr "Gross-/Kleinschreibung beachten"
+msgstr "Groß-/Kleinschreibung beachten"
 
 #: gap/gap_range_ops.c:772
 #, fuzzy
