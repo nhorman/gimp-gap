@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: gimp-gap HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-04-07 16:42+0200\n"
-"PO-Revision-Date: 2005-07-04 17:52+0200\n"
+"PO-Revision-Date: 2005-07-24 14:12+0200\n"
 "Last-Translator: Hendrik Richter <hendi@gnome-de.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -1621,7 +1621,7 @@ msgstr "<Image>/Video/Einzelbilder duplizieren..."
 #: gap/gap_main.c:733
 #, fuzzy
 msgid "<Image>/Video/Frames Density..."
-msgstr "<Image>/Video/Frame-Grösse verändern..."
+msgstr "<Image>/Video/Frame-Größe verändern..."
 
 #: gap/gap_main.c:745
 msgid "<Image>/Video/Exchange Frame..."
@@ -1673,7 +1673,7 @@ msgstr "<Image>/Video/Frame-Abfolge verschieben..."
 #: gap/gap_main.c:958
 #, fuzzy
 msgid "<Image>/Video/Frames Renumber..."
-msgstr "<Image>/Video/Frame-Grösse verändern..."
+msgstr "<Image>/Video/Frame-Größe verändern..."
 
 #: gap/gap_main.c:970
 msgid "<Image>/Video/Frames Modify..."
@@ -2608,7 +2608,7 @@ msgstr "Genaues Objekt auf Frames"
 #: gap/gap_mov_dialog.c:1003
 #, fuzzy
 msgid "Anim Preview Mode:"
-msgstr "Grösse der animierten Vorschau"
+msgstr "Größe der animierten Vorschau"
 
 #: gap/gap_mov_dialog.c:1025
 #, fuzzy
@@ -3768,7 +3768,7 @@ msgstr ""
 #: gap/gap_mpege.c:209
 #, fuzzy
 msgid "All images must have the same size,"
-msgstr "3.) Alle Bilder müssen die gleiche Grösse haben,"
+msgstr "3.) Alle Bilder müssen die gleiche Größe haben,"
 
 #: gap/gap_mpege.c:217
 msgid ""
@@ -4121,7 +4121,7 @@ msgid ""
 "<Shift> use timezoom stepsize"
 msgstr ""
 "Gehe zu vorherigem Frame\n"
-"<Shift> benutze \"Zeitdehnung\" als Schrittgrösse"
+"<Shift> benutze \"Zeitdehnung\" als Schrittgröße"
 
 #: gap/gap_navigator_dialog.c:465
 #, fuzzy
@@ -4130,7 +4130,7 @@ msgid ""
 "<Shift> use timezoom stepsize"
 msgstr ""
 "Gehe zum nächsten Frame\n"
-"<Shift> benutze \"Zeitdehnung\" als Schrittgrösse"
+"<Shift> benutze \"Zeitdehnung\" als Schrittgröße"
 
 #: gap/gap_navigator_dialog.c:470
 #, fuzzy
@@ -4948,9 +4948,8 @@ msgstr ""
 
 #. the size button
 #: gap/gap_player_dialog.c:5621
-#, fuzzy
 msgid "Size"
-msgstr "Grösse verändern"
+msgstr "Größe"
 
 #: gap/gap_player_dialog.c:5628
 msgid "Toggle size 128/256. <Shift> Set 1:1 full image size"
@@ -5084,7 +5083,7 @@ msgstr "Zuschneiden (ursprünglich %dx%d)"
 #: gap/gap_range_ops.c:201
 #, fuzzy
 msgid "Resize Video Frames (all)"
-msgstr "Grösse der AnimFrames verändern"
+msgstr "Größe der AnimFrames verändern"
 
 #: gap/gap_range_ops.c:202
 #, c-format
@@ -5105,7 +5104,7 @@ msgstr "Skalieren (ursprünglich %dx%d)"
 #: gap/gap_story_dialog.c:5945
 #, fuzzy
 msgid "Reset"
-msgstr "Grösse verändern"
+msgstr "Größe verändern"
 
 #. should use GIMP_STOCK_RESET if possible
 #: gap/gap_range_ops.c:216
@@ -5309,13 +5308,13 @@ msgid ""
 "Resulting layer size is made of the outline-rectangle of all visible layers "
 "(may differ from frame to frame)"
 msgstr ""
-"Grösse der resultierenden Ebenen wird durch das Umriss-Rechteck aller\n"
+"Größe der resultierenden Ebenen wird durch das Umriss-Rechteck aller\n"
 "sichtbaren Ebenen bestimmt (könnte von Frame zu Frame versch. sein)"
 
 #: gap/gap_range_ops.c:645
 #, fuzzy
 msgid "Resulting layer size is the frame size"
-msgstr "Grösse der resultierenden Ebenen = Grösse des Frames"
+msgstr "Größe der resultierenden Ebenen = Größe des Frames"
 
 #: gap/gap_range_ops.c:646
 #, fuzzy
@@ -5323,7 +5322,7 @@ msgid ""
 "Resulting layer size is the size of the bottom layer (may differ from frame "
 "to frame)"
 msgstr ""
-"Grösse der resultierenden Ebenen wird durch die Grösse der untersten Ebene\n"
+"Größe der resultierenden Ebenen wird durch die Größe der untersten Ebene\n"
 "bestimmt (kann von Frame zu Frame verschieden sein)"
 
 #: gap/gap_range_ops.c:647
@@ -5332,7 +5331,7 @@ msgid ""
 "Resulting layer size is the frame size transparent parts are filled with "
 "background color"
 msgstr ""
-"Grösse der resultierenden Ebenen = Grösse des Frames,\n"
+"Größe der resultierenden Ebenen = Größe des Frames,\n"
 "transparente Stellen werden mit der Hintergrundfarbe gefüllt"
 
 #: gap/gap_range_ops.c:658
@@ -5491,7 +5490,7 @@ msgstr "Alle Animations-Frames werden zugeschnitten..."
 #: gap/gap_range_ops.c:1592
 #, fuzzy
 msgid "Resizing all video frames..."
-msgstr "Verändere die Grösse aller Animations-Frames..."
+msgstr "Verändere die Größe aller Animations-Frames..."
 
 #: gap/gap_range_ops.c:1595
 #, fuzzy
@@ -5524,7 +5523,7 @@ msgstr "AnimFrames skalieren"
 #: gap/gap_resi_dialog.c:625
 #, fuzzy
 msgid "Resize Frames"
-msgstr "Grösse der AnimFrames verändern"
+msgstr "Größe der AnimFrames verändern"
 
 #: gap/gap_resi_dialog.c:628
 #, fuzzy
@@ -6724,7 +6723,7 @@ msgstr ""
 #: gap/gap_wr_color_curve.c:527
 #, fuzzy
 msgid "<Image>/Video/Layer/Colors/CurvesFile..."
-msgstr "<Image>/Video/Frame-Grösse verändern..."
+msgstr "<Image>/Video/Frame-Größe verändern..."
 
 #: gap/gap_wr_color_curve.c:792
 #, fuzzy
