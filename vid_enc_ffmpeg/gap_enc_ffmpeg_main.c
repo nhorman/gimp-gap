@@ -45,6 +45,11 @@
  */
 
 /* revision history:
+ * version 2.1.0a;  2005.07.16   hof: base support for encoding of multiple tracks
+ *                                    video is still limited to 1 track
+ *                                    multiple audio tracks are possible
+ *                                    when a playlist (file containing filenames of audiofiles)
+ *                                    is passed rather than a single input audiofile
  * version 2.1.0a;  2005.03.27   hof: support ffmpeg  LIBAVCODEC_BUILD  >= 4744,
  *                                    changed Noninteractive PDB-API (use paramfile)
  *                                    changed presets (are still a wild guess)
@@ -108,7 +113,67 @@
 #endif
 
 
-static char *gap_enc_ffmpeg_version = "2.1.0a; 2005/03/06";
+static char *gap_enc_ffmpeg_version = "2.1.0a; 2005/07/16";
+
+#define MAX_VIDEO_STREAMS 1
+#define MAX_AUDIO_STREAMS 16
+
+typedef struct t_audio_work
+{
+  FILE *fp_inwav;
+  char *referred_wavfile;   /* filename of the reffereed wavfile, extended to absolute path */
+  gint32 wavsize; /* Data size of the wav file */
+  long audio_margin; /*8192 The audio chunk size (8192) */
+  long audio_filled_100;
+  long audio_per_frame_x100;
+  long frames_per_second_x100;
+  gdouble frames_per_second_x100f;
+  char *databuffer; /* 300000 dyn. allocated bytes for transferring audio data */
+  
+  long  sample_rate;
+  long  channels;
+  long  bytes_per_sample;
+  long  bits;
+  long  samples;
+  
+} t_audio_work;
+
+
+typedef struct t_awk_array
+{
+  gint          audio_tracks;           /* == max_ast */   
+  t_audio_work  awk[MAX_AUDIO_STREAMS];
+} t_awk_array;
+
+
+typedef struct t_ffmpeg_video
+{
+ int              video_stream_index;
+ AVStream        *vid_stream;
+ AVCodecContext  *vid_codec_context;
+ AVCodec         *vid_codec;
+ AVFrame         *big_picture_codec;
+ uint8_t         *yuv420_buffer;
+ int              yuv420_buffer_size;
+ uint8_t         *video_buffer;
+ int              video_buffer_size;
+ uint8_t         *video_dummy_buffer;
+ int              video_dummy_buffer_size;
+ uint8_t         *yuv420_dummy_buffer;
+ int              yuv420_dummy_buffer_size;
+ FILE            *passlog_fp;
+} t_ffmpeg_video;
+
+typedef struct t_ffmpeg_audio
+{
+ int              audio_stream_index;
+ AVStream        *aud_stream;
+ AVCodecContext  *aud_codec_context;
+ AVCodec         *aud_codec;
+ uint8_t         *audio_buffer;
+ int              audio_buffer_size;
+} t_ffmpeg_audio;
+
 
 
 
@@ -117,31 +182,12 @@ typedef struct t_ffmpeg_handle
  AVFormatContext *output_context;
  AVOutputFormat  *file_oformat;
  AVFormatParameters *ap;
-
- AVStream        *vid_stream;
- AVStream        *aud_stream;
- AVCodecContext  *vid_codec_context;
- AVCodecContext  *aud_codec_context;
- AVCodec         *vid_codec;
- AVCodec         *aud_codec;
- AVFrame         *big_picture_codec;
-
- uint8_t         *yuv420_buffer;
- int              yuv420_buffer_size;
-
- uint8_t         *video_buffer;
- uint8_t         *audio_buffer;
- int              video_buffer_size;
- int              audio_buffer_size;
- int              video_stream_index;
- int              audio_stream_index;
- FILE            *passlog_fp;
-
- uint8_t         *video_dummy_buffer;
- int              video_dummy_buffer_size;
- uint8_t         *yuv420_dummy_buffer;
- int              yuv420_dummy_buffer_size;
-
+ 
+ t_ffmpeg_video  vst[MAX_VIDEO_STREAMS];
+ t_ffmpeg_audio  ast[MAX_AUDIO_STREAMS];
+ 
+ int max_vst;   /* used video streams,  0 <= max_vst <= MAX_VIDEO_STREAMS */
+ int max_ast;   /* used audio streams,  0 <= max_ast <= MAX_AUDIO_STREAMS */
 
  int frame_width;
  int frame_height;
@@ -191,10 +237,7 @@ typedef struct t_ffmpeg_handle
 
  int gop_size;
  int intra_only;
- int audio_sample_rate;
  int audio_bit_rate;
- int audio_disable;
- int audio_channels;
  int audio_codec_id;
 
  int64_t recording_time;
@@ -240,14 +283,43 @@ static void run(const gchar *name
 static void   p_gimp_get_data(const char *key, void *buffer, gint expected_size);
 static void   p_ffmpeg_init_default_params(GapGveFFMpegValues *epp);
 
+static void              p_init_audio_workdata(t_awk_array *awp);
+static void              p_open_inwav_and_buffers(t_awk_array *awp
+                        	      , const char *wavefile
+                        	      , gint ii
+				      , long sample_rate
+				      , long channels
+				      , long bytes_per_sample
+				      , long bits
+				      , long samples
+				      );
+static void              p_sound_precalculations(t_ffmpeg_handle *ffh  
+                		      , t_awk_array *awp
+                		      , GapGveFFMpegGlobalParams *gpp
+				      );
+static void              p_process_audio_frame(t_ffmpeg_handle *ffh, t_awk_array *awp);
+static void              p_close_audio_input_files(t_awk_array *awp);
+static void              p_open_audio_input_files(t_awk_array *awp, GapGveFFMpegGlobalParams *gpp);
+
+static void              p_ffmpeg_open_init(t_ffmpeg_handle *ffh, GapGveFFMpegGlobalParams *gpp);
+static gboolean          p_init_video_codec(t_ffmpeg_handle *ffh
+        			      , gint ii
+        			      , GapGveFFMpegGlobalParams *gpp
+        			      , gint32 current_pass);
+
+static gboolean          p_init_and_open_audio_codec(t_ffmpeg_handle *ffh
+        			      , gint ii
+        			      , GapGveFFMpegGlobalParams *gpp
+        			      , long audio_samplerate
+        			      , long audio_channels);
 static t_ffmpeg_handle * p_ffmpeg_open(GapGveFFMpegGlobalParams *gpp
                                       , gint32 current_pass
-                                      , long audio_samplerate
-                                      , long audio_channels
+				      , t_awk_array *awp
+                                      , gint video_tracks
                                       );
-static int    p_ffmpeg_write_frame_chunk(t_ffmpeg_handle *ffh, gint32 encoded_size);
-static int    p_ffmpeg_write_frame(t_ffmpeg_handle *ffh, gboolean force_keyframe);
-static int    p_ffmpeg_write_audioframe(t_ffmpeg_handle *ffh, guchar *audio_buf, int frame_bytes);
+static int    p_ffmpeg_write_frame_chunk(t_ffmpeg_handle *ffh, gint32 encoded_size, gint vid_track);
+static int    p_ffmpeg_write_frame(t_ffmpeg_handle *ffh, gboolean force_keyframe, gint vid_track);
+static int    p_ffmpeg_write_audioframe(t_ffmpeg_handle *ffh, guchar *audio_buf, int frame_bytes, gint aud_track);
 static void   p_ffmpeg_close(t_ffmpeg_handle *ffh);
 static gint   p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp);
 
@@ -288,7 +360,14 @@ query ()
     {GIMP_PDB_INT32, "vid_format", "videoformat:  0=comp., 1=PAL, 2=NTSC, 3=SECAM, 4=MAC, 5=unspec"},
     {GIMP_PDB_FLOAT, "framerate", "framerate in frames per seconds"},
     {GIMP_PDB_INT32, "samplerate", "audio samplerate in samples per seconds (is ignored .wav files are used)"},
-    {GIMP_PDB_STRING, "audfile", "optional audiodata file .wav must contain uncompressed 16 bit samples. pass empty string if no audiodata should be included"},
+    {GIMP_PDB_STRING, "audfile", "optional audiodata file .wav must contain uncompressed 16 bit samples."
+                                 " pass empty string if no audiodata should be included."
+				 " optional you can pass a textfile as audiofile. this textfile must contain "
+				 " one filename of a .wav file per line and allows encoding of "
+				 " multiple audio tracks because each of the specified audiofiles "
+				 " is encoded as ist own audiostream (works only if the selected multimedia fileformat "
+				 " has multiple audio track support. For example multilingual MPEG2 .vob files "
+				 " do support multiple audio streams)"},
     {GIMP_PDB_INT32, "use_rest", "0 == use default values for all encoder specific params, "
                                  "1 == use encoder specific params set by the parameter procedure:"
                                  GAP_PLUGIN_NAME_FFMPEG_PARAMS
@@ -906,48 +985,414 @@ p_ffmpeg_init_default_params(GapGveFFMpegValues *epp)
 
 
 
-/* ---------------
- * p_ffmpeg_open
- * ---------------
+
+/* ---------------------
+ * p_init_audio_workdata
+ * ---------------------
  */
-static t_ffmpeg_handle *
-p_ffmpeg_open(GapGveFFMpegGlobalParams *gpp
-             , gint32 current_pass
-             , long audio_samplerate
-             , long audio_channels)
+static void
+p_init_audio_workdata(t_awk_array *awp)
 {
-  t_ffmpeg_handle *ffh;
-  GapGveFFMpegValues   *epp;
-  AVCodecContext *video_enc = NULL;
-  AVCodecContext *audio_enc = NULL;
-  gint  size;
+  gint ii;
+  
+  awp->audio_tracks = 0;  
 
-
-  if(gap_debug) printf("\np_ffmpeg_open START\n");
-
-  epp = &gpp->evl;
-
-  if(((gpp->val.vid_width % 2) != 0) || ((gpp->val.vid_height % 2) != 0))
+  /* clear all elements of the audio stream and audio work tables */
+  for (ii=0; ii < MAX_AUDIO_STREAMS; ii++)
   {
-    if(gpp->val.run_mode == GIMP_RUN_NONINTERACTIVE)
+    awp->awk[ii].fp_inwav = NULL;
+    awp->awk[ii].referred_wavfile = NULL;
+    awp->awk[ii].wavsize = 0;
+    awp->awk[ii].audio_margin = 8192;
+    awp->awk[ii].audio_filled_100 = 0;
+    awp->awk[ii].audio_per_frame_x100 = -1;
+    awp->awk[ii].frames_per_second_x100 = 2500;
+    awp->awk[ii].frames_per_second_x100f = 2500;
+    awp->awk[ii].databuffer = NULL;
+    awp->awk[ii].sample_rate = 22050;
+    awp->awk[ii].channels = 2;
+    awp->awk[ii].bytes_per_sample = 4;
+    awp->awk[ii].bits = 16;
+    awp->awk[ii].samples = 0;
+
+  }
+}  /* end p_init_audio_workdata */
+
+
+
+
+/* ------------------------
+ * p_open_inwav_and_buffers
+ * ------------------------
+ * open input wavefile for the audio stram specified by its index ii
+ * allocate buffers and init audio relevant informations
+ */
+static void
+p_open_inwav_and_buffers(t_awk_array *awp
+                        , const char *wavefile
+                        , gint ii
+			, long sample_rate
+			, long channels
+			, long bytes_per_sample
+			, long bits
+			, long samples
+			)
+{
+  FILE *fp_inwav;
+
+  /* l_bytes_per_sample: 8bitmono: 1, 16bit_mono: 2, 8bitstereo: 2, 16bitstereo: 4 */
+  awp->awk[ii].wavsize = samples * bytes_per_sample;
+  awp->awk[ii].bytes_per_sample = bytes_per_sample;
+  awp->awk[ii].samples = samples;
+  awp->awk[ii].sample_rate = sample_rate;
+  awp->awk[ii].channels = channels;
+  awp->awk[ii].bits = bits;
+
+  /* open WAVE file and set position to the 1.st audio databyte */
+  fp_inwav = gap_audio_wav_open_seek_data(wavefile);
+
+  awp->awk[ii].fp_inwav = fp_inwav;
+  awp->awk[ii].audio_margin = 8192;
+  awp->awk[ii].audio_filled_100 = 0;
+  awp->awk[ii].audio_per_frame_x100 = -1;
+  awp->awk[ii].frames_per_second_x100 = 2500;
+  awp->awk[ii].frames_per_second_x100f = 2500;
+  awp->awk[ii].databuffer = g_malloc(300000);
+  
+}  /* end p_open_inwav_and_buffers */
+
+
+
+/* -----------------------
+ * p_sound_precalculations
+ * -----------------------
+ */ 
+static void
+p_sound_precalculations(t_ffmpeg_handle *ffh  
+                      , t_awk_array *awp
+                      , GapGveFFMpegGlobalParams *gpp)
+{
+  gint ii;
+  
+  for (ii=0; ii < MIN(ffh->max_ast, awp->audio_tracks); ii++)
+  {
+    /* Calculations for encoding the sound
+     */
+    awp->awk[ii].frames_per_second_x100f = (100.0 * gpp->val.framerate) + 0.5;
+    awp->awk[ii].frames_per_second_x100 = awp->awk[ii].frames_per_second_x100f;
+    awp->awk[ii].audio_per_frame_x100 = (100 * 100 * awp->awk[ii].sample_rate 
+                                         * awp->awk[ii].bytes_per_sample) 
+                                         / MAX(1,awp->awk[ii].frames_per_second_x100);
+
+    /* ?? dont sure if to use fix audo_margin of 8192 or
+     * if its ok to set audio_margin to audio_per_frame
+     */
+    /* audio_margin = audio_per_frame_x100 / 100; */
+    if(ffh->ast[ii].aud_codec_context)
     {
-      printf(_("Frame width and height must be a multiple of 2\n"));
+       /* the audio codec gives us the correct audio frame size, in samples */
+       if (gap_debug) printf("Codec ontext frame_size[%d]:%d  channels:%d\n"
+                             , (int)ii
+                             , (int)ffh->ast[ii].aud_codec_context->frame_size
+                             , (int)ffh->ast[ii].aud_codec_context->channels
+                             );
+  
+       awp->awk[ii].audio_margin = ffh->ast[ii].aud_codec_context->frame_size * 2 * ffh->ast[ii].aud_codec_context->channels;
     }
-    else
-    {
-      g_message(_("Frame width and height must be a multiple of 2\n"));
-    }
-    return (NULL);
+
+    if(gap_debug) printf("audio_margin[%d]: %d\n", (int)ii, (int)awp->awk[ii].audio_margin);
   }
 
-  av_register_all();  /* register all fileformats and codecs before we can use th lib */
 
-  ffh = g_malloc0(sizeof(t_ffmpeg_handle));
-  ffh->vid_codec = NULL;
-  ffh->aud_codec = NULL;
-  ffh->big_picture_codec = avcodec_alloc_frame();
+}  /* end p_sound_precalculations */
 
 
+/* ----------------------
+ * p_process_audio_frame
+ * ----------------------
+ * encode + write audio one frame (for each audio track)
+ * requires an already opened multimedia output file context
+ * and audio codecs initilalized and opened for each input
+ * track. (ffh->ast)
+ * Further all audio buffers have to be allocated
+ * and all audio input file handles must be opened read
+ *
+ * The read position in those file will be advanced
+ * when the content of the corresponding input buffers 
+ * falls down below the margin.
+ */
+static void
+p_process_audio_frame(t_ffmpeg_handle *ffh, t_awk_array *awp)
+{
+  gint ii;
+  gint32 datasize;
+
+  /* foreach audio_track 
+   * (number of audioinput tracks should always match
+   *  the max audio streams)
+   */
+  for (ii=0; ii < MIN(ffh->max_ast, awp->audio_tracks); ii++)
+  {
+      if (gap_debug)
+      {
+        printf("p_process_audio_frame: audio treack: ii=%d.\n", (int)ii);
+      }
+      /* encode AUDIO FRAME (audio packet for playbacktime of one frame) */
+      /* As long as there is a video frame, "fill" the fake audio buffer */
+      if (awp->awk[ii].fp_inwav)
+      {
+        awp->awk[ii].audio_filled_100 += awp->awk[ii].audio_per_frame_x100;
+      }
+
+      /* Now "empty" the audio buffer, until it goes under the margin again */
+      while ((awp->awk[ii].audio_filled_100 >= (awp->awk[ii].audio_margin * 100)) && (awp->awk[ii].wavsize > 0))
+      {
+        if (gap_debug) printf("p_process_audio_frame: Audio buffer at %ld bytes.\n", awp->awk[ii].audio_filled_100);
+        if (awp->awk[ii].wavsize >= awp->awk[ii].audio_margin)
+        {
+            datasize = fread(awp->awk[ii].databuffer
+                           , 1
+                           , awp->awk[ii].audio_margin
+                           , awp->awk[ii].fp_inwav
+                           );
+            if (datasize != awp->awk[ii].audio_margin)
+            {
+              printf("Warning: Read from wav file failed. (non-critical)\n");
+            }
+            awp->awk[ii].wavsize -= awp->awk[ii].audio_margin;
+        }
+        else
+        {
+            datasize = fread(awp->awk[ii].databuffer
+                           , 1
+                           , awp->awk[ii].wavsize
+                           , awp->awk[ii].fp_inwav
+                           );
+            if (datasize != awp->awk[ii].wavsize)
+            {
+              printf("Warning: Read from wav file failed. (non-critical)\n");
+            }
+            awp->awk[ii].wavsize = 0;
+        }
+
+        if (gap_debug) printf("Now encoding audio frame datasize:%d\n", (int)datasize);
+
+        p_ffmpeg_write_audioframe(ffh, awp->awk[ii].databuffer, datasize, ii /* aud_track */);
+
+        awp->awk[ii].audio_filled_100 -= awp->awk[ii].audio_margin * 100;
+      }
+  }
+
+
+}  /* end p_process_audio_frame */
+
+
+/* -------------------------
+ * p_close_audio_input_files
+ * -------------------------
+ * close input files for all audio tracks
+ * and free their databuffer
+ */
+static void
+p_close_audio_input_files(t_awk_array *awp)
+{
+  gint ii;
+  
+  for (ii=0; ii < awp->audio_tracks; ii++)
+  {
+    if (awp->awk[ii].fp_inwav)
+    {
+      fclose(awp->awk[ii].fp_inwav);
+      awp->awk[ii].fp_inwav = NULL;
+    }
+    
+    if(awp->awk[ii].referred_wavfile)
+    {
+      g_free(awp->awk[ii].referred_wavfile);
+      awp->awk[ii].referred_wavfile = NULL;
+    }
+
+
+    if(awp->awk[ii].databuffer)
+    {
+      g_free(awp->awk[ii].databuffer);
+      awp->awk[ii].databuffer = NULL;
+    }
+
+  }
+}  /* end p_close_audio_input_files */
+
+
+/* -------------------------
+ * p_open_audio_input_files
+ * -------------------------
+ *
+ */
+static void
+p_open_audio_input_files(t_awk_array *awp, GapGveFFMpegGlobalParams *gpp)
+{
+  long  l_bytes_per_sample = 4;
+  long  l_sample_rate = 22050;
+  long  l_channels = 2;
+  long  l_bits = 16;
+  long  l_samples = 0;
+  gint  ii = 0;
+  
+  /* check and open audio wave file */
+  if(0 == gap_audio_wav_file_check( gpp->val.audioname1
+                                , &l_sample_rate
+                                , &l_channels
+                                , &l_bytes_per_sample
+                                , &l_bits
+                                , &l_samples
+                                ))
+  {
+    p_open_inwav_and_buffers(awp
+                            , gpp->val.audioname1
+			    , ii
+                            , l_sample_rate
+			    , l_channels
+			    , l_bytes_per_sample
+			    , l_bits
+			    , l_samples
+			    );
+    awp->audio_tracks = 1;
+  }
+  else
+  {
+    FILE *l_fp;
+    char         l_buf[4000];
+  
+    l_channels = 0;
+    awp->audio_tracks = 0;
+    
+    /* check if gpp->val.audioname1
+     * is a playlist referring to more than one inputfile
+     * and try to open those input wavefiles
+     * (but limited upto MAX_AUDIO_STREAMS input wavefiles)
+     */
+    l_fp = fopen(gpp->val.audioname1, "r");
+    if(l_fp)
+    {
+      ii = 0;
+      while(NULL != fgets(l_buf, sizeof(l_buf)-1, l_fp))
+      {
+        if((l_buf[0] == '#') || (l_buf[0] == '\n') || (l_buf[0] == '\0'))
+	{
+	  continue;  /* skip comment lines, and empty lines */
+	}
+      
+        l_buf[sizeof(l_buf) -1] = '\0';  /* make sure we have a terminated string */
+        gap_file_chop_trailingspace_and_nl(&l_buf[0]);
+	
+	if(ii < MAX_AUDIO_STREAMS)
+	{
+          int    l_rc;
+	  
+          awp->awk[ii].referred_wavfile = gap_file_make_abspath_filename(&l_buf[0], gpp->val.audioname1);
+
+          l_rc = gap_audio_wav_file_check(awp->awk[ii].referred_wavfile
+                                , &l_sample_rate
+                                , &l_channels
+                                , &l_bytes_per_sample
+                                , &l_bits
+                                , &l_samples
+                                );
+          if(l_rc == 0)
+          {
+            p_open_inwav_and_buffers(awp
+                            , awp->awk[ii].referred_wavfile
+			    , ii
+                            , l_sample_rate
+			    , l_channels
+			    , l_bytes_per_sample
+			    , l_bits
+			    , l_samples
+			    );
+	    
+	    ii++;
+            awp->audio_tracks = ii;
+	  }
+	  else
+	  {
+            g_message(_("The file: %s\n"
+	              "has unexpect content that will be ignored\n"
+		      "you should specify an audio file in RIFF WAVE fileformat\n"
+		      "or a texfile containing filenames of such audio files")
+		     , gpp->val.audioname1
+		     );
+	    break;
+	  }
+	}
+	else
+	{
+          g_message(_("The file: %s\n"
+	              "contains too much audio input tracks\n"
+		      "(only %d tracks are used, rest is ignored)")
+		   , gpp->val.audioname1
+		   , (int) MAX_AUDIO_STREAMS
+		   );
+	  break;
+	}
+	l_buf[0] = '\0';
+      }
+      
+      fclose(l_fp);
+    }
+  }
+  
+}  /* end p_open_audio_input_files */
+
+
+
+
+
+
+
+/* ------------------
+ * p_ffmpeg_open_init
+ * ------------------
+ */
+static void
+p_ffmpeg_open_init(t_ffmpeg_handle *ffh, GapGveFFMpegGlobalParams *gpp)
+{
+  gint ii;
+  GapGveFFMpegValues   *epp;
+
+  epp = &gpp->evl;
+  
+  /* clear all elements of the video stream tables */
+  for (ii=0; ii < MAX_VIDEO_STREAMS; ii++)
+  {
+    ffh->vst[ii].video_stream_index = 0;
+    ffh->vst[ii].vid_stream = NULL;
+    ffh->vst[ii].vid_codec_context = NULL;
+    ffh->vst[ii].vid_codec = NULL;
+    ffh->vst[ii].big_picture_codec = avcodec_alloc_frame();
+    ffh->vst[ii].yuv420_buffer = NULL;
+    ffh->vst[ii].yuv420_buffer_size = 0;
+    ffh->vst[ii].video_buffer = NULL;
+    ffh->vst[ii].video_buffer_size = 0;
+    ffh->vst[ii].video_dummy_buffer = NULL;
+    ffh->vst[ii].video_dummy_buffer_size = 0;
+    ffh->vst[ii].yuv420_dummy_buffer = NULL;
+    ffh->vst[ii].yuv420_dummy_buffer_size = 0;
+    ffh->vst[ii].passlog_fp = NULL;
+  }
+  
+  
+  /* clear all elements of the audio stream and audio work tables */
+  for (ii=0; ii < MAX_AUDIO_STREAMS; ii++)
+  {
+    ffh->ast[ii].audio_stream_index = 0;
+    ffh->ast[ii].aud_stream = NULL;
+    ffh->ast[ii].aud_codec_context = NULL;
+    ffh->ast[ii].aud_codec = NULL;
+    ffh->ast[ii].audio_buffer = NULL;
+    ffh->ast[ii].audio_buffer_size = 0;
+  }
+
+  /* initialize common things */
   ffh->frame_width                  = (int)gpp->val.vid_width;
   ffh->frame_height                 = (int)gpp->val.vid_height;
   ffh->frame_topBand                = 0;
@@ -997,10 +1442,7 @@ p_ffmpeg_open(GapGveFFMpegGlobalParams *gpp
 
   ffh->gop_size                     = epp->gop_size;
   ffh->intra_only                   = epp->intra;
-  ffh->audio_sample_rate            = audio_samplerate;              /* 44100; */
   ffh->audio_bit_rate               = epp->audio_bitrate * 1000;     /* 64000; */
-  ffh->audio_disable                = 1;
-  ffh->audio_channels               = 1;
   ffh->audio_codec_id               = CODEC_ID_NONE;
 
   ffh->recording_time               = 0;
@@ -1018,78 +1460,61 @@ p_ffmpeg_open(GapGveFFMpegGlobalParams *gpp
   ffh->pass_logfilename = NULL;     if (epp->passlogfile[0] != '\0')   {ffh->pass_logfilename   = &epp->passlogfile[0];}
   ffh->audio_stream_copy            = 0;
   ffh->video_stream_copy            = 0;
+  
+}  /* end p_ffmpeg_open_init */
 
-  /* ------------ File Format  -------   */
+/* ------------------
+ * p_init_video_codec
+ * ------------------
+ * init settings for the video codec
+ * (just prepare for opening, but dont open yet)
+ */
+static gboolean
+p_init_video_codec(t_ffmpeg_handle *ffh
+             , gint ii
+             , GapGveFFMpegGlobalParams *gpp
+             , gint32 current_pass)
+{
+  GapGveFFMpegValues   *epp;
+  AVCodecContext *video_enc = NULL;
 
-  ffh->file_oformat = guess_format(epp->format_name, gpp->val.videoname, NULL);
-  if (!ffh->file_oformat)
-  {
-     printf("Unknown output format: %s\n", epp->format_name);
-     g_free(ffh);
-     return(NULL);
-  }
-
-  if(gap_debug)
-  {
-    printf("AVOutputFormat ffh->file_oformat opened\n");
-    printf("  name: %s\n", ffh->file_oformat->name);
-    printf("  long_name: %s\n", ffh->file_oformat->long_name);
-    printf("  extensions: %s\n", ffh->file_oformat->extensions);
-    printf("  priv_data_size: %d\n", (int)ffh->file_oformat->priv_data_size);
-    printf("  ID default audio_codec: %d\n", (int)ffh->file_oformat->audio_codec);
-    printf("  ID default video_codec: %d\n", (int)ffh->file_oformat->video_codec);
-    printf("  FPTR write_header: %d\n", (int)ffh->file_oformat->write_header);
-    printf("  FPTR write_packet: %d\n", (int)ffh->file_oformat->write_packet);
-    printf("  FPTR write_trailer: %d\n", (int)ffh->file_oformat->write_trailer);
-    printf("  flags: %d\n", (int)ffh->file_oformat->flags);
-    printf("\n");
-  }
-
-
-#ifdef HAVE_OLD_FFMPEG_0408
-  ffh->output_context = g_malloc0(sizeof(AVFormatContext));
-#else
-  ffh->output_context = av_alloc_format_context();
-#endif
-  ffh->output_context->oformat = ffh->file_oformat;
-  strcpy(ffh->output_context->filename, &gpp->val.videoname[0]);
-
-
-
-  /* ------------ Video CODEC  -------   */
-
-  ffh->vid_codec = avcodec_find_encoder_by_name(epp->vcodec_name);
-  if(!ffh->vid_codec)
+  epp = &gpp->evl;
+  
+  
+  ffh->vst[ii].vid_codec = avcodec_find_encoder_by_name(epp->vcodec_name);
+  if(!ffh->vst[ii].vid_codec)
   {
      printf("Unknown Video CODEC: %s\n", epp->vcodec_name);
      g_free(ffh);
-     return(NULL);
+     return(FALSE); /* error */
   }
-  if(ffh->vid_codec->type != CODEC_TYPE_VIDEO)
+  if(ffh->vst[ii].vid_codec->type != CODEC_TYPE_VIDEO)
   {
      printf("CODEC: %s is no VIDEO CODEC!\n", epp->vcodec_name);
      g_free(ffh);
-     return(NULL);
+     return(FALSE); /* error */
   }
 
+
   /* set stream 0 (video stream) */
-  ffh->output_context->nb_streams = 0;  /* number of streams */
 
 #ifdef HAVE_OLD_FFMPEG_0408
   ffh->output_context->nb_streams += 1;  /* number of streams */
-  ffh->vid_stream = g_malloc0(sizeof(AVStream));
-  avcodec_get_context_defaults(&ffh->vid_stream->codec);
-  ffh->vid_stream->index = 0;
-  ffh->vid_stream->id = 0;        /* XXXx ? dont know how to init this ? */
-  ffh->output_context->streams[0] = ffh->vid_stream;
+  ffh->vst[ii].vid_stream = g_malloc0(sizeof(AVStream));
+  avcodec_get_context_defaults(&ffh->vst[ii].vid_stream->codec);
+  ffh->vst[ii].vid_stream->index = ii;
+  ffh->vst[ii].vid_stream->id = ii;        /* XXXx ? dont know how to init this ? = or ii ? */
+  ffh->output_context->streams[ii] = ffh->vst[ii].vid_stream;
 #else
-  ffh->vid_stream = av_new_stream(ffh->output_context, 0 /* vid_stream_index */ );
+  ffh->vst[ii].vid_stream = av_new_stream(ffh->output_context, ii /* vid_stream_index */ );
 
   if(gap_debug) 
   {
-    printf("p_ffmpeg_open ffh->vid_stream: %d   ffh->output_context->streams[0]: %d nb_streams:%d\n"
-      ,(int)ffh->vid_stream
-      ,(int)ffh->output_context->streams[0]
+    printf("p_ffmpeg_open ffh->vst[%d].vid_stream: %d   ffh->output_context->streams[%d]: %d nb_streams:%d\n"
+      ,(int)ii
+      ,(int)ffh->vst[ii].vid_stream
+      ,(int)ii
+      ,(int)ffh->output_context->streams[ii]
       ,(int)ffh->output_context->nb_streams
       );
   }
@@ -1097,19 +1522,18 @@ p_ffmpeg_open(GapGveFFMpegGlobalParams *gpp
 
 
   /* set Video codec context */
-  ffh->vid_codec_context = &ffh->vid_stream->codec;
-
+  ffh->vst[ii].vid_codec_context = &ffh->vst[ii].vid_stream->codec;
 
   /* some formats need to know about the coded_frame
    * and get the information from the AVCodecContext coded_frame Pointer
    */
-  if(gap_debug) printf("(B) ffh->vid_codec_context:%d\n", (int)ffh->vid_codec_context);
-  ffh->vid_codec_context->coded_frame = ffh->big_picture_codec;
+  if(gap_debug) printf("(B) ffh->vst[ii].vid_codec_context:%d\n", (int)ffh->vst[ii].vid_codec_context);
+  ffh->vst[ii].vid_codec_context->coded_frame = ffh->vst[ii].big_picture_codec;
 
-  video_enc = ffh->vid_codec_context;
+  video_enc = ffh->vst[ii].vid_codec_context;
 
   video_enc->codec_type = CODEC_TYPE_VIDEO;
-  video_enc->codec_id = ffh->vid_codec->id;
+  video_enc->codec_id = ffh->vst[ii].vid_codec->id;
 
   video_enc->bit_rate = epp->video_bitrate * 1000;
   video_enc->bit_rate_tolerance = epp->bitrate_tol * 1000;
@@ -1130,7 +1554,7 @@ p_ffmpeg_open(GapGveFFMpegGlobalParams *gpp
   if(epp->qscale)
   {
     video_enc->flags |= CODEC_FLAG_QSCALE;
-    ffh->vid_stream->quality = epp->qscale;   /* video_enc->quality = epp->qscale; */
+    ffh->vst[ii].vid_stream->quality = epp->qscale;   /* video_enc->quality = epp->qscale; */
   }
 
   video_enc->aspect_ratio = 0;
@@ -1151,7 +1575,7 @@ p_ffmpeg_open(GapGveFFMpegGlobalParams *gpp
   if(epp->qscale)
   {
     video_enc->flags |= CODEC_FLAG_QSCALE;
-    ffh->vid_stream->quality = FF_QP2LAMBDA * epp->qscale;   /* video_enc->quality = epp->qscale; */
+    ffh->vst[ii].vid_stream->quality = FF_QP2LAMBDA * epp->qscale;   /* video_enc->quality = epp->qscale; */
   }
 
 
@@ -1485,7 +1909,7 @@ p_ffmpeg_open(GapGveFFMpegGlobalParams *gpp
           video_enc->flags |= CODEC_FLAG_PASS2;
       }
   }
-  ffh->passlog_fp = NULL;
+  ffh->vst[ii].passlog_fp = NULL;
 
   if (video_enc->flags & (CODEC_FLAG_PASS1 | CODEC_FLAG_PASS2))
   {
@@ -1514,9 +1938,9 @@ p_ffmpeg_open(GapGveFFMpegGlobalParams *gpp
 			   ,logfilename
 			   ,g_strerror (l_errno) );
 	      }
-              return(NULL);
+              return(FALSE);  /* error */
           }
-          ffh->passlog_fp = fp;
+          ffh->vst[ii].passlog_fp = fp;
       }
       else
       {
@@ -1537,7 +1961,7 @@ p_ffmpeg_open(GapGveFFMpegGlobalParams *gpp
 			   ,logfilename
 			   ,g_strerror (l_errno) );
 	      }
-              return(NULL);
+              return(FALSE);  /* error */
           }
           fseek(fp, 0, SEEK_END);
           size = ftell(fp);
@@ -1552,7 +1976,203 @@ p_ffmpeg_open(GapGveFFMpegGlobalParams *gpp
   }
 
   /* dont know why */
-  /* *(ffh->vid_stream->codec) = *video_enc; */    /* XXX(#) copy codec context */
+  /* *(ffh->vst[ii].vid_stream->codec) = *video_enc; */    /* XXX(#) copy codec context */
+
+
+  return (TRUE); /* OK */
+}  /* end p_init_video_codec */
+
+
+/* ---------------------------
+ * p_init_and_open_audio_codec
+ * ---------------------------
+ */
+static gboolean
+p_init_and_open_audio_codec(t_ffmpeg_handle *ffh
+             , gint ii
+             , GapGveFFMpegGlobalParams *gpp
+             , long audio_samplerate
+             , long audio_channels)
+{
+  GapGveFFMpegValues   *epp;
+  AVCodecContext *audio_enc = NULL;
+
+  epp = &gpp->evl;
+
+  /* ------------ Start Audio CODEC init -------   */
+  if(audio_channels > 0)
+  {
+    if(gap_debug) printf("p_ffmpeg_open Audio CODEC start init\n");
+
+    ffh->ast[ii].aud_codec = avcodec_find_encoder_by_name(epp->acodec_name);
+    if(!ffh->ast[ii].aud_codec)
+    {
+       printf("Unknown Audio CODEC: %s\n", epp->acodec_name);
+    }
+    else
+    {
+      if(ffh->ast[ii].aud_codec->type != CODEC_TYPE_AUDIO)
+      {
+         printf("CODEC: %s is no VIDEO CODEC!\n", epp->acodec_name);
+         ffh->ast[ii].aud_codec = NULL;
+      }
+      else
+      {
+        gint ast_index;
+        
+        /* audio stream indexes start after last video stream */
+        ast_index = ffh->max_vst + ii;
+        
+        /* set stream 1 (audio stream) */
+#ifdef HAVE_OLD_FFMPEG_0408
+        ffh->output_context->nb_streams += 1;  /* number of streams */
+        ffh->ast[ii].aud_stream = g_malloc0(sizeof(AVStream));
+        avcodec_get_context_defaults(&ffh->ast[ii].aud_stream->codec);
+        ffh->ast[ii].aud_stream->index = ast_index;
+        ffh->ast[ii].aud_stream->id = ast_index;        /* XXXx ? dont know how to init this ? */
+        ffh->output_context->streams[ast_index] = ffh->ast[ii].aud_stream;
+#else
+        ffh->ast[ii].aud_stream = av_new_stream(ffh->output_context, ast_index /* aud_stream_index */ );
+#endif
+        ffh->ast[ii].aud_codec_context = &ffh->ast[ii].aud_stream->codec;
+
+        /* set codec context */
+        /*  ffh->ast[ii].aud_codec_context = avcodec_alloc_context();*/
+        audio_enc = ffh->ast[ii].aud_codec_context;
+
+        audio_enc->codec_type = CODEC_TYPE_AUDIO;
+        audio_enc->codec_id = ffh->ast[ii].aud_codec->id;
+
+        audio_enc->bit_rate = epp->audio_bitrate * 1000;
+        audio_enc->sample_rate = audio_samplerate;  /* was read from wav file */
+        audio_enc->channels = audio_channels;       /* 1=mono, 2 = stereo (from wav file) */
+
+
+        /* open audio codec */
+        if (avcodec_open(ffh->ast[ii].aud_codec_context, ffh->ast[ii].aud_codec) < 0)
+        {
+	  if(gpp->val.run_mode == GIMP_RUN_NONINTERACTIVE)
+	  {
+            printf("could not avcodec_open audio-codec: %s\n", epp->acodec_name);
+	  }
+	  else
+	  {
+	    g_message("could not open audio codec: %s\n", epp->acodec_name);
+	  }
+          ffh->ast[ii].aud_codec = NULL;
+        }
+
+#ifdef HAVE_OLD_FFMPEG_0408
+#else
+        /* the following options were added after ffmpeg 0.4.8 */
+        audio_enc->thread_count = 1;
+        audio_enc->strict_std_compliance = epp->strict;
+#endif
+
+
+      }
+    }
+  }
+
+  return (TRUE); /* OK */
+
+} /* end p_init_and_open_audio_codec */
+
+
+
+/* ---------------
+ * p_ffmpeg_open
+ * ---------------
+ * master open procedure
+ */
+static t_ffmpeg_handle *
+p_ffmpeg_open(GapGveFFMpegGlobalParams *gpp
+             , gint32 current_pass
+	     , t_awk_array *awp
+             , gint video_tracks
+	     )
+{
+  t_ffmpeg_handle *ffh;
+  GapGveFFMpegValues   *epp;
+  gint ii;
+
+  if(gap_debug) printf("\np_ffmpeg_open START\n");
+
+  epp = &gpp->evl;
+
+  if(((gpp->val.vid_width % 2) != 0) || ((gpp->val.vid_height % 2) != 0))
+  {
+    if(gpp->val.run_mode == GIMP_RUN_NONINTERACTIVE)
+    {
+      printf(_("Frame width and height must be a multiple of 2\n"));
+    }
+    else
+    {
+      g_message(_("Frame width and height must be a multiple of 2\n"));
+    }
+    return (NULL);
+  }
+
+  ffh = g_malloc0(sizeof(t_ffmpeg_handle));
+  ffh->max_vst = MIN(MAX_VIDEO_STREAMS, video_tracks);
+  ffh->max_ast = MIN(MAX_AUDIO_STREAMS, awp->audio_tracks);
+
+  av_register_all();  /* register all fileformats and codecs before we can use the lib */
+  
+  p_ffmpeg_open_init(ffh, gpp);
+
+  /* ------------ File Format  -------   */
+
+  ffh->file_oformat = guess_format(epp->format_name, gpp->val.videoname, NULL);
+  if (!ffh->file_oformat)
+  {
+     printf("Unknown output format: %s\n", epp->format_name);
+     g_free(ffh);
+     return(NULL);
+  }
+
+  if(gap_debug)
+  {
+    printf("AVOutputFormat ffh->file_oformat opened\n");
+    printf("  name: %s\n", ffh->file_oformat->name);
+    printf("  long_name: %s\n", ffh->file_oformat->long_name);
+    printf("  extensions: %s\n", ffh->file_oformat->extensions);
+    printf("  priv_data_size: %d\n", (int)ffh->file_oformat->priv_data_size);
+    printf("  ID default audio_codec: %d\n", (int)ffh->file_oformat->audio_codec);
+    printf("  ID default video_codec: %d\n", (int)ffh->file_oformat->video_codec);
+    printf("  FPTR write_header: %d\n", (int)ffh->file_oformat->write_header);
+    printf("  FPTR write_packet: %d\n", (int)ffh->file_oformat->write_packet);
+    printf("  FPTR write_trailer: %d\n", (int)ffh->file_oformat->write_trailer);
+    printf("  flags: %d\n", (int)ffh->file_oformat->flags);
+    printf("\n");
+  }
+
+
+#ifdef HAVE_OLD_FFMPEG_0408
+  ffh->output_context = g_malloc0(sizeof(AVFormatContext));
+#else
+  ffh->output_context = av_alloc_format_context();
+#endif
+  ffh->output_context->oformat = ffh->file_oformat;
+  strcpy(ffh->output_context->filename, &gpp->val.videoname[0]);
+
+
+  ffh->output_context->nb_streams = 0;  /* number of streams */
+
+  /* ------------ video codec -------------- */
+  
+  for (ii=0; ii < ffh->max_vst; ii++)
+  {
+    gboolean codec_ok;
+    
+    codec_ok = p_init_video_codec(ffh, ii, gpp, current_pass);
+    if(!codec_ok)
+    {
+      g_free(ffh);
+      return(NULL);
+    }
+  }
+
 
   /* open output FILE */
   g_snprintf(ffh->output_context->filename, sizeof(ffh->output_context->filename), "%s", &gpp->val.videoname[0]);
@@ -1569,94 +2189,52 @@ p_ffmpeg_open(GapGveFFMpegGlobalParams *gpp
     return(NULL);
   }
 
-  /* open video codec */
-  if (avcodec_open(ffh->vid_codec_context, ffh->vid_codec) < 0)
+  /* open video codec(s) */
+  for (ii=0; ii < ffh->max_vst; ii++)
   {
-    if(gpp->val.run_mode == GIMP_RUN_NONINTERACTIVE)
+    if (avcodec_open(ffh->vst[ii].vid_codec_context, ffh->vst[ii].vid_codec) < 0)
     {
-      printf("could not avcodec_open video-codec: %s\n", epp->vcodec_name);
-    }
-    else
-    {
-      g_message("could not open video codec: %s\n", epp->vcodec_name);
-    }
-    return(NULL);
-  }
-
-  /* ------------ Start Audio CODEC init -------   */
-  if(audio_channels > 0)
-  {
-    if(gap_debug) printf("p_ffmpeg_open Audio CODEC start init\n");
-
-    ffh->aud_codec = avcodec_find_encoder_by_name(epp->acodec_name);
-    if(!ffh->aud_codec)
-    {
-       printf("Unknown Audio CODEC: %s\n", epp->acodec_name);
-    }
-    else
-    {
-      if(ffh->aud_codec->type != CODEC_TYPE_AUDIO)
+      if(gpp->val.run_mode == GIMP_RUN_NONINTERACTIVE)
       {
-         printf("CODEC: %s is no VIDEO CODEC!\n", epp->acodec_name);
-         ffh->aud_codec = NULL;
+        printf("could not avcodec_open video-codec: %s\n", epp->vcodec_name);
       }
       else
       {
-        /* set stream 1 (audio stream) */
-#ifdef HAVE_OLD_FFMPEG_0408
-        ffh->output_context->nb_streams += 1;  /* number of streams */
-        ffh->aud_stream = g_malloc0(sizeof(AVStream));
-        avcodec_get_context_defaults(&ffh->aud_stream->codec);
-        ffh->aud_stream->index = 1;
-        ffh->aud_stream->id = 1;        /* XXXx ? dont know how to init this ? */
-        ffh->output_context->streams[1] = ffh->aud_stream;
-#else
-        ffh->aud_stream = av_new_stream(ffh->output_context, 1 /* aud_stream_index */ );
-#endif
-        ffh->aud_codec_context = &ffh->aud_stream->codec;
-
-        /* set codec context */
-        /*  ffh->aud_codec_context = avcodec_alloc_context();*/
-        audio_enc = ffh->aud_codec_context;
-
-        audio_enc->codec_type = CODEC_TYPE_AUDIO;
-        audio_enc->codec_id = ffh->aud_codec->id;
-
-        audio_enc->bit_rate = epp->audio_bitrate * 1000;
-        audio_enc->sample_rate = audio_samplerate;  /* was read from wav file */
-        audio_enc->channels = audio_channels;       /* 1=mono, 2 = stereo (from wav file) */
-
-
-        /* open audio codec */
-        if (avcodec_open(ffh->aud_codec_context, ffh->aud_codec) < 0)
-        {
-	  if(gpp->val.run_mode == GIMP_RUN_NONINTERACTIVE)
-	  {
-            printf("could not avcodec_open audio-codec: %s\n", epp->acodec_name);
-	  }
-	  else
-	  {
-	    g_message("could not open audio codec: %s\n", epp->acodec_name);
-	  }
-          ffh->aud_codec = NULL;
-        }
-
-#ifdef HAVE_OLD_FFMPEG_0408
-#else
-        /* the following options were added after ffmpeg 0.4.8 */
-        audio_enc->thread_count = 1;
-        audio_enc->strict_std_compliance = epp->strict;
-#endif
-
-
+        g_message("could not open video codec: %s\n", epp->vcodec_name);
       }
+      return(NULL);
     }
   }
-  /* ------------ End Audio CODEC init -------   */
+  
+  /* ------------ audio codec -------------- */
+
+  for (ii=0; ii < MIN(ffh->max_ast, awp->audio_tracks); ii++)
+  {
+    gboolean codec_ok;
+    codec_ok = p_init_and_open_audio_codec(ffh
+                                         , ii
+					 , gpp
+					 , awp->awk[ii].sample_rate
+					 , awp->awk[ii].channels
+					 );
+    if(!codec_ok)
+    {
+      g_free(ffh);
+      return(NULL);
+    }
+  }
+
+  /* media file format parameters */
 
   ffh->ap = g_malloc0(sizeof(AVFormatParameters));
-  ffh->ap->sample_rate = audio_samplerate;
-  ffh->ap->channels = audio_channels;
+  
+  /* we use sample rate and channels from the 1.st audio track for
+   * the overall format parameters
+   * (dont know if ffmpeg allows different settings for the audio tracks
+   *  and how to deal with this) 
+   */
+  ffh->ap->sample_rate = awp->awk[0].sample_rate;
+  ffh->ap->channels = awp->awk[0].channels;
   ffh->ap->frame_rate_base = DEFAULT_FRAME_RATE_BASE;
   ffh->ap->frame_rate = gpp->val.framerate * DEFAULT_FRAME_RATE_BASE;
   ffh->ap->width = gpp->val.vid_width;
@@ -1692,33 +2270,42 @@ p_ffmpeg_open(GapGveFFMpegGlobalParams *gpp
     return(NULL);
   }
 
+
   /* ------------ media file output  -------   */
   av_write_header(ffh->output_context);
 
-  size = gpp->val.vid_width * gpp->val.vid_height;
+  /* ------------ buffers for video output  -------   */
+  for (ii=0; ii < ffh->max_vst; ii++)
+  {
+    gint  size;
+    size = gpp->val.vid_width * gpp->val.vid_height;
 
-  /* allocate video_buffer (should be large enough for one ENCODED frame) */
-  ffh->video_buffer_size =  size * 4;  /* (1024*1024); */
-  ffh->video_buffer = g_malloc0(ffh->video_buffer_size);
-  ffh->video_stream_index = 0;
+    /* allocate video_buffer (should be large enough for one ENCODED frame) */
+    ffh->vst[ii].video_buffer_size =  size * 4;  /* (1024*1024); */
+    ffh->vst[ii].video_buffer = g_malloc0(ffh->vst[ii].video_buffer_size);
+    ffh->vst[ii].video_stream_index = ii;
 
-  ffh->video_dummy_buffer_size =  size * 4;  /* (1024*1024); */
-  ffh->video_dummy_buffer = g_malloc0(ffh->video_dummy_buffer_size);
+    ffh->vst[ii].video_dummy_buffer_size =  size * 4;  /* (1024*1024); */
+    ffh->vst[ii].video_dummy_buffer = g_malloc0(ffh->vst[ii].video_dummy_buffer_size);
 
-  /* allocate yuv420_buffer (for the RAW image data YUV 4:2:0) */
-  ffh->yuv420_buffer_size = size + (size / 2);
-  ffh->yuv420_buffer = g_malloc0(ffh->yuv420_buffer_size);
+    /* allocate yuv420_buffer (for the RAW image data YUV 4:2:0) */
+    ffh->vst[ii].yuv420_buffer_size = size + (size / 2);
+    ffh->vst[ii].yuv420_buffer = g_malloc0(ffh->vst[ii].yuv420_buffer_size);
 
-  ffh->yuv420_dummy_buffer_size = size + (size / 2);
-  ffh->yuv420_dummy_buffer = g_malloc0(ffh->yuv420_dummy_buffer_size);
+    ffh->vst[ii].yuv420_dummy_buffer_size = size + (size / 2);
+    ffh->vst[ii].yuv420_dummy_buffer = g_malloc0(ffh->vst[ii].yuv420_dummy_buffer_size);
 
-  memset(ffh->yuv420_dummy_buffer, 0, ffh->yuv420_dummy_buffer_size);
+    memset(ffh->vst[ii].yuv420_dummy_buffer, 0, ffh->vst[ii].yuv420_dummy_buffer_size);
+  }
 
-
-  /* ------------ audio output  -------   */
-  ffh->audio_buffer_size =  4 * MAX_AUDIO_PACKET_SIZE;
-  ffh->audio_buffer = g_malloc0(ffh->audio_buffer_size);
-  ffh->audio_stream_index = 1;
+  /* ------------ buffers for audio output  -------   */
+  for (ii=0; ii < ffh->max_ast; ii++)
+  {
+    ffh->ast[ii].audio_buffer_size =  4 * MAX_AUDIO_PACKET_SIZE;
+    ffh->ast[ii].audio_buffer = g_malloc0(ffh->ast[ii].audio_buffer_size);
+    /* audio stream indexes start after last video stream */
+    ffh->ast[ii].audio_stream_index = ffh->max_vst + ii;
+  }
 
 
 #ifdef HAVE_FULL_FFMPEG
@@ -1734,6 +2321,7 @@ p_ffmpeg_open(GapGveFFMpegGlobalParams *gpp
   }
 
   return(ffh);
+
 }  /* end p_ffmpeg_open */
 
 
@@ -1742,20 +2330,23 @@ p_ffmpeg_open(GapGveFFMpegGlobalParams *gpp
  * --------------------------
  */
 static int
-p_ffmpeg_write_frame_chunk(t_ffmpeg_handle *ffh, gint32 encoded_size)
+p_ffmpeg_write_frame_chunk(t_ffmpeg_handle *ffh, gint32 encoded_size, gint vid_track)
 {
   int ret;
   int encoded_dummy_size;
+  int ii;
 
   ret = 0;
+  ii = ffh->vst[vid_track].video_stream_index;
+  
 
   if(gap_debug)
   {
      AVCodec  *codec;
 
-     codec = ffh->vid_codec_context->codec;
+     codec = ffh->vst[ii].vid_codec_context->codec;
 
-     printf("p_ffmpeg_write_frame_chunk: START codec: %d\n", (int)codec);
+     printf("p_ffmpeg_write_frame_chunk: START codec: %d  track:%d\n", (int)codec, (int)vid_track);
      printf("\n-------------------------\n");
      printf("name: %s\n", codec->name);
      printf("type: %d\n", codec->type);
@@ -1767,7 +2358,7 @@ p_ffmpeg_write_frame_chunk(t_ffmpeg_handle *ffh, gint32 encoded_size)
     if(gap_debug)  printf("before av_write_frame  encoded_size:%d\n", (int)encoded_size );
 
 #ifdef HAVE_OLD_FFMPEG_0408
-    ret = av_write_frame(ffh->output_context, ffh->video_stream_index, ffh->video_buffer, encoded_size);
+    ret = av_write_frame(ffh->output_context, ffh->vst[ii].video_stream_index, ffh->vst[ii].video_buffer, encoded_size);
 #else
     {
       AVPacket pkt;
@@ -1788,7 +2379,7 @@ p_ffmpeg_write_frame_chunk(t_ffmpeg_handle *ffh, gint32 encoded_size)
 	AVPicture *picture_codec;
 
 	/* picture to feed the codec */
-	picture_codec = (AVPicture *)ffh->big_picture_codec;
+	picture_codec = (AVPicture *)ffh->vst[ii].big_picture_codec;
 
 	/* source picture (YUV420) */
 	big_picture_yuv = avcodec_alloc_frame();
@@ -1797,18 +2388,18 @@ p_ffmpeg_write_frame_chunk(t_ffmpeg_handle *ffh, gint32 encoded_size)
 	/* Feed the encoder with a (black) dummy frame
          */
 	avpicture_fill(picture_codec
-                      ,ffh->yuv420_dummy_buffer
+                      ,ffh->vst[ii].yuv420_dummy_buffer
                       ,PIX_FMT_YUV420P          /* PIX_FMT_RGB24, PIX_FMT_RGBA32, PIX_FMT_BGRA32 */
                       ,ffh->frame_width
                       ,ffh->frame_height
                       );
 
-	ffh->big_picture_codec->quality = ffh->vid_stream->quality;
-	ffh->big_picture_codec->key_frame = 1;
+	ffh->vst[ii].big_picture_codec->quality = ffh->vst[ii].vid_stream->quality;
+	ffh->vst[ii].big_picture_codec->key_frame = 1;
 
-        encoded_dummy_size = avcodec_encode_video(ffh->vid_codec_context
-                               ,ffh->video_dummy_buffer, ffh->video_dummy_buffer_size
-                               ,ffh->big_picture_codec);
+        encoded_dummy_size = avcodec_encode_video(ffh->vst[ii].vid_codec_context
+                               ,ffh->vst[ii].video_dummy_buffer, ffh->vst[ii].video_dummy_buffer_size
+                               ,ffh->vst[ii].big_picture_codec);
 
 	g_free(big_picture_yuv);
       }
@@ -1825,7 +2416,7 @@ p_ffmpeg_write_frame_chunk(t_ffmpeg_handle *ffh, gint32 encoded_size)
 	 g_message(_("Black dummy frame was added"));
       }		       
 
-      chunk_frame_type = GVA_util_check_mpg_frame_type(ffh->video_buffer, encoded_size);
+      chunk_frame_type = GVA_util_check_mpg_frame_type(ffh->vst[ii].video_buffer, encoded_size);
       if(chunk_frame_type == 1)  /* check for intra frame type */
       {
         pkt.flags |= PKT_FLAG_KEY;
@@ -1837,16 +2428,16 @@ p_ffmpeg_write_frame_chunk(t_ffmpeg_handle *ffh, gint32 encoded_size)
         printf("CHUNK picture_number: enc_dummy_size:%d  frame_type:%d pic_number: %d %d PTS:%d\n"
 	      , (int)encoded_dummy_size
 	      , (int)chunk_frame_type
-	      , (int)ffh->vid_codec_context->coded_frame->coded_picture_number
-	      , (int)ffh->vid_codec_context->coded_frame->display_picture_number
-	      , (int)ffh->vid_codec_context->coded_frame->pts
+	      , (int)ffh->vst[ii].vid_codec_context->coded_frame->coded_picture_number
+	      , (int)ffh->vst[ii].vid_codec_context->coded_frame->display_picture_number
+	      , (int)ffh->vst[ii].vid_codec_context->coded_frame->pts
 	      );
       }
       
-      pkt.pts = ffh->vid_codec_context->coded_frame->pts;
+      pkt.pts = ffh->vst[ii].vid_codec_context->coded_frame->pts;
       pkt.dts = AV_NOPTS_VALUE;  /* let av_write_frame calculate the decompression timestamp */
-      pkt.stream_index = ffh->video_stream_index;
-      pkt.data = ffh->video_buffer;
+      pkt.stream_index = ffh->vst[ii].video_stream_index;
+      pkt.data = ffh->vst[ii].video_buffer;
       pkt.size = encoded_size;
       ret = av_write_frame(ffh->output_context, &pkt);
     }
@@ -1864,7 +2455,7 @@ p_ffmpeg_write_frame_chunk(t_ffmpeg_handle *ffh, gint32 encoded_size)
  * --------------------
  */
 static int
-p_ffmpeg_write_frame(t_ffmpeg_handle *ffh, gboolean force_keyframe)
+p_ffmpeg_write_frame(t_ffmpeg_handle *ffh, gboolean force_keyframe, gint vid_track)
 {
   AVFrame   *big_picture_yuv;
   AVPicture *picture_yuv;
@@ -1872,7 +2463,9 @@ p_ffmpeg_write_frame(t_ffmpeg_handle *ffh, gboolean force_keyframe)
   int encoded_size;
   int ret;
   uint8_t  *l_convert_buffer;
+  int ii;
 
+  ii = ffh->vst[vid_track].video_stream_index;
   ret = 0;
   l_convert_buffer = NULL;
 
@@ -1880,9 +2473,9 @@ p_ffmpeg_write_frame(t_ffmpeg_handle *ffh, gboolean force_keyframe)
   {
      AVCodec  *codec;
 
-     codec = ffh->vid_codec_context->codec;
+     codec = ffh->vst[ii].vid_codec_context->codec;
 
-     printf("p_ffmpeg_write_frame: START codec: %d\n", (int)codec);
+     printf("p_ffmpeg_write_frame: START codec: %d track:%d\n", (int)codec, (int)vid_track);
      printf("\n-------------------------\n");
      printf("name: %s\n", codec->name);
      printf("type: %d\n", codec->type);
@@ -1897,21 +2490,21 @@ p_ffmpeg_write_frame(t_ffmpeg_handle *ffh, gboolean force_keyframe)
   }
 
   /* picture to feed the codec */
-  picture_codec = (AVPicture *)ffh->big_picture_codec;
+  picture_codec = (AVPicture *)ffh->vst[ii].big_picture_codec;
 
   /* source picture (YUV420) */
   big_picture_yuv = avcodec_alloc_frame();
   picture_yuv = (AVPicture *)big_picture_yuv;
 
-  if(ffh->vid_codec_context->pix_fmt == PIX_FMT_YUV420P)
+  if(ffh->vst[ii].vid_codec_context->pix_fmt == PIX_FMT_YUV420P)
   {
     if(gap_debug) printf("USE YUV420 (no pix_fmt convert needed)\n");
 
     /* most of the codecs wants YUV420
-      * (we can use the picture in ffh->yuv420_buffer without pix_fmt conversion
+      * (we can use the picture in ffh->vst[ii].yuv420_buffer without pix_fmt conversion
       */
     avpicture_fill(picture_codec
-                  ,ffh->yuv420_buffer
+                  ,ffh->vst[ii].yuv420_buffer
                   ,PIX_FMT_YUV420P          /* PIX_FMT_RGB24, PIX_FMT_RGBA32, PIX_FMT_BGRA32 */
                   ,ffh->frame_width
                   ,ffh->frame_height
@@ -1925,7 +2518,7 @@ p_ffmpeg_write_frame(t_ffmpeg_handle *ffh, gboolean force_keyframe)
     if(gap_debug)
     {
       printf("HAVE TO convert  pix_fmt: %d\n (PIX_FMT_YUV420P %d)"
-            , (int)ffh->vid_codec_context->pix_fmt
+            , (int)ffh->vst[ii].vid_codec_context->pix_fmt
 	    , (int)PIX_FMT_YUV420P
 	    );
     }
@@ -1935,13 +2528,13 @@ p_ffmpeg_write_frame(t_ffmpeg_handle *ffh, gboolean force_keyframe)
      */
      avpicture_fill(picture_codec
                   ,l_convert_buffer
-                  ,ffh->vid_codec_context->pix_fmt          /* PIX_FMT_RGB24, PIX_FMT_RGBA32, PIX_FMT_BGRA32 */
+                  ,ffh->vst[ii].vid_codec_context->pix_fmt          /* PIX_FMT_RGB24, PIX_FMT_RGBA32, PIX_FMT_BGRA32 */
                   ,ffh->frame_width
                   ,ffh->frame_height
                   );
     /* source picture (has YUV420P colormodel) */
      avpicture_fill(picture_yuv
-                  ,ffh->yuv420_buffer
+                  ,ffh->vst[ii].yuv420_buffer
                   ,PIX_FMT_YUV420P
                   ,ffh->frame_width
                   ,ffh->frame_height
@@ -1951,10 +2544,10 @@ p_ffmpeg_write_frame(t_ffmpeg_handle *ffh, gboolean force_keyframe)
      * (same as AVPicture but with additional members at the end)
      */
 
-    if(gap_debug) printf("before img_convert  pix_fmt: %d  (YUV420:%d)\n", (int)ffh->vid_codec_context->pix_fmt, (int)PIX_FMT_YUV420P);
+    if(gap_debug) printf("before img_convert  pix_fmt: %d  (YUV420:%d)\n", (int)ffh->vst[ii].vid_codec_context->pix_fmt, (int)PIX_FMT_YUV420P);
 
     /* convert to pix_fmt needed by the codec */
-    img_convert(picture_codec, ffh->vid_codec_context->pix_fmt  /* dst */
+    img_convert(picture_codec, ffh->vst[ii].vid_codec_context->pix_fmt  /* dst */
                ,picture_yuv, PIX_FMT_BGR24                    /* src */
                ,ffh->frame_width
                ,ffh->frame_height
@@ -1966,30 +2559,30 @@ p_ffmpeg_write_frame(t_ffmpeg_handle *ffh, gboolean force_keyframe)
   /* AVFrame is the new structure introduced in FFMPEG 0.4.6,
    * (same as AVPicture but with additional members at the end)
    */
-  ffh->big_picture_codec->quality = ffh->vid_stream->quality;
+  ffh->vst[ii].big_picture_codec->quality = ffh->vst[ii].vid_stream->quality;
 
   if(force_keyframe)
   {
     /* TODO: howto force the encoder to write an I frame ??
-     *   ffh->big_picture_codec->key_frame could be ignored
+     *   ffh->vst[ii].big_picture_codec->key_frame could be ignored
      *   because this seems to be just an information
      *   reported by the encoder.
      */
-    /* ffh->vid_codec_context->key_frame = 1; */
-    ffh->big_picture_codec->key_frame = 1;
+    /* ffh->vst[ii].vid_codec_context->key_frame = 1; */
+    ffh->vst[ii].big_picture_codec->key_frame = 1;
   }
   else
   {
-    ffh->big_picture_codec->key_frame = 0;
+    ffh->vst[ii].big_picture_codec->key_frame = 0;
   }
 
   if(ffh->output_context)
   {
     if(gap_debug)  printf("before avcodec_encode_video\n");
 
-    encoded_size = avcodec_encode_video(ffh->vid_codec_context
-                           ,ffh->video_buffer, ffh->video_buffer_size
-                           ,ffh->big_picture_codec);
+    encoded_size = avcodec_encode_video(ffh->vst[ii].vid_codec_context
+                           ,ffh->vst[ii].video_buffer, ffh->vst[ii].video_buffer_size
+                           ,ffh->vst[ii].big_picture_codec);
 
 
     /* if zero size, it means the image was buffered */
@@ -1997,7 +2590,10 @@ p_ffmpeg_write_frame(t_ffmpeg_handle *ffh, gboolean force_keyframe)
     {
       if(gap_debug)  printf("before av_write_frame  encoded_size:%d\n", (int)encoded_size );
 #ifdef HAVE_OLD_FFMPEG_0408
-      ret = av_write_frame(ffh->output_context, ffh->video_stream_index, ffh->video_buffer, encoded_size);
+      ret = av_write_frame(ffh->output_context
+                         , ffh->vst[ii].video_stream_index
+                         , ffh->vst[ii].video_buffer
+                         , encoded_size);
 #else
       {
 	AVPacket pkt;
@@ -2008,11 +2604,11 @@ p_ffmpeg_write_frame(t_ffmpeg_handle *ffh, gboolean force_keyframe)
           printf("before av_write_frame  encoded_size:%d\n", (int)encoded_size );
 	}
 
-	pkt.pts = ffh->vid_codec_context->coded_frame->pts;
-	pkt.stream_index = ffh->video_stream_index;
-	pkt.data = ffh->video_buffer;
+	pkt.pts = ffh->vst[ii].vid_codec_context->coded_frame->pts;
+	pkt.stream_index = ffh->vst[ii].video_stream_index;
+	pkt.data = ffh->vst[ii].video_buffer;
 	pkt.size = encoded_size;
-	if(ffh->vid_codec_context->coded_frame->key_frame)
+	if(ffh->vst[ii].vid_codec_context->coded_frame->key_frame)
 	{
           pkt.flags |= PKT_FLAG_KEY;
 	}
@@ -2029,9 +2625,9 @@ p_ffmpeg_write_frame(t_ffmpeg_handle *ffh, gboolean force_keyframe)
 
 
   /* if we are in pass1 of a two pass encoding run, output log */
-  if (ffh->passlog_fp && ffh->vid_codec_context->stats_out)
+  if (ffh->vst[ii].passlog_fp && ffh->vst[ii].vid_codec_context->stats_out)
   {
-    fprintf(ffh->passlog_fp, "%s", ffh->vid_codec_context->stats_out);
+    fprintf(ffh->vst[ii].passlog_fp, "%s", ffh->vst[ii].vid_codec_context->stats_out);
   }
 
   if(gap_debug)  printf("before free picture structures\n");
@@ -2049,20 +2645,29 @@ p_ffmpeg_write_frame(t_ffmpeg_handle *ffh, gboolean force_keyframe)
  * -------------------------
  */
 static int
-p_ffmpeg_write_audioframe(t_ffmpeg_handle *ffh, guchar *audio_buf, int frame_bytes)
+p_ffmpeg_write_audioframe(t_ffmpeg_handle *ffh, guchar *audio_buf, int frame_bytes, gint aud_track)
 {
   int encoded_size;
   int ret;
+  int ii;
 
   ret = 0;
+  ii = aud_track;
 
   if(ffh->output_context)
   {
-    encoded_size = avcodec_encode_audio(ffh->aud_codec_context
-                           ,ffh->audio_buffer, ffh->audio_buffer_size
+    if(gap_debug)
+    {
+      printf("p_ffmpeg_write_audioframe: START audo track ii=%d\n", (int)ii);
+      printf("ffh->ast[%d].audio_buffer: %d\n", (int)ii, (int)ffh->ast[ii].audio_buffer);
+      printf("ffh->ast[%d].audio_buffer_size: %d\n", (int)ii, ffh->ast[ii].audio_buffer_size);
+      printf("audio_buf: %d\n", (int)audio_buf);
+    }
+    encoded_size = avcodec_encode_audio(ffh->ast[ii].aud_codec_context
+                           ,ffh->ast[ii].audio_buffer, ffh->ast[ii].audio_buffer_size
                            ,(short *)audio_buf);
 #ifdef HAVE_OLD_FFMPEG_0408
-    ret = av_write_frame(ffh->output_context, ffh->audio_stream_index, ffh->audio_buffer, encoded_size);
+    ret = av_write_frame(ffh->ast[ii].output_context, ffh->ast[ii].audio_stream_index, ffh->ast[ii].audio_buffer, encoded_size);
 #else
     {
       AVPacket pkt;
@@ -2070,9 +2675,9 @@ p_ffmpeg_write_audioframe(t_ffmpeg_handle *ffh, guchar *audio_buf, int frame_byt
           
       if(gap_debug)  printf("before av_write_frame  encoded_size:%d\n", (int)encoded_size );
 
-      pkt.pts = ffh->aud_codec_context->coded_frame->pts;
-      pkt.stream_index = ffh->audio_stream_index;
-      pkt.data = ffh->audio_buffer;
+      pkt.pts = ffh->ast[ii].aud_codec_context->coded_frame->pts;
+      pkt.stream_index = ffh->ast[ii].audio_stream_index;
+      pkt.data = ffh->ast[ii].audio_buffer;
       pkt.size = encoded_size;
       ret = av_write_frame(ffh->output_context, &pkt);
 
@@ -2087,15 +2692,21 @@ p_ffmpeg_write_audioframe(t_ffmpeg_handle *ffh, guchar *audio_buf, int frame_byt
 /* ---------------
  * p_ffmpeg_close
  * ---------------
+ * write multimeda format trailer, close all video and audio codecs
+ * and free all related buffers
  */
 static void
 p_ffmpeg_close(t_ffmpeg_handle *ffh)
 {
-
-  if(ffh->big_picture_codec)
+  gint ii;
+  
+  for (ii=0; ii < ffh->max_vst; ii++)
   {
-    g_free(ffh->big_picture_codec);
-    ffh->big_picture_codec = NULL;
+    if(ffh->vst[ii].big_picture_codec)
+    {
+      g_free(ffh->vst[ii].big_picture_codec);
+      ffh->vst[ii].big_picture_codec = NULL;
+    }
   }
 
   if(ffh->output_context)
@@ -2105,52 +2716,62 @@ p_ffmpeg_close(t_ffmpeg_handle *ffh)
     url_fclose(&ffh->output_context->pb);
   }
 
-  if(ffh->vid_codec_context)
+  for (ii=0; ii < ffh->max_vst; ii++)
   {
-    avcodec_close(ffh->vid_codec_context);
-    ffh->vid_codec_context = NULL;
-    /* do not attempt to free ffh->vid_codec_context (it points to ffh->vid_stream->codec) */
-  }
+    if(ffh->vst[ii].vid_codec_context)
+    {
+      avcodec_close(ffh->vst[ii].vid_codec_context);
+      ffh->vst[ii].vid_codec_context = NULL;
+      /* do not attempt to free ffh->vst[ii].vid_codec_context (it points to ffh->vst[ii].vid_stream->codec) */
+    }
 
-  if(ffh->aud_codec_context)
-  {
-    avcodec_close(ffh->aud_codec_context);
-    ffh->aud_codec_context = NULL;
-    /* do not attempt to free ffh->aud_codec_context (it points to ffh->aud_stream->codec) */
-  }
-
-  if (ffh->passlog_fp)
-  {
-    fclose(ffh->passlog_fp);
-    ffh->passlog_fp = NULL;
-  }
+    if (ffh->vst[ii].passlog_fp)
+    {
+      fclose(ffh->vst[ii].passlog_fp);
+      ffh->vst[ii].passlog_fp = NULL;
+    }
 
 
-  if(ffh->video_buffer)
-  {
-     g_free(ffh->video_buffer);
-     ffh->video_buffer = NULL;
+    if(ffh->vst[ii].video_buffer)
+    {
+       g_free(ffh->vst[ii].video_buffer);
+       ffh->vst[ii].video_buffer = NULL;
+    }
+    if(ffh->vst[ii].video_dummy_buffer)
+    {
+       g_free(ffh->vst[ii].video_dummy_buffer);
+       ffh->vst[ii].video_dummy_buffer = NULL;
+    }
+    if(ffh->vst[ii].yuv420_buffer)
+    {
+       g_free(ffh->vst[ii].yuv420_buffer);
+       ffh->vst[ii].yuv420_buffer = NULL;
+    }
+    if(ffh->vst[ii].yuv420_dummy_buffer)
+    {
+       g_free(ffh->vst[ii].yuv420_dummy_buffer);
+       ffh->vst[ii].yuv420_dummy_buffer = NULL;
+    }
+    
   }
-  if(ffh->video_dummy_buffer)
+
+
+  for (ii=0; ii < ffh->max_ast; ii++)
   {
-     g_free(ffh->video_dummy_buffer);
-     ffh->video_dummy_buffer = NULL;
+    if(ffh->ast[ii].aud_codec_context)
+    {
+      avcodec_close(ffh->ast[ii].aud_codec_context);
+      ffh->ast[ii].aud_codec_context = NULL;
+      /* do not attempt to free ffh->ast[ii].aud_codec_context (it points to ffh->ast[ii].aud_stream->codec) */
+    }
+
+    if(ffh->ast[ii].audio_buffer)
+    {
+       g_free(ffh->ast[ii].audio_buffer);
+       ffh->ast[ii].audio_buffer = NULL;
+    }
   }
-  if(ffh->yuv420_buffer)
-  {
-     g_free(ffh->yuv420_buffer);
-     ffh->yuv420_buffer = NULL;
-  }
-  if(ffh->yuv420_dummy_buffer)
-  {
-     g_free(ffh->yuv420_dummy_buffer);
-     ffh->yuv420_dummy_buffer = NULL;
-  }
-  if(ffh->audio_buffer)
-  {
-     g_free(ffh->audio_buffer);
-     ffh->audio_buffer = NULL;
-  }
+
 }  /* end p_ffmpeg_close */
 
 
@@ -2168,8 +2789,8 @@ p_ffmpeg_close(t_ffmpeg_handle *ffh)
 static gint
 p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
 {
-  GapGveFFMpegValues   *epp;
-  t_ffmpeg_handle     *ffh;
+  GapGveFFMpegValues   *epp = NULL;
+  t_ffmpeg_handle     *ffh = NULL;
   GapGveStoryVidHandle        *l_vidhand = NULL;
   gint32        l_tmp_image_id = -1;
   gint32        l_layer_id = -1;
@@ -2181,30 +2802,17 @@ p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
   gint32        l_max_master_frame_nr;
   gint32        l_cnt_encoded_frames;
   gint32        l_cnt_reused_frames;
+  gint          l_video_tracks = 0;
 
-  FILE *l_fp_inwav = NULL;
-  gint32 datasize;
-  gint32 audio_size = 0;
-  gint32 audio_stereo = 0;
-  long  l_sample_rate = 22050;
-  long  l_channels = 2;
-  long  l_bytes_per_sample = 4;
-  long  l_bits = 16;
-  long  l_samples = 0;
-  l_cnt_encoded_frames = 0;
-  l_cnt_reused_frames = 0;
-
-
-  gint32 wavsize = 0; /* Data size of the wav file */
-  long audio_margin = 8192; /* The audio chunk size */
-  long audio_filled_100 = 0;
-  long audio_per_frame_x100 = -1;
-  long frames_per_second_x100 = 2500;
-  gdouble frames_per_second_x100f = 2500;
-  char databuffer[300000]; /* For transferring audio data */
+  t_awk_array   l_awk_arr;
+  t_awk_array   *awp;
 
 
   epp = &gpp->evl;
+  awp = &l_awk_arr;
+  l_cnt_encoded_frames = 0;
+  l_cnt_reused_frames = 0;
+  p_init_audio_workdata(awp);
 
   if(gap_debug)
   {
@@ -2232,8 +2840,9 @@ p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
   l_layer_id = -1;
 
   /* make list of frameranges (input frames to feed the encoder) */
-  { gint32 l_total_framecount;
-  l_vidhand = gap_gve_story_open_vid_handle (gpp->val.input_mode
+  {
+    gint32 l_total_framecount;
+    l_vidhand = gap_gve_story_open_vid_handle (gpp->val.input_mode
                                        ,gpp->val.image_ID
 				       ,gpp->val.storyboard_file
 				       ,gpp->ainfo.basename
@@ -2242,6 +2851,8 @@ p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
                                        ,gpp->val.range_to
                                        ,&l_total_framecount
                                        );
+  
+    l_video_tracks = 1;                    
   }
 
   /* TODO check for overwrite (in case we are called non-interactive) */
@@ -2250,47 +2861,20 @@ p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
   if (gap_debug) printf("Creating ffmpeg file.\n");
 
 
-  /* check and open audio wave file */
-  l_fp_inwav = NULL;
-  if(0 == gap_audio_wav_file_check( gpp->val.audioname1
-                                , &l_sample_rate
-                                , &l_channels
-                                , &l_bytes_per_sample
-                                , &l_bits
-                                , &l_samples
-                                ))
-  {
-    /* l_bytes_per_sample: 8bitmono: 1, 16bit_mono: 2, 8bitstereo: 2, 16bitstereo: 4 */
-    wavsize = l_samples * l_bytes_per_sample;
-    audio_size = l_bits;                          /*  16 or 8 */
-    audio_stereo = (l_channels ==2) ? TRUE : FALSE;
-
-    /* open WAVE file and set position to the 1.st audio databyte */
-    l_fp_inwav = gap_audio_wav_open_seek_data(gpp->val.audioname1);
-  }
-  else
-  {
-    l_channels = 0;
-  }
+  /* check and open audio wave file(s) */
+  p_open_audio_input_files(awp, gpp);
 
 
   /* OPEN the video file for write (create)
    *  successful open returns initialized FFMPEG handle structure
    */
-  ffh = p_ffmpeg_open(gpp, 0, l_sample_rate, l_channels);
+  ffh = p_ffmpeg_open(gpp, 0, awp, l_video_tracks);
   if(ffh == NULL)
   {
-    if(l_fp_inwav)
-    {
-      fclose(l_fp_inwav);
-    }
-    return(-1);     /* FFMPEG open Faield */
+    p_close_audio_input_files(awp);
+    return(-1);     /* FFMPEG open Failed */
   }
 
-  if(l_fp_inwav)
-  {
-    ffh->audio_disable = 0; /* enable AUDIO */
-  }
 
   l_percentage = 0.0;
   if(gpp->val.run_mode == GIMP_RUN_INTERACTIVE)
@@ -2299,28 +2883,8 @@ p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
   }
 
 
-  /* Calculations for encoding the sound
-   */
-  frames_per_second_x100f = (100.0 * gpp->val.framerate) + 0.5;
-  frames_per_second_x100 = frames_per_second_x100f;
-  audio_per_frame_x100 = (100 * 100 * l_sample_rate * l_bytes_per_sample) / MAX(1,frames_per_second_x100);
-
-  /* ?? dont sure if to use fix audo_margin of 8192 or
-   * if its ok to set audio_margin to audio_per_frame
-   */
-  /* audio_margin = audio_per_frame_x100 / 100; */
-  if(ffh->aud_codec_context)
-  {
-     /* the audio codec gives us the correct audio frame size, in samples */
-     if (gap_debug) printf("Codec ontext frame_size:%d  channels:%d\n"
-                           , (int)ffh->aud_codec_context->frame_size
-                           , (int)ffh->aud_codec_context->channels
-                           );
-
-      audio_margin = ffh->aud_codec_context->frame_size * 2 * ffh->aud_codec_context->channels;
-  }
-
-  if(gap_debug) printf("audio_margin: %d\n", (int)audio_margin);
+  /* Calculations for encoding the sound */
+  p_sound_precalculations(ffh, awp, gpp);
 
 
   /* special setup (makes it possible to code sequences backwards)
@@ -2363,9 +2927,9 @@ p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
                                            , epp->dont_recode_flag
                                            , epp->vcodec_name
                                            , &l_force_keyframe
-                                           , ffh->video_buffer
+                                           , ffh->vst[0].video_buffer
                                            , &l_video_frame_chunk_size
-                                           , ffh->video_buffer_size    /* IN max size */
+                                           , ffh->vst[0].video_buffer_size    /* IN max size */
 					   , gpp->val.framerate
 					   , l_max_master_frame_nr
                                            );
@@ -2385,7 +2949,7 @@ p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
 	}
 
         /* dont recode, just copy video chunk to output videofile */
-        p_ffmpeg_write_frame_chunk(ffh, l_video_frame_chunk_size);
+        p_ffmpeg_write_frame_chunk(ffh, l_video_frame_chunk_size, 0 /* vid_track */);
       }
       else   /* encode one VIDEO FRAME */
       {
@@ -2402,53 +2966,20 @@ p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
 
 
         /* fill the yuv420_buffer with current frame image data */
-        gap_gve_raw_YUV420P_drawable_encode(l_drawable, ffh->yuv420_buffer);
+        gap_gve_raw_YUV420P_drawable_encode(l_drawable, ffh->vst[0].yuv420_buffer);
 
         /* store the compressed video frame */
         if (gap_debug) printf("GAP_FFMPEG: Writing frame nr. %d\n", (int)l_cur_frame_nr);
 
-        p_ffmpeg_write_frame(ffh, l_force_keyframe);
+        p_ffmpeg_write_frame(ffh, l_force_keyframe, 0 /* vid_track */);
 
         /* destroy the tmp image */
         gimp_image_delete(l_tmp_image_id);
       }
 
-      /* encode AUDIO FRAME (audio packet for playbacktime of one frame) */
-      /* As long as there is a video frame, "fill" the fake audio buffer */
-      if (l_fp_inwav)
-      {
-        audio_filled_100 += audio_per_frame_x100;
-      }
-
-      /* Now "empty" the fake audio buffer, until it goes under the margin again */
-      while ((audio_filled_100 >= (audio_margin * 100)) && (wavsize > 0))
-      {
-        if (gap_debug) printf("Audio processing: Audio buffer at %ld bytes.\n", audio_filled_100);
-        if (wavsize >= audio_margin)
-        {
-            datasize = fread(databuffer, 1, audio_margin, l_fp_inwav);
-            if (datasize != audio_margin)
-            {
-              printf("Warning: Read from wav file failed. (non-critical)\n");
-            }
-            wavsize -= audio_margin;
-        }
-        else
-        {
-            datasize = fread(databuffer, 1, wavsize, l_fp_inwav);
-            if (datasize != wavsize)
-            {
-              printf("Warning: Read from wav file failed. (non-critical)\n");
-            }
-            wavsize = 0;
-        }
-
-        if (gap_debug) printf("Now encoding audio frame datasize:%d, audio codec:%s\n", (int)datasize, epp->acodec_name);
-
-        p_ffmpeg_write_audioframe(ffh, databuffer, datasize);
-
-        audio_filled_100 -= audio_margin * 100;
-      }
+      /* encode AUDIO FRAME (audio data for playbacktime of one frame) */
+      p_process_audio_frame(ffh, awp);
+      
     }
     else  /* if fetch_ok */
     {
@@ -2486,10 +3017,7 @@ p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
     g_free(ffh);
   }
 
-  if(l_fp_inwav)
-  {
-    fclose(l_fp_inwav);
-  }
+  p_close_audio_input_files(awp);
 
   if(l_vidhand)
   {

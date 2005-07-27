@@ -22,6 +22,7 @@
 #include <config.h>
 #include "gap_gve_sox.h"
 #include "gap_audio_wav.h"
+#include "gap-intl.h"
 
 #define DEFAULT_UTIL_SOX           "sox"
 #define DEFAULT_UTIL_SOX_OPTIONS   " \"$IN\"  -w -r $RATE \"$OUT\" resample "
@@ -116,6 +117,7 @@ gap_gve_sox_exec_resample(char *in_audiofile
 }  /* end gap_gve_sox_exec_resample */
 
 
+
 /* --------------------------------
  * gap_gve_sox_chk_and_resample
  * --------------------------------
@@ -128,9 +130,10 @@ gap_gve_sox_chk_and_resample(GapGveCommonValues *cval)
   long        bytes_per_sample;
   long        bits;
   long        samples;
+  long        all_playlist_references;
+  long        valid_playlist_references;
   int    l_rc;
   gchar *l_msg;
-
 
   if(gap_debug) printf("gap_gve_sox_chk_and_resample\n");
 
@@ -140,10 +143,26 @@ gap_gve_sox_chk_and_resample(GapGveCommonValues *cval)
     return 0;
   }
 
-  /* check for WAV file, and get audio informations */
-  l_rc = gap_audio_wav_file_check(cval->audioname1
-                     , &samplerate, &channels
-                     , &bytes_per_sample, &bits, &samples);
+  /* check for WAV file or valid audio playlist, and get audio informations */
+  l_rc = gap_audio_playlist_wav_file_check(cval->audioname1
+                     , &samplerate
+		     , &channels
+                     , &bytes_per_sample
+		     , &bits
+		     , &samples
+		     , &all_playlist_references
+		     , &valid_playlist_references
+		     , cval->samplerate
+		     );
+
+   if (valid_playlist_references > 0)
+   {
+     return 0;  /* OK,  valid audio playlist */
+   }
+   if (all_playlist_references > 0)
+   {
+     return -1; /*  non matching playlist */
+   }
 
   if ((l_rc !=0)
   ||  (bits != 16)
@@ -166,7 +185,7 @@ gap_gve_sox_chk_and_resample(GapGveCommonValues *cval)
      remove(cval->tmp_audfile);
      if(g_file_test(cval->tmp_audfile, G_FILE_TEST_EXISTS))
      {
-        l_msg = g_strdup_printf("ERROR: Cant overwrite temporary workfile\nfile: %s"
+        l_msg = g_strdup_printf(_("ERROR: Cant overwrite temporary workfile\nfile: %s")
                            , cval->tmp_audfile);
         if(cval->run_mode == GIMP_RUN_INTERACTIVE)
         {
@@ -184,9 +203,9 @@ gap_gve_sox_chk_and_resample(GapGveCommonValues *cval)
 
      if(!g_file_test(cval->tmp_audfile, G_FILE_TEST_EXISTS))
      {
-       l_msg = g_strdup_printf("ERROR: Could not create resampled WAV workfile\n\n"
+       l_msg = g_strdup_printf(_("ERROR: Could not create resampled WAV workfile\n\n"
 			       "1.) check write permission on \n  file:  %s\n"
- 			       "2.) check if SOX (version >= 12.16) is installed:\n  prog:  %s\n"
+ 			       "2.) check if SOX (version >= 12.16) is installed:\n  prog:  %s\n")
                        , cval->tmp_audfile
 		       , cval->util_sox
 		       );

@@ -412,5 +412,4 @@ gboolean  gap_gve_story_create_composite_audiofile(GapGveStoryVidHandle *vidhand
                             , char *comp_audiofile
                             );
 
-
 #endif        /* GAP_GVE_STORY_H */

@@ -1,3 +1,31 @@
+2005-07-24  Wolfgang Hofer <hof@gimp.org>
+	- extended the FFMPEG based video encoder to support encoding
+	  multiple tracks.
+	  Video is still limited to one track, but multiple
+	  audiotrack encoding is supported as hidden feature.
+	  To use that feature, just pass a textfile
+	  with references to multiple audio wavefiles instead of
+	  one audio file to this encoder.
+	- fixed bug related to checking for valid RIFF WAVE file format.
+	  (relevant for audiofiles with additional chunk(s) before the data
+	  chunk)
+
+	* vid_enc_ffmpeg/gap_enc_ffmpeg_main.c
+	* libgapvidutil/gap_gve_sox.c
+	* libgapvidutil/gap_gve_story.c [.h]
+	* gap/gap_audio_wav.c [.h]
+	* gap/gap_file_util.c [.h]
+	* gap/gap_libgimpgap.h
+	* vid_common/gap_cme_gui.c
+	* docs/reference/txt/plug-in-gap-vid-encode-master.txt
+	* po/POTFILES.in
+	
+2005-07-23  Wolfgang Hofer <hof@gimp.org>
+	check for errors while writing audio files.
+	in case of error print the error message and exit
+	* gap/gap_audio_wav.c
+	* libgapvidutil/gap_gve_story.c
+	
 2005-07-21  Pawan Chitrakar  <pawan@nplinux.org>
 
 	* configure.in: Added ne in ALL_LINGUAS

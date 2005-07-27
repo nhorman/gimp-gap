@@ -189,3 +189,109 @@ gap_file_mkdir (const char *fname, int mode)
   return(mkdir(fname, mode));
 }
 
+
+
+/* ----------------------------------------------------
+ * gap_file_chop_trailingspace_and_nl
+ * ----------------------------------------------------
+ * requires a '\0' terminated input buffer 
+ * chop trailing white space and newline chars
+ * (by replacing those chars with \0 directly in the
+ *  specified buffer)
+ */
+void
+gap_file_chop_trailingspace_and_nl(char *buffer)
+{
+  int len;
+  len = strlen(buffer);
+  while(TRUE)
+  {
+    if(len > 0)
+    {
+      len--;
+      if((buffer[len] == '\n')
+      || (buffer[len] == '\a')
+      || (buffer[len] == '\t')
+      || (buffer[len] == ' '))
+      {
+	buffer[len] = '\0';
+      }
+      else
+      {
+	break;
+      }
+    }
+  }
+}  /* end gap_file_chop_trailingspace_and_nl */
+
+
+/* ----------------------------------------------------
+ * gap_file_make_abspath_filename
+ * ----------------------------------------------------
+ * check if filename is specified with absolute path,
+ * if true: return 1:1 copy of filename
+ * if false: prefix filename with path from container file.
+ */
+char *
+gap_file_make_abspath_filename(const char *filename, const char *container_file)
+{
+    gboolean l_path_is_relative;
+    char    *l_container_path;
+    char    *l_ptr;
+    char    *l_abs_name;
+
+    l_abs_name = NULL;
+    l_path_is_relative = TRUE;
+    if(filename[0] == G_DIR_SEPARATOR)
+    {
+      l_path_is_relative = FALSE;
+    }
+#ifdef G_OS_WIN32
+    /* check for WIN/DOS styled abs pathname "Drive:\dir\file" */
+    for(l_idx=0; filename[l_idx] != '\0'; l_idx++)
+    {
+      if(filename[l_idx] == DIR_ROOT)
+      {
+        l_path_is_relative = FALSE;
+        break;
+      }
+    }
+#endif
+
+    if((l_path_is_relative) && (container_file != NULL))
+    {
+      l_container_path = g_strdup(container_file);
+      l_ptr = &l_container_path[strlen(l_container_path)];
+      while(l_ptr != l_container_path)
+      {
+        if((*l_ptr == G_DIR_SEPARATOR) || (*l_ptr == DIR_ROOT))
+        {
+          l_ptr++;
+          *l_ptr = '\0';   /* terminate the string after the directorypath */
+          break;
+        }
+        l_ptr--;
+      }
+      if(l_ptr != l_container_path)
+      {
+        /* prefix the filename with the container_path */
+        l_abs_name  = g_strdup_printf("%s%s", l_container_path, filename);
+      }
+      else
+      {
+        /* container_file has no path at all (and must be in the current dir)
+         * (therefore we cant expand absolute path name)
+         */
+        l_abs_name  = g_strdup(filename);
+      }
+      g_free(l_container_path);
+    }
+    else
+    {
+      /* use absolute filename as it is */
+      l_abs_name  = g_strdup(filename);
+    }
+
+    return(l_abs_name);
+
+}  /* end gap_file_make_abspath_filename */

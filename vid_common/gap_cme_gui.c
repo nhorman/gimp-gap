@@ -800,6 +800,8 @@ p_update_aud_info (GapCmeGlobalParams *gpp
   long        bytes_per_sample;
   long        bits;
   long        samples;
+  long        all_playlist_references;
+  long        valid_playlist_references;
   int         l_rc;
   gint32      tmsec;        /* audioplaytime in milli secs */
 
@@ -809,6 +811,9 @@ p_update_aud_info (GapCmeGlobalParams *gpp
      p_print_time_label(lbl_time0, 0);
      return 0;
   }
+
+  all_playlist_references = 0;
+  valid_playlist_references = 0;
   g_snprintf(txt, sizeof(txt), "??:??:???");
   gtk_label_set_text(lbl_time, txt);
   gtk_label_set_text(lbl_time0, txt);
@@ -819,12 +824,22 @@ p_update_aud_info (GapCmeGlobalParams *gpp
   if(g_file_test(audioname, G_FILE_TEST_EXISTS))
   {
      tmsec = 0;
-     /* check for WAV file, and get audio informations */
-     l_rc = gap_audio_wav_file_check(audioname
-                     , &samplerate, &channels
-                     , &bytes_per_sample, &bits, &samples);
 
-     if(l_rc == 0)
+     /* check for WAV file or valid audio playlist, and get audio informations */
+     l_rc = gap_audio_playlist_wav_file_check(audioname
+                     , &samplerate
+		     , &channels
+                     , &bytes_per_sample
+		     , &bits
+		     , &samples
+		     , &all_playlist_references
+		     , &valid_playlist_references
+		     , gpp->val.samplerate          /* desired_samplerate */
+		     );
+
+
+     if((l_rc == 0)
+     || (all_playlist_references >0))
      {
        if((samplerate > 0) && (channels > 0))
        {
@@ -835,12 +850,31 @@ p_update_aud_info (GapCmeGlobalParams *gpp
          tmsec = (gint32)((((gdouble)samples / (gdouble)channels) * 1000.0) / (gdouble)disp_samplerate);
        }
 
-       g_snprintf(txt, sizeof(txt), _("%s, Bit:%d Chan:%d Rate:%d")
+       if(all_playlist_references > 0)
+       {
+         /* audioname is a audio playlist with references to
+	  * audiofiles for multiple audio track encding
+	  * valid_playlist_references holds the number of valid tracks
+	  * (where samplerate matches the desired samplerate and bits == 16)
+	  */
+         g_snprintf(txt, sizeof(txt), _("List[%d] has [%d] valid tracks, Bit:%d Chan:%d Rate:%d")
+                                  , (int)all_playlist_references
+                                  , (int)valid_playlist_references
+                                  , (int)bits
+                                  , (int)channels
+                                  , (int)samplerate
+                                  );
+       }
+       else
+       {
+         g_snprintf(txt, sizeof(txt), _("%s, Bit:%d Chan:%d Rate:%d")
                                   , "WAV"
                                   , (int)bits
                                   , (int)channels
                                   , (int)samplerate
                                   );
+       }
+
        p_print_time_label(lbl_time, tmsec);
        p_print_time_label(lbl_time0, tmsec);
      }
@@ -2933,7 +2967,13 @@ p_create_audio_options_frame (GapCmeGlobalParams *gpp)
   gtk_table_attach (GTK_TABLE (table), entry, 1, 2, row, row+1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gimp_help_set_help_data (entry, _("Name of audiofile (.wav 16 bit mono or stereo samples preferred)"), NULL);
+  gimp_help_set_help_data (entry
+                   , _("Name of audiofile (.wav 16 bit mono or stereo samples preferred). "
+		       "Optional you may select a textfile that contains a list "
+		       "of file names referring to audio files. "
+		       "Each of those audio files will be encoded as seperate audio track.")
+		   , NULL)
+		   ;
   g_signal_connect (G_OBJECT (entry), "changed",
                       G_CALLBACK (on_cme__entry_audio1_changed),
                       gpp);

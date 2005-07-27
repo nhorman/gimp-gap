@@ -77,6 +77,9 @@ gint32      gap_file_load_file_segment(const char *filename
 
 int         gap_file_chmod (const char *fname, int mode);
 int         gap_file_mkdir (const char *fname, int mode);
+void        gap_file_chop_trailingspace_and_nl(char *buff);
+char *      gap_file_make_abspath_filename(const char *filename
+                  , const char *container_file);
 
 
 

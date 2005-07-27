@@ -213,7 +213,6 @@ static char *   p_fetch_framename   (GapGveStoryFrameRangeElem *frn_list
                             , gdouble *move_y        /* output -1.0 upto 1.0 where 0.0 is centered */
                             , GapGveStoryFrameRangeElem **frn_elem_ptr  /* OUT pointer to the relevant framerange element */
                            );
-static char *   p_make_abspath_filename(const char *filename, const char *storyboard_file);
 static void     p_extract_audioblock(t_GVA_Handle *gvahand
                 		     , FILE  *fp_wav
                 		     , gdouble samples_to_extract
@@ -1297,9 +1296,12 @@ p_get_audio_sample(GapGveStoryVidHandle *vidhand        /* IN  */
         if((l_byte_idx < 0) || (l_byte_idx >= ac_elem->segment_bytelength  /*aud_elem->aud_bytelength */ ))
         {
           printf("p_get_audio_sample: **ERROR INDEX OVERFLOW: %d (segment_bytelength: %d aud_bytelength: %d)\n"
+	         "  file:%s\n"
                  , (int)l_byte_idx
                  , (int)ac_elem->segment_bytelength
-                 , (int)aud_elem->aud_bytelength );
+                 , (int)aud_elem->aud_bytelength
+		 , ac_elem->filename
+		 );
           return;
         }
 
@@ -1852,78 +1854,6 @@ p_fetch_framename(GapGveStoryFrameRangeElem *frn_list
 }       /* end p_fetch_framename */
 
 
-
-/* ----------------------------------------------------
- * p_make_abspath_filename
- * ----------------------------------------------------
- * check if filename is specified with absolute path,
- * if true: return 1:1 copy of filename
- * if false: prefix filename with path from storyboard file.
- */
-static char *
-p_make_abspath_filename(const char *filename, const char *storyboard_file)
-{
-    gboolean l_path_is_relative;
-    char    *l_storyboard_path;
-    char    *l_ptr;
-    char    *l_abs_name;
-
-    l_abs_name = NULL;
-    l_path_is_relative = TRUE;
-    if(filename[0] == G_DIR_SEPARATOR)
-    {
-      l_path_is_relative = FALSE;
-    }
-#ifdef G_OS_WIN32
-    /* check for WIN/DOS styled abs pathname "Drive:\dir\file" */
-    for(l_idx=0; filename[l_idx] != '\0'; l_idx++)
-    {
-      if(filename[l_idx] == DIR_ROOT)
-      {
-        l_path_is_relative = FALSE;
-        break;
-      }
-    }
-#endif
-
-    if((l_path_is_relative) && (storyboard_file != NULL))
-    {
-      l_storyboard_path = g_strdup(storyboard_file);
-      l_ptr = &l_storyboard_path[strlen(l_storyboard_path)];
-      while(l_ptr != l_storyboard_path)
-      {
-        if((*l_ptr == G_DIR_SEPARATOR) || (*l_ptr == DIR_ROOT))
-        {
-          l_ptr++;
-          *l_ptr = '\0';   /* terminate the string after the directorypath */
-          break;
-        }
-        l_ptr--;
-      }
-      if(l_ptr != l_storyboard_path)
-      {
-        /* prefix the filename with the storyboard_path */
-        l_abs_name  = g_strdup_printf("%s%s", l_storyboard_path, filename);
-      }
-      else
-      {
-        /* storyboard_file has no path at all (and must be in the current dir)
-         * (therefore we cant expand absolute path name)
-         */
-        l_abs_name  = g_strdup(filename);
-      }
-      g_free(l_storyboard_path);
-    }
-    else
-    {
-      /* use absolute filename as it is */
-      l_abs_name  = g_strdup(filename);
-    }
-
-    return(l_abs_name);
-
-}  /* end p_make_abspath_filename */
-
 /* ----------------------------------------------------
  * p_extract_audioblock
  * ----------------------------------------------------
@@ -2227,7 +2157,7 @@ p_new_audiorange_element(GapGveStoryAudioType  aud_type
 
   if(audiofile)
   {
-     aud_elem->audiofile = p_make_abspath_filename(audiofile, storyboard_file);
+     aud_elem->audiofile = gap_file_make_abspath_filename(audiofile, storyboard_file);
 
      if(!g_file_test(aud_elem->audiofile, G_FILE_TEST_EXISTS)) /* check for regular file */
      {
@@ -2737,7 +2667,7 @@ p_new_framerange_element(GapGveStoryFrameType  frn_type
   /* check basename for absolute pathname */
   if(basename)
   {
-     frn_elem->basename = p_make_abspath_filename(basename, storyboard_file);
+     frn_elem->basename = gap_file_make_abspath_filename(basename, storyboard_file);
 
      /* check the list for known frameranges
       * if basename is already known, we can skip the directory scan
@@ -2770,7 +2700,7 @@ p_new_framerange_element(GapGveStoryFrameType  frn_type
   {
     if(*filtermacro_file != '\0')
     {
-      frn_elem->filtermacro_file = p_make_abspath_filename(filtermacro_file, storyboard_file);
+      frn_elem->filtermacro_file = gap_file_make_abspath_filename(filtermacro_file, storyboard_file);
 
       if(!g_file_test(frn_elem->filtermacro_file, G_FILE_TEST_EXISTS))
       {

@@ -36,6 +36,7 @@
 
 #include "gap-intl.h"
 #include "gap_arr_dialog.h"
+#include "gap_file_util.h"
 #include "gap_image.h"
 #include "gap_layer_copy.h"
 #include "gap_lib.h"

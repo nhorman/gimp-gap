@@ -43,4 +43,11 @@ int         gap_audio_wav_16bit_save(const char *wavfile
                     , int samplerate
                     , long total_samples);
 
+int         gap_audio_playlist_wav_file_check(const char *audfile, long *sample_rate, long *channels
+                     , long *bytes_per_sample, long *bits, long *samples
+		     , long *all_playlist_references
+		     , long *valid_playlist_references
+		     , long desired_samplerate
+		     );
+
 #endif

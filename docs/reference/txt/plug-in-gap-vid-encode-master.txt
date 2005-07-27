@@ -106,6 +106,39 @@ Audio Options:
     Audiofile:
       Specify the name of an audiofile.
       
+      - Files in the RIFF WAVE format are preferred, but
+        you may use other audiofile formats if you have
+        installed sox or configured another external audio converter
+        program.
+
+      - Encoding of multiple audio tracks:
+      
+        Instead of an audiofile you can specify an audio playlist file.
+	This is a textfile that contains filenames of audifiles,
+	one filename per line. The filenames can include absolute path
+	or may use relative path that is relative to the audio playlist file.
+	Empty lines and comment lines (starting with #) are allowed.
+	For each of this audiofiles the encoder will create
+	a seperated audio track.
+	
+	Restrictions:
+	
+	- The selected video encoder and selected output
+	  videofile format must support multiple audio tracks.
+	  Currently only the FFMPEG based encoder provides this
+	  support for the most videoformats (.mpg .vob, .avi ...) 
+	
+	- Each of those filenames must refere to an
+	  audiofile in the RIFF WAVE fileformat.
+	  (automatic convert to RIFF WAVE is not supported
+	  inside of audio playlist files)
+	  
+	- The audio samplerate in all referenced audiofiles
+	  must exactly match the desired samplerate.
+	  
+	- The samples must be encoded with 16 bits per sample
+	  in all referenced audiofiles.
+      
     Samplerate:
       Here you can specify the audio target samplerate that should 
       be used in the resulting videofile. 
