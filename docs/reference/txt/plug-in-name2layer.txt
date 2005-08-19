@@ -51,6 +51,6 @@ Render Filename to Layer
   (only for the first frame) where you can adjust the settings.
   Choose "Number Only" mode for rendering only the framenumber part,
   and "Create Layer" checkbutton turned on if you want the number to be created
-  as seperate layer.
+  as separate layer.
   With "Create Layer" turned off the number will be rendered on (all)
   the layer(s) that were selected in the initial "Modify Frames" dialog window.  

@@ -446,7 +446,7 @@ gap_bluebox_create_dialog (GapBlueboxGlobalParams *bbp)
   button = gtk_button_new_with_label(_("Preview"));
   gtk_table_attach(GTK_TABLE (table), button, 2, 3, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
   gtk_widget_show(button);
-  gimp_help_set_help_data(button, _("Show preview as seperate image"), NULL);
+  gimp_help_set_help_data(button, _("Show preview as separate image"), NULL);
   g_signal_connect (button, "clicked",
                     G_CALLBACK (p_apply_callback),
                     bbp);

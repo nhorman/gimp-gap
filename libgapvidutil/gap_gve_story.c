@@ -1400,7 +1400,7 @@ p_get_audio_sample(GapGveStoryVidHandle *vidhand        /* IN  */
  * and calculate mix scale (to fit into 16bit int)
  * optional write the mixed audio to wav file
  *  (bytesrquence LLRRLLRR)
- * or write to seperate buffers for left and right stereo channel
+ * or write to separate buffers for left and right stereo channel
  * or write nothing at all.
  */
 static void
@@ -2758,7 +2758,7 @@ p_new_framerange_element(GapGveStoryFrameType  frn_type
 
              /* immediate close the video for now.
               * when we want to fetch frames (later)
-              * we have to open a seperate handle for each range element
+              * we have to open a separate handle for each range element
               * regardless if the range is within the same videofile or not.
               */
              GVA_close(gvahand);

@@ -553,8 +553,8 @@ msgid "Preview"
 msgstr "Preview"
 
 #: gap/gap_bluebox.c:449
-msgid "Show preview as seperate image"
-msgstr "Show preview as seperate image"
+msgid "Show preview as separate image"
+msgstr "Show preview as separate image"
 
 #: gap/gap_bluebox.c:457
 msgid "Previewsize:"
@@ -7485,7 +7485,7 @@ msgstr "Audio Input"
 msgid ""
 "Name of audiofile (.wav 16 bit mono or stereo samples preferred). Optional "
 "you may select a textfile that contains a list of file names referring to "
-"audio files. Each of those audio files will be encoded as seperate audio "
+"audio files. Each of those audio files will be encoded as separate audio "
 "track."
 msgstr ""
 "Name of audiofile (.wav 16 bit mono or stereo samples preferred). Optionally "

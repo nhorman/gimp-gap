@@ -6,7 +6,7 @@
 ; the gap Plugin-collection, available in the plugin registry)
 ;
 ; - 26.5.1999 hof: adapted for GIMP 1.1 Plug-in Interfaces
-; - Takes the Current selection and saves it n-times (as multiple layers) in one seperate image.
+; - Takes the Current selection and saves it n-times (as multiple layers) in one separate image.
 ;    (base functions taken from Selection to Image ((c) by Adrian Likins adrian@gimp.org)
 ; - added number of copies and
 ; - optional { BG-FILL | TRANS-FILL }

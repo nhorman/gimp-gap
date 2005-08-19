@@ -26,7 +26,7 @@ First of all:
    
    
    You can generate the "plug_in_XXXX_Iterator"
-   for a Plugin as seperated Sourcefile, ready to compile.
+   for a Plugin as separated Sourcefile, ready to compile.
    (The Plugin must be found in the PDB at generation time)
    
    # this example uses the Plugin whirlpinch

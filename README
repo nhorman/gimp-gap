@@ -107,7 +107,7 @@ in docs/reference/txt/INTRODUCTION.txt
 Additional Installation Notes
 =============================
 
-This version of GIMP-GAP is a seperated Package since GIMP-1.3.x
+This version of GIMP-GAP is a separated Package since GIMP-1.3.x
 and does not compile/run with GIMP-1.2.x or older GIMP versions than 2.2.
 
   ./autogen.sh   # includes the ./configure call

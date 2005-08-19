@@ -465,7 +465,7 @@ msgid "Preview"
 msgstr "Просмотр анимации"
 
 #: gap/gap_bluebox.c:445
-msgid "Show preview as seperate image"
+msgid "Show preview as separate image"
 msgstr ""
 
 #: gap/gap_bluebox.c:453
@@ -4875,7 +4875,7 @@ msgstr "Насыщенность"
 #~ msgid ""
 #~ "Name of the MPEG1 videofile to READ.\n"
 #~ "Frames are extracted from the videofile\n"
-#~ "and written to seperate diskfiles.\n"
+#~ "and written to separate diskfiles.\n"
 #~ "Audiotracks in the videofile are ignored."
 #~ msgstr ""
 #~ "Название MPEG1 видеофайла для чтения.\n"

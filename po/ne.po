@@ -494,7 +494,7 @@ msgid "Preview"
 msgstr "पुर्वद्रिश्य"
 
 #: gap/gap_bluebox.c:449
-msgid "Show preview as seperate image"
+msgid "Show preview as separate image"
 msgstr "पूर्वदृश्यलाई भिन्न छविको रुपमा देखाउनुहोस"
 
 #: gap/gap_bluebox.c:457

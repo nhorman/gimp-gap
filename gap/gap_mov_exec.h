@@ -30,7 +30,7 @@
  * gimp    1.1.29b; 2000/11/25  hof: NONINTEACTIV PDB interface for Movepath
  * gimp    1.1.20a; 2000/04/25  hof: support for keyframes, anim_preview
  * 0.96.00; 1998/06/27   hof: added gap animation sizechange plugins
- *                            (moved range_ops to seperate .h file)
+ *                            (moved range_ops to separate .h file)
  * 0.94.01; 1998/04/27   hof: added flatten_mode to plugin: gap_range_to_multilayer
  * 0.90.00;              hof: 1.st (pre) release
  */

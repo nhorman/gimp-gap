@@ -1,3 +1,7 @@
+2005-08-18  Jens Seidel <jseidel@cvs.gnome.org>
+	- fixed a typo (s/seperate/separate/) in a msgid string and other
+	  files (inclusive all translations).
+
 2005-07-24  Wolfgang Hofer <hof@gimp.org>
 	- extended the FFMPEG based video encoder to support encoding
 	  multiple tracks.

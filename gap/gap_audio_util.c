@@ -49,7 +49,7 @@ gap_audio_util_stereo_split16to16(unsigned char *l_left_ptr, unsigned char *l_ri
   long l_idx;
 
   /* split stereo 16 bit data from wave data (sequence is  2 bytes left channel, 2 right, 2 left, 2 right ...)
-   * into 2 seperate datablocks for left and right channel of 16 bit per sample
+   * into 2 separate datablocks for left and right channel of 16 bit per sample
    */
   l_idx = 0;
   while(l_idx < l_data_len)
@@ -100,7 +100,7 @@ gap_audio_util_stereo_split8to16(unsigned char *l_left_ptr, unsigned char *l_rig
   unsigned char l_lsb, l_msb;
 
   /* split stereo 8 bit data from wave data (sequence is  2 bytes left channel, 2 right, 2 left, 2 right ...)
-   * into 2 seperate datablocks for left and right channel of 16 bit per sample
+   * into 2 separate datablocks for left and right channel of 16 bit per sample
    */
   l_idx = 0;
   while(l_idx < l_data_len)

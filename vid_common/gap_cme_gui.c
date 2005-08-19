@@ -2971,7 +2971,7 @@ p_create_audio_options_frame (GapCmeGlobalParams *gpp)
                    , _("Name of audiofile (.wav 16 bit mono or stereo samples preferred). "
 		       "Optional you may select a textfile that contains a list "
 		       "of file names referring to audio files. "
-		       "Each of those audio files will be encoded as seperate audio track.")
+		       "Each of those audio files will be encoded as separate audio track.")
 		   , NULL)
 		   ;
   g_signal_connect (G_OBJECT (entry), "changed",

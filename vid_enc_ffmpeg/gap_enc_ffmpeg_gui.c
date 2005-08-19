@@ -511,7 +511,7 @@ gap_enc_ffgui_set_default_codecs(GapGveFFMpegGlobalParams *gpp, gboolean set_cod
      }
 
      /* store the current video extension
-      * ofmt->extensions may contain more than 1 extension (comma seperated)
+      * ofmt->extensions may contain more than 1 extension (comma separated)
       * but we always use only the 1.st one.
       */
      if(ofmt->extensions)

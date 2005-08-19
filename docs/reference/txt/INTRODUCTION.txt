@@ -33,7 +33,7 @@ Idea:
 General:
 	An animation consists of a series of images of the same size & type
 	(frames).
-	The concept of GIMP-GAP is to store each frame seperate on disk, using a filename
+	The concept of GIMP-GAP is to store each frame separate on disk, using a filename
 	convention that includes the frame number and extension.
 
 	Example: film_000001.xcf, 

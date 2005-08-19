@@ -449,7 +449,7 @@ msgid "Preview"
 msgstr "Перегляд анімації"
 
 #: gap/gap_bluebox.c:445
-msgid "Show preview as seperate image"
+msgid "Show preview as separate image"
 msgstr ""
 
 #: gap/gap_bluebox.c:453

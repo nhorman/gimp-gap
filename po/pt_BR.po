@@ -471,7 +471,7 @@ msgid "Preview"
 msgstr "Pré-visualização"
 
 #: gap/gap_bluebox.c:445
-msgid "Show preview as seperate image"
+msgid "Show preview as separate image"
 msgstr "Exibir pré-visualização como uma imagem separada"
 
 #: gap/gap_bluebox.c:453

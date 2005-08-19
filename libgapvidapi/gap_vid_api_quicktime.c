@@ -289,7 +289,7 @@ p_wrapper_quicktime_get_audio(t_GVA_Handle *gvahand
 /* ----------------------------------
  * p_wrapper_quicktime_count_frames
  * ----------------------------------
- * (re)open a seperated handle for counting
+ * (re)open a separated handle for counting
  * to ensure that stream positions are not affected by the count.
  */
 t_GVA_RetCode

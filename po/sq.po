@@ -484,7 +484,7 @@ msgstr "Shikoje"
 
 #: gap/gap_bluebox.c:446
 #, fuzzy
-msgid "Show preview as seperate image"
+msgid "Show preview as separate image"
 msgstr "Shfaq figurë"
 
 #: gap/gap_bluebox.c:454

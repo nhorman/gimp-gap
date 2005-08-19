@@ -224,7 +224,7 @@ p_wrapper_mpeg3_check_sig(char *filename)
       /* workaround: (available for UNIX systems only)
        * libmpeg3 does sometimes crash on close.
        * (some mpeg1 files encoded by ffmpeg)
-       * this code tries open close sequence in a seperated process
+       * this code tries open close sequence in a separated process
        *
        * to catch those crashes, and deliver sig_ok FALSE
        * in case of crash)
@@ -901,7 +901,7 @@ p_wrapper_mpeg3_count_frames(t_GVA_Handle *gvahand)
  * p_wrapper_mpeg3_get_video_chunk
  * -------------------------------
  * read video_frame_chunk at frame_nr
- *   we use a seperate handle (raw_handle) for mpeg3 file access
+ *   we use a separate handle (raw_handle) for mpeg3 file access
  *   to keep positions of the main_handle unaffected.
  *   further we do not use seek ops
  *   to get the exact frame numbers.

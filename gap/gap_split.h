@@ -3,7 +3,7 @@
  *
  * GAP ... Gimp Animation Plugins
  *
- * Split image to video frames (seperate Images on disk)
+ * Split image to video frames (separate Images on disk)
  *
  */
 /* The GIMP -- an image manipulation program

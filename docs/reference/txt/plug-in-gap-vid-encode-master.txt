@@ -119,7 +119,7 @@ Audio Options:
 	or may use relative path that is relative to the audio playlist file.
 	Empty lines and comment lines (starting with #) are allowed.
 	For each of this audiofiles the encoder will create
-	a seperated audio track.
+	a separated audio track.
 	
 	Restrictions:
 	

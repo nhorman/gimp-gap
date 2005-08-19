@@ -457,7 +457,7 @@ msgid "Preview"
 msgstr "Náhľad"
 
 #: gap/gap_bluebox.c:445
-msgid "Show preview as seperate image"
+msgid "Show preview as separate image"
 msgstr "Zobraziť náhľad na obrázok ako samostatný obrázok"
 
 #: gap/gap_bluebox.c:453

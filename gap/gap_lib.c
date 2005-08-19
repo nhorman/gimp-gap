@@ -709,7 +709,7 @@ gap_lib_searchpath_for_exefile(const char *exefile, const char *path)
 
     if(*pp == G_SEARCHPATH_SEPARATOR)
     {
-      *pp = '\0';  /* terminate dirpath string at seperator */
+      *pp = '\0';  /* terminate dirpath string at separator */
     }
 
     if (*pp == '\0')
@@ -2994,7 +2994,7 @@ gap_lib_fprintf_gdouble(FILE *fp, gdouble value, gint digits, gint precision_dig
 /* ============================================================================
  * gap_lib_sscan_flt_numbers
  * ============================================================================
- * scan the blank seperated buffer for 2 integer and 13 float numbers.
+ * scan the blank separated buffer for 2 integer and 13 float numbers.
  * always use "." as decimalpoint in the float numbers regardless to LANGUAGE settings
  * return a counter that tells how many numbers were scanned successfully
  */

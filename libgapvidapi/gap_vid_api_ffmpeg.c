@@ -255,7 +255,7 @@ p_wrapper_ffmpeg_open_read(char *filename, t_GVA_Handle *gvahand)
 
   if(gvahand->aud_track >= 0)
   {
-    /* open a seperate input context for the AUDIO part */
+    /* open a separate input context for the AUDIO part */
     if(FALSE == p_ff_open_input(filename, gvahand, handle, FALSE))
     {
       g_free(handle);
@@ -1297,7 +1297,7 @@ p_wrapper_ffmpeg_get_audio(t_GVA_Handle *gvahand
 /* ----------------------------------
  * p_wrapper_ffmpeg_count_frames
  * ----------------------------------
- * (re)open a seperated handle for counting
+ * (re)open a separated handle for counting
  * to ensure that stream positions are not affected by the count.
  * This procedure optionally creates a videoindex
  * for faster seek access

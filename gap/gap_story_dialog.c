@@ -553,7 +553,7 @@ p_render_all_frame_widgets (GapStbTabWidgets *tabw)
 	  * this Flag stays TRUE until the next start of this refresh procedure.
 	  * All further video items waiting for refresh are then rendered 
 	  * with the default icon (instead of accessing the videofile) in this refresh cycle.
-	  * otherwise the user has to cancel each video item seperately
+	  * otherwise the user has to cancel each video item separately
 	  */
          sgpp_ptr->auto_vthumb_refresh_canceled = TRUE;
        }

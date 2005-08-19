@@ -479,7 +479,7 @@ msgstr "Förhandsgranskning"
 
 #: gap/gap_bluebox.c:445
 #, fuzzy
-msgid "Show preview as seperate image"
+msgid "Show preview as separate image"
 msgstr "Visa förhandsvisning som separat bild"
 
 #: gap/gap_bluebox.c:453

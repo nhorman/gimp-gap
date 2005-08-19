@@ -1362,7 +1362,7 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
     l_wordval[ii] = g_strdup("\0");
   }
   
-  /* get the record key (1.st space seperated word) */
+  /* get the record key (1.st space separated word) */
   l_wordval[0]    = p_fetch_string(&l_scan_ptr, &l_parname);
   l_record_key = l_wordval[0];
   if(l_parname)

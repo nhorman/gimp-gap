@@ -468,7 +468,7 @@ msgid "Preview"
 msgstr "ਨਮੂਨਾ"
 
 #: gap/gap_bluebox.c:446
-msgid "Show preview as seperate image"
+msgid "Show preview as separate image"
 msgstr "ਨਮੂਨਾ ਵੱਖਰੇ ਚਿੱਤਰ ਦੇ ਰੂਪ ਵਿੱਚ ਵਿਖਾਉ"
 
 #: gap/gap_bluebox.c:454

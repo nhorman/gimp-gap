@@ -518,8 +518,8 @@ msgid "Preview"
 msgstr "Preview"
 
 #: ../gap/gap_bluebox.c:449
-msgid "Show preview as seperate image"
-msgstr "Show preview as seperate image"
+msgid "Show preview as separate image"
+msgstr "Show preview as separate image"
 
 #: ../gap/gap_bluebox.c:457
 msgid "Previewsize:"

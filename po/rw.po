@@ -538,7 +538,7 @@ msgstr "Igaragazambere"
 
 #: gap/gap_bluebox.c:449
 #, fuzzy
-msgid "Show preview as seperate image"
+msgid "Show preview as separate image"
 msgstr "Igaragazambere Nka Ishusho"
 
 #: gap/gap_bluebox.c:457

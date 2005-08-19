@@ -511,7 +511,7 @@ msgid "Preview"
 msgstr "Vorschau"
 
 #: gap/gap_bluebox.c:449
-msgid "Show preview as seperate image"
+msgid "Show preview as separate image"
 msgstr ""
 
 #: gap/gap_bluebox.c:457

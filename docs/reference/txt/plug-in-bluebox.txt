@@ -16,13 +16,13 @@ Blubox Filter
       4 different ways depending on threshold mode:
       
     Threshold Mode:
-      HSV ..... has 3 seperate thresholds for hue, saturation and value
+      HSV ..... has 3 separate thresholds for hue, saturation and value
                 and operates in the HSV colormodel.
-      RGB ..... has 3 seperate thresholds for red, green and blue channels
+      RGB ..... has 3 separate thresholds for red, green and blue channels
                 and operates in the RGB colormodel
       VALUE ... has only one single threshold for the maximum difference
                 of red, green, and blue channels and operates in the RGB colormodel.
-      ALL ..... has 6 seperate thresholds for HSV and RGB
+      ALL ..... has 6 separate thresholds for HSV and RGB
 
     Thresholds
       All thresholds have the range from 0.0 to 1.0

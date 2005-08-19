@@ -462,9 +462,8 @@ msgstr "Uključeno: sam osvežavaj pregled slike"
 msgid "Preview"
 msgstr "Pregled"
 
-# bug: seperate -> separate
 #: gap/gap_bluebox.c:445
-msgid "Show preview as seperate image"
+msgid "Show preview as separate image"
 msgstr "Prikaži pregled kao odvojenu sliku"
 
 #: gap/gap_bluebox.c:453

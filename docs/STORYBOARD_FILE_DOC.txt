@@ -272,7 +272,7 @@ VID_PLAY_FRAMES
 VID_PLAY_IMAGE
   fetch frame from a single imagefile. (Multilayer Images are handled as
   one composite image. For animated GIF's you can use VID_PLAY_ANIMIMAGE
-  to playback all the layers seperately)
+  to playback all the layers separately)
   
   (1) Record Key        ... VID_PLAY_IMAGE
   (2) track             ... integer tracknumer
@@ -556,7 +556,7 @@ Filenames:
   or by relative pathnames. Relative pathnames are relative
   to the loacation of the storyboard_file.
 
-  Both / and \ are traeted as directory Seperator.
+  Both / and \ are treated as directory Separator.
 
 
 Videotracks:
@@ -707,5 +707,5 @@ LIMITS:
 -------
  - Video Tracknumbers are limited to integer numbers within 
    the range from 0 to 19.
- - Both / and \ are treated as directory Seperator in filenames.
+ - Both / and \ are treated as directory Separator in filenames.
   
