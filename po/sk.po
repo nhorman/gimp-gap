@@ -744,7 +744,7 @@ msgstr ""
 "na vašu verziu xanim a znovu spustiť gimp"
 
 #: gap/gap_decode_xanim.c:187
-msgid "An error occured while trying to call xanim:"
+msgid "An error occurred while trying to call xanim:"
 msgstr "Vyskytla sa chyba počas volania xanim:"
 
 #: gap/gap_decode_xanim.c:206

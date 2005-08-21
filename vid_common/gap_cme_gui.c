@@ -1434,7 +1434,7 @@ p_storybord_job_finished(GapCmeGlobalParams *gpp, t_global_stb *gstb)
   }
   else
   {
-     l_msg = g_strdup_printf(_("Storyboard file %s checkreport:\n\nSYNTAX check failed (internal error occured)")
+     l_msg = g_strdup_printf(_("Storyboard file %s checkreport:\n\nSYNTAX check failed (internal error occurred)")
                                , gpp->val.storyboard_file
                                  );
   }

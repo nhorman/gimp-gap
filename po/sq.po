@@ -805,7 +805,7 @@ msgstr "është nuk në është nuk programi dhe"
 
 #: gap/gap_decode_xanim.c:187
 #, fuzzy
-msgid "An error occured while trying to call xanim:"
+msgid "An error occurred while trying to call xanim:"
 msgstr "gabim:"
 
 #: gap/gap_decode_xanim.c:206
@@ -6691,7 +6691,7 @@ msgstr "j j j j j është OK"
 msgid ""
 "Storyboard file %s checkreport:\n"
 "\n"
-"SYNTAX check failed (internal error occured)"
+"SYNTAX check failed (internal error occurred)"
 msgstr "j i brendshëm gabim"
 
 #. g_message(_("Go for checking storyboard file"));

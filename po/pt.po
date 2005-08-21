@@ -752,7 +752,7 @@ msgstr ""
 "apontando para a sua aplicação xanim exporting e reiniciar o gimp"
 
 #: gap/gap_decode_xanim.c:187
-msgid "An error occured while trying to call xanim:"
+msgid "An error occurred while trying to call xanim:"
 msgstr "Ocorreu um erro ao tentar invocar o xanim:"
 
 #: gap/gap_decode_xanim.c:206

@@ -845,7 +845,7 @@ msgstr ""
 "to your mplayer program and restart gimp"
 
 #: gap/gap_decode_mplayer.c:265
-msgid "An error occured while trying to call mplayer:"
+msgid "An error occurred while trying to call mplayer:"
 msgstr "An error occurred while trying to call mplayer:"
 
 #: gap/gap_decode_mplayer.c:285
@@ -1192,8 +1192,8 @@ msgstr ""
 "to your xanim exporting program and restart gimp"
 
 #: gap/gap_decode_xanim.c:183
-msgid "An error occured while trying to call xanim:"
-msgstr "An error occured while trying to call xanim:"
+msgid "An error occurred while trying to call xanim:"
+msgstr "An error occurred while trying to call xanim:"
 
 #: gap/gap_decode_xanim.c:203
 msgid "XANIM Information"
@@ -7111,11 +7111,11 @@ msgstr ""
 msgid ""
 "Storyboard file %s checkreport:\n"
 "\n"
-"SYNTAX check failed (internal error occured)"
+"SYNTAX check failed (internal error occurred)"
 msgstr ""
 "Storyboard file %s checkreport:\n"
 "\n"
-"SYNTAX check failed (internal error occured)"
+"SYNTAX check failed (internal error occurred)"
 
 #. g_message(_("Go for checking storyboard file"));
 #: vid_common/gap_cme_gui.c:1751

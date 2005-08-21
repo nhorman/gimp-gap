@@ -760,7 +760,7 @@ msgstr ""
 "para apontar para o executável canim e re-iniciar o gimp"
 
 #: gap/gap_decode_xanim.c:187
-msgid "An error occured while trying to call xanim:"
+msgid "An error occurred while trying to call xanim:"
 msgstr "Ocorreu um erro ao tentar chamar xanim:"
 
 #: gap/gap_decode_xanim.c:206

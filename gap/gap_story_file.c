@@ -343,7 +343,7 @@ p_calculate_pingpong_framenr(gint32 framenr, gint32 rangesize, gdouble step_dens
  * ------------------------------
  * print the passed errtext to stdout
  * and store linenumber, errtext and sourcecode line
- * of the 1.st error that occured
+ * of the 1.st error that occurred
  */
 static void
 p_set_stb_error(GapStoryBoard *stb, char *errtext)
@@ -377,7 +377,7 @@ p_set_stb_error(GapStoryBoard *stb, char *errtext)
  * ------------------------------
  * print the passed errtext to stdout
  * and store linenumber, errtext and sourcecode line
- * of the 1.st error that occured
+ * of the 1.st error that occurred
  */
 static void
 p_set_stb_warning(GapStoryBoard *stb, char *warntext)
@@ -1327,7 +1327,7 @@ p_scan_gdouble(char *ptr, gdouble min, gdouble max, GapStoryBoard *stb)
  *    add The Line as new stb_elem (at end of the stb_elem list)
  * if the line has ERRORS
  *    the errtxt memer in the GapStoryBoard struct is set
- *    to the errormessage of the 1st error that occured.
+ *    to the errormessage of the 1st error that occurred.
  *
  * missing Header is tolerated but:
  * - lines with unsupported record type are rejected if no header is present
@@ -2210,9 +2210,9 @@ cleanup:
  * This parser makes only syntactical checks, but does not verify
  * if the files or frames are existent and accessable.
  *
- * The 1.st error that occured is reported in the errtext pointer
+ * The 1.st error that occurred is reported in the errtext pointer
  * errtext is a member of the returned GapStoryBoard structure
- * (if no error occured the errtxt pointer is  NULL)
+ * (if no error occurred the errtxt pointer is  NULL)
  *
  * The caller is responsible to free the returned GapStoryBoard structure.
  * this should be done by calling gap_story_free_storyboard after usage.

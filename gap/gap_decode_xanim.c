@@ -180,7 +180,7 @@ p_xanim_info(char *errlist)
 
   l_idx++;
   gap_arr_arg_init(&argv[l_idx], GAP_ARR_WGT_LABEL_LEFT);
-  argv[l_idx].label_txt = _("An error occured while trying to call xanim:");  
+  argv[l_idx].label_txt = _("An error occurred while trying to call xanim:");  
 
   l_idx++;
   gap_arr_arg_init(&argv[l_idx], GAP_ARR_WGT_LABEL_LEFT);

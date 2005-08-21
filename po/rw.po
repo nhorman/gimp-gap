@@ -878,7 +878,7 @@ msgstr ""
 
 #: gap/gap_decode_mplayer.c:240
 #, fuzzy
-msgid "An error occured while trying to call mplayer:"
+msgid "An error occurred while trying to call mplayer:"
 msgstr "Ikosa Kuri"
 
 #: gap/gap_decode_mplayer.c:260
@@ -1219,7 +1219,7 @@ msgstr ""
 
 #: gap/gap_decode_xanim.c:183
 #, fuzzy
-msgid "An error occured while trying to call xanim:"
+msgid "An error occurred while trying to call xanim:"
 msgstr "Ikosa Kuri"
 
 #: gap/gap_decode_xanim.c:203
@@ -7508,7 +7508,7 @@ msgstr "IDOSIYE Oya Amakosa Byabonetse IDOSIYE ni"
 msgid ""
 "Storyboard file %s checkreport:\n"
 "\n"
-"SYNTAX check failed (internal error occured)"
+"SYNTAX check failed (internal error occurred)"
 msgstr "IDOSIYE Kugenzura... Byanze By'imbere Ikosa"
 
 #. g_message(_("Go for checking storyboard file"));

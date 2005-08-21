@@ -771,7 +771,7 @@ msgstr ""
 "a su programa de exportación xanim y reiniciar El Gimp"
 
 #: gap/gap_decode_xanim.c:187
-msgid "An error occured while trying to call xanim:"
+msgid "An error occurred while trying to call xanim:"
 msgstr "Ocurrió un error mientras se intentaba llamar a xanim:"
 
 #: gap/gap_decode_xanim.c:206
@@ -6270,7 +6270,7 @@ msgstr ""
 msgid ""
 "Storyboard file %s checkreport:\n"
 "\n"
-"SYNTAX check failed (internal error occured)"
+"SYNTAX check failed (internal error occurred)"
 msgstr ""
 
 #. g_message(_("Go for checking storyboard file"));

@@ -203,7 +203,7 @@ gint32  global_delete_number;
 /* ============================================================================
  * p_mplayer_info
  * ============================================================================
- * this dialog is shown when errors occured after attempt
+ * this dialog is shown when errors occurred after attempt
  * to call mplayer.
  * Provides some informations what is required,
  * and the information about error.
@@ -262,7 +262,7 @@ p_mplayer_info(char *errlist)
 
   l_idx++;
   gap_arr_arg_init(&argv[l_idx], GAP_ARR_WGT_LABEL_LEFT);
-  argv[l_idx].label_txt = _("An error occured while trying to call mplayer:");  
+  argv[l_idx].label_txt = _("An error occurred while trying to call mplayer:");  
 
   l_idx++;
   gap_arr_arg_init(&argv[l_idx], GAP_ARR_WGT_LABEL_LEFT);

@@ -763,7 +763,7 @@ msgstr ""
 "xanim извозни програм и поново покренете Гимп"
 
 #: gap/gap_decode_xanim.c:187
-msgid "An error occured while trying to call xanim:"
+msgid "An error occurred while trying to call xanim:"
 msgstr "Грешка приликом позива програма xanim:"
 
 #: gap/gap_decode_xanim.c:206

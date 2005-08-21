@@ -737,7 +737,7 @@ msgstr ""
 
 #: gap/gap_decode_xanim.c:187
 #, fuzzy
-msgid "An error occured while trying to call xanim:"
+msgid "An error occurred while trying to call xanim:"
 msgstr "На спробі виклику xanim виникла ПОМИЛКА:"
 
 #: gap/gap_decode_xanim.c:206

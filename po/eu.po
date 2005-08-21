@@ -817,7 +817,7 @@ msgstr ""
 "mplayer-en esportatzeko programari eta gimp berrabiarazi behar duzu"
 
 #: ../gap/gap_decode_mplayer.c:240
-msgid "An error occured while trying to call mplayer:"
+msgid "An error occurred while trying to call mplayer:"
 msgstr "Errorea gertatu da mplayer-i deitzean:"
 
 #: ../gap/gap_decode_mplayer.c:260
@@ -1155,7 +1155,7 @@ msgstr ""
 "xanim-en esportatzeko programari eta gimp berrabiarazi behar duzu"
 
 #: ../gap/gap_decode_xanim.c:183
-msgid "An error occured while trying to call xanim:"
+msgid "An error occurred while trying to call xanim:"
 msgstr "Errorea gertatu da xanim-i deitzean:"
 
 #: ../gap/gap_decode_xanim.c:203
@@ -7021,7 +7021,7 @@ msgstr ""
 msgid ""
 "Storyboard file %s checkreport:\n"
 "\n"
-"SYNTAX check failed (internal error occured)"
+"SYNTAX check failed (internal error occurred)"
 msgstr ""
 
 #. g_message(_("Go for checking storyboard file"));

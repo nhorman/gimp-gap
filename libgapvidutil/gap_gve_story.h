@@ -290,10 +290,10 @@ typedef struct GapGveStoryErrors
 {
   char   *errtext;       /* NULL==no error */
   char   *errline;       /* NULL, or copy of the line that has the 1. error */
-  gint32  errline_nr;    /* line number where 1.st error occured */
+  gint32  errline_nr;    /* line number where 1.st error occurred */
   char   *warntext;      /* NULL==no error */
   char   *warnline;      /* NULL, or copy of the line that has the 1. error */
-  gint32  warnline_nr;   /* line number where 1.st error occured */
+  gint32  warnline_nr;   /* line number where 1.st error occurred */
   gint32  curr_nr;       /* current line nr while parsing */
   char   *currline;      /* pointer to currently parsed line (do not free this) */
 } GapGveStoryErrors;  /* used for storyboard processing */

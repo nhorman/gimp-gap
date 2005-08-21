@@ -90,7 +90,7 @@ Error handling:
 ---------------
 
 Most routines (besides open/close) will return 0 or a usefull number if successfull
-and a -1 in the case of an error. If an error occured, the external variable
+and a -1 in the case of an error. If an error occurred, the external variable
 AVI_errno is set. See avilib.h for the meaning of the error codes in AVI_errno.
 
 There is also a routine (which acts like perror) to output a description

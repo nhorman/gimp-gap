@@ -820,7 +820,7 @@ msgstr ""
 "à votre programme d'exportation mplayer et relancer Gimp"
 
 #: gap/gap_decode_mplayer.c:240
-msgid "An error occured while trying to call mplayer:"
+msgid "An error occurred while trying to call mplayer:"
 msgstr "Une erreur est survenue lors de l'appel de mplayer :"
 
 #: gap/gap_decode_mplayer.c:260
@@ -1159,7 +1159,7 @@ msgstr ""
 "à votre programme d'exportation xanim et relancer Gimp"
 
 #: gap/gap_decode_xanim.c:183
-msgid "An error occured while trying to call xanim:"
+msgid "An error occurred while trying to call xanim:"
 msgstr "Une erreur est survenue lors de l'appel de XAnim :"
 
 #: gap/gap_decode_xanim.c:203
@@ -7075,7 +7075,7 @@ msgstr ""
 msgid ""
 "Storyboard file %s checkreport:\n"
 "\n"
-"SYNTAX check failed (internal error occured)"
+"SYNTAX check failed (internal error occurred)"
 msgstr ""
 "Rapport de vérification fichier de scénarimage : %s\n"
 "\n"

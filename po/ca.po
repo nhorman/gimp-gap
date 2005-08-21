@@ -992,7 +992,7 @@ msgstr ""
 
 #: ../gap/gap_decode_mplayer.c:240
 #, fuzzy
-msgid "An error occured while trying to call mplayer:"
+msgid "An error occurred while trying to call mplayer:"
 msgstr "S'ha produït un error en intentar cridar l'xanim:"
 
 #: ../gap/gap_decode_mplayer.c:260
@@ -1358,7 +1358,7 @@ msgstr ""
 "al vostre programa d'exportació xanim i reiniciar El Gimp"
 
 #: ../gap/gap_decode_xanim.c:183
-msgid "An error occured while trying to call xanim:"
+msgid "An error occurred while trying to call xanim:"
 msgstr "S'ha produït un error en intentar cridar l'xanim:"
 
 #: ../gap/gap_decode_xanim.c:203
@@ -7835,7 +7835,7 @@ msgstr ""
 msgid ""
 "Storyboard file %s checkreport:\n"
 "\n"
-"SYNTAX check failed (internal error occured)"
+"SYNTAX check failed (internal error occurred)"
 msgstr ""
 "Informe de verificació del fitxer storyboard %s:\n"
 "\n"

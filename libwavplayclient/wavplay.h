@@ -339,7 +339,7 @@ typedef struct {
 
 		/*
 		 * Message from server to client, to convey a fatal error that
-		 * has occured in the server.
+		 * has occurred in the server.
 		 */
 		struct	{
 			int	Errno;		/* Error code */
@@ -453,7 +453,7 @@ typedef struct {
 
 		/*
 		 * Message from server to client, to convey a NON-fatal error that
-		 * has occured in the server.
+		 * has occurred in the server.
 		 */
 		struct	{
 			int	Errno;		/* Error code */

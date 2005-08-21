@@ -1706,7 +1706,7 @@ gap_lib_get_frame_nr(gint32 image_id)
  * (using save as)
  * while the gap-plugin's dialog was open.
  * return: 0 .. OK
- *        -1 .. Changed (or error occured)
+ *        -1 .. Changed (or error occurred)
  * ============================================================================
  */
 int

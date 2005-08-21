@@ -786,7 +786,7 @@ msgstr ""
 "र गिम्पलाई पुन:सुरु गर्नुपर्छ"
 
 #: gap/gap_decode_mplayer.c:240
-msgid "An error occured while trying to call mplayer:"
+msgid "An error occurred while trying to call mplayer:"
 msgstr "एमप्लेयर वोलाएको वेलामा एउटा त्रुटी रहन गयो:"
 
 #: gap/gap_decode_mplayer.c:260
@@ -1105,7 +1105,7 @@ msgstr ""
 " लाई तपाईको एक्सएनिम निर्यात गर्ने प्रोग्राममासेट गर्नु पर्छ र जिम्प लाई पुन:सुरु गर्नु पर्छ "
 
 #: gap/gap_decode_xanim.c:183
-msgid "An error occured while trying to call xanim:"
+msgid "An error occurred while trying to call xanim:"
 msgstr "एक्स एनिम लाई वोलाउने कोशिस गर्दा एउटा त्रुटी रहन गयो:"
 
 #: gap/gap_decode_xanim.c:203
@@ -6773,7 +6773,7 @@ msgstr ""
 msgid ""
 "Storyboard file %s checkreport:\n"
 "\n"
-"SYNTAX check failed (internal error occured)"
+"SYNTAX check failed (internal error occurred)"
 msgstr ""
 "स्टोरिबोर्ड फाईल %s प्रतिवेदन जाँच गर्नुहोस:\n"
 "\n"
