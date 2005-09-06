@@ -1,3 +1,7 @@
+2005-09-06  Ankit Patel  <ankit644@yahoo.com>
+
+	* configure.in : Added "gu" to ALL_LINGUAS.
+
 2005-08-21  Jens Seidel <jseidel@cvs.gnome.org>
 	- fixed a typo (s/occured/occurred/) in a few msgid strings and other
 	  files (inclusive all translations).
