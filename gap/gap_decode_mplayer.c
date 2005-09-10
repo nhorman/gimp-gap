@@ -593,8 +593,8 @@ p_mplayer_dialog   (GapMPlayerParams *gpp)
 
   ii++; ii_async = ii;
   gap_arr_arg_init(&argv[ii], GAP_ARR_WGT_TOGGLE);
-  argv[ii].label_txt = _("Asynchron");
-  argv[ii].help_txt  = _("Run the mplayer as asynchroh process");
+  argv[ii].label_txt = _("Asynchronous");
+  argv[ii].help_txt  = _("Run the mplayer as asynchronous process");
   argv[ii].int_ret   = gpp->run_mplayer_asynchron;
 
 
@@ -602,7 +602,7 @@ p_mplayer_dialog   (GapMPlayerParams *gpp)
   gap_arr_arg_init(&argv[ii], GAP_ARR_WGT_TOGGLE);
   argv[ii].label_txt = _("MPlayer 1.0pre5:");
   argv[ii].help_txt  = _("on: use deprecated options for mplayer 1.0pre5 off: use options for newer mplayer"
-                        " (newer mplayer 1.0pre7 has changed options incompatible)");
+                        " (dont turn on the deprecated options if you have mplayer 1.0pre7 or newer mplayer versions)");
   argv[ii].int_ret   = gpp->use_old_mplayer1_syntax;
 
   ii++;
@@ -611,7 +611,7 @@ p_mplayer_dialog   (GapMPlayerParams *gpp)
 
   ii++;
    
-  if(TRUE == gap_arr_ok_cancel_dialog(_("MPlayer based extract"), 
+  if(TRUE == gap_arr_ok_cancel_dialog(_("MPlayer based extraction"), 
                             _("Select Frame Range"), ii, argv))
   {
      gboolean params_ok;

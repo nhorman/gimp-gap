@@ -108,6 +108,7 @@ typedef struct GapStbPropWidget  /* nickname: pw */
   GtkWidget  *dur_time_label;
   GtkWidget  *pingpong_toggle;
   GtkWidget  *comment_entry;
+  GtkWidget  *fmac_entry;
   GtkObject  *pw_spinbutton_from_adj;
   GtkObject  *pw_spinbutton_to_adj;
   GtkObject  *pw_spinbutton_loops_adj;

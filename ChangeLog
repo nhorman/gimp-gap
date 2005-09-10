@@ -2,6 +2,48 @@
 
 	* configure.in : Added "hi" to ALL_LINGUAS.
 
+2005-09-07  Wolfgang Hofer <hof@gimp.org>
+	- bugfix: typo's pointed out in bug #313965
+	- bugfix in generation of original tone audio track.
+          Must fetch the original framerate of the videoclips
+          (VID_PLAY_MOVIE)
+          for creating the corresponding audioclips
+          and supply this framerate parameter in the generated
+          AUD_PLAY_MOVIE record.
+          This is necessary to ensure correct timing if the
+          handled clips have different framerates or framerates
+          other than the gimp-gap default of 25 fps.
+
+	- ffmpeg encoder change progress text if frames are copied
+          rather than encoded. this gives immediate feedback if
+          the "dont recode" option is in affect or not.
+          (e.g if lossless mpeg cut is active)
+	- renamed internal procedure to p_flip_separators
+
+	* vid_enc_ffmpeg/gap_enc_ffmpeg_main.c
+	* gap/gap_story_file.c
+
+	* gap/gap_decode_mplayer.c
+	* gap/gap_decode_xanim.c
+	* gap/gap_frontends_main.c
+	* gap/gap_vex_main.c
+
+2005-09-06  Wolfgang Hofer <hof@gimp.org>
+	bugfix MasterVideo encoder OK button did not work in case
+	of encoding with a single audio inputfile.
+	(init of local variables was missing:
+        all_playlist_references and valid_playlist_references)
+
+	* libgapvidutil/gap_gve_sox.c
+
+2005-09-06  Wolfgang Hofer <hof@gimp.org>
+
+	- storyboard properties: added filtermacro entry widget
+        (TODO: add button to invoke a filesel widget)
+
+	* gap/gap_story_main.h
+	* gap/gap_story_properties.c
+
 2005-09-06  Ankit Patel  <ankit644@yahoo.com>
 
 	* configure.in : Added "gu" to ALL_LINGUAS.

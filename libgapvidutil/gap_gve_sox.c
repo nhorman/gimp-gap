@@ -137,6 +137,9 @@ gap_gve_sox_chk_and_resample(GapGveCommonValues *cval)
 
   if(gap_debug) printf("gap_gve_sox_chk_and_resample\n");
 
+  all_playlist_references = 0;
+  valid_playlist_references = 0;
+  
   cval->tmp_audfile[0] = '\0';
   if(cval->audioname1[0] == '\0')
   {

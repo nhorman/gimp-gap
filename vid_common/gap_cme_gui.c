@@ -1983,6 +1983,8 @@ gap_cme_gui_check_encode_OK (GapCmeGlobalParams *gpp)
 
   if(0 != gap_gve_sox_chk_and_resample(&gpp->val))
   {
+     g_message(_("Cant process the audio input file."
+                 " You may check audio options and audio tool configuration"));
      return (FALSE);
   }
 

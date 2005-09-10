@@ -2993,10 +2993,20 @@ p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
     {
       char *msg;
       
-      msg = g_strdup_printf(_("FFMPEG encoding frame %d (%d)")
+      if (l_video_frame_chunk_size > 0)
+      {
+        msg = g_strdup_printf(_("FFMPEG lossless copy frame %d (%d)")
                            ,(int)l_cnt_encoded_frames + l_cnt_reused_frames
                            ,(int)l_max_master_frame_nr
 			   );
+      }
+      else
+      {
+        msg = g_strdup_printf(_("FFMPEG encoding frame %d (%d)")
+                           ,(int)l_cnt_encoded_frames + l_cnt_reused_frames
+                           ,(int)l_max_master_frame_nr
+			   );
+      }
       gimp_progress_init(msg);
       g_free(msg);
       gimp_progress_update (l_percentage);

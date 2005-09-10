@@ -115,6 +115,8 @@ gap_story_debug_print_elem(GapStoryElem *stb_elem)
     printf("step_density: %f\n", (float)stb_elem->step_density);
     printf("aud_play_from_sec: %f\n", (float)stb_elem->aud_play_from_sec);
     printf("aud_play_to_sec: %f\n", (float)stb_elem->aud_play_to_sec);
+    printf("aud_min_play_sec: %f\n", (float)stb_elem->aud_min_play_sec);
+    printf("aud_max_play_sec: %f\n", (float)stb_elem->aud_max_play_sec);
     printf("aud_volume: %f\n", (float)stb_elem->aud_volume);
     printf("aud_volume_start: %f\n", (float)stb_elem->aud_volume_start);
     printf("aud_fade_in_sec: %f\n", (float)stb_elem->aud_fade_in_sec);
@@ -1030,7 +1032,7 @@ gap_story_elem_find_by_story_id(GapStoryBoard *stb, gint32 story_id)
  * Replace all / and \ characters by G_DIR_SEPARATOR
  */
 static void
-p_flip_dir_seperators(char *ptr)
+p_flip_dir_separators(char *ptr)
 {
   while(ptr)
   {
@@ -1044,7 +1046,7 @@ p_flip_dir_seperators(char *ptr)
     }
     ptr++;
   }
-}  /* end p_flip_dir_seperators */
+}  /* end p_flip_dir_separators */
 
 
 /* ----------------------------------------------------
@@ -1750,12 +1752,12 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
       stb_elem->file_line_nr = longlinenr;
       stb_elem->orig_src_line = g_strdup(multi_lines);
 
-      if(*l_filename_ptr) { p_flip_dir_seperators(l_filename_ptr); 
+      if(*l_filename_ptr) { p_flip_dir_separators(l_filename_ptr); 
                             stb_elem->orig_filename = g_strdup(l_filename_ptr);
                           }      
       if(*l_track_ptr)    { stb_elem->track = p_scan_gint32(l_track_ptr,  1, GAP_STB_MAX_VID_TRACKS,  stb); }
       if(*l_nloops_ptr)   { stb_elem->nloop = p_scan_gint32(l_nloops_ptr, 1, 999999, stb); }
-      if(*l_macro_ptr)    { p_flip_dir_seperators(l_macro_ptr);
+      if(*l_macro_ptr)    { p_flip_dir_separators(l_macro_ptr);
                             stb_elem->filtermacro_file = g_strdup(l_macro_ptr);
                           }
 
@@ -1792,13 +1794,13 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
       if(*l_to_ptr)       { stb_elem->to_frame   = p_scan_gint32(l_to_ptr,      1, 999999, stb); }
       if(*l_nloops_ptr)   { stb_elem->nloop      = p_scan_gint32(l_nloops_ptr,  1, 999999, stb); }
       if(*l_stepsize_ptr) { stb_elem->step_density = p_scan_gdouble(l_stepsize_ptr,  0.125, 99.9, stb); }
-      if(*l_basename_ptr) { p_flip_dir_seperators(l_basename_ptr); 
+      if(*l_basename_ptr) { p_flip_dir_separators(l_basename_ptr); 
                             stb_elem->basename = g_strdup(l_basename_ptr);
                           }
       if(*l_ext_ptr)      { if(*l_ext_ptr == '.') stb_elem->ext = g_strdup(l_ext_ptr);
                             else                  stb_elem->ext = g_strdup_printf(".%s", l_ext_ptr);
                           }
-      if(*l_macro_ptr)    { p_flip_dir_seperators(l_macro_ptr);
+      if(*l_macro_ptr)    { p_flip_dir_separators(l_macro_ptr);
                             stb_elem->filtermacro_file = g_strdup(l_macro_ptr);
                           }
       if(*l_pingpong_ptr) { if ((strncmp(l_pingpong_ptr, "PINGPONG", strlen("PINGPONG")) == 0)
@@ -1847,7 +1849,7 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
       stb_elem->orig_src_line = g_strdup(multi_lines);
 
       if(*l_track_ptr)    { stb_elem->track      = p_scan_gint32(l_track_ptr, 1, GAP_STB_MAX_VID_TRACKS, stb); }
-      if(*l_filename_ptr) { p_flip_dir_seperators(l_filename_ptr); 
+      if(*l_filename_ptr) { p_flip_dir_separators(l_filename_ptr); 
                             stb_elem->orig_filename = g_strdup(l_filename_ptr);
                           }
       if(*l_from_ptr)     { stb_elem->from_frame = p_scan_gint32(l_from_ptr,    1, 999999, stb); }
@@ -1859,7 +1861,7 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
       if(*l_delace_ptr)     { stb_elem->delace       = p_scan_gdouble(l_delace_ptr, 0.0, 3.0, stb); }
       if(*l_stepsize_ptr)   { stb_elem->step_density = p_scan_gdouble(l_stepsize_ptr,  0.125, 99.9, stb); }
 
-      if(*l_macro_ptr)    { p_flip_dir_seperators(l_macro_ptr);
+      if(*l_macro_ptr)    { p_flip_dir_separators(l_macro_ptr);
                             stb_elem->filtermacro_file = g_strdup(l_macro_ptr);
                           }
       if(*l_decoder_ptr)  { stb_elem->preferred_decoder = g_strdup(l_decoder_ptr);
@@ -1925,7 +1927,7 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
       stb_elem->file_line_nr = longlinenr;
       stb_elem->orig_src_line = g_strdup(multi_lines);
       if(*l_track_ptr)    { stb_elem->track      = p_scan_gint32(l_track_ptr, 1, GAP_STB_MAX_VID_TRACKS, stb); }
-      if(*l_filename_ptr) { p_flip_dir_seperators(l_filename_ptr); 
+      if(*l_filename_ptr) { p_flip_dir_separators(l_filename_ptr); 
                             stb_elem->orig_filename = g_strdup(l_filename_ptr);
                           }
       if(*l_from_ptr)     { stb_elem->from_frame = p_scan_gint32(l_from_ptr,    1, 999999, stb); }
@@ -1933,7 +1935,7 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
       if(*l_nloops_ptr)   { stb_elem->nloop      = p_scan_gint32(l_nloops_ptr,  1, 999999, stb); }
 
 
-      if(*l_macro_ptr)    { p_flip_dir_seperators(l_macro_ptr);
+      if(*l_macro_ptr)    { p_flip_dir_separators(l_macro_ptr);
                             stb_elem->filtermacro_file = g_strdup(l_macro_ptr);
                           }
       if(*l_pingpong_ptr) { if ((strncmp(l_pingpong_ptr, "PINGPONG", strlen("PINGPONG")) == 0)
@@ -2017,7 +2019,7 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
       stb_elem->orig_src_line = g_strdup(multi_lines);
       stb_elem->aud_play_to_sec = 9999.9;  /* 9999.9 is default for end of audiofile */
       if(*l_track_ptr)        { stb_elem->track      = p_scan_gint32(l_track_ptr,   1, GAP_STB_MAX_AUD_TRACKS,    stb); }
-      if(*l_filename_ptr)     { p_flip_dir_seperators(l_filename_ptr); 
+      if(*l_filename_ptr)     { p_flip_dir_separators(l_filename_ptr); 
                                 stb_elem->aud_filename = g_strdup(l_filename_ptr);
                                 stb_elem->orig_filename = g_strdup(l_filename_ptr);
                               }
@@ -2074,7 +2076,7 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
       stb_elem->orig_src_line = g_strdup(multi_lines);
       stb_elem->aud_play_to_sec = 9999.9;  /* 9999.9 is default for end of audiofile */
       if(*l_track_ptr)        { stb_elem->track      = p_scan_gint32(l_track_ptr,   1, GAP_STB_MAX_AUD_TRACKS,    stb); }
-      if(*l_filename_ptr)     { p_flip_dir_seperators(l_filename_ptr); 
+      if(*l_filename_ptr)     { p_flip_dir_separators(l_filename_ptr); 
                                 stb_elem->aud_filename = g_strdup(l_filename_ptr);
                                 stb_elem->orig_filename = g_strdup(l_filename_ptr);
                               }
@@ -2099,7 +2101,7 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
        *  where the audio is extracted from)
        */
       l_framerate = stb->master_framerate;
-      
+
       if(*l_from_ptr)     { l_from_frame = p_scan_gint32(l_from_ptr,     0, 999999, stb); }
       if(*l_to_ptr)       { l_to_frame   = p_scan_gint32(l_to_ptr,       0, 999999, stb); }
       if(*l_frate_ptr)    { l_framerate  = p_scan_gdouble(l_frate_ptr,   1.0, 999.9, stb); }
@@ -2115,6 +2117,15 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
       if((l_min_frame > 0) && (l_max_frame > 0))
       {
         /* framenumbers starts at 1. frame one has 0 sec starttime */ 
+        if(gap_debug)
+	{
+	  printf("AUD_MOVIE framerate based timerange calculation  from:%d to:%d  l_framerate: %f\n"
+	     , (int)l_min_frame
+	     , (int)l_max_frame
+	     , (float)l_framerate
+	     );
+	}
+
         stb_elem->aud_play_from_sec = (gdouble)(l_min_frame -1) / l_framerate;
 	stb_elem->from_frame = l_min_frame;
 	stb_elem->aud_framerate = l_framerate;
@@ -2136,7 +2147,7 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
     l_filename_ptr = g_strdup(l_record_key);
     if(l_filename_ptr)
     {
-      p_flip_dir_seperators(l_filename_ptr);
+      p_flip_dir_separators(l_filename_ptr);
 
       if(g_file_test(l_filename_ptr, G_FILE_TEST_EXISTS))
       {
@@ -3862,7 +3873,7 @@ gap_story_set_aud_movie_min_max(GapStoryBoard *stb)
 
     }
   }
-  
+
 }  /* end gap_story_set_aud_movie_min_max */
 
 
@@ -3933,6 +3944,38 @@ gap_story_del_audio_track(GapStoryBoard *stb
 }  /* end gap_story_del_audio_track */
 
 
+
+
+
+/* --------------------------
+ * p_get_video_framerate
+ * --------------------------
+ */
+gdouble
+p_get_video_framerate(const char *videofile
+                     ,gint32 videotrack
+		     ,gint32 seltrack
+		     ,const char *preferred_decoder
+		     )
+{
+  gdouble l_video_framerate = 0.0;
+#ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
+  t_GVA_Handle *gvahand= NULL;
+
+  gvahand = GVA_open_read_pref(videofile
+                              , videotrack
+                              , seltrack
+                              , preferred_decoder
+                              , FALSE  /* use MMX if available (disable_mmx == FALSE) */
+                              );
+ l_video_framerate = gvahand->framerate;
+ GVA_close(gvahand);
+ 
+#endif
+
+  return(l_video_framerate);
+}  /* end p_get_video_framerate */
+
 /* --------------------------
  * gap_story_gen_otone_audio
  * --------------------------
@@ -3947,9 +3990,14 @@ gap_story_gen_otone_audio(GapStoryBoard *stb
 {
   GapStoryElem *stb_elem;
   GapStoryElem *stb_elem_new;
+  gdouble      l_std_framerate;
   gdouble      l_framerate;
   
-  l_framerate = MAX(0.1, stb->master_framerate);
+  gchar       *l_videoname = NULL;
+  gdouble      l_video_framerate = 0.0;
+ 
+  l_std_framerate = MAX(0.1, stb->master_framerate);
+  l_framerate = l_std_framerate;
   
   /* handling for already existing audio track */
   if(replace_existing_aud_track)
@@ -3987,6 +4035,46 @@ gap_story_gen_otone_audio(GapStoryBoard *stb
             stb_elem_new = gap_story_new_elem(GAP_STBREC_AUD_MOVIE);
             if(stb_elem_new)
             {
+	      gboolean l_check_videorate;
+	      
+	      l_check_videorate = TRUE;
+	      
+	      /* findout framerate of the source video file */
+	      if (l_videoname != NULL)
+	      {
+	        if(strcmp(l_videoname, stb_elem->orig_filename) == 0)
+		{
+	          /* the orig_filename matches the current videofile (that is already checked)
+		   * we can skip the check and use the known l_video_framerate
+		   */
+		  l_framerate = l_video_framerate;
+	          l_check_videorate = FALSE;
+		}
+		else
+		{
+		  g_free(l_videoname);
+		  l_videoname = NULL;
+		  l_video_framerate = l_std_framerate;
+		}
+	      }
+	      if (l_check_videorate)
+	      {
+	        l_videoname = g_strdup(stb_elem->orig_filename);
+	        l_framerate = p_get_video_framerate(l_videoname
+		                                   ,1
+						   ,1
+						   ,stb_elem->preferred_decoder
+						   );
+		if(l_framerate <= 0.0)
+		{
+		  l_framerate = l_std_framerate;
+		}
+		l_video_framerate = l_framerate;
+	      }
+ 
+	    
+	      /* initialise the new AUDIO element */ 
+	    
               stb_elem_new->aud_play_from_sec = 0.0;
               stb_elem_new->track             = aud_track;
               stb_elem_new->from_frame        = stb_elem->from_frame;
@@ -4005,6 +4093,8 @@ gap_story_gen_otone_audio(GapStoryBoard *stb
               stb_elem_new->nloop                  = stb_elem->nloop;
               stb_elem_new->aud_seltrack           = aud_seltrack;
               stb_elem_new->preferred_decoder      = g_strdup(stb_elem->preferred_decoder);
+
+              stb_elem_new->aud_framerate          = l_framerate;
 
               gap_story_list_append_elem(stb, stb_elem_new);
             }
@@ -4025,7 +4115,7 @@ gap_story_gen_otone_audio(GapStoryBoard *stb
             stb_elem_new->aud_play_from_sec      = 0.0;
             stb_elem_new->track                  = aud_track;
             stb_elem_new->aud_play_from_sec      = 0.0;
-            stb_elem_new->aud_play_to_sec        = stb_elem->nframes / l_framerate;
+            stb_elem_new->aud_play_to_sec        = stb_elem->nframes / l_std_framerate;
             stb_elem_new->aud_wait_untiltime_sec = 0.0;
 
             gap_story_list_append_elem(stb, stb_elem_new);

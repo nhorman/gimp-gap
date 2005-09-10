@@ -321,7 +321,7 @@ p_xanim_dialog   (gint32 *first_frame,
   argv[12].help_id = GAP_XANIM_HELP_ID;
 
    
-  if(TRUE == gap_arr_ok_cancel_dialog(_("Xanim based extract (DEPRECATED)"), 
+  if(TRUE == gap_arr_ok_cancel_dialog(_("Xanim based extraction (DEPRECATED)"), 
 			    _("Select Frame Range"), XADIALOG_NUM_ARGS, argv))
   {
      if(argv[1].int_ret < argv[2].int_ret )

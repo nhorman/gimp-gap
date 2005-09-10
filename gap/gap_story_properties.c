@@ -112,6 +112,7 @@ static void     p_filesel_pw_ok_cb (GtkWidget *widget, GapStbPropWidget *pw);
 static void     p_filesel_pw_close_cb ( GtkWidget *widget, GapStbPropWidget *pw);
 static void     p_pw_filesel_button_cb ( GtkWidget *w, GapStbPropWidget *pw);
 static void     p_pw_comment_entry_update_cb(GtkWidget *widget, GapStbPropWidget *pw);
+static void     p_pw_fmac_entry_update_cb(GtkWidget *widget, GapStbPropWidget *pw);
 static void     p_pw_update_info_labels(GapStbPropWidget *pw);
 static void     p_pw_update_framenr_labels(GapStbPropWidget *pw, gint32 framenr);
 static void     p_pw_update_properties(GapStbPropWidget *pw);
@@ -1273,6 +1274,29 @@ p_pw_comment_entry_update_cb(GtkWidget *widget, GapStbPropWidget *pw)
 }  /* end p_pw_comment_entry_update_cb */
 
 
+/* ----------------------------
+ * p_pw_fmac_entry_update_cb
+ * ----------------------------
+ */
+static void
+p_pw_fmac_entry_update_cb(GtkWidget *widget, GapStbPropWidget *pw)
+{
+  if(pw == NULL) { return; }
+  if(pw->stb_elem_refptr == NULL) { return; }
+  if(pw->stb_refptr)
+  {
+    pw->stb_refptr->unsaved_changes = TRUE;
+  }
+  
+  if(pw->stb_elem_refptr->filtermacro_file)
+  {
+    g_free(pw->stb_elem_refptr->filtermacro_file);
+  } 
+
+  pw->stb_elem_refptr->filtermacro_file = g_strdup(gtk_entry_get_text(GTK_ENTRY(widget)));
+}  /* end p_pw_fmac_entry_update_cb */
+
+
 /* ---------------------------------
  * p_pw_update_info_labels
  * ---------------------------------
@@ -1679,7 +1703,7 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
   gtk_box_pack_start (GTK_BOX (main_vbox), frame, FALSE, FALSE, 0);
   gtk_widget_show (frame);
 
-  table = gtk_table_new (14, 4, FALSE);
+  table = gtk_table_new (15, 4, FALSE);
   pw->master_table = table;
   gtk_container_set_border_width (GTK_CONTAINER (table), 4);
   gtk_table_set_col_spacings (GTK_TABLE (table), 4);
@@ -2090,6 +2114,38 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
   gtk_widget_show (entry);
   pw->comment_entry = entry;
 
+
+
+  row++;
+
+  /* the filtermacro label */
+  label = gtk_label_new (_("Filtermacro:"));
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+  gtk_table_attach_defaults (GTK_TABLE(table), label, 0, 1, row, row+1);
+  gtk_widget_show (label);
+
+
+
+  /* the filtermacro entry */
+  entry = gtk_entry_new ();
+  gtk_widget_set_size_request(entry, PW_ENTRY_WIDTH, -1);
+  if(pw->stb_elem_refptr)
+  {
+    if(pw->stb_elem_refptr->filtermacro_file)
+    {
+      gtk_entry_set_text(GTK_ENTRY(entry), pw->stb_elem_refptr->filtermacro_file);
+    }
+  }
+  gtk_table_attach_defaults (GTK_TABLE(table), entry, 1, 4, row, row+1);
+  g_signal_connect(G_OBJECT(entry), "changed",
+                     G_CALLBACK(p_pw_fmac_entry_update_cb),
+                     pw);
+  gtk_widget_show (entry);
+  pw->fmac_entry = entry;
+
+
+
+
   if(pw->stb_elem_refptr)
   {
     if((pw->stb_elem_refptr->record_type == GAP_STBREC_VID_FRAMES)
@@ -2100,7 +2156,9 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
     }
   }
 
-   /*  Show the main containers  */
+
+
+  /*  Show the main containers  */
 
   gtk_widget_show (main_vbox);
 
