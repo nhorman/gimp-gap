@@ -3714,7 +3714,7 @@ on_framenr_spinbutton_changed          (GtkEditable     *editable,
   if(gpp->play_current_framenr != framenr)
   {
     /* force adjustment to the integer value */
-    (gint32)GTK_ADJUSTMENT(gpp->framenr_spinbutton_adj)->value = framenr;
+    GTK_ADJUSTMENT (gpp->framenr_spinbutton_adj)->value = framenr;
     gpp->play_current_framenr = framenr;
     if(gpp->play_is_active)
     {

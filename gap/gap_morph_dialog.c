@@ -1027,7 +1027,7 @@ on_curr_point_spinbutton_changed             (GtkObject       *obj,
  
   /* find the n.th workpoint in the list */
   l_idx = 1;
-  for(wp = mgpp->master_wp_list; wp != NULL; (GapMorphWorkPoint *)wp= wp->next)
+  for(wp = mgpp->master_wp_list; wp != NULL; wp= wp->next)
   {
     if(l_idx == value)
     {
@@ -1189,7 +1189,7 @@ p_set_current_workpoint_no_refresh(GapMorphSubWin  *swp, GapMorphWorkPoint *wp_c
 
   /* find the index of the current workpoint in the master list */
   l_idx = 1;
-  for(wp = mgup->mgpp->master_wp_list; wp != NULL; (GapMorphWorkPoint *)wp= wp->next)
+  for(wp = mgup->mgpp->master_wp_list; wp != NULL; wp= wp->next)
   {
     if(wp == wp_cur)
     {
