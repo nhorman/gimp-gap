@@ -1,0 +1,93 @@
+The GIMP-GAP distribution contains some libraries
+as sourcecode for convenient static linking.
+
+- ffmpeg CVS snapshot 2005.APR.08 (contains libavformat and libavcodec)
+- libmpeg3-1.5.4
+
+The gimp-gap project does NOT maintain the sourcecode for those libs !
+Bugs related to those libraries are never fixed here.
+Future releases of gimp-gap may include newer versions
+of those libs.
+
+
+
+---------------
+ffmpeg
+--------------
+
+GIMP-GAP uses the libraries libavformat and libavcodec
+that are part of ffmpeg. 
+libavformat and libavcodec build up the basic videofile support for 
+many MPEG based fileformats, both for read and write access 
+(frame and audio extraction, and for the powerful video encoder plug-in
+ "FFMPEG" in the Master Videoencoder dialog).
+		    
+You can get ffmpeg at:
+    http://ffmpeg.sourceforge.net
+
+
+GIMP-GAP was developed and tested with several ffmpeg versions.
+The code still should compile and run with following versions:
+
+
+ - ffmpeg 0.4.8        (outdated stable release) 
+ - ffmpeg-0.4.9pre1    (latest official release)
+ 
+ - CVS snapshots
+   ffmpeg-CVS-2005.03.02
+   ffmpeg-CVS-2005.04.08
+   
+   ffmpeg CVS snapshot versions with LIBAVCODEC_BUILD   >=  4744
+   may or may not compile, link and run with this GIMP-GAP release.
+   
+   very new CVS snapshot version 
+   from date 2005.08.04 (with LIBAVCODEC_BUILD = ((49<<16)+(0<<8)+1) )
+   or newer definetly will not compile and work with this GIMP-GAP
+   release.
+
+
+It is recommanded to use the ffmpeg tarball that is included in
+this GIMP-GAP distribution. 
+
+  The ongoing ffmpeg development often introduces incompatible changes
+  that would require changes and extension in the GIMP-GAP 
+  modules to enable compile together with GIMP-GAP and much testing
+  to check if the new ffmpeg version will work. 
+  
+  Therefore i decided to include an ffmpeg  CVS snaphot
+  that was tested with GIMP-GAP during July/August 2005
+
+
+GIMP-GAP can be configured to be compiled without ffmpeg (in this case 
+with reduced functionality at video encoding and decoding)
+
+    --disable_gva_libavformat
+
+If you want to try other versions you can download the ffmpeg tarball
+and move the extracted sourcecode directory to
+
+   <GIMP-GAP-sourcedir>/extern_libs/ffmpeg
+
+
+---------------
+libmpeg3
+--------------
+
+GIMP-GAP uses the library libmpeg3 for decoding MPEG videos.
+(frame and audio extraction).
+With libmpeg3 access to VCD and DVD is supported. 
+This includes read access to .vob and .ifo files.
+
+GIMP-GAP was developed and tested with libmpeg3-1.5.4
+The sourcecode of this libmpeg3 version is included in the GIMP-GAP
+distribution as tarball.
+
+You can get libmpeg3 at:
+  http://www.heroinewarrior.com/download.php3
+
+
+Note: the original has no installation support,
+it is recommanded to use the libmpeg3 tarball that is included in
+this GIMP-GAP distribution.
+
+

@@ -1,0 +1,3 @@
+#
+# options for the libmpeg3 configure
+

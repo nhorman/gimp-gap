@@ -51,12 +51,10 @@ GIMP_PLUGIN_DIR=`$PKG_CONFIG gimp-2.0 --variable=gimplibdir`
 AC_SUBST(GIMP_DATA_DIR)
 AC_SUBST(GIMP_PLUGIN_DIR)
 
-
-
 dnl Test for unix-frontends
 dnl -----------------------
 AC_ARG_ENABLE(unixfrontends,
-              [  --disable-unix-frontends     don't build with UNIX specific frontends for xanim and mpeg encoders])
+              [  --disable-unix-frontends     don't build with UNIX specific frontends for mplayer, xanim and mpeg encoders])
   if test "x$enable_unix_frontends" != "xno"; then
     frontends_warning="
 gimp-gap is configured with Linux/UNIX specific frontends for xanim
@@ -99,6 +97,7 @@ pwd_dir=`pwd`
 cd ..
 parent_dir=`pwd`
 cd "$pwd_dir"
+extern_libs_dir="$pwd_dir/extern_libs"
 
 dnl Test for video libavformat (FFMPEG)
 dnl -----------------------------------
@@ -113,21 +112,27 @@ dnl   libavformat.a and libavcodec.a
 dnl must be already built there. 
 dnl
 dnl
-dnl FFMPEG_DIRNAME="ffmpeg-0.4.8"
-dnl FFMPEG_DIRNAME="ffmpeg-0.4.9-pre1"
-dnl FFMPEG_DIRNAME="FFMpeg-20050120"
-dnl FFMPEG_DIRNAME="FFMpeg-20050228"
-dnl FFMPEG_DIRNAME="FFMpeg-20050302"
-FFMPEG_DIRNAME="FFMpeg-20050302"
+FFMPEG_DIRNAME="ffmpeg"
+FFMPEG_TARBALL="$extern_libs_dir/ffmpeg.tar.gz"
 
-dnl check if ffmpeg sourcedir (expanded ffmpeg tarball) is specified
-FFMPEG_DIR="$parent_dir/extern_libs/$FFMPEG_DIRNAME"
+dnl where to find the ffmpeg sourcedir (expanded ffmpeg tarball)
+FFMPEG_DIR="$extern_libs_dir/$FFMPEG_DIRNAME"
+
 AC_ARG_WITH(ffmpegsrcdir, [  --with-ffmpegsrcdir=DIR      specify where to find ffmpeg src directory DIR],
 if eval "test x$with_ffmpegsrcdir != x"; then
   if eval "test x$with_ffmpegsrcdir != xyes"; then
-    FFMPEG_DIR=$with_ffmpegsrcdir
+    if test -d "$with_ffmpegsrcdir"; then
+      FFMPEG_DIR=$with_ffmpegsrcdir
+    else
+      echo "** ERROR option --with-ffmpegsrcdir must refere to a directory"
+      echo "** $with_ffmpegsrcdir  is not a directory"
+    fi
   fi
 fi)
+
+
+dnl assume ffmpeg libs build "no" (in case disabled)
+build_ffmpeg_libs_yesno="no"
 
 
 AC_ARG_ENABLE(libavformat,
@@ -136,6 +141,20 @@ AC_ARG_ENABLE(libavformat,
     dnl
 
     AC_DEFINE(ENABLE_GVA_LIBAVFORMAT, 1, [Define to 1 to enable compile and link with libavformat])
+    dnl
+    if test -d "$FFMPEG_DIR"; then
+      dnl
+      echo "FFMPEG sourcetree found at dir: $FFMPEG_DIR"
+    else
+      if test -f "$FFMPEG_TARBALL"; then
+        cd "$extern_libs_dir"
+        echo "extracting tarball: $FFMPEG_TARBALL"
+	gzip -d -c "$FFMPEG_TARBALL" | tar -x
+	cd "$pwd_dir"
+      else
+        echo "** error FFMPEG tarball not found, file: $FFMPEG_TARBALL"
+      fi
+    fi
     dnl
     dnl
     if test -d "$FFMPEG_DIR"; then
@@ -146,82 +165,62 @@ AC_ARG_ENABLE(libavformat,
       dnl from sourcedirectory
       dnl
       dnl   sequence of libs does matter  1. libavformat.a  2. libavcodec.a 
+      dnl  
+      build_ffmpeg_libs_yesno="yes"
       FFMPEG_LIBAVFORMAT_A="$FFMPEG_DIR/libavformat/libavformat.a"
       FFMPEG_LIBAVCODEC_A="$FFMPEG_DIR/libavcodec/libavcodec.a"
 
       GAP_VLIBS_FFMPEG=" $FFMPEG_LIBAVFORMAT_A $FFMPEG_LIBAVCODEC_A "
-      GAP_VINCS_FFMPEG=" -I$FFMPEG_DIR/libavcodec -I$FFMPEG_DIR/libavformat "
+      GAP_VINCS_FFMPEG=" -I$FFMPEG_DIR/libavcodec -I$FFMPEG_DIR/libavformat -I$FFMPEG_DIR/libavutil "
 
       vid_ffmpeg_warning=""
-      if test -f "$FFMPEG_LIBAVFORMAT_A"; then
-        echo "libavformat found: $FFMPEG_LIBAVFORMAT_A"
-      else
-        vid_ffmpeg_warning="$vid_ffmpeg_warning
-** libavformat not found at:
-   $FFMPEG_LIBAVFORMAT_A
-"
-      fi
 
-      if test -f "$FFMPEG_LIBAVCODEC_A"; then
-        echo "libavcodec found: $FFMPEG_LIBAVCODEC_A"
-      else
-        vid_ffmpeg_warning="$vid_ffmpeg_warning
-** libavcodec not found at:
-   $FFMPEG_LIBAVCODEC_A
-"
-      fi
+      dnl read configure options for the external lib from a file      
+      dnl the current simple implementation requires all options in one line
+      FFMPEG_CONFIGURE_OPTIONS=`cat "$extern_libs_dir/configure_options_ffmpeg.txt"`
+
+      echo "================================="
+      echo "Calling FFMPEG configure script optins: $FFMPEG_CONFIGURE_OPTIONS"
+      echo "================================="
       
-      if test "x$vid_ffmpeg_warning" != "x"; then
-        vid_ffmpeg_warning="$vid_ffmpeg_warning
-        please first build the ffmpeg libraries.
-        Therefore you may cd to DIR: 
-          $FFMPEG_DIR
-        then run 
-          ./configure and make:
-"
-      fi      
+      cd "$FFMPEG_DIR"
+      ./configure $FFMPEG_CONFIGURE_OPTIONS
+      cd "$pwd_dir"
+      
+      echo "================================="
+      echo "FFMPEG configure script done optins: $FFMPEG_CONFIGURE_OPTIONS"
+      echo "================================="
+      
       dnl
       dnl
     else
-      if eval "test x$with_ffmpegsrcdir != x"; then
-         vid_ffmpeg_warning="
-** ffmpeg sourcetree was not found at:       
+      vid_ffmpeg_warning="
+** ERROR: ffmpeg sourcetree was not found at:       
 $FFMPEG_DIR
-you can get the ffmpeg tarball at:
-http://ffmpeg.sourceforge.net.
-"
-      else
-        if test -d "/usr/local/include/ffmpeg"; then
-          GAP_VINCS_FFMPEG=" -I/usr/local/include/ffmpeg"
-        else
-          if test -d "/usr/include/ffmpeg"; then
-            GAP_VINCS_FFMPEG=" -I/usr/include/ffmpeg"
-	  else
-            vid_ffmpeg_warning="
-** ffmpeg include directory not found at:       
-/usr/local/include/ffmpeg
-/usr/include/ffmpeg
-you can get the ffmpeg libs at:
-http://packages.debian.org/unstable/libdevel/libavcodec-dev
-http://packages.debian.org/unstable/libdevel/libavformat-dev
-or
-alternative you can get the ffmpeg tarball at:
-http://ffmpeg.sourceforge.net.
-"
-	  fi
-	fi
-      fi
 
-      dnl options for dynamic linking
-      GAP_VLIBS_FFMPEG=" -lavcodec -lavformat"
+  this directory should be created automatically by extracting
+  the tarball $FFMPEG_TARBALL
+
+  if this tarball is not included in your gimp-gap distribution
+  you can get the ffmpeg tarball at:
+  http://ffmpeg.sourceforge.net.
+  
+  The configure option --disable-libavformat was activated due to this ERROR.
+  (This reduces the number of supported videoformats both for read and write
+   access.)
+
+"
+      dnl options for dynamic linking. (currently not supported via configure script)
+      dnl GAP_VINCS_FFMPEG=" -I/usr/include/ffmpeg"
+      dnl GAP_VLIBS_FFMPEG=" -lavcodec -lavformat"
       dnl
-    fi    
+    fi
   else
         vid_ffmpeg_warning="
 gimp-gap is configured without libavformat
    This reduces the number of supported videoformats both for read and write
    access. libavformat and libavcodec are part of $FFMPEG_DIRNAME.
-
+ 
 Warning: checks for libavformat and libavcodec are not implemented yet.
 You can get ffmpeg at: http://ffmpeg.sourceforge.net.
 "
@@ -239,22 +238,32 @@ dnl as far as i know this lib is available only on UNIX systems
 dnl
 dnl the current gimp-gap includes the libmpeg3-1.5.4 as (unmaintained) sourcetree
 dnl and calls the libmpeg3 configure script.
-dnl The generated Makefile will call the libmpeg3 original Makefile to buld the library 
+dnl The generated Makefile will call the libmpeg3 original Makefile to build the library 
 dnl   libmpeg3.a
 dnl linking with gimp-gap modules is now done statically. 
 dnl
 REQ_LIBMPEG3_VERSION="1.5.4"
 
 
-dnl check if libmpeg3 sourcedir (expanded ffmpeg tarball) is specified
-LMPEG3_DIR="$parent_dir/extern_libs/libmpeg3-$REQ_LIBMPEG3_VERSION"
+dnl where to find the libmpeg3 sourcedir
+LMPEG3_DIR="$extern_libs_dir/libmpeg3"
+LIBMPEG3_TARBALL="$extern_libs_dir/libmpeg3.tar.gz"
+
 AC_ARG_WITH(libmpeg3srcdir, [  --with-libmpeg3srcdir=DIR    specify where to find libmpeg3 src directory DIR],
 if eval "test x$with_libmpeg3srcdir != x"; then
   if eval "test x$with_libmpeg3srcdir != xyes"; then
-    LMPEG3_DIR=$with_libmpeg3srcdir
+    if test -d "$with_libmpeg3srcdir"; then
+      LMPEG3_DIR=$with_libmpeg3srcdir
+    else
+      echo "** ERROR option --with-libmpeg3srcdir must refere to a directory"
+      echo "** $with_libmpeg3srcdir  is not a directory"
+    fi
   fi
 fi)
 
+
+dnl assume libmpeg3 build "no" (in case disabled)
+build_libmpeg3_lib_yesno="no"
 
 AC_ARG_ENABLE(libmpeg3,
               [  --disable-libmpeg3           don't build with libmpeg3])
@@ -266,7 +275,7 @@ AC_ARG_ENABLE(libmpeg3,
     dnl
     dnl some older libmpeg3-1.5 rpm packages (from my SuSE 8.2 distribution) are NOT compatible
     dnl with the new API, and have limited functions -- AC3 is turned off --
-    dnl other packages (like the current debian) disable CSS decrytion.
+    dnl other packages (like the current debian) disable CSS decryption.
     dnl
     dnl one solution to face those problems
     dnl is to get the tarball with the full sourcetree of the libmpeg3-1.5.4 library
@@ -280,62 +289,68 @@ AC_ARG_ENABLE(libmpeg3,
     dnl
     if test -d "$LMPEG3_DIR"; then
       dnl
+      echo "libmpeg3 sourcetree found at dir: $LMPEG3_DIR"
+    else
+      if test -f "$LIBMPEG3_TARBALL"; then
+        cd "$extern_libs_dir"
+	echo "extracting tarball: $LIBMPEG3_TARBALL"
+	gzip -d -c "$LIBMPEG3_TARBALL" | tar -x
+	cd "$pwd_dir"
+      else
+        echo "** error LIBMPEG3 tarball not found, file: $LIBMPEG3_TARBALL"
+      fi
+    fi
+    dnl
+    if test -d "$LMPEG3_DIR"; then
+      dnl
       echo "LIBMPEG3 sourcetree found at dir: $LMPEG3_DIR"
       dnl
+      build_libmpeg3_lib_yesno="yes"
       LMPEG3_A="$LMPEG3_DIR/$machine_dependent_odir/libmpeg3.a"
       dnl
-      if test -f "$LMPEG3_A"; then
-        echo "libmpeg3 found: $LMPEG3_A"
-	GAP_VLIBS_MPEG3=" $LMPEG3_A "
-	GAP_VINCS_MPEG3=" -I$LMPEG3_DIR -I$LMPEG3_DIR/audio -I$LMPEG3_DIR/video "
-	AC_DEFINE(ENABLE_GVA_LIBMPEG3, 1,
+      GAP_VLIBS_MPEG3=" $LMPEG3_A "
+      GAP_VINCS_MPEG3=" -I$LMPEG3_DIR -I$LMPEG3_DIR/audio -I$LMPEG3_DIR/video "
+      AC_DEFINE(ENABLE_GVA_LIBMPEG3, 1,
            [Define to 1 to enable compile and link with libmpeg3])
-      else
-        vid_mpeg3_warning="
-** libmpeg3 not found at:
-   $LMPEG3_A
-please first build the library. Therefore you may run ./configure and make at DIR:
-   $LMPEG3_DIR
-"
-      fi
+      
+      dnl read configure options for the external lib from a file      
+      dnl the current simple implementation requires all options in one line
+      LIBMPEG3_CONFIGURE_OPTIONS=`cat "$extern_libs_dir/configure_options_libmpeg3.txt"`
+
+      echo "================================="
+      echo "Calling LIBMPEG3 configure script optins: $LIBMPEG3_CONFIGURE_OPTIONS"
+      echo "================================="
+      
+
+      
+      cd "$LMPEG3_DIR"
+      ./configure $LIBMPEG3_CONFIGURE_OPTIONS
+      cd "$pwd_dir"
+      
+      echo "================================="
+      echo "LIBMPEG3 configure script done optins: $LIBMPEG3_CONFIGURE_OPTIONS"
+      echo "================================="
 
       dnl
     else
       GAP_VLIBS_MPEG3=" "
       GAP_VINCS_MPEG3=" "
-      if eval "test x$with_libmpeg3srcdir != x"; then
-        vid_mpeg3_warning="
-** libmpeg3 sourcetree was not found. at:
-   $LMPEG3_DIR
-You can get the required tarball libmpeg3-$REQ_LIBMPEG3_VERSION at:
-http://www.heroinewarrior.com/download.php3
+      vid_mpeg3_warning="
+** ERROR: libmpeg3 source directory was not found at:
+$LMPEG3_DIR
+
+  this directory should be created automatically by extracting
+  the tarball $LIBMPEG3_TARBALL
+
+  if this tarball is not included in your gimp-gap distribution
+  you can get the source tarball libmpeg3-$REQ_LIBMPEG3_VERSION at:
+  http://www.heroinewarrior.com/download.php3
+  
+  The configure option --disable-libmpeg3 was activated due to this ERROR.
+  (This reduces the number of supported videoformats for read access.
+   access.)
+
 "
-      else
-        dnl check for typic libmpeg3 installation (debian)
-        dnl the debian release of libmpeg3 was built with disabled CSS option
-        dnl and does not permit reading of CSS encrypted DVD .vob files.
-        if test -f "/usr/local/include/libmpeg3.h"; then
-          LMPEG3_IDIR="/usr/local/include"
-          LMPEG3_A="/usr/local/lib/libmpeg3.a"
-          GAP_VLIBS_MPEG3=" $LMPEG3_A "
-          GAP_VINCS_MPEG3=" -I$LMPEG3_IDIR -I$LMPEG3_IDIR/audio -I$LMPEG3_IDIR/video "
-        elif test -f "/usr/include/libmpeg3.h"; then
-          LMPEG3_IDIR="/usr/include"
-          LMPEG3_A="/usr/lib/libmpeg3.a"
-          GAP_VLIBS_MPEG3=" $LMPEG3_A "
-          GAP_VINCS_MPEG3=" -I$LMPEG3_IDIR -I$LMPEG3_IDIR/audio -I$LMPEG3_IDIR/video "
-        else
-          vid_mpeg3_warning="
-** libmpeg3 header files were not found. at:
-  /usr/local/include
-  /usr/include
-You can get libmpeg3 at
-http://packages.debian.org/unstable/libdevel/libmpeg3-dev
-alternative you can get the source tarball libmpeg3-$REQ_LIBMPEG3_VERSION at:
-http://www.heroinewarrior.com/download.php3
-"
-	fi
-      fi
     fi  
   else
     if test "x$enable_videoapi_support" != "xno"; then
@@ -465,10 +480,11 @@ AC_ARG_ENABLE(gdkpixbuf,
 
 
 
+AM_CONDITIONAL(BUILD_FFMPEG_LIBS, test "x$build_ffmpeg_libs_yesno" != "xno")
+AM_CONDITIONAL(BUILD_LIBMPEG3_LIB, test "x$build_libmpeg3_lib_yesno" != "xno")
 
 
 GAPLIBDIR=${libdir}/$PACKAGE-$GAP_MAJOR_VERSION.$GAP_MINOR_VERSION
-
 
 ALL_LINGUAS="az ca cs da de el en_GB es eu fi fr gu hi hr hu it ja ko lt ml ne nl nn no pa pl pt pt_BR ru rw sk sl sq sr sr@Latn sv tr uk zh_CN zh_TW"
 
@@ -492,9 +508,12 @@ CPPFLAGS="$CPPFLAGS -DG_DISABLE_DEPRECATED -DGDK_DISABLE_DEPRECATED -DGIMP_DISAB
 
 AC_SUBST(GAPLIBDIR)
 AC_SUBST(LOCALEDIR)
+AC_SUBST(BUILD_FFMPEG_LIBS)
+AC_SUBST(BUILD_LIBMPEG3_LIB)
 
 AC_OUTPUT([
 Makefile
+extern_libs/Makefile
 images/Makefile
 gap/Makefile
 libwavplayclient/Makefile

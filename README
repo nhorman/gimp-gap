@@ -8,86 +8,21 @@ Animations as sequences of single frames.
 Requires:
 =========
  - gimp 2.2pre1 or higher
+ 
+ - For full video encoding and decoding support
+   check also the requirements for ffmpeg and libmpeg3.
+   
+   ffmpeg and libmpeg3 are included as sourcecode tarball in this
+   GIMP-GAP distribution.
+   
+   - nasm  is required to compile libmpeg3 (for the .asm sources)
+   
+   see file extern_libs/README_extern_libs for further information
+   about those libs.    
+ 
 
  Optional libs for decode/encode videofiles:
 
- - ffmpeg     0.4.8 (libavformat 0.4.8 and libavcodec 0.4.8)
- 		    
-		    ffmpeg-0.4.9pre1 and some later CVS snapshots 2005.03.02
-		    (LIBAVCODEC_BUILD   >=  4744)
-		    of ffmpeg were also successfully tested to work with gimp-gap.
-		    But if you are using CVS snapshots of ffmpeg it may
-		    not work properly together with gimp-gap or even fail to compile.
-		    
-                    libavformat and libavcodec build up the basic
-		    videofile support for many MPEG based fileformats
-		    both for read and write access 
-		    (decode and encode video and audio).
-		    
-		    You can get ffmpeg at:
-		       http://ffmpeg.sourceforge.net
-		       
-		    Please install FFMPEG's libraries
-		     - libavformat
-		     - libavcodec
-		    that are needed for linking with the Gimp Video API
-
-		    To install those libs you must use the configure option
-
-		     --enable-shared   
-
-		    (that is normally OFF by default)
-
-
-		    cd ffmpeg
-		    ./configure --enable-shared --disable-mmx
-		    
-		    ##  --enable-gpl --enable-a52
-		    ##  --enable-mp3lame
-		    
-		    
-		    If you want create videos with gimp-gap
-		    you should install those libs
-		    and configure gimp-gap with
-		    
-		    --enable_gva_libavformat
-		    
- - libmpeg3   1.5.4
-                    libmpeg3 is an additional library for
-		    reading (decode) frames and audio from MPEG files
-		    (VCD, DVD)
-		    You can get libmpeg3 at:
-		        http://www.heroinewarrior.com/download.php3
-			
-		    Note: the original has no installation support,
-		    you may prefere libmpeg3 rpm packages provided by SuSE
-		    or other LINUX distributors.
-		    
-		    To install the original, you must first compile the library 
-		    (see the included docs and Makefile).
-		    Then copy all header files
-		    to /usr/local/include and the library to /usr/local/lib.
-		    
-		    mkdir /usr/local/include/libmpeg3
-		    mkdir /usr/local/include/libmpeg3/audio
-		    mkdir /usr/local/include/libmpeg3/video
-		    
-		    cd libmpeg3  # the directory that was created by extracting the tarball
-                    cp *.h  	  /usr/local/include/libmpeg3
-		    cp audio/*.h  /usr/local/include/libmpeg3/audio
-		    cp video/*.h  /usr/local/include/libmpeg3/video	    
-		    
-		    # copy the lib (directory i686 depends on machine architecture)
-		    cp i686/libmpeg3.a /usr/local/lib
-		    
-		    
-		    
-		    If you want to extract frames form DVD typical .IFO
-		    files you should install libmpeg3 and configure
-		    gimp-gap with 
-
-		    -- enable_gva_libmpeg3
-		    
  - xvid       1.0.2
                    The free XVID Codec is used for MPEG4 encoding
 		   with the gimp-gap AVI fileformat encoding plug-in.
@@ -98,8 +33,6 @@ Requires:
 		       http://www.xvid.org/downloads.html
 
 
-For installation instructions, see the file INSTALL.
-
 For information about GIMP-GAP details please read the files
 in docs/reference/txt/INTRODUCTION.txt
 
@@ -107,12 +40,32 @@ in docs/reference/txt/INTRODUCTION.txt
 Additional Installation Notes
 =============================
 
-This version of GIMP-GAP is a separated Package since GIMP-1.3.x
-and does not compile/run with GIMP-1.2.x or older GIMP versions than 2.2.
+This GIMP-GAP release includes sourcecode tarballs of
+external libraries :
+
+- ffmpeg
+- libmpeg3
+
+Those libs are built automatically.
+Configuration options for those libs can be set by editing the
+files:
+
+  extern_libs/configure_options_ffmpeg.txt
+  extern_libs/configure_options_libmpeg3.txt
+
+Those configure_option files are read by the master .configure script
+
+
+Installation:
 
   ./autogen.sh   # includes the ./configure call
   make
   make install
+
+
+
+
+
 
 A correct installation adds the follwing menu trees to the GIMP:
   <Image>/Video
@@ -121,82 +74,12 @@ A correct installation adds the follwing menu trees to the GIMP:
 An overview of all menus can be found at
 docs/reference/txt/INTRODUCTION.txt    
 
+For the generic installation instructions, see the file INSTALL.
 
 
-Static linking with ffmpeg and libmpeg3 from sourcetree:
-========================================================
-
-The configure options
-  --with-ffmpegsrcdir=DIR
-  --with-libmpeg3srcdir=DIR
-
-enable static linking without the need to install ffmpeg and libmpeg3
-permanent on your system. The gimp-gap binaries are then built
-including those libs without dependencies at runtime.
-
-In this case you have to get the source tarballs of ffmpeg and libmpeg3
-extract them somewhere on your machine (using tar -xzf xxx.tar.gz)
-and run .configure and make in the extracted directories.
-
-after successful build of the libmpeg3 and ffmpeg libs
-you can pass their sourcedirectory names as configure options:
-(the autogen.sh script passes the options to the configure script)
-
-
-example:
-
-./autogen.sh \
-   --with-ffmpegsrcdir=/home/hof/FFMpeg-20050302 \
-   --with-libmpeg3srcdir=/home/hof/libmpeg3-1.5.4
-
-
-
-After successful installation of gimp-gap you may
-remove the libmpeg3 and ffmpeg sourcedirectories.
-
-
-Dynamic linking with ffmpeg already installed
-=============================================
-
-this requires that the ffmpeg include files and libavformat libavcodec
-are installed at in the directories:
-  /usr/local/include/ffmpeg
-  /usr/local/lib
-
-or
-
-  /usr/include/ffmpeg
-  /usr/lib
-
-You can get the ffmpeg libs at:
-  http://packages.debian.org/unstable/libdevel/libavcodec-dev
-  http://packages.debian.org/unstable/libdevel/libavformat-dev
-
-
-Linking with libmpeg3 already installed 
-=======================================
-
-this requires that the libmpeg3 include files and libmpeg3.a
-are installed at in the directories:
-  /usr/local/include
-  /usr/local/include/audio
-  /usr/local/include/video
-  
-  /usr/local/lib/libmpeg3.a
-
-or
-
-  /usr/include/
-  /usr/include/audio
-  /usr/include/video
-
-  /usr/lib/libmpeg3.a
-
-
-You can get libmpeg3 at:
-http://packages.debian.org/unstable/libdevel/libmpeg3-dev
-
-
+Additional notes:
+  This version of GIMP-GAP is a separated Package since GIMP-1.3.x
+  and does not compile/run with GIMP-1.2.x or older GIMP versions than 2.2.
 
 
 Notes:

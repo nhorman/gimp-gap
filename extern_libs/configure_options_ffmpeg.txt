@@ -1,0 +1,4 @@
+--enable-shared --disable-mmx --enable-gpl --enable-a52
+#
+# options for the ffmpeg configure
+

@@ -1,3 +1,35 @@
+2005-09-22  Wolfgang Hofer <hof@gimp.org>
+
+	- added sourcecode of external_libs (libmpeg3 and ffmpeg)
+	  as gzipped tarballs.
+	  Those libs are now automatically configured, built
+	  and linked statically with the gimp-gap plug-ins
+	  (as convenience libraries).
+	  
+	  configure options for the external libs can be
+	  specified via files:
+	  
+	  extern_libs/configure_options_ffmpeg.txt
+	  extern_libs/configure_options_libmpeg3.txt
+	  
+	- removed configure support for linking
+	  libavformat and libavcodec with already installed
+	  libraries.
+	  (the removed code did not properly check
+	   and was limited to fixed installation dirs)
+	
+	* configure.in  
+	* Makefile.am
+	* README 
+	
+	* extern_libs               # newly added directory
+	* extern_libs/Makefile.am  
+	* extern_libs/configure_options_ffmpeg.txt
+	* extern_libs/configure_options_libmpeg3.txt
+	* extern_libs/README_extern_libs
+	* extern_libs/ffmpeg.tar.gz
+	* extern_libs/libmpeg3.tar.gz
+	
 2005-09-09  Rajesh Ranjan  <rajeshkajha@yahoo.com>
 
 	* configure.in : Added "hi" to ALL_LINGUAS.
