@@ -1,3 +1,7 @@
+2005-09-23  Sven Neumann  <sven@gimp.org>
+
+	* autogen.sh: prefer newer version of automake over older ones.
+
 2005-09-22  Wolfgang Hofer <hof@gimp.org>
 
 	- added sourcecode of external_libs (libmpeg3 and ffmpeg)
