@@ -77,7 +77,8 @@ dnl ------------------------
 AC_ARG_ENABLE(videoapisupport,
               [  --disable-videoapi-support   don't build with videoapi support])
   if test "x$enable_videoapi_support" != "xno"; then
-    AC_DEFINE(GAP_ENABLE_VIDEOAPI_SUPPORT, 1, [Define to 1 to enable videoapi support])
+    AC_DEFINE(GAP_ENABLE_VIDEOAPI_SUPPORT, 1,
+              [Define to 1 to enable videoapi support])
   else
         videoapi_warning="
 gimp-gap is configured without video API (libgapvidapi.a)
@@ -140,7 +141,8 @@ AC_ARG_ENABLE(libavformat,
   if test "x$enable_libavformat" != "xno"; then
     dnl
 
-    AC_DEFINE(ENABLE_GVA_LIBAVFORMAT, 1, [Define to 1 to enable compile and link with libavformat])
+    AC_DEFINE(ENABLE_GVA_LIBAVFORMAT, 1,
+              [Define to 1 to enable compile and link with libavformat])
     dnl
     if test -d "$FFMPEG_DIR"; then
       dnl
@@ -379,12 +381,29 @@ AC_ARG_ENABLE(libxvidcore,
               [  --disable-libxvidcore        don't build with libxvidcore])
   if test "x$enable_libxvidcore" != "xno"; then
     dnl
-    dnl hof: TODO: here we should check for libxvidcore 1.0.0
-    dnl the temporary workaround uses the hardcoded default /usr/local/include
+    dnl check for libxvidcore 1.0.0
     dnl
-    AC_DEFINE(ENABLE_LIBXVIDCORE, 1, [Define to 1 to enable compile and link with libavformat])
-    GAP_VLIBS_XVIDCORE=" -lxvidcore"
-    GAP_VINCS_XVIDCORE=" -I/usr/local/include"
+    xvid_err=""
+    AC_CHECK_LIB(xvidcore, xvid_encore,
+      [AC_CHECK_HEADER(xvid.h,
+        GAP_VLIBS_XVIDCORE=" -lxvidcore",
+        xvid_err="xvid header file (xvid.h) not found")],
+      xvid_err="xvid library (libxvidcore) not found")
+
+    if test "x$xvid_err" = "x"; then
+      AC_DEFINE(ENABLE_LIBXVIDCORE, 1,
+                [Define to 1 to enable compile and link with libxvidcore])
+      GAP_VLIBS_XVIDCORE=" -lxvidcore"
+      dnl GAP_VINCS_XVIDCORE=" -I/usr/local/include"
+    else
+        vid_xvidcore_warning="
+** WARNING: $xvid_err
+   The AVI encoder plug-in is built without MPEG4 support.
+   You can get the xvid codec at:  http://www.xvid.org/downloads.html
+"
+        GAP_VLIBS_XVIDCORE=" "
+        GAP_VINCS_XVIDCORE=" "
+    fi
   else
         vid_xvidcore_warning="
 gimp-gap is configured without libxvidcore
@@ -465,7 +484,8 @@ be installed at runtime.
 "
       fi
 
-    AC_DEFINE(GAP_ENABLE_AUDIO_SUPPORT, 1, [Define to 1 to enable audio support])
+    AC_DEFINE(GAP_ENABLE_AUDIO_SUPPORT, 1,
+              [Define to 1 to enable audio support])
   fi
 
 AM_CONDITIONAL(GAP_AUDIO_SUPPORT, test "x$enable_audio_support" != "xno")
@@ -475,7 +495,8 @@ dnl
 AC_ARG_ENABLE(gdkpixbuf,
               [  --enable-gdkpixbuf-pview     use GdkPixbuf thumbnail rendering (default=no)])
   if test "x$enable_gdkpixbuf_pview" = "xyes"; then
-    AC_DEFINE(GAP_PVIEW_USE_GDK_PIXBUF_RENDERING, 1, [use Gdk for Pixbuf rendering in gap preview widget])
+    AC_DEFINE(GAP_PVIEW_USE_GDK_PIXBUF_RENDERING, 1,
+              [use Gdk for Pixbuf rendering in gap preview widget])
   fi
 
 
@@ -531,4 +552,4 @@ docs/reference/Makefile
 docs/reference/txt/Makefile
 ])
 
-AC_MSG_RESULT($frontends_warning $audio_warning $videoapi_warning $vid_ffmpeg_warning $vid_mpeg3_warning $vid_quicktime_warning)
+AC_MSG_RESULT($frontends_warning $audio_warning $videoapi_warning $vid_ffmpeg_warning $vid_mpeg3_warning $vid_quicktime_warning $vid_xvidcore_warning)
