@@ -27,6 +27,11 @@
 	* README
 	* configure.in: cosmetic changes.
 
+2005-09-27  Sven Neumann  <sven@gimp.org>
+
+	* configure.in: applied patch by Wolfgang Hofer that adds a check
+	for libxvidcore.
+
 2005-09-23  Sven Neumann  <sven@gimp.org>
 
 	* gap/gap_morph_dialog.c
