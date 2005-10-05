@@ -30,6 +30,7 @@
 /* SYTEM (UNIX) includes */
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <errno.h>
@@ -247,13 +248,17 @@ gap_file_make_abspath_filename(const char *filename, const char *container_file)
       l_path_is_relative = FALSE;
     }
 #ifdef G_OS_WIN32
-    /* check for WIN/DOS styled abs pathname "Drive:\dir\file" */
-    for(l_idx=0; filename[l_idx] != '\0'; l_idx++)
     {
-      if(filename[l_idx] == DIR_ROOT)
+      gint l_idx;
+
+      /* check for WIN/DOS styled abs pathname "Drive:\dir\file" */
+      for(l_idx=0; filename[l_idx] != '\0'; l_idx++)
       {
-        l_path_is_relative = FALSE;
-        break;
+        if(filename[l_idx] == DIR_ROOT)
+        {
+          l_path_is_relative = FALSE;
+          break;
+        }
       }
     }
 #endif
