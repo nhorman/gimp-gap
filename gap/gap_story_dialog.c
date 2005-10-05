@@ -1758,16 +1758,16 @@ p_tabw_load_file_cb ( GtkWidget *w
   }
   tabw->filesel = filesel;
 
-  gtk_window_position (GTK_WINDOW (filesel), GTK_WIN_POS_MOUSE);
-  gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION (filesel)->ok_button),
-		      "clicked", (GtkSignalFunc) p_filesel_tabw_load_ok_cb,
-		      tabw);
-  gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION (filesel)->cancel_button),
-		      "clicked", (GtkSignalFunc) p_filesel_tabw_close_cb,
-		      tabw);
-  gtk_signal_connect (GTK_OBJECT (filesel), "destroy",
-		      (GtkSignalFunc) p_filesel_tabw_close_cb,
-		      tabw);
+  gtk_window_set_position (GTK_WINDOW (filesel), GTK_WIN_POS_MOUSE);
+  g_signal_connect (GTK_FILE_SELECTION (filesel)->ok_button,
+                    "clicked", (GtkSignalFunc) p_filesel_tabw_load_ok_cb,
+                    tabw);
+  g_signal_connect (GTK_FILE_SELECTION (filesel)->cancel_button,
+                    "clicked", (GtkSignalFunc) p_filesel_tabw_close_cb,
+                    tabw);
+  g_signal_connect (filesel, "destroy",
+                    (GtkSignalFunc) p_filesel_tabw_close_cb,
+                    tabw);
   gtk_file_selection_set_filename (GTK_FILE_SELECTION (filesel),
                                      tabw->filename_refptr);
   gtk_widget_show (filesel);
@@ -1795,16 +1795,16 @@ p_tabw_file_save_as_cb ( GtkWidget *w
   filesel = gtk_file_selection_new ( _("Save Storyboard file"));
   tabw->filesel = filesel;
 
-  gtk_window_position (GTK_WINDOW (filesel), GTK_WIN_POS_MOUSE);
-  gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION (filesel)->ok_button),
-		      "clicked", (GtkSignalFunc) p_filesel_tabw_save_ok_cb,
-		      tabw);
-  gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION (filesel)->cancel_button),
-		      "clicked", (GtkSignalFunc) p_filesel_tabw_close_cb,
-		      tabw);
-  gtk_signal_connect (GTK_OBJECT (filesel), "destroy",
-		      (GtkSignalFunc) p_filesel_tabw_close_cb,
-		      tabw);
+  gtk_window_set_position (GTK_WINDOW (filesel), GTK_WIN_POS_MOUSE);
+  g_signal_connect (GTK_FILE_SELECTION (filesel)->ok_button,
+                    "clicked", (GtkSignalFunc) p_filesel_tabw_save_ok_cb,
+                    tabw);
+  g_signal_connect (GTK_FILE_SELECTION (filesel)->cancel_button,
+                    "clicked", (GtkSignalFunc) p_filesel_tabw_close_cb,
+                    tabw);
+  g_signal_connect (filesel, "destroy",
+                    (GtkSignalFunc) p_filesel_tabw_close_cb,
+                    tabw);
   gtk_file_selection_set_filename (GTK_FILE_SELECTION (filesel),
                                      tabw->filename_refptr);
   gtk_widget_show (filesel);
@@ -5315,14 +5315,14 @@ p_create_button_bar(GapStbTabWidgets *tabw
                   , (GtkAttachOptions) (0)
                   , (GtkAttachOptions) (GTK_FILL)
                   , 0, 0);
-  gtk_signal_connect (GTK_OBJECT (adj), "value_changed",
-                      (GtkSignalFunc)p_vscale_changed_cb,
-                      tabw);
+  g_signal_connect (adj, "value_changed",
+                    (GtkSignalFunc)p_vscale_changed_cb,
+                    tabw);
   /* startup with invisble vscale */
   gtk_widget_hide (vscale);
     
-  tabw->rowpage_vscale_adj = adj;					   
-  tabw->rowpage_vscale = vscale;					   
+  tabw->rowpage_vscale_adj = adj;
+  tabw->rowpage_vscale = vscale;
  
       
 }  /* end p_create_button_bar */

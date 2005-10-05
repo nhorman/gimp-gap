@@ -3400,8 +3400,8 @@ p_create_subwin(GapMorphSubWin *swp
     gtk_table_attach (GTK_TABLE (pv_table), vscale, 1, 2, 0, 1,
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (GTK_FILL), 0, 0);
-    gtk_signal_connect (GTK_OBJECT (adj), "value_changed",
-                      (GtkSignalFunc) on_hvscale_changed_callback,
+    g_signal_connect (adj, "value_changed",
+                      G_CALLBACK (on_hvscale_changed_callback),
                       swp);
     gtk_widget_show (vscale);
     
@@ -3420,8 +3420,8 @@ p_create_subwin(GapMorphSubWin *swp
     gtk_table_attach (GTK_TABLE (pv_table), hscale, 0, 1, 1, 2,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-    gtk_signal_connect (GTK_OBJECT (adj), "value_changed",
-                      (GtkSignalFunc) on_hvscale_changed_callback,
+    g_signal_connect (adj, "value_changed",
+                      G_CALLBACK (on_hvscale_changed_callback),
                       swp);
     gtk_widget_show (hscale);
     

@@ -4194,8 +4194,8 @@ navi_dialog_create (GtkWidget* shell, gint32 image_id)
 
     gtk_range_set_update_policy (GTK_RANGE (vscale), GTK_UPDATE_DELAYED); /* GTK_UPDATE_CONTINUOUS */
     gtk_box_pack_start (GTK_BOX (vbox2), vscale, TRUE, TRUE, 0);
-    gtk_signal_connect (GTK_OBJECT (naviD->dyn_adj), "value_changed",
-                      (GtkSignalFunc) navi_dyn_adj_changed_callback,
+    g_signal_connect (naviD->dyn_adj, "value_changed",
+                      G_CALLBACK (navi_dyn_adj_changed_callback),
                       naviD);
     gtk_widget_show (vscale);
   }

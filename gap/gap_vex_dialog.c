@@ -426,16 +426,16 @@ p_init_mw__main_window_widgets (GapVexMainGlobalParams *gpp)
 
 
  wgt = gpp->mw__checkbutton_multilayer;
- gtk_toggle_button_set_state (GTK_TOGGLE_BUTTON (wgt),
-                              gpp->val.multilayer );
+ gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (wgt),
+                               gpp->val.multilayer );
 
  wgt = gpp->mw__checkbutton_disable_mmx;
- gtk_toggle_button_set_state (GTK_TOGGLE_BUTTON (wgt),
-                              gpp->val.disable_mmx );
+ gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (wgt),
+                               gpp->val.disable_mmx );
 
  wgt = gpp->mw__checkbutton_exact_seek;
- gtk_toggle_button_set_state (GTK_TOGGLE_BUTTON (wgt),
-                              gpp->val.exact_seek );
+ gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (wgt),
+                               gpp->val.exact_seek );
 
  p_update_range_widgets(gpp);
  p_update_wgt_sensitivity(gpp);
@@ -1788,7 +1788,7 @@ p_align_widget_columns(GtkWidget **wgt_array, gint max_elements)
    */
   for(ii=0; ii < max_elements; ii++)
   {
-    gtk_widget_set_usize (wgt_array[ii], max_label_width, -2);
+    gtk_widget_set_size_request (wgt_array[ii], max_label_width, -2);
   }
 
 }  /* end p_align_widget_columns */
@@ -1941,7 +1941,7 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
   /* the videofile entry */
   mw__entry_video = gtk_entry_new ();
   gtk_widget_show (mw__entry_video);
-  gtk_widget_set_usize (mw__entry_video, ENTRY_WIDTH_LARGE, -2);
+  gtk_widget_set_size_request (mw__entry_video, ENTRY_WIDTH_LARGE, -2);
   gtk_table_attach (GTK_TABLE (mw__table_in), mw__entry_video, 1, 2, in_row, in_row+1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
@@ -1989,7 +1989,7 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
   mw__spinbutton_begin_frame_adj = gtk_adjustment_new (1, 1, 999999, 1, 10, 10);
   mw__spinbutton_begin_frame = gtk_spin_button_new (GTK_ADJUSTMENT (mw__spinbutton_begin_frame_adj), 1, 0);
   gtk_widget_show (mw__spinbutton_begin_frame);
-  gtk_widget_set_usize (mw__spinbutton_begin_frame, SPIN_WIDTH_LARGE, -2);
+  gtk_widget_set_size_request (mw__spinbutton_begin_frame, SPIN_WIDTH_LARGE, -2);
   gtk_box_pack_start (GTK_BOX (hbox2), mw__spinbutton_begin_frame, FALSE, FALSE, 0);
   gimp_help_set_help_data (mw__spinbutton_begin_frame, _("Frame number of 1.st frame to extract"), NULL);
 
@@ -2038,7 +2038,7 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
   mw__spinbutton_end_frame = gtk_spin_button_new (GTK_ADJUSTMENT (mw__spinbutton_end_frame_adj), 1, 0);
   gtk_widget_show (mw__spinbutton_end_frame);
   gtk_box_pack_start (GTK_BOX (hbox2), mw__spinbutton_end_frame, FALSE, FALSE, 0);
-  gtk_widget_set_usize (mw__spinbutton_end_frame, SPIN_WIDTH_LARGE, -2);
+  gtk_widget_set_size_request (mw__spinbutton_end_frame, SPIN_WIDTH_LARGE, -2);
   gimp_help_set_help_data (mw__spinbutton_end_frame
                           , _("Frame number of last frame to extract. "
 			      "To extract all frames use a range from 1 to 999999. "
@@ -2088,7 +2088,7 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
   mw__spinbutton_videotrack_adj = gtk_adjustment_new (1, 0, 100, 1, 10, 10);
   mw__spinbutton_videotrack = gtk_spin_button_new (GTK_ADJUSTMENT (mw__spinbutton_videotrack_adj), 1, 0);
   gtk_widget_show (mw__spinbutton_videotrack);
-  gtk_widget_set_usize (mw__spinbutton_videotrack, SPIN_WIDTH_SMALL, -2);
+  gtk_widget_set_size_request (mw__spinbutton_videotrack, SPIN_WIDTH_SMALL, -2);
   gtk_box_pack_start (GTK_BOX (hbox2), mw__spinbutton_videotrack, FALSE, FALSE, 0);
   gimp_help_set_help_data (mw__spinbutton_videotrack, _("Videotrack number (0 == extract no frames)"), NULL);
 
@@ -2122,7 +2122,7 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
   mw__spinbutton_audiotrack_adj = gtk_adjustment_new (0, 0, 100, 1, 10, 10);
   mw__spinbutton_audiotrack = gtk_spin_button_new (GTK_ADJUSTMENT (mw__spinbutton_audiotrack_adj), 1, 0);
   gtk_widget_show (mw__spinbutton_audiotrack);
-  gtk_widget_set_usize (mw__spinbutton_audiotrack, SPIN_WIDTH_SMALL, -2);
+  gtk_widget_set_size_request (mw__spinbutton_audiotrack, SPIN_WIDTH_SMALL, -2);
   gtk_box_pack_start (GTK_BOX (hbox2), mw__spinbutton_audiotrack, FALSE, FALSE, 0);
   gimp_help_set_help_data (mw__spinbutton_audiotrack, _("Audiotrack number (0 == extract no audio)"), NULL);
 
@@ -2149,7 +2149,7 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
 
   mw__entry_preferred_decoder = gtk_entry_new ();
   gtk_widget_show (mw__entry_preferred_decoder);
-  gtk_widget_set_usize (mw__entry_preferred_decoder, ENTRY_WIDTH_LARGE, -2);
+  gtk_widget_set_size_request (mw__entry_preferred_decoder, ENTRY_WIDTH_LARGE, -2);
   gtk_table_attach (GTK_TABLE (mw__table_in), mw__entry_preferred_decoder, 1, 2, in_row, in_row+1,
                     (GtkAttachOptions) (GTK_FILL | GTK_EXPAND),
                     (GtkAttachOptions) (0), 0, 0);
@@ -2296,7 +2296,7 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
   /* the basename entry */
   mw__entry_basename = gtk_entry_new ();
   gtk_widget_show (mw__entry_basename);
-  gtk_widget_set_usize (mw__entry_basename, ENTRY_WIDTH_LARGE, -2);
+  gtk_widget_set_size_request (mw__entry_basename, ENTRY_WIDTH_LARGE, -2);
   gtk_table_attach (GTK_TABLE (mw__table_out), mw__entry_basename, 1, 2, out_row, out_row+1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
@@ -2340,7 +2340,7 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
   mw__spinbutton_fn_digits_adj = gtk_adjustment_new (1, 1, GAP_LIB_MAX_DIGITS, 1, 10, 10);
   mw__spinbutton_fn_digits = gtk_spin_button_new (GTK_ADJUSTMENT (mw__spinbutton_fn_digits_adj), 1, 0);
   gtk_widget_show (mw__spinbutton_fn_digits);
-  gtk_widget_set_usize (mw__spinbutton_fn_digits, SPIN_WIDTH_SMALL, -2);
+  gtk_widget_set_size_request (mw__spinbutton_fn_digits, SPIN_WIDTH_SMALL, -2);
   gtk_box_pack_start (GTK_BOX (hbox2), mw__spinbutton_fn_digits, FALSE, FALSE, 0);
   gimp_help_set_help_data (mw__spinbutton_fn_digits, _("Digits to use for framenumber part in filenames (use 1 if you dont want leading zeroes)"), NULL);
 
@@ -2373,7 +2373,7 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
 
   mw__entry_extension = gtk_entry_new ();
   gtk_widget_show (mw__entry_extension);
-  gtk_widget_set_usize (mw__entry_extension, SPIN_WIDTH_LARGE, -2);
+  gtk_widget_set_size_request (mw__entry_extension, SPIN_WIDTH_LARGE, -2);
   gtk_box_pack_start (GTK_BOX (hbox2), mw__entry_extension, FALSE, FALSE, 0);
   gimp_help_set_help_data (mw__entry_extension, _("Extension of extracted frames (.xcf, .jpg, .ppm)"), NULL);
   gtk_entry_set_text (GTK_ENTRY (mw__entry_extension), _(".xcf"));
@@ -2406,7 +2406,7 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
   mw__spinbutton_basenum_adj = gtk_adjustment_new (0, 0, 10000, 1, 10, 10);
   mw__spinbutton_basenum = gtk_spin_button_new (GTK_ADJUSTMENT (mw__spinbutton_basenum_adj), 1, 0);
   gtk_widget_show (mw__spinbutton_basenum);
-  gtk_widget_set_usize (mw__spinbutton_basenum, SPIN_WIDTH_LARGE, -2);
+  gtk_widget_set_size_request (mw__spinbutton_basenum, SPIN_WIDTH_LARGE, -2);
   gtk_box_pack_start (GTK_BOX (hbox2), mw__spinbutton_basenum, FALSE, FALSE, 0);
   gimp_help_set_help_data (mw__spinbutton_basenum, _("Framenumber for 1st extracted frame (use 0 for keeping original framenumbers)"), NULL);
 
@@ -2438,7 +2438,7 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
   mw__spinbutton_delace_threshold = gtk_spin_button_new (GTK_ADJUSTMENT (mw__spinbutton_delace_threshold_adj), 1, 2);
   gtk_widget_show (mw__spinbutton_delace_threshold);
   gtk_box_pack_start (GTK_BOX (hbox2), mw__spinbutton_delace_threshold, FALSE, FALSE, 0);
-  gtk_widget_set_usize (mw__spinbutton_delace_threshold, SPIN_WIDTH_LARGE, -2);
+  gtk_widget_set_size_request (mw__spinbutton_delace_threshold, SPIN_WIDTH_LARGE, -2);
   gimp_help_set_help_data (mw__spinbutton_delace_threshold, _("0.0 .. no interpolation, 1.0 smooth interpolation at deinterlacing"), NULL);
 
 
@@ -2476,7 +2476,7 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
   /* the output audiofile entry */
   mw__entry_audiofile = gtk_entry_new ();
   gtk_widget_show (mw__entry_audiofile);
-  gtk_widget_set_usize (mw__entry_audiofile, ENTRY_WIDTH_LARGE, -2);
+  gtk_widget_set_size_request (mw__entry_audiofile, ENTRY_WIDTH_LARGE, -2);
   gtk_table_attach (GTK_TABLE (mw__table_out), mw__entry_audiofile, 1, 2, out_row, out_row+1,
                     (GtkAttachOptions) (GTK_FILL | GTK_EXPAND),
                     (GtkAttachOptions) (0), 0, 0);

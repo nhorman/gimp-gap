@@ -634,27 +634,27 @@ do_dialog (wr_levels_val_t *cuvals)
 
   /* Channel the radio buttons */
   radiobutton1 = gtk_radio_button_new_with_label (vbox1_group, _("Master"));
-  vbox1_group = gtk_radio_button_group (GTK_RADIO_BUTTON (radiobutton1));
+  vbox1_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radiobutton1));
   gtk_widget_show (radiobutton1);
   gtk_box_pack_start (GTK_BOX (vbox1), radiobutton1, FALSE, FALSE, 0);
 
   radiobutton2 = gtk_radio_button_new_with_label (vbox1_group, _("Red"));
-  vbox1_group = gtk_radio_button_group (GTK_RADIO_BUTTON (radiobutton2));
+  vbox1_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radiobutton2));
   gtk_widget_show (radiobutton2);
   gtk_box_pack_start (GTK_BOX (vbox1), radiobutton2, FALSE, FALSE, 0);
 
   radiobutton3 = gtk_radio_button_new_with_label (vbox1_group, _("Green"));
-  vbox1_group = gtk_radio_button_group (GTK_RADIO_BUTTON (radiobutton3));
+  vbox1_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radiobutton3));
   gtk_widget_show (radiobutton3);
   gtk_box_pack_start (GTK_BOX (vbox1), radiobutton3, FALSE, FALSE, 0);
 
   radiobutton4 = gtk_radio_button_new_with_label (vbox1_group, _("Blue"));
-  vbox1_group = gtk_radio_button_group (GTK_RADIO_BUTTON (radiobutton4));
+  vbox1_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radiobutton4));
   gtk_widget_show (radiobutton4);
   gtk_box_pack_start (GTK_BOX (vbox1), radiobutton4, FALSE, FALSE, 0);
 
   radiobutton5 = gtk_radio_button_new_with_label (vbox1_group, _("Alpha"));
-  vbox1_group = gtk_radio_button_group (GTK_RADIO_BUTTON (radiobutton5));
+  vbox1_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radiobutton5));
   gtk_widget_show (radiobutton5);
   gtk_box_pack_start (GTK_BOX (vbox1), radiobutton5, FALSE, FALSE, 0);
 

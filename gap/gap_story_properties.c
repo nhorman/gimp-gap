@@ -1223,18 +1223,18 @@ p_pw_filesel_button_cb ( GtkWidget *w
   filesel = gtk_file_selection_new ( _("Set Image or Frame Filename"));
   pw->pw_filesel = filesel;
 
-  gtk_window_position (GTK_WINDOW (filesel), GTK_WIN_POS_MOUSE);
-  gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION (filesel)->ok_button),
-                      "clicked", (GtkSignalFunc) p_filesel_pw_ok_cb,
-                      pw);
-  gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION (filesel)->cancel_button),
-                      "clicked", (GtkSignalFunc) p_filesel_pw_close_cb,
-                      pw);
-  gtk_signal_connect (GTK_OBJECT (filesel), "destroy",
-                      (GtkSignalFunc) p_filesel_pw_close_cb,
-                      pw);
+  gtk_window_set_position (GTK_WINDOW (filesel), GTK_WIN_POS_MOUSE);
+  g_signal_connect (GTK_FILE_SELECTION (filesel)->ok_button,
+                    "clicked", G_CALLBACK (p_filesel_pw_ok_cb),
+                    pw);
+  g_signal_connect (GTK_FILE_SELECTION (filesel)->cancel_button,
+                    "clicked", G_CALLBACK (p_filesel_pw_close_cb),
+                    pw);
+  g_signal_connect (filesel, "destroy",
+                    G_CALLBACK (p_filesel_pw_close_cb),
+                    pw);
   gtk_file_selection_set_filename (GTK_FILE_SELECTION (filesel),
-                                     pw->stb_elem_refptr->orig_filename);
+                                   pw->stb_elem_refptr->orig_filename);
   gtk_widget_show (filesel);
 
 }  /* end p_pw_filesel_button_cb */

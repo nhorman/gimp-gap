@@ -1057,7 +1057,7 @@ dialog_search_callback (GtkWidget   *widget,
   
   if (i_added > 0)
     {
-      gtk_tree_model_get_iter_root (GTK_TREE_MODEL (dbbrowser->store), &iter);
+      gtk_tree_model_get_iter_first (GTK_TREE_MODEL (dbbrowser->store), &iter);
       gtk_tree_selection_select_iter (dbbrowser->sel, &iter);
     }
   else

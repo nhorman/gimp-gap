@@ -847,7 +847,7 @@ p_tree_fill (fmac_globalparams_t *gpp)
     }
   }
 
-  gtk_tree_model_get_iter_root (GTK_TREE_MODEL (gpp->store), &iter);
+  gtk_tree_model_get_iter_first (GTK_TREE_MODEL (gpp->store), &iter);
   gtk_tree_selection_select_iter (gpp->sel, &iter);
 
   p_setbutton_sensitivity  (gpp);

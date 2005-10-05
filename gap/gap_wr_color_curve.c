@@ -58,6 +58,8 @@
 #include <libgimp/gimp.h>
 #include <libgimp/gimpui.h>
 
+#include "gap_stock.h"
+
 #include "gap-intl.h"
 
 
@@ -792,16 +794,16 @@ wr_curve_load_callback (GtkWidget *w,
   filesel = gtk_file_selection_new ( _("Load color curve from file"));
   wcd->filesel = filesel;
 
-  gtk_window_position (GTK_WINDOW (filesel), GTK_WIN_POS_MOUSE);
-  gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION (filesel)->ok_button),
-		      "clicked", (GtkSignalFunc) p_filesel_ok_callback,
-		      wcd);
-  gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION (filesel)->cancel_button),
+  gtk_window_set_position (GTK_WINDOW (filesel), GTK_WIN_POS_MOUSE);
+  g_signal_connect (GTK_FILE_SELECTION (filesel)->ok_button,
+                    "clicked", (GtkSignalFunc) p_filesel_ok_callback,
+                    wcd);
+  g_signal_connect (GTK_FILE_SELECTION (filesel)->cancel_button,
 		      "clicked", (GtkSignalFunc) p_filesel_close_cb,
 		      wcd);
-  gtk_signal_connect (GTK_OBJECT (filesel), "destroy",
-		      (GtkSignalFunc) p_filesel_close_cb,
-		      wcd);
+  g_signal_connect (filesel, "destroy",
+                    (GtkSignalFunc) p_filesel_close_cb,
+                    wcd);
   if(wcd->filename)
   {
     gtk_file_selection_set_filename (GTK_FILE_SELECTION (filesel),
@@ -923,7 +925,7 @@ do_dialog (wr_curves_val_t *cuvals)
 
   /*  The filename entry */
   entry = gtk_entry_new();
-  gtk_widget_set_usize(entry, 350, 0);
+  gtk_widget_set_size_request(entry, 350, 0);
   gtk_entry_set_text(GTK_ENTRY(entry), "");
   gtk_box_pack_start (GTK_BOX (hbox), entry, TRUE, FALSE, 0);
   g_signal_connect(G_OBJECT(entry), "changed",
