@@ -7,7 +7,7 @@ Animations as sequences of single frames.
 
 Requires:
 =========
- - gimp 2.2pre1 or higher
+ - gimp 2.2 or higher
  
  - For full video encoding and decoding support
    check also the requirements for ffmpeg and libmpeg3.
@@ -91,7 +91,8 @@ Notes:
 
    - GIMP-GAP provides frontend dialogs for:
       - mplayer 1.0
-      - xanim 2.80.1 exporting edition (with the extensions from loki entertainment)
+      - xanim 2.80.1 exporting edition (with the extensions from loki
+        entertainment)
       - mpeg_encode (V1.5R2)
       - mpeg2encode (V1.2)
       
@@ -112,14 +113,16 @@ Notes:
        mpeg2encode and mpeg2decode
      on your system.
 
-   - The GIMP-GAP playback module provides audiosupport for audiofiles in  RIFF WAV format.
-     The audiosupport is based on wavplay (tested with version 1.4).
+   - The GIMP-GAP playback module provides audiosupport for audiofiles
+     in RIFF WAV format.  The audiosupport is based on wavplay (tested
+     with version 1.4).
      
      If you want to have audiosupport you must install wavplay
      and configure and compile gimp-gap without the
      configure option --disable-audiosupport
      
-     As far as i know, wavplay is available only for LINUX, but i may be wrong..
+     As far as i know, wavplay is available only for LINUX, but i may
+     be wrong..
      
      The GIMP-GAP playback module further provides a button for converting
      other audiofile formats to RIFF WAV.
@@ -128,9 +131,8 @@ Notes:
       - sox
       - lame
      
-   - There is no need to install all those external programs to compile GIMP-GAP.
-
-
+   - There is no need to install all those external programs to
+     compile GIMP-GAP.
 
 
 Bugs

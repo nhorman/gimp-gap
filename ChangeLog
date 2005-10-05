@@ -1,5 +1,11 @@
 2005-10-05  Sven Neumann  <sven@gimp.org>
 
+	* configure.in: check if the libmpeg3 code can be compiled (it
+	doesn't compile with gcc 4.0 for example).
+
+2005-10-05  Sven Neumann  <sven@gimp.org>
+
+	* README
 	* configure.in: cosmetic changes.
 
 2005-09-23  Sven Neumann  <sven@gimp.org>
