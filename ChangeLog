@@ -1,5 +1,10 @@
 2005-10-05  Sven Neumann  <sven@gimp.org>
 
+	* configure.in (CPPFLAGS): do not disable APIs that may be
+	deprecated in the future.
+
+2005-10-05  Sven Neumann  <sven@gimp.org>
+
 	* configure.in: check if the libmpeg3 code can be compiled (it
 	doesn't compile with gcc 4.0 for example).
 
