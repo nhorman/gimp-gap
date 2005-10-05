@@ -1137,7 +1137,7 @@ p_create_basic_options_frame (GapGveFFMpegGlobalParams *gpp)
 
 
   /* the fileformat combo box */
-  combo =  gimp_int_combo_box_new (NULL, 0);
+  combo = g_object_new (GIMP_TYPE_INT_COMBO_BOX, NULL);
   gpp->ff_fileformat_combo = combo;
   gtk_widget_show (combo);
   gtk_table_attach (GTK_TABLE (table), combo, 1, 2, row, row+1,
@@ -1163,7 +1163,7 @@ p_create_basic_options_frame (GapGveFFMpegGlobalParams *gpp)
   gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 
   /* the video codec  combo box */
-  combo =  gimp_int_combo_box_new (NULL, 0);
+  combo = g_object_new (GIMP_TYPE_INT_COMBO_BOX, NULL);
   gpp->ff_vid_codec_combo = combo;
   gtk_widget_show (combo);
   gtk_table_attach (GTK_TABLE (table), combo, 1, 2, row, row+1,
@@ -1186,7 +1186,7 @@ p_create_basic_options_frame (GapGveFFMpegGlobalParams *gpp)
   gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 
   /* the audio codec  combo box */
-  combo =  gimp_int_combo_box_new (NULL, 0);
+  combo = g_object_new (GIMP_TYPE_INT_COMBO_BOX, NULL);
   gpp->ff_aud_codec_combo = combo;
   gtk_widget_show (combo);
   gtk_table_attach (GTK_TABLE (table), combo, 1, 2, row, row+1,
@@ -3177,8 +3177,9 @@ p_create_file_comment_frame (GapGveFFMpegGlobalParams *gpp)
   gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
  
   /* the title entry */  
-  entry = gtk_entry_new_with_max_length (40);
-  gpp->ff_title_entry                     = entry;
+  entry = gtk_entry_new ();
+  gtk_entry_set_max_length (GTK_ENTRY (entry), 40);
+  gpp->ff_title_entry = entry;
   gtk_widget_show (entry);
   gtk_table_attach (GTK_TABLE (table6), entry, 1, 2, row, row+1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
@@ -3199,8 +3200,9 @@ p_create_file_comment_frame (GapGveFFMpegGlobalParams *gpp)
   gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 
   /* the Author entry */  
-  entry = gtk_entry_new_with_max_length (40);
-  gpp->ff_author_entry                    = entry;
+  entry = gtk_entry_new ();
+  gtk_entry_set_max_length (GTK_ENTRY (entry), 40);
+  gpp->ff_author_entry = entry;
   gtk_widget_show (entry);
   gtk_table_attach (GTK_TABLE (table6), entry, 1, 2, row, row+1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
@@ -3220,7 +3222,8 @@ p_create_file_comment_frame (GapGveFFMpegGlobalParams *gpp)
   gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 
   /* the Copyright entry */  
-  entry = gtk_entry_new_with_max_length (40);
+  entry = gtk_entry_new ();
+  gtk_entry_set_max_length (GTK_ENTRY (entry), 40);
   gpp->ff_copyright_entry                 = entry;
   gtk_widget_show (entry);
   gtk_table_attach (GTK_TABLE (table6), entry, 1, 2, row, row+1,
@@ -3242,8 +3245,9 @@ p_create_file_comment_frame (GapGveFFMpegGlobalParams *gpp)
   gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 
   /* the Comment entry */  
-  entry = gtk_entry_new_with_max_length (80);
-  gpp->ff_comment_entry                   = entry;
+  entry = gtk_entry_new ();
+  gtk_entry_set_max_length (GTK_ENTRY (entry), 80);
+  gpp->ff_comment_entry = entry;
   gtk_widget_show (entry);
   gtk_table_attach (GTK_TABLE (table6), entry, 1, 2, row, row+1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),

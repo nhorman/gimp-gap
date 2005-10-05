@@ -1,5 +1,10 @@
 2005-10-05  Sven Neumann  <sven@gimp.org>
 
+	* vid_common/gap_cme_gui.c
+	* vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c: undeprecated.
+
+2005-10-05  Sven Neumann  <sven@gimp.org>
+
 	* gap/Makefile.am (*_LDADD): reordered libraries.
 
 2005-10-05  Sven Neumann  <sven@gimp.org>

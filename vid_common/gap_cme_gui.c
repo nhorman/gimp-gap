@@ -1238,7 +1238,7 @@ p_status_progress(GapCmeGlobalParams *gpp, t_global_stb *gstb)
   pbar = gpp->cme__progressbar_status;
   if(pbar) 
   {
-    gtk_progress_bar_update (GTK_PROGRESS_BAR (pbar), gstb->progress);
+    gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR (pbar), gstb->progress);
     gtk_progress_bar_set_text(GTK_PROGRESS_BAR(pbar), gstb->status_msg);
   }
   
@@ -1482,7 +1482,7 @@ gap_cme_gui_remove_poll_timer(GapCmeGlobalParams *gpp)
 
   if(gstb->poll_timertag >= 0)
   {
-    gtk_timeout_remove(gstb->poll_timertag);
+    g_source_remove(gstb->poll_timertag);
     gstb->poll_timertag = -1;
   }
 }  /* end gap_cme_gui_remove_poll_timer */
@@ -1507,7 +1507,7 @@ on_timer_poll(gpointer   user_data)
 
   if(gstb)
   {
-     gtk_timeout_remove(gstb->poll_timertag);
+     g_source_remove(gstb->poll_timertag);
      if(gstb->stb_job_done)
      {
        gstb->poll_timertag = -1;
@@ -1523,8 +1523,8 @@ on_timer_poll(gpointer   user_data)
           */
           p_status_progress(gpp, gstb);
 
-          gstb->poll_timertag = (gint32) gtk_timeout_add(500,
-                                     (GtkFunction)on_timer_poll, gstb);
+          gstb->poll_timertag =
+            (gint32) g_timeout_add (500, (GSourceFunc)on_timer_poll, gstb);
        }
      }
   }
@@ -1764,8 +1764,8 @@ gap_cme_gui_check_storyboard_file(GapCmeGlobalParams *gpp)
   if(gap_debug) printf("MASTER: After storyborad pthread_create\n");
 
   /* start poll timer to update progress and notify when storyboard job finished */
-  gstb->poll_timertag = (gint32) gtk_timeout_add(500,   /* 500 millisec */
-                                  (GtkFunction)on_timer_poll, gstb);
+  gstb->poll_timertag =
+    (gint32) g_timeout_add(500, (GSourceFunc) on_timer_poll, gstb);
 
 
 #else
@@ -2501,7 +2501,7 @@ p_create_shell_window (GapCmeGlobalParams *gpp)
   button = gtk_button_new_with_label (_("..."));
   gtk_widget_show (button);
   gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 0);
-  gtk_widget_set_usize (button, 80, -2);
+  gtk_widget_set_size_request (button, 80, -2);
   gimp_help_set_help_data (button, _("Select output videofile via browser"), NULL);
   g_signal_connect (G_OBJECT (button), "clicked",
                       G_CALLBACK (on_cme__button_video_clicked),
@@ -2632,7 +2632,7 @@ p_create_encode_extras_frame (GapCmeGlobalParams *gpp)
   gtk_table_attach (GTK_TABLE (table1), button, 2, 3, row, row+1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_usize (button, 70, -2);
+  gtk_widget_set_size_request (button, 70, -2);
   gimp_help_set_help_data (button, _("select macrofile via browser"), NULL);
   g_signal_connect (G_OBJECT (button), "clicked",
                       G_CALLBACK (on_cme__button_mac_clicked),
@@ -2862,23 +2862,21 @@ p_create_audiotool_cfg_frame (GapCmeGlobalParams *gpp)
   /* the multitextline information label 
    * (explains how params are passed to audiotool) 
    */
-  label = gtk_label_new ("");
-  gtk_label_parse_uline (GTK_LABEL (label),
-                        _("Configuration of an audiotool (like sox on UNIX).\n\n"
-			  "$IN .. is replaced by the input audiofile\n"
-			  "$OUT .. is replaced by audiofile with suffix  _tmp.wav\n"
-			  "$RATE .. is replaced by samplerate in byte/sec\n"
-			  "\n"
-			  "This tool is called for audio conversions  if\n"
-			  "a) the input audiofile is not WAV 16Bit format\n"
-			  "b) Desired Samplerate does not match the\n"
-			  "     rate in the .wav file")
-			  );
+  label =
+    gtk_label_new (_("Configuration of an audiotool (like sox on UNIX).\n\n"
+                     "$IN .. is replaced by the input audiofile\n"
+                     "$OUT .. is replaced by audiofile with suffix  _tmp.wav\n"
+                     "$RATE .. is replaced by samplerate in byte/sec\n"
+                     "\n"
+                     "This tool is called for audio conversions  if\n"
+                     "a) the input audiofile is not WAV 16Bit format\n"
+                     "b) Desired Samplerate does not match the\n"
+                     "     rate in the .wav file"));
   gtk_widget_show (label);
   gtk_table_attach (GTK_TABLE (table), label, 0, 2, row, row+1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 2, 2);
-  gtk_widget_set_usize (label, 300, -2);
+  gtk_widget_set_size_request (label, 300, -2);
   gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
   gtk_misc_set_alignment (GTK_MISC (label), 0.5, 0.5);
 
@@ -2986,7 +2984,7 @@ p_create_audio_options_frame (GapCmeGlobalParams *gpp)
   gtk_table_attach (GTK_TABLE (table), button, 2, 3, 0, 1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_usize (button, 80, -2);
+  gtk_widget_set_size_request (button, 80, -2);
   gimp_help_set_help_data (button, _("Select input audiofile via browser"), NULL);
   g_signal_connect (G_OBJECT (button), "clicked",
                       G_CALLBACK (on_cme__button_audio1_clicked),
@@ -3338,7 +3336,7 @@ p_create_video_options_frame (GapCmeGlobalParams *gpp)
   gtk_table_attach (GTK_TABLE (cme__table1), combo, 2, 3, l_row, l_row+1,
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_usize (combo, 160, -2);
+  gtk_widget_set_size_request (combo, 160, -2);
   gimp_help_set_help_data (combo, _("Scale width/height to common size"), NULL);
   gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (combo),
                               GAP_CME_STANDARD_SIZE_IMAGE,  /* initial gint value */
@@ -3421,7 +3419,7 @@ p_create_video_options_frame (GapCmeGlobalParams *gpp)
   gtk_table_attach (GTK_TABLE (cme__table1), combo, 2, 3, l_row, l_row+1,
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_usize (combo, 160, -2);
+  gtk_widget_set_size_request (combo, 160, -2);
   gimp_help_set_help_data (combo, _("Set framerate"), NULL);
   gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (combo),
                               GAP_CME_STANDARD_FRAMERATE_00_UNCHANGED,  /* initial gint value */
@@ -3454,7 +3452,7 @@ p_create_video_options_frame (GapCmeGlobalParams *gpp)
   gtk_table_attach (GTK_TABLE (cme__table1), combo, 2, 3, l_row, l_row+1,
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_usize (combo, 160, -2);
+  gtk_widget_set_size_request (combo, 160, -2);
   gimp_help_set_help_data (combo, _("Select videonorm"), NULL);
   gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (combo),
                               VID_FMT_NTSC,  /* initial gint value */
@@ -3488,13 +3486,13 @@ p_create_video_options_frame (GapCmeGlobalParams *gpp)
 
 
   /* the videoencoder combo */
-  combo =  gimp_int_combo_box_new (NULL, 0);
+  combo = g_object_new (GIMP_TYPE_INT_COMBO_BOX, NULL);
   gpp->cme__combo_encodername      = combo;
   gtk_widget_show (combo);
   gtk_table_attach (GTK_TABLE (cme__table1), combo, 2, 3, l_row, l_row+1,
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_usize (combo, 160, -2);
+  gtk_widget_set_size_request (combo, 160, -2);
   gimp_help_set_help_data (combo, _("Select video encoder plugin"), NULL);
   
   /* the  videoencoder combo items are set later by query the PDB
