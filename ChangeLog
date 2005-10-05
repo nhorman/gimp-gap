@@ -1,5 +1,9 @@
 2005-10-05  Sven Neumann  <sven@gimp.org>
 
+	* gap/Makefile.am (*_LDADD): reordered libraries.
+
+2005-10-05  Sven Neumann  <sven@gimp.org>
+
 	* gap/gap_file_util.c (gap_file_make_abspath_filename): fixed
 	compilation on G_OS_WIN32; include <string.h>.
 
