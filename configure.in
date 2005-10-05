@@ -235,14 +235,13 @@ AM_CONDITIONAL(ENABLE_GVA_LIBAVFORMAT_SUPPORT, test "x$enable_libavformat" != "x
 
 dnl Test for video libmpeg3
 dnl ------------------------
-dnl libmpeg3 is used in one of the decoder implementations in the GAP Video API (GVA)
-dnl as far as i know this lib is available only on UNIX systems
-dnl
-dnl the current gimp-gap includes the libmpeg3-1.5.4 as (unmaintained) sourcetree
-dnl and calls the libmpeg3 configure script.
-dnl The generated Makefile will call the libmpeg3 original Makefile to build the library 
-dnl   libmpeg3.a
-dnl linking with gimp-gap modules is now done statically. 
+dnl libmpeg3 is used in one of the decoder implementations in the GAP
+dnl Video API (GVA) as far as i know this lib is available only on
+dnl UNIX systems dnl the current gimp-gap includes the libmpeg3-1.5.4
+dnl as (unmaintained) sourcetree and calls the libmpeg3 configure
+dnl script.  The generated Makefile will call the libmpeg3 original
+dnl Makefile to build the library libmpeg3.a linking with gimp-gap
+dnl modules is now done statically.
 dnl
 REQ_LIBMPEG3_VERSION="1.5.4"
 
@@ -270,23 +269,27 @@ build_libmpeg3_lib_yesno="no"
 AC_ARG_ENABLE(libmpeg3,
               [  --disable-libmpeg3           don't build with libmpeg3])
   if test "x$enable_libmpeg3" != "xno"; then
+
     dnl
-    dnl the original tarball from http:www.heroinewarrior.com of libmpeg3-1.5.4
-    dnl comes without installation help for the library and its headers.
-    dnl but (some ?) LINUX distributors provide installation rpm packages for libmpeg3
+    dnl the original tarball from http:www.heroinewarrior.com of
+    dnl libmpeg3-1.5.4 comes without installation help for the library
+    dnl and its headers.  but (some ?) LINUX distributors provide
+    dnl installation rpm packages for libmpeg3
     dnl
-    dnl some older libmpeg3-1.5 rpm packages (from my SuSE 8.2 distribution) are NOT compatible
-    dnl with the new API, and have limited functions -- AC3 is turned off --
-    dnl other packages (like the current debian) disable CSS decryption.
+    dnl some older libmpeg3-1.5 rpm packages (from my SuSE 8.2
+    dnl distribution) are NOT compatible with the new API, and have
+    dnl limited functions -- AC3 is turned off -- other packages (like
+    dnl the current debian) disable CSS decryption.
     dnl
-    dnl one solution to face those problems
-    dnl is to get the tarball with the full sourcetree of the libmpeg3-1.5.4 library
-    dnl configure and make the libmpeg3 from sourcetree
-    dnl and then link statically by specifying the option --with-libmpeg3srcdir.
+    dnl one solution to face those problems is to get the tarball with
+    dnl the full sourcetree of the libmpeg3-1.5.4 library configure
+    dnl and make the libmpeg3 from sourcetree and then link statically
+    dnl by specifying the option --with-libmpeg3srcdir.
     dnl
-    dnl libmpeg3 needs the assembler nasm to compile
-    dnl and checks this requirement in its configuration script.
+    dnl libmpeg3 needs the assembler nasm to compile and checks this
+    dnl requirement in its configuration script.
     dnl
+
     machine_dependent_odir=`uname --machine`
     dnl
     if test -d "$LMPEG3_DIR"; then
@@ -373,9 +376,10 @@ AM_CONDITIONAL(ENABLE_GVA_LIBMPEG3_SUPPORT, test "x$enable_libmpeg3" != "xno")
 
 dnl Test for XVID codec
 dnl ------------------------
-dnl the xvid codec lib is used in the AVI videoencoder plug-in for MPEG4 support
-dnl xvid should compile on many operating systems, including UNIX and WINDOWS systems
-dnl (ffmpeg has its own builtin MPEG4 codec implementation and does not depend on this codec)
+dnl the xvid codec lib is used in the AVI videoencoder plug-in for
+dnl MPEG4 support xvid should compile on many operating systems,
+dnl including UNIX and WINDOWS systems (ffmpeg has its own builtin
+dnl MPEG4 codec implementation and does not depend on this codec)
 dnl
 AC_ARG_ENABLE(libxvidcore,
               [  --disable-libxvidcore        don't build with libxvidcore])
@@ -418,41 +422,10 @@ gimp-gap is configured without libxvidcore
 AM_CONDITIONAL(ENABLE_LIBXVIDCORE_SUPPORT, test "x$enable_libxvidcore" != "xno")
 
 
-
-dnl Test for video libquicktime (QUICKTIME4LINUX)
-dnl ---------------------------
-dnl WARNING: libquicktime is in experimental state and probably will be removed later
-dnl 
-dnl AC_ARG_ENABLE(libquicktime,
-dnl               [  --enable-libquicktime       don't build with libquicktime])
-dnl   if test "x$enable_libquicktime" = "xyes"; then
-dnl    dnl
-dnl    dnl Linking with quicktime not finished yet
-dnl    dnl      the current video API once worked with old quicktime libs
-dnl    dnl      the new quicktime4linux comes with ffmpeg as subset but did not
-dnl    dnl      even compile on my machine. therefore this version of gimp-gap has NO QUICKTIME support
-dnl    dnl AC_DEFINE(ENABLE_GVA_LIBQUICKTIME, 1, [Define to 1 to enable compile and link with libquicktime])
-dnl    GAP_VLIBS_QUICKTIME=" "
-dnl    GAP_VINCS_QUICKTIME=" "
-dnl     vid_quicktime_warning="
-dnl gimp-gap libquicktime support is NOT fully implemented 
-dnl and currently does not even compile (forced option --disable-libquicktime)
-dnl "
-dnl   else
-    GAP_VLIBS_QUICKTIME=" "
-    GAP_VINCS_QUICKTIME=" "
-dnl
-dnl  fi
-
-AM_CONDITIONAL(ENABLE_GVA_LIBQUICKTIME_SUPPORT, test "x$enable_libquicktime" != "xno")
-
-
 AC_SUBST(GAP_VLIBS_FFMPEG)
 AC_SUBST(GAP_VINCS_FFMPEG)
 AC_SUBST(GAP_VLIBS_MPEG3)
 AC_SUBST(GAP_VINCS_MPEG3)
-AC_SUBST(GAP_VLIBS_QUICKTIME)
-AC_SUBST(GAP_VINCS_QUICKTIME)
 AC_SUBST(GAP_VLIBS_XVIDCORE)
 AC_SUBST(GAP_VINCS_XVIDCORE)
 
@@ -462,8 +435,8 @@ AC_SUBST(FFMPEG_LIBAVCODEC_A)
 AC_SUBST(LMPEG3_DIR)
 AC_SUBST(LMPEG3_A)
 
-GAPVIDEOAPI_EXTLIBS="$GAP_VLIBS_FFMPEG $GAP_VLIBS_MPEG3 $GAP_VLIBS_QUICKTIME -lpng -lz -lpthread -ldl -lm"
-GAPVIDEOAPI_EXTINCS="$GAP_VINCS_FFMPEG $GAP_VINCS_MPEG3 $GAP_VINCS_QUICKTIME"
+GAPVIDEOAPI_EXTLIBS="$GAP_VLIBS_FFMPEG $GAP_VLIBS_MPEG3 -lpng -lz -lpthread -ldl -lm"
+GAPVIDEOAPI_EXTINCS="$GAP_VINCS_FFMPEG $GAP_VINCS_MPEG3"
 AC_SUBST(GAPVIDEOAPI_EXTLIBS)
 AC_SUBST(GAPVIDEOAPI_EXTINCS)
 
