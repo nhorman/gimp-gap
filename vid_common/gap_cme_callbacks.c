@@ -65,7 +65,7 @@ on_cme__response (GtkWidget *widget,
     case GTK_RESPONSE_OK:
       if(gpp)
       {
-        if(gpp->val.gui_proc_tid)
+        if(gpp->val.gui_proc_thread)
         {
           if(gap_cme_gui_check_gui_thread_is_active(gpp)) return;
         }

@@ -131,7 +131,7 @@ typedef struct GapGveCommonValues {                     /* nick: cval */
   GimpRunMode run_mode;
   gint        ow_mode;
   gint        run;
-  pthread_t   gui_proc_tid;      /* thread id of gui_procedure 0 if not running */
+  GThread    *gui_proc_thread;   /* thread id of gui_procedure null if not running */
   gchar       tmp_audfile[256];  /* Workfile (output after conversion by sox) */
   gchar       util_sox[256];
   gchar       util_sox_options[256];

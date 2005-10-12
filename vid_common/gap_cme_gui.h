@@ -52,7 +52,7 @@ void      gap_cme_gui_update_aud_labels (GapCmeGlobalParams *gpp);
 void      gap_cme_gui_update_vid_labels (GapCmeGlobalParams *gpp);
 void      gap_cme_gui_util_sox_widgets (GapCmeGlobalParams *gpp);
 gint      gap_cme_gui_pdb_call_encoder_gui_plugin (GapCmeGlobalParams *gpp);
-void      gap_cme_gui_pthread_async_pdb_call(void);
+gpointer  gap_cme_gui_thread_async_pdb_call(gpointer data);
 void      gap_cme_gui_check_storyboard_file(GapCmeGlobalParams *gpp);
 void      gap_cme_gui_requery_vid_extension(GapCmeGlobalParams *gpp);
 void      gap_cme_gui_remove_poll_timer(GapCmeGlobalParams *gpp);

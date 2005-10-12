@@ -119,7 +119,7 @@ p_wrapper_gimp_open_read(char *filename, t_GVA_Handle *gvahand)
   gimp_image_flatten(l_image_id);
   handle->initial_image_id = l_image_id;
 
-  gvahand->pthread_save = FALSE;  /* calls to gimp from 2 threads do crash */
+  gvahand->gva_thread_save = FALSE;  /* calls to gimp from 2 threads do crash */
   gvahand->vtracks = 1;
   gvahand->atracks = 0;
   gvahand->frame_bpp = 3;              /* RGB pixelformat */

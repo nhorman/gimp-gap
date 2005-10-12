@@ -197,7 +197,7 @@ typedef struct t_GVA_Handle  /* nickname: gvahand */
   gint32            mtime;
   
   gboolean disable_mmx;
-  gboolean do_gimp_progress;    /* WARNING: dont try to set this TRUE if you call the API from a pthread !! */
+  gboolean do_gimp_progress;    /* WARNING: dont try to set this TRUE if you call the API from a thread !! */
   gboolean all_frames_counted;  /* TRUE: counted all frames, total_frames is an exact value
                                  * FALSE: total_frames may not tell the exact value.
                                  */
@@ -260,7 +260,7 @@ typedef struct t_GVA_Handle  /* nickname: gvahand */
   gint32  vid_track;
   gint32  aud_track;
   char   *filename;
-  gboolean pthread_save;
+  gboolean gva_thread_save;
 } t_GVA_Handle;
 
 

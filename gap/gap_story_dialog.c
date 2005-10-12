@@ -1506,7 +1506,7 @@ p_cancel_button_cb (GtkWidget *w,
 		    GapStbMainGlobalParams *sgpp)
 {
 
-  printf("VIDEO-CANCEL BUTTON clicked\n");
+  if(gap_debug) printf("VIDEO-CANCEL BUTTON clicked\n");
   
   if(sgpp)
   {

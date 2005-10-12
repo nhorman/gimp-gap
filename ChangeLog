@@ -1,3 +1,71 @@
+2005-10-08  Wolfgang Hofer <hof@gimp.org>
+	- player: do not always print the framerange to stdout
+	now restricted to explicite request via clicking From/To Frame buttons
+	when the player is NOT embedded into storyboard dialog.
+
+	- bugfix for color curves wrapper dialog.
+	fixed init size of entry widget for curves file.
+	(after porting to gtk_widget_set_size_request
+	the height of 0 resulted in 1 pixel height
+	that made the entry unusable)
+	
+	- bugfix: dont call gtk_widget_set_size_request wit -2 as height value
+	(fixes warnings Gtk-CRITICAL **: gtk_widget_set_size_request: assertion `height >= -1' failed)
+	
+	- disable some debug output to stdout
+	- Storyboard dialog: clip properties uses previous filename
+	  when th dialog is creating a new clip.
+	  (fixes Gtk-CRITICAL **: gtk_file_selection_set_filename: assertion `filename != NULL' failed
+	  warning)
+	- repeated filter all layers test with gimp-2.2.8 and gtk+-2.6.7
+	
+	* gap/gap_wr_color_curve.c
+	* gap/gap_vex_dialog.c
+	* vid_common/gap_cme_gui.c
+	* gap/gap_story_dialog.c
+	* gap/gap_story_properties.c
+	* gap/gap_player_dialog.c
+	* gap/TESTPROT_iter_ALT
+	
+2005-10-07  Wolfgang Hofer <hof@gimp.org>
+
+	use GThread instead of pthread (fixes bug #318045)
+	Note: pthread is still required for the libmpeg3.
+	The configure.in script now checks for pthread library
+	and disables libmpeg3 if pthread is not available.
+	
+	The new configure option 
+	   --with-preinstalled-libmpeg3incdir=/usr/local/include
+	   --with-preinstalled-libmpeg3=/usr/local/lib/libmpeg3.a
+	allows to build GIMP-GAP with already installed libmpeg3
+	
+	for those who use newer gcc (and cannot compile libmpeg3 that requires
+	older gcc 3.3, but already have libmpeg3-1.5.4 installed)
+	.. Carol reported such a situation ...
+	
+	But those options work WITHOUT reliable checks. 
+	(I failed once again to to write clean library checks for that beast,
+	that is the reason why it was added as sourcecode, but i did not
+	know about the compile problems with newer gcc 4.x versions,
+	and i dont want to drop libmpeg3 because it can parse DVD typical .ifo
+	files and supports compressed frame access
+	that is required for GIMP-GAP's lossless mpeg cut feature ...)
+	
+	Specify those options on your own risk,
+	wrong libmpeg3 versions may build, but crash at runtime...
+
+	* configure.in
+	* libgapvidapi/gap_vid_api.h
+	* libgapvidapi/gap_vid_api.c
+	* libgapvidapi/gap_vid_api_gimp.c
+	* libgapvidutil/gap_gvetypes.h
+	* vid_common/Makefile.am
+	* vid_common/gap_cme_callbacks.c
+	* vid_common/gap_cme_main.c
+	* vid_common/gap_cme_gui.c
+	* vid_common/gap_cme_gui.h
+
+
 2005-10-05  Sven Neumann  <sven@gimp.org>
 
 	* vid_common/gap_cme_gui.c

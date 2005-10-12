@@ -908,12 +908,12 @@ do_dialog (wr_curves_val_t *cuvals)
   /* the hbox */
   hbox = gtk_hbox_new (FALSE, 2);
   gtk_container_set_border_width (GTK_CONTAINER (vbox), 2);
-  gtk_box_pack_start (GTK_BOX (vbox), hbox, TRUE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, TRUE, 0);
   gtk_widget_show (hbox);
 
   /*  The Load button  */
   button = gtk_button_new_with_label (_("Load Curve"));
-  gtk_box_pack_start (GTK_BOX (hbox), button, TRUE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 0);
   g_signal_connect (G_OBJECT (button), "clicked",
 		    G_CALLBACK (wr_curve_load_callback),
 		    wcd);
@@ -925,9 +925,9 @@ do_dialog (wr_curves_val_t *cuvals)
 
   /*  The filename entry */
   entry = gtk_entry_new();
-  gtk_widget_set_size_request(entry, 350, 0);
+  gtk_widget_set_size_request(entry, 350, -1);
   gtk_entry_set_text(GTK_ENTRY(entry), "");
-  gtk_box_pack_start (GTK_BOX (hbox), entry, TRUE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (hbox), entry, TRUE, TRUE, 0);
   g_signal_connect(G_OBJECT(entry), "changed",
 		   G_CALLBACK (text_entry_callback),
 		   wcd);

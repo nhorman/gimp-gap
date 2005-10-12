@@ -51,6 +51,10 @@ GIMP_PLUGIN_DIR=`$PKG_CONFIG gimp-2.0 --variable=gimplibdir`
 AC_SUBST(GIMP_DATA_DIR)
 AC_SUBST(GIMP_PLUGIN_DIR)
 
+dnl gimp-gap does not need pthread library GAP_PTHREAD_LIB
+dnl unless we build with libmpeg3.
+GAP_PTHREAD_LIB=" "
+
 dnl Test for unix-frontends
 dnl -----------------------
 AC_ARG_ENABLE(unixfrontends,
@@ -119,7 +123,7 @@ FFMPEG_TARBALL="$extern_libs_dir/ffmpeg.tar.gz"
 dnl where to find the ffmpeg sourcedir (expanded ffmpeg tarball)
 FFMPEG_DIR="$extern_libs_dir/$FFMPEG_DIRNAME"
 
-AC_ARG_WITH(ffmpegsrcdir, [  --with-ffmpegsrcdir=DIR      specify where to find ffmpeg src directory DIR],
+AC_ARG_WITH(ffmpegsrcdir, [  --with-ffmpegsrcdir=DIR      specify where to find ffmpeg src directory DIR (this is a developers option to bypass the included ffmpeg sourcetree)],
 if eval "test x$with_ffmpegsrcdir != x"; then
   if eval "test x$with_ffmpegsrcdir != xyes"; then
     if test -d "$with_ffmpegsrcdir"; then
@@ -182,7 +186,7 @@ AC_ARG_ENABLE(libavformat,
       FFMPEG_CONFIGURE_OPTIONS=`cat "$extern_libs_dir/configure_options_ffmpeg.txt"`
 
       echo "================================="
-      echo "Calling FFMPEG configure script optins: $FFMPEG_CONFIGURE_OPTIONS"
+      echo "Calling FFMPEG configure script options: $FFMPEG_CONFIGURE_OPTIONS"
       echo "================================="
       
       cd "$FFMPEG_DIR"
@@ -190,7 +194,7 @@ AC_ARG_ENABLE(libavformat,
       cd "$pwd_dir"
       
       echo "================================="
-      echo "FFMPEG configure script done optins: $FFMPEG_CONFIGURE_OPTIONS"
+      echo "FFMPEG configure script done options: $FFMPEG_CONFIGURE_OPTIONS"
       echo "================================="
       
       dnl
@@ -250,7 +254,7 @@ dnl where to find the libmpeg3 sourcedir
 LMPEG3_DIR="$extern_libs_dir/libmpeg3"
 LIBMPEG3_TARBALL="$extern_libs_dir/libmpeg3.tar.gz"
 
-AC_ARG_WITH(libmpeg3srcdir, [  --with-libmpeg3srcdir=DIR    specify where to find libmpeg3 src directory DIR],
+AC_ARG_WITH(libmpeg3srcdir, [  --with-libmpeg3srcdir=DIR    specify where to find libmpeg3 src directory DIR  (this is a developers option to bypass the included libmpeg3 sourcetree)],
 if eval "test x$with_libmpeg3srcdir != x"; then
   if eval "test x$with_libmpeg3srcdir != xyes"; then
     if test -d "$with_libmpeg3srcdir"; then
@@ -263,13 +267,121 @@ if eval "test x$with_libmpeg3srcdir != x"; then
 fi)
 
 
-dnl assume libmpeg3 build "no" (in case disabled)
+dnl assume libmpeg3 build "no" (in case disabled or linked as prebuilt library)
 build_libmpeg3_lib_yesno="no"
+preinst_libmpeg3_specified="no"
+vid_mpeg3_warning=""
+libmpeg3_info_msg="
+## gimp-gap is now configured without libmpeg3
+   This is not critical, GIMP-GAP uses libmpeg3 in the video API 
+   as additional video decoding engine for MPEG videos. 
+   The main decoding engine based on ffmpeg also supports MPEG.
+   libmpeg3 is limited to UNIX/LINUX operating systems.
+   This gimp-gap release includes the sourcecode of libmpeg3
+   (this is a duplicate of the original code libmpeg3-$REQ_LIBMPEG3_VERSION copied from: 
+   http://www.heroinewarrior.com/download.php3)
+   
+"
+
+dnl check for pthread library (required for libmpeg3)
+dnl the check result does not matter unless libmpeg3 is linked or built later on.
+pthread_err=""
+AC_CHECK_LIB(pthread, pthread_create,
+	[AC_CHECK_HEADER(pthread.h,
+          GAP_PTHREAD_LIB=" -lpthread",
+          pthread_err="pthread header file (pthread.h) not found")],
+	pthread_err="pthread library (libpthread) not found")
+
 
 AC_ARG_ENABLE(libmpeg3,
               [  --disable-libmpeg3           don't build with libmpeg3])
-  if test "x$enable_libmpeg3" != "xno"; then
+AC_ARG_WITH(preinstalled-libmpeg3incdir, 
+              [  --with-preinstalled-libmpeg3incdir=DIR    force link with an already installed libmpeg3 library and specify where to find libmpeg3 headerfiles])
+AC_ARG_WITH(preinstalled-libmpeg3, 
+              [  --with-preinstalled-libmpeg3=FILE         full pathname of the preinstalled libmpeg3.a libraryfile])
 
+dnl
+dnl checks for prebuilt libmpeg3
+dnl usually installed at /usr/local/lib  or /usr/lib
+dnl
+
+if test "x$with_preinstalled_libmpeg3" != "x"; then
+  preinst_libmpeg3_specified="yes"
+  if test "x$pthread_err" != "x"; then
+    enable_libmpeg3="no"
+    vid_mpeg3_warning="
+** WARNING: cant build with libmpeg3 (libmpeg3 depends on pthread library)
+$pthread_err
+$libmpeg3_info_msg
+"
+  fi
+  
+  if test "$xenable_libmpeg3" != "no"; then
+
+
+    if test -f "$with_preinstalled_libmpeg3"; then
+       GAP_VLIBS_MPEG3=" $with_preinstalled_libmpeg3"
+       AC_DEFINE(ENABLE_GVA_LIBMPEG3, 1,
+             [Define to 1 to enable compile and link with prebuilt libmpeg3])
+    else
+      vid_mpeg3_warning="$libmpeg3_info_msg
+** ERROR option --with-preinstalled-libmpeg3 must refere to the file libmpeg3.a including full pathname.
+   Maybe you should try to build libmpeg3 from the included sourcetree
+   (dont specify --with-preinstalled-libmpeg3 in that case)
+"
+    fi
+  fi
+fi
+
+if test "x$with_preinstalled_libmpeg3incdir" != "x"; then
+  preinst_libmpeg3_err=""
+  if test "x$preinst_libmpeg3_specified" != "xyes"; then
+      vid_mpeg3_warning="$libmpeg3_info_msg
+** ERROR option --with-preinstalled-libmpeg3incdir also requires the option --with-preinstalled-libmpeg3.
+"
+  
+  fi;
+  if test "$xenable_libmpeg3" != "no"; then
+    if test -f "$with_preinstalled_libmpeg3incdir/libmpeg3.h"; then
+      if test -d "$with_preinstalled_libmpeg3incdir/audio"; then
+	:
+      else
+	preinst_libmpeg3_err="$with_preinstalled_libmpeg3incdir has no subdirectory named audio"
+      fi
+      if test -d "$with_preinstalled_libmpeg3incdir/video"; then
+	:
+      else
+	preinst_libmpeg3_err="$with_preinstalled_libmpeg3incdir has no subdirectory named video"
+      fi
+    else
+      preinst_libmpeg3_err="file not found: $with_preinstalled_libmpeg3incdir/libmpeg3.h"
+    fi
+    
+    if test "x$preinst_libmpeg3_err" != "x"; then
+      vid_mpeg3_warning="$libmpeg3_info_msg
+** ERROR option --with-preinstalled-libmpeg3incdir must refere to a directory with audio and video subdir.
+** $preinst_libmpeg3_err
+   Maybe you should try to build libmpeg3 from the included sourcetree
+   (dont specify --with-preinstalled-libmpeg3incdir in that case)
+"
+    fi
+    
+    
+    if test "x$vid_mpeg3_warning" != "x"; then
+      GAP_VLIBS_MPEG3=" "
+      GAP_VINCS_MPEG3=" "
+      enable_libmpeg3="no"
+    else
+      LMPEG3_DIR="$with_preinstalled_libmpeg3incdir"
+      GAP_VINCS_MPEG3=" -I$LMPEG3_DIR -I$LMPEG3_DIR/audio -I$LMPEG3_DIR/video "
+    fi
+  fi
+fi
+
+
+
+if test "x$preinst_libmpeg3_specified" != "xyes"; then
+  if test "x$enable_libmpeg3" != "no"; then
     dnl
     dnl First of all check if the compiler is able to handle the libmpeg3
     dnl code.
@@ -285,6 +397,7 @@ int main(void) {
     AC_MSG_RESULT($enable_libmpeg3)
 
   fi
+
 
   if test "x$enable_libmpeg3" != "xno"; then
     dnl
@@ -307,57 +420,66 @@ int main(void) {
     dnl requirement in its configuration script.
     dnl
 
-    machine_dependent_odir=`uname --machine`
-    dnl
-    if test -d "$LMPEG3_DIR"; then
-      dnl
-      echo "libmpeg3 sourcetree found at dir: $LMPEG3_DIR"
-    else
-      if test -f "$LIBMPEG3_TARBALL"; then
-        cd "$extern_libs_dir"
-	echo "extracting tarball: $LIBMPEG3_TARBALL"
-	gzip -d -c "$LIBMPEG3_TARBALL" | tar -x
-	cd "$pwd_dir"
-      else
-        echo "** error LIBMPEG3 tarball not found, file: $LIBMPEG3_TARBALL"
-      fi
-    fi
-    dnl
-    if test -d "$LMPEG3_DIR"; then
-      dnl
-      echo "LIBMPEG3 sourcetree found at dir: $LMPEG3_DIR"
-      dnl
-      build_libmpeg3_lib_yesno="yes"
-      LMPEG3_A="$LMPEG3_DIR/$machine_dependent_odir/libmpeg3.a"
-      dnl
-      GAP_VLIBS_MPEG3=" $LMPEG3_A "
-      GAP_VINCS_MPEG3=" -I$LMPEG3_DIR -I$LMPEG3_DIR/audio -I$LMPEG3_DIR/video "
-      AC_DEFINE(ENABLE_GVA_LIBMPEG3, 1,
-           [Define to 1 to enable compile and link with libmpeg3])
-      
-      dnl read configure options for the external lib from a file      
-      dnl the current simple implementation requires all options in one line
-      LIBMPEG3_CONFIGURE_OPTIONS=`cat "$extern_libs_dir/configure_options_libmpeg3.txt"`
-
-      echo "================================="
-      echo "Calling LIBMPEG3 configure script optins: $LIBMPEG3_CONFIGURE_OPTIONS"
-      echo "================================="
-      
-
-      
-      cd "$LMPEG3_DIR"
-      ./configure $LIBMPEG3_CONFIGURE_OPTIONS
-      cd "$pwd_dir"
-      
-      echo "================================="
-      echo "LIBMPEG3 configure script done optins: $LIBMPEG3_CONFIGURE_OPTIONS"
-      echo "================================="
-
-      dnl
-    else
-      GAP_VLIBS_MPEG3=" "
-      GAP_VINCS_MPEG3=" "
+    if test "x$pthread_err" != "x"; then
+      enable_libmpeg3="no"
       vid_mpeg3_warning="
+** WARNING: cant build with libmpeg3 (libmpeg3 depends on pthread library)
+$pthread_err
+$libmpeg3_info_msg
+"
+
+    else
+      machine_dependent_odir=`uname --machine`
+      dnl
+      if test -d "$LMPEG3_DIR"; then
+	dnl
+	echo "libmpeg3 sourcetree found at dir: $LMPEG3_DIR"
+      else
+	if test -f "$LIBMPEG3_TARBALL"; then
+          cd "$extern_libs_dir"
+	  echo "extracting tarball: $LIBMPEG3_TARBALL"
+	  gzip -d -c "$LIBMPEG3_TARBALL" | tar -x
+	  cd "$pwd_dir"
+	else
+          echo "** error LIBMPEG3 tarball not found, file: $LIBMPEG3_TARBALL"
+	fi
+      fi
+      dnl
+      if test -d "$LMPEG3_DIR"; then
+	dnl
+	echo "LIBMPEG3 sourcetree found at dir: $LMPEG3_DIR"
+	dnl
+	build_libmpeg3_lib_yesno="yes"
+	LMPEG3_A="$LMPEG3_DIR/$machine_dependent_odir/libmpeg3.a"
+	dnl
+	GAP_VLIBS_MPEG3=" $LMPEG3_A "
+	GAP_VINCS_MPEG3=" -I$LMPEG3_DIR -I$LMPEG3_DIR/audio -I$LMPEG3_DIR/video "
+	AC_DEFINE(ENABLE_GVA_LIBMPEG3, 1,
+             [Define to 1 to enable compile and link with libmpeg3])
+
+	dnl read configure options for the external lib from a file      
+	dnl the current simple implementation requires all options in one line
+	LIBMPEG3_CONFIGURE_OPTIONS=`cat "$extern_libs_dir/configure_options_libmpeg3.txt"`
+
+	echo "================================="
+	echo "Calling LIBMPEG3 configure script options: $LIBMPEG3_CONFIGURE_OPTIONS"
+	echo "================================="
+
+
+
+	cd "$LMPEG3_DIR"
+	./configure $LIBMPEG3_CONFIGURE_OPTIONS
+	cd "$pwd_dir"
+
+	echo "================================="
+	echo "LIBMPEG3 configure script done options: $LIBMPEG3_CONFIGURE_OPTIONS"
+	echo "================================="
+
+	dnl
+      else
+	GAP_VLIBS_MPEG3=" "
+	GAP_VINCS_MPEG3=" "
+	vid_mpeg3_warning="
 ** ERROR: libmpeg3 source directory was not found at:
 $LMPEG3_DIR
 
@@ -373,19 +495,16 @@ $LMPEG3_DIR
    access.)
 
 "
-    fi  
+      fi
+    fi
   else
     if test "x$enable_videoapi_support" != "xno"; then
-        vid_mpeg3_warning="
-gimp-gap is configured without libmpeg3
-   This reduces the number of supported videoformats for read access.
-   You can get libmpeg3-$REQ_LIBMPEG3_VERSION at: 
-   http://www.heroinewarrior.com/download.php3
-"
+      vid_mpeg3_warning="$libmpeg3_info_msg $vid_mpeg3_warning"
       GAP_VLIBS_MPEG3=" "
       GAP_VINCS_MPEG3=" "
     fi
   fi
+fi
 
 AM_CONDITIONAL(ENABLE_GVA_LIBMPEG3_SUPPORT, test "x$enable_libmpeg3" != "xno")
 
@@ -452,11 +571,17 @@ AC_SUBST(FFMPEG_LIBAVCODEC_A)
 AC_SUBST(LMPEG3_DIR)
 AC_SUBST(LMPEG3_A)
 
-GAPVIDEOAPI_EXTLIBS="$GAP_VLIBS_FFMPEG $GAP_VLIBS_MPEG3 -lpng -lz -lpthread -ldl -lm"
+GAPVIDEOAPI_EXTLIBS="$GAP_VLIBS_FFMPEG $GAP_VLIBS_MPEG3 -lpng -lz $GAP_PTHREAD_LIB -ldl -lm"
 GAPVIDEOAPI_EXTINCS="$GAP_VINCS_FFMPEG $GAP_VINCS_MPEG3"
 AC_SUBST(GAPVIDEOAPI_EXTLIBS)
 AC_SUBST(GAPVIDEOAPI_EXTINCS)
 
+dnl 
+dnl TODO: check for required gthread version, 
+dnl and disable GAP_USE_GTHREAD if not available
+dnl
+GTHREAD_LIBS="-lgthread-2.0"
+AC_SUBST(GTHREAD_LIBS)
 
 
 

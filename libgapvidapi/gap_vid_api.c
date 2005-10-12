@@ -1190,7 +1190,7 @@ p_gva_worker_open_read(const char *filename, gint32 vid_track, gint32 aud_track
   gvahand->audio_cannels = 0;
   gvahand->percentage_done = 0.0;
   gvahand->frame_counter = 0;
-  gvahand->pthread_save = TRUE;  /* default for most decoder libs */
+  gvahand->gva_thread_save = TRUE;  /* default for most decoder libs */
 
   if(GVA_global_decoder_list == NULL)
   {

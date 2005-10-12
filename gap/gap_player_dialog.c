@@ -1137,14 +1137,19 @@ p_mtrace_pixbuf( GapPlayerMainGlobalParams *gpp
 /* -----------------------------
  * p_printout_range
  * -----------------------------
- * print selected RANGE to stdout
+ * call fptr_set_range 
+ * if such a callback function for setting the framerange is available (!= NULL)
+ * typically for the case where the player is called from storyboard dialog.
+ * 
+ * Another optional functionality 
+ * prints the selected RANGE to stdout
  * (Line Formated for STORYBOARD_FILE processing)
  *
  * if the Player is in Storyboard mode
  * the printout is just a comment with range numbers
  */
 static void 
-p_printout_range(GapPlayerMainGlobalParams *gpp, gboolean inverse)
+p_printout_range(GapPlayerMainGlobalParams *gpp, gboolean inverse, gboolean printflag)
 {
   gint32 l_begin;
   gint32 l_end;
@@ -1162,32 +1167,38 @@ p_printout_range(GapPlayerMainGlobalParams *gpp, gboolean inverse)
 
   if(gpp->stb_ptr)
   {
-    printf("# storyboard  %06d=frame_from %06d=frame_to  normal  1=nloops\n"
+    if(printflag)
+    {
+      printf("# storyboard  %06d=frame_from %06d=frame_to  normal  1=nloops\n"
                      , (int)l_begin
                      , (int)l_end
                      );
+    }
     return;
   }
 
-  if(gpp->ainfo_ptr->ainfo_type == GAP_AINFO_MOVIE)
+  if(printflag)
   {
-    /* Storyboard command line for playback of GAP singleframe range */
-    printf("VID_PLAY_MOVIE      1=track  \"%s\" %06d=frame_from %06d=frame_to  normal  1=nloops %d=seltrack\n"
-                       , gpp->ainfo_ptr->old_filename
-                       , (int)l_begin
-                       , (int)l_end
-		       , (int)gpp->ainfo_ptr->seltrack
-                       );
-  }
-  else
-  {
-    /* Storyboard command line for playback of GAP singleframe range */
-    printf("VID_PLAY_FRAMES     1=track  \"%s\" %s %06d=frame_from %06d=frame_to  normal  1=nloops\n"
-                       , gpp->ainfo_ptr->basename
-                       , &gpp->ainfo_ptr->extension[1]
-                       , (int)l_begin
-                       , (int)l_end
-                       );
+    if(gpp->ainfo_ptr->ainfo_type == GAP_AINFO_MOVIE)
+    {
+      /* Storyboard command line for playback of GAP singleframe range */
+      printf("VID_PLAY_MOVIE      1=track  \"%s\" %06d=frame_from %06d=frame_to  normal  1=nloops %d=seltrack\n"
+                	 , gpp->ainfo_ptr->old_filename
+                	 , (int)l_begin
+                	 , (int)l_end
+			 , (int)gpp->ainfo_ptr->seltrack
+                	 );
+    }
+    else
+    {
+      /* Storyboard command line for playback of GAP singleframe range */
+      printf("VID_PLAY_FRAMES     1=track  \"%s\" %s %06d=frame_from %06d=frame_to  normal  1=nloops\n"
+                	 , gpp->ainfo_ptr->basename
+                	 , &gpp->ainfo_ptr->extension[1]
+                	 , (int)l_begin
+                	 , (int)l_end
+                	 );
+    }
   }
 
   /* callback function for adding range as cliplist */
@@ -3252,7 +3263,7 @@ on_from_spinbutton_changed             (GtkEditable     *editable,
   {
     if(gpp->caller_range_linked)
     {
-      p_printout_range(gpp, FALSE);
+      p_printout_range(gpp, FALSE, FALSE);
     }
   }
   
@@ -3284,7 +3295,7 @@ on_to_spinbutton_changed               (GtkEditable     *editable,
   {
     if(gpp->caller_range_linked)
     {
-      p_printout_range(gpp, FALSE);
+      p_printout_range(gpp, FALSE, FALSE);
     }
   }
   
@@ -3656,7 +3667,14 @@ on_from_button_clicked            (GtkButton       *button,
 {
   if(gpp)
   {
-      p_printout_range(gpp, FALSE); 
+    gboolean printflag;
+    printflag = TRUE;
+    if(gpp->fptr_set_range)
+    {
+      printflag = FALSE;
+    }
+    
+    p_printout_range(gpp, FALSE, printflag); 
   }
 }  /* end on_from_button_clicked */
 
@@ -3671,7 +3689,13 @@ on_to_button_clicked            (GtkButton       *button,
 {
   if(gpp)
   {
-      p_printout_range(gpp, TRUE); 
+    gboolean printflag;
+    printflag = TRUE;
+    if(gpp->fptr_set_range)
+    {
+      printflag = FALSE;
+    }
+    p_printout_range(gpp, TRUE, printflag); 
   }
 }  /* end on_to_button_clicked */
 

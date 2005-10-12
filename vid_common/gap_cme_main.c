@@ -45,7 +45,6 @@
  */
 
 #include <config.h>
-#include <pthread.h>
 #include <stdlib.h>
 
 #include "gap-intl.h"
@@ -350,7 +349,7 @@ run (const gchar *name,          /* name of plugin */
 
   if(gap_debug) fprintf(stderr, "\n\ngap_qt_main: debug name = %s\n", name);
 
-  gpp->val.gui_proc_tid = 0;
+  gpp->val.gui_proc_thread = NULL;
   gpp->val.run_mode = param[0].data.d_int32;
 
   INIT_I18N();
@@ -551,14 +550,13 @@ run (const gchar *name,          /* name of plugin */
            remove(gpp->val.tmp_audfile);
          }
 
-#ifdef GAP_USE_PTHREAD
          /* is the encoder specific gui_thread still open ? */
-         if(gpp->val.gui_proc_tid != 0)
+         if(gpp->val.gui_proc_thread != NULL)
          {
             /* wait until thread exits */
-            pthread_join(gpp->val.gui_proc_tid, 0);
+            g_thread_join(gpp->val.gui_proc_thread);
+	    gpp->val.gui_proc_thread = NULL;
          }
-#endif
       }
   }
   else

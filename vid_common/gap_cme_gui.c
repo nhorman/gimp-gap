@@ -27,6 +27,7 @@
 
 
 /* revision history:
+ * version 2.2.0;   2005.10.08   hof: ported from pthread to gthread
  * version 2.1.0a;  2004.11.10   hof: reorganized dialog creation procedures
  *                                    and replaced the deprecated GtkOptionMenu widget by gimp_int_combo_box
  * version 2.1.0a;  2004.10.26   hof: added input_mode radiobuttons
@@ -36,7 +37,12 @@
  * version 1.2.1a;  2001.06.30   hof: created
  */
 
-#define GAP_USE_PTHREAD
+
+/* the gui can run even if we dont have gthread library
+ * (but the main window refresh will not be done while the encoder
+ * parameter dialog -- that is called via pdb -- is open)
+ */
+#define GAP_USE_GTHREAD
 
 
 #include <config.h>
@@ -46,7 +52,6 @@
 #include <unistd.h>
 #include <string.h>
 #include <stdlib.h>
-#include <pthread.h>
 
 #include <gtk/gtk.h>
 
@@ -121,7 +126,7 @@ static void            p_init_shell_window_widgets (GapCmeGlobalParams *gpp);
 static void            p_status_progress(GapCmeGlobalParams *gpp, t_global_stb *gstb);
 static void            p_storybord_job_finished(GapCmeGlobalParams *gpp, t_global_stb *gstb);
 static void            on_timer_poll(gpointer   user_data);
-static void            p_thread_storyboard_file(void);
+static gpointer        p_thread_storyboard_file(gpointer data);
 
 
 /* procedures to create the dialog windows */
@@ -156,7 +161,7 @@ p_gap_message(const char *msg)
   {
     if(*msg)
     {
-       printf("%s\n", msg);
+       if(gap_debug) printf("%s\n", msg);
        gap_arr_buttons_dialog  (_("GAP Message"), msg, l_argc, l_argv, -1);
     }
   }
@@ -171,12 +176,12 @@ gap_cme_gui_check_gui_thread_is_active(GapCmeGlobalParams *gpp)
 {
    static gboolean l_gap_message_open = FALSE;
 
-   if(gpp->val.gui_proc_tid)
+   if(gpp->val.gui_proc_thread)
    {
      /* only one of the threads (Master or GUI thread) can use the PDB Interface (or call gimp_xxx procedures)
       * If 2 threads are talking to the gimp main app parallel it comes to crash.
       */
-     if(gap_debug) printf("MASTER: GUI thread %d is already active\n", (int)gpp->val.gui_proc_tid);
+     if(gap_debug) printf("MASTER: GUI thread %d is already active\n", (int)gpp->val.gui_proc_thread);
      if(l_gap_message_open == FALSE)
      {
        l_gap_message_open = TRUE;
@@ -195,26 +200,33 @@ gap_cme_gui_check_gui_thread_is_active(GapCmeGlobalParams *gpp)
 gint
 gap_cme_gui_pdb_call_encoder_gui_plugin(GapCmeGlobalParams *gpp)
 {
+  gboolean joinable;
   if(gpp->ecp == NULL)
   {
     return -1;
   }
 
-#ifdef GAP_USE_PTHREAD
+#ifdef GAP_USE_GTHREAD
   if(gap_cme_gui_check_gui_thread_is_active(gpp)) return -1;
 
   /* start a thread for asynchron PDB call of the gui_ procedure
    */
-  if(gap_debug) printf("MASTER: Before pthread_create\n");
+  if(gap_debug) printf("MASTER: Before g_thread_create\n");
 
-  pthread_create(&gpp->val.gui_proc_tid, NULL, (void*)gap_cme_gui_pthread_async_pdb_call, NULL);
-
-  if(gap_debug) printf("MASTER: After pthread_create\n");
+  joinable = TRUE;
+  gpp->val.gui_proc_thread = 
+      g_thread_create((GThreadFunc)gap_cme_gui_thread_async_pdb_call
+                     , NULL  /* data */
+		     , joinable
+		     , NULL  /* GError **error (NULL dont report errors) */
+		     );
+  
+  if(gap_debug) printf("MASTER: After g_thread_create\n");
 #else
   /* if threads are not used simply call the procedure
    * (the common GUI window is not refreshed until the called gui_proc ends)
    */
-  gap_cme_gui_pthread_async_pdb_call();
+  gap_cme_gui_thread_async_pdb_call(NULL);
 
 #endif
 
@@ -223,11 +235,11 @@ gap_cme_gui_pdb_call_encoder_gui_plugin(GapCmeGlobalParams *gpp)
 
 
 /* ----------------------------------------
- * gap_cme_gui_pthread_async_pdb_call
+ * gap_cme_gui_thread_async_pdb_call
  * ----------------------------------------
  */
-void
-gap_cme_gui_pthread_async_pdb_call(void)
+gpointer
+gap_cme_gui_thread_async_pdb_call(gpointer data)
 {
    GapCmeGlobalParams *gpp;
    GimpParam       *l_ret_params;
@@ -249,7 +261,7 @@ gap_cme_gui_pthread_async_pdb_call(void)
 
   gpp = gap_cme_main_get_global_params();
 
-  if(gap_debug) printf("THREAD: gap_cme_gui_pthread_async_pdb_call &gpp: %d\n", (int)gpp);
+  if(gap_debug) printf("THREAD: gap_cme_gui_thread_async_pdb_call &gpp: %d\n", (int)gpp);
 
   plugin_name = gpp->val.ecp_sel.gui_proc;
 
@@ -268,10 +280,10 @@ gap_cme_gui_pthread_async_pdb_call(void)
   {
     printf("ERROR: Plugin not available, Name was %s\n", plugin_name);
 
-    if(gap_debug) printf("THREAD gui_proc err TERMINATING: %d\n", (int)gpp->val.gui_proc_tid);
+    if(gap_debug) printf("THREAD gui_proc err TERMINATING: %d\n", (int)gpp->val.gui_proc_thread);
 
-    gpp->val.gui_proc_tid = 0;
-    return;
+    gpp->val.gui_proc_thread = NULL;
+    return (NULL);
   }
 
   /* construct the procedures arguments */
@@ -360,10 +372,12 @@ gap_cme_gui_pthread_async_pdb_call(void)
    */
   gap_cme_gui_requery_vid_extension(gpp);
 
-  if(gap_debug) printf("THREAD gui_proc TERMINATING: %d\n", (int)gpp->val.gui_proc_tid);
+  if(gap_debug) printf("THREAD gui_proc TERMINATING: %d\n", (int)gpp->val.gui_proc_thread);
 
-  gpp->val.gui_proc_tid = 0;
-}  /* end gap_cme_gui_pthread_async_pdb_call */
+  gpp->val.gui_proc_thread = NULL;
+  
+  return (NULL);
+}  /* end gap_cme_gui_thread_async_pdb_call */
 
 
 
@@ -1281,23 +1295,23 @@ p_storybord_job_finished(GapCmeGlobalParams *gpp, t_global_stb *gstb)
   g_snprintf(gstb->status_msg, sizeof(gstb->status_msg), _("ready"));
   p_status_progress(gpp, gstb);
 
-#ifdef GAP_USE_PTHREAD
+#ifdef GAP_USE_GTHREAD
    /* is the encoder specific gui_thread still open ? */
-   if(gpp->val.gui_proc_tid != 0)
+   if(gpp->val.gui_proc_thread)
    {
       /* wait until thread exits */
       if(gap_debug) 
       {
-        printf("p_storybord_job_finished: before pthread_join\n");
+        printf("p_storybord_job_finished: before g_thread_join\n");
       }
 
-      pthread_join(gpp->val.gui_proc_tid, 0);
+      g_thread_join(gpp->val.gui_proc_thread);
 
       if(gap_debug)
       {
-        printf("p_storybord_job_finished: after pthread_join\n");
+        printf("p_storybord_job_finished: after g_thread_join\n");
       }
-      gpp->val.gui_proc_tid = 0;
+      gpp->val.gui_proc_thread = NULL;
    }
 #endif
 
@@ -1543,8 +1557,8 @@ on_timer_poll(gpointer   user_data)
  *   if no storyboard file exists then use the first/last frame_nr from the ainfo structure
  *   that describes the animation frames from the invoking image_frame.
  */
-static void
-p_thread_storyboard_file(void)
+static gpointer
+p_thread_storyboard_file(gpointer data)
 {
   GapCmeGlobalParams   *gpp;
   t_global_stb         *gstb;
@@ -1682,7 +1696,7 @@ p_thread_storyboard_file(void)
   if(gap_debug) 
   {
     printf("THREAD storyboard TERMINATING: tid:%d first:%d last:%d input_mode:%d\n"
-       , (int)gpp->val.gui_proc_tid
+       , (int)gpp->val.gui_proc_thread
        , (int)gstb->first_frame_limit
        , (int)gstb->last_frame_nr
        , (int)gpp->val.input_mode
@@ -1690,8 +1704,9 @@ p_thread_storyboard_file(void)
   }
 
   gstb->stb_job_done = TRUE;
-  /* gpp->val.gui_proc_tid = 0; */
+  /* gpp->val.gui_proc_thread = NULL; */
 
+  return (NULL);
 } /* end p_thread_storyboard_file */
 
 
@@ -1703,6 +1718,7 @@ p_thread_storyboard_file(void)
 void
 gap_cme_gui_check_storyboard_file(GapCmeGlobalParams *gpp)
 {
+   gboolean joinable;
    t_global_stb    *gstb;
   gint32 l_first_frame_limit;
   gint32 l_last_frame_nr;
@@ -1743,7 +1759,7 @@ gap_cme_gui_check_storyboard_file(GapCmeGlobalParams *gpp)
 
 
 
-#ifdef GAP_USE_PTHREAD
+#ifdef GAP_USE_GTHREAD
   if(gap_cme_gui_check_gui_thread_is_active(gpp))  { return; }
   if(gstb->poll_timertag >= 0)           { return; }
 
@@ -1757,11 +1773,17 @@ gap_cme_gui_check_storyboard_file(GapCmeGlobalParams *gpp)
 
   /* start a thread for asynchron PDB call of the gui_ procedure
    */
-  if(gap_debug) printf("MASTER: Before storyborad pthread_create\n");
+  if(gap_debug) printf("MASTER: Before storyborad g_thread_create\n");
 
-  pthread_create(&gpp->val.gui_proc_tid, NULL, (void*)p_thread_storyboard_file, NULL);
+  joinable = TRUE;
+  gpp->val.gui_proc_thread = 
+      g_thread_create((GThreadFunc)p_thread_storyboard_file
+                     , NULL  /* data */
+		     , joinable
+		     , NULL  /* GError **error (NULL dont report errors) */
+		     );
 
-  if(gap_debug) printf("MASTER: After storyborad pthread_create\n");
+  if(gap_debug) printf("MASTER: After storyborad g_thread_create\n");
 
   /* start poll timer to update progress and notify when storyboard job finished */
   gstb->poll_timertag =
@@ -1802,7 +1824,7 @@ gap_cme_gui_check_storyboard_file(GapCmeGlobalParams *gpp)
     
     if(do_processing)
     {			       
-      p_thread_storyboard_file();
+      p_thread_storyboard_file(NULL);
       p_storybord_job_finished(gpp, gstb);
     }
   }
@@ -1842,7 +1864,7 @@ gap_cme_gui_check_encode_OK (GapCmeGlobalParams *gpp)
 
   if(gap_debug) printf("gap_cme_gui_check_encode_OK: Start\n");
 
-  if(gpp->val.gui_proc_tid != 0 )
+  if(gpp->val.gui_proc_thread)
   {
      p_gap_message(_("Encoder specific parameter window is still open" ));
      return (FALSE);
@@ -2501,7 +2523,7 @@ p_create_shell_window (GapCmeGlobalParams *gpp)
   button = gtk_button_new_with_label (_("..."));
   gtk_widget_show (button);
   gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 0);
-  gtk_widget_set_size_request (button, 80, -2);
+  gtk_widget_set_size_request (button, 80, -1);
   gimp_help_set_help_data (button, _("Select output videofile via browser"), NULL);
   g_signal_connect (G_OBJECT (button), "clicked",
                       G_CALLBACK (on_cme__button_video_clicked),
@@ -2632,7 +2654,7 @@ p_create_encode_extras_frame (GapCmeGlobalParams *gpp)
   gtk_table_attach (GTK_TABLE (table1), button, 2, 3, row, row+1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_size_request (button, 70, -2);
+  gtk_widget_set_size_request (button, 70, -1);
   gimp_help_set_help_data (button, _("select macrofile via browser"), NULL);
   g_signal_connect (G_OBJECT (button), "clicked",
                       G_CALLBACK (on_cme__button_mac_clicked),
@@ -2876,7 +2898,7 @@ p_create_audiotool_cfg_frame (GapCmeGlobalParams *gpp)
   gtk_table_attach (GTK_TABLE (table), label, 0, 2, row, row+1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 2, 2);
-  gtk_widget_set_size_request (label, 300, -2);
+  gtk_widget_set_size_request (label, 300, -1);
   gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
   gtk_misc_set_alignment (GTK_MISC (label), 0.5, 0.5);
 
@@ -2984,7 +3006,7 @@ p_create_audio_options_frame (GapCmeGlobalParams *gpp)
   gtk_table_attach (GTK_TABLE (table), button, 2, 3, 0, 1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_size_request (button, 80, -2);
+  gtk_widget_set_size_request (button, 80, -1);
   gimp_help_set_help_data (button, _("Select input audiofile via browser"), NULL);
   g_signal_connect (G_OBJECT (button), "clicked",
                       G_CALLBACK (on_cme__button_audio1_clicked),
@@ -3336,7 +3358,7 @@ p_create_video_options_frame (GapCmeGlobalParams *gpp)
   gtk_table_attach (GTK_TABLE (cme__table1), combo, 2, 3, l_row, l_row+1,
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_size_request (combo, 160, -2);
+  gtk_widget_set_size_request (combo, 160, -1);
   gimp_help_set_help_data (combo, _("Scale width/height to common size"), NULL);
   gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (combo),
                               GAP_CME_STANDARD_SIZE_IMAGE,  /* initial gint value */
@@ -3419,7 +3441,7 @@ p_create_video_options_frame (GapCmeGlobalParams *gpp)
   gtk_table_attach (GTK_TABLE (cme__table1), combo, 2, 3, l_row, l_row+1,
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_size_request (combo, 160, -2);
+  gtk_widget_set_size_request (combo, 160, -1);
   gimp_help_set_help_data (combo, _("Set framerate"), NULL);
   gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (combo),
                               GAP_CME_STANDARD_FRAMERATE_00_UNCHANGED,  /* initial gint value */
@@ -3452,7 +3474,7 @@ p_create_video_options_frame (GapCmeGlobalParams *gpp)
   gtk_table_attach (GTK_TABLE (cme__table1), combo, 2, 3, l_row, l_row+1,
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_size_request (combo, 160, -2);
+  gtk_widget_set_size_request (combo, 160, -1);
   gimp_help_set_help_data (combo, _("Select videonorm"), NULL);
   gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (combo),
                               VID_FMT_NTSC,  /* initial gint value */
@@ -3492,7 +3514,7 @@ p_create_video_options_frame (GapCmeGlobalParams *gpp)
   gtk_table_attach (GTK_TABLE (cme__table1), combo, 2, 3, l_row, l_row+1,
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_size_request (combo, 160, -2);
+  gtk_widget_set_size_request (combo, 160, -1);
   gimp_help_set_help_data (combo, _("Select video encoder plugin"), NULL);
   
   /* the  videoencoder combo items are set later by query the PDB
@@ -3533,6 +3555,11 @@ gap_cme_gui_master_encoder_dialog(GapCmeGlobalParams *gpp)
 
   if(gap_debug) printf("gap_cme_gui_master_encoder_dialog: Start\n");
 
+#ifdef GAP_USE_GTHREAD
+  g_thread_init (NULL);
+  gdk_threads_init ();
+  gdk_threads_enter ();
+#endif
   gstb = &global_stb;
   gstb->stb_job_done = FALSE;
   gstb->vidhand_open_ok = FALSE;
@@ -3579,6 +3606,9 @@ gap_cme_gui_master_encoder_dialog(GapCmeGlobalParams *gpp)
 
   gpp->val.run = 0;
   gtk_main ();
+#ifdef GAP_USE_GTHREAD
+  gdk_threads_leave ();
+#endif
 
   if(gap_debug) printf("A F T E R gtk_main run:%d\n", (int)gpp->val.run);
 

@@ -81,6 +81,8 @@
 #define GAP_STORY_SCENE_CMP_IGNORE          0.15
 #define GAP_STORY_SCENE_CMP_THRESHOLD       8000
 
+#define GAP_STORY_PROPERTIES_PREVIOUS_FILENAME "GAP_STORY_PROPERTIES_PREVIOUS_FILENAME"
+
 extern int gap_debug;  /* 1 == print debug infos , 0 dont print debug infos */
 
 static void     p_pw_prop_reset_all(GapStbPropWidget *pw);
@@ -1127,12 +1129,22 @@ p_pw_filename_changed(const char *filename, GapStbPropWidget *pw)
  
   pw->stb_refptr->unsaved_changes = TRUE;
 
+  if(filename)
+  {
+    gint len;
+    len = strlen(filename);
+    if(len > 0)
+    {
+      gimp_set_data(GAP_STORY_PROPERTIES_PREVIOUS_FILENAME, filename, len+1);
+    }
+  }
   gap_story_upd_elem_from_filename(pw->stb_elem_refptr, filename);
 
   p_pw_check_ainfo_range(pw, pw->stb_elem_refptr->orig_filename);
 
   /* update pw stuff */
   p_pw_update_properties(pw);
+  
 }  /* end p_pw_filename_changed */
 
 
@@ -1233,8 +1245,37 @@ p_pw_filesel_button_cb ( GtkWidget *w
   g_signal_connect (filesel, "destroy",
                     G_CALLBACK (p_filesel_pw_close_cb),
                     pw);
-  gtk_file_selection_set_filename (GTK_FILE_SELECTION (filesel),
-                                   pw->stb_elem_refptr->orig_filename);
+
+
+  if(pw->stb_elem_refptr->orig_filename)
+  {
+    gtk_file_selection_set_filename (GTK_FILE_SELECTION (filesel),
+                                     pw->stb_elem_refptr->orig_filename);
+  }
+  else
+  {
+    gchar *previous_filename = NULL;
+    gint name_length;
+
+    /* for creating new clips we have no orig_filename in the properties
+     * in this case we use the previous used name in this session
+     * as default
+     */
+
+    name_length = gimp_get_data_size(GAP_STORY_PROPERTIES_PREVIOUS_FILENAME);
+    if(name_length > 0)
+    {
+      previous_filename = g_malloc(name_length);
+      gimp_get_data(GAP_STORY_PROPERTIES_PREVIOUS_FILENAME, previous_filename);
+
+    }
+    if(previous_filename)
+    {
+      gtk_file_selection_set_filename (GTK_FILE_SELECTION (filesel),
+                                     previous_filename);
+      g_free(previous_filename);
+    }
+  }
   gtk_widget_show (filesel);
 
 }  /* end p_pw_filesel_button_cb */
