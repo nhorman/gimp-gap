@@ -2179,14 +2179,14 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
   {
     /* unsupported lines raise an error for files without correct Header
      */
-    p_set_stb_error(stb, _("Unsupported line was igonored"));
+    p_set_stb_error(stb, _("Unsupported line was ignored"));
   }
   else
   {
     /* accept unsupported lines (with just a warning)
      * because the file has correct Header
      */
-    p_set_stb_warning(stb, _("Unsupported line was igonored"));
+    p_set_stb_warning(stb, _("Unsupported line was ignored"));
   }
 
 

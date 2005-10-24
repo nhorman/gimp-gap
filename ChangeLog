@@ -1,3 +1,9 @@
+2005-10-23  Wolfgang Hofer <hof@gimp.org>
+	- bugfix typo in messages (#318856)
+	
+	* gap/gap_story_file.c 
+	* vid_common/gap_cme_gui.c
+
 2005-10-08  Wolfgang Hofer <hof@gimp.org>
 	- player: do not always print the framerange to stdout
 	now restricted to explicite request via clicking From/To Frame buttons

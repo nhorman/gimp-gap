@@ -2678,7 +2678,7 @@ p_create_encode_extras_frame (GapCmeGlobalParams *gpp)
   gtk_table_attach (GTK_TABLE (table1), entry, 1, 2, row, row+1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gimp_help_set_help_data (entry, _("optional use a storyboard file to feed the encoder"), NULL);
+  gimp_help_set_help_data (entry, _("optionally use a storyboard file to feed the encoder"), NULL);
   g_signal_connect (G_OBJECT (entry), "changed",
                       G_CALLBACK (on_cme__entry_stb_changed),
                       gpp);
