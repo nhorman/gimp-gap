@@ -1084,7 +1084,7 @@ combo_create_value(char *title, GtkTable *table, int row,
 
   /* create an empty combo box */
   l_col++;
-  combo = gimp_int_combo_box_new (NULL, 0);
+  combo = g_object_new (GIMP_TYPE_INT_COMBO_BOX, NULL);
   g_object_set_data (G_OBJECT (combo), GAP_ARR_INTERFACE_PTR, (gpointer)arrint_ptr);
 
   g_signal_connect (combo, "changed",

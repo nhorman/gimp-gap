@@ -1,5 +1,10 @@
 2005-10-25  Sven Neumann  <sven@gimp.org>
 
+	* gap/gap_arr_dialog.c (combo_create_value): use g_object_new() to
+	create an empty combobox to avoid compiler warnings with gimp-2.3.
+
+2005-10-25  Sven Neumann  <sven@gimp.org>
+
 	* gap/gap_lib.c
 	* gap/gap_match.c: use g_ascii_toupper() instead of toupper().
 
