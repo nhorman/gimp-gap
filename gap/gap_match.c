@@ -36,7 +36,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
 
 
 /* GIMP includes */
@@ -137,7 +136,7 @@ str_toupper(char *str)
   {
      while(*str != '\0')
      {
-       *str = toupper(*str);
+       *str = g_ascii_toupper(*str);
        str++;
      }
   }

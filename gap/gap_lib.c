@@ -293,14 +293,14 @@ p_set_active_layer_by_name(gint32 image_id
       if(l_layer_name)
       {
         gint ii;
-	
+
 	/* check how many characters of the name are equal */
         l_len = strlen(l_layer_name);
         for(ii=0; ii < MIN(l_len, l_ref_len); ii++)
 	{
-	  if(toupper(l_layer_name[ii]) == toupper(ref_layer_name[ii]))
+	  if(g_ascii_toupper(l_layer_name[ii]) == g_ascii_toupper(ref_layer_name[ii]))
 	  {
-	    /* best score formatching character */
+	    /* best score for matching character */
 	    l_score += 8;
 	    if(l_layer_name[ii] == ref_layer_name[ii])
 	    {
