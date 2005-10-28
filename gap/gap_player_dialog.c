@@ -3581,8 +3581,14 @@ on_framenr_button_clicked             (GtkButton       *button,
 
   p_stop_playback(gpp);
   
-  button_type = (gint) g_object_get_data (G_OBJECT (button), KEY_FRAMENR_BUTTON_TYPE);
-
+  if(button)
+  {
+    button_type = (gint) g_object_get_data (G_OBJECT (button), KEY_FRAMENR_BUTTON_TYPE);
+  }
+  else
+  {
+    button_type = FRAMENR_BUTTON_BEGIN;
+  }
 
   if(bevent)
   {
@@ -5818,14 +5824,14 @@ p_create_player_window (GapPlayerMainGlobalParams *gpp)
   if(gpp->have_progress_bar)
   {
     progress_bar = gtk_progress_bar_new ();
-    gpp->progress_bar = progress_bar;
     gtk_progress_bar_set_text(GTK_PROGRESS_BAR(progress_bar), " ");
     gtk_widget_show (progress_bar);
     gtk_table_attach (GTK_TABLE (table2), progress_bar, 0, 2, row, row+1,
                       (GtkAttachOptions) (GTK_FILL),
                       (GtkAttachOptions) (0), 0, 0);
   }
-  
+  gpp->progress_bar = progress_bar;
+ 
   /* a dummy label to fill up table1 until bottom */
   label = gtk_label_new (" ");
   gtk_widget_show (label);

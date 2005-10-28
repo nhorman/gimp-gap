@@ -4214,6 +4214,18 @@ navi_dialog_create (GtkWidget* shell, gint32 image_id)
   gtk_box_pack_start (GTK_BOX (vbox), button_box, FALSE, FALSE, 2);
   gtk_widget_show (button_box);
 
+
+  /* the GimpProgressBar */
+  {
+    GtkWidget *progressbar;
+
+    progressbar = gimp_progress_bar_new();
+    gtk_widget_set_size_request (progressbar, 100, -1);
+    gtk_widget_show (progressbar);
+    gtk_box_pack_start (GTK_BOX (vbox), progressbar, FALSE, FALSE, 2);
+  }
+
+
   gtk_widget_show (vbox);
   gtk_widget_show (naviD->vbox);
 

@@ -1,3 +1,25 @@
+2005-09-26  Wolfgang Hofer <hof@gimp.org>
+
+	- added GimpProgressBar to the VCR Navigator dialog
+	  to display progress in this dialog rather than
+	  in the invokining image. (bug # 135185)
+	  
+	- bugfix: player stand alone mode without progress_bar
+	  when have no progress_bar must init gpp->progress_bar
+	  with NULL
+	  
+	  fixes warnings to stdout:
+	  (gap_player_dialog:17992): GLib-GObject-WARNING **: invalid unclassed pointer in cast to `GtkProgressBar'
+          (gap_player_dialog:17992): Gtk-CRITICAL **: gtk_progress_bar_set_text: assertion `GTK_IS_PROGRESS_BAR (pbar)' failed
+
+	- bugfix: player click on go-button printed critical warning
+	  (only if click results in loading a frame into the invoking image)
+	
+	  (gap_player_dialog:19725): GLib-GObject-CRITICAL **: g_object_get_data: assertion `G_IS_OBJECT (object)' failed
+	
+	* gap/gap_navigator_dialog.c
+	* gap/gap_player_dialog.c
+
 2005-10-25  Sven Neumann  <sven@gimp.org>
 
 	* gap/gap_arr_dialog.c (combo_create_value): use g_object_new() to
