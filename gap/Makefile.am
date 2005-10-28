@@ -259,7 +259,12 @@ gap_wr_color_levels_SOURCES = \
 
 gap_wr_color_huesat_SOURCES = \
 	gap_wr_color_huesat.c	\
-	gap_libgimpgap.h	
+	gap_libgimpgap.h
+
+
+if OS_WIN32
+mwindows = -mwindows
+endif
 
 AM_CPPFLAGS = \
 	-DGAPLIBDIR=\""$(GAPLIBDIR)"\"	\
@@ -273,6 +278,8 @@ INCLUDES = \
 	-I$(includedir)
 
 
+AM_LDFLAGS = $(mwindows)
+
 LDADD = $(GIMP_LIBS)
 
 
@@ -284,10 +291,10 @@ gap_frontends_LDADD =        $(LIBGIMPGAP) $(GIMP_LIBS)
 gap_morph_LDADD =            $(LIBGIMPGAP) $(GIMP_LIBS)
 gap_name2layer_LDADD =       $(LIBGIMPGAP) $(GIMP_LIBS)
 gap_navigator_dialog_LDADD = $(LIBGIMPGAP) $(GIMP_LIBS)
-gap_player_LDADD =           ${LIBGAPSTORY} $(WAVPLAYCLIENT) $(GAPVIDEOAPI) $(LIBGIMPGAP) $(GIMP_LIBS)
+gap_player_LDADD =           $(GAPVIDEOAPI) $(LIBGIMPGAP) ${LIBGAPSTORY} $(GIMP_LIBS) $(WAVPLAYCLIENT)
 gap_onion_LDADD =            $(LIBGIMPGAP) $(GIMP_LIBS)
-gap_storyboard_LDADD =       ${LIBGAPSTORY} $(WAVPLAYCLIENT) $(GAPVIDEOAPI) $(LIBGIMPGAP) $(GIMP_LIBS)
-gap_video_extract_LDADD =    ${LIBGAPSTORY} $(WAVPLAYCLIENT) $(GAPVIDEOAPI) $(LIBGIMPGAP) $(GIMP_LIBS)
+gap_storyboard_LDADD =       $(GAPVIDEOAPI) $(LIBGIMPGAP) ${LIBGAPSTORY} $(GIMP_LIBS) $(WAVPLAYCLIENT)
+gap_video_extract_LDADD =    $(GAPVIDEOAPI) $(LIBGIMPGAP) ${LIBGAPSTORY} $(GIMP_LIBS) $(WAVPLAYCLIENT)
 gap_wr_opacity_LDADD =       $(LIBGIMPGAP) $(GIMP_LIBS)
 gap_wr_trans_LDADD =         $(LIBGIMPGAP) $(GIMP_LIBS)
 gap_wr_color_curve_LDADD =   $(LIBGIMPGAP) $(GIMP_LIBS)

@@ -1,4 +1,12 @@
-2005-09-26  Wolfgang Hofer <hof@gimp.org>
+2005-10-28  Sven Neumann  <sven@gimp.org>
+
+	* configure.in: pass $CC to the ffmpef configure script, check for
+	native Win32.
+
+	* gap/Makefile.am: another try at getting the link order right.
+	Pass -mwindows to the linker on Win32.
+
+2005-10-26  Wolfgang Hofer <hof@gimp.org>
 
 	- added GimpProgressBar to the VCR Navigator dialog
 	  to display progress in this dialog rather than
