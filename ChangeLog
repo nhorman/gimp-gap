@@ -1,6 +1,10 @@
 2005-10-28  Sven Neumann  <sven@gimp.org>
 
-	* configure.in: pass $CC to the ffmpef configure script, check for
+	* Made 2.2.0 release.
+
+2005-10-28  Sven Neumann  <sven@gimp.org>
+
+	* configure.in: pass $CC to the ffmpeg configure script, check for
 	native Win32.
 
 	* gap/Makefile.am: another try at getting the link order right.
@@ -45,6 +49,7 @@
 	* vid_common/gap_cme_gui.c
 
 2005-10-08  Wolfgang Hofer <hof@gimp.org>
+
 	- player: do not always print the framerange to stdout
 	now restricted to explicite request via clicking From/To Frame buttons
 	when the player is NOT embedded into storyboard dialog.
@@ -3369,6 +3374,3 @@ x- Remove  gap_decode_mpeg  (gap_decode_mpeg_main.c)
 
     ==> The layer stealing strategy does not use clean API
 	and will be replaced by a new clean Concept.
-
-
-
