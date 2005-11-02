@@ -143,7 +143,7 @@ gboolean            p_set_active_layer_by_pos(gint32 image_id
                          ,gint32 ref_layer_stackpos
                          );
 gboolean            p_set_active_layer_by_name(gint32 image_id
-                          ,gchar *ref_layer_name
+                          ,const gchar *ref_layer_name
                           ,gint32 ref_layer_stackpos
                           );
 static gchar *      p_get_active_layer_name(gint32 image_id
@@ -246,10 +246,11 @@ p_set_active_layer_by_pos(gint32 image_id
  * set active layer by picking the layer
  * whos name matches best with ref_layer_name.
  * ref_layer_stackpos is the 2nd criterium
+ * restriction: works only for utf8 compliant layernames.
  */
 gboolean
 p_set_active_layer_by_name(gint32 image_id
-                          ,gchar *ref_layer_name
+                          ,const gchar *ref_layer_name
                           ,gint32 ref_layer_stackpos
                           )
 {
@@ -263,8 +264,8 @@ p_set_active_layer_by_name(gint32 image_id
   gint        l_score;
   gint        l_case_bonus;
   gint        l_max_score;
-  gint        l_ref_len;
-  gint        l_len;
+  glong       l_ref_len;
+  glong       l_len;
   char       *l_layer_name;
 
   if(gap_debug)
@@ -280,7 +281,12 @@ p_set_active_layer_by_name(gint32 image_id
     return(p_set_active_layer_by_pos(image_id, ref_layer_stackpos));
   }
   
-  l_ref_len = strlen(ref_layer_name);
+  if(!g_utf8_validate(ref_layer_name, -1, NULL))
+  {
+    return(p_set_active_layer_by_pos(image_id, ref_layer_stackpos));
+  }
+  
+  l_ref_len = g_utf8_strlen(ref_layer_name, -1);
   l_layers_list = gimp_image_get_layers(image_id, &l_nlayers);
   if(l_layers_list)
   {
@@ -294,40 +300,58 @@ p_set_active_layer_by_name(gint32 image_id
       {
         gint ii;
 
-	/* check how many characters of the name are equal */
-        l_len = strlen(l_layer_name);
-        for(ii=0; ii < MIN(l_len, l_ref_len); ii++)
-	{
-	  if(g_ascii_toupper(l_layer_name[ii]) == g_ascii_toupper(ref_layer_name[ii]))
+        if(g_utf8_validate(l_layer_name, -1, NULL))
+        {
+	  const char *uni_ref_ptr;
+	  const char *uni_nam_ptr;
+
+          uni_ref_ptr = ref_layer_name;
+	  uni_nam_ptr = l_layer_name;
+
+	  /* check how many characters of the name are equal */
+          l_len = g_utf8_strlen(l_layer_name, -1);
+          for(ii=0; ii < MIN(l_len, l_ref_len); ii++)
 	  {
-	    /* best score for matching character */
-	    l_score += 8;
-	    if(l_layer_name[ii] == ref_layer_name[ii])
+	    gunichar refname_char;
+	    gunichar layername_char;
+	    
+	    refname_char = g_utf8_get_char(uni_ref_ptr);
+	    layername_char = g_utf8_get_char(uni_nam_ptr);
+
+	    if(g_unichar_toupper(layername_char) == g_unichar_toupper(refname_char))
 	    {
-	      if(ii==0)
+	      /* best score for matching character */
+	      l_score += 8;
+	      if(layername_char == refname_char)
 	      {
-	        /* prepare bonus for matching in case sensitivity */
-	        l_case_bonus = 4;
+		if(ii==0)
+		{
+	          /* prepare bonus for matching in case sensitivity */
+	          l_case_bonus = 4;
+		}
+	      }
+	      else
+	      {
+		/* lost the bonus for exact matching in case sensitivity */
+		l_case_bonus = 0;
 	      }
 	    }
 	    else
 	    {
-	      /* lost the bonus for exact matching in case sensitivity */
-	      l_case_bonus = 0;
+              break;
 	    }
+	    uni_ref_ptr = g_utf8_find_next_char(uni_ref_ptr, NULL);
+	    uni_nam_ptr = g_utf8_find_next_char(uni_nam_ptr, NULL);
 	  }
-	  else
+
+	  l_score += l_case_bonus;
+	  if(l_len == l_ref_len)
 	  {
-            break;
+	    /* extra score for equal length */
+	    l_score += 2;
 	  }
-	}
-	
-	l_score += l_case_bonus;
-	if(l_len == l_ref_len)
-	{
-	  /* extra score for equal length */
-	  l_score += 2;
-	}
+        }
+
 	g_free(l_layer_name);
       }
       
@@ -380,6 +404,8 @@ p_set_active_layer_by_name(gint32 image_id
   
   return (FALSE);
 }  /* end p_set_active_layer_by_name */
+
+
 
 
 /* ---------------------------------
