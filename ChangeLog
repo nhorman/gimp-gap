@@ -1,5 +1,16 @@
 2005-11-15  Sven Neumann  <sven@gimp.org>
 
+	* configure.in
+	* gap/Makefile.am
+	* libgapvidutil/Makefile.am
+	* vid_common/Makefile.am
+	* vid_enc_avi/Makefile.am
+	* vid_enc_ffmpeg/Makefile.am
+	* vid_enc_single/Makefile.am: applied patch that fixes the build
+	for srcdir != builddir (bug #321348).
+
+2005-11-15  Sven Neumann  <sven@gimp.org>
+
 	* gap/Makefile.am
 	* libwavplayclient/client.c
 	* libwavplayclient/msg.c

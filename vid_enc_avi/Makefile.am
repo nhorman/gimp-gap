@@ -7,14 +7,14 @@ scriptdatadir = $(GIMP_DATA_DIR)/scripts
 
 if GAP_VIDEOAPI_SUPPORT
 GAPVIDEOAPI = $(top_builddir)/libgapvidapi/libgapvidapi.a  $(GAPVIDEOAPI_EXTLIBS)
-INC_GAPVIDEOAPI = -I$(top_builddir)/libgapvidapi $(GAPVIDEOAPI_EXTINCS)
+INC_GAPVIDEOAPI = -I$(top_srcdir)/libgapvidapi $(GAPVIDEOAPI_EXTINCS)
 endif
 
 LIBGIMPGAP =  -L$(top_builddir)/gap  -lgimpgap -lgapstory
-INC_LIBGIMPGAP = -I$(top_builddir)/gap
+INC_LIBGIMPGAP = -I$(top_srcdir)/gap
 
 LIBGAPVIDUTIL  = $(top_builddir)/libgapvidutil/libgapvidutil.a
-INC_LIBGAPVIDUTIL = -I$(top_builddir)/libgapvidutil
+INC_LIBGAPVIDUTIL = -I$(top_srcdir)/libgapvidutil
 
 libexec_PROGRAMS = gap_vid_enc_avi
 
