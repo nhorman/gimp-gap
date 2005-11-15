@@ -1,5 +1,9 @@
 2005-11-15  Sven Neumann  <sven@gimp.org>
 
+	* configure.in: bumped version to 2.2.1.
+
+2005-11-15  Sven Neumann  <sven@gimp.org>
+
 	* configure.in
 	* gap/Makefile.am
 	* libgapvidutil/Makefile.am
