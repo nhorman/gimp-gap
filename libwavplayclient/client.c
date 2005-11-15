@@ -58,7 +58,11 @@ static const char rcsid[] = "@(#)client.c $Revision$";
 #include <sys/wait.h>
 #include <sys/stat.h>
 #include <assert.h>
+#ifdef __CYGWIN__
+#include <sys/soundcard.h>
+#else
 #include <linux/soundcard.h>
+#endif
 
 #include <glib.h>
 

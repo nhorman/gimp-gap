@@ -55,7 +55,11 @@ static const char rcsid[] = "@(#)msg.c $Revision$";
 #include <sys/msg.h>
 #include <sys/ioctl.h>
 #include <assert.h>
+#ifdef __CYGWIN__
+#include <sys/soundcard.h>
+#else
 #include <linux/soundcard.h>
+#endif
 #include "wavplay.h"
 
 /*

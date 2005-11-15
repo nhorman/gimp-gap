@@ -48,7 +48,7 @@ LDADD = $(GIMP_LIBS)
 # note: sequence of libs matters because LIBGAPVIDUTIL uses both LIBGIMPGAP and GAPVIDEOAPI
 #       (if those libs appear before LIBGAPVIDUTIL the linker can not resolve those references.
 
-gap_vid_enc_avi_LDADD =  $(GIMP_LIBS) $(LIBGAPVIDUTIL) $(LIBGIMPGAP) $(GAPVIDEOAPI) $(GAP_VLIBS_XVIDCORE) -ljpeg
+gap_vid_enc_avi_LDADD =  $(LIBGAPVIDUTIL) $(LIBGIMPGAP) $(GAPVIDEOAPI) $(GAP_VLIBS_XVIDCORE) -ljpeg $(GIMP_LIBS)
 
 
 

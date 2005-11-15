@@ -1,3 +1,15 @@
+2005-11-15  Sven Neumann  <sven@gimp.org>
+
+	* gap/Makefile.am
+	* libwavplayclient/client.c
+	* libwavplayclient/msg.c
+	* libwavplayclient/wpc_msg.c
+	* vid_common/Makefile.am
+	* vid_enc_avi/Makefile.am
+	* vid_enc_ffmpeg/Makefile.am
+	* vid_enc_single/Makefile.am: aplied patch that fixes build issues
+	on Cygwin (bug #321347).
+
 2005-10-28  Sven Neumann  <sven@gimp.org>
 
 	* Made 2.2.0 release.
