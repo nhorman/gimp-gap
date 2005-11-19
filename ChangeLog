@@ -25,6 +25,23 @@
 	* vid_enc_single/Makefile.am: aplied patch that fixes build issues
 	on Cygwin (bug #321347).
 
+2005-11-01  Wolfgang Hofer <hof@gimp.org>
+
+	- bugfix: matching end of string did not work for stringlength
+	equal to pattern length.
+
+        changes for UTF8 support (bugzilla #319710)
+	- added utf8 support for simple gap layername matching
+	and frame number substitution in layernames.
+	now checks for utf8 compliance using g_utf8_validate
+	and take care of multibyte characters when
+	iterating layername or pattern strings.
+	- active layer tracing: support utf8 encoded layernames
+	(gap_lib.c p_set_active_layer_by_name)
+
+	* gap/gap_match.c
+	* gap/gap_lib.c
+
 2005-10-28  Sven Neumann  <sven@gimp.org>
 
 	* Made 2.2.0 release.
