@@ -1,3 +1,10 @@
+2005-11-20  Wolfgang Hofer <hof@gimp.org>
+	fixed bug when building with libmpeg3.
+	AC_SUBST(GAP_PTHREAD_LIB) required due to deferred expansion
+	introduced with patch for bug #321348.
+	
+	* configure.in: # added AC_SUBST(GAP_PTHREAD_LIB)
+	
 2005-11-15  Sven Neumann  <sven@gimp.org>
 
 	* configure.in: bumped version to 2.2.1.
