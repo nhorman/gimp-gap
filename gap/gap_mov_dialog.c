@@ -3158,7 +3158,7 @@ mov_edit_button_box_create (t_mov_gui_stuff *mgp)
   gimp_help_set_help_data(button,
                        _("Delete all controlpoints, and replace them with "
 		         "a copy of all anchorpoints of the current path "
-		         "from the image where 'MovePath' was invoked from."
+		         "from the image where 'MovePath' was invoked from. "
 			 "Hold Shift key to create contolpoints foreach handled frame, "
 			 "following the bezier path")
                        , NULL);

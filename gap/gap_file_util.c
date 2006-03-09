@@ -145,7 +145,7 @@ gap_file_load_file_len(const char *fname, gint32 *filelen)
   l_buff_ptr[len] = '\0';
 
   /* File in eine Buffer laden */
-  fp = fopen(fname, "r");		    /* open read */
+  fp = fopen(fname, "rb");		    /* open read */
   if(fp == NULL)
   {
     printf ("open(read) error on '%s'\n", fname);

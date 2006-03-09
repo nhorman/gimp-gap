@@ -605,10 +605,14 @@ gap_story_filename_is_videofile(const char *filename)
  * gap_story_upd_elem_from_filename
  * --------------------------------
  */
-void
+long
 gap_story_upd_elem_from_filename(GapStoryElem *stb_elem,  const char *filename)
 {
-  if(stb_elem == NULL) { return; }
+  long current_frame;
+  
+  current_frame = -1;
+  
+  if(stb_elem == NULL) { return(current_frame); }
   if(stb_elem->basename)
   {
     g_free(stb_elem->basename);
@@ -644,6 +648,7 @@ gap_story_upd_elem_from_filename(GapStoryElem *stb_elem,  const char *filename)
       if(l_number > 0)
       {
 	stb_elem->record_type = GAP_STBREC_VID_FRAMES;
+	current_frame = l_number;
       }
       else
       {
@@ -651,6 +656,7 @@ gap_story_upd_elem_from_filename(GapStoryElem *stb_elem,  const char *filename)
       }
     }
   }
+  return (current_frame);
 }  /* end gap_story_upd_elem_from_filename */
 
 
@@ -3613,6 +3619,34 @@ gap_story_duplicate_sel_only(GapStoryBoard *stb_ptr)
   return(p_story_board_duplicate(stb_ptr, FALSE));
 }  /* end gap_story_duplicate_sel_only  */
 
+/* -------------------------------------------
+ * gap_story_set_properties_like_sample_storyboard
+ * -------------------------------------------
+ */
+void
+gap_story_set_properties_like_sample_storyboard (GapStoryBoard *stb
+  , GapStoryBoard *stb_sample)
+{
+  if(stb)
+  {
+    if(stb_sample)
+    {
+      stb->master_width       = stb_sample->master_width;
+      stb->master_height      = stb_sample->master_height;
+      stb->master_framerate   = stb_sample->master_framerate;
+      stb->master_samplerate  = stb_sample->master_samplerate;
+      stb->master_volume      = stb_sample->master_volume;
+      stb->unsaved_changes = TRUE;
+      if(stb_sample->preferred_decoder)
+      {
+        stb->preferred_decoder  = g_strdup(stb_sample->preferred_decoder);
+      }
+    }
+  }
+}  /* end gap_story_set_properties_like_sample_storyboard */
+
+
+
 /* ----------------------------------------------------
  * gap_story_remove_sel_elems
  * ----------------------------------------------------
@@ -3738,6 +3772,7 @@ gap_story_fetch_nth_active_elem(GapStoryBoard *stb
 /* ---------------------------------
  * gap_story_selection_all_set
  * ---------------------------------
+ * set selection state in all elements to specified sel_state
  */
 void
 gap_story_selection_all_set(GapStoryBoard *stb, gboolean sel_state)
@@ -3752,6 +3787,50 @@ gap_story_selection_all_set(GapStoryBoard *stb, gboolean sel_state)
   }
 
 }  /* end gap_story_selection_all_set */
+
+
+/* ---------------------------------
+ * gap_story_selection_by_story_id
+ * ---------------------------------
+ */
+void
+gap_story_selection_by_story_id(GapStoryBoard *stb, gboolean sel_state, gint32 story_id)
+{
+  GapStoryElem *stb_elem;
+  
+  if(stb == NULL)   { return; }
+  
+  for(stb_elem = stb->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
+  {
+    if(stb_elem->story_id == story_id)
+    {
+      stb_elem->selected = sel_state;
+      return;
+    }
+  }
+
+}  /* end gap_story_selection_by_story_id */
+
+
+/* ------------------------------------------
+ * gap_story_selection_from_ref_list_orig_ids
+ * ------------------------------------------
+ * set selection for all elements with story_id matching to orig_story_id 
+ * of at least one element in the 2.dn storyboard (specified via stb_ref)
+ */
+void
+gap_story_selection_from_ref_list_orig_ids(GapStoryBoard *stb, gboolean sel_state, GapStoryBoard *stb_ref)
+{
+  GapStoryElem *stb_elem;
+  
+  if((stb == NULL) || (stb_ref == NULL))  { return; }
+  
+  for(stb_elem = stb_ref->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
+  {
+    gap_story_selection_by_story_id(stb, sel_state, stb_elem->story_orig_id);
+  }
+
+}  /* end gap_story_selection_from_ref_list_orig_ids */
 
 
 /* ---------------------------------

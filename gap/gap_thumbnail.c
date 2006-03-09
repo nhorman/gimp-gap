@@ -295,7 +295,7 @@ p_copy_png_thumb(char *filename_src, char *filename_dst)
 					 );
               g_object_unref(pixbuf);
 	    }
-	    g_free(thumbnail);
+	    g_object_unref(thumbnail);
 	  }
           g_free(dst_png_thumb_full);
         }
@@ -600,7 +600,7 @@ gap_thumb_file_load_pixbuf_thumbnail(char* filename
       *th_bpp = nchannels;
 
     }
-    g_free(thumbnail);
+    g_object_unref(thumbnail);
   }
 
   return (pixbuf);

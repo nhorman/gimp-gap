@@ -73,5 +73,5 @@ void       gap_pview_reset(GapPView *pv_ptr);
 void       gap_pview_drop_repaint_buffers(GapPView *pv_ptr);
 
 void       gap_pview_render_default_icon(GapPView   *pv_ptr);
-
+GdkPixbuf *gap_pview_get_repaint_pixbuf(GapPView   *pv_ptr);
 #endif

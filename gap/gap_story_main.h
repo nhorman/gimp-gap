@@ -257,6 +257,8 @@ typedef struct GapStbMainGlobalParams  /* nickname: sgpp */
   GtkWidget *menu_item_cll_audio_otone;
   GtkWidget *menu_item_cll_encode;
   GtkWidget *menu_item_cll_close;
+  
+  GdkPixbuf *dnd_pixbuf;
 } GapStbMainGlobalParams;
 
 

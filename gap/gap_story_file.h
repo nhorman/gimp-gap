@@ -205,7 +205,7 @@ GapStoryElem *      gap_story_elem_find_by_story_id(GapStoryBoard *stb, gint32 s
 
 gboolean            gap_story_save(GapStoryBoard *stb, const char *filename);
 GapStoryElem *      gap_story_new_elem(GapStoryRecordType record_type);
-void                gap_story_upd_elem_from_filename(GapStoryElem *stb_elem,  const char *filename);
+long                gap_story_upd_elem_from_filename(GapStoryElem *stb_elem,  const char *filename);
 gboolean            gap_story_filename_is_videofile_by_ext(const char *filename);
 gboolean            gap_story_filename_is_videofile(const char *filename);
 void                gap_story_elem_free(GapStoryElem **stb_elem);
@@ -227,6 +227,8 @@ void                gap_story_elem_copy(GapStoryElem *stb_elem_dst, GapStoryElem
 
 GapStoryBoard *     gap_story_duplicate(GapStoryBoard *stb_ptr);
 GapStoryBoard *     gap_story_duplicate_sel_only(GapStoryBoard *stb_ptr);
+void                gap_story_set_properties_like_sample_storyboard (GapStoryBoard *stb
+                         , GapStoryBoard *stb_sample);
 void                gap_story_remove_sel_elems(GapStoryBoard *stb);
 
 gint32              gap_story_count_active_elements(GapStoryBoard *stb_ptr, gint32 in_track);
@@ -234,6 +236,8 @@ void                gap_story_get_master_size(GapStoryBoard *stb_ptr
                          ,gint32 *width
 			 ,gint32 *height);
 void                gap_story_selection_all_set(GapStoryBoard *stb, gboolean sel_state);
+void                gap_story_selection_by_story_id(GapStoryBoard *stb, gboolean sel_state, gint32 story_id);
+void                gap_story_selection_from_ref_list_orig_ids(GapStoryBoard *stb, gboolean sel_state, GapStoryBoard *stb_ref);
 
 const char *        gap_story_get_preferred_decoder(GapStoryBoard *stb, GapStoryElem *stb_elem);
 

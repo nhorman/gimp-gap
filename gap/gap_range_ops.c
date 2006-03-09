@@ -1952,7 +1952,7 @@ gap_range_conv(GimpRunMode run_mode, gint32 image_id,
   char  l_palette[256];
 
   strcpy(l_save_proc_name, "gimp_file_save");
-  strcpy(l_extension, ".tif");
+  strcpy(l_extension, ".jpg");
 
   l_rc = -1;
   ainfo_ptr = gap_lib_alloc_ainfo(image_id, run_mode);

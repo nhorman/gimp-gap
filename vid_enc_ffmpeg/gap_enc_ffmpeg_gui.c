@@ -1757,7 +1757,7 @@ p_create_expert_algortihms_frame (GapGveFFMpegGlobalParams *gpp)
   gtk_table_attach (GTK_TABLE (table2), combo, 1, 2, row, row+1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gimp_help_set_help_data (combo, _("coder type"), NULL);
+  gimp_help_set_help_data (combo, _("Coder type"), NULL);
 
   inital_value = p_init_gint_combo_active(gpp
                               , combo
@@ -1797,7 +1797,7 @@ p_create_expert_algortihms_frame (GapGveFFMpegGlobalParams *gpp)
   gtk_table_attach (GTK_TABLE (table2), combo, 1, 2, row, row+1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gimp_help_set_help_data (combo, _("prediction method"), NULL);
+  gimp_help_set_help_data (combo, _("Prediction method"), NULL);
 
   inital_value = p_init_gint_combo_active(gpp
                               , combo
@@ -1950,7 +1950,7 @@ p_create_expert_algortihms_frame (GapGveFFMpegGlobalParams *gpp)
   gtk_table_attach (GTK_TABLE (table2), combo, 1, 2, row, row+1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gimp_help_set_help_data (combo, _("Select subpel compare function "), NULL);
+  gimp_help_set_help_data (combo, _("Select subpel compare function"), NULL);
 
   inital_value = p_init_gint_combo_active(gpp
                               , combo
@@ -2136,7 +2136,7 @@ p_create_expert_flags_frame (GapGveFFMpegGlobalParams *gpp)
     gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 0, 1, flags_row, flags_row+1,
                       (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                       (GtkAttachOptions) (0), 0, 0);
-    gimp_help_set_help_data (checkbutton, _("only use bit exact algorithms (for codec testing)"), NULL);
+    gimp_help_set_help_data (checkbutton, _("Only use bit exact algorithms (for codec testing)"), NULL);
     g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
     g_signal_connect (G_OBJECT (checkbutton), "toggled",
                       G_CALLBACK (on_ff_gint32_checkbutton_toggled),
@@ -2150,7 +2150,7 @@ p_create_expert_flags_frame (GapGveFFMpegGlobalParams *gpp)
     gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 1, 2, flags_row, flags_row+1,
                       (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                       (GtkAttachOptions) (0), 0, 0);
-    gimp_help_set_help_data (checkbutton, _("activate intra frame coding (only h263+ CODEC)"), NULL);
+    gimp_help_set_help_data (checkbutton, _("Activate intra frame coding (only h263+ CODEC)"), NULL);
     g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
     g_signal_connect (G_OBJECT (checkbutton), "toggled",
                       G_CALLBACK (on_ff_gint32_checkbutton_toggled),
@@ -2164,7 +2164,7 @@ p_create_expert_flags_frame (GapGveFFMpegGlobalParams *gpp)
     gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 2, 3, flags_row, flags_row+1,
                       (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                       (GtkAttachOptions) (0), 0, 0);
-    gimp_help_set_help_data (checkbutton, _("use four motion vector by macroblock (only MPEG-4 CODEC)"), NULL);
+    gimp_help_set_help_data (checkbutton, _("Use four motion vector by macroblock (only MPEG-4 CODEC)"), NULL);
     g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
     g_signal_connect (G_OBJECT (checkbutton), "toggled",
                       G_CALLBACK (on_ff_gint32_checkbutton_toggled),
@@ -2182,7 +2182,7 @@ p_create_expert_flags_frame (GapGveFFMpegGlobalParams *gpp)
     gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 0, 1, flags_row, flags_row+1,
                       (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                       (GtkAttachOptions) (0), 0, 0);
-    gimp_help_set_help_data (checkbutton, _("closed group of pictures"), NULL);
+    gimp_help_set_help_data (checkbutton, _("Closed group of pictures"), NULL);
     g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
     g_signal_connect (G_OBJECT (checkbutton), "toggled",
                       G_CALLBACK (on_ff_gint32_checkbutton_toggled),
@@ -2195,7 +2195,7 @@ p_create_expert_flags_frame (GapGveFFMpegGlobalParams *gpp)
     gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 1, 2, flags_row, flags_row+1,
                       (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                       (GtkAttachOptions) (0), 0, 0);
-    gimp_help_set_help_data (checkbutton, _("enable unlimited motion vector (only h263+ CODEC)"), NULL);
+    gimp_help_set_help_data (checkbutton, _("Enable unlimited motion vector (only h263+ CODEC)"), NULL);
     g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
     g_signal_connect (G_OBJECT (checkbutton), "toggled",
                       G_CALLBACK (on_ff_gint32_checkbutton_toggled),
@@ -2209,7 +2209,7 @@ p_create_expert_flags_frame (GapGveFFMpegGlobalParams *gpp)
     gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 2, 3, flags_row, flags_row+1,
                       (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                       (GtkAttachOptions) (0), 0, 0);
-    gimp_help_set_help_data (checkbutton, _("use data partitioning (only MPEG-4 CODEC)"), NULL);
+    gimp_help_set_help_data (checkbutton, _("Use data partitioning (only MPEG-4 CODEC)"), NULL);
     g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
     g_signal_connect (G_OBJECT (checkbutton), "toggled",
                       G_CALLBACK (on_ff_gint32_checkbutton_toggled),
@@ -2228,7 +2228,7 @@ p_create_expert_flags_frame (GapGveFFMpegGlobalParams *gpp)
     gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 0, 1, flags_row, flags_row+1,
                       (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                       (GtkAttachOptions) (0), 0, 0);
-    gimp_help_set_help_data (checkbutton, _("strictly enforce GOP size"), NULL);
+    gimp_help_set_help_data (checkbutton, _("Strictly enforce GOP size"), NULL);
     g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
     g_signal_connect (G_OBJECT (checkbutton), "toggled",
                       G_CALLBACK (on_ff_gint32_checkbutton_toggled),
@@ -2246,7 +2246,7 @@ p_create_expert_flags_frame (GapGveFFMpegGlobalParams *gpp)
     gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 1, 2, flags_row, flags_row+1,
                       (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                       (GtkAttachOptions) (0), 0, 0);
-    gimp_help_set_help_data (checkbutton, _("enable slice structured mode (only h263+ CODEC)"), NULL);
+    gimp_help_set_help_data (checkbutton, _("Enable slice structured mode (only h263+ CODEC)"), NULL);
     g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
     g_signal_connect (G_OBJECT (checkbutton), "toggled",
                       G_CALLBACK (on_ff_gint32_checkbutton_toggled),
@@ -2254,7 +2254,7 @@ p_create_expert_flags_frame (GapGveFFMpegGlobalParams *gpp)
 
 
     /* the Use Alt scantable checkbutton */
-    checkbutton = gtk_check_button_new_with_label (_("Use alt scanntable"));
+    checkbutton = gtk_check_button_new_with_label (_("Use alt scantable"));
     gpp->ff_use_alt_scan_checkbutton = checkbutton;
 #ifdef HAVE_FULL_FFMPEG
     gtk_widget_show (checkbutton);
@@ -2262,7 +2262,7 @@ p_create_expert_flags_frame (GapGveFFMpegGlobalParams *gpp)
     gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 2, 3, flags_row, flags_row+1,
                       (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                       (GtkAttachOptions) (0), 0, 0);
-    gimp_help_set_help_data (checkbutton, _("enable alternate scantable (only MPEG-2 MPEG-4 CODECs)"), NULL);
+    gimp_help_set_help_data (checkbutton, _("Enable alternate scantable (only MPEG-2 MPEG-4 CODECs)"), NULL);
     g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
     g_signal_connect (G_OBJECT (checkbutton), "toggled",
                       G_CALLBACK (on_ff_gint32_checkbutton_toggled),
@@ -2281,7 +2281,7 @@ p_create_expert_flags_frame (GapGveFFMpegGlobalParams *gpp)
     gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 0, 1, flags_row, flags_row+1,
                       (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                       (GtkAttachOptions) (0), 0, 0);
-    gimp_help_set_help_data (checkbutton, _("enable interlaced motion estimation"), NULL);
+    gimp_help_set_help_data (checkbutton, _("Enable interlaced motion estimation"), NULL);
     g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
     g_signal_connect (G_OBJECT (checkbutton), "toggled",
                       G_CALLBACK (on_ff_gint32_checkbutton_toggled),
@@ -2297,7 +2297,7 @@ p_create_expert_flags_frame (GapGveFFMpegGlobalParams *gpp)
     gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 1, 2, flags_row, flags_row+1,
                       (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                       (GtkAttachOptions) (0), 0, 0);
-    gimp_help_set_help_data (checkbutton, _("enable Alternative inter vlc (only h263+ CODEC)"), NULL);
+    gimp_help_set_help_data (checkbutton, _("Enable Alternative inter vlc (only h263+ CODEC)"), NULL);
     g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
     g_signal_connect (G_OBJECT (checkbutton), "toggled",
                       G_CALLBACK (on_ff_gint32_checkbutton_toggled),
@@ -2315,7 +2315,7 @@ p_create_expert_flags_frame (GapGveFFMpegGlobalParams *gpp)
     gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 0, 1, flags_row, flags_row+1,
                       (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                       (GtkAttachOptions) (0), 0, 0);
-    gimp_help_set_help_data (checkbutton, _("use interlaced dct"), NULL);
+    gimp_help_set_help_data (checkbutton, _("Use interlaced dct"), NULL);
     g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
     g_signal_connect (G_OBJECT (checkbutton), "toggled",
                       G_CALLBACK (on_ff_gint32_checkbutton_toggled),
@@ -2331,7 +2331,7 @@ p_create_expert_flags_frame (GapGveFFMpegGlobalParams *gpp)
     gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 1, 2, flags_row, flags_row+1,
                       (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                       (GtkAttachOptions) (0), 0, 0);
-    gimp_help_set_help_data (checkbutton, _("enable use overlapped block motion compensation (only h263+ CODEC)"), NULL);
+    gimp_help_set_help_data (checkbutton, _("Enable use overlapped block motion compensation (only h263+ CODEC)"), NULL);
     g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
     g_signal_connect (G_OBJECT (checkbutton), "toggled",
                       G_CALLBACK (on_ff_gint32_checkbutton_toggled),
@@ -2350,7 +2350,7 @@ p_create_expert_flags_frame (GapGveFFMpegGlobalParams *gpp)
     gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 0, 1, flags_row, flags_row+1,
                       (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                       (GtkAttachOptions) (0), 0, 0);
-    gimp_help_set_help_data (checkbutton, _("enable 1/4-pel"), NULL);
+    gimp_help_set_help_data (checkbutton, _("Enable 1/4-pel"), NULL);
     g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
     g_signal_connect (G_OBJECT (checkbutton), "toggled",
                       G_CALLBACK (on_ff_gint32_checkbutton_toggled),
@@ -2365,7 +2365,7 @@ p_create_expert_flags_frame (GapGveFFMpegGlobalParams *gpp)
     gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 1, 2, flags_row, flags_row+1,
                       (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                       (GtkAttachOptions) (0), 0, 0);
-    gimp_help_set_help_data (checkbutton, _("use loop filter (only h263+ CODEC)"), NULL);
+    gimp_help_set_help_data (checkbutton, _("Use loop filter (only h263+ CODEC)"), NULL);
     g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
     g_signal_connect (G_OBJECT (checkbutton), "toggled",
                       G_CALLBACK (on_ff_gint32_checkbutton_toggled),
@@ -2383,7 +2383,7 @@ p_create_expert_flags_frame (GapGveFFMpegGlobalParams *gpp)
     gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 0, 1, flags_row, flags_row+1,
                       (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                       (GtkAttachOptions) (0), 0, 0);
-    gimp_help_set_help_data (checkbutton, _("use rate distortion optimization for qp selection"), NULL);
+    gimp_help_set_help_data (checkbutton, _("Use rate distortion optimization for qp selection"), NULL);
     g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
     g_signal_connect (G_OBJECT (checkbutton), "toggled",
                       G_CALLBACK (on_ff_gint32_checkbutton_toggled),
@@ -2400,7 +2400,7 @@ p_create_expert_flags_frame (GapGveFFMpegGlobalParams *gpp)
     gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 0, 1, flags_row, flags_row+1,
                       (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                       (GtkAttachOptions) (0), 0, 0);
-    gimp_help_set_help_data (checkbutton, _("use rate distortion optimization for cbp"), NULL);
+    gimp_help_set_help_data (checkbutton, _("Use rate distortion optimization for cbp"), NULL);
     g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
     g_signal_connect (G_OBJECT (checkbutton), "toggled",
                       G_CALLBACK (on_ff_gint32_checkbutton_toggled),
@@ -2418,7 +2418,7 @@ p_create_expert_flags_frame (GapGveFFMpegGlobalParams *gpp)
     gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 0, 1, flags_row, flags_row+1,
                       (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                       (GtkAttachOptions) (0), 0, 0);
-    gimp_help_set_help_data (checkbutton, _("try to encode each MB with MV=<0,0> and choose the better one (has no effect if mbd=0)"), NULL);
+    gimp_help_set_help_data (checkbutton, _("Try to encode each MB with MV=<0,0> and choose the better one (has no effect if mbd=0)"), NULL);
     g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
     g_signal_connect (G_OBJECT (checkbutton), "toggled",
                       G_CALLBACK (on_ff_gint32_checkbutton_toggled),
@@ -2435,7 +2435,7 @@ p_create_expert_flags_frame (GapGveFFMpegGlobalParams *gpp)
     gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 0, 1, flags_row, flags_row+1,
                       (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                       (GtkAttachOptions) (0), 0, 0);
-    gimp_help_set_help_data (checkbutton, _("normalize adaptive quantization"), NULL);
+    gimp_help_set_help_data (checkbutton, _("Normalize adaptive quantization"), NULL);
     g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
     g_signal_connect (G_OBJECT (checkbutton), "toggled",
                       G_CALLBACK (on_ff_gint32_checkbutton_toggled),
@@ -2454,7 +2454,7 @@ p_create_expert_flags_frame (GapGveFFMpegGlobalParams *gpp)
     gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 0, 1, flags_row, flags_row+1,
                       (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                       (GtkAttachOptions) (0), 0, 0);
-    gimp_help_set_help_data (checkbutton, _("enable SVCD scan offset placeholder"), NULL);
+    gimp_help_set_help_data (checkbutton, _("Enable SVCD scan offset placeholder"), NULL);
     g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
     g_signal_connect (G_OBJECT (checkbutton), "toggled",
                       G_CALLBACK (on_ff_gint32_checkbutton_toggled),
@@ -2473,7 +2473,7 @@ p_create_expert_flags_frame (GapGveFFMpegGlobalParams *gpp)
     gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 0, 1, flags_row, flags_row+1,
                       (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                       (GtkAttachOptions) (0), 0, 0);
-    gimp_help_set_help_data (checkbutton, _("enable trellis quantization"), NULL);
+    gimp_help_set_help_data (checkbutton, _("Enable trellis quantization"), NULL);
     g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
     g_signal_connect (G_OBJECT (checkbutton), "toggled",
                       G_CALLBACK (on_ff_gint32_checkbutton_toggled),
@@ -2553,7 +2553,7 @@ p_create_expert_options_frame (GapGveFFMpegGlobalParams *gpp)
   gtk_table_attach (GTK_TABLE (table4), spinbutton, 1, 2, row, row+1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gimp_help_set_help_data (spinbutton, _("video quantiser scale blur (VBR)"), NULL);
+  gimp_help_set_help_data (spinbutton, _("Video quantiser scale blur (VBR)"), NULL);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_ADJ, (gpointer)adj);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
   g_signal_connect (G_OBJECT (spinbutton), "changed",
@@ -2582,7 +2582,7 @@ p_create_expert_options_frame (GapGveFFMpegGlobalParams *gpp)
   gtk_table_attach (GTK_TABLE (table4), spinbutton, 1, 2, row, row+1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gimp_help_set_help_data (spinbutton, _("video quantiser scale compression (VBR)"), NULL);
+  gimp_help_set_help_data (spinbutton, _("Video quantiser scale compression (VBR)"), NULL);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_ADJ, (gpointer)adj);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
   g_signal_connect (G_OBJECT (spinbutton), "changed",
@@ -2608,7 +2608,7 @@ p_create_expert_options_frame (GapGveFFMpegGlobalParams *gpp)
   gtk_table_attach (GTK_TABLE (table4), spinbutton, 1, 2, 2, 3,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gimp_help_set_help_data (spinbutton, _("initial complexity for 1-pass encoding"), NULL);
+  gimp_help_set_help_data (spinbutton, _("Initial complexity for 1-pass encoding"), NULL);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_ADJ, (gpointer)adj);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
   g_signal_connect (G_OBJECT (spinbutton), "changed",
@@ -2742,7 +2742,7 @@ p_create_expert_options_frame (GapGveFFMpegGlobalParams *gpp)
   gtk_table_attach (GTK_TABLE (table4), spinbutton, 1, 2, row, row+1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gimp_help_set_help_data (spinbutton, _("set video bitrate tolerance (in kbit/s)"), NULL);
+  gimp_help_set_help_data (spinbutton, _("Qet video bitrate tolerance (in kbit/s)"), NULL);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_ADJ, (gpointer)adj);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
   g_signal_connect (G_OBJECT (spinbutton), "changed",
@@ -2769,7 +2769,7 @@ p_create_expert_options_frame (GapGveFFMpegGlobalParams *gpp)
   gtk_table_attach (GTK_TABLE (table4), spinbutton, 1, 2, row, row+1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gimp_help_set_help_data (spinbutton, _("set max video bitrate tolerance (in kbit/s)"), NULL);
+  gimp_help_set_help_data (spinbutton, _("Set max video bitrate tolerance (in kbit/s)"), NULL);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_ADJ, (gpointer)adj);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
   g_signal_connect (G_OBJECT (spinbutton), "changed",
@@ -2797,7 +2797,7 @@ p_create_expert_options_frame (GapGveFFMpegGlobalParams *gpp)
   gtk_table_attach (GTK_TABLE (table4), spinbutton, 1, 2, row, row+1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gimp_help_set_help_data (spinbutton, _("set min video bitrate tolerance (in kbit/s)"), NULL);
+  gimp_help_set_help_data (spinbutton, _("Set min video bitrate tolerance (in kbit/s)"), NULL);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_ADJ, (gpointer)adj);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
   g_signal_connect (G_OBJECT (spinbutton), "changed",
@@ -2824,7 +2824,7 @@ p_create_expert_options_frame (GapGveFFMpegGlobalParams *gpp)
   gtk_table_attach (GTK_TABLE (table4), spinbutton, 1, 2, row, row+1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gimp_help_set_help_data (spinbutton, _("set ratecontrol buffere size (in kbyte)"), NULL);
+  gimp_help_set_help_data (spinbutton, _("Set ratecontrol buffer size (in kbyte)"), NULL);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_ADJ, (gpointer)adj);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
   g_signal_connect (G_OBJECT (spinbutton), "changed",
@@ -2851,7 +2851,7 @@ p_create_expert_options_frame (GapGveFFMpegGlobalParams *gpp)
   gtk_table_attach (GTK_TABLE (table4), spinbutton, 1, 2, row, row+1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gimp_help_set_help_data (spinbutton, _("how strictly to follow the standards"), NULL);
+  gimp_help_set_help_data (spinbutton, _("How strictly to follow the standards"), NULL);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_ADJ, (gpointer)adj);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
   g_signal_connect (G_OBJECT (spinbutton), "changed",
@@ -2879,7 +2879,7 @@ p_create_expert_options_frame (GapGveFFMpegGlobalParams *gpp)
   gtk_table_attach (GTK_TABLE (table4), spinbutton, 1, 2, row, row+1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gimp_help_set_help_data (spinbutton, _("min macroblock quantiser scale (VBR)"), NULL);
+  gimp_help_set_help_data (spinbutton, _("Min macroblock quantiser scale (VBR)"), NULL);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_ADJ, (gpointer)adj);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
   g_signal_connect (G_OBJECT (spinbutton), "changed",
@@ -2906,7 +2906,7 @@ p_create_expert_options_frame (GapGveFFMpegGlobalParams *gpp)
   gtk_table_attach (GTK_TABLE (table4), spinbutton, 1, 2, row, row+1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gimp_help_set_help_data (spinbutton, _("max macroblock quantiser scale (VBR)"), NULL);
+  gimp_help_set_help_data (spinbutton, _("Max macroblock quantiser scale (VBR)"), NULL);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_ADJ, (gpointer)adj);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
   g_signal_connect (G_OBJECT (spinbutton), "changed",
@@ -3097,7 +3097,7 @@ p_create_2pass_options_frame (GapGveFFMpegGlobalParams *gpp)
   gtk_table_attach (GTK_TABLE (table), spinbutton, 1, 2, row, row+1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gimp_help_set_help_data (spinbutton, _("set the initial demux-decode delay (seconds)"), NULL);
+  gimp_help_set_help_data (spinbutton, _("Set the initial demux-decode delay (seconds)"), NULL);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_ADJ, (gpointer)adj);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
   g_signal_connect (G_OBJECT (spinbutton), "changed",

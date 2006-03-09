@@ -3861,7 +3861,7 @@ p_create_acl_tracking_widgets(NaviDialog *naviD)
   }
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radio_button),
 				   l_radio_pressed);
-  gimp_help_set_help_data(radio_button, _("enable tracking of the active layer by name at framechanges"), NULL);
+  gimp_help_set_help_data(radio_button, _("Enable tracking of the active layer by name at framechanges"), NULL);
 
   gtk_widget_show (radio_button);
   g_signal_connect ( G_OBJECT (radio_button), "toggled",
@@ -3885,7 +3885,7 @@ p_create_acl_tracking_widgets(NaviDialog *naviD)
   }
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radio_button),
 				   l_radio_pressed);
-  gimp_help_set_help_data(radio_button, _("enable tracking of the active layer by stack position at framechanges"), NULL);
+  gimp_help_set_help_data(radio_button, _("Enable tracking of the active layer by stack position at framechanges"), NULL);
 
   gtk_widget_show (radio_button);
   g_signal_connect ( G_OBJECT (radio_button), "toggled",

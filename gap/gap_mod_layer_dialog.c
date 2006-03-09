@@ -66,7 +66,33 @@
 
 extern      int gap_debug; /* ==0  ... dont print debug infos */
 
+static void p_mod_frames_response (GtkWidget *widget,
+                 gint       response_id,
+                 GapModFramesGlobalParams *gmop);
+static void p_upd_sensitivity(GapModFramesGlobalParams *gmop);
+static void p_func_optionmenu_callback  (GtkWidget     *wgt_item,
+                           GapModFramesGlobalParams *gmop);
+static void p_make_func_menu_item(const char *title
+                    , const char *tip_text
+		    , gint32 action_mode
+		    , GtkWidget *menu
+		    , GapModFramesGlobalParams *gmop
+		    );
 
+static void p_make_layer_attrinutes_submenu(GtkWidget *master_menu, GapModFramesGlobalParams *gmop);
+static void p_make_layer_modes_submenu(GtkWidget *master_menu, GapModFramesGlobalParams *gmop);
+static void p_make_layer_stackpositions_submenu(GtkWidget *master_menu, GapModFramesGlobalParams *gmop);
+static void p_make_merge_layers_submenu(GtkWidget *master_menu, GapModFramesGlobalParams *gmop);
+static void p_make_selection_submenu(GtkWidget *master_menu, GapModFramesGlobalParams *gmop);
+static void p_make_layermask_submenu(GtkWidget *master_menu, GapModFramesGlobalParams *gmop);
+static void p_make_toplevel_menu_items(GtkWidget *master_menu, GapModFramesGlobalParams *gmop);
+
+static void p_case_sensitive_toggled_callback(GtkCheckButton *checkbutton, GapModFramesGlobalParams *gmop);
+static void p_invert_selection_toggled_callback(GtkCheckButton *checkbutton, GapModFramesGlobalParams *gmop);
+static void p_layer_pattern_entry_update_cb(GtkWidget *widget, GapModFramesGlobalParams *gmop);
+static void p_new_layername_entry_update_cb(GtkWidget *widget, GapModFramesGlobalParams *gmop);
+static void p_sel_mode_radio_callback(GtkWidget *widget, GapModFramesGlobalParams *gmop);
+static void p_create_mod_frames_dialog(GapModFramesGlobalParams *gmop);
 
 
 /* ---------------------------------
@@ -286,6 +312,504 @@ p_make_func_menu_item(const char *title
   }
 }  /* end p_make_func_menu_item */
 
+
+
+/* -------------------------------
+ * p_make_layer_attrinutes_submenu
+ * -------------------------------
+ */
+static void
+p_make_layer_attrinutes_submenu(GtkWidget *master_menu, GapModFramesGlobalParams *gmop)
+{
+  GtkWidget *menu_item;
+  GtkWidget *sub_menu;
+  
+  /* the Layer Attributes sub menu */
+  menu_item = gtk_menu_item_new_with_label (_("Layer Attributes"));
+  gtk_widget_show (menu_item);
+  gtk_menu_shell_append (GTK_MENU_SHELL (master_menu), menu_item);
+
+  sub_menu = gtk_menu_new ();
+  gtk_menu_item_set_submenu (GTK_MENU_ITEM (menu_item), sub_menu);
+
+  p_make_func_menu_item(_("Set layer(s) visible")
+                       ,_("set all selected layers visible")
+		       ,GAP_MOD_ACM_SET_VISIBLE
+		       ,sub_menu
+		       ,gmop
+		       );
+  p_make_func_menu_item(_("Set layer(s) invisible")
+                       ,_("set all selected layers invisible")
+		       ,GAP_MOD_ACM_SET_INVISIBLE
+		       ,sub_menu
+		       ,gmop
+		       );
+  p_make_func_menu_item(_("Set layer(s) linked")
+                       ,_("set all selected layers linked")
+		       ,GAP_MOD_ACM_SET_LINKED
+		       ,sub_menu
+		       ,gmop
+		       );
+  p_make_func_menu_item(_("Set layer(s) unlinked")
+                       ,_("set all selected layers unlinked")
+		       ,GAP_MOD_ACM_SET_UNLINKED
+		       ,sub_menu
+		       ,gmop
+		       );
+
+}  /* end p_make_layer_attrinutes_submenu */
+
+
+/* ------------------------------
+ * p_make_layer_modes_submenu
+ * ------------------------------
+ */
+static void
+p_make_layer_modes_submenu(GtkWidget *master_menu, GapModFramesGlobalParams *gmop)
+{
+  GtkWidget *menu_item;
+  GtkWidget *sub_menu;
+  /* the Layer Modes sub menu */
+  menu_item = gtk_menu_item_new_with_label (_("Layer Modes"));
+  gtk_widget_show (menu_item);
+  gtk_menu_shell_append (GTK_MENU_SHELL (master_menu), menu_item);
+
+  sub_menu = gtk_menu_new ();
+  gtk_menu_item_set_submenu (GTK_MENU_ITEM (menu_item), sub_menu);
+
+
+  p_make_func_menu_item(_("Set layer(s) mode: Normal")
+                       ,_("set all selected layers to Normal")
+           ,GAP_MOD_ACM_SET_MODE_NORMAL
+           ,sub_menu
+           ,gmop
+           );
+  p_make_func_menu_item(_("Set layer(s) mode: Dissolve")
+                       ,_("set all selected layers to Dissolve")
+           ,GAP_MOD_ACM_SET_MODE_DISSOLVE
+           ,sub_menu
+           ,gmop
+           );
+  p_make_func_menu_item(_("Set layer(s) mode: Multiply")
+                       ,_("set all selected layers to Multiply")
+           ,GAP_MOD_ACM_SET_MODE_MULTIPLY
+           ,sub_menu
+           ,gmop
+           );
+  p_make_func_menu_item(_("Set layer(s) mode: Divide")
+                       ,_("set all selected layers to Divide")
+           ,GAP_MOD_ACM_SET_MODE_DIVIDE
+           ,sub_menu
+           ,gmop
+           );
+  p_make_func_menu_item(_("Set layer(s) mode: Screen")
+                       ,_("set all selected layers to Screen")
+           ,GAP_MOD_ACM_SET_MODE_SCREEN
+           ,sub_menu
+           ,gmop
+           );
+  p_make_func_menu_item(_("Set layer(s) mode: Overlay")
+                       ,_("set all selected layers to Overlay")
+           ,GAP_MOD_ACM_SET_MODE_OVERLAY
+           ,sub_menu
+           ,gmop
+           );
+
+  p_make_func_menu_item(_("Set layer(s) mode: Difference")
+                       ,_("set all selected layers to Difference")
+           ,GAP_MOD_ACM_SET_MODE_DIFFERENCE
+           ,sub_menu
+           ,gmop
+           );
+  p_make_func_menu_item(_("Set layer(s) mode: Addition")
+                       ,_("set all selected layers to Addition")
+           ,GAP_MOD_ACM_SET_MODE_ADDITION
+           ,sub_menu
+           ,gmop
+           );
+  p_make_func_menu_item(_("Set layer(s) mode: Subtract")
+                       ,_("set all selected layers to Subtract")
+           ,GAP_MOD_ACM_SET_MODE_SUBTRACT
+           ,sub_menu
+           ,gmop
+           );
+  p_make_func_menu_item(_("Set layer(s) mode: Darken only")
+                       ,_("set all selected layers to Darken only")
+           ,GAP_MOD_ACM_SET_MODE_DARKEN_ONLY
+           ,sub_menu
+           ,gmop
+           );
+  p_make_func_menu_item(_("Set layer(s) mode: Lighten only")
+                       ,_("set all selected layers to Lighten only")
+           ,GAP_MOD_ACM_SET_MODE_LIGHTEN_ONLY
+           ,sub_menu
+           ,gmop
+           );
+  
+  p_make_func_menu_item(_("Set layer(s) mode: Dodge")
+                       ,_("set all selected layers to Dodge")
+           ,GAP_MOD_ACM_SET_MODE_DODGE
+           ,sub_menu
+           ,gmop
+           );
+  p_make_func_menu_item(_("Set layer(s) mode: Burn")
+                       ,_("set all selected layers to Burn")
+           ,GAP_MOD_ACM_SET_MODE_BURN
+           ,sub_menu
+           ,gmop
+           );
+  p_make_func_menu_item(_("Set layer(s) mode: Hardlight")
+                       ,_("set all selected layers to Hardlight")
+           ,GAP_MOD_ACM_SET_MODE_HARDLIGHT
+           ,sub_menu
+           ,gmop
+           );
+  p_make_func_menu_item(_("Set layer(s) mode: Softlight")
+                       ,_("set all selected layers to Softlight")
+           ,GAP_MOD_ACM_SET_MODE_SOFTLIGHT
+           ,sub_menu
+           ,gmop
+           );
+  p_make_func_menu_item(_("Set layer(s) mode: Color erase")
+                       ,_("set all selected layers to Color erase")
+           ,GAP_MOD_ACM_SET_MODE_COLOR_ERASE
+           ,sub_menu
+           ,gmop
+           );
+  p_make_func_menu_item(_("Set layer(s) mode: Grain extract")
+                       ,_("set all selected layers to Grain extract")
+           ,GAP_MOD_ACM_SET_MODE_GRAIN_EXTRACT_MODE
+           ,sub_menu
+           ,gmop
+           );
+  p_make_func_menu_item(_("Set layer(s) mode: Grain merge")
+                       ,_("set all selected layers to Grain merge")
+           ,GAP_MOD_ACM_SET_MODE_GRAIN_MERGE_MODE
+           ,sub_menu
+           ,gmop
+           );
+  p_make_func_menu_item(_("Set layer(s) mode: Hue")
+                       ,_("set all selected layers to Hue")
+           ,GAP_MOD_ACM_SET_MODE_HUE_MODE
+           ,sub_menu
+           ,gmop
+           );
+  p_make_func_menu_item(_("Set layer(s) mode: Saturation")
+                       ,_("set all selected layers to Saturation")
+           ,GAP_MOD_ACM_SET_MODE_SATURATION_MODE
+           ,sub_menu
+           ,gmop
+           );
+  p_make_func_menu_item(_("Set layer(s) mode: Color")
+                       ,_("set all selected layers to Color")
+           ,GAP_MOD_ACM_SET_MODE_COLOR_MODE
+           ,sub_menu
+           ,gmop
+           );
+  p_make_func_menu_item(_("Set layer(s) mode: Value")
+                       ,_("set all selected layers to Value")
+           ,GAP_MOD_ACM_SET_MODE_VALUE_MODE
+           ,sub_menu
+           ,gmop
+           );
+}  /* end p_make_layer_modes_submenu */
+
+
+
+/* -----------------------------------
+ * p_make_layer_stackpositions_submenu
+ * -----------------------------------
+ */
+static void
+p_make_layer_stackpositions_submenu(GtkWidget *master_menu, GapModFramesGlobalParams *gmop)
+{
+  GtkWidget *menu_item;
+  GtkWidget *sub_menu;
+
+  /* the Layer Stackposition sub menu */
+  menu_item = gtk_menu_item_new_with_label (_("Layer Stackposition"));
+  gtk_widget_show (menu_item);
+  gtk_menu_shell_append (GTK_MENU_SHELL (master_menu), menu_item);
+
+  sub_menu = gtk_menu_new ();
+  gtk_menu_item_set_submenu (GTK_MENU_ITEM (menu_item), sub_menu);
+
+  p_make_func_menu_item(_("Raise layer(s)")
+                       ,_("raise all selected layers")
+		       ,GAP_MOD_ACM_RAISE
+		       ,sub_menu
+		       ,gmop
+		       );
+  p_make_func_menu_item(_("Lower layer(s)")
+                       ,_("lower all selected layers")
+		       ,GAP_MOD_ACM_LOWER
+		       ,sub_menu
+		       ,gmop
+		       );
+}  /* end p_make_layer_stackpositions_submenu */
+
+
+/* ------------------------------
+ * p_make_merge_layers_submenu
+ * ------------------------------
+ */
+static void
+p_make_merge_layers_submenu(GtkWidget *master_menu, GapModFramesGlobalParams *gmop)
+{
+  GtkWidget *menu_item;
+  GtkWidget *sub_menu;
+
+  /* the Merge Layers sub menu */
+  menu_item = gtk_menu_item_new_with_label (_("Merge Layers"));
+  gtk_widget_show (menu_item);
+  gtk_menu_shell_append (GTK_MENU_SHELL (master_menu), menu_item);
+
+  sub_menu = gtk_menu_new ();
+  gtk_menu_item_set_submenu (GTK_MENU_ITEM (menu_item), sub_menu);
+
+  p_make_func_menu_item(_("Merge layer(s) expand as necessary")
+                       ,_("merge selected layers and expand as necessary")
+		       ,GAP_MOD_ACM_MERGE_EXPAND
+		       ,sub_menu
+		       ,gmop
+		       );
+  p_make_func_menu_item(_("Merge layer(s) clipped to image")
+                       ,_("merge selected layers and clip to image")
+		       ,GAP_MOD_ACM_MERGE_IMG
+		       ,sub_menu
+		       ,gmop
+		       );
+  p_make_func_menu_item(_("Merge layer(s) clipped to bg-layer")
+                       ,_("merge selected layers and clip to bg-layer")
+		       ,GAP_MOD_ACM_MERGE_BG
+		       ,sub_menu
+		       ,gmop
+		       );
+  
+}  /* end p_make_merge_layers_submenu */
+
+
+/* ------------------------------
+ * p_make_selection_submenu
+ * ------------------------------
+ */
+static void
+p_make_selection_submenu(GtkWidget *master_menu, GapModFramesGlobalParams *gmop)
+{
+  GtkWidget *menu_item;
+  GtkWidget *sub_menu;
+
+  /* the Selection sub menu */
+  menu_item = gtk_menu_item_new_with_label (_("Selection"));
+  gtk_widget_show (menu_item);
+  gtk_menu_shell_append (GTK_MENU_SHELL (master_menu), menu_item);
+
+  sub_menu = gtk_menu_new ();
+  gtk_menu_item_set_submenu (GTK_MENU_ITEM (menu_item), sub_menu);
+
+  p_make_func_menu_item(_("Replace selection (source is the active frame)")
+                       ,_("Replace Selection by Selection of the invoking Frame Image")
+		       ,GAP_MOD_ACM_SEL_REPLACE
+		       ,sub_menu
+		       ,gmop
+		       );
+  p_make_func_menu_item(_("Add selection (source is the active frame)")
+                       ,NULL
+		       ,GAP_MOD_ACM_SEL_ADD
+		       ,sub_menu
+		       ,gmop
+		       );
+  p_make_func_menu_item(_("Subtract selection (source is the active frame)")
+                       ,NULL
+		       ,GAP_MOD_ACM_SEL_SUTRACT
+		       ,sub_menu
+		       ,gmop
+		       );
+  p_make_func_menu_item(_("Intersect selection (source is the active frame)")
+                       ,NULL
+		       ,GAP_MOD_ACM_SEL_INTERSECT
+		       ,sub_menu
+		       ,gmop
+		       );
+  p_make_func_menu_item(_("Selection none")
+                       ,NULL
+		       ,GAP_MOD_ACM_SEL_NONE
+		       ,sub_menu
+		       ,gmop
+		       );
+  p_make_func_menu_item(_("Selection all")
+                       ,NULL
+		       ,GAP_MOD_ACM_SEL_ALL
+		       ,sub_menu
+		       ,gmop
+		       );
+  p_make_func_menu_item(_("Selection invert")
+                       ,NULL
+		       ,GAP_MOD_ACM_SEL_INVERT
+		       ,sub_menu
+		       ,gmop
+		       );
+
+  p_make_func_menu_item(_("Save selection to channel (individual per frame)")
+                       ,NULL
+		       ,GAP_MOD_ACM_SEL_SAVE
+		       ,sub_menu
+		       ,gmop
+		       );
+  p_make_func_menu_item(_("Load selection from channel (individual per frame)")
+                       ,NULL
+		       ,GAP_MOD_ACM_SEL_LOAD
+		       ,sub_menu
+		       ,gmop
+		       );
+  p_make_func_menu_item(_("Delete channel (by name)")
+                       ,NULL
+		       ,GAP_MOD_ACM_SEL_DELETE
+		       ,sub_menu
+		       ,gmop
+		       );
+}  /* end p_make_selection_submenu */
+
+
+/* ------------------------------
+ * p_make_layermask_submenu
+ * ------------------------------
+ */
+static void
+p_make_layermask_submenu(GtkWidget *master_menu, GapModFramesGlobalParams *gmop)
+{
+  GtkWidget *menu_item;
+  GtkWidget *sub_menu;
+
+  /* the LayerMask sub menu */
+  menu_item = gtk_menu_item_new_with_label (_("Layer Mask"));
+  gtk_widget_show (menu_item);
+  gtk_menu_shell_append (GTK_MENU_SHELL (master_menu), menu_item);
+
+  sub_menu = gtk_menu_new ();
+  gtk_menu_item_set_submenu (GTK_MENU_ITEM (menu_item), sub_menu);
+
+  p_make_func_menu_item(_("Add white layermask (opaque)")
+                       ,NULL
+		       ,GAP_MOD_ACM_LMASK_WHITE
+		       ,sub_menu
+		       ,gmop
+		       );
+  p_make_func_menu_item(_("Add black layermask (transparent)")
+                       ,NULL
+		       ,GAP_MOD_ACM_LMASK_BLACK
+		       ,sub_menu
+		       ,gmop
+		       );
+  p_make_func_menu_item(_("Add layermask from alpha")
+                       ,NULL
+		       ,GAP_MOD_ACM_LMASK_ALPHA
+		       ,sub_menu
+		       ,gmop
+		       );
+  p_make_func_menu_item(_("Add layermask transfer from alpha")
+                       ,NULL
+		       ,GAP_MOD_ACM_LMASK_TALPHA
+		       ,sub_menu
+		       ,gmop
+		       );
+  p_make_func_menu_item(_("Add layermask from selection")
+                       ,NULL
+		       ,GAP_MOD_ACM_LMASK_SEL
+		       ,sub_menu
+		       ,gmop
+		       );
+  p_make_func_menu_item(_("Add layermask from bw copy")
+                       ,NULL
+		       ,GAP_MOD_ACM_LMASK_BWCOPY
+		       ,sub_menu
+		       ,gmop
+		       );
+  p_make_func_menu_item(_("Invert existing layermask")
+                       ,NULL
+                       ,GAP_MOD_ACM_LMASK_INVERT
+                       ,sub_menu
+                       ,gmop
+                       );
+  p_make_func_menu_item(_("Apply filter on layermask")
+                       ,NULL
+		       ,GAP_MOD_ACM_APPLY_FILTER_ON_LAYERMASK
+		       ,sub_menu
+		       ,gmop
+		       );
+  p_make_func_menu_item(_("Delete layermask")
+                       ,NULL
+		       ,GAP_MOD_ACM_LMASK_DELETE
+		       ,sub_menu
+		       ,gmop
+		       );
+  p_make_func_menu_item(_("Apply layermask")
+                       ,NULL
+		       ,GAP_MOD_ACM_LMASK_APPLY
+		       ,sub_menu
+		       ,gmop
+		       );
+  p_make_func_menu_item(_("Copy layermask from layer above")
+                       ,NULL
+		       ,GAP_MOD_ACM_LMASK_COPY_FROM_UPPER_LMASK
+		       ,sub_menu
+		       ,gmop
+		       );
+  p_make_func_menu_item(_("Copy layermask from layer below")
+                       ,NULL
+		       ,GAP_MOD_ACM_LMASK_COPY_FROM_LOWER_LMASK
+		       ,sub_menu
+		       ,gmop
+		       );
+}  /* end p_make_layermask_submenu */
+
+
+/* ------------------------------
+ * p_make_toplevel_menu_items
+ * ------------------------------
+ */
+static void
+p_make_toplevel_menu_items(GtkWidget *master_menu, GapModFramesGlobalParams *gmop)
+{
+  GtkWidget *menu_item;
+  
+  /* apply filter has no sub_menu */
+  p_make_func_menu_item(_("Apply filter on layer(s)")
+                       ,_("apply filter to all selected layers")
+		       ,GAP_MOD_ACM_APPLY_FILTER
+		       ,master_menu
+		       ,gmop
+		       );
+  p_make_func_menu_item(_("Duplicate layer(s)")
+                       ,NULL
+		       ,GAP_MOD_ACM_DUPLICATE
+		       ,master_menu
+		       ,gmop
+		       );
+  p_make_func_menu_item(_("Delete layer(s)")
+                       ,NULL
+		       ,GAP_MOD_ACM_DELETE
+		       ,master_menu
+		       ,gmop
+		       );
+  p_make_func_menu_item(_("Rename layer(s)")
+                       ,NULL
+		       ,GAP_MOD_ACM_RENAME
+		       ,master_menu
+		       ,gmop
+		       );
+
+  p_make_func_menu_item(_("Add alpha channel")
+                       ,NULL
+		       ,GAP_MOD_ACM_ADD_ALPHA
+		       ,master_menu
+		       ,gmop
+		       );
+}  /* end p_make_toplevel_menu_items */
+
+
+
+
 /* ---------------------------------
  * p_case_sensitive_toggled_callback
  * ---------------------------------
@@ -496,266 +1020,16 @@ p_create_mod_frames_dialog(GapModFramesGlobalParams *gmop)
   gtk_menu_shell_append(GTK_MENU_SHELL(menu_bar), menu_item);
   gtk_menu_item_set_submenu(GTK_MENU_ITEM(menu_item), master_menu);
 
-
-  /* the Layer Attributes sub menu */
-  menu_item = gtk_menu_item_new_with_label (_("Layer Attributes"));
-  gtk_widget_show (menu_item);
-  gtk_menu_shell_append (GTK_MENU_SHELL (master_menu), menu_item);
-
-  sub_menu = gtk_menu_new ();
-  gtk_menu_item_set_submenu (GTK_MENU_ITEM (menu_item), sub_menu);
-
-  p_make_func_menu_item(_("Set layer(s) visible")
-                       ,_("set all selected layers visible")
-		       ,GAP_MOD_ACM_SET_VISIBLE
-		       ,sub_menu
-		       ,gmop
-		       );
-  p_make_func_menu_item(_("Set layer(s) invisible")
-                       ,_("set all selected layers invisible")
-		       ,GAP_MOD_ACM_SET_INVISIBLE
-		       ,sub_menu
-		       ,gmop
-		       );
-  p_make_func_menu_item(_("Set layer(s) linked")
-                       ,_("set all selected layers linked")
-		       ,GAP_MOD_ACM_SET_LINKED
-		       ,sub_menu
-		       ,gmop
-		       );
-  p_make_func_menu_item(_("Set layer(s) unlinked")
-                       ,_("set all selected layers unlinked")
-		       ,GAP_MOD_ACM_SET_UNLINKED
-		       ,sub_menu
-		       ,gmop
-		       );
-
-
-
-  /* the Layer Stackposition sub menu */
-  menu_item = gtk_menu_item_new_with_label (_("Layer Stackposition"));
-  gtk_widget_show (menu_item);
-  gtk_menu_shell_append (GTK_MENU_SHELL (master_menu), menu_item);
-
-  sub_menu = gtk_menu_new ();
-  gtk_menu_item_set_submenu (GTK_MENU_ITEM (menu_item), sub_menu);
-
-  p_make_func_menu_item(_("Raise layer(s)")
-                       ,_("raise all selected layers")
-		       ,GAP_MOD_ACM_RAISE
-		       ,sub_menu
-		       ,gmop
-		       );
-  p_make_func_menu_item(_("Lower layer(s)")
-                       ,_("lower all selected layers")
-		       ,GAP_MOD_ACM_LOWER
-		       ,sub_menu
-		       ,gmop
-		       );
-
-
-  /* the Merge Layers sub menu */
-  menu_item = gtk_menu_item_new_with_label (_("Merge Layers"));
-  gtk_widget_show (menu_item);
-  gtk_menu_shell_append (GTK_MENU_SHELL (master_menu), menu_item);
-
-  sub_menu = gtk_menu_new ();
-  gtk_menu_item_set_submenu (GTK_MENU_ITEM (menu_item), sub_menu);
-
-  p_make_func_menu_item(_("Merge layer(s) expand as necessary")
-                       ,_("merge selected layers and expand as necessary")
-		       ,GAP_MOD_ACM_MERGE_EXPAND
-		       ,sub_menu
-		       ,gmop
-		       );
-  p_make_func_menu_item(_("Merge layer(s) clipped to image")
-                       ,_("merge selected layers and clip to image")
-		       ,GAP_MOD_ACM_MERGE_IMG
-		       ,sub_menu
-		       ,gmop
-		       );
-  p_make_func_menu_item(_("Merge layer(s) clipped to bg-layer")
-                       ,_("merge selected layers and clip to bg-layer")
-		       ,GAP_MOD_ACM_MERGE_BG
-		       ,sub_menu
-		       ,gmop
-		       );
-
-  /* the Selection sub menu */
-  menu_item = gtk_menu_item_new_with_label (_("Selection"));
-  gtk_widget_show (menu_item);
-  gtk_menu_shell_append (GTK_MENU_SHELL (master_menu), menu_item);
-
-  sub_menu = gtk_menu_new ();
-  gtk_menu_item_set_submenu (GTK_MENU_ITEM (menu_item), sub_menu);
-
-  p_make_func_menu_item(_("Replace selection (source is the active frame)")
-                       ,_("Replace Selection by Selection of the invoking Frame Image")
-		       ,GAP_MOD_ACM_SEL_REPLACE
-		       ,sub_menu
-		       ,gmop
-		       );
-  p_make_func_menu_item(_("Add selection (source is the active frame)")
-                       ,NULL
-		       ,GAP_MOD_ACM_SEL_ADD
-		       ,sub_menu
-		       ,gmop
-		       );
-  p_make_func_menu_item(_("Subtract selection (source is the active frame)")
-                       ,NULL
-		       ,GAP_MOD_ACM_SEL_SUTRACT
-		       ,sub_menu
-		       ,gmop
-		       );
-  p_make_func_menu_item(_("Intersect selection (source is the active frame)")
-                       ,NULL
-		       ,GAP_MOD_ACM_SEL_INTERSECT
-		       ,sub_menu
-		       ,gmop
-		       );
-  p_make_func_menu_item(_("Selection none")
-                       ,NULL
-		       ,GAP_MOD_ACM_SEL_NONE
-		       ,sub_menu
-		       ,gmop
-		       );
-  p_make_func_menu_item(_("Selection all")
-                       ,NULL
-		       ,GAP_MOD_ACM_SEL_ALL
-		       ,sub_menu
-		       ,gmop
-		       );
-  p_make_func_menu_item(_("Selection invert")
-                       ,NULL
-		       ,GAP_MOD_ACM_SEL_INVERT
-		       ,sub_menu
-		       ,gmop
-		       );
-
-  p_make_func_menu_item(_("Save selection to channel (individual per frame)")
-                       ,NULL
-		       ,GAP_MOD_ACM_SEL_SAVE
-		       ,sub_menu
-		       ,gmop
-		       );
-  p_make_func_menu_item(_("Load selection from channel (individual per frame)")
-                       ,NULL
-		       ,GAP_MOD_ACM_SEL_LOAD
-		       ,sub_menu
-		       ,gmop
-		       );
-  p_make_func_menu_item(_("Delete channel (by name)")
-                       ,NULL
-		       ,GAP_MOD_ACM_SEL_DELETE
-		       ,sub_menu
-		       ,gmop
-		       );
-
-  /* the LayerMask sub menu */
-  menu_item = gtk_menu_item_new_with_label (_("Layer Mask"));
-  gtk_widget_show (menu_item);
-  gtk_menu_shell_append (GTK_MENU_SHELL (master_menu), menu_item);
-
-  sub_menu = gtk_menu_new ();
-  gtk_menu_item_set_submenu (GTK_MENU_ITEM (menu_item), sub_menu);
-
-  p_make_func_menu_item(_("Add white layermask (opaque)")
-                       ,NULL
-		       ,GAP_MOD_ACM_LMASK_WHITE
-		       ,sub_menu
-		       ,gmop
-		       );
-  p_make_func_menu_item(_("Add black layermask (transparent)")
-                       ,NULL
-		       ,GAP_MOD_ACM_LMASK_BLACK
-		       ,sub_menu
-		       ,gmop
-		       );
-  p_make_func_menu_item(_("Add layermask from alpha")
-                       ,NULL
-		       ,GAP_MOD_ACM_LMASK_ALPHA
-		       ,sub_menu
-		       ,gmop
-		       );
-  p_make_func_menu_item(_("Add layermask transfer from alpha")
-                       ,NULL
-		       ,GAP_MOD_ACM_LMASK_TALPHA
-		       ,sub_menu
-		       ,gmop
-		       );
-  p_make_func_menu_item(_("Add layermask from selection")
-                       ,NULL
-		       ,GAP_MOD_ACM_LMASK_SEL
-		       ,sub_menu
-		       ,gmop
-		       );
-  p_make_func_menu_item(_("Add layermask from bw copy")
-                       ,NULL
-		       ,GAP_MOD_ACM_LMASK_BWCOPY
-		       ,sub_menu
-		       ,gmop
-		       );
-  p_make_func_menu_item(_("Delete layermask")
-                       ,NULL
-		       ,GAP_MOD_ACM_LMASK_DELETE
-		       ,sub_menu
-		       ,gmop
-		       );
-  p_make_func_menu_item(_("Apply layermask")
-                       ,NULL
-		       ,GAP_MOD_ACM_LMASK_APPLY
-		       ,sub_menu
-		       ,gmop
-		       );
-  p_make_func_menu_item(_("Copy layermask from layer above")
-                       ,NULL
-		       ,GAP_MOD_ACM_LMASK_COPY_FROM_UPPER_LMASK
-		       ,sub_menu
-		       ,gmop
-		       );
-  p_make_func_menu_item(_("Copy layermask from layer below")
-                       ,NULL
-		       ,GAP_MOD_ACM_LMASK_COPY_FROM_LOWER_LMASK
-		       ,sub_menu
-		       ,gmop
-		       );
-
+  /* make submenus */
+  p_make_layer_attrinutes_submenu(master_menu, gmop);
+  p_make_layer_modes_submenu(master_menu, gmop);
+  p_make_layer_stackpositions_submenu(master_menu, gmop);
+  p_make_merge_layers_submenu(master_menu, gmop);
+  p_make_selection_submenu(master_menu, gmop);
+  p_make_layermask_submenu(master_menu, gmop);
 
   /* finally we have some menu items that are not grouped into sub-menus */
-  /* apply filter has no sub_menu */
-  p_make_func_menu_item(_("Apply filter on layer(s)")
-                       ,_("apply filter to all selected layers")
-		       ,GAP_MOD_ACM_APPLY_FILTER
-		       ,master_menu
-		       ,gmop
-		       );
-  p_make_func_menu_item(_("Duplicate layer(s)")
-                       ,NULL
-		       ,GAP_MOD_ACM_DUPLICATE
-		       ,master_menu
-		       ,gmop
-		       );
-  p_make_func_menu_item(_("Delete layer(s)")
-                       ,NULL
-		       ,GAP_MOD_ACM_DELETE
-		       ,master_menu
-		       ,gmop
-		       );
-  p_make_func_menu_item(_("Rename layer(s)")
-                       ,NULL
-		       ,GAP_MOD_ACM_RENAME
-		       ,master_menu
-		       ,gmop
-		       );
-
-  p_make_func_menu_item(_("Add alpha channel")
-                       ,NULL
-		       ,GAP_MOD_ACM_ADD_ALPHA
-		       ,master_menu
-		       ,gmop
-		       );
- 
- 
+  p_make_toplevel_menu_items(master_menu, gmop);
 
 
   row++;

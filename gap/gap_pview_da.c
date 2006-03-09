@@ -861,3 +861,103 @@ gap_pview_render_from_pixbuf (GapPView *pv_ptr, GdkPixbuf *src_pixbuf)
 
 #endif
 
+
+
+/* ------------------------------
+ * p_pixmap_data_destructor
+ * ------------------------------
+ * a wrapper to g_free
+ * just for printing debug output at testing
+ */
+static void
+p_pixmap_data_destructor(gpointer data)
+{
+  if(gap_debug)
+  {
+    printf(" -- DESTRUCTOR p_pixmap_data_destructor called\n");
+    printf(" -- data: %d\n", (int)data);
+  }
+  g_free(data);
+  
+}
+
+
+/* ------------------------------
+ * gap_pview_get_repaint_pixbuf
+ * ------------------------------
+ * return the repaint buffer as GdkPixbuf,
+ * or NULL if no buffer is available.
+ */
+GdkPixbuf *
+gap_pview_get_repaint_pixbuf(GapPView   *pv_ptr)
+{ 
+  int bits_per_sample;
+  int rowstride;
+  int width;
+  int height;
+  gboolean has_alpha;
+  guchar *pixel_data_src;
+  guchar *pixel_data_copy;
+  
+  
+  if (pv_ptr == NULL)
+  {
+    return(NULL);
+  }
+
+  bits_per_sample = 8;
+  rowstride = pv_ptr->pv_width * pv_ptr->pv_bpp;
+  has_alpha = FALSE;
+  width = pv_ptr->pv_width;
+  height = pv_ptr->pv_height;
+  pixel_data_src = NULL;
+  
+  if ((pv_ptr->use_pixbuf_repaint) 
+  && (pv_ptr->pixbuf))
+  {
+    pixel_data_src = gdk_pixbuf_get_pixels(pv_ptr->pixbuf);
+    rowstride = gdk_pixbuf_get_rowstride(pv_ptr->pixbuf);
+    bits_per_sample = gdk_pixbuf_get_bits_per_sample(pv_ptr->pixbuf);
+    has_alpha = gdk_pixbuf_get_has_alpha(pv_ptr->pixbuf);
+  }
+  
+  if ((pv_ptr->use_pixmap_repaint) 
+  && (pv_ptr->pixmap)
+  && (pixel_data_src == NULL))
+  { 
+    gdk_drawable_get_size (pv_ptr->pixmap, &width, &height);
+    // pixel_data_src = ???; 
+    // TODO: how to make duplicate of pixeldata for GdkPixmap ?
+    // not critical, the pixmap is currently used only for the default icon
+    // that is renderd in case no useful pixeldata is available.
+    // The caller has to deal with returned NULL pointer anyway.
+ 
+    return(NULL);
+  }
+
+  if((pv_ptr->pv_area_data)
+  && (pixel_data_src == NULL))
+  {
+    pixel_data_src = pv_ptr->pv_area_data;
+  }
+
+  if(pixel_data_src)
+  {
+    size_t pixel_data_size = pv_ptr->pv_height * pv_ptr->pv_width * pv_ptr->pv_bpp;
+    pixel_data_copy = g_new ( guchar, pixel_data_size );
+    memcpy(pixel_data_copy, pv_ptr->pv_area_data, pixel_data_size);			    
+
+    return(gdk_pixbuf_new_from_data(
+            pixel_data_copy
+            , GDK_COLORSPACE_RGB
+            , has_alpha
+            , bits_per_sample
+            , width
+            , height
+            , rowstride
+            , p_pixmap_data_destructor  /* GdkPixbufDestroyNotify destroy_fn */
+            , pixel_data_copy    /* gpointer destroy_fn_data */
+	));
+  }
+  return (NULL);
+}  /* end gap_pview_get_repaint_pixbuf */

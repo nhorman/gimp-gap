@@ -1,6 +1,25 @@
-Here is a short overview whats new in GIMP-GAP-2.2.0:
-(compared to gimp-gap release 2.0.2)
+Here is a short overview whats new in GIMP-GAP-2.2.1:
+-----------------------------------------------------
+(compared to gimp-gap release 2.2.0)
 
+- Modifiy Frames support of additional functions:
+  - invert existing layermask
+  - apply filter on layermask
+  - set layermodes 
+     (normal, dissolve, multiply, divide, screen, overlay,
+      difference, addition, subtract, darken only, lighten only,
+      dodge, burn, hardlight, softlight, color erase,
+      grain extract, grain merge, hue, saturation, color, value)
+
+- drag&drop support in the storyboard dialog.
+  accept drop of images, frameranges and videoclips.
+  drag&drop copy and move is now possible to arrange
+  existing clips in the storyboard and/or cliplist.
+
+
+Here is a short overview whats new in GIMP-GAP-2.2.0:
+-----------------------------------------------------
+(compared to gimp-gap release 2.0.2)
 
 - support upto 8 framenumber digits for frame images (mplayer style)
   (older support was limited to 6 digits)

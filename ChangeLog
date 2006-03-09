@@ -1,3 +1,91 @@
+2006-03-02  Wolfgang Hofer <hof@gimp.org>
+	- added more functions to modify frames
+	  (based on the attachments of 
+	  feature requests #332689 #332959)
+	  plus function to apply filter on layermask.
+	- frames convert: changed default extension from ".tif" to ".jpg"
+	
+	* gap/gap_mod_layer.c [.h]
+	* gap/gap_mod_layer_dialog.c
+	* gap/gap_main.c
+	* gap/gap_range_ops.c
+	* docs/reference/txt/plug-in-gap-modify.txt
+	* NEWS
+
+2006-02-28  Wolfgang Hofer <hof@gimp.org>
+	- could not reproduce bug #332689 that causes crash
+	  on duplicate frame operations, but made attempt to fix.
+	  The stacktrace applied to that bug points to a problem
+	  related to g_free for the thumbnail.
+
+	   now using g_object_unref instead of g_free to free up
+	   GimpThumbnail objects.
+	   
+	* gap/gap_story_file.c [.h]
+	   
+	   
+2006-02-10  Wolfgang Hofer <hof@gimp.org>
+	- storyboard support to act as drag and drop destination for
+	  image files and video clips
+	  application internal copy and move of clips is also supported.
+	- render default icon dependent to type of the clip.
+	  (use png images for the default icons)
+
+	* gap/gap_story_properties.c
+	* gap/gap_story_file.c [.h]
+	* gap/gap_story_dialog.c
+	* gap/gap_pview_da.c [.h]
+	* gap/gap_story_main.h
+	* NEWS
+	* docs/reference/txt/plug-in-gap-storyboard-edit.txt
+	
+	* images/Makefile.am
+        * images/gap-story-icon-movie.png
+        * images/gap-story-icon-frames.png
+        * images/gap-story-icon-animimage.png
+        * images/gap-story-icon-image.png
+        * images/gap-story-icon-color.png
+        * images/gap-story-icon-default.png
+	  
+2006-02-05  Wolfgang Hofer <hof@gimp.org>
+	- bugfix: AVI RAW encoding did not work 
+	  (used XVID encoding but declared as "RAW " in the AVI file)
+	  or delivered:
+	  ERROR: GAP AVI encoder CODEC RAW delivered empty buffer at frame
+	  (in case when compiled without XVID support)
+	  
+	  added checkbutton for vertical flip 
+	  (player like WinDVD wants raw AVI vflipped,
+	   gmplayer on linux want same order of rows than gimp)
+	  
+	  * vid_enc_avi/gap_enc_avi_main.c [.h]
+	  * vid_enc_avi/gap_enc_avi_gui.c [.h]
+	  
+2006-02-04  Wolfgang Hofer <hof@gimp.org>
+        - bugfix: in procedure on_vid_preview_size_allocate
+	  (dont access the gpp->ainfo_ptr befor the == NULL check)
+	  
+	  * gap/gap_player_dialog.c
+	  
+	- attempt to fix #326201 (MinGW link problem with ffmpeg.)
+	  (not yet tested with MinGW, i have no win development environment)
+
+	  * configure.in
+	
+	- fixed typos reported by Fabrizzio Mellerti 
+	 
+          * gap/gap_mov_dialog.c
+          * gap/gap_navigator_dialog.c
+          * gap/gap_vex_dialog.c
+          * vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c
+
+2005-12-03  Wolfgang Hofer <hof@gimp.org>
+
+        gap file util must use the binary file type open mode
+	(consequent usage of fopen(file, "rb");)
+        
+	* gap/gap_file_util.c [h]
+
 2005-11-20  Wolfgang Hofer <hof@gimp.org>
 	fixed bug when building with libmpeg3.
 	AC_SUBST(GAP_PTHREAD_LIB) required due to deferred expansion

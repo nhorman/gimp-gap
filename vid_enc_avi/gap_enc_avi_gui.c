@@ -120,6 +120,28 @@ on_avi_response (GtkWidget *widget,
   }
 }  /* end on_avi_response */
 
+/* ----------------------------------------
+ * p_get_initial_video_codec_idx
+ * ----------------------------------------
+ */
+static gint
+p_get_initial_video_codec_idx(GapGveAviGlobalParams *gpp)
+{
+  GapGveAviValues *epp;
+  gint l_idx;
+
+  epp = &gpp->evl;
+    
+  for(l_idx=0;l_idx < GAP_AVI_VIDCODEC_MAX_ELEMENTS; l_idx++)
+  {
+    if(strcmp(gtab_avi_codecname[l_idx], epp->codec_name) == 0)
+    {
+      return(l_idx);
+    }
+  }
+  return (0);
+
+}  /* end p_get_initial_video_codec_idx */
 
 /* ----------------------------------------
  * p_init_widget_values
@@ -169,28 +191,18 @@ p_init_widget_values(GapGveAviGlobalParams *gpp)
                                , epp->jpeg_odd_even);  
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->app0_checkbutton)
                                , epp->APP0_marker);
-
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->raw_vflip_checkbutton)
+                               , epp->raw_vflip);
 
   /* set initial value according to codec */
   {
     gint l_idx;
-    
-    for(l_idx=0;l_idx < GAP_AVI_VIDCODEC_MAX_ELEMENTS; l_idx++)
-    {
-      if(strcmp(gtab_avi_codecname[l_idx], epp->codec_name) == 0)
-      {
-        break;
-      }
-    }
-    if(l_idx >= GAP_AVI_VIDCODEC_MAX_ELEMENTS)
-    {
-      /* for unknow codec, set the default */
-      l_idx = 0;
-    }
+    l_idx = p_get_initial_video_codec_idx(gpp);
     gimp_int_combo_box_set_active (GIMP_INT_COMBO_BOX (gpp->combo_codec), l_idx);
     p_set_codec_dependent_wgt_senistive(gpp, l_idx);
   }
 }  /* end p_init_widget_values */
+
 
 
 /* ----------------------------------------
@@ -379,6 +391,7 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
   gint      master_row;
   gint      jpg_row;
   gint      xvid_row;
+  gint      raw_row;
   GtkWidget *shell_window;
   GtkWidget *vbox1;
   GtkWidget *frame_main;
@@ -449,7 +462,7 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
                                      NULL);
 
   gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (combo_codec),
-                             GAP_AVI_VIDCODEC_00_JPEG,  /* inital value */
+                             p_get_initial_video_codec_idx(gpp),  /* inital value */
                              G_CALLBACK (on_combo_video_codec),
                              gpp);
 
@@ -677,15 +690,47 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
   gtk_table_set_row_spacings (GTK_TABLE (table_raw), 2);
   gtk_table_set_col_spacings (GTK_TABLE (table_raw), 2);
 
+  raw_row = 0;
+
   /* the raw codec info label */
   label = gtk_label_new (_("The RAW codec has no encoding options.\n"
                            "The resulting videoframes will be\n"
 			   "uncompressed."));
   gtk_widget_show (label);
-  gtk_table_attach (GTK_TABLE (table_raw), label, 0, 3, 0, 1,
+  gtk_table_attach (GTK_TABLE (table_raw), label, 0, 3, raw_row, raw_row+1,
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
+
+
+  raw_row++;
+
+  /* the vflip label */
+  label = gtk_label_new (_("Vertical flip:"));
+  gtk_widget_show (label);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+  gtk_table_attach (GTK_TABLE (table_raw), label, 0, 1, raw_row, raw_row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_RIGHT);
+  
+  /* the vflip checkbutton */
+  checkbutton = gtk_check_button_new_with_label (" ");
+  gpp->raw_vflip_checkbutton = checkbutton;
+  gtk_widget_show (checkbutton);
+  gtk_table_attach (GTK_TABLE (table_raw), checkbutton, 1, 2, raw_row, raw_row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+        g_object_set_data (G_OBJECT (checkbutton), "gpp"
+                          , (gpointer)gpp);
+        g_signal_connect (G_OBJECT (checkbutton), "toggled"
+                   , G_CALLBACK (on_checkbutton_toggled)
+                   , &epp->raw_vflip);
+  gimp_help_set_help_data (checkbutton
+                   , _("Check if you want encode frames vertically flipped "
+		       "(suitable for playback on WinDVD player)"
+		       "or as is (suitable for gmplayer on linux)")
+                   , NULL);
 
 
 #ifdef ENABLE_LIBXVIDCORE
@@ -999,6 +1044,7 @@ gap_enc_avi_gui_dialog(GapGveAviGlobalParams *gpp)
   gpp->xvid_min_quantizer_spinbutton = NULL;
   gpp->xvid_max_key_interval_spinbutton = NULL;
   gpp->xvid_quality_spinbutton = NULL;
+  gpp->raw_vflip_checkbutton = NULL;
 
 
   gpp->shell_window = p_create_shell_window (gpp);

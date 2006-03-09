@@ -52,8 +52,18 @@ Creating new storyboard file and clips:
 
       (you may change those properties later any time too,
       using storyboard menu "Properties")
+
+  1b.) Creation of a storyboard file can also be done
+      via drag&drop. Drag a clip (image, frames or videofile)
+      from another application (e.g. a filemanager supporting Drag&Drop)
+      and drop onto one the button row.
+      (any of the buttons can act as drop destination in the same way)
+      This will add the droped clips at end of an aready existing storyboard 
+      (or cliplist) but also automatically create a new storyboard (or cliplist) in case if
+      if the destination is NOT already existing.
+
     
-  3.) Create a new clip.
+  2.) Create a new clip.
       Use the storyboard menu "Create Clip" to add a new clip.
       This opens the "Clip Properties" popup dialog window,
       where you can specify a filename.
@@ -72,6 +82,18 @@ Creating new storyboard file and clips:
       in the playback motion preview and add it from there
       by pressing the buttons 'From Frame' or 'To Frame'
   
+  2b.) Create a new clip via Drag&Drop.
+      Select one or more frames, single images or videoclips in another
+      application (e.g. a filemanager supporting Drag&Drop) and 
+      drag them with the mouse onto a thumbnail
+      of an existing clip in the storyboard or cliplist window
+      and drop them via relesing the mousebutton.
+      If the mouse pointer is within the left half of the destination
+      thumbnail, the droped clips will be inserted before the destination
+      thumbnail. If you drop them over the right half they are inserted
+      after the destination thumbnail.
+      
+      
 
 
   Following functions on the thumbnails in the storyboard and cliplist

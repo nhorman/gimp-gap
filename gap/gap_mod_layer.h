@@ -77,6 +77,33 @@
 #define	 GAP_MOD_ACM_LMASK_COPY_FROM_UPPER_LMASK   32
 #define	 GAP_MOD_ACM_LMASK_COPY_FROM_LOWER_LMASK   33
 
+#define  GAP_MOD_ACM_LMASK_INVERT                  34
+
+#define  GAP_MOD_ACM_SET_MODE_NORMAL               35
+#define  GAP_MOD_ACM_SET_MODE_DISSOLVE             36
+#define  GAP_MOD_ACM_SET_MODE_MULTIPLY             37
+#define  GAP_MOD_ACM_SET_MODE_DIVIDE               38
+#define  GAP_MOD_ACM_SET_MODE_SCREEN               39
+#define  GAP_MOD_ACM_SET_MODE_OVERLAY              40
+#define  GAP_MOD_ACM_SET_MODE_DIFFERENCE           41
+#define  GAP_MOD_ACM_SET_MODE_ADDITION             42
+#define  GAP_MOD_ACM_SET_MODE_SUBTRACT             43
+#define  GAP_MOD_ACM_SET_MODE_DARKEN_ONLY          44
+#define  GAP_MOD_ACM_SET_MODE_LIGHTEN_ONLY         45
+#define  GAP_MOD_ACM_SET_MODE_DODGE                46
+#define  GAP_MOD_ACM_SET_MODE_BURN                 47
+#define  GAP_MOD_ACM_SET_MODE_HARDLIGHT            48
+#define  GAP_MOD_ACM_SET_MODE_SOFTLIGHT            49
+#define  GAP_MOD_ACM_SET_MODE_COLOR_ERASE          50
+#define  GAP_MOD_ACM_SET_MODE_GRAIN_EXTRACT_MODE   51
+#define  GAP_MOD_ACM_SET_MODE_GRAIN_MERGE_MODE     52
+#define  GAP_MOD_ACM_SET_MODE_HUE_MODE             53
+#define  GAP_MOD_ACM_SET_MODE_SATURATION_MODE      54
+#define  GAP_MOD_ACM_SET_MODE_COLOR_MODE           55
+#define  GAP_MOD_ACM_SET_MODE_VALUE_MODE           56
+
+#define  GAP_MOD_ACM_APPLY_FILTER_ON_LAYERMASK     57
+
 typedef struct
 {
   gint32 layer_id;

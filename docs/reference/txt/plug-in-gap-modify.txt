@@ -30,6 +30,29 @@ Modify Frames
 	 "Set Layer(s) invisible",
 	 "Set Layer(s) linked",
 	 "Set Layer(s) unlinked),
+       Layer Modes
+         "Set Layer(s) mode: Normal",
+         "Set Layer(s) mode: Dissolve",
+         "Set Layer(s) mode: Multiply",
+         "Set Layer(s) mode: Divide",
+         "Set Layer(s) mode: Screen",
+         "Set Layer(s) mode: Overlay",
+         "Set Layer(s) mode: Difference",
+         "Set Layer(s) mode: Addition",
+         "Set Layer(s) mode: Subtract",
+         "Set Layer(s) mode: Darken only",
+         "Set Layer(s) mode: Lighten only",
+         "Set Layer(s) mode: Dodge",
+         "Set Layer(s) mode: Burn",
+         "Set Layer(s) mode: Hardlight",
+         "Set Layer(s) mode: Softlight",
+         "Set Layer(s) mode: Color erase",
+         "Set Layer(s) mode: Grain extract",
+         "Set Layer(s) mode: Grain merge",
+         "Set Layer(s) mode: Hue",
+         "Set Layer(s) mode: Saturation",
+         "Set Layer(s) mode: Color",
+         "Set Layer(s) mode: Value",
        Layer Stackposition
 	 "Raise Layer(s)",
 	 "Lower Layer(s)",
@@ -55,6 +78,8 @@ Modify Frames
 	 "Add layermask transfer from alpha",
 	 "Add layermask from selection",
 	 "Add layermask from bw copy",
+	 "Invert existing layermask",
+	 "Apply filter on layermask",
 	 "Delete layermask",
 	 "Apply layermask"
 	 "Copy layermask from layer above"
@@ -120,6 +145,24 @@ Modify Frames
     
          (for more information see chapter 'Animated calls of Plug-In Filters' below)
  
+    The function 
+      "Apply filter on layermask"
+       
+       works with same additional dialog steps as described
+       for function "Apply filter on Layer(s)", but applies the 
+       selected filter to the layermask instead of the layer itself.
+       
+       If the first selected layer in the first handled frame image
+       has no layermask, this function will terminate with an
+       appropriate error message.
+       
+       If the filter shall be applied with varying values, it is also
+       required that the first selected layer of the last handled
+       frame image has a layermask.
+       
+       If the selected layer(s) of the frame images of the selected frame range
+       between first and last handled frame have no layermask, the filter 
+       processing is skipped on those layers, but processing will continue.
 
 
     It is a good idea to use the same layerstack structure in all

@@ -44,7 +44,8 @@
 
 
 /* names of the supported AVI Codecs */
-#define GAP_AVI_CODEC_NONE "RGB"
+#define GAP_AVI_CODEC_RAW  "RAW "   /* refers to 4 byte code "RGB " */
+#define GAP_AVI_CODEC_RGB  "RGB "
 #define GAP_AVI_CODEC_JPEG "JPEG"
 /* ??? not sure what to use for the correct 4cc codec names for xvid divx MPEG 4 */
 #define GAP_AVI_CODEC_XVID "XVID"
@@ -179,8 +180,9 @@ query ()
     {GIMP_PDB_INT32, "xvid_motion", "ignored if preset ==-1, see xvid docs for description which bit turns which algorithm on"},
 
     {GIMP_PDB_INT32, "APP0_marker", "=1: write APP0 marker for each frame into the AVI. "
-                                 "( The APP0 marker is evaluated by some Windows programs for AVIs)"}
+                                 "( The APP0 marker is evaluated by some Windows programs for AVIs)"},
 
+    {GIMP_PDB_INT32, "raw_vflip", "=1: flip vertically (only for codec_name RAW and RGB )"}
   };
   static int nargs_avi_enc_par = sizeof(args_avi_enc_par) / sizeof(args_avi_enc_par[0]);
 
@@ -387,6 +389,8 @@ run (const gchar *name,          /* name of plugin */
 
            epp->APP0_marker                    = param[l_ii++].data.d_int32;
 
+           epp->raw_vflip                      = param[l_ii++].data.d_int32;
+
         }
       }
       else
@@ -562,6 +566,8 @@ gap_enc_avi_main_init_default_params(GapGveAviValues *epp)
 #endif
 
   epp->APP0_marker = TRUE;
+
+  epp->raw_vflip    = 1;
 }  /* end gap_enc_avi_main_init_default_params */
 
 
@@ -835,7 +841,7 @@ p_avi_encode(GapGveAviGlobalParams *gpp)
      printf("  storyboard_file: %s\n", gpp->val.storyboard_file);
      printf("  input_mode: %d\n", gpp->val.input_mode);
 
-     printf("  codec_name: %s\n", epp->codec_name);
+     printf("  codec_name:%s:\n", epp->codec_name);
   }
 
   l_rc = 0;
@@ -903,12 +909,34 @@ p_avi_encode(GapGveAviGlobalParams *gpp)
   frames_per_second_x100 = frames_per_second_x100f;
   audio_per_frame_x100 = (100 * 100 * l_sample_rate * l_bytes_per_sample) / MAX(1,frames_per_second_x100);
 
-  AVI_set_video( l_avifile
-               , gpp->val.vid_width
-               , gpp->val.vid_height
-               , gpp->val.framerate
-               , epp->codec_name           /* char *compressor  one of "RGB", "JPEG"  ... */
-               );
+
+  /* build AVI 4 byte codec name
+   * ("RAW" is converted to "RGB ", other codec names can be copied 1:1)
+   */
+  {
+    gchar *codec_name;
+   
+    if(strcmp(epp->codec_name, GAP_AVI_CODEC_RAW) == 0)
+    {
+      codec_name = g_strdup(GAP_AVI_CODEC_RGB);
+    }
+    else
+    {
+      codec_name = g_strdup(epp->codec_name);
+    }
+    if(gap_debug)
+    {
+      printf("AVI 4byte code for codec_name: %s\n", codec_name);
+    }
+    AVI_set_video( l_avifile
+        	 , gpp->val.vid_width
+        	 , gpp->val.vid_height
+        	 , gpp->val.framerate
+        	 , codec_name           /* char *compressor  one of "RGB", "JPEG"  ... */
+        	 );
+	       
+    g_free(codec_name);
+  }
   if(l_fp_inwav)
   {
     AVI_set_audio(l_avifile
@@ -923,7 +951,8 @@ p_avi_encode(GapGveAviGlobalParams *gpp)
   if(gap_debug) printf("next is INIT Encoder Instance ?\n");
 
 #ifdef ENABLE_LIBXVIDCORE
-  if ((strcmp(epp->codec_name, GAP_AVI_CODEC_NONE) != 0)
+  if ((strcmp(epp->codec_name, GAP_AVI_CODEC_RGB) != 0)
+  && (strcmp(epp->codec_name, GAP_AVI_CODEC_RAW) != 0)
   && (strcmp(epp->codec_name, GAP_AVI_CODEC_JPEG) != 0))
   {
     if(gap_debug) printf("INIT Encoder Instance (HANDLE) for XVID (OpenDivX)\n");
@@ -1110,14 +1139,21 @@ p_avi_encode(GapGveAviGlobalParams *gpp)
         }
         else
         {
-          if (strcmp(epp->codec_name, GAP_AVI_CODEC_NONE) == 0)
+          if ((strcmp(epp->codec_name, GAP_AVI_CODEC_RAW) == 0)
+          ||  (strcmp(epp->codec_name, GAP_AVI_CODEC_RGB) == 0))
           {
             gboolean l_vflip;
 
-            /* fill buffer with raw 24bit data
-             * AVI uses opposite vertical row order than gimp, vertical flip
+            /* fill buffer with raw 24bit data, optional flipped.
+             * it seems that some AVI players (for instance the WinDVD player)
+	     *  require the inverse row order than gimp,
+	     *  and other players (like gmplayer on unix) does not need vflipped images.
              */
-            l_vflip = TRUE;
+            l_vflip = FALSE;
+            if(epp->raw_vflip != 0)
+	    {
+	      l_vflip = TRUE;
+	    }
             buffer = gap_gve_raw_BGR_drawable_encode(l_drawable, &l_FRAME_size, l_vflip, l_app0_buffer, l_app0_len);
           }
 #ifdef ENABLE_LIBXVIDCORE

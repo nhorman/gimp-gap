@@ -2209,7 +2209,7 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
   mw__checkbutton_exact_seek = gtk_check_button_new_with_label (_("Exact Seek"));
   gtk_widget_show (mw__checkbutton_exact_seek);
   gimp_help_set_help_data (mw__checkbutton_exact_seek
-                          , _("ON: emulate seek operations by seqeuntial reads, "
+                          , _("ON: emulate seek operations by sequential reads, "
 			      "even when videoindex is available")
 			  , NULL);
   gtk_table_attach (GTK_TABLE (mw__table_in), mw__checkbutton_exact_seek, 2, 3, in_row, in_row+1,

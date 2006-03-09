@@ -495,6 +495,15 @@ p_apply_action(gint32 image_id,
           if(gap_debug) fprintf(stderr, "gap: p_apply_action FILTER:%s rc =%d\n",
                                 filter_procname, (int)l_rc);
 	  break;
+        case GAP_MOD_ACM_APPLY_FILTER_ON_LAYERMASK:
+	  if(gimp_layer_get_mask(l_layer_id) >= 0)
+	  {
+	    l_rc = gap_filt_pdb_call_plugin(filter_procname,
+	                       image_id,
+			       gimp_layer_get_mask(l_layer_id),
+			       GIMP_RUN_WITH_LAST_VALS);
+          }
+	  break;
         case GAP_MOD_ACM_DUPLICATE:
 	  l_new_layer_id = gimp_layer_copy(l_layer_id);
 	  gimp_image_add_layer (image_id, l_new_layer_id, -1);
@@ -746,6 +755,78 @@ p_apply_action(gint32 image_id,
 	    }
 	  }
 	  break;
+	case GAP_MOD_ACM_LMASK_INVERT:
+	  if(gimp_layer_get_mask(l_layer_id) >= 0)
+	  {
+	    gimp_invert(gimp_layer_get_mask(l_layer_id));
+	  }
+	  break;
+	case GAP_MOD_ACM_SET_MODE_NORMAL: 
+	  gimp_layer_set_mode(l_layer_id, GIMP_NORMAL_MODE);
+	  break;
+	case GAP_MOD_ACM_SET_MODE_DISSOLVE:
+	  gimp_layer_set_mode(l_layer_id, GIMP_DISSOLVE_MODE);
+	  break;
+	case GAP_MOD_ACM_SET_MODE_MULTIPLY:
+	  gimp_layer_set_mode(l_layer_id, GIMP_MULTIPLY_MODE);
+	  break;
+	case GAP_MOD_ACM_SET_MODE_DIVIDE:
+	  gimp_layer_set_mode(l_layer_id, GIMP_DIVIDE_MODE);
+	  break;
+	case GAP_MOD_ACM_SET_MODE_SCREEN:
+	  gimp_layer_set_mode(l_layer_id, GIMP_SCREEN_MODE);
+	  break;
+	case GAP_MOD_ACM_SET_MODE_OVERLAY:
+	  gimp_layer_set_mode(l_layer_id, GIMP_OVERLAY_MODE);
+	  break;
+	case GAP_MOD_ACM_SET_MODE_DIFFERENCE:
+	  gimp_layer_set_mode(l_layer_id, GIMP_DIFFERENCE_MODE);
+	  break;
+	case GAP_MOD_ACM_SET_MODE_ADDITION:
+	  gimp_layer_set_mode(l_layer_id, GIMP_ADDITION_MODE);
+	  break;
+	case GAP_MOD_ACM_SET_MODE_SUBTRACT:
+	  gimp_layer_set_mode(l_layer_id, GIMP_SUBTRACT_MODE);
+	  break;
+	case GAP_MOD_ACM_SET_MODE_DARKEN_ONLY:
+	  gimp_layer_set_mode(l_layer_id, GIMP_DARKEN_ONLY_MODE);
+	  break;
+	case GAP_MOD_ACM_SET_MODE_LIGHTEN_ONLY:
+	  gimp_layer_set_mode(l_layer_id, GIMP_LIGHTEN_ONLY_MODE);
+	  break;
+	case GAP_MOD_ACM_SET_MODE_DODGE:
+	  gimp_layer_set_mode(l_layer_id, GIMP_DODGE_MODE);
+	  break;
+	case GAP_MOD_ACM_SET_MODE_BURN:
+	  gimp_layer_set_mode(l_layer_id, GIMP_BURN_MODE);
+	  break;
+	case GAP_MOD_ACM_SET_MODE_HARDLIGHT:
+	  gimp_layer_set_mode(l_layer_id, GIMP_HARDLIGHT_MODE);
+	  break;
+	case GAP_MOD_ACM_SET_MODE_SOFTLIGHT:
+	  gimp_layer_set_mode(l_layer_id, GIMP_SOFTLIGHT_MODE);
+	  break;
+	case GAP_MOD_ACM_SET_MODE_COLOR_ERASE:
+	  gimp_layer_set_mode(l_layer_id, GIMP_COLOR_ERASE_MODE);
+	  break;
+	case GAP_MOD_ACM_SET_MODE_GRAIN_EXTRACT_MODE:
+	  gimp_layer_set_mode(l_layer_id, GIMP_GRAIN_EXTRACT_MODE);
+	  break;
+	case GAP_MOD_ACM_SET_MODE_GRAIN_MERGE_MODE:
+	  gimp_layer_set_mode(l_layer_id, GIMP_GRAIN_MERGE_MODE);
+	  break;
+	case GAP_MOD_ACM_SET_MODE_HUE_MODE:
+	  gimp_layer_set_mode(l_layer_id, GIMP_HUE_MODE);
+	  break;
+	case GAP_MOD_ACM_SET_MODE_SATURATION_MODE:
+	  gimp_layer_set_mode(l_layer_id, GIMP_SATURATION_MODE);
+	  break;
+	case GAP_MOD_ACM_SET_MODE_COLOR_MODE:
+	  gimp_layer_set_mode(l_layer_id, GIMP_COLOR_MODE);
+	  break;
+	case GAP_MOD_ACM_SET_MODE_VALUE_MODE:
+	  gimp_layer_set_mode(l_layer_id, GIMP_VALUE_MODE);
+	  break;
         default:
 	  break;
       }
@@ -770,11 +851,12 @@ p_do_filter_dialogs(GapAnimInfo *ainfo_ptr,
                     GapModLayliElem * layli_ptr, gint nlayers ,
                     char *filter_procname, int filt_len,
 		    gint *plugin_data_len,
-		    GapFiltPdbApplyMode *apply_mode
+		    GapFiltPdbApplyMode *apply_mode,
+		    gboolean operate_on_layermask
 		    )
 {
   GapDbBrowserResult  l_browser_result;
-  gint32   l_layer_id;
+  gint32   l_drawable_id;
   int      l_rc;
   int      l_idx;
   static char l_key_from[512];
@@ -818,12 +900,21 @@ p_do_filter_dialogs(GapAnimInfo *ainfo_ptr,
      fprintf(stderr, "ERROR: No layer selected in 1.st handled frame\n");
      return (-1);
   }
-  l_layer_id = layli_ptr[l_idx].layer_id;
+  l_drawable_id = layli_ptr[l_idx].layer_id;
+  if(operate_on_layermask)
+  {
+    l_drawable_id = gimp_layer_get_mask(layli_ptr[l_idx].layer_id);
+    if(l_drawable_id < 0)
+    {
+      fprintf(stderr, "ERROR: selected layer has no layermask\n");
+      return -1;
+    }
+  }
 
   /* open a view for the 1.st handled frame */
   *dpy_id = gimp_display_new (image_id);
 
-  l_rc = gap_filt_pdb_call_plugin(filter_procname, image_id, l_layer_id, GIMP_RUN_INTERACTIVE);
+  l_rc = gap_filt_pdb_call_plugin(filter_procname, image_id, l_drawable_id, GIMP_RUN_INTERACTIVE);
 
   /* OOPS: cant delete the display here, because
    *       closing the last display seems to free up
@@ -872,10 +963,11 @@ p_do_2nd_filter_dialogs(char *filter_procname,
                         GapFiltPdbApplyMode  l_apply_mode,
 			char *last_frame_filename,
 			gint32 sel_mode, gint32 sel_case,
-			gint32 sel_invert, char *sel_pattern
+			gint32 sel_invert, char *sel_pattern,
+			gboolean operate_on_layermask
                        )
 {
-  gint32   l_layer_id;
+  gint32   l_drawable_id;
   gint32   l_dpy_id;
   int      l_rc;
   int      l_idx;
@@ -918,17 +1010,28 @@ p_do_2nd_filter_dialogs(char *filter_procname,
   l_idx = gap_mod_get_1st_selected(l_layli_ptr, l_nlayers);
   if(l_idx < 0)
   {
-     gap_arr_msg_win (GIMP_RUN_INTERACTIVE, _("GAP Modify: No layer selected in last handled frame"));
+     g_message (_("Modify Layers cancelled: No layer selected in last handled frame"));
      goto cleanup;
   }
-  l_layer_id = l_layli_ptr[l_idx].layer_id;
+  l_drawable_id = l_layli_ptr[l_idx].layer_id;
+  if(operate_on_layermask)
+  {
+    l_drawable_id = gimp_layer_get_mask(l_layli_ptr[l_idx].layer_id);
+    if(l_drawable_id < 0)
+    {
+      g_message (_("Modify Layers cancelled: first selected layer \"%s\"\nin last frame has no layermask"),
+	            gimp_drawable_get_name(l_layli_ptr[l_idx].layer_id)
+		    );
+      goto cleanup;
+    }
+  }
 
   /* open a view for the last handled frame */
   l_dpy_id = gimp_display_new (l_last_image_id);
 
   /* 2.nd INTERACTIV Filtercall dialog */
   /* --------------------------------- */
-  l_rc = gap_filt_pdb_call_plugin(filter_procname, l_last_image_id, l_layer_id, GIMP_RUN_INTERACTIVE);
+  l_rc = gap_filt_pdb_call_plugin(filter_procname, l_last_image_id, l_drawable_id, GIMP_RUN_INTERACTIVE);
 
   /* get values, then store with suffix "_ITER_TO" */
   l_plugin_data_len = gap_filt_pdb_get_data(filter_procname);
@@ -996,13 +1099,15 @@ p_frames_modify(GapAnimInfo *ainfo_ptr,
   char         *l_last_frame_filename;
   gint          l_count;
   gboolean      l_operating_on_current_image;
-
+  gboolean      l_operate_on_layermask;
+      
 
 
 
   if(gap_debug) fprintf(stderr, "gap: p_frames_modify START, action_mode=%d  sel_mode=%d case=%d, invert=%d patt:%s:\n",
         (int)action_mode, (int)sel_mode, (int)sel_case, (int)sel_invert, sel_pattern);
 
+  l_operate_on_layermask = FALSE;
   l_percentage = 0.0;
   if(ainfo_ptr->run_mode == GIMP_RUN_INTERACTIVE)
   {
@@ -1091,14 +1196,30 @@ p_frames_modify(GapAnimInfo *ainfo_ptr,
        goto error;
     }
 
-    if((l_cur_frame_nr == l_begin) && (action_mode == GAP_MOD_ACM_APPLY_FILTER))
-    {
+    if((l_cur_frame_nr == l_begin) 
+    && ((action_mode == GAP_MOD_ACM_APPLY_FILTER) || (action_mode == GAP_MOD_ACM_APPLY_FILTER_ON_LAYERMASK)))
+    {      
       /* ------------- 1.st frame: extra dialogs for APPLY_FILTER ---------- */
 
       if(l_sel_cnt < 1)
       {
-         gap_arr_msg_win(GIMP_RUN_INTERACTIVE, _("No selected layer in start frame"));
+         g_message(_("No selected layer in start frame"));
          goto error;
+      }
+      
+      if(action_mode == GAP_MOD_ACM_APPLY_FILTER_ON_LAYERMASK)
+      {
+        gint l_ii;
+
+	l_operate_on_layermask = TRUE;
+	l_ii = gap_mod_get_1st_selected(l_layli_ptr, l_nlayers);
+	if(gimp_layer_get_mask(l_layli_ptr[l_ii].layer_id) < 0)
+	{
+          g_message(_("first selected layer \"%s\"\nin start frame has no layermask"),
+	            gimp_drawable_get_name(l_layli_ptr[l_ii].layer_id)
+		    );
+          goto error;
+	}
       }
 
       if(l_begin != l_end)
@@ -1120,7 +1241,8 @@ p_frames_modify(GapAnimInfo *ainfo_ptr,
                                  l_layli_ptr, l_nlayers,
                                 &l_filter_procname[0], sizeof(l_filter_procname),
                                 &l_plugin_data_len,
-				&l_apply_mode
+				&l_apply_mode,
+				 l_operate_on_layermask
 				 );
 
       if(l_last_frame_filename != NULL)
@@ -1130,7 +1252,8 @@ p_frames_modify(GapAnimInfo *ainfo_ptr,
           l_rc = p_do_2nd_filter_dialogs(&l_filter_procname[0],
 				   l_apply_mode,
 				   l_last_frame_filename,
-				   sel_mode, sel_case, sel_invert, sel_pattern
+				   sel_mode, sel_case, sel_invert, sel_pattern,
+				   l_operate_on_layermask
 				  );
         }
 

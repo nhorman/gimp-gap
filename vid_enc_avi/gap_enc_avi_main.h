@@ -58,6 +58,9 @@ typedef struct {
   /* for the "xvid" (Open DivX) CODEC */
   GapGveXvidValues xvid;
 
+  /* for the "RGB " (== raw) CODEC */
+  gint32 raw_vflip;
+
 } GapGveAviValues;
 
 typedef struct GapGveAviGlobalParams {   /* nick: gpp */
@@ -96,6 +99,7 @@ typedef struct GapGveAviGlobalParams {   /* nick: gpp */
   GtkWidget *xvid_quality_spinbutton;
   GtkObject *xvid_quality_spinbutton_adj;
   
+  GtkWidget *raw_vflip_checkbutton;
 
 } GapGveAviGlobalParams;
 

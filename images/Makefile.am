@@ -19,7 +19,13 @@ STOCK_IMAGES = \
 	gap-rotate-follow.png		\
 	gap-source-image.png		\
 	gap-stepmode.png		\
-	gap-update.png
+	gap-update.png			\
+	gap-story-icon-movie.png	\
+	gap-story-icon-frames.png	\
+	gap-story-icon-animimage.png	\
+	gap-story-icon-image.png	\
+	gap-story-icon-color.png	\
+	gap-story-icon-default.png
 
 EXTRA_DIST = $(STOCK_IMAGES)
 

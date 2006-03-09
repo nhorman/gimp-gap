@@ -3457,10 +3457,9 @@ on_vid_preview_size_allocate            (GtkWidget       *widget,
      gdouble  alloc_ratio;
      
      
-     
+     img_ratio = 1.0;
      blocked = FALSE;
      alloc_ratio = (gdouble)allo_width / (gdouble)allo_height;
-     img_ratio   = (gdouble)gpp->ainfo_ptr->width / (gdouble)gpp->ainfo_ptr->height;
      if(gpp->ainfo_ptr == NULL)
      {
        blocked = FALSE;
@@ -3468,6 +3467,7 @@ on_vid_preview_size_allocate            (GtkWidget       *widget,
      }
      else
      {
+        img_ratio   = (gdouble)gpp->ainfo_ptr->width / (gdouble)gpp->ainfo_ptr->height;
         if(img_ratio >= 1.0)
         {
            /* imageorientation is landscape */

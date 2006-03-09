@@ -816,7 +816,7 @@ p_pv_pview_render_immediate (GapStbPropWidget *pw)
    if(l_frame_filename == NULL)
    {
      /* no filename available, use default icon */
-     gap_pview_render_default_icon(pw->pv_ptr);
+     gap_story_dlg_render_default_icon(pw->stb_elem_refptr, pw->pv_ptr);
      return;
    }
 
@@ -840,7 +840,7 @@ p_pv_pview_render_immediate (GapStbPropWidget *pw)
         /* could not read the image
          */
         if(gap_debug) printf("p_frame_widget_render: fetch failed, using DEFAULT_ICON\n");
-        gap_pview_render_default_icon(pw->pv_ptr);
+        gap_story_dlg_render_default_icon(pw->stb_elem_refptr, pw->pv_ptr);
       }
       else
       {
