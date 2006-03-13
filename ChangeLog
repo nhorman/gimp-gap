@@ -1,3 +1,9 @@
+2006-03-11  Wolfgang Hofer <hof@gimp.org>
+	- bugfix for selection handling via modify frames (#333978)
+	
+	* gap/gap_mod_layer.c [.h]
+	* gap/gap_mod_layer_dialog.c
+	
 2006-03-02  Wolfgang Hofer <hof@gimp.org>
 	- added more functions to modify frames
 	  (based on the attachments of 

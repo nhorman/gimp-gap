@@ -197,7 +197,7 @@ p_upd_sensitivity(GapModFramesGlobalParams *gmop)
       break;
     case GAP_MOD_ACM_SEL_REPLACE:
     case GAP_MOD_ACM_SEL_ADD:
-    case GAP_MOD_ACM_SEL_SUTRACT:
+    case GAP_MOD_ACM_SEL_SUBTRACT:
     case GAP_MOD_ACM_SEL_INTERSECT:
     case GAP_MOD_ACM_SEL_NONE:
     case GAP_MOD_ACM_SEL_ALL:
@@ -621,7 +621,7 @@ p_make_selection_submenu(GtkWidget *master_menu, GapModFramesGlobalParams *gmop)
 		       );
   p_make_func_menu_item(_("Subtract selection (source is the active frame)")
                        ,NULL
-		       ,GAP_MOD_ACM_SEL_SUTRACT
+		       ,GAP_MOD_ACM_SEL_SUBTRACT
 		       ,sub_menu
 		       ,gmop
 		       );

@@ -348,17 +348,121 @@ p_selection_combine(gint32 image_id
 
 }  /* end p_selection_combine */
 
-/* ============================================================================
- * p_apply_action
+
+/* ---------------------------------
+ * p_apply_selection_action
+ * ---------------------------------
+ * check/perform action that modify the images selection channel.
+ * NOTE: actions where the master_channel_id is required
+ *       are NOT performed if the image_id is equal to master_image_id
+ *       To perform the action on the master image pass -1 as master_image_id.
+ *       (this shall be done deferred after processing all the other frame images)
  *
+ * return TRUE if action was handled 
+ *             (this is also TRUE if the action was skiped due to the condition
+ *              image_id == master_image_id)
+ * return FALSE for all other actions
+ */
+static gboolean
+p_apply_selection_action(gint32 image_id, gint32 action_mode
+     , gint32 master_image_id, gint32  master_channel_id)
+{
+  if(action_mode == GAP_MOD_ACM_SEL_REPLACE)
+  {
+    /* check if we are processing the master image
+     * (must not replace selection by itself)
+     */
+    if (image_id != master_image_id)
+    {
+      gint32 l_sel_channel_id;
+
+      gimp_selection_all(image_id);
+      l_sel_channel_id = gimp_image_get_selection(image_id);
+      /* copy the initial selection master_channel_id
+       * to the newly create image
+       */
+      gap_layer_copy_content( l_sel_channel_id      /* dst_drawable_id  */
+                            , master_channel_id   /* src_drawable_id  */
+                            );
+    }
+    return(TRUE);
+  }
+
+  if(action_mode == GAP_MOD_ACM_SEL_ADD)
+  {
+    /* if we are processing the master image, 
+     * no need to add selection to itself
+     */
+    if (image_id != master_image_id)
+    {
+      p_selection_combine(image_id, master_channel_id, GIMP_CHANNEL_OP_ADD);
+    }
+    return(TRUE);
+  }
+
+  if(action_mode == GAP_MOD_ACM_SEL_SUBTRACT)
+  {
+    /* if we are processing the master image, 
+     * we must defere action until all other images are handled
+     * to keep original master selection intact.
+     * (subtract from itself would clear the selection)
+     */
+    if (image_id != master_image_id)
+    {
+      p_selection_combine(image_id, master_channel_id, GIMP_CHANNEL_OP_SUBTRACT);
+    }
+    return(TRUE);
+  }
+
+  if(action_mode == GAP_MOD_ACM_SEL_INTERSECT)
+  {
+    /* if we are processing the master image, 
+     * intersect with itself can be skipped, because
+     * the result will be the same selection as before.
+     */
+    if (image_id != master_image_id)
+    {
+      p_selection_combine(image_id, master_channel_id, GIMP_CHANNEL_OP_INTERSECT);
+    }
+    return(TRUE);
+  }
+
+  if(action_mode == GAP_MOD_ACM_SEL_NONE)
+  {
+    gimp_selection_none(image_id);
+    return(TRUE);
+  }
+
+  if(action_mode == GAP_MOD_ACM_SEL_ALL)
+  {
+    gimp_selection_all(image_id);
+    return(TRUE);
+  }
+
+  if(action_mode == GAP_MOD_ACM_SEL_INVERT)
+  {
+    gimp_selection_invert(image_id);
+    return(TRUE);
+  }
+
+
+  return(FALSE);
+  
+}  /* end p_apply_selection_action */
+
+
+/* ---------------------------------
+ * p_apply_action
+ * ---------------------------------
  *    perform function (defined by action_mode)
  *    on all selcted layer(s)
  *
+ *    note: some functions operate on the images selection channel
+ *          and may be skiped when processing the active master_image_id
+ *
  * returns   0 if all done OK
  *           (or -1 on error)
- * ============================================================================
  */
-
 static int
 p_apply_action(gint32 image_id,
 	      gint32 action_mode,
@@ -382,18 +486,35 @@ p_apply_action(gint32 image_id,
   gint    l_merge_mode;
   gint    l_vis_result;
   char    l_name_buff[MAX_LAYERNAME];
-  gint32  l_master_channel_id;
 
   if(gap_debug) fprintf(stderr, "gap: p_apply_action START\n");
 
   l_rc = 0;
+  
   l_merge_mode = -44; /* none of the flatten modes */
 
   if(action_mode == GAP_MOD_ACM_MERGE_EXPAND) l_merge_mode = GAP_RANGE_OPS_FLAM_MERG_EXPAND;
   if(action_mode == GAP_MOD_ACM_MERGE_IMG)    l_merge_mode = GAP_RANGE_OPS_FLAM_MERG_CLIP_IMG;
   if(action_mode == GAP_MOD_ACM_MERGE_BG)     l_merge_mode = GAP_RANGE_OPS_FLAM_MERG_CLIP_BG;
 
-  l_master_channel_id = gimp_image_get_selection(master_image_id);
+  /* check and perform selection related actions
+   * that operate on the image (and not on selected layer(s)
+   */
+  {
+    gint32  master_channel_id;
+    gboolean action_was_applied;
+    
+    master_channel_id = gimp_image_get_selection(master_image_id);
+    action_was_applied = p_apply_selection_action(image_id 
+                                                , action_mode
+					        , master_image_id
+						, master_channel_id
+                                                );
+    if(action_was_applied)
+    {
+      return l_rc;
+    }
+  }
 
 
   /* merge actions require one call per image */
@@ -522,38 +643,9 @@ p_apply_action(gint32 image_id,
 	                        new_layername, curr);
 	  gimp_drawable_set_name(l_layer_id, &l_name_buff[0]);
 	  break;
-        case GAP_MOD_ACM_SEL_REPLACE:
-	  {
-            gint32 l_sel_channel_id;
 
-	    gimp_selection_all(image_id);
-            l_sel_channel_id = gimp_image_get_selection(image_id);
-            /* copy the initial selection l_master_channel_id
-	     * to the newly create image
-	     */
-            gap_layer_copy_content( l_sel_channel_id      /* dst_drawable_id  */
-                                  , l_master_channel_id   /* src_drawable_id  */
-			          );
-	  }
-	  break;
-        case GAP_MOD_ACM_SEL_ADD:
-	  p_selection_combine(image_id, l_master_channel_id, GIMP_CHANNEL_OP_ADD);
-	  break;
-        case GAP_MOD_ACM_SEL_SUTRACT:
-	  p_selection_combine(image_id, l_master_channel_id, GIMP_CHANNEL_OP_SUBTRACT);
-	  break;
-        case GAP_MOD_ACM_SEL_INTERSECT:
-	  p_selection_combine(image_id, l_master_channel_id, GIMP_CHANNEL_OP_INTERSECT);
-	  break;
-        case GAP_MOD_ACM_SEL_NONE:
-	  gimp_selection_none(image_id);
-	  break;
-        case GAP_MOD_ACM_SEL_ALL:
-	  gimp_selection_all(image_id);
-	  break;
-        case GAP_MOD_ACM_SEL_INVERT:
-	  gimp_selection_invert(image_id);
-	  break;
+
+
         case GAP_MOD_ACM_SEL_SAVE:
           {
 	    gint32 l_sel_channel_id;
@@ -1390,6 +1482,35 @@ p_frames_modify(GapAnimInfo *ainfo_ptr,
     l_cur_frame_nr += l_step;
 
   }		/* end while(1)  loop foreach frame in range */
+
+  /* check if master image is included in the affected range */
+  if ((ainfo_ptr->curr_frame_nr >= MIN(range_from, range_to))
+  &&  (ainfo_ptr->curr_frame_nr <= MAX(range_from, range_to)))
+  {
+    /* apply defered action concerning modifying the selection
+     * (this is done after processing all other frames in the range
+     * because the changes affect the selection of the master image)
+     */
+    if ((action_mode == GAP_MOD_ACM_SEL_SUBTRACT)
+    ||  (action_mode == GAP_MOD_ACM_SEL_ADD)
+    ||  (action_mode == GAP_MOD_ACM_SEL_INTERSECT))
+    {
+       gint32  master_channel_id;
+
+       /* create a temporary copy of the selection
+        * (because add the selections to itself
+	*  behaves different when there are partly selected pixel
+	*  than using a copy)
+	*/
+       master_channel_id = gimp_selection_save(ainfo_ptr->image_id);
+       p_apply_selection_action(ainfo_ptr->image_id 
+                	     , action_mode
+			     , -1   /* MASTER_image_id */
+			     , master_channel_id
+                	     );
+       gimp_image_remove_channel(ainfo_ptr->image_id, master_channel_id);
+    }
+  }
 
   if(gap_debug) fprintf(stderr, "p_frames_modify End OK\n");
 

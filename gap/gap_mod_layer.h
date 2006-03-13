@@ -55,7 +55,7 @@
 
 #define	 GAP_MOD_ACM_SEL_REPLACE   13
 #define	 GAP_MOD_ACM_SEL_ADD       14
-#define	 GAP_MOD_ACM_SEL_SUTRACT   15
+#define	 GAP_MOD_ACM_SEL_SUBTRACT  15
 #define	 GAP_MOD_ACM_SEL_INTERSECT 16
 #define	 GAP_MOD_ACM_SEL_NONE      17
 #define	 GAP_MOD_ACM_SEL_ALL       18
