@@ -64,6 +64,7 @@ extern      int gap_debug; /* ==0  ... dont print debug infos */
 #define GAP_HELP_ID_EXCHANGE          "plug-in-gap-exchg"
 #define GAP_HELP_ID_RENUMBER          "plug-in-gap-renumber"
 #define GAP_HELP_ID_SHIFT             "plug-in-gap-shift"
+#define GAP_HELP_ID_REVERSE           "plug-in-gap-reverse"
 
 
 /* ------------------------
@@ -840,11 +841,109 @@ p_shift(GapAnimInfo *ainfo_ptr, long cnt, long range_from, long range_to)
 }  /* end p_shift */
 
 
+/* ============================================================================
+ * p_reverse
+ *
+ * all frames in the given range are renumbered in reverse order
+ * 
+ *  example:  range before 3, 4, 5, 6, 7
+ *            range after  7, 6, 5, 4, 3
+ *
+ * return image_id (of the new loaded frame) on success
+ *        or -1 on errors
+ * ============================================================================
+ */
+static gint32
+p_reverse(GapAnimInfo *ainfo_ptr, long range_from, long range_to)
+{
+   long  l_tmp_nr;
+   long  l_lo, l_hi, l_curr;
+   long  l_swap;
+   gchar *tmp_errtxt;
 
+   gdouble    l_percentage;
+   
+   l_tmp_nr = ainfo_ptr->last_frame_nr + 4;  /* use a free frame_nr for temp name */
+   
+   if(gap_debug) fprintf(stderr, "DEBUG  p_reverse fr:%d to:%d\n",
+                         (int)range_from, (int)range_to);
 
+   if(range_from == range_to) return -1;
 
+   /* clip range */
+   if(range_from > ainfo_ptr->last_frame_nr)  range_from = ainfo_ptr->last_frame_nr;
+   if(range_to   > ainfo_ptr->last_frame_nr)  range_to   = ainfo_ptr->last_frame_nr;
+   if(range_from < ainfo_ptr->first_frame_nr) range_from = ainfo_ptr->first_frame_nr;
+   if(range_to   < ainfo_ptr->first_frame_nr) range_to   = ainfo_ptr->first_frame_nr;
 
+   if(range_to < range_from)
+   {
+      l_lo = range_to;
+      l_hi = range_from;
+   }
+   else
+   {
+      l_lo = range_from;
+      l_hi = range_to;
+   }
+   
+   if(l_hi <= l_lo) return -1;
 
+   if(gap_lib_gap_check_save_needed(ainfo_ptr->image_id))
+   {
+     if(gap_lib_save_named_frame(ainfo_ptr->image_id, ainfo_ptr->old_filename) < 0)
+        return -1;
+   }
+
+   l_percentage = 0.0;  
+   if(ainfo_ptr->run_mode == GIMP_RUN_INTERACTIVE)
+   { 
+     gimp_progress_init( _("Renumber frame sequence..."));
+   }
+
+   /* swap lo with high for each of the (first half of the) frames */
+   for(l_curr = l_lo; l_curr < l_lo + ((l_hi - l_lo + 1) / 2); l_curr++)
+   {
+     l_swap = l_hi - (l_curr - l_lo);
+     /* rename hi to temp */
+     if(0 != gap_lib_rename_frame(ainfo_ptr, l_swap, l_tmp_nr))
+     {
+       tmp_errtxt = g_strdup_printf(_("Error: could not rename frame %ld to %ld"), l_swap, l_tmp_nr);
+       gap_arr_msg_win(ainfo_ptr->run_mode, tmp_errtxt);
+       g_free(tmp_errtxt);
+       return -1;
+     }
+     /* rename lo to hi */
+     if(0 != gap_lib_rename_frame(ainfo_ptr, l_curr, l_swap))
+     {
+       tmp_errtxt = g_strdup_printf(_("Error: could not rename frame %ld to %ld"), ainfo_ptr->curr_frame_nr, l_swap);
+       gap_arr_msg_win(ainfo_ptr->run_mode, tmp_errtxt);
+       g_free(tmp_errtxt);
+       return -1;
+     }
+     /* rename temp to lo */
+     if(0 != gap_lib_rename_frame(ainfo_ptr, l_tmp_nr, l_curr))
+     {
+       tmp_errtxt = g_strdup_printf(_("Error: could not rename frame %ld to %ld"), l_tmp_nr, ainfo_ptr->curr_frame_nr);
+       gap_arr_msg_win(ainfo_ptr->run_mode, tmp_errtxt);
+       g_free(tmp_errtxt);
+     return -1;
+     }
+     if (ainfo_ptr->run_mode == GIMP_RUN_INTERACTIVE)
+     { 
+       l_percentage = (double)((l_curr - l_lo + 1) / ((l_hi - l_lo + 1) / 2.0 ));
+       if (l_percentage > 1.0) l_percentage = 1.0;
+       gimp_progress_update (l_percentage);
+     }
+   }
+   
+   /* load from the "new" current frame */   
+   if(ainfo_ptr->new_filename != NULL) g_free(ainfo_ptr->new_filename);
+   ainfo_ptr->new_filename = gap_lib_alloc_fname(ainfo_ptr->basename,
+                                      ainfo_ptr->curr_frame_nr,
+                                      ainfo_ptr->extension);
+   return(gap_lib_load_named_frame(ainfo_ptr->image_id, ainfo_ptr->new_filename));
+}  /* end p_reverse */
 
 /* ============================================================================
  * gap_base_next gap_base_prev
@@ -1629,7 +1728,58 @@ p_shift_dialog(GapAnimInfo *ainfo_ptr, long *range_from, long *range_to)
   }
    
 
-}	/* end p_shift_dialog */
+} /* end p_shift_dialog */
+
+
+/* ============================================================================
+ * p_reverse_dialog
+ * returns range_to - range_from
+ * ============================================================================
+ */
+gint32
+p_reverse_dialog(GapAnimInfo *ainfo_ptr, long *range_from, long *range_to)
+{
+  static GapArrArg  argv[3];
+  gchar            *l_title;
+
+  l_title = g_strdup_printf (_("Frame Sequence reverse (%ld/%ld)")
+           , ainfo_ptr->curr_frame_nr
+           , ainfo_ptr->frame_cnt);
+
+  gap_arr_arg_init(&argv[0], GAP_ARR_WGT_INT_PAIR);
+  argv[0].label_txt = _("From Frame:");
+  argv[0].constraint = TRUE;
+  argv[0].int_min   = (gint)ainfo_ptr->first_frame_nr;
+  argv[0].int_max   = (gint)ainfo_ptr->last_frame_nr;
+  argv[0].int_ret   = (gint)ainfo_ptr->curr_frame_nr;
+  argv[0].help_txt  = _("Affected range starts at this framenumber");
+
+  gap_arr_arg_init(&argv[1], GAP_ARR_WGT_INT_PAIR);
+  argv[1].label_txt = _("To Frame:");
+  argv[1].constraint = TRUE;
+  argv[1].int_min   = (gint)ainfo_ptr->first_frame_nr;
+  argv[1].int_max   = (gint)ainfo_ptr->last_frame_nr;
+  argv[1].int_ret   = (gint)ainfo_ptr->last_frame_nr;
+  argv[1].help_txt  = _("Affected range ends at this framenumber");
+    
+  gap_arr_arg_init(&argv[2], GAP_ARR_WGT_HELP_BUTTON);
+  argv[2].help_id = GAP_HELP_ID_REVERSE;
+  
+  if(TRUE == gap_arr_ok_cancel_dialog(l_title, _("Frame Sequence Reverse"),  3, argv))
+  { 
+    g_free (l_title);
+    *range_from = (long)(argv[0].int_ret);
+    *range_to   = (long)(argv[1].int_ret);
+    return (int)((long)(argv[1].int_ret) - (long)(argv[0].int_ret));
+  }
+  else
+  {
+    g_free (l_title);
+    return 0;
+  }
+   
+
+} /* end p_reverse_dialog */
 
 
 /* ============================================================================
@@ -1686,9 +1836,63 @@ gap_base_shift(GimpRunMode run_mode, gint32 image_id, int nr,
   return(rc);    
 
  
-}	/* end gap_base_shift */
+} /* end gap_base_shift */
+
+/* ============================================================================
+ * gap_base_reverse
+ * ============================================================================
+ */
+gint32
+gap_base_reverse(GimpRunMode run_mode, gint32 image_id,
+            long range_from, long range_to)
+{
+  int rc;
+  GapAnimInfo *ainfo_ptr;
+
+  long           l_cnt, l_from, l_to;
+
+  rc = -1;
+  ainfo_ptr = gap_lib_alloc_ainfo(image_id, run_mode);
+  if(ainfo_ptr != NULL)
+  {
+    if (0 == gap_lib_dir_ainfo(ainfo_ptr))
+    {
+      if(run_mode == GIMP_RUN_INTERACTIVE)
+      {
+         l_cnt = 1;
+         if(0 != gap_lib_chk_framechange(ainfo_ptr)) { l_cnt = 0; }
+         else { l_cnt = p_reverse_dialog(ainfo_ptr, &l_from, &l_to); } 
+         /* note: 'p_reverse_dialog' returns 'to' minus 'from' */
+
+         if((0 != gap_lib_chk_framechange(ainfo_ptr)) || (l_cnt == 0))
+         {
+            l_cnt = 0;
+         }
+                
+      }
+      else
+      {
+        l_from = range_from;
+        l_to   = range_to;
+        l_cnt  = l_to - l_from;
+      }
+ 
+      if(l_cnt != 0)
+      {
+         /* reverse framesquence
+          * (renames all frames in the given range on disk)
+          */
+         rc = p_reverse(ainfo_ptr, l_from, l_to);
+      }
 
 
+    }
+    gap_lib_free_ainfo(&ainfo_ptr);
+  }
+  
+  return(rc);    
+ 
+} /* end gap_base_reverse */
 
 /* --------------------------------
  * p_renumber_dialog

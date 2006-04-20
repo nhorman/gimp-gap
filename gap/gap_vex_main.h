@@ -120,6 +120,7 @@ typedef struct {  /* nick: gpp */
   gboolean   in_player_call;
   gint32     video_width;
   gint32     video_height;
+  gdouble    video_speed;    /* original playback speed in frames per sec */
   
   GtkWidget *mw__main_window;
   GtkWidget *fsv__fileselection;
@@ -159,6 +160,8 @@ typedef struct {  /* nick: gpp */
   GtkObject *mw__spinbutton_fn_digits_adj;
   GtkWidget *mw__spinbutton_fn_digits;
   GtkWidget *mw__button_OK;
+  GtkWidget *mw__begin_time_label;
+  GtkWidget *mw__end_time_label;
   
 } GapVexMainGlobalParams;
 

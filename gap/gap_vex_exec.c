@@ -366,7 +366,7 @@ gap_vex_exe_extract_videorange(GapVexMainGlobalParams *gpp)
                           100.0,     /* Opacity full opaque */     
                           GIMP_NORMAL_MODE);
       gimp_image_add_layer(l_dummy_image_id, l_empty_layer_id, 0);
-      gap_layer_clear_to_color(l_empty_layer_id, 0, 0, 0, 255);
+      gap_layer_clear_to_color(l_empty_layer_id, 0.0, 0.0, 0.0, 1.0);
 
       l_save_run_mode = GIMP_RUN_INTERACTIVE;  /* for the 1.st call of saving a non xcf frame */
       l_dummyname = gimp_temp_name(gpp->val.extension);

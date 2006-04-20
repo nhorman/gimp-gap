@@ -60,6 +60,39 @@ extern int gap_debug;  /* 1 == print debug infos , 0 dont print debug infos */
 
 static gint32 global_stb_elem_id = 0;
 
+static const char *gtab_att_transition_key_words[GAP_STB_ATT_TYPES_ARRAY_MAX] =
+       { GAP_STBKEY_VID_OPACITY
+       , GAP_STBKEY_VID_MOVE_X
+       , GAP_STBKEY_VID_MOVE_Y
+       , GAP_STBKEY_VID_ZOOM_X
+       , GAP_STBKEY_VID_ZOOM_Y
+       };
+
+
+/* ----------------------------------------------------
+ * gap_story_debug_print_elem
+ * ----------------------------------------------------
+ */
+static const char *
+p_record_type_to_string(GapStoryRecordType record_type)
+{
+  switch(record_type)
+  {
+    case GAP_STBREC_VID_SILENCE:     return("GAP_STBREC_VID_SILENCE"); break;
+    case GAP_STBREC_VID_COLOR:       return("GAP_STBREC_VID_COLOR"); break;
+    case GAP_STBREC_VID_IMAGE:       return("GAP_STBREC_VID_IMAGE"); break;
+    case GAP_STBREC_VID_ANIMIMAGE:   return("GAP_STBREC_VID_ANIMIMAGE"); break;
+    case GAP_STBREC_VID_FRAMES:      return("GAP_STBREC_VID_FRAMES"); break;
+    case GAP_STBREC_VID_MOVIE:       return("GAP_STBREC_VID_MOVIE"); break;
+    case GAP_STBREC_VID_COMMENT:     return("GAP_STBREC_VID_COMMENT"); break;
+    case GAP_STBREC_VID_UNKNOWN:     return("GAP_STBREC_VID_UNKNOWN"); break;
+    case GAP_STBREC_AUD_SILENCE:     return("GAP_STBREC_AUD_SILENCE"); break;
+    case GAP_STBREC_AUD_SOUND:       return("GAP_STBREC_AUD_SOUND"); break;
+    case GAP_STBREC_AUD_MOVIE:       return("GAP_STBREC_AUD_MOVIE"); break;
+    case GAP_STBREC_ATT_TRANSITION:  return("GAP_STBREC_ATT_TRANSITION"); break;
+  }
+  return("** UNDEFINED RECORD TYPE **");
+}
 
 /* ----------------------------------------------------
  * gap_story_debug_print_elem
@@ -74,31 +107,11 @@ gap_story_debug_print_elem(GapStoryElem *stb_elem)
   }
   else
   {
-    char *tab_rec_types[] =
-       { "GAP_STBREC_VID_SILENCE"
-       , "GAP_STBREC_VID_COLOR"      
-       , "GAP_STBREC_VID_IMAGE"
-       , "GAP_STBREC_VID_ANIMIMAGE"
-       , "GAP_STBREC_VID_FRAMES"
-       , "GAP_STBREC_VID_MOVIE"
-       , "GAP_STBREC_VID_COMMENT"
-       , "GAP_STBREC_VID_UNKNOWN"
-       , "GAP_STBREC_AUD_SILENCE"
-       , "GAP_STBREC_AUD_SOUND"
-       , "GAP_STBREC_AUD_MOVIE"
-       , "GAP_STBREC_ATT_OPACITY"  
-       , "GAP_STBREC_ATT_ZOOM_X"  
-       , "GAP_STBREC_ATT_ZOOM_Y"  
-       , "GAP_STBREC_ATT_MOVE_X"  
-       , "GAP_STBREC_ATT_MOVE_Y" 
-       , "GAP_STBREC_ATT_FIT_SIZE"
-       };
-  
     printf("\ngap_story_debug_print_elem:  stb_elem: %d\n", (int)stb_elem);
  
     printf("gap_story_debug_print_elem: START\n");
     printf("record_type: %d  %s\n", (int)stb_elem->record_type
-                                  , tab_rec_types[stb_elem->record_type]
+                                  , p_record_type_to_string(stb_elem->record_type)
 				  );
     printf("story_id: %d\n", (int)stb_elem->story_id);
     printf("story_orig_id: %d\n", (int)stb_elem->story_orig_id);
@@ -179,7 +192,23 @@ gap_story_debug_print_elem(GapStoryElem *stb_elem)
       printf("preferred_decoder: (NULL)\n");
     }
 
-
+    if(stb_elem->record_type == GAP_STBREC_ATT_TRANSITION)
+    {
+      gint ii;
+      for(ii=0; ii < GAP_STB_ATT_TYPES_ARRAY_MAX; ii++)
+      {
+        if(stb_elem->att_arr_enable[ii])
+	{
+	  printf("  [%d] %s  from: %f  to: %f   dur: %d\n"
+	    , (int)ii
+	    , gtab_att_transition_key_words[ii]
+	    , (float)stb_elem->att_arr_value_from[ii]
+	    , (float)stb_elem->att_arr_value_to[ii]
+	    , (int)stb_elem->att_arr_value_dur[ii]
+	    );
+	}
+      }
+    }
 
     printf("comment ptr:%d\n", (int)stb_elem->comment);
     printf("next    ptr:%d\n", (int)stb_elem->next);
@@ -503,10 +532,18 @@ gap_story_new_elem(GapStoryRecordType record_type)
     stb_elem->att_fit_width = TRUE;
     stb_elem->att_fit_height = TRUE;
 
-    stb_elem->att_value_from = 0.0;
-    stb_elem->att_value_to = 0.0;
-    stb_elem->att_value_dur = 0;        /* number of frames to change from -> to value */
-
+    /* init transition attributes */
+    {
+      gint ii;
+      for(ii=0; ii < GAP_STB_ATT_TYPES_ARRAY_MAX; ii++)
+      {
+        stb_elem->att_arr_enable[ii] = FALSE;
+        stb_elem->att_arr_value_from[ii] = gap_story_get_default_attribute(ii);
+        stb_elem->att_arr_value_to[ii] = gap_story_get_default_attribute(ii);
+        stb_elem->att_arr_value_dur[ii] = 1;        /* number of frames to change from -> to value */
+      }
+    }
+    
     /* init members for Audio Record types */
     stb_elem->aud_filename = NULL;
     stb_elem->aud_seltrack = 1;          /* selected audiotrack in a videofile (for GAP_AUT_MOVIE) */
@@ -783,8 +820,6 @@ gap_story_free_storyboard(GapStoryBoard **stb_ptr)
 }  /* end gap_story_free_storyboard */
 
 
-
-
 /* ----------------------------------------------------
  * gap_story_list_append_elem
  * ----------------------------------------------------
@@ -877,6 +912,96 @@ gap_story_list_append_elem(GapStoryBoard *stb, GapStoryElem *stb_elem)
      }
   }
 }  /* end gap_story_list_append_elem */
+
+
+/* ----------------------------------------------------
+ * p_get_last_non_comment_elem
+ * ----------------------------------------------------
+ */
+static GapStoryElem *
+p_get_last_non_comment_elem(GapStoryBoard *stb, gint32 in_track)
+{
+  GapStoryElem *stb_elem_non_comment;
+  GapStoryElem *stb_elem;
+  
+  stb_elem_non_comment = NULL;
+  for(stb_elem = stb->stb_elem; stb_elem != NULL; stb_elem = (GapStoryElem *)stb_elem->next)
+  {
+    if(stb_elem->track != in_track)
+    {
+      continue;
+    }
+    if(stb_elem->record_type != GAP_STBREC_VID_COMMENT)
+    {
+      stb_elem_non_comment = stb_elem;
+    }
+  }
+  
+  return (stb_elem_non_comment);
+  
+}  /* end p_get_last_non_comment_elem */
+
+
+/* ----------------------------------------------------
+ * gap_story_set_fit_size_attributes
+ * ----------------------------------------------------
+ */
+static void
+gap_story_set_fit_size_attributes(GapStoryBoard *stb
+                        , GapStoryElem *target_stb_elem
+                        , gint32 story_id
+                        , gint32 in_track)
+{
+  GapStoryElem      *stb_elem;
+  
+  for(stb_elem = stb->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
+  {
+    if(stb_elem->track != in_track)
+    {
+      continue;
+    }
+    if(stb_elem->record_type == GAP_STBREC_ATT_TRANSITION)
+    {
+      target_stb_elem->att_keep_proportions = stb_elem->att_keep_proportions;
+      target_stb_elem->att_fit_width = stb_elem->att_fit_width;
+      target_stb_elem->att_fit_height = stb_elem->att_fit_height;
+    }
+    
+    if(stb_elem->story_id == story_id)
+    {
+      break;
+    }
+  }
+  
+}  /* end gap_story_set_fit_size_attributes */
+
+
+/* ----------------------------------------------------
+ * p_get_att_transition_elem
+ * ----------------------------------------------------
+ */
+static GapStoryElem *
+p_get_att_transition_elem(GapStoryBoard *stb, gboolean *elem_already_in_the_list, gint32 in_track)
+{
+  GapStoryElem *stb_elem;
+  
+  stb_elem = p_get_last_non_comment_elem(stb, in_track);
+  if(stb_elem)
+  {
+    if(stb_elem->record_type == GAP_STBREC_ATT_TRANSITION)
+    {
+      *elem_already_in_the_list = TRUE;
+      return (stb_elem);
+    }
+  }
+     
+  *elem_already_in_the_list = FALSE;
+  stb_elem =  gap_story_new_elem(GAP_STBREC_ATT_TRANSITION);
+  stb_elem->nframes = 0;
+  stb_elem->track = in_track;
+  gap_story_set_fit_size_attributes(stb, stb_elem, -1, in_track);
+  return (stb_elem);
+}  /* end p_get_att_transition_elem */
 
 
 
@@ -1552,22 +1677,37 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
     char *l_to_ptr         = l_wordval[3];
     char *l_dur_ptr        = l_wordval[4];
 
+    gint32 l_track_nr;
+    
+    l_track_nr = 1;
+    if(*l_track_ptr)    
+    { 
+      l_track_nr = p_scan_gint32(l_track_ptr,  1, GAP_STB_MAX_VID_TRACKS,    stb);
+    }
+
 
     /* ATTRIBUTE: GAP_STBKEY_VID_OPACITY */
     if (strcmp(l_record_key, GAP_STBKEY_VID_OPACITY) == 0)
     {
-      stb_elem = gap_story_new_elem(GAP_STBREC_ATT_OPACITY);
+      gboolean elem_already_in_the_list = FALSE;
+      ii = GAP_STB_ATT_TYPE_OPACITY;
+      
+      stb_elem =  p_get_att_transition_elem(stb, &elem_already_in_the_list, l_track_nr);
       if(stb_elem)
       {
+        stb_elem->att_arr_enable[ii] = TRUE;
         stb_elem->file_line_nr = longlinenr;
         stb_elem->orig_src_line = g_strdup(multi_lines);
-        if(*l_track_ptr)    { stb_elem->track = p_scan_gint32(l_track_ptr,  1, GAP_STB_MAX_VID_TRACKS,    stb); }
-        if(*l_from_ptr)     { stb_elem->att_value_from = p_scan_gdouble(l_from_ptr, 0.0, 1.0, stb); }
-        if(*l_to_ptr)       { stb_elem->att_value_to   = p_scan_gdouble(l_to_ptr,   0.0, 1.0, stb); }
-        else                { stb_elem->att_value_to   = stb_elem->att_value_from; }
-        if(*l_dur_ptr)      { stb_elem->att_value_dur  = p_scan_gint32(l_dur_ptr,  1, 999, stb); }
+        stb_elem->track = l_track_nr;
+        if(*l_from_ptr)     { stb_elem->att_arr_value_from[ii] = p_scan_gdouble(l_from_ptr, 0.0, 1.0, stb); }
+        if(*l_to_ptr)       { stb_elem->att_arr_value_to[ii]   = p_scan_gdouble(l_to_ptr,   0.0, 1.0, stb); }
+        else                { stb_elem->att_arr_value_to[ii]   = stb_elem->att_arr_value_from[ii]; }
+        if(*l_dur_ptr)      { stb_elem->att_arr_value_dur[ii]  = p_scan_gint32(l_dur_ptr,  1, 999, stb); }
         
-        gap_story_list_append_elem(stb, stb_elem);
+        if(elem_already_in_the_list != TRUE)
+        {
+          gap_story_list_append_elem(stb, stb_elem);
+        }
       }
       goto cleanup;
     }
@@ -1575,18 +1715,25 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
     /* ATTRIBUTE: GAP_STBKEY_VID_ZOOM_X */
     if (strcmp(l_record_key, GAP_STBKEY_VID_ZOOM_X) == 0)
     {
-      stb_elem = gap_story_new_elem(GAP_STBREC_ATT_ZOOM_X);
+      gboolean elem_already_in_the_list = FALSE;
+      ii = GAP_STB_ATT_TYPE_ZOOM_X;
+      
+      stb_elem =  p_get_att_transition_elem(stb, &elem_already_in_the_list, l_track_nr);
       if(stb_elem)
       {
+        stb_elem->att_arr_enable[ii] = TRUE;
         stb_elem->file_line_nr = longlinenr;
         stb_elem->orig_src_line = g_strdup(multi_lines);
-        if(*l_track_ptr)    { stb_elem->track = p_scan_gint32(l_track_ptr,  1, GAP_STB_MAX_VID_TRACKS,    stb); }
-        if(*l_from_ptr)     { stb_elem->att_value_from = p_scan_gdouble(l_from_ptr, 0.0001, 999.9, stb); }
-        if(*l_to_ptr)       { stb_elem->att_value_to   = p_scan_gdouble(l_to_ptr,   0.0001, 999.9, stb); }
-        else                { stb_elem->att_value_to   = stb_elem->att_value_from; }
-        if(*l_dur_ptr)      { stb_elem->att_value_dur  = p_scan_gint32(l_dur_ptr,  1, 999, stb); }
+        stb_elem->track = l_track_nr;
+        if(*l_from_ptr)     { stb_elem->att_arr_value_from[ii] = p_scan_gdouble(l_from_ptr, 0.0001, 999.9, stb); }
+        if(*l_to_ptr)       { stb_elem->att_arr_value_to[ii]   = p_scan_gdouble(l_to_ptr,   0.0001, 999.9, stb); }
+        else                { stb_elem->att_arr_value_to[ii]   = stb_elem->att_arr_value_from[ii]; }
+        if(*l_dur_ptr)      { stb_elem->att_arr_value_dur[ii]  = p_scan_gint32(l_dur_ptr,  1, 999, stb); }
         
-        gap_story_list_append_elem(stb, stb_elem);
+        if(elem_already_in_the_list != TRUE)
+        {
+          gap_story_list_append_elem(stb, stb_elem);
+        }
       }
       goto cleanup;
     }
@@ -1594,18 +1741,25 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
     /* ATTRIBUTE: GAP_STBKEY_VID_ZOOM_Y */
     if (strcmp(l_record_key, GAP_STBKEY_VID_ZOOM_Y) == 0)
     {
-      stb_elem = gap_story_new_elem(GAP_STBREC_ATT_ZOOM_Y);
+      gboolean elem_already_in_the_list = FALSE;
+      ii = GAP_STB_ATT_TYPE_ZOOM_Y;
+      
+      stb_elem =  p_get_att_transition_elem(stb, &elem_already_in_the_list, l_track_nr);
       if(stb_elem)
       {
+        stb_elem->att_arr_enable[ii] = TRUE;
         stb_elem->file_line_nr = longlinenr;
         stb_elem->orig_src_line = g_strdup(multi_lines);
-        if(*l_track_ptr)    { stb_elem->track = p_scan_gint32(l_track_ptr,  1, GAP_STB_MAX_VID_TRACKS,    stb); }
-        if(*l_from_ptr)     { stb_elem->att_value_from = p_scan_gdouble(l_from_ptr, 0.0001, 999.9, stb); }
-        if(*l_to_ptr)       { stb_elem->att_value_to   = p_scan_gdouble(l_to_ptr,   0.0001, 999.9, stb); }
-        else                { stb_elem->att_value_to   = stb_elem->att_value_from; }
-        if(*l_dur_ptr)      { stb_elem->att_value_dur  = p_scan_gint32(l_dur_ptr,  1, 999, stb); }
+        stb_elem->track = l_track_nr;
+        if(*l_from_ptr)     { stb_elem->att_arr_value_from[ii] = p_scan_gdouble(l_from_ptr, 0.0001, 999.9, stb); }
+        if(*l_to_ptr)       { stb_elem->att_arr_value_to[ii]   = p_scan_gdouble(l_to_ptr,   0.0001, 999.9, stb); }
+        else                { stb_elem->att_arr_value_to[ii]   = stb_elem->att_arr_value_from[ii]; }
+        if(*l_dur_ptr)      { stb_elem->att_arr_value_dur[ii]  = p_scan_gint32(l_dur_ptr,  1, 999, stb); }
         
-        gap_story_list_append_elem(stb, stb_elem);
+        if(elem_already_in_the_list != TRUE)
+        {
+          gap_story_list_append_elem(stb, stb_elem);
+        }
       }
       goto cleanup;
     }
@@ -1613,18 +1767,25 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
     /* ATTRIBUTE: GAP_STBKEY_VID_MOVE_X */
     if (strcmp(l_record_key, GAP_STBKEY_VID_MOVE_X) == 0)
     {
-      stb_elem = gap_story_new_elem(GAP_STBREC_ATT_MOVE_X);
+      gboolean elem_already_in_the_list = FALSE;
+      ii = GAP_STB_ATT_TYPE_MOVE_X;
+      
+      stb_elem =  p_get_att_transition_elem(stb, &elem_already_in_the_list, l_track_nr);
       if(stb_elem)
       {
+        stb_elem->att_arr_enable[ii] = TRUE;
         stb_elem->file_line_nr = longlinenr;
         stb_elem->orig_src_line = g_strdup(multi_lines);
-        if(*l_track_ptr)    { stb_elem->track = p_scan_gint32(l_track_ptr,  1, GAP_STB_MAX_VID_TRACKS,    stb); }
-        if(*l_from_ptr)     { stb_elem->att_value_from = p_scan_gdouble(l_from_ptr, -99999.9, 99999.9, stb); }
-        if(*l_to_ptr)       { stb_elem->att_value_to   = p_scan_gdouble(l_to_ptr,   -99999.9, 99999.9, stb); }
-        else                { stb_elem->att_value_to   = stb_elem->att_value_from; }
-        if(*l_dur_ptr)      { stb_elem->att_value_dur  = p_scan_gint32(l_dur_ptr,  1, 999, stb); }
+        stb_elem->track = l_track_nr;
+        if(*l_from_ptr)     { stb_elem->att_arr_value_from[ii] = p_scan_gdouble(l_from_ptr, -99999.9, 99999.9, stb); }
+        if(*l_to_ptr)       { stb_elem->att_arr_value_to[ii]   = p_scan_gdouble(l_to_ptr,   -99999.9, 99999.9, stb); }
+        else                { stb_elem->att_arr_value_to[ii]   = stb_elem->att_arr_value_from[ii]; }
+        if(*l_dur_ptr)      { stb_elem->att_arr_value_dur[ii]  = p_scan_gint32(l_dur_ptr,  1, 999, stb); }
         
-        gap_story_list_append_elem(stb, stb_elem);
+        if(elem_already_in_the_list != TRUE)
+        {
+          gap_story_list_append_elem(stb, stb_elem);
+        }
       }
       goto cleanup;
     }
@@ -1632,27 +1793,34 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
     /* ATTRIBUTE: GAP_STBKEY_VID_MOVE_Y */
     if (strcmp(l_record_key, GAP_STBKEY_VID_MOVE_Y) == 0)
     {
-      stb_elem = gap_story_new_elem(GAP_STBREC_ATT_MOVE_Y);
+      gboolean elem_already_in_the_list = FALSE;
+      ii = GAP_STB_ATT_TYPE_MOVE_Y;
+      
+      stb_elem =  p_get_att_transition_elem(stb, &elem_already_in_the_list, l_track_nr);
       if(stb_elem)
       {
+        stb_elem->att_arr_enable[ii] = TRUE;
         stb_elem->file_line_nr = longlinenr;
         stb_elem->orig_src_line = g_strdup(multi_lines);
-        if(*l_track_ptr)    { stb_elem->track = p_scan_gint32(l_track_ptr,  1, GAP_STB_MAX_VID_TRACKS,    stb); }
-        if(*l_from_ptr)     { stb_elem->att_value_from = p_scan_gdouble(l_from_ptr, -99999.9, 99999.9, stb); }
-        if(*l_to_ptr)       { stb_elem->att_value_to   = p_scan_gdouble(l_to_ptr,   -99999.9, 99999.9, stb); }
-        else                { stb_elem->att_value_to   = stb_elem->att_value_from; }
-        if(*l_dur_ptr)      { stb_elem->att_value_dur  = p_scan_gint32(l_dur_ptr,  1, 999, stb); }
+        stb_elem->track = l_track_nr;
+        if(*l_from_ptr)     { stb_elem->att_arr_value_from[ii] = p_scan_gdouble(l_from_ptr, -99999.9, 99999.9, stb); }
+        if(*l_to_ptr)       { stb_elem->att_arr_value_to[ii]   = p_scan_gdouble(l_to_ptr,   -99999.9, 99999.9, stb); }
+        else                { stb_elem->att_arr_value_to[ii]   = stb_elem->att_arr_value_from[ii]; }
+        if(*l_dur_ptr)      { stb_elem->att_arr_value_dur[ii]  = p_scan_gint32(l_dur_ptr,  1, 999, stb); }
         
-        gap_story_list_append_elem(stb, stb_elem);
+        if(elem_already_in_the_list != TRUE)
+        {
+          gap_story_list_append_elem(stb, stb_elem);
+        }
       }
       goto cleanup;
-    }
- 
+    } 
  
     /* ATTRIBUTE: GAP_STBKEY_VID_FIT_SIZE */
     if (strcmp(l_record_key, GAP_STBKEY_VID_FIT_SIZE) == 0)
     {
-      stb_elem = gap_story_new_elem(GAP_STBREC_ATT_FIT_SIZE);
+      gboolean elem_already_in_the_list = FALSE;
+      stb_elem =  p_get_att_transition_elem(stb, &elem_already_in_the_list, l_track_nr);
       if(stb_elem)
       {
         stb_elem->file_line_nr = longlinenr;
@@ -1660,8 +1828,9 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
         stb_elem->att_keep_proportions = FALSE;
         stb_elem->att_fit_width = TRUE;
         stb_elem->att_fit_height = TRUE;
+        stb_elem->nframes = 0;
 
-        if(*l_track_ptr)    { stb_elem->track = p_scan_gint32(l_track_ptr,  1, GAP_STB_MAX_VID_TRACKS,    stb); }
+        stb_elem->track = l_track_nr;
         if(*l_from_ptr != '\0')
         {
           if((strncmp(l_from_ptr, "none", strlen("none")) ==0)
@@ -1710,22 +1879,22 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
         
         if(*l_to_ptr != '\0')
         {
-          if((strncmp(l_to_ptr, "keep_prop", strlen("keep_prop")) ==0)
-          || (strncmp(l_to_ptr, "KEEP_PROP", strlen("KEEP_PROP")) ==0))
+          if((strncmp(l_to_ptr, "keep", strlen("keep")) ==0)
+          || (strncmp(l_to_ptr, "KEEP", strlen("KEEP")) ==0))
           {
             stb_elem->att_keep_proportions = TRUE;
           }
           else
           {
-            if((strncmp(l_to_ptr, "change_prop", strlen("change_prop")) ==0)
-            || (strncmp(l_to_ptr, "CHANGE_PROP", strlen("CHANGE_PROP")) ==0))
+            if((strncmp(l_to_ptr, "change", strlen("change")) ==0)
+            || (strncmp(l_to_ptr, "CHANGE", strlen("CHANGE")) ==0))
             {
               stb_elem->att_keep_proportions = FALSE;
             }
             else
             {
                    char *l_errtxt;
-                   l_errtxt = g_strdup_printf(_("illegal keyword: %s (expected keywords are: keep_proportions, change_proportions")
+                   l_errtxt = g_strdup_printf(_("illegal keyword: %s (expected keywords are: keep, change")
                                              , l_to_ptr);
                    p_set_stb_warning(stb, l_errtxt);
                    g_free(l_errtxt);
@@ -1733,7 +1902,10 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
           }
         }
         
-        gap_story_list_append_elem(stb, stb_elem);
+        if(elem_already_in_the_list != TRUE)
+        {
+          gap_story_list_append_elem(stb, stb_elem);
+        }
       }
       goto cleanup;
       
@@ -2472,6 +2644,101 @@ p_story_save_comments(FILE *fp, GapStoryElem *stb_elem_node)
   
 }  /* end p_story_save_comments */
 
+
+/* ------------------------------
+ * p_story_save_att_transition
+ * ------------------------------
+ */
+static void
+p_story_save_att_transition(FILE *fp, GapStoryElem *stb_elem)
+{
+  gint ii;
+  GapStbSyntaxParnames l_parnam_tab;
+  const char *tab_fit_modes[4] =
+    { "none"
+    , "width"
+    , "height"
+    , "both"
+    };
+  const char *tab_prop_modes[2] =
+    { "change"
+    , "keep"
+    };
+
+  gint fmi;
+  gint pmi;
+
+  fmi = 0;
+  if(stb_elem->att_fit_width == TRUE)
+  {
+    fmi += 1;
+  }
+  if(stb_elem->att_fit_height == TRUE)
+  {
+    fmi += 2;
+  }
+  
+  pmi = 0;
+  if(stb_elem->att_keep_proportions == TRUE)
+  {
+    pmi = 1;
+  }
+  
+  gap_stb_syntax_get_parname_tab(GAP_STBKEY_VID_FIT_SIZE
+                                ,&l_parnam_tab
+                                );
+  fprintf(fp, "%s        %s:%d %s:%s %s:%s\n"
+                 , GAP_STBKEY_VID_FIT_SIZE
+                 , l_parnam_tab.parname[1]              , (int)stb_elem->track
+                 , l_parnam_tab.parname[2]              , tab_fit_modes[fmi]
+                 , l_parnam_tab.parname[3]              , tab_prop_modes[pmi]
+                 );
+
+  
+  for(ii=0; ii < GAP_STB_ATT_TYPES_ARRAY_MAX; ii++)
+  {
+    if(stb_elem->att_arr_enable[ii])
+    {
+      gchar l_from_str[G_ASCII_DTOSTR_BUF_SIZE];
+      gchar l_to_str[G_ASCII_DTOSTR_BUF_SIZE];
+
+      gap_stb_syntax_get_parname_tab(gtab_att_transition_key_words[ii]
+                                    ,&l_parnam_tab
+                                    );
+
+      g_ascii_dtostr(&l_from_str[0]
+                     ,G_ASCII_DTOSTR_BUF_SIZE
+                     ,stb_elem->att_arr_value_from[ii]
+                     );
+      g_ascii_dtostr(&l_to_str[0]
+                     ,G_ASCII_DTOSTR_BUF_SIZE
+                     ,stb_elem->att_arr_value_to[ii]
+                     );
+
+      fprintf(fp, "%s         "
+                 , gtab_att_transition_key_words[ii]
+                 );
+      if(ii !=0 )
+      {
+        /* print one extra space
+         * VID_MOVE_X, VID_MOVE_Y, VID_ZOOM_X, VID_ZOOM_Y
+         * are 1 character shorter than VID_OPACITY
+         */
+        fprintf(fp, " ");
+      }
+                       
+      fprintf(fp, "%s:%d %s:%s %s:%s %s:%d\n"
+                 , l_parnam_tab.parname[1]              , (int)stb_elem->track
+                 , l_parnam_tab.parname[2]              , l_from_str
+                 , l_parnam_tab.parname[3]              , l_to_str
+                 , l_parnam_tab.parname[4]              , stb_elem->att_arr_value_dur[ii]
+                 );
+    }
+  }
+  
+}  /* end p_story_save_att_transition */
+
+
 /* ------------------------------
  * gap_story_save
  * ------------------------------
@@ -2991,6 +3258,9 @@ gap_story_save(GapStoryBoard *stb, const char *filename)
           }
           break;
 
+        case GAP_STBREC_ATT_TRANSITION:
+          p_story_save_att_transition(fp, stb_elem);
+          break;
         case GAP_STBREC_VID_COMMENT:
           p_story_save_fprint_comment(fp, stb_elem);
           break;
@@ -3186,14 +3456,12 @@ gap_story_locate_framenr(GapStoryBoard *stb, gint32 in_framenr, gint32 in_track)
  * for the 1.st stb_elem in the list, 1 is returned.
  */
 gint32
-gap_story_get_framenr_by_story_id(GapStoryBoard *stb, gint32 story_id)
+gap_story_get_framenr_by_story_id(GapStoryBoard *stb, gint32 story_id, gint32 in_track)
 {
   GapStoryElem      *stb_elem;
   gint32             l_framenr;
-  gint32             in_track;
 
   l_framenr = 1;
-  in_track = 1;
   
   for(stb_elem = stb->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
   {
@@ -3212,6 +3480,7 @@ gap_story_get_framenr_by_story_id(GapStoryBoard *stb, gint32 story_id)
   
 }  /* end gap_story_get_framenr_by_story_id */ 
 
+
 /* ------------------------------
  * gap_story_fetch_filename
  * ------------------------------
@@ -3219,7 +3488,7 @@ gap_story_get_framenr_by_story_id(GapStoryBoard *stb, gint32 story_id)
  * or NULL in case when no frame was found for the requested framenr
  */
 char *
-gap_story_fetch_filename(GapStoryBoard *stb, gint32 framenr)
+gap_story_fetch_filename(GapStoryBoard *stb, gint32 framenr, gint32 in_track)
 {
   GapStoryLocateRet *stb_ret;
   char *filename;
@@ -3227,7 +3496,7 @@ gap_story_fetch_filename(GapStoryBoard *stb, gint32 framenr)
   filename = NULL;
   stb_ret = gap_story_locate_framenr(stb
                                     , framenr
-				    , 1              /* gint32 in_track */
+				    , in_track
 				    );
   if(stb_ret)
   {
@@ -3251,7 +3520,7 @@ gap_story_fetch_filename(GapStoryBoard *stb, gint32 framenr)
  *
  * if no master size information is present
  * in the storyboard file
- * then deliver size of the 1.st frame
+ * then deliver size of the 1.st frame of track 1
  * that will be fetched to peek the size.
  */
 void
@@ -3445,9 +3714,20 @@ gap_story_elem_duplicate(GapStoryElem      *stb_elem)
     stb_elem_dup->att_keep_proportions    = stb_elem->att_keep_proportions;  
     stb_elem_dup->att_fit_width           = stb_elem->att_fit_width;  
     stb_elem_dup->att_fit_height          = stb_elem->att_fit_height;  
-    stb_elem_dup->att_value_from          = stb_elem->att_value_from;  
-    stb_elem_dup->att_value_to            = stb_elem->att_value_to;  
-    stb_elem_dup->att_value_dur           = stb_elem->att_value_dur;  
+
+    /* copy all transition attributes */
+    {
+      gint ii;
+      for(ii=0; ii < GAP_STB_ATT_TYPES_ARRAY_MAX; ii++)
+      {
+        stb_elem_dup->att_arr_enable[ii]     = stb_elem->att_arr_enable[ii];
+        stb_elem_dup->att_arr_value_from[ii] = stb_elem->att_arr_value_from[ii];
+        stb_elem_dup->att_arr_value_to[ii]   = stb_elem->att_arr_value_to[ii];
+        stb_elem_dup->att_arr_value_dur[ii]  = stb_elem->att_arr_value_dur[ii];
+      }
+    }
+
+
     if(stb_elem->aud_filename)            stb_elem_dup->aud_filename     = g_strdup(stb_elem->aud_filename);
     stb_elem_dup->aud_seltrack            = stb_elem->aud_seltrack;  
     stb_elem_dup->aud_wait_untiltime_sec  = stb_elem->aud_wait_untiltime_sec;  
@@ -3488,6 +3768,7 @@ gap_story_elem_copy(GapStoryElem *stb_elem_dst, GapStoryElem *stb_elem)
     if(stb_elem_dst->filtermacro_file)  g_free(stb_elem_dst->filtermacro_file);
     if(stb_elem_dst->preferred_decoder) g_free(stb_elem_dst->preferred_decoder);
 
+
     stb_elem_dst->orig_filename     = NULL;
     stb_elem_dst->orig_src_line     = NULL;
     stb_elem_dst->basename          = NULL;
@@ -3519,6 +3800,48 @@ gap_story_elem_copy(GapStoryElem *stb_elem_dst, GapStoryElem *stb_elem)
     stb_elem_dst->nframes         = stb_elem->nframes; 
     stb_elem_dst->step_density    = stb_elem->step_density; 
     stb_elem_dst->file_line_nr    = stb_elem->file_line_nr;  
+
+
+    stb_elem_dst->vid_wait_untiltime_sec  = stb_elem->vid_wait_untiltime_sec;  
+    stb_elem_dst->color_red               = stb_elem->color_red;  
+    stb_elem_dst->color_green             = stb_elem->color_green;  
+    stb_elem_dst->color_blue              = stb_elem->color_blue;  
+    stb_elem_dst->color_alpha             = stb_elem->color_alpha;  
+    stb_elem_dst->att_keep_proportions    = stb_elem->att_keep_proportions;  
+    stb_elem_dst->att_fit_width           = stb_elem->att_fit_width;  
+    stb_elem_dst->att_fit_height          = stb_elem->att_fit_height;  
+
+    /* copy all transition attributes */
+    {
+      gint ii;
+      for(ii=0; ii < GAP_STB_ATT_TYPES_ARRAY_MAX; ii++)
+      {
+        stb_elem_dst->att_arr_enable[ii]     = stb_elem->att_arr_enable[ii];
+        stb_elem_dst->att_arr_value_from[ii] = stb_elem->att_arr_value_from[ii];
+        stb_elem_dst->att_arr_value_to[ii]   = stb_elem->att_arr_value_to[ii];
+        stb_elem_dst->att_arr_value_dur[ii]  = stb_elem->att_arr_value_dur[ii];
+      }
+    }
+
+    if(stb_elem_dst->aud_filename)      g_free(stb_elem_dst->aud_filename);
+    stb_elem_dst->aud_filename = NULL;
+    if(stb_elem->aud_filename)          stb_elem_dst->aud_filename     = g_strdup(stb_elem->aud_filename);
+
+    stb_elem_dst->aud_seltrack            = stb_elem->aud_seltrack;  
+    stb_elem_dst->aud_wait_untiltime_sec  = stb_elem->aud_wait_untiltime_sec;  
+    stb_elem_dst->aud_play_from_sec       = stb_elem->aud_play_from_sec;  
+    stb_elem_dst->aud_play_to_sec         = stb_elem->aud_play_to_sec;  
+    stb_elem_dst->aud_volume_start        = stb_elem->aud_volume_start;  
+    stb_elem_dst->aud_volume              = stb_elem->aud_volume;  
+    stb_elem_dst->aud_volume_end          = stb_elem->aud_volume_end;  
+    stb_elem_dst->aud_fade_in_sec         = stb_elem->aud_fade_in_sec;  
+    stb_elem_dst->aud_fade_out_sec        = stb_elem->aud_fade_out_sec;  
+    stb_elem_dst->aud_min_play_sec        = stb_elem->aud_min_play_sec;  
+    stb_elem_dst->aud_max_play_sec        = stb_elem->aud_max_play_sec;  
+    stb_elem_dst->aud_framerate           = stb_elem->aud_framerate;  
+
+
+
     if(stb_elem_dst->comment)       gap_story_elem_free(&stb_elem_dst->comment);
     if(stb_elem->comment)           stb_elem_dst->comment = gap_story_elem_duplicate(stb_elem->comment);
 
@@ -3692,9 +4015,32 @@ gap_story_remove_sel_elems(GapStoryBoard *stb)
 }  /* end gap_story_remove_sel_elems */
 
 
-/* -----------------------------
+/* -------------------------------
+ * gap_story_is_active_element
+ * -------------------------------
+ */
+gboolean
+gap_story_is_active_element(GapStoryElem *stb_elem)
+{
+  if((stb_elem->record_type == GAP_STBREC_VID_SILENCE)
+  || (stb_elem->record_type == GAP_STBREC_VID_COLOR)
+  || (stb_elem->record_type == GAP_STBREC_VID_IMAGE)
+  || (stb_elem->record_type == GAP_STBREC_VID_ANIMIMAGE)
+  || (stb_elem->record_type == GAP_STBREC_VID_FRAMES)
+  || (stb_elem->record_type == GAP_STBREC_VID_MOVIE)
+  || (stb_elem->record_type == GAP_STBREC_ATT_TRANSITION)
+  )
+  {
+    return (TRUE);
+  }
+  
+  return (FALSE);
+
+}  /* end gap_story_is_active_element */
+
+/* -------------------------------
  * gap_story_count_active_elements
- * -----------------------------
+ * -------------------------------
  */
 gint32
 gap_story_count_active_elements(GapStoryBoard *stb_ptr, gint32 in_track)
@@ -3707,13 +4053,7 @@ gap_story_count_active_elements(GapStoryBoard *stb_ptr, gint32 in_track)
   {
     if(stb_elem->track == in_track)
     {
-      if((stb_elem->record_type == GAP_STBREC_VID_SILENCE)
-      || (stb_elem->record_type == GAP_STBREC_VID_COLOR)
-      || (stb_elem->record_type == GAP_STBREC_VID_IMAGE)
-      || (stb_elem->record_type == GAP_STBREC_VID_ANIMIMAGE)
-      || (stb_elem->record_type == GAP_STBREC_VID_FRAMES)
-      || (stb_elem->record_type == GAP_STBREC_VID_MOVIE)
-      )
+      if(gap_story_is_active_element(stb_elem))
       {
         cnt_active_elements++;
       }
@@ -3735,8 +4075,8 @@ gap_story_count_active_elements(GapStoryBoard *stb_ptr, gint32 in_track)
 GapStoryElem *
 gap_story_fetch_nth_active_elem(GapStoryBoard *stb
                               , gint32 seq_nr
-			      , gint32 in_track
-			      )
+                              , gint32 in_track
+                              )
 {
   gint32             cnt_active_elements;
   GapStoryElem *stb_elem;
@@ -3746,27 +4086,19 @@ gap_story_fetch_nth_active_elem(GapStoryBoard *stb
   {
     if(stb_elem->track == in_track)
     {
-      if((stb_elem->record_type == GAP_STBREC_VID_SILENCE)
-      || (stb_elem->record_type == GAP_STBREC_VID_COLOR)
-      || (stb_elem->record_type == GAP_STBREC_VID_IMAGE)
-      || (stb_elem->record_type == GAP_STBREC_VID_ANIMIMAGE)
-      || (stb_elem->record_type == GAP_STBREC_VID_FRAMES)
-      || (stb_elem->record_type == GAP_STBREC_VID_MOVIE)
-      )
+      if(gap_story_is_active_element(stb_elem))
       {
         cnt_active_elements++;
-	if(cnt_active_elements == seq_nr)
-	{
-	  return(stb_elem);
-	}
+        if(cnt_active_elements == seq_nr)
+        {
+          return(stb_elem);
+        }
       }
     }
   }
   
   return(NULL);
 }  /* end gap_story_fetch_nth_active_elem */
-
-
 
 
 /* ---------------------------------
@@ -3976,6 +4308,31 @@ gap_story_elem_is_audio(GapStoryElem *stb_elem)
   
   return (FALSE);
 }  /* end gap_story_elem_is_audio */
+
+
+/* --------------------------
+ * gap_story_elem_is_video
+ * --------------------------
+ */
+gboolean
+gap_story_elem_is_video(GapStoryElem *stb_elem)
+{
+  switch(stb_elem->record_type)
+  {
+    case GAP_STBREC_VID_SILENCE:
+    case GAP_STBREC_VID_COLOR:
+    case GAP_STBREC_VID_IMAGE:
+    case GAP_STBREC_VID_ANIMIMAGE:
+    case GAP_STBREC_VID_FRAMES:
+    case GAP_STBREC_VID_MOVIE:
+      return (TRUE);
+      break;
+    default:
+      return (FALSE);
+  }
+  
+  return (FALSE);
+}  /* end gap_story_elem_is_video */
 
 
 /* --------------------------
@@ -4212,3 +4569,197 @@ gap_story_gen_otone_audio(GapStoryBoard *stb
   return(TRUE);
   
 }  /* end gap_story_gen_otone_audio */
+
+
+/* --------------------------
+ * gap_story_get_default_attribute
+ * --------------------------
+ */
+gdouble
+gap_story_get_default_attribute(gint att_typ_idx)
+{
+   if ((att_typ_idx == GAP_STB_ATT_TYPE_OPACITY)
+   ||  (att_typ_idx == GAP_STB_ATT_TYPE_ZOOM_X)
+   ||  (att_typ_idx == GAP_STB_ATT_TYPE_ZOOM_Y))
+   {
+     return (1.0);  /* 1.0 indicates fully opaque, or no scaling */
+   }
+   return (0.0);  /* indicates centerd positioning */
+}  /* end gap_story_get_default_attribute */
+
+
+/* ------------------------------------------
+ * gap_story_file_calculate_render_attributes
+ * ------------------------------------------
+ * perform calculations for rendering a layer or image (specified by frame_width, frame_height)
+ * onto a destination image (specified by vid_width, vid_height)
+ *
+ * according to storyboard attribute settings
+ * (specified by
+ *   fit_width
+ *   fit_height
+ *   keep_proportions
+ *   scale_x       1.0 .. original width,  2.0 double width     
+ *   scale_y       1.0 .. original height, 2.0 double height  
+ *   move_x        (-1.0 .. left outside, 0.0 centered, +1.0 right outside)
+ *   move_y        (-1.0 .. top  outside, 0.0 centered, +1.0 bottom outside)
+ *   opacity       0.0 .. fully transparent, 1.0 fully opaque
+ * )
+ *
+ * the results are written to the speccified result_attr structure,
+ * and shall be applied to the layer. 
+ *    
+ */
+void
+gap_story_file_calculate_render_attributes(GapStoryCalcAttr *result_attr
+    , gint32 view_vid_width
+    , gint32 view_vid_height
+    , gint32 vid_width
+    , gint32 vid_height
+    , gint32 frame_width
+    , gint32 frame_height
+    , gboolean keep_proportions
+    , gboolean fit_width
+    , gboolean fit_height
+    , gdouble opacity
+    , gdouble scale_x
+    , gdouble scale_y
+    , gdouble move_x
+    , gdouble move_y
+    )
+{
+  gint32 result_width;
+  gint32 result_height;
+  gint32 result_ofsx;
+  gint32 result_ofsy;
+  gint32 l_tmp_width;
+  gint32 l_tmp_height;
+  gint32 center_x_ofs;
+  gint32 center_y_ofs;
+  
+  
+  if(result_attr == NULL)
+  {
+    return;
+  }
+
+  result_width = -1;
+  result_height = -1;
+  l_tmp_width = frame_width;
+  l_tmp_height = frame_height;
+  
+  if(keep_proportions)
+  {
+    gdouble l_vid_prop;
+    gdouble l_frame_prop;
+
+    l_vid_prop = (gdouble)vid_width / (gdouble)vid_height;
+    l_frame_prop = (gdouble)frame_width / (gdouble)frame_height;
+
+
+    if((fit_width) && (fit_height))
+    {
+      l_tmp_width = vid_height * l_frame_prop;
+      l_tmp_height = vid_height;
+      
+      if(l_tmp_width > vid_width)
+      {
+        l_tmp_width = vid_width;
+        l_tmp_height = vid_width / l_frame_prop;
+      }
+
+      /* scaling */
+      result_width  = MAX(1, (l_tmp_width  * scale_x));
+      result_height = MAX(1, (l_tmp_height * scale_y));
+
+    }
+    else
+    {
+      if(fit_height)
+      {
+         l_tmp_width = vid_height * l_frame_prop;
+      }
+      if(fit_width)
+      {
+         l_tmp_height = vid_width / l_frame_prop;
+      }
+    }
+
+  }
+
+  /* scaling (if not already done at proportion calculation) */
+  if(result_width < 0)
+  {
+    if(fit_width)
+    {
+      result_width  = MAX(1, (vid_width  * scale_x));
+    }
+    else
+    {
+      result_width  = MAX(1, (l_tmp_width  * scale_x));
+    }
+
+    if(fit_height)
+    {
+      result_height = MAX(1, (vid_height * scale_y));
+    }
+    else
+    {
+      result_height = MAX(1, (l_tmp_height * scale_y));
+    }
+  }
+
+
+  /* offset calculation */
+  {
+    
+    center_x_ofs = (vid_width/2) -  (result_width/2);
+    center_y_ofs = (vid_height/2) - (result_height/2);
+    
+    result_ofsx  = center_x_ofs + ((result_width / 2)  * move_x) + ((vid_width / 2)  * move_x);
+    result_ofsy  = center_y_ofs + ((result_height / 2 ) * move_y) + ((vid_height / 2 ) * move_y);
+    
+  }
+
+  result_attr->opacity = CLAMP(opacity * 100.0, 0.0, 100.0);
+  result_attr->width = result_width;
+  result_attr->height = result_height;
+  result_attr->x_offs = result_ofsx + ((view_vid_width - vid_width) / 2);
+  result_attr->y_offs = result_ofsy + ((view_vid_height - vid_height) / 2);
+
+  /* debug output */
+  if(gap_debug)
+  {
+    
+    printf ("\n\nCALC size and OFFS opacity: %f", (float)result_attr->opacity);
+    {
+      printf (" fit_width: ");
+      if (fit_width) { printf ("ON "); } else  { printf ("OFF "); }
+      printf (" fit_height: ");
+      if (fit_height) { printf ("ON "); } else  { printf ("OFF "); }
+      printf (" keep_prop: ");
+      if (keep_proportions) { printf ("ON "); } else  { printf ("OFF "); }
+      printf ("\n");
+    }
+    printf (" view: (%d x %d) master: (%d x %d) frame: (%d x %d)\n"
+              ,(int)view_vid_width
+              ,(int)view_vid_height
+              ,(int)vid_width
+              ,(int)vid_height
+              ,(int)frame_width
+              ,(int)frame_height
+              );
+    printf (" scale_x:%.3f scale_y:%.3f\n", (float)scale_x , (float) scale_y);
+    printf (" move_x:%.3f move_y:%.3f\n", (float)move_x , (float) move_y);
+    printf (" result_width:%d result_height:%d\n", (int)result_width , (int) result_height);
+    printf (" center_x_ofs:%d center_y_ofs:%d  result_ofsx: %d  result_ofs_y: %d\n"
+              , (int)center_x_ofs
+              , (int)center_y_ofs
+              , (int)result_ofsx
+              , (int)result_ofsy
+              );
+    printf (" OFSX:%d OFSY:%d\n", (int)result_attr->x_offs , (int) result_attr->y_offs);
+
+  }
+  
+}  /* end gap_story_file_calculate_render_attributes */

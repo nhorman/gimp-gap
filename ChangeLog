@@ -1,7 +1,128 @@
+2006-04-18  Wolfgang Hofer <hof@gimp.org>
+        applied patch provided with #338556
+
+        * gap/gap_mod_layer.c [.h]
+        * gap/gap_mod_layer_dialog.c
+        * docs/reference/txt/plug-in-gap-modify.txt
+
 2006-04-17  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* configure.in: Remove obsolete entry for no_NO.
 	* po/no.po: And the translation.
+
+2006-04-14  Wolfgang Hofer <hof@gimp.org>
+        applied patch provided with #337441
+        
+	* gap/gap_base_ops.c [.h]
+	* gap/gap_main.c
+        
+        * docs/reference/txt/plug-in-gap-reverse.txt              # new file
+        * docs/reference/txt/plug-in-gap-shift.txt
+        * docs/reference/txt/plug-in-gap-storyboard-attr-prop.txt # new file
+        * docs/reference/txt/INTRODUCTION.txt
+         
+2006-04-12  Wolfgang Hofer <hof@gimp.org>
+	bugfix #337587: check version in the autogen.sh script
+        (using separate checks for major, minor micro version)
+        
+        bugfix: on videoindex creation.
+        - video indexes created in normal time were droped after switch to
+          daylight saving time even if the videofile was not modified
+          since videoindex creation.
+        - dialogs for video index creation show wrong filename
+        for the index. The video track number that is part of the
+        vidoindex filename must use the internal
+        track number that starts at 0, but dialogs show the external
+        representation starting at 1.
+        (keeping the suffix   .0.libavformat.gvaidx to be compatible
+        with already existing video indexes)
+        
+	* autogen.sh
+        * libgapvidapi/gap_vid_api_vidindex.c
+        
+2006-04-08  Wolfgang Hofer <hof@gimp.org>
+        - bugfix gap_layer_clear_to_color 
+          , restore original BG color)
+        - replaced private implementation p_layer_resize_to_imagesize
+          by gimp_layer_resize_to_image_size that does the same.
+        - use color range 0.0 to 1.0 for internal calculations in storyboard processing.
+	- storyboard dialog: added graphic views of the attributes
+          at start and end frame in the treansition attribute properties dialog.
+          
+        * gap/gap_pview_da.c [.h]
+        * gap/gap_lib.c [.h]
+        * gap/gap_layer_copy.c [.h]
+        * gap/gap_vex_exec.c
+        * libgapvidutil/gap_gve_story.c [.h]
+	* gap/gap_story_att_trans_dlg.c [.h]
+
+2006-04-06  Wolfgang Hofer <hof@gimp.org>
+	- storyboard processing: VID_FIT_SIZE record
+        is internally handled as transition attribute.
+        (now we have only ony type of attribute,
+        the attribute dialog support for fit_size is not implemented yet.)
+                
+	* gap/gap_story_dialog.c [.h]
+	* gap/gap_story_file.c [.h]
+	* gap/gap_story_main.h
+	* libgapvidutil/gap_gve_story.c
+        
+2006-04-02  Wolfgang Hofer <hof@gimp.org>
+	- extract video range dialog: added labels to display
+          From and To Frames as time code mm:ss:ms
+        - added storyboard dialog icon for transition attributes
+
+	* gap/gap_vex_dialog.c
+        * gap/gap_vex_main.h
+        * images/gap-story-icon-transition-attr.png  # new icon
+        * images/Makefile.am
+
+
+2006-03-31  Wolfgang Hofer <hof@gimp.org>
+	- bugfix: storyboard processing changed the calculation of
+	  layer offsets. (the old code had bugs, and assumed that 
+	  gimp_edit_paste
+	  would center the pasted layer within the destination layer
+	  which is not true with gimp-2.2.10)
+	  The new calculation includes centering and scrolling
+	  according to the MOVE_Y/MOVE_Y attribute settings of the 
+	  storyboard file and only uses this self calculated offest.
+	  
+	- Storyboard dialog support to edit transition attributes
+	(MOVE X/Y ZOOM X/Y and OPACITY) of the storyboard file.
+
+        Added menu to create a transition attribute (as last element)
+	Right mouse button on the transition attribute's thumbnail
+	also opens the new transition attributes properties dialog.
+	
+	* gap/gap_story_att_trans_dlg.c [.h]  # NEW files
+	* gap/Makefile.am
+	* gap/gap_story_file.c [h]
+	* gap_story_dialog.c
+	* gap/gap_story_main.h
+	* gap/gap_story_properties.c
+	* docs/reference/txt/STORYBOARD_FILE_DOC.txt
+	* libgapvidutil/gap_gve_story.c
+	* NEWS
+	
+2006-03-28  Wolfgang Hofer <hof@gimp.org>
+	- internal changes of the storyboard file handling and processing
+	(attributes MOVE X/Y ZOOM X/Y and OPACITY are now handled
+	as one common TRANSITION attribute,
+	for the planed basic GUI support of those transformations)
+	
+	* gap/gap_story_file.c [h]
+	* libgapvidutil/gap_gve_story.c
+	* gap/gap_player_dialog.c
+	* gap/gap_story_dialog.c
+	
+	2006-03-19  Wolfgang Hofer <hof@gimp.org>
+	player dialog: support step/backstep frame via scroll event.
+	(mouse wheel)
+	storyboard dialog: support scroll event.
+	
+	* gap_player_dialog.c
+	* gap_story_dialog.c
 
 2006-03-11  Wolfgang Hofer <hof@gimp.org>
 	- bugfix for selection handling via modify frames (#333978)

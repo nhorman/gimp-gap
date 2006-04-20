@@ -75,5 +75,20 @@ void  gap_story_dlg_recreate_tab_widgets(GapStbTabWidgets *tabw
 				  ,GapStbMainGlobalParams *sgpp
 				  );
 void  gap_story_dlg_render_default_icon(GapStoryElem *stb_elem, GapPView   *pv_ptr);
+void  gap_story_dlg_tabw_update_frame_label (GapStbTabWidgets *tabw
+                           , GapStbMainGlobalParams *sgpp
+                           );
+
+guchar * gap_story_dlg_fetch_videoframe(GapStbMainGlobalParams *sgpp
+                   , const char *gva_videofile
+                   , gint32 framenumber
+                   , gint32 seltrack
+                   , const char *preferred_decoder
+                   , gdouble delace
+                   , gint32 *th_bpp
+                   , gint32 *th_width
+                   , gint32 *th_height
+                   , gboolean do_scale
+                   );
 
 #endif

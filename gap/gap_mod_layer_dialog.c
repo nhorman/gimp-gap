@@ -649,7 +649,12 @@ p_make_selection_submenu(GtkWidget *master_menu, GapModFramesGlobalParams *gmop)
 		       ,sub_menu
 		       ,gmop
 		       );
-
+  p_make_func_menu_item(_("Selection from alpha channel (individual per frame)")
+                       ,NULL
+                       ,GAP_MOD_ACM_SEL_ALPHA
+                       ,sub_menu
+                       ,gmop
+                       );
   p_make_func_menu_item(_("Save selection to channel (individual per frame)")
                        ,NULL
 		       ,GAP_MOD_ACM_SEL_SAVE

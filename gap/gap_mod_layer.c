@@ -644,6 +644,16 @@ p_apply_action(gint32 image_id,
 	  gimp_drawable_set_name(l_layer_id, &l_name_buff[0]);
 	  break;
 
+        case GAP_MOD_ACM_SEL_ALPHA:
+          if(gimp_drawable_has_alpha(l_layer_id))
+          {
+            gimp_selection_layer_alpha(l_layer_id);
+          }
+          else
+          {
+            gimp_selection_none(image_id);
+          }
+          break;
 
 
         case GAP_MOD_ACM_SEL_SAVE:

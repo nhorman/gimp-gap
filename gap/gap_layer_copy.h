@@ -66,9 +66,9 @@ gint32 gap_layer_new_from_buffer(gint32 dst_image_id
 				, guchar *data
 				);
 void   gap_layer_clear_to_color(gint32 layer_id
-                             ,guchar red
-                             ,guchar green
-                             ,guchar blue
-                             ,guchar alpha
+                             ,gdouble red
+                             ,gdouble green
+                             ,gdouble blue
+                             ,gdouble alpha
                              );
 #endif

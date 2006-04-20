@@ -495,6 +495,8 @@ gap_pview_render_from_buf (GapPView *pv_ptr
  * render preview widget from image.
  * IMPORTANT: the image is scaled to preview size
  *            and the visible layers in the image are merged together !
+ *            If the supplied image shall stay unchanged,
+ *            you may use  gap_pview_render_from_image_duplicate
  *
  * hint: call gtk_widget_queue_draw(pv_ptr->da_widget);
  * after this procedure to make the changes appear on screen.
@@ -506,7 +508,7 @@ gap_pview_render_from_image (GapPView *pv_ptr, gint32 image_id)
   guchar *frame_data;
   GimpPixelRgn pixel_rgn;
   GimpDrawable *drawable;
-  
+
   if(image_id < 0)
   {
     if(gap_debug)
@@ -518,7 +520,11 @@ gap_pview_render_from_image (GapPView *pv_ptr, gint32 image_id)
     return;
   }
 
-  gimp_image_scale(image_id, pv_ptr->pv_width, pv_ptr->pv_height);
+  if((gimp_image_width(image_id) != pv_ptr->pv_width)
+  || ( gimp_image_height(image_id) != pv_ptr->pv_height))
+  {
+    gimp_image_scale(image_id, pv_ptr->pv_width, pv_ptr->pv_height);
+  }
 
   /* workaround: gimp_image_merge_visible_layers
    * needs at least 2 layers to work without complaining
@@ -546,6 +552,7 @@ gap_pview_render_from_image (GapPView *pv_ptr, gint32 image_id)
                                 , 0         /* NORMAL */
                                 );   
     gimp_image_add_layer(image_id, l_layer_id, 0);
+    gimp_layer_resize_to_image_size(l_layer_id);
   }
   
     
@@ -568,6 +575,7 @@ gap_pview_render_from_image (GapPView *pv_ptr, gint32 image_id)
  
  {
     gboolean frame_data_was_grabbed;
+
     frame_data_was_grabbed = gap_pview_render_from_buf (pv_ptr
                    , frame_data
                    , drawable->width
@@ -581,6 +589,31 @@ gap_pview_render_from_image (GapPView *pv_ptr, gint32 image_id)
   
 }  /* end gap_pview_render_from_image */
 
+/* -------------------------------------
+ * gap_pview_render_from_image_duplicate
+ * -------------------------------------
+ * render preview widget from image.
+ * This procedure creates a temorary copy of the image
+ * for rendering of the preview.
+ * NOTE: if the caller wants to render a temporary image
+ *       that is not needed anymore after the rendering,
+ *       the procedure gap_pview_render_from_image should be used
+ *       to avoid duplicating of the image.
+ *
+ * hint: call gtk_widget_queue_draw(pv_ptr->da_widget);
+ * after this procedure to make the changes appear on screen.
+ */
+void
+gap_pview_render_from_image_duplicate (GapPView *pv_ptr, gint32 image_id)
+{
+  gint32 dup_image_id;
+  
+  dup_image_id = gimp_image_duplicate(image_id);
+  gimp_image_undo_disable (dup_image_id); 
+  gap_pview_render_from_image(pv_ptr, dup_image_id);
+  gimp_image_delete(dup_image_id);
+  
+}  /* end gap_pview_render_from_image_duplicate */
 
 /* ------------------------------
  * gap_pview_render_default_icon

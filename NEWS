@@ -2,7 +2,19 @@ Here is a short overview whats new in GIMP-GAP-2.2.1:
 -----------------------------------------------------
 (compared to gimp-gap release 2.2.0)
 
+- Storyboard dialog support to edit transition attributes.
+  The new popup dialog allows creation and changes of the storyboard file attributes
+    FIT_SIZE
+    MOVE X/Y 
+    ZOOM X/Y and 
+    OPACITY
+  creation is invoked via menu "create transition" in the story board edit dialog,
+  changes are made via right mouse button click on the thumbnail of the
+  transition attribute.
+  
+
 - Modifiy Frames support of additional functions:
+  - set selection from alphachannel
   - invert existing layermask
   - apply filter on layermask
   - set layermodes 

@@ -1,0 +1,67 @@
+"plug-in-gap-storyboard-clip-prop"
+
+
+Transition Attributes (Storyboard)
+
+    The transition attributes dialog window is used to
+    control transitions that shall be performed on the following
+    clips in the same storyboard video track.
+    It is a popup dialog of the storyboard editor
+
+    ## refere to Storyboard Dialog
+    ## (plug-in-gap-storyboard-edit.txt)
+
+    supported transitions are:
+
+    - Opacity changes
+    - Moves related to the center position 0/0 (Scrolling)
+    - Scaling (Zoom)
+    
+    The dialog has 2 previews:
+    The left one shows the transition effect
+    start settings applied on the first affected frame.
+    The right one shows the transition end settings applied
+    on the last affected frame.
+    The previews show the size of the resulting video (master size)
+    in a centered green frame and the environment around the master size
+    with solid grey background.
+    
+    Note: the last affected frame can be different for each
+    single transition. In this case the preview shows only one frame
+    as 'last affected' using the first enabled transition.
+    
+    FitSize:
+      Width:
+        Enabled: Scale width of input clips to fit into the resulting master width.
+      Height
+        Enabled: Scale height of input clips to fit into the resulting master height.
+      Keep Proportion
+        Enabled: Keep proportions of the input frame at scaling.
+      
+    Opacity:
+      Settings for the opacity where 0 is fully transparent and 100 is fully opaque. 
+    Move X:
+      Scroll settings, where 0.0 is horizontal centered, 100.0 moves the frame
+      entirely outside the right border of the master width.
+    Move Y:
+      Scroll settings, where 0.0 is vertical centered, 100.0 moves the frame
+      entirely outside the lower border of the master height.
+    Scale Width:
+     Zoom settings, where 100.0 specifies no scaling, 200.0 is scaling to double width,
+     50.0 is scaling down to half width. 
+    Scale Height:
+     Zoom settings, where 100.0 specifies no scaling, 200.0 is scaling to double height,
+     50.0 is scaling dow to half height.
+     
+    Frames:
+      Duration of the transition effect measured in frames.
+      
+      
+    Comment:
+      An optional comment text on the transition.
+
+Reset
+    This button resets all settings to the values at opening 
+    time of this dialog window.
+    
+    

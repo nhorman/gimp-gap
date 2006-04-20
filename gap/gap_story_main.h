@@ -52,6 +52,10 @@ typedef gpointer t_GVA_Handle;
 #endif
 #endif
 
+
+
+#define GAP_STB_ATT_GFX_ARRAY_MAX 2
+
 typedef enum
   {
      GAP_STB_EDMO_SEQUENCE_NUMBER
@@ -122,6 +126,76 @@ typedef struct GapStbPropWidget  /* nickname: pw */
   struct GapStbPropWidget *next;
 } GapStbPropWidget;
 
+/* for graphical display of transition attributes */
+typedef struct GapStbAttGfx
+{
+  gint32      image_id;
+  gint32      base_layer_id;   /* decor layer (always BG) */
+  gint32      deco_layer_id;   /* decor layer (always on top of stack) */
+  gint32      orig_layer_id;   /* invisible frame at original image size */
+  gint32      curr_layer_id;   /* copy of orig_layer_id, after transformations */
+  gboolean    auto_update;
+  
+  /* information about the orig layer */
+  gboolean               orig_layer_is_fake;
+  GapStoryRecordType     orig_layer_record_type;
+  gint32                 orig_layer_local_framenr;
+  gint32                 orig_layer_seltrack;
+  gchar                 *orig_layer_filename;
+
+  GapPView   *pv_ptr;
+  GtkWidget  *auto_update_toggle;
+  GtkWidget  *framenr_label;
+  GtkWidget  *frametime_label;
+
+} GapStbAttGfx;
+
+/* widgets for one transition attribute */
+typedef struct GapStbAttRow
+{
+  GtkWidget  *enable_toggle;
+  GtkObject  *spinbutton_from_adj;
+  GtkObject  *spinbutton_to_adj;
+  GtkObject  *spinbutton_dur_adj;
+  GtkWidget  *dur_time_label;
+
+  GtkWidget  *spinbutton_from;
+  GtkWidget  *spinbutton_to;
+  GtkWidget  *spinbutton_dur;
+
+  GtkWidget  *button_from;
+  GtkWidget  *button_to;
+  GtkWidget  *button_dur;
+} GapStbAttRow;
+
+typedef struct GapStbAttrWidget  /* nickname: attw */
+{
+  GapStoryElem  *stb_elem_bck;     /* backup for use at reset button pressed */
+  GapStoryElem  *stb_elem_refptr;  /* never g_free this one ! */
+  GapStoryBoard *stb_refptr;       /* never g_free this one ! */
+  void  *sgpp;               /* never g_free this one ! */
+  void  *tabw;               /* never g_free this one ! (pointer to parent GapStbTabWidgets) */
+
+  gint32   go_timertag;
+  gboolean close_flag;
+  
+  GtkWidget  *attw_prop_dialog;
+  GtkWidget  *master_table;
+  
+  GtkWidget  *fit_width_toggle;
+  GtkWidget  *fit_height_toggle;
+  GtkWidget  *keep_proportions_toggle;
+  
+  GapStbAttRow  att_rows[GAP_STB_ATT_TYPES_ARRAY_MAX];
+  GapStbAttGfx  gfx_tab[GAP_STB_ATT_GFX_ARRAY_MAX];   /* 0 .. from, 1 .. to */
+
+  GtkWidget  *comment_entry;
+
+  struct GapStbAttrWidget *next;
+} GapStbAttrWidget;
+
+
+
 typedef struct GapStbFrameWidget  /* nickname: fw */
 {
   GtkWidget *event_box;
@@ -183,6 +257,7 @@ typedef struct GapStbTabWidgets  /* nickname: tabw */
   GtkWidget *edit_paste_button;
 
   GapStbPropWidget *pw;
+  GapStbAttrWidget *attw;
   GapStoryElemDisplayMode edmode;
   void  *sgpp;               /* never g_free this one ! */
 
@@ -245,6 +320,7 @@ typedef struct GapStbMainGlobalParams  /* nickname: sgpp */
   GtkWidget *menu_item_stb_add_clip;
   GtkWidget *menu_item_stb_playback;
   GtkWidget *menu_item_stb_properties;
+  GtkWidget *menu_item_stb_att_properties;
   GtkWidget *menu_item_stb_audio_otone;
   GtkWidget *menu_item_stb_encode;
   GtkWidget *menu_item_stb_close;
@@ -254,6 +330,7 @@ typedef struct GapStbMainGlobalParams  /* nickname: sgpp */
   GtkWidget *menu_item_cll_add_clip;
   GtkWidget *menu_item_cll_playback;
   GtkWidget *menu_item_cll_properties;
+  GtkWidget *menu_item_cll_att_properties;
   GtkWidget *menu_item_cll_audio_otone;
   GtkWidget *menu_item_cll_encode;
   GtkWidget *menu_item_cll_close;

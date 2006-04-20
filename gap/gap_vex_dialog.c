@@ -55,8 +55,12 @@
 #define SPIN_WIDTH_LARGE 80
 #define ENTRY_WIDTH_LARGE 320
 
+#define TIME_UNDEF_STRING "mm:ss:msec"
+
 
 /* -------- GUI TOOL PROCEDURES -----------*/
+static const char *p_timeconv_framenr_to_timestr_fps( gint32 framenr, gdouble framerate);
+static void        p_update_time_labels   (GapVexMainGlobalParams *gpp);
 static void        p_update_range_widgets(GapVexMainGlobalParams *gpp);
 static void        p_update_wgt_sensitivity(GapVexMainGlobalParams *gpp);
 static void        p_init_mw__main_window_widgets (GapVexMainGlobalParams *gpp);
@@ -250,6 +254,58 @@ gap_vex_dlg_overwrite_dialog(GapVexMainGlobalParams *gpp, gchar *filename, gint 
   return (overwrite_mode);
 }  /* end gap_vex_dlg_overwrite_dialog */
 
+/* ---------------------------------
+ * p_timeconv_framenr_to_timestr_fps
+ * ---------------------------------
+ * return constant string with converted time and framerate information
+ * Do not attemt to free the returned string. (it refers to a static constant buffer)
+ */
+static const char *
+p_timeconv_framenr_to_timestr_fps( gint32 framenr, gdouble framerate)
+{
+  static char  txt_buf[100];
+  gint len;
+
+  gap_timeconv_framenr_to_timestr( framenr
+                           , framerate
+                           , txt_buf
+                           , sizeof(txt_buf)
+                           );
+  len = strlen(txt_buf);
+  g_snprintf(&txt_buf[len], sizeof(txt_buf) - len, " @ %2.3f fps", (float)framerate);
+
+  return (txt_buf);
+}  /* end p_timeconv_framenr_to_timestr_fps */
+
+
+/* --------------------------------
+ * p_update_time_labels
+ * --------------------------------
+ */
+static void
+p_update_time_labels   (GapVexMainGlobalParams *gpp)
+{
+  if(gpp == NULL) return;
+  
+  if(!gpp->val.chk_is_compatible_videofile)
+  {
+    gtk_label_set_text ( GTK_LABEL(gpp->mw__begin_time_label), TIME_UNDEF_STRING);
+    gtk_label_set_text ( GTK_LABEL(gpp->mw__end_time_label), TIME_UNDEF_STRING);
+    return;
+  }
+
+  gtk_label_set_text ( GTK_LABEL(gpp->mw__begin_time_label)
+                      , p_timeconv_framenr_to_timestr_fps((gint32)(gpp->val.begin_frame -1)
+                                                         ,(gdouble)gpp->video_speed
+                                                         )
+                     );
+  gtk_label_set_text ( GTK_LABEL(gpp->mw__end_time_label)
+                      , p_timeconv_framenr_to_timestr_fps((gint32)(gpp->val.end_frame -1)
+                                                         ,(gdouble)gpp->video_speed
+                                                         )
+                     );
+}  /* end p_update_time_labels */
+
 
 /* ------------------------
  * p_update_range_widgets
@@ -266,6 +322,7 @@ p_update_range_widgets(GapVexMainGlobalParams *gpp)
   adj = GTK_ADJUSTMENT(gpp->mw__spinbutton_end_frame_adj);
   gtk_adjustment_set_value(adj, (gfloat)gpp->val.end_frame);
 
+  p_update_time_labels(gpp);
 }  /* end p_update_range_widgets */
 
 
@@ -687,6 +744,7 @@ p_check_videofile(GapVexMainGlobalParams *gpp)
        gpp->val.chk_total_frames = gvahand->total_frames;
        gpp->video_width = gvahand->width;
        gpp->video_height = gvahand->height;
+       gpp->video_speed = gvahand->framerate;
        aspect_ratio = gvahand->aspect_ratio;
        
 
@@ -936,6 +994,7 @@ on_mw__spinbutton_begin_frame_changed   (GtkEditable     *editable,
   if((gdouble)adj->value != gpp->val.begin_frame)
   {
     gpp->val.begin_frame = (gdouble)adj->value;
+    p_update_time_labels(gpp);
   }
 }
 
@@ -960,6 +1019,7 @@ on_mw__spinbutton_end_frame_changed   (GtkEditable     *editable,
   if((gdouble)adj->value != gpp->val.end_frame)
   {
     gpp->val.end_frame = (gdouble)adj->value;
+    p_update_time_labels(gpp);
   }
 }
 
@@ -1994,6 +2054,14 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
   gimp_help_set_help_data (mw__spinbutton_begin_frame, _("Frame number of 1.st frame to extract"), NULL);
 
 
+  /* from timecode label */
+  label = gtk_label_new(TIME_UNDEF_STRING);
+  gpp->mw__begin_time_label = label;
+  gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
+  gtk_box_pack_start (GTK_BOX (hbox2), label, FALSE, FALSE, 12);
+  gtk_widget_show(label);
+
+
   /* dummy label to fill up the hbox2 */
   label = gtk_label_new (" ");
   gtk_widget_show (label);
@@ -2044,6 +2112,14 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
 			      "To extract all frames use a range from 1 to 999999. "
 			      "(Extract stops at the last available frame)")
 			  , NULL);
+
+
+  /* to timecode label */
+  label = gtk_label_new(TIME_UNDEF_STRING);
+  gpp->mw__end_time_label = label;
+  gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
+  gtk_box_pack_start (GTK_BOX (hbox2), label, FALSE, FALSE, 12);
+  gtk_widget_show(label);
 
   /* dummy label to fill up the hbox2 */
   label = gtk_label_new (" ");

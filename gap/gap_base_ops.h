@@ -47,6 +47,7 @@ gint32 gap_base_dup(GimpRunMode run_mode, gint32 image_id, int nr, long range_fr
 gint32 gap_base_del(GimpRunMode run_mode, gint32 image_id, int nr);
 gint32 gap_base_exchg(GimpRunMode run_mode, gint32 image_id, int nr);
 gint32 gap_base_shift(GimpRunMode run_mode, gint32 image_id, int nr, long range_from, long range_to);
+gint32 gap_base_reverse(GimpRunMode run_mode, gint32 image_id, long range_from, long range_to);
 gint32 gap_base_renumber(GimpRunMode run_mode, gint32 image_id,
             long start_frame_nr, long digits);
 

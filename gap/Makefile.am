@@ -218,6 +218,8 @@ gap_storyboard_SOURCES = \
 	gap_story_dialog.h	\
 	gap_story_properties.c	\
 	gap_story_properties.h	\
+	gap_story_att_trans_dlg.c \
+	gap_story_att_trans_dlg.h \
 	gap_player_main.h	\
 	gap_player_dialog.c	\
 	gap_player_dialog.h	\

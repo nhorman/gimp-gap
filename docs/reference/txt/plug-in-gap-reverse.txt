@@ -1,0 +1,35 @@
+"plug-in-gap-reverse"
+
+Frame Sequence Reverse
+
+    Start from Menu:
+        <Image>/Video/Frame Sequence Reverse
+
+    This feature reverses the specified sequencew of frames
+    in the affected range.
+    The affected range is specified with "From Frame"
+    and "To Frame".
+    
+    
+Example:
+    
+    Assume tere are 10 frames:
+      pic_000001.xcf
+      pic_000002.xcf
+   
+      pic_000010.xcf
+     
+    After applying the Frame Sequence Reverse with settings:
+
+      From Frame: 5
+      To Frame:   8
+      
+      
+   the affected frames are renumbered as shown here:
+
+      old name            new name
+      ----------------------------------
+      pic_000005.xcf  ==> pic_000008.xcf
+      pic_000006.xcf  ==> pic_000007.xcf
+      pic_000007.xcf  ==> pic_000006.xcf
+      pic_000008.xcf  ==> pic_000005.xcf

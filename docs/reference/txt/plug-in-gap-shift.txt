@@ -3,7 +3,7 @@
 Frame Sequence Shift
 
     Start from Menu:
-        <Image>/Video/Framesequence Shift
+        <Image>/Video/Frame Sequence Shift
 
     This feature does cycic reordering the sequence
     of the frames in the affected range.

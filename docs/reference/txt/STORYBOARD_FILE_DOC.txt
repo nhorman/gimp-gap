@@ -305,7 +305,7 @@ VID_OPACITY
 
 VID_ZOOM_X and VID_ZOOM_Y
   These records are used to define Zooming Effects
-  by changing the Opacity of the Videotrack slightly from one value
+  by scaling the Videotrack slightly from one value
   to another. Zooming can be defined independet for Width (VID_ZOOM_X)
   and Height (VID_ZOOM_Y).
   
@@ -341,7 +341,38 @@ VID_MOVE_X and VID_MOVE_Y
                             DEFAULT: 0
 
   Example:
+    Assume we have video master size 320x200 pixels,
+                			+-----------+
+                			|master     |
+                			|width: 320 |
+                			|           |
+                			+-----------+
 
+    We use VID_ZOOM_X settings with a value of 2.0, 
+    (also assume that automatical fit to master size is turned OFF
+    using VID_FIT_SIZE  mode=none)
+    
+    The source is an image 400 x 200 that is scaled to 800 x 200
+    (due to VID_ZOOM_X value of 2.0) that gives a tmp_width of 800 pixels.
+    
+    Without any VID_MOVE attributes the result will be centered The normal be
+
+			    +-----------+===========+-----------+
+			    |...........|...........|...........|
+			    |...........|.....+.....|...........|
+			    |...........|...........|...........|
+			    +-----------+===========+-----------+
+                                             320
+
+                                        |<--------->|
+					
+					     800
+                            |<--------------------------------->|
+
+
+    We use VID_MOVE_X setting to place the image completely outside to the left border at the
+    first handled frame,
+    
     move_x_from = -1.0  
                                          
     +-----------------------------------+-----------+
@@ -349,28 +380,26 @@ VID_MOVE_X and VID_MOVE_Y
     |.................+.................|width: 320 |
     |...................................|           |
     +-----------------------------------+-----------+
-                      ^                 ^     ^ 
-                      |   400           | 160 |
+    ^                 ^   400           ^ 160 ^ 
+    |         800     |<--------------->|<--->|
+    |<--------------------------------->|
 
 
 
-     delta_x_offset_from_center = ((master_width /2) + (tmp_width / 2)) * move_x_from
-     -560 = (400 + 160) * -1.0
-
-
-    move_x_to = 0.5  
+   
+    the setting for the last handled frame places the image half outside the right border.
+    move_x_to = 0.5 
        
-                                     +--+===========+--------------------+
-                                     |..|master.....|....................|
-                                     |..|width:.320.|..+.................|
-                                     |..|...........|....................|
-                                     +--+===========+--------------------+
-                                              ^        ^ 
-                                              |   280  |
+                                  +-----+===========+-----------------+
+                                  |.....|master.....|.................|
+                                  |.....|width:.320.|.................|
+                                  |.....|...........|.................|
+                                  +-----+===========+-----------------+
+                                  ^           ^     ^                 ^
+                                  |           | 160 |     400         |
+                                  |           |<--->|<--------------->|
+                                  |<--------------------------------->|
 
-
-     delta_x_offset_from_center = ((master_width /2) + (tmp_width / 2)) * move_x_from
-     280 = (400 + 160) * 0.5
 
 
 VID_FIT_SIZE
@@ -403,10 +432,13 @@ VID_FIT_SIZE
   [4] proportions           ... One of the Keywords "keep_proportions" "change_proportions"
                             keep_proportions:
                                     Keep proportions of the input frame at scaling.
-                                    This can lead to black stripes on top/bottom
+                                    This can lead to stripes on top/bottom
                                     (or left/right).
                                     especially if the resulting video is LANDSCAPE oriented
                                     and the input frame is PORTRAIT oriented.
+                                    The stripes are transparent and show the frames
+                                    of lower video track numbers, or the black
+                                    background if there no such frames.
                             change_proportions:
                                     allow proportion changes at scaling.
                                     Stretch the image to fit the resulting

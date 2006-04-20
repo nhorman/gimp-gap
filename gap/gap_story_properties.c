@@ -2305,6 +2305,10 @@ gap_story_fw_properties_dialog (GapStbFrameWidget *fw)
   if(tabw == NULL)  { return; }
 
 
-  gap_story_stb_elem_properties_dialog(tabw, fw->stb_elem_refptr, fw->stb_refptr);
+  /* type check, this dialog handles only stb_elements that are video clips */
+  if(gap_story_elem_is_video(fw->stb_elem_refptr))
+  {
+    gap_story_stb_elem_properties_dialog(tabw, fw->stb_elem_refptr, fw->stb_refptr);
+  }
 }  /* end gap_story_fw_properties_dialog */
 

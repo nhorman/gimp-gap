@@ -14,14 +14,31 @@
  * 2004.03.06   hof created
  *
  */
-
+static char *   p_build_videoindex_filename(const char *filename, gint32 track, const char *decoder_name);
+static gboolean p_equal_mtime(time_t mtime_idx, time_t mtime_file);
 
 /* ----------------------------------
  * GVA_build_videoindex_filename
  * ----------------------------------
+ * external variante using track numbers starting at 1
  */
 char *
 GVA_build_videoindex_filename(const char *filename, gint32 track, const char *decoder_name)
+{
+  return (p_build_videoindex_filename(filename
+         , MIN(track -1, 0)
+         ,decoder_name
+         ));
+}  /* end GVA_build_videoindex_filename */
+
+
+/* ------------------------------------
+ * p_build_videoindex_filename
+ * ------------------------------------
+ * internal variante using track numbers starting at 0
+ */
+static char *
+p_build_videoindex_filename(const char *filename, gint32 track, const char *decoder_name)
 {
   static gchar name[40];
   gchar *vindex_file;
@@ -63,7 +80,53 @@ GVA_build_videoindex_filename(const char *filename, gint32 track, const char *de
   g_free(filename_part);  
 
   return(vindex_file);
-}  /* end GVA_build_videoindex_filename */
+}  /* end p_build_videoindex_filename */
+
+
+
+/* ----------------------------------
+ * p_equal_mtime
+ * ----------------------------------
+ * return if bot mtime values are equal
+ * 
+ * if the difference is exactly 3600 seconds 
+ * accept this as equal and return TRUE
+ *
+ * return FALSE in all other cases.
+ *
+ * This behaviour compensates the problem were the video index creation
+ * was done in normal time (for instance in december)
+ * but the query is done after switch to daylight saving time (for instance in may)
+ * where the mtime delivered via a query with stat uses 1 hour earlier mtime
+ * (assuming that the video file was not modified since december) and won't match
+ * with the mtime value stored in the videoindex.
+ *
+ * therefore we tolerate the difference (with a very little risk to use an old index
+ * in case there really was a modififaction with exactly one hour difference)
+ * but keeps all videoindexes usable after switch to daylight saving time.
+ */
+static gboolean 
+p_equal_mtime(time_t mtime_idx, time_t mtime_file)
+{
+  if(mtime_idx == mtime_file)
+  {
+    return (TRUE);
+  }
+  
+  if (abs(mtime_idx - mtime_file) == 3600)
+  {
+    if(gap_debug)
+    {
+      printf("GVA_videoindex faking equal mtimes  MTIME_INDEX:%ld MTIME_FILE:%ld  (3600 sec different)\n"
+             , (long)mtime_idx
+             , (long)mtime_file);
+    }
+    return (TRUE);
+  }
+  
+  return (FALSE);
+}  /* end p_equal_mtime */
+
 
 
 /* ----------------------------------
@@ -182,22 +245,31 @@ GVA_load_videoindex(const char *filename, gint32 track, const char *decoder_name
   gboolean success;
   gboolean delete_flag;
 
-  if(gap_debug) printf("GVA_load_videoindex  START\n");
+  if(gap_debug)
+  {
+    printf("GVA_load_videoindex  START\n");
+  }
   if(filename == NULL)     { return (NULL); }
   if(decoder_name == NULL) { return (NULL); }
 
-  if(gap_debug) printf("GVA_load_videoindex  file:%s\n", filename);
+  if(gap_debug)
+  {
+    printf("GVA_load_videoindex  file:%s\n", filename);
+  }
   success = FALSE;
   delete_flag = FALSE;
   vindex = GVA_new_videoindex();
   if(vindex)
   {
-    vindex->videoindex_filename = GVA_build_videoindex_filename(filename
+    vindex->videoindex_filename = p_build_videoindex_filename(filename
                                                                , track
                                                                , decoder_name);
     if(vindex->videoindex_filename)
     {
-      if(gap_debug) printf("GVA_load_videoindex  videoindex_filename:%s\n", vindex->videoindex_filename);
+      if(gap_debug) 
+      {
+        printf("GVA_load_videoindex  videoindex_filename:%s\n", vindex->videoindex_filename);
+      }
       fp = fopen(vindex->videoindex_filename, "rb");
       if(fp)
       {
@@ -216,10 +288,14 @@ GVA_load_videoindex(const char *filename, gint32 track, const char *decoder_name
           vindex->tabsize_allocated = atol(vindex->hdr.val_size);
           vindex->mtime = atol(vindex->hdr.val_mtim);
 
-          if(gap_debug) printf("GVA_load_videoindex MTIM:  vindex->hdr.val_mtim:%s\n", vindex->hdr.val_mtim);
+          if(gap_debug) 
+          {
+            printf("GVA_load_videoindex MTIM:  vindex->hdr.val_mtim:%s\n"
+               , vindex->hdr.val_mtim);
+          }
 
 	  l_mtime = GVA_file_get_mtime(filename);
-	  if(l_mtime == vindex->mtime)
+	  if(p_equal_mtime(l_mtime, vindex->mtime) == TRUE)
 	  {
             l_flen = atol(vindex->hdr.val_flen);
 	    if(l_flen > 0)
@@ -269,7 +345,10 @@ GVA_load_videoindex(const char *filename, gint32 track, const char *decoder_name
             if(rd_len == rd_size)
             {
               success = TRUE;
-              if(gap_debug) printf("GVA_load_videoindex  SUCCESS\n");
+              if(gap_debug) 
+              {
+                printf("GVA_load_videoindex  SUCCESS\n");
+              }
             }
 	  }
 	  else
@@ -277,8 +356,11 @@ GVA_load_videoindex(const char *filename, gint32 track, const char *decoder_name
             delete_flag = TRUE;
             if(gap_debug)
 	    {
-	      printf("GVA_load_videoindex  TOO OLD  videoindex_filename:%s\n", vindex->videoindex_filename);
-              printf("GVA_load_videoindex  MTIME_INDEX:%ld FILE:%ld\n", (long)vindex->mtime, (long)l_mtime);
+	      printf("\nGVA_load_videoindex  TOO OLD  videoindex_filename:%s\n"
+                     , vindex->videoindex_filename);
+              printf("GVA_load_videoindex  MTIME_INDEX:%ld FILE:%ld\n"
+                     , (long)vindex->mtime
+                     , (long)l_mtime);
 	    }
 	  }
 
@@ -293,12 +375,18 @@ GVA_load_videoindex(const char *filename, gint32 track, const char *decoder_name
       }
       else
       {
-        if(gap_debug) printf("GVA_load_videoindex  FILE NOT FOUND %s\n", vindex->videoindex_filename);
+        if(gap_debug)
+        {
+          printf("GVA_load_videoindex  FILE NOT FOUND %s\n", vindex->videoindex_filename);
+        }
       }
     }
     if(!success)
     {
-      if(gap_debug) printf("GVA_load_videoindex  NO vindex available\n");
+      if(gap_debug)
+      {
+        printf("GVA_load_videoindex  NO vindex available\n");
+      }
       GVA_free_videoindex(&vindex);
     }
    
@@ -369,7 +457,7 @@ GVA_save_videoindex(t_GVA_Videoindex *vindex, const char *filename, const char *
   g_snprintf(vindex->hdr.key_flen, sizeof(vindex->hdr.key_flen), "FLEN");
   g_snprintf(vindex->hdr.val_flen, sizeof(vindex->hdr.val_flen), "%d", l_flen);
   
-  vindex->videoindex_filename = GVA_build_videoindex_filename(filename, vindex->track, decoder_name);
+  vindex->videoindex_filename = p_build_videoindex_filename(filename, vindex->track, decoder_name);
   if(vindex->videoindex_filename)
   {
     fp = fopen(vindex->videoindex_filename, "wb");

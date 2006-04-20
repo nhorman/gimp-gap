@@ -178,6 +178,9 @@ static void   on_to_spinbutton_changed               (GtkEditable     *editable,
 static gboolean on_vid_preview_button_press_event    (GtkWidget       *widget,
                                                       GdkEventButton  *bevent,
                                                       GapPlayerMainGlobalParams *gpp);
+static gboolean on_warp_frame_scroll_event      (GtkWidget       *widget,
+                                                      GdkEventScroll  *sevent,
+                                                      GapPlayerMainGlobalParams *gpp);
 static gboolean on_vid_preview_expose_event          (GtkWidget       *widget,
                                                       GdkEventExpose  *eevent,
                                                       GapPlayerMainGlobalParams *gpp);
@@ -293,6 +296,7 @@ static void   on_audio_filename_entry_changed     (GtkWidget     *widget,
 static void   on_cancel_vindex_button_clicked     (GtkObject       *object,
                                                    GapPlayerMainGlobalParams *gpp);
 
+static void     p_step_frame(GapPlayerMainGlobalParams *gpp, gint stepsize);
 
 static void     p_set_frame_with_name_label(GapPlayerMainGlobalParams *gpp);
 static void     p_update_position_widgets(GapPlayerMainGlobalParams *gpp);
@@ -2818,6 +2822,41 @@ p_get_next_framenr_in_sequence(GapPlayerMainGlobalParams *gpp)
 }  /*end p_get_next_framenr_in_sequence */
 
 
+
+/* -----------------------------
+ * p_step_frame
+ * -----------------------------
+ */
+static void
+p_step_frame(GapPlayerMainGlobalParams *gpp, gint stepsize)
+{
+  gint32 framenr;
+
+  framenr = gpp->play_current_framenr + stepsize;
+  if(gpp->ainfo_ptr)
+  {
+    framenr = CLAMP(framenr
+                   , gpp->ainfo_ptr->first_frame_nr
+                   , gpp->ainfo_ptr->last_frame_nr
+                   );
+    if(gpp->play_current_framenr != framenr)
+    {
+        /* we want the go_timer to display that framenr */
+        gpp->go_job_framenr = framenr;
+        if(gpp->go_timertag < 0)
+        {
+           /* if the go_timer is not already prepared to fire
+            * we start  p_display_frame(gpp, gpp->go_job_framenr); 
+            * after minimal delay of 8 millisecods.
+            */
+           gpp->go_timertag = (gint32) g_timeout_add(8, (GtkFunction)on_timer_go_job, gpp);
+        }
+
+    }
+  }
+
+}  /* end p_step_frame */
+
 /* ------------------------------
  * p_framenr_from_go_number
  * ------------------------------
@@ -3331,6 +3370,36 @@ on_vid_preview_button_press_event      (GtkWidget       *widget,
   return FALSE;
 
 }  /* end on_vid_preview_button_press_event */
+
+
+/* -----------------------------
+ * on_warp_frame_scroll_event
+ * -----------------------------
+ * handle scroll event (inludes wheel mose)
+ */
+static gboolean
+on_warp_frame_scroll_event      (GtkWidget       *widget,
+                                 GdkEventScroll  *sevent,
+                                 GapPlayerMainGlobalParams *gpp)
+{
+  /*if(gap_debug) printf("on_warp_frame_scroll_event: START\n"); */
+  
+
+  p_stop_playback(gpp);
+  
+  if((sevent->direction == GDK_SCROLL_UP)
+  || (sevent->direction == GDK_SCROLL_RIGHT))
+  {
+    p_step_frame(gpp, -1);
+  }
+  else
+  {
+    p_step_frame(gpp, 1);
+  }
+  
+  return FALSE;
+
+}  /* end on_warp_frame_scroll_event */
 
 
 /* -----------------------------
@@ -5972,15 +6041,23 @@ p_create_player_window (GapPlayerMainGlobalParams *gpp)
   
   {
     GtkWidget *wrap_frame;
+    GtkWidget *wrap_event_box;
+    wrap_event_box = gtk_event_box_new ();
+    gtk_widget_show (wrap_event_box);
     
     wrap_frame= gimp_frame_new(NULL);
     gtk_container_set_border_width (GTK_CONTAINER (wrap_frame), 0);
     gpp->resize_box = wrap_frame;
     gtk_widget_show(wrap_frame);
     gtk_container_add (GTK_CONTAINER (wrap_frame), table11);
-    gtk_table_attach (GTK_TABLE (table1), wrap_frame, 0, 1, 0, 2,
+    gtk_container_add (GTK_CONTAINER (wrap_event_box), wrap_frame);
+    gtk_table_attach (GTK_TABLE (table1), wrap_event_box, 0, 1, 0, 2,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_SHRINK | GTK_FILL),
                     (GtkAttachOptions) (GTK_EXPAND | GTK_SHRINK | GTK_FILL), 0, 0);
+
+    g_signal_connect (G_OBJECT (wrap_event_box), "scroll_event",
+                      G_CALLBACK (on_warp_frame_scroll_event),
+                      gpp);
   }
 
   gtk_widget_realize (shell_window);

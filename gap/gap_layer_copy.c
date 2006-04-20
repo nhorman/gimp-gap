@@ -490,21 +490,22 @@ gap_layer_new_from_buffer(gint32 image_id
 /* ----------------------------------------------------
  * gap_layer_clear_to_color
  * ----------------------------------------------------
- * set layer to unique color
+ * set layer to unique color 
+ * (color channels are specified within range 0.0 up to 1.0)
  */
 void
 gap_layer_clear_to_color(gint32 layer_id
-                             ,guchar red
-                             ,guchar green
-                             ,guchar blue
-                             ,guchar alpha
+                             ,gdouble red
+                             ,gdouble green
+                             ,gdouble blue
+                             ,gdouble alpha
                              )
 {
   gint32 image_id;
   
   image_id = gimp_drawable_get_image(layer_id);
 
-  if(alpha==0)
+  if(alpha==0.0)
   {
     gimp_selection_none(image_id);
     gimp_edit_clear(layer_id);
@@ -512,15 +513,32 @@ gap_layer_clear_to_color(gint32 layer_id
   else
   {
     GimpRGB  color;
+    GimpRGB  bck_color;
     
     color.r = red;
     color.g = green;
     color.b = blue;
     color.a = alpha;
-    gimp_selection_all(image_id);
+
+    if(gap_debug)
+    {
+      printf("CLR to COLOR gap_layer_clear_to_color: %f %f %f  %f\n"
+        ,(float)color.r
+        ,(float)color.g
+        ,(float)color.b
+        ,(float)color.a
+        );
+    }
+
+    gimp_context_get_background(&bck_color);
     gimp_context_set_background(&color);
+    /* fill the drawable (ignoring selections) */
     gimp_drawable_fill(layer_id, GIMP_BACKGROUND_FILL);
-    gimp_selection_none(image_id);
+
+    
+    /* restore BG color in the context */
+    gimp_context_set_background(&bck_color);
+
   }
  
 }  /* end gap_layer_clear_to_color */

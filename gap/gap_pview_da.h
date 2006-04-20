@@ -64,6 +64,7 @@ gboolean   gap_pview_render_from_buf (GapPView *pv_ptr
                  , gint    src_bpp
                  , gboolean allow_grab_src_data
                  );
+void       gap_pview_render_from_image_duplicate (GapPView *pv_ptr, gint32 image_id);
 void       gap_pview_render_from_image (GapPView *pv_ptr, gint32 image_id);
 void       gap_pview_repaint(GapPView *pv_ptr);
 

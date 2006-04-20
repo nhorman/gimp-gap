@@ -5,6 +5,8 @@
  */
 
 /*
+ * 2006.04.10  hof  - use procedure gap_story_file_calculate_render_attributes
+ *                    p_transform_and_add_layer
  * 2005.01.12  hof  - audio processing has new flag: create_audio_tmp_files
  *                  - no more checks and constraints for valid video/audio ranges
  *                    adressing illegal range delivers black frames (or audio silence)
@@ -79,6 +81,7 @@
 #include "gap_gve_sox.h"
 #include "gap_vid_api.h"
 #include "gap_story_file.h"
+#include "gap_layer_copy.h"
 #include "gap_gve_story.h"
 
 /*************************************************************
@@ -148,12 +151,6 @@ static void     p_drop_image_cache_elem1(GapGveStoryImageCache *imcache);
 static gint32   p_load_cache_image( char* filename);
 static void     p_drop_audio_cache_elem1(GapGveStoryAudioCache *audcache);
 static GapGveStoryAudioCacheElem  *p_load_cache_audio( char* filename, gint32 *audio_id, gint32 *aud_bytelength, gint32 seek_idx);
-static void     p_clear_layer(gint32 layer_id
-                             ,guchar red
-                             ,guchar green
-                             ,guchar blue
-                             ,guchar alpha
-                             );
 static void     p_find_min_max_vid_tracknumbers(GapGveStoryFrameRangeElem *frn_list
                              , gint32 *lowest_tracknr
                              , gint32 *highest_tracknr
@@ -202,10 +199,10 @@ static char *   p_fetch_framename   (GapGveStoryFrameRangeElem *frn_list
                             , gboolean *keep_proportions
                             , gboolean *fit_width
                             , gboolean *fit_height
-                            , guchar  *red
-                            , guchar  *green
-                            , guchar  *blue
-                            , guchar  *alpha
+                            , gdouble  *red_f
+                            , gdouble  *green_f
+                            , gdouble  *blue_f
+                            , gdouble  *alpha_f
                             , gdouble *opacity       /* output opacity 0.0 upto 1.0 */
                             , gdouble *scale_x       /* output 0.0 upto 10.0 where 1.0 is 1:1 */
                             , gdouble *scale_y       /* output 0.0 upto 10.0 where 1.0 is 1:1 */
@@ -312,8 +309,7 @@ static gint32     p_transform_and_add_layer( gint32 comp_image_id
                          , char *filtermacro_file
                          );
 static gint32     p_create_unicolor_image(gint32 *layer_id, gint32 width , gint32 height
-                       , guchar r, guchar g, guchar b, guchar a);
-static void       p_layer_resize_to_imagesize(gint32 layer_id);
+                       , gdouble r_f, gdouble g_f, gdouble b_f, gdouble a_f);
 static gint32     p_prepare_RGB_image(gint32 image_id);
 static t_GVA_Handle * p_try_to_steal_gvahand(GapGveStoryVidHandle *vidhand
                       , gint32 master_frame_nr
@@ -1004,46 +1000,6 @@ p_load_cache_audio( char* filename, gint32 *audio_id, gint32 *aud_bytelength, gi
 }  /* end p_load_cache_audio */
 
 
-
-/* ----------------------------------------------------
- * p_clear_layer
- * ----------------------------------------------------
- * set layer to unique color
- */
-static void
-p_clear_layer(gint32 layer_id
-                             ,guchar red
-                             ,guchar green
-                             ,guchar blue
-                             ,guchar alpha
-                             )
-{
-  gint32 image_id;
-
-  image_id = gimp_drawable_get_image(layer_id);
-
-  if(alpha==0)
-  {
-    gimp_selection_none(image_id);
-    gimp_edit_clear(layer_id);
-  }
-  else
-  {
-    GimpRGB  color;
-
-    color.r = red;
-    color.g = green;
-    color.b = blue;
-    color.a = alpha;
-    gimp_selection_all(image_id);
-    gimp_context_set_background(&color);
-    gimp_drawable_fill(layer_id, GIMP_BACKGROUND_FILL);
-    gimp_selection_none(image_id);
-  }
-
-}  /* end p_clear_layer */
-
-
 /* ----------------------------------------------------
  * p_find_min_max_vid_tracknumbers
  * ----------------------------------------------------
@@ -1693,10 +1649,10 @@ p_fetch_framename(GapGveStoryFrameRangeElem *frn_list
                  , gboolean *keep_proportions
                  , gboolean *fit_width
                  , gboolean *fit_height
-                 , guchar  *red
-                 , guchar  *green
-                 , guchar  *blue
-                 , guchar  *alpha
+                 , gdouble  *red_f
+                 , gdouble  *green_f
+                 , gdouble  *blue_f
+                 , gdouble  *alpha_f
                  , gdouble *opacity       /* output opacity 0.0 upto 1.0 */
                  , gdouble *scale_x       /* output 0.0 upto 10.0 where 1.0 is 1:1 */
                  , gdouble *scale_y       /* output 0.0 upto 10.0 where 1.0 is 1:1 */
@@ -1727,10 +1683,10 @@ p_fetch_framename(GapGveStoryFrameRangeElem *frn_list
   *keep_proportions = FALSE;
   *fit_width        = TRUE;
   *fit_height       = TRUE;
-  *red              = 0;
-  *green            = 0;
-  *blue             = 0;
-  *alpha            = 255;
+  *red_f            = 0.0;
+  *green_f          = 0.0;
+  *blue_f           = 0.0;
+  *alpha_f          = 1.0;
   *filtermacro_file = NULL;
   *frn_elem_ptr      = NULL;
 
@@ -1784,10 +1740,10 @@ p_fetch_framename(GapGveStoryFrameRangeElem *frn_list
          *keep_proportions = frn_elem->keep_proportions;
          *fit_width        = frn_elem->fit_width;
          *fit_height       = frn_elem->fit_height;
-         *red              = frn_elem->red;
-         *green            = frn_elem->green;
-         *blue             = frn_elem->blue;
-         *alpha            = frn_elem->alpha;
+         *red_f            = frn_elem->red_f;
+         *green_f          = frn_elem->green_f;
+         *blue_f           = frn_elem->blue_f;
+         *alpha_f          = frn_elem->alpha_f;
          *filtermacro_file = frn_elem->filtermacro_file;
 
          frn_elem->last_master_frame_access = master_frame_nr;
@@ -2556,13 +2512,13 @@ p_new_audiorange_element(GapGveStoryAudioType  aud_type
 static GapGveStoryFrameRangeElem *
 p_new_framerange_element(GapGveStoryFrameType  frn_type
                       ,gint32 track
-                      ,const char *basename       /* basename or full imagename  for frn_type GAP_FRN_IMAGE */
-                      ,const char *ext            /* NULL for frn_type GAP_FRN_IMAGE and GAP_FRN_MOVIE */
-                      ,gint32  frame_from   /* IN: use -1 for first, 99999999 for last */
-                      ,gint32  frame_to     /* IN: use -1 for first, 99999999 for last */
-                      ,const char *storyboard_file  /* IN: NULL if no storyboard file is used */
+                      ,const char *basename           /* basename or full imagename  for frn_type GAP_FRN_IMAGE */
+                      ,const char *ext                /* NULL for frn_type GAP_FRN_IMAGE and GAP_FRN_MOVIE */
+                      ,gint32  frame_from             /* IN: use -1 for first, 99999999 for last */
+                      ,gint32  frame_to               /* IN: use -1 for first, 99999999 for last */
+                      ,const char *storyboard_file    /* IN: NULL if no storyboard file is used */
                       ,const char *preferred_decoder  /* IN: NULL if no preferred_decoder is specified */
-                      ,const char *filtermacro_file  /* IN: NULL, or name of the macro file */
+                      ,const char *filtermacro_file   /* IN: NULL, or name of the macro file */
                       ,GapGveStoryFrameRangeElem *frn_list /* NULL or list of already known ranges */
                       ,GapGveStoryErrors *sterr           /* element to store Error/Warning report */
                       ,gint32 seltrack      /* IN: select videotrack number 1 upto 99 for GAP_FRN_MOVIE */
@@ -2616,10 +2572,10 @@ p_new_framerange_element(GapGveStoryFrameType  frn_type
   frn_elem->last_master_frame_access = -1;   /* -1 indicate that there was no access */
 
   /* default attributes (used if storyboard does not define settings) */
-  frn_elem->red                = 0.0;
-  frn_elem->green              = 0.0;
-  frn_elem->blue               = 0.0;
-  frn_elem->alpha              = 1.0;
+  frn_elem->red_f              = 0.0;
+  frn_elem->green_f            = 0.0;
+  frn_elem->blue_f             = 0.0;
+  frn_elem->alpha_f            = 1.0;
   frn_elem->alpha_proportional = 1.0;
   frn_elem->keep_proportions   = FALSE;
   frn_elem->fit_width          = TRUE;
@@ -3232,35 +3188,49 @@ p_storyboard_analyze(GapStoryBoard *stb
   
     switch(stb_elem->record_type)
     {
-      case GAP_STBREC_ATT_OPACITY:
-        vtarr->attr[l_track].opacity_from = stb_elem->att_value_from;
-        vtarr->attr[l_track].opacity_to   = stb_elem->att_value_to;
-        vtarr->attr[l_track].opacity_dur  = stb_elem->att_value_dur;
-        break;
-      case GAP_STBREC_ATT_ZOOM_X:
-        vtarr->attr[l_track].scale_x_from = stb_elem->att_value_from;
-        vtarr->attr[l_track].scale_x_to   = stb_elem->att_value_to;
-        vtarr->attr[l_track].scale_x_dur  = stb_elem->att_value_dur;
-        break;
-      case GAP_STBREC_ATT_ZOOM_Y:
-        vtarr->attr[l_track].scale_y_from = stb_elem->att_value_from;
-        vtarr->attr[l_track].scale_y_to   = stb_elem->att_value_to;
-        vtarr->attr[l_track].scale_y_dur  = stb_elem->att_value_dur;
-        break;
-      case GAP_STBREC_ATT_MOVE_X:
-        vtarr->attr[l_track].move_x_from  = stb_elem->att_value_from;
-        vtarr->attr[l_track].move_x_to    = stb_elem->att_value_to;
-        vtarr->attr[l_track].move_x_dur   = stb_elem->att_value_dur;
-        break;
-      case GAP_STBREC_ATT_MOVE_Y:
-        vtarr->attr[l_track].move_y_from  = stb_elem->att_value_from;
-        vtarr->attr[l_track].move_y_to    = stb_elem->att_value_to;
-        vtarr->attr[l_track].move_y_dur   = stb_elem->att_value_dur;
-        break;
-      case GAP_STBREC_ATT_FIT_SIZE:
-        vtarr->attr[l_track].fit_width        = stb_elem->att_fit_width;
-        vtarr->attr[l_track].fit_height       = stb_elem->att_fit_height;
-        vtarr->attr[l_track].keep_proportions = stb_elem->att_keep_proportions;
+      case GAP_STBREC_ATT_TRANSITION:
+        {
+          gint ii;
+          
+          vtarr->attr[l_track].fit_width        = stb_elem->att_fit_width;
+          vtarr->attr[l_track].fit_height       = stb_elem->att_fit_height;
+          vtarr->attr[l_track].keep_proportions = stb_elem->att_keep_proportions;
+          for(ii=0; ii < GAP_STB_ATT_TYPES_ARRAY_MAX; ii++)
+          {
+            if(stb_elem->att_arr_enable[ii])
+            {
+              switch(ii)
+              {
+                case GAP_STB_ATT_TYPE_OPACITY:
+                  vtarr->attr[l_track].opacity_from = stb_elem->att_arr_value_from[ii];
+                  vtarr->attr[l_track].opacity_to   = stb_elem->att_arr_value_to[ii];
+                  vtarr->attr[l_track].opacity_dur  = stb_elem->att_arr_value_dur[ii];
+                  break;
+                case GAP_STB_ATT_TYPE_MOVE_X:
+                  vtarr->attr[l_track].move_x_from  = stb_elem->att_arr_value_from[ii];
+                  vtarr->attr[l_track].move_x_to    = stb_elem->att_arr_value_to[ii];
+                  vtarr->attr[l_track].move_x_dur   = stb_elem->att_arr_value_dur[ii];
+                  break;
+                case GAP_STB_ATT_TYPE_MOVE_Y:
+                  vtarr->attr[l_track].move_y_from  = stb_elem->att_arr_value_from[ii];
+                  vtarr->attr[l_track].move_y_to    = stb_elem->att_arr_value_to[ii];
+                  vtarr->attr[l_track].move_y_dur   = stb_elem->att_arr_value_dur[ii];
+                  break;
+                case GAP_STB_ATT_TYPE_ZOOM_X:
+                  vtarr->attr[l_track].scale_x_from = stb_elem->att_arr_value_from[ii];
+                  vtarr->attr[l_track].scale_x_to   = stb_elem->att_arr_value_to[ii];
+                  vtarr->attr[l_track].scale_x_dur  = stb_elem->att_arr_value_dur[ii];
+                  break;
+                case GAP_STB_ATT_TYPE_ZOOM_Y:
+                  vtarr->attr[l_track].scale_y_from = stb_elem->att_arr_value_from[ii];
+                  vtarr->attr[l_track].scale_y_to   = stb_elem->att_arr_value_to[ii];
+                  vtarr->attr[l_track].scale_y_dur  = stb_elem->att_arr_value_dur[ii];
+                  break;
+              }
+            }
+          }
+
+        }
         break;
       case GAP_STBREC_VID_SILENCE:
         if(!vidhand->ignore_video)
@@ -3314,10 +3284,10 @@ p_storyboard_analyze(GapStoryBoard *stb
                                              );
           if(frn_elem)
           {
-            frn_elem->red                = CLAMP(stb_elem->color_red   * 255, 0 ,255);
-            frn_elem->green              = CLAMP(stb_elem->color_green * 255, 0 ,255);
-            frn_elem->blue               = CLAMP(stb_elem->color_blue  * 255, 0 ,255);
-            frn_elem->alpha              = CLAMP(stb_elem->color_alpha * 255, 0 ,255);
+            frn_elem->red_f           = CLAMP(stb_elem->color_red,   0.0, 1.0);     
+            frn_elem->green_f         = CLAMP(stb_elem->color_green, 0.0, 1.0);     
+            frn_elem->blue_f          = CLAMP(stb_elem->color_blue,  0.0, 1.0);     
+            frn_elem->alpha_f         = CLAMP(stb_elem->color_alpha, 0.0, 1.0);     
             vtarr->attr[l_track].frame_count += frn_elem->frames_to_handle;
             p_set_vtrack_attributes(frn_elem, vtarr);
             p_add_frn_list(vidhand, frn_elem);
@@ -4099,25 +4069,18 @@ p_transform_and_add_layer( gint32 comp_image_id
 {
   gint32 vid_width;
   gint32 vid_height;
-  gint32 l_width;
-  gint32 l_height;
-  gint32 l_ofsx;
-  gint32 l_ofsy;
-  gdouble l_opacity;
   gint32 l_new_layer_id;
   gint32 l_fsel_layer_id;
-
-  gint32        l_tmp_width;
-  gint32        l_tmp_height;
-  gdouble       l_vid_prop;
-  gdouble       l_img_prop;
-  gint32        l_vid_width;
-  gint32        l_vid_height;
-  gint          l_fsel_ofsx;
-  gint          l_fsel_ofsy;
+  GapStoryCalcAttr  calculate_attributes;
+  GapStoryCalcAttr  *calculated;
 
 
-  if(gap_debug) printf("p_transform_and_add_layer: called at layer_id: %d, tmp_image_id:%d\n", (int)layer_id ,(int)tmp_image_id );
+  if(gap_debug)
+  {
+    printf("p_transform_and_add_layer: called at layer_id: %d, tmp_image_id:%d\n"
+      , (int)layer_id 
+      ,(int)tmp_image_id );
+  }
 
   /* execute input track specific  filtermacro (optional if supplied) */
   p_exec_filtermacro(tmp_image_id
@@ -4125,100 +4088,51 @@ p_transform_and_add_layer( gint32 comp_image_id
                     , filtermacro_file
                     );
 
-
-
-  vid_width  = gimp_image_width(comp_image_id);
+  /* expand layer to tmp image size (before applying any scaling) */
+  gimp_layer_resize_to_image_size(layer_id);
+  
+  vid_width = gimp_image_width(comp_image_id);
   vid_height = gimp_image_height(comp_image_id);
+ 
+  /* calculate scaling, offsets and opacity  according to current attributes */ 
+  gap_story_file_calculate_render_attributes(&calculate_attributes
+    , vid_width
+    , vid_height
+    , vid_width
+    , vid_height
+    , gimp_image_width(tmp_image_id)
+    , gimp_image_height(tmp_image_id)
+    , keep_proportions
+    , fit_width
+    , fit_height
+    , opacity
+    , scale_x
+    , scale_y
+    , move_x
+    , move_y
+    );
 
-  l_tmp_width = gimp_image_width(tmp_image_id);
-  l_tmp_height = gimp_image_height(tmp_image_id);
-
-  if(keep_proportions)
-  {
-    l_vid_width  = vid_width;
-    l_vid_height = vid_height;
-
-    l_vid_prop = (gdouble)l_vid_width / (gdouble)l_vid_height;
-    l_img_prop = (gdouble)l_tmp_width / (gdouble)l_tmp_height;
-
-    if((fit_width) && (fit_height))
-    {
-      if (l_img_prop < l_vid_prop)
-      {
-        /* keep height, adjust width */
-        l_tmp_width = l_tmp_height * l_vid_prop;
-      }
-      if (l_img_prop > l_vid_prop)
-      {
-        /* keep width, adjust height */
-        l_tmp_height = l_tmp_width / l_vid_prop;
-      }
-
-      /* resize tmp_image to vid proportions */
-      if ((l_tmp_width  != gimp_image_width(tmp_image_id))
-      ||  (l_tmp_height != gimp_image_height(tmp_image_id)))
-      {
-        l_ofsx = (l_tmp_width - gimp_image_width(tmp_image_id)) / 2;
-        l_ofsy = (l_tmp_height - gimp_image_height(tmp_image_id)) / 2;
-
-        gimp_image_resize(tmp_image_id, l_tmp_width, l_tmp_height, l_ofsx, l_ofsy);
-
-        p_layer_resize_to_imagesize(layer_id);
-      }
-
-    }
-    else
-    {
-      if(fit_height)
-      {
-         l_tmp_width = vid_height * l_img_prop;
-      }
-      if(fit_width)
-      {
-         l_tmp_height = vid_width / l_img_prop;
-      }
-    }
-
-  }
+  calculated = &calculate_attributes;
 
 
-  if(fit_width)
-  {
-    l_width  = MAX(1, (vid_width  * scale_x));
-  }
-  else
-  {
-    l_width  = MAX(1, (l_tmp_width  * scale_x));
-  }
-
-  if(fit_height)
-  {
-    l_height = MAX(1, (vid_height * scale_y));
-  }
-  else
-  {
-    l_height = MAX(1, (l_tmp_height * scale_y));
-  }
-
-
-  /* check size and scale source layer_id to desired size
-   * (is the Videosize * scale attributes)
+  /* check size and scale source layer_id to calculated size
    */
-  if ((gimp_image_width(tmp_image_id) != l_width)
-  ||  (gimp_image_height(tmp_image_id) != l_height) )
+  if ((gimp_image_width(tmp_image_id) != calculated->width)
+  ||  (gimp_image_height(tmp_image_id) != calculated->height) )
   {
     if(gap_debug) printf("DEBUG: p_transform_and_add_layer scaling layer from %dx%d to %dx%d\n"
                             , (int)gimp_image_width(tmp_image_id)
                             , (int)gimp_image_height(tmp_image_id)
-                            , (int)l_width
-                            , (int)l_height
+                            , (int)calculated->width
+                            , (int)calculated->height
                             );
 
-    gimp_layer_scale(layer_id, l_width, l_height
+    gimp_layer_scale(layer_id, calculated->width, calculated->height
                     , FALSE  /* FALSE: centered at image TRUE: centered local on layer */
                     );
 
   }
+
 
   /* add a new layer to composite image */
   l_new_layer_id = gimp_layer_new(comp_image_id
@@ -4229,50 +4143,27 @@ p_transform_and_add_layer( gint32 comp_image_id
                               , 0.0         /* Opacity full transparent */
                               ,GIMP_NORMAL_MODE);
   gimp_image_add_layer(comp_image_id, l_new_layer_id, 0);
-  p_clear_layer(l_new_layer_id, 0, 0, 0, 0);
+  gap_layer_clear_to_color(l_new_layer_id, 0.0, 0.0, 0.0, 0.0);
 
   /* copy from tmp_image and paste to composite_image
-   * (the prescaled layer is cliped to video
+   * force copying of the complete layer by clearing the selection 
    */
-  gimp_selection_none(tmp_image_id);  /* if there is no selection, copy the complete layer */
+  gimp_selection_none(tmp_image_id);
   gimp_edit_copy(layer_id);
   l_fsel_layer_id = gimp_edit_paste(l_new_layer_id, FALSE);  /* FALSE paste clear selection */
 
-
-  l_ofsx  = ((vid_width/2)  + (l_width/2))  * move_x;
-  l_ofsy  = ((vid_height/2) + (l_height/2)) * move_y;
-
-  gimp_drawable_offsets(l_fsel_layer_id, &l_fsel_ofsx, &l_fsel_ofsy);
-
-
-  if(gap_debug)
-  {
-    printf (" move_x:%.3f move_y:%.3f\n", (float)move_x , (float) move_y);
-    printf (" l_width:%d l_height:%d\n", (int)l_width , (int) l_height);
-    printf ("\n FSEL_OFSX:%d FSEL:OFSY:%d\n", (int)l_fsel_ofsx , (int) l_fsel_ofsy);
-    printf (" OFSX:%d OFSY:%d\n", (int)l_ofsx , (int) l_ofsy);
-
-    if((!keep_proportions) && (1==0))   /* debug code to check move operations */
-    {
-      p_debug_dup_image(tmp_image_id);
-    }
-  }
-
-  if ((l_ofsx != 0) || (l_ofsy != 0))
-  {
-    gimp_layer_set_offsets(l_fsel_layer_id
-                          , l_ofsx + l_fsel_ofsx
-                          , l_ofsy + l_fsel_ofsy);
-  }
-
+  gimp_layer_set_offsets(l_fsel_layer_id
+                        , calculated->x_offs
+                        , calculated->y_offs
+                        );
 
   gimp_floating_sel_anchor(l_fsel_layer_id);
 
-  l_opacity = CLAMP((opacity * 100.0), 0.0, 100.0);
-  gimp_layer_set_opacity(l_new_layer_id, l_opacity);
+  gimp_layer_set_opacity(l_new_layer_id, calculated->opacity);
 
   return(l_new_layer_id);
 }   /* end p_transform_and_add_layer */
+
 
 
 /* ----------------------------------------------------
@@ -4286,7 +4177,7 @@ p_transform_and_add_layer( gint32 comp_image_id
  */
 static gint32
 p_create_unicolor_image(gint32 *layer_id, gint32 width , gint32 height
-                       , guchar r, guchar g, guchar b, guchar a)
+                       , gdouble r_f, gdouble g_f, gdouble b_f, gdouble a_f)
 {
   gint32 l_empty_layer_id;
   gint32 l_image_id;
@@ -4303,52 +4194,12 @@ p_create_unicolor_image(gint32 *layer_id, gint32 width , gint32 height
     gimp_image_add_layer(l_image_id, l_empty_layer_id, 0);
 
     /* clear layer to unique color */
-    p_clear_layer(l_empty_layer_id, r, g, b, a);
+    gap_layer_clear_to_color(l_empty_layer_id, r_f, g_f, b_f, a_f);
 
     *layer_id = l_empty_layer_id;
   }
   return(l_image_id);
 }       /* end p_create_unicolor_image */
-
-
-/* ----------------------------------------------------
- * p_layer_resize_to_imagesize
- * ----------------------------------------------------
- * enlarge layer with transparent border to fit exactly
- * in the image boundaries.
- * and clip to image size if layer was bigger.
- */
-static void
-p_layer_resize_to_imagesize(gint32 layer_id)
-{
-  gint32        l_image_id;
-  gint32        l_width;
-  gint32        l_height;
-  gint          l_ofsx;
-  gint          l_ofsy;
-
-  l_image_id = gimp_drawable_get_image(layer_id);
-
-  /* check if resulting layer is exactly the image size
-   * and resize to fit imagesize if it is not
-   */
-  gimp_drawable_offsets(layer_id, &l_ofsx, &l_ofsy);
-  l_width = gimp_image_width(l_image_id);
-  l_height = gimp_image_height(l_image_id);
-
-  if ((l_width  != gimp_drawable_width(layer_id))
-  ||  (l_height != gimp_drawable_height(layer_id))
-  ||  (l_ofsx   != 0)
-  ||  (l_ofsy   != 0))
-  {
-    gimp_layer_resize(layer_id
-                     ,l_width
-                     ,l_height
-                     ,l_ofsx
-                     ,l_ofsy);
-  }
-}  /* end p_layer_resize_to_imagesize */
-
 
 /* ----------------------------------------------------
  * p_prepare_RGB_image
@@ -4401,7 +4252,7 @@ p_prepare_RGB_image(gint32 image_id)
 
   if(l_layer_id >= 0)
   {
-    p_layer_resize_to_imagesize(l_layer_id);
+    gimp_layer_resize_to_image_size(l_layer_id);
   }
 
   return(l_layer_id);
@@ -4508,10 +4359,10 @@ gap_gve_story_fetch_composite_image(GapGveStoryVidHandle *vidhand
   gboolean      l_fit_height;
   GapGveStoryFrameType   l_frn_type;
   char            *l_trak_filtermacro_file;
-   guchar l_red;
-   guchar l_green;
-   guchar l_blue;
-   guchar l_alpha;
+  gdouble l_red_f;
+  gdouble l_green_f;
+  gdouble l_blue_f;
+  gdouble l_alpha_f;
 
 
   l_comp_image_id   = -1;
@@ -4538,10 +4389,10 @@ gap_gve_story_fetch_composite_image(GapGveStoryVidHandle *vidhand
                  , &l_keep_proportions
                  , &l_fit_width
                  , &l_fit_height
-                 , &l_red
-                 , &l_green
-                 , &l_blue
-                 , &l_alpha
+                 , &l_red_f
+                 , &l_green_f
+                 , &l_blue_f
+                 , &l_alpha_f
                  , &l_opacity       /* output opacity 0.0 upto 1.0 */
                  , &l_scale_x       /* output 0.0 upto 10.0 where 1.0 is 1:1 */
                  , &l_scale_y       /* output 0.0 upto 10.0 where 1.0 is 1:1 */
@@ -4557,10 +4408,10 @@ gap_gve_story_fetch_composite_image(GapGveStoryVidHandle *vidhand
            l_tmp_image_id = p_create_unicolor_image(&l_layer_id
                                                 , vid_width
                                                 , vid_height
-                                                , l_red
-                                                , l_green
-                                                , l_blue
-                                                , l_alpha
+                                                , l_red_f
+                                                , l_green_f
+                                                , l_blue_f
+                                                , l_alpha_f
                                                 );
 
        }
@@ -4586,7 +4437,7 @@ gap_gve_story_fetch_composite_image(GapGveStoryVidHandle *vidhand
                l_tmp_image_id = p_create_unicolor_image(&l_layer_id
                                                        , gimp_image_width(l_orig_image_id)
                                                        , gimp_image_height(l_orig_image_id)
-                                                       , 0,0,0,0);
+                                                       , 0.0, 0.0, 0.0, 0.0);
                gimp_layer_add_alpha(l_layer_id);
                l_layers_list = gimp_image_get_layers(l_orig_image_id, &l_nlayers);
                if(l_layers_list != NULL)
@@ -4596,7 +4447,7 @@ gap_gve_story_fetch_composite_image(GapGveStoryVidHandle *vidhand
                      gint32 l_fsel_layer_id;
 
                      gimp_drawable_set_visible(l_layers_list[l_localframe_index], TRUE);
-                     p_layer_resize_to_imagesize(l_layers_list[l_localframe_index]);
+                     gimp_layer_resize_to_image_size(l_layers_list[l_localframe_index]);
                      gimp_edit_copy(l_layers_list[l_localframe_index]);
                      l_fsel_layer_id = gimp_edit_paste(l_layer_id, FALSE);  /* FALSE paste clear selection */
                      gimp_floating_sel_anchor(l_fsel_layer_id);
@@ -4786,7 +4637,14 @@ gap_gve_story_fetch_composite_image(GapGveStoryVidHandle *vidhand
          {
            /* create empty backgound */
            gint32 l_empty_layer_id;
-           l_comp_image_id = p_create_unicolor_image(&l_empty_layer_id, vid_width, vid_height, 0,0,0,255);
+           l_comp_image_id = p_create_unicolor_image(&l_empty_layer_id
+                                , vid_width
+                                , vid_height
+                                , 0.0
+                                , 0.0
+                                , 0.0
+                                , 1.0
+                                );
          }
        }
 
@@ -4814,11 +4672,21 @@ gap_gve_story_fetch_composite_image(GapGveStoryVidHandle *vidhand
     /* none of the tracks had a frame image on this master_frame_nr position
      * create a blank image (VID_SILENNCE)
      */
-    l_comp_image_id = p_create_unicolor_image(&l_layer_id, vid_width, vid_height, 0,0,0,255);
+    l_comp_image_id = p_create_unicolor_image(&l_layer_id
+                         , vid_width
+                         , vid_height
+                         , 0.0
+                         , 0.0
+                         , 0.0
+                         , 1.0
+                         );
   }
 
-  /* p_debug_dup_image(l_comp_image_id); */ /* debug: display a copy of the image */
-
+  /* debug: disabled code to display a copy of the image */
+  if(1==0)
+  {
+    p_debug_dup_image(l_comp_image_id);
+  }
 
   /* check the layerstack
    */
@@ -4944,10 +4812,10 @@ p_check_chunk_fetch_possible(GapGveStoryVidHandle *vidhand
   gboolean      l_fit_height;
   GapGveStoryFrameType   l_frn_type;
   char            *l_trak_filtermacro_file;
-   guchar l_red;
-   guchar l_green;
-   guchar l_blue;
-   guchar l_alpha;
+  gdouble l_red_f;
+  gdouble l_green_f;
+  gdouble l_blue_f;
+  gdouble l_alpha_f;
 
 
   *video_frame_nr   = -1;
@@ -4972,10 +4840,10 @@ p_check_chunk_fetch_possible(GapGveStoryVidHandle *vidhand
                  , &l_keep_proportions
                  , &l_fit_width
                  , &l_fit_height
-                 , &l_red
-                 , &l_green
-                 , &l_blue
-                 , &l_alpha
+                 , &l_red_f
+                 , &l_green_f
+                 , &l_blue_f
+                 , &l_alpha_f
                  , &l_opacity       /* output opacity 0.0 upto 1.0 */
                  , &l_scale_x       /* output 0.0 upto 10.0 where 1.0 is 1:1 */
                  , &l_scale_y       /* output 0.0 upto 10.0 where 1.0 is 1:1 */

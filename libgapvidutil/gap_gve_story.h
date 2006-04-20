@@ -171,10 +171,10 @@ typedef struct GapGveStoryFrameRangeElem
    gint32  frame_cnt;
    gint32  delta;               /* +1 or -1 */
    gdouble step_density;        /* 1==normal stepsize 1:1   0.5 == each frame twice, 2.0 only every 2nd frame */
-   guchar red;
-   guchar green;
-   guchar blue;
-   guchar alpha;
+   gdouble red_f;
+   gdouble green_f;
+   gdouble blue_f;
+   gdouble alpha_f;
 
    gdouble  alpha_proportional; /* 0.0 upto 1.0 */
    gboolean keep_proportions;

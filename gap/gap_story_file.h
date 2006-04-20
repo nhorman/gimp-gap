@@ -38,6 +38,15 @@
 #define GAP_STB_MAX_VID_TRACKS 20
 #define GAP_STB_MAX_AUD_TRACKS 99
 
+/* transition attribute types 
+ * (values are used as index for look-up tables)
+ */
+#define GAP_STB_ATT_TYPES_ARRAY_MAX 5
+#define GAP_STB_ATT_TYPE_OPACITY  0
+#define GAP_STB_ATT_TYPE_MOVE_X   1
+#define GAP_STB_ATT_TYPE_MOVE_Y   2
+#define GAP_STB_ATT_TYPE_ZOOM_X   3
+#define GAP_STB_ATT_TYPE_ZOOM_Y   4
 
 /* GapStoryRecordType enum values are superset of GapLibAinfoType
  * from the sourcefile gap_lib.h
@@ -57,12 +66,7 @@
     ,GAP_STBREC_AUD_SOUND
     ,GAP_STBREC_AUD_MOVIE
 
-    ,GAP_STBREC_ATT_OPACITY  
-    ,GAP_STBREC_ATT_ZOOM_X   
-    ,GAP_STBREC_ATT_ZOOM_Y   
-    ,GAP_STBREC_ATT_MOVE_X   
-    ,GAP_STBREC_ATT_MOVE_Y   
-    ,GAP_STBREC_ATT_FIT_SIZE 
+    ,GAP_STBREC_ATT_TRANSITION 
   } GapStoryRecordType;
 
   typedef enum
@@ -114,21 +118,23 @@
 			    */
     gint32 file_line_nr;   /* line Number in the storyboard file */
 
-    /* new members for level2 VID Record types */
+    /* members for level2 VID Record types */
     gdouble  vid_wait_untiltime_sec;
     gdouble  color_red;
     gdouble  color_green;
     gdouble  color_blue;
     gdouble  color_alpha;
            
-    /* new members for attribute Record types */
+    /* members for attribute Record types */
     gboolean att_keep_proportions;
     gboolean att_fit_width;
     gboolean att_fit_height;
 
-    gdouble  att_value_from;
-    gdouble  att_value_to;
-    gint32   att_value_dur;        /* number of frames to change from -> to value */
+    /* members for transition attribute Record type */
+    gboolean att_arr_enable[GAP_STB_ATT_TYPES_ARRAY_MAX];
+    gdouble  att_arr_value_from[GAP_STB_ATT_TYPES_ARRAY_MAX];
+    gdouble  att_arr_value_to[GAP_STB_ATT_TYPES_ARRAY_MAX];
+    gint32   att_arr_value_dur[GAP_STB_ATT_TYPES_ARRAY_MAX];        /* number of frames to change from -> to value */
 
     /* new members for Audio Record types */
     char     *aud_filename;
@@ -186,6 +192,15 @@
      gboolean      locate_ok;
   }  GapStoryLocateRet;
 
+  typedef struct GapStoryCalcAttr
+  {
+    gint32  width;
+    gint32  height;
+    gint32  x_offs;
+    gint32  y_offs;
+    gdouble opacity;
+  } GapStoryCalcAttr;
+
 void                gap_story_debug_print_list(GapStoryBoard *stb);
 void                gap_story_debug_print_elem(GapStoryElem *stb_elem);
 
@@ -212,8 +227,8 @@ void                gap_story_elem_free(GapStoryElem **stb_elem);
 void                gap_story_free_storyboard(GapStoryBoard **stb_ptr);
 void                gap_story_list_append_elem(GapStoryBoard *stb, GapStoryElem *stb_elem);
 
-gint32              gap_story_get_framenr_by_story_id(GapStoryBoard *stb, gint32 story_id);
-char *              gap_story_fetch_filename(GapStoryBoard *stb, gint32 framenr);
+gint32              gap_story_get_framenr_by_story_id(GapStoryBoard *stb, gint32 story_id, gint32 in_track);
+char *              gap_story_fetch_filename(GapStoryBoard *stb, gint32 framenr, gint32 in_track);
 char *              gap_story_get_filename_from_elem(GapStoryElem *stb_elem);
 char *              gap_story_get_filename_from_elem_nr(GapStoryElem *stb_elem, gint32 in_framenr);
 GapStoryElem *      gap_story_fetch_nth_active_elem(GapStoryBoard *stb
@@ -243,6 +258,7 @@ const char *        gap_story_get_preferred_decoder(GapStoryBoard *stb, GapStory
 
 void                gap_story_set_aud_movie_min_max(GapStoryBoard *stb);
 gboolean            gap_story_elem_is_audio(GapStoryElem *stb_elem);
+gboolean            gap_story_elem_is_video(GapStoryElem *stb_elem);
 void                gap_story_del_audio_track(GapStoryBoard *stb, gint aud_track);
 gboolean            gap_story_gen_otone_audio(GapStoryBoard *stb
                          ,gint vid_track
@@ -250,6 +266,22 @@ gboolean            gap_story_gen_otone_audio(GapStoryBoard *stb
                          ,gint aud_seltrack
                          ,gboolean replace_existing_aud_track
                          );
-
+gdouble             gap_story_get_default_attribute(gint att_typ_idx);
+void                gap_story_file_calculate_render_attributes(GapStoryCalcAttr *result_attr
+                         , gint32 view_vid_width
+                         , gint32 view_vid_height
+                         , gint32 vid_width
+                         , gint32 vid_height
+                         , gint32 frame_width
+                         , gint32 frame_height
+                         , gboolean keep_proportions
+                         , gboolean fit_width
+                         , gboolean fit_height
+                         , gdouble opacity
+                         , gdouble scale_x
+                         , gdouble scale_y
+                         , gdouble move_x
+                         , gdouble move_y
+                         );
 
 #endif

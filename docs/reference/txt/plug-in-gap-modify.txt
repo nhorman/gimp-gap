@@ -61,16 +61,17 @@ Modify Frames
 	 "Merge Layer(s) clipped to image",
 	 "Merge Layer(s) clipped to bg-layer",
        Selection
-	 "Replace Selection",
-	 "Add Selection",
-	 "Subtract Selection",
-	 "Intersect Selection",
-	 "Selection None",
-	 "Selection All",
-	 "Selection Invert",
-	 "Save Selection to Channel",
-	 "Load Selection from Channel",
-	 "Delete Channel (by Name)"
+	 "Replace selection (source is the active frame)",
+	 "Add selection (source is the active frame)",
+	 "Subtract selection (source is the active frame)",
+	 "Intersect selection (source is the active frame)",
+	 "Selection none",
+	 "Selection all",
+	 "Selection invert",
+         "Selection from alpha channel (individual per frame)",
+	 "Save selection to channel (individual per frame)",
+	 "Load selection from channel (individual per frame)",
+	 "Delete channel (by name)"
        Layer Mask
 	 "Add white layermask (opaque)",
 	 "Add black layermask (transparent)",

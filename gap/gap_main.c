@@ -506,6 +506,16 @@ GimpPlugInInfo PLUG_IN_INFO =
   };
   static int nargs_shift = G_N_ELEMENTS (args_shift);
 
+  static GimpParamDef args_reverse[] =
+  {
+    {GIMP_PDB_INT32, "run_mode", "Interactive, non-interactive"},
+    {GIMP_PDB_IMAGE, "image", "Input image (current one of the video frames)"},
+    {GIMP_PDB_DRAWABLE, "drawable", "Input drawable (unused)"},
+    {GIMP_PDB_INT32, "range_from", "frame nr to start"},
+    {GIMP_PDB_INT32, "range_to", "frame nr to stop"},
+  };
+  static int nargs_reverse = G_N_ELEMENTS (args_reverse);
+
   static GimpParamDef args_renumber[] =
   {
     {GIMP_PDB_INT32, "run_mode", "Interactive, non-interactive"},
@@ -962,16 +972,28 @@ query ()
 
 
   gimp_install_procedure("plug_in_gap_shift",
-			 "This plugin exchanges frame numbers in the given range. (discfile frame_0001.xcf is renamed to frame_0002.xcf, 2->3, 3->4 ... n->1)",
-			 "",
-			 "Wolfgang Hofer (hof@gimp.org)",
-			 "Wolfgang Hofer",
-			 gap_main_version,
-			 N_("<Image>/Video/Frame Sequence Shift..."),
-			 "RGB*, INDEXED*, GRAY*",
-			 GIMP_PLUGIN,
-			 nargs_shift, nreturn_std,
-			 args_shift, return_std);
+       "This plugin exchanges frame numbers in the given range. (discfile frame_0001.xcf is renamed to frame_0002.xcf, 2->3, 3->4 ... n->1)",
+       "",
+       "Wolfgang Hofer (hof@gimp.org)",
+       "Wolfgang Hofer",
+       gap_main_version,
+       N_("<Image>/Video/Frame Sequence Shift..."),
+       "RGB*, INDEXED*, GRAY*",
+       GIMP_PLUGIN,
+       nargs_shift, nreturn_std,
+       args_shift, return_std);
+
+  gimp_install_procedure("plug_in_gap_reverse",
+       "This plugin reverse the order of frame numbers in the given range. ( 3-4-5-6-7 ==> 7-6-5-4-3)",
+       "",
+       "Saul Goode (saulgoode@brickfilms.com)",
+       "Saul Goode",
+       gap_main_version,
+       N_("<Image>/Video/Frame Sequence Reverse..."),
+       "RGB*, INDEXED*, GRAY*",
+       GIMP_PLUGIN,
+       nargs_reverse, nreturn_std,
+       args_reverse, return_std);
 
   gimp_install_procedure("plug_in_gap_renumber",
 			 "This plugin renumbers all frames (discfiles) starting at start_frame_nr using n digits for the framenumber part)",
@@ -1877,6 +1899,25 @@ run (const gchar *name
         range_to   = param[5].data.d_int32;  /* frame nr to stop  */
 
         l_rc_image = gap_base_shift(run_mode, image_id, nr, range_from, range_to );
+
+      }
+  }
+  else if (strcmp (name, "plug_in_gap_reverse") == 0)
+  {
+      if (run_mode == GIMP_RUN_NONINTERACTIVE)
+      {
+        if (n_params != nargs_shift)
+        {
+          status = GIMP_PDB_CALLING_ERROR;
+        }
+      }
+
+      if (status == GIMP_PDB_SUCCESS)
+      {
+        range_from = param[3].data.d_int32;  /* frame nr to start */
+        range_to   = param[4].data.d_int32;  /* frame nr to stop  */
+
+        l_rc_image = gap_base_reverse(run_mode, image_id, range_from, range_to );
 
       }
   }

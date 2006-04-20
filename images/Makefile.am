@@ -25,6 +25,7 @@ STOCK_IMAGES = \
 	gap-story-icon-animimage.png	\
 	gap-story-icon-image.png	\
 	gap-story-icon-color.png	\
+	gap-story-icon-transition-attr.png	\
 	gap-story-icon-default.png
 
 EXTRA_DIST = $(STOCK_IMAGES)
