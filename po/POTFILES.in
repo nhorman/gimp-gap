@@ -36,6 +36,7 @@ gap/gap_range_ops.c
 gap/gap_resi_dialog.c
 gap/gap_split.c
 gap/gap_stock.c
+gap/gap_story_att_trans_dlg.c
 gap/gap_story_dialog.c
 gap/gap_story_file.c
 gap/gap_story_main.c
