@@ -58,9 +58,6 @@
 #include "gap_libgimpgap.h"
 
 
-static char *gap_cme_version_fmt =  "%d.%d.%da; 2004/05/06";
-
-
 /* ------------------------
  * global gap DEBUG switch
  * ------------------------
@@ -103,14 +100,6 @@ MAIN ()
 static void
 query ()
 {
-  char  *gap_cme_version;
-
-  /* get version numbers from config.h (that is derived from ../configure.in) */
-  gap_cme_version = g_strdup_printf(gap_cme_version_fmt
-                                    ,GAP_MAJOR_VERSION
-                                    ,GAP_MINOR_VERSION
-                                    ,GAP_MICRO_VERSION
-                                    );
   gimp_plugin_domain_register (GETTEXT_PACKAGE, LOCALEDIR);
 
   static GimpParamDef args_qt_enc[] =
@@ -165,7 +154,7 @@ query ()
                          " want to specify non-interacive parameters"),
                          "Wolfgang Hofer (hof@gimp.org)",
                          "Wolfgang Hofer",
-                         gap_cme_version,
+                         GAP_VERSION_WITH_DATE,
                          N_("<Image>/Video/Encode/Master Videoencoder"),
                          "RGB*, INDEXED*, GRAY*",
                          GIMP_PLUGIN,
@@ -199,6 +188,7 @@ p_call_encoder_procedure(GapCmeGlobalParams *gpp)
   gint  l_use_encoderspecific_params;
   gint  l_rc;
   gchar            *l_16bit_wav_file;
+  gint32           dummy_layer_id;
 
   l_rc = -1;
 
@@ -267,11 +257,12 @@ p_call_encoder_procedure(GapCmeGlobalParams *gpp)
 
 
   /* generic call of GAP video encoder plugin */
+  dummy_layer_id = gap_image_get_any_layer(gpp->val.image_ID);
   l_params = gimp_run_procedure (gpp->val.ecp_sel.vid_enc_plugin,
                      &l_retvals,
                      GIMP_PDB_INT32,  gpp->val.run_mode,
                      GIMP_PDB_IMAGE,  gpp->val.image_ID,
-                     GIMP_PDB_DRAWABLE, -1,
+                     GIMP_PDB_DRAWABLE, dummy_layer_id,
                      GIMP_PDB_STRING, gpp->val.videoname,
                      GIMP_PDB_INT32,  gpp->val.range_from,
                      GIMP_PDB_INT32,  gpp->val.range_to,

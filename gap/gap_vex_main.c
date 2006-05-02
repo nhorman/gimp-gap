@@ -14,8 +14,6 @@
  * 2003/04/14 v1.2.1a:  created
  */
 
-static char *gap_main_version_fmt =  "%d.%d.%da; 2004/04/10";
-
 /*
  * Copyright
  *
@@ -90,16 +88,6 @@ MAIN ()
 static void
 query ()
 {
-  char  *gap_main_version;
-
-  /* get version numbers from config.h (that is derived from ../configure.in) */
-  gap_main_version = g_strdup_printf(gap_main_version_fmt
-                                    ,GAP_MAJOR_VERSION
-				    ,GAP_MINOR_VERSION
-				    ,GAP_MICRO_VERSION
-				    );
-
-
   static GimpParamDef load_args[] =
   {
     { GIMP_PDB_INT32, "run_mode", "Interactive, non-interactive" },
@@ -176,7 +164,7 @@ query ()
                           " (see gap_vid_api docs for supported Videoformats and CODECS)",
                           "Wolfgang Hofer (hof@gimp.org)",
                           "Wolfgang Hofer",
-                          gap_main_version,
+                          GAP_VERSION_WITH_DATE,
                           N_("<Image>/Video/Split Video into Frames/Extract Videorange"),
                           NULL,
                           GIMP_PLUGIN,
@@ -196,7 +184,7 @@ query ()
                           " (see gap_vid_api docs for supported Videoformats and CODECS)",
                           "Wolfgang Hofer (hof@gimp.org)",
                           "Wolfgang Hofer",
-                          gap_main_version,
+                          GAP_VERSION_WITH_DATE,
                           N_("<Toolbox>/Xtns/Split Video into Frames/Extract Videorange"),
                           NULL,
                           GIMP_PLUGIN,

@@ -3640,6 +3640,7 @@ on_framenr_button_clicked             (GtkButton       *button,
    GimpParam       *return_vals;
    int              nreturn_vals;
    gint             button_type;
+   gint32           dummy_layer_id;
  
   /*if(gap_debug) printf("on_framenr_button_clicked: START\n"); */
 
@@ -3706,11 +3707,12 @@ on_framenr_button_clicked             (GtkButton       *button,
   }
  
 
+  dummy_layer_id = gap_image_get_any_layer(gpp->image_id);
   return_vals = gimp_run_procedure ("plug_in_gap_goto",
                                     &nreturn_vals,
 	                            GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
 				    GIMP_PDB_IMAGE,    gpp->image_id,
-				    GIMP_PDB_DRAWABLE, -1,  /* dummy */
+				    GIMP_PDB_DRAWABLE, dummy_layer_id,
 	                            GIMP_PDB_INT32,    gpp->play_current_framenr,
                                     GIMP_PDB_END);
 

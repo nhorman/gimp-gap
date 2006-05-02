@@ -38,8 +38,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-static char *gap_main_version_fmt =  "%d.%d.%d; 2004/05/06";
-
 /* revision history:
  * gimp    2.1.0a;  2004/04/05  hof: - Move Path added option to keep the original paintmode of the src_layer
  * gimp    1.3.24a; 2004/01/17  hof: - get main version from config.h, fixed PDB docs for plug_in_gap_modify
@@ -123,6 +121,7 @@ static char *gap_main_version_fmt =  "%d.%d.%d; 2004/05/06";
 #include "gap_arr_dialog.h"
 #include "gap_pdb_calls.h"
 #include "gap_vin.h"
+#include "gap_image.h"
 
 #include "gap-intl.h"
 
@@ -591,6 +590,7 @@ GimpPlugInInfo PLUG_IN_INFO =
 				    ", 55:set layer mode to color_mode"
 				    ", 56:set layer mode to value_mode"
 				    ", 57:apply filter on layermask"
+				    ", 58:set selection from alphachannel"
 				    },
     {GIMP_PDB_INT32, "select_mode", "Mode how to identify a layer: 0-3 by layername 0=equal, 1=prefix, 2=suffix, 3=contains, 4=layerstack_numberslist, 5=inv_layerstack, 6=all_visible"},
     {GIMP_PDB_INT32, "select_case", "0: ignore case 1: select_string is case sensitive"},
@@ -658,14 +658,6 @@ static void
 query ()
 {
   gchar *l_help_str;
-  char  *gap_main_version;
-
-  /* get version numbers from config.h (that is derived from ../configure.in) */
-  gap_main_version = g_strdup_printf(gap_main_version_fmt
-                                    ,GAP_MAJOR_VERSION
-				    ,GAP_MINOR_VERSION
-				    ,GAP_MICRO_VERSION
-				    );
 
   gimp_plugin_domain_register (GETTEXT_PACKAGE, LOCALEDIR);
 
@@ -674,7 +666,7 @@ query ()
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
-			 gap_main_version,
+			 GAP_VERSION_WITH_DATE,
 			 N_("<Image>/Video/Go To/Next Frame"),
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
@@ -686,7 +678,7 @@ query ()
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
-			 gap_main_version,
+			 GAP_VERSION_WITH_DATE,
 			 N_("<Image>/Video/Go To/Previous Frame"),
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
@@ -698,7 +690,7 @@ query ()
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
-			 gap_main_version,
+			 GAP_VERSION_WITH_DATE,
 			 N_("<Image>/Video/Go To/First Frame"),
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
@@ -710,7 +702,7 @@ query ()
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
-			 gap_main_version,
+			 GAP_VERSION_WITH_DATE,
 			 N_("<Image>/Video/Go To/Last Frame"),
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
@@ -722,7 +714,7 @@ query ()
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
-			 gap_main_version,
+			 GAP_VERSION_WITH_DATE,
 			 N_("<Image>/Video/Go To/Any Frame..."),
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
@@ -734,7 +726,7 @@ query ()
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
-			 gap_main_version,
+			 GAP_VERSION_WITH_DATE,
 			 N_("<Image>/Video/Delete Frames..."),
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
@@ -746,7 +738,7 @@ query ()
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
-			 gap_main_version,
+			 GAP_VERSION_WITH_DATE,
 			 N_("<Image>/Video/Duplicate Frames..."),
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
@@ -763,7 +755,7 @@ query ()
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
-			 gap_main_version,
+			 GAP_VERSION_WITH_DATE,
 			 N_("<Image>/Video/Frames Density..."),
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
@@ -775,7 +767,7 @@ query ()
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
-			 gap_main_version,
+			 GAP_VERSION_WITH_DATE,
 			 N_("<Image>/Video/Exchange Frame..."),
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
@@ -787,7 +779,7 @@ query ()
 			 "For NONINTERACTIVE PDB interfaces see also (plug_in_gap_move_path_ext, plug_in_gap_move_path_ext2)",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
-			 gap_main_version,
+			 GAP_VERSION_WITH_DATE,
 			 N_("<Image>/Video/Move Path..."),
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
@@ -833,7 +825,7 @@ query ()
 			 l_help_str,
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
-			 gap_main_version,
+			 GAP_VERSION_WITH_DATE,
 			 NULL,                      /* do not appear in menus */
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
@@ -853,7 +845,7 @@ query ()
 			 ,
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
-			 gap_main_version,
+			 GAP_VERSION_WITH_DATE,
 			 NULL,                      /* do not appear in menus */
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
@@ -867,7 +859,7 @@ query ()
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
-			 gap_main_version,
+			 GAP_VERSION_WITH_DATE,
 			 N_("<Image>/Video/Frames to Image..."),
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
@@ -879,7 +871,7 @@ query ()
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
-			 gap_main_version,
+			 GAP_VERSION_WITH_DATE,
 			 N_("<Image>/Video/Frames Flatten..."),
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
@@ -891,7 +883,7 @@ query ()
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
-			 gap_main_version,
+			 GAP_VERSION_WITH_DATE,
 			 N_("<Image>/Video/Frames Layer Delete..."),
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
@@ -903,7 +895,7 @@ query ()
 			 "WARNING this procedure is obsolete, please use plug_in_gap_range_convert2",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
-			 gap_main_version,
+			 GAP_VERSION_WITH_DATE,
 			 NULL,                      /* do not appear in menus */
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
@@ -915,7 +907,7 @@ query ()
 			 "only one of the converted frames is returned (the one with lowest handled frame number)",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
-			 gap_main_version,
+			 GAP_VERSION_WITH_DATE,
 			 N_("<Image>/Video/Frames Convert..."),
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
@@ -927,7 +919,7 @@ query ()
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
-			 gap_main_version,
+			 GAP_VERSION_WITH_DATE,
 			 N_("<Image>/Video/Frames Resize..."),
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
@@ -939,7 +931,7 @@ query ()
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
-			 gap_main_version,
+			 GAP_VERSION_WITH_DATE,
 			 N_("<Image>/Video/Frames Crop..."),
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
@@ -951,7 +943,7 @@ query ()
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
-			 gap_main_version,
+			 GAP_VERSION_WITH_DATE,
 			 N_("<Image>/Video/Frames Scale..."),
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
@@ -963,7 +955,7 @@ query ()
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
-			 gap_main_version,
+			 GAP_VERSION_WITH_DATE,
 			 N_("<Image>/Video/Split Image to Frames..."),
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
@@ -976,7 +968,7 @@ query ()
        "",
        "Wolfgang Hofer (hof@gimp.org)",
        "Wolfgang Hofer",
-       gap_main_version,
+       GAP_VERSION_WITH_DATE,
        N_("<Image>/Video/Frame Sequence Shift..."),
        "RGB*, INDEXED*, GRAY*",
        GIMP_PLUGIN,
@@ -988,7 +980,7 @@ query ()
        "",
        "Saul Goode (saulgoode@brickfilms.com)",
        "Saul Goode",
-       gap_main_version,
+       GAP_VERSION_WITH_DATE,
        N_("<Image>/Video/Frame Sequence Reverse..."),
        "RGB*, INDEXED*, GRAY*",
        GIMP_PLUGIN,
@@ -1000,7 +992,7 @@ query ()
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
-			 gap_main_version,
+			 GAP_VERSION_WITH_DATE,
 			 N_("<Image>/Video/Frames Renumber..."),
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
@@ -1012,7 +1004,7 @@ query ()
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
-			 gap_main_version,
+			 GAP_VERSION_WITH_DATE,
 			 N_("<Image>/Video/Frames Modify..."),
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
@@ -1026,7 +1018,7 @@ query ()
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
-			 gap_main_version,
+			 GAP_VERSION_WITH_DATE,
 			 NULL,                     /* do not appear in menus */
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
@@ -1045,7 +1037,7 @@ query ()
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
-			 gap_main_version,
+			 GAP_VERSION_WITH_DATE,
 			 NULL,                     /* do not appear in menus */
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
@@ -1059,7 +1051,7 @@ query ()
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
-			 gap_main_version,
+			 GAP_VERSION_WITH_DATE,
 			 NULL,                     /* do not appear in menus */
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
@@ -1078,7 +1070,7 @@ query ()
                          ,
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
-			 gap_main_version,
+			 GAP_VERSION_WITH_DATE,
 			 NULL,                /* no menu */
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
@@ -1093,14 +1085,13 @@ query ()
                          " of this video info file is .vin",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
-			 gap_main_version,
+			 GAP_VERSION_WITH_DATE,
 			 NULL,                      /* no menu */
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
 			 nargs_setrate, nreturn_nothing,
 			 args_setrate, return_nothing);
 
-  g_free(gap_main_version);
 }	/* end query */
 
 
@@ -1183,10 +1174,6 @@ run (const gchar *name
 
   if(gap_debug) fprintf(stderr, "\n\ngap_main: debug name = %s\n", name);
 
-  image_id = param[1].data.d_image;
-  lock_image_id = image_id;
-
-
   /* gimp_ui_init is sometimes needed even in NON-Interactive
    * runmodes.
    * because thumbnail handling uses the procedure gdk_pixbuf_new_from_file
@@ -1196,6 +1183,16 @@ run (const gchar *name
    */
   gimp_ui_init ("gap_main", FALSE);
 
+  image_id = param[1].data.d_image;
+  if(!gap_image_is_alive(image_id))
+  {
+     printf("GAP plug-in was called on INVALID IMAGE_ID:%d (terminating)\n", 
+                  (int)image_id);
+     status = GIMP_PDB_EXECUTION_ERROR;
+     values[0].data.d_status = status;
+     return ;
+  }
+  lock_image_id = image_id;
 
   /* ---------------------------
    * NON-LOCKING gap_plugins

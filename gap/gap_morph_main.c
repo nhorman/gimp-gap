@@ -50,7 +50,6 @@
 /* Defines */
 #define PLUG_IN_NAME        "plug_in_gap_morph_layers"
 #define PLUG_IN_PRINT_NAME  "Morph Layers"
-#define PLUG_IN_VERSION     "v1.3.26 (2004/02/14)"
 #define PLUG_IN_IMAGE_TYPES "RGBA, GRAYA"
 #define PLUG_IN_AUTHOR      "Wolfgang Hofer (hof@gimp.org)"
 #define PLUG_IN_COPYRIGHT   "Wolfgang Hofer"
@@ -142,7 +141,7 @@ static void query (void)
 			  ,
                           PLUG_IN_AUTHOR,
                           PLUG_IN_COPYRIGHT,
-                          PLUG_IN_VERSION,
+                          GAP_VERSION_WITH_DATE,
                           N_("<Image>/Video/Morph..."),
                           PLUG_IN_IMAGE_TYPES,
                           GIMP_PLUGIN,

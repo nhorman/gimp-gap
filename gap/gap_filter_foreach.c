@@ -537,12 +537,10 @@ int p_foreach_multilayer(GimpRunMode run_mode, gint32 image_id,
  * ============================================================================
  */
 
-gint gap_proc_anim_apply(GimpRunMode run_mode, gint32 image_id, char *plugin_name)
+gint gap_proc_anim_apply(GimpRunMode run_mode, gint32 image_id, char *plugin_name
+  , GapFiltPdbApplyMode apply_mode)
 {
   GapDbBrowserResult  l_browser_result;
-  GapFiltPdbApplyMode            l_apply_mode;
-
-  l_apply_mode = GAP_PAPP_CONSTANT;
 
   if(run_mode == GIMP_RUN_INTERACTIVE)
   {
@@ -563,7 +561,7 @@ gint gap_proc_anim_apply(GimpRunMode run_mode, gint32 image_id, char *plugin_nam
     }
 
     strcpy(plugin_name, l_browser_result.selected_proc_name);
-    if(l_browser_result.button_nr == 1) l_apply_mode = GAP_PAPP_VARYING_LINEAR;
+    if(l_browser_result.button_nr == 1) apply_mode = GAP_PAPP_VARYING_LINEAR;
 
     if(gap_debug) fprintf(stderr, "DEBUG: gap_db_browser_dialog SELECTED:%s\n", plugin_name);
 
@@ -572,6 +570,6 @@ gint gap_proc_anim_apply(GimpRunMode run_mode, gint32 image_id, char *plugin_nam
   return(p_foreach_multilayer(run_mode,
                               image_id,
 			      plugin_name,
-			      l_apply_mode ));
+			      apply_mode ));
 
 }

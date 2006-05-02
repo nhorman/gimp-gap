@@ -100,7 +100,7 @@
         ; (drawable and plugin name are dummy parameters
         ; the plug-in to run is selcted by the built in PDB-browserdialog
         ; of plug-in-gap-layers-run-animfilter)
-        (plug-in-gap-layers-run-animfilter 0 brush-image brush-draw "plug-in-bend")
+        (plug-in-gap-layers-run-animfilter 0 brush-image brush-draw "plug-in-bend" 1)
     )
 )
 
@@ -109,7 +109,7 @@
 		    "Create a multilayer image from current selection and apply any PDB Filter to all layer-copies"
 		    "Wolfgang Hofer <hof@gimp.org>"
 		    "Wolfgang Hofer"
-		    "2000/11/30"
+		    "2006/05/01"
 		    "RGB RGBA GRAY GRAYA"
 		    SF-IMAGE "Image" 0
 		    SF-DRAWABLE "Drawable" 0

@@ -1127,12 +1127,15 @@ mov_apv_callback (GtkWidget *widget,
       }
       else
       {
+        gint32           dummy_layer_id;
+        dummy_layer_id = gap_image_get_any_layer(l_new_image_id);
+  
         mov_set_waiting_cursor(mgp);  /* for refresh */
         return_vals = gimp_run_procedure ("plug_in_animationplay",
                                  &nreturn_vals,
 	                         GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
 				 GIMP_PDB_IMAGE,    l_new_image_id,
-				 GIMP_PDB_DRAWABLE, -1,  /* dummy */
+				 GIMP_PDB_DRAWABLE, dummy_layer_id,
                                  GIMP_PDB_END);
 	gimp_destroy_params(return_vals, nreturn_vals);
       }

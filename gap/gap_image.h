@@ -48,6 +48,7 @@ void      gap_image_prevent_empty_image(gint32 image_id);
 gint32    gap_image_new_with_layer_of_samesize(gint32 old_image_id, gint32 *layer_id);
 gint32    gap_image_new_of_samesize(gint32 old_image_id);
 gboolean  gap_image_is_alive(gint32 image_id);
+gint32    gap_image_get_any_layer(gint32 image_id);
 
 
 #endif

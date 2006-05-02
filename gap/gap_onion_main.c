@@ -49,9 +49,6 @@
 #include <gap_onion_dialog.h>
 
 
-static char *gap_onion_version = "2.1.0a; 2004/06/03";
-
-
 /* ------------------------
  * global gap DEBUG switch
  * ------------------------
@@ -151,7 +148,7 @@ query ()
                          " The configuration can be saved in the gimprc parameter file.",
                          "Wolfgang Hofer (hof@gimp.org)",
                          "Wolfgang Hofer",
-                         gap_onion_version,
+                         GAP_VERSION_WITH_DATE,
                          N_("<Image>/Video/Onionskin/Configuration..."),
                          "RGB*, INDEXED*, GRAY*",
                          GIMP_PLUGIN,
@@ -169,7 +166,7 @@ query ()
                          " if no configuration is found, default settings are used",
                          "Wolfgang Hofer (hof@gimp.org)",
                          "Wolfgang Hofer",
-                         gap_onion_version,
+                         GAP_VERSION_WITH_DATE,
                          N_("<Image>/Video/Onionskin/Create or Replace"),
                          "RGB*, INDEXED*, GRAY*",
                          GIMP_PLUGIN,
@@ -184,7 +181,7 @@ query ()
                          " of the video.",
                          "Wolfgang Hofer (hof@gimp.org)",
                          "Wolfgang Hofer",
-                         gap_onion_version,
+                         GAP_VERSION_WITH_DATE,
                          N_("<Image>/Video/Onionskin/Delete"),
                          "RGB*, INDEXED*, GRAY*",
                          GIMP_PLUGIN,
@@ -197,7 +194,7 @@ query ()
                          "This plugin sets visibility for all onionskin Layers in the current Videoframe.",
                          "Wolfgang Hofer (hof@gimp.org)",
                          "Wolfgang Hofer",
-                         gap_onion_version,
+                         GAP_VERSION_WITH_DATE,
                          N_("<Image>/Video/Onionskin/Toggle Visibility"),
                          "RGB*, INDEXED*, GRAY*",
                          GIMP_PLUGIN,

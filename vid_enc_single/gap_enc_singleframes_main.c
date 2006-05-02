@@ -69,8 +69,6 @@ gchar* p_build_format_from_framename(gchar *framename);
 /* Includes for extra LIBS */
 
 
-static char *gap_enc_single_version = "1.2.2b; 2002/11/24";
-
 #define GAP_PLUGIN_NAME_SINGLEFRAMES_ENCODE     "plug_in_gap_enc_singleframes"
 
 /* ------------------------
@@ -192,7 +190,7 @@ query ()
                          " this release of the singleframe encoder has NO encoder specific paramters"),
                          "Wolfgang Hofer (hof@gimp.org)",
                          "Wolfgang Hofer",
-                         gap_enc_single_version,
+                         GAP_VERSION_WITH_DATE,
                          NULL,                      /* has no Menu entry, just a PDB interface */
                          "RGB*, INDEXED*, GRAY*",
                          GIMP_PLUGIN,
@@ -206,7 +204,7 @@ query ()
                          _("This plugin sets singleframes specific video encoding parameters."),
                          "Wolfgang Hofer (hof@gimp.org)",
                          "Wolfgang Hofer",
-                         gap_enc_single_version,
+                         GAP_VERSION_WITH_DATE,
                          NULL,                      /* has no Menu entry, just a PDB interface */
                          NULL,
                          GIMP_PLUGIN,
@@ -220,7 +218,7 @@ query ()
                          _("This plugin returns singleframes encoder specific parameters."),
                          "Wolfgang Hofer (hof@gimp.org)",
                          "Wolfgang Hofer",
-                         gap_enc_single_version,
+                         GAP_VERSION_WITH_DATE,
                          NULL,                      /* has no Menu entry, just a PDB interface */
                          NULL,
                          GIMP_PLUGIN,

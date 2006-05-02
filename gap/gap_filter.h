@@ -28,6 +28,7 @@
 #define _GAP_FILTER_H
 
 #include "libgimp/gimp.h"
+#include "gap_filter_pdb.h"
 
 
 /* ------------------------
@@ -35,7 +36,8 @@
  * ------------------------
  */
 
-gint gap_proc_anim_apply(GimpRunMode run_mode, gint32 image_id, char *l_plugin_name);
+gint gap_proc_anim_apply(GimpRunMode run_mode, gint32 image_id, char *l_plugin_name
+    , GapFiltPdbApplyMode apply_mode);
 
 
 /* ------------------------

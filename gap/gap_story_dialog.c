@@ -1345,6 +1345,7 @@ p_call_master_encoder(GapStbMainGlobalParams *sgpp
   GimpParam* l_params;
   gint       l_retvals;
   gint       l_rc;
+  gint32     dummy_layer_id;
 
   gint32 vid_width;
   gint32 vid_height;
@@ -1364,12 +1365,13 @@ p_call_master_encoder(GapStbMainGlobalParams *sgpp
   gap_story_get_master_size(stb, &vid_width, &vid_height);
 
 
+  dummy_layer_id = gap_image_get_any_layer(sgpp->image_id);
   /* generic call of GAP master video encoder plugin */
   l_params = gimp_run_procedure (GAP_PLUG_IN_MASTER_ENCODER,
                      &l_retvals,
                      GIMP_PDB_INT32,  GIMP_RUN_INTERACTIVE,
                      GIMP_PDB_IMAGE,  sgpp->image_id,  /* pass the image where invoked from */
-                     GIMP_PDB_DRAWABLE, -1,
+                     GIMP_PDB_DRAWABLE, dummy_layer_id,
                      GIMP_PDB_STRING, "video_output.avi",
                      GIMP_PDB_INT32,  1,            /* range_from */
                      GIMP_PDB_INT32,  2,            /* range_to */

@@ -11,7 +11,11 @@ Here is a short overview whats new in GIMP-GAP-2.2.1:
   creation is invoked via menu "create transition" in the story board edit dialog,
   changes are made via right mouse button click on the thumbnail of the
   transition attribute.
-  
+
+- drag&drop support in the storyboard dialog.
+  accept drop of images, frameranges and videoclips.
+  drag&drop copy and move is now possible to arrange
+  existing clips in the storyboard and/or cliplist.
 
 - Modifiy Frames support of additional functions:
   - set selection from alphachannel
@@ -22,12 +26,8 @@ Here is a short overview whats new in GIMP-GAP-2.2.1:
       difference, addition, subtract, darken only, lighten only,
       dodge, burn, hardlight, softlight, color erase,
       grain extract, grain merge, hue, saturation, color, value)
-
-- drag&drop support in the storyboard dialog.
-  accept drop of images, frameranges and videoclips.
-  drag&drop copy and move is now possible to arrange
-  existing clips in the storyboard and/or cliplist.
-
+- new plug-in to reverse frame sequence.
+- wheel mouse scroll support  for VCR naviagtor and playback dialogs.
 
 Here is a short overview whats new in GIMP-GAP-2.2.0:
 -----------------------------------------------------

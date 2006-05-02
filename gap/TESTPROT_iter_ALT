@@ -11,10 +11,10 @@ Here is a result List of the "Animated Filtercall" Tests.
 ---------------------------------------------------
 Testresults
 --------------------------------------------------
-2005.10.08
+20065.04.30
 
    Test with PDB-Procedures (Plugins) that came with
-   gimp release 2.2.3 and 2.2.8
+   gimp release 2.2.3, 2.2.8 and 2.2.11
    Test also includes PDB-Procedures provided by GIMP-GAP itself
 
 
@@ -38,7 +38,7 @@ State Procedure/Iterator_ALT ame               Testnotes
 :     plug_in_animationoptimize_diff
 :     plug_in_animationplay
 :     plug_in_animationunoptimize
-#(+)  plug_in_apply_canvas_iter_ALT             Uses wrong name "plug_in_struc" to store LAST_VAL's
++     plug_in_apply_canvas_iter_ALT             Uses wrong name "plug_in_struc" to store LAST_VAL's
 +     plug_in_applylens_iter_ALT
 :     plug_in_autocrop
 -     plug_in_autocrop_layer                    constant apply would make sense, but did not work
@@ -150,7 +150,7 @@ State Procedure/Iterator_ALT ame               Testnotes
 +     plug_in_sharpen_iter_ALT
 +     plug_in_shift_iter_ALT
 +     plug_in_sinus_iter_ALT
-#(+)  plug_in_small_tiles_iter_ALT             Uses wrong name "plug_in_tileit" to store LAST_VAL's     
++     plug_in_small_tiles_iter_ALT             Uses wrong name "plug_in_tileit" to store LAST_VAL's     
 :     plug_in_smooth_palette                   makes no sense (creates palette)
 +     plug_in_sobel_iter_ALT                   OK, but only constant apply makes sense
 +     plug_in_softglow
@@ -243,3 +243,7 @@ older (gimp-1.2 and before)
 .     plug_in_struc_iter_ALT.inc
 .     plug_in_tileit_iter_ALT.inc
 .     plug_in_universal_filter_iter_ALT.inc
+
+
+
+

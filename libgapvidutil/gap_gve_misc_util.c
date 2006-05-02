@@ -64,12 +64,15 @@ gap_gve_misc_get_ainfo(gint32 image_ID, GapGveEncAInfo *ainfo)
    static char     *l_called_proc = "plug_in_gap_get_animinfo";
    GimpParam       *return_vals;
    int              nreturn_vals;
+   gint32           dummy_layer_id;
+
+   dummy_layer_id = gap_image_get_any_layer(image_ID);
 
    return_vals = gimp_run_procedure (l_called_proc,
                                  &nreturn_vals,
 				 GIMP_PDB_INT32, GIMP_RUN_NONINTERACTIVE,
                                  GIMP_PDB_IMAGE, image_ID,
-                                 GIMP_PDB_DRAWABLE, -1,
+                                 GIMP_PDB_DRAWABLE, dummy_layer_id,
                                  GIMP_PDB_END);
 
    if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)

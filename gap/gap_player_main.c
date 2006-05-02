@@ -51,7 +51,6 @@
 #define PLUG_IN_NAME        "plug_in_gap_videoframes_player"
 #define PLUG_IN_HELP_ID     "plug-in-gap-videoframes-player"
 #define PLUG_IN_PRINT_NAME  "Videopreview Player"
-#define PLUG_IN_VERSION     "v2.1.0 (2004/11/12)"
 #define PLUG_IN_IMAGE_TYPES "RGB*, INDEXED*, GRAY*"
 #define PLUG_IN_AUTHOR      "Wolfgang Hofer (hof@gimp.org)"
 #define PLUG_IN_COPYRIGHT   "Wolfgang Hofer"
@@ -246,7 +245,7 @@ static void query (void)
                           "based on thumbnail preview or full sized video frames.",
                           PLUG_IN_AUTHOR,
                           PLUG_IN_COPYRIGHT,
-                          PLUG_IN_VERSION,
+                          GAP_VERSION_WITH_DATE,
                           N_("<Image>/Video/Playback..."),
                           PLUG_IN_IMAGE_TYPES,
                           GIMP_PLUGIN,
@@ -255,7 +254,7 @@ static void query (void)
                           in_args,
                           NULL      /* out_args */
                           );
- 
+
 }
 
 static void

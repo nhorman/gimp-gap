@@ -99,9 +99,6 @@
  * version 1.1.14a; 2000.01.08   hof: 1st release
  */
 
-static char *gap_navigator_version = "1.3.17a; 2003/07/29";
-
-
 /* SYTEM (UNIX) includes */
 #include <stdio.h>
 #include <string.h>
@@ -126,7 +123,7 @@ static char *gap_navigator_version = "1.3.17a; 2003/07/29";
 #include "gap_pview_da.h"
 #include "gap_arr_dialog.h"
 #include "gap_thumbnail.h"
-
+#include "gap_image.h"
 
 
 #define PLUGIN_NAME     "plug_in_gap_navigator"
@@ -357,6 +354,10 @@ static gboolean frame_widget_preview_events      (GtkWidget *, GdkEvent *, gpoin
 static gint navi_dialog_poll(GtkWidget *w, gpointer   data);
 static void navi_dialog_update(gint32 update_flag);
 static void navi_scroll_to_current_frame_nr(void);
+static gboolean navi_scroll_event_cb ( GtkWidget *widget
+                    , GdkEventScroll *sevent
+                    , NaviDialog *naviD
+                    );
 
 static gint32          navi_get_preview_size(void);
 static void            navi_frames_timing_update (void);
@@ -534,7 +535,7 @@ query ()
                          "",
                          "Wolfgang Hofer (hof@gimp.org)",
                          "Wolfgang Hofer",
-                         gap_navigator_version,
+                         GAP_VERSION_WITH_DATE,
                          N_("<Image>/Video/VCR Navigator..."),
                          "RGB*, INDEXED*, GRAY*",
                          GIMP_PLUGIN,
@@ -715,6 +716,7 @@ p_edit_paste_call(gint32 paste_mode)
 {
   GimpParam          *return_vals;
   int              nreturn_vals;
+  gint32           dummy_layer_id;
 
   if(naviD->paste_at_frame < 0)
   {
@@ -727,11 +729,12 @@ p_edit_paste_call(gint32 paste_mode)
    );
 
   /* goto the first selected frame */
+  dummy_layer_id = gap_image_get_any_layer(naviD->active_imageid);
   return_vals = gimp_run_procedure ("plug_in_gap_goto",
                                &nreturn_vals,
                                GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
                                GIMP_PDB_IMAGE,    naviD->active_imageid,
-                               GIMP_PDB_DRAWABLE, -1,  /* dummy */
+                               GIMP_PDB_DRAWABLE, dummy_layer_id,
                                GIMP_PDB_INT32,    naviD->paste_at_frame,
                                GIMP_PDB_END);
   if (return_vals[0].data.d_status != GIMP_PDB_SUCCESS)
@@ -747,11 +750,12 @@ p_edit_paste_call(gint32 paste_mode)
   gimp_destroy_params(return_vals, nreturn_vals);
 
 
+  dummy_layer_id = gap_image_get_any_layer(naviD->active_imageid);
   return_vals = gimp_run_procedure ("plug_in_gap_video_edit_paste",
                                       &nreturn_vals,
                                       GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
                                       GIMP_PDB_IMAGE,    naviD->active_imageid,
-                                      GIMP_PDB_DRAWABLE, -1,  /* dummy */
+                                      GIMP_PDB_DRAWABLE, dummy_layer_id,
                                       GIMP_PDB_INT32,    paste_mode,
                                       GIMP_PDB_END);
   if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
@@ -790,13 +794,17 @@ edit_clrpaste_callback (GtkWidget *w,  gpointer   client_data)
 {
   GimpParam          *return_vals;
   int              nreturn_vals;
+  gint32           dummy_layer_id;
+  
 
   if(gap_debug) printf("edit_clrpaste_callback\n");
+  
+  dummy_layer_id = gap_image_get_any_layer(naviD->active_imageid);
   return_vals = gimp_run_procedure ("plug_in_gap_video_edit_clear",
                                       &nreturn_vals,
                                       GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
                                       GIMP_PDB_IMAGE,    naviD->active_imageid,
-                                      GIMP_PDB_DRAWABLE, -1,  /* dummy */
+                                      GIMP_PDB_DRAWABLE, dummy_layer_id,
                                       GIMP_PDB_END);
   gimp_destroy_params(return_vals, nreturn_vals);
 }
@@ -835,6 +843,7 @@ navi_vid_copy_and_cut(gint cut_flag)
    GimpParam          *return_vals;
    int                 nreturn_vals;
    gboolean            vid_copy_ok;
+   gint32              dummy_layer_id;
 
   vid_copy_ok = TRUE;
   if(gap_debug) printf("navi_dialog_vid_copy_callback\n");
@@ -856,11 +865,12 @@ navi_vid_copy_and_cut(gint cut_flag)
        if(gap_debug) printf("Copy Range from:%d  to:%d\n"
                      ,(int)range_list->from ,(int)range_list->to );
 
+       dummy_layer_id = gap_image_get_any_layer(naviD->active_imageid);
        return_vals = gimp_run_procedure ("plug_in_gap_video_edit_copy",
                                    &nreturn_vals,
                                    GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
                                    GIMP_PDB_IMAGE,    naviD->active_imageid,
-                                   GIMP_PDB_DRAWABLE, -1,  /* dummy */
+                                   GIMP_PDB_DRAWABLE, dummy_layer_id,
                                    GIMP_PDB_INT32,    range_list->from,
                                    GIMP_PDB_INT32,    range_list->to,
                                   GIMP_PDB_END);
@@ -893,22 +903,24 @@ navi_vid_copy_and_cut(gint cut_flag)
          if(gap_debug) printf("Delete Range from:%d  to:%d\n"
                        ,(int)range_list2->from ,(int)range_list2->to );
 
+         dummy_layer_id = gap_image_get_any_layer(naviD->active_imageid);
          return_vals = gimp_run_procedure ("plug_in_gap_goto",
                                       &nreturn_vals,
                                       GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
                                       GIMP_PDB_IMAGE,    naviD->active_imageid,
-                                      GIMP_PDB_DRAWABLE, -1,  /* dummy */
+                                      GIMP_PDB_DRAWABLE, dummy_layer_id,
                                       GIMP_PDB_INT32,    range_list2->from,
                                       GIMP_PDB_END);
          if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
          {
             naviD->active_imageid = return_vals[1].data.d_image;
             gimp_destroy_params(return_vals, nreturn_vals);
+            dummy_layer_id = gap_image_get_any_layer(naviD->active_imageid);
             return_vals = gimp_run_procedure ("plug_in_gap_del",
                                      &nreturn_vals,
                                      GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
                                      GIMP_PDB_IMAGE,    naviD->active_imageid,
-                                     GIMP_PDB_DRAWABLE, -1,  /* dummy */
+                                     GIMP_PDB_DRAWABLE, dummy_layer_id,
                                      GIMP_PDB_INT32,    1 + (range_list2->to - range_list2->from), /* number of frames to delete */
                                     GIMP_PDB_END);
             if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
@@ -1308,6 +1320,45 @@ navi_scroll_to_current_frame_nr(void)
   navi_dyn_adj_set_pos();
 
 }  /* end navi_scroll_to_current_frame_nr */
+
+
+/* -----------------------------------
+ * navi_scroll_event_cb
+ * -----------------------------------
+ * handling of ctrl-c, ctrl-x, ctrl-v, ctrl-z keys
+ * pressed when focus is somewhere in the tabw frame_with_name.
+ */
+static gboolean
+navi_scroll_event_cb ( GtkWidget *widget
+                    , GdkEventScroll *sevent
+                    , NaviDialog *naviD
+                    )
+{
+  gint32  value;
+
+
+  if(naviD == NULL) { return FALSE;}
+
+  value = (gint32)GTK_ADJUSTMENT(naviD->dyn_adj)->value;
+
+  if((sevent->direction == GDK_SCROLL_UP)
+  || (sevent->direction == GDK_SCROLL_RIGHT))
+  {
+    value--;
+  }
+  else
+  {
+    value++;
+  }
+
+  /* set value in the rowpage spinbutton 
+   * (this fires another callback for update of tabw->rowpage;)
+   */
+  gtk_adjustment_set_value(GTK_ADJUSTMENT(naviD->dyn_adj), (gdouble)value);
+  
+  return FALSE;
+}  /* end navi_scroll_event_cb */
+
 
 
 /* ---------------------------------
@@ -1752,6 +1803,7 @@ navi_playback(gboolean use_gimp_layeranimplayer)
    int            nreturn_vals;
    char           l_frame_name[50];
    int            l_frame_delay;
+   gint32         dummy_layer_id;
 
 
   if(gap_debug) printf("navi_dialog_vcr_play_callback\n");
@@ -1792,11 +1844,12 @@ navi_playback(gboolean use_gimp_layeranimplayer)
       * but accepts calling parameters only when called in
       * GIMP_RUN_NONINTERACTIVE runmode
       */
+     dummy_layer_id = gap_image_get_any_layer(naviD->active_imageid);
      return_vals = gimp_run_procedure ("plug_in_gap_videoframes_player",
                                     &nreturn_vals,
                                     GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
                                     GIMP_PDB_IMAGE,    naviD->active_imageid,
-                                    GIMP_PDB_DRAWABLE, -1,  /* dummy */
+                                    GIMP_PDB_DRAWABLE, dummy_layer_id,
                                     GIMP_PDB_INT32,    l_from,
                                     GIMP_PDB_INT32,    l_to,
                                     GIMP_PDB_INT32,    TRUE,  /* autostart */
@@ -1819,11 +1872,12 @@ navi_playback(gboolean use_gimp_layeranimplayer)
   }
 
 
+  dummy_layer_id = gap_image_get_any_layer(naviD->active_imageid);
   return_vals = gimp_run_procedure ("plug_in_gap_range_to_multilayer",
                                     &nreturn_vals,
                                     GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
                                     GIMP_PDB_IMAGE,    naviD->active_imageid,
-                                    GIMP_PDB_DRAWABLE, -1,  /* dummy */
+                                    GIMP_PDB_DRAWABLE, dummy_layer_id,
                                     GIMP_PDB_INT32,    l_from,
                                     GIMP_PDB_INT32,    l_to,
                                     GIMP_PDB_INT32,    3,     /* flatten image */
@@ -1845,11 +1899,12 @@ navi_playback(gboolean use_gimp_layeranimplayer)
      /* TODO: here we should start a thread for the playback,
       * so the navigator is not blocked until playback exits
       */
+      dummy_layer_id = gap_image_get_any_layer(l_new_image_id);
       return_vals = gimp_run_procedure ("plug_in_animationplay",
                                     &nreturn_vals,
                                     GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
                                     GIMP_PDB_IMAGE,    l_new_image_id,
-                                    GIMP_PDB_DRAWABLE, -1,  /* dummy */
+                                    GIMP_PDB_DRAWABLE, dummy_layer_id,
                                    GIMP_PDB_END);
       gimp_destroy_params(return_vals, nreturn_vals);
   }
@@ -1886,6 +1941,7 @@ navi_dialog_frames_duplicate_frame_callback(GtkWidget *w, gpointer   data)
    SelectedRange *range_list;
    GimpParam     *return_vals;
    int            nreturn_vals;
+   gint32         dummy_layer_id;
 
 
   if(gap_debug) printf("navi_dialog_frames_duplicate_frame_callback\n");
@@ -1904,22 +1960,24 @@ navi_dialog_frames_duplicate_frame_callback(GtkWidget *w, gpointer   data)
        if(gap_debug) printf("Duplicate Range from:%d  to:%d\n"
                      ,(int)range_list->from ,(int)range_list->to );
 
+       dummy_layer_id = gap_image_get_any_layer(naviD->active_imageid);
        return_vals = gimp_run_procedure ("plug_in_gap_goto",
                                     &nreturn_vals,
                                     GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
                                     GIMP_PDB_IMAGE,    naviD->active_imageid,
-                                    GIMP_PDB_DRAWABLE, -1,  /* dummy */
+                                    GIMP_PDB_DRAWABLE, dummy_layer_id,
                                     GIMP_PDB_INT32,    range_list->from,
                                     GIMP_PDB_END);
        if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
        {
           naviD->active_imageid = return_vals[1].data.d_image;
           gimp_destroy_params(return_vals, nreturn_vals);
+          dummy_layer_id = gap_image_get_any_layer(naviD->active_imageid);
           return_vals = gimp_run_procedure ("plug_in_gap_dup",
                                    &nreturn_vals,
                                    GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
                                    GIMP_PDB_IMAGE,    naviD->active_imageid,
-                                   GIMP_PDB_DRAWABLE, -1,  /* dummy */
+                                   GIMP_PDB_DRAWABLE, dummy_layer_id,
                                    GIMP_PDB_INT32,    1,     /* copy block 1 times */
                                    GIMP_PDB_INT32,    range_list->from,
                                    GIMP_PDB_INT32,    range_list->to,
@@ -1947,6 +2005,7 @@ navi_dialog_frames_delete_frame_callback(GtkWidget *w, gpointer   data)
    SelectedRange *range_list;
    GimpParam     *return_vals;
    int            nreturn_vals;
+   gint32         dummy_layer_id;
 
 
   if(gap_debug) printf("navi_dialog_frames_delete_frame_callback\n");
@@ -1979,22 +2038,24 @@ navi_dialog_frames_delete_frame_callback(GtkWidget *w, gpointer   data)
        if(gap_debug) printf("Delete Range from:%d  to:%d\n"
                      ,(int)range_list->from ,(int)range_list->to );
 
+       dummy_layer_id = gap_image_get_any_layer(naviD->active_imageid);
        return_vals = gimp_run_procedure ("plug_in_gap_goto",
                                     &nreturn_vals,
                                     GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
                                     GIMP_PDB_IMAGE,    naviD->active_imageid,
-                                    GIMP_PDB_DRAWABLE, -1,  /* dummy */
+                                    GIMP_PDB_DRAWABLE, dummy_layer_id,  /* dummy */
                                     GIMP_PDB_INT32,    range_list->from,
                                     GIMP_PDB_END);
        if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
        {
           naviD->active_imageid = return_vals[1].data.d_image;
           gimp_destroy_params(return_vals, nreturn_vals);
+          dummy_layer_id = gap_image_get_any_layer(naviD->active_imageid);
           return_vals = gimp_run_procedure ("plug_in_gap_del",
                                    &nreturn_vals,
                                    GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
                                    GIMP_PDB_IMAGE,    naviD->active_imageid,
-                                   GIMP_PDB_DRAWABLE, -1,  /* dummy */
+                                   GIMP_PDB_DRAWABLE, dummy_layer_id,
                                    GIMP_PDB_INT32,    1 + (range_list->to - range_list->from), /* number of frames to delete */
                                   GIMP_PDB_END);
           if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
@@ -2020,14 +2081,16 @@ navi_dialog_goto_callback(gint32 dst_framenr)
 {
    GimpParam          *return_vals;
    int              nreturn_vals;
+   gint32           dummy_layer_id;
 
    if(gap_debug) printf("navi_dialog_goto_callback\n");
    navi_set_waiting_cursor();
+   dummy_layer_id = gap_image_get_any_layer(naviD->active_imageid);
    return_vals = gimp_run_procedure ("plug_in_gap_goto",
                                     &nreturn_vals,
                                     GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
                                     GIMP_PDB_IMAGE,    naviD->active_imageid,
-                                    GIMP_PDB_DRAWABLE, -1,  /* dummy */
+                                    GIMP_PDB_DRAWABLE, dummy_layer_id,  /* dummy */
                                     GIMP_PDB_INT32,    dst_framenr,
                                     GIMP_PDB_END);
    if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
@@ -2049,14 +2112,16 @@ navi_dialog_vcr_goto_first_callback(GtkWidget *w, gpointer   data)
 {
    GimpParam          *return_vals;
    int              nreturn_vals;
+   gint32           dummy_layer_id;
 
    if(gap_debug) printf("navi_dialog_vcr_goto_first_callback\n");
    navi_set_waiting_cursor();
+   dummy_layer_id = gap_image_get_any_layer(naviD->active_imageid);
    return_vals = gimp_run_procedure ("plug_in_gap_first",
                                     &nreturn_vals,
                                     GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
                                     GIMP_PDB_IMAGE,    naviD->active_imageid,
-                                    GIMP_PDB_DRAWABLE, -1,  /* dummy */
+                                    GIMP_PDB_DRAWABLE, dummy_layer_id,
                                     GIMP_PDB_END);
    if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
    {
@@ -2076,14 +2141,16 @@ navi_dialog_vcr_goto_prev_callback(GtkWidget *w, gpointer   data)
 {
    GimpParam          *return_vals;
    int              nreturn_vals;
+   gint32           dummy_layer_id;
 
    if(gap_debug) printf("navi_dialog_vcr_goto_prev_callback\n");
    navi_set_waiting_cursor();
+   dummy_layer_id = gap_image_get_any_layer(naviD->active_imageid);
    return_vals = gimp_run_procedure ("plug_in_gap_prev",
                                     &nreturn_vals,
                                     GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
                                     GIMP_PDB_IMAGE,    naviD->active_imageid,
-                                    GIMP_PDB_DRAWABLE, -1,  /* dummy */
+                                    GIMP_PDB_DRAWABLE, dummy_layer_id,
                                     GIMP_PDB_END);
    if (return_vals[0].data.d_status == GIMP_PDB_SUCCESS)
    {
@@ -2121,14 +2188,16 @@ navi_dialog_vcr_goto_next_callback(GtkWidget *w, gpointer   data)
 {
    GimpParam       *return_vals;
    int              nreturn_vals;
+   gint32           dummy_layer_id;
 
    if(gap_debug) printf("navi_dialog_vcr_goto_next_callback\n");
    navi_set_waiting_cursor();
+   dummy_layer_id = gap_image_get_any_layer(naviD->active_imageid);
    return_vals = gimp_run_procedure ("plug_in_gap_next",
                                     &nreturn_vals,
                                     GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
                                     GIMP_PDB_IMAGE,    naviD->active_imageid,
-                                    GIMP_PDB_DRAWABLE, -1,  /* dummy */
+                                    GIMP_PDB_DRAWABLE, dummy_layer_id,
                                     GIMP_PDB_END);
    gimp_destroy_params(return_vals, nreturn_vals);
    navi_update_after_goto();
@@ -2163,14 +2232,16 @@ navi_dialog_vcr_goto_last_callback(GtkWidget *w, gpointer   data)
 {
    GimpParam          *return_vals;
    int              nreturn_vals;
+   gint32           dummy_layer_id;
 
    if(gap_debug) printf("navi_dialog_vcr_goto_last_callback\n");
    navi_set_waiting_cursor();
+   dummy_layer_id = gap_image_get_any_layer(naviD->active_imageid);
    return_vals = gimp_run_procedure ("plug_in_gap_last",
                                     &nreturn_vals,
                                     GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
                                     GIMP_PDB_IMAGE,    naviD->active_imageid,
-                                    GIMP_PDB_DRAWABLE, -1,  /* dummy */
+                                    GIMP_PDB_DRAWABLE, dummy_layer_id,
                                     GIMP_PDB_END);
    gimp_destroy_params(return_vals, nreturn_vals);
    navi_update_after_goto();
@@ -4225,6 +4296,9 @@ navi_dialog_create (GtkWidget* shell, gint32 image_id)
     gtk_box_pack_start (GTK_BOX (vbox), progressbar, FALSE, FALSE, 2);
   }
 
+  g_signal_connect (G_OBJECT ( naviD->dyn_frame), "scroll_event",
+                    G_CALLBACK (navi_scroll_event_cb),
+                    naviD);
 
   gtk_widget_show (vbox);
   gtk_widget_show (naviD->vbox);

@@ -48,7 +48,6 @@
 #define PLUG_IN_NAME        "plug_in_name2layer"
 #define PLUG_IN_HELP_ID     "plug-in-name2layer"
 #define PLUG_IN_PRINT_NAME  "Name to Layer"
-#define PLUG_IN_VERSION     "v2.0.2 (2004/05/06)"
 #define PLUG_IN_IMAGE_TYPES "RGB*, INDEXED*, GRAY*"
 #define PLUG_IN_AUTHOR      "Wolfgang Hofer (hof@gimp.org)"
 #define PLUG_IN_COPYRIGHT   "Wolfgang Hofer"
@@ -165,7 +164,7 @@ static void query (void)
                           "to the input drawable, otherwise a new textlayer is created",
                           PLUG_IN_AUTHOR,
                           PLUG_IN_COPYRIGHT,
-                          PLUG_IN_VERSION,
+                          GAP_VERSION_WITH_DATE,
                           N_("<Image>/Video/Filename to Layer..."),
                           PLUG_IN_IMAGE_TYPES,
                           GIMP_PLUGIN,

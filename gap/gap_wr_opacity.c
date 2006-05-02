@@ -44,7 +44,6 @@
 /* Defines */
 #define PLUG_IN_NAME        "plug_in_wr_set_opacity"
 #define PLUG_IN_PRINT_NAME  "Name to Layer"
-#define PLUG_IN_VERSION     "v2.0.2 (2004/05/06)"
 #define PLUG_IN_IMAGE_TYPES "RGB*, INDEXED*, GRAY*"
 #define PLUG_IN_AUTHOR      "Wolfgang Hofer (hof@gimp.org)"
 #define PLUG_IN_COPYRIGHT   "Wolfgang Hofer"
@@ -135,7 +134,7 @@ static void query (void)
                           "(for the use with GAP Video Frame manipulation)",
                           PLUG_IN_AUTHOR,
                           PLUG_IN_COPYRIGHT,
-                          PLUG_IN_VERSION,
+                          GAP_VERSION_WITH_DATE,
                           N_("<Image>/Video/Layer/Set Layer Opacity..."),
                           PLUG_IN_IMAGE_TYPES,
                           GIMP_PLUGIN,

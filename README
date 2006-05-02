@@ -1,4 +1,4 @@
-This is a release version 2.2.0 of the GIMP Video menu.
+This is a release version 2.2.1 of the GIMP Video menu.
 
 The GIMP-GAP (GIMP Animation Package) is a collection of Plug-Ins
 to extend the GIMP with capabilities to edit and create
@@ -7,7 +7,14 @@ Animations as sequences of single frames.
 
 Requires:
 =========
- - gimp 2.2 or higher
+ - gimp 2.2 or higher.
+     This release was tested with gimp-2.2.11
+     
+     Note: GIMP-GAP provides some features that are able to call many of the
+           GIMP standard filters. (plug-in programs that are shiped with 
+           gimp-2.2.11) Those features depend on the tested PDB interface
+           versions and may fail if newer version are used.
+
  
  - For full video encoding and decoding support
    check also the requirements for ffmpeg and libmpeg3.
@@ -15,7 +22,10 @@ Requires:
    ffmpeg and libmpeg3 are included as sourcecode tarball in this
    GIMP-GAP distribution.
    
-   - nasm  is required to compile libmpeg3 (for the .asm sources)
+   - nasm  and the old gcc 3.3 version 
+           are required only in case when compiling of the
+           (optional) libmpeg3 is desired.
+           (nasm for the .asm sources)
    
    see file extern_libs/README_extern_libs for further information
    about those libs.    
@@ -33,8 +43,12 @@ Requires:
 		       http://www.xvid.org/downloads.html
 
 
-For information about GIMP-GAP details please read the files
-in docs/reference/txt/INTRODUCTION.txt
+For general information about GIMP-GAP concepts
+please read:
+   docs/reference/txt/INTRODUCTION.txt
+
+Feature specific details are documented the files
+   docs/reference/txt/*.txt
 
 
 Additional Installation Notes

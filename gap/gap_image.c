@@ -231,3 +231,31 @@ gap_image_is_alive(gint32 image_id)
  
   return FALSE ;   /* INVALID image id */
 }  /* end gap_image_is_alive */
+ 
+ 
+/* ------------------------------------
+ * gap_image_get_any_layer
+ * ------------------------------------
+ * return the id of the active layer 
+ *   or the id of the first layer found in the image if there is no active layer
+ *   or -1 if the image has no layer at all.
+ */
+gint32
+gap_image_get_any_layer(gint32 image_id)
+{
+  gint32  l_layer_id;
+  gint    l_nlayers;
+  gint32 *l_layers_list;
+
+  l_layer_id = gimp_image_get_active_layer(image_id);
+  if(l_layer_id < 0)
+  {
+    l_layers_list = gimp_image_get_layers(image_id, &l_nlayers);
+    if(l_layers_list != NULL)
+    {
+       l_layer_id = l_layers_list[0];
+       g_free (l_layers_list);
+    }
+  }
+  return (l_layer_id);
+}  /* end gap_image_get_any_layer */

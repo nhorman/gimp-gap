@@ -113,8 +113,6 @@
 #endif
 
 
-static char *gap_enc_ffmpeg_version = "2.1.0a; 2005/07/16";
-
 #define MAX_VIDEO_STREAMS 1
 #define MAX_AUDIO_STREAMS 16
 
@@ -426,7 +424,7 @@ query ()
                          " to set encoder specific paramters, then set the use_rest parameter to 1 to use them."),
                          "Wolfgang Hofer (hof@gimp.org)",
                          "Wolfgang Hofer",
-                         gap_enc_ffmpeg_version,
+                         GAP_VERSION_WITH_DATE,
                          NULL,                      /* has no Menu entry, just a PDB interface */
                          "RGB*, INDEXED*, GRAY*",
                          GIMP_PLUGIN,
@@ -442,7 +440,7 @@ query ()
 			   " Interactive calls provide a dialog window to specify and optionally save the parameters."),
                          "Wolfgang Hofer (hof@gimp.org)",
                          "Wolfgang Hofer",
-                         gap_enc_ffmpeg_version,
+                         GAP_VERSION_WITH_DATE,
                          NULL,                      /* has no Menu entry, just a PDB interface */
                          NULL,
                          GIMP_PLUGIN,
@@ -456,7 +454,7 @@ query ()
                          _("This plugin returns ffmpeg encoder specific parameters."),
                          "Wolfgang Hofer (hof@gimp.org)",
                          "Wolfgang Hofer",
-                         gap_enc_ffmpeg_version,
+                         GAP_VERSION_WITH_DATE,
                          NULL,                      /* has no Menu entry, just a PDB interface */
                          NULL,
                          GIMP_PLUGIN,

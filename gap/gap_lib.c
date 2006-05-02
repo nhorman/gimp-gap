@@ -2350,17 +2350,33 @@ gap_lib_load_named_frame (gint32 old_image_id, char *lod_name)
 
   l_new_image_id = gap_lib_load_image(lod_name);
 
-  if(gap_debug) printf("DEBUG: after    gap_lib_load_named_frame: '%s' old_id=%d  new_id=%d\n\n",
+  if(gap_debug)
+  {
+    printf("DEBUG: after    gap_lib_load_named_frame: '%s' old_id=%d  new_id=%d\n\n",
                                lod_name, (int)old_image_id, (int)l_new_image_id);
+  }
 
   if(l_new_image_id < 0)
+  {
       return -1;
-
+  }
+  
   if (gap_pdb_gimp_displays_reconnect(old_image_id, l_new_image_id))
   {
-      /* delete the old image */
-      gimp_image_delete(old_image_id);
-
+      /* deleteing the old image if it is still alive
+       * (maybe still required gimp-2.2.x prior to gimp-2.2.11
+       * gimp-2.2.11 still accepts the delete, but the old image becomes invalid after
+       * reconnecting the display.
+       * gimp-2.3.8 even complains and breaks gimp-gap if we attempt to delete
+       * the old image. (see #339840)
+       * GAP has no more chance for explicite delete the old image
+       * (hope that this is already done implicite by gimp_reconnect_displays ?)
+       */
+       
+      if(gap_image_is_alive(old_image_id))
+      {
+        gimp_image_delete(old_image_id);
+      }
 
       gimp_image_undo_disable(l_new_image_id);
 

@@ -80,9 +80,6 @@ static gint p_avi_encode_dialog(GapGveAviGlobalParams *gpp);
 #include "avilib.h"
 
 
-static char *gap_enc_avi_version = "2.1.0a; 2004/10/07";
-
-
 /* ------------------------
  * global gap DEBUG switch
  * ------------------------
@@ -217,7 +214,7 @@ query ()
                          " to set encoder specific paramters, then set the use_rest parameter to 1 to use them."),
                          "Wolfgang Hofer (hof@gimp.org)",
                          "Wolfgang Hofer",
-                         gap_enc_avi_version,
+                         GAP_VERSION_WITH_DATE,
                          NULL,                      /* has no Menu entry, just a PDB interface */
                          "RGB*, INDEXED*, GRAY*",
                          GIMP_PLUGIN,
@@ -231,7 +228,7 @@ query ()
                          _("This plugin sets avi specific video encoding parameters."),
                          "Wolfgang Hofer (hof@gimp.org)",
                          "Wolfgang Hofer",
-                         gap_enc_avi_version,
+                         GAP_VERSION_WITH_DATE,
                          NULL,                      /* has no Menu entry, just a PDB interface */
                          NULL,
                          GIMP_PLUGIN,
@@ -245,7 +242,7 @@ query ()
                          _("This plugin returns avi encoder specific parameters."),
                          "Wolfgang Hofer (hof@gimp.org)",
                          "Wolfgang Hofer",
-                         gap_enc_avi_version,
+                         GAP_VERSION_WITH_DATE,
                          NULL,                      /* has no Menu entry, just a PDB interface */
                          NULL,
                          GIMP_PLUGIN,

@@ -55,7 +55,6 @@
 
 /* Defines */
 #define PLUG_IN_NAME        "plug_in_wr_huesat"
-#define PLUG_IN_VERSION     "v1.3 (2004/01/15)"
 #define PLUG_IN_IMAGE_TYPES "RGB*, GRAY*"
 #define PLUG_IN_AUTHOR      "Wolfgang Hofer (hof@gimp.org)"
 #define PLUG_IN_COPYRIGHT   "Wolfgang Hofer"
@@ -258,7 +257,7 @@ query (void)
                           ,
                           PLUG_IN_AUTHOR,
                           PLUG_IN_COPYRIGHT,
-                          PLUG_IN_VERSION,
+                          GAP_VERSION_WITH_DATE,
                           N_("<Image>/Video/Layer/Colors/Hue-Saturation..."),
                           PLUG_IN_IMAGE_TYPES,
                           GIMP_PLUGIN,
@@ -274,7 +273,7 @@ query (void)
                           "",
                           PLUG_IN_AUTHOR,
                           PLUG_IN_COPYRIGHT,
-                          PLUG_IN_VERSION,
+                          GAP_VERSION_WITH_DATE,
                           NULL,    /* do not appear in menus */
                           NULL,
                           GIMP_PLUGIN,

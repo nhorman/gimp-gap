@@ -46,7 +46,6 @@
 #define PLUG_IN_NAME_270    "plug_in_wr_layer_rotate_270"
 #define PLUG_IN_NAME_HOR    "plug_in_wr_layer_flip_horizontal"
 #define PLUG_IN_NAME_VER    "plug_in_wr_layer_flip_vetrical"
-#define PLUG_IN_VERSION     "v1.0 (2005/05/01)"
 #define PLUG_IN_IMAGE_TYPES "RGB*, INDEXED*, GRAY*"
 #define PLUG_IN_AUTHOR      "Wolfgang Hofer (hof@gimp.org)"
 #define PLUG_IN_COPYRIGHT   "Wolfgang Hofer"
@@ -164,7 +163,7 @@ static void query (void)
                           "(for the use with GAP Video Frame manipulation)",
                           PLUG_IN_AUTHOR,
                           PLUG_IN_COPYRIGHT,
-                          PLUG_IN_VERSION,
+                          GAP_VERSION_WITH_DATE,
                           N_("<Image>/Video/Layer/Transform/Flip Horizontal"),
                           PLUG_IN_IMAGE_TYPES,
                           GIMP_PLUGIN,
@@ -181,7 +180,7 @@ static void query (void)
                           "(for the use with GAP Video Frame manipulation)",
                           PLUG_IN_AUTHOR,
                           PLUG_IN_COPYRIGHT,
-                          PLUG_IN_VERSION,
+                          GAP_VERSION_WITH_DATE,
                           N_("<Image>/Video/Layer/Transform/Flip Vertical"),
                           PLUG_IN_IMAGE_TYPES,
                           GIMP_PLUGIN,
@@ -198,7 +197,7 @@ static void query (void)
                           "(for the use with GAP Video Frame manipulation)",
                           PLUG_IN_AUTHOR,
                           PLUG_IN_COPYRIGHT,
-                          PLUG_IN_VERSION,
+                          GAP_VERSION_WITH_DATE,
                           N_("<Image>/Video/Layer/Transform/Rotate 90 degrees CW"),
                           PLUG_IN_IMAGE_TYPES,
                           GIMP_PLUGIN,
@@ -216,7 +215,7 @@ static void query (void)
                           "(for the use with GAP Video Frame manipulation)",
                           PLUG_IN_AUTHOR,
                           PLUG_IN_COPYRIGHT,
-                          PLUG_IN_VERSION,
+                          GAP_VERSION_WITH_DATE,
                           N_("<Image>/Video/Layer/Transform/Rotate 180 degrees"),
                           PLUG_IN_IMAGE_TYPES,
                           GIMP_PLUGIN,
@@ -233,7 +232,7 @@ static void query (void)
                           "(for the use with GAP Video Frame manipulation)",
                           PLUG_IN_AUTHOR,
                           PLUG_IN_COPYRIGHT,
-                          PLUG_IN_VERSION,
+                          GAP_VERSION_WITH_DATE,
                           N_("<Image>/Video/Layer/Transform/Rotate 90 degrees CCW"),
                           PLUG_IN_IMAGE_TYPES,
                           GIMP_PLUGIN,

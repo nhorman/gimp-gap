@@ -41,8 +41,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-static char *gap_main_version =  "2.1.0; 2004/12/06";
-
 /* revision history:
  * gimp    2.1.0;   2004/12/06  hof: added gap_decode_mplayer
  * gimp    1.1.29b; 2000/11/25  hof: use gap lock procedures, update e-mail adress + main version
@@ -141,7 +139,7 @@ query ()
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
-			 gap_main_version,
+			 GAP_VERSION_WITH_DATE,
 			 N_("<Image>/Video/Split Video into Frames/MPlayer based extraction..."),
 			 NULL,
 			 GIMP_PLUGIN,
@@ -154,7 +152,7 @@ query ()
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
-			 gap_main_version,
+			 GAP_VERSION_WITH_DATE,
 			 N_("<Toolbox>/Xtns/Split Video into Frames/MPlayer based extraction..."),
 			 NULL,
 			 GIMP_PLUGIN,
@@ -168,7 +166,7 @@ query ()
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
-			 gap_main_version,
+			 GAP_VERSION_WITH_DATE,
 			 N_("<Image>/Video/Split Video into Frames/XANIM based extraction..."),
 			 NULL,
 			 GIMP_PLUGIN,
@@ -181,7 +179,7 @@ query ()
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
-			 gap_main_version,
+			 GAP_VERSION_WITH_DATE,
 			 N_("<Toolbox>/Xtns/Split Video into Frames/XANIM based extraction..."),
 			 NULL,
 			 GIMP_PLUGIN,
@@ -193,7 +191,7 @@ query ()
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
-			 gap_main_version,
+			 GAP_VERSION_WITH_DATE,
 			 N_("<Image>/Video/Encode/MPEG1..."),
 			 "*",
 			 GIMP_PLUGIN,
@@ -206,7 +204,7 @@ query ()
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
-			 gap_main_version,
+			 GAP_VERSION_WITH_DATE,
 			 N_("<Image>/Video/Encode/MPEG2..."),
 			 "*",
 			 GIMP_PLUGIN,

@@ -51,8 +51,6 @@
 #include "gap_filter_iterators.h"
 #include "gap_dbbrowser_utils.h"
 
-static char *gap_filter_version = "1.3.20b; 2003/09/20";
-
 /* revision history:
  * gimp   1.3.20b;  2003/09/20  hof: update version, minor cleanup
  * gimp   1.3.12a;  2003/05/02  hof: merge into CVS-gimp-gap project
@@ -99,12 +97,12 @@ query ()
     {GIMP_PDB_INT32, "run_mode", "Interactive, non-interactive"},
     {GIMP_PDB_IMAGE, "image", "Input image"},
     {GIMP_PDB_DRAWABLE, "drawable", "Input drawable (unused)"},
-    {GIMP_PDB_STRING, "proc_name", "name of plugin procedure to run for each layer)"},
+    {GIMP_PDB_STRING, "proc_name", "name of plugin procedure to run for each layer"},
+    {GIMP_PDB_INT32, "varying", "0 .. apply constant, 1..apply varying"},
   };
 
   static GimpParamDef *return_vals = NULL;
   static int nreturn_vals = 0;
-
 
   static GimpParamDef args_com_iter[] =
   {
@@ -115,14 +113,26 @@ query ()
     {GIMP_PDB_STRING, "plugin_name", "name of the plugin (used as keyname to access LAST_VALUES buffer)"},
   };
 
+
   gimp_plugin_domain_register (GETTEXT_PACKAGE, LOCALEDIR);
 
   gimp_install_procedure("plug_in_gap_layers_run_animfilter",
-			 "This plugin calls another plugin for each layer of an image, varying its settings (to produce animated effects). The called plugin must work on a single drawable and must be able to GIMP_RUN_WITH_LAST_VALS",
+			 "This plugin calls another plugin for each layer of an image, "
+                         "optional varying its settings (to produce animated effects). "
+                         "The called plugin must work on a single drawable and must be "
+                         "able to run in runmode GIMP_RUN_WITH_LAST_VALS and using gimp_set_data "
+                         "to store its parameters for this session with its own name as access key. "
+                         "plug_in_gap_layers_run_animfilter runs as wizzard (using more dialog steps). "
+                         "In Interactive runmode it starts with with a browser dialog where the name of the "
+                         "other plug-in (that is to execute) can be selected."
+                         "In non-interactive run mode this first browser dialog step is skiped. "
+                         "But the selceted plug-in (in this case via parameter plugin_name) is called in "
+                         "interactive runmode one time or two times if varying parameter is not 0. "
+                         "Those interactive calls are done regardless what runmode is specified here.",
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
-			 gap_filter_version,
+			 GAP_VERSION_WITH_DATE,
 			 N_("<Image>/Filters/Filter all Layers..."),
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
@@ -136,7 +146,7 @@ query ()
 			 "",
 			 "Wolfgang Hofer",
 			 "Wolfgang Hofer",
-			 "Feb. 2002",
+			 GAP_VERSION_WITH_DATE,
 			 NULL,    /* do not appear in menus */
 			 NULL,
 			 GIMP_PLUGIN,
@@ -191,9 +201,12 @@ run(const gchar *name
   
   if (strcmp (name, "plug_in_gap_layers_run_animfilter") == 0)
   {
+      GapFiltPdbApplyMode apply_mode;
+
+      apply_mode = GAP_PAPP_CONSTANT;
       if (run_mode == GIMP_RUN_NONINTERACTIVE)
       {
-        if (n_params != 4)
+        if (n_params != 5)
         {
           status = GIMP_PDB_CALLING_ERROR;
         }
@@ -201,6 +214,10 @@ run(const gchar *name
         {
           strncpy(l_plugin_name, param[3].data.d_string, MAX_PLUGIN_NAME_LEN -1);
           l_plugin_name[MAX_PLUGIN_NAME_LEN -1] = '\0';
+        }
+        if( param[4].data.d_int32 != 0)
+        {
+          apply_mode = GAP_PAPP_VARYING_LINEAR;
         }
       }
       else if(run_mode == GIMP_RUN_WITH_LAST_VALS)
@@ -214,7 +231,7 @@ run(const gchar *name
 
         image_id    = param[1].data.d_image;
 
-        l_rc = gap_proc_anim_apply(run_mode, image_id, l_plugin_name);
+        l_rc = gap_proc_anim_apply(run_mode, image_id, l_plugin_name, apply_mode);
         gimp_set_data("plug_in_gap_layers_run_animfilter",
                       l_plugin_name, sizeof(l_plugin_name));
       }
