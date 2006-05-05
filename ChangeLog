@@ -1,3 +1,8 @@
+2006-05-05  Sven Neumann  <sven@gimp.org>
+
+	* libgapvidapi/gap_vid_api.h: include "gap/gap_image.h" for the
+	declaration of gap_image_get_any_layer().
+
 2006-05-01  Wolfgang Hofer <hof@gimp.org>
 	fixes to make gimp-gap usable with the more restrictive
         PDB checks that were introduced with the gimp-2.3.8 release.

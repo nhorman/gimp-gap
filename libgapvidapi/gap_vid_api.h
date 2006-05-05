@@ -23,6 +23,7 @@
 #include <gtk/gtk.h>
 #include <libgimp/gimp.h>
 
+#include "gap/gap_image.h"
 
 #define GVA_MPGFRAME_UNKNOWN -1
 #define GVA_MPGFRAME_I_TYPE 1
