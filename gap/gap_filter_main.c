@@ -70,7 +70,7 @@
 
 int gap_debug = 0;
 
-
+#define PLUG_IN_NAME_ANIMFILTER "plug_in_gap_layers_run_animfilter"
 
 static void query(void);
 static void run(const gchar *name
@@ -116,7 +116,7 @@ query ()
 
   gimp_plugin_domain_register (GETTEXT_PACKAGE, LOCALEDIR);
 
-  gimp_install_procedure("plug_in_gap_layers_run_animfilter",
+  gimp_install_procedure(PLUG_IN_NAME_ANIMFILTER,
 			 "This plugin calls another plugin for each layer of an image, "
                          "optional varying its settings (to produce animated effects). "
                          "The called plugin must work on a single drawable and must be "
@@ -133,7 +133,7 @@ query ()
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
 			 GAP_VERSION_WITH_DATE,
-			 N_("<Image>/Filters/Filter all Layers..."),
+			 N_("Filter all Layers..."),
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
 			 G_N_ELEMENTS (args_foreach), nreturn_vals,
@@ -154,6 +154,8 @@ query ()
 			 args_com_iter, return_vals);
 
   /* ------------------ ALTernative Iterators ------------------------------ */
+
+  gimp_plugin_menu_register (PLUG_IN_NAME_ANIMFILTER, N_("<Image>/Filters/"));
 
   gap_query_iterators_ALT();
 			 
@@ -199,7 +201,7 @@ run(const gchar *name
 
   if(gap_debug) fprintf(stderr, "\n\ngap_filter_main: debug name = %s\n", name);
   
-  if (strcmp (name, "plug_in_gap_layers_run_animfilter") == 0)
+  if (strcmp (name, PLUG_IN_NAME_ANIMFILTER) == 0)
   {
       GapFiltPdbApplyMode apply_mode;
 
@@ -223,7 +225,7 @@ run(const gchar *name
       else if(run_mode == GIMP_RUN_WITH_LAST_VALS)
       {
         /* probably get last values (name of last plugin) */
-        gimp_get_data("plug_in_gap_layers_run_animfilter", l_plugin_name);
+        gimp_get_data(PLUG_IN_NAME_ANIMFILTER, l_plugin_name);
       }
 
       if (status == GIMP_PDB_SUCCESS)
@@ -232,7 +234,7 @@ run(const gchar *name
         image_id    = param[1].data.d_image;
 
         l_rc = gap_proc_anim_apply(run_mode, image_id, l_plugin_name, apply_mode);
-        gimp_set_data("plug_in_gap_layers_run_animfilter",
+        gimp_set_data(PLUG_IN_NAME_ANIMFILTER,
                       l_plugin_name, sizeof(l_plugin_name));
       }
   }

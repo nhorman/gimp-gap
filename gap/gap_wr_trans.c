@@ -164,7 +164,7 @@ static void query (void)
                           PLUG_IN_AUTHOR,
                           PLUG_IN_COPYRIGHT,
                           GAP_VERSION_WITH_DATE,
-                          N_("<Image>/Video/Layer/Transform/Flip Horizontal"),
+                          N_("Flip Horizontal"),
                           PLUG_IN_IMAGE_TYPES,
                           GIMP_PLUGIN,
                           global_number_in_args,
@@ -181,7 +181,7 @@ static void query (void)
                           PLUG_IN_AUTHOR,
                           PLUG_IN_COPYRIGHT,
                           GAP_VERSION_WITH_DATE,
-                          N_("<Image>/Video/Layer/Transform/Flip Vertical"),
+                          N_("Flip Vertical"),
                           PLUG_IN_IMAGE_TYPES,
                           GIMP_PLUGIN,
                           global_number_in_args,
@@ -198,7 +198,7 @@ static void query (void)
                           PLUG_IN_AUTHOR,
                           PLUG_IN_COPYRIGHT,
                           GAP_VERSION_WITH_DATE,
-                          N_("<Image>/Video/Layer/Transform/Rotate 90 degrees CW"),
+                          N_("Rotate 90 degrees CW"),
                           PLUG_IN_IMAGE_TYPES,
                           GIMP_PLUGIN,
                           global_number_in_args,
@@ -216,7 +216,7 @@ static void query (void)
                           PLUG_IN_AUTHOR,
                           PLUG_IN_COPYRIGHT,
                           GAP_VERSION_WITH_DATE,
-                          N_("<Image>/Video/Layer/Transform/Rotate 180 degrees"),
+                          N_("Rotate 180 degrees"),
                           PLUG_IN_IMAGE_TYPES,
                           GIMP_PLUGIN,
                           global_number_in_args,
@@ -233,13 +233,27 @@ static void query (void)
                           PLUG_IN_AUTHOR,
                           PLUG_IN_COPYRIGHT,
                           GAP_VERSION_WITH_DATE,
-                          N_("<Image>/Video/Layer/Transform/Rotate 90 degrees CCW"),
+                          N_("Rotate 90 degrees CCW"),
                           PLUG_IN_IMAGE_TYPES,
                           GIMP_PLUGIN,
                           global_number_in_args,
                           global_number_out_args,
                           in_args,
                           NULL);
+  {
+    /* Menu names */
+    const char *menupath_image_video_layer_transform = N_("<Image>/Video/Layer/Transform/");
+
+    //gimp_plugin_menu_branch_register("<Image>", "Video");
+    //gimp_plugin_menu_branch_register("<Image>/Video", "Layer");
+    //gimp_plugin_menu_branch_register("<Image>/Video/Layer", "Transform");
+
+    gimp_plugin_menu_register (PLUG_IN_NAME_HOR, menupath_image_video_layer_transform);
+    gimp_plugin_menu_register (PLUG_IN_NAME_VER, menupath_image_video_layer_transform);
+    gimp_plugin_menu_register (PLUG_IN_NAME_90,  menupath_image_video_layer_transform);
+    gimp_plugin_menu_register (PLUG_IN_NAME_180, menupath_image_video_layer_transform);
+    gimp_plugin_menu_register (PLUG_IN_NAME_270, menupath_image_video_layer_transform);
+  }
 }  /* end query */
 
 

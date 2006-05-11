@@ -267,7 +267,7 @@ query (void)
                           PLUG_IN_AUTHOR,
                           PLUG_IN_COPYRIGHT,
                           GAP_VERSION_WITH_DATE,
-                          N_("<Image>/Video/Layer/Colors/Levels..."),
+                          N_("Levels..."),
                           PLUG_IN_IMAGE_TYPES,
                           GIMP_PLUGIN,
                           nargs,
@@ -288,6 +288,16 @@ query (void)
                           GIMP_PLUGIN,
                           nargs_iter, nreturn_iter,
                           args_iter, return_iter);
+  {
+    /* Menu names */
+    const char *menupath_image_video_layer_colors = N_("<Image>/Video/Layer/Colors/");
+
+    //gimp_plugin_menu_branch_register("<Image>", "Video");
+    //gimp_plugin_menu_branch_register("<Image>/Video", "Layer");
+    //gimp_plugin_menu_branch_register("<Image>/Video/Layer", "Colors");
+
+    gimp_plugin_menu_register (PLUG_IN_NAME, menupath_image_video_layer_colors);
+  }
 }
 
 

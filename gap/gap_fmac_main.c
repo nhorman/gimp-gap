@@ -208,12 +208,13 @@ query ()
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
 			 gap_fmac_version,
-			 N_("<Image>/Filters/Filtermacro..."),
+			 N_("Filtermacro..."),
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
 			 G_N_ELEMENTS (args_fmac_dialog), nreturn_vals,
 			 args_fmac_dialog, return_vals);
 
+  gimp_plugin_menu_register (PLUG_IN_NAME_FMAC, N_("<Image>/Filters/"));
 }  /* end query */
 
 

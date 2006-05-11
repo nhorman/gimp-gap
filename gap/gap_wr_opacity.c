@@ -135,13 +135,22 @@ static void query (void)
                           PLUG_IN_AUTHOR,
                           PLUG_IN_COPYRIGHT,
                           GAP_VERSION_WITH_DATE,
-                          N_("<Image>/Video/Layer/Set Layer Opacity..."),
+                          N_("Set Layer Opacity..."),
                           PLUG_IN_IMAGE_TYPES,
                           GIMP_PLUGIN,
                           global_number_in_args,
                           global_number_out_args,
                           in_args,
                           NULL);
+  {
+    /* Menu names */
+    const char *menupath_image_video_layer = N_("<Image>/Video/Layer/");
+
+    //gimp_plugin_menu_branch_register("<Image>", "Video");
+    //gimp_plugin_menu_branch_register("<Image>/Video", "Layer");
+
+    gimp_plugin_menu_register (PLUG_IN_NAME, menupath_image_video_layer);
+  }
 
 }  /* end query */
 

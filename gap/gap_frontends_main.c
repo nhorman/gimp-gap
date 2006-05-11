@@ -77,6 +77,12 @@
 
 int gap_debug = 0;
 
+#define GAP_XANIM_PLUGIN_NAME          "plug_in_gap_xanim_decode"
+#define GAP_XANIM_PLUGIN_NAME_TOOLBOX  "plug_in_gap_xanim_decode_toolbox"
+#define GAP_MPEG_ENCODE_PLUGIN_NAME    "plug_in_gap_mpeg_encode"
+#define GAP_MPEG2_ENCODE_PLUGIN_NAME   "plug_in_gap_mpeg2encode"
+
+
 static void query(void);
 static void run(const gchar *name
               , gint n_params
@@ -140,7 +146,7 @@ query ()
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
 			 GAP_VERSION_WITH_DATE,
-			 N_("<Image>/Video/Split Video into Frames/MPlayer based extraction..."),
+			 N_("MPlayer based extraction..."),
 			 NULL,
 			 GIMP_PLUGIN,
 			 G_N_ELEMENTS (args_mplayer), nreturn_vals,
@@ -153,64 +159,86 @@ query ()
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
 			 GAP_VERSION_WITH_DATE,
-			 N_("<Toolbox>/Xtns/Split Video into Frames/MPlayer based extraction..."),
+			 N_("MPlayer based extraction..."),
 			 NULL,
 			 GIMP_PLUGIN,
 			 G_N_ELEMENTS (args_mplayer_ext), nreturn_vals,
 			 args_mplayer_ext, return_vals);
 
 
-  gimp_install_procedure("plug_in_gap_xanim_decode",
+  gimp_install_procedure(GAP_XANIM_PLUGIN_NAME,
 			 "This plugin calls xanim to split any video to video frames. "
 			 "(xanim exporting edition must be installed on your system)",
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
 			 GAP_VERSION_WITH_DATE,
-			 N_("<Image>/Video/Split Video into Frames/XANIM based extraction..."),
+			 N_("XANIM based extraction..."),
 			 NULL,
 			 GIMP_PLUGIN,
 			 G_N_ELEMENTS (args_xanim), nreturn_vals,
 			 args_xanim, return_vals);
 
-  gimp_install_procedure("plug_in_gap_xanim_decode_toolbox",
+  gimp_install_procedure(GAP_XANIM_PLUGIN_NAME_TOOLBOX,
 			 "This plugin calls xanim to split any video to video frames. "
 			 "(xanim exporting edition must be installed on your system)",
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
 			 GAP_VERSION_WITH_DATE,
-			 N_("<Toolbox>/Xtns/Split Video into Frames/XANIM based extraction..."),
+			 N_("XANIM based extraction..."),
 			 NULL,
 			 GIMP_PLUGIN,
 			 G_N_ELEMENTS (args_xanim_ext), nreturn_vals,
 			 args_xanim_ext, return_vals);
 
-  gimp_install_procedure("plug_in_gap_mpeg_encode",
+  gimp_install_procedure(GAP_MPEG_ENCODE_PLUGIN_NAME,
 			 "This plugin calls mpeg_encode to convert video frames to MPEG1, or just generates a param file for mpeg_encode. (mpeg_encode must be installed on your system)",
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
 			 GAP_VERSION_WITH_DATE,
-			 N_("<Image>/Video/Encode/MPEG1..."),
+			 N_("MPEG1..."),
 			 "*",
 			 GIMP_PLUGIN,
 			 G_N_ELEMENTS (args_mpege), nreturn_vals,
 			 args_mpege, return_vals);
 
 
-  gimp_install_procedure("plug_in_gap_mpeg2encode",
+  gimp_install_procedure(GAP_MPEG2_ENCODE_PLUGIN_NAME,
 			 "This plugin calls mpeg2encode to convert video frames to MPEG1 or MPEG2, or just generates a param file for mpeg2encode. (mpeg2encode must be installed on your system)",
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
 			 GAP_VERSION_WITH_DATE,
-			 N_("<Image>/Video/Encode/MPEG2..."),
+			 N_("MPEG2..."),
 			 "*",
 			 GIMP_PLUGIN,
 			 G_N_ELEMENTS (args_mpege), nreturn_vals,
 			 args_mpege, return_vals);
 
+  {
+    /* Menu names */
+    const char *menupath_image_video_encode = N_("<Image>/Video/Encode/");
+    const char *menupath_image_video_split = N_("<Image>/Video/Split Video into Frames/");
+    const char *menupath_toolbox_video_split = N_("<Toolbox>/Xtns/Split Video into Frames/");
+
+    //gimp_plugin_menu_branch_register("<Image>", "Video");
+    //gimp_plugin_menu_branch_register("<Image>/Video", "Encode");
+    //gimp_plugin_menu_branch_register("<Image>/Video", "Split Video into Frames");
+
+    //gimp_plugin_menu_branch_register("<Toolbox>", "Video");
+    //gimp_plugin_menu_branch_register("<Toolbox>/Video", "Encode");
+    //gimp_plugin_menu_branch_register("<Toolbox>/Video", "Split Video into Frames");
+
+    gimp_plugin_menu_register (GAP_MPLAYER_PLUGIN_NAME, menupath_image_video_split);
+    gimp_plugin_menu_register (GAP_XANIM_PLUGIN_NAME, menupath_image_video_split);
+    gimp_plugin_menu_register (GAP_MPEG_ENCODE_PLUGIN_NAME, menupath_image_video_encode);
+    gimp_plugin_menu_register (GAP_MPEG2_ENCODE_PLUGIN_NAME, menupath_image_video_encode);
+
+    gimp_plugin_menu_register (GAP_MPLAYER_PLUGIN_NAME_TOOLBOX, menupath_toolbox_video_split);
+    gimp_plugin_menu_register (GAP_XANIM_PLUGIN_NAME_TOOLBOX, menupath_toolbox_video_split);
+  }
 
 }	/* end query */
 
@@ -253,8 +281,8 @@ static void run(const gchar *name
 
   if(gap_debug) fprintf(stderr, "\n\ngap_main: debug name = %s\n", name);
 
-  if ((strcmp (name, "plug_in_gap_mpeg_encode") == 0)
-  ||  (strcmp (name, "plug_in_gap_mpeg2encode") == 0))
+  if ((strcmp (name, GAP_MPEG_ENCODE_PLUGIN_NAME) == 0)
+  ||  (strcmp (name, GAP_MPEG2_ENCODE_PLUGIN_NAME) == 0))
   {
     image_id = param[1].data.d_image;
     lock_image_id = image_id;
@@ -323,8 +351,8 @@ static void run(const gchar *name
 	gimp_set_data(GAP_MPLAYER_PLUGIN_NAME, gpp, sizeof(mplayer_gpp));
       }
   }
-  else if ((strcmp (name, "plug_in_gap_xanim_decode") == 0)
-  ||  (strcmp (name, "plug_in_gap_xanim_decode_toolbox") == 0))
+  else if ((strcmp (name, GAP_XANIM_PLUGIN_NAME) == 0)
+  ||  (strcmp (name, GAP_XANIM_PLUGIN_NAME_TOOLBOX) == 0))
   {
       if (run_mode == GIMP_RUN_NONINTERACTIVE)
       {
@@ -340,7 +368,7 @@ static void run(const gchar *name
 
       }
   }
-  else if (strcmp (name, "plug_in_gap_mpeg_encode") == 0)
+  else if (strcmp (name, GAP_MPEG_ENCODE_PLUGIN_NAME) == 0)
   {
       if (run_mode == GIMP_RUN_NONINTERACTIVE)
       {
@@ -365,7 +393,7 @@ static void run(const gchar *name
 
       }
   }
-  else if (strcmp (name, "plug_in_gap_mpeg2encode") == 0)
+  else if (strcmp (name, GAP_MPEG2_ENCODE_PLUGIN_NAME) == 0)
   {
       if (run_mode == GIMP_RUN_NONINTERACTIVE)
       {
@@ -405,8 +433,8 @@ static void run(const gchar *name
   values[0].type = GIMP_PDB_STATUS;
   values[0].data.d_status = status;
 
-  if ((strcmp (name, "plug_in_gap_mpeg_encode") == 0)
-  ||  (strcmp (name, "plug_in_gap_mpeg2encode") == 0))
+  if ((strcmp (name, GAP_MPEG_ENCODE_PLUGIN_NAME) == 0)
+  ||  (strcmp (name, GAP_MPEG2_ENCODE_PLUGIN_NAME) == 0))
   {
     /* remove LOCK on this image for all gap_plugins */
      gap_lock_remove_lock(lock_image_id);

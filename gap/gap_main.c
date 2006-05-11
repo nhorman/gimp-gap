@@ -136,6 +136,36 @@
 
 int gap_debug = 0;
 
+#define PLUGIN_NAME_GAP_NEXT                 "plug_in_gap_next"
+#define PLUGIN_NAME_GAP_PREV                 "plug_in_gap_prev" 
+#define PLUGIN_NAME_GAP_FIRST                "plug_in_gap_first"
+#define PLUGIN_NAME_GAP_LAST                 "plug_in_gap_last" 
+#define PLUGIN_NAME_GAP_GOTO                 "plug_in_gap_goto"
+#define PLUGIN_NAME_GAP_DEL                  "plug_in_gap_del"
+#define PLUGIN_NAME_GAP_DUP                  "plug_in_gap_dup"
+#define PLUGIN_NAME_GAP_DENSITY              "plug_in_gap_density"
+#define PLUGIN_NAME_GAP_EXCHG                "plug_in_gap_exchg"
+#define PLUGIN_NAME_GAP_MOVE                 "plug_in_gap_move"
+#define PLUGIN_NAME_GAP_MOVE_PATH_EXT        "plug_in_gap_move_path_ext" 
+#define PLUGIN_NAME_GAP_MOVE_PATH_EXT2       "plug_in_gap_move_path_ext2"
+#define PLUGIN_NAME_GAP_RANGE_TO_MULTILAYER  "plug_in_gap_range_to_multilayer"
+#define PLUGIN_NAME_GAP_RANGE_FLATTEN        "plug_in_gap_range_flatten" 
+#define PLUGIN_NAME_GAP_RANGE_LAYER_DEL      "plug_in_gap_range_layer_del"
+#define PLUGIN_NAME_GAP_RANGE_CONVERT        "plug_in_gap_range_convert" 
+#define PLUGIN_NAME_GAP_RANGE_CONVERT2       "plug_in_gap_range_convert2"
+#define PLUGIN_NAME_GAP_ANIM_RESIZE          "plug_in_gap_anim_resize"
+#define PLUGIN_NAME_GAP_ANIM_CROP            "plug_in_gap_anim_crop" 
+#define PLUGIN_NAME_GAP_ANIM_SCALE           "plug_in_gap_anim_scale"
+#define PLUGIN_NAME_GAP_SPLIT                "plug_in_gap_split"
+#define PLUGIN_NAME_GAP_SHIFT                "plug_in_gap_shift" 
+#define PLUGIN_NAME_GAP_REVERSE              "plug_in_gap_reverse"
+#define PLUGIN_NAME_GAP_RENUMBER             "plug_in_gap_renumber"
+#define PLUGIN_NAME_GAP_MODIFY               "plug_in_gap_modify" 
+#define PLUGIN_NAME_GAP_VIDEO_EDIT_COPY      "plug_in_gap_video_edit_copy"  
+#define PLUGIN_NAME_GAP_VIDEO_EDIT_PASTE     "plug_in_gap_video_edit_paste"
+#define PLUGIN_NAME_GAP_VIDEO_EDIT_CLEAR     "plug_in_gap_video_edit_clear"
+#define PLUGIN_NAME_GAP_GET_ANIMINFO         "plug_in_gap_get_animinfo"
+#define PLUGIN_NAME_GAP_SET_FRAMERATE        "plug_in_gap_set_framerate"
 
 
 static void query(void);
@@ -661,91 +691,91 @@ query ()
 
   gimp_plugin_domain_register (GETTEXT_PACKAGE, LOCALEDIR);
 
-  gimp_install_procedure("plug_in_gap_next",
-			 "This plugin exchanges current image with (next nubered) image from disk.",
+  gimp_install_procedure(PLUGIN_NAME_GAP_NEXT,
+			 "This plugin exchanges current image with (next numbered) image from disk.",
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
 			 GAP_VERSION_WITH_DATE,
-			 N_("<Image>/Video/Go To/Next Frame"),
+			 N_("Next Frame"),
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
 			 nargs_std, nreturn_std,
 			 args_std, return_std);
 
-  gimp_install_procedure("plug_in_gap_prev",
-			 "This plugin exchanges current image with (previous nubered) image from disk.",
+  gimp_install_procedure(PLUGIN_NAME_GAP_PREV,
+			 "This plugin exchanges current image with (previous numbered) image from disk.",
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
 			 GAP_VERSION_WITH_DATE,
-			 N_("<Image>/Video/Go To/Previous Frame"),
+			 N_("Previous Frame"),
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
 			 nargs_std, nreturn_std,
 			 args_std, return_std);
 
-  gimp_install_procedure("plug_in_gap_first",
-			 "This plugin exchanges current image with (lowest nubered) image from disk.",
+  gimp_install_procedure(PLUGIN_NAME_GAP_FIRST,
+			 "This plugin exchanges current image with (lowest numbered) image from disk.",
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
 			 GAP_VERSION_WITH_DATE,
-			 N_("<Image>/Video/Go To/First Frame"),
+			 N_("First Frame"),
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
 			 nargs_std, nreturn_std,
 			 args_std, return_std);
 
-  gimp_install_procedure("plug_in_gap_last",
-			 "This plugin exchanges current image with (highest nubered) image from disk.",
+  gimp_install_procedure(PLUGIN_NAME_GAP_LAST,
+			 "This plugin exchanges current image with (highest numbered) image from disk.",
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
 			 GAP_VERSION_WITH_DATE,
-			 N_("<Image>/Video/Go To/Last Frame"),
+			 N_("Last Frame"),
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
 			 nargs_std, nreturn_std,
 			 args_std, return_std);
 
-  gimp_install_procedure("plug_in_gap_goto",
+  gimp_install_procedure(PLUGIN_NAME_GAP_GOTO,
 			 "This plugin exchanges current image with requested image (nr) from disk.",
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
 			 GAP_VERSION_WITH_DATE,
-			 N_("<Image>/Video/Go To/Any Frame..."),
+			 N_("Any Frame..."),
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
 			 nargs_goto, nreturn_std,
 			 args_goto, return_std);
 
-  gimp_install_procedure("plug_in_gap_del",
+  gimp_install_procedure(PLUGIN_NAME_GAP_DEL,
 			 "This plugin deletes the given number of frames from disk including the current frame.",
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
 			 GAP_VERSION_WITH_DATE,
-			 N_("<Image>/Video/Delete Frames..."),
+			 N_("Delete Frames..."),
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
 			 nargs_del, nreturn_std,
 			 args_del, return_std);
 
-  gimp_install_procedure("plug_in_gap_dup",
+  gimp_install_procedure(PLUGIN_NAME_GAP_DUP,
 			 "This plugin duplicates the current frames on disk n-times.",
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
 			 GAP_VERSION_WITH_DATE,
-			 N_("<Image>/Video/Duplicate Frames..."),
+			 N_("Duplicate Frames..."),
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
 			 nargs_dup, nreturn_std,
 			 args_dup, return_std);
 
-  gimp_install_procedure("plug_in_gap_density",
+  gimp_install_procedure(PLUGIN_NAME_GAP_DENSITY,
 			 "This plugin changes the number of frames (density) on disk to match a"
 			 " new target framerate that is densty_factor times higher"
 			 " than the origianl framerate."
@@ -756,31 +786,31 @@ query ()
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
 			 GAP_VERSION_WITH_DATE,
-			 N_("<Image>/Video/Frames Density..."),
+			 N_("Frames Density..."),
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
 			 nargs_dup, nreturn_std,
 			 args_dup, return_std);
 
-  gimp_install_procedure("plug_in_gap_exchg",
+  gimp_install_procedure(PLUGIN_NAME_GAP_EXCHG,
 			 "This plugin exchanges content of the current with destination frame.",
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
 			 GAP_VERSION_WITH_DATE,
-			 N_("<Image>/Video/Exchange Frame..."),
+			 N_("Exchange Frame..."),
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
 			 nargs_exchg, nreturn_std,
 			 args_exchg, return_std);
 
-  gimp_install_procedure("plug_in_gap_move",
+  gimp_install_procedure(PLUGIN_NAME_GAP_MOVE,
 			 "This plugin copies layer(s) from one sourceimage to multiple frames on disk, varying position, size and opacity.",
 			 "For NONINTERACTIVE PDB interfaces see also (plug_in_gap_move_path_ext, plug_in_gap_move_path_ext2)",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
 			 GAP_VERSION_WITH_DATE,
-			 N_("<Image>/Video/Move Path..."),
+			 N_("Move Path..."),
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
 			 G_N_ELEMENTS (args_mov), nreturn_std,
@@ -818,7 +848,7 @@ query ()
 			 "See also (plug_in_gap_move_path, plug_in_gap_move)",
 			 (int)GAP_MOV_MAX_POINT);
 
-  gimp_install_procedure("plug_in_gap_move_path_ext",
+  gimp_install_procedure(PLUGIN_NAME_GAP_MOVE_PATH_EXT,
 			 "This plugin copies layer(s) from one sourceimage or source animation to multiple frames on disk,\n"
 			 "with varying position, size, perspective and opacity.\n"
 			 ,
@@ -833,7 +863,7 @@ query ()
 			 args_mov_path_ext, return_std);
   g_free(l_help_str);
 
-  gimp_install_procedure("plug_in_gap_move_path_ext2",
+  gimp_install_procedure(PLUGIN_NAME_GAP_MOVE_PATH_EXT2,
 			 "This plugin copies layer(s) from one sourceimage or source animation to multiple frames on disk,\n"
 			 "with varying position, size, perspective and opacity.\n"
 			 ,
@@ -854,43 +884,43 @@ query ()
 
 
 
-  gimp_install_procedure("plug_in_gap_range_to_multilayer",
+  gimp_install_procedure(PLUGIN_NAME_GAP_RANGE_TO_MULTILAYER,
 			 "This plugin creates a new image from the given range of frame-images. Each frame is converted to one layer in the new image, according to flatten_mode. (the frames on disk are not changed).",
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
 			 GAP_VERSION_WITH_DATE,
-			 N_("<Image>/Video/Frames to Image..."),
+			 N_("Frames to Image..."),
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
 			 nargs_f2multi, nreturn_f2multi,
 			 args_f2multi, return_f2multi);
 
-  gimp_install_procedure("plug_in_gap_range_flatten",
+  gimp_install_procedure(PLUGIN_NAME_GAP_RANGE_FLATTEN,
 			 "This plugin flattens the given range of frame-images (on disk)",
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
 			 GAP_VERSION_WITH_DATE,
-			 N_("<Image>/Video/Frames Flatten..."),
+			 N_("Frames Flatten..."),
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
 			 nargs_rflatt, nreturn_std,
 			 args_rflatt, return_std);
 
-  gimp_install_procedure("plug_in_gap_range_layer_del",
+  gimp_install_procedure(PLUGIN_NAME_GAP_RANGE_LAYER_DEL,
 			 "This plugin deletes one layer in the given range of frame-images (on disk). exception: the last remaining layer of a frame is not deleted",
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
 			 GAP_VERSION_WITH_DATE,
-			 N_("<Image>/Video/Frames Layer Delete..."),
+			 N_("Frames Layer Delete..."),
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
 			 nargs_rlayerdel, nreturn_std,
 			 args_rlayerdel, return_std);
 
-  gimp_install_procedure("plug_in_gap_range_convert",
+  gimp_install_procedure(PLUGIN_NAME_GAP_RANGE_CONVERT,
 			 "This plugin converts the given range of frame-images to other fileformats (on disk) depending on extension",
 			 "WARNING this procedure is obsolete, please use plug_in_gap_range_convert2",
 			 "Wolfgang Hofer (hof@gimp.org)",
@@ -902,116 +932,116 @@ query ()
 			 nargs_rconv, nreturn_rconv,
 			 args_rconv, return_rconv);
 
-  gimp_install_procedure("plug_in_gap_range_convert2",
+  gimp_install_procedure(PLUGIN_NAME_GAP_RANGE_CONVERT2,
 			 "This plugin converts the given range of frame-images to other fileformats (on disk) depending on extension",
 			 "only one of the converted frames is returned (the one with lowest handled frame number)",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
 			 GAP_VERSION_WITH_DATE,
-			 N_("<Image>/Video/Frames Convert..."),
+			 N_("Frames Convert..."),
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
 			 nargs_rconv2, nreturn_rconv,
 			 args_rconv2, return_rconv);
 
-  gimp_install_procedure("plug_in_gap_anim_resize",
+  gimp_install_procedure(PLUGIN_NAME_GAP_ANIM_RESIZE,
 			 "This plugin resizes all video frames (images on disk) to the given new_width/new_height",
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
 			 GAP_VERSION_WITH_DATE,
-			 N_("<Image>/Video/Frames Resize..."),
+			 N_("Frames Resize..."),
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
 			 nargs_resize, nreturn_std,
 			 args_resize, return_std);
 
-  gimp_install_procedure("plug_in_gap_anim_crop",
+  gimp_install_procedure(PLUGIN_NAME_GAP_ANIM_CROP,
 			 "This plugin crops all video frames (images on disk) to the given new_width/new_height",
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
 			 GAP_VERSION_WITH_DATE,
-			 N_("<Image>/Video/Frames Crop..."),
+			 N_("Frames Crop..."),
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
 			 nargs_resize, nreturn_std,
 			 args_resize, return_std);
 
-  gimp_install_procedure("plug_in_gap_anim_scale",
+  gimp_install_procedure(PLUGIN_NAME_GAP_ANIM_SCALE,
 			 "This plugin scales all video frames (images on disk) to the given new_width/new_height",
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
 			 GAP_VERSION_WITH_DATE,
-			 N_("<Image>/Video/Frames Scale..."),
+			 N_("Frames Scale..."),
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
 			 nargs_scale, nreturn_std,
 			 args_scale, return_std);
 
-  gimp_install_procedure("plug_in_gap_split",
+  gimp_install_procedure(PLUGIN_NAME_GAP_SPLIT,
 			 "This plugin splits the current image to video frames (images on disk). Each layer is saved as one frame",
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
 			 GAP_VERSION_WITH_DATE,
-			 N_("<Image>/Video/Split Image to Frames..."),
+			 N_("Split Image to Frames..."),
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
 			 nargs_split, nreturn_split,
 			 args_split, return_split);
 
 
-  gimp_install_procedure("plug_in_gap_shift",
+  gimp_install_procedure(PLUGIN_NAME_GAP_SHIFT,
        "This plugin exchanges frame numbers in the given range. (discfile frame_0001.xcf is renamed to frame_0002.xcf, 2->3, 3->4 ... n->1)",
        "",
        "Wolfgang Hofer (hof@gimp.org)",
        "Wolfgang Hofer",
        GAP_VERSION_WITH_DATE,
-       N_("<Image>/Video/Frame Sequence Shift..."),
+       N_("Frame Sequence Shift..."),
        "RGB*, INDEXED*, GRAY*",
        GIMP_PLUGIN,
        nargs_shift, nreturn_std,
        args_shift, return_std);
 
-  gimp_install_procedure("plug_in_gap_reverse",
+  gimp_install_procedure(PLUGIN_NAME_GAP_REVERSE,
        "This plugin reverse the order of frame numbers in the given range. ( 3-4-5-6-7 ==> 7-6-5-4-3)",
        "",
        "Saul Goode (saulgoode@brickfilms.com)",
        "Saul Goode",
        GAP_VERSION_WITH_DATE,
-       N_("<Image>/Video/Frame Sequence Reverse..."),
+       N_("Frame Sequence Reverse..."),
        "RGB*, INDEXED*, GRAY*",
        GIMP_PLUGIN,
        nargs_reverse, nreturn_std,
        args_reverse, return_std);
 
-  gimp_install_procedure("plug_in_gap_renumber",
+  gimp_install_procedure(PLUGIN_NAME_GAP_RENUMBER,
 			 "This plugin renumbers all frames (discfiles) starting at start_frame_nr using n digits for the framenumber part)",
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
 			 GAP_VERSION_WITH_DATE,
-			 N_("<Image>/Video/Frames Renumber..."),
+			 N_("Frames Renumber..."),
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
 			 nargs_renumber, nreturn_std,
 			 args_renumber, return_std);
 
-  gimp_install_procedure("plug_in_gap_modify",
+  gimp_install_procedure(PLUGIN_NAME_GAP_MODIFY,
 			 "This plugin performs a modifying action on each selected layer in each selected framerange",
 			 "",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
 			 GAP_VERSION_WITH_DATE,
-			 N_("<Image>/Video/Frames Modify..."),
+			 N_("Frames Modify..."),
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
 			 nargs_modify, nreturn_std,
 			 args_modify, return_std);
 
-  gimp_install_procedure("plug_in_gap_video_edit_copy",
+  gimp_install_procedure(PLUGIN_NAME_GAP_VIDEO_EDIT_COPY,
 			 "This plugin appends the selected framerange to the video paste buffer"
 			 "the video paste buffer is a directory configured by gimprc (video-paste-dir )"
 			 "and a framefile basename configured by gimprc (video-paste-basename)",
@@ -1025,7 +1055,7 @@ query ()
 			 nargs_video_copy, nreturn_nothing,
 			 args_video_copy, return_nothing);
 
-  gimp_install_procedure("plug_in_gap_video_edit_paste",
+  gimp_install_procedure(PLUGIN_NAME_GAP_VIDEO_EDIT_PASTE,
 			 "This plugin copies all frames from the video paste buffer"
 			 "to the current video. Depending on the paste_mode parameter"
 			 "the copied frames are replacing frames beginning at current frame"
@@ -1044,7 +1074,7 @@ query ()
 			 nargs_video_paste, nreturn_std,
 			 args_video_paste, return_std);
 
-  gimp_install_procedure("plug_in_gap_video_edit_clear",
+  gimp_install_procedure(PLUGIN_NAME_GAP_VIDEO_EDIT_CLEAR,
 			 "clear the video paste buffer by deleting all framefiles"
 			 "the video paste buffer is a directory configured by gimprc (video-paste-dir )"
 			 "and a framefile basename configured by gimprc (video-paste-basename)",
@@ -1059,7 +1089,7 @@ query ()
                          nreturn_nothing,
 			 args_video_clear, return_nothing);
 
-  gimp_install_procedure("plug_in_gap_get_animinfo",
+  gimp_install_procedure(PLUGIN_NAME_GAP_GET_ANIMINFO,
 			 "This plugin gets animation infos about video frames."
                          ,
 			 "Informations about the video frames belonging to the\n"
@@ -1077,7 +1107,7 @@ query ()
 			 nargs_std, nreturn_ainfo,
 			 args_std, return_ainfo);
 
-  gimp_install_procedure("plug_in_gap_set_framerate",
+  gimp_install_procedure(PLUGIN_NAME_GAP_SET_FRAMERATE,
 			 "This plugin sets the framerate for video frames",
 			 "The framerate is stored in a video info file"
                          " named like the basename of the video frames"
@@ -1092,6 +1122,38 @@ query ()
 			 nargs_setrate, nreturn_nothing,
 			 args_setrate, return_nothing);
 
+  {
+     /* Menu names */
+     const char *menupath_image_video = N_("<Image>/Video/");
+     const char *menupath_image_video_goto = N_("<Image>/Video/Go To/");
+ 
+     //gimp_plugin_menu_branch_register("<Image>", "Video");
+     //gimp_plugin_menu_branch_register("<Image>/Video", "Go To");
+    
+     gimp_plugin_menu_register (PLUGIN_NAME_GAP_NEXT, menupath_image_video_goto);
+     gimp_plugin_menu_register (PLUGIN_NAME_GAP_PREV, menupath_image_video_goto);
+     gimp_plugin_menu_register (PLUGIN_NAME_GAP_FIRST, menupath_image_video_goto);
+     gimp_plugin_menu_register (PLUGIN_NAME_GAP_LAST, menupath_image_video_goto);
+     gimp_plugin_menu_register (PLUGIN_NAME_GAP_GOTO, menupath_image_video_goto);
+
+     gimp_plugin_menu_register (PLUGIN_NAME_GAP_DEL, menupath_image_video);
+     gimp_plugin_menu_register (PLUGIN_NAME_GAP_DUP, menupath_image_video);
+     gimp_plugin_menu_register (PLUGIN_NAME_GAP_DENSITY, menupath_image_video);
+     gimp_plugin_menu_register (PLUGIN_NAME_GAP_EXCHG, menupath_image_video);
+     gimp_plugin_menu_register (PLUGIN_NAME_GAP_MOVE, menupath_image_video);
+     gimp_plugin_menu_register (PLUGIN_NAME_GAP_RANGE_TO_MULTILAYER, menupath_image_video);
+     gimp_plugin_menu_register (PLUGIN_NAME_GAP_RANGE_FLATTEN, menupath_image_video);
+     gimp_plugin_menu_register (PLUGIN_NAME_GAP_RANGE_LAYER_DEL, menupath_image_video);
+     gimp_plugin_menu_register (PLUGIN_NAME_GAP_RANGE_CONVERT2, menupath_image_video);
+     gimp_plugin_menu_register (PLUGIN_NAME_GAP_ANIM_RESIZE, menupath_image_video);
+     gimp_plugin_menu_register (PLUGIN_NAME_GAP_ANIM_CROP, menupath_image_video);
+     gimp_plugin_menu_register (PLUGIN_NAME_GAP_ANIM_SCALE, menupath_image_video);
+     gimp_plugin_menu_register (PLUGIN_NAME_GAP_SPLIT, menupath_image_video);
+     gimp_plugin_menu_register (PLUGIN_NAME_GAP_SHIFT, menupath_image_video);
+     gimp_plugin_menu_register (PLUGIN_NAME_GAP_REVERSE, menupath_image_video);
+     gimp_plugin_menu_register (PLUGIN_NAME_GAP_RENUMBER, menupath_image_video);
+     gimp_plugin_menu_register (PLUGIN_NAME_GAP_MODIFY, menupath_image_video);
+  }
 }	/* end query */
 
 
@@ -1160,8 +1222,8 @@ run (const gchar *name
 
   run_mode = param[0].data.d_int32;
   lock_run_mode = run_mode;
-  if((strcmp (name, "plug_in_gap_prev") == 0)
-  || (strcmp (name, "plug_in_gap_next") == 0))
+  if((strcmp (name, PLUGIN_NAME_GAP_PREV) == 0)
+  || (strcmp (name, PLUGIN_NAME_GAP_NEXT) == 0))
   {
     /* stepping from frame to frame is often done
      * in quick sequence via Shortcut Key, and should
@@ -1198,7 +1260,7 @@ run (const gchar *name
    * NON-LOCKING gap_plugins
    * ---------------------------
    */
-  if (strcmp (name, "plug_in_gap_get_animinfo") == 0)
+  if (strcmp (name, PLUGIN_NAME_GAP_GET_ANIMINFO) == 0)
   {
       GapAnimInfo *ainfo_ptr;
       GapVinVideoInfo *vin_ptr;
@@ -1245,7 +1307,7 @@ run (const gchar *name
       }
       return;
   }
-  else if (strcmp (name, "plug_in_gap_set_framerate") == 0)
+  else if (strcmp (name, PLUGIN_NAME_GAP_SET_FRAMERATE) == 0)
   {
       GapAnimInfo *ainfo_ptr;
       GapVinVideoInfo *vin_ptr;
@@ -1310,7 +1372,7 @@ run (const gchar *name
    * ---------------------------
    */
 
-  if (strcmp (name, "plug_in_gap_next") == 0)
+  if (strcmp (name, PLUGIN_NAME_GAP_NEXT) == 0)
   {
       if (run_mode == GIMP_RUN_NONINTERACTIVE)
       {
@@ -1325,7 +1387,7 @@ run (const gchar *name
         l_rc_image = gap_base_next(run_mode, image_id);
       }
   }
-  else if (strcmp (name, "plug_in_gap_prev") == 0)
+  else if (strcmp (name, PLUGIN_NAME_GAP_PREV) == 0)
   {
       if (run_mode == GIMP_RUN_NONINTERACTIVE)
       {
@@ -1340,7 +1402,7 @@ run (const gchar *name
         l_rc_image = gap_base_prev(run_mode, image_id);
       }
   }
-  else if (strcmp (name, "plug_in_gap_first") == 0)
+  else if (strcmp (name, PLUGIN_NAME_GAP_FIRST) == 0)
   {
       if (run_mode == GIMP_RUN_NONINTERACTIVE)
       {
@@ -1355,7 +1417,7 @@ run (const gchar *name
         l_rc_image = gap_base_first(run_mode, image_id);
       }
   }
-  else if (strcmp (name, "plug_in_gap_last") == 0)
+  else if (strcmp (name, PLUGIN_NAME_GAP_LAST) == 0)
   {
       if (run_mode == GIMP_RUN_NONINTERACTIVE)
       {
@@ -1370,7 +1432,7 @@ run (const gchar *name
         l_rc_image = gap_base_last(run_mode, image_id);
       }
   }
-  else if (strcmp (name, "plug_in_gap_goto") == 0)
+  else if (strcmp (name, PLUGIN_NAME_GAP_GOTO) == 0)
   {
       if (run_mode == GIMP_RUN_NONINTERACTIVE)
       {
@@ -1386,7 +1448,7 @@ run (const gchar *name
         l_rc_image = gap_base_goto(run_mode, image_id, nr);
       }
   }
-  else if (strcmp (name, "plug_in_gap_del") == 0)
+  else if (strcmp (name, PLUGIN_NAME_GAP_DEL) == 0)
   {
       if (run_mode == GIMP_RUN_NONINTERACTIVE)
       {
@@ -1402,7 +1464,7 @@ run (const gchar *name
         l_rc_image = gap_base_del(run_mode, image_id, nr);
       }
   }
-  else if (strcmp (name, "plug_in_gap_dup") == 0)
+  else if (strcmp (name, PLUGIN_NAME_GAP_DUP) == 0)
   {
       if (run_mode == GIMP_RUN_NONINTERACTIVE)
       {
@@ -1431,7 +1493,7 @@ run (const gchar *name
 
       }
   }
-  else if (strcmp (name, "plug_in_gap_density") == 0)
+  else if (strcmp (name, PLUGIN_NAME_GAP_DENSITY) == 0)
   {
      gdouble density_factor;
      gboolean density_grow;
@@ -1454,7 +1516,7 @@ run (const gchar *name
         l_rc_image = gap_base_density(run_mode, image_id, range_from, range_to, density_factor, density_grow);
       }
   }
-  else if (strcmp (name, "plug_in_gap_exchg") == 0)
+  else if (strcmp (name, PLUGIN_NAME_GAP_EXCHG) == 0)
   {
       if (run_mode == GIMP_RUN_NONINTERACTIVE)
       {
@@ -1470,7 +1532,7 @@ run (const gchar *name
         l_rc_image = gap_base_exchg(run_mode, image_id, nr);
       }
   }
-  else if (strcmp (name, "plug_in_gap_move") == 0)
+  else if (strcmp (name, PLUGIN_NAME_GAP_MOVE) == 0)
   {
       GapMovValues *pvals;
 
@@ -1486,8 +1548,8 @@ run (const gchar *name
       }
       g_free(pvals);
   }
-  else if ((strcmp (name, "plug_in_gap_move_path_ext") == 0)
-       ||  (strcmp (name, "plug_in_gap_move_path_ext2") == 0))
+  else if ((strcmp (name, PLUGIN_NAME_GAP_MOVE_PATH_EXT) == 0)
+       ||  (strcmp (name, PLUGIN_NAME_GAP_MOVE_PATH_EXT2) == 0))
   {
       GapMovValues *pvals;
       gchar        *pointfile;
@@ -1532,8 +1594,8 @@ run (const gchar *name
 
       if (run_mode == GIMP_RUN_NONINTERACTIVE)
       {
-        if ( ((n_params != nargs_mov_path_ext)  && (strcmp (name, "plug_in_gap_move_path_ext")  == 0))
-	||   ((n_params != nargs_mov_path_ext2) && (strcmp (name, "plug_in_gap_move_path_ext2") == 0)))
+        if ( ((n_params != nargs_mov_path_ext)  && (strcmp (name, PLUGIN_NAME_GAP_MOVE_PATH_EXT)  == 0))
+	||   ((n_params != nargs_mov_path_ext2) && (strcmp (name, PLUGIN_NAME_GAP_MOVE_PATH_EXT2) == 0)))
         {
           status = GIMP_PDB_CALLING_ERROR;
         }
@@ -1563,9 +1625,9 @@ run (const gchar *name
 	   pvals->src_apply_bluebox      = param[21].data.d_int32;
 	   pvals->src_selmode            = param[22].data.d_int32;
 
-	   if (strcmp (name, "plug_in_gap_move_path_ext")  == 0)
+	   if (strcmp (name, PLUGIN_NAME_GAP_MOVE_PATH_EXT)  == 0)
 	   {
-	      /* "plug_in_gap_move_path_ext" passes controlpoints as array parameters */
+	      /* PLUGIN_NAME_GAP_MOVE_PATH_EXT passes controlpoints as array parameters */
 	      l_numpoints = param[23].data.d_int32;
 	      if ((l_numpoints != param[25].data.d_int32)
 	      ||  (l_numpoints != param[27].data.d_int32)
@@ -1613,7 +1675,7 @@ run (const gchar *name
 	   }
 	   else
 	   {
-	      /* "plug_in_gap_move_path_ext2" operates with controlpoint file */
+	      /* PLUGIN_NAME_GAP_MOVE_PATH_EXT2 operates with controlpoint file */
 	      if(param[23].data.d_string != NULL)
 	      {
 	         pointfile = g_strdup(param[23].data.d_string);
@@ -1630,7 +1692,7 @@ run (const gchar *name
       g_free(pvals);
       if(pointfile != NULL) g_free(pointfile);
   }
-  else if (strcmp (name, "plug_in_gap_range_to_multilayer") == 0)
+  else if (strcmp (name, PLUGIN_NAME_GAP_RANGE_TO_MULTILAYER) == 0)
   {
       *nreturn_vals = nreturn_f2multi + 1;
       l_rc_image = -1;
@@ -1688,7 +1750,7 @@ run (const gchar *name
       values[1].type = GIMP_PDB_IMAGE;
       values[1].data.d_int32 = l_rc_image;  /* return the new generated image_id */
   }
-  else if (strcmp (name, "plug_in_gap_range_flatten") == 0)
+  else if (strcmp (name, PLUGIN_NAME_GAP_RANGE_FLATTEN) == 0)
   {
       if (run_mode == GIMP_RUN_NONINTERACTIVE)
       {
@@ -1707,7 +1769,7 @@ run (const gchar *name
 
       }
   }
-  else if (strcmp (name, "plug_in_gap_range_layer_del") == 0)
+  else if (strcmp (name, PLUGIN_NAME_GAP_RANGE_LAYER_DEL) == 0)
   {
       if (run_mode == GIMP_RUN_NONINTERACTIVE)
       {
@@ -1727,8 +1789,8 @@ run (const gchar *name
 
       }
   }
-  else if ((strcmp (name, "plug_in_gap_range_convert") == 0)
-       ||  (strcmp (name, "plug_in_gap_range_convert2") == 0))
+  else if ((strcmp (name, PLUGIN_NAME_GAP_RANGE_CONVERT) == 0)
+       ||  (strcmp (name, PLUGIN_NAME_GAP_RANGE_CONVERT2) == 0))
   {
       *nreturn_vals = nreturn_rconv +1;
       l_basename_ptr = NULL;
@@ -1780,7 +1842,7 @@ run (const gchar *name
 
       }
   }
-  else if (strcmp (name, "plug_in_gap_anim_resize") == 0)
+  else if (strcmp (name, PLUGIN_NAME_GAP_ANIM_RESIZE) == 0)
   {
       if (run_mode == GIMP_RUN_NONINTERACTIVE)
       {
@@ -1802,7 +1864,7 @@ run (const gchar *name
 
       }
   }
-  else if (strcmp (name, "plug_in_gap_anim_crop") == 0)
+  else if (strcmp (name, PLUGIN_NAME_GAP_ANIM_CROP) == 0)
   {
       if (run_mode == GIMP_RUN_NONINTERACTIVE)
       {
@@ -1824,7 +1886,7 @@ run (const gchar *name
 
       }
   }
-  else if (strcmp (name, "plug_in_gap_anim_scale") == 0)
+  else if (strcmp (name, PLUGIN_NAME_GAP_ANIM_SCALE) == 0)
   {
       if (run_mode == GIMP_RUN_NONINTERACTIVE)
       {
@@ -1844,7 +1906,7 @@ run (const gchar *name
 
       }
   }
-  else if (strcmp (name, "plug_in_gap_split") == 0)
+  else if (strcmp (name, PLUGIN_NAME_GAP_SPLIT) == 0)
   {
       gint32 l_digits;
       gint32 l_only_visible;
@@ -1879,7 +1941,7 @@ run (const gchar *name
       values[1].type = GIMP_PDB_IMAGE;
       values[1].data.d_int32 = l_rc_image;  /* return the new generated image_id */
   }
-  else if (strcmp (name, "plug_in_gap_shift") == 0)
+  else if (strcmp (name, PLUGIN_NAME_GAP_SHIFT) == 0)
   {
       if (run_mode == GIMP_RUN_NONINTERACTIVE)
       {
@@ -1899,7 +1961,7 @@ run (const gchar *name
 
       }
   }
-  else if (strcmp (name, "plug_in_gap_reverse") == 0)
+  else if (strcmp (name, PLUGIN_NAME_GAP_REVERSE) == 0)
   {
       if (run_mode == GIMP_RUN_NONINTERACTIVE)
       {
@@ -1918,7 +1980,7 @@ run (const gchar *name
 
       }
   }
-  else if (strcmp (name, "plug_in_gap_renumber") == 0)
+  else if (strcmp (name, PLUGIN_NAME_GAP_RENUMBER) == 0)
   {
       gint32 digits;
 
@@ -1940,7 +2002,7 @@ run (const gchar *name
 
       }
   }
-  else if (strcmp (name, "plug_in_gap_video_edit_copy") == 0)
+  else if (strcmp (name, PLUGIN_NAME_GAP_VIDEO_EDIT_COPY) == 0)
   {
       *nreturn_vals = nreturn_nothing +1;
       if (n_params != nargs_video_copy)
@@ -1956,7 +2018,7 @@ run (const gchar *name
         l_rc_image = gap_vid_edit_copy(run_mode, image_id, range_from, range_to );
       }
   }
-  else if (strcmp (name, "plug_in_gap_video_edit_paste") == 0)
+  else if (strcmp (name, PLUGIN_NAME_GAP_VIDEO_EDIT_PASTE) == 0)
   {
       if (n_params != nargs_video_paste)
       {
@@ -1970,7 +2032,7 @@ run (const gchar *name
         l_rc_image = gap_vid_edit_paste(run_mode, image_id, nr );
       }
   }
-  else if (strcmp (name, "plug_in_gap_video_edit_clear") == 0)
+  else if (strcmp (name, PLUGIN_NAME_GAP_VIDEO_EDIT_CLEAR) == 0)
   {
       *nreturn_vals = nreturn_nothing +1;
       if (status == GIMP_PDB_SUCCESS)
@@ -1985,7 +2047,7 @@ run (const gchar *name
 	}
       }
   }
-  else if (strcmp (name, "plug_in_gap_modify") == 0)
+  else if (strcmp (name, PLUGIN_NAME_GAP_MODIFY) == 0)
   {
       if (run_mode == GIMP_RUN_NONINTERACTIVE)
       {

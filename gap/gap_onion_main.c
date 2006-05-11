@@ -149,7 +149,7 @@ query ()
                          "Wolfgang Hofer (hof@gimp.org)",
                          "Wolfgang Hofer",
                          GAP_VERSION_WITH_DATE,
-                         N_("<Image>/Video/Onionskin/Configuration..."),
+                         N_("Configuration..."),
                          "RGB*, INDEXED*, GRAY*",
                          GIMP_PLUGIN,
                          nargs_onion_cfg, nreturn_vals,
@@ -167,7 +167,7 @@ query ()
                          "Wolfgang Hofer (hof@gimp.org)",
                          "Wolfgang Hofer",
                          GAP_VERSION_WITH_DATE,
-                         N_("<Image>/Video/Onionskin/Create or Replace"),
+                         N_("Create or Replace"),
                          "RGB*, INDEXED*, GRAY*",
                          GIMP_PLUGIN,
                          nargs_onion_std, nreturn_vals,
@@ -182,7 +182,7 @@ query ()
                          "Wolfgang Hofer (hof@gimp.org)",
                          "Wolfgang Hofer",
                          GAP_VERSION_WITH_DATE,
-                         N_("<Image>/Video/Onionskin/Delete"),
+                         N_("Delete"),
                          "RGB*, INDEXED*, GRAY*",
                          GIMP_PLUGIN,
                          nargs_onion_std, nreturn_vals,
@@ -195,11 +195,24 @@ query ()
                          "Wolfgang Hofer (hof@gimp.org)",
                          "Wolfgang Hofer",
                          GAP_VERSION_WITH_DATE,
-                         N_("<Image>/Video/Onionskin/Toggle Visibility"),
+                         N_("Toggle Visibility"),
                          "RGB*, INDEXED*, GRAY*",
                          GIMP_PLUGIN,
                          nargs_onion_visi, nreturn_vals,
                          args_onion_visi, return_vals);
+  {
+     /* Menu names */
+     const char *menupath_image_video = N_("<Image>/Video/");
+     const char *menupath_image_video_onionskin = N_("<Image>/Video/Onionskin/");
+ 
+     //gimp_plugin_menu_branch_register("<Image>", "Video");
+     //gimp_plugin_menu_branch_register("<Image>/Video", "Onionskin");
+
+     gimp_plugin_menu_register (GAP_PLUGIN_NAME_ONION_CFG, menupath_image_video_onionskin);
+     gimp_plugin_menu_register (GAP_PLUGIN_NAME_ONION_APPLY, menupath_image_video_onionskin);
+     gimp_plugin_menu_register (GAP_PLUGIN_NAME_ONION_DEL, menupath_image_video_onionskin);
+     gimp_plugin_menu_register (GAP_PLUGIN_NAME_ONION_VISI, menupath_image_video_onionskin);
+  }
 }       /* end query */
 
 

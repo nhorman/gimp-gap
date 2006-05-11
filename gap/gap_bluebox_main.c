@@ -177,11 +177,15 @@ query ()
                          "Wolfgang Hofer (hof@gimp.org)",
                          "Wolfgang Hofer",
                          gap_bluebox_version,
-                         N_("<Image>/Video/Bluebox ..."),
+                         N_("Bluebox ..."),
                          "RGB*",
                          GIMP_PLUGIN,
                          G_N_ELEMENTS (args_bluebox), nreturn_vals,
                          args_bluebox, return_vals);
+
+ //gimp_plugin_menu_branch_register("<Image>", "Video");
+ gimp_plugin_menu_register (GAP_BLUEBOX_PLUGIN_NAME, N_("<Image>/Video/"));
+
 }       /* end query */
 
 

@@ -161,7 +161,7 @@ static void query (void)
                           PLUG_IN_AUTHOR,
                           PLUG_IN_COPYRIGHT,
                           l_plug_in_version,
-                          N_("<Image>/Video/Storyboard..."),
+                          N_("Storyboard..."),
                           PLUG_IN_IMAGE_TYPES,
                           GIMP_PLUGIN,
                           G_N_ELEMENTS (in_args),
@@ -170,6 +170,9 @@ static void query (void)
                           NULL      /* out_args */
                           );
  
+  // gimp_plugin_menu_branch_register("<Image>", "Video");
+  gimp_plugin_menu_register (PLUG_IN_NAME, N_("<Image>/Video/"));
+  
   g_free(l_plug_in_version);
 }  /* end query */
 

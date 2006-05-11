@@ -246,7 +246,7 @@ static void query (void)
                           PLUG_IN_AUTHOR,
                           PLUG_IN_COPYRIGHT,
                           GAP_VERSION_WITH_DATE,
-                          N_("<Image>/Video/Playback..."),
+                          N_("Playback..."),
                           PLUG_IN_IMAGE_TYPES,
                           GIMP_PLUGIN,
                           G_N_ELEMENTS (in_args),
@@ -255,6 +255,8 @@ static void query (void)
                           NULL      /* out_args */
                           );
 
+  // gimp_plugin_menu_branch_register("<Image>", "Video");
+  gimp_plugin_menu_register (PLUG_IN_NAME, N_("<Image>/Video/"));
 }
 
 static void

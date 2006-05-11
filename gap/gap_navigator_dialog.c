@@ -536,11 +536,13 @@ query ()
                          "Wolfgang Hofer (hof@gimp.org)",
                          "Wolfgang Hofer",
                          GAP_VERSION_WITH_DATE,
-                         N_("<Image>/Video/VCR Navigator..."),
+                         N_("VCR Navigator..."),
                          "RGB*, INDEXED*, GRAY*",
                          GIMP_PLUGIN,
                          G_N_ELEMENTS (args_navigator), nreturn_vals,
                          args_navigator, return_vals);
+  // gimp_plugin_menu_branch_register("<Image>", "Video");
+  gimp_plugin_menu_register (PLUGIN_NAME, N_("<Image>/Video/"));
 }       /* end query */
 
 

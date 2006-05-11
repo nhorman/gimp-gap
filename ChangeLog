@@ -1,11 +1,33 @@
-2006-05-05  Sven Neumann  <sven@gimp.org>
+2006-05-10  Wolfgang Hofer <hof@gimp.org>
+	- updated PDB regstration to gimp-2.2 PDB API,
+          where the menu path is specified via searate call to
+          gimp_plugin_menu_register.
+          
+          (commented out gimp_plugin_menu_branch_register calls
+          to be compatible with the stable gimp-2.2.x versions)
 
-	* libgapvidapi/gap_vid_api.h: include "gap/gap_image.h" for the
-	declaration of gap_image_get_any_layer().
+	* gap/gap_bluebox_main.c
+	* gap/gap_filter_main.c
+	* gap/gap_fmac_main.c
+	* gap/gap_frontends_main.c
+	* gap/gap_main.c
+	* gap/gap_morph_main.c
+	* gap/gap_name2layer_main.c
+	* gap/gap_navigator_dialog.c
+	* gap/gap_onion_main.c
+	* gap/gap_player_main.c
+	* gap/gap_story_main.c
+	* gap/gap_vex_main.c
+	* gap/gap_wr_color_curve.c
+	* gap/gap_wr_color_huesat.c
+	* gap/gap_wr_color_levels.c
+	* gap/gap_wr_opacity.c
+	* gap/gap_wr_trans.c
+	* vid_common/gap_cme_main.c
 
 2006-05-01  Wolfgang Hofer <hof@gimp.org>
 	fixes to make gimp-gap usable with the more restrictive
-        PDB checks that were introduced with the gimp-2.3.8 release.
+        PDB checks that were introduced with the gimp-2.2.8 release.
        
         the fix assumes that gimp core deletes unused image after 
         reconnecting the display.
@@ -21,7 +43,7 @@
         partly fixes bug #339840,
         in some situations there are still error messages
         caused by the restrictive checks.
-
+        
         One example is using a hot-key for fast stepping from frame to next frame,
         that results in errors:
              PDB calling error for procedure 'gimp_image_get_filename':
@@ -100,12 +122,7 @@
         * gap/gap_mod_layer_dialog.c
         * docs/reference/txt/plug-in-gap-modify.txt
 
-2006-04-17  Kjartan Maraas  <kmaraas@gnome.org>
-
-	* configure.in: Remove obsolete entry for no_NO.
-	* po/no.po: And the translation.
-
-2006-04-14  Wolfgang Hofer <hof@gimp.org>
+	2006-04-14  Wolfgang Hofer <hof@gimp.org>
         applied patch provided with #337441
         
 	* gap/gap_base_ops.c [.h]
@@ -116,7 +133,7 @@
         * docs/reference/txt/plug-in-gap-storyboard-attr-prop.txt # new file
         * docs/reference/txt/INTRODUCTION.txt
          
-2006-04-12  Wolfgang Hofer <hof@gimp.org>
+	2006-04-12  Wolfgang Hofer <hof@gimp.org>
 	bugfix #337587: check version in the autogen.sh script
         (using separate checks for major, minor micro version)
         
@@ -135,7 +152,7 @@
 	* autogen.sh
         * libgapvidapi/gap_vid_api_vidindex.c
         
-2006-04-08  Wolfgang Hofer <hof@gimp.org>
+	2006-04-08  Wolfgang Hofer <hof@gimp.org>
         - bugfix gap_layer_clear_to_color 
           , restore original BG color)
         - replaced private implementation p_layer_resize_to_imagesize
@@ -151,7 +168,7 @@
         * libgapvidutil/gap_gve_story.c [.h]
 	* gap/gap_story_att_trans_dlg.c [.h]
 
-2006-04-06  Wolfgang Hofer <hof@gimp.org>
+	2006-04-06  Wolfgang Hofer <hof@gimp.org>
 	- storyboard processing: VID_FIT_SIZE record
         is internally handled as transition attribute.
         (now we have only ony type of attribute,
@@ -162,7 +179,7 @@
 	* gap/gap_story_main.h
 	* libgapvidutil/gap_gve_story.c
         
-2006-04-02  Wolfgang Hofer <hof@gimp.org>
+	2006-04-02  Wolfgang Hofer <hof@gimp.org>
 	- extract video range dialog: added labels to display
           From and To Frames as time code mm:ss:ms
         - added storyboard dialog icon for transition attributes
@@ -173,7 +190,7 @@
         * images/Makefile.am
 
 
-2006-03-31  Wolfgang Hofer <hof@gimp.org>
+	2006-03-31  Wolfgang Hofer <hof@gimp.org>
 	- bugfix: storyboard processing changed the calculation of
 	  layer offsets. (the old code had bugs, and assumed that 
 	  gimp_edit_paste
@@ -200,7 +217,7 @@
 	* libgapvidutil/gap_gve_story.c
 	* NEWS
 	
-2006-03-28  Wolfgang Hofer <hof@gimp.org>
+	2006-03-28  Wolfgang Hofer <hof@gimp.org>
 	- internal changes of the storyboard file handling and processing
 	(attributes MOVE X/Y ZOOM X/Y and OPACITY are now handled
 	as one common TRANSITION attribute,
@@ -218,6 +235,11 @@
 	
 	* gap_player_dialog.c
 	* gap_story_dialog.c
+
+2006-04-17  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Remove obsolete entry for no_NO.
+	* po/no.po: And the translation.
 
 2006-03-11  Wolfgang Hofer <hof@gimp.org>
 	- bugfix for selection handling via modify frames (#333978)

@@ -165,7 +165,7 @@ query ()
                           "Wolfgang Hofer (hof@gimp.org)",
                           "Wolfgang Hofer",
                           GAP_VERSION_WITH_DATE,
-                          N_("<Image>/Video/Split Video into Frames/Extract Videorange"),
+                          N_("Extract Videorange"),
                           NULL,
                           GIMP_PLUGIN,
                           nload_args, nload_return_vals,
@@ -185,12 +185,27 @@ query ()
                           "Wolfgang Hofer (hof@gimp.org)",
                           "Wolfgang Hofer",
                           GAP_VERSION_WITH_DATE,
-                          N_("<Toolbox>/Xtns/Split Video into Frames/Extract Videorange"),
+                          N_("Extract Videorange"),
                           NULL,
                           GIMP_PLUGIN,
                           next_args, nload_return_vals,
                           ext_args, load_return_vals);
-}
+  {
+    /* Menu names */
+    const char *menupath_image_video_split = N_("<Image>/Video/Split Video into Frames/");
+    const char *menupath_toolbox_video_split = N_("<Toolbox>/Xtns/Split Video into Frames/");
+
+    //gimp_plugin_menu_branch_register("<Image>", "Video");
+    //gimp_plugin_menu_branch_register("<Image>/Video", "Split Video into Frames");
+
+    //gimp_plugin_menu_branch_register("<Toolbox>", "Video");
+    //gimp_plugin_menu_branch_register("<Toolbox>/Video", "Split Video into Frames");
+
+    gimp_plugin_menu_register (GAP_VEX_PLUG_IN_NAME, menupath_image_video_split);
+
+    gimp_plugin_menu_register (GAP_VEX_PLUG_IN_NAME_XTNS, menupath_toolbox_video_split);
+  }
+}  /* end query */
 
 static void
 run (const gchar *name,          /* name of plugin */
