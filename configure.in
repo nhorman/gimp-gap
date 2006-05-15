@@ -76,20 +76,26 @@ AC_SUBST(PATHSEP)
 AC_SUBST(LIBSUF)
 AM_CONDITIONAL(OS_WIN32, test "$os_win32" = "yes")
 
-
 dnl Test for unix-frontends
 dnl -----------------------
 AC_ARG_ENABLE(unixfrontends,
               [  --disable-unix-frontends     don't build with UNIX specific frontends for mplayer, xanim and mpeg encoders])
+  dnl disable unix frontends per default on win32 systems (unless explicte specified yes)
+  if test "x$enable_unix_frontends" != "xyes"; then
+    if test "x$os_win32" = "xyes"; then
+       enable_unix_frontends=no
+    fi
+  fi
+
   if test "x$enable_unix_frontends" != "xno"; then
     frontends_warning="
-gimp-gap is configured with Linux/UNIX specific frontends for xanim
+gimp-gap is configured with Linux/UNIX specific frontends for mplayer, xanim
 and mpeg encoders. Non Linux/UNIX users should run configure with
 the --disable-unix-frontends option.
 "
   else
     frontends_warning="
-The Linux/UNIX specific frontends for xanim and mpeg encoders will
+The Linux/UNIX specific frontends for mplayer, xanim and mpeg encoders will
 not be built. This is OK for non Linux/UNIX users.
 "
   fi

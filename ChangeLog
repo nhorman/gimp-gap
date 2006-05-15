@@ -1,3 +1,9 @@
+2006-05-14  Wolfgang Hofer <hof@gimp.org>
+	configure per default --disable-unix-frontends  on WIN32 systems,
+        default on UNIX systems is --enable-unix-frontends.
+
+	* configure.in
+        
 2006-05-10  Wolfgang Hofer <hof@gimp.org>
 	- updated PDB regstration to gimp-2.2 PDB API,
           where the menu path is specified via searate call to
