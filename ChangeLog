@@ -1,3 +1,8 @@
+2006-05-19  Sven Neumann  <sven@gimp.org>
+
+	* configure.in: added missing check for target architecture.
+	Should fix bug #324854.
+
 2006-05-16  Clytie Siddall <clytie@riverland.net.au>
 
 	* configure.in	Added vi in ALL_LINGUAS line.
@@ -7,7 +12,7 @@
         default on UNIX systems is --enable-unix-frontends.
 
 	* configure.in
-        
+
 2006-05-10  Wolfgang Hofer <hof@gimp.org>
 	- updated PDB regstration to gimp-2.2 PDB API,
           where the menu path is specified via searate call to
