@@ -3,6 +3,11 @@
 	* configure.in: added missing check for target architecture.
 	Should fix bug #324854.
 
+2006-05-18  Wolfgang Hofer <hof@gimp.org>
+         fixed more than 40 typos (#342108)
+ 
+         * typo fixes in many files..
+
 2006-05-16  Clytie Siddall <clytie@riverland.net.au>
 
 	* configure.in	Added vi in ALL_LINGUAS line.
