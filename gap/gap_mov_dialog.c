@@ -683,7 +683,7 @@ mov_dialog ( GimpDrawable *drawable, t_mov_gui_stuff *mgp,
   /*  parameter settings  */
   spc_hbox = gtk_hbox_new (FALSE, 0);
   gtk_widget_show (spc_hbox);
-  
+
   frame = gimp_frame_new ( _("Copy moving source-layer(s) into frames"));
   gtk_widget_show (frame);
 
@@ -804,7 +804,7 @@ mov_help_callback (GtkWidget *widget,
 		    t_mov_gui_stuff *mgp)
 {
   if(gap_debug) printf("mov_help_callback:\n");
-  
+
   gimp_standard_help_func(GAP_MOVE_PATH_HELP_ID, mgp->shell);
 }  /* end mov_help_callback */
 
@@ -1129,7 +1129,7 @@ mov_apv_callback (GtkWidget *widget,
       {
         gint32           dummy_layer_id;
         dummy_layer_id = gap_image_get_any_layer(l_new_image_id);
-  
+
         mov_set_waiting_cursor(mgp);  /* for refresh */
         return_vals = gimp_run_procedure ("plug_in_animationplay",
                                  &nreturn_vals,
@@ -1215,14 +1215,14 @@ mov_get_path_length (gint32 image_id)
   }
 
   return(max_distance);
-  
+
 }  /* end mov_get_path_length */
 
 
 /* --------------------------
  * mov_grab_bezier_path
  * --------------------------
- * grab the bezier path divided in 
+ * grab the bezier path divided in
  * straight lines and assign them to N-controlpoints.
  * this procedure uses the number of frames to be handled
  * as the wanted number of contolpoints.
@@ -1241,7 +1241,7 @@ mov_grab_bezier_path(t_mov_gui_stuff *mgp)
   gdouble          slope;
   gdouble          step_length;
   gint             l_ii;
-  
+
 
   image_id = mgp->ainfo_ptr->image_id;
   step_length = 1.0;
@@ -1249,15 +1249,15 @@ mov_grab_bezier_path(t_mov_gui_stuff *mgp)
   num_points = 1 + abs(pvals->dst_range_end - pvals->dst_range_start);
   num_points = MIN((GAP_MOV_MAX_POINT-2), num_points);
   num_lines = num_points -1;
-  
+
   if(num_lines > 0)
   {
     max_distance = mov_get_path_length(image_id);
     step_length = max_distance / ((gdouble)num_lines);
   }
-  
+
   distance   = 0.0;
-  
+
   for(l_ii=0; l_ii < num_points ; l_ii++)
   {
     x_point = gimp_path_get_point_at_dist (image_id
@@ -1282,14 +1282,14 @@ mov_grab_bezier_path(t_mov_gui_stuff *mgp)
 
     distance += step_length;
   }
-  
+
 }  /* end mov_grab_bezier_path */
 
 
 /* --------------------------
  * mov_grab_anchorpoints_path
  * --------------------------
- * grab the bezier path divided in 
+ * grab the bezier path divided in
  * straight lines and assign them to N-controlpoints.
  * this procedure uses the number of frames to be handled
  * as the wanted number of contolpoints.
@@ -1372,13 +1372,13 @@ mov_grab_anchorpoints_path(t_mov_gui_stuff *mgp,
 	break;
       }
     }
-    
+
     if(gap_debug)
     {
       printf("\n");
     }
-    
-    
+
+
 }  /* end mov_grab_anchorpoints_path */
 
 
@@ -1439,9 +1439,9 @@ mov_pgrab_callback (GtkWidget *widget,
 	      );
       return;
     }
-    
-    
-    
+
+
+
     if(bevent->state & GDK_SHIFT_MASK)
     {
       /* When SHIFT Key was pressed
@@ -1457,7 +1457,7 @@ mov_pgrab_callback (GtkWidget *widget,
 				,points_details
 				);
     }
-    
+
 
     g_free(points_details);
 
@@ -1577,7 +1577,7 @@ mov_follow_keyframe(t_mov_gui_stuff *mgp)
       }
     }
   }
-  
+
   if((keyframe_abs >= mgp->first_nr)
   && (keyframe_abs <= mgp->last_nr))
   {
@@ -1718,7 +1718,7 @@ mov_pclr_all_callback (GtkWidget *widget,
       mix_factor = 0.0;
       l_ref_idx1 = 0;
       l_ref_idx2 = 0;
-      
+
       p_mix_one_point(l_idx, l_ref_idx1, l_ref_idx2, mix_factor);
     }
   }
@@ -2077,7 +2077,7 @@ mov_imglayer_menu_callback(GtkWidget *widget, t_mov_gui_stuff *mgp)
          (int)pvals->src_image_id, (int)pvals->src_layer_id);
 
   mov_set_instant_apply_request(mgp);
-  
+
 } /* end mov_imglayer_menu_callback */
 
 static gint
@@ -2122,7 +2122,7 @@ static void
 mov_paintmode_menu_callback (GtkWidget *widget,  t_mov_gui_stuff *mgp)
 {
   gint value;
-  
+
   gimp_int_combo_box_get_active (GIMP_INT_COMBO_BOX (widget), &value);
 
   pvals->src_paintmode = value;
@@ -2576,7 +2576,7 @@ p_mix_one_point(gint idx, gint ref1, gint ref2, gdouble mix_factor)
 {
 #define MIX_VALUE(factor, a, b) ((a * (1.0 - factor)) +  (b * factor))
 
-  if((idx >= 0) 
+  if((idx >= 0)
   && (idx <= pvals->point_idx_max)
   && (ref1 >= 0)
   && (ref1 <= pvals->point_idx_max)
@@ -2695,7 +2695,7 @@ p_save_points(char *filename, t_mov_gui_stuff *mgp)
 static void
 mov_refresh_src_layer_menu(t_mov_gui_stuff *mgp)
 {
-  gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (mgp->src_layer_combo), 
+  gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (mgp->src_layer_combo),
                               pvals->src_layer_id,                      /* initial value */
                               G_CALLBACK (mov_imglayer_menu_callback),
                               mgp);
@@ -2776,8 +2776,8 @@ mov_src_sel_create(t_mov_gui_stuff *mgp)
                                   _("Value"),          GIMP_VALUE_MODE,
                                   _("Keep Paintmode"), GAP_MOV_KEEP_SRC_PAINTMODE,
                                   NULL);
-                                 
-  gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (combo), 
+
+  gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (combo),
                               GIMP_NORMAL_MODE,              /* initial int value */
                               G_CALLBACK (mov_paintmode_menu_callback),
                               mgp);
@@ -2819,9 +2819,9 @@ mov_src_sel_create(t_mov_gui_stuff *mgp)
 			  3,                                  /* digits */
 			  FALSE,                              /* constrain */
 			  (gdouble)0.0, (gdouble)50.0,        /* lower, upper (unconstrained) */
-			  _("Source and target frames step synchron at value 1.0. "
-			    "A value of 0.5 will step the source half time slower."
-			    "One source step is done only at every 2.nd target frame."),
+			  _("Source and target frames step synchronized at value 1.0. "
+			    "A value of 0.5 will step the source half time slower. "
+			    "One source step is done only at every 2nd target frame."),
 			  NULL);    /* tooltip privatetip */
   g_signal_connect (G_OBJECT (adj), "value_changed",
 		    G_CALLBACK (gimp_double_adjustment_update),
@@ -2845,7 +2845,7 @@ mov_src_sel_create(t_mov_gui_stuff *mgp)
                                   _("Frame None"),           GAP_STEP_FRAME_NONE,
                                   NULL);
 
-  gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (combo), 
+  gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (combo),
                               GAP_STEP_LOOP,              /* initial int value */
                               G_CALLBACK (mov_stepmode_menu_callback),
                               mgp);
@@ -2872,7 +2872,7 @@ mov_src_sel_create(t_mov_gui_stuff *mgp)
                                   _("Center"),        GAP_HANDLE_CENTER,
                                   NULL);
 
-  gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (combo), 
+  gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (combo),
                               GAP_HANDLE_LEFT_TOP,              /* initial int value */
                               G_CALLBACK (mov_handmode_menu_callback),
                               mgp);
@@ -3055,8 +3055,8 @@ mov_advanced_tab_create(t_mov_gui_stuff *mgp)
 			  (gdouble)0, (gdouble)50,              /* lower, upper (unconstrained) */
 			  _("Calculate n steps between 2 frames. "
 			    "The rendered tween steps are collected in a tween layer "
-			    "that will be added to the handeld destination frames. "
-			    "If the tween steps value is 0, no tweens are calculated "
+			    "that will be added to the handled destination frames. "
+			    "If the tween step value is 0, no tweens are calculated "
 			    "and no tween layers are created"),
 			  NULL);    /* tooltip privatetip */
   mgp->tween_steps_adj = GTK_ADJUSTMENT(adj);
@@ -3161,9 +3161,9 @@ mov_edit_button_box_create (t_mov_gui_stuff *mgp)
   gimp_help_set_help_data(button,
                        _("Delete all controlpoints, and replace them with "
 		         "a copy of all anchorpoints of the current path "
-		         "from the image where 'MovePath' was invoked from. "
-			 "Hold Shift key to create contolpoints foreach handled frame, "
-			 "following the bezier path")
+		         "from the image from which 'MovePath' was invoked. "
+			 "Hold down the Shift key to create controlpoints for each handled frame, "
+			 "following the Bezier path.")
                        , NULL);
   gtk_widget_show (button);
   g_signal_connect (G_OBJECT (button), "button_press_event",
@@ -3642,7 +3642,7 @@ mov_modify_tab_create(t_mov_gui_stuff *mgp)
 			  1,                                  /* digits */
 			  FALSE,                              /* constrain */
 			  (gdouble)-3600, (gdouble)3600,      /* lower, upper (unconstrained) */
-			  _("Rotate source layer (in degree)"),
+			  _("Rotate source layer (in degrees)"),
 			  NULL);    /* tooltip privatetip */
   g_object_set_data(G_OBJECT(adj), "mgp", mgp);
   g_signal_connect (G_OBJECT (adj), "value_changed",
@@ -3816,7 +3816,7 @@ mov_trans_tab_create (t_mov_gui_stuff *mgp)
 
   /* tbry transformfactor */
   adj = p_mov_spinbutton_new( GTK_TABLE (table), 6, 1,        /* table col, row */
-			  _("y3:"),                           /* label text */
+			  _("y4:"),                           /* label text */
 			  SCALE_WIDTH, ENTRY_WIDTH,           /* scalesize spinsize */
 			  (gdouble)mgp->tbry,                 /* initial value */
 			  (gdouble)0, (gdouble)10,            /* lower, upper */
@@ -3867,7 +3867,7 @@ mov_selection_handling_tab_create (t_mov_gui_stuff *mgp)
                                   _("Use selection (from initial source image)"),  GAP_MOV_SEL_INITIAL,
                                   _("Use selections (from all source images)"),    GAP_MOV_SEL_FRAME_SPECIFIC,
                                   NULL);
-  gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (combo), 
+  gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (combo),
                               GAP_MOV_SEL_IGNORE,              /* initial int value */
                               G_CALLBACK (mov_selmode_menu_callback),
                               mgp);

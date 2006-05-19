@@ -291,7 +291,7 @@ p_range_dialog(GapAnimInfo *ainfo_ptr,
 
 
   argc = 0;
-  
+
   gap_arr_arg_init(&argv[argc], GAP_ARR_WGT_INT_PAIR);
   argv[argc].label_txt = _("From Frame:");
   argv[argc].help_txt  = _("First handled frame");
@@ -324,15 +324,15 @@ p_range_dialog(GapAnimInfo *ainfo_ptr,
     argv[argc].int_ret   = 0;
     argc++;
   }
- 
-  
+
+
   if(help_id)
   {
     gap_arr_arg_init(&argv[argc], GAP_ARR_WGT_HELP_BUTTON);
     argv[argc].help_id = help_id;
     argc++;
   }
-  
+
 
   if(0 != gap_lib_chk_framerange(ainfo_ptr))   return -1;
   if(TRUE == gap_arr_ok_cancel_dialog(title, hline, argc, argv))
@@ -529,8 +529,8 @@ p_convert_dialog(GapAnimInfo *ainfo_ptr,
   gap_arr_arg_init(&argv[4], GAP_ARR_WGT_TEXT);
   argv[4].label_txt = _("Extension:");
   argv[4].help_txt  = _("The extension of resulting frames is also used to define the fileformat. "
-                        "Please note that fileformats differ in capabilities to store informations for "
-			"multiple layers and other things."
+                        "Please note that fileformats differ in capabilities to store information for "
+			"multiple layers and other things. "
 			"Some fileformats may require converting to another imagetype "
 			"and/or flattening the frames.");
   argv[4].text_buf_len = len_ext;
@@ -644,7 +644,7 @@ p_range_to_multilayer_dialog(GapAnimInfo *ainfo_ptr,
   static char *radio_help[4] = { N_("Resulting layer size is made of the outline-rectangle of all visible layers (may differ from frame to frame)"),
                                  N_("Resulting layer size is the frame size"),
                                  N_("Resulting layer size is the size of the bottom layer (may differ from frame to frame)"),
-                                 N_("Resulting layer size is the frame size transparent parts are filled with background color") };
+                                 N_("Resulting layer size is the frame size and transparent parts are filled with the background color") };
 
   /* Layer select modes */
   static char *layersel_args[7] = { N_("Pattern is equal to layer name"),
@@ -855,7 +855,7 @@ p_frames_to_multilayer(GapAnimInfo *ainfo_ptr,
   gint32 calling_image_id;
   gint32 calling_frame_nr;
 
-  
+
   calling_image_id = ainfo_ptr->image_id;
   calling_frame_nr = ainfo_ptr->curr_frame_nr;
 
@@ -933,7 +933,7 @@ p_frames_to_multilayer(GapAnimInfo *ainfo_ptr,
       l_clear_selected_area = TRUE;
     }
   }
-  
+
 
   l_cur_frame_nr = l_begin;
   while(1)
@@ -1561,7 +1561,7 @@ int p_image_sizechange(gint32 image_id,
  *     scale, resize or crop all frames in the animation
  * ============================================================================
  */
-static gint32 
+static gint32
 p_anim_sizechange(GapAnimInfo *ainfo_ptr,
                GapRangeOpsAsiz asiz_mode,
                long size_x, long size_y,
@@ -2047,7 +2047,7 @@ gap_range_conv(GimpRunMode run_mode, gint32 image_id,
  *    (depending on asiz_mode)
  * ============================================================================
  */
-int 
+int
 gap_range_anim_sizechange(GimpRunMode run_mode, GapRangeOpsAsiz asiz_mode, gint32 image_id,
                   long size_x, long size_y, long offs_x, long offs_y)
 {

@@ -4,7 +4,7 @@
  * GAP ... Gimp Animation Plugins
  *
  * This Module contains:
- * modify Layer(s) in frames dialog 
+ * modify Layer(s) in frames dialog
  * (perform actions (like raise, set visible, apply filter)
  *               - foreach selected layer
  *               - in each frame of the selected framerange)
@@ -79,6 +79,13 @@ static void p_make_func_menu_item(const char *title
 		    , GapModFramesGlobalParams *gmop
 		    );
 
+static void p_make_func_menu_item_set_mode(const char *mode_name
+		    , gint32 action_mode
+		    , GtkWidget *menu
+		    , GapModFramesGlobalParams *gmop
+		    );
+
+
 static void p_make_layer_attrinutes_submenu(GtkWidget *master_menu, GapModFramesGlobalParams *gmop);
 static void p_make_layer_modes_submenu(GtkWidget *master_menu, GapModFramesGlobalParams *gmop);
 static void p_make_layer_stackpositions_submenu(GtkWidget *master_menu, GapModFramesGlobalParams *gmop);
@@ -144,7 +151,7 @@ p_upd_sensitivity(GapModFramesGlobalParams *gmop)
     case GAP_MTCH_START:
     case GAP_MTCH_END:
     case GAP_MTCH_ANYWHERE:
-      /* insensitive for other select modes that are 
+      /* insensitive for other select modes that are
        * lists of stacknumbers or all_visible layers
        */
       l_sensitive = TRUE;
@@ -171,7 +178,7 @@ p_upd_sensitivity(GapModFramesGlobalParams *gmop)
   }
 
 
-  
+
   l_sensitive = FALSE;
   l_sensitive_frame = TRUE;
   l_label_name = " ";
@@ -207,7 +214,7 @@ p_upd_sensitivity(GapModFramesGlobalParams *gmop)
     default:
       break;
   }
- 
+
   wgt = gmop->new_layername_entry;
   if(wgt)
   {
@@ -226,7 +233,7 @@ p_upd_sensitivity(GapModFramesGlobalParams *gmop)
     gtk_label_set_text(GTK_LABEL(wgt), l_label_name);
   }
 
-  
+
 }  /* end p_upd_sensitivity */
 
 
@@ -258,12 +265,12 @@ p_func_optionmenu_callback  (GtkWidget     *wgt_item,
  }
 
  gmop->action_mode = l_idx;
- 
+
  if(title)
  {
    if(gmop->func_info_label)
    {
-     gtk_label_set_text(GTK_LABEL(gmop->func_info_label), title);    
+     gtk_label_set_text(GTK_LABEL(gmop->func_info_label), title);
    }
 
  }
@@ -289,7 +296,7 @@ p_make_func_menu_item(const char *title
 		    )
 {
   GtkWidget *menu_item;
-  
+
   menu_item = gtk_menu_item_new_with_label (title);
         g_signal_connect (G_OBJECT (menu_item), "activate",
                           G_CALLBACK (p_func_optionmenu_callback),
@@ -302,12 +309,12 @@ p_make_func_menu_item(const char *title
                           , (gpointer)tip_text);
   gtk_widget_show (menu_item);
   gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
-  
+
   if(action_mode == gmop->action_mode)
   {
     if(gmop->func_info_label)
     {
-      gtk_label_set_text(GTK_LABEL(gmop->func_info_label), title);    
+      gtk_label_set_text(GTK_LABEL(gmop->func_info_label), title);
     }
   }
 }  /* end p_make_func_menu_item */
@@ -323,7 +330,7 @@ p_make_layer_attrinutes_submenu(GtkWidget *master_menu, GapModFramesGlobalParams
 {
   GtkWidget *menu_item;
   GtkWidget *sub_menu;
-  
+
   /* the Layer Attributes sub menu */
   menu_item = gtk_menu_item_new_with_label (_("Layer Attributes"));
   gtk_widget_show (menu_item);
@@ -361,6 +368,32 @@ p_make_layer_attrinutes_submenu(GtkWidget *master_menu, GapModFramesGlobalParams
 
 
 /* ------------------------------
+ * p_make_func_menu_item_set_mode
+ * ------------------------------
+ */
+static void
+p_make_func_menu_item_set_mode(const char *mode_name
+		    , gint32 action_mode
+		    , GtkWidget *menu
+		    , GapModFramesGlobalParams *gmop)
+{
+  char *title;
+  char *tip_text;
+
+  title = g_strdup_printf(_("Set layer(s) mode: %s"), mode_name);
+  tip_text = g_strdup_printf(_("Set all selected layers to mode: %s"), mode_name);
+
+  p_make_func_menu_item(title
+           ,tip_text
+           ,action_mode
+           ,menu
+           ,gmop
+           );
+  g_free(title);
+  g_free(tip_text);
+}  /* end p_make_func_menu_item_set_mode */
+
+/* ------------------------------
  * p_make_layer_modes_submenu
  * ------------------------------
  */
@@ -378,136 +411,114 @@ p_make_layer_modes_submenu(GtkWidget *master_menu, GapModFramesGlobalParams *gmo
   gtk_menu_item_set_submenu (GTK_MENU_ITEM (menu_item), sub_menu);
 
 
-  p_make_func_menu_item(_("Set layer(s) mode: Normal")
-                       ,_("set all selected layers to Normal")
+  p_make_func_menu_item_set_mode(_("Normal")
            ,GAP_MOD_ACM_SET_MODE_NORMAL
            ,sub_menu
            ,gmop
            );
-  p_make_func_menu_item(_("Set layer(s) mode: Dissolve")
-                       ,_("set all selected layers to Dissolve")
+  p_make_func_menu_item_set_mode(_("Dissolve")
            ,GAP_MOD_ACM_SET_MODE_DISSOLVE
            ,sub_menu
            ,gmop
            );
-  p_make_func_menu_item(_("Set layer(s) mode: Multiply")
-                       ,_("set all selected layers to Multiply")
+  p_make_func_menu_item_set_mode(_("Multiply")
            ,GAP_MOD_ACM_SET_MODE_MULTIPLY
            ,sub_menu
            ,gmop
            );
-  p_make_func_menu_item(_("Set layer(s) mode: Divide")
-                       ,_("set all selected layers to Divide")
+  p_make_func_menu_item_set_mode(_("Divide")
            ,GAP_MOD_ACM_SET_MODE_DIVIDE
            ,sub_menu
            ,gmop
            );
-  p_make_func_menu_item(_("Set layer(s) mode: Screen")
-                       ,_("set all selected layers to Screen")
+  p_make_func_menu_item_set_mode(_("Screen")
            ,GAP_MOD_ACM_SET_MODE_SCREEN
            ,sub_menu
            ,gmop
            );
-  p_make_func_menu_item(_("Set layer(s) mode: Overlay")
-                       ,_("set all selected layers to Overlay")
+  p_make_func_menu_item_set_mode(_("Overlay")
            ,GAP_MOD_ACM_SET_MODE_OVERLAY
            ,sub_menu
            ,gmop
            );
 
-  p_make_func_menu_item(_("Set layer(s) mode: Difference")
-                       ,_("set all selected layers to Difference")
+  p_make_func_menu_item_set_mode(_("Difference")
            ,GAP_MOD_ACM_SET_MODE_DIFFERENCE
            ,sub_menu
            ,gmop
            );
-  p_make_func_menu_item(_("Set layer(s) mode: Addition")
-                       ,_("set all selected layers to Addition")
+  p_make_func_menu_item_set_mode(_("Addition")
            ,GAP_MOD_ACM_SET_MODE_ADDITION
            ,sub_menu
            ,gmop
            );
-  p_make_func_menu_item(_("Set layer(s) mode: Subtract")
-                       ,_("set all selected layers to Subtract")
+  p_make_func_menu_item_set_mode(_("Subtract")
            ,GAP_MOD_ACM_SET_MODE_SUBTRACT
            ,sub_menu
            ,gmop
            );
-  p_make_func_menu_item(_("Set layer(s) mode: Darken only")
-                       ,_("set all selected layers to Darken only")
+  p_make_func_menu_item_set_mode(_("Darken only")
            ,GAP_MOD_ACM_SET_MODE_DARKEN_ONLY
            ,sub_menu
            ,gmop
            );
-  p_make_func_menu_item(_("Set layer(s) mode: Lighten only")
-                       ,_("set all selected layers to Lighten only")
+  p_make_func_menu_item_set_mode(_("Lighten only")
            ,GAP_MOD_ACM_SET_MODE_LIGHTEN_ONLY
            ,sub_menu
            ,gmop
            );
-  
-  p_make_func_menu_item(_("Set layer(s) mode: Dodge")
-                       ,_("set all selected layers to Dodge")
+
+  p_make_func_menu_item_set_mode(_("Dodge")
            ,GAP_MOD_ACM_SET_MODE_DODGE
            ,sub_menu
            ,gmop
            );
-  p_make_func_menu_item(_("Set layer(s) mode: Burn")
-                       ,_("set all selected layers to Burn")
+  p_make_func_menu_item_set_mode(_("Burn")
            ,GAP_MOD_ACM_SET_MODE_BURN
            ,sub_menu
            ,gmop
            );
-  p_make_func_menu_item(_("Set layer(s) mode: Hardlight")
-                       ,_("set all selected layers to Hardlight")
+  p_make_func_menu_item_set_mode(_("Hardlight")
            ,GAP_MOD_ACM_SET_MODE_HARDLIGHT
            ,sub_menu
            ,gmop
            );
-  p_make_func_menu_item(_("Set layer(s) mode: Softlight")
-                       ,_("set all selected layers to Softlight")
+  p_make_func_menu_item_set_mode(_("Softlight")
            ,GAP_MOD_ACM_SET_MODE_SOFTLIGHT
            ,sub_menu
            ,gmop
            );
-  p_make_func_menu_item(_("Set layer(s) mode: Color erase")
-                       ,_("set all selected layers to Color erase")
+  p_make_func_menu_item_set_mode(_("Color erase")
            ,GAP_MOD_ACM_SET_MODE_COLOR_ERASE
            ,sub_menu
            ,gmop
            );
-  p_make_func_menu_item(_("Set layer(s) mode: Grain extract")
-                       ,_("set all selected layers to Grain extract")
+  p_make_func_menu_item_set_mode(_("Grain extract")
            ,GAP_MOD_ACM_SET_MODE_GRAIN_EXTRACT_MODE
            ,sub_menu
            ,gmop
            );
-  p_make_func_menu_item(_("Set layer(s) mode: Grain merge")
-                       ,_("set all selected layers to Grain merge")
+  p_make_func_menu_item_set_mode(_("Grain merge")
            ,GAP_MOD_ACM_SET_MODE_GRAIN_MERGE_MODE
            ,sub_menu
            ,gmop
            );
-  p_make_func_menu_item(_("Set layer(s) mode: Hue")
-                       ,_("set all selected layers to Hue")
+  p_make_func_menu_item_set_mode(_("Hue")
            ,GAP_MOD_ACM_SET_MODE_HUE_MODE
            ,sub_menu
            ,gmop
            );
-  p_make_func_menu_item(_("Set layer(s) mode: Saturation")
-                       ,_("set all selected layers to Saturation")
+  p_make_func_menu_item_set_mode(_("Saturation")
            ,GAP_MOD_ACM_SET_MODE_SATURATION_MODE
            ,sub_menu
            ,gmop
            );
-  p_make_func_menu_item(_("Set layer(s) mode: Color")
-                       ,_("set all selected layers to Color")
+  p_make_func_menu_item_set_mode(_("Color")
            ,GAP_MOD_ACM_SET_MODE_COLOR_MODE
            ,sub_menu
            ,gmop
            );
-  p_make_func_menu_item(_("Set layer(s) mode: Value")
-                       ,_("set all selected layers to Value")
+  p_make_func_menu_item_set_mode(_("Value")
            ,GAP_MOD_ACM_SET_MODE_VALUE_MODE
            ,sub_menu
            ,gmop
@@ -567,7 +578,7 @@ p_make_merge_layers_submenu(GtkWidget *master_menu, GapModFramesGlobalParams *gm
   sub_menu = gtk_menu_new ();
   gtk_menu_item_set_submenu (GTK_MENU_ITEM (menu_item), sub_menu);
 
-  p_make_func_menu_item(_("Merge layer(s) expand as necessary")
+  p_make_func_menu_item(_("Merge layer(s); expand as necessary")
                        ,_("merge selected layers and expand as necessary")
 		       ,GAP_MOD_ACM_MERGE_EXPAND
 		       ,sub_menu
@@ -585,7 +596,7 @@ p_make_merge_layers_submenu(GtkWidget *master_menu, GapModFramesGlobalParams *gm
 		       ,sub_menu
 		       ,gmop
 		       );
-  
+
 }  /* end p_make_merge_layers_submenu */
 
 
@@ -776,8 +787,6 @@ p_make_layermask_submenu(GtkWidget *master_menu, GapModFramesGlobalParams *gmop)
 static void
 p_make_toplevel_menu_items(GtkWidget *master_menu, GapModFramesGlobalParams *gmop)
 {
-  GtkWidget *menu_item;
-  
   /* apply filter has no sub_menu */
   p_make_func_menu_item(_("Apply filter on layer(s)")
                        ,_("apply filter to all selected layers")
@@ -867,7 +876,7 @@ p_layer_pattern_entry_update_cb(GtkWidget *widget, GapModFramesGlobalParams *gmo
   {
     return;
   }
-  
+
   g_snprintf(gmop->sel_pattern, sizeof(gmop->sel_pattern), "%s"
             , gtk_entry_get_text(GTK_ENTRY(widget))
 	    );
@@ -884,7 +893,7 @@ p_new_layername_entry_update_cb(GtkWidget *widget, GapModFramesGlobalParams *gmo
   {
     return;
   }
-  
+
   g_snprintf(gmop->new_layername, sizeof(gmop->new_layername), "%s"
             , gtk_entry_get_text(GTK_ENTRY(widget))
 	    );
@@ -935,10 +944,9 @@ p_create_mod_frames_dialog(GapModFramesGlobalParams *gmop)
   GtkWidget *menu_bar;
   GtkWidget *menu_item;
   GtkWidget *master_menu;
-  GtkWidget *sub_menu;
   gint       row;
   GtkObject *adj;
- 
+
   GtkWidget *radio_button;
   GSList    *radio_group = NULL;
   gboolean  l_radio_pressed;
@@ -1115,7 +1123,7 @@ p_create_mod_frames_dialog(GapModFramesGlobalParams *gmop)
   g_signal_connect ( G_OBJECT (check_button), "toggled",
 		     G_CALLBACK (p_case_sensitive_toggled_callback),
 		     gmop);
- 
+
   row++;
 
   /* the radio button "Pattern is start of layer name"  */
@@ -1138,7 +1146,7 @@ p_create_mod_frames_dialog(GapModFramesGlobalParams *gmop)
   g_signal_connect ( G_OBJECT (radio_button), "toggled",
 		     G_CALLBACK (p_sel_mode_radio_callback),
 		     gmop);
-  
+
   /* the invert layer_selection  check_button */
   check_button = gtk_check_button_new_with_label (_("Invert Layer Selection"));
   gmop->invert_check_button = check_button;
@@ -1202,7 +1210,7 @@ p_create_mod_frames_dialog(GapModFramesGlobalParams *gmop)
 		     gmop);
 
   row++;
-  
+
   /* the  radio button "Pattern is a list of layerstack numbers" */
   radio_button = gtk_radio_button_new_with_label ( radio_group, _("Pattern is a list of layerstack numbers") );
   radio_group = gtk_radio_button_get_group ( GTK_RADIO_BUTTON (radio_button) );
@@ -1294,7 +1302,7 @@ p_create_mod_frames_dialog(GapModFramesGlobalParams *gmop)
   g_signal_connect(G_OBJECT(entry), "changed",
 		   G_CALLBACK (p_layer_pattern_entry_update_cb),
 		   gmop);
- 
+
   gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
   gtk_box_pack_start (GTK_BOX (hbox), entry, TRUE, TRUE, 4);
 
@@ -1364,14 +1372,14 @@ p_create_mod_frames_dialog(GapModFramesGlobalParams *gmop)
 
   gtk_widget_show(main_vbox);
 
-}  /* end p_create_mod_frames_dialog */ 
+}  /* end p_create_mod_frames_dialog */
 
 
 /* -----------------------------
  * gap_mod_frames_dialog
  * -----------------------------
  */
-int 
+int
 gap_mod_frames_dialog(GapAnimInfo *ainfo_ptr,
                    gint32 *range_from,  gint32 *range_to,
                    gint32 *action_mode, gint32 *sel_mode,
@@ -1382,7 +1390,7 @@ gap_mod_frames_dialog(GapAnimInfo *ainfo_ptr,
   GapModFramesGlobalParams *gmop;
 
   if(gap_debug) printf("\nSTART gap_mod_frames_dialog\n");
-  
+
   gmop = &global_modify_params;
   gimp_ui_init ("gap_mod_frames", FALSE);
   gap_stock_init();
@@ -1398,15 +1406,15 @@ gap_mod_frames_dialog(GapAnimInfo *ainfo_ptr,
   gmop->sel_pattern[0] = '0';
   gmop->sel_pattern[1] = '\0';
   gmop->new_layername[0] = '\0';
- 
+
   gmop->case_sensitive_check_button = NULL;
   gmop->invert_check_button = NULL;
   gmop->layer_pattern_entry = NULL;
   gmop->new_layername_entry = NULL;
   gmop->new_layername_label = NULL;
   gmop->layer_selection_frame = NULL;
- 
-  
+
+
   p_create_mod_frames_dialog(gmop);
   p_upd_sensitivity(gmop);
   gtk_widget_show (gmop->shell);

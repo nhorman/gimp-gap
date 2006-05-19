@@ -321,9 +321,9 @@ gap_bluebox_create_dialog (GapBlueboxGlobalParams *bbp)
 			      3,              /* digits */
 			      TRUE,           /* constrain */
 			      0.0, 1.0,       /* lower/upper unconstrained */
-			      _("Sharp pixel selection by color with 0.0. Greater values than 0 "
-			        "makes selection with more or less variable alpha value depending "
-				"on difference to the keycolor"), NULL);
+			      _("Sharp pixel selection by color with 0.0. "
+			        "Values greater than 0 give the selection more or less variable alpha value,"
+			        "depending on disparity with the key color."), NULL);
   bbp->tolerance_adj = adj;
   g_object_set_data(G_OBJECT(adj), "bbp", bbp);
   g_signal_connect (adj, "value_changed",
@@ -928,13 +928,13 @@ p_radio_create_thres_mode(GtkWidget *table, int row, int col, GapBlueboxGlobalPa
 
   /* radio button thres_mode ALL */
   radio_button = gtk_radio_button_new_with_label ( radio_group, _("ALL") );
-  radio_group = gtk_radio_button_get_group ( GTK_RADIO_BUTTON (radio_button) );  
+  radio_group = gtk_radio_button_get_group ( GTK_RADIO_BUTTON (radio_button) );
   gtk_table_attach ( GTK_TABLE (radio_table), radio_button, l_idx, l_idx+1, 0, 1
                    , GTK_FILL | GTK_EXPAND, 0, 0, 0);
   bbp->thres_val_toggle = radio_button;
 
   l_radio_pressed = (bbp->vals.thres_mode == GAP_BLUBOX_THRES_VAL);
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radio_button), 
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radio_button),
 				   l_radio_pressed);
   gimp_help_set_help_data(radio_button, _("Use both HSV and RGB threshold values"), NULL);
 
@@ -942,7 +942,7 @@ p_radio_create_thres_mode(GtkWidget *table, int row, int col, GapBlueboxGlobalPa
   g_signal_connect ( G_OBJECT (radio_button), "toggled",
 		     G_CALLBACK (p_radio_thres_ALL_callback),
 		     bbp);
- 
+
 
   /* attach radio_table */
   gtk_table_attach ( GTK_TABLE (table), radio_table, col+1, col+3, row, row+1, GTK_FILL | GTK_EXPAND, 0, 0, 0);

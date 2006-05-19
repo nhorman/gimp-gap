@@ -5,7 +5,7 @@
  *
  * This Module contains:
  *
- *        GIMP/GAP-frontend interface for mplayer 
+ *        GIMP/GAP-frontend interface for mplayer
  *         Calls mplayer to split any mplayer supported video into
  *         video frames (single images on disk)
  *         Audio can also be extracted.
@@ -17,7 +17,7 @@
  *   It uses programs and commands that are NOT available
  *   on other Operating Systems (Win95, NT, XP ...)
  *
- *     - mplayer            MPlayer 1.0pre5 or MPlayer 1.0pre7 
+ *     - mplayer            MPlayer 1.0pre5 or MPlayer 1.0pre7
  *                          (the best mediaplayer for linux)
  *                          set environment GAP_MPLAYER_PROG to configure where to find mplayer
  *                          (default: search mplayer in your PATH)
@@ -54,28 +54,28 @@
  *    that were used in this frontend.
  *    Please Note: Options changed incompatible from 1.0pre5 to 1.0pre7 release,
  *                 the old MPlayer1.0pre5 options can be selected via dialog.
- * 
+ *
  *    -ss <time> (see -sb option too)
  * 		    Seek to given time position.
- * 
+ *
  * 		    EXAMPLE:
  * 			  -ss 56
  * 				  seeks to 56 seconds
  * 			  -ss 01:10:00
  * 				  seeks to 1 hour 10 min
- *   
+ *
  *    -frames <number>
  *       Play/convert only first <number> frames, then quit.
- * 
+ *
  *    -vo png
  *       set video output to png device (this device saves png frames to disc)
  *    -vo jpeg
  *       set video output to jpeg device (this device saves jpeg frames to disc)
- * 
+ *
  *    -jpeg <option1:option2:...> (-vo jpeg only)  # old syntax for Mplayer1.0pre5
  * 	      Specify options for the JPEG output.
  * 	      Available options are:
- * 
+ *
  * 		    [no]progressive
  * 			    Specify standard or progressive JPEG.
  * 		    [no]baseline
@@ -92,19 +92,19 @@
  *		    Specifies compression level for PNG output.
  *			  0    no compression
  *			  9    max compression
- * 
+ *
  *    -dvdangle <angle id> (DVD only)
  *               Some DVD discs contain scenes that  can  be  viewed
  *               from  multiple  angles.   Here you can tell MPlayer
  *               which angles to use (default: 1).  Examples can  be
  *               found below.
- * 
- *  
+ *
+ *
  *    -ao pcm -aofile <filename>   # syntax for MPlayer 1.0pre5
  *    -ao pcm:file=<filename>      # syntax for MPlayer 1.0pre7 or latest CVS
  *       set audiooutput to pcm device (writes PCM wavefiles to disc)
- *  
- * 
+ *
+ *
  *    -aid <id> (also see -alang option)
  * 		    Select audio channel [MPEG: 0-31 AVI/OGM: 1-99 ASF/
  * 		    RM:  0-127  VOB(AC3):  128-159  VOB(LPCM):  160-191
@@ -118,45 +118,45 @@
  *    -novideo
  *		    Do not play/encode video.
  *
- *    
+ *
  *    examples (MPlayer 1.0pre5):
  *    -----------------------
  *      mplayer  -ss 00:00:14 -frames 200 -ao pcm -aofile extracted_audio.wav  videoinput.rm
- *      
+ *
  *        ==> extracts wav file named audiodump.wav
- * 
- *      mplayer -vo jpeg -ss 00:00:14 -frames 150 -jpeg quality=92:smooth=70 videoinput.rm  
- * 
+ *
+ *      mplayer -vo jpeg -ss 00:00:14 -frames 150 -jpeg quality=92:smooth=70 videoinput.rm
+ *
  *        ==> extracts 150 jpeg frames starting at second 13
- *    
+ *
  *         00000001.jpg
  * 	..
- *      mplayer -vo png -ss 00:00:14 -frames 25 -z 9 videoinput.rm  
- * 
+ *      mplayer -vo png -ss 00:00:14 -frames 25 -z 9 videoinput.rm
+ *
  *        ==> extracts 25 png frames in best compression starting at second 13
- *    
+ *
  *         00000001.jpg
  * 	..
  *    examples (MPlayer 1.0pre7  or latest CVS):
  *    -----------------------
  *      mplayer  -ss 00:00:14 -frames 200 -ao pcm:file=extracted_audio.wav  videoinput.rm
- *      
+ *
  *        ==> extracts wav file named audiodump.wav
- * 
- *      mplayer -vo jpeg:quality=92:smooth=70 -ss 00:00:14 -frames 150  videoinput.rm  
- * 
+ *
+ *      mplayer -vo jpeg:quality=92:smooth=70 -ss 00:00:14 -frames 150  videoinput.rm
+ *
  *        ==> extracts 150 jpeg frames starting at second 13   WARNING does not work yet
- *    
+ *
  *         00000001.jpg
  * 	..
  *
- *      mplayer -vo png:z=9 -ss 00:00:14 -frames 25  videoinput.mpg 
+ *      mplayer -vo png:z=9 -ss 00:00:14 -frames 25  videoinput.mpg
  *        ==> extracts 25 png frames in best compression starting at second 13   WARNING does not work yet
  */
 
 
- 
-/* SYTEM (UNIX) includes */ 
+
+/* SYTEM (UNIX) includes */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -216,7 +216,7 @@ p_mplayer_info(char *errlist)
 
   int        l_idx;
   int        l_rc;
-  
+
 
   l_idx = 0;
   gap_arr_arg_init(&argv[l_idx], GAP_ARR_WGT_LABEL_LEFT);
@@ -262,11 +262,11 @@ p_mplayer_info(char *errlist)
 
   l_idx++;
   gap_arr_arg_init(&argv[l_idx], GAP_ARR_WGT_LABEL_LEFT);
-  argv[l_idx].label_txt = _("An error occurred while trying to call mplayer:");  
+  argv[l_idx].label_txt = _("An error occurred while trying to call mplayer:");
 
   l_idx++;
   gap_arr_arg_init(&argv[l_idx], GAP_ARR_WGT_LABEL_LEFT);
-  argv[l_idx].label_txt = "--------------------------------------------";  
+  argv[l_idx].label_txt = "--------------------------------------------";
 
 
   l_idx++;
@@ -281,14 +281,14 @@ p_mplayer_info(char *errlist)
     b_argv[0].but_val  = -1;
     b_argv[1].but_txt  = GTK_STOCK_OK;
     b_argv[1].but_val  = 0;
-  
+
   l_rc = gap_arr_std_dialog(_("mplayer Information"),
                              "",
                               l_idx,   argv,      /* widget array */
                               1,       b_argv,    /* button array */
                               -1);
 
-  return (l_rc); 
+  return (l_rc);
 }       /* end p_mplayer_info */
 
 
@@ -312,8 +312,8 @@ p_scann_start_time(char *buf, GapMPlayerParams *gpp)
   gint factor;
   gint tab[3];
   gboolean num_ready;
-  
-  
+
+
   tab[0] = 0;
   tab[1] = 0;
   tab[2] = 0;
@@ -322,7 +322,7 @@ p_scann_start_time(char *buf, GapMPlayerParams *gpp)
   num = 0;
   factor = 1;
   num_ready = FALSE;
-  
+
   ii = strlen(buf);
   while(TRUE)
   {
@@ -347,7 +347,7 @@ p_scann_start_time(char *buf, GapMPlayerParams *gpp)
         num_ready = TRUE;
       }
     }
-    
+
     if(num_ready)
     {
       if(tab_idx < 3)
@@ -359,7 +359,7 @@ p_scann_start_time(char *buf, GapMPlayerParams *gpp)
       factor = 1;
       num_ready = FALSE;
     }
-  
+
     if(ii <= 0)
     {
       break;
@@ -369,7 +369,7 @@ p_scann_start_time(char *buf, GapMPlayerParams *gpp)
   gpp->start_hour   = tab[2];
   gpp->start_minute = tab[1];
   gpp->start_second = tab[0];
-  
+
 }  /* end p_scann_start_time */
 
 
@@ -386,7 +386,7 @@ p_mplayer_dialog   (GapMPlayerParams *gpp)
 #define MPDIALOG_NUM_ARGS 22
   static GapArrArg  argv[MPDIALOG_NUM_ARGS];
   static char *radio_args[3]  = { "XCF", "PNG", "JPEG" };
-  
+
   char buf_start_time[10];
   char err_msg_buffer[1000];
 
@@ -442,7 +442,7 @@ p_mplayer_dialog   (GapMPlayerParams *gpp)
   ii++;
   gap_arr_arg_init(&argv[ii], GAP_ARR_WGT_TEXT);
   argv[ii].label_txt = _("Start Time:");
-  argv[ii].help_txt  = _("sart time HH:MM:SS where to begin extract");
+  argv[ii].help_txt  = _("Extracting starts at the specified time offset HH:MM:SS in the video");
   argv[ii].text_buf_len = sizeof(buf_start_time);
   argv[ii].text_buf_ret = buf_start_time;
   argv[ii].entry_width = MPDIALOG_SMALL_ENTRY_WIDTH;
@@ -460,7 +460,7 @@ p_mplayer_dialog   (GapMPlayerParams *gpp)
   argv[ii].umin       = 1;
   argv[ii].umax       = 999999;
   argv[ii].entry_width = MPDIALOG_SMALL_ENTRY_WIDTH;
-  
+
   ii++; ii_vtrack = ii;
   gap_arr_arg_init(&argv[ii], GAP_ARR_WGT_INT);
   argv[ii].label_txt = _("Videotrack:");
@@ -472,7 +472,7 @@ p_mplayer_dialog   (GapMPlayerParams *gpp)
   argv[ii].umin       = 0;
   argv[ii].umax       = 20;
   argv[ii].entry_width = MPDIALOG_SMALL_ENTRY_WIDTH;
-  
+
   ii++; ii_atrack = ii;
   gap_arr_arg_init(&argv[ii], GAP_ARR_WGT_INT);
   argv[ii].label_txt = _("Audiotrack:");
@@ -519,7 +519,7 @@ p_mplayer_dialog   (GapMPlayerParams *gpp)
   ii++; ii_png_compression = ii;
   gap_arr_arg_init(&argv[ii], GAP_ARR_WGT_INT);
   argv[ii].label_txt = _("Png Compression:");
-  argv[ii].help_txt  = _("Compression for resulting png frames where 0 is uncopressed (fast), 9 is max. compression "
+  argv[ii].help_txt  = _("Compression for resulting png frames where 0 is uncompressed (fast), 9 is max. compression "
                         "(this option is ignored when JPEG format is used)");
   argv[ii].constraint = TRUE;
   argv[ii].int_min    = 0;
@@ -529,8 +529,8 @@ p_mplayer_dialog   (GapMPlayerParams *gpp)
   ii++; ii_jpg_quality = ii;
   gap_arr_arg_init(&argv[ii], GAP_ARR_WGT_INT);
   argv[ii].label_txt = _("Jpeg Quality:");
-  argv[ii].help_txt  = _("Quality for resulting jpeg frames where 100 is best quality"
-                        "(is ignored when other formats are used)");
+  argv[ii].help_txt  = _("Quality for resulting jpeg frames where 100 is best quality "
+                        "(ignored when other formats are used)");
   argv[ii].constraint = TRUE;
   argv[ii].int_min    = 0;
   argv[ii].int_max    = 100;
@@ -601,8 +601,9 @@ p_mplayer_dialog   (GapMPlayerParams *gpp)
   ii++; ii_old_syntax = ii;
   gap_arr_arg_init(&argv[ii], GAP_ARR_WGT_TOGGLE);
   argv[ii].label_txt = _("MPlayer 1.0pre5:");
-  argv[ii].help_txt  = _("on: use deprecated options for mplayer 1.0pre5 off: use options for newer mplayer"
-                        " (dont turn on the deprecated options if you have mplayer 1.0pre7 or newer mplayer versions)");
+  argv[ii].help_txt  = _("ON: use deprecated options for mplayer 1.0pre5\n"
+                         "OFF: use options for newer mplayer\n"
+                        " Dont turn on the deprecated options if you have mplayer 1.0pre7 or newer mplayer versions");
   argv[ii].int_ret   = gpp->use_old_mplayer1_syntax;
 
   ii++;
@@ -610,20 +611,20 @@ p_mplayer_dialog   (GapMPlayerParams *gpp)
   argv[ii].help_id = GAP_MPLAYER_HELP_ID;
 
   ii++;
-   
-  if(TRUE == gap_arr_ok_cancel_dialog(_("MPlayer based extraction"), 
+
+  if(TRUE == gap_arr_ok_cancel_dialog(_("MPlayer based extraction"),
                             _("Select Frame Range"), ii, argv))
   {
      gboolean params_ok;
      p_scann_start_time(buf_start_time, gpp);
-     
+
      if(gap_debug)
      {
        printf("# gpp->start_hour:   %d\n", (int)gpp->start_hour );
        printf("# gpp->start_minute: %d\n", (int)gpp->start_minute );
        printf("# gpp->start_second: %d\n", (int)gpp->start_second );
      }
-     
+
      gpp->number_of_frames  = (gint32)(argv[ii_num_frames].int_ret);
      gpp->vtrack            = (gint32)(argv[ii_vtrack].int_ret);
      gpp->atrack            = (gint32)(argv[ii_atrack].int_ret);
@@ -633,7 +634,7 @@ p_mplayer_dialog   (GapMPlayerParams *gpp)
      gpp->jpg_smooth        = (gint32)(argv[ii_jpg_smooth].int_ret);
      gpp->jpg_progressive   = (gint32)(argv[ii_jpg_progressive].int_ret);
      gpp->jpg_baseline      = (gint32)(argv[ii_jpg_baseline].int_ret);
-     
+
      gpp->img_format        = (GapMPlayerFormats)(argv[ii_img_format].radio_ret);
      gpp->silent            = (gboolean)(argv[ii_silent].int_ret);
      gpp->autoload          = (gboolean)(argv[ii_autoload].int_ret);
@@ -650,7 +651,7 @@ p_mplayer_dialog   (GapMPlayerParams *gpp)
 		 );
      }
      if((gpp->start_minute > 59)
-     || (gpp->start_second > 59))     
+     || (gpp->start_second > 59))
      {
        params_ok = FALSE;
        g_snprintf(err_msg_buffer, sizeof(err_msg_buffer)
@@ -658,7 +659,7 @@ p_mplayer_dialog   (GapMPlayerParams *gpp)
 		 , buf_start_time
 		 );
      }
-     
+
      if(params_ok)
      {
        return (0);    /* OK */
@@ -668,7 +669,7 @@ p_mplayer_dialog   (GapMPlayerParams *gpp)
   {
      return -1;     /* Cancel */
   }
-   
+
   }
 }       /* end p_mplayer_dialog */
 
@@ -696,7 +697,7 @@ p_overwrite_dialog(char *filename, gint overwrite_mode)
 
        gap_arr_arg_init(&argv[0], GAP_ARR_WGT_LABEL);
        argv[0].label_txt = filename;
-    
+
        return(gap_arr_std_dialog ( _("GAP Question"),
                                    _("File already exists"),
                                    1, argv,
@@ -749,7 +750,7 @@ static void
 p_dirname(char *fname)
 {
   int l_idx;
-  
+
   l_idx = strlen(fname) -1;
   while(l_idx > 0)
   {
@@ -769,7 +770,7 @@ p_dirname(char *fname)
  * ------------------------------
  * build the name for a temporary directory
  * where mplayer will run and writes the extracted frames.
- * 
+ *
  * the first guess is making a subdirectory at same location
  * where the resulting frames will be stored.
  * (has the advantage that fast renaming is possible
@@ -819,11 +820,11 @@ p_init_mplayer_working_dir(GapMPlayerParams *gpp)
 
     return;
   }
-  
-  /* use gimp_temp_name to find a writeable tempdir 
-   * (used as mplayer workingdir) 
+
+  /* use gimp_temp_name to find a writeable tempdir
+   * (used as mplayer workingdir)
    */
-    
+
   gpp->mplayer_working_dir = g_build_filename(g_get_home_dir(), tmp_dir, NULL);
 
 }  /* end p_init_mplayer_working_dir */
@@ -853,7 +854,7 @@ p_convert_frames(GapMPlayerParams *gpp, gint32 frame_from, gint32 frame_to, char
    /* convert the mplayer frames (from png) to xcf fileformat
     * (the gap module for range convert is not linked to the frontends
     *  main program, therefore i call the convert procedure via PDB-interface)
-    */   
+    */
    return_vals = gimp_run_procedure ("plug_in_gap_range_convert2",
                                     &nreturn_vals,
                                     GIMP_PDB_INT32, GIMP_RUN_NONINTERACTIVE,     /* runmode  */
@@ -899,29 +900,29 @@ p_find_max_mplayer_frame(GapMPlayerParams *gpp, gint32 from_nr, char *ext)
   gint32 l_nr;
   gint32 l_delta;
   char   l_frame[500];
-  
+
   l_nr = from_nr;
   l_max_found = 0;
   l_high = 99999999;
-  
+
   while(1 == 1)
   {
      p_build_mplayer_framename(gpp, l_frame, sizeof(l_frame), l_nr, ext);
 
      if(gap_debug) printf("DEBUG find_MAX :%s\n", l_frame);
-     
+
      if(g_file_test(l_frame, G_FILE_TEST_EXISTS))
      {
         l_max_found = l_nr;
         l_delta = (l_high - l_nr) / 2;
         if(l_delta == 0)
-        { 
+        {
            l_delta = 1;
         }
         l_nr = l_max_found + l_delta;
      }
      else
-     {  
+     {
         if(l_nr == from_nr) { return (-1); }  /* no frames found */
 
         if(l_nr < l_high)
@@ -934,7 +935,7 @@ p_find_max_mplayer_frame(GapMPlayerParams *gpp, gint32 from_nr, char *ext)
            return(l_max_found);
         }
      }
-  } 
+  }
 }       /* end p_find_max_mplayer_frame */
 
 /* ---------------------
@@ -962,7 +963,7 @@ p_rename_frames(GapMPlayerParams *gpp, gint32 frame_from, gint32 frame_to, char 
   l_use_mv = TRUE;
   l_overwrite_mode = 0;
 
-  
+
   l_max_found = p_find_max_mplayer_frame (gpp, frame_from, ext);
   if(l_max_found < 0)
   {
@@ -971,20 +972,20 @@ p_rename_frames(GapMPlayerParams *gpp, gint32 frame_from, gint32 frame_to, char 
                l_src_frame);
        return(-1);
   }
- 
-  
+
+
   l_frame_nr = frame_from;
-   
+
   while (l_frame_nr <= frame_to)
   {
      p_build_mplayer_framename(gpp, l_src_frame, sizeof(l_src_frame), l_frame_nr, ext);
      p_build_gap_framename(l_dst_frame, sizeof(l_dst_frame), l_frame_nr, basename, ext);
-     
+
      if(!g_file_test(l_src_frame, G_FILE_TEST_EXISTS))
      {
         break;  /* srcfile not found, stop */
      }
-     
+
      if (strcmp(l_src_frame, l_dst_frame) != 0)
      {
         /* check overwrite if Destination frame already exsts */
@@ -1009,10 +1010,10 @@ p_rename_frames(GapMPlayerParams *gpp, gint32 frame_from, gint32 frame_to, char 
         }
 
         if (l_use_mv)
-        {       
+        {
            rename(l_src_frame, l_dst_frame);
         }
-        
+
         if(!g_file_test(l_dst_frame, G_FILE_TEST_EXISTS))
         {
            gap_lib_file_copy(l_src_frame, l_dst_frame);
@@ -1047,9 +1048,9 @@ p_init_and_check_mplayer(GapMPlayerParams *gpp)
   gint l_rc;
   const char *cp;
   gboolean mplayer_prog_found;
-  
+
   if (gap_debug) printf("p_init_and_check_mplayer\n");
-  
+
   mplayer_prog_found = FALSE;
 
   l_rc = 0;  /* SUCCESS */
@@ -1057,7 +1058,7 @@ p_init_and_check_mplayer(GapMPlayerParams *gpp)
   /*
    * Set environmental values for the mplayer program:
    */
-  
+
   /* check gimprc for the mplayer executable name (including path) */
   if ( (cp = gimp_gimprc_query("mplayer_prog")) != NULL )
   {
@@ -1069,14 +1070,14 @@ p_init_and_check_mplayer(GapMPlayerParams *gpp)
     else
     {
       g_message(_("WARNING: your gimprc file configuration for the mediaplayer\n"
-             "does not point to an executable program\n"
+             "does not point to an executable program;\n"
 	     "the configured value for %s is: %s\n")
 	     , "mplayer_prog"
 	     , gpp->mplayer_prog
 	     );
     }
   }
-  
+
   /* check environment variable for the mplayer program */
   if(!mplayer_prog_found)
   {
@@ -1090,7 +1091,7 @@ p_init_and_check_mplayer(GapMPlayerParams *gpp)
       else
       {
 	g_message(_("WARNING: the environment variable %s\n"
-               "does not point to an executable program\n"
+               "does not point to an executable program;\n"
 	       "the current value is: %s\n")
 	       , "GAP_MPLAYER_PROG"
 	       , gpp->mplayer_prog
@@ -1098,7 +1099,7 @@ p_init_and_check_mplayer(GapMPlayerParams *gpp)
       }
     }
   }
-  
+
   if(!mplayer_prog_found)
   {
     if ( (cp = g_getenv("PATH")) != NULL )
@@ -1120,7 +1121,7 @@ p_init_and_check_mplayer(GapMPlayerParams *gpp)
 		 );
   }
 
-  return (l_rc); 
+  return (l_rc);
 }  /* end p_init_and_check_mplayer */
 
 
@@ -1150,18 +1151,18 @@ p_poll(GapMPlayerParams *gpp, pid_t mplayer_pid, char *ext)
 
     /* check for the max_frame number out of the already extracted frames */
     l_max_frame = p_find_max_mplayer_frame (gpp, 1, ext);
-    
+
     if(gap_debug)
     {
       printf("POLL: frames found: %d\n", (int)l_max_frame);
     }
-    
+
     if(l_max_frame > 0)
     {
       gimp_progress_update ((gdouble)l_max_frame / (gdouble)gpp->number_of_frames);
     }
-  }   
-              
+  }
+
   if(gap_debug) printf("poll ended on mplayer pid: %d\n", (int)mplayer_pid);
 }	/* end p_poll */
 
@@ -1170,7 +1171,7 @@ p_poll(GapMPlayerParams *gpp, pid_t mplayer_pid, char *ext)
  * p_start_mplayer_process
  * -----------------------
  *
- * build a cmd string 
+ * build a cmd string
  *   "cd <dir>; mplayer <options> video_filename"
  * and run this string SYNCHRON as system command.
  * or asynchron (using a generated shellscript)
@@ -1183,8 +1184,8 @@ p_start_mplayer_process(GapMPlayerParams *gpp)
    int    l_rc;
    pid_t  l_mplayer_pid;
 
-   l_mplayer_pid = -1;   
-   
+   l_mplayer_pid = -1;
+
    if((gpp->vtrack > 0)
    && (!gpp->run_mplayer_asynchron))
    {
@@ -1199,17 +1200,17 @@ p_start_mplayer_process(GapMPlayerParams *gpp)
    {
      l_buf[0] = '\0';
    }
-   
+
    /* prepare args for the mplayer call */
    g_snprintf(l_cmd, sizeof(l_cmd), "%s%s -ss %02d:%02d:%02d -frames %d "
-             , l_buf                            /* optional cd   gpp->mplayer_working_dir */      
+             , l_buf                            /* optional cd   gpp->mplayer_working_dir */
              , gpp->mplayer_prog                /* programname */
 	     , (int)gpp->start_hour
 	     , (int)gpp->start_minute
 	     , (int)gpp->start_second
 	     , (int)gpp->number_of_frames
              );
-   
+
    if (gpp->atrack > 0)
    {
      if(gpp->atrack > 1)
@@ -1220,7 +1221,7 @@ p_start_mplayer_process(GapMPlayerParams *gpp)
                     );
        strcat(l_cmd, l_buf);
      }
-     
+
      /* the -ao option selects the audio output device.
       * device pcm writes pcm encoded audiodata
       * to RIFF wave formated audiofiles on disc.
@@ -1234,7 +1235,7 @@ p_start_mplayer_process(GapMPlayerParams *gpp)
      {
        strcat(l_cmd, "-ao pcm:file='");
      }
-     
+
      if(gpp->audio_filename[0] == '\0')
      {
        strcat(l_cmd, gpp->video_filename);
@@ -1264,7 +1265,7 @@ p_start_mplayer_process(GapMPlayerParams *gpp)
                     );
        strcat(l_cmd, l_buf);
      }
-     
+
      /* the -vo option selects the video output device
       * devices jpeg and png are used to write frames to disc
       * in the corresponding image fileformat.
@@ -1272,7 +1273,7 @@ p_start_mplayer_process(GapMPlayerParams *gpp)
      strcat(l_cmd, "-vo ");
 
      switch(gpp->img_format)
-     { 
+     {
        case MPENC_JPEG:
           if(gpp->use_old_mplayer1_syntax)
           {
@@ -1290,9 +1291,9 @@ p_start_mplayer_process(GapMPlayerParams *gpp)
 	            ,(int)gpp->jpg_smooth
                     );
 	  }
-	  
+
 	  strcat(l_cmd, l_buf);
-	  
+
           if(gpp->jpg_progressive)
 	  {
             strcat(l_cmd, ":progressive");
@@ -1325,8 +1326,8 @@ p_start_mplayer_process(GapMPlayerParams *gpp)
 	            ,(int)gpp->png_compression
                     );
 	  }
-          strcat(l_cmd, l_buf);   /* other formats extract as png, 
-	                           * and may need further processing for convert 
+          strcat(l_cmd, l_buf);   /* other formats extract as png,
+	                           * and may need further processing for convert
 				   */
           break;
       }
@@ -1339,7 +1340,7 @@ p_start_mplayer_process(GapMPlayerParams *gpp)
        strcat(l_cmd, "-novideo ");
      }
    }
-   
+
    /* add the videofilename (in quotes to protect blanks) as last parameter */
    strcat(l_cmd, " \"");
    strcat(l_cmd, gpp->video_filename);
@@ -1359,7 +1360,7 @@ p_start_mplayer_process(GapMPlayerParams *gpp)
 
      /* asynchron start */
      remove(l_mplayer_pidfile);
-       
+
      /* generate a shellscript */
      l_fp = fopen(l_mplayer_startscript, "w+");
      if (l_fp != NULL)
@@ -1378,7 +1379,7 @@ p_start_mplayer_process(GapMPlayerParams *gpp)
 	 fprintf(l_fp, "echo \"$MPLAYER_PID # MPLAYER_PID\"\n");
 	 fprintf(l_fp, "echo \"$MPLAYER_PID # MPLAYER_PID\" > \"%s\"\n", l_mplayer_pidfile);
 
-	 /* we pass the mplayer pid in a file, 
+	 /* we pass the mplayer pid in a file,
           * exitcodes are truncated to 8 bit
           * by the system call
           */
@@ -1417,12 +1418,12 @@ p_start_mplayer_process(GapMPlayerParams *gpp)
      if ((l_rc & 0xff) == 0) l_mplayer_pid = 0;    /* OK */
      else                    l_mplayer_pid = -1;   /* Synchron call failed */
 
-     if(gap_debug) 
+     if(gap_debug)
      {
        printf("SYNCHRON CALL: %s\nretcode:%d (%d)\n", l_cmd, (int)l_rc, (int)l_mplayer_pid);
      }
    }
-   
+
    return(l_mplayer_pid);
 
 }       /* end p_start_mplayer_process */
@@ -1444,16 +1445,16 @@ gap_mplayer_decode(GapMPlayerParams *gpp)
   char  *l_dst_dir;
   int    l_input_dir_created_by_myself;
   pid_t  l_mplayer_pid;
-  
+
   l_rc = 0;
   l_input_dir_created_by_myself = FALSE;
   global_errlist = NULL;
 
-   
+
   /* init mplayer_prog name
    * (including check if mplayer is installed)
    */
-  l_rc = p_init_and_check_mplayer(gpp);  
+  l_rc = p_init_and_check_mplayer(gpp);
   if(l_rc != 0)
   {
     if(global_errlist)
@@ -1464,11 +1465,11 @@ gap_mplayer_decode(GapMPlayerParams *gpp)
     {
       p_mplayer_info("ERROR: could not execute mplayer");
     }
-    
+
     return(l_rc);
   }
 
-  
+
   l_rc = p_mplayer_dialog (gpp);
 
 
@@ -1486,7 +1487,7 @@ gap_mplayer_decode(GapMPlayerParams *gpp)
 
 
   p_init_mplayer_working_dir(gpp);
-  
+
   if(!g_file_test(gpp->video_filename, G_FILE_TEST_EXISTS))
   {
      global_errlist = g_strdup_printf(
@@ -1494,12 +1495,12 @@ gap_mplayer_decode(GapMPlayerParams *gpp)
             gpp->video_filename);
             l_rc = 10;
   }
-  
-  
+
+
   if (l_rc == 0)
   {
     switch(gpp->img_format)
-    { 
+    {
       case MPENC_PNG:
          strcpy(extension,  "png");
          strcpy(extension2, ".png");
@@ -1546,7 +1547,7 @@ gap_mplayer_decode(GapMPlayerParams *gpp)
          }
      }
   }
-   
+
   if(l_rc == 0)
   {
      if (gpp->vtrack > 0)
@@ -1584,8 +1585,8 @@ gap_mplayer_decode(GapMPlayerParams *gpp)
   && (gpp->vtrack > 0))
   {
      gint32  l_max_frame;
-     
-     
+
+
      if(gpp->run_mplayer_asynchron)
      {
        /* if mplayer was started as asynchron process
@@ -1596,9 +1597,9 @@ gap_mplayer_decode(GapMPlayerParams *gpp)
      }
 
      gimp_progress_update (1.0);
-     
+
      l_max_frame = p_find_max_mplayer_frame (gpp, 1, extension);
-     if (l_max_frame < 1) 
+     if (l_max_frame < 1)
      {
         global_errlist = g_strdup_printf(
                _("can't find any extracted frames,\n"
@@ -1653,7 +1654,7 @@ gap_mplayer_decode(GapMPlayerParams *gpp)
          {
             /* remove input dir with all files */
             g_snprintf(l_cmd, sizeof(l_cmd), "rm -rf \"%s\"", gpp->mplayer_working_dir);
-            system(l_cmd);         
+            system(l_cmd);
          }
        }
        g_free(l_dst_dir);
@@ -1677,7 +1678,7 @@ gap_mplayer_decode(GapMPlayerParams *gpp)
    }
    else
    {
-     if((gpp->autoload) 
+     if((gpp->autoload)
      && (gpp->vtrack > 0))
      {
         /* load first frame and add a display */
@@ -1693,5 +1694,5 @@ gap_mplayer_decode(GapMPlayerParams *gpp)
      }
    }
 
-   return(l_rc);    
+   return(l_rc);
 }       /* end  gap_mplayer_decode */

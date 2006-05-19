@@ -151,8 +151,8 @@ static void
 p_gap_message(const char *msg)
 {
   static GapArrButtonArg  l_argv[1];
-  int               l_argc;  
-  
+  int               l_argc;
+
   l_argv[0].but_txt  = GTK_STOCK_OK;
   l_argv[0].but_val  = 0;
   l_argc             = 1;
@@ -214,13 +214,13 @@ gap_cme_gui_pdb_call_encoder_gui_plugin(GapCmeGlobalParams *gpp)
   if(gap_debug) printf("MASTER: Before g_thread_create\n");
 
   joinable = TRUE;
-  gpp->val.gui_proc_thread = 
+  gpp->val.gui_proc_thread =
       g_thread_create((GThreadFunc)gap_cme_gui_thread_async_pdb_call
                      , NULL  /* data */
 		     , joinable
 		     , NULL  /* GError **error (NULL dont report errors) */
 		     );
-  
+
   if(gap_debug) printf("MASTER: After g_thread_create\n");
 #else
   /* if threads are not used simply call the procedure
@@ -375,7 +375,7 @@ gap_cme_gui_thread_async_pdb_call(gpointer data)
   if(gap_debug) printf("THREAD gui_proc TERMINATING: %d\n", (int)gpp->val.gui_proc_thread);
 
   gpp->val.gui_proc_thread = NULL;
-  
+
   return (NULL);
 }  /* end gap_cme_gui_thread_async_pdb_call */
 
@@ -681,9 +681,9 @@ p_get_range_from_type (GapCmeGlobalParams *gpp
     case GAP_RNGTYPE_STORYBOARD:
       {
         t_global_stb  *gstb;
-	
+
         *lower = 0;
-	
+
         gstb = &global_stb;
         *upper = gstb->total_stroyboard_frames;
 	if(*upper > 0)
@@ -733,7 +733,7 @@ p_get_range_and_type (GapCmeGlobalParams *gpp, gint32 *lower, gint32 *upper, Gap
  }
 
  p_get_range_from_type(gpp, *range_type, lower, upper);
- 
+
 }   /* end p_get_range_and_type */
 
 
@@ -761,7 +761,7 @@ p_print_storyboard_text_label(GapCmeGlobalParams *gpp, char *msg)
         "assemble a video from a list of single images,\n"
         "frameranges, videoclips, gif animations or audiofiles.\n"
         "the frames are organized in tracks,\n"
-        "and allow fading, scale and move\n"
+        "and allow fade, scale and move\n"
         "operations between the tracks.\n"
         "(see STORYBOARD_FILE_DOC.txt for details)")
         );
@@ -961,16 +961,16 @@ gap_cme_gui_upd_wgt_sensitivity (GapCmeGlobalParams *gpp)
   }
 
   gtk_widget_set_sensitive(gpp->cme__button_params, sensitive);
-  
+
   sensitive = FALSE;
   if(gpp->val.storyboard_file[0] != '\0')
   {
     if(g_file_test(gpp->val.storyboard_file, G_FILE_TEST_EXISTS))
     {
       t_global_stb         *gstb;
-      
+
       /* check if storyboard file is valid and has audio */
-      gstb = &global_stb;     
+      gstb = &global_stb;
       if((gstb->aud_total_sec > 0.0)
       && (gstb->vidhand_open_ok))
       {
@@ -979,7 +979,7 @@ gap_cme_gui_upd_wgt_sensitivity (GapCmeGlobalParams *gpp)
     }
   }
   gtk_widget_set_sensitive(gpp->cme__button_stb_audio, sensitive);
- 
+
 }  /* end gap_cme_gui_upd_wgt_sensitivity */
 
 /* ----------------------------------------
@@ -1250,12 +1250,12 @@ p_status_progress(GapCmeGlobalParams *gpp, t_global_stb *gstb)
   if(status_lbl) gtk_label_set_text(GTK_LABEL(status_lbl), gstb->status_msg);
 
   pbar = gpp->cme__progressbar_status;
-  if(pbar) 
+  if(pbar)
   {
     gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR (pbar), gstb->progress);
     gtk_progress_bar_set_text(GTK_PROGRESS_BAR(pbar), gstb->status_msg);
   }
-  
+
   if(gap_debug) printf("progress: %f\n", (float)gstb->progress );
 }  /* end p_status_progress */
 
@@ -1286,7 +1286,7 @@ p_storybord_job_finished(GapCmeGlobalParams *gpp, t_global_stb *gstb)
 
 
 
-  if(gap_debug) 
+  if(gap_debug)
   {
     printf("p_storybord_job_finished: START\n");
   }
@@ -1300,7 +1300,7 @@ p_storybord_job_finished(GapCmeGlobalParams *gpp, t_global_stb *gstb)
    if(gpp->val.gui_proc_thread)
    {
       /* wait until thread exits */
-      if(gap_debug) 
+      if(gap_debug)
       {
         printf("p_storybord_job_finished: before g_thread_join\n");
       }
@@ -1571,7 +1571,7 @@ p_thread_storyboard_file(gpointer data)
 
   gpp = gap_cme_main_get_global_params();
 
-  if(gap_debug) 
+  if(gap_debug)
   {
     printf("THREAD: p_thread_storyboard_file &gpp: %d\n", (int)gpp);
   }
@@ -1647,7 +1647,7 @@ p_thread_storyboard_file(gpointer data)
 	              , "%s"
 		      ,l_composite_audio
 		      );
-	              
+
             if(gap_debug) gap_gve_story_debug_print_audiorange_list(vidhand->aud_list, -1);
             gap_gve_story_drop_audio_cache();
          }
@@ -1693,7 +1693,7 @@ p_thread_storyboard_file(gpointer data)
   gstb->last_frame_nr     = l_last_frame_nr;
   gpp->val.input_mode     = l_rangetype;
 
-  if(gap_debug) 
+  if(gap_debug)
   {
     printf("THREAD storyboard TERMINATING: tid:%d first:%d last:%d input_mode:%d\n"
        , (int)gpp->val.gui_proc_thread
@@ -1776,7 +1776,7 @@ gap_cme_gui_check_storyboard_file(GapCmeGlobalParams *gpp)
   if(gap_debug) printf("MASTER: Before storyborad g_thread_create\n");
 
   joinable = TRUE;
-  gpp->val.gui_proc_thread = 
+  gpp->val.gui_proc_thread =
       g_thread_create((GThreadFunc)p_thread_storyboard_file
                      , NULL  /* data */
 		     , joinable
@@ -1796,9 +1796,9 @@ gap_cme_gui_check_storyboard_file(GapCmeGlobalParams *gpp)
    */
   {
     gboolean do_processing;
-    
+
     do_processing = TRUE;
-    
+
     /* if storyboard_create_composite_audio button was pressed
      * there is no need for extra pop-up dialog
      * before start processing
@@ -1806,9 +1806,9 @@ gap_cme_gui_check_storyboard_file(GapCmeGlobalParams *gpp)
     if (!gpp->storyboard_create_composite_audio)
     {
       static GapArrArg  argv[1];
-      
+
       do_processing = FALSE;
-    
+
       gap_arr_arg_init(&argv[0], GAP_ARR_WGT_LABEL);
       argv[0].label_txt = _("Go for checking storyboard file");
 
@@ -1821,9 +1821,9 @@ gap_cme_gui_check_storyboard_file(GapCmeGlobalParams *gpp)
         do_processing = TRUE;
       }
     }
-    
+
     if(do_processing)
-    {			       
+    {
       p_thread_storyboard_file(NULL);
       p_storybord_job_finished(gpp, gstb);
     }
@@ -2005,8 +2005,8 @@ gap_cme_gui_check_encode_OK (GapCmeGlobalParams *gpp)
 
   if(0 != gap_gve_sox_chk_and_resample(&gpp->val))
   {
-     g_message(_("Cant process the audio input file."
-                 " You may check audio options and audio tool configuration"));
+     g_message(_("Can't process the audio input file."
+                 " You should check audio options and audio tool configuration"));
      return (FALSE);
   }
 
@@ -2275,7 +2275,7 @@ p_input_mode_radio_callback(GtkWidget *widget, GapCmeGlobalParams *gpp)
   {
     gint32  l_first_frame_limit;
     gint32  l_last_frame_nr;
-    
+
     gpp->val.input_mode = l_rangetype;
 
     p_get_range_from_type (gpp, l_rangetype, &l_first_frame_limit, &l_last_frame_nr);
@@ -2343,11 +2343,11 @@ p_create_input_mode_widgets(GtkWidget *table, int row, int col, GapCmeGlobalPara
   radio_group = gtk_radio_button_get_group ( GTK_RADIO_BUTTON (radio_button) );
   gtk_table_attach ( GTK_TABLE (radio_table), radio_button, l_idx, l_idx+1, 0, 1
                    , GTK_FILL | GTK_EXPAND, 0, 0, 0);
- 
+
   l_radio_pressed = (gpp->val.input_mode == GAP_RNGTYPE_LAYER);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radio_button),
 				   l_radio_pressed);
-  gimp_help_set_help_data(radio_button, _("Input are all the layers of one image"), NULL);
+  gimp_help_set_help_data(radio_button, _("Input is all the layers of one image"), NULL);
 
   gtk_widget_show (radio_button);
   g_object_set_data (G_OBJECT (radio_button), RADIO_ITEM_INDEX_KEY
@@ -2371,7 +2371,7 @@ p_create_input_mode_widgets(GtkWidget *table, int row, int col, GapCmeGlobalPara
   l_radio_pressed = (gpp->val.input_mode == GAP_RNGTYPE_STORYBOARD);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radio_button),
 				   l_radio_pressed);
-  gimp_help_set_help_data(radio_button, _("Input are videoclips and frames, defined via storyboard file. "
+  gimp_help_set_help_data(radio_button, _("Input is videoclips and frames, defined via storyboard file. "
                                           "(specify the storyboard filename in the extras tab)")
 					  , NULL);
 
@@ -2545,7 +2545,7 @@ p_create_shell_window (GapCmeGlobalParams *gpp)
   /* the Status label */
   label = gtk_label_new (_("READY"));
   gpp->cme__label_status = label;
-  
+
   /* hide cme__label_status, because status is now displayed
    * via gtk_progress_bar_set_text
    */
@@ -2625,7 +2625,7 @@ p_create_encode_extras_frame (GapCmeGlobalParams *gpp)
   gtk_container_add (GTK_CONTAINER (frame), table1);
 
   row = 0;
-  
+
   /* the Macrofile label */
   label = gtk_label_new (_("Macrofile:"));
   gtk_widget_show (label);
@@ -2633,7 +2633,7 @@ p_create_encode_extras_frame (GapCmeGlobalParams *gpp)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
-  
+
 
   /* the Macrofile entry */
   entry = gtk_entry_new ();
@@ -2660,9 +2660,9 @@ p_create_encode_extras_frame (GapCmeGlobalParams *gpp)
                       G_CALLBACK (on_cme__button_mac_clicked),
                       gpp);
 
-  
+
   row++;
-  
+
   /* the Storyboard label */
   label = gtk_label_new (_("Storyboard File:"));
   gtk_widget_show (label);
@@ -2695,7 +2695,7 @@ p_create_encode_extras_frame (GapCmeGlobalParams *gpp)
                       G_CALLBACK (on_cme__button_stb_clicked),
                       gpp);
   row++;
-  
+
   /* the Storyboard Audio */
   label = gtk_label_new (_("Storyboard Audio:"));
   gtk_widget_show (label);
@@ -2720,9 +2720,9 @@ p_create_encode_extras_frame (GapCmeGlobalParams *gpp)
   g_signal_connect (G_OBJECT (button), "clicked",
                       G_CALLBACK (on_cme__button_stb_audio_clicked),
                       gpp);
-  
+
   row++;
-  
+
   /* the  storyboard helptext & parsing report label */
   label = gtk_label_new (_("Storyboardfiles are textfiles that are used to\n"
 			   "assemble a video from a list of single images,\n"
@@ -2735,9 +2735,9 @@ p_create_encode_extras_frame (GapCmeGlobalParams *gpp)
                     (GtkAttachOptions) (0), 2, 6);
   gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_FILL);
   gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
-  
+
   row++;
-  
+
   /* the Monitor label */
   label = gtk_label_new (_("Monitor"));
   gtk_widget_hide (label);
@@ -2757,7 +2757,7 @@ p_create_encode_extras_frame (GapCmeGlobalParams *gpp)
                       G_CALLBACK (on_cme__checkbutton_enc_monitor_toggled),
                       gpp);
 
-  
+
   row++;
 
   /* the Debug Flat File label */
@@ -2780,7 +2780,7 @@ p_create_encode_extras_frame (GapCmeGlobalParams *gpp)
                       G_CALLBACK (on_cme__entry_debug_flat_changed),
                       gpp);
 
-  
+
   row++;
 
   /* the Debug Multilayer File label */
@@ -2832,7 +2832,7 @@ p_create_audiotool_cfg_frame (GapCmeGlobalParams *gpp)
   gtk_container_add (GTK_CONTAINER (frame), table);
 
   row = 0;
-  
+
   /* the audiotool (sox) label */
   label = gtk_label_new (_("Audiotool:"));
   gtk_widget_show (label);
@@ -2856,7 +2856,7 @@ p_create_audiotool_cfg_frame (GapCmeGlobalParams *gpp)
 
 
   row++;
-   
+
   /* the audiotool options (sox options) label */
   label = gtk_label_new (_("Options:"));
   gtk_widget_show (label);
@@ -2865,7 +2865,7 @@ p_create_audiotool_cfg_frame (GapCmeGlobalParams *gpp)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  
+
   /* the audiotool options (sox options) entry */
   entry = gtk_entry_new ();
   gpp->cme__entry_sox_options           = entry;
@@ -2880,9 +2880,9 @@ p_create_audiotool_cfg_frame (GapCmeGlobalParams *gpp)
 
 
   row++;
-   
-  /* the multitextline information label 
-   * (explains how params are passed to audiotool) 
+
+  /* the multitextline information label
+   * (explains how params are passed to audiotool)
    */
   label =
     gtk_label_new (_("Configuration of an audiotool (like sox on UNIX).\n\n"
@@ -2904,7 +2904,7 @@ p_create_audiotool_cfg_frame (GapCmeGlobalParams *gpp)
 
 
   row++;
-  
+
   /* the hbox for LOAD/SAVE/DEFAULT buttons */
 
   hbox = gtk_hbox_new (TRUE, 0);
@@ -2973,7 +2973,7 @@ p_create_audio_options_frame (GapCmeGlobalParams *gpp)
 
 
   row = 0;
-  
+
   /* the Audiofile label */
   label = gtk_label_new (_("Audiofile:"));
   gtk_widget_show (label);
@@ -2991,9 +2991,9 @@ p_create_audio_options_frame (GapCmeGlobalParams *gpp)
                     (GtkAttachOptions) (0), 0, 0);
   gimp_help_set_help_data (entry
                    , _("Name of audiofile (.wav 16 bit mono or stereo samples preferred). "
-		       "Optional you may select a textfile that contains a list "
+		       "Optionally you may select a textfile that contains a list "
 		       "of file names referring to audio files. "
-		       "Each of those audio files will be encoded as separate audio track.")
+		       "Each of those audio files will be encoded as a separate audio track.")
 		   , NULL)
 		   ;
   g_signal_connect (G_OBJECT (entry), "changed",
@@ -3015,7 +3015,7 @@ p_create_audio_options_frame (GapCmeGlobalParams *gpp)
 
   row++;
 
-  /* the audiofile information label */  
+  /* the audiofile information label */
   label = gtk_label_new (_("WAV, 16 Bit stereo, rate: 44100"));
   gpp->cme__label_aud1_info             = label;
   gtk_widget_show (label);
@@ -3023,8 +3023,8 @@ p_create_audio_options_frame (GapCmeGlobalParams *gpp)
   gtk_table_attach (GTK_TABLE (table), label, 1, 2, row, row+1,
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
- 
-  /* the audiofile total playtime information label */  
+
+  /* the audiofile total playtime information label */
   label = gtk_label_new (_("00:00:000"));
   gpp->cme__label_aud1_time             = label;
   gtk_widget_show (label);
@@ -3035,7 +3035,7 @@ p_create_audio_options_frame (GapCmeGlobalParams *gpp)
 
   row++;
 
-  /* the Samplerate label */  
+  /* the Samplerate label */
   label = gtk_label_new (_("Samplerate:"));
   gtk_widget_show (label);
   gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
@@ -3044,7 +3044,7 @@ p_create_audio_options_frame (GapCmeGlobalParams *gpp)
                     (GtkAttachOptions) (0), 0, 0);
 
 
-  /* the Samplerate spinbutton */  
+  /* the Samplerate spinbutton */
   adj = gtk_adjustment_new (44100, 1000, 100000, 10, 100, 1000);
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
   gpp->cme__spinbutton_samplerate_adj   = adj;
@@ -3057,8 +3057,8 @@ p_create_audio_options_frame (GapCmeGlobalParams *gpp)
   g_signal_connect (G_OBJECT (spinbutton), "value_changed",
                       G_CALLBACK (on_cme__spinbutton_samplerate_changed),
                       gpp);
- 
-  /* the Samplerate combo */  
+
+  /* the Samplerate combo */
   combo = gimp_int_combo_box_new (_(" 8k Phone"),       8000,
                                   _("11.025k"),        11025,
                                   _("12k Voice"),      12000,
@@ -3076,7 +3076,7 @@ p_create_audio_options_frame (GapCmeGlobalParams *gpp)
   gtk_table_attach (GTK_TABLE (table), combo, 2, 3, row, row+1,
                     (GtkAttachOptions) (GTK_EXPAND),
                     (GtkAttachOptions) (0), 0, 0);
-  gimp_help_set_help_data (combo, _("Select a common used samplerate"), NULL);
+  gimp_help_set_help_data (combo, _("Select a commonly-used samplerate"), NULL);
   gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (combo),
                               44100,  /* initial gint value */
                               G_CALLBACK (on_cme__combo_outsamplerate),
@@ -3138,7 +3138,7 @@ p_create_audio_options_frame (GapCmeGlobalParams *gpp)
   /* the resample general information label */
   label = gtk_label_new (_("\nNote:\n"
                            "if you set samplerate lower than\n"
-			   "rate of the WAV file, you loose sound quality,\n"
+			   "rate of the WAV file, you lose sound quality,\n"
 			   "but higher samplerates can not improve the\n"
 			   "quality of the original sound.")
 			 );
@@ -3162,7 +3162,7 @@ p_create_video_timing_table (GapCmeGlobalParams *gpp)
 {
   GtkWidget *cme__table_times;
   GtkWidget *label;
-  
+
 
   /* table for the video timing info labels */
   cme__table_times = gtk_table_new (2, 3, FALSE);
@@ -3247,18 +3247,18 @@ p_create_video_options_frame (GapCmeGlobalParams *gpp)
 
 
   cme__table1 = gtk_table_new (10, 3, FALSE);
-  
+
   gtk_widget_show (cme__table1);
   gtk_container_add (GTK_CONTAINER (frame), cme__table1);
   gtk_container_set_border_width (GTK_CONTAINER (cme__table1), 5);
   gtk_table_set_row_spacings (GTK_TABLE (cme__table1), 2);
   gtk_table_set_col_spacings (GTK_TABLE (cme__table1), 2);
-  
+
 
   l_row = 0;
   p_create_input_mode_widgets(cme__table1, l_row, 0, gpp);
 
-  l_row++;  
+  l_row++;
 
   /* the from_frame label */
   label = gtk_label_new (_("From Frame:"));
@@ -3268,7 +3268,7 @@ p_create_video_options_frame (GapCmeGlobalParams *gpp)
   gtk_table_attach (GTK_TABLE (cme__table1), label, 0, 1, l_row, l_row+1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  
+
 
   /* the from_frame spinbutton */
   adj = gtk_adjustment_new (1, 0, 100000, 1, 10, 10);
@@ -3293,7 +3293,7 @@ p_create_video_options_frame (GapCmeGlobalParams *gpp)
 
 
   l_row++;
-  
+
   /* the to_frame label */
   label = gtk_label_new (_("To Frame:"));
   gpp->cme__label_to                    = label;
@@ -3318,7 +3318,7 @@ p_create_video_options_frame (GapCmeGlobalParams *gpp)
                       gpp);
 
 
-  l_row++;  
+  l_row++;
 
   /* the width label */
   label = gtk_label_new (_("Width:"));
@@ -3367,7 +3367,7 @@ p_create_video_options_frame (GapCmeGlobalParams *gpp)
 
 
 
-  l_row++;  
+  l_row++;
 
   /* the height label */
   label = gtk_label_new (_("Height:"));
@@ -3393,7 +3393,7 @@ p_create_video_options_frame (GapCmeGlobalParams *gpp)
 
 
 
-  l_row++;  
+  l_row++;
 
   /* the Framerate lable */
   label = gtk_label_new (_("Framerate:"));
@@ -3449,7 +3449,7 @@ p_create_video_options_frame (GapCmeGlobalParams *gpp)
                               gpp);
 
 
-  l_row++;  
+  l_row++;
 
 
   /* the Videonorm label */
@@ -3482,7 +3482,7 @@ p_create_video_options_frame (GapCmeGlobalParams *gpp)
                               gpp);
 
 
-  l_row++;  
+  l_row++;
 
   /* the videoencoder label */
   label = gtk_label_new (_("Encoder:"));
@@ -3516,14 +3516,14 @@ p_create_video_options_frame (GapCmeGlobalParams *gpp)
                     (GtkAttachOptions) (0), 0, 0);
   gtk_widget_set_size_request (combo, 160, -1);
   gimp_help_set_help_data (combo, _("Select video encoder plugin"), NULL);
-  
+
   /* the  videoencoder combo items are set later by query the PDB
    * for all registered video encoder plug-ins
    */
 
 
   l_row++;
-  
+
   /* videoencoder short description label */
   label = gtk_label_new ("");
   gpp->cme__short_description           = label;

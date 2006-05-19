@@ -31,7 +31,7 @@
  * gimp    2.1.0a;  2004/06/26  hof: #144649 use NULL for the default cursor as active_cursor
  * gimp    1.3.26a; 2004/01/30  hof: navi_pviews_reset: use the procedure gap_pview_drop_repaint_buffers rather than g_free the pixmap
  * gimp    1.3.25a; 2004/01/21  hof: gap_thumb_file_load_thumbnail now returns th_data with th_bpp == 4
- *                                   (the flatten capabilities were removed) 
+ *                                   (the flatten capabilities were removed)
  * gimp    1.3.24a; 2004/01/17  hof: bugfix: call of plug_in_gap_range_to_multilayer needs regionselect_mode
  *                                   use faster procedure gap_thumb_file_load_thumbnail to load thumbnaildata
  * gimp    1.3.23a; 2003/11/26  hof: follow API changes for gimp_dialog_new
@@ -431,13 +431,13 @@ static OpsButton frames_ops_buttons[] =
 {
   { GAP_STOCK_PLAY, OPS_BUTTON_FUNC (navi_dialog_vcr_play_callback), navi_dialog_vcr_play_ext_callbacks,
     N_("Playback\n"
-       "<Shift> converts the selected frames to temporary image "
-       "and do layeranimation playback on the temporary image"),
+       "SHIFT converts the selected frames to temporary image, "
+       "and does layeranimation playback on it."),
     "#playback",
     NULL, 0 },
   { GAP_STOCK_UPDATE, OPS_BUTTON_FUNC (navi_dialog_thumb_update_callback), navi_dialog_update_ext_callbacks,
     N_("Smart update thumbnails\n"
-       "<Shift> forced thumbnail update for all frames"),
+       "SHIFT forces thumbnail update for all frames"),
     "#update",
     NULL, 0 },
   { GIMP_STOCK_DUPLICATE, OPS_BUTTON_FUNC (navi_dialog_frames_duplicate_frame_callback), NULL,
@@ -459,12 +459,12 @@ static OpsButton vcr_ops_buttons[] =
     NULL, 0 },
   { GTK_STOCK_GO_BACK, OPS_BUTTON_FUNC (navi_dialog_vcr_goto_prev_callback), navi_dialog_vcr_goto_prev_ext_callbacks,
     N_("Goto prev frame\n"
-       "<Shift> use timezoom stepsize"),
+       "SHIFT use timezoom stepsize"),
     "#goto_previous",
     NULL, 0 },
   { GTK_STOCK_GO_FORWARD, OPS_BUTTON_FUNC (navi_dialog_vcr_goto_next_callback), navi_dialog_vcr_goto_next_ext_callbacks,
     N_("Goto next frame\n"
-       "<Shift> use timezoom stepsize"),
+       "SHIFT use timezoom stepsize"),
     "#goto_next",
     NULL, 0 },
   { GTK_STOCK_GOTO_LAST, OPS_BUTTON_FUNC (navi_dialog_vcr_goto_last_callback), NULL,
@@ -797,10 +797,10 @@ edit_clrpaste_callback (GtkWidget *w,  gpointer   client_data)
   GimpParam          *return_vals;
   int              nreturn_vals;
   gint32           dummy_layer_id;
-  
+
 
   if(gap_debug) printf("edit_clrpaste_callback\n");
-  
+
   dummy_layer_id = gap_image_get_any_layer(naviD->active_imageid);
   return_vals = gimp_run_procedure ("plug_in_gap_video_edit_clear",
                                       &nreturn_vals,
@@ -1222,11 +1222,11 @@ navi_images_menu_callback  (GtkWidget *widget, gpointer data)
 {
   gint32 image_id;
   gint   value;
-  
+
   gimp_int_combo_box_get_active (GIMP_INT_COMBO_BOX (widget), &value);
   image_id = (gint32)value;
-  
-  
+
+
   if(gap_debug) printf("navi_images_menu_callback PROCEDURE imageID:%d\n", (int)image_id);
 
   if(naviD)
@@ -1292,7 +1292,7 @@ navi_scroll_to_current_frame_nr(void)
 
   adj_intval = (gint32)(GTK_ADJUSTMENT(naviD->dyn_adj)->value + 0.5);
 
-  if(gap_debug) 
+  if(gap_debug)
   {
     printf("navi_scroll_to_current_frame_nr: BEGIN timezoom:%d, item_height:%d\n"
            "  curr_frame_nr: %d  dyn_topframenr: %d  dyn_rows:%d dyn_adj: %d\n"
@@ -1353,11 +1353,11 @@ navi_scroll_event_cb ( GtkWidget *widget
     value++;
   }
 
-  /* set value in the rowpage spinbutton 
+  /* set value in the rowpage spinbutton
    * (this fires another callback for update of tabw->rowpage;)
    */
   gtk_adjustment_set_value(GTK_ADJUSTMENT(naviD->dyn_adj), (gdouble)value);
-  
+
   return FALSE;
 }  /* end navi_scroll_event_cb */
 
@@ -1519,7 +1519,7 @@ navi_refresh_image_menu()
     if(!navi_check_image_menu_changes())
     {
       GtkWidget *old_combo;
-      
+
       if(gap_debug) printf("navi_refresh_image_menu ** BEGIN REFRESH\n");
       if(naviD->OpenFrameImagesCount != 0)
       {
@@ -1534,17 +1534,17 @@ navi_refresh_image_menu()
         /* drop the old combo box */
         gtk_widget_destroy(old_combo);
       }
-      
+
       gtk_box_pack_start (GTK_BOX (naviD->image_combo_hbox)
                          , naviD->image_combo
 			 , TRUE, TRUE, 0);
       gtk_widget_show (naviD->image_combo);
-      
-      gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (naviD->image_combo), 
+
+      gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (naviD->image_combo),
                               naviD->active_imageid,                      /* initial value */
                               G_CALLBACK (navi_images_menu_callback),
                               naviD);
-      
+
       if(naviD->OpenFrameImagesCount == 0)
       {
         gtk_widget_set_sensitive(naviD->vbox, FALSE);
@@ -1721,7 +1721,7 @@ navi_thumb_update(gboolean update_all)
         */
        l_th_width = naviD->preview_size;
        l_th_height = naviD->preview_size;
-      
+
        l_raw_thumb = NULL;
        if(TRUE == gap_thumb_file_load_thumbnail(l_image_filename
                                   , &l_th_width
@@ -3514,7 +3514,7 @@ navi_dyn_adj_set_pos(void)
 	   );
   }
 
- 
+
   if(adj_intval != topval)
   {
     gtk_adjustment_set_value(GTK_ADJUSTMENT(naviD->dyn_adj), (gdouble)topval);
@@ -3785,7 +3785,7 @@ static void
 p_set_acl_tracking_radio_buttons(NaviDialog *naviD)
 {
   GtkWidget *radio_button;
-  
+
   radio_button = naviD->acl_trace_off_toggle;
   if(naviD->vin_ptr)
   {
@@ -3883,11 +3883,11 @@ p_create_acl_tracking_widgets(NaviDialog *naviD)
   GSList    *radio_group = NULL;
   gint      l_idx;
   gboolean  l_radio_pressed;
-  
-  
-  util_box = gtk_hbox_new (FALSE, 1);  
 
-  /* the active layer tracking label */  
+
+  util_box = gtk_hbox_new (FALSE, 1);
+
+  /* the active layer tracking label */
   label = gtk_label_new (_("AL-Tracking:"));
   gtk_box_pack_start (GTK_BOX (util_box), label, FALSE, FALSE, 2);
   gtk_widget_show (label);
@@ -3967,7 +3967,7 @@ p_create_acl_tracking_widgets(NaviDialog *naviD)
 
   gtk_box_pack_start (GTK_BOX (util_box), radio_table, FALSE, FALSE, 2);
   gtk_widget_show (radio_table);
-  
+
   return(util_box);
 }  /* end p_create_acl_tracking_widgets */
 
@@ -4215,7 +4215,7 @@ navi_dialog_create (GtkWidget* shell, gint32 image_id)
                     naviD);
   gtk_widget_show (spinbutton);
 
-  gimp_help_set_help_data (spinbutton, _("Show only every N.th frame"), NULL);
+  gimp_help_set_help_data (spinbutton, _("Show only every Nth frame"), NULL);
 
   gtk_widget_show (util_box);
 

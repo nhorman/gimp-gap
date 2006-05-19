@@ -92,7 +92,7 @@ void
 p_check_errno()
 {
   gint l_errno;
-  
+
   l_errno = errno;
   if(l_errno != 0)
   {
@@ -108,11 +108,11 @@ void
 gap_audio_wav_write_gint16(FILE *fp, gint16 val)
 {
    t_wav_16bit_int l_val;
-   
+
    l_val.value = val;
    errno = 0;
 
-   /* write 16bit sample to file (filedata has always lsb first) */   
+   /* write 16bit sample to file (filedata has always lsb first) */
    fputc((int)l_val.bytes.lsb, fp);
    fputc((int)l_val.bytes.msb, fp);
    p_check_errno();
@@ -122,15 +122,15 @@ void
 gap_audio_wav_write_gint32(FILE *fp, gint32 val)
 {
   t_wav_32bit_int l_val;
-  
+
   l_val.value = val;
   errno = 0;
-  
-  /* write 32bit integer to file (lsb first) */   
+
+  /* write 32bit integer to file (lsb first) */
   fputc((int)l_val.bytes.b0, fp);
   fputc((int)l_val.bytes.b1, fp);
   fputc((int)l_val.bytes.b2, fp);
-  fputc((int)l_val.bytes.b3, fp);   
+  fputc((int)l_val.bytes.b3, fp);
   p_check_errno();
 }
 
@@ -164,7 +164,7 @@ gap_audio_wav_write_header(FILE *fp
   l_data_len  = nsamples * bytes_per_sample;
   l_total_len = l_data_len + 36;
   l_fmt_len = 16;      /* length of 'fmt ' chunk has fix length of 16 byte */
-  
+
   l_format_tag = 1;     /* 1 is tag for PCM_WAVE_FORMAT   */
   l_avg_bytes_per_sec = samplerate * bytes_per_sample;
 
@@ -209,7 +209,7 @@ p_wav_open_seek_data_private(const char *filename, unsigned char *audata)
   struct stat  l_stat_buf;
   size_t       l_len_to_read;
   size_t       l_len_read;
-  
+
   /* get File Length */
   if (0 != stat(filename, &l_stat_buf))
   {
@@ -284,7 +284,7 @@ p_wav_open_seek_data_private(const char *filename, unsigned char *audata)
     fclose (fp);
     return(NULL);
   }
-  
+
 
   /* searching for data chunk */
   while (l_len_to_read == l_len_read)
@@ -321,7 +321,7 @@ p_wav_open_seek_data_private(const char *filename, unsigned char *audata)
     l_len_to_read = 8;
     l_len_read = fread(&audata[36], 1, l_len_to_read, fp);
   }
-  
+
   fclose(fp);
   return(NULL);
 }   /* end p_wav_open_seek_data_private */
@@ -426,10 +426,10 @@ gap_audio_wav_16bit_save(const char *wavfile
   FILE *fp;
   gint32 l_bytes_per_sample;
   gint32 l_ii;
-  
+
   if(channels == 1) { l_bytes_per_sample = 2;}  /* mono */
   else              { l_bytes_per_sample = 4; channels = 2; }  /* stereo */
-  
+
 
   fp = fopen(wavfile, "wb");
   if (fp)
@@ -442,8 +442,8 @@ gap_audio_wav_16bit_save(const char *wavfile
                             , l_bytes_per_sample
                             , 16                          /* 16 bit sample resolution */
                             );
- 
-    /* write 16 bit wave datasamples 
+
+    /* write 16 bit wave datasamples
      * sequence mono:    (lo, hi)
      * sequence stereo:  (lo_left, hi_left, lo_right, hi_right)
      */
@@ -457,11 +457,11 @@ gap_audio_wav_16bit_save(const char *wavfile
          right_ptr++;
        }
      }
-    
+
     fclose(fp);
   }
   return(0); /* OK */
-}  /* end gap_audio_wav_16bit_save */                     
+}  /* end gap_audio_wav_16bit_save */
 
 
 
@@ -495,12 +495,12 @@ p_check_for_valid_playlist(const char *audfile, long *sample_rate, long *channel
   char  l_buf[4000];
   char  *referred_wavfile;
   gint  ii;
- 
+
   l_retval = IS_NO_PLAYLIST;
   referred_wavfile = NULL;
   l_channels = 0;
   *all_playlist_references = 0;
-    
+
   /* check if audfile
    * is a playlist referring to more than one inputfile
    * and try to open those input wavefiles
@@ -522,15 +522,15 @@ p_check_for_valid_playlist(const char *audfile, long *sample_rate, long *channel
       {
 	continue;  /* skip comment lines, and empty lines */
       }
-      
+
       l_buf[sizeof(l_buf) -1] = '\0';  /* make sure we have a terminated string */
       gap_file_chop_trailingspace_and_nl(&l_buf[0]);
 
       if(ii < MAX_AUDIO_STREAMS)
       {
         int    l_rc;
-	
-	
+
+
         if(referred_wavfile)
 	{
 	  g_free(referred_wavfile);
@@ -541,7 +541,7 @@ p_check_for_valid_playlist(const char *audfile, long *sample_rate, long *channel
 	{
 	  printf("p_check_for_valid_playlist: checking reference file: %s\n", referred_wavfile);
 	}
-	
+
 	l_rc = gap_audio_wav_file_check(referred_wavfile
                               , &l_sample_rate
                               , &l_channels
@@ -563,7 +563,7 @@ p_check_for_valid_playlist(const char *audfile, long *sample_rate, long *channel
         if(l_rc == 0)
         {
 	  (*all_playlist_references)++;
-	  
+
 	  /* use audio informations from the 1.st valid referenced file for output
 	   * (or pick information of any other referenced audiofile
 	   * if we have no matching audio file reference)
@@ -611,7 +611,7 @@ p_check_for_valid_playlist(const char *audfile, long *sample_rate, long *channel
             g_message(_("The file: %s\n"
 	            "has unexpect content that will be ignored\n"
 		    "you should specify an audio file in RIFF WAVE fileformat\n"
-		    "or a texfile containing filenames of such audio files")
+		    "or a textfile containing filenames of such audio files")
 		   , audfile
 		   );
 	  }
@@ -621,8 +621,8 @@ p_check_for_valid_playlist(const char *audfile, long *sample_rate, long *channel
       else
       {
         g_message(_("The file: %s\n"
-	            "contains too much audio input tracks\n"
-		    "(only %d tracks are used, rest is ignored)")
+	            "contains too much audio-input tracks\n"
+		    "(only %d tracks are used, the rest are ignored)")
 		 , audfile
 		 , (int) MAX_AUDIO_STREAMS
 		 );
@@ -649,7 +649,7 @@ p_check_for_valid_playlist(const char *audfile, long *sample_rate, long *channel
   {
     g_free(referred_wavfile);
   }
-  
+
   *valid_playlist_references = ii;
   return (l_retval);
 }  /* end p_check_for_valid_playlist */
@@ -675,7 +675,7 @@ gap_audio_playlist_wav_file_check(const char *audfile, long *sample_rate, long *
 		     )
 {
   int    l_rc;
-  
+
   /* check for WAV file, and get audio informations */
   l_rc = gap_audio_wav_file_check(audfile
                      , sample_rate
@@ -727,6 +727,6 @@ gap_audio_playlist_wav_file_check(const char *audfile, long *sample_rate, long *
 	break;
     }
   }
-  
+
   return -1;
 }  /* end gap_audio_playlist_wav_file_check */

@@ -62,7 +62,7 @@
 extern int gap_debug;
 
 gint  gtab_select_modes[MAX_SELECT_MODE_ARRAY_ELEMENTS] =  { 0, 1, 2, 3, 4, 5, 6 };
-gint  gtab_ref_modes[MAX_REF_MODE_ARRAY_ELEMENTS] = 
+gint  gtab_ref_modes[MAX_REF_MODE_ARRAY_ELEMENTS] =
   { GAP_ONION_REFMODE_NORMAL                /* 0 */
   , GAP_ONION_REFMODE_BIDRIECTIONAL_SINGLE  /* 1 */
   , GAP_ONION_REFMODE_BIDRIECTIONAL_DOUBLE  /* 2 */
@@ -889,7 +889,7 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
   GtkWidget *oni__button_delete;
   GtkWidget *oni__button_apply;
   GtkWidget *oni__button_help;
- 
+
   gint tab1_row;
 
 
@@ -1219,7 +1219,7 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
 
 
   /* the ref_mode combo box */
-  oni__combo_select_mode 
+  oni__combo_select_mode
     = gimp_int_combo_box_new (_("Pattern is equal to layername"),                   0,
                               _("Pattern is start of layername"),                   1,
                               _("Pattern is end of layername"),                     2,
@@ -1238,11 +1238,11 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gimp_help_set_help_data(oni__combo_select_mode
-                         , _("Modes how to use select pattern")
+                         , _("This mode determines how the selection pattern is interpreted.")
                          , NULL);
 
- 
- 
+
+
 
   /* the selct options label */
   label8 = gtk_label_new (_("Select Options:"));
@@ -1310,7 +1310,7 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
                          , NULL);
 
   tab1_row++;
-  
+
   {
      GtkWidget *auto_table;
 
@@ -1568,7 +1568,7 @@ gap_onion_dlg_onion_cfg_dialog(GapOnionMainGlobalParams *gpp)
   {
     gint32 l_ref_mode;
     gint32 l_select_mode;
-    
+
     l_ref_mode = gpp->vin.ref_mode;
     l_select_mode = gpp->vin.select_mode;
 

@@ -59,7 +59,7 @@
 #define GAP_STORY_CLIP_PROP_HELP_ID  "plug-in-gap-storyboard-clip-prop"
 
 #define GAP_STORY_RESPONSE_RESET 1
-#define GAP_STORY_RESPONSE_SCENE_SPLIT 2 
+#define GAP_STORY_RESPONSE_SCENE_SPLIT 2
 #define GAP_STORY_RESPONSE_SCENE_END   3
 #define PW_ENTRY_WIDTH        300
 #define PW_COMMENT_WIDTH      480
@@ -174,7 +174,7 @@ p_pw_prop_reset_all(GapStbPropWidget *pw)
 
     p_pw_update_properties(pw);
   }
-  
+
 }  /* end p_pw_prop_reset_all */
 
 
@@ -190,12 +190,12 @@ p_pw_prop_response(GtkWidget *widget
 {
   GtkWidget *dlg;
   GapStbMainGlobalParams  *sgpp;
- 
+
   sgpp = pw->sgpp;
   switch (response_id)
   {
     case GAP_STORY_RESPONSE_RESET:
-      if((pw->stb_elem_bck) 
+      if((pw->stb_elem_bck)
       && (pw->stb_elem_refptr)
       && (!pw->scene_detection_busy))
       {
@@ -217,19 +217,19 @@ p_pw_prop_response(GtkWidget *widget
         {
           all_scenes = TRUE;
         }
-        
+
         p_pw_auto_scene_split(pw, all_scenes);
         gtk_adjustment_set_value(GTK_ADJUSTMENT(pw->pw_spinbutton_to_adj)
                             , pw->stb_elem_refptr->to_frame);
         p_pv_pview_render(pw);
         pw->scene_detection_busy = FALSE;
       }
-      
+
       if(!pw->close_flag)
       {
         break;
       }
-      
+
       /* the p_pw_auto_scene_split procedure was cancelled (by close_flag)
        * in this case run into the close code
        */
@@ -288,7 +288,7 @@ p_pw_get_preferred_decoder(GapStbPropWidget *pw)
  * The returned difference is 0 if all checked blocks
  * are equal in color.
  * A maximum difference of 196608 (256 * 256) * 3
- * will be returned if buf2 is the negative of buf1 
+ * will be returned if buf2 is the negative of buf1
  * (full black versus full white)
  *
  * big differences are ignored until there are
@@ -297,7 +297,7 @@ p_pw_get_preferred_decoder(GapStbPropWidget *pw)
  * (if Objects enter a scene there are typical some blocks
  *  with big differences that should not be triggered as new scene start)
  *
- * For performance reasons we check 
+ * For performance reasons we check
  * only 1 Block in a square of 2x2 Blocks
  */
 gdouble
@@ -320,21 +320,21 @@ p_overall_colordiff(guchar *buf1, guchar *buf2
   gint32 rowstride;
   gint32 count_big_diff;
   gdouble ignore_big_diff_blocks;
-  
+
   color_diff_sum = 0;
   checked_blocks = 0;
   count_big_diff = 0;
-  
+
   pick_radius = MIN(8, th_width);
   pick_radius = MIN(pick_radius, th_height);
- 
+
   rowstride = th_width * th_bpp;
   stepsize = pick_radius * 2;
   bpp_step = stepsize * th_bpp;
   pixels_per_block = pick_radius * pick_radius;
   ignore_big_diff_blocks = (th_height / stepsize) * (th_width / stepsize);
   ignore_big_diff_blocks *= cmp_ignore;
-  
+
   for(y = 0; y < th_height - pick_radius; y += stepsize)
   {
     ii = y * rowstride;
@@ -343,11 +343,11 @@ p_overall_colordiff(guchar *buf1, guchar *buf2
       rpick1 = 0;  rpick2 = 0;
       gpick1 = 0;  gpick2 = 0;
       bpick1 = 0;  bpick2 = 0;
-      
+
       /* calculate summary color of one block */
       for(yy = 0; yy < pick_radius; yy++)
       {
-        jj = ii + (yy * rowstride); 
+        jj = ii + (yy * rowstride);
         for(xx = 0; xx < pick_radius; xx++)
         {
           rpick1 += buf1[jj];
@@ -363,8 +363,8 @@ p_overall_colordiff(guchar *buf1, guchar *buf2
       rdif = abs(rpick1 - rpick2) / pixels_per_block;
       gdif = abs(gpick1 - gpick2) / pixels_per_block;
       bdif = abs(bpick1 - bpick2) / pixels_per_block;
-    
-      color_diff =  ( (rdif * rdif) 
+
+      color_diff =  ( (rdif * rdif)
                     + (gdif * gdif)
                     + (bdif * bdif)
                     );
@@ -382,7 +382,7 @@ p_overall_colordiff(guchar *buf1, guchar *buf2
       ii += bpp_step;
     }
   }
-  
+
   return(color_diff_sum / MAX(checked_blocks,1));
 }  /* end p_overall_colordiff */
 
@@ -444,18 +444,18 @@ p_pw_auto_scene_split(GapStbPropWidget *pw, gboolean all_scenes)
   prev_th_data = NULL;
   framenr = stb_elem->from_frame;
   framenr_max = stb_elem->to_frame;
-  
-  if((framenr_max <= framenr) 
+
+  if((framenr_max <= framenr)
   || (all_scenes == FALSE))
   {
     /* allow search until end */
     framenr_max =999999;
   }
-  
+
   drop_th_data = FALSE;
   drop_prev_th_data = FALSE;
   l_cmp_ignore = GAP_STORY_SCENE_CMP_IGNORE;
-  
+
   diff_threshold = GAP_STORY_SCENE_DIFF_THRESHOLD;
   diff_diff_threshold = GAP_STORY_SCENE_DIFF_DIFF_THRESHOLD;
   sum_diff = 0;
@@ -475,7 +475,7 @@ p_pw_auto_scene_split(GapStbPropWidget *pw, gboolean all_scenes)
   else
   {
     char *filename;
-    
+
     filename = gap_lib_alloc_fname(stb_elem->basename
                                    , stb_elem->from_frame
                                    , stb_elem->ext
@@ -509,7 +509,7 @@ p_pw_auto_scene_split(GapStbPropWidget *pw, gboolean all_scenes)
   l_1st_th_width  = l_th_width;
   l_1st_th_height = l_th_height;
   l_1st_th_bpp    = l_th_bpp;
-  
+
   while(TRUE)
   {
     framenr++;
@@ -518,7 +518,7 @@ p_pw_auto_scene_split(GapStbPropWidget *pw, gboolean all_scenes)
      * (the list would grow too much if all thumbnails of all handled
      *  videos were added.
      *  therefore we add only vthumbs of the startframes of a new scene)
-     * 
+     *
      */
     if(stb_elem->record_type == GAP_STBREC_VID_MOVIE)
     {
@@ -573,13 +573,13 @@ p_pw_auto_scene_split(GapStbPropWidget *pw, gboolean all_scenes)
     || (l_1st_th_height != l_th_height)
     || (l_1st_th_bpp    != l_th_bpp))
     {
-      /* STOP because we cant compare, 
-       * we have no current frame of same size as prev. frame 
+      /* STOP because we cant compare,
+       * we have no current frame of same size as prev. frame
        */
       stb_elem->to_frame = framenr -1;
       return;
     }
-    
+
     diff = p_overall_colordiff(prev_th_data
                               ,th_data
                               ,l_th_width
@@ -602,7 +602,7 @@ p_pw_auto_scene_split(GapStbPropWidget *pw, gboolean all_scenes)
 
     sum_diff += diff;
     num_diff++;
-                    
+
     if(gap_debug)
     {
       printf("SCENE: frame_max:%d frame:%d  THRES:%d AVG_DIFF:%d DIFF:%d\n"
@@ -613,7 +613,7 @@ p_pw_auto_scene_split(GapStbPropWidget *pw, gboolean all_scenes)
       , (int)diff
       );
     }
-    
+
     /* check if diff is bigger than abs threshold
      * or if we have more than 4 frames:
      *   if current diff is 8 times bigger than the average diff
@@ -629,13 +629,13 @@ p_pw_auto_scene_split(GapStbPropWidget *pw, gboolean all_scenes)
       diff = 0;
       sum_diff = 0;
       num_diff = 0;
-      
+
       /* raise the thresholds for the first frame after the cut
        * (avoid ultra short scenes with less than 3 frames)
        */
       diff_threshold = GAP_STORY_SCENE_DIFF_THRESHOLD_MAX * 2;
       diff_diff_threshold = GAP_STORY_SCENE_DIFF_THRESHOLD_MAX * 2;
-      
+
       stb_elem->to_frame = framenr -1;
       if(!all_scenes)
       {
@@ -652,14 +652,14 @@ p_pw_auto_scene_split(GapStbPropWidget *pw, gboolean all_scenes)
         }
 
         if(gap_debug) printf("AUTO SCENE NEW_ELEM:\n");
-    
+
         /* add a new Element for the next scene */
         stb_elem_new = gap_story_elem_duplicate(stb_elem);
-        
+
         stb_elem_new->from_frame = framenr;
         stb_elem_new->to_frame = framenr;
         gap_story_elem_calculate_nframes(stb_elem_new);
-        
+
         stb_elem_new->next = stb_elem->next;
         stb_elem->next = stb_elem_new;
         stb_elem = stb_elem_new;
@@ -670,7 +670,7 @@ p_pw_auto_scene_split(GapStbPropWidget *pw, gboolean all_scenes)
 	       ,(int)drop_th_data
 	       ,(int)video_id
 	       );
-	} 
+	}
 
         if((stb_elem->record_type == GAP_STBREC_VID_MOVIE)
         && (drop_th_data)
@@ -699,9 +699,9 @@ p_pw_auto_scene_split(GapStbPropWidget *pw, gboolean all_scenes)
                                   );
         }
       }
-      
+
     }
-    
+
     if((prev_th_data) && (drop_prev_th_data))
     {
       /* throw away video thumbnails for frames that
@@ -718,7 +718,7 @@ p_pw_auto_scene_split(GapStbPropWidget *pw, gboolean all_scenes)
         prev_pixbuf = NULL;
       }
       prev_th_data = NULL;
-    }                 
+    }
     if(stb_elem->record_type == GAP_STBREC_VID_MOVIE)
     {
       prev_th_data = th_data;
@@ -748,7 +748,7 @@ p_pw_auto_scene_split(GapStbPropWidget *pw, gboolean all_scenes)
  * 1.) fetch thumbnal pixbuf data,
  * 2.) if no thumbnail available
  *     try to load full image (and create the thumbnail for next usage)
- * 3.) if neither thumbnail nor image could be fetched 
+ * 3.) if neither thumbnail nor image could be fetched
  *        render a default icon
  *
  */
@@ -774,7 +774,7 @@ p_pv_pview_render_immediate (GapStbPropWidget *pw)
    {
      guchar *l_th_data;
      /* if(gap_debug) printf("RENDER: p_pv_pview_render MOVIE Thumbnail\n"); */
-     
+
      l_th_data = gap_story_dlg_fetch_vthumb(pw->sgpp
               ,pw->stb_elem_refptr->orig_filename
               ,pw->stb_elem_refptr->from_frame
@@ -787,7 +787,7 @@ p_pv_pview_render_immediate (GapStbPropWidget *pw)
      if(l_th_data)
      {
        gboolean l_th_data_was_grabbed;
-       
+
        l_th_data_was_grabbed = gap_pview_render_from_buf (pw->pv_ptr
                     , l_th_data
                     , l_th_width
@@ -809,9 +809,9 @@ p_pv_pview_render_immediate (GapStbPropWidget *pw)
        p_pw_update_framenr_labels(pw, pw->stb_elem_refptr->from_frame);
        return;
      }
-   
+
    }
-  
+
    l_frame_filename = gap_story_get_filename_from_elem(pw->stb_elem_refptr);
    if(l_frame_filename == NULL)
    {
@@ -849,13 +849,13 @@ p_pv_pview_render_immediate (GapStbPropWidget *pw)
          */
         gimp_image_undo_disable (l_image_id);
         gap_pview_render_from_image (pw->pv_ptr, l_image_id);
-        
+
         /* create thumbnail (to speed up acces next time) */
         gap_thumb_cond_gimp_file_save_thumbnail(l_image_id, l_frame_filename);
-        
+
         gimp_image_delete(l_image_id);
       }
-   }                                
+   }
 
    p_pw_update_framenr_labels(pw, pw->stb_elem_refptr->from_frame);
 
@@ -869,20 +869,20 @@ static void
 p_pw_timer_go_job(GapStbPropWidget *pw)
 {
   GapStbMainGlobalParams  *sgpp;
- 
+
   /*if(gap_debug) printf("\np_pw_timer_go_job: START\n");*/
   sgpp = pw->sgpp;
 
-  if((pw) 
+  if((pw)
   && (sgpp))
   {
-    
+
     if(pw->go_timertag >= 0)
     {
       g_source_remove(pw->go_timertag);
     }
     pw->go_timertag = -1;
-    
+
     if((pw->go_job_framenr >= 0)
     ||(pw->go_render_all_request))
     {
@@ -909,7 +909,7 @@ p_pw_timer_go_job(GapStbPropWidget *pw)
             }
             gap_story_dlg_pw_render_all(pw);
             pw->go_render_all_request = FALSE;
-            
+
             /* sometimes the displayed thumbnail does not match with the displayed
              * from_frame number at this point. (dont know exactly why)
              * the simple workaround is just render twice
@@ -931,9 +931,9 @@ p_pw_timer_go_job(GapStbPropWidget *pw)
           }
 
           pw->go_job_framenr = -1;
-          
+
         }
-        
+
       }
     }
 
@@ -960,7 +960,7 @@ p_pv_pview_render (GapStbPropWidget *pw)
    {
      pw->go_timertag = (gint32) g_timeout_add(16, (GtkFunction)p_pw_timer_go_job, pw);
    }
-   
+
 }  /* end p_pv_pview_render */
 
 /* ---------------------------------
@@ -1040,14 +1040,14 @@ p_pw_check_ainfo_range(GapStbPropWidget *pw, char *filename)
 
   if(gap_debug) printf("PROP AINFO CHECK\n");
 
-  /* default: allow maximum range 
+  /* default: allow maximum range
    * (for movies we dont know the exactnumber of frames
    *  until the movie is read sequential until EOF
    *  that would be much to slow, must live with unconstrained range spinbuttons)
    */
   l_lower = 1;
   l_upper = 99999; /* default for unknown total_frames */
-  
+
   if(pw->stb_elem_refptr->record_type == GAP_STBREC_VID_FRAMES)
   {
     ainfo_ptr = gap_lib_alloc_ainfo_from_name(filename, GIMP_RUN_NONINTERACTIVE);
@@ -1126,7 +1126,7 @@ p_pw_filename_changed(const char *filename, GapStbPropWidget *pw)
 {
   if(pw == NULL)  { return; }
   if(pw->stb_elem_refptr == NULL)  { return; }
- 
+
   pw->stb_refptr->unsaved_changes = TRUE;
 
   if(filename)
@@ -1144,7 +1144,7 @@ p_pw_filename_changed(const char *filename, GapStbPropWidget *pw)
 
   /* update pw stuff */
   p_pw_update_properties(pw);
-  
+
 }  /* end p_pw_filename_changed */
 
 
@@ -1181,14 +1181,14 @@ p_filesel_pw_ok_cb (GtkWidget *widget
   }
 
   gtk_widget_destroy(GTK_WIDGET(pw->pw_filesel));
-  
+
   if(dup_filename)
   {
       gtk_entry_set_text(GTK_ENTRY(pw->pw_filename_entry), dup_filename);
       p_pw_filename_changed(dup_filename, pw);
       g_free(dup_filename);
   }
-  
+
   pw->pw_filesel = NULL;
 }  /* end p_filesel_pw_ok_cb */
 
@@ -1205,7 +1205,7 @@ p_filesel_pw_close_cb ( GtkWidget *widget
 
   gtk_widget_destroy(GTK_WIDGET(pw->pw_filesel));
   pw->pw_filesel = NULL;   /* now filesel_story is closed */
-  
+
 }  /* end p_filesel_pw_close_cb */
 
 
@@ -1298,7 +1298,7 @@ p_pw_comment_entry_update_cb(GtkWidget *widget, GapStbPropWidget *pw)
   {
     pw->stb_refptr->unsaved_changes = TRUE;
   }
-  
+
   if(pw->stb_elem_refptr->comment == NULL)
   {
     pw->stb_elem_refptr->comment = gap_story_new_elem(GAP_STBREC_VID_COMMENT);
@@ -1311,7 +1311,7 @@ p_pw_comment_entry_update_cb(GtkWidget *widget, GapStbPropWidget *pw)
       g_free(pw->stb_elem_refptr->comment->orig_src_line);
     }
     pw->stb_elem_refptr->comment->orig_src_line = g_strdup(gtk_entry_get_text(GTK_ENTRY(widget)));
-  } 
+  }
 }  /* end p_pw_comment_entry_update_cb */
 
 
@@ -1328,11 +1328,11 @@ p_pw_fmac_entry_update_cb(GtkWidget *widget, GapStbPropWidget *pw)
   {
     pw->stb_refptr->unsaved_changes = TRUE;
   }
-  
+
   if(pw->stb_elem_refptr->filtermacro_file)
   {
     g_free(pw->stb_elem_refptr->filtermacro_file);
-  } 
+  }
 
   pw->stb_elem_refptr->filtermacro_file = g_strdup(gtk_entry_get_text(GTK_ENTRY(widget)));
 }  /* end p_pw_fmac_entry_update_cb */
@@ -1351,12 +1351,12 @@ p_pw_update_info_labels(GapStbPropWidget *pw)
   gboolean l_mov_sensitive;
   GtkWidget  *scale;
   GtkWidget  *spinbutton;
-  
+
   if(pw == NULL) { return; }
   if(pw->stb_elem_refptr == NULL) { return; }
 
   gap_story_elem_calculate_nframes(pw->stb_elem_refptr);
-  
+
   l_sensitive = FALSE;
   l_mov_sensitive = FALSE;
   switch(pw->stb_elem_refptr->record_type)
@@ -1435,7 +1435,7 @@ p_pw_update_info_labels(GapStbPropWidget *pw)
   {
     gtk_widget_set_sensitive(scale, l_mov_sensitive);
   }
-  
+
   g_snprintf(txt_buf, sizeof(txt_buf), _("%d (frames)")
             ,(int)pw->stb_elem_refptr->nframes
             );
@@ -1467,7 +1467,7 @@ p_pw_update_framenr_labels(GapStbPropWidget *pw, gint32 framenr)
 {
   char    txt_buf[100];
   gdouble l_speed_fps;
-  
+
   if(pw == NULL) { return; }
   if(pw->stb_elem_refptr == NULL) { return; }
 
@@ -1485,10 +1485,10 @@ p_pw_update_framenr_labels(GapStbPropWidget *pw, gint32 framenr)
       l_speed_fps = pw->stb_refptr->master_framerate;
     }
   }
-  
-  // TODO: can not show the exact frametime for 
+
+  // TODO: can not show the exact frametime for
   // clips that do not start at frame 1
-  
+
   gap_timeconv_framenr_to_timestr(framenr -1
                          , l_speed_fps
                          , txt_buf
@@ -1517,7 +1517,7 @@ p_pw_update_properties(GapStbPropWidget *pw)
   {
     pw->go_timertag = (gint32) g_timeout_add(16, (GtkFunction)p_pw_timer_go_job, pw);
   }
-  
+
 }  /* end p_pw_update_properties */
 
 
@@ -1727,7 +1727,7 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
                          ,GTK_STOCK_CLOSE,  GTK_RESPONSE_CLOSE
                          ,NULL);
   }
-  
+
   pw->pw_prop_dialog = dlg;
 
   g_signal_connect (G_OBJECT (dlg), "response",
@@ -1821,7 +1821,7 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
                     &pw->stb_elem_refptr->from_frame);
   {
     GtkWidget *scale;
-    
+
     scale = GTK_WIDGET(g_object_get_data (G_OBJECT (pw->pw_spinbutton_from_adj), "scale"));
     if(scale)
     {
@@ -1882,11 +1882,11 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
   gtk_table_attach ( GTK_TABLE (table), check_button, 1, 2, row, row+1, GTK_FILL, 0, 0, 0);
   {
     gboolean pingpong_state;
-    
+
     pingpong_state = (pw->stb_elem_refptr->playmode == GAP_STB_PM_PINGPONG);
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (check_button), pingpong_state);
-                                
-  }                             
+
+  }
   gimp_help_set_help_data(check_button, _("ON: Play clip in pingpong mode"), NULL);
   gtk_widget_show(check_button);
   pw->pingpong_toggle = check_button;
@@ -1927,7 +1927,7 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
                               0,              /* digits */
                               TRUE,           /* constrain */
                               1.0, 100.0,  /* lower/upper unconstrained */
-                              _("select input videotrack"
+                              _("select input videotrack "
                                 "(most videofiles have just 1 track)"), NULL);
   pw->pw_spinbutton_seltrack_adj = adj;
   g_object_set_data(G_OBJECT(adj), "pw", pw);
@@ -1936,14 +1936,14 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
                     &pw->stb_elem_refptr->seltrack);
 
   row++;
-  
+
   /* the Deinterlace Mode label */
   label = gtk_label_new (_("Deinterlace:"));
   gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
   gtk_table_attach_defaults (GTK_TABLE(table), label, 0, 1, row, row+1);
   gtk_widget_show (label);
- 
-  /* delace mode radio button group */ 
+
+  /* delace mode radio button group */
   {
     GSList    *radio_group = NULL;
     GtkWidget *radio_table;
@@ -1953,7 +1953,7 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
 
     /* radio_table */
     radio_table = gtk_table_new (1, 3, FALSE);
-    
+
     l_idx = 0;
     /* radio button delace_mode None */
     radio_button = gtk_radio_button_new_with_label ( radio_group, _("None") );
@@ -2008,11 +2008,11 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
     gtk_widget_show (radio_table);
     gtk_table_attach_defaults (GTK_TABLE(table), radio_table, 1, 2, row, row+1);
   }
-  
+
   /* delace threshold spinbutton */
   {
     GtkWidget *spinbutton;
-    
+
     pw->pw_spinbutton_delace_adj = gtk_adjustment_new (pw->delace_threshold
                                            , 0.0
                                            , 0.999
@@ -2035,7 +2035,7 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
       gtk_widget_set_sensitive(pw->pw_spinbutton_delace, FALSE);
     }
   }
-  
+
   row++;
 
 
@@ -2059,7 +2059,7 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
   gtk_widget_show (label);
   pw->dur_time_label = label;
 
-  
+
   /* the vox2  */
   vbox2 = gtk_vbox_new (FALSE, 1);
 
@@ -2216,7 +2216,7 @@ gap_story_stb_elem_properties_dialog ( GapStbTabWidgets *tabw
                                      , GapStoryBoard *stb_dst)
 {
   GapStbPropWidget *pw;
-   
+
   /* check if already open */
   for(pw=tabw->pw; pw!=NULL; pw=(GapStbPropWidget *)pw->next)
   {
@@ -2236,7 +2236,7 @@ gap_story_stb_elem_properties_dialog ( GapStbTabWidgets *tabw
       break;
     }
   }
-  
+
   if(pw==NULL)
   {
     pw = g_new(GapStbPropWidget ,1);
@@ -2297,7 +2297,7 @@ void
 gap_story_fw_properties_dialog (GapStbFrameWidget *fw)
 {
   GapStbTabWidgets *tabw;
- 
+
   if(fw == NULL) { return; }
   if(fw->stb_elem_refptr == NULL)  { return; }
 

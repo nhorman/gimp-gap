@@ -131,7 +131,7 @@ p_get_initial_video_codec_idx(GapGveAviGlobalParams *gpp)
   gint l_idx;
 
   epp = &gpp->evl;
-    
+
   for(l_idx=0;l_idx < GAP_AVI_VIDCODEC_MAX_ELEMENTS; l_idx++)
   {
     if(strcmp(gtab_avi_codecname[l_idx], epp->codec_name) == 0)
@@ -157,13 +157,13 @@ p_init_widget_values(GapGveAviGlobalParams *gpp)
   {
     return;
   }
-  
+
   /* init spnbuttons */
   gtk_adjustment_set_value(GTK_ADJUSTMENT(gpp->jpg_quality_spinbutton_adj)
                          , (gfloat)epp->jpeg_quality);
-  
+
   gpp->xvid_kbitrate = epp->xvid.rc_bitrate / 1000;
-  
+
   gtk_adjustment_set_value(GTK_ADJUSTMENT(gpp->xvid_rc_kbitrate_spinbutton_adj)
                          , (gfloat)gpp->xvid_kbitrate);
   gtk_adjustment_set_value(GTK_ADJUSTMENT(gpp->xvid_rc_reaction_delay_spinbutton_adj)
@@ -181,14 +181,14 @@ p_init_widget_values(GapGveAviGlobalParams *gpp)
   gtk_adjustment_set_value(GTK_ADJUSTMENT(gpp->xvid_quality_spinbutton_adj)
                          , (gfloat)epp->xvid.quality_preset);
 
-  
+
   /* init checkbuttons */
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->jpg_dont_recode_checkbutton)
                                , epp->dont_recode_frames);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->jpg_interlace_checkbutton)
                                , epp->jpeg_interlaced);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->jpg_odd_first_checkbutton)
-                               , epp->jpeg_odd_even);  
+                               , epp->jpeg_odd_even);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->app0_checkbutton)
                                , epp->APP0_marker);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->raw_vflip_checkbutton)
@@ -211,15 +211,15 @@ p_init_widget_values(GapGveAviGlobalParams *gpp)
  * idx is the video codec index
  * and is corresponding with the notebook tab
  */
-static void 
+static void
 p_set_codec_dependent_wgt_senistive(GapGveAviGlobalParams *gpp, gint32 idx)
 {
   gboolean jpeg_sensitive;
   gboolean xvid_sensitive;
-  
+
   jpeg_sensitive = TRUE;
   xvid_sensitive = TRUE;
-  
+
   switch(idx)
   {
     case GAP_AVI_VIDCODEC_00_JPEG:
@@ -249,7 +249,7 @@ p_set_codec_dependent_wgt_senistive(GapGveAviGlobalParams *gpp, gint32 idx)
   if(gpp->jpg_interlace_checkbutton)
     gtk_widget_set_sensitive(gpp->jpg_interlace_checkbutton,   jpeg_sensitive);
   if(gpp->jpg_odd_first_checkbutton)
-    gtk_widget_set_sensitive(gpp->jpg_odd_first_checkbutton,   (jpeg_sensitive 
+    gtk_widget_set_sensitive(gpp->jpg_odd_first_checkbutton,   (jpeg_sensitive
                                                              && gpp->evl.jpeg_interlaced) );
   if(gpp->jpg_quality_spinbutton)
     gtk_widget_set_sensitive(gpp->jpg_quality_spinbutton,      jpeg_sensitive);
@@ -270,7 +270,7 @@ p_set_codec_dependent_wgt_senistive(GapGveAviGlobalParams *gpp, gint32 idx)
     gtk_widget_set_sensitive(gpp->xvid_max_key_interval_spinbutton,  xvid_sensitive);
   if(gpp->xvid_quality_spinbutton)
     gtk_widget_set_sensitive(gpp->xvid_quality_spinbutton,           xvid_sensitive);
-  
+
 }  /* end p_set_codec_dependent_wgt_senistive  */
 
 
@@ -321,7 +321,7 @@ on_checkbutton_toggled (GtkToggleButton *togglebutton
                        , gint32 *val_ptr)
 {
  GapGveAviGlobalParams *gpp;
- 
+
  if(gap_debug) printf("CB: on_checkbutton_toggled: %d\n", (int)togglebutton);
 
  if(val_ptr)
@@ -408,7 +408,7 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
   GtkWidget *spinbutton;
   GtkObject *adj;
   GtkWidget *combo_codec;
-  
+
 
   epp = &gpp->evl;
 
@@ -517,7 +517,7 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
                    , &epp->APP0_marker);
   gimp_help_set_help_data (checkbutton
                    , _("Write APP0 Marker for each encoded frame."
-                       " (The APP0 marker is evaluated by some windows programs for AVIs")
+                       " (The APP0 marker is evaluated by some windows programs for AVIs)")
                    , NULL);
 
   master_row++;
@@ -713,7 +713,7 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
   gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_RIGHT);
-  
+
   /* the vflip checkbutton */
   checkbutton = gtk_check_button_new_with_label (" ");
   gpp->raw_vflip_checkbutton = checkbutton;
@@ -727,8 +727,8 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
                    , G_CALLBACK (on_checkbutton_toggled)
                    , &epp->raw_vflip);
   gimp_help_set_help_data (checkbutton
-                   , _("Check if you want encode frames vertically flipped "
-		       "(suitable for playback on WinDVD player)"
+                   , _("Check if you want to encode frames vertically flipped "
+		       "(suitable for playback on WinDVD player) "
 		       "or as is (suitable for gmplayer on linux)")
                    , NULL);
 

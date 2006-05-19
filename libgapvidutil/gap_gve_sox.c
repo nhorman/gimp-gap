@@ -139,7 +139,7 @@ gap_gve_sox_chk_and_resample(GapGveCommonValues *cval)
 
   all_playlist_references = 0;
   valid_playlist_references = 0;
-  
+
   cval->tmp_audfile[0] = '\0';
   if(cval->audioname1[0] == '\0')
   {
@@ -188,7 +188,7 @@ gap_gve_sox_chk_and_resample(GapGveCommonValues *cval)
      remove(cval->tmp_audfile);
      if(g_file_test(cval->tmp_audfile, G_FILE_TEST_EXISTS))
      {
-        l_msg = g_strdup_printf(_("ERROR: Cant overwrite temporary workfile\nfile: %s")
+        l_msg = g_strdup_printf(_("ERROR: Can't overwrite temporary workfile\nfile: %s")
                            , cval->tmp_audfile);
         if(cval->run_mode == GIMP_RUN_INTERACTIVE)
         {

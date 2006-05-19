@@ -453,7 +453,7 @@ Naml_dialog(void)
   ii++; gap_arr_arg_init(&argv[ii], GAP_ARR_WGT_FONTSEL);
   argv[ii].label_txt = _("Fontname:");
   argv[ii].entry_width = 350;       /* pixel */
-  argv[ii].help_txt  = _("Select Fontname)");
+  argv[ii].help_txt  = _("Select Fontname");
   argv[ii].text_buf_len = sizeof(glob_namlvals.fontname);
   argv[ii].text_buf_ret = &glob_namlvals.fontname[0];
   argv[ii].has_default = TRUE;

@@ -4,9 +4,9 @@
  * GAP ... Gimp Animation Plugins
  *
  * basic Videomenu functions:
- *   Delete, Duplicate, Density, Exchange, Shift 
+ *   Delete, Duplicate, Density, Exchange, Shift
  *   Next, Prev, First, Last, Goto
- * 
+ *
  *
  */
 /* The GIMP -- an image manipulation program
@@ -35,8 +35,8 @@
  */
 
 #include "config.h"
- 
-/* SYSTEM (UNIX) includes */ 
+
+/* SYSTEM (UNIX) includes */
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -72,7 +72,7 @@ extern      int gap_debug; /* ==0  ... dont print debug infos */
  * ------------------------
  * shrink framedensity in the selected range (range_from - range_to)
  * by density_factor (is used as divisor here).
- * a value of 2.0 results in deleting half of the frames 
+ * a value of 2.0 results in deleting half of the frames
  * (by deleting every 2.nd frame in the affected range)
  * the range will playback with double speed when using the original framerate.
  */
@@ -92,7 +92,7 @@ p_density_shrink(GapAnimInfo *ainfo_ptr
      gimp_progress_init(_("Decreasing density by deleting frames..."));
    }
 
-   l_percentage = 0.0;  
+   l_percentage = 0.0;
    l_percentage_step = 1.0 / (gdouble)(ainfo_ptr->last_frame_nr - range_from);
 
    l_framenr = range_from;
@@ -101,18 +101,18 @@ p_density_shrink(GapAnimInfo *ainfo_ptr
    for(l_hi = range_from; l_hi <= range_to; l_hi++)
    {
      gdouble l_fnr;
-     
+
      /* l_lo is the source framenumber in the (time) shrinked variant */
      l_fnr = ((gdouble)(l_hi - range_from) / density_factor);
      l_lo = range_from + (gint32)l_fnr;
-     
+
      if(gap_debug) printf("p_density_shrink: (ren/dup loop) l_lo: %d  l_hi:%d last_kept:%d framenr:%d\n"
                          , (int)l_lo
                          , (int)l_hi
                          , (int)l_last_kept_nr
                          , (int)l_framenr
                          );
-     
+
      if(l_lo == l_last_kept_nr)
      {
         /* 2 or more frames would result in the the same framenr
@@ -137,22 +137,22 @@ p_density_shrink(GapAnimInfo *ainfo_ptr
        l_last_kept_nr = l_framenr;
        l_framenr++;
      }
-     
+
      /* update progress for INTERACTIVE processing */
      if(ainfo_ptr->run_mode == GIMP_RUN_INTERACTIVE)
-     { 
+     {
         l_percentage += l_percentage_step;
         gimp_progress_update (l_percentage);
      }
    }
 
-   /* down_shift rename loop 
+   /* down_shift rename loop
     * (framenumber higher than range_to are renamed with lower numbers
     *  to close up the leak in the numberspace that was
     *  left in the 1.loop when frames were deleted.)
     */
    l_lo = l_framenr;
-   l_hi = range_to +1; 
+   l_hi = range_to +1;
    while(l_hi <= ainfo_ptr->last_frame_nr  )
    {
      if(0 != gap_lib_rename_frame(ainfo_ptr, l_hi, l_lo))
@@ -165,7 +165,7 @@ p_density_shrink(GapAnimInfo *ainfo_ptr
      }
 
      if(ainfo_ptr->run_mode == GIMP_RUN_INTERACTIVE)
-     { 
+     {
         l_percentage += l_percentage_step;
         gimp_progress_update (l_percentage);
      }
@@ -175,13 +175,13 @@ p_density_shrink(GapAnimInfo *ainfo_ptr
    }
 
    l_lo--;  /* this is the new last framenumber */
-   
+
    /* recalculate last and total frames */
    ainfo_ptr->frame_cnt -= (ainfo_ptr->last_frame_nr - l_lo);
    ainfo_ptr->last_frame_nr = l_lo;
 
    return 0;  /* OK */
-   
+
 }  /* end p_density_shrink */
 
 
@@ -190,7 +190,7 @@ p_density_shrink(GapAnimInfo *ainfo_ptr
  * ------------------------
  * grow framedensity in the selected range (range_from - range_to)
  * by density_factor.
- * a value of 2.0 results in duplicating 
+ * a value of 2.0 results in duplicating
  * all frames within the range.
  * the range will playback with half speed when using the original framerate.
  */
@@ -215,12 +215,12 @@ p_density_grow(GapAnimInfo *ainfo_ptr
    src_range_size = 1 + (range_to - range_from);
    target_range_fsize = (gdouble)(src_range_size) * density_factor;
    copied_frames = (gint)(target_range_fsize) - src_range_size;
-   
-   l_percentage = 0.0;  
+
+   l_percentage = 0.0;
    l_percentage_step = 1.0 / (gdouble)((gint32)target_range_fsize
                                       + (ainfo_ptr->last_frame_nr - range_to));
 
-   /* up_shift rename loop 
+   /* up_shift rename loop
     * (framenumber higher than range_to are renamed with higher numbers
     *  to get free numberspace for the duplicates that will be created
     *  in the 2.nd loop)
@@ -239,15 +239,15 @@ p_density_grow(GapAnimInfo *ainfo_ptr
      }
 
      if(ainfo_ptr->run_mode == GIMP_RUN_INTERACTIVE)
-     { 
+     {
         l_percentage += l_percentage_step;
         gimp_progress_update (l_percentage);
      }
 
      l_lo--;
    }
- 
- 
+
+
    l_alias_lo = -1;
    l_alias_nr = -1;
 
@@ -255,23 +255,23 @@ p_density_grow(GapAnimInfo *ainfo_ptr
    for(l_hi = range_to + copied_frames; l_hi >= range_from; l_hi--)
    {
      gdouble l_flo;
-     
+
      /* pick the source framenumber (l_lo) */
      l_flo = ((gdouble)(l_hi - range_from) / density_factor);
      l_lo = range_from + (gint32)l_flo;
-     
+
      if(gap_debug) printf("p_density_grow: (ren/dup loop) l_lo: %d  l_hi:%d\n", (int)l_lo, (int)l_hi);
-     
+
      if(l_lo == l_alias_lo)
      {
         gchar *l_alias_name;
         gchar *l_dup_name;
-        
+
         /* the source framenumber (l_lo) was already renamed
          * to l_alias_nr. we must create a copy in that case
          * where the new framenumber (l_alias_nr) is the source framenumber
          */
-        l_alias_name = gap_lib_alloc_fname(ainfo_ptr->basename, l_alias_nr, ainfo_ptr->extension);  
+        l_alias_name = gap_lib_alloc_fname(ainfo_ptr->basename, l_alias_nr, ainfo_ptr->extension);
         l_dup_name = gap_lib_alloc_fname(ainfo_ptr->basename, l_hi, ainfo_ptr->extension);
         if((l_dup_name != NULL) && (l_alias_name != NULL))
         {
@@ -296,10 +296,10 @@ p_density_grow(GapAnimInfo *ainfo_ptr
        l_alias_lo = l_lo;
        l_alias_nr = l_hi;
      }
-     
+
      /* update progress for INTERACTIVE processing */
      if(ainfo_ptr->run_mode == GIMP_RUN_INTERACTIVE)
-     { 
+     {
         l_percentage += l_percentage_step;
         gimp_progress_update (l_percentage);
      }
@@ -308,7 +308,7 @@ p_density_grow(GapAnimInfo *ainfo_ptr
    /* recalculate last and total frames */
    ainfo_ptr->frame_cnt += copied_frames;
    ainfo_ptr->last_frame_nr += copied_frames;
-   
+
    return 0;  /* OK */
 
 }  /* end p_density_grow */
@@ -323,7 +323,7 @@ p_density_grow(GapAnimInfo *ainfo_ptr
  * or by deleting 100/density_factor Percent of the frames.
  * Depending on the density_grow flag.
  *
- * all following frames are renamed (renumbered up by cnt) 
+ * all following frames are renamed (renumbered up by cnt)
  * current frame is duplicated (cnt) times
  *
  * return image_id (of the new loaded frame) on success
@@ -357,10 +357,10 @@ p_density(GapAnimInfo *ainfo_ptr
    {
      return -1;
    }
-   
+
    if(gap_lib_gap_check_save_needed(ainfo_ptr->image_id))
    {
-     /* save current frame  */   
+     /* save current frame  */
      if(gap_lib_save_named_frame(ainfo_ptr->image_id, l_curr_name) < 0)
      {
        gchar *tmp_errtxt;
@@ -372,7 +372,7 @@ p_density(GapAnimInfo *ainfo_ptr
      }
    }
 
-   /* use a new name (000001.xcf Konvention) */ 
+   /* use a new name (000001.xcf Konvention) */
    gimp_image_set_filename (ainfo_ptr->image_id, l_curr_name);
    g_free(l_curr_name);
 
@@ -399,12 +399,12 @@ p_density(GapAnimInfo *ainfo_ptr
                             , range_to
                             );
    }
-   
+
    if(l_rc < 0)
    {
      return(-1);
    }
-   
+
    /* load from the "new" current frame */
    ainfo_ptr->curr_frame_nr = range_from;
    if(ainfo_ptr->new_filename != NULL) g_free(ainfo_ptr->new_filename);
@@ -420,7 +420,7 @@ p_density(GapAnimInfo *ainfo_ptr
  * p_del
  *
  * delete cnt frames starting at current
- * all following frames are renamed (renumbered down by cnt) 
+ * all following frames are renamed (renumbered down by cnt)
  *
  * return image_id (of the new loaded frame) on success
  *        or -1 on errors
@@ -450,14 +450,14 @@ p_del(GapAnimInfo *ainfo_ptr, long cnt)
       cnt--;
    }
 
-   
+
    l_idx   = l_curr;
    while(l_idx < (l_curr + cnt))
    {
       gap_lib_delete_frame(ainfo_ptr, l_idx);
       l_idx++;
    }
-   
+
    /* rename (renumber) all frames with number greater than current
     */
    l_lo   = l_curr;
@@ -467,7 +467,7 @@ p_del(GapAnimInfo *ainfo_ptr, long cnt)
      if(0 != gap_lib_rename_frame(ainfo_ptr, l_hi, l_lo))
      {
         gchar *tmp_errtxt;
-	
+
         tmp_errtxt = g_strdup_printf(_("Error: could not rename frame %ld to %ld") ,l_hi, l_lo);
         gap_arr_msg_win(ainfo_ptr->run_mode, tmp_errtxt);
 	g_free(tmp_errtxt);
@@ -480,14 +480,14 @@ p_del(GapAnimInfo *ainfo_ptr, long cnt)
    /* calculate how much frames are left */
    ainfo_ptr->frame_cnt -= cnt;
    ainfo_ptr->last_frame_nr = ainfo_ptr->first_frame_nr + ainfo_ptr->frame_cnt -1;
-   
+
    /* set current position to previous frame (if there is one) */
-   if(l_curr > ainfo_ptr->first_frame_nr) 
-   { 
+   if(l_curr > ainfo_ptr->first_frame_nr)
+   {
      ainfo_ptr->frame_nr = l_curr -1;
    }
    else
-   { 
+   {
       ainfo_ptr->frame_nr = ainfo_ptr->first_frame_nr;
    }
 
@@ -507,7 +507,7 @@ p_del(GapAnimInfo *ainfo_ptr, long cnt)
 /* ============================================================================
  * p_dup
  *
- * all following frames are renamed (renumbered up by cnt) 
+ * all following frames are renamed (renumbered up by cnt)
  * current frame is duplicated (cnt) times
  *
  * return image_id (of the new loaded frame) on success
@@ -524,17 +524,17 @@ p_dup(GapAnimInfo *ainfo_ptr, long cnt, long range_from, long range_to)
    char  *l_dup_name;
    char  *l_curr_name;
    gdouble    l_percentage, l_percentage_step;
- 
+
    if(gap_debug) fprintf(stderr, "DEBUG  p_dup fr:%d to:%d cnt:%d extension:%s: basename:%s frame_cnt:%d\n",
                          (int)range_from, (int)range_to, (int)cnt, ainfo_ptr->extension, ainfo_ptr->basename, (int)ainfo_ptr->frame_cnt);
 
    if(cnt < 1) return -1;
 
    l_curr_name = gap_lib_alloc_fname(ainfo_ptr->basename, ainfo_ptr->curr_frame_nr, ainfo_ptr->extension);
-   
+
    if(gap_lib_gap_check_save_needed(ainfo_ptr->image_id))
    {
-     /* save current frame  */   
+     /* save current frame  */
      if(gap_lib_save_named_frame(ainfo_ptr->image_id, l_curr_name) < 0)
      {
        gchar *tmp_errtxt;
@@ -545,7 +545,7 @@ p_dup(GapAnimInfo *ainfo_ptr, long cnt, long range_from, long range_to)
      }
    }
 
-   /* use a new name (000001.xcf Konvention) */ 
+   /* use a new name (000001.xcf Konvention) */
    gimp_image_set_filename (ainfo_ptr->image_id, l_curr_name);
    g_free(l_curr_name);
 
@@ -575,19 +575,19 @@ p_dup(GapAnimInfo *ainfo_ptr, long cnt, long range_from, long range_to)
    }
    else
    {
-      l_cnt2 = ((range_to - range_from ) + 1) * cnt;  
+      l_cnt2 = ((range_to - range_from ) + 1) * cnt;
       l_step = 1;
       l_src_nr_max = range_to;
       l_src_nr_min = range_from;
-   }    
+   }
 
    if(gap_debug) fprintf(stderr, "DEBUG  p_dup fr:%d to:%d cnt2:%d l_src_nr_max:%d\n",
                          (int)range_from, (int)range_to, (int)l_cnt2, (int)l_src_nr_max);
-   
 
-   l_percentage = 0.0;  
+
+   l_percentage = 0.0;
    if(ainfo_ptr->run_mode == GIMP_RUN_INTERACTIVE)
-   { 
+   {
      gimp_progress_init( _("Duplicating frames..."));
    }
 
@@ -596,7 +596,7 @@ p_dup(GapAnimInfo *ainfo_ptr, long cnt, long range_from, long range_to)
    l_lo   = ainfo_ptr->last_frame_nr;
    l_hi   = l_lo + l_cnt2;
    while(l_lo > l_src_nr_max)
-   {     
+   {
      if(0 != gap_lib_rename_frame(ainfo_ptr, l_lo, l_hi))
      {
         gchar *tmp_errtxt;
@@ -612,16 +612,16 @@ p_dup(GapAnimInfo *ainfo_ptr, long cnt, long range_from, long range_to)
 
    l_percentage_step = 1.0 / ((1.0 + l_hi) - l_src_nr_max);
    if(ainfo_ptr->run_mode == GIMP_RUN_INTERACTIVE)
-   { 
+   {
       l_percentage += l_percentage_step;
       gimp_progress_update (l_percentage);
    }
 
-   /* copy cnt duplicates */   
+   /* copy cnt duplicates */
    l_src_nr = range_to;
    while(l_hi > l_src_nr_max)
    {
-      l_curr_name = gap_lib_alloc_fname(ainfo_ptr->basename, l_src_nr, ainfo_ptr->extension);  
+      l_curr_name = gap_lib_alloc_fname(ainfo_ptr->basename, l_src_nr, ainfo_ptr->extension);
       l_dup_name = gap_lib_alloc_fname(ainfo_ptr->basename, l_hi, ainfo_ptr->extension);
       if((l_dup_name != NULL) && (l_curr_name != NULL))
       {
@@ -630,16 +630,16 @@ p_dup(GapAnimInfo *ainfo_ptr, long cnt, long range_from, long range_to)
          g_free(l_curr_name);
       }
       if(ainfo_ptr->run_mode == GIMP_RUN_INTERACTIVE)
-      { 
+      {
          l_percentage += l_percentage_step;
          gimp_progress_update (l_percentage);
       }
-      
-      
+
+
       l_src_nr -= l_step;
       if(l_src_nr < l_src_nr_min) l_src_nr = l_src_nr_max;
       if(l_src_nr > l_src_nr_max) l_src_nr = l_src_nr_min;
-      
+
       l_hi--;
    }
 
@@ -653,12 +653,12 @@ p_dup(GapAnimInfo *ainfo_ptr, long cnt, long range_from, long range_to)
     * (reload failed at the gimp_displays_reconnect call, when invoked from script-fu
     *  in NONINTERACTIVE mode, dont know why ?)
     */
-    
+
    /* if(ainfo_ptr->new_filename != NULL) g_free(ainfo_ptr->new_filename);
     *ainfo_ptr->new_filename = gap_lib_alloc_fname(ainfo_ptr->basename,
     *                                   ainfo_ptr->curr_frame_nr,
     *                                   ainfo_ptr->extension);
-    * return (gap_lib_load_named_frame(ainfo_ptr->image_id, ainfo_ptr->new_filename)); 
+    * return (gap_lib_load_named_frame(ainfo_ptr->image_id, ainfo_ptr->new_filename));
     */
    return (ainfo_ptr->image_id);
 }        /* end p_dup */
@@ -666,7 +666,7 @@ p_dup(GapAnimInfo *ainfo_ptr, long cnt, long range_from, long range_to)
 /* ============================================================================
  * p_exchg
  *
- * save current frame, exchange its name with destination frame on disk 
+ * save current frame, exchange its name with destination frame on disk
  * and reload current frame (now has contents of dest. and vice versa)
  *
  * return image_id (of the new loaded frame) on success
@@ -681,7 +681,7 @@ p_exchg(GapAnimInfo *ainfo_ptr, long dest)
 
    l_tmp_nr = ainfo_ptr->last_frame_nr + 4;  /* use a free frame_nr for temp name */
 
-   if((dest < 1) || (dest == ainfo_ptr->curr_frame_nr)) 
+   if((dest < 1) || (dest == ainfo_ptr->curr_frame_nr))
       return -1;
 
    if(gap_lib_gap_check_save_needed(ainfo_ptr->image_id))
@@ -713,7 +713,7 @@ p_exchg(GapAnimInfo *ainfo_ptr, long dest)
         return -1;
    }
 
-   /* load from the "new" current frame */   
+   /* load from the "new" current frame */
    if(ainfo_ptr->new_filename != NULL) g_free(ainfo_ptr->new_filename);
    ainfo_ptr->new_filename = gap_lib_alloc_fname(ainfo_ptr->basename,
                                       ainfo_ptr->curr_frame_nr,
@@ -741,8 +741,8 @@ p_shift(GapAnimInfo *ainfo_ptr, long cnt, long range_from, long range_to)
    long  l_shift;
    gchar *l_curr_name;
    gchar *tmp_errtxt;
-	
-   gdouble    l_percentage, l_percentage_step;  
+
+   gdouble    l_percentage, l_percentage_step;
 
    if(gap_debug) fprintf(stderr, "DEBUG  p_shift fr:%d to:%d cnt:%d\n",
                          (int)range_from, (int)range_to, (int)cnt);
@@ -765,7 +765,7 @@ p_shift(GapAnimInfo *ainfo_ptr, long cnt, long range_from, long range_to)
       l_lo = range_from;
       l_hi = range_to;
    }
-   
+
    /* limit shift  amount to number of frames in range */
    l_shift = cnt % (l_hi - l_lo);
    if(gap_debug) fprintf(stderr, "DEBUG  p_shift shift:%d\n",
@@ -775,14 +775,14 @@ p_shift(GapAnimInfo *ainfo_ptr, long cnt, long range_from, long range_to)
    l_curr_name = gap_lib_alloc_fname(ainfo_ptr->basename, ainfo_ptr->curr_frame_nr, ainfo_ptr->extension);
    if(gap_lib_gap_check_save_needed(ainfo_ptr->image_id))
    {
-     /* save current frame  */   
+     /* save current frame  */
      gap_lib_save_named_frame(ainfo_ptr->image_id, l_curr_name);
    }
    g_free(l_curr_name);
 
-   l_percentage = 0.0;  
+   l_percentage = 0.0;
    if(ainfo_ptr->run_mode == GIMP_RUN_INTERACTIVE)
-   { 
+   {
      gimp_progress_init( _("Renumber frame sequence..."));
    }
 
@@ -801,7 +801,7 @@ p_shift(GapAnimInfo *ainfo_ptr, long cnt, long range_from, long range_to)
         return -1;
      }
      if(ainfo_ptr->run_mode == GIMP_RUN_INTERACTIVE)
-     { 
+     {
        l_percentage += l_percentage_step;
        gimp_progress_update (l_percentage);
      }
@@ -823,16 +823,16 @@ p_shift(GapAnimInfo *ainfo_ptr, long cnt, long range_from, long range_to)
         return -1;
      }
      if(ainfo_ptr->run_mode == GIMP_RUN_INTERACTIVE)
-     { 
+     {
        l_percentage += l_percentage_step;
        gimp_progress_update (l_percentage);
      }
 
-     l_dst ++;     
+     l_dst ++;
    }
 
 
-   /* load from the "new" current frame */   
+   /* load from the "new" current frame */
    if(ainfo_ptr->new_filename != NULL) g_free(ainfo_ptr->new_filename);
    ainfo_ptr->new_filename = gap_lib_alloc_fname(ainfo_ptr->basename,
                                       ainfo_ptr->curr_frame_nr,
@@ -845,7 +845,7 @@ p_shift(GapAnimInfo *ainfo_ptr, long cnt, long range_from, long range_to)
  * p_reverse
  *
  * all frames in the given range are renumbered in reverse order
- * 
+ *
  *  example:  range before 3, 4, 5, 6, 7
  *            range after  7, 6, 5, 4, 3
  *
@@ -862,9 +862,9 @@ p_reverse(GapAnimInfo *ainfo_ptr, long range_from, long range_to)
    gchar *tmp_errtxt;
 
    gdouble    l_percentage;
-   
+
    l_tmp_nr = ainfo_ptr->last_frame_nr + 4;  /* use a free frame_nr for temp name */
-   
+
    if(gap_debug) fprintf(stderr, "DEBUG  p_reverse fr:%d to:%d\n",
                          (int)range_from, (int)range_to);
 
@@ -886,7 +886,7 @@ p_reverse(GapAnimInfo *ainfo_ptr, long range_from, long range_to)
       l_lo = range_from;
       l_hi = range_to;
    }
-   
+
    if(l_hi <= l_lo) return -1;
 
    if(gap_lib_gap_check_save_needed(ainfo_ptr->image_id))
@@ -895,9 +895,9 @@ p_reverse(GapAnimInfo *ainfo_ptr, long range_from, long range_to)
         return -1;
    }
 
-   l_percentage = 0.0;  
+   l_percentage = 0.0;
    if(ainfo_ptr->run_mode == GIMP_RUN_INTERACTIVE)
-   { 
+   {
      gimp_progress_init( _("Renumber frame sequence..."));
    }
 
@@ -930,14 +930,14 @@ p_reverse(GapAnimInfo *ainfo_ptr, long range_from, long range_to)
      return -1;
      }
      if (ainfo_ptr->run_mode == GIMP_RUN_INTERACTIVE)
-     { 
+     {
        l_percentage = (double)((l_curr - l_lo + 1) / ((l_hi - l_lo + 1) / 2.0 ));
        if (l_percentage > 1.0) l_percentage = 1.0;
        gimp_progress_update (l_percentage);
      }
    }
-   
-   /* load from the "new" current frame */   
+
+   /* load from the "new" current frame */
    if(ainfo_ptr->new_filename != NULL) g_free(ainfo_ptr->new_filename);
    ainfo_ptr->new_filename = gap_lib_alloc_fname(ainfo_ptr->basename,
                                       ainfo_ptr->curr_frame_nr,
@@ -967,11 +967,11 @@ gap_base_next(GimpRunMode run_mode, gint32 image_id)
   {
     ainfo_ptr->frame_nr = ainfo_ptr->curr_frame_nr + 1;
     rc = gap_lib_replace_image(ainfo_ptr);
-  
+
     gap_lib_free_ainfo(&ainfo_ptr);
   }
-  
-  return(rc);    
+
+  return(rc);
 }	/* end gap_base_next */
 
 gint32
@@ -986,11 +986,11 @@ gap_base_prev(GimpRunMode run_mode, gint32 image_id)
   {
     ainfo_ptr->frame_nr = ainfo_ptr->curr_frame_nr - 1;
     rc = gap_lib_replace_image(ainfo_ptr);
-  
+
     gap_lib_free_ainfo(&ainfo_ptr);
   }
-  
-  return(rc);    
+
+  return(rc);
 }	/* end gap_base_prev */
 
 /* ============================================================================
@@ -1018,8 +1018,8 @@ gap_base_first(GimpRunMode run_mode, gint32 image_id)
     }
     gap_lib_free_ainfo(&ainfo_ptr);
   }
-  
-  return(rc);    
+
+  return(rc);
 }	/* end gap_base_first */
 
 gint32
@@ -1039,13 +1039,13 @@ gap_base_last(GimpRunMode run_mode, gint32 image_id)
     }
     gap_lib_free_ainfo(&ainfo_ptr);
   }
-  
-  return(rc);    
+
+  return(rc);
 }	/* end gap_base_last */
 
 /* ============================================================================
  * gap_base_goto
- * 
+ *
  * store the current Gimp Image to disk
  * and load it from the video frame on disk that has the specified frame Nr.
  * GIMP_RUN_INTERACTIVE:
@@ -1092,12 +1092,12 @@ gap_base_goto(GimpRunMode run_mode, gint32 image_id, int nr)
 
 	g_free (l_title);
 	g_free (l_hline);
-                
+
         if(l_dest < 0)
         {
            /* Cancel button: go back to current frame */
            l_dest = ainfo_ptr->curr_frame_nr;
-        }  
+        }
         if(0 != gap_lib_chk_framechange(ainfo_ptr))
         {
            l_dest = -1;
@@ -1117,8 +1117,8 @@ gap_base_goto(GimpRunMode run_mode, gint32 image_id, int nr)
     }
     gap_lib_free_ainfo(&ainfo_ptr);
   }
-  
-  return(rc);    
+
+  return(rc);
 }	/* end gap_base_goto */
 
 
@@ -1131,7 +1131,7 @@ p_delete_confirm_dialog(GapAnimInfo *ainfo_ptr, long range_from, long range_to)
 {
   gchar *msg_txt;
   gboolean l_rc;
-  
+
   msg_txt = g_strdup_printf(_("Frames %d - %d will be deleted. "
                     "There will be no undo for this operation.")
                    , (int)range_from
@@ -1144,7 +1144,7 @@ p_delete_confirm_dialog(GapAnimInfo *ainfo_ptr, long range_from, long range_to)
   g_free(msg_txt);
 
   return (l_rc);
-  
+
 }  /* end p_delete_confirm_dialog */
 
 
@@ -1171,7 +1171,7 @@ gap_base_del(GimpRunMode run_mode, gint32 image_id, int nr)
     if (0 == gap_lib_dir_ainfo(ainfo_ptr))
     {
       if(0 != gap_lib_chk_framerange(ainfo_ptr))   return -1;
-      
+
       if(run_mode == GIMP_RUN_INTERACTIVE)
       {
         l_title = g_strdup_printf (_("Delete Frames (%ld/%ld)")
@@ -1182,14 +1182,14 @@ gap_base_del(GimpRunMode run_mode, gint32 image_id, int nr)
 
         l_max = ainfo_ptr->last_frame_nr;
         if(l_max == ainfo_ptr->curr_frame_nr)
-        { 
+        {
           /* bugfix: the slider needs a maximum > minimum
            *         (if not an error is printed, and
            *          a default range 0 to 100 is displayed)
            */
           l_max++;
         }
-	
+
         l_tooltip = g_strdup_printf(_("Delete frames starting at current number %d "
 	                              "up to this number (inclusive)")
 	            , (int)ainfo_ptr->curr_frame_nr );
@@ -1201,15 +1201,15 @@ gap_base_del(GimpRunMode run_mode, gint32 image_id, int nr)
               , ainfo_ptr->curr_frame_nr
               , TRUE
 	      , GAP_HELP_ID_DELETE);
-                
+
 	g_free (l_tooltip);
 	g_free (l_title);
 	g_free (l_hline);
-	
+
         if(l_cnt >= 0)
         {
            l_cnt = 1 + l_cnt - ainfo_ptr->curr_frame_nr;
-           
+
            /* ask the user to confirm delete (there is no undo) */
            if(!p_delete_confirm_dialog(ainfo_ptr
                                      ,ainfo_ptr->curr_frame_nr
@@ -1217,7 +1217,7 @@ gap_base_del(GimpRunMode run_mode, gint32 image_id, int nr)
            {
               l_cnt = -1;  /* Canceled by confirm dialog */
            }
-        } 
+        }
         if(0 != gap_lib_chk_framechange(ainfo_ptr))
         {
            l_cnt = -1;
@@ -1227,7 +1227,7 @@ gap_base_del(GimpRunMode run_mode, gint32 image_id, int nr)
       {
         l_cnt = nr;
       }
- 
+
       if(l_cnt >= 0)
       {
          /* delete l_cnt number of frames (-1 CANCEL button) */
@@ -1239,8 +1239,8 @@ gap_base_del(GimpRunMode run_mode, gint32 image_id, int nr)
     }
     gap_lib_free_ainfo(&ainfo_ptr);
   }
-  
-  return(rc);    
+
+  return(rc);
 
 }	/* end gap_base_del */
 
@@ -1258,10 +1258,10 @@ p_density_confirm_dialog(GapAnimInfo *ainfo_ptr, long range_from, long range_to
   gdouble l_src_range_size;
   gdouble l_target_range_size;
   gboolean l_rc;
-  
+
   msg_txt = NULL;
   l_src_range_size = 1+ range_to - range_from;
-  
+
   if(density_grow)
   {
     l_target_range_size = l_src_range_size * density_factor;
@@ -1269,8 +1269,8 @@ p_density_confirm_dialog(GapAnimInfo *ainfo_ptr, long range_from, long range_to
                      - l_src_range_size
                      + l_target_range_size
                      ;
-                      
-    msg_txt =              
+
+    msg_txt =
     g_strdup_printf(_("Frames in the range: %d - %d will be duplicated %.4f times.\n"
                       "This will increase the total number of frames from %d up to %d.\n"
                       "There will be no undo for this operation\n")
@@ -1288,9 +1288,9 @@ p_density_confirm_dialog(GapAnimInfo *ainfo_ptr, long range_from, long range_to
                      - l_src_range_size
                      + l_target_range_size
                      ;
-    msg_txt =              
+    msg_txt =
     g_strdup_printf(_("%.04f percent of the frames in the range: %d - %d\n"
-                      "will be deleted.\n" 
+                      "will be deleted.\n"
                       "This will decrease the total number of frames from %d down to %d\n"
                       "There will be no undo for this operation\n")
                    , (float)100.0 - (100.0 / l_src_range_size * l_target_range_size)
@@ -1342,7 +1342,7 @@ p_density_dialog(GapAnimInfo *ainfo_ptr, long *range_from, long *range_to
   argv[1].int_max   = (gint)ainfo_ptr->last_frame_nr;
   argv[1].int_ret   = (gint)ainfo_ptr->last_frame_nr;
   argv[1].help_txt  = _("Affected range ends at this framenumber");
-    
+
   gap_arr_arg_init(&argv[2], GAP_ARR_WGT_FLT_PAIR);
   argv[2].label_txt = _("Density:");
   argv[2].constraint = FALSE;
@@ -1358,8 +1358,8 @@ p_density_dialog(GapAnimInfo *ainfo_ptr, long *range_from, long *range_to
 
   gap_arr_arg_init(&argv[3], GAP_ARR_WGT_TOGGLE);
   argv[3].label_txt = _("Increase Density");
-  argv[3].help_txt  = _("ON: Duplicate frames to get a target rate that is density * originalrate.\n"
-                        "OFF: Delete frames to get a target rate that is originalrate/density.");
+  argv[3].help_txt  = _("ON: Duplicate frames to get a target rate that is density * original_rate..\n"
+                        "OFF: Delete frames to get a target rate that is original_rate/density.");
   argv[3].int_ret   = 1;
 
   gap_arr_arg_init(&argv[4], GAP_ARR_WGT_HELP_BUTTON);
@@ -1387,9 +1387,9 @@ p_density_dialog(GapAnimInfo *ainfo_ptr, long *range_from, long *range_to
     }
     return TRUE;
   }
-  
+
   return FALSE;
-  
+
 }       /* end p_density_dialog */
 
 
@@ -1397,7 +1397,7 @@ p_density_dialog(GapAnimInfo *ainfo_ptr, long *range_from, long *range_to
  * gap_base_density
  * ============================================================================
  */
-gint32 
+gint32
 gap_base_density(GimpRunMode run_mode, gint32 image_id
            , long range_from, long range_to
            , gdouble density_factor, gboolean density_grow)
@@ -1441,7 +1441,7 @@ gap_base_density(GimpRunMode run_mode, gint32 image_id
          {
             l_density_factor = -1.0;
          }
-                
+
       }
       else
       {
@@ -1450,7 +1450,7 @@ gap_base_density(GimpRunMode run_mode, gint32 image_id
         l_density_factor = density_factor;
         l_density_grow = density_grow;
       }
- 
+
       if(l_density_factor > 1.0)
       {
          /* change density by duplicating or deleting frames (on disk) */
@@ -1460,8 +1460,8 @@ gap_base_density(GimpRunMode run_mode, gint32 image_id
     }
     gap_lib_free_ainfo(&ainfo_ptr);
   }
-  
-  return(l_rci);    
+
+  return(l_rci);
 
 }       /* end gap_base_density */
 
@@ -1496,7 +1496,7 @@ p_dup_dialog(GapAnimInfo *ainfo_ptr, long *range_from, long *range_to)
   argv[1].int_max   = (gint)ainfo_ptr->last_frame_nr;
   argv[1].int_ret   = (gint)ainfo_ptr->curr_frame_nr;
   argv[1].help_txt  = _("Source range ends at this framenumber");
-    
+
   gap_arr_arg_init(&argv[2], GAP_ARR_WGT_INT_PAIR);
   argv[2].label_txt = _("N times:");
   argv[2].constraint = FALSE;
@@ -1511,7 +1511,7 @@ p_dup_dialog(GapAnimInfo *ainfo_ptr, long *range_from, long *range_to)
   argv[3].help_id = GAP_HELP_ID_DUPLICATE;
 
   if(TRUE == gap_arr_ok_cancel_dialog(l_title, _("Make Duplicates of Frame Range"),  4, argv))
-  { 
+  {
     g_free (l_title);
     *range_from = (long)(argv[0].int_ret);
     *range_to   = (long)(argv[1].int_ret);
@@ -1522,7 +1522,7 @@ p_dup_dialog(GapAnimInfo *ainfo_ptr, long *range_from, long *range_to)
     g_free (l_title);
     return -1;
   }
-   
+
 
 }	/* end p_dup_dialog */
 
@@ -1570,7 +1570,7 @@ gap_base_dup(GimpRunMode run_mode, gint32 image_id, int nr,
          {
             l_cnt = -1;
          }
-                
+
       }
       else
       {
@@ -1578,7 +1578,7 @@ gap_base_dup(GimpRunMode run_mode, gint32 image_id, int nr,
         l_from = range_from;
         l_to   = range_to;
       }
- 
+
       if(l_cnt > 0)
       {
          /* make l_cnt duplicate frames (on disk) */
@@ -1589,9 +1589,9 @@ gap_base_dup(GimpRunMode run_mode, gint32 image_id, int nr,
     }
     gap_lib_free_ainfo(&ainfo_ptr);
   }
-  
+
   return(rc);
-  
+
 }	/* end gap_base_dup */
 
 
@@ -1619,7 +1619,7 @@ gap_base_exchg(GimpRunMode run_mode, gint32 image_id, int nr)
     if (0 == gap_lib_dir_ainfo(ainfo_ptr))
     {
       if(0 != gap_lib_chk_framerange(ainfo_ptr))   return -1;
-      
+
       if(run_mode == GIMP_RUN_INTERACTIVE)
       {
          if(ainfo_ptr->curr_frame_nr < ainfo_ptr->last_frame_nr)
@@ -1628,7 +1628,7 @@ gap_base_exchg(GimpRunMode run_mode, gint32 image_id, int nr)
          }
          else
          {
-           l_initial = ainfo_ptr->last_frame_nr; 
+           l_initial = ainfo_ptr->last_frame_nr;
          }
          l_title = g_strdup_printf (_("Exchange Current Frame (%ld)")
 				    , ainfo_ptr->curr_frame_nr);
@@ -1636,18 +1636,18 @@ gap_base_exchg(GimpRunMode run_mode, gint32 image_id, int nr)
          l_tooltip = g_strdup_printf(_("Exchange the current frame %d "
 	                              "with the frame that has the number entered here")
 	            , (int)ainfo_ptr->curr_frame_nr );
-         l_dest = gap_arr_slider_dialog(l_title, 
-				  _("Exchange with Frame"), 
+         l_dest = gap_arr_slider_dialog(l_title,
+				  _("Exchange with Frame"),
 				  _("Number:")
 				  , l_tooltip
-				  , ainfo_ptr->first_frame_nr 
+				  , ainfo_ptr->first_frame_nr
 				  , ainfo_ptr->last_frame_nr
 				  , l_initial
 				  , TRUE
 				  , GAP_HELP_ID_EXCHANGE);
 	 g_free (l_tooltip);
 	 g_free (l_title);
-				  
+
          if(0 != gap_lib_chk_framechange(ainfo_ptr))
          {
             l_dest = -1;
@@ -1657,7 +1657,7 @@ gap_base_exchg(GimpRunMode run_mode, gint32 image_id, int nr)
       {
         l_dest = nr;
       }
- 
+
       if((l_dest >= ainfo_ptr->first_frame_nr ) && (l_dest <= ainfo_ptr->last_frame_nr ))
       {
          /* excange current frames with destination frame (on disk) */
@@ -1668,8 +1668,8 @@ gap_base_exchg(GimpRunMode run_mode, gint32 image_id, int nr)
     }
     gap_lib_free_ainfo(&ainfo_ptr);
   }
-  
-  return(rc);    
+
+  return(rc);
 }	/* end gap_base_exchg */
 
 /* ============================================================================
@@ -1702,7 +1702,7 @@ p_shift_dialog(GapAnimInfo *ainfo_ptr, long *range_from, long *range_to)
   argv[1].int_max   = (gint)ainfo_ptr->last_frame_nr;
   argv[1].int_ret   = (gint)ainfo_ptr->last_frame_nr;
   argv[1].help_txt  = _("Affected range ends at this framenumber");
-    
+
   gap_arr_arg_init(&argv[2], GAP_ARR_WGT_INT_PAIR);
   argv[2].label_txt = _("N-Shift:");
   argv[2].constraint = TRUE;
@@ -1713,9 +1713,9 @@ p_shift_dialog(GapAnimInfo *ainfo_ptr, long *range_from, long *range_to)
 
   gap_arr_arg_init(&argv[3], GAP_ARR_WGT_HELP_BUTTON);
   argv[3].help_id = GAP_HELP_ID_SHIFT;
-  
+
   if(TRUE == gap_arr_ok_cancel_dialog(l_title, _("Frame Sequence Shift"),  4, argv))
-  { 
+  {
     g_free (l_title);
     *range_from = (long)(argv[0].int_ret);
     *range_to   = (long)(argv[1].int_ret);
@@ -1726,7 +1726,7 @@ p_shift_dialog(GapAnimInfo *ainfo_ptr, long *range_from, long *range_to)
     g_free (l_title);
     return 0;
   }
-   
+
 
 } /* end p_shift_dialog */
 
@@ -1761,12 +1761,12 @@ p_reverse_dialog(GapAnimInfo *ainfo_ptr, long *range_from, long *range_to)
   argv[1].int_max   = (gint)ainfo_ptr->last_frame_nr;
   argv[1].int_ret   = (gint)ainfo_ptr->last_frame_nr;
   argv[1].help_txt  = _("Affected range ends at this framenumber");
-    
+
   gap_arr_arg_init(&argv[2], GAP_ARR_WGT_HELP_BUTTON);
   argv[2].help_id = GAP_HELP_ID_REVERSE;
-  
+
   if(TRUE == gap_arr_ok_cancel_dialog(l_title, _("Frame Sequence Reverse"),  3, argv))
-  { 
+  {
     g_free (l_title);
     *range_from = (long)(argv[0].int_ret);
     *range_to   = (long)(argv[1].int_ret);
@@ -1777,7 +1777,7 @@ p_reverse_dialog(GapAnimInfo *ainfo_ptr, long *range_from, long *range_to)
     g_free (l_title);
     return 0;
   }
-   
+
 
 } /* end p_reverse_dialog */
 
@@ -1811,7 +1811,7 @@ gap_base_shift(GimpRunMode run_mode, gint32 image_id, int nr,
          {
             l_cnt = 0;
          }
-                
+
       }
       else
       {
@@ -1819,10 +1819,10 @@ gap_base_shift(GimpRunMode run_mode, gint32 image_id, int nr,
         l_from = range_from;
         l_to   = range_to;
       }
- 
+
       if(l_cnt != 0)
       {
-         /* shift framesquence by l_cnt frames 
+         /* shift framesquence by l_cnt frames
           * (rename all frames in the given range on disk)
           */
          rc = p_shift(ainfo_ptr, l_cnt, l_from, l_to);
@@ -1832,10 +1832,10 @@ gap_base_shift(GimpRunMode run_mode, gint32 image_id, int nr,
     }
     gap_lib_free_ainfo(&ainfo_ptr);
   }
-  
-  return(rc);    
 
- 
+  return(rc);
+
+
 } /* end gap_base_shift */
 
 /* ============================================================================
@@ -1861,14 +1861,14 @@ gap_base_reverse(GimpRunMode run_mode, gint32 image_id,
       {
          l_cnt = 1;
          if(0 != gap_lib_chk_framechange(ainfo_ptr)) { l_cnt = 0; }
-         else { l_cnt = p_reverse_dialog(ainfo_ptr, &l_from, &l_to); } 
+         else { l_cnt = p_reverse_dialog(ainfo_ptr, &l_from, &l_to); }
          /* note: 'p_reverse_dialog' returns 'to' minus 'from' */
 
          if((0 != gap_lib_chk_framechange(ainfo_ptr)) || (l_cnt == 0))
          {
             l_cnt = 0;
          }
-                
+
       }
       else
       {
@@ -1876,7 +1876,7 @@ gap_base_reverse(GimpRunMode run_mode, gint32 image_id,
         l_to   = range_to;
         l_cnt  = l_to - l_from;
       }
- 
+
       if(l_cnt != 0)
       {
          /* reverse framesquence
@@ -1889,16 +1889,16 @@ gap_base_reverse(GimpRunMode run_mode, gint32 image_id,
     }
     gap_lib_free_ainfo(&ainfo_ptr);
   }
-  
-  return(rc);    
- 
+
+  return(rc);
+
 } /* end gap_base_reverse */
 
 /* --------------------------------
  * p_renumber_dialog
  * --------------------------------
  */
-static int 
+static int
 p_renumber_dialog(GapAnimInfo *ainfo_ptr, long *start_frame_nr, long *digits)
 {
   static GapArrArg  argv[3];
@@ -1922,13 +1922,13 @@ p_renumber_dialog(GapAnimInfo *ainfo_ptr, long *start_frame_nr, long *digits)
   argv[1].int_max   = GAP_LIB_MAX_DIGITS;
   argv[1].int_ret   = GAP_LIB_DEFAULT_DIGITS;
   argv[1].help_txt  = _("How many digits to use for the framenumber in the filename");
-    
+
   gap_arr_arg_init(&argv[2], GAP_ARR_WGT_HELP_BUTTON);
   argv[2].help_id = GAP_HELP_ID_RENUMBER;
 
 
   if(TRUE == gap_arr_ok_cancel_dialog(l_title, _("Renumber Frames"),  3, argv))
-  { 
+  {
     g_free (l_title);
     *start_frame_nr = (long)(argv[0].int_ret);
     *digits   = (long)(argv[1].int_ret);
@@ -1947,24 +1947,24 @@ p_renumber_dialog(GapAnimInfo *ainfo_ptr, long *start_frame_nr, long *digits)
  * gap_lib_rename_frame_digits
  * ------------------------
  * rename framename. the source framename number part must match with from_nr
- * the resulting name has a number part with to_nr, filled up with leading zeroes 
+ * the resulting name has a number part with to_nr, filled up with leading zeroes
  * to the specified number of digits.
  * if the current frame is renumbered, we also set the image filename,
  * and keep track of the new current number
  */
-int 
+int
 gap_lib_rename_frame_digits(GapAnimInfo *ainfo_ptr, long from_nr, long to_nr, long from_digits, long to_digits)
 {
    char          *l_from_fname;
    char          *l_to_fname;
    int            l_rc;
-   
+
    l_from_fname = gap_lib_alloc_fname_fixed_digits(ainfo_ptr->basename, from_nr, ainfo_ptr->extension, from_digits);
    if(l_from_fname == NULL) { return(1); }
-   
+
    l_to_fname = gap_lib_alloc_fname_fixed_digits(ainfo_ptr->basename, to_nr, ainfo_ptr->extension, to_digits);
    if(l_to_fname == NULL) { g_free(l_from_fname); return(1); }
-   
+
    if(gap_debug) printf("DEBUG gap_lib_rename_frame_digits: %s ..to.. %s\n", l_from_fname, l_to_fname);
    l_rc = rename(l_from_fname, l_to_fname);
 
@@ -1976,12 +1976,12 @@ gap_lib_rename_frame_digits(GapAnimInfo *ainfo_ptr, long from_nr, long to_nr, lo
       ainfo_ptr->curr_frame_nr = to_nr;
       gimp_image_set_filename(ainfo_ptr->image_id, l_to_fname);
    }
-   
+
    g_free(l_from_fname);
    g_free(l_to_fname);
-   
+
    return(l_rc);
-   
+
 }    /* end gap_lib_rename_frame_digits */
 
 
@@ -2045,8 +2045,8 @@ p_renumber_frames(GapAnimInfo *ainfo_ptr, long start_frame_nr, long digits)
 
     l_from = ainfo_ptr->last_frame_nr;
     l_to = ainfo_ptr->last_frame_nr + (start_frame_nr - ainfo_ptr->first_frame_nr);
-    
-    l_cnt=0; 
+
+    l_cnt=0;
     while (l_cnt < ainfo_ptr->frame_cnt)
     {
 
@@ -2057,10 +2057,10 @@ p_renumber_frames(GapAnimInfo *ainfo_ptr, long start_frame_nr, long digits)
         || (l_has_digits != digits))
         {
           if (0 != gap_lib_rename_frame_digits(ainfo_ptr, l_from, l_to, l_has_digits, digits))
-          { 
+          {
             return -1;
           }
-        }      
+        }
         l_to--;
         l_cnt++;
       }
@@ -2085,7 +2085,7 @@ p_renumber_frames(GapAnimInfo *ainfo_ptr, long start_frame_nr, long digits)
   || (two_pass))
   {
     l_from = ainfo_ptr->first_frame_nr;
-    l_to = start_frame_nr; 
+    l_to = start_frame_nr;
     while (l_to < start_frame_nr + ainfo_ptr->frame_cnt)
     {
 
@@ -2097,14 +2097,14 @@ p_renumber_frames(GapAnimInfo *ainfo_ptr, long start_frame_nr, long digits)
         || (l_has_digits != digits))
         {
           if(0 != gap_lib_rename_frame_digits(ainfo_ptr, l_from, l_to, l_has_digits, digits))
-          { 
+          {
             return -1;
           }
-        }      
+        }
         l_to++;
       }
       l_from++;
-      
+
       if(ainfo_ptr->run_mode == GIMP_RUN_INTERACTIVE)
       {
         gimp_progress_update( (gdouble)(l_from - ainfo_ptr->first_frame_nr)
@@ -2130,7 +2130,7 @@ gap_base_renumber(GimpRunMode run_mode, gint32 image_id,
 
   long           l_cnt, l_start_frame_nr, l_digits;
 
-  
+
   rc = -1;
   l_cnt = 0;
   ainfo_ptr = gap_lib_alloc_ainfo(image_id, run_mode);
@@ -2150,7 +2150,7 @@ gap_base_renumber(GimpRunMode run_mode, gint32 image_id,
          {
             l_cnt = -1;
          }
-                
+
       }
       else
       {
@@ -2159,7 +2159,7 @@ gap_base_renumber(GimpRunMode run_mode, gint32 image_id,
       }
 
       if(gap_debug) printf("gap_base_renumber: l_cnt:%d l_start_frame_nr:%d l_digits:%d\n", (int)l_cnt, (int)l_start_frame_nr, (int)l_digits);
- 
+
       if(l_cnt >= 0)
       {
          /* rename all frames (on disk) */
@@ -2173,6 +2173,6 @@ gap_base_renumber(GimpRunMode run_mode, gint32 image_id,
     }
     gap_lib_free_ainfo(&ainfo_ptr);
   }
-  
-  return(rc); 
+
+  return(rc);
 }	/* end gap_base_renumber */

@@ -214,8 +214,8 @@ int p_mpege_info(GapAnimInfo *ainfo_ptr, char *errlist, GapMpegEncoderType encod
   l_idx++;
 
   gap_arr_arg_init(&argv[l_idx], GAP_ARR_WGT_LABEL_LEFT);
-  argv[l_idx].label_txt = _("\nINFORMATINON:\n"
-                            "For more efficient MPEG encoding use the menu:\n"
+  argv[l_idx].label_txt = _("\nNOTE:\n"
+                            "For more efficient MPEG encoding, use the menu:\n"
                             "Video->Encode->Master Videoencoder");
 #endif
 
@@ -382,7 +382,7 @@ int p_mpege_dialog(GapAnimInfo *ainfo_ptr, t_mpg_par *mp_ptr, GapMpegEncoderType
 
      gap_arr_arg_init(&argv[5], GAP_ARR_WGT_TOGGLE);
      argv[5].label_txt = _("Constant Bitrate:");
-     argv[5].help_txt  = _("Iqnore I/P/QSCALE values and use constant bit-rate)");
+     argv[5].help_txt  = _("Ignore I/P/QSCALE values and use constant bit-rate");
      argv[5].int_ret   = 1;
      argv[5].has_default = TRUE;
      argv[5].int_default = 1;

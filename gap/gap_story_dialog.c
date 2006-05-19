@@ -21,8 +21,8 @@
  */
 /* revision history:
  * version 2.2.1;   2006/02/07  hof: support drag&drop  destination for image/videofilenames
- * version 2.1.0a;  2005/01/22  hof: copy/cut/paste handling via keys (ctrl-c, ctrl-x, ctrl-v) 
- * version 2.1.0a;  2004/12/05  hof: added global layout properties dialog 
+ * version 2.1.0a;  2005/01/22  hof: copy/cut/paste handling via keys (ctrl-c, ctrl-x, ctrl-v)
+ * version 2.1.0a;  2004/12/05  hof: added global layout properties dialog
  * version 1.3.27a; 2004/03/15  hof: videothumbnails are kept in memory
  *                                   for the startframes in all MOVIE clips
  *                                   (common list for both storyboard and cliplist)
@@ -260,11 +260,11 @@ static void     p_menu_stb_close_cb (GtkWidget *widget, GapStbMainGlobalParams *
 
 
 static GtkWidget*  p_make_menu_bar_item(GtkWidget *menu_bar, gchar *label);
-static GtkWidget*  p_make_item_with_image(GtkWidget *parent, const gchar *stock_id, 
+static GtkWidget*  p_make_item_with_image(GtkWidget *parent, const gchar *stock_id,
                      GapStbMenuCallbackFptr fptr, GapStbMainGlobalParams *sgpp);
-static GtkWidget*  p_make_item_with_label(GtkWidget *parent, gchar *label, 
+static GtkWidget*  p_make_item_with_label(GtkWidget *parent, gchar *label,
                      GapStbMenuCallbackFptr fptr, GapStbMainGlobalParams *sgpp);
-static GtkWidget*  p_make_check_item_with_label(GtkWidget *parent, gchar *label, 
+static GtkWidget*  p_make_check_item_with_label(GtkWidget *parent, gchar *label,
                      GapStbMenuCallbackFptr fptr, GapStbMainGlobalParams *sgpp
                      ,gboolean initial_value);
 
@@ -393,12 +393,12 @@ gap_story_dlg_tabw_update_frame_label (GapStbTabWidgets *tabw
  * gap_story_dlg_pw_render_all
  * -----------------------------
  */
-void 
+void
 gap_story_dlg_pw_render_all(GapStbPropWidget *pw)
 {
   if(pw == NULL) { return; }
   if(pw->tabw == NULL) { return; }
-  
+
   p_render_all_frame_widgets(pw->tabw);
   p_tabw_update_frame_label(pw->tabw, pw->sgpp);
 }  /* end gap_story_dlg_pw_render_all */
@@ -414,7 +414,7 @@ p_tabw_get_stb_ptr (GapStbTabWidgets *tabw)
   GapStbMainGlobalParams *sgpp;
 
   if(tabw == NULL) { return(NULL); }
-  
+
   sgpp = (GapStbMainGlobalParams *)tabw->sgpp;
   if(sgpp == NULL)  { return(NULL); }
 
@@ -425,7 +425,7 @@ p_tabw_get_stb_ptr (GapStbTabWidgets *tabw)
   }
   return(l_stb);
 
-}  /* end p_tabw_get_stb_ptr */ 
+}  /* end p_tabw_get_stb_ptr */
 
 
 /* -----------------------------
@@ -436,7 +436,7 @@ static GapStbTabWidgets *
 p_new_stb_tab_widgets(GapStbMainGlobalParams *sgpp, GapStoryMasterType type)
 {
   GapStbTabWidgets *tabw;
-  
+
   tabw = g_new(GapStbTabWidgets, 1);
   if(tabw)
   {
@@ -463,18 +463,18 @@ p_new_stb_tab_widgets(GapStbMainGlobalParams *sgpp, GapStoryMasterType type)
     tabw->edit_paste_button = NULL;
     tabw->edit_cut_button = NULL;
     tabw->edit_copy_button = NULL;
-    
+
     tabw->thumb_width = tabw->thumbsize;
     tabw->thumb_height = tabw->thumbsize;
     tabw->rowpage = 1;
-    
+
     tabw->mount_table = NULL;
     tabw->frame_with_name = NULL;
     tabw->fw_gtk_table = NULL;
     tabw->rowpage_spinbutton_adj = NULL;
     tabw->rowpage_vscale_adj = NULL;
     tabw->total_rows_label = NULL;
-    
+
     tabw->pw = NULL;
     tabw->attw = NULL;
     tabw->fw_tab = NULL;
@@ -482,7 +482,7 @@ p_new_stb_tab_widgets(GapStbMainGlobalParams *sgpp, GapStoryMasterType type)
     tabw->master_dlg_open = FALSE;
     tabw->otone_dlg_open = FALSE;
     tabw->story_id_at_prev_paste = -1;
-    
+
     tabw->sgpp = sgpp;
 
   }
@@ -498,7 +498,7 @@ static void
 p_set_layout_preset(GapStbMainGlobalParams *sgpp)
 {
   GapStbTabWidgets *tabw;
-  
+
   if(sgpp)
   {
     tabw = sgpp->stb_widgets;
@@ -527,7 +527,7 @@ p_set_layout_preset(GapStbMainGlobalParams *sgpp)
     }
   }
 }  /* end p_set_layout_preset */
-                   
+
 
 /* -----------------------------
  * p_render_all_frame_widgets
@@ -545,7 +545,7 @@ p_render_all_frame_widgets (GapStbTabWidgets *tabw)
   gint32 ii;
   gint32 seq_nr;
   gint32 l_act_elems = 0;
-  
+
 
   if(gap_debug)
   {
@@ -563,13 +563,13 @@ p_render_all_frame_widgets (GapStbTabWidgets *tabw)
     sgpp_ptr->auto_vthumb_refresh_canceled = FALSE;
   }
   l_stb = p_tabw_get_stb_ptr(tabw);
- 
+
   if(l_stb)
   {
-    l_act_elems = gap_story_count_active_elements(l_stb, 1 /* track */ );   
+    l_act_elems = gap_story_count_active_elements(l_stb, 1 /* track */ );
   }
-  
-  
+
+
   /* init buffers for the frame widgets */
   seq_nr = (tabw->rowpage -1) * tabw->cols;
   for(ii=0; ii < tabw->fw_tab_size; ii++)
@@ -586,13 +586,13 @@ p_render_all_frame_widgets (GapStbTabWidgets *tabw)
     }
 
     fw = tabw->fw_tab[ii];
-    
+
     if(gap_debug)
     {
       printf("(3) p_render_all_frame_widgets fw: %d\n", (int)fw );
       printf("(4) p_render_all_frame_widgets fw->frame_filename: %d\n", (int)&fw->frame_filename );
     }
-    
+
     if(fw->frame_filename)
     {
       g_free(fw->frame_filename);
@@ -605,7 +605,7 @@ p_render_all_frame_widgets (GapStbTabWidgets *tabw)
     {
       fw->frame_filename = gap_story_get_filename_from_elem(fw->stb_elem_refptr);
       fw->seq_nr = seq_nr;
-      
+
       p_frame_widget_render(fw);
       if(sgpp_ptr)
       {
@@ -614,7 +614,7 @@ p_render_all_frame_widgets (GapStbTabWidgets *tabw)
          /* if user did press cancel during videoseek or videoindex creation
           * we set the flag auto_vthumb_refresh_canceled TRUE
           * this Flag stays TRUE until the next start of this refresh procedure.
-          * All further video items waiting for refresh are then rendered 
+          * All further video items waiting for refresh are then rendered
           * with the default icon (instead of accessing the videofile) in this refresh cycle.
           * otherwise the user has to cancel each video item separately
           */
@@ -624,8 +624,8 @@ p_render_all_frame_widgets (GapStbTabWidgets *tabw)
     }
 
   }
- 
-  /* render selection state for all displayed framewidgets */ 
+
+  /* render selection state for all displayed framewidgets */
   p_tabw_update_selection(tabw);
 }  /* end p_render_all_frame_widgets */
 
@@ -736,7 +736,7 @@ p_frame_widget_init_empty (GapStbTabWidgets *tabw, GapStbFrameWidget *fw)
                                 ,-1);
     }
   }
-  
+
   gtk_widget_show (fw->key_label);
   gtk_widget_show (fw->val_label);
 
@@ -748,7 +748,7 @@ p_frame_widget_init_empty (GapStbTabWidgets *tabw, GapStbFrameWidget *fw)
   gtk_widget_show (fw->vbox);
 
   p_frame_widget_init_dnd(fw);
-  
+
   g_signal_connect (G_OBJECT (fw->event_box), "button_press_event",
                     G_CALLBACK (p_frame_widget_preview_events_cb),
                     fw);
@@ -781,7 +781,7 @@ gap_story_dlg_render_default_icon(GapStoryElem *stb_elem, GapPView   *pv_ptr)
   {
     return;
   }
-  
+
   pixbuf = NULL;
   if(stb_elem)
   {
@@ -817,9 +817,9 @@ gap_story_dlg_render_default_icon(GapStoryElem *stb_elem, GapPView   *pv_ptr)
     g_object_unref(pixbuf);
     return;
   }
-  
+
   gap_pview_render_default_icon(pv_ptr);
-  
+
 }  /* end gap_story_dlg_render_default_icon */
 
 /* ---------------------------------
@@ -828,7 +828,7 @@ gap_story_dlg_render_default_icon(GapStoryElem *stb_elem, GapPView   *pv_ptr)
  * 1.) fetch thumbnal pixbuf data,
  * 2.) if no thumbnail available
  *     try to load full image (and create the thumbnail for next usage)
- * 3.) if neither thumbnail nor image could be fetched 
+ * 3.) if neither thumbnail nor image could be fetched
  *        render a default icon
  *
  */
@@ -847,13 +847,13 @@ p_frame_widget_render (GapStbFrameWidget *fw)
      gint32 l_framenr;
      GapStbTabWidgets *tabw;
      char  txt_buf[100];
-    
+
      tabw = (GapStbTabWidgets *)fw->tabw;
-     
+
      l_txt = g_strdup_printf("%d.", (int)fw->seq_nr);
      gtk_label_set_text ( GTK_LABEL(fw->key_label), l_txt);
      g_free(l_txt);
-     
+
      switch(tabw->edmode)
      {
       case GAP_STB_EDMO_FRAME_NUMBER:
@@ -872,7 +872,7 @@ p_frame_widget_render (GapStbFrameWidget *fw)
          if(fw->stb_refptr)
          {
            gdouble l_framerate;
-           
+
            l_framerate = fw->stb_refptr->master_framerate;
            if(l_framerate < 1)
            {
@@ -882,7 +882,7 @@ p_frame_widget_render (GapStbFrameWidget *fw)
                                                         ,fw->stb_elem_refptr->story_id
                                                         ,IN_TRACK
                                                         );
-           gap_timeconv_framenr_to_timestr(l_framenr 
+           gap_timeconv_framenr_to_timestr(l_framenr
                              , (gdouble)l_framerate
                              , txt_buf
                              , sizeof(txt_buf)
@@ -907,9 +907,9 @@ p_frame_widget_render (GapStbFrameWidget *fw)
    if(fw->stb_elem_refptr->record_type == GAP_STBREC_VID_MOVIE)
    {
      guchar *l_th_data;
-     
+
      /*if(gap_debug) printf("RENDER: p_frame_widget_render MOVIE Thumbnail\n"); */
-     
+
      l_th_data = gap_story_dlg_fetch_vthumb(fw->sgpp
               ,fw->stb_elem_refptr->orig_filename
               ,fw->stb_elem_refptr->from_frame
@@ -922,7 +922,7 @@ p_frame_widget_render (GapStbFrameWidget *fw)
      if(l_th_data)
      {
        gboolean l_th_data_was_grabbed;
-       
+
        l_th_data_was_grabbed = gap_pview_render_from_buf (fw->pv_ptr
                     , l_th_data
                     , l_th_width
@@ -943,16 +943,16 @@ p_frame_widget_render (GapStbFrameWidget *fw)
        l_th_data = NULL;
        return;
      }
-   
+
    }
-  
+
    if(fw->frame_filename == NULL)
    {
      /* no filename available, use default icon */
      gap_story_dlg_render_default_icon(fw->stb_elem_refptr, fw->pv_ptr);
      return;
    }
-   
+
    pixbuf = gap_thumb_file_load_pixbuf_thumbnail(fw->frame_filename
                                     , &l_th_width, &l_th_height
                                     , &l_th_bpp
@@ -982,13 +982,13 @@ p_frame_widget_render (GapStbFrameWidget *fw)
          */
         gimp_image_undo_disable (l_image_id);
         gap_pview_render_from_image (fw->pv_ptr, l_image_id);
-        
+
         /* create thumbnail (to speed up acces next time) */
         gap_thumb_cond_gimp_file_save_thumbnail(l_image_id, fw->frame_filename);
-        
+
         gimp_image_delete(l_image_id);
       }
-   }                                
+   }
 
 }       /* end p_frame_widget_render */
 
@@ -1009,7 +1009,7 @@ p_frame_widget_destroy(GapStbFrameWidget *fw)
   fw->tabw = NULL;
 
   gtk_widget_destroy(fw->vbox);
-  
+
 }  /* end p_frame_widget_destroy */
 
 
@@ -1022,7 +1022,7 @@ static gint32
 p_get_max_rowpage(gint32 act_elems, gint32 cols, gint rows)
 {
   gint32 l_max_rowpage;
-  
+
   if(cols < 1)
   {
     l_max_rowpage = (MAX(act_elems, 1) -1);
@@ -1033,7 +1033,7 @@ p_get_max_rowpage(gint32 act_elems, gint32 cols, gint rows)
   }
   l_max_rowpage =  1 + (l_max_rowpage - (MAX(rows,1) -1));
   return(MAX(l_max_rowpage,1));
-  
+
 }  /* end p_get_max_rowpage */
 
 
@@ -1057,7 +1057,7 @@ p_story_set_range_cb(GapPlayerAddClip *plac_ptr)
     GapStbTabWidgets *tabw;
     GapStoryBoard *stb_dst;
     GapStoryElem *stb_elem;
-    
+
     if(gap_debug)
     {
       printf("  basename  :%s:\n", plac_ptr->ainfo_ptr->basename);
@@ -1065,7 +1065,7 @@ p_story_set_range_cb(GapPlayerAddClip *plac_ptr)
       printf("  frame_cnt :%d\n",  (int)plac_ptr->ainfo_ptr->frame_cnt);
       printf("  old_filename :%s\n",  plac_ptr->ainfo_ptr->old_filename);
     }
-    
+
     sgpp = (GapStbMainGlobalParams *)plac_ptr->user_data_ptr;
     if(sgpp)
     {
@@ -1095,7 +1095,7 @@ p_story_set_range_cb(GapPlayerAddClip *plac_ptr)
               stb_elem->exact_seek  = 0;
               stb_elem->delace      = plac_ptr->ainfo_ptr->delace;
               //stb_elem->density   = plac_ptr->ainfo_ptr->density;
-              
+
             }
           }
 
@@ -1112,9 +1112,9 @@ p_story_set_range_cb(GapPlayerAddClip *plac_ptr)
         }
       }
     }
-    
+
   }
-  
+
 }  /* end p_story_set_range_cb */
 
 
@@ -1146,7 +1146,7 @@ gap_story_fw_abstract_properties_dialog (GapStbFrameWidget *fw)
 /* -----------------------------
  * p_story_call_player
  * -----------------------------
- * IN: stb       Pointer to a stroyboard list structure 
+ * IN: stb       Pointer to a stroyboard list structure
  * IN: imagename of one frame to playback in normal mode (NULL for storyboard playback)
  * IN: image_id  of one frame to playback in normal mode (use -1 for storyboard playback)
  *
@@ -1158,12 +1158,12 @@ gap_story_fw_abstract_properties_dialog (GapStbFrameWidget *fw)
  * normalmode:  stb == NULL, imagename == NULL, image_id >= 0
  *
  * Call the Player
- * If it is the 1.st call or the player window has closed since last call 
+ * If it is the 1.st call or the player window has closed since last call
  *    create the player widget
- * else 
+ * else
  *    reset the player widget
  */
-void    
+void
 p_story_call_player(GapStbMainGlobalParams *sgpp
                    ,GapStoryBoard *stb
                    ,char *imagename
@@ -1179,7 +1179,7 @@ p_story_call_player(GapStbMainGlobalParams *sgpp
                    )
 {
   GapStoryBoard *stb_dup;
-  
+
   if(sgpp->in_player_call)
   {
     /* this procedure is already active, and locked against
@@ -1191,11 +1191,11 @@ p_story_call_player(GapStbMainGlobalParams *sgpp
 
   sgpp->in_player_call = TRUE;
   p_close_videofile(sgpp);
-  
+
   stb_dup = NULL;
   if(stb)
   {
-    /* make a copy of the storyboard list 
+    /* make a copy of the storyboard list
      * for the internal use in the player
      */
     if(play_all)
@@ -1210,7 +1210,7 @@ p_story_call_player(GapStbMainGlobalParams *sgpp
     {
       if(stb_dup->stb_elem == NULL)
       {
-        /* there was no selection, now try to playback the 
+        /* there was no selection, now try to playback the
          * whole storyboard
          */
         gap_story_free_storyboard(&stb_dup);
@@ -1223,8 +1223,8 @@ p_story_call_player(GapStbMainGlobalParams *sgpp
       sgpp->in_player_call = FALSE;
     }
   }
-  
- 
+
+
   if(sgpp->plp)
   {
     if(sgpp->plp->stb_ptr)
@@ -1235,8 +1235,8 @@ p_story_call_player(GapStbMainGlobalParams *sgpp
        */
       gap_story_free_storyboard(&sgpp->plp->stb_ptr);
     }
-    
-    if((sgpp->plp->shell_window == NULL) 
+
+    if((sgpp->plp->shell_window == NULL)
     && (sgpp->plp->docking_container == NULL))
     {
       /*if(gap_debug)*/ printf("Player shell has gone, force Reopen now\n");
@@ -1258,7 +1258,7 @@ p_story_call_player(GapStbMainGlobalParams *sgpp
     {
       sgpp->plp->standalone_mode = FALSE;  /* player acts as widget and does not call gtk_main_quit */
       sgpp->plp->docking_container = sgpp->player_frame;
-      
+
       sgpp->plp->help_id = GAP_STB_PLAYER_HELP_ID;
       if(sgpp->plp->docking_container)
       {
@@ -1298,7 +1298,7 @@ p_story_call_player(GapStbMainGlobalParams *sgpp
       sgpp->plp->preferred_decoder = g_strdup(preferred_decoder);
       sgpp->plp->force_open_as_video = FALSE;   /* FALSE: try video open only for known videofile extensions */
       sgpp->plp->have_progress_bar = TRUE;
-      
+
       gap_player_dlg_create(sgpp->plp);
 
     }
@@ -1350,7 +1350,7 @@ p_call_master_encoder(GapStbMainGlobalParams *sgpp
   gint32 vid_width;
   gint32 vid_height;
 
-  if(gap_debug) 
+  if(gap_debug)
   {
     printf("p_call_master_encoder\n");
   }
@@ -1360,7 +1360,7 @@ p_call_master_encoder(GapStbMainGlobalParams *sgpp
   {
     return;
   }
-  
+
   l_rc = -1;
   gap_story_get_master_size(stb, &vid_width, &vid_height);
 
@@ -1378,7 +1378,7 @@ p_call_master_encoder(GapStbMainGlobalParams *sgpp
                      GIMP_PDB_INT32,  vid_width,
                      GIMP_PDB_INT32,  vid_height,
                      GIMP_PDB_INT32,  1,            /* 1 VID_FMT_PAL,  2 VID_FMT_NTSC */
-                     GIMP_PDB_FLOAT,  MAX(stb->master_framerate, 1.0), 
+                     GIMP_PDB_FLOAT,  MAX(stb->master_framerate, 1.0),
                      GIMP_PDB_INT32,  44100,        /* samplerate */
                      GIMP_PDB_STRING, NULL,         /* audfile l_16bit_wav_file */
                      GIMP_PDB_STRING, NULL,         /* vid_enc_plugin */
@@ -1415,13 +1415,13 @@ static gboolean
 p_storyboard_reload (GapStbMainGlobalParams *sgpp)
 {
   gboolean l_ret;
-  
+
   l_ret = FALSE;
-  
+
   if(sgpp)
   {
     GapStoryBoard *stb;
-    
+
     /* load the new storyboard structure from file */
     stb = gap_story_parse(sgpp->storyboard_filename);
     if(stb)
@@ -1446,7 +1446,7 @@ p_storyboard_reload (GapStbMainGlobalParams *sgpp)
         sgpp->stb = stb;
         sgpp->stb->master_type = GAP_STB_MASTER_TYPE_STORYBOARD;
         l_ret = TRUE;
-        
+
         /* refresh storyboard layout and thumbnail list widgets */
         p_recreate_tab_widgets( sgpp->stb
                          ,sgpp->stb_widgets
@@ -1457,7 +1457,7 @@ p_storyboard_reload (GapStbMainGlobalParams *sgpp)
         p_render_all_frame_widgets(sgpp->stb_widgets);
       }
     }
-    
+
   }
   return (l_ret);
 }  /* end p_storyboard_reload */
@@ -1471,13 +1471,13 @@ static gboolean
 p_cliplist_reload (GapStbMainGlobalParams *sgpp)
 {
   gboolean l_ret;
-  
+
   l_ret = FALSE;
-  
+
   if(sgpp)
   {
     GapStoryBoard *stb;
-    
+
     /* load the new storyboard structure from file */
     stb = gap_story_parse(sgpp->cliplist_filename);
     if(stb)
@@ -1501,7 +1501,7 @@ p_cliplist_reload (GapStbMainGlobalParams *sgpp)
         sgpp->cll = stb;
         sgpp->cll->master_type = GAP_STB_MASTER_TYPE_CLIPLIST;
         l_ret = TRUE;
-        
+
         /* refresh storyboard layout and thumbnail list widgets */
         p_recreate_tab_widgets( sgpp->cll
                          ,sgpp->cll_widgets
@@ -1512,7 +1512,7 @@ p_cliplist_reload (GapStbMainGlobalParams *sgpp)
         p_render_all_frame_widgets(sgpp->cll_widgets);
       }
     }
-    
+
   }
   return (l_ret);
 }  /* end p_cliplist_reload */
@@ -1533,7 +1533,7 @@ p_player_cll_mode_cb (GtkWidget *w
   gint32 imagewidth;
   gint32 imageheight;
   gboolean play_all;
-  
+
   play_all = TRUE;
   if(bevent)
   {
@@ -1542,7 +1542,7 @@ p_player_cll_mode_cb (GtkWidget *w
       play_all = FALSE;
     }
   }
-  
+
   if(sgpp->cll)
   {
     gap_story_get_master_size(sgpp->cll, &imagewidth, &imageheight);
@@ -1574,7 +1574,7 @@ p_player_stb_mode_cb (GtkWidget *w
   gint32 imagewidth;
   gint32 imageheight;
   gboolean play_all;
-  
+
   play_all = TRUE;
   if(bevent)
   {
@@ -1598,7 +1598,7 @@ p_player_stb_mode_cb (GtkWidget *w
                          ,1         /* seltrack */
                          ,0.0       /* delace */
                          ,gap_story_get_preferred_decoder(sgpp->stb, NULL)
-                         );  
+                         );
   }
 }  /* end p_player_stb_mode_cb */
 
@@ -1618,15 +1618,15 @@ p_player_img_mode_cb (GtkWidget *w,
   long   framenr;
   char  *basename;
   char  *imagename;
-  
-  
-  
+
+
+
   imagewidth = gimp_image_width(sgpp->image_id);
   imageheight = gimp_image_height(sgpp->image_id);
   imagename = gimp_image_get_filename(sgpp->image_id);
 
   basename = gap_lib_alloc_basename(imagename, &framenr);
-  
+
   if(basename)
   {
     p_story_call_player(sgpp
@@ -1641,15 +1641,15 @@ p_player_img_mode_cb (GtkWidget *w,
                      ,1         /* seltrack */
                      ,0.0       /* delace */
                      ,"libavformat"
-                     );  
+                     );
     g_free(basename);
   }
-  
+
   if(imagename)
   {
     g_free(imagename);
   }
-  
+
 
 }  /* end p_player_img_mode_cb */
 
@@ -1665,7 +1665,7 @@ p_cancel_button_cb (GtkWidget *w,
 {
 
   if(gap_debug) printf("VIDEO-CANCEL BUTTON clicked\n");
-  
+
   if(sgpp)
   {
     sgpp->cancel_video_api = TRUE;
@@ -1741,7 +1741,7 @@ p_tabw_add_att_elem (GapStbTabWidgets *tabw, GapStbMainGlobalParams *sgpp, GapSt
       gdouble l_from;
       gdouble l_to;
       gboolean l_enable;
-      
+
       l_from = 0.0;
       l_to = 0.0;
       l_enable = FALSE;
@@ -1753,7 +1753,7 @@ p_tabw_add_att_elem (GapStbTabWidgets *tabw, GapStbMainGlobalParams *sgpp, GapSt
 	l_to = 1.0;     /* to 1:1 original size */
 	l_enable = FALSE;
       }
-      
+
       if ((ii == GAP_STB_ATT_TYPE_MOVE_X)
       ||  (ii == GAP_STB_ATT_TYPE_MOVE_Y))
       {
@@ -1767,7 +1767,7 @@ p_tabw_add_att_elem (GapStbTabWidgets *tabw, GapStbMainGlobalParams *sgpp, GapSt
 	l_to = 0.0;     /* to fully transparent */
 	l_enable = TRUE;
       }
-      
+
       stb_elem->att_arr_enable[ii]     = l_enable;
       stb_elem->att_arr_value_from[ii] = l_from;
       stb_elem->att_arr_value_to[ii]   = l_to;
@@ -1806,7 +1806,7 @@ p_filesel_tabw_close_cb ( GtkWidget *widget
 
   gtk_widget_destroy(GTK_WIDGET(tabw->filesel));
   tabw->filesel = NULL;   /* now filesel_story is closed */
-  
+
 }  /* end p_filesel_tabw_close_cb */
 
 
@@ -1855,8 +1855,8 @@ p_filesel_tabw_load_ok_cb (GtkWidget *widget
                    ,GapStbTabWidgets *tabw)
 {
   GapStbMainGlobalParams *sgpp;
-  
-  sgpp = (GapStbMainGlobalParams *)tabw->sgpp;  
+
+  sgpp = (GapStbMainGlobalParams *)tabw->sgpp;
   sgpp->auto_vthumb_refresh_canceled = FALSE;
   if(p_filesel_tabw_ok(widget, tabw))
   {
@@ -1981,9 +1981,9 @@ p_tabw_load_file_cb ( GtkWidget *w
       return;
     }
   }
-  
 
-  
+
+
   if(tabw->type == GAP_STB_MASTER_TYPE_STORYBOARD)
   {
     filesel = gtk_file_selection_new ( _("Load Storyboard"));
@@ -2080,17 +2080,17 @@ p_rowpage_spinbutton_cb( GtkEditable     *editable
                        , GapStbTabWidgets *tabw)
 {
   gint32 rowpage;
-  
+
   if(tabw == NULL) { return; }
-  
+
   rowpage = (gint32)GTK_ADJUSTMENT(tabw->rowpage_spinbutton_adj)->value;
   if(rowpage != tabw->rowpage)
   {
     GapStoryBoard *stb_dst;
-    
+
     tabw->rowpage = rowpage;
     stb_dst = p_tabw_get_stb_ptr(tabw);
-    
+
     if(stb_dst)
     {
       /* refresh storyboard layout and thumbnail list widgets */
@@ -2107,7 +2107,7 @@ p_rowpage_spinbutton_cb( GtkEditable     *editable
   {
     gtk_adjustment_set_value(GTK_ADJUSTMENT(tabw->rowpage_vscale_adj), (gdouble)rowpage);
   }
-  
+
 }  /* end p_rowpage_spinbutton_cb */
 
 
@@ -2127,14 +2127,14 @@ p_vscale_changed_cb(GtkObject *adj, GapStbTabWidgets *tabw)
     value = (gint32)GTK_ADJUSTMENT(adj)->value;
     if(value != tabw->rowpage)
     {
-      /* set value in the rowpage spinbutton 
+      /* set value in the rowpage spinbutton
        * (this fires another callback for update of tabw->rowpage;)
        */
       gtk_adjustment_set_value(GTK_ADJUSTMENT(tabw->rowpage_spinbutton_adj), (gdouble)value);
-      
+
     }
   }
-  
+
 }  /* end p_vscale_changed_cb */
 
 
@@ -2147,9 +2147,9 @@ gap_story_pw_single_clip_playback(GapStbPropWidget *pw)
 {
   gchar *imagename;
   GapStbTabWidgets *tabw;
-  
+
   tabw = (GapStbTabWidgets *)pw->tabw;
-  
+
   if((tabw) && (pw->sgpp))
   {
     imagename = gap_story_get_filename_from_elem(pw->stb_elem_refptr);
@@ -2165,7 +2165,7 @@ gap_story_pw_single_clip_playback(GapStbPropWidget *pw)
                      ,pw->stb_elem_refptr->seltrack
                      ,pw->stb_elem_refptr->delace
                      ,gap_story_get_preferred_decoder(pw->stb_refptr, pw->stb_elem_refptr)
-                     );  
+                     );
     g_free(imagename);
   }
 }  /* end gap_story_pw_single_clip_playback */
@@ -2180,9 +2180,9 @@ p_single_clip_playback(GapStbFrameWidget *fw)
 {
   gchar *imagename;
   GapStbTabWidgets *tabw;
-  
+
   tabw = (GapStbTabWidgets *)fw->tabw;
-  
+
   if((tabw) && (fw->sgpp))
   {
     if(fw->stb_elem_refptr)
@@ -2202,7 +2202,7 @@ p_single_clip_playback(GapStbFrameWidget *fw)
                 	 ,fw->stb_elem_refptr->seltrack
                 	 ,fw->stb_elem_refptr->delace
                 	 ,gap_story_get_preferred_decoder(fw->stb_refptr, fw->stb_elem_refptr)
-                	 );  
+                	 );
 	g_free(imagename);
       }
     }
@@ -2324,7 +2324,7 @@ p_frame_widget_preview_events_cb (GtkWidget *widget,
 /* -----------------------------------
  * p_tabw_destroy_properties_dlg
  * -----------------------------------
- * destroy the open property dialog(s) attached to tabw 
+ * destroy the open property dialog(s) attached to tabw
  * destroy_all == FALSE: destroy only the invalid elents
  *                       (that are no members of the tabw->xxx list)
  * destroy_all == TRUE:  destroy all elements
@@ -2345,7 +2345,7 @@ p_tabw_destroy_properties_dlg (GapStbTabWidgets *tabw, gboolean destroy_all)
   for(pw = tabw->pw; pw != NULL; pw = pw_next)
   {
     pw_next = (GapStbPropWidget *)pw->next;
- 
+
     if(pw->stb_elem_bck)
     {
       gap_story_elem_free(&pw->stb_elem_bck);
@@ -2369,10 +2369,10 @@ p_tabw_destroy_properties_dlg (GapStbTabWidgets *tabw, gboolean destroy_all)
           }
         }
       }
-      
+
       if(destroy_elem)
       {
-        if(pw->pw_prop_dialog) 
+        if(pw->pw_prop_dialog)
         {
           gtk_widget_destroy(pw->pw_prop_dialog);
         }
@@ -2391,9 +2391,9 @@ p_tabw_destroy_properties_dlg (GapStbTabWidgets *tabw, gboolean destroy_all)
         pw_prev = pw;
       }
     }
-    
+
   }
-}  /* end p_tabw_destroy_properties_dlg */ 
+}  /* end p_tabw_destroy_properties_dlg */
 
 
 /* ---------------------------------
@@ -2412,7 +2412,7 @@ p_tabw_edit_cut_cb ( GtkWidget *w
   sgpp = (GapStbMainGlobalParams  *)tabw->sgpp;
   if(sgpp == NULL) { return; }
 
-  
+
   if(sgpp->curr_selection)
   {
      gap_story_free_storyboard(&sgpp->curr_selection);
@@ -2436,8 +2436,8 @@ p_tabw_edit_cut_cb ( GtkWidget *w
     p_render_all_frame_widgets(tabw);
     p_widget_sensibility(sgpp);
   }
-  
-  
+
+
 }  /* end p_tabw_edit_cut_cb */
 
 /* ---------------------------------
@@ -2459,7 +2459,7 @@ p_tabw_edit_copy_cb ( GtkWidget *w
   sgpp = (GapStbMainGlobalParams  *)tabw->sgpp;
   if(sgpp == NULL) { return; }
 
-  
+
   if(sgpp->curr_selection)
   {
      gap_story_free_storyboard(&sgpp->curr_selection);
@@ -2472,7 +2472,7 @@ p_tabw_edit_copy_cb ( GtkWidget *w
   }
 
   p_widget_sensibility(sgpp);
-  
+
 }  /* end p_tabw_edit_copy_cb */
 
 /* ---------------------------------
@@ -2505,7 +2505,7 @@ p_tabw_edit_paste_cb ( GtkWidget *w
     {
       tabw->story_id_at_prev_paste = story_id;
     }
-    
+
     p_tabw_edit_paste_at_story_id(sgpp
                                ,stb_dst
                                ,tabw
@@ -2513,7 +2513,7 @@ p_tabw_edit_paste_cb ( GtkWidget *w
                                ,TRUE      /* insert_after == TRUE */
                                );
   }
-                               
+
 }  /* end p_tabw_edit_paste_cb */
 
 /* ---------------------------------
@@ -2533,13 +2533,13 @@ p_tabw_edit_paste_at_story_id (GapStbMainGlobalParams  *sgpp
 
   if(sgpp == NULL) { return; }
   if(sgpp->curr_selection == NULL) { return; }
-  
+
   stb_sel_dup = gap_story_duplicate(sgpp->curr_selection);
   if(stb_sel_dup)
   {
     /* clear all selections of the destination list before pasting into it */
     gap_story_selection_all_set(stb_dst, FALSE);
-    
+
     gap_story_lists_merge(stb_dst
                       , stb_sel_dup
                       , story_id
@@ -2623,7 +2623,7 @@ p_selection_add(GapStbFrameWidget *fw)
 
   tabw = (GapStbTabWidgets  *)fw->tabw;
   if(tabw == NULL)   { return; }
-  
+
   sgpp = (GapStbMainGlobalParams *)tabw->sgpp;
   if(sgpp == NULL)   { return; }
 
@@ -2636,7 +2636,7 @@ p_selection_add(GapStbFrameWidget *fw)
   {
     gap_story_selection_all_set(sgpp->stb, FALSE);
   }
-  
+
   if(fw->stb_elem_refptr)
   {
       if(fw->stb_elem_refptr->selected)
@@ -2653,7 +2653,7 @@ p_selection_add(GapStbFrameWidget *fw)
   p_tabw_update_selection(sgpp->cll_widgets);
   p_tabw_update_selection(sgpp->stb_widgets);
 
-  p_widget_sensibility(sgpp);  
+  p_widget_sensibility(sgpp);
 }  /* end p_selection_add */
 
 
@@ -2674,7 +2674,7 @@ p_selection_extend(GapStbFrameWidget *fw)
 
   tabw = (GapStbTabWidgets  *)fw->tabw;
   if(tabw == NULL)   { return; }
-  
+
   sgpp = (GapStbMainGlobalParams *)tabw->sgpp;
   if(sgpp == NULL)   { return; }
 
@@ -2699,7 +2699,7 @@ p_selection_extend(GapStbFrameWidget *fw)
   story_id = fw->stb_elem_refptr->story_id;
 
   sel_state = FALSE;
-  
+
   if((last_sel_story_id >= 0) && (story_id != last_sel_story_id))
   {
     for(stb_elem = stb->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
@@ -2724,7 +2724,7 @@ p_selection_extend(GapStbFrameWidget *fw)
       }
       if(stb_elem->selected)
       {
-        /* set selected beginning at the 1.st already seleected elem 
+        /* set selected beginning at the 1.st already seleected elem
          * and all further elements until element with story_id
          */
         sel_state = TRUE;
@@ -2755,24 +2755,24 @@ p_selection_replace(GapStbFrameWidget *fw)
   {
     old_selection_state = fw->stb_elem_refptr->selected;
   }
- 
+
   tabw = (GapStbTabWidgets  *)fw->tabw;
   if(tabw == NULL)   { return; }
-  
+
   sgpp = (GapStbMainGlobalParams *)tabw->sgpp;
   if(sgpp == NULL)   { return; }
-  
+
   /* clear all selected flags in both lists */
   gap_story_selection_all_set(sgpp->stb, FALSE);
   gap_story_selection_all_set(sgpp->cll, FALSE);
- 
+
   if(fw->stb_elem_refptr)
   {
     fw->stb_elem_refptr->selected = old_selection_state;
   }
- 
+
   p_selection_add(fw);
-  
+
 }  /* end p_selection_replace */
 
 
@@ -2785,13 +2785,13 @@ static gboolean
 p_cut_copy_sensitive (GapStoryBoard *stb)
 {
   gboolean l_sensitive_cc;
-  
+
   l_sensitive_cc = FALSE;
-  
+
   if(stb)
   {
     GapStoryElem      *stb_elem;
- 
+
     /* check if there is at least one selected element */
     for(stb_elem = stb->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
     {
@@ -2802,9 +2802,9 @@ p_cut_copy_sensitive (GapStoryBoard *stb)
       }
     }
   }
-  
+
   return (l_sensitive_cc);
-  
+
 }  /* end p_cut_copy_sensitive */
 
 
@@ -2855,11 +2855,11 @@ p_tabw_sensibility (GapStbMainGlobalParams *sgpp
     {
       l_sensitive  = TRUE;
     }
-  }  
+  }
 
   if(tabw->save_button)  gtk_widget_set_sensitive(tabw->save_button, l_sensitive);
   if(tabw->play_button)  gtk_widget_set_sensitive(tabw->play_button, l_sensitive);
- 
+
   l_sensitive  = p_paste_sensitive(sgpp, stb);
   l_sensitive_cc = p_cut_copy_sensitive(stb);
 
@@ -2867,7 +2867,7 @@ p_tabw_sensibility (GapStbMainGlobalParams *sgpp
 
   if(tabw->edit_cut_button) gtk_widget_set_sensitive(tabw->edit_cut_button, l_sensitive_cc);
   if(tabw->edit_copy_button) gtk_widget_set_sensitive(tabw->edit_copy_button, l_sensitive_cc);
-  
+
 }  /* end p_tabw_sensibility */
 
 
@@ -2913,13 +2913,13 @@ p_widget_sensibility (GapStbMainGlobalParams *sgpp)
 
   if(sgpp->menu_item_cll_add_clip)       gtk_widget_set_sensitive(sgpp->menu_item_cll_add_clip, l_sensitive_add);
   if(sgpp->menu_item_cll_att_properties) gtk_widget_set_sensitive(sgpp->menu_item_cll_att_properties, l_sensitive_add);
-  
+
   if(sgpp->cll_widgets)
   {
     p_tabw_sensibility(sgpp, sgpp->cll, sgpp->cll_widgets);
   }
-  
-  
+
+
   l_sensitive  = FALSE;
   l_sensitive_add = FALSE;
   l_sensitive_encode = FALSE;
@@ -2946,13 +2946,13 @@ p_widget_sensibility (GapStbMainGlobalParams *sgpp)
 
   if(sgpp->menu_item_stb_add_clip)       gtk_widget_set_sensitive(sgpp->menu_item_stb_add_clip, l_sensitive_add);
   if(sgpp->menu_item_stb_att_properties) gtk_widget_set_sensitive(sgpp->menu_item_stb_att_properties, l_sensitive_add);
-  
+
   if(sgpp->stb_widgets)
   {
     p_tabw_sensibility(sgpp, sgpp->stb, sgpp->stb_widgets);
   }
 
-}  /* end p_widget_sensibility */ 
+}  /* end p_widget_sensibility */
 
 
 /* -----------------------------
@@ -2960,7 +2960,7 @@ p_widget_sensibility (GapStbMainGlobalParams *sgpp)
  * -----------------------------
  * check for unsaved changes and ask for close permission if there are such changes.
  *
- * return: FALSE if there were unsaved changes 
+ * return: FALSE if there were unsaved changes
  *               AND the user has REFUSED permission to close
  *               (by pressing the CANCEL Button)
  *
@@ -2973,7 +2973,7 @@ p_close_one_or_both_lists(GapStbMainGlobalParams *sgpp
                          )
 {
   gboolean  l_rc;
-  
+
   l_rc = TRUE;
   if(sgpp)
   {
@@ -2995,7 +2995,7 @@ p_close_one_or_both_lists(GapStbMainGlobalParams *sgpp
                            ,sgpp
                            );
       }
-      
+
       if(check_storyboard)
       {
         p_tabw_destroy_properties_dlg (sgpp->stb_widgets, TRUE /* destroy_all*/ );
@@ -3008,9 +3008,9 @@ p_close_one_or_both_lists(GapStbMainGlobalParams *sgpp
                            ,sgpp
                            );
       }
-      
+
     }
-  } 
+  }
   return(l_rc);
 }  /* end p_close_one_or_both_lists */
 
@@ -3033,7 +3033,7 @@ p_menu_win_quit_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
     story_dlg_response(widget, GTK_RESPONSE_CANCEL, sgpp);
   }
 
-}  /* end p_menu_win_quit_cb */ 
+}  /* end p_menu_win_quit_cb */
 
 /* -----------------------------
  * p_menu_win_help_cb
@@ -3049,7 +3049,7 @@ p_menu_win_help_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
     gimp_standard_help_func(GAP_STORYBOARD_EDIT_HELP_ID, sgpp->shell_window);
   }
 
-}  /* end p_menu_win_help_cb */ 
+}  /* end p_menu_win_help_cb */
 
 /* -----------------------------
  * p_menu_win_properties_cb
@@ -3071,7 +3071,7 @@ p_menu_win_properties_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
 
 
   if(gap_debug) printf("p_menu_win_properties_cb\n");
-  
+
   if(sgpp->win_prop_dlg_open)
   {
     g_message(_("Global Layout Properties dialog already open"));
@@ -3168,7 +3168,7 @@ p_menu_win_properties_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
   gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_DEFAULT_BUTTON);
   argv[l_ii].label_txt = _("Default");
   argv[l_ii].help_txt  = _("Use the standard built in layout settings");
-  
+
   l_rc = gap_arr_ok_cancel_dialog( _("Global Layout Properties")
                                  , _("Settings")
                                  ,G_N_ELEMENTS(argv), argv
@@ -3179,10 +3179,10 @@ p_menu_win_properties_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
   {
     gint32 cll_thumbsize;
     gint32 stb_thumbsize;
-    
+
     cll_thumbsize = p_index_to_thumbsize(argv[l_cll_thumbsize_idx].radio_ret);
     stb_thumbsize = p_index_to_thumbsize(argv[l_stb_thumbsize_idx].radio_ret);
-    
+
     if((sgpp->cll_thumbsize  != cll_thumbsize)
     || (sgpp->stb_thumbsize  != stb_thumbsize)
     || (sgpp->cll_cols != argv[l_cll_cols_idx].int_ret)
@@ -3195,7 +3195,7 @@ p_menu_win_properties_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
       GapStoryBoard    *stb_dst;
       gint min_width;
       gint min_height;
-      
+
       /* apply the new layout settings */
       sgpp->cll_thumbsize  = cll_thumbsize;
       sgpp->stb_thumbsize  = stb_thumbsize;
@@ -3203,15 +3203,15 @@ p_menu_win_properties_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
       sgpp->stb_cols = argv[l_stb_cols_idx].int_ret;
       sgpp->cll_rows = argv[l_cll_rows_idx].int_ret;
       sgpp->stb_rows = argv[l_stb_rows_idx].int_ret;
-    
+
       p_set_layout_preset(sgpp);
-      
+
       /* refresh */
       if(sgpp->stb_widgets)
       {
         stb_dst = (GapStoryBoard *)sgpp->stb;
         tabw = sgpp->stb_widgets;
-        
+
         if((stb_dst) && (tabw))
         {
           /* refresh storyboard layout and thumbnail list widgets */
@@ -3241,7 +3241,7 @@ p_menu_win_properties_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
           p_render_all_frame_widgets(sgpp->cll_widgets);
         }
       }
-      
+
       /* shrink shell window to minimal size
        * note: this does not shrink downto 320 x 200 (is just a dummy size)
        * but shrinks as much as possible.
@@ -3252,7 +3252,7 @@ p_menu_win_properties_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
 
     }
   }
-}  /* end p_menu_win_properties_cb */ 
+}  /* end p_menu_win_properties_cb */
 
 
 
@@ -3270,7 +3270,7 @@ p_menu_win_vthumbs_toggle_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
     {
 #ifndef GAP_ENABLE_VIDEOAPI_SUPPORT
       g_message(_("GIMP-GAP is compiled without videoapi support. "
-                  "Therfore thumbnails for videoframes can not be displayed."));
+                  "Therefore thumbnails for videoframes can not be displayed."));
 #endif
       sgpp->auto_vthumb = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(sgpp->menu_item_win_vthumbs));
 
@@ -3294,7 +3294,7 @@ p_menu_win_vthumbs_toggle_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
     }
   }
 
-}  /* end p_menu_win_vthumbs_toggle_cb */ 
+}  /* end p_menu_win_vthumbs_toggle_cb */
 
 
 
@@ -3307,7 +3307,7 @@ static void
 p_menu_cll_new_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
 {
   if(gap_debug) printf("p_menu_cll_new_cb\n");
-  
+
   if(p_close_one_or_both_lists(sgpp
                            , TRUE   /* check_cliplist */
                            , FALSE  /* check_storyboard */
@@ -3318,7 +3318,7 @@ p_menu_cll_new_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
     p_tabw_master_prop_dialog(sgpp->cll_widgets, TRUE /* new_flag */);
 
   }
-}  /* end p_menu_cll_new_cb */ 
+}  /* end p_menu_cll_new_cb */
 
 /* -----------------------------
  * p_menu_cll_open_cb
@@ -3332,8 +3332,8 @@ p_menu_cll_open_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
   {
       p_tabw_load_file_cb (widget, sgpp->cll_widgets);
   }
-  
-}  /* end p_menu_cll_open_cb */ 
+
+}  /* end p_menu_cll_open_cb */
 
 
 
@@ -3348,7 +3348,7 @@ p_menu_cll_save_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
   gint l_errno;
 
   if(gap_debug) printf("p_menu_cll_save_cb\n");
-  
+
   if(sgpp->cll == NULL)          { return; }
   if(sgpp->cll->errtext != NULL)
   {
@@ -3362,7 +3362,7 @@ p_menu_cll_save_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
     g_free(sgpp->cll->storyboardfile);
   }
   sgpp->cll->storyboardfile = g_strdup(sgpp->cliplist_filename);
-        
+
   /* save cliplist as new filename */
   l_save_ok = gap_story_save(sgpp->cll, sgpp->cliplist_filename);
   l_errno = errno;
@@ -3373,9 +3373,9 @@ p_menu_cll_save_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
                   "filename: '%s':\n%s")
                ,  sgpp->cliplist_filename, g_strerror (l_errno));
   }
-  
+
   p_tabw_update_frame_label(sgpp->cll_widgets, sgpp);
-}  /* end p_menu_cll_save_cb */ 
+}  /* end p_menu_cll_save_cb */
 
 /* -----------------------------
  * p_menu_cll_save_cb_as
@@ -3387,7 +3387,7 @@ p_menu_cll_save_cb_as (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
   if(gap_debug) printf("p_menu_cll_save_cb_as\n");
   p_tabw_file_save_as_cb(widget, sgpp->cll_widgets);
   p_tabw_update_frame_label(sgpp->cll_widgets, sgpp);
-}  /* end p_menu_cll_save_cb_as */ 
+}  /* end p_menu_cll_save_cb_as */
 
 /* -----------------------------
  * p_menu_cll_playback_cb
@@ -3398,7 +3398,7 @@ p_menu_cll_playback_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
 {
   if(gap_debug) printf("p_menu_cll_playback_cb\n");
   p_player_cll_mode_cb(widget, NULL, sgpp);
-}  /* end p_menu_cll_playback_cb */ 
+}  /* end p_menu_cll_playback_cb */
 
 /* -----------------------------
  * p_menu_cll_properties_cb
@@ -3409,7 +3409,7 @@ p_menu_cll_properties_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
 {
   if(gap_debug) printf("p_menu_cll_properties_cb\n");
   p_tabw_master_prop_dialog(sgpp->cll_widgets, FALSE);
-}  /* end p_menu_cll_properties_cb */ 
+}  /* end p_menu_cll_properties_cb */
 
 /* -----------------------------
  * p_menu_cll_add_elem_cb
@@ -3422,7 +3422,7 @@ p_menu_cll_add_elem_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
 
   if(sgpp == NULL) { return; }
   p_tabw_add_elem(sgpp->cll_widgets, sgpp, sgpp->cll);
-}  /* end p_menu_cll_add_elem_cb */ 
+}  /* end p_menu_cll_add_elem_cb */
 
 /* -----------------------------
  * p_menu_cll_add_att_elem_cb
@@ -3435,7 +3435,7 @@ p_menu_cll_add_att_elem_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
 
   if(sgpp == NULL) { return; }
   p_tabw_add_att_elem(sgpp->cll_widgets, sgpp, sgpp->cll);
-}  /* end p_menu_cll_add_att_elem_cb */ 
+}  /* end p_menu_cll_add_att_elem_cb */
 
 /* -----------------------------
  * p_menu_cll_toggle_edmode
@@ -3462,7 +3462,7 @@ p_menu_cll_toggle_edmode (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
     }
     p_render_all_frame_widgets(sgpp->cll_widgets);
   }
-}  /* end p_menu_cll_toggle_edmode */ 
+}  /* end p_menu_cll_toggle_edmode */
 
 
 /* -----------------------------
@@ -3474,7 +3474,7 @@ p_menu_cll_audio_otone_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
 {
   if(gap_debug) printf("p_menu_cll_audio_otone_cb\n");
   p_tabw_gen_otone_dialog(sgpp->cll_widgets);
-}  /* end p_menu_cll_audio_otone_cb */ 
+}  /* end p_menu_cll_audio_otone_cb */
 
 /* -----------------------------
  * p_menu_cll_encode_cb
@@ -3486,7 +3486,7 @@ p_menu_cll_encode_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
   if(gap_debug) printf("p_menu_cll_encode_cb\n");
 
   p_call_master_encoder(sgpp, sgpp->cll, sgpp->cliplist_filename);
-}  /* end p_menu_cll_encode_cb */ 
+}  /* end p_menu_cll_encode_cb */
 
 
 /* -----------------------------
@@ -3502,7 +3502,7 @@ p_menu_cll_close_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
                            , TRUE   /* check_cliplist */
                            , FALSE  /* check_storyboard */
                            );
-}  /* end p_menu_cll_close_cb */ 
+}  /* end p_menu_cll_close_cb */
 
 
 
@@ -3521,7 +3521,7 @@ static void
 p_menu_stb_new_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
 {
   if(gap_debug) printf("p_menu_stb_new_cb\n");
-  
+
   if(p_close_one_or_both_lists(sgpp
                            , FALSE  /* check_cliplist */
                            , TRUE   /* check_storyboard */
@@ -3531,7 +3531,7 @@ p_menu_stb_new_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
     sgpp->stb->master_type = GAP_STB_MASTER_TYPE_STORYBOARD;
     p_tabw_master_prop_dialog(sgpp->stb_widgets, TRUE /* new_flag */);
   }
-}  /* end p_menu_stb_new_cb */ 
+}  /* end p_menu_stb_new_cb */
 
 
 /* -----------------------------
@@ -3546,8 +3546,8 @@ p_menu_stb_open_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
   {
       p_tabw_load_file_cb (widget, sgpp->stb_widgets);
   }
-  
-}  /* end p_menu_stb_open_cb */ 
+
+}  /* end p_menu_stb_open_cb */
 
 
 
@@ -3562,7 +3562,7 @@ p_menu_stb_save_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
   gint l_errno;
 
   if(gap_debug) printf("p_menu_stb_save_cb\n");
-  
+
   if(sgpp->stb == NULL)          { return; }
   if(sgpp->stb->errtext != NULL)
   {
@@ -3576,7 +3576,7 @@ p_menu_stb_save_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
     g_free(sgpp->stb->storyboardfile);
   }
   sgpp->stb->storyboardfile = g_strdup(sgpp->storyboard_filename);
-  
+
   /* save storyboard as new filename */
   l_save_ok = gap_story_save(sgpp->stb, sgpp->storyboard_filename);
   l_errno = errno;
@@ -3589,7 +3589,7 @@ p_menu_stb_save_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
   }
 
   p_tabw_update_frame_label(sgpp->stb_widgets, sgpp);
-}  /* end p_menu_stb_save_cb */ 
+}  /* end p_menu_stb_save_cb */
 
 /* -----------------------------
  * p_menu_stb_save_cb_as
@@ -3601,7 +3601,7 @@ p_menu_stb_save_cb_as (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
   if(gap_debug) printf("p_menu_stb_save_cb_as\n");
   p_tabw_file_save_as_cb(widget, sgpp->stb_widgets);
   p_tabw_update_frame_label(sgpp->stb_widgets, sgpp);
-}  /* end p_menu_stb_save_cb_as */ 
+}  /* end p_menu_stb_save_cb_as */
 
 /* -----------------------------
  * p_menu_stb_playback_cb
@@ -3612,7 +3612,7 @@ p_menu_stb_playback_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
 {
   if(gap_debug) printf("p_menu_stb_playback_cb\n");
   p_player_stb_mode_cb(widget, NULL, sgpp);
-}  /* end p_menu_stb_playback_cb */ 
+}  /* end p_menu_stb_playback_cb */
 
 /* -----------------------------
  * p_menu_stb_properties_cb
@@ -3623,7 +3623,7 @@ p_menu_stb_properties_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
 {
   if(gap_debug) printf("p_menu_stb_properties_cb\n");
   p_tabw_master_prop_dialog(sgpp->stb_widgets, FALSE);
-}  /* end p_menu_stb_properties_cb */ 
+}  /* end p_menu_stb_properties_cb */
 
 /* -----------------------------
  * p_menu_stb_add_elem_cb
@@ -3636,7 +3636,7 @@ p_menu_stb_add_elem_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
 
   if(sgpp == NULL) { return; }
   p_tabw_add_elem(sgpp->stb_widgets, sgpp, sgpp->stb);
-}  /* end p_menu_stb_add_elem_cb */ 
+}  /* end p_menu_stb_add_elem_cb */
 
 /* -----------------------------
  * p_menu_stb_add_att_elem_cb
@@ -3649,7 +3649,7 @@ p_menu_stb_add_att_elem_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
 
   if(sgpp == NULL) { return; }
   p_tabw_add_att_elem(sgpp->stb_widgets, sgpp, sgpp->stb);
-}  /* end p_menu_stb_add_att_elem_cb */ 
+}  /* end p_menu_stb_add_att_elem_cb */
 
 /* -----------------------------
  * p_menu_stb_toggle_edmode
@@ -3676,7 +3676,7 @@ p_menu_stb_toggle_edmode (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
     }
     p_render_all_frame_widgets(sgpp->stb_widgets);
   }
-}  /* end p_menu_stb_toggle_edmode */ 
+}  /* end p_menu_stb_toggle_edmode */
 
 
 /* -----------------------------
@@ -3688,7 +3688,7 @@ p_menu_stb_audio_otone_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
 {
   if(gap_debug) printf("p_menu_stb_audio_otone_cb\n");
   p_tabw_gen_otone_dialog(sgpp->stb_widgets);
-}  /* end p_menu_stb_audio_otone_cb */ 
+}  /* end p_menu_stb_audio_otone_cb */
 
 /* -----------------------------
  * p_menu_stb_encode_cb
@@ -3700,7 +3700,7 @@ p_menu_stb_encode_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
   if(gap_debug) printf("p_menu_stb_encode_cb\n");
 
   p_call_master_encoder(sgpp, sgpp->stb, sgpp->storyboard_filename);
-}  /* end p_menu_stb_encode_cb */ 
+}  /* end p_menu_stb_encode_cb */
 
 
 /* -----------------------------
@@ -3717,7 +3717,7 @@ p_menu_stb_close_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
                            , TRUE   /* check_storyboard */
                            );
 
-}  /* end p_menu_stb_close_cb */ 
+}  /* end p_menu_stb_close_cb */
 
 
 
@@ -3750,7 +3750,7 @@ p_make_menu_bar_item(GtkWidget *menu_bar, gchar *label)
  * -----------------------------
  */
 static GtkWidget*
-p_make_item_with_image(GtkWidget *parent, const gchar *stock_id, 
+p_make_item_with_image(GtkWidget *parent, const gchar *stock_id,
                      GapStbMenuCallbackFptr fptr, GapStbMainGlobalParams *sgpp)
 {
    GtkWidget *item;
@@ -3771,7 +3771,7 @@ p_make_item_with_image(GtkWidget *parent, const gchar *stock_id,
  * -----------------------------
  */
 static GtkWidget*
-p_make_item_with_label(GtkWidget *parent, gchar *label, 
+p_make_item_with_label(GtkWidget *parent, gchar *label,
                      GapStbMenuCallbackFptr fptr, GapStbMainGlobalParams *sgpp)
 {
    GtkWidget *item;
@@ -3790,7 +3790,7 @@ p_make_item_with_label(GtkWidget *parent, gchar *label,
  * -----------------------------
  */
 static GtkWidget*
-p_make_check_item_with_label(GtkWidget *parent, gchar *label 
+p_make_check_item_with_label(GtkWidget *parent, gchar *label
                      , GapStbMenuCallbackFptr fptr
                      , GapStbMainGlobalParams *sgpp
                      , gboolean initial_value
@@ -3815,24 +3815,24 @@ static void
 p_make_menu_global(GapStbMainGlobalParams *sgpp, GtkWidget *menu_bar)
 {
    GtkWidget *file_menu = p_make_menu_bar_item(menu_bar, _("Global"));
-   
+
    p_make_item_with_label(file_menu, _("Properties")
                           , p_menu_win_properties_cb
                           , sgpp
                           );
 
-   sgpp->menu_item_win_vthumbs =                          
+   sgpp->menu_item_win_vthumbs =
    p_make_check_item_with_label(file_menu, _("Videothumbnails")
                           , p_menu_win_vthumbs_toggle_cb
                           , sgpp
                           , sgpp->auto_vthumb
                           );
-                          
+
    p_make_item_with_image(file_menu, GTK_STOCK_QUIT
                           , p_menu_win_quit_cb
                           , sgpp
                           );
-   
+
 }  /* end p_make_menu_global */
 
 /* -----------------------------
@@ -3843,7 +3843,7 @@ static void
 p_make_menu_help(GapStbMainGlobalParams *sgpp, GtkWidget *menu_bar)
 {
    GtkWidget *file_menu = p_make_menu_bar_item(menu_bar, _("Help"));
-   
+
    p_make_item_with_image(file_menu, GTK_STOCK_HELP
                           , p_menu_win_help_cb
                           , sgpp
@@ -3858,7 +3858,7 @@ static void
 p_make_menu_cliplist(GapStbMainGlobalParams *sgpp, GtkWidget *menu_bar)
 {
    GtkWidget *file_menu = p_make_menu_bar_item(menu_bar, _("Cliplist"));
-   
+
    p_make_item_with_image(file_menu, GTK_STOCK_NEW
                           , p_menu_cll_new_cb
                           , sgpp
@@ -3868,37 +3868,37 @@ p_make_menu_cliplist(GapStbMainGlobalParams *sgpp, GtkWidget *menu_bar)
                           , p_menu_cll_open_cb
                           , sgpp
                           );
-   sgpp->menu_item_cll_save =                     
+   sgpp->menu_item_cll_save =
    p_make_item_with_image(file_menu, GTK_STOCK_SAVE
                           , p_menu_cll_save_cb
                           , sgpp
                           );
 
-   sgpp->menu_item_cll_save_as =                          
+   sgpp->menu_item_cll_save_as =
    p_make_item_with_image(file_menu, GTK_STOCK_SAVE_AS
                           , p_menu_cll_save_cb_as
                           , sgpp
                           );
 
-   sgpp->menu_item_cll_playback =                         
+   sgpp->menu_item_cll_playback =
    p_make_item_with_label(file_menu, _("Playback")
                           , p_menu_cll_playback_cb
                           , sgpp
                           );
 
-   sgpp->menu_item_cll_properties =                       
+   sgpp->menu_item_cll_properties =
    p_make_item_with_label(file_menu, _("Properties")
                           , p_menu_cll_properties_cb
                           , sgpp
                           );
 
-   sgpp->menu_item_cll_add_clip =                         
+   sgpp->menu_item_cll_add_clip =
    p_make_item_with_label(file_menu, _("Create Clip")
                           , p_menu_cll_add_elem_cb
                           , sgpp
                           );
 
-   sgpp->menu_item_cll_att_properties =                         
+   sgpp->menu_item_cll_att_properties =
    p_make_item_with_label(file_menu, _("Create Transition")
                           , p_menu_cll_add_att_elem_cb
                           , sgpp
@@ -3909,24 +3909,24 @@ p_make_menu_cliplist(GapStbMainGlobalParams *sgpp, GtkWidget *menu_bar)
                           , sgpp
                           );
 
-   sgpp->menu_item_cll_audio_otone =                      
+   sgpp->menu_item_cll_audio_otone =
    p_make_item_with_label(file_menu, _("Add Audio Otone")
                           , p_menu_cll_audio_otone_cb
                           , sgpp
                           );
 
-   sgpp->menu_item_cll_encode =                   
+   sgpp->menu_item_cll_encode =
    p_make_item_with_label(file_menu, _("Encode")
                           , p_menu_cll_encode_cb
                           , sgpp
                           );
-                          
-   sgpp->menu_item_cll_close =                    
+
+   sgpp->menu_item_cll_close =
    p_make_item_with_image(file_menu, GTK_STOCK_CLOSE
                           , p_menu_cll_close_cb
                           , sgpp
                           );
-  
+
 }  /* end p_make_menu_cliplist */
 
 
@@ -3939,7 +3939,7 @@ static void
 p_make_menu_storyboard(GapStbMainGlobalParams *sgpp, GtkWidget *menu_bar)
 {
    GtkWidget *file_menu = p_make_menu_bar_item(menu_bar, _("_Storyboard"));
-   
+
    p_make_item_with_image(file_menu, GTK_STOCK_NEW
                           , p_menu_stb_new_cb
                           , sgpp
@@ -3949,65 +3949,65 @@ p_make_menu_storyboard(GapStbMainGlobalParams *sgpp, GtkWidget *menu_bar)
                           , p_menu_stb_open_cb
                           , sgpp
                           );
-   sgpp->menu_item_stb_save =                     
+   sgpp->menu_item_stb_save =
    p_make_item_with_image(file_menu, GTK_STOCK_SAVE
                           , p_menu_stb_save_cb
                           , sgpp
                           );
 
-   sgpp->menu_item_stb_save_as =                          
+   sgpp->menu_item_stb_save_as =
    p_make_item_with_image(file_menu, GTK_STOCK_SAVE_AS
                           , p_menu_stb_save_cb_as
                           , sgpp
                           );
 
-   sgpp->menu_item_stb_playback =                         
+   sgpp->menu_item_stb_playback =
    p_make_item_with_label(file_menu, _("Playback")
                           , p_menu_stb_playback_cb
                           , sgpp
                           );
 
-   sgpp->menu_item_stb_properties =                       
+   sgpp->menu_item_stb_properties =
    p_make_item_with_label(file_menu, _("Properties")
                           , p_menu_stb_properties_cb
                           , sgpp
                           );
 
-   sgpp->menu_item_stb_add_clip =                         
+   sgpp->menu_item_stb_add_clip =
    p_make_item_with_label(file_menu, _("Create Clip")
                           , p_menu_stb_add_elem_cb
                           , sgpp
                           );
 
-   sgpp->menu_item_stb_att_properties =                         
+   sgpp->menu_item_stb_att_properties =
    p_make_item_with_label(file_menu, _("Create Transition")
                           , p_menu_stb_add_att_elem_cb
                           , sgpp
                           );
- 
+
    p_make_item_with_label(file_menu, _("Toggle Unit")
                           , p_menu_stb_toggle_edmode
                           , sgpp
                           );
 
-   sgpp->menu_item_stb_audio_otone =                      
+   sgpp->menu_item_stb_audio_otone =
    p_make_item_with_label(file_menu, _("Add Audio Otone")
                           , p_menu_stb_audio_otone_cb
                           , sgpp
                           );
 
-   sgpp->menu_item_stb_encode =                   
+   sgpp->menu_item_stb_encode =
    p_make_item_with_label(file_menu, _("Encode")
                           , p_menu_stb_encode_cb
                           , sgpp
                           );
 
-   sgpp->menu_item_stb_close =                    
+   sgpp->menu_item_stb_close =
    p_make_item_with_image(file_menu, GTK_STOCK_CLOSE
                           , p_menu_stb_close_cb
                           , sgpp
                           );
-   
+
 }  /* end p_make_menu_storyboard */
 
 
@@ -4031,7 +4031,7 @@ p_check_unsaved_changes (GapStbMainGlobalParams *sgpp
     gchar  *l_cll_msg;
     gchar  *l_stb_msg;
     gint    l_ii;
-    
+
     l_cll_msg = NULL;
     l_stb_msg = NULL;
     l_ii = 0;
@@ -4069,7 +4069,7 @@ p_check_unsaved_changes (GapStbMainGlobalParams *sgpp
       {
         l_argv[1].but_txt  = _("Continue");
       }
-      
+
       l_argv[1].but_val  = 0;
 
       l_argv[0].but_txt  = GTK_STOCK_CANCEL;
@@ -4092,7 +4092,7 @@ p_check_unsaved_changes (GapStbMainGlobalParams *sgpp
   }
   return (TRUE);
 
-}  /* end p_check_unsaved_changes */ 
+}  /* end p_check_unsaved_changes */
 
 
 /* -----------------------------
@@ -4102,7 +4102,7 @@ p_check_unsaved_changes (GapStbMainGlobalParams *sgpp
  * if valid storyboard available add the filename
  * and show the string "(modified)" if there are unsaved changes
  *
- * then calculate max_rowpage 
+ * then calculate max_rowpage
  * and set upper limit for the tabw->rowpage_spinbutton_adj widget
  */
 static void
@@ -4113,7 +4113,7 @@ p_tabw_update_frame_label (GapStbTabWidgets *tabw, GapStbMainGlobalParams *sgpp)
 
   if(tabw == NULL) { return; }
   if(sgpp == NULL) { return; }
-  
+
   if((tabw->frame_with_name)
   && (tabw->filename_refptr))
   {
@@ -4131,7 +4131,7 @@ p_tabw_update_frame_label (GapStbTabWidgets *tabw, GapStbMainGlobalParams *sgpp)
     {
       l_hdr_txt = g_strdup(_("Storyboard:"));
 
-      /* the max_chars for the cliplist header text 
+      /* the max_chars for the cliplist header text
        * is just a guess how much characters
        * would fit when the default font is used.
        * correct calculation would be more complex.
@@ -4152,12 +4152,12 @@ p_tabw_update_frame_label (GapStbTabWidgets *tabw, GapStbMainGlobalParams *sgpp)
     {
       l_hdr_txt = g_strdup(_("Cliplist:"));
 
-      /* the max_chars for the cliplist is just a guess 
+      /* the max_chars for the cliplist is just a guess
        * dependent on thumbnail size and columns in the layout.
        * the layout space is limited here
        * because the extra space is requred for the player window.
        * correct calculation would be complex
-       * and would have to respect current fontsize, NLS settings, 
+       * and would have to respect current fontsize, NLS settings,
        * and something more ...
        */
       l_max_chars = 70;
@@ -4197,8 +4197,8 @@ p_tabw_update_frame_label (GapStbTabWidgets *tabw, GapStbMainGlobalParams *sgpp)
   if(stb_dst)
   {
     gint32 l_act_elems = 0;
-    
-    l_act_elems = gap_story_count_active_elements(stb_dst, 1 /* track */ );   
+
+    l_act_elems = gap_story_count_active_elements(stb_dst, 1 /* track */ );
     l_max_rowpage = p_get_max_rowpage(l_act_elems, tabw->cols, tabw->rows);
   }
   if(tabw->rowpage_spinbutton_adj)
@@ -4252,18 +4252,18 @@ p_tabw_update_frame_label (GapStbTabWidgets *tabw, GapStbMainGlobalParams *sgpp)
     }
 
   }
-  
+
   if(tabw->total_rows_label)
   {
     char max_rowpage_txt[40];
-    
+
     g_snprintf(max_rowpage_txt, sizeof(max_rowpage_txt), "%d", (int)l_max_rowpage);
     gtk_label_set_text(GTK_LABEL(tabw->total_rows_label), max_rowpage_txt);
   }
- 
+
   p_widget_sensibility(sgpp);
-  
-}  /* end p_tabw_update_frame_label */ 
+
+}  /* end p_tabw_update_frame_label */
 
 
 
@@ -4282,7 +4282,7 @@ p_vid_progress_callback(gdouble progress
                        )
 {
   GapStbMainGlobalParams *sgpp;
-  
+
   sgpp = (GapStbMainGlobalParams *)user_data;
   if(sgpp == NULL) { return (TRUE); }
   if(sgpp->progress_bar == NULL) { return (TRUE); }
@@ -4299,7 +4299,7 @@ p_vid_progress_callback(gdouble progress
   return(sgpp->cancel_video_api);
 
   /* return (TRUE); */ /* cancel video api if playback was stopped */
-  
+
 }  /* end p_vid_progress_callback */
 
 
@@ -4339,7 +4339,7 @@ p_open_videofile(GapStbMainGlobalParams *sgpp
   gboolean l_have_valid_vindex;
   char *vindex_file;
   char *create_vindex_msg;
-  
+
   p_close_videofile(sgpp);
   vindex_file = NULL;
   create_vindex_msg = NULL;
@@ -4390,15 +4390,15 @@ p_open_videofile(GapStbMainGlobalParams *sgpp
         l_have_valid_vindex = TRUE;
       }
     }
-    
-    
+
+
     if(l_have_valid_vindex == FALSE)
     {
       /* check for permission to create a videoindex file */
       vindex_permission = gap_arr_create_vindex_permission(sgpp->gva_videofile, vindex_file);
     }
-     
-    if((l_have_valid_vindex == FALSE) 
+
+    if((l_have_valid_vindex == FALSE)
     && (vindex_permission))
     {
 printf("STORY: DEBUG: create vidindex start\n");
@@ -4429,7 +4429,7 @@ printf("STORY: DEBUG: create vidindex done\n");
     {
       g_free(vindex_file);
     }
-    
+
     if(create_vindex_msg)
     {
       g_free(create_vindex_msg);
@@ -4437,7 +4437,7 @@ printf("STORY: DEBUG: create vidindex done\n");
 
   }
 #endif
-  
+
 }  /* end p_open_videofile */
 
 
@@ -4460,7 +4460,7 @@ gap_story_dlg_fetch_videoframe(GapStbMainGlobalParams *sgpp
                    )
 {
   guchar *th_data;
-  
+
   th_data = NULL;
 #ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
 
@@ -4483,23 +4483,23 @@ gap_story_dlg_fetch_videoframe(GapStbMainGlobalParams *sgpp
       p_close_videofile(sgpp);
     }
   }
-  
+
 //printf(" VIDFETCH (-0) sgpp->gvahand: %d  framenumber:%06d\n", (int)sgpp->gvahand, (int)framenumber);
   if(sgpp->gvahand == NULL)
   {
     p_open_videofile(sgpp, gva_videofile, seltrack, preferred_decoder);
   }
-  
+
   if(sgpp->gvahand)
   {
      gint32 l_deinterlace;
      gdouble l_threshold;
-     
+
      if(sgpp->progress_bar)
      {
        t_GVA_DecoderElem *dec_elem;
        char *videoseek_msg;
-       
+
        videoseek_msg = NULL;
        dec_elem = (t_GVA_DecoderElem *)sgpp->gvahand->dec_elem;
        if(dec_elem->decoder_name)
@@ -4510,15 +4510,15 @@ gap_story_dlg_fetch_videoframe(GapStbMainGlobalParams *sgpp
        {
          videoseek_msg = g_strdup_printf(_("Videoseek"));
        }
-       
+
        gtk_progress_bar_set_text(GTK_PROGRESS_BAR(sgpp->progress_bar), videoseek_msg);
        g_free(videoseek_msg);
      }
-     
+
      if(do_scale == TRUE)
      {
        gint32 vthumb_size;
-       
+
        vthumb_size = 256;
        if(sgpp->gvahand->width > sgpp->gvahand->height)
        {
@@ -4538,8 +4538,8 @@ gap_story_dlg_fetch_videoframe(GapStbMainGlobalParams *sgpp
          *th_height = sgpp->gvahand->height;
      }
      *th_bpp = sgpp->gvahand->frame_bpp;
-     
-     /* split delace value: integer part is deinterlace mode, rest is threshold */                  
+
+     /* split delace value: integer part is deinterlace mode, rest is threshold */
      l_deinterlace = delace;
      l_threshold = delace - (gdouble)l_deinterlace;
 
@@ -4563,7 +4563,7 @@ gap_story_dlg_fetch_videoframe(GapStbMainGlobalParams *sgpp
        gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(sgpp->progress_bar), 0.0);
      }
   }
-  
+
   if(th_data)
   {
     /* throw away frame data because the fetch was cancelled
@@ -4580,7 +4580,7 @@ gap_story_dlg_fetch_videoframe(GapStbMainGlobalParams *sgpp
 
 #endif
   return (th_data);
-}  /* end gap_story_dlg_fetch_videoframe */ 
+}  /* end gap_story_dlg_fetch_videoframe */
 
 
 
@@ -4606,7 +4606,7 @@ gap_story_dlg_get_velem(GapStbMainGlobalParams *sgpp
               )
 {
   GapStoryVideoElem *velem;
-  
+
   if(sgpp == NULL) { return (NULL); }
 
   /* check for known video_filenames */
@@ -4618,7 +4618,7 @@ gap_story_dlg_get_velem(GapStbMainGlobalParams *sgpp
       return(velem);
     }
   }
-  
+
 #ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
   if(!sgpp->auto_vthumb)
   {
@@ -4657,7 +4657,7 @@ gap_story_dlg_get_velem(GapStbMainGlobalParams *sgpp
 
 #endif
   return(velem);
-  
+
 }  /* end gap_story_dlg_get_velem */
 
 
@@ -4695,7 +4695,7 @@ gap_story_dlg_add_vthumb(GapStbMainGlobalParams *sgpp
   }
   return(vthumb);
 }  /* end gap_story_dlg_add_vthumb */
-                        
+
 
 
 /* ------------------------------
@@ -4726,17 +4726,17 @@ p_fetch_vthumb_elem(GapStbMainGlobalParams *sgpp
   gint32 th_width;
   gint32 th_height;
   gint32 th_bpp;
-  
+
   if(sgpp == NULL) { return (NULL); }
-  
+
   velem = gap_story_dlg_get_velem(sgpp
               ,video_filename
               ,seltrack
               ,preferred_decoder
               );
-              
+
   if(velem == NULL) { return (NULL); }
- 
+
   /* check for known viedo_thumbnails */
   for(vthumb = sgpp->vthumb_list; vthumb != NULL; vthumb = (GapVThumbElem *)vthumb->next)
   {
@@ -4760,7 +4760,7 @@ p_fetch_vthumb_elem(GapStbMainGlobalParams *sgpp
   /* Videothumbnail not known yet,
    * we try to create it now
    */
-  
+
   /* Fetch the wanted Frame from the Videofile */
   th_data = gap_story_dlg_fetch_videoframe(sgpp
                    , video_filename
@@ -4773,7 +4773,7 @@ p_fetch_vthumb_elem(GapStbMainGlobalParams *sgpp
                    , &th_height
                    , TRUE  /* do scale */
                    );
-  
+
   if(th_data == NULL ) { return (NULL); }
 
   vthumb = gap_story_dlg_add_vthumb(sgpp
@@ -4784,12 +4784,12 @@ p_fetch_vthumb_elem(GapStbMainGlobalParams *sgpp
                           ,th_bpp
                           ,velem->video_id
                           );
-  
-  
-  
+
+
+
   vthumb = g_new(GapVThumbElem ,1);
   if(vthumb == NULL ) { return (NULL); }
-  
+
   vthumb->th_data = th_data;
   vthumb->th_width = th_width;
   vthumb->th_height = th_height;
@@ -4798,9 +4798,9 @@ p_fetch_vthumb_elem(GapStbMainGlobalParams *sgpp
   vthumb->video_id = velem->video_id;
   vthumb->next = sgpp->vthumb_list;
   sgpp->vthumb_list = vthumb;
-  
+
   return(vthumb);
-  
+
 }  /* end p_fetch_vthumb_elem */
 
 
@@ -4808,7 +4808,7 @@ p_fetch_vthumb_elem(GapStbMainGlobalParams *sgpp
  * p_prefetch_vthumbs
  * -----------------------------
  * this procedure does a prefetch of all
- * videoframes that are start frame in of a storyboard_element 
+ * videoframes that are start frame in of a storyboard_element
  * with type GAP_STBREC_VID_MOVIE
  * the fetch causes creation of all the vthumbs
  */
@@ -4819,13 +4819,13 @@ p_prefetch_vthumbs (GapStbMainGlobalParams *sgpp, GapStoryBoard *stb)
   GapVThumbElem *vthumb;
   gint32         l_total;
   gint32         l_count;
-  
+
 
   if(stb == NULL)
   {
     return;
   }
-  
+
   l_total = 0;
   for(stb_elem = stb->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
   {
@@ -4846,7 +4846,7 @@ p_prefetch_vthumbs (GapStbMainGlobalParams *sgpp, GapStoryBoard *stb)
       {
         if(sgpp->progress_bar)
         {
-          gtk_progress_bar_set_text(GTK_PROGRESS_BAR(sgpp->progress_bar), 
+          gtk_progress_bar_set_text(GTK_PROGRESS_BAR(sgpp->progress_bar),
                                    _("videothumbnail cancelled"));
           gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(sgpp->progress_bar), 0);
         }
@@ -4884,7 +4884,7 @@ p_prefetch_vthumbs (GapStbMainGlobalParams *sgpp, GapStoryBoard *stb)
     gtk_progress_bar_set_text(GTK_PROGRESS_BAR(sgpp->progress_bar), "");
     gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(sgpp->progress_bar), 0);
   }
-    
+
 }  /* end p_prefetch_vthumbs */
 
 
@@ -4921,7 +4921,7 @@ gap_story_dlg_fetch_vthumb(GapStbMainGlobalParams *sgpp
   if(vthumb)
   {
     gint32 th_size;
-    
+
     th_size = vthumb->th_width * vthumb->th_height * vthumb->th_bpp;
     th_data = g_malloc(th_size);
     if(th_data)
@@ -4932,7 +4932,7 @@ gap_story_dlg_fetch_vthumb(GapStbMainGlobalParams *sgpp
       *th_bpp = vthumb->th_bpp;
     }
   }
-  return(th_data);           
+  return(th_data);
 }  /* end gap_story_dlg_fetch_vthumb */
 
 
@@ -4964,7 +4964,7 @@ gap_story_dlg_fetch_vthumb_no_store(GapStbMainGlobalParams *sgpp
   GapStoryVideoElem *velem;
   GapVThumbElem     *vthumb;
   guchar *th_data;
-  
+
   if(sgpp == NULL) { return (NULL); }
 
   *video_id = -1;
@@ -4974,11 +4974,11 @@ gap_story_dlg_fetch_vthumb_no_store(GapStbMainGlobalParams *sgpp
               ,seltrack
               ,preferred_decoder
               );
-              
+
   if(velem == NULL) { return (NULL); }
- 
+
   *video_id = velem->video_id;
- 
+
   /* check for known viedo_thumbnails */
   for(vthumb = sgpp->vthumb_list; vthumb != NULL; vthumb = (GapVThumbElem *)vthumb->next)
   {
@@ -5001,7 +5001,7 @@ gap_story_dlg_fetch_vthumb_no_store(GapStbMainGlobalParams *sgpp
   /* Videothumbnail not known yet,
    * we try to create it now
    */
-  
+
   /* Fetch the wanted Frame from the Videofile */
   th_data = gap_story_dlg_fetch_videoframe(sgpp
                    , video_filename
@@ -5016,7 +5016,7 @@ gap_story_dlg_fetch_vthumb_no_store(GapStbMainGlobalParams *sgpp
                    );
 
   *file_read_flag = TRUE;
-  return(th_data); 
+  return(th_data);
 
 }  /* end gap_story_dlg_fetch_vthumb_no_store */
 
@@ -5038,7 +5038,7 @@ p_tabw_set_focus_to_first_fw(GapStbTabWidgets *tabw)
     fw = tabw->fw_tab[0];
     gtk_widget_grab_focus (fw->vbox);
   }
-  
+
 }  /* end p_tabw_set_focus_to_first_fw */
 
 /* -----------------------------------
@@ -5061,14 +5061,14 @@ p_tabw_key_press_event_cb ( GtkWidget *widget
   GdkEventKey   *kevent;
 
   if(gap_debug) printf("p_tabw_key_press_event_cb : tabw:%d\n", (int)tabw);
-  
+
   if(tabw == NULL)
   {
     return (FALSE);
   }
   sgpp = (GapStbMainGlobalParams *)tabw->sgpp;
   stb = p_tabw_get_stb_ptr(tabw);
-  
+
   ctrl_modifier = FALSE;
 
   switch (event->type)
@@ -5081,7 +5081,7 @@ p_tabw_key_press_event_cb ( GtkWidget *widget
         ctrl_modifier = TRUE;
       }
       keyval = (gint)kevent->keyval;
-      if(gap_debug) 
+      if(gap_debug)
       {
         printf("KEY Press : val:%d  ctrl_modifier:%d\n", (int)keyval, (int)ctrl_modifier);
       }
@@ -5109,7 +5109,7 @@ p_tabw_key_press_event_cb ( GtkWidget *widget
             if(sensitive)
             {
               p_tabw_edit_paste_cb(NULL, tabw);
-              
+
               /* after paste focus is lost
                * force setting focus at 1st widget in the fw_tab
                * to catch the release event of the v-key
@@ -5137,14 +5137,14 @@ p_tabw_key_press_event_cb ( GtkWidget *widget
           if(ctrl_modifier)
           {
             if(gap_debug) printf("GDK_Z: undo\n");
-            
+
             /* undo not implemented yet */
             return(TRUE);
           }
           break;
       }
       break;
- 
+
     default:
       /*  do nothing  */
       break;
@@ -5182,11 +5182,11 @@ p_tabw_scroll_event_cb ( GtkWidget *widget
     value++;
   }
 
-  /* set value in the rowpage spinbutton 
+  /* set value in the rowpage spinbutton
    * (this fires another callback for update of tabw->rowpage;)
    */
   gtk_adjustment_set_value(GTK_ADJUSTMENT(tabw->rowpage_spinbutton_adj), (gdouble)value);
-  
+
   return FALSE;
 }  /* end p_tabw_scroll_event_cb */
 
@@ -5265,12 +5265,12 @@ p_recreate_tab_widgets(GapStoryBoard *stb
       printf("Internal error: tabw->mount_table is NULL\n");
       return;
     }
-    
+
     tabw->sgpp = sgpp;
-    
+
     if(tabw->fw_tab)
     {
-      /* destroy the old table of frame widgets */      
+      /* destroy the old table of frame widgets */
       for(ii=0; ii < tabw->fw_tab_size; ii++)
       {
         p_frame_widget_destroy(tabw->fw_tab[ii]);
@@ -5279,7 +5279,7 @@ p_recreate_tab_widgets(GapStoryBoard *stb
       g_free(tabw->fw_tab);
       tabw->fw_tab = NULL;
     }
-    
+
     if(tabw->fw_gtk_table)
     {
       /* destroy the old table widget */
@@ -5294,11 +5294,11 @@ p_recreate_tab_widgets(GapStoryBoard *stb
     {
       gint32 l_width = 1;
       gint32 l_height = 1;
-      
+
       if(stb->layout_cols > 0)       { tabw->cols = stb->layout_cols; }
       if(stb->layout_rows > 0)       { tabw->rows = stb->layout_rows; }
       if(stb->layout_thumbsize > 0)  { tabw->thumbsize = stb->layout_thumbsize; }
-      
+
       gap_story_get_master_size(stb
                                ,&l_width
                                ,&l_height);
@@ -5312,16 +5312,16 @@ p_recreate_tab_widgets(GapStoryBoard *stb
         tabw->thumb_width = tabw->thumbsize * l_width / l_height;
         tabw->thumb_height = tabw->thumbsize;
       }
- 
-      l_act_elems = gap_story_count_active_elements(stb, 1 /* track */ );   
+
+      l_act_elems = gap_story_count_active_elements(stb, 1 /* track */ );
     }
 
     if(gap_debug) printf("p_recreate_tab_widgets: rows:%d cols:%d\n", (int)tabw->rows ,(int)tabw->cols );
-    
+
     table = gtk_table_new (tabw->rows, tabw->cols, TRUE);
     gtk_widget_show (table);
     tabw->fw_gtk_table = table;
-    
+
     gtk_table_attach (GTK_TABLE (tabw->mount_table)
                       , tabw->fw_gtk_table
                       , tabw->mount_col, tabw->mount_col+1
@@ -5329,7 +5329,7 @@ p_recreate_tab_widgets(GapStoryBoard *stb
                       , (GtkAttachOptions) (GTK_FILL | GTK_EXPAND)
                       , (GtkAttachOptions) (GTK_FILL | GTK_EXPAND)
                       , 0, 0);
- 
+
 
     /* allocate as much frame widgets as can be displayed
      * in the table
@@ -5353,7 +5353,7 @@ p_recreate_tab_widgets(GapStoryBoard *stb
          if(ii < l_max_ii)
          {
            GapStbFrameWidget *fw;
-          
+
            fw = tabw->fw_tab[ii];
            gtk_table_attach (GTK_TABLE (tabw->fw_gtk_table)
                         , fw->vbox
@@ -5607,7 +5607,7 @@ p_create_button_bar(GapStbTabWidgets *tabw
                                        , 1   /* min */
                                        , 1   /* max */
                                        , 1, 10, 10);
-  tabw->rowpage_spinbutton_adj = spinbutton_adj;                                           
+  tabw->rowpage_spinbutton_adj = spinbutton_adj;
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (spinbutton_adj), 1, 0);
   gtk_widget_show (spinbutton);
   gtk_box_pack_start (GTK_BOX (hbox), spinbutton, FALSE, FALSE, 2);
@@ -5651,18 +5651,18 @@ p_create_button_bar(GapStbTabWidgets *tabw
                     tabw);
   /* startup with invisble vscale */
   gtk_widget_hide (vscale);
-    
+
   tabw->rowpage_vscale_adj = adj;
   tabw->rowpage_vscale = vscale;
- 
-  /* setup the hbox that contains the button bar 
+
+  /* setup the hbox that contains the button bar
    * as drop destination.
    * (for inserting clips at end of storyboard, and for
    * enable drop destination in case when th storyboard is empty
    * and has not frame widget that can act as DND target).
    */
   p_widget_init_dnd_drop(hbox, tabw);
-      
+
 }  /* end p_create_button_bar */
 
 
@@ -5707,7 +5707,7 @@ gap_storyboard_dialog(GapStbMainGlobalParams *sgpp)
     {
        chk_rc = gap_lib_chk_framerange(ainfo_ptr);
        gap_lib_free_ainfo(&ainfo_ptr);
-       
+
        if(0 != chk_rc)
        {
          return;
@@ -5785,7 +5785,7 @@ gap_storyboard_dialog(GapStbMainGlobalParams *sgpp)
   p_make_menu_help(sgpp, menu_bar);
 
   gtk_widget_show(menu_bar);
- 
+
   /* the hbox */
   hbox = gtk_hbox_new (FALSE, 2);
   gtk_container_set_border_width (GTK_CONTAINER (hbox), 2);
@@ -5794,7 +5794,7 @@ gap_storyboard_dialog(GapStbMainGlobalParams *sgpp)
 
 
   /* XXXXXXXXXXX Start of the CLIPLIST widgets  XXXXXXXXXXXX */
-  
+
 
   /* the frame_event_box (to catch key events) */
   frame_event_box = gtk_event_box_new ();
@@ -5815,7 +5815,7 @@ gap_storyboard_dialog(GapStbMainGlobalParams *sgpp)
   gtk_container_set_border_width (GTK_CONTAINER (clp_vbox), 2);
   gtk_container_add (GTK_CONTAINER (clp_frame), clp_vbox);
   gtk_widget_show (clp_vbox);
- 
+
   /* mount_table for the cliplist table */
   table = gtk_table_new (2, 2, FALSE);
   gtk_widget_show (table);
@@ -5930,18 +5930,18 @@ gap_storyboard_dialog(GapStbMainGlobalParams *sgpp)
   {
     GtkWidget *button;
     GtkWidget *progress_bar;
-     
-     
+
+
     progress_bar = gtk_progress_bar_new ();
     gtk_progress_bar_set_text(GTK_PROGRESS_BAR(progress_bar), " ");
     gtk_widget_show (progress_bar);
 
     gtk_box_pack_start (GTK_BOX (hbox), progress_bar, TRUE, TRUE, 0);
-  
+
     sgpp->progress_bar = progress_bar;
 
 
-    button = gtk_button_new_with_label (_("Cancel"));  
+    button = gtk_button_new_with_label (_("Cancel"));
     gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 0);
     gtk_widget_show (button);
     g_signal_connect (G_OBJECT (button), "clicked",
@@ -5966,10 +5966,10 @@ gap_storyboard_dialog(GapStbMainGlobalParams *sgpp)
   sgpp->initialized = TRUE;
   p_widget_sensibility(sgpp);
   gtk_widget_show (dialog);
-  
+
   /* init player window */
   p_player_img_mode_cb(NULL, sgpp);
-  
+
   gtk_main ();
   gdk_flush ();
 
@@ -6009,9 +6009,7 @@ p_tabw_gen_otone_dialog(GapStbTabWidgets *tabw)
   gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_INT);
   argv[l_ii].constraint = TRUE;
   argv[l_ii].label_txt = _("Input Audiotrack:");
-  argv[l_ii].help_txt  = _("select input audiotrack in the videofile(s)."
-                           "(if your input videos have multiple audiotracks "
-                           "values > 1 usually refer to non-default language)");
+  argv[l_ii].help_txt  = _("select input audiotrack in the videofile(s).");
   argv[l_ii].int_min   = (gint)1;
   argv[l_ii].int_max   = (gint)99;
   argv[l_ii].int_ret   = (gint)1;
@@ -6301,7 +6299,7 @@ p_tabw_master_prop_dialog(GapStbTabWidgets *tabw, gboolean new_flag)
 
 
   l_ii++;
-  
+
   l_rc = gap_arr_ok_cancel_dialog( _("Master Properties"),
                                  _("Settings"),
                                   G_N_ELEMENTS(argv), argv);
@@ -6392,14 +6390,14 @@ on_stb_elem_drag_begin (GtkWidget        *widget,
 
   sgpp = (GapStbMainGlobalParams *)tabw->sgpp;
   if(sgpp == NULL)   { return; }
-  
+
   if(fw->pv_ptr)
   {
     if(sgpp->dnd_pixbuf)
-    { 
+    {
       g_object_unref(sgpp->dnd_pixbuf);
     }
-    
+
     /* get the icon from (a duplicate of the) repaint buffer */
     sgpp->dnd_pixbuf = gap_pview_get_repaint_pixbuf(fw->pv_ptr);
     if(sgpp->dnd_pixbuf)
@@ -6409,7 +6407,7 @@ on_stb_elem_drag_begin (GtkWidget        *widget,
 	, -7   /* hot_x */
 	, -7   /* hot_y */
 	);
-	
+
     }
   }
 }  /* end on_stb_elem_drag_begin */
@@ -6461,12 +6459,12 @@ printf("on_stb_elem_drag_delete FW:%d\n", (int)fw);
  * on_clip_elements_dropped
  * ---------------------------------
  * signal handler called when uri list
- * was dropped onto a frame widget 
+ * was dropped onto a frame widget
  *   or another widget that can act as drop destination.
  * (the thumbnail icon in a storyboard)
  * Note:
  * this implementation replaces the current selection,
- * with the elements received from the DND drop operation. 
+ * with the elements received from the DND drop operation.
  */
 static void
 on_clip_elements_dropped (GtkWidget        *widget,
@@ -6490,7 +6488,7 @@ on_clip_elements_dropped (GtkWidget        *widget,
   gboolean auto_created;
 
   if(gap_debug)
-  {   
+  {
     printf("  ** >> DROP handler(COPY:%d MOVE:%d )  context->action:%d  x:%d y:%d\n"
       , (int)GDK_ACTION_COPY
       , (int)GDK_ACTION_MOVE
@@ -6505,7 +6503,7 @@ on_clip_elements_dropped (GtkWidget        *widget,
   insert_after = TRUE;
   auto_created = FALSE;
   dest_story_id = -2;   /* unknown id for insert after last elem */
-  
+
   fw = g_object_get_data (G_OBJECT (widget)
                         , GAP_STORY_FW_PTR);
 
@@ -6536,7 +6534,7 @@ on_clip_elements_dropped (GtkWidget        *widget,
 
 
   if(tabw == NULL)   { return; }
-     
+
   sgpp = (GapStbMainGlobalParams *)tabw->sgpp;
   if(sgpp == NULL)   { return; }
 
@@ -6569,7 +6567,7 @@ on_clip_elements_dropped (GtkWidget        *widget,
 	fw_drop_ptr = (GapStbFrameWidget **)selection_data->data;
 	fw_drop = *fw_drop_ptr;
 	if(gap_debug)
-	{   
+	{
           printf("on_clip_elements_dropped FW_DROP:%d\n", (int)fw_drop);
         }
 	if (fw_drop == NULL)
@@ -6580,7 +6578,7 @@ on_clip_elements_dropped (GtkWidget        *widget,
 	if ((tabw_src == NULL)
 	|| ((tabw_src != sgpp->cll_widgets) && (tabw_src != sgpp->stb_widgets)))
 	{
-          /* if tabw of the droped frame widget 
+          /* if tabw of the droped frame widget
            * is not equal to one of stb_widgets or cll_widgets
            * assume that the sender was another application
            * which is not supported for drop type TARGET_STORYBOARD_ELEM.
@@ -6590,33 +6588,33 @@ on_clip_elements_dropped (GtkWidget        *widget,
         stb_src = p_tabw_get_stb_ptr(tabw_src);
 	if (auto_created)
 	{
-	  /* clone properties from the source storyboard 
+	  /* clone properties from the source storyboard
 	   * because the stb_dst was created in this DND drop action
 	   */
           gap_story_set_properties_like_sample_storyboard (stb_dst, stb_src);
 	}
-	
+
 	/* select the storyboard elem referred by fw_drop */
 	if(fw_drop->stb_elem_refptr)
 	{
 	  fw_drop->stb_elem_refptr->selected = TRUE;
 	}
 	p_tabw_edit_copy_cb(widget, tabw_src);
-	
+
       }
       break;
     default:
       return;
   }
-    
+
   if(sgpp->curr_selection != NULL)
   {
-     
+
      if (gap_debug)
      {
        gap_story_debug_print_list(sgpp->curr_selection);
      }
-     
+
      /* insert into destination list via standard paste operation */
      p_tabw_edit_paste_at_story_id (sgpp
                     , stb_dst
@@ -6642,7 +6640,7 @@ on_clip_elements_dropped (GtkWidget        *widget,
       p_tabw_edit_cut_cb(widget, tabw_src);
     }
   }
-  
+
   if (info == TARGET_URILIST)
   {
     /* restore selection as it was before the DND of uri-list caused paste */
@@ -6711,7 +6709,7 @@ p_get_or_auto_create_storyboard (GapStbMainGlobalParams *sgpp
       tabw->filename_maxlen = sizeof(sgpp->storyboard_filename);
     }
 
-    
+
     /* refresh storyboard layout and thumbnail list widgets */
     p_recreate_tab_widgets( l_stb
                            ,tabw
@@ -6726,7 +6724,7 @@ p_get_or_auto_create_storyboard (GapStbMainGlobalParams *sgpp
 
   return(l_stb);
 
-}  /* end p_get_or_auto_create_storyboard */ 
+}  /* end p_get_or_auto_create_storyboard */
 
 
 
@@ -6745,9 +6743,9 @@ p_dnd_selection_to_stb_list(const char *uri_list)
   prev_elem = NULL;
   list_root = NULL;
   stb_dnd = NULL;
-  
+
   g_return_val_if_fail (uri_list != NULL, NULL);
-  
+
   p = uri_list;
   /* We don't actually try to validate the URI according to RFC
    * 2396, or even check for allowed characters - we just ignore
@@ -6769,7 +6767,7 @@ p_dnd_selection_to_stb_list(const char *uri_list)
           {
             q++;
           }
-          
+
           if (q > p)
           {
               q--;
@@ -6781,7 +6779,7 @@ p_dnd_selection_to_stb_list(const char *uri_list)
               {
                 gchar *uri;
                 GapStoryElem *elem;
-                
+
                 uri = g_strndup (p, q - p + 1);
                 elem = p_check_and_convert_uri_to_stb_elem(uri, prev_elem);
                 if (elem)
@@ -6822,7 +6820,7 @@ p_dnd_selection_to_stb_list(const char *uri_list)
  * check if the specified uri refers to
  * an existing local file and convert
  * to storyboard element.
- * return the converted elem 
+ * return the converted elem
  * return NULL in case where conversion was not possible
  *             or in case the element could be merged into prev_elem
  */
@@ -6836,7 +6834,7 @@ p_check_and_convert_uri_to_stb_elem(const char *uri, GapStoryElem *prev_elem)
   int res;
   gboolean is_localfile;
   GError *error = NULL;
-  
+
   elem = NULL;
   hostname = NULL;
   filename = g_filename_from_uri (uri, &hostname, &error);
@@ -6860,7 +6858,7 @@ p_check_and_convert_uri_to_stb_elem(const char *uri, GapStoryElem *prev_elem)
 
   res = gethostname (this_hostname, 256);
   this_hostname[256] = 0;
-  
+
   is_localfile = FALSE;
   if (hostname == NULL)
   {
@@ -6915,13 +6913,13 @@ p_check_and_merge_range_if_possible(GapStoryElem *elem, GapStoryElem *prev_elem)
   {
     return (FALSE);
   }
-  
+
   if(elem->record_type != GAP_STBREC_VID_FRAMES)
   {
     return (FALSE);
   }
-  
-  
+
+
   if (prev_elem->record_type != GAP_STBREC_VID_FRAMES)
   {
     return (FALSE);
@@ -6935,9 +6933,9 @@ p_check_and_merge_range_if_possible(GapStoryElem *elem, GapStoryElem *prev_elem)
      prev_elem->to_frame = elem->to_frame;
      return (TRUE);
   }
-  
+
   return (FALSE);
-  
+
 }  /* end p_check_and_merge_range_if_possible */
 
 
@@ -6967,14 +6965,14 @@ p_create_stb_elem_from_filename (const char *filename)
     stb_elem->from_frame = current_frame;
     stb_elem->to_frame = current_frame;
   }
-  
+
   if(gap_debug)
   {
     printf("p_create_stb_elem_from_filename  current_frame:%d\n"
        , (int)current_frame);
     gap_story_debug_print_elem(stb_elem);
   }
-  
+
   return (stb_elem);
 }  /* end p_create_stb_elem_from_filename */
 
@@ -6987,7 +6985,7 @@ p_create_stb_elem_from_filename (const char *filename)
  *  TODO: this drop should be restricted to GDK_ACTION_COPY
  *  but if we remove the GDK_ACTION_MOVE in the gtk_drag_dest_set
  *  call, move would be disabled too for the application internal
- *  drop-move of typ TARGET_STORYBOARD_ELEM 
+ *  drop-move of typ TARGET_STORYBOARD_ELEM
  * drag & drop support for storyboard elem
  * only local in the same application.
  */

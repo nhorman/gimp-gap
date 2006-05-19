@@ -67,7 +67,7 @@
 
 #define LAYERSTACK_TOP  -1
 #define LAYERSTACK_CURR 1
-#define LAYERSTACK_BASE 0 
+#define LAYERSTACK_BASE 0
 
 #define OBJ_DATA_KEY_ATTW     "attw"
 #define OBJ_DATA_KEY_IMG_IDX  "img_idx"
@@ -195,12 +195,12 @@ p_attw_prop_response(GtkWidget *widget
 {
   GtkWidget *dlg;
   GapStbMainGlobalParams  *sgpp;
- 
+
   sgpp = attw->sgpp;
   switch (response_id)
   {
     case GAP_STORY_ATT_RESPONSE_RESET:
-      if((attw->stb_elem_bck) 
+      if((attw->stb_elem_bck)
       && (attw->stb_elem_refptr))
       {
         p_attw_prop_reset_all(attw);
@@ -280,7 +280,7 @@ p_attw_prop_reset_all(GapStbAttrWidget *attw)
       p_attw_update_properties(attw);
     }
   }
-  
+
 }  /* end p_attw_prop_reset_all */
 
 
@@ -293,20 +293,20 @@ static void
 p_attw_timer_job(GapStbAttrWidget *attw)
 {
   GapStbMainGlobalParams  *sgpp;
- 
+
   /*if(gap_debug) printf("\np_attw_timer_job: START\n");*/
   sgpp = attw->sgpp;
 
-  if((attw) 
+  if((attw)
   && (sgpp))
   {
-    
+
     if(attw->go_timertag >= 0)
     {
       g_source_remove(attw->go_timertag);
     }
     attw->go_timertag = -1;
-    
+
     p_render_gfx(attw, 0);
     p_render_gfx(attw, 1);
   }
@@ -327,7 +327,7 @@ p_attw_update_properties(GapStbAttrWidget *attw)
   if(attw->go_timertag < 0)
   {
     gint32 delay_millisec;
-    
+
     delay_millisec = 100;
     attw->go_timertag = (gint32) g_timeout_add(delay_millisec
                                              , (GtkFunction)p_attw_timer_job
@@ -368,13 +368,13 @@ p_attw_update_sensitivity(GapStbAttrWidget *attw)
     gtk_widget_set_sensitive(attw->att_rows[ii].button_from, sensitive);
     gtk_widget_set_sensitive(attw->att_rows[ii].button_to, sensitive);
     gtk_widget_set_sensitive(attw->att_rows[ii].button_dur, sensitive);
-    
+
   }
- 
+
   sensitive = ((attw->stb_elem_refptr->att_fit_width == TRUE)
             || (attw->stb_elem_refptr->att_fit_height == TRUE));
   gtk_widget_set_sensitive(attw->keep_proportions_toggle, sensitive);
-  
+
 }  /* end p_attw_update_sensitivity */
 
 
@@ -427,7 +427,7 @@ p_get_default_attribute(GapStbAttrWidget *attw
       }
       return (0.75);  /* indicates 75% opacity */
     }
-  
+
     if(bevent->state & GDK_SHIFT_MASK)
     {
       if(attw->stb_elem_bck)
@@ -461,7 +461,7 @@ p_attw_start_button_clicked_callback(GtkWidget *widget
     if(attw->stb_elem_refptr)
     {
       gdouble attr_value;
-      
+
       attr_value = CONVERT_TO_100PERCENT * p_get_default_attribute(attw
                         , bevent
                         , att_type_idx
@@ -470,7 +470,7 @@ p_attw_start_button_clicked_callback(GtkWidget *widget
 
       gtk_adjustment_set_value(GTK_ADJUSTMENT(attw->att_rows[att_type_idx].spinbutton_from_adj)
                                 , attr_value);
-      
+
     }
   }
 }  /* end p_attw_start_button_clicked_callback */
@@ -491,7 +491,7 @@ p_attw_end_button_clicked_callback(GtkWidget *widget
     if(attw->stb_elem_refptr)
     {
       gdouble attr_value;
-      
+
       attr_value = CONVERT_TO_100PERCENT * p_get_default_attribute(attw
                         , bevent
                         , att_type_idx
@@ -500,7 +500,7 @@ p_attw_end_button_clicked_callback(GtkWidget *widget
 
       gtk_adjustment_set_value(GTK_ADJUSTMENT(attw->att_rows[att_type_idx].spinbutton_to_adj)
                                 , attr_value);
-      
+
     }
   }
 }  /* end p_attw_end_button_clicked_callback */
@@ -523,9 +523,9 @@ p_attw_dur_button_clicked_callback(GtkWidget *widget
     {
       gint ii;
       gint32 duration;
-      
+
       duration = attw->stb_elem_refptr->att_arr_value_dur[att_type_idx];
-      
+
       for(ii = 0; ii < GAP_STB_ATT_TYPES_ARRAY_MAX; ii++)
       {
         if(attw->stb_elem_refptr->att_arr_enable[ii] == TRUE)
@@ -534,7 +534,7 @@ p_attw_dur_button_clicked_callback(GtkWidget *widget
                                   , duration);
         }
       }
-      
+
     }
   }
 }  /* end p_attw_dur_button_clicked_callback */
@@ -543,7 +543,7 @@ p_attw_dur_button_clicked_callback(GtkWidget *widget
 /* ----------------------------------
  * p_attw_gdouble_adjustment_callback
  * ----------------------------------
- * 
+ *
  * Notes: the value we get from the spinbutton is divided by 100
  *        because the GUI presents 100 percent as 100.0
  *        but internal representation uses the value 1.0
@@ -562,10 +562,10 @@ p_attw_gdouble_adjustment_callback(GtkObject *obj, gdouble *val)
     if(attw->stb_elem_refptr)
     {
       l_val = (GTK_ADJUSTMENT(obj)->value) / CONVERT_TO_100PERCENT;
-      if(gap_debug) 
+      if(gap_debug)
       {
         printf("gdouble_adjustment_callback: old_val:%f val:%f\n"
-          , (float)*val 
+          , (float)*val
           , (float)l_val
           );
       }
@@ -715,7 +715,7 @@ p_attw_preview_events_cb (GtkWidget *widget
     return FALSE;
   }
   sgpp = attw->sgpp;
-  
+
   img_idx = (gint)g_object_get_data( G_OBJECT(widget), OBJ_DATA_KEY_IMG_IDX );
   if(img_idx != 0)
   {
@@ -738,18 +738,18 @@ p_attw_preview_events_cb (GtkWidget *widget
           dup_id = gimp_image_duplicate(attw->gfx_tab[img_idx].image_id);
           gimp_display_new(dup_id);
       }
-      
+
       return FALSE;
       break;
 
     case GDK_EXPOSE:
-      if(gap_debug) 
+      if(gap_debug)
       {
         printf("p_attw_preview_events_cb GDK_EXPOSE widget:%d  img_idx:%d\n"
                               , (int)widget
                               , (int)img_idx
                               );
-      } 
+      }
 
       eevent = (GdkEventExpose *) event;
 
@@ -770,7 +770,7 @@ p_attw_preview_events_cb (GtkWidget *widget
  * p_calculate_render_attributes
  * -----------------------------------------
  * NOTE: filtermacro processing is ignored,
- *       the preview 
+ *       the preview
  */
 static void
 p_calculate_render_attributes(GapStbAttrWidget *attw
@@ -785,11 +785,11 @@ p_calculate_render_attributes(GapStbAttrWidget *attw
   gdouble att_tab[GAP_STB_ATT_GFX_ARRAY_MAX][GAP_STB_ATT_TYPES_ARRAY_MAX];
   gdouble pv_frame_width;
   gdouble pv_frame_height;
-  
+
   pv_master_width = gimp_image_width(attw->gfx_tab[img_idx].image_id) * PVIEW_TO_MASTER_SCALE;
   pv_master_height = gimp_image_height(attw->gfx_tab[img_idx].image_id) * PVIEW_TO_MASTER_SCALE;
 
-  master_scale = (gdouble)pv_master_width 
+  master_scale = (gdouble)pv_master_width
                / (gdouble)(MAX( 1, attw->stb_refptr->master_width));
 
   pv_frame_width = (gdouble)gimp_drawable_width(attw->gfx_tab[img_idx].orig_layer_id) * master_scale;
@@ -826,11 +826,11 @@ p_calculate_render_attributes(GapStbAttrWidget *attw
     , att_tab [img_idx][GAP_STB_ATT_TYPE_MOVE_Y]
     );
 
-  
-}  /* end p_calculate_render_attributes */ 
+
+}  /* end p_calculate_render_attributes */
 
 
- 
+
 /* -----------------------------------------
  * p_check_and_make_orig_default_layer
  * -----------------------------------------
@@ -855,19 +855,19 @@ p_check_and_make_orig_default_layer(GapStbAttrWidget *attw, gint img_idx)
                   , 100.0   /* full opacity */
                   , 0       /* normal mode */
                   );
-    
+
     gimp_image_add_layer (image_id, layer_id, LAYERSTACK_TOP);
     red   = 0.42;
     green = 0.90;
     blue  = 0.35;
     alpha = 1.0;
     gap_layer_clear_to_color(layer_id, red, green, blue, alpha);
-    
+
     attw->gfx_tab[img_idx].orig_layer_id = layer_id;
     attw->gfx_tab[img_idx].orig_layer_is_fake = TRUE;
   }
   gimp_drawable_set_visible(attw->gfx_tab[img_idx].orig_layer_id, FALSE);
-  
+
 }  /* end p_check_and_make_orig_default_layer */
 
 
@@ -887,7 +887,7 @@ p_create_color_layer(GapStbAttrWidget *attw, gint32 image_id
   gdouble ofs_y;
   gdouble pv_master_width;   /* master width scaled to preview size */
   gdouble pv_master_height;  /* master height scaled to preview size */
-  
+
   layer_id = gimp_layer_new(image_id
                   , name
                   , gimp_image_width(image_id)
@@ -899,22 +899,22 @@ p_create_color_layer(GapStbAttrWidget *attw, gint32 image_id
   gimp_image_add_layer (image_id, layer_id, stackposition);
   gap_layer_clear_to_color(layer_id, red, green, blue, 1.0);
   gimp_drawable_set_visible(layer_id, TRUE);
-  
+
   pv_master_width = (gdouble)gimp_image_width(image_id) * PVIEW_TO_MASTER_SCALE;
   pv_master_height = (gdouble)gimp_image_height(image_id) * PVIEW_TO_MASTER_SCALE;
   ofs_x = ((gdouble)gimp_image_width(image_id) - pv_master_width) / 2.0;
   ofs_y = ((gdouble)gimp_image_height(image_id) - pv_master_height) / 2.0;
 
   /* green border */
-  {  
+  {
     GimpRGB  color;
     GimpRGB  bck_color;
-    
+
     color.r = 0.25;
     color.g = 0.80;
     color.b = 0.17;
     color.a = 1.0;
-    
+
     /* selection for green rectangle (2 pixels border around master size) */
     gimp_rect_select(image_id
                   , ofs_x -2
@@ -931,11 +931,11 @@ p_create_color_layer(GapStbAttrWidget *attw, gint32 image_id
     /* fill the drawable (ignoring selections) */
     gimp_edit_fill(layer_id, GIMP_BACKGROUND_FILL);
 
-    
+
     /* restore BG color in the context */
     gimp_context_set_background(&bck_color);
   }
-  
+
   gimp_rect_select(image_id
                   , ofs_x
                   , ofs_y
@@ -945,11 +945,11 @@ p_create_color_layer(GapStbAttrWidget *attw, gint32 image_id
                   , 0       /* gint32 feather */
                   , 0.0     /* gdouble feather radius */
                   );
-                  
+
   gimp_edit_clear(layer_id);
   gimp_selection_none(image_id);
-                 
-  
+
+
   return (layer_id);
 }  /* end p_create_color_layer */
 
@@ -1018,13 +1018,13 @@ static void
 p_create_gfx_image(GapStbAttrWidget *attw, gint img_idx)
 {
   gint32 image_id;
-  
+
   image_id = gimp_image_new( attw->gfx_tab[img_idx].pv_ptr->pv_width
                            , attw->gfx_tab[img_idx].pv_ptr->pv_height
                            , GIMP_RGB
                            );
-  gimp_image_undo_disable (image_id); 
-  
+  gimp_image_undo_disable (image_id);
+
   attw->gfx_tab[img_idx].base_layer_id = p_create_base_layer(attw, image_id);
   attw->gfx_tab[img_idx].deco_layer_id = p_create_deco_layer(attw, image_id);
   attw->gfx_tab[img_idx].orig_layer_id = -1;  /* to be created later */
@@ -1042,10 +1042,10 @@ p_delete_gfx_images(GapStbAttrWidget *attw)
 {
   gimp_image_delete(attw->gfx_tab[0].image_id);
   gimp_image_delete(attw->gfx_tab[1].image_id);
-  
+
   attw->gfx_tab[0].image_id = -1;
   attw->gfx_tab[1].image_id = -1;
-  
+
 }  /* end p_delete_gfx_images */
 
 
@@ -1066,18 +1066,18 @@ p_render_gfx(GapStbAttrWidget *attw, gint img_idx)
   GapStoryCalcAttr  calculate_attributes;
   GapStoryCalcAttr  *calculated;
   gint32  image_id;
-  
+
   image_id = attw->gfx_tab[img_idx].image_id;
   calculated = &calculate_attributes;
 
-  p_check_and_make_orig_default_layer(attw, img_idx); 
-  
+  p_check_and_make_orig_default_layer(attw, img_idx);
+
   p_calculate_render_attributes (attw
      , img_idx
      , calculated
      );
-  
-  
+
+
   /* if size is not equal calculated size remove curr layer
    * to force recreation in desired size
    */
@@ -1092,18 +1092,18 @@ p_render_gfx(GapStbAttrWidget *attw, gint img_idx)
      }
   }
 
-  /* check and recreate the current layer at stackposition 1 */  
+  /* check and recreate the current layer at stackposition 1 */
   if (attw->gfx_tab[img_idx].curr_layer_id < 0)
   {
     gint32 new_layer_id;
- 
-    
+
+
     new_layer_id = gimp_layer_copy(attw->gfx_tab[img_idx].orig_layer_id);
     gimp_image_add_layer (image_id, new_layer_id, LAYERSTACK_CURR);
     gimp_drawable_set_name(new_layer_id, LAYERNAME_CURR);
     gimp_layer_scale(new_layer_id, calculated->width, calculated->height, 0);
     gimp_drawable_set_visible(new_layer_id, TRUE);
-     
+
     attw->gfx_tab[img_idx].curr_layer_id = new_layer_id;
   }
 
@@ -1121,8 +1121,8 @@ p_render_gfx(GapStbAttrWidget *attw, gint img_idx)
       gimp_image_raise_layer (image_id, layer_id);
     }
   }
-  
-  
+
+
   /* set offsets and opacity */
   gimp_layer_set_offsets(attw->gfx_tab[img_idx].curr_layer_id
                         , calculated->x_offs
@@ -1136,7 +1136,7 @@ p_render_gfx(GapStbAttrWidget *attw, gint img_idx)
   gimp_drawable_set_visible(attw->gfx_tab[img_idx].deco_layer_id, TRUE);
   gimp_drawable_set_visible(attw->gfx_tab[img_idx].curr_layer_id, TRUE);
   gimp_drawable_set_visible(attw->gfx_tab[img_idx].base_layer_id, TRUE);
-                        
+
   /* render the preview from image */
   gap_pview_render_from_image_duplicate (attw->gfx_tab[img_idx].pv_ptr
                                 , image_id
@@ -1157,7 +1157,7 @@ p_update_framenr_labels(GapStbAttrWidget *attw, gint img_idx, gint32 framenr)
 {
   char    txt_buf[100];
   gdouble l_speed_fps;
-  
+
   if(attw == NULL) { return; }
   if(attw->stb_elem_refptr == NULL) { return; }
 
@@ -1175,14 +1175,14 @@ p_update_framenr_labels(GapStbAttrWidget *attw, gint img_idx, gint32 framenr)
       l_speed_fps = attw->stb_refptr->master_framerate;
     }
   }
-  
+
   gap_timeconv_framenr_to_timestr(framenr -1
                          , l_speed_fps
                          , txt_buf
                          , sizeof(txt_buf)
                          );
   gtk_label_set_text ( GTK_LABEL(attw->gfx_tab[img_idx].frametime_label), txt_buf);
-  
+
 }  /* end p_update_framenr_labels */
 
 
@@ -1195,12 +1195,12 @@ p_get_relevant_duration(GapStbAttrWidget *attw, gint img_idx)
 {
   gint32 duration;
 
-  /* for the start frame ( img_idx ==0) always use duration 0 */    
+  /* for the start frame ( img_idx ==0) always use duration 0 */
   duration = 0;
   if (img_idx != 0)
   {
     gint ii;
-    
+
     /* for the end frame pick the duration from the first enabled attribute */
     for(ii=0; ii < GAP_STB_ATT_TYPES_ARRAY_MAX; ii++)
     {
@@ -1210,9 +1210,9 @@ p_get_relevant_duration(GapStbAttrWidget *attw, gint img_idx)
         break;
       }
     }
-    
+
   }
-  
+
   return(duration);
 }  /* end p_get_relevant_duration */
 
@@ -1228,19 +1228,19 @@ static void
 p_update_full_preview_gfx(GapStbAttrWidget *attw)
 {
    gint img_idx;
-   
+
    for(img_idx = 0; img_idx < GAP_STB_ATT_GFX_ARRAY_MAX; img_idx++)
    {
      if(attw->gfx_tab[img_idx].auto_update)
      {
        gint32 duration;
-     
+
        duration = p_get_relevant_duration(attw, img_idx);
        p_create_or_replace_orig_layer (attw, img_idx, duration);
        p_render_gfx (attw, img_idx);
      }
    }
-   
+
 }  /* end p_update_full_preview_gfx */
 
 
@@ -1256,7 +1256,7 @@ p_update_full_preview_gfx(GapStbAttrWidget *attw)
  *      orig_layer_local_framenr;
  *      orig_layer_seltrack;
  *     *orig_layer_filename;
- *  
+ *
  */
 static gboolean
 p_stb_reg_equals_orig_layer(GapStbAttrWidget *attw
@@ -1264,7 +1264,7 @@ p_stb_reg_equals_orig_layer(GapStbAttrWidget *attw
                          , GapStoryLocateRet *stb_ret
                          , const char *filename)
 {
-  if (stb_ret->stb_elem->record_type 
+  if (stb_ret->stb_elem->record_type
   != attw->gfx_tab[img_idx].orig_layer_record_type)
   {
     return(FALSE);
@@ -1278,7 +1278,7 @@ p_stb_reg_equals_orig_layer(GapStbAttrWidget *attw
   {
     return(FALSE);
   }
-  
+
   if (attw->gfx_tab[img_idx].orig_layer_filename == NULL)
   {
      if(filename != NULL)
@@ -1297,7 +1297,7 @@ p_stb_reg_equals_orig_layer(GapStbAttrWidget *attw
        return(FALSE);
      }
   }
-  
+
   return(TRUE);
 }
 
@@ -1315,7 +1315,7 @@ p_destroy_orig_layer(GapStbAttrWidget *attw
      gimp_image_remove_layer(attw->gfx_tab[img_idx].image_id
                             , attw->gfx_tab[img_idx].orig_layer_id);
      attw->gfx_tab[img_idx].orig_layer_id = -1;
-     
+
    }
 
    attw->gfx_tab[img_idx].orig_layer_record_type = GAP_STBREC_VID_UNKNOWN;
@@ -1356,7 +1356,7 @@ p_check_orig_layer_up_to_date(GapStbAttrWidget *attw
    /* remove orig layer if already exists */
    if(attw->gfx_tab[img_idx].orig_layer_id >= 0)
    {
-    
+
      if (p_stb_reg_equals_orig_layer(attw, img_idx, stb_ret, filename) == TRUE)
      {
        return (TRUE);  /* OK orig layer already up to date */
@@ -1364,7 +1364,7 @@ p_check_orig_layer_up_to_date(GapStbAttrWidget *attw
    }
    p_destroy_orig_layer(attw, img_idx);
 
-   
+
    return (FALSE);
 }  /* end p_check_orig_layer_up_to_date */
 
@@ -1392,7 +1392,7 @@ p_create_or_replace_orig_layer (GapStbAttrWidget *attw
    gint32     l_layer_id;
    char      *l_filename;
    gint32     l_framenr;
-   
+
 
    l_layer_id = -1;
    l_filename = NULL;
@@ -1410,7 +1410,7 @@ p_create_or_replace_orig_layer (GapStbAttrWidget *attw
 
    {
      GapStoryLocateRet *stb_ret;
-     
+
      stb_ret = gap_story_locate_framenr(attw->stb_refptr
                                     , l_framenr
                                     , attw->stb_elem_refptr->track
@@ -1430,13 +1430,13 @@ p_create_or_replace_orig_layer (GapStbAttrWidget *attw
                          , l_filename) == TRUE)
          {
            g_free(stb_ret);
-           if(l_filename) 
+           if(l_filename)
            {
              g_free(l_filename);
            }
            return;  /* orig_layer is still up to date, done */
          }
-         
+
          if(stb_ret->stb_elem->record_type == GAP_STBREC_VID_MOVIE)
          {
            if(l_filename)
@@ -1498,7 +1498,7 @@ p_create_or_replace_orig_layer (GapStbAttrWidget *attw
    {
      p_destroy_orig_layer(attw, img_idx);
    }
-   
+
    /* check if we have a valid orig layer, create it if have not
     * (includes setting invisible)
     */
@@ -1531,7 +1531,7 @@ p_fetch_video_frame_as_layer(GapStbMainGlobalParams *sgpp
   gint32 img_bpp;
   gboolean do_scale;
   gint32 l_new_layer_id;
- 
+
   l_new_layer_id  = -1;
   do_scale = FALSE;
 
@@ -1565,13 +1565,13 @@ p_fetch_video_frame_as_layer(GapStbMainGlobalParams *sgpp
        }
     }
 
-    
+
     type = GIMP_RGB_IMAGE;
     if(img_bpp == 4)
     {
       type = GIMP_RGBA_IMAGE;
     }
-     
+
     l_new_layer_id = gimp_layer_new (image_id
                                 , LAYERNAME_ORIG
                                 , img_width
@@ -1579,7 +1579,7 @@ p_fetch_video_frame_as_layer(GapStbMainGlobalParams *sgpp
                                 , type
                                 , 100.0
                                 , GIMP_NORMAL_MODE);
- 
+
     drawable = gimp_drawable_get (l_new_layer_id);
     gimp_pixel_rgn_init (&pixel_rgn, drawable, 0, 0
                       , drawable->width, drawable->height
@@ -1620,19 +1620,19 @@ p_fetch_imagefile_as_layer (const char *img_filename
   gint32 l_new_layer_id;
 
   l_new_layer_id  = -1;
-  
+
   {
     char  *l_filename;
     l_filename = g_strdup(img_filename);
     l_tmp_image_id = gap_lib_load_image(l_filename);
     g_free(l_filename);
   }
-  
+
   if(l_tmp_image_id >= 0)
   {
     gint32  l_layer_id;
     gint    l_src_offset_x, l_src_offset_y;
-          
+
     gimp_image_undo_disable (l_tmp_image_id);
     l_layer_id = gimp_image_flatten(l_tmp_image_id);
     if(l_layer_id < 0)
@@ -1666,7 +1666,7 @@ p_fetch_imagefile_as_layer (const char *img_filename
 
 
   return(l_new_layer_id);
-}  /* end p_fetch_imagefile_as_layer */                   
+}  /* end p_fetch_imagefile_as_layer */
 
 
 
@@ -1684,7 +1684,7 @@ p_attw_comment_entry_update_cb(GtkWidget *widget, GapStbAttrWidget *attw)
   {
     attw->stb_refptr->unsaved_changes = TRUE;
   }
-  
+
   if(attw->stb_elem_refptr->comment == NULL)
   {
     attw->stb_elem_refptr->comment = gap_story_new_elem(GAP_STBREC_VID_COMMENT);
@@ -1697,7 +1697,7 @@ p_attw_comment_entry_update_cb(GtkWidget *widget, GapStbAttrWidget *attw)
       g_free(attw->stb_elem_refptr->comment->orig_src_line);
     }
     attw->stb_elem_refptr->comment->orig_src_line = g_strdup(gtk_entry_get_text(GTK_ENTRY(widget)));
-  } 
+  }
 }  /* end p_attw_comment_entry_update_cb */
 
 
@@ -1744,7 +1744,7 @@ p_create_and_attach_pv_widgets(GapStbAttrWidget *attw
   gtk_container_add (GTK_CONTAINER (event_box), vbox2);
   gtk_widget_set_events (event_box, GDK_BUTTON_PRESS_MASK);
 
- 
+
   /*  The preview  */
   alignment = gtk_alignment_new (0.5, 0.5, 0.0, 0.0);
   gtk_box_pack_start (GTK_BOX (vbox2), alignment, FALSE, FALSE, 1);
@@ -1755,7 +1755,7 @@ p_create_and_attach_pv_widgets(GapStbAttrWidget *attw
    */
   {
     gdouble master_size;
-    
+
     master_size = (gdouble)MAX(attw->stb_refptr->master_width, attw->stb_refptr->master_height);
     thumb_scale = (gdouble)PVIEW_SIZE / master_size;
   }
@@ -1801,11 +1801,11 @@ p_create_and_attach_pv_widgets(GapStbAttrWidget *attw
   gtk_box_pack_start (GTK_BOX (hbox), check_button, FALSE, FALSE, 1);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (check_button)
       , attw->gfx_tab[img_idx].auto_update);
-  gimp_help_set_help_data(check_button, _("automatic update using the refered frame"), NULL);
+  gimp_help_set_help_data(check_button, _("automatic update using the referred frame"), NULL);
   gtk_widget_show(check_button);
-  
+
   g_object_set_data(G_OBJECT(check_button), OBJ_DATA_KEY_ATTW, attw);
-  
+
   g_signal_connect (G_OBJECT (check_button), "toggled",
                     G_CALLBACK (p_attw_auto_update_toggle_update_callback),
                     &attw->gfx_tab[img_idx].auto_update);
@@ -1888,13 +1888,13 @@ p_create_and_attach_att_arr_widgets(const char *row_title
   gtk_table_attach ( GTK_TABLE (table), check_button, col, col+1, row, row+1, GTK_FILL, 0, 0, 0);
   {
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (check_button), *att_arr_enable_ptr);
-                                
-  }                             
+
+  }
   gimp_help_set_help_data(check_button, enable_tooltip, NULL);
   gtk_widget_show(check_button);
-  
+
   g_object_set_data(G_OBJECT(check_button), OBJ_DATA_KEY_ATTW, attw);
-  
+
   g_signal_connect (G_OBJECT (check_button), "toggled",
                     G_CALLBACK (p_attw_enable_toggle_update_callback),
                     att_arr_enable_ptr);
@@ -1929,7 +1929,7 @@ p_create_and_attach_att_arr_widgets(const char *row_title
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, digits);
   attw->att_rows[att_type_idx].spinbutton_from_adj = adj;
   attw->att_rows[att_type_idx].spinbutton_from = spinbutton;
-  
+
   gtk_widget_show (spinbutton);
   gtk_table_attach (GTK_TABLE (table), spinbutton, col, col+1, row, row+1,
                     (GtkAttachOptions) (0),
@@ -1971,7 +1971,7 @@ p_create_and_attach_att_arr_widgets(const char *row_title
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, digits);
   attw->att_rows[att_type_idx].spinbutton_to_adj = adj;
   attw->att_rows[att_type_idx].spinbutton_to = spinbutton;
-  
+
   gtk_widget_show (spinbutton);
   gtk_table_attach (GTK_TABLE (table), spinbutton, col, col+1, row, row+1,
                     (GtkAttachOptions) (0),
@@ -2012,7 +2012,7 @@ p_create_and_attach_att_arr_widgets(const char *row_title
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
   attw->att_rows[att_type_idx].spinbutton_dur_adj = adj;
   attw->att_rows[att_type_idx].spinbutton_dur = spinbutton;
-  
+
   gtk_widget_show (spinbutton);
   gtk_table_attach (GTK_TABLE (table), spinbutton, col, col+1, row, row+1,
                     (GtkAttachOptions) (0),
@@ -2079,7 +2079,7 @@ gap_story_attw_properties_dialog (GapStbAttrWidget *attw)
                          ,GTK_STOCK_CLOSE,  GTK_RESPONSE_CLOSE
                          ,NULL);
   }
-  
+
   attw->attw_prop_dialog = dlg;
 
   g_signal_connect (G_OBJECT (dlg), "response",
@@ -2118,13 +2118,13 @@ gap_story_attw_properties_dialog (GapStbAttrWidget *attw)
   {
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (check_button)
       , attw->stb_elem_refptr->att_fit_width);
-                                
-  }                             
+
+  }
   gimp_help_set_help_data(check_button, _("scale width of frame to fit master width"), NULL);
   gtk_widget_show(check_button);
-  
+
   g_object_set_data(G_OBJECT(check_button), OBJ_DATA_KEY_ATTW, attw);
-  
+
   g_signal_connect (G_OBJECT (check_button), "toggled",
                     G_CALLBACK (p_attw_enable_toggle_update_callback),
                     &attw->stb_elem_refptr->att_fit_width);
@@ -2137,13 +2137,13 @@ gap_story_attw_properties_dialog (GapStbAttrWidget *attw)
   {
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (check_button)
       , attw->stb_elem_refptr->att_fit_height);
-                                
-  }                             
+
+  }
   gimp_help_set_help_data(check_button, _("scale height of frame to fit master height"), NULL);
   gtk_widget_show(check_button);
-  
+
   g_object_set_data(G_OBJECT(check_button), OBJ_DATA_KEY_ATTW, attw);
-  
+
   g_signal_connect (G_OBJECT (check_button), "toggled",
                     G_CALLBACK (p_attw_enable_toggle_update_callback),
                     &attw->stb_elem_refptr->att_fit_height);
@@ -2156,15 +2156,15 @@ gap_story_attw_properties_dialog (GapStbAttrWidget *attw)
   {
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (check_button)
       , attw->stb_elem_refptr->att_keep_proportions);
-                                
-  }                             
+
+  }
   gimp_help_set_help_data(check_button, _("ON: keep proportions at scaling. "
                                           " (this may result in black borders)"
                                           "OFF: allow changes of image proportions at scaling"), NULL);
   gtk_widget_show(check_button);
-  
+
   g_object_set_data(G_OBJECT(check_button), OBJ_DATA_KEY_ATTW, attw);
-  
+
   g_signal_connect (G_OBJECT (check_button), "toggled",
                     G_CALLBACK (p_attw_enable_toggle_update_callback),
                     &attw->stb_elem_refptr->att_keep_proportions);
@@ -2176,7 +2176,7 @@ gap_story_attw_properties_dialog (GapStbAttrWidget *attw)
   {
     gint att_type_idx;
     gint col = 0;
-    
+
     att_type_idx = GAP_STB_ATT_TYPE_OPACITY;
     p_create_and_attach_att_arr_widgets(_("Opacity:")
       , attw
@@ -2186,7 +2186,7 @@ gap_story_attw_properties_dialog (GapStbAttrWidget *attw)
       , att_type_idx
       , 0.0      /* lower constraint for the from/to values */
       , 100.0    /* upper constraint for the from/to values */
-      , 1.0      /* step increment   for the from/to values  */      
+      , 1.0      /* step increment   for the from/to values  */
       , 10.0     /* page increment   for the from/to values */
       , 10.0     /* page size        for the from/to values */
       , 0        /* digits for the from/to values */
@@ -2212,7 +2212,7 @@ gap_story_attw_properties_dialog (GapStbAttrWidget *attw)
       , att_type_idx
       , -1000.0    /* lower constraint for the from/to values */
       ,  1000.0    /* upper constraint for the from/to values */
-      , 1.0        /* step increment   for the from/to values  */      
+      , 1.0        /* step increment   for the from/to values  */
       , 10.0       /* page increment   for the from/to values */
       , 10.0       /* page size        for the from/to values */
       , 2          /* digits for the from/to values */
@@ -2239,7 +2239,7 @@ gap_story_attw_properties_dialog (GapStbAttrWidget *attw)
       , att_type_idx
       , -1000.0    /* lower constraint for the from/to values */
       ,  1000.0    /* upper constraint for the from/to values */
-      , 1.0        /* step increment   for the from/to values  */      
+      , 1.0        /* step increment   for the from/to values  */
       , 10.0       /* page increment   for the from/to values */
       , 10.0       /* page size        for the from/to values */
       , 2          /* digits for the from/to values */
@@ -2265,7 +2265,7 @@ gap_story_attw_properties_dialog (GapStbAttrWidget *attw)
       , att_type_idx
       , 0.0    /* lower constraint for the from/to values */
       , 1000.0 /* upper constraint for the from/to values */
-      , 1.0    /* step increment   for the from/to values  */      
+      , 1.0    /* step increment   for the from/to values  */
       , 10.0   /* page increment   for the from/to values */
       , 10.0   /* page size        for the from/to values */
       , 2      /* digits for the from/to values */
@@ -2291,7 +2291,7 @@ gap_story_attw_properties_dialog (GapStbAttrWidget *attw)
       , att_type_idx
       , -1000.0    /* lower constraint for the from/to values */
       ,  1000.0    /* upper constraint for the from/to values */
-      , 1.0        /* step increment   for the from/to values  */      
+      , 1.0        /* step increment   for the from/to values  */
       , 10.0       /* page increment   for the from/to values */
       , 10.0       /* page size        for the from/to values */
       , 2          /* digits for the from/to values */
@@ -2308,10 +2308,10 @@ gap_story_attw_properties_dialog (GapStbAttrWidget *attw)
       );
 
   }
- 
+
 
   row++;
-  
+
   {
     GtkWidget *gfx_table;
 
@@ -2319,7 +2319,7 @@ gap_story_attw_properties_dialog (GapStbAttrWidget *attw)
     gtk_widget_show (gfx_table);
 
     gtk_table_attach ( GTK_TABLE (table), gfx_table, 1, 8, row, row+1, GTK_FILL, 0, 0, 0);
-    
+
     /* the graphical preview(s) of the attributes at start and end */
     p_create_and_attach_pv_widgets(attw
        , gfx_table
@@ -2331,7 +2331,7 @@ gap_story_attw_properties_dialog (GapStbAttrWidget *attw)
     label = gtk_label_new (" ");
     gtk_widget_show (label);
     gtk_table_attach ( GTK_TABLE (gfx_table), label, 1, 2, 1, 1+1, GTK_FILL, 0, 0, 0);
-    
+
     p_create_and_attach_pv_widgets(attw
        , gfx_table
        , 1   /* row */
@@ -2340,10 +2340,10 @@ gap_story_attw_properties_dialog (GapStbAttrWidget *attw)
        , 1   /* img_idx */
       );
   }
-  
-  
+
+
   row++;
-  
+
 
   /* the comment label */
   label = gtk_label_new (_("Comment:"));
@@ -2377,7 +2377,7 @@ gap_story_attw_properties_dialog (GapStbAttrWidget *attw)
 
   /*  Show the main containers  */
   gtk_widget_show (main_vbox);
-  
+
   return(dlg);
 }  /* end gap_story_attw_properties_dialog */
 
@@ -2393,7 +2393,7 @@ gap_story_att_stb_elem_properties_dialog ( GapStbTabWidgets *tabw
 {
   GapStbAttrWidget *attw;
   gint ii;
-   
+
   /* check if already open */
   for(attw=tabw->attw; attw!=NULL; attw=(GapStbAttrWidget *)attw->next)
   {
@@ -2413,7 +2413,7 @@ gap_story_att_stb_elem_properties_dialog ( GapStbTabWidgets *tabw
       break;
     }
   }
-  
+
   if(attw==NULL)
   {
     attw = g_new(GapStbAttrWidget ,1);
@@ -2461,7 +2461,7 @@ gap_story_att_stb_elem_properties_dialog ( GapStbTabWidgets *tabw
   if(attw->attw_prop_dialog)
   {
     gtk_widget_show(attw->attw_prop_dialog);
-    
+
     /* initial rendering (must be done after pview widgets are realised) */
     p_render_gfx(attw, 0);
     p_render_gfx(attw, 1);
@@ -2480,7 +2480,7 @@ void
 gap_story_att_fw_properties_dialog (GapStbFrameWidget *fw)
 {
   GapStbTabWidgets *tabw;
- 
+
   if(fw == NULL) { return; }
   if(fw->stb_elem_refptr == NULL)  { return; }
 

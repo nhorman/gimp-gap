@@ -619,7 +619,7 @@ p_avi_encode_dialog(GapGveAviGlobalParams *gpp)
 
   l_ii = 3;
   gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_TOGGLE);
-  argv[l_ii].label_txt = _("Interlaced Frames)");
+  argv[l_ii].label_txt = _("Interlaced Frames");
   argv[l_ii].help_txt = _("Generate interlaced JPEGs (two frames for odd/even lines)");
   argv[l_ii].int_ret = epp->jpeg_interlaced;
 
@@ -912,7 +912,7 @@ p_avi_encode(GapGveAviGlobalParams *gpp)
    */
   {
     gchar *codec_name;
-   
+
     if(strcmp(epp->codec_name, GAP_AVI_CODEC_RAW) == 0)
     {
       codec_name = g_strdup(GAP_AVI_CODEC_RGB);
@@ -931,7 +931,7 @@ p_avi_encode(GapGveAviGlobalParams *gpp)
         	 , gpp->val.framerate
         	 , codec_name           /* char *compressor  one of "RGB", "JPEG"  ... */
         	 );
-	       
+
     g_free(codec_name);
   }
   if(l_fp_inwav)

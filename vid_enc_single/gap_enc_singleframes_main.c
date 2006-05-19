@@ -186,8 +186,8 @@ query ()
                          " audiodata is ignored."
                          " A  call of"
                          "\"" GAP_PLUGIN_NAME_SINGLEFRAMES_PARAMS  "\""
-                         " to set encoder specific paramters, is not required because"
-                         " this release of the singleframe encoder has NO encoder specific paramters"),
+                         " to set encoder specific parameters, is not required because"
+                         " this release of the singleframe encoder has NO encoder specific parameters"),
                          "Wolfgang Hofer (hof@gimp.org)",
                          "Wolfgang Hofer",
                          GAP_VERSION_WITH_DATE,
@@ -236,7 +236,7 @@ query ()
  */
 static void
 run (const gchar *name,          /* name of plugin */
-     gint n_params,               /* number of in-paramters */
+     gint n_params,              /* number of in-parameters */
      const GimpParam * param,    /* in-parameters */
      gint *nreturn_vals,         /* number of out-parameters */
      GimpParam ** return_vals)   /* out-parameters */
@@ -719,7 +719,7 @@ p_singleframe_encode(GapGveSingleGlobalParams *gpp)
        if(gpp->val.run_mode == GIMP_RUN_INTERACTIVE)
        {
          char *l_msg;
-	 
+
 	 l_msg = g_strdup_printf(_("SAVING: %s\n"), l_sav_name);
          gimp_progress_init(l_msg);
          g_free(l_msg);

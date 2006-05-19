@@ -90,8 +90,8 @@ extern int gap_debug;  /* 1 == print debug infos , 0 dont print debug infos */
 
 /* op_mode Radio Buttons */
 #define   GAP_MORPH_OP_MODE_SET    0
-#define   GAP_MORPH_OP_MODE_MOVE   1    
-#define   GAP_MORPH_OP_MODE_DELETE 2     
+#define   GAP_MORPH_OP_MODE_MOVE   1
+#define   GAP_MORPH_OP_MODE_DELETE 2
 #define   GAP_MORPH_OP_MODE_ZOOM   3
 #define   GAP_MORPH_OP_MODE_SHOW   4
 
@@ -220,7 +220,7 @@ p_morph_response(GtkWidget *w, gint response_id, GapMorphGUIParams *mgup)
       p_set_upd_timer_request(mgup
                          ,GAP_MORPH_DLG_UPD_REQUEST_FULL_REFRESH
 			 ,GAP_MORPH_DLG_UPD_REQUEST_FULL_REFRESH
-			 ); 
+			 );
       p_refresh_total_points_label(mgup);
       mgup->mgpp->tween_steps = 1;
       mgup->num_shapepoints = 16;
@@ -288,7 +288,7 @@ p_upd_widget_values(GapMorphGUIParams *mgup)
                                     , mgup->mgpp->create_tween_layers);
        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (mgup->multiple_pointsets_checkbutton)
                                     , mgup->mgpp->multiple_pointsets);
-    
+
   }
 }  /* end p_upd_widget_values */
 
@@ -302,14 +302,14 @@ static void
 p_upd_warp_info_label(GapMorphGUIParams *mgup)
 {
   GapMorphWorkPoint *wp;
-  
+
   if(mgup)
   {
     wp = mgup->dst_win.curr_wp;
     if((mgup->warp_info_label) && (wp))
     {
       gchar msg[100];
-      
+
       g_snprintf(&msg[0], sizeof(msg)
                 , "si:%d rl:%d d:%.1f w:%.4f"
                 , (int)wp->sek_idx
@@ -341,7 +341,7 @@ p_pixel_check_opaque(GimpPixelFetcher *pft, gint bpp, gdouble needx, gdouble nee
 
   gint    xi, yi;
   gint alpha_idx;
-  
+
 
   if (needx >= 0.0)
     xi = (int) needx;
@@ -411,8 +411,8 @@ p_find_outmost_opaque_pixel(GimpPixelFetcher *pft
   center_y = half_height;
   l_r = MAX(half_width, half_height);
   l_r *= l_r;
-  
-  /* start at the out-most point 
+
+  /* start at the out-most point
    * (may be out of the layer in most cases)
    * and search towards the center along
    * the line with angle alpha
@@ -440,10 +440,10 @@ p_find_outmost_opaque_pixel(GimpPixelFetcher *pft
     }
     l_r--;
   }
-  
+
   *px = center_x + l_x;
   *py = center_y + l_y;
-  
+
 }  /* end p_find_outmost_opaque_pixel */
 
 
@@ -465,18 +465,18 @@ p_generate_outline_shape_workpoints(GapMorphGUIParams *mgup)
 
   src_drawable = gimp_drawable_get (mgup->mgpp->osrc_layer_id);
   dst_drawable = gimp_drawable_get (mgup->mgpp->fdst_layer_id);
-  
+
   src_pixfet = gimp_pixel_fetcher_new (src_drawable, FALSE /*shadow*/);
   dst_pixfet = gimp_pixel_fetcher_new (dst_drawable, FALSE /*shadow*/);
 
   step_rad =  (2.0 * G_PI) / MAX(1, mgup->num_shapepoints);
   alpha_rad = 0.0;
-  
+
   /* loop from 0 to 360 degree */
   for(ii=0; ii < mgup->num_shapepoints; ii++)
   {
      gdouble sx, sy, dx, dy;
-     
+
      p_find_outmost_opaque_pixel(src_pixfet
                                 ,src_drawable->bpp
                                 ,alpha_rad
@@ -493,12 +493,12 @@ p_generate_outline_shape_workpoints(GapMorphGUIParams *mgup)
                                 ,&dx
                                 ,&dy
                                 );
-     
+
      /* create a new workpoint with sx,sy, dx, dy coords */
      wp = gap_morph_dlg_new_workpont(sx ,sy ,dx ,dy);
      wp->next = mgup->mgpp->master_wp_list;
      mgup->mgpp->master_wp_list = wp;
-     
+
      alpha_rad += step_rad;
   }
   gimp_pixel_fetcher_destroy (src_pixfet);
@@ -545,7 +545,7 @@ p_add_4corner_workpoints(GapMorphGUIParams *mgup)
   dx[3] = 0;
   dy[3] = 0;
 
-  
+
   for(ii=0; ii<4; ii++)
   {
     wp = gap_morph_dlg_new_workpont(sx[ii] ,sy[ii] ,dx[ii] ,dy[ii]);
@@ -576,7 +576,7 @@ p_zoom_in(GapMorphSubWin  *swp, gdouble l_x, gdouble l_y)
   {
     swp->zoom = 1.0;
   }
-  
+
   width = swp->zoom * swp->pv_ptr->pv_width;
   height = swp->zoom * swp->pv_ptr->pv_height;
 
@@ -587,7 +587,7 @@ p_zoom_in(GapMorphSubWin  *swp, gdouble l_x, gdouble l_y)
   p_set_upd_timer_request(mgup
                          ,GAP_MORPH_DLG_UPD_REQUEST_FULL_REFRESH
 			 ,GAP_MORPH_DLG_UPD_REQUEST_FULL_REFRESH
-			 ); 
+			 );
 }  /* end p_zoom_in */
 
 /* -----------------------------
@@ -625,7 +625,7 @@ static void
 p_fit_zoom_into_pview_size(GapMorphSubWin  *swp)
 {
   swp->zoom = 1.0;
-  
+
   if(swp->layer_id_ptr)
   {
     if(*swp->layer_id_ptr >= 0)
@@ -637,8 +637,8 @@ p_fit_zoom_into_pview_size(GapMorphSubWin  *swp)
       gdouble pv_pixelsize;
       gint32  src_request;
       gint32  dst_request;
-      
-      
+
+
       width = (gdouble) gimp_drawable_width(*swp->layer_id_ptr);
       height = (gdouble) gimp_drawable_height(*swp->layer_id_ptr);
 
@@ -664,7 +664,7 @@ p_fit_zoom_into_pview_size(GapMorphSubWin  *swp)
         swp->zoom = height / (gdouble)pv_height;
       }
       swp->max_zoom = swp->zoom;
-     
+
       if(gap_debug)
       {
         printf("p_fit_zoom_into_pview_size: width: %d height:%d ## ZOOM:%f\n"
@@ -673,8 +673,8 @@ p_fit_zoom_into_pview_size(GapMorphSubWin  *swp)
 	      , (float)swp->zoom)
 	      ;
       }
-     
-      
+
+
       if((pv_width != swp->pv_ptr->pv_width)
       || (pv_height != swp->pv_ptr->pv_height))
       {
@@ -684,7 +684,7 @@ p_fit_zoom_into_pview_size(GapMorphSubWin  *swp)
                       , MAX(GAP_MORPH_CHECK_SIZE, (pv_pixelsize / 16))
                       );
       }
-      		      
+
       if(swp->src_flag)
       {
         src_request = GAP_MORPH_DLG_UPD_REQUEST_FULL_REFRESH;
@@ -718,12 +718,12 @@ on_swap_button_pressed_callback(GtkWidget *wgt, GapMorphGUIParams *mgup)
   {
     return;
   }
-  
+
   src_layer_width  = gimp_drawable_width(mgup->mgpp->osrc_layer_id);
   src_layer_height = gimp_drawable_height(mgup->mgpp->osrc_layer_id);
   dst_layer_width  = gimp_drawable_width(mgup->mgpp->fdst_layer_id);
   dst_layer_height = gimp_drawable_height(mgup->mgpp->fdst_layer_id);
-  
+
   GAP_MORPH_SWAP(gint32
                 ,mgup->mgpp->osrc_layer_id
 		,mgup->mgpp->fdst_layer_id
@@ -748,7 +748,7 @@ on_swap_button_pressed_callback(GtkWidget *wgt, GapMorphGUIParams *mgup)
                 ,mgup->src_win.zoom
                 ,mgup->dst_win.zoom
 		)
-  
+
   for(wp = mgup->mgpp->master_wp_list; wp != NULL; wp = (GapMorphWorkPoint *)wp->next)
   {
      GAP_MORPH_SWAP(gdouble
@@ -760,7 +760,7 @@ on_swap_button_pressed_callback(GtkWidget *wgt, GapMorphGUIParams *mgup)
 		   ,wp->fdst_y
 		   )
   }
-  
+
   if((src_layer_width != dst_layer_width)
   || (src_layer_height != dst_layer_height))
   {
@@ -772,7 +772,7 @@ on_swap_button_pressed_callback(GtkWidget *wgt, GapMorphGUIParams *mgup)
                                , mgup->mgpp->osrc_layer_id);
   gimp_int_combo_box_set_active(GIMP_INT_COMBO_BOX(mgup->dst_win.combo)
                                , mgup->mgpp->fdst_layer_id);
-  
+
   p_set_upd_timer_request(mgup
                          ,GAP_MORPH_DLG_UPD_REQUEST_FULL_REFRESH
                          ,GAP_MORPH_DLG_UPD_REQUEST_FULL_REFRESH
@@ -913,7 +913,7 @@ on_timer_update_job(GapMorphGUIParams *mgup)
     }
 
 
-    
+
     if(mgup->upd_timertag >= 0)
     {
       g_source_remove(mgup->upd_timertag);
@@ -1015,16 +1015,16 @@ on_curr_point_spinbutton_changed             (GtkObject       *obj,
   {
     return;
   }
-  
+
   mgpp = mgup->mgpp;
   if(mgpp == NULL)
   {
     return;
   }
-  
+
 
   value = (gint32)GTK_ADJUSTMENT(obj)->value;
- 
+
   /* find the n.th workpoint in the list */
   l_idx = 1;
   for(wp = mgpp->master_wp_list; wp != NULL; wp= wp->next)
@@ -1058,7 +1058,7 @@ GapMorphWorkPoint *
 gap_morph_dlg_new_workpont(gdouble srcx, gdouble srcy, gdouble dstx, gdouble dsty)
 {
   GapMorphWorkPoint *wp;
- 
+
   wp = g_new(GapMorphWorkPoint, 1);
   wp->next = NULL;
   wp->fdst_x = dstx;
@@ -1087,14 +1087,14 @@ p_delete_current_point(GapMorphSubWin  *swp)
   GapMorphWorkPoint *wp;
   gdouble delx;
   gdouble dely;
-  
+
 
   mgup = (GapMorphGUIParams *)swp->mgup;
-  
+
   if(mgup->mgpp->master_wp_list->next)
   {
     GapMorphWorkPoint *wp_prev;
-    
+
     wp_prev = NULL;
     for(wp = mgup->mgpp->master_wp_list; wp != NULL; wp = (GapMorphWorkPoint *)wp->next)
     {
@@ -1110,7 +1110,7 @@ p_delete_current_point(GapMorphSubWin  *swp)
 	  delx = wp->fdst_x;
 	  dely = wp->fdst_y;
 	}
-       
+
         if(wp_prev == NULL)
         {
           /* delete the 1.st workpoint */
@@ -1146,7 +1146,7 @@ p_set_nearest_current_workpoint(GapMorphSubWin  *swp, gdouble in_x, gdouble in_y
 {
   GapMorphWorkPoint *wp;
   gdouble ret_sqr_dist;
-  
+
   wp = p_find_nearest_point(swp, in_x, in_y, &ret_sqr_dist);
   if(wp)
   {
@@ -1174,7 +1174,7 @@ p_set_current_workpoint_no_refresh(GapMorphSubWin  *swp, GapMorphWorkPoint *wp_c
   }
   mgup->src_win.curr_wp = wp_cur;
   mgup->dst_win.curr_wp = wp_cur;
-  
+
   mgup->src_win.wpx_ptr = &wp_cur->osrc_x;
   mgup->src_win.wpy_ptr = &wp_cur->osrc_y;
   mgup->dst_win.wpx_ptr = &wp_cur->fdst_x;
@@ -1220,7 +1220,7 @@ p_set_current_workpoint(GapMorphSubWin  *swp, GapMorphWorkPoint *wp_cur)
   {
     return;
   }
-  
+
   p_set_current_workpoint_no_refresh(swp, wp_cur);
   if(swp->startup_flag)
   {
@@ -1246,10 +1246,10 @@ p_set_current_workpoint(GapMorphSubWin  *swp, GapMorphWorkPoint *wp_cur)
   {
     wgt_count++;
   }
-  
+
   if(wgt_count >= 4)
   {
-    /* set adjustment values and start timer request 
+    /* set adjustment values and start timer request
      * but only if we already have all
      * reqired (4) widgets initialized
      * (otherwise we are in startup and may crash when timer fires too early)
@@ -1287,13 +1287,13 @@ p_add_new_point(GapMorphSubWin  *swp, gdouble in_x, gdouble in_y)
   gdouble            dsty;
   gdouble            ret_sqr_dist;
   gdouble wo, ho, w, h;
-  
+
   mgup = (GapMorphGUIParams *)swp->mgup;
   wo = 1.0;
   ho = 1.0;
   w  = 1.0;
   h  = 1.0;
-  
+
   /* set the other point with same offset as the nearest available point
    */
   wp_near = p_find_nearest_point(swp, in_x, in_y, &ret_sqr_dist);
@@ -1346,7 +1346,7 @@ p_add_new_point(GapMorphSubWin  *swp, gdouble in_x, gdouble in_y)
   }
 
   wp = gap_morph_dlg_new_workpont(srcx, srcy, dstx, dsty);
-  
+
   /* add new workpoint as 1st listelement */
   wp->next = mgup->mgpp->master_wp_list;
   mgup->mgpp->master_wp_list = wp;
@@ -1370,7 +1370,7 @@ p_add_new_point_refresh(GapMorphSubWin  *swp, gdouble in_x, gdouble in_y)
 
   wp = p_add_new_point(swp, in_x, in_y);
   p_set_current_workpoint(swp, wp);
-  
+
   mgup = (GapMorphGUIParams *)swp->mgup;
   p_refresh_total_points_label(mgup);
 
@@ -1394,11 +1394,11 @@ p_refresh_total_points_label(GapMorphGUIParams *mgup)
   {
     total_points++;
   }
-  
+
   if(mgup->toal_points_label)
   {
     char num_buf[10];
-    
+
     g_snprintf(num_buf, sizeof(num_buf), "%03d", (int)total_points);
     gtk_label_set_text(GTK_LABEL(mgup->toal_points_label), num_buf);
   }
@@ -1408,7 +1408,7 @@ p_refresh_total_points_label(GapMorphGUIParams *mgup)
 /* ---------------------------------
  * p_find_nearest_point
  * ---------------------------------
- * saerch the workpoint list for the point that is the nearest 
+ * saerch the workpoint list for the point that is the nearest
  * to position in_x/in_y in the osrc or fdst koord system.
  * (depending on the swp->src_flag)
  */
@@ -1425,19 +1425,19 @@ p_find_nearest_point(GapMorphSubWin  *swp
   gdouble            sqr_distance;
   gdouble            min_sqr_distance;
   GapMorphGUIParams *mgup;
-  
+
   mgup = (GapMorphGUIParams *)swp->mgup;
 
   wp_list = mgup->mgpp->master_wp_list;
   wp_ret = wp_list;
-  
+
   min_sqr_distance = GAP_MORPH_MAXGINT32;
-  
+
   for(wp = wp_list; wp != NULL; wp = (GapMorphWorkPoint *)wp->next)
   {
     register gdouble  adx;
     register gdouble  ady;
-    
+
     if(swp->src_flag)
     {
       adx = abs(wp->osrc_x - in_x);
@@ -1448,16 +1448,16 @@ p_find_nearest_point(GapMorphSubWin  *swp
       adx = abs(wp->fdst_x - in_x);
       ady = abs(wp->fdst_y - in_y);
     }
-    
+
     sqr_distance = (adx * adx) + (ady * ady);
-    
+
     if(sqr_distance < min_sqr_distance)
     {
       wp_ret = wp;
       min_sqr_distance = sqr_distance;
     }
   }
-  
+
   *ret_sqr_dist = min_sqr_distance;
   return(wp_ret);
 }  /* end p_find_nearest_point */
@@ -1485,7 +1485,7 @@ p_pick_nearest_point(GapMorphSubWin  *swp, gdouble l_x, gdouble l_y)
     return (TRUE);
   }
   return (FALSE);
-  
+
 }  /* end p_pick_nearest_point */
 
 
@@ -1522,7 +1522,7 @@ p_show_warp_pick_point(GapMorphGUIParams *mgup
     scale_x = src_layer_width / MAX(1,dst_layer_width);
     scale_y = src_layer_height / MAX(1,dst_layer_height);
   }
-  
+
   gap_morph_exec_get_warp_pick_koords(mgup->mgpp->master_wp_list
                                      ,in_x
 				     ,in_y
@@ -1568,7 +1568,7 @@ p_draw_workpoints (GapMorphSubWin  *swp)
   GapMorphSubWin    *swp_other;
   gboolean           show_lines;
 
- 
+
   mgup = (GapMorphGUIParams *)swp->mgup;
   wp_list = mgup->mgpp->master_wp_list;
 
@@ -1588,10 +1588,10 @@ p_draw_workpoints (GapMorphSubWin  *swp)
   {
     swp_other = &mgup->src_win;
   }
-  
+
   scalex = gimp_drawable_width(*swp->layer_id_ptr) / gimp_drawable_width(*swp_other->layer_id_ptr);
   scaley = gimp_drawable_height(*swp->layer_id_ptr) / gimp_drawable_height(*swp_other->layer_id_ptr);
- 
+
   cmap = gtk_widget_get_colormap(swp->pv_ptr->da_widget);
 
   gimp_rgb_get_uchar (&mgup->pointcolor, &l_red, &l_green, &l_blue);
@@ -1684,7 +1684,7 @@ p_draw_workpoints (GapMorphSubWin  *swp)
 		    ,qx
 		    ,qy
 		    );
-      
+
     }
 
   }
@@ -1708,7 +1708,7 @@ p_draw_workpoints (GapMorphSubWin  *swp)
                           );
       gdk_gc_set_foreground (swp->pv_ptr->da_widget->style->black_gc, &fg);
     }
-    
+
     if(swp->src_flag)
     {
       px = (mgup->show_px - swp->offs_x) / swp->zoom;
@@ -1720,7 +1720,7 @@ p_draw_workpoints (GapMorphSubWin  *swp)
       py = (mgup->show_in_y - swp->offs_y) / swp->zoom;
     }
 
-    /* draw the warp pick point 
+    /* draw the warp pick point
      * (the point that will be picked for the current position in src by the warp procedure)
      * THIS is a debug feature
      */
@@ -1774,7 +1774,7 @@ p_prevw_draw (GapMorphSubWin  *swp)
   gap_pview_repaint(swp->pv_ptr);
 
   p_draw_workpoints(swp);
-  
+
 }  /* end p_prevw_draw */
 
 
@@ -1803,7 +1803,7 @@ p_render_zoomed_pview(GapMorphSubWin  *swp)
     gint   height;
     gint   offs_x;
     gint   offs_y;
-    
+
     src_layer_id = *swp->layer_id_ptr;
 
     if(gap_debug) printf("p_render_zoomed_pview START src_layer_id: %d\n", (int)src_layer_id);
@@ -1816,7 +1816,7 @@ p_render_zoomed_pview(GapMorphSubWin  *swp)
       l_type   = GIMP_GRAYA_IMAGE;
     }
     src_drawable = gimp_drawable_get (src_layer_id);
-    
+
     /* constrain to legal values */
     fwidth  = swp->zoom * (gdouble)swp->pv_ptr->pv_width;
     fheight = swp->zoom * (gdouble)swp->pv_ptr->pv_height;
@@ -1848,7 +1848,7 @@ p_render_zoomed_pview(GapMorphSubWin  *swp)
       dst_drawable = gimp_drawable_get (tmp_layer_id);
       buf_ptr = g_malloc(dst_drawable->bpp * dst_drawable->width * dst_drawable->height);
 
-      if(gap_debug) 
+      if(gap_debug)
       {
         printf("p_render_zoomed_pview: w/h: %d / %d offs_x/y: %d / %d\n"
 	      , (int)width
@@ -1893,7 +1893,7 @@ p_render_zoomed_pview(GapMorphSubWin  *swp)
     /* render the preview (this includes scaling to preview size) */
     gap_pview_render_from_image(swp->pv_ptr, tmp_image_id);
     gimp_image_delete(tmp_image_id);
-    
+
     p_draw_workpoints(swp);
     p_hvscale_adj_set_limits(swp);
   }
@@ -1964,7 +1964,7 @@ on_pview_events (GtkWidget *widget
         gdouble l_x;
         gdouble l_y;
         gboolean make_new_point;
-        
+
          /* Picking of pathpoints is done when
           *   the left mousebutton goes down (mouse_button == 1)
           */
@@ -1983,20 +1983,20 @@ on_pview_events (GtkWidget *widget
 	   {
 	     GapMorphWorkPoint *wp;
 	     gdouble sqr_distance;
-	     
+
 	     /* set nearest point as new current point */
 	     wp = p_find_nearest_point(swp, l_x, l_y, &sqr_distance);
              p_set_current_workpoint(swp, wp);
 	   }
            return (FALSE);
 	 }
-	 
+
 	 /* ZOOM handling */
          if (mgup->op_mode == GAP_MORPH_OP_MODE_ZOOM)
          {
 	     mgup->show_in_x = -1;
 	     mgup->show_in_y = -1;
-	     
+
 	     if(bevent->state & GDK_CONTROL_MASK)
 	     {
 	       if(mouse_button == 1)
@@ -2021,7 +2021,7 @@ on_pview_events (GtkWidget *widget
 	     }
              return (FALSE);
 	 }
-	 
+
 	 /* DELETE handling */
 	 if((mouse_button == 3)
 	 || (mgup->op_mode == GAP_MORPH_OP_MODE_DELETE))
@@ -2034,7 +2034,7 @@ on_pview_events (GtkWidget *widget
            }
            return (FALSE);
 	 }
-         
+
          if(bevent->state & GDK_SHIFT_MASK)
          {
            /* SHIFT-Click: force creation of new point
@@ -2055,7 +2055,7 @@ on_pview_events (GtkWidget *widget
 	   {
 	     drag_disabled = TRUE;
 	   }
-	   
+
 	   if(bevent->state & GDK_MOD1_MASK)
 	   {
              p_set_current_workpoint(swp, wp);
@@ -2101,7 +2101,7 @@ on_pview_events (GtkWidget *widget
 	gint l_dy;
         gint32  src_request;
         gint32  dst_request;
-	
+
 	l_dx = 0;
 	l_dy = 0;
         if((prevx >= 0) && (prevy >= 0))
@@ -2109,10 +2109,10 @@ on_pview_events (GtkWidget *widget
 	  l_dx = prevx - curx;
 	  l_dy = prevy - cury;
 	}
-	
+
         swp->offs_x += l_dx;
         swp->offs_y += l_dy;
-	
+
         swp->pview_scrolling = TRUE;
         if(gap_debug) printf("scrolling dx:%d dy: %d\n", (int)l_dx ,(int)l_dy);
 
@@ -2132,7 +2132,7 @@ on_pview_events (GtkWidget *widget
 	p_set_upd_timer_request(swp->mgup, src_request, dst_request);
         return (FALSE);
       }
-      
+
       /* dragging the current workpoint
        * (is locked if we are currently deleting or zooming
        * or by modifier Keys ALT and CTRL in SET mode)
@@ -2171,7 +2171,7 @@ on_pview_events (GtkWidget *widget
  * new layer dimensions.
  * (dont scale if old_width value 0
  *  in that case there we had no other valid layerdimension before)
- * this procedures sets the old dimensions width/height equal to the 
+ * this procedures sets the old dimensions width/height equal to the
  * current dimensions at end of processing.
  */
 static void
@@ -2196,7 +2196,7 @@ p_scale_wp_list(GapMorphGUIParams *mgup)
   src_scale_y = 1.0;
   src_layer_width = 0;
   src_layer_height = 0;
-  
+
   if(mgup->mgpp->osrc_layer_id >= 0)
   {
     src_layer_width  = gimp_drawable_width(mgup->mgpp->osrc_layer_id);
@@ -2212,7 +2212,7 @@ p_scale_wp_list(GapMorphGUIParams *mgup)
   dst_scale_y = 1.0;
   dst_layer_width = 0;
   dst_layer_height = 0;
-  
+
   if(mgup->mgpp->fdst_layer_id >= 0)
   {
     dst_layer_width  = gimp_drawable_width(mgup->mgpp->fdst_layer_id);
@@ -2255,7 +2255,7 @@ p_scale_wp_list(GapMorphGUIParams *mgup)
 
   for(wp = mgup->mgpp->master_wp_list; wp != NULL; wp = (GapMorphWorkPoint *)wp->next)
   {
-     /* scale the loaded workpoints 
+     /* scale the loaded workpoints
       * (to fit the current layer)
       */
      wp->osrc_x *=  src_scale_x;
@@ -2278,13 +2278,13 @@ p_scale_wp_list(GapMorphGUIParams *mgup)
     mgup->old_src_layer_width  = src_layer_width;
     mgup->old_src_layer_height = src_layer_height;
   }
-  
+
   if(dst_layer_width > 0)
   {
     mgup->old_dst_layer_width  = dst_layer_width;
     mgup->old_dst_layer_height = dst_layer_height;
   }
-  
+
 }  /* end p_scale_wp_list */
 
 
@@ -2316,14 +2316,14 @@ p_imglayer_menu_callback(GtkWidget *widget, GapMorphSubWin *swp)
     {
       *swp->layer_id_ptr = layer_id;
       if(gap_debug) printf("p_imglayer_menu_callback new LAYER_ID: %d\n", (int)layer_id);
-      
+
       p_scale_wp_list(swp->mgup);
       p_fit_zoom_into_pview_size(swp);
     }
   }
 
 
-  if(gap_debug) 
+  if(gap_debug)
   {
     printf("p_imglayer_menu_callback: image_id=%d layer_id=%d\n"
           , (int)swp->image_id, (int)*swp->layer_id_ptr);
@@ -2372,14 +2372,14 @@ p_imglayer_constrain(gint32 image_id, gint32 drawable_id, gpointer data)
   {
     return(TRUE);
   }
-  
+
   if(gimp_drawable_is_gray(drawable_id))
   {
     return(TRUE);
   }
-  
+
   return (FALSE);
-  
+
 } /* end p_imglayer_constrain */
 
 
@@ -2391,7 +2391,7 @@ p_imglayer_constrain(gint32 image_id, gint32 drawable_id, gpointer data)
 static void
 p_refresh_layer_menu(GapMorphSubWin *swp, GapMorphGUIParams *mgup)
 {
-  gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (swp->combo), 
+  gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (swp->combo),
                               *swp->layer_id_ptr,                    /* the initial value to set */
                               G_CALLBACK (p_imglayer_menu_callback),
                               swp
@@ -2411,7 +2411,7 @@ on_pointcolor_button_changed(GimpColorButton *widget,
 			     GimpRGB *pcolor )
 {
   GapMorphGUIParams *mgup;
-  
+
   mgup = g_object_get_data( G_OBJECT(widget), "mgup");
   if(mgup)
   {
@@ -2419,7 +2419,7 @@ on_pointcolor_button_changed(GimpColorButton *widget,
     p_set_upd_timer_request(mgup
                          ,GAP_MORPH_DLG_UPD_REQUEST_REDRAW
 			 ,GAP_MORPH_DLG_UPD_REQUEST_REDRAW
-			 ); 
+			 );
 
 
   }
@@ -2599,7 +2599,7 @@ p_create_wp_filesel (GapMorphGUIParams *mgup
     printf("p_create_wp_filesel: filesel dialog already open\n");
     return;
   }
-  
+
   mgup->wp_save_mode = save_mode;
   if(save_mode)
   {
@@ -2689,17 +2689,17 @@ on_wp_shape_button_clicked (GtkButton *button
         clear_old_workpoint_set = FALSE;
       }
     }
-    
+
     if(clear_old_workpoint_set)
     {
       gap_morph_exec_free_workpoint_list(&mgup->mgpp->master_wp_list);
-    } 
+    }
     mgup->num_shapepoints = (gint32)GTK_ADJUSTMENT(mgup->num_shapepoints_adj)->value;;
     p_generate_outline_shape_workpoints(mgup);
     p_set_upd_timer_request(mgup
                        ,GAP_MORPH_DLG_UPD_REQUEST_FULL_REFRESH
 		       ,GAP_MORPH_DLG_UPD_REQUEST_FULL_REFRESH
-		       ); 
+		       );
     p_refresh_total_points_label(mgup);
   }
 }  /* end on_wp_shape_button_clicked */
@@ -2735,7 +2735,7 @@ on_hvscale_changed_callback(GtkObject *obj, GapMorphSubWin *swp)
       swp->offs_x = value;
     }
   }
-  
+
   if(swp->src_flag)
   {
     src_request = GAP_MORPH_DLG_UPD_REQUEST_FULL_REFRESH;
@@ -2747,7 +2747,7 @@ on_hvscale_changed_callback(GtkObject *obj, GapMorphSubWin *swp)
     dst_request = GAP_MORPH_DLG_UPD_REQUEST_FULL_REFRESH;
   }
   p_set_upd_timer_request(swp->mgup, src_request, dst_request);
-  
+
 }  /* end on_hvscale_changed_callback */
 
 
@@ -2871,9 +2871,9 @@ static void
 on_radio_op_mode_callback(GtkWidget *widget, gint32 op_mode)
 {
   GapMorphGUIParams *mgup;
-  
+
   mgup = g_object_get_data( G_OBJECT(widget), "mgup");
- 
+
   if((mgup)
   && (GTK_TOGGLE_BUTTON (widget)->active))
   {
@@ -2893,9 +2893,9 @@ static void
 on_radio_render_mode_callback(GtkWidget *widget, gint32 render_mode)
 {
   GapMorphGUIParams *mgup;
-  
+
   mgup = g_object_get_data( G_OBJECT(widget), "mgup");
- 
+
   if((mgup)
   && (GTK_TOGGLE_BUTTON (widget)->active))
   {
@@ -2932,7 +2932,7 @@ p_radio_create_op_mode(GtkWidget *table, int row, int col, GapMorphGUIParams *mg
 
   l_idx = col+1;
   l_idy = row;
-  
+
   /* radio button SET */
   radio_button = gtk_radio_button_new_with_label ( radio_group, _("Set") );
   radio_group = gtk_radio_button_get_group ( GTK_RADIO_BUTTON (radio_button) );
@@ -2944,10 +2944,10 @@ p_radio_create_op_mode(GtkWidget *table, int row, int col, GapMorphGUIParams *mg
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radio_button), l_radio_pressed);
   gimp_help_set_help_data(radio_button
                          , _("Click: pick and drag point at cursor"
-                             " or create new point"
-                             " SHIFT-Click: force create new point"
-			     " Alt-Click: disable drag"
-			     " Right-Click: delete point at cursor")
+                             " or create new point\n"
+                             "SHIFT-Click: force create new point\n"
+			     "Alt-Click: disable drag\n"
+			     "Right-Click: delete point at cursor")
 			 , NULL);
 
   gtk_widget_show (radio_button);
@@ -2969,10 +2969,10 @@ p_radio_create_op_mode(GtkWidget *table, int row, int col, GapMorphGUIParams *mg
   l_radio_pressed = (mgup->op_mode == GAP_MORPH_OP_MODE_MOVE);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radio_button), l_radio_pressed);
   gimp_help_set_help_data(radio_button
-                         , _("Click: drag next point"
-                             " SHIFT-Click: force create new point"
-			     " Alt-Click: disable drag"
-			     " Right-Click: delete point at cursor")
+                         , _("Click: drag next point\n"
+                             "SHIFT-Click: force create new point\n"
+			     "Alt-Click: disable drag\n"
+			     "Right-Click: delete point at cursor\n")
 			 , NULL);
 
   gtk_widget_show (radio_button);
@@ -3009,7 +3009,7 @@ p_radio_create_op_mode(GtkWidget *table, int row, int col, GapMorphGUIParams *mg
 
   /* radio button ZOOM */
   radio_button = gtk_radio_button_new_with_label ( radio_group, _("Zoom") );
-  radio_group = gtk_radio_button_get_group ( GTK_RADIO_BUTTON (radio_button) );  
+  radio_group = gtk_radio_button_get_group ( GTK_RADIO_BUTTON (radio_button) );
   gtk_table_attach ( GTK_TABLE (radio_table), radio_button, l_idx, l_idx+1, l_idy, l_idy+1
                    , GTK_FILL | GTK_EXPAND, 0, 0, 0);
   mgup->op_mode_zoom_toggle = radio_button;
@@ -3017,7 +3017,7 @@ p_radio_create_op_mode(GtkWidget *table, int row, int col, GapMorphGUIParams *mg
   l_radio_pressed = (mgup->op_mode == GAP_MORPH_OP_MODE_ZOOM);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radio_button), l_radio_pressed);
   gimp_help_set_help_data(radio_button
-                         , _("Click: zoom in, CTRL-click: zoom out")
+                         , _("Click: zoom in,\nCTRL-click: zoom out")
 			 , NULL);
 
   gtk_widget_show (radio_button);
@@ -3025,14 +3025,14 @@ p_radio_create_op_mode(GtkWidget *table, int row, int col, GapMorphGUIParams *mg
   g_signal_connect ( G_OBJECT (radio_button), "toggled",
 		     G_CALLBACK (on_radio_op_mode_callback),
 		     (gpointer)GAP_MORPH_OP_MODE_ZOOM);
- 
+
 
   l_idx++;
 
 
   /* radio button SHOW */
   radio_button = gtk_radio_button_new_with_label ( radio_group, _("Show") );
-  radio_group = gtk_radio_button_get_group ( GTK_RADIO_BUTTON (radio_button) );  
+  radio_group = gtk_radio_button_get_group ( GTK_RADIO_BUTTON (radio_button) );
   gtk_table_attach ( GTK_TABLE (radio_table), radio_button, l_idx, l_idx+1, l_idy, l_idy+1
                    , GTK_FILL | GTK_EXPAND, 0, 0, 0);
   mgup->op_mode_show_toggle = radio_button;
@@ -3082,7 +3082,7 @@ p_radio_create_render_mode(GtkWidget *table, int row, int col, GapMorphGUIParams
 
   l_idx = col +1;
   l_idy = row;
-  
+
   /* radio button MORPH */
   radio_button = gtk_radio_button_new_with_label ( radio_group, _("Morph") );
   radio_group = gtk_radio_button_get_group ( GTK_RADIO_BUTTON (radio_button) );
@@ -3165,12 +3165,12 @@ p_create_subwin(GapMorphSubWin *swp
   table = gtk_table_new (2, 11, FALSE);
   gtk_widget_show (table);
   gtk_box_pack_start (GTK_BOX (vbox), table, FALSE, FALSE, 0);
-  
+
   row = 0;
-  
+
   /* the layer seletion combobox */
   label = gtk_label_new( _("Layer:"));
-  
+
   gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
   gtk_table_attach(GTK_TABLE(table), label, 0, 1, row, row+1
                   , GTK_FILL, 0, 4, 0);
@@ -3200,8 +3200,8 @@ p_create_subwin(GapMorphSubWin *swp
 
 
   row++;
-  
-  
+
+
   /* the x koordinate label */
   label = gtk_label_new (_("X:"));
   gtk_widget_show (label);
@@ -3218,7 +3218,7 @@ p_create_subwin(GapMorphSubWin *swp
   swp->x_spinbutton_adj = adj;
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
   gtk_widget_show (spinbutton);
-  
+
   gtk_table_attach (GTK_TABLE (table), spinbutton, 1, 2, row, row+1,
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0),
@@ -3250,7 +3250,7 @@ p_create_subwin(GapMorphSubWin *swp
   swp->y_spinbutton_adj = adj;
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
   gtk_widget_show (spinbutton);
-  
+
   gtk_table_attach (GTK_TABLE (table), spinbutton, 3, 4, row, row+1,
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0),
@@ -3298,7 +3298,7 @@ p_create_subwin(GapMorphSubWin *swp
     mgup->curr_point_spinbutton_adj = adj;
     spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
     gtk_widget_show (spinbutton);
-  
+
     gtk_table_attach (GTK_TABLE (table), spinbutton, 7, 8, row, row+1,
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0),
@@ -3386,9 +3386,9 @@ p_create_subwin(GapMorphSubWin *swp
 
     upper_max = 1;
     initial_val = 1;
-  
 
-    /* the vscale */  
+
+    /* the vscale */
     adj = gtk_adjustment_new (initial_val
                              , 1
                              , upper_max
@@ -3404,11 +3404,11 @@ p_create_subwin(GapMorphSubWin *swp
                       G_CALLBACK (on_hvscale_changed_callback),
                       swp);
     gtk_widget_show (vscale);
-    
+
     swp->vscale_adj = adj;
     swp->vscale = vscale;
-    
-    /* the hscale */  
+
+    /* the hscale */
     adj = gtk_adjustment_new (initial_val
                              , 1
                              , upper_max
@@ -3424,10 +3424,10 @@ p_create_subwin(GapMorphSubWin *swp
                       G_CALLBACK (on_hvscale_changed_callback),
                       swp);
     gtk_widget_show (hscale);
-    
+
     swp->hscale_adj = adj;
     swp->hscale = hscale;
-    
+
     p_hvscale_adj_set_limits(swp);
   }
 
@@ -3515,7 +3515,7 @@ gap_morph_create_dialog(GapMorphGUIParams *mgup)
   vbox = gtk_vbox_new (FALSE, 4);
   gtk_container_add (GTK_CONTAINER (frame), vbox);
   gtk_widget_show (vbox);
-  
+
   /* the hbox */
   hbox = gtk_hbox_new (FALSE, 4);
   gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
@@ -3569,7 +3569,7 @@ gap_morph_create_dialog(GapMorphGUIParams *mgup)
   table = gtk_table_new (5, 14, FALSE);
   gtk_widget_show (table);
   gtk_box_pack_start (GTK_BOX (vbox), table, FALSE, FALSE, 0);
-  
+
   row = 0;
 
 
@@ -3589,7 +3589,7 @@ gap_morph_create_dialog(GapMorphGUIParams *mgup)
   mgup->num_shapepoints_adj = adj;
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
   gtk_widget_show (spinbutton);
-  
+
   gtk_table_attach (GTK_TABLE (table), spinbutton, 1, 2, row, row+1,
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0),
@@ -3632,7 +3632,7 @@ gap_morph_create_dialog(GapMorphGUIParams *mgup)
   gimp_help_set_help_data(checkbutton,
                        _("Show movement vector lines in the destination preview")
                        , NULL);
-  
+
 
   /* Swap Windows Button */
   button = gtk_button_new_from_stock (_("Swap"));
@@ -3665,7 +3665,7 @@ gap_morph_create_dialog(GapMorphGUIParams *mgup)
   mgup->affect_radius_spinbutton_adj = adj;
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
   gtk_widget_show (spinbutton);
-  
+
   gtk_table_attach (GTK_TABLE (table), spinbutton, 1, 2, row, row+1,
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0),
@@ -3698,7 +3698,7 @@ gap_morph_create_dialog(GapMorphGUIParams *mgup)
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 2);
   mgup->gravity_intensity_spinbutton = spinbutton;
   gtk_widget_show (spinbutton);
-  
+
   gtk_table_attach (GTK_TABLE (table), spinbutton, 5, 7, row, row+1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0),
@@ -3787,7 +3787,7 @@ gap_morph_create_dialog(GapMorphGUIParams *mgup)
   mgup->tween_steps_spinbutton_adj = adj;
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
   gtk_widget_show (spinbutton);
-  
+
   gtk_table_attach (GTK_TABLE (table), spinbutton, 1, 2, row, row+1,
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0),
@@ -3847,7 +3847,7 @@ gap_morph_create_dialog(GapMorphGUIParams *mgup)
 
   /* the render_mode RADIO Buttons (attaches to 3 Columns: 4,5,6 ) */
   p_radio_create_render_mode(table, row, 4, mgup);
-  
+
 
 
   /* the create tween checkbutton */
@@ -3909,7 +3909,7 @@ gap_morph_create_dialog(GapMorphGUIParams *mgup)
   gtk_table_attach (GTK_TABLE (table), label, 0, 1, row, row+1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  
+
   /* the lower workpoint file label */
   label = gtk_label_new (&mgup->mgpp->workpoint_file_lower[0]);
   mgup->workpoint_file_lower_label = label;
@@ -3935,7 +3935,7 @@ gap_morph_create_dialog(GapMorphGUIParams *mgup)
   gtk_table_attach (GTK_TABLE (table), label, 1, 12, row, row+1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-   
+
 
   /*  Show the main container  */
   gtk_widget_show (main_vbox);
@@ -3958,7 +3958,7 @@ gap_morph_dialog(GapMorphGlobalParams *mgpp)
 {
   GapMorphGUIParams morph_gui_params;
   GapMorphGUIParams *mgup;
-  
+
   if(gap_debug) printf("gap_morph_dialog: ** START **\n");
 
   gimp_ui_init ("gap_morph", FALSE);
