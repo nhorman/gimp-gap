@@ -1,3 +1,7 @@
+2006-05-22  Sven Neumann  <sven@gimp.org>
+
+	* configure.in: added missing call of AC_CANONICAL_HOST.
+
 2006-05-19  Sven Neumann  <sven@gimp.org>
 
 	* configure.in: added missing check for target architecture.
