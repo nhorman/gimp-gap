@@ -1,3 +1,7 @@
+2006-05-24  Jakub Friedl <jfriedl@suse.cz>
+
+	* cs.po: Updated cs translation.
+
 2006-05-16  Clytie Siddall <clytie@riverland.net.au>
 
 	* vi.po: Added Vietnamese translation.
@@ -8,8 +12,8 @@
 
 2006-04-26  Daniel Nylander  <po@danielnylander.se>
 
-        * sv.po: Updated Swedish translation.
-	
+	* sv.po: Updated Swedish translation.
+
 2006-01-28  Benoît Dejean  <benoit@placenet.org>
 
 	* fr.po: Updated french translation.
