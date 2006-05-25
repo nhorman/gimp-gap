@@ -6,15 +6,15 @@ msgid ""
 ""
 msgstr "Project-Id-Version: gimp-gap HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-05-13 02:32+0200\n"
-"PO-Revision-Date: 2006-05-16 17:18+0930\n"
+"POT-Creation-Date: 2006-05-25 02:34+0200\n"
+"PO-Revision-Date: 2006-05-25 20:45+0930\n"
 "Last-Translator: Clytie Siddall <clytie@riverland.net.au>\n"
 "Language-Team: Vietnamese <gnomevi-list@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0\n"
-"X-Generator: LocFactoryEditor 1.6b41\n"
+"X-Generator: LocFactoryEditor 1.6b36\n"
 
 #.Button  to invoke fontbrowser
 #: ../gap/gap_arr_dialog.c:543
@@ -56,7 +56,7 @@ msgid "Overwrite"
 msgstr "Ghi đè"
 
 #: ../gap/gap_arr_dialog.c:1820
-#: ../gap/gap_decode_mplayer.c:700
+#: ../gap/gap_decode_mplayer.c:701
 #: ../gap/gap_decode_xanim.c:374
 #: ../gap/gap_range_ops.c:1437
 msgid "GAP Question"
@@ -125,19 +125,19 @@ msgid ""
 "The file: %s\n"
 "has unexpect content that will be ignored\n"
 "you should specify an audio file in RIFF WAVE fileformat\n"
-"or a texfile containing filenames of such audio files"
+"or a textfile containing filenames of such audio files"
 msgstr "Tập tin: %s\n"
 "chứa nội dung bất thường sẽ bị bỏ qua.\n"
 "Bạn nên xác định tập tin âm thanh có dạng thức RIFF WAVE,\n"
-"hay tập tin TeX chứa các tên tập tin âm thanh như vậy."
+"hay tập tin văn bản chứa các tên tập tin âm thanh như vậy."
 
 #: ../gap/gap_audio_wav.c:623
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:1327
 #, c-format
 msgid ""
 "The file: %s\n"
-"contains too much audio input tracks\n"
-"(only %d tracks are used, rest is ignored)"
+"contains too much audio-input tracks\n"
+"(only %d tracks are used, the rest are ignored)"
 msgstr "Tập tin: %s\n"
 "chứa quá nhiều rãnh ghi nhập âm thanh\n"
 "(chỉ dùng %d rãnh ghi, các điều khác bị bỏ qua)."
@@ -292,7 +292,7 @@ msgstr "Đổi mật độ khung"
 #: ../gap/gap_base_ops.c:1691
 #: ../gap/gap_base_ops.c:1750
 #: ../gap/gap_decode_xanim.c:246
-#: ../gap/gap_mod_layer_dialog.c:1325
+#: ../gap/gap_mod_layer_dialog.c:1333
 #: ../gap/gap_mov_dialog.c:3444
 #: ../gap/gap_mpege.c:300
 #: ../gap/gap_onion_dialog.c:914
@@ -322,7 +322,7 @@ msgstr "Phạm vị có kết quả bắt đầu tại số hiệu khung này"
 #: ../gap/gap_base_ops.c:1699
 #: ../gap/gap_base_ops.c:1758
 #: ../gap/gap_decode_xanim.c:256
-#: ../gap/gap_mod_layer_dialog.c:1347
+#: ../gap/gap_mod_layer_dialog.c:1355
 #: ../gap/gap_mov_dialog.c:3462
 #: ../gap/gap_mpege.c:310
 #: ../gap/gap_onion_dialog.c:921
@@ -358,10 +358,10 @@ msgstr "Tăng mật độ"
 
 #: ../gap/gap_base_ops.c:1361
 msgid ""
-"ON: Duplicate frames to get a target rate that is density * originalrate.\n"
-"OFF: Delete frames to get a target rate that is originalrate/density."
+"ON: Duplicate frames to get a target rate that is density * original_rate..\n"
+"OFF: Delete frames to get a target rate that is original_rate/density."
 msgstr "BẬT: nhân đôi khung để đạt tỷ lệ đích là mật độ nhân với tỷ lệ gốc.\n"
-"TẮT: xoá bỏ khung để đạt tỷ lệ đích là mật độ chia cho tỷ lệ gốc."
+"TẮT: xoá bỏ khung để đạt tỷ lệ đích là tỷ lệ gốc chia cho mật độ."
 
 #: ../gap/gap_base_ops.c:1368
 msgid "Change Frames Density"
@@ -515,9 +515,9 @@ msgstr "Sức chịu đựng Anfa:"
 #.lower/upper unconstrained
 #: ../gap/gap_bluebox.c:324
 msgid ""
-"Sharp pixel selection by color with 0.0. Greater values than 0 makes "
-"selection with more or less variable alpha value depending on difference to "
-"the keycolor"
+"Sharp pixel selection by color with 0.0. Values greater than 0 give the "
+"selection more or less variable alpha value,depending on disparity with the "
+"key color."
 msgstr "Sự lựa chọn điểm ảnh sắc theo màu với 0.0. Giá trị hơn 0 tạo vùng chọn với giá trị anfa biến thể nhiều hay ít phụ thuộc vào khác biệt với màu khoá."
 
 #: ../gap/gap_bluebox.c:336
@@ -531,7 +531,8 @@ msgstr "Anfa nguồn:"
 #.lowr/upper unconstrained
 #: ../gap/gap_bluebox.c:343
 msgid "Affect only pixels with alpha >= source alpha where 1.0 is full opaque"
-msgstr "Có tác động chỉ tới điểm ảnh có giá trị anfa ≥ anfa nguồn, mà 1.0 là đục hoàn toàn"
+msgstr "Có tác động chỉ tới điểm ảnh có giá trị anfa ≥ anfa nguồn, mà 1.0 là đục "
+"hoàn toàn"
 
 #: ../gap/gap_bluebox.c:354
 msgid "Target Alpha:"
@@ -545,7 +546,8 @@ msgstr "Anfa đích:"
 #: ../gap/gap_bluebox.c:361
 msgid ""
 "Set alpha of affected pixel to target alpha where 0.0 is full transparent"
-msgstr "Đặt giá trị anfa của điểm có tác động thành anfa đích mà 0.0 là trong suốt hoàn toàn"
+msgstr "Đặt giá trị anfa của điểm có tác động thành anfa đích mà 0.0 là trong suốt "
+"hoàn toàn"
 
 #: ../gap/gap_bluebox.c:372
 msgid "Feather Edges:"
@@ -924,15 +926,17 @@ msgstr "Phim nhập:"
 msgid ""
 "Name of a videofile to read by mplayer. Frames are extracted from the "
 "videofile and written to separate diskfiles. mplayer 1.0 is required."
-msgstr "Tên của tập tin ảnh động cần đọc bằng MPlayer. Các khung được rút ra tập tin ảnh động đó, rồi được ghi vào tập tin khác nhau trên đĩa. Cần thiết MPlayer phiên bản 1.0."
+msgstr "Tên của tập tin ảnh động cần đọc bằng MPlayer. Các khung được rút ra tập tin "
+"ảnh động đó, rồi được ghi vào tập tin khác nhau trên đĩa. Cần thiết MPlayer "
+"phiên bản 1.0."
 
 #: ../gap/gap_decode_mplayer.c:444
 msgid "Start Time:"
 msgstr "Giờ đầu :"
 
 #: ../gap/gap_decode_mplayer.c:445
-msgid "sart time HH:MM:SS where to begin extract"
-msgstr "giờ đầu GG:PP:gg cần bắt đầu rút"
+msgid "Extracting starts at the specified time offset HH:MM:SS in the video"
+msgstr "Việc trích khởi chạy tại hiệu số giờ đã xác định GG:PP:gg trong ảnh động"
 
 #.Frames Duration label
 #: ../gap/gap_decode_mplayer.c:454
@@ -973,7 +977,8 @@ msgstr "Nhạc xuất:"
 msgid ""
 "Filename for the extracted audiodata. Audiodata is written in RIFF WAV "
 "fileformat (but only if audiotrack >= 1)"
-msgstr "Tên tập tin cho dữ liệu âm thanh đã rút. Dữ liệu âm thanh được ghi trong dạng thức tập tin RIFF WAV (nhưng chỉ nếu Rãnh nhạc ≥1)."
+msgstr "Tên tập tin cho dữ liệu âm thanh đã rút. Dữ liệu âm thanh được ghi trong "
+"dạng thức tập tin RIFF WAV (nhưng chỉ nếu Rãnh nhạc ≥1)."
 
 #: ../gap/gap_decode_mplayer.c:501
 #: ../gap/gap_decode_xanim.c:266
@@ -985,7 +990,8 @@ msgstr "Tên khung:"
 msgid ""
 "Basename for the video frames to write on disk. Framenumber and extension is "
 "added."
-msgstr "Tên cơ bản cho các khung ảnh động cần ghi vào đĩa. Số hiệu khung và phần mở rộng được thêm vào tên cơ bản này."
+msgstr "Tên cơ bản cho các khung ảnh động cần ghi vào đĩa. Số hiệu khung và phần mở "
+"rộng được thêm vào tên cơ bản này."
 
 #: ../gap/gap_decode_mplayer.c:511
 msgid "Format:"
@@ -995,7 +1001,8 @@ msgstr "Dạng thức:"
 msgid ""
 "Image fileformat for the extracted video frames. (xcf is extracted as png "
 "and converted to xcf)"
-msgstr "Dạng thức ảnh cho các khung ảnh động đã rút (.xcf được trích dạng .png rồi được chuyển đổi về .xcf)."
+msgstr "Dạng thức ảnh cho các khung ảnh động đã rút (.xcf được trích dạng .png rồi "
+"được chuyển đổi về .xcf)."
 
 #: ../gap/gap_decode_mplayer.c:521
 msgid "Png Compression:"
@@ -1003,7 +1010,7 @@ msgstr "Nén PNG:"
 
 #: ../gap/gap_decode_mplayer.c:522
 msgid ""
-"Compression for resulting png frames where 0 is uncopressed (fast), 9 is "
+"Compression for resulting png frames where 0 is uncompressed (fast), 9 is "
 "max. compression (this option is ignored when JPEG format is used)"
 msgstr "Độ nén các khung PNG kết quả mà 0 là chưa nén (nhanh), 9 là nén tối đa (tùy chọn này bị bỏ qua khi dùng dạng thức JPEG)."
 
@@ -1014,7 +1021,7 @@ msgstr "Chất lượng JPEG:"
 
 #: ../gap/gap_decode_mplayer.c:532
 msgid ""
-"Quality for resulting jpeg frames where 100 is best quality(is ignored when "
+"Quality for resulting jpeg frames where 100 is best quality (ignored when "
 "other formats are used)"
 msgstr "Chất lượng của các khung JPEG kết quả mà 100 là chất lượng cao nhất (bị bỏ qua khi dùng dạng thức khác JPEG)."
 
@@ -1087,53 +1094,54 @@ msgstr "MPlayer 1.0pre5:"
 
 #: ../gap/gap_decode_mplayer.c:604
 msgid ""
-"on: use deprecated options for mplayer 1.0pre5 off: use options for newer "
-"mplayer (dont turn on the deprecated options if you have mplayer 1.0pre7 or "
-"newer mplayer versions)"
+"ON: use deprecated options for mplayer 1.0pre5\n"
+"OFF: use options for newer mplayer\n"
+" Dont turn on the deprecated options if you have mplayer 1.0pre7 or newer "
+"mplayer versions"
 msgstr "BẬT: dùng tùy chọn bị phản đối cho mplayer 1.0pre5\n"
 "TẮT: dùng tùy chọn cho mplayer mới hơn\n"
 "Đừng bật tùy chọn bị phản đối nếu bạn có mplayer phiên bản 1.0pre7 hay mới hơn."
 
-#: ../gap/gap_decode_mplayer.c:614
+#: ../gap/gap_decode_mplayer.c:615
 msgid "MPlayer based extraction"
 msgstr "Rút đựa vào MPlayer"
 
-#: ../gap/gap_decode_mplayer.c:615
+#: ../gap/gap_decode_mplayer.c:616
 #: ../gap/gap_decode_xanim.c:325
 #: ../gap/gap_range_ops.c:1686
 msgid "Select Frame Range"
 msgstr "Chọn phạm vị khung"
 
-#: ../gap/gap_decode_mplayer.c:648
-#: ../gap/gap_decode_mplayer.c:1493
+#: ../gap/gap_decode_mplayer.c:649
+#: ../gap/gap_decode_mplayer.c:1494
 #, c-format
 msgid "videofile %s not existent\n"
 msgstr "tập tin ảnh động %s không tồn tại\n"
 
-#: ../gap/gap_decode_mplayer.c:657
+#: ../gap/gap_decode_mplayer.c:658
 #, c-format
 msgid "Illegal starttime %s"
 msgstr "Không cho phép giờ đầu %s"
 
-#: ../gap/gap_decode_mplayer.c:690
+#: ../gap/gap_decode_mplayer.c:691
 #: ../gap/gap_decode_xanim.c:364
 #: ../gap/gap_range_ops.c:1430
 msgid "Overwrite Frame"
 msgstr "Ghi đè khung"
 
-#: ../gap/gap_decode_mplayer.c:692
+#: ../gap/gap_decode_mplayer.c:693
 #: ../gap/gap_decode_xanim.c:366
 #: ../gap/gap_range_ops.c:1432
 #: ../gap/gap_vex_dialog.c:235
 msgid "Overwrite All"
 msgstr "Ghi đè tất cả"
 
-#: ../gap/gap_decode_mplayer.c:701
+#: ../gap/gap_decode_mplayer.c:702
 #: ../gap/gap_decode_xanim.c:375
 msgid "File already exists"
 msgstr "Tập tin đã có"
 
-#: ../gap/gap_decode_mplayer.c:970
+#: ../gap/gap_decode_mplayer.c:971
 #, c-format
 msgid ""
 "can't find any extracted frames,\n"
@@ -1143,56 +1151,55 @@ msgstr "không tìm thấy khung đã rút,\n"
 "%s\n"
 "có lẽ MPlayer bị lỗi hay bị thôi."
 
-#: ../gap/gap_decode_mplayer.c:995
+#: ../gap/gap_decode_mplayer.c:996
 #: ../gap/gap_decode_xanim.c:601
 #, c-format
 msgid "frames are not extracted, because overwrite of %s was cancelled"
 msgstr "khung chưa được rút, vì việc ghi đè lên %s bị thôi"
 
-#: ../gap/gap_decode_mplayer.c:1005
+#: ../gap/gap_decode_mplayer.c:1006
 #: ../gap/gap_decode_xanim.c:611
 #, c-format
 msgid "failed to overwrite %s (check permissions ?)"
 msgstr "lỗi ghi đè lên %s (kiểm tra quyền hạn ?)"
 
-#: ../gap/gap_decode_mplayer.c:1027
+#: ../gap/gap_decode_mplayer.c:1028
 #: ../gap/gap_decode_xanim.c:633
 #, c-format
 msgid "failed to write %s (check permissions ?)"
 msgstr "lỗi ghi %s (kiểm tra quyền hạn ?)"
 
-#: ../gap/gap_decode_mplayer.c:1071
+#: ../gap/gap_decode_mplayer.c:1072
 #, c-format
 msgid ""
 "WARNING: your gimprc file configuration for the mediaplayer\n"
-"does not point to an executable program\n"
+"does not point to an executable program;\n"
 "the configured value for %s is: %s\n"
 msgstr "CẢNH BÁO : cấu hình của tập tin tài nguyên gimprc cho trình\n"
 "phát nhạc/phim không chỉ tới chương trình thực hiện được;\n"
 "giá trị đã cấu hình cho %s là: %s\n"
 
-#: ../gap/gap_decode_mplayer.c:1092
-#: ../gap/gap_player_dialog.c:852
+#: ../gap/gap_decode_mplayer.c:1093
 #, c-format
 msgid ""
 "WARNING: the environment variable %s\n"
-"does not point to an executable program\n"
+"does not point to an executable program;\n"
 "the current value is: %s\n"
 msgstr "CẢNH BÁO : biến môi trường %s không\n"
 "chỉ tới chương trình thực hiện được;\n"
 "giá trị đã cấu hình là: %s\n"
 
 #.ERROR
-#: ../gap/gap_decode_mplayer.c:1118
+#: ../gap/gap_decode_mplayer.c:1119
 #, c-format
 msgid "The mediaplayer executable file '%s' was not found."
 msgstr "Không tìm thấy tập tin thực hiện trình phát nhạc/phim « %s »."
 
-#: ../gap/gap_decode_mplayer.c:1483
+#: ../gap/gap_decode_mplayer.c:1484
 msgid "Exit, neither video nor audio track was selected"
 msgstr "Thoát, chưa chọn rãnh ghi ảnh động hay âm thanh"
 
-#: ../gap/gap_decode_mplayer.c:1541
+#: ../gap/gap_decode_mplayer.c:1542
 #, c-format
 msgid ""
 "could not create %s directory\n"
@@ -1200,16 +1207,16 @@ msgid ""
 msgstr "không thể tạo thư mục %s\n"
 "(cần thiết để xuất khẩu khung MPlayer)"
 
-#: ../gap/gap_decode_mplayer.c:1554
+#: ../gap/gap_decode_mplayer.c:1555
 #: ../gap/gap_decode_xanim.c:1132
 msgid "Extracting frames..."
 msgstr "Đang rút khung..."
 
-#: ../gap/gap_decode_mplayer.c:1558
+#: ../gap/gap_decode_mplayer.c:1559
 msgid "Extracting audio..."
 msgstr "Đang rút âm thanh..."
 
-#: ../gap/gap_decode_mplayer.c:1576
+#: ../gap/gap_decode_mplayer.c:1577
 #, c-format
 msgid ""
 "could not start mplayer process\n"
@@ -1217,19 +1224,19 @@ msgid ""
 msgstr "không thể khởi chạy tiến trình mplayer\n"
 "(chương trình=%s)"
 
-#: ../gap/gap_decode_mplayer.c:1604
+#: ../gap/gap_decode_mplayer.c:1605
 msgid ""
 "can't find any extracted frames,\n"
 "mplayer has failed or was cancelled"
 msgstr "không tìm thấy khung đã rút;\n"
 "trình mplayer bị lỗi hay bị thôi"
 
-#: ../gap/gap_decode_mplayer.c:1630
+#: ../gap/gap_decode_mplayer.c:1631
 #: ../gap/gap_decode_xanim.c:1197
 msgid "Renaming frames..."
 msgstr "Đang đổi tên khung..."
 
-#: ../gap/gap_decode_mplayer.c:1640
+#: ../gap/gap_decode_mplayer.c:1641
 #: ../gap/gap_decode_xanim.c:1202
 #: ../gap/gap_range_ops.c:1303
 msgid "Converting frames..."
@@ -1272,7 +1279,9 @@ msgid ""
 "Name of a videofile to read by xanim. Frames are extracted from the "
 "videofile and written to separate diskfiles. xanim exporting edition is "
 "required."
-msgstr "Tên của tập tin ảnh động cần đọc bằng xanim. Các khung được rút ra tập tin ảnh động rồi được ghi vào tập tin khác nhau trên đĩa. Cần thiết phiên bản xuất khẩu của xanim."
+msgstr "Tên của tập tin ảnh động cần đọc bằng xanim. Các khung được rút ra tập tin "
+"ảnh động rồi được ghi vào tập tin khác nhau trên đĩa. Cần thiết phiên bản "
+"xuất khẩu của xanim."
 
 #: ../gap/gap_decode_xanim.c:247
 msgid "Framenumber of 1st frame to extract"
@@ -1290,7 +1299,8 @@ msgstr "Dạng thức"
 msgid ""
 "Fileformat for the extracted video frames. (xcf is extracted as ppm and "
 "converted to xcf)"
-msgstr "Dạng thức tập tin cho các khung ảnh động đã rút (.xcf được trích dạng .ppm rồi được chuyển đổi về .xcf)."
+msgstr "Dạng thức tập tin cho các khung ảnh động đã rút (.xcf được trích dạng .ppm "
+"rồi được chuyển đổi về .xcf)."
 
 #: ../gap/gap_decode_xanim.c:282
 msgid "Extract Frames"
@@ -1308,7 +1318,8 @@ msgstr "Rút âm thanh"
 msgid ""
 "Enable extraction of audio to raw audiofile. (frame range limits are ignored "
 "for audio)"
-msgstr "Bật rút âm thanh vào tập tin âm thanh thô (giới hạn phạm vị khung bị bỏ qua cho âm thanh)."
+msgstr "Bật rút âm thanh vào tập tin âm thanh thô (giới hạn phạm vị khung bị bỏ qua "
+"cho âm thanh)."
 
 #: ../gap/gap_decode_xanim.c:294
 msgid ""
@@ -1323,7 +1334,8 @@ msgstr "Chạy không đồng bộ"
 msgid ""
 "Run xanim asynchronously and delete unwanted frames (out of the specified "
 "range) while xanim is still running"
-msgstr "Chạy xanim một cách không đồng bộ và xoá bỏ các khung không được muốn (nằm ở ngoại phạm vị đã xác định) trong khi xanim vẫn còn chạy."
+msgstr "Chạy xanim một cách không đồng bộ và xoá bỏ các khung không được muốn (nằm ở "
+"ngoại phạm vị đã xác định) trong khi xanim vẫn còn chạy."
 
 #: ../gap/gap_decode_xanim.c:316
 msgid ""
@@ -1569,7 +1581,9 @@ msgid ""
 "settings of the last call"
 msgstr "Mở cửa sổ bộ duyệt PDB để thêm bộ lọc mới vào tập lệnh lọc.\n"
 "Quan trọng:\n"
-"Bộ duyệt PDB hiển thị chỉ những bộ lọc đã được dùng trong phiên chạy hiện thời, và đã thiết lập bộ đệm nội bộ bằng các giá trị tham số của cuộc gọi cuối cùng."
+"Bộ duyệt PDB hiển thị chỉ những bộ lọc đã được dùng trong phiên chạy hiện "
+"thời, và đã thiết lập bộ đệm nội bộ bằng các giá trị tham số của cuộc gọi "
+"cuối cùng."
 
 #: ../gap/gap_fmac_main.c:941
 #: ../gap/gap_player_dialog.c:5996
@@ -1796,7 +1810,8 @@ msgstr "Chọn bộ lọc cho Áp dụng đã hoạt cảnh trên khung"
 
 #: ../gap/gap_mod_layer.c:1115
 msgid "Modify Layers cancelled: No layer selected in last handled frame"
-msgstr "Việc sửa đổi lớp bị thôi : không có lớp được chọn trong khung đã thao tác cuối cùng"
+msgstr "Việc sửa đổi lớp bị thôi : không có lớp được chọn trong khung đã thao tác "
+"cuối cùng"
 
 #: ../gap/gap_mod_layer.c:1124
 #, c-format
@@ -1822,441 +1837,378 @@ msgid ""
 msgstr "trong khung đầu « %s », lớp đã chọn\n"
 "đầu tiên không có mặt nạ lớp"
 
-#: ../gap/gap_mod_layer_dialog.c:182
+#: ../gap/gap_mod_layer_dialog.c:189
 msgid "New Layer Name"
 msgstr "Tên lớp mới"
 
-#: ../gap/gap_mod_layer_dialog.c:188
+#: ../gap/gap_mod_layer_dialog.c:195
 msgid "Merged Layer Name"
 msgstr "Tên lớp đã trộn"
 
-#: ../gap/gap_mod_layer_dialog.c:195
+#: ../gap/gap_mod_layer_dialog.c:202
 msgid "Channel Name"
 msgstr "Tên kênh"
 
 #.the Layer Attributes sub menu
-#: ../gap/gap_mod_layer_dialog.c:328
+#: ../gap/gap_mod_layer_dialog.c:335
 msgid "Layer Attributes"
 msgstr "Thuộc tính lớp"
 
-#: ../gap/gap_mod_layer_dialog.c:335
+#: ../gap/gap_mod_layer_dialog.c:342
 msgid "Set layer(s) visible"
 msgstr "Đặt lớp hiển thị"
 
-#: ../gap/gap_mod_layer_dialog.c:336
+#: ../gap/gap_mod_layer_dialog.c:343
 msgid "set all selected layers visible"
 msgstr "đặt các lớp đã chọn có hiển thị"
 
-#: ../gap/gap_mod_layer_dialog.c:341
+#: ../gap/gap_mod_layer_dialog.c:348
 msgid "Set layer(s) invisible"
 msgstr "Đặt lớp vô hình"
 
-#: ../gap/gap_mod_layer_dialog.c:342
+#: ../gap/gap_mod_layer_dialog.c:349
 msgid "set all selected layers invisible"
 msgstr "đặt các lớp đã chọn là vô hình"
 
-#: ../gap/gap_mod_layer_dialog.c:347
+#: ../gap/gap_mod_layer_dialog.c:354
 msgid "Set layer(s) linked"
 msgstr "Đặt lớp đã được liên kết"
 
-#: ../gap/gap_mod_layer_dialog.c:348
+#: ../gap/gap_mod_layer_dialog.c:355
 msgid "set all selected layers linked"
 msgstr "đặt các lớp đã chọn đã được liên kết"
 
-#: ../gap/gap_mod_layer_dialog.c:353
+#: ../gap/gap_mod_layer_dialog.c:360
 msgid "Set layer(s) unlinked"
 msgstr "Đặt lớp đã bỏ liên kết"
 
-#: ../gap/gap_mod_layer_dialog.c:354
+#: ../gap/gap_mod_layer_dialog.c:361
 msgid "set all selected layers unlinked"
 msgstr "đặt các lớp đã chọn đã bỏ liên kết"
 
+#: ../gap/gap_mod_layer_dialog.c:383
+#, c-format
+msgid "Set layer(s) mode: %s"
+msgstr "Đặt chế độ lớp: %s"
+
+#: ../gap/gap_mod_layer_dialog.c:384
+#, c-format
+msgid "Set all selected layers to mode: %s"
+msgstr "Đặt mọi lớp đã chọn thành chế độ : %s"
+
 #.the Layer Modes sub menu
-#: ../gap/gap_mod_layer_dialog.c:373
+#: ../gap/gap_mod_layer_dialog.c:406
 msgid "Layer Modes"
 msgstr "Chế độ lớp"
 
-#: ../gap/gap_mod_layer_dialog.c:381
-msgid "Set layer(s) mode: Normal"
-msgstr "Đặt chế độ lớp: chuẩn"
-
-#: ../gap/gap_mod_layer_dialog.c:382
-msgid "set all selected layers to Normal"
-msgstr "đặt mọi lớp đã chọn là chuẩn"
-
-#: ../gap/gap_mod_layer_dialog.c:387
-msgid "Set layer(s) mode: Dissolve"
-msgstr "Đặt chế độ lớp: mờ chồng"
-
-#: ../gap/gap_mod_layer_dialog.c:388
-msgid "set all selected layers to Dissolve"
-msgstr "đặt mọi lớp đã chọn sẽ mờ chồng"
-
-#: ../gap/gap_mod_layer_dialog.c:393
-msgid "Set layer(s) mode: Multiply"
-msgstr "Đặt chế độ lớp: nhân"
-
-#: ../gap/gap_mod_layer_dialog.c:394
-msgid "set all selected layers to Multiply"
-msgstr "đặt mọi lớp đã chọn sẽ nhân"
-
-#: ../gap/gap_mod_layer_dialog.c:399
-msgid "Set layer(s) mode: Divide"
-msgstr "Đặt chế độ lớp: chia"
-
-#: ../gap/gap_mod_layer_dialog.c:400
-msgid "set all selected layers to Divide"
-msgstr "đặt mọi lớp đã chọn sẽ chia"
-
-#: ../gap/gap_mod_layer_dialog.c:405
-msgid "Set layer(s) mode: Screen"
-msgstr "Đặt chế độ lớp: màn hình"
-
-#: ../gap/gap_mod_layer_dialog.c:406
-msgid "set all selected layers to Screen"
-msgstr "đặt mọi lớp đã chọn là màn hình"
-
-#: ../gap/gap_mod_layer_dialog.c:411
-msgid "Set layer(s) mode: Overlay"
-msgstr "Đặt chế độ lớp: phủ"
-
-#: ../gap/gap_mod_layer_dialog.c:412
-msgid "set all selected layers to Overlay"
-msgstr "đặt mọi lớp đã chọn là phủ"
-
-#: ../gap/gap_mod_layer_dialog.c:418
-msgid "Set layer(s) mode: Difference"
-msgstr "Đặt chế độ lớp: hiệu"
+#: ../gap/gap_mod_layer_dialog.c:414
+#: ../gap/gap_mov_dialog.c:2756
+msgid "Normal"
+msgstr "Chuẩn"
 
 #: ../gap/gap_mod_layer_dialog.c:419
-msgid "set all selected layers to Difference"
-msgstr "đặt mọi lớp đã chọn: hiệu"
+#: ../gap/gap_mov_dialog.c:2757
+msgid "Dissolve"
+msgstr "Mờ chồng"
 
 #: ../gap/gap_mod_layer_dialog.c:424
-msgid "Set layer(s) mode: Addition"
-msgstr "Đặt chế độ lớp: cộng"
+#: ../gap/gap_mov_dialog.c:2758
+msgid "Multiply"
+msgstr "Nhân"
 
-#: ../gap/gap_mod_layer_dialog.c:425
-msgid "set all selected layers to Addition"
-msgstr "đặt mọi lớp đã chọn sẽ cộng"
+#: ../gap/gap_mod_layer_dialog.c:429
+#: ../gap/gap_mov_dialog.c:2759
+msgid "Divide"
+msgstr "Chia"
 
-#: ../gap/gap_mod_layer_dialog.c:430
-msgid "Set layer(s) mode: Subtract"
-msgstr "Đặt chế độ lớp: trừ"
+#: ../gap/gap_mod_layer_dialog.c:434
+#: ../gap/gap_mov_dialog.c:2760
+msgid "Screen"
+msgstr "Màn hình"
 
-#: ../gap/gap_mod_layer_dialog.c:431
-msgid "set all selected layers to Subtract"
-msgstr "đặt mọi lớp đã chọn sẽ trừ"
+#: ../gap/gap_mod_layer_dialog.c:439
+#: ../gap/gap_mov_dialog.c:2761
+msgid "Overlay"
+msgstr "Phủ"
 
-#: ../gap/gap_mod_layer_dialog.c:436
-msgid "Set layer(s) mode: Darken only"
-msgstr "Đặt chế độ lớp: chỉ làm tối"
-
-#: ../gap/gap_mod_layer_dialog.c:437
-msgid "set all selected layers to Darken only"
-msgstr "đặt mọi lớp đã chọn sẽ chỉ làm tối"
-
-#: ../gap/gap_mod_layer_dialog.c:442
-msgid "Set layer(s) mode: Lighten only"
-msgstr "Đặt chế độ lớp: chỉ làm sáng"
-
-#: ../gap/gap_mod_layer_dialog.c:443
-msgid "set all selected layers to Lighten only"
-msgstr "đặt mọi lớp đã chọn sẽ chỉ làm sáng"
-
-#: ../gap/gap_mod_layer_dialog.c:449
-msgid "Set layer(s) mode: Dodge"
-msgstr "Đặt chế độ lớp: né tránh"
+#: ../gap/gap_mod_layer_dialog.c:445
+#: ../gap/gap_mov_dialog.c:2768
+msgid "Difference"
+msgstr "Hiệu"
 
 #: ../gap/gap_mod_layer_dialog.c:450
-msgid "set all selected layers to Dodge"
-msgstr "đặt mọi lớp đã chọn sẽ né tránh"
+#: ../gap/gap_mov_dialog.c:2769
+msgid "Addition"
+msgstr "Cộng"
 
 #: ../gap/gap_mod_layer_dialog.c:455
-msgid "Set layer(s) mode: Burn"
-msgstr "Đặt chế độ lớp: chép ra"
+#: ../gap/gap_mov_dialog.c:2770
+msgid "Subtract"
+msgstr "Trừ"
 
-#: ../gap/gap_mod_layer_dialog.c:456
-msgid "set all selected layers to Burn"
-msgstr "đặt mọi lớp đã chọn sẽ chép ra"
+#: ../gap/gap_mod_layer_dialog.c:460
+msgid "Darken only"
+msgstr "Chỉ làm tối"
 
-#: ../gap/gap_mod_layer_dialog.c:461
-msgid "Set layer(s) mode: Hardlight"
-msgstr "Đặt chế độ lớp: ánh sáng cứng"
+#: ../gap/gap_mod_layer_dialog.c:465
+msgid "Lighten only"
+msgstr "Chỉ làm sáng"
 
-#: ../gap/gap_mod_layer_dialog.c:462
-msgid "set all selected layers to Hardlight"
-msgstr "đặt mọi lớp đã chọn là ánh sáng cứng"
+#: ../gap/gap_mod_layer_dialog.c:471
+#: ../gap/gap_mov_dialog.c:2762
+msgid "Dodge"
+msgstr "Né tránh"
 
-#: ../gap/gap_mod_layer_dialog.c:467
-msgid "Set layer(s) mode: Softlight"
-msgstr "Đặt chế độ lớp: ánh sáng mềm"
+#: ../gap/gap_mod_layer_dialog.c:476
+#: ../gap/gap_mov_dialog.c:2763
+msgid "Burn"
+msgstr "Cháy"
 
-#: ../gap/gap_mod_layer_dialog.c:468
-msgid "set all selected layers to Softlight"
-msgstr "đặt mọi lớp đã chọn là ánh sáng mềm"
-
-#: ../gap/gap_mod_layer_dialog.c:473
-msgid "Set layer(s) mode: Color erase"
-msgstr "Đặt chế độ lớp: xoá màu"
-
-#: ../gap/gap_mod_layer_dialog.c:474
-msgid "set all selected layers to Color erase"
-msgstr "đặt mọi lớp đã chọn sẽ xoá màu"
-
-#: ../gap/gap_mod_layer_dialog.c:479
-msgid "Set layer(s) mode: Grain extract"
-msgstr "Đặt chế độ lớp: chiết hạt"
-
-#: ../gap/gap_mod_layer_dialog.c:480
-msgid "set all selected layers to Grain extract"
-msgstr "đặt mọi lớp đã chọn sẽ chiết hạt"
-
-#: ../gap/gap_mod_layer_dialog.c:485
-msgid "Set layer(s) mode: Grain merge"
-msgstr "Đặt chế độ lớp: trộn hạt"
+#: ../gap/gap_mod_layer_dialog.c:481
+msgid "Hardlight"
+msgstr "Sáng cứng"
 
 #: ../gap/gap_mod_layer_dialog.c:486
-msgid "set all selected layers to Grain merge"
-msgstr "đặt mọi lớp đã chọn sẽ trộn hạt"
+msgid "Softlight"
+msgstr "Sáng mềm"
 
 #: ../gap/gap_mod_layer_dialog.c:491
-msgid "Set layer(s) mode: Hue"
-msgstr "Đặt chế độ lớp: sắc màu"
+msgid "Color erase"
+msgstr "Xoá màu"
 
-#: ../gap/gap_mod_layer_dialog.c:492
-msgid "set all selected layers to Hue"
-msgstr "đặt mọi lớp đã chọn là sắc màu"
+#: ../gap/gap_mod_layer_dialog.c:496
+msgid "Grain extract"
+msgstr "Chiết hạt"
 
-#: ../gap/gap_mod_layer_dialog.c:497
-msgid "Set layer(s) mode: Saturation"
-msgstr "Đặt chế độ lớp: độ bão hoà"
+#: ../gap/gap_mod_layer_dialog.c:501
+msgid "Grain merge"
+msgstr "Trộn hạt"
 
-#: ../gap/gap_mod_layer_dialog.c:498
-msgid "set all selected layers to Saturation"
-msgstr "đặt mọi lớp đã chọn là độ bão hoà"
+#: ../gap/gap_mod_layer_dialog.c:506
+#: ../gap/gap_mov_dialog.c:2773
+msgid "Hue"
+msgstr "Sắc màu"
 
-#: ../gap/gap_mod_layer_dialog.c:503
-msgid "Set layer(s) mode: Color"
-msgstr "Đặt chế độ lớp: màu"
+#: ../gap/gap_mod_layer_dialog.c:511
+#: ../gap/gap_mov_dialog.c:2774
+msgid "Saturation"
+msgstr "Độ bão hòa"
 
-#: ../gap/gap_mod_layer_dialog.c:504
-msgid "set all selected layers to Color"
-msgstr "đặt mọi lớp đã chọn là màu"
+#: ../gap/gap_mod_layer_dialog.c:516
+#: ../gap/gap_mov_dialog.c:2775
+msgid "Color"
+msgstr "Màu"
 
-#: ../gap/gap_mod_layer_dialog.c:509
-msgid "Set layer(s) mode: Value"
-msgstr "Đặt chế độ lớp: giá trị"
-
-#: ../gap/gap_mod_layer_dialog.c:510
-msgid "set all selected layers to Value"
-msgstr "đặt mọi lớp đã chọn là giá trị"
+#: ../gap/gap_mod_layer_dialog.c:521
+#: ../gap/gap_mov_dialog.c:2776
+msgid "Value"
+msgstr "Giá trị"
 
 #.the Layer Stackposition sub menu
-#: ../gap/gap_mod_layer_dialog.c:530
+#: ../gap/gap_mod_layer_dialog.c:541
 msgid "Layer Stackposition"
 msgstr "Vị trí đống lớp"
 
-#: ../gap/gap_mod_layer_dialog.c:537
+#: ../gap/gap_mod_layer_dialog.c:548
 msgid "Raise layer(s)"
 msgstr "Nâng lớp lên"
 
-#: ../gap/gap_mod_layer_dialog.c:538
+#: ../gap/gap_mod_layer_dialog.c:549
 msgid "raise all selected layers"
 msgstr "nâng lên các lớp đã chọn"
 
-#: ../gap/gap_mod_layer_dialog.c:543
+#: ../gap/gap_mod_layer_dialog.c:554
 msgid "Lower layer(s)"
 msgstr "Hạ lớp thấp"
 
-#: ../gap/gap_mod_layer_dialog.c:544
+#: ../gap/gap_mod_layer_dialog.c:555
 msgid "lower all selected layers"
 msgstr "Hạ thấp các lớp đã chọn"
 
 #.the Merge Layers sub menu
-#: ../gap/gap_mod_layer_dialog.c:563
+#: ../gap/gap_mod_layer_dialog.c:574
 msgid "Merge Layers"
 msgstr "Trộn lớp"
 
-#: ../gap/gap_mod_layer_dialog.c:570
-msgid "Merge layer(s) expand as necessary"
+#: ../gap/gap_mod_layer_dialog.c:581
+msgid "Merge layer(s); expand as necessary"
 msgstr "Trộn lớp; mở rộng như cần thiết"
 
-#: ../gap/gap_mod_layer_dialog.c:571
+#: ../gap/gap_mod_layer_dialog.c:582
 msgid "merge selected layers and expand as necessary"
 msgstr "trộn các lớp đã chọn và mở rộng như cần thiết"
 
-#: ../gap/gap_mod_layer_dialog.c:576
+#: ../gap/gap_mod_layer_dialog.c:587
 msgid "Merge layer(s) clipped to image"
 msgstr "Trộn lớp; xén khít ảnh"
 
-#: ../gap/gap_mod_layer_dialog.c:577
+#: ../gap/gap_mod_layer_dialog.c:588
 msgid "merge selected layers and clip to image"
 msgstr "trộn các lớp đã chọn và xén khít ảnh"
 
-#: ../gap/gap_mod_layer_dialog.c:582
+#: ../gap/gap_mod_layer_dialog.c:593
 msgid "Merge layer(s) clipped to bg-layer"
 msgstr "Trộn lớp; xén khít lớp nền"
 
-#: ../gap/gap_mod_layer_dialog.c:583
+#: ../gap/gap_mod_layer_dialog.c:594
 msgid "merge selected layers and clip to bg-layer"
 msgstr "trộn các lớp và xén khít lớp nền"
 
 #.the Selection sub menu
-#: ../gap/gap_mod_layer_dialog.c:603
+#: ../gap/gap_mod_layer_dialog.c:614
 msgid "Selection"
 msgstr "Vùng chọn"
 
-#: ../gap/gap_mod_layer_dialog.c:610
+#: ../gap/gap_mod_layer_dialog.c:621
 msgid "Replace selection (source is the active frame)"
 msgstr "Thay thế vùng chọn (nguồn là khung hoạt động)"
 
-#: ../gap/gap_mod_layer_dialog.c:611
+#: ../gap/gap_mod_layer_dialog.c:622
 msgid "Replace Selection by Selection of the invoking Frame Image"
 msgstr "Thay thế vùng chọn bằng vùng chọn của ảnh khung đang gọi"
 
-#: ../gap/gap_mod_layer_dialog.c:616
+#: ../gap/gap_mod_layer_dialog.c:627
 msgid "Add selection (source is the active frame)"
 msgstr "Thêm vùng chọn (nguồn là khung hoạt động)"
 
-#: ../gap/gap_mod_layer_dialog.c:622
+#: ../gap/gap_mod_layer_dialog.c:633
 msgid "Subtract selection (source is the active frame)"
 msgstr "Trờ vùng chọn (nguồn là khung hoạt động)"
 
-#: ../gap/gap_mod_layer_dialog.c:628
+#: ../gap/gap_mod_layer_dialog.c:639
 msgid "Intersect selection (source is the active frame)"
 msgstr "Cắt chéo vùng chọn (nguồn là khung hoạt động)"
 
-#: ../gap/gap_mod_layer_dialog.c:634
+#: ../gap/gap_mod_layer_dialog.c:645
 msgid "Selection none"
 msgstr "Không chọn gì"
 
-#: ../gap/gap_mod_layer_dialog.c:640
+#: ../gap/gap_mod_layer_dialog.c:651
 msgid "Selection all"
 msgstr "Chọn tất cả"
 
-#: ../gap/gap_mod_layer_dialog.c:646
+#: ../gap/gap_mod_layer_dialog.c:657
 msgid "Selection invert"
 msgstr "Đảo vùng chọn"
 
-#: ../gap/gap_mod_layer_dialog.c:652
+#: ../gap/gap_mod_layer_dialog.c:663
 msgid "Selection from alpha channel (individual per frame)"
 msgstr "Vùng chọn từ kênh anfa (riêng cho mỗi khung)"
 
-#: ../gap/gap_mod_layer_dialog.c:658
+#: ../gap/gap_mod_layer_dialog.c:669
 msgid "Save selection to channel (individual per frame)"
 msgstr "Lưu vùng chọn vào kênh (riêng cho mỗi khung)"
 
-#: ../gap/gap_mod_layer_dialog.c:664
+#: ../gap/gap_mod_layer_dialog.c:675
 msgid "Load selection from channel (individual per frame)"
 msgstr "Tải vùng chọn từ kênh (riêng cho mỗi khung)"
 
-#: ../gap/gap_mod_layer_dialog.c:670
+#: ../gap/gap_mod_layer_dialog.c:681
 msgid "Delete channel (by name)"
 msgstr "Xoá bỏ kênh (theo tên)"
 
 #.the LayerMask sub menu
-#: ../gap/gap_mod_layer_dialog.c:690
+#: ../gap/gap_mod_layer_dialog.c:701
 msgid "Layer Mask"
 msgstr "Mặt nạ lớp"
 
-#: ../gap/gap_mod_layer_dialog.c:697
+#: ../gap/gap_mod_layer_dialog.c:708
 msgid "Add white layermask (opaque)"
 msgstr "Thêm mặt nạ lớp trắng (đục)"
 
-#: ../gap/gap_mod_layer_dialog.c:703
+#: ../gap/gap_mod_layer_dialog.c:714
 msgid "Add black layermask (transparent)"
 msgstr "Thêm mặt nạ lớp đen (trong suốt)"
 
-#: ../gap/gap_mod_layer_dialog.c:709
+#: ../gap/gap_mod_layer_dialog.c:720
 msgid "Add layermask from alpha"
 msgstr "Thêm mặt nạ lớp từ anfa"
 
-#: ../gap/gap_mod_layer_dialog.c:715
+#: ../gap/gap_mod_layer_dialog.c:726
 msgid "Add layermask transfer from alpha"
 msgstr "Thêm mặt nạ lớp được chuyển đổi từ anfa"
 
-#: ../gap/gap_mod_layer_dialog.c:721
+#: ../gap/gap_mod_layer_dialog.c:732
 msgid "Add layermask from selection"
 msgstr "Thêm mặt nạ lớp từ vùng chọn"
 
-#: ../gap/gap_mod_layer_dialog.c:727
+#: ../gap/gap_mod_layer_dialog.c:738
 msgid "Add layermask from bw copy"
 msgstr "Thêm mặt nạ lớp từ bản sao đen trắng"
 
-#: ../gap/gap_mod_layer_dialog.c:733
+#: ../gap/gap_mod_layer_dialog.c:744
 msgid "Invert existing layermask"
 msgstr "Đảo mặt nạ lớp đã có"
 
-#: ../gap/gap_mod_layer_dialog.c:739
+#: ../gap/gap_mod_layer_dialog.c:750
 msgid "Apply filter on layermask"
 msgstr "Áp dụng bộ lọc vào mặt nạ lớp"
 
-#: ../gap/gap_mod_layer_dialog.c:745
+#: ../gap/gap_mod_layer_dialog.c:756
 msgid "Delete layermask"
 msgstr "Xoá bỏ mặt nạ lớp"
 
-#: ../gap/gap_mod_layer_dialog.c:751
+#: ../gap/gap_mod_layer_dialog.c:762
 msgid "Apply layermask"
 msgstr "Áp dụng mặt nạ lớp"
 
-#: ../gap/gap_mod_layer_dialog.c:757
+#: ../gap/gap_mod_layer_dialog.c:768
 msgid "Copy layermask from layer above"
 msgstr "Chép mặt nạ lớp từ lớp trên"
 
-#: ../gap/gap_mod_layer_dialog.c:763
+#: ../gap/gap_mod_layer_dialog.c:774
 msgid "Copy layermask from layer below"
 msgstr "Chép mặt nạ lớp từ lớp dưới"
 
 #.apply filter has no sub_menu
-#: ../gap/gap_mod_layer_dialog.c:782
+#: ../gap/gap_mod_layer_dialog.c:791
 msgid "Apply filter on layer(s)"
 msgstr "Áp dụng bộ lọc vào lớp"
 
-#: ../gap/gap_mod_layer_dialog.c:783
+#: ../gap/gap_mod_layer_dialog.c:792
 msgid "apply filter to all selected layers"
 msgstr "áp dụng bộ lọc vào các lớp đã chọn"
 
-#: ../gap/gap_mod_layer_dialog.c:788
+#: ../gap/gap_mod_layer_dialog.c:797
 msgid "Duplicate layer(s)"
 msgstr "Nhân đôi lớp"
 
-#: ../gap/gap_mod_layer_dialog.c:794
+#: ../gap/gap_mod_layer_dialog.c:803
 msgid "Delete layer(s)"
 msgstr "Xoá bỏ lớp"
 
-#: ../gap/gap_mod_layer_dialog.c:800
+#: ../gap/gap_mod_layer_dialog.c:809
 msgid "Rename layer(s)"
 msgstr "Đổi tên lớp"
 
-#: ../gap/gap_mod_layer_dialog.c:807
+#: ../gap/gap_mod_layer_dialog.c:816
 msgid "Add alpha channel"
 msgstr "Thêm kênh anfa"
 
-#: ../gap/gap_mod_layer_dialog.c:948
+#: ../gap/gap_mod_layer_dialog.c:956
 msgid "Frames Modify"
 msgstr "Sửa đổi khung"
 
 #.+++++++++++++++++++++++++
 #.the function        frame
 #.+++++++++++++++++++++++++
-#: ../gap/gap_mod_layer_dialog.c:971
+#: ../gap/gap_mod_layer_dialog.c:979
 msgid "Function"
 msgstr "Chức năng"
 
 #.the Fuction label
 #.the toplevel menu_item (will be replaced on any selection)
-#: ../gap/gap_mod_layer_dialog.c:985
-#: ../gap/gap_mod_layer_dialog.c:1023
+#: ../gap/gap_mod_layer_dialog.c:993
+#: ../gap/gap_mod_layer_dialog.c:1031
 msgid "Function:"
 msgstr "Chức năng:"
 
 #.the LayerName (or channel Name) label
-#: ../gap/gap_mod_layer_dialog.c:1043
+#: ../gap/gap_mod_layer_dialog.c:1051
 msgid "Layer Name:"
 msgstr "Tên lớp:"
 
-#: ../gap/gap_mod_layer_dialog.c:1061
+#: ../gap/gap_mod_layer_dialog.c:1069
 msgid ""
 "Name for all handled layers (or channels),\n"
 "where the string '[######]' is replaced by the frame number."
@@ -2266,80 +2218,80 @@ msgstr "Tên cho mọi lớp đã thao tác (hay kênh),\n"
 #.+++++++++++++++++++++++++
 #.the layer selection frame
 #.+++++++++++++++++++++++++
-#: ../gap/gap_mod_layer_dialog.c:1070
+#: ../gap/gap_mod_layer_dialog.c:1078
 #: ../gap/gap_onion_dialog.c:1176
 msgid "Layer Selection"
 msgstr "Vùng chọn lớp"
 
 #.the radio button "Pattern is equal to layer name"
 #.Layer select modes
-#: ../gap/gap_mod_layer_dialog.c:1083
+#: ../gap/gap_mod_layer_dialog.c:1091
 #: ../gap/gap_range_ops.c:650
 msgid "Pattern is equal to layer name"
 msgstr "Mẫu bằng tên lớp"
 
-#: ../gap/gap_mod_layer_dialog.c:1092
+#: ../gap/gap_mod_layer_dialog.c:1100
 msgid "Select all layers where layer name is equal to pattern"
 msgstr "Chọn mọi lớp mà tên lớp bằng mẫu"
 
 #.the case sensitive  check_button
-#: ../gap/gap_mod_layer_dialog.c:1104
+#: ../gap/gap_mod_layer_dialog.c:1112
 #: ../gap/gap_onion_dialog.c:1261
 msgid "Case sensitive"
 msgstr "Phân biệt chữ hoa/thường"
 
-#: ../gap/gap_mod_layer_dialog.c:1111
+#: ../gap/gap_mod_layer_dialog.c:1119
 #: ../gap/gap_range_ops.c:767
 msgid "Lowercase and uppercase letters are considered as different"
 msgstr "Chữ hoa và chữ thường không phải là trùng."
 
 #.the radio button "Pattern is start of layer name"
-#: ../gap/gap_mod_layer_dialog.c:1122
+#: ../gap/gap_mod_layer_dialog.c:1130
 #: ../gap/gap_range_ops.c:651
 msgid "Pattern is start of layer name"
 msgstr "Mẫu là đầu tên lớp"
 
-#: ../gap/gap_mod_layer_dialog.c:1131
+#: ../gap/gap_mod_layer_dialog.c:1139
 msgid "Select all layers where layer name starts with pattern"
 msgstr "Chọn mọi lớp mà tên lớp bắt đầu bằng mẫu"
 
 #.the invert layer_selection  check_button
-#: ../gap/gap_mod_layer_dialog.c:1143
+#: ../gap/gap_mod_layer_dialog.c:1151
 msgid "Invert Layer Selection"
 msgstr "Đảo vùng chọn lớp"
 
-#: ../gap/gap_mod_layer_dialog.c:1150
+#: ../gap/gap_mod_layer_dialog.c:1158
 msgid "Perform actions on all unselected layers"
 msgstr "Làm hành động vào mọi lớp chưa chọn"
 
 #.the  radio button "Pattern is end of layer name"
-#: ../gap/gap_mod_layer_dialog.c:1161
+#: ../gap/gap_mod_layer_dialog.c:1169
 #: ../gap/gap_range_ops.c:652
 msgid "Pattern is end of layer name"
 msgstr "Mẫu là cuối tên lớp"
 
-#: ../gap/gap_mod_layer_dialog.c:1170
+#: ../gap/gap_mod_layer_dialog.c:1178
 msgid "Select all layers where layer name ends up with pattern"
 msgstr "Chọn mọi lớp mà tên lớp kết thúc bằng mẫu"
 
 #.the  radio button "Pattern is a part of layer name"
-#: ../gap/gap_mod_layer_dialog.c:1184
+#: ../gap/gap_mod_layer_dialog.c:1192
 #: ../gap/gap_range_ops.c:653
 msgid "Pattern is a part of layer name"
 msgstr "Mẫu là phần của tên lớp"
 
-#: ../gap/gap_mod_layer_dialog.c:1193
+#: ../gap/gap_mod_layer_dialog.c:1201
 msgid "Select all layers where layer name contains pattern"
 msgstr "Chọn mọi lớp mà tên lớp chứa mẫu"
 
 #.the  radio button "Pattern is a list of layerstack numbers"
-#: ../gap/gap_mod_layer_dialog.c:1207
+#: ../gap/gap_mod_layer_dialog.c:1215
 #: ../gap/gap_onion_dialog.c:1227
 #: ../gap/gap_range_ops.c:654
 msgid "Pattern is a list of layerstack numbers"
 msgstr "Mẫu là danh sách số đống lớp"
 
-#: ../gap/gap_mod_layer_dialog.c:1216
+#: ../gap/gap_mod_layer_dialog.c:1224
 #: ../gap/gap_range_ops.c:662
 msgid ""
 "Select layerstack positions where 0 is the top layer.\n"
@@ -2348,13 +2300,13 @@ msgstr "Chọn vị trí đống lớp mà 0 là lớp đầu.\n"
 "Thí dụ : 0, 4-5, 8"
 
 #.the  radio button "Pattern is a list of reverse layerstack numbers"
-#: ../gap/gap_mod_layer_dialog.c:1230
+#: ../gap/gap_mod_layer_dialog.c:1238
 #: ../gap/gap_onion_dialog.c:1228
 #: ../gap/gap_range_ops.c:655
 msgid "Pattern is a list of reverse layerstack numbers"
 msgstr "Mẫu là danh sách số đống lớp ngược"
 
-#: ../gap/gap_mod_layer_dialog.c:1239
+#: ../gap/gap_mod_layer_dialog.c:1247
 #: ../gap/gap_range_ops.c:663
 msgid ""
 "Select layerstack positions where 0 is the background layer.\n"
@@ -2363,24 +2315,24 @@ msgstr "Chọn vị trí đống lớp mà 0 là lớp nền.\n"
 "Thí dụ : 0, 4-5, 8"
 
 #.the  radio button "All visible (ignore pattern)"
-#: ../gap/gap_mod_layer_dialog.c:1253
+#: ../gap/gap_mod_layer_dialog.c:1261
 #: ../gap/gap_onion_dialog.c:1229
 #: ../gap/gap_range_ops.c:656
 msgid "All visible (ignore pattern)"
 msgstr "Mọi lớp hiển thị (bỏ qua mẫu)"
 
-#: ../gap/gap_mod_layer_dialog.c:1262
+#: ../gap/gap_mod_layer_dialog.c:1270
 #: ../gap/gap_range_ops.c:664
 msgid "Select all visible layers"
 msgstr "Chọn mọi lớp có thể thấy"
 
 #.the layer_pattern label
-#: ../gap/gap_mod_layer_dialog.c:1281
+#: ../gap/gap_mod_layer_dialog.c:1289
 #: ../gap/gap_range_ops.c:757
 msgid "Layer Pattern:"
 msgstr "Mẫu lớp:"
 
-#: ../gap/gap_mod_layer_dialog.c:1291
+#: ../gap/gap_mod_layer_dialog.c:1299
 msgid ""
 "String to identify layer names or layerstack position numbers. Example: 0,3-5"
 msgstr "Chuỗi để nhận diện tên lớp hay số vị trí đống lớp. Thí dụ : 0,3-5"
@@ -2388,7 +2340,7 @@ msgstr "Chuỗi để nhận diện tên lớp hay số vị trí đống lớp.
 #.+++++++++++++++++++++++++
 #.the frame_range     frame
 #.+++++++++++++++++++++++++
-#: ../gap/gap_mod_layer_dialog.c:1312
+#: ../gap/gap_mod_layer_dialog.c:1320
 #: ../gap/gap_onion_dialog.c:904
 msgid "Frame Range"
 msgstr "Phạm vị khung"
@@ -2400,7 +2352,7 @@ msgstr "Phạm vị khung"
 #.constrain
 #.lower unconstrained
 #.upper unconstrained
-#: ../gap/gap_mod_layer_dialog.c:1334
+#: ../gap/gap_mod_layer_dialog.c:1342
 #: ../gap/gap_mpege.c:301
 #: ../gap/gap_onion_dialog.c:939
 #: ../gap/gap_range_ops.c:297
@@ -2416,7 +2368,7 @@ msgstr "Khung đã thao tác đầu tiên"
 #.constrain
 #.lower unconstrained
 #.upper unconstrained
-#: ../gap/gap_mod_layer_dialog.c:1356
+#: ../gap/gap_mod_layer_dialog.c:1364
 #: ../gap/gap_mpege.c:311
 #: ../gap/gap_onion_dialog.c:957
 #: ../gap/gap_range_ops.c:307
@@ -2474,8 +2426,10 @@ msgstr "Đặt"
 
 #: ../gap/gap_morph_dialog.c:2946
 msgid ""
-"Click: pick and drag point at cursor or create new point SHIFT-Click: force "
-"create new point Alt-Click: disable drag Right-Click: delete point at cursor"
+"Click: pick and drag point at cursor or create new point\n"
+"SHIFT-Click: force create new point\n"
+"Alt-Click: disable drag\n"
+"Right-Click: delete point at cursor"
 msgstr "Nhắp: kén và kéo điểm tại con trỏ hay tạo điểm mới\n"
 "Shift-nhắp: ép buộc tạo điểm mới\n"
 "Alt-nhắp: tắt khả năng kéo\n"
@@ -2488,12 +2442,14 @@ msgstr "Chuyển"
 
 #: ../gap/gap_morph_dialog.c:2972
 msgid ""
-"Click: drag next point SHIFT-Click: force create new point Alt-Click: "
-"disable drag Right-Click: delete point at cursor"
+"Click: drag next point\n"
+"SHIFT-Click: force create new point\n"
+"Alt-Click: disable drag\n"
+"Right-Click: delete point at cursor\n"
 msgstr "Nhắp: kéo điểm ké tiếp\n"
 "Shift-nhắp: ép buộc tạo điểm mới\n"
 "Alt-nhắp: tắt khả năng kéo\n"
-"Nhắp-phải: xoá bỏ điểm tại con trỏ"
+"Nhắp-phải: xoá bỏ điểm tại con trỏ\n"
 
 #: ../gap/gap_morph_dialog.c:2998
 msgid "Click: delete next point"
@@ -2505,7 +2461,9 @@ msgid "Zoom"
 msgstr "Thu phóng"
 
 #: ../gap/gap_morph_dialog.c:3020
-msgid "Click: zoom in, CTRL-click: zoom out"
+msgid ""
+"Click: zoom in,\n"
+"CTRL-click: zoom out"
 msgstr "Nhắp: phóng to\n"
 "Ctrl-nhắp: thu nhỏ"
 
@@ -2590,7 +2548,8 @@ msgstr "Thu phóng khít"
 
 #: ../gap/gap_morph_dialog.c:3272
 msgid "Show the whole layer. (by adjusting zoom to fit into preview)."
-msgstr "Hiển thị toàn bộ lớp (bằng cách điều chỉnh việc thu phóng để vừa khít ô xem thử)."
+msgstr "Hiển thị toàn bộ lớp (bằng cách điều chỉnh việc thu phóng để vừa khít ô xem "
+"thử)."
 
 #.there is just one total_points display (always in the dst frame)
 #.the current Point label
@@ -2643,7 +2602,8 @@ msgid ""
 "Create N workpoints following the outline shape of the layer.(the shape "
 "detection is looking for non-transparent pixels).SHIFT-click: adds the new "
 "points and keeps the old points"
-msgstr "Tạo N điểm làm việc theo hình nét ngoài của lớp (việc phát hiện hình tìm điểm ảnh không trong suốt).\n"
+msgstr "Tạo N điểm làm việc theo hình nét ngoài của lớp (việc phát hiện hình tìm "
+"điểm ảnh không trong suốt).\n"
 "Shift-nhắp: thêm điểm mới và giữ lại điểm cũ."
 
 #.the show lines checkbutton
@@ -2673,7 +2633,8 @@ msgstr "Bán kính:"
 msgid ""
 "Deform radius in pixels. Each workpoint causes a move-deform operation "
 "within this affect radius."
-msgstr "Bán kính làm biến dạng theo điểm ảnh. Mỗi điểm làm việc gây ra một thao tác di chuyển-làm biến dạng trong bán kính có tác động."
+msgstr "Bán kính làm biến dạng theo điểm ảnh. Mỗi điểm làm việc gây ra một thao tác "
+"di chuyển-làm biến dạng trong bán kính có tác động."
 
 #.the deform intensity label
 #: ../gap/gap_morph_dialog.c:3685
@@ -2693,7 +2654,8 @@ msgstr "Dùng độ mạnh"
 msgid ""
 "ON: Descending deform action from workpoint (full) to radius (zero). Descend "
 "by power of intensity.OFF: Linear deform action inside the radius"
-msgstr "BẬT: hành động làm biến dạng giảm dần từ điểm làm việc (đầy) đến bán kính (số không). Giảm dần theo độ mạnh lũy thừa.\n"
+msgstr "BẬT: hành động làm biến dạng giảm dần từ điểm làm việc (đầy) đến bán kính "
+"(số không). Giảm dần theo độ mạnh lũy thừa.\n"
 "TẮT: hành động làm biến dạng tuyến trong bán kính."
 
 #.the use_quality_wp_selection checkbutton
@@ -2730,7 +2692,9 @@ msgid ""
 "Number of layers to create or modify. Steps refers to N layers under the "
 "destination layer. Steps is ignored if render mode is warp and source and "
 "destination are different layers of the same image"
-msgstr "Số lớp cần tạo hay sửa đổi. « Bước » tham chiếu đến N lớp dưới lớp đích. « Bước » bị bỏ qua nếu chế độ vẽ là làm oằn, và nguồn và đích là lớp khác của cùng một ảnh."
+msgstr "Số lớp cần tạo hay sửa đổi. « Bước » tham chiếu đến N lớp dưới lớp đích. « "
+"Bước » bị bỏ qua nếu chế độ vẽ là làm oằn, và nguồn và đích là lớp khác của "
+"cùng một ảnh."
 
 #.the pointcolor colorbutton
 #: ../gap/gap_morph_dialog.c:3807
@@ -2774,7 +2738,9 @@ msgid ""
 "(points_01.txt, points_02.txt, points_03.txt) then open and SHIFT open the "
 "first and last pointset\n"
 "OFF: use current set of workpoints"
-msgstr "BẬT: dùng nhiều (≥2) bộ điểm từ tập tin. Hãy tạo và lưu các bộ điểm trước tiên, dùng tên tập tin có phần hai con số nằm trước phần mở rộng (điểm_01.txt, điểm_02.txt, điểm_03.txt) rồi mở và SHIFT-mở bộ điểm đầu và cuối.\n"
+msgstr "BẬT: dùng nhiều (≥2) bộ điểm từ tập tin. Hãy tạo và lưu các bộ điểm trước "
+"tiên, dùng tên tập tin có phần hai con số nằm trước phần mở rộng (điểm_01."
+"txt, điểm_02.txt, điểm_03.txt) rồi mở và SHIFT-mở bộ điểm đầu và cuối.\n"
 "TẮT: dùng bộ điểm hiện có"
 
 #.the lower workpoint label
@@ -2858,7 +2824,7 @@ msgstr "Co dãn kích cỡ của ô xem thử hoạt cảnh đã tạo ra (theo 
 #: ../gap/gap_mov_dialog.c:1045
 #: ../gap/gap_mpege.c:319
 #: ../gap/gap_navigator_dialog.c:4166
-#: ../gap/gap_story_dialog.c:6202
+#: ../gap/gap_story_dialog.c:6200
 #: ../vid_common/gap_cme_gui.c:3399
 msgid "Framerate:"
 msgstr "Tỷ lệ khung:"
@@ -2875,7 +2841,9 @@ msgstr "Chép vào bộ đệm ảnh động:"
 msgid ""
 "Save all single frames of animated preview to video buffer.(configured in "
 "gimprc by video-paste-dir and video-paste-basename)"
-msgstr "Lưu mọi khung đơn của ô xem thử hoạt cảnh vào bộ đệm ảnh động (được cấu hình trong tập tin tài nguyên gimprc bằng « video-paste-dir » [thư mục dán ảnh động] và « video-paste-basename » [tên cơ sở dán ảnh động])."
+msgstr "Lưu mọi khung đơn của ô xem thử hoạt cảnh vào bộ đệm ảnh động (được cấu hình "
+"trong tập tin tài nguyên gimprc bằng « video-paste-dir » [thư mục dán ảnh "
+"động] và « video-paste-basename » [tên cơ sở dán ảnh động])."
 
 #.the Default button
 #: ../gap/gap_mov_dialog.c:1070
@@ -2988,38 +2956,6 @@ msgstr "Đối tượng nguồn cần chèn vào các khung đích của phạm 
 msgid "Mode:"
 msgstr "Chế độ :"
 
-#: ../gap/gap_mov_dialog.c:2756
-msgid "Normal"
-msgstr "Chuẩn"
-
-#: ../gap/gap_mov_dialog.c:2757
-msgid "Dissolve"
-msgstr "Mờ chồng"
-
-#: ../gap/gap_mov_dialog.c:2758
-msgid "Multiply"
-msgstr "Nhân"
-
-#: ../gap/gap_mov_dialog.c:2759
-msgid "Divide"
-msgstr "Chia"
-
-#: ../gap/gap_mov_dialog.c:2760
-msgid "Screen"
-msgstr "Màn hình"
-
-#: ../gap/gap_mov_dialog.c:2761
-msgid "Overlay"
-msgstr "Phủ"
-
-#: ../gap/gap_mov_dialog.c:2762
-msgid "Dodge"
-msgstr "Né tránh"
-
-#: ../gap/gap_mov_dialog.c:2763
-msgid "Burn"
-msgstr "Cháy"
-
 #: ../gap/gap_mov_dialog.c:2764
 msgid "Hard Light"
 msgstr "Sáng cứng"
@@ -3036,18 +2972,6 @@ msgstr "Chiết hạt"
 msgid "Grain Merge"
 msgstr "Trộn hạt"
 
-#: ../gap/gap_mov_dialog.c:2768
-msgid "Difference"
-msgstr "Hiệu"
-
-#: ../gap/gap_mov_dialog.c:2769
-msgid "Addition"
-msgstr "Cộng"
-
-#: ../gap/gap_mov_dialog.c:2770
-msgid "Subtract"
-msgstr "Trừ"
-
 #: ../gap/gap_mov_dialog.c:2771
 msgid "Darken Only"
 msgstr "Chỉ làm tối"
@@ -3055,22 +2979,6 @@ msgstr "Chỉ làm tối"
 #: ../gap/gap_mov_dialog.c:2772
 msgid "Lighten Only"
 msgstr "Chỉ làm sáng"
-
-#: ../gap/gap_mov_dialog.c:2773
-msgid "Hue"
-msgstr "Sắc màu"
-
-#: ../gap/gap_mov_dialog.c:2774
-msgid "Saturation"
-msgstr "Độ bão hòa"
-
-#: ../gap/gap_mov_dialog.c:2775
-msgid "Color"
-msgstr "Màu"
-
-#: ../gap/gap_mov_dialog.c:2776
-msgid "Value"
-msgstr "Giá trị"
 
 #: ../gap/gap_mov_dialog.c:2777
 msgid "Keep Paintmode"
@@ -3101,8 +3009,8 @@ msgstr "Hệ số tốc độ :"
 #.lower, upper (unconstrained)
 #: ../gap/gap_mov_dialog.c:2822
 msgid ""
-"Source and target frames step synchron at value 1.0. A value of 0.5 will "
-"step the source half time slower.One source step is done only at every 2.nd "
+"Source and target frames step synchronized at value 1.0. A value of 0.5 will "
+"step the source half time slower. One source step is done only at every 2nd "
 "target frame."
 msgstr "Bước của khung nguồn và đích được đồng bộ tại giá trị 1.0. Giá trị 0.5 sẽ bước nguồn nửa thời gian chậm hơn. Một bước nguồn được làm chỉ tại mỗi khung đích thứ hai."
 
@@ -3197,7 +3105,8 @@ msgstr "Cách để lớp nguồn tại tọa độ điểm điều khiển."
 msgid ""
 "Apply the bluebox filter on the moving object(s). The bluebox filter makes "
 "the keycolor transparent."
-msgstr "Áp dụng bộ lọc hộp xanh trên (các) đối tượng di chuyển. Bộ lọc hộp xanh làm cho màu khoá là trong suốt."
+msgstr "Áp dụng bộ lọc hộp xanh trên (các) đối tượng di chuyển. Bộ lọc hộp xanh làm "
+"cho màu khoá là trong suốt."
 
 #.keycolor button
 #: ../gap/gap_mov_dialog.c:2960
@@ -3272,8 +3181,8 @@ msgstr "Bước giữa :"
 #: ../gap/gap_mov_dialog.c:3056
 msgid ""
 "Calculate n steps between 2 frames. The rendered tween steps are collected "
-"in a tween layer that will be added to the handeld destination frames. If "
-"the tween steps value is 0, no tweens are calculated and no tween layers are "
+"in a tween layer that will be added to the handled destination frames. If "
+"the tween step value is 0, no tweens are calculated and no tween layers are "
 "created"
 msgstr "Tính n bước giữa hai khung. Những bước giữa đã vẽ có được tập hợp trong một lớp giữa sẽ được thêm vào các khung đích đã thao tác. Nếu giá trị của bước giữa là 0, không tính bước giữa nào, cũng không tạo lớp giữa nào."
 
@@ -3320,14 +3229,15 @@ msgstr "Sửa đổi điểm điều khiển"
 
 #: ../gap/gap_mov_dialog.c:3149
 msgid "Add controlpoint at end. The last controlpoint is duplicated."
-msgstr "Thêm điểm điều khiển tại kết thúc. Điểm điều khiển cuối cùng sẽ được nhân đôi."
+msgstr "Thêm điểm điều khiển tại kết thúc. Điểm điều khiển cuối cùng sẽ được nhân "
+"đôi."
 
 #: ../gap/gap_mov_dialog.c:3162
 msgid ""
 "Delete all controlpoints, and replace them with a copy of all anchorpoints "
-"of the current path from the image where 'MovePath' was invoked from. Hold "
-"Shift key to create contolpoints foreach handled frame, following the bezier "
-"path"
+"of the current path from the image from which 'MovePath' was invoked. Hold "
+"down the Shift key to create controlpoints for each handled frame, following "
+"the Bezier path."
 msgstr "Xoá bỏ mọi điểm điều khiển và thay thế chúng bằng một bản sao của mọi điểm neo của đường dẫn hiện thời từ ảnh từ đó « Chuyển đường dẫn » đã được gọi. Bấm giữ phím SHIFT để tạo điểm điều khiển cho mỗi khung đã thao tác, theo đường dẫn Bezier."
 
 #: ../gap/gap_mov_dialog.c:3181
@@ -3365,13 +3275,17 @@ msgid ""
 "values). Hold down the shift key to copy settings of point1 into all other "
 "points. Holding down the ctrl key spreads a mix of the settings of point1 "
 "and the last point into the other points inbetween."
-msgstr "Đặt lại mọi điểm điều khiển thành các giá trị mặc định, mà không thay đổi đường dẫn (giá trị X/Y). Hãy bấm giữ phím SHIFT để sao chép thiết lập của điểm 1 vào các điểm khác. Việc bấm giữ phím CTRL phân phối thiết lập của điểm 1 và điểm cuối cùng được trộn với nhau vào các điểm khác ở giữa."
+msgstr "Đặt lại mọi điểm điều khiển thành các giá trị mặc định, mà không thay đổi "
+"đường dẫn (giá trị X/Y). Hãy bấm giữ phím SHIFT để sao chép thiết lập của "
+"điểm 1 vào các điểm khác. Việc bấm giữ phím CTRL phân phối thiết lập của "
+"điểm 1 và điểm cuối cùng được trộn với nhau vào các điểm khác ở giữa."
 
 #: ../gap/gap_mov_dialog.c:3299
 msgid ""
 "Set rotation for all controlpoints to follow the shape of the path. Hold "
 "down the shift key to use rotation of contolpoint 1 as offset."
-msgstr "Đặt độ xoay cho mọi điểm điều khiển để theo hình của đường dẫn. Bấm giữ phím SHIFT để sử dụng độ xoay của điểm điều khiển 1 là hiệu số."
+msgstr "Đặt độ xoay cho mọi điểm điều khiển để theo hình của đường dẫn. Bấm giữ phím "
+"SHIFT để sử dụng độ xoay của điểm điều khiển 1 là hiệu số."
 
 #: ../gap/gap_mov_dialog.c:3314
 msgid "Delete all controlpoints"
@@ -3432,7 +3346,8 @@ msgstr "Đống lớp:"
 msgid ""
 "How to insert source layer into the layerstack of the destination frames. "
 "layerstack 0 means on top i.e. in front"
-msgstr "Cách chèn lớp nguồn vào đống lớp của các khung đích. Đống lớp 1 ngụ ý nó lên trên (trước hết)."
+msgstr "Cách chèn lớp nguồn vào đống lớp của các khung đích. Đống lớp 1 ngụ ý nó lên "
+"trên (trước hết)."
 
 #.toggle force visibility
 #: ../gap/gap_mov_dialog.c:3503
@@ -3456,7 +3371,7 @@ msgstr "Xén mọi lớp nguồn đã sao chép tại ranh giới khung đích."
 #.table col, row
 #.the width label
 #: ../gap/gap_mov_dialog.c:3567
-#: ../gap/gap_story_dialog.c:6179
+#: ../gap/gap_story_dialog.c:6177
 #: ../vid_common/gap_cme_gui.c:3324
 msgid "Width:"
 msgstr "Rộng:"
@@ -3477,7 +3392,7 @@ msgstr "Co dãn độ rộng của lớp nguồn theo phần trăm."
 #.table col, row
 #.the height label
 #: ../gap/gap_mov_dialog.c:3585
-#: ../gap/gap_story_dialog.c:6190
+#: ../gap/gap_story_dialog.c:6188
 #: ../vid_common/gap_cme_gui.c:3373
 msgid "Height:"
 msgstr "Cao :"
@@ -3538,7 +3453,7 @@ msgstr "Xoay:"
 #.constrain
 #.lower, upper (unconstrained)
 #: ../gap/gap_mov_dialog.c:3645
-msgid "Rotate source layer (in degree)"
+msgid "Rotate source layer (in degrees)"
 msgstr "Xoay lớp nguồn (theo độ)"
 
 #.ttlx transformfactor
@@ -3633,10 +3548,7 @@ msgstr "Hệ số chuyển dạng tọa độ X của góc dưới bên trái."
 
 #.tbly transformfactor
 #.table col, row
-#.tbry transformfactor
-#.table col, row
 #: ../gap/gap_mov_dialog.c:3783
-#: ../gap/gap_mov_dialog.c:3819
 msgid "y3:"
 msgstr "y3:"
 
@@ -3669,6 +3581,12 @@ msgstr "x4:"
 #: ../gap/gap_mov_dialog.c:3809
 msgid "Transformfactor for lower right corner X coordinate"
 msgstr "Hệ số chuyển dạng tọa độ X của góc dưới bên phải."
+
+#.tbry transformfactor
+#.table col, row
+#: ../gap/gap_mov_dialog.c:3819
+msgid "y4:"
+msgstr "y4:"
 
 #.label text
 #.scalesize spinsize
@@ -3775,7 +3693,8 @@ msgstr "Đường dẫn"
 msgid ""
 "Show path lines and enable pick/drag with left button or move with right "
 "button"
-msgstr "Hiển thị các đường dẫn và hiệu lực kén/kéo bằng cái nút trái hay di chuyển bằng cái nút phải."
+msgstr "Hiển thị các đường dẫn và hiệu lực kén/kéo bằng cái nút trái hay di chuyển "
+"bằng cái nút phải."
 
 #.toggle Show cursor
 #: ../gap/gap_mov_dialog.c:4221
@@ -3863,7 +3782,8 @@ msgid ""
 "\n"
 "Error: Keyframe %d at point [%d] higher or equal than last handled frame"
 msgstr "\n"
-"Lỗi : khung khoá %d tại điểm [%d] là cao hơn hay bằng khung đã thao tác cuối cùng."
+"Lỗi : khung khoá %d tại điểm [%d] là cao hơn hay bằng khung đã thao tác cuối "
+"cùng."
 
 #: ../gap/gap_mov_exec.c:1866
 #, c-format
@@ -3971,8 +3891,8 @@ msgstr "Mọi ảnh phải có cùng một kích cỡ,"
 #: ../gap/gap_mpege.c:217
 msgid ""
 "\n"
-"INFORMATINON:\n"
-"For more efficient MPEG encoding use the menu:\n"
+"NOTE:\n"
+"For more efficient MPEG encoding, use the menu:\n"
 "Video->Encode->Master Videoencoder"
 msgstr "\n"
 "GHI CHÚ :\n"
@@ -4011,7 +3931,8 @@ msgstr "Tỷ lệ bit:"
 msgid ""
 "Used for constant bitrates (bit/sec). low rate gives good compression + bad "
 "quality"
-msgstr "Dùng cho tỷ lệ bit bất biến (bit/giây): tỷ lệ thấp tạo độ nén tốt và chất lượng xấu."
+msgstr "Dùng cho tỷ lệ bit bất biến (bit/giây): tỷ lệ thấp tạo độ nén tốt và chất "
+"lượng xấu."
 
 #: ../gap/gap_mpege.c:346
 msgid "Outputfile:"
@@ -4052,7 +3973,7 @@ msgid "Constant Bitrate:"
 msgstr "Tỷ lệ bit bất biến:"
 
 #: ../gap/gap_mpege.c:385
-msgid "Iqnore I/P/QSCALE values and use constant bit-rate)"
+msgid "Ignore I/P/QSCALE values and use constant bit-rate"
 msgstr "Bỏ qua các giá trị TỶ LỆ CL I/P và dùng tỷ lệ bit bất biến."
 
 #: ../gap/gap_mpege.c:392
@@ -4195,7 +4116,7 @@ msgstr "Tên phông chữ :"
 
 #.pixel
 #: ../gap/gap_name2layer_main.c:456
-msgid "Select Fontname)"
+msgid "Select Fontname"
 msgstr "Chọn tên phông chữ"
 
 #: ../gap/gap_name2layer_main.c:464
@@ -4245,16 +4166,16 @@ msgstr "Thiết lập:"
 #: ../gap/gap_navigator_dialog.c:433
 msgid ""
 "Playback\n"
-"<Shift> converts the selected frames to temporary image and do "
-"layeranimation playback on the temporary image"
+"SHIFT converts the selected frames to temporary image, and does "
+"layeranimation playback on it."
 msgstr "Phát lại\n"
 "Phím SHIFT chuyển đổi các khung đã chọn thành một ảnh tạm thời và làm việc phát lại hoạt cảnh lớp trên nó."
 
 #: ../gap/gap_navigator_dialog.c:439
 msgid ""
 "Smart update thumbnails\n"
-"<Shift> forced thumbnail update for all frames"
-msgstr "Cập nhật thông minh hình thu nhỏ.\n"
+"SHIFT forces thumbnail update for all frames"
+msgstr "Cập nhật thông minh các hình thu nhỏ.\n"
 "Phím SHIFT ép buộc cập nhật hình thu nhỏ cho mọi khung."
 
 #: ../gap/gap_navigator_dialog.c:444
@@ -4272,16 +4193,16 @@ msgstr "Về khung đầu"
 #: ../gap/gap_navigator_dialog.c:461
 msgid ""
 "Goto prev frame\n"
-"<Shift> use timezoom stepsize"
+"SHIFT use timezoom stepsize"
 msgstr "Lùi khung trước\n"
 "Phím SHIFT dùng bước thu phóng giờ"
 
 #: ../gap/gap_navigator_dialog.c:466
 msgid ""
 "Goto next frame\n"
-"<Shift> use timezoom stepsize"
+"SHIFT use timezoom stepsize"
 msgstr "Tới khung kế tiếp\n"
-"Phím SHIFT dùng bước thu phóng giờ"
+"Phím SHIFT dùng kích cỡ của bước thu phóng giờ"
 
 #: ../gap/gap_navigator_dialog.c:471
 msgid "Goto last frame"
@@ -4415,7 +4336,7 @@ msgid "Timezoom:"
 msgstr "Phóng giờ :"
 
 #: ../gap/gap_navigator_dialog.c:4218
-msgid "Show only every N.th frame"
+msgid "Show only every Nth frame"
 msgstr "Hiện chỉ mỗi khung thứ N"
 
 #.The main shell
@@ -4527,7 +4448,8 @@ msgstr "BẬT: 0 là lên trên đống (lên trước).\n"
 
 #: ../gap/gap_onion_dialog.c:1152
 msgid "Opacity of first onionskin layer (0 is transparent, 100 full opaque)"
-msgstr "Độ mờ đục của lớp da hành thứ nhất (0 là trong suốt, 100 là mờ đục hoàn toàn)."
+msgstr "Độ mờ đục của lớp da hành thứ nhất (0 là trong suốt, 100 là mờ đục hoàn "
+"toàn)."
 
 #: ../gap/gap_onion_dialog.c:1170
 msgid "Descending opacity for 2.nd onionskin layer"
@@ -4563,8 +4485,8 @@ msgid "Pattern is a part of layername"
 msgstr "Mẫu là phần của tên lớp"
 
 #: ../gap/gap_onion_dialog.c:1241
-msgid "Modes how to use select pattern"
-msgstr "Chế độ dùng mẫu chọn"
+msgid "This mode determines how the selection pattern is interpreted."
+msgstr "Chế độ này quyết định cách giải thích mẫu lựa chọn."
 
 #.the selct options label
 #: ../gap/gap_onion_dialog.c:1248
@@ -4615,7 +4537,9 @@ msgid ""
 "ON: Automatic creation/replacement of onionskin layer(s). Works on frame "
 "changes via 'VCR Navigator' and go to operations in the video menu -- but "
 "not on explicite load from the file menu."
-msgstr "BẬT: tạo/thay thế tự động các lớp da hành. Hoạt động khi thay đổi khung thông qua « bộ duyệt VCR » và đi tới thao tác trong trình đơn ảnh động, nhưng không phải khi tải dứt khoát từ trình đơn tập tin."
+msgstr "BẬT: tạo/thay thế tự động các lớp da hành. Hoạt động khi thay đổi khung "
+"thông qua « bộ duyệt VCR » và đi tới thao tác trong trình đơn ảnh động, "
+"nhưng không phải khi tải dứt khoát từ trình đơn tập tin."
 
 #: ../gap/gap_onion_dialog.c:1335
 msgid "Auto delete before save"
@@ -4627,7 +4551,10 @@ msgid ""
 "Navigator' and go to operations in the video menu -- but not on explicite "
 "save from the file menu. Use this option if you dont want onionskin layers "
 "to appear in thumbnail files."
-msgstr "BẬT: xoá bỏ tự động các lớp da hành. Hoạt động khi thay đổi khung thông qua « bộ duyệt VCR » và đi tới thao tác trong trình đơn ảnh động, nhưng không phải khi tải dứt khoát từ trình đơn tập tin. Hãy dùng tùy chọn này nếu bạn không muốn lớp da hành xuất hiện trong tập tin hình thu nhỏ."
+msgstr "BẬT: xoá bỏ tự động các lớp da hành. Hoạt động khi thay đổi khung thông qua "
+"« bộ duyệt VCR » và đi tới thao tác trong trình đơn ảnh động, nhưng không "
+"phải khi tải dứt khoát từ trình đơn tập tin. Hãy dùng tùy chọn này nếu bạn "
+"không muốn lớp da hành xuất hiện trong tập tin hình thu nhỏ."
 
 #: ../gap/gap_onion_dialog.c:1372
 msgid "Reset to default settings"
@@ -4716,13 +4643,13 @@ msgstr "BẬT: lấy lại mẫu của bãn sao tại tỷ lệ lấy mẫu đã
 #.the Samplerate label
 #: ../gap/gap_player_dialog.c:406
 #: ../gap/gap_player_dialog.c:5083
-#: ../gap/gap_story_dialog.c:6261
+#: ../gap/gap_story_dialog.c:6259
 #: ../vid_common/gap_cme_gui.c:3039
 msgid "Samplerate:"
 msgstr "Tỷ lệ lấy mẫu :"
 
 #: ../gap/gap_player_dialog.c:407
-msgid "Target audio samperate in samples/sec. Ignored if resample is off)"
+msgid "Target audio samplerate in samples/sec. Ignored if resample is off"
 msgstr "Tỷ lệ lấy mẫu âm thanh đích theo mẫu/giây; bị bỏ qua nếu « Lấy lại mẫu » bị tắt."
 
 #: ../gap/gap_player_dialog.c:428
@@ -4731,8 +4658,8 @@ msgstr "Chép tập tin âm thanh dạng tập tin .wav"
 
 #: ../gap/gap_player_dialog.c:429
 #: ../gap/gap_story_dialog.c:3173
-#: ../gap/gap_story_dialog.c:6058
-#: ../gap/gap_story_dialog.c:6306
+#: ../gap/gap_story_dialog.c:6056
+#: ../gap/gap_story_dialog.c:6304
 msgid "Settings"
 msgstr "Thiết lập"
 
@@ -4779,6 +4706,16 @@ msgstr "CẢNH BÁO : tập tin tài nguyên gimprc chứa cấu hình cho trìn
 "wavplay không chỉ tới chương trình có khả năng thực hiện;\n"
 "giá trị đã cấu hình cho %s là %s\n"
 
+#: ../gap/gap_player_dialog.c:852
+#, c-format
+msgid ""
+"WARNING: the environment variable %s\n"
+"does not point to an executable program\n"
+"the current value is: %s\n"
+msgstr "CẢNH BÁO : biến môi trường %s không\n"
+"chỉ tới chương trình thực hiện được;\n"
+"giá trị đã cấu hình là: %s\n"
+
 #: ../gap/gap_player_dialog.c:888
 #, c-format
 msgid ""
@@ -4791,7 +4728,8 @@ msgid ""
 msgstr "Không hỗ trợ âm thanh;\n"
 "không tìm thấy tập tin thực hiện được trình phục vụ âm thanh « %s ».\n"
 "Nếu bạn đã cài đặt « %s »\n"
-"bạn nên thêm thư mục cài đặt đó vào đường dẫn thưc hiện mặc định PATH của bạn,\n"
+"bạn nên thêm thư mục cài đặt đó vào đường dẫn thưc hiện mặc định PATH của "
+"bạn,\n"
 "hoặc đặt biến môi trường %s là tên của tập tin thực hiện được đó\n"
 "trước khi bạn khởi chạy GIMP."
 
@@ -4832,7 +4770,8 @@ msgstr "Đang tạo phụ lục..."
 msgid ""
 "No videoindex available. Access is limited to (slow) sequential read on "
 "file: %s"
-msgstr "Không có phụ lục ảnh động. Truy cập bị hạn chế thành việc đọc tuần tự (chậm) trên tập tin: %s"
+msgstr "Không có phụ lục ảnh động. Truy cập bị hạn chế thành việc đọc tuần tự (chậm) "
+"trên tập tin: %s"
 
 #: ../gap/gap_player_dialog.c:2172
 #: ../gap/gap_story_dialog.c:4511
@@ -4880,7 +4819,8 @@ msgstr "CẢNH BÁO : biến môi trường %s\n"
 msgid ""
 "ERROR: The external program for audioconversion is not executable.\n"
 "Filename: '%s'\n"
-msgstr "LỖI : chương trình bên ngoài để chuyển đổi âm thanh không có khả năng thực hiện.\n"
+msgstr "LỖI : chương trình bên ngoài để chuyển đổi âm thanh không có khả năng thực "
+"hiện.\n"
 "Tên tập tin: %s\n"
 
 #: ../gap/gap_player_dialog.c:4655
@@ -4910,7 +4850,7 @@ msgstr "Mở cửa sổ hộp thoại duyệt vùng chọn tập tin âm thanh."
 
 #.Volume
 #: ../gap/gap_player_dialog.c:4914
-#: ../gap/gap_story_dialog.c:6277
+#: ../gap/gap_story_dialog.c:6275
 msgid "Volume:"
 msgstr "Âm lượng:"
 
@@ -4942,7 +4882,11 @@ msgid ""
 "frame 9 silently and start audio at frame 10. A value of 10 starts audio at "
 "frame 1, but skips the audio begin part in a length that is equal to the "
 "duration of 10 frames at original video playback speed."
-msgstr "Hiệu số âm thanh trong khung tại tốc độ phát lại ảnh động gốc. Giá trị 0 khởi chạy âm thanh và ảnh động tại thời gian đồng bộ. Giá trị -10 sẽ phát khung 1 đến khung 9 một cách câm và bất đầu âm thanh tại khung 10. Giá trị 10 khởi chạy âm thanh tại khung 1, nhưng bỏ qua phần bắt đầu âm thanh trong độ dài bằng thời gian 10 khung tại tốc độ phát lại ảnh động gốc."
+msgstr "Hiệu số âm thanh trong khung tại tốc độ phát lại ảnh động gốc. Giá trị 0 "
+"khởi chạy âm thanh và ảnh động tại thời gian đồng bộ. Giá trị -10 sẽ phát "
+"khung 1 đến khung 9 một cách câm và bất đầu âm thanh tại khung 10. Giá trị "
+"10 khởi chạy âm thanh tại khung 1, nhưng bỏ qua phần bắt đầu âm thanh trong "
+"độ dài bằng thời gian 10 khung tại tốc độ phát lại ảnh động gốc."
 
 #: ../gap/gap_player_dialog.c:4990
 msgid "Reset offset and volume"
@@ -4957,7 +4901,8 @@ msgstr "Chép dạng tập tin .wav"
 msgid ""
 "Create a copy from audiofile as RIFF WAVE audiofile and use the copy for "
 "audio playback"
-msgstr "Tạo một bản sao từ tập tin âm thanh dạng RIFF WAVE và sử dụng bản sao này để phát lại âm thanh."
+msgstr "Tạo một bản sao từ tập tin âm thanh dạng RIFF WAVE và sử dụng bản sao này để "
+"phát lại âm thanh."
 
 #.Audio Offset Length (mm:ss:msec)
 #: ../gap/gap_player_dialog.c:5024
@@ -5017,9 +4962,9 @@ msgstr "Tùy chọn âm thanh"
 #: ../gap/gap_player_dialog.c:5357
 msgid ""
 "Click: go to frame, Ctrl-Click: set 'From Frame', Alt-Click: set 'To Frame'"
-msgstr "Nhắp		đi tới khung\n"
-"CTRL-nhắp	đặt « Từ khung »\n"
-"ALT-nhắp	đặt « Đến khung »"
+msgstr "Nhắp\t\tđi tới khung\n"
+"CTRL-nhắp\tđặt « Từ khung »\n"
+"ALT-nhắp\tđặt « Đến khung »"
 
 #: ../gap/gap_player_dialog.c:5427
 #: ../gap/gap_player_dialog.c:5530
@@ -5179,9 +5124,9 @@ msgstr "Thôi việc tạo phụ lục ảnh động"
 
 #: ../gap/gap_player_dialog.c:5932
 msgid ""
-"Cancel videoindex creation. Videoindex creation requires full scann of the "
-"video but allows fast random access to frames afterwards. Without a "
-"videoindex, access is done by very slow sequential read"
+"Cancel videoindex creation. Videoindex creation requires full scanning of "
+"the video but allows fast random access to frames afterwards. Without a "
+"videoindex, access is done by a very slow sequential read"
 msgstr "Thôi việc tạo phụ lục ảnh động. Việc này cần thiết quét toàn bộ ảnh động, còn cho phép truy cập khung một cách ngẫu nhiên và nhanh về sau. Khi không có phụ lục ảnh động, sự truy cập xảy ra trong khi đọc thứ tự rất chậm."
 
 #: ../gap/gap_player_dialog.c:5959
@@ -5195,13 +5140,13 @@ msgstr "Khởi chạy phát lại.\n"
 
 #: ../gap/gap_player_dialog.c:5972
 msgid ""
-"Pause if playing (any mouseboutton). Go to selection start/active/end (left/"
+"Pause if playing (any mousebutton). Go to selection start/active/end (left/"
 "middle/right mousebutton) if not playing"
 msgstr "Tạm dừng nếu phát (bắt kỳ nút chuột).\n"
 "Nếu không phát:\n"
-"	đi tới đầu của vùng chọn 	cái nút bên trái trên con chuột\n"
-"	đi tới vùng chọn hoạt động 	cái nút giữa trên con chuột\n"
-"	đi tới cuối của vùng chọn 	cái nút bên phải trên con chuột."
+"\tđi tới đầu của vùng chọn \tcái nút bên trái trên con chuột\n"
+"\tđi tới vùng chọn hoạt động \tcái nút giữa trên con chuột\n"
+"\tđi tới cuối của vùng chọn \tcái nút bên phải trên con chuột."
 
 #: ../gap/gap_player_dialog.c:5982
 msgid ""
@@ -5261,8 +5206,8 @@ msgid "Scale (original %dx%d)"
 msgstr "Co dãn (gốc %d×%d)"
 
 #: ../gap/gap_range_ops.c:215
-#: ../gap/gap_story_dialog.c:6048
-#: ../gap/gap_story_dialog.c:6293
+#: ../gap/gap_story_dialog.c:6046
+#: ../gap/gap_story_dialog.c:6291
 msgid "Reset"
 msgstr "Đặt lại"
 
@@ -5317,7 +5262,8 @@ msgstr "Bảng chọn riêng"
 
 #: ../gap/gap_range_ops.c:397
 msgid "Name of a custom palette (ignored if palette type is not custom)"
-msgstr "Tên của bảng chọn riêng (bị bỏ qua nếu kiểu bảng chọn không phải đã được tự chọn)."
+msgstr "Tên của bảng chọn riêng (bị bỏ qua nếu kiểu bảng chọn không phải đã được tự "
+"chọn)."
 
 #: ../gap/gap_range_ops.c:402
 msgid "Remove Unused"
@@ -5325,7 +5271,8 @@ msgstr "Bỏ (chưa dùng)"
 
 #: ../gap/gap_range_ops.c:403
 msgid "Remove unused or double colors (ignored if palette type is not custom)"
-msgstr "Gỡ bỏ màu chưa dùng hay màu đôi (bị bỏ qua nếu kiểu bảng chọn không phải đã được tự chọn)."
+msgstr "Gỡ bỏ màu chưa dùng hay màu đôi (bị bỏ qua nếu kiểu bảng chọn không phải đã "
+"được tự chọn)."
 
 #: ../gap/gap_range_ops.c:408
 msgid "Number of Colors"
@@ -5335,7 +5282,8 @@ msgstr "Số màu"
 msgid ""
 "Number of resulting colors (ignored if palette type is not generate optimal "
 "palette)"
-msgstr "Số màu kết quả (bị bỏ qua nếu kiểu bảng chọn không phải là tạo ra bảng chọn tối ưu)."
+msgstr "Số màu kết quả (bị bỏ qua nếu kiểu bảng chọn không phải là tạo ra bảng chọn "
+"tối ưu)."
 
 #: ../gap/gap_range_ops.c:416
 msgid "Dither Options"
@@ -5383,7 +5331,8 @@ msgstr "Tên cơ sở :"
 msgid ""
 "basename of the resulting frames. The number part and extension (000001.ext) "
 "is added automatically to all converted frames."
-msgstr "tên cơ sở cũa các khung kết quả. Phần số và phần mở rộng (000001.ext) được thêm tự động vào mọi khung đã chuyển đổi."
+msgstr "tên cơ sở cũa các khung kết quả. Phần số và phần mở rộng (000001.ext) được "
+"thêm tự động vào mọi khung đã chuyển đổi."
 
 #.the extension label
 #: ../gap/gap_range_ops.c:530
@@ -5395,9 +5344,9 @@ msgstr "Mở rộng:"
 #: ../gap/gap_range_ops.c:531
 msgid ""
 "The extension of resulting frames is also used to define the fileformat. "
-"Please note that fileformats differ in capabilities to store informations "
-"for multiple layers and other things.Some fileformats may require converting "
-"to another imagetype and/or flattening the frames."
+"Please note that fileformats differ in capabilities to store information for "
+"multiple layers and other things. Some fileformats may require converting to "
+"another imagetype and/or flattening the frames."
 msgstr "Phần mở rộng của các khung kết quả cũng được dùng để xác định dạng thức tập tin. Hãy ghi chú rằng dạng thức tập tin khác biệt theo khả năng cất giữ thông tin cho nhiều lớp và thứ khác. Một số dạng thức riêng có lẽ cần thiết được chuyển đổi sang kiểu ảnh khác và/hay làm phẳng các khung."
 
 #: ../gap/gap_range_ops.c:541
@@ -5409,7 +5358,10 @@ msgid ""
 "Convert to another imagetype, or keep imagetype as it is. Most fileformats "
 "can't handle all types and may require a conversion.Example: GIF can not "
 "handle RGB and requires convert to indexed imagetype."
-msgstr "Chuyển đổi sang một kiểu ảnh khác, hay giữ kiểu ảnh đã có. Phần lớn dạng thức tập tin không thể xử lý mọi kiểu và có thể cần thiết việc chuyển đổi. Lấy thí dụ : dạng thức GIF không thể xử lý ảnh RGB và cần thiết nó được chuyển đổi sang kiểu ảnh phụ lục."
+msgstr "Chuyển đổi sang một kiểu ảnh khác, hay giữ kiểu ảnh đã có. Phần lớn dạng "
+"thức tập tin không thể xử lý mọi kiểu và có thể cần thiết việc chuyển đổi. "
+"Lấy thí dụ : dạng thức GIF không thể xử lý ảnh RGB và cần thiết nó được "
+"chuyển đổi sang kiểu ảnh phụ lục."
 
 #: ../gap/gap_range_ops.c:550
 #: ../gap/gap_split.c:285
@@ -5422,7 +5374,10 @@ msgid ""
 "layers and need flattened frames (flattening does melt down all layers to "
 "one composite layer).Example: JPEG can not handle multiple layers and "
 "requires flattened frames."
-msgstr "Làm phẳng các khung kết quả. Phần lớn dạng thức tập tin không thể xử lý ảnh đa lớp nên cần thiết khung đã bị làm phẳng (việc làm phẳng trộn mọi lớp khác nhau thành cùng một lớp ghép). Lấy thí dụ : dạng thức JPEG không thể xử lý ảnh đa lớp nên cần thiết khung đã bị làm phẳng."
+msgstr "Làm phẳng các khung kết quả. Phần lớn dạng thức tập tin không thể xử lý ảnh "
+"đa lớp nên cần thiết khung đã bị làm phẳng (việc làm phẳng trộn mọi lớp khác "
+"nhau thành cùng một lớp ghép). Lấy thí dụ : dạng thức JPEG không thể xử lý "
+"ảnh đa lớp nên cần thiết khung đã bị làm phẳng."
 
 #: ../gap/gap_range_ops.c:561
 msgid "Convert Frames to other Formats"
@@ -5452,7 +5407,8 @@ msgstr "Ảnh bị làm phẳng"
 msgid ""
 "Resulting layer size is made of the outline-rectangle of all visible layers "
 "(may differ from frame to frame)"
-msgstr "Kích cỡ của lớp kết quả được tạo bằng hình chữ nhật phác thảo mọi lớp hiển thị (có thể khác biệt từ khung này đến khung khác)."
+msgstr "Kích cỡ của lớp kết quả được tạo bằng hình chữ nhật phác thảo mọi lớp hiển "
+"thị (có thể khác biệt từ khung này đến khung khác)."
 
 #: ../gap/gap_range_ops.c:645
 msgid "Resulting layer size is the frame size"
@@ -5462,12 +5418,13 @@ msgstr "Kích cỡ của lớp kết quả là kích cỡ khung"
 msgid ""
 "Resulting layer size is the size of the bottom layer (may differ from frame "
 "to frame)"
-msgstr "Kích cỡ của lớp kết quả là kích cỡ của lớp xuống dưới (có thể khác biệt từ khung này đến khung khác)."
+msgstr "Kích cỡ của lớp kết quả là kích cỡ của lớp xuống dưới (có thể khác biệt từ "
+"khung này đến khung khác)."
 
 #: ../gap/gap_range_ops.c:647
 msgid ""
-"Resulting layer size is the frame size transparent parts are filled with "
-"background color"
+"Resulting layer size is the frame size and transparent parts are filled with "
+"the background color"
 msgstr "Kích cỡ của lớp kết quả là kích cỡ của khung (các phần trong suốt được tô màu bằng màu nền)."
 
 #: ../gap/gap_range_ops.c:658
@@ -5507,13 +5464,15 @@ msgstr "Kén lớp tại kích cỡ đầy đủ. Bỏ qua mọi sự chọn đi
 msgid ""
 "Pick only the selected pixels. Use the selection from the invoking frame as "
 "fixed selection in all handled frames."
-msgstr "Kén chỉ những điểm ảnh đã chọn. Dùng vùng lựa chọn từ khung đang gọi như là vùng chọn cố định trong các khung đã thao tác."
+msgstr "Kén chỉ những điểm ảnh đã chọn. Dùng vùng lựa chọn từ khung đang gọi như là "
+"vùng chọn cố định trong các khung đã thao tác."
 
 #: ../gap/gap_range_ops.c:677
 msgid ""
 "Pick only the selected pixels. Use the individual selection as it is in each "
 "handled frame."
-msgstr "Kén chỉ những điểm ảnh đã chọn. Dùng vùng lựa chọn riêng như thế trong mỗi khung đã thao tác."
+msgstr "Kén chỉ những điểm ảnh đã chọn. Dùng vùng lựa chọn riêng như thế trong mỗi "
+"khung đã thao tác."
 
 #: ../gap/gap_range_ops.c:714
 msgid "Layer Basename:"
@@ -5537,7 +5496,8 @@ msgstr "Loại trừ lớp nền:"
 msgid ""
 "Exclude the background layer in all handled frames, regardless to the other "
 "settings of layer selection."
-msgstr "Loại trừ lớp nền trong các khung đã thao tác, bất chấp thiết lập chọn lớp khác."
+msgstr "Loại trừ lớp nền trong các khung đã thao tác, bất chấp thiết lập chọn lớp "
+"khác."
 
 #: ../gap/gap_range_ops.c:748
 msgid "Layer Selection:"
@@ -5707,7 +5667,8 @@ msgstr "Tạo một khung (tập tin trên đĩa) từ mỗi lớp.\n"
 msgid ""
 "Extension of resulting frames. The extension is also used to define "
 "fileformat."
-msgstr "Phần mở rộng của các khung kết quả. Phần mở rộng này cũng được dùng để xác định dạng thức tập tin."
+msgstr "Phần mở rộng của các khung kết quả. Phần mở rộng này cũng được dùng để xác "
+"định dạng thức tập tin."
 
 #: ../gap/gap_split.c:277
 msgid "Inverse Order:"
@@ -5725,7 +5686,8 @@ msgid ""
 "ON: Remove alpha channel in resulting frames. Transparent parts are filled "
 "with the background color.\n"
 "OFF: Layers in the resulting frames keep their alpha channel."
-msgstr "BẬT: gỡ bỏ kênh anfa trong các khung kết quả. Các phần trong suốt được tô màu bằng màu nền.\n"
+msgstr "BẬT: gỡ bỏ kênh anfa trong các khung kết quả. Các phần trong suốt được tô "
+"màu bằng màu nền.\n"
 "TẮT: lớp trong các khung kết quả giữ kênh anfa."
 
 #: ../gap/gap_split.c:293
@@ -5818,7 +5780,7 @@ msgid "Update"
 msgstr "Cập nhật"
 
 #: ../gap/gap_story_att_trans_dlg.c:1804
-msgid "automatic update using the refered frame"
+msgid "automatic update using the referred frame"
 msgstr "cập nhật tự động bằng khung đã tham chiếu"
 
 #.from start label
@@ -5911,13 +5873,15 @@ msgstr "BẬT: hiệu lực thiết lập độ mờ đục"
 msgid ""
 "opacity value for the first handled frame where 100 is fully opaque, 0 is "
 "fully transparent"
-msgstr "giá trị mờ đục cho khung đã thao tác đầu tiên khi giá trị 100 là mờ đục hoàn toàn, và 0 là trong suốt hoàn toàn."
+msgstr "giá trị mờ đục cho khung đã thao tác đầu tiên khi giá trị 100 là mờ đục hoàn "
+"toàn, và 0 là trong suốt hoàn toàn."
 
 #: ../gap/gap_story_att_trans_dlg.c:2198
 msgid ""
 "opacity value for the last handled framewhere 100 is fully opaque, 0 is "
 "fully transparent"
-msgstr "giá trị mờ đục cho khung đã thao tác cuối cùng khi giá trị 100 là mờ đục hoàn toàn, và 0 là trong suốt hoàn toàn."
+msgstr "giá trị mờ đục cho khung đã thao tác cuối cùng khi giá trị 100 là mờ đục "
+"hoàn toàn, và 0 là trong suốt hoàn toàn."
 
 #: ../gap/gap_story_att_trans_dlg.c:2201
 #: ../gap/gap_story_att_trans_dlg.c:2227
@@ -5945,13 +5909,15 @@ msgstr "BẬT: hiệu lực khả năng di chuyển thiết lập ngang"
 msgid ""
 "move horizontal value for the first handled frame  where 0.0 is centered, "
 "100.0 is outside right, -100.0 is outside left)"
-msgstr "di chuyển giá trị ngang cho khung đã thao tác đầu tiên khi giá trị 0.0 là được giữa lại, 100.0 là bên phải ngoài, và -100.0 là bên trái ngoài."
+msgstr "di chuyển giá trị ngang cho khung đã thao tác đầu tiên khi giá trị 0.0 là "
+"được giữa lại, 100.0 là bên phải ngoài, và -100.0 là bên trái ngoài."
 
 #: ../gap/gap_story_att_trans_dlg.c:2224
 msgid ""
 "move horizontal value for the last handled frame  where 0.0 is centered, "
 "100.0 is outside right, -100.0 is outside left)"
-msgstr "di chuyển giá trị dọc cho khung đã thao tác cuối cùng khi giá trị 0.0 là được giữa lại, 100.0 là bên phải ngoài, và -100.0 là bên trái ngoài."
+msgstr "di chuyển giá trị dọc cho khung đã thao tác cuối cùng khi giá trị 0.0 là "
+"được giữa lại, 100.0 là bên phải ngoài, và -100.0 là bên trái ngoài."
 
 #: ../gap/gap_story_att_trans_dlg.c:2234
 msgid "Move Y:"
@@ -5971,13 +5937,15 @@ msgstr "BẬT: hiệu lực khả năng di chuyển thiết lập dọc"
 msgid ""
 "move vertical value for the first handled frame  where 0.0 is centered, "
 "100.0 is outside at bottom, -100.0 is outside at top)"
-msgstr "di chuyển giá trị dọc cho khung đã thao tác đầu tiên khi giá trị 0.0 là được giữa lại, 100.0 là bên ngoài dưới, và -100.0 là bên ngoài trên."
+msgstr "di chuyển giá trị dọc cho khung đã thao tác đầu tiên khi giá trị 0.0 là được "
+"giữa lại, 100.0 là bên ngoài dưới, và -100.0 là bên ngoài trên."
 
 #: ../gap/gap_story_att_trans_dlg.c:2251
 msgid ""
 "move vertical value for the last handled frame  where 0.0 is centered, 100.0 "
 "is outside at bottom, -100.0 is outside at top)"
-msgstr "di chuyển giá trị dọc cho khung đã thao tác cuối cùng khi giá trị 0.0 là được giữa lại, 100.0 là bên ngoài dưới, và -100.0 là bên ngoài trên."
+msgstr "di chuyển giá trị dọc cho khung đã thao tác cuối cùng khi giá trị 0.0 là "
+"được giữa lại, 100.0 là bên ngoài dưới, và -100.0 là bên ngoài trên."
 
 #: ../gap/gap_story_att_trans_dlg.c:2260
 msgid "Scale Width:"
@@ -5997,13 +5965,15 @@ msgstr "BẬT: hiệu lực thiết lập độ rộng ca dãn"
 msgid ""
 "scale width value for the first handled frame where 100 is 1:1, 50 is half, "
 "200 is double width"
-msgstr "giá trị độ rộng co dãn cho khung đã thao tác đầu tiên mà 100 là 1:1, 50 là nửa rộng và 200 là độ rộng đôi."
+msgstr "giá trị độ rộng co dãn cho khung đã thao tác đầu tiên mà 100 là 1:1, 50 là "
+"nửa rộng và 200 là độ rộng đôi."
 
 #: ../gap/gap_story_att_trans_dlg.c:2277
 msgid ""
 "scale width value for the last handled frame where 100 is 1:1, 50 is half, "
 "200 is double width"
-msgstr "giá trị độ rộng co dãn cho khung đã thao tác cuối cùng mà 100 là 1:1, 50 là nửa rộng và 200 là độ rộng đôi."
+msgstr "giá trị độ rộng co dãn cho khung đã thao tác cuối cùng mà 100 là 1:1, 50 là "
+"nửa rộng và 200 là độ rộng đôi."
 
 #: ../gap/gap_story_att_trans_dlg.c:2286
 msgid "Scale Height:"
@@ -6023,13 +5993,15 @@ msgstr "BẬT: hiệu lực thiết lập độ cao ca dãn"
 msgid ""
 "scale height value for the first handled frame where 100 is 1:1, 50 is half, "
 "200 is double height"
-msgstr "giá trị độ cao co dãn cho khung đã thao tác đầu tiên mà 100 là 1:1, 50 là nửa cao và 200 là độ cao đôi."
+msgstr "giá trị độ cao co dãn cho khung đã thao tác đầu tiên mà 100 là 1:1, 50 là "
+"nửa cao và 200 là độ cao đôi."
 
 #: ../gap/gap_story_att_trans_dlg.c:2303
 msgid ""
 "scale height value for the last handled frame where 100 is 1:1, 50 is half, "
 "200 is double height"
-msgstr "giá trị độ cao co dãn cho khung đã thao tác cuối cùng mà 100 là 1:1, 50 là nửa cao và 200 là độ cao đôi."
+msgstr "giá trị độ cao co dãn cho khung đã thao tác cuối cùng mà 100 là 1:1, 50 là "
+"nửa cao và 200 là độ cao đôi."
 
 #.the comment label
 #.the Comment lable
@@ -6133,7 +6105,7 @@ msgstr "Tài sản Bố trí Toàn cục"
 
 #: ../gap/gap_story_dialog.c:3272
 msgid ""
-"GIMP-GAP is compiled without videoapi support. Therfore thumbnails for "
+"GIMP-GAP is compiled without videoapi support. Therefore thumbnails for "
 "videoframes can not be displayed."
 msgstr "GIMP-GAP được biên dịch không có khả năng hỗ trợ videoapi. Vì vậy không thể hiển thị hình thu nhỏ cho khung của ảnh động."
 
@@ -6339,48 +6311,50 @@ msgstr "Thôi"
 #: ../gap/gap_story_dialog.c:6005
 msgid ""
 "Generate original tone audio track for all video clips in the storyboard"
-msgstr "Tạo ra rãnh ghi âm thanh giọng gốc cho mọi trích đoạn ảnh động trong bản phác họa."
+msgstr "Tạo ra rãnh ghi âm thanh giọng gốc cho mọi trích đoạn ảnh động trong bản "
+"phác họa."
 
 #: ../gap/gap_story_dialog.c:6011
 msgid "Input Audiotrack:"
 msgstr "Nhập rãnh âm thanh:"
 
 #: ../gap/gap_story_dialog.c:6012
-msgid ""
-"select input audiotrack in the videofile(s).(if your input videos have "
-"multiple audiotracks values > 1 usually refer to non-default language)"
-msgstr "chọn rãnh ghi âm thanh nhập trong (các) tập tin ảnh động. (Nếu các ảnh động nhập có nhiều giá trị khác nhau cho rãnh ghi âm thanh, thường tham chiếu đến ngôn ngữ không phải là mặc định.)"
+msgid "select input audiotrack in the videofile(s)."
+msgstr "chọn rãnh ghi âm thanh nhập trong các tập tin ảnh động"
 
-#: ../gap/gap_story_dialog.c:6025
+#: ../gap/gap_story_dialog.c:6023
 msgid "Output Audiotrack:"
 msgstr "Rãnh âm thanh xuất:"
 
-#: ../gap/gap_story_dialog.c:6026
+#: ../gap/gap_story_dialog.c:6024
 msgid ""
 "output audiotrack to be generated in the storyboard file. The generated "
 "storyboard audiotrack will be a list of references to the audioparts in the "
 "input videos, corresponding to all used video clip references."
-msgstr "rãnh ghi âm thanh xuất cần tạo ra trong tập tin bản phác họa. Rãnh ghi bản phác họa đã tạo ra sẽ là danh sách tham chiếu đến các phần âm thanh trong những ảnh động nhập, tương ứng với các tham chiếu trích đoạn ảnh động đã được dùng."
+msgstr "rãnh ghi âm thanh xuất cần tạo ra trong tập tin bản phác họa. Rãnh ghi bản "
+"phác họa đã tạo ra sẽ là danh sách tham chiếu đến các phần âm thanh trong "
+"những ảnh động nhập, tương ứng với các tham chiếu trích đoạn ảnh động đã "
+"được dùng."
 
-#: ../gap/gap_story_dialog.c:6038
+#: ../gap/gap_story_dialog.c:6036
 msgid "Replace Audiotrack:"
 msgstr "Thay thế rãnh âm thanh:"
 
-#: ../gap/gap_story_dialog.c:6039
+#: ../gap/gap_story_dialog.c:6037
 msgid ""
 "ON: Allow replacing of already existing audio clip references  in the "
 "storyboard"
 msgstr "BẬT: cho phép thay thế tham chiếu trích ảnh động đã có trong bản phác họa."
 
-#: ../gap/gap_story_dialog.c:6049
+#: ../gap/gap_story_dialog.c:6047
 msgid "Reset parameters to default values"
 msgstr "Đặt lại các tham số thành giá trị mặc định"
 
-#: ../gap/gap_story_dialog.c:6057
+#: ../gap/gap_story_dialog.c:6055
 msgid "Generate Original Tone Audio"
 msgstr "Tạo ra âm thanh giọng gốc"
 
-#: ../gap/gap_story_dialog.c:6084
+#: ../gap/gap_story_dialog.c:6082
 #, c-format
 msgid ""
 "Original tone track was not created.\n"
@@ -6392,71 +6366,73 @@ msgstr "Chưa tạo rãnh ghi giọng gốc.\n"
 "đã dùng tham chiếu trích đoạn âm thanh tại rãnh ghi %d.\n"
 "Hãy dùng số rãnh ghi khác, hay cho phép thay thế tại lần thử kế tiếp."
 
-#: ../gap/gap_story_dialog.c:6110
+#: ../gap/gap_story_dialog.c:6108
 msgid "automatic"
 msgstr "tự động"
 
-#: ../gap/gap_story_dialog.c:6147
+#: ../gap/gap_story_dialog.c:6145
 msgid "Name:"
 msgstr "Tên:"
 
-#: ../gap/gap_story_dialog.c:6151
+#: ../gap/gap_story_dialog.c:6149
 msgid "Name of the Storyboardfile"
 msgstr "Tên của tập tin bản phác họa."
 
-#: ../gap/gap_story_dialog.c:6157
+#: ../gap/gap_story_dialog.c:6155
 msgid "Name of the Cliplistfile"
 msgstr "Tên của tập tin danh mục trích đoạn"
 
-#: ../gap/gap_story_dialog.c:6167
-#: ../gap/gap_story_dialog.c:6171
+#: ../gap/gap_story_dialog.c:6165
+#: ../gap/gap_story_dialog.c:6169
 #, c-format
 msgid "Name: %s"
 msgstr "Tên: %s"
 
-#: ../gap/gap_story_dialog.c:6180
+#: ../gap/gap_story_dialog.c:6178
 msgid "Master width of the resulting video in pixels"
 msgstr "Độ rộng chủ của ảnh động kết quả, theo điểm ảnh."
 
-#: ../gap/gap_story_dialog.c:6191
+#: ../gap/gap_story_dialog.c:6189
 msgid "Master height of the resulting video in pixels)"
 msgstr "Độ rộng chủ của ảnh động kết quả, theo điểm ảnh."
 
-#: ../gap/gap_story_dialog.c:6203
+#: ../gap/gap_story_dialog.c:6201
 msgid "Framerate in frames/sec."
 msgstr "Tỷ lệ khung theo khung/giây"
 
 #.the (preferred) Decoder label
-#: ../gap/gap_story_dialog.c:6243
+#: ../gap/gap_story_dialog.c:6241
 #: ../gap/gap_vex_dialog.c:2215
 msgid "Decoder:"
 msgstr "Bộ giải mã:"
 
-#: ../gap/gap_story_dialog.c:6244
+#: ../gap/gap_story_dialog.c:6242
 msgid ""
 "Select preferred video decoder library, or leave empty for automatic "
 "selection.The decoder setting is only relevant if videoclips are used (but "
 "not for frames that are imagefiles)"
-msgstr "Hãy chọn thư viện giải mã đã muốn, hay bỏ trống để chọn tự động. Thiết lập giải mã chỉ là thích hợp nếu trích đoạn ảnh động được dùng (nhưng không phải cho khung cũng là tập tin ảnh)."
+msgstr "Hãy chọn thư viện giải mã đã muốn, hay bỏ trống để chọn tự động. Thiết lập "
+"giải mã chỉ là thích hợp nếu trích đoạn ảnh động được dùng (nhưng không phải "
+"cho khung cũng là tập tin ảnh)."
 
-#: ../gap/gap_story_dialog.c:6262
+#: ../gap/gap_story_dialog.c:6260
 msgid "Master audio samplerate for the resulting video in samples/sec."
 msgstr "Tỷ lệ lấy mẫu âm thanh chủ cho ảnh động kết quả theo mẫu/giây."
 
-#: ../gap/gap_story_dialog.c:6278
+#: ../gap/gap_story_dialog.c:6276
 msgid "Master audio volume, where 1.0 keeps original volume"
 msgstr "Âm lượng chủ, mà 1.0 duy trì âm lượng gốc."
 
 #.should use GIMP_STOCK_RESET if possible
-#: ../gap/gap_story_dialog.c:6294
+#: ../gap/gap_story_dialog.c:6292
 msgid "Reset parameters to inital values"
 msgstr "Đặt lại các tham số thành giá trị đầu tiên"
 
-#: ../gap/gap_story_dialog.c:6305
+#: ../gap/gap_story_dialog.c:6303
 msgid "Master Properties"
 msgstr "Tài sản chủ"
 
-#: ../gap/gap_story_dialog.c:6695
+#: ../gap/gap_story_dialog.c:6693
 msgid "STORY_new.txt"
 msgstr "PHÁC.txt"
 
@@ -6495,17 +6471,17 @@ msgstr "Không tìm thấy phần đầu.\n"
 #, c-format
 msgid "illegal keyword: %s (expected keywords are: width, height, both, none"
 msgstr "từ khoá không hợp lệ: %s (từ khoá đã ngờ là:\n"
-" • width		độ rộng\n"
-" • height		độ cao\n"
-" • both		cả hai\n"
-" • none		không gì."
+" • width\t\tđộ rộng\n"
+" • height\t\tđộ cao\n"
+" • both\t\tcả hai\n"
+" • none\t\tkhông gì."
 
 #: ../gap/gap_story_file.c:1897
 #, c-format
 msgid "illegal keyword: %s (expected keywords are: keep, change"
 msgstr "từ khoá không hợp lệ: %s (từ khoá đã ngờ là:\n"
-" • keep		giữ\n"
-" • change	thay đổi."
+" • keep\t\tgiữ\n"
+" • change\tthay đổi."
 
 #.unsupported lines raise an error for files without correct Header
 #.
@@ -6522,7 +6498,8 @@ msgstr "Dòng không được hỗ trợ thì bị bỏ qua"
 msgid ""
 "the passed filename %s has irrelevant content or could not be opened by the "
 "parser"
-msgstr "tên tập tin đã gởi %s có nội dung không thích hợp hay không thể được mở bằng bộ phân tách"
+msgstr "tên tập tin đã gởi %s có nội dung không thích hợp hay không thể được mở bằng "
+"bộ phân tách"
 
 #: ../gap/gap_story_main.c:164
 msgid "Storyboard..."
@@ -6530,20 +6507,23 @@ msgstr "Bản phác họa..."
 
 #: ../gap/gap_story_properties.c:430
 msgid "Automatic scene detection operates only on cliptypes MOVIE and FRAMES"
-msgstr "Khả năng tìm ra hiện trường có hoạt động chỉ với kiểu trích đoạn PHIM và KHUNG."
+msgstr "Khả năng tìm ra hiện trường có hoạt động chỉ với kiểu trích đoạn PHIM và "
+"KHUNG."
 
 #: ../gap/gap_story_properties.c:437
 msgid ""
 "Scene detection depends on video thumbnails. Please enable videothumbnails "
 "(in the Windows Menu)"
-msgstr "Khả năng tìm ra hiện trường có phụ thuộc vào hình thu nhỏ ảnh động. Hãy hiệu lực tạo hình thu nhỏ ảnh động (trong trình đơn Cửa sổ)."
+msgstr "Khả năng tìm ra hiện trường có phụ thuộc vào hình thu nhỏ ảnh động. Hãy hiệu "
+"lực tạo hình thu nhỏ ảnh động (trong trình đơn Cửa sổ)."
 
 #: ../gap/gap_story_properties.c:497
 #: ../gap/gap_story_properties.c:561
 msgid ""
 "Scene detection for cliptype FRAMES depends on thumbnails. Please create "
 "thumbnails for your frames and then try again."
-msgstr "Khả năng tìm ra hiện trường với kiểu trích đoạn KHUNG có phụ thuộc vào hình thu nhỏ. Hãy tạo hình thu nhỏ cho các khung đó, rồi thử lại."
+msgstr "Khả năng tìm ra hiện trường với kiểu trích đoạn KHUNG có phụ thuộc vào hình "
+"thu nhỏ. Hãy tạo hình thu nhỏ cho các khung đó, rồi thử lại."
 
 #: ../gap/gap_story_properties.c:1235
 msgid "Set Image or Frame Filename"
@@ -6684,7 +6664,7 @@ msgstr "Mật độ kích cỡ bước. Hãy dùng:\n"
 #.constrain
 #.lower/upper unconstrained
 #: ../gap/gap_story_properties.c:1930
-msgid "select input videotrack(most videofiles have just 1 track)"
+msgid "select input videotrack (most videofiles have just 1 track)"
 msgstr "chọn rãnh ghi ảnh động nhập (phần lớn tập tin ảnh động có chỉ một rãnh ghi)"
 
 #.the Deinterlace Mode label
@@ -6720,8 +6700,8 @@ msgstr "Áp dụng bộ lọc dòng chẵn khi đọc khung ảnh động"
 msgid ""
 "deinterlacing threshold: 0.0 no interpolation 0.999 smooth interpolation"
 msgstr "ngưỡng bỏ kết hợp:\n"
-" 0.0		không nội suy\n"
-" 0.999	nội suy mịn."
+" 0.0\t\tkhông nội suy\n"
+" 0.999\tnội suy mịn."
 
 #.the duration label
 #: ../gap/gap_story_properties.c:2043
@@ -6846,7 +6826,8 @@ msgstr "Khả năng lựa chọn phạm vị ảnh động hiển thị bằng b
 msgid ""
 "Frame number of last frame to extract. To extract all frames use a range "
 "from 1 to 999999. (Extract stops at the last available frame)"
-msgstr "Số hiệu khung của khung cuối cùng cần rút. Để rút tất cả các khung, dùng phạm vị [1-999999]. (Việc rút kết thúc tại khung sẵn sằng cuối cùng.)"
+msgstr "Số hiệu khung của khung cuối cùng cần rút. Để rút tất cả các khung, dùng "
+"phạm vị [1-999999]. (Việc rút kết thúc tại khung sẵn sằng cuối cùng.)"
 
 #.the videorange button (that invokes the player for video range selection in docked mode)
 #: ../gap/gap_vex_dialog.c:2132
@@ -6893,7 +6874,8 @@ msgstr "Tìm nơi chính xác"
 msgid ""
 "ON: emulate seek operations by sequential reads, even when videoindex is "
 "available"
-msgstr "BẬT: mô phỏng thao tác tìm nơi bằng cách đọc tuần tự, ngay cả khi phụ lục ảnh động sẵn sàng"
+msgstr "BẬT: mô phỏng thao tác tìm nơi bằng cách đọc tuần tự, ngay cả khi phụ lục "
+"ảnh động sẵn sàng"
 
 #.the Aspect Ratio Label(s)
 #: ../gap/gap_vex_dialog.c:2300
@@ -6934,7 +6916,8 @@ msgstr "Dùng bộ duyệt tập tin để chọn tên cơ sở cho các khung �
 msgid ""
 "Digits to use for framenumber part in filenames (use 1 if you dont want "
 "leading zeroes)"
-msgstr "Con số cần dùng cho phần số hiệu khung trong tên tập tin (hãy dùng 1 nếu bạn không muốn tạo con số đi trước)."
+msgstr "Con số cần dùng cho phần số hiệu khung trong tên tập tin (hãy dùng 1 nếu bạn "
+"không muốn tạo con số đi trước)."
 
 #: ../gap/gap_vex_dialog.c:2454
 msgid "Extension of extracted frames (.xcf, .jpg, .ppm)"
@@ -6953,12 +6936,13 @@ msgstr "Số khung 1:"
 #: ../gap/gap_vex_dialog.c:2487
 msgid ""
 "Framenumber for 1st extracted frame (use 0 for keeping original framenumbers)"
-msgstr "Số hiệu khung cho khung đã rút đầu tiên (hãy dùng 0 để giữ các số hiệu khung gốc)."
+msgstr "Số hiệu khung cho khung đã rút đầu tiên (hãy dùng 0 để giữ các số hiệu khung "
+"gốc)."
 
 #: ../gap/gap_vex_dialog.c:2518
 msgid "0.0 .. no interpolation, 1.0 smooth interpolation at deinterlacing"
-msgstr "0.0	không nội suy\n"
-"1.0	nội suy mịn khi bỏ kết hợp."
+msgstr "0.0\tkhông nội suy\n"
+"1.0\tnội suy mịn khi bỏ kết hợp."
 
 #: ../gap/gap_vex_dialog.c:2523
 msgid "no deinterlace"
@@ -7025,7 +7009,8 @@ msgid ""
 "Videoextract is not available because GIMP-GAP was configured and compiled "
 "with\n"
 " --disable-videoapi-support"
-msgstr "Khả năng rút ảnh động không sẵn sàng vì GIMP-GAP đã được cấu hình và biên dịch với cờ :\n"
+msgstr "Khả năng rút ảnh động không sẵn sàng vì GIMP-GAP đã được cấu hình và biên "
+"dịch với cờ :\n"
 " --disable-videoapi-support"
 
 #: ../gap/gap_wr_color_curve.c:395
@@ -7062,7 +7047,8 @@ msgstr "Tải Cong"
 msgid ""
 "Load curve from a GIMP curve file (that was saved with the GIMP's color "
 "curve tool)"
-msgstr "Tải đường cong từ tập tin đường cong GIMP (mà được lưu bằng công cụ đường cong màu của GIMP)."
+msgstr "Tải đường cong từ tập tin đường cong GIMP (mà được lưu bằng công cụ đường "
+"cong màu của GIMP)."
 
 #: ../gap/gap_wr_color_huesat.c:261
 msgid "Hue-Saturation..."
@@ -7189,7 +7175,8 @@ msgstr "Giá trị độ mờ đục mới mà 0 là trong suốt hoàn toàn v�
 msgid ""
 "Modes set opacity or change the old opacity value by adding, subtracting or "
 "multiply by the supplied new value"
-msgstr "Chế độ đặt độ mờ đục hay thay đổi giá trị độ mờ đục bằng cách cộng, trừ hay nhân giá trị mới đã cung cấp."
+msgstr "Chế độ đặt độ mờ đục hay thay đổi giá trị độ mờ đục bằng cách cộng, trừ hay "
+"nhân giá trị mới đã cung cấp."
 
 #: ../gap/gap_wr_opacity.c:353
 msgid "Reset all Parameters to Default Values"
@@ -7257,7 +7244,7 @@ msgstr "LỖI : không ghi được tập tin của phụ lục ảnh động:\n
 #: ../libgapvidutil/gap_gve_sox.c:191
 #, c-format
 msgid ""
-"ERROR: Cant overwrite temporary workfile\n"
+"ERROR: Can't overwrite temporary workfile\n"
 "file: %s"
 msgstr "LỖI: không thể ghi đè lên tập tin làm việc tạm thời:\n"
 "tập tin: %s"
@@ -7273,10 +7260,10 @@ msgid ""
 "  prog:  %s\n"
 msgstr "LỖI: không thể tạo tập tin làm việc WAV đã lấy lại mẫu :\n"
 "\n"
-"1.	kiểm tra quyền ghi vào\n"
-"	tập tin: %s\n"
-"2.	kiểm tra nếu SOX (phiên bản ≥12.16) đã được cài đặt chưa:\n"
-"	tiến hành: %s\n"
+"1.\tkiểm tra quyền ghi vào\n"
+"\ttập tin: %s\n"
+"2.\tkiểm tra nếu SOX (phiên bản ≥12.16) đã được cài đặt chưa:\n"
+"\ttiến hành: %s\n"
 
 #: ../libgapvidutil/gap_gve_story.c:571
 #, c-format
@@ -7387,7 +7374,7 @@ msgid ""
 "assemble a video from a list of single images,\n"
 "frameranges, videoclips, gif animations or audiofiles.\n"
 "the frames are organized in tracks,\n"
-"and allow fading, scale and move\n"
+"and allow fade, scale and move\n"
 "operations between the tracks.\n"
 "(see STORYBOARD_FILE_DOC.txt for details)"
 msgstr "Tập tin bản phác họa là tập tin văn bản được dùng\n"
@@ -7630,7 +7617,7 @@ msgstr "Lỗi: gặp tỷ lệ lấy mẫu không được hỗ trợ cho Bảng
 
 #: ../vid_common/gap_cme_gui.c:2008
 msgid ""
-"Cant process the audio input file. You may check audio options and audio "
+"Can't process the audio input file. You should check audio options and audio "
 "tool configuration"
 msgstr "Không thể xử lý tập tin nhập âm thanh. Bạn nên kiểm tra xem các tùy chọn âm thanh và cấu hình công cụ âm thanh là đúng."
 
@@ -7681,14 +7668,16 @@ msgid "Layers"
 msgstr "Lớp"
 
 #: ../vid_common/gap_cme_gui.c:2350
-msgid "Input are all the layers of one image"
+msgid "Input is all the layers of one image"
 msgstr "Kết nhập là các lớp của cùng một ảnh"
 
 #: ../vid_common/gap_cme_gui.c:2374
 msgid ""
-"Input are videoclips and frames, defined via storyboard file. (specify the "
+"Input is videoclips and frames, defined via storyboard file. (specify the "
 "storyboard filename in the extras tab)"
-msgstr "Kết nhập là các trích đoạn ảnh động và các khung, được xác định thông qua tập tin bản phác họa (hãy ghi rõ tập tin bản phác họa đó trong phần « Phụ tùng »)."
+msgstr "Kết nhập là các trích đoạn ảnh động và các khung, được xác định thông qua "
+"tập tin bản phác họa (hãy ghi rõ tập tin bản phác họa đó trong phần « Phụ "
+"tùng »)."
 
 #: ../vid_common/gap_cme_gui.c:2420
 #: ../vid_common/gap_cme_main.c:158
@@ -7772,7 +7761,9 @@ msgstr "Tạo tập tin âm thanh ghép"
 msgid ""
 "create a composite audiofile as mixdown of all audio tracks in the "
 "storyboard file and use the created composite audiofile as input for encoding"
-msgstr "tạo một tập tin âm thanh ghép là kết quả hoà tiếng xuống của mọi rãnh ghi âm thanh trong tập tin bản phác họa, và sử dụng tập tin âm thanh ghép mới tạo là kết nhập cho việc mã hoá"
+msgstr "tạo một tập tin âm thanh ghép là kết quả hoà tiếng xuống của mọi rãnh ghi âm "
+"thanh trong tập tin bản phác họa, và sử dụng tập tin âm thanh ghép mới tạo "
+"là kết nhập cho việc mã hoá"
 
 #.the  storyboard helptext & parsing report label
 #: ../vid_common/gap_cme_gui.c:2727
@@ -7827,7 +7818,8 @@ msgstr "Gỡ lỗi\n"
 msgid ""
 "optional save each composite multilayer frame to XCF file, before flattening "
 "and executing macro"
-msgstr "Lưu tùy chọn mỗi khung đa lớp ghép vào tập tin XCF, trước khi làm phẳng nó và thực hiện bộ lệnh"
+msgstr "Lưu tùy chọn mỗi khung đa lớp ghép vào tập tin XCF, trước khi làm phẳng nó "
+"và thực hiện bộ lệnh"
 
 #: ../vid_common/gap_cme_gui.c:2827
 msgid "Configuration of external audiotool program"
@@ -7865,13 +7857,13 @@ msgid ""
 "     rate in the .wav file"
 msgstr "Cấu hình của công cụ âm thanh (như sox trên UNIX):\n"
 "\n"
-"$IN		được thay thế bằng tập tin âm thanh nhập\n"
-"$OUT	được thay thế bằng tập tin âm thanh có hậu tố « _tmp.wav »\n"
-"$RATE	được thay thế bằng tỷ lệ lấy mẫu theo byte/giây\n"
+"$IN\t\tđược thay thế bằng tập tin âm thanh nhập\n"
+"$OUT\tđược thay thế bằng tập tin âm thanh có hậu tố « _tmp.wav »\n"
+"$RATE\tđược thay thế bằng tỷ lệ lấy mẫu theo byte/giây\n"
 "\n"
 "Công cụ này được gọi cho việc chuyển đổi âm thanh nếu :\n"
-"A.	tập tin âm thanh nhập không phải có dạng thức 16bit WAV\n"
-"B.	tỷ lệ lấy mẫu đã muốn không khớp với tỳ lệ trong tập tin kiểu .wav"
+"A.\ttập tin âm thanh nhập không phải có dạng thức 16bit WAV\n"
+"B.\ttỷ lệ lấy mẫu đã muốn không khớp với tỳ lệ trong tập tin kiểu .wav"
 
 #.the Save button
 #: ../vid_common/gap_cme_gui.c:2917
@@ -7901,11 +7893,14 @@ msgstr "Kết nhập âm thanh"
 
 #: ../vid_common/gap_cme_gui.c:2993
 msgid ""
-"Name of audiofile (.wav 16 bit mono or stereo samples preferred). Optional "
+"Name of audiofile (.wav 16 bit mono or stereo samples preferred). Optionally "
 "you may select a textfile that contains a list of file names referring to "
-"audio files. Each of those audio files will be encoded as separate audio "
+"audio files. Each of those audio files will be encoded as a separate audio "
 "track."
-msgstr "Tên của tập tin âm thanh (tốt hơn nếu có mẫu .wav 16bit nguồn đơn hay âm lập thể). Bạn tùy chọn có thể chọn một tập tin văn bản chứa danh sách các tên tập tin tham chiếu đến các tập tin âm thanh. Mỗi tập tin âm thanh đó sẽ được mã hoá dạng một rãnh ghi âm thanh riêng."
+msgstr "Tên của tập tin âm thanh (tốt hơn nếu có mẫu .wav 16bit nguồn đơn hay âm lập "
+"thể). Bạn tùy chọn có thể chọn một tập tin văn bản chứa danh sách các tên "
+"tập tin tham chiếu đến các tập tin âm thanh. Mỗi tập tin âm thanh đó sẽ được "
+"mã hoá dạng một rãnh ghi âm thanh riêng."
 
 #: ../vid_common/gap_cme_gui.c:3010
 msgid "Select input audiofile via browser"
@@ -7970,7 +7965,7 @@ msgid "48 k Studio"
 msgstr "48k Xưởng"
 
 #: ../vid_common/gap_cme_gui.c:3079
-msgid "Select a common used samplerate"
+msgid "Select a commonly-used samplerate"
 msgstr "Chọn một tỷ lệ lấy mẫu thường dùng"
 
 #.the Tmp audiofile label
@@ -7993,7 +7988,7 @@ msgid ""
 "\n"
 "Note:\n"
 "if you set samplerate lower than\n"
-"rate of the WAV file, you loose sound quality,\n"
+"rate of the WAV file, you lose sound quality,\n"
 "but higher samplerates can not improve the\n"
 "quality of the original sound."
 msgstr "\n"
@@ -8075,8 +8070,8 @@ msgstr "Đặt tỷ lệ khung"
 msgid "Videonorm:"
 msgstr "Tiêu chuẩn ảnh động:"
 
-#.the Videonorm combo
 # Literal: don't translate / Nghĩa chữ: đừng dịch
+#.the Videonorm combo
 #: ../vid_common/gap_cme_gui.c:3464
 msgid "NTSC"
 msgstr "NTSC"
@@ -8138,7 +8133,17 @@ msgid ""
 "the dialog. for noninteractive calls default values will be used. (you may "
 "call the desired plugin directly if you want to specify non-interacive "
 "parameters"
-msgstr "Bổ sung này là giao diện người dùng đồ họa dùng chung cho các bổ sung mã hoá ảnh động cùng với âm thanh có sẵn. Nó hoạt động trong một phạm vị khung hoạt cảnh hay tập tin bản phác họa đã chọn. Dữ liệu nhập âm thanh tùy chọn (tham số : audfile) được chuyển đổi sang dạng thức RIFF WAVE (16bit PCM) rồi được gởi cho bổ sung mã hoá ảnh động đã chọn như là tập tin tạm thời (hoặc một cách trực tiếp nếu dạng thức và tỷ lệ lấy mẫu đã khớp với tỷ lệ đích đã muốn). Dạng thức ảnh động được xác định bằng tham số « vid_enc_plugin ». Bổ sung đã xác định có được gọi bằng các tham số được ghi rõ trong hộp thoại đó. Đối với cuộc gọi không tương tác, các giá trị mặc định sẽ được dùng. Bạn có khả năng gọi trực tiếp bổ sung đã muốn, nếu bạn muốn ghi rõ một số tham số không tương tác."
+msgstr "Bổ sung này là giao diện người dùng đồ họa dùng chung cho các bổ sung mã hoá "
+"ảnh động cùng với âm thanh có sẵn. Nó hoạt động trong một phạm vị khung hoạt "
+"cảnh hay tập tin bản phác họa đã chọn. Dữ liệu nhập âm thanh tùy chọn (tham "
+"số : audfile) được chuyển đổi sang dạng thức RIFF WAVE (16bit PCM) rồi được "
+"gởi cho bổ sung mã hoá ảnh động đã chọn như là tập tin tạm thời (hoặc một "
+"cách trực tiếp nếu dạng thức và tỷ lệ lấy mẫu đã khớp với tỷ lệ đích đã "
+"muốn). Dạng thức ảnh động được xác định bằng tham số « vid_enc_plugin ». Bổ "
+"sung đã xác định có được gọi bằng các tham số được ghi rõ trong hộp thoại "
+"đó. Đối với cuộc gọi không tương tác, các giá trị mặc định sẽ được dùng. Bạn "
+"có khả năng gọi trực tiếp bổ sung đã muốn, nếu bạn muốn ghi rõ một số tham "
+"số không tương tác."
 
 #: ../vid_common/gap_cme_main.c:247
 #, c-format
@@ -8186,8 +8191,9 @@ msgstr "Dấu hiệu APP0:"
 #: ../vid_enc_avi/gap_enc_avi_gui.c:519
 msgid ""
 "Write APP0 Marker for each encoded frame. (The APP0 marker is evaluated by "
-"some windows programs for AVIs"
-msgstr "Ghi dấu hiệu APP0 cho mỗi khung đã mã hoá. (Dấu hiệu APP0 được ước lượng bằng một số chương trình Windows cho AVI"
+"some windows programs for AVIs)"
+msgstr "Ghi dấu hiệu APP0 cho mỗi khung đã mã hoá. (Dấu hiệu APP0 được ước lượng "
+"bằng một số chương trình Windows cho AVI.)"
 
 #.the notebook page for JPEG Codec options
 #.-----------------------------------------
@@ -8210,7 +8216,10 @@ msgid ""
 "read from storyboard. WARNING: works only if all input frames are JPEG "
 "pictures with matching size and YUV 4:2:2 encoding. This option may produce "
 "an unusable video when other frames are provided as input."
-msgstr "Đừng má hoá lại các khung JPEG nhập. Tùy chọn này bị bỏ qua khi kết nhập được đọc từ bản phác họa. CẢNH BÁO : hoạt động được chỉ nếu mọi khung nhập là ảnh JPEG có kích cỡ trùng và bảng mã  kiểu YUV 4:2:2. Tùy chọn này có thể tạo một ảnh động vô ích khi khung khác được cung cấp là kết nhập."
+msgstr "Đừng má hoá lại các khung JPEG nhập. Tùy chọn này bị bỏ qua khi kết nhập "
+"được đọc từ bản phác họa. CẢNH BÁO : hoạt động được chỉ nếu mọi khung nhập "
+"là ảnh JPEG có kích cỡ trùng và bảng mã  kiểu YUV 4:2:2. Tùy chọn này có thể "
+"tạo một ảnh động vô ích khi khung khác được cung cấp là kết nhập."
 
 #.the interlace label
 #: ../vid_enc_avi/gap_enc_avi_gui.c:589
@@ -8243,7 +8252,8 @@ msgstr "Chất lượng:"
 
 #: ../vid_enc_avi/gap_enc_avi_gui.c:669
 msgid "The quality setting of the encoded JPEG frames (100=best quality)"
-msgstr "Thiết lập chất lượng của các khung JPEG đã mã hoá (100 là chất lượng tốt nhất)."
+msgstr "Thiết lập chất lượng của các khung JPEG đã mã hoá (100 là chất lượng tốt "
+"nhất)."
 
 #.the notebook page for RAW Codec options
 #.-----------------------------------------
@@ -8271,9 +8281,10 @@ msgstr "Lật dọc:"
 
 #: ../vid_enc_avi/gap_enc_avi_gui.c:730
 msgid ""
-"Check if you want encode frames vertically flipped (suitable for playback on "
-"WinDVD player)or as is (suitable for gmplayer on linux)"
-msgstr "Hãy bật nếu bạn muốn mã hoá khung đã lật dọc (thích hợp để phát lại bằng bộ phát WinDVD) hay như thế (thích hợp cho chương trình gmplayer trên Linux)."
+"Check if you want to encode frames vertically flipped (suitable for playback "
+"on WinDVD player) or as is (suitable for gmplayer on linux)"
+msgstr "Hãy bật nếu bạn muốn mã hoá khung đã lật dọc (thích hợp để phát lại bằng bộ "
+"phát WinDVD) hay như thế (thích hợp cho chương trình gmplayer trên Linux)."
 
 #.the notebook page for XVID Codec options
 #.-----------------------------------------
@@ -8355,8 +8366,8 @@ msgstr "khoảng cách tối đa cho khung khoá (khung-I)"
 #: ../vid_enc_avi/gap_enc_avi_gui.c:1000
 msgid "XVID codec algoritm presets where 0==low quality(fast) 6==best(slow)"
 msgstr "các giá trị định sẵn của CODEC XVID:\n"
-" 0	chất lượng thấp (nhanh)\n"
-" 6	chất lượng tất nhất (chậm)."
+" 0\tchất lượng thấp (nhanh)\n"
+" 6\tchất lượng tất nhất (chậm)."
 
 #: ../vid_enc_avi/gap_enc_avi_main.c:208
 msgid "avi video encoding for anim frames. Menu: @AVI@"
@@ -8368,14 +8379,18 @@ msgid ""
 "must be a raw datafile(s) or .wav (RIFF WAVEfmt ) file(s) .wav files can be "
 "mono (1) or stereo (2channels) audiodata must be 16bit uncompressed. "
 "IMPORTANT:  you should first call \""
-msgstr "Bổ sung này mã hoá ảnh động giả các khung hoạt cảnh. Dữ liệu âm thanh tùy chọn phải là một số tập tin dữ liệu thô hay tập tin .wav (RIFF WAVEfmt). Tập tin .wav có thể là kiểu nguồn đơn (1 kênh) hay âm lập thể (2 kênh); dữ liệu âm thanh phải có kiểu 16 bit chưa nén. QUAN TRỌNG: bạn nên gọi trước \""
+msgstr "Bổ sung này mã hoá ảnh động giả các khung hoạt cảnh. Dữ liệu âm thanh tùy "
+"chọn phải là một số tập tin dữ liệu thô hay tập tin .wav (RIFF WAVEfmt). Tập "
+"tin .wav có thể là kiểu nguồn đơn (1 kênh) hay âm lập thể (2 kênh); dữ liệu "
+"âm thanh phải có kiểu 16 bit chưa nén. QUAN TRỌNG: bạn nên gọi trước \""
 
 #: ../vid_enc_avi/gap_enc_avi_main.c:213
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:423
 msgid ""
 "\" to set encoder specific paramters, then set the use_rest parameter to 1 "
 "to use them."
-msgstr "\" để đặt các tham số đặc trưng cho bộ mã hoá, rồi đặt tham số « use_rest » thành 1 để sử dụng chúng."
+msgstr "\" để đặt các tham số đặc trưng cho bộ mã hoá, rồi đặt tham số « use_rest » "
+"thành 1 để sử dụng chúng."
 
 #: ../vid_enc_avi/gap_enc_avi_main.c:227
 msgid "Set Parameters for GAP avi video encoder Plugins"
@@ -8422,10 +8437,11 @@ msgstr "Không mã hoá lại"
 msgid ""
 "Don't recode the input JPEG frames (works for 4:2:2 JPEG only, may result in "
 "unreadable Video)"
-msgstr "Đừng mã hoá lại các khung JPEG nhập (hoạt động được chỉ cho JPEG 4:2:2, có thể tạo ảnh động không thể đọc)."
+msgstr "Đừng mã hoá lại các khung JPEG nhập (hoạt động được chỉ cho JPEG 4:2:2, có "
+"thể tạo ảnh động không thể đọc)."
 
 #: ../vid_enc_avi/gap_enc_avi_main.c:622
-msgid "Interlaced Frames)"
+msgid "Interlaced Frames"
 msgstr "Khung đã kết hợp"
 
 #: ../vid_enc_avi/gap_enc_avi_main.c:628
@@ -8468,7 +8484,8 @@ msgstr "bộ_tính_số_lượng_tối_đa:"
 
 #: ../vid_enc_avi/gap_enc_avi_main.c:692
 msgid "for XVID Codec  upper limit for quantize Range 1 == BEST Quality "
-msgstr "cho CODEC XVID, hạn chế trên của phạm vị tính số lượng (1 = chất lượng tốt nhất) "
+msgstr "cho CODEC XVID, hạn chế trên của phạm vị tính số lượng (1 = chất lượng tốt "
+"nhất) "
 
 #: ../vid_enc_avi/gap_enc_avi_main.c:701
 msgid "min_quantizer:"
@@ -8476,7 +8493,8 @@ msgstr "bộ_tính_số_lượng_tối_thiểu :"
 
 #: ../vid_enc_avi/gap_enc_avi_main.c:702
 msgid "for XVID Codec  lower limit for quantize Range 1 == BEST Quality "
-msgstr "cho CODEC XVID, hạn chế dưới của phạm vị tính số lượng (1 = chất lượng tốt nhất) "
+msgstr "cho CODEC XVID, hạn chế dưới của phạm vị tính số lượng (1 = chất lượng tốt "
+"nhất) "
 
 #: ../vid_enc_avi/gap_enc_avi_main.c:711
 msgid "key_interval:"
@@ -8495,8 +8513,8 @@ msgid ""
 "for XVID Codec select algoritm presets where 0==low quality(fast) 6==best"
 "(slow) "
 msgstr "cho CODEC XVID, chọn các giá trị định sẵn thuật toán:\n"
-" 0	chất lượng thấp (nhanh)\n"
-" 6	chất lượng tốt nhất (chậm)."
+" 0\tchất lượng thấp (nhanh)\n"
+" 6\tchất lượng tốt nhất (chậm)."
 
 #: ../vid_enc_avi/gap_enc_avi_main.c:732
 msgid "APP0 Marker for each frame"
@@ -8506,7 +8524,8 @@ msgstr "Dấu hiệu APP0 cho mỗi khung"
 msgid ""
 "Write APP0 Marker for each encoded frame. (The APP0 marker is evaluated by "
 "some Windows programs for AVIs"
-msgstr "Ghi dấu hiệu APP0 cho mỗi khung đã mã hoá (dấu hiệu APP0 được ước lượng bằng một số chương trình Windows cho AVI)."
+msgstr "Ghi dấu hiệu APP0 cho mỗi khung đã mã hoá (dấu hiệu APP0 được ước lượng bằng "
+"một số chương trình Windows cho AVI)."
 
 #: ../vid_enc_avi/gap_enc_avi_main.c:873
 msgid "AVI Video Encoding .."
@@ -8647,7 +8666,7 @@ msgid "Audio bitrate in kBit/sec"
 msgstr "Tỷ lệ bit âm thanh theo kBit/giây."
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1249
-msgid "Common used audio bitrates"
+msgid "Commonly-used used audio bitrates"
 msgstr "Tỷ lệ bit âm thanh thường dùng"
 
 #.the video bitrate label
@@ -8789,7 +8808,7 @@ msgid "4 phods"
 msgstr "4 phods"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1589
-msgid "5 epzs (recommanded)"
+msgid "5 epzs (recommended)"
 msgstr "5 epzs (đề nghị)"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1590
@@ -9050,7 +9069,7 @@ msgid "4 Motion Vectors"
 msgstr "4 véc-tơ chuyển động"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2167
-msgid "Use four motion vector by macroblock (only MPEG-4 CODEC)"
+msgid "Use four motion vectors by macroblock (only MPEG-4 CODEC)"
 msgstr "Dùng bốn véc-tơ bằng bộ khối (chỉ CODEC MPEG-4)."
 
 #.the Closed GOP checkbutton
@@ -9188,7 +9207,8 @@ msgstr "MVD"
 msgid ""
 "Try to encode each MB with MV=<0,0> and choose the better one (has no effect "
 "if mbd=0)"
-msgstr "Cố gắng mã hoá mỗi MB bằng MV=<0,0> và chọn điều tốt hơn (không có tác động nếu mbd=0)."
+msgstr "Cố gắng mã hoá mỗi MB bằng MV=<0,0> và chọn điều tốt hơn (không có tác động "
+"nếu mbd=0)."
 
 #.the Use Normalize checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2430
@@ -9227,7 +9247,10 @@ msgid ""
 "Bypass the FFMPEG Vidoencoder where inputframes can be copied 1:1 from an "
 "input MPEG videofile.This experimental feature provides lossless MPEG video "
 "cut, but works only for the MPEG Fileformats."
-msgstr "Đi qua bộ mã hoá ảnh động FFMPEG mà các khung nhập có thể được sao chép 1:1 từ một tập tin ảnh động MPEG nhập. Tính năng thực nghiệm này cung cấp khả năng cắt ảnh động MPEG không mất gì, nhưng mà hoạt động được chỉ cho các dạng thức tập tin MPEG thôi."
+msgstr "Đi qua bộ mã hoá ảnh động FFMPEG mà các khung nhập có thể được sao chép 1:1 "
+"từ một tập tin ảnh động MPEG nhập. Tính năng thực nghiệm này cung cấp khả "
+"năng cắt ảnh động MPEG không mất gì, nhưng mà hoạt động được chỉ cho các "
+"dạng thức tập tin MPEG thôi."
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2527
 msgid "FFMpeg Expert Encoder Options"
@@ -9302,7 +9325,7 @@ msgid "Bitrate Tol:"
 msgstr "Chịu đựng tỷ lệ bit:"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2745
-msgid "Qet video bitrate tolerance (in kbit/s)"
+msgid "Set video bitrate tolerance (in kbit/s)"
 msgstr "Đặt độ chịu đựng tỷ lệ bit (theo kbit/giây)."
 
 #.the Maxrate Tolerance label
@@ -9379,7 +9402,8 @@ msgstr "Bản ghi đi qua:"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2981
 msgid "The pass logfile is only used as workfile for 2-pass encoding"
-msgstr "Tập tin bản ghi lần chỉ được dùng như là tập tin làm việc cho khả năng mã hoá hai lần."
+msgstr "Tập tin bản ghi lần chỉ được dùng như là tập tin làm việc cho khả năng mã "
+"hoá hai lần."
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2992
 msgid "Select pass logfile via file browser"
@@ -9540,7 +9564,11 @@ msgid ""
 "wav) file. .wav files can be mono (1) or stereo (2channels) audiodata and "
 "must be 16bit uncompressed. IMPORTANT:  Non-interactive callers should first "
 "call \""
-msgstr "Bổ sung này mã hoá ảnh động của khung hoạt cảnh đựa vào dạng thức libavformat (cũng được biết như là bộ mã hoá FFMPEG). Dữ liệu âm thanh tùy chọn phải là tập tin dạng thức RIFF WAVEfmt (.wav). Tập tin có thể là dữ liệu âm thanh nguồn đơn (1 kênh) hay âm lập thể (2 kênh) cũng được và phải được nén 16bit. QUAN TRỌNG: bộ gọi không tương tác nên gọi trước \""
+msgstr "Bổ sung này mã hoá ảnh động của khung hoạt cảnh đựa vào dạng thức "
+"libavformat (cũng được biết như là bộ mã hoá FFMPEG). Dữ liệu âm thanh tùy "
+"chọn phải là tập tin dạng thức RIFF WAVEfmt (.wav). Tập tin có thể là dữ "
+"liệu âm thanh nguồn đơn (1 kênh) hay âm lập thể (2 kênh) cũng được và phải "
+"được nén 16bit. QUAN TRỌNG: bộ gọi không tương tác nên gọi trước \""
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:437
 msgid "Set Parameters for GAP ffmpeg video encoder Plugin"
@@ -9551,7 +9579,9 @@ msgid ""
 "This plugin sets ffmpeg specific video encoding parameters. Non-interactive "
 "callers must provide a parameterfile, Interactive calls provide a dialog "
 "window to specify and optionally save the parameters."
-msgstr "Bổ sung này đặt các tham số mã hoá ảnh động đặt trưng cho ffmpeg. Bộ gọi không tương tác phải cung cấp một tập tin tham số, còn cuộc tương tác cung cấp một cửa sổ hộp thoại để xác định và (tùy chọn) lưu các tham số này."
+msgstr "Bổ sung này đặt các tham số mã hoá ảnh động đặt trưng cho ffmpeg. Bộ gọi "
+"không tương tác phải cung cấp một tập tin tham số, còn cuộc tương tác cung "
+"cấp một cửa sổ hộp thoại để xác định và (tùy chọn) lưu các tham số này."
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:453
 msgid "Get GUI Parameters for GAP ffmpeg video encoder"
@@ -9649,13 +9679,19 @@ msgid ""
 "\". the names of the output frame(s) are same as the parameter \"videofile\" "
 "but the framenumber part is replaced by the current framenumber (or added "
 "automatic if videofile has no number part) audiodata is ignored. A  call of\""
-msgstr "Bổ sung có một API mã hoá ảnh động nhưng ghi một dãy khung đơn thay vào chỉ một tập tin ảnh động. Kiểu tập tin của các khung xuất bắt nguồn từ phần mở rộng. Phần mở rộng là phần hậu tố của tham số « videofile ». Khung xuát có cùng tên với tham số « videofile » nhưng mà phần số hiệu khung được thay thế bằng số hiệu hiện thời (hoặc được thêm tự động nếu tập tin ảnh động không có phần con số). Các dữ liệu âm thanh bị bỏ qua. Cuộc gọi\""
+msgstr "Bổ sung có một API mã hoá ảnh động nhưng ghi một dãy khung đơn thay vào chỉ "
+"một tập tin ảnh động. Kiểu tập tin của các khung xuất bắt nguồn từ phần mở "
+"rộng. Phần mở rộng là phần hậu tố của tham số « videofile ». Khung xuát có "
+"cùng tên với tham số « videofile » nhưng mà phần số hiệu khung được thay thế "
+"bằng số hiệu hiện thời (hoặc được thêm tự động nếu tập tin ảnh động không có "
+"phần con số). Các dữ liệu âm thanh bị bỏ qua. Cuộc gọi\""
 
 #: ../vid_enc_single/gap_enc_singleframes_main.c:188
 msgid ""
-"\" to set encoder specific paramters, is not required because this release "
-"of the singleframe encoder has NO encoder specific paramters"
-msgstr "\" để đặt các tham số đặc trưng cho bộ mã hoá, không cần thiết vì bản phát hành bộ mã hoá khung đơn này không có tham số đặc trưng cho bộ mã hoá."
+"\" to set encoder specific parameters, is not required because this release "
+"of the singleframe encoder has NO encoder specific parameters"
+msgstr "\" để đặt các tham số đặc trưng cho bộ mã hoá, không cần thiết vì bản phát "
+"hành bộ mã hoá khung đơn này không có tham số đặc trưng cho bộ mã hoá."
 
 #: ../vid_enc_single/gap_enc_singleframes_main.c:203
 msgid "Set Parameters for GAP singleframes video encoder Plugins"
