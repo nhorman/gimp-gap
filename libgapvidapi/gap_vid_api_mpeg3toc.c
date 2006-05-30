@@ -21,10 +21,11 @@
 #include "mpeg3protos.h"
 
 #include <stdint.h>
-#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <sys/stat.h>
+
+#include <glib/gstdio.h>
 
 /* hof: mpeg3video_get_header is defined in libmpeg3/video/headers.c
  * but libmpeg3 does not provide this procedure difinition in its

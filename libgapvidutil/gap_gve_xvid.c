@@ -39,11 +39,12 @@
 #include <config.h>
 
 /* SYSTEM (UNIX) includes */
-#include <stdio.h>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+
+#include <glib/gstdio.h>
 
 /* GIMP includes */
 #include "gtk/gtk.h"

@@ -1,5 +1,14 @@
 2006-05-30  Sven Neumann  <sven@gimp.org>
 
+	* libgapvidapi/gap_vid_api_mpeg3toc.c
+	* libgapvidapi/gap_vid_api_util.c
+	* libgapvidutil/gap_gve_xvid.c: include <glib/gstdio.h>.
+
+	* vid_enc_avi/gap_enc_avi_gui.c: use gtk_widget_set_size_request()
+	instead of the deprecated gtk_widget_set_usize().
+
+2006-05-30  Sven Neumann  <sven@gimp.org>
+
 	* configure.in: use DISABLE_DEPRECATED for glib >= 2.11, pango >= 1.13
 	and gimp >= 2.3.8.
 

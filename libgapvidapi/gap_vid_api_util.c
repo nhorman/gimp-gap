@@ -6,6 +6,7 @@
  *
  */
 
+#include <glib/gstdio.h>
 
 /* XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX END fcache procedures */
 

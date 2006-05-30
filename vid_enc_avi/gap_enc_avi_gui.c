@@ -471,7 +471,7 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
   gtk_table_attach (GTK_TABLE (table_master), combo_codec, 1, 2, master_row, master_row+1,
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_usize (combo_codec, 160, -2);
+  gtk_widget_set_size_request (combo_codec, 160, -1);
   gimp_help_set_help_data (combo_codec, _("Select video codec"), NULL);
 
 
