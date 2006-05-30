@@ -1,3 +1,15 @@
+2006-05-30  Sven Neumann  <sven@gimp.org>
+
+	* configure.in: use DISABLE_DEPRECATED for glib >= 2.11, pango >= 1.13
+	and gimp >= 2.3.8.
+
+	* gap/gap_audio_wav.c
+	* gap/gap_file_util.c
+	* gap/gap_lib.c
+	* gap/gap_navigator_dialog.c
+	* gap/gap_story_properties.c
+	* gap/gimplastvaldesc.c: include <glib/gstdio.h> instead of <stdio.h>.
+
 2006-05-29  Wolfgang Hofer <hof@gimp.org>
 	- Fix for ffmpeg libnames on MinGW
          ( avformat.lib, avcodec.lib )

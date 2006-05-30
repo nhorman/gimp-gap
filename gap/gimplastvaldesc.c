@@ -34,7 +34,6 @@
  */
 
 /* SYSTEM (UNIX) includes */ 
-#include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
@@ -43,6 +42,8 @@
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
+
+#include <glib/gstdio.h>
 
 #include "libgimp/gimp.h"
 /* gimplastvaldesc should become part of libgimp in the future.

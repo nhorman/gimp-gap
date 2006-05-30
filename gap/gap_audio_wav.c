@@ -16,6 +16,8 @@
 #include <errno.h>
 #include "stdlib.h"
 
+#include <glib/gstdio.h>
+
 #include "libgimp/gimp.h"
 #include "gap-intl.h"
 #include "gap_audio_wav.h"
