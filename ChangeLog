@@ -1,3 +1,32 @@
+2006-05-29  Wolfgang Hofer <hof@gimp.org>
+	- Fix for ffmpeg libnames on MinGW
+         ( avformat.lib, avcodec.lib )
+          Should fix bug #324854.
+        - Replaced gethostname and stat
+           by OS-independent glib variants
+           g_get_host_name , g_stat
+           
+          (should fix #342941 without the need to link
+          with winsock lib)
+        - fixed typos (#342973)
+        - 
+        
+	* configure.in: $LIBPREF
+        * gap/gap_story_dialog.c
+        
+        * gap/gap_audio_wav.c
+        * gap/gap_bluebox.c
+        * gap/gap_file_util.c [.h]
+        * gap/gap_lib.c
+        * gap/gap_navigator_dialog.c
+        * gap/gap_pview_da.c [.h]
+        * gap/gimplastvaldesc.c
+        * libgapvidapi/gap_vid_api_mpeg3toc.c
+        * libgapvidapi/gap_vid_api_util.c
+        * libgapvidutil/gap_gve_xvid.c
+        * vid_enc_ffmpeg/gap_enc_ffmpeg_main.c
+        
+        
 2006-05-22  Sven Neumann  <sven@gimp.org>
 
 	* configure.in: added missing call of AC_CANONICAL_HOST.

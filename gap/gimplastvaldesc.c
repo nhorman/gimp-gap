@@ -266,7 +266,7 @@ gimp_lastval_desc_update(void)
   if(gimp_get_data_size(TIMESTAMP_DESCFILE_CHECKED) > 1)
   {     
      gimp_get_data(TIMESTAMP_DESCFILE_CHECKED, &l_timestamp);
-     if(stat(fname, &stat_buf) == 0)
+     if(g_stat(fname, &stat_buf) == 0)
      {
         if(l_timestamp > stat_buf.st_mtime)
         {
@@ -516,7 +516,7 @@ p_load_lastval_desc_file(const gchar *fname)
   file_size = 0;
   file_buff = NULL;
   /* get filelength */
-  if (0 == stat(fname, &stat_buf))
+  if (0 == g_stat(fname, &stat_buf))
   {
     file_size = stat_buf.st_size;
     /* load File into Buffer */

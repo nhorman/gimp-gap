@@ -322,7 +322,7 @@ gap_bluebox_create_dialog (GapBlueboxGlobalParams *bbp)
 			      TRUE,           /* constrain */
 			      0.0, 1.0,       /* lower/upper unconstrained */
 			      _("Sharp pixel selection by color with 0.0. "
-			        "Values greater than 0 give the selection more or less variable alpha value,"
+			        "Values greater than 0 give the selection more or less variable alpha value, "
 			        "depending on disparity with the key color."), NULL);
   bbp->tolerance_adj = adj;
   g_object_set_data(G_OBJECT(adj), "bbp", bbp);

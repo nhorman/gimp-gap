@@ -680,7 +680,7 @@ gap_lib_file_exists(const char *fname)
   long         l_len;
 
   /* File Laenge ermitteln */
-  if (0 != stat(fname, &l_stat_buf))
+  if (0 != g_stat(fname, &l_stat_buf))
   {
     /* stat error (file does not exist) */
     return(0);
@@ -810,7 +810,7 @@ gap_lib_file_copy(char *fname, char *fname_copy)
   if(gap_debug) printf("gap_lib_file_copy src:%s dst:%s\n", fname, fname_copy);
 
   /* File Laenge ermitteln */
-  if (0 != stat(fname, &l_stat_buf))
+  if (0 != g_stat(fname, &l_stat_buf))
   {
     fprintf (stderr, "stat error on '%s'\n", fname);
     return -1;

@@ -81,6 +81,7 @@ void        gap_file_chop_trailingspace_and_nl(char *buff);
 char *      gap_file_make_abspath_filename(const char *filename
                   , const char *container_file);
 
+char *      gap_file_build_absolute_filename(const char * filename);
 
 
 #endif        /* GAP_FILE_UTIL_H */

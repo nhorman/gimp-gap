@@ -978,7 +978,7 @@ gap_pview_get_repaint_pixbuf(GapPView   *pv_ptr)
   {
     size_t pixel_data_size = pv_ptr->pv_height * pv_ptr->pv_width * pv_ptr->pv_bpp;
     pixel_data_copy = g_new ( guchar, pixel_data_size );
-    memcpy(pixel_data_copy, pv_ptr->pv_area_data, pixel_data_size);			    
+    memcpy(pixel_data_copy, pixel_data_src, pixel_data_size);			    
 
     return(gdk_pixbuf_new_from_data(
             pixel_data_copy
@@ -994,3 +994,87 @@ gap_pview_get_repaint_pixbuf(GapPView   *pv_ptr)
   }
   return (NULL);
 }  /* end gap_pview_get_repaint_pixbuf */
+
+
+/* ------------------------------
+ * gap_pview_get_repaint_thdata
+ * ------------------------------
+ * return the repaint buffer as thumbnail data (guchar RGB),
+ * or NULL if no buffer is available.
+ */
+guchar *
+gap_pview_get_repaint_thdata(GapPView   *pv_ptr        /* IN */
+                            , gint32    *th_size       /* OUT */
+                            , gint32    *th_width      /* OUT */
+                            , gint32    *th_height     /* OUT */
+                            , gint32    *th_bpp        /* OUT */
+                            , gboolean  *th_has_alpha  /* OUT */
+                            )
+{ 
+  int bits_per_sample;
+  int rowstride;
+  int width;
+  int height;
+  gboolean has_alpha;
+  guchar *pixel_data_src;
+  guchar *pixel_data_copy;
+  
+  
+  if (pv_ptr == NULL)
+  {
+    return(NULL);
+  }
+
+  bits_per_sample = 8;
+  rowstride = pv_ptr->pv_width * pv_ptr->pv_bpp;
+  has_alpha = FALSE;
+  width = pv_ptr->pv_width;
+  height = pv_ptr->pv_height;
+  pixel_data_src = NULL;
+  
+  if ((pv_ptr->use_pixbuf_repaint) 
+  && (pv_ptr->pixbuf))
+  {
+    pixel_data_src = gdk_pixbuf_get_pixels(pv_ptr->pixbuf);
+    rowstride = gdk_pixbuf_get_rowstride(pv_ptr->pixbuf);
+    bits_per_sample = gdk_pixbuf_get_bits_per_sample(pv_ptr->pixbuf);
+    has_alpha = gdk_pixbuf_get_has_alpha(pv_ptr->pixbuf);
+  }
+  
+  if ((pv_ptr->use_pixmap_repaint) 
+  && (pv_ptr->pixmap)
+  && (pixel_data_src == NULL))
+  { 
+    gdk_drawable_get_size (pv_ptr->pixmap, &width, &height);
+    // pixel_data_src = ???; 
+    // TODO: how to make duplicate of pixeldata for GdkPixmap ?
+    // not critical, the pixmap is currently used only for the default icon
+    // that is renderd in case no useful pixeldata is available.
+    // The caller has to deal with returned NULL pointer anyway.
+ 
+    return(NULL);
+  }
+
+  if((pv_ptr->pv_area_data)
+  && (pixel_data_src == NULL))
+  {
+    pixel_data_src = pv_ptr->pv_area_data;
+  }
+
+  if(pixel_data_src)
+  {
+    size_t pixel_data_size = pv_ptr->pv_height * pv_ptr->pv_width * pv_ptr->pv_bpp;
+    pixel_data_copy = g_new ( guchar, pixel_data_size );
+    memcpy(pixel_data_copy, pixel_data_src, pixel_data_size);			    
+
+    *th_size       = width * height * pv_ptr->pv_bpp;
+    *th_width      = width;
+    *th_height     = height;
+    *th_bpp        = pv_ptr->pv_bpp;
+    *th_has_alpha  = has_alpha;
+
+    return (pixel_data_copy);
+  }
+  return (NULL);
+
+} /* end gap_pview_get_repaint_thdata */

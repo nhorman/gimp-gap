@@ -62,7 +62,7 @@ gap_file_get_filesize(const char *fname)
 {
   struct stat  stat_buf;
 
-  if (0 != stat(fname, &stat_buf))
+  if (0 != g_stat(fname, &stat_buf))
   {
     printf ("stat error on '%s'\n", fname);
     return(0);
@@ -300,3 +300,28 @@ gap_file_make_abspath_filename(const char *filename, const char *container_file)
     return(l_abs_name);
 
 }  /* end gap_file_make_abspath_filename */
+
+
+/* --------------------------------
+ * gap_file_build_absolute_filename
+ * --------------------------------
+ */
+char *
+gap_file_build_absolute_filename(const char * filename)
+{
+ gchar *absolute;
+  if (! g_path_is_absolute (filename))
+  {
+      gchar *current;
+
+      current = g_get_current_dir ();
+      absolute = g_build_filename (current, filename, NULL);
+      g_free (current);
+  }
+  else
+  {
+      absolute = g_strdup (filename);
+  }
+  return (absolute);
+}  /* end gap_file_build_absolute_filename */
+

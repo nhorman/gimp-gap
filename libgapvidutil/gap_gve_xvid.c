@@ -93,8 +93,8 @@ p_xvid_debug_write_mp4u_file(guchar *buff, gint32 len)
 		bigendian = 0;
   }
 
-  /* File Laenge ermitteln */
-  if (0 != stat(fname, &l_stat_buf))
+  /* get legth of file */
+  if (0 != g_stat(fname, &l_stat_buf))
   {
     long hdr;
 

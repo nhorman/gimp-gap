@@ -2459,7 +2459,7 @@ navi_render_preview (FrameWidget *fw)
      l_frame_filename = gap_lib_alloc_fname(naviD->ainfo_ptr->basename, fw->frame_nr, naviD->ainfo_ptr->extension);
      if(l_frame_filename)
      {
-       if (0 == stat(l_frame_filename, &l_stat))
+       if (0 == g_stat(l_frame_filename, &l_stat))
        {
          if(fw->frame_filename)
          {

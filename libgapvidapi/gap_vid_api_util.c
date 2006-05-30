@@ -24,7 +24,7 @@ p_get_filesize(char *fname)
 {
   struct stat  stat_buf;
 
-  if (0 != stat(fname, &stat_buf))
+  if (0 != g_stat(fname, &stat_buf))
   {
     printf ("stat error on '%s'\n", fname);
     return(0);
@@ -251,7 +251,7 @@ GVA_file_get_mtime(const char *filename)
 {
   struct stat  l_stat;
 
-  if (0 == stat(filename, &l_stat))
+  if (0 == g_stat(filename, &l_stat))
   {
     return(l_stat.st_mtime);
   }

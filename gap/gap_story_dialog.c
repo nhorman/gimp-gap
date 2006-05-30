@@ -6830,7 +6830,7 @@ p_check_and_convert_uri_to_stb_elem(const char *uri, GapStoryElem *prev_elem)
   GapStoryElem *elem;
   gchar *filename;
   gchar *hostname;
-  gchar this_hostname[257];
+  const gchar *this_hostname;
   int res;
   gboolean is_localfile;
   GError *error = NULL;
@@ -6856,8 +6856,7 @@ p_check_and_convert_uri_to_stb_elem(const char *uri, GapStoryElem *prev_elem)
       return (NULL);
   }
 
-  res = gethostname (this_hostname, 256);
-  this_hostname[256] = 0;
+  this_hostname = g_get_host_name();
 
   is_localfile = FALSE;
   if (hostname == NULL)

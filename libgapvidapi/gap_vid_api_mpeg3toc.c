@@ -232,7 +232,7 @@ GVA_create_libmpeg3_toc(int argc, char *argv[]
     exit(1);
   }
 
-  stat(src, &st);
+  g_stat(src, &st);
 
   if(!st.st_size)
   {

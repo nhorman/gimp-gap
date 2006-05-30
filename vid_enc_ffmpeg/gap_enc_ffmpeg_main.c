@@ -1314,8 +1314,8 @@ p_open_audio_input_files(t_awk_array *awp, GapGveFFMpegGlobalParams *gpp)
 	  else
 	  {
             g_message(_("The file: %s\n"
-	              "has unexpect content that will be ignored\n"
-		      "you should specify an audio file in RIFF WAVE fileformat\n"
+	              "has unexpect content that will be ignored.\n"
+		      "You should specify an audio file in RIFF WAVE fileformat,\n"
 		      "or a textfile containing filenames of such audio files")
 		     , gpp->val.audioname1
 		     );
@@ -1325,8 +1325,8 @@ p_open_audio_input_files(t_awk_array *awp, GapGveFFMpegGlobalParams *gpp)
 	else
 	{
           g_message(_("The file: %s\n"
-	              "contains too much audio-input tracks\n"
-		      "(only %d tracks are used, the rest are ignored)")
+	              "contains too many audio-input tracks\n"
+		      "(only %d tracks are used, the rest are ignored).")
 		   , gpp->val.audioname1
 		   , (int) MAX_AUDIO_STREAMS
 		   );

@@ -211,7 +211,7 @@ p_wav_open_seek_data_private(const char *filename, unsigned char *audata)
   size_t       l_len_read;
 
   /* get File Length */
-  if (0 != stat(filename, &l_stat_buf))
+  if (0 != g_stat(filename, &l_stat_buf))
   {
     if(gap_debug)
     {
@@ -609,8 +609,8 @@ p_check_for_valid_playlist(const char *audfile, long *sample_rate, long *channel
 	  if(ii > 0)
 	  {
             g_message(_("The file: %s\n"
-	            "has unexpect content that will be ignored\n"
-		    "you should specify an audio file in RIFF WAVE fileformat\n"
+	            "has unexpect content that will be ignored.\n"
+		    "You should specify an audio file in RIFF WAVE fileformat,\n"
 		    "or a textfile containing filenames of such audio files")
 		   , audfile
 		   );
@@ -621,8 +621,8 @@ p_check_for_valid_playlist(const char *audfile, long *sample_rate, long *channel
       else
       {
         g_message(_("The file: %s\n"
-	            "contains too much audio-input tracks\n"
-		    "(only %d tracks are used, the rest are ignored)")
+	            "contains too many audio-input tracks\n"
+		    "(only %d tracks are used, the rest are ignored).")
 		 , audfile
 		 , (int) MAX_AUDIO_STREAMS
 		 );
