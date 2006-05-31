@@ -37,8 +37,9 @@
 #include "config.h"
 
 /* SYSTEM (UNIX) includes */
-#include <stdio.h>
 #include <stdlib.h>
+
+#include <glib/gstdio.h>
 
 /* GIMP includes */
 #include "gtk/gtk.h"
@@ -1966,7 +1967,7 @@ gap_lib_rename_frame_digits(GapAnimInfo *ainfo_ptr, long from_nr, long to_nr, lo
    if(l_to_fname == NULL) { g_free(l_from_fname); return(1); }
 
    if(gap_debug) printf("DEBUG gap_lib_rename_frame_digits: %s ..to.. %s\n", l_from_fname, l_to_fname);
-   l_rc = rename(l_from_fname, l_to_fname);
+   l_rc = g_rename(l_from_fname, l_to_fname);
 
    gap_thumb_file_rename_thumbnail(l_from_fname, l_to_fname);
 

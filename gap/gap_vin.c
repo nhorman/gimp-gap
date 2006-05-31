@@ -34,10 +34,11 @@
  * version 1.3.14a; 2003/05/24  hof: created (splitted off from gap_pdb_calls module)
  *                              write now keeps unkown keyword lines in _vin.gap files
  */
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <locale.h>
+
+#include <glib/gstdio.h>
 
 /* GIMP includes */
 #include "libgimp/gimp.h"
@@ -257,7 +258,7 @@ gap_vin_load_textfile(const char *filename)
   line_nr = 0;
   txf_ptr_prev = NULL;
   txf_ptr_root = NULL;
-  l_fp = fopen(filename, "r");
+  l_fp = g_fopen(filename, "r");
   if(l_fp)
   {
     while(NULL != fgets(l_buf, 4000-1, l_fp))
@@ -472,7 +473,7 @@ gap_vin_rewrite_file(GapVinKeyList *keylist, const char *filename, const char *h
   {
       txf_ptr_root = gap_vin_load_textfile(filename);
   
-      l_fp = fopen(filename, "w");
+      l_fp = g_fopen(filename, "w");
       if(l_fp)
       {
          for(txf_ptr = txf_ptr_root; txf_ptr != NULL; txf_ptr = (GapVinTextFileLines *) txf_ptr->next)
@@ -557,7 +558,6 @@ gap_vin_scann_filevalues(GapVinKeyList *keylist, const char *filename)
   GapVinKeyList *keyptr;
   GapVinTextFileLines *txf_ptr_root;
   GapVinTextFileLines *txf_ptr;
-  GapVinVideoInfo *l_vin_ptr;
   int   l_len;
   int   l_cnt_keys;
   
@@ -712,7 +712,6 @@ gap_vin_set_common_keylist(GapVinKeyList *keylist, GapVinVideoInfo *vin_ptr, cha
 {
   char  *l_vin_filename;
   int   l_rc;
-  int   l_len;
    
   l_rc = -1;
   l_vin_filename = gap_vin_alloc_name(basename);
@@ -741,11 +740,8 @@ static void
 gap_vin_get_all_keylist(GapVinKeyList *keylist, GapVinVideoInfo *vin_ptr, char *basename)
 {
   char  *l_vin_filename;
-  GapVinKeyList *keyptr;
   GapVinTextFileLines *txf_ptr_root;
-  GapVinTextFileLines *txf_ptr;
   GapVinVideoInfo *l_vin_ptr;
-  int   l_len;
   
   l_vin_ptr = g_malloc(sizeof(GapVinVideoInfo));
   /* init wit defaults (for the case where no video_info file available) */

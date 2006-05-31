@@ -47,6 +47,8 @@
 #include <config.h>
 #include <stdlib.h>
 
+#include <glib/gstdio.h>
+
 #include "gap-intl.h"
 
 #include "gap_cme_main.h"
@@ -532,7 +534,7 @@ run (const gchar *name,          /* name of plugin */
             if(l_tmp_image_id >= 0)
             {
               gap_image_delete_immediate(l_tmp_image_id);
-              remove(l_tmpname);
+              g_remove(l_tmpname);
             }
             if(l_tmpname)
             {
@@ -542,7 +544,7 @@ run (const gchar *name,          /* name of plugin */
 
          if(gpp->val.tmp_audfile[0] != '\0')
          {
-           remove(gpp->val.tmp_audfile);
+           g_remove(gpp->val.tmp_audfile);
          }
 
          /* is the encoder specific gui_thread still open ? */

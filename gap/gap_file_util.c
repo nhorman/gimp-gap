@@ -93,7 +93,7 @@ gap_file_load_file_segment(const char *filename
 
   l_bytes_read = 0;
 
-  fp = fopen(filename, "rb");
+  fp = g_fopen(filename, "rb");
   if (fp)
   {
 
@@ -145,7 +145,7 @@ gap_file_load_file_len(const char *fname, gint32 *filelen)
   l_buff_ptr[len] = '\0';
 
   /* File in eine Buffer laden */
-  fp = fopen(fname, "rb");		    /* open read */
+  fp = g_fopen(fname, "rb");		    /* open read */
   if(fp == NULL)
   {
     printf ("open(read) error on '%s'\n", fname);
@@ -177,7 +177,7 @@ gap_file_load_file(const char *fname)
 int
 gap_file_chmod (const char *fname, int mode)
 {
-  return(chmod(fname, mode));
+  return(g_chmod(fname, mode));
 }
 
 /* -------------------------
@@ -187,7 +187,7 @@ gap_file_chmod (const char *fname, int mode)
 int
 gap_file_mkdir (const char *fname, int mode)
 {
-  return(mkdir(fname, mode));
+  return(g_mkdir(fname, mode));
 }
 
 

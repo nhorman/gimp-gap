@@ -71,6 +71,8 @@
 
 #include <errno.h>
 
+#include <glib/gstdio.h>
+
 #include <gtk/gtk.h>
 #include <libgimp/gimp.h>
 #include <libgimp/gimpui.h>
@@ -1269,7 +1271,7 @@ p_open_audio_input_files(t_awk_array *awp, GapGveFFMpegGlobalParams *gpp)
      * and try to open those input wavefiles
      * (but limited upto MAX_AUDIO_STREAMS input wavefiles)
      */
-    l_fp = fopen(gpp->val.audioname1, "r");
+    l_fp = g_fopen(gpp->val.audioname1, "r");
     if(l_fp)
     {
       ii = 0;
@@ -1920,7 +1922,7 @@ p_init_video_codec(t_ffmpeg_handle *ffh
       snprintf(logfilename, sizeof(logfilename), "%s.log", epp->passlogfile);
       if (video_enc->flags & CODEC_FLAG_PASS1)
       {
-          fp = fopen(logfilename, "w");
+          fp = g_fopen(logfilename, "w");
           l_errno = errno;
           if (!fp)
           {
@@ -1943,7 +1945,7 @@ p_init_video_codec(t_ffmpeg_handle *ffh
       else
       {
           /* read the log file */
-          fp = fopen(logfilename, "r");
+          fp = g_fopen(logfilename, "r");
           l_errno = errno;
           if (!fp)
           {

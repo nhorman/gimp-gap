@@ -20,6 +20,9 @@
  */
 
 #include <config.h>
+
+#include <glib/gstdio.h>
+
 #include "gap_gve_sox.h"
 #include "gap_audio_wav.h"
 #include "gap-intl.h"
@@ -185,7 +188,7 @@ gap_gve_sox_chk_and_resample(GapGveCommonValues *cval)
      if(gap_debug) printf("resample needed, try to call sox to create tmpfile: %s\n", cval->tmp_audfile);
 
      /* delete tmp file */
-     remove(cval->tmp_audfile);
+     g_remove(cval->tmp_audfile);
      if(g_file_test(cval->tmp_audfile, G_FILE_TEST_EXISTS))
      {
         l_msg = g_strdup_printf(_("ERROR: Can't overwrite temporary workfile\nfile: %s")

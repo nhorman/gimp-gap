@@ -102,14 +102,14 @@ p_xvid_debug_write_mp4u_file(guchar *buff, gint32 len)
     hdr = LONG_PACK('M','P','4','U');
 
     /* (file does not exist) create it */
-    fp = fopen(fname, "wb");
+    fp = g_fopen(fname, "wb");
     hdr = (!bigendian)?SWAP(hdr):hdr;
     fwrite(&hdr, sizeof(hdr), 1, fp);
   }
   else
   {
     /* (file exists) open append */
-    fp = fopen(fname, "ab");
+    fp = g_fopen(fname, "ab");
   }
 
   if(fp)

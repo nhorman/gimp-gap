@@ -523,7 +523,7 @@ p_load_lastval_desc_file(const gchar *fname)
     /* load File into Buffer */
     file_buff = g_malloc0(file_size+1);
 
-    fp = fopen(fname, "rb");		    /* open read */
+    fp = g_fopen(fname, "rb");		    /* open read */
     if(fp == NULL)
     {
       printf ("open(read) error on '%s'\n", fname);
@@ -704,7 +704,7 @@ p_lastvals_register_persistent(const gchar *keyname, GimpLastvalDescType *lastva
   ptr = file_buff;
 
   /* rewrite file (replacing or adding  the structure description block for keyname) */
-  fp = fopen(fname, "w");
+  fp = g_fopen(fname, "w");
   if(fp)
   {
     /* write all lines until 1.st description line matching keyname */

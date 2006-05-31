@@ -56,7 +56,6 @@
 #include <config.h>
 
 /* SYTEM (UNIX) includes */
-#include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -65,6 +64,8 @@
 
 #include <dirent.h>
 
+
+#include <glib/gstdio.h>
 
 
 
@@ -894,7 +895,7 @@ gap_gve_story_remove_tmp_audiofiles(GapGveStoryVidHandle *vidhand)
 	  printf("gap_gve_story_remove_tmp_audiofiles removing: %s\n"
 		, aud_elem->tmp_audiofile);
 	}
-        remove(aud_elem->tmp_audiofile);
+        g_remove(aud_elem->tmp_audiofile);
       }
       g_free(aud_elem->tmp_audiofile);
       aud_elem->tmp_audiofile = NULL;
@@ -1515,7 +1516,7 @@ gap_gve_story_create_composite_audiofile(GapGveStoryVidHandle *vidhand
 
 
   p_check_audio_peaks(vidhand, l_aud_total_sec, &l_mix_scale);
-  l_fp = fopen(comp_audiofile, "wb");
+  l_fp = g_fopen(comp_audiofile, "wb");
   if (l_fp)
   {
     gdouble l_nsamples;
@@ -1965,7 +1966,7 @@ p_extract_audiopart(t_GVA_Handle *gvahand
   {
     FILE  *fp_wav;
 
-    fp_wav = fopen(wavfilename, "wb");
+    fp_wav = g_fopen(wavfilename, "wb");
     if(fp_wav)
     {
        gint32 l_bytes_per_sample;
@@ -2256,7 +2257,7 @@ p_new_audiorange_element(GapGveStoryAudioType  aud_type
 				, &bytes_per_sample, &bits, &samples);
 
 			/* delete the extracted wavfile after resampling (keep just the resampled variante) */
-			remove(l_wavfilename);
+			g_remove(l_wavfilename);
 			g_free(l_wavfilename);
 
 			if((l_rc == 0)
@@ -2281,7 +2282,7 @@ p_new_audiorange_element(GapGveStoryAudioType  aud_type
 
 			  if(aud_elem->tmp_audiofile)
 			  {
-			     remove(aud_elem->tmp_audiofile);
+			     g_remove(aud_elem->tmp_audiofile);
 			     g_free(aud_elem->tmp_audiofile);
 			     aud_elem->tmp_audiofile = NULL;
 			  }
@@ -2416,7 +2417,7 @@ p_new_audiorange_element(GapGveStoryAudioType  aud_type
   
                     if(aud_elem->tmp_audiofile)
                     {
-                       remove(aud_elem->tmp_audiofile);
+                       g_remove(aud_elem->tmp_audiofile);
                        g_free(aud_elem->tmp_audiofile);
                        aud_elem->tmp_audiofile = NULL;
                     }
@@ -5128,7 +5129,7 @@ gap_gve_story_fetch_composite_image_or_chunk(GapGveStoryVidHandle *vidhand
                char *fname;
 
                fname = g_strdup_printf("zz_chunk_data_%06d.dmp", (int)l_video_frame_nr);
-               fp = fopen(fname, "wb");
+               fp = g_fopen(fname, "wb");
                if(fp)
                {
                   fwrite(video_frame_chunk_data, *video_frame_chunk_size, 1, fp);

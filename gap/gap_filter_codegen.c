@@ -27,12 +27,13 @@
 #include "config.h"
 
 /* SYTEM (UNIX) includes */
-#include <stdio.h>
 #include <string.h>
 #include <time.h>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
+
+#include <glib/gstdio.h>
 
 /* GIMP includes */
 #include "libgimp/gimp.h"
@@ -50,8 +51,8 @@ gint gap_codegen_gen_code_iterator(char  *proc_name);
 
 void gap_codegen_remove_codegen_files()
 {
-   remove(GEN_FORWARDFILE_NAME);
-   remove(GEN_TABFILE_NAME);
+   g_remove(GEN_FORWARDFILE_NAME);
+   g_remove(GEN_TABFILE_NAME);
 
    printf("overwrite  file: %s\n", GEN_FORWARDFILE_NAME);
    printf("overwrite  file: %s\n", GEN_TABFILE_NAME);
@@ -205,7 +206,7 @@ gint gap_codegen_gen_code_iter_ALT(char  *proc_name)
      if (l_params[2].type !=  GIMP_PDB_DRAWABLE) { l_rc = -1;  }
 
      g_snprintf(l_filename, sizeof(l_filename), "%s_iter_ALT.inc", l_clean_proc_name);
-     l_fp = fopen(l_filename, "w");
+     l_fp = g_fopen(l_filename, "w");
      if(l_fp != NULL)
      {
        fprintf(l_fp, "/* ----------------------------------------------------------------------\n");
@@ -313,7 +314,7 @@ gint gap_codegen_gen_forward_iter_ALT(char  *proc_name)
   char             l_clean_proc_name[256];
 
   p_clean_name(proc_name, &l_clean_proc_name[0]);
-  l_fp = fopen(GEN_FORWARDFILE_NAME, "a");
+  l_fp = g_fopen(GEN_FORWARDFILE_NAME, "a");
   if(l_fp != NULL)
   {
     fprintf(l_fp, "static gint p_%s_iter_ALT (GimpRunMode run_mode, gint32 total_steps, gdouble current_step, gint32 len_struct);\n",
@@ -329,7 +330,7 @@ gint gap_codegen_gen_tab_iter_ALT(char  *proc_name)
   char             l_clean_proc_name[256];
 
   p_clean_name(proc_name, &l_clean_proc_name[0]);
-  l_fp = fopen(GEN_TABFILE_NAME, "a");
+  l_fp = g_fopen(GEN_TABFILE_NAME, "a");
   if(l_fp != NULL)
   {
     fprintf(l_fp, "   , { \"%s\",  p_%s_iter_ALT }\n",
@@ -398,7 +399,7 @@ gint gap_codegen_gen_code_iterator(char  *proc_name)
 
      g_snprintf(l_filename, sizeof(l_filename), "%s_iter.c", l_clean_proc_name);
 
-     l_fp = fopen(l_filename, "w");
+     l_fp = g_fopen(l_filename, "w");
      if(l_fp != NULL)
      {
 

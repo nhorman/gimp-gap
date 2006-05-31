@@ -30,6 +30,8 @@
 
 #include <config.h>
 
+#include <glib/gstdio.h>
+
 #include <gtk/gtk.h>
 #include "gap-intl.h"
 
@@ -720,7 +722,7 @@ on_cme__entry_audio1_changed           (GtkEditable     *editable,
     {
       if(g_file_test(gpp->val.tmp_audfile, G_FILE_TEST_EXISTS))
       {
-        remove(gpp->val.tmp_audfile);
+        g_remove(gpp->val.tmp_audfile);
       }
       gpp->val.tmp_audfile[0] = '\0';
     }

@@ -548,7 +548,7 @@ GVA_create_libmpeg3_toc(int argc, char *argv[]
       rewind = 0;
     }
 
-    output = fopen(dst, "wb");
+    output = g_fopen(dst, "wb");
     if(output==NULL)
     {
       printf("** ERROR can not write toc-file: %s", dst);

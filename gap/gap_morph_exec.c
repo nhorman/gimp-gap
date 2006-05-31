@@ -30,7 +30,6 @@
 #include "config.h"
 
 /* SYTEM (UNIX) includes */
-#include "stdio.h"
 #include "math.h"
 #include <stdlib.h>
 #include <string.h>
@@ -39,6 +38,8 @@
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
+
+#include <glib/gstdio.h>
 
 /* GIMP includes */
 #include "gtk/gtk.h"
@@ -206,7 +207,7 @@ gap_moprh_exec_save_workpointfile(const char *filename
 
   if(filename == NULL) return -1;
 
-  l_fp = fopen(filename, "w+");
+  l_fp = g_fopen(filename, "w+");
   if(l_fp != NULL)
   {
     src_layer_width  = gimp_drawable_width(mgup->mgpp->osrc_layer_id);
@@ -335,7 +336,7 @@ p_load_workpointfile(const char *filename
 
   *use_gravity = FALSE;
   *use_quality_wp_selection = FALSE;
-  l_fp = fopen(filename, "r");
+  l_fp = g_fopen(filename, "r");
   if(l_fp != NULL)
   {
     gint l_len;

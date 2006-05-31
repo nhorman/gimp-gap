@@ -236,7 +236,7 @@ p_wav_open_seek_data_private(const char *filename, unsigned char *audata)
     return(NULL);  /* too short for WAVE file */
   }
 
-  fp = fopen(filename, "rb");
+  fp = g_fopen(filename, "rb");
   if(fp == NULL)
   {
     if(gap_debug)
@@ -433,7 +433,7 @@ gap_audio_wav_16bit_save(const char *wavfile
   else              { l_bytes_per_sample = 4; channels = 2; }  /* stereo */
 
 
-  fp = fopen(wavfile, "wb");
+  fp = g_fopen(wavfile, "wb");
   if (fp)
   {
     /* write the header */
@@ -515,7 +515,7 @@ p_check_for_valid_playlist(const char *audfile, long *sample_rate, long *channel
   }
 
   ii = 0;
-  l_fp = fopen(audfile, "r");
+  l_fp = g_fopen(audfile, "r");
   if(l_fp)
   {
     while(NULL != fgets(l_buf, sizeof(l_buf)-1, l_fp))

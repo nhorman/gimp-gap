@@ -86,12 +86,13 @@
 
 #include "config.h"
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <errno.h>
+
+#include <glib/gstdio.h>
 
 /* GIMP includes */
 #include "gtk/gtk.h"
@@ -1918,7 +1919,7 @@ p_check_vindex_file(const char *vindex_file)
 	 * when the whole video was scanned and the index
 	 * should be written to file.
 	 */
-	fp = fopen(vindex_file, "wb");
+	fp = g_fopen(vindex_file, "wb");
 	if(fp)
 	{
           fclose(fp);  /* OK, empty file written */

@@ -27,6 +27,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+
+#include <glib/gstdio.h>
+
 #include "gap_vex_exec.h"
 #include "gap_vex_dialog.h"
 #include "gap_audio_wav.h"
@@ -96,7 +99,7 @@ p_extract_audio(GapVexMainGlobalParams *gpp,  t_GVA_Handle   *gvahand, gdouble s
   fp_wav = NULL;
   if(wav_save) 
   {
-    fp_wav = fopen(gpp->val.audiofile, "wb");
+    fp_wav = g_fopen(gpp->val.audiofile, "wb");
   }
   
   if((fp_wav) || (!wav_save))
@@ -378,7 +381,7 @@ gap_vex_exe_extract_videorange(GapVexMainGlobalParams *gpp)
                          ,l_dummyname
                          );
       gap_image_delete_immediate(l_dummy_image_id);
-      remove(l_dummyname);                       
+      g_remove(l_dummyname);                       
       g_free(l_dummyname);       
       l_save_run_mode = GIMP_RUN_WITH_LAST_VALS;     /* for all further calls */
     }

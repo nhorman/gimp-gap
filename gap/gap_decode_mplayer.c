@@ -157,13 +157,14 @@
 
 
 /* SYTEM (UNIX) includes */
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
 #include <signal.h>
 #include <sys/stat.h>
 #include <unistd.h>
+
+#include <glib/gstdio.h>
 
 /* GIMP includes */
 #include "gtk/gtk.h"
@@ -999,7 +1000,7 @@ p_rename_frames(GapMPlayerParams *gpp, gint32 frame_from, gint32 frame_to, char 
         }
         else
         {
-           remove(l_dst_frame);
+           g_remove(l_dst_frame);
            if(g_file_test(l_dst_frame, G_FILE_TEST_EXISTS))
            {
              global_errlist = g_strdup_printf(
@@ -1011,7 +1012,7 @@ p_rename_frames(GapMPlayerParams *gpp, gint32 frame_from, gint32 frame_to, char 
 
         if (l_use_mv)
         {
-           rename(l_src_frame, l_dst_frame);
+           g_rename(l_src_frame, l_dst_frame);
         }
 
         if(!g_file_test(l_dst_frame, G_FILE_TEST_EXISTS))
@@ -1020,7 +1021,7 @@ p_rename_frames(GapMPlayerParams *gpp, gint32 frame_from, gint32 frame_to, char 
            if(g_file_test(l_dst_frame, G_FILE_TEST_EXISTS))
            {
               l_use_mv = FALSE; /* if destination is on another device use copy-remove strategy */
-              remove(l_src_frame);
+              g_remove(l_src_frame);
            }
            else
            {
@@ -1359,10 +1360,10 @@ p_start_mplayer_process(GapMPlayerParams *gpp)
      l_mplayer_pidfile = gimp_temp_name(".mplayer_pidfile.txt");
 
      /* asynchron start */
-     remove(l_mplayer_pidfile);
+     g_remove(l_mplayer_pidfile);
 
      /* generate a shellscript */
-     l_fp = fopen(l_mplayer_startscript, "w+");
+     l_fp = g_fopen(l_mplayer_startscript, "w+");
      if (l_fp != NULL)
      {
 	 fprintf(l_fp, "#!/bin/sh\n");
@@ -1393,7 +1394,7 @@ p_start_mplayer_process(GapMPlayerParams *gpp)
      /* START the generated shellscrit */
      l_rc = system(l_mplayer_startscript);
 
-     l_fp = fopen(l_mplayer_pidfile, "r");
+     l_fp = g_fopen(l_mplayer_pidfile, "r");
      if (l_fp != NULL)
      {
 	fscanf(l_fp, "%d", &l_rc);
@@ -1401,8 +1402,8 @@ p_start_mplayer_process(GapMPlayerParams *gpp)
 	l_mplayer_pid = (pid_t)l_rc;
      }
 
-     remove(l_mplayer_startscript);
-     remove(l_mplayer_pidfile);
+     g_remove(l_mplayer_startscript);
+     g_remove(l_mplayer_pidfile);
      g_free(l_mplayer_startscript);
      g_free(l_mplayer_pidfile);
 

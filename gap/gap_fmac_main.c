@@ -35,10 +35,11 @@
  */
 
 /* SYTEM (UNIX) includes */
-#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <errno.h>
+
+#include <glib/gstdio.h>
 
 /* GIMP includes */
 #include "gtk/gtk.h"
@@ -335,7 +336,7 @@ p_chk_filtermacro_file(const char *filtermacro_file)
 
   l_buf[0] = '\0';
   l_rc = FALSE;
-  l_fp = fopen(filtermacro_file, "r");
+  l_fp = g_fopen(filtermacro_file, "r");
   if (l_fp)
   {
     /* file exists, check for header */
@@ -450,7 +451,7 @@ p_fmac_add_filter_to_file(const char *filtermacro_file, const char *plugin_name)
   if(gap_lib_file_exists(filtermacro_file) == 0 )
   {
     /*  file does not exist, or is empty */
-    fp = fopen(filtermacro_file, "w");
+    fp = g_fopen(filtermacro_file, "w");
     if(fp)
     {
       fprintf(fp, "# FILTERMACRO FILE (GIMP-GAP-1.3)\n");
@@ -463,7 +464,7 @@ p_fmac_add_filter_to_file(const char *filtermacro_file, const char *plugin_name)
   }
   else
   {
-    fp = fopen(filtermacro_file, "a");
+    fp = g_fopen(filtermacro_file, "a");
   }
 
   if (fp)
@@ -1081,7 +1082,7 @@ p_delete_callback (GtkWidget *widget, fmac_globalparams_t *gpp)
 	 * without the line that corresponds to gpp->selected_number
 	 */
         txf_ptr_root = gap_vin_load_textfile(gpp->filtermacro_file);
-	fp = fopen(gpp->filtermacro_file, "w");
+	fp = g_fopen(gpp->filtermacro_file, "w");
 	if(fp)
 	{
 	  count_elem = 0;
@@ -1131,7 +1132,7 @@ p_delete_all_callback (GtkWidget *widget, fmac_globalparams_t *gpp)
   {
     if(p_chk_filtermacro_file(gpp->filtermacro_file))
     {
-      remove(gpp->filtermacro_file);
+      g_remove(gpp->filtermacro_file);
     }
     p_tree_fill (gpp);
   }

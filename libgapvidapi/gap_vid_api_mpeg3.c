@@ -804,7 +804,7 @@ p_wrapper_mpeg3_count_frames(t_GVA_Handle *gvahand)
       FILE *fp;
       gint l_errno;
       
-      fp = fopen(vindex->tocfile, "wb");
+      fp = g_fopen(vindex->tocfile, "wb");
       if(fp)
       {
 	int argc;
@@ -842,7 +842,7 @@ p_wrapper_mpeg3_count_frames(t_GVA_Handle *gvahand)
       /* delete uncomplete TOC file
        * (dont know if libmpeg3 can use unfinished TOC files)
        */
-      remove(vindex->tocfile);
+      g_remove(vindex->tocfile);
     }
     else
     {
@@ -1409,7 +1409,7 @@ p_check_libmpeg3_toc_file(const char *filename)
   gboolean l_rc;
  
   l_rc = FALSE;
-  fp = fopen(filename, "rb");
+  fp = g_fopen(filename, "rb");
   if(fp)
   {
     char buff[5];

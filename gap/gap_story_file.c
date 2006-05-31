@@ -40,11 +40,13 @@
 
 #include "config.h"
 
-#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 
+
+#include <glib/gstdio.h>
 #include <gtk/gtk.h>
+
 #include <libgimp/gimp.h>
 
 #include "gap_story_syntax.h"
@@ -2750,7 +2752,7 @@ gap_story_save(GapStoryBoard *stb, const char *filename)
   GapStoryElem *stb_elem;
       
   
-  fp = fopen(filename, "w");
+  fp = g_fopen(filename, "w");
   if(fp)
   {
     GapStbSyntaxParnames l_parnam_tab;

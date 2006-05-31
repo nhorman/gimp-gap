@@ -66,13 +66,14 @@
  */
  
 /* SYTEM (UNIX) includes */ 
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
 #include <signal.h>
 #include <sys/stat.h>
 #include <unistd.h>
+
+#include <glib/gstdio.h>
 
 /* GIMP includes */
 #include "gtk/gtk.h"
@@ -604,7 +605,7 @@ gap_lib_rename_frames(gint32 frame_from, gint32 frame_to, char *basename, char *
 	}
 	else
 	{
-	   remove(l_dst_frame);
+	   g_remove(l_dst_frame);
 	   if (gap_lib_file_exists(l_dst_frame))
            {
 	     global_errlist = g_strdup_printf(
@@ -616,7 +617,7 @@ gap_lib_rename_frames(gint32 frame_from, gint32 frame_to, char *basename, char *
 
         if (l_use_mv)
 	{	
-           rename(l_src_frame, l_dst_frame);
+           g_rename(l_src_frame, l_dst_frame);
 	}
 	
 	if (!gap_lib_file_exists(l_dst_frame)) 
@@ -625,7 +626,7 @@ gap_lib_rename_frames(gint32 frame_from, gint32 frame_to, char *basename, char *
 	   if (gap_lib_file_exists(l_dst_frame))
 	   {
               l_use_mv = FALSE; /* if destination is on another device use copy-remove strategy */
-	      remove(l_src_frame);
+	      g_remove(l_src_frame);
 	   }
 	   else
 	   {
@@ -668,7 +669,7 @@ gap_lib_delete_frames(gint32 max_tries, gint32 frame_from, gint32 frame_to, char
 	 */
         p_build_xanim_framename(l_framename, sizeof(l_framename), global_delete_number, ext);
 	if(gap_debug) printf("delete frame: %s\n", l_framename);
-	remove(l_framename);
+	g_remove(l_framename);
 
 	global_delete_number = l_next_number;
      }
@@ -736,7 +737,7 @@ p_check_xanim()
   FILE *l_fp;
 
   l_xanim_help_output = gimp_temp_name(".xanim_help.stdout");
-  l_fp = fopen(l_xanim_help_output, "w+");
+  l_fp = g_fopen(l_xanim_help_output, "w+");
   if (l_fp == NULL)
   {
     global_errlist = g_strdup_printf("no write permission for tempfile %s", l_xanim_help_output);
@@ -784,7 +785,7 @@ p_check_xanim()
   l_grep_counter3 = 0;
   l_grep_counter3 += p_grep("Write video to input/frameN.EXT", l_xanim_help_output);
 
-  remove(l_xanim_help_output);
+  g_remove(l_xanim_help_output);
   g_free(l_xanim_help_output);
 
   if(l_grep_counter2 != 0)
@@ -871,9 +872,9 @@ p_start_xanim_process(gint32 first_frame, gint32 last_frame,
      l_xanim_pidfile = gimp_temp_name(".xanim_pidfile.txt");
 
      /* asynchron start */
-     remove(l_xanim_pidfile);   
+     g_remove(l_xanim_pidfile);   
      /* generate a shellscript */
-     l_fp = fopen(l_xanim_startscript, "w+");
+     l_fp = g_fopen(l_xanim_startscript, "w+");
      if (l_fp != NULL)
      {
 	 fprintf(l_fp, "#!/bin/sh\n");
@@ -898,7 +899,7 @@ p_start_xanim_process(gint32 first_frame, gint32 last_frame,
 
      l_rc = system(l_xanim_startscript);
 
-     l_fp = fopen(l_xanim_pidfile, "r");
+     l_fp = g_fopen(l_xanim_pidfile, "r");
      if (l_fp != NULL)
      {
 	fscanf(l_fp, "%d", &l_rc);
@@ -906,8 +907,8 @@ p_start_xanim_process(gint32 first_frame, gint32 last_frame,
 	l_xanim_pid = (pid_t)l_rc;
      }
 
-     remove(l_xanim_startscript);
-     remove(l_xanim_pidfile);
+     g_remove(l_xanim_startscript);
+     g_remove(l_xanim_pidfile);
      g_free(l_xanim_startscript);
      g_free(l_xanim_pidfile);
 
@@ -1168,7 +1169,7 @@ gap_xanim_decode(GimpRunMode run_mode)
      }
      
      gap_lib_delete_frames(99999, first_frame, last_frame, extension);
-     remove(l_one_past_last_frame);
+     g_remove(l_one_past_last_frame);
 
      gimp_progress_update (1.0);
      

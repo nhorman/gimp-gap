@@ -42,7 +42,6 @@
 #include "config.h"
 
 /* SYSTEM (UNIX) includes */
-#include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
@@ -52,6 +51,8 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <errno.h>
+
+#include <glib/gstdio.h>
 
 #ifdef G_OS_WIN32
 #include <io.h>
@@ -450,7 +451,7 @@ gap_thumb_file_delete_thumbnail(char *filename)
         if(gap_lib_file_exists(png_thumb_full) == 1)
         {
           if (gap_debug) printf ("gap_thumb_file_delete_thumbnail: png_thumb_full: %s\n", png_thumb_full);
-          remove(png_thumb_full);
+          g_remove(png_thumb_full);
         }
         g_free(png_thumb_full);
       }

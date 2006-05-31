@@ -48,7 +48,6 @@
 #include "config.h"
 
 /* SYTEM (UNIX) includes */
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
@@ -56,6 +55,8 @@
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
+
+#include <glib/gstdio.h>
 
 /* GIMP includes */
 #include "gtk/gtk.h"
@@ -1415,7 +1416,7 @@ gap_mov_exec_gap_save_pointfile(char *filename, GapMovValues *pvals)
 
   if(filename == NULL) return -1;
 
-  l_fp = fopen(filename, "w+");
+  l_fp = g_fopen(filename, "w+");
   if(l_fp != NULL)
   {
     fprintf(l_fp, "# GAP file contains saved Move Path Point Table\n");
@@ -1522,7 +1523,7 @@ gap_mov_exec_gap_load_pointfile(char *filename, GapMovValues *pvals)
   l_rc = -1;
   if(filename == NULL) return(l_rc);
 
-  l_fp = fopen(filename, "r");
+  l_fp = g_fopen(filename, "r");
   if(l_fp != NULL)
   {
     l_idx = -1;

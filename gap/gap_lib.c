@@ -827,7 +827,7 @@ gap_lib_file_copy(char *fname, char *fname_copy)
   }
 
   /* load File into Buffer */
-  l_fp = fopen(fname, "rb");		    /* open read */
+  l_fp = g_fopen(fname, "rb");		    /* open read */
   if(l_fp == NULL)
   {
     fprintf (stderr, "open(read) error on '%s'\n", fname);
@@ -837,7 +837,7 @@ gap_lib_file_copy(char *fname, char *fname_copy)
   fread(l_buffer, 1, (size_t)l_len, l_fp);
   fclose(l_fp);
 
-  l_fp = fopen(fname_copy, "wb");		    /* open write */
+  l_fp = g_fopen(fname_copy, "wb");		    /* open write */
   if(l_fp == NULL)
   {
     fprintf (stderr, "file_copy: open(write) error on '%s' \n", fname_copy);
@@ -870,7 +870,7 @@ gap_lib_delete_frame(GapAnimInfo *ainfo_ptr, long nr)
    if(l_fname == NULL) { return(1); }
 
    if(gap_debug) printf("\nDEBUG gap_lib_delete_frame: %s\n", l_fname);
-   l_rc = remove(l_fname);
+   l_rc = g_remove(l_fname);
 
    gap_thumb_file_delete_thumbnail(l_fname);
 
@@ -899,7 +899,7 @@ gap_lib_rename_frame(GapAnimInfo *ainfo_ptr, long from_nr, long to_nr)
 
 
    if(gap_debug) printf("\nDEBUG gap_lib_rename_frame: %s ..to.. %s\n", l_from_fname, l_to_fname);
-   l_rc = rename(l_from_fname, l_to_fname);
+   l_rc = g_rename(l_from_fname, l_to_fname);
 
    gap_thumb_file_rename_thumbnail(l_from_fname, l_to_fname);
 
@@ -2200,7 +2200,7 @@ gap_lib_save_named_frame(gint32 image_id, char *sav_name)
 
   if(l_rc < 0)
   {
-     remove(l_tmpname);
+     g_remove(l_tmpname);
      g_free(l_tmpname);  /* free temporary name */
      return l_rc;
   }
@@ -2208,8 +2208,8 @@ gap_lib_save_named_frame(gint32 image_id, char *sav_name)
   if(l_gzip == 0)
   {
      /* remove sav_name, then rename tmpname ==> sav_name */
-     remove(sav_name);
-     if (0 != rename(l_tmpname, sav_name))
+     g_remove(sav_name);
+     if (0 != g_rename(l_tmpname, sav_name))
      {
         /* if tempname is located on another filesystem (errno == EXDEV)
          * rename will not work.
@@ -2218,7 +2218,7 @@ gap_lib_save_named_frame(gint32 image_id, char *sav_name)
          if(gap_debug) printf("DEBUG: gap_lib_save_named_frame: RENAME 2nd try\n");
          if(0 == gap_lib_file_copy(l_tmpname, sav_name))
 	 {
-	    remove(l_tmpname);
+	    g_remove(l_tmpname);
 	 }
          else
          {
@@ -2236,7 +2236,7 @@ gap_lib_save_named_frame(gint32 image_id, char *sav_name)
        /* OK zip created compressed file named sav_name
         * now delete the uncompressed l_tempname
         */
-       remove(l_tmpname);
+       g_remove(l_tmpname);
     }
   }
 
@@ -2325,7 +2325,7 @@ gap_lib_load_image (char *lod_name)
 
   if(l_tmpname != lod_name)
   {
-    remove(l_tmpname);
+    g_remove(l_tmpname);
     g_free(l_tmpname);  /* free if it was a temporary name */
   }
 
@@ -2613,7 +2613,7 @@ p_clear_or_count_video_paste(gint delete_flag)
              if(delete_flag)
              {
                 if(gap_debug) printf("gap_vid_edit_clear: remove file %s\n", l_filename);
-                remove(l_filename);
+                g_remove(l_filename);
 
                 /* also delete thumbnail */
                 gap_thumb_file_delete_thumbnail(l_filename);
@@ -2728,7 +2728,7 @@ p_custom_palette_file(char *filename, guchar *rgb, gint count)
 {
   FILE *l_fp;
 
-  l_fp= fopen(filename, "w");
+  l_fp= g_fopen(filename, "w");
   if (l_fp == NULL)
   {
     return -1;

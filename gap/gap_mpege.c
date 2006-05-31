@@ -50,10 +50,11 @@
  */
 
 /* SYTEM (UNIX) includes */
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
+
+#include <glib/gstdio.h>
 
 /* GIMP includes */
 #include "gtk/gtk.h"
@@ -591,7 +592,7 @@ int p_mpeg2encode_gen_parfile(GapAnimInfo *ainfo_ptr, t_mpg_par *mp_ptr)
   char  *l_basename_ptr;
   char   l_basename_buff[1024];
 
-  l_fp = fopen(mp_ptr->parfile, "w");
+  l_fp = g_fopen(mp_ptr->parfile, "w");
   if(l_fp == NULL)
   {
      fprintf(stderr, "cant open MPEG Paramfile %s for write\n", mp_ptr->parfile);
@@ -707,7 +708,7 @@ int p_mpeg2encode_gen_parfile(GapAnimInfo *ainfo_ptr, t_mpg_par *mp_ptr)
 
   /* generate a startscript */
 
-  l_fp = fopen(mp_ptr->startscript, "w");
+  l_fp = g_fopen(mp_ptr->startscript, "w");
   if(l_fp == NULL)
   {
      fprintf(stderr, "cant open Startscript %s for write\n", mp_ptr->startscript);
@@ -740,7 +741,7 @@ int p_mpeg_encode_gen_parfile(GapAnimInfo *ainfo_ptr, t_mpg_par *mp_ptr)
   char   l_basename_buff[1024];
   char  *l_base_file_format;
 
-  l_fp = fopen(mp_ptr->parfile, "w");
+  l_fp = g_fopen(mp_ptr->parfile, "w");
   if(l_fp == NULL)
   {
      fprintf(stderr, "cant open MPEG Paramfile %s for write\n", mp_ptr->parfile);
@@ -960,7 +961,7 @@ int p_mpeg_encode_gen_parfile(GapAnimInfo *ainfo_ptr, t_mpg_par *mp_ptr)
 
   /* generate a startscript */
 
-  l_fp = fopen(mp_ptr->startscript, "w");
+  l_fp = g_fopen(mp_ptr->startscript, "w");
   if(l_fp == NULL)
   {
      fprintf(stderr, "cant open Startscript %s for write\n", mp_ptr->startscript);

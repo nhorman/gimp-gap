@@ -49,9 +49,10 @@
 
 #include "config.h"
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include <glib/gstdio.h>
 
 #include <gtk/gtk.h>
 
@@ -388,7 +389,7 @@ p_load_curve(gchar *filename, wr_curves_val_t *cuvals)
 {
   FILE  *fp;
 
-  fp = fopen (filename, "rt");
+  fp = g_fopen (filename, "rt");
 
   if (!fp)
   {

@@ -270,7 +270,7 @@ GVA_load_videoindex(const char *filename, gint32 track, const char *decoder_name
       {
         printf("GVA_load_videoindex  videoindex_filename:%s\n", vindex->videoindex_filename);
       }
-      fp = fopen(vindex->videoindex_filename, "rb");
+      fp = g_fopen(vindex->videoindex_filename, "rb");
       if(fp)
       {
 	gint32 rd_len;
@@ -370,7 +370,7 @@ GVA_load_videoindex(const char *filename, gint32 track, const char *decoder_name
 	{
 	  /* delete OLD videoindex
 	   * (that has become unusable because mtime does not match with videofile) */
-	  remove(vindex->videoindex_filename);
+	  g_remove(vindex->videoindex_filename);
 	}
       }
       else
@@ -460,7 +460,7 @@ GVA_save_videoindex(t_GVA_Videoindex *vindex, const char *filename, const char *
   vindex->videoindex_filename = p_build_videoindex_filename(filename, vindex->track, decoder_name);
   if(vindex->videoindex_filename)
   {
-    fp = fopen(vindex->videoindex_filename, "wb");
+    fp = g_fopen(vindex->videoindex_filename, "wb");
     if(fp)
     {
       /* write HEAEDR */
