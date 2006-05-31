@@ -1,3 +1,8 @@
+2006-05-31  Sven Neumann  <sven@gimp.org>
+
+	* configure.in
+	* README: added check for glib >= 2.8.0.
+
 2006-05-30  Wolfgang Hofer <hof@gimp.org>
 	- use glib file utility wrappers for posix functions
           (fopen, chmod, mkdir, rename, remove)

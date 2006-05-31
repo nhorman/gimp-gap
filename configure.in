@@ -60,6 +60,9 @@ AC_SUBST(GIMP_DATA_DIR)
 AC_SUBST(GIMP_PLUGIN_DIR)
 
 
+PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.8.0)
+
+
 AC_MSG_CHECKING([for target architecture])
 case x"$target" in
   xNONE | x)

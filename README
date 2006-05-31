@@ -15,7 +15,8 @@ Requires:
            gimp-2.2.11) Those features depend on the tested PDB interface
            versions and may fail if newer version are used.
 
- 
+ - glib 2.8 or higher.
+
  - For full video encoding and decoding support
    check also the requirements for ffmpeg and libmpeg3.
    
