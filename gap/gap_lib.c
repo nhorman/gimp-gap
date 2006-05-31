@@ -123,15 +123,16 @@
 #endif
 
 /* GAP includes */
+#include "gap_arr_dialog.h"
+#include "gap_image.h"
 #include "gap_layer_copy.h"
 #include "gap_lib.h"
-#include "gap_pdb_calls.h"
-#include "gap_arr_dialog.h"
 #include "gap_lock.h"
 #include "gap_navi_activtable.h"
+#include "gap_onion_base.h"
+#include "gap_pdb_calls.h"
 #include "gap_thumbnail.h"
 #include "gap_vin.h"
-#include "gap_onion_base.h"
 
 
 extern      int gap_debug; /* ==0  ... dont print debug infos */

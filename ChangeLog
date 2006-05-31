@@ -1,5 +1,9 @@
 2006-05-31  Sven Neumann  <sven@gimp.org>
 
+	* gap/gap_lib.c: include "gap_image.h" for gap_image_is_alive().
+
+2006-05-31  Sven Neumann  <sven@gimp.org>
+
 	* configure.in
 	* README: added check for glib >= 2.8.0.
 
