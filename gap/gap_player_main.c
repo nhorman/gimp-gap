@@ -117,6 +117,7 @@ static GapPlayerMainGlobalParams global_params =
 , NULL        /*  GtkWidget *frame_with_name */
 , NULL        /*  GtkObject *from_spinbutton_adj */
 , NULL        /*  GtkObject *to_spinbutton_adj */
+, NULL        /*  GtkWidget *framenr_scale */
 , NULL        /*  GtkObject *framenr_spinbutton_adj */
 , NULL        /*  GtkObject *speed_spinbutton_adj */
 , NULL        /*  GtkObject *size_spinbutton_adj */

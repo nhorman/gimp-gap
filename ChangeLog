@@ -1,3 +1,12 @@
+2006-05-31  Wolfgang Hofer <hof@gimp.org>
+	- bugfix: player framenr position hscale sometimes showed
+          a non actual framenumber value different from the framnr spinbutton
+          (both using the same adjstment).
+          
+	* gap/gap_player_dialog.c
+	* gap/gap_player_main.c 
+	* gap/gap_player_main.h
+        
 2006-05-31  Sven Neumann  <sven@gimp.org>
 
 	* gap/gap_lib.c: include "gap_image.h" for gap_image_is_alive().

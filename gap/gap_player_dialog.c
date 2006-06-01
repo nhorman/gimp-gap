@@ -3812,6 +3812,11 @@ on_framenr_spinbutton_changed          (GtkEditable     *editable,
   }
   framenr = (gint32)GTK_ADJUSTMENT(gpp->framenr_spinbutton_adj)->value;
 
+  /* force redraw of the framenr_scale widget
+   * that refers to the framenr_spinbutton_adj adjustment
+   */
+  gtk_widget_queue_draw(gpp->framenr_scale);
+
   if(gpp->play_current_framenr != framenr)
   {
     /* force adjustment to the integer value */
@@ -5410,7 +5415,7 @@ p_create_player_window (GapPlayerMainGlobalParams *gpp)
 //  gtk_box_pack_start (GTK_BOX (vbox1), hseparator, FALSE, FALSE, 2);
 
   framenr_scale = gtk_hscale_new (GTK_ADJUSTMENT (framenr_spinbutton_adj));
-
+  gpp->framenr_scale = framenr_scale;
   gtk_scale_set_digits (GTK_SCALE (framenr_scale), 0 /* digits */);
 
   /* gtk_scale_set_draw_value (GTK_SCALE (framenr_scale), FALSE); */

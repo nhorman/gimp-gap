@@ -129,6 +129,7 @@ typedef struct GapPlayerMainGlobalParams {
   GtkWidget *frame_with_name;  
   GtkObject *from_spinbutton_adj;
   GtkObject *to_spinbutton_adj;
+  GtkWidget *framenr_scale;  
   GtkObject *framenr_spinbutton_adj;
   GtkObject *speed_spinbutton_adj;
   GtkObject *size_spinbutton_adj;
