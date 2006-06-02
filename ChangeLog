@@ -1,3 +1,7 @@
+2006-06-02  Alexander Shopov  <ash@contact.bg>
+
+	* configure.in (ALL_LINGUAS): Added "bg" (Bulgarian)
+
 2006-05-31  Wolfgang Hofer <hof@gimp.org>
 	- bugfix: player framenr position hscale sometimes showed
           a non actual framenumber value different from the framnr spinbutton
