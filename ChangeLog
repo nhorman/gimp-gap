@@ -1,10 +1,15 @@
+2006-06-06  Sven Neumann  <sven@gimp.org>
+
+	* configure.in: applied patch from Michael Schumacher to finally
+	fix linking problems with MinGW (bug #324854).
+
 2006-06-02  Alexander Shopov  <ash@contact.bg>
 
 	* configure.in (ALL_LINGUAS): Added "bg" (Bulgarian)
 
 2006-05-31  Wolfgang Hofer <hof@gimp.org>
-	- bugfix: player framenr position hscale sometimes showed
-          a non actual framenumber value different from the framnr spinbutton
+	- bugfix: player framenr position hscale sometimes showed a non
+	  actual framenumber value different from the framenr spinbutton
           (both using the same adjstment).
           
 	* gap/gap_player_dialog.c

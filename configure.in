@@ -221,8 +221,8 @@ AC_ARG_ENABLE(libavformat,
       dnl Note: on minGW ffmpeg static libraries have suffix .lib (and not .a)
       dnl  
       build_ffmpeg_libs_yesno="yes"
-      FFMPEG_LIBAVFORMAT_A="$FFMPEG_DIR/${LIBPREF}avformat/libavformat${LIBSUF}"
-      FFMPEG_LIBAVCODEC_A="$FFMPEG_DIR/${LIBPREF}avcodec/libavcodec${LIBSUF}"
+      FFMPEG_LIBAVFORMAT_A="$FFMPEG_DIR/libavformat/${LIBPREF}avformat${LIBSUF}"
+      FFMPEG_LIBAVCODEC_A="$FFMPEG_DIR/libavcodec/${LIBPREF}avcodec${LIBSUF}"
 
       GAP_VLIBS_FFMPEG=" $FFMPEG_LIBAVFORMAT_A $FFMPEG_LIBAVCODEC_A "
       GAP_VINCS_FFMPEG=" -I$FFMPEG_DIR/libavcodec -I$FFMPEG_DIR/libavformat -I$FFMPEG_DIR/libavutil "
