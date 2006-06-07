@@ -81,14 +81,14 @@
 
 #include "config.h"
 
-#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <unistd.h>
 
-#include <gtk/gtk.h>
+#include <glib/gstdio.h>
+
 #include <libgimp/gimp.h>
 #include <libgimp/gimpui.h>
 
@@ -678,7 +678,7 @@ p_audio_filename_changed(GapPlayerMainGlobalParams *gpp)
   gpp->audio_status = MIN(gpp->audio_status, GAP_PLAYER_MAIN_AUSTAT_SERVER_STARTED);
 
   /* Open the file for reading: */
-  if ( (fd = open(gpp->audio_filename,O_RDONLY)) < 0 )
+  if ( (fd = g_open(gpp->audio_filename,O_RDONLY)) < 0 )
   {
      p_print_and_clear_audiolabels(gpp);
      return;
