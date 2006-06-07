@@ -1,5 +1,10 @@
 2006-06-07  Sven Neumann  <sven@gimp.org>
 
+	* vid_enc_avi/avilib.c (AVI_open_input_file): added missing
+	parameter to g_open(). Spotted by Michael Schumacher.
+
+2006-06-07  Sven Neumann  <sven@gimp.org>
+
 	* gap/gap_player_dialog.c: use g_open().
 
 	* vid_enc_avi/avilib.c: use g_open(); define flags used with open()

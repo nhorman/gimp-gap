@@ -1099,7 +1099,7 @@ avi_t *AVI_open_input_file(char *filename, int getIndex)
 
   /* Open the file */
 
-  AVI->fdes = g_open(filename,O_RDONLY);
+  AVI->fdes = g_open(filename, O_RDONLY, 0);
   if(AVI->fdes < 0)
     {
       AVI_errno = AVI_ERR_OPEN;
