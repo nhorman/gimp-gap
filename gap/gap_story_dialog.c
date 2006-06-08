@@ -6864,8 +6864,8 @@ p_check_and_convert_uri_to_stb_elem(const char *uri, GapStoryElem *prev_elem)
   }
   else
   {
-    if (strcmp (hostname, this_hostname) == 0)
-    ||  (strcmp (hostname, "localhost") == 0))
+    if ((strcmp (hostname, this_hostname) == 0)
+        || (strcmp (hostname, "localhost") == 0))
     {
       is_localfile = TRUE;
     }
