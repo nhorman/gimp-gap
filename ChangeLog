@@ -1,3 +1,9 @@
+2006-06-07  Wolfgang Hofer <hof@gimp.org>
+	bugfix: no more check for int result of the already
+        removed gethostname call. 
+
+        * gap/gap_story_dialog.c
+        
 2006-06-07  Sven Neumann  <sven@gimp.org>
 
 	* vid_enc_avi/avilib.c (AVI_open_input_file): added missing

@@ -6831,7 +6831,6 @@ p_check_and_convert_uri_to_stb_elem(const char *uri, GapStoryElem *prev_elem)
   gchar *filename;
   gchar *hostname;
   const gchar *this_hostname;
-  int res;
   gboolean is_localfile;
   GError *error = NULL;
 
@@ -6865,7 +6864,7 @@ p_check_and_convert_uri_to_stb_elem(const char *uri, GapStoryElem *prev_elem)
   }
   else
   {
-    if ((res == 0 && strcmp (hostname, this_hostname) == 0)
+    if (strcmp (hostname, this_hostname) == 0)
     ||  (strcmp (hostname, "localhost") == 0))
     {
       is_localfile = TRUE;
