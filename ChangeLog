@@ -1,5 +1,9 @@
 2006-06-09  Sven Neumann  <sven@gimp.org>
 
+	* Made 2.2.1 release.
+
+2006-06-09  Sven Neumann  <sven@gimp.org>
+
 	* configure.in: builds fine with gimp 2.3.9.
 
 2006-06-07  Wolfgang Hofer <hof@gimp.org>
