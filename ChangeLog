@@ -1,3 +1,7 @@
+2006-06-09  Sven Neumann  <sven@gimp.org>
+
+	* configure.in: builds fine with gimp 2.3.9.
+
 2006-06-07  Wolfgang Hofer <hof@gimp.org>
 	bugfix: no more check for int result of the already
         removed gethostname call. 
