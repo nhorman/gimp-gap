@@ -2,15 +2,15 @@
 # Copyright (C) 1999-2003 Free Software Foundation, Inc.
 # Sven Neumann <sven@gimp.org>, 2004.
 # Hendrik Brandt <heb@gnome-de.org>, 2004.
-# Hendrik Richter <hendi@gnome-de.org>, 2005. 
+# Hendrik Richter <hendrikr@gnome.org>, 2005. 
 # 
 msgid ""
 msgstr ""
 "Project-Id-Version: gimp-gap HEAD\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-04-07 16:42+0200\n"
-"PO-Revision-Date: 2005-07-24 14:12+0200\n"
-"Last-Translator: Hendrik Richter <hendi@gnome-de.org>\n"
+"PO-Revision-Date: 2006-06-15 16:27+0200\n"
+"Last-Translator: Hendrik Richter <hendrikr@gnome.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -124,7 +124,7 @@ msgstr "Fehler: Konnte Frame %ld nicht in %ld umbenennen."
 #: gap/gap_base_ops.c:211
 #, fuzzy
 msgid "Density duplicating frames..."
-msgstr "Dupliziere Frames..."
+msgstr "Dupliziere Frames …"
 
 #: gap/gap_base_ops.c:366 gap/gap_base_ops.c:540
 #, c-format
@@ -140,13 +140,13 @@ msgstr "Fehler: Einzelbild %ld konnte nicht in %ld umbenannt werden."
 
 #: gap/gap_base_ops.c:590
 msgid "Duplicating frames..."
-msgstr "Einzelbilder werden dupliziert..."
+msgstr "Einzelbilder werden dupliziert …"
 
 # TODO
 #: gap/gap_base_ops.c:785
 #, fuzzy
 msgid "Renumber frame sequence..."
-msgstr "Reihenfolge der Frames wird verändert..."
+msgstr "Reihenfolge der Frames wird verändert …"
 
 #: gap/gap_base_ops.c:977
 #, c-format
@@ -389,13 +389,13 @@ msgstr ""
 #: gap/gap_base_ops.c:1726 gap/gap_base_ops.c:1835
 #, fuzzy
 msgid "Renumber Frames"
-msgstr "Reihenfolge der Frames wird verändert..."
+msgstr "Reihenfolge der Frames wird verändert …"
 
 # TODO
 #: gap/gap_base_ops.c:1875
 #, fuzzy
 msgid "Renumber Frames 2nd Pass"
-msgstr "Reihenfolge der Frames wird verändert..."
+msgstr "Reihenfolge der Frames wird verändert …"
 
 #. toggle bluebox
 #: gap/gap_bluebox.c:250 gap/gap_mov_dialog.c:2693
@@ -688,7 +688,7 @@ msgstr "Hauptebene"
 
 #: gap/gap_bluebox_main.c:180
 msgid "<Image>/Video/Bluebox ..."
-msgstr "<Image>/Video/Bluebox..."
+msgstr "<Image>/Video/Bluebox …"
 
 #. the parameters button (invokes videoencoder specific GUI dialog)
 #: gap/gap_dbbrowser_utils.c:240 vid_common/gap_cme_gui.c:3434
@@ -1098,11 +1098,11 @@ msgstr ""
 
 #: gap/gap_decode_mplayer.c:1490 gap/gap_decode_xanim.c:1132
 msgid "Extracting frames..."
-msgstr "Einzelbilder werden extrahiert..."
+msgstr "Einzelbilder werden extrahiert …"
 
 #: gap/gap_decode_mplayer.c:1494
 msgid "Extracting audio..."
-msgstr "Audio wird extrahiert..."
+msgstr "Audio wird extrahiert …"
 
 #: gap/gap_decode_mplayer.c:1512
 #, fuzzy, c-format
@@ -1124,12 +1124,12 @@ msgstr ""
 
 #: gap/gap_decode_mplayer.c:1559 gap/gap_decode_xanim.c:1197
 msgid "Renaming frames..."
-msgstr "Einzelbilder werden umbenannt..."
+msgstr "Einzelbilder werden umbenannt …"
 
 #: gap/gap_decode_mplayer.c:1569 gap/gap_decode_xanim.c:1202
 #: gap/gap_range_ops.c:1303
 msgid "Converting frames..."
-msgstr "Einzelbilder werden konvertiert..."
+msgstr "Einzelbilder werden konvertiert …"
 
 #: gap/gap_decode_xanim.c:137
 #, fuzzy
@@ -1368,7 +1368,7 @@ msgstr "Animationen Filtern"
 #: gap/gap_filter_foreach.c:264
 #, fuzzy
 msgid "Applying filter to all layers..."
-msgstr "Filter wird auf alle Ebenen angewandt..."
+msgstr "Filter wird auf alle Ebenen angewandt …"
 
 # nicht so wörtlich ?
 #: gap/gap_filter_foreach.c:550
@@ -1387,12 +1387,12 @@ msgstr "Variierend anwenden"
 
 #: gap/gap_filter_main.c:126
 msgid "<Image>/Filters/Filter all Layers..."
-msgstr "<Image>/Filter/Alle Ebenen filtern..."
+msgstr "<Image>/Filter/Alle Ebenen filtern …"
 
 #: gap/gap_fmac_main.c:211
 #, fuzzy
 msgid "<Image>/Filters/Filtermacro..."
-msgstr "<Image>/Filter/Alle Ebenen filtern..."
+msgstr "<Image>/Filter/Alle Ebenen filtern …"
 
 #: gap/gap_fmac_main.c:499
 msgid "Select Filtercalls of Current GIMP Session"
@@ -1525,20 +1525,20 @@ msgstr "<Toolbox>/Xtns/Video in Frames aufteilen/MPEG1"
 #: gap/gap_frontends_main.c:172
 #, fuzzy
 msgid "<Image>/Video/Split Video to Frames/XANIM based extract..."
-msgstr "<Image>/Video/Video in Frames aufteilen/Von XANIM lesbar..."
+msgstr "<Image>/Video/Video in Frames aufteilen/Von XANIM lesbar …"
 
 #: gap/gap_frontends_main.c:185
 #, fuzzy
 msgid "<Toolbox>/Xtns/Split Video to Frames/XANIM based extract..."
-msgstr "<Toolbox>/Xtns/Video in Frames aufteilen/Von XANIM lesbar..."
+msgstr "<Toolbox>/Xtns/Video in Frames aufteilen/Von XANIM lesbar …"
 
 #: gap/gap_frontends_main.c:197
 msgid "<Image>/Video/Encode/MPEG1..."
-msgstr "<Image>/Video/Kodieren/MPEG1..."
+msgstr "<Image>/Video/Kodieren/MPEG1 …"
 
 #: gap/gap_frontends_main.c:210
 msgid "<Image>/Video/Encode/MPEG2..."
-msgstr "<Image>/Video/Kodieren/MPEG2..."
+msgstr "<Image>/Video/Kodieren/MPEG2 …"
 
 #: gap/gap_lib.c:1729
 #, fuzzy
@@ -1608,76 +1608,76 @@ msgstr "<Image>/Video/Gehe zu/Letzter Frame"
 #: gap/gap_main.c:692
 #, fuzzy
 msgid "<Image>/Video/Go To/Any Frame..."
-msgstr "<Image>/Video/Gehe zu/Beliebiger Frame..."
+msgstr "<Image>/Video/Gehe zu/Beliebiger Frame …"
 
 #: gap/gap_main.c:704
 msgid "<Image>/Video/Delete Frames..."
-msgstr "<Image>/Video/Einzelbilder löschen..."
+msgstr "<Image>/Video/Einzelbilder löschen …"
 
 #: gap/gap_main.c:716
 msgid "<Image>/Video/Duplicate Frames..."
-msgstr "<Image>/Video/Einzelbilder duplizieren..."
+msgstr "<Image>/Video/Einzelbilder duplizieren …"
 
 #: gap/gap_main.c:733
 #, fuzzy
 msgid "<Image>/Video/Frames Density..."
-msgstr "<Image>/Video/Frame-Größe verändern..."
+msgstr "<Image>/Video/Frame-Größe verändern …"
 
 #: gap/gap_main.c:745
 msgid "<Image>/Video/Exchange Frame..."
-msgstr "<Image>/Video/Einzelbilder austauschen..."
+msgstr "<Image>/Video/Einzelbilder austauschen …"
 
 #: gap/gap_main.c:757
 msgid "<Image>/Video/Move Path..."
-msgstr "<Image>/Video/Bewegungs-Pfad..."
+msgstr "<Image>/Video/Bewegungs-Pfad …"
 
 # besser ?
 #: gap/gap_main.c:837
 msgid "<Image>/Video/Frames to Image..."
-msgstr "<Image>/Video/Einzelbilder zu Bild..."
+msgstr "<Image>/Video/Einzelbilder zu Bild …"
 
 #: gap/gap_main.c:849
 msgid "<Image>/Video/Frames Flatten..."
-msgstr "<Image>/Video/Einzelbilder zusammenfügen..."
+msgstr "<Image>/Video/Einzelbilder zusammenfügen …"
 
 #: gap/gap_main.c:861
 #, fuzzy
 msgid "<Image>/Video/Frames Layer Delete..."
-msgstr "<Image>/Video/Ebene aus Frames entfernen..."
+msgstr "<Image>/Video/Ebene aus Frames entfernen …"
 
 #: gap/gap_main.c:885
 msgid "<Image>/Video/Frames Convert..."
-msgstr "<Image>/Video/Einzelbilder konvertieren..."
+msgstr "<Image>/Video/Einzelbilder konvertieren …"
 
 #: gap/gap_main.c:897
 msgid "<Image>/Video/Frames Resize..."
-msgstr "<Image>/Video/Einzelbildgröße verändern..."
+msgstr "<Image>/Video/Einzelbildgröße verändern …"
 
 #: gap/gap_main.c:909
 msgid "<Image>/Video/Frames Crop..."
-msgstr "<Image>/Video/Einzelbilder zuschneiden..."
+msgstr "<Image>/Video/Einzelbilder zuschneiden …"
 
 #: gap/gap_main.c:921
 msgid "<Image>/Video/Frames Scale..."
-msgstr "<Image>/Video/Einzelbilder skalieren..."
+msgstr "<Image>/Video/Einzelbilder skalieren …"
 
 #: gap/gap_main.c:933
 msgid "<Image>/Video/Split Image to Frames..."
-msgstr "<Image>/Video/Bild in Einzelbilder aufteilen..."
+msgstr "<Image>/Video/Bild in Einzelbilder aufteilen …"
 
 #: gap/gap_main.c:946
 #, fuzzy
 msgid "<Image>/Video/Frame Sequence Shift..."
-msgstr "<Image>/Video/Frame-Abfolge verschieben..."
+msgstr "<Image>/Video/Frame-Abfolge verschieben …"
 
 #: gap/gap_main.c:958
 #, fuzzy
 msgid "<Image>/Video/Frames Renumber..."
-msgstr "<Image>/Video/Frame-Größe verändern..."
+msgstr "<Image>/Video/Frame-Größe verändern …"
 
 #: gap/gap_main.c:970
 msgid "<Image>/Video/Frames Modify..."
-msgstr "<Image>/Video/Einzelbilder modifizieren..."
+msgstr "<Image>/Video/Einzelbilder modifizieren …"
 
 #: gap/gap_mod_layer.c:130
 #, c-format
@@ -1704,7 +1704,7 @@ msgstr ""
 #: gap/gap_mod_layer.c:1009
 #, fuzzy
 msgid "Modifying frames/layer(s)..."
-msgstr "Modifiziere Frames/Ebene(n)..."
+msgstr "Modifiziere Frames/Ebene(n) …"
 
 #: gap/gap_mod_layer.c:1100
 #, fuzzy
@@ -1966,7 +1966,7 @@ msgstr "Filter auf Ebene(n) anwenden"
 #: gap/gap_mod_layer_dialog.c:727
 #, fuzzy
 msgid "apply filter to all selected layers"
-msgstr "Filter wird auf alle Ebenen angewandt..."
+msgstr "Filter wird auf alle Ebenen angewandt …"
 
 #: gap/gap_mod_layer_dialog.c:732
 #, fuzzy
@@ -2550,7 +2550,7 @@ msgstr ""
 #: gap/gap_morph_main.c:146
 #, fuzzy
 msgid "<Image>/Video/Morph..."
-msgstr "<Image>/Video/Bewegungs-Pfad..."
+msgstr "<Image>/Video/Bewegungs-Pfad …"
 
 # TODO context ?
 #: gap/gap_mov_dialog.c:605
@@ -3657,12 +3657,12 @@ msgstr ""
 #: gap/gap_mov_exec.c:697
 #, fuzzy
 msgid "Copying layers into frames..."
-msgstr "Kopiere Ebenen in Frames..."
+msgstr "Kopiere Ebenen in Frames …"
 
 #: gap/gap_mov_exec.c:701
 #, fuzzy
 msgid "Generating animated preview..."
-msgstr "Erstelle animierte Vorschau..."
+msgstr "Erstelle animierte Vorschau …"
 
 #: gap/gap_mov_exec.c:1858
 #, c-format
@@ -4019,7 +4019,7 @@ msgstr ""
 #: gap/gap_name2layer_main.c:169
 #, fuzzy
 msgid "<Image>/Video/Filename to Layer..."
-msgstr "<Image>/Video/Frames zu Bild..."
+msgstr "<Image>/Video/Frames zu Bild …"
 
 #: gap/gap_name2layer_main.c:444
 msgid "Modes to choose entire filename or just parts of the filename"
@@ -4139,7 +4139,7 @@ msgstr "Gehe zum letzten Frame"
 
 #: gap/gap_navigator_dialog.c:538
 msgid "<Image>/Video/VCR Navigator..."
-msgstr "<Image>/Video/VCR-Navigator..."
+msgstr "<Image>/Video/VCR-Navigator …"
 
 #: gap/gap_navigator_dialog.c:601
 #, fuzzy
@@ -4519,7 +4519,7 @@ msgstr ""
 #: gap/gap_onion_main.c:155
 #, fuzzy
 msgid "<Image>/Video/Onionskin/Configuration..."
-msgstr "<Image>/Video/VCR-Navigator..."
+msgstr "<Image>/Video/VCR-Navigator …"
 
 #: gap/gap_onion_main.c:173
 #, fuzzy
@@ -4529,7 +4529,7 @@ msgstr "<Image>/Video/Gehe zu/Letzter Frame"
 #: gap/gap_onion_main.c:188
 #, fuzzy
 msgid "<Image>/Video/Onionskin/Delete"
-msgstr "<Image>/Video/Frames löschen..."
+msgstr "<Image>/Video/Frames löschen …"
 
 #: gap/gap_onion_main.c:201
 msgid "<Image>/Video/Onionskin/Toggle Visibility"
@@ -5052,7 +5052,7 @@ msgstr ""
 #: gap/gap_player_main.c:250
 #, fuzzy
 msgid "<Image>/Video/Playback..."
-msgstr "<Image>/Video/Bewegungs-Pfad..."
+msgstr "<Image>/Video/Bewegungs-Pfad …"
 
 #: gap/gap_range_ops.c:143
 msgid "New Width:"
@@ -5457,7 +5457,7 @@ msgstr "Auswahl invertieren"
 #: gap/gap_range_ops.c:867
 #, fuzzy
 msgid "Creating layer-animated image..."
-msgstr "Erstelle Ebenenanimation..."
+msgstr "Erstelle Ebenenanimation …"
 
 #: gap/gap_range_ops.c:1147
 msgid "Frames to Image"
@@ -5469,7 +5469,7 @@ msgstr "Mehrebenenbild aus Einzelbildern erstellen"
 
 #: gap/gap_range_ops.c:1302
 msgid "Flattening frames..."
-msgstr "Ebenen zusammenfügen..."
+msgstr "Ebenen zusammenfügen …"
 
 #: gap/gap_range_ops.c:1458
 #, fuzzy
@@ -5485,17 +5485,17 @@ msgstr ""
 #: gap/gap_range_ops.c:1589
 #, fuzzy
 msgid "Cropping all video frames..."
-msgstr "Alle Animations-Frames werden zugeschnitten..."
+msgstr "Alle Animations-Frames werden zugeschnitten …"
 
 #: gap/gap_range_ops.c:1592
 #, fuzzy
 msgid "Resizing all video frames..."
-msgstr "Verändere die Größe aller Animations-Frames..."
+msgstr "Verändere die Größe aller Animations-Frames …"
 
 #: gap/gap_range_ops.c:1595
 #, fuzzy
 msgid "Scaling all video frames..."
-msgstr "Skaliere alle Animations-Frames..."
+msgstr "Skaliere alle Animations-Frames …"
 
 #: gap/gap_range_ops.c:1685
 msgid "Flatten Frames"
@@ -5504,7 +5504,7 @@ msgstr "Einzelbilder zusammenfügen"
 #: gap/gap_range_ops.c:1752
 #, fuzzy, c-format
 msgid "Removing layer (pos:%ld) from frames..."
-msgstr "Entferne Ebene (pos:%ld) aus Frames..."
+msgstr "Entferne Ebene (pos:%ld) aus Frames …"
 
 #: gap/gap_range_ops.c:1873
 msgid "Delete Layers in Frames"
@@ -5579,7 +5579,7 @@ msgstr "Vertikal zentrieren"
 #: gap/gap_split.c:108
 #, fuzzy
 msgid "Splitting image into frames..."
-msgstr "Bild in Frames aufteilen..."
+msgstr "Bild in Frames aufteilen …"
 
 #: gap/gap_split.c:196
 #, fuzzy
@@ -6191,7 +6191,7 @@ msgstr ""
 #: gap/gap_story_main.c:164
 #, fuzzy
 msgid "<Image>/Video/Storyboard..."
-msgstr "<Image>/Video/Bewegungs-Pfad..."
+msgstr "<Image>/Video/Bewegungs-Pfad …"
 
 #: gap/gap_story_properties.c:427
 msgid "Automatic scene detection operates only on cliptypes MOVIE and FRAMES"
@@ -6723,7 +6723,7 @@ msgstr ""
 #: gap/gap_wr_color_curve.c:527
 #, fuzzy
 msgid "<Image>/Video/Layer/Colors/CurvesFile..."
-msgstr "<Image>/Video/Frame-Größe verändern..."
+msgstr "<Image>/Video/Frame-Größe verändern …"
 
 #: gap/gap_wr_color_curve.c:792
 #, fuzzy
@@ -6749,7 +6749,7 @@ msgstr ""
 #: gap/gap_wr_color_huesat.c:262
 #, fuzzy
 msgid "<Image>/Video/Layer/Colors/Hue-Saturation..."
-msgstr "<Image>/Video/Frames zusammenfügen..."
+msgstr "<Image>/Video/Frames zusammenfügen …"
 
 #. The dialog1 and main vbox
 #: gap/gap_wr_color_huesat.c:571
@@ -6817,7 +6817,7 @@ msgstr "Sättigung"
 #: gap/gap_wr_color_levels.c:271
 #, fuzzy
 msgid "<Image>/Video/Layer/Colors/Levels..."
-msgstr "<Image>/Video/Ebene aus Frames entfernen..."
+msgstr "<Image>/Video/Ebene aus Frames entfernen …"
 
 #. The dialog1 and main vbox
 #: gap/gap_wr_color_levels.c:586
@@ -6864,7 +6864,7 @@ msgstr "Höhe:"
 #: gap/gap_wr_opacity.c:139
 #, fuzzy
 msgid "<Image>/Video/Layer/Set Layer Opacity..."
-msgstr "<Image>/Video/Ebene aus Frames entfernen..."
+msgstr "<Image>/Video/Ebene aus Frames entfernen …"
 
 #: gap/gap_wr_opacity.c:322
 msgid "New opacity value where 0 is transparent and 100.0 is opaque"
@@ -6985,7 +6985,7 @@ msgstr "Frames zu Bild"
 #: libgapvidutil/gap_gve_story.c:4781
 #, fuzzy
 msgid "Seek Inputvideoframe..."
-msgstr "Skaliere alle Animations-Frames..."
+msgstr "Skaliere alle Animations-Frames …"
 
 #: libgapvidutil/gap_gve_story.c:4786
 msgid "Continue Encoding..."
@@ -7696,7 +7696,7 @@ msgstr ""
 #: vid_common/gap_cme_main.c:170
 #, fuzzy
 msgid "<Image>/Video/Encode/Master Videoencoder"
-msgstr "<Image>/Video/Komprimieren/MPEG2..."
+msgstr "<Image>/Video/Komprimieren/MPEG2 …"
 
 #: vid_common/gap_cme_main.c:254
 #, c-format
@@ -8048,7 +8048,7 @@ msgstr ""
 
 #: vid_enc_avi/gap_enc_avi_main.c:870
 msgid "AVI Video Encoding .."
-msgstr "AVI-Video-Kodierung..."
+msgstr "AVI-Video-Kodierung …"
 
 #. the CODEC delivered a NULL buffer
 #. * there is something essential wrong (TERMINATE)
@@ -8250,7 +8250,7 @@ msgstr "B-Frames:"
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1484
 #, fuzzy
 msgid "Max number of B-frames in sequence"
-msgstr "Reihenfolge der Frames wird verändert..."
+msgstr "Reihenfolge der Frames wird verändert …"
 
 #. the qdiff label
 #: vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1494
@@ -9216,4 +9216,7 @@ msgstr ""
 #: vid_enc_single/gap_enc_singleframes_main.c:680
 msgid "Singleframes Video Encoding .."
 msgstr ""
+
+
+
 
