@@ -376,7 +376,7 @@ msgid ""
 "that end in numbers like _000001.xcf.\n"
 "==> Rename your image, then try again."
 msgstr "Thao tác bị thôi.\n"
-"Bổ sung ảnh động GAP hoạt động chỉ với\n"
+"Phần bổ sung ảnh động GAP hoạt động chỉ với\n"
 "tên tập tin kết thúc bằng số như <_000001.xcf>.\n"
 "→ Hãy đổi tên của ảnh, rồi thử lại."
 
@@ -878,7 +878,7 @@ msgstr "Thủ tục GIMP nội bộ"
 
 #: ../gap/gap_dbbrowser_utils.c:1123
 msgid "GIMP Plug-In"
-msgstr "Bổ sung GIMP"
+msgstr "Phần bổ sung GIMP"
 
 #: ../gap/gap_dbbrowser_utils.c:1124
 msgid "GIMP Extension"
@@ -1613,8 +1613,8 @@ msgstr "Chọn tập lệnh lọc"
 msgid ""
 "Plug-in not available or has wrong type\n"
 "plug-in name: '%s'"
-msgstr "Bổ sung không sẵn sàng hay có kiểu không đúng;\n"
-"tên bổ sung: « %s »"
+msgstr "Phần bổ sung không sẵn sàng hay có kiểu không đúng;\n"
+"tên phần bổ sung: « %s »"
 
 #: ../gap/gap_frontends_main.c:149
 #: ../gap/gap_frontends_main.c:162
@@ -5548,8 +5548,8 @@ msgid ""
 "Desired save plugin can't handle type\n"
 "or desired save plugin not available."
 msgstr "Chuyển đổi khung: thao tác lưu bị lỗi.\n"
-"Bổ sung lưu đã muốn không thể xử lý kiểu,\n"
-"hoặc bổ sung lưu đã muốn không sẵn sàng."
+"Phần bổ sung để lưu không thể xử lý kiểu,\n"
+"hoặc không sẵn sàng."
 
 #: ../gap/gap_range_ops.c:1589
 msgid "Cropping all video frames..."
@@ -5644,8 +5644,8 @@ msgid ""
 "desired save plugin can't handle type\n"
 "or desired save plugin not available."
 msgstr "Chia khung: thao tác lưu bị lỗi.\n"
-"Bổ sung lưu đã muốn không thể xử lý kiểu,\n"
-"hoặc bổ sung lưu đã muốn không sẵn sàng."
+"Phần bổ sung để lưu không thể xử lý kiểu,\n"
+"hoặc không sẵn sàng."
 
 #: ../gap/gap_split.c:256
 #, c-format
@@ -7217,7 +7217,7 @@ msgid ""
 "The plug-in %s\n"
 "operates only on layers\n"
 "(but was called on mask or channel)"
-msgstr "Bổ sung %s\n"
+msgstr "Phần bổ sung %s\n"
 "hoạt động chỉ với lớp\n"
 "(còn đã được gọi với mặt nạ hay kênh)."
 
@@ -8115,11 +8115,11 @@ msgstr "Sửa đổi các tham số đặc trưng cho bộ mã hoá"
 
 #: ../vid_common/gap_cme_gui.c:3518
 msgid "Select video encoder plugin"
-msgstr "Chọn bổ sung mã hoá ảnh động"
+msgstr "Chọn Phần bổ sung Mã hoá Ảnh động"
 
 #: ../vid_common/gap_cme_main.c:145
 msgid "This plugin is the master dialog for video + audio encoding"
-msgstr "Bổ sung này là hộp thoại cái để mã hoá ảnh động cùng với âm thanh."
+msgstr "Phần bổ sung này là hộp thoại cái để mã hoá ảnh động cùng với âm thanh."
 
 #: ../vid_common/gap_cme_main.c:146
 msgid ""
@@ -8133,13 +8133,13 @@ msgid ""
 "the dialog. for noninteractive calls default values will be used. (you may "
 "call the desired plugin directly if you want to specify non-interacive "
 "parameters"
-msgstr "Bổ sung này là giao diện người dùng đồ họa dùng chung cho các bổ sung mã hoá "
+msgstr "Phần bổ sung này là giao diện người dùng đồ họa dùng chung cho các bổ sung mã hoá "
 "ảnh động cùng với âm thanh có sẵn. Nó hoạt động trong một phạm vị khung hoạt "
 "cảnh hay tập tin bản phác họa đã chọn. Dữ liệu nhập âm thanh tùy chọn (tham "
 "số : audfile) được chuyển đổi sang dạng thức RIFF WAVE (16bit PCM) rồi được "
 "gởi cho bổ sung mã hoá ảnh động đã chọn như là tập tin tạm thời (hoặc một "
 "cách trực tiếp nếu dạng thức và tỷ lệ lấy mẫu đã khớp với tỷ lệ đích đã "
-"muốn). Dạng thức ảnh động được xác định bằng tham số « vid_enc_plugin ». Bổ "
+"muốn). Dạng thức ảnh động được xác định bằng tham số « vid_enc_plugin ». Phần bổ "
 "sung đã xác định có được gọi bằng các tham số được ghi rõ trong hộp thoại "
 "đó. Đối với cuộc gọi không tương tác, các giá trị mặc định sẽ được dùng. Bạn "
 "có khả năng gọi trực tiếp bổ sung đã muốn, nếu bạn muốn ghi rõ một số tham "
@@ -8148,12 +8148,12 @@ msgstr "Bổ sung này là giao diện người dùng đồ họa dùng chung ch
 #: ../vid_common/gap_cme_main.c:247
 #, c-format
 msgid "Required Plugin %s not available"
-msgstr "Bổ sung cần thiết %s chưa sẵn sàng"
+msgstr "Phần bổ sung cần thiết %s chưa sẵn sàng"
 
 #: ../vid_common/gap_cme_main.c:292
 #, c-format
 msgid "Call of Required Plugin %s failed"
-msgstr "Cuộc gọi bổ sung cần thiết %s bị lỗi"
+msgstr "Cuộc gọi Phần bổ sung cần thiết %s bị lỗi"
 
 #: ../vid_enc_avi/gap_enc_avi_gui.c:416
 msgid "AVI Video Encode Parameters"
@@ -8379,7 +8379,7 @@ msgid ""
 "must be a raw datafile(s) or .wav (RIFF WAVEfmt ) file(s) .wav files can be "
 "mono (1) or stereo (2channels) audiodata must be 16bit uncompressed. "
 "IMPORTANT:  you should first call \""
-msgstr "Bổ sung này mã hoá ảnh động giả các khung hoạt cảnh. Dữ liệu âm thanh tùy "
+msgstr "Phần bổ sung này mã hoá ảnh động giả các khung hoạt cảnh. Dữ liệu âm thanh tùy "
 "chọn phải là một số tập tin dữ liệu thô hay tập tin .wav (RIFF WAVEfmt). Tập "
 "tin .wav có thể là kiểu nguồn đơn (1 kênh) hay âm lập thể (2 kênh); dữ liệu "
 "âm thanh phải có kiểu 16 bit chưa nén. QUAN TRỌNG: bạn nên gọi trước \""
@@ -8394,11 +8394,11 @@ msgstr "\" để đặt các tham số đặc trưng cho bộ mã hoá, rồi đ
 
 #: ../vid_enc_avi/gap_enc_avi_main.c:227
 msgid "Set Parameters for GAP avi video encoder Plugins"
-msgstr "Đặt tham số cho bổ sung mã hoá ảnh động AVI GAP"
+msgstr "Đặt tham số cho Phần bổ sung Mã hoá Ảnh động AVI GAP"
 
 #: ../vid_enc_avi/gap_enc_avi_main.c:228
 msgid "This plugin sets avi specific video encoding parameters."
-msgstr "Bổ sung này đặt các tham số đặc trưng cho bộ mã hoá AVI."
+msgstr "Phần bổ sung này đặt các tham số đặc trưng cho bộ mã hoá AVI."
 
 #: ../vid_enc_avi/gap_enc_avi_main.c:241
 msgid "Get GUI Parameters for GAP avi video encoder"
@@ -8406,7 +8406,7 @@ msgstr "Lấy các tham số GUI cho bộ mã hoá ảnh động AVI GAP"
 
 #: ../vid_enc_avi/gap_enc_avi_main.c:242
 msgid "This plugin returns avi encoder specific parameters."
-msgstr "Bổ sung này trả gởi các tham số đặc trưng cho bộ mã hoá AVI."
+msgstr "Phần bổ sung này trả gởi các tham số đặc trưng cho bộ mã hoá AVI."
 
 #: ../vid_enc_avi/gap_enc_avi_main.c:324
 msgid ""
@@ -9564,7 +9564,7 @@ msgid ""
 "wav) file. .wav files can be mono (1) or stereo (2channels) audiodata and "
 "must be 16bit uncompressed. IMPORTANT:  Non-interactive callers should first "
 "call \""
-msgstr "Bổ sung này mã hoá ảnh động của khung hoạt cảnh đựa vào dạng thức "
+msgstr "Phần bổ sung này mã hoá ảnh động của khung hoạt cảnh đựa vào dạng thức "
 "libavformat (cũng được biết như là bộ mã hoá FFMPEG). Dữ liệu âm thanh tùy "
 "chọn phải là tập tin dạng thức RIFF WAVEfmt (.wav). Tập tin có thể là dữ "
 "liệu âm thanh nguồn đơn (1 kênh) hay âm lập thể (2 kênh) cũng được và phải "
@@ -9572,14 +9572,14 @@ msgstr "Bổ sung này mã hoá ảnh động của khung hoạt cảnh đựa v
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:437
 msgid "Set Parameters for GAP ffmpeg video encoder Plugin"
-msgstr "Đặt tham số cho bổ sung mã hoá ảnh động ffmpeg GAP"
+msgstr "Đặt tham số cho Phần bổ sung Mã hoá Ảnh động ffmpeg của GAP"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:438
 msgid ""
 "This plugin sets ffmpeg specific video encoding parameters. Non-interactive "
 "callers must provide a parameterfile, Interactive calls provide a dialog "
 "window to specify and optionally save the parameters."
-msgstr "Bổ sung này đặt các tham số mã hoá ảnh động đặt trưng cho ffmpeg. Bộ gọi "
+msgstr "Phần bổ sung này đặt các tham số mã hoá ảnh động đặt trưng cho ffmpeg. Bộ gọi "
 "không tương tác phải cung cấp một tập tin tham số, còn cuộc tương tác cung "
 "cấp một cửa sổ hộp thoại để xác định và (tùy chọn) lưu các tham số này."
 
@@ -9589,7 +9589,7 @@ msgstr "Lấy tham số cho bổ sung mã hoá ảnh động ffmpeg GAP"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:454
 msgid "This plugin returns ffmpeg encoder specific parameters."
-msgstr "Bổ sung này trả gởi các tham số đặc trưng cho bộ mã hoá ffmpeg."
+msgstr "Phần bổ sung này trả gởi các tham số đặc trưng cho bộ mã hoá ffmpeg."
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:543
 msgid ""
@@ -9679,7 +9679,7 @@ msgid ""
 "\". the names of the output frame(s) are same as the parameter \"videofile\" "
 "but the framenumber part is replaced by the current framenumber (or added "
 "automatic if videofile has no number part) audiodata is ignored. A  call of\""
-msgstr "Bổ sung có một API mã hoá ảnh động nhưng ghi một dãy khung đơn thay vào chỉ "
+msgstr "Phần bổ sung có một API mã hoá ảnh động nhưng ghi một dãy khung đơn thay vào chỉ "
 "một tập tin ảnh động. Kiểu tập tin của các khung xuất bắt nguồn từ phần mở "
 "rộng. Phần mở rộng là phần hậu tố của tham số « videofile ». Khung xuát có "
 "cùng tên với tham số « videofile » nhưng mà phần số hiệu khung được thay thế "
@@ -9695,11 +9695,11 @@ msgstr "\" để đặt các tham số đặc trưng cho bộ mã hoá, không c
 
 #: ../vid_enc_single/gap_enc_singleframes_main.c:203
 msgid "Set Parameters for GAP singleframes video encoder Plugins"
-msgstr "Đặt tham số cho bổ sung bộ mã hoá ảnh động khung đơn GAP"
+msgstr "Đặt tham số cho Phần bổ sung Mã hoá Ảnh động khung đơn của GAP"
 
 #: ../vid_enc_single/gap_enc_singleframes_main.c:204
 msgid "This plugin sets singleframes specific video encoding parameters."
-msgstr "Bổ sung này đặt các tham số mã hoá ảnh động đặc trưng cho khung đơn."
+msgstr "Phần bổ sung này đặt các tham số mã hoá ảnh động đặc trưng cho khung đơn."
 
 #: ../vid_enc_single/gap_enc_singleframes_main.c:217
 msgid "Get GUI Parameters for GAP singleframes video encoder"
@@ -9707,7 +9707,7 @@ msgstr "Lấy tham số GUI cho bộ mã hoá ảnh động khung đơn GAP"
 
 #: ../vid_enc_single/gap_enc_singleframes_main.c:218
 msgid "This plugin returns singleframes encoder specific parameters."
-msgstr "Bổ sung này trả gởi các tham số đặc trưng cho bộ mã hoá khung đơn."
+msgstr "Phần bổ sung này trả gởi các tham số đặc trưng cho bộ mã hoá khung đơn."
 
 #: ../vid_enc_single/gap_enc_singleframes_main.c:299
 msgid ""
