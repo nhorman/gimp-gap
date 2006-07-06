@@ -5172,11 +5172,11 @@ msgstr "Cao mới:"
 
 #: ../gap/gap_range_ops.c:165
 msgid "Offset X:"
-msgstr "HIệu X:"
+msgstr "Hiệu X:"
 
 #: ../gap/gap_range_ops.c:176
 msgid "Offset Y:"
-msgstr "HIệu Y:"
+msgstr "Hiệu Y:"
 
 #: ../gap/gap_range_ops.c:190
 msgid "Crop Video Frames (all)"
@@ -9133,7 +9133,7 @@ msgstr "Ước chuyển kết hợp"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2284
 msgid "Enable interlaced motion estimation"
-msgstr "HIệu lực khả năng ước lượng chuyển đống đã kết hợp."
+msgstr "Hiệu lực khả năng ước lượng chuyển đống đã kết hợp."
 
 #.the Use AIV checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2292
@@ -9226,7 +9226,7 @@ msgstr "Hiệu quét SVCD"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2457
 msgid "Enable SVCD scan offset placeholder"
-msgstr "HIệu lực bộ giữ chỗ hiệu số quét SVCD."
+msgstr "Hiệu lực bộ giữ chỗ hiệu số quét SVCD."
 
 #.the Use trell checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2468
