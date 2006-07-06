@@ -256,7 +256,7 @@ msgid ""
 "Frames in the range: %d - %d will be duplicated %.4f times.\n"
 "This will increase the total number of frames from %d up to %d.\n"
 "There will be no undo for this operation\n"
-msgstr "Mỗi khung nằm trong phạm vị [%d - %d] sẽ được nhân đôi %.4f lần.\n"
+msgstr "Mỗi khung nằm trong phạm vi [%d - %d] sẽ được nhân đôi %.4f lần.\n"
 "Việc này sẽ tăng tổng khung từ %d lên %d.\n"
 "Không thể hồi lại thao tác này.\n"
 
@@ -267,7 +267,7 @@ msgid ""
 "will be deleted.\n"
 "This will decrease the total number of frames from %d down to %d\n"
 "There will be no undo for this operation\n"
-msgstr "%.04f phần trăm các khung nằm trong phạm vị [%d - %d]\n"
+msgstr "%.04f phần trăm các khung nằm trong phạm vi [%d - %d]\n"
 "sẽ bị xoá bỏ.\n"
 "Việc này sẽ giảm tổng khung từ %d xuống %d.\n"
 "Không thể hồi lại thao tác này.\n"
@@ -310,7 +310,7 @@ msgstr "Từ khung:"
 #: ../gap/gap_base_ops.c:1696
 #: ../gap/gap_base_ops.c:1755
 msgid "Affected range starts at this framenumber"
-msgstr "Phạm vị có kết quả bắt đầu tại số hiệu khung này"
+msgstr "Phạm vi có kết quả bắt đầu tại số hiệu khung này"
 
 #.the end frame scale_entry
 #.table col, row
@@ -340,7 +340,7 @@ msgstr "Đến khung:"
 #: ../gap/gap_base_ops.c:1704
 #: ../gap/gap_base_ops.c:1763
 msgid "Affected range ends at this framenumber"
-msgstr "Phạm vị có kết quả kết thúc tại số hiệu khung này"
+msgstr "Phạm vi có kết quả kết thúc tại số hiệu khung này"
 
 #: ../gap/gap_base_ops.c:1347
 msgid "Density:"
@@ -387,11 +387,11 @@ msgstr "Nhân đôi khung (%ld/%ld)"
 
 #: ../gap/gap_base_ops.c:1490
 msgid "Source range starts at this framenumber"
-msgstr "Phạm vị nguồn bắt đầu tại số hiệu khung này"
+msgstr "Phạm vi nguồn bắt đầu tại số hiệu khung này"
 
 #: ../gap/gap_base_ops.c:1498
 msgid "Source range ends at this framenumber"
-msgstr "Phạm vị nguồn kết thúc tại số hiệu khung này"
+msgstr "Phạm vi nguồn kết thúc tại số hiệu khung này"
 
 #: ../gap/gap_base_ops.c:1501
 msgid "N times:"
@@ -399,11 +399,11 @@ msgstr "N lần:"
 
 #: ../gap/gap_base_ops.c:1508
 msgid "Copy selected range n-times (you may type in values > 99)"
-msgstr "Sao chếp n lần phạm vị đã chọn (gõ được giá trị > 99)"
+msgstr "Sao chếp n lần phạm vi đã chọn (gõ được giá trị > 99)"
 
 #: ../gap/gap_base_ops.c:1513
 msgid "Make Duplicates of Frame Range"
-msgstr "Tạo bản sao của phạm vị khung"
+msgstr "Tạo bản sao của phạm vi khung"
 
 #: ../gap/gap_base_ops.c:1633
 #, c-format
@@ -1110,7 +1110,7 @@ msgstr "Rút đựa vào MPlayer"
 #: ../gap/gap_decode_xanim.c:325
 #: ../gap/gap_range_ops.c:1686
 msgid "Select Frame Range"
-msgstr "Chọn phạm vị khung"
+msgstr "Chọn phạm vi khung"
 
 #: ../gap/gap_decode_mplayer.c:649
 #: ../gap/gap_decode_mplayer.c:1494
@@ -1318,7 +1318,7 @@ msgstr "Rút âm thanh"
 msgid ""
 "Enable extraction of audio to raw audiofile. (frame range limits are ignored "
 "for audio)"
-msgstr "Bật rút âm thanh vào tập tin âm thanh thô (giới hạn phạm vị khung bị bỏ qua "
+msgstr "Bật rút âm thanh vào tập tin âm thanh thô (giới hạn phạm vi khung bị bỏ qua "
 "cho âm thanh)."
 
 #: ../gap/gap_decode_xanim.c:294
@@ -1335,7 +1335,7 @@ msgid ""
 "Run xanim asynchronously and delete unwanted frames (out of the specified "
 "range) while xanim is still running"
 msgstr "Chạy xanim một cách không đồng bộ và xoá bỏ các khung không được muốn (nằm ở "
-"ngoại phạm vị đã xác định) trong khi xanim vẫn còn chạy."
+"ngoại phạm vi đã xác định) trong khi xanim vẫn còn chạy."
 
 #: ../gap/gap_decode_xanim.c:316
 msgid ""
@@ -2343,7 +2343,7 @@ msgstr "Chuỗi để nhận diện tên lớp hay số vị trí đống lớp.
 #: ../gap/gap_mod_layer_dialog.c:1320
 #: ../gap/gap_onion_dialog.c:904
 msgid "Frame Range"
-msgstr "Phạm vị khung"
+msgstr "Phạm vi khung"
 
 #.lower
 #.upper
@@ -2945,7 +2945,7 @@ msgstr "Ảnh/lớp nguồn:"
 
 #: ../gap/gap_mov_dialog.c:2740
 msgid "Source object to insert into destination frames of the specified range"
-msgstr "Đối tượng nguồn cần chèn vào các khung đích của phạm vị đã xác định."
+msgstr "Đối tượng nguồn cần chèn vào các khung đích của phạm vi đã xác định."
 
 #.Paintmode combo (menu)
 #.the operating Mode label
@@ -3809,7 +3809,7 @@ msgid ""
 "\n"
 "Error: controlpoint [%d] is out of handled framerange"
 msgstr "\n"
-"Lỗi : điểm điều khiển [%d] ở ngoại phạm vị khung đã thao tác."
+"Lỗi : điểm điều khiển [%d] ở ngoại phạm vi khung đã thao tác."
 
 #: ../gap/gap_mov_exec.c:1908
 #, c-format
@@ -4574,13 +4574,13 @@ msgstr "Đóng cửa sổ, không tạo hay xoá bỏ lớp da hành nào,\n"
 #: ../gap/gap_onion_dialog.c:1394
 msgid ""
 "Remove all onionskin layers in all frames of the the selected frame range"
-msgstr "Gỡ bỏ mọi lớp da hành ra mọi khung của phạm vị khung đã chọn"
+msgstr "Gỡ bỏ mọi lớp da hành ra mọi khung của phạm vi khung đã chọn"
 
 #: ../gap/gap_onion_dialog.c:1403
 msgid ""
 "Create or replace onionskin layer(s) in all frames of the selected frame "
 "range"
-msgstr "Tạo hay thay thế các lớp da hành trong mọi khung của phạm vị khung đã chọn"
+msgstr "Tạo hay thay thế các lớp da hành trong mọi khung của phạm vi khung đã chọn"
 
 #: ../gap/gap_onion_main.c:152
 msgid "Configuration..."
@@ -4981,12 +4981,12 @@ msgstr "Khung"
 msgid ""
 "Click: Set current framenr as selection range start 'From Frame',\n"
 "SHIFT-Click: load this frame into the calling image"
-msgstr "Nhắp: đặt số hiệu khung hiện thời là phạm vị chọn bắt đầu « Từ khung »,\n"
+msgstr "Nhắp: đặt số hiệu khung hiện thời là phạm vi chọn bắt đầu « Từ khung »,\n"
 "SHIFT-nhắp: tải khung này vào ảnh gọi."
 
 #: ../gap/gap_player_dialog.c:5491
 msgid "Set current framenr as selection range start 'From Frame'"
-msgstr "Đặt số hiệu khung hiện thời là phạm vị chọn bắt đầu « Từ khung »."
+msgstr "Đặt số hiệu khung hiện thời là phạm vi chọn bắt đầu « Từ khung »."
 
 #.the framenr 2 button (does set End of range)
 #: ../gap/gap_player_dialog.c:5496
@@ -4997,12 +4997,12 @@ msgstr "Số :"
 msgid ""
 "Click: Set current framenr as selection range end 'To Frame',\n"
 "SHIFT-Click: load this frame into the calling image"
-msgstr "Nhắp: đặt số hiệu khung hiện thời là phạm vị chọn kết thúc « Đến khung »,\n"
+msgstr "Nhắp: đặt số hiệu khung hiện thời là phạm vi chọn kết thúc « Đến khung »,\n"
 "SHIFT-nhắp: tải khung này vào ảnh gọi."
 
 #: ../gap/gap_player_dialog.c:5518
 msgid "Set current framenr as selection range end 'To Frame'"
-msgstr "Đặt số hiệu khung hiện thời là phạm vị chọn kết thúc « Đến khung »."
+msgstr "Đặt số hiệu khung hiện thời là phạm vi chọn kết thúc « Đến khung »."
 
 #.the time position
 #: ../gap/gap_player_dialog.c:5539
@@ -5011,27 +5011,27 @@ msgstr "Vị trí thời:"
 
 #: ../gap/gap_player_dialog.c:5584
 msgid "Add range to cliplist"
-msgstr "Tham phạm vị vào danh mục trích"
+msgstr "Tham phạm vi vào danh mục trích"
 
 #: ../gap/gap_player_dialog.c:5588
 msgid "Print range to stdout"
-msgstr "In phạm vị ra thiết bị xuất chuẩn"
+msgstr "In phạm vi ra thiết bị xuất chuẩn"
 
 #: ../gap/gap_player_dialog.c:5607
 msgid "Start framenumber of selection range"
-msgstr "Bắt đầu số hiệu khung của phạm vị chọn"
+msgstr "Bắt đầu số hiệu khung của phạm vi chọn"
 
 #: ../gap/gap_player_dialog.c:5636
 msgid "Add inverse range to cliplist"
-msgstr "Thêm phạm vị đảo vào danh mục trích"
+msgstr "Thêm phạm vi đảo vào danh mục trích"
 
 #: ../gap/gap_player_dialog.c:5640
 msgid "Print inverse range to stdout"
-msgstr "In phạm vị đảo ra thiết bị xuất chuẩn"
+msgstr "In phạm vi đảo ra thiết bị xuất chuẩn"
 
 #: ../gap/gap_player_dialog.c:5661
 msgid "End framenumber of selection range"
-msgstr "Kết thúc số hiệu khung của phạm vị chọn"
+msgstr "Kết thúc số hiệu khung của phạm vi chọn"
 
 #.the origspeed_button
 #: ../gap/gap_player_dialog.c:5679
@@ -5578,7 +5578,7 @@ msgstr "Xoá bỏ lớp trong khung"
 
 #: ../gap/gap_range_ops.c:1874
 msgid "Select Frame Range & Stack Position"
-msgstr "Chọn phạm vị khung và vị trí đống"
+msgstr "Chọn phạm vi khung và vị trí đống"
 
 #: ../gap/gap_resi_dialog.c:622
 msgid "Scale Frames"
@@ -6444,12 +6444,12 @@ msgstr "lỗi nôi bộ"
 #: ../gap/gap_story_file.c:1401
 #, c-format
 msgid "illegal number: %s (valid range is %d upto %d)\n"
-msgstr "số không hợp lệ: %s (phạm vị hợp lệ là [%d-%d])\n"
+msgstr "số không hợp lệ: %s (phạm vi hợp lệ là [%d-%d])\n"
 
 #: ../gap/gap_story_file.c:1440
 #, c-format
 msgid "illegal number: %s (valid range is %.3f upto %.3f)"
-msgstr "số không hợp lệ: %s (phạm vị hợp lệ là [%.3f-%.3f])"
+msgstr "số không hợp lệ: %s (phạm vi hợp lệ là [%.3f-%.3f])"
 
 #: ../gap/gap_story_file.c:1543
 msgid "same parameter used more than once"
@@ -6602,7 +6602,7 @@ msgstr "Từ :"
 #.lower/upper unconstrained
 #: ../gap/gap_story_properties.c:1815
 msgid "framenumber of the first frame in the clip range"
-msgstr "số hiệu khung của khung đầu tiên trong phạm vị trích đoạn"
+msgstr "số hiệu khung của khung đầu tiên trong phạm vi trích đoạn"
 
 #: ../gap/gap_story_properties.c:1837
 msgid "To:"
@@ -6615,7 +6615,7 @@ msgstr "Đến:"
 #.lower/upper unconstrained
 #: ../gap/gap_story_properties.c:1844
 msgid "framenumber of the last frame in the clip range"
-msgstr "số hiệu khung của khung cuối cùng trong phạm vị trích đoạn"
+msgstr "số hiệu khung của khung cuối cùng trong phạm vi trích đoạn"
 
 #: ../gap/gap_story_properties.c:1856
 msgid "Loops:"
@@ -6628,7 +6628,7 @@ msgstr "Lặp:"
 #.lower/upper unconstrained
 #: ../gap/gap_story_properties.c:1863
 msgid "number of loops (how often to play the framerange)"
-msgstr "số vòng lặp (bao nhiều lần phát phạm vị khung này)"
+msgstr "số vòng lặp (bao nhiều lần phát phạm vi khung này)"
 
 #.pingpong
 #: ../gap/gap_story_properties.c:1874
@@ -6725,7 +6725,7 @@ msgstr "Tập tin « %s » đã có."
 #: ../gap/gap_vex_dialog.c:672
 #: ../gap/gap_vex_dialog.c:675
 msgid "Set range to extract"
-msgstr "Đặt phạm vị cần rút"
+msgstr "Đặt phạm vi cần rút"
 
 #: ../gap/gap_vex_dialog.c:800
 msgid "unknown"
@@ -6748,14 +6748,14 @@ msgstr "Chọn tên tập tin âm thanh"
 #: ../gap/gap_vex_main.c:168
 #: ../gap/gap_vex_main.c:188
 msgid "Extract Videorange"
-msgstr "Rút phạm vị ảnh động"
+msgstr "Rút phạm vi ảnh động"
 
 #.gtk_container_set_border_width (GTK_CONTAINER (mw__vbox1), 5);
 #.XXXXXXXXXXX Player Frame  XXXXXXXXXXXX
 #.the player_frame
 #: ../gap/gap_vex_dialog.c:1957
 msgid "Select Videorange"
-msgstr "Chọn phạm vị ảnh động"
+msgstr "Chọn phạm vi ảnh động"
 
 #.the mw__player_frame widget is hidden at startup
 #.* and becomes visible, when the user wants to select
@@ -6813,13 +6813,13 @@ msgstr "Số hiệu khung của khung thứ nhất cần rút"
 #.the videorange button (that invokes the player for video range selection)
 #: ../gap/gap_vex_dialog.c:2072
 msgid "Video Range"
-msgstr "Phạm vị ảnh động"
+msgstr "Phạm vi ảnh động"
 
 #: ../gap/gap_vex_dialog.c:2080
 msgid ""
 "Visual video range selection via videoplayer\n"
 "SHIFT: Open a separate player window"
-msgstr "Khả năng lựa chọn phạm vị ảnh động hiển thị bằng bộ phát ảnh động.\n"
+msgstr "Khả năng lựa chọn phạm vi ảnh động hiển thị bằng bộ phát ảnh động.\n"
 "Phím SHIFT: mở một cửa sổ bộ phát riêng."
 
 #: ../gap/gap_vex_dialog.c:2111
@@ -6827,12 +6827,12 @@ msgid ""
 "Frame number of last frame to extract. To extract all frames use a range "
 "from 1 to 999999. (Extract stops at the last available frame)"
 msgstr "Số hiệu khung của khung cuối cùng cần rút. Để rút tất cả các khung, dùng "
-"phạm vị [1-999999]. (Việc rút kết thúc tại khung sẵn sằng cuối cùng.)"
+"phạm vi [1-999999]. (Việc rút kết thúc tại khung sẵn sằng cuối cùng.)"
 
 #.the videorange button (that invokes the player for video range selection in docked mode)
 #: ../gap/gap_vex_dialog.c:2132
 msgid "VideoRange"
-msgstr "Phạm vị ảnh động"
+msgstr "Phạm vi ảnh động"
 
 #: ../gap/gap_vex_dialog.c:2169
 msgid "Videotrack number (0 == extract no frames)"
@@ -7379,7 +7379,7 @@ msgid ""
 "(see STORYBOARD_FILE_DOC.txt for details)"
 msgstr "Tập tin bản phác họa là tập tin văn bản được dùng\n"
 "để tập hợp một ảnh động từ danh sách các ảnh đơn,\n"
-"phạm vị khung, trích đoạn ảnh động, hoạt cảnh GIF\n"
+"phạm vi khung, trích đoạn ảnh động, hoạt cảnh GIF\n"
 "hay tập tin âm thanh. Các khung được tổ chức theo\n"
 "rãnh ghi, và cho phép thao tác mờ, co dãn và\n"
 "di chuyển giữa các khung này (xem tập tin\n"
@@ -7774,7 +7774,7 @@ msgid ""
 "(see STORYBOARD_FILE_DOC.txt for details)"
 msgstr "Tập tin bản phác họa là tập tin văn bản được dùng\n"
 "để tập hợp một ảnh động từ danh sách các ảnh đơn,\n"
-"phạm vị khung, trích đoạn ảnh động, hoạt cảnh GIF\n"
+"phạm vi khung, trích đoạn ảnh động, hoạt cảnh GIF\n"
 "hay tập tin âm thanh (xem tập tin\n"
 "STORYBOARD_FILE_DOC.doc để tìm chi tiết)."
 
@@ -8134,7 +8134,7 @@ msgid ""
 "call the desired plugin directly if you want to specify non-interacive "
 "parameters"
 msgstr "Phần bổ sung này là giao diện người dùng đồ họa dùng chung cho các bổ sung mã hoá "
-"ảnh động cùng với âm thanh có sẵn. Nó hoạt động trong một phạm vị khung hoạt "
+"ảnh động cùng với âm thanh có sẵn. Nó hoạt động trong một phạm vi khung hoạt "
 "cảnh hay tập tin bản phác họa đã chọn. Dữ liệu nhập âm thanh tùy chọn (tham "
 "số : audfile) được chuyển đổi sang dạng thức RIFF WAVE (16bit PCM) rồi được "
 "gởi cho bổ sung mã hoá ảnh động đã chọn như là tập tin tạm thời (hoặc một "
@@ -8343,7 +8343,7 @@ msgstr "Tính số lượng tối đa:"
 
 #: ../vid_enc_avi/gap_enc_avi_gui.c:909
 msgid "upper limit for quantize Range 1 == BEST Quality"
-msgstr "hạn chế trên của phạm vị tính số lượng (quantize); 1 = chất lượng tốt nhất"
+msgstr "hạn chế trên của phạm vi tính số lượng (quantize); 1 = chất lượng tốt nhất"
 
 #.the xvid min_quantizer label
 #: ../vid_enc_avi/gap_enc_avi_gui.c:915
@@ -8352,7 +8352,7 @@ msgstr "Tính số lượng tối thiểu :"
 
 #: ../vid_enc_avi/gap_enc_avi_gui.c:939
 msgid "lower limit for quantize Range 1 == BEST Quality"
-msgstr "hạn chế dưới của phạm vị tính số lượng (quantize); 1 = chất lượng tốt nhất"
+msgstr "hạn chế dưới của phạm vi tính số lượng (quantize); 1 = chất lượng tốt nhất"
 
 #.the xvid max_key_interval label
 #: ../vid_enc_avi/gap_enc_avi_gui.c:946
@@ -8484,7 +8484,7 @@ msgstr "bộ_tính_số_lượng_tối_đa:"
 
 #: ../vid_enc_avi/gap_enc_avi_main.c:692
 msgid "for XVID Codec  upper limit for quantize Range 1 == BEST Quality "
-msgstr "cho CODEC XVID, hạn chế trên của phạm vị tính số lượng (1 = chất lượng tốt "
+msgstr "cho CODEC XVID, hạn chế trên của phạm vi tính số lượng (1 = chất lượng tốt "
 "nhất) "
 
 #: ../vid_enc_avi/gap_enc_avi_main.c:701
@@ -8493,7 +8493,7 @@ msgstr "bộ_tính_số_lượng_tối_thiểu :"
 
 #: ../vid_enc_avi/gap_enc_avi_main.c:702
 msgid "for XVID Codec  lower limit for quantize Range 1 == BEST Quality "
-msgstr "cho CODEC XVID, hạn chế dưới của phạm vị tính số lượng (1 = chất lượng tốt "
+msgstr "cho CODEC XVID, hạn chế dưới của phạm vi tính số lượng (1 = chất lượng tốt "
 "nhất) "
 
 #: ../vid_enc_avi/gap_enc_avi_main.c:711
