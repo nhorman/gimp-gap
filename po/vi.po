@@ -7286,7 +7286,7 @@ msgstr "đang ghi tập tin âm thanh ghép"
 #: ../libgapvidutil/gap_gve_story.c:1547
 #, c-format
 msgid "cant write audio to file: %s "
-msgstr "không thể ghi âmthanh vào tập tin: %s "
+msgstr "không thể ghi âm thanh vào tập tin: %s "
 
 #: ../libgapvidutil/gap_gve_story.c:1554
 #: ../vid_common/gap_cme_gui.c:1295
