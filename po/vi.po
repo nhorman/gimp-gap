@@ -7539,7 +7539,7 @@ msgstr "Đang kiểm tra tập tin bản phác họa..."
 
 #: ../vid_common/gap_cme_gui.c:1770
 msgid "Parsing Storyboardfile"
-msgstr "Đang phân tách tâp tin bản phác họa"
+msgstr "Đang phân tách tập tin bản phác họa"
 
 #: ../vid_common/gap_cme_gui.c:1813
 msgid "Go for checking storyboard file"
