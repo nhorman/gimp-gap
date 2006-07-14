@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cs\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-06-29 11:02+0200\n"
-"PO-Revision-Date: 2006-06-29 11:16+0200\n"
+"POT-Creation-Date: 2006-07-14 13:59+0200\n"
+"PO-Revision-Date: 2006-07-14 13:58+0200\n"
 "Last-Translator: Jakub Friedl <jfriedl@suse.cz>\n"
 "Language-Team:  <cs@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -52,8 +52,8 @@ msgstr "Adresář '%s' již existuje"
 msgid "File '%s' already exists"
 msgstr "Soubor '%s' již existuje"
 
-#: ../gap/gap_arr_dialog.c:1810 ../gap/gap_vex_dialog.c:244
-#: ../vid_common/gap_cme_gui.c:2231
+#: ../gap/gap_arr_dialog.c:1810 ../gap/gap_vex_dialog.c:245
+#: ../vid_common/gap_cme_gui.c:2235
 msgid "Overwrite"
 msgstr "Přepsat"
 
@@ -216,7 +216,8 @@ msgstr "Jít na toto číslo políčka"
 
 #: ../gap/gap_base_ops.c:1136
 #, c-format
-msgid "Frames %d - %d will be deleted. There will be no undo for this operation."
+msgid ""
+"Frames %d - %d will be deleted. There will be no undo for this operation."
 msgstr "Políčka %d - %d budou odstraněna. Tuto operaci nelze vrátit zpět."
 
 #. title_txt
@@ -237,7 +238,8 @@ msgstr "Odstranit políčka od %ld do (číslo)"
 
 #: ../gap/gap_base_ops.c:1194
 #, c-format
-msgid "Delete frames starting at current number %d up to this number (inclusive)"
+msgid ""
+"Delete frames starting at current number %d up to this number (inclusive)"
 msgstr "Odstranit políčka od aktuálního čísla %d až po toto číslo (včetně)"
 
 #: ../gap/gap_base_ops.c:1275
@@ -275,17 +277,15 @@ msgstr "Změnit hustotu políček"
 
 #. the start frame scale_entry
 #. table col, row
-#. the from button
 #. the videoextract range from label
 #. the from_frame label
 #: ../gap/gap_base_ops.c:1332 ../gap/gap_base_ops.c:1486
 #: ../gap/gap_base_ops.c:1692 ../gap/gap_base_ops.c:1751
 #: ../gap/gap_decode_xanim.c:247 ../gap/gap_mod_layer_dialog.c:1333
 #: ../gap/gap_mov_dialog.c:3444 ../gap/gap_mpege.c:301
-#: ../gap/gap_onion_dialog.c:914 ../gap/gap_player_dialog.c:5567
-#: ../gap/gap_player_dialog.c:5572 ../gap/gap_range_ops.c:296
+#: ../gap/gap_onion_dialog.c:914 ../gap/gap_range_ops.c:296
 #: ../gap/gap_range_ops.c:505 ../gap/gap_range_ops.c:699
-#: ../gap/gap_vex_dialog.c:2032 ../vid_common/gap_cme_gui.c:3264
+#: ../gap/gap_vex_dialog.c:2036 ../vid_common/gap_cme_gui.c:3268
 msgid "From Frame:"
 msgstr "Výchozí políčko:"
 
@@ -296,17 +296,15 @@ msgstr "Dotčený rozsah začíná na tomto políčku"
 
 #. the end frame scale_entry
 #. table col, row
-#. the to button
 #. the videoextract range to label
 #. the to_frame label
 #: ../gap/gap_base_ops.c:1340 ../gap/gap_base_ops.c:1494
 #: ../gap/gap_base_ops.c:1700 ../gap/gap_base_ops.c:1759
 #: ../gap/gap_decode_xanim.c:257 ../gap/gap_mod_layer_dialog.c:1355
 #: ../gap/gap_mov_dialog.c:3462 ../gap/gap_mpege.c:311
-#: ../gap/gap_onion_dialog.c:921 ../gap/gap_player_dialog.c:5620
-#: ../gap/gap_player_dialog.c:5625 ../gap/gap_range_ops.c:306
+#: ../gap/gap_onion_dialog.c:921 ../gap/gap_range_ops.c:306
 #: ../gap/gap_range_ops.c:513 ../gap/gap_range_ops.c:707
-#: ../gap/gap_vex_dialog.c:2088 ../vid_common/gap_cme_gui.c:3298
+#: ../gap/gap_vex_dialog.c:2092 ../vid_common/gap_cme_gui.c:3302
 msgid "To Frame:"
 msgstr "Koncové políčko:"
 
@@ -390,7 +388,8 @@ msgstr "Vyměnit aktuální políčko (%ld)"
 
 #: ../gap/gap_base_ops.c:1637
 #, c-format
-msgid "Exchange the current frame %d with the frame that has the number entered here"
+msgid ""
+"Exchange the current frame %d with the frame that has the number entered here"
 msgstr "Vyměnit aktuální políčko %d s políčkem s tímto číslem"
 
 #: ../gap/gap_base_ops.c:1641
@@ -410,7 +409,8 @@ msgstr "N-posun:"
 msgid ""
 "Renumber the affected frame sequence (numbers are shifted in circle by N "
 "steps)"
-msgstr "Přečíslovat dotyčnou sekvenci políček (čísla jsou posunuta cyklicky o N)"
+msgstr ""
+"Přečíslovat dotyčnou sekvenci políček (čísla jsou posunuta cyklicky o N)"
 
 #: ../gap/gap_base_ops.c:1718
 msgid "Frame Sequence Shift"
@@ -440,7 +440,7 @@ msgstr "Nové číslo prvního políčka"
 
 #. the framenumber digits label
 #: ../gap/gap_base_ops.c:1920 ../gap/gap_split.c:302
-#: ../gap/gap_vex_dialog.c:2396
+#: ../gap/gap_vex_dialog.c:2400
 msgid "Digits:"
 msgstr "Číslice:"
 
@@ -505,7 +505,8 @@ msgstr "Zdrojová alfa:"
 #. lowr/upper unconstrained
 #: ../gap/gap_bluebox.c:343
 msgid "Affect only pixels with alpha >= source alpha where 1.0 is full opaque"
-msgstr "Ovlivňovat jen pixely s alfou >= zdrojová alfa, kde 1.0 je úplně neprůhledné"
+msgstr ""
+"Ovlivňovat jen pixely s alfou >= zdrojová alfa, kde 1.0 je úplně neprůhledné"
 
 #: ../gap/gap_bluebox.c:354
 msgid "Target Alpha:"
@@ -517,8 +518,10 @@ msgstr "Cílová alfa:"
 #. constrain
 #. lowr/upper unconstrained
 #: ../gap/gap_bluebox.c:361
-msgid "Set alpha of affected pixel to target alpha where 0.0 is full transparent"
-msgstr "Nastavit alfu ovlivněných pixelů na cílovou alfu, kde 0.0 je úplně průhledné"
+msgid ""
+"Set alpha of affected pixel to target alpha where 0.0 is full transparent"
+msgstr ""
+"Nastavit alfu ovlivněných pixelů na cílovou alfu, kde 0.0 je úplně průhledné"
 
 #: ../gap/gap_bluebox.c:372
 msgid "Feather Edges:"
@@ -756,12 +759,12 @@ msgstr "Bluebox ..."
 #: ../gap/gap_bluebox_main.c:187 ../gap/gap_main.c:1127
 #: ../gap/gap_morph_main.c:155 ../gap/gap_name2layer_main.c:177
 #: ../gap/gap_navigator_dialog.c:546 ../gap/gap_onion_main.c:205
-#: ../gap/gap_player_main.c:260 ../gap/gap_story_main.c:174
+#: ../gap/gap_player_main.c:281 ../gap/gap_story_main.c:174
 msgid "<Image>/Video/"
 msgstr "<Image>/Video/"
 
 #. the parameters button (invokes videoencoder specific GUI dialog)
-#: ../gap/gap_dbbrowser_utils.c:240 ../vid_common/gap_cme_gui.c:3496
+#: ../gap/gap_dbbrowser_utils.c:240 ../vid_common/gap_cme_gui.c:3500
 msgid "Parameters"
 msgstr "Parametry"
 
@@ -902,8 +905,10 @@ msgstr "Počáteční čas:"
 msgid "Extracting starts at the specified time offset HH:MM:SS in the video"
 msgstr "Extrakce začíná v určitém časovém bodě HH:MM:SS videa"
 
-#. Frames Duration label
-#: ../gap/gap_decode_mplayer.c:455 ../gap/gap_story_att_trans_dlg.c:1991
+#. Frames Duration button
+#. Frames Overlap duration button
+#: ../gap/gap_decode_mplayer.c:455 ../gap/gap_story_att_trans_dlg.c:2433
+#: ../gap/gap_story_att_trans_dlg.c:2633
 msgid "Frames:"
 msgstr "Políčka:"
 
@@ -912,8 +917,8 @@ msgid "Number of frames to extract"
 msgstr "Počet políček, které extrahovat"
 
 #. the videotrack to label
-#: ../gap/gap_decode_mplayer.c:467 ../gap/gap_story_properties.c:1924
-#: ../gap/gap_vex_dialog.c:2145
+#: ../gap/gap_decode_mplayer.c:467 ../gap/gap_story_properties.c:3056
+#: ../gap/gap_vex_dialog.c:2149
 msgid "Videotrack:"
 msgstr "Stopa videa:"
 
@@ -922,7 +927,7 @@ msgid "Number of videotrack to extract. (0 == ignore video)"
 msgstr "Číslo stopy videa, kterou extrahovat. (0 == ignorovat video)"
 
 #. the audiotrack to label
-#: ../gap/gap_decode_mplayer.c:479 ../gap/gap_vex_dialog.c:2179
+#: ../gap/gap_decode_mplayer.c:479 ../gap/gap_vex_dialog.c:2183
 msgid "Audiotrack:"
 msgstr "Stopa zvuku:"
 
@@ -1011,8 +1016,10 @@ msgid "Jpeg Progressive:"
 msgstr "Progresivní JPEG:"
 
 #: ../gap/gap_decode_mplayer.c:566
-msgid "Enable progressive jpeg encoding(is ignored when other formats are used)"
-msgstr "Povolit progresivní kódování JPEG (při použití jiného formátu je ignorováno)"
+msgid ""
+"Enable progressive jpeg encoding(is ignored when other formats are used)"
+msgstr ""
+"Povolit progresivní kódování JPEG (při použití jiného formátu je ignorováno)"
 
 #: ../gap/gap_decode_mplayer.c:572
 msgid "Jpeg Baseline:"
@@ -1020,7 +1027,8 @@ msgstr "Základní jpeg:"
 
 #: ../gap/gap_decode_mplayer.c:573
 msgid "Enable baseline jpeg encoding(is ignored when other formats are used)"
-msgstr "Povolit základní kódování jpeg (je ignorován, když se používají jiné formáty)"
+msgstr ""
+"Povolit základní kódování jpeg (je ignorován, když se používají jiné formáty)"
 
 #: ../gap/gap_decode_mplayer.c:584
 msgid "Silent"
@@ -1091,7 +1099,7 @@ msgid "Overwrite Frame"
 msgstr "Přepsat políčko"
 
 #: ../gap/gap_decode_mplayer.c:694 ../gap/gap_decode_xanim.c:367
-#: ../gap/gap_range_ops.c:1432 ../gap/gap_vex_dialog.c:235
+#: ../gap/gap_range_ops.c:1432 ../gap/gap_vex_dialog.c:236
 msgid "Overwrite All"
 msgstr "Přepsat vše"
 
@@ -1168,7 +1176,7 @@ msgstr ""
 
 #: ../gap/gap_decode_mplayer.c:1556 ../gap/gap_decode_xanim.c:1133
 msgid "Extracting frames..."
-msgstr "Získávám políčka..."
+msgstr "Extrahuji políčka..."
 
 #: ../gap/gap_decode_mplayer.c:1560
 msgid "Extracting audio..."
@@ -1264,7 +1272,7 @@ msgstr ""
 
 #: ../gap/gap_decode_xanim.c:283
 msgid "Extract Frames"
-msgstr "Získat kanály"
+msgstr "Extrahovat políčka"
 
 #: ../gap/gap_decode_xanim.c:284
 msgid "Enable extraction of frames"
@@ -1272,7 +1280,7 @@ msgstr "Povolit získání políček"
 
 #: ../gap/gap_decode_xanim.c:288
 msgid "Extract Audio"
-msgstr "Získat zvuk"
+msgstr "Extrahovat zvuk"
 
 #: ../gap/gap_decode_xanim.c:289
 msgid ""
@@ -1283,7 +1291,8 @@ msgstr ""
 "políček je pro zvuk ignorováno)"
 
 #: ../gap/gap_decode_xanim.c:295
-msgid "Quality for resulting jpeg frames. (is ignored when other formats are used)"
+msgid ""
+"Quality for resulting jpeg frames. (is ignored when other formats are used)"
 msgstr "Kvalita výsledných políček jpeg. (pro jiné formáty ignorováno)"
 
 #: ../gap/gap_decode_xanim.c:311
@@ -1394,7 +1403,7 @@ msgid "Make backup of the image after each step"
 msgstr "Vytvořit zálohu obrázku po každém kroku"
 
 #: ../gap/gap_filter_foreach.c:117 ../gap/gap_mod_layer.c:107
-#: ../gap/gap_story_dialog.c:4070
+#: ../gap/gap_story_dialog.c:4468
 msgid "Continue"
 msgstr "Pokračovat"
 
@@ -1506,7 +1515,7 @@ msgid "** File is not a filtermacro **"
 msgstr "** Soubor není makro filtru **"
 
 #: ../gap/gap_fmac_main.c:882 ../gap/gap_onion_dialog.c:1364
-#: ../gap/gap_player_dialog.c:5953
+#: ../gap/gap_player_dialog.c:7121
 msgid "Show help page"
 msgstr "Zobrazit stránku nápovědy"
 
@@ -1550,7 +1559,7 @@ msgstr ""
 "použity a nastavily interní buffer s nastaveními parametrů z posledního "
 "spuštění"
 
-#: ../gap/gap_fmac_main.c:942 ../gap/gap_player_dialog.c:6001
+#: ../gap/gap_fmac_main.c:942 ../gap/gap_player_dialog.c:7169
 msgid "Close window"
 msgstr "Zavřít okno"
 
@@ -2276,7 +2285,8 @@ msgid "Layer Pattern:"
 msgstr "Vzorek vrstvy:"
 
 #: ../gap/gap_mod_layer_dialog.c:1299
-msgid "String to identify layer names or layerstack position numbers. Example: 0,3-5"
+msgid ""
+"String to identify layer names or layerstack position numbers. Example: 0,3-5"
 msgstr ""
 "Řetězec k identifikaci jmen vrstev nebo čísel pozice v zásobníku vrstev. "
 "Příklad: 0,3-5"
@@ -2610,12 +2620,14 @@ msgstr ""
 
 #: ../gap/gap_morph_dialog.c:3751
 #, fuzzy
-msgid "Load morph workpoints from file. SHIFT-click: define filename of Pointset B"
+msgid ""
+"Load morph workpoints from file. SHIFT-click: define filename of Pointset B"
 msgstr "Načíst"
 
 #: ../gap/gap_morph_dialog.c:3763
 #, fuzzy
-msgid "Save morph workpoints to file. SHIFT-click: define filename of Pointset B"
+msgid ""
+"Save morph workpoints to file. SHIFT-click: define filename of Pointset B"
 msgstr "Uložit"
 
 #. the tween_steps label
@@ -2701,7 +2713,7 @@ msgstr "Vytvářím vrstvy onionskin..."
 
 #: ../gap/gap_morph_main.c:145
 msgid "Morph..."
-msgstr ""
+msgstr "Morf..."
 
 #: ../gap/gap_mov_dialog.c:614
 msgid "Move Path"
@@ -2763,8 +2775,8 @@ msgstr "Zmenšení velikosti generovaného animovaného náhledu (v %)"
 
 #. the Framerate lable
 #: ../gap/gap_mov_dialog.c:1045 ../gap/gap_mpege.c:320
-#: ../gap/gap_navigator_dialog.c:4167 ../gap/gap_story_dialog.c:6200
-#: ../vid_common/gap_cme_gui.c:3399
+#: ../gap/gap_navigator_dialog.c:4167 ../gap/gap_story_dialog.c:6897
+#: ../vid_common/gap_cme_gui.c:3403
 msgid "Framerate:"
 msgstr "Frekvence políček:"
 
@@ -2787,8 +2799,8 @@ msgstr ""
 #. the Default button
 #: ../gap/gap_mov_dialog.c:1070 ../gap/gap_mpege.c:372
 #: ../gap/gap_name2layer_main.c:512 ../gap/gap_split.c:312
-#: ../gap/gap_story_dialog.c:3169 ../gap/gap_wr_opacity.c:352
-#: ../vid_common/gap_cme_gui.c:2935
+#: ../gap/gap_story_dialog.c:3566 ../gap/gap_wr_opacity.c:352
+#: ../vid_common/gap_cme_gui.c:2939
 msgid "Default"
 msgstr "Implicitní"
 
@@ -2889,7 +2901,7 @@ msgstr "Zdrojový objekt ke vložení do určeného rozsahu cílových políček
 #. Paintmode combo (menu)
 #. the operating Mode label
 #: ../gap/gap_mov_dialog.c:2751 ../gap/gap_name2layer_main.c:444
-#: ../gap/gap_vex_dialog.c:2340 ../gap/gap_wr_opacity.c:340
+#: ../gap/gap_vex_dialog.c:2344 ../gap/gap_wr_opacity.c:340
 msgid "Mode:"
 msgstr "Režim:"
 
@@ -2955,7 +2967,7 @@ msgstr "Zdroj."
 #. Loop Stepmode combo
 #. the playback mode checkbuttons
 #. Loop Toggle
-#: ../gap/gap_mov_dialog.c:2834 ../gap/gap_player_dialog.c:5783
+#: ../gap/gap_mov_dialog.c:2834 ../gap/gap_player_dialog.c:6958
 msgid "Loop"
 msgstr "Smyčka"
 
@@ -2976,7 +2988,9 @@ msgid "Ping Pong"
 msgstr "Tam a zpět"
 
 #. radio button delace_mode None
-#: ../gap/gap_mov_dialog.c:2839 ../gap/gap_story_properties.c:1960
+#. radio button flip_request None
+#: ../gap/gap_mov_dialog.c:2839 ../gap/gap_story_properties.c:3092
+#: ../gap/gap_story_properties.c:3198
 msgid "None"
 msgstr "Nic"
 
@@ -3053,7 +3067,8 @@ msgstr "Přesun Cesta"
 
 #: ../gap/gap_mov_dialog.c:2976
 #, fuzzy
-msgid "Open dialog window to set parameters and keycolor for the bluebox filter"
+msgid ""
+"Open dialog window to set parameters and keycolor for the bluebox filter"
 msgstr "Otevřít"
 
 #. toggle Tracelayer
@@ -3195,7 +3210,8 @@ msgid "Delete current controlpoint"
 msgstr "Odstranit aktuální řídicí bod"
 
 #: ../gap/gap_mov_dialog.c:3209
-msgid "Show previous controlpoint. Hold down the shift key to follow keyframes."
+msgid ""
+"Show previous controlpoint. Hold down the shift key to follow keyframes."
 msgstr ""
 "Zobrazit předchozí řídicí bod. Stiskněte klávesu shift pro posun po "
 "klíčových políčkách."
@@ -3325,8 +3341,8 @@ msgstr "Oříznout všechny kopírované zdrojové vrstvy na hranicích políče
 #. Width Scale
 #. table col, row
 #. the width label
-#: ../gap/gap_mov_dialog.c:3567 ../gap/gap_story_dialog.c:6177
-#: ../vid_common/gap_cme_gui.c:3324
+#: ../gap/gap_mov_dialog.c:3567 ../gap/gap_story_dialog.c:6874
+#: ../vid_common/gap_cme_gui.c:3328
 msgid "Width:"
 msgstr "Šířka:"
 
@@ -3345,8 +3361,8 @@ msgstr "Přepočet šířky zdrojové vrstvy v procentech"
 #. Height Scale
 #. table col, row
 #. the height label
-#: ../gap/gap_mov_dialog.c:3585 ../gap/gap_story_dialog.c:6188
-#: ../vid_common/gap_cme_gui.c:3373
+#: ../gap/gap_mov_dialog.c:3585 ../gap/gap_story_dialog.c:6885
+#: ../vid_common/gap_cme_gui.c:3377
 msgid "Height:"
 msgstr "Výška:"
 
@@ -3372,7 +3388,7 @@ msgstr "Omezit poměr"
 #. Opacity
 #. table col, row
 #: ../gap/gap_mov_dialog.c:3619 ../gap/gap_onion_dialog.c:1130
-#: ../gap/gap_story_att_trans_dlg.c:2181 ../gap/gap_wr_opacity.c:329
+#: ../gap/gap_story_att_trans_dlg.c:2676 ../gap/gap_wr_opacity.c:329
 msgid "Opacity:"
 msgstr "Krytí:"
 
@@ -3611,7 +3627,8 @@ msgstr "Klíčové políčko:"
 #. lower, upper (unconstrained)
 #: ../gap/gap_mov_dialog.c:4029
 msgid "Fix controlpoint to keyframe number where 0 == no keyframe"
-msgstr "Upevnit řídicí bod k číslu klíčového políčka, kde 0 == žádné klíčové políčko"
+msgstr ""
+"Upevnit řídicí bod k číslu klíčového políčka, kde 0 == žádné klíčové políčko"
 
 #: ../gap/gap_mov_dialog.c:4055
 msgid "Scale and Modify"
@@ -3944,7 +3961,8 @@ msgstr "Pevná bitrate:"
 #: ../gap/gap_mpege.c:386
 #, fuzzy
 msgid "Ignore I/P/QSCALE values and use constant bit-rate"
-msgstr "Ignorovat hodnoty I/P/QSCALE a použít konstantní hodnotu bitové frekvence)"
+msgstr ""
+"Ignorovat hodnoty I/P/QSCALE a použít konstantní hodnotu bitové frekvence)"
 
 #: ../gap/gap_mpege.c:393
 msgid "Pattern:"
@@ -4315,7 +4333,7 @@ msgid "Select None"
 msgstr "Zrušit výběr"
 
 #. Video Length (frames)
-#: ../gap/gap_navigator_dialog.c:4152 ../gap/gap_player_dialog.c:5146
+#: ../gap/gap_navigator_dialog.c:4152 ../gap/gap_player_dialog.c:5960
 msgid "Videoframes:"
 msgstr "Video políčka:"
 
@@ -4454,8 +4472,10 @@ msgid "Ignore BG-layer(s):"
 msgstr "Ignorovat vrstvy pozadí:"
 
 #: ../gap/gap_onion_dialog.c:1209
-msgid "Exclude N background layers. Use 0 if you dont want to exclude any layer."
-msgstr "Vyjmout N vrstev pozadí. Použijte 0, pokud nechcete vyjmout žádnou vrstvu."
+msgid ""
+"Exclude N background layers. Use 0 if you dont want to exclude any layer."
+msgstr ""
+"Vyjmout N vrstev pozadí. Použijte 0, pokud nechcete vyjmout žádnou vrstvu."
 
 #: ../gap/gap_onion_dialog.c:1212
 msgid "Select Mode:"
@@ -4570,8 +4590,10 @@ msgstr ""
 "ale uložit aktuální nastavení"
 
 #: ../gap/gap_onion_dialog.c:1394
-msgid "Remove all onionskin layers in all frames of the the selected frame range"
-msgstr "Odstranit všechny vrstvy onionskin ze všech políček ze zvoleného rozsahu"
+msgid ""
+"Remove all onionskin layers in all frames of the the selected frame range"
+msgstr ""
+"Odstranit všechny vrstvy onionskin ze všech políček ze zvoleného rozsahu"
 
 #: ../gap/gap_onion_dialog.c:1403
 msgid ""
@@ -4607,7 +4629,7 @@ msgid "Removing onionskin layers..."
 msgstr "Odstraňuji vrstvy onionskin..."
 
 #. Format the message
-#: ../gap/gap_player_dialog.c:356
+#: ../gap/gap_player_dialog.c:399
 #, c-format
 msgid ""
 "Problem with audioplayback. The audiolib reported:\n"
@@ -4616,23 +4638,24 @@ msgstr ""
 "Problém s přehráváním zvuku. audiolib ohlásila:\n"
 "%s"
 
-#: ../gap/gap_player_dialog.c:377
+#: ../gap/gap_player_dialog.c:420
 msgid "Audiosource:"
 msgstr "Zdroj zvuku:"
 
-#: ../gap/gap_player_dialog.c:388
+#: ../gap/gap_player_dialog.c:431
 msgid "Wavefile:"
 msgstr "Soubor zvuku:"
 
-#: ../gap/gap_player_dialog.c:390
+#: ../gap/gap_player_dialog.c:433
 msgid "Name of wavefile to create as copy in RIFF WAVE format"
-msgstr "Název zvukového souboru, který vytvořit jako kopii ve formátu RIFF WAVE"
+msgstr ""
+"Název zvukového souboru, který vytvořit jako kopii ve formátu RIFF WAVE"
 
-#: ../gap/gap_player_dialog.c:397
+#: ../gap/gap_player_dialog.c:440
 msgid "Resample:"
 msgstr "Převzorkovat:"
 
-#: ../gap/gap_player_dialog.c:398
+#: ../gap/gap_player_dialog.c:441
 msgid ""
 "ON: Resample the copy at specified samplerate.\n"
 "OFF: Use original samplerate"
@@ -4642,28 +4665,28 @@ msgstr ""
 
 #. Audio Samplerate
 #. the Samplerate label
-#: ../gap/gap_player_dialog.c:406 ../gap/gap_player_dialog.c:5088
-#: ../gap/gap_story_dialog.c:6259 ../vid_common/gap_cme_gui.c:3039
+#: ../gap/gap_player_dialog.c:449 ../gap/gap_player_dialog.c:5902
+#: ../gap/gap_story_dialog.c:7002 ../vid_common/gap_cme_gui.c:3043
 msgid "Samplerate:"
 msgstr "Vzorkovací frekvence:"
 
-#: ../gap/gap_player_dialog.c:407
+#: ../gap/gap_player_dialog.c:450
 #, fuzzy
 msgid "Target audio samplerate in samples/sec. Ignored if resample is off"
 msgstr ""
 "Cílová vzorkovací frekvence ve vzorcích/s. Ignorována, je-li Převzorkovat "
 "vypnuto."
 
-#: ../gap/gap_player_dialog.c:428
+#: ../gap/gap_player_dialog.c:471
 msgid "Copy Audiofile as Wavefile"
 msgstr "Zkopírovat soubor zvuku"
 
-#: ../gap/gap_player_dialog.c:429 ../gap/gap_story_dialog.c:3173
-#: ../gap/gap_story_dialog.c:6056 ../gap/gap_story_dialog.c:6304
+#: ../gap/gap_player_dialog.c:472 ../gap/gap_story_dialog.c:3570
+#: ../gap/gap_story_dialog.c:6662 ../gap/gap_story_dialog.c:7047
 msgid "Settings"
 msgstr "Nastavení"
 
-#: ../gap/gap_player_dialog.c:513
+#: ../gap/gap_player_dialog.c:556
 msgid ""
 "Failure to start the wavplay server is fatal.\n"
 "Please check the executability of the 'wavplay' command.\n"
@@ -4675,29 +4698,29 @@ msgstr ""
 "Pokud jste někam nainstalovali spustitelný soubor wavplay,\n"
 "můžete nastavit proměnnou prostředí WAVPLAYPATH před spuštěním gimpu\n"
 
-#: ../gap/gap_player_dialog.c:576
+#: ../gap/gap_player_dialog.c:619
 msgid "Audio Delay"
 msgstr "Zvuk zpožděn"
 
-#: ../gap/gap_player_dialog.c:588
+#: ../gap/gap_player_dialog.c:631
 msgid "Syncron"
 msgstr "Synchronní"
 
-#: ../gap/gap_player_dialog.c:592
+#: ../gap/gap_player_dialog.c:635
 msgid "Audio Skipped"
 msgstr "Zvuk přeskočen"
 
-#: ../gap/gap_player_dialog.c:604
+#: ../gap/gap_player_dialog.c:647
 #, c-format
 msgid "%d (at %.4f frames/sec)"
 msgstr "%d (při %.4f políčkách/s)"
 
-#: ../gap/gap_player_dialog.c:698
+#: ../gap/gap_player_dialog.c:741
 #, c-format
 msgid "Error at reading WAV header from file '%s'"
 msgstr "Chyba při čtení hlavičky WAV ze souboru '%s'"
 
-#: ../gap/gap_player_dialog.c:831
+#: ../gap/gap_player_dialog.c:874
 #, c-format
 msgid ""
 "WARNING: your gimprc file configuration for the wavplay audio server\n"
@@ -4708,7 +4731,7 @@ msgstr ""
 "neukazuje na spustitelný program\n"
 "nastavená hodnota pro %s je: %s\n"
 
-#: ../gap/gap_player_dialog.c:852
+#: ../gap/gap_player_dialog.c:895
 #, c-format
 msgid ""
 "WARNING: the environment variable %s\n"
@@ -4719,7 +4742,7 @@ msgstr ""
 "neukazuje na spustitelný program\n"
 "aktuální hodnota je: %s\n"
 
-#: ../gap/gap_player_dialog.c:888
+#: ../gap/gap_player_dialog.c:931
 #, c-format
 msgid ""
 "No audiosupport available\n"
@@ -4736,36 +4759,42 @@ msgstr ""
 "nebo nastavit proměnnou prostředí %s na název spustitelného\n"
 "souboru před spuštěním GIMPu"
 
-#. shortname prefix to indicate that displayed filename is from type storyboard file
-#: ../gap/gap_player_dialog.c:1691
+#. filename prefix shortcut for storyboard single track playback for specified track number
+#: ../gap/gap_player_dialog.c:1739
+#, c-format
+msgid "STB:[%d]"
+msgstr "STB:[%d]"
+
+#. filename prefix shortcut for storyboard in composite video playback mode
+#: ../gap/gap_player_dialog.c:1744
 msgid "STB:"
 msgstr "STB:"
 
 #. shortname prefix to indicate that displayed filename is a single videofile
-#: ../gap/gap_player_dialog.c:1704
+#: ../gap/gap_player_dialog.c:1761
 msgid "VIDEO:"
 msgstr "VIDEO:"
 
 #. shortname prefix to indicate that displayed filename is basename of the frames
-#: ../gap/gap_player_dialog.c:1716
+#: ../gap/gap_player_dialog.c:1773
 msgid "FRAMES:"
 msgstr "POLÍČEK:"
 
 #. pending timer_go_job gets useless, since we start playback now
-#: ../gap/gap_player_dialog.c:1815 ../gap/gap_player_dialog.c:3004
+#: ../gap/gap_player_dialog.c:1872 ../gap/gap_player_dialog.c:3766
 msgid "Playing"
 msgstr "Přehrávám"
 
 #. the status value label
-#: ../gap/gap_player_dialog.c:1854 ../gap/gap_player_dialog.c:5889
+#: ../gap/gap_player_dialog.c:1911 ../gap/gap_player_dialog.c:7057
 msgid "Ready"
 msgstr "Připraven"
 
-#: ../gap/gap_player_dialog.c:2068 ../gap/gap_story_dialog.c:4377
+#: ../gap/gap_player_dialog.c:2125 ../gap/gap_story_dialog.c:4775
 msgid "Creating Index"
 msgstr "Vytvářím index"
 
-#: ../gap/gap_player_dialog.c:2091
+#: ../gap/gap_player_dialog.c:2148
 #, c-format
 msgid ""
 "No videoindex available. Access is limited to (slow) sequential read on "
@@ -4774,26 +4803,26 @@ msgstr ""
 "Index videa není k dispozici. Přístup je omezen na (pomalé) sekvenční čtení "
 "souboru: %s"
 
-#: ../gap/gap_player_dialog.c:2172 ../gap/gap_story_dialog.c:4511
+#: ../gap/gap_player_dialog.c:2231 ../gap/gap_story_dialog.c:4909
 msgid "Videoseek"
 msgstr "Posun ve videu"
 
-#: ../gap/gap_player_dialog.c:2377 ../gap/gap_player_dialog.c:2428
-#: ../gap/gap_story_dialog.c:4420
+#: ../gap/gap_player_dialog.c:2784 ../gap/gap_player_dialog.c:3233
+#: ../gap/gap_story_dialog.c:4818
 msgid "Canceled"
 msgstr "Přerušeno"
 
 #. printf("DROP (SKIP) frame\n");
-#: ../gap/gap_player_dialog.c:2987
+#: ../gap/gap_player_dialog.c:3749
 msgid "Skip"
 msgstr "Přeskočit"
 
-#: ../gap/gap_player_dialog.c:3016
+#: ../gap/gap_player_dialog.c:3778
 #, c-format
 msgid "Delay %.2f"
 msgstr "Zpoždění %.2f"
 
-#: ../gap/gap_player_dialog.c:4599
+#: ../gap/gap_player_dialog.c:5413
 #, c-format
 msgid ""
 "WARNING: Your gimprc file configuration for the audioconverter script\n"
@@ -4804,7 +4833,7 @@ msgstr ""
 "neukazuje na spustitelný program\n"
 "nastavená hodnota pro %s je: %s\n"
 
-#: ../gap/gap_player_dialog.c:4621
+#: ../gap/gap_player_dialog.c:5435
 #, c-format
 msgid ""
 "WARNING: The environment variable %s\n"
@@ -4815,7 +4844,7 @@ msgstr ""
 "neukazuje na spustitelný program\n"
 "aktuální hodnota je: %s\n"
 
-#: ../gap/gap_player_dialog.c:4640
+#: ../gap/gap_player_dialog.c:5454
 #, c-format
 msgid ""
 "ERROR: The external program for audioconversion is not executable.\n"
@@ -4824,45 +4853,45 @@ msgstr ""
 "CHYBA: Externí program pro konverzi zvuku není spustitelný.\n"
 "Název souboru: '%s'\n"
 
-#: ../gap/gap_player_dialog.c:4660
+#: ../gap/gap_player_dialog.c:5474
 msgid "Creating audiofile - please wait"
 msgstr "Vytvářím soubor zvuku - čekejte prosím"
 
-#: ../gap/gap_player_dialog.c:4802
+#: ../gap/gap_player_dialog.c:5616
 msgid "Select Audiofile"
 msgstr "Vybrat soubor zvuku"
 
 #. audiofile label
 #. the output audiofile label
 #. the Audiofile label
-#: ../gap/gap_player_dialog.c:4874 ../gap/gap_vex_dialog.c:2543
-#: ../vid_common/gap_cme_gui.c:2978
+#: ../gap/gap_player_dialog.c:5688 ../gap/gap_vex_dialog.c:2547
+#: ../vid_common/gap_cme_gui.c:2982
 msgid "Audiofile:"
 msgstr "Soubor zvuku:"
 
-#: ../gap/gap_player_dialog.c:4886
+#: ../gap/gap_player_dialog.c:5700
 msgid "Enter an audiofile. The file must be in RIFF WAVE fileformat."
 msgstr "Zadejte soubor zvuku. Soubor musí být ve formátu RIFF WAVE."
 
-#: ../gap/gap_player_dialog.c:4907
+#: ../gap/gap_player_dialog.c:5721
 msgid "Open audiofile selection browser dialog window"
 msgstr "Otevřít okno dialogu procházení výběru souboru zvuku"
 
 #. Volume
-#: ../gap/gap_player_dialog.c:4919 ../gap/gap_story_dialog.c:6275
+#: ../gap/gap_player_dialog.c:5733 ../gap/gap_story_dialog.c:7018
 msgid "Volume:"
 msgstr "Hlasitost:"
 
-#: ../gap/gap_player_dialog.c:4939
+#: ../gap/gap_player_dialog.c:5753
 msgid "Audio Volume"
 msgstr "Hlasitost zvuku"
 
 #. check button
-#: ../gap/gap_player_dialog.c:4945
+#: ../gap/gap_player_dialog.c:5759
 msgid "Enable"
 msgstr "Povolit"
 
-#: ../gap/gap_player_dialog.c:4949
+#: ../gap/gap_player_dialog.c:5763
 msgid ""
 "ON: Play button plays video + audio.\n"
 "OFF: Play video silently"
@@ -4871,11 +4900,11 @@ msgstr ""
 "VYPNUTO: Přehrávat video potichu"
 
 #. Sample Offset
-#: ../gap/gap_player_dialog.c:4959
+#: ../gap/gap_player_dialog.c:5773
 msgid "Offset:"
 msgstr "Posun:"
 
-#: ../gap/gap_player_dialog.c:4979
+#: ../gap/gap_player_dialog.c:5793
 msgid ""
 "Audio offset in frames at original video playback speed. A value of 0 starts "
 "audio and video at synchron time. A value of -10 will play frame 1 up to "
@@ -4889,16 +4918,16 @@ msgstr ""
 "přeskočí počáteční část zvuku o délce odpovídající trvání deseti políček při "
 "původní rychlosti přehrávání videa."
 
-#: ../gap/gap_player_dialog.c:4995
+#: ../gap/gap_player_dialog.c:5809
 msgid "Reset offset and volume"
 msgstr "Vynulovat posun a hlasitost"
 
 #. create wavfile button
-#: ../gap/gap_player_dialog.c:5006
+#: ../gap/gap_player_dialog.c:5820
 msgid "Copy As Wavfile"
 msgstr "Zkopírovat jako soubor zvuku"
 
-#: ../gap/gap_player_dialog.c:5008
+#: ../gap/gap_player_dialog.c:5822
 msgid ""
 "Create a copy from audiofile as RIFF WAVE audiofile and use the copy for "
 "audio playback"
@@ -4907,72 +4936,133 @@ msgstr ""
 "přehrávání zvuku"
 
 #. Audio Offset Length (mm:ss:msec)
-#: ../gap/gap_player_dialog.c:5029
+#: ../gap/gap_player_dialog.c:5843
 msgid "Offsettime:"
 msgstr "Čas posunu:"
 
 #. Total Audio Length (mm:ss:msec)
 #. the audio timing information labels
-#: ../gap/gap_player_dialog.c:5043 ../vid_common/gap_cme_gui.c:3209
+#: ../gap/gap_player_dialog.c:5857 ../vid_common/gap_cme_gui.c:3213
 msgid "Audiotime:"
 msgstr "Čas zvuku:"
 
 #. Length (frames)
-#: ../gap/gap_player_dialog.c:5058
+#: ../gap/gap_player_dialog.c:5872
 msgid "Audioframes:"
 msgstr "Políčka zvuku:"
 
 #. Audiolength (Samples)
-#: ../gap/gap_player_dialog.c:5073
+#: ../gap/gap_player_dialog.c:5887
 msgid "Samples:"
 msgstr "Vzorky:"
 
 #. Audio Channels
-#: ../gap/gap_player_dialog.c:5102
+#: ../gap/gap_player_dialog.c:5916
 msgid "Channels:"
 msgstr "Kanály:"
 
 #. Bits per Audio Sample
-#: ../gap/gap_player_dialog.c:5116
+#: ../gap/gap_player_dialog.c:5930
 msgid "Bits/Sample:"
 msgstr "Bity/vzorek:"
 
 #. Total Video Length (mm:ss:msec)
 #. the video timing information labels
-#: ../gap/gap_player_dialog.c:5131 ../vid_common/gap_cme_gui.c:3182
+#: ../gap/gap_player_dialog.c:5945 ../vid_common/gap_cme_gui.c:3186
 msgid "Videotime:"
 msgstr "Délka videa:"
 
-#: ../gap/gap_player_dialog.c:5250
+#. Cahe size label
+#: ../gap/gap_player_dialog.c:6157
+msgid "Cache Size (MB):"
+msgstr ""
+
+#: ../gap/gap_player_dialog.c:6183
+msgid "Player frame cache maximum size im MB. Value 0 turns the cache off"
+msgstr ""
+
+#: ../gap/gap_player_dialog.c:6192
+msgid "Clear the frame cache"
+msgstr ""
+
+#. Chache Status (number of frames currently in the cache)
+#: ../gap/gap_player_dialog.c:6203
+#, fuzzy
+msgid "Cached Frames:"
+msgstr "Prokládaná políčka"
+
+#. Layout Options label
+#: ../gap/gap_player_dialog.c:6228
+#, fuzzy
+msgid "Layout Options:"
+msgstr "Volby:"
+
+#. Show Go button array (configure to show/hide this optional positioning tool)
+#: ../gap/gap_player_dialog.c:6238
+msgid "Show Button Array"
+msgstr ""
+
+#: ../gap/gap_player_dialog.c:6244
+msgid ""
+"ON: Show the go button array positioning tool.\n"
+"OFF: Hide the go button array."
+msgstr ""
+
+#. Show Position Scale (configure to show/hide this optional positioning tool)
+#: ../gap/gap_player_dialog.c:6257
+msgid "Show Position Scale"
+msgstr ""
+
+#: ../gap/gap_player_dialog.c:6263
+msgid ""
+"ON: Show the position scale.\n"
+"OFF: Hide the position scale."
+msgstr ""
+
+#. Save Player Preferences label
+#: ../gap/gap_player_dialog.c:6276
+#, fuzzy
+msgid "Save Preferences:"
+msgstr "Odkaz na políčko:"
+
+#: ../gap/gap_player_dialog.c:6288
+msgid "Save player cache and layout settings (as gimprc parameters)"
+msgstr ""
+
+#: ../gap/gap_player_dialog.c:6403
 msgid "Videoframe Playback"
 msgstr "Přehrávání políček videa"
 
+#. vid options TAB frame
 #. the video options notebook tab
-#: ../gap/gap_player_dialog.c:5299 ../vid_common/gap_cme_gui.c:2447
+#: ../gap/gap_player_dialog.c:6418 ../vid_common/gap_cme_gui.c:2451
 msgid "Video Options"
 msgstr "Volby videa"
 
+#. configure options TAB frame
+#: ../gap/gap_player_dialog.c:6442
+#, fuzzy
+msgid "Preferences"
+msgstr "Odkaz na políčko:"
+
+#. audio options TAB frame
 #. the Audio Options notebook tab
-#: ../gap/gap_player_dialog.c:5300 ../vid_common/gap_cme_gui.c:2459
+#: ../gap/gap_player_dialog.c:6458 ../vid_common/gap_cme_gui.c:2463
 msgid "Audio Options"
 msgstr "Volby zvuku"
 
-#: ../gap/gap_player_dialog.c:5362
-msgid "Click: go to frame, Ctrl-Click: set 'From Frame', Alt-Click: set 'To Frame'"
+#: ../gap/gap_player_dialog.c:6551
+msgid ""
+"Click: go to frame, Ctrl-Click: set 'From Frame', Alt-Click: set 'To Frame'"
 msgstr ""
 "Kliknutí: přejít na políčko, Ctrl-kliknutí: nastavit 'od políčka', Alt-"
 "kliknutí: nastavit 'po políčko'"
 
-#: ../gap/gap_player_dialog.c:5432 ../gap/gap_player_dialog.c:5535
+#: ../gap/gap_player_dialog.c:6624 ../gap/gap_player_dialog.c:6754
 msgid "The currently displayed frame number"
 msgstr "Číslo aktuálně zobrazovaného políčka"
 
-#. the framenr 1 button (does set Begin of range)
-#: ../gap/gap_player_dialog.c:5474 ../vid_common/gap_cme_gui.c:1167
-msgid "Frame"
-msgstr "Políčko"
-
-#: ../gap/gap_player_dialog.c:5485
+#: ../gap/gap_player_dialog.c:6704
 msgid ""
 "Click: Set current framenr as selection range start 'From Frame',\n"
 "SHIFT-Click: load this frame into the calling image"
@@ -4981,16 +5071,11 @@ msgstr ""
 "políčka',\n"
 "SHIFT-kliknutí: načíst toto políčko do volajícího obrázku"
 
-#: ../gap/gap_player_dialog.c:5496
+#: ../gap/gap_player_dialog.c:6715
 msgid "Set current framenr as selection range start 'From Frame'"
 msgstr "Nastavit číslo aktuálního políčka jako začátek rozsahu 'Od políčka'"
 
-#. the framenr 2 button (does set End of range)
-#: ../gap/gap_player_dialog.c:5501
-msgid "Nr:"
-msgstr "Č:"
-
-#: ../gap/gap_player_dialog.c:5512
+#: ../gap/gap_player_dialog.c:6731
 msgid ""
 "Click: Set current framenr as selection range end 'To Frame',\n"
 "SHIFT-Click: load this frame into the calling image"
@@ -4998,66 +5083,51 @@ msgstr ""
 "Kliknutí: Nastavit aktuální číslo políčka jako konec rozsahu 'Do políčka',\n"
 "SHIFT-kliknutí: načíst toto políčko do volajícího obrázku"
 
-#: ../gap/gap_player_dialog.c:5523
+#: ../gap/gap_player_dialog.c:6742
 msgid "Set current framenr as selection range end 'To Frame'"
 msgstr "Nastavit číslo aktuálního políčka jako konec rozsahu 'Do políčka'"
 
-#. the time position
-#: ../gap/gap_player_dialog.c:5544
-msgid "Timepos:"
-msgstr "Časová pozice:"
-
-#: ../gap/gap_player_dialog.c:5589
+#: ../gap/gap_player_dialog.c:6782
 msgid "Add range to cliplist"
 msgstr "Přidat rozsah do seznamu ořezání"
 
-#: ../gap/gap_player_dialog.c:5593
+#: ../gap/gap_player_dialog.c:6786
 msgid "Print range to stdout"
 msgstr "Vypsat rozsah na stdout"
 
-#: ../gap/gap_player_dialog.c:5612
+#: ../gap/gap_player_dialog.c:6805
 msgid "Start framenumber of selection range"
 msgstr "Číslo počátečního políčka vybraného rozsahu"
 
-#: ../gap/gap_player_dialog.c:5641
+#: ../gap/gap_player_dialog.c:6828
 msgid "Add inverse range to cliplist"
 msgstr "Přidat opačný rozsah do seznamu ořezání"
 
-#: ../gap/gap_player_dialog.c:5645
+#: ../gap/gap_player_dialog.c:6832
 msgid "Print inverse range to stdout"
 msgstr "Vypsat opačný rozsah na stdout"
 
-#: ../gap/gap_player_dialog.c:5666
+#: ../gap/gap_player_dialog.c:6853
 msgid "End framenumber of selection range"
 msgstr "Číslo koncového políčka vybraného rozsahu"
 
-#. the origspeed_button
-#: ../gap/gap_player_dialog.c:5684
-msgid "Speed"
-msgstr "Rychlost"
-
-#: ../gap/gap_player_dialog.c:5689
+#: ../gap/gap_player_dialog.c:6869
 msgid "Reset playback speed to original (or previous) value"
 msgstr "Vrátit rychlost přehrávání na původní (nebo předchozí) hodnotu"
 
-#: ../gap/gap_player_dialog.c:5709
+#: ../gap/gap_player_dialog.c:6889
 msgid "Current playback speed (frames/sec)"
 msgstr "Aktuální rychlost přehrávání (políček/s)"
 
-#. the size button
-#: ../gap/gap_player_dialog.c:5727
-msgid "Size"
-msgstr "Velikost"
-
-#: ../gap/gap_player_dialog.c:5734
+#: ../gap/gap_player_dialog.c:6915
 msgid "Toggle size 128/256. <Shift> Set 1:1 full image size"
 msgstr "Přepnout velikost 128/256, <Shift> Nastavit plnou velikost obrázku 1:1"
 
-#: ../gap/gap_player_dialog.c:5753
+#: ../gap/gap_player_dialog.c:6934
 msgid "Video preview size (pixels)"
 msgstr "Velikost náhledu obrázku (pixely)"
 
-#: ../gap/gap_player_dialog.c:5789
+#: ../gap/gap_player_dialog.c:6964
 msgid ""
 "ON: Play in endless loop.\n"
 "OFF: Play only once"
@@ -5065,34 +5135,37 @@ msgstr ""
 "ZAPNUTO: Přehrávat v nekonečné smyčce.\n"
 "VYPNUTO: Přehrávat jen jednou"
 
-#. SelOnly Toggle
-#: ../gap/gap_player_dialog.c:5803
-msgid "Play selection only"
-msgstr "Přehrávat jen výběr"
+#. SelOnly Toggle (keep text short)
+#: ../gap/gap_player_dialog.c:6978
+#, fuzzy
+msgid "Selection only"
+msgstr "Žádný výběr"
 
-#: ../gap/gap_player_dialog.c:5809
+#: ../gap/gap_player_dialog.c:6984
+#, fuzzy
 msgid ""
-"ON: Play selection only.\n"
+"ON: Play only frames within the selected range.\n"
 "OFF: Play all frames"
 msgstr ""
 "ZAPNUTO: Přehrávat jen výběr.\n"
 "VYPNUTO: Přehrávat všechna políčka"
 
-#. PingPong Toggle
-#: ../gap/gap_player_dialog.c:5822
+#. PingPong Toggle (keep text short)
+#: ../gap/gap_player_dialog.c:6997
 msgid "Ping pong"
 msgstr "Tam a zpět"
 
-#: ../gap/gap_player_dialog.c:5828
+#: ../gap/gap_player_dialog.c:7003
 msgid "ON: Play alternating forward/backward"
 msgstr "ZAPNUTO: Přehrávat střídavě vpřed/vzad"
 
-#. UseThumbnails Toggle
-#: ../gap/gap_player_dialog.c:5841
-msgid "Use thumbnails"
+#. UseThumbnails Toggle (keep text short)
+#: ../gap/gap_player_dialog.c:7016
+#, fuzzy
+msgid "Thumbnails"
 msgstr "Používat náhledy"
 
-#: ../gap/gap_player_dialog.c:5847
+#: ../gap/gap_player_dialog.c:7022
 msgid ""
 "ON: Use thumbnails when available.\n"
 "OFF: Read full sized frames"
@@ -5100,12 +5173,12 @@ msgstr ""
 "ZAPNUTO: Používat náhledy, pokud jsou k dispozici.\n"
 "VYPNUTO: Číst políčka v plné velikosti"
 
-#. ExactTiming Toggle
-#: ../gap/gap_player_dialog.c:5862
+#. ExactTiming Toggle (keep text short)
+#: ../gap/gap_player_dialog.c:7037
 msgid "Exact timing"
 msgstr "Přesné časování"
 
-#: ../gap/gap_player_dialog.c:5868
+#: ../gap/gap_player_dialog.c:7043
 msgid ""
 "ON: Skip frames to hold exact timing.\n"
 "OFF: Disable frame skipping"
@@ -5113,17 +5186,12 @@ msgstr ""
 "ZAPNUTO: Přeskakovat políčka pro dodržení přesného časování.\n"
 "VYPNUTO: Zakázat přeskakování políček"
 
-#. the status label
-#: ../gap/gap_player_dialog.c:5881
-msgid "Status:"
-msgstr "Stav:"
-
 #. the Cancel Videoindex Creation button (only visible while creating vindex)
-#: ../gap/gap_player_dialog.c:5933
+#: ../gap/gap_player_dialog.c:7101
 msgid "Cancel Videoindex creation"
 msgstr "Zrušit vytváření indexu videa"
 
-#: ../gap/gap_player_dialog.c:5937
+#: ../gap/gap_player_dialog.c:7105
 #, fuzzy
 msgid ""
 "Cancel videoindex creation. Videoindex creation requires full scanning of "
@@ -5131,7 +5199,7 @@ msgid ""
 "videoindex, access is done by a very slow sequential read"
 msgstr "Zrušit"
 
-#: ../gap/gap_player_dialog.c:5964
+#: ../gap/gap_player_dialog.c:7132
 msgid ""
 "Start playback. SHIFT: snapshot frames  in a multilayer image at original "
 "size CTRL: snapshot at preview size ALT: force creation of new snapshot image"
@@ -5140,7 +5208,7 @@ msgstr ""
 "původní velikosti CTRL: zachytávat ve velikosti náhledu ALT: vnutit "
 "vytvoření nového zachyceného obrázku"
 
-#: ../gap/gap_player_dialog.c:5977
+#: ../gap/gap_player_dialog.c:7145
 #, fuzzy
 msgid ""
 "Pause if playing (any mousebutton). Go to selection start/active/end (left/"
@@ -5150,7 +5218,7 @@ msgstr ""
 "aktivní/konec výběru, pokud se nepřehrává (levé/prostřední/pravé tlačítko "
 "myši)"
 
-#: ../gap/gap_player_dialog.c:5987
+#: ../gap/gap_player_dialog.c:7155
 msgid ""
 "Start reverse playback. SHIFT: snapshot frames  in a multilayer image at "
 "original size CTRL: snapshot at preview size ALT: force creation of new "
@@ -5160,7 +5228,7 @@ msgstr ""
 "vrstvami v původní velikosti CTRL: zachytávat ve velikosti náhledu ALT: "
 "vnutit vytvoření nového zachyceného obrázku"
 
-#: ../gap/gap_player_main.c:250
+#: ../gap/gap_player_main.c:271
 msgid "Playback..."
 msgstr "Přehrávání..."
 
@@ -5207,8 +5275,8 @@ msgstr "Změna velikosti políček videa (všech)"
 msgid "Scale (original %dx%d)"
 msgstr "Změna velikosti (původně %d×%d)"
 
-#: ../gap/gap_range_ops.c:215 ../gap/gap_story_dialog.c:6046
-#: ../gap/gap_story_dialog.c:6291
+#: ../gap/gap_range_ops.c:215 ../gap/gap_story_dialog.c:6652
+#: ../gap/gap_story_dialog.c:7034
 msgid "Reset"
 msgstr "Vynulovat"
 
@@ -5324,7 +5392,7 @@ msgid "Convert to Indexed"
 msgstr "Převést do indexované"
 
 #. the basename label
-#: ../gap/gap_range_ops.c:523 ../gap/gap_vex_dialog.c:2363
+#: ../gap/gap_range_ops.c:523 ../gap/gap_vex_dialog.c:2367
 msgid "Basename:"
 msgstr "Základ jména:"
 
@@ -5338,7 +5406,7 @@ msgstr ""
 
 #. the extension label
 #: ../gap/gap_range_ops.c:530 ../gap/gap_split.c:269
-#: ../gap/gap_vex_dialog.c:2433
+#: ../gap/gap_vex_dialog.c:2437
 msgid "Extension:"
 msgstr "Přípona:"
 
@@ -5498,7 +5566,8 @@ msgstr "Základ jména vrstvy:"
 msgid ""
 "Basename for all layers where the string '[######]' is replaced by the frame "
 "number"
-msgstr "Základ názvu všech vrstev, kde řetězec '[######]' je nahrazen číslem políčka"
+msgstr ""
+"Základ názvu všech vrstev, kde řetězec '[######]' je nahrazen číslem políčka"
 
 #: ../gap/gap_range_ops.c:733
 msgid "Layer Mergemode:"
@@ -5802,84 +5871,95 @@ msgid "Rotate Follow"
 msgstr "Sledovat rotací"
 
 #. auto update toggle  check button
-#: ../gap/gap_story_att_trans_dlg.c:1799
+#: ../gap/gap_story_att_trans_dlg.c:2241
 msgid "Update"
 msgstr "Aktualizace"
 
-#: ../gap/gap_story_att_trans_dlg.c:1804
+#: ../gap/gap_story_att_trans_dlg.c:2246
 msgid "automatic update using the referred frame"
 msgstr ""
 
 #. from start label
-#: ../gap/gap_story_att_trans_dlg.c:1906
+#: ../gap/gap_story_att_trans_dlg.c:2348
 msgid "Start:"
 msgstr "Start:"
 
-#: ../gap/gap_story_att_trans_dlg.c:1909 ../gap/gap_story_att_trans_dlg.c:1951
+#: ../gap/gap_story_att_trans_dlg.c:2351 ../gap/gap_story_att_trans_dlg.c:2393
 msgid ""
 "Reset to: defaults, use modifyer keys CTRL, ALT for alternative defaults. "
 "SHIFT resets to initial value"
 msgstr ""
 
-#. to label
-#: ../gap/gap_story_att_trans_dlg.c:1948
+#. to (end value of transition) button
+#: ../gap/gap_story_att_trans_dlg.c:2390
 msgid "End:"
 msgstr "Konec:"
 
-#: ../gap/gap_story_att_trans_dlg.c:1994
+#: ../gap/gap_story_att_trans_dlg.c:2436 ../gap/gap_story_att_trans_dlg.c:2636
 msgid "Copy this number of frames to all enabled rows"
 msgstr ""
 
-#: ../gap/gap_story_att_trans_dlg.c:2021
+#: ../gap/gap_story_att_trans_dlg.c:2463
 msgid "Number of frames (duration of transition from start to end value)"
 msgstr ""
 
-#: ../gap/gap_story_att_trans_dlg.c:2065 ../gap/gap_story_att_trans_dlg.c:2075
+#: ../gap/gap_story_att_trans_dlg.c:2507 ../gap/gap_story_att_trans_dlg.c:2518
 #, fuzzy
 msgid "Transition Attributes"
 msgstr "Atributy vrstvy"
 
 #. the frame
-#: ../gap/gap_story_att_trans_dlg.c:2095 ../gap/gap_story_dialog.c:3819
-#: ../gap/gap_story_dialog.c:3890 ../gap/gap_story_dialog.c:3971
-#: ../gap/gap_story_properties.c:1744
+#: ../gap/gap_story_att_trans_dlg.c:2539 ../gap/gap_story_dialog.c:4217
+#: ../gap/gap_story_dialog.c:4288 ../gap/gap_story_dialog.c:4369
+#: ../gap/gap_story_properties.c:2786
 msgid "Properties"
 msgstr "Vlastnosti"
 
 #. the fit size label
-#: ../gap/gap_story_att_trans_dlg.c:2109
+#: ../gap/gap_story_att_trans_dlg.c:2555
 #, fuzzy
 msgid "FitSize:"
 msgstr "Velikost písma:"
 
 #. the fit width check button
-#: ../gap/gap_story_att_trans_dlg.c:2115
+#: ../gap/gap_story_att_trans_dlg.c:2561
 msgid "Width"
 msgstr "Šířka:"
 
-#: ../gap/gap_story_att_trans_dlg.c:2123
+#: ../gap/gap_story_att_trans_dlg.c:2569
 msgid "scale width of frame to fit master width"
 msgstr ""
 
 #. the fit height check button
-#: ../gap/gap_story_att_trans_dlg.c:2134
+#: ../gap/gap_story_att_trans_dlg.c:2580
 msgid "Height"
 msgstr "Výška"
 
-#: ../gap/gap_story_att_trans_dlg.c:2142
+#: ../gap/gap_story_att_trans_dlg.c:2588
 msgid "scale height of frame to fit master height"
 msgstr ""
 
 #. the keep proportions check button
-#: ../gap/gap_story_att_trans_dlg.c:2153
+#: ../gap/gap_story_att_trans_dlg.c:2599
 msgid "Keep Proportion"
 msgstr "Zachovat proporce"
 
-#: ../gap/gap_story_att_trans_dlg.c:2161
+#: ../gap/gap_story_att_trans_dlg.c:2607
 msgid ""
 "ON: keep proportions at scaling.  (this may result in black borders)OFF: "
 "allow changes of image proportions at scaling"
 msgstr ""
+
+#. the overlap label (same row as FitSize)
+#: ../gap/gap_story_att_trans_dlg.c:2626
+#, fuzzy
+msgid "Overlap:"
+msgstr "Překrytí"
+
+#: ../gap/gap_story_att_trans_dlg.c:2661
+#, fuzzy
+msgid "Number of overlapping frames within this track"
+msgstr "Počet políček, které extrahovat"
 
 #. lower constraint for the from/to values
 #. upper constraint for the from/to values
@@ -5887,29 +5967,29 @@ msgstr ""
 #. page increment   for the from/to values
 #. page size        for the from/to values
 #. digits for the from/to values
-#: ../gap/gap_story_att_trans_dlg.c:2193
+#: ../gap/gap_story_att_trans_dlg.c:2688
 msgid "ON: Enable opacity settings"
 msgstr ""
 
-#: ../gap/gap_story_att_trans_dlg.c:2195
+#: ../gap/gap_story_att_trans_dlg.c:2690
 msgid ""
 "opacity value for the first handled frame where 100 is fully opaque, 0 is "
 "fully transparent"
 msgstr ""
 
-#: ../gap/gap_story_att_trans_dlg.c:2198
+#: ../gap/gap_story_att_trans_dlg.c:2693
 msgid ""
 "opacity value for the last handled framewhere 100 is fully opaque, 0 is "
 "fully transparent"
 msgstr ""
 
-#: ../gap/gap_story_att_trans_dlg.c:2201 ../gap/gap_story_att_trans_dlg.c:2227
-#: ../gap/gap_story_att_trans_dlg.c:2254 ../gap/gap_story_att_trans_dlg.c:2280
-#: ../gap/gap_story_att_trans_dlg.c:2306
+#: ../gap/gap_story_att_trans_dlg.c:2696 ../gap/gap_story_att_trans_dlg.c:2722
+#: ../gap/gap_story_att_trans_dlg.c:2749 ../gap/gap_story_att_trans_dlg.c:2775
+#: ../gap/gap_story_att_trans_dlg.c:2801
 msgid "number of frames"
 msgstr "počet políček"
 
-#: ../gap/gap_story_att_trans_dlg.c:2207
+#: ../gap/gap_story_att_trans_dlg.c:2702
 msgid "Move X:"
 msgstr "Přesun X:"
 
@@ -5919,23 +5999,23 @@ msgstr "Přesun X:"
 #. page increment   for the from/to values
 #. page size        for the from/to values
 #. digits for the from/to values
-#: ../gap/gap_story_att_trans_dlg.c:2219
+#: ../gap/gap_story_att_trans_dlg.c:2714
 msgid "ON: Enable move horizontal settings"
 msgstr ""
 
-#: ../gap/gap_story_att_trans_dlg.c:2221
+#: ../gap/gap_story_att_trans_dlg.c:2716
 msgid ""
 "move horizontal value for the first handled frame  where 0.0 is centered, "
 "100.0 is outside right, -100.0 is outside left)"
 msgstr ""
 
-#: ../gap/gap_story_att_trans_dlg.c:2224
+#: ../gap/gap_story_att_trans_dlg.c:2719
 msgid ""
 "move horizontal value for the last handled frame  where 0.0 is centered, "
 "100.0 is outside right, -100.0 is outside left)"
 msgstr ""
 
-#: ../gap/gap_story_att_trans_dlg.c:2234
+#: ../gap/gap_story_att_trans_dlg.c:2729
 msgid "Move Y:"
 msgstr "Přesun Y:"
 
@@ -5945,23 +6025,23 @@ msgstr "Přesun Y:"
 #. page increment   for the from/to values
 #. page size        for the from/to values
 #. digits for the from/to values
-#: ../gap/gap_story_att_trans_dlg.c:2246
+#: ../gap/gap_story_att_trans_dlg.c:2741
 msgid "ON: Enable move vertical settings"
 msgstr ""
 
-#: ../gap/gap_story_att_trans_dlg.c:2248
+#: ../gap/gap_story_att_trans_dlg.c:2743
 msgid ""
 "move vertical value for the first handled frame  where 0.0 is centered, "
 "100.0 is outside at bottom, -100.0 is outside at top)"
 msgstr ""
 
-#: ../gap/gap_story_att_trans_dlg.c:2251
+#: ../gap/gap_story_att_trans_dlg.c:2746
 msgid ""
 "move vertical value for the last handled frame  where 0.0 is centered, 100.0 "
 "is outside at bottom, -100.0 is outside at top)"
 msgstr ""
 
-#: ../gap/gap_story_att_trans_dlg.c:2260
+#: ../gap/gap_story_att_trans_dlg.c:2755
 #, fuzzy
 msgid "Scale Width:"
 msgstr "Škála Šířka:"
@@ -5972,23 +6052,23 @@ msgstr "Škála Šířka:"
 #. page increment   for the from/to values
 #. page size        for the from/to values
 #. digits for the from/to values
-#: ../gap/gap_story_att_trans_dlg.c:2272
+#: ../gap/gap_story_att_trans_dlg.c:2767
 msgid "ON: Enable scale width settings"
 msgstr ""
 
-#: ../gap/gap_story_att_trans_dlg.c:2274
+#: ../gap/gap_story_att_trans_dlg.c:2769
 msgid ""
 "scale width value for the first handled frame where 100 is 1:1, 50 is half, "
 "200 is double width"
 msgstr ""
 
-#: ../gap/gap_story_att_trans_dlg.c:2277
+#: ../gap/gap_story_att_trans_dlg.c:2772
 msgid ""
 "scale width value for the last handled frame where 100 is 1:1, 50 is half, "
 "200 is double width"
 msgstr ""
 
-#: ../gap/gap_story_att_trans_dlg.c:2286
+#: ../gap/gap_story_att_trans_dlg.c:2781
 #, fuzzy
 msgid "Scale Height:"
 msgstr "Škála Výška:"
@@ -5999,17 +6079,17 @@ msgstr "Škála Výška:"
 #. page increment   for the from/to values
 #. page size        for the from/to values
 #. digits for the from/to values
-#: ../gap/gap_story_att_trans_dlg.c:2298
+#: ../gap/gap_story_att_trans_dlg.c:2793
 msgid "ON: Enable scale height settings"
 msgstr ""
 
-#: ../gap/gap_story_att_trans_dlg.c:2300
+#: ../gap/gap_story_att_trans_dlg.c:2795
 msgid ""
 "scale height value for the first handled frame where 100 is 1:1, 50 is half, "
 "200 is double height"
 msgstr ""
 
-#: ../gap/gap_story_att_trans_dlg.c:2303
+#: ../gap/gap_story_att_trans_dlg.c:2798
 msgid ""
 "scale height value for the last handled frame where 100 is 1:1, 50 is half, "
 "200 is double height"
@@ -6017,103 +6097,101 @@ msgstr ""
 
 #. the comment label
 #. the Comment lable
-#: ../gap/gap_story_att_trans_dlg.c:2349 ../gap/gap_story_properties.c:2133
+#: ../gap/gap_story_att_trans_dlg.c:2844 ../gap/gap_story_properties.c:3456
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3240
 msgid "Comment:"
 msgstr "Poznámka:"
 
-#: ../gap/gap_story_dialog.c:1431 ../gap/gap_story_dialog.c:1487
+#: ../gap/gap_story_dialog.c:1587 ../gap/gap_story_dialog.c:1643
 #, c-format
 msgid ""
 "** ERROR: Storyboard parser reported:\n"
 "%s\n"
 msgstr ""
 
-#: ../gap/gap_story_dialog.c:1989
+#: ../gap/gap_story_dialog.c:2184
 #, fuzzy
 msgid "Load Storyboard"
 msgstr "Načíst"
 
-#: ../gap/gap_story_dialog.c:1993
+#: ../gap/gap_story_dialog.c:2188
 msgid "Load Cliplist"
 msgstr "Načíst seznam klipů"
 
-#: ../gap/gap_story_dialog.c:2031
+#: ../gap/gap_story_dialog.c:2226
 #, fuzzy
 msgid "Save Storyboard file"
 msgstr "Uložit"
 
-#: ../gap/gap_story_dialog.c:3077
+#: ../gap/gap_story_dialog.c:3474
 msgid "Global Layout Properties dialog already open"
 msgstr "Dialog Globální vlastnosti rozložení je již otevřen"
 
-#: ../gap/gap_story_dialog.c:3083
+#: ../gap/gap_story_dialog.c:3480
 msgid "large"
 msgstr "velké"
 
-#: ../gap/gap_story_dialog.c:3084
+#: ../gap/gap_story_dialog.c:3481
 msgid "medium"
 msgstr "střední"
 
-#: ../gap/gap_story_dialog.c:3085
+#: ../gap/gap_story_dialog.c:3482
 msgid "small"
 msgstr "malé"
 
-#: ../gap/gap_story_dialog.c:3090
+#: ../gap/gap_story_dialog.c:3487
 msgid "Cliplist Layout:"
 msgstr "Rozložení seznamu klipů:"
 
-#: ../gap/gap_story_dialog.c:3095 ../gap/gap_story_dialog.c:3135
+#: ../gap/gap_story_dialog.c:3492 ../gap/gap_story_dialog.c:3532
 msgid "Thumbnail Size:"
 msgstr "Velikost miniatury:"
 
-#: ../gap/gap_story_dialog.c:3096
+#: ../gap/gap_story_dialog.c:3493
 msgid "Thumbnail size in the cliplist"
 msgstr "Velikost miniatury v seznamu klipů"
 
-#: ../gap/gap_story_dialog.c:3106 ../gap/gap_story_dialog.c:3146
+#: ../gap/gap_story_dialog.c:3503 ../gap/gap_story_dialog.c:3543
 msgid "Columns:"
 msgstr "Sloupců:"
 
-#: ../gap/gap_story_dialog.c:3107
+#: ../gap/gap_story_dialog.c:3504
 msgid "columns in the cliplist"
 msgstr "sloupce v seznamu klipů"
 
-#: ../gap/gap_story_dialog.c:3117 ../gap/gap_story_dialog.c:3157
+#: ../gap/gap_story_dialog.c:3514 ../gap/gap_story_dialog.c:3554
 msgid "Rows:"
 msgstr "Řádků:"
 
-#: ../gap/gap_story_dialog.c:3118
+#: ../gap/gap_story_dialog.c:3515
 msgid "rows in the cliplist"
 msgstr "řádky v seznamu ořezání"
 
-#: ../gap/gap_story_dialog.c:3130
+#: ../gap/gap_story_dialog.c:3527
 msgid "Storyboard Layout:"
 msgstr ""
 
-#: ../gap/gap_story_dialog.c:3136
+#: ../gap/gap_story_dialog.c:3533
 msgid "Thumbnail size in the storyboard list"
-msgstr ""
+msgstr "Velikost náhledu v seznamu storyboardu"
 
-#: ../gap/gap_story_dialog.c:3147
-#, fuzzy
+#: ../gap/gap_story_dialog.c:3544
 msgid "columns in the storyboard list"
-msgstr "Název souboru skriptu makra filtrování"
+msgstr "sloupce v seznamu storyboardu"
 
-#: ../gap/gap_story_dialog.c:3158
-#, fuzzy
+#: ../gap/gap_story_dialog.c:3555
 msgid "rows in the storyboard list"
-msgstr "Název souboru skriptu makra filtrování"
+msgstr "řádky v seznamu storyboardu"
 
-#: ../gap/gap_story_dialog.c:3170
+#: ../gap/gap_story_dialog.c:3567
 msgid "Use the standard built in layout settings"
 msgstr "Používat standardní vestavěná nastavení rozložení"
 
-#: ../gap/gap_story_dialog.c:3172
+#: ../gap/gap_story_dialog.c:3569
 msgid "Global Layout Properties"
 msgstr "Globální vlastnosti rozložení"
 
-#: ../gap/gap_story_dialog.c:3272
+#: ../gap/gap_story_dialog.c:3670
 msgid ""
 "GIMP-GAP is compiled without videoapi support. Therefore thumbnails for "
 "videoframes can not be displayed."
@@ -6121,7 +6199,7 @@ msgstr ""
 "GIMP-GAP je přeložen bez podpory videoapi. Náhledy políček videa proto nelze "
 "zobrazit."
 
-#: ../gap/gap_story_dialog.c:3372
+#: ../gap/gap_story_dialog.c:3770
 #, c-format
 msgid ""
 "Failed to write cliplistfile\n"
@@ -6132,167 +6210,178 @@ msgstr ""
 "název souboru: '%s':\n"
 "%s"
 
-#: ../gap/gap_story_dialog.c:3586
-#, fuzzy, c-format
+#: ../gap/gap_story_dialog.c:3984
+#, c-format
 msgid ""
 "Failed to write storyboardfile\n"
 "filename: '%s':\n"
 "%s"
 msgstr ""
-"Nemohu zapsat soubor řídicích bodů\n"
-"název souboru: '%s':\n"
+"Zápis souboru storyboardu selhal\n"
+"jméno souboru: '%s':\n"
 "%s"
 
-#: ../gap/gap_story_dialog.c:3817
+#: ../gap/gap_story_dialog.c:4215
 msgid "Global"
 msgstr "Globální"
 
-#: ../gap/gap_story_dialog.c:3825
+#: ../gap/gap_story_dialog.c:4223
 msgid "Videothumbnails"
 msgstr "Náhledy videa"
 
-#: ../gap/gap_story_dialog.c:3845
+#: ../gap/gap_story_dialog.c:4243
 msgid "Help"
 msgstr "Nápověda"
 
 #. the clp_frame
-#: ../gap/gap_story_dialog.c:3860 ../gap/gap_story_dialog.c:5806
+#: ../gap/gap_story_dialog.c:4258 ../gap/gap_story_dialog.c:6432
 msgid "Cliplist"
 msgstr "Seznam klipů"
 
 #. XXXXXXXXXXX Player Frame  XXXXXXXXXXXX
 #. the player_frame
-#: ../gap/gap_story_dialog.c:3884 ../gap/gap_story_dialog.c:3965
-#: ../gap/gap_story_dialog.c:5858
+#: ../gap/gap_story_dialog.c:4282 ../gap/gap_story_dialog.c:4363
+#: ../gap/gap_story_dialog.c:6484
 msgid "Playback"
 msgstr "Přehrávání"
 
-#: ../gap/gap_story_dialog.c:3896 ../gap/gap_story_dialog.c:3977
+#: ../gap/gap_story_dialog.c:4294 ../gap/gap_story_dialog.c:4375
 msgid "Create Clip"
 msgstr "Vytvořit klip"
 
-#: ../gap/gap_story_dialog.c:3902 ../gap/gap_story_dialog.c:3983
+#: ../gap/gap_story_dialog.c:4300 ../gap/gap_story_dialog.c:4381
 #, fuzzy
 msgid "Create Transition"
 msgstr "deformace rate"
 
-#: ../gap/gap_story_dialog.c:3907 ../gap/gap_story_dialog.c:3988
+#: ../gap/gap_story_dialog.c:4305 ../gap/gap_story_dialog.c:4386
 msgid "Toggle Unit"
 msgstr "Přepnout jednotku"
 
-#: ../gap/gap_story_dialog.c:3913 ../gap/gap_story_dialog.c:3994
+#: ../gap/gap_story_dialog.c:4311 ../gap/gap_story_dialog.c:4392
 #, fuzzy
 msgid "Add Audio Otone"
 msgstr "Přidat"
 
-#: ../gap/gap_story_dialog.c:3919 ../gap/gap_story_dialog.c:4000
+#: ../gap/gap_story_dialog.c:4317 ../gap/gap_story_dialog.c:4398
 msgid "Encode"
 msgstr "Zakódovat"
 
-#: ../gap/gap_story_dialog.c:3941
+#: ../gap/gap_story_dialog.c:4339
 msgid "_Storyboard"
 msgstr ""
 
-#: ../gap/gap_story_dialog.c:4042
+#: ../gap/gap_story_dialog.c:4440
 #, c-format
 msgid "Unsaved cliplist changes '%s'"
 msgstr "Neuložené změny seznamu klipů '%s'"
 
-#: ../gap/gap_story_dialog.c:4054
+#: ../gap/gap_story_dialog.c:4452
 #, c-format
 msgid "Unsaved storyboard changes '%s'"
-msgstr ""
+msgstr "Neuložené změny storyboardu '%s'"
 
-#: ../gap/gap_story_dialog.c:4066
+#: ../gap/gap_story_dialog.c:4464
 msgid "Quit Storyboard"
-msgstr ""
+msgstr "Ukončit storyboard"
 
-#: ../gap/gap_story_dialog.c:4079 ../gap/gap_story_dialog.c:4080
+#: ../gap/gap_story_dialog.c:4477 ../gap/gap_story_dialog.c:4478
 msgid "Storyboard unsaved changes"
-msgstr ""
+msgstr "Neuložené změny storyboardu"
 
-#: ../gap/gap_story_dialog.c:4132
-#, fuzzy
+#: ../gap/gap_story_dialog.c:4530
 msgid "Storyboard:"
-msgstr "Vybrat soubor zvuku"
+msgstr "Storyboard:"
 
-#: ../gap/gap_story_dialog.c:4147 ../gap/gap_story_dialog.c:4176
+#: ../gap/gap_story_dialog.c:4545 ../gap/gap_story_dialog.c:4574
 msgid "(modified)"
 msgstr "(změněno)"
 
-#: ../gap/gap_story_dialog.c:4153
+#: ../gap/gap_story_dialog.c:4551
 msgid "Cliplist:"
 msgstr "Seznam klipů:"
 
-#: ../gap/gap_story_dialog.c:4369
+#: ../gap/gap_story_dialog.c:4767
 #, c-format
 msgid "Creating Index (decoder: %s)"
 msgstr "Vytvářím index (dekodér: %s)"
 
-#: ../gap/gap_story_dialog.c:4507
+#: ../gap/gap_story_dialog.c:4905
 #, c-format
 msgid "Videoseek (decoder: %s)"
 msgstr "Posun ve videu (dekodér: %s)"
 
-#: ../gap/gap_story_dialog.c:4850
+#: ../gap/gap_story_dialog.c:5248
 msgid "videothumbnail cancelled"
 msgstr "miniatura videa zrušena"
 
-#: ../gap/gap_story_dialog.c:4865
+#: ../gap/gap_story_dialog.c:5263
 #, c-format
 msgid "Fetching videothumbnail for clip: %d (out of %d)"
 msgstr "Získávám miniaturu videa pro klip: %d (z %d)"
 
-#: ../gap/gap_story_dialog.c:5490
-#, fuzzy
+#: ../gap/gap_story_dialog.c:5890
 msgid "Load storyboard file"
-msgstr "Načíst"
+msgstr "Načíst soubor storyboardu"
 
-#: ../gap/gap_story_dialog.c:5496
+#: ../gap/gap_story_dialog.c:5896
 msgid "Load cliplist file"
 msgstr "Načíst soubor seznamu klipů"
 
-#: ../gap/gap_story_dialog.c:5511
-#, fuzzy
+#: ../gap/gap_story_dialog.c:5911
 msgid "Save storyboard to file"
-msgstr "Uložit"
+msgstr "Uložit storyboard do souboru"
 
-#: ../gap/gap_story_dialog.c:5520
+#: ../gap/gap_story_dialog.c:5920
 msgid "Save cliplist to file"
 msgstr "Uložit seznam klipů do souboru"
 
-#: ../gap/gap_story_dialog.c:5536
+#. Track label
+#: ../gap/gap_story_dialog.c:5928
+msgid "Track:"
+msgstr "Stopa:"
+
+#: ../gap/gap_story_dialog.c:5942
+msgid "Video Track Number (0 refers to mask definition track)"
+msgstr "Číslo stopy videa (0 odpovídá stopě definice masky)"
+
+#: ../gap/gap_story_dialog.c:5958
 msgid "Cut a clip"
 msgstr "Vyjmout klip"
 
-#: ../gap/gap_story_dialog.c:5548
+#: ../gap/gap_story_dialog.c:5970
 msgid "Copy a clip"
 msgstr "Kopírovat klip"
 
-#: ../gap/gap_story_dialog.c:5560
+#: ../gap/gap_story_dialog.c:5982
 msgid "Paste a clip after last (selected) element"
 msgstr "Vložit klip po posledním (vybraném) elementu"
 
-#: ../gap/gap_story_dialog.c:5574
-msgid "Playback storyboard file. SHIFT: Play only selected clips"
-msgstr ""
+#: ../gap/gap_story_dialog.c:5996
+#, fuzzy
+msgid ""
+"Playback storyboard file. SHIFT: Play only selected clips CTRL: Play "
+"composite video"
+msgstr "Přehrát seznam klipů. SHIFT: Přehrát jen vybrané klipy"
 
-#: ../gap/gap_story_dialog.c:5583
-msgid "Playback cliplist. SHIFT: Play only selected clips"
+#: ../gap/gap_story_dialog.c:6006
+#, fuzzy
+msgid ""
+"Playback cliplist. SHIFT: Play only selected clips CTRL: Play composite video"
 msgstr "Přehrát seznam klipů. SHIFT: Přehrát jen vybrané klipy"
 
 #. gtk_widget_show (entry);
 #. Row label
-#: ../gap/gap_story_dialog.c:5601
+#: ../gap/gap_story_dialog.c:6025
 msgid "Row:"
 msgstr "Řádek:"
 
-#: ../gap/gap_story_dialog.c:5616
+#: ../gap/gap_story_dialog.c:6039
 msgid "Top rownumber"
 msgstr "Číslo horního řádku"
 
 #. of label
-#: ../gap/gap_story_dialog.c:5622
+#: ../gap/gap_story_dialog.c:6045
 msgid "of:"
 msgstr "z:"
 
@@ -6305,58 +6394,59 @@ msgstr "z:"
 #.
 #. the stb_frame
 #. radio button Storyboard input_mode
-#: ../gap/gap_story_dialog.c:5760 ../gap/gap_story_dialog.c:5874
-#: ../vid_common/gap_cme_gui.c:2365
+#: ../gap/gap_story_dialog.c:6386 ../gap/gap_story_dialog.c:6500
+#: ../vid_common/gap_cme_gui.c:2369
 msgid "Storyboard"
 msgstr ""
 
-#: ../gap/gap_story_dialog.c:5944 ../vid_common/gap_cme_gui.c:2237
+#: ../gap/gap_story_dialog.c:6563 ../vid_common/gap_cme_gui.c:2241
 msgid "Cancel"
 msgstr "Zrušit"
 
-#: ../gap/gap_story_dialog.c:6005
-msgid "Generate original tone audio track for all video clips in the storyboard"
+#: ../gap/gap_story_dialog.c:6611
+msgid ""
+"Generate original tone audio track for all video clips in the storyboard"
 msgstr ""
 
-#: ../gap/gap_story_dialog.c:6011
+#: ../gap/gap_story_dialog.c:6617
 msgid "Input Audiotrack:"
 msgstr "Vstupní stopa zvuku:"
 
-#: ../gap/gap_story_dialog.c:6012
+#: ../gap/gap_story_dialog.c:6618
 #, fuzzy
 msgid "select input audiotrack in the videofile(s)."
 msgstr "zvolte vstupní stopu videa (většina souborů videa má jen 1 stopu)"
 
-#: ../gap/gap_story_dialog.c:6023
+#: ../gap/gap_story_dialog.c:6629
 msgid "Output Audiotrack:"
 msgstr "Výstupní stopa zvuku:"
 
-#: ../gap/gap_story_dialog.c:6024
+#: ../gap/gap_story_dialog.c:6630
 msgid ""
 "output audiotrack to be generated in the storyboard file. The generated "
 "storyboard audiotrack will be a list of references to the audioparts in the "
 "input videos, corresponding to all used video clip references."
 msgstr ""
 
-#: ../gap/gap_story_dialog.c:6036
+#: ../gap/gap_story_dialog.c:6642
 msgid "Replace Audiotrack:"
 msgstr "Nahradit stopu zvuku:"
 
-#: ../gap/gap_story_dialog.c:6037
+#: ../gap/gap_story_dialog.c:6643
 msgid ""
 "ON: Allow replacing of already existing audio clip references  in the "
 "storyboard"
 msgstr ""
 
-#: ../gap/gap_story_dialog.c:6047
+#: ../gap/gap_story_dialog.c:6653
 msgid "Reset parameters to default values"
 msgstr "Nastavit parametry na implicitní hodnoty"
 
-#: ../gap/gap_story_dialog.c:6055
+#: ../gap/gap_story_dialog.c:6661
 msgid "Generate Original Tone Audio"
 msgstr "Vytvořit zvuk s původním tónem"
 
-#: ../gap/gap_story_dialog.c:6082
+#: ../gap/gap_story_dialog.c:6690
 #, c-format
 msgid ""
 "Original tone track was not created.\n"
@@ -6365,46 +6455,74 @@ msgid ""
 "Use another track number or allow replace at next try."
 msgstr ""
 
-#: ../gap/gap_story_dialog.c:6108
+#: ../gap/gap_story_dialog.c:6702
+#, c-format
+msgid ""
+"Original tone track was created with warnings.\n"
+"The storyboard %s\n"
+"has movie clips with framerate %.4f.that is different from the master "
+"framerate %.4f.\n"
+"The generated audio is NOT synchron with the video."
+msgstr ""
+
+#: ../gap/gap_story_dialog.c:6801
 msgid "automatic"
 msgstr "automatický"
 
-#: ../gap/gap_story_dialog.c:6145
+#: ../gap/gap_story_dialog.c:6802
+#, fuzzy
+msgid "none"
+msgstr "Nic"
+
+#: ../gap/gap_story_dialog.c:6842
 msgid "Name:"
 msgstr "Jméno:"
 
-#: ../gap/gap_story_dialog.c:6149
+#: ../gap/gap_story_dialog.c:6846
 #, fuzzy
 msgid "Name of the Storyboardfile"
 msgstr "Název"
 
-#: ../gap/gap_story_dialog.c:6155
+#: ../gap/gap_story_dialog.c:6852
 msgid "Name of the Cliplistfile"
 msgstr "Název souboru seznamu klipů"
 
-#: ../gap/gap_story_dialog.c:6165 ../gap/gap_story_dialog.c:6169
+#: ../gap/gap_story_dialog.c:6862 ../gap/gap_story_dialog.c:6866
 #, c-format
 msgid "Name: %s"
 msgstr "Název: %s"
 
-#: ../gap/gap_story_dialog.c:6178
+#: ../gap/gap_story_dialog.c:6875
 msgid "Master width of the resulting video in pixels"
 msgstr "Šířka výstupního videa v pixelech"
 
-#: ../gap/gap_story_dialog.c:6189
+#: ../gap/gap_story_dialog.c:6886
 msgid "Master height of the resulting video in pixels)"
 msgstr "Výška výstupního videa v pixelech)"
 
-#: ../gap/gap_story_dialog.c:6201
+#: ../gap/gap_story_dialog.c:6898
 msgid "Framerate in frames/sec."
 msgstr "Frekvence políček v políčkách za sekundu"
 
+#. the qdiff label
+#: ../gap/gap_story_dialog.c:6941 ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1494
+msgid "Aspect:"
+msgstr "Poměr stran:"
+
+#: ../gap/gap_story_dialog.c:6942
+msgid ""
+"Select video frame aspect ratio; Enter a string like \"4:3\" or \"16:9\" to "
+"specify the aspect.Enter none or leave empty if no special aspect shall be "
+"used.(in this case video frames use the master pixelsize 1:1 for displaying "
+"video frames)"
+msgstr ""
+
 #. the (preferred) Decoder label
-#: ../gap/gap_story_dialog.c:6241 ../gap/gap_vex_dialog.c:2215
+#: ../gap/gap_story_dialog.c:6984 ../gap/gap_vex_dialog.c:2219
 msgid "Decoder:"
 msgstr "Dekodér:"
 
-#: ../gap/gap_story_dialog.c:6242
+#: ../gap/gap_story_dialog.c:6985
 msgid ""
 "Select preferred video decoder library, or leave empty for automatic "
 "selection.The decoder setting is only relevant if videoclips are used (but "
@@ -6414,50 +6532,50 @@ msgstr ""
 "automatický výběr. Nastavení dekodéru má vliv, jen když se používají "
 "videoklipy (ale ne pro políčka, která jsou soubory obrázků)"
 
-#: ../gap/gap_story_dialog.c:6260
+#: ../gap/gap_story_dialog.c:7003
 msgid "Master audio samplerate for the resulting video in samples/sec."
 msgstr "vzorkovací frekvence hlavního zvuku výsledného videa ve vzorcích/s."
 
-#: ../gap/gap_story_dialog.c:6276
+#: ../gap/gap_story_dialog.c:7019
 msgid "Master audio volume, where 1.0 keeps original volume"
 msgstr "Hlavní hlasitost zvuku, kde 1,0 ponechává původní hlasitost"
 
 #. should use GIMP_STOCK_RESET if possible
-#: ../gap/gap_story_dialog.c:6292
+#: ../gap/gap_story_dialog.c:7035
 msgid "Reset parameters to inital values"
 msgstr "Nastavit parametry na původní hodnoty"
 
-#: ../gap/gap_story_dialog.c:6303
+#: ../gap/gap_story_dialog.c:7046
 msgid "Master Properties"
 msgstr "Hlavní vlastnosti"
 
-#: ../gap/gap_story_dialog.c:6693
+#: ../gap/gap_story_dialog.c:7469
 msgid "STORY_new.txt"
 msgstr "STORY_nový.txt"
 
-#: ../gap/gap_story_file.c:397 ../gap/gap_story_file.c:431
+#: ../gap/gap_story_file.c:471 ../gap/gap_story_file.c:516
 msgid "internal error"
 msgstr "interní chyba"
 
-#: ../gap/gap_story_file.c:1403
+#: ../gap/gap_story_file.c:1969
 #, c-format
 msgid "illegal number: %s (valid range is %d upto %d)\n"
 msgstr "neplatné číslo: %s (platný rozsah je %d až %d)\n"
 
-#: ../gap/gap_story_file.c:1442
+#: ../gap/gap_story_file.c:2008
 #, c-format
 msgid "illegal number: %s (valid range is %.3f upto %.3f)"
 msgstr "neplatné číslo: %s (platný rozsah je %.3f až %.3f)"
 
-#: ../gap/gap_story_file.c:1545
+#: ../gap/gap_story_file.c:2301
 msgid "same parameter used more than once"
 msgstr "stejný parametr použit více než jednou"
 
-#: ../gap/gap_story_file.c:1557
+#: ../gap/gap_story_file.c:2313
 msgid "conflict: positional parameter shadows named parameter"
 msgstr "konflikt: poziční parametr zastiňuje pojmenovaný parametr"
 
-#: ../gap/gap_story_file.c:1605
+#: ../gap/gap_story_file.c:2361
 #, c-format
 msgid ""
 "Header not found!\n"
@@ -6466,14 +6584,14 @@ msgstr ""
 "Hlavička nenalezena!\n"
 "(řádek 1 musí začít s %s nebo %s"
 
-#: ../gap/gap_story_file.c:1872
+#: ../gap/gap_story_file.c:2661
 #, c-format
 msgid "illegal keyword: %s (expected keywords are: width, height, both, none"
 msgstr ""
 "neplatné klíčové slovo: %s (očekávaná klíčová slova jsou width, height, "
 "both, none"
 
-#: ../gap/gap_story_file.c:1899
+#: ../gap/gap_story_file.c:2688
 #, c-format
 msgid "illegal keyword: %s (expected keywords are: keep, change"
 msgstr "neplatné klíčové slovo: %s (očekávaná klíčová slova jsou keep, change"
@@ -6483,27 +6601,37 @@ msgstr "neplatné klíčové slovo: %s (očekávaná klíčová slova jsou keep,
 #. accept unsupported lines (with just a warning)
 #. * because the file has correct Header
 #.
-#: ../gap/gap_story_file.c:2362 ../gap/gap_story_file.c:2369
+#: ../gap/gap_story_file.c:3366 ../gap/gap_story_file.c:3373
 msgid "Unsupported line was ignored"
 msgstr "Nepodporovaný řádek byl ignorován"
 
-#: ../gap/gap_story_file.c:2540
+#: ../gap/gap_story_file.c:3544
 #, c-format
 msgid ""
 "the passed filename %s has irrelevant content or could not be opened by the "
 "parser"
-msgstr "zadaný název souboru %s má nepodstatný obsah nebo jej parser nemůže otevřít"
+msgstr ""
+"zadaný název souboru %s má nepodstatný obsah nebo jej parser nemůže otevřít"
 
 #: ../gap/gap_story_main.c:164
 #, fuzzy
 msgid "Storyboard..."
 msgstr "Vybrat soubor zvuku"
 
-#: ../gap/gap_story_properties.c:431
+#: ../gap/gap_story_properties.c:432
+#, c-format
+msgid ""
+"Error: References could not be updated from the\n"
+"old mask name: \"%s\" to the\n"
+"new mask name: \"%s\"\n"
+"because the new mask name is already in use."
+msgstr ""
+
+#: ../gap/gap_story_properties.c:614
 msgid "Automatic scene detection operates only on cliptypes MOVIE and FRAMES"
 msgstr "Automatická detekce scény pracuje jen na typech klipů FILM a POLÍČKA"
 
-#: ../gap/gap_story_properties.c:438
+#: ../gap/gap_story_properties.c:621
 msgid ""
 "Scene detection depends on video thumbnails. Please enable videothumbnails "
 "(in the Windows Menu)"
@@ -6511,7 +6639,7 @@ msgstr ""
 "Detekce scény závisí na náhledech videa. Povolte prosím náhledy videa (v "
 "menu Okna)"
 
-#: ../gap/gap_story_properties.c:498 ../gap/gap_story_properties.c:562
+#: ../gap/gap_story_properties.c:681 ../gap/gap_story_properties.c:745
 msgid ""
 "Scene detection for cliptype FRAMES depends on thumbnails. Please create "
 "thumbnails for your frames and then try again."
@@ -6519,70 +6647,86 @@ msgstr ""
 "Detekce scény pro typ klipu POLÍČKA závisí na náhledech. Vytvořte prosím "
 "náhledy políček a zkuste to znovu."
 
-#: ../gap/gap_story_properties.c:1236
+#: ../gap/gap_story_properties.c:1651
 msgid "Set Image or Frame Filename"
 msgstr "Nastavit název souboru obrázku nebo políčka"
 
-#: ../gap/gap_story_properties.c:1366
+#: ../gap/gap_story_properties.c:1781
 msgid "EMPTY"
 msgstr "PRÁZDNÉ"
 
-#: ../gap/gap_story_properties.c:1369
+#: ../gap/gap_story_properties.c:1784
 msgid "COLOR"
 msgstr "BARVA"
 
-#: ../gap/gap_story_properties.c:1372
+#: ../gap/gap_story_properties.c:1787
 msgid "SINGLE-IMAGE"
 msgstr "JEDEN-OBRÁZEK"
 
-#: ../gap/gap_story_properties.c:1376
+#: ../gap/gap_story_properties.c:1791
 msgid "ANIM-IMAGE"
 msgstr "ANIMOVANÝ-OBRÁZEK"
 
-#: ../gap/gap_story_properties.c:1380
+#: ../gap/gap_story_properties.c:1795
 msgid "FRAME-IMAGES"
 msgstr "OBRÁZKY-POLÍČEK"
 
-#: ../gap/gap_story_properties.c:1385
+#: ../gap/gap_story_properties.c:1800
 msgid "MOVIE"
 msgstr "FILM"
 
-#: ../gap/gap_story_properties.c:1388
+#: ../gap/gap_story_properties.c:1803
 msgid "COMMENT"
 msgstr "POZNÁMKA"
 
-#: ../gap/gap_story_properties.c:1391
+#: ../gap/gap_story_properties.c:1806
 msgid "** UNKNOWN **"
 msgstr "** NEZNÁMÉ **"
 
-#: ../gap/gap_story_properties.c:1440
+#: ../gap/gap_story_properties.c:1855
 #, c-format
 msgid "%d (frames)"
 msgstr "%d (políček)"
 
-#: ../gap/gap_story_properties.c:1710 ../gap/gap_story_properties.c:1722
+#: ../gap/gap_story_properties.c:2729 ../gap/gap_story_properties.c:2739
+#, fuzzy
+msgid "Mask Properties"
+msgstr "Hlavní vlastnosti"
+
+#: ../gap/gap_story_properties.c:2751 ../gap/gap_story_properties.c:2763
 msgid "Clip Properties"
 msgstr "Vlastnosti klipu"
 
-#: ../gap/gap_story_properties.c:1715 ../gap/gap_story_properties.c:1726
+#: ../gap/gap_story_properties.c:2756 ../gap/gap_story_properties.c:2767
 msgid "Find Scene End"
 msgstr "Najít konec scény"
 
-#: ../gap/gap_story_properties.c:1716 ../gap/gap_story_properties.c:1727
+#: ../gap/gap_story_properties.c:2757 ../gap/gap_story_properties.c:2768
 msgid "Auto Scene Split"
 msgstr "Automatické rozdělení scény"
 
+#. the masktype label
+#: ../gap/gap_story_properties.c:2809
+#, fuzzy
+msgid "Mask Type:"
+msgstr "Typ klipu:"
+
 #. the cliptype label
-#: ../gap/gap_story_properties.c:1759
+#: ../gap/gap_story_properties.c:2814
 msgid "Clip Type:"
 msgstr "Typ klipu:"
 
+#. the duration label
+#: ../gap/gap_story_properties.c:2846
+msgid "Duration:"
+msgstr "Trvání:"
+
 #. the filename label
-#: ../gap/gap_story_properties.c:1774
+#: ../gap/gap_story_properties.c:2870
 msgid "File:"
 msgstr "Soubor:"
 
-#: ../gap/gap_story_properties.c:1809
+#: ../gap/gap_story_properties.c:2915
 msgid "From:"
 msgstr "Od:"
 
@@ -6591,11 +6735,11 @@ msgstr "Od:"
 #. digits
 #. constrain
 #. lower/upper unconstrained
-#: ../gap/gap_story_properties.c:1816
+#: ../gap/gap_story_properties.c:2922
 msgid "framenumber of the first frame in the clip range"
 msgstr "číslo prvního políčka v rozsahu klipu"
 
-#: ../gap/gap_story_properties.c:1838
+#: ../gap/gap_story_properties.c:2944
 msgid "To:"
 msgstr "Do:"
 
@@ -6604,11 +6748,11 @@ msgstr "Do:"
 #. digits
 #. constrain
 #. lower/upper unconstrained
-#: ../gap/gap_story_properties.c:1845
+#: ../gap/gap_story_properties.c:2951
 msgid "framenumber of the last frame in the clip range"
 msgstr "číslo posledního políčka v rozsahu klipu"
 
-#: ../gap/gap_story_properties.c:1857
+#: ../gap/gap_story_properties.c:2972
 msgid "Loops:"
 msgstr "Opakování:"
 
@@ -6617,20 +6761,20 @@ msgstr "Opakování:"
 #. digits
 #. constrain
 #. lower/upper unconstrained
-#: ../gap/gap_story_properties.c:1864
+#: ../gap/gap_story_properties.c:2979
 msgid "number of loops (how often to play the framerange)"
 msgstr "počet opakování (jak často přehrávat rozsah políček)"
 
 #. pingpong
-#: ../gap/gap_story_properties.c:1875
+#: ../gap/gap_story_properties.c:3000
 msgid "Pingpong:"
 msgstr "Pingpong:"
 
-#: ../gap/gap_story_properties.c:1891
+#: ../gap/gap_story_properties.c:3016
 msgid "ON: Play clip in pingpong mode"
 msgstr "ZAPNUTO: Přehrávat klip v režimu pingpong"
 
-#: ../gap/gap_story_properties.c:1903
+#: ../gap/gap_story_properties.c:3036
 msgid "Stepsize:"
 msgstr "Velikost kroku:"
 
@@ -6639,7 +6783,7 @@ msgstr "Velikost kroku:"
 #. digits
 #. constrain
 #. lower/upper unconstrained
-#: ../gap/gap_story_properties.c:1910
+#: ../gap/gap_story_properties.c:3043
 msgid ""
 "Stepsize density. Use 1.0 for normal 1:1 frame by frame steps. a value of "
 "0.5 shows each input frame 2 times. a value of 2.0 shows only every 2.nd "
@@ -6654,84 +6798,197 @@ msgstr ""
 #. digits
 #. constrain
 #. lower/upper unconstrained
-#: ../gap/gap_story_properties.c:1931
+#: ../gap/gap_story_properties.c:3063
 #, fuzzy
 msgid "select input videotrack (most videofiles have just 1 track)"
 msgstr "zvolte vstupní stopu videa (většina souborů videa má jen 1 stopu)"
 
 #. the Deinterlace Mode label
 #. the deinterlace Mode label
-#: ../gap/gap_story_properties.c:1942 ../gap/gap_vex_dialog.c:2497
+#: ../gap/gap_story_properties.c:3074 ../gap/gap_vex_dialog.c:2501
 msgid "Deinterlace:"
 msgstr "Eliminovat prokládání:"
 
-#: ../gap/gap_story_properties.c:1968
+#: ../gap/gap_story_properties.c:3101
 msgid "Read videoframes 1:1 without de-interlace filter"
 msgstr "Číst políčka videa 1:1 bez filtru pro eliminaci prokládání"
 
 #. radio button delace_mode odd
-#: ../gap/gap_story_properties.c:1977
+#: ../gap/gap_story_properties.c:3110
 msgid "Odd"
 msgstr "Liché"
 
-#: ../gap/gap_story_properties.c:1985
+#: ../gap/gap_story_properties.c:3119
 msgid "Apply odd-lines filter when reading videoframes"
 msgstr "Používat při čtení políček videa filtr lichých řádků"
 
 #. radio button delace_mode even
-#: ../gap/gap_story_properties.c:1994
+#: ../gap/gap_story_properties.c:3128
 msgid "Even"
 msgstr "Sudé"
 
-#: ../gap/gap_story_properties.c:2002
+#: ../gap/gap_story_properties.c:3137
 msgid "Apply even-lines filter when reading videoframes"
 msgstr "Používat při čtení políček videa filtr sudých řádků"
 
-#: ../gap/gap_story_properties.c:2027
-msgid "deinterlacing threshold: 0.0 no interpolation 0.999 smooth interpolation"
-msgstr "práh eliminace prokládání: 0.0 žádná interpolace 0.999 hladká interpolace"
+#: ../gap/gap_story_properties.c:3162
+msgid ""
+"deinterlacing threshold: 0.0 no interpolation 0.999 smooth interpolation"
+msgstr ""
+"práh eliminace prokládání: 0.0 žádná interpolace 0.999 hladká interpolace"
 
-#. the duration label
-#: ../gap/gap_story_properties.c:2044
-msgid "Duration:"
-msgstr "Trvání:"
+#. the Transform (flip_request) label
+#: ../gap/gap_story_properties.c:3179
+msgid "Transform:"
+msgstr ""
+
+#: ../gap/gap_story_properties.c:3208
+msgid "Do not apply internal transformations"
+msgstr ""
+
+#. radio button flip_request rotate 180 degree
+#: ../gap/gap_story_properties.c:3217
+#, fuzzy
+msgid "Rotate 180"
+msgstr "Otočit o 180 stupňů"
+
+#: ../gap/gap_story_properties.c:3226
+msgid "Rotate all frames of this clip by 180 degree"
+msgstr ""
+
+#. radio button flip_request hor
+#: ../gap/gap_story_properties.c:3235
+#, fuzzy
+msgid "Flip Horizontally"
+msgstr "Převrátit vodorovně"
+
+#: ../gap/gap_story_properties.c:3244
+msgid "Flip all frames of this clip horizontally"
+msgstr ""
+
+#. radio button flip_request ver
+#: ../gap/gap_story_properties.c:3253
+#, fuzzy
+msgid "Flip Vertically"
+msgstr "Převrátit svisle"
+
+#: ../gap/gap_story_properties.c:3262
+msgid "Flip all frames of this clip vertically"
+msgstr ""
+
+#. the mask_name label
+#: ../gap/gap_story_properties.c:3278
+#, fuzzy
+msgid "Mask Name:"
+msgstr "Jméno:"
+
+#: ../gap/gap_story_properties.c:3296
+#, fuzzy
+msgid "Name of the layermask definition clip"
+msgstr "Název souboru skriptu makra filtrování"
+
+#: ../gap/gap_story_properties.c:3300
+msgid ""
+"Reference to a layermask definition clip.\n"
+"Layermasks are used to control opacity. Track 0 is used for definitions of "
+"layermask clips."
+msgstr ""
+
+#. the mask enable check button
+#: ../gap/gap_story_properties.c:3322
+#, fuzzy
+msgid "enable"
+msgstr "Povolit"
+
+#: ../gap/gap_story_properties.c:3331
+#, fuzzy
+msgid "ON: Enable layer mask"
+msgstr "Odstranit masku vrstvy"
+
+#. the Deinterlace Mode label
+#: ../gap/gap_story_properties.c:3350
+msgid "Mask Anchor:"
+msgstr ""
+
+#. radio button mask_anchor None
+#: ../gap/gap_story_properties.c:3368
+#, fuzzy
+msgid "Clip"
+msgstr "Seznam klipů"
+
+#: ../gap/gap_story_properties.c:3377
+msgid "Attach mask to clip at clip position in clip size"
+msgstr ""
+
+#. radio button mask_anchor odd
+#. Hue Mode the radio buttons
+#. Channel the radio buttons
+#: ../gap/gap_story_properties.c:3386 ../gap/gap_wr_color_huesat.c:643
+#: ../gap/gap_wr_color_levels.c:645
+msgid "Master"
+msgstr "Hlavní"
+
+#: ../gap/gap_story_properties.c:3395
+msgid "Attach mask in resulting master video size at fixed position"
+msgstr ""
+
+#: ../gap/gap_story_properties.c:3419
+#, fuzzy
+msgid "Maskstepsize:"
+msgstr "Velikost kroku:"
+
+#. lower/upper
+#. step, page
+#. digits
+#. constrain
+#. lower/upper unconstrained
+#: ../gap/gap_story_properties.c:3426
+#, fuzzy
+msgid ""
+"Stepsize density for the layer mask. Use 1.0 for normal 1:1 frame by frame "
+"steps. a value of 0.5 shows each input mask frame 2 times. a value of 2.0 "
+"shows only every 2.nd input mask frame"
+msgstr ""
+"Hustota velikosti kroku. Použijte 1.0 pro normální kroky 1:1 políčko po "
+"políčku, hodnota 0.5 zobrazuje každé vstupní políčko dvakrát. hodnota 2.0 "
+"zobrazuje jen každé druhé vstupní políčko"
 
 #. the filtermacro label
-#: ../gap/gap_story_properties.c:2164
+#: ../gap/gap_story_properties.c:3487
 #, fuzzy
 msgid "Filtermacro:"
 msgstr "Skript makra filtrování"
 
-#: ../gap/gap_vex_dialog.c:233
+#: ../gap/gap_vex_dialog.c:234
 msgid "Overwrite File"
 msgstr "Přepsat soubor"
 
-#: ../gap/gap_vex_dialog.c:243
+#: ../gap/gap_vex_dialog.c:244
 #, c-format
 msgid "File: %s already exists"
 msgstr "Soubor: %s již existuje"
 
-#: ../gap/gap_vex_dialog.c:672 ../gap/gap_vex_dialog.c:675
+#: ../gap/gap_vex_dialog.c:676 ../gap/gap_vex_dialog.c:679
 msgid "Set range to extract"
 msgstr "Nastavit rozsah pro extrakci"
 
-#: ../gap/gap_vex_dialog.c:800
+#: ../gap/gap_vex_dialog.c:804
 msgid "unknown"
 msgstr "neznámé"
 
-#: ../gap/gap_vex_dialog.c:1708
+#: ../gap/gap_vex_dialog.c:1712
 msgid "Select input videofile"
 msgstr "Zvolte vstupní soubor videa"
 
-#: ../gap/gap_vex_dialog.c:1746
+#: ../gap/gap_vex_dialog.c:1750
 msgid "Select basename for frame(s)"
 msgstr "Zvolte základ jména políček"
 
-#: ../gap/gap_vex_dialog.c:1784 ../vid_common/gap_cme_gui.c:2138
+#: ../gap/gap_vex_dialog.c:1788 ../vid_common/gap_cme_gui.c:2142
 msgid "Select Audiofilename"
 msgstr "Zvolte název souboru zvuku"
 
-#: ../gap/gap_vex_dialog.c:1927 ../gap/gap_vex_main.c:168
+#: ../gap/gap_vex_dialog.c:1931 ../gap/gap_vex_main.c:168
 #: ../gap/gap_vex_main.c:188
 msgid "Extract Videorange"
 msgstr "Extrahovat rozsah videa"
@@ -6739,7 +6996,7 @@ msgstr "Extrahovat rozsah videa"
 #. gtk_container_set_border_width (GTK_CONTAINER (mw__vbox1), 5);
 #. XXXXXXXXXXX Player Frame  XXXXXXXXXXXX
 #. the player_frame
-#: ../gap/gap_vex_dialog.c:1957
+#: ../gap/gap_vex_dialog.c:1961
 msgid "Select Videorange"
 msgstr "Zvolte rozsah videa"
 
@@ -6749,16 +7006,16 @@ msgstr "Zvolte rozsah videa"
 #.
 #. gtk_widget_show (mw__player_frame);
 #. not yet, show the widget later
-#: ../gap/gap_vex_dialog.c:1971
+#: ../gap/gap_vex_dialog.c:1975
 msgid "Input Video selection"
 msgstr "Výběr vstupního videa"
 
 #. the videofile label
-#: ../gap/gap_vex_dialog.c:1990
+#: ../gap/gap_vex_dialog.c:1994
 msgid "Videofilename:"
 msgstr "Název souboru videa:"
 
-#: ../gap/gap_vex_dialog.c:2008
+#: ../gap/gap_vex_dialog.c:2012
 msgid "Name of videofile (used as inputfile)"
 msgstr "Název souboru videa (používaného jako vstupní soubor)"
 
@@ -6770,35 +7027,35 @@ msgstr "Název souboru videa (používaného jako vstupní soubor)"
 #. the Storyboard filebrowser button
 #. the Audiofile filebrowser button
 #. the pass_logfile fileselector button
-#: ../gap/gap_vex_dialog.c:2012 ../gap/gap_vex_dialog.c:2383
-#: ../gap/gap_vex_dialog.c:2563 ../vid_common/gap_cme_gui.c:2523
-#: ../vid_common/gap_cme_gui.c:2652 ../vid_common/gap_cme_gui.c:2688
-#: ../vid_common/gap_cme_gui.c:3004
+#: ../gap/gap_vex_dialog.c:2016 ../gap/gap_vex_dialog.c:2387
+#: ../gap/gap_vex_dialog.c:2567 ../vid_common/gap_cme_gui.c:2527
+#: ../vid_common/gap_cme_gui.c:2656 ../vid_common/gap_cme_gui.c:2692
+#: ../vid_common/gap_cme_gui.c:3008
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2987
 msgid "..."
 msgstr "..."
 
-#: ../gap/gap_vex_dialog.c:2019
+#: ../gap/gap_vex_dialog.c:2023
 msgid "Select video using file browser"
 msgstr "Zvolte video pomocí prohlížeče souborů"
 
 #. MMX sometimes gives unusable results, and therefore is always OFF
 #. * checkbox is not needed any more..
 #.
-#: ../gap/gap_vex_dialog.c:2026
+#: ../gap/gap_vex_dialog.c:2030
 msgid "Disable MMX"
 msgstr "Zakázat MMX"
 
-#: ../gap/gap_vex_dialog.c:2054
+#: ../gap/gap_vex_dialog.c:2058
 msgid "Frame number of 1.st frame to extract"
 msgstr "Číslo prvního extrahovaného políčka"
 
 #. the videorange button (that invokes the player for video range selection)
-#: ../gap/gap_vex_dialog.c:2072
+#: ../gap/gap_vex_dialog.c:2076
 msgid "Video Range"
 msgstr "Rozsah videa"
 
-#: ../gap/gap_vex_dialog.c:2080
+#: ../gap/gap_vex_dialog.c:2084
 msgid ""
 "Visual video range selection via videoplayer\n"
 "SHIFT: Open a separate player window"
@@ -6806,7 +7063,7 @@ msgstr ""
 "Vizuální výběr rozsahu videal přehrávačem videa\n"
 "SHIFT: Otevřít oddělené okno přehrávače"
 
-#: ../gap/gap_vex_dialog.c:2111
+#: ../gap/gap_vex_dialog.c:2115
 msgid ""
 "Frame number of last frame to extract. To extract all frames use a range "
 "from 1 to 999999. (Extract stops at the last available frame)"
@@ -6816,19 +7073,19 @@ msgstr ""
 "políčku)"
 
 #. the videorange button (that invokes the player for video range selection in docked mode)
-#: ../gap/gap_vex_dialog.c:2132
+#: ../gap/gap_vex_dialog.c:2136
 msgid "VideoRange"
 msgstr "Rozsah videa"
 
-#: ../gap/gap_vex_dialog.c:2169
+#: ../gap/gap_vex_dialog.c:2173
 msgid "Videotrack number (0 == extract no frames)"
 msgstr "Číslo stopy videa (0 == neextrahovat žádné snímky)"
 
-#: ../gap/gap_vex_dialog.c:2203
+#: ../gap/gap_vex_dialog.c:2207
 msgid "Audiotrack number (0 == extract no audio)"
 msgstr "Číslo stopy zvuku (0 == nextrahovat žádný zvuk)"
 
-#: ../gap/gap_vex_dialog.c:2232
+#: ../gap/gap_vex_dialog.c:2236
 msgid ""
 "leave empty or select your preferred decoder (libmpeg3, libavformat, "
 "quicktime4linux)"
@@ -6836,16 +7093,16 @@ msgstr ""
 "nechte prázdné nebo zvolte váš preferovaný dekodér (libmpeg3, libavformat, "
 "quicktime4linux)"
 
-#: ../gap/gap_vex_dialog.c:2238
+#: ../gap/gap_vex_dialog.c:2242
 msgid "(none, automatic)"
 msgstr "(žádný, automatický)"
 
 #. the (Active) Decoder Label(s)
-#: ../gap/gap_vex_dialog.c:2262
+#: ../gap/gap_vex_dialog.c:2266
 msgid "Active Decoder:"
 msgstr "Aktivní dekodér:"
 
-#: ../gap/gap_vex_dialog.c:2272 ../gap/gap_vex_dialog.c:2310
+#: ../gap/gap_vex_dialog.c:2276 ../gap/gap_vex_dialog.c:2314
 msgid "****"
 msgstr "****"
 
@@ -6853,11 +7110,11 @@ msgstr "****"
 #. * (the videoapi delivers exact frame positions on most videos
 #. *  but sometimes is not exact when libmepg3 is used)
 #.
-#: ../gap/gap_vex_dialog.c:2285
+#: ../gap/gap_vex_dialog.c:2289
 msgid "Exact Seek"
 msgstr "Přesný posun"
 
-#: ../gap/gap_vex_dialog.c:2288
+#: ../gap/gap_vex_dialog.c:2292
 #, fuzzy
 msgid ""
 "ON: emulate seek operations by sequential reads, even when videoindex is "
@@ -6867,21 +7124,21 @@ msgstr ""
 "index videa"
 
 #. the Aspect Ratio Label(s)
-#: ../gap/gap_vex_dialog.c:2300
+#: ../gap/gap_vex_dialog.c:2304
 msgid "Aspect Ratio:"
 msgstr "Poměr stran:"
 
 #. the output frame
-#: ../gap/gap_vex_dialog.c:2324 ../vid_common/gap_cme_gui.c:2497
+#: ../gap/gap_vex_dialog.c:2328 ../vid_common/gap_cme_gui.c:2501
 msgid "Output"
 msgstr "Výstup"
 
 #. the multilayer checkbox (decide if extract writes to frames on disc or to one image)
-#: ../gap/gap_vex_dialog.c:2350
+#: ../gap/gap_vex_dialog.c:2354
 msgid "Create only one multilayer Image"
 msgstr "Vytvořit jen jeden obrázek s více vrstvami"
 
-#: ../gap/gap_vex_dialog.c:2356
+#: ../gap/gap_vex_dialog.c:2360
 msgid ""
 "On: extracted frames are stored in one multilayer image\n"
 "Off: extracted frames are written to frame files on disc"
@@ -6889,19 +7146,20 @@ msgstr ""
 "Zapnuto: extrahovaná políčka jsou uložena v jednom obrázku s více vrstvami\n"
 "Vypnuto: extrahovaná políčka jsou zapsána na soubory políček na disk"
 
-#: ../gap/gap_vex_dialog.c:2379
+#: ../gap/gap_vex_dialog.c:2383
 msgid "Basename for extracted frames (framenr and extension is added)"
-msgstr "Základ jména pro extrahovaná políčka (je přidáno číslo políčka a přípona)"
+msgstr ""
+"Základ jména pro extrahovaná políčka (je přidáno číslo políčka a přípona)"
 
-#: ../gap/gap_vex_dialog.c:2380
+#: ../gap/gap_vex_dialog.c:2384
 msgid "frame_"
 msgstr "frame_"
 
-#: ../gap/gap_vex_dialog.c:2390
+#: ../gap/gap_vex_dialog.c:2394
 msgid "Use filebrowser to select basename for extracted frames"
 msgstr "Použít pro zvolení základu jména extrahovaných políček"
 
-#: ../gap/gap_vex_dialog.c:2421
+#: ../gap/gap_vex_dialog.c:2425
 msgid ""
 "Digits to use for framenumber part in filenames (use 1 if you dont want "
 "leading zeroes)"
@@ -6909,64 +7167,67 @@ msgstr ""
 "Počet číslic, které používat pro část názvů souborů s číslem políčka "
 "(použijte 1, pokud nechcete na začátku nuly)"
 
-#: ../gap/gap_vex_dialog.c:2454
+#: ../gap/gap_vex_dialog.c:2458
 msgid "Extension of extracted frames (.xcf, .jpg, .ppm)"
 msgstr "Přípona extrahovaných políček (.xcf, .jpg, .ppm)"
 
-#: ../gap/gap_vex_dialog.c:2455
+#: ../gap/gap_vex_dialog.c:2459
 msgid ".xcf"
 msgstr ".xcf"
 
 #. the framenumber for 1st frame label
-#: ../gap/gap_vex_dialog.c:2466
+#: ../gap/gap_vex_dialog.c:2470
 msgid "Framenr 1:"
 msgstr "Číslo políčka 1:"
 
-#: ../gap/gap_vex_dialog.c:2487
-msgid "Framenumber for 1st extracted frame (use 0 for keeping original framenumbers)"
-msgstr "Číslo prvního extrahovaného políčka (použijte 0 pro původní čísla políček)"
+#: ../gap/gap_vex_dialog.c:2491
+msgid ""
+"Framenumber for 1st extracted frame (use 0 for keeping original framenumbers)"
+msgstr ""
+"Číslo prvního extrahovaného políčka (použijte 0 pro původní čísla políček)"
 
-#: ../gap/gap_vex_dialog.c:2518
+#: ../gap/gap_vex_dialog.c:2522
 msgid "0.0 .. no interpolation, 1.0 smooth interpolation at deinterlacing"
-msgstr "0.0 .. žádná interpolace, 1.0 hladká interpolace při eliminaci prokládání"
+msgstr ""
+"0.0 .. žádná interpolace, 1.0 hladká interpolace při eliminaci prokládání"
 
-#: ../gap/gap_vex_dialog.c:2523
+#: ../gap/gap_vex_dialog.c:2527
 msgid "no deinterlace"
 msgstr "neeliminovat prokládání"
 
-#: ../gap/gap_vex_dialog.c:2524
+#: ../gap/gap_vex_dialog.c:2528
 msgid "deinterlace (odd lines only)"
 msgstr "eliminovat prokládání (jen liché řádky)"
 
-#: ../gap/gap_vex_dialog.c:2525
+#: ../gap/gap_vex_dialog.c:2529
 msgid "deinterlace (even lines only)"
 msgstr "eliminovat prokládání (jen sudé řádky)"
 
-#: ../gap/gap_vex_dialog.c:2526
+#: ../gap/gap_vex_dialog.c:2530
 msgid "deinterlace frames x 2 (odd 1st)"
 msgstr "eliminovat prokládání políček × 2 (první liché)"
 
-#: ../gap/gap_vex_dialog.c:2527
+#: ../gap/gap_vex_dialog.c:2531
 msgid "deinterlace frames x 2 (even 1st)"
 msgstr "eliminovat prokládání políček × 2 (první sudé)"
 
-#: ../gap/gap_vex_dialog.c:2538
+#: ../gap/gap_vex_dialog.c:2542
 msgid "Deinterlace splits each extracted frame in 2 frames"
 msgstr "Eliminace prokládání rozdělí každé extrahované políčko na 2"
 
-#: ../gap/gap_vex_dialog.c:2559
+#: ../gap/gap_vex_dialog.c:2563
 msgid "Name for extracted audio (audio is written in RIFF WAV format)"
 msgstr "Název extrahovaného zvuku (zvuk je zapsán ve formátu RIFF WAV)"
 
-#: ../gap/gap_vex_dialog.c:2560
+#: ../gap/gap_vex_dialog.c:2564
 msgid "frame.wav"
 msgstr "frame.wav"
 
-#: ../gap/gap_vex_dialog.c:2570
+#: ../gap/gap_vex_dialog.c:2574
 msgid "Use filebrowser to select audiofilename"
 msgstr "Použít pro zvolená názvu souboru zvuku prohlížeč souborů"
 
-#: ../gap/gap_vex_dialog.c:2576
+#: ../gap/gap_vex_dialog.c:2580
 msgid "Start extraction"
 msgstr "Spustit extrakci"
 
@@ -6996,7 +7257,8 @@ msgid ""
 "with\n"
 " --disable-videoapi-support"
 msgstr ""
-"Extrakce videa není k dispozici, protože GIMP-GAP byl nastaven a přeložen s\n"
+"Extrakce videa není k dispozici, protože GIMP-GAP byl konfigurován a "
+"přeložen s\n"
 " --disable-videoapi-support"
 
 #: ../gap/gap_wr_color_curve.c:396
@@ -7054,12 +7316,6 @@ msgstr "Úpravy odstínu / světlosti / sytosti"
 #: ../gap/gap_wr_color_huesat.c:635
 msgid "Hue Mode:"
 msgstr "Režim odstínu:"
-
-#. Hue Mode the radio buttons
-#. Channel the radio buttons
-#: ../gap/gap_wr_color_huesat.c:643 ../gap/gap_wr_color_levels.c:645
-msgid "Master"
-msgstr "Hlavní"
 
 #: ../gap/gap_wr_color_huesat.c:648 ../gap/gap_wr_color_levels.c:650
 msgid "Red"
@@ -7229,7 +7485,7 @@ msgstr ""
 "%s"
 
 # FIXME: s/ file//
-#: ../libgapvidutil/gap_gve_sox.c:194
+#: ../libgapvidutil/gap_gve_sox.c:152
 #, c-format
 msgid ""
 "ERROR: Can't overwrite temporary workfile\n"
@@ -7238,7 +7494,7 @@ msgstr ""
 "CHYBA: Nelze přepsat dočasný pracovní\n"
 "soubor: %s"
 
-#: ../libgapvidutil/gap_gve_sox.c:212
+#: ../libgapvidutil/gap_gve_sox.c:170
 #, c-format
 msgid ""
 "ERROR: Could not create resampled WAV workfile\n"
@@ -7255,93 +7511,6 @@ msgstr ""
 "2.) zkontrolujte, jestli je nainstalován SOX (verze >= 12.16):\n"
 "  prog:  %s\n"
 
-#: ../libgapvidutil/gap_gve_story.c:572
-#, c-format
-msgid "encoding_video_frame_%06d"
-msgstr "encoding_video_frame_%06d"
-
-#: ../libgapvidutil/gap_gve_story.c:1206
-#, c-format
-msgid "cant load:  %s to memory"
-msgstr "nemohu načíst: %s do paměti"
-
-#: ../libgapvidutil/gap_gve_story.c:1513
-msgid "checking audio peaks"
-msgstr "kontroluji vrcholy zvuku"
-
-#: ../libgapvidutil/gap_gve_story.c:1535
-msgid "writing composite audiofile"
-msgstr "zapisuji složený soubor zvuku"
-
-#: ../libgapvidutil/gap_gve_story.c:1548
-#, c-format
-msgid "cant write audio to file: %s "
-msgstr "nemohu zapsat zvuk do sobuoru: %s "
-
-#: ../libgapvidutil/gap_gve_story.c:1555 ../vid_common/gap_cme_gui.c:1295
-#: ../vid_common/gap_cme_gui.c:1461
-msgid "ready"
-msgstr "připraven"
-
-#: ../libgapvidutil/gap_gve_story.c:1907
-msgid "extracting audio to tmp audiofile"
-msgstr "převádím zvuk do dočasného souboru"
-
-#: ../libgapvidutil/gap_gve_story.c:1912
-msgid "seeking audio"
-msgstr "posouvám se ve zvuku"
-
-#: ../libgapvidutil/gap_gve_story.c:2123
-#, c-format
-msgid "file not found:  %s for audioinput"
-msgstr "soubor nenalezen: %s pro vstup zvuku"
-
-#: ../libgapvidutil/gap_gve_story.c:2238 ../libgapvidutil/gap_gve_story.c:2376
-msgid "converting audio (via external programm)"
-msgstr "převádním zvuk (externím programem)"
-
-#: ../libgapvidutil/gap_gve_story.c:2297 ../libgapvidutil/gap_gve_story.c:2425
-#, c-format
-msgid "cant use file:  %s as audioinput"
-msgstr "nemohu použít soubor: %s jako vstup zvuku"
-
-#: ../libgapvidutil/gap_gve_story.c:2314 ../libgapvidutil/gap_gve_story.c:2727
-#, c-format
-msgid "ERROR file: %s is not a supported videoformat"
-msgstr "CHYBA soubor: %s není v podporovaném formátu videa"
-
-#: ../libgapvidutil/gap_gve_story.c:2752
-#, c-format
-msgid "loading error on animimage:  %s"
-msgstr "chyba při načítání animovaného obrázku: %s"
-
-#: ../libgapvidutil/gap_gve_story.c:2770
-#, c-format
-msgid "imagefile not found:  %s"
-msgstr "soubor obrázku nenalezen: %s"
-
-#: ../libgapvidutil/gap_gve_story.c:2881
-#, c-format
-msgid "no framefile(s) found at:  %s"
-msgstr "nenalezeny žádné soubory políček v: %s"
-
-#: ../libgapvidutil/gap_gve_story.c:3505
-#, c-format
-msgid "analyze line %d (out of %d)"
-msgstr "analyzovat řádek %d (z %d)"
-
-#: ../libgapvidutil/gap_gve_story.c:3621
-msgid "No Frames or Images found ...."
-msgstr "Nenalezeno žádné políčko ani obrázek ...."
-
-#: ../libgapvidutil/gap_gve_story.c:4563
-msgid "Seek Inputvideoframe..."
-msgstr "Přejít na políčko vstupního videa..."
-
-#: ../libgapvidutil/gap_gve_story.c:4568
-msgid "Continue Encoding..."
-msgstr "Pokračovat v kódování"
-
 #: ../vid_common/gap_cme_gui.c:165
 msgid "GAP Message"
 msgstr "Zpráva GAP"
@@ -7354,7 +7523,7 @@ msgstr "Okno parametrů specifických pro kodér stále otevřeno"
 msgid "no description available"
 msgstr "popis není k dispozici"
 
-#: ../vid_common/gap_cme_gui.c:760
+#: ../vid_common/gap_cme_gui.c:764
 msgid ""
 "Storyboardfiles are textfiles that are used to\n"
 "assemble a video from a list of single images,\n"
@@ -7370,50 +7539,58 @@ msgstr ""
 #. * valid_playlist_references holds the number of valid tracks
 #. * (where samplerate matches the desired samplerate and bits == 16)
 #.
-#: ../vid_common/gap_cme_gui.c:874
+#: ../vid_common/gap_cme_gui.c:878
 #, c-format
 msgid "List[%d] has [%d] valid tracks, Bit:%d Chan:%d Rate:%d"
 msgstr "List[%d] má [%d] platných stop, Bit:%d Kan:%d Rate:%d"
 
-#: ../vid_common/gap_cme_gui.c:884
+#: ../vid_common/gap_cme_gui.c:888
 #, c-format
 msgid "%s, Bit:%d Chan:%d Rate:%d"
 msgstr "%s, Bit:%d Kan:%d Rate:%d"
 
-#: ../vid_common/gap_cme_gui.c:897
+#: ../vid_common/gap_cme_gui.c:901
 msgid "UNKNOWN (using sox)"
 msgstr "NEZNÁMÉ (používám sox)"
 
-#: ../vid_common/gap_cme_gui.c:1159
+#: ../vid_common/gap_cme_gui.c:1163
 #, fuzzy
 msgid "Storyframe"
 msgstr "Klíčové políčko:"
 
-#: ../vid_common/gap_cme_gui.c:1163
+#: ../vid_common/gap_cme_gui.c:1167
 msgid "Layer"
 msgstr "Vrstva"
 
+#: ../vid_common/gap_cme_gui.c:1171
+msgid "Frame"
+msgstr "Políčko"
+
 #. label changes dependent from rangetype "From Frame", "From Layer" or "From Storyframe"
-#: ../vid_common/gap_cme_gui.c:1173
+#: ../vid_common/gap_cme_gui.c:1177
 #, c-format
 msgid "From %s:"
 msgstr "Z %s:"
 
-#: ../vid_common/gap_cme_gui.c:1177
+#: ../vid_common/gap_cme_gui.c:1181
 #, c-format
 msgid "To %s:"
 msgstr "Do %s:"
 
-#: ../vid_common/gap_cme_gui.c:1323
+#: ../vid_common/gap_cme_gui.c:1299 ../vid_common/gap_cme_gui.c:1465
+msgid "ready"
+msgstr "připraven"
+
+#: ../vid_common/gap_cme_gui.c:1327
 #, c-format
 msgid "using master_framerate %2.2f found in file"
 msgstr "používám master_framerate %2.2f nalezenou v souboru"
 
-#: ../vid_common/gap_cme_gui.c:1332
+#: ../vid_common/gap_cme_gui.c:1336
 msgid "file has no master_framerate setting"
 msgstr "soubor nemá nastavení master_framerate"
 
-#: ../vid_common/gap_cme_gui.c:1360
+#: ../vid_common/gap_cme_gui.c:1364
 #, c-format
 msgid ""
 "composite video track playtime %.3fsec (%d frames)\n"
@@ -7422,7 +7599,7 @@ msgstr ""
 "čas přehrávání složené stopy videa %.3f s (%d políček)\n"
 "čas přehrávání složené stopy zvuku %.3f s"
 
-#: ../vid_common/gap_cme_gui.c:1368
+#: ../vid_common/gap_cme_gui.c:1372
 #, c-format
 msgid ""
 "composite video track playtime %.3fsec (%d frames)\n"
@@ -7431,16 +7608,16 @@ msgstr ""
 "čas přehrávání složené stopy videa %.3f s (%d políček)\n"
 "NEMÁ stopy zvuku"
 
-#: ../vid_common/gap_cme_gui.c:1376
+#: ../vid_common/gap_cme_gui.c:1380
 #, c-format
 msgid "using master_size %d x %d found in file"
 msgstr "používám hlavní velikost %d × %d nalezenou v souboru"
 
-#: ../vid_common/gap_cme_gui.c:1389
+#: ../vid_common/gap_cme_gui.c:1393
 msgid "file has no master_size setting"
 msgstr "soubor nemá nastavení master_size"
 
-#: ../vid_common/gap_cme_gui.c:1396
+#: ../vid_common/gap_cme_gui.c:1400
 #, c-format
 msgid ""
 "Storyboard file %s checkreport:\n"
@@ -7456,7 +7633,7 @@ msgid ""
 "[%d:] %s"
 msgstr ""
 
-#: ../vid_common/gap_cme_gui.c:1411 ../vid_common/gap_cme_gui.c:1426
+#: ../vid_common/gap_cme_gui.c:1415 ../vid_common/gap_cme_gui.c:1430
 #, c-format
 msgid ""
 "Storyboard file %s checkreport:\n"
@@ -7469,7 +7646,7 @@ msgid ""
 "[%d:] %s"
 msgstr ""
 
-#: ../vid_common/gap_cme_gui.c:1438
+#: ../vid_common/gap_cme_gui.c:1442
 #, c-format
 msgid ""
 "Storyboard file %s checkreport:\n"
@@ -7481,7 +7658,7 @@ msgid ""
 "no errors found, file is OK"
 msgstr ""
 
-#: ../vid_common/gap_cme_gui.c:1451
+#: ../vid_common/gap_cme_gui.c:1455
 #, c-format
 msgid ""
 "Storyboard file %s checkreport:\n"
@@ -7490,34 +7667,36 @@ msgid ""
 msgstr ""
 
 #. g_message(_("Go for checking storyboard file"));
-#: ../vid_common/gap_cme_gui.c:1767
+#: ../vid_common/gap_cme_gui.c:1771
 #, fuzzy
 msgid "Checking Storyboard File"
 msgstr "Soubor"
 
-#: ../vid_common/gap_cme_gui.c:1770
+#: ../vid_common/gap_cme_gui.c:1774
 msgid "Parsing Storyboardfile"
 msgstr ""
 
-#: ../vid_common/gap_cme_gui.c:1813
+#: ../vid_common/gap_cme_gui.c:1817
 msgid "Go for checking storyboard file"
 msgstr ""
 
-#: ../vid_common/gap_cme_gui.c:1815 ../vid_common/gap_cme_gui.c:1816
+#: ../vid_common/gap_cme_gui.c:1819 ../vid_common/gap_cme_gui.c:1820
 msgid "Storyboardfile Check"
 msgstr ""
 
-#: ../vid_common/gap_cme_gui.c:1869
+#: ../vid_common/gap_cme_gui.c:1873
 msgid "Encoder specific parameter window is still open"
 msgstr "Okno parametrů specifických pro kodér je stále otevřeno"
 
-#: ../vid_common/gap_cme_gui.c:1878
+#: ../vid_common/gap_cme_gui.c:1882
 msgid ""
 "ERROR: No valid storyboardfile was specified.\n"
 "(a storyboard file can be specified in the extras tab)"
 msgstr ""
+"CHYBA: Nebyl zadán platný soubor storyboardu.\n"
+"(soubor storyboardu lze nastavit na kartě Další)"
 
-#: ../vid_common/gap_cme_gui.c:1890
+#: ../vid_common/gap_cme_gui.c:1894
 #, c-format
 msgid ""
 "Error:\n"
@@ -7530,7 +7709,7 @@ msgstr ""
 "nastavte šířku na %d\n"
 "nastavte výšku na %d"
 
-#: ../vid_common/gap_cme_gui.c:1913
+#: ../vid_common/gap_cme_gui.c:1917
 #, c-format
 msgid ""
 "Error: Unsupported Bit per Sample %d\n"
@@ -7541,7 +7720,7 @@ msgstr ""
 "soubor: %s\n"
 "podporováno je 8 nebo 16 bitů"
 
-#: ../vid_common/gap_cme_gui.c:1934
+#: ../vid_common/gap_cme_gui.c:1938
 #, c-format
 msgid ""
 "Error: Audiofile not found\n"
@@ -7550,7 +7729,7 @@ msgstr ""
 "Chyba: soubor zvuku nenalezen\n"
 "soubor: %s\n"
 
-#: ../vid_common/gap_cme_gui.c:1957
+#: ../vid_common/gap_cme_gui.c:1961
 #, c-format
 msgid ""
 "Error: Unsupported Samplerate for MPEG1 Layer2 Audio Encoding\n"
@@ -7563,7 +7742,7 @@ msgstr ""
 "podporované frekvence: \n"
 " 22050, 24000, 32000, 44100, 48000"
 
-#: ../vid_common/gap_cme_gui.c:1985
+#: ../vid_common/gap_cme_gui.c:1989
 #, c-format
 msgid ""
 "Error: Unsupported Samplerate for MPEG2 Layer3 Audio Encoding\n"
@@ -7576,7 +7755,7 @@ msgstr ""
 "podporované frekvence: \n"
 " 8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000"
 
-#: ../vid_common/gap_cme_gui.c:2008
+#: ../vid_common/gap_cme_gui.c:2012
 msgid ""
 "Can't process the audio input file. You should check audio options and audio "
 "tool configuration"
@@ -7584,150 +7763,149 @@ msgstr ""
 "Nelze zpracovat vstupní zvukový soubor. Zkontrolujte volby zvuku a "
 "konfiguraci nástroje zvuku"
 
-#: ../vid_common/gap_cme_gui.c:2029
+#: ../vid_common/gap_cme_gui.c:2033
 #, fuzzy
 msgid "Select Storyboardfile"
 msgstr "Vybrat"
 
-#: ../vid_common/gap_cme_gui.c:2065
+#: ../vid_common/gap_cme_gui.c:2069
 msgid "Select Videofile"
 msgstr "Zvolte soubor videa"
 
-#: ../vid_common/gap_cme_gui.c:2102
+#: ../vid_common/gap_cme_gui.c:2106
 msgid "Select Macrofile"
 msgstr "Zvolte soubor makra"
 
-#: ../vid_common/gap_cme_gui.c:2186
+#: ../vid_common/gap_cme_gui.c:2190
 msgid "Overwrite warning"
 msgstr "Varování před přepsáním"
 
-#: ../vid_common/gap_cme_gui.c:2205
+#: ../vid_common/gap_cme_gui.c:2209
 msgid "File already exists:"
 msgstr "Soubor již existuje:"
 
-#: ../vid_common/gap_cme_gui.c:2214
+#: ../vid_common/gap_cme_gui.c:2218
 msgid "filename"
 msgstr "název souboru:"
 
-#: ../vid_common/gap_cme_gui.c:2227
+#: ../vid_common/gap_cme_gui.c:2231
 msgid "  "
 msgstr "  "
 
-#: ../vid_common/gap_cme_gui.c:2307
+#: ../vid_common/gap_cme_gui.c:2311
 msgid "Input Mode:"
 msgstr "Režim vstupu:"
 
 #. radio button Frames input_mode
-#: ../vid_common/gap_cme_gui.c:2317
+#: ../vid_common/gap_cme_gui.c:2321
 msgid "Frames"
 msgstr "Políčka"
 
-#: ../vid_common/gap_cme_gui.c:2327
+#: ../vid_common/gap_cme_gui.c:2331
 msgid "Input is a sequence of frame images"
 msgstr "Vstup je poslouptnost obrázků políček"
 
 #. radio button Layers input_mode
-#: ../vid_common/gap_cme_gui.c:2341
+#: ../vid_common/gap_cme_gui.c:2345
 msgid "Layers"
 msgstr "Vrstvy"
 
-#: ../vid_common/gap_cme_gui.c:2350
+#: ../vid_common/gap_cme_gui.c:2354
 msgid "Input is all the layers of one image"
 msgstr "Vstupem jsou všechny vrstvy jednoho obrázku"
 
-#: ../vid_common/gap_cme_gui.c:2374
+#: ../vid_common/gap_cme_gui.c:2378
 msgid ""
 "Input is videoclips and frames, defined via storyboard file. (specify the "
 "storyboard filename in the extras tab)"
 msgstr ""
 
-#: ../vid_common/gap_cme_gui.c:2420 ../vid_common/gap_cme_main.c:160
+#: ../vid_common/gap_cme_gui.c:2424 ../vid_common/gap_cme_main.c:160
 msgid "Master Videoencoder"
 msgstr "Hlavní kodér videa"
 
 #. the Audio Tool notebook tab
-#: ../vid_common/gap_cme_gui.c:2471
+#: ../vid_common/gap_cme_gui.c:2475
 msgid "Audio Tool Configuration"
 msgstr "Nastavení nástroje zvuku"
 
 #. the Extras notebook tab
-#: ../vid_common/gap_cme_gui.c:2484
+#: ../vid_common/gap_cme_gui.c:2488
 msgid "Extras"
-msgstr "Extra"
+msgstr "Další"
 
 #. the (output) video label
-#: ../vid_common/gap_cme_gui.c:2508
+#: ../vid_common/gap_cme_gui.c:2512
 msgid "Video :"
 msgstr "Video:"
 
-#: ../vid_common/gap_cme_gui.c:2517
+#: ../vid_common/gap_cme_gui.c:2521
 msgid "Name of output videofile"
 msgstr "Název výstupního souboru videa"
 
-#: ../vid_common/gap_cme_gui.c:2527
+#: ../vid_common/gap_cme_gui.c:2531
 msgid "Select output videofile via browser"
 msgstr "Vybrat výstupní soubor videa prohlížečem"
 
 #. the Status frame
-#: ../vid_common/gap_cme_gui.c:2535
+#: ../vid_common/gap_cme_gui.c:2539
 msgid "Status"
 msgstr "Stav"
 
 #. the Status label
-#: ../vid_common/gap_cme_gui.c:2546
+#: ../vid_common/gap_cme_gui.c:2550
 msgid "READY"
 msgstr "PŘIPRAVEN"
 
-#: ../vid_common/gap_cme_gui.c:2620
+#: ../vid_common/gap_cme_gui.c:2624
 msgid "Encoding Extras"
 msgstr ""
 
 #. the Macrofile label
-#: ../vid_common/gap_cme_gui.c:2630
+#: ../vid_common/gap_cme_gui.c:2634
 msgid "Macrofile:"
 msgstr "Soubor makra:"
 
-#: ../vid_common/gap_cme_gui.c:2645
+#: ../vid_common/gap_cme_gui.c:2649
 msgid "optional filtermacro file to be performed on each handled frame "
 msgstr "nepovinné makro filtru, které provést na každém obsluhovaném políčku "
 
-#: ../vid_common/gap_cme_gui.c:2658
+#: ../vid_common/gap_cme_gui.c:2662
 msgid "select macrofile via browser"
 msgstr "vybrat soubor makra prohlížečem"
 
 #. the Storyboard label
-#: ../vid_common/gap_cme_gui.c:2667
+#: ../vid_common/gap_cme_gui.c:2671
 #, fuzzy
 msgid "Storyboard File:"
 msgstr "Soubor:"
 
-#: ../vid_common/gap_cme_gui.c:2681
+#: ../vid_common/gap_cme_gui.c:2685
 msgid "optionally use a storyboard file to feed the encoder"
 msgstr ""
 
-#: ../vid_common/gap_cme_gui.c:2693
+#: ../vid_common/gap_cme_gui.c:2697
 msgid "select storyboard file via browser"
-msgstr ""
+msgstr "vyberte soubor storyboardu v prohlížeči"
 
 #. the Storyboard Audio
-#: ../vid_common/gap_cme_gui.c:2700
-#, fuzzy
+#: ../vid_common/gap_cme_gui.c:2704
 msgid "Storyboard Audio:"
-msgstr "Vybrat soubor zvuku"
+msgstr "Storyboard audio:"
 
 #. the Storyboard filebrowser button
-#: ../vid_common/gap_cme_gui.c:2708
+#: ../vid_common/gap_cme_gui.c:2712
 msgid "Create Composite Audiofile"
 msgstr "Vytvořit složený soubor zvuku"
 
-#: ../vid_common/gap_cme_gui.c:2715
+#: ../vid_common/gap_cme_gui.c:2719
 msgid ""
 "create a composite audiofile as mixdown of all audio tracks in the "
 "storyboard file and use the created composite audiofile as input for encoding"
 msgstr ""
 
 #. the  storyboard helptext & parsing report label
-#: ../vid_common/gap_cme_gui.c:2727
+#: ../vid_common/gap_cme_gui.c:2731
 msgid ""
 "Storyboardfiles are textfiles that are used to\n"
 "assemble a video from a list of single images,\n"
@@ -7736,21 +7914,21 @@ msgid ""
 msgstr ""
 
 #. the Monitor label
-#: ../vid_common/gap_cme_gui.c:2742
+#: ../vid_common/gap_cme_gui.c:2746
 msgid "Monitor"
 msgstr "Sledovat"
 
 #. the Monitor checkbutton
-#: ../vid_common/gap_cme_gui.c:2750
+#: ../vid_common/gap_cme_gui.c:2754
 msgid "Monitor Frames while Encoding"
 msgstr "Sledovat políčka při kódování"
 
-#: ../vid_common/gap_cme_gui.c:2755
+#: ../vid_common/gap_cme_gui.c:2759
 msgid "Show each frame before passed to encoder"
 msgstr "Zobrazit každé políčko před předání kodéru"
 
 #. the Debug Flat File label
-#: ../vid_common/gap_cme_gui.c:2764
+#: ../vid_common/gap_cme_gui.c:2768
 msgid ""
 "Debug\n"
 "Flat File:"
@@ -7758,14 +7936,15 @@ msgstr ""
 "Ladění\n"
 "plochý soubor:"
 
-#: ../vid_common/gap_cme_gui.c:2778
+#: ../vid_common/gap_cme_gui.c:2782
 msgid ""
 "optional Save each composite frame to JPEG file, before it is passed to the "
 "encoder"
-msgstr "nepovinné Uložit každé složené políčko do souboru JPEG před předáním kodéru"
+msgstr ""
+"nepovinné Uložit každé složené políčko do souboru JPEG před předáním kodéru"
 
 #. the Debug Multilayer File label
-#: ../vid_common/gap_cme_gui.c:2787
+#: ../vid_common/gap_cme_gui.c:2791
 msgid ""
 "Debug\n"
 "Multilayer File:"
@@ -7773,7 +7952,7 @@ msgstr ""
 "Ladění\n"
 "Soubor s více vrstvami:"
 
-#: ../vid_common/gap_cme_gui.c:2801
+#: ../vid_common/gap_cme_gui.c:2805
 msgid ""
 "optional save each composite multilayer frame to XCF file, before flattening "
 "and executing macro"
@@ -7781,29 +7960,30 @@ msgstr ""
 "nepovinné uložit každé složené políčko s více vrstvami do souboru XCF před "
 "zploštěním a spuštěním makra"
 
-#: ../vid_common/gap_cme_gui.c:2827
+#: ../vid_common/gap_cme_gui.c:2831
 msgid "Configuration of external audiotool program"
 msgstr "Konfigurace externího programu nástroj zvuku"
 
 #. the audiotool (sox) label
-#: ../vid_common/gap_cme_gui.c:2837
+#: ../vid_common/gap_cme_gui.c:2841
 msgid "Audiotool:"
 msgstr "Nástroj zvuku:"
 
-#: ../vid_common/gap_cme_gui.c:2851
+#: ../vid_common/gap_cme_gui.c:2855
 msgid "name of audiotool (something like sox with or without path)"
 msgstr "název nástroje zvuku (něco jako sox, s nebo bez cesty)"
 
 #. the audiotool options (sox options) label
-#: ../vid_common/gap_cme_gui.c:2861
+#: ../vid_common/gap_cme_gui.c:2865
 msgid "Options:"
 msgstr "Volby:"
 
-#: ../vid_common/gap_cme_gui.c:2876
+#: ../vid_common/gap_cme_gui.c:2880
 msgid "Options to call the audiotool ($IN, $OUT $RATE are replaced)"
-msgstr "Přepínače, se kterými volat nástroj zvuku ($IN, $OUT, $RATE jsou nahrazeny)"
+msgstr ""
+"Přepínače, se kterými volat nástroj zvuku ($IN, $OUT, $RATE jsou nahrazeny)"
 
-#: ../vid_common/gap_cme_gui.c:2888
+#: ../vid_common/gap_cme_gui.c:2892
 msgid ""
 "Configuration of an audiotool (like sox on UNIX).\n"
 "\n"
@@ -7828,32 +8008,32 @@ msgstr ""
 "     v souboru .wav"
 
 #. the Save button
-#: ../vid_common/gap_cme_gui.c:2917
+#: ../vid_common/gap_cme_gui.c:2921
 msgid "Save"
 msgstr "Uložit"
 
-#: ../vid_common/gap_cme_gui.c:2920
+#: ../vid_common/gap_cme_gui.c:2924
 msgid "Save audiotool configuration to gimprc"
 msgstr "Uložit nastavení nástroje zvuku do gimprc"
 
 #. the Load button
-#: ../vid_common/gap_cme_gui.c:2926
+#: ../vid_common/gap_cme_gui.c:2930
 msgid "Load"
 msgstr "Načíst"
 
-#: ../vid_common/gap_cme_gui.c:2929
+#: ../vid_common/gap_cme_gui.c:2933
 msgid "Load audiotool configuration from gimprc"
 msgstr "Načíst nastavení nástroje zvuku z gimprc"
 
-#: ../vid_common/gap_cme_gui.c:2938
+#: ../vid_common/gap_cme_gui.c:2942
 msgid "Set default audiotool configuration "
 msgstr "Nastavit implicitní nastavení nástroje zvuku "
 
-#: ../vid_common/gap_cme_gui.c:2965
+#: ../vid_common/gap_cme_gui.c:2969
 msgid "Audio Input"
 msgstr "Vstup zvuku"
 
-#: ../vid_common/gap_cme_gui.c:2993
+#: ../vid_common/gap_cme_gui.c:2997
 msgid ""
 "Name of audiofile (.wav 16 bit mono or stereo samples preferred). Optionally "
 "you may select a textfile that contains a list of file names referring to "
@@ -7865,85 +8045,85 @@ msgstr ""
 "odkazujících na zvukové soubory. Každý z těchto zvukových souborů bude "
 "zakódován jako samostatná zvuková stopa."
 
-#: ../vid_common/gap_cme_gui.c:3010
+#: ../vid_common/gap_cme_gui.c:3014
 msgid "Select input audiofile via browser"
 msgstr "Zvolit vstupní soubor zvuku prohlížečem"
 
 #. the audiofile information label
 #. the Tmp audioinformation  label
-#: ../vid_common/gap_cme_gui.c:3019 ../vid_common/gap_cme_gui.c:3120
+#: ../vid_common/gap_cme_gui.c:3023 ../vid_common/gap_cme_gui.c:3124
 msgid "WAV, 16 Bit stereo, rate: 44100"
 msgstr "WAV, 16 bitů stereo, frekvence: 44100"
 
 #. the audiofile total playtime information label
 #. the Tmp audio playtime information  label
 #. the timestamp of the last frame
-#: ../vid_common/gap_cme_gui.c:3028 ../vid_common/gap_cme_gui.c:3129
-#: ../vid_common/gap_cme_gui.c:3200 ../vid_common/gap_cme_gui.c:3215
+#: ../vid_common/gap_cme_gui.c:3032 ../vid_common/gap_cme_gui.c:3133
+#: ../vid_common/gap_cme_gui.c:3204 ../vid_common/gap_cme_gui.c:3219
 msgid "00:00:000"
 msgstr "00:00:000"
 
-#: ../vid_common/gap_cme_gui.c:3056
+#: ../vid_common/gap_cme_gui.c:3060
 msgid "Output samplerate in samples/sec"
 msgstr "Výstupní frekvence vzorků ve vzorcích/s"
 
 #. the Samplerate combo
-#: ../vid_common/gap_cme_gui.c:3062
+#: ../vid_common/gap_cme_gui.c:3066
 msgid " 8k Phone"
 msgstr " 8k Telefon"
 
-#: ../vid_common/gap_cme_gui.c:3063
+#: ../vid_common/gap_cme_gui.c:3067
 msgid "11.025k"
 msgstr "11,025k"
 
-#: ../vid_common/gap_cme_gui.c:3064
+#: ../vid_common/gap_cme_gui.c:3068
 msgid "12k Voice"
 msgstr "12k Hlas"
 
-#: ../vid_common/gap_cme_gui.c:3065
+#: ../vid_common/gap_cme_gui.c:3069
 msgid "16k FM"
 msgstr "16k FM"
 
-#: ../vid_common/gap_cme_gui.c:3066
+#: ../vid_common/gap_cme_gui.c:3070
 msgid "22.05k"
 msgstr "22.05k"
 
-#: ../vid_common/gap_cme_gui.c:3067
+#: ../vid_common/gap_cme_gui.c:3071
 msgid "24k Tape"
 msgstr "24k Kazeta"
 
-#: ../vid_common/gap_cme_gui.c:3068
+#: ../vid_common/gap_cme_gui.c:3072
 msgid "32k HiFi"
 msgstr "32k HiFi"
 
-#: ../vid_common/gap_cme_gui.c:3069
+#: ../vid_common/gap_cme_gui.c:3073
 msgid "44.1k CD"
 msgstr "44.1k CD"
 
-#: ../vid_common/gap_cme_gui.c:3070
+#: ../vid_common/gap_cme_gui.c:3074
 msgid "48 k Studio"
 msgstr "48 k Studio"
 
-#: ../vid_common/gap_cme_gui.c:3079
+#: ../vid_common/gap_cme_gui.c:3083
 msgid "Select a commonly-used samplerate"
 msgstr "Vyberte běžně používanou vzorkovací frekvenci"
 
 #. the Tmp audiofile label
-#: ../vid_common/gap_cme_gui.c:3089
+#: ../vid_common/gap_cme_gui.c:3093
 msgid "Tmpfile:"
 msgstr "Dočasný soubor:"
 
 #. the convert Tmp audiofilefile button
-#: ../vid_common/gap_cme_gui.c:3106
+#: ../vid_common/gap_cme_gui.c:3110
 msgid "Audioconvert"
 msgstr "Převod zvuku"
 
-#: ../vid_common/gap_cme_gui.c:3112
+#: ../vid_common/gap_cme_gui.c:3116
 msgid "Convert audiofile to tmpfile"
 msgstr "Převést soubor zvuku do dočasného souboru"
 
 #. the resample general information label
-#: ../vid_common/gap_cme_gui.c:3139
+#: ../vid_common/gap_cme_gui.c:3143
 msgid ""
 "\n"
 "Note:\n"
@@ -7959,112 +8139,112 @@ msgstr ""
 "kvalitu zvuku. Vyšší vzorkovací frekvence ale\n"
 "nemohou zlepšit kvalitu původního zvuku."
 
-#: ../vid_common/gap_cme_gui.c:3245
+#: ../vid_common/gap_cme_gui.c:3249
 msgid "Video Encode Options"
 msgstr "Možnosti kódování videa"
 
-#: ../vid_common/gap_cme_gui.c:3282
+#: ../vid_common/gap_cme_gui.c:3286
 msgid "Start encoding at this frame"
 msgstr "Začít kódovat od tohoto políčka"
 
-#: ../vid_common/gap_cme_gui.c:3315
+#: ../vid_common/gap_cme_gui.c:3319
 msgid "Stop encoding at this frame"
 msgstr "Přestat kódovat na tomto políčku"
 
-#: ../vid_common/gap_cme_gui.c:3341
+#: ../vid_common/gap_cme_gui.c:3345
 msgid "Width of the output video (pixels)"
 msgstr "Šířka výstupního videa (pixely)"
 
 #. the Frame width/height scale combo (for picking common used video sizes)
-#: ../vid_common/gap_cme_gui.c:3348
+#: ../vid_common/gap_cme_gui.c:3352
 msgid "Framesize (1:1)"
 msgstr "Velikost políčka (1:1)"
 
-#: ../vid_common/gap_cme_gui.c:3349
+#: ../vid_common/gap_cme_gui.c:3353
 msgid "320x240 NTSC"
 msgstr "320×240 NTSC"
 
-#: ../vid_common/gap_cme_gui.c:3350
+#: ../vid_common/gap_cme_gui.c:3354
 msgid "320x288 PAL"
 msgstr "320×288 PAL"
 
-#: ../vid_common/gap_cme_gui.c:3351
+#: ../vid_common/gap_cme_gui.c:3355
 msgid "640x480"
 msgstr "640×480"
 
-#: ../vid_common/gap_cme_gui.c:3352
+#: ../vid_common/gap_cme_gui.c:3356
 msgid "720x480 NTSC"
 msgstr "720×480 NTSC"
 
-#: ../vid_common/gap_cme_gui.c:3353
+#: ../vid_common/gap_cme_gui.c:3357
 msgid "720x576 PAL"
 msgstr "720×576 PAL"
 
-#: ../vid_common/gap_cme_gui.c:3362
+#: ../vid_common/gap_cme_gui.c:3366
 msgid "Scale width/height to common size"
 msgstr "Změnit měřítko šířky/výšky na stejnou velikost"
 
-#: ../vid_common/gap_cme_gui.c:3389
+#: ../vid_common/gap_cme_gui.c:3393
 msgid "Height of the output video (pixels)"
 msgstr "Výška výstupního videa (pixely)"
 
-#: ../vid_common/gap_cme_gui.c:3416
+#: ../vid_common/gap_cme_gui.c:3420
 msgid "Framerate of the output video (frames/sec)"
 msgstr "Frekvence políček výsupního videa (políčka/s)"
 
 #. the framerate combo (to select common used video framerates)
-#: ../vid_common/gap_cme_gui.c:3423
+#: ../vid_common/gap_cme_gui.c:3427
 msgid "unchanged"
 msgstr "nezměněna"
 
-#: ../vid_common/gap_cme_gui.c:3445
+#: ../vid_common/gap_cme_gui.c:3449
 msgid "Set framerate"
 msgstr "Nastavit frekvenci políček"
 
 #. the Videonorm label
-#: ../vid_common/gap_cme_gui.c:3456
+#: ../vid_common/gap_cme_gui.c:3460
 msgid "Videonorm:"
 msgstr "Norma videa:"
 
 #. the Videonorm combo
-#: ../vid_common/gap_cme_gui.c:3464
+#: ../vid_common/gap_cme_gui.c:3468
 msgid "NTSC"
 msgstr "NTSC"
 
-#: ../vid_common/gap_cme_gui.c:3465
+#: ../vid_common/gap_cme_gui.c:3469
 msgid "PAL"
 msgstr "PAL"
 
-#: ../vid_common/gap_cme_gui.c:3466
+#: ../vid_common/gap_cme_gui.c:3470
 msgid "SECAM"
 msgstr "SECAM"
 
-#: ../vid_common/gap_cme_gui.c:3467
+#: ../vid_common/gap_cme_gui.c:3471
 msgid "MAC"
 msgstr "MAC"
 
-#: ../vid_common/gap_cme_gui.c:3468
+#: ../vid_common/gap_cme_gui.c:3472
 msgid "COMP"
 msgstr "COMP"
 
-#: ../vid_common/gap_cme_gui.c:3469
+#: ../vid_common/gap_cme_gui.c:3473
 msgid "undefined"
 msgstr "nedefinováno"
 
-#: ../vid_common/gap_cme_gui.c:3478
+#: ../vid_common/gap_cme_gui.c:3482
 msgid "Select videonorm"
 msgstr "Zvolte normu videa"
 
 #. the videoencoder label
-#: ../vid_common/gap_cme_gui.c:3488
+#: ../vid_common/gap_cme_gui.c:3492
 msgid "Encoder:"
 msgstr "Kodér:"
 
-#: ../vid_common/gap_cme_gui.c:3502
+#: ../vid_common/gap_cme_gui.c:3506
 msgid "Edit encoder specific parameters"
 msgstr "Upravit parametry specifické pro kodér"
 
-#: ../vid_common/gap_cme_gui.c:3518
+#: ../vid_common/gap_cme_gui.c:3522
 msgid "Select video encoder plugin"
 msgstr "Zvolte modul kodéru videa"
 
@@ -8363,7 +8543,8 @@ msgstr "Název kodeku:"
 
 #: ../vid_enc_avi/gap_enc_avi_main.c:608
 msgid "4 char codec code name. One of: RGB (raw uncompressed) JPEG,  XVID"
-msgstr "čtyřznakový kódový název kodeku. Jedno z RGB (raw, nekomprimované) JPEG, XVID"
+msgstr ""
+"čtyřznakový kódový název kodeku. Jedno z RGB (raw, nekomprimované) JPEG, XVID"
 
 #: ../vid_enc_avi/gap_enc_avi_main.c:616
 msgid "Don't recode"
@@ -8420,7 +8601,8 @@ msgstr "max_quantizer:"
 
 #: ../vid_enc_avi/gap_enc_avi_main.c:692
 msgid "for XVID Codec  upper limit for quantize Range 1 == BEST Quality "
-msgstr "pro kodek XVID  horní limit pro rozsah kvantování 1 == NEJLEPŠÍ kvalita"
+msgstr ""
+"pro kodek XVID  horní limit pro rozsah kvantování 1 == NEJLEPŠÍ kvalita"
 
 #: ../vid_enc_avi/gap_enc_avi_main.c:701
 msgid "min_quantizer:"
@@ -8428,7 +8610,8 @@ msgstr "min_quantizer:"
 
 #: ../vid_enc_avi/gap_enc_avi_main.c:702
 msgid "for XVID Codec  lower limit for quantize Range 1 == BEST Quality "
-msgstr "pro kodek XVID  dolní limit pro rozsah kvantování 1 == NEJLEPŠÍ kvalita"
+msgstr ""
+"pro kodek XVID  dolní limit pro rozsah kvantování 1 == NEJLEPŠÍ kvalita"
 
 #: ../vid_enc_avi/gap_enc_avi_main.c:711
 msgid "key_interval:"
@@ -8667,11 +8850,6 @@ msgstr "B-Políčka:"
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1484
 msgid "Max number of B-frames in sequence"
 msgstr "Maximální počet B-políček za sebou"
-
-#. the qdiff label
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1494
-msgid "Aspect:"
-msgstr "Poměr stran:"
 
 #. the Set Aspectratio checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1503
@@ -9013,9 +9191,8 @@ msgid "Unlimited motion vector"
 msgstr "Neomezený vektor pohybu"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2198
-#, fuzzy
 msgid "Enable unlimited motion vector (only h263+ CODEC)"
-msgstr "povolit neomezený vektor pohybu (jen kodek h263+)"
+msgstr "Povolit neomezený vektor pohybu (jen kodek h263+)"
 
 #. the Partitioning checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2206
@@ -9023,9 +9200,8 @@ msgid "Partitioning"
 msgstr "Oddělování"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2212
-#, fuzzy
 msgid "Use data partitioning (only MPEG-4 CODEC)"
-msgstr "používat oddělování dat (jen kodek MPEG-4)"
+msgstr "Používat oddělování dat (jen kodek MPEG-4)"
 
 #. the Strict GOP checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2223
@@ -9042,20 +9218,17 @@ msgid "Use slice struct"
 msgstr "Používat strukturování řezy"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2249
-#, fuzzy
 msgid "Enable slice structured mode (only h263+ CODEC)"
-msgstr "povolit režim strukturování řezy (jen kodek h263+)"
+msgstr "Povolit režim strukturování řezy (jen kodek h263+)"
 
 #. the Use Alt scantable checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2257
-#, fuzzy
 msgid "Use alt scantable"
 msgstr "Používat alternativní skenovací tabulku"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2265
-#, fuzzy
 msgid "Enable alternate scantable (only MPEG-2 MPEG-4 CODECs)"
-msgstr "povolit alternativní skenovací tabulku (jen kodeky MPEG-2 MPEG-4)"
+msgstr "Povolit alternativní skenovací tabulku (jen kodeky MPEG-2, MPEG-4)"
 
 #. the Use interlaced me checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2276
@@ -9063,9 +9236,8 @@ msgid "Use interlaced me"
 msgstr "Používat prokládaný op"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2284
-#, fuzzy
 msgid "Enable interlaced motion estimation"
-msgstr "povolit prokládaný odhad pohybu"
+msgstr "Povolit prokládaný odhad pohybu"
 
 #. the Use AIV checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2292
@@ -9073,9 +9245,8 @@ msgid "Use AIV"
 msgstr "Používat AIV"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2300
-#, fuzzy
 msgid "Enable Alternative inter vlc (only h263+ CODEC)"
-msgstr "povolit alternativní inter vlc (jen kodek h263+)"
+msgstr "Povolit alternativní inter vlc (jen kodek h263+)"
 
 #. the interlace dct checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2310
@@ -9094,7 +9265,8 @@ msgstr "Překrývající se blok"
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2334
 #, fuzzy
 msgid "Enable use overlapped block motion compensation (only h263+ CODEC)"
-msgstr "povolit používání kompenzace pohybu překrývajícího se bloku (jen kodek h263+)"
+msgstr ""
+"povolit používání kompenzace pohybu překrývajícího se bloku (jen kodek h263+)"
 
 #. the quarter pel checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2345
@@ -9102,9 +9274,8 @@ msgid "quarter pel"
 msgstr "čtvrt pel"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2353
-#, fuzzy
 msgid "Enable 1/4-pel"
-msgstr "povolit ¼-pel"
+msgstr "Povolit ¼-pel"
 
 #. the Use Loop checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2360
@@ -9112,9 +9283,8 @@ msgid "Loop Filter"
 msgstr "Filtr smyček"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2368
-#, fuzzy
 msgid "Use loop filter (only h263+ CODEC)"
-msgstr "používat filtr smyček (jen kodek h263+)"
+msgstr "Používat filtr smyček (jen kodek h263+)"
 
 #. the Use qprd checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2378
@@ -9146,7 +9316,8 @@ msgstr "používat MVO"
 msgid ""
 "Try to encode each MB with MV=<0,0> and choose the better one (has no effect "
 "if mbd=0)"
-msgstr "zkusit kódovat každý MB s MV=<0,0> a zvolit ten lepší (nemá vliv, když mbd=0)"
+msgstr ""
+"zkusit kódovat každý MB s MV=<0,0> a zvolit ten lepší (nemá vliv, když mbd=0)"
 
 #. the Use Normalize checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2430
@@ -9657,7 +9828,8 @@ msgstr "Nastavit parametry pro moduly GAP kodéru videa singleframes"
 
 #: ../vid_enc_single/gap_enc_singleframes_main.c:204
 msgid "This plugin sets singleframes specific video encoding parameters."
-msgstr "Tento modul nastavuje parametry kódování videa specifické pro singleframes."
+msgstr ""
+"Tento modul nastavuje parametry kódování videa specifické pro singleframes."
 
 #: ../vid_enc_single/gap_enc_singleframes_main.c:217
 msgid "Get GUI Parameters for GAP singleframes video encoder"
@@ -9702,4 +9874,3 @@ msgid ""
 msgstr ""
 "** Ukládání SELHALO na souboru\n"
 "%s"
-
