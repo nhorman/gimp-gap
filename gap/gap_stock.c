@@ -58,7 +58,12 @@ static GtkStockItem gap_stock_items[] =
   {  GAP_STOCK_ROTATE_FOLLOW      , N_("Rotate Follow"),     0, 0, NULL },
   {  GAP_STOCK_SOURCE_IMAGE       , NULL,                    0, 0, NULL },
   {  GAP_STOCK_STEPMODE           , NULL,                    0, 0, NULL },
-  {  GAP_STOCK_UPDATE             , NULL,                    0, 0, NULL }
+  {  GAP_STOCK_UPDATE             , NULL,                    0, 0, NULL },
+  {  GAP_STOCK_RANGE_END          , NULL,                    0, 0, NULL },
+  {  GAP_STOCK_RANGE_START        , NULL,                    0, 0, NULL },
+  {  GAP_STOCK_SET_RANGE_END      , NULL,                    0, 0, NULL },
+  {  GAP_STOCK_SET_RANGE_START    , NULL,                    0, 0, NULL },
+  {  GAP_STOCK_SPEED              , NULL,                    0, 0, NULL }
 };
 
 
@@ -120,6 +125,12 @@ gap_stock_init (void)
   add_stock_icon (GAP_STOCK_SOURCE_IMAGE       , GTK_ICON_SIZE_BUTTON, gap_source_image);
   add_stock_icon (GAP_STOCK_STEPMODE           , GTK_ICON_SIZE_BUTTON, gap_stepmode);
   add_stock_icon (GAP_STOCK_UPDATE             , GTK_ICON_SIZE_BUTTON, gap_update);
+
+  add_stock_icon ( GAP_STOCK_RANGE_END         , GTK_ICON_SIZE_BUTTON, gap_range_end);
+  add_stock_icon ( GAP_STOCK_RANGE_START       , GTK_ICON_SIZE_BUTTON, gap_range_start);
+  add_stock_icon ( GAP_STOCK_SET_RANGE_END     , GTK_ICON_SIZE_BUTTON, gap_set_range_end);
+  add_stock_icon ( GAP_STOCK_SET_RANGE_START   , GTK_ICON_SIZE_BUTTON, gap_set_range_start);
+  add_stock_icon ( GAP_STOCK_SPEED             , GTK_ICON_SIZE_BUTTON, gap_speed);
 
   gtk_icon_factory_add_default (gap_icon_factory);
 

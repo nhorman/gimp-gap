@@ -27,8 +27,6 @@
 #include "gap_audio_wav.h"
 #include "gap-intl.h"
 
-#define DEFAULT_UTIL_SOX           "sox"
-#define DEFAULT_UTIL_SOX_OPTIONS   " \"$IN\"  -w -r $RATE \"$OUT\" resample "
 
 /* --------------------------------
  * gap_gve_sox_init_default
@@ -38,9 +36,9 @@ void
 gap_gve_sox_init_default(GapGveCommonValues *cval)
 {
    g_snprintf(cval->util_sox, sizeof(cval->util_sox), "%s"
-              , DEFAULT_UTIL_SOX);
+              , GAP_STORY_SOX_DEFAULT_UTIL_SOX);
    g_snprintf(cval->util_sox_options, sizeof(cval->util_sox_options), "%s"
-              ,  DEFAULT_UTIL_SOX_OPTIONS);
+              ,  GAP_STORY_SOX_DEFAULT_UTIL_SOX_OPTIONS);
 }  /* end gap_gve_sox_init_default */
 
 /* --------------------------------
@@ -79,46 +77,6 @@ gap_gve_sox_init_config(GapGveCommonValues *cval)
       g_free(value_string);
    }
 }  /* end gap_gve_sox_init_config */
-
-
-/* --------------------------------
- * gap_gve_sox_exec_resample
- * --------------------------------
- */
-void
-gap_gve_sox_exec_resample(char *in_audiofile
-               ,char *out_audiofile
-               ,gint32 samplerate
-               ,char *util_sox           /* the resample program (default: sox) */
-               ,char *util_sox_options
-               )
-{
-  gchar *l_cmd;
-
-  if(util_sox == NULL)
-  {
-    util_sox = DEFAULT_UTIL_SOX;
-  }
-  if(util_sox_options == NULL)
-  {
-    util_sox_options = DEFAULT_UTIL_SOX_OPTIONS;
-  }
-
-  /* the calling style requres UNIX Shell for Environment Variables
-   * IN, OUT, RATE  that are used for Parameter substitution
-   */
-
-  l_cmd = g_strdup_printf("IN='%s';OUT='%s';RATE=%d;%s %s\n"
-           , in_audiofile               /* input audio file */
-           , out_audiofile              /* output audio file (tmp 16-bit wav file) */
-	   , (int)samplerate
-           , util_sox
-           , util_sox_options
-	   );
-  system(l_cmd);
-  g_free(l_cmd);
-}  /* end gap_gve_sox_exec_resample */
-
 
 
 /* --------------------------------
@@ -200,7 +158,7 @@ gap_gve_sox_chk_and_resample(GapGveCommonValues *cval)
         return -1;
      }
 
-     gap_gve_sox_exec_resample( cval->audioname1
+     gap_story_sox_exec_resample( cval->audioname1
                     , cval-> tmp_audfile
                     , cval->samplerate
                     , cval->util_sox

@@ -67,9 +67,10 @@ Overview of supported RECORD TYPES:
 STORYBOARDFILE    version:1.0   # comments
 
 
-VID_MASTER_FRAMERATE  frames_per_sec:24.0
-VID_MASTER_SIZE       width:320  height:200
-VID_PREFERRED_DECODER  libavformat
+VID_MASTER_FRAMERATE    frames_per_sec:24.0
+VID_MASTER_FRAME_ASPECT width:16 height:9
+VID_MASTER_SIZE         width:320  height:200
+VID_PREFERRED_DECODER   libavformat
 
 AUD_MASTER_VOLUME      volume:1.0
 AUD_MASTER_SAMPLERATE  samples_per_sec:44100
@@ -137,6 +138,24 @@ STORYBOARDFILE
 
   (1) Record Key        ... STORYBOARDFILE
   (2) version           ... version string (1.0 for the current implementation)
+
+VID_MASTER_FRAME_ASPECT
+  Specifies the relation of width / height for playback of the resulting
+  video output. This may result in automatical scaling to the specified
+  aspect on playback.
+  If nothing is specified, or one of the values width or height is 0,
+  then playback will be done at the aspect derived from the original
+  pixelsize.
+  You can encode a video at 720 x 576 pixels, but specifiy aspect
+  16:9
+  Note: not all video encoders do support aspect settings.
+
+  (1) Record Key        ... VID_MASTER_FRAME_ASPECT
+  (2) width             ... the width aspect
+                            (0: derive aspect from original pixelsize)
+  (3) height            ... the height aspect
+                            (0: derive aspect from original pixelsize)
+  
 
 VID_PREFERRED_DECODER
   (1) Record Key        ... VID_PREFERRED_DECODER

@@ -1,13 +1,8 @@
-/* gap_libgapstory.h
- * 1997.11.01 hof (Wolfgang Hofer)
- *
- * GAP ... Gimp Animation Plugins
- *
- * Master includefile for the library libgapstory (Storyboard SYNTAX AND  PARSER)
- *
+/* gap_story_sox.h
+ *    Headers for Audio resampling Modules
  */
-/* The GIMP -- an image manipulation program
- * Copyright (C) 1995 Spencer Kimball and Peter Mattis
+/*
+ * Copyright
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,21 +19,24 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/* revision history:
- * 2.1.0a  2004/09/12   hof: created
- */
+#ifndef GAP_STORY_SOX_H
+#define GAP_STORY_SOX_H
 
-#ifndef _LIBGAPSTORY_H
-#define _LIBGAPSTORY_H
+#include <config.h>
 
+/* GIMP includes */
+#include "gtk/gtk.h"
+#include "gap-intl.h"
 #include "libgimp/gimp.h"
 
-/* libgapstory depends on libgimpgap */
-#include "gap_libgimpgap.h"
+#define GAP_STORY_SOX_DEFAULT_UTIL_SOX           "sox"
+#define GAP_STORY_SOX_DEFAULT_UTIL_SOX_OPTIONS   " \"$IN\"  -w -r $RATE \"$OUT\" resample "
 
-#include "gap_story_file.h"
-#include "gap_story_processor.h"
-#include "gap_story_sox.h"
-#include "gap_story_syntax.h"
+void   gap_story_sox_exec_resample(char *in_audiofile
+                      ,char *out_audiofile
+                      ,gint32 samplerate
+                      ,char *util_sox
+                      ,char *util_sox_options
+                      );
 
 #endif

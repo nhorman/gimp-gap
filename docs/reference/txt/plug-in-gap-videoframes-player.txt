@@ -11,7 +11,7 @@ Playback
     and allows visible positioning for the animation designer.
 
     There is NO direct support for playback of videoformats (like MPEG, AVI, ....)
-    Internally the player can handle access the frames (but no audio) in videofiles
+    Internally the player can read the frames (but no audio) from videofiles
     when invoked from the video extract dialog or from the storyboard dialog.
 
 

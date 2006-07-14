@@ -38,6 +38,8 @@
 #include <libgimp/gimpui.h>
 #include "gap_pview_da.h"
 #include "gap_story_file.h"
+#include "gap_player_cache.h"
+#include "gap_story_render_types.h"
 
 #ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
 #include "gap_vid_api.h"
@@ -207,6 +209,36 @@ typedef struct GapPlayerMainGlobalParams {
   const char *help_id;
   
   gboolean    onion_delete;
+  
+  /* player cache settings */
+  GtkObject *cache_size_spinbutton_adj;
+  GtkWidget *label_current_cache_values;
+  GtkWidget *progress_bar_cache_usage;
+
+  gint32     max_player_cache;    /* max bytesize to use for caching frames 
+                                   * (at pview widget size) 
+                                   * a value of 0 turns cahing OFF
+                                   */
+  GapPlayerCacheCompressionType cache_compression;
+  gdouble                       cache_jpeg_quality;
+  
+  /* layout options */
+  gboolean show_go_buttons;
+  gboolean show_position_scale;
+  GtkWidget *show_go_buttons_checkbutton;
+  GtkWidget *show_position_scale_checkbutton;
+  GtkWidget *gobutton_hbox;
+  GtkWidget *frame_scale_hbox;
+  
+  /* flags to trigger built in transformations */
+  gint32 flip_request;
+  gint32 flip_status;
+  gint32 stb_in_track;
+  
+  /* for playback of storyboard composite video */
+  gint32 stb_parttype;
+  gint32 stb_unique_id;
+  GapStoryRenderVidHandle *stb_comp_vidhand;
   
 } GapPlayerMainGlobalParams;
 

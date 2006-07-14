@@ -43,6 +43,12 @@
 #define GAP_STOCK_STEPMODE           "gap-stepmode"
 #define GAP_STOCK_UPDATE             "gap-update"
 
+#define GAP_STOCK_RANGE_END          "gap-range-end"
+#define GAP_STOCK_RANGE_START        "gap-range-start"
+#define GAP_STOCK_SET_RANGE_END      "gap-set-range-end"
+#define GAP_STOCK_SET_RANGE_START    "gap-set-range-start"
+#define GAP_STOCK_SPEED              "gap-speed"
+
 void  gap_stock_init (void);
 
 

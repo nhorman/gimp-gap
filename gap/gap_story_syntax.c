@@ -261,6 +261,11 @@ p_create_syntax_list(void)
                ,"frames_per_sec"
                ,NULL
                );
+  p_add_keyword(GAP_STBKEY_VID_MASTER_FRAME_ASPECT
+	       ,"width"
+               ,"height"
+               ,NULL
+               );
   p_add_keyword(GAP_STBKEY_VID_PREFERRED_DECODER
                ,"decoder"
                ,NULL
@@ -278,6 +283,11 @@ p_create_syntax_list(void)
 	       ,"stepsize"
                ,"macro"
                ,"decoder"
+               ,"flip"
+               ,"mask_name"
+               ,"mask_anchor"
+               ,"mask_stepsize"
+               ,"mask_disable"
                ,NULL
                );
   p_add_keyword(GAP_STBKEY_VID_PLAY_FRAMES
@@ -290,6 +300,11 @@ p_create_syntax_list(void)
                ,"nloops"
 	       ,"stepsize"
                ,"macro"
+               ,"flip"
+               ,"mask_name"
+               ,"mask_anchor"
+               ,"mask_stepsize"
+               ,"mask_disable"
 	       ,NULL
                );
   p_add_keyword(GAP_STBKEY_VID_PLAY_ANIMIMAGE
@@ -301,6 +316,11 @@ p_create_syntax_list(void)
                ,"nloops"
 	       ,"stepsize"
                ,"macro"
+               ,"flip"
+               ,"mask_name"
+               ,"mask_anchor"
+               ,"mask_stepsize"
+               ,"mask_disable"
 	       ,NULL
                );
 
@@ -309,6 +329,11 @@ p_create_syntax_list(void)
                ,"file"
                ,"nloops"
                ,"macro"
+               ,"flip"
+               ,"mask_name"
+               ,"mask_anchor"
+               ,"mask_stepsize"
+               ,"mask_disable"
 	       ,NULL
                );
   p_add_keyword(GAP_STBKEY_VID_PLAY_COLOR
@@ -319,6 +344,11 @@ p_create_syntax_list(void)
 	       ,"alpha"
                ,"nloops"
                ,"macro"
+               ,"flip"
+               ,"mask_name"
+               ,"mask_anchor"
+               ,"mask_stepsize"
+               ,"mask_disable"
 	       ,NULL
                );
   p_add_keyword(GAP_STBKEY_VID_SILENCE
@@ -368,6 +398,50 @@ p_create_syntax_list(void)
                ,"proportions"
 	       ,NULL
                );
+  p_add_keyword(GAP_STBKEY_VID_OVERLAP
+               ,"track"
+               ,"nframes"
+	       ,NULL
+               );
+  p_add_keyword(GAP_STBKEY_MASK_MOVIE
+               ,"mask_name"
+               ,"file"
+               ,"from"
+               ,"to"
+               ,"seltrack"
+               ,"exactseek"
+               ,"deinterlace"
+               ,"decoder"
+               ,"flip"
+               ,NULL
+               );
+  p_add_keyword(GAP_STBKEY_MASK_FRAMES
+               ,"mask_name"
+               ,"base"
+               ,"ext"
+               ,"from"
+               ,"to"
+               ,"flip"
+	       ,NULL
+               );
+  p_add_keyword(GAP_STBKEY_MASK_ANIMIMAGE
+               ,"mask_name"
+               ,"file"
+               ,"from"
+               ,"to"
+               ,"flip"
+	       ,NULL
+               );
+
+  p_add_keyword(GAP_STBKEY_MASK_IMAGE
+               ,"mask_name"
+               ,"file"
+               ,"flip"
+	       ,NULL
+               );
+
+
+
   p_add_keyword(GAP_STBKEY_AUD_MASTER_VOLUME
                ,"volume"
 	       ,NULL

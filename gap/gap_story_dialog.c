@@ -77,29 +77,30 @@ static gint32 global_stb_video_id = 0;
 #define STB_THSIZE_MEDIUM 66
 #define STB_THSIZE_SMALL  44
 
+
+/* layout constraint check values */
+#define STB_THSIZE_MAX   120
+#define STB_THSIZE_MIN    33
+#define CLL_MIN_COL        4
+#define CLL_MAX_COL       15
+#define CLL_MIN_ROW        1
+#define CLL_MAX_ROW       10
+
+#define STB_MIN_COL       10
+#define STB_MAX_COL       30
+#define STB_MIN_ROW        1
+#define STB_MAX_ROW        5
+
+
 #define STB_THIDX_LARGE  0
 #define STB_THIDX_MEDIUM 1
 #define STB_THIDX_SMALL  2
 #define GAP_STORY_FW_PTR   "gap_story_fw_ptr"
 #define GAP_STORY_TABW_PTR "gap_story_tabw_ptr"
 
-// IN_TRACK shall be replaced by the currently edited track.
-// currently this dialog supports only one track with number 1
-#define IN_TRACK 1
-
 
 typedef void (*GapStbMenuCallbackFptr)(GtkWidget *widget, GapStbMainGlobalParams *sgpp);
 
-
-enum
-{
-  TARGET_URILIST,
-  TARGET_UTF8_STRING,
-  TARGET_STRING,
-  TARGET_TEXT,
-  TARGET_COMPOUND_TEXT,
-  TARGET_STORYBOARD_ELEM
-};
 
 static void     on_stb_elem_drag_begin (GtkWidget        *widget,
                     GdkDragContext   *context,
@@ -110,9 +111,9 @@ static void     on_stb_elem_drag_get (GtkWidget        *widget,
                     guint             info,
                     guint             time,
                     GapStbFrameWidget *fw);
-static void     on_stb_elem_drag_delete (GtkWidget        *widget,
-                    GdkDragContext   *context,
-                    GapStbFrameWidget *fw);
+//static void     on_stb_elem_drag_delete (GtkWidget        *widget,
+//                    GdkDragContext   *context,
+//                    GapStbFrameWidget *fw);
 static void     on_clip_elements_dropped (GtkWidget        *widget,
                    GdkDragContext   *context,
                    gint              x,
@@ -121,10 +122,10 @@ static void     on_clip_elements_dropped (GtkWidget        *widget,
                    guint             info,
                    guint             time);
 static GapStoryBoard * p_get_or_auto_create_storyboard (GapStbMainGlobalParams *sgpp, GapStbTabWidgets *tabw , gboolean *auto_created);
-static GapStoryBoard * p_dnd_selection_to_stb_list(const char *selection_data);
-static GapStoryElem *  p_check_and_convert_uri_to_stb_elem(const char *uri, GapStoryElem *prev_elem);
+static GapStoryBoard * p_dnd_selection_to_stb_list(const char *selection_data, gint32 vtrack);
+static GapStoryElem *  p_check_and_convert_uri_to_stb_elem(const char *uri, GapStoryElem *prev_elem, gint32 vtrack);
 static gboolean        p_check_and_merge_range_if_possible(GapStoryElem *elem, GapStoryElem *prev_elem);
-static GapStoryElem *  p_create_stb_elem_from_filename (const char *filename);
+static GapStoryElem *  p_create_stb_elem_from_filename (const char *filename, gint32 vtrack);
 static void            p_frame_widget_init_dnd(GapStbFrameWidget *fw);
 static void            p_widget_init_dnd_drop(GtkWidget *widget, GapStbTabWidgets *tabw);
 
@@ -161,6 +162,9 @@ static void     p_story_call_player(GapStbMainGlobalParams *sgpp
                    , gint32 seltrack
                    , gdouble delace
                    , const char *preferred_decoder
+                   , gint32 flip_request
+                   , gint32 flip_status
+                   , gint32 stb_in_track
                    );
 static void     p_call_master_encoder(GapStbMainGlobalParams *sgpp
                    , GapStoryBoard *stb
@@ -178,6 +182,9 @@ static void     p_player_img_mode_cb (GtkWidget *w, GapStbMainGlobalParams *sgpp
 static void     p_cancel_button_cb (GtkWidget *w, GapStbMainGlobalParams *sgpp);
 
 static void     p_tabw_gen_otone_dialog(GapStbTabWidgets *tabw);
+
+static gint32   p_parse_int(const char *buff);
+static void     p_parse_aspect_width_and_height(const char *buff, gint32 *aspect_width, gint32 *aspect_height);
 static void     p_tabw_master_prop_dialog(GapStbTabWidgets *tabw, gboolean new_flag);
 static void     p_tabw_add_elem (GapStbTabWidgets *tabw, GapStbMainGlobalParams *sgpp, GapStoryBoard *stb_dst);
 static void     p_tabw_add_att_elem (GapStbTabWidgets *tabw, GapStbMainGlobalParams *sgpp, GapStoryBoard *stb_dst);
@@ -190,6 +197,8 @@ static void     p_filesel_tabw_save_ok_cb ( GtkWidget *widget, GapStbTabWidgets 
 static void     p_tabw_load_file_cb ( GtkWidget *w, GapStbTabWidgets *tabw);
 static void     p_tabw_file_save_as_cb ( GtkWidget *w, GapStbTabWidgets *tabw);
 static void     p_tabw_filename_entry_cb(GtkWidget *widget, GapStbTabWidgets *tabw);
+static void     p_vtack_spinbutton_cb(GtkEditable     *editable,
+                                     GapStbTabWidgets *tabw);
 static void     p_rowpage_spinbutton_cb(GtkEditable     *editable,
                                      GapStbTabWidgets *tabw);
 static void     p_vscale_changed_cb(GtkObject *adj, GapStbTabWidgets *tabw);
@@ -323,7 +332,7 @@ static void     p_recreate_tab_widgets(GapStoryBoard *stb
                        ,gint32 mount_row
                        ,GapStbMainGlobalParams *sgpp
                       );
-static void     p_create_button_bar(GapStbTabWidgets *tabw
+static GtkWidget *  p_create_button_bar(GapStbTabWidgets *tabw
                    ,gint32 mount_col
                    ,gint32 mount_row
                    ,GapStbMainGlobalParams *sgpp
@@ -331,6 +340,16 @@ static void     p_create_button_bar(GapStbTabWidgets *tabw
                    ,gint32 mount_vs_col
                    ,gint32 mount_vs_row
                    );
+
+GtkWidget *    p_gtk_button_new_from_stock_icon(const char *stock_id);
+static gint32  p_get_gimprc_int_value (const char *gimprc_option_name
+                       , gint32 default_value, gint32 min_value, gint32 max_value);
+                       
+static gint32  p_get_gimprc_preview_size(const char *gimprc_option_name);
+static void    p_save_gimprc_preview_size(const char *gimprc_option_name, gint32 preview_size);
+static void    p_save_gimprc_int_value(const char *gimprc_option_name, gint32 value);
+static void    p_save_gimprc_layout_settings(GapStbMainGlobalParams *sgpp);
+static void    p_get_gimprc_layout_settings(GapStbMainGlobalParams *sgpp);
 
 /* -----------------------------
  * p_thumbsize_to_index
@@ -394,14 +413,47 @@ gap_story_dlg_tabw_update_frame_label (GapStbTabWidgets *tabw
  * -----------------------------
  */
 void
-gap_story_dlg_pw_render_all(GapStbPropWidget *pw)
+gap_story_dlg_pw_render_all(GapStbPropWidget *pw, gboolean recreate)
 {
+  if(gap_debug)
+  {
+    printf("gap_story_dlg_pw_render_all recreate:%d\n", (int)recreate);
+  }
+
   if(pw == NULL) { return; }
   if(pw->tabw == NULL) { return; }
 
+  if(recreate)
+  {
+    GapStbTabWidgets *tabw;
+    
+    tabw = (GapStbTabWidgets *)pw->tabw;
+    
+    /* refresh storyboard layout and thumbnail list widgets */
+    p_recreate_tab_widgets( pw->stb_refptr
+                           ,tabw
+                           ,tabw->mount_col
+                           ,tabw->mount_row
+                           ,pw->sgpp
+                           );
+  }
   p_render_all_frame_widgets(pw->tabw);
   p_tabw_update_frame_label(pw->tabw, pw->sgpp);
 }  /* end gap_story_dlg_pw_render_all */
+
+/* --------------------------------------
+ * gap_story_dlg_attw_render_all
+ * --------------------------------------
+ */
+void
+gap_story_dlg_attw_render_all(GapStbAttrWidget *attw)
+{
+  if(attw == NULL) { return; }
+  if(attw->tabw == NULL) { return; }
+
+  p_render_all_frame_widgets(attw->tabw);
+  p_tabw_update_frame_label(attw->tabw, attw->sgpp);
+}  /* end gap_story_dlg_attw_render_all */
 
 /* -----------------------------
  * p_tabw_get_stb_ptr
@@ -467,6 +519,7 @@ p_new_stb_tab_widgets(GapStbMainGlobalParams *sgpp, GapStoryMasterType type)
     tabw->thumb_width = tabw->thumbsize;
     tabw->thumb_height = tabw->thumbsize;
     tabw->rowpage = 1;
+    tabw->vtrack = 1;
 
     tabw->mount_table = NULL;
     tabw->frame_with_name = NULL;
@@ -566,7 +619,7 @@ p_render_all_frame_widgets (GapStbTabWidgets *tabw)
 
   if(l_stb)
   {
-    l_act_elems = gap_story_count_active_elements(l_stb, 1 /* track */ );
+    l_act_elems = gap_story_count_active_elements(l_stb, tabw->vtrack);
   }
 
 
@@ -600,7 +653,7 @@ p_render_all_frame_widgets (GapStbTabWidgets *tabw)
     }
     fw->tabw = tabw;
     fw->stb_refptr = l_stb;
-    fw->stb_elem_refptr = gap_story_fetch_nth_active_elem(l_stb, seq_nr, 1 /* track*/);
+    fw->stb_elem_refptr = gap_story_fetch_nth_active_elem(l_stb, seq_nr, tabw->vtrack);
     if(fw->stb_elem_refptr)
     {
       fw->frame_filename = gap_story_get_filename_from_elem(fw->stb_elem_refptr);
@@ -682,7 +735,6 @@ p_frame_widget_init_empty (GapStbTabWidgets *tabw, GapStbFrameWidget *fw)
                             , l_check_size
                             , NULL   /* no aspect_frame is used */
                             );
-
   gtk_widget_set_events (fw->pv_ptr->da_widget, GDK_EXPOSURE_MASK);
   gtk_container_add (GTK_CONTAINER (alignment), fw->pv_ptr->da_widget);
   gtk_widget_show (fw->pv_ptr->da_widget);
@@ -769,8 +821,10 @@ p_frame_widget_init_empty (GapStbTabWidgets *tabw, GapStbFrameWidget *fw)
  * gap_story_dlg_render_default_icon
  * ----------------------------------
  * render a default icon,
- * depending on the record_type of the
+ * depending on the track and record_type of the
  * story board elem.
+ * if stb_elem is passed as NULL pointer then render
+ * the icon for undefined mask reference.
  */
 void
 gap_story_dlg_render_default_icon(GapStoryElem *stb_elem, GapPView   *pv_ptr)
@@ -785,8 +839,37 @@ gap_story_dlg_render_default_icon(GapStoryElem *stb_elem, GapPView   *pv_ptr)
   pixbuf = NULL;
   if(stb_elem)
   {
-     switch(stb_elem->record_type)
-     {
+    if(stb_elem->track == GAP_STB_MASK_TRACK_NUMBER)
+    {
+      switch(stb_elem->record_type)
+      {
+       case GAP_STBREC_VID_MOVIE:
+         pixbuf = gdk_pixbuf_new_from_inline (-1, gap_story_icon_mask_movie, FALSE, NULL);
+         break;
+       case GAP_STBREC_VID_FRAMES:
+         pixbuf = gdk_pixbuf_new_from_inline (-1, gap_story_icon_mask_frames, FALSE, NULL);
+         break;
+       case GAP_STBREC_VID_ANIMIMAGE:
+         pixbuf = gdk_pixbuf_new_from_inline (-1, gap_story_icon_mask_animimage, FALSE, NULL);
+         break;
+       case GAP_STBREC_VID_IMAGE:
+         pixbuf = gdk_pixbuf_new_from_inline (-1, gap_story_icon_mask_image, FALSE, NULL);
+         break;
+       case GAP_STBREC_VID_COLOR:
+         pixbuf = gdk_pixbuf_new_from_inline (-1, gap_story_icon_color, FALSE, NULL);
+         break;
+       case GAP_STBREC_ATT_TRANSITION:
+         pixbuf = gdk_pixbuf_new_from_inline (-1, gap_story_icon_transition_attr, FALSE, NULL);
+         break;
+       default:
+         pixbuf = gdk_pixbuf_new_from_inline (-1, gap_story_icon_default, FALSE, NULL);
+         break;
+      }
+    }
+    else
+    {
+      switch(stb_elem->record_type)
+      {
        case GAP_STBREC_VID_MOVIE:
          pixbuf = gdk_pixbuf_new_from_inline (-1, gap_story_icon_movie, FALSE, NULL);
          break;
@@ -808,7 +891,12 @@ gap_story_dlg_render_default_icon(GapStoryElem *stb_elem, GapPView   *pv_ptr)
        default:
          pixbuf = gdk_pixbuf_new_from_inline (-1, gap_story_icon_default, FALSE, NULL);
          break;
-     }
+      }
+    }
+  }
+  else
+  {
+         pixbuf = gdk_pixbuf_new_from_inline (-1, gap_story_icon_mask_undefined, FALSE, NULL);
   }
 
   if(pixbuf)
@@ -840,6 +928,13 @@ p_frame_widget_render (GapStbFrameWidget *fw)
    gint32  l_th_bpp;
    GdkPixbuf *pixbuf;
 
+    if(fw->stb_elem_refptr)
+    {
+      if(fw->stb_elem_refptr->track == GAP_STB_MASK_TRACK_NUMBER)
+      {
+        fw->pv_ptr->desaturate_request = TRUE;
+      }
+    }
 
    if((fw->key_label) && (fw->val_label))
    {
@@ -854,45 +949,70 @@ p_frame_widget_render (GapStbFrameWidget *fw)
      gtk_label_set_text ( GTK_LABEL(fw->key_label), l_txt);
      g_free(l_txt);
 
-     switch(tabw->edmode)
+     if(tabw->vtrack == GAP_STB_MASK_TRACK_NUMBER)
      {
-      case GAP_STB_EDMO_FRAME_NUMBER:
-         if(fw->stb_refptr)
+       /* in the mask track always show the mask_name
+        * (because framenumber or timecode are not relevant for mask definitions)
+        */
+       if(fw->stb_elem_refptr)
+       {
+         if(fw->stb_elem_refptr->mask_name)
          {
-           l_framenr = gap_story_get_framenr_by_story_id(fw->stb_refptr
-                                                        ,fw->stb_elem_refptr->story_id
-                                                        , IN_TRACK
-                                                        );
-           l_txt = g_strdup_printf("%06d", (int)l_framenr);
-           gtk_label_set_text ( GTK_LABEL(fw->val_label), l_txt);
-           g_free(l_txt);
-           break;
-         }
-       case GAP_STB_EDMO_TIMECODE:
-         if(fw->stb_refptr)
-         {
-           gdouble l_framerate;
-
-           l_framerate = fw->stb_refptr->master_framerate;
-           if(l_framerate < 1)
+           if(strlen(fw->stb_elem_refptr->mask_name) > 8)
            {
-             l_framerate = GAP_STORY_DEFAULT_FRAMERATE;
+             l_txt = g_strdup_printf("%.6s..", fw->stb_elem_refptr->mask_name);
+             gtk_label_set_text ( GTK_LABEL(fw->val_label), l_txt);
+             g_free(l_txt);
            }
-           l_framenr = gap_story_get_framenr_by_story_id(fw->stb_refptr
-                                                        ,fw->stb_elem_refptr->story_id
-                                                        ,IN_TRACK
-                                                        );
-           gap_timeconv_framenr_to_timestr(l_framenr
-                             , (gdouble)l_framerate
-                             , txt_buf
-                             , sizeof(txt_buf)
-                             );
-           gtk_label_set_text ( GTK_LABEL(fw->val_label), txt_buf);
-           break;
+           else
+           {
+             gtk_label_set_text ( GTK_LABEL(fw->val_label), fw->stb_elem_refptr->mask_name);
+           }
          }
-       default:
-         gtk_label_set_text ( GTK_LABEL(fw->val_label), " ");
-         break;
+       }
+     }
+     else
+     {
+       switch(tabw->edmode)
+       {
+        case GAP_STB_EDMO_FRAME_NUMBER:
+           if(fw->stb_refptr)
+           {
+             l_framenr = gap_story_get_framenr_by_story_id(fw->stb_refptr
+                                                          ,fw->stb_elem_refptr->story_id
+                                                          ,tabw->vtrack
+                                                          );
+             l_txt = g_strdup_printf("%06d", (int)l_framenr);
+             gtk_label_set_text ( GTK_LABEL(fw->val_label), l_txt);
+             g_free(l_txt);
+             break;
+           }
+         case GAP_STB_EDMO_TIMECODE:
+           if(fw->stb_refptr)
+           {
+             gdouble l_framerate;
+
+             l_framerate = fw->stb_refptr->master_framerate;
+             if(l_framerate < 1)
+             {
+               l_framerate = GAP_STORY_DEFAULT_FRAMERATE;
+             }
+             l_framenr = gap_story_get_framenr_by_story_id(fw->stb_refptr
+                                                          ,fw->stb_elem_refptr->story_id
+                                                          ,tabw->vtrack
+                                                          );
+             gap_timeconv_framenr_to_timestr(l_framenr
+                               , (gdouble)l_framerate
+                               , txt_buf
+                               , sizeof(txt_buf)
+                               );
+             gtk_label_set_text ( GTK_LABEL(fw->val_label), txt_buf);
+             break;
+           }
+         default:
+           gtk_label_set_text ( GTK_LABEL(fw->val_label), " ");
+           break;
+       }
      }
    }
 
@@ -923,16 +1043,18 @@ p_frame_widget_render (GapStbFrameWidget *fw)
      {
        gboolean l_th_data_was_grabbed;
 
-       l_th_data_was_grabbed = gap_pview_render_from_buf (fw->pv_ptr
+       l_th_data_was_grabbed = gap_pview_render_f_from_buf (fw->pv_ptr
                     , l_th_data
                     , l_th_width
                     , l_th_height
                     , l_th_bpp
                     , TRUE         /* allow_grab_src_data */
+                    , fw->stb_elem_refptr->flip_request
+                    , GAP_STB_FLIP_NONE  /* flip_status */
                     );
        if(!l_th_data_was_grabbed)
        {
-         /* the gap_pview_render_from_buf procedure can grab the l_th_data
+         /* the gap_pview_render_f_from_buf procedure can grab the l_th_data
           * instead of making a private copy for later use on repaint demands.
           * if such a grab happened it returns TRUE.
           * (this is done for optimal performance reasons)
@@ -959,7 +1081,11 @@ p_frame_widget_render (GapStbFrameWidget *fw)
                                     );
    if(pixbuf)
    {
-     gap_pview_render_from_pixbuf (fw->pv_ptr, pixbuf);
+     gap_pview_render_f_from_pixbuf (fw->pv_ptr
+                                  , pixbuf
+                                  , fw->stb_elem_refptr->flip_request
+                                  , GAP_STB_FLIP_NONE  /* flip_status */
+                                  );
      g_object_unref(pixbuf);
    }
    else
@@ -981,7 +1107,11 @@ p_frame_widget_render (GapStbFrameWidget *fw)
          * so we turn undo off for performance reasons
          */
         gimp_image_undo_disable (l_image_id);
-        gap_pview_render_from_image (fw->pv_ptr, l_image_id);
+        gap_pview_render_f_from_image (fw->pv_ptr
+                                    , l_image_id
+                                    , fw->stb_elem_refptr->flip_request
+                                    , GAP_STB_FLIP_NONE  /* flip_status */
+                                    );
 
         /* create thumbnail (to speed up acces next time) */
         gap_thumb_cond_gimp_file_save_thumbnail(l_image_id, fw->frame_filename);
@@ -1083,6 +1213,7 @@ p_story_set_range_cb(GapPlayerAddClip *plac_ptr)
         if(stb_elem)
         {
           gap_story_upd_elem_from_filename(stb_elem, plac_ptr->ainfo_ptr->old_filename);
+          stb_elem->track = tabw->vtrack;
           stb_elem->from_frame = plac_ptr->range_from;
           stb_elem->to_frame   = plac_ptr->range_to;
           gap_story_elem_calculate_nframes(stb_elem);
@@ -1143,6 +1274,7 @@ gap_story_fw_abstract_properties_dialog (GapStbFrameWidget *fw)
   }
 }  /* end gap_story_fw_abstract_properties_dialog */
 
+
 /* -----------------------------
  * p_story_call_player
  * -----------------------------
@@ -1152,6 +1284,7 @@ gap_story_fw_abstract_properties_dialog (GapStbFrameWidget *fw)
  *
  * IN: begin_frame  use -1 to start play from  1.st frame
  * IN: end_frame    use -1 to start play until last frame
+ * IN: stb_in_track use -1 to play composite video or specify video track number (start with 1)
  *
  * stb_mode:    stb != NULL, imagename == NULL, image_id == -1
  * imagemode:   stb == NULL, imagename != NULL, image_id == -1
@@ -1165,17 +1298,20 @@ gap_story_fw_abstract_properties_dialog (GapStbFrameWidget *fw)
  */
 void
 p_story_call_player(GapStbMainGlobalParams *sgpp
-                   ,GapStoryBoard *stb
-                   ,char *imagename
-                   ,gint32 imagewidth
-                   ,gint32 imageheight
-                   ,gint32 image_id
+                   , GapStoryBoard *stb
+                   , char *imagename
+                   , gint32 imagewidth
+                   , gint32 imageheight
+                   , gint32 image_id
                    , gint32 begin_frame
                    , gint32 end_frame
                    , gboolean play_all
                    , gint32 seltrack
                    , gdouble delace
                    , const char *preferred_decoder
+                   , gint32 flip_request
+                   , gint32 flip_status
+                   , gint32 stb_in_track
                    )
 {
   GapStoryBoard *stb_dup;
@@ -1195,6 +1331,12 @@ p_story_call_player(GapStbMainGlobalParams *sgpp
   stb_dup = NULL;
   if(stb)
   {
+    if(gap_debug)
+    {
+       printf("\n\n\n\n\n\n\n\n\np_story_call_player: The original storyboard list:");
+       gap_story_debug_print_list(stb);
+       printf("==========###########========\n\n END of The original storyboard list:\n");
+    }
     /* make a copy of the storyboard list
      * for the internal use in the player
      */
@@ -1204,10 +1346,18 @@ p_story_call_player(GapStbMainGlobalParams *sgpp
     }
     else
     {
-      stb_dup = gap_story_duplicate_sel_only(stb);
+      stb_dup = gap_story_duplicate_sel_only(stb, stb_in_track);
+      gap_story_enable_hidden_maskdefinitions(stb_dup);
     }
     if(stb_dup)
     {
+      if(gap_debug)
+      {
+         printf("p_story_call_player: The duplicated storyboard list:");
+         gap_story_debug_print_list(stb_dup);
+         printf("==========###########========\n\n END of The duplicated storyboard list:\n");
+      }
+
       if(stb_dup->stb_elem == NULL)
       {
         /* there was no selection, now try to playback the
@@ -1270,14 +1420,15 @@ p_story_call_player(GapStbMainGlobalParams *sgpp
 
       sgpp->plp->autostart = TRUE;
       sgpp->plp->caller_range_linked = FALSE;
-      sgpp->plp->use_thumbnails = TRUE;
-      sgpp->plp->exact_timing = TRUE;
+      sgpp->plp->use_thumbnails = FALSE;
+      sgpp->plp->exact_timing = FALSE;
       sgpp->plp->play_selection_only = TRUE;
       sgpp->plp->play_loop = FALSE;
       sgpp->plp->play_pingpong = FALSE;
       sgpp->plp->play_backward = FALSE;
 
       sgpp->plp->stb_ptr = stb_dup;
+      sgpp->plp->stb_in_track = stb_in_track;
       sgpp->plp->image_id = image_id;
       sgpp->plp->imagename = NULL;
       if(imagename)
@@ -1298,6 +1449,8 @@ p_story_call_player(GapStbMainGlobalParams *sgpp
       sgpp->plp->preferred_decoder = g_strdup(preferred_decoder);
       sgpp->plp->force_open_as_video = FALSE;   /* FALSE: try video open only for known videofile extensions */
       sgpp->plp->have_progress_bar = TRUE;
+      sgpp->plp->flip_request = flip_request;
+      sgpp->plp->flip_status = flip_status;
 
       gap_player_dlg_create(sgpp->plp);
 
@@ -1320,7 +1473,10 @@ p_story_call_player(GapStbMainGlobalParams *sgpp
                       , seltrack
                       , delace
                       , preferred_decoder
-                      , FALSE             /* force_open_as_video */
+                      , FALSE
+                      , flip_request
+                      , flip_status
+                      , stb_in_track
                       );
 
   }
@@ -1362,7 +1518,7 @@ p_call_master_encoder(GapStbMainGlobalParams *sgpp
   }
 
   l_rc = -1;
-  gap_story_get_master_size(stb, &vid_width, &vid_height);
+  gap_story_get_master_size_respecting_aspect(stb, &vid_width, &vid_height);
 
 
   dummy_layer_id = gap_image_get_any_layer(sgpp->image_id);
@@ -1532,20 +1688,34 @@ p_player_cll_mode_cb (GtkWidget *w
 {
   gint32 imagewidth;
   gint32 imageheight;
+  gint32 stb_in_track;
   gboolean play_all;
+  GapStbTabWidgets  *tabw;
 
-  play_all = TRUE;
-  if(bevent)
-  {
-    if(bevent->state & GDK_SHIFT_MASK)
-    {
-      play_all = FALSE;
-    }
-  }
 
   if(sgpp->cll)
   {
-    gap_story_get_master_size(sgpp->cll, &imagewidth, &imageheight);
+    play_all = TRUE;
+    tabw = sgpp->cll_widgets;
+    
+    stb_in_track = 1;
+    if(tabw)
+    {
+      stb_in_track = tabw->vtrack;
+    }
+    if(bevent)
+    {
+      if(bevent->state & GDK_SHIFT_MASK)
+      {
+        play_all = FALSE;
+      }
+      if(bevent->state & GDK_CONTROL_MASK)
+      {
+        stb_in_track = -1;  /* for play composite video */
+      }
+    }
+
+    gap_story_get_master_size_respecting_aspect(sgpp->cll, &imagewidth, &imageheight);
     p_story_call_player(sgpp
                          ,sgpp->cll
                          ,NULL      /* no imagename */
@@ -1558,6 +1728,9 @@ p_player_cll_mode_cb (GtkWidget *w
                          ,1         /* seltrack */
                          ,0.0       /* delace */
                          ,gap_story_get_preferred_decoder(sgpp->cll, NULL)
+                         ,GAP_STB_FLIP_NONE
+                         ,GAP_STB_FLIP_NONE
+                         ,stb_in_track
                          );
   }
 }  /* end p_player_cll_mode_cb */
@@ -1573,19 +1746,33 @@ p_player_stb_mode_cb (GtkWidget *w
 {
   gint32 imagewidth;
   gint32 imageheight;
+  gint32 stb_in_track;
   gboolean play_all;
+  GapStbTabWidgets  *tabw;
 
-  play_all = TRUE;
-  if(bevent)
-  {
-    if(bevent->state & GDK_SHIFT_MASK)
-    {
-      play_all = FALSE;
-    }
-  }
   if(sgpp->stb)
   {
-    gap_story_get_master_size(sgpp->stb, &imagewidth, &imageheight);
+    play_all = TRUE;
+    tabw = sgpp->stb_widgets;
+    
+    stb_in_track = 1;
+    if(tabw)
+    {
+      stb_in_track = tabw->vtrack;
+    }
+    if(bevent)
+    {
+      if(bevent->state & GDK_SHIFT_MASK)
+      {
+        play_all = FALSE;
+      }
+      if(bevent->state & GDK_CONTROL_MASK)
+      {
+        stb_in_track = -1;  /* for play composite video */
+      }
+    }
+
+    gap_story_get_master_size_respecting_aspect(sgpp->stb, &imagewidth, &imageheight);
     p_story_call_player(sgpp
                          ,sgpp->stb
                          ,NULL      /* no imagename */
@@ -1598,6 +1785,9 @@ p_player_stb_mode_cb (GtkWidget *w
                          ,1         /* seltrack */
                          ,0.0       /* delace */
                          ,gap_story_get_preferred_decoder(sgpp->stb, NULL)
+                         ,GAP_STB_FLIP_NONE
+                         ,GAP_STB_FLIP_NONE
+                         ,stb_in_track
                          );
   }
 }  /* end p_player_stb_mode_cb */
@@ -1641,6 +1831,9 @@ p_player_img_mode_cb (GtkWidget *w,
                      ,1         /* seltrack */
                      ,0.0       /* delace */
                      ,"libavformat"
+                     ,GAP_STB_FLIP_NONE
+                     ,GAP_STB_FLIP_NONE
+                     ,1                /* stb_in_track (not relevant here) */
                      );
     g_free(basename);
   }
@@ -1692,6 +1885,7 @@ p_tabw_add_elem (GapStbTabWidgets *tabw, GapStbMainGlobalParams *sgpp, GapStoryB
 
   stb_elem = gap_story_new_elem(GAP_STBREC_VID_IMAGE);
   /* stb_elem->orig_filename = g_strdup("empty.xcf"); */
+  stb_elem->track = tabw->vtrack;
   stb_elem->from_frame = 1;
   stb_elem->to_frame = 1;
   stb_elem->nloop = 1;
@@ -1731,6 +1925,7 @@ p_tabw_add_att_elem (GapStbTabWidgets *tabw, GapStbMainGlobalParams *sgpp, GapSt
 
   /* initial settings for creating a new attribute transition element */
   stb_elem = gap_story_new_elem(GAP_STBREC_ATT_TRANSITION);
+  stb_elem->track = tabw->vtrack;
   stb_elem->att_keep_proportions = FALSE;
   stb_elem->att_fit_width = TRUE;
   stb_elem->att_fit_height = TRUE;
@@ -2111,6 +2306,45 @@ p_rowpage_spinbutton_cb( GtkEditable     *editable
 }  /* end p_rowpage_spinbutton_cb */
 
 
+/* -----------------------------
+ * p_vtack_spinbutton_cb
+ * -----------------------------
+ */
+static void
+p_vtack_spinbutton_cb( GtkEditable     *editable
+                       , GapStbTabWidgets *tabw)
+{
+  gint32 vtrack;
+
+  if(tabw == NULL) { return; }
+
+  vtrack = (gint32)GTK_ADJUSTMENT(tabw->vtrack_spinbutton_adj)->value;
+  if(vtrack != tabw->vtrack)
+  {
+    GapStoryBoard *stb_dst;
+
+    tabw->vtrack = vtrack;
+    stb_dst = p_tabw_get_stb_ptr(tabw);
+
+    if(stb_dst)
+    {
+      tabw->rowpage = 1;
+      gtk_adjustment_set_value(GTK_ADJUSTMENT(tabw->rowpage_spinbutton_adj), 1.0);
+
+      /* refresh storyboard layout and thumbnail list widgets */
+      p_recreate_tab_widgets( stb_dst
+                            ,tabw
+                            ,tabw->mount_col
+                            ,tabw->mount_row
+                            ,tabw->sgpp
+                            );
+      p_render_all_frame_widgets(tabw);
+    }
+  }
+
+}  /* end p_vtack_spinbutton_cb */
+
+
 /* ------------------------------
  * p_vscale_changed_cb
  * ------------------------------
@@ -2165,10 +2399,107 @@ gap_story_pw_single_clip_playback(GapStbPropWidget *pw)
                      ,pw->stb_elem_refptr->seltrack
                      ,pw->stb_elem_refptr->delace
                      ,gap_story_get_preferred_decoder(pw->stb_refptr, pw->stb_elem_refptr)
+                     ,pw->stb_elem_refptr->flip_request
+                     ,GAP_STB_FLIP_NONE
+                     ,tabw->vtrack             /* stb_in_track (not relevant here) */
                      );
     g_free(imagename);
   }
 }  /* end gap_story_pw_single_clip_playback */
+
+
+/* ---------------------------------
+ * gap_story_pw_composite_playback
+ * ---------------------------------
+ */
+void
+gap_story_pw_composite_playback(GapStbPropWidget *pw)
+{
+  GapStbTabWidgets *tabw;
+
+  tabw = (GapStbTabWidgets *)pw->tabw;
+
+  if((tabw) && (pw->sgpp))
+  {
+    GapStoryBoard *stb_duptrack;
+    gint32 imagewidth;
+    gint32 imageheight;
+    gint32 begin_frame;
+    gint32 end_frame;
+    
+    stb_duptrack = gap_story_duplicate_vtrack(pw->stb_refptr
+                                          , pw->stb_elem_refptr->track);
+    
+    gap_story_get_master_size_respecting_aspect(stb_duptrack, &imagewidth, &imageheight);
+    
+    begin_frame = gap_story_get_framenr_by_story_id(pw->stb_refptr
+                       , pw->stb_elem_refptr->story_id
+                       , pw->stb_elem_refptr->track);
+    end_frame = begin_frame + pw->stb_elem_refptr->nframes;
+
+    p_story_call_player(pw->sgpp
+                         ,stb_duptrack
+                         ,NULL      /* no imagename */
+                         ,imagewidth
+                         ,imageheight
+                         ,-1        /* image_id (unused in storyboard playback mode) */
+                         ,begin_frame
+                         ,end_frame
+                         ,TRUE      /* play_all */
+                         ,1         /* seltrack */
+                         ,0.0       /* delace */
+                         ,gap_story_get_preferred_decoder(stb_duptrack, NULL)
+                         ,GAP_STB_FLIP_NONE
+                         ,GAP_STB_FLIP_NONE
+                         ,-1        /* stb_in_track -1 for composite video */
+                         );
+  }
+}  /* end gap_story_pw_composite_playback */
+
+
+/* ---------------------------------
+ * gap_story_attw_range_playback
+ * ---------------------------------
+ * playback on a duplicate storyboard reduced to
+ * the relevant video track.
+ * playback is initiated for the specified range.
+ */
+void
+gap_story_attw_range_playback(GapStbAttrWidget *attw, gint32 begin_frame, gint32 end_frame)
+{
+  GapStbTabWidgets *tabw;
+
+  tabw = (GapStbTabWidgets *)attw->tabw;
+
+  if((tabw) && (attw->sgpp))
+  {
+    GapStoryBoard *stb_duptrack;
+    gint32 imagewidth;
+    gint32 imageheight;
+    
+    stb_duptrack = gap_story_duplicate_vtrack(attw->stb_refptr
+                                          , attw->stb_elem_refptr->track);
+    
+    gap_story_get_master_size_respecting_aspect(stb_duptrack, &imagewidth, &imageheight);
+
+    p_story_call_player(attw->sgpp
+                         ,stb_duptrack
+                         ,NULL      /* no imagename */
+                         ,imagewidth
+                         ,imageheight
+                         ,-1        /* image_id (unused in storyboard playback mode) */
+                         ,begin_frame
+                         ,end_frame
+                         ,TRUE      /* play_all */
+                         ,1         /* seltrack */
+                         ,0.0       /* delace */
+                         ,gap_story_get_preferred_decoder(stb_duptrack, NULL)
+                         ,GAP_STB_FLIP_NONE
+                         ,GAP_STB_FLIP_NONE
+                         ,-1        /* stb_in_track -1 for composite video */
+                         );
+  }
+}  /* end gap_story_attw_range_playback */
 
 
 /* ---------------------------------
@@ -2202,6 +2533,9 @@ p_single_clip_playback(GapStbFrameWidget *fw)
                 	 ,fw->stb_elem_refptr->seltrack
                 	 ,fw->stb_elem_refptr->delace
                 	 ,gap_story_get_preferred_decoder(fw->stb_refptr, fw->stb_elem_refptr)
+                         ,fw->stb_elem_refptr->flip_request
+                         ,GAP_STB_FLIP_NONE
+                         ,tabw->vtrack           /* stb_in_track (not relevant here) */
                 	 );
 	g_free(imagename);
       }
@@ -2321,6 +2655,54 @@ p_frame_widget_preview_events_cb (GtkWidget *widget,
 }       /* end  p_frame_widget_preview_events_cb */
 
 
+
+/* --------------------------------------------
+ * gap_story_dlg_pw_update_mask_references
+ * --------------------------------------------
+ * this procedure updates mask name references
+ * and rendering of layermasks in all open
+ * clip property dialogs
+ */
+void
+gap_story_dlg_pw_update_mask_references(GapStbTabWidgets *tabw)
+{
+  GapStbPropWidget *pw;
+  GapStoryBoard    *stb;
+
+  if(tabw==NULL) { return; }
+  stb = p_tabw_get_stb_ptr(tabw);
+  if(stb==NULL)  { return; }
+
+  for(pw = tabw->pw; pw != NULL; pw = (GapStbPropWidget *)pw->next)
+  {
+    if(pw->is_mask_definition)
+    {
+      continue;
+    }
+
+    if(pw->stb_elem_refptr)
+    {
+      if(pw->stb_elem_refptr->mask_name)
+      {
+        char *l_mask_name;
+
+
+        if(gap_debug)
+        {
+          printf("\n\n\n ## gap_story_dlg_pw_update_mask_references\n");
+          gap_story_debug_print_elem(pw->stb_elem_refptr);
+        }
+
+        l_mask_name = g_strdup(pw->stb_elem_refptr->mask_name);
+        gtk_entry_set_text(GTK_ENTRY(pw->pw_mask_name_entry)
+            , l_mask_name);
+        g_free(l_mask_name);
+        gap_story_pw_trigger_refresh_properties(pw);
+      }
+    }
+  }
+}  /* end gap_story_dlg_pw_update_mask_references */
+
 /* -----------------------------------
  * p_tabw_destroy_properties_dlg
  * -----------------------------------
@@ -2421,7 +2803,7 @@ p_tabw_edit_cut_cb ( GtkWidget *w
   stb_dst = p_tabw_get_stb_ptr(tabw);
   if(stb_dst)
   {
-    sgpp->curr_selection = gap_story_duplicate_sel_only(stb_dst);
+    sgpp->curr_selection = gap_story_duplicate_sel_only(stb_dst, tabw->vtrack);
     gap_story_remove_sel_elems(stb_dst);
 
     p_tabw_destroy_properties_dlg (tabw, FALSE /* DONT destroy_all*/ );
@@ -2437,6 +2819,8 @@ p_tabw_edit_cut_cb ( GtkWidget *w
     p_widget_sensibility(sgpp);
   }
 
+
+  gap_story_dlg_pw_update_mask_references(tabw);
 
 }  /* end p_tabw_edit_cut_cb */
 
@@ -2468,7 +2852,7 @@ p_tabw_edit_copy_cb ( GtkWidget *w
   stb_dst = p_tabw_get_stb_ptr(tabw);
   if(stb_dst)
   {
-    sgpp->curr_selection = gap_story_duplicate_sel_only(stb_dst);
+    sgpp->curr_selection = gap_story_duplicate_sel_only(stb_dst, tabw->vtrack);
   }
 
   p_widget_sensibility(sgpp);
@@ -2544,6 +2928,7 @@ p_tabw_edit_paste_at_story_id (GapStbMainGlobalParams  *sgpp
                       , stb_sel_dup
                       , story_id
                       , insert_after
+                      , tabw->vtrack
                       );
     gap_story_free_storyboard(&stb_sel_dup);
   }
@@ -2881,6 +3266,7 @@ p_widget_sensibility (GapStbMainGlobalParams *sgpp)
   gboolean l_sensitive;
   gboolean l_sensitive_add;
   gboolean l_sensitive_encode;
+  gboolean l_sensitive_att;
 
   if(gap_debug) printf("p_tabw_set_sensibility\n");
 
@@ -2903,6 +3289,12 @@ p_widget_sensibility (GapStbMainGlobalParams *sgpp)
       }
     }
   }
+  l_sensitive_att = l_sensitive_add;
+  if(sgpp->cll_widgets->vtrack == GAP_STB_MASK_TRACK_NUMBER)
+  {
+    l_sensitive_att = FALSE;
+  }
+  
   if(sgpp->menu_item_cll_save)         gtk_widget_set_sensitive(sgpp->menu_item_cll_save, l_sensitive);
   if(sgpp->menu_item_cll_save_as)      gtk_widget_set_sensitive(sgpp->menu_item_cll_save_as, l_sensitive);
   if(sgpp->menu_item_cll_playback)     gtk_widget_set_sensitive(sgpp->menu_item_cll_playback, l_sensitive);
@@ -2912,7 +3304,7 @@ p_widget_sensibility (GapStbMainGlobalParams *sgpp)
   if(sgpp->menu_item_cll_encode)       gtk_widget_set_sensitive(sgpp->menu_item_cll_encode, l_sensitive_encode);
 
   if(sgpp->menu_item_cll_add_clip)       gtk_widget_set_sensitive(sgpp->menu_item_cll_add_clip, l_sensitive_add);
-  if(sgpp->menu_item_cll_att_properties) gtk_widget_set_sensitive(sgpp->menu_item_cll_att_properties, l_sensitive_add);
+  if(sgpp->menu_item_cll_att_properties) gtk_widget_set_sensitive(sgpp->menu_item_cll_att_properties, l_sensitive_att);
 
   if(sgpp->cll_widgets)
   {
@@ -2936,6 +3328,11 @@ p_widget_sensibility (GapStbMainGlobalParams *sgpp)
       }
     }
   }
+  l_sensitive_att = l_sensitive_add;
+  if(sgpp->stb_widgets->vtrack == GAP_STB_MASK_TRACK_NUMBER)
+  {
+    l_sensitive_att = FALSE;
+  }
   if(sgpp->menu_item_stb_save)         gtk_widget_set_sensitive(sgpp->menu_item_stb_save, l_sensitive);
   if(sgpp->menu_item_stb_save_as)      gtk_widget_set_sensitive(sgpp->menu_item_stb_save_as, l_sensitive);
   if(sgpp->menu_item_stb_playback)     gtk_widget_set_sensitive(sgpp->menu_item_stb_playback, l_sensitive);
@@ -2945,7 +3342,7 @@ p_widget_sensibility (GapStbMainGlobalParams *sgpp)
   if(sgpp->menu_item_stb_encode)       gtk_widget_set_sensitive(sgpp->menu_item_stb_encode, l_sensitive_encode);
 
   if(sgpp->menu_item_stb_add_clip)       gtk_widget_set_sensitive(sgpp->menu_item_stb_add_clip, l_sensitive_add);
-  if(sgpp->menu_item_stb_att_properties) gtk_widget_set_sensitive(sgpp->menu_item_stb_att_properties, l_sensitive_add);
+  if(sgpp->menu_item_stb_att_properties) gtk_widget_set_sensitive(sgpp->menu_item_stb_att_properties, l_sensitive_att);
 
   if(sgpp->stb_widgets)
   {
@@ -3105,8 +3502,8 @@ p_menu_win_properties_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
   argv[l_ii].constraint = TRUE;
   argv[l_ii].label_txt = _("Columns:");
   argv[l_ii].help_txt  = _("columns in the cliplist");
-  argv[l_ii].int_min   = (gint)4;
-  argv[l_ii].int_max   = (gint)15;
+  argv[l_ii].int_min   = (gint)CLL_MIN_COL;
+  argv[l_ii].int_max   = (gint)CLL_MAX_COL;
   argv[l_ii].int_ret   = (gint)sgpp->cll_cols;
   argv[l_ii].has_default = TRUE;
   argv[l_ii].int_default = (gint)6;
@@ -3116,8 +3513,8 @@ p_menu_win_properties_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
   argv[l_ii].constraint = TRUE;
   argv[l_ii].label_txt = _("Rows:");
   argv[l_ii].help_txt  = _("rows in the cliplist");
-  argv[l_ii].int_min   = (gint)1;
-  argv[l_ii].int_max   = (gint)10;
+  argv[l_ii].int_min   = (gint)CLL_MIN_ROW;
+  argv[l_ii].int_max   = (gint)CLL_MAX_ROW;
   argv[l_ii].int_ret   = (gint)sgpp->cll_rows;
   argv[l_ii].has_default = TRUE;
   argv[l_ii].int_default = (gint)6;
@@ -3145,8 +3542,8 @@ p_menu_win_properties_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
   argv[l_ii].constraint = TRUE;
   argv[l_ii].label_txt = _("Columns:");
   argv[l_ii].help_txt  = _("columns in the storyboard list");
-  argv[l_ii].int_min   = (gint)10;
-  argv[l_ii].int_max   = (gint)30;
+  argv[l_ii].int_min   = (gint)STB_MIN_COL;
+  argv[l_ii].int_max   = (gint)STB_MAX_COL;
   argv[l_ii].int_ret   = (gint)sgpp->stb_cols;
   argv[l_ii].has_default = TRUE;
   argv[l_ii].int_default = (gint)15;
@@ -3156,8 +3553,8 @@ p_menu_win_properties_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
   argv[l_ii].constraint = TRUE;
   argv[l_ii].label_txt = _("Rows:");
   argv[l_ii].help_txt  = _("rows in the storyboard list");
-  argv[l_ii].int_min   = (gint)1;
-  argv[l_ii].int_max   = (gint)5;
+  argv[l_ii].int_min   = (gint)STB_MIN_ROW;
+  argv[l_ii].int_max   = (gint)STB_MAX_ROW;
   argv[l_ii].int_ret   = (gint)sgpp->stb_rows;
   argv[l_ii].has_default = TRUE;
   argv[l_ii].int_default = (gint)2;
@@ -3205,6 +3602,7 @@ p_menu_win_properties_cb (GtkWidget *widget, GapStbMainGlobalParams *sgpp)
       sgpp->stb_rows = argv[l_stb_rows_idx].int_ret;
 
       p_set_layout_preset(sgpp);
+      p_save_gimprc_layout_settings(sgpp);
 
       /* refresh */
       if(sgpp->stb_widgets)
@@ -4160,7 +4558,7 @@ p_tabw_update_frame_label (GapStbTabWidgets *tabw, GapStbMainGlobalParams *sgpp)
        * and would have to respect current fontsize, NLS settings,
        * and something more ...
        */
-      l_max_chars = 70;
+      l_max_chars = 65;
       if(sgpp->cll_cols <= 4)
       {
         l_max_chars = 55;
@@ -4198,7 +4596,7 @@ p_tabw_update_frame_label (GapStbTabWidgets *tabw, GapStbMainGlobalParams *sgpp)
   {
     gint32 l_act_elems = 0;
 
-    l_act_elems = gap_story_count_active_elements(stb_dst, 1 /* track */ );
+    l_act_elems = gap_story_count_active_elements(stb_dst, tabw->vtrack );
     l_max_rowpage = p_get_max_rowpage(l_act_elems, tabw->cols, tabw->rows);
   }
   if(tabw->rowpage_spinbutton_adj)
@@ -5299,7 +5697,7 @@ p_recreate_tab_widgets(GapStoryBoard *stb
       if(stb->layout_rows > 0)       { tabw->rows = stb->layout_rows; }
       if(stb->layout_thumbsize > 0)  { tabw->thumbsize = stb->layout_thumbsize; }
 
-      gap_story_get_master_size(stb
+      gap_story_get_master_size_respecting_aspect(stb
                                ,&l_width
                                ,&l_height);
       if(l_width > l_height)
@@ -5313,7 +5711,7 @@ p_recreate_tab_widgets(GapStoryBoard *stb
         tabw->thumb_height = tabw->thumbsize;
       }
 
-      l_act_elems = gap_story_count_active_elements(stb, 1 /* track */ );
+      l_act_elems = gap_story_count_active_elements(stb, tabw->vtrack);
     }
 
     if(gap_debug) printf("p_recreate_tab_widgets: rows:%d cols:%d\n", (int)tabw->rows ,(int)tabw->cols );
@@ -5321,6 +5719,8 @@ p_recreate_tab_widgets(GapStoryBoard *stb
     table = gtk_table_new (tabw->rows, tabw->cols, TRUE);
     gtk_widget_show (table);
     tabw->fw_gtk_table = table;
+    gtk_table_set_row_spacings (GTK_TABLE (table), 2);
+    gtk_table_set_col_spacings (GTK_TABLE (table), 2);
 
     gtk_table_attach (GTK_TABLE (tabw->mount_table)
                       , tabw->fw_gtk_table
@@ -5433,7 +5833,7 @@ void  gap_story_dlg_recreate_tab_widgets(GapStbTabWidgets *tabw
  * create button bar (cut,copy,paste,play and rowpage spinbutton)
  * and rowpage vscale widgets
  */
-static void
+static GtkWidget *
 p_create_button_bar(GapStbTabWidgets *tabw
                    ,gint32 mount_col
                    ,gint32 mount_row
@@ -5476,10 +5876,10 @@ p_create_button_bar(GapStbTabWidgets *tabw
   gtk_widget_show (hbox2);
 
 
-  if(with_open_and_save)
+  //if(with_open_and_save)
   {
     /*  The Load button  */
-    button = gtk_button_new_from_stock (GTK_STOCK_OPEN );
+    button = p_gtk_button_new_from_stock_icon (GTK_STOCK_OPEN );
     gtk_box_pack_start (GTK_BOX (hbox2), button, FALSE, FALSE, 0);
     g_signal_connect (G_OBJECT (button), "clicked",
                       G_CALLBACK (p_tabw_load_file_cb),
@@ -5499,7 +5899,7 @@ p_create_button_bar(GapStbTabWidgets *tabw
     gtk_widget_show (button);
 
     /*  The Save button  */
-    button = gtk_button_new_from_stock (GTK_STOCK_SAVE );
+    button = p_gtk_button_new_from_stock_icon (GTK_STOCK_SAVE );
     tabw->save_button = button;
     gtk_box_pack_start (GTK_BOX (hbox2), button, FALSE, FALSE, 0);
     if(tabw->type == GAP_STB_MASTER_TYPE_STORYBOARD)
@@ -5524,9 +5924,31 @@ p_create_button_bar(GapStbTabWidgets *tabw
   }
 
 
+  /* Track label */
+  label = gtk_label_new (_("Track:"));
+  gtk_box_pack_start (GTK_BOX (hbox2), label, FALSE, FALSE, 2);
+  gtk_widget_show (label);
+
+  /* video track spinbutton */
+  spinbutton_adj = gtk_adjustment_new ( tabw->vtrack
+                                       , 0   /* min */
+                                       , GAP_STB_MAX_VID_TRACKS -1   /* max */
+                                       , 1, 10, 10);
+  tabw->vtrack_spinbutton_adj = spinbutton_adj;
+  spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (spinbutton_adj), 1, 0);
+  gtk_widget_show (spinbutton);
+  gtk_box_pack_start (GTK_BOX (hbox2), spinbutton, FALSE, FALSE, 2);
+
+  gimp_help_set_help_data (spinbutton, _("Video Track Number (0 refers to mask definition track)"), NULL);
+  g_signal_connect (G_OBJECT (spinbutton), "value_changed",
+                  G_CALLBACK (p_vtack_spinbutton_cb),
+                  tabw);
+
+
+
 
   /*  The Cut button  */
-  button = gtk_button_new_from_stock (GTK_STOCK_CUT );
+  button = p_gtk_button_new_from_stock_icon (GTK_STOCK_CUT );
   tabw->edit_cut_button = button;
   gtk_box_pack_start (GTK_BOX (hbox2), button, FALSE, FALSE, 0);
   g_signal_connect (G_OBJECT (button), "clicked",
@@ -5538,7 +5960,7 @@ p_create_button_bar(GapStbTabWidgets *tabw
   gtk_widget_show (button);
 
   /*  The Copy button  */
-  button = gtk_button_new_from_stock (GTK_STOCK_COPY );
+  button = p_gtk_button_new_from_stock_icon (GTK_STOCK_COPY );
   tabw->edit_copy_button = button;
   gtk_box_pack_start (GTK_BOX (hbox2), button, FALSE, FALSE, 0);
   g_signal_connect (G_OBJECT (button), "clicked",
@@ -5550,7 +5972,7 @@ p_create_button_bar(GapStbTabWidgets *tabw
   gtk_widget_show (button);
 
   /*  The Paste button  */
-  button = gtk_button_new_from_stock (GTK_STOCK_PASTE );
+  button = p_gtk_button_new_from_stock_icon (GTK_STOCK_PASTE );
   tabw->edit_paste_button = button;
   gtk_box_pack_start (GTK_BOX (hbox2), button, FALSE, FALSE, 0);
   g_signal_connect (G_OBJECT (button), "clicked",
@@ -5562,7 +5984,7 @@ p_create_button_bar(GapStbTabWidgets *tabw
   gtk_widget_show (button);
 
   /*  The Play Button */
-  button = gtk_button_new_from_stock (GAP_STOCK_PLAY);
+  button = p_gtk_button_new_from_stock_icon (GAP_STOCK_PLAY);
   tabw->play_button = button;
   gtk_box_pack_start (GTK_BOX (hbox2), button, FALSE, FALSE, 0);
   if(tabw->type == GAP_STB_MASTER_TYPE_STORYBOARD)
@@ -5571,7 +5993,8 @@ p_create_button_bar(GapStbTabWidgets *tabw
                     G_CALLBACK (p_player_stb_mode_cb),
                     sgpp);
     gimp_help_set_help_data (button,
-                           _("Playback storyboard file. SHIFT: Play only selected clips"),
+                           _("Playback storyboard file. SHIFT: Play only selected clips "
+                             "CTRL: Play composite video"),
                            NULL);
   }
   else
@@ -5580,7 +6003,8 @@ p_create_button_bar(GapStbTabWidgets *tabw
                     G_CALLBACK (p_player_cll_mode_cb),
                     sgpp);
     gimp_help_set_help_data (button,
-                           _("Playback cliplist. SHIFT: Play only selected clips"),
+                           _("Playback cliplist. SHIFT: Play only selected clips "
+                             "CTRL: Play composite video"),
                            NULL);
   }
   gtk_widget_show (button);
@@ -5612,7 +6036,6 @@ p_create_button_bar(GapStbTabWidgets *tabw
   gtk_widget_show (spinbutton);
   gtk_box_pack_start (GTK_BOX (hbox), spinbutton, FALSE, FALSE, 2);
 
-  gtk_widget_set_size_request (spinbutton, 80, -1);
   gimp_help_set_help_data (spinbutton, _("Top rownumber"), NULL);
   g_signal_connect (G_OBJECT (spinbutton), "value_changed",
                   G_CALLBACK (p_rowpage_spinbutton_cb),
@@ -5663,7 +6086,204 @@ p_create_button_bar(GapStbTabWidgets *tabw
    */
   p_widget_init_dnd_drop(hbox, tabw);
 
+  return(hbox);
 }  /* end p_create_button_bar */
+
+/* --------------------------------
+ * p_gtk_button_new_from_stock_icon
+ * --------------------------------
+ * create a  button from stock, using only the icon
+ * (the text assotiated with the stock id is not rendered,
+ * to keep the button width small)
+ */
+GtkWidget * p_gtk_button_new_from_stock_icon(const char *stock_id)
+{
+  GtkWidget *button;
+  GtkWidget *image;
+  image = gtk_image_new_from_stock (stock_id,
+                                    GTK_ICON_SIZE_BUTTON);
+      
+  gtk_widget_show (image);
+  button = gtk_button_new();
+  gtk_container_add (GTK_CONTAINER (button), image);
+  return(button);
+  
+}  /* end p_gtk_button_new_from_stock_icon */
+
+
+
+
+/* -----------------------------------------
+ * p_get_gimprc_int_value
+ * -----------------------------------------
+ */
+static gint32
+p_get_gimprc_int_value (const char *gimprc_option_name
+   , gint32 default_value, gint32 min_value, gint32 max_value)
+{
+  char *value_string;
+  gint32 value;
+  
+  value = default_value;
+
+  value_string = gimp_gimprc_query(gimprc_option_name);
+  if(value_string)
+  {
+     value = atol(value_string);
+     g_free(value_string);
+  }  
+  return (CLAMP(value, min_value, max_value));
+  
+}  /* end p_get_gimprc_int_value */
+
+
+/* ---------------------------------
+ * p_get_gimprc_preview_size
+ * ---------------------------------
+ */
+static gint32
+p_get_gimprc_preview_size(const char *gimprc_option_name)
+{
+  char *value_string;
+  gint32 preview_size;
+
+  preview_size = STB_THSIZE_MEDIUM;  /* default preview size if nothing is configured */
+  value_string = gimp_gimprc_query(gimprc_option_name);
+
+  if(value_string)
+  {
+     if (strcmp (value_string, "small") == 0)
+     {
+        preview_size = STB_THSIZE_SMALL;
+     }
+     else if (strcmp (value_string, "medium") == 0)
+     {
+        preview_size = STB_THSIZE_MEDIUM;
+     }
+      else if (strcmp (value_string, "large") == 0)
+     {
+        preview_size = STB_THSIZE_LARGE;
+     }
+     else
+     {
+        preview_size = atol(value_string);
+     }
+
+     g_free(value_string);
+  }
+
+
+  /* limit to useable values (in case gimrc value was specified as integer number) */
+  if (preview_size < STB_THSIZE_MIN)
+  {
+    preview_size = STB_THSIZE_MIN;
+  }
+  if (preview_size > STB_THSIZE_MAX)
+  {
+    preview_size = STB_THSIZE_MAX;
+  }
+
+  return (preview_size);
+}  /* p_get_gimprc_preview_size */
+
+
+/* ---------------------------------
+ * p_save_gimprc_preview_size
+ * ---------------------------------
+ */
+static void
+p_save_gimprc_preview_size(const char *gimprc_option_name, gint32 preview_size)
+{
+  char *value_string;
+
+  value_string = NULL;
+
+  switch(preview_size)
+  {
+    case STB_THSIZE_SMALL:
+      value_string = g_strdup_printf("small");
+      break;
+    case STB_THSIZE_MEDIUM:
+      value_string = g_strdup_printf("medium");
+      break;
+    case STB_THSIZE_LARGE:
+      value_string = g_strdup_printf("large");
+      break;
+    default:
+      value_string = g_strdup_printf("%d", preview_size);
+      break;
+    
+  }
+  gimp_gimprc_set(gimprc_option_name, value_string);
+  g_free(value_string);
+
+}  /* p_save_gimprc_preview_size */
+
+/* ---------------------------------
+ * p_save_gimprc_int_value
+ * ---------------------------------
+ */
+static void
+p_save_gimprc_int_value(const char *gimprc_option_name, gint32 value)
+{
+  char *value_string;
+
+  value_string = g_strdup_printf("%d", (int)value);
+  gimp_gimprc_set(gimprc_option_name, value_string);
+  g_free(value_string);
+
+}  /* p_save_gimprc_int_value */
+
+/* ---------------------------------
+ * p_save_gimprc_layout_settings
+ * ---------------------------------
+ */
+static void
+p_save_gimprc_layout_settings(GapStbMainGlobalParams *sgpp)
+{
+  p_save_gimprc_preview_size("video-cliplist-thumbnail_size", sgpp->cll_thumbsize);
+  p_save_gimprc_int_value("video-cliplist-columns", sgpp->cll_cols);
+  p_save_gimprc_int_value("video-cliplist-rows", sgpp->cll_rows);
+
+  p_save_gimprc_preview_size("video-storyboard-thumbnail_size", sgpp->stb_thumbsize);
+  p_save_gimprc_int_value("video-storyboard-columns", sgpp->stb_cols);
+  p_save_gimprc_int_value("video-storyboard-rows", sgpp->stb_rows);
+
+}  /* end p_save_gimprc_layout_settings */
+
+
+/* ---------------------------------
+ * p_get_gimprc_layout_settings
+ * ---------------------------------
+ */
+static void
+p_get_gimprc_layout_settings(GapStbMainGlobalParams *sgpp)
+{
+  sgpp->cll_thumbsize = p_get_gimprc_preview_size("video-cliplist-thumbnail_size");
+  sgpp->cll_cols = p_get_gimprc_int_value("video-cliplist-columns"
+                    , sgpp->cll_cols
+                    , CLL_MIN_COL
+                    , CLL_MAX_COL
+                    );
+  sgpp->cll_rows = p_get_gimprc_int_value("video-cliplist-rows"
+                    , sgpp->cll_rows
+                    , CLL_MIN_ROW
+                    , CLL_MAX_ROW
+                    );
+
+  sgpp->stb_thumbsize = p_get_gimprc_preview_size("video-storyboard-thumbnail_size");
+  sgpp->stb_cols = p_get_gimprc_int_value("video-storyboard-columns"
+                    , sgpp->stb_cols
+                    , STB_MIN_COL
+                    , STB_MAX_COL 
+                    );
+  sgpp->stb_rows = p_get_gimprc_int_value("video-storyboard-rows"
+                    , sgpp->stb_rows
+                    , STB_MIN_ROW
+                    , STB_MAX_ROW
+                    );
+
+}  /* end p_get_gimprc_layout_settings */
 
 
 /* -----------------------------
@@ -5685,6 +6305,7 @@ gap_storyboard_dialog(GapStbMainGlobalParams *sgpp)
   GtkWidget  *table;
   GtkWidget  *menu_bar;
   GtkWidget  *frame_event_box;
+  GtkWidget  *hbox_stb_frame;
 
   /* Init UI  */
   gimp_ui_init ("storyboard", FALSE);
@@ -5749,6 +6370,11 @@ gap_storyboard_dialog(GapStbMainGlobalParams *sgpp)
 
   sgpp->win_prop_dlg_open = FALSE;
   sgpp->dnd_pixbuf = NULL;
+
+  /* get layout settings from gimprc
+   * (keeping initial values if no layout settings available in gimprc)
+   */
+  p_get_gimprc_layout_settings(sgpp);
 
   /*  The dialog and main vbox  */
   /* the help_id is passed as NULL to avoid creation of the HELP button
@@ -5910,7 +6536,7 @@ gap_storyboard_dialog(GapStbMainGlobalParams *sgpp)
                          ,sgpp
                          );
   /* button bar */
-  p_create_button_bar(sgpp->stb_widgets
+  hbox_stb_frame = p_create_button_bar(sgpp->stb_widgets
                          ,0    /* mount_col */
                          ,1    /* mount_row */
                          ,sgpp
@@ -5918,13 +6544,6 @@ gap_storyboard_dialog(GapStbMainGlobalParams *sgpp)
                          ,1    /* mount_vs_col */
                          ,0    /* mount_vs_row */
                          );
-
-  /* the hbox */
-  hbox = gtk_hbox_new (FALSE, 2);
-  gtk_box_pack_start (GTK_BOX (vbox), hbox, TRUE, FALSE, 0);
-  gtk_widget_show (hbox);
-
-
 
   /*  The Video ProgressBar */
   {
@@ -5936,32 +6555,19 @@ gap_storyboard_dialog(GapStbMainGlobalParams *sgpp)
     gtk_progress_bar_set_text(GTK_PROGRESS_BAR(progress_bar), " ");
     gtk_widget_show (progress_bar);
 
-    gtk_box_pack_start (GTK_BOX (hbox), progress_bar, TRUE, TRUE, 0);
+    gtk_box_pack_start (GTK_BOX (hbox_stb_frame), progress_bar, TRUE, TRUE, 0);
 
     sgpp->progress_bar = progress_bar;
 
 
     button = gtk_button_new_with_label (_("Cancel"));
-    gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 0);
+    gtk_box_pack_start (GTK_BOX (hbox_stb_frame), button, FALSE, FALSE, 0);
     gtk_widget_show (button);
     g_signal_connect (G_OBJECT (button), "clicked",
                     G_CALLBACK (p_cancel_button_cb),
                     sgpp);
   }
 
-
-//  /*  The Play Frames Button (DEBUG widget) */
-//  { GtkWidget *button;
-//  button = gtk_button_new_with_label (_("Play Frames"));
-//  gtk_box_pack_start (GTK_BOX (hbox), button, TRUE, FALSE, 0);
-//  g_signal_connect (G_OBJECT (button), "clicked",
-//                  G_CALLBACK (p_player_img_mode_cb),
-//                  sgpp);
-//  gtk_widget_show (button);
-//  gimp_help_set_help_data (button,
-//                         _("Playback normal mode (frames from invoking image)"),
-//                         NULL);
-//  }
 
   sgpp->initialized = TRUE;
   p_widget_sensibility(sgpp);
@@ -6064,10 +6670,11 @@ p_tabw_gen_otone_dialog(GapStbTabWidgets *tabw)
      gint     vid_track;
      gboolean replace_existing_aud_track;
      gboolean l_ok;
+     gdouble  l_first_non_matching_framerate;
 
      aud_seltrack = (gint32)(argv[l_ii_aud_seltrack].int_ret);
      aud_track    = (gint32)(argv[l_ii_aud_track].int_ret);
-     vid_track    = 1;
+     vid_track    = tabw->vtrack;
      replace_existing_aud_track = (gint32)(argv[l_ii_replace].int_ret);
 
      /* start otone generator procedure */
@@ -6076,6 +6683,7 @@ p_tabw_gen_otone_dialog(GapStbTabWidgets *tabw)
                          ,aud_track
                          ,aud_seltrack
                          ,replace_existing_aud_track
+                         ,&l_first_non_matching_framerate
                          );
      if(!l_ok)
      {
@@ -6087,6 +6695,21 @@ p_tabw_gen_otone_dialog(GapStbTabWidgets *tabw)
                 ,(int)aud_track
                 );
      }
+     else
+     {
+       if(l_first_non_matching_framerate != 0.0)
+       {
+         g_message(_("Original tone track was created with warnings.\n"
+                   "The storyboard %s\n"
+                   "has movie clips with framerate %.4f."
+                   "that is different from the master framerate %.4f.\n"
+                   "The generated audio is NOT synchron with the video.")
+                ,tabw->filename_refptr
+                ,(float)l_first_non_matching_framerate
+                ,(float)stb_dst->master_framerate
+                );
+       }
+     }
 
      /* update to reflect the modified status */
      p_tabw_update_frame_label (tabw, sgpp);
@@ -6097,6 +6720,76 @@ p_tabw_gen_otone_dialog(GapStbTabWidgets *tabw)
 }  /* end p_tabw_gen_otone_dialog */
 
 
+
+/* -----------------------------------
+ * p_parse_int
+ * ------------------------------------
+ */
+static gint32
+p_parse_int(const char *buff)
+{
+  gint32 value;
+
+  value  = 0;
+  if(buff == NULL)
+  {
+  }
+
+  while(buff != NULL)
+  {
+     if (*buff == '\0')
+     {
+       break;
+     }
+     if ((*buff != ' ') || (*buff != '\t') || (*buff != '\n'))
+     {
+       value = atol(buff);
+       break;
+     }
+     buff++;
+  }
+
+  return (value);
+
+}  /* end p_parse_int */
+
+
+/* -----------------------------------
+ * p_parse_aspect_width_and_height
+ * ------------------------------------
+ */
+static void
+p_parse_aspect_width_and_height(const char *buff, gint32 *aspect_width, gint32 *aspect_height)
+{
+  *aspect_width = 0;
+  *aspect_height = 0;
+  const char *h_ptr;
+
+  if(buff == NULL)
+  {
+    return;
+  }
+
+  *aspect_width = p_parse_int(buff);
+
+  h_ptr = buff;
+  while(h_ptr != NULL)
+  {
+     if (*h_ptr == ':')
+     {
+       h_ptr++;
+       *aspect_height = p_parse_int(h_ptr);
+       return;
+     }
+     if (*h_ptr == '\0')
+     {
+       break;
+     }
+     h_ptr++;
+  }
+  
+}  /* end p_parse_aspect_width_and_height */
+
 /* -----------------------------------
  * p_tabw_master_prop_dialog
  * ------------------------------------
@@ -6104,21 +6797,25 @@ p_tabw_gen_otone_dialog(GapStbTabWidgets *tabw)
 static void
 p_tabw_master_prop_dialog(GapStbTabWidgets *tabw, gboolean new_flag)
 {
-  GapArrArg  argv[9];
+  GapArrArg  argv[10];
   static char *radio_args[4]  = { N_("automatic"), "libmpeg3", "libavformat", "quicktime4linux" };
+  static char *radio_aspect_args[3]  = { N_("none"), "4:3", "16:9"};
   gint   l_ii;
   gint   l_decoder_idx;
+  gint   l_aspect_idx;
   gint   l_ii_width;
   gint   l_ii_height;
   gint   l_ii_framerate;
   gint   l_ii_preferred_decoder;
   gint   l_ii_samplerate;
   gint   l_ii_volume;
+  gint   l_ii_aspect;
   GapStbMainGlobalParams *sgpp;
   GapStoryBoard *stb_dst;
   gint32   l_master_width;
   gint32   l_master_height;
   gchar    buf_preferred_decoder[60];
+  gchar    buf_aspect_string[40];
   gchar   *label_txt;
   gboolean l_rc;
 
@@ -6135,7 +6832,7 @@ p_tabw_master_prop_dialog(GapStbTabWidgets *tabw, gboolean new_flag)
 
   tabw->master_dlg_open  = TRUE;
 
-  gap_story_get_master_size(stb_dst, &l_master_width, &l_master_height);
+  gap_story_get_master_pixelsize(stb_dst, &l_master_width, &l_master_height);
 
   label_txt = NULL;
   l_ii = 0; l_ii_width = l_ii;
@@ -6211,6 +6908,52 @@ p_tabw_master_prop_dialog(GapStbTabWidgets *tabw, gboolean new_flag)
   argv[l_ii].has_default = TRUE;
   argv[l_ii].flt_default = argv[l_ii].flt_ret;
 
+
+  /* the aspect option entry widget */
+  l_ii++; l_ii_aspect = l_ii;
+  buf_aspect_string[0] = '\0';
+  l_decoder_idx = 0;
+
+  l_aspect_idx = 0;
+  if((stb_dst->master_aspect_width == 4)
+  && (stb_dst->master_aspect_height == 3))
+  {
+    l_aspect_idx = 1;
+  }
+  if((stb_dst->master_aspect_width == 16)
+  && (stb_dst->master_aspect_height == 9))
+  {
+    l_aspect_idx = 2;
+  }
+  
+  if((stb_dst->master_aspect_width != 0)
+  && (stb_dst->master_aspect_height != 0))
+  {
+     g_snprintf(buf_aspect_string
+               , sizeof(buf_aspect_string)
+               , "%d:%d"
+               , (int)stb_dst->master_aspect_width
+               , (int)stb_dst->master_aspect_height
+               );
+  }
+  
+  gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_OPT_ENTRY);
+  argv[l_ii].label_txt = _("Aspect:");
+  argv[l_ii].help_txt  = _("Select video frame aspect ratio; "
+                       "Enter a string like \"4:3\" or \"16:9\" to specify the aspect."
+                       "Enter none or leave empty if no special aspect shall be used."
+                       "(in this case video frames use the master pixelsize 1:1 "
+                       "for displaying video frames)");
+  argv[l_ii].radio_argc  = G_N_ELEMENTS(radio_aspect_args);
+  argv[l_ii].radio_argv = radio_aspect_args;
+  argv[l_ii].radio_ret  = l_aspect_idx;
+  argv[l_ii].has_default = TRUE;
+  argv[l_ii].radio_default = 1;
+  argv[l_ii].text_buf_ret = buf_aspect_string;
+  argv[l_ii].text_buf_len = sizeof(buf_aspect_string);
+  argv[l_ii].text_buf_default =  "4:3";
+
+  /* the preferred decoder */
   l_ii++; l_ii_preferred_decoder = l_ii;
   buf_preferred_decoder[0] = '\0';
   l_decoder_idx = 0;
@@ -6309,9 +7052,33 @@ p_tabw_master_prop_dialog(GapStbTabWidgets *tabw, gboolean new_flag)
   }
   if((l_rc) && (sgpp->shell_window))
   {
+     GapStoryBoard *stb_dup;
+     
+     stb_dup = gap_story_duplicate(stb_dst);
+
+  
      stb_dst->master_width = (gint32)(argv[l_ii_width].int_ret);
      stb_dst->master_height = (gint32)(argv[l_ii_height].int_ret);
      stb_dst->master_framerate = (gint32)(argv[l_ii_framerate].flt_ret);
+
+     p_parse_aspect_width_and_height(buf_aspect_string
+                                   , &stb_dst->master_aspect_width
+                                   , &stb_dst->master_aspect_height
+                                   );
+
+     stb_dst->master_aspect_ratio = 0.0;
+     if(stb_dst->master_aspect_height > 0)
+     {
+        stb_dst->master_aspect_ratio = (gdouble)stb_dst->master_aspect_width
+                                     / (gdouble)stb_dst->master_aspect_height;
+     }
+
+     if(gap_debug)
+     {
+       printf("master_aspect_width: %d\n", (int)stb_dst->master_aspect_width );
+       printf("master_aspect_height: %d\n", (int)stb_dst->master_aspect_height );
+     }
+     
      stb_dst->master_samplerate = (gint32)(argv[l_ii_samplerate].int_ret);
      stb_dst->master_volume = (gint32)(argv[l_ii_volume].flt_ret);
      if(*buf_preferred_decoder)
@@ -6345,6 +7112,19 @@ p_tabw_master_prop_dialog(GapStbTabWidgets *tabw, gboolean new_flag)
        stb_dst->preferred_decoder = NULL;
      }
 
+     /* check for changes of master properties */
+     if((stb_dst->master_width        != stb_dup->master_width)
+     || (stb_dst->master_height       != stb_dup->master_height)
+     || (stb_dst->master_framerate    != stb_dup->master_framerate)
+     || (stb_dst->master_aspect_ratio != stb_dup->master_aspect_ratio)
+     || (stb_dst->master_samplerate   != stb_dup->master_samplerate)
+     || (stb_dst->master_volume       != stb_dup->master_volume)
+     )
+     {
+       stb_dst->unsaved_changes = TRUE;
+     }
+     gap_story_free_storyboard(&stb_dup);
+
      /* refresh storyboard layout and thumbnail list widgets */
      p_recreate_tab_widgets( stb_dst
                                  ,tabw
@@ -6359,11 +7139,6 @@ p_tabw_master_prop_dialog(GapStbTabWidgets *tabw, gboolean new_flag)
   tabw->master_dlg_open  = FALSE;
 
 }  /* end p_tabw_master_prop_dialog */
-
-
-
-
-
 
 
 /* ---------------------------------
@@ -6432,7 +7207,7 @@ on_stb_elem_drag_get (GtkWidget        *widget,
   }
   if (fw)
   {
-      if (info == TARGET_STORYBOARD_ELEM)
+      if (info == GAP_STB_TARGET_STORYBOARD_ELEM)
       {
           gtk_selection_data_set (selection_data,
                                   selection_data->target, 8,
@@ -6446,13 +7221,13 @@ on_stb_elem_drag_get (GtkWidget        *widget,
  * on_stb_elem_drag_delete
  * ---------------------------------
  */
-static void
-on_stb_elem_drag_delete (GtkWidget        *widget,
-                    GdkDragContext   *context,
-                    GapStbFrameWidget *fw)
-{
-printf("on_stb_elem_drag_delete FW:%d\n", (int)fw);
-}  /* end on_stb_elem_drag_delete */
+//static void
+//on_stb_elem_drag_delete (GtkWidget        *widget,
+//                    GdkDragContext   *context,
+//                    GapStbFrameWidget *fw)
+//{
+//printf("on_stb_elem_drag_delete FW:%d\n", (int)fw);
+//}  /* end on_stb_elem_drag_delete */
 
 
 /* ---------------------------------
@@ -6553,14 +7328,15 @@ on_clip_elements_dropped (GtkWidget        *widget,
 
   switch (info)
   {
-    case TARGET_URILIST:
+    case GAP_STB_TARGET_URILIST:
       /* clear all selected flags in the destination list */
       gap_story_selection_all_set(stb_dst, FALSE);
 
       /* replace the current selection with elements we got from DND as uri list */
-      sgpp->curr_selection = p_dnd_selection_to_stb_list((const char *)selection_data->data);
+      sgpp->curr_selection = p_dnd_selection_to_stb_list((const char *)selection_data->data
+                               , tabw->vtrack);
       break;
-    case TARGET_STORYBOARD_ELEM:
+    case GAP_STB_TARGET_STORYBOARD_ELEM:
       {
 	GapStbFrameWidget **fw_drop_ptr;
 
@@ -6581,7 +7357,7 @@ on_clip_elements_dropped (GtkWidget        *widget,
           /* if tabw of the droped frame widget
            * is not equal to one of stb_widgets or cll_widgets
            * assume that the sender was another application
-           * which is not supported for drop type TARGET_STORYBOARD_ELEM.
+           * which is not supported for drop type GAP_STB_TARGET_STORYBOARD_ELEM.
            */
           return;
 	}
@@ -6623,7 +7399,7 @@ on_clip_elements_dropped (GtkWidget        *widget,
                     , insert_after
                     );
 
-    if ((info == TARGET_STORYBOARD_ELEM)
+    if ((info == GAP_STB_TARGET_STORYBOARD_ELEM)
     && (context->action == GDK_ACTION_MOVE)
     && (tabw_src != NULL)
     && (stb_src != NULL))
@@ -6641,7 +7417,7 @@ on_clip_elements_dropped (GtkWidget        *widget,
     }
   }
 
-  if (info == TARGET_URILIST)
+  if (info == GAP_STB_TARGET_URILIST)
   {
     /* restore selection as it was before the DND of uri-list caused paste */
     sgpp->curr_selection = stb_bck_selection;
@@ -6733,7 +7509,7 @@ p_get_or_auto_create_storyboard (GapStbMainGlobalParams *sgpp
  * ---------------------------------
  */
 static GapStoryBoard *
-p_dnd_selection_to_stb_list(const char *uri_list)
+p_dnd_selection_to_stb_list(const char *uri_list, gint32 vtrack)
 {
   const gchar *p, *q;
   GapStoryElem  *list_root;
@@ -6781,7 +7557,7 @@ p_dnd_selection_to_stb_list(const char *uri_list)
                 GapStoryElem *elem;
 
                 uri = g_strndup (p, q - p + 1);
-                elem = p_check_and_convert_uri_to_stb_elem(uri, prev_elem);
+                elem = p_check_and_convert_uri_to_stb_elem(uri, prev_elem, vtrack);
                 if (elem)
                 {
                   if(list_root == NULL)
@@ -6825,7 +7601,7 @@ p_dnd_selection_to_stb_list(const char *uri_list)
  *             or in case the element could be merged into prev_elem
  */
 static GapStoryElem *
-p_check_and_convert_uri_to_stb_elem(const char *uri, GapStoryElem *prev_elem)
+p_check_and_convert_uri_to_stb_elem(const char *uri, GapStoryElem *prev_elem, gint32 vtrack)
 {
   GapStoryElem *elem;
   gchar *filename;
@@ -6865,7 +7641,7 @@ p_check_and_convert_uri_to_stb_elem(const char *uri, GapStoryElem *prev_elem)
   else
   {
     if ((strcmp (hostname, this_hostname) == 0)
-        || (strcmp (hostname, "localhost") == 0))
+    ||  (strcmp (hostname, "localhost") == 0))
     {
       is_localfile = TRUE;
     }
@@ -6876,7 +7652,7 @@ p_check_and_convert_uri_to_stb_elem(const char *uri, GapStoryElem *prev_elem)
   {
     if(g_file_test(filename, G_FILE_TEST_EXISTS))
     {
-      elem = p_create_stb_elem_from_filename(filename);
+      elem = p_create_stb_elem_from_filename(filename, vtrack);
       if (p_check_and_merge_range_if_possible(elem, prev_elem) == TRUE)
       {
          /* elem could be merged as extended range of prev_elem
@@ -6942,7 +7718,7 @@ p_check_and_merge_range_if_possible(GapStoryElem *elem, GapStoryElem *prev_elem)
  * -----------------------------------
  */
 static GapStoryElem *
-p_create_stb_elem_from_filename (const char *filename)
+p_create_stb_elem_from_filename (const char *filename, gint32 vtrack)
 {
   GapStoryElem *stb_elem;
   long current_frame;
@@ -6953,6 +7729,7 @@ p_create_stb_elem_from_filename (const char *filename)
 
   stb_elem = gap_story_new_elem(GAP_STBREC_VID_IMAGE);
   stb_elem->orig_filename = g_strdup(filename);
+  stb_elem->track = vtrack;
   stb_elem->from_frame = 1;
   stb_elem->to_frame = 1;
   stb_elem->nloop = 1;
@@ -6983,7 +7760,7 @@ p_create_stb_elem_from_filename (const char *filename)
  *  TODO: this drop should be restricted to GDK_ACTION_COPY
  *  but if we remove the GDK_ACTION_MOVE in the gtk_drag_dest_set
  *  call, move would be disabled too for the application internal
- *  drop-move of typ TARGET_STORYBOARD_ELEM
+ *  drop-move of typ GAP_STB_TARGET_STORYBOARD_ELEM
  * drag & drop support for storyboard elem
  * only local in the same application.
  */
@@ -6992,13 +7769,13 @@ p_frame_widget_init_dnd(GapStbFrameWidget *fw)
 {
   GtkWidget *widget;
   static const GtkTargetEntry drop_types[] = {
-    { "text/uri-list", 0, TARGET_URILIST},
-    { "application/gimp-gap-story-elem", GTK_TARGET_SAME_APP, TARGET_STORYBOARD_ELEM}
+    { "text/uri-list", 0, GAP_STB_TARGET_URILIST},
+    { "application/gimp-gap-story-elem", GTK_TARGET_SAME_APP, GAP_STB_TARGET_STORYBOARD_ELEM}
   };
   static const gint n_drop_types = sizeof(drop_types)/sizeof(drop_types[0]);
 
   static const GtkTargetEntry drag_types[] = {
-    { "application/gimp-gap-story-elem", GTK_TARGET_SAME_APP, TARGET_STORYBOARD_ELEM}
+    { "application/gimp-gap-story-elem", GTK_TARGET_SAME_APP, GAP_STB_TARGET_STORYBOARD_ELEM}
   };
   static const gint n_drag_types = sizeof(drag_types)/sizeof(drag_types[0]);
 
@@ -7046,8 +7823,8 @@ static void
 p_widget_init_dnd_drop(GtkWidget *widget, GapStbTabWidgets *tabw)
 {
   static const GtkTargetEntry drop_types[] = {
-    { "text/uri-list", 0, TARGET_URILIST},
-    { "application/gimp-gap-story-elem", GTK_TARGET_SAME_APP, TARGET_STORYBOARD_ELEM}
+    { "text/uri-list", 0, GAP_STB_TARGET_URILIST},
+    { "application/gimp-gap-story-elem", GTK_TARGET_SAME_APP, GAP_STB_TARGET_STORYBOARD_ELEM}
   };
   static const gint n_drop_types = sizeof(drop_types)/sizeof(drop_types[0]);
 

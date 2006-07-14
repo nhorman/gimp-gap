@@ -1,3 +1,47 @@
+Here is a short overview whats new in GIMP-GAP-2.3.0:
+-----------------------------------------------------
+(compared to gimp-gap release 2.2.1)
+
+
+- Player support to playback storyboard composite video.
+  The rendering respects all tracks and effects of storyboard
+  processing and gives an exact preview of the final results.
+  This feature is triggered via Storyboard Play button
+  pressed with CRTL-Key button held down.
+
+- Player cache with configurable size (via gimprc and Player dialog)
+- Player layout
+    - using icons for the buttons 
+      (that are now smaller and allow more space for the video frame)
+    - go buttons and position scale are configurable
+      (via gimprc and Player dialog)
+
+- Storyboard supports overlapping frames within one single track.
+    this makes it easy to create any transitions effects between 2 scenes
+    without the need of having multiple video tracks.
+
+- Storyboard supports layer mask (and mask sequences)
+    that can be applied to any type of videoclip to control
+    transparency for the masked parts in all the frames of the videoclip.
+    Mask sequences can be used to make custom transitions effects
+
+- Storyboard dialog supports editing multiple tracks,
+    where track 0 is used to define layermasks.
+    The layermask definitions can be applied to any
+    clip (by drag & drop onto a clip properties dialog window)
+
+- Storyboard support for frame aspect (4:3 or 16:9)
+  Thumbnails in the Storyboard dialog are now displayed respecting
+  the aspect to reflect the correct video frame proportion 
+  that may differ from the pixelsize.
+
+- Storyboard clip properties now support built in transitions
+    to flip horizontally, vertically and rotate by 180 degree.
+
+- Storyboard Layout
+    - Global Storyboard Layout settings are now saved (in gimprc)
+      and restored in further sessions.
+
 Here is a short overview whats new in GIMP-GAP-2.2.1:
 -----------------------------------------------------
 (compared to gimp-gap release 2.2.0)

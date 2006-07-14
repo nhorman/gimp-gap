@@ -21,6 +21,7 @@
  */
 
 /* revision history:
+ * version 2.3.0-238; 2006/06/18  hof: support overlapping frames within a video track
  * version 2.2.1-214; 2006/03/31  hof: created
  */
 
@@ -58,15 +59,20 @@
 
 #define GAP_STORY_ATTR_PROP_HELP_ID  "plug-in-gap-storyboard-attr-prop"
 #define GAP_STORY_ATT_RESPONSE_RESET 1
+#define GAP_STORY_ATT_RESPONSE_PLAYBACK 2
 
 #define PVIEW_SIZE 256
 #define LAYERNAME_ORIG "orig_layer"
-#define LAYERNAME_CURR "curr_layer"
+#define LAYERNAME_OPRE "opre_layer"
+
 #define LAYERNAME_DECO "deco_layer"
+#define LAYERNAME_CURR "curr_layer"
+#define LAYERNAME_PREF "pref_layer"
 #define LAYERNAME_BASE "base_layer"
 
 #define LAYERSTACK_TOP  -1
-#define LAYERSTACK_CURR 1
+#define LAYERSTACK_CURR 2
+#define LAYERSTACK_PREF 1
 #define LAYERSTACK_BASE 0
 
 #define OBJ_DATA_KEY_ATTW     "attw"
@@ -81,6 +87,7 @@ static void     p_attw_prop_response(GtkWidget *widget
                   , GapStbAttrWidget *attw
                   );
 static void     p_attw_prop_reset_all(GapStbAttrWidget *attw);
+static void     p_playback_effect_range(GapStbAttrWidget *attw);
 static void     p_attw_timer_job(GapStbAttrWidget *attw);
 static void     p_attw_update_properties(GapStbAttrWidget *attw);
 static void     p_attw_update_sensitivity(GapStbAttrWidget *attw);
@@ -95,6 +102,11 @@ static void     p_attw_start_button_clicked_callback(GtkWidget *widget
 static void     p_attw_end_button_clicked_callback(GtkWidget *widget
                   , GdkEventButton  *bevent
                   , gint att_type_idx);
+
+static void     p_copy_duration_to_all(gint32 duration, GapStbAttrWidget *attw);
+static void     p_attw_overlap_dur_button_clicked_callback(GtkWidget *widget
+                  , GdkEventButton  *bevent
+                  , GapStbAttrWidget *attw);
 static void     p_attw_dur_button_clicked_callback(GtkWidget *widget
                   , GdkEventButton  *bevent
                   , gint att_type_idx);
@@ -108,10 +120,15 @@ static void     p_attw_auto_update_toggle_update_callback(GtkWidget *widget, gbo
 static gboolean p_attw_preview_events_cb (GtkWidget *widget
                        , GdkEvent  *event
                        , GapStbAttrWidget *attw);
+static void     p_calculate_prefetch_render_attributes(GapStbAttrWidget *attw
+                       , gint img_idx
+                       , GapStoryCalcAttr  *calc_attr_ptr
+                       );
 static void     p_calculate_render_attributes(GapStbAttrWidget *attw
                        , gint img_idx
                        , GapStoryCalcAttr  *calc_attr
                        );
+static void     p_check_and_make_opre_default_layer(GapStbAttrWidget *attw, gint img_idx);
 static void     p_check_and_make_orig_default_layer(GapStbAttrWidget *attw, gint img_idx);
 static gint32   p_create_color_layer(GapStbAttrWidget *attw, gint32 image_id
                     , const char *name, gint stackposition, gdouble opacity
@@ -120,23 +137,45 @@ static gint32   p_create_base_layer(GapStbAttrWidget *attw, gint32 image_id);
 static gint32   p_create_deco_layer(GapStbAttrWidget *attw, gint32 image_id);
 static void     p_create_gfx_image(GapStbAttrWidget *attw, gint img_idx);
 static void     p_delete_gfx_images(GapStbAttrWidget *attw);
+static void     p_adjust_stackposition(gint32 image_id, gint32 layer_id, gint position);
+static void     p_create_transformed_layer(gint32 image_id
+                    , gint32 origsize_layer_id
+                    , gint32 *layer_id_ptr
+                    , GapStoryCalcAttr  *calculated
+                    , gint32 stackposition, const char *layername);
+static gboolean p_calculate_prefetch_visibility(GapStbAttrWidget *attw, gint img_idx);
+
 static void     p_render_gfx(GapStbAttrWidget *attw, gint img_idx);
 
 static void     p_update_framenr_labels(GapStbAttrWidget *attw, gint img_idx, gint32 framenr);
 static gint32   p_get_relevant_duration(GapStbAttrWidget *attw, gint img_idx);
 static void     p_update_full_preview_gfx(GapStbAttrWidget *attw);
 
-static gboolean p_stb_reg_equals_orig_layer(GapStbAttrWidget *attw
-                         , gint   img_idx
+static gboolean p_stb_req_equals_layer_info(GapStbAttrLayerInfo *linfo
                          , GapStoryLocateRet *stb_ret
                          , const char *filename);
-static void     p_destroy_orig_layer(GapStbAttrWidget *attw
-                         , gint   img_idx);
-static gboolean p_check_orig_layer_up_to_date(GapStbAttrWidget *attw
-                         , gint   img_idx
-                         , GapStoryLocateRet *stb_ret
-                         , const char *filename);
-static void     p_create_or_replace_orig_layer (GapStbAttrWidget *attw
+static void     p_destroy_orig_layer( gint32 image_id
+                    , gint32 *orig_layer_id_ptr
+                    , gint32 *derived_layer_id_ptr
+                    , GapStbAttrLayerInfo *linfo);
+static gboolean p_check_orig_layer_up_to_date(gint32 image_id
+                    , gint32 *orig_layer_id_ptr
+                    , gint32 *derived_layer_id_ptr
+                    , GapStbAttrLayerInfo *linfo
+                    , GapStoryLocateRet *stb_ret
+                    , const char *filename);
+static void     p_orig_layer_frame_fetcher(GapStbAttrWidget *attw
+                    , gint32 master_framenr
+                    , gint32 image_id
+                    , gint32 *orig_layer_id_ptr
+                    , gint32 *derived_layer_id_ptr
+                    , GapStbAttrLayerInfo *linfo);
+
+static gint32   p_calc_and_set_display_framenr(GapStbAttrWidget *attw
+                    , gint   img_idx
+                    , gint32 duration);
+
+static void     p_create_or_replace_orig_and_opre_layer (GapStbAttrWidget *attw
                          , gint   img_idx
                          , gint32 duration);
 static gint32   p_fetch_video_frame_as_layer(GapStbMainGlobalParams *sgpp
@@ -153,6 +192,8 @@ static gint32   p_fetch_imagefile_as_layer (const char *img_filename
 
 
 static void     p_attw_comment_entry_update_cb(GtkWidget *widget, GapStbAttrWidget *attw);
+
+static void     p_init_layer_info(GapStbAttrLayerInfo *linfo);
 
 static void     p_create_and_attach_pv_widgets(GapStbAttrWidget *attw
                  , GtkWidget *table
@@ -205,6 +246,9 @@ p_attw_prop_response(GtkWidget *widget
       {
         p_attw_prop_reset_all(attw);
       }
+      break;
+    case GAP_STORY_ATT_RESPONSE_PLAYBACK:
+      p_playback_effect_range(attw);
       break;
     case GTK_RESPONSE_CLOSE:
     default:
@@ -269,6 +313,10 @@ p_attw_prop_reset_all(GapStbAttrWidget *attw)
                                 , attw->stb_elem_refptr->att_arr_value_dur[ii]);
 
       }
+      gtk_adjustment_set_value(GTK_ADJUSTMENT(attw->spinbutton_overlap_dur_adj)
+                                , attw->stb_elem_refptr->att_overlap);
+      
+      
       gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (attw->fit_width_toggle)
              , attw->stb_elem_refptr->att_fit_width);
       gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (attw->fit_height_toggle)
@@ -276,25 +324,47 @@ p_attw_prop_reset_all(GapStbAttrWidget *attw)
       gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (attw->keep_proportions_toggle)
              , attw->stb_elem_refptr->att_keep_proportions);
 
-      p_update_full_preview_gfx(attw);
+      attw->timer_full_update_request = TRUE;
       p_attw_update_properties(attw);
     }
   }
 
 }  /* end p_attw_prop_reset_all */
 
+ 
+/* ------------------------------
+ * p_playback_effect_range
+ * ------------------------------
+ */
+static void
+p_playback_effect_range(GapStbAttrWidget *attw)
+{
+  gint32 begin_frame;
+  gint32 end_frame;
+
+  begin_frame = p_calc_and_set_display_framenr(attw, 0, 0);
+  end_frame = begin_frame + p_get_relevant_duration(attw, 1);
+
+  gap_story_attw_range_playback(attw, begin_frame, end_frame);
+
+}  /* end p_playback_effect_range */
 
 /* ------------------
  * p_attw_timer_job
  * ------------------
  * render both graphical previews
+ * or do full update if timer_full_update_request flag is set.
+ * (also reset this flag)
  */
 static void
 p_attw_timer_job(GapStbAttrWidget *attw)
 {
   GapStbMainGlobalParams  *sgpp;
 
-  /*if(gap_debug) printf("\np_attw_timer_job: START\n");*/
+  if(gap_debug)
+  {
+    printf("\np_attw_timer_job: START\n");
+  }
   sgpp = attw->sgpp;
 
   if((attw)
@@ -307,8 +377,24 @@ p_attw_timer_job(GapStbAttrWidget *attw)
     }
     attw->go_timertag = -1;
 
-    p_render_gfx(attw, 0);
-    p_render_gfx(attw, 1);
+    if(attw->timer_full_update_request)
+    {
+      attw->timer_full_update_request = FALSE;
+      p_update_full_preview_gfx(attw);
+      
+      /* it would be sufficient to update the labels
+       * of all clips displayed in the storyboard,
+       * but we simply render everything
+       * (the code is already complex enough)
+       */
+      gap_story_dlg_attw_render_all(attw);
+    }
+    else
+    {
+      p_render_gfx(attw, 0);
+      p_render_gfx(attw, 1);
+    }
+
   }
 }  /* end p_attw_timer_job */
 
@@ -507,6 +593,54 @@ p_attw_end_button_clicked_callback(GtkWidget *widget
 
 
 /* -----------------------------------------
+ * p_copy_duration_to_all
+ * -----------------------------------------
+ * copy to all duration attributes (except overlap)
+ */
+static void
+p_copy_duration_to_all(gint32 duration, GapStbAttrWidget *attw)
+{
+  if(attw)
+  {
+    gint ii;
+    
+    for(ii = 0; ii < GAP_STB_ATT_TYPES_ARRAY_MAX; ii++)
+    {
+      if(attw->stb_elem_refptr->att_arr_enable[ii] == TRUE)
+      {
+        gtk_adjustment_set_value(GTK_ADJUSTMENT(attw->att_rows[ii].spinbutton_dur_adj)
+                                , duration);
+      }
+    }
+  }
+}  /* end p_copy_duration_to_all */
+
+
+/* -----------------------------------------
+ * p_attw_overlap_dur_button_clicked_callback
+ * -----------------------------------------
+ */
+static void
+p_attw_overlap_dur_button_clicked_callback(GtkWidget *widget
+               , GdkEventButton  *bevent
+               , GapStbAttrWidget *attw)
+{
+  if(attw)
+  {
+    if(attw->stb_elem_refptr)
+    {
+      gint32 duration;
+
+      duration = attw->stb_elem_refptr->att_overlap;
+      p_copy_duration_to_all(duration, attw);
+
+    }
+  }
+}  /* end p_attw_overlap_dur_button_clicked_callback */
+
+
+
+/* -----------------------------------------
  * p_attw_dur_button_clicked_callback
  * -----------------------------------------
  */
@@ -521,19 +655,10 @@ p_attw_dur_button_clicked_callback(GtkWidget *widget
   {
     if(attw->stb_elem_refptr)
     {
-      gint ii;
       gint32 duration;
 
       duration = attw->stb_elem_refptr->att_arr_value_dur[att_type_idx];
-
-      for(ii = 0; ii < GAP_STB_ATT_TYPES_ARRAY_MAX; ii++)
-      {
-        if(attw->stb_elem_refptr->att_arr_enable[ii] == TRUE)
-        {
-          gtk_adjustment_set_value(GTK_ADJUSTMENT(attw->att_rows[ii].spinbutton_dur_adj)
-                                  , duration);
-        }
-      }
+      p_copy_duration_to_all(duration, attw);
 
     }
   }
@@ -584,26 +709,21 @@ p_attw_gdouble_adjustment_callback(GtkObject *obj, gdouble *val)
 /* ---------------------------------
  * p_duration_dependent_refresh
  * ---------------------------------
+ * support of overlapping requires refresh of both previews in most situations
+ * (in some sitations, where att_overlap == 0 it might be sufficient
+ * to refresh only the preview that represents the TO value.
+ * this simple implementation currently refreshes always both previews)
  */
 static void
 p_duration_dependent_refresh(GapStbAttrWidget *attw)
 {
-  gint img_idx;
-
-  img_idx = 1;
-  if(attw->gfx_tab[img_idx].auto_update)
-  {
-    gint32 duration;
-
-    duration = p_get_relevant_duration(attw, img_idx);
-    p_create_or_replace_orig_layer (attw, img_idx, duration);
-    p_render_gfx (attw, img_idx);
-  }
+  attw->timer_full_update_request = TRUE;
+  p_attw_update_properties(attw);
 }  /* end p_duration_dependent_refresh */
 
-/* ---------------------------------
+/* -----------------------------------
  * p_attw_duration_adjustment_callback
- * ---------------------------------
+ * -----------------------------------
  */
 static void
 p_attw_duration_adjustment_callback(GtkObject *obj, gint32 *val)
@@ -618,7 +738,14 @@ p_attw_duration_adjustment_callback(GtkObject *obj, gint32 *val)
     if(attw->stb_elem_refptr)
     {
       l_val = RINT (GTK_ADJUSTMENT(obj)->value);
-      if(gap_debug) printf("gint32_adjustment_callback: old_val:%d val:%d\n", (int)*val ,(int)l_val );
+      if(gap_debug)
+      {
+        printf("gint32_adjustment_callback: obj:%d old_val:%d val:%d\n"
+             ,(int)obj
+             ,(int)*val 
+             ,(int)l_val
+             );
+      }
       if(l_val != *val)
       {
         *val = l_val;
@@ -767,6 +894,71 @@ p_attw_preview_events_cb (GtkWidget *widget
 
 
 /* -----------------------------------------
+ * p_calculate_prefetch_render_attributes
+ * -----------------------------------------
+ * Calculate render attributes for the prefetch frame
+ * The prefetch frame is used for overlapping frames for
+ * the "normal" track that is overlapped by the shadow track.
+ * Defaults for all transitions transition settings are used here,
+ * because the transition settings will apply to the curr_layer in the shadow track,
+ * but settings for keep_proportions, fit_width and fit_height are respected.
+ * NOTE:
+ *   for exact rendering the transition attribute settings at prefetch position
+ *   would be required, but defaults should be sufficient to visualizes the settings
+ *   of the current transition without interfering with settings of prior transitions.
+ */
+static void
+p_calculate_prefetch_render_attributes(GapStbAttrWidget *attw
+    , gint img_idx
+    , GapStoryCalcAttr  *calc_attr_ptr
+    )
+{
+  gint ii;
+  gint32  pv_master_width;   /* master width scaled to preview size */
+  gint32  pv_master_height;  /* master height scaled to preview size */
+  gdouble master_scale;
+  gdouble att_tab[GAP_STB_ATT_GFX_ARRAY_MAX][GAP_STB_ATT_TYPES_ARRAY_MAX];
+  gdouble pv_frame_width;
+  gdouble pv_frame_height;
+
+  pv_master_width = gimp_image_width(attw->gfx_tab[img_idx].image_id) * PVIEW_TO_MASTER_SCALE;
+  pv_master_height = gimp_image_height(attw->gfx_tab[img_idx].image_id) * PVIEW_TO_MASTER_SCALE;
+
+  master_scale = (gdouble)pv_master_width
+               / (gdouble)(MAX( 1, attw->stb_refptr->master_width));
+
+  pv_frame_width = (gdouble)gimp_drawable_width(attw->gfx_tab[img_idx].opre_layer_id) * master_scale;
+  pv_frame_height = (gdouble)gimp_drawable_height(attw->gfx_tab[img_idx].opre_layer_id) * master_scale;
+
+  for(ii=0; ii < GAP_STB_ATT_TYPES_ARRAY_MAX; ii++)
+  {
+    att_tab[0][ii] =  gap_story_get_default_attribute(ii);
+    att_tab[1][ii] =  gap_story_get_default_attribute(ii);
+  }
+
+  gap_story_file_calculate_render_attributes(calc_attr_ptr
+    , gimp_image_width(attw->gfx_tab[img_idx].image_id)
+    , gimp_image_height(attw->gfx_tab[img_idx].image_id)
+    , pv_master_width
+    , pv_master_height
+    , (gint32)rint(pv_frame_width)
+    , (gint32)rint(pv_frame_height)
+    , attw->stb_elem_refptr->att_keep_proportions
+    , attw->stb_elem_refptr->att_fit_width
+    , attw->stb_elem_refptr->att_fit_height
+    , att_tab [img_idx][GAP_STB_ATT_TYPE_OPACITY]
+    , att_tab [img_idx][GAP_STB_ATT_TYPE_ZOOM_X]
+    , att_tab [img_idx][GAP_STB_ATT_TYPE_ZOOM_Y]
+    , att_tab [img_idx][GAP_STB_ATT_TYPE_MOVE_X]
+    , att_tab [img_idx][GAP_STB_ATT_TYPE_MOVE_Y]
+    );
+
+
+}  /* end p_calculate_prefetch_render_attributes */
+
+
+
+/* -----------------------------------------
  * p_calculate_render_attributes
  * -----------------------------------------
  * NOTE: filtermacro processing is ignored,
@@ -830,6 +1022,46 @@ p_calculate_render_attributes(GapStbAttrWidget *attw
 }  /* end p_calculate_render_attributes */
 
 
+/* -----------------------------------------
+ * p_check_and_make_opre_default_layer
+ * -----------------------------------------
+ * check if there is a valid original prefetch layer opre_layer_id (>= 0)
+ * if NOT create a faked opre layer at master size.
+ */
+static void
+p_check_and_make_opre_default_layer(GapStbAttrWidget *attw, gint img_idx)
+{
+  if(attw->gfx_tab[img_idx].opre_layer_id < 0)
+  {
+    gint32  image_id;
+    gint32  layer_id;
+    gdouble red, green, blue, alpha;
+
+    image_id = attw->gfx_tab[img_idx].image_id;
+    layer_id = gimp_layer_new(image_id
+                  , LAYERNAME_OPRE
+                  , attw->stb_refptr->master_width
+                  , attw->stb_refptr->master_height
+                  , GIMP_RGBA_IMAGE
+                  , 100.0   /* full opacity */
+                  , 0       /* normal mode */
+                  );
+
+    gimp_image_add_layer (image_id, layer_id, LAYERSTACK_TOP);
+    red   = 0.72;
+    green = 0.80;
+    blue  = 0.25;
+    alpha = 1.0;
+    gap_layer_clear_to_color(layer_id, red, green, blue, alpha);
+
+    attw->gfx_tab[img_idx].opre_layer_id = layer_id;
+    attw->gfx_tab[img_idx].opre_info.layer_is_fake = TRUE;
+  }
+  gimp_drawable_set_visible(attw->gfx_tab[img_idx].opre_layer_id, FALSE);
+
+}  /* end p_check_and_make_opre_default_layer */
+
+
 
 /* -----------------------------------------
  * p_check_and_make_orig_default_layer
@@ -864,7 +1096,7 @@ p_check_and_make_orig_default_layer(GapStbAttrWidget *attw, gint img_idx)
     gap_layer_clear_to_color(layer_id, red, green, blue, alpha);
 
     attw->gfx_tab[img_idx].orig_layer_id = layer_id;
-    attw->gfx_tab[img_idx].orig_layer_is_fake = TRUE;
+    attw->gfx_tab[img_idx].orig_info.layer_is_fake = TRUE;
   }
   gimp_drawable_set_visible(attw->gfx_tab[img_idx].orig_layer_id, FALSE);
 
@@ -1029,8 +1261,11 @@ p_create_gfx_image(GapStbAttrWidget *attw, gint img_idx)
   attw->gfx_tab[img_idx].deco_layer_id = p_create_deco_layer(attw, image_id);
   attw->gfx_tab[img_idx].orig_layer_id = -1;  /* to be created later */
   attw->gfx_tab[img_idx].curr_layer_id = -1;  /* to be created later */
+  attw->gfx_tab[img_idx].opre_layer_id = -1;  /* to be created later */
+  attw->gfx_tab[img_idx].pref_layer_id = -1;  /* to be created later */
   attw->gfx_tab[img_idx].image_id = image_id;
-  attw->gfx_tab[img_idx].orig_layer_is_fake = TRUE;
+  attw->gfx_tab[img_idx].opre_info.layer_is_fake = TRUE;
+  attw->gfx_tab[img_idx].orig_info.layer_is_fake = TRUE;
 }  /* end p_create_gfx_image */
 
 /* -----------------------------------------
@@ -1050,91 +1285,164 @@ p_delete_gfx_images(GapStbAttrWidget *attw)
 
 
 /* -----------------------------------------
- * p_render_gfx
+ * p_adjust_stackposition
  * -----------------------------------------
- * render graphical preview.
- * This procedure does not include fetching the refered frame
- * It assumes that the corresponding frame has already been fetched
- * into the org layer of the internal gimp image that will be used for
- * rendering of the preview.
- * If that image doe not contain such a valid orig layer,
- * it creates an empty default representation, where master size is assumed.
  */
 static void
-p_render_gfx(GapStbAttrWidget *attw, gint img_idx)
+p_adjust_stackposition(gint32 image_id, gint32 layer_id, gint position)
 {
-  GapStoryCalcAttr  calculate_attributes;
-  GapStoryCalcAttr  *calculated;
-  gint32  image_id;
+  gint   ii;
 
-  image_id = attw->gfx_tab[img_idx].image_id;
-  calculated = &calculate_attributes;
-
-  p_check_and_make_orig_default_layer(attw, img_idx);
-
-  p_calculate_render_attributes (attw
-     , img_idx
-     , calculated
-     );
+  /* adjust stack position */
+  gimp_image_lower_layer_to_bottom (image_id, layer_id);
+  for (ii=0; ii < position; ii++)
+  {
+    gimp_image_raise_layer (image_id, layer_id);
+  }
+}  /* end p_adjust_stackposition */
 
 
+/* -----------------------------------------
+ * p_create_transformed_layer
+ * -----------------------------------------
+ * create transformed copy of the specified origsize_layer_id,
+ * according to calculated transformation settings.
+ */
+static void
+p_create_transformed_layer(gint32 image_id
+  , gint32 origsize_layer_id
+  , gint32 *layer_id_ptr
+  , GapStoryCalcAttr  *calculated
+  , gint32 stackposition, const char *layername)
+{
   /* if size is not equal calculated size remove curr layer
    * to force recreation in desired size
    */
-  if (attw->gfx_tab[img_idx].curr_layer_id >= 0)
+  if (*layer_id_ptr >= 0)
   {
-     if ((gimp_drawable_width(attw->gfx_tab[img_idx].curr_layer_id)  != calculated->width)
-     ||  (gimp_drawable_height(attw->gfx_tab[img_idx].curr_layer_id) != calculated->height))
+     if ((gimp_drawable_width(*layer_id_ptr)  != calculated->width)
+     ||  (gimp_drawable_height(*layer_id_ptr) != calculated->height))
      {
         gimp_image_remove_layer( image_id
-                               , attw->gfx_tab[img_idx].curr_layer_id);
-        attw->gfx_tab[img_idx].curr_layer_id = -1;
+                               , *layer_id_ptr);
+        *layer_id_ptr = -1;
      }
   }
 
-  /* check and recreate the current layer at stackposition 1 */
-  if (attw->gfx_tab[img_idx].curr_layer_id < 0)
+  /* check and recreate the current layer at stackposition 2 */
+  if (*layer_id_ptr < 0)
   {
     gint32 new_layer_id;
 
 
-    new_layer_id = gimp_layer_copy(attw->gfx_tab[img_idx].orig_layer_id);
-    gimp_image_add_layer (image_id, new_layer_id, LAYERSTACK_CURR);
-    gimp_drawable_set_name(new_layer_id, LAYERNAME_CURR);
+    new_layer_id = gimp_layer_copy(origsize_layer_id);
+    gimp_image_add_layer (image_id, new_layer_id, stackposition);
+    gimp_drawable_set_name(new_layer_id, layername);
     gimp_layer_scale(new_layer_id, calculated->width, calculated->height, 0);
     gimp_drawable_set_visible(new_layer_id, TRUE);
 
-    attw->gfx_tab[img_idx].curr_layer_id = new_layer_id;
+    *layer_id_ptr = new_layer_id;
   }
-
-
-  {
-    gint32 layer_id;
-    gint   ii;
-
-
-    /* adjust stack position */
-    layer_id = attw->gfx_tab[img_idx].curr_layer_id;
-    gimp_image_lower_layer_to_bottom (image_id, layer_id);
-    for (ii=0; ii < LAYERSTACK_CURR; ii++)
-    {
-      gimp_image_raise_layer (image_id, layer_id);
-    }
-  }
+  p_adjust_stackposition(image_id, *layer_id_ptr, stackposition);
 
 
   /* set offsets and opacity */
-  gimp_layer_set_offsets(attw->gfx_tab[img_idx].curr_layer_id
+  gimp_layer_set_offsets(*layer_id_ptr
                         , calculated->x_offs
                         , calculated->y_offs
                         );
-  gimp_layer_set_opacity(attw->gfx_tab[img_idx].curr_layer_id
+  gimp_layer_set_opacity(*layer_id_ptr
                         , calculated->opacity
                         );
 
+}  /* end p_create_transformed_layer */
+
+
+/* -----------------------------------------
+ * p_calculate_prefetch_visibility
+ * -----------------------------------------
+ */
+static gboolean
+p_calculate_prefetch_visibility(GapStbAttrWidget *attw, gint img_idx)
+{
+  gboolean prefetch_visible;
+
+  prefetch_visible = FALSE;
+  if(attw->stb_elem_refptr->att_overlap > 0)
+  {
+    gint32 duration;
+
+    duration = p_get_relevant_duration(attw, img_idx);
+    if(attw->stb_elem_refptr->att_overlap >= duration)
+    {
+      prefetch_visible = TRUE;
+    }
+  }
+  
+  return (prefetch_visible);
+}  /* end p_calculate_prefetch_visibility */
+
+
+/* -----------------------------------------
+ * p_render_gfx
+ * -----------------------------------------
+ * render graphical preview.
+ * This procedure does not include fetching the referred frame
+ * It assumes that the corresponding frame(s) have already been fetched
+ * into the orig_layer (and opre_layer for overlapping frames within this track)
+ * of the internal gimp image that will be used for
+ * rendering of the preview.
+ * If that image does not contain such a valid orig_layer and opre_layer,
+ * it creates empty default representations, where master size is assumed.
+ */
+static void
+p_render_gfx(GapStbAttrWidget *attw, gint img_idx)
+{
+  GapStoryCalcAttr  calculate_curr_attributes;
+  GapStoryCalcAttr  calculate_pref_attributes;
+  gint32   image_id;
+  gboolean prefetch_visible;
+
+  image_id = attw->gfx_tab[img_idx].image_id;
+
+  p_check_and_make_orig_default_layer(attw, img_idx);
+  p_check_and_make_opre_default_layer(attw, img_idx);
+
+
+  p_calculate_prefetch_render_attributes(attw
+     , img_idx
+     , &calculate_pref_attributes
+     );
+
+  p_create_transformed_layer(image_id
+      , attw->gfx_tab[img_idx].opre_layer_id
+      , &attw->gfx_tab[img_idx].pref_layer_id
+      , &calculate_pref_attributes
+      , LAYERSTACK_PREF
+      , LAYERNAME_PREF
+      );
+     
+
+  p_calculate_render_attributes (attw
+     , img_idx
+     , &calculate_curr_attributes
+     );
+
+  p_create_transformed_layer(image_id
+      , attw->gfx_tab[img_idx].orig_layer_id
+      , &attw->gfx_tab[img_idx].curr_layer_id
+      , &calculate_curr_attributes
+      , LAYERSTACK_CURR
+      , LAYERNAME_CURR
+      );
+
+  prefetch_visible = p_calculate_prefetch_visibility(attw, img_idx);
+
+  gimp_drawable_set_visible(attw->gfx_tab[img_idx].opre_layer_id, FALSE);
   gimp_drawable_set_visible(attw->gfx_tab[img_idx].orig_layer_id, FALSE);
   gimp_drawable_set_visible(attw->gfx_tab[img_idx].deco_layer_id, TRUE);
   gimp_drawable_set_visible(attw->gfx_tab[img_idx].curr_layer_id, TRUE);
+  gimp_drawable_set_visible(attw->gfx_tab[img_idx].pref_layer_id, prefetch_visible);
   gimp_drawable_set_visible(attw->gfx_tab[img_idx].base_layer_id, TRUE);
 
   /* render the preview from image */
@@ -1236,7 +1544,7 @@ p_update_full_preview_gfx(GapStbAttrWidget *attw)
        gint32 duration;
 
        duration = p_get_relevant_duration(attw, img_idx);
-       p_create_or_replace_orig_layer (attw, img_idx, duration);
+       p_create_or_replace_orig_and_opre_layer (attw, img_idx, duration);
        p_render_gfx (attw, img_idx);
      }
    }
@@ -1247,39 +1555,38 @@ p_update_full_preview_gfx(GapStbAttrWidget *attw)
 
 
 /* ---------------------------------
- * p_stb_reg_equals_orig_layer
+ * p_stb_req_equals_layer_info
  * ---------------------------------
  * check if required position (specified via stb_ret and filename)
- * refers to the same frame as the orig layer.
+ * refers to the same frame as stored in the specified layer info structure.
  * the relevant infornmation of the orig_layer is stored in
- *      orig_layer_record_type;
- *      orig_layer_local_framenr;
- *      orig_layer_seltrack;
- *     *orig_layer_filename;
+ *      linfo->layer_record_type;
+ *      linfo->layer_local_framenr;
+ *      linfo->layer_seltrack;
+ *     *linfo->layer_filename;
  *
  */
 static gboolean
-p_stb_reg_equals_orig_layer(GapStbAttrWidget *attw
-                         , gint   img_idx
+p_stb_req_equals_layer_info(GapStbAttrLayerInfo *linfo
                          , GapStoryLocateRet *stb_ret
                          , const char *filename)
 {
   if (stb_ret->stb_elem->record_type
-  != attw->gfx_tab[img_idx].orig_layer_record_type)
+  != linfo->layer_record_type)
   {
     return(FALSE);
   }
-  if (stb_ret->stb_elem->seltrack != attw->gfx_tab[img_idx].orig_layer_seltrack)
-  {
-    return(FALSE);
-  }
-
-  if (stb_ret->ret_framenr != attw->gfx_tab[img_idx].orig_layer_local_framenr)
+  if (stb_ret->stb_elem->seltrack != linfo->layer_seltrack)
   {
     return(FALSE);
   }
 
-  if (attw->gfx_tab[img_idx].orig_layer_filename == NULL)
+  if (stb_ret->ret_framenr != linfo->layer_local_framenr)
+  {
+    return(FALSE);
+  }
+
+  if (linfo->layer_filename == NULL)
   {
      if(filename != NULL)
      {
@@ -1292,50 +1599,55 @@ p_stb_reg_equals_orig_layer(GapStbAttrWidget *attw
      {
        return(FALSE);
      }
-     if(strcmp(filename, attw->gfx_tab[img_idx].orig_layer_filename) != 0)
+     if(strcmp(filename, linfo->layer_filename) != 0)
      {
        return(FALSE);
      }
   }
 
   return(TRUE);
-}
+}  /* end p_stb_req_equals_layer_info */
+
 
 /* ---------------------------------
  * p_destroy_orig_layer
  * ---------------------------------
+ * destroy orig layer and corresponding derived layer
+ * if they are already existing
  */
 static void
-p_destroy_orig_layer(GapStbAttrWidget *attw
-                    , gint   img_idx)
+p_destroy_orig_layer( gint32 image_id
+                    , gint32 *orig_layer_id_ptr
+                    , gint32 *derived_layer_id_ptr
+                    , GapStbAttrLayerInfo *linfo)
 {
-   if(attw->gfx_tab[img_idx].orig_layer_id >= 0)
+   if(*orig_layer_id_ptr >= 0)
    {
      /* not up to date: destroy orig layer */
-     gimp_image_remove_layer(attw->gfx_tab[img_idx].image_id
-                            , attw->gfx_tab[img_idx].orig_layer_id);
-     attw->gfx_tab[img_idx].orig_layer_id = -1;
-
+     gimp_image_remove_layer(image_id
+                            , *orig_layer_id_ptr);
+     *orig_layer_id_ptr = -1;
    }
 
-   attw->gfx_tab[img_idx].orig_layer_record_type = GAP_STBREC_VID_UNKNOWN;
-   attw->gfx_tab[img_idx].orig_layer_local_framenr = -1;
-   attw->gfx_tab[img_idx].orig_layer_seltrack = -1;
-   if (attw->gfx_tab[img_idx].orig_layer_filename != NULL)
+   linfo->layer_record_type = GAP_STBREC_VID_UNKNOWN;
+   linfo->layer_local_framenr = -1;
+   linfo->layer_seltrack = -1;
+   if (linfo->layer_filename != NULL)
    {
-     g_free(attw->gfx_tab[img_idx].orig_layer_filename);
-     attw->gfx_tab[img_idx].orig_layer_filename = NULL;
+     g_free(linfo->layer_filename);
+     linfo->layer_filename = NULL;
    }
 
    /* remove curr layer if already exists */
-   if(attw->gfx_tab[img_idx].curr_layer_id >= 0)
+   if(*derived_layer_id_ptr >= 0)
    {
-     gimp_image_remove_layer(attw->gfx_tab[img_idx].image_id
-                            , attw->gfx_tab[img_idx].curr_layer_id);
-     attw->gfx_tab[img_idx].curr_layer_id = -1;
+     gimp_image_remove_layer(image_id
+                            , *derived_layer_id_ptr);
+     *derived_layer_id_ptr = -1;
    }
 
 }  /* end p_destroy_orig_layer */
+
 
 /* ---------------------------------
  * p_check_orig_layer_up_to_date
@@ -1345,74 +1657,61 @@ p_destroy_orig_layer(GapStbAttrWidget *attw
  * else return FALSE.
  *
  * if there is a non-up to date orig layer destroy this outdated
- * orig layer and the curr_layer too.
+ * orig layer and the correspondig derived layer too.
  */
 static gboolean
-p_check_orig_layer_up_to_date(GapStbAttrWidget *attw
-                         , gint   img_idx
-                         , GapStoryLocateRet *stb_ret
-                         , const char *filename)
+p_check_orig_layer_up_to_date(gint32 image_id
+                    , gint32 *orig_layer_id_ptr
+                    , gint32 *derived_layer_id_ptr
+                    , GapStbAttrLayerInfo *linfo
+                    , GapStoryLocateRet *stb_ret
+                    , const char *filename)
 {
-   /* remove orig layer if already exists */
-   if(attw->gfx_tab[img_idx].orig_layer_id >= 0)
+   if(*orig_layer_id_ptr >= 0)
    {
-
-     if (p_stb_reg_equals_orig_layer(attw, img_idx, stb_ret, filename) == TRUE)
+     if (p_stb_req_equals_layer_info(linfo, stb_ret, filename) == TRUE)
      {
        return (TRUE);  /* OK orig layer already up to date */
      }
    }
-   p_destroy_orig_layer(attw, img_idx);
+   /* remove orig layer and derived layer if already exists */
+   p_destroy_orig_layer(image_id
+                       ,orig_layer_id_ptr
+                       ,derived_layer_id_ptr
+                       ,linfo
+                       );
 
 
    return (FALSE);
 }  /* end p_check_orig_layer_up_to_date */
 
 
-/* ---------------------------------
- * p_create_or_replace_orig_layer
- * ---------------------------------
- * fetch the frame that is refered by the stb_elem_refptr + duration (frames)
- * If there is no frame found, use a default image.
- * (possible reasons: duration refers behind valid frame range,
- *  video support is turned off at compile time, but reference points
- *  into a movie clip)
- *
- * the fetched (or default) frame is added as invisible layer with alpha channel
- * on top of the layerstack in the specified image as orig_layer_id.
- * (an already existing orig_layer_id will be replaced if there exists one)
- *
- * If the orig_layer is up to date the fetch is not performed.
+
+/* --------------------------------------
+ * p_orig_layer_frame_fetcher
+ * --------------------------------------
  */
 static void
-p_create_or_replace_orig_layer (GapStbAttrWidget *attw
-                         , gint   img_idx
-                         , gint32 duration)
+p_orig_layer_frame_fetcher(GapStbAttrWidget *attw
+                    , gint32 master_framenr
+                    , gint32 image_id
+                    , gint32 *orig_layer_id_ptr
+                    , gint32 *derived_layer_id_ptr
+                    , GapStbAttrLayerInfo *linfo)
 {
    gint32     l_layer_id;
    char      *l_filename;
-   gint32     l_framenr;
 
 
    l_layer_id = -1;
    l_filename = NULL;
 
 
-   /* calculate the absolute frame number for the frame to access */
-   l_framenr = gap_story_get_framenr_by_story_id(attw->stb_refptr
-                                                ,attw->stb_elem_refptr->story_id
-                                                ,attw->stb_elem_refptr->track
-                                                );
-   /* stb_elem_refptr refers to the transition attribute stb_elem
-    */
-   l_framenr += duration;
-   p_update_framenr_labels(attw, img_idx, l_framenr);
-
    {
      GapStoryLocateRet *stb_ret;
 
-     stb_ret = gap_story_locate_framenr(attw->stb_refptr
-                                    , l_framenr
+     stb_ret = gap_story_locate_expanded_framenr(attw->stb_refptr
+                                    , master_framenr
                                     , attw->stb_elem_refptr->track
                                     );
      if(stb_ret)
@@ -1420,14 +1719,19 @@ p_create_or_replace_orig_layer (GapStbAttrWidget *attw
        if ((stb_ret->locate_ok)
        && (stb_ret->stb_elem))
        {
+         gboolean is_up_to_date;
+         
          l_filename = gap_story_get_filename_from_elem_nr(stb_ret->stb_elem
                                                 , stb_ret->ret_framenr
                                                );
-
-         if(p_check_orig_layer_up_to_date(attw
-                         , img_idx
-                         , stb_ret
-                         , l_filename) == TRUE)
+         is_up_to_date = p_check_orig_layer_up_to_date(image_id
+                             ,orig_layer_id_ptr
+                             ,derived_layer_id_ptr
+                             ,linfo
+                             ,stb_ret
+                             ,l_filename
+                             );
+         if(is_up_to_date)
          {
            g_free(stb_ret);
            if(l_filename)
@@ -1449,17 +1753,19 @@ p_create_or_replace_orig_layer (GapStbAttrWidget *attw
                 ,gap_story_get_preferred_decoder(attw->stb_refptr
                                                  ,stb_ret->stb_elem
                                                  )
-                ,attw->gfx_tab[img_idx].image_id
+                ,image_id
                 );
              if(l_layer_id > 0)
              {
-                attw->gfx_tab[img_idx].orig_layer_record_type = stb_ret->stb_elem->record_type;
-                attw->gfx_tab[img_idx].orig_layer_local_framenr = stb_ret->ret_framenr;
-                attw->gfx_tab[img_idx].orig_layer_seltrack = stb_ret->stb_elem->seltrack;
-                if (attw->gfx_tab[img_idx].orig_layer_filename != NULL)
+                l_layer_id = gap_layer_flip(l_layer_id, stb_ret->stb_elem->flip_request);
+
+                linfo->layer_record_type = stb_ret->stb_elem->record_type;
+                linfo->layer_local_framenr = stb_ret->ret_framenr;
+                linfo->layer_seltrack = stb_ret->stb_elem->seltrack;
+                if (linfo->layer_filename != NULL)
                 {
-                  g_free(attw->gfx_tab[img_idx].orig_layer_filename);
-                  attw->gfx_tab[img_idx].orig_layer_filename = g_strdup(l_filename);
+                  g_free(linfo->layer_filename);
+                  linfo->layer_filename = g_strdup(l_filename);
                 }
              }
            }
@@ -1470,17 +1776,19 @@ p_create_or_replace_orig_layer (GapStbAttrWidget *attw
             * TODO: anim frame and COLOR not handled
             */
            l_layer_id = p_fetch_imagefile_as_layer(l_filename
-                            ,attw->gfx_tab[img_idx].image_id
+                            ,image_id
                             );
            if(l_layer_id > 0)
            {
-              attw->gfx_tab[img_idx].orig_layer_record_type = stb_ret->stb_elem->record_type;
-              attw->gfx_tab[img_idx].orig_layer_local_framenr = 0;
-              attw->gfx_tab[img_idx].orig_layer_seltrack = 1;
-              if (attw->gfx_tab[img_idx].orig_layer_filename != NULL)
+              l_layer_id = gap_layer_flip(l_layer_id, stb_ret->stb_elem->flip_request);
+           
+              linfo->layer_record_type = stb_ret->stb_elem->record_type;
+              linfo->layer_local_framenr = 0;
+              linfo->layer_seltrack = 1;
+              if (linfo->layer_filename != NULL)
               {
-                g_free(attw->gfx_tab[img_idx].orig_layer_filename);
-                attw->gfx_tab[img_idx].orig_layer_filename = g_strdup(l_filename);
+                g_free(linfo->layer_filename);
+                linfo->layer_filename = g_strdup(l_filename);
               }
            }
          }
@@ -1489,27 +1797,148 @@ p_create_or_replace_orig_layer (GapStbAttrWidget *attw
      }
    }
 
-   attw->gfx_tab[img_idx].orig_layer_id = l_layer_id;
+   *orig_layer_id_ptr = l_layer_id;
    if(l_layer_id >= 0)
    {
-     attw->gfx_tab[img_idx].orig_layer_is_fake = FALSE;
+     linfo->layer_is_fake = FALSE;
    }
    else
    {
-     p_destroy_orig_layer(attw, img_idx);
+     p_destroy_orig_layer(image_id
+                       ,orig_layer_id_ptr
+                       ,derived_layer_id_ptr
+                       ,linfo
+                       );
    }
-
-   /* check if we have a valid orig layer, create it if have not
-    * (includes setting invisible)
-    */
-   p_check_and_make_orig_default_layer(attw, img_idx);
 
    if(l_filename)
    {
      g_free(l_filename);
    }
+}  /* end p_orig_layer_frame_fetcher */
 
-}       /* end p_create_or_replace_orig_layer */
+
+
+/* ---------------------------------------
+ * p_create_or_replace_orig_and_opre_layer
+ * ---------------------------------------
+ */
+static gint32
+p_calc_and_set_display_framenr(GapStbAttrWidget *attw
+                         , gint   img_idx
+                         , gint32 duration)
+{
+   gint32     l_framenr_start;
+   gint32     l_framenr;
+   gint32     l_prefetch_framenr;
+   gint32     l_dsiplay_framenr;
+
+   /* calculate the absolute frame number for the frame to access */
+   l_framenr_start = gap_story_get_framenr_by_story_id(attw->stb_refptr
+                                                ,attw->stb_elem_refptr->story_id
+                                                ,attw->stb_elem_refptr->track
+                                                );
+   /* stb_elem_refptr refers to the transition attribute stb_elem
+    */
+   l_framenr = l_framenr_start + MAX(0, (duration -1));
+   l_prefetch_framenr = -1;
+   l_dsiplay_framenr = l_framenr;
+
+   if(attw->stb_elem_refptr->att_overlap > 0)
+   {
+     l_prefetch_framenr = CLAMP((l_framenr - attw->stb_elem_refptr->att_overlap), 0, l_framenr_start);
+     
+     if(l_prefetch_framenr > 0)
+     {
+       l_dsiplay_framenr = l_prefetch_framenr;
+     }
+   }
+   p_update_framenr_labels(attw, img_idx, l_dsiplay_framenr);
+   
+   return (l_dsiplay_framenr);
+}  /* end p_calc_and_set_display_framenr */
+
+
+/* ---------------------------------------
+ * p_create_or_replace_orig_and_opre_layer
+ * ---------------------------------------
+ * fetch the frame that is refered by the stb_elem_refptr + duration (frames)
+ * If there is no frame found, use a default image.
+ * (possible reasons: duration refers behind valid frame range,
+ *  video support is turned off at compile time, but reference points
+ *  into a movie clip)
+ *
+ * the fetched (or default) frame is added as invisible layer with alpha channel
+ * on top of the layerstack in the specified image as orig_layer_id.
+ * (an already existing orig_layer_id will be replaced if there exists one)
+ *
+ * If the orig_layer is up to date the fetch is not performed.
+ *
+ * if overlapping is used (att_overap > 0) 
+ * we prefetch a 2.nd original (the opre_layer) that shall be rendered
+ * below the orig_layer. its position is current - att_overap
+ *
+ */
+static void
+p_create_or_replace_orig_and_opre_layer (GapStbAttrWidget *attw
+                         , gint   img_idx
+                         , gint32 duration)
+{
+   gint32     l_framenr_start;
+   gint32     l_framenr;
+   gint32     l_prefetch_framenr;
+
+   /* calculate the absolute expanded frame number for the frame to access
+    * (we operate with expanded frame number, where the track overlapping
+    * is ignored. this allows access to frames that otherwise were skipped due to
+    * overlapping in the shadow track)
+    */
+   l_framenr_start = gap_story_get_expanded_framenr_by_story_id(attw->stb_refptr
+                                                ,attw->stb_elem_refptr->story_id
+                                                ,attw->stb_elem_refptr->track
+                                                );
+   /* stb_elem_refptr refers to the transition attribute stb_elem
+    */
+   l_framenr = l_framenr_start + MAX(0, (duration -1));
+   l_prefetch_framenr = -1;
+
+   if(attw->stb_elem_refptr->att_overlap > 0)
+   {
+     l_prefetch_framenr = l_framenr - attw->stb_elem_refptr->att_overlap;
+   }
+
+   p_calc_and_set_display_framenr(attw, img_idx, duration );
+   
+   /* OPRE_LAYER (re)creation */
+   if(l_prefetch_framenr > 0)
+   {
+     p_orig_layer_frame_fetcher(attw
+                      , l_prefetch_framenr
+                      , attw->gfx_tab[img_idx].image_id
+                      ,&attw->gfx_tab[img_idx].opre_layer_id   /* orig_layer_id_ptr */
+                      ,&attw->gfx_tab[img_idx].pref_layer_id   /* derived_layer_id_ptr */
+                      ,&attw->gfx_tab[img_idx].opre_info       /* linfo */
+                      );
+   }
+   
+   p_check_and_make_opre_default_layer(attw, img_idx);
+
+
+   /* ORIG_LAYER (re)creation */
+   p_orig_layer_frame_fetcher(attw
+                    , l_framenr
+                    , attw->gfx_tab[img_idx].image_id
+                    ,&attw->gfx_tab[img_idx].orig_layer_id   /* orig_layer_id_ptr */
+                    ,&attw->gfx_tab[img_idx].curr_layer_id   /* derived_layer_id_ptr */
+                    ,&attw->gfx_tab[img_idx].orig_info       /* linfo */
+                    );
+   /* check if we have a valid orig layer, create it if have not
+    * (includes setting invisible)
+    */
+   p_check_and_make_orig_default_layer(attw, img_idx);
+
+
+}       /* end p_create_or_replace_orig_and_opre_layer */
 
 
 /* ---------------------------------
@@ -1699,6 +2128,19 @@ p_attw_comment_entry_update_cb(GtkWidget *widget, GapStbAttrWidget *attw)
     attw->stb_elem_refptr->comment->orig_src_line = g_strdup(gtk_entry_get_text(GTK_ENTRY(widget)));
   }
 }  /* end p_attw_comment_entry_update_cb */
+
+/* ---------------------------------------
+ * p_init_layer_info
+ * ---------------------------------------
+ */
+static void
+p_init_layer_info(GapStbAttrLayerInfo *linfo)
+{
+  linfo->layer_record_type = GAP_STBREC_VID_UNKNOWN;
+  linfo->layer_local_framenr = -1;
+  linfo->layer_seltrack = -1;
+  linfo->layer_filename = NULL;
+}  /* end p_init_layer_info */
 
 
 /* -----------------------------------
@@ -1918,7 +2360,7 @@ p_create_and_attach_att_arr_widgets(const char *row_title
 
   col++;
 
-  /* the From value spinbutton */
+  /* From (Start value of transition) button */
   adj = gtk_adjustment_new ( *att_arr_value_from_ptr * CONVERT_TO_100PERCENT
                            , lower_constraint
                            , upper_constraint
@@ -1944,7 +2386,7 @@ p_create_and_attach_att_arr_widgets(const char *row_title
 
   col++;
 
-  /* to label */
+  /* to (end value of transition) button */
   button = gtk_button_new_with_label(_("End:"));
   attw->att_rows[att_type_idx].button_to = button;
   gtk_table_attach(GTK_TABLE (table), button, col, col+1, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
@@ -1987,7 +2429,7 @@ p_create_and_attach_att_arr_widgets(const char *row_title
 
   col++;
 
-  /* Frames Duration label */
+  /* Frames Duration button */
   button = gtk_button_new_with_label(_("Frames:"));
   attw->att_rows[att_type_idx].button_dur = button;
   gtk_table_attach(GTK_TABLE (table), button, col, col+1, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
@@ -2066,6 +2508,7 @@ gap_story_attw_properties_dialog (GapStbAttrWidget *attw)
                          ,NULL, 0
                          ,gimp_standard_help_func, GAP_STORY_ATTR_PROP_HELP_ID
 
+                         ,GAP_STOCK_PLAY,   GAP_STORY_ATT_RESPONSE_PLAYBACK
                          ,GIMP_STOCK_RESET, GAP_STORY_ATT_RESPONSE_RESET
                          ,GTK_STOCK_CLOSE,  GTK_RESPONSE_CLOSE
                          ,NULL);
@@ -2076,6 +2519,7 @@ gap_story_attw_properties_dialog (GapStbAttrWidget *attw)
                          ,NULL, 0
                          ,gimp_standard_help_func, GAP_STORY_ATTR_PROP_HELP_ID
 
+                         ,GAP_STOCK_PLAY,   GAP_STORY_ATT_RESPONSE_PLAYBACK
                          ,GTK_STOCK_CLOSE,  GTK_RESPONSE_CLOSE
                          ,NULL);
   }
@@ -2096,7 +2540,7 @@ gap_story_attw_properties_dialog (GapStbAttrWidget *attw)
   gtk_box_pack_start (GTK_BOX (main_vbox), frame, FALSE, FALSE, 0);
   gtk_widget_show (frame);
 
-  table = gtk_table_new (15, 10, FALSE);
+  table = gtk_table_new (16, 10, FALSE);
   attw->master_table = table;
   gtk_container_set_border_width (GTK_CONTAINER (table), 4);
   gtk_table_set_col_spacings (GTK_TABLE (table), 4);
@@ -2105,6 +2549,8 @@ gap_story_attw_properties_dialog (GapStbAttrWidget *attw)
   gtk_widget_show (table);
 
   row = 0;
+
+  
   /* the fit size label  */
   label = gtk_label_new (_("FitSize:"));
   gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
@@ -2170,6 +2616,55 @@ gap_story_attw_properties_dialog (GapStbAttrWidget *attw)
                     &attw->stb_elem_refptr->att_keep_proportions);
 
 
+  /* overlap attributes */
+  {
+    GtkObject *adj;
+    GtkWidget *spinbutton;
+    GtkWidget *button;
+    
+    /* the overlap label (same row as FitSize) */
+    label = gtk_label_new (_("Overlap:"));
+    gtk_misc_set_alignment (GTK_MISC (label), 0.9, 0.5);
+    gtk_table_attach_defaults (GTK_TABLE(table), label, 5, 6, row, row+1);
+    gtk_widget_show (label);
+
+
+    /* Frames Overlap duration button */
+    button = gtk_button_new_with_label(_("Frames:"));
+    attw->button_overlap_dur = button;
+    gtk_table_attach(GTK_TABLE (table), button, 6, 7, row, row + 1, GTK_FILL, GTK_FILL, 0, 0);
+    gimp_help_set_help_data(button, _("Copy this number of frames to all enabled rows"), NULL);
+    gtk_widget_show(button);
+
+    g_signal_connect (G_OBJECT (button), "button_press_event",
+                      G_CALLBACK (p_attw_overlap_dur_button_clicked_callback),
+                      (gpointer)attw);
+
+
+    /* the frames overlap duration value spinbutton */
+    adj = gtk_adjustment_new ( attw->stb_elem_refptr->att_overlap
+                             , 0
+                             , 999999
+                             , 1
+                             , 10
+                             , 10
+                             );
+    spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
+    attw->spinbutton_overlap_dur_adj = adj;
+    attw->spinbutton_overlap_dur = spinbutton;
+
+    gtk_widget_show (spinbutton);
+    gtk_table_attach (GTK_TABLE (table), spinbutton, 7, 8, row, row+1,
+                      (GtkAttachOptions) (0),
+                      (GtkAttachOptions) (0), 0, 0);
+    gtk_widget_set_size_request (spinbutton, 80, -1);
+    gimp_help_set_help_data (spinbutton, _("Number of overlapping frames within this track"), NULL);
+
+    g_object_set_data(G_OBJECT(adj), OBJ_DATA_KEY_ATTW, attw);
+    g_signal_connect (G_OBJECT (adj), "value_changed",
+                        G_CALLBACK (p_attw_duration_adjustment_callback),
+                        &attw->stb_elem_refptr->att_overlap);
+  }  /* end overlap attributes */
 
   row++;
 
@@ -2432,13 +2927,12 @@ gap_story_att_stb_elem_properties_dialog ( GapStbTabWidgets *tabw
   attw->sgpp = tabw->sgpp;
   attw->tabw = tabw;
   attw->go_timertag = -1;
+  attw->timer_full_update_request = FALSE;
   for (ii=0; ii < GAP_STB_ATT_GFX_ARRAY_MAX; ii++)
   {
     attw->gfx_tab[ii].auto_update = FALSE;
-    attw->gfx_tab[ii].orig_layer_record_type = GAP_STBREC_VID_UNKNOWN;
-    attw->gfx_tab[ii].orig_layer_local_framenr = -1;
-    attw->gfx_tab[ii].orig_layer_seltrack = -1;
-    attw->gfx_tab[ii].orig_layer_filename = NULL;
+    p_init_layer_info(&attw->gfx_tab[ii].opre_info);
+    p_init_layer_info(&attw->gfx_tab[ii].orig_info);
   }
 
   attw->gfx_tab[1].auto_update = FALSE;

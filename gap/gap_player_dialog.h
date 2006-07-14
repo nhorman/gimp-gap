@@ -48,6 +48,9 @@ void    gap_player_dlg_restart(GapPlayerMainGlobalParams *gpp
 		      , gdouble delace
 		      , const char *preferred_decoder
 		      , gboolean  force_open_as_video
+                      , gint32 flip_request
+                      , gint32 flip_status
+                      , gint32 stb_in_track
 		      );
 
 void    gap_player_dlg_playback_dialog(GapPlayerMainGlobalParams *gpp);

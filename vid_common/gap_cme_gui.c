@@ -103,14 +103,14 @@ static gint            p_overwrite_dialog(GapCmeGlobalParams *gpp, gchar *filena
 static GapGveEncList*  pdb_find_video_encoders(void);
 static void            p_replace_combo_encodername(GapCmeGlobalParams *gpp);
 static void            p_get_range_from_type (GapCmeGlobalParams *gpp
-                           , GapGveTypeInputRange range_type
+                           , GapLibTypeInputRange range_type
 			   , gint32 *lower
                            , gint32 *upper
                            );
 static void            p_get_range_and_type (GapCmeGlobalParams *gpp
                            , gint32 *lower
                            , gint32 *upper
-                           , GapGveTypeInputRange *range_type);
+                           , GapLibTypeInputRange *range_type);
 static void            p_print_storyboard_text_label(GapCmeGlobalParams *gpp, char *msg);
 static void            p_print_time_label( GtkLabel *lbl, gint32   tmsec);
 static gint32          p_update_aud_info (GapCmeGlobalParams *gpp
@@ -121,7 +121,7 @@ static gint32          p_update_aud_info (GapCmeGlobalParams *gpp
 static void            p_range_widgets_set_limits(GapCmeGlobalParams *gpp
                            , gint32 lower_limit
                            , gint32 upper_limit
-                           , GapGveTypeInputRange range_type);
+                           , GapLibTypeInputRange range_type);
 static void            p_init_shell_window_widgets (GapCmeGlobalParams *gpp);
 static void            p_status_progress(GapCmeGlobalParams *gpp, t_global_stb *gstb);
 static void            p_storybord_job_finished(GapCmeGlobalParams *gpp, t_global_stb *gstb);
@@ -671,7 +671,7 @@ p_replace_combo_encodername(GapCmeGlobalParams *gpp)
  */
 static void
 p_get_range_from_type (GapCmeGlobalParams *gpp
-                           , GapGveTypeInputRange range_type
+                           , GapLibTypeInputRange range_type
 			   , gint32 *lower
                            , gint32 *upper
                            )
@@ -717,22 +717,26 @@ p_get_range_from_type (GapCmeGlobalParams *gpp
  * ----------------------------------------
  */
 static void
-p_get_range_and_type (GapCmeGlobalParams *gpp, gint32 *lower, gint32 *upper, GapGveTypeInputRange *range_type)
+p_get_range_and_type (GapCmeGlobalParams *gpp, gint32 *lower, gint32 *upper, GapLibTypeInputRange *range_type)
 
 {
+  gint32 l_frame_cnt;
+  
  /* Range limits for widgets "cme__spinbutton_from" and "cme__spinbutton_to"
   * If there is just one frame, we operate on layers
   */
- if(gpp->ainfo.last_frame_nr - gpp->ainfo.first_frame_nr == 0)
- {
-   *range_type = GAP_RNGTYPE_LAYER;
- }
- else
- {
-   *range_type = GAP_RNGTYPE_FRAMES;
- }
 
- p_get_range_from_type(gpp, *range_type, lower, upper);
+  l_frame_cnt = abs(gpp->ainfo.last_frame_nr - gpp->ainfo.first_frame_nr);
+  if(l_frame_cnt > 1)
+  {
+    *range_type = GAP_RNGTYPE_FRAMES;
+  }
+  else
+  {
+    *range_type = GAP_RNGTYPE_LAYER;
+  }
+
+  p_get_range_from_type(gpp, *range_type, lower, upper);
 
 }   /* end p_get_range_and_type */
 
@@ -1106,7 +1110,7 @@ static void
 p_range_widgets_set_limits(GapCmeGlobalParams *gpp
                           , gint32 lower_limit
                           , gint32 upper_limit
-                          , GapGveTypeInputRange range_type)
+                          , GapLibTypeInputRange range_type)
 {
   GtkAdjustment *adj;
   gchar *lbl_text;
@@ -1197,7 +1201,7 @@ p_init_shell_window_widgets (GapCmeGlobalParams *gpp)
 
  /* widgets "cme__spinbutton_from" and "cme__spinbutton_to" */
  {
-   GapGveTypeInputRange l_rangetype;
+   GapLibTypeInputRange l_rangetype;
    gint32  l_first_frame_limit;
    gint32  l_last_frame_nr;
 
@@ -1565,7 +1569,7 @@ p_thread_storyboard_file(gpointer data)
   GapGveStoryVidHandle *vidhand;
   gint32                l_first_frame_limit;
   gint32                l_last_frame_nr;
-  GapGveTypeInputRange  l_rangetype;
+  GapLibTypeInputRange  l_rangetype;
   gdouble               l_aud_total_sec;
   gboolean              l_create_audio_tmp_files;
 
@@ -1722,7 +1726,7 @@ gap_cme_gui_check_storyboard_file(GapCmeGlobalParams *gpp)
    t_global_stb    *gstb;
   gint32 l_first_frame_limit;
   gint32 l_last_frame_nr;
-  GapGveTypeInputRange l_rangetype;
+  GapLibTypeInputRange l_rangetype;
 
   gstb = &global_stb;
   p_get_range_and_type (gpp, &l_first_frame_limit, &l_last_frame_nr, &l_rangetype);
@@ -2265,9 +2269,9 @@ create_ow__dialog (GapCmeGlobalParams *gpp)
 static void
 p_input_mode_radio_callback(GtkWidget *widget, GapCmeGlobalParams *gpp)
 {
-  GapGveTypeInputRange l_rangetype;
+  GapLibTypeInputRange l_rangetype;
 
-  l_rangetype = (GapGveTypeInputRange) g_object_get_data (G_OBJECT (widget)
+  l_rangetype = (GapLibTypeInputRange) g_object_get_data (G_OBJECT (widget)
                                                         , RADIO_ITEM_INDEX_KEY);
 
 
@@ -3551,7 +3555,7 @@ gint32
 gap_cme_gui_master_encoder_dialog(GapCmeGlobalParams *gpp)
 {
   t_global_stb    *gstb;
-  GapGveTypeInputRange l_rangetype;
+  GapLibTypeInputRange l_rangetype;
 
   if(gap_debug) printf("gap_cme_gui_master_encoder_dialog: Start\n");
 

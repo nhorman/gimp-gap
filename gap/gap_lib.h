@@ -51,62 +51,8 @@
 #define _GAP_LIB_H
 
 #include "libgimp/gimp.h"
+#include "gap_lib_common_defs.h"
 
-/* G_DIR_SEPARATOR (is defined in glib.h if you have glib-1.2.0 or later) */
-#ifdef G_OS_WIN32
-
-/* Filenames in WIN/DOS Style */
-#ifndef G_DIR_SEPARATOR
-#define G_DIR_SEPARATOR '\\'
-#endif
-#define DIR_ROOT ':'
-
-#else  /* !G_OS_WIN32 */
-
-/* Filenames in UNIX Style */
-#ifndef G_DIR_SEPARATOR
-#define G_DIR_SEPARATOR '/'
-#endif
-#define DIR_ROOT '/'
-
-#endif /* !G_OS_WIN32 */
-
-/* GapLibAinfoType enum values are subset of GapStoryRecordType
- * from the sourcefile gap_story_file.h
- */
-typedef enum
-{
-     GAP_AINFO_UNUSED_1
-    ,GAP_AINFO_UNUSED_2
-    ,GAP_AINFO_IMAGE
-    ,GAP_AINFO_ANIMIMAGE    
-    ,GAP_AINFO_FRAMES
-    ,GAP_AINFO_MOVIE
-    ,GAP_AINFO_UNUSED_3
-    ,GAP_AINFO_UNKNOWN
-} GapLibAinfoType;
-
-
-typedef struct GapAnimInfo {
-   gint32      image_id;
-   char        *basename;    /* may include path */
-   long         frame_nr; 
-   char        *extension;
-   char        *new_filename;
-   char        *old_filename;
-   GimpRunMode run_mode;
-   long         width;       
-   long         height;      
-   long         frame_cnt;   
-   long         curr_frame_nr; 
-   long         first_frame_nr; 
-   long         last_frame_nr;
-   
-   GapLibAinfoType  ainfo_type;
-   gint32           seltrack;    /* input videotrack (used only for GAP_AINFO_MOVIE) */
-   gdouble          delace;      /* deinterlace params (used only for GAP_AINFO_MOVIE) */
-   gdouble          density;     
-} GapAnimInfo;
 
 /* procedures used in other gap*.c files */
 char *       gap_lib_shorten_filename(const char *prefix
@@ -158,13 +104,6 @@ gint32   gap_lib_replace_image(GapAnimInfo *ainfo_ptr);
 
 void     gap_lib_fprintf_gdouble(FILE *fp, gdouble value, gint digits, gint precision_digits, const char *pfx);
 gint     gap_lib_sscan_flt_numbers(gchar *buf, gdouble *farr, gint farr_max);
-
-#define  GAP_VID_PASTE_REPLACE         0
-#define  GAP_VID_PASTE_INSERT_BEFORE   1
-#define  GAP_VID_PASTE_INSERT_AFTER    2
-
-#define  GAP_LIB_MAX_DIGITS     8
-#define  GAP_LIB_DEFAULT_DIGITS 6
 
 #endif
 

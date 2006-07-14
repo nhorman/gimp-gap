@@ -1,11 +1,12 @@
 /* gap_gve_story.h
  *
  *  GAP common encoder tool procedures
- *  for storyboard_file handling.
+ *  for storyboard processing and rendering.
  *
  */
 
 /*
+ * 2006.06.25  hof  - moved functionality to gap/gap_story_render_processor
  * 2005.01.12  hof  - audio processing has new flag: create_audio_tmp_files
  *                  - no more checks and constraints for valid video/audio ranges
  *                    adressing illegal range delivers black frames (or audio silence)
@@ -43,373 +44,46 @@
 #include "libgimp/gimp.h"
 #include "gap_vid_api.h"
 #include "gap_story_file.h"
-
-/* G_DIR_SEPARATOR (is defined in glib.h if you have glib-1.2.0 or later) */
-#ifdef G_OS_WIN32
-
-/* Filenames in WIN/DOS Style */
-#ifndef G_DIR_SEPARATOR
-#define G_DIR_SEPARATOR '\\'
-#endif
-#define DIR_ROOT ':'
-
-#else  /* !G_OS_WIN32 */
-
-/* Filenames in UNIX Style */
-#ifndef G_DIR_SEPARATOR
-#define G_DIR_SEPARATOR '/'
-#endif
-#define DIR_ROOT '/'
-
-#endif /* !G_OS_WIN32 */
+#include "gap_story_render_processor.h"
 
 
-/* record keynames in Storyboard files */
-#define STORYBOARD_HEADER                "STORYBOARDFILE"
-#define CLIPLISTFILE_HEADER              "CLIPLISTFILE"
-#define STORYBOARD_VID_MASTER_SIZE       "VID_MASTER_SIZE"
-#define STORYBOARD_VID_MASTER_FRAMERATE  "VID_MASTER_FRAMERATE"
-#define STORYBOARD_VID_PREFERRED_DECODER "VID_PREFERRED_DECODER"
+/* --------------------------*/
+/* Data Type DLARATIONS      */
+/* --------------------------*/
+/* old type names are still supported via defines */
 
-#define STORYBOARD_VID_PLAY_MOVIE        "VID_PLAY_MOVIE"
-#define STORYBOARD_VID_PLAY_FRAMES       "VID_PLAY_FRAMES"
-#define STORYBOARD_VID_PLAY_ANIMIMAGE    "VID_PLAY_ANIMIMAGE"
-#define STORYBOARD_VID_PLAY_IMAGE        "VID_PLAY_IMAGE"
-#define STORYBOARD_VID_PLAY_COLOR        "VID_PLAY_COLOR"
-#define STORYBOARD_VID_SILENCE           "VID_SILENCE"
-#define STORYBOARD_VID_OPACITY           "VID_OPACITY"
-#define STORYBOARD_VID_ZOOM_X            "VID_ZOOM_X"
-#define STORYBOARD_VID_ZOOM_Y            "VID_ZOOM_Y"
-#define STORYBOARD_VID_MOVE_X            "VID_MOVE_X"
-#define STORYBOARD_VID_MOVE_Y            "VID_MOVE_Y"
-#define STORYBOARD_VID_FIT_SIZE          "VID_FIT_SIZE"
-
-#define STORYBOARD_AUD_MASTER_VOLUME     "AUD_MASTER_VOLUME"
-#define STORYBOARD_AUD_MASTER_SAMPLERATE "AUD_MASTER_SAMPLERATE"
-#define STORYBOARD_AUD_PLAY_SOUND        "AUD_PLAY_SOUND"
-#define STORYBOARD_AUD_PLAY_MOVIE        "AUD_PLAY_MOVIE"
-#define STORYBOARD_AUD_SILENCE           "AUD_SILENCE"
-
-
-#define GAP_VID_ENC_SAVE_MULTILAYER   "GAP_VID_ENC_SAVE_MULTILAYER"
-#define GAP_VID_ENC_SAVE_FLAT         "GAP_VID_ENC_SAVE_FLAT"
-#define GAP_VID_ENC_MONITOR           "GAP_VID_ENC_MONITOR"
-
-
-typedef enum
-{
-   GAP_FRN_SILENCE
-  ,GAP_FRN_COLOR
-  ,GAP_FRN_IMAGE
-  ,GAP_FRN_ANIMIMAGE
-  ,GAP_FRN_FRAMES
-  ,GAP_FRN_MOVIE
-} GapGveStoryFrameType;
-
-typedef enum
-{
-   GAP_AUT_SILENCE
-  ,GAP_AUT_AUDIOFILE
-  ,GAP_AUT_MOVIE
-} GapGveStoryAudioType;
-
-
-typedef struct GapGveStoryImageCacheElem
-{
-   gint32  image_id;
-   char   *filename;
-   void *next;
-} GapGveStoryImageCacheElem;
-
-typedef struct GapGveStoryImageCache
-{
-  GapGveStoryImageCacheElem *ic_list;
-  gint32            max_img_cache;  /* number of images to hold in the cache */
-} GapGveStoryImageCache;
-
-
-
-typedef struct GapGveStoryAudioCacheElem
-{
-   gint32  audio_id;
-   char   *filename;
-   guchar *aud_data;   /* full audiodata (including header) loaded in memory */
-   gint32 aud_bytelength;
-
-   gint32 segment_startoffset;
-   gint32 segment_bytelength;
-
-   void *next;
-} GapGveStoryAudioCacheElem;
-
-typedef struct GapGveStoryAudioCache
-{
-  GapGveStoryAudioCacheElem *ac_list;
-  gint32 nextval_audio_id;
-  gint32            max_aud_cache;  /* number of images to hold in the cache */
-} GapGveStoryAudioCache;
-
-
-
-typedef struct GapGveStoryFrameRangeElem
-{
-   GapGveStoryFrameType  frn_type;
-   gint32  track;
-   gint32  last_master_frame_access;
-   char   *basename;
-   char   *ext;
-   t_GVA_Handle *gvahand;     /* API handle for videofile (for GAP_FRN_MOVIE) */
-   gint32        seltrack;    /* selected videotrack in a videofile (for GAP_FRN_MOVIE) */
-   gint32        exact_seek;  /* 0 fast seek, 1 exact seek (for GAP_FRN_MOVIE) */
-   gdouble       delace;      /* 0.0 no deinterlace, 1.0-1.99 odd 2.0-2.99 even rows  (for GAP_FRN_MOVIE) */
-   char   *filtermacro_file;
-   gint32  frame_from;
-   gint32  frame_to;
-   gint32  frame_first;
-   gint32  frame_last;
-   gint32  frames_to_handle;
-   gint32  frame_cnt;
-   gint32  delta;               /* +1 or -1 */
-   gdouble step_density;        /* 1==normal stepsize 1:1   0.5 == each frame twice, 2.0 only every 2nd frame */
-   gdouble red_f;
-   gdouble green_f;
-   gdouble blue_f;
-   gdouble alpha_f;
-
-   gdouble  alpha_proportional; /* 0.0 upto 1.0 */
-   gboolean keep_proportions;
-   gboolean fit_width;
-   gboolean fit_height;
-
-   gdouble  wait_untiltime_sec;
-   gint32   wait_untilframes;
-
-   gdouble opacity_from;       /* 0.0 upto 1.0 */
-   gdouble opacity_to;         /* 0.0 upto 1.0 */
-   gint32  opacity_dur;        /* number of frames to change from -> to value */
-
-   gdouble scale_x_from;       /* 0.0 upto 10.0  where 1.0 is fit video size */
-   gdouble scale_x_to;         /* 0.0 upto 10.0  where 1.0 is fit video size */
-   gint32  scale_x_dur;        /* number of frames to change from -> to value */
-
-   gdouble scale_y_from;       /* 0.0 upto 10.0  where 1.0 is fit video size */
-   gdouble scale_y_to;         /* 0.0 upto 10.0  where 1.0 is fit video size */
-   gint32  scale_y_dur;        /* number of frames to change from -> to value */
-
-   gdouble move_x_from;        /* -1.0 upto 1.0 where 0 is center and -1.0 left outside */
-   gdouble move_x_to;          /* -1.0 upto 1.0 where 0 is center and -1.0 left outside */
-   gint32  move_x_dur;         /* number of frames to change from -> to value */
-
-   gdouble move_y_from;        /* -1.0 upto 1.0 where 0 is center and -1.0 up outside */
-   gdouble move_y_to;          /* -1.0 upto 1.0 where 0 is center and -1.0 up outside */
-   gint32  move_y_dur;         /* number of frames to change from -> to value */
-
-   void   *next;
-} GapGveStoryFrameRangeElem;  /* used for storyboard processing */
-
-
-typedef struct GapGveStoryAudioRangeElem
-{
-   GapGveStoryAudioType  aud_type;
-   gint32    track;
-   char     *audiofile;
-   char     *tmp_audiofile;
-   t_GVA_Handle *gvahand;           /* API handle for videofile (for GAP_AUT_MOVIE) */
-   gint32        seltrack;          /* selected audiotrack in a videofile (for GAP_AUT_MOVIE) */
-   gint32   samplerate;             /* samples per sec */
-   gint32   channels;               /* 1 mono, 2 stereo */
-   gint32   bytes_per_sample;
-   gint32   samples;
-   gdouble  max_playtime_sec;
-
-   gdouble  wait_untiltime_sec;
-   gint32   wait_until_samples;
-
-   gdouble  range_playtime_sec;
-   gdouble  play_from_sec;
-   gdouble  play_to_sec;
-   gdouble  volume_start;
-   gdouble  volume;
-   gdouble  volume_end;
-   gdouble  fade_in_sec;
-   gdouble  fade_out_sec;
-
-   gint32 audio_id;               /* audio cache id */
-   GapGveStoryAudioCacheElem *ac_elem;
-   guchar *aud_data;
-   gint32 aud_bytelength;
-   gint32 range_samples;          /* number of samples in the selected range (sample has upto 4 bytes) */
-   gint32 fade_in_samples;
-   gint32 fade_out_samples;
-   gint32 byteoffset_rangestart;
-   gint32 byteoffset_data;
-
-   void   *next;
-} GapGveStoryAudioRangeElem;  /* used for storyboard processing */
-
-
-typedef struct GapGveStoryVTrackAttrElem
-{
-   gint32  frame_count;
-
-   gdouble  alpha_proportional; /* 0.0 upto 1.0 */
-   gboolean keep_proportions;
-   gboolean fit_width;
-   gboolean fit_height;
-
-   gdouble opacity_from;       /* 0.0 upto 1.0 */
-   gdouble opacity_to;         /* 0.0 upto 1.0 */
-   gint32  opacity_dur;        /* number of frames to change from -> to value */
-
-   gdouble scale_x_from;       /* 0.0 upto 10.0  where 1.0 is fit video size */
-   gdouble scale_x_to;         /* 0.0 upto 10.0  where 1.0 is fit video size */
-   gint32  scale_x_dur;        /* number of frames to change from -> to value */
-
-   gdouble scale_y_from;       /* 0.0 upto 10.0  where 1.0 is fit video size */
-   gdouble scale_y_to;         /* 0.0 upto 10.0  where 1.0 is fit video size */
-   gint32  scale_y_dur;        /* number of frames to change from -> to value */
-
-   gdouble move_x_from;        /* -1.0 upto 1.0 where 0 is center and -1.0 left outside */
-   gdouble move_x_to;          /* -1.0 upto 1.0 where 0 is center and -1.0 left outside */
-   gint32  move_x_dur;         /* number of frames to change from -> to value */
-
-   gdouble move_y_from;        /* -1.0 upto 1.0 where 0 is center and -1.0 up outside */
-   gdouble move_y_to;          /* -1.0 upto 1.0 where 0 is center and -1.0 up outside */
-   gint32  move_y_dur;         /* number of frames to change from -> to value */
-
-} GapGveStoryVTrackAttrElem;  /* Video track attributes used for storyboard processing */
-
-typedef struct GapGveStoryVTrackArray
-{
-  GapGveStoryVTrackAttrElem attr[GAP_STB_MAX_VID_TRACKS];
-  gint32 max_tracknum;
-} GapGveStoryVTrackArray;  /* used for storyboard processing */
-
-
-typedef struct GapGveStoryErrors
-{
-  char   *errtext;       /* NULL==no error */
-  char   *errline;       /* NULL, or copy of the line that has the 1. error */
-  gint32  errline_nr;    /* line number where 1.st error occurred */
-  char   *warntext;      /* NULL==no error */
-  char   *warnline;      /* NULL, or copy of the line that has the 1. error */
-  gint32  warnline_nr;   /* line number where 1.st error occurred */
-  gint32  curr_nr;       /* current line nr while parsing */
-  char   *currline;      /* pointer to currently parsed line (do not free this) */
-} GapGveStoryErrors;  /* used for storyboard processing */
-
-typedef struct GapGveStoryVidHandle
-{
-  GapGveStoryFrameRangeElem    *frn_list;
-  GapGveStoryAudioRangeElem    *aud_list;
-  GapGveStoryErrors            *sterr;
-  char                         *preferred_decoder;
-
-  /* master video settings found in the storyboard file */
-  gdouble  master_framerate;
-  gint32   master_width;
-  gint32   master_height;
-  gint32   master_samplerate;
-  gdouble  master_volume;
-
-  char    *util_sox;
-  char    *util_sox_options;
-
-  gboolean ignore_audio;
-  gboolean ignore_video;
-  gboolean create_audio_tmp_files;
-
-  gboolean   cancel_operation;   /* not supported yet */
-  gdouble    *progress;
-  gboolean   do_gimp_progress;   /* pass this to GVA gvahand->do_gimp_progress (to show video seek progress) */
-  gchar      *status_msg;
-  gint32     status_msg_len;
-
-} GapGveStoryVidHandle;  /* used for storyboard processing */
+#define GapGveStoryFrameType            GapStoryRenderFrameType
+#define GapGveStoryAudioType            GapStoryRenderAudioType
+#define GapGveStoryImageCacheElem       GapStoryRenderImageCacheElem
+#define GapGveStoryImageCache           GapStoryRenderImageCache
+#define GapGveStoryAudioCacheElem       GapStoryRenderAudioCacheElem
+#define GapGveStoryAudioCache           GapStoryRenderAudioCache
+#define GapGveStoryFrameRangeElem       GapStoryRenderFrameRangeElem
+#define GapGveStoryAudioRangeElem       GapStoryRenderAudioRangeElem
+#define GapGveStoryVTrackAttrElem       GapStoryRenderVTrackAttrElem
+#define GapGveStoryVTrackArray          GapStoryRenderVTrackArray
+#define GapGveStoryErrors               GapStoryRenderErrors
+#define GapGveStoryVidHandle            GapStoryRenderVidHandle
 
 
 /* --------------------------*/
 /* PROCEDURE DECLARATIONS    */
 /* --------------------------*/
+/* old procedure names are still supported via defines */
 
-void     gap_gve_story_debug_print_framerange_list(GapGveStoryFrameRangeElem *frn_list
-                             , gint32 track                    /* -1 show all tracks */
-                             );
-void     gap_gve_story_debug_print_audiorange_list(GapGveStoryAudioRangeElem *aud_list
-                             , gint32 track                    /* -1 show all tracks */
-                             );
+#define gap_gve_story_debug_print_framerange_list           gap_story_render_debug_print_framerange_list
+#define gap_gve_story_debug_print_audiorange_list           gap_story_render_debug_print_audiorange_list
+#define gap_gve_story_drop_image_cache                      gap_story_render_drop_image_cache
+#define gap_gve_story_remove_tmp_audiofiles                 gap_story_render_remove_tmp_audiofiles
+#define gap_gve_story_drop_audio_cache                      gap_story_render_drop_audio_cache
+#define gap_gve_story_fetch_composite_image                 gap_story_render_fetch_composite_image
+#define gap_gve_story_fetch_composite_image_or_chunk        gap_story_render_fetch_composite_image_or_chunk
+#define gap_gve_story_open_vid_handle                       gap_story_render_open_vid_handle
+#define gap_gve_story_open_extended_video_handle            gap_story_render_open_extended_video_handle
+#define gap_gve_story_close_vid_handle                      gap_story_render_close_vid_handle
+#define gap_gve_story_set_audio_resampling_program          gap_story_render_set_audio_resampling_program
+#define gap_gve_story_calc_audio_playtime                   gap_story_render_calc_audio_playtime
+#define gap_gve_story_create_composite_audiofile            gap_story_render_create_composite_audiofile
 
-
-void     gap_gve_story_drop_image_cache(void);
-
-void     gap_gve_story_remove_tmp_audiofiles(GapGveStoryVidHandle *vidhand);
-void     gap_gve_story_drop_audio_cache(void);
-
-
-
-gint32   gap_gve_story_fetch_composite_image(GapGveStoryVidHandle *vidhand
-                    , gint32 master_frame_nr  /* starts at 1 */
-                    , gint32  vid_width       /* desired Video Width in pixels */
-                    , gint32  vid_height      /* desired Video Height in pixels */
-                    , char *filtermacro_file  /* NULL if no filtermacro is used */
-                    , gint32 *layer_id        /* output: Id of the only layer in the composite image */
-                 );
-
-gboolean gap_gve_story_fetch_composite_image_or_chunk(GapGveStoryVidHandle *vidhand
-                    , gint32 master_frame_nr  /* starts at 1 */
-                    , gint32  vid_width       /* desired Video Width in pixels */
-                    , gint32  vid_height      /* desired Video Height in pixels */
-                    , char *filtermacro_file  /* NULL if no filtermacro is used */
-                    , gint32 *layer_id        /* output: Id of the only layer in the composite image */
-
-                    , gint32 *image_id        /* output: Id of the only layer in the composite image */
-                    , gboolean dont_recode_flag                /* IN: TRUE try to fetch comressed chunk if possible */
-                    , char *vcodec_name                        /* IN: video_codec used in the calling encoder program */
-                    , gboolean *force_keyframe                 /* OUT: the calling encoder should encode an I-Frame */
-                    , unsigned char *video_frame_chunk_data    /* OUT: */
-                    , gint32 *video_frame_chunk_size           /* OUT: */
-                    , gint32 video_frame_chunk_maxsize         /* IN: */
-                    , gdouble master_framerate
-                    , gint32  max_master_frame_nr   /* the number of frames that will be encode in total */
-                 );
-
-GapGveStoryVidHandle *  gap_gve_story_open_vid_handle(
-			   GapGveTypeInputRange input_mode
-			  ,gint32 image_id 
-                          ,const char *storyboard_file
-                          ,const char *basename
-                          ,const char *ext
-                          ,gint32  frame_from
-                          ,gint32  frame_to
-                          ,gint32 *frame_count   /* output total frame_count , or 0 on failure */
-                          );
-
-GapGveStoryVidHandle *  gap_gve_story_open_extended_video_handle(
-                           gboolean ignore_audio
-                          ,gboolean igore_video
-			  ,gboolean create_audio_tmp_files
-                          ,gdouble  *progress_ptr
-                          ,char *status_msg
-                          ,gint32 status_msg_len
-			  ,GapGveTypeInputRange input_mode
-                          ,const char *imagename
-                          ,const char *storyboard_file
-                          ,const char *basename
-                          ,const char *ext
-                          ,gint32  frame_from
-                          ,gint32  frame_to
-                          ,gint32 *frame_count   /* output total frame_count , or 0 on failure */
-                          );
-
-void    gap_gve_story_close_vid_handle(GapGveStoryVidHandle *vidhand);
-void    gap_gve_story_set_audio_resampling_program(
-                           GapGveStoryVidHandle *vidhand
-                           , char *util_sox
-                           , char *util_sox_options
-                           );
-void      gap_gve_story_calc_audio_playtime(GapGveStoryVidHandle *vidhand, gdouble *aud_total_sec);
-gboolean  gap_gve_story_create_composite_audiofile(GapGveStoryVidHandle *vidhand
-                            , char *comp_audiofile
-                            );
 
 #endif        /* GAP_GVE_STORY_H */

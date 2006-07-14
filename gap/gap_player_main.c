@@ -41,6 +41,7 @@
 #include <libgimp/gimpui.h>
 
 #include "gap_player_main.h"
+#include "gap_player_cache.h"
 #include "gap_player_dialog.h"
 #include "gap_story_file.h"
 #include "gap_pview_da.h"
@@ -190,6 +191,26 @@ static GapPlayerMainGlobalParams global_params =
 , NULL        /* cancel_vindex_button */
 , NULL        /* help_id */
 , FALSE       /* onion_delete */
+
+, NULL        /* cache_size_spinbutton_adj */
+, NULL        /* label_current_cache_values */
+, NULL        /* progress_bar_cache_usage */
+, GAP_PLAYER_CACHE_DEFAULT_MAX_BYTESIZE  /* max_player_cache */
+, GAP_PLAYER_CACHE_COMPRESSION_NONE      /* cache_compression */
+, 0.86                                   /* cache_jpeg_quality */
+
+, TRUE        /* show_go_buttons */
+, TRUE        /* show_position_scale */
+, NULL        /* show_go_buttons_checkbutton */
+, NULL        /* show_position_scale_checkbutton */
+, NULL        /* gobutton_hbox */
+, NULL        /* frame_scale_hbox */
+, GAP_STB_FLIP_NONE  /* flip_request */
+, GAP_STB_FLIP_NONE  /* flip_status */
+, 1                  /* stb_in_track */
+,-1                  /* stb_parttype */
+,-1                  /* stb_unique_id */
+,NULL                /* stb_comp_vidhand */
 };
 
 

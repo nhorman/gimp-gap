@@ -44,6 +44,7 @@
 #include <libgimp/gimpui.h>
 #include "gap_pview_da.h"
 #include "gap-intl.h"
+#include "gap_lib_common_defs.h"
 
 
 extern int gap_debug;  /* 1 == print debug infos , 0 dont print debug infos */
@@ -55,6 +56,363 @@ extern int gap_debug;  /* 1 == print debug infos , 0 dont print debug infos */
 
 #define PREVIEW_BG_GRAY1_GDK 0x505050
 #define PREVIEW_BG_GRAY2_GDK 0xb4b4b4
+
+static void     p_replace_pixbuf_by_flipped_pixbuf(GapPView *pv_ptr, gint32 flip_to_perform);
+static gint32   p_calculate_flip_request(GapPView *pv_ptr, gint32 flip_request, gint32 flip_status);
+static void     p_render_thdata_as_flipped_pixbuf(GapPView *pv_ptr, gint32 flip_to_perform);
+static void     p_pview_repaint_desaturated(GapPView *pv_ptr);
+static void     p_desaturate(GapPView *pv_ptr, guchar *src_buff, gint src_rowstride);
+static void     p_free_desaturated_area_data(GapPView *pv_ptr);
+static void     p_create_desaturated_buf_from_pixbuf(GapPView *pv_ptr);
+static void     p_create_desaturated_buf_from_area_data(GapPView *pv_ptr);
+
+
+/* ----------------------------------------------------
+ * p_replace_pixbuf_by_flipped_pixbuf
+ * ----------------------------------------------------
+ */
+static void
+p_replace_pixbuf_by_flipped_pixbuf(GapPView *pv_ptr, gint32 flip_to_perform)
+{
+  GdkPixbuf *flipped_pixbuf;
+  gboolean   horizontal;
+
+  if(pv_ptr->pixbuf == NULL)
+  {
+    printf("ERROR cant flip pv_ptr->pixbuf becaus it is NULL\n");
+    return;
+  }
+  
+  flipped_pixbuf = NULL;
+  switch(flip_to_perform)
+  {
+    case GAP_STB_FLIP_HOR:
+      horizontal = TRUE;
+      flipped_pixbuf = gdk_pixbuf_flip(pv_ptr->pixbuf
+                                      ,horizontal
+                                      );
+      break;
+    case GAP_STB_FLIP_VER:
+      horizontal = FALSE;
+      flipped_pixbuf = gdk_pixbuf_flip(pv_ptr->pixbuf
+                                      ,horizontal
+                                      );
+      break;
+    case GAP_STB_FLIP_BOTH:
+      flipped_pixbuf = gdk_pixbuf_rotate_simple (pv_ptr->pixbuf
+                                                ,GDK_PIXBUF_ROTATE_UPSIDEDOWN
+                                                );
+      break;
+    default:
+      break;
+  }
+  if(flipped_pixbuf)
+  {
+    /* free old (refresh) pixbuf if there is one
+     * and replace by fliped variant
+     */
+    g_object_unref(pv_ptr->pixbuf);
+    pv_ptr->pixbuf = flipped_pixbuf;
+  }
+
+}  /* end p_replace_pixbuf_by_flipped_pixbuf */
+
+
+/* ----------------------------------------------------
+ * p_calculate_flip_request
+ * ----------------------------------------------------
+ * return the flip action to be performed on an image
+ * that was already transformed as described by flip_status
+ * and should be transformed as described by flip_request.
+ *
+ * in case both values are equal, no transformation is necessary
+ * different bits require the corresponding transformation. 
+ * (XOR delvers the required result)
+ *
+ * request  status      return
+ *    0       0           0
+ *    1       0           1
+ *    2       0           2
+ *    3       0           3
+ *
+ * request  status      return
+ *    0       1           1
+ *    1       1           0
+ *    2       1           3
+ *    3       1           2
+ *
+ * request  status      return
+ *    0       2           2
+ *    1       2           3
+ *    2       2           0
+ *    3       2           1
+ *
+ * request  status      return
+ *    0       3           3
+ *    1       3           2
+ *    2       3           1
+ *    3       3           0
+ */
+static gint32
+p_calculate_flip_request(GapPView *pv_ptr, gint32 flip_request, gint32 flip_status)
+{
+  pv_ptr->flip_status = flip_request;
+  return ((flip_request ^ flip_status) & 3);
+}  /* end p_calculate_flip_request */
+
+
+
+/* ----------------------------------------------------
+ * p_render_thdata_as_flipped_pixbuf
+ * ----------------------------------------------------
+ */
+static void
+p_render_thdata_as_flipped_pixbuf(GapPView *pv_ptr
+  , gint32 flip_to_perform
+  )
+{
+  if(pv_ptr->pixbuf)
+  {
+    /* free old (refresh) pixbuf if there is one
+     * and replace by fliped variant
+     */
+    g_object_unref(pv_ptr->pixbuf);
+  }
+  
+  /* create a pixbuf from pv_area_data
+   * use NULL because we dont want to run the destructor notifyer
+   * (g_free of pv_area_data is already handled in gap_pview_reset)
+   */
+  pv_ptr->pixbuf = gdk_pixbuf_new_from_data(pv_ptr->pv_area_data
+              , GDK_COLORSPACE_RGB
+              , FALSE                 /* has_alpha */
+              , 8                     /* bits_per_sample */
+              , pv_ptr->pv_width
+              , pv_ptr->pv_height
+              , pv_ptr->pv_width * pv_ptr->pv_bpp  /* rowstride */
+              , NULL                  /* GdkPixbufDestroyNotify NULL: dont call destroy_fn */
+              , pv_ptr->pv_area_data  /* gpointer destroy_fn_data */
+	);
+	
+  /* clear flag to let gap_pview_repaint procedure know
+   * to use the pixbuf rather than pv_area_data or pixmap for refresh
+   */
+  pv_ptr->use_pixmap_repaint = FALSE;
+  pv_ptr->use_pixbuf_repaint = TRUE;
+
+  p_replace_pixbuf_by_flipped_pixbuf(pv_ptr, flip_to_perform);
+  gap_pview_repaint(pv_ptr);
+
+}  /* end p_render_thdata_as_flipped_pixbuf */
+
+
+
+
+/* ----------------------------------------------------
+ * p_pview_repaint_desaturated
+ * ----------------------------------------------------
+ * repaint from the desaturated buffer.
+ */
+static void
+p_pview_repaint_desaturated(GapPView *pv_ptr)
+{
+  if(gap_debug)
+  {
+    printf("p_pview_repaint_desaturated START\n");
+  }
+  if(pv_ptr->pv_desaturated_area_data)
+  {
+    gdk_draw_rgb_image ( pv_ptr->da_widget->window
+		       , pv_ptr->da_widget->style->white_gc
+		       , 0
+		       , 0
+		       , pv_ptr->pv_width
+		       , pv_ptr->pv_height
+		       , GDK_RGB_DITHER_NORMAL
+		       , pv_ptr->pv_desaturated_area_data
+		       , pv_ptr->pv_width * 3
+		       );
+  }
+
+}  /* end p_pview_repaint_desaturated */  
+  
+
+/* ----------------------------------------------------
+ * p_desaturate
+ * ----------------------------------------------------
+ * fill the desaturated_area_data with a grayscale copy
+ * of the specified src_buff.
+ * NOTE: both buffers are same size and have bpp 3 (for RGB)
+ * desaturation uses the same gray value for all 3 color channels.
+ */
+static void
+p_desaturate(GapPView *pv_ptr, guchar *src_buff, gint src_rowstride)
+{
+  gint didx;
+  gint sidx;
+  gint src_bpp;
+  gint row;
+  gint col;
+  gint dst_rowstride;
+  
+  
+  src_bpp = src_rowstride / MAX(1, pv_ptr->pv_width);
+  dst_rowstride = pv_ptr->pv_width * pv_ptr->pv_bpp;
+  
+  if((pv_ptr->pv_desaturated_area_data)
+  && (src_buff))
+  {
+    sidx = 0;
+    didx = 0;
+    for(row=0; row < pv_ptr->pv_height; row++ )
+    {
+      sidx = row * src_rowstride;
+      didx = row * dst_rowstride;
+      for(col=0; col < pv_ptr->pv_width; col++)
+      {
+        gdouble grayvalue;
+    
+        grayvalue = ((gdouble)src_buff[sidx] 
+              + (gdouble)src_buff[sidx + 1] 
+              + (gdouble)src_buff[sidx + 2]) / 3.0;
+        pv_ptr->pv_desaturated_area_data[didx] = (guchar)grayvalue;
+        pv_ptr->pv_desaturated_area_data[didx + 1] = (guchar)grayvalue;
+        pv_ptr->pv_desaturated_area_data[didx + 2] = (guchar)grayvalue;
+      
+        sidx += src_bpp;
+        didx += pv_ptr->pv_bpp;
+      }
+    }
+  }
+
+}  /* end p_desaturate */
+
+
+/* ----------------------------------------------------
+ * p_free_desaturated_area_data
+ * ----------------------------------------------------
+ */
+static void
+p_free_desaturated_area_data(GapPView *pv_ptr)
+{  
+
+  if(pv_ptr->pv_desaturated_area_data)
+  {
+    g_free(pv_ptr->pv_desaturated_area_data);
+    pv_ptr->pv_desaturated_area_data = NULL;
+  }
+
+}  /* end p_free_desaturated_area_data */
+
+/* ----------------------------------------------------
+ * p_create_desaturated_buf_from_pixbuf
+ * ----------------------------------------------------
+ */
+static void
+p_create_desaturated_buf_from_pixbuf(GapPView *pv_ptr)
+{  
+
+  pv_ptr->pv_desaturated_area_data = g_new ( guchar
+                                      , pv_ptr->pv_height * pv_ptr->pv_width * pv_ptr->pv_bpp );
+
+  p_desaturate(pv_ptr
+             , gdk_pixbuf_get_pixels(pv_ptr->pixbuf)
+             , gdk_pixbuf_get_rowstride(pv_ptr->pixbuf)
+             );
+
+}  /* end p_create_desaturated_buf_from_pixbuf */
+
+
+/* ----------------------------------------------------
+ * p_create_desaturated_buf_from_area_data
+ * ----------------------------------------------------
+ */
+static void
+p_create_desaturated_buf_from_area_data(GapPView *pv_ptr)
+{  
+  gint l_rowstride;
+  
+  l_rowstride = pv_ptr->pv_width * pv_ptr->pv_bpp;
+  pv_ptr->pv_desaturated_area_data = g_new ( guchar
+                                      , pv_ptr->pv_height *  l_rowstride);
+
+  p_desaturate(pv_ptr, pv_ptr->pv_area_data, l_rowstride);
+
+}  /* end p_create_desaturated_buf_from_area_data */
+
+
+
+
+/* ------------------------------
+ * gap_pview_render_from_buf
+ * ------------------------------
+ */
+gboolean
+gap_pview_render_from_buf (GapPView *pv_ptr
+                 , guchar *src_data
+                 , gint    src_width
+                 , gint    src_height
+                 , gint    src_bpp
+                 , gboolean allow_grab_src_data
+                 )
+{
+  return gap_pview_render_f_from_buf(pv_ptr
+                                    ,src_data
+                                    ,src_width
+                                    ,src_height
+                                    ,src_bpp
+                                    ,allow_grab_src_data
+                                    ,GAP_STB_FLIP_NONE
+                                    ,GAP_STB_FLIP_NONE
+                                    );
+}  /* end gap_pview_render_from_buf */
+
+/* ------------------------------
+ * gap_pview_render_from_image
+ * ------------------------------
+ */
+void
+gap_pview_render_from_image (GapPView *pv_ptr, gint32 image_id)
+{
+  gap_pview_render_f_from_image(pv_ptr
+                               ,image_id
+                               ,GAP_STB_FLIP_NONE
+                               ,GAP_STB_FLIP_NONE
+                               );
+}  /* end gap_pview_render_from_image */
+
+
+/* -------------------------------------
+ * gap_pview_render_from_image_duplicate
+ * -------------------------------------
+ */
+void
+gap_pview_render_from_image_duplicate (GapPView *pv_ptr, gint32 image_id)
+{
+  gap_pview_render_f_from_image_duplicate(pv_ptr
+                                         ,image_id
+                                         ,GAP_STB_FLIP_NONE
+                                         ,GAP_STB_FLIP_NONE
+                                         );
+}  /* end gap_pview_render_from_image_duplicate */
+
+
+/* ------------------------------
+ * gap_pview_render_from_pixbuf
+ * ------------------------------
+ */
+void
+gap_pview_render_from_pixbuf (GapPView *pv_ptr, GdkPixbuf *src_pixbuf)
+{
+  gap_pview_render_f_from_pixbuf(pv_ptr
+                                ,src_pixbuf
+                                ,GAP_STB_FLIP_NONE
+                                ,GAP_STB_FLIP_NONE
+                                );
+}       /* end gap_pview_render_from_pixbuf */
+
+
+
 
 /* ------------------------------
  * gap_pview_drop_repaint_buffers
@@ -69,6 +427,8 @@ gap_pview_drop_repaint_buffers(GapPView *pv_ptr)
   pv_ptr->pixmap = NULL;
   pv_ptr->pixbuf = NULL;
   
+  p_free_desaturated_area_data(pv_ptr);
+  
 } /* end gap_pview_drop_repaint_buffers */
 
 /* ------------------------------
@@ -79,6 +439,10 @@ gap_pview_drop_repaint_buffers(GapPView *pv_ptr)
 void
 gap_pview_reset(GapPView *pv_ptr)
 {
+  if(pv_ptr == NULL)
+  {
+    return;
+  }
   if(pv_ptr->src_col) g_free(pv_ptr->src_col);
   if(pv_ptr->pv_area_data)  g_free(pv_ptr->pv_area_data);
 
@@ -129,6 +493,12 @@ gap_pview_set_size(GapPView *pv_ptr, gint pv_width, gint pv_height, gint pv_chec
   pv_ptr->pv_area_data = g_new ( guchar
                                     , pv_ptr->pv_height * pv_ptr->pv_width * pv_ptr->pv_bpp );
   pv_ptr->src_col = g_new ( gint, pv_ptr->pv_width );                   /* column fetch indexes foreach preview col */
+
+  if(pv_ptr->pv_desaturated_area_data)
+  {
+    g_free(pv_ptr->pv_desaturated_area_data);
+    pv_ptr->pv_desaturated_area_data = NULL;
+  }
   
 }  /* end gap_pview_set_size */
 
@@ -152,8 +522,10 @@ gap_pview_new(gint pv_width, gint pv_height, gint pv_check_size, GtkWidget *aspe
   gap_pview_set_size(pv_ptr, pv_width, pv_height, pv_check_size);
   pv_ptr->use_pixmap_repaint = FALSE;
   pv_ptr->use_pixbuf_repaint = FALSE;
+  pv_ptr->flip_status = GAP_STB_FLIP_NONE;
   pv_ptr->pixmap = NULL;
   pv_ptr->pixbuf = NULL;
+  pv_ptr->desaturate_request = FALSE;
 
   return(pv_ptr);
 }  /* end gap_pview_new */
@@ -162,6 +534,7 @@ gap_pview_new(gint pv_width, gint pv_height, gint pv_check_size, GtkWidget *aspe
 /* ------------------------------
  * gap_pview_repaint
  * ------------------------------
+ * Repaint (implicite conversion of gray_pixbuf)
  */
 void
 gap_pview_repaint(GapPView *pv_ptr)
@@ -173,6 +546,18 @@ gap_pview_repaint(GapPView *pv_ptr)
   if((pv_ptr->pixbuf != NULL)
   && (pv_ptr->use_pixbuf_repaint))
   {
+    if(pv_ptr->desaturate_request)
+    {
+      if(pv_ptr->pv_desaturated_area_data == NULL)
+      {
+        p_create_desaturated_buf_from_pixbuf(pv_ptr);
+      }
+      if(pv_ptr->pv_desaturated_area_data)
+      {
+        p_pview_repaint_desaturated(pv_ptr);
+        return;
+      }
+    }
     gdk_draw_pixbuf(
                      pv_ptr->da_widget->window
 		   , pv_ptr->da_widget->style->white_gc
@@ -194,6 +579,18 @@ gap_pview_repaint(GapPView *pv_ptr)
   if((pv_ptr->pv_area_data != NULL)
   && (!pv_ptr->use_pixmap_repaint))
   {
+    if(pv_ptr->desaturate_request)
+    {
+      if(pv_ptr->pv_desaturated_area_data == NULL)
+      {
+        p_create_desaturated_buf_from_area_data(pv_ptr);
+      }
+      if(pv_ptr->pv_desaturated_area_data)
+      {
+        p_pview_repaint_desaturated(pv_ptr);
+        return;
+      }
+    }
     gdk_draw_rgb_image ( pv_ptr->da_widget->window
 		       , pv_ptr->da_widget->style->white_gc
 		       , 0
@@ -206,6 +603,8 @@ gap_pview_repaint(GapPView *pv_ptr)
 		       );
     return;
   }
+
+  
   if(pv_ptr->pixmap != NULL)
   {
     gdk_draw_drawable(pv_ptr->da_widget->window
@@ -223,7 +622,7 @@ gap_pview_repaint(GapPView *pv_ptr)
 
 
 /* ------------------------------
- * gap_pview_render_from_buf
+ * gap_pview_render_f_from_buf
  * ------------------------------
  * render drawing_area widget from src_data buffer
  * quick scaling without any interpolation
@@ -246,12 +645,14 @@ gap_pview_repaint(GapPView *pv_ptr)
  *            
  */
 gboolean
-gap_pview_render_from_buf (GapPView *pv_ptr
+gap_pview_render_f_from_buf (GapPView *pv_ptr
                  , guchar *src_data
                  , gint    src_width
                  , gint    src_height
                  , gint    src_bpp
                  , gboolean allow_grab_src_data
+                 , gint32 flip_request
+		 , gint32 flip_status
                  )
 {
   register guchar  *src, *dest;
@@ -265,7 +666,7 @@ gap_pview_render_from_buf (GapPView *pv_ptr
   {
     if(gap_debug)
     {
-      printf("gap_pview_render_from_buf: drawing_area window pointer is NULL, cant render\n");
+      printf("gap_pview_render_f_from_buf: drawing_area window pointer is NULL, cant render\n");
     }
     return FALSE;
   }
@@ -275,6 +676,7 @@ gap_pview_render_from_buf (GapPView *pv_ptr
    */
   pv_ptr->use_pixmap_repaint = FALSE;
   pv_ptr->use_pixbuf_repaint = FALSE;
+  p_free_desaturated_area_data(pv_ptr);
 
   /* check for col and area_data buffers (allocate if needed) */
   if ((pv_ptr->src_col == NULL)
@@ -312,23 +714,14 @@ gap_pview_render_from_buf (GapPView *pv_ptr
 
     /* Source is empty: draw a black preview */
     memset(pv_ptr->pv_area_data, 0, pv_ptr->pv_height * pv_ptr->pv_width * pv_ptr->pv_bpp);
-
-    gdk_draw_rgb_image ( pv_ptr->da_widget->window
-		       , pv_ptr->da_widget->style->white_gc
-		       , 0
-		       , 0
-		       , pv_ptr->pv_width
-		       , pv_ptr->pv_height
-		       , GDK_RGB_DITHER_NORMAL
-		       , pv_ptr->pv_area_data
-		       , pv_ptr->pv_width * 3
-		       );
+    gap_pview_repaint(pv_ptr);
     return FALSE;
   }
 
   if ((src_width == pv_ptr->pv_width)
   &&  (src_height == pv_ptr->pv_height)
-  &&  (src_bpp == 3))
+  &&  (src_bpp == 3)
+  &&  (flip_request == flip_status))
   {
 
     /* if(gap_debug) printf("\n\n   can use QUICK render\n"); */
@@ -336,18 +729,6 @@ gap_pview_render_from_buf (GapPView *pv_ptr
     /* for RGB src_data with matching size and without Alpha
      * we can render with just one call (fastest)
      */
-    
-    gdk_draw_rgb_image ( pv_ptr->da_widget->window
-		       , pv_ptr->da_widget->style->white_gc
-		       , 0
-		       , 0
-		       , pv_ptr->pv_width
-		       , pv_ptr->pv_height
-		       , GDK_RGB_DITHER_NORMAL
-		       , src_data
-		       , pv_ptr->pv_width * 3
-		       );
-
     if( allow_grab_src_data )
     {
        /* the calling procedure has permitted to grab the src_data
@@ -355,17 +736,19 @@ gap_pview_render_from_buf (GapPView *pv_ptr
         */
        g_free(pv_ptr->pv_area_data);
        pv_ptr->pv_area_data = src_data;
+       gap_pview_repaint(pv_ptr);
        return TRUE;
     }
     else
     {
-      /* here we make a claen copy of src_data to pv_ptr->pv_area_data.
+      /* here we make a clean copy of src_data to pv_ptr->pv_area_data.
        *  beacause the data might be needed
        *  for refresh of the display (for an "expose" event handler procedure)
        */
        memcpy(pv_ptr->pv_area_data, src_data, pv_ptr->pv_height * pv_ptr->pv_width * pv_ptr->pv_bpp);
     }     
  
+    gap_pview_repaint(pv_ptr);
     return FALSE;
   }
 
@@ -473,36 +856,44 @@ gap_pview_render_from_buf (GapPView *pv_ptr
     }
   }
 
-  gdk_draw_rgb_image ( pv_ptr->da_widget->window
-		       , pv_ptr->da_widget->style->white_gc
-		       , 0
-		       , 0
-		       , pv_ptr->pv_width
-		       , pv_ptr->pv_height
-		       , GDK_RGB_DITHER_NORMAL
-		       , pv_ptr->pv_area_data
-		       , pv_ptr->pv_width * 3
-		       );
+  /* check and perform built in flip transformations */
+  {
+    gint32 l_flip_to_perform;
+  
+    l_flip_to_perform = p_calculate_flip_request(pv_ptr, flip_request, flip_status);
+    if(l_flip_to_perform != GAP_STB_FLIP_NONE)
+    {
+      p_render_thdata_as_flipped_pixbuf(pv_ptr
+                                ,l_flip_to_perform
+                                );
+      return FALSE;
+    }
+  }
+  gap_pview_repaint(pv_ptr);
 
   return FALSE;
 
-}       /* end gap_pview_render_from_buf */
+}       /* end gap_pview_render_f_from_buf */
 
 
 /* ------------------------------
- * gap_pview_render_from_image
+ * gap_pview_render_f_from_image
  * ------------------------------
  * render preview widget from image.
  * IMPORTANT: the image is scaled to preview size
  *            and the visible layers in the image are merged together !
  *            If the supplied image shall stay unchanged,
- *            you may use  gap_pview_render_from_image_duplicate
+ *            you may use  gap_pview_render_f_from_image_duplicate
  *
  * hint: call gtk_widget_queue_draw(pv_ptr->da_widget);
  * after this procedure to make the changes appear on screen.
  */
 void
-gap_pview_render_from_image (GapPView *pv_ptr, gint32 image_id)
+gap_pview_render_f_from_image (GapPView *pv_ptr
+    , gint32 image_id
+    , gint32 flip_request
+    , gint32 flip_status
+)
 {
   gint32 layer_id;
   guchar *frame_data;
@@ -513,12 +904,13 @@ gap_pview_render_from_image (GapPView *pv_ptr, gint32 image_id)
   {
     if(gap_debug)
     {
-      printf("gap_pview_render_from_image: have no image, cant render image_id:%d\n"
+      printf("gap_pview_render_f_from_image: have no image, cant render image_id:%d\n"
             ,(int)image_id
 	    );
     }
     return;
   }
+  p_free_desaturated_area_data(pv_ptr);
 
   if((gimp_image_width(image_id) != pv_ptr->pv_width)
   || ( gimp_image_height(image_id) != pv_ptr->pv_height))
@@ -576,44 +968,55 @@ gap_pview_render_from_image (GapPView *pv_ptr, gint32 image_id)
  {
     gboolean frame_data_was_grabbed;
 
-    frame_data_was_grabbed = gap_pview_render_from_buf (pv_ptr
+    frame_data_was_grabbed = gap_pview_render_f_from_buf (pv_ptr
                    , frame_data
                    , drawable->width
                    , drawable->height
                    , drawable->bpp
                    , TRUE            /* allow_grab_src_data */
+                   , flip_request
+		   , flip_status
+
                  );
   
     if(!frame_data_was_grabbed) g_free(frame_data);
   }
   
-}  /* end gap_pview_render_from_image */
+}  /* end gap_pview_render_f_from_image */
 
-/* -------------------------------------
- * gap_pview_render_from_image_duplicate
- * -------------------------------------
+/* ---------------------------------------
+ * gap_pview_render_f_from_image_duplicate
+ * ---------------------------------------
  * render preview widget from image.
  * This procedure creates a temorary copy of the image
  * for rendering of the preview.
  * NOTE: if the caller wants to render a temporary image
  *       that is not needed anymore after the rendering,
- *       the procedure gap_pview_render_from_image should be used
+ *       the procedure gap_pview_render_f_from_image should be used
  *       to avoid duplicating of the image.
  *
  * hint: call gtk_widget_queue_draw(pv_ptr->da_widget);
  * after this procedure to make the changes appear on screen.
  */
 void
-gap_pview_render_from_image_duplicate (GapPView *pv_ptr, gint32 image_id)
+gap_pview_render_f_from_image_duplicate (GapPView *pv_ptr
+  , gint32 image_id
+  , gint32 flip_request
+  , gint32 flip_status
+  )
 {
   gint32 dup_image_id;
   
   dup_image_id = gimp_image_duplicate(image_id);
   gimp_image_undo_disable (dup_image_id); 
-  gap_pview_render_from_image(pv_ptr, dup_image_id);
+  gap_pview_render_f_from_image(pv_ptr
+                 , dup_image_id
+                 , flip_request
+		 , flip_status
+		 );
   gimp_image_delete(dup_image_id);
   
-}  /* end gap_pview_render_from_image_duplicate */
+}  /* end gap_pview_render_f_from_image_duplicate */
 
 /* ------------------------------
  * gap_pview_render_default_icon
@@ -640,6 +1043,7 @@ gap_pview_render_default_icon(GapPView   *pv_ptr)
    */
   pv_ptr->use_pixmap_repaint = TRUE;
   pv_ptr->use_pixbuf_repaint = FALSE;
+  p_free_desaturated_area_data(pv_ptr);
   
   if(pv_ptr->pixmap)
   {
@@ -726,7 +1130,7 @@ gap_pview_render_default_icon(GapPView   *pv_ptr)
 #ifdef GAP_PVIEW_USE_GDK_PIXBUF_RENDERING
 
 /* ------------------------------
- * gap_pview_render_from_pixbuf (slow)
+ * gap_pview_render_f_from_pixbuf (slow)
  * ------------------------------
  * render drawing_area widget from src_pixbuf buffer
  * scaling and flattening against checkerboard background
@@ -741,12 +1145,16 @@ gap_pview_render_default_icon(GapPView   *pv_ptr)
  * is NOT defined per default.
  */
 void
-gap_pview_render_from_pixbuf (GapPView *pv_ptr, GdkPixbuf *src_pixbuf)
+gap_pview_render_f_from_pixbuf (GapPView *pv_ptr
+  , GdkPixbuf *src_pixbuf
+  , gint32 flip_request
+  , gint32 flip_status
+  )
 {
   static int l_checksize_tab[17] = { 2, 4, 8, 8, 16, 16, 16, 32, 32, 32, 32, 32, 32, 64, 64, 64, 64 };
   int l_check_size;
 
-  /* printf("gap_pview_render_from_pixbuf --- USE GDK-PIXBUF procedures\n"); */
+  /* printf("gap_pview_render_f_from_pixbuf --- USE GDK-PIXBUF procedures\n"); */
   
   if(pv_ptr == NULL) { return; }
   if(pv_ptr->da_widget == NULL) { return; }
@@ -754,7 +1162,7 @@ gap_pview_render_from_pixbuf (GapPView *pv_ptr, GdkPixbuf *src_pixbuf)
   { 
     if(gap_debug)
     {
-      printf("gap_pview_render_from_pixbuf: drawing_area window pointer is NULL, cant render\n");
+      printf("gap_pview_render_f_from_pixbuf: drawing_area window pointer is NULL, cant render\n");
     }
     return ;
   }
@@ -763,7 +1171,7 @@ gap_pview_render_from_pixbuf (GapPView *pv_ptr, GdkPixbuf *src_pixbuf)
   {
     if(gap_debug)
     {
-      printf("gap_pview_render_from_pixbuf: src_pixbuf is NULL, cant render\n");
+      printf("gap_pview_render_f_from_pixbuf: src_pixbuf is NULL, cant render\n");
     }
     return ;
   }
@@ -773,6 +1181,7 @@ gap_pview_render_from_pixbuf (GapPView *pv_ptr, GdkPixbuf *src_pixbuf)
    */
   pv_ptr->use_pixmap_repaint = FALSE;
   pv_ptr->use_pixbuf_repaint = TRUE;
+  p_free_desaturated_area_data(pv_ptr);
 
   /* l_check_size must be a power of 2 (using fixed size for 1.st test) */
   l_check_size = l_checksize_tab[MIN((pv_ptr->pv_check_size >> 2), 8)];
@@ -809,7 +1218,7 @@ gap_pview_render_from_pixbuf (GapPView *pv_ptr, GdkPixbuf *src_pixbuf)
     has_alpha = gdk_pixbuf_get_has_alpha(pv_ptr->pixbuf);
     rowstride = gdk_pixbuf_get_rowstride(pv_ptr->pixbuf);
 
-    printf("gap_pview_render_from_pixbuf (AFTER SCALE/FLATTEN):\n");
+    printf("gap_pview_render_f_from_pixbuf (AFTER SCALE/FLATTEN):\n");
     printf(" l_check_size: %d (%d)\n", (int)l_check_size, pv_ptr->pv_check_size);
     printf(" width: %d\n", (int)width );
     printf(" height: %d\n", (int)height );
@@ -819,33 +1228,31 @@ gap_pview_render_from_pixbuf (GapPView *pv_ptr, GdkPixbuf *src_pixbuf)
     printf(" rowstride: %d\n", (int)rowstride );
   }
 
-  gdk_draw_pixbuf(
-                     pv_ptr->da_widget->window
-		   , pv_ptr->da_widget->style->white_gc
-                   , pv_ptr->pixbuf
-                   , 0                         /*  gint src_x  */
-                   , 0                         /*  gint src_y  */
-                   , 0                         /*  gint dest_x */
-                   , 0                         /*  gint dest_y */
-                   , pv_ptr->pv_width
-                   , pv_ptr->pv_height
-                   , GDK_RGB_DITHER_NORMAL
-                   , 0                         /* gint x_dither_offset */
-                   , 0                         /* gint y_dither_offset */
-		   );
-}       /* end gap_pview_render_from_pixbuf */
+  {
+    gint32 l_flip_to_perform;
+  
+    l_flip_to_perform = p_calculate_flip_request(pv_ptr, flip_request, flip_status);
+    if(l_flip_to_perform != GAP_STB_FLIP_NONE)
+    {
+      p_replace_pixbuf_by_flipped_pixbuf(pv_ptr, l_flip_to_perform);
+    }
+  }
+
+  gap_pview_repaint(pv_ptr);
+
+}       /* end gap_pview_render_f_from_pixbuf */
 
 #else
 
 /* ------------------------------
- * gap_pview_render_from_pixbuf (fast)
+ * gap_pview_render_f_from_pixbuf (fast)
  * ------------------------------
  * render drawing_area widget from src_pixbuf buffer.
  * 
  * scaling and flattening against checkerboard background
- * is done by calling gap_pview_render_from_buf.
+ * is done by calling gap_pview_render_f_from_buf.
  *
- * The scaling in gap_pview_render_from_buf is optimized for speed
+ * The scaling in gap_pview_render_f_from_buf is optimized for speed
  * especially when both src and dest sizes are the same as in the
  * previous call.
  *
@@ -856,15 +1263,19 @@ gap_pview_render_from_pixbuf (GapPView *pv_ptr, GdkPixbuf *src_pixbuf)
  *
  */
 void
-gap_pview_render_from_pixbuf (GapPView *pv_ptr, GdkPixbuf *src_pixbuf)
+gap_pview_render_f_from_pixbuf (GapPView *pv_ptr
+  , GdkPixbuf *src_pixbuf
+  , gint32 flip_request
+  , gint32 flip_status
+  )
 {
-  /* printf("gap_pview_render_from_pixbuf >>NO<< USE OF GDK-PIXBUF procedures\n"); */
+  /* printf("gap_pview_render_f_from_pixbuf >>NO<< USE OF GDK-PIXBUF procedures\n"); */
 
   if(src_pixbuf == NULL)
   {
     if(gap_debug)
     {
-      printf("gap_pview_render_from_pixbuf: src_pixbuf is NULL, cant render\n");
+      printf("gap_pview_render_f_from_pixbuf: src_pixbuf is NULL, cant render\n");
     }
     return ;
   }
@@ -880,17 +1291,19 @@ gap_pview_render_from_pixbuf (GapPView *pv_ptr, GdkPixbuf *src_pixbuf)
     nchannels = gdk_pixbuf_get_n_channels(src_pixbuf);
     pix_data = gdk_pixbuf_get_pixels(src_pixbuf);
      
-    gap_pview_render_from_buf(pv_ptr
+    gap_pview_render_f_from_buf(pv_ptr
                              , pix_data
 			     , width
 			     , height
 			     , nchannels
 			     , FALSE                             /* DONT allow_grab_src_data */
+                             , flip_request
+                             , flip_status
 			     );
   }
   
 
-}       /* end gap_pview_render_from_pixbuf */
+}       /* end gap_pview_render_f_from_pixbuf */
 
 #endif
 
@@ -988,7 +1401,7 @@ gap_pview_get_repaint_pixbuf(GapPView   *pv_ptr)
             , width
             , height
             , rowstride
-            , p_pixmap_data_destructor  /* GdkPixbufDestroyNotify destroy_fn */
+            , (GdkPixbufDestroyNotify)p_pixmap_data_destructor  /* destroy_fn */
             , pixel_data_copy    /* gpointer destroy_fn_data */
 	));
   }

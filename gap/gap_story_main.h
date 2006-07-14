@@ -56,6 +56,10 @@ typedef gpointer t_GVA_Handle;
 
 #define GAP_STB_ATT_GFX_ARRAY_MAX 2
 
+/* max flip request and delace modes (for dimensions of radio button tables) */
+#define GAP_MAX_FLIP_REQUEST  4
+#define GAP_MAX_DELACE_MODES  3
+
 typedef enum
   {
      GAP_STB_EDMO_SEQUENCE_NUMBER
@@ -95,14 +99,20 @@ typedef struct GapStbPropWidget  /* nickname: pw */
 
   gint32   go_job_framenr;
   gboolean go_render_all_request;
+  gboolean go_recreate_request;
   gint32   go_timertag;
   gboolean scene_detection_busy;
   gboolean close_flag;
   
   gdouble     delace_threshold;
   gint32      delace_mode;
+  gint32      flip_request;
+  GapStoryMaskAnchormode  mask_anchor;
 
-  GapPView   *pv_ptr;            /* for gap preview rendering based on drawing_area */
+  GapPView   *pv_ptr;            /* for gap preview rendering of clip icon based on drawing_area */
+  GapPView   *mask_pv_ptr;       /* for gap preview rendering of mask icon based on drawing_area */
+  GtkWidget  *mask_pv_container; /* holds the layermask preview (hidden when not relevant) */
+  GapPView   *typ_icon_pv_ptr;   /* for display of the clip or mask type */
   GtkWidget  *pw_prop_dialog;
   GtkWidget  *pw_filesel;
   GtkWidget  *pw_filename_entry;
@@ -123,25 +133,49 @@ typedef struct GapStbPropWidget  /* nickname: pw */
   GtkWidget  *pw_framenr_label;
   GtkWidget  *pw_frametime_label;
 
+  GtkWidget  *pw_delace_mode_radio_button_arr[GAP_MAX_DELACE_MODES];
+  GtkWidget  *pw_flip_request_radio_button_arr[GAP_MAX_FLIP_REQUEST];
+
+  /* for mask handling */
+  gboolean   is_mask_definition;
+  GtkWidget  *pw_mask_name_entry;
+  GtkWidget  *pw_mask_enable_toggle;
+  GtkWidget  *pw_mask_anchor_radio_button_arr[2];
+  GtkObject  *pw_spinbutton_mask_stepsize_adj;
+  
+  
+
   struct GapStbPropWidget *next;
 } GapStbPropWidget;
+
+
+typedef struct GapStbAttrLayerInfo  /* nickname: linfo */
+{
+  gboolean               layer_is_fake;
+  GapStoryRecordType     layer_record_type;
+  gint32                 layer_local_framenr;
+  gint32                 layer_seltrack;
+  gchar                 *layer_filename;
+  
+} GapStbAttrLayerInfo;
 
 /* for graphical display of transition attributes */
 typedef struct GapStbAttGfx
 {
   gint32      image_id;
-  gint32      base_layer_id;   /* decor layer (always BG) */
-  gint32      deco_layer_id;   /* decor layer (always on top of stack) */
+
   gint32      orig_layer_id;   /* invisible frame at original image size */
+  gint32      opre_layer_id;   /* invisible prefetch frame at original image size */
+  
+  gint32      deco_layer_id;   /* decor layer (always on top of stack) */
   gint32      curr_layer_id;   /* copy of orig_layer_id, after transformations */
+  gint32      pref_layer_id;   /* copy of opre_layer_id, after transformations (visible if overlapping is active) */
+  gint32      base_layer_id;   /* decor layer (always BG) */
   gboolean    auto_update;
   
   /* information about the orig layer */
-  gboolean               orig_layer_is_fake;
-  GapStoryRecordType     orig_layer_record_type;
-  gint32                 orig_layer_local_framenr;
-  gint32                 orig_layer_seltrack;
-  gchar                 *orig_layer_filename;
+  GapStbAttrLayerInfo  orig_info;
+  GapStbAttrLayerInfo  opre_info;
 
   GapPView   *pv_ptr;
   GtkWidget  *auto_update_toggle;
@@ -177,6 +211,7 @@ typedef struct GapStbAttrWidget  /* nickname: attw */
   void  *tabw;               /* never g_free this one ! (pointer to parent GapStbTabWidgets) */
 
   gint32   go_timertag;
+  gboolean timer_full_update_request;
   gboolean close_flag;
   
   GtkWidget  *attw_prop_dialog;
@@ -188,6 +223,10 @@ typedef struct GapStbAttrWidget  /* nickname: attw */
   
   GapStbAttRow  att_rows[GAP_STB_ATT_TYPES_ARRAY_MAX];
   GapStbAttGfx  gfx_tab[GAP_STB_ATT_GFX_ARRAY_MAX];   /* 0 .. from, 1 .. to */
+
+  GtkObject  *spinbutton_overlap_dur_adj;
+  GtkWidget  *spinbutton_overlap_dur;
+  GtkWidget  *button_overlap_dur;
 
   GtkWidget  *comment_entry;
 
@@ -230,6 +269,7 @@ typedef struct GapStbTabWidgets  /* nickname: tabw */
   gint32 thumb_width;
   gint32 thumb_height;
   gint32 rowpage;
+  gint32 vtrack;
 
   gint32    story_id_at_prev_paste;
 
@@ -243,6 +283,8 @@ typedef struct GapStbTabWidgets  /* nickname: tabw */
   GtkObject *rowpage_spinbutton_adj;
   GtkObject *rowpage_vscale_adj;
   GtkWidget *rowpage_vscale;
+
+  GtkObject *vtrack_spinbutton_adj;
 
   GtkWidget *filesel;
   GtkWidget *filename_entry;

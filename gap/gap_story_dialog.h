@@ -34,8 +34,16 @@
 
 void    gap_storyboard_dialog(GapStbMainGlobalParams *gpp);
 
-void    gap_story_dlg_pw_render_all(GapStbPropWidget *pw);
+void    gap_story_dlg_attw_render_all(GapStbAttrWidget *attw);
+
+void    gap_story_dlg_pw_render_all(GapStbPropWidget *pw, gboolean recreate);
 void    gap_story_pw_single_clip_playback(GapStbPropWidget *pw);
+void    gap_story_pw_composite_playback(GapStbPropWidget *pw);
+void    gap_story_attw_range_playback(GapStbAttrWidget *attw, gint32 begin_frame
+            , gint32 end_frame);
+void    gap_story_dlg_pw_update_mask_references(GapStbTabWidgets *tabw);
+
+
 
 GapStoryVideoElem * gap_story_dlg_get_velem(GapStbMainGlobalParams *sgpp
               ,const char *video_filename

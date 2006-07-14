@@ -10,8 +10,8 @@ GAPVIDEOAPI = $(top_builddir)/libgapvidapi/libgapvidapi.a  $(GAPVIDEOAPI_EXTLIBS
 INC_GAPVIDEOAPI = -I$(top_srcdir)/libgapvidapi $(GAPVIDEOAPI_EXTINCS)
 endif
 
-LIBGIMPGAP =  -L$(top_builddir)/gap  -lgimpgap -lgapstory
-INC_LIBGIMPGAP = -I$(top_srcdir)/gap
+LIBGAPSTORY =  -L$(top_builddir)/gap  -lgapstory
+INC_LIBGAPSTORY = -I$(top_srcdir)/gap
 
 LIBGAPVIDUTIL  = $(top_builddir)/libgapvidutil/libgapvidutil.a
 INC_LIBGAPVIDUTIL = -I$(top_srcdir)/libgapvidutil
@@ -35,7 +35,7 @@ INCLUDES = \
 	-I$(top_srcdir)	\
 	-I$(top_srcdir)/libwavplayclient	\
 	$(INC_GAPVIDEOAPI)	\
-	$(INC_LIBGIMPGAP)	\
+	$(INC_LIBGAPSTORY)	\
 	$(INC_LIBGAPVIDUTIL)	\
 	$(GIMP_CFLAGS)	\
 	$(GAP_VINCS_XVIDCORE)	\
@@ -45,10 +45,10 @@ INCLUDES = \
 LDADD = $(GIMP_LIBS)
 
 
-# note: sequence of libs matters because LIBGAPVIDUTIL uses both LIBGIMPGAP and GAPVIDEOAPI
+# note: sequence of libs matters because LIBGAPVIDUTIL uses both LIBGAPSTORY and GAPVIDEOAPI
 #       (if those libs appear before LIBGAPVIDUTIL the linker can not resolve those references.
 
-gap_vid_enc_avi_LDADD =  $(LIBGAPVIDUTIL) $(LIBGIMPGAP) $(GAPVIDEOAPI) $(GAP_VLIBS_XVIDCORE) -ljpeg $(GIMP_LIBS)
+gap_vid_enc_avi_LDADD =  $(LIBGAPVIDUTIL) $(LIBGAPSTORY) $(GAPVIDEOAPI) $(GAP_VLIBS_XVIDCORE) -ljpeg $(GIMP_LIBS)
 
 
 

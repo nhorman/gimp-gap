@@ -37,5 +37,6 @@ void         gap_story_stb_elem_properties_dialog ( GapStbTabWidgets *tabw
                                      , GapStoryElem *stb_elem
                                      , GapStoryBoard *stb_dst);
 void         gap_story_fw_properties_dialog (GapStbFrameWidget *fw);
+void         gap_story_pw_trigger_refresh_properties(GapStbPropWidget *pw);
 
 #endif

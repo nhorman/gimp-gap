@@ -42,6 +42,7 @@
 #include "string.h"
 /* GIMP includes */
 /* GAP includes */
+#include "gap_lib_common_defs.h"
 #include "gap_layer_copy.h"
 #include "gap_pdb_calls.h"
 
@@ -542,3 +543,59 @@ gap_layer_clear_to_color(gint32 layer_id
   }
  
 }  /* end gap_layer_clear_to_color */
+
+
+
+/* ----------------------------------------------------
+ * gap_layer_flip
+ * ----------------------------------------------------
+ * flip layer according to flip_request,
+ * return the id of the flipped layer.
+ * NOTE: flip_request GAP_STB_FLIP_NONE returns the unchanged layer 
+ */
+gint32
+gap_layer_flip(gint32 layer_id, gint32 flip_request)
+{
+  gint32   center_x;
+  gint32   center_y;
+  gdouble  axis;
+
+
+  switch(flip_request)
+  {
+    case GAP_STB_FLIP_HOR:
+      axis = (gdouble)(gimp_drawable_width(layer_id)) / 2.0;
+      layer_id = gimp_drawable_transform_flip_simple(layer_id
+                                   ,GIMP_ORIENTATION_HORIZONTAL
+				   ,TRUE    /* auto_center */
+				   ,axis
+				   ,TRUE    /* clip_result */
+				   );
+      break;
+    case GAP_STB_FLIP_VER:
+      axis = (gdouble)(gimp_drawable_height(layer_id)) / 2.0;
+      layer_id = gimp_drawable_transform_flip_simple(layer_id
+                                   ,GIMP_ORIENTATION_VERTICAL
+				   ,TRUE    /* auto_center */
+				   ,axis
+				   ,TRUE    /* clip_result */
+				   );
+      break;
+    case GAP_STB_FLIP_BOTH:
+      center_x = gimp_drawable_width(layer_id) / 2;
+      center_y = gimp_drawable_height(layer_id) / 2;
+  
+      layer_id = gimp_drawable_transform_rotate_simple(layer_id
+                                  ,GIMP_ROTATE_180
+				  ,TRUE      /* auto_center */
+				  ,center_x
+				  ,center_y
+				  ,TRUE      /* clip_result */
+				  );
+      break;
+    default:
+      break;
+  }
+  
+  return(layer_id);
+}  /* end gap_layer_flip */

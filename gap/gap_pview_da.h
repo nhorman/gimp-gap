@@ -35,6 +35,12 @@
 #include <libgimp/gimp.h>
 #include <libgimp/gimpui.h>
 
+/* flip_request bits */
+#define GAP_STB_FLIP_NONE      0
+#define GAP_STB_FLIP_HOR       1
+#define GAP_STB_FLIP_VER       2
+#define GAP_STB_FLIP_BOTH      3
+
 
 typedef struct GapPView
 {
@@ -48,15 +54,45 @@ typedef struct GapPView
   gint    pv_height;          /* Preview Height in pixels */
   gint    pv_bpp;             /* BPP of the preview currently always 3 */
   gint    pv_check_size;      /* size of the cheks in pixels */
+  gint32  flip_status;
   gboolean use_pixbuf_repaint;
   gboolean use_pixmap_repaint;
   guchar *pv_area_data;       /* buffer to hold RGB image in preview size */
   GdkPixmap *pixmap;          /* alternative pixmap buffer */
   GdkPixbuf *pixbuf;          /* alternative pixbuf buffer */
+  
+  gboolean desaturate_request;        /* TRUE: render gray, FALSE render in color */
+  guchar *pv_desaturated_area_data;   /* buffer to hold gray copy of image in preview size */
+  
 } GapPView;
 
-void       gap_pview_render_from_pixbuf (GapPView *pv_ptr, GdkPixbuf *src_pixbuf);
 
+void       gap_pview_render_f_from_pixbuf (GapPView *pv_ptr, GdkPixbuf *src_pixbuf
+                 , gint32 flip_request
+                 , gint32 flip_status
+                 );
+gboolean   gap_pview_render_f_from_buf (GapPView *pv_ptr
+                 , guchar *src_data
+                 , gint    src_width
+                 , gint    src_height
+                 , gint    src_bpp
+                 , gboolean allow_grab_src_data
+                 , gint32 flip_request
+                 , gint32 flip_status
+                 );
+void       gap_pview_render_f_from_image_duplicate (GapPView *pv_ptr, gint32 image_id
+                 , gint32 flip_request
+                 , gint32 flip_status
+                 );
+void       gap_pview_render_f_from_image (GapPView *pv_ptr, gint32 image_id
+                 , gint32 flip_request
+                 , gint32 flip_status
+                 );
+
+
+
+
+void       gap_pview_render_from_pixbuf (GapPView *pv_ptr, GdkPixbuf *src_pixbuf);
 gboolean   gap_pview_render_from_buf (GapPView *pv_ptr
                  , guchar *src_data
                  , gint    src_width

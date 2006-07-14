@@ -41,6 +41,7 @@
 
 #include "gap_vex_main.h"
 #include "gap_vex_dialog.h"
+#include "gap_lib_common_defs.h"
 
 #include "gap-intl.h"
 
@@ -660,6 +661,9 @@ p_call_player_widget(GapVexMainGlobalParams *gpp
 		      , delace
 		      , gpp->val.preferred_decoder
 		      , TRUE               /* force_open_as_video */
+                      , GAP_STB_FLIP_NONE  /* flip_request */
+                      , GAP_STB_FLIP_NONE  /* flip_status */
+                      , 1                  /* stb_in_track */
 		      );
   }
   

@@ -29,8 +29,10 @@ EXTRA_DIST = \
 	plug-in-gap-range-layer-del.txt		\
 	plug-in-gap-range-to-multilayer.txt	\
 	plug-in-gap-renumber.txt		\
+	plug-in-gap-reverse.txt			\
 	plug-in-gap-shift.txt			\
 	plug-in-gap-split.txt			\
+	plug-in-gap-storyboard-attr-prop.txt	\
 	plug-in-gap-storyboard-clip-prop.txt	\
 	plug-in-gap-storyboard-edit.txt		\
 	plug-in-gap-storyboard-gen-otone.txt	\

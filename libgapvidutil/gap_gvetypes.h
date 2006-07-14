@@ -67,7 +67,7 @@
 #include <libgimp/gimp.h>
 #include <libgimp/gimpui.h>
 #include <gap_gve_misc_util.h>
-
+#include <gap_lib_common_defs.h>
 
 
 
@@ -79,13 +79,6 @@
 #define VID_FMT_UNDEF  5
 
 #define GAP_GVE_MENU_ITEM_INDEX_KEY "gap_enc_menu_item_index"
-
-typedef enum
-{
-   GAP_RNGTYPE_FRAMES
-  ,GAP_RNGTYPE_LAYER
-  ,GAP_RNGTYPE_STORYBOARD
-} GapGveTypeInputRange;
 
 
 
@@ -112,7 +105,7 @@ typedef struct GapGveCommonValues {                     /* nick: cval */
   gchar   extension[50];
   GapGveEncList ecp_sel;
 
-  GapGveTypeInputRange input_mode;
+  GapLibTypeInputRange input_mode;
   gint32  range_from;
   gint32  range_to;
   gdouble framerate;

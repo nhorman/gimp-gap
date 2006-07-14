@@ -29,18 +29,13 @@
 #include "gap-intl.h"
 #include "libgimp/gimp.h"
 
+#include "gap_story_sox.h"
+
 #include "gap_gvetypes.h"
 
 void   gap_gve_sox_save_config(GapGveCommonValues *cval);
 void   gap_gve_sox_init_config(GapGveCommonValues *cval);
 void   gap_gve_sox_init_default(GapGveCommonValues *cval);
 gint   gap_gve_sox_chk_and_resample(GapGveCommonValues *cval);
-
-void   gap_gve_sox_exec_resample(char *in_audiofile
-                      ,char *out_audiofile
-                      ,gint32 samplerate
-                      ,char *util_sox
-                      ,char *util_sox_options
-                      );
 
 #endif

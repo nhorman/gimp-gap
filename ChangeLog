@@ -1,3 +1,199 @@
+2006-07-12  Wolfgang Hofer <hof@gimp.org>
+	- flip transformation support is now also available for mask definitions.
+        - attempts to open an binary file for storyboard parsing
+          now limits the erros printed to standard out to printable
+          characters and stops logging to stdout if too much unprintables are detected. 
+          (in case of accidently specified binary files the log output 
+          of the parser can take much time and the full content is not from any interest)
+        
+	(2006-07-03)
+	refactoring. (mask_elem is now part of stb_elem, mask definitions
+        are represented as track number 0 at editing (not in the render processor)
+         *gap/gap_story_file.c
+         *gap/gap_story_file.h
+         *gap/gap_story_main.h
+         *gap/gap_story_properties.c
+         *gap/gap_story_render_processor.c
+         *gap/gap_story_render_types.h
+
+	(2006-06-30)
+	player support to playback composite video
+        
+        added playback button to storyboard transition attributes dialog
+        to visualize the transition effect.
+        This button triggers playback of composite video resticted
+        to the relevant track and range concerning the transition effect.
+        
+         *gap/gap_story_att_trans_dlg.c 
+         *gap/gap_story_dialog.c [.h]
+         *gap/gap_story_file.c [.h]
+       
+        
+	(2006-06-28)
+        refactoring: player_dialog spliited p_display_frame into
+        several subroutines.
+        
+        refactoring: storyboard rendering is required
+        for the player (to provide rendering of composite video)
+        therefore moved functionality to new gap/story_*  modules
+        and make them part of libgapstory.a
+        to prepare common use in player, storyboard dialog and encoders.
+        
+        libgapstory.a now contains all modules of libgimpgap.a
+        (libgapstory uses those modules and each program had to include
+        both libs in correct order before this change)
+                
+
+        * gap/Makefile.am
+        * vid_common/Makefile.am
+        * vid_enc_avi/Makefile.am
+        * vid_enc_ffmpeg/Makefile.am
+        * vid_enc_single/Makefile.am
+        * gap/gap_libgapstory.h
+        * gap/gap_lib_common_defs.h
+        * gap/gap_story_render_audio.c [.h]  # NEW FILES
+        * gap/gap_story_render_processor.c [.h]  # NEW FILES
+        * gap/gap_story_render_types.h           # NEW FILES
+        * gap/gap_story_sox.c [.h]               # NEW FILES
+        * gap/gap_player_dialog.c [.h]
+        * libgapvidutil/gap_gvetypes.h
+        * libgapvidutil/gap_gve_sox.c [.h]
+        * vid_common/gap_cme_gui.c
+        
+
+	(2006-06-24)
+        - storyboard dialog shows correct framenumbers respecting overlapping.
+	- player now skips overlapping parts when storboard is played.
+        
+        * gap/gap_story_*.c [.h]
+        * gap/gap_player_main.c [.h]
+        * gap/gap_player_dialog.c [.h]
+        
+	(2006-06-19)
+	- rendering support of built in simple flip transformations in the pview
+	  widget, and in all storyboard dialogs (including the player)
+        - bugfix: edit storyboard master properties must set unsaved changes flag.
+
+        * gap/Makefile.am
+        * gap/gap_lib_common_defs.h       # NEW file created
+        * gap/gap_lib.h
+        * gap/gap_layer_copy.c [.h]
+        * gap/gap_player_main.c [.h]
+        * gap/gap_player_cache.c [.h]
+        * gap/gap_player_dialog.c [.h]
+        * gap/gap_pview_da.c.[.h]
+        * gap/gap_story_att_trans_dlg.c
+        * gap/gap_story_dialog.c
+        * gap/gap_story_properties.c
+        * gap/gap_vex_dialog.c
+        
+        * libgapvidutil/gap_gve_story.c
+       
+
+	(2006-06-18)
+	- Syntax definition, parsing, and saving for the new storyboard features
+           VID_* clips support built in transformations flip hor/ver/both,
+            and are able to refere to layer mask definitions.
+           MASK_* definition records to describe layer mask frames
+           VID_OVERLAP  (is a new part of transition attribute,
+                         allows overlap frames within the same track.)
+
+        - Storyboard processor implementation of overlap and flip features.
+        - Storyboard clip properties dialog: added radio buttons for
+          built in transformations (flip hor,ver and rotate by 180 degree)
+        - Storyboard clip properties dialog: added radio buttons for
+          built in transformations (flip hor,ver and rotate by 180 degree)
+        - Storyboard transition attributes dialog: added spinbutton
+          for overlapping number of frames within the same track,
+          and extended rendering of the preview by adding a prefetch
+          layer to the preview images in case overlapping is active.
+          
+        
+        * libgapvidutil/gap_gve_story.c [.h]
+        * gap/gap_story_properties.c
+        * gap/gap_story_main.h
+        * gap/gap_story_att_trans_dlg.c
+        
+	(2006-06-14)
+	- added text docfiles to EXTRA_DIST makefile target
+             plug-in-gap-reverse.txt
+             plug-in-gap-storyboard-attr-prop.txt
+             
+	- merged in changes from 2.2.1 release (mainline)
+          to my local new-feature-branch
+                    
+        * docs/reference/txt/Makefile.am
+          
+	(2006-06-03)
+	Player layout changes:
+         - configure option to hide/show go button array and position scale
+         - use icons for the buttons to have more space for the frame preview
+           moved buttons right next the corresponding spinbuttons
+           (for shorter mouse move distances)
+         - shorter texts for checkbuttons
+         - time position (mm:sec:msec)
+           is shown next to the position scale widget in the same row
+         - use col/row spacing for layout of the player control widget table
+           (instead of hseperators)
+
+	Storyboard layout changes:
+        - Stock Buttons reduced in width (now showing only the icon)
+          this allows showing the full set both for the cliplist and the storyboard.
+        - progress bar is displayed right next to the stock buttons
+          (no more need to waste space for an extra layout row)
+        - use persitent Global storyboard settings via
+          automatically query/save settings as gimprc options.
+
+        - storyboard file format extension:
+          new (optional) record keyword: VID_MASTER_FRAME_ASPECT
+          implemented support for video frame aspect in the storyboard
+          dialog.
+          
+          TODO: use the aspect in the encoder(s) too 
+          (if video format is capable to handle aspect ratio)
+          
+          currently the aspect is available in the ffmpeg specific encoder
+          but only via ffmpeg parameter settings and no connection
+          to get the aspect from the storyboard.          
+          
+
+	* images/Makefile.am
+	* images/gap-range-end.png
+	* images/gap-range-start.png
+	* images/gap-set-range-end.png
+	* images/gap-set-range-start.png
+	* images/gap-speed.png
+        
+        * gap/gap_stock.c
+        * gap/gap_stock.h
+        * gap/gap_story_dialog.c
+        * gap/gap_story_syntax.h 
+        * gap/gap_story_syntax.c
+        * gap/gap_story_file.c 
+        * gap/gap_story_file.h 
+        
+        * docs/reference/txt/STORYBOARD_FILE_DOC.txt
+	* docs/reference/txt/gap_gimprc_params.txt  
+	* NEWS 
+
+        
+	(2006-05-31)
+        - basic implementation of player cache feature.
+          The player does now support a frame cache for any type of frames.
+          frames are cached at current preview size of the player.
+          
+          (caching of frames at original size read from videofiles in the video API
+           is still supported too)
+           
+          if the same sequence is played more than one time (loop mode)
+          it is now possible to do fast playback in best possible
+          display quality. (without using thumbnails).
+
+	* gap/Makefile.am
+	* gap/gap_player_dialog.c 
+	* gap/gap_player_main.c 
+	* gap/gap_player_main.h  
+
 2006-06-09  Sven Neumann  <sven@gimp.org>
 
 	* Made 2.2.1 release.

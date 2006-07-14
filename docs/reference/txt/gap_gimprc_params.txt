@@ -43,6 +43,30 @@ If you edit gimprc files by hand, you must do this before you startup GIMP.
 (video-max-frames-keep-cached 500)
 
 
+# the gap player supports caching of frames
+# (both image sequences or frames fetched from videofiles)
+# to achieve fast playback speed when playback
+# is repeated in loops or pingpong mode.
+# a cache size of 0 turns caching OFF.
+# the cache size can be set in kilobytes (K) or megaytes (M)
+(video_playback_cache "100M")
+
+# the gap player has several widgets to set the
+# position (e.g. the currently displayed framenumber)
+#
+# - the "Go Buttons" are an array of buttons that allow
+#   positioning by simply moving the mouse over the buttons.
+#   in some situations this may be annoying to some users
+#   therefore this optional way of positioning can be turned
+#   on/off
+#   via the gimprc option video_player_show_go_buttons  "yes" or "no"
+#   (default is "yes")
+# - the position scale widget can be turned on/off  
+#   via the gimprc option video_player_show_position_scale  "yes" or "no"
+#   (default is "yes")
+(video_player_show_go_buttons "yes")
+(video_player_show_position_scale "yes")
+
 
 # videoindexes are files that store seekoffsets for keyframes
 # and enable fast and frame exact random access to frames in a videofile.
@@ -111,3 +135,22 @@ If you edit gimprc files by hand, you must do this before you startup GIMP.
 (video-save-flattened-xjt    "no")
 (video-save-flattened-gif    "no")
 
+
+# video storyboard layout options
+# --------------------------------
+# layout options for the storyboard dialog including
+# number of rows/column and thumbnail sizes for both
+# cliplist (upper) and storyboard (lower) thumbnail area.
+#
+# thumbnail_size supported values are:
+#  "large"
+#  "medium"  (default)
+#  "small"
+#
+# row and column settings:
+(video-storyboard-thumbnail_size    "medium")
+(video-storyboard-columns           "5")
+(video-storyboard-rows              "6")
+(video-cliplist-thumbnail_size      "medium")
+(video-cliplist-columns             "12")
+(video-cliplist-rows                "2")
