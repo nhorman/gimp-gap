@@ -3040,7 +3040,7 @@ p_radio_create_op_mode(GtkWidget *table, int row, int col, GapMorphGUIParams *mg
   l_radio_pressed = (mgup->op_mode == GAP_MORPH_OP_MODE_SHOW);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radio_button), l_radio_pressed);
   gimp_help_set_help_data(radio_button
-                         , _("Click: show warp pick koordinates in the source window")
+                         , _("Click: show warp pick coordinates in the source window")
 			 , NULL);
 
   gtk_widget_show (radio_button);
@@ -3225,7 +3225,7 @@ p_create_subwin(GapMorphSubWin *swp
                      0, 0);
 
   gtk_widget_set_size_request (spinbutton, 60, -1);
-  gimp_help_set_help_data (spinbutton, _("Morphpoint X koordinate"), NULL);
+  gimp_help_set_help_data (spinbutton, _("Morphpoint X coordinate"), NULL);
   g_object_set_data( G_OBJECT(adj), "swp", swp);
   g_signal_connect (G_OBJECT (adj), "value_changed"
                    , G_CALLBACK (on_koord_spinbutton_changed)
@@ -3257,7 +3257,7 @@ p_create_subwin(GapMorphSubWin *swp
                      0, 0);
 
   gtk_widget_set_size_request (spinbutton, 60, -1);
-  gimp_help_set_help_data (spinbutton, _("Morphpoint Y koordinate"), NULL);
+  gimp_help_set_help_data (spinbutton, _("Morphpoint Y coordinate"), NULL);
   g_object_set_data( G_OBJECT(adj), "swp", swp);
   g_signal_connect (G_OBJECT (adj), "value_changed"
                    , G_CALLBACK (on_koord_spinbutton_changed)

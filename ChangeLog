@@ -1,3 +1,8 @@
+2006-07-17  Jakub Friedl <jfriedl@suse.cz>
+
+	* gap/gap_morph_dialog.c: Fixed English spelling in UI
+	translatable strings (koordinate->coordinate)
+
 2006-07-12  Wolfgang Hofer <hof@gimp.org>
 	- flip transformation support is now also available for mask definitions.
         - attempts to open an binary file for storyboard parsing
