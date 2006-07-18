@@ -1,3 +1,4 @@
+# translation of cs.po to Czech
 # translation of cs.po to
 # Czech translation of gimp-gap
 # Copyright (C) 2001, 2006 Free Software Foundation, Inc.
@@ -10,10 +11,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cs\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-07-14 13:59+0200\n"
-"PO-Revision-Date: 2006-07-14 13:58+0200\n"
+"POT-Creation-Date: 2006-07-18 12:38+0200\n"
+"PO-Revision-Date: 2006-07-18 12:38+0200\n"
 "Last-Translator: Jakub Friedl <jfriedl@suse.cz>\n"
-"Language-Team:  <cs@li.org>\n"
+"Language-Team: Czech <gnome-cs-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -1460,9 +1461,8 @@ msgid "<Image>/Filters/"
 msgstr "<Image>/Filtry/"
 
 #: ../gap/gap_fmac_main.c:212
-#, fuzzy
 msgid "Filtermacro..."
-msgstr "<Image>/Filtry/Makro filtru..."
+msgstr "Makro filtru..."
 
 #: ../gap/gap_fmac_main.c:501
 msgid "Select Filtercalls of Current GIMP Session"
@@ -1720,9 +1720,8 @@ msgid "Frames to Image..."
 msgstr "Políčka do obrázku..."
 
 #: ../gap/gap_main.c:905
-#, fuzzy
 msgid "Frames Flatten..."
-msgstr "<Image>/Video/Sloučit políčka..."
+msgstr "Sloučit políčka..."
 
 #: ../gap/gap_main.c:917
 #, fuzzy
@@ -2422,7 +2421,7 @@ msgid "Show"
 msgstr "Zobrazit"
 
 #: ../gap/gap_morph_dialog.c:3043
-msgid "Click: show warp pick koordinates in the source window"
+msgid "Click: show warp pick coordinates in the source window"
 msgstr ""
 
 #: ../gap/gap_morph_dialog.c:3074
@@ -2472,7 +2471,7 @@ msgstr "X:"
 
 #: ../gap/gap_morph_dialog.c:3228
 #, fuzzy
-msgid "Morphpoint X koordinate"
+msgid "Morphpoint X coordinate"
 msgstr "X"
 
 #. the y koordinate label
@@ -2485,7 +2484,7 @@ msgstr "Y:"
 
 #: ../gap/gap_morph_dialog.c:3260
 #, fuzzy
-msgid "Morphpoint Y koordinate"
+msgid "Morphpoint Y coordinate"
 msgstr "Y"
 
 #. Fit Zoom Button
@@ -3066,10 +3065,10 @@ msgid "Move Path Bluebox Keycolor"
 msgstr "Přesun Cesta"
 
 #: ../gap/gap_mov_dialog.c:2976
-#, fuzzy
 msgid ""
 "Open dialog window to set parameters and keycolor for the bluebox filter"
-msgstr "Otevřít"
+msgstr ""
+"Otevřít dialogové okno pro nastavení parametrů a klíčové barvy filtru bluebox"
 
 #. toggle Tracelayer
 #: ../gap/gap_mov_dialog.c:2994 ../gap/gap_mov_exec.c:929
@@ -3959,10 +3958,8 @@ msgid "Constant Bitrate:"
 msgstr "Pevná bitrate:"
 
 #: ../gap/gap_mpege.c:386
-#, fuzzy
 msgid "Ignore I/P/QSCALE values and use constant bit-rate"
-msgstr ""
-"Ignorovat hodnoty I/P/QSCALE a použít konstantní hodnotu bitové frekvence)"
+msgstr "Ignorovat hodnoty I/P/QSCALE a použít konstantní datový tok"
 
 #: ../gap/gap_mpege.c:393
 msgid "Pattern:"
@@ -4160,24 +4157,22 @@ msgid "Settings :"
 msgstr "Nastavení :"
 
 #: ../gap/gap_navigator_dialog.c:434
-#, fuzzy
 msgid ""
 "Playback\n"
 "SHIFT converts the selected frames to temporary image, and does "
 "layeranimation playback on it."
 msgstr ""
 "Přehrávání\n"
-"<Shift> převede vybraná políčka do dočasného obrázku a provede přehrávání "
-"animace vrstvy v dočasném obrázku"
+"SHIFT převede vybraná políčka do dočasného obrázku a přehraje v něm animaci "
+"vrstev"
 
 #: ../gap/gap_navigator_dialog.c:440
-#, fuzzy
 msgid ""
 "Smart update thumbnails\n"
 "SHIFT forces thumbnail update for all frames"
 msgstr ""
 "Chytrá aktualizace náhledů\n"
-"<Shift> vnucená aktualizace náhledů pro všechna políčka"
+"SHIFT vynutí aktualizaci náhledů všech políček"
 
 #: ../gap/gap_navigator_dialog.c:445
 msgid "Duplicate selected frames"
@@ -4616,9 +4611,8 @@ msgid "Toggle Visibility"
 msgstr "Přepnout viditelnost"
 
 #: ../gap/gap_onion_main.c:206
-#, fuzzy
 msgid "<Image>/Video/Onionskin/"
-msgstr "<Image>/Video/Onionskin/Odstranit"
+msgstr "<Image>/Video/Onionskin/"
 
 #: ../gap/gap_onion_worker.c:367
 msgid "Creating onionskin layers..."
@@ -4671,11 +4665,10 @@ msgid "Samplerate:"
 msgstr "Vzorkovací frekvence:"
 
 #: ../gap/gap_player_dialog.c:450
-#, fuzzy
 msgid "Target audio samplerate in samples/sec. Ignored if resample is off"
 msgstr ""
-"Cílová vzorkovací frekvence ve vzorcích/s. Ignorována, je-li Převzorkovat "
-"vypnuto."
+"Cílová vzorkovací frekvence zvuku ve vzorcích za sekundu. Ignorována, je-li "
+"převzorkování vypnuto."
 
 #: ../gap/gap_player_dialog.c:471
 msgid "Copy Audiofile as Wavefile"
@@ -4975,7 +4968,7 @@ msgstr "Délka videa:"
 #. Cahe size label
 #: ../gap/gap_player_dialog.c:6157
 msgid "Cache Size (MB):"
-msgstr ""
+msgstr "Velikost cache (MB)"
 
 #: ../gap/gap_player_dialog.c:6183
 msgid "Player frame cache maximum size im MB. Value 0 turns the cache off"
@@ -4983,7 +4976,7 @@ msgstr ""
 
 #: ../gap/gap_player_dialog.c:6192
 msgid "Clear the frame cache"
-msgstr ""
+msgstr "Vyčistit vyrovnávací paměť políček"
 
 #. Chache Status (number of frames currently in the cache)
 #: ../gap/gap_player_dialog.c:6203
@@ -5021,9 +5014,8 @@ msgstr ""
 
 #. Save Player Preferences label
 #: ../gap/gap_player_dialog.c:6276
-#, fuzzy
 msgid "Save Preferences:"
-msgstr "Odkaz na políčko:"
+msgstr "Uložit předvolby"
 
 #: ../gap/gap_player_dialog.c:6288
 msgid "Save player cache and layout settings (as gimprc parameters)"
@@ -5041,9 +5033,8 @@ msgstr "Volby videa"
 
 #. configure options TAB frame
 #: ../gap/gap_player_dialog.c:6442
-#, fuzzy
 msgid "Preferences"
-msgstr "Odkaz na políčko:"
+msgstr "Předvolby"
 
 #. audio options TAB frame
 #. the Audio Options notebook tab
@@ -5137,9 +5128,8 @@ msgstr ""
 
 #. SelOnly Toggle (keep text short)
 #: ../gap/gap_player_dialog.c:6978
-#, fuzzy
 msgid "Selection only"
-msgstr "Žádný výběr"
+msgstr "Pouze výběr"
 
 #: ../gap/gap_player_dialog.c:6984
 #, fuzzy
@@ -5161,9 +5151,8 @@ msgstr "ZAPNUTO: Přehrávat střídavě vpřed/vzad"
 
 #. UseThumbnails Toggle (keep text short)
 #: ../gap/gap_player_dialog.c:7016
-#, fuzzy
 msgid "Thumbnails"
-msgstr "Používat náhledy"
+msgstr "Náhledy"
 
 #: ../gap/gap_player_dialog.c:7022
 msgid ""
@@ -5897,7 +5886,7 @@ msgstr "Konec:"
 
 #: ../gap/gap_story_att_trans_dlg.c:2436 ../gap/gap_story_att_trans_dlg.c:2636
 msgid "Copy this number of frames to all enabled rows"
-msgstr ""
+msgstr "Zkopírovat tento počet políček do všech povolených řádků"
 
 #: ../gap/gap_story_att_trans_dlg.c:2463
 msgid "Number of frames (duration of transition from start to end value)"
@@ -5952,14 +5941,12 @@ msgstr ""
 
 #. the overlap label (same row as FitSize)
 #: ../gap/gap_story_att_trans_dlg.c:2626
-#, fuzzy
 msgid "Overlap:"
-msgstr "Překrytí"
+msgstr "Překryv:"
 
 #: ../gap/gap_story_att_trans_dlg.c:2661
-#, fuzzy
 msgid "Number of overlapping frames within this track"
-msgstr "Počet políček, které extrahovat"
+msgstr "Počet překrývajících se políček v této stopě"
 
 #. lower constraint for the from/to values
 #. upper constraint for the from/to values
@@ -6108,20 +6095,20 @@ msgid ""
 "** ERROR: Storyboard parser reported:\n"
 "%s\n"
 msgstr ""
+"** CHYBA: analyzátor storyboardu ohlásil:\n"
+"%s\n"
 
 #: ../gap/gap_story_dialog.c:2184
-#, fuzzy
 msgid "Load Storyboard"
-msgstr "Načíst"
+msgstr "Načíst storyboard"
 
 #: ../gap/gap_story_dialog.c:2188
 msgid "Load Cliplist"
 msgstr "Načíst seznam klipů"
 
 #: ../gap/gap_story_dialog.c:2226
-#, fuzzy
 msgid "Save Storyboard file"
-msgstr "Uložit"
+msgstr "Uložit soubor storyboardu"
 
 #: ../gap/gap_story_dialog.c:3474
 msgid "Global Layout Properties dialog already open"
@@ -6269,7 +6256,7 @@ msgstr "Zakódovat"
 
 #: ../gap/gap_story_dialog.c:4339
 msgid "_Storyboard"
-msgstr ""
+msgstr "_Storyboard"
 
 #: ../gap/gap_story_dialog.c:4440
 #, c-format
@@ -6397,7 +6384,7 @@ msgstr "z:"
 #: ../gap/gap_story_dialog.c:6386 ../gap/gap_story_dialog.c:6500
 #: ../vid_common/gap_cme_gui.c:2369
 msgid "Storyboard"
-msgstr ""
+msgstr "Storyboard"
 
 #: ../gap/gap_story_dialog.c:6563 ../vid_common/gap_cme_gui.c:2241
 msgid "Cancel"
@@ -6470,18 +6457,16 @@ msgid "automatic"
 msgstr "automatický"
 
 #: ../gap/gap_story_dialog.c:6802
-#, fuzzy
 msgid "none"
-msgstr "Nic"
+msgstr "nic"
 
 #: ../gap/gap_story_dialog.c:6842
 msgid "Name:"
 msgstr "Jméno:"
 
 #: ../gap/gap_story_dialog.c:6846
-#, fuzzy
 msgid "Name of the Storyboardfile"
-msgstr "Název"
+msgstr "Jméno souboru storyboardu"
 
 #: ../gap/gap_story_dialog.c:6852
 msgid "Name of the Cliplistfile"
@@ -6614,9 +6599,8 @@ msgstr ""
 "zadaný název souboru %s má nepodstatný obsah nebo jej parser nemůže otevřít"
 
 #: ../gap/gap_story_main.c:164
-#, fuzzy
 msgid "Storyboard..."
-msgstr "Vybrat soubor zvuku"
+msgstr "Storyboard..."
 
 #: ../gap/gap_story_properties.c:432
 #, c-format
@@ -6689,9 +6673,8 @@ msgid "%d (frames)"
 msgstr "%d (políček)"
 
 #: ../gap/gap_story_properties.c:2729 ../gap/gap_story_properties.c:2739
-#, fuzzy
 msgid "Mask Properties"
-msgstr "Hlavní vlastnosti"
+msgstr "Vlastnosti masky"
 
 #: ../gap/gap_story_properties.c:2751 ../gap/gap_story_properties.c:2763
 msgid "Clip Properties"
@@ -6707,9 +6690,8 @@ msgstr "Automatické rozdělení scény"
 
 #. the masktype label
 #: ../gap/gap_story_properties.c:2809
-#, fuzzy
 msgid "Mask Type:"
-msgstr "Typ klipu:"
+msgstr "Typ masky:"
 
 #. the cliptype label
 #: ../gap/gap_story_properties.c:2814
