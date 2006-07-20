@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cs\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-07-18 12:38+0200\n"
-"PO-Revision-Date: 2006-07-18 12:38+0200\n"
+"POT-Creation-Date: 2006-07-20 16:54+0200\n"
+"PO-Revision-Date: 2006-07-20 16:52+0200\n"
 "Last-Translator: Jakub Friedl <jfriedl@suse.cz>\n"
 "Language-Team: Czech <gnome-cs-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -2648,7 +2648,7 @@ msgstr "Barva bodu"
 
 #: ../gap/gap_morph_dialog.c:3815
 msgid "Set color for the morph workpoints"
-msgstr ""
+msgstr "Nastavit barvu pracovních bodů morfingu"
 
 #. the currentcolor colorbutton
 #: ../gap/gap_morph_dialog.c:3826
@@ -2656,9 +2656,8 @@ msgid "Current Pointcolor"
 msgstr "Aktuální barva bodu"
 
 #: ../gap/gap_morph_dialog.c:3834
-#, fuzzy
 msgid "Set color for the current morph workpoint"
-msgstr "Odstranit aktuální řídicí bod"
+msgstr "Nastavit barvu aktuálního pracovního bodu morfingu"
 
 #. the create tween checkbutton
 #: ../gap/gap_morph_dialog.c:3854
@@ -3165,9 +3164,8 @@ msgstr "Snížení průhlednosti pro druhou vrstvu Onionskin"
 #. TweenOpacityDescending
 #. table col, row
 #: ../gap/gap_mov_dialog.c:3088
-#, fuzzy
 msgid "TweenOpacity2:"
-msgstr "Krytí:"
+msgstr "Tween krytí 2:"
 
 #. label text
 #. scalesize spinsize
@@ -3178,9 +3176,8 @@ msgstr "Krytí:"
 #. constrain
 #. lower, upper (unconstrained)
 #: ../gap/gap_mov_dialog.c:3096
-#, fuzzy
 msgid "Descending opacity of the tween layer"
-msgstr "Snížení průhlednosti pro druhou vrstvu Onionskin"
+msgstr "Klesající krytí tween vrtsvy"
 
 #. the frame
 #: ../gap/gap_mov_dialog.c:3131
@@ -4494,7 +4491,7 @@ msgstr "Vzorek je část názvu vrstvy"
 
 #: ../gap/gap_onion_dialog.c:1241
 msgid "This mode determines how the selection pattern is interpreted."
-msgstr ""
+msgstr "tento režim určujezpůsob interpretace výběrového vzorku."
 
 #. the selct options label
 #: ../gap/gap_onion_dialog.c:1248
@@ -4980,20 +4977,18 @@ msgstr "Vyčistit vyrovnávací paměť políček"
 
 #. Chache Status (number of frames currently in the cache)
 #: ../gap/gap_player_dialog.c:6203
-#, fuzzy
 msgid "Cached Frames:"
-msgstr "Prokládaná políčka"
+msgstr "Políčka ve vyrovnávací paměti:"
 
 #. Layout Options label
 #: ../gap/gap_player_dialog.c:6228
-#, fuzzy
 msgid "Layout Options:"
-msgstr "Volby:"
+msgstr "Volby rozvržení:"
 
 #. Show Go button array (configure to show/hide this optional positioning tool)
 #: ../gap/gap_player_dialog.c:6238
 msgid "Show Button Array"
-msgstr ""
+msgstr "Zobrazit pole tlačítek"
 
 #: ../gap/gap_player_dialog.c:6244
 msgid ""
@@ -5866,7 +5861,7 @@ msgstr "Aktualizace"
 
 #: ../gap/gap_story_att_trans_dlg.c:2246
 msgid "automatic update using the referred frame"
-msgstr ""
+msgstr "automatická aktualizace pomocí uvedeného políčka"
 
 #. from start label
 #: ../gap/gap_story_att_trans_dlg.c:2348
@@ -5890,12 +5885,11 @@ msgstr "Zkopírovat tento počet políček do všech povolených řádků"
 
 #: ../gap/gap_story_att_trans_dlg.c:2463
 msgid "Number of frames (duration of transition from start to end value)"
-msgstr ""
+msgstr "Počet políček (trvání přechodu z počáteční do konečné hodnoty)"
 
 #: ../gap/gap_story_att_trans_dlg.c:2507 ../gap/gap_story_att_trans_dlg.c:2518
-#, fuzzy
 msgid "Transition Attributes"
-msgstr "Atributy vrstvy"
+msgstr "Atributy přechodu"
 
 #. the frame
 #: ../gap/gap_story_att_trans_dlg.c:2539 ../gap/gap_story_dialog.c:4217
@@ -6237,9 +6231,8 @@ msgid "Create Clip"
 msgstr "Vytvořit klip"
 
 #: ../gap/gap_story_dialog.c:4300 ../gap/gap_story_dialog.c:4381
-#, fuzzy
 msgid "Create Transition"
-msgstr "deformace rate"
+msgstr "Vytvořit přechod"
 
 #: ../gap/gap_story_dialog.c:4305 ../gap/gap_story_dialog.c:4386
 msgid "Toggle Unit"
@@ -6345,11 +6338,12 @@ msgid "Paste a clip after last (selected) element"
 msgstr "Vložit klip po posledním (vybraném) elementu"
 
 #: ../gap/gap_story_dialog.c:5996
-#, fuzzy
 msgid ""
 "Playback storyboard file. SHIFT: Play only selected clips CTRL: Play "
 "composite video"
-msgstr "Přehrát seznam klipů. SHIFT: Přehrát jen vybrané klipy"
+msgstr ""
+"Přehrát soubor storyboardu. SHIFT: přehrát pouze zvolené klipy CTRL: přehrát "
+"kompozitní video"
 
 #: ../gap/gap_story_dialog.c:6006
 #, fuzzy
@@ -6400,9 +6394,8 @@ msgid "Input Audiotrack:"
 msgstr "Vstupní stopa zvuku:"
 
 #: ../gap/gap_story_dialog.c:6618
-#, fuzzy
 msgid "select input audiotrack in the videofile(s)."
-msgstr "zvolte vstupní stopu videa (většina souborů videa má jen 1 stopu)"
+msgstr "zvolte vstupní zvukovou stopu ve videosouboru/ech."
 
 #: ../gap/gap_story_dialog.c:6629
 msgid "Output Audiotrack:"
