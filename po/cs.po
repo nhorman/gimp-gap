@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cs\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-07-20 16:54+0200\n"
-"PO-Revision-Date: 2006-07-20 16:52+0200\n"
+"POT-Creation-Date: 2006-07-21 13:08+0200\n"
+"PO-Revision-Date: 2006-07-21 13:08+0200\n"
 "Last-Translator: Jakub Friedl <jfriedl@suse.cz>\n"
 "Language-Team: Czech <gnome-cs-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -2470,9 +2470,8 @@ msgid "X:"
 msgstr "X:"
 
 #: ../gap/gap_morph_dialog.c:3228
-#, fuzzy
 msgid "Morphpoint X coordinate"
-msgstr "X"
+msgstr "Souřadnice X bodu morfingu"
 
 #. the y koordinate label
 #. Y
@@ -2483,14 +2482,13 @@ msgid "Y:"
 msgstr "Y:"
 
 #: ../gap/gap_morph_dialog.c:3260
-#, fuzzy
 msgid "Morphpoint Y coordinate"
-msgstr "Y"
+msgstr "Souřadnice Y bodu morfingu"
 
 #. Fit Zoom Button
 #: ../gap/gap_morph_dialog.c:3268
 msgid "Fit Zoom"
-msgstr "Přizpůsobit zvětšení"
+msgstr "Přizpůsobit přiblížení"
 
 #: ../gap/gap_morph_dialog.c:3272
 msgid "Show the whole layer. (by adjusting zoom to fit into preview)."
@@ -2700,14 +2698,12 @@ msgid "Pointset B:"
 msgstr "Sada bodů B:"
 
 #: ../gap/gap_morph_exec.c:2583
-#, fuzzy
 msgid "creating morph tween layers..."
-msgstr "Vytvářím vrstvy onionskin..."
+msgstr "vytváří se tween vrstvy pro morfing..."
 
 #: ../gap/gap_morph_exec.c:2587
-#, fuzzy
 msgid "creating warp tween layers..."
-msgstr "Vytvářím vrstvy onionskin..."
+msgstr "vytváří se tween vrstvy pro warping..."
 
 #: ../gap/gap_morph_main.c:145
 msgid "Morph..."
@@ -3071,9 +3067,8 @@ msgstr ""
 
 #. toggle Tracelayer
 #: ../gap/gap_mov_dialog.c:2994 ../gap/gap_mov_exec.c:929
-#, fuzzy
 msgid "Tracelayer"
-msgstr "Vytvořit vrstvu:"
+msgstr "Trace vrstva"
 
 #: ../gap/gap_mov_dialog.c:2998
 msgid "Create an additional trace layer in all handled frames"
@@ -3082,9 +3077,8 @@ msgstr ""
 #. TraceOpacityInitial
 #. table col, row
 #: ../gap/gap_mov_dialog.c:3010
-#, fuzzy
 msgid "TraceOpacity1:"
-msgstr "Krytí:"
+msgstr "Trace krytí 1:"
 
 #. label text
 #. scalesize spinsize
@@ -3095,16 +3089,14 @@ msgstr "Krytí:"
 #. constrain
 #. lower, upper (unconstrained)
 #: ../gap/gap_mov_dialog.c:3018
-#, fuzzy
 msgid "Initial opacity of the trace layer"
-msgstr "Snížení průhlednosti pro druhou vrstvu Onionskin"
+msgstr "Počáteční krytí trace vrstvy"
 
 #. TraceOpacityDescending
 #. table col, row
 #: ../gap/gap_mov_dialog.c:3028
-#, fuzzy
 msgid "TraceOpacity2:"
-msgstr "Krytí:"
+msgstr "Trace krytí 2:"
 
 #. label text
 #. scalesize spinsize
@@ -3123,7 +3115,7 @@ msgstr "Snížení průhlednosti pro druhou vrstvu Onionskin"
 #. table col, row
 #: ../gap/gap_mov_dialog.c:3048
 msgid "Tweensteps:"
-msgstr ""
+msgstr "Tween kroky:"
 
 #. label text
 #. scalesize spinsize
@@ -3144,9 +3136,8 @@ msgstr ""
 #. TweenOpacityInitial
 #. table col, row
 #: ../gap/gap_mov_dialog.c:3071
-#, fuzzy
 msgid "TweenOpacity1:"
-msgstr "Krytí:"
+msgstr "Tween krytí 1:"
 
 #. label text
 #. scalesize spinsize
@@ -3157,9 +3148,8 @@ msgstr "Krytí:"
 #. constrain
 #. lower, upper (unconstrained)
 #: ../gap/gap_mov_dialog.c:3079
-#, fuzzy
 msgid "Initial opacity of the tween layer"
-msgstr "Snížení průhlednosti pro druhou vrstvu Onionskin"
+msgstr "Počáteční krytí tween vrstvy"
 
 #. TweenOpacityDescending
 #. table col, row
@@ -3723,9 +3713,8 @@ msgstr ""
 "%s"
 
 #: ../gap/gap_mov_exec.c:237
-#, fuzzy
 msgid "Tweenlayer"
-msgstr "Vytvořit vrstvu:"
+msgstr "Tween vrstva"
 
 #: ../gap/gap_mov_exec.c:687
 msgid ""
@@ -6150,7 +6139,7 @@ msgstr "řádky v seznamu ořezání"
 
 #: ../gap/gap_story_dialog.c:3527
 msgid "Storyboard Layout:"
-msgstr ""
+msgstr "Rozvržení storyboardu:"
 
 #: ../gap/gap_story_dialog.c:3533
 msgid "Thumbnail size in the storyboard list"
@@ -6815,11 +6804,11 @@ msgstr ""
 #. the Transform (flip_request) label
 #: ../gap/gap_story_properties.c:3179
 msgid "Transform:"
-msgstr ""
+msgstr "Transformovat:"
 
 #: ../gap/gap_story_properties.c:3208
 msgid "Do not apply internal transformations"
-msgstr ""
+msgstr "Neaplikovat interní transformace"
 
 #. radio button flip_request rotate 180 degree
 #: ../gap/gap_story_properties.c:3217
@@ -6829,33 +6818,30 @@ msgstr "Otočit o 180 stupňů"
 
 #: ../gap/gap_story_properties.c:3226
 msgid "Rotate all frames of this clip by 180 degree"
-msgstr ""
+msgstr "Otočit všechna políčka tohoto klipu o 180 stupňů"
 
 #. radio button flip_request hor
 #: ../gap/gap_story_properties.c:3235
-#, fuzzy
 msgid "Flip Horizontally"
 msgstr "Převrátit vodorovně"
 
 #: ../gap/gap_story_properties.c:3244
 msgid "Flip all frames of this clip horizontally"
-msgstr ""
+msgstr "Převrátit všechna políčka tohoto klipu vodorovně"
 
 #. radio button flip_request ver
 #: ../gap/gap_story_properties.c:3253
-#, fuzzy
 msgid "Flip Vertically"
 msgstr "Převrátit svisle"
 
 #: ../gap/gap_story_properties.c:3262
 msgid "Flip all frames of this clip vertically"
-msgstr ""
+msgstr "Převrátit všechna políčka tohoto klipu svisle"
 
 #. the mask_name label
 #: ../gap/gap_story_properties.c:3278
-#, fuzzy
 msgid "Mask Name:"
-msgstr "Jméno:"
+msgstr "Jméno masky:"
 
 #: ../gap/gap_story_properties.c:3296
 #, fuzzy
@@ -6871,9 +6857,8 @@ msgstr ""
 
 #. the mask enable check button
 #: ../gap/gap_story_properties.c:3322
-#, fuzzy
 msgid "enable"
-msgstr "Povolit"
+msgstr "pPovolit"
 
 #: ../gap/gap_story_properties.c:3331
 #, fuzzy
