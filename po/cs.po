@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cs\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-07-21 13:08+0200\n"
-"PO-Revision-Date: 2006-07-21 13:08+0200\n"
+"POT-Creation-Date: 2006-07-21 13:17+0200\n"
+"PO-Revision-Date: 2006-07-21 13:18+0200\n"
 "Last-Translator: Jakub Friedl <jfriedl@suse.cz>\n"
 "Language-Team: Czech <gnome-cs-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -217,8 +217,7 @@ msgstr "Jít na toto číslo políčka"
 
 #: ../gap/gap_base_ops.c:1136
 #, c-format
-msgid ""
-"Frames %d - %d will be deleted. There will be no undo for this operation."
+msgid "Frames %d - %d will be deleted. There will be no undo for this operation."
 msgstr "Políčka %d - %d budou odstraněna. Tuto operaci nelze vrátit zpět."
 
 #. title_txt
@@ -239,8 +238,7 @@ msgstr "Odstranit políčka od %ld do (číslo)"
 
 #: ../gap/gap_base_ops.c:1194
 #, c-format
-msgid ""
-"Delete frames starting at current number %d up to this number (inclusive)"
+msgid "Delete frames starting at current number %d up to this number (inclusive)"
 msgstr "Odstranit políčka od aktuálního čísla %d až po toto číslo (včetně)"
 
 #: ../gap/gap_base_ops.c:1275
@@ -389,8 +387,7 @@ msgstr "Vyměnit aktuální políčko (%ld)"
 
 #: ../gap/gap_base_ops.c:1637
 #, c-format
-msgid ""
-"Exchange the current frame %d with the frame that has the number entered here"
+msgid "Exchange the current frame %d with the frame that has the number entered here"
 msgstr "Vyměnit aktuální políčko %d s políčkem s tímto číslem"
 
 #: ../gap/gap_base_ops.c:1641
@@ -410,8 +407,7 @@ msgstr "N-posun:"
 msgid ""
 "Renumber the affected frame sequence (numbers are shifted in circle by N "
 "steps)"
-msgstr ""
-"Přečíslovat dotyčnou sekvenci políček (čísla jsou posunuta cyklicky o N)"
+msgstr "Přečíslovat dotyčnou sekvenci políček (čísla jsou posunuta cyklicky o N)"
 
 #: ../gap/gap_base_ops.c:1718
 msgid "Frame Sequence Shift"
@@ -506,8 +502,7 @@ msgstr "Zdrojová alfa:"
 #. lowr/upper unconstrained
 #: ../gap/gap_bluebox.c:343
 msgid "Affect only pixels with alpha >= source alpha where 1.0 is full opaque"
-msgstr ""
-"Ovlivňovat jen pixely s alfou >= zdrojová alfa, kde 1.0 je úplně neprůhledné"
+msgstr "Ovlivňovat jen pixely s alfou >= zdrojová alfa, kde 1.0 je úplně neprůhledné"
 
 #: ../gap/gap_bluebox.c:354
 msgid "Target Alpha:"
@@ -519,10 +514,8 @@ msgstr "Cílová alfa:"
 #. constrain
 #. lowr/upper unconstrained
 #: ../gap/gap_bluebox.c:361
-msgid ""
-"Set alpha of affected pixel to target alpha where 0.0 is full transparent"
-msgstr ""
-"Nastavit alfu ovlivněných pixelů na cílovou alfu, kde 0.0 je úplně průhledné"
+msgid "Set alpha of affected pixel to target alpha where 0.0 is full transparent"
+msgstr "Nastavit alfu ovlivněných pixelů na cílovou alfu, kde 0.0 je úplně průhledné"
 
 #: ../gap/gap_bluebox.c:372
 msgid "Feather Edges:"
@@ -1017,10 +1010,8 @@ msgid "Jpeg Progressive:"
 msgstr "Progresivní JPEG:"
 
 #: ../gap/gap_decode_mplayer.c:566
-msgid ""
-"Enable progressive jpeg encoding(is ignored when other formats are used)"
-msgstr ""
-"Povolit progresivní kódování JPEG (při použití jiného formátu je ignorováno)"
+msgid "Enable progressive jpeg encoding(is ignored when other formats are used)"
+msgstr "Povolit progresivní kódování JPEG (při použití jiného formátu je ignorováno)"
 
 #: ../gap/gap_decode_mplayer.c:572
 msgid "Jpeg Baseline:"
@@ -1028,8 +1019,7 @@ msgstr "Základní jpeg:"
 
 #: ../gap/gap_decode_mplayer.c:573
 msgid "Enable baseline jpeg encoding(is ignored when other formats are used)"
-msgstr ""
-"Povolit základní kódování jpeg (je ignorován, když se používají jiné formáty)"
+msgstr "Povolit základní kódování jpeg (je ignorován, když se používají jiné formáty)"
 
 #: ../gap/gap_decode_mplayer.c:584
 msgid "Silent"
@@ -1292,8 +1282,7 @@ msgstr ""
 "políček je pro zvuk ignorováno)"
 
 #: ../gap/gap_decode_xanim.c:295
-msgid ""
-"Quality for resulting jpeg frames. (is ignored when other formats are used)"
+msgid "Quality for resulting jpeg frames. (is ignored when other formats are used)"
 msgstr "Kvalita výsledných políček jpeg. (pro jiné formáty ignorováno)"
 
 #: ../gap/gap_decode_xanim.c:311
@@ -2284,8 +2273,7 @@ msgid "Layer Pattern:"
 msgstr "Vzorek vrstvy:"
 
 #: ../gap/gap_mod_layer_dialog.c:1299
-msgid ""
-"String to identify layer names or layerstack position numbers. Example: 0,3-5"
+msgid "String to identify layer names or layerstack position numbers. Example: 0,3-5"
 msgstr ""
 "Řetězec k identifikaci jmen vrstev nebo čísel pozice v zásobníku vrstev. "
 "Příklad: 0,3-5"
@@ -2405,7 +2393,7 @@ msgstr "Kliknutí: odstranit následující bod"
 #. radio button ZOOM
 #: ../gap/gap_morph_dialog.c:3011
 msgid "Zoom"
-msgstr "Zvětšení"
+msgstr "Přiblížení"
 
 #: ../gap/gap_morph_dialog.c:3020
 msgid ""
@@ -2492,7 +2480,7 @@ msgstr "Přizpůsobit přiblížení"
 
 #: ../gap/gap_morph_dialog.c:3272
 msgid "Show the whole layer. (by adjusting zoom to fit into preview)."
-msgstr "Zobrazit celou vrstvu (upravením zvětšení, aby se vešla do náhledu)."
+msgstr "Zobrazit celou vrstvu (změnou přiblížení, aby se vešla do náhledu)."
 
 #. there is just one total_points display (always in the dst frame)
 #. the current Point label
@@ -2617,14 +2605,12 @@ msgstr ""
 
 #: ../gap/gap_morph_dialog.c:3751
 #, fuzzy
-msgid ""
-"Load morph workpoints from file. SHIFT-click: define filename of Pointset B"
+msgid "Load morph workpoints from file. SHIFT-click: define filename of Pointset B"
 msgstr "Načíst"
 
 #: ../gap/gap_morph_dialog.c:3763
 #, fuzzy
-msgid ""
-"Save morph workpoints to file. SHIFT-click: define filename of Pointset B"
+msgid "Save morph workpoints to file. SHIFT-click: define filename of Pointset B"
 msgstr "Uložit"
 
 #. the tween_steps label
@@ -3060,10 +3046,8 @@ msgid "Move Path Bluebox Keycolor"
 msgstr "Přesun Cesta"
 
 #: ../gap/gap_mov_dialog.c:2976
-msgid ""
-"Open dialog window to set parameters and keycolor for the bluebox filter"
-msgstr ""
-"Otevřít dialogové okno pro nastavení parametrů a klíčové barvy filtru bluebox"
+msgid "Open dialog window to set parameters and keycolor for the bluebox filter"
+msgstr "Otevřít dialogové okno pro nastavení parametrů a klíčové barvy filtru bluebox"
 
 #. toggle Tracelayer
 #: ../gap/gap_mov_dialog.c:2994 ../gap/gap_mov_exec.c:929
@@ -3196,8 +3180,7 @@ msgid "Delete current controlpoint"
 msgstr "Odstranit aktuální řídicí bod"
 
 #: ../gap/gap_mov_dialog.c:3209
-msgid ""
-"Show previous controlpoint. Hold down the shift key to follow keyframes."
+msgid "Show previous controlpoint. Hold down the shift key to follow keyframes."
 msgstr ""
 "Zobrazit předchozí řídicí bod. Stiskněte klávesu shift pro posun po "
 "klíčových políčkách."
@@ -3613,8 +3596,7 @@ msgstr "Klíčové políčko:"
 #. lower, upper (unconstrained)
 #: ../gap/gap_mov_dialog.c:4029
 msgid "Fix controlpoint to keyframe number where 0 == no keyframe"
-msgstr ""
-"Upevnit řídicí bod k číslu klíčového políčka, kde 0 == žádné klíčové políčko"
+msgstr "Upevnit řídicí bod k číslu klíčového políčka, kde 0 == žádné klíčové políčko"
 
 #: ../gap/gap_mov_dialog.c:4055
 msgid "Scale and Modify"
@@ -4453,10 +4435,8 @@ msgid "Ignore BG-layer(s):"
 msgstr "Ignorovat vrstvy pozadí:"
 
 #: ../gap/gap_onion_dialog.c:1209
-msgid ""
-"Exclude N background layers. Use 0 if you dont want to exclude any layer."
-msgstr ""
-"Vyjmout N vrstev pozadí. Použijte 0, pokud nechcete vyjmout žádnou vrstvu."
+msgid "Exclude N background layers. Use 0 if you dont want to exclude any layer."
+msgstr "Vyjmout N vrstev pozadí. Použijte 0, pokud nechcete vyjmout žádnou vrstvu."
 
 #: ../gap/gap_onion_dialog.c:1212
 msgid "Select Mode:"
@@ -4571,10 +4551,8 @@ msgstr ""
 "ale uložit aktuální nastavení"
 
 #: ../gap/gap_onion_dialog.c:1394
-msgid ""
-"Remove all onionskin layers in all frames of the the selected frame range"
-msgstr ""
-"Odstranit všechny vrstvy onionskin ze všech políček ze zvoleného rozsahu"
+msgid "Remove all onionskin layers in all frames of the the selected frame range"
+msgstr "Odstranit všechny vrstvy onionskin ze všech políček ze zvoleného rozsahu"
 
 #: ../gap/gap_onion_dialog.c:1403
 msgid ""
@@ -4628,8 +4606,7 @@ msgstr "Soubor zvuku:"
 
 #: ../gap/gap_player_dialog.c:433
 msgid "Name of wavefile to create as copy in RIFF WAVE format"
-msgstr ""
-"Název zvukového souboru, který vytvořit jako kopii ve formátu RIFF WAVE"
+msgstr "Název zvukového souboru, který vytvořit jako kopii ve formátu RIFF WAVE"
 
 #: ../gap/gap_player_dialog.c:440
 msgid "Resample:"
@@ -5027,8 +5004,7 @@ msgid "Audio Options"
 msgstr "Volby zvuku"
 
 #: ../gap/gap_player_dialog.c:6551
-msgid ""
-"Click: go to frame, Ctrl-Click: set 'From Frame', Alt-Click: set 'To Frame'"
+msgid "Click: go to frame, Ctrl-Click: set 'From Frame', Alt-Click: set 'To Frame'"
 msgstr ""
 "Kliknutí: přejít na políčko, Ctrl-kliknutí: nastavit 'od políčka', Alt-"
 "kliknutí: nastavit 'po políčko'"
@@ -5539,8 +5515,7 @@ msgstr "Základ jména vrstvy:"
 msgid ""
 "Basename for all layers where the string '[######]' is replaced by the frame "
 "number"
-msgstr ""
-"Základ názvu všech vrstev, kde řetězec '[######]' je nahrazen číslem políčka"
+msgstr "Základ názvu všech vrstev, kde řetězec '[######]' je nahrazen číslem políčka"
 
 #: ../gap/gap_range_ops.c:733
 msgid "Layer Mergemode:"
@@ -6336,8 +6311,7 @@ msgstr ""
 
 #: ../gap/gap_story_dialog.c:6006
 #, fuzzy
-msgid ""
-"Playback cliplist. SHIFT: Play only selected clips CTRL: Play composite video"
+msgid "Playback cliplist. SHIFT: Play only selected clips CTRL: Play composite video"
 msgstr "Přehrát seznam klipů. SHIFT: Přehrát jen vybrané klipy"
 
 #. gtk_widget_show (entry);
@@ -6374,8 +6348,7 @@ msgid "Cancel"
 msgstr "Zrušit"
 
 #: ../gap/gap_story_dialog.c:6611
-msgid ""
-"Generate original tone audio track for all video clips in the storyboard"
+msgid "Generate original tone audio track for all video clips in the storyboard"
 msgstr ""
 
 #: ../gap/gap_story_dialog.c:6617
@@ -6577,8 +6550,7 @@ msgstr "Nepodporovaný řádek byl ignorován"
 msgid ""
 "the passed filename %s has irrelevant content or could not be opened by the "
 "parser"
-msgstr ""
-"zadaný název souboru %s má nepodstatný obsah nebo jej parser nemůže otevřít"
+msgstr "zadaný název souboru %s má nepodstatný obsah nebo jej parser nemůže otevřít"
 
 #: ../gap/gap_story_main.c:164
 msgid "Storyboard..."
@@ -6796,10 +6768,8 @@ msgid "Apply even-lines filter when reading videoframes"
 msgstr "Používat při čtení políček videa filtr sudých řádků"
 
 #: ../gap/gap_story_properties.c:3162
-msgid ""
-"deinterlacing threshold: 0.0 no interpolation 0.999 smooth interpolation"
-msgstr ""
-"práh eliminace prokládání: 0.0 žádná interpolace 0.999 hladká interpolace"
+msgid "deinterlacing threshold: 0.0 no interpolation 0.999 smooth interpolation"
+msgstr "práh eliminace prokládání: 0.0 žádná interpolace 0.999 hladká interpolace"
 
 #. the Transform (flip_request) label
 #: ../gap/gap_story_properties.c:3179
@@ -7108,8 +7078,7 @@ msgstr ""
 
 #: ../gap/gap_vex_dialog.c:2383
 msgid "Basename for extracted frames (framenr and extension is added)"
-msgstr ""
-"Základ jména pro extrahovaná políčka (je přidáno číslo políčka a přípona)"
+msgstr "Základ jména pro extrahovaná políčka (je přidáno číslo políčka a přípona)"
 
 #: ../gap/gap_vex_dialog.c:2384
 msgid "frame_"
@@ -7141,15 +7110,12 @@ msgid "Framenr 1:"
 msgstr "Číslo políčka 1:"
 
 #: ../gap/gap_vex_dialog.c:2491
-msgid ""
-"Framenumber for 1st extracted frame (use 0 for keeping original framenumbers)"
-msgstr ""
-"Číslo prvního extrahovaného políčka (použijte 0 pro původní čísla políček)"
+msgid "Framenumber for 1st extracted frame (use 0 for keeping original framenumbers)"
+msgstr "Číslo prvního extrahovaného políčka (použijte 0 pro původní čísla políček)"
 
 #: ../gap/gap_vex_dialog.c:2522
 msgid "0.0 .. no interpolation, 1.0 smooth interpolation at deinterlacing"
-msgstr ""
-"0.0 .. žádná interpolace, 1.0 hladká interpolace při eliminaci prokládání"
+msgstr "0.0 .. žádná interpolace, 1.0 hladká interpolace při eliminaci prokládání"
 
 #: ../gap/gap_vex_dialog.c:2527
 msgid "no deinterlace"
@@ -7900,8 +7866,7 @@ msgstr ""
 msgid ""
 "optional Save each composite frame to JPEG file, before it is passed to the "
 "encoder"
-msgstr ""
-"nepovinné Uložit každé složené políčko do souboru JPEG před předáním kodéru"
+msgstr "nepovinné Uložit každé složené políčko do souboru JPEG před předáním kodéru"
 
 #. the Debug Multilayer File label
 #: ../vid_common/gap_cme_gui.c:2791
@@ -7940,8 +7905,7 @@ msgstr "Volby:"
 
 #: ../vid_common/gap_cme_gui.c:2880
 msgid "Options to call the audiotool ($IN, $OUT $RATE are replaced)"
-msgstr ""
-"Přepínače, se kterými volat nástroj zvuku ($IN, $OUT, $RATE jsou nahrazeny)"
+msgstr "Přepínače, se kterými volat nástroj zvuku ($IN, $OUT, $RATE jsou nahrazeny)"
 
 #: ../vid_common/gap_cme_gui.c:2892
 msgid ""
@@ -8503,8 +8467,7 @@ msgstr "Název kodeku:"
 
 #: ../vid_enc_avi/gap_enc_avi_main.c:608
 msgid "4 char codec code name. One of: RGB (raw uncompressed) JPEG,  XVID"
-msgstr ""
-"čtyřznakový kódový název kodeku. Jedno z RGB (raw, nekomprimované) JPEG, XVID"
+msgstr "čtyřznakový kódový název kodeku. Jedno z RGB (raw, nekomprimované) JPEG, XVID"
 
 #: ../vid_enc_avi/gap_enc_avi_main.c:616
 msgid "Don't recode"
@@ -8561,8 +8524,7 @@ msgstr "max_quantizer:"
 
 #: ../vid_enc_avi/gap_enc_avi_main.c:692
 msgid "for XVID Codec  upper limit for quantize Range 1 == BEST Quality "
-msgstr ""
-"pro kodek XVID  horní limit pro rozsah kvantování 1 == NEJLEPŠÍ kvalita"
+msgstr "pro kodek XVID  horní limit pro rozsah kvantování 1 == NEJLEPŠÍ kvalita"
 
 #: ../vid_enc_avi/gap_enc_avi_main.c:701
 msgid "min_quantizer:"
@@ -8570,8 +8532,7 @@ msgstr "min_quantizer:"
 
 #: ../vid_enc_avi/gap_enc_avi_main.c:702
 msgid "for XVID Codec  lower limit for quantize Range 1 == BEST Quality "
-msgstr ""
-"pro kodek XVID  dolní limit pro rozsah kvantování 1 == NEJLEPŠÍ kvalita"
+msgstr "pro kodek XVID  dolní limit pro rozsah kvantování 1 == NEJLEPŠÍ kvalita"
 
 #: ../vid_enc_avi/gap_enc_avi_main.c:711
 msgid "key_interval:"
@@ -9225,8 +9186,7 @@ msgstr "Překrývající se blok"
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2334
 #, fuzzy
 msgid "Enable use overlapped block motion compensation (only h263+ CODEC)"
-msgstr ""
-"povolit používání kompenzace pohybu překrývajícího se bloku (jen kodek h263+)"
+msgstr "povolit používání kompenzace pohybu překrývajícího se bloku (jen kodek h263+)"
 
 #. the quarter pel checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2345
@@ -9276,8 +9236,7 @@ msgstr "používat MVO"
 msgid ""
 "Try to encode each MB with MV=<0,0> and choose the better one (has no effect "
 "if mbd=0)"
-msgstr ""
-"zkusit kódovat každý MB s MV=<0,0> a zvolit ten lepší (nemá vliv, když mbd=0)"
+msgstr "zkusit kódovat každý MB s MV=<0,0> a zvolit ten lepší (nemá vliv, když mbd=0)"
 
 #. the Use Normalize checkbutton
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2430
@@ -9788,8 +9747,7 @@ msgstr "Nastavit parametry pro moduly GAP kodéru videa singleframes"
 
 #: ../vid_enc_single/gap_enc_singleframes_main.c:204
 msgid "This plugin sets singleframes specific video encoding parameters."
-msgstr ""
-"Tento modul nastavuje parametry kódování videa specifické pro singleframes."
+msgstr "Tento modul nastavuje parametry kódování videa specifické pro singleframes."
 
 #: ../vid_enc_single/gap_enc_singleframes_main.c:217
 msgid "Get GUI Parameters for GAP singleframes video encoder"
@@ -9834,3 +9792,4 @@ msgid ""
 msgstr ""
 "** Ukládání SELHALO na souboru\n"
 "%s"
+
