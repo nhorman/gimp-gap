@@ -2690,7 +2690,7 @@ gap_story_attw_properties_dialog (GapStbAttrWidget *attw)
       , _("opacity value for the first handled frame "
           "where 100 is fully opaque, 0 is fully transparent")
       , &attw->stb_elem_refptr->att_arr_value_from[att_type_idx]
-      , _("opacity value for the last handled frame"
+      , _("opacity value for the last handled frame "
           "where 100 is fully opaque, 0 is fully transparent")
       , &attw->stb_elem_refptr->att_arr_value_to[att_type_idx]
       , _("number of frames")
