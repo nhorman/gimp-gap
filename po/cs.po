@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cs\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-08-02 17:17+0200\n"
-"PO-Revision-Date: 2006-08-02 17:17+0200\n"
+"POT-Creation-Date: 2006-08-03 11:57+0200\n"
+"PO-Revision-Date: 2006-08-03 11:55+0200\n"
 "Last-Translator: Jakub Friedl <jfriedl@suse.cz>\n"
 "Language-Team: Czech <gnome-cs-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -5935,19 +5935,23 @@ msgstr "Počet překrývajících se políček v této stopě"
 #. digits for the from/to values
 #: ../gap/gap_story_att_trans_dlg.c:2688
 msgid "ON: Enable opacity settings"
-msgstr ""
+msgstr "ON: Povolit nastavení krytí"
 
 #: ../gap/gap_story_att_trans_dlg.c:2690
 msgid ""
 "opacity value for the first handled frame where 100 is fully opaque, 0 is "
 "fully transparent"
 msgstr ""
+"hodnota krytí pro první zpracovávané políčko, kde 100 znamená plné krytí a 0 "
+"znamená úplnou průhlednost"
 
 #: ../gap/gap_story_att_trans_dlg.c:2693
 msgid ""
 "opacity value for the last handled framewhere 100 is fully opaque, 0 is "
 "fully transparent"
 msgstr ""
+"hodnota krytí pro poslední zpracovávané políčko, kde 100 znamená plné krytí "
+"a 0 znamená úplnou průhlednost"
 
 #: ../gap/gap_story_att_trans_dlg.c:2696 ../gap/gap_story_att_trans_dlg.c:2722
 #: ../gap/gap_story_att_trans_dlg.c:2749 ../gap/gap_story_att_trans_dlg.c:2775

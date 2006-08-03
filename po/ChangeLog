@@ -1,6 +1,10 @@
+2006-08-03  Jakub Friedl  <jfriedl@suse.cz>
+
+	* cs.po: Updated Czech translation
+
 2006-08-02  Jakub Friedl  <jfriedl@suse.cz>
 
-	* cs.po: UpdatedCzech translation
+	* cs.po: Updated Czech translation
 
 2006-07-31  Jakub Friedl  <jfriedl@suse.cz>
 
@@ -122,8 +126,8 @@
 
 2005-09-29  Ryoichi INAGAKI  <ryo1@bc.wakwak.com>
 
-        * ja.po: Updated Japanese translation.
-	
+	* ja.po: Updated Japanese translation.
+
 2005-09-23  Adam Weinberger  <adamw@gnome.org>
 
 	* en_CA.po: Updated Canadian English translation.
