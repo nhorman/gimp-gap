@@ -399,7 +399,7 @@ msgstr "N lần:"
 
 #: ../gap/gap_base_ops.c:1508
 msgid "Copy selected range n-times (you may type in values > 99)"
-msgstr "Sao chếp n lần phạm vi đã chọn (gõ được giá trị > 99)"
+msgstr "Sao chép n lần phạm vi đã chọn (gõ được giá trị > 99)"
 
 #: ../gap/gap_base_ops.c:1513
 msgid "Make Duplicates of Frame Range"
