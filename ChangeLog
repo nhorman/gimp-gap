@@ -1,3 +1,7 @@
+2006-09-12  Pema Geyleg  <pgeyleg@gmail.com>
+
+	* configure.in: Added dz in ALL_LINGUAS
+
 2006-08-03  Jakub Friedl <jfriedl@suse.cz>
 
 	* gap/gap_story_att_trans_dlg.c: missing space in UI string
