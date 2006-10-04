@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cs\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-08-03 12:09+0200\n"
-"PO-Revision-Date: 2006-08-03 12:10+0200\n"
+"POT-Creation-Date: 2006-10-04 16:01+0200\n"
+"PO-Revision-Date: 2006-10-04 16:09+0200\n"
 "Last-Translator: Jakub Friedl <jfriedl@suse.cz>\n"
 "Language-Team: Czech <gnome-cs-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -3034,6 +3034,8 @@ msgid ""
 "Apply the bluebox filter on the moving object(s). The bluebox filter makes "
 "the keycolor transparent."
 msgstr ""
+"Aplikovat filtr bluebox na pohyblivé objekty. Filtr bluebox mění klíčovou "
+"barvu na průhlednost."
 
 #. keycolor button
 #: ../gap/gap_mov_dialog.c:2960
@@ -3087,9 +3089,8 @@ msgstr "Trace krytí 2:"
 #. constrain
 #. lower, upper (unconstrained)
 #: ../gap/gap_mov_dialog.c:3036
-#, fuzzy
 msgid "Descending opacity of the trace layer"
-msgstr "Snížení průhlednosti pro druhou vrstvu Onionskin"
+msgstr "Snižující se krytí trace vrstvy"
 
 #. TweenSteps
 #. table col, row
@@ -4151,7 +4152,6 @@ msgid "Goto first frame"
 msgstr "Jít na první políčko"
 
 #: ../gap/gap_navigator_dialog.c:462
-#, fuzzy
 msgid ""
 "Goto prev frame\n"
 "SHIFT use timezoom stepsize"
@@ -4160,7 +4160,6 @@ msgstr ""
 "<Shift> použít krok časové lupy"
 
 #: ../gap/gap_navigator_dialog.c:467
-#, fuzzy
 msgid ""
 "Goto next frame\n"
 "SHIFT use timezoom stepsize"
