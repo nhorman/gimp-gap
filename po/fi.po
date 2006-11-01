@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gimp-gap\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-10-14 20:31+0300\n"
-"PO-Revision-Date: 2006-10-14 20:53+0300\n"
+"POT-Creation-Date: 2006-11-01 17:58+0300\n"
+"PO-Revision-Date: 2006-11-01 18:04+0300\n"
 "Last-Translator: Tuomas Nurmi <outolumo@ìki.fi>\n"
 "Language-Team: Finnish <gnome-fi@lokalisointi.fi>\n"
 "MIME-Version: 1.0\n"
@@ -1141,7 +1141,7 @@ msgid "failed to write %s (check permissions ?)"
 msgstr "tiedoston %s kirjoittaminen epäonnistui (tarkista kirjoitusoikeudet?)"
 
 #: ../gap/gap_decode_mplayer.c:1073
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "WARNING: your gimprc file configuration for the mediaplayer\n"
 "does not point to an executable program;\n"
@@ -1152,15 +1152,14 @@ msgstr ""
 "Asetus %s on %s\n"
 
 #: ../gap/gap_decode_mplayer.c:1094
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "WARNING: the environment variable %s\n"
 "does not point to an executable program;\n"
 "the current value is: %s\n"
 msgstr ""
 "VAROITUS: ympäristömuuttuja %s\n"
-"ei osoita\n"
-" suoritettavaan ohjelmaan.\n"
+"ei osoita suoritettavaan ohjelmaan.\n"
 "Nykyinen arvo on %s\n"
 
 #. ERROR
@@ -2191,11 +2190,11 @@ msgstr "Tasojen valinta"
 #. Layer select modes
 #: ../gap/gap_mod_layer_dialog.c:1091 ../gap/gap_range_ops.c:650
 msgid "Pattern is equal to layer name"
-msgstr ""
+msgstr "Malli vastaa tason nimeä"
 
 #: ../gap/gap_mod_layer_dialog.c:1100
 msgid "Select all layers where layer name is equal to pattern"
-msgstr ""
+msgstr "Valitse kaikki tasot, joissa tason nimi vastaa mallia"
 
 #. the case sensitive  check_button
 #: ../gap/gap_mod_layer_dialog.c:1112 ../gap/gap_onion_dialog.c:1261
@@ -2384,16 +2383,16 @@ msgid "Move"
 msgstr "Siirrä "
 
 #: ../gap/gap_morph_dialog.c:2972
-#, fuzzy
 msgid ""
 "Click: drag next point\n"
 "SHIFT-Click: force create new point\n"
 "Alt-Click: disable drag\n"
 "Right-Click: delete point at cursor\n"
 msgstr ""
-"Napsautus: vedä seuraava piste Vaihto-napsautus: pakota luomaan uusi piste "
-"Alt-Napsautus: estä vetäminen Oikea-Napsautus: poista kursorin alla oleva "
-"piste."
+"Napsautus: vedä seuraava piste\n"
+"Vaihto-napsautus: pakota luomaan uusi piste\n"
+"Alt-Napsautus: estä vetäminen\n"
+"Oikea-Napsautus: poista kursorin kohdalla oleva piste\n"
 
 #: ../gap/gap_morph_dialog.c:2998
 msgid "Click: delete next point"
@@ -2405,11 +2404,12 @@ msgid "Zoom"
 msgstr "Suurennos"
 
 #: ../gap/gap_morph_dialog.c:3020
-#, fuzzy
 msgid ""
 "Click: zoom in,\n"
 "CTRL-click: zoom out"
-msgstr "Napsautus: suurenna, CTRL-napsautus: loitonna"
+msgstr ""
+"Napsautus: lähennä,\n"
+"CTRL-napsautus: loitonna"
 
 #. radio button SHOW
 #: ../gap/gap_morph_dialog.c:3034
@@ -6520,7 +6520,6 @@ msgstr ""
 #. constrain
 #. lower/upper unconstrained
 #: ../gap/gap_story_properties.c:3063
-#, fuzzy
 msgid "select input videotrack (most videofiles have just 1 track)"
 msgstr ""
 "valitse syötettävä videoraita (useimmissa videotiedostoissa on vain 1 raita)"
@@ -6647,7 +6646,6 @@ msgid "Attach mask in resulting master video size at fixed position"
 msgstr ""
 
 #: ../gap/gap_story_properties.c:3419
-#, fuzzy
 msgid "Maskstepsize:"
 msgstr "Askelpituus:"
 
@@ -6979,9 +6977,8 @@ msgid "Unable to open file %s"
 msgstr "Tiedostoa %s ei voitu avata"
 
 #: ../gap/gap_wr_color_curve.c:529
-#, fuzzy
 msgid "CurvesFile..."
-msgstr "Käyrätiedosto"
+msgstr "Käyrätiedosto..."
 
 #. Menu names
 #: ../gap/gap_wr_color_curve.c:552 ../gap/gap_wr_color_huesat.c:285
@@ -7012,24 +7009,23 @@ msgstr ""
 "värikäyrätyökalulla)"
 
 #: ../gap/gap_wr_color_huesat.c:261
-#, fuzzy
 msgid "Hue-Saturation..."
-msgstr "Värisävysaturaatio"
+msgstr "Sävy ja värikylläisyys..."
 
 #. The dialog1 and main vbox
 #: ../gap/gap_wr_color_huesat.c:581
 msgid "Hue-Saturation"
-msgstr "Värisävysaturaatio"
+msgstr "Sävy ja värikylläisyys..."
 
 #. the frame
 #: ../gap/gap_wr_color_huesat.c:616
 msgid "Hue / Lightness / Saturation Adjustments "
-msgstr "Värisävy / Vaaleus / Saturaation säätö "
+msgstr "Värisävyn, kirkkauden j värikylläisyyden säädöt "
 
 #. Hue Mode the label
 #: ../gap/gap_wr_color_huesat.c:635
 msgid "Hue Mode:"
-msgstr "Värisävyn tila"
+msgstr "Sävyn tila:"
 
 #: ../gap/gap_wr_color_huesat.c:648 ../gap/gap_wr_color_levels.c:650
 msgid "Red"
@@ -7065,11 +7061,11 @@ msgstr "Vaaleus:"
 
 #: ../gap/gap_wr_color_huesat.c:699
 msgid "Saturation:"
-msgstr "Saturaatio:"
+msgstr "Värikylläisyys:"
 
 #: ../gap/gap_wr_color_levels.c:270
 msgid "Levels..."
-msgstr ""
+msgstr "Tasot..."
 
 #. The dialog1 and main vbox
 #: ../gap/gap_wr_color_levels.c:595
@@ -7198,7 +7194,7 @@ msgstr ""
 "%s"
 
 #: ../libgapvidutil/gap_gve_sox.c:152
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "ERROR: Can't overwrite temporary workfile\n"
 "file: %s"
