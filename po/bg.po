@@ -1,16 +1,13 @@
-# translation of gimp-gap.HEAD.bg.po to Bulgarian
-# Bulgarian translation of GIMP-GAP.
-# Copyright (C) 2006 THE GIMP-GAP'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the GIMP-GAP package.
-#
-#
-# Victor Dachev <vdachev@gmail.com>, 2006.
+# Bulgarian translation of gimp-gap po-file.
+# Copyright (C) 2006, 2007 Free Software Foundation, Inc.
+# This file is distributed under the same license as the gimp-gap package.
+# Victor Dachev <vdachev@gmail.com>, 2006, 2007.
 msgid ""
 msgstr ""
-"Project-Id-Version: gimp-gap.HEAD.bg\n"
+"Project-Id-Version: gimp-gap trunk\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-10-28 23:23+0300\n"
-"PO-Revision-Date: 2006-10-28 23:00+0300\n"
+"POT-Creation-Date: 2007-07-27 16:56+0300\n"
+"PO-Revision-Date: 2007-07-27 16:58+0300\n"
 "Last-Translator: Victor Dachev <vdachev@gmail.com>\n"
 "Language-Team: Bulgarian <dict@fsa-bg.org>\n"
 "MIME-Version: 1.0\n"
@@ -8602,15 +8599,6 @@ msgstr ""
 "канални) аудиоданните трябва да са 16-битови некомпресирани. Важно:  първо "
 "трябва да се извика „"
 
-#: ../vid_enc_avi/gap_enc_avi_main.c:213
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:425
-msgid ""
-"\" to set encoder specific paramters, then set the use_rest parameter to 1 "
-"to use them."
-msgstr ""
-"“ за да се зададат специфичните параметри, и тогава да се зададе use_rest "
-"параметър до 1 за да се използва."
-
 #: ../vid_enc_avi/gap_enc_avi_main.c:227
 msgid "Set Parameters for GAP avi video encoder Plugins"
 msgstr "Задаване параметрите за GAP avi video encoder Plugins"
@@ -9901,14 +9889,6 @@ msgstr ""
 "„videofile“ но частта за номер на кадъра се подменя от номера на текущия "
 "кадър (илидобавя автоматично ако видеофайла няма част за номер), "
 "аудиоданните се игнорират. Извикване на „"
-
-#: ../vid_enc_single/gap_enc_singleframes_main.c:188
-msgid ""
-"\" to set encoder specific parameters, is not required because this release "
-"of the singleframe encoder has NO encoder specific parameters"
-msgstr ""
-"“, за да се зададат на енкодера определени параметри, не е необходимо,защото "
-"тази версия няма специфични параметри"
 
 #: ../vid_enc_single/gap_enc_singleframes_main.c:203
 msgid "Set Parameters for GAP singleframes video encoder Plugins"
