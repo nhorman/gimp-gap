@@ -1,3 +1,7 @@
+2007-07-29  Sven Neumann  <sven@gimp.org>
+
+	* POTFILES.in: added missing files (bug #414256).
+
 2007-07-27  Alexander Shopov  <ash@contact.bg>
 
 	* bg.po: Updated Bulgarian translation by
