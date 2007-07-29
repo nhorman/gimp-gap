@@ -2072,7 +2072,7 @@ p_lib_save_named_image2(gint32 image_id, const char *sav_name, GimpRunMode run_m
   if(gap_debug) printf("DEBUG: after thumbmail save\n");
 
   g_free (l_layers_list);
-  g_free (l_drawable);
+  gimp_drawable_detach (l_drawable);
 
 
   if (l_rc != TRUE)
