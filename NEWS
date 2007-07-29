@@ -1,16 +1,26 @@
+Bugs fixed in GAP 2.2.2:
+------------------------
+
+- corrected handling of GimpDrawable to fix crashes with GIMP 2.3 (bug #451350)
+- don't call gimp-image-get-filename on a closed image (bug #452080)
+
+
 Here is a short overview whats new in GIMP-GAP-2.2.1:
 -----------------------------------------------------
 (compared to gimp-gap release 2.2.0)
 
-- Storyboard dialog support to edit transition attributes.
-  The new popup dialog allows creation and changes of the storyboard file attributes
+- Storyboard dialog support to edit transition attributes.  The new
+  popup dialog allows creation and changes of the storyboard file
+  attributes
+
     FIT_SIZE
     MOVE X/Y 
     ZOOM X/Y and 
     OPACITY
-  creation is invoked via menu "create transition" in the story board edit dialog,
-  changes are made via right mouse button click on the thumbnail of the
-  transition attribute.
+  
+  creation is invoked via menu "create transition" in the story board
+  edit dialog, changes are made via right mouse button click on the
+  thumbnail of the transition attribute.
 
 - drag&drop support in the storyboard dialog.
   accept drop of images, frameranges and videoclips.
