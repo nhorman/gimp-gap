@@ -1717,12 +1717,16 @@ gap_lib_get_frame_nr(gint32 image_id)
   long  number;
 
   number = -1;
-  fname = gimp_image_get_filename(image_id);
-  if(fname)
+  if (gap_image_is_alive(image_id))
   {
-     number = gap_lib_get_frame_nr_from_name(fname);
-     g_free(fname);
+    fname = gimp_image_get_filename(image_id);
+    if(fname)
+    {
+       number = gap_lib_get_frame_nr_from_name(fname);
+       g_free(fname);
+    }
   }
+
   return (number);
 }
 
