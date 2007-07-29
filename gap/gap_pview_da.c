@@ -980,6 +980,7 @@ gap_pview_render_f_from_image (GapPView *pv_ptr
                  );
   
     if(!frame_data_was_grabbed) g_free(frame_data);
+    gimp_drawable_detach (drawable);
   }
   
 }  /* end gap_pview_render_f_from_image */

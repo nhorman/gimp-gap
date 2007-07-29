@@ -1184,6 +1184,7 @@ p_avi_encode(GapGveAviGlobalParams *gpp)
 	  l_rc = -1;
 	}
 
+        gimp_drawable_detach (l_drawable);
         /* destroy the tmp image */
         gimp_image_delete(l_tmp_image_id);
       }

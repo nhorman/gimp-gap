@@ -1511,6 +1511,7 @@ GVA_gimp_image_to_rowbuffer(t_GVA_Handle *gvahand, gint32 image_id)
      if(gap_debug) printf("GVA_gimp_image_to_rowbuffer: FLATTEN Image\n");
 
      l_layer_id = gimp_image_flatten(image_id);
+     gimp_drawable_detach (drawable);
      drawable = gimp_drawable_get (l_layer_id);
   }
 
@@ -1545,12 +1546,9 @@ GVA_gimp_image_to_rowbuffer(t_GVA_Handle *gvahand, gint32 image_id)
 
   if (gap_debug)  printf("DEBUG: after copy data rows \n");
 
-
+  gimp_drawable_detach (drawable);
   return(GVA_RET_OK); /* return the newly created layer_id (-1 on error) */
 }  /* end GVA_gimp_image_to_rowbuffer */
-
-
-
 
 /* ------------------------------------
  * p_check_image_is_alive
@@ -2041,7 +2039,7 @@ GVA_frame_to_gimp_layer_2(t_GVA_Handle *gvahand
    * }
    */
 
-
+  gimp_drawable_detach (drawable);
   return(l_new_layer_id); /* return the newly created layer_id (-1 on error) */
 }  /* end GVA_frame_to_gimp_layer_2 */
 

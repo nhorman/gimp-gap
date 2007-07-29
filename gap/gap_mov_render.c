@@ -193,6 +193,7 @@ p_mov_selection_handling(gint32 orig_layer_id
 
   /* delete dummy layer */
   gimp_image_remove_layer(val_ptr->tmpsel_image_id, l_tmp_layer_id);
+  gimp_drawable_detach (drawable);
 
 }  /* end p_mov_selection_handling  */
 
@@ -844,4 +845,5 @@ gap_mov_render_create_or_replace_tempsel_image(gint32 channel_id
                           ,channel_id                   /* src */
 			  );
   }
+  gimp_drawable_detach (drawable);
 }  /* end gap_mov_render_create_or_replace_tempsel_image */

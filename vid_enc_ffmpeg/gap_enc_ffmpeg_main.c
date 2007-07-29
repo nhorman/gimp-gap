@@ -2972,7 +2972,7 @@ p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
         if (gap_debug) printf("GAP_FFMPEG: Writing frame nr. %d\n", (int)l_cur_frame_nr);
 
         p_ffmpeg_write_frame(ffh, l_force_keyframe, 0 /* vid_track */);
-
+        gimp_drawable_detach (l_drawable);
         /* destroy the tmp image */
         gimp_image_delete(l_tmp_image_id);
       }

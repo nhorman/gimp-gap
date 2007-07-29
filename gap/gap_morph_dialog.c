@@ -504,6 +504,9 @@ p_generate_outline_shape_workpoints(GapMorphGUIParams *mgup)
   gimp_pixel_fetcher_destroy (src_pixfet);
   gimp_pixel_fetcher_destroy (dst_pixfet);
 
+  gimp_drawable_detach (src_drawable);
+  gimp_drawable_detach (dst_drawable);
+
 }  /* end p_generate_outline_shape_workpoints */
 
 /* -----------------------------
@@ -552,6 +555,9 @@ p_add_4corner_workpoints(GapMorphGUIParams *mgup)
     wp->next = mgup->mgpp->master_wp_list;
     mgup->mgpp->master_wp_list = wp;
   }
+
+  gimp_drawable_detach (src_drawable);
+  gimp_drawable_detach (dst_drawable);
 
 }  /* end p_add_4corner_workpoints */
 
@@ -1896,6 +1902,9 @@ p_render_zoomed_pview(GapMorphSubWin  *swp)
 
     p_draw_workpoints(swp);
     p_hvscale_adj_set_limits(swp);
+
+    gimp_drawable_detach (src_drawable);
+    gimp_drawable_detach (dst_drawable);
   }
 }  /* end p_render_zoomed_pview */
 

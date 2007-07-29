@@ -95,8 +95,6 @@ gap_filt_pdb_call_plugin(char *plugin_name, gint32 image_id, gint32 layer_id, Gi
   GimpParamDef    *l_return_vals;
   gint             l_rc;
 
-  l_drawable =  gimp_drawable_get(layer_id);  /* use the background layer */
-
   /* query for plugin_name to get its argument types */
   if (!gimp_procedural_db_proc_info (plugin_name,
 				     &l_proc_blurb,
@@ -113,6 +111,8 @@ gap_filt_pdb_call_plugin(char *plugin_name, gint32 image_id, gint32 layer_id, Gi
     fprintf(stderr, "ERROR: Plugin not available, Name was %s\n", plugin_name);
     return -1;
   }			    
+
+  l_drawable =  gimp_drawable_get(layer_id);  /* use the background layer */
 
   /* construct the procedures arguments */
   l_argv = g_new (GimpParam, l_nparams);
@@ -186,6 +186,8 @@ gap_filt_pdb_call_plugin(char *plugin_name, gint32 image_id, gint32 layer_id, Gi
     l_rc = 0;  /* OK */
   }
   gimp_destroy_params(l_ret_params, l_retvals);
+
+  gimp_drawable_detach (l_drawable);
   return(l_rc);
 }
 

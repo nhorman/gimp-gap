@@ -1425,6 +1425,8 @@ p_bluebox_alpha (GapBlueboxGlobalParams *bbp)
 
   drawable = gimp_drawable_get (bbp->pv_layer_id);
   gimp_rgn_iterate2 (drawable, GIMP_RUN_NONINTERACTIVE, p_toalpha_func, bbp);
+
+  gimp_drawable_detach (drawable);
 }  /* end p_bluebox_alpha */
 
 
@@ -1642,7 +1644,6 @@ gap_bluebox_apply(GapBlueboxGlobalParams *bbp)
                          , bbp->pv_master_layer_id    /* src */
 			 );
   }
-
 
 
   if((bbp->vals.thres_mode == GAP_BLUBOX_THRES_HSV)

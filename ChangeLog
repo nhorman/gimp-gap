@@ -1,3 +1,18 @@
+2007-07-29  Sven Neumann  <sven@gimp.org>
+
+	* gap/gap_bluebox.c
+	* gap/gap_filter_pdb.c
+	* gap/gap_layer_copy.c
+	* gap/gap_lib.c
+	* gap/gap_morph_dialog.c
+	* gap/gap_morph_exec.c
+	* gap/gap_mov_render.c
+	* gap/gap_pview_da.c
+	* libgapvidapi/gap_vid_api.c
+	* vid_enc_avi/gap_enc_avi_main.c
+	* vid_enc_ffmpeg/gap_enc_ffmpeg_main.c: applied patch from Saul Goode:
+	Release drawables using gimp_drawable_detach(). Fixes bug #451350.
+
 2006-09-12  Pema Geyleg  <pgeyleg@gmail.com>
 
 	* configure.in: Added dz in ALL_LINGUAS
