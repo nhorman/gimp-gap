@@ -1,5 +1,9 @@
 2007-07-29  Sven Neumann  <sven@gimp.org>
 
+	* gap/gap_lib.c: applied patch from Wolfgang Hofer to fix bug #452080.
+
+2007-07-29  Sven Neumann  <sven@gimp.org>
+
 	* gap/gap_lib.c: applied patch from Saul Goode: Release drawable
 	using gimp_drawable_detach() instead of g_free(). Fixes bug #451350.
 
