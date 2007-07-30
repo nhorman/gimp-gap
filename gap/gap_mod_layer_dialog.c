@@ -254,7 +254,8 @@ p_func_optionmenu_callback  (GtkWidget     *wgt_item,
 
  if(gmop == NULL) return;
 
- l_idx = (gint32) g_object_get_data (G_OBJECT (wgt_item), MENU_ITEM_INDEX_KEY);
+ l_idx = GPOINTER_TO_INT(g_object_get_data (G_OBJECT (wgt_item),
+                                            MENU_ITEM_INDEX_KEY));
  title = (const char *)g_object_get_data (G_OBJECT (wgt_item), MENU_ITEM_TITLE_KEY);
  tiptext = (const char *)g_object_get_data (G_OBJECT (wgt_item), MENU_ITEM_TIPTEXT_KEY);
 
@@ -302,11 +303,11 @@ p_make_func_menu_item(const char *title
                           G_CALLBACK (p_func_optionmenu_callback),
                           (gpointer)gmop);
         g_object_set_data (G_OBJECT (menu_item), MENU_ITEM_INDEX_KEY
-                          , (gpointer)action_mode);
-        g_object_set_data (G_OBJECT (menu_item), MENU_ITEM_TITLE_KEY
-                          , (gpointer)title);
-        g_object_set_data (G_OBJECT (menu_item), MENU_ITEM_TIPTEXT_KEY
-                          , (gpointer)tip_text);
+                           , GINT_TO_POINTER(action_mode));
+        g_object_set_data_full (G_OBJECT (menu_item), MENU_ITEM_TITLE_KEY
+                                , g_strdup(title), (GDestroyNotify) g_free);
+        g_object_set_data_full (G_OBJECT (menu_item), MENU_ITEM_TIPTEXT_KEY
+                                , g_strdup(tip_text), (GDestroyNotify) g_free);
   gtk_widget_show (menu_item);
   gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 
@@ -909,8 +910,8 @@ p_sel_mode_radio_callback(GtkWidget *widget, GapModFramesGlobalParams *gmop)
 {
   gint32 l_sel_mode;
 
-  l_sel_mode = (gint32) g_object_get_data (G_OBJECT (widget)
-                                                        , RADIO_ITEM_INDEX_KEY);
+  l_sel_mode = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (widget)
+                                                   , RADIO_ITEM_INDEX_KEY));
 
 
   if((gmop) && (GTK_TOGGLE_BUTTON (widget)->active))
@@ -1102,8 +1103,7 @@ p_create_mod_frames_dialog(GapModFramesGlobalParams *gmop)
 
   gtk_widget_show (radio_button);
   g_object_set_data (G_OBJECT (radio_button), RADIO_ITEM_INDEX_KEY
-                    , (gpointer)GAP_MTCH_EQUAL
-		    );
+                     , GINT_TO_POINTER(GAP_MTCH_EQUAL));
   g_signal_connect ( G_OBJECT (radio_button), "toggled",
 		     G_CALLBACK (p_sel_mode_radio_callback),
 		     gmop);
@@ -1141,8 +1141,7 @@ p_create_mod_frames_dialog(GapModFramesGlobalParams *gmop)
 
   gtk_widget_show (radio_button);
   g_object_set_data (G_OBJECT (radio_button), RADIO_ITEM_INDEX_KEY
-                    , (gpointer)GAP_MTCH_START
-		    );
+                     , GINT_TO_POINTER(GAP_MTCH_START));
   g_signal_connect ( G_OBJECT (radio_button), "toggled",
 		     G_CALLBACK (p_sel_mode_radio_callback),
 		     gmop);
@@ -1180,8 +1179,7 @@ p_create_mod_frames_dialog(GapModFramesGlobalParams *gmop)
 
   gtk_widget_show (radio_button);
   g_object_set_data (G_OBJECT (radio_button), RADIO_ITEM_INDEX_KEY
-                    , (gpointer)GAP_MTCH_END
-		    );
+                     , GINT_TO_POINTER(GAP_MTCH_END));
   g_signal_connect ( G_OBJECT (radio_button), "toggled",
 		     G_CALLBACK (p_sel_mode_radio_callback),
 		     gmop);
@@ -1203,8 +1201,7 @@ p_create_mod_frames_dialog(GapModFramesGlobalParams *gmop)
 
   gtk_widget_show (radio_button);
   g_object_set_data (G_OBJECT (radio_button), RADIO_ITEM_INDEX_KEY
-                    , (gpointer)GAP_MTCH_ANYWHERE
-		    );
+                     , GINT_TO_POINTER(GAP_MTCH_ANYWHERE));
   g_signal_connect ( G_OBJECT (radio_button), "toggled",
 		     G_CALLBACK (p_sel_mode_radio_callback),
 		     gmop);
@@ -1226,8 +1223,7 @@ p_create_mod_frames_dialog(GapModFramesGlobalParams *gmop)
 
   gtk_widget_show (radio_button);
   g_object_set_data (G_OBJECT (radio_button), RADIO_ITEM_INDEX_KEY
-                    , (gpointer)GAP_MTCH_NUMBERLIST
-		    );
+                     , GINT_TO_POINTER(GAP_MTCH_NUMBERLIST));
   g_signal_connect ( G_OBJECT (radio_button), "toggled",
 		     G_CALLBACK (p_sel_mode_radio_callback),
 		     gmop);
@@ -1249,8 +1245,7 @@ p_create_mod_frames_dialog(GapModFramesGlobalParams *gmop)
 
   gtk_widget_show (radio_button);
   g_object_set_data (G_OBJECT (radio_button), RADIO_ITEM_INDEX_KEY
-                    , (gpointer)GAP_MTCH_INV_NUMBERLIST
-		    );
+                     , GINT_TO_POINTER(GAP_MTCH_INV_NUMBERLIST));
   g_signal_connect ( G_OBJECT (radio_button), "toggled",
 		     G_CALLBACK (p_sel_mode_radio_callback),
 		     gmop);
@@ -1272,8 +1267,7 @@ p_create_mod_frames_dialog(GapModFramesGlobalParams *gmop)
 
   gtk_widget_show (radio_button);
   g_object_set_data (G_OBJECT (radio_button), RADIO_ITEM_INDEX_KEY
-                    , (gpointer)GAP_MTCH_ALL_VISIBLE
-		    );
+                     , GINT_TO_POINTER(GAP_MTCH_ALL_VISIBLE));
   g_signal_connect ( G_OBJECT (radio_button), "toggled",
 		     G_CALLBACK (p_sel_mode_radio_callback),
 		     gmop);
