@@ -1,3 +1,7 @@
+2007-07-31  Ignacio Casal Quinteiro  <nacho.resa@gmail.com>
+
+	* configure.in: Added 'gl' to ALL_LINGUAS.
+
 2007-07-30  Sven Neumann  <sven@gimp.org>
 
 	* gap/gap_mod_layer_dialog.c: duplicate the strings attached to
