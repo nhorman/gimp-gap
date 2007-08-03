@@ -1,5 +1,12 @@
 2007-08-03  Sven Neumann  <sven@gimp.org>
 
+	* gap/gap_wr_color_huesat.c
+	* gap/gap_wr_color_levels.c
+	* gap/gap_wr_color_curve.c: added missing calls to
+	gimp_plugin_domain_register().
+
+2007-08-03  Sven Neumann  <sven@gimp.org>
+
 	* gap/gap_arr_dialog.c
 	* gap/gap_dbbrowser_utils.c
 	* gap/gap_fmac_main.c
