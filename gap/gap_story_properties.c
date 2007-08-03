@@ -429,7 +429,7 @@ p_pw_propagate_mask_name_changes(GapStbPropWidget *pw
            );
          if (!updateOK)
          {
-           g_message(_("Error: References could not be updated from the\n"
+           g_message(_("Error: references could not be updated from the\n"
                        "old mask name: \"%s\" to the\n"
                        "new mask name: \"%s\"\n"
                        "because the new mask name is already in use.")
@@ -3425,7 +3425,7 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
                             0.125, 8.0,     /* lower/upper unconstrained */
                             _("Stepsize density for the layer mask. Use 1.0 for normal 1:1 frame by frame steps. "
                               "a value of 0.5 shows each input mask frame 2 times. "
-                              "a value of 2.0 shows only every 2.nd input mask frame"), NULL);
+                              "a value of 2.0 shows only every 2nd input mask frame"), NULL);
   pw->pw_spinbutton_mask_stepsize_adj = adj;
   g_object_set_data(G_OBJECT(adj), "pw", pw);
   g_signal_connect (adj, "value_changed",

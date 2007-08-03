@@ -6180,7 +6180,7 @@ p_new_configframe(GapPlayerMainGlobalParams *gpp)
     gtk_widget_show (spinbutton);
     gpp->cache_size_spinbutton_adj = adj;
     gtk_table_attach(GTK_TABLE(table1), spinbutton, 1, 2, row, row + 1, GTK_FILL, GTK_FILL, 4, 0);
-    gimp_help_set_help_data(spinbutton, _("Player frame cache maximum size im MB. Value 0 turns the cache off"),NULL);
+    gimp_help_set_help_data(spinbutton, _("Player frame cache maximum size in MB. Value 0 turns the cache off."),NULL);
     g_signal_connect (G_OBJECT (gpp->cache_size_spinbutton_adj), "value_changed",
                         G_CALLBACK (on_cache_size_spinbutton_changed),
                         gpp);

@@ -6701,9 +6701,9 @@ p_tabw_gen_otone_dialog(GapStbTabWidgets *tabw)
        {
          g_message(_("Original tone track was created with warnings.\n"
                    "The storyboard %s\n"
-                   "has movie clips with framerate %.4f."
+                   "has movie clips with framerate %.4f. "
                    "that is different from the master framerate %.4f.\n"
-                   "The generated audio is NOT synchron with the video.")
+                   "The generated audio is NOT synchronized with the video.")
                 ,tabw->filename_refptr
                 ,(float)l_first_non_matching_framerate
                 ,(float)stb_dst->master_framerate
@@ -6940,10 +6940,10 @@ p_tabw_master_prop_dialog(GapStbTabWidgets *tabw, gboolean new_flag)
   gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_OPT_ENTRY);
   argv[l_ii].label_txt = _("Aspect:");
   argv[l_ii].help_txt  = _("Select video frame aspect ratio; "
-                       "Enter a string like \"4:3\" or \"16:9\" to specify the aspect."
-                       "Enter none or leave empty if no special aspect shall be used."
+                       "enter a string like \"4:3\" or \"16:9\" to specify the aspect. "
+                       "Enter none or leave empty if no special aspect shall be used "
                        "(in this case video frames use the master pixelsize 1:1 "
-                       "for displaying video frames)");
+                       "for displaying video frames).");
   argv[l_ii].radio_argc  = G_N_ELEMENTS(radio_aspect_args);
   argv[l_ii].radio_argv = radio_aspect_args;
   argv[l_ii].radio_ret  = l_aspect_idx;

@@ -1,3 +1,10 @@
+2007-08-03  Sven Neumann  <sven@gimp.org>
+
+	* gap/gap_player_dialog.c
+	* gap/gap_story_properties.c
+	* gap/gap_story_dialog.c: applied patch from Thierry Moisan that
+	fixes typos in user-visible strings (bug #352351).
+
 2007-07-31  Ignacio Casal Quinteiro  <nacho.resa@gmail.com>
 
 	* configure.in: Added 'gl' to ALL_LINGUAS.
