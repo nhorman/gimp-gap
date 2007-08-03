@@ -1,5 +1,16 @@
 2007-08-03  Sven Neumann  <sven@gimp.org>
 
+	* gap/gap_arr_dialog.c
+	* gap/gap_dbbrowser_utils.c
+	* gap/gap_fmac_main.c
+	* gap/gap_mov_dialog.c
+	* gap/gap_onion_dialog.c
+	* gap/gap_player_dialog.c
+	* gap/gap_resi_dialog.c: show help buttons conditionally.
+	Fixes bug #463074.
+
+2007-08-03  Sven Neumann  <sven@gimp.org>
+
 	* gap/gap_player_dialog.c
 	* gap/gap_story_properties.c
 	* gap/gap_story_dialog.c: applied patch from Thierry Moisan that

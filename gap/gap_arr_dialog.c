@@ -1379,7 +1379,7 @@ gint gap_arr_std_dialog(const char *title_txt,
 
 
   /*  Action area help-button (if desired) */
-  if(arr_help_ptr)
+  if(arr_help_ptr && gimp_show_help_button ())
   {
     if(arr_help_ptr->help_id)
     {

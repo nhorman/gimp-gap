@@ -888,7 +888,7 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
   GtkWidget *oni__button_close;
   GtkWidget *oni__button_delete;
   GtkWidget *oni__button_apply;
-  GtkWidget *oni__button_help;
+  GtkWidget *oni__button_help = NULL;
 
   gint tab1_row;
 
@@ -1357,13 +1357,15 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
   gtk_box_pack_end (GTK_BOX (dialog_action_area1), hbox1, FALSE, TRUE, 0);
 
 
-  oni__button_help = gtk_button_new_from_stock (GTK_STOCK_HELP);
-  gtk_widget_show (oni__button_help);
-  gtk_box_pack_end (GTK_BOX (hbox1), oni__button_help, FALSE, FALSE, 2);
-  gimp_help_set_help_data(oni__button_help
-                         , _("Show help page")
-                         , NULL);
-
+  if (gimp_show_help_button ())
+    {
+      oni__button_help = gtk_button_new_from_stock (GTK_STOCK_HELP);
+      gtk_widget_show (oni__button_help);
+      gtk_box_pack_end (GTK_BOX (hbox1), oni__button_help, FALSE, FALSE, 2);
+      gimp_help_set_help_data(oni__button_help
+                              , _("Show help page")
+                              , NULL);
+    }
 
   oni__button_default = gtk_button_new_from_stock (GIMP_STOCK_RESET);
   gtk_widget_show (oni__button_default);
@@ -1457,8 +1459,8 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
                       G_CALLBACK (on_oni__checkbutton_auto_delete_toggled),
                       gpp);
 
-
-  g_signal_connect (G_OBJECT (oni__button_help), "clicked",
+  if (oni__button_help)
+    g_signal_connect (G_OBJECT (oni__button_help), "clicked",
                       G_CALLBACK (on_oni__button_help_clicked),
                       gpp);
   g_signal_connect (G_OBJECT (oni__button_default), "clicked",

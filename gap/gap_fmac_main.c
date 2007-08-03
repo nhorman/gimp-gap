@@ -876,17 +876,19 @@ p_create_action_area_buttons(fmac_globalparams_t *gpp)
 
 
   /* Button HELP */
-  button = gtk_button_new_from_stock ( GTK_STOCK_HELP);
-  gtk_box_pack_start (GTK_BOX (hbox), button, TRUE, TRUE, 0);
-  gimp_help_set_help_data(button
-                          ,_("Show help page")
-                          , NULL);
-  g_signal_connect (G_OBJECT (button), "clicked"
-		   ,G_CALLBACK (p_help_callback)
-                   ,gpp
-                   );
-  gtk_widget_show (button);
-
+  if (gimp_show_help_button ())
+    {
+      button = gtk_button_new_from_stock ( GTK_STOCK_HELP);
+      gtk_box_pack_start (GTK_BOX (hbox), button, TRUE, TRUE, 0);
+      gimp_help_set_help_data(button
+                              ,_("Show help page")
+                              , NULL);
+      g_signal_connect (G_OBJECT (button), "clicked"
+                        ,G_CALLBACK (p_help_callback)
+                        ,gpp
+                        );
+      gtk_widget_show (button);
+    }
 
   /* Button Delete All */
   button = gtk_button_new_with_label (_("Delete All"));
