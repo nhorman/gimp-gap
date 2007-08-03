@@ -255,6 +255,8 @@ query (void)
   static GimpParamDef *return_iter = NULL;
   static int nreturn_iter = 0;
 
+  gimp_plugin_domain_register (GETTEXT_PACKAGE, LOCALEDIR);
+
   /* the actual installation of the bend plugin */
   gimp_install_procedure (PLUG_IN_NAME,
                           PLUG_IN_DESCRIPTION,
