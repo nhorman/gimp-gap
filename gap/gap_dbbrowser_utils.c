@@ -658,7 +658,7 @@ p_create_action_area_buttons(dbbrowser_t *dbbrowser,
   gtk_widget_show (button);
 
 
-  if((help_id) && (dbbrowser))
+  if((help_id) && (dbbrowser) && gimp_show_help_button ())
   {
     /* Button HELP */
     button = gtk_button_new_from_stock ( GTK_STOCK_HELP);

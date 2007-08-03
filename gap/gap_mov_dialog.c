@@ -629,14 +629,16 @@ mov_dialog ( GimpDrawable *drawable, t_mov_gui_stuff *mgp,
 
 
   /* the HELP button */
-  button = gtk_button_new_from_stock ( GTK_STOCK_HELP);
-  GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
-  gtk_box_pack_end (GTK_BOX (hbbox), button, FALSE, TRUE, 0);
-  gtk_widget_show (button);
-  g_signal_connect (G_OBJECT (button), "clicked",
-		    G_CALLBACK(mov_help_callback),
-		    mgp);
-
+  if (gimp_show_help_button ())
+    {
+      button = gtk_button_new_from_stock ( GTK_STOCK_HELP);
+      GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
+      gtk_box_pack_end (GTK_BOX (hbbox), button, FALSE, TRUE, 0);
+      gtk_widget_show (button);
+      g_signal_connect (G_OBJECT (button), "clicked",
+                        G_CALLBACK(mov_help_callback),
+                        mgp);
+    }
 
   /* the CANCEL button */
   button = gtk_button_new_from_stock ( GTK_STOCK_CANCEL);

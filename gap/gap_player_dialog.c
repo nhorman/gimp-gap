@@ -5942,7 +5942,7 @@ p_create_player_window (GapPlayerMainGlobalParams *gpp)
                     G_CALLBACK (on_cancel_vindex_button_clicked),
                     gpp);
 
-  if(gpp->help_id)
+  if(gpp->help_id && gimp_show_help_button ())
   {
     GtkWidget *help_button;
 

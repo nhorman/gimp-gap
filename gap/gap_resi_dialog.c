@@ -941,12 +941,15 @@ gap_resi_dialog (gint32 image_id, GapRangeOpsAsiz asiz_mode, char *title_text,
 
   /*  Action area  */
 
-  button = gtk_button_new_from_stock ( GTK_STOCK_HELP);
-  gtk_box_pack_end (GTK_BOX (hbbox), button, TRUE, TRUE, 0);
-  gtk_widget_show (button);
-  g_signal_connect (GTK_OBJECT (button), "clicked",
-                    G_CALLBACK  (p_res_help_callback),
-                    res_private);
+  if (gimp_show_help_button ())
+    {
+      button = gtk_button_new_from_stock ( GTK_STOCK_HELP);
+      gtk_box_pack_end (GTK_BOX (hbbox), button, TRUE, TRUE, 0);
+      gtk_widget_show (button);
+      g_signal_connect (GTK_OBJECT (button), "clicked",
+                        G_CALLBACK  (p_res_help_callback),
+                        res_private);
+    }
 
   button = gtk_button_new_from_stock ( GIMP_STOCK_RESET);
   gtk_box_pack_start (GTK_BOX (hbbox), button, TRUE, TRUE, 0);
