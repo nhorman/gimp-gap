@@ -1,3 +1,8 @@
+2007-08-04  Sven Neumann  <sven@gimp.org>
+
+	* gap/sel-to-anim-img.scm: applied patch from Saul Goode to make
+	the script work with Tiny-Fu.
+
 2007-08-03  Sven Neumann  <sven@gimp.org>
 
 	* gap/gap_wr_color_huesat.c
