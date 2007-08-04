@@ -37,7 +37,17 @@
          (idx 0)
 	 (draw-type (car (gimp-drawable-type-with-alpha drawable)))
 	 (image-type (car (gimp-image-base-type image)))
-	 (old-bg (car (gimp-context-get-background))))
+	 (old-bg (car (gimp-context-get-background)))
+         (selection-bounds)
+         (select-offset-x)
+         (select-offset-y)
+         (selection-width)
+         (selection-height)
+         (from-selection)
+         (active-selection)
+         (brush-draw)
+         (draw-name)
+         (brush-image))
 
     (set! selection-bounds (gimp-selection-bounds image))
     (set! select-offset-x (cadr selection-bounds))
@@ -94,7 +104,7 @@
     (gimp-image-set-active-layer image drawable)
     (gimp-image-clean-all brush-image)
     (gimp-display-new brush-image)
-    (gimp-displays-flush))
+    (gimp-displays-flush)
     (if (= filter-all TRUE)
         ; INTERACTIVE animated call of any other plugin
         ; (drawable and plugin name are dummy parameters
@@ -102,6 +112,7 @@
         ; of plug-in-gap-layers-run-animfilter)
         (plug-in-gap-layers-run-animfilter 0 brush-image brush-draw "plug-in-bend" 1)
     )
+)
 )
 
 (script-fu-register "script-fu-selection-to-anim-image"
