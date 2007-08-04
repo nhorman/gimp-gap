@@ -1,3 +1,8 @@
+2007-08-03 João S. O. Bueno Calligaris <gwidion@mpc.com.br>
+ 
+    * pt_BR.po: Backport full Brazillian
+      Portuguese translation in trunk to branch 2-2
+
 2006-06-29  Ilkka Tuohela  <hile@iki.fi>
 
 	* fi.po: Updated Finnish translation.
@@ -6,7 +11,7 @@
 
 	* cs.po: Updated Czech translation
 
-2006-0624  Marco Ciampa <ciampix@libero.it>
+2006-06-24  Marco Ciampa <ciampix@libero.it>
 
 	* it.po: updated italian translation.
 
