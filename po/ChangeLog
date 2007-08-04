@@ -1,7 +1,11 @@
+2007-08-04  Sven Neumann  <sven@gimp.org>
+
+	* fr.po: updated French translation from Popolon.
+
 2007-08-03 João S. O. Bueno Calligaris <gwidion@mpc.com.br>
- 
-    * pt_BR.po: Backport full Brazillian
-      Portuguese translation in trunk to branch 2-2
+
+	* pt_BR.po: Backport full Brazillian Portuguese translation in
+	trunk to branch 2-2
 
 2006-06-29  Ilkka Tuohela  <hile@iki.fi>
 
