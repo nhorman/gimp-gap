@@ -1,3 +1,7 @@
+2007-08-05  Sven Neumann  <sven@gimp.org>
+
+	* Made 2.2.2 release.
+
 2007-08-04  Sven Neumann  <sven@gimp.org>
 
 	* gap/sel-to-anim-img.scm: applied patch from Saul Goode to make
