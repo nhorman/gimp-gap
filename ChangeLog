@@ -1,3 +1,7 @@
+2007-08-15  Adam Weinberger  <adamw@gnome.org>
+
+	* configure.in: Re-add en_CA to ALL_LINGUAS.
+
 2007-08-04  Sven Neumann  <sven@gimp.org>
 
 	* gap/sel-to-anim-img.scm: applied patch from Saul Goode to make
