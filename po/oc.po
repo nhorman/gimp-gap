@@ -8844,7 +8844,7 @@ msgstr ""
 #. the title lable
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3172
 msgid "Title:"
-msgstr "Titol:"
+msgstr "Títol:"
 
 #. the filecomment_label lable
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3262
