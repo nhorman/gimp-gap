@@ -1,3 +1,8 @@
+2007-10-09  Sven Neumann  <sven@gimp.org>
+
+	* gap/gap_wr_color_curve.c: fixed check for the number of parameters
+	(bug #466176).
+
 2007-08-05  Sven Neumann  <sven@gimp.org>
 
 	* Made 2.2.2 release.

@@ -677,7 +677,7 @@ run(const gchar *name
 
       case GIMP_RUN_NONINTERACTIVE:
         /* check to see if invoked with the correct number of parameters */
-        if (nparams >= 5)
+        if (nparams >= 4)
         {
            wcd = g_malloc (sizeof (WrCurveDialog));
            wcd->run = TRUE;
