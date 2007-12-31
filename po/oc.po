@@ -1,24 +1,23 @@
-# translation of oc.po to Occitan
+# Translation of oc.po to Occitan
 # Occitan translation of gimp-gap.
 # Copyright (C) 1998-2006, 2007 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gimp-gap package.
 #
 #
-# Yannig MARCHEGAY (Kokoyaya)  <yannig@marchegay.org>, 2007.
+# Yannig Marchegay (Kokoyaya)  <yannig@marchegay.org>, 2007.
 # Yannig Marchegay (Kokoyaya) <yannig@marchegay.org>, 2007.
 msgid ""
 msgstr ""
 "Project-Id-Version: oc\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-10-13 17:47+0200\n"
-"PO-Revision-Date: 2007-11-20 14:30+0100\n"
+"POT-Creation-Date: 2007-12-27 13:29+0100\n"
+"PO-Revision-Date: 2007-12-27 13:36+0100\n"
 "Last-Translator: Yannig Marchegay (Kokoyaya) <yannig@marchegay.org>\n"
 "Language-Team: Occitan <ubuntu-l10n-oci@lists.ubuntu.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: KBabel 1.11.4\n"
 
 #. Button  to invoke fontbrowser
 #: ../gap/gap_arr_dialog.c:544
@@ -192,7 +191,8 @@ msgstr ""
 
 #: ../gap/gap_base_ops.c:1136
 #, c-format
-msgid "Frames %d - %d will be deleted. There will be no undo for this operation."
+msgid ""
+"Frames %d - %d will be deleted. There will be no undo for this operation."
 msgstr ""
 
 # Stupide : titre et contenu !
@@ -214,7 +214,8 @@ msgstr ""
 
 #: ../gap/gap_base_ops.c:1194
 #, c-format
-msgid "Delete frames starting at current number %d up to this number (inclusive)"
+msgid ""
+"Delete frames starting at current number %d up to this number (inclusive)"
 msgstr ""
 
 #: ../gap/gap_base_ops.c:1275
@@ -347,7 +348,8 @@ msgstr ""
 
 #: ../gap/gap_base_ops.c:1637
 #, c-format
-msgid "Exchange the current frame %d with the frame that has the number entered here"
+msgid ""
+"Exchange the current frame %d with the frame that has the number entered here"
 msgstr ""
 
 #: ../gap/gap_base_ops.c:1641
@@ -473,7 +475,8 @@ msgstr ""
 #. constrain
 #. lowr/upper unconstrained
 #: ../gap/gap_bluebox.c:361
-msgid "Set alpha of affected pixel to target alpha where 0.0 is full transparent"
+msgid ""
+"Set alpha of affected pixel to target alpha where 0.0 is full transparent"
 msgstr ""
 
 #: ../gap/gap_bluebox.c:372
@@ -728,13 +731,13 @@ msgstr ""
 
 #: ../gap/gap_dbbrowser_utils.c:266
 msgid "Additional Information"
-msgstr "Informacions suplementàrias"
+msgstr "Entresenhas suplementàrias"
 
 #. the Author lable
 #: ../gap/gap_dbbrowser_utils.c:305
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3195
 msgid "Author:"
-msgstr "Ancora"
+msgstr "Autor :"
 
 #: ../gap/gap_dbbrowser_utils.c:316
 msgid "Date:"
@@ -953,7 +956,8 @@ msgid "Jpeg Progressive:"
 msgstr ""
 
 #: ../gap/gap_decode_mplayer.c:566
-msgid "Enable progressive jpeg encoding(is ignored when other formats are used)"
+msgid ""
+"Enable progressive jpeg encoding(is ignored when other formats are used)"
 msgstr ""
 
 #: ../gap/gap_decode_mplayer.c:572
@@ -1192,7 +1196,8 @@ msgid ""
 msgstr ""
 
 #: ../gap/gap_decode_xanim.c:295
-msgid "Quality for resulting jpeg frames. (is ignored when other formats are used)"
+msgid ""
+"Quality for resulting jpeg frames. (is ignored when other formats are used)"
 msgstr ""
 
 #: ../gap/gap_decode_xanim.c:311
@@ -2123,7 +2128,8 @@ msgid "Layer Pattern:"
 msgstr ""
 
 #: ../gap/gap_mod_layer_dialog.c:1293
-msgid "String to identify layer names or layerstack position numbers. Example: 0,3-5"
+msgid ""
+"String to identify layer names or layerstack position numbers. Example: 0,3-5"
 msgstr ""
 
 #. +++++++++++++++++++++++++
@@ -2288,7 +2294,7 @@ msgstr ""
 #: ../gap/gap_morph_dialog.c:3215 ../gap/gap_mov_dialog.c:3987
 #: ../gap/gap_name2layer_main.c:475 ../gap/gap_resi_dialog.c:847
 msgid "X:"
-msgstr "X\\:"
+msgstr "X :"
 
 #: ../gap/gap_morph_dialog.c:3237
 msgid "Morphpoint X coordinate"
@@ -2300,7 +2306,7 @@ msgstr ""
 #: ../gap/gap_morph_dialog.c:3246 ../gap/gap_mov_dialog.c:4005
 #: ../gap/gap_name2layer_main.c:486 ../gap/gap_resi_dialog.c:853
 msgid "Y:"
-msgstr "Y\\:"
+msgstr "Y :"
 
 #: ../gap/gap_morph_dialog.c:3269
 msgid "Morphpoint Y coordinate"
@@ -2429,11 +2435,13 @@ msgid ""
 msgstr ""
 
 #: ../gap/gap_morph_dialog.c:3760
-msgid "Load morph workpoints from file. SHIFT-click: define filename of Pointset B"
+msgid ""
+"Load morph workpoints from file. SHIFT-click: define filename of Pointset B"
 msgstr ""
 
 #: ../gap/gap_morph_dialog.c:3772
-msgid "Save morph workpoints to file. SHIFT-click: define filename of Pointset B"
+msgid ""
+"Save morph workpoints to file. SHIFT-click: define filename of Pointset B"
 msgstr ""
 
 #. the tween_steps label
@@ -2839,7 +2847,8 @@ msgid "Move Path Bluebox Keycolor"
 msgstr ""
 
 #: ../gap/gap_mov_dialog.c:2978
-msgid "Open dialog window to set parameters and keycolor for the bluebox filter"
+msgid ""
+"Open dialog window to set parameters and keycolor for the bluebox filter"
 msgstr ""
 
 #. toggle Tracelayer
@@ -2971,7 +2980,8 @@ msgid "Delete current controlpoint"
 msgstr ""
 
 #: ../gap/gap_mov_dialog.c:3211
-msgid "Show previous controlpoint. Hold down the shift key to follow keyframes."
+msgid ""
+"Show previous controlpoint. Hold down the shift key to follow keyframes."
 msgstr ""
 
 #: ../gap/gap_mov_dialog.c:3224
@@ -3979,7 +3989,7 @@ msgstr "Tot seleccionar"
 #. menu_item Select None
 #: ../gap/gap_navigator_dialog.c:4132
 msgid "Select None"
-msgstr ""
+msgstr "Seleccionar una estampaira"
 
 #. Video Length (frames)
 #: ../gap/gap_navigator_dialog.c:4152 ../gap/gap_player_dialog.c:5960
@@ -4109,7 +4119,8 @@ msgid "Ignore BG-layer(s):"
 msgstr ""
 
 #: ../gap/gap_onion_dialog.c:1209
-msgid "Exclude N background layers. Use 0 if you dont want to exclude any layer."
+msgid ""
+"Exclude N background layers. Use 0 if you dont want to exclude any layer."
 msgstr ""
 
 #: ../gap/gap_onion_dialog.c:1212
@@ -4212,7 +4223,8 @@ msgid ""
 msgstr ""
 
 #: ../gap/gap_onion_dialog.c:1396
-msgid "Remove all onionskin layers in all frames of the the selected frame range"
+msgid ""
+"Remove all onionskin layers in all frames of the the selected frame range"
 msgstr ""
 
 #: ../gap/gap_onion_dialog.c:1405
@@ -4535,7 +4547,7 @@ msgstr ""
 #. Audio Channels
 #: ../gap/gap_player_dialog.c:5916
 msgid "Channels:"
-msgstr "Canals:"
+msgstr "Canals :"
 
 #. Bits per Audio Sample
 #: ../gap/gap_player_dialog.c:5930
@@ -4624,7 +4636,8 @@ msgid "Audio Options"
 msgstr ""
 
 #: ../gap/gap_player_dialog.c:6551
-msgid "Click: go to frame, Ctrl-Click: set 'From Frame', Alt-Click: set 'To Frame'"
+msgid ""
+"Click: go to frame, Ctrl-Click: set 'From Frame', Alt-Click: set 'To Frame'"
 msgstr ""
 
 #: ../gap/gap_player_dialog.c:6624 ../gap/gap_player_dialog.c:6754
@@ -5827,7 +5840,8 @@ msgid ""
 msgstr ""
 
 #: ../gap/gap_story_dialog.c:6006
-msgid "Playback cliplist. SHIFT: Play only selected clips CTRL: Play composite video"
+msgid ""
+"Playback cliplist. SHIFT: Play only selected clips CTRL: Play composite video"
 msgstr ""
 
 #. gtk_widget_show (entry);
@@ -5864,7 +5878,8 @@ msgid "Cancel"
 msgstr "Anullar"
 
 #: ../gap/gap_story_dialog.c:6611
-msgid "Generate original tone audio track for all video clips in the storyboard"
+msgid ""
+"Generate original tone audio track for all video clips in the storyboard"
 msgstr ""
 
 #: ../gap/gap_story_dialog.c:6617
@@ -6269,7 +6284,8 @@ msgid "Apply even-lines filter when reading videoframes"
 msgstr ""
 
 #: ../gap/gap_story_properties.c:3162
-msgid "deinterlacing threshold: 0.0 no interpolation 0.999 smooth interpolation"
+msgid ""
+"deinterlacing threshold: 0.0 no interpolation 0.999 smooth interpolation"
 msgstr ""
 
 #. the Transform (flip_request) label
@@ -6665,7 +6681,8 @@ msgid "Framenr 1:"
 msgstr ""
 
 #: ../gap/gap_vex_dialog.c:2491
-msgid "Framenumber for 1st extracted frame (use 0 for keeping original framenumbers)"
+msgid ""
+"Framenumber for 1st extracted frame (use 0 for keeping original framenumbers)"
 msgstr ""
 
 #: ../gap/gap_vex_dialog.c:2522
@@ -6846,7 +6863,7 @@ msgstr ""
 #. Channel the label
 #: ../gap/gap_wr_color_levels.c:640
 msgid "Channel:"
-msgstr ""
+msgstr "Canal :"
 
 #: ../gap/gap_wr_color_levels.c:667
 msgid "Alpha"
