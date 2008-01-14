@@ -26,8 +26,8 @@ gint p_plug_in_depth_merge_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gd
       return -1;  /* ERROR */ 
     }
 
-    gimp_get_data("plug_in_depth_merge_ITER_FROM", g_plugin_data_from); 
-    gimp_get_data("plug_in_depth_merge_ITER_TO",   g_plugin_data_to); 
+    gimp_get_data("plug-in-depth-merge-ITER-FROM", g_plugin_data_from); 
+    gimp_get_data("plug-in-depth-merge-ITER-TO",   g_plugin_data_to); 
 
     buf_from = (t_plug_in_depth_merge_Vals *)&g_plugin_data_from[0]; 
     buf_to   = (t_plug_in_depth_merge_Vals *)&g_plugin_data_to[0]; 
@@ -43,7 +43,7 @@ gint p_plug_in_depth_merge_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gd
     p_delta_float(&buf.scale1, buf_from->scale1, buf_to->scale1, total_steps, current_step);
     p_delta_float(&buf.scale2, buf_from->scale2, buf_to->scale2, total_steps, current_step);
 
-    gimp_set_data("plug_in_depth_merge", &buf, sizeof(buf)); 
+    gimp_set_data("plug-in-depth-merge", &buf, sizeof(buf)); 
 
     return 0; /* OK */
 }

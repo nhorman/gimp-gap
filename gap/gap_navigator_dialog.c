@@ -133,6 +133,8 @@
 #define NAVI_CHECK_SIZE 4
 #define MAX_DYN_ROWS 400
 
+#define KEY_NAVI_DIALOG_TO_FRONT     "plug_in_gap_navigator_to_front"
+
 /*
  * OpsButton  code was inspired by gimp-1.2 core code,
  *   but was changed for gap_navigator_dialog use and ported to gtk+2.2
@@ -319,6 +321,9 @@ typedef struct NaviDialog
  * procedure declarations
  * -----------------------
  */
+static void p_set_data_to_front_request(gboolean dialog_to_front_request);
+static void p_check_dialog_to_front_request(void);
+
 int  gap_navigator(gint32 image_id);
 static void navi_preview_extents (void);
 static void frames_dialog_flush (void);
@@ -588,6 +593,7 @@ run(const gchar *name
   if(gap_debug) printf("\n\ngap_navigator: debug name = %s\n", name);
 
   l_active_image = param[1].data.d_image;
+  p_set_data_to_front_request(TRUE);
 
   /* check for other Video navigator Dialog Process */
   if (sizeof(pid_t) == gimp_get_data_size(PLUGIN_NAME))
@@ -709,6 +715,55 @@ edit_cut_callback (GtkWidget *w,  gpointer   client_data)
   navi_vid_copy_and_cut(TRUE /* cut_flag */);
 }
 
+/* ---------------------------------
+ * p_set_data_to_front_request
+ * ---------------------------------
+ */
+static void
+p_set_data_to_front_request(gboolean dialog_to_front_request)
+{
+  gimp_set_data(KEY_NAVI_DIALOG_TO_FRONT, &dialog_to_front_request, sizeof (gboolean));
+}  /* end p_set_data_to_front_request */
+
+/* ---------------------------------
+ * p_check_dialog_to_front_request
+ * ---------------------------------
+ * check for request to present the (already open) naviagtor dialog
+ * window (in front of screen)
+ * typically used on attempt to start a 2nd instance (which is not allowed)
+ */
+static void
+p_check_dialog_to_front_request(void)
+{
+  gint data_size;
+  if (naviD == NULL)
+  {
+    return;
+  }
+  if (naviD->shell == NULL)
+  {
+    return;
+  }
+  if (GTK_WIDGET(naviD->shell)->window == NULL)
+  {
+    return;
+  }
+
+  data_size = gimp_get_data_size(KEY_NAVI_DIALOG_TO_FRONT);
+  if (data_size == sizeof (gboolean))
+  {
+     gboolean dialog_to_front_request;
+   
+     gimp_get_data(KEY_NAVI_DIALOG_TO_FRONT, &dialog_to_front_request);
+     if(dialog_to_front_request == TRUE)
+     {
+       gtk_window_present(GTK_WINDOW(naviD->shell));
+       p_set_data_to_front_request(FALSE);
+     }
+  }
+
+}  /* end p_check_dialog_to_front_request */
+
 
 /* ---------------------------------
  * p_edit_paste_call
@@ -726,10 +781,13 @@ p_edit_paste_call(gint32 paste_mode)
     return;  /* invalid frame_nr do not paste here */
   }
 
-  if(gap_debug) printf("p_edit_paste_call: paste_at_frame:%d active_image_id:%d\n"
-   , (int)naviD->paste_at_frame
-   , (int)naviD->active_imageid
-   );
+  if(gap_debug)
+  {
+    printf("p_edit_paste_call: paste_at_frame:%d active_image_id:%d\n"
+       , (int)naviD->paste_at_frame
+       , (int)naviD->active_imageid
+       );
+  }
 
   /* goto the first selected frame */
   dummy_layer_id = gap_image_get_any_layer(naviD->active_imageid);
@@ -1104,8 +1162,23 @@ navi_reload_ainfo_force(gint32 image_id)
 {
   GapAnimInfo *old_ainfo_ptr;
   char frame_nr_to_char[20];
-
-  if(gap_debug) printf("navi_reload_ainfo_force image_id:%d\n", (int)image_id);
+  gboolean is_alive;
+  
+  is_alive = gap_image_is_alive(image_id);
+  
+  if(gap_debug)
+  {
+     printf("navi_reload_ainfo_force image_id:%d is_alive:%d\n"
+      , (int)image_id
+      , (int)is_alive
+      );
+  }
+  
+  if (is_alive != TRUE)
+  {
+    return;
+  }
+  
   old_ainfo_ptr = naviD->ainfo_ptr;
   naviD->active_imageid = image_id;
   naviD->ainfo_ptr = navi_get_ainfo(image_id, old_ainfo_ptr);
@@ -1179,8 +1252,15 @@ navi_reload_ainfo(gint32 image_id)
   {
     if(naviD->vin_ptr) g_free(naviD->vin_ptr);
     naviD->vin_ptr = gap_vin_get_all(naviD->ainfo_ptr->basename);
-    gtk_adjustment_set_value(GTK_ADJUSTMENT(naviD->framerate_adj), (gfloat)naviD->vin_ptr->framerate);
-    gtk_adjustment_set_value(GTK_ADJUSTMENT(naviD->timezoom_adj), (gfloat)naviD->vin_ptr->timezoom);
+
+    if(naviD->framerate_adj != NULL)
+    {
+      gtk_adjustment_set_value(GTK_ADJUSTMENT(naviD->framerate_adj), (gfloat)naviD->vin_ptr->framerate);
+    }
+    if(naviD->timezoom_adj != NULL)
+    {
+      gtk_adjustment_set_value(GTK_ADJUSTMENT(naviD->timezoom_adj), (gfloat)naviD->vin_ptr->timezoom);
+    }
     p_set_acl_tracking_radio_buttons(naviD);
   }
 }  /* end navi_reload_ainfo */
@@ -1252,6 +1332,7 @@ static void
 navi_set_waiting_cursor(void)
 {
   if(naviD == NULL) return;
+  if(GTK_WIDGET(naviD->shell)->window == NULL) return;
 
   naviD->waiting_cursor = TRUE;
   gdk_window_set_cursor(GTK_WIDGET(naviD->shell)->window, naviD->cursor_wait);
@@ -1271,6 +1352,7 @@ static void
 navi_set_active_cursor(void)
 {
   if(naviD == NULL) return;
+  if(GTK_WIDGET(naviD->shell)->window == NULL) return;
 
   naviD->waiting_cursor = FALSE;
   gdk_window_set_cursor(GTK_WIDGET(naviD->shell)->window, naviD->cursor_acitve);
@@ -1371,35 +1453,10 @@ navi_scroll_event_cb ( GtkWidget *widget
 static void
 navi_dialog_tooltips(void)
 {
-  char *value_string;
-  gint tooltip_on;
+  if(naviD == NULL) { return; }
 
-  if(naviD == NULL) return;
+  naviD->tooltip_on = gap_lib_check_tooltips(&naviD->tooltip_on);
 
-  tooltip_on = TRUE;
-  value_string = gimp_gimprc_query("show-tool-tips");
-
-  if(value_string != NULL)
-  {
-    if (strcmp(value_string, "no") == 0)
-    {
-      tooltip_on = FALSE;
-    }
-  }
-
-  if(naviD->tooltip_on != tooltip_on)
-  {
-     naviD->tooltip_on = tooltip_on;
-
-     if(tooltip_on)
-     {
-       gimp_help_enable_tooltips ();
-     }
-     else
-     {
-       gimp_help_disable_tooltips ();
-     }
-  }
 }  /* end navi_dialog_tooltips */
 
 
@@ -2416,12 +2473,15 @@ navi_render_preview (FrameWidget *fw)
 
    if(gap_debug) printf("navi_render_preview START\n");
 
+
+
    l_th_data = NULL;
    l_th_bpp = 3;                /* l_th_bpp always 3 for thumbnail_file data, but can be 4 for the actual image */
    if(naviD == NULL)            { return; }
    if(fw == NULL)               { return; }
    if(fw->pv_ptr == NULL)       { return; }
    if(naviD->ainfo_ptr == NULL) { return; }
+   if(!gap_image_is_alive(naviD->active_imageid)) {return; }
 
    if((fw->pv_ptr->pv_width != naviD->image_width)
    || (fw->pv_ptr->pv_height != naviD->image_height))
@@ -2754,9 +2814,28 @@ navi_dialog_poll(GtkWidget *w, gpointer   data)
          /* check and enable/disable tooltips */
          navi_dialog_tooltips ();
 
-         frame_nr = gap_lib_get_frame_nr(naviD->active_imageid);
+         /* check request to present dialog window */
+         p_check_dialog_to_front_request();
+         
+         /* check if active image is still valid and is a frame image */
+         if(gap_image_is_alive(naviD->active_imageid))
+         {
+           frame_nr = gap_lib_get_frame_nr(naviD->active_imageid);
+         }
+         else
+         {
+           frame_nr = -1;
+         }
+
          if(frame_nr < 0 )
          {
+           if(gap_debug)
+           {
+             printf("TIMER POLL active_imageid:%d is now invalid\n"
+                ,(int)naviD->active_imageid
+                );
+           }
+           
             /* no valid frame number, maybe frame was closed
              */
             naviD->active_imageid = -1;
@@ -2855,7 +2934,14 @@ navi_preview_extents (void)
 {
   gint32 width, height;
   if (!naviD)
+  {
     return;
+  }
+  
+  if (!gap_image_is_alive(naviD->active_imageid))
+  {
+    return;
+  }
 
   naviD->gimage_width = gimp_image_width(naviD->active_imageid);
   naviD->gimage_height = gimp_image_height(naviD->active_imageid);
@@ -4004,6 +4090,8 @@ navi_dialog_create (GtkWidget* shell, gint32 image_id)
   /* init the global naviD structure */
   naviD->del_button = NULL;
   naviD->dup_button = NULL;
+  naviD->framerate_adj = NULL;
+  naviD->timezoom_adj = NULL;
   naviD->acl_trace_off_toggle = NULL;
   naviD->acl_trace_by_name_toggle = NULL;
   naviD->acl_trace_by_pos_toggle = NULL;

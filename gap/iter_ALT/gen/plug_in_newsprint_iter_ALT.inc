@@ -29,8 +29,8 @@ gint p_plug_in_newsprint_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdou
       return -1;  /* ERROR */ 
     }
 
-    gimp_get_data("plug_in_newsprint_ITER_FROM", g_plugin_data_from); 
-    gimp_get_data("plug_in_newsprint_ITER_TO",   g_plugin_data_to); 
+    gimp_get_data("plug-in-newsprint-ITER-FROM", g_plugin_data_from); 
+    gimp_get_data("plug-in-newsprint-ITER-TO",   g_plugin_data_to); 
 
     buf_from = (t_plug_in_newsprint_Vals *)&g_plugin_data_from[0]; 
     buf_to   = (t_plug_in_newsprint_Vals *)&g_plugin_data_to[0]; 
@@ -49,7 +49,7 @@ gint p_plug_in_newsprint_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdou
     p_delta_long(&buf.blu_spotfn, buf_from->blu_spotfn, buf_to->blu_spotfn, total_steps, current_step);
     p_delta_long(&buf.oversample, buf_from->oversample, buf_to->oversample, total_steps, current_step);
 
-    gimp_set_data("plug_in_newsprint", &buf, sizeof(buf)); 
+    gimp_set_data("plug-in-newsprint", &buf, sizeof(buf)); 
 
     return 0; /* OK */
 }

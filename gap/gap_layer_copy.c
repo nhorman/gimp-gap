@@ -42,6 +42,7 @@
 #include "string.h"
 /* GIMP includes */
 /* GAP includes */
+#include "gap_lib_common_defs.h"
 #include "gap_layer_copy.h"
 #include "gap_pdb_calls.h"
 
@@ -122,7 +123,6 @@ gint32
 gap_layer_copy_to_image (gint32 dst_image_id, gint32 src_layer_id)
 {
   gint32 l_new_layer_id;
-  GimpDrawable *src_drawable;
   GimpImageType  l_src_type;
   gdouble        l_src_opacity;
   GimpLayerModeEffects  l_src_mode;
@@ -131,7 +131,6 @@ gap_layer_copy_to_image (gint32 dst_image_id, gint32 src_layer_id)
 
   /* create new layer in destination image */
   l_src_type    = gimp_drawable_type(src_layer_id);
-  src_drawable  = gimp_drawable_get (src_layer_id);
   l_src_opacity = gimp_layer_get_opacity(src_layer_id);
   l_src_mode    = gimp_layer_get_mode(src_layer_id);
 
@@ -259,6 +258,8 @@ gap_layer_copy_content (gint32 dst_drawable_id, gint32 src_drawable_id)
   }
 
   gimp_drawable_flush (dst_drawable);
+  gimp_drawable_detach(src_drawable);
+  gimp_drawable_detach(dst_drawable);
   return TRUE;
 }  /* end gap_layer_copy_content */
 
@@ -406,6 +407,8 @@ gap_layer_copy_picked_channel (gint32 dst_drawable_id,  guint dst_channel_pick
   }
   gimp_drawable_update (dst_drawable_id, x1, y1, (x2 - x1), (y2 - y1));
 
+  gimp_drawable_detach(src_drawable);
+  gimp_drawable_detach(dst_drawable);
 
   return TRUE;
 }  /* end gap_layer_copy_picked_channel */
@@ -481,6 +484,8 @@ gap_layer_new_from_buffer(gint32 image_id
 
     /*  update the processed region  */
     gimp_drawable_flush (dst_drawable);
+    gimp_drawable_detach(dst_drawable);
+
   }
   
   return(layer_id);
@@ -542,3 +547,59 @@ gap_layer_clear_to_color(gint32 layer_id
   }
  
 }  /* end gap_layer_clear_to_color */
+
+
+
+/* ----------------------------------------------------
+ * gap_layer_flip
+ * ----------------------------------------------------
+ * flip layer according to flip_request,
+ * return the id of the flipped layer.
+ * NOTE: flip_request GAP_STB_FLIP_NONE returns the unchanged layer 
+ */
+gint32
+gap_layer_flip(gint32 layer_id, gint32 flip_request)
+{
+  gint32   center_x;
+  gint32   center_y;
+  gdouble  axis;
+
+
+  switch(flip_request)
+  {
+    case GAP_STB_FLIP_HOR:
+      axis = (gdouble)(gimp_drawable_width(layer_id)) / 2.0;
+      layer_id = gimp_drawable_transform_flip_simple(layer_id
+                                   ,GIMP_ORIENTATION_HORIZONTAL
+				   ,TRUE    /* auto_center */
+				   ,axis
+				   ,TRUE    /* clip_result */
+				   );
+      break;
+    case GAP_STB_FLIP_VER:
+      axis = (gdouble)(gimp_drawable_height(layer_id)) / 2.0;
+      layer_id = gimp_drawable_transform_flip_simple(layer_id
+                                   ,GIMP_ORIENTATION_VERTICAL
+				   ,TRUE    /* auto_center */
+				   ,axis
+				   ,TRUE    /* clip_result */
+				   );
+      break;
+    case GAP_STB_FLIP_BOTH:
+      center_x = gimp_drawable_width(layer_id) / 2;
+      center_y = gimp_drawable_height(layer_id) / 2;
+  
+      layer_id = gimp_drawable_transform_rotate_simple(layer_id
+                                  ,GIMP_ROTATE_180
+				  ,TRUE      /* auto_center */
+				  ,center_x
+				  ,center_y
+				  ,TRUE      /* clip_result */
+				  );
+      break;
+    default:
+      break;
+  }
+  
+  return(layer_id);
+}  /* end gap_layer_flip */

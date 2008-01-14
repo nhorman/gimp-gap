@@ -10,9 +10,6 @@ gint p_plug_in_despeckle_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdou
       gint      type;    /* not iterated */
       gint      black;
       gint      white;
-      gint      preview;
-      gint      dummy1;
-      gint      dummy2;
     } t_plug_in_despeckle_Vals; 
 
     t_plug_in_despeckle_Vals  buf, *buf_from, *buf_to; 
@@ -24,8 +21,8 @@ gint p_plug_in_despeckle_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdou
       return -1;  /* ERROR */ 
     }
 
-    gimp_get_data("plug_in_despeckle_ITER_FROM", g_plugin_data_from); 
-    gimp_get_data("plug_in_despeckle_ITER_TO",   g_plugin_data_to); 
+    gimp_get_data("plug-in-despeckle-ITER-FROM", g_plugin_data_from); 
+    gimp_get_data("plug-in-despeckle-ITER-TO",   g_plugin_data_to); 
 
     buf_from = (t_plug_in_despeckle_Vals *)&g_plugin_data_from[0]; 
     buf_to   = (t_plug_in_despeckle_Vals *)&g_plugin_data_to[0]; 
@@ -36,8 +33,7 @@ gint p_plug_in_despeckle_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdou
     p_delta_gint(&buf.black, buf_from->black, buf_to->black, total_steps, current_step);
     p_delta_gint(&buf.white, buf_from->white, buf_to->white, total_steps, current_step);
 
-    buf.preview = FALSE;
-    gimp_set_data("plug_in_despeckle", &buf, sizeof(buf)); 
+    gimp_set_data("plug-in-despeckle", &buf, sizeof(buf)); 
 
     return 0; /* OK */
 }

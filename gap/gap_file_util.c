@@ -205,22 +205,19 @@ gap_file_chop_trailingspace_and_nl(char *buffer)
 {
   int len;
   len = strlen(buffer);
-  while(TRUE)
+  while(len > 0)
   {
-    if(len > 0)
+    len--;
+    if((buffer[len] == '\n')
+    || (buffer[len] == '\r')
+    || (buffer[len] == '\t')
+    || (buffer[len] == ' '))
     {
-      len--;
-      if((buffer[len] == '\n')
-      || (buffer[len] == '\a')
-      || (buffer[len] == '\t')
-      || (buffer[len] == ' '))
-      {
-	buffer[len] = '\0';
-      }
-      else
-      {
-	break;
-      }
+      buffer[len] = '\0';
+    }
+    else
+    {
+      break;
     }
   }
 }  /* end gap_file_chop_trailingspace_and_nl */
@@ -325,3 +322,19 @@ gap_file_build_absolute_filename(const char * filename)
   return (absolute);
 }  /* end gap_file_build_absolute_filename */
 
+/* --------------------------------
+ * gap_file_get_mtime
+ * --------------------------------
+ */
+gint32
+gap_file_get_mtime(const char *filename)
+{
+  struct stat  l_stat;
+
+  if (0 == g_stat(filename, &l_stat))
+  {
+    return(l_stat.st_mtime);
+  }
+  return(0);
+  
+}  /* end gap_file_get_mtime */

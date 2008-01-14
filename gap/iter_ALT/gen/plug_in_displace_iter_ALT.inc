@@ -4,16 +4,23 @@
  */
 gint p_plug_in_displace_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble current_step, gint32 len_struct) 
 {
+    typedef enum
+    {
+      CARTESIAN_MODE = 0,
+      POLAR_MODE     = 1
+    } t_DisplaceMode;
+
     typedef struct t_plug_in_displace_Vals 
     {
-      gdouble   amount_x;
-      gdouble   amount_y;
-      long      do_x;
-      long      do_y;
-      gint32    displace_map_x;
-      gint32    displace_map_y;
-      long      displace_type;
-      gboolean  preview;
+      gdouble      amount_x;
+      gdouble      amount_y;
+      gint         do_x;
+      gint         do_y;
+      gint         displace_map_x;
+      gint         displace_map_y;
+      gint         displace_type;
+      t_DisplaceMode mode;
+
     } t_plug_in_displace_Vals; 
 
     t_plug_in_displace_Vals  buf, *buf_from, *buf_to; 
@@ -25,8 +32,8 @@ gint p_plug_in_displace_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdoub
       return -1;  /* ERROR */ 
     }
 
-    gimp_get_data("plug_in_displace_ITER_FROM", g_plugin_data_from); 
-    gimp_get_data("plug_in_displace_ITER_TO",   g_plugin_data_to); 
+    gimp_get_data("plug-in-displace-ITER-FROM", g_plugin_data_from); 
+    gimp_get_data("plug-in-displace-ITER-TO",   g_plugin_data_to); 
 
     buf_from = (t_plug_in_displace_Vals *)&g_plugin_data_from[0]; 
     buf_to   = (t_plug_in_displace_Vals *)&g_plugin_data_to[0]; 
@@ -34,14 +41,13 @@ gint p_plug_in_displace_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdoub
 
     p_delta_gdouble(&buf.amount_x, buf_from->amount_x, buf_to->amount_x, total_steps, current_step);
     p_delta_gdouble(&buf.amount_y, buf_from->amount_y, buf_to->amount_y, total_steps, current_step);
-    p_delta_long(&buf.do_x, buf_from->do_x, buf_to->do_x, total_steps, current_step);
-    p_delta_long(&buf.do_y, buf_from->do_y, buf_to->do_y, total_steps, current_step);
-    p_delta_drawable(&buf.displace_map_x, buf_from->displace_map_x, buf_to->displace_map_x, total_steps, current_step);
-    p_delta_drawable(&buf.displace_map_y, buf_from->displace_map_y, buf_to->displace_map_y, total_steps, current_step);
-    p_delta_long(&buf.displace_type, buf_from->displace_type, buf_to->displace_type, total_steps, current_step);
+    p_delta_gint(&buf.do_x, buf_from->do_x, buf_to->do_x, total_steps, current_step);
+    p_delta_gint(&buf.do_y, buf_from->do_y, buf_to->do_y, total_steps, current_step);
+    p_delta_gintdrawable(&buf.displace_map_x, buf_from->displace_map_x, buf_to->displace_map_x, total_steps, current_step);
+    p_delta_gintdrawable(&buf.displace_map_y, buf_from->displace_map_y, buf_to->displace_map_y, total_steps, current_step);
+    p_delta_gint(&buf.displace_type, buf_from->displace_type, buf_to->displace_type, total_steps, current_step);
 
-    buf.preview = FALSE;
-    gimp_set_data("plug_in_displace", &buf, sizeof(buf)); 
+    gimp_set_data("plug-in-displace", &buf, sizeof(buf)); 
 
     return 0; /* OK */
 }

@@ -30,7 +30,7 @@
 
 #include <config.h>
 
-#define GAP_WILDCARD_VIDEO_ENCODERS     "^plug_in_gap_enc_.*"
+#define GAP_WILDCARD_VIDEO_ENCODERS     "^plug.in.gap.enc.*"
 #define GAP_QUERY_PREFIX_VIDEO_ENCODERS "extension_gap_ENCPAR_QUERY_"
 #define GAP_VENC_PAR_MENU_NAME          "gapve_menu_name"
 #define GAP_VENC_PAR_VID_EXTENSION      "gapve_vid_extension"
@@ -68,6 +68,7 @@
 #include <libgimp/gimpui.h>
 #include <gap_gve_misc_util.h>
 
+#include <gap_lib_common_defs.h>
 
 
 
@@ -80,13 +81,7 @@
 
 #define GAP_GVE_MENU_ITEM_INDEX_KEY "gap_enc_menu_item_index"
 
-typedef enum
-{
-   GAP_RNGTYPE_FRAMES
-  ,GAP_RNGTYPE_LAYER
-  ,GAP_RNGTYPE_STORYBOARD
-} GapGveTypeInputRange;
-
+typedef GapLibTypeInputRange GapGveTypeInputRange;
 
 
 typedef struct GapGveEncList {

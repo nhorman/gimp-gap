@@ -320,27 +320,9 @@ static void     p_open_videofile(GapPlayerMainGlobalParams *gpp
 static void
 p_check_tooltips(void)
 {
-  char *value_string;
-
-  value_string = gimp_gimprc_query("show-tool-tips");
-
-  if(value_string != NULL)
-  {
-    if (strcmp(value_string, "no") == 0)
-    {
-       gimp_help_disable_tooltips ();
-    }
-    else
-    {
-       gimp_help_enable_tooltips ();
-    }
-  }
-  else
-  {
-       gimp_help_enable_tooltips ();
-  }
-
+  gap_lib_check_tooltips(NULL);
 }  /* end p_check_tooltips */
+
 
 
 /* -----------------------------

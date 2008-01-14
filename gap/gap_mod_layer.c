@@ -487,7 +487,7 @@ p_apply_action(gint32 image_id,
   gint    l_vis_result;
   char    l_name_buff[MAX_LAYERNAME];
 
-  if(gap_debug) fprintf(stderr, "gap: p_apply_action START\n");
+  if(gap_debug) printf("gap: p_apply_action START\n");
 
   l_rc = 0;
   
@@ -586,7 +586,7 @@ p_apply_action(gint32 image_id,
     /* apply function defined by action_mode */
     if(layli_ptr[l_idx].selected != FALSE)
     {
-      if(gap_debug) fprintf(stderr, "gap: p_apply_action on selected LayerID:%d layerstack:%d\n",
+      if(gap_debug) printf("gap: p_apply_action on selected LayerID:%d layerstack:%d\n",
                            (int)l_layer_id, (int)l_idx);
       switch(action_mode)
       {
@@ -613,7 +613,7 @@ p_apply_action(gint32 image_id,
 	                       image_id,
 			       l_layer_id,
 			       GIMP_RUN_WITH_LAST_VALS);
-          if(gap_debug) fprintf(stderr, "gap: p_apply_action FILTER:%s rc =%d\n",
+          if(gap_debug) printf("gap: p_apply_action FILTER:%s rc =%d\n",
                                 filter_procname, (int)l_rc);
 	  break;
         case GAP_MOD_ACM_APPLY_FILTER_ON_LAYERMASK:
@@ -929,6 +929,9 @@ p_apply_action(gint32 image_id,
 	case GAP_MOD_ACM_SET_MODE_VALUE_MODE:
 	  gimp_layer_set_mode(l_layer_id, GIMP_VALUE_MODE);
 	  break;
+        case GAP_MOD_ACM_RESIZE_TO_IMG:
+          gimp_layer_resize_to_image_size (l_layer_id);
+	  break;
         default:
 	  break;
       }
@@ -962,6 +965,7 @@ p_do_filter_dialogs(GapAnimInfo *ainfo_ptr,
   int      l_rc;
   int      l_idx;
   static char l_key_from[512];
+  static char *canonical_proc_name;
 
   /* GAP-PDB-Browser Dialog */
   /* ---------------------- */
@@ -975,12 +979,16 @@ p_do_filter_dialogs(GapAnimInfo *ainfo_ptr,
 			    image_id,
 			    GAP_DB_BROWSER_MODFRAMES_HELP_ID) < 0)
   {
-      if(gap_debug) fprintf(stderr, "DEBUG: gap_db_browser_dialog cancelled\n");
+      if(gap_debug) printf("DEBUG: gap_db_browser_dialog cancelled\n");
       return -1;
   }
 
-  strncpy(filter_procname, l_browser_result.selected_proc_name, filt_len-1);
+  canonical_proc_name = gimp_canonicalize_identifier(l_browser_result.selected_proc_name);
+
+  strncpy(filter_procname, canonical_proc_name, filt_len-1);
   filter_procname[filt_len-1] = '\0';
+  g_free(canonical_proc_name);
+  
   if(l_browser_result.button_nr == 1) *apply_mode = GAP_PAPP_VARYING_LINEAR;
   else                                *apply_mode = GAP_PAPP_CONSTANT;
 
@@ -991,7 +999,7 @@ p_do_filter_dialogs(GapAnimInfo *ainfo_ptr,
   l_rc = gap_filt_pdb_procedure_available(filter_procname, GAP_PTYP_CAN_OPERATE_ON_DRAWABLE);
   if(l_rc < 0)
   {
-     fprintf(stderr, "ERROR: Plugin not available or wrong type %s\n", filter_procname);
+     printf("ERROR: Plugin not available or wrong type %s\n", filter_procname);
      return -1;
   }
 
@@ -999,7 +1007,7 @@ p_do_filter_dialogs(GapAnimInfo *ainfo_ptr,
   l_idx = gap_mod_get_1st_selected(layli_ptr, nlayers);
   if(l_idx < 0)
   {
-     fprintf(stderr, "ERROR: No layer selected in 1.st handled frame\n");
+     printf("ERROR: No layer selected in 1.st handled frame\n");
      return (-1);
   }
   l_drawable_id = layli_ptr[l_idx].layer_id;
@@ -1008,7 +1016,7 @@ p_do_filter_dialogs(GapAnimInfo *ainfo_ptr,
     l_drawable_id = gimp_layer_get_mask(layli_ptr[l_idx].layer_id);
     if(l_drawable_id < 0)
     {
-      fprintf(stderr, "ERROR: selected layer has no layermask\n");
+      printf("ERROR: selected layer has no layermask\n");
       return -1;
     }
   }
@@ -1026,11 +1034,11 @@ p_do_filter_dialogs(GapAnimInfo *ainfo_ptr,
    */
   /* gimp_display_delete(*dpy_id); */
 
-  /* get values, then store with suffix "_ITER_FROM" */
+  /* get values, then store with suffix "-ITER-FROM" */
   *plugin_data_len = gap_filt_pdb_get_data(filter_procname);
   if(*plugin_data_len > 0)
   {
-     g_snprintf(l_key_from, sizeof(l_key_from), "%s_ITER_FROM", filter_procname);
+     g_snprintf(l_key_from, sizeof(l_key_from), "%s%s", filter_procname, GAP_ITER_FROM_SUFFIX);
      gap_filt_pdb_set_data(l_key_from, *plugin_data_len);
   }
   else
@@ -1135,25 +1143,34 @@ p_do_2nd_filter_dialogs(char *filter_procname,
   /* --------------------------------- */
   l_rc = gap_filt_pdb_call_plugin(filter_procname, l_last_image_id, l_drawable_id, GIMP_RUN_INTERACTIVE);
 
-  /* get values, then store with suffix "_ITER_TO" */
+  /* get values, then store with suffix "-ITER-TO" */
   l_plugin_data_len = gap_filt_pdb_get_data(filter_procname);
   if(l_plugin_data_len <= 0)
      goto cleanup;
 
-   g_snprintf(l_key_to, sizeof(l_key_to), "%s_ITER_TO", filter_procname);
+   g_snprintf(l_key_to, sizeof(l_key_to), "%s%s", filter_procname, GAP_ITER_TO_SUFFIX);
    gap_filt_pdb_set_data(l_key_to, l_plugin_data_len);
 
    /* get FROM values */
-   g_snprintf(l_key_from, sizeof(l_key_from), "%s_ITER_FROM", filter_procname);
+   g_snprintf(l_key_from, sizeof(l_key_from), "%s%s", filter_procname, GAP_ITER_FROM_SUFFIX);
    l_plugin_data_len = gap_filt_pdb_get_data(l_key_from);
    gap_filt_pdb_set_data(filter_procname, l_plugin_data_len);
 
   l_rc = p_pitstop_dialog(1, filter_procname);
 
 cleanup:
-  if(l_dpy_id >= 0)        gimp_display_delete(l_dpy_id);
-  if(l_last_image_id >= 0) gimp_image_delete(l_last_image_id);
-  if(l_layli_ptr != NULL)  g_free(l_layli_ptr);
+  if(l_last_image_id >= 0)
+  {
+    gimp_image_delete(l_last_image_id);
+  }
+  if(l_dpy_id >= 0)
+  {
+    gimp_display_delete(l_dpy_id);
+  }
+  if(l_layli_ptr != NULL)
+  {
+    g_free(l_layli_ptr);
+  }
 
   return (l_rc);
 
@@ -1206,7 +1223,7 @@ p_frames_modify(GapAnimInfo *ainfo_ptr,
 
 
 
-  if(gap_debug) fprintf(stderr, "gap: p_frames_modify START, action_mode=%d  sel_mode=%d case=%d, invert=%d patt:%s:\n",
+  if(gap_debug) printf("gap: p_frames_modify START, action_mode=%d  sel_mode=%d case=%d, invert=%d patt:%s:\n",
         (int)action_mode, (int)sel_mode, (int)sel_case, (int)sel_invert, sel_pattern);
 
   l_operate_on_layermask = FALSE;
@@ -1263,7 +1280,7 @@ p_frames_modify(GapAnimInfo *ainfo_ptr,
   l_cur_frame_nr = l_begin;
   while(1)              /* loop foreach frame in range */
   {
-    if(gap_debug) fprintf(stderr, "p_frames_modify While l_cur_frame_nr = %d\n", (int)l_cur_frame_nr);
+    if(gap_debug) printf("p_frames_modify While l_cur_frame_nr = %d\n", (int)l_cur_frame_nr);
 
     /* build the frame name */
     if(ainfo_ptr->new_filename != NULL) g_free(ainfo_ptr->new_filename);
@@ -1398,7 +1415,7 @@ p_frames_modify(GapAnimInfo *ainfo_ptr,
 		   );
     if(l_rc != 0)
     {
-      if(gap_debug) fprintf(stderr, "gap: p_frames_modify p_apply-action failed. rc=%d\n", (int)l_rc);
+      if(gap_debug) printf("gap: p_frames_modify p_apply-action failed. rc=%d\n", (int)l_rc);
       goto error;
     }
 
@@ -1429,7 +1446,7 @@ p_frames_modify(GapAnimInfo *ainfo_ptr,
         /* call plugin-specific iterator, to modify
          * the plugin's last_values
          */
-       if(gap_debug) fprintf(stderr, "DEBUG: calling iterator %s  current frame:%d\n",
+       if(gap_debug) printf("DEBUG: calling iterator %s  current frame:%d\n",
         		       l_plugin_iterator, (int)l_cur_frame_nr);
        if(strcmp(l_plugin_iterator, GIMP_PLUGIN_GAP_COMMON_ITER) == 0)
        {
@@ -1454,13 +1471,19 @@ p_frames_modify(GapAnimInfo *ainfo_ptr,
        }
        if (l_params[0].data.d_status != GIMP_PDB_SUCCESS)
        {
-         fprintf(stderr, "ERROR: iterator %s  failed\n", l_plugin_iterator);
+         printf("ERROR: iterator %s  failed\n", l_plugin_iterator);
          l_rc = -1;
        }
 
        gimp_destroy_params(l_params, l_retvals);
     }
 
+
+    if(l_operating_on_current_image == FALSE)
+    {
+      /* destroy the tmp image */
+      gimp_image_delete(l_tmp_image_id);
+    }
 
     /* close display (if open) */
     if (l_dpy_id >= 0)
@@ -1469,11 +1492,6 @@ p_frames_modify(GapAnimInfo *ainfo_ptr,
       l_dpy_id = -1;
     }
 
-    if(l_operating_on_current_image == FALSE)
-    {
-      /* destroy the tmp image */
-      gimp_image_delete(l_tmp_image_id);
-    }
 
     if(l_rc != 0)
       goto error;
@@ -1522,21 +1540,21 @@ p_frames_modify(GapAnimInfo *ainfo_ptr,
     }
   }
 
-  if(gap_debug) fprintf(stderr, "p_frames_modify End OK\n");
+  if(gap_debug) printf("p_frames_modify End OK\n");
 
   return 0;
 
 error:
-  if(gap_debug) fprintf(stderr, "gap: p_frames_modify exit with Error\n");
+  if(gap_debug) printf("gap: p_frames_modify exit with Error\n");
 
+  if((l_tmp_image_id >= 0) && (l_operating_on_current_image == FALSE))
+  {
+    gimp_image_delete(l_tmp_image_id);
+  }
   if (l_dpy_id >= 0)
   {
       gimp_display_delete(l_dpy_id);
       l_dpy_id = -1;
-  }
-  if((l_tmp_image_id >= 0) && (l_operating_on_current_image == FALSE))
-  {
-    gimp_image_delete(l_tmp_image_id);
   }
   if(l_layli_ptr != NULL) g_free(l_layli_ptr);
   if(l_plugin_iterator != NULL)  g_free(l_plugin_iterator);

@@ -52,13 +52,37 @@
 extern int gap_debug;
 
 /* ============================================================================
+ * p_status_to_string
+ * ============================================================================
+ */
+const char *
+p_status_to_string(int status)
+{
+  switch (status)
+  {
+    case GIMP_PDB_EXECUTION_ERROR:
+      return ("GIMP_PDB_EXECUTION_ERROR");
+    case GIMP_PDB_CALLING_ERROR:
+      return ("GIMP_PDB_CALLING_ERROR");
+    case GIMP_PDB_PASS_THROUGH:
+      return ("GIMP_PDB_PASS_THROUGH");
+    case GIMP_PDB_SUCCESS:
+      return ("GIMP_PDB_SUCCESS");
+    case GIMP_PDB_CANCEL:
+      return ("GIMP_PDB_CANCEL");
+    default:
+      return ("* unknown *");
+  }
+}  /* end p_status_to_string */
+
+
+/* ============================================================================
  * gap_pdb_procedure_available
  *   if requested procedure is available in the PDB return the number of args
  *      (0 upto n) that are needed to call the procedure.
  *   if not available return -1
  * ============================================================================
  */
-
 gint 
 gap_pdb_procedure_available(char *proc_name)
 {
@@ -158,7 +182,11 @@ gap_pdb_gimp_displays_reconnect(gint32 old_image_id, gint32 new_image_id)
       return (TRUE);   /* OK */
    }
    gimp_destroy_params(return_vals, nreturn_vals);
-   printf("GAP: Error: PDB call of %s failed\n", l_called_proc);
+   printf("GAP: Error: PDB call of %s failed, d_status:%d %s\n"
+      , l_called_proc
+      , (int)return_vals[0].data.d_status
+      , p_status_to_string(return_vals[0].data.d_status)
+      );
    return(FALSE);
 }	/* end gap_pdb_gimp_displays_reconnect */
 
@@ -192,7 +220,11 @@ gap_pdb_gimp_layer_new_from_drawable(gint32 drawable_id, gint32 dst_image_id)
       return(layer_id);   /* return the resulting layer_id */
    }
    gimp_destroy_params(return_vals, nreturn_vals);
-   printf("GAP: Error: PDB call of %s failed\n", l_called_proc);
+   printf("GAP: Error: PDB call of %s failed, d_status:%d %s\n"
+      , l_called_proc
+      , (int)return_vals[0].data.d_status
+      , p_status_to_string(return_vals[0].data.d_status)
+      );
 
    return(-1);
 }	/* end gap_pdb_gimp_layer_new_from_drawable */
@@ -225,10 +257,12 @@ gap_pdb_gimp_file_save_thumbnail(gint32 image_id, char* filename)
    }
 
    gimp_destroy_params(return_vals, nreturn_vals);
-   printf("GAP: Error: PDB call of %s failed on file: %s (image_id:%d)\n"
+   printf("GAP: Error: PDB call of %s failed on file: %s (image_id:%d), d_status:%d %s\n"
           , l_called_proc
 	  , filename
 	  , (int)image_id
+          , (int)return_vals[0].data.d_status
+          , p_status_to_string(return_vals[0].data.d_status)
 	  );
    return(FALSE);
 }	/* end gap_pdb_gimp_file_save_thumbnail */
@@ -313,6 +347,10 @@ workaround:
       return(TRUE); /* OK */
    }
    gimp_destroy_params(return_vals, nreturn_vals);
-   printf("GAP: Error: PDB call of %s failed\n", l_called_proc);
+   printf("GAP: Error: PDB call of %s failed, d_status:%d %s\n"
+      , l_called_proc
+      , (int)return_vals[0].data.d_status
+      , p_status_to_string(return_vals[0].data.d_status)
+      );
    return(FALSE);
 }	/* end gap_pdb_gimp_image_thumbnail */

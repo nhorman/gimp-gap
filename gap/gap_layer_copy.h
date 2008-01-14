@@ -71,4 +71,7 @@ void   gap_layer_clear_to_color(gint32 layer_id
                              ,gdouble blue
                              ,gdouble alpha
                              );
+
+gint32 gap_layer_flip(gint32 layer_id, gint32 flip_request);
+
 #endif

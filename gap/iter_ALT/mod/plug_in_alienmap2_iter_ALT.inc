@@ -4,19 +4,24 @@
  */
 gint p_plug_in_alienmap2_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble current_step, gint32 len_struct) 
 {
+    typedef enum
+    {
+      RGB_MODEL = 0,
+      HSL_MODEL = 1
+    } t_plug_in_alienmap2_ColorModel;
+
     typedef struct t_plug_in_alienmap2_Vals 
     {
-      gdouble   redfrequency;
-      gdouble   redangle;
-      gdouble   greenfrequency;
-      gdouble   greenangle;
-      gdouble   bluefrequency;
-      gdouble   blueangle;
-      gint      colormodel;
-      gint      redmode;
-      gint      greenmode;
-      gint      bluemode;
-      gboolean   preview;
+      gdouble    redfrequency;
+      gdouble    redangle;
+      gdouble    greenfrequency;
+      gdouble    greenangle;
+      gdouble    bluefrequency;
+      gdouble    blueangle;
+      t_plug_in_alienmap2_ColorModel colormodel;
+      gboolean   redmode;
+      gboolean   greenmode;
+      gboolean   bluemode;
     } t_plug_in_alienmap2_Vals; 
 
     t_plug_in_alienmap2_Vals  buf, *buf_from, *buf_to; 
@@ -28,8 +33,8 @@ gint p_plug_in_alienmap2_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdou
       return -1;  /* ERROR */ 
     }
 
-    gimp_get_data("plug_in_alienmap2_ITER_FROM", g_plugin_data_from); 
-    gimp_get_data("plug_in_alienmap2_ITER_TO",   g_plugin_data_to); 
+    gimp_get_data("plug-in-alienmap2-ITER-FROM", g_plugin_data_from); 
+    gimp_get_data("plug-in-alienmap2-ITER-TO",   g_plugin_data_to); 
 
     buf_from = (t_plug_in_alienmap2_Vals *)&g_plugin_data_from[0]; 
     buf_to   = (t_plug_in_alienmap2_Vals *)&g_plugin_data_to[0]; 
@@ -41,12 +46,8 @@ gint p_plug_in_alienmap2_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdou
     p_delta_gdouble(&buf.greenangle, buf_from->greenangle, buf_to->greenangle, total_steps, current_step);
     p_delta_gdouble(&buf.bluefrequency, buf_from->bluefrequency, buf_to->bluefrequency, total_steps, current_step);
     p_delta_gdouble(&buf.blueangle, buf_from->blueangle, buf_to->blueangle, total_steps, current_step);
-    p_delta_gint(&buf.colormodel, buf_from->colormodel, buf_to->colormodel, total_steps, current_step);
-    p_delta_gint(&buf.redmode, buf_from->redmode, buf_to->redmode, total_steps, current_step);
-    p_delta_gint(&buf.greenmode, buf_from->greenmode, buf_to->greenmode, total_steps, current_step);
-    p_delta_gint(&buf.bluemode, buf_from->bluemode, buf_to->bluemode, total_steps, current_step);
 
-    gimp_set_data("plug_in_alienmap2", &buf, sizeof(buf)); 
+    gimp_set_data("plug-in-alienmap2", &buf, sizeof(buf)); 
 
     return 0; /* OK */
 }

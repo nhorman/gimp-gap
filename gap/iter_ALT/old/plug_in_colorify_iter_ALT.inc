@@ -18,8 +18,8 @@ gint p_Colorify_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble curre
       return -1;  /* ERROR */ 
     }
 
-    gimp_get_data("Colorify_ITER_FROM", g_plugin_data_from); 
-    gimp_get_data("Colorify_ITER_TO",   g_plugin_data_to); 
+    gimp_get_data("Colorify-ITER-FROM", g_plugin_data_from); 
+    gimp_get_data("Colorify-ITER-TO",   g_plugin_data_to); 
 
     buf_from = (t_Colorify_Vals *)&g_plugin_data_from[0]; 
     buf_to   = (t_Colorify_Vals *)&g_plugin_data_to[0]; 

@@ -82,6 +82,7 @@ char *      gap_file_make_abspath_filename(const char *filename
                   , const char *container_file);
 
 char *      gap_file_build_absolute_filename(const char * filename);
+gint32      gap_file_get_mtime(const char *filename);
 
 
 #endif        /* GAP_FILE_UTIL_H */

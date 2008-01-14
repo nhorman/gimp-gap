@@ -31,8 +31,8 @@ gint p_plug_in_pagecurl_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdoub
       return -1;  /* ERROR */ 
     }
 
-    gimp_get_data("plug_in_pagecurl_ITER_FROM", g_plugin_data_from); 
-    gimp_get_data("plug_in_pagecurl_ITER_TO",   g_plugin_data_to); 
+    gimp_get_data("plug-in-pagecurl-ITER-FROM", g_plugin_data_from); 
+    gimp_get_data("plug-in-pagecurl-ITER-TO",   g_plugin_data_to); 
 
     buf_from = (t_plug_in_pagecurl_Vals *)&g_plugin_data_from[0]; 
     buf_to   = (t_plug_in_pagecurl_Vals *)&g_plugin_data_to[0]; 
@@ -50,7 +50,7 @@ gint p_plug_in_pagecurl_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdoub
     p_delta_gint(&buf.do_vertical, buf_from->do_vertical, buf_to->do_vertical, total_steps, current_step);
     p_delta_gint(&buf.do_horizontal, buf_from->do_horizontal, buf_to->do_horizontal, total_steps, current_step);
 
-    gimp_set_data("plug_in_pagecurl", &buf, sizeof(buf)); 
+    gimp_set_data("plug-in-pagecurl", &buf, sizeof(buf)); 
 
     return 0; /* OK */
 }

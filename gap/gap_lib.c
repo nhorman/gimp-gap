@@ -1710,6 +1710,13 @@ gap_lib_get_frame_nr_from_name(char *fname)
   return(-1);
 }
 
+/* -------------------------------
+ * gap_lib_get_frame_nr
+ * -------------------------------
+ * return -1 if the specified image is
+ *           NOT a gimp-gap typical frame image (e.g. has no number part in its filename)
+ * return the number part in case of valid frame image.
+ */
 long
 gap_lib_get_frame_nr(gint32 image_id)
 {
@@ -1886,6 +1893,13 @@ p_decide_save_as(gint32 image_id, const char *sav_name, const char *final_sav_na
 
   gimp_get_data (l_key_save_as_mode, &l_save_as_mode);
 
+  if(gap_debug)
+  {
+    printf("DEBUG: p_decide_save_as l_save_as_mode: %d\n"
+          , l_save_as_mode
+          );
+  }
+
   if(l_save_as_mode == -1)
   {
     gchar *l_key_gimprc;
@@ -1904,14 +1918,20 @@ p_decide_save_as(gint32 image_id, const char *sav_name, const char *final_sav_na
     }
     l_key_gimprc = g_strdup_printf("video-save-flattened-%s", l_ext);
 
-    if(gap_debug) printf("GIMPRC KEY:%s:\n", l_key_gimprc);
+    if(gap_debug)
+    {
+      printf("GIMPRC KEY:%s:\n", l_key_gimprc);
+    }
 
     l_val_gimprc = gimp_gimprc_query(l_key_gimprc);
     l_ask = TRUE;
 
     if(l_val_gimprc)
     {
-      if(gap_debug) printf("GIMPRC VAL:%s:\n", l_val_gimprc);
+      if(gap_debug)
+      {
+        printf("GIMPRC VAL:%s:\n", l_val_gimprc);
+      }
 
       if(strcmp(l_val_gimprc, "yes") == 0)
       {
@@ -1928,7 +1948,10 @@ p_decide_save_as(gint32 image_id, const char *sav_name, const char *final_sav_na
     }
     else
     {
-      if(gap_debug) printf("GIMPRC VAL:<NULL>\n");
+      if(gap_debug)
+      {
+        printf("GIMPRC VAL:<NULL>\n");
+      }
     }
 
     if(l_ask)
@@ -2030,39 +2053,51 @@ gap_lib_gap_check_save_needed(gint32 image_id)
 /* ============================================================================
  * gap_lib_save_named_image / 2
  * ============================================================================
+ * this procedure is typically used to save frame images in other image formats than
+ * gimp native XCF format.
  */
 static gint32
 p_lib_save_named_image2(gint32 image_id, const char *sav_name, GimpRunMode run_mode, gboolean enable_thumbnailsave)
 {
-  GimpDrawable  *l_drawable;
+  gint32      l_drawable_id;
   gint        l_nlayers;
   gint32     *l_layers_list;
   gboolean    l_rc;
 
-  if(gap_debug) printf("DEBUG: before   p_lib_save_named_image2: '%s'\n", sav_name);
+  if(gap_debug)
+  {
+    printf("DEBUG: before   p_lib_save_named_image2: '%s'\n", sav_name);
+  }
 
   l_layers_list = gimp_image_get_layers(image_id, &l_nlayers);
   if(l_layers_list == NULL)
-     return -1;
-
-  l_drawable =  gimp_drawable_get(l_layers_list[l_nlayers -1]);  /* use the background layer */
-  if(l_drawable == NULL)
   {
-     fprintf(stderr, "ERROR: p_lib_save_named_image2 gimp_drawable_get failed '%s' nlayers=%d\n",
-                     sav_name, (int)l_nlayers);
-     g_free (l_layers_list);
+     printf("ERROR: gap_lib.c.p_lib_save_named_image2: failed to save '%s' because has no layers\n"
+         , sav_name
+         );
      return -1;
   }
 
+  l_drawable_id = l_layers_list[l_nlayers -1];  /* use the background layer */
+
   l_rc = gimp_file_save(run_mode,
                  image_id,
-		 l_drawable->drawable_id,
+		 l_drawable_id,
 		 sav_name,
 		 sav_name /* raw name ? */
 		 );
 
 
-  if(gap_debug) printf("DEBUG: after    p_lib_save_named_image2: '%s' nlayers=%d image=%d drw=%d run_mode=%d\n", sav_name, (int)l_nlayers, (int)image_id, (int)l_drawable->drawable_id, (int)run_mode);
+  if(gap_debug)
+  {
+    printf("DEBUG: after    p_lib_save_named_image2: '%s' nlayers=%d image=%d drawable_id=%d run_mode=%d\n"
+        , sav_name
+        , (int)l_nlayers
+        , (int)image_id
+        , (int)l_drawable_id
+        , (int)run_mode
+        );
+  }
 
   if(enable_thumbnailsave)
   {
@@ -2073,15 +2108,19 @@ p_lib_save_named_image2(gint32 image_id, const char *sav_name, GimpRunMode run_m
     g_free(l_sav_name);
   }
 
-  if(gap_debug) printf("DEBUG: after thumbmail save\n");
+  if(gap_debug)
+  {
+    printf("DEBUG: after thumbmail save\n");
+  }
 
   g_free (l_layers_list);
-  gimp_drawable_detach (l_drawable);
-
 
   if (l_rc != TRUE)
   {
-    fprintf(stderr, "ERROR: p_lib_save_named_image2  gimp_file_save failed '%s'\n", sav_name);
+    printf("ERROR: p_lib_save_named_image2  gimp_file_save failed '%s'  rc:%d\n"
+        , sav_name
+        ,(int)l_rc
+        );
     return -1;
   }
   return image_id;
@@ -2125,7 +2164,13 @@ gap_lib_save_named_frame(gint32 image_id, char *sav_name)
 
   /* check extension to decide if savd file will be zipped */
   l_ext = gap_lib_alloc_extension(sav_name);
-  if(l_ext == NULL)  return -1;
+  if(l_ext == NULL)
+  {
+    printf("gap_lib_save_named_frame failed for file:%s  (because it has no extension)\n"
+      ,sav_name
+      );
+    return -1;
+  }
 
   if(0 == strcmp(l_ext, ".xcf"))
   {
@@ -2155,21 +2200,28 @@ gap_lib_save_named_frame(gint32 image_id, char *sav_name)
   g_free(l_ext);
 
 
-   if(gap_debug)
-   {
-     l_ext = (gchar *) g_getenv("GAP_NO_SAVE");
-     if(l_ext != NULL)
-     {
-       fprintf(stderr, "DEBUG: GAP_NO_SAVE is set: save is skipped: '%s'\n", l_tmpname);
-       g_free(l_tmpname);  /* free if it was a temporary name */
-       return 0;
-     }
-   }
+  if(gap_debug)
+  {
+    char *env_no_save;
+    env_no_save = (gchar *) g_getenv("GAP_NO_SAVE");
+    if(env_no_save != NULL)
+    {
+      printf("DEBUG: GAP_NO_SAVE is set: save is skipped: '%s'\n", l_tmpname);
+      g_free(l_tmpname);  /* free if it was a temporary name */
+      return 0;
+    }
+  }
 
-  if(gap_debug) printf("DEBUG: before   gap_lib_save_named_frame: '%s'\n", l_tmpname);
 
   if(l_xcf != 0)
   {
+    if(gap_debug)
+    {
+      printf("DEBUG: gap_lib_save_named_frame before gimp_xcf_save on file: '%s'\n"
+            , l_tmpname
+            );
+    }
+
     /* save current frame as xcf image
      * xcf_save does operate on the complete image,
      * the drawable is ignored. (we can supply a dummy value)
@@ -2182,7 +2234,10 @@ gap_lib_save_named_frame(gint32 image_id, char *sav_name)
 			         GIMP_PDB_STRING, l_tmpname,
 			         GIMP_PDB_STRING, l_tmpname, /* raw name ? */
 			         GIMP_PDB_END);
-    if(gap_debug) printf("DEBUG: after   xcf  gap_lib_save_named_frame: '%s'\n", l_tmpname);
+    if(gap_debug)
+    {
+      printf("DEBUG: after   xcf  gap_lib_save_named_frame: '%s'\n", l_tmpname);
+    }
 
     if (l_params[0].data.d_status == GIMP_PDB_SUCCESS)
     {
@@ -2192,6 +2247,13 @@ gap_lib_save_named_frame(gint32 image_id, char *sav_name)
   }
   else
   {
+     if(gap_debug)
+     {
+       printf("DEBUG: gap_lib_save_named_frame before save NON-XCF file: '%s'\n"
+             , l_tmpname
+             );
+     }
+
      /* let gimp try to save (and detect filetype by extension)
       * Note: the most imagefileformats do not support multilayer
       *       images, and extra channels
@@ -2201,6 +2263,14 @@ gap_lib_save_named_frame(gint32 image_id, char *sav_name)
       */
 
      l_rc = p_decide_save_as(image_id, l_tmpname, sav_name);
+
+     if(gap_debug)
+     {
+       printf("DEBUG: gap_lib_save_named_frame after save NON-XCF file: '%s'  rc:%d\n"
+             , l_tmpname
+             , (int)l_rc
+             );
+     }
   }
 
   if(l_rc < 0)
@@ -2220,15 +2290,21 @@ gap_lib_save_named_frame(gint32 image_id, char *sav_name)
          * rename will not work.
          * so lets try a  copy ; remove sequence
          */
-         if(gap_debug) printf("DEBUG: gap_lib_save_named_frame: RENAME 2nd try\n");
+         if(gap_debug)
+         {
+           printf("DEBUG: gap_lib_save_named_frame: RENAME 2nd try\n");
+         }
+         
          if(0 == gap_lib_file_copy(l_tmpname, sav_name))
 	 {
 	    g_remove(l_tmpname);
 	 }
          else
          {
-            fprintf(stderr, "ERROR in gap_lib_save_named_frame: can't rename %s to %s\n",
-                            l_tmpname, sav_name);
+            printf("ERROR in gap_lib_save_named_frame: can't rename %s to %s\n"
+                  , l_tmpname
+                  , sav_name
+                  );
             return -1;
          }
      }
@@ -2245,7 +2321,17 @@ gap_lib_save_named_frame(gint32 image_id, char *sav_name)
     }
   }
 
+  if(gap_debug)
+  {
+    printf("DEBUG: gap_lib_save_named_frame: before gap_thumb_cond_gimp_file_save_thumbnail\n");
+  }
+
   gap_thumb_cond_gimp_file_save_thumbnail(image_id, sav_name);
+
+  if(gap_debug)
+  {
+    printf("DEBUG: gap_lib_save_named_frame: after gap_thumb_cond_gimp_file_save_thumbnail\n");
+  }
 
   g_free(l_tmpname);  /* free temporary name */
 
@@ -2266,6 +2352,12 @@ p_save_old_frame(GapAnimInfo *ainfo_ptr, GapVinVideoInfo *vin_ptr)
    */
   if(gap_lib_gap_check_save_needed(ainfo_ptr->image_id))
   {
+    if(gap_debug)
+    {
+       printf("p_save_old_frame Save required for file:%s\n"
+             , ainfo_ptr->old_filename
+             );
+    }
     /* check and perform automatic onionskinlayer remove */
     if(vin_ptr)
     {
@@ -2275,6 +2367,15 @@ p_save_old_frame(GapAnimInfo *ainfo_ptr, GapVinVideoInfo *vin_ptr)
       }
     }
     return (gap_lib_save_named_frame(ainfo_ptr->image_id, ainfo_ptr->old_filename));
+  }
+  else
+  {
+    if(gap_debug)
+    {
+       printf("p_save_old_frame No save needed for file:%s OK\n"
+             , ainfo_ptr->old_filename
+             );
+    }
   }
   return 0;
 }	/* end p_save_old_frame */
@@ -2429,31 +2530,74 @@ gap_lib_replace_image(GapAnimInfo *ainfo_ptr)
   gint32    ref_active_layer;
   gint32    ref_layer_stackpos;
   gchar    *ref_layer_name;
+  int       save_rc;
 
   do_onionskin_crate  = FALSE;
+
+  if(gap_debug)
+  {
+    printf("gap_lib_replace_image START\n");
+  }
 
   ref_layer_name = p_get_active_layer_name(ainfo_ptr->image_id
                                           ,&ref_active_layer
                                           ,&ref_layer_stackpos
                                           );  
   
-  if(ainfo_ptr->new_filename != NULL) g_free(ainfo_ptr->new_filename);
+  if(ainfo_ptr->new_filename != NULL)
+  {
+    g_free(ainfo_ptr->new_filename);
+  }
   ainfo_ptr->new_filename = gap_lib_alloc_fname(ainfo_ptr->basename,
                                       ainfo_ptr->frame_nr,
                                       ainfo_ptr->extension);
   if(ainfo_ptr->new_filename == NULL)
+  {
+     if(gap_debug)
+     {
+       printf("gap_lib_replace_image (1) return because ainfo_ptr->new_filename == NULL\n");
+     }
      return -1;
-
+  }
+  
   if(0 == gap_lib_file_exists(ainfo_ptr->new_filename ))
+  {
+     if(gap_debug)
+     {
+       printf("gap_lib_replace_image (2) return because %s does not exist (or is empty)\n"
+             , ainfo_ptr->new_filename
+             );
+     }
      return -1;
+  }
+
+  if(gap_debug)
+  {
+     printf("gap_lib_replace_image (3) ainfo_ptr->new_filename:%s OK\n"
+           , ainfo_ptr->new_filename
+            );
+  }
 
   vin_ptr = gap_vin_get_all(ainfo_ptr->basename);
-  if(p_save_old_frame(ainfo_ptr, vin_ptr) < 0)
+  save_rc = p_save_old_frame(ainfo_ptr, vin_ptr);
+  if(gap_debug)
+  {
+    printf("gap_lib_replace_image (4) automatic save: save_rc:%d, old_filename:%s\n"
+           , (int)save_rc
+           , ainfo_ptr->old_filename
+            );
+  }
+
+  if(save_rc < 0)
   {
     if(vin_ptr)
     {
       g_free(vin_ptr);
     }
+    printf("gap_lib_replace_image (5) automatic save failed: save_rc:%d, old_filename:%s\n"
+           , (int)save_rc
+           , ainfo_ptr->old_filename
+            );
     return -1;
   }
 
@@ -2508,6 +2652,11 @@ gap_lib_replace_image(GapAnimInfo *ainfo_ptr)
   if(ref_layer_name)
   {
     g_free(ref_layer_name);
+  }
+
+  if(gap_debug)
+  {
+    printf("gap_lib_replace_image ENDED regular\n");
   }
 
   return(image_id);
@@ -3073,3 +3222,52 @@ gap_lib_sscan_flt_numbers(gchar   *buf
 
   return (l_cnt);
 }  /* end gap_lib_sscan_flt_numbers */
+
+
+/* --------------------------------
+ * gap_lib_check_tooltips
+ * --------------------------------
+ * check and enable/disable tooltips according to global gimprc settings
+ */
+gboolean
+gap_lib_check_tooltips(gboolean *old_state)
+{
+  char *value_string;
+  gboolean new_state;
+  gboolean changed;
+
+  new_state = TRUE;
+  changed = TRUE;
+  
+  value_string = gimp_gimprc_query("show-tooltips");
+  if(value_string != NULL)
+  {
+    if (strcmp(value_string, "no") == 0)
+    {
+       new_state = FALSE;
+    }
+  }
+  
+  if (old_state != NULL)
+  {
+    if(*old_state == new_state)
+    {
+      changed = FALSE;
+    }
+  }
+  
+  if (changed == TRUE)
+  {
+    if(new_state == TRUE)
+    {
+       gimp_help_enable_tooltips ();
+    }
+    else
+    {
+       gimp_help_disable_tooltips ();
+    }
+  }
+  
+  return (new_state);
+  
+}  /* end gap_lib_check_tooltips */

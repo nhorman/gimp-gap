@@ -126,6 +126,7 @@ p_split_image(GapAnimInfo *ainfo_ptr,
        {
           /* destroy the tmp image (it was saved to disk before) */
           gimp_image_delete(l_new_image_id);
+          l_new_image_id = -1;
        }
 
        if(invers == TRUE) l_layer_idx = l_idx;
@@ -191,6 +192,7 @@ p_split_image(GapAnimInfo *ainfo_ptr,
           * (regardless if image was flattened or not)
           */
           l_rc = gap_lib_save_named_image(l_new_image_id, l_sav_name, l_run_mode);
+
           if(l_rc < 0)
           {
             gap_arr_msg_win(ainfo_ptr->run_mode, _("Split Frames: Save operation failed.\n"
@@ -209,9 +211,6 @@ p_split_image(GapAnimInfo *ainfo_ptr,
 
           g_free(l_sav_name);
        }
-
-       /* save as frame */
-
 
        /* show progress bar */
        if(ainfo_ptr->run_mode == GIMP_RUN_INTERACTIVE)

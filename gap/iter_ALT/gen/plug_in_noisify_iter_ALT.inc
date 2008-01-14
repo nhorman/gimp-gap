@@ -2,11 +2,11 @@
  * p_plug_in_noisify_iter_ALT 
  * ----------------------------------------------------------------------
  * this plug-in registers 2 procedures named
- *   plug_in_scatter_rgb  and
- *   plug_in_noisify
+ *   plug-in-rgb-noise  and
+ *   plug-in-noisify
  *
- * the Last values Buffer is always stored with the name "plug_in_scatter_rgb"
- * therefore the iterator must use the plug_in_scatter_rgb based names.
+ * the Last values Buffer is always stored with the name "plug-in-rgb-noise" (old name: "plug_in_scatter_rgb")
+ * therefore the iterator must use the plug-in-rgb-noise based names.
  * (there is no iterator support possible for the other API named plug_in_noisify)
  */
 gint p_plug_in_noisify_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble current_step, gint32 len_struct) 
@@ -28,8 +28,8 @@ gint p_plug_in_noisify_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdoubl
       return -1;  /* ERROR */ 
     }
 
-    gimp_get_data("plug_in_scatter_rgb_ITER_FROM", g_plugin_data_from); 
-    gimp_get_data("plug_in_scatter_rgb_ITER_TO",   g_plugin_data_to); 
+    gimp_get_data("plug-in-rgb-noise-ITER-FROM", g_plugin_data_from); 
+    gimp_get_data("plug-in-rgb-noise-ITER-TO",   g_plugin_data_to); 
 
     buf_from = (t_plug_in_noisify_Vals *)&g_plugin_data_from[0]; 
     buf_to   = (t_plug_in_noisify_Vals *)&g_plugin_data_to[0]; 
@@ -40,7 +40,7 @@ gint p_plug_in_noisify_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdoubl
       p_delta_gdouble(&buf.noise[ii], buf_from->noise[ii], buf_to->noise[ii], total_steps, current_step);
     }
 
-    gimp_set_data("plug_in_scatter_rgb", &buf, sizeof(buf)); 
+    gimp_set_data("plug-in-rgb-noise", &buf, sizeof(buf)); 
 
     return 0; /* OK */
 }

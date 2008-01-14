@@ -1543,6 +1543,8 @@ GVA_gimp_image_to_rowbuffer(t_GVA_Handle *gvahand, gint32 image_id)
                           , gvahand->width
                           , gvahand->height);
 
+  gimp_drawable_detach(drawable);
+
   if (gap_debug)  printf("DEBUG: after copy data rows \n");
 
 
@@ -1798,8 +1800,8 @@ GVA_image_set_aspect(t_GVA_Handle *gvahand, gint32 image_id)
     xresolution = yresolution * asymetric;
 
     /* set resolution in DPI according to aspect ratio */
-    gimp_image_set_unit (gvahand->image_id, GIMP_UNIT_INCH);
-    gimp_image_set_resolution (gvahand->image_id, xresolution, yresolution);
+    gimp_image_set_unit (image_id, GIMP_UNIT_INCH);
+    gimp_image_set_resolution (image_id, xresolution, yresolution);
 
     if(gap_debug)
     {
@@ -1998,10 +2000,10 @@ GVA_frame_to_gimp_layer_2(t_GVA_Handle *gvahand
   if (gap_debug)  printf("DEBUG: after copy data rows (NO SHADOW)\n");
 
   gimp_drawable_flush (drawable);
+  gimp_drawable_detach(drawable);
 
 /*
  * gimp_drawable_merge_shadow (drawable->id, TRUE);
- * gimp_drawable_detach (drawable);
  */
 
   /* what to do with old layer ? */

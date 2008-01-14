@@ -12,7 +12,6 @@ gint p_plug_in_vpropagate_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdo
       gint      direction_mask;
       gint      lower_limit;
       gint      upper_limit;
-      gboolean  preview;
     } t_plug_in_vpropagate_Vals; 
 
     t_plug_in_vpropagate_Vals  buf, *buf_from, *buf_to; 
@@ -24,8 +23,8 @@ gint p_plug_in_vpropagate_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdo
       return -1;  /* ERROR */ 
     }
 
-    gimp_get_data("plug_in_vpropagate_ITER_FROM", g_plugin_data_from); 
-    gimp_get_data("plug_in_vpropagate_ITER_TO",   g_plugin_data_to); 
+    gimp_get_data("plug-in-vpropagate-ITER-FROM", g_plugin_data_from); 
+    gimp_get_data("plug-in-vpropagate-ITER-TO",   g_plugin_data_to); 
 
     buf_from = (t_plug_in_vpropagate_Vals *)&g_plugin_data_from[0]; 
     buf_to   = (t_plug_in_vpropagate_Vals *)&g_plugin_data_to[0]; 
@@ -38,8 +37,7 @@ gint p_plug_in_vpropagate_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdo
     p_delta_gint(&buf.lower_limit, buf_from->lower_limit, buf_to->lower_limit, total_steps, current_step);
     p_delta_gint(&buf.upper_limit, buf_from->upper_limit, buf_to->upper_limit, total_steps, current_step);
 
-    buf.preview = FALSE;
-    gimp_set_data("plug_in_vpropagate", &buf, sizeof(buf)); 
+    gimp_set_data("plug-in-vpropagate", &buf, sizeof(buf)); 
 
     return 0; /* OK */
 }

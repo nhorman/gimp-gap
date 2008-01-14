@@ -8,8 +8,7 @@ gint p_plug_in_apply_canvas_iter_ALT(GimpRunMode run_mode, gint32 total_steps, g
     {
       gint      direction;
       gint      depth;
-      gboolean  update_preview;
-    } t_plug_in_apply_canvas_Vals; 
+     } t_plug_in_apply_canvas_Vals; 
 
     t_plug_in_apply_canvas_Vals  buf, *buf_from, *buf_to; 
 
@@ -21,8 +20,8 @@ gint p_plug_in_apply_canvas_iter_ALT(GimpRunMode run_mode, gint32 total_steps, g
     }
 
 
-    gimp_get_data("plug_in_apply_canvas_ITER_FROM", g_plugin_data_from); 
-    gimp_get_data("plug_in_apply_canvas_ITER_TO",   g_plugin_data_to); 
+    gimp_get_data("plug-in-apply-canvas-ITER-FROM", g_plugin_data_from); 
+    gimp_get_data("plug-in-apply-canvas-ITER-TO",   g_plugin_data_to); 
 
     buf_from = (t_plug_in_apply_canvas_Vals *)&g_plugin_data_from[0]; 
     buf_to   = (t_plug_in_apply_canvas_Vals *)&g_plugin_data_to[0]; 
@@ -31,7 +30,6 @@ gint p_plug_in_apply_canvas_iter_ALT(GimpRunMode run_mode, gint32 total_steps, g
     p_delta_gint(&buf.direction, buf_from->direction, buf_to->direction, total_steps, current_step);
     p_delta_gint(&buf.depth, buf_from->depth, buf_to->depth, total_steps, current_step);
 
-    buf.update_preview = FALSE;
-    gimp_set_data("plug_in_apply_canvas", &buf, sizeof(buf)); 
+    gimp_set_data("plug-in-apply-canvas", &buf, sizeof(buf)); 
     return 0; /* OK */
 }

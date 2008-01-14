@@ -10,7 +10,6 @@ gint p_plug_in_retinex_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdoubl
       gint     nscales;
       gint     scales_mode;
       gfloat   cvar;
-      gboolean preview;
     } t_plug_in_retinex_Vals; 
 
     t_plug_in_retinex_Vals  buf, *buf_from, *buf_to; 
@@ -22,8 +21,8 @@ gint p_plug_in_retinex_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdoubl
       return -1;  /* ERROR */ 
     }
 
-    gimp_get_data("plug_in_retinex_ITER_FROM", g_plugin_data_from); 
-    gimp_get_data("plug_in_retinex_ITER_TO",   g_plugin_data_to); 
+    gimp_get_data("plug-in-retinex-ITER-FROM", g_plugin_data_from); 
+    gimp_get_data("plug-in-retinex-ITER-TO",   g_plugin_data_to); 
 
     buf_from = (t_plug_in_retinex_Vals *)&g_plugin_data_from[0]; 
     buf_to   = (t_plug_in_retinex_Vals *)&g_plugin_data_to[0]; 
@@ -34,8 +33,7 @@ gint p_plug_in_retinex_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdoubl
     p_delta_gint(&buf.scales_mode, buf_from->scales_mode, buf_to->scales_mode, total_steps, current_step);
     p_delta_gfloat(&buf.cvar, buf_from->cvar, buf_to->cvar, total_steps, current_step);
 
-    buf.preview = FALSE;
-    gimp_set_data("plug_in_retinex", &buf, sizeof(buf)); 
+    gimp_set_data("plug-in-retinex", &buf, sizeof(buf)); 
 
     return 0; /* OK */
 }

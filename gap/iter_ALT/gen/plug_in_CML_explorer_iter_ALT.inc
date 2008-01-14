@@ -26,8 +26,8 @@ gint p_plug_in_cml_explorer_iter_ALT(GimpRunMode run_mode, gint32 total_steps, g
       return -1;  /* ERROR */ 
     }
 
-    gimp_get_data("plug_in_cml_explorer_ITER_FROM", g_plugin_data_from); 
-    gimp_get_data("plug_in_cml_explorer_ITER_TO",   g_plugin_data_to); 
+    gimp_get_data("plug-in-cml-explorer-ITER-FROM", g_plugin_data_from); 
+    gimp_get_data("plug-in-cml-explorer-ITER-TO",   g_plugin_data_to); 
 
     buf_from = (t_plug_in_cml_explorer_Vals *)&g_plugin_data_from[0]; 
     buf_to   = (t_plug_in_cml_explorer_Vals *)&g_plugin_data_to[0]; 
@@ -42,7 +42,7 @@ gint p_plug_in_cml_explorer_iter_ALT(GimpRunMode run_mode, gint32 total_steps, g
     p_delta_gint(&buf.start_offset, buf_from->start_offset, buf_to->start_offset, total_steps, current_step);
     p_delta_gint(&buf.seed, buf_from->seed, buf_to->seed, total_steps, current_step);
 
-    gimp_set_data("plug_in_cml_explorer", &buf, sizeof(buf)); 
+    gimp_set_data("plug-in-cml-explorer", &buf, sizeof(buf)); 
 
     return 0; /* OK */
 }

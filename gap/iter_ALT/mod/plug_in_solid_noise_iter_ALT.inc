@@ -13,7 +13,6 @@ gint p_plug_in_solid_noise_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gd
       gdouble     xsize;
       gdouble     ysize;
       gboolean    random_seed;
-      gboolean    preview;
     } t_plug_in_solid_noise_Vals; 
 
     t_plug_in_solid_noise_Vals  buf, *buf_from, *buf_to; 
@@ -25,8 +24,8 @@ gint p_plug_in_solid_noise_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gd
       return -1;  /* ERROR */ 
     }
 
-    gimp_get_data("plug_in_solid_noise_ITER_FROM", g_plugin_data_from); 
-    gimp_get_data("plug_in_solid_noise_ITER_TO",   g_plugin_data_to); 
+    gimp_get_data("plug-in-solid-noise-ITER-FROM", g_plugin_data_from); 
+    gimp_get_data("plug-in-solid-noise-ITER-TO",   g_plugin_data_to); 
 
     buf_from = (t_plug_in_solid_noise_Vals *)&g_plugin_data_from[0]; 
     buf_to   = (t_plug_in_solid_noise_Vals *)&g_plugin_data_to[0]; 
@@ -37,8 +36,7 @@ gint p_plug_in_solid_noise_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gd
     p_delta_gdouble(&buf.xsize, buf_from->xsize, buf_to->xsize, total_steps, current_step);
     p_delta_gdouble(&buf.ysize, buf_from->ysize, buf_to->ysize, total_steps, current_step);
 
-    buf.preview = FALSE;
-    gimp_set_data("plug_in_solid_noise", &buf, sizeof(buf)); 
+    gimp_set_data("plug-in-solid-noise", &buf, sizeof(buf)); 
 
     return 0; /* OK */
 }

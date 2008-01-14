@@ -1,5 +1,34 @@
-Bugs fixed in GAP 2.2.2:
-------------------------
+GIMP-GAP 2.2.3:
+----------------------------
+This is a bugfix release that makes GIMP-GAP usable with GIMP-2.4.x releases.
+
+IMPORTANT:
+
+This release breaks backward compatibility with older
+GIMP releases than GIMP-2.4.x
+
+Users of GIMP-2-2.x shall update both GIMP and GIMP-GAP
+or do not update at all.
+
+new features:
+- modify frames support to expand layer to image size (feature request #488653)
+- Make Filter all Layers feature compatible to GIMP-2.4.
+  (Updated Iterator procedures to match structures of the supported
+  plug ins that are part of the GIMP-2.4.x distribution)
+
+fixed bugs:
+- fixed crashes of the VCR Navigator plug-in
+- fixed crashes when using GIMP-GAP frames in other image formats than XCF.
+- fixed lots of warnings about using invalid image/drawable id's
+- Master Videoencoder did not recognize the registered encoder plug-ins.
+- enable/disable tooltips now compatible with GIMP 2.4 preferences
+- replaced deprecated gimp-path-* PDB calls (fixed bug #505001)
+
+
+
+
+Bugs fixed in GIMP-GAP 2.2.2:
+----------------------------
 
 - corrected handling of GimpDrawable to fix crashes with GIMP 2.3 (bug #451350)
 - don't call gimp-image-get-filename on a closed image (bug #452080)

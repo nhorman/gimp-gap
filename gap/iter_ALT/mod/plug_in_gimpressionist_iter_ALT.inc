@@ -75,8 +75,8 @@ p_plug_in_gimpressionist_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdou
       return -1;  /* ERROR */ 
     }
 
-    gimp_get_data("plug_in_gimpressionist_ITER_FROM", &buf_from); 
-    gimp_get_data("plug_in_gimpressionist_ITER_TO",   &buf_to); 
+    gimp_get_data("plug-in-gimpressionist-ITER-FROM", &buf_from); 
+    gimp_get_data("plug-in-gimpressionist-ITER-TO",   &buf_to); 
     memcpy(&buf, &buf_from, sizeof(buf));
 
     p_delta_int(&buf.orient_num, buf_from.orient_num, buf_to.orient_num, total_steps, current_step);
@@ -149,7 +149,7 @@ p_plug_in_gimpressionist_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdou
     p_delta_gdouble(&buf.color_noise, buf_from.color_noise, buf_to.color_noise, total_steps, current_step);
 
 
-    gimp_set_data("plug_in_gimpressionist", &buf, sizeof(buf)); 
+    gimp_set_data("plug-in-gimpressionist", &buf, sizeof(buf)); 
 
     return 0; /* OK */
 }

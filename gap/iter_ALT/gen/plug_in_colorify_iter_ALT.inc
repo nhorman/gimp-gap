@@ -7,7 +7,6 @@ gint p_plug_in_colorify_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdoub
     typedef struct t_plug_in_colorify_Vals 
     {
       GimpRGB   color;
-      gboolean preview;
     } t_plug_in_colorify_Vals; 
 
     t_plug_in_colorify_Vals  buf, *buf_from, *buf_to; 
@@ -19,8 +18,8 @@ gint p_plug_in_colorify_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdoub
       return -1;  /* ERROR */ 
     }
 
-    gimp_get_data("plug_in_colorify_ITER_FROM", g_plugin_data_from); 
-    gimp_get_data("plug_in_colorify_ITER_TO",   g_plugin_data_to); 
+    gimp_get_data("plug-in-colorify-ITER-FROM", g_plugin_data_from); 
+    gimp_get_data("plug-in-colorify-ITER-TO",   g_plugin_data_to); 
 
     buf_from = (t_plug_in_colorify_Vals *)&g_plugin_data_from[0]; 
     buf_to   = (t_plug_in_colorify_Vals *)&g_plugin_data_to[0]; 
@@ -28,9 +27,7 @@ gint p_plug_in_colorify_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdoub
 
     p_delta_GimpRGB(&buf.color, &buf_from->color, &buf_to->color, total_steps, current_step);
 
-    buf.preview = FALSE;
-
-    gimp_set_data("plug_in_colorify", &buf, sizeof(buf)); 
+    gimp_set_data("plug-in-colorify", &buf, sizeof(buf)); 
 
     return 0; /* OK */
 }
