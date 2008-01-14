@@ -1,5 +1,5 @@
-GIMP-GAP 2.2.3:
-----------------------------
+GIMP-GAP 2.4.0:
+---------------
 This is a bugfix release that makes GIMP-GAP usable with GIMP-2.4.x releases.
 
 IMPORTANT:
@@ -7,8 +7,7 @@ IMPORTANT:
 This release breaks backward compatibility with older
 GIMP releases than GIMP-2.4.x
 
-Users of GIMP-2-2.x shall update both GIMP and GIMP-GAP
-or do not update at all.
+Users of GIMP-2-2.x shall update both GIMP and GIMP-GAP or not update at all.
 
 new features:
 - modify frames support to expand layer to image size (feature request #488653)
@@ -28,7 +27,7 @@ fixed bugs:
 
 
 Bugs fixed in GIMP-GAP 2.2.2:
-----------------------------
+-----------------------------
 
 - corrected handling of GimpDrawable to fix crashes with GIMP 2.3 (bug #451350)
 - don't call gimp-image-get-filename on a closed image (bug #452080)

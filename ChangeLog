@@ -1,3 +1,9 @@
+2008-01-14  Sven Neumann  <sven@gimp.org>
+
+	* configure.in: bumped version to 2.4.0.
+
+	* NEWS: changed accordingly.
+
 2008-01-05 Wolfgang Hofer <hof@gimp.org>
 
    - modify frames support to expand layer to image size 
