@@ -1,0 +1,5 @@
+extern_libs/ffmpeg/libavcodec/bswap.h
+extern_libs/ffmpeg/libavcodec/liba52/bitstream.h
+extern_libs/ffmpeg/libavcodec/ps2/idct_mmi.c
+extern_libs/ffmpeg/libavcodec/sparc/dsputil_vis.c
+extern_libs/ffmpeg/libavcodec/sparc/vis.h
