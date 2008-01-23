@@ -1,4 +1,4 @@
-This is a release version 2.2.1 of the GIMP Video menu.
+This is a release version 2.4.0 of the GIMP Video menu.
 
 The GIMP-GAP (GIMP Animation Package) is a collection of Plug-Ins
 to extend the GIMP with capabilities to edit and create
@@ -7,15 +7,15 @@ Animations as sequences of single frames.
 
 Requires:
 =========
- - gimp 2.2 or higher.
-     This release was tested with gimp-2.2.11
-     
+ - GIMP 2.4 or higher.
+     This release was tested with GIMP 2.4.3.
+
      Note: GIMP-GAP provides some features that are able to call many of the
            GIMP standard filters. (plug-in programs that are shiped with 
            gimp-2.2.11) Those features depend on the tested PDB interface
            versions and may fail if newer version are used.
 
- - glib 2.8 or higher.
+ - GLib 2.12 or higher.
 
  - For full video encoding and decoding support
    check also the requirements for ffmpeg and libmpeg3.

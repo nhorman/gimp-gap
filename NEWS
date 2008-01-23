@@ -1,19 +1,20 @@
 GIMP-GAP 2.4.0:
 ---------------
-This is a bugfix release that makes GIMP-GAP usable with GIMP-2.4.x releases.
+
+This is a bugfix release that makes GIMP-GAP usable with GIMP 2.4.x releases.
 
 IMPORTANT:
 
-This release breaks backward compatibility with older
-GIMP releases than GIMP-2.4.x
+This release breaks backward compatibility with older GIMP releases
+than GIMP 2.4.x.
 
-Users of GIMP-2-2.x shall update both GIMP and GIMP-GAP or not update at all.
+Users of GIMP 2.2.x shall update both GIMP and GIMP-GAP or not update at all.
 
 new features:
 - modify frames support to expand layer to image size (feature request #488653)
-- Make Filter all Layers feature compatible to GIMP-2.4.
+- Make Filter all Layers feature compatible to GIMP 2.4.
   (Updated Iterator procedures to match structures of the supported
-  plug ins that are part of the GIMP-2.4.x distribution)
+  plug ins that are part of the GIMP 2.4.x distribution)
 
 fixed bugs:
 - fixed crashes of the VCR Navigator plug-in
@@ -37,7 +38,7 @@ Bugs fixed in GIMP-GAP 2.2.2:
 - fixed sel-to-anim-img script to work properly with Tiny-Fu
 
 
-Here is a short overview whats new in GIMP-GAP-2.2.1:
+Here is a short overview whats new in GIMP-GAP 2.2.1:
 -----------------------------------------------------
 (compared to gimp-gap release 2.2.0)
 
@@ -71,7 +72,7 @@ Here is a short overview whats new in GIMP-GAP-2.2.1:
 - new plug-in to reverse frame sequence.
 - wheel mouse scroll support  for VCR naviagtor and playback dialogs.
 
-Here is a short overview whats new in GIMP-GAP-2.2.0:
+Here is a short overview whats new in GIMP-GAP 2.2.0:
 -----------------------------------------------------
 (compared to gimp-gap release 2.0.2)
 
@@ -153,7 +154,7 @@ old news
 -------------------------------
 
 
-Here is a short overview whats new in GIMP-GAP-2.0.2:
+Here is a short overview whats new in GIMP-GAP 2.0.2:
 (compared to the gap version that once was part of gimp-1.2.x release)
 
  - new bluebox plug-in makes selected color transparent.
