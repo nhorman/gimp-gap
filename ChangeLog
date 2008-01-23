@@ -1,5 +1,11 @@
 2008-01-23  Sven Neumann  <sven@gimp.org>
 
+	* configure.in: increased API versions for deprecation warnings.
+
+	* gap/Makefile.am (libgimpgap_a_SOURCES): added missing file.
+
+2008-01-23  Sven Neumann  <sven@gimp.org>
+
 	* README: updated for the 2.4.0 release.
 
 2008-01-14  Sven Neumann  <sven@gimp.org>

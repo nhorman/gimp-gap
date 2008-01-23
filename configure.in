@@ -698,7 +698,7 @@ changequote([,])dnl
 # Disable deprecated API
 ########################
 
-if ! $PKG_CONFIG --atleast-version=2.11.0 glib-2.0; then
+if ! $PKG_CONFIG --atleast-version=2.15.0 glib-2.0; then
   CPPFLAGS="${CPPFLAGS} -DG_DISABLE_DEPRECATED"
 fi
 
@@ -706,11 +706,11 @@ if ! $PKG_CONFIG --atleast-version=2.9.0 gtk+-2.0; then
   CPPFLAGS="${CPPFLAGS} -DGDK_PIXBUF_DISABLE_DEPRECATED -DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED"
 fi
 
-if ! $PKG_CONFIG --atleast-version=1.13.0 pango; then
+if ! $PKG_CONFIG --atleast-version=1.19.0 pango; then
   CPPFLAGS="${CPPFLAGS} -DPANGO_DISABLE_DEPRECATED"
 fi
 
-if ! $PKG_CONFIG --atleast-version=2.3.20 gimp-2.0; then
+if ! $PKG_CONFIG --atleast-version=2.5.0 gimp-2.0; then
   CPPFLAGS="${CPPFLAGS} -DGIMP_DISABLE_DEPRECATED"
 fi
 

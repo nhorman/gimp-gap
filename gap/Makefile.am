@@ -41,6 +41,7 @@ libgimpgap_a_SOURCES = \
 	gap_layer_copy.h 	\
 	gap_lib.c		\
 	gap_lib.h		\
+	gap_lib_common_defs.h	\
 	gap_lock.c		\
 	gap_lock.h		\
 	gap_navi_activtable.c	\
