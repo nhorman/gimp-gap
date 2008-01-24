@@ -9,7 +9,7 @@
 # directly.
 
 
-PROJECT="The GIMP Animation Package"
+PROJECT="GIMP Animation Package"
 TEST_TYPE=-f
 FILE="gap/gap_main.c"
 
@@ -219,4 +219,4 @@ if test $RC -ne 0; then
 fi
 
 echo
-echo "Now type 'make' to compile $PROJECT."
+echo "Now type 'make' to compile the $PROJECT."
