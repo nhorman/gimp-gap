@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: gimp-gap 2.4\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-01-25 11:40+0100\n"
-"PO-Revision-Date: 2008-01-25 11:45+0100\n"
+"PO-Revision-Date: 2008-01-25 11:47+0100\n"
 "Last-Translator: Sven Neumann <sven@gimp.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -7290,7 +7290,7 @@ msgstr ""
 #. Menu names
 #: ../gap/gap_wr_trans.c:245
 msgid "<Image>/Video/Layer/Transform/"
-msgstr "<Image>/Video/Ebene/Transformation"
+msgstr "<Image>/Video/Ebene/Transformation/"
 
 #: ../gap/gap_wr_trans.c:367
 #, c-format
