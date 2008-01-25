@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: gimp-gap 2.4\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-01-25 11:40+0100\n"
-"PO-Revision-Date: 2008-01-25 11:40+0100\n"
+"PO-Revision-Date: 2008-01-25 11:45+0100\n"
 "Last-Translator: Sven Neumann <sven@gimp.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -1688,9 +1688,8 @@ msgstr "Einzelbilder vertauschen …"
 
 # TODO context ?
 #: ../gap/gap_main.c:813
-#, fuzzy
 msgid "Move Path..."
-msgstr "Bewegungspfad"
+msgstr "Bewegungspfad …"
 
 #: ../gap/gap_main.c:893
 msgid "Frames to Image..."
@@ -1721,14 +1720,13 @@ msgid "Frames Scale..."
 msgstr "Einzelbilder skalieren …"
 
 #: ../gap/gap_main.c:989
-#, fuzzy
 msgid "Split Image to Frames..."
-msgstr "Bild in Frames aufteilen"
+msgstr "Bild in Einzelbilder aufteilen …"
 
 #: ../gap/gap_main.c:1002
 #, fuzzy
 msgid "Frame Sequence Shift..."
-msgstr "Verschiebung der Frame-Reihenfolge"
+msgstr "Verschiebung der Frame-Reihenfolge …"
 
 #: ../gap/gap_main.c:1014
 #, fuzzy
@@ -1736,14 +1734,12 @@ msgid "Frame Sequence Reverse..."
 msgstr "Framefolge Einmal umgekehrt"
 
 #: ../gap/gap_main.c:1026
-#, fuzzy
 msgid "Frames Renumber..."
-msgstr "<Image>/Video/Frame-Größe verändern …"
+msgstr "Einzelbilder umnummerieren …"
 
 #: ../gap/gap_main.c:1038
-#, fuzzy
 msgid "Frames Modify..."
-msgstr "Einzelbilder modifizieren"
+msgstr "Einzelbilder modifizieren …"
 
 #: ../gap/gap_main.c:1128
 msgid "<Image>/Video/Go To/"
@@ -5204,9 +5200,8 @@ msgid ""
 msgstr ""
 
 #: ../gap/gap_player_main.c:250
-#, fuzzy
 msgid "Playback..."
-msgstr "<Image>/Video/Bewegungs-Pfad …"
+msgstr "Wiedergabe …"
 
 #: ../gap/gap_range_ops.c:143
 msgid "New Width:"
@@ -7102,9 +7097,8 @@ msgstr ""
 #. Menu names
 #: ../gap/gap_wr_color_curve.c:554 ../gap/gap_wr_color_huesat.c:287
 #: ../gap/gap_wr_color_levels.c:295
-#, fuzzy
 msgid "<Image>/Video/Layer/Colors/"
-msgstr "<Image>/Video/Ebene aus Frames entfernen …"
+msgstr "<Image>/Video/Ebene/Farben/"
 
 #: ../gap/gap_wr_color_curve.c:806
 #, fuzzy
@@ -7248,9 +7242,8 @@ msgstr "Ebene(n) verknüpfen"
 
 #. Menu names
 #: ../gap/gap_wr_opacity.c:147
-#, fuzzy
 msgid "<Image>/Video/Layer/"
-msgstr "<Image>/Video/Bewegungs-Pfad …"
+msgstr "<Image>/Video/Ebene/"
 
 #: ../gap/gap_wr_opacity.c:330
 msgid "New opacity value where 0 is transparent and 100.0 is opaque"
@@ -7296,9 +7289,8 @@ msgstr ""
 
 #. Menu names
 #: ../gap/gap_wr_trans.c:245
-#, fuzzy
 msgid "<Image>/Video/Layer/Transform/"
-msgstr "<Image>/Video/Ebene aus Frames entfernen …"
+msgstr "<Image>/Video/Ebene/Transformation"
 
 #: ../gap/gap_wr_trans.c:367
 #, c-format
