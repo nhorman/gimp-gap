@@ -1,6 +1,6 @@
 # This is the German catalog for gimp-gap
 # Copyright (C) 1999-2003 Free Software Foundation, Inc.
-# Sven Neumann <sven@gimp.org>, 2004.
+# Sven Neumann <sven@gimp.org>, 2004, 2008
 # Hendrik Brandt <heb@gnome-de.org>, 2004.
 # Hendrik Richter <hendrikr@gnome.org>, 2005. 
 #
@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gimp-gap 2.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-25 11:40+0100\n"
-"PO-Revision-Date: 2008-01-25 11:47+0100\n"
+"POT-Creation-Date: 2008-01-25 15:57+0100\n"
+"PO-Revision-Date: 2008-01-29 16:58+0100\n"
 "Last-Translator: Sven Neumann <sven@gimp.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -369,7 +369,7 @@ msgstr "Vertausche momentanes Einzelbild (%ld)"
 #, c-format
 msgid ""
 "Exchange the current frame %d with the frame that has the number entered here"
-msgstr ""
+msgstr "Ersetze das Einzelbild %d mit dem Einzelbild das die hier eingetragene Nummer hat"
 
 #: ../gap/gap_base_ops.c:1641
 msgid "Exchange with Frame"
@@ -525,7 +525,7 @@ msgstr ""
 
 #: ../gap/gap_bluebox.c:410
 msgid "Shrink/Grow:"
-msgstr ""
+msgstr "Verkleinern/Vergrößern:"
 
 #. lower/upper
 #. step, page
@@ -534,7 +534,7 @@ msgstr ""
 #. lowr/upper unconstrained
 #: ../gap/gap_bluebox.c:417
 msgid "Grow selection in pixels (use negative values for shrink)"
-msgstr ""
+msgstr "Auswahl in Pixeln vergrößern (negative Werte um zu verkleinern)"
 
 #: ../gap/gap_bluebox.c:426
 msgid "Automatic Preview:"
@@ -542,7 +542,7 @@ msgstr "Automatische Vorschau:"
 
 #: ../gap/gap_bluebox.c:437
 msgid "ON: Keep preview image up to date"
-msgstr ""
+msgstr "EIN: Vorschaubild aktuell halten"
 
 #. button
 #. the preview frame
@@ -552,7 +552,7 @@ msgstr "Vorschau"
 
 #: ../gap/gap_bluebox.c:449
 msgid "Show preview as separate image"
-msgstr ""
+msgstr "Vorschau als seperates Bild zeigen"
 
 #: ../gap/gap_bluebox.c:457
 msgid "Previewsize:"
@@ -565,7 +565,7 @@ msgstr "Vorschaugröße:"
 #. lowr/upper unconstrained
 #: ../gap/gap_bluebox.c:464
 msgid "Size of the preview image in percent of the original"
-msgstr ""
+msgstr "Größe des Vorschaubildes in Prozent des Orginals"
 
 #: ../gap/gap_bluebox.c:859
 msgid "Threshold Mode:"
@@ -596,7 +596,7 @@ msgstr "WERT"
 
 #: ../gap/gap_bluebox.c:919
 msgid "Use single threshold value"
-msgstr ""
+msgstr "Einzelnen Grenzwert benutzen"
 
 #. radio button thres_mode ALL
 #: ../gap/gap_bluebox.c:930
@@ -605,7 +605,7 @@ msgstr "ALLE"
 
 #: ../gap/gap_bluebox.c:939
 msgid "Use both HSV and RGB threshold values"
-msgstr ""
+msgstr "HSV und RGB Grenzwerte benutzen"
 
 #: ../gap/gap_bluebox.c:965
 msgid "Threshold R:"
@@ -705,11 +705,11 @@ msgstr "Fehler: Das Bild »%s« wurde nicht gefunden"
 
 #: ../gap/gap_bluebox.c:1496
 msgid "Error: Bluebox effect operates only on layers"
-msgstr ""
+msgstr "Fehler: Blueboxeffekt funktionert nur auf Ebenen"
 
 #: ../gap/gap_bluebox.c:1505
 msgid "Error: Bluebox effect operates only on RGB layers"
-msgstr ""
+msgstr "Fehler: Blueboxeffekt funktionert nur auf RGB-Ebenen"
 
 #: ../gap/gap_bluebox.c:1589
 msgid "BlueboxPreview.xcf"
@@ -802,16 +802,16 @@ msgstr "** nicht verfügbar **"
 
 #: ../gap/gap_dbbrowser_utils.c:927
 msgid "Searching by name - please wait"
-msgstr "Suche nach Menüeintrag (bitte warten)"
+msgstr "Bitte warten, es wird nach Namen gesucht"
 
 # blurb ?
 #: ../gap/gap_dbbrowser_utils.c:950
 msgid "Searching by blurb - please wait"
-msgstr "Suche nach Beschreibung (bitte warten)"
+msgstr "Bitte warten, es wird nach Beschreibung gesucht"
 
 #: ../gap/gap_dbbrowser_utils.c:962
 msgid "Searching by menupath - please wait"
-msgstr ""
+msgstr "Bitte warten, es wird nach Menüpfad gesucht"
 
 #: ../gap/gap_dbbrowser_utils.c:966
 msgid "Searching - please wait"
@@ -4571,6 +4571,8 @@ msgid ""
 "ON: Case sensitive pattern.\n"
 "OFF: Ignore case."
 msgstr ""
+"EIN: Großschreibung berücksichtigen.\n"
+"AUS: Großschreibung ignorieren."
 
 #: ../gap/gap_onion_dialog.c:1269
 msgid "Invert Selection"
@@ -4601,7 +4603,7 @@ msgstr ""
 
 #: ../gap/gap_onion_dialog.c:1323
 msgid "Auto create after load"
-msgstr ""
+msgstr "Automatisch nach dem Laden erstellen"
 
 #: ../gap/gap_onion_dialog.c:1326
 msgid ""
@@ -4612,7 +4614,7 @@ msgstr ""
 
 #: ../gap/gap_onion_dialog.c:1335
 msgid "Auto delete before save"
-msgstr ""
+msgstr "Automatisch vor dem Löschen speichern"
 
 #: ../gap/gap_onion_dialog.c:1338
 msgid ""
@@ -4624,7 +4626,7 @@ msgstr ""
 
 #: ../gap/gap_onion_dialog.c:1374
 msgid "Reset to default settings"
-msgstr ""
+msgstr "Auf vorgegebene Einstellungen zurücksetzen"
 
 #: ../gap/gap_onion_dialog.c:1381
 msgid "Close window without any action"
@@ -4655,7 +4657,7 @@ msgstr ""
 
 #: ../gap/gap_onion_main.c:152
 msgid "Configuration..."
-msgstr ""
+msgstr "Einstellung..."
 
 #: ../gap/gap_onion_main.c:170
 #, fuzzy
@@ -4742,7 +4744,7 @@ msgstr ""
 
 #: ../gap/gap_player_dialog.c:558
 msgid "Audio Delay"
-msgstr ""
+msgstr "Audioverzögerung"
 
 #: ../gap/gap_player_dialog.c:570
 #, fuzzy
@@ -4751,12 +4753,12 @@ msgstr "Schirm"
 
 #: ../gap/gap_player_dialog.c:574
 msgid "Audio Skipped"
-msgstr ""
+msgstr "Audio ausgelassen"
 
 #: ../gap/gap_player_dialog.c:586
 #, c-format
 msgid "%d (at %.4f frames/sec)"
-msgstr ""
+msgstr "%d (bei %.4f Einzelbilder/sec)"
 
 #: ../gap/gap_player_dialog.c:680
 #, c-format
@@ -4848,7 +4850,7 @@ msgstr "Überspringe %d"
 #: ../gap/gap_player_dialog.c:2998
 #, c-format
 msgid "Delay %.2f"
-msgstr ""
+msgstr "Verzögerung %.2f"
 
 #: ../gap/gap_player_dialog.c:4581
 #, c-format
@@ -4892,6 +4894,7 @@ msgstr "Audiodatei:"
 #: ../gap/gap_player_dialog.c:4868
 msgid "Enter an audiofile. The file must be in RIFF WAVE fileformat."
 msgstr ""
+"Eine Audiodatei eingeben. Die Datei muss im RIFF WAVE Datenformat sein."
 
 #: ../gap/gap_player_dialog.c:4889
 msgid "Open audiofile selection browser dialog window"
@@ -5090,7 +5093,7 @@ msgstr ""
 
 #: ../gap/gap_player_dialog.c:5691
 msgid "Current playback speed (frames/sec)"
-msgstr ""
+msgstr "Jetztige Abspielgeschwindigkeit (Einzelbilder/sec)"
 
 #. the size button
 #: ../gap/gap_player_dialog.c:5709
@@ -5258,7 +5261,7 @@ msgstr "Größe verändern"
 #. should use GIMP_STOCK_RESET if possible
 #: ../gap/gap_range_ops.c:216
 msgid "Reset parameters to original size"
-msgstr ""
+msgstr "Parameter auf Orginalgröße zurücksetzen"
 
 #: ../gap/gap_range_ops.c:318
 #, fuzzy
@@ -6286,7 +6289,7 @@ msgstr ""
 
 #: ../gap/gap_story_dialog.c:4147 ../gap/gap_story_dialog.c:4176
 msgid "(modified)"
-msgstr ""
+msgstr "(verändert)"
 
 #: ../gap/gap_story_dialog.c:4153
 msgid "Cliplist:"
@@ -6295,7 +6298,7 @@ msgstr ""
 #: ../gap/gap_story_dialog.c:4369
 #, c-format
 msgid "Creating Index (decoder: %s)"
-msgstr ""
+msgstr "Erstelle Index (decoder: %s)"
 
 #: ../gap/gap_story_dialog.c:4507
 #, c-format
@@ -6443,7 +6446,7 @@ msgstr ""
 
 #: ../gap/gap_story_dialog.c:6108
 msgid "automatic"
-msgstr ""
+msgstr "automatisch"
 
 #: ../gap/gap_story_dialog.c:6145
 msgid "Name:"
@@ -6496,7 +6499,7 @@ msgstr "Frame-Rate der animierten Vorschau in Frames/s"
 
 #: ../gap/gap_story_dialog.c:6276
 msgid "Master audio volume, where 1.0 keeps original volume"
-msgstr ""
+msgstr "Hauptlautstärke, wobei 1.0 die derzeitige Lautstärke behält"
 
 #. should use GIMP_STOCK_RESET if possible
 #: ../gap/gap_story_dialog.c:6292
@@ -6506,7 +6509,7 @@ msgstr "Den aktuellen Kontrollpunkt auf Standardwerte zurücksetzen"
 
 #: ../gap/gap_story_dialog.c:6303
 msgid "Master Properties"
-msgstr ""
+msgstr "Haupteinstellungen"
 
 #: ../gap/gap_story_dialog.c:6693
 msgid "STORY_new.txt"
@@ -6514,21 +6517,21 @@ msgstr ""
 
 #: ../gap/gap_story_file.c:397 ../gap/gap_story_file.c:431
 msgid "internal error"
-msgstr ""
+msgstr "interner Fehler"
 
 #: ../gap/gap_story_file.c:1403
 #, c-format
 msgid "illegal number: %s (valid range is %d upto %d)\n"
-msgstr ""
+msgstr "ungültige Nummer: %s (gültiger Bereich ist %d bis %d)\n"
 
 #: ../gap/gap_story_file.c:1442
-#, c-format
+#, c-format, fuzzy
 msgid "illegal number: %s (valid range is %.3f upto %.3f)"
-msgstr ""
+msgstr "ungültige Nummer: "
 
 #: ../gap/gap_story_file.c:1545
 msgid "same parameter used more than once"
-msgstr ""
+msgstr "gleicher Parameter mehrmals verwendet"
 
 #: ../gap/gap_story_file.c:1557
 msgid "conflict: positional parameter shadows named parameter"
@@ -6595,19 +6598,19 @@ msgstr "Bild in Frames aufteilen"
 
 #: ../gap/gap_story_properties.c:1366
 msgid "EMPTY"
-msgstr ""
+msgstr "LEER"
 
 #: ../gap/gap_story_properties.c:1369
 msgid "COLOR"
-msgstr ""
+msgstr "FARBE"
 
 #: ../gap/gap_story_properties.c:1372
 msgid "SINGLE-IMAGE"
-msgstr ""
+msgstr "EINZEL-BILD"
 
 #: ../gap/gap_story_properties.c:1376
 msgid "ANIM-IMAGE"
-msgstr ""
+msgstr "ANIMIERTES-BILD"
 
 #: ../gap/gap_story_properties.c:1380
 msgid "FRAME-IMAGES"
@@ -6615,15 +6618,15 @@ msgstr ""
 
 #: ../gap/gap_story_properties.c:1385
 msgid "MOVIE"
-msgstr ""
+msgstr "FILM"
 
 #: ../gap/gap_story_properties.c:1388
 msgid "COMMENT"
-msgstr ""
+msgstr "KOMMENTAR"
 
 #: ../gap/gap_story_properties.c:1391
 msgid "** UNKNOWN **"
-msgstr ""
+msgstr "** UNBEKANNT **"
 
 #: ../gap/gap_story_properties.c:1440
 #, fuzzy, c-format
@@ -6636,7 +6639,7 @@ msgstr ""
 
 #: ../gap/gap_story_properties.c:1715 ../gap/gap_story_properties.c:1726
 msgid "Find Scene End"
-msgstr ""
+msgstr "Szenenende finden"
 
 #: ../gap/gap_story_properties.c:1716 ../gap/gap_story_properties.c:1727
 msgid "Auto Scene Split"
@@ -6748,7 +6751,7 @@ msgstr ""
 #. radio button delace_mode odd
 #: ../gap/gap_story_properties.c:1977
 msgid "Odd"
-msgstr ""
+msgstr "Ungerade"
 
 #: ../gap/gap_story_properties.c:1985
 msgid "Apply odd-lines filter when reading videoframes"
@@ -6757,7 +6760,7 @@ msgstr ""
 #. radio button delace_mode even
 #: ../gap/gap_story_properties.c:1994
 msgid "Even"
-msgstr ""
+msgstr "Gerade"
 
 #: ../gap/gap_story_properties.c:2002
 msgid "Apply even-lines filter when reading videoframes"
@@ -6777,7 +6780,7 @@ msgstr "Sättigung"
 #. the filtermacro label
 #: ../gap/gap_story_properties.c:2164
 msgid "Filtermacro:"
-msgstr ""
+msgstr "Filtermakro:"
 
 #: ../gap/gap_vex_dialog.c:233
 #, fuzzy
@@ -6796,7 +6799,7 @@ msgstr "Framenummer des ersten Frames, der extrahiert werden soll"
 
 #: ../gap/gap_vex_dialog.c:800
 msgid "unknown"
-msgstr ""
+msgstr "unbekannt"
 
 #: ../gap/gap_vex_dialog.c:1708
 #, fuzzy
@@ -6846,7 +6849,7 @@ msgstr "Videoframes:"
 
 #: ../gap/gap_vex_dialog.c:2008
 msgid "Name of videofile (used as inputfile)"
-msgstr ""
+msgstr "Name der Videodatei (benutzt als Eingabedatei)"
 
 #. the videofile button (that invokes fileselection dialog)
 #. the basename button (that invokes the fileselection dialog)
@@ -6873,7 +6876,7 @@ msgstr ""
 #.
 #: ../gap/gap_vex_dialog.c:2026
 msgid "Disable MMX"
-msgstr ""
+msgstr "MMX deaktivieren"
 
 #: ../gap/gap_vex_dialog.c:2054
 #, fuzzy
@@ -6920,16 +6923,16 @@ msgstr ""
 
 #: ../gap/gap_vex_dialog.c:2238
 msgid "(none, automatic)"
-msgstr ""
+msgstr "(kein, automatisch)"
 
 #. the (Active) Decoder Label(s)
 #: ../gap/gap_vex_dialog.c:2262
 msgid "Active Decoder:"
-msgstr ""
+msgstr "Aktiver Dekoder:"
 
 #: ../gap/gap_vex_dialog.c:2272 ../gap/gap_vex_dialog.c:2310
 msgid "****"
-msgstr ""
+msgstr "****"
 
 #. exact_seek option to disable fast videoindex based positioning.
 #. * (the videoapi delivers exact frame positions on most videos
@@ -6937,7 +6940,7 @@ msgstr ""
 #.
 #: ../gap/gap_vex_dialog.c:2285
 msgid "Exact Seek"
-msgstr ""
+msgstr "Genaue Suche"
 
 #: ../gap/gap_vex_dialog.c:2288
 msgid ""
@@ -6997,7 +7000,7 @@ msgstr ""
 
 #: ../gap/gap_vex_dialog.c:2455
 msgid ".xcf"
-msgstr ""
+msgstr ".xcf"
 
 #. the framenumber for 1st frame label
 #: ../gap/gap_vex_dialog.c:2466
@@ -7044,7 +7047,7 @@ msgstr ""
 
 #: ../gap/gap_vex_dialog.c:2560
 msgid "frame.wav"
-msgstr ""
+msgstr "einzelbild.wav"
 
 #: ../gap/gap_vex_dialog.c:2570
 msgid "Use filebrowser to select audiofilename"
@@ -7061,13 +7064,12 @@ msgid "Seek Frame Position..."
 msgstr "Frame-Reichweite & Position auswählen"
 
 #: ../gap/gap_vex_exec.c:446
-#, fuzzy
 msgid "Extracting Frames..."
-msgstr "Extrahiere Frames.."
+msgstr "Extrahiere Frames..."
 
 #: ../gap/gap_vex_exec.c:602
 msgid "Seek Audio Position..."
-msgstr ""
+msgstr "Audioposition suchen"
 
 #: ../gap/gap_vex_exec.c:637
 #, fuzzy
@@ -7076,7 +7078,7 @@ msgstr "Audio extrahieren"
 
 #: ../gap/gap_vex_main.c:261
 msgid "MAIN_TST"
-msgstr ""
+msgstr "HAUPT_TST"
 
 #: ../gap/gap_vex_main.c:381
 msgid ""
@@ -7147,15 +7149,15 @@ msgstr "Modus:"
 #. Channel the radio buttons
 #: ../gap/gap_wr_color_huesat.c:645 ../gap/gap_wr_color_levels.c:647
 msgid "Master"
-msgstr ""
+msgstr "Haupt"
 
 #: ../gap/gap_wr_color_huesat.c:650 ../gap/gap_wr_color_levels.c:652
 msgid "Red"
-msgstr ""
+msgstr "Rot"
 
 #: ../gap/gap_wr_color_huesat.c:655
 msgid "Yellow"
-msgstr ""
+msgstr "Gelb"
 
 #: ../gap/gap_wr_color_huesat.c:660 ../gap/gap_wr_color_levels.c:657
 #, fuzzy
@@ -7169,34 +7171,32 @@ msgstr ""
 #: ../gap/gap_wr_color_huesat.c:670 ../gap/gap_wr_color_levels.c:662
 #, fuzzy
 msgid "Blue"
-msgstr "Wert"
+msgstr "Blau"
 
 #: ../gap/gap_wr_color_huesat.c:675
 msgid "Magenta"
 msgstr ""
 
 #: ../gap/gap_wr_color_huesat.c:687
-#, fuzzy
 msgid "Hue:"
 msgstr "Farbton"
 
 #: ../gap/gap_wr_color_huesat.c:694
 msgid "Lightness:"
-msgstr ""
+msgstr "Helligkeit:"
 
 #: ../gap/gap_wr_color_huesat.c:701
-#, fuzzy
 msgid "Saturation:"
-msgstr "Sättigung"
+msgstr "Sättigung:"
 
 #: ../gap/gap_wr_color_levels.c:272
 msgid "Levels..."
-msgstr ""
+msgstr "Farbwerte..."
 
 #. The dialog1 and main vbox
 #: ../gap/gap_wr_color_levels.c:597
 msgid "Color Levels"
-msgstr ""
+msgstr "Farbwerte"
 
 #. the frame
 #: ../gap/gap_wr_color_levels.c:624
@@ -7223,7 +7223,7 @@ msgstr "Höhe:"
 
 #: ../gap/gap_wr_color_levels.c:693
 msgid "Gamma:"
-msgstr ""
+msgstr "Gamma:"
 
 #: ../gap/gap_wr_color_levels.c:700
 #, fuzzy
@@ -7248,6 +7248,7 @@ msgstr "<Image>/Video/Ebene/"
 #: ../gap/gap_wr_opacity.c:330
 msgid "New opacity value where 0 is transparent and 100.0 is opaque"
 msgstr ""
+"Neuer Transparenzwert wobei 0 transparent und 100.0 nicht transparent ist"
 
 #: ../gap/gap_wr_opacity.c:341
 msgid ""
@@ -7277,15 +7278,15 @@ msgstr "Vertikal zentrieren"
 
 #: ../gap/gap_wr_trans.c:201
 msgid "Rotate 90 degrees CW"
-msgstr ""
+msgstr "Um 90 Grad im Uhrzeigersinn drehen"
 
 #: ../gap/gap_wr_trans.c:219
 msgid "Rotate 180 degrees"
-msgstr ""
+msgstr "Um 180 Grad drehen"
 
 #: ../gap/gap_wr_trans.c:236
 msgid "Rotate 90 degrees CCW"
-msgstr ""
+msgstr "Um 90 Grad gegen den Uhrzeigersinn drehen"
 
 #. Menu names
 #: ../gap/gap_wr_trans.c:245
@@ -7439,7 +7440,7 @@ msgstr ""
 
 #: ../vid_common/gap_cme_gui.c:445
 msgid "no description available"
-msgstr ""
+msgstr "keine Beschreibung vorhanden"
 
 #: ../vid_common/gap_cme_gui.c:760
 msgid ""
@@ -7755,7 +7756,7 @@ msgstr "Startskript:"
 #. the Status label
 #: ../vid_common/gap_cme_gui.c:2546
 msgid "READY"
-msgstr ""
+msgstr "BEREIT"
 
 #: ../vid_common/gap_cme_gui.c:2620
 msgid "Encoding Extras"
@@ -8007,7 +8008,7 @@ msgstr ""
 
 #: ../vid_common/gap_cme_gui.c:3112
 msgid "Convert audiofile to tmpfile"
-msgstr ""
+msgstr "Audiodatei in TMP-Datei konvertieren"
 
 #. the resample general information label
 #: ../vid_common/gap_cme_gui.c:3139
@@ -8037,7 +8038,7 @@ msgstr "Quellbereich hört bei dieser Framenummer auf"
 
 #: ../vid_common/gap_cme_gui.c:3341
 msgid "Width of the output video (pixels)"
-msgstr ""
+msgstr "Breite des Ausgabevideos (in Pixeln)"
 
 #. the Frame width/height scale combo (for picking common used video sizes)
 #: ../vid_common/gap_cme_gui.c:3348
@@ -8070,7 +8071,7 @@ msgstr ""
 
 #: ../vid_common/gap_cme_gui.c:3389
 msgid "Height of the output video (pixels)"
-msgstr ""
+msgstr "Höhe des Ausgabevideos (in Pixeln)"
 
 #: ../vid_common/gap_cme_gui.c:3416
 #, fuzzy
@@ -8240,7 +8241,7 @@ msgstr ""
 #. the odd frames first label
 #: ../vid_enc_avi/gap_enc_avi_gui.c:617
 msgid "Odd Frames first:"
-msgstr ""
+msgstr "Ungerade Einzelbilder zuerst:"
 
 #: ../vid_enc_avi/gap_enc_avi_gui.c:638 ../vid_enc_avi/gap_enc_avi_main.c:629
 msgid ""
@@ -8257,6 +8258,7 @@ msgstr "Qualität:"
 #: ../vid_enc_avi/gap_enc_avi_gui.c:669
 msgid "The quality setting of the encoded JPEG frames (100=best quality)"
 msgstr ""
+"Qualitätseinstellung der enkodierten JPEG-Einzelbilder (100=beste Qualität)"
 
 #. the notebook page for RAW Codec options
 #. -----------------------------------------
@@ -8435,7 +8437,7 @@ msgstr "Frames extrahieren"
 
 #: ../vid_enc_avi/gap_enc_avi_main.c:628
 msgid "Odd Frames first"
-msgstr ""
+msgstr "Ungerade Einzelbilder zuerst"
 
 #: ../vid_enc_avi/gap_enc_avi_main.c:635
 msgid "JPEG quality:"
@@ -8444,6 +8446,7 @@ msgstr "JPEG-Qualität:"
 #: ../vid_enc_avi/gap_enc_avi_main.c:636
 msgid "The quality setting of the generated JPEG frames (100=best)"
 msgstr ""
+"Die Qualitätseinstellungen der generierten JPEG-Einzelbilder (100=beste)"
 
 #: ../vid_enc_avi/gap_enc_avi_main.c:645
 msgid "options for the XVID CODEC"
