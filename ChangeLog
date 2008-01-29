@@ -1,3 +1,10 @@
+2008-01-29  Kevin Cozens  <kcozens@cvs.gnome.org>
+
+	* gap/gap-dup-continue.scm: De-tabified.
+
+	* gap/sel-to-anim-img.scm: Fixed bad syntax in let block. Moved some
+	set! calls in to let block. De-tabified.
+
 2008-01-29  Sven Neumann  <sven@gimp.org>
 
 	Merged from gap-2-4:
