@@ -679,7 +679,7 @@ ALL_LINGUAS="ar az bg ca cs da de dz el en_CA en_GB es eu fi fr gl gu hi hr hu i
 AC_PROG_INTLTOOL
 AM_GLIB_GNU_GETTEXT
 
-LOCALEDIR='${datadir}/locale'
+LOCALEDIR='$(prefix)/$(DATADIRNAME)/locale'
 
 
 dnl Use -Wall if we have gcc.

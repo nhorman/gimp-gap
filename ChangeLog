@@ -1,3 +1,11 @@
+2008-01-29  Sven Neumann  <sven@gimp.org>
+
+	Merged from gap-2-4:
+
+	* configure.in: use the same definition for LOCALEDIR as what the
+	Makefile in the po directory uses as the install location for the
+	message catalogs.
+
 2007-10-14  Yannig Marchegay  <yannig@marchegay.org>
 
 	* configure.in: Added 'oc' to ALL_LINGUAS.
