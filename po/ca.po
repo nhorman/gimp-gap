@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ca\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-17 12:56+0100\n"
-"PO-Revision-Date: 2008-01-17 12:57+0100\n"
+"POT-Creation-Date: 2008-01-31 02:34+0100\n"
+"PO-Revision-Date: 2008-01-30 00:03+0100\n"
 "Last-Translator: Joaquim Perez <noguer@gmail.com>\n"
 "Language-Team: Catalan <gimp@llistes.softcatala.org>\n"
 "MIME-Version: 1.0\n"
@@ -2360,25 +2360,23 @@ msgstr "aplica un filtre a totes les capes seleccionades"
 
 #: ../gap/gap_mod_layer_dialog.c:798
 msgid "Duplicate layer(s)"
-msgstr "Duplica capa(es)"
+msgstr "Duplica les capes"
 
 #: ../gap/gap_mod_layer_dialog.c:804
 msgid "Delete layer(s)"
-msgstr "Suprimeix capa(es)"
+msgstr "Suprimeix les capes"
 
 #: ../gap/gap_mod_layer_dialog.c:810
 msgid "Rename layer(s)"
-msgstr "Reanomena capa(es)"
+msgstr "Reanomena les capes"
 
 #: ../gap/gap_mod_layer_dialog.c:817
-#, fuzzy
 msgid "Resize layer(s) to image size"
-msgstr "Refosa de la(es) capa(es) enganxada a la imatge"
+msgstr "Canvia la mida de les capes a la mida de la imatge"
 
 #: ../gap/gap_mod_layer_dialog.c:818
-#, fuzzy
 msgid "Resize selected layer(s) to image size"
-msgstr "fusiona les capes seleccionades i enganxa a la imatge"
+msgstr "Canvia la mida de les capes seleccionades a la mida de la imatge"
 
 #: ../gap/gap_mod_layer_dialog.c:824
 msgid "Add alpha channel"
@@ -3145,16 +3143,16 @@ msgid "Generation of animated preview failed"
 msgstr "S'ha produït un error en generar la previsualització animada"
 
 #: ../gap/gap_mov_dialog.c:1417
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "No stroke ids found in path:\n"
 "'%s'\n"
 "in the Image:\n"
 "'%s'"
 msgstr ""
-"S'ha trobat un tipus de camí %d no suportat en camí:\n"
+"Falten identificadors en el camí:\n"
 "«%s»\n"
-"en la imatge:\n"
+"de la imatge:\n"
 "«%s»"
 
 #: ../gap/gap_mov_dialog.c:1454
@@ -3165,22 +3163,22 @@ msgid ""
 "in the Image:\n"
 "'%s'"
 msgstr ""
-"S'ha trobat un tipus de camí %d no suportat en camí:\n"
+"Tipus de camí desconegut %d en el camí:\n"
 "«%s»\n"
-"en la imatge:\n"
+"de la imatge:\n"
 "«%s»"
 
 #: ../gap/gap_mov_dialog.c:1467
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "No controlpoints found in path:\n"
 "'%s'\n"
 "in the Image:\n"
 "'%s'"
 msgstr ""
-"S'ha trobat un tipus de camí %d no suportat en camí:\n"
+"Falten punts de control en el camí:\n"
 "«%s»\n"
-"en la imatge:\n"
+"de la imatge:\n"
 "«%s»"
 
 #: ../gap/gap_mov_dialog.c:1504
@@ -5687,9 +5685,8 @@ msgstr ""
 
 #. the framenr 2 button (does set End of range)
 #: ../gap/gap_player_dialog.c:5483
-#, fuzzy
 msgid "Nr:"
-msgstr "Nr"
+msgstr "Núm:"
 
 #: ../gap/gap_player_dialog.c:5494
 msgid ""
@@ -5708,9 +5705,8 @@ msgstr ""
 
 #. the time position
 #: ../gap/gap_player_dialog.c:5526
-#, fuzzy
 msgid "Timepos:"
-msgstr "Zoom temporal:"
+msgstr "Posicó:"
 
 #: ../gap/gap_player_dialog.c:5571
 msgid "Add range to cliplist"
@@ -5738,9 +5734,8 @@ msgstr "Darrer número de fotograma de la selecció"
 
 #. the origspeed_button
 #: ../gap/gap_player_dialog.c:5666
-#, fuzzy
 msgid "Speed"
-msgstr "Forma"
+msgstr "Velocitat"
 
 #: ../gap/gap_player_dialog.c:5671
 msgid "Reset playback speed to original (or previous) value"
@@ -5752,9 +5747,8 @@ msgstr "Velocitat de reproducció actual (fotogrames/seg)"
 
 #. the size button
 #: ../gap/gap_player_dialog.c:5709
-#, fuzzy
 msgid "Size"
-msgstr "Mida mestre:"
+msgstr "Mida:"
 
 #: ../gap/gap_player_dialog.c:5716
 msgid "Toggle size 128/256. <Shift> Set 1:1 full image size"
@@ -5774,12 +5768,10 @@ msgstr ""
 
 #. SelOnly Toggle
 #: ../gap/gap_player_dialog.c:5785
-#, fuzzy
 msgid "Play selection only"
-msgstr "Només els seleccionats"
+msgstr "Reprodueix la selecció"
 
 #: ../gap/gap_player_dialog.c:5791
-#, fuzzy
 msgid ""
 "ON: Play selection only.\n"
 "OFF: Play all frames"
@@ -5799,9 +5791,8 @@ msgstr "Activat: Reprodueix alternativament endavant/endarrere"
 
 #. UseThumbnails Toggle
 #: ../gap/gap_player_dialog.c:5823
-#, fuzzy
 msgid "Use thumbnails"
-msgstr "Miniatures de vídeo"
+msgstr "Utilitza miniatures"
 
 #: ../gap/gap_player_dialog.c:5829
 msgid ""
@@ -5829,9 +5820,8 @@ msgstr ""
 #  the Status frame
 #. the status label
 #: ../gap/gap_player_dialog.c:5863
-#, fuzzy
 msgid "Status:"
-msgstr "Estat"
+msgstr "Estat:"
 
 #  the Cancel Videoindex Creation button (only visible while creating vindex)
 #. the Cancel Videoindex Creation button (only visible while creating vindex)
@@ -6655,7 +6645,6 @@ msgstr ""
 "transparent del tot"
 
 #: ../gap/gap_story_att_trans_dlg.c:2198
-#, fuzzy
 msgid ""
 "opacity value for the last handled framewhere 100 is fully opaque, 0 is "
 "fully transparent"
@@ -7062,18 +7051,15 @@ msgid "Paste a clip after last (selected) element"
 msgstr "Enganxa un clip després de l'últim element (seleccionat)"
 
 #: ../gap/gap_story_dialog.c:5574
-#, fuzzy
 msgid "Playback storyboard file. SHIFT: Play only selected clips"
 msgstr ""
 "Reprodueix el fitxer del guió il·lustrat. Maj : Reprodueix només els clips "
-"seleccionats CTRL: Reprodueix la composició del vídeo "
+"seleccionats"
 
 #: ../gap/gap_story_dialog.c:5583
-#, fuzzy
 msgid "Playback cliplist. SHIFT: Play only selected clips"
 msgstr ""
-"Reprodueix la llista de clips. Maj: Reprodueix només els clips seleccionats "
-"CTRL: Reprodueix la composició del vídeo"
+"Reprodueix la llista de clips. Maj: Reprodueix només els clips seleccionats"
 
 #  gtk_widget_show (entry);
 #  Row label
@@ -8254,17 +8240,17 @@ msgstr "S'ha produït un error. El fitxer: %s no és un format de vídeo suporta
 #: ../libgapvidutil/gap_gve_story.c:2752
 #, c-format
 msgid "loading error on animimage:  %s"
-msgstr ""
+msgstr "s'ha produït un error en carregar la imatge animada: %s"
 
 #: ../libgapvidutil/gap_gve_story.c:2770
-#, fuzzy, c-format
+#, c-format
 msgid "imagefile not found:  %s"
-msgstr "No s'ha trobat el fitxer:  %s per l'entrada d'àudio"
+msgstr "no s'ha trobat la imatge animada: %s"
 
 #: ../libgapvidutil/gap_gve_story.c:2881
 #, c-format
 msgid "no framefile(s) found at:  %s"
-msgstr ""
+msgstr "no s'ha trobat el fitxer de fotogrames: %s"
 
 #: ../libgapvidutil/gap_gve_story.c:3505
 #, c-format
@@ -10798,205 +10784,3 @@ msgid ""
 msgstr ""
 "** No s'ha pogut desar en el fitxer\n"
 "%s"
-
-#  shortname prefix to indicate that displayed filename is from type storyboard file
-#~ msgid "STB:[%d]"
-#~ msgstr "STB:[%d]"
-
-#~ msgid "Cache Size (MB):"
-#~ msgstr "Mida d'intercanvi (MB):"
-
-#~ msgid "Player frame cache maximum size in MB. Value 0 turns the cache off."
-#~ msgstr ""
-#~ "Mida de la memòria cau per a la reproducció de fotogrames en MB. Un valor "
-#~ "0 desactiva la memòria cau."
-
-#~ msgid "Clear the frame cache"
-#~ msgstr "Buida la memòria cau de fotogrames"
-
-#~ msgid "Cached Frames:"
-#~ msgstr "Fotogrames en la memòria cau:"
-
-#~ msgid "Layout Options:"
-#~ msgstr "Opcions de disposició:"
-
-#~ msgid "Show Button Array"
-#~ msgstr "Mostra la taula de botons"
-
-#~ msgid ""
-#~ "ON: Show the go button array positioning tool.\n"
-#~ "OFF: Hide the go button array."
-#~ msgstr ""
-#~ "Activat: mostra la taula de botons de l'eina de posicionament.\n"
-#~ "Desactivat: oculta la taula de botons."
-
-#~ msgid "Show Position Scale"
-#~ msgstr "Mostra l'escala de la posició"
-
-#~ msgid ""
-#~ "ON: Show the position scale.\n"
-#~ "OFF: Hide the position scale."
-#~ msgstr ""
-#~ "Activat: mostra l'escala de la posició.\n"
-#~ "Desactivat: oculta l'escala de la posició."
-
-#~ msgid "Save Preferences:"
-#~ msgstr "Desa les opcions:"
-
-#~ msgid "Save player cache and layout settings (as gimprc parameters)"
-#~ msgstr ""
-#~ "Desa la memòria cau del reproductor i les opcions de disposició (com a "
-#~ "paràmetres del gimprc)"
-
-#~ msgid "Preferences"
-#~ msgstr "Preferències"
-
-#  UseThumbnails Toggle
-#~ msgid "Thumbnails"
-#~ msgstr "Miniatures"
-
-#~ msgid "Overlap:"
-#~ msgstr "Superposa:"
-
-#~ msgid "Number of overlapping frames within this track"
-#~ msgstr "Nombre de fotogrames a superposar en aquesta pista"
-
-#~ msgid "Track:"
-#~ msgstr "Pista:"
-
-#~ msgid "Video Track Number (0 refers to mask definition track)"
-#~ msgstr ""
-#~ "Número de pista de vídeo (0 es refereix a la pista de definició de "
-#~ "màscares)"
-
-#~ msgid ""
-#~ "Original tone track was created with warnings.\n"
-#~ "The storyboard %s\n"
-#~ "has movie clips with framerate %.4f. that is different from the master "
-#~ "framerate %.4f.\n"
-#~ "The generated audio is NOT synchronized with the video."
-#~ msgstr ""
-#~ "La pista del to original s'ha creat amb avisos.\n"
-#~ "El guió il·lustrat %s\n"
-#~ "té clips de pel·lícules amb una freqüència de mostreig %.4f. que és "
-#~ "diferent de la freqüència de mostreig mestra %.4f.\n"
-#~ "L'àudio generat NO està sincronitzat amb el vídeo."
-
-#  radio button delace_mode None
-#~ msgid "none"
-#~ msgstr "cap"
-
-#~ msgid ""
-#~ "Select video frame aspect ratio; enter a string like \"4:3\" or \"16:9\" "
-#~ "to specify the aspect. Enter none or leave empty if no special aspect "
-#~ "shall be used (in this case video frames use the master pixelsize 1:1 for "
-#~ "displaying video frames)."
-#~ msgstr ""
-#~ "Selecciona la relació d'aspecte del fotograma de vídeo; escriviu un text "
-#~ "com «4:3» o «16:9» per a especificar la relació d'aspecte. Escriviu "
-#~ "«none» o deixeu-ho buit si no voleu emprar una relació d'aspecte en "
-#~ "concret (en tal cas les fotogrames de vídeo utilitzaran la mida de píxel "
-#~ "mestra 1:1 per a mostrar els fotogrames de vídeo)"
-
-#~ msgid ""
-#~ "Error: references could not be updated from the\n"
-#~ "old mask name: \"%s\" to the\n"
-#~ "new mask name: \"%s\"\n"
-#~ "because the new mask name is already in use."
-#~ msgstr ""
-#~ "Error: les referències no es poden actualitzar a partir\n"
-#~ "d'una màscara de nom antiga: «%s» cap al\n"
-#~ "nou nom de màscara: «%s»\n"
-#~ "perquè el nou nom de màscara ja s'està utilitzant."
-
-#~ msgid "Mask Properties"
-#~ msgstr "Propietats de la màscara"
-
-#  the cliptype label
-#~ msgid "Mask Type:"
-#~ msgstr "Tipus de màscara:"
-
-#~ msgid "Transform:"
-#~ msgstr "Transforma:"
-
-#~ msgid "Do not apply internal transformations"
-#~ msgstr "No apliquis transformacions internes"
-
-#  Rotation
-#  table col, row
-#~ msgid "Rotate 180"
-#~ msgstr "Gira 180"
-
-#~ msgid "Rotate all frames of this clip by 180 degree"
-#~ msgstr "Gira tos els fotogrames d'aquest clip 180 graus"
-
-#  the center offsetX button
-#~ msgid "Flip Horizontally"
-#~ msgstr "Capgira horitzontalment"
-
-#~ msgid "Flip all frames of this clip horizontally"
-#~ msgstr "Capgira tots els fotogrames d'aquest clip horitzontalment"
-
-#  the center offsetY button
-#~ msgid "Flip Vertically"
-#~ msgstr "Capgira verticalment"
-
-#~ msgid "Flip all frames of this clip vertically"
-#~ msgstr "Capgira tots els fotogrames d'aquest clip verticalment"
-
-#  the LayerName (or channel Name) label
-#~ msgid "Mask Name:"
-#~ msgstr "Nom de la màscara:"
-
-#~ msgid "Name of the layermask definition clip"
-#~ msgstr "Nom del clip de definició de la màscara de capa"
-
-#~ msgid ""
-#~ "Reference to a layermask definition clip.\n"
-#~ "Layermasks are used to control opacity. Track 0 is used for definitions "
-#~ "of layermask clips."
-#~ msgstr ""
-#~ "Referència al clip de definició de la màscara de capa.\n"
-#~ "Les màscares de capa s'utilitzen per a controlar la transparència. La "
-#~ "pista 0 s'utilitza per a la definició de clips de definició de màscares "
-#~ "de capa."
-
-#  check button
-#~ msgid "enable"
-#~ msgstr "habilita"
-
-#~ msgid "ON: Enable layer mask"
-#~ msgstr "Activat: habilita la màscara de la capa"
-
-#~ msgid "Mask Anchor:"
-#~ msgstr "Enllaç de la màscara:"
-
-#  XXXXXXXXXXX Start of the CLIPLIST widgets  XXXXXXXXXXXX
-#  the clp_frame
-#~ msgid "Clip"
-#~ msgstr "Clip"
-
-#~ msgid "Attach mask to clip at clip position in clip size"
-#~ msgstr "Enllaça la màscara al clip donada una posició i una mida del clip"
-
-#~ msgid "Attach mask in resulting master video size at fixed position"
-#~ msgstr ""
-#~ "Enllaça la màscara amb el vídeo mestre resultant en una determinada "
-#~ "posició"
-
-#~ msgid "Maskstepsize:"
-#~ msgstr "Mida del pas de la màscara:"
-
-#  lower/upper
-#  step, page
-#  digits
-#  constrain
-#  lower/upper unconstrained
-#~ msgid ""
-#~ "Stepsize density for the layer mask. Use 1.0 for normal 1:1 frame by "
-#~ "frame steps. a value of 0.5 shows each input mask frame 2 times. a value "
-#~ "of 2.0 shows only every 2nd input mask frame"
-#~ msgstr ""
-#~ "Densitat de la mida dels passos. Utilitzeu 1.0 pel cas normal 1:1 pels "
-#~ "passos fotograma a fotograma. Un valor de 0.5 mostrarà cada fotograma "
-#~ "d'entrada 2 cops. Un valor de 2.0 mostrarà només els fotogrames parells"
