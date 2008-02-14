@@ -4140,11 +4140,13 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_gui_stuff *mgp, gboolean v
   if ( mgp->dwidth > mgp->dheight )
   {
     mgp->pheight = mgp->dheight * PREVIEW_SIZE / mgp->dwidth;
-    mgp->pwidth = PREVIEW_SIZE;
+    mgp->pheight = MAX (1, mgp->pheight);
+    mgp->pwidth  = PREVIEW_SIZE;
   }
   else
   {
-    mgp->pwidth = mgp->dwidth * PREVIEW_SIZE / mgp->dheight;
+    mgp->pwidth  = mgp->dwidth * PREVIEW_SIZE / mgp->dheight;
+    mgp->pwidth  = MAX (1, mgp->pwidth);
     mgp->pheight = PREVIEW_SIZE;
   }
 
@@ -5377,11 +5379,13 @@ mov_pview_size_allocate_callback(GtkWidget *widget
     if ( mgp->dwidth > mgp->dheight )
     {
       pheight = mgp->dheight * PREVIEW_SIZE / mgp->dwidth;
-      pwidth = PREVIEW_SIZE;
+      pheight = MAX (1, pheight);
+      pwidth  = PREVIEW_SIZE;
     }
     else
     {
-      pwidth = mgp->dwidth * PREVIEW_SIZE / mgp->dheight;
+      pwidth  = mgp->dwidth * PREVIEW_SIZE / mgp->dheight;
+      pwidth  = MAX (1, pwidth);
       pheight = PREVIEW_SIZE;
     }
     psize = PREVIEW_SIZE;

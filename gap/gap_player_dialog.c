@@ -1627,12 +1627,14 @@ p_update_pviewsize(GapPlayerMainGlobalParams *gpp)
   {
     /* landscape */
     gpp->pv_height = gpp->ainfo_ptr->height * gpp->pv_pixelsize / gpp->ainfo_ptr->width;
-    gpp->pv_width = gpp->pv_pixelsize;
+    gpp->pv_height = MAX (1, gpp->pv_height);
+    gpp->pv_width  = gpp->pv_pixelsize;
   }
   else
   {
     /* portrait */
     gpp->pv_width = gpp->ainfo_ptr->width * gpp->pv_pixelsize / gpp->ainfo_ptr->height;
+    gpp->pv_width  = MAX (1, gpp->pv_width);
     gpp->pv_height = gpp->pv_pixelsize;
   }
 
