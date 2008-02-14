@@ -1,3 +1,15 @@
+2008-02-14  Sven Neumann  <sven@gimp.org>
+
+	Merged from gap-2-4:
+
+	* gap/gap_pview_da.c (gap_pview_set_size): added a sanity check
+	for the preview size.
+
+	* gap/gap_mov_dialog.c (mov_path_prevw_create)
+	(mov_pview_size_allocate_callback)
+	* gap/gap_player_dialog.c (p_update_pviewsize): make sure that the
+	preview size doesn't become zero. Fixes bug #516443.
+
 2008-01-29  Kevin Cozens  <kcozens@cvs.gnome.org>
 
 	* gap/gap-dup-continue.scm: De-tabified.

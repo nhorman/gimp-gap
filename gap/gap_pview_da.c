@@ -468,6 +468,8 @@ gap_pview_reset(GapPView *pv_ptr)
 void
 gap_pview_set_size(GapPView *pv_ptr, gint pv_width, gint pv_height, gint pv_check_size)
 {
+  g_return_if_fail (pv_width > 0 && pv_height > 0);
+
   if(pv_ptr->da_widget == NULL) { return; }
 
   gap_pview_reset(pv_ptr);
