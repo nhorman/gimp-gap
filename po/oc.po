@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: oc\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-02-19 20:21+0100\n"
-"PO-Revision-Date: 2007-12-27 13:36+0100\n"
+"POT-Creation-Date: 2008-03-07 10:20+0100\n"
+"PO-Revision-Date: 2008-03-04 18:45+0100\n"
 "Last-Translator: Yannig Marchegay (Kokoyaya) <yannig@marchegay.org>\n"
 "Language-Team: Occitan <ubuntu-l10n-oci@lists.ubuntu.com>\n"
 "MIME-Version: 1.0\n"
@@ -1673,7 +1673,7 @@ msgstr ""
 
 #: ../gap/gap_mod_layer_dialog.c:202
 msgid "Channel Name"
-msgstr ""
+msgstr "Nom del canal"
 
 #. the Layer Attributes sub menu
 #: ../gap/gap_mod_layer_dialog.c:336
@@ -2013,7 +2013,7 @@ msgstr "Foncion"
 #. the toplevel menu_item (will be replaced on any selection)
 #: ../gap/gap_mod_layer_dialog.c:994 ../gap/gap_mod_layer_dialog.c:1032
 msgid "Function:"
-msgstr ""
+msgstr "Foncion :"
 
 #. the LayerName (or channel Name) label
 #: ../gap/gap_mod_layer_dialog.c:1052
@@ -2688,7 +2688,7 @@ msgstr ""
 #: ../gap/gap_mov_dialog.c:2753 ../gap/gap_name2layer_main.c:444
 #: ../gap/gap_vex_dialog.c:2344 ../gap/gap_wr_opacity.c:340
 msgid "Mode:"
-msgstr ""
+msgstr "Mòde :"
 
 #: ../gap/gap_mov_dialog.c:2766
 msgid "Hard Light"
@@ -3180,7 +3180,7 @@ msgstr ""
 #. table col, row
 #: ../gap/gap_mov_dialog.c:3693
 msgid "x1:"
-msgstr ""
+msgstr "x1 :"
 
 #. label text
 #. scalesize spinsize
@@ -3198,7 +3198,7 @@ msgstr ""
 #. table col, row
 #: ../gap/gap_mov_dialog.c:3712
 msgid "y1:"
-msgstr ""
+msgstr "y1 :"
 
 #. label text
 #. scalesize spinsize
@@ -4388,7 +4388,7 @@ msgstr ""
 #. pending timer_go_job gets useless, since we start playback now
 #: ../gap/gap_player_dialog.c:1874 ../gap/gap_player_dialog.c:3768
 msgid "Playing"
-msgstr ""
+msgstr "Lectura"
 
 #. the status value label
 #: ../gap/gap_player_dialog.c:1913 ../gap/gap_player_dialog.c:7059
@@ -4912,7 +4912,7 @@ msgstr ""
 
 #: ../gap/gap_range_ops.c:423
 msgid "Enable Transparency"
-msgstr ""
+msgstr "Activar la transparéncia"
 
 #: ../gap/gap_range_ops.c:424
 msgid "Enable dithering of transparency"
@@ -7231,7 +7231,7 @@ msgstr ""
 
 #: ../vid_common/gap_cme_gui.c:2218
 msgid "filename"
-msgstr ""
+msgstr "nom de fichièr"
 
 #: ../vid_common/gap_cme_gui.c:2231
 msgid "  "
@@ -7777,7 +7777,7 @@ msgstr ""
 #. the xvid quality label
 #: ../vid_enc_avi/gap_enc_avi_gui.c:645 ../vid_enc_avi/gap_enc_avi_gui.c:976
 msgid "Quality:"
-msgstr ""
+msgstr "Qualitat :"
 
 #: ../vid_enc_avi/gap_enc_avi_gui.c:669
 msgid "The quality setting of the encoded JPEG frames (100=best quality)"
