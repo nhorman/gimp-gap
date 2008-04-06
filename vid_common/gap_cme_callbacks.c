@@ -690,7 +690,7 @@ on_cme__spinbutton_framerate_changed   (GtkEditable     *editable,
 
    if((gint)adj->value != gpp->val.framerate)
    {
-     gpp->val.framerate = (gint)adj->value;
+     gpp->val.framerate = adj->value;
      gap_cme_gui_update_vid_labels (gpp);
    }
  }

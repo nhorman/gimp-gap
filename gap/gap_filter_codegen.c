@@ -39,6 +39,7 @@
 #include "libgimp/gimp.h"
 
 /* GAP includes */
+#include "gap_filter.h"
 
 /* int gap_debug = 1; */    /* print debug infos */
 /* int gap_debug = 0; */    /* 0: dont print debug infos */
@@ -231,13 +232,13 @@ gint gap_codegen_gen_code_iter_ALT(char  *proc_name)
        fprintf(l_fp, "\n");
        fprintf(l_fp, "    if(len_struct != sizeof(t_%s_Vals)) \n", l_clean_proc_name);
        fprintf(l_fp, "    {\n");
-       fprintf(l_fp, "      fprintf(stderr, \"ERROR: p_\%s_iter_ALT  stored Data missmatch in size %%d != %%d\\n\",   \n", l_clean_proc_name);
+       fprintf(l_fp, "      printf(\"ERROR: p_\%s_iter_ALT  stored Data missmatch in size %%d != %%d\\n\",   \n", l_clean_proc_name);
        fprintf(l_fp, "                       (int)len_struct, sizeof(t_%s_Vals) ); \n", l_clean_proc_name);
        fprintf(l_fp, "      return -1;  /* ERROR */ \n");
        fprintf(l_fp, "    }\n");
        fprintf(l_fp, "\n");
-       fprintf(l_fp, "    gimp_get_data(\"%s_ITER_FROM\", g_plugin_data_from); \n", l_clean_proc_name);
-       fprintf(l_fp, "    gimp_get_data(\"%s_ITER_TO\",   g_plugin_data_to); \n", l_clean_proc_name);
+       fprintf(l_fp, "    gimp_get_data(\"%s%s\", g_plugin_data_from); \n", l_clean_proc_name, GAP_ITER_FROM_SUFFIX);
+       fprintf(l_fp, "    gimp_get_data(\"%s%s\",   g_plugin_data_to); \n", l_clean_proc_name, GAP_ITER_TO_SUFFIX);
        fprintf(l_fp, "\n");
        fprintf(l_fp, "    buf_from = (t_%s_Vals *)&g_plugin_data_from[0]; \n", l_clean_proc_name);
        fprintf(l_fp, "    buf_to   = (t_%s_Vals *)&g_plugin_data_to[0]; \n", l_clean_proc_name);
@@ -597,8 +598,8 @@ gint gap_codegen_gen_code_iterator(char  *proc_name)
        fprintf(l_fp, "      return -1;  /* ERROR */ \n");
        fprintf(l_fp, "    }\n");
        fprintf(l_fp, "\n");
-       fprintf(l_fp, "    gimp_get_data(\"%s_ITER_FROM\", &buf_from); \n", l_clean_proc_name);
-       fprintf(l_fp, "    gimp_get_data(\"%s_ITER_TO\",   &buf_to); \n", l_clean_proc_name);
+       fprintf(l_fp, "    gimp_get_data(\"%s%s\", &buf_from); \n", l_clean_proc_name, GAP_ITER_FROM_SUFFIX);
+       fprintf(l_fp, "    gimp_get_data(\"%s%s\",   &buf_to); \n", l_clean_proc_name, GAP_ITER_TO_SUFFIX);
        fprintf(l_fp, "    memcpy(&buf, &buf_from, sizeof(buf));\n");
        fprintf(l_fp, "\n");
 
@@ -645,7 +646,7 @@ gint gap_codegen_gen_code_iterator(char  *proc_name)
        fprintf(l_fp, "MAIN ()\n");
        fprintf(l_fp, "\n");
        fprintf(l_fp, "/* ----------------------------------------------------------------------\n");
-       fprintf(l_fp, " * install (query) _Iterator\n");
+       fprintf(l_fp, " * install (query) %s\n", GAP_ITERATOR_SUFFIX);
        fprintf(l_fp, " * ----------------------------------------------------------------------\n");
        fprintf(l_fp, " */\n");
        fprintf(l_fp, "\n");
@@ -667,7 +668,7 @@ gint gap_codegen_gen_code_iterator(char  *proc_name)
        fprintf(l_fp, "\n");
        fprintf(l_fp, "  g_snprintf(l_blurb_text, sizeof(l_blurb_text), \"This procedure calculates the modified values for one iterationstep for the call of %s\");\n", l_clean_proc_name);
        fprintf(l_fp, "\n");
-       fprintf(l_fp, "  gimp_install_procedure(\"%s_Iterator\",\n", l_clean_proc_name);
+       fprintf(l_fp, "  gimp_install_procedure(\"%s%s\",\n", l_clean_proc_name, GAP_ITERATOR_SUFFIX);
        fprintf(l_fp, "                         l_blurb_text,\n");
        fprintf(l_fp, "                         \"\",\n");
        fprintf(l_fp, "                         \"Wolfgang Hofer\",\n");

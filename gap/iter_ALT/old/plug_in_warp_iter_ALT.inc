@@ -33,8 +33,8 @@ gint p_plug_in_warp_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble c
       return -1;  /* ERROR */ 
     }
 
-    gimp_get_data("plug_in_warp_ITER_FROM", g_plugin_data_from); 
-    gimp_get_data("plug_in_warp_ITER_TO",   g_plugin_data_to); 
+    gimp_get_data("plug-in-warp-ITER-FROM", g_plugin_data_from); 
+    gimp_get_data("plug-in-warp-ITER-TO",   g_plugin_data_to); 
 
     buf_from = (t_plug_in_warp_Vals *)&g_plugin_data_from[0]; 
     buf_to   = (t_plug_in_warp_Vals *)&g_plugin_data_to[0]; 
@@ -57,7 +57,7 @@ gint p_plug_in_warp_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble c
     p_delta_gdouble(&buf.vector_scale, buf_from->vector_scale, buf_to->vector_scale, total_steps, current_step);
     p_delta_gdouble(&buf.vector_angle, buf_from->vector_angle, buf_to->vector_angle, total_steps, current_step);
     
-    gimp_set_data("plug_in_warp", &buf, sizeof(buf)); 
+    gimp_set_data("plug-in-warp", &buf, sizeof(buf)); 
 
     return 0; /* OK */
 }

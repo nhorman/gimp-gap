@@ -11,6 +11,7 @@ gap/gap_decode_mplayer.c
 gap/gap_decode_xanim.c
 gap/gap_filter_foreach.c
 gap/gap_filter_main.c
+gap/gap_fmac_base.c
 gap/gap_fmac_main.c
 gap/gap_frontends_main.c
 gap/gap_lib.c
@@ -43,8 +44,11 @@ gap/gap_story_main.c
 gap/gap_story_properties.c
 gap/gap_story_render_audio.c
 gap/gap_story_render_processor.c
+gap/gap_story_section_properties.c
+gap/gap_story_vthumb.c
 gap/gap_vex_dialog.c
 gap/gap_vex_exec.c
+gap/gap_video_index_creator.c
 gap/gap_vex_main.c
 gap/gap_wr_color_curve.c
 gap/gap_wr_color_huesat.c
@@ -59,8 +63,8 @@ vid_common/gap_cme_gui.c
 vid_common/gap_cme_main.c
 vid_enc_avi/gap_enc_avi_gui.c
 vid_enc_avi/gap_enc_avi_main.c
-vid_enc_ffmpeg/gap_enc_ffmpeg_callbacks.c
 vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c
 vid_enc_ffmpeg/gap_enc_ffmpeg_main.c
+vid_enc_ffmpeg/gap_enc_ffmpeg_callbacks.c
 vid_enc_ffmpeg/gap_enc_ffmpeg_par.c
 vid_enc_single/gap_enc_singleframes_main.c

@@ -10,7 +10,6 @@ gint p_plug_in_emboss_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble
       gdouble   elevation;
       gint32    depth;
       gint32    embossp;
-      gboolean  preview;
     } t_plug_in_emboss_Vals; 
 
     t_plug_in_emboss_Vals  buf, *buf_from, *buf_to; 
@@ -22,8 +21,8 @@ gint p_plug_in_emboss_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble
       return -1;  /* ERROR */ 
     }
 
-    gimp_get_data("plug_in_emboss_ITER_FROM", g_plugin_data_from); 
-    gimp_get_data("plug_in_emboss_ITER_TO",   g_plugin_data_to); 
+    gimp_get_data("plug-in-emboss-ITER-FROM", g_plugin_data_from); 
+    gimp_get_data("plug-in-emboss-ITER-TO",   g_plugin_data_to); 
 
     buf_from = (t_plug_in_emboss_Vals *)&g_plugin_data_from[0]; 
     buf_to   = (t_plug_in_emboss_Vals *)&g_plugin_data_to[0]; 
@@ -34,8 +33,7 @@ gint p_plug_in_emboss_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble
     p_delta_gint32(&buf.depth, buf_from->depth, buf_to->depth, total_steps, current_step);
     p_delta_gint32(&buf.embossp, buf_from->embossp, buf_to->embossp, total_steps, current_step);
 
-    buf.preview = FALSE;
-    gimp_set_data("plug_in_emboss", &buf, sizeof(buf)); 
+    gimp_set_data("plug-in-emboss", &buf, sizeof(buf)); 
 
     return 0; /* OK */
 }

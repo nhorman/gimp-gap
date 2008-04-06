@@ -9,7 +9,6 @@ gint p_plug_in_unsharp_mask_iter_ALT(GimpRunMode run_mode, gint32 total_steps, g
       gdouble   radius;
       gdouble   amount;
       gint      threshold;
-      gboolean  update_preview;
     } t_plug_in_unsharp_mask_Vals; 
 
     t_plug_in_unsharp_mask_Vals  buf, *buf_from, *buf_to; 
@@ -21,8 +20,8 @@ gint p_plug_in_unsharp_mask_iter_ALT(GimpRunMode run_mode, gint32 total_steps, g
       return -1;  /* ERROR */ 
     }
 
-    gimp_get_data("plug_in_unsharp_mask_ITER_FROM", g_plugin_data_from); 
-    gimp_get_data("plug_in_unsharp_mask_ITER_TO",   g_plugin_data_to); 
+    gimp_get_data("plug-in-unsharp-mask-ITER-FROM", g_plugin_data_from); 
+    gimp_get_data("plug-in-unsharp-mask-ITER-TO",   g_plugin_data_to); 
 
     buf_from = (t_plug_in_unsharp_mask_Vals *)&g_plugin_data_from[0]; 
     buf_to   = (t_plug_in_unsharp_mask_Vals *)&g_plugin_data_to[0]; 
@@ -32,8 +31,7 @@ gint p_plug_in_unsharp_mask_iter_ALT(GimpRunMode run_mode, gint32 total_steps, g
     p_delta_gdouble(&buf.amount, buf_from->amount, buf_to->amount, total_steps, current_step);
     p_delta_gint(&buf.threshold, buf_from->threshold, buf_to->threshold, total_steps, current_step);
 
-    buf.update_preview = FALSE;
-    gimp_set_data("plug_in_unsharp_mask", &buf, sizeof(buf)); 
+    gimp_set_data("plug-in-unsharp-mask", &buf, sizeof(buf)); 
 
     return 0; /* OK */
 }

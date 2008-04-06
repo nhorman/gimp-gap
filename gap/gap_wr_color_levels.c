@@ -1,4 +1,4 @@
-/* wr_color_levels.c
+/* gap_wr_color_levels.c
  * 2002.Oct.27 hof (Wolfgang Hofer)
  *
  *  Wrapper Plugin for GIMP Color Levels tool
@@ -53,15 +53,15 @@
 #include "gap-intl.h"
 
 /* Defines */
-#define PLUG_IN_NAME        "plug_in_wr_color_levels"
+#define PLUG_IN_NAME        "plug-in-wr-color-levels"
 #define PLUG_IN_IMAGE_TYPES "RGB*, GRAY*"
 #define PLUG_IN_AUTHOR      "Wolfgang Hofer (hof@gimp.org)"
 #define PLUG_IN_COPYRIGHT   "Wolfgang Hofer"
 #define PLUG_IN_DESCRIPTION "Wrapper call for GIMP Levels Color Tool"
 
-#define PLUG_IN_ITER_NAME       "plug_in_wr_color_levels_Iterator"
-#define PLUG_IN_DATA_ITER_FROM  "plug_in_wr_color_levels_ITER_FROM"
-#define PLUG_IN_DATA_ITER_TO    "plug_in_wr_color_levels_ITER_TO"
+#define PLUG_IN_ITER_NAME       "plug-in-wr-color-levels-Iterator"
+#define PLUG_IN_DATA_ITER_FROM  "plug-in-wr-color-levels-ITER-FROM"
+#define PLUG_IN_DATA_ITER_TO    "plug-in-wr-color-levels-ITER-TO"
 #define PLUG_IN_HELP_ID         "plug-in-wr-color-levels"
 
 

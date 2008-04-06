@@ -23,8 +23,8 @@ gint p_plug_in_CentralReflection_iter_ALT(GimpRunMode run_mode, gint32 total_ste
       return -1;  /* ERROR */ 
     }
 
-    gimp_get_data("plug_in_CentralReflection_ITER_FROM", g_plugin_data_from); 
-    gimp_get_data("plug_in_CentralReflection_ITER_TO",   g_plugin_data_to); 
+    gimp_get_data("plug-in-CentralReflection-ITER-FROM", g_plugin_data_from); 
+    gimp_get_data("plug-in-CentralReflection-ITER-TO",   g_plugin_data_to); 
 
     buf_from = (t_plug_in_CentralReflection_Vals *)&g_plugin_data_from[0]; 
     buf_to   = (t_plug_in_CentralReflection_Vals *)&g_plugin_data_to[0]; 
@@ -37,7 +37,7 @@ gint p_plug_in_CentralReflection_iter_ALT(GimpRunMode run_mode, gint32 total_ste
     p_delta_gint(&buf.use_antialias, buf_from->use_antialias, buf_to->use_antialias, total_steps, current_step);
     p_delta_gint(&buf.flip, buf_from->flip, buf_to->flip, total_steps, current_step);
 
-    gimp_set_data("plug_in_CentralReflection", &buf, sizeof(buf)); 
+    gimp_set_data("plug-in-CentralReflection", &buf, sizeof(buf)); 
 
     return 0; /* OK */
 }

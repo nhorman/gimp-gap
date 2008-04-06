@@ -43,41 +43,8 @@ void    gap_story_attw_range_playback(GapStbAttrWidget *attw, gint32 begin_frame
             , gint32 end_frame);
 void    gap_story_dlg_pw_update_mask_references(GapStbTabWidgets *tabw);
 
+void    gap_story_dlg_spw_section_refresh(GapStbSecpropWidget *spw, GapStorySection *section);
 
-
-GapStoryVideoElem * gap_story_dlg_get_velem(GapStbMainGlobalParams *sgpp
-              ,const char *video_filename
-	      ,gint32 seltrack
-	      ,const char *preferred_decoder
-	      );
-guchar *    gap_story_dlg_fetch_vthumb(GapStbMainGlobalParams *sgpp
-        	   ,const char *video_filename
-		   ,gint32 framenr
-		   ,gint32 seltrack
-	           ,const char *preferred_decoder
-		   , gint32 *th_bpp
-		   , gint32 *th_width
-		   , gint32 *th_height
-		   );
-guchar *    gap_story_dlg_fetch_vthumb_no_store(GapStbMainGlobalParams *sgpp
-              ,const char *video_filename
-	      ,gint32 framenr
-	      ,gint32 seltrack
-	      ,const char *preferred_decoder
-	      , gint32   *th_bpp
-	      , gint32   *th_width
-	      , gint32   *th_height
-	      , gboolean *file_read_flag
-	      , gint32   *video_id
-	      );
-GapVThumbElem * gap_story_dlg_add_vthumb(GapStbMainGlobalParams *sgpp
-			,gint32 framenr
-	                ,guchar *th_data
-			,gint32 th_width
-			,gint32 th_height
-			,gint32 th_bpp
-			,gint32 video_id
-			);
 
 void  gap_story_dlg_recreate_tab_widgets(GapStbTabWidgets *tabw
 				  ,GapStbMainGlobalParams *sgpp
@@ -86,6 +53,7 @@ void  gap_story_dlg_render_default_icon(GapStoryElem *stb_elem, GapPView   *pv_p
 void  gap_story_dlg_tabw_update_frame_label (GapStbTabWidgets *tabw
                            , GapStbMainGlobalParams *sgpp
                            );
+void  gap_story_dlg_tabw_undo_redo_sensitivity(GapStbTabWidgets *tabw);
 
 guchar * gap_story_dlg_fetch_videoframe(GapStbMainGlobalParams *sgpp
                    , const char *gva_videofile
@@ -97,6 +65,10 @@ guchar * gap_story_dlg_fetch_videoframe(GapStbMainGlobalParams *sgpp
                    , gint32 *th_width
                    , gint32 *th_height
                    , gboolean do_scale
+                   );
+GapStoryBoard * gap_story_dlg_tabw_get_stb_ptr (GapStbTabWidgets *tabw);
+void            gap_story_dlg_update_edit_settings(GapStoryBoard *stb
+                   , GapStbTabWidgets *tabw
                    );
 
 #endif

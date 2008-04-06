@@ -22,8 +22,8 @@ gint p_plug_in_randomize_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdou
       return -1;  /* ERROR */ 
     }
 
-    gimp_get_data("plug_in_randomize_ITER_FROM", g_plugin_data_from); 
-    gimp_get_data("plug_in_randomize_ITER_TO",   g_plugin_data_to); 
+    gimp_get_data("plug-in-randomize-ITER-FROM", g_plugin_data_from); 
+    gimp_get_data("plug-in-randomize-ITER-TO",   g_plugin_data_to); 
 
     buf_from = (t_plug_in_randomize_Vals *)&g_plugin_data_from[0]; 
     buf_to   = (t_plug_in_randomize_Vals *)&g_plugin_data_to[0]; 
@@ -33,7 +33,7 @@ gint p_plug_in_randomize_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdou
     p_delta_gdouble(&buf.rndm_pct, buf_from->rndm_pct, buf_to->rndm_pct, total_steps, current_step);
     p_delta_gdouble(&buf.rndm_rcount, buf_from->rndm_rcount, buf_to->rndm_rcount, total_steps, current_step);
 
-    gimp_set_data("plug_in_randomize", &buf, sizeof(buf)); 
+    gimp_set_data("plug-in-randomize", &buf, sizeof(buf)); 
 
     return 0; /* OK */
 }

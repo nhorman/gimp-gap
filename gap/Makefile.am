@@ -19,6 +19,9 @@ GAPVIDEOAPI = $(top_builddir)/libgapvidapi/libgapvidapi.a  $(GAPVIDEOAPI_EXTLIBS
 INC_GAPVIDEOAPI = -I$(top_srcdir)/libgapvidapi $(GAPVIDEOAPI_EXTINCS)
 endif
 
+LIBGAPBASE  = $(top_builddir)/libgapbase/libgapbase.a
+INC_LIBGAPBASE = -I$(top_srcdir)/libgapbase
+
 LIBGIMPGAP = libgimpgap.a
 
 LIBGAPSTORY = libgapstory.a
@@ -67,6 +70,8 @@ libgimpgap_a_SOURCES = $(BASE_SOURCES)
 
 
 libgapstory_a_SOURCES = $(BASE_SOURCES)	\
+	gap_fmac_name.c		\
+	gap_fmac_name.h		\
 	gap_story_file.h		\
 	gap_story_file.c		\
 	gap_story_render_types.h	\
@@ -84,14 +89,16 @@ libexec_PROGRAMS = \
 	gap_plugins		\
 	gap_filter		\
 	gap_fmac		\
+	gap_fmac_varying	\
 	$(GAP_FRONTENDS)	\
-        gap_morph		\
+	gap_morph		\
 	gap_name2layer		\
 	gap_navigator_dialog	\
 	gap_player		\
-        gap_onion		\
-        gap_storyboard		\
-        gap_video_extract	\
+	gap_onion		\
+	gap_storyboard		\
+	gap_video_extract	\
+	gap_video_index		\
 	gap_wr_color_curve	\
 	gap_wr_color_levels	\
 	gap_wr_color_huesat	\
@@ -166,6 +173,25 @@ gap_fmac_SOURCES = \
 	gap_fmac_main.c	\
 	gap_filter_pdb.c	\
 	gap_filter_pdb.h	\
+	gap_fmac_name.c		\
+	gap_fmac_name.h		\
+	gap_fmac_base.c		\
+	gap_fmac_base.h		\
+	gap_lastvaldesc.c	\
+	gap_lastvaldesc.h	\
+	gap_libgimpgap.h	
+
+gap_fmac_varying_SOURCES = \
+	gap_filter.h		\
+	gap_filter_iterators.c	\
+	gap_filter_iterators.h	\
+	gap_fmac_varying_main.c	\
+	gap_filter_pdb.c	\
+	gap_filter_pdb.h	\
+	gap_fmac_name.c		\
+	gap_fmac_name.h		\
+	gap_fmac_base.c		\
+	gap_fmac_base.h		\
 	gap_lastvaldesc.c	\
 	gap_lastvaldesc.h	\
 	gap_libgimpgap.h	
@@ -229,6 +255,13 @@ gap_storyboard_SOURCES = \
 	gap_story_main.h	\
 	gap_story_dialog.c	\
 	gap_story_dialog.h	\
+	gap_story_undo.c	\
+	gap_story_undo.h	\
+	gap_story_undo_types.h	\
+	gap_story_vthumb.c	\
+	gap_story_vthumb.h	\
+	gap_story_section_properties.c	\
+	gap_story_section_properties.h	\
 	gap_story_properties.c	\
 	gap_story_properties.h	\
 	gap_story_att_trans_dlg.c \
@@ -253,6 +286,12 @@ gap_video_extract_SOURCES = \
 	gap_player_dialog.h	\
 	gap_player_cache.c	\
 	gap_player_cache.h	\
+	gap_libgapstory.h	\
+	gap_libgimpgap.h	
+
+
+gap_video_index_SOURCES = \
+	gap_video_index_creator.c	\
 	gap_libgapstory.h	\
 	gap_libgimpgap.h	
 
@@ -292,6 +331,7 @@ AM_CPPFLAGS = \
 INCLUDES = \
 	-I$(top_srcdir)	\
 	-I$(top_srcdir)/libwavplayclient	\
+	$(INC_LIBGAPBASE)	\
 	$(INC_GAPVIDEOAPI)	\
 	$(GIMP_CFLAGS)	\
 	-I$(includedir)
@@ -302,23 +342,25 @@ AM_LDFLAGS = $(mwindows)
 LDADD = $(GIMP_LIBS)
 
 
-gap_bluebox_LDADD =          $(LIBGIMPGAP) $(GIMP_LIBS)
-gap_plugins_LDADD =          $(LIBGIMPGAP) $(GIMP_LIBS)
-gap_filter_LDADD =           $(LIBGIMPGAP) $(GIMP_LIBS)
-gap_fmac_LDADD =             $(LIBGIMPGAP) $(GIMP_LIBS)
-gap_frontends_LDADD =        $(LIBGIMPGAP) $(GIMP_LIBS)
-gap_morph_LDADD =            $(LIBGIMPGAP) $(GIMP_LIBS)
-gap_name2layer_LDADD =       $(LIBGIMPGAP) $(GIMP_LIBS)
-gap_navigator_dialog_LDADD = $(LIBGIMPGAP) $(GIMP_LIBS)
-gap_player_LDADD =           $(GAPVIDEOAPI) $(WAVPLAYCLIENT) ${LIBGAPSTORY} $(GIMP_LIBS)
-gap_onion_LDADD =            $(LIBGIMPGAP) $(GIMP_LIBS)
-gap_storyboard_LDADD =       $(GAPVIDEOAPI) $(WAVPLAYCLIENT) ${LIBGAPSTORY} $(GIMP_LIBS)
-gap_video_extract_LDADD =    $(GAPVIDEOAPI) $(WAVPLAYCLIENT) ${LIBGAPSTORY} $(GIMP_LIBS)
-gap_wr_opacity_LDADD =       $(LIBGIMPGAP) $(GIMP_LIBS)
-gap_wr_trans_LDADD =         $(LIBGIMPGAP) $(GIMP_LIBS)
-gap_wr_color_curve_LDADD =   $(LIBGIMPGAP) $(GIMP_LIBS)
-gap_wr_color_levels_LDADD =  $(LIBGIMPGAP) $(GIMP_LIBS)
-gap_wr_color_huesat_LDADD =  $(LIBGIMPGAP) $(GIMP_LIBS)
+gap_plugins_LDADD =          $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
+gap_bluebox_LDADD =          $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
+gap_filter_LDADD =           $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
+gap_fmac_LDADD =             $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
+gap_fmac_varying_LDADD =     $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
+gap_frontends_LDADD =        $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
+gap_morph_LDADD =            $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
+gap_name2layer_LDADD =       $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
+gap_navigator_dialog_LDADD = $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
+gap_player_LDADD =           $(GAPVIDEOAPI) $(LIBGAPBASE) $(WAVPLAYCLIENT) ${LIBGAPSTORY} $(GIMP_LIBS)
+gap_onion_LDADD =            $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
+gap_storyboard_LDADD =       $(GAPVIDEOAPI) $(LIBGAPBASE) $(WAVPLAYCLIENT) ${LIBGAPSTORY} $(GIMP_LIBS)
+gap_video_extract_LDADD =    $(GAPVIDEOAPI) $(LIBGAPBASE) $(WAVPLAYCLIENT) ${LIBGAPSTORY} $(GIMP_LIBS)
+gap_video_index_LDADD =      $(GAPVIDEOAPI) $(LIBGAPBASE) $(LIBGAPSTORY)  $(GIMP_LIBS)
+gap_wr_opacity_LDADD =       $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
+gap_wr_trans_LDADD =         $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
+gap_wr_color_curve_LDADD =   $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
+gap_wr_color_levels_LDADD =  $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
+gap_wr_color_huesat_LDADD =  $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
 
 EXTRA_DIST = \
 	README							\

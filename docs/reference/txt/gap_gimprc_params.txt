@@ -40,7 +40,7 @@ If you edit gimprc files by hand, you must do this before you startup GIMP.
 # the gap video API keeps an internal cache for
 # the specified number of frames at read access from
 # videofiles.
-(video-max-frames-keep-cached 500)
+(video-max-frames-keep-cached 50)
 
 
 # the gap player supports caching of frames
@@ -72,8 +72,13 @@ If you edit gimprc files by hand, you must do this before you startup GIMP.
 # and enable fast and frame exact random access to frames in a videofile.
 # if gimp-gap should create such files automatically when needed
 # you should configure the value "yes".
+# 
 # if you want gimp-gap to ask each time before creating videoindex file
-# then configure value "ask"
+# then configure value "ask".
+# if you want GIMP_GAP to ask even in case where creating a videoindex is not required
+# because native timecodebased seek works, then configure "ask-always".
+# Note: the "ask-always" setting is rather annoying for productive usage, but
+# useful for testing and development purpose.
 # (ask is the default when nothing is configured)
 # if gimp-gap should not create such videoindex files at all
 # configure value "no"
@@ -136,6 +141,7 @@ If you edit gimprc files by hand, you must do this before you startup GIMP.
 (video-save-flattened-gif    "no")
 
 
+
 # video storyboard layout options
 # --------------------------------
 # layout options for the storyboard dialog including
@@ -154,3 +160,79 @@ If you edit gimprc files by hand, you must do this before you startup GIMP.
 (video-cliplist-thumbnail_size      "medium")
 (video-cliplist-columns             "12")
 (video-cliplist-rows                "2")
+
+# force storyboard clip playbacks to the aspect defined
+# in the storyboard file properties.
+# if turned off plaback clips according to their original pixelsize.
+(video-storyboard-force-aspect-playback "yes")
+
+
+# the video-libavformat-seek-gopsize parameter
+# enables native (fast) seek operations in the ffmeg (libavformat) 
+# video read access api.
+# values <= 0 disables native seek operations.
+# values > 4 define how many frames shall be sequentially read
+# after seek operation. 
+# For some videofiles libavformat positioning
+# to keyframe seems not to work properly. This will result
+# in some trash frames when positioning to B or P frame, because
+# the related keyframe required for proper decoding may be skiped
+# by the seek operation.
+# If you get trashed frames after seek operations you may
+# increase the video-libavformat-seek-gopsize parameter
+# (values upto 128 can make sense). Note that a high value
+# increases the chance to pre-read the releated keyframe and fixes
+# the problem with trashed frames, but makes seek significantly slower.
+#
+# libavformat native seek operates timecode based while gimp-gap
+# operates frame number based. therefore positioning via native seek
+# may deliver wrong frame positions for videos with individual timing
+# per frame. For frame exact operation on such (rare) videofiles
+# you should disable native seek by setting the video-libavformat-seek-gopsize
+# parameter to 0 and let gimp-gap create a videoindex.
+# (videoindex creation requires in initial full scann of the video,
+# but offers exact positioning. positioning via vidoeindex is slower than native seek)
+# 
+# an internal default value of 8 is used if no other value is configured.
+# (this should be OK for most videofiles, if you work with mpeg2 dvd stuff
+# .vob files, a value of 4 shall be enough and give optimal positioning performace)
+#
+(video-libavformat-seek-gopsize "8")
+
+
+# The gimprc parameter video-libavformat-timecodelog
+# triggers additional timecode logging at video index creation
+# it creates a logfile with same name as the videoindex + ".timelog"
+#
+# The gimprc parameter video-libavformat-timecodelog
+# defaults to "0" where no .timelog file is written.
+# *.timelog files are useful for developers 
+# to analyze and verify native timcode based
+# seek operations. *.timelog files contain timecodes and stepsize differences
+# for each frame of the analyzed video and CRITICAL warnings where
+# variable or non-plausible timecodes were detected.
+#
+(video-libavformat-timecodelog "1")
+
+# (video-gva-libavformat-video-analyse-persistent "yes")
+# the ffmpeg video access api performs
+# analyses on videofiles to detect parameters that
+# are required for fast native timecodebased seek
+# access and to detect if seek support generally works for a videofile.
+# This analyse is normally triggered at the 1st seek attempt
+# and takes some time (usually less than 10 secs) because probereads
+# and seek tests are performed.
+# If the parameter 
+# video-gva-libavformat-video-analyse-persistent
+# is set to value "yes" the results of the analyse is saved to
+# a file (located in gimprc subdirectory gvaindexes)
+# If the same video is opened another time, the analyse can be skipped
+# if the required parameters can be successfully fetched from the file.
+# (if the video file was modified since creation of the analyse result
+# file the fetched parameters are not used and analyse is NOT skipped)
+# 
+#
+# Setting this parameter to value "no" ignores
+# anaylse results files (even if they are still valid)
+# 
+(video-gva-libavformat-video-analyse-persistent "yes")

@@ -26,7 +26,7 @@ gint p_plug_in_map_object_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdo
       gint showgrid;
       gint showcaps;
 
-      glong preview_zoom_factor;
+      gdouble zoom;
 
       gdouble alpha,beta,gamma;
       gdouble maxdepth;
@@ -50,8 +50,8 @@ gint p_plug_in_map_object_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdo
       return -1;  /* ERROR */ 
     }
 
-    gimp_get_data("plug_in_map_object_ITER_FROM", &buf_from); 
-    gimp_get_data("plug_in_map_object_ITER_TO",   &buf_to); 
+    gimp_get_data("plug-in-map-object-ITER-FROM", &buf_from); 
+    gimp_get_data("plug-in-map-object-ITER-TO",   &buf_to); 
     memcpy(&buf, &buf_from, sizeof(buf));
 
     p_delta_GimpVector3(&buf.viewpoint, &buf_from.viewpoint, &buf_to.viewpoint, total_steps, current_step);
@@ -97,7 +97,7 @@ gint p_plug_in_map_object_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdo
     buf.transparent_background     =    buf_from.transparent_background;
     buf.tiled                      =    buf_from.tiled;
 
-    gimp_set_data("plug_in_map_object", &buf, sizeof(buf)); 
+    gimp_set_data("plug-in-map-object", &buf, sizeof(buf)); 
 
     return 0; /* OK */
 }

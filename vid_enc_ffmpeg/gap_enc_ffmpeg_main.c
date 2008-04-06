@@ -1463,6 +1463,61 @@ p_ffmpeg_open_init(t_ffmpeg_handle *ffh, GapGveFFMpegGlobalParams *gpp)
 
 }  /* end p_ffmpeg_open_init */
 
+
+/* -----------------------------
+ * p_set_timebase_from_framerate
+ * -----------------------------
+ * set the specified framerate (frames per second)
+ * in the ffmpeg typical AVRational struct.
+ *
+ * 25 frames per second shall be encoded ad num = 25, den = 1
+ * typedef struct AVRational{
+ *     int num; ///< numerator
+ *     int den; ///< denominator
+ * } AVRational;
+ */
+static void
+p_set_timebase_from_framerate(AVRational *time_base, gdouble framerate)
+{
+  gdouble truncatedFramerate;
+
+  time_base->num = 1;
+  time_base->den = framerate;
+
+  truncatedFramerate = time_base->den;
+  if((framerate - truncatedFramerate) != 0.0)
+  {
+    time_base->num = DEFAULT_FRAME_RATE_BASE;
+    time_base->den = framerate * DEFAULT_FRAME_RATE_BASE;
+  }
+
+
+
+  /* due to rounding errors, some typical framerates would be
+   * rejected by newer libavcodec encoders.
+   * therefore adjust those values to exact expected values of the codecs.
+   */
+  if ((framerate > 59.90) && (framerate < 59.99))
+  {
+    time_base->num = 1001;
+    time_base->den = 60000;
+  
+  }
+  if ((framerate > 29.90) && (framerate < 29.99))
+  {
+    time_base->num = 1001;
+    time_base->den = 30000;
+  
+  }
+  if ((framerate > 23.90) && (framerate < 23.99))
+  {
+    time_base->num = 1001;
+    time_base->den = 24000;
+  
+  }
+
+}  /* end p_set_timebase_from_framerate */
+
 /* ------------------
  * p_init_video_codec
  * ------------------
@@ -1522,7 +1577,7 @@ p_init_video_codec(t_ffmpeg_handle *ffh
 
 
   /* set Video codec context */
-  ffh->vst[ii].vid_codec_context = &ffh->vst[ii].vid_stream->codec;
+  ffh->vst[ii].vid_codec_context = ffh->vst[ii].vid_stream->codec;
 
   /* some formats need to know about the coded_frame
    * and get the information from the AVCodecContext coded_frame Pointer
@@ -1537,8 +1592,22 @@ p_init_video_codec(t_ffmpeg_handle *ffh
 
   video_enc->bit_rate = epp->video_bitrate * 1000;
   video_enc->bit_rate_tolerance = epp->bitrate_tol * 1000;
-  video_enc->frame_rate_base = DEFAULT_FRAME_RATE_BASE;
-  video_enc->frame_rate = gpp->val.framerate * DEFAULT_FRAME_RATE_BASE;
+
+  p_set_timebase_from_framerate(&video_enc->time_base, gpp->val.framerate);
+
+  //if (gap_debug)
+  {
+    printf("VCODEC:  time_base.num :%d  time_base.den:%d    float:%f\n"
+           "            AV_TIME_BASE: %d  DEFAULT_FRAME_RATE_BASE: %d\n"
+      , video_enc->time_base.num
+      , video_enc->time_base.den
+      , (float)gpp->val.framerate
+      , (int)AV_TIME_BASE
+      , (int)DEFAULT_FRAME_RATE_BASE
+      );
+  }
+
+
   video_enc->width = gpp->val.vid_width;
   video_enc->height = gpp->val.vid_height;
 
@@ -2034,7 +2103,7 @@ p_init_and_open_audio_codec(t_ffmpeg_handle *ffh
 #else
         ffh->ast[ii].aud_stream = av_new_stream(ffh->output_context, ast_index /* aud_stream_index */ );
 #endif
-        ffh->ast[ii].aud_codec_context = &ffh->ast[ii].aud_stream->codec;
+        ffh->ast[ii].aud_codec_context = ffh->ast[ii].aud_stream->codec;
 
         /* set codec context */
         /*  ffh->ast[ii].aud_codec_context = avcodec_alloc_context();*/
@@ -2235,12 +2304,12 @@ p_ffmpeg_open(GapGveFFMpegGlobalParams *gpp
    */
   ffh->ap->sample_rate = awp->awk[0].sample_rate;
   ffh->ap->channels = awp->awk[0].channels;
-  ffh->ap->frame_rate_base = DEFAULT_FRAME_RATE_BASE;
-  ffh->ap->frame_rate = gpp->val.framerate * DEFAULT_FRAME_RATE_BASE;
+  
+  p_set_timebase_from_framerate(&ffh->ap->time_base, gpp->val.framerate);
+
   ffh->ap->width = gpp->val.vid_width;
   ffh->ap->height = gpp->val.vid_height;
 
-  ffh->ap->image_format = NULL;
   ffh->ap->pix_fmt = PIX_FMT_YUV420P;
 
   /* tv standard, NTSC, PAL, SECAM */
@@ -2357,9 +2426,6 @@ p_ffmpeg_write_frame_chunk(t_ffmpeg_handle *ffh, gint32 encoded_size, gint vid_t
   {
     if(gap_debug)  printf("before av_write_frame  encoded_size:%d\n", (int)encoded_size );
 
-#ifdef HAVE_OLD_FFMPEG_0408
-    ret = av_write_frame(ffh->output_context, ffh->vst[ii].video_stream_index, ffh->vst[ii].video_buffer, encoded_size);
-#else
     {
       AVPacket pkt;
       av_init_packet (&pkt);
@@ -2441,7 +2507,7 @@ p_ffmpeg_write_frame_chunk(t_ffmpeg_handle *ffh, gint32 encoded_size, gint vid_t
       pkt.size = encoded_size;
       ret = av_write_frame(ffh->output_context, &pkt);
     }
-#endif
+
     if(gap_debug)  printf("after av_write_frame  encoded_size:%d\n", (int)encoded_size );
   }
 
@@ -2588,13 +2654,10 @@ p_ffmpeg_write_frame(t_ffmpeg_handle *ffh, gboolean force_keyframe, gint vid_tra
     /* if zero size, it means the image was buffered */
     if(encoded_size != 0)
     {
-      if(gap_debug)  printf("before av_write_frame  encoded_size:%d\n", (int)encoded_size );
-#ifdef HAVE_OLD_FFMPEG_0408
-      ret = av_write_frame(ffh->output_context
-                         , ffh->vst[ii].video_stream_index
-                         , ffh->vst[ii].video_buffer
-                         , encoded_size);
-#else
+      if(gap_debug)
+      {
+        printf("before av_write_frame  encoded_size:%d\n", (int)encoded_size );
+      }
       {
 	AVPacket pkt;
 	av_init_packet (&pkt);
@@ -2619,7 +2682,6 @@ p_ffmpeg_write_frame(t_ffmpeg_handle *ffh, gboolean force_keyframe, gint vid_tra
 	  printf("after av_write_frame  encoded_size:%d\n", (int)encoded_size );
 	}
       }
-#endif
     }
   }
 
@@ -2666,9 +2728,8 @@ p_ffmpeg_write_audioframe(t_ffmpeg_handle *ffh, guchar *audio_buf, int frame_byt
     encoded_size = avcodec_encode_audio(ffh->ast[ii].aud_codec_context
                            ,ffh->ast[ii].audio_buffer, ffh->ast[ii].audio_buffer_size
                            ,(short *)audio_buf);
-#ifdef HAVE_OLD_FFMPEG_0408
-    ret = av_write_frame(ffh->ast[ii].output_context, ffh->ast[ii].audio_stream_index, ffh->ast[ii].audio_buffer, encoded_size);
-#else
+
+
     {
       AVPacket pkt;
       av_init_packet (&pkt);
@@ -2683,11 +2744,34 @@ p_ffmpeg_write_audioframe(t_ffmpeg_handle *ffh, guchar *audio_buf, int frame_byt
 
       if(gap_debug)  printf("after av_write_frame  encoded_size:%d\n", (int)encoded_size );
     }
-#endif
   }
   return(ret);
 }  /* end p_ffmpeg_write_audioframe */
 
+
+
+/* ---------------
+ * my_url_fclose
+ * ---------------
+ * this procedure is a workaround that fixes a crash that happens on attempt to call the original
+ * url_fclose procedure 
+ * my private copy of (libavformat/aviobuf.c url_fclose)
+ * just skips the crashing step "av_free(s);"  that frees up the ByteIOContext itself
+ * (free(): invalid pointer: 0x0859f3b0)
+ */
+int 
+my_url_fclose(ByteIOContext *s)
+{
+    URLContext *h = s->opaque;
+
+    av_free(s->buffer);
+
+//printf("before av_free s\n");
+//    av_free(s);                  // ## crash happens here
+//printf("after av_free s\n");
+
+    return url_close(h);
+}
 
 /* ---------------
  * p_ffmpeg_close
@@ -2700,6 +2784,11 @@ p_ffmpeg_close(t_ffmpeg_handle *ffh)
 {
   gint ii;
 
+  //if(gap_debug)
+  {
+    printf("free big_picture_codec\n");
+  }
+
   for (ii=0; ii < ffh->max_vst; ii++)
   {
     if(ffh->vst[ii].big_picture_codec)
@@ -2708,19 +2797,34 @@ p_ffmpeg_close(t_ffmpeg_handle *ffh)
       ffh->vst[ii].big_picture_codec = NULL;
     }
   }
+  //if(gap_debug)
+  {
+    printf("Closing VIDEO stuff\n");
+  }
 
   if(ffh->output_context)
   {
-    /* ?? TODO check if should close the code first ?? */
+    /* write the trailer if needed and close file */
     av_write_trailer(ffh->output_context);
-    url_fclose(&ffh->output_context->pb);
+    //if(gap_debug)
+    {
+      printf("after av_write_trailer\n");
+    }
   }
 
   for (ii=0; ii < ffh->max_vst; ii++)
   {
     if(ffh->vst[ii].vid_codec_context)
     {
+      //if(gap_debug)
+      {
+        printf("[%d] before avcodec_close\n", ii);
+      }
       avcodec_close(ffh->vst[ii].vid_codec_context);
+      //if(gap_debug)
+      {
+        printf("[%d] after avcodec_close\n", ii);
+      }
       ffh->vst[ii].vid_codec_context = NULL;
       /* do not attempt to free ffh->vst[ii].vid_codec_context (it points to ffh->vst[ii].vid_stream->codec) */
     }
@@ -2734,27 +2838,63 @@ p_ffmpeg_close(t_ffmpeg_handle *ffh)
 
     if(ffh->vst[ii].video_buffer)
     {
+       //if(gap_debug)
+       {
+         printf("[%d] before g_free video_buffer\n", ii);
+       }
        g_free(ffh->vst[ii].video_buffer);
        ffh->vst[ii].video_buffer = NULL;
+       //if(gap_debug)
+       {
+         printf("[%d] after g_free video_buffer\n", ii);
+       }
     }
     if(ffh->vst[ii].video_dummy_buffer)
     {
+       //if(gap_debug)
+       {
+         printf("[%d] before g_free video_dummy_buffer\n", ii);
+       }
        g_free(ffh->vst[ii].video_dummy_buffer);
        ffh->vst[ii].video_dummy_buffer = NULL;
+       //if(gap_debug)
+       {
+         printf("[%d] after g_free video_dummy_buffer\n", ii);
+       }
     }
     if(ffh->vst[ii].yuv420_buffer)
     {
+       //if(gap_debug)
+       {
+         printf("[%d] before g_free yuv420_buffer\n", ii);
+       }
        g_free(ffh->vst[ii].yuv420_buffer);
        ffh->vst[ii].yuv420_buffer = NULL;
+       //if(gap_debug)
+       {
+         printf("[%d] after g_free yuv420_buffer\n", ii);
+       }
     }
     if(ffh->vst[ii].yuv420_dummy_buffer)
     {
+       //if(gap_debug)
+       {
+         printf("[%d] before g_free yuv420_dummy_buffer\n", ii);
+       }
        g_free(ffh->vst[ii].yuv420_dummy_buffer);
        ffh->vst[ii].yuv420_dummy_buffer = NULL;
+       //if(gap_debug)
+       {
+         printf("[%d] after g_free yuv420_dummy_buffer\n", ii);
+       }
     }
 
   }
-
+ 
+  //if(gap_debug)
+  {
+    printf("Closing AUDIO stuff\n");
+  }
 
   for (ii=0; ii < ffh->max_ast; ii++)
   {
@@ -2771,6 +2911,27 @@ p_ffmpeg_close(t_ffmpeg_handle *ffh)
        ffh->ast[ii].audio_buffer = NULL;
     }
   }
+
+  if(ffh->output_context)
+  {
+    if (!(ffh->output_context->oformat->flags & AVFMT_NOFILE))
+    {
+      //if(gap_debug)
+      {
+        printf("before url_fclose\n");
+      }
+      my_url_fclose(&ffh->output_context->pb);
+      //if(gap_debug)
+      {
+        printf("after url_fclose\n");
+      }
+    }
+    else
+    {
+        printf("SKIP url_fclose (AVFMT_NOFILE)\n");
+    }
+  }
+
 
 }  /* end p_ffmpeg_close */
 
@@ -2814,7 +2975,7 @@ p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
   l_cnt_reused_frames = 0;
   p_init_audio_workdata(awp);
 
-  if(gap_debug)
+  //if(gap_debug)
   {
      printf("p_ffmpeg_encode: START\n");
      printf("  videoname: %s\n", gpp->val.videoname);
@@ -2915,7 +3076,10 @@ p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
     /* must fetch the frame into gimp_image  */
     /* load the current frame image, and transform (flatten, convert to RGB, scale, macro, etc..) */
 
-    if(gap_debug) printf("\nFFenc: before gap_gve_story_fetch_composite_image_or_chunk\n");
+    if(gap_debug)
+    {
+      printf("\nFFenc: before gap_gve_story_fetch_composite_image_or_chunk\n");
+    }
 
     l_fetch_ok = gap_gve_story_fetch_composite_image_or_chunk(l_vidhand
                                            , l_cur_frame_nr
@@ -2934,7 +3098,13 @@ p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
 					   , l_max_master_frame_nr
                                            );
 
-    if(gap_debug) printf("\nFFenc: after gap_gve_story_fetch_composite_image_or_chunk image_id:%d layer_id:%d\n", (int)l_tmp_image_id , (int) l_layer_id);
+    //if(gap_debug)
+    {
+      printf("\nFFenc: after gap_gve_story_fetch_composite_image_or_chunk image_id:%d layer_id:%d\n"
+        , (int)l_tmp_image_id 
+        , (int) l_layer_id
+        );
+    }
 
     /* this block is done foreach handled video frame */
     if(l_fetch_ok)
@@ -2956,7 +3126,7 @@ p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
         l_cnt_encoded_frames++;
         l_drawable = gimp_drawable_get (l_layer_id);
 
-	if (gap_debug)
+	//if (gap_debug)
 	{
 	  printf("DEBUG: %s encoding frame %d\n"
 	        , epp->vcodec_name
@@ -3023,11 +3193,28 @@ p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
 
   if(ffh != NULL)
   {
+    //if(gap_debug)
+    {
+      printf("before: p_ffmpeg_close\n");
+    }
     p_ffmpeg_close(ffh);
+    //if(gap_debug)
+    {
+      printf("after: p_ffmpeg_close\n");
+    }
     g_free(ffh);
   }
 
+  //if(gap_debug)
+  {
+    printf("before: p_close_audio_input_files\n");
+  }
+
   p_close_audio_input_files(awp);
+  //if(gap_debug)
+  {
+    printf("after: p_close_audio_input_files\n");
+  }
 
   if(l_vidhand)
   {

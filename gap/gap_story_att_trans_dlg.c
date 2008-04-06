@@ -40,6 +40,7 @@
 #include <libgimp/gimpui.h>
 
 #include "gap_story_main.h"
+#include "gap_story_undo.h"
 #include "gap_story_dialog.h"
 #include "gap_story_file.h"
 #include "gap_story_att_trans_dlg.h"
@@ -86,6 +87,9 @@ static void     p_attw_prop_response(GtkWidget *widget
                   , gint       response_id
                   , GapStbAttrWidget *attw
                   );
+
+static void     p_attw_push_undo_and_set_unsaved_changes(GapStbAttrWidget *attw);
+
 static void     p_attw_prop_reset_all(GapStbAttrWidget *attw);
 static void     p_playback_effect_range(GapStbAttrWidget *attw);
 static void     p_attw_timer_job(GapStbAttrWidget *attw);
@@ -268,6 +272,36 @@ p_attw_prop_response(GtkWidget *widget
   }
 }  /* end p_attw_prop_response */
 
+/* --------------------------------------
+ * p_attw_push_undo_and_set_unsaved_changes
+ * --------------------------------------
+ * this procedure is called in most cases when
+ * a transition attribute property has changed.
+ * (note that the Undo push implementation filter out
+ * multiple attribute property changes on the same object in sequence)
+ */
+static void
+p_attw_push_undo_and_set_unsaved_changes(GapStbAttrWidget *attw)
+{
+  if(attw != NULL)
+  {
+    if((attw->stb_elem_refptr != NULL) && (attw->stb_refptr != NULL))
+    {
+      gap_stb_undo_push_clip(attw->tabw
+          , GAP_STB_FEATURE_PROPERTIES_TRANSITION
+          , attw->stb_elem_refptr->story_id
+          );
+
+      attw->stb_refptr->unsaved_changes = TRUE;
+      if(attw->stb_refptr->active_section != NULL)
+      {
+        attw->stb_refptr->active_section->version++;
+      }
+    
+    }
+  }
+}  /* end p_attw_push_undo_and_set_unsaved_changes */
+
 
 /* ---------------------------------
  * p_attw_prop_reset_all
@@ -283,7 +317,8 @@ p_attw_prop_reset_all(GapStbAttrWidget *attw)
   {
     if(attw->stb_elem_refptr)
     {
-      attw->stb_refptr->unsaved_changes = TRUE;
+      p_attw_push_undo_and_set_unsaved_changes(attw);
+      
       gap_story_elem_copy(attw->stb_elem_refptr, attw->stb_elem_bck);
 
       comment_set = FALSE;
@@ -548,6 +583,7 @@ p_attw_start_button_clicked_callback(GtkWidget *widget
     {
       gdouble attr_value;
 
+      p_attw_push_undo_and_set_unsaved_changes(attw);
       attr_value = CONVERT_TO_100PERCENT * p_get_default_attribute(attw
                         , bevent
                         , att_type_idx
@@ -578,6 +614,7 @@ p_attw_end_button_clicked_callback(GtkWidget *widget
     {
       gdouble attr_value;
 
+      p_attw_push_undo_and_set_unsaved_changes(attw);
       attr_value = CONVERT_TO_100PERCENT * p_get_default_attribute(attw
                         , bevent
                         , att_type_idx
@@ -604,6 +641,7 @@ p_copy_duration_to_all(gint32 duration, GapStbAttrWidget *attw)
   {
     gint ii;
     
+    p_attw_push_undo_and_set_unsaved_changes(attw);
     for(ii = 0; ii < GAP_STB_ATT_TYPES_ARRAY_MAX; ii++)
     {
       if(attw->stb_elem_refptr->att_arr_enable[ii] == TRUE)
@@ -631,6 +669,7 @@ p_attw_overlap_dur_button_clicked_callback(GtkWidget *widget
     {
       gint32 duration;
 
+      p_attw_push_undo_and_set_unsaved_changes(attw);
       duration = attw->stb_elem_refptr->att_overlap;
       p_copy_duration_to_all(duration, attw);
 
@@ -657,6 +696,7 @@ p_attw_dur_button_clicked_callback(GtkWidget *widget
     {
       gint32 duration;
 
+      p_attw_push_undo_and_set_unsaved_changes(attw);
       duration = attw->stb_elem_refptr->att_arr_value_dur[att_type_idx];
       p_copy_duration_to_all(duration, attw);
 
@@ -696,8 +736,8 @@ p_attw_gdouble_adjustment_callback(GtkObject *obj, gdouble *val)
       }
       if(l_val != *val)
       {
+        p_attw_push_undo_and_set_unsaved_changes(attw);
         *val = l_val;
-        attw->stb_refptr->unsaved_changes = TRUE;
         p_attw_update_properties(attw);
       }
     }
@@ -748,8 +788,8 @@ p_attw_duration_adjustment_callback(GtkObject *obj, gint32 *val)
       }
       if(l_val != *val)
       {
+        p_attw_push_undo_and_set_unsaved_changes(attw);
         *val = l_val;
-        attw->stb_refptr->unsaved_changes = TRUE;
         p_duration_dependent_refresh(attw);
       }
     }
@@ -772,7 +812,7 @@ p_attw_enable_toggle_update_callback(GtkWidget *widget, gboolean *val)
   {
     if(attw->stb_elem_refptr)
     {
-      attw->stb_refptr->unsaved_changes = TRUE;
+      p_attw_push_undo_and_set_unsaved_changes(attw);
 
       if (GTK_TOGGLE_BUTTON (widget)->active)
       {
@@ -805,7 +845,7 @@ p_attw_auto_update_toggle_update_callback(GtkWidget *widget, gboolean *val)
   {
     if(attw->stb_elem_refptr)
     {
-      attw->stb_refptr->unsaved_changes = TRUE;
+      p_attw_push_undo_and_set_unsaved_changes(attw);
 
       if (GTK_TOGGLE_BUTTON (widget)->active)
       {
@@ -1709,8 +1749,10 @@ p_orig_layer_frame_fetcher(GapStbAttrWidget *attw
 
    {
      GapStoryLocateRet *stb_ret;
+     GapStorySection   *section;
 
-     stb_ret = gap_story_locate_expanded_framenr(attw->stb_refptr
+     section = gap_story_find_section_by_stb_elem(attw->stb_refptr, attw->stb_elem_refptr);
+     stb_ret = gap_story_locate_expanded_framenr(section
                                     , master_framenr
                                     , attw->stb_elem_refptr->track
                                     );
@@ -1832,9 +1874,13 @@ p_calc_and_set_display_framenr(GapStbAttrWidget *attw
    gint32     l_framenr;
    gint32     l_prefetch_framenr;
    gint32     l_dsiplay_framenr;
+   GapStorySection   *section;
+
+   section = gap_story_find_section_by_stb_elem(attw->stb_refptr, attw->stb_elem_refptr);
+
 
    /* calculate the absolute frame number for the frame to access */
-   l_framenr_start = gap_story_get_framenr_by_story_id(attw->stb_refptr
+   l_framenr_start = gap_story_get_framenr_by_story_id(section
                                                 ,attw->stb_elem_refptr->story_id
                                                 ,attw->stb_elem_refptr->track
                                                 );
@@ -1887,13 +1933,16 @@ p_create_or_replace_orig_and_opre_layer (GapStbAttrWidget *attw
    gint32     l_framenr_start;
    gint32     l_framenr;
    gint32     l_prefetch_framenr;
+   GapStorySection   *section;
+
+   section = gap_story_find_section_by_stb_elem(attw->stb_refptr, attw->stb_elem_refptr);
 
    /* calculate the absolute expanded frame number for the frame to access
     * (we operate with expanded frame number, where the track overlapping
     * is ignored. this allows access to frames that otherwise were skipped due to
     * overlapping in the shadow track)
     */
-   l_framenr_start = gap_story_get_expanded_framenr_by_story_id(attw->stb_refptr
+   l_framenr_start = gap_story_get_expanded_framenr_by_story_id(section
                                                 ,attw->stb_elem_refptr->story_id
                                                 ,attw->stb_elem_refptr->track
                                                 );
@@ -2028,6 +2077,7 @@ p_fetch_video_frame_as_layer(GapStbMainGlobalParams *sgpp
     }
 
     gimp_drawable_flush (drawable);
+    gimp_drawable_detach(drawable);
     gimp_image_add_layer (image_id,l_new_layer_id, LAYERSTACK_TOP);
   }
 

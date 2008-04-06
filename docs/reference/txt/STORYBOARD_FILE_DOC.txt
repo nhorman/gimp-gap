@@ -1,4 +1,4 @@
-STORYBOARD_FILES           2005.01.26:
+STORYBOARD_FILES           2007.09.05:
 
 
 General
@@ -57,7 +57,7 @@ in the style:
    key:value
 
 if no parametername key prefix is specified the fixed order of items
-is assumed. items must not contain blanks. (except blanks in "qutes strings")
+is assumed. items must not contain blanks. (except blanks in "quoted strings")
 
 
 
@@ -71,28 +71,68 @@ VID_MASTER_FRAMERATE    frames_per_sec:24.0
 VID_MASTER_FRAME_ASPECT width:16 height:9
 VID_MASTER_SIZE         width:320  height:200
 VID_PREFERRED_DECODER   libavformat
+VID_MASTER_LAYERSTACK   track1:Background
 
 AUD_MASTER_VOLUME      volume:1.0
 AUD_MASTER_SAMPLERATE  samples_per_sec:44100
 
-# video frames
-VID_PLAY_MOVIE     track:1  file:"movie_filename"     from:0001  to:0099 mode:{pingpong|normal}\
+# video clip descriptions
+VID_PLAY_MOVIE     track:1  file:"movie_filename"     from:0001  to:0099 \
+                             mode:{pingpong|normal}\
                              nloops:1 \
 	                     seltrack:1 \
                              exactseek:0 \
                              deinterlace:1.0 \
 			     stepsize:1.0 \
+                             macro:"macro_filename" \
+                             flip:n \
+			     mask_name:"maskname" \
+			     mask_anchor:clip \
+			     mask_stepsize:1.0 \
+			     mask_disable:n \
+			     macsteps:1
+
+VID_PLAY_ANIMIMAGE track:1  file:"image_filename"     from:0001 to:0099  \
+                             mode:{pingpong|normal} \
+                             nloops:1 \
+			     stepsize:1.0 \
+			     macro:"macro_filename"
+                             flip:n \
+			     mask_name:"maskname" \
+			     mask_anchor:clip \
+			     mask_stepsize:1.0 \
+			     mask_disable:n \
+			     macsteps:1
+
+VID_PLAY_FRAMES    track:1  base:"basename" ext:.jpg  from:0001 to:0099  \
+                             mode:{pingpong|normal} \
+                             nloops:1 \
+			     stepsize:1.0 \
+			     macro:"macro_filename"
+                             flip:n \
+			     mask_name:"maskname" \
+			     mask_anchor:clip \
+			     mask_stepsize:1.0 \
+			     mask_disable:n \
+			     macsteps:1
+
+VID_PLAY_IMAGE     track:1  file:"image_filename"    nloops:1 \
                              macro:"macro_filename"
-VID_PLAY_ANIMIMAGE track:1  file:"image_filename"     from:0001 to:0099  mode:{pingpong|normal} \
-                             nloops:1 \
-			     stepsize:1.0 \
-			     macro:"macro_filename"
-VID_PLAY_FRAMES    track:1  base:"basename" ext:.jpg  from:0001 to:0099  mode:{pingpong|normal} \
-                             nloops:1 \
-			     stepsize:1.0 \
-			     macro:"macro_filename"
-VID_PLAY_IMAGE     track:1  file:"image_filename"    nloops:1 macro:"macro_filename"
-VID_PLAY_COLOR     track:1  red:0.0 green:1.0 blue:0.0 alpha:1.0   nloops:1
+                             flip:n \
+			     mask_name:"maskname" \
+			     mask_anchor:clip \
+			     mask_stepsize:1.0 \
+			     mask_disable:n \
+			     macsteps:1
+
+VID_PLAY_COLOR     track:1  red:0.0 green:1.0 blue:0.0 alpha:1.0   nloops:1 \
+                             flip:n \
+			     mask_name:"maskname" \
+			     mask_anchor:clip \
+			     mask_stepsize:1.0 \
+			     mask_disable:n \
+			     macsteps:1
+
 VID_SILENCE        track:1                                         nloops:1  wait_until_sec:0.0
 
 # video attributes
@@ -102,9 +142,17 @@ VID_ZOOM_Y         track:1  zoom_y_from:0.1      zoom_y_to:10.0     nframes:10
 VID_MOVE_X         track:1  move_x_from:-1.0     move_x_to:1.0      nframes:10
 VID_MOVE_Y         track:1  move_y_from:-1.0     move_y_to:1.0      nframes:10
 VID_FIT_SIZE       track:1  mode:{both|none|width|height}  proportions:{keep_proportions|change_proportions}
+VID_OVERLAP        track:1  nframes:0
 
 
-# audio
+# mask definitions
+MASK_IMAGE        mask_name:"m1" file:"mask_filename"
+MASK_ANIMIMAGE    mask_name:"m2" file:"mask_filename"     from:0001 to:0099
+MASK_FRAMES       mask_name:"m3" base:"basename" ext:.jpg from:0001 to:0099
+MASK_MOVIE        mask_name:"m4" file:"mask_filename"     from:0001 to:0099
+
+
+# audio clip descriptions
 AUD_PLAY_SOUND     track:1  file:"audiofile" start_sec:0.0 end_sec:10.2 \
                              volume:1.0 \
                              start_vol:0.0 fade_in_time:1.0  \
@@ -168,8 +216,25 @@ VID_PREFERRED_DECODER
                             Currently you may choose the following decoders:
 			      libavformat
 			      libmpeg3
-			      quicktime4linux
                             DEFAULT: NULL (no preferred decoder)
+
+VID_MASTER_LAYERSTACK   track1:[Top | Background]
+  (1) Record Key        ... VID_PREFERRED_DECODER
+  (2) track1            ... control order of videotracks in the layerstack
+                            of the composite frame image.
+                            If track1 is placed on Top of the layerstack
+                            it appears in foreground. higher video track numbers
+                            appears behind track1, and the highst video track
+                            builds the background.
+                            Background tracks are only visible when all other tracks
+                            in the foreground have transparent areas,
+                            or do not cover the full image size
+                            (caused by ZOOM or MOVE operations)
+
+                            You may choose the following options:
+			      Top   ......... (track 1 is the foreground)
+			      Background .... (track 1 is the background)
+                            DEFAULT: Top 
 
 VID_PLAY_MOVIE
   fetch frames from a videofile. (such as MPEG, AVI, ...
@@ -209,11 +274,59 @@ VID_PLAY_MOVIE
 			    use a value of 1.0 to fetch all input frames step by step
                             DEFAULT: 1.0
  [12] macro             ... optional name of a filtermacro_file
-                            that will be execute on each imported input_layer
+                            that will be execute on each imported input_layer.
+                            
+                            If the macsteps parameter (see below) is set to a value
+                            > 1 and the filtermacro_file has a pendant file that provides
+                            alternative parameter sets, the filtermacro will be applied
+                            with varying values until the number of defined
+                            steps (parameter macsteps) is reached or all frames
+                            of this clip are processed.
+                            (for further details see also chapter about Macrofiles
+                            below)
+                 
  [13] decoder           ... optional name of preferred video decoder that should
                             be used for the videofile read access.
 			    "libmpeg3"
 			    "libavformat"
+ [14] flip              ... h ... (Horizontal) mirror the input frames horizontally
+                            v ... (Vertical) mirror the input frames vertically
+			    b ... (Both) 
+			    n ... (None) do not flip input frames.
+                            DEFAULT: n (None)
+ [15] mask_name         ... optional maskname refers to mask definitions.
+                            the mask name is a unique identifier of
+                            a mask clip that is applied to all frames of the clip.
+                            mask definitions are mask clips that will be attached
+                            as layermask to the input frames. This allows
+                            modification of opacity for individual masked areas.
+ [16] mask_anchor       ... Defines how to apply the layermask.
+                            "clip" scale mask to resulting layer size.
+                                   E.g. the mask scales and moves according
+                                   to transformations of the input frame
+                                   where it is attached to.
+                                   (default)
+                            "master" scale mask to master frame size and apply layer
+                                   after clippng the layer to master frame image.
+                                   In this mode the mask is fixed to the master frame.
+                                   and does not follow transformations and movements
+                                   of the input frame.
+ [17] mask_stepsize:    ... stepsize factor for the mask-frames.
+                            a value of 2.0 speeds up the mask effect (by skipping
+                            every 2nd frame in the assigned mask clip)
+                            a value of 0.5 will slow down the mask effect.
+                            Default 1.0 (normal speed for mask effect)
+
+ [18] mask_disable:     ... disable flag
+
+ [19] macsteps:         ... an integer value greater or equal than 1.
+                            Defines the (maximal) duration in number of frames
+                            for applying filtermacros with varying values.
+                            Default: 1
+
+
+
+
 
 VID_PLAY_ANIMIMAGE
   fetch frames from layers of a multilayer image (such as GIF animations,
@@ -235,8 +348,15 @@ VID_PLAY_ANIMIMAGE
 			    a value of 2.0 does skip every 2.nd input layer
 			    use a value of 1.0 to fetch all input layers step by step
                             DEFAULT: 1.0
-  [9] macro             ... optional name of a filtermacro_file
-                            that will be execute on each imported input_layer
+  [9] macro             ... Same as described for VID_PLAY_MOVIE (see above)
+ [10] flip              ... Same as described for VID_PLAY_MOVIE (see above)
+ [11] mask_name         ... Same as described for VID_PLAY_MOVIE (see above)
+ [12] mask_anchor       ... Same as described for VID_PLAY_MOVIE (see above)
+ [13] mask_stepsize:    ... Same as described for VID_PLAY_MOVIE (see above)
+ [14] mask_disable:     ... Same as described for VID_PLAY_MOVIE (see above)
+ [15] macsteps:         ... Same as described for VID_PLAY_MOVIE (see above)
+
+
 
 VID_PLAY_FRAMES
   fetch frames from numbered imagefiles with names follow the convention
@@ -263,8 +383,13 @@ VID_PLAY_FRAMES
 			    a value of 2.0 does skip every 2.nd input frame
 			    use a value of 1.0 to fetch all input frames step by step
                             DEFAULT: 1.0
- [10] macro             ... optional name of a filtermacro_file
-                            that will be execute on each imported input frame
+ [10] macro             ... Same as described for VID_PLAY_MOVIE (see above)
+ [11] flip              ... Same as described for VID_PLAY_MOVIE (see above)
+ [12] mask_name         ... Same as described for VID_PLAY_MOVIE (see above)
+ [13] mask_anchor       ... Same as described for VID_PLAY_MOVIE (see above)
+ [14] mask_stepsize:    ... Same as described for VID_PLAY_MOVIE (see above)
+ [15] mask_disable:     ... Same as described for VID_PLAY_MOVIE (see above)
+ [16] macsteps:         ... Same as described for VID_PLAY_MOVIE (see above)
 
 VID_PLAY_IMAGE
   fetch frame from a single imagefile. (Multilayer Images are handled as
@@ -276,8 +401,14 @@ VID_PLAY_IMAGE
   (3) file              ... filename of the image.
   [4] nloops            ... optional duration in number of frames (integer) or seconds (float)
                             DEFAULT: 1
-  [5] macro             ... optional name of a filtermacro_file
-                            that will be execute on the imported input image
+  [5] macro             ... Same as described for VID_PLAY_MOVIE (see above)
+  [6] flip              ... Same as described for VID_PLAY_MOVIE (see above)
+  [7] mask_name         ... Same as described for VID_PLAY_MOVIE (see above)
+  [8] mask_anchor       ... Same as described for VID_PLAY_MOVIE (see above)
+  [9] mask_stepsize:    ... Same as described for VID_PLAY_MOVIE (see above)
+ [10] mask_disable:     ... Same as described for VID_PLAY_MOVIE (see above)
+ [11] macsteps:         ... Same as described for VID_PLAY_MOVIE (see above)
+
 
 
 VID_PLAY_COLOR
@@ -292,6 +423,13 @@ VID_PLAY_COLOR
                             (where 0.0 is full transparent and 1.0 is full opaque) 
   [7] nloops            ... duration in number of frames (integer) or seconds (float)
                             DEFAULT: 1
+  [6] macro             ... Same as described for VID_PLAY_MOVIE (see above)
+  [7] flip              ... Same as described for VID_PLAY_MOVIE (see above)
+  [8] mask_name         ... Same as described for VID_PLAY_MOVIE (see above)
+  [9] mask_anchor       ... Same as described for VID_PLAY_MOVIE (see above)
+ [10] mask_stepsize:    ... Same as described for VID_PLAY_MOVIE (see above)
+ [11] mask_disable:     ... Same as described for VID_PLAY_MOVIE (see above)
+ [12] macsteps:         ... Same as described for VID_PLAY_MOVIE (see above)
 
 VID_SILENCE
   This record is used to define Pauses in a videotrack. 
@@ -332,8 +470,8 @@ VID_ZOOM_X and VID_ZOOM_Y
   (2) track             ... integer tracknumer
   (3) zoom_from         ... Start zoom with this value
                             where 0.0 is 1x1 Pixel, 1.0 is fit videosize, 2.0 is double videosize
-  [4] zoom_to           ... Change opacity to this value
-                            DEFAULT: use same value as opacity_from
+  [4] zoom_to           ... Change zoom to this value
+                            DEFAULT: use same value as zoom_from
   [5] nframes           ... optional duration of the effect 
                             in number of frames (integer 10) or seconds (float) 
                             The duration Value 0 applies the TO value immediate.
@@ -464,6 +602,53 @@ VID_FIT_SIZE
                                     video.
                                     
                             DEFAULT: "change_proportions"
+
+VID_OVERLAP
+  Define overlapping frames within one track.
+  The specified number of frames will overlap previous frames of the same track.
+
+
+  (1) Record Key        ... VID_OVERLAP
+  (2) track             ... integer tracknumer
+  (3) nframes           ... Number of overlapping frames.
+
+  The main use case is smooth blending from one scene to another.
+  To achieve such effects, varying transparency must be set for the overlapping
+  frames. This can be done either by modifying global opacity via VID_OPACITY
+  instructions, or by assigning (layer)masks to the frames of the overlapping
+  clips.
+
+  Example: overlap specified with nframes:5.
+  In this case the next 5 frames fetched from the
+  following clip ("B.mpg" 1 upto 5) 
+  in the same track 1 will not create a new frame in the resulting video,
+  but will be placed as additional layer in the 5 previous frames.
+
+  
+  
+  VID_PLAY_MOVIE track:1 file:"A.mpg" from:000001 to:000100
+  VID_OVERLAP    track:1 nframes:5
+  VID_OPACITY    track:1 opacity_from:0.0 opacity_to:1.0 nframes:5
+  VID_PLAY_MOVIE track:1 file:"B.mpg" from:000001 to:000100
+  
+    
+  FrameNr
+  (Result)    |BG-Layer           
+  --------    |------------------------------------> layer stack position (TOP)
+  00001        A.mpg 000001
+    ..
+    
+  00094        A.mpg 000094
+  00095        A.mpg 000095              
+  00096        A.mpg 000096  B.mpg 000001
+  00097        A.mpg 000097  B.mpg 000002
+  00098        A.mpg 000098  B.mpg 000003
+  00099        A.mpg 000099  B.mpg 000004
+  00100        A.mpg 000100  B.mpg 000005  
+  00101        B.mpg 000006 
+  00102        B.mpg 000007 
+  ...
+  00195        B.mpg 000100 
 
 
 AUD_PLAY_SOUND
@@ -601,15 +786,16 @@ Videotracks:
   The Videotracks in a Storyboard_file are Input tracks
   and will be merged internal to one composite Videotrack.
 
-  The composite Frame Image for the output Videotrack is built
+  The composite frame image for the output Videotrack is built
   as Layerstack, where each videotrack represents one Layer
-  (except for tracks where the current frame is VID_SILENCE,
-  or if the track is not part of the requested output track.
-  in that case no layer will be created in the composite Frame)
+  (except mask track 0 and tracks where the current frame is VID_SILENCE.
+  in such cases no layer will be created in the composite frame image)
 
-  The Video Track with the smallest tracknumber (0)
-  is always placed on top of the Layerstack.
-  Set VID_OPACITY to value 0.0 (or less than 1.0) to let
+  The tracknumber of video tracks defines its position
+  in the layerstack. Per default video track 1 is placed on
+  top of the Layerstack.
+   
+  You can set VID_OPACITY to value 0.0 (or less than 1.0) to let
   other tracks shine through.
 
   If the Input Frame of a Video Track has an alpha channel,
@@ -618,6 +804,56 @@ Videotracks:
   If there is no layer below, black pixels are shown
   at full transparent regions.
 
+  Notes:
+   - Inverse order that places video tracknumber 1 in the background
+     can be specified via VID_MASTER_LAYERSTACK
+   - You can add a layermask to Input frames by using
+     masks. (If the original frame already has an alpha channel
+     only those pixels are visible that are euogh opaque in both the mask
+     and the original alpha channel)
+   - video tracknumber 0 is reserved used for mask definitions.
+     Clips with tracknumber 0 therefore are not placed
+     as layers in the composite frame image.
+     Those Mask clips can be refered in Video Clips (via mask_name)
+     for adding a layermask to provide individual transparency areas.
+
+Sections:
+---------
+  Storyboard files always have a main section, optionally indicated
+  by the Record Key MAIN_SECTION and can have additional sub sections.
+
+  For the output video rendering only the clips in the main section are processed.
+  Sub sections are definitions of clip sequences that can be refered
+  from the main section via VID_PLAY_SECTION as if the were a simple clip.
+  
+  Note that Clips in a SUB_SECTION not rendered in the output
+  video if there is no reference via VID_PLAY_SECTION
+  in the MAIN_SECTION.
+
+
+  Both main section and sub sections can have multiple tracks.
+  
+  
+  
+  Example:
+    creating a video with a complex intro scene built up
+    
+    SUB_SECTION section_name:"Intro"    (complex multitrack)
+    SUB_SECTION section_name:"Finale"    (complex multitrack)
+  
+
+
+
+
+  A sub section starts with the Record Key SUB_SECTION.
+  If there are no Records with Record Keys SUB_SECTION 
+  or MAIN_SECTION all clips are implicite placed in the main section.
+
+  
+  Mask definitions have global scope for all sections.
+
+  audio tracks in SUB_SECTION are not supported,
+  and will be ignored.
 
 Framerange:
 -----------
@@ -653,28 +889,106 @@ Macrofiles:
 ------------
   Macros can be used to perform a user defineable set of
   one or more gimp procedures, such as 
-    - deinterlace
     - color correction
-    - sharpen
-    - blur
+    - sharpen / blur
+    - transformations
+    - artistic effects
     -  ...... or whatever ..
   on the handled frames of an input framerange in a video track.
   The macro is performed before
   the frame is added to the composite frame.
   
-  Another methode to perform a macro with global scope
-  an all frames can be done by specifying the macro directly
-  in the "Master Encoder" dialog.
+  Apply Macrofiles with varying parameters:
+  ----------------------------------------
+  A single macrofile only allows applying an effect
+  with constant settings to all processed frames.
+  
+  If an effect shall be applied with variable settings
+  this can be done by using a 2nd macrofile that
+  describes alternate parameter sets, and by defining
+  the duration (e.g number of frames see macsteps parameter)
+  that shall be used to vary the iterable parameters from the
+  values defined in the 1st set to their final alternate value
+  as defined in the 2nd macrofile.
+  
+  The 2nd macrofile is implicite referenced by naming convetion
+  via the keyword .VARYING (as suffix or before the extension)
+  
+  example:
+  VID_PLAY_MOVIE track:1 file:"/vol1/videos/A.mpg" from:000001 to:000500 \
+              macro:"/vol1/fmac/my_blur_macro.fmac" \
+              macsteps:200
+              
+  This example implicite referes to a second macrofile:
+  
+             "/vol1/fmac/my_blur_macro.VARYING.fmac"
+  
+  If such a file exists, it is used as provider of alternate
+  parameter sets for correlating filtercalls.
+  Filtercalls in the alternate (2nd) macrofile where filtername
+  and occurance count matches to filtername and occourance count in 
+  the first macrofile are correlating and will be used to build
+  a mix of the iterable parameters.
+  Procesing for frame 000001 of the input video clip A.mpg 
+  will apply the parameter values of the 1st macrofile.
+  As processing continues, the influence of
+  the values defined in the 2nd macrofile grows. At fame 000200
+  (macsteps:200) the final value as defined in the 2nd macrofile
+  is reached, and will be used for all further frames of this video clip too
+  (201 upto 500).
+  
+  Filtercalls in the 2nd macrofile that have no correlating pendent
+  in the 1st macrofile are ignored. Filtercalls of the 1st
+  macrofile that have no pendent in the 2,nd macrofile are executed
+  with constant parameter values in all processed frames.
+
+  example:
+   *
+   *   #  macrofile1:    len   filter parameter data      
+   *   ---------------------------------------------
+   *   1. plug_in_abc    3     00 01 02 
+   *   2. plug_in_xy     2     00 00
+   *   3. plug_in_abc    3     00 08 00 
+   *   4. plug_in_xy     2     0A 0A
+   *   5. plug_in_xy     2     02 02
+   *   
+   *   #  macrofile2:    len   filter parameter data      
+   *   ---------------------------------------------
+   *   1. plug_in_zzz    1     00
+   *   2. plug_in_xy     2     00 20
+   *   3. plug_in_xy     2     00 00
+   *
+   *   In this example the plug_in_zzz is ignored (because there is no correlating
+   *   filtercall definition in macrofile1)
+   *   macrofile2:line 2.) correlates with macrofile1:line 2.)
+   *   macrofile2:line 3.) correlates with macrofile1:line 4.)
+
+  RESTRICTION:
+   - Applying filters with varying values is restricted
+     to filters that provide an iterator procedure
+     that handles the mix of filter specific prameter values.
+     (see also Filter->Filter all Layers)
+     
+  
+  
+  Macrofiles for global usage:
+  ---------------------------
+  Another methode allows performing of a macro with global scope
+  (e.g. affecting all frames).
+  This can be done by specifying the macro directly in the 
+  "Master Encoder" dialog.
   In that case the macro is performed on the already
   flattened composite frames immediate before they are
   passed to the encoder engine.
 
   
-  Macrofiles can be from type 
-   - filtermacro_files
-
-       filtermacro files are a user defineable set of filtercalls.
-       You can Record any Filter Plug-In that works on a single
+  What are Macrofiles and how to create them ?
+  --------------------------------------------
+  GAP Filtermacro_files
+       include a user defineable list of filtercalls,
+       where each filtercall defines a set of filter specific parmeters.
+       
+       You can Record any GIMP Filter Plug-In that works on a single
        drawable and is able to run with LAST VALUES in a
        filtermacro_file.
        (use the Menu  Filter->Filtermacro)

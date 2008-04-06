@@ -9,7 +9,6 @@ gint p_plug_in_edge_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble c
       gdouble   amount;
       gint      edgemode;
       gint      wrapmode;
-      gboolean  update_preview;
     } t_plug_in_edge_Vals; 
 
     t_plug_in_edge_Vals  buf, *buf_from, *buf_to; 
@@ -21,8 +20,8 @@ gint p_plug_in_edge_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble c
       return -1;  /* ERROR */ 
     }
 
-    gimp_get_data("plug_in_edge_ITER_FROM", g_plugin_data_from); 
-    gimp_get_data("plug_in_edge_ITER_TO",   g_plugin_data_to); 
+    gimp_get_data("plug-in-edge-ITER-FROM", g_plugin_data_from); 
+    gimp_get_data("plug-in-edge-ITER-TO",   g_plugin_data_to); 
 
     buf_from = (t_plug_in_edge_Vals *)&g_plugin_data_from[0]; 
     buf_to   = (t_plug_in_edge_Vals *)&g_plugin_data_to[0]; 
@@ -32,8 +31,7 @@ gint p_plug_in_edge_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble c
     p_delta_gint(&buf.wrapmode, buf_from->wrapmode, buf_to->wrapmode, total_steps, current_step);
     p_delta_gint(&buf.edgemode, buf_from->edgemode, buf_to->edgemode, total_steps, current_step);
 
-    buf.update_preview = FALSE;
-    gimp_set_data("plug_in_edge", &buf, sizeof(buf)); 
+    gimp_set_data("plug-in-edge", &buf, sizeof(buf)); 
 
     return 0; /* OK */
 }

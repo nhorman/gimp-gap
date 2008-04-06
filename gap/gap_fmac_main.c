@@ -51,13 +51,13 @@
 #include "config.h"
 #include "gap-intl.h"
 #include "gap_lib.h"
-#include "gap_vin.h"
+#include "gap_val_file.h"
 #include "gap_filter.h"
 #include "gap_filter_pdb.h"
+#include "gap_fmac_name.h"
+#include "gap_fmac_base.h"
 #include "gap_dbbrowser_utils.h"
 #include "gap_lastvaldesc.h"
-
-static char *gap_fmac_version = "2.1.0; 2004/11/12";
 
 /* revision history:
  * gimp   1.3.26b;  2004/02/29  hof: bugfix NONINTERACTIVE call did crash
@@ -65,7 +65,8 @@ static char *gap_fmac_version = "2.1.0; 2004/11/12";
  * gimp   1.3.22b;  2003/11/09  hof: created (based on old unpublished patches for gimp-1.2)
  */
 
-#define PLUG_IN_NAME_FMAC            "plug_in_filter_macro"
+
+/* from gap_fmac_name.h: GAP_FMACNAME_PLUG_IN_NAME_FMAC */
 #define HELP_ID_NAME_FMAC            "plug-in-filter-macro"
 #define GAP_DB_BROWSER_FMAC_HELP_ID  "gap-filtermacro-db-browser"
 
@@ -135,11 +136,6 @@ static int       p_fmac_pdb_constraint_proc_sel1(gchar *proc_name, gint32 image_
 static int       p_fmac_pdb_constraint_proc_sel2(gchar *proc_name, gint32 image_id);
 
 
-gint             p_fmac_execute(GimpRunMode run_mode, gint32 image_id, gint32 drawable_id, const char *filtermacro_file);
-gint             gap_fmac_execute(GimpRunMode run_mode, gint32 image_id, gint32 drawable_id, const char *filtermacro_file);
-
-
-
 /* ############################################################# */
 
 
@@ -186,13 +182,13 @@ query ()
   gimp_plugin_domain_register (GETTEXT_PACKAGE, LOCALEDIR);
 
   /* registration for last values buffer structure (useful for animated filter apply) */
-  gimp_lastval_desc_register(PLUG_IN_NAME_FMAC,
+  gimp_lastval_desc_register(GAP_FMACNAME_PLUG_IN_NAME_FMAC,
                              &filtermacro_file[0],
                              sizeof(filtermacro_file),
                              G_N_ELEMENTS (lastvals),
                              lastvals);
 
-  gimp_install_procedure(PLUG_IN_NAME_FMAC,
+  gimp_install_procedure(GAP_FMACNAME_PLUG_IN_NAME_FMAC,
 			 "This plug-in can create and execute filtermacro scriptfiles",
 			 "This plug-in allows the user to pick one or more filters "
 			 "that have already been called before in the current Gimp session. "
@@ -208,14 +204,14 @@ query ()
                          "versions.",
 			 "Wolfgang Hofer (hof@gimp.org)",
 			 "Wolfgang Hofer",
-			 gap_fmac_version,
+			 GAP_VERSION_WITH_DATE,
 			 N_("Filtermacro..."),
 			 "RGB*, INDEXED*, GRAY*",
 			 GIMP_PLUGIN,
 			 G_N_ELEMENTS (args_fmac_dialog), nreturn_vals,
 			 args_fmac_dialog, return_vals);
 
-  gimp_plugin_menu_register (PLUG_IN_NAME_FMAC, N_("<Image>/Filters/"));
+  gimp_plugin_menu_register (GAP_FMACNAME_PLUG_IN_NAME_FMAC, N_("<Image>/Filters/"));
 }  /* end query */
 
 
@@ -257,7 +253,7 @@ run(const gchar *name
 
   if(gap_debug) fprintf(stderr, "\n\ngap_filter_main: debug name = %s\n", name);
 
-  if (strcmp (name, PLUG_IN_NAME_FMAC) == 0)
+  if (strcmp (name, GAP_FMACNAME_PLUG_IN_NAME_FMAC) == 0)
   {
       if (run_mode == GIMP_RUN_INTERACTIVE)
       {
@@ -284,11 +280,11 @@ run(const gchar *name
 	{
 	  gint l_len;
 
-	  l_len = gimp_get_data_size(PLUG_IN_NAME_FMAC);
+	  l_len = gimp_get_data_size(GAP_FMACNAME_PLUG_IN_NAME_FMAC);
 	  if(l_len > 0)
 	  {
 	    filtermacro_file = g_malloc0(l_len);
-	    gimp_get_data(PLUG_IN_NAME_FMAC, filtermacro_file);
+	    gimp_get_data(GAP_FMACNAME_PLUG_IN_NAME_FMAC, filtermacro_file);
 	  }
 	  else
 	  {
@@ -298,7 +294,12 @@ run(const gchar *name
 
 	if(status == GIMP_PDB_SUCCESS)
 	{
-          l_rc = gap_fmac_execute(run_mode, image_id, drawable_id, filtermacro_file);
+          l_rc = gap_fmac_execute(run_mode, image_id, drawable_id
+                   , filtermacro_file
+                   , NULL  /* filtermacro_file2 */
+                   , 1.0   /* current_step */
+                   , 1     /* total_steps */
+                   );
 	}
       }
   }
@@ -470,8 +471,13 @@ p_fmac_add_filter_to_file(const char *filtermacro_file, const char *plugin_name)
   if (fp)
   {
     char *data_string;
+    char *canonical_plugin_name;
+    
+    canonical_plugin_name = gimp_canonicalize_identifier(plugin_name);
 
-    data_string = p_get_gap_filter_data_string(plugin_name);
+    data_string = p_get_gap_filter_data_string(canonical_plugin_name);
+    g_free(canonical_plugin_name);
+    
     if(data_string)
     {
       fprintf(fp, "%s", data_string);
@@ -546,7 +552,7 @@ gap_fmac_dialog(GimpRunMode run_mode, gint32 image_id, gint32 drawable_id)
   gpp->selected_number = -1;
 
   /* probably get filtermacro_file (form a previous call in the same GIMP-session) */
-  gimp_get_data(PLUG_IN_NAME_FMAC, gpp->filtermacro_file);
+  gimp_get_data(GAP_FMACNAME_PLUG_IN_NAME_FMAC, gpp->filtermacro_file);
 
   gpp->filesel = NULL;
   gpp->image_id = image_id;
@@ -669,7 +675,7 @@ gap_fmac_dialog(GimpRunMode run_mode, gint32 image_id, gint32 drawable_id)
 
   if(gpp->filtermacro_file[0] != '\0')
   {
-    gimp_set_data(PLUG_IN_NAME_FMAC, gpp->filtermacro_file, FMAC_FILE_LENGTH);
+    gimp_set_data(GAP_FMACNAME_PLUG_IN_NAME_FMAC, gpp->filtermacro_file, FMAC_FILE_LENGTH);
 
     if(gpp->run_flag)
     {
@@ -678,7 +684,12 @@ gap_fmac_dialog(GimpRunMode run_mode, gint32 image_id, gint32 drawable_id)
 			      ,(int)drawable_id
 			      ,gpp->filtermacro_file
 			      );
-      return(gap_fmac_execute(run_mode, image_id, drawable_id, gpp->filtermacro_file));
+      return(gap_fmac_execute(run_mode, image_id, drawable_id
+              , gpp->filtermacro_file
+              , NULL  /* filtermacro_file2 */
+              , 1.0   /* current_step */
+              , 1     /* total_steps */
+              ));
     }
   }
 
@@ -758,8 +769,8 @@ p_tree_fill (fmac_globalparams_t *gpp)
   gint          count_elem;
   gboolean      parse_file;
 
-  GapVinTextFileLines *txf_ptr;
-  GapVinTextFileLines *txf_ptr_root;
+  GapValTextFileLines *txf_ptr;
+  GapValTextFileLines *txf_ptr_root;
 
 
   gpp->store = gtk_list_store_new (4, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
@@ -783,8 +794,8 @@ p_tree_fill (fmac_globalparams_t *gpp)
 
   if(parse_file)
   {
-    txf_ptr_root = gap_vin_load_textfile(gpp->filtermacro_file);
-    for(txf_ptr = txf_ptr_root; txf_ptr != NULL; txf_ptr = (GapVinTextFileLines *) txf_ptr->next)
+    txf_ptr_root = gap_val_load_textfile(gpp->filtermacro_file);
+    for(txf_ptr = txf_ptr_root; txf_ptr != NULL; txf_ptr = (GapValTextFileLines *) txf_ptr->next)
     {
        gchar *pdb_name;
 
@@ -820,7 +831,7 @@ p_tree_fill (fmac_globalparams_t *gpp)
 
     if(txf_ptr_root)
     {
-      gap_vin_free_textfile_lines(txf_ptr_root);
+      gap_val_free_textfile_lines(txf_ptr_root);
     }
   }
 
@@ -1073,8 +1084,8 @@ p_delete_callback (GtkWidget *widget, fmac_globalparams_t *gpp)
 
       if(gpp->selected_number >= 0)
       {
-        GapVinTextFileLines *txf_ptr;
-        GapVinTextFileLines *txf_ptr_root;
+        GapValTextFileLines *txf_ptr;
+        GapValTextFileLines *txf_ptr_root;
 	gint count_elem;
         gchar *label;
         FILE  *fp;
@@ -1083,12 +1094,12 @@ p_delete_callback (GtkWidget *widget, fmac_globalparams_t *gpp)
 	/* rewrite the filtermacro file
 	 * without the line that corresponds to gpp->selected_number
 	 */
-        txf_ptr_root = gap_vin_load_textfile(gpp->filtermacro_file);
+        txf_ptr_root = gap_val_load_textfile(gpp->filtermacro_file);
 	fp = g_fopen(gpp->filtermacro_file, "w");
 	if(fp)
 	{
 	  count_elem = 0;
-	  for(txf_ptr = txf_ptr_root; txf_ptr != NULL; txf_ptr = (GapVinTextFileLines *) txf_ptr->next)
+	  for(txf_ptr = txf_ptr_root; txf_ptr != NULL; txf_ptr = (GapValTextFileLines *) txf_ptr->next)
 	  {
 	    copy_line = TRUE;
 
@@ -1114,7 +1125,7 @@ p_delete_callback (GtkWidget *widget, fmac_globalparams_t *gpp)
 	}
 	if(txf_ptr_root)
 	{
-	  gap_vin_free_textfile_lines(txf_ptr_root);
+	  gap_val_free_textfile_lines(txf_ptr_root);
 	}
 
       }
@@ -1289,7 +1300,7 @@ p_fmac_pdb_constraint_proc(gchar *proc_name, gint32 image_id)
      return 0;
   }
 
-  if(strcmp(proc_name, PLUG_IN_NAME_FMAC) == 0)
+  if(strcmp(proc_name, GAP_FMACNAME_PLUG_IN_NAME_FMAC) == 0)
   {
      /* Do not add the filtermacro plugin itself */
      return 0;
@@ -1337,177 +1348,3 @@ p_fmac_pdb_constraint_proc_sel2(gchar *proc_name, gint32 image_id)
   return (p_fmac_pdb_constraint_proc_sel1 (proc_name, image_id));
 }
 
-
-
-/* ----------------
- * p_fmac_execute
- * ----------------
- */
-gint
-p_fmac_execute(GimpRunMode run_mode, gint32 image_id, gint32 drawable_id, const char *filtermacro_file)
-{
-  int      l_rc;
-  int      l_idx;
-  long int l_data_len;
-  long int l_data_byte;
-  char    *l_plugin_name;
-  char    *l_scan_ptr;
-  char    *l_scan_ptr2;
-  guchar  *l_lastvalues_data_buffer;
-  guchar  *l_lastvalues_bck_buffer;
-  gchar   *l_msg;
-  gint     l_bck_len;
-
-  GapVinTextFileLines *txf_ptr;
-  GapVinTextFileLines *txf_ptr_root;
-
-
-  l_lastvalues_bck_buffer = NULL;
-  l_bck_len = 0;
-
-  if (!p_chk_filtermacro_file(filtermacro_file))
-  {
-      l_msg = g_strdup_printf("file: %s is not a filtermacro file !", filtermacro_file);
-      p_print_and_free_msg(l_msg, run_mode);
-      return -1;
-  }
-
-  /* process filtermacro file (scann line by line and apply filter ) */
-  txf_ptr_root = gap_vin_load_textfile(filtermacro_file);
-  for(txf_ptr = txf_ptr_root; txf_ptr != NULL; txf_ptr = (GapVinTextFileLines *) txf_ptr->next)
-  {
-    gchar *l_buf;
-
-    l_buf = txf_ptr->line;
-
-     /* handle lines starting with double quotes */
-    if (l_buf[0] == '"')
-    {
-      /* scan plugin-name */
-      l_scan_ptr=&l_buf[0];
-      l_plugin_name = &l_buf[1];
-      for(l_idx=1; l_idx < 4000;l_idx++)
-      {
-        if (l_buf[l_idx] == '"')
-        {
-          l_buf[l_idx] = '\0';
-          l_scan_ptr=&l_buf[l_idx+1];
-          break;
-        }
-      }
-
-      if(gap_debug) printf("p_fmac_execute: ##l_plugin_name:%s\n", l_plugin_name);
-
-
-      /* scan for data length */
-      l_data_len = strtol(l_scan_ptr, &l_scan_ptr2, 10);
-
-      if (l_scan_ptr != l_scan_ptr2)
-      {
-         l_bck_len = gimp_get_data_size(l_plugin_name);
-
-         if(l_bck_len > 0)
-         {
-           if(l_bck_len != l_data_len)
-           {
-              l_msg = g_strdup_printf ("parameter data buffer for plugin: '%s' differs in size\n"
-                                       "actual size: %d\n"
-                                       "recorded size: %d"
-                                      , l_plugin_name
-                                      , (int)l_bck_len
-                                      , (int)l_data_len
-                                      );
-              p_print_and_free_msg(l_msg, run_mode);
-              gap_vin_free_textfile_lines(txf_ptr_root);
-              return -1;
-           }
-           l_lastvalues_bck_buffer = g_malloc0(l_bck_len);
-           gimp_get_data (l_plugin_name, l_lastvalues_bck_buffer);
-         }
-
-         if(gap_debug) printf("p_fmac_execute: ##l_data_len:%d\n", (int)l_data_len);
-
-
-         l_lastvalues_data_buffer = g_malloc0(l_data_len);
-         l_scan_ptr = l_scan_ptr2;
-         for(l_idx=0; l_idx < l_data_len;l_idx++)
-         {
-            l_data_byte = strtol(l_scan_ptr, &l_scan_ptr2, 16);
-            /* if(gap_debug) printf("p_fmac_execute: l_data_byte:%d\n", (int)l_data_byte); */
-
-            if ((l_data_byte < 0) || (l_data_byte > 255) || (l_scan_ptr == l_scan_ptr2))
-            {
-              g_free(l_lastvalues_data_buffer);
-              l_msg = g_strdup_printf ("filtermacro_file: '%s' is corrupted, could not scan databytes", filtermacro_file);
-              p_print_and_free_msg(l_msg, run_mode);
-              gap_vin_free_textfile_lines(txf_ptr_root);
-              return -1;
-            }
-            l_lastvalues_data_buffer[l_idx] = l_data_byte;
-            l_scan_ptr = l_scan_ptr2;
-         }
-         gimp_set_data(l_plugin_name, l_lastvalues_data_buffer, (gint)l_data_len);
-         g_free(l_lastvalues_data_buffer);
-      }
-
-      if(gap_debug) printf("p_fmac_execute: # before p_call_plugin: image_id:%d drawable_id:%d\n", (int)image_id ,(int)drawable_id );
-
-      /* check for the Plugin */
-      l_rc = gap_filt_pdb_procedure_available(l_plugin_name, GAP_PTYP_CAN_OPERATE_ON_DRAWABLE);
-      if(l_rc < 0)
-      {
-         l_msg = g_strdup_printf(_("Plug-in not available or has wrong type\n"
-                                   "plug-in name: '%s'")
-                                  , l_plugin_name);
-         p_print_and_free_msg(l_msg, run_mode);
-         gap_vin_free_textfile_lines(txf_ptr_root);
-         return -1;
-      }
-
-      /* execute one filtermacro step on image/drawable */
-      l_rc = gap_filt_pdb_call_plugin(l_plugin_name, image_id, drawable_id, GIMP_RUN_WITH_LAST_VALS);
-      if(l_rc < 0)
-      {
-         l_msg = g_strdup_printf("Plug-in call failed\n"
-                                 "plug-in name: '%s'"
-                                 , l_plugin_name);
-         p_print_and_free_msg(l_msg, run_mode);
-         gap_vin_free_textfile_lines(txf_ptr_root);
-         return -1;
-      }
-
-      if(l_lastvalues_bck_buffer)
-      {
-        gimp_set_data(l_plugin_name, l_lastvalues_bck_buffer, l_bck_len);
-        g_free(l_lastvalues_bck_buffer);
-        l_lastvalues_bck_buffer = NULL;
-      }
-
-    }
-
-  }
-
-  if(txf_ptr_root)
-  {
-    gap_vin_free_textfile_lines(txf_ptr_root);
-  }
-
-  return 0;
-}  /* end p_fmac_execute */
-
-
-
-/* ----------------
- * gap_fmac_execute
- * ----------------
- */
-gint
-gap_fmac_execute(GimpRunMode run_mode, gint32 image_id, gint32 drawable_id, const char *filtermacro_file)
-{
-  gint l_rc;
-
-  gimp_image_undo_group_start(image_id);
-  l_rc = p_fmac_execute(run_mode, image_id,  drawable_id, filtermacro_file);
-  gimp_image_undo_group_end(image_id);
-  return (l_rc);
-}

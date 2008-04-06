@@ -42,6 +42,17 @@ Here is a short overview whats new in GIMP-GAP-2.3.0:
     - Global Storyboard Layout settings are now saved (in gimprc)
       and restored in further sessions.
 
+- Videofile read API update for use with recent ffmpeg (SVN snapshot 2007.04.04)
+    The API now supports native timcode based seek and allows fast and exact
+    positioning without the need of creating a video index.
+    (note: for some videofiles with variable frametiming and corrupted timecode
+    information the video index is still required) 
+
+- New Plug-in that allows explicite creation of video indexes
+    for a list of videofiles.
+
+- Some bugfixes (see ChangeLog for details)
+
 Here is a short overview whats new in GIMP-GAP-2.2.1:
 -----------------------------------------------------
 (compared to gimp-gap release 2.2.0)

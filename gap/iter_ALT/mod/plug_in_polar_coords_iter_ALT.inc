@@ -11,7 +11,6 @@ gint p_plug_in_polar_coords_iter_ALT(GimpRunMode run_mode, gint32 total_steps, g
       gboolean  backwards;
       gboolean  inverse;
       gboolean  polrec;
-      gboolean  preview;
     } t_plug_in_polar_coords_Vals; 
 
     t_plug_in_polar_coords_Vals  buf, *buf_from, *buf_to; 
@@ -23,8 +22,8 @@ gint p_plug_in_polar_coords_iter_ALT(GimpRunMode run_mode, gint32 total_steps, g
       return -1;  /* ERROR */ 
     }
 
-    gimp_get_data("plug_in_polar_coords_ITER_FROM", g_plugin_data_from); 
-    gimp_get_data("plug_in_polar_coords_ITER_TO",   g_plugin_data_to); 
+    gimp_get_data("plug-in-polar-coords-ITER-FROM", g_plugin_data_from); 
+    gimp_get_data("plug-in-polar-coords-ITER-TO",   g_plugin_data_to); 
 
     buf_from = (t_plug_in_polar_coords_Vals *)&g_plugin_data_from[0]; 
     buf_to   = (t_plug_in_polar_coords_Vals *)&g_plugin_data_to[0]; 
@@ -34,8 +33,7 @@ gint p_plug_in_polar_coords_iter_ALT(GimpRunMode run_mode, gint32 total_steps, g
     p_delta_gdouble(&buf.angle, buf_from->angle, buf_to->angle, total_steps, current_step);
 
 
-    buf.preview = FALSE;
-    gimp_set_data("plug_in_polar_coords", &buf, sizeof(buf)); 
+    gimp_set_data("plug-in-polar-coords", &buf, sizeof(buf)); 
 
     return 0; /* OK */
 }

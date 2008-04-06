@@ -68,6 +68,8 @@ typedef struct GapPlayerAddClip {
 /* Function Typedefs */
 typedef  void           (*GapPlayerSetRangeFptr)(GapPlayerAddClip *plac_ptr);
 
+#define GAP_PLAYER_DONT_FORCE_ASPECT 0.0
+
 typedef struct GapPlayerMainGlobalParams {
   gboolean     standalone_mode;
   GimpRunMode  run_mode;
@@ -75,6 +77,7 @@ typedef struct GapPlayerMainGlobalParams {
   gchar        *imagename;
   gint32       imagewidth;
   gint32       imageheight;
+  gdouble      aspect_ratio;  /* 0.0 use original size, else force aspect  */
 
   GapAnimInfo *ainfo_ptr;
   GapStoryBoard *stb_ptr;
@@ -239,9 +242,11 @@ typedef struct GapPlayerMainGlobalParams {
   gint32 stb_parttype;
   gint32 stb_unique_id;
   GapStoryRenderVidHandle *stb_comp_vidhand;
+
   
 } GapPlayerMainGlobalParams;
 
+#define GAP_PLAYER_MAIN_AUSTAT_UNCHECKED       -1
 #define GAP_PLAYER_MAIN_AUSTAT_NONE             0
 #define GAP_PLAYER_MAIN_AUSTAT_SERVER_STARTED   1
 #define GAP_PLAYER_MAIN_AUSTAT_FILENAME_SET     2

@@ -49,8 +49,8 @@ typedef struct GapStbSyntaxElem {
 static GapStbSyntaxElem  *global_syntax_par_list = NULL;
 
 static void  p_add_keyword(const char *record_key
-			  , ...
-			  );
+              , ...
+              );
 static void  p_create_syntax_list(void);
 
 
@@ -74,7 +74,7 @@ p_add_keyword(const char *record_key
   sxpar_elem->par_list = NULL;
   sxpar_elem->next = global_syntax_par_list;
   global_syntax_par_list = sxpar_elem;
- 
+
   par_idx = 1;
 
   va_start (args, record_key);
@@ -87,7 +87,7 @@ p_add_keyword(const char *record_key
     par_elem->parname = g_strdup(parname);
     par_elem->next = sxpar_elem->par_list;
     sxpar_elem->par_list = par_elem;
-    
+
     parname = va_arg (args,  const char *);
   }
   va_end (args);
@@ -109,7 +109,7 @@ gap_stb_syntax_get_parname_idx(const char *record_key
                  )
 {
   GapStbSyntaxElem  *sp_elem;
- 
+
   if(global_syntax_par_list == NULL)
   {
     p_create_syntax_list();
@@ -121,13 +121,13 @@ gap_stb_syntax_get_parname_idx(const char *record_key
     return(-1);
   }
 
-  
+
   for(sp_elem = global_syntax_par_list; sp_elem != NULL; sp_elem = (GapStbSyntaxElem  *)sp_elem->next)
   {
     if(strcmp(record_key, sp_elem->record_key) == 0)
     {
       GapStbSyntaxParElem *par;
-      
+
       for(par=sp_elem->par_list; par != NULL; par = (GapStbSyntaxParElem *)par->next)
       {
         if(strcmp(par->parname, parname) == 0)
@@ -156,7 +156,7 @@ gap_stb_syntax_get_parname(const char *record_key
                  )
 {
   GapStbSyntaxElem  *sp_elem;
- 
+
   if(global_syntax_par_list == NULL)
   {
     p_create_syntax_list();
@@ -166,21 +166,21 @@ gap_stb_syntax_get_parname(const char *record_key
   {
     return(NULL);
   }
-  
+
   for(sp_elem = global_syntax_par_list; sp_elem != NULL; sp_elem = (GapStbSyntaxElem  *)sp_elem->next)
   {
     if(strcmp(record_key, sp_elem->record_key) == 0)
     {
       GapStbSyntaxParElem *par;
-      
+
       for(par=sp_elem->par_list; par != NULL; par = (GapStbSyntaxParElem *)par->next)
       {
         if(par->par_idx == par_idx)
         {
-	  if(par->parname)
-	  {
-	    return(g_strdup(par->parname));
-	  }
+          if(par->parname)
+          {
+            return(g_strdup(par->parname));
+          }
           return(NULL);
         }
       }
@@ -201,7 +201,7 @@ gap_stb_syntax_get_parname_tab(const char *record_key
                  )
 {
   GapStbSyntaxElem  *sp_elem;
- 
+
   par_tab->tabsize = 0;
   if(global_syntax_par_list == NULL)
   {
@@ -212,7 +212,7 @@ gap_stb_syntax_get_parname_tab(const char *record_key
   {
     return;
   }
-  
+
   for(sp_elem = global_syntax_par_list; sp_elem != NULL; sp_elem = (GapStbSyntaxElem  *)sp_elem->next)
   {
     if(strcmp(record_key, sp_elem->record_key) == 0)
@@ -240,20 +240,26 @@ p_create_syntax_list(void)
 {
   p_add_keyword(GAP_STBKEY_STB_HEADER
                ,"version"
-	       ,NULL
+               ,NULL
                );
   p_add_keyword(GAP_STBKEY_CLIP_HEADER
                ,"version"
-	       ,NULL
+               ,NULL
                );
   p_add_keyword(GAP_STBKEY_LAYOUT_SIZE
                ,"cols"
                ,"rows"
                ,"thumbsize"
-	       ,NULL
+               ,NULL
+               );
+  p_add_keyword(GAP_STBKEY_EDIT_SETTINGS
+               ,"secition_name"
+               ,"track"
+               ,"page"
+               ,NULL
                );
   p_add_keyword(GAP_STBKEY_VID_MASTER_SIZE
-	       ,"width"
+               ,"width"
                ,"height"
                ,NULL
                );
@@ -261,8 +267,12 @@ p_create_syntax_list(void)
                ,"frames_per_sec"
                ,NULL
                );
+  p_add_keyword(GAP_STBKEY_VID_MASTER_LAYERSTACK
+               ,"track1"
+               ,NULL
+               );
   p_add_keyword(GAP_STBKEY_VID_MASTER_FRAME_ASPECT
-	       ,"width"
+           ,"width"
                ,"height"
                ,NULL
                );
@@ -270,17 +280,58 @@ p_create_syntax_list(void)
                ,"decoder"
                ,NULL
                );
+  p_add_keyword(GAP_STBKEY_MAIN_SECTION
+               ,NULL
+               );
+  p_add_keyword(GAP_STBKEY_SUB_SECTION
+               ,"section_name"
+               ,NULL
+               );
+  p_add_keyword(GAP_STBKEY_VID_PLAY_SECTION
+               ,"track"
+               ,"section_name"
+               ,"from"
+               ,"to"
+               ,"mode"
+               ,"nloops"
+               ,"stepsize"
+               ,"macro"
+               ,"flip"
+               ,"mask_name"
+               ,"mask_anchor"
+               ,"mask_stepsize"
+               ,"mask_disable"
+               ,"macsteps"
+               ,NULL
+               );
+  p_add_keyword(GAP_STBKEY_VID_PLAY_BLACKSECTION
+               ,"track"
+               ,"section_name"
+               ,"from"
+               ,"to"
+               ,"mode"
+               ,"nloops"
+               ,"stepsize"
+               ,"macro"
+               ,"flip"
+               ,"mask_name"
+               ,"mask_anchor"
+               ,"mask_stepsize"
+               ,"mask_disable"
+               ,"macsteps"
+               ,NULL
+               );
   p_add_keyword(GAP_STBKEY_VID_PLAY_MOVIE
                ,"track"
                ,"file"
                ,"from"
                ,"to"
-	       ,"mode"
+               ,"mode"
                ,"nloops"
                ,"seltrack"
                ,"exactseek"
                ,"deinterlace"
-	       ,"stepsize"
+               ,"stepsize"
                ,"macro"
                ,"decoder"
                ,"flip"
@@ -288,6 +339,7 @@ p_create_syntax_list(void)
                ,"mask_anchor"
                ,"mask_stepsize"
                ,"mask_disable"
+               ,"macsteps"
                ,NULL
                );
   p_add_keyword(GAP_STBKEY_VID_PLAY_FRAMES
@@ -296,32 +348,34 @@ p_create_syntax_list(void)
                ,"ext"
                ,"from"
                ,"to"
-	       ,"mode"
+               ,"mode"
                ,"nloops"
-	       ,"stepsize"
+               ,"stepsize"
                ,"macro"
                ,"flip"
                ,"mask_name"
                ,"mask_anchor"
                ,"mask_stepsize"
                ,"mask_disable"
-	       ,NULL
+               ,"macsteps"
+               ,NULL
                );
   p_add_keyword(GAP_STBKEY_VID_PLAY_ANIMIMAGE
                ,"track"
                ,"file"
                ,"from"
                ,"to"
-	       ,"mode"
+               ,"mode"
                ,"nloops"
-	       ,"stepsize"
+               ,"stepsize"
                ,"macro"
                ,"flip"
                ,"mask_name"
                ,"mask_anchor"
                ,"mask_stepsize"
                ,"mask_disable"
-	       ,NULL
+               ,"macsteps"
+               ,NULL
                );
 
   p_add_keyword(GAP_STBKEY_VID_PLAY_IMAGE
@@ -334,14 +388,15 @@ p_create_syntax_list(void)
                ,"mask_anchor"
                ,"mask_stepsize"
                ,"mask_disable"
-	       ,NULL
+               ,"macsteps"
+               ,NULL
                );
   p_add_keyword(GAP_STBKEY_VID_PLAY_COLOR
                ,"track"
                ,"red"
                ,"green"
                ,"blue"
-	       ,"alpha"
+               ,"alpha"
                ,"nloops"
                ,"macro"
                ,"flip"
@@ -349,59 +404,60 @@ p_create_syntax_list(void)
                ,"mask_anchor"
                ,"mask_stepsize"
                ,"mask_disable"
-	       ,NULL
+               ,"macsteps"
+               ,NULL
                );
   p_add_keyword(GAP_STBKEY_VID_SILENCE
                ,"track"
                ,"nloops"
                ,"wait_until_sec"
-	       ,NULL
+               ,NULL
                );
   p_add_keyword(GAP_STBKEY_VID_OPACITY
                ,"track"
                ,"opacity_from"
                ,"opacity_to"
                ,"nframes"
-	       ,NULL
+               ,NULL
                );
   p_add_keyword(GAP_STBKEY_VID_ZOOM_X
                ,"track"
                ,"zoom_x_from"
                ,"zoom_x_to"
                ,"nframes"
-	       ,NULL
+               ,NULL
                );
   p_add_keyword(GAP_STBKEY_VID_ZOOM_Y
                ,"track"
                ,"zoom_y_from"
                ,"zoom_y_to"
                ,"nframes"
-	       ,NULL
+               ,NULL
                );
   p_add_keyword(GAP_STBKEY_VID_MOVE_X
                ,"track"
                ,"move_x_from"
                ,"move_x_to"
                ,"nframes"
-	       ,NULL
+               ,NULL
                );
   p_add_keyword(GAP_STBKEY_VID_MOVE_Y
                ,"track"
                ,"move_y_from"
                ,"move_y_to"
                ,"nframes"
-	       ,NULL
+               ,NULL
                );
   p_add_keyword(GAP_STBKEY_VID_FIT_SIZE
                ,"track"
                ,"mode"
                ,"proportions"
-	       ,NULL
+               ,NULL
                );
   p_add_keyword(GAP_STBKEY_VID_OVERLAP
                ,"track"
                ,"nframes"
-	       ,NULL
+               ,NULL
                );
   p_add_keyword(GAP_STBKEY_MASK_MOVIE
                ,"mask_name"
@@ -415,6 +471,12 @@ p_create_syntax_list(void)
                ,"flip"
                ,NULL
                );
+  p_add_keyword(GAP_STBKEY_MASK_BLACKSECTION
+               ,"mask_name"
+               ,"from"
+               ,"to"
+               ,NULL
+               );
   p_add_keyword(GAP_STBKEY_MASK_FRAMES
                ,"mask_name"
                ,"base"
@@ -422,7 +484,7 @@ p_create_syntax_list(void)
                ,"from"
                ,"to"
                ,"flip"
-	       ,NULL
+              ,NULL
                );
   p_add_keyword(GAP_STBKEY_MASK_ANIMIMAGE
                ,"mask_name"
@@ -430,61 +492,61 @@ p_create_syntax_list(void)
                ,"from"
                ,"to"
                ,"flip"
-	       ,NULL
+               ,NULL
                );
 
   p_add_keyword(GAP_STBKEY_MASK_IMAGE
                ,"mask_name"
                ,"file"
                ,"flip"
-	       ,NULL
+               ,NULL
                );
 
 
 
   p_add_keyword(GAP_STBKEY_AUD_MASTER_VOLUME
                ,"volume"
-	       ,NULL
+                ,NULL
                );
   p_add_keyword(GAP_STBKEY_AUD_MASTER_SAMPLERATE
                ,"samples_per_sec"
-	       ,NULL
+               ,NULL
                );
   p_add_keyword(GAP_STBKEY_AUD_PLAY_SOUND
                ,"track"
                ,"file"
                ,"start_sec"
                ,"end_sec"
-	       ,"volume"
-	       ,"start_volume"
-	       ,"fade_in_time"
-	       ,"end_volume"
-	       ,"fade_out_time"
-	       ,"nloops"
-	       ,NULL
+               ,"volume"
+               ,"start_volume"
+               ,"fade_in_time"
+               ,"end_volume"
+               ,"fade_out_time"
+               ,"nloops"
+               ,NULL
                );
   p_add_keyword(GAP_STBKEY_AUD_PLAY_MOVIE
                ,"track"
                ,"file"
                ,"start_sec"
                ,"end_sec"
-	       ,"volume"
-	       ,"start_volume"
-	       ,"fade_in_time"
-	       ,"end_volume"
-	       ,"fade_out_time"
-	       ,"nloops"
+               ,"volume"
+               ,"start_volume"
+               ,"fade_in_time"
+               ,"end_volume"
+               ,"fade_out_time"
+               ,"nloops"
                ,"seltrack"
                ,"decoder"
                ,"from"
                ,"to"
                ,"framerate"
-	       ,NULL
+               ,NULL
                );
   p_add_keyword(GAP_STBKEY_AUD_SILENCE
                ,"track"
                ,"duration_sec"
                ,"wait_until_sec"
-	       ,NULL
+           ,NULL
                );
 }  /* end p_create_syntax_list */

@@ -1085,6 +1085,36 @@ p_gva_worker_count_frames(t_GVA_Handle  *gvahand)
 }  /* end p_gva_worker_count_frames */
 
 
+/* -------------------------------
+ * p_gva_worker_check_seek_support
+ * -------------------------------
+ */
+static t_GVA_SeekSupport
+p_gva_worker_check_seek_support(t_GVA_Handle  *gvahand)
+{
+  t_GVA_SeekSupport l_rc;
+
+  l_rc = GVA_SEEKSUPP_NONE;
+  if(gvahand)
+  {
+    t_GVA_DecoderElem *dec_elem;
+
+    dec_elem = (t_GVA_DecoderElem *)gvahand->dec_elem;
+
+    if(dec_elem)
+    {
+      if(dec_elem->fptr_seek_support == NULL)
+      {
+         printf("p_gva_worker_check_seek_support: Method not implemented in decoder %s\n", dec_elem->decoder_name);
+         return(GVA_SEEKSUPP_NONE);
+      }
+      l_rc = (*dec_elem->fptr_seek_support)(gvahand);
+    }
+  }
+  return(l_rc);
+}  /* end p_gva_worker_check_seek_support */
+
+
 /* ----------------------------
  * p_gva_worker_get_video_chunk
  * ----------------------------
@@ -1180,6 +1210,7 @@ p_gva_worker_open_read(const char *filename, gint32 vid_track, gint32 aud_track
   gvahand->do_gimp_progress = FALSE;          /* WARNING: dont try to set this TRUE if you call the API from a pthread !! */
   gvahand->all_frames_counted = FALSE;
   gvahand->all_samples_counted = FALSE;
+  gvahand->critical_timecodesteps_found = FALSE;
   gvahand->cancel_operation = FALSE;
   gvahand->filename = g_strdup(filename);
   gvahand->current_frame_nr = 0;
@@ -1349,9 +1380,17 @@ GVA_get_next_frame(t_GVA_Handle  *gvahand)
 {
   t_GVA_RetCode l_rc;
 
-  if(gap_debug) printf("GVA_get_next_frame: START handle:%d\n", (int)gvahand);
+  if(gap_debug)
+  {
+    printf("GVA_get_next_frame: START handle:%d\n", (int)gvahand);
+  }
+
   l_rc = p_gva_worker_get_next_frame(gvahand);
-  if(gap_debug) printf("GVA_get_next_frame: END rc:%d\n", (int)l_rc);
+
+  if(gap_debug)
+  {
+    printf("GVA_get_next_frame: END rc:%d\n", (int)l_rc);
+  }
 
   return(l_rc);
 }
@@ -1361,9 +1400,19 @@ GVA_seek_frame(t_GVA_Handle  *gvahand, gdouble pos, t_GVA_PosUnit pos_unit)
 {
   t_GVA_RetCode l_rc;
 
-  if(gap_debug) printf("GVA_seek_frame: START handle:%d, pos%.4f unit:%d\n", (int)gvahand, (float)pos, (int)pos_unit);
+  if(gap_debug)
+  {
+    printf("GVA_seek_frame: START handle:%d, pos%.4f unit:%d\n"
+      , (int)gvahand, (float)pos, (int)pos_unit);
+  }
+
   l_rc = p_gva_worker_seek_frame(gvahand, pos, pos_unit);
-  if(gap_debug) printf("GVA_seek_frame: END rc:%d\n", (int)l_rc);
+
+  if(gap_debug)
+  {
+    printf("GVA_seek_frame: END rc:%d\n"
+      , (int)l_rc);
+  }
 
   return(l_rc);
 }
@@ -1410,6 +1459,18 @@ GVA_count_frames(t_GVA_Handle  *gvahand)
   if(gap_debug) printf("GVA_count_frames: START handle:%d\n", (int)gvahand);
   l_rc = p_gva_worker_count_frames(gvahand);
   if(gap_debug) printf("GVA_count_frames: END rc:%d\n", (int)l_rc);
+
+  return(l_rc);
+}
+
+t_GVA_SeekSupport
+GVA_check_seek_support(t_GVA_Handle  *gvahand)
+{
+  t_GVA_SeekSupport l_rc;
+
+  if(gap_debug) printf("GVA_check_seek_support: START handle:%d\n", (int)gvahand);
+  l_rc = p_gva_worker_check_seek_support(gvahand);
+  if(gap_debug) printf("GVA_check_seek_support: END rc:%d\n", (int)l_rc);
 
   return(l_rc);
 }
@@ -1544,11 +1605,16 @@ GVA_gimp_image_to_rowbuffer(t_GVA_Handle *gvahand, gint32 image_id)
                           , gvahand->width
                           , gvahand->height);
 
+  gimp_drawable_detach(drawable);
+  
   if (gap_debug)  printf("DEBUG: after copy data rows \n");
 
-  gimp_drawable_detach (drawable);
+
   return(GVA_RET_OK); /* return the newly created layer_id (-1 on error) */
 }  /* end GVA_gimp_image_to_rowbuffer */
+
+
+
 
 /* ------------------------------------
  * p_check_image_is_alive
@@ -1796,8 +1862,8 @@ GVA_image_set_aspect(t_GVA_Handle *gvahand, gint32 image_id)
     xresolution = yresolution * asymetric;
 
     /* set resolution in DPI according to aspect ratio */
-    gimp_image_set_unit (gvahand->image_id, GIMP_UNIT_INCH);
-    gimp_image_set_resolution (gvahand->image_id, xresolution, yresolution);
+    gimp_image_set_unit (image_id, GIMP_UNIT_INCH);
+    gimp_image_set_resolution (image_id, xresolution, yresolution);
 
     if(gap_debug)
     {
@@ -1856,11 +1922,20 @@ GVA_frame_to_gimp_layer_2(t_GVA_Handle *gvahand
   static gchar *odd_even_tab[8] = {"\0", "_odd", "_even", "_odd", "_even", "\0", "\0", "\0" };
 
 
-  if(gap_debug) printf("GVA_frame_to_gimp_layer_2 framenumber: %d\n", (int)framenumber);
+  if(gap_debug)
+  {
+    printf("GVA_frame_to_gimp_layer_2 framenumber: %d\n", (int)framenumber);
+  }
+
   l_new_layer_id = -1;
   if (GVA_search_fcache(gvahand, framenumber) != GVA_RET_OK)
   {
-     if(gap_debug) printf("frame %d not found in fcache!  %d\n", (int)framenumber , (int)gvahand->current_frame_nr );
+     if(gap_debug)
+     {
+       printf("frame %d not found in fcache!  %d\n"
+         , (int)framenumber
+         , (int)gvahand->current_frame_nr );
+     }
 
      return (-2);
   }
@@ -1937,7 +2012,8 @@ GVA_frame_to_gimp_layer_2(t_GVA_Handle *gvahand
    *
    */
   if (gap_debug)
-  {  printf("DEBUG: before copy data rows gvahand->height=%d  gvahand->width=%d\n"
+  {
+     printf("DEBUG: before copy data rows gvahand->height=%d  gvahand->width=%d\n"
             , (int)gvahand->height
             ,(int)gvahand->width);
   }
@@ -1993,13 +2069,16 @@ GVA_frame_to_gimp_layer_2(t_GVA_Handle *gvahand
     }
   }
 
-  if (gap_debug)  printf("DEBUG: after copy data rows (NO SHADOW)\n");
+  if (gap_debug)
+  {
+    printf("DEBUG: after copy data rows (NO SHADOW)\n");
+  }
 
   gimp_drawable_flush (drawable);
+  gimp_drawable_detach(drawable);
 
 /*
  * gimp_drawable_merge_shadow (drawable->id, TRUE);
- * gimp_drawable_detach (drawable);
  */
 
   /* what to do with old layer ? */
@@ -2039,7 +2118,11 @@ GVA_frame_to_gimp_layer_2(t_GVA_Handle *gvahand
    * }
    */
 
-  gimp_drawable_detach (drawable);
+  if (gap_debug)
+  {
+    printf("END GVA_frame_to_gimp_layer_2: return value:%d\n", (int)l_new_layer_id);
+  }
+
   return(l_new_layer_id); /* return the newly created layer_id (-1 on error) */
 }  /* end GVA_frame_to_gimp_layer_2 */
 

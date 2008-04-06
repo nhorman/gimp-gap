@@ -21,7 +21,7 @@ VID_ENC_AVI=vid_enc_avi
 endif
 
 
-SUBDIRS = extern_libs images $(LIBWAVCLIENT) $(LIBGAPVIDAPI) gap po docs \
+SUBDIRS = libgapbase extern_libs images $(LIBWAVCLIENT) $(LIBGAPVIDAPI) gap po docs \
 	$(LIBGAPVIDUTIL) 	\
 	$(VID_COMMON)		\
 	$(VID_ENC_AVI) 		\

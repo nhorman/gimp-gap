@@ -121,7 +121,7 @@ p_mov_selection_handling(gint32 orig_layer_id
                   , GapMovCurrent *cur_ptr
                   )
 {
-  GimpDrawable *drawable;
+  gint l_bpp;
   gint l_width;
   gint l_height;
   gint32 l_tmp_layer_id;
@@ -137,9 +137,9 @@ p_mov_selection_handling(gint32 orig_layer_id
     gimp_layer_add_alpha(orig_layer_id);
   }
 
-  drawable =  gimp_drawable_get (orig_layer_id);
-  l_width = drawable->width;
-  l_height = drawable->height;
+  l_width = gimp_drawable_width(orig_layer_id);
+  l_height = gimp_drawable_height(orig_layer_id);
+  l_bpp = gimp_drawable_bpp(orig_layer_id);
 
   l_tmp_layer_id = gimp_layer_new(val_ptr->tmpsel_image_id, "dummy",
                                  l_width, l_height,
@@ -151,7 +151,7 @@ p_mov_selection_handling(gint32 orig_layer_id
   gimp_selection_none(val_ptr->tmpsel_image_id);
 
   gap_layer_copy_picked_channel(l_tmp_layer_id, 3  /* dst_pick is the alpha channel */
-                               ,orig_layer_id, (drawable->bpp -1)
+                               ,orig_layer_id, (l_bpp -1)
 			       ,FALSE  /* shadow */
 			       );
 
@@ -175,7 +175,7 @@ p_mov_selection_handling(gint32 orig_layer_id
     gimp_edit_clear(l_tmp_layer_id);
 
     /* copy alpha channel form dummy back to original */
-    gap_layer_copy_picked_channel(orig_layer_id, (drawable->bpp -1)
+    gap_layer_copy_picked_channel(orig_layer_id, (l_bpp -1)
                                ,l_tmp_layer_id, 3 /* dst_pick is the alpha channel */
 			       ,FALSE  /* shadow */
 			       );
@@ -193,7 +193,6 @@ p_mov_selection_handling(gint32 orig_layer_id
 
   /* delete dummy layer */
   gimp_image_remove_layer(val_ptr->tmpsel_image_id, l_tmp_layer_id);
-  gimp_drawable_detach (drawable);
 
 }  /* end p_mov_selection_handling  */
 
@@ -823,16 +822,13 @@ gap_mov_render_create_or_replace_tempsel_image(gint32 channel_id
 		  , gboolean all_empty
                   )
 {
-  GimpDrawable *drawable;
-
   if(val_ptr->tmpsel_image_id >= 0)
   {
     gimp_image_delete(val_ptr->tmpsel_image_id);
   }
 
-  drawable = gimp_drawable_get (channel_id);
-  val_ptr->tmpsel_image_id = gimp_image_new(drawable->width
-                                           ,drawable->height
+  val_ptr->tmpsel_image_id = gimp_image_new(gimp_drawable_width(channel_id)
+                                           ,gimp_drawable_height(channel_id)
 					   ,GIMP_RGB
 					   );
 
@@ -845,5 +841,4 @@ gap_mov_render_create_or_replace_tempsel_image(gint32 channel_id
                           ,channel_id                   /* src */
 			  );
   }
-  gimp_drawable_detach (drawable);
 }  /* end gap_mov_render_create_or_replace_tempsel_image */

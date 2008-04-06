@@ -291,6 +291,8 @@ How to use
 Internal PDB names and menu names of GIMP-GAP plug-ins
 ======================================================
 
+  plug_in_gap_layers_run_animfilter   "<Image>/Filters/Filter all Layers"
+
   plug_in_bluebox                     "<Image>/Video/Bluebox"
   plug_in_filter_macro                "<Image>/Filters/Filtermacro"
   plug_in_gap_anim_crop               "<Image>/Video/Frames Crop"
@@ -300,18 +302,10 @@ Internal PDB names and menu names of GIMP-GAP plug-ins
   plug_in_gap_density                 "<Image>/Video/Frames Density"
   plug_in_gap_dup                     "<Image>/Video/Duplicate Frames"
   plug_in_gap_exchg                   "<Image>/Video/Exchange Frame"
-  plug_in_gap_first                   "<Image>/Video/Goto First"
-  plug_in_gap_goto                    "<Image>/Video/Goto Any"
-  plug_in_gap_last                    "<Image>/Video/Goto Last"
-  plug_in_gap_layers_run_animfilter   "<Image>/Filters/Filter all Layers"
   plug_in_gap_modify                  "<Image>/Video/Frames Modify"
+  plug-in-gap-morph-layers            "<Image>/Video/Morph"
   plug_in_gap_move                    "<Image>/Video/Move Path"
-  plug_in_gap_mpeg2encode             "<Image>/Video/Encode/MPEG2 (mpeg2encode)"
-  plug_in_gap_mpeg_encode             "<Image>/Video/Encode/MPEG1 (mpeg_encode)"
   plug_in_gap_navigator               "<Image>/Video/VCR Navigator"
-  plug_in_gap_next                    "<Image>/Video/Goto Next"
-  plug_in_gap_onionskin_configuration "<Image>/Video/Onionskin/Configuration"
-  plug_in_gap_prev                    "<Image>/Video/Goto Prev"
   plug_in_gap_range_convert           "<Image>/Video/Frames Convert"
   plug_in_gap_range_flatten           "<Image>/Video/Frames Flatten"
   plug_in_gap_range_layer_del         "<Image>/Video/Frames LayerDel"
@@ -320,11 +314,29 @@ Internal PDB names and menu names of GIMP-GAP plug-ins
   plug_in_gap_reverse                 "<Image>/Video/Frame Sequence Reverse"
   plug_in_gap_shift                   "<Image>/Video/Frame Sequence Shift"
   plug_in_gap_split                   "<Image>/Video/Split Img to Frames"
+  plug-in-gap-storyboard-edit         "<Image>/Video/Storyboard"
   plug_in_gap_videoframes_player      "<Image>/Video/Playback"
-  plug_in_gap_mplayer_decode          "<Image>/Video/Split Video to Frames/MPlayer based extract"
-  plug_in_gap_mplayer_decode_toolbox  "<Toolbox>/Xtns/Split Video to Frames/MPlayer based extract"
-  plug_in_gap_xanim_decode            "<Image>/Video/Split Video to Frames/XANIM based extract"
-  plug_in_gap_xanim_decode_toolbox    "<Toolbox>/Xtns/Split Video to Frames/XANIM based extract"
+
+  plug-in-gap-vid-encode-master       "<Image>/Video/Encode/Master Videoencoder"
+  plug_in_gap_mpeg2encode             "<Image>/Video/Encode/MPEG2 (mpeg2encode)"
+  plug_in_gap_mpeg_encode             "<Image>/Video/Encode/MPEG1 (mpeg_encode)"
+
+  plug_in_gap_goto                    "<Image>/Video/Go To/Any Frame"
+  plug_in_gap_first                   "<Image>/Video/Go To/First Frame"
+  plug_in_gap_last                    "<Image>/Video/Go To/Last Frame"
+  plug_in_gap_next                    "<Image>/Video/Go To/Next Frame"
+  plug_in_gap_prev                    "<Image>/Video/Go To/Previous Frame"
+
+  plug_in_gap_onionskin_configuration "<Image>/Video/Onionskin/Configuration"
+
+  plug_in_gap_mplayer_decode          "<Image>/Video/Split Video into Frames/MPlayer based extract"
+  plug_in_gap_xanim_decode            "<Image>/Video/Split Video into Frames/XANIM based extract"
+  plug_in_gap_exctract_video          "<Image>/Video/Split Video into Frames/Extract Videorange"
+
+  plug_in_gap_mplayer_decode_toolbox  "<Toolbox>/Xtns/Split Video into Frames/MPlayer based extract"
+  plug_in_gap_xanim_decode_toolbox    "<Toolbox>/Xtns/Split Video into Frames/XANIM based extract"
+  plug_in_gap_exctract_video_toolbox  "<Toolbox>/Xtns/Split Video into Frames/Extract Videorange"
+  plug-in-gap-video-index-creator     "<Toolbox>/Xtns/Videoindex creation"
 
   script-fu-selection-to-anim-image   "<Image>->Script-Fu->Animators->Sel To AnimImage"
 
@@ -335,3 +347,8 @@ Internal PDB names and menu names of GIMP-GAP plug-ins
   plug_in_gap_video_edit_clear        ** NON_INTERACTIVE batchscript API
   plug_in_gap_video_edit_copy         ** NON_INTERACTIVE batchscript API
   plug_in_gap_video_edit_paste        ** NON_INTERACTIVE batchscript API
+  
+  plug-in-gap-enc-avi1                ** NON_INTERACTIVE video encoder
+  plug-in-gap-enc-ffmpeg              ** NON_INTERACTIVE video encoder
+  plug-in-gap-enc-singleframes        ** NON_INTERACTIVE video encoder
+  

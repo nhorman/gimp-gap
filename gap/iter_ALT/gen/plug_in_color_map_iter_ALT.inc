@@ -21,8 +21,8 @@ gint p_plug_in_color_map_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdou
       return -1;  /* ERROR */ 
     }
 
-    gimp_get_data("plug_in_color_map_ITER_FROM", g_plugin_data_from); 
-    gimp_get_data("plug_in_color_map_ITER_TO",   g_plugin_data_to); 
+    gimp_get_data("plug-in-color-map-ITER-FROM", g_plugin_data_from); 
+    gimp_get_data("plug-in-color-map-ITER-TO",   g_plugin_data_to); 
 
     buf_from = (t_plug_in_color_map_Vals *)&g_plugin_data_from[0]; 
     buf_to   = (t_plug_in_color_map_Vals *)&g_plugin_data_to[0]; 
@@ -37,7 +37,7 @@ gint p_plug_in_color_map_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdou
 
     buf.preview = FALSE;
 
-    gimp_set_data("plug_in_color_map", &buf, sizeof(buf)); 
+    gimp_set_data("plug-in-color-map", &buf, sizeof(buf)); 
 
     return 0; /* OK */
 }

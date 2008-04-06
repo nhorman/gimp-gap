@@ -406,17 +406,31 @@ pdb_find_video_encoders(void)
   GimpParamDef    *l_return_vals;
 
 
-  if(gap_debug) printf("pdb_find_video_encoders: START\n");
+  if(gap_debug)
+  {
+    printf("pdb_find_video_encoders: START\n");
+  }
 
   list_ecp = NULL;
   l_ecp = NULL;
 
   gimp_procedural_db_query (GAP_WILDCARD_VIDEO_ENCODERS, ".*", ".*", ".*", ".*", ".*", ".*",
                            &num_procs, &proc_list);
+  if(gap_debug)
+  {
+    printf("pdb_find_video_encoders: num_procs:%d (matching the wildcard:%s)\n"
+      ,(int)num_procs
+      , GAP_WILDCARD_VIDEO_ENCODERS
+      );
+  }
+
   for (j = 0; j < num_procs; j++)
   {
+     gboolean l_has_proc_info;
+     
      i = (num_procs -1) - j;
-     if(TRUE == gimp_procedural_db_proc_info (proc_list[i],
+     
+     l_has_proc_info = gimp_procedural_db_proc_info (proc_list[i],
                              &l_proc_blurb,
                              &l_proc_help,
                              &l_proc_author,
@@ -426,14 +440,27 @@ pdb_find_video_encoders(void)
                              &l_nparams,
                              &l_nreturn_vals,
                              &l_paramdef,
-                             &l_return_vals))
+                             &l_return_vals);
+    
+     if(gap_debug)
+     {
+       printf("pdb_find_video_encoders: check proc:%s  has_proc_info:%d\n"
+         , proc_list[i]
+         , (int)l_has_proc_info
+         );
+     }
+
+     if(l_has_proc_info == TRUE)
      {
         char *ecp_infoproc;
 
         if (l_nparams != GAP_VENC_NUM_STANDARD_PARAM)
         {
-           if(gap_debug) printf("pdb_find_video_encoders: procedure %s is skipped (nparams %d != %d)\n"
+           if(gap_debug)
+           {
+             printf("pdb_find_video_encoders: procedure %s is skipped (nparams %d != %d)\n"
                                , proc_list[i], (int)l_nparams, (int)GAP_VENC_NUM_STANDARD_PARAM );
+           }
            continue;
         }
 
@@ -480,7 +507,10 @@ pdb_find_video_encoders(void)
               {
                 if((l_params[1].data.d_string != NULL) && (l_params[1].type == GIMP_PDB_STRING))
                 {
-                  if(gap_debug) printf("[1].d_string %s\n", l_params[1].data.d_string);
+                  if(gap_debug)
+                  {
+                    printf("[1].d_string %s\n", l_params[1].data.d_string);
+                  }
                   g_snprintf(l_ecp->menu_name, sizeof(l_ecp->menu_name), "%s", l_params[1].data.d_string);
                 }
               }
@@ -496,7 +526,10 @@ pdb_find_video_encoders(void)
               {
                 if((l_params[1].data.d_string) && (l_params[1].type == GIMP_PDB_STRING))
                 {
-                  if(gap_debug) printf("[1].d_string %s\n", l_params[1].data.d_string);
+                  if(gap_debug)
+                  {
+                    printf("[1].d_string %s\n", l_params[1].data.d_string);
+                  }
                   g_snprintf(l_ecp->video_extension, sizeof(l_ecp->video_extension), "%s",  l_params[1].data.d_string);
                 }
               }
@@ -512,7 +545,10 @@ pdb_find_video_encoders(void)
               {
                 if((l_params[1].data.d_string) && (l_params[1].type == GIMP_PDB_STRING))
                 {
-                  if(gap_debug) printf("[1].d_string %s\n", l_params[1].data.d_string);
+                  if(gap_debug)
+                  {
+                    printf("[1].d_string %s\n", l_params[1].data.d_string);
+                  }
                   g_snprintf(l_ecp->short_description, sizeof(l_ecp->short_description), "%s",  l_params[1].data.d_string);
                 }
               }
@@ -529,7 +565,10 @@ pdb_find_video_encoders(void)
               {
                 if((l_params[1].data.d_string) && (l_params[1].type == GIMP_PDB_STRING))
                 {
-                  if(gap_debug) printf("[1].d_string %s\n", l_params[1].data.d_string);
+                  if(gap_debug)
+                  {
+                    printf("[1].d_string %s\n", l_params[1].data.d_string);
+                  }
                   g_snprintf(l_ecp->gui_proc, sizeof(l_ecp->gui_proc), "%s",  l_params[1].data.d_string);
                 }
               }

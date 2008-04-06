@@ -158,5 +158,14 @@ void      gap_story_render_calc_audio_playtime(GapStoryRenderVidHandle *vidhand,
 gboolean  gap_story_render_create_composite_audiofile(GapStoryRenderVidHandle *vidhand
                             , char *comp_audiofile
                             );
+guchar *  gap_story_convert_layer_to_RGB_thdata(gint32 l_layer_id, gint32 *RAW_size
+                            , gint32 *th_bpp
+                            , gint32 *th_width
+                            , gint32 *th_height
+                            );
+guchar *  gap_story_render_fetch_composite_vthumb(GapStoryRenderVidHandle *stb_comp_vidhand
+                            , gint32 framenumber
+                            , gint32 width, gint32 height
+                            );
 
 #endif        /* GAP_STORY_RENDER_PROCESSOR_H */

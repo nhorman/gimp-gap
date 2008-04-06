@@ -6,7 +6,7 @@
  * vidindex files are machine and decoder dependent files
  * that store seek offsets (gint64 or gdouble) in an access table where (framenumber / stepsize)
  * is the table index.
- * standard stepsize of 50 reults in one entry for every 50.th frame.
+ * standard stepsize of 50 results in one entry for every 50.th frame.
  * usually vidindex is built in the frame_count procedure,
  * but only if the decoder has an implementation for videoindex.
  * (the 1.st decoder with videoindex implementation is libavformat FFMPEG) 
@@ -32,13 +32,15 @@ GVA_build_videoindex_filename(const char *filename, gint32 track, const char *de
 }  /* end GVA_build_videoindex_filename */
 
 
+
 /* ------------------------------------
- * p_build_videoindex_filename
+ * p_build_gvaidx_filename
  * ------------------------------------
  * internal variante using track numbers starting at 0
  */
 static char *
-p_build_videoindex_filename(const char *filename, gint32 track, const char *decoder_name)
+p_build_gvaidx_filename(const char *filename, gint32 track, const char *decoder_name
+  , const char *suffix)
 {
   static gchar name[40];
   gchar *vindex_file;
@@ -56,7 +58,12 @@ p_build_videoindex_filename(const char *filename, gint32 track, const char *deco
     return (NULL);
   }
   
-  filename_part = g_strdup_printf("%s.%d.%s.gvaidx", name, (int)track, decoder_name);
+  filename_part = g_strdup_printf("%s.%d.%s.%s"
+        , name
+        , (int)track
+        , decoder_name
+        , suffix
+        );
   gvaindexes_dir = gimp_gimprc_query("video-index-dir");
   if(gvaindexes_dir)
   {
@@ -80,8 +87,18 @@ p_build_videoindex_filename(const char *filename, gint32 track, const char *deco
   g_free(filename_part);  
 
   return(vindex_file);
-}  /* end p_build_videoindex_filename */
+}  /* end p_build_gvaidx_filename */
 
+/* ------------------------------------
+ * p_build_videoindex_filename
+ * ------------------------------------
+ * internal variante using track numbers starting at 0
+ */
+static char *
+p_build_videoindex_filename(const char *filename, gint32 track, const char *decoder_name)
+{
+  return(p_build_gvaidx_filename(filename, track, decoder_name, "gvaidx"));
+}  /* end p_build_videoindex_filename */
 
 
 /* ----------------------------------
@@ -515,6 +532,33 @@ GVA_debug_print_videoindex(t_GVA_Handle *gvahand)
   if(vindex)
   {
     gint l_idx;
+    
+    printf("GVA_VIDEOINDEX dump START");
+    printf("TYPE:");
+    switch(vindex->tabtype)
+    {
+      case GVA_IDX_TT_GDOUBLE:
+        printf("gdouble");
+        break;
+      case GVA_IDX_TT_GINT64:
+      case GVA_IDX_TT_UNDEFINED:
+        printf("gint64");
+        break;
+    }
+    printf("\n");
+    printf("STEP:");
+    printf("%d\n", (int)vindex->stepsize);
+    printf("SIZE:");
+    printf("%d\n", (int)vindex->tabsize_used);
+    printf("TRAK:");
+    printf("%d\n", (int)vindex->track);
+    printf("FTOT:");
+    printf("%d\n", (int)vindex->total_frames);
+    printf("DECO:");
+    printf("%15s\n", vindex->hdr.val_deco);
+    printf("MTIM:");
+    printf("%ld\n", (long)vindex->mtime);
+    printf("FILE:%s\n\n", vindex->videofile_uri);
     
     for(l_idx=0; l_idx < vindex->tabsize_used; l_idx++)
     {

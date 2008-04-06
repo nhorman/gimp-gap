@@ -62,8 +62,8 @@ gint p_plug_in_lighting_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdoub
       return -1;  /* ERROR */ 
     }
 
-    gimp_get_data("plug_in_lighting_ITER_FROM", &buf_from); 
-    gimp_get_data("plug_in_lighting_ITER_TO",   &buf_to); 
+    gimp_get_data("plug-in-lighting-ITER-FROM", &buf_from); 
+    gimp_get_data("plug-in-lighting-ITER-TO",   &buf_to); 
     memcpy(&buf, &buf_from, sizeof(buf));
 
 
@@ -93,7 +93,7 @@ gint p_plug_in_lighting_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdoub
 
     p_delta_gint(&buf.light_selected, buf_from.light_selected, buf_to.light_selected, total_steps, current_step);
 
-    gimp_set_data("plug_in_lighting", &buf, sizeof(buf)); 
+    gimp_set_data("plug-in-lighting", &buf, sizeof(buf)); 
 
     return 0; /* OK */
 }

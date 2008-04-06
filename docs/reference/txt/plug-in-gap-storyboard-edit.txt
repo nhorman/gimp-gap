@@ -136,11 +136,11 @@ The Playback Preview
     Pressing the "To Frame:" button adds the clip with inverse range.
   
     new clips are added after the last clip in the cliplist.
-    (if no cliplist is opened the clip will be added
-    to the storyboard)
+    (if no cliplist is opened, or the storyboard is set as default
+    clip target, the clip will be added to the storyboard)
   
-    Limits: Creating Clips via Playback
-          does not work when playback is in storyboard mode.
+    Restrctions: Creating Clips via Playback
+          is not supported when playback is in storyboard mode.
           (STB: name of the storyboard file)
 
 
@@ -257,14 +257,14 @@ The Cliplist and Storyboard Menu
   
 
 
-Limits:  
-  In GIMP-GAP release 2.2 the storyboard dialog
+Restrictions:  
+  In GIMP-GAP release 2.4 the storyboard dialog
   does not support the full storyboard syntax.
 
   - audiotracks are not supported.
-  - multiple video tracks are not supported.
-  - transformations are not supported.
 
-  Keep in mind that the video encoders can
-  already handle all those features,
-  if they are added via a text editor.
+  Keep in mind that the backend processing can
+  already handle all specifed storyboard features.
+  If they are added via a text editor
+  all features inclusive audio processing are supported
+  for rendering the resulting video.

@@ -30,6 +30,28 @@
 #include "libgimp/gimp.h"
 #include "gap_filter_pdb.h"
 
+/* GIMP-GAP Suffix strings to identify iterator procedures.
+ * The iterator procedures have same name as the corresponding plug in
+ * extended by GAP_ITERATOR_SUFFIX or GAP_ITERATOR_SUFFIX
+ *
+ * Note: GIMP-2.4 changed naming style for pdb names from
+ * underscore to minus character. 
+ * The GIMP-2.4 core uses
+ * canonicalized names that converts all characters that are no letter and no digit
+ * to minus character.
+ * 
+ */
+#define GAP_ITERATOR_SUFFIX "-Iterator"
+#define GAP_ITERATOR_ALT_SUFFIX "-Iterator-ALT"
+
+/* GIMP-GAP suffixes for start and end value buffers
+ * (stored via gimp_set_data)
+ * those buffers are named like the corresponding plug in
+ * extended by suffixes GAP_ITER_FROM_SUFFIX and GAP_ITER_TO_SUFFIX.
+ *
+ */
+#define GAP_ITER_FROM_SUFFIX "-ITER-FROM"
+#define GAP_ITER_TO_SUFFIX "-ITER-TO"
 
 /* ------------------------
  * gap_filter_foreach.h

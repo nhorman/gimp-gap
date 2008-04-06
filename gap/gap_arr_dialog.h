@@ -204,6 +204,9 @@ gboolean gap_arr_overwrite_file_dialog(const char *filename);
 
 void gap_arr_msg_win(GimpRunMode run_mode, const char *msg);
 
-gboolean gap_arr_create_vindex_permission(const char *videofile, const char *vindex_file);
+gboolean gap_arr_create_vindex_permission(const char *videofile
+      , const char *vindex_file
+      , gint32 seek_status
+      );
 
 #endif

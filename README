@@ -34,11 +34,19 @@ Requires:
 
  Optional libs for decode/encode videofiles:
 
+ - liba52     0.7.4
+                   recent ffmpeg libraries do no longer include
+                   this library that is required to encode/decode
+                   DVD audio, but ffmpeg supports dynamic linking of the liba52
+                   library if it is installed and the GPL licence 
+                   configure option is set ( --enable-gpl --enable-liba52 )
+                   installation of liba52 is Recommanded.
+
  - xvid       1.0.2
                    The free XVID Codec is used for MPEG4 encoding
 		   with the gimp-gap AVI fileformat encoding plug-in.
 		   (the FFMPEG libs have built in MPEG4 support
-		   and do not depend on XVID Codec)
+		   and do not depend on XVID Codec)                   
 		 
 		   You can get the xvid codec at:
 		       http://www.xvid.org/downloads.html
@@ -178,6 +186,12 @@ Other known Bugs
   you can produce such problem videos
   with the ffmpeg encoder, 
   and with "MPEG1 high quality" preset in the GIMP-GAP Master Encoder dialog
+
+- random frame access is not possible for all supported video files
+  with the libavformat based video decoder.
+  (while testing for some mpeg1 encoded videos frame reads always failed after positioning
+  the current API detects such "problematic" videofiles and emulates seek
+  by very slow sequential frame read operations)
   
 
 

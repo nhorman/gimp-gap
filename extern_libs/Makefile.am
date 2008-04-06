@@ -24,6 +24,7 @@ scriptdatadir = $(GAPLIBDIR)
 if BUILD_FFMPEG_LIBS
 x_ffmpeg_libavformat = $(FFMPEG_LIBAVFORMAT_A)
 x_ffmpeg_libavcodec  = $(FFMPEG_LIBAVCODEC_A)
+x_ffmpeg_libavutil  = $(FFMPEG_LIBAVUTIL_A)
 endif
 
 #if ENABLE_GVA_LIBMPEG3_SUPPORT
@@ -34,6 +35,7 @@ endif
 scriptdata_DATA = \
 	$(x_ffmpeg_libavformat)			\
 	$(x_ffmpeg_libavcodec)			\
+	$(x_ffmpeg_libavutil)			\
 	$(x_libmpeg3)
 
 
@@ -45,6 +47,11 @@ $(x_ffmpeg_libavformat):
 	make lib
 
 $(x_ffmpeg_libavcodec):
+	echo "cd $(FFMPEG_DIR)"; \
+	cd $(FFMPEG_DIR);\
+	make lib
+
+$(x_ffmpeg_libavutil):
 	echo "cd $(FFMPEG_DIR)"; \
 	cd $(FFMPEG_DIR);\
 	make lib

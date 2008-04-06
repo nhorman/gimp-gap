@@ -1865,6 +1865,62 @@ gap_arr_msg_win(GimpRunMode run_mode, const char *msg)
 }    /* end  gap_arr_msg_win */
 
 
+/* --------------------------------------
+ * p_mkdir_from_file_if_not_exists
+ * --------------------------------------
+ * return TRUE if directory part of the specifed filename already exists
+ *             or did not exist, but could be created successfully.
+ * return FALSE if directory part does not exist and could not be created.
+ */
+int
+p_mkdir_from_file_if_not_exists (const char *fname, int mode)
+{
+  gint   l_ii;
+  char *l_dir;
+  gboolean l_rc;
+
+  l_rc = TRUE; /* assume success */
+
+  if(fname != NULL)
+  {
+    /* build directory name from filename */
+    l_dir = g_strdup(fname);
+    for(l_ii = strlen(l_dir) -1; l_ii >= 0; l_ii--)
+    {
+      if(l_dir[l_ii] == G_DIR_SEPARATOR)
+      {
+        l_dir[l_ii] = '\0';
+        break;
+      }
+      l_dir[l_ii] = '\0';
+    }
+    
+    if(*l_dir != '\0')
+    {
+      /* check if directory already exists */
+      if(!g_file_test(l_dir, G_FILE_TEST_IS_DIR))
+      {
+        gint l_errno;
+        if(0 != gap_file_mkdir(l_dir, mode))
+        {
+	  l_errno = errno;
+	  g_message(_("ERROR: could not create directory:"
+	             "'%s'"
+		     "%s")
+		     ,l_dir
+		     ,g_strerror (l_errno) );
+          l_rc = FALSE;/* can not create vindex (invalid direcory path) */
+        }
+      }
+    }
+
+    g_free(l_dir);
+  }
+
+  return(l_rc);
+}  /* end p_mkdir_from_file_if_not_exists */
+
+
 /* --------------------------------
  * p_check_vindex_file
  * --------------------------------
@@ -1872,39 +1928,13 @@ gap_arr_msg_win(GimpRunMode run_mode, const char *msg)
 static gboolean
 p_check_vindex_file(const char *vindex_file)
 {
-  gint   l_ii;
-  char *l_vindex_dir;
   gboolean l_rc;
 
   l_rc = TRUE; /* assume success */
   if(vindex_file)
   {
-    l_vindex_dir = g_strdup(vindex_file);
-    for(l_ii = strlen(l_vindex_dir) -1; l_ii >= 0; l_ii--)
-    {
-      if(l_vindex_dir[l_ii] == G_DIR_SEPARATOR)
-      {
-        l_vindex_dir[l_ii] = '\0';
-        break;
-      }
-      l_vindex_dir[l_ii] = '\0';
-    }
+    l_rc = p_mkdir_from_file_if_not_exists(vindex_file, GAP_FILE_MKDIR_MODE);
 
-    if(!g_file_test(l_vindex_dir, G_FILE_TEST_IS_DIR))
-    {
-      gint l_errno;
-      if(0 != gap_file_mkdir(l_vindex_dir, GAP_FILE_MKDIR_MODE))
-      {
-	l_errno = errno;
-	g_message(_("ERROR: could not create video-index-directory:"
-	           "'%s'"
-		   "%s")
-		   ,l_vindex_dir
-		   ,g_strerror (l_errno) );
-        l_rc = FALSE;/* can not create vindex (invalid direcory path) */
-      }
-    }
-    
     if(l_rc)
     {
       if(!g_file_test(vindex_file, G_FILE_TEST_EXISTS))
@@ -1937,7 +1967,6 @@ p_check_vindex_file(const char *vindex_file)
       }
     }
     
-    g_free(l_vindex_dir);
   }
   return(l_rc);
 }  /* end p_check_vindex_file */
@@ -1960,16 +1989,24 @@ p_check_vindex_file(const char *vindex_file)
  *        FALSE: user has cancelled, dont create videoindex
  */
 gboolean
-gap_arr_create_vindex_permission(const char *videofile, const char *vindex_file)
+gap_arr_create_vindex_permission(const char *videofile, const char *vindex_file
+ , gint32 seek_status)
 {
-  static GapArrArg  argv[4];
+  static GapArrArg  argv[6];
   gint   l_ii;
   char *value_string;
   char *l_videofile;
   char *l_vindex_file;
   char *l_info_msg;
+  char *l_status_info;
   gboolean l_rc;
+  gboolean l_ask_always;
 
+#define SEEK_STATUS_SEEKSUPP_NONE   0
+#define SEEK_STATUS_SEEKSUPP_VINDEX 1
+#define SEEK_STATUS_SEEKSUPP_NATIVE 2
+
+  l_ask_always = FALSE;
   l_videofile = NULL;
   l_vindex_file = NULL;
   value_string = gimp_gimprc_query("video-index-creation");
@@ -1983,6 +2020,12 @@ gap_arr_create_vindex_permission(const char *videofile, const char *vindex_file)
     }
   }
 
+  l_rc = p_mkdir_from_file_if_not_exists(vindex_file, GAP_FILE_MKDIR_MODE);
+  if (l_rc != TRUE)
+  {
+    return(l_rc);
+  }
+
 	
   l_rc = FALSE;
   if(value_string)
@@ -1991,16 +2034,38 @@ gap_arr_create_vindex_permission(const char *videofile, const char *vindex_file)
     if((*value_string == 'y')
     || (*value_string == 'Y'))
     {
+      if ((seek_status == SEEK_STATUS_SEEKSUPP_NONE)
+      || (seek_status == SEEK_STATUS_SEEKSUPP_NATIVE))
+      {
+        /* never automatically create videoindex for videos where
+         * - seek is NOT possible (even with a video index)
+         * - native seek support is available (without having video index)
+         */
+        return(FALSE);
+      }
+      
       l_rc = p_check_vindex_file(vindex_file);
       return(l_rc);
     }
+
+    if (strcmp(value_string, "ask-always") == 0)
+    {
+      l_ask_always = TRUE;
+    }
+  }
+  
+  if (!l_ask_always)
+  {
+      if (seek_status == SEEK_STATUS_SEEKSUPP_NATIVE)
+      {
+        return(FALSE);
+      }
   }
 
   l_info_msg = g_strdup_printf(_("Do you want to create a videoindex file ?\n"
-                              "This will enable fast and random frame access.\n"
-			      "\n"
-			      "If you want GIMP-GAP to create videoindex files\n"
-			      "automatically whithout showing up this dialog again\n"
+ 			      "\n"
+			      "If you want GIMP-GAP to create videoindex files automatically\n"
+			      "when recommanded, whithout showing up this dialog again\n"
 			      "then you should add the following line to\n"
 			      "your gimprc file:\n"
 			      "%s")
@@ -2010,6 +2075,35 @@ gap_arr_create_vindex_permission(const char *videofile, const char *vindex_file)
   gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_LABEL_LEFT);
   argv[l_ii].label_txt = " ";
   argv[l_ii].text_buf_ret = l_info_msg;
+
+  l_ii++;
+  gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_LABEL_LEFT);
+  argv[l_ii].label_txt = " ";
+  argv[l_ii].text_buf_ret = " ";
+
+  l_ii++;
+  gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_LABEL_LEFT);
+  argv[l_ii].label_txt = " ";
+  l_status_info = g_strdup("\0");
+  switch (seek_status)
+  {
+    case SEEK_STATUS_SEEKSUPP_NONE:
+      l_status_info = g_strdup_printf(_("WARNING:\nrandom positioning is not possible for this video.\n"
+                                      "creating a video index is NOT recommanded\n"
+                                      "(would not work)\n"));
+      break;
+    case SEEK_STATUS_SEEKSUPP_VINDEX:
+      l_status_info = g_strdup_printf(_("TIP:\ncreating a video index on this video is recommanded.\n"
+                                      "This will enable fast and random frame access.\n"
+                                      "but requires one initial full scann.\n"
+                                      "(this will take a while).\n"));
+      break;
+    case SEEK_STATUS_SEEKSUPP_NATIVE:
+      l_status_info = g_strdup_printf(_("INFO:\nnative fast and exact random positioning works for this video.\n"
+                                      "video index is not required, and should be cancelled.\n"));
+      break;
+  }
+  argv[l_ii].text_buf_ret = l_status_info;
 
   if(videofile)
   {
@@ -2048,6 +2142,7 @@ gap_arr_create_vindex_permission(const char *videofile, const char *vindex_file)
     g_free(l_vindex_file);
   }
   g_free(l_info_msg);
+  g_free(l_status_info);
 
   return (l_rc);
 }  /* end gap_arr_create_vindex_permission */

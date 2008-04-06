@@ -30,24 +30,24 @@
 
 #include <config.h>
 
-#define GAP_WILDCARD_VIDEO_ENCODERS     "^plug_in_gap_enc_.*"
-#define GAP_QUERY_PREFIX_VIDEO_ENCODERS "extension_gap_ENCPAR_QUERY_"
-#define GAP_VENC_PAR_MENU_NAME          "gapve_menu_name"
-#define GAP_VENC_PAR_VID_EXTENSION      "gapve_vid_extension"
-#define GAP_VENC_PAR_SHORT_DESCRIPTION  "gapve_vid_short_description"
-#define GAP_VENC_PAR_GUI_PROC           "gapve_gui_proc"
+#define GAP_WILDCARD_VIDEO_ENCODERS     "^plug.in.gap.enc.*"
+#define GAP_QUERY_PREFIX_VIDEO_ENCODERS "extension-gap-ENCPAR-QUERY-"
+#define GAP_VENC_PAR_MENU_NAME          "gapve-menu-name"
+#define GAP_VENC_PAR_VID_EXTENSION      "gapve-vid-extension"
+#define GAP_VENC_PAR_SHORT_DESCRIPTION  "gapve-vid-short-description"
+#define GAP_VENC_PAR_GUI_PROC           "gapve-gui-proc"
 
-#define GAP_PLUGIN_NAME_SINGLEFRAMES_ENCODE  "plug_in_gap_enc_singleframes"
-#define GAP_PLUGIN_NAME_FFMPEG_ENCODE        "plug_in_gap_enc_ffmpeg"
-#define GAP_PLUGIN_NAME_AVI_ENCODE           "plug_in_gap_enc_avi1"
-#define GAP_PLUGIN_NAME_QT1_ENCODE           "plug_in_gap_enc_qt1"
-#define GAP_PLUGIN_NAME_QT2_ENCODE           "plug_in_gap_enc_qt2"
+#define GAP_PLUGIN_NAME_SINGLEFRAMES_ENCODE  "plug-in-gap-enc-singleframes"
+#define GAP_PLUGIN_NAME_FFMPEG_ENCODE        "plug-in-gap-enc-ffmpeg"
+#define GAP_PLUGIN_NAME_AVI_ENCODE           "plug-in-gap-enc-avi1"
+#define GAP_PLUGIN_NAME_QT1_ENCODE           "plug-in-gap-enc-qt1"
+#define GAP_PLUGIN_NAME_QT2_ENCODE           "plug-in-gap-enc-qt2"
 
 /* the old encoders MPG1 and MPG2 are not ported
  * to GTK+2.2 (maybe i'll remove them completely)
  */
-#define GAP_PLUGIN_NAME_MPG1_ENCODE          "plug_in_gap_enc_mpg1"
-#define GAP_PLUGIN_NAME_MPG2_ENCODE          "plug_in_gap_enc_mpg2"
+#define GAP_PLUGIN_NAME_MPG1_ENCODE          "plug-in-gap-enc-mpg1"
+#define GAP_PLUGIN_NAME_MPG2_ENCODE          "plug-in-gap-enc-mpg2"
 
 
 
@@ -71,6 +71,7 @@
 
 
 
+
 #define VID_FMT_COMP   0
 #define VID_FMT_PAL    1
 #define VID_FMT_NTSC   2
@@ -79,7 +80,6 @@
 #define VID_FMT_UNDEF  5
 
 #define GAP_GVE_MENU_ITEM_INDEX_KEY "gap_enc_menu_item_index"
-
 
 
 typedef struct GapGveEncList {

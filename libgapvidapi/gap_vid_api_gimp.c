@@ -354,6 +354,18 @@ p_wrapper_gimp_count_frames(t_GVA_Handle *gvahand)
 }  /* end p_wrapper_gimp_count_frames */
 
 
+
+/* ----------------------------------
+ * p_wrapper_gimp_seek_support
+ * ----------------------------------
+ */
+t_GVA_SeekSupport
+p_wrapper_gimp_seek_support(t_GVA_Handle *gvahand)
+{
+  return(GVA_SEEKSUPP_NATIVE);
+}  /* end p_wrapper_gimp_seek_support */
+
+
 /* -----------------------------
  * p_gimp_new_dec_elem
  * -----------------------------
@@ -379,6 +391,7 @@ p_gimp_new_dec_elem(void)
     dec_elem->fptr_seek_audio      = &p_wrapper_gimp_seek_audio;
     dec_elem->fptr_get_audio       = &p_wrapper_gimp_get_audio;
     dec_elem->fptr_count_frames    = &p_wrapper_gimp_count_frames;
+    dec_elem->fptr_seek_support    = &p_wrapper_gimp_seek_support;
     dec_elem->fptr_get_video_chunk = NULL;  /* singleframes dont have compressed video chunks */
     dec_elem->next = NULL;
   }

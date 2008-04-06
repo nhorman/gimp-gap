@@ -7,8 +7,7 @@ gint p_plug_in_deinterlace_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gd
     typedef struct t_plug_in_deinterlace_Vals 
     {
       gint      evenness;
-      gboolean preview;
-    } t_plug_in_deinterlace_Vals; 
+     } t_plug_in_deinterlace_Vals; 
 
     t_plug_in_deinterlace_Vals  buf, *buf_from, *buf_to; 
 
@@ -19,8 +18,8 @@ gint p_plug_in_deinterlace_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gd
       return -1;  /* ERROR */ 
     }
 
-    gimp_get_data("plug_in_deinterlace_ITER_FROM", g_plugin_data_from); 
-    gimp_get_data("plug_in_deinterlace_ITER_TO",   g_plugin_data_to); 
+    gimp_get_data("plug-in-deinterlace-ITER-FROM", g_plugin_data_from); 
+    gimp_get_data("plug-in-deinterlace-ITER-TO",   g_plugin_data_to); 
 
     buf_from = (t_plug_in_deinterlace_Vals *)&g_plugin_data_from[0]; 
     buf_to   = (t_plug_in_deinterlace_Vals *)&g_plugin_data_to[0]; 
@@ -28,7 +27,7 @@ gint p_plug_in_deinterlace_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gd
 
     p_delta_gint(&buf.evenness, buf_from->evenness, buf_to->evenness, total_steps, current_step);
 
-    gimp_set_data("plug_in_deinterlace", &buf, sizeof(buf)); 
+    gimp_set_data("plug-in-deinterlace", &buf, sizeof(buf)); 
 
     return 0; /* OK */
 }

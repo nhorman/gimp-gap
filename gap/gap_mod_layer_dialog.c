@@ -814,6 +814,13 @@ p_make_toplevel_menu_items(GtkWidget *master_menu, GapModFramesGlobalParams *gmo
 		       ,gmop
 		       );
 
+  p_make_func_menu_item(_("Resize layer(s) to image size")
+                       ,_("Resize selected layer(s) to image size")
+                      ,GAP_MOD_ACM_RESIZE_TO_IMG
+                      ,master_menu
+                      ,gmop
+                      );
+
   p_make_func_menu_item(_("Add alpha channel")
                        ,NULL
 		       ,GAP_MOD_ACM_ADD_ALPHA

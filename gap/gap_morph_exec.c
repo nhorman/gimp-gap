@@ -1969,9 +1969,9 @@ p_layer_warp_move (GapMorphWorkPoint     *wp_list_1
                       , dst_drawable->height
                       );
   gimp_pixel_fetcher_destroy (src_pixfet);
-  gimp_drawable_detach (src_drawable);
-  gimp_drawable_detach (dst_drawable);
 
+  gimp_drawable_detach(src_drawable);
+  gimp_drawable_detach(dst_drawable);
 }   /* end p_layer_warp_move */
 
 /* ---------------------------------
@@ -2106,9 +2106,11 @@ p_mix_layers (gint32  curr_image_id
                       , dst_drawable->width
                       , dst_drawable->height
                       );
-  gimp_drawable_detach (top_drawable);
-  gimp_drawable_detach (bg_drawable);
-  gimp_drawable_detach (dst_drawable);
+
+  gimp_drawable_detach(bg_drawable);
+  gimp_drawable_detach(top_drawable);
+  gimp_drawable_detach(dst_drawable);
+
   return(dst_layer_id);
 
 }   /* end p_mix_layers */
@@ -2383,6 +2385,7 @@ p_create_morph_tween_frame(gint32 total_steps
      gap_morph_exec_free_workpoint_list(&curr_wp_list_1);
    }
 
+   gimp_drawable_detach(dst_drawable);
 
    if(mgpp->render_mode == GAP_MORPH_RENDER_MODE_WARP)
    {
@@ -2413,7 +2416,7 @@ p_create_morph_tween_frame(gint32 total_steps
      gimp_display_new (dup_id);
 
    }
-   gimp_drawable_detach (dst_drawable);
+
    return(merged_layer_id);
 
 }  /* end p_create_morph_tween_frame  */

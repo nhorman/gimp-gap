@@ -28,6 +28,7 @@
  */
 
 /* Revision history
+ *  (2007/11/01)  v2.3.0     hof: - gimprc changed to "show-tooltips" with gimp-2.4
  *  (2004/11/12)  v2.1.0     hof: - added help button
  *  (2004/03/17)  v1.3.27a   hof: - go_timer does check if video api is busy and retries
  *                                  to display the wanted frame if video fetch (of previous frame)
@@ -354,7 +355,7 @@ static void     p_frame_chache_processing(GapPlayerMainGlobalParams *gpp
                    , const gchar *ckey);
 static void     p_update_cache_status (GapPlayerMainGlobalParams *gpp);
 
-
+static void     p_audio_startup_server(GapPlayerMainGlobalParams *gpp);
 
 /* -----------------------------
  * p_check_tooltips
@@ -363,26 +364,7 @@ static void     p_update_cache_status (GapPlayerMainGlobalParams *gpp);
 static void
 p_check_tooltips(void)
 {
-  char *value_string;
-
-  value_string = gimp_gimprc_query("show-tool-tips");
-
-  if(value_string != NULL)
-  {
-    if (strcmp(value_string, "no") == 0)
-    {
-       gimp_help_disable_tooltips ();
-    }
-    else
-    {
-       gimp_help_enable_tooltips ();
-    }
-  }
-  else
-  {
-       gimp_help_enable_tooltips ();
-  }
-
+  gap_lib_check_tooltips(NULL);
 }  /* end p_check_tooltips */
 
 
@@ -549,6 +531,15 @@ p_audio_init(GapPlayerMainGlobalParams *gpp)
   /* if (gap_debug) printf("p_audio_init\n"); */
   if(gpp->audio_samples > 0)       /* audiofile has samples (seems to be a valid audiofile) */
   {
+    if(gpp->audio_status == GAP_PLAYER_MAIN_AUSTAT_UNCHECKED)
+    {
+      p_audio_startup_server(gpp);
+      if(gpp->audio_enable != TRUE)
+      {
+        return;
+      }
+      gpp->audio_status = GAP_PLAYER_MAIN_AUSTAT_NONE;
+    }
     if(gpp->audio_status <= GAP_PLAYER_MAIN_AUSTAT_NONE)
     {
       if ( apcl_start(p_audio_errfunc) < 0 )
@@ -992,6 +983,7 @@ p_mtrace_image_alive(GapPlayerMainGlobalParams *gpp
                                          , *mtrace_height
                                          , image_type
                                          );
+
 #ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
     /* if there is an active videohandle
      * set image resolution according to
@@ -1681,23 +1673,40 @@ p_check_for_active_image(GapPlayerMainGlobalParams *gpp, gint32 framenr)
 static void
 p_update_pviewsize(GapPlayerMainGlobalParams *gpp)
 {
+  gint32 l_width;
+  gint32 l_height;
+  
+  l_width = gpp->ainfo_ptr->width;
+  l_height = gpp->ainfo_ptr->height;
+
+
+  if(gpp->aspect_ratio > 0.0)
+  {
+    gdouble asp_height;
+    
+    /* force playback at specified aspect ratio */
+    asp_height = (gdouble)(l_width) / gpp->aspect_ratio;
+    l_height = (gint32)asp_height;
+  }
+
   /*
    * Resize the greater one of dwidth and dheight to PREVIEW_SIZE
    */
-  if ( gpp->ainfo_ptr->width > gpp->ainfo_ptr->height )
+  if ( l_width > l_height )
   {
     /* landscape */
-    gpp->pv_height = gpp->ainfo_ptr->height * gpp->pv_pixelsize / gpp->ainfo_ptr->width;
+    gpp->pv_height = l_height * gpp->pv_pixelsize / l_width;
     gpp->pv_height = MAX (1, gpp->pv_height);
-    gpp->pv_width  = gpp->pv_pixelsize;
+    gpp->pv_width = gpp->pv_pixelsize;
   }
   else
   {
     /* portrait */
-    gpp->pv_width = gpp->ainfo_ptr->width * gpp->pv_pixelsize / gpp->ainfo_ptr->height;
-    gpp->pv_width  = MAX (1, gpp->pv_width);
+    gpp->pv_width = l_width * gpp->pv_pixelsize / l_height;
+    gpp->pv_width = MAX(1, gpp->pv_width);
     gpp->pv_height = gpp->pv_pixelsize;
   }
+
 
   if(gpp->pv_pixelsize != (gint32)GTK_ADJUSTMENT(gpp->size_spinbutton_adj)->value)
   {
@@ -2108,9 +2117,21 @@ p_open_videofile(GapPlayerMainGlobalParams *gpp
     &&(gpp->startup == FALSE))
     {
       gboolean vindex_permission;
+      t_GVA_SeekSupport seekSupp;
+
+      gpp->cancel_video_api = FALSE;
+      gpp->request_cancel_video_api = FALSE;
+      if(gpp->progress_bar)
+      {
+        gtk_progress_bar_set_text(GTK_PROGRESS_BAR(gpp->progress_bar), _("seek-selftest"));
+      }
+      seekSupp = GVA_check_seek_support(gpp->gvahand);
 
       /* check for permission to create a videoindex file */
-      vindex_permission = gap_arr_create_vindex_permission(gpp->gva_videofile, vindex_file);
+      vindex_permission = gap_arr_create_vindex_permission(gpp->gva_videofile
+                            , vindex_file
+                            , (gint32)seekSupp
+                            );
 
       if(vindex_permission)
       {
@@ -3147,7 +3168,7 @@ p_display_frame(GapPlayerMainGlobalParams *gpp, gint32 framenr)
     l_flip_request = GAP_STB_FLIP_NONE;
     l_flip_status = GAP_STB_FLIP_NONE;
 
-    if(gpp->stb_in_track > 0)
+    if(gpp->stb_in_track >= 0)
     {
       l_th_data = p_fetch_display_th_data_from_storyboard(gpp
                 , framenr
@@ -3167,8 +3188,18 @@ p_display_frame(GapPlayerMainGlobalParams *gpp, gint32 framenr)
     }
     else
     {
+      gint32 mapped_framenr =
+        gap_story_get_mapped_master_frame_number(gpp->stb_ptr->mapping, framenr);
+      
+      if(gap_debug)
+      {
+        printf("  >> PLAY composite framenr:%d mapped_framenr:%d\n"
+          ,(int)framenr
+          ,(int)mapped_framenr
+          );
+      }
       l_th_data = p_fetch_display_composite_image_from_storyboard(gpp
-                , framenr
+                , mapped_framenr
                 , &ckey
                 , &l_composite_image_id
                 , &l_th_width
@@ -7698,7 +7729,10 @@ gap_player_dlg_create(GapPlayerMainGlobalParams *gpp)
 
   p_check_tooltips();
 
-  p_audio_startup_server(gpp);
+  /* set audio status to unchecked state
+   * and do p_audio_startup_server(gpp); deferred on 1st attempt to enter audiofile
+   */
+  gpp->audio_status = GAP_PLAYER_MAIN_AUSTAT_UNCHECKED;
 
   if(gpp->autostart)
   {
@@ -7784,6 +7818,7 @@ gap_player_dlg_playback_dialog(GapPlayerMainGlobalParams *gpp)
   gpp->progress_bar_idle_txt = g_strdup(" ");
   gpp->exact_timing = TRUE;
   gpp->caller_range_linked = FALSE;
+  gpp->aspect_ratio = GAP_PLAYER_DONT_FORCE_ASPECT;
 
   gap_player_dlg_create(gpp);
   if(gpp->shell_window)

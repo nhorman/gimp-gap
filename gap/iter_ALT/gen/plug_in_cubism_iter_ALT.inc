@@ -8,7 +8,7 @@ gint p_plug_in_cubism_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble
     {
       gdouble   tile_size;
       gdouble   tile_saturation;
-      long      bg_color;
+      gint       bg_color;
       gboolean preview;
     } t_plug_in_cubism_Vals; 
 
@@ -21,8 +21,8 @@ gint p_plug_in_cubism_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble
       return -1;  /* ERROR */ 
     }
 
-    gimp_get_data("plug_in_cubism_ITER_FROM", g_plugin_data_from); 
-    gimp_get_data("plug_in_cubism_ITER_TO",   g_plugin_data_to); 
+    gimp_get_data("plug-in-cubism-ITER-FROM", g_plugin_data_from); 
+    gimp_get_data("plug-in-cubism-ITER-TO",   g_plugin_data_to); 
 
     buf_from = (t_plug_in_cubism_Vals *)&g_plugin_data_from[0]; 
     buf_to   = (t_plug_in_cubism_Vals *)&g_plugin_data_to[0]; 
@@ -30,10 +30,10 @@ gint p_plug_in_cubism_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble
 
     p_delta_gdouble(&buf.tile_size, buf_from->tile_size, buf_to->tile_size, total_steps, current_step);
     p_delta_gdouble(&buf.tile_saturation, buf_from->tile_saturation, buf_to->tile_saturation, total_steps, current_step);
-    p_delta_long(&buf.bg_color, buf_from->bg_color, buf_to->bg_color, total_steps, current_step);
+    p_delta_gint(&buf.bg_color, buf_from->bg_color, buf_to->bg_color, total_steps, current_step);
 
     buf.preview = FALSE;
-    gimp_set_data("plug_in_cubism", &buf, sizeof(buf)); 
+    gimp_set_data("plug-in-cubism", &buf, sizeof(buf)); 
 
     return 0; /* OK */
 }

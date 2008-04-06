@@ -943,24 +943,29 @@ gap_story_render_audio_add_aud_list(GapStoryRenderVidHandle *vidhand, GapStoryRe
 
 
   if((vidhand)  && (aud_elem))
-   {
+  {
+     if(vidhand->parsing_section == NULL)
+     {
+       printf("** INTERNAL ERROR parsing_section is NULL\n");
+       return;
+     }
      aud_listend = vidhand->aud_list;
-     if (vidhand->aud_list == NULL)
+     if (vidhand->parsing_section->aud_list == NULL)
      {
        /* 1. element (or returned list) starts aud_list */
-       vidhand->aud_list = aud_elem;
+       vidhand->parsing_section->aud_list = aud_elem;
      }
      else
      {
        /* link aud_elem (that can be a single ement or list) to the end of aud_list */
-       aud_listend = vidhand->aud_list;
+       aud_listend = vidhand->parsing_section->aud_list;
        while(aud_listend->next != NULL)
        {
           aud_listend = (GapStoryRenderAudioRangeElem *)aud_listend->next;
        }
        aud_listend->next = (GapStoryRenderAudioRangeElem *)aud_elem;
      }
-   }
+  }
 }  /* end gap_story_render_audio_add_aud_list */
 
 

@@ -32,7 +32,7 @@
 
 
 
-#define GAP_PLUGIN_NAME_AVI_PARAMS     "plug_in_gap_encpar_avi1"
+#define GAP_PLUGIN_NAME_AVI_PARAMS     "plug-in-gap-encpar-avi1"
 #define GAP_HELP_ID_AVI_PARAMS         "plug-in-gap-encpar-avi1"
 #define GAP_MENUNAME                   "AVI1"
 

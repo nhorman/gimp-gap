@@ -104,6 +104,8 @@
 
 #define  GAP_MOD_ACM_APPLY_FILTER_ON_LAYERMASK     57
 #define  GAP_MOD_ACM_SEL_ALPHA                     58
+#define  GAP_MOD_ACM_RESIZE_TO_IMG                 59
+
 typedef struct
 {
   gint32 layer_id;

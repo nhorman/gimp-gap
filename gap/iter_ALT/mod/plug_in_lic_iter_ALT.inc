@@ -26,8 +26,8 @@ gint p_plug_in_lic_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble cu
       return -1;  /* ERROR */ 
     }
 
-    gimp_get_data("plug_in_lic_ITER_FROM", g_plugin_data_from); 
-    gimp_get_data("plug_in_lic_ITER_TO",   g_plugin_data_to); 
+    gimp_get_data("plug-in-lic-ITER-FROM", g_plugin_data_from); 
+    gimp_get_data("plug-in-lic-ITER-TO",   g_plugin_data_to); 
 
     buf_from = (t_plug_in_lic_Vals *)&g_plugin_data_from[0]; 
     buf_to   = (t_plug_in_lic_Vals *)&g_plugin_data_to[0]; 
@@ -45,7 +45,7 @@ gint p_plug_in_lic_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble cu
     /* dont iterate the effect_image_id */
     /* p_delta_gint32(&buf.effect_image_id, buf_from->effect_image_id, buf_to->effect_image_id, total_steps, current_step); */
 
-    gimp_set_data("plug_in_lic", &buf, sizeof(buf)); 
+    gimp_set_data("plug-in-lic", &buf, sizeof(buf)); 
 
     return 0; /* OK */
 }

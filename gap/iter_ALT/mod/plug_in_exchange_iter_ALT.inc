@@ -9,7 +9,6 @@ gint p_plug_in_exchange_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdoub
       GimpRGB  from;
       GimpRGB  to;
       GimpRGB  threshold;
-      gboolean preview;
     } t_plug_in_exchange_Vals; 
 
     t_plug_in_exchange_Vals  buf, *buf_from, *buf_to; 
@@ -21,8 +20,8 @@ gint p_plug_in_exchange_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdoub
       return -1;  /* ERROR */ 
     }
 
-    gimp_get_data("plug_in_exchange_ITER_FROM", g_plugin_data_from); 
-    gimp_get_data("plug_in_exchange_ITER_TO",   g_plugin_data_to); 
+    gimp_get_data("plug-in-exchange-ITER-FROM", g_plugin_data_from); 
+    gimp_get_data("plug-in-exchange-ITER-TO",   g_plugin_data_to); 
 
     buf_from = (t_plug_in_exchange_Vals *)&g_plugin_data_from[0]; 
     buf_to   = (t_plug_in_exchange_Vals *)&g_plugin_data_to[0]; 
@@ -35,8 +34,7 @@ gint p_plug_in_exchange_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdoub
     /* exchange takes FROM colors from foreground when called in mode GIMP_RUN_WITH_LAST_VALS */
     gimp_context_set_foreground(&buf.from);
     
-    buf.preview = FALSE;
-    gimp_set_data("plug_in_exchange", &buf, sizeof(buf)); 
+    gimp_set_data("plug-in-exchange", &buf, sizeof(buf)); 
 
     return 0; /* OK */
 }

@@ -45,8 +45,6 @@ static char *plug_in_version_fmt =  "%d.%d.%d; 2004/01/26";
 #include "gap-intl.h"
 
 /* Defines */
-#define PLUG_IN_NAME        "plug_in_gap_storyboard_edit"
-#define PLUG_IN_PRINT_NAME  "Storyboard Editor"
 #define PLUG_IN_IMAGE_TYPES "RGB*, INDEXED*, GRAY*"
 #define PLUG_IN_AUTHOR      "Wolfgang Hofer (hof@gimp.org)"
 #define PLUG_IN_COPYRIGHT   "Wolfgang Hofer"
@@ -57,8 +55,8 @@ int gap_debug = 0;  /* 1 == print debug infos , 0 dont print debug infos */
 static GapStbMainGlobalParams global_params =
 {
   GIMP_RUN_INTERACTIVE
-, FALSE       /* initialized     run */
-, FALSE       /* gboolean     run */
+, FALSE       /* initialized */
+, FALSE       /* gboolean run */
 , -1          /* gint32  image_id */
 , "\0"        /* storyboard_filename */
 , "\0"        /* cliplist_filename */
@@ -66,21 +64,23 @@ static GapStbMainGlobalParams global_params =
 , NULL        /*  cll  cliplist pointer */
 , NULL        /*  curr_selection  (list holds all selected items) */
 , NULL        /*  plp  player param pointer */
-
 , NULL        /*  GapStbTabWidgets  *stb_widgets */
 , NULL        /*  GapStbTabWidgets  *cll_widgets */
-, NULL        /*  GapStoryVideoElem *video_list */
+, NULL        /*  GapStoryVTResurceElem *video_list */
 , NULL        /*  GapVThumbElem     *vthumb_list */
 , NULL        /*  t_GVA_Handle      *gvahand */
 , NULL        /*  gchar             *gva_videofile */
-, NULL        /*  GtkWidget         *progress_bar */
+, NULL        /*  GtkWidget         *progress_bar_master */
+, NULL        /*  GtkWidget         *progress_bar_sub */
 , FALSE       /*  gboolean           gva_lock */
 , FALSE       /*  gboolean           cancel_video_api */
 , FALSE       /*  gboolean           auto_vthumb */
 , FALSE       /*  gboolean           auto_vthumb_refresh_canceled */
 , FALSE       /*  gboolean           in_player_call */
 , FALSE       /*  gboolean           arr_dlg_open */
-
+, FALSE       /*  gboolean           force_stb_aspect */
+, GAP_STB_CLIPTARGET_CLIPLIST_APPEND  /* GapStoryClipTargetEnum clip_target */
+, GAP_VTHUMB_PREFETCH_NOT_ACTIVE      /* GapVThumbPrefetchProgressMode    vthumb_prefetch_in_progress */
 , FALSE       /*  gboolean           win_prop_dlg_open */
 , GAP_STB_EDMO_SEQUENCE_NUMBER   /*  gint32             cll_edmode */
 , 5                              /*  gint32 cll_cols  */
@@ -90,24 +90,32 @@ static GapStbMainGlobalParams global_params =
 , 12                             /*  gint32 stb_cols  */
 , 2                              /*  gint32 stb_rows  */
 , 66                             /*  gint32 stb_thumbsize */
-
 , NULL        /*  GtkWidget *shell_window */
-
+, NULL        /*  GtkWidget *player_frame */
 , NULL        /*  GtkWidget *menu_item_win_vthumbs */
-
 , NULL        /*  GtkWidget *menu_item_stb_save */
 , NULL        /*  GtkWidget *menu_item_stb_save_as */
+, NULL        /*  GtkWidget *menu_item_stb_add_clip */
+, NULL        /*  GtkWidget *menu_item_stb_add_section_clip */
 , NULL        /*  GtkWidget *menu_item_stb_playback */
 , NULL        /*  GtkWidget *menu_item_stb_properties */
+, NULL        /*  GtkWidget *menu_item_stb_att_properties */
+, NULL        /*  GtkWidget *menu_item_stb_audio_otone */
 , NULL        /*  GtkWidget *menu_item_stb_encode */
+, NULL        /*  GtkWidget *menu_item_stb_undo */
+, NULL        /*  GtkWidget *menu_item_stb_redo */
 , NULL        /*  GtkWidget *menu_item_stb_close */
-
 , NULL        /*  GtkWidget *menu_item_cll_save */
 , NULL        /*  GtkWidget *menu_item_cll_save_as */
 , NULL        /*  GtkWidget *menu_item_cll_add_clip */
+, NULL        /*  GtkWidget *menu_item_cll_add_section_clip */
 , NULL        /*  GtkWidget *menu_item_cll_playback */
 , NULL        /*  GtkWidget *menu_item_cll_properties */
+, NULL        /*  GtkWidget *menu_item_cll_att_properties */
+, NULL        /*  GtkWidget *menu_item_cll_audio_otone */
 , NULL        /*  GtkWidget *menu_item_cll_encode */
+, NULL        /*  GtkWidget *menu_item_cll_undo */
+, NULL        /*  GtkWidget *menu_item_cll_redo */
 , NULL        /*  GtkWidget *menu_item_cll_close */
 };
 
@@ -153,7 +161,7 @@ static void query (void)
   gimp_plugin_domain_register (GETTEXT_PACKAGE, LOCALEDIR);
 
   /* the actual installation of the plugin */
-  gimp_install_procedure (PLUG_IN_NAME,
+  gimp_install_procedure (GAP_STORY_PLUG_IN_PROC,
                           "Storyboardfile Editor",
                           "This plug-in is an interactive GUI to create edit storyboard level1 files, "
                           "storyboard level1 files are videoframe playlist textfiles"
@@ -171,7 +179,7 @@ static void query (void)
                           );
  
   // gimp_plugin_menu_branch_register("<Image>", "Video");
-  gimp_plugin_menu_register (PLUG_IN_NAME, N_("<Image>/Video/"));
+  gimp_plugin_menu_register (GAP_STORY_PLUG_IN_PROC, N_("<Image>/Video/"));
   
   g_free(l_plug_in_version);
 }  /* end query */
@@ -224,7 +232,7 @@ run (const gchar *name,          /* name of plugin */
   {
    case GIMP_RUN_INTERACTIVE:
       /* Possibly retrieve data from a previous run */
-      gimp_get_data (PLUG_IN_NAME, sgpp);
+      gimp_get_data (GAP_STORY_PLUG_IN_PROC, sgpp);
       break;
 
     case GIMP_RUN_NONINTERACTIVE:
@@ -232,7 +240,7 @@ run (const gchar *name,          /* name of plugin */
       /* if (nparams == G_N_ELEMENTS (in_args)) */
       {
         printf("%s: noninteractive call NOT supported.\n"
-              , PLUG_IN_NAME
+              , GAP_STORY_PLUG_IN_PROC
               );
         status = GIMP_PDB_CALLING_ERROR;
       }
@@ -240,7 +248,7 @@ run (const gchar *name,          /* name of plugin */
 
     case GIMP_RUN_WITH_LAST_VALS:
       /* Possibly retrieve data from a previous run */
-      gimp_get_data (PLUG_IN_NAME, sgpp);
+      gimp_get_data (GAP_STORY_PLUG_IN_PROC, sgpp);
 
       break;
 
@@ -261,7 +269,7 @@ run (const gchar *name,          /* name of plugin */
   
     /* Store variable states for next run */
     if (run_mode == GIMP_RUN_INTERACTIVE)
-      gimp_set_data (PLUG_IN_NAME, sgpp, sizeof (GapStbMainGlobalParams));
+      gimp_set_data (GAP_STORY_PLUG_IN_PROC, sgpp, sizeof (GapStbMainGlobalParams));
   }
   values[0].data.d_status = status;
 }	/* end run */

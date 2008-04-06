@@ -12,7 +12,6 @@ gint p_plug_in_nova_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble c
       gint      radius;
       gint      nspoke;
       gint      randomhue;
-      gboolean  preview;
     } t_plug_in_nova_Vals; 
 
     t_plug_in_nova_Vals  buf, *buf_from, *buf_to; 
@@ -24,8 +23,8 @@ gint p_plug_in_nova_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble c
       return -1;  /* ERROR */ 
     }
 
-    gimp_get_data("plug_in_nova_ITER_FROM", g_plugin_data_from); 
-    gimp_get_data("plug_in_nova_ITER_TO",   g_plugin_data_to); 
+    gimp_get_data("plug-in-nova-ITER-FROM", g_plugin_data_from); 
+    gimp_get_data("plug-in-nova-ITER-TO",   g_plugin_data_to); 
 
     buf_from = (t_plug_in_nova_Vals *)&g_plugin_data_from[0]; 
     buf_to   = (t_plug_in_nova_Vals *)&g_plugin_data_to[0]; 
@@ -38,8 +37,7 @@ gint p_plug_in_nova_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble c
     p_delta_gint(&buf.nspoke, buf_from->nspoke, buf_to->nspoke, total_steps, current_step);
     p_delta_gint(&buf.randomhue, buf_from->randomhue, buf_to->randomhue, total_steps, current_step);
 
-    buf.preview = FALSE;
-    gimp_set_data("plug_in_nova", &buf, sizeof(buf)); 
+    gimp_set_data("plug-in-nova", &buf, sizeof(buf)); 
 
     return 0; /* OK */
 }

@@ -65,15 +65,15 @@
 
 
 /* Defines */
-#define PLUG_IN_NAME        "plug_in_wr_curves"
+#define PLUG_IN_NAME        "plug-in-wr-curves"
 #define PLUG_IN_IMAGE_TYPES "RGB*, GRAY*"
 #define PLUG_IN_AUTHOR      "Wolfgang Hofer (hof@gimp.org)"
 #define PLUG_IN_COPYRIGHT   "Wolfgang Hofer"
 #define PLUG_IN_DESCRIPTION "Wrapper for GIMP Curves Tool call based on Curves file"
 
-#define PLUG_IN_ITER_NAME       "plug_in_wr_curves_Iterator"
-#define PLUG_IN_DATA_ITER_FROM  "plug_in_wr_curves_ITER_FROM"
-#define PLUG_IN_DATA_ITER_TO    "plug_in_wr_curves_ITER_TO"
+#define PLUG_IN_ITER_NAME       "plug-in-wr-curves-Iterator"
+#define PLUG_IN_DATA_ITER_FROM  "plug-in-wr-curves-ITER-FROM"
+#define PLUG_IN_DATA_ITER_TO    "plug-in-wr-curves-ITER-TO"
 
 #define PLUG_IN_HELP_ID         "plug-in-wr-curves"
 

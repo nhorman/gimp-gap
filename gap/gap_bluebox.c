@@ -129,6 +129,7 @@ void
 gap_bluebox_init_default_vals(GapBlueboxGlobalParams *bbp)
 {
   gimp_rgb_set(&bbp->vals.keycolor, 0.2, 0.2, 1.0); /* BLUE keycolor */
+  gimp_rgb_set_alpha(&bbp->vals.keycolor, 1.0);
   bbp->vals.thres_mode = GAP_BLUBOX_THRES_HSV;
   bbp->vals.thres_r = 0.85;
   bbp->vals.thres_g = 0.85;
@@ -1644,6 +1645,7 @@ gap_bluebox_apply(GapBlueboxGlobalParams *bbp)
                          , bbp->pv_master_layer_id    /* src */
 			 );
   }
+
 
 
   if((bbp->vals.thres_mode == GAP_BLUBOX_THRES_HSV)

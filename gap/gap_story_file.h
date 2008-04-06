@@ -46,6 +46,10 @@
 #define GAP_STB_ATT_TYPE_ZOOM_X   3
 #define GAP_STB_ATT_TYPE_ZOOM_Y   4
 
+
+#define GAP_STB_MASK_SECTION_NAME  "Masks"
+
+
 /* GapStoryRecordType enum values are superset of GapLibAinfoType
  * from the sourcefile gap_lib.h
  */
@@ -65,6 +69,8 @@
     ,GAP_STBREC_AUD_MOVIE
 
     ,GAP_STBREC_ATT_TRANSITION
+    ,GAP_STBREC_VID_SECTION
+    ,GAP_STBREC_VID_BLACKSECTION
   } GapStoryRecordType;
 
 
@@ -106,7 +112,9 @@
     GapStoryVideoPlaymode  playmode;
     gint32                 track;
     
-    char  *orig_filename;   /* full filename (use that for IMAGE and MOVIE Files */
+    char  *orig_filename;   /* full filename use for IMAGE and MOVIE Files 
+                             * and SECTIONS (for section_name)
+                             */
     char  *orig_src_line;   /* without \n, used to store header, comment and unknown lines */
     
                             /* basename + ext are used for FRAME range elements only */ 
@@ -127,6 +135,8 @@
 
     gchar *preferred_decoder;
     gchar *filtermacro_file;
+    gint32 fmac_total_steps;
+    
     gint32 from_frame;
     gint32 to_frame;
     gint32 nloop;          /* 1 play one time */
@@ -180,14 +190,51 @@
     struct GapStoryElem  *next;
   } GapStoryElem;
 
+  typedef struct GapStorySection
+  {
+     GapStoryElem    *stb_elem;
+     gchar           *section_name;  /* null refers to the main section */
+     gint32          current_vtrack;
+     
+     gint32          section_id;  /* unique ID, NOT persistent */
+     gint32          version;     /* numer of changes while editing, NOT persistent */
+
+     void            *next;
+  } GapStorySection;
+
+
+  typedef struct GapStoryEditSettings
+  {
+     gchar           *section_name;  /* null refers to the main section */
+     gint32          track;
+     gint32          page;
+  } GapStoryEditSettings;
+
+  typedef struct GapStoryFrameNumberMappingElem {
+    gint32 mapped_frame_number;
+    gint32 orig_frame_number;
+    
+    struct GapStoryFrameNumberMappingElem *next;
+    
+  } GapStoryFrameNumberMappingElem;
+
+
+  typedef struct GapStoryFrameNumberMap {
+    gint32 total_frames_selected;
+    GapStoryFrameNumberMappingElem *map_list;
+  } GapStoryFrameNumberMap;
 
   typedef struct GapStoryBoard {
-     GapStoryElem  *stb_elem;
+     GapStorySection *active_section;   /* reference pointer to active section (dont free this) */
+     GapStorySection *mask_section;     /* reference pointer to mask section (dont free this) */
+     GapStorySection *stb_section;      /* root of section list */
+
      gchar         *storyboardfile;
      GapStoryMasterType master_type;
      gint32         master_width;
      gint32         master_height;
      gdouble        master_framerate;
+     gboolean       master_vtrack1_is_toplayer;  /* default = true; */
 
      gdouble        master_aspect_ratio;
      gint32         master_aspect_width;
@@ -217,8 +264,17 @@
      gint32         stb_parttype;
      gint32         stb_unique_id;
 
+     /* selection mapping is not relevant for rendering
+      * but is used at playback of composite video
+      * where frame ranges of the selected clips
+      * are represented by a mapping
+      * and the player only picks frame numbers via mapping
+      */
+     GapStoryFrameNumberMap *mapping;
+
 
      gboolean       unsaved_changes;
+     GapStoryEditSettings *edit_settings;
   }  GapStoryBoard;
 
  
@@ -237,6 +293,18 @@
     gdouble opacity;
   } GapStoryCalcAttr;
 
+  typedef struct GapStoryVideoFileRef
+  {
+     gchar           *videofile;         /* full filename */
+     gchar           *userdata;
+     gchar           *preferred_decoder;
+     gint32          seltrack;
+     gint32          max_ref_framenr;
+     
+     void            *next;
+  } GapStoryVideoFileRef;
+
+
 void                gap_story_debug_print_list(GapStoryBoard *stb);
 void                gap_story_debug_print_elem(GapStoryElem *stb_elem);
 
@@ -247,7 +315,7 @@ void                gap_story_elem_calculate_nframes(GapStoryElem *stb_elem);
 GapStoryLocateRet * gap_story_locate_framenr(GapStoryBoard *stb
                          , gint32 in_framenr
                          , gint32 in_track);
-GapStoryLocateRet * gap_story_locate_expanded_framenr(GapStoryBoard *stb
+GapStoryLocateRet * gap_story_locate_expanded_framenr(GapStorySection  *section
                          , gint32 in_framenr
                          , gint32 in_track);
 
@@ -256,7 +324,7 @@ void                gap_story_lists_merge(GapStoryBoard *stb_dst
                          , gint32 story_id
                          , gboolean insert_after
                          , gint32   dst_vtrack);
-gint32              gap_story_find_last_selected(GapStoryBoard *stb);
+gint32              gap_story_find_last_selected_in_track(GapStorySection *section, gint32 track_nr);
 GapStoryElem *      gap_story_elem_find_by_story_id(GapStoryBoard *stb, gint32 story_id);
 GapStoryElem *      gap_story_elem_find_by_story_orig_id(GapStoryBoard *stb, gint32 story_orig_id);
 
@@ -267,14 +335,34 @@ long                gap_story_upd_elem_from_filename(GapStoryElem *stb_elem,  co
 gboolean            gap_story_filename_is_videofile_by_ext(const char *filename);
 gboolean            gap_story_filename_is_videofile(const char *filename);
 void                gap_story_elem_free(GapStoryElem **stb_elem);
+void                gap_story_free_stb_section(GapStorySection *stb_section);
+void                gap_story_free_selection_mapping(GapStoryFrameNumberMap *mapping);
 void                gap_story_free_storyboard(GapStoryBoard **stb_ptr);
 
 
 GapStoryElem *      gap_story_new_mask_elem(GapStoryRecordType record_type);
-void                gap_story_list_append_elem(GapStoryBoard *stb, GapStoryElem *stb_elem);
 
-gint32              gap_story_get_framenr_by_story_id(GapStoryBoard *stb, gint32 story_id, gint32 in_track);
-gint32              gap_story_get_expanded_framenr_by_story_id(GapStoryBoard *stb, gint32 story_id, gint32 in_track);
+GapStorySection *   gap_story_new_section();
+GapStorySection *   gap_story_find_first_referable_subsection(GapStoryBoard *stb_dst);
+GapStoryElem *      gap_story_elem_find_in_section_by_story_id(GapStorySection *section, gint32 story_id);
+GapStorySection *   gap_story_find_section_by_story_id(GapStoryBoard *stb, gint32 story_id);
+GapStorySection *   gap_story_find_section_by_stb_elem(GapStoryBoard *stb, GapStoryElem      *stb_elem);
+GapStorySection *   gap_story_find_section_by_name(GapStoryBoard *stb, const char *section_name);
+GapStorySection *   gap_story_find_main_section(GapStoryBoard *stb);
+GapStorySection *   gap_story_create_or_find_section_by_name(GapStoryBoard *stb, const char *section_name);
+gboolean            gap_story_remove_section(GapStoryBoard *stb, GapStorySection *del_section);
+gchar *             gap_story_generate_new_unique_section_name(GapStoryBoard    *stb);
+
+
+
+void                gap_story_list_append_elem(GapStoryBoard *stb, GapStoryElem *stb_elem);
+void                gap_story_list_append_elem_at_section(GapStoryBoard *stb
+                        , GapStoryElem *stb_elem
+                        , GapStorySection *active_section);
+
+gint32              gap_story_count_total_frames_in_section(GapStorySection  *section);
+gint32              gap_story_get_framenr_by_story_id(GapStorySection  *section, gint32 story_id, gint32 in_track);
+gint32              gap_story_get_expanded_framenr_by_story_id(GapStorySection *section, gint32 story_id, gint32 in_track);
 char *              gap_story_get_filename_from_elem(GapStoryElem *stb_elem);
 char *              gap_story_get_filename_from_elem_nr(GapStoryElem *stb_elem, gint32 in_framenr);
 GapStoryElem *      gap_story_fetch_nth_active_elem(GapStoryBoard *stb
@@ -290,9 +378,19 @@ GapStoryElem *      gap_story_find_mask_definition_by_name(GapStoryBoard *stb_pt
 GapStoryElem *      gap_story_find_mask_reference_by_name(GapStoryBoard *stb_ptr, const char *mask_name);
 
 void                gap_story_enable_hidden_maskdefinitions(GapStoryBoard *stb_ptr);
-GapStoryBoard *     gap_story_duplicate(GapStoryBoard *stb_ptr);
+GapStoryBoard *     gap_story_duplicate_full(GapStoryBoard *stb_ptr);
+GapStoryBoard *     gap_story_duplicate_active_and_mask_section(GapStoryBoard *stb_ptr);
 GapStoryBoard *     gap_story_duplicate_vtrack(GapStoryBoard *stb_ptr, gint32 in_vtrack);
 GapStoryBoard *     gap_story_duplicate_sel_only(GapStoryBoard *stb_ptr, gint32 in_vtrack);
+GapStoryBoard *     gap_story_duplicate_one_elem_and_masks(GapStoryBoard *stb_ptr
+                      , GapStorySection *active_section, gint32 story_id);
+GapStoryBoard *     gap_story_duplicate_one_elem(GapStoryBoard *stb_ptr
+                      , GapStorySection *active_section, gint32 story_id);
+GapStoryBoard *     gap_story_board_duplicate_distinct_sorted(GapStoryBoard  *stb_dup, GapStoryBoard *stb_ptr);
+void                gap_story_copy_sub_sections(GapStoryBoard *stb_src, GapStoryBoard *stb_dst);
+
+
+
 void                gap_story_set_properties_like_sample_storyboard (GapStoryBoard *stb
                          , GapStoryBoard *stb_sample);
 void                gap_story_remove_sel_elems(GapStoryBoard *stb);
@@ -301,10 +399,12 @@ gint32              gap_story_count_active_elements(GapStoryBoard *stb_ptr, gint
 void                gap_story_get_master_pixelsize(GapStoryBoard *stb_ptr
                          ,gint32 *width
                          ,gint32 *height);
-void                gap_story_get_master_size_respecting_aspect(GapStoryBoard *stb_ptr
+gdouble             gap_story_get_master_size_respecting_aspect(GapStoryBoard *stb_ptr
                          ,gint32 *width
                          ,gint32 *height);
-void                gap_story_set_vtrack(GapStoryBoard *stb, gint32 vtrack);
+gdouble             gap_story_adjust_size_respecting_aspect(GapStoryBoard *stb_ptr
+                         ,gint32 *width
+                         ,gint32 *height);
 void                gap_story_selection_all_set(GapStoryBoard *stb, gboolean sel_state);
 void                gap_story_selection_by_story_id(GapStoryBoard *stb, gboolean sel_state, gint32 story_id);
 void                gap_story_selection_from_ref_list_orig_ids(GapStoryBoard *stb, gboolean sel_state, GapStoryBoard *stb_ref);
@@ -315,6 +415,11 @@ void                gap_story_set_aud_movie_min_max(GapStoryBoard *stb);
 gboolean            gap_story_elem_is_audio(GapStoryElem *stb_elem);
 gboolean            gap_story_elem_is_video(GapStoryElem *stb_elem);
 gboolean            gap_story_elem_is_video_relevant(GapStoryElem *stb_elem);
+gboolean            gap_story_elem_is_same_resource(GapStoryElem *stb_elem, GapStoryElem *stb_elem_ref);
+GapStoryElem *      gap_story_elem_find_by_same_resource(GapStoryBoard *stb_ptr, GapStoryElem *stb_elem_ref);
+
+
+
 void                gap_story_del_audio_track(GapStoryBoard *stb, gint aud_track);
 gboolean            gap_story_gen_otone_audio(GapStoryBoard *stb
                          ,gint vid_track
@@ -347,6 +452,24 @@ gboolean          gap_story_update_mask_name_references(GapStoryBoard *stb_ptr
                          );
 char *            gap_story_generate_unique_maskname(GapStoryBoard *stb_ptr);
 GapStoryElem *    gap_story_find_maskdef_equal_to_ref_elem(GapStoryBoard *stb_ptr, GapStoryElem *stb_ref_elem);
+gint32            gap_story_get_current_vtrack (GapStoryBoard *stb, GapStorySection *section);
+void              gap_story_set_current_vtrack (GapStoryBoard *stb, GapStorySection *section
+                         , gint32 current_vtrack);
 
+
+gint32            gap_story_get_mapped_master_frame_number(GapStoryFrameNumberMap *mapping
+                         , gint32 frame_number);
+GapStoryFrameNumberMap * gap_story_create_new_mapping_from_selection(GapStorySection *active_section
+                         , gint32 vtrack);
+GapStoryFrameNumberMap * gap_story_create_new_mapping_by_story_id(GapStorySection *active_section
+                         , gint32 vtrack, gint32 story_id);
+void              gap_story_debug_print_mapping(GapStoryFrameNumberMap *mapping);
+
+void              gap_story_free_GapStoryVideoFileRef(GapStoryVideoFileRef *vref_list);
+GapStoryVideoFileRef * p_new_GapStoryVideoFileRef(const char *videofile
+                          , gint32 seltrack
+                          , const char *preferred_decoder
+                          , gint32          max_ref_framenr);
+GapStoryVideoFileRef * gap_story_get_video_file_ref_list(GapStoryBoard *stb);
 
 #endif

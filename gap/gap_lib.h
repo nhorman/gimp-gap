@@ -104,6 +104,7 @@ gint32   gap_lib_replace_image(GapAnimInfo *ainfo_ptr);
 
 void     gap_lib_fprintf_gdouble(FILE *fp, gdouble value, gint digits, gint precision_digits, const char *pfx);
 gint     gap_lib_sscan_flt_numbers(gchar *buf, gdouble *farr, gint farr_max);
+gboolean gap_lib_check_tooltips(gboolean *old_state);
 
 #endif
 

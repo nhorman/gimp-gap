@@ -626,6 +626,7 @@ p_call_player_widget(GapVexMainGlobalParams *gpp
       }
       gpp->plp->imagewidth = imagewidth;
       gpp->plp->imageheight = imageheight;
+      gpp->plp->aspect_ratio = GAP_PLAYER_DONT_FORCE_ASPECT;
 
       gpp->plp->play_current_framenr = 0;
       gpp->plp->begin_frame = begin_frame;

@@ -11,7 +11,6 @@ gint p_plug_in_waves_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble 
       gdouble   wavelength;
       gint32    type;
       gboolean  reflective;
-      gboolean  preview;
     } t_plug_in_waves_Vals; 
 
     t_plug_in_waves_Vals  buf, *buf_from, *buf_to; 
@@ -23,8 +22,8 @@ gint p_plug_in_waves_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble 
       return -1;  /* ERROR */ 
     }
 
-    gimp_get_data("plug_in_waves_ITER_FROM", g_plugin_data_from); 
-    gimp_get_data("plug_in_waves_ITER_TO",   g_plugin_data_to); 
+    gimp_get_data("plug-in-waves-ITER-FROM", g_plugin_data_from); 
+    gimp_get_data("plug-in-waves-ITER-TO",   g_plugin_data_to); 
 
     buf_from = (t_plug_in_waves_Vals *)&g_plugin_data_from[0]; 
     buf_to   = (t_plug_in_waves_Vals *)&g_plugin_data_to[0]; 
@@ -35,8 +34,7 @@ gint p_plug_in_waves_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble 
     p_delta_gdouble(&buf.wavelength, buf_from->wavelength, buf_to->wavelength, total_steps, current_step);
     p_delta_gint32(&buf.type, buf_from->type, buf_to->type, total_steps, current_step);
 
-    buf.preview = FALSE;
-    gimp_set_data("plug_in_waves", &buf, sizeof(buf)); 
+    gimp_set_data("plug-in-waves", &buf, sizeof(buf)); 
 
     return 0; /* OK */
 }

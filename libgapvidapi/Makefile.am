@@ -8,11 +8,14 @@ noinst_LIBRARIES = libgapvidapi.a
 AM_CPPFLAGS = \
 	-DLOCALEDIR=\""$(LOCALEDIR)"\"
 
+INC_LIBGAPBASE = -I$(top_srcdir)/libgapbase
+
 INCLUDES = \
 	-I$(top_srcdir)	\
 	$(GLIB_CFLAGS)	\
 	$(GIMP_CFLAGS)	\
 	$(GAPVIDEOAPI_EXTINCS)	\
+	$(INC_LIBGAPBASE)	\
 	-I$(includedir)
 
 

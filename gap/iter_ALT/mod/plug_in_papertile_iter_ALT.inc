@@ -23,7 +23,8 @@ gint p_plug_in_papertile_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdou
 
     typedef struct t_plug_in_papertile_Vals 
     {
-      gint32          tile_size;
+      gint32          tile_width;
+      gint32          tile_height;
       gint32          division_x;
       gint32          division_y;
       gdouble         move_max_rate;
@@ -43,14 +44,15 @@ gint p_plug_in_papertile_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdou
       return -1;  /* ERROR */ 
     }
 
-    gimp_get_data("plug_in_papertile_ITER_FROM", g_plugin_data_from); 
-    gimp_get_data("plug_in_papertile_ITER_TO",   g_plugin_data_to); 
+    gimp_get_data("plug-in-papertile-ITER-FROM", g_plugin_data_from); 
+    gimp_get_data("plug-in-papertile-ITER-TO",   g_plugin_data_to); 
 
     buf_from = (t_plug_in_papertile_Vals *)&g_plugin_data_from[0]; 
     buf_to   = (t_plug_in_papertile_Vals *)&g_plugin_data_to[0]; 
     memcpy(&buf, buf_from, sizeof(buf));
 
-    p_delta_gint32(&buf.tile_size, buf_from->tile_size, buf_to->tile_size, total_steps, current_step);
+    p_delta_gint32(&buf.tile_width, buf_from->tile_width, buf_to->tile_width, total_steps, current_step);
+    p_delta_gint32(&buf.tile_height, buf_from->tile_height, buf_to->tile_height, total_steps, current_step);
     p_delta_gint32(&buf.division_x, buf_from->division_x, buf_to->division_x, total_steps, current_step);
     p_delta_gint32(&buf.division_y, buf_from->division_y, buf_to->division_y, total_steps, current_step);
     p_delta_gdouble(&buf.move_max_rate, buf_from->move_max_rate, buf_to->move_max_rate, total_steps, current_step);
@@ -64,7 +66,7 @@ gint p_plug_in_papertile_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdou
     
     p_delta_GimpRGB(&buf.background_color, &buf_from->background_color, &buf_to->background_color, total_steps, current_step);
 
-    gimp_set_data("plug_in_papertile", &buf, sizeof(buf)); 
+    gimp_set_data("plug-in-papertile", &buf, sizeof(buf)); 
 
     return 0; /* OK */
 }

@@ -33,7 +33,7 @@
 #include <config.h>
 #include "gap_gvetypes.h"
 
-#define GAP_CME_PLUGIN_NAME_VID_ENCODE_MASTER    "plug_in_gap_vid_encode_master"
+#define GAP_CME_PLUGIN_NAME_VID_ENCODE_MASTER    "plug-in-gap-vid-encode-master"
 #define GAP_CME_PLUGIN_HELP_ID_VID_ENCODE_MASTER "plug-in-gap-vid-encode-master"
 
 

@@ -19,8 +19,8 @@ gint p_plug_in_borderaverage_iter_ALT(GimpRunMode run_mode, gint32 total_steps, 
       return -1;  /* ERROR */ 
     }
 
-    gimp_get_data("plug_in_borderaverage_ITER_FROM", g_plugin_data_from); 
-    gimp_get_data("plug_in_borderaverage_ITER_TO",   g_plugin_data_to); 
+    gimp_get_data("plug-in-borderaverage-ITER-FROM", g_plugin_data_from); 
+    gimp_get_data("plug-in-borderaverage-ITER-TO",   g_plugin_data_to); 
 
     buf_from = (t_plug_in_borderaverage_Vals *)&g_plugin_data_from[0]; 
     buf_to   = (t_plug_in_borderaverage_Vals *)&g_plugin_data_to[0]; 
@@ -29,7 +29,7 @@ gint p_plug_in_borderaverage_iter_ALT(GimpRunMode run_mode, gint32 total_steps, 
     p_delta_long(&buf.thickness, buf_from->thickness, buf_to->thickness, total_steps, current_step);
     p_delta_long(&buf.bucket_exponent, buf_from->bucket_exponent, buf_to->bucket_exponent, total_steps, current_step);
 
-    gimp_set_data("plug_in_borderaverage", &buf, sizeof(buf)); 
+    gimp_set_data("plug-in-borderaverage", &buf, sizeof(buf)); 
 
     return 0; /* OK */
 }

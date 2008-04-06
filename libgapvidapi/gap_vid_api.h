@@ -57,10 +57,24 @@ typedef enum t_GVA_PosUnit
 
 typedef enum t_GVA_RetCode
 {
-  GVA_RET_OK    = 0
- ,GVA_RET_EOF   = 1   /* not implemented yet */
- ,GVA_RET_ERROR = 2
+  GVA_RET_OK                      = 0
+ ,GVA_RET_EOF                     = 1
+ ,GVA_RET_ERROR                   = 2
 } t_GVA_RetCode;
+
+
+typedef enum t_GVA_SeekSupport
+{
+  GVA_SEEKSUPP_NONE    = 0      /* no fast random positioning possible for this video
+                                 * (with the current decoder)
+                                 * The caller still can use GVA_seek
+                                 * but in this case seek will be emulated via
+                                 * very slow sequential read loop.
+                                 */
+, GVA_SEEKSUPP_VINDEX  = 1      /* creating a video index will provide random positioning */
+, GVA_SEEKSUPP_NATIVE  = 2      /* random positioning supported even without creating a video index */
+} t_GVA_SeekSupport;
+
 
 #define GVA_MAX_FCACHE_SIZE 1000
 
@@ -236,6 +250,8 @@ typedef struct t_GVA_Handle  /* nickname: gvahand */
   gint32  samplerate;           /* audio samples per sec */
   gint32  audio_cannels;        /* number of channel (in the selected aud_track) */
 
+  gboolean critical_timecodesteps_found;
+  
 
   gdouble percentage_done;      /* 0.0 <= percentage_done <= 1.0 */
 
@@ -279,13 +295,14 @@ typedef  t_GVA_RetCode  (*t_get_audio_fptr)(t_GVA_Handle *gvahand
                              ,gdouble samples
                              ,t_GVA_AudPos mode_flag
                         );
-typedef  t_GVA_RetCode  (*t_count_frames_fptr)(t_GVA_Handle *gvahand);
-typedef  t_GVA_RetCode  (*t_get_video_chunk_fptr)(t_GVA_Handle *gvahand
+typedef  t_GVA_RetCode     (*t_count_frames_fptr)(t_GVA_Handle *gvahand);
+typedef  t_GVA_SeekSupport (*t_seek_support_fptr)(t_GVA_Handle *gvahand);
+typedef  t_GVA_RetCode     (*t_get_video_chunk_fptr)(t_GVA_Handle *gvahand
                              ,gint32 frame_nr
                              ,unsigned char *chunk
                              ,gint32 *sizes
                              ,gint32 max_size
-                        );
+                           );
 
 
 
@@ -306,6 +323,7 @@ typedef struct t_GVA_DecoderElem
   t_seek_audio_fptr             fptr_seek_audio;
   t_get_audio_fptr              fptr_get_audio;
   t_count_frames_fptr           fptr_count_frames;
+  t_seek_support_fptr           fptr_seek_support;
   t_get_video_chunk_fptr        fptr_get_video_chunk;
 } t_GVA_DecoderElem;
 
@@ -335,7 +353,8 @@ t_GVA_RetCode   GVA_get_audio(t_GVA_Handle  *gvahand
                              ,t_GVA_AudPos mode_flag      /* specify the position where to start reading audio from */
                              );
 
-t_GVA_RetCode   GVA_count_frames(t_GVA_Handle  *gvahand);
+t_GVA_RetCode     GVA_count_frames(t_GVA_Handle  *gvahand);
+t_GVA_SeekSupport GVA_check_seek_support(t_GVA_Handle  *gvahand);
 
 void            GVA_set_fcache_size(t_GVA_Handle *gvahand
                  ,gint32 frames_to_keep_cahed

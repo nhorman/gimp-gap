@@ -31,6 +31,10 @@ STOCK_IMAGES = \
 	gap-story-icon-mask-undefined.png	\
 	gap-story-icon-color.png		\
 	gap-story-icon-transition-attr.png	\
+	gap-story-icon-blacksection.png		\
+	gap-story-icon-section.png		\
+	gap-story-icon-section-main.png		\
+	gap-story-icon-section-mask.png		\
 	gap-story-icon-default.png		\
 	gap-range-end.png			\
 	gap-range-start.png			\

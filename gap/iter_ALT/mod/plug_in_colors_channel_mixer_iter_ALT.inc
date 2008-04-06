@@ -47,8 +47,8 @@ gint p_plug_in_colors_channel_mixer_iter_ALT(GimpRunMode run_mode, gint32 total_
       return -1;  /* ERROR */ 
     }
 
-    gimp_get_data("plug_in_colors_channel_mixer_ITER_FROM", g_plugin_data_from); 
-    gimp_get_data("plug_in_colors_channel_mixer_ITER_TO",   g_plugin_data_to); 
+    gimp_get_data("plug-in-colors-channel-mixer-ITER-FROM", g_plugin_data_from); 
+    gimp_get_data("plug-in-colors-channel-mixer-ITER-TO",   g_plugin_data_to); 
 
     buf_from = (t_plug_in_colors_channel_mixer_Vals *)&g_plugin_data_from[0]; 
     buf_to   = (t_plug_in_colors_channel_mixer_Vals *)&g_plugin_data_to[0]; 
@@ -61,7 +61,7 @@ gint p_plug_in_colors_channel_mixer_iter_ALT(GimpRunMode run_mode, gint32 total_
 
     buf.preview = FALSE;
 
-    gimp_set_data("plug_in_colors_channel_mixer", &buf, sizeof(buf)); 
+    gimp_set_data("plug-in-colors-channel-mixer", &buf, sizeof(buf)); 
 
     return 0; /* OK */
 }

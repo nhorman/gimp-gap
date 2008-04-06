@@ -1,6 +1,6 @@
 /*  gap_story_file.c
  *
- *  This module handles GAP storyboard file 
+ *  This module handles GAP storyboard file
  *  parsing of storyboard level1 files (load informations into a list)
  *  and (re)write storyboard files from the list (back to storyboard file)
  *
@@ -45,7 +45,8 @@
 #include "gap_story_main.h"
 #include "gap_story_file.h"
 #include "gap_lib.h"
-#include "gap_vin.h"
+#include "gap_val_file.h"
+#include "gap_file_util.h"
 
 
 #include "gap-intl.h"
@@ -57,9 +58,19 @@ extern int gap_debug;  /* 1 == print debug infos , 0 dont print debug infos */
 #define MAX_CHARS_ERRORTEXT_GUI   50
 #define MAX_TOLERATED_UNPRINTABLE_CHARACTERS 500
 
+  typedef enum
+  {
+    GAP_STB_DUPLICATE_ALL_ELEMS,
+    GAP_STB_DUPLICATE_ONLY_SELECTED_ELEMS,
+    GAP_STB_DUPLICATE_ONE_ELEM,
+    GAP_STB_DUPLICATE_NO_ELEMS
+  } GapStoryDuplicateMode;
+
+
 static gint32 global_stb_id = 0;
 static gint32 global_stb_elem_id = 0;
 static gint32 global_mask_name_number = 1000;
+static gint32 global_section_name_number = 1;
 
 static const char *gtab_att_transition_key_words[GAP_STB_ATT_TYPES_ARRAY_MAX] =
        { GAP_STBKEY_VID_OPACITY
@@ -79,22 +90,52 @@ p_record_type_to_string(GapStoryRecordType record_type)
 {
   switch(record_type)
   {
-    case GAP_STBREC_VID_SILENCE:     return("GAP_STBREC_VID_SILENCE"); break;
-    case GAP_STBREC_VID_COLOR:       return("GAP_STBREC_VID_COLOR"); break;
-    case GAP_STBREC_VID_IMAGE:       return("GAP_STBREC_VID_IMAGE"); break;
-    case GAP_STBREC_VID_ANIMIMAGE:   return("GAP_STBREC_VID_ANIMIMAGE"); break;
-    case GAP_STBREC_VID_FRAMES:      return("GAP_STBREC_VID_FRAMES"); break;
-    case GAP_STBREC_VID_MOVIE:       return("GAP_STBREC_VID_MOVIE"); break;
-    case GAP_STBREC_VID_COMMENT:     return("GAP_STBREC_VID_COMMENT"); break;
-    case GAP_STBREC_VID_UNKNOWN:     return("GAP_STBREC_VID_UNKNOWN"); break;
-    case GAP_STBREC_AUD_SILENCE:     return("GAP_STBREC_AUD_SILENCE"); break;
-    case GAP_STBREC_AUD_SOUND:       return("GAP_STBREC_AUD_SOUND"); break;
-    case GAP_STBREC_AUD_MOVIE:       return("GAP_STBREC_AUD_MOVIE"); break;
-    case GAP_STBREC_ATT_TRANSITION:  return("GAP_STBREC_ATT_TRANSITION"); break;
+    case GAP_STBREC_VID_SILENCE:      return("GAP_STBREC_VID_SILENCE"); break;
+    case GAP_STBREC_VID_COLOR:        return("GAP_STBREC_VID_COLOR"); break;
+    case GAP_STBREC_VID_IMAGE:        return("GAP_STBREC_VID_IMAGE"); break;
+    case GAP_STBREC_VID_ANIMIMAGE:    return("GAP_STBREC_VID_ANIMIMAGE"); break;
+    case GAP_STBREC_VID_FRAMES:       return("GAP_STBREC_VID_FRAMES"); break;
+    case GAP_STBREC_VID_MOVIE:        return("GAP_STBREC_VID_MOVIE"); break;
+    case GAP_STBREC_VID_COMMENT:      return("GAP_STBREC_VID_COMMENT"); break;
+    case GAP_STBREC_VID_UNKNOWN:      return("GAP_STBREC_VID_UNKNOWN"); break;
+    case GAP_STBREC_AUD_SILENCE:      return("GAP_STBREC_AUD_SILENCE"); break;
+    case GAP_STBREC_AUD_SOUND:        return("GAP_STBREC_AUD_SOUND"); break;
+    case GAP_STBREC_AUD_MOVIE:        return("GAP_STBREC_AUD_MOVIE"); break;
+    case GAP_STBREC_ATT_TRANSITION:   return("GAP_STBREC_ATT_TRANSITION"); break;
+    case GAP_STBREC_VID_SECTION:      return("GAP_STBREC_VID_SECTION"); break;
+    case GAP_STBREC_VID_BLACKSECTION: return("GAP_STBREC_VID_BLACKSECTION"); break;
   }
   return("** UNDEFINED RECORD TYPE **");
 }  /* end p_record_type_to_string */
 
+
+/* ----------------------------------------------------
+ * p_null_strcmp
+ * ----------------------------------------------------
+ * return TRUE if both strings are equal or both are NULL.
+ */
+static gboolean
+p_null_strcmp(const char *str1, const char *str2)
+{
+  if(str1 != NULL)
+  {
+    if(str2 != NULL)
+    {
+      if(strcmp(str1 , str2) == 0)
+      {
+        return (TRUE);
+      }
+    }
+  }
+  else
+  {
+    if(str2 == NULL)
+    {
+        return (TRUE);
+    }
+  }
+  return (FALSE);
+}  /* end p_null_strcmp */
 
 /* ----------------------------------------------------
  * gap_story_debug_print_elem
@@ -105,100 +146,101 @@ gap_story_debug_print_elem(GapStoryElem *stb_elem)
 {
   if(stb_elem == NULL)
   {
-    printf("\ngap_story_debug_print_elem:  stb_elem is NULL\n");
+    printf("\n  gap_story_debug_print_elem:  stb_elem is NULL\n");
   }
   else
   {
-    printf("\ngap_story_debug_print_elem:  stb_elem: %d\n", (int)stb_elem);
- 
-    printf("gap_story_debug_print_elem: START\n");
-    printf("record_type: %d  %s\n", (int)stb_elem->record_type
+    printf("\n  gap_story_debug_print_elem:  stb_elem: %d\n", (int)stb_elem);
+
+    printf("  gap_story_debug_print_elem: START\n");
+    printf("  record_type: %d  %s\n", (int)stb_elem->record_type
                                   , p_record_type_to_string(stb_elem->record_type)
                                   );
-    printf("story_id: %d\n", (int)stb_elem->story_id);
-    printf("story_orig_id: %d\n", (int)stb_elem->story_orig_id);
-    printf("selected: %d\n", (int)stb_elem->selected);
-    printf("playmode: %d\n", (int)stb_elem->playmode);
-    printf("track: %d", (int)stb_elem->track);
-    
+    printf("  story_id: %d\n", (int)stb_elem->story_id);
+    printf("  story_orig_id: %d\n", (int)stb_elem->story_orig_id);
+    printf("  selected: %d\n", (int)stb_elem->selected);
+    printf("  playmode: %d\n", (int)stb_elem->playmode);
+    printf("  track: %d", (int)stb_elem->track);
+
     if(stb_elem->track == GAP_STB_MASK_TRACK_NUMBER)
     {
       printf(" (MASK-DEFINITION track)");
     }
     printf("\n");
-    
-    printf("from_frame: %d\n", (int)stb_elem->from_frame);
-    printf("to_frame: %d\n", (int)stb_elem->to_frame);
-    printf("nloop: %d\n", (int)stb_elem->nloop);
-    printf("seltrack: %d\n", (int)stb_elem->seltrack);
-    printf("exact_seek: %d\n", (int)stb_elem->exact_seek);
-    printf("delace: %f\n", (float)stb_elem->delace);
-    printf("nframes: %d\n", (int)stb_elem->nframes);
-    printf("step_density: %f\n", (float)stb_elem->step_density);
-    printf("aud_play_from_sec: %f\n", (float)stb_elem->aud_play_from_sec);
-    printf("aud_play_to_sec: %f\n", (float)stb_elem->aud_play_to_sec);
-    printf("aud_min_play_sec: %f\n", (float)stb_elem->aud_min_play_sec);
-    printf("aud_max_play_sec: %f\n", (float)stb_elem->aud_max_play_sec);
-    printf("aud_volume: %f\n", (float)stb_elem->aud_volume);
-    printf("aud_volume_start: %f\n", (float)stb_elem->aud_volume_start);
-    printf("aud_fade_in_sec: %f\n", (float)stb_elem->aud_fade_in_sec);
-    printf("aud_volume_end: %f\n", (float)stb_elem->aud_volume_end);
-    printf("aud_fade_out_sec: %f\n", (float)stb_elem->aud_fade_out_sec);
-    printf("file_line_nr: %d\n", (int)stb_elem->file_line_nr);
+
+    printf("  from_frame: %d\n", (int)stb_elem->from_frame);
+    printf("  to_frame: %d\n", (int)stb_elem->to_frame);
+    printf("  nloop: %d\n", (int)stb_elem->nloop);
+    printf("  seltrack: %d\n", (int)stb_elem->seltrack);
+    printf("  exact_seek: %d\n", (int)stb_elem->exact_seek);
+    printf("  delace: %f\n", (float)stb_elem->delace);
+    printf("  nframes: %d\n", (int)stb_elem->nframes);
+    printf("  step_density: %f\n", (float)stb_elem->step_density);
+    printf("  aud_play_from_sec: %f\n", (float)stb_elem->aud_play_from_sec);
+    printf("  aud_play_to_sec: %f\n", (float)stb_elem->aud_play_to_sec);
+    printf("  aud_min_play_sec: %f\n", (float)stb_elem->aud_min_play_sec);
+    printf("  aud_max_play_sec: %f\n", (float)stb_elem->aud_max_play_sec);
+    printf("  aud_volume: %f\n", (float)stb_elem->aud_volume);
+    printf("  aud_volume_start: %f\n", (float)stb_elem->aud_volume_start);
+    printf("  aud_fade_in_sec: %f\n", (float)stb_elem->aud_fade_in_sec);
+    printf("  aud_volume_end: %f\n", (float)stb_elem->aud_volume_end);
+    printf("  aud_fade_out_sec: %f\n", (float)stb_elem->aud_fade_out_sec);
+    printf("  file_line_nr: %d\n", (int)stb_elem->file_line_nr);
     if(stb_elem->orig_filename)
     {
-      printf("orig_filename :%s:\n", stb_elem->orig_filename);
+      printf("  orig_filename :%s:\n", stb_elem->orig_filename);
     }
     else
     {
-      printf("orig_filename: (NULL)\n");
+      printf("  orig_filename: (NULL)\n");
     }
-    
+
     if(stb_elem->orig_src_line)
     {
-      printf("orig_src_line :%s:\n", stb_elem->orig_src_line);
+      printf("  orig_src_line :%s:\n", stb_elem->orig_src_line);
     }
     else
     {
-      printf("orig_src_line: (NULL)\n");
+      printf("  orig_src_line: (NULL)\n");
     }
 
-    
+
     if(stb_elem->basename)
     {
-      printf("basename :%s:\n", stb_elem->basename);
+      printf("  basename :%s:\n", stb_elem->basename);
     }
     else
     {
-      printf("basename: (NULL)\n");
-    }
-    
-    if(stb_elem->ext)
-    {
-      printf("ext :%s:\n", stb_elem->ext);
-    }
-    else
-    {
-      printf("ext: (NULL)\n");
+      printf("  basename: (NULL)\n");
     }
 
-    
-    if(stb_elem->filtermacro_file)
+    if(stb_elem->ext)
     {
-      printf("filtermacro_file :%s:\n", stb_elem->filtermacro_file);
+      printf("  ext :%s:\n", stb_elem->ext);
     }
     else
     {
-      printf("filtermacro_file: (NULL)\n");
+      printf("  ext: (NULL)\n");
     }
+
+
+    if(stb_elem->filtermacro_file)
+    {
+      printf("  filtermacro_file :%s:\n", stb_elem->filtermacro_file);
+    }
+    else
+    {
+      printf("  filtermacro_file: (NULL)\n");
+    }
+    printf("  fmac_total_steps: %d\n", (int)stb_elem->fmac_total_steps);
 
     if(stb_elem->preferred_decoder)
     {
-      printf("preferred_decoder :%s:\n", stb_elem->preferred_decoder);
+      printf("  preferred_decoder :%s:\n", stb_elem->preferred_decoder);
     }
     else
     {
-      printf("preferred_decoder: (NULL)\n");
+      printf("  preferred_decoder: (NULL)\n");
     }
 
     if(stb_elem->record_type == GAP_STBREC_ATT_TRANSITION)
@@ -217,25 +259,26 @@ gap_story_debug_print_elem(GapStoryElem *stb_elem)
             );
         }
       }
-      printf(" overlap: %d\n", (int)stb_elem->att_overlap);
+      printf("   overlap: %d\n", (int)stb_elem->att_overlap);
     }
 
-    printf(" flip_request: %d\n", (int)stb_elem->flip_request);
+    printf("   flip_request: %d\n", (int)stb_elem->flip_request);
     if(stb_elem->mask_name)
     {
-      printf("mask_name :%s:\n", stb_elem->mask_name);
+      printf("  mask_name :%s:\n", stb_elem->mask_name);
     }
     else
     {
-      printf("mask_name: (NULL)\n");
+      printf("  mask_name: (NULL)\n");
     }
-    printf("mask_anchor:   %d\n", (int)stb_elem->mask_anchor);
-    printf("mask_stepsize: %f\n", (float)stb_elem->mask_stepsize);
-    printf("mask_disable:  %d\n", (int)stb_elem->mask_disable);
+    printf("  mask_anchor:   %d\n", (int)stb_elem->mask_anchor);
+    printf("  mask_stepsize: %f\n", (float)stb_elem->mask_stepsize);
+    printf("  mask_disable:  %d\n", (int)stb_elem->mask_disable);
 
-    printf("comment ptr:%d\n", (int)stb_elem->comment);
-    printf("next    ptr:%d\n", (int)stb_elem->next);
+    printf("  comment ptr:%d\n", (int)stb_elem->comment);
+    printf("  next    ptr:%d\n", (int)stb_elem->next);
   }
+  fflush(stdout);
 }  /* end gap_story_debug_print_elem */
 
 
@@ -248,8 +291,15 @@ gap_story_debug_print_list(GapStoryBoard *stb)
 {
   GapStoryElem *stb_elem;
   gint ii;
-  
+
   printf("\n\ngap_story_debug_print_list:  START stb: %d\n", (int)stb);
+
+  if(stb == NULL)
+  {
+    printf("NULL POINTER\n");
+    fflush(stdout);
+    return;
+  }
 
   printf("master_type         : %d\n", (int)stb->master_type );
   printf("master_width        : %d\n", (int)stb->master_width );
@@ -260,6 +310,7 @@ gap_story_debug_print_list(GapStoryBoard *stb)
             , (int)stb->master_aspect_width
             , (int)stb->master_aspect_height
             );
+  printf("master_1is_toplayer : %d\n", (int)stb->master_vtrack1_is_toplayer );
   printf("layout_cols         : %d\n", (int)stb->layout_cols );
   printf("layout_rows         : %d\n", (int)stb->layout_rows );
   printf("layout_thumbsize    : %d\n", (int)stb->layout_thumbsize );
@@ -267,23 +318,39 @@ gap_story_debug_print_list(GapStoryBoard *stb)
   printf("stb_parttype        : %d\n", (int)stb->stb_parttype );
   printf("stb_unique_id       : %d\n", (int)stb->stb_unique_id );
 
-  ii = 0;
-  for(stb_elem = stb->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
+  GapStorySection *active_section;
+  
+  for(active_section = stb->stb_section; active_section != NULL; active_section=active_section->next)
   {
-    ii++;
-    if(stb_elem->track == GAP_STB_MASK_TRACK_NUMBER)
+    if(active_section->section_name == NULL)
     {
-      printf("\nMask-Element # (%03d)\n", (int)ii);
+      printf("\nSECTION_NAME is NULL (refers to MAIN section)\n");
     }
     else
     {
-      printf("\nElement # (%03d)\n", (int)ii);
+      printf("\nSECTION_NAME %s\n", active_section->section_name);
     }
-    
-    gap_story_debug_print_elem(stb_elem);
+
+    ii = 0;
+    for(stb_elem = active_section->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
+    {
+      ii++;
+      if(stb_elem->track == GAP_STB_MASK_TRACK_NUMBER)
+      {
+        printf("\nMask-Element # (%03d)\n", (int)ii);
+      }
+      else
+      {
+        printf("\nElement # (%03d)\n", (int)ii);
+      }
+
+      gap_story_debug_print_elem(stb_elem);
+    }
+
   }
 
   printf("\ngap_story_debug_print_list:  END stb: %d\n", (int)stb);
+  fflush(stdout);
 }  /* end gap_story_debug_print_list */
 
 
@@ -308,7 +375,7 @@ p_check_image_numpart (GapStoryElem *stb_elem, char *filename)
     }
     g_free(l_basnam);
   }
-}  /* end p_check_image_numpart */ 
+}  /* end p_check_image_numpart */
 
 
 /* -----------------------------
@@ -329,36 +396,36 @@ static gint32
 p_calculate_rangesize(GapStoryElem *stb_elem)
 {
   gdouble fnr;
-  
+
   if(stb_elem->step_density <= 0)
   {
     /* force leagal step_density value */
     stb_elem->step_density = 1.0;
   }
-  
+
   fnr = (gdouble)(ABS(stb_elem->from_frame - stb_elem->to_frame) +1);
   fnr = fnr / stb_elem->step_density;
 
   return((gint32)MAX( (fnr+0.5), 1 ));
-  
+
 }  /* end p_calculate_rangesize */
 
 static gint32
 p_calculate_rangesize_pingpong(GapStoryElem *stb_elem)
 {
   gdouble fnr;
-  
+
   if(stb_elem->step_density <= 0)
   {
     /* force leagal step_density value */
     stb_elem->step_density = 1.0;
   }
-  
+
   fnr = 2.0 * (gdouble)(ABS(stb_elem->from_frame - stb_elem->to_frame));
   fnr = fnr / stb_elem->step_density;
 
   return((gint32)MAX( (fnr+0.5), 1 ));
-  
+
 }  /* end p_calculate_rangesize_pingpong */
 
 
@@ -403,7 +470,7 @@ p_calculate_pingpong_framenr(gint32 framenr, gint32 rangesize, gdouble step_dens
 
   fnr = 1.0 + ((gdouble)(ret_framenr -1) * step_density);
   return ((gint32)(fnr + 0.5));
-  
+
 }  /* end p_calculate_pingpong_framenr */
 
 
@@ -416,9 +483,9 @@ p_dup_printable_stringprefix(GapStoryBoard *stb, const char *str, gint32 length)
 {
   char *l_dup_str;
   gint ii;
-  
+
   l_dup_str = g_malloc0(length + 1);
-  
+
   for(ii=0; ii < length; ii++)
   {
     if(g_ascii_isprint(str[ii]))
@@ -447,7 +514,7 @@ static void
 p_set_stb_error(GapStoryBoard *stb, char *errtext)
 {
   char *currline_string;
-  
+
 
   if(stb->count_unprintable_chars < MAX_TOLERATED_UNPRINTABLE_CHARACTERS)
   {
@@ -459,7 +526,7 @@ p_set_stb_error(GapStoryBoard *stb, char *errtext)
         );
     g_free(currline_string);
   }
-  
+
   if(stb->errtext == NULL)
   {
      if(errtext)
@@ -471,7 +538,7 @@ p_set_stb_error(GapStoryBoard *stb, char *errtext)
        stb->errtext     = g_strdup(_("internal error"));
      }
      stb->errline_nr  = stb->curr_nr;
-     if(stb->currline) 
+     if(stb->currline)
      {
        stb->errline     = p_dup_printable_stringprefix(stb
                             , stb->currline
@@ -492,7 +559,7 @@ static void
 p_set_stb_warning(GapStoryBoard *stb, char *warntext)
 {
   char *currline_string;
-  
+
   if(stb->count_unprintable_chars < MAX_TOLERATED_UNPRINTABLE_CHARACTERS)
   {
     currline_string = p_dup_printable_stringprefix(stb, stb->currline, MAX_CHARS_ERRORTEXT_LONG);
@@ -504,7 +571,7 @@ p_set_stb_warning(GapStoryBoard *stb, char *warntext)
         );
     g_free(currline_string);
   }
-  
+
   if(stb->warntext == NULL)
   {
      if(warntext)
@@ -516,7 +583,7 @@ p_set_stb_warning(GapStoryBoard *stb, char *warntext)
        stb->warntext     = g_strdup(_("internal error"));
      }
      stb->warnline_nr  = stb->curr_nr;
-     if(stb->currline) 
+     if(stb->currline)
      {
        stb->warnline     = p_dup_printable_stringprefix(stb
                             , stb->currline
@@ -534,7 +601,7 @@ GapStoryBoard *
 gap_story_new_story_board(const char *filename)
 {
   GapStoryBoard *stb;
-  
+
   stb = g_new(GapStoryBoard, 1);
   if(stb)
   {
@@ -542,18 +609,19 @@ gap_story_new_story_board(const char *filename)
     stb->master_width = -1;
     stb->master_height = -1;
     stb->master_framerate = -1.0;
+    stb->master_vtrack1_is_toplayer = TRUE;
     stb->master_volume = -1.0;
     stb->master_samplerate = -1;
 
     stb->master_aspect_ratio = 0.0;  /* 0.0 for none */
     stb->master_aspect_width = 0;
     stb->master_aspect_height = 0;
-    
+
     stb->layout_cols = -1;
     stb->layout_rows = -1;
     stb->layout_thumbsize = -1;
-    
-    stb->stb_elem = NULL;
+
+    stb->stb_section = NULL;
     stb->storyboardfile = NULL;
     if(filename)
     {
@@ -575,9 +643,23 @@ gap_story_new_story_board(const char *filename)
     stb->stb_parttype  = 0;
     stb->stb_unique_id  = global_stb_id++;
 
+    stb->mask_section = gap_story_create_or_find_section_by_name(stb, GAP_STB_MASK_SECTION_NAME);
+    stb->active_section = gap_story_create_or_find_section_by_name(stb, NULL);
+    
+    stb->edit_settings = g_new(GapStoryEditSettings, 1);
+    if (stb->edit_settings)
+    {
+       /* init default edit settings 
+        * (show main section track 1 first page)
+        */
+       stb->edit_settings->section_name = NULL;
+       stb->edit_settings->track = 1;
+       stb->edit_settings->page = 0;
+    }
+    stb->mapping = NULL;
     stb->unsaved_changes = TRUE;
   }
-  
+
   return(stb);
 }  /* end gap_story_new_story_board */
 
@@ -592,7 +674,7 @@ GapStoryElem *
 gap_story_new_elem(GapStoryRecordType record_type)
 {
   GapStoryElem *stb_elem;
-  
+
   stb_elem = g_new(GapStoryElem, 1);
   if(stb_elem)
   {
@@ -611,12 +693,13 @@ gap_story_new_elem(GapStoryRecordType record_type)
     stb_elem->exact_seek = 0;
     stb_elem->delace = 0.0;
     stb_elem->filtermacro_file = NULL;
+    stb_elem->fmac_total_steps = 1;
     stb_elem->preferred_decoder = NULL;
     stb_elem->from_frame = 1;
     stb_elem->to_frame = 1;
     stb_elem->nloop = 1;
-    stb_elem->nframes = -1;         /* -1 : for not specified in file */ 
-    stb_elem->step_density = 1.0;   /* normal stepsize 1:1 */ 
+    stb_elem->nframes = -1;         /* -1 : for not specified in file */
+    stb_elem->step_density = 1.0;   /* normal stepsize 1:1 */
     stb_elem->file_line_nr = -1;
     stb_elem->flip_request = GAP_STB_FLIP_NONE;
     stb_elem->mask_name = NULL;
@@ -630,7 +713,7 @@ gap_story_new_elem(GapStoryRecordType record_type)
     stb_elem->color_green = 0.0;
     stb_elem->color_blue = 0.0;
     stb_elem->color_alpha = 0.0;
-           
+
     /* init members for attribute Record types */
     stb_elem->att_keep_proportions = FALSE;
     stb_elem->att_fit_width = TRUE;
@@ -648,7 +731,7 @@ gap_story_new_elem(GapStoryRecordType record_type)
         stb_elem->att_arr_value_dur[ii] = 1;        /* number of frames to change from -> to value */
       }
     }
-    
+
     /* init members for Audio Record types */
     stb_elem->aud_filename = NULL;
     stb_elem->aud_seltrack = 1;          /* selected audiotrack in a videofile (for GAP_AUT_MOVIE) */
@@ -668,7 +751,7 @@ gap_story_new_elem(GapStoryRecordType record_type)
     stb_elem->comment = NULL;
     stb_elem->next = NULL;
   }
-  
+
   if(gap_debug) printf("gap_story_new_elem: RETURN stb_elem ptr: %d\n", (int)stb_elem );
   return(stb_elem);
 }  /* end gap_story_new_elem */
@@ -682,16 +765,358 @@ GapStoryElem *
 gap_story_new_mask_elem(GapStoryRecordType record_type)
 {
   GapStoryElem *stb_elem;
-  
+
   stb_elem = gap_story_new_elem(record_type);
   if(stb_elem)
   {
-    /* forcce defaults for mask definition elements */
+    /* force defaults for mask definition elements */
     stb_elem->track = GAP_STB_MASK_TRACK_NUMBER;
     stb_elem->playmode = GAP_STB_PM_NORMAL;
   }
   return(stb_elem);
 }  /* end gap_story_new_mask_elem */
+
+
+
+/* ------------------------------
+ * gap_story_new_section
+ * ------------------------------
+ */
+GapStorySection *
+gap_story_new_section()
+{
+   GapStorySection *new_section;
+   
+   new_section = g_new(GapStorySection, 1);
+   new_section->stb_elem = NULL;
+   new_section->section_name = NULL;
+   new_section->current_vtrack = 1;
+
+   new_section->section_id = global_stb_elem_id++;
+   new_section->version = 0;
+
+   new_section->next = NULL;
+
+   return (new_section);
+}  /* end gap_story_new_section */
+
+
+/* -----------------------------------------
+ * gap_story_find_first_referable_subsection
+ * -----------------------------------------
+ * returns NULL if the active_section is NOT the main section
+ *              (refernces are not allowed in other sections)
+ *              or if there is no referable subsection.
+ */
+GapStorySection *
+gap_story_find_first_referable_subsection(GapStoryBoard *stb)
+{
+  GapStorySection *section;
+  GapStorySection *main_section;
+
+  if(stb == NULL) { return(NULL); }
+  if(stb->active_section == NULL) { return(NULL); }
+
+  main_section = gap_story_find_main_section(stb);
+  if(stb->active_section != main_section) { return(NULL); }
+
+  for(section = stb->stb_section; section != NULL; section = section->next)
+  {
+    if((section == stb->mask_section)
+    || (section == main_section))
+    {
+      continue;
+    }
+    return(section);
+  }
+
+  return(NULL);
+
+}  /* end gap_story_find_first_referable_subsection */
+
+
+/* ------------------------------------------
+ * gap_story_elem_find_in_section_by_story_id
+ * ------------------------------------------
+ */
+GapStoryElem *
+gap_story_elem_find_in_section_by_story_id(GapStorySection *section, gint32 story_id)
+{
+  GapStoryElem *stb_elem;
+
+  if(section)
+  {
+      for(stb_elem = section->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
+      {
+        if(stb_elem->story_id == story_id)
+        {
+          return(stb_elem);
+        }
+      }
+  }
+  return (NULL);
+
+}  /* end gap_story_elem_find_in_section_by_story_id */
+
+
+
+/* ----------------------------------
+ * gap_story_find_section_by_story_id
+ * ----------------------------------
+ * find the section in the specified storyboard that contains
+ * the specified storyboard element id (story_id).
+ * return pointer to the section where stb_elem is included
+ *        or NULL if no such section was found.
+ */
+GapStorySection *
+gap_story_find_section_by_story_id(GapStoryBoard *stb, gint32 story_id)
+{
+  GapStorySection *section;
+  
+  if (stb == NULL)
+  {
+    return (NULL);
+  }
+  
+
+  /* 1st attempt searches only in the active section */
+  if (gap_story_elem_find_in_section_by_story_id(stb->active_section, story_id) != NULL)
+  {
+    return (stb->active_section);
+  }
+
+  /* 2nd attempt searches in all sections */ 
+  for(section = stb->stb_section; section != NULL; section = section->next)
+  {
+    if (gap_story_elem_find_in_section_by_story_id(section, story_id) != NULL)
+    {
+      return(section);
+    }
+  }
+  
+  return (NULL);
+  
+}  /* end gap_story_find_section_by_story_id */
+
+
+/* ----------------------------------
+ * gap_story_find_section_by_stb_elem
+ * ----------------------------------
+ * find the section in the specified storyboard that contains
+ * the specified storyboard element (stb_elem).
+ * return pointer to the section where stb_elem is included
+ *        or NULL if no such section was found.
+ */
+GapStorySection *
+gap_story_find_section_by_stb_elem(GapStoryBoard *stb, GapStoryElem      *stb_elem)
+{
+  if ((stb == NULL) || (stb_elem == NULL))
+  {
+    return (NULL);
+  }
+  
+  return (gap_story_find_section_by_story_id(stb, stb_elem->story_id));
+}
+
+
+/* ------------------------------
+ * gap_story_find_section_by_name
+ * ------------------------------
+ * section_name NULL refers to MAIN section.
+ */
+GapStorySection *
+gap_story_find_section_by_name(GapStoryBoard *stb, const char *section_name)
+{
+  GapStorySection *section;
+  
+  for(section = stb->stb_section; section != NULL; section = section->next)
+  {
+    if(p_null_strcmp(section->section_name, section_name))
+    {
+      return(section);
+    }
+  }
+  return (NULL);
+}  /* end gap_story_find_section_by_name */
+
+
+/* ------------------------------
+ * gap_story_find_main_section
+ * ------------------------------
+ * section_name NULL refers to MAIN section.
+ */
+GapStorySection *
+gap_story_find_main_section(GapStoryBoard *stb)
+{
+  return (gap_story_find_section_by_name(stb, NULL));
+}  /* end gap_story_find_main_section */
+
+
+/* ----------------------------------------
+ * gap_story_create_or_find_section_by_name
+ * ----------------------------------------
+ * check if section with specified name already exists,
+ * if not create the section and addit at end of the section list.
+ * return the section with the specified name.
+ */
+GapStorySection *
+gap_story_create_or_find_section_by_name(GapStoryBoard *stb, const char *section_name)
+{
+  GapStorySection *section;
+  GapStorySection *new_section;
+  
+  section = gap_story_find_section_by_name(stb, section_name);
+  if (section != NULL)
+  {
+    return(section);
+  }
+    
+    
+  new_section = gap_story_new_section();
+  if (section_name != NULL)
+  {
+    new_section->section_name = g_strdup(section_name);
+  }
+    
+  for(section = stb->stb_section; section != NULL; section = section->next)
+  {
+    if(section->next == NULL)
+    {
+        break;
+    }
+  }
+  if (section != NULL)
+  {
+    section->next = new_section;
+  }
+  else
+  {
+    stb->stb_section = new_section;
+  }
+  stb->unsaved_changes = TRUE;
+  return(new_section);
+
+}  /* end p_create_or_switch_to_section */
+
+
+
+
+/* ---------------------------------
+ * p_free_section
+ * ---------------------------------
+ */
+static void
+p_free_section(GapStorySection *section)
+{
+  if(section)
+  {
+    if(section->section_name)
+    {
+      g_free(section->section_name);
+    }
+    g_free(section);
+  }
+}  /* end p_free_section */
+
+
+/* ---------------------------------
+ * gap_story_remove_section
+ * ---------------------------------
+ * remove the specified section.
+ * removal fails if the section is still refered via
+ * Clips of type VID_PLAY_SECTION in the MAIN section.
+ *
+ * returns TRUE if section removal was successful.
+ *         FALSE if section could not be removed.
+ *               (note that attempts to remove MAIN otr Mask
+ *               section are not allowed and always return FALSE)
+ */
+gboolean
+gap_story_remove_section(GapStoryBoard *stb, GapStorySection *del_section)
+{
+  GapStorySection *section;
+  GapStorySection *prev_section;
+  GapStorySection *main_section;
+  GapStoryElem *stb_elem;
+
+  /* check for mask section */
+  if (del_section == stb->mask_section)  { return(FALSE); }
+
+  main_section = gap_story_find_main_section(stb);
+  if (del_section == main_section)  { return(FALSE); }
+
+  /* check if refernced by clips in the main section */
+  if(del_section->section_name != NULL)
+  {
+    for(stb_elem = main_section->stb_elem; stb_elem != NULL; stb_elem = (GapStoryElem *)stb_elem->next)
+    {
+      if((stb_elem->record_type == GAP_STBREC_VID_SECTION)
+      || (stb_elem->record_type == GAP_STBREC_VID_BLACKSECTION))
+      {
+        if(stb_elem->orig_filename)  /* reference to section_name */
+        {
+          if(strcmp(stb_elem->orig_filename, del_section->section_name) == 0)
+          {
+            return(FALSE);
+          }
+        }
+      }
+    }
+  }
+  
+  
+  prev_section = NULL;
+  for(section = stb->stb_section; section != NULL; section = section->next)
+  {
+    if(del_section == section)
+    {
+      stb->unsaved_changes = TRUE;
+      
+      if(prev_section == NULL)
+      {
+        /* remove the 1st list element */
+        stb->stb_section = section->next;
+      }
+      else
+      {
+        /* remove list element that has a rprevious element */
+        prev_section->next = section->next;
+      }
+      
+      p_free_section(section);
+      
+      return(TRUE);
+    }
+    prev_section = section;
+  }
+  return (FALSE);
+  
+}  /* end gap_story_remove_section */
+
+/* ------------------------------------------
+ * gap_story_generate_new_unique_section_name
+ * ------------------------------------------
+ */
+gchar * gap_story_generate_new_unique_section_name(GapStoryBoard *stb)
+{
+  gchar *new_name;
+  
+  while (TRUE)
+  {
+    new_name = g_strdup_printf(_("section_%02d"), global_section_name_number);
+    global_section_name_number++;
+
+    if(gap_story_find_section_by_name(stb, new_name) == NULL)
+    {
+      /* there is no section matching new_name (new_name is unique) */
+      break;
+    }
+    g_free(new_name);
+  }
+
+  return (new_name);
+}  /* end gap_story_generate_new_unique_section_name */
+
 
 /* --------------------------------------
  * gap_story_filename_is_videofile_by_ext
@@ -759,7 +1184,7 @@ gap_story_filename_is_videofile(const char *filename)
       return (TRUE);
   }
   return(FALSE);
-  
+
 }  /* end gap_story_filename_is_videofile */
 
 /* --------------------------------
@@ -770,16 +1195,16 @@ long
 gap_story_upd_elem_from_filename(GapStoryElem *stb_elem,  const char *filename)
 {
   long current_frame;
-  
+
   current_frame = -1;
-  
+
   if(stb_elem == NULL) { return(current_frame); }
   if(stb_elem->basename)
   {
     g_free(stb_elem->basename);
   }
   stb_elem->basename = NULL;
-  
+
   if(stb_elem->ext)
   {
     g_free(stb_elem->ext);
@@ -792,12 +1217,23 @@ gap_story_upd_elem_from_filename(GapStoryElem *stb_elem,  const char *filename)
     g_free(stb_elem->orig_filename);
   }
   stb_elem->orig_filename = g_strdup(filename);
-  stb_elem->record_type = GAP_STBREC_VID_UNKNOWN;
-  
+
+  switch(stb_elem->record_type)
+  {
+    case GAP_STBREC_VID_SECTION:
+    case GAP_STBREC_VID_BLACKSECTION:
+      current_frame = 1;
+      return (current_frame);
+      break;
+    default:
+      stb_elem->record_type = GAP_STBREC_VID_UNKNOWN;
+      break;
+  }
+
   if(g_file_test(filename, G_FILE_TEST_EXISTS))
   {
     long   l_number;
-    
+
     stb_elem->basename = gap_lib_alloc_basename(filename, &l_number);
     stb_elem->ext = gap_lib_alloc_extension(filename);
     if(gap_story_filename_is_videofile(filename))
@@ -824,7 +1260,7 @@ gap_story_upd_elem_from_filename(GapStoryElem *stb_elem,  const char *filename)
 /* ----------------------------------------------------
  * p_free_stb_elem
  * ----------------------------------------------------
- * free all strings that were allocated as members 
+ * free all strings that were allocated as members
  * of the passed Storyboard Element
  */
 static void
@@ -849,7 +1285,7 @@ gap_story_elem_free(GapStoryElem **stb_elem)
 {
   GapStoryElem *stb_comment;
   GapStoryElem *stb_next;
-  
+
   if(stb_elem)
   {
     if(*stb_elem)
@@ -901,6 +1337,63 @@ p_free_stb_elem_list(GapStoryElem *stb_list)
 
 
 /* ----------------------------------------------------
+ * gap_story_free_stb_section
+ * ----------------------------------------------------
+ * free all the elements in the passed stb_section
+ * and the section_name.
+ */
+void
+gap_story_free_stb_section(GapStorySection *stb_section)
+{
+  if (stb_section)
+  {
+    if (stb_section->stb_elem)
+    {
+      p_free_stb_elem_list(stb_section->stb_elem);
+    }
+    stb_section->stb_elem = NULL;
+    
+    if (stb_section->section_name)
+    {
+      g_free(stb_section->section_name);
+    }
+    stb_section->section_name = NULL;
+  }
+}  /* end gap_story_free_stb_section */
+
+
+
+/* -------------------------------------------
+ * gap_story_free_selection_mapping
+ * -------------------------------------------
+ * free the map_list (all elements) of the specified mapping.
+ */
+void
+gap_story_free_selection_mapping(GapStoryFrameNumberMap *mapping)
+{
+  if(mapping)
+  {
+    if(mapping->map_list)
+    {
+      GapStoryFrameNumberMappingElem *map_elem;
+      
+      map_elem = mapping->map_list;
+      while(map_elem != NULL)
+      {
+        GapStoryFrameNumberMappingElem *map_elem_next;
+
+        map_elem_next = map_elem->next;
+        g_free(map_elem);
+        map_elem = map_elem_next;
+      }
+      mapping->map_list = NULL;
+      mapping->total_frames_selected = 0;
+    }
+  }
+  
+}  /* end gap_story_free_selection_mapping */
+
+/* ----------------------------------------------------
  * gap_story_free_storyboard
  * ----------------------------------------------------
  */
@@ -908,14 +1401,48 @@ void
 gap_story_free_storyboard(GapStoryBoard **stb_ptr)
 {
   GapStoryBoard *stb;
-  
+
   stb = *stb_ptr;
   if(stb)
   {
-    if(stb->stb_elem)
+    if(stb->stb_section)
     {
-      p_free_stb_elem_list(stb->stb_elem);
+      GapStorySection *stb_section;
+      stb_section = stb->stb_section;
+      while(stb_section != NULL)
+      {
+        GapStorySection *stb_section_next;
+
+        stb_section_next = stb_section->next;
+        gap_story_free_stb_section(stb_section);
+        stb_section = stb_section_next;
+      }
+      stb->stb_section = NULL;
     }
+    
+    /* free edit_settings */
+    if(stb->edit_settings)
+    {
+       if (stb->edit_settings->section_name)
+       {
+         g_free(stb->edit_settings->section_name);
+       }
+       g_free(stb->edit_settings);
+       stb->edit_settings = NULL;
+    }
+    
+    /* free selction mapping */
+    if(stb->mapping)
+    {
+      gap_story_free_selection_mapping(stb->mapping);
+      stb->mapping = NULL;
+    }
+    /* note that active_section and mask_section are just a references
+     * to objects in the already freed stb_section list.
+     */
+    stb->active_section = NULL;
+    stb->mask_section = NULL;
+
     if(stb->storyboardfile)
     {
       g_free(stb->storyboardfile);
@@ -936,11 +1463,11 @@ gap_story_free_storyboard(GapStoryBoard **stb_ptr)
     {
       g_free(stb->warnline);
     }
-    
+
     /* Note: Dont try to g_free stb->currline
      * it points to memory that is controlled (and already free'd) by the parser
      */
-    
+
   }
   *stb_ptr = NULL;
 }  /* end gap_story_free_storyboard */
@@ -950,39 +1477,78 @@ gap_story_free_storyboard(GapStoryBoard **stb_ptr)
 /* ----------------------------------------------------
  * gap_story_list_append_elem
  * ----------------------------------------------------
- * add new stb_elem at end of the stb->stb_elem list
+ * add new stb_elem at end of the stb->active_section->stb_elem list
  * if the existing list's tail element has record_type == GAP_STBREC_VID_COMMENT
  * (or more record_type == GAP_STBREC_VID_COMMENT elements in sequence)
  * the comment-tail is cut off the existing list
  * and assigned to the comment pointer of the new element.
- * In both cases the new element will be the last in the stb->stb_elem list
+ * In both cases the new element will be the last in the
+ * stb->active_section->stb_elem list
  */
 void
 gap_story_list_append_elem(GapStoryBoard *stb, GapStoryElem *stb_elem)
+{
+  gap_story_list_append_elem_at_section(stb, stb_elem, stb->active_section);
+}  /* end gap_story_list_append_elem_at_section */
+
+
+/* ----------------------------------------------------
+ * gap_story_list_append_elem_at_section
+ * ----------------------------------------------------
+ * add new stb_elem at end of the stb_elem list in the specified section.
+ * if the existing list's tail element has record_type == GAP_STBREC_VID_COMMENT
+ * (or more record_type == GAP_STBREC_VID_COMMENT elements in sequence)
+ * the comment-tail is cut off the existing list
+ * and assigned to the comment pointer of the new element.
+ * In both cases the new element will be the last in the active_section->stb_elem list
+ */
+void
+gap_story_list_append_elem_at_section(GapStoryBoard *stb, GapStoryElem *stb_elem
+  , GapStorySection *active_section)
 {
   GapStoryElem *stb_listend;
   GapStoryElem *stb_non_comment;
 
   if(gap_debug)
   {
-    printf("gap_story_list_append_elem: START\n");
+    printf("gap_story_list_append_elem: START:");
+    if (active_section != NULL)
+    {
+      if(active_section->section_name != NULL)
+      {
+        printf(" section_name: %s\n", active_section->section_name);
+      }
+      else
+      {
+        printf(" section_name: NULL (MAIN)\n");
+      }
+    }
+    printf("\n");
     gap_story_debug_print_elem(stb_elem);
     printf("\n\n");
   }
+  
+  if (active_section == NULL)
+  {
+    printf("gap_story_list_append_elem: ERROR active_section is NULL\n");
+  }
 
   stb_non_comment = NULL;
-  if((stb)  && (stb_elem))
+  if((stb)  && (stb_elem) && (active_section))
   {
      stb->unsaved_changes = TRUE;
-     if (stb->stb_elem == NULL)
+     active_section->version++;
+     if (active_section->stb_elem == NULL)
      {
        /* 1. element (or returned list) starts the list */
-       stb->stb_elem = stb_elem;
+       active_section->stb_elem = stb_elem;
      }
      else
      {
-       /* link stb_elem (that can be a single ement or list) to the end of frn_list */
-       stb_listend = stb->stb_elem;
+       /* link stb_elem (that can be a single ement or list) to the end of elem list
+        * in the specified active section
+        */
+       stb_listend = active_section->stb_elem;
        while(stb_listend->next != NULL)
        {
           if(stb_listend->record_type != GAP_STBREC_VID_COMMENT)
@@ -1000,30 +1566,30 @@ gap_story_list_append_elem(GapStoryBoard *stb, GapStoryElem *stb_elem)
           * to the comment pointer of the current element that is to add now,
           * and add the element.
           */
-         if(stb_non_comment == NULL)  
+         if(stb_non_comment == NULL)
          {
-           stb_elem->comment = (GapStoryElem *)stb->stb_elem;
-           stb->stb_elem = (GapStoryElem *)stb_elem;
+           stb_elem->comment = (GapStoryElem *)active_section->stb_elem;
+           active_section->stb_elem = (GapStoryElem *)stb_elem;
          }
          else
          {
            /*  Old list:
             *
             *  +------+          +------+          +------+
-            *  |non-  |          |#comm1|          |#comm2|          
-            *  |comm  |---next-->|      |---next-->|      |---next-->| 
+            *  |non-  |          |#comm1|          |#comm2|
+            *  |comm  |---next-->|      |---next-->|      |---next-->|
             *  +------+          +------+          +------+
             *
             *  New list:
             *
             *  +------+          +------+
             *  |non-  |          |new   |
-            *  |com   |---next-->|elem  |---next-->| 
+            *  |com   |---next-->|elem  |---next-->|
             *  +------+          +------+
             *                        |
             *                        |               +------+          +------+
-            *                        |               |#comm1|          |#comm2|          
-            *                        +--- comment--->|      |---next-->|      |---next-->| 
+            *                        |               |#comm1|          |#comm2|
+            *                        +--- comment--->|      |---next-->|      |---next-->|
             *                                        +------+          +------+
             *
             *
@@ -1046,13 +1612,13 @@ gap_story_list_append_elem(GapStoryBoard *stb, GapStoryElem *stb_elem)
  * ----------------------------------------------------
  */
 static GapStoryElem *
-p_get_last_non_comment_elem(GapStoryBoard *stb, gint32 in_track)
+p_get_last_non_comment_elem(GapStoryBoard *stb, gint32 in_track, GapStorySection *active_section)
 {
   GapStoryElem *stb_elem_non_comment;
   GapStoryElem *stb_elem;
-  
+
   stb_elem_non_comment = NULL;
-  for(stb_elem = stb->stb_elem; stb_elem != NULL; stb_elem = (GapStoryElem *)stb_elem->next)
+  for(stb_elem = active_section->stb_elem; stb_elem != NULL; stb_elem = (GapStoryElem *)stb_elem->next)
   {
     if(stb_elem->track != in_track)
     {
@@ -1063,9 +1629,9 @@ p_get_last_non_comment_elem(GapStoryBoard *stb, gint32 in_track)
       stb_elem_non_comment = stb_elem;
     }
   }
-  
+
   return (stb_elem_non_comment);
-  
+
 }  /* end p_get_last_non_comment_elem */
 
 
@@ -1077,11 +1643,12 @@ static void
 gap_story_set_fit_size_attributes(GapStoryBoard *stb
                         , GapStoryElem *target_stb_elem
                         , gint32 story_id
-                        , gint32 in_track)
+                        , gint32 in_track
+                        , GapStorySection *active_section)
 {
   GapStoryElem      *stb_elem;
-  
-  for(stb_elem = stb->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
+
+  for(stb_elem = active_section->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
   {
     if(stb_elem->track != in_track)
     {
@@ -1093,26 +1660,39 @@ gap_story_set_fit_size_attributes(GapStoryBoard *stb
       target_stb_elem->att_fit_width = stb_elem->att_fit_width;
       target_stb_elem->att_fit_height = stb_elem->att_fit_height;
     }
-    
+
     if(stb_elem->story_id == story_id)
     {
       break;
     }
   }
-  
+
 }  /* end gap_story_set_fit_size_attributes */
 
 
 /* ----------------------------------------------------
  * p_get_att_transition_elem
  * ----------------------------------------------------
+ * this procedure is typically used when parsing a storyboard file transition element.
+ * in the file there may be several different transition records
+ * in continous sequence that are collected in only one transition element in memory
+ * (the presence of a video clip record breaks continous sequence). 
+ * This procedure shall provide the one transition element that collects the
+ * transition records read from file. Therefore the already existing list in the active section
+ * is checked at the last NON comment element. If there is such an elem that is a transition,
+ * then set *elem_already_in_the_list TRUE and return this element. Otherwise create a new
+ * transition element.
+ * if the list already contains previous, but NON continous Fit size attributes for the same track,
+ * those attributes will be used to overwrite the defaults of a newly created transition attribute element. 
+ * Note: at parsing, the active_section is managed by the line parser and set always
+ * to the section where the currently parsed record shall be added.
  */
 static GapStoryElem *
 p_get_att_transition_elem(GapStoryBoard *stb, gboolean *elem_already_in_the_list, gint32 in_track)
 {
   GapStoryElem *stb_elem;
-  
-  stb_elem = p_get_last_non_comment_elem(stb, in_track);
+
+  stb_elem = p_get_last_non_comment_elem(stb, in_track, stb->active_section);
   if(stb_elem)
   {
     if(stb_elem->record_type == GAP_STBREC_ATT_TRANSITION)
@@ -1121,12 +1701,12 @@ p_get_att_transition_elem(GapStoryBoard *stb, gboolean *elem_already_in_the_list
       return (stb_elem);
     }
   }
-     
+
   *elem_already_in_the_list = FALSE;
   stb_elem =  gap_story_new_elem(GAP_STBREC_ATT_TRANSITION);
   stb_elem->nframes = 0;
   stb_elem->track = in_track;
-  gap_story_set_fit_size_attributes(stb, stb_elem, -1, in_track);
+  gap_story_set_fit_size_attributes(stb, stb_elem, -1, in_track, stb->active_section);
   return (stb_elem);
 }  /* end p_get_att_transition_elem */
 
@@ -1141,11 +1721,11 @@ char *
 gap_story_generate_unique_maskname(GapStoryBoard *stb_ptr)
 {
   char *mask_name;
-  
+
   while(1==1)
   {
     GapStoryElem      *stb_elem_ref;
-    
+
     mask_name = g_strdup_printf("m%d", (int)global_mask_name_number);
     global_mask_name_number++;
 
@@ -1153,17 +1733,17 @@ gap_story_generate_unique_maskname(GapStoryBoard *stb_ptr)
     {
       printf("gap_story_generate_unique_maskname: %s\n", mask_name);
     }
-    
+
     stb_elem_ref = gap_story_find_mask_definition_by_name(stb_ptr, mask_name);
     if(stb_elem_ref == NULL)
     {
       /* no element found, name is unique */
       return(mask_name);
     }
-    
+
     /* the generated mask_name is already in use, try another one */
     g_free(mask_name);
-    
+
   }
 }  /* end gap_story_generate_unique_maskname */
 
@@ -1196,57 +1776,40 @@ gap_story_update_mask_name_references(GapStoryBoard *stb_ptr
     return (FALSE);
   }
 
-  /* replace referneces */
-  for(stb_elem = stb_ptr->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
+  /* replace referneces in all NON-mask sections */
+  GapStorySection *section;
+  for(section = stb_ptr->stb_section; section != NULL; section = section->next)
   {
-    if((stb_elem->track != GAP_STB_MASK_TRACK_NUMBER)
-    && (stb_elem->mask_name != NULL))
+    if (section == stb_ptr->mask_section)
     {
-      if(strcmp(stb_elem->mask_name, mask_name_old) == 0)
+      continue;
+    }
+    for(stb_elem = section->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
+    {
+      if((stb_elem->track != GAP_STB_MASK_TRACK_NUMBER)
+      && (stb_elem->mask_name != NULL))
       {
-        g_free(stb_elem->mask_name);
-        stb_elem->mask_name = g_strdup(mask_name_new);
-        if(gap_debug)
+        if(strcmp(stb_elem->mask_name, mask_name_old) == 0)
         {
-          printf("gap_story_update_mask_name_references: update old_name: %s\n", mask_name_old);
-          gap_story_debug_print_elem(stb_elem);
+          g_free(stb_elem->mask_name);
+          stb_elem->mask_name = g_strdup(mask_name_new);
+          if(gap_debug)
+          {
+            printf("gap_story_update_mask_name_references: update old_name: %s\n", mask_name_old);
+            gap_story_debug_print_elem(stb_elem);
+          }
+
+
         }
-        
-        
       }
     }
+
   }
+
+
   return(TRUE);
 }  /* end gap_story_update_mask_name_references */
 
-
-/* ----------------------------------------------------
- * p_equal_null_strings
- * ----------------------------------------------------
- * return TRUE if both strings are equal or both are NULL.
- */
-static gboolean
-p_null_strcmp(const char *str1, const char *str2)
-{
-  if(str1 != NULL)
-  {
-    if(str2 != NULL)
-    {
-      if(strcmp(str1 , str2) == 0)
-      {
-        return (TRUE);
-      }
-    }
-  }
-  else
-  {
-    if(str2 == NULL)
-    {
-        return (TRUE);
-    }
-  }
-  return (FALSE);
-}  /* end p_null_strcmp */
 
 
 /* ----------------------------------------------------
@@ -1326,11 +1889,13 @@ gap_story_find_maskdef_equal_to_ref_elem(GapStoryBoard *stb_ptr, GapStoryElem *s
 {
   GapStoryElem *stb_elem;
   
-  for(stb_elem = stb_ptr->stb_elem; stb_elem != NULL; stb_elem = stb_elem->next)
+  if(stb_ptr->mask_section == NULL)
   {
-  
-  
-  
+    return (NULL);
+  }
+
+  for(stb_elem = stb_ptr->mask_section->stb_elem; stb_elem != NULL; stb_elem = stb_elem->next)
+  {
     if(stb_elem->track == GAP_STB_MASK_TRACK_NUMBER)
     {
       if(gap_debug)
@@ -1354,9 +1919,11 @@ gap_story_find_maskdef_equal_to_ref_elem(GapStoryBoard *stb_ptr, GapStoryElem *s
 /* ----------------------------------------------------
  * p_process_maskdefs_and_split_off_vtrack_elems
  * ----------------------------------------------------
- * returns a newly created storyboard with clip elements ready to insert
- * at desired position of the destination storyboard.
- * the newly created storyboard is a copy of the source storyboard
+ * returns a newly created storyboard with clip elements in the main section,
+ * ready to insert
+ * at desired position of the specified destination storyboard stb_dst.
+ *
+ * The newly created storyboard is a copy of the source storyboard
  * where the elements of hidden mask definition tracks
  * are NOT included. (those elements are already processed in this procedure
  * and added to the destination storyboard if necessary.
@@ -1374,12 +1941,15 @@ p_process_maskdefs_and_split_off_vtrack_elems(GapStoryBoard *stb_dst
                          , gint32   dst_vtrack
                          )
 {
-  GapStoryBoard *stb_vtrack_src;
-  GapStoryElem  *stb_elem_dup;
-  GapStoryElem  *stb_elem;
+  GapStoryBoard   *stb_vtrack_src;
+  GapStoryElem    *stb_elem_dup;
+  GapStoryElem    *stb_elem;
+  GapStorySection *stb_vtrack_main_section;
 
   stb_vtrack_src = gap_story_new_story_board(stb_src->storyboardfile);
-  
+  stb_vtrack_main_section =
+         gap_story_find_main_section(stb_vtrack_src);
+
   if(gap_debug)
   {
     printf("***** p_process_maskdefs_and_split_off_vtrack_elems dst_vtrack:%d\n"
@@ -1387,21 +1957,24 @@ p_process_maskdefs_and_split_off_vtrack_elems(GapStoryBoard *stb_dst
         );
     gap_story_debug_print_list(stb_src);
   }
-  
-  if(dst_vtrack != GAP_STB_MASK_TRACK_NUMBER)
+
+  if(stb_dst->active_section != stb_dst->mask_section)
   {
-    /* we are pasting into a normal video track
+    /* we are pasting into a normal video track of a non mask section
      * check if there are maskdefinitions in the src storyboard that have to
      * be pasted implicite (into mask definition track at end of destination storyboard)
+     * Note: implicite mask definitions are already present in the stb_src->mask_section
+     * (the cut/copy processing has put them there, using a hidden track number
+     * GAP_STB_HIDDEN_MASK_TRACK_NUMBER)
      */
-    for(stb_elem = stb_src->stb_elem; stb_elem != NULL; stb_elem = stb_elem->next)
+    for(stb_elem = stb_src->mask_section->stb_elem; stb_elem != NULL; stb_elem = stb_elem->next)
     {
       if(stb_elem->track == GAP_STB_HIDDEN_MASK_TRACK_NUMBER)
       {
         gboolean maskdef_copy_required;
         gchar *new_mask_name;
         GapStoryElem *stb_maskdef_elem;
-      
+
         new_mask_name = NULL;
         maskdef_copy_required = TRUE;
 
@@ -1412,7 +1985,7 @@ p_process_maskdefs_and_split_off_vtrack_elems(GapStoryBoard *stb_dst
           if(p_story_is_maskdef_equal(stb_elem, stb_maskdef_elem))
           {
             /* the destination storyboard already includes this
-             * maskdefinition, therefore no implicite copy
+             * maskdefinition (same mask_name and mask same clip), therefore no implicite copy
              * is necessary
              */
             maskdef_copy_required = FALSE;
@@ -1423,6 +1996,15 @@ p_process_maskdefs_and_split_off_vtrack_elems(GapStoryBoard *stb_dst
             gap_story_update_mask_name_references(stb_src, new_mask_name, stb_elem->mask_name);
           }
         }
+        /* else:
+         *  mask_name was not yet found in destination storyboard,
+         *  we can add the mask definition without changng the mask_name.
+         *
+         *  TODO: check if destination already includes same mask_definition clip
+         *  using another mask_name.
+         *   in such a case copy is not required, but have to 
+         *   gap_story_update_mask_name_references(stb_src, another_mask_name, stb_elem->mask_name);
+         */
 
         if(maskdef_copy_required)
         {
@@ -1437,39 +2019,49 @@ p_process_maskdefs_and_split_off_vtrack_elems(GapStoryBoard *stb_dst
             stb_elem_dup->mask_name = g_strdup(new_mask_name);
           }
           gap_story_list_append_elem(stb_dst, stb_elem_dup);
+          gap_story_list_append_elem_at_section(stb_dst, stb_elem_dup, stb_dst->mask_section);
+
         }
         if(new_mask_name)
         {
           g_free(new_mask_name);
         }
       }
-    }  
+    }
   }
 
-  /* loop 2 copy vtrack elements (also handles the case
-   * of explicite pasting elemts into the mask definition track)
+  /* loop 2 copy vtrack elements to main section of the result storyboard (stb_vtrack_src)
+   * This also handles the case
+   * In case of explicite pasting elements into the mask section.
+   * the elements require a new unique mask_name that is generated.
+   * (existing mask_name references must be removed)
+   * 
    */
-  for(stb_elem = stb_src->stb_elem; stb_elem != NULL; stb_elem = stb_elem->next)
+   
+  for(stb_elem = stb_src->active_section->stb_elem; stb_elem != NULL; stb_elem = stb_elem->next)
   {
-    if((dst_vtrack == GAP_STB_MASK_TRACK_NUMBER)
-    && (stb_elem->record_type == GAP_STBREC_ATT_TRANSITION))
+    if(stb_elem->record_type == GAP_STBREC_ATT_TRANSITION)
     {
-      /* never paste transitions into mask definition tracks */
-      continue;
+      if((dst_vtrack == GAP_STB_MASK_TRACK_NUMBER)
+      || (stb_dst->active_section == stb_dst->mask_section))
+      {
+        /* never paste transitions into mask definition tracks */
+        continue;
+      }
     }
     if(stb_elem->track != GAP_STB_HIDDEN_MASK_TRACK_NUMBER)
     {
-      /* remove mask references if destination is the mask definition track
-       * and source track was no mask definition
-       */
       stb_elem_dup = gap_story_elem_duplicate(stb_elem);
-      if(dst_vtrack == GAP_STB_MASK_TRACK_NUMBER)
+      if(stb_dst->active_section == stb_dst->mask_section)
       {
+        /* remove mask references if destination is the mask definition track
+         * and source track was no mask definition
+         */
         if(stb_elem_dup->mask_name)
         {
           GapStoryElem      *stb_elem_ref;
-         
-          stb_elem_ref = gap_story_find_mask_definition_by_name(stb_dst, stb_elem_dup->mask_name); 
+
+          stb_elem_ref = gap_story_find_mask_definition_by_name(stb_dst, stb_elem_dup->mask_name);
           if(stb_elem_ref)
           {
             /* the same mask name is already in use in the destination
@@ -1480,9 +2072,9 @@ p_process_maskdefs_and_split_off_vtrack_elems(GapStoryBoard *stb_dst
             stb_elem_dup->mask_name = NULL;
           }
         }
-        
+
         /* mask definitions require a unique name
-         * therefore generate one if there is none
+         * therefore generate a new one if there is none
          */
         if(stb_elem_dup->mask_name == NULL)
         {
@@ -1504,21 +2096,47 @@ p_process_maskdefs_and_split_off_vtrack_elems(GapStoryBoard *stb_dst
         }
       }
       stb_elem_dup->track = dst_vtrack;
-      gap_story_list_append_elem(stb_vtrack_src, stb_elem_dup);
+      gap_story_list_append_elem_at_section(stb_vtrack_src, stb_elem_dup, stb_vtrack_main_section);
     }
-  }  
+  }
 
   return(stb_vtrack_src);
 }  /* end p_process_maskdefs_and_split_off_vtrack_elems */
+
+/* ----------------------------------------------------
+ * p_section_to_blacksection
+ * ----------------------------------------------------
+ * convert all vid_play_section elements to vid_play_blacsections elements
+ * in the specified section.
+ */
+static void
+p_section_to_blacksection(GapStorySection *section)
+{
+  GapStoryElem    *stb_elem;
+
+  for(stb_elem = section->stb_elem; stb_elem != NULL; stb_elem = stb_elem->next)
+  {
+    if (stb_elem->record_type == GAP_STBREC_VID_SECTION)
+    {
+      stb_elem->record_type = GAP_STBREC_VID_BLACKSECTION;
+    }
+  }
+}  /* end p_section_to_blacksection */
 
 
 /* ----------------------------------------------------
  * p_list_insert_at_story_id
  * ----------------------------------------------------
+ * move the list of storyboard elements from the
+ * specified vtrack_src_section to the specified dst_section
+ * and insert it before (or after if insert_after == TRUE)
+ * the storyboard element with the specified story_id.
+ * (story_id == -1 or unknown id results in appending
+ *  the list at end of the dst_section->stb_elem list)
  */
 static void
-p_list_insert_at_story_id(GapStoryBoard *stb_dst
-                         , GapStoryBoard *stb_vtrack_src
+p_list_insert_at_story_id(GapStorySection *dst_section
+                         , GapStorySection  *vtrack_src_section
                          , gint32 story_id
                          , gboolean insert_after
                          )
@@ -1526,14 +2144,14 @@ p_list_insert_at_story_id(GapStoryBoard *stb_dst
   GapStoryElem *stb_elem_prev;
   GapStoryElem *stb_elem;
   GapStoryElem *stb_elem_last_src;
-  
-  
-  stb_elem_last_src = stb_vtrack_src->stb_elem;
+
+
+  stb_elem_last_src = vtrack_src_section->stb_elem;
   if(stb_elem_last_src == NULL)
   {
     return;  /* src list is already empty, nothing left to do */
   }
-  
+
   /* find last source element */
   while(TRUE)
   {
@@ -1546,61 +2164,62 @@ p_list_insert_at_story_id(GapStoryBoard *stb_dst
       stb_elem_last_src = stb_elem_last_src->next;
     }
   }
-  
-  if(stb_dst->stb_elem == NULL)
+
+  if(dst_section->stb_elem == NULL)
   {
-    /* destination list is empty, just move src elems there and done */ 
-    stb_dst->stb_elem = stb_vtrack_src->stb_elem;
-    stb_vtrack_src->stb_elem = NULL;
+    /* destination list is empty, just move src elems there and done */
+    dst_section->stb_elem = vtrack_src_section->stb_elem;
+    vtrack_src_section->stb_elem = NULL;
   }
-  
-  /* find position in dst list and insert the src list there */ 
+
+  /* find position in dst list and insert the src list there */
   stb_elem_prev = NULL;
-  for(stb_elem = stb_dst->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
+  for(stb_elem = dst_section->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
   {
     if((stb_elem->story_id == story_id))
     {
       if(insert_after)
       {
         stb_elem_last_src->next = stb_elem->next;
-        stb_elem->next = stb_vtrack_src->stb_elem;
+        stb_elem->next = vtrack_src_section->stb_elem;
       }
       else
       {
         stb_elem_last_src->next = stb_elem;
-        
+
         if(stb_elem_prev == NULL)
         {
           /* insert before the 1.st element */
-          stb_dst->stb_elem = stb_vtrack_src->stb_elem;
+          dst_section->stb_elem = vtrack_src_section->stb_elem;
         }
         else
         {
-          stb_elem_prev->next = stb_vtrack_src->stb_elem;
+          stb_elem_prev->next = vtrack_src_section->stb_elem;
         }
       }
-      stb_vtrack_src->stb_elem = NULL;
+      vtrack_src_section->stb_elem = NULL;
       return;
-      
+
     }
     stb_elem_prev = stb_elem;
   }
-  
+
   if(stb_elem_prev)  /* should never be NULL at this point */
   {
     /* add src list at end of dst list */
-    stb_elem_prev->next = stb_vtrack_src->stb_elem;
-    stb_vtrack_src->stb_elem = NULL;
+    stb_elem_prev->next = vtrack_src_section->stb_elem;
+    vtrack_src_section->stb_elem = NULL;
   }
 
 }  /* end p_list_insert_at_story_id */
 
 
 
+
 /* ----------------------------------------------------
  * gap_story_lists_merge
  * ----------------------------------------------------
- * insert all elements of stb_src into stb_dst
+ * insert all elements of stb_src into the active section of stb_dst
  * at position after (or before) the elment with matching story_id.
  *
  * use story_id -1 (or any other invalid story_id) if you want to
@@ -1610,10 +2229,19 @@ p_list_insert_at_story_id(GapStoryBoard *stb_dst
  * into another storyboard list at the specified video track number
  * (parameter dst_vtrack).
  *
- * NOTE: mask definition refrences in the source storyboard are
+ * NOTES: mask definition refrences in the source storyboard are
  * modified to fit the needs for the destionation storyboard
  * at processing. Typically the source storyboard stb_src
+ * (that usually is a copy of the paste buffer)
  * should be destroyed after calling this procedure.
+ *
+ * Paste into mask_section:
+ *   in this case stb_dst->active_section == stb_dst->mask_section
+ *   and dst_vtrack == GAP_STB_MASK_TRACK_NUMBER (0)
+ *
+ * Paste into non-mask section: main or sub_section:
+ *   in this case stb_dst->active_section != stb_dst->mask_section
+ *   all clips in non mask sections of stb_src (this is the  are copied into 
  */
 void
 gap_story_lists_merge(GapStoryBoard *stb_dst
@@ -1625,13 +2253,18 @@ gap_story_lists_merge(GapStoryBoard *stb_dst
 {
   if((stb_dst) && (stb_src))
   {
-    GapStoryBoard *stb_vtrack_src;
+    GapStoryBoard    *stb_vtrack_src;
+    GapStorySection  *stb_vtrack_main_section;
+    GapStorySection  *stb_dst_main_section;
+    GapStorySection  *stb_src_main_section;
 
-    if(stb_src->stb_elem == NULL)
+    stb_src_main_section = gap_story_find_main_section(stb_src);
+
+    if(stb_src_main_section->stb_elem == NULL)
     {
       return;  /* src list is empty, nothing to do */
     }
-    
+
     stb_dst->unsaved_changes = TRUE;
     stb_src->unsaved_changes = TRUE;
 
@@ -1639,66 +2272,107 @@ gap_story_lists_merge(GapStoryBoard *stb_dst
                                    , stb_src
                                    , dst_vtrack
                                    );
-
-    p_list_insert_at_story_id(stb_dst
-                         , stb_vtrack_src
+    stb_vtrack_main_section = gap_story_find_main_section(stb_vtrack_src);
+    stb_dst_main_section = gap_story_find_main_section(stb_dst);
+    
+    if (stb_dst->active_section != stb_dst_main_section)
+    {
+      /* other sections than main section do NOT support VID_PLAY_SECTION elements
+       * therefore convert them into VID_PLAY_BLACKSECTION elements.
+       */
+       p_section_to_blacksection(stb_vtrack_main_section);
+    }
+    else
+    {
+      if (strcmp(stb_dst->storyboardfile, stb_src->storyboardfile) != 0)
+      {
+        /* convert VID_PLAY_SECTION to VID_PLAY_BLACKSECTION
+         * because we copy from another storyboard into a main section.
+         * note: this is done because the more complex implicite copying
+         *  of all refered sections and references updates is NOT yet supported.
+         *  a future implemtation must take care to copy only those sections
+         *  that are not already present in the destination storyboard stb_dst.
+         *  where checking must test if an adequate section is available
+         *  where all list elements match.
+         */
+         p_section_to_blacksection(stb_vtrack_main_section);
+      }
+    }
+        
+    /* insert regular clips (non-mask clips) to the active section in the
+     * destination storyboard. (e.g. paste explicte selected clips)
+     */
+    p_list_insert_at_story_id(stb_dst->active_section
+                         , stb_vtrack_main_section
                          , story_id
                          , insert_after
                          );
+    if(stb_dst->active_section != NULL)
+    {
+      stb_dst->active_section->version++;
+    }
     gap_story_free_storyboard(&stb_vtrack_src);
   }
-  
+
 }  /* end gap_story_lists_merge */
 
 
-/* ---------------------------------
- * gap_story_find_last_selected
- * ---------------------------------
+/* -------------------------------------
+ * gap_story_find_last_selected_in_track
+ * -------------------------------------
  */
 gint32
-gap_story_find_last_selected(GapStoryBoard *stb)
+gap_story_find_last_selected_in_track(GapStorySection *section, gint32 track_nr)
 {
   GapStoryElem *stb_elem;
   gint32 story_id;
 
   story_id = -1;
-  if(stb)
+  if(section)
   {
-    for(stb_elem = stb->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
+    for(stb_elem = section->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
     {
-      if(stb_elem->selected)
+      if((stb_elem->selected) && (stb_elem->track == track_nr ))
       {
         story_id = stb_elem->story_id;
       }
     }
   }
   return (story_id);
-  
-}  /* end gap_story_find_last_selected */
+
+}  /* end gap_story_find_last_selected_in_track */
 
 
 
 /* ---------------------------------
  * gap_story_elem_find_by_story_id
  * ---------------------------------
+ * find a storyboard element by the specified id
+ * within all sections of the specified storyboard.
+ * return pointer to the matching elment or NULL if the serched element
+ *        was not found.
+ *        (The caller MUST NOT free the returned elment that is just a reference)
  */
 GapStoryElem *
 gap_story_elem_find_by_story_id(GapStoryBoard *stb, gint32 story_id)
 {
-  GapStoryElem *stb_elem;
+  GapStorySection *section;
 
   if(stb)
   {
-    for(stb_elem = stb->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
+    for(section = stb->stb_section; section != NULL; section = section->next)
     {
-      if(stb_elem->story_id == story_id)
+      GapStoryElem *stb_elem;
+      stb_elem = gap_story_elem_find_in_section_by_story_id(section, story_id);
+      if (stb_elem != NULL)
       {
-        return(stb_elem);
+          return(stb_elem);
       }
     }
+
   }
   return (NULL);
-  
+
 }  /* end gap_story_elem_find_by_story_id */
 
 
@@ -1710,19 +2384,23 @@ GapStoryElem *
 gap_story_elem_find_by_story_orig_id(GapStoryBoard *stb, gint32 story_orig_id)
 {
   GapStoryElem *stb_elem;
+  GapStorySection *section;
 
   if(stb)
   {
-    for(stb_elem = stb->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
+    for(section = stb->stb_section; section != NULL; section = section->next)
     {
-      if(stb_elem->story_orig_id == story_orig_id)
+      for(stb_elem = section->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
       {
-        return(stb_elem);
+        if(stb_elem->story_orig_id == story_orig_id)
+        {
+          return(stb_elem);
+        }
       }
     }
   }
   return (NULL);
-  
+
 }  /* end gap_story_elem_find_by_story_orig_id */
 
 /* ----------------------------------------------------
@@ -1793,7 +2471,7 @@ p_fetch_string(char **scan_ptr
   gboolean l_enable_end_idx;
 
   buff = *scan_ptr;
-  
+
   *out_keyword = NULL;
   keyword = NULL;
 
@@ -1836,7 +2514,7 @@ p_fetch_string(char **scan_ptr
         l_end_idx = l_idx;
         l_enable_end_idx = FALSE;
       }
-      
+
       if (buff[l_idx] != '"')
       {
         break;
@@ -1905,7 +2583,7 @@ p_fetch_string(char **scan_ptr
     keyword[l_len] = '\0';
   }
 
-    
+
   /* advance scan position */
   *scan_ptr = &buff[l_idx];
 
@@ -1936,13 +2614,13 @@ p_fetch_string(char **scan_ptr
   *out_keyword = keyword;
   return (ret_string);
 }       /* end p_fetch_string */
-  
+
 
 /* ------------------------------
  * p_scan_gint32
  * ------------------------------
  */
-static gint32 
+static gint32
 p_scan_gint32(char *ptr, gint32 min, gint32 max, GapStoryBoard *stb)
 {
   char *l_errtxt;
@@ -1981,7 +2659,7 @@ p_scan_gint32(char *ptr, gint32 min, gint32 max, GapStoryBoard *stb)
  * p_scan_gdouble
  * ------------------------------
  */
-static gdouble 
+static gdouble
 p_scan_gdouble(char *ptr, gdouble min, gdouble max, GapStoryBoard *stb)
 {
   char *l_errtxt;
@@ -2011,10 +2689,53 @@ p_scan_gdouble(char *ptr, gdouble min, gdouble max, GapStoryBoard *stb)
         g_free(l_errtxt);
       }
     }
-    
+
   }
   return (l_num);
 }  /* end p_scan_gdouble */
+
+/* ------------------------------
+ * p_scan_gboolean
+ * ------------------------------
+ */
+static gboolean
+p_scan_gboolean(char *ptr, gboolean default_value,
+   const char *trueString, const char *falseString,
+   GapStoryBoard *stb)
+{
+  char *l_errtxt;
+  gboolean value;
+
+  value = default_value;
+  if(ptr)
+  {
+    if(*ptr != '\0')
+    {
+      if(strcmp(ptr, trueString) == 0)
+      {
+          value = TRUE;
+      }
+      else
+      {
+        if(strcmp(ptr, falseString) == 0)
+        {
+          value = FALSE;
+        }
+        else
+        {
+          if(stb)
+          {
+            l_errtxt = g_strdup_printf(_("illegal boolean value: %s (valid range is %s or %s)\n")
+                                  , ptr, trueString, falseString);
+            p_set_stb_error(stb, l_errtxt);
+            g_free(l_errtxt);
+          }
+        }
+      }
+    }
+  }
+  return (value);
+}  /* end p_scan_gint32 */
 
 
 
@@ -2078,6 +2799,7 @@ p_assign_parsed_video_values(GapStoryElem *stb_elem
   , char *mask_anchor_ptr
   , char *mask_stepsize_ptr
   , char *mask_disable_ptr
+  , char *fmac_total_steps_ptr
   )
 {
   if(nloops_ptr)
@@ -2087,7 +2809,7 @@ p_assign_parsed_video_values(GapStoryElem *stb_elem
       stb_elem->nloop = p_scan_gint32(nloops_ptr,  1, 999999, stb);
     }
   }
-  
+
   if(stepsize_ptr)
   {
     if(*stepsize_ptr)
@@ -2172,6 +2894,14 @@ p_assign_parsed_video_values(GapStoryElem *stb_elem
     }
   }
 
+  if(fmac_total_steps_ptr)
+  {
+    if(*fmac_total_steps_ptr)
+    {
+      stb_elem->fmac_total_steps = p_scan_gint32(fmac_total_steps_ptr,  1, 999999, stb);
+    }
+  }
+
 }  /* end p_assign_parsed_video_values */
 
 /* ------------------------------
@@ -2191,19 +2921,20 @@ p_assign_parsed_video_values(GapStoryElem *stb_elem
  *   for compatibility with future syntax extension.
  *
  * this way the parser will accept textfiles that are simlpe playlists of imagefilenames
- * (one name per line) without any keywords 
+ * (one name per line) without any keywords
  */
 static void
-p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *multi_lines)
+p_story_parse_line(GapStoryBoard *stb, char *longline
+   , gint32 longlinenr, char *multi_lines)
 {
-#define GAP_MAX_STB_PARAMS_PER_LINE 18
+#define GAP_MAX_STB_PARAMS_PER_LINE 19
   char *l_scan_ptr;
   char *l_record_key;
   char *l_parname;
   char *l_wordval[GAP_MAX_STB_PARAMS_PER_LINE];
   gint ii;
   GapStoryElem *stb_elem;
-  
+
   if(gap_debug)
   {
     printf("p_story_parse_line: %d %s\n", (int)longlinenr, longline);
@@ -2219,7 +2950,7 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
   {
     l_wordval[ii] = g_strdup("\0");
   }
-  
+
   /* get the record key (1.st space separated word) */
   g_free(l_wordval[0]);
   l_wordval[0]    = p_fetch_string(&l_scan_ptr, &l_parname);
@@ -2244,7 +2975,7 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
     goto cleanup;
   }
 
-  /* ignore empty lines */  
+  /* ignore empty lines */
   if ((*l_record_key == '\n')
   ||  (*l_record_key == '\0'))
   {
@@ -2257,7 +2988,7 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
    *        RECORD_IDENTIFIER  val1  val2  val3
    * b) by keyword
    *        RECORD_IDENTIFIER  key:val2  key3:val3  key1:val1
-   * mixed variants are possible as long as positions are unique 
+   * mixed variants are possible as long as positions are unique
    */
   for(ii=1; ii < GAP_MAX_STB_PARAMS_PER_LINE; ii++)
   {
@@ -2323,9 +3054,9 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
     }
     /* if(gap_debug) printf("%s   ii:%d (END)\n", l_record_key, (int)ii); */
   }
- 
+
   if(gap_debug)
-  { 
+  {
     for(ii=0; ii < GAP_MAX_STB_PARAMS_PER_LINE; ii++)
     {
       printf("  l_wordval[%02d]: %s\n"
@@ -2334,13 +3065,13 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
             );
     }
   }
-  
-  
+
+
   /* check for Header */
   if(longlinenr == 1)
   {
     stb->master_type = GAP_STB_MASTER_TYPE_UNDEFINED;
-    
+
     if(strcmp(l_record_key, GAP_STBKEY_STB_HEADER) == 0)
     {
       stb->master_type = GAP_STB_MASTER_TYPE_STORYBOARD;
@@ -2349,7 +3080,7 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
     {
       stb->master_type = GAP_STB_MASTER_TYPE_CLIPLIST;
     }
-    
+
     if (stb->master_type != GAP_STB_MASTER_TYPE_UNDEFINED)
     {
       goto cleanup;  /* HDR processed OK */
@@ -2365,7 +3096,7 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
        p_set_stb_warning(stb, l_errtxt);
        g_free(l_errtxt);
     }
-    
+
   }
 
 
@@ -2382,6 +3113,18 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
       if(*l_wordval[1]) { stb->master_framerate = p_scan_gdouble(l_wordval[1], 0.1, 999.9, stb); }
       goto cleanup;  /* master RECORD does not create frame range elements */
   }
+
+  /* Master informations: GAP_STBKEY_VID_MASTER_LAYERSTACK */
+  if (strcmp(l_record_key, GAP_STBKEY_VID_MASTER_LAYERSTACK) == 0)
+  {
+      if(*l_wordval[1]) { stb->master_vtrack1_is_toplayer =
+                           p_scan_gboolean(l_wordval[1],
+                               TRUE, GAP_STB_VTRACK1_TOP_TRUE, GAP_STB_VTRACK1_TOP_FALSE,
+                               stb);
+                        }
+      goto cleanup;  /* master RECORD does not create frame range elements */
+  }
+
   /* Master informations: GAP_STBKEY_VID_MASTER_FRAME_ASPECT */
   if (strcmp(l_record_key, GAP_STBKEY_VID_MASTER_FRAME_ASPECT) == 0)
   {
@@ -2427,6 +3170,42 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
       goto cleanup;  /* master RECORD does not create frame range elements */
   }
 
+
+  /* Master informations: GAP_STBKEY_EDIT_SETTINGS */
+  if (strcmp(l_record_key, GAP_STBKEY_EDIT_SETTINGS) == 0)
+  {
+    char *l_section_name_ptr = l_wordval[1];
+    char *l_track_ptr        = l_wordval[2];
+    char *l_page_ptr         = l_wordval[3];
+    GapStoryEditSettings *edit_settings;
+    
+    edit_settings = stb->edit_settings;
+
+    if (edit_settings != NULL)
+    {
+      if(*l_section_name_ptr) { edit_settings->section_name = g_strdup(l_section_name_ptr); }
+      if(*l_track_ptr)        { edit_settings->track   = p_scan_gint32(l_track_ptr, 0, 999999, stb); }
+      if(*l_page_ptr)         { edit_settings->page    = p_scan_gint32(l_page_ptr, 0, 999999, stb); }
+    }
+    goto cleanup;  /* master RECORD does not create frame range elements */
+  }
+
+
+  /* Section Handling */
+  if (strcmp(l_record_key, GAP_STBKEY_MAIN_SECTION) == 0)
+  {
+    stb->active_section = gap_story_create_or_find_section_by_name(stb, NULL);
+    goto cleanup;  /* main section RECORD does not create frame range elements */
+  }  
+  if (strcmp(l_record_key, GAP_STBKEY_SUB_SECTION) == 0)
+  {
+    char *l_section_name_ptr      = l_wordval[1];
+    
+    stb->active_section = gap_story_create_or_find_section_by_name(stb, l_section_name_ptr);
+    goto cleanup;  /* sub section RECORD does not create frame range elements */
+  }  
+
+
   /* =========== Vid Attributes ===== start =========== */
   if ((strcmp(l_record_key, GAP_STBKEY_VID_OPACITY)  == 0)
   ||  (strcmp(l_record_key, GAP_STBKEY_VID_ZOOM_X)   == 0)
@@ -2442,10 +3221,10 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
     char *l_dur_ptr        = l_wordval[4];
 
     gint32 l_track_nr;
-    
+
     l_track_nr = 1;
-    if(*l_track_ptr)    
-    { 
+    if(*l_track_ptr)
+    {
       l_track_nr = p_scan_gint32(l_track_ptr,  1, GAP_STB_MAX_VID_TRACKS,    stb);
     }
 
@@ -2456,7 +3235,7 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
       char *l_overlap_nframes_ptr       = l_wordval[2];
 
       gboolean elem_already_in_the_list = FALSE;
-      
+
       stb_elem =  p_get_att_transition_elem(stb, &elem_already_in_the_list, l_track_nr);
       if(stb_elem)
       {
@@ -2467,7 +3246,7 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
         {
           stb_elem->att_overlap = p_scan_gint32(l_overlap_nframes_ptr,  0, 999999, stb);
         }
-        
+
         if(elem_already_in_the_list != TRUE)
         {
           gap_story_list_append_elem(stb, stb_elem);
@@ -2482,7 +3261,7 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
     {
       gboolean elem_already_in_the_list = FALSE;
       ii = GAP_STB_ATT_TYPE_OPACITY;
-      
+
       stb_elem =  p_get_att_transition_elem(stb, &elem_already_in_the_list, l_track_nr);
       if(stb_elem)
       {
@@ -2493,8 +3272,8 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
         if(*l_from_ptr)     { stb_elem->att_arr_value_from[ii] = p_scan_gdouble(l_from_ptr, 0.0, 1.0, stb); }
         if(*l_to_ptr)       { stb_elem->att_arr_value_to[ii]   = p_scan_gdouble(l_to_ptr,   0.0, 1.0, stb); }
         else                { stb_elem->att_arr_value_to[ii]   = stb_elem->att_arr_value_from[ii]; }
-        if(*l_dur_ptr)      { stb_elem->att_arr_value_dur[ii]  = p_scan_gint32(l_dur_ptr,  1, 999, stb); }
-        
+        if(*l_dur_ptr)      { stb_elem->att_arr_value_dur[ii]  = p_scan_gint32(l_dur_ptr,  0, 999, stb); }
+
         if(elem_already_in_the_list != TRUE)
         {
           gap_story_list_append_elem(stb, stb_elem);
@@ -2508,7 +3287,7 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
     {
       gboolean elem_already_in_the_list = FALSE;
       ii = GAP_STB_ATT_TYPE_ZOOM_X;
-      
+
       stb_elem =  p_get_att_transition_elem(stb, &elem_already_in_the_list, l_track_nr);
       if(stb_elem)
       {
@@ -2519,8 +3298,8 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
         if(*l_from_ptr)     { stb_elem->att_arr_value_from[ii] = p_scan_gdouble(l_from_ptr, 0.0001, 999.9, stb); }
         if(*l_to_ptr)       { stb_elem->att_arr_value_to[ii]   = p_scan_gdouble(l_to_ptr,   0.0001, 999.9, stb); }
         else                { stb_elem->att_arr_value_to[ii]   = stb_elem->att_arr_value_from[ii]; }
-        if(*l_dur_ptr)      { stb_elem->att_arr_value_dur[ii]  = p_scan_gint32(l_dur_ptr,  1, 999, stb); }
-        
+        if(*l_dur_ptr)      { stb_elem->att_arr_value_dur[ii]  = p_scan_gint32(l_dur_ptr,  0, 999, stb); }
+
         if(elem_already_in_the_list != TRUE)
         {
           gap_story_list_append_elem(stb, stb_elem);
@@ -2534,7 +3313,7 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
     {
       gboolean elem_already_in_the_list = FALSE;
       ii = GAP_STB_ATT_TYPE_ZOOM_Y;
-      
+
       stb_elem =  p_get_att_transition_elem(stb, &elem_already_in_the_list, l_track_nr);
       if(stb_elem)
       {
@@ -2545,8 +3324,8 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
         if(*l_from_ptr)     { stb_elem->att_arr_value_from[ii] = p_scan_gdouble(l_from_ptr, 0.0001, 999.9, stb); }
         if(*l_to_ptr)       { stb_elem->att_arr_value_to[ii]   = p_scan_gdouble(l_to_ptr,   0.0001, 999.9, stb); }
         else                { stb_elem->att_arr_value_to[ii]   = stb_elem->att_arr_value_from[ii]; }
-        if(*l_dur_ptr)      { stb_elem->att_arr_value_dur[ii]  = p_scan_gint32(l_dur_ptr,  1, 999, stb); }
-        
+        if(*l_dur_ptr)      { stb_elem->att_arr_value_dur[ii]  = p_scan_gint32(l_dur_ptr,  0, 999, stb); }
+
         if(elem_already_in_the_list != TRUE)
         {
           gap_story_list_append_elem(stb, stb_elem);
@@ -2560,7 +3339,7 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
     {
       gboolean elem_already_in_the_list = FALSE;
       ii = GAP_STB_ATT_TYPE_MOVE_X;
-      
+
       stb_elem =  p_get_att_transition_elem(stb, &elem_already_in_the_list, l_track_nr);
       if(stb_elem)
       {
@@ -2571,8 +3350,8 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
         if(*l_from_ptr)     { stb_elem->att_arr_value_from[ii] = p_scan_gdouble(l_from_ptr, -99999.9, 99999.9, stb); }
         if(*l_to_ptr)       { stb_elem->att_arr_value_to[ii]   = p_scan_gdouble(l_to_ptr,   -99999.9, 99999.9, stb); }
         else                { stb_elem->att_arr_value_to[ii]   = stb_elem->att_arr_value_from[ii]; }
-        if(*l_dur_ptr)      { stb_elem->att_arr_value_dur[ii]  = p_scan_gint32(l_dur_ptr,  1, 999, stb); }
-        
+        if(*l_dur_ptr)      { stb_elem->att_arr_value_dur[ii]  = p_scan_gint32(l_dur_ptr,  0, 999, stb); }
+
         if(elem_already_in_the_list != TRUE)
         {
           gap_story_list_append_elem(stb, stb_elem);
@@ -2586,7 +3365,7 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
     {
       gboolean elem_already_in_the_list = FALSE;
       ii = GAP_STB_ATT_TYPE_MOVE_Y;
-      
+
       stb_elem =  p_get_att_transition_elem(stb, &elem_already_in_the_list, l_track_nr);
       if(stb_elem)
       {
@@ -2597,16 +3376,16 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
         if(*l_from_ptr)     { stb_elem->att_arr_value_from[ii] = p_scan_gdouble(l_from_ptr, -99999.9, 99999.9, stb); }
         if(*l_to_ptr)       { stb_elem->att_arr_value_to[ii]   = p_scan_gdouble(l_to_ptr,   -99999.9, 99999.9, stb); }
         else                { stb_elem->att_arr_value_to[ii]   = stb_elem->att_arr_value_from[ii]; }
-        if(*l_dur_ptr)      { stb_elem->att_arr_value_dur[ii]  = p_scan_gint32(l_dur_ptr,  1, 999, stb); }
-        
+        if(*l_dur_ptr)      { stb_elem->att_arr_value_dur[ii]  = p_scan_gint32(l_dur_ptr,  0, 999, stb); }
+
         if(elem_already_in_the_list != TRUE)
         {
           gap_story_list_append_elem(stb, stb_elem);
         }
       }
       goto cleanup;
-    } 
- 
+    }
+
     /* ATTRIBUTE: GAP_STBKEY_VID_FIT_SIZE */
     if (strcmp(l_record_key, GAP_STBKEY_VID_FIT_SIZE) == 0)
     {
@@ -2657,7 +3436,7 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
                 else
                 {
                    char *l_errtxt;
-                 
+
                    l_errtxt = g_strdup_printf(_("illegal keyword: %s (expected keywords are: width, height, both, none")
                                              , l_from_ptr);
                    p_set_stb_error(stb, l_errtxt);
@@ -2667,7 +3446,7 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
             }
           }
         }
-        
+
         if(*l_to_ptr != '\0')
         {
           if((strncmp(l_to_ptr, "keep", strlen("keep")) ==0)
@@ -2692,14 +3471,14 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
             }
           }
         }
-        
+
         if(elem_already_in_the_list != TRUE)
         {
           gap_story_list_append_elem(stb, stb_elem);
         }
       }
       goto cleanup;
-      
+
     }  /* END ATTRIBUTE: GAP_STBKEY_VID_FIT_SIZE */
 
   }
@@ -2720,6 +3499,8 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
     char *l_mask_anchor_ptr   = l_wordval[7];
     char *l_mask_stepsize_ptr = l_wordval[8];
     char *l_mask_disable_ptr  = l_wordval[9];
+    char *l_fmac_total_steps_ptr  = l_wordval[10];
+
 
     stb_elem = gap_story_new_elem(GAP_STBREC_VID_IMAGE);
     if(stb_elem)
@@ -2727,9 +3508,9 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
       stb_elem->file_line_nr = longlinenr;
       stb_elem->orig_src_line = g_strdup(multi_lines);
 
-      if(*l_filename_ptr) { p_flip_dir_separators(l_filename_ptr); 
+      if(*l_filename_ptr) { p_flip_dir_separators(l_filename_ptr);
                             stb_elem->orig_filename = g_strdup(l_filename_ptr);
-                          }      
+                          }
       if(*l_track_ptr)    { stb_elem->track = p_scan_gint32(l_track_ptr,  1, GAP_STB_MAX_VID_TRACKS,  stb); }
       p_assign_parsed_video_values(stb_elem, stb
           , l_nloops_ptr
@@ -2741,13 +3522,14 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
           , l_mask_anchor_ptr
           , l_mask_stepsize_ptr
           , l_mask_disable_ptr
+          , l_fmac_total_steps_ptr
           );
 
       p_check_image_numpart(stb_elem, l_filename_ptr);
 
       gap_story_list_append_elem(stb, stb_elem);
     }
-    
+
     goto cleanup;
 
   }  /* end VID_PLAY_IMAGE */
@@ -2769,6 +3551,7 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
     char *l_mask_anchor_ptr   = l_wordval[12];
     char *l_mask_stepsize_ptr = l_wordval[13];
     char *l_mask_disable_ptr  = l_wordval[14];
+    char *l_fmac_total_steps_ptr  = l_wordval[15];
 
     stb_elem = gap_story_new_elem(GAP_STBREC_VID_FRAMES);
     if(stb_elem)
@@ -2779,7 +3562,7 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
       if(*l_track_ptr)    { stb_elem->track      = p_scan_gint32(l_track_ptr,   1, GAP_STB_MAX_VID_TRACKS, stb); }
       if(*l_from_ptr)     { stb_elem->from_frame = p_scan_gint32(l_from_ptr,    0, 999999, stb); }
       if(*l_to_ptr)       { stb_elem->to_frame   = p_scan_gint32(l_to_ptr,      0, 999999, stb); }
-      if(*l_basename_ptr) { p_flip_dir_separators(l_basename_ptr); 
+      if(*l_basename_ptr) { p_flip_dir_separators(l_basename_ptr);
                             stb_elem->basename = g_strdup(l_basename_ptr);
                           }
       if(*l_ext_ptr)      { if(*l_ext_ptr == '.') stb_elem->ext = g_strdup(l_ext_ptr);
@@ -2796,21 +3579,22 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
           , l_mask_anchor_ptr
           , l_mask_stepsize_ptr
           , l_mask_disable_ptr
+          , l_fmac_total_steps_ptr
           );
 
-      if((*l_basename_ptr) 
+      if((*l_basename_ptr)
       && (*l_from_ptr)
       && (*l_ext_ptr))
       {
         stb_elem->orig_filename = gap_lib_alloc_fname(stb_elem->basename
                                                      ,stb_elem->from_frame
                                                      ,stb_elem->ext
-                                                     ); 
+                                                     );
       }
 
       gap_story_list_append_elem(stb, stb_elem);
     }
-    
+
     goto cleanup;
 
   }   /* end VID_PLAY_FRAMES */
@@ -2835,6 +3619,7 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
     char *l_mask_anchor_ptr   = l_wordval[15];
     char *l_mask_stepsize_ptr = l_wordval[16];
     char *l_mask_disable_ptr  = l_wordval[17];
+    char *l_fmac_total_steps_ptr  = l_wordval[18];
 
     stb_elem = gap_story_new_elem(GAP_STBREC_VID_MOVIE);
     if(stb_elem)
@@ -2843,7 +3628,7 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
       stb_elem->orig_src_line = g_strdup(multi_lines);
 
       if(*l_track_ptr)    { stb_elem->track      = p_scan_gint32(l_track_ptr, 1, GAP_STB_MAX_VID_TRACKS, stb); }
-      if(*l_filename_ptr) { p_flip_dir_separators(l_filename_ptr); 
+      if(*l_filename_ptr) { p_flip_dir_separators(l_filename_ptr);
                             stb_elem->orig_filename = g_strdup(l_filename_ptr);
                           }
       if(*l_from_ptr)     { stb_elem->from_frame = p_scan_gint32(l_from_ptr,    1, 999999, stb); }
@@ -2865,16 +3650,87 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
           , l_mask_anchor_ptr
           , l_mask_stepsize_ptr
           , l_mask_disable_ptr
+          , l_fmac_total_steps_ptr
           );
 
 
 
       gap_story_list_append_elem(stb, stb_elem);
     }
-    
+
     goto cleanup;
 
   }   /* end VID_PLAY_MOVIE */
+
+  /* FRAMES: GAP_STBKEY_VID_PLAY_SECTION */
+  if ((strcmp(l_record_key, GAP_STBKEY_VID_PLAY_SECTION) == 0)
+  ||  (strcmp(l_record_key, GAP_STBKEY_VID_PLAY_BLACKSECTION) == 0))
+  {
+    char *l_track_ptr         = l_wordval[1];
+    char *l_section_ptr       = l_wordval[2];
+    char *l_from_ptr          = l_wordval[3];
+    char *l_to_ptr            = l_wordval[4];
+    char *l_pingpong_ptr      = l_wordval[5];
+    char *l_nloops_ptr        = l_wordval[6];
+
+    char *l_stepsize_ptr      = l_wordval[7];
+    char *l_macro_ptr         = l_wordval[8];
+
+    char *l_flip_ptr          = l_wordval[9];
+    char *l_mask_name_ptr     = l_wordval[10];
+    char *l_mask_anchor_ptr   = l_wordval[11];
+    char *l_mask_stepsize_ptr = l_wordval[12];
+    char *l_mask_disable_ptr  = l_wordval[13];
+    char *l_fmac_total_steps_ptr  = l_wordval[14];
+    GapStorySection *l_main_section;
+    
+    l_main_section = gap_story_find_main_section(stb);
+
+    if ((strcmp(l_record_key, GAP_STBKEY_VID_PLAY_SECTION) == 0)
+    && (stb->active_section == l_main_section))
+    {
+      /* VID_PLAY_SECTION is only supported in the main section */
+      stb_elem = gap_story_new_elem(GAP_STBREC_VID_SECTION);
+    }
+    else
+    {
+      /* in all other sections we implicte convert to blacksection playback
+       * (this also handles the case of blacksection playback in the main section)
+       */
+      stb_elem = gap_story_new_elem(GAP_STBREC_VID_BLACKSECTION);
+    }
+    
+    if(stb_elem)
+    {
+      stb_elem->file_line_nr = longlinenr;
+      stb_elem->orig_src_line = g_strdup(multi_lines);
+
+      if(*l_track_ptr)    { stb_elem->track      = p_scan_gint32(l_track_ptr, 1, GAP_STB_MAX_VID_TRACKS, stb); }
+      if(*l_section_ptr)  { stb_elem->orig_filename = g_strdup(l_section_ptr);
+                          }
+      if(*l_from_ptr)     { stb_elem->from_frame = p_scan_gint32(l_from_ptr,    1, 999999, stb); }
+      if(*l_to_ptr)       { stb_elem->to_frame   = p_scan_gint32(l_to_ptr,      1, 999999, stb); }
+
+      p_assign_parsed_video_values(stb_elem, stb
+          , l_nloops_ptr
+          , l_stepsize_ptr
+          , l_pingpong_ptr
+          , l_macro_ptr
+          , l_flip_ptr
+          , l_mask_name_ptr
+          , l_mask_anchor_ptr
+          , l_mask_stepsize_ptr
+          , l_mask_disable_ptr
+          , l_fmac_total_steps_ptr
+          );
+
+      gap_story_list_append_elem(stb, stb_elem);
+    }
+
+    goto cleanup;
+
+  }   /* end VID_PLAY_SECTION (and VID_PLAY_BLACKSECTION) */
+
 
   /* VID_PLAY_COLOR frame(s): GAP_STBKEY_VID_PLAY_COLOR  */
   if (strcmp(l_record_key, GAP_STBKEY_VID_PLAY_COLOR) == 0)
@@ -2891,6 +3747,7 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
     char *l_mask_anchor_ptr   = l_wordval[10];
     char *l_mask_stepsize_ptr = l_wordval[11];
     char *l_mask_disable_ptr  = l_wordval[12];
+    char *l_fmac_total_steps_ptr  = l_wordval[13];
 
     stb_elem = gap_story_new_elem(GAP_STBREC_VID_COLOR);
     if(stb_elem)
@@ -2914,11 +3771,12 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
           , l_mask_anchor_ptr
           , l_mask_stepsize_ptr
           , l_mask_disable_ptr
+          , l_fmac_total_steps_ptr
           );
 
       gap_story_list_append_elem(stb, stb_elem);
     }
-    
+
     goto cleanup;
 
   }  /* end VID_PLAY_COLOR */
@@ -2939,6 +3797,7 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
     char *l_mask_anchor_ptr   = l_wordval[11];
     char *l_mask_stepsize_ptr = l_wordval[12];
     char *l_mask_disable_ptr  = l_wordval[13];
+    char *l_fmac_total_steps_ptr  = l_wordval[14];
 
     stb_elem = gap_story_new_elem(GAP_STBREC_VID_ANIMIMAGE);
     if(stb_elem)
@@ -2946,7 +3805,7 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
       stb_elem->file_line_nr = longlinenr;
       stb_elem->orig_src_line = g_strdup(multi_lines);
       if(*l_track_ptr)    { stb_elem->track      = p_scan_gint32(l_track_ptr, 1, GAP_STB_MAX_VID_TRACKS, stb); }
-      if(*l_filename_ptr) { p_flip_dir_separators(l_filename_ptr); 
+      if(*l_filename_ptr) { p_flip_dir_separators(l_filename_ptr);
                             stb_elem->orig_filename = g_strdup(l_filename_ptr);
                           }
       if(*l_from_ptr)     { stb_elem->from_frame = p_scan_gint32(l_from_ptr,    0, 999999, stb); }
@@ -2962,11 +3821,12 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
           , l_mask_anchor_ptr
           , l_mask_stepsize_ptr
           , l_mask_disable_ptr
+          , l_fmac_total_steps_ptr
           );
 
       gap_story_list_append_elem(stb, stb_elem);
     }
-    
+
     goto cleanup;
 
   }   /* end STORYBOARD_VID_PLAY_ANIMIMAGE */
@@ -3017,8 +3877,8 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
       gap_story_list_append_elem(stb, stb_elem);
     }
     goto cleanup;
-  }  
-  
+  }
+
   /* ATTRIBUTE: GAP_STBKEY_AUD_PLAY_SOUND */
   if (strcmp(l_record_key, GAP_STBKEY_AUD_PLAY_SOUND) == 0)
   {
@@ -3041,7 +3901,7 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
       stb_elem->orig_src_line = g_strdup(multi_lines);
       stb_elem->aud_play_to_sec = 9999.9;  /* 9999.9 is default for end of audiofile */
       if(*l_track_ptr)        { stb_elem->track      = p_scan_gint32(l_track_ptr,   1, GAP_STB_MAX_AUD_TRACKS,    stb); }
-      if(*l_filename_ptr)     { p_flip_dir_separators(l_filename_ptr); 
+      if(*l_filename_ptr)     { p_flip_dir_separators(l_filename_ptr);
                                 stb_elem->aud_filename = g_strdup(l_filename_ptr);
                                 stb_elem->orig_filename = g_strdup(l_filename_ptr);
                               }
@@ -3063,9 +3923,9 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
       gap_story_list_append_elem(stb, stb_elem);
     }
     goto cleanup;
-  }  
+  }
 
-  
+
   /* ATTRIBUTE: GAP_STBKEY_AUD_PLAY_MOVIE */
   if (strcmp(l_record_key, GAP_STBKEY_AUD_PLAY_MOVIE) == 0)
   {
@@ -3098,7 +3958,7 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
       stb_elem->orig_src_line = g_strdup(multi_lines);
       stb_elem->aud_play_to_sec = 9999.9;  /* 9999.9 is default for end of audiofile */
       if(*l_track_ptr)        { stb_elem->track      = p_scan_gint32(l_track_ptr,   1, GAP_STB_MAX_AUD_TRACKS,    stb); }
-      if(*l_filename_ptr)     { p_flip_dir_separators(l_filename_ptr); 
+      if(*l_filename_ptr)     { p_flip_dir_separators(l_filename_ptr);
                                 stb_elem->aud_filename = g_strdup(l_filename_ptr);
                                 stb_elem->orig_filename = g_strdup(l_filename_ptr);
                               }
@@ -3117,9 +3977,9 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
       /* optional positioning in unit frames */
       l_from_frame = -1;
       l_to_frame = -1;
-      
+
       /* per default we use the master framerate for frame base positioning
-       * (correctly we should get the original framerate used in the videofile 
+       * (correctly we should get the original framerate used in the videofile
        *  where the audio is extracted from)
        */
       l_framerate = stb->master_framerate;
@@ -3135,10 +3995,10 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
 
       l_min_frame = MIN(l_from_frame, l_to_frame);
       l_max_frame = MAX(l_from_frame, l_to_frame);
-      
+
       if((l_min_frame > 0) && (l_max_frame > 0))
       {
-        /* framenumbers starts at 1. frame one has 0 sec starttime */ 
+        /* framenumbers starts at 1. frame one has 0 sec starttime */
         if(gap_debug)
         {
           printf("AUD_MOVIE framerate based timerange calculation  from:%d to:%d  l_framerate: %f\n"
@@ -3159,7 +4019,7 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
       gap_story_list_append_elem(stb, stb_elem);
     }
     goto cleanup;
-  }  
+  }
 
   /* =========== Audio element ====== end ============= */
 
@@ -3179,20 +4039,20 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
       stb_elem->file_line_nr = longlinenr;
       stb_elem->orig_src_line = g_strdup(multi_lines);
 
-      if(*l_filename_ptr)  { p_flip_dir_separators(l_filename_ptr); 
+      if(*l_filename_ptr)  { p_flip_dir_separators(l_filename_ptr);
                              stb_elem->orig_filename = g_strdup(l_filename_ptr);
-                           }      
+                           }
       if(*l_mask_name_ptr) { stb_elem->mask_name = g_strdup(l_mask_name_ptr); }
-      
+
       p_assign_parsed_flip_value(stb_elem, l_flip_ptr);
-      
+
       stb_elem->nframes = 1;
 
       p_check_image_numpart(stb_elem, l_filename_ptr);
 
-      gap_story_list_append_elem(stb, stb_elem);
+      gap_story_list_append_elem_at_section(stb, stb_elem, stb->mask_section);
     }
-    
+
     goto cleanup;
 
   }  /* end MASK_IMAGE */
@@ -3216,29 +4076,29 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
       if(*l_mask_name_ptr) { stb_elem->mask_name = g_strdup(l_mask_name_ptr); }
       if(*l_from_ptr)      { stb_elem->from_frame = p_scan_gint32(l_from_ptr,    0, 999999, stb); }
       if(*l_to_ptr)        { stb_elem->to_frame   = p_scan_gint32(l_to_ptr,      0, 999999, stb); }
-      if(*l_basename_ptr)  { p_flip_dir_separators(l_basename_ptr); 
+      if(*l_basename_ptr)  { p_flip_dir_separators(l_basename_ptr);
                              stb_elem->basename = g_strdup(l_basename_ptr);
                            }
       if(*l_ext_ptr)       { if(*l_ext_ptr == '.') stb_elem->ext = g_strdup(l_ext_ptr);
                              else                  stb_elem->ext = g_strdup_printf(".%s", l_ext_ptr);
                            }
-      if((*l_basename_ptr) 
+      if((*l_basename_ptr)
       && (*l_from_ptr)
       && (*l_ext_ptr))
       {
         stb_elem->orig_filename = gap_lib_alloc_fname(stb_elem->basename
                                                      ,stb_elem->from_frame
                                                      ,stb_elem->ext
-                                                     ); 
+                                                     );
       }
-      
+
       p_assign_parsed_flip_value(stb_elem, l_flip_ptr);
 
       stb_elem->nframes = ABS(stb_elem->from_frame - stb_elem->to_frame) + 1;
- 
-      gap_story_list_append_elem(stb, stb_elem);
+
+      gap_story_list_append_elem_at_section(stb, stb_elem, stb->mask_section);
     }
-    
+
     goto cleanup;
 
   }   /* end MASK FRAMES */
@@ -3263,7 +4123,7 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
       stb_elem->orig_src_line = g_strdup(multi_lines);
 
       if(*l_mask_name_ptr)  { stb_elem->mask_name = g_strdup(l_mask_name_ptr); }
-      if(*l_filename_ptr)   { p_flip_dir_separators(l_filename_ptr); 
+      if(*l_filename_ptr)   { p_flip_dir_separators(l_filename_ptr);
                               stb_elem->orig_filename = g_strdup(l_filename_ptr);
                             }
       if(*l_from_ptr)       { stb_elem->from_frame = p_scan_gint32(l_from_ptr,    1, 999999, stb); }
@@ -3275,14 +4135,14 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
 
       if(*l_decoder_ptr)    { stb_elem->preferred_decoder = g_strdup(l_decoder_ptr);
                             }
-      
+
       p_assign_parsed_flip_value(stb_elem, l_flip_ptr);
 
       stb_elem->nframes = ABS(stb_elem->from_frame - stb_elem->to_frame) + 1;
 
-      gap_story_list_append_elem(stb, stb_elem);
+      gap_story_list_append_elem_at_section(stb, stb_elem, stb->mask_section);
     }
-    
+
     goto cleanup;
 
   }   /* end MASK_MOVIE */
@@ -3302,23 +4162,49 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
       stb_elem->file_line_nr = longlinenr;
       stb_elem->orig_src_line = g_strdup(multi_lines);
       if(*l_mask_name_ptr) { stb_elem->mask_name = g_strdup(l_mask_name_ptr); }
-      if(*l_filename_ptr)  { p_flip_dir_separators(l_filename_ptr); 
+      if(*l_filename_ptr)  { p_flip_dir_separators(l_filename_ptr);
                              stb_elem->orig_filename = g_strdup(l_filename_ptr);
                            }
       if(*l_from_ptr)      { stb_elem->from_frame = p_scan_gint32(l_from_ptr,    0, 999999, stb); }
       if(*l_to_ptr)        { stb_elem->to_frame   = p_scan_gint32(l_to_ptr,      0, 999999, stb); }
-      
+
       p_assign_parsed_flip_value(stb_elem, l_flip_ptr);
 
       stb_elem->nframes = ABS(stb_elem->from_frame - stb_elem->to_frame) + 1;
 
-      gap_story_list_append_elem(stb, stb_elem);
+      gap_story_list_append_elem_at_section(stb, stb_elem, stb->mask_section);
     }
-    
+
     goto cleanup;
 
   }   /* end MASK_ANIMIMAGE */
 
+  /* MASK: GAP_STBKEY_MASK_BLACKSECTION */
+  if (strcmp(l_record_key, GAP_STBKEY_MASK_BLACKSECTION) == 0)
+  {
+    char *l_mask_name_ptr  = l_wordval[1];
+    char *l_from_ptr       = l_wordval[2];
+    char *l_to_ptr         = l_wordval[3];
+
+    stb_elem = gap_story_new_mask_elem(GAP_STBREC_VID_BLACKSECTION);
+    if(stb_elem)
+    {
+      stb_elem->file_line_nr = longlinenr;
+      stb_elem->orig_src_line = g_strdup(multi_lines);
+
+      if(*l_mask_name_ptr)  { stb_elem->mask_name = g_strdup(l_mask_name_ptr); }
+      if(*l_from_ptr)       { stb_elem->from_frame = p_scan_gint32(l_from_ptr,    1, 999999, stb); }
+      if(*l_to_ptr)         { stb_elem->to_frame   = p_scan_gint32(l_to_ptr,      1, 999999, stb); }
+
+
+      stb_elem->nframes = ABS(stb_elem->from_frame - stb_elem->to_frame) + 1;
+
+      gap_story_list_append_elem_at_section(stb, stb_elem, stb->mask_section);
+    }
+
+    goto cleanup;
+
+  }   /* end MASK_BLACKSECTION */
 
   /* =========== MASK definitions === end ============= */
 
@@ -3327,7 +4213,7 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
   /* accept lines with filenames as implicite VID_PLAY_IMAGE commands */
   {
     char *l_filename_ptr;
-    
+
     l_filename_ptr = g_strdup(l_record_key);
     if(l_filename_ptr)
     {
@@ -3340,11 +4226,11 @@ p_story_parse_line(GapStoryBoard *stb, char *longline, gint32 longlinenr, char *
         if(stb_elem)
         {
           stb_elem->file_line_nr = longlinenr;
-          stb_elem->orig_filename = g_strdup(l_record_key); 
+          stb_elem->orig_filename = g_strdup(l_record_key);
           stb_elem->orig_src_line = g_strdup(multi_lines);
 
           p_check_image_numpart(stb_elem, l_filename_ptr);
- 
+
           gap_story_list_append_elem(stb, stb_elem);
         }
 
@@ -3394,6 +4280,28 @@ cleanup:
 }  /* end p_story_parse_line */
 
 
+/* ----------------------------------------------------
+ * p_stb_is_empty_in_all_sections
+ * ----------------------------------------------------
+ * return TRUE if the storyboard has no sections, or all sections are empty
+ *        FALSE if there is at least one section that has at least one element.
+ */
+static gboolean
+p_stb_is_empty_in_all_sections(GapStoryBoard *stb)
+{
+  GapStorySection *stb_section;
+
+  for(stb_section = stb->stb_section; stb_section != NULL; stb_section = stb_section->next)
+  {
+    if(stb_section->stb_elem != NULL)
+    {
+      return(FALSE);
+    }
+  }
+  
+  return (TRUE);
+}  /* end p_stb_is_empty_in_all_sections */
+
 /* ------------------------------
  * gap_story_parse
  * ------------------------------
@@ -3415,44 +4323,48 @@ cleanup:
 GapStoryBoard *
 gap_story_parse(const gchar *filename)
 {
-  GapVinTextFileLines *txf_ptr_root;
-  GapVinTextFileLines *txf_ptr;
+  GapValTextFileLines *txf_ptr_root;
+  GapValTextFileLines *txf_ptr;
   GapStoryBoard *stb;
   gchar *longline;
   gchar *multi_lines;
   gint32 longlinenr;
   gint32 line_nr;
-  
+
   stb = gap_story_new_story_board(filename);
   if(stb == NULL)
   {
     return (NULL);
   }
-  txf_ptr_root = gap_vin_load_textfile(filename);
+  txf_ptr_root = gap_val_load_textfile(filename);
+
+  /* when loading from file assume the old behaviour
+   * where highest video track is on top.
+   * (newer files contain explicite setting that will overwrite the default)
+   */
+  stb->master_vtrack1_is_toplayer = FALSE;
+
 
   longline = NULL;
   multi_lines = NULL;
   longlinenr = 0;
   line_nr = 0;
-  for(txf_ptr = txf_ptr_root; txf_ptr != NULL; txf_ptr = (GapVinTextFileLines *) txf_ptr->next)
+  for(txf_ptr = txf_ptr_root; txf_ptr != NULL; txf_ptr = (GapValTextFileLines *) txf_ptr->next)
   {
     gint l_len;
 
     line_nr++;
-    if(gap_debug) printf("line_nr: %d\n", (int)line_nr);
-    
+    if(gap_debug)
+    {
+      printf("line_nr: %d\n", (int)line_nr);
+    }
+
+    gap_file_chop_trailingspace_and_nl(&txf_ptr->line[0]);
     l_len = strlen(txf_ptr->line);
 
-    /* chop \n */
-    if(txf_ptr->line[l_len-1] == '\n')
+    if(gap_debug)
     {
-      txf_ptr->line[l_len-1] = '\0';
-      l_len--;
-    }
-    if(txf_ptr->line[l_len-1] == '\a')
-    {
-      txf_ptr->line[l_len-1] = '\0';
-      l_len--;
+      printf("line:%s:\n", txf_ptr->line);
     }
 
     /* concatenate long lines */
@@ -3463,31 +4375,31 @@ gap_story_parse(const gchar *filename)
     else
     {
       gchar *l_ml;
-      
+
       l_ml = g_strdup_printf("%s\n%s", multi_lines, txf_ptr->line);
       g_free(multi_lines);
       multi_lines = l_ml;
     }
-    
+
     /* handle long lines with backslash at line end
      * concatenate those lines with blank inbetween for
      * the following syntax check.
      */
     if (txf_ptr->line[l_len-1] == '\\')
     {
-      if(longline == NULL) 
+      if(longline == NULL)
       {
         longline = g_strdup(txf_ptr->line);
       }
       else
       {
         char *l_line;
-        
+
         l_line = g_strdup_printf("%s %s", longline, txf_ptr->line);
         g_free(longline);
         longline = l_line;
       }
-      if(longlinenr == 0) 
+      if(longlinenr == 0)
       {
         longlinenr = line_nr;
       }
@@ -3501,7 +4413,7 @@ gap_story_parse(const gchar *filename)
       else
       {
         char *l_line;
-        
+
         l_line = g_strdup_printf("%s %s", longline, txf_ptr->line);
         g_free(longline);
         longline = NULL;
@@ -3527,15 +4439,15 @@ gap_story_parse(const gchar *filename)
 
   if(txf_ptr_root)
   {
-    gap_vin_free_textfile_lines(txf_ptr_root);
+    gap_val_free_textfile_lines(txf_ptr_root);
   }
 
-  
-  /* calculate nframes 
+
+  /* calculate nframes
    *  nframes is the number of frames to handle (by a player or encoder)
    *  to process the stb_elem respecting nloops and playmode
    */
-  if(stb->stb_elem == NULL)
+  if(p_stb_is_empty_in_all_sections(stb) == TRUE)
   {
     char *l_errtext;
 
@@ -3550,28 +4462,40 @@ gap_story_parse(const gchar *filename)
   else
   {
     GapStoryElem *stb_elem;
+    GapStorySection *stb_section;
 
     if(gap_debug) printf("gap_story_parse: CALCULATE NFRAMES\n");
-    
-    for(stb_elem = stb->stb_elem; stb_elem != NULL; stb_elem = (GapStoryElem *)stb_elem->next)
+
+    for(stb_section = stb->stb_section; stb_section != NULL; stb_section = stb_section->next)
     {
-      if(gap_debug) 
+      for(stb_elem = stb_section->stb_elem; stb_elem != NULL; stb_elem = (GapStoryElem *)stb_elem->next)
       {
-        printf("\nCALCULATE NFRAMES for stb_elem: %d\n", (int)stb_elem);
-        gap_story_debug_print_elem(stb_elem);
-      }
-      
-      if(stb_elem->nframes <= 0)
-      {
-        gap_story_elem_calculate_nframes(stb_elem);
+        if(gap_debug)
+        {
+          printf("\nCALCULATE NFRAMES for stb_elem: %d\n", (int)stb_elem);
+          gap_story_debug_print_elem(stb_elem);
+        }
+
+        if(stb_elem->nframes <= 0)
+        {
+          gap_story_elem_calculate_nframes(stb_elem);
+        }
       }
     }
+
   }
+
+  /* set the main section active
+   * TODO: an extended filesyntax shall allow persisting
+   *       of current dialog settings (such as active_section,
+   *       current track number scroll position ...) in future.
+   */
+  stb->active_section = gap_story_find_main_section(stb);
 
   if(gap_debug) printf("gap_story_parse: RET ptr:%d\n", (int)stb);
 
   stb->unsaved_changes = FALSE;
-  return(stb);  
+  return(stb);
 }  /* end gap_story_parse */
 
 
@@ -3580,7 +4504,7 @@ gap_story_parse(const gchar *filename)
  * --------------------------------
  * returns number of overlapping frames
  */
-static gint32 
+static gint32
 p_story_elem_calculate_nframes(GapStoryElem *stb_elem)
 {
   if((stb_elem->record_type == GAP_STBREC_VID_SILENCE)
@@ -3591,12 +4515,14 @@ p_story_elem_calculate_nframes(GapStoryElem *stb_elem)
   }
   if((stb_elem->record_type == GAP_STBREC_VID_FRAMES)
   || (stb_elem->record_type == GAP_STBREC_VID_ANIMIMAGE)
+  || (stb_elem->record_type == GAP_STBREC_VID_SECTION)
+  || (stb_elem->record_type == GAP_STBREC_VID_BLACKSECTION)
   || (stb_elem->record_type == GAP_STBREC_VID_MOVIE))
   {
     /* calculate number of frames in this clip
      * respecting playmode and nloop count
      */
-    if ((stb_elem->playmode == GAP_STB_PM_PINGPONG) 
+    if ((stb_elem->playmode == GAP_STB_PM_PINGPONG)
     &&  (stb_elem->from_frame != stb_elem->to_frame))
     {
       stb_elem->nframes = p_calculate_rangesize_pingpong(stb_elem) * stb_elem->nloop;
@@ -3612,14 +4538,14 @@ p_story_elem_calculate_nframes(GapStoryElem *stb_elem)
       return(MAX(0, stb_elem->att_overlap));
   }
   return (0);
-  
+
 }  /* end p_story_elem_calculate_nframes */
 
 /* --------------------------------
  * gap_story_elem_calculate_nframes
  * --------------------------------
  */
-void 
+void
 gap_story_elem_calculate_nframes(GapStoryElem *stb_elem)
 {
   p_story_elem_calculate_nframes(stb_elem);
@@ -3655,7 +4581,7 @@ static void
 p_story_save_comments(FILE *fp, GapStoryElem *stb_elem_node)
 {
   GapStoryElem *stb_elem;
-  
+
   if(stb_elem_node)
   {
     for(stb_elem = stb_elem_node->comment; stb_elem != NULL; stb_elem = (GapStoryElem *)stb_elem->next)
@@ -3663,7 +4589,7 @@ p_story_save_comments(FILE *fp, GapStoryElem *stb_elem_node)
       p_story_save_fprint_comment(fp, stb_elem);
     }
   }
-  
+
 }  /* end p_story_save_comments */
 
 
@@ -3715,7 +4641,7 @@ p_story_save_att_transition(FILE *fp, GapStoryElem *stb_elem)
   gint pmi;
 
   p_story_save_att_overlap(fp, stb_elem);
-  
+
   fmi = 0;
   if(stb_elem->att_fit_width == TRUE)
   {
@@ -3725,13 +4651,13 @@ p_story_save_att_transition(FILE *fp, GapStoryElem *stb_elem)
   {
     fmi += 2;
   }
-  
+
   pmi = 0;
   if(stb_elem->att_keep_proportions == TRUE)
   {
     pmi = 1;
   }
-  
+
   gap_stb_syntax_get_parname_tab(GAP_STBKEY_VID_FIT_SIZE
                                 ,&l_parnam_tab
                                 );
@@ -3742,7 +4668,7 @@ p_story_save_att_transition(FILE *fp, GapStoryElem *stb_elem)
                  , l_parnam_tab.parname[3]              , tab_prop_modes[pmi]
                  );
 
-  
+
   for(ii=0; ii < GAP_STB_ATT_TYPES_ARRAY_MAX; ii++)
   {
     if(stb_elem->att_arr_enable[ii])
@@ -3774,7 +4700,7 @@ p_story_save_att_transition(FILE *fp, GapStoryElem *stb_elem)
          */
         fprintf(fp, " ");
       }
-                       
+
       fprintf(fp, "%s:%d %s:%s %s:%s %s:%d\n"
                  , l_parnam_tab.parname[1]              , (int)stb_elem->track
                  , l_parnam_tab.parname[2]              , l_from_str
@@ -3783,7 +4709,7 @@ p_story_save_att_transition(FILE *fp, GapStoryElem *stb_elem)
                  );
     }
   }
-  
+
 }  /* end p_story_save_att_transition */
 
 
@@ -3804,20 +4730,20 @@ p_story_save_flip_param(FILE *fp, GapStoryElem *stb_elem
       fprintf(fp, " %s:hor"
                , parname_flip
                );
-      break;    
+      break;
     case GAP_STB_FLIP_VER:
       fprintf(fp, " %s:ver"
                , parname_flip
                );
-      break;    
+      break;
     case GAP_STB_FLIP_BOTH:
       fprintf(fp, " %s:both"
                , parname_flip
                );
-      break;    
+      break;
     default:
       /* do not print the default GAP_STB_FLIP_NONE to file */
-      break;    
+      break;
   }
 
 }  /* end p_story_save_flip_param */
@@ -3831,7 +4757,7 @@ static void
 p_story_save_header(GapStoryBoard *stb, FILE *fp)
 {
   GapStbSyntaxParnames l_parnam_tab;
-  
+
   /* print Header */
   if(stb->master_type == GAP_STB_MASTER_TYPE_STORYBOARD)
   {
@@ -3841,7 +4767,7 @@ p_story_save_header(GapStoryBoard *stb, FILE *fp)
   {
     fprintf(fp, "%s\n", GAP_STBKEY_CLIP_HEADER);
   }
-  
+
   /* print MASTER_SIZE */
   if((stb->master_width > 0) || (stb->master_height > 0))
   {
@@ -3877,14 +4803,36 @@ p_story_save_header(GapStoryBoard *stb, FILE *fp)
          );
   }
 
+  /* print MASTER_TRACK1_IS_TOPLAYER */
+  if(stb != NULL)
+  {
+     static gchar *l_bool_tab[2] = { GAP_STB_VTRACK1_TOP_TRUE, GAP_STB_VTRACK1_TOP_FALSE };
+     gint l_bool_idx;
+     
+     l_bool_idx = 0;
+     if (stb->master_vtrack1_is_toplayer != TRUE)
+     {
+       l_bool_idx = 1;
+     }
+
+     gap_stb_syntax_get_parname_tab(GAP_STBKEY_VID_MASTER_LAYERSTACK
+                                  ,&l_parnam_tab
+                                  );
+     fprintf(fp, "%s   %s:%s\n"
+         , GAP_STBKEY_VID_MASTER_LAYERSTACK
+         , l_parnam_tab.parname[1]
+         , l_bool_tab[l_bool_idx]
+         );
+  }
+
   /* print MASTER_FRAME_ASPECT */
   if((stb->master_aspect_width > 0) && (stb->master_aspect_height > 0))
   {
     gap_stb_syntax_get_parname_tab(GAP_STBKEY_VID_MASTER_FRAME_ASPECT
                                   ,&l_parnam_tab
                                   );
-    fprintf(fp, "%s         %s:%d %s:%d\n"
-         , GAP_STBKEY_VID_MASTER_SIZE
+    fprintf(fp, "%s %s:%d %s:%d\n"
+         , GAP_STBKEY_VID_MASTER_FRAME_ASPECT
          , l_parnam_tab.parname[1]
          , (int)stb->master_aspect_width
          , l_parnam_tab.parname[2]
@@ -3932,7 +4880,7 @@ p_story_save_header(GapStoryBoard *stb, FILE *fp)
     gap_stb_syntax_get_parname_tab(GAP_STBKEY_LAYOUT_SIZE
                                   ,&l_parnam_tab
                                   );
-    fprintf(fp, "%s         %s:%d %s:%d %s:%d\n"
+    fprintf(fp, "%s             %s:%d %s:%d %s:%d\n"
          , GAP_STBKEY_LAYOUT_SIZE
          , l_parnam_tab.parname[1]
          , (int)stb->layout_cols
@@ -3942,7 +4890,36 @@ p_story_save_header(GapStoryBoard *stb, FILE *fp)
          , (int)stb->layout_thumbsize
          );
    }
-  
+
+   /* print EDIT_SETTINGS */
+   if (stb->edit_settings != NULL)
+   {
+     char *section_name;
+     int l_track;
+     int l_page;
+     
+     l_track = stb->edit_settings->track;
+     l_page = stb->edit_settings->page;
+     section_name = "\0";
+     if (stb->edit_settings->section_name != NULL)
+     {
+       section_name = stb->edit_settings->section_name;
+     }
+     
+     gap_stb_syntax_get_parname_tab(GAP_STBKEY_EDIT_SETTINGS
+                                  ,&l_parnam_tab
+                                  );
+     fprintf(fp, "%s           %s:\"%s\" %s:%d %s:%d\n"
+         , GAP_STBKEY_EDIT_SETTINGS
+         , l_parnam_tab.parname[1]
+         , (int)section_name
+         , l_parnam_tab.parname[2]
+         , (int)l_track
+         , l_parnam_tab.parname[3]
+         , (int)l_page
+         );
+   }
+
   /* print PREFERRED_DECODER */
   if(stb->preferred_decoder > 0)
   {
@@ -3972,15 +4949,20 @@ p_story_save_mask_elem_list(GapStoryBoard *stb, FILE *fp)
 {
   GapStoryElem *stb_elem;
 
-  for(stb_elem = stb->stb_elem; stb_elem != NULL; stb_elem = (GapStoryElem *)stb_elem->next)
+  if (stb->mask_section == NULL)
+  {
+    return;
+  }
+
+  for(stb_elem = stb->mask_section->stb_elem; stb_elem != NULL; stb_elem = (GapStoryElem *)stb_elem->next)
   {
     GapStbSyntaxParnames l_parnam_tab;
-    
+
     if(stb_elem->track != GAP_STB_MASK_TRACK_NUMBER)
     {
       continue;
     }
-    
+
     switch(stb_elem->record_type)
     {
       case GAP_STBREC_VID_FRAMES:
@@ -4043,7 +5025,7 @@ p_story_save_mask_elem_list(GapStoryBoard *stb, FILE *fp)
                , l_parnam_tab.parname[2], stb_elem->orig_filename
                , l_parnam_tab.parname[3], (int)stb_elem->from_frame
                , l_parnam_tab.parname[4], (int)stb_elem->to_frame
-               
+
                , l_parnam_tab.parname[5], (int)stb_elem->seltrack
                , l_parnam_tab.parname[6], (int)stb_elem->exact_seek
                , l_parnam_tab.parname[7], (int)l_delace_int
@@ -4061,6 +5043,22 @@ p_story_save_mask_elem_list(GapStoryBoard *stb, FILE *fp)
           fprintf(fp, "\n");
         }
         break;
+      case GAP_STBREC_VID_SECTION:
+      case GAP_STBREC_VID_BLACKSECTION:
+        {
+          gap_stb_syntax_get_parname_tab(GAP_STBKEY_MASK_BLACKSECTION
+                                  ,&l_parnam_tab
+                                  );
+          fprintf(fp, "%s     %s:\"%s\" %s:%06d %s:%06d"
+               , GAP_STBKEY_MASK_BLACKSECTION
+               , l_parnam_tab.parname[1], stb_elem->mask_name
+               , l_parnam_tab.parname[2], (int)stb_elem->from_frame
+               , l_parnam_tab.parname[3], (int)stb_elem->to_frame
+
+               );
+          fprintf(fp, "\n");
+        }
+        break;
       default:
         break;
     }
@@ -4072,9 +5070,11 @@ p_story_save_mask_elem_list(GapStoryBoard *stb, FILE *fp)
 /* ------------------------------
  * p_story_save_audio_list
  * ------------------------------
+ * saves storyboard audio element list of the specified active_section to file.
  */
 static void
-p_story_save_audio_list(GapStoryBoard *stb, FILE *fp, gint32 save_track)
+p_story_save_audio_list(GapStoryBoard *stb, FILE *fp, gint32 save_track
+  , GapStorySection *section)
 {
   GapStoryElem *stb_elem;
   GapStbSyntaxParnames l_parnam_tab;
@@ -4082,7 +5082,7 @@ p_story_save_audio_list(GapStoryBoard *stb, FILE *fp, gint32 save_track)
 
 
   empty_track = TRUE;
-  for(stb_elem = stb->stb_elem; stb_elem != NULL; stb_elem = (GapStoryElem *)stb_elem->next)
+  for(stb_elem = section->stb_elem; stb_elem != NULL; stb_elem = (GapStoryElem *)stb_elem->next)
   {
     gchar l_dbl_str_step_density[G_ASCII_DTOSTR_BUF_SIZE];
     gchar l_dbl_str_mask_stepsize[G_ASCII_DTOSTR_BUF_SIZE];
@@ -4103,7 +5103,7 @@ p_story_save_audio_list(GapStoryBoard *stb, FILE *fp, gint32 save_track)
       }
       empty_track = FALSE;
     }
-   
+
 
     /* setlocale independent float string */
     g_ascii_dtostr(&l_dbl_str_step_density[0]
@@ -4139,25 +5139,25 @@ p_story_save_audio_list(GapStoryBoard *stb, FILE *fp, gint32 save_track)
                      ,G_ASCII_DTOSTR_BUF_SIZE
                      ,stb_elem->aud_play_from_sec
                      );
-               
+
             fprintf(fp, "%s:%s "
                   , l_parnam_tab.parname[3], l_dbl_str
                  );
-                 
+
             g_ascii_dtostr(&l_dbl_str[0]
                      ,G_ASCII_DTOSTR_BUF_SIZE
                      ,stb_elem->aud_play_to_sec
                      );
-                 
+
             fprintf(fp, "%s:%s "
                  , l_parnam_tab.parname[4], l_dbl_str
                  );
-          }     
+          }
           g_ascii_dtostr(&l_dbl_str[0]
                    ,G_ASCII_DTOSTR_BUF_SIZE
                    ,stb_elem->aud_volume
                    );
-               
+
           fprintf(fp, "%s:%s "
                , l_parnam_tab.parname[5], l_dbl_str
                );
@@ -4193,7 +5193,7 @@ p_story_save_audio_list(GapStoryBoard *stb, FILE *fp, gint32 save_track)
                    ,G_ASCII_DTOSTR_BUF_SIZE
                    ,stb_elem->aud_fade_out_sec
                    );
-               
+
             fprintf(fp, "%s:%s "
                    , l_parnam_tab.parname[9], l_dbl_str
                    );
@@ -4211,7 +5211,7 @@ p_story_save_audio_list(GapStoryBoard *stb, FILE *fp, gint32 save_track)
                , stb_elem->preferred_decoder
                );
           }
-               
+
           if(stb_elem->to_frame > 0)
           {
             g_ascii_dtostr(&l_dbl_str[0]
@@ -4274,16 +5274,16 @@ p_story_save_audio_list(GapStoryBoard *stb, FILE *fp, gint32 save_track)
                    ,G_ASCII_DTOSTR_BUF_SIZE
                    ,stb_elem->aud_play_from_sec
                    );
-             
+
           fprintf(fp, "%s:%s "
                 , l_parnam_tab.parname[3], l_dbl_str
                );
-               
+
           g_ascii_dtostr(&l_dbl_str[0]
                    ,G_ASCII_DTOSTR_BUF_SIZE
                    ,stb_elem->aud_play_to_sec
                    );
-               
+
           fprintf(fp, "%s:%s "
                , l_parnam_tab.parname[4], l_dbl_str
                );
@@ -4292,7 +5292,7 @@ p_story_save_audio_list(GapStoryBoard *stb, FILE *fp, gint32 save_track)
                    ,G_ASCII_DTOSTR_BUF_SIZE
                    ,stb_elem->aud_volume
                    );
-               
+
           fprintf(fp, "%s:%s "
                , l_parnam_tab.parname[5], l_dbl_str
                );
@@ -4328,7 +5328,7 @@ p_story_save_audio_list(GapStoryBoard *stb, FILE *fp, gint32 save_track)
                    ,G_ASCII_DTOSTR_BUF_SIZE
                    ,stb_elem->aud_fade_out_sec
                    );
-               
+
             fprintf(fp, "%s:%s "
                    , l_parnam_tab.parname[9], l_dbl_str
                    );
@@ -4377,21 +5377,21 @@ p_story_save_flip_and_mask_params(FILE *fp, GapStoryElem *stb_elem
            , parname_mask_name
            , stb_elem->mask_name
            );
-    
+
     switch(stb_elem->mask_anchor)
     {
       case GAP_MSK_ANCHOR_CLIP:
         fprintf(fp, " %s:clip"
                , parname_mask_anchor
                );
-        break;    
+        break;
       case GAP_MSK_ANCHOR_MASTER:
         fprintf(fp, " %s:master"
                , parname_mask_anchor
                );
-        break;    
+        break;
     }
-    
+
     if(stb_elem->mask_stepsize != 1.0)
     {
       gchar l_dbl_str_mask_stepsize[G_ASCII_DTOSTR_BUF_SIZE];
@@ -4411,7 +5411,7 @@ p_story_save_flip_and_mask_params(FILE *fp, GapStoryElem *stb_elem
                , parname_mask_disable
                );
     }
-    
+
 
 
   }
@@ -4422,9 +5422,12 @@ p_story_save_flip_and_mask_params(FILE *fp, GapStoryElem *stb_elem
 /* ------------------------------
  * p_story_save_video_list
  * ------------------------------
+ * saves section identifier
+ * and storyboard video element list of the specified active_section to file.
  */
 static void
-p_story_save_video_list(GapStoryBoard *stb, FILE *fp, gint32 save_track)
+p_story_save_video_list(GapStoryBoard *stb, FILE *fp, gint32 save_track
+  , GapStorySection *active_section, gboolean print_section_record)
 {
   static const gchar *l_playmode_normal = "normal";
   static const gchar *l_playmode_pingpong = "pingpong";
@@ -4433,11 +5436,37 @@ p_story_save_video_list(GapStoryBoard *stb, FILE *fp, gint32 save_track)
   gboolean empty_track;
 
 
+  if(print_section_record == TRUE)
+  {
+    /* print section identification of specified active_section */
+    fprintf(fp, "\n");
+    if(active_section->section_name == NULL)
+    {
+       gap_stb_syntax_get_parname_tab(GAP_STBKEY_MAIN_SECTION
+                                    ,&l_parnam_tab
+                                    );
+       fprintf(fp, "%s\n"
+                 , GAP_STBKEY_MAIN_SECTION
+                 );
+    }
+    else
+    {
+       gap_stb_syntax_get_parname_tab(GAP_STBKEY_SUB_SECTION
+                                    ,&l_parnam_tab
+                                    );
+       fprintf(fp, "%s     %s:\"%s\"\n"
+                 , GAP_STBKEY_SUB_SECTION
+                 , l_parnam_tab.parname[1], active_section->section_name
+                 );
+    }
+    fprintf(fp, "\n");
+  }
+
   empty_track = TRUE;
-  for(stb_elem = stb->stb_elem; stb_elem != NULL; stb_elem = (GapStoryElem *)stb_elem->next)
+  for(stb_elem = active_section->stb_elem; stb_elem != NULL; stb_elem = (GapStoryElem *)stb_elem->next)
   {
     gchar l_dbl_str_step_density[G_ASCII_DTOSTR_BUF_SIZE];
-    
+
     const gchar *l_playmode_str;
     if(stb_elem->playmode == GAP_STB_PM_PINGPONG)
     {
@@ -4447,7 +5476,7 @@ p_story_save_video_list(GapStoryBoard *stb, FILE *fp, gint32 save_track)
     {
       l_playmode_str = l_playmode_normal;
     }
-    
+
 
 
 
@@ -4465,7 +5494,7 @@ p_story_save_video_list(GapStoryBoard *stb, FILE *fp, gint32 save_track)
       }
       empty_track = FALSE;
     }
-   
+
 
     /* setlocale independent float string */
     g_ascii_dtostr(&l_dbl_str_step_density[0]
@@ -4478,7 +5507,7 @@ p_story_save_video_list(GapStoryBoard *stb, FILE *fp, gint32 save_track)
       case GAP_STBREC_VID_FRAMES:
         {
           p_story_save_comments(fp, stb_elem);
-          
+
           gap_stb_syntax_get_parname_tab(GAP_STBKEY_VID_PLAY_FRAMES
                                   ,&l_parnam_tab
                                   );
@@ -4500,8 +5529,15 @@ p_story_save_video_list(GapStoryBoard *stb, FILE *fp, gint32 save_track)
                , l_parnam_tab.parname[9]
                , stb_elem->filtermacro_file
                );
+            if(stb_elem->fmac_total_steps > 1)
+            {
+              fprintf(fp, " %s:%d"
+                 , l_parnam_tab.parname[15]
+                 , stb_elem->fmac_total_steps
+                 );
+            }
           }
-          
+
           p_story_save_flip_and_mask_params(fp, stb_elem
                   , l_parnam_tab.parname[10]  /* parname_flip  */
                   , l_parnam_tab.parname[11]  /* parname_mask_name */
@@ -4509,7 +5545,7 @@ p_story_save_video_list(GapStoryBoard *stb, FILE *fp, gint32 save_track)
                   , l_parnam_tab.parname[13]  /* parname_mask_stepsize */
                   , l_parnam_tab.parname[14]  /* parname_mask_disable */
                   );
-          
+
           fprintf(fp, "\n");
         }
         if(gap_debug)
@@ -4535,6 +5571,13 @@ p_story_save_video_list(GapStoryBoard *stb, FILE *fp, gint32 save_track)
                , l_parnam_tab.parname[4]
                , stb_elem->filtermacro_file
                );
+          if(stb_elem->fmac_total_steps > 1)
+          {
+              fprintf(fp, " %s:%d"
+                 , l_parnam_tab.parname[10]
+                 , stb_elem->fmac_total_steps
+                 );
+          }
         }
 
         p_story_save_flip_and_mask_params(fp, stb_elem
@@ -4554,7 +5597,7 @@ p_story_save_video_list(GapStoryBoard *stb, FILE *fp, gint32 save_track)
       case GAP_STBREC_VID_MOVIE:
         {
           gint   l_delace_int;
-          
+
           gap_stb_syntax_get_parname_tab(GAP_STBKEY_VID_PLAY_MOVIE
                                   ,&l_parnam_tab
                                   );
@@ -4582,6 +5625,13 @@ p_story_save_video_list(GapStoryBoard *stb, FILE *fp, gint32 save_track)
                , l_parnam_tab.parname[11]
                , stb_elem->filtermacro_file
                );
+            if(stb_elem->fmac_total_steps > 1)
+            {
+              fprintf(fp, " %s:%d"
+                 , l_parnam_tab.parname[18]
+                 , stb_elem->fmac_total_steps
+                 );
+            }
           }
           if(stb_elem->preferred_decoder)
           {
@@ -4605,10 +5655,77 @@ p_story_save_video_list(GapStoryBoard *stb, FILE *fp, gint32 save_track)
           gap_story_debug_print_elem(stb_elem);
         }
         break;
+      case GAP_STBREC_VID_BLACKSECTION:
+        /* fall through
+         * VID_PLAY_BLACKSECTION has identical structure as VID_PLAY_SECTION
+         * but renders only black frames. (it is used when pasting VID_PLAY_SECTION
+         * into subsections where reference to same or other section is NOT supported)
+         */
+      case GAP_STBREC_VID_SECTION:
+        {
+          gint   l_delace_int;
+          const char *l_gap_stb_key_vid_play_section;
+          if (stb_elem->record_type == GAP_STBREC_VID_SECTION)
+          {
+            l_gap_stb_key_vid_play_section = GAP_STBKEY_VID_PLAY_SECTION;
+          }
+          else
+          {
+            l_gap_stb_key_vid_play_section = GAP_STBKEY_VID_PLAY_BLACKSECTION;
+          }
+          
+
+          gap_stb_syntax_get_parname_tab(GAP_STBKEY_VID_PLAY_SECTION
+                                  ,&l_parnam_tab
+                                  );
+          p_story_save_comments(fp, stb_elem);
+          l_delace_int = (int)stb_elem->delace;
+          fprintf(fp, "%s    %s:%d %s:\"%s\" %s:%06d %s:%06d %s:%s %s:%d "
+                      "%s:%s"
+               , l_gap_stb_key_vid_play_section
+               , l_parnam_tab.parname[1], (int)stb_elem->track
+               , l_parnam_tab.parname[2], stb_elem->orig_filename  /* the section_name */
+               , l_parnam_tab.parname[3], (int)stb_elem->from_frame
+               , l_parnam_tab.parname[4], (int)stb_elem->to_frame
+               , l_parnam_tab.parname[5], l_playmode_str
+               , l_parnam_tab.parname[6], (int)stb_elem->nloop
+               , l_parnam_tab.parname[7], l_dbl_str_step_density
+               );
+
+          if(stb_elem->filtermacro_file)
+          {
+            fprintf(fp, " %s:\"%s\""
+               , l_parnam_tab.parname[8]
+               , stb_elem->filtermacro_file
+               );
+            if(stb_elem->fmac_total_steps > 1)
+            {
+              fprintf(fp, " %s:%d"
+                 , l_parnam_tab.parname[14]
+                 , stb_elem->fmac_total_steps
+                 );
+            }
+          }
+
+          p_story_save_flip_and_mask_params(fp, stb_elem
+                  , l_parnam_tab.parname[9]  /* parname_flip  */
+                  , l_parnam_tab.parname[10]  /* parname_mask_name */
+                  , l_parnam_tab.parname[11]  /* parname_mask_anchor */
+                  , l_parnam_tab.parname[12]  /* parname_mask_stepsize */
+                  , l_parnam_tab.parname[13]  /* parname_mask_disable */
+                  );
+          fprintf(fp, "\n");
+        }
+        if(gap_debug)
+        {
+          printf("\nSAVED stb_elem\n");
+          gap_story_debug_print_elem(stb_elem);
+        }
+        break;
       case GAP_STBREC_VID_ANIMIMAGE:
         {
           p_story_save_comments(fp, stb_elem);
-          
+
           gap_stb_syntax_get_parname_tab(GAP_STBKEY_VID_PLAY_ANIMIMAGE
                                   ,&l_parnam_tab
                                   );
@@ -4629,8 +5746,15 @@ p_story_save_video_list(GapStoryBoard *stb, FILE *fp, gint32 save_track)
                , l_parnam_tab.parname[8]
                , stb_elem->filtermacro_file
                );
+            if(stb_elem->fmac_total_steps > 1)
+            {
+              fprintf(fp, " %s:%d"
+                 , l_parnam_tab.parname[14]
+                 , stb_elem->fmac_total_steps
+                 );
+            }
           }
-          
+
           p_story_save_flip_and_mask_params(fp, stb_elem
                   , l_parnam_tab.parname[9]  /* parname_flip  */
                   , l_parnam_tab.parname[10]  /* parname_mask_name */
@@ -4638,7 +5762,7 @@ p_story_save_video_list(GapStoryBoard *stb, FILE *fp, gint32 save_track)
                   , l_parnam_tab.parname[12]  /* parname_mask_stepsize */
                   , l_parnam_tab.parname[13]  /* parname_mask_disable */
                   );
-          
+
           fprintf(fp, "\n");
         }
         if(gap_debug)
@@ -4676,31 +5800,49 @@ gboolean
 gap_story_save(GapStoryBoard *stb, const char *filename)
 {
   FILE *fp;
-  
+
   fp = g_fopen(filename, "w");
   if(fp)
   {
+    GapStorySection *section;
     gint32 track;
-    
+    gboolean print_section_record;
+
     p_story_save_header(stb, fp);
     p_story_save_mask_elem_list(stb, fp);
     
-    for(track=1; track < GAP_STB_MAX_VID_TRACKS; track++)
+
+    for(section = stb->stb_section; section != NULL; section = section->next)
     {
-      if(track != GAP_STB_MASK_TRACK_NUMBER)
+      print_section_record = TRUE;
+      if (section == stb->mask_section)
       {
-        p_story_save_video_list(stb, fp, track);
+        /* mask definitions (e.g. all elements in the mask_section)
+         * were already handled separate, because they have other file syntax
+         * than regular clip elements.
+         */
+        continue;
       }
-    }
-    for(track=1; track < GAP_STB_MAX_AUD_TRACKS; track++)
-    {
-      p_story_save_audio_list(stb, fp, track);
+
+      for(track=1; track < GAP_STB_MAX_VID_TRACKS; track++)
+      {
+        if(track != GAP_STB_MASK_TRACK_NUMBER)
+        {
+          p_story_save_video_list(stb, fp, track, section, print_section_record);
+          print_section_record = FALSE;
+        }
+      }
+      for(track=1; track < GAP_STB_MAX_AUD_TRACKS; track++)
+      {
+        p_story_save_audio_list(stb, fp, track, section);
+      }
+
     }
     fclose(fp);
     stb->unsaved_changes = FALSE;
     return (TRUE);
   }
-   
+
   return (FALSE);
 }  /* end gap_story_save */
 
@@ -4718,7 +5860,7 @@ static char *
 p_story_get_filename_from_elem (GapStoryElem *stb_elem, gint32 in_framenr)
 {
   char *filename;
-  
+
   filename = NULL;
   if(stb_elem)
   {
@@ -4834,19 +5976,19 @@ p_story_local_wanted_framenr(GapStoryLocateRet *ret_elem, GapStoryElem *stb_elem
 }  /* end p_story_local_wanted_framenr */
 
 
- 
+
 /* ---------------------------------
  * gap_story_locate_expanded_framenr
  * ---------------------------------
- * IMPOTANT: this procedure operates on expanded frame numbers.
+ * IMPORTANT: this procedure operates on expanded frame numbers.
  * it does not respect overlapping scenarios.
  *
- * IN: stbd_list  The Liststructure that represents the Storyboardfile
+ * IN: section    The relevant section of the Storyboardfile
  * IN: in_framenr The Framenumber in sequence to locate
  * IN: in_track   The Video Track (for later use with multiple tracksupport in storyboard level2)
  *                for level1 storyboard files the caller always should supply
  *                the value 1 for in_track.
-
+ *
  * OUT:
  *   the returned structure GapStoryLocateRet contains a pointer
  *   to the corresponding GapStoryElem (dont gfree that stb_elem pointer)
@@ -4858,7 +6000,7 @@ p_story_local_wanted_framenr(GapStoryLocateRet *ret_elem, GapStoryElem *stb_elem
  *                     within valid range
  */
 GapStoryLocateRet *
-gap_story_locate_expanded_framenr(GapStoryBoard *stb, gint32 in_framenr, gint32 in_track)
+gap_story_locate_expanded_framenr(GapStorySection  *section, gint32 in_framenr, gint32 in_track)
 {
   GapStoryLocateRet *ret_elem;
   GapStoryElem      *stb_elem;
@@ -4873,14 +6015,20 @@ gap_story_locate_expanded_framenr(GapStoryBoard *stb, gint32 in_framenr, gint32 
   {
     return(ret_elem);
   }
-  
-  for(stb_elem = stb->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
+
+  if (section == NULL)
+  {
+    printf("** ERROR gap_story_locate_expanded_framenr section is NULL\n");
+    return(ret_elem);
+  }
+
+  for(stb_elem = section->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
   {
     if(stb_elem->track != in_track)
     {
       continue;
     }
-  
+
     if (l_framenr > stb_elem->nframes)
     {
       /* the wanted in_framenr is not within the range of the current stb_elem */
@@ -4897,16 +6045,77 @@ gap_story_locate_expanded_framenr(GapStoryBoard *stb, gint32 in_framenr, gint32 
       break;
     }
   }
-  
+
   return(ret_elem);
-  
+
 }  /* end gap_story_locate_expanded_framenr */
 
+
+
+static GapStoryLocateRet *
+p_story_locate_framenr(GapStorySection   *section, gint32 in_framenr, gint32 in_track)
+{
+  GapStoryLocateRet *ret_elem;
+  GapStoryElem      *stb_elem;
+  gint32             l_framenr;
+
+  ret_elem = g_new(GapStoryLocateRet, 1);
+  ret_elem->stb_elem = NULL;
+  ret_elem->locate_ok = FALSE;
+
+  l_framenr = in_framenr;
+  if (l_framenr < 1)
+  {
+    return(ret_elem);
+  }
+  if (section == NULL)
+  {
+    printf("** ERROR p_story_locate_framenr section is NULL\n");
+    return(ret_elem);
+  }
+
+  for(stb_elem = section->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
+  {
+    if(stb_elem->track != in_track)
+    {
+      continue;
+    }
+
+    if(stb_elem->record_type == GAP_STBREC_ATT_TRANSITION)
+    {
+      /* expand the wanted target framenr by adding the number of overlapping frames
+       * this results in skipping the overlapped part
+       */
+      l_framenr += stb_elem->att_overlap;
+    }
+
+    if (l_framenr > stb_elem->nframes)
+    {
+      /* the wanted in_framenr is not within the range of the current stb_elem */
+      l_framenr -= stb_elem->nframes;
+    }
+    else
+    {
+      /* the wanted in_framenr is within the range of the current stb_elem
+       * now figure out the local framenr
+       *  (respecting normal|invers order, nloop count and normal|pingpong playmode
+       *   and step_density setting)
+       */
+      p_story_local_wanted_framenr(ret_elem, stb_elem, l_framenr);
+      break;
+    }
+  }
+
+  return(ret_elem);
+
+}  /* end gap_story_locate_framenr */
 
 /* ------------------------------
  * gap_story_locate_framenr
  * ------------------------------
- * IN: stbd_list  The Liststructure that represents the Storyboardfile
+ * IN: stb        The Storyboardfile 
+ *                   NOTE: this procedure operates on the active_section of the
+ *                         specified storyboard.
  * IN: in_framenr The Framenumber in sequence to locate
  * IN: in_track   The Video Track (for later use with multiple tracksupport in storyboard level2)
  *                for level1 storyboard files the caller always should supply
@@ -4921,64 +6130,75 @@ gap_story_locate_expanded_framenr(GapStoryBoard *stb, gint32 in_framenr, gint32 
  *   locate_ok flag == FALSE indicates that the given in_framenr was not
  *                     within valid range
  * NOTE: in case of overlapping within the specified track
- *       the overlapping frames 
+ *       the overlapping frames
  *       (that will be placed in the shadow track at storyboard render processing)
  *       can NOT be accessed with this procedure.
  */
 GapStoryLocateRet *
 gap_story_locate_framenr(GapStoryBoard *stb, gint32 in_framenr, gint32 in_track)
 {
-  GapStoryLocateRet *ret_elem;
+  return (p_story_locate_framenr(stb->active_section, in_framenr, in_track));
+}
+
+
+/* ---------------------------------------
+ * gap_story_count_total_frames_in_section
+ * ---------------------------------------
+ * return total frames in the specified storyboard section.
+ * (this is the maximum of all available tracks)
+ *
+ * NOTES:
+ * - overlapping frames are respected (and not counted)
+ */
+gint32
+gap_story_count_total_frames_in_section(GapStorySection  *section)
+{
   GapStoryElem      *stb_elem;
-  gint32             l_framenr;
+  gint32             l_total_frames;
+  gint32             l_framecount[GAP_STB_MAX_VID_TRACKS];
+  gint32             l_overlap_request[GAP_STB_MAX_VID_TRACKS];
+  gint ii;
 
-  ret_elem = g_new(GapStoryLocateRet, 1);
-  ret_elem->stb_elem = NULL;
-  ret_elem->locate_ok = FALSE;
-
-  l_framenr = in_framenr;
-  if (l_framenr < 1)
+  if (section == NULL)
   {
-    return(ret_elem);
+    printf("** ERROR gap_story_count_total_frames_in_section section is NULL\n");
+    return(0);
   }
 
-  for(stb_elem = stb->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
+  for(ii=0; ii < GAP_STB_MAX_VID_TRACKS; ii++)
   {
-    if(stb_elem->track != in_track)
+    l_overlap_request[ii] = 0;
+    l_framecount[ii] = 0;
+  }
+
+  for(stb_elem = section->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
+  {
+    gint32             l_overlap_new;
+    gint32             l_overlap_actual;
+
+    if(gap_story_elem_is_video_relevant(stb_elem) != TRUE)
     {
       continue;
     }
 
-    if(stb_elem->record_type == GAP_STBREC_ATT_TRANSITION)
-    {
-      /* expand the wanted target framenr by adding the number of overlapping frames
-       * this results in skipping the overlapped part
-       */
-      l_framenr += stb_elem->att_overlap;
-    }
-  
-    if (l_framenr > stb_elem->nframes)
-    {
-      /* the wanted in_framenr is not within the range of the current stb_elem */
-      l_framenr -= stb_elem->nframes;
-    }
-    else
-    {
-      /* the wanted in_framenr is within the range of the current stb_elem
-       * now figure out the local framenr
-       *  (respecting normal|invers order, nloop count and normal|pingpong playmode
-       *   and step_density setting)
-       */
-      p_story_local_wanted_framenr(ret_elem, stb_elem, l_framenr);
-      break;
-    }
+    l_overlap_new = p_story_elem_calculate_nframes(stb_elem);
+    l_overlap_request[stb_elem->track] += l_overlap_new;
+    l_framecount[stb_elem->track] = l_framecount[stb_elem->track] + stb_elem->nframes;
+    l_overlap_actual = MIN(MAX(0, l_framecount[stb_elem->track]), l_overlap_request[stb_elem->track]);
+
+    l_framecount[stb_elem->track] -= l_overlap_actual;
+    l_overlap_request[stb_elem->track] -= l_overlap_actual;
   }
-  
-  return(ret_elem);
-  
-}  /* end gap_story_locate_framenr */
 
+  l_total_frames = 0;
+  for(ii=0; ii < GAP_STB_MAX_VID_TRACKS; ii++)
+  {
+    l_total_frames = MAX(l_framecount[ii], l_total_frames); 
+  }
 
+  return(l_total_frames);
+
+}  /* end gap_story_count_total_frames_in_section */
 
 /* ---------------------------------
  * gap_story_get_framenr_by_story_id
@@ -4990,7 +6210,7 @@ gap_story_locate_framenr(GapStoryBoard *stb, gint32 in_framenr, gint32 in_track)
  * - overlapping frames are respected (and not counted)
  */
 gint32
-gap_story_get_framenr_by_story_id(GapStoryBoard *stb, gint32 story_id, gint32 in_track)
+gap_story_get_framenr_by_story_id(GapStorySection  *section, gint32 story_id, gint32 in_track)
 {
   GapStoryElem      *stb_elem;
   gint32             l_framenr;
@@ -5000,7 +6220,13 @@ gap_story_get_framenr_by_story_id(GapStoryBoard *stb, gint32 story_id, gint32 in
   l_overlap_request = 0;
   l_framecount = 0;
 
-  for(stb_elem = stb->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
+  if (section == NULL)
+  {
+    printf("** ERROR gap_story_get_framenr_by_story_id section is NULL\n");
+    return(0);
+  }
+
+  for(stb_elem = section->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
   {
     gint32             l_overlap_new;
     gint32             l_overlap_actual;
@@ -5022,16 +6248,16 @@ gap_story_get_framenr_by_story_id(GapStoryBoard *stb, gint32 story_id, gint32 in
     l_overlap_request += l_overlap_new;
     l_framecount = l_framecount + stb_elem->nframes;
     l_overlap_actual = MIN(MAX(0, l_framecount), l_overlap_request);
-    
+
     l_framecount -= l_overlap_actual;
     l_overlap_request -= l_overlap_actual;
   }
   l_framenr = l_framecount + 1;
   return(l_framenr);
-  
-}  /* end gap_story_get_framenr_by_story_id */ 
 
- 
+}  /* end gap_story_get_framenr_by_story_id */
+
+
 /* ------------------------------------------
  * gap_story_get_expanded_framenr_by_story_id
  * ------------------------------------------
@@ -5041,15 +6267,15 @@ gap_story_get_framenr_by_story_id(GapStoryBoard *stb, gint32 story_id, gint32 in
  * it ignores overlapping within a track.
  */
 gint32
-gap_story_get_expanded_framenr_by_story_id(GapStoryBoard *stb, gint32 story_id, gint32 in_track)
+gap_story_get_expanded_framenr_by_story_id(GapStorySection *section, gint32 story_id, gint32 in_track)
 {
   GapStoryElem      *stb_elem;
   gint32             l_framenr;
   gint32             l_framecount;
 
   l_framecount = 0;
-  
-  for(stb_elem = stb->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
+
+  for(stb_elem = section->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
   {
     if(stb_elem->track != in_track)
     {
@@ -5068,8 +6294,8 @@ gap_story_get_expanded_framenr_by_story_id(GapStoryBoard *stb, gint32 story_id, 
   }
   l_framenr = l_framecount + 1;
   return(l_framenr);
-  
-}  /* end gap_story_get_expanded_framenr_by_story_id */ 
+
+}  /* end gap_story_get_expanded_framenr_by_story_id */
 
 /* ------------------------------
  * gap_story_get_master_pixelsize
@@ -5087,7 +6313,7 @@ gap_story_get_master_pixelsize(GapStoryBoard *stb
                          ,gint32 *height)
 {
   char *filename;
- 
+
   *width = MAX(stb->master_width, 0);
   *height = MAX(stb->master_height, 0);
 
@@ -5096,15 +6322,18 @@ gap_story_get_master_pixelsize(GapStoryBoard *stb
   {
     return;
   }
-  
+
   /* load 1.st image to peek width/height
    * (that were not supplied as master size information
    * in the storyboard file)
    */
   {
     GapStoryLocateRet *stb_ret;
+    GapStorySection   *section;
     
-    stb_ret = gap_story_locate_framenr(stb
+    section = gap_story_find_main_section(stb);
+
+    stb_ret = p_story_locate_framenr(section
                                     , 1     /* framenr */
                                     , 1     /* gint32 in_track */
                                     );
@@ -5146,15 +6375,66 @@ gap_story_get_master_pixelsize(GapStoryBoard *stb
       g_free(stb_ret);
     }
   }
-  
+
   if(*width < 1)
   {
     *width = MAX(stb->master_width, 720);
     *height = MAX(stb->master_height, 576);
   }
-  
-  
+
+
 }  /* end gap_story_get_master_pixelsize */
+
+/* ------------------------------------------
+ * gap_story_adjust_size_respecting_aspect
+ * ------------------------------------------
+ * adjust specified height according to
+ * aspect of the specified storyboard
+ * Note: no adjustment is done if the specified storyboard
+ * does not define aspect settings.
+ *
+ * returns aspect_ratio (width / height) as gdouble
+ *         if no aspect is defined return 0.0
+ */
+gdouble
+gap_story_adjust_size_respecting_aspect(GapStoryBoard *stb
+                         ,gint32 *width
+                         ,gint32 *height)
+{
+  gdouble aspect_ratio;
+
+  aspect_ratio  = 0.0;
+  if(stb->master_aspect_height > 0)
+  {
+    stb->master_aspect_ratio = (gdouble)stb->master_aspect_width
+                             / (gdouble)stb->master_aspect_height;
+  }
+
+
+  if(stb->master_aspect_ratio > 0.0)
+  {
+    gdouble asp_height;
+
+    asp_height = (gdouble)(*width) / stb->master_aspect_ratio;
+    *height = (gint32)asp_height;
+    aspect_ratio = stb->master_aspect_ratio;
+  }
+
+  if(gap_debug)
+  {
+    printf("gap_story_adjust_size_respecting_aspect aspect:%f master_asp (%d x %d) result: (%d x %d)\n"
+      ,(float)stb->master_aspect_ratio
+      ,(int)stb->master_aspect_width
+      ,(int)stb->master_aspect_height
+      ,(int)*width
+      ,(int)*height
+      );
+  }
+
+  return(aspect_ratio);
+
+
+}  /* end gap_story_adjust_size_respecting_aspect */
 
 
 /* ------------------------------------------
@@ -5169,26 +6449,14 @@ gap_story_get_master_pixelsize(GapStoryBoard *stb
  * then deliver size of the 1.st frame of track 1
  * that will be fetched to peek the size.
  */
-void
+gdouble
 gap_story_get_master_size_respecting_aspect(GapStoryBoard *stb
                          ,gint32 *width
                          ,gint32 *height)
 {
   gap_story_get_master_pixelsize(stb, width, height);
+  return (gap_story_adjust_size_respecting_aspect(stb, width, height));
 
-  if(stb->master_aspect_height > 0)
-  {
-    stb->master_aspect_ratio = (gdouble)stb->master_aspect_width
-                             / (gdouble)stb->master_aspect_height;
-  }
-
-  if(stb->master_aspect_ratio > 0.0)
-  {
-    gdouble asp_height;
-    
-    asp_height = (gdouble)(*width) / stb->master_aspect_ratio;
-    *height = (gint32)asp_height;
-  }
 }  /* end gap_story_get_master_size_respecting_aspect */
 
 
@@ -5196,12 +6464,13 @@ gap_story_get_master_size_respecting_aspect(GapStoryBoard *stb
  * p_story_count_frames_in_track
  * ---------------------------------
  * return totoal number of frames in the specified track
+ *        of the speciifed section.
  *
  * NOTES:
  * - overlapping frames are respected (and not counted)
  */
 gint32
-p_story_count_frames_in_track(GapStoryBoard *stb, gint32 in_track)
+p_story_count_frames_in_track(GapStorySection *section, gint32 in_track)
 {
   GapStoryElem      *stb_elem;
   gint32             l_framecount;
@@ -5211,7 +6480,7 @@ p_story_count_frames_in_track(GapStoryBoard *stb, gint32 in_track)
   l_overlap_request = 0;
   l_framecount = 0;
 
-  for(stb_elem = stb->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
+  for(stb_elem = section->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
   {
     gint32             l_overlap_handled_in_this_clip;
 
@@ -5228,8 +6497,8 @@ p_story_count_frames_in_track(GapStoryBoard *stb, gint32 in_track)
 
     l_overlap_handled_in_this_clip = MIN(l_overlap_request, stb_elem->nframes);
     l_rest_frames = stb_elem->nframes - l_overlap_handled_in_this_clip;
-    
- 
+
+
     l_framecount += l_rest_frames;
     l_overlap_request -= l_overlap_handled_in_this_clip;
   }
@@ -5241,22 +6510,27 @@ p_story_count_frames_in_track(GapStoryBoard *stb, gint32 in_track)
       ,(int)l_framecount
       );
   }
-  
+
   return(l_framecount);
-  
-}  /* end p_story_count_frames_in_track */ 
+
+}  /* end p_story_count_frames_in_track */
 
 /* -----------------------------
  * gap_story_fake_ainfo_from_stb
  * -----------------------------
  * returned a faked GapAnimInfo structure
- * that tells about the total frames in the storyboard file in the specified in_track.
+ * that tells about the total frames in the storyboard file in the specified in_track
+ * of the active_section in the specified storyboard.
  * (if in_track is < 1 count total frames of the longest video track)
+ *
+ * If a selection mapping (!= NULL) is present in the storyboard,
+ * then use the total_frames_selected from the mapping as first priority
+ * (and do the calculation only in case if 0 frames are selected)
  *
  * all char pointers are set to NULL
  * the caller is responsible to free the returned struct.
  */
-GapAnimInfo * 
+GapAnimInfo *
 gap_story_fake_ainfo_from_stb(GapStoryBoard *stb, gint32 in_track)
 {
   GapAnimInfo   *l_ainfo_ptr;
@@ -5268,7 +6542,7 @@ gap_story_fake_ainfo_from_stb(GapStoryBoard *stb, gint32 in_track)
   }
 
   l_ainfo_ptr = (GapAnimInfo*)g_malloc0(sizeof(GapAnimInfo));
-  
+
   if(l_ainfo_ptr)
   {
     gint32 l_width;
@@ -5292,23 +6566,36 @@ gap_story_fake_ainfo_from_stb(GapStoryBoard *stb, gint32 in_track)
     l_ainfo_ptr->height = l_height;
 
     l_max_framecount = 0;
-    if(in_track < 0)
+    
+    if (stb->mapping != NULL)
     {
-      gint32 l_framecount;
-      gint32 l_track;
-      for(l_track=1; l_track <= GAP_STB_MAX_VID_TRACKS; l_track++)
+      /* use framecount from selction mapping if
+       * such a mapping is present in the storyboard
+       */
+      l_max_framecount = stb->mapping->total_frames_selected;
+    }
+    
+    if(l_max_framecount == 0)
+    {
+      if(in_track < 0)
       {
-        if(l_track != GAP_STB_MASK_TRACK_NUMBER)
+        gint32 l_framecount;
+        gint32 l_track;
+        for(l_track=1; l_track <= GAP_STB_MAX_VID_TRACKS; l_track++)
         {
-          l_framecount = p_story_count_frames_in_track(stb, l_track); 
-          l_max_framecount = MAX(l_framecount, l_max_framecount);
+          if(l_track != GAP_STB_MASK_TRACK_NUMBER)
+          {
+            l_framecount = p_story_count_frames_in_track(stb->active_section, l_track);
+            l_max_framecount = MAX(l_framecount, l_max_framecount);
+          }
         }
       }
+      else
+      {
+        l_max_framecount = p_story_count_frames_in_track(stb->active_section ,in_track);
+      }
     }
-    else
-    {
-      l_max_framecount = p_story_count_frames_in_track(stb ,in_track); 
-    }
+    
 
     l_ainfo_ptr->curr_frame_nr = 1;
     l_ainfo_ptr->first_frame_nr = 1;
@@ -5321,12 +6608,12 @@ gap_story_fake_ainfo_from_stb(GapStoryBoard *stb, gint32 in_track)
             , (int)l_max_framecount
             );
     }
-    
-    
+
+
   }
-  
+
   return(l_ainfo_ptr);
-  
+
 }  /* end gap_story_fake_ainfo_from_stb */
 
 
@@ -5334,8 +6621,13 @@ gap_story_fake_ainfo_from_stb(GapStoryBoard *stb, gint32 in_track)
  * gap_story_elem_duplicate
  * -----------------------------
  * make a duplicate of the element (without the comment sublists)
+ * Notes:
+ * - the returned duplicated element gets its own unique story_id
+ *     (the story_id of the original is put to the story_orig_id)
+ * - the returned duplicated element is NOT selected
+ *     (independent from the selection state of the original)
  */
-GapStoryElem *     
+GapStoryElem *
 gap_story_elem_duplicate(GapStoryElem      *stb_elem)
 {
   GapStoryElem      *stb_elem_dup;
@@ -5362,18 +6654,21 @@ gap_story_elem_duplicate(GapStoryElem      *stb_elem)
     stb_elem_dup->from_frame      = stb_elem->from_frame;
     stb_elem_dup->to_frame        = stb_elem->to_frame;
     stb_elem_dup->nloop           = stb_elem->nloop;
-    stb_elem_dup->nframes         = stb_elem->nframes; 
-    stb_elem_dup->step_density    = stb_elem->step_density; 
-    stb_elem_dup->file_line_nr    = stb_elem->file_line_nr;  
+    stb_elem_dup->nframes         = stb_elem->nframes;
+    stb_elem_dup->step_density    = stb_elem->step_density;
+    stb_elem_dup->file_line_nr    = stb_elem->file_line_nr;
 
-    stb_elem_dup->vid_wait_untiltime_sec  = stb_elem->vid_wait_untiltime_sec;  
-    stb_elem_dup->color_red               = stb_elem->color_red;  
-    stb_elem_dup->color_green             = stb_elem->color_green;  
-    stb_elem_dup->color_blue              = stb_elem->color_blue;  
-    stb_elem_dup->color_alpha             = stb_elem->color_alpha;  
-    stb_elem_dup->att_keep_proportions    = stb_elem->att_keep_proportions;  
-    stb_elem_dup->att_fit_width           = stb_elem->att_fit_width;  
-    stb_elem_dup->att_fit_height          = stb_elem->att_fit_height;  
+    stb_elem_dup->fmac_total_steps        = stb_elem->fmac_total_steps;
+
+    stb_elem_dup->vid_wait_untiltime_sec  = stb_elem->vid_wait_untiltime_sec;
+    stb_elem_dup->color_red               = stb_elem->color_red;
+    stb_elem_dup->color_green             = stb_elem->color_green;
+    stb_elem_dup->color_blue              = stb_elem->color_blue;
+    stb_elem_dup->color_alpha             = stb_elem->color_alpha;
+    stb_elem_dup->att_keep_proportions    = stb_elem->att_keep_proportions;
+    stb_elem_dup->att_fit_width           = stb_elem->att_fit_width;
+    stb_elem_dup->att_fit_height          = stb_elem->att_fit_height;
+
 
     /* copy all transition attributes */
     {
@@ -5386,27 +6681,27 @@ gap_story_elem_duplicate(GapStoryElem      *stb_elem)
         stb_elem_dup->att_arr_value_dur[ii]  = stb_elem->att_arr_value_dur[ii];
       }
     }
-    stb_elem_dup->flip_request            = stb_elem->flip_request;  
-    stb_elem_dup->att_overlap             = stb_elem->att_overlap;  
+    stb_elem_dup->flip_request            = stb_elem->flip_request;
+    stb_elem_dup->att_overlap             = stb_elem->att_overlap;
     if(stb_elem->mask_name)               stb_elem_dup->mask_name = g_strdup(stb_elem->mask_name);
-    stb_elem_dup->mask_anchor             = stb_elem->mask_anchor;  
-    stb_elem_dup->mask_stepsize           = stb_elem->mask_stepsize;  
-    stb_elem_dup->mask_disable            = stb_elem->mask_disable;  
+    stb_elem_dup->mask_anchor             = stb_elem->mask_anchor;
+    stb_elem_dup->mask_stepsize           = stb_elem->mask_stepsize;
+    stb_elem_dup->mask_disable            = stb_elem->mask_disable;
 
 
     if(stb_elem->aud_filename)            stb_elem_dup->aud_filename = g_strdup(stb_elem->aud_filename);
-    stb_elem_dup->aud_seltrack            = stb_elem->aud_seltrack;  
-    stb_elem_dup->aud_wait_untiltime_sec  = stb_elem->aud_wait_untiltime_sec;  
-    stb_elem_dup->aud_play_from_sec       = stb_elem->aud_play_from_sec;  
-    stb_elem_dup->aud_play_to_sec         = stb_elem->aud_play_to_sec;  
-    stb_elem_dup->aud_volume_start        = stb_elem->aud_volume_start;  
-    stb_elem_dup->aud_volume              = stb_elem->aud_volume;  
-    stb_elem_dup->aud_volume_end          = stb_elem->aud_volume_end;  
-    stb_elem_dup->aud_fade_in_sec         = stb_elem->aud_fade_in_sec;  
-    stb_elem_dup->aud_fade_out_sec        = stb_elem->aud_fade_out_sec;  
-    stb_elem_dup->aud_min_play_sec        = stb_elem->aud_min_play_sec;  
-    stb_elem_dup->aud_max_play_sec        = stb_elem->aud_max_play_sec;  
-    stb_elem_dup->aud_framerate           = stb_elem->aud_framerate;  
+    stb_elem_dup->aud_seltrack            = stb_elem->aud_seltrack;
+    stb_elem_dup->aud_wait_untiltime_sec  = stb_elem->aud_wait_untiltime_sec;
+    stb_elem_dup->aud_play_from_sec       = stb_elem->aud_play_from_sec;
+    stb_elem_dup->aud_play_to_sec         = stb_elem->aud_play_to_sec;
+    stb_elem_dup->aud_volume_start        = stb_elem->aud_volume_start;
+    stb_elem_dup->aud_volume              = stb_elem->aud_volume;
+    stb_elem_dup->aud_volume_end          = stb_elem->aud_volume_end;
+    stb_elem_dup->aud_fade_in_sec         = stb_elem->aud_fade_in_sec;
+    stb_elem_dup->aud_fade_out_sec        = stb_elem->aud_fade_out_sec;
+    stb_elem_dup->aud_min_play_sec        = stb_elem->aud_min_play_sec;
+    stb_elem_dup->aud_max_play_sec        = stb_elem->aud_max_play_sec;
+    stb_elem_dup->aud_framerate           = stb_elem->aud_framerate;
 
     stb_elem_dup->comment = NULL;
     stb_elem_dup->next = NULL;
@@ -5420,8 +6715,12 @@ gap_story_elem_duplicate(GapStoryElem      *stb_elem)
  * gap_story_elem_copy
  * -----------------------------
  * make a copy of the element content (including the first comment element)
+ * Notes:
+ * - the destination element (stb_elem_dst) keeps its selection state
+ *     and its own unique story_id
+ *     (the story_id of the original is put to the story_orig_id)
  */
-void     
+void
 gap_story_elem_copy(GapStoryElem *stb_elem_dst, GapStoryElem *stb_elem)
 {
 
@@ -5449,7 +6748,7 @@ gap_story_elem_copy(GapStoryElem *stb_elem_dst, GapStoryElem *stb_elem)
     stb_elem_dst->record_type = stb_elem->record_type;
     /*
      * stb_elem_dst->story_id   ...  keep id as initialized by gap_story_new_elem
-     * stb_elem_dst->selected   ...  keep FALSE as initialized by gap_story_new_elem
+     * stb_elem_dst->selected   ...  keep as it is
      */
     stb_elem_dst->story_orig_id   = stb_elem->story_id;
     stb_elem_dst->playmode        = stb_elem->playmode;
@@ -5470,19 +6769,19 @@ gap_story_elem_copy(GapStoryElem *stb_elem_dst, GapStoryElem *stb_elem)
     stb_elem_dst->from_frame      = stb_elem->from_frame;
     stb_elem_dst->to_frame        = stb_elem->to_frame;
     stb_elem_dst->nloop           = stb_elem->nloop;
-    stb_elem_dst->nframes         = stb_elem->nframes; 
-    stb_elem_dst->step_density    = stb_elem->step_density; 
-    stb_elem_dst->file_line_nr    = stb_elem->file_line_nr;  
+    stb_elem_dst->nframes         = stb_elem->nframes;
+    stb_elem_dst->step_density    = stb_elem->step_density;
+    stb_elem_dst->file_line_nr    = stb_elem->file_line_nr;
 
 
-    stb_elem_dst->vid_wait_untiltime_sec  = stb_elem->vid_wait_untiltime_sec;  
-    stb_elem_dst->color_red               = stb_elem->color_red;  
-    stb_elem_dst->color_green             = stb_elem->color_green;  
-    stb_elem_dst->color_blue              = stb_elem->color_blue;  
-    stb_elem_dst->color_alpha             = stb_elem->color_alpha;  
-    stb_elem_dst->att_keep_proportions    = stb_elem->att_keep_proportions;  
-    stb_elem_dst->att_fit_width           = stb_elem->att_fit_width;  
-    stb_elem_dst->att_fit_height          = stb_elem->att_fit_height;  
+    stb_elem_dst->vid_wait_untiltime_sec  = stb_elem->vid_wait_untiltime_sec;
+    stb_elem_dst->color_red               = stb_elem->color_red;
+    stb_elem_dst->color_green             = stb_elem->color_green;
+    stb_elem_dst->color_blue              = stb_elem->color_blue;
+    stb_elem_dst->color_alpha             = stb_elem->color_alpha;
+    stb_elem_dst->att_keep_proportions    = stb_elem->att_keep_proportions;
+    stb_elem_dst->att_fit_width           = stb_elem->att_fit_width;
+    stb_elem_dst->att_fit_height          = stb_elem->att_fit_height;
 
     /* copy all transition attributes */
     {
@@ -5496,27 +6795,27 @@ gap_story_elem_copy(GapStoryElem *stb_elem_dst, GapStoryElem *stb_elem)
       }
     }
 
-    stb_elem_dst->flip_request            = stb_elem->flip_request;  
+    stb_elem_dst->flip_request            = stb_elem->flip_request;
     stb_elem_dst->att_overlap             = stb_elem->att_overlap;
- 
-    stb_elem_dst->mask_anchor             = stb_elem->mask_anchor;  
-    stb_elem_dst->mask_stepsize           = stb_elem->mask_stepsize;  
-    stb_elem_dst->mask_disable            = stb_elem->mask_disable;  
+
+    stb_elem_dst->mask_anchor             = stb_elem->mask_anchor;
+    stb_elem_dst->mask_stepsize           = stb_elem->mask_stepsize;
+    stb_elem_dst->mask_disable            = stb_elem->mask_disable;
 
 
 
-    stb_elem_dst->aud_seltrack            = stb_elem->aud_seltrack;  
-    stb_elem_dst->aud_wait_untiltime_sec  = stb_elem->aud_wait_untiltime_sec;  
-    stb_elem_dst->aud_play_from_sec       = stb_elem->aud_play_from_sec;  
-    stb_elem_dst->aud_play_to_sec         = stb_elem->aud_play_to_sec;  
-    stb_elem_dst->aud_volume_start        = stb_elem->aud_volume_start;  
-    stb_elem_dst->aud_volume              = stb_elem->aud_volume;  
-    stb_elem_dst->aud_volume_end          = stb_elem->aud_volume_end;  
-    stb_elem_dst->aud_fade_in_sec         = stb_elem->aud_fade_in_sec;  
-    stb_elem_dst->aud_fade_out_sec        = stb_elem->aud_fade_out_sec;  
-    stb_elem_dst->aud_min_play_sec        = stb_elem->aud_min_play_sec;  
-    stb_elem_dst->aud_max_play_sec        = stb_elem->aud_max_play_sec;  
-    stb_elem_dst->aud_framerate           = stb_elem->aud_framerate;  
+    stb_elem_dst->aud_seltrack            = stb_elem->aud_seltrack;
+    stb_elem_dst->aud_wait_untiltime_sec  = stb_elem->aud_wait_untiltime_sec;
+    stb_elem_dst->aud_play_from_sec       = stb_elem->aud_play_from_sec;
+    stb_elem_dst->aud_play_to_sec         = stb_elem->aud_play_to_sec;
+    stb_elem_dst->aud_volume_start        = stb_elem->aud_volume_start;
+    stb_elem_dst->aud_volume              = stb_elem->aud_volume;
+    stb_elem_dst->aud_volume_end          = stb_elem->aud_volume_end;
+    stb_elem_dst->aud_fade_in_sec         = stb_elem->aud_fade_in_sec;
+    stb_elem_dst->aud_fade_out_sec        = stb_elem->aud_fade_out_sec;
+    stb_elem_dst->aud_min_play_sec        = stb_elem->aud_min_play_sec;
+    stb_elem_dst->aud_max_play_sec        = stb_elem->aud_max_play_sec;
+    stb_elem_dst->aud_framerate           = stb_elem->aud_framerate;
 
 
 
@@ -5537,8 +6836,14 @@ GapStoryElem *
 gap_story_find_mask_definition_by_name(GapStoryBoard *stb_ptr, const char *mask_name)
 {
   GapStoryElem      *stb_elem;
-  
-  for(stb_elem = stb_ptr->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
+
+  if((stb_ptr->mask_section == NULL)
+  || (mask_name == NULL))
+  {
+    return (NULL);
+  }
+
+  for(stb_elem = stb_ptr->mask_section->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
   {
     if((stb_elem->track == GAP_STB_MASK_TRACK_NUMBER)
     && (stb_elem->mask_name != NULL))
@@ -5549,7 +6854,7 @@ gap_story_find_mask_definition_by_name(GapStoryBoard *stb_ptr, const char *mask_
       }
     }
   }
-  
+
   return (NULL);
 }  /* end gap_story_find_mask_definition_by_name */
 
@@ -5557,25 +6862,43 @@ gap_story_find_mask_definition_by_name(GapStoryBoard *stb_ptr, const char *mask_
 /* ------------------------------------------------
  * gap_story_find_mask_reference_by_name
  * ------------------------------------------------
- * returns the 1.st element that rfers to the specified mas_name
+ * returns the 1.st element that refers to the specified mask_name.
+ * Note that all non-mask sections and all video tracks are included
+ * in the search for the mask reference.
  */
 GapStoryElem *
 gap_story_find_mask_reference_by_name(GapStoryBoard *stb_ptr, const char *mask_name)
 {
   GapStoryElem      *stb_elem;
-  
-  for(stb_elem = stb_ptr->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
+
+  if (mask_name == NULL)
   {
-    if((stb_elem->track != GAP_STB_MASK_TRACK_NUMBER)
-    && (stb_elem->mask_name != NULL))
-    {
-      if(strcmp(stb_elem->mask_name, mask_name) == 0)
-      {
-        return(stb_elem);
-      }
-    }
+    return (NULL);
   }
   
+  GapStorySection *section;
+  for(section = stb_ptr->stb_section; section != NULL; section = section->next)
+  {
+    if (section == stb_ptr->mask_section)
+    {
+      continue;
+    }
+    
+    for(stb_elem = section->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
+    {
+      if((stb_elem->track != GAP_STB_MASK_TRACK_NUMBER)
+      && (stb_elem->mask_name != NULL))
+      {
+        if(strcmp(stb_elem->mask_name, mask_name) == 0)
+        {
+          return(stb_elem);
+        }
+      }
+    }
+
+  }
+
+
   return (NULL);
 }  /* end gap_story_find_mask_reference_by_name */
 
@@ -5583,6 +6906,21 @@ gap_story_find_mask_reference_by_name(GapStoryBoard *stb_ptr, const char *mask_n
 /* ------------------------------------------------
  * p_story_board_duplicate_refered_mask_definitions
  * ------------------------------------------------
+ * copy mask definitions of the specified stb_src
+ * as hidden mask definitions (track = GAP_STB_HIDDEN_MASK_TRACK_NUMBER)
+ * to the mask_section of the specified destination storyboard stb_dest.
+ * Only those mask definitions are copied, that are refered
+ * in the destination storyboard.
+ * NOTES: this procedure is often called in cut or copy operations,
+ * where the destination (stb_dest) is the paste buffer that contains
+ * already copies of all selected elements (where copy source was stb_src)
+ * This procedure is now responsible, to add all refered mask definition
+ * elements implicitely as hidden elements to the mask_section.
+ *
+ * the hidden mask definition elements are only relevant for
+ * paste processing that may follow later on.
+ * hidden elements and are not important if there will be no paste processing
+ * afterwards.
  */
 static void
 p_story_board_duplicate_refered_mask_definitions(GapStoryBoard *stb_dest
@@ -5591,20 +6929,30 @@ p_story_board_duplicate_refered_mask_definitions(GapStoryBoard *stb_dest
 {
   GapStoryElem      *stb_elem_dup;
   GapStoryElem      *stb_elem;
-  
+
   if(gap_debug)
   {
     printf("@@@@@ p_story_board_duplicate_refered_mask_definitions\n");
     gap_story_debug_print_list(stb_src);
   }
   
-  for(stb_elem = stb_src->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
+  if (stb_src->mask_section == NULL)
   {
-    if((stb_elem->track == GAP_STB_MASK_TRACK_NUMBER)
-    && (stb_elem->mask_name != NULL))
+    printf("** ERROR p_story_board_duplicate_refered_mask_definitions src mask_section is NULL\n");
+    return;
+  }
+  if (stb_dest->mask_section == NULL)
+  {
+    printf("** ERROR p_story_board_duplicate_refered_mask_definitions dst mask_section is NULL\n");
+    return;
+  }
+
+  for(stb_elem = stb_src->mask_section->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
+  {
+    if(stb_elem->mask_name != NULL)
     {
       GapStoryElem      *stb_elem_ref;
-      
+
       stb_elem_ref = gap_story_find_mask_reference_by_name(stb_dest, stb_elem->mask_name);
       if(stb_elem_ref)
       {
@@ -5616,42 +6964,92 @@ p_story_board_duplicate_refered_mask_definitions(GapStoryBoard *stb_dest
         if(stb_elem_dup)
         {
           stb_elem_dup->track = GAP_STB_HIDDEN_MASK_TRACK_NUMBER;
-          gap_story_list_append_elem(stb_dest, stb_elem_dup);
+          gap_story_list_append_elem_at_section(stb_dest, stb_elem_dup, stb_dest->mask_section);
         }
       }
-      
+
     }
   }
 
 }  /* end p_story_board_duplicate_refered_mask_definitions */
+
+/* -----------------------------------
+ * p_story_copy_edit_settings
+ * -----------------------------------
+ */
+static void
+p_story_copy_edit_settings (GapStoryEditSettings *dst_edit_settings
+  , GapStoryEditSettings *src_edit_settings)
+{
+  if (src_edit_settings == NULL)
+  {
+    return;
+  }
+
+  if (dst_edit_settings)
+  {
+    if (dst_edit_settings->section_name != NULL)
+    {
+      g_free(dst_edit_settings->section_name);
+      dst_edit_settings->section_name = NULL;
+    }
+    
+    if (src_edit_settings->section_name)
+    {
+      dst_edit_settings->section_name = g_strdup(src_edit_settings->section_name);
+    }
+    
+    dst_edit_settings->track = src_edit_settings->track;
+    dst_edit_settings->page = src_edit_settings->page;
+  }
+
+}  /* end p_story_copy_edit_settings */
 
 
 
 /* -----------------------------
  * p_story_board_duplicate
  * -----------------------------
- * make a duplicate of the storyboard and its list of elements.
+ * make a duplicate of the storyboard and list of elements.
  * (but without the comment sublists)
  *
  * the input stb_ptr is not copied if there are errors
  *   in this case NULL is returned.
  *
- * IN: copy_all   FALSE: copy only selcted elements
+ * IN: dup_mode   GAP_STB_DUPLICATE_ALL_ELEMS:  copy both selected and unselected elements.
+ *                GAP_STB_DUPLICATE_ONLY_SELECTED_ELEMS: copy only selected elements
+ *                GAP_STB_DUPLICATE_ONE_ELEM: copy the one element specified via story_id
+ *                GAP_STB_DUPLICATE_NO_ELEMS: copy only master data but no elements
  * IN: in_vtrack   -1 copy all video tracks, 1..n copy only selected video track
  * IN: in_atrack   -1 copy all audio tracks, 1..n copy only selected audio track
- *
- * NOTE: mask definitions (elements of the track GAP_STB_MASK_TRACK_NUMBER)
- * are automatically included in the duplicate when 
- * the copied video elements refere to them.
+ * IN: active_section == NULL: the duplicate will contain all sections of the original
+ *     active_section != NULL: the duplicate will contain only a MAIN and a Mask section
+ *                             The MAIN section has copies of the clips from the specified
+ *                             active_section in the source storyboard (stb_ptr)
+ *                             The Mask section has hidden copies of mask_definitions
+ *                             (all those mask_definitions that are referred by the copied clips)
+ * IN: all_masks   TRUE:  explicite include all mask definitions with regular
+ *                             mask track number GAP_STB_MASK_TRACK_NUMBER in the duplicate.
+ *                 FALSE: mask definitions (elements of the mask_section with 
+ *                        track GAP_STB_MASK_TRACK_NUMBER)
+ *                        are automatically included in the duplicate (as GAP_STB_HIDDEN_MASK_TRACK_NUMBER)
+ *                        but only when the copied video elements refere to them.
+ * IN: story_id    id of the one element to copy
+ *                        (only relevant in dup_mode GAP_STB_DUPLICATE_ONE_ELEM)
  */
-static GapStoryBoard *     
-p_story_board_duplicate(GapStoryBoard *stb_ptr, gboolean copy_all_all
+static GapStoryBoard *
+p_story_board_duplicate(GapStoryBoard *stb_ptr, GapStoryDuplicateMode dup_mode
   , gint32 in_vtrack
-  , gint32 in_atrack)
+  , gint32 in_atrack
+  , GapStorySection *active_section
+  , gboolean all_masks
+  , gint32 story_id)
 {
   GapStoryBoard     *stb_dup;
   GapStoryElem      *stb_elem_dup;
   GapStoryElem      *stb_elem;
+  GapStorySection   *section;
+  GapStorySection   *dup_to_section;
 
   if(stb_ptr == NULL)
   {
@@ -5671,6 +7069,7 @@ p_story_board_duplicate(GapStoryBoard *stb_ptr, gboolean copy_all_all
   stb_dup->master_width = stb_ptr->master_width;
   stb_dup->master_height = stb_ptr->master_height;
   stb_dup->master_framerate = stb_ptr->master_framerate;
+  stb_dup->master_vtrack1_is_toplayer = stb_ptr->master_vtrack1_is_toplayer;
   stb_dup->master_aspect_ratio = stb_ptr->master_aspect_ratio;
   stb_dup->master_aspect_width = stb_ptr->master_aspect_width;
   stb_dup->master_aspect_height = stb_ptr->master_aspect_height;
@@ -5686,66 +7085,204 @@ p_story_board_duplicate(GapStoryBoard *stb_ptr, gboolean copy_all_all
   stb_dup->layout_rows = stb_ptr->layout_rows;
   stb_dup->layout_thumbsize = stb_ptr->layout_thumbsize;
 
+  p_story_copy_edit_settings (stb_dup->edit_settings
+                             ,stb_ptr->edit_settings
+                             );
+
   stb_dup->stb_parttype  = 1;     /* duplicate is just the selected part */
-  if(copy_all_all)
+  if(dup_mode == GAP_STB_DUPLICATE_ALL_ELEMS)
   {
-     stb_dup->stb_parttype  = 0;  /* duplicate is a full copy */
+     stb_dup->stb_parttype  = 0;  /* duplicate is a full copy or full copy of the active section */
   }
   stb_dup->stb_unique_id  = global_stb_id++;  /* duplicate has its own id */
 
   stb_dup->unsaved_changes = TRUE;
 
-  
-  for(stb_elem = stb_ptr->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
+  for(section=stb_ptr->stb_section; section != NULL; section = section->next)
   {
-    gboolean trackselect_flag;
-    gboolean dup_flag;
-    
-    trackselect_flag = FALSE;
-    dup_flag = FALSE;
-    
-    if(gap_story_elem_is_audio(stb_elem))
+    dup_to_section = NULL;
+    if (section == stb_ptr->mask_section)
     {
-      if((stb_elem->track == in_atrack)
-      || (in_atrack < 0))
+      if(all_masks == TRUE)
       {
-        trackselect_flag = TRUE;
+        dup_to_section =
+               gap_story_create_or_find_section_by_name(stb_dup, GAP_STB_MASK_SECTION_NAME);
+      }
+      if(section == active_section)
+      {
+        /* mask_section is the active_section
+         * this case handled copy from mask definition
+         * into main section 
+         * (the mask_section of the duplicate will be left empty in that case)
+         */
+        dup_to_section = gap_story_find_main_section(stb_dup);
       }
     }
     else
     {
-      if((stb_elem->track == in_vtrack)
-      || (in_vtrack < 0))
+      if(active_section != NULL)
       {
-        trackselect_flag = TRUE;
+        /* handle only specified active section.
+         *  the duplicate will include only clips from the active section
+         *  in its MAIN section.
+         * 
+         */
+        if(section == active_section)
+        {
+          dup_to_section = gap_story_find_main_section(stb_dup);
+        }
+      }
+      else
+      {
+        /* handle all available sections
+         * (the duplicate will include all the sections from the original with same names and structure)
+         */
+        dup_to_section = 
+           gap_story_create_or_find_section_by_name(stb_dup, section->section_name);
+
+        /* handle current_vtrack settings of copied section
+         * (relevant for full duplicates that are used
+         * for backup/restore of current edit settings in undo / redo operations)
+         */
+        gap_story_set_current_vtrack (stb_dup
+                                     ,dup_to_section
+                                     ,section->current_vtrack
+                                     );
       }
     }
     
-    if(trackselect_flag)
+    
+    
+    if(dup_to_section == NULL)
     {
-      if((stb_elem->selected)
-      || (copy_all_all))
+      /* current section not relevant */
+      continue;
+    }
+    
+    /* copy tracks of the currently processed section */
+    for(stb_elem = section->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
+    {
+      gboolean trackselect_flag;
+      gboolean dup_flag;
+
+      trackselect_flag = FALSE;
+      dup_flag = FALSE;
+
+      if(gap_story_elem_is_audio(stb_elem))
       {
-        dup_flag = TRUE;
+        if((stb_elem->track == in_atrack)
+        || (in_atrack < 0))
+        {
+          trackselect_flag = TRUE;
+        }
+      }
+      else
+      {
+        if((stb_elem->track == in_vtrack)
+        || (in_vtrack < 0))
+        {
+          trackselect_flag = TRUE;
+        }
+        if ((section == stb_ptr->mask_section) && (all_masks == TRUE))
+        {
+          dup_flag = TRUE;
+        }
+      }
+  
+      if(trackselect_flag)
+      {
+        if( ((stb_elem->selected) && (dup_mode == GAP_STB_DUPLICATE_ONLY_SELECTED_ELEMS))
+        ||  ((stb_elem->story_id == story_id) && (dup_mode == GAP_STB_DUPLICATE_ONE_ELEM))
+        ||  (dup_mode == GAP_STB_DUPLICATE_ALL_ELEMS)
+        )
+        {
+          dup_flag = TRUE;
+        }
+      }
+  
+      if(dup_flag)
+      {
+          stb_elem_dup = gap_story_elem_duplicate(stb_elem);
+
+          if (dup_to_section == stb_dup->mask_section)
+          {
+            if(stb_elem_dup->mask_name != NULL)
+            {
+              if(section != stb_ptr->mask_section)
+              {
+                /* the element comes from a NON-mask_section,
+                 * and is copied into a mask_section
+                 * In this case the mask_name was a mask reference
+                 * and must be cleared (== NULL)
+                 */
+                g_free(stb_elem_dup->mask_name);
+                stb_elem_dup->mask_name = NULL;
+              }
+            }
+            /* the element is put in the mask_section
+             * and therefore is now a mask definition.
+             * that MUST have GAP_STB_MASK_TRACK_NUMBER
+             * (?? and shall have a unique mask_name)
+             */
+//            if (stb_elem_dup->mask_name != NULL)
+//            {
+//              stb_elem_dup->mask_name = gap_story_generate_unique_maskname(stb_dup);
+//            }
+            stb_elem_dup->track = GAP_STB_MASK_TRACK_NUMBER;
+          }
+          else
+          {
+            /* the element is put into a NON-mask_section
+             * if the source was a mask_section
+             * we MUST remove the mask_name (that former was a mask_definition
+             * and would be interpreted as reference in the NON-mask_section)
+             */
+            if(stb_elem_dup->mask_name != NULL)
+            {
+              if(section == stb_ptr->mask_section)
+              {
+                g_free(stb_elem_dup->mask_name);
+                stb_elem_dup->mask_name = NULL;
+              }
+            }
+            if (stb_elem_dup->track == GAP_STB_MASK_TRACK_NUMBER)
+            {
+              /* make sure that a legal track number 1..19
+               * is used for NON-mask_section destinations
+               */
+              if (in_vtrack > 0)
+              {
+                stb_elem_dup->track = in_vtrack;
+              }
+              else
+              {
+                stb_elem_dup->track = 1;
+              }
+            }
+
+          }
+          
+          if(stb_elem_dup)
+          {
+            gap_story_list_append_elem_at_section(stb_dup, stb_elem_dup, dup_to_section);
+          }
       }
     }
 
-    if(dup_flag)
-    {
-        stb_elem_dup = gap_story_elem_duplicate(stb_elem);
-        if(stb_elem_dup)
-        {
-          gap_story_list_append_elem(stb_dup, stb_elem_dup);
-        }
-    }
-  }
-  
+    
+  }  /* end for section loop */
+
+
+
+
   /* copy corresponding mask definitions.
    * this is not required if the requested in_vtrack refers to
-   * the mask definition track. Or if the copy already included
-   * all video tracks.
+   * the mask definition track. Or if the duplicate already includes
+   * all mask definitions (in the mask_section)
    */
   if((in_vtrack != GAP_STB_MASK_TRACK_NUMBER)
+  &&(active_section != NULL)
+  &&(all_masks != TRUE)
   &&(in_vtrack > 0))
   {
     p_story_board_duplicate_refered_mask_definitions(stb_dup, stb_ptr);
@@ -5754,49 +7291,80 @@ p_story_board_duplicate(GapStoryBoard *stb_ptr, gboolean copy_all_all
   if(gap_debug)
   {
     printf("\np_story_board_duplicate: dump of the DUP List copy_all:%d in_atrack;%d in_vtrack:%d\n"
-      ,(int)copy_all_all
+      ,(int)dup_mode
       ,(int)in_atrack
       ,(int)in_vtrack
       );
     gap_story_debug_print_list(stb_dup);
   }
- 
+
   return(stb_dup);
-  
+
 }  /* end p_story_board_duplicate  */
- 
+
 
 /* -----------------------------
- * gap_story_duplicate
+ * gap_story_duplicate_full
  * -----------------------------
- * the input stb_ptr is not copied if there are errors
- *   in this case NULL is returned.
- *
- * make a duplicate of the list (without the comment sublists)
+ * make a full duplicate of all lists in all sections 
+ * (but without the comment sublists)
  */
-GapStoryBoard *     
-gap_story_duplicate(GapStoryBoard *stb_ptr)
+GapStoryBoard *
+gap_story_duplicate_full(GapStoryBoard *stb_ptr)
 {
-  return(p_story_board_duplicate(stb_ptr, TRUE, -1, -1));
-}  /* end gap_story_duplicate  */
+  GapStoryBoard *stb_dup;
+  
+  stb_dup = p_story_board_duplicate(stb_ptr
+                                , GAP_STB_DUPLICATE_ALL_ELEMS
+                                , -1         /* include all video tracks */
+                                , -1         /* include all audio tracks */
+                                , NULL       /* include all sections, keep section structure */
+                                , TRUE       /* include all mask definitions */
+                                , -1         /* story_id */
+                                );
+  stb_dup->unsaved_changes = stb_ptr->unsaved_changes;
+  return(stb_dup);
+}  /* end gap_story_duplicate_full  */
+
+/* -------------------------------------------
+ * gap_story_duplicate_active_and_mask_section
+ * -------------------------------------------
+ * make a duplicate of all list in all sections 
+ * (but without the comment sublists)
+ */
+GapStoryBoard *
+gap_story_duplicate_active_and_mask_section(GapStoryBoard *stb_ptr)
+{
+  return(p_story_board_duplicate(stb_ptr
+           , GAP_STB_DUPLICATE_ALL_ELEMS
+           , -1        /* include all video tracks */
+           , -1        /* include all audio tracks */
+           , stb_ptr->active_section  /* include only active section */
+          , TRUE       /* include all mask definitions */
+          , -1         /* story_id */
+        ));
+}  /* end gap_story_duplicate_active_and_mask_section  */
 
 
 /* ---------------------------------------
  * gap_story_enable_hidden_maskdefinitions
  * ---------------------------------------
- * the input stb_ptr is not copied if there are errors
- *   in this case NULL is returned.
  *
- * make a duplicate of the list restricted to specified video track.
- *   (without the comment sublists, and without any audio tracks)
- *   
+ * convert hidden mask track number to regular mask track number.
+ * in the mask_section.
+ *
  */
-void    
+void
 gap_story_enable_hidden_maskdefinitions(GapStoryBoard *stb_ptr)
 {
   GapStoryElem  *stb_elem;
+  
+  if (stb_ptr->mask_section == NULL)
+  {
+    return;
+  }
 
-  for(stb_elem = stb_ptr->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
+  for(stb_elem = stb_ptr->mask_section->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
   {
     if(stb_elem->track == GAP_STB_HIDDEN_MASK_TRACK_NUMBER)
     {
@@ -5808,19 +7376,23 @@ gap_story_enable_hidden_maskdefinitions(GapStoryBoard *stb_ptr)
 /* -----------------------------
  * gap_story_duplicate_vtrack
  * -----------------------------
- * the input stb_ptr is not copied if there are errors
- *   in this case NULL is returned.
- *
  * make a duplicate of the list restricted to specified video track.
  *   (without the comment sublists, and without any audio tracks)
- *   
+ *
  */
-GapStoryBoard *     
+GapStoryBoard *
 gap_story_duplicate_vtrack(GapStoryBoard *stb_ptr, gint32 in_vtrack)
 {
   GapStoryBoard *stb_dup;
 
-  stb_dup = p_story_board_duplicate(stb_ptr, TRUE, in_vtrack, 0);
+  stb_dup = p_story_board_duplicate(stb_ptr
+                                   , GAP_STB_DUPLICATE_ALL_ELEMS
+                                   , in_vtrack  /* limit to this track */
+                                   , 0          /* ignore audio track */
+                                   ,stb_ptr->active_section  /* include only active section */
+                                   ,TRUE       /* include all mask definitions */
+                                   , -1        /* story_id */
+                                   );
   gap_story_enable_hidden_maskdefinitions(stb_dup);
 
   return(stb_dup);
@@ -5829,23 +7401,343 @@ gap_story_duplicate_vtrack(GapStoryBoard *stb_ptr, gint32 in_vtrack)
 /* -----------------------------
  * gap_story_duplicate_sel_only
  * -----------------------------
- * the input stb_ptr is not copied if there are errors
- *   in this case NULL is returned.
  *
- * make a filtered duplicate of the list that contains only elements of the specified track
+ * make a filtered duplicate of the storyboard where the element lists 
+ * contains only elements of the
+ * specified track in the active_section
  * with the selected flag set.
- * (use -1 to specify all tracks, including the mask definition track)
+ * (use -1 to specify all tracks of the active section)
  *
  * the duplicated list will contain mask definition elements in the hidden
  * mask track if selected elements have mask references and in_vtrack > 0 was specified.
- * 
- * (without the comment sublists)
+ *
+ * Note that all mask definiton clips (hidden and regular track)
+ * are placed in the mask_section.
+ *
+ * (the duplicate is without the comment sublists)
  */
-GapStoryBoard *     
+GapStoryBoard *
 gap_story_duplicate_sel_only(GapStoryBoard *stb_ptr, gint32 in_vtrack)
 {
-  return(p_story_board_duplicate(stb_ptr, FALSE, in_vtrack, -1));
+  return(p_story_board_duplicate(stb_ptr
+      , GAP_STB_DUPLICATE_ONLY_SELECTED_ELEMS
+      , in_vtrack
+      , -1
+      , stb_ptr->active_section  /* include only active section */
+      , FALSE       /* only referenced mask definitions as hidden track in mask_section */
+      , -1          /* story_id */
+      ));
 }  /* end gap_story_duplicate_sel_only  */
+
+
+/* ---------------------------------------
+ * gap_story_duplicate_one_elem_and_masks
+ * ---------------------------------------
+ *
+ * make a filtered duplicate of the storyboard where the element lists 
+ * contains only one element in the main section, that is specifed by story_id.
+ * and must be in the active_section
+ *
+ *
+ * Note that the duplicate will include copies of ALL mask definiton clips
+ * and will not include refered sub sections
+ *
+ * (the duplicate is without the comment sublists)
+ */
+GapStoryBoard *
+gap_story_duplicate_one_elem_and_masks(GapStoryBoard *stb_ptr
+   , GapStorySection *active_section, gint32 story_id)
+{
+  return(p_story_board_duplicate(stb_ptr
+      , GAP_STB_DUPLICATE_ONE_ELEM
+      , -1
+      , -1
+      , active_section  /* include only active section */
+      , TRUE            /* include  all_masks definitions in mask_section */
+      , story_id
+      ));
+}  /* end gap_story_duplicate_one_elem_and_masks  */
+
+/* ---------------------------------------
+ * gap_story_duplicate_one_elem
+ * ---------------------------------------
+ *
+ * make a filtered duplicate of the storyboard where the element lists 
+ * contains only one element in the main section, that is specifed by story_id.
+ * and must be in the active_section
+ *
+ *
+ * Note that the duplicate will NOT include the mask definiton clips
+ * and will not include refered sub sections
+ *
+ * (the duplicate is without the comment sublists)
+ */
+GapStoryBoard *
+gap_story_duplicate_one_elem(GapStoryBoard *stb_ptr
+   , GapStorySection *active_section, gint32 story_id)
+{
+  return(p_story_board_duplicate(stb_ptr
+      , GAP_STB_DUPLICATE_ONE_ELEM
+      , -1
+      , -1
+      , active_section  /* include only active section */
+      , FALSE            /* include  all_masks definitions in mask_section */
+      , story_id
+      ));
+}  /* end gap_story_duplicate_one_elem  */
+
+
+/* ------------------------------------------
+ * gap_story_board_duplicate_distinct_sorted
+ * ------------------------------------------
+ * make a copy of the video clips in the specified storyboard (stb_ptr)
+ * clips refering the same resource (frames or videofile) are sorted
+ * grouped together, where the groups are sorted by first frame numbers.
+ * references to duplicate frame numbers are not copied.
+ * and audio clips are ignored.
+ *
+ * typical usage at storyboard dialog startup,
+ * to speed up videothumbnail creation.
+ * (minimize frame seek times)
+ *
+ * NOTE: mask definitions (elements of the track GAP_STB_MASK_TRACK_NUMBER)
+ * are automatically included in the duplicate when
+ * the copied video elements refere to them.
+ *
+ * return the sorted duplicate of the storyboard
+ *        if stb_dup was specified != NULL by the caller
+ *        it is updated
+ */
+GapStoryBoard *
+gap_story_board_duplicate_distinct_sorted(GapStoryBoard  *stb_dup, GapStoryBoard *stb_ptr)
+{
+  GapStoryElem      *stb_elem_dup;
+  GapStoryElem      *stb_elem;
+  GapStorySection   *section;
+  GapStorySection   *dup_main_section;
+
+  if(stb_ptr == NULL)
+  {
+    return (NULL);
+  }
+  if(stb_ptr->errtext)
+  {
+    return (NULL);
+  }
+
+  if(stb_dup == NULL)
+  {
+    /* create the duplicate if caller passed NULL */
+    stb_dup = gap_story_new_story_board(stb_ptr->storyboardfile);
+    if(stb_dup == NULL)
+    {
+      return (NULL);
+    }
+    stb_dup->master_type = stb_ptr->master_type;
+    stb_dup->master_width = stb_ptr->master_width;
+    stb_dup->master_height = stb_ptr->master_height;
+    stb_dup->master_framerate = stb_ptr->master_framerate;
+    stb_dup->master_vtrack1_is_toplayer = stb_ptr->master_vtrack1_is_toplayer;
+    stb_dup->master_aspect_ratio = stb_ptr->master_aspect_ratio;
+    stb_dup->master_aspect_width = stb_ptr->master_aspect_width;
+    stb_dup->master_aspect_height = stb_ptr->master_aspect_height;
+
+    stb_dup->master_samplerate = stb_ptr->master_samplerate;
+    stb_dup->master_volume = stb_ptr->master_volume;
+    if(stb_ptr->preferred_decoder)
+    {
+      stb_dup->preferred_decoder = g_strdup(stb_ptr->preferred_decoder);
+    }
+
+    stb_dup->layout_cols = stb_ptr->layout_cols;
+    stb_dup->layout_rows = stb_ptr->layout_rows;
+    stb_dup->layout_thumbsize = stb_ptr->layout_thumbsize;
+
+    stb_dup->stb_parttype  = 0;  /* duplicate is a full copy */
+    stb_dup->stb_unique_id  = global_stb_id++;  /* duplicate has its own id */
+
+    stb_dup->unsaved_changes = TRUE;
+  }
+  
+  dup_main_section = gap_story_find_section_by_name(stb_dup, NULL);
+
+  for(section = stb_ptr->stb_section; section != NULL; section = section->next)
+  {
+    for(stb_elem = section->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
+    {
+      if(gap_story_elem_is_audio(stb_elem))
+      {
+        /* ignore audio elements */
+        continue;
+      }
+      else
+      {
+        GapStoryElem      *stb_elem_same;
+
+        /* check if the duplicate storybord (that is in creation) already contains
+         * an element refering to the same resource
+         */
+        stb_elem_same = gap_story_elem_find_by_same_resource(stb_dup, stb_elem);
+        if(stb_elem_same == NULL)
+        {
+          /* add new resources at end */
+          stb_elem_dup = gap_story_elem_duplicate(stb_elem);
+          if(stb_elem_dup)
+          {
+            gap_story_list_append_elem_at_section(stb_dup, stb_elem_dup, dup_main_section);
+          }
+        }
+        else
+        {
+          while(stb_elem_same)
+          {
+            if((stb_elem_same->from_frame == stb_elem->from_frame)
+            && (gap_story_elem_is_same_resource(stb_elem_same, stb_elem) == TRUE))
+            {
+              /* do not copy equal resources refering to the same from_frame */
+              break;
+            }
+            else
+            {
+              gboolean insert_after;
+              gboolean insert_flag;
+
+              insert_flag = FALSE;
+              if((stb_elem->from_frame < stb_elem_same->from_frame)
+              || (gap_story_elem_is_same_resource(stb_elem_same, stb_elem) == FALSE))
+              {
+                /* insert before same resource with higher from_frame
+                 * or before next element with other resource
+                 * (in order to sort same resources by ascending from_frame numbers)
+                 */
+                insert_after = FALSE;
+                insert_flag = TRUE;
+              }
+              else
+              {
+                if (stb_elem_same->next == NULL)
+                {
+                  /* insert after last element */
+                  insert_after = TRUE;
+                  insert_flag = TRUE;
+                }
+              }
+
+              if(insert_flag)
+              {
+                stb_elem_dup = gap_story_elem_duplicate(stb_elem);
+                if(stb_elem_dup)
+                {
+                  GapStoryBoard  *stb_new;
+
+                  stb_new = gap_story_new_story_board(stb_ptr->storyboardfile);
+                  if(stb_new != NULL)
+                  {
+                    GapStorySection *new_main_section;
+                    new_main_section =
+                      gap_story_find_section_by_name(stb_new, NULL);
+
+                    
+                    gap_story_list_append_elem_at_section(stb_new, stb_elem_dup, new_main_section);
+
+                    /* insert before stb_elem_same */
+                    p_list_insert_at_story_id(dup_main_section
+                           , new_main_section
+                           , stb_elem_same->story_id
+                           , insert_after
+                           );
+                    gap_story_free_storyboard(&stb_new);
+                  }
+                }
+                break;
+              }
+            }
+            stb_elem_same = stb_elem_same->next;
+          }
+
+
+        }
+      }
+
+    }
+
+
+  }  /* end for section loop */
+  
+  
+
+
+  if(gap_debug)
+  {
+    printf("\ngap_story_board_duplicate_distinct_sorted: dump of the DUP List\n");
+    gap_story_debug_print_list(stb_dup);
+  }
+
+  return(stb_dup);
+
+}  /* end gap_story_board_duplicate_distinct_sorted  */
+
+
+
+/* -----------------------------
+ * gap_story_copy_sub_sections
+ * -----------------------------
+ * copy all sub sections from the specified source storyboard (stb_src)
+ * to the specified destination storyboard (stb_dst)
+ * Notes:
+ *   the mask section and main section are NOT copied.
+ *   the destination storyboard typically shall NOT have subsections before
+ *   this procedure call.
+ *   (If the destination storyboard already has subsection(s) with the same
+ *    section_name(s) as the source storyboard, the elements are appended
+ *    at end.)
+ *   
+ */
+void
+gap_story_copy_sub_sections(GapStoryBoard *stb_src, GapStoryBoard *stb_dst)
+{
+  GapStoryElem      *stb_elem_dup;
+  GapStoryElem      *stb_elem;
+  GapStorySection   *section;
+  GapStorySection   *src_main_section;
+  GapStorySection   *dup_to_section;
+
+  if(stb_src == NULL)
+  {
+    return;
+  }
+  if(stb_dst == NULL)
+  {
+    return;
+  }
+
+  stb_dst->unsaved_changes = TRUE;
+  src_main_section = gap_story_find_main_section(stb_src);
+
+  for(section=stb_src->stb_section; section != NULL; section = section->next)
+  {
+    if((section != stb_src->mask_section)
+    && (section != src_main_section))
+    {
+      /* copy all available sub sections (except main and mask section)
+       */
+      dup_to_section = 
+         gap_story_create_or_find_section_by_name(stb_dst, section->section_name);
+
+      /* copy tracks of the currently processed section */
+      for(stb_elem = section->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
+      {
+        stb_elem_dup = gap_story_elem_duplicate(stb_elem);
+        if(stb_elem_dup)
+        {
+          gap_story_list_append_elem_at_section(stb_dst, stb_elem_dup, dup_to_section);
+        }
+      }
+    }
+  }  /* end for section loop */
+
+}  /* end gap_story_copy_sub_sections */
+
 
 /* -----------------------------------------------
  * gap_story_set_properties_like_sample_storyboard
@@ -5862,6 +7754,7 @@ gap_story_set_properties_like_sample_storyboard (GapStoryBoard *stb
       stb->master_width       = stb_sample->master_width;
       stb->master_height      = stb_sample->master_height;
       stb->master_framerate   = stb_sample->master_framerate;
+      stb->master_vtrack1_is_toplayer   = stb_sample->master_vtrack1_is_toplayer;
 
       stb->master_aspect_ratio   = stb_sample->master_aspect_ratio;
       stb->master_aspect_width   = stb_sample->master_aspect_width;
@@ -5883,42 +7776,58 @@ gap_story_set_properties_like_sample_storyboard (GapStoryBoard *stb
 /* ----------------------------------------------------
  * gap_story_remove_sel_elems
  * ----------------------------------------------------
- * remove and discard all selected stb_elem ents in the list.
+ * remove and discard all selected stb_elem ents in all sections
+ * of the specified storyboard.
  */
 void
 gap_story_remove_sel_elems(GapStoryBoard *stb)
 {
-  GapStoryElem *stb_elem_prev;
-  GapStoryElem *stb_elem_next;
-  GapStoryElem *stb_elem;
 
   if(stb)
   {
-    stb_elem_prev = NULL;
-    for(stb_elem = stb->stb_elem; stb_elem != NULL;  stb_elem = stb_elem_next)
+    GapStorySection   *section;
+
+    for(section = stb->stb_section; section != NULL; section = section->next)
     {
-      stb_elem_next = (GapStoryElem *)stb_elem->next;
-      if(stb_elem->selected)
+      GapStoryElem *stb_elem_prev;
+      GapStoryElem *stb_elem_next;
+      GapStoryElem *stb_elem;
+      gint32 unsaved_changes_counter;
+
+      unsaved_changes_counter = 0;
+      stb_elem_prev = NULL;
+      
+      for(stb_elem = section->stb_elem; stb_elem != NULL;  stb_elem = stb_elem_next)
       {
-        stb->unsaved_changes = TRUE;
-        if(stb_elem == stb->stb_elem)
+        stb_elem_next = (GapStoryElem *)stb_elem->next;
+        if(stb_elem->selected)
         {
-          /* remove the 1.st elem of the list */
-          stb->stb_elem = stb_elem_next;
+          stb->unsaved_changes = TRUE;
+          unsaved_changes_counter++;
+          if((stb_elem == section->stb_elem)
+          || (stb_elem_prev == NULL))
+          {
+            /* remove the 1.st elem of the list */
+            section->stb_elem = stb_elem_next;
+          }
+          else
+          {
+            stb_elem_prev->next = stb_elem->next;
+          }
+          stb_elem->next = NULL;  /* ensure that no other elements
+                                   * will be discarded by the following
+                                   * call to p_free_stb_elem_list
+                                   */
+          p_free_stb_elem_list(stb_elem);
         }
         else
         {
-          stb_elem_prev->next = stb_elem->next;
+          stb_elem_prev = stb_elem;
         }
-        stb_elem->next = NULL;  /* ensure that no other elements 
-                                 * will be discarded by the following
-                                 * call to p_free_stb_elem_list
-                                 */
-        p_free_stb_elem_list(stb_elem);
       }
-      else
+      if (unsaved_changes_counter > 0)
       {
-        stb_elem_prev = stb_elem;
+        section->version++;
       }
     }
   }
@@ -5928,6 +7837,8 @@ gap_story_remove_sel_elems(GapStoryBoard *stb)
 /* -------------------------------
  * gap_story_is_active_element
  * -------------------------------
+ * returns true on elements that are active video elements
+ * (e.g. relevant to be visualized as thumbnail in the storyboard dialog)
  */
 gboolean
 gap_story_is_active_element(GapStoryElem *stb_elem)
@@ -5938,12 +7849,14 @@ gap_story_is_active_element(GapStoryElem *stb_elem)
   || (stb_elem->record_type == GAP_STBREC_VID_ANIMIMAGE)
   || (stb_elem->record_type == GAP_STBREC_VID_FRAMES)
   || (stb_elem->record_type == GAP_STBREC_VID_MOVIE)
+  || (stb_elem->record_type == GAP_STBREC_VID_SECTION)
+  || (stb_elem->record_type == GAP_STBREC_VID_BLACKSECTION)
   || (stb_elem->record_type == GAP_STBREC_ATT_TRANSITION)
   )
   {
     return (TRUE);
   }
-  
+
   return (FALSE);
 
 }  /* end gap_story_is_active_element */
@@ -5951,15 +7864,22 @@ gap_story_is_active_element(GapStoryElem *stb_elem)
 /* -------------------------------
  * gap_story_count_active_elements
  * -------------------------------
+ * count the active elements of the specified in_track in the
+ * active_section of the specified storyboard.
  */
 gint32
 gap_story_count_active_elements(GapStoryBoard *stb_ptr, gint32 in_track)
 {
   gint32             cnt_active_elements;
   GapStoryElem      *stb_elem;
-  
+
   cnt_active_elements = 0;
-  for(stb_elem = stb_ptr->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
+  if (stb_ptr->active_section == NULL)
+  {
+    return (0);
+  }
+  
+  for(stb_elem = stb_ptr->active_section->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
   {
     if(stb_elem->track == in_track)
     {
@@ -5969,7 +7889,7 @@ gap_story_count_active_elements(GapStoryBoard *stb_ptr, gint32 in_track)
       }
     }
   }
-  
+
   return(cnt_active_elements);
 }  /* end gap_story_count_active_elements */
 
@@ -5979,8 +7899,11 @@ gap_story_count_active_elements(GapStoryBoard *stb_ptr, gint32 in_track)
  * ------------------------------
  * find the nth active element in the storyboard list
  * specified by seq_nr.  (the first elem has seq_nr == 1)
+ *
+ * the fetch operates on the specified in_track of the active_section.
+ *
  * return a pointer to the element (if found)
- * or return NULL if no element was found at seq_nr list-position found 
+ * or return NULL if no element was found at seq_nr list-position found
  */
 GapStoryElem *
 gap_story_fetch_nth_active_elem(GapStoryBoard *stb
@@ -5990,9 +7913,14 @@ gap_story_fetch_nth_active_elem(GapStoryBoard *stb
 {
   gint32             cnt_active_elements;
   GapStoryElem *stb_elem;
-  
+
   cnt_active_elements = 0;
-  for(stb_elem = stb->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
+  if (stb->active_section == NULL)
+  {
+    return (NULL);
+  }
+  
+  for(stb_elem = stb->active_section->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
   {
     if(stb_elem->track == in_track)
     {
@@ -6006,72 +7934,68 @@ gap_story_fetch_nth_active_elem(GapStoryBoard *stb
       }
     }
   }
-  
+
   return(NULL);
 }  /* end gap_story_fetch_nth_active_elem */
 
 
-/* ---------------------------------
- * gap_story_set_vtrack
- * ---------------------------------
- * set selection state in all elements to specified sel_state
- */
-void
-gap_story_set_vtrack(GapStoryBoard *stb, gint32 vtrack)
-{
-  GapStoryElem *stb_elem;
-  
-  if(stb  == NULL)   { return; }
-  
-  for(stb_elem = stb->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
-  {
-    if(gap_story_elem_is_video_relevant(stb_elem))
-    {
-      stb_elem->track = vtrack;
-    }
-  }
-
-}  /* end gap_story_set_vtrack */
 
 
 /* ---------------------------------
  * gap_story_selection_all_set
  * ---------------------------------
- * set selection state in all elements to specified sel_state
+ * set selection state in all elements of all sections to specified sel_state
  */
 void
 gap_story_selection_all_set(GapStoryBoard *stb, gboolean sel_state)
 {
   GapStoryElem *stb_elem;
-  
+  GapStorySection *section;
+
   if(stb  == NULL)   { return; }
-  
-  for(stb_elem = stb->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
+  for(section = stb->stb_section; section != NULL; section = section->next)
   {
-    stb_elem->selected = sel_state;
+    for(stb_elem = section->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
+    {
+      stb_elem->selected = sel_state;
+    }
   }
 
+
 }  /* end gap_story_selection_all_set */
+
 
 /* ---------------------------------
  * gap_story_selection_by_story_id
  * ---------------------------------
+ * set the element with specified story_id to the specified selection state.
+ * Notes: 
+ *  - searching for the element is done in all sections of the
+ *    specified storyboard.
+ *
+ * -  the search stops if when the 1st matching element was found.
+ *    (there never shall be 2 elements having the same story_id)
  */
 void
 gap_story_selection_by_story_id(GapStoryBoard *stb, gboolean sel_state, gint32 story_id)
 {
   GapStoryElem *stb_elem;
-  
+  GapStorySection   *section;
+
   if(stb == NULL)   { return; }
-  
-  for(stb_elem = stb->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
+
+  for(section = stb->stb_section; section != NULL; section = section->next)
   {
-    if(stb_elem->story_id == story_id)
+    for(stb_elem = section->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
     {
-      stb_elem->selected = sel_state;
-      return;
+      if(stb_elem->story_id == story_id)
+      {
+        stb_elem->selected = sel_state;
+        return;
+      }
     }
   }
+
 
 }  /* end gap_story_selection_by_story_id */
 
@@ -6079,20 +8003,24 @@ gap_story_selection_by_story_id(GapStoryBoard *stb, gboolean sel_state, gint32 s
 /* ------------------------------------------
  * gap_story_selection_from_ref_list_orig_ids
  * ------------------------------------------
- * set selection for all elements with story_id matching to orig_story_id 
- * of at least one element in the 2.dn storyboard (specified via stb_ref)
+ * set selection for all elements with story_id matching to orig_story_id
+ * of at least one element in the 2.nd storyboard (specified via stb_ref)
  */
 void
 gap_story_selection_from_ref_list_orig_ids(GapStoryBoard *stb, gboolean sel_state, GapStoryBoard *stb_ref)
 {
   GapStoryElem *stb_elem;
-  
+  GapStorySection   *section;
+
   if((stb == NULL) || (stb_ref == NULL))  { return; }
-  
-  for(stb_elem = stb_ref->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
+  for(section = stb_ref->stb_section; section != NULL; section = section->next)
   {
-    gap_story_selection_by_story_id(stb, sel_state, stb_elem->story_orig_id);
+    for(stb_elem = section->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
+    {
+      gap_story_selection_by_story_id(stb, sel_state, stb_elem->story_orig_id);
+    }
   }
+
 
 }  /* end gap_story_selection_from_ref_list_orig_ids */
 
@@ -6113,9 +8041,9 @@ gap_story_get_preferred_decoder(GapStoryBoard *stb, GapStoryElem *stb_elem)
 {
   const char *preferred_decoder;
 
-  /* use the file-global preferred_decoder per default */ 
+  /* use the file-global preferred_decoder per default */
   preferred_decoder = NULL;
-  
+
   if(stb_elem)
   {
     if(stb_elem->preferred_decoder)
@@ -6126,7 +8054,7 @@ gap_story_get_preferred_decoder(GapStoryBoard *stb, GapStoryElem *stb_elem)
       }
     }
   }
-  
+
   if((stb) && (preferred_decoder == NULL))
   {
     if(stb->preferred_decoder)
@@ -6161,24 +8089,29 @@ gap_story_set_aud_movie_min_max(GapStoryBoard *stb)
 {
   GapStoryElem *stb_element;
   GapStoryElem *stb_elem;
+  
+  if (stb->active_section == NULL)
+  {
+    return;
+  }
 
   /* init all min/max values with negative value */
-  for(stb_elem = stb->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
+  for(stb_elem = stb->active_section->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
   {
     stb_elem->aud_min_play_sec = -1.0;
     stb_elem->aud_max_play_sec = -1.0;
   }
 
 
-  /* Loop foreach Element in the STB */
-  for(stb_element = stb->stb_elem; stb_element != NULL;  stb_element = stb_element->next)
+  /* Loop foreach Element in the active section in the STB */
+  for(stb_element = stb->active_section->stb_elem; stb_element != NULL;  stb_element = stb_element->next)
   {
     if((stb_element->record_type == GAP_STBREC_AUD_MOVIE)
     && (stb_element->aud_min_play_sec < 0.0))
     {
       gdouble min_play_sec;
       gdouble max_play_sec;
-      
+
       min_play_sec = stb_element->aud_play_from_sec;
       max_play_sec = stb_element->aud_play_to_sec;
 
@@ -6197,7 +8130,7 @@ gap_story_set_aud_movie_min_max(GapStoryBoard *stb)
           }
         }
       }
-      
+
       /* set min/max values in all references */
       for(stb_elem = stb_element; stb_elem != NULL;  stb_elem = stb_elem->next)
       {
@@ -6237,7 +8170,7 @@ gap_story_elem_is_audio(GapStoryElem *stb_elem)
     default:
       return (FALSE);
   }
-  
+
   return (FALSE);
 }  /* end gap_story_elem_is_audio */
 
@@ -6257,12 +8190,14 @@ gap_story_elem_is_video(GapStoryElem *stb_elem)
     case GAP_STBREC_VID_ANIMIMAGE:
     case GAP_STBREC_VID_FRAMES:
     case GAP_STBREC_VID_MOVIE:
+    case GAP_STBREC_VID_SECTION:
+    case GAP_STBREC_VID_BLACKSECTION:
       return (TRUE);
       break;
     default:
       return (FALSE);
   }
-  
+
   return (FALSE);
 }  /* end gap_story_elem_is_video */
 
@@ -6283,14 +8218,83 @@ gap_story_elem_is_video_relevant(GapStoryElem *stb_elem)
     return (TRUE);
   }
   return (gap_story_elem_is_video(stb_elem));
-  
+
 }  /* end gap_story_elem_is_video_relevant */
+
+
+/* ------------------------------------------------
+ * gap_story_elem_is_same_resource
+ * ------------------------------------------------
+ */
+gboolean
+gap_story_elem_is_same_resource(GapStoryElem *stb_elem, GapStoryElem *stb_elem_ref)
+{
+    if(stb_elem->record_type == stb_elem_ref->record_type)
+    {
+      switch(stb_elem->record_type)
+      {
+        case GAP_STBREC_VID_FRAMES:
+          if(strcmp(stb_elem->basename, stb_elem_ref->basename) == 0)
+          {
+            if(strcmp(stb_elem->ext, stb_elem_ref->ext) == 0)
+            {
+              return(TRUE);
+            }
+          }
+          break;
+        case GAP_STBREC_VID_IMAGE:
+        case GAP_STBREC_VID_ANIMIMAGE:
+        case GAP_STBREC_VID_MOVIE:
+        case GAP_STBREC_VID_SECTION:
+        case GAP_STBREC_VID_BLACKSECTION:
+        case GAP_STBREC_AUD_SOUND:
+        case GAP_STBREC_AUD_MOVIE:
+          if(strcmp(stb_elem->orig_filename, stb_elem_ref->orig_filename) == 0)
+          {
+            return(TRUE);
+          }
+          break;
+        default:
+          break;
+      }
+    }
+    return (FALSE);
+
+}  /* end gap_story_elem_is_same_resource */
+
+
+/* ------------------------------------------------
+ * gap_story_elem_find_by_same_resource
+ * ------------------------------------------------
+ * all sections of the specified storyboard are searched for an element
+ * that uses the same resource (e.q. same movie, framesequence, image ...).
+ */
+GapStoryElem *
+gap_story_elem_find_by_same_resource(GapStoryBoard *stb_ptr, GapStoryElem *stb_elem_ref)
+{
+  GapStoryElem      *stb_elem;
+  GapStorySection   *section;
+
+  for(section = stb_ptr->stb_section; section != NULL; section = section->next)
+  {
+    for(stb_elem = section->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
+    {
+      if(gap_story_elem_is_same_resource(stb_elem, stb_elem_ref))
+      {
+        return(stb_elem);
+      }
+    }
+  }
+
+  return (NULL);
+}  /* end gap_story_elem_find_by_same_resource */
 
 
 /* --------------------------
  * gap_story_del_audio_track
  * --------------------------
  * delete all elements of the specified audio track
+ * in the active_section of the specified storyboard.
  */
 void
 gap_story_del_audio_track(GapStoryBoard *stb
@@ -6301,9 +8305,13 @@ gap_story_del_audio_track(GapStoryBoard *stb
   GapStoryElem *stb_prev;
   GapStoryElem *stb_next;
 
+  if (stb->active_section == NULL)
+  {
+    return;
+  }
 
   stb_prev = NULL;
-  for(stb_elem = stb->stb_elem; stb_elem != NULL;  stb_elem = stb_next)
+  for(stb_elem = stb->active_section->stb_elem; stb_elem != NULL;  stb_elem = stb_next)
   {
     stb_next = (GapStoryElem *)stb_elem->next;
 
@@ -6318,9 +8326,9 @@ gap_story_del_audio_track(GapStoryBoard *stb
       else
       {
         /* unlink the 1.st elem in the storyboard list */
-        stb->stb_elem = stb_next;
+        stb->active_section->stb_elem = stb_next;
       }
-      
+
       gap_story_elem_free(&stb_elem);
     }
     else
@@ -6358,7 +8366,7 @@ p_get_video_framerate(const char *videofile
                               );
  l_video_framerate = gvahand->framerate;
  GVA_close(gvahand);
- 
+
 #endif
 
   return(l_video_framerate);
@@ -6367,7 +8375,25 @@ p_get_video_framerate(const char *videofile
 /* --------------------------
  * gap_story_gen_otone_audio
  * --------------------------
- * OUT: first_non_matching_framerate 0 if all is OK, else value of 1st non matching framerate.
+ * generate audiotrack with original tone of the movies
+ * in the specified vid_track in the active_section.
+ *
+ * all elements in the generated audio track will have the specified
+ * aud_track number and are placed in the active_section of the storyboard.
+ *
+ * IN: replace_existing_aud_track  TRUE ... replace audiotrack if already exists.
+ *
+ * return TRUE if ok,
+ *        FALSE in case of error (if audio track already exists, but
+ *              parameter replace_existing_aud_track does not allow replace)
+ *
+ * TODO:
+ *   currently playback of a sub section (GAP_STBREC_VID_SECTION)
+ *   prouces just silence.
+ *   if the subsection includes clips they shall be respected, but contained
+ *   to the length of the section playback instruction.
+ *   open issue: the subsection can have multiple video tracks.
+ *               How to pick a relevant one ?
  */
 gboolean
 gap_story_gen_otone_audio(GapStoryBoard *stb
@@ -6382,16 +8408,21 @@ gap_story_gen_otone_audio(GapStoryBoard *stb
   GapStoryElem *stb_elem_new;
   gdouble      l_std_framerate;
   gdouble      l_framerate;
-  
+
   gchar       *l_videoname = NULL;
   gdouble      l_video_framerate = 0.0;
   gint32       l_overlapcount;
- 
+
+  if (stb->active_section == NULL)
+  {
+    return (FALSE);
+  }
+
   l_std_framerate = MAX(0.1, stb->master_framerate);
   l_framerate = l_std_framerate;
-  
-  *first_non_matching_framerate = 0; 
-  
+
+  *first_non_matching_framerate = 0;
+
   /* handling for already existing audio track */
   if(replace_existing_aud_track)
   {
@@ -6399,7 +8430,7 @@ gap_story_gen_otone_audio(GapStoryBoard *stb
   }
   else
   {
-    for(stb_elem = stb->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
+    for(stb_elem = stb->active_section->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
     {
       if((stb_elem->track == aud_track)
       && (gap_story_elem_is_audio(stb_elem)))
@@ -6415,12 +8446,12 @@ gap_story_gen_otone_audio(GapStoryBoard *stb
   l_overlapcount = 0;
 
   /* generate the otone track (at the lists tail) */
-  for(stb_elem = stb->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
+  for(stb_elem = stb->active_section->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
   {
     if(stb_elem->track == vid_track)
     {
       gint32 l_overlap_in_this_elem;
-      
+
       l_overlap_in_this_elem = MIN(l_overlapcount, stb_elem->nframes);
 
       switch(stb_elem->record_type)
@@ -6432,7 +8463,7 @@ gap_story_gen_otone_audio(GapStoryBoard *stb
           /* add otne for the movie when playing normal forward */
           if((stb_elem->playmode == GAP_STB_PM_NORMAL)
           && (stb_elem->step_density == 1.0)
-          && (stb_elem->from_frame < stb_elem->to_frame)
+          && (stb_elem->from_frame <= stb_elem->to_frame)
           && (stb_elem->nframes > l_overlap_in_this_elem)
           )
           {
@@ -6441,11 +8472,11 @@ gap_story_gen_otone_audio(GapStoryBoard *stb
             {
               gboolean l_check_videorate;
               gint32 l_from_frame;
-              
+
               l_from_frame = stb_elem->from_frame + l_overlap_in_this_elem;
-              
+
               l_check_videorate = TRUE;
-              
+
               /* findout framerate of the source video file */
               if (l_videoname != NULL)
               {
@@ -6478,22 +8509,22 @@ gap_story_gen_otone_audio(GapStoryBoard *stb
                 }
                 l_video_framerate = l_framerate;
               }
- 
-            
-              /* initialise the new AUDIO element */ 
+
+
+              /* initialise the new AUDIO element */
               if((*first_non_matching_framerate == 0.0)
               && (l_framerate != stb->master_framerate))
               {
                 *first_non_matching_framerate = l_framerate;
               }
-            
+
               stb_elem_new->aud_play_from_sec = 0.0;
               stb_elem_new->track             = aud_track;
               stb_elem_new->from_frame        = l_from_frame;
               stb_elem_new->to_frame          = stb_elem->to_frame;
               stb_elem_new->aud_filename      = g_strdup(stb_elem->aud_filename);
               stb_elem_new->orig_filename     = g_strdup(stb_elem->orig_filename);
-              
+
               stb_elem_new->aud_play_from_sec = (gdouble)l_from_frame / l_framerate;
               stb_elem_new->aud_play_to_sec   = (gdouble)stb_elem->to_frame / l_framerate;
               stb_elem_new->aud_wait_untiltime_sec = 0.0;
@@ -6508,11 +8539,14 @@ gap_story_gen_otone_audio(GapStoryBoard *stb
 
               stb_elem_new->aud_framerate          = l_framerate;
 
-              gap_story_list_append_elem(stb, stb_elem_new);
+              gap_story_list_append_elem_at_section(stb
+                    , stb_elem_new
+                    , stb->active_section
+                    );
             }
             break;
           }
-          /* no break at this point, 
+          /* no break at this point,
            * same handling as all other vid record types is required
            */
         case GAP_STBREC_VID_SILENCE:
@@ -6520,6 +8554,8 @@ gap_story_gen_otone_audio(GapStoryBoard *stb
         case GAP_STBREC_VID_IMAGE:
         case GAP_STBREC_VID_ANIMIMAGE:
         case GAP_STBREC_VID_FRAMES:
+        case GAP_STBREC_VID_SECTION:
+        case GAP_STBREC_VID_BLACKSECTION:
 
           if(stb_elem->nframes > l_overlap_in_this_elem)
           {
@@ -6534,10 +8570,13 @@ gap_story_gen_otone_audio(GapStoryBoard *stb
                                                      / l_std_framerate;
               stb_elem_new->aud_wait_untiltime_sec = 0.0;
 
-              gap_story_list_append_elem(stb, stb_elem_new);
+              gap_story_list_append_elem_at_section(stb
+                      , stb_elem_new
+                      , stb->active_section
+                      );
             }
           }
-          
+
           break;
         case GAP_STBREC_VID_COMMENT:
         case GAP_STBREC_VID_UNKNOWN:
@@ -6545,15 +8584,15 @@ gap_story_gen_otone_audio(GapStoryBoard *stb
         default:
           break;
       }
-      
+
       l_overlapcount = (l_overlapcount - l_overlap_in_this_elem);
-      
-      
+
+
     }
   }
 
   return(TRUE);
-  
+
 }  /* end gap_story_gen_otone_audio */
 
 
@@ -6585,16 +8624,16 @@ gap_story_get_default_attribute(gint att_typ_idx)
  *   fit_width
  *   fit_height
  *   keep_proportions
- *   scale_x       1.0 .. original width,  2.0 double width     
- *   scale_y       1.0 .. original height, 2.0 double height  
+ *   scale_x       1.0 .. original width,  2.0 double width
+ *   scale_y       1.0 .. original height, 2.0 double height
  *   move_x        (-1.0 .. left outside, 0.0 centered, +1.0 right outside)
  *   move_y        (-1.0 .. top  outside, 0.0 centered, +1.0 bottom outside)
  *   opacity       0.0 .. fully transparent, 1.0 fully opaque
  * )
  *
  * the results are written to the speccified result_attr structure,
- * and shall be applied to the layer. 
- *    
+ * and shall be applied to the layer.
+ *
  */
 void
 gap_story_file_calculate_render_attributes(GapStoryCalcAttr *result_attr
@@ -6622,8 +8661,8 @@ gap_story_file_calculate_render_attributes(GapStoryCalcAttr *result_attr
   gint32 l_tmp_height;
   gint32 center_x_ofs;
   gint32 center_y_ofs;
-  
-  
+
+
   if(result_attr == NULL)
   {
     return;
@@ -6633,7 +8672,7 @@ gap_story_file_calculate_render_attributes(GapStoryCalcAttr *result_attr
   result_height = -1;
   l_tmp_width = frame_width;
   l_tmp_height = frame_height;
-  
+
   if(keep_proportions)
   {
     gdouble l_vid_prop;
@@ -6647,7 +8686,7 @@ gap_story_file_calculate_render_attributes(GapStoryCalcAttr *result_attr
     {
       l_tmp_width = vid_height * l_frame_prop;
       l_tmp_height = vid_height;
-      
+
       if(l_tmp_width > vid_width)
       {
         l_tmp_width = vid_width;
@@ -6698,13 +8737,13 @@ gap_story_file_calculate_render_attributes(GapStoryCalcAttr *result_attr
 
   /* offset calculation */
   {
-    
+
     center_x_ofs = (vid_width/2) -  (result_width/2);
     center_y_ofs = (vid_height/2) - (result_height/2);
-    
+
     result_ofsx  = center_x_ofs + ((result_width / 2)  * move_x) + ((vid_width / 2)  * move_x);
     result_ofsy  = center_y_ofs + ((result_height / 2 ) * move_y) + ((vid_height / 2 ) * move_y);
-    
+
   }
 
   result_attr->opacity = CLAMP(opacity * 100.0, 0.0, 100.0);
@@ -6716,7 +8755,7 @@ gap_story_file_calculate_render_attributes(GapStoryCalcAttr *result_attr
   /* debug output */
   if(gap_debug)
   {
-    
+
     printf ("\n\nCALC size and OFFS opacity: %f", (float)result_attr->opacity);
     {
       printf (" fit_width: ");
@@ -6747,5 +8786,478 @@ gap_story_file_calculate_render_attributes(GapStoryCalcAttr *result_attr
     printf (" OFSX:%d OFSY:%d\n", (int)result_attr->x_offs , (int) result_attr->y_offs);
 
   }
-  
+
 }  /* end gap_story_file_calculate_render_attributes */
+
+
+/* -----------------------------
+ * gap_story_get_current_vtrack
+ * -----------------------------
+ * get the current video track
+ * for the specified section.
+ * Typically used in the storyboard dialog
+ * when switching sections. (for implicite switch
+ * to the video track that was active when the section
+ * was edited the last time)
+ * Note that the mask section has only one implicte track with
+ * GAP_STB_MASK_TRACK_NUMBER (0)
+ */
+gint32
+gap_story_get_current_vtrack (GapStoryBoard *stb, GapStorySection *section)
+{
+  gint32 current_vtrack;
+  
+  if(section == stb->mask_section)
+  {
+    return (GAP_STB_MASK_TRACK_NUMBER);
+  }
+  current_vtrack = CLAMP(section->current_vtrack, 1, GAP_STB_MAX_VID_TRACKS);
+  section->current_vtrack = current_vtrack;
+
+  return (current_vtrack);
+  
+}  /* end gap_story_get_current_vtrack */
+
+
+/* -----------------------------
+ * gap_story_set_current_vtrack
+ * -----------------------------
+ * set current videotrack for the specified section.
+ * the value will be constraint to valid range
+ * (0 for mask_section, 1 .. GAP_STB_MAX_VID_TRACKS for other sections)
+ *
+ * Note: the specified section must be a section of the specified
+ * storyboard ! (otherwise this procedure has no effect)
+ */
+void
+gap_story_set_current_vtrack (GapStoryBoard *stb, GapStorySection *section
+  , gint32 current_vtrack)
+{
+  if(section == NULL)
+  {
+    return;
+  }
+  
+  if(section == stb->mask_section)
+  {
+    section->current_vtrack = GAP_STB_MASK_TRACK_NUMBER;
+  }
+  else
+  {
+    GapStorySection *l_section;
+    for(l_section = stb->stb_section; l_section != NULL; l_section = l_section->next)
+    {
+      if(l_section == section)
+      {
+        section->current_vtrack =
+          CLAMP(current_vtrack, 1, GAP_STB_MAX_VID_TRACKS);
+        return;
+      }
+    }
+  }
+}  /* end gap_story_set_current_vtrack */
+
+
+
+/* ----------------------------------------
+ * gap_story_get_mapped_master_frame_number
+ * ----------------------------------------
+ * returns the specified frame_number converted according
+ *         to the specified selection mapping.
+ *         if no mapping (NULL) is specified return
+ *         the frame_number unchanged.
+ *
+ * This procedure is typically used for playback
+ * of selected clips within a complete storyboard.
+ *
+ * The mapping is a list that describes frame ranges
+ * refering to the selected clips.
+ * Example:
+ * If the caller specifies frame_number 1 the result
+ * is the frame number of the 1st selected frame in the 1st
+ * selected clip of the current videotrack in the MAIN section.
+ *
+ * each selected clip has one entry in the map,
+ * the map must be sorted ascending by mapped_frame_number,
+ * and the 1st element must describe mapped_frame_number == 1
+ * Mapping Example:
+ *  the current vtrack has 5 clips
+ *     clip1 has  7 unselected frames 
+ *     clip2 has 10 SELECTED frames 
+ *     clip3 has  4 unselected frames
+ *     clip4 has  5 SELECTED frames 
+ *     clip5 has  4 unselected frames
+ *
+ *     o .. unselected frame,
+ *     # .. SELECTED frame.
+ *
+ *     vtrack    ooooooo ########## oooo ##### oooo
+ *               1234567 8901234567 8901 23456 7890
+ *               0         1          2           3
+ *                       |               |
+ *                       |               |
+ *                       |               +----- 2nd map entry
+ *                       +--------------------- 1st map entry
+ *
+ * the mapping looks like this:
+ *   mapping->total_frames_selected == 15  (because 15 frames are selected)
+ *   mapping->map_list 1st elem:
+ *             map->mapped_frame_number == 1
+ *             map->orig_frame_number   == 8
+ *   mapping->map_list 2nd elem:
+ *             map->mapped_frame_number == 11
+ *             map->orig_frame_number   == 22
+ */
+gint32
+gap_story_get_mapped_master_frame_number(GapStoryFrameNumberMap *mapping
+  , gint32 frame_number)
+{
+  GapStoryFrameNumberMappingElem *map_elem;
+  gint32 mapped_nr;
+  gint32 l_frame_number;
+  
+  if(mapping == NULL)
+  {
+    return (frame_number);
+  }
+  
+  if (mapping->map_list == NULL)
+  {
+    return (frame_number);
+  }
+
+  mapped_nr = 1;
+  l_frame_number = CLAMP(frame_number, 1, mapping->total_frames_selected);
+
+  map_elem = mapping->map_list;
+  while(map_elem != NULL)
+  {
+    mapped_nr = l_frame_number + (map_elem->orig_frame_number - map_elem->mapped_frame_number);
+
+    if (l_frame_number <= map_elem->mapped_frame_number)
+    {
+      break;
+    }
+    map_elem = map_elem->next;
+    if (map_elem != NULL)
+    {
+      if (l_frame_number < map_elem->mapped_frame_number)
+      {
+        break;
+      }
+    }
+  }
+
+  return (mapped_nr);
+
+}  /* end gap_story_get_mapped_master_frame_number */
+
+
+/* -------------------------------------------
+ * p_story_add_selection_mapping_elem
+ * -------------------------------------------
+ * create a new mapping element and append it to the
+ * end of the map_list.
+ */
+static void
+p_story_add_selection_mapping_elem(GapStoryFrameNumberMap *mapping,
+  gint32 orig_frame_number, gint32 mapped_frame_number)
+{
+  GapStoryFrameNumberMappingElem *new_map_elem;
+  GapStoryFrameNumberMappingElem *map_elem;
+  
+  new_map_elem = g_new(GapStoryFrameNumberMappingElem, 1);
+  new_map_elem->next = NULL;
+  new_map_elem->orig_frame_number = orig_frame_number;
+  new_map_elem->mapped_frame_number = mapped_frame_number;
+  
+
+  /* add new map element at and of the list */
+  for(map_elem = mapping->map_list; map_elem != NULL; map_elem = map_elem->next)
+  {
+    if(map_elem->next == NULL)
+    {
+        break;
+    }
+  }
+  if (map_elem != NULL)
+  {
+    map_elem->next = new_map_elem;
+  }
+  else
+  {
+    mapping->map_list = new_map_elem;
+  }
+  
+}  /* end p_story_add_selection_mapping_elem */
+
+
+/* -------------------------------------------
+ * gap_story_create_new_mapping_from_selection
+ * -------------------------------------------
+ * create mapping for framenumbers of selected clips in the specified video track
+ * of the specified active section.
+ * The mapping is typically used for composite video playback of selected
+ * clips.
+ * (the caller shall use gap_story_free_selection_mapping
+ * to free up allocated memory when the mapping is no longer in use)
+ */
+GapStoryFrameNumberMap *
+gap_story_create_new_mapping_from_selection(GapStorySection *active_section
+  , gint32 vtrack)
+{
+  GapStoryFrameNumberMap *mapping;
+  GapStoryElem      *stb_elem;
+  gint32             mapped_frame_number;
+  gint32             orig_frame_number;
+  gint32             rest_frames;
+  gboolean           capture_maped_frame_number;
+
+  if (active_section == NULL)
+  {
+    return (NULL);
+  }
+
+
+  mapping = g_new(GapStoryFrameNumberMap, 1);
+  mapping->total_frames_selected = 0;
+  mapping->map_list = NULL;
+  mapped_frame_number = 1;
+  orig_frame_number = 1;
+  rest_frames = 0;
+  capture_maped_frame_number = FALSE;
+
+  for(stb_elem = active_section->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
+  {
+    if((stb_elem->track == vtrack )
+    && (capture_maped_frame_number == TRUE)
+    && (gap_story_elem_is_video(stb_elem) == TRUE))
+    {
+      /* calculate mapping for the next selected element
+       * as differnence of the previous selected clip
+       * to its next video clip element in the same track.
+       * (if there is no further selected element, we have reached
+       * the total number of selected frames in the vtrack)
+       */
+      gint32 next_orig_frame_number;
+
+      next_orig_frame_number = gap_story_get_framenr_by_story_id(active_section
+                                                   ,stb_elem->story_id
+                                                   ,vtrack
+                                                   );
+      mapped_frame_number += (next_orig_frame_number - orig_frame_number);
+      rest_frames = 0;
+      capture_maped_frame_number = FALSE;
+    }
+
+    if((stb_elem->selected) && (stb_elem->track == vtrack )
+    && (gap_story_elem_is_video(stb_elem) == TRUE))
+    {
+      orig_frame_number = gap_story_get_framenr_by_story_id(active_section
+                                                   ,stb_elem->story_id
+                                                   ,vtrack
+                                                   );
+      p_story_add_selection_mapping_elem(mapping, orig_frame_number, mapped_frame_number);
+
+      /* trigger capture of mapped number for the
+       * video clip that follows this selected clip in the same track.
+       */
+      capture_maped_frame_number = TRUE;
+      rest_frames = stb_elem->nframes;
+      
+    }
+    
+  }
+
+  mapping->total_frames_selected = mapped_frame_number + rest_frames -1;
+
+  return (mapping);
+}  /* end gap_story_create_new_mapping_from_selection */
+
+/* -------------------------------------------
+ * gap_story_debug_print_mapping
+ * -------------------------------------------
+ */
+void
+gap_story_debug_print_mapping(GapStoryFrameNumberMap *mapping)
+{
+  printf("gap_story_debug_print_mapping START\n");
+  if (mapping)
+  {
+    GapStoryFrameNumberMappingElem *map_elem;
+
+    printf("total_frames_selected: %d\n"
+          , (int)mapping->total_frames_selected
+          );
+    for(map_elem = mapping->map_list; map_elem != NULL; map_elem = map_elem->next)
+    {
+      printf("mapped_framenr: %06d  orig_framenr:%06d\n"
+          , (int)map_elem->mapped_frame_number
+          , (int)map_elem->orig_frame_number
+          );
+    }
+  }
+  printf("gap_story_debug_print_mapping END\n");
+  
+}  /* end gap_story_debug_print_mapping */
+
+
+
+/* ----------------------------------------
+ * gap_story_free_GapStoryVideoFileRef
+ * ----------------------------------------
+ */
+void
+gap_story_free_GapStoryVideoFileRef(GapStoryVideoFileRef *vref_list)
+{
+  GapStoryVideoFileRef *vref;
+  GapStoryVideoFileRef *vref_next;
+
+  vref = vref_list;
+  while(vref != NULL)
+  {
+    vref_next = vref->next;
+    
+    if (vref->videofile != NULL)
+    {
+      g_free(vref->videofile);
+      vref->videofile = NULL;
+    }
+    if (vref->userdata != NULL)
+    {
+      g_free(vref->userdata);
+      vref->userdata = NULL;
+    }
+    
+    if (vref->preferred_decoder != NULL)
+    {
+      g_free(vref->preferred_decoder);
+      vref->preferred_decoder = NULL;
+    }
+    
+    g_free(vref);
+    vref = vref_next;
+    
+  }
+}  /* end gap_story_free_GapStoryVideoFileRef */
+
+
+/* ----------------------------------------
+ * p_new_GapStoryVideoFileRef
+ * ----------------------------------------
+ */
+GapStoryVideoFileRef *
+p_new_GapStoryVideoFileRef(const char *videofile
+  , gint32 seltrack
+  , const char *preferred_decoder
+  , gint32          max_ref_framenr)
+{
+  GapStoryVideoFileRef *vref;
+  
+  vref = g_new(GapStoryVideoFileRef, 1);
+  if(vref)
+  {
+    vref->next = NULL;
+    vref->videofile = NULL;
+    vref->userdata = NULL;
+    vref->preferred_decoder = NULL;
+    vref->seltrack = seltrack;
+    vref->max_ref_framenr = max_ref_framenr;
+    
+    if (videofile != NULL)
+    {
+      vref->videofile = g_strdup(videofile);
+    }
+    
+    if (preferred_decoder != NULL)
+    {
+      vref->preferred_decoder = g_strdup(preferred_decoder);
+    }
+
+  }
+  return (vref);
+}  /* end p_new_GapStoryVideoFileRef */
+
+
+/* ----------------------------------------
+ * gap_story_find_vref_by_name_and_seltrack
+ * ----------------------------------------
+ */
+GapStoryVideoFileRef *
+gap_story_find_vref_by_name_and_seltrack(GapStoryVideoFileRef *vref_list
+  , const char *videofile
+  , gint32 seltrack)
+{
+  GapStoryVideoFileRef *vref;
+  for(vref = vref_list; vref != NULL; vref = vref->next)
+  {
+    if(p_null_strcmp(vref->videofile, videofile)
+    && (vref->seltrack == seltrack))
+    {
+      return (vref);
+    }
+
+  }
+  return (NULL);
+  
+}  /* end gap_story_find_vref_by_name_and_seltrack */
+
+
+/* ---------------------------------
+ * gap_story_get_video_file_ref_list
+ * ---------------------------------
+ * IN: stb        The Storyboardfile 
+ *                   NOTE: this procedure operates on all sections of the
+ *                         specified storyboard.
+ * OUT:
+ *   the returned GapStoryVideoFileRef contains a list
+ *   with descriptions of all videofiles that are used in clips
+ *   of the specified storyboard file.
+ *   If there multiple references to the same video and same seltrack
+ *   are reprented by only one element.
+ *   NULL is returned if the storyboard contains no video.
+ */
+GapStoryVideoFileRef *
+gap_story_get_video_file_ref_list(GapStoryBoard *stb)
+{
+  GapStoryVideoFileRef *vref_list;
+  GapStorySection *section;
+  
+  vref_list = NULL;
+
+  for(section = stb->stb_section; section != NULL; section = section->next)
+  {
+    GapStoryElem      *stb_elem;
+    for(stb_elem = section->stb_elem; stb_elem != NULL;  stb_elem = stb_elem->next)
+    {
+       if(stb_elem->record_type == GAP_STBREC_VID_MOVIE)
+       {
+         GapStoryVideoFileRef *vref;
+         
+         vref = gap_story_find_vref_by_name_and_seltrack(vref_list
+                                                        ,stb_elem->orig_filename
+                                                        ,stb_elem->seltrack
+                                                        );
+         if (vref != NULL)
+         {
+           vref->max_ref_framenr =
+              MAX(vref->max_ref_framenr
+                 , MAX(stb_elem->from_frame, stb_elem->to_frame)
+                 );
+         }
+         else
+         {
+           vref = p_new_GapStoryVideoFileRef(stb_elem->orig_filename
+                          , stb_elem->seltrack
+                          , stb_elem->preferred_decoder
+                          , MAX(stb_elem->from_frame, stb_elem->to_frame)
+                          );
+           /* add new elem at begin of list */
+           vref->next =  vref_list;
+           vref_list = vref;
+         }
+       }
+    }
+  }
+  return (vref_list);
+}  /* end gap_story_get_video_file_ref_list */

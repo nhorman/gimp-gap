@@ -1,4 +1,10 @@
---enable-shared --disable-mmx --enable-gpl --enable-a52
-#
+--enable-shared --enable-static --disable-mmx --enable-gpl 
+# recent ffmpeg releases do no longer include liba52 (NO DVD audio support)
+# but supports dynamic linking if liba52 is installed.
+# the gap main configure script checks if some of the external libs for ffmpeg
+# are installed and adds further options automatically
+#   --enable-liba52
+#   --enable-libx264  (old name: --enable-x264)
+#   --enable-libxvid  (old name: --enable-xvid)
 # options for the ffmpeg configure
 

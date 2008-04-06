@@ -5,6 +5,8 @@ GAPVIDEOAPI = $(top_builddir)/libgapvidapi/libgapvidapi.a  $(GAPVIDEOAPI_EXTLIBS
 INC_GAPVIDEOAPI = -I$(top_srcdir)/libgapvidapi $(GAPVIDEOAPI_EXTINCS)
 endif
 
+INC_LIBGAPBASE = -I$(top_srcdir)/libgapbase
+
 
 noinst_LIBRARIES = libgapvidutil.a
 
@@ -14,6 +16,7 @@ AM_CPPFLAGS = \
 INCLUDES = \
 	-I$(top_srcdir)	\
 	-I$(top_srcdir)/gap	\
+	$(INC_LIBGAPBASE)	\
 	$(GLIB_CFLAGS)	\
 	$(GIMP_CFLAGS)	\
 	$(INC_GAPVIDEOAPI)	\

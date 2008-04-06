@@ -8,7 +8,6 @@ gint p_plug_in_glasstile_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdou
     {
       gint      tilex;
       gint      tiley;
-      gboolean preview;
       /* interface only */
       gint     constrain;
     } t_plug_in_glasstile_Vals; 
@@ -22,8 +21,8 @@ gint p_plug_in_glasstile_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdou
       return -1;  /* ERROR */ 
     }
 
-    gimp_get_data("plug_in_glasstile_ITER_FROM", g_plugin_data_from); 
-    gimp_get_data("plug_in_glasstile_ITER_TO",   g_plugin_data_to); 
+    gimp_get_data("plug-in-glasstile-ITER-FROM", g_plugin_data_from); 
+    gimp_get_data("plug-in-glasstile-ITER-TO",   g_plugin_data_to); 
 
     buf_from = (t_plug_in_glasstile_Vals *)&g_plugin_data_from[0]; 
     buf_to   = (t_plug_in_glasstile_Vals *)&g_plugin_data_to[0]; 
@@ -32,7 +31,7 @@ gint p_plug_in_glasstile_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdou
     p_delta_gint(&buf.tilex, buf_from->tilex, buf_to->tilex, total_steps, current_step);
     p_delta_gint(&buf.tiley, buf_from->tiley, buf_to->tiley, total_steps, current_step);
 
-    gimp_set_data("plug_in_glasstile", &buf, sizeof(buf)); 
+    gimp_set_data("plug-in-glasstile", &buf, sizeof(buf)); 
 
     return 0; /* OK */
 }

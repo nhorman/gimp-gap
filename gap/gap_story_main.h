@@ -34,8 +34,10 @@
 #include <libgimp/gimpui.h>
 #include "gap_pview_da.h"
 #include "gap_story_file.h"
+#include "gap_story_undo_types.h"
 #include "gap_player_main.h"
 
+#define GAP_STORY_PLUG_IN_PROC            "plug_in_gap_storyboard_edit"
 #define GAP_STORYBOARD_EDIT_HELP_ID       "plug-in-gap-storyboard-edit"
 
 #define GAP_STORY_MAX_STORYFILENAME_LEN 2048
@@ -67,16 +69,64 @@ typedef enum
     ,GAP_STB_EDMO_TIMECODE        
   } GapStoryElemDisplayMode;
 
-typedef struct GapStoryVideoElem {
-  gchar *video_filename;
-  gint32 seltrack;
-  gint32 video_id;
-  gint32 total_frames;
+typedef enum
+  {
+     GAP_STB_CLIPTARGET_CLIPLIST_APPEND
+    ,GAP_STB_CLIPTARGET_STORYBOARD_APPEND
+  } GapStoryClipTargetEnum;
+
+typedef enum
+  {
+     GAP_STB_VLIST_MOVIE
+    ,GAP_STB_VLIST_SECTION
+    ,GAP_STB_VLIST_ANIM_IMAGE
+  } GapStoryVthumbEnum;
+
+typedef enum
+  {
+     GAP_VTHUMB_PREFETCH_NOT_ACTIVE
+    ,GAP_VTHUMB_PREFETCH_IN_PROGRESS        
+    ,GAP_VTHUMB_PREFETCH_RESTART_REQUEST        
+    ,GAP_VTHUMB_PREFETCH_CANCEL_REQUEST        
+    ,GAP_VTHUMB_PREFETCH_PENDING        
+  } GapVThumbPrefetchProgressMode;
+
+/* video list element describes base resource that has
+ * a unique video_id and requires (much) more than one thumbnail
+ * per resource.
+ *
+ * currently supported video resource types are defined via GapStoryVthumbEnum.
+ * 
+ * The storyboard dialog has a global video thumbnail list that keeps
+ * all non-persistent thumbnails in memory, connected to the video list elem
+ * by theis video_id.
+ *
+ * Note that other resources that are based on single images / frames
+ * use persistent thumbnails (according to the same open thumbnail standard
+ * as supported by the gimp)
+ */
+typedef struct GapStoryVTResurceElem {
+  GapStoryVthumbEnum vt_type;
+  gint32 section_id;
+  gint32 version;
+
+  gchar *video_filename;   /* filename of the video or anim image,
+                            * or section_name
+                            */
+  gint32 seltrack;         /* not relevant for 
+                            * GAP_STB_VLIST_SECTION and 
+                            * GAP_STB_VLIST_ANIM_IMAGE
+                            */
+  gint32 video_id;         /* uniqie video resource id */
+  gint32 total_frames;     /* total frames of the video resource */
+
   
   void *next;
-}  GapStoryVideoElem;
+}  GapStoryVTResurceElem;
 
-
+/* video thumbnail elemnt is used in the storyboard dialog 
+ * (and clip properties dialog)
+ */
 typedef struct GapVThumbElem {
   guchar *th_data;
   gint32 th_width;
@@ -143,6 +193,9 @@ typedef struct GapStbPropWidget  /* nickname: pw */
   GtkWidget  *pw_mask_anchor_radio_button_arr[2];
   GtkObject  *pw_spinbutton_mask_stepsize_adj;
   
+  GtkWidget  *pw_spinbutton_fmac_steps;
+  GtkObject  *pw_spinbutton_fmac_steps_adj;
+  GtkWidget  *pw_label_alternate_fmac_file;
   
 
   struct GapStbPropWidget *next;
@@ -158,6 +211,28 @@ typedef struct GapStbAttrLayerInfo  /* nickname: linfo */
   gchar                 *layer_filename;
   
 } GapStbAttrLayerInfo;
+
+
+typedef struct GapStbSecpropWidget  /* nickname: spw */
+{
+  GapStorySection  *section_refptr;   /* never g_free this one ! */
+  GapStoryBoard    *stb_refptr;       /* never g_free this one ! */
+  void  *sgpp;               /* never g_free this one ! */
+  void  *tabw;               /* never g_free this one ! (pointer to parent GapStbTabWidgets) */
+
+  
+  GapPView   *typ_icon_pv_ptr;   /* for display of the section type */
+  GtkWidget  *spw_prop_dialog;
+  GtkWidget  *spw_section_name_entry;
+  GtkWidget  *master_table;
+  GtkWidget  *cliptype_label;
+  GtkWidget  *dur_frames_label;
+  GtkWidget  *dur_time_label;
+  GtkWidget  *spw_info_text_label;
+  GtkWidget  *spw_delete_button;
+
+} GapStbSecpropWidget;
+
 
 /* for graphical display of transition attributes */
 typedef struct GapStbAttGfx
@@ -250,7 +325,7 @@ typedef struct GapStbFrameWidget  /* nickname: fw */
 
   gint32    seq_nr;          /* position in the storyboard list (starting at 1) */
   char      *frame_filename;
-
+  
   void  *sgpp;               /* never g_free this one ! */
   void  *tabw;               /* never g_free this one ! (pointer to parent GapStbTabWidgets) */
 } GapStbFrameWidget;
@@ -284,6 +359,7 @@ typedef struct GapStbTabWidgets  /* nickname: tabw */
   GtkObject *rowpage_vscale_adj;
   GtkWidget *rowpage_vscale;
 
+  GtkWidget *vtrack_spinbutton;
   GtkObject *vtrack_spinbutton_adj;
 
   GtkWidget *filesel;
@@ -294,13 +370,27 @@ typedef struct GapStbTabWidgets  /* nickname: tabw */
   GtkWidget *save_button;
   GtkWidget *play_button;
 
+  GtkWidget *undo_button;
+  GtkWidget *redo_button;
   GtkWidget *edit_cut_button;
   GtkWidget *edit_copy_button;
   GtkWidget *edit_paste_button;
 
-  GapStbPropWidget *pw;
-  GapStbAttrWidget *attw;
+  GtkWidget *new_clip_button;
+
+
+  GtkWidget *sections_combo;
+  gint32     sections_combo_elem_count; /* current number element in the combo box */
+
+  GapStbPropWidget       *pw;
+  GapStbSecpropWidget    *spw;
+  GapStbAttrWidget       *attw;
   GapStoryElemDisplayMode edmode;
+
+  GapStoryUndoElem  *undo_stack_list;     
+  GapStoryUndoElem  *undo_stack_ptr;
+  gdouble            undo_stack_group_counter;
+
   void  *sgpp;               /* never g_free this one ! */
 
 } GapStbTabWidgets;
@@ -325,17 +415,21 @@ typedef struct GapStbMainGlobalParams  /* nickname: sgpp */
   GapStbTabWidgets  *stb_widgets;
   GapStbTabWidgets  *cll_widgets;
   
-  GapStoryVideoElem *video_list;
+  GapStoryVTResurceElem *video_list;
   GapVThumbElem     *vthumb_list;
   t_GVA_Handle      *gvahand;
   gchar             *gva_videofile;
-  GtkWidget         *progress_bar;
+  GtkWidget         *progress_bar_master;
+  GtkWidget         *progress_bar_sub;
   gboolean           gva_lock;
   gboolean           cancel_video_api;
   gboolean           auto_vthumb;
   gboolean           auto_vthumb_refresh_canceled;
   gboolean           in_player_call;
   gboolean           arr_dlg_open;
+  gboolean           force_stb_aspect;
+  GapStoryClipTargetEnum           clip_target;
+  GapVThumbPrefetchProgressMode    vthumb_prefetch_in_progress;
 
   /* layout values
    * those values are used for LAST_VALUES runmode at startup only
@@ -360,21 +454,27 @@ typedef struct GapStbMainGlobalParams  /* nickname: sgpp */
   GtkWidget *menu_item_stb_save;
   GtkWidget *menu_item_stb_save_as;
   GtkWidget *menu_item_stb_add_clip;
+  GtkWidget *menu_item_stb_add_section_clip;
   GtkWidget *menu_item_stb_playback;
   GtkWidget *menu_item_stb_properties;
   GtkWidget *menu_item_stb_att_properties;
   GtkWidget *menu_item_stb_audio_otone;
   GtkWidget *menu_item_stb_encode;
+  GtkWidget *menu_item_stb_undo;
+  GtkWidget *menu_item_stb_redo;
   GtkWidget *menu_item_stb_close;
 
   GtkWidget *menu_item_cll_save;
   GtkWidget *menu_item_cll_save_as;
   GtkWidget *menu_item_cll_add_clip;
+  GtkWidget *menu_item_cll_add_section_clip;
   GtkWidget *menu_item_cll_playback;
   GtkWidget *menu_item_cll_properties;
   GtkWidget *menu_item_cll_att_properties;
   GtkWidget *menu_item_cll_audio_otone;
   GtkWidget *menu_item_cll_encode;
+  GtkWidget *menu_item_cll_undo;
+  GtkWidget *menu_item_cll_redo;
   GtkWidget *menu_item_cll_close;
   
   GdkPixbuf *dnd_pixbuf;

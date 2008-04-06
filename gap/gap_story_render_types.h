@@ -62,7 +62,9 @@ typedef enum
   ,GAP_FRN_ANIMIMAGE
   ,GAP_FRN_FRAMES
   ,GAP_FRN_MOVIE
+  ,GAP_FRN_SECTION
 } GapStoryRenderFrameType;
+
 
 typedef enum
 {
@@ -123,6 +125,10 @@ typedef struct GapStoryRenderFrameRangeElem   /* nick: frn_elem */
    gint32        exact_seek;  /* 0 fast seek, 1 exact seek (for GAP_FRN_MOVIE) */
    gdouble       delace;      /* 0.0 no deinterlace, 1.0-1.99 odd 2.0-2.99 even rows  (for GAP_FRN_MOVIE) */
    char   *filtermacro_file;
+   char   *filtermacro_file_to;  /* additional macro with 2nd parameterset(s) for varying apply */
+   gint32  fmac_total_steps;     /* total steps for varying filtermacro apply */
+
+   
    gdouble  frame_from;       /* internal frame number that is 1.st of range (float due to internal clip splitting) */
    gdouble  frame_to;         /* internal frame number that is the last handled frame of the range */
    gint32  frames_to_handle;
@@ -265,8 +271,22 @@ typedef struct GapStoryRenderErrors
   char   *currline;      /* pointer to currently parsed line (do not free this) */
 } GapStoryRenderErrors;  /* used for storyboard processing */
 
+
+
+typedef struct GapStoryRenderSection
+{
+  GapStoryRenderFrameRangeElem    *frn_list;
+  GapStoryRenderAudioRangeElem    *aud_list;
+  gchar                           *section_name;  /* null refers to the main section */
+  void                            *next;
+} GapStoryRenderSection;
+
+
+
 typedef struct GapStoryRenderVidHandle
 {
+  GapStoryRenderSection           *section_list;
+  GapStoryRenderSection           *parsing_section;
   GapStoryRenderFrameRangeElem    *frn_list;
   GapStoryRenderAudioRangeElem    *aud_list;
   GapStoryRenderErrors            *sterr;
@@ -288,6 +308,10 @@ typedef struct GapStoryRenderVidHandle
 
   gboolean   cancel_operation;   /* not supported yet */
   gdouble    *progress;
+  gdouble    dummy_progress;     /* progress points to dummy_progress if no
+                                  * external progress_ptr was specified at
+                                  * opening of the video handle.
+                                  */
   gboolean   do_gimp_progress;   /* pass this to GVA gvahand->do_gimp_progress (to show video seek progress) */
   gchar      *status_msg;
   gint32     status_msg_len;

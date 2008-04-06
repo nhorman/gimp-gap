@@ -67,6 +67,7 @@ static GapPlayerMainGlobalParams global_params =
 , NULL        /* gchar        *imagename */
 , -1          /* gint32  imagewidth */
 , -1          /* gint32  imageheight */
+, 0.0         /* gdouble aspect_ratio */
 , NULL        /* GapAnimInfo *ainfo_ptr */
 , NULL        /* GapAnimInfo *stb_ptr */
 , NULL        /* t_GVA_Handle *gvahand */

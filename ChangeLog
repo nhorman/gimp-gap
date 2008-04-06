@@ -1,3 +1,1060 @@
+2008-04-06  Wolfgang Hofer <hof@gimp.org>
+
+    Lots of updates (merged in local development since 2006-07-16)
+    This also includes merge of the changes and bugfixes that were alredy applied
+    in the stable gimp-gap-2.4 branch.
+    
+    Merge protocol:
+        NEW FILES ADDED TO SVN:
+          gap/gap_fmac_base.c 
+          gap/gap_fmac_base.h  
+          gap/gap_fmac_name.c  
+          gap/gap_fmac_name.h  
+          gap/gap_fmac_varying_main.c  
+          gap/gap_story_section_properties.c  
+          gap/gap_story_section_properties.h  
+          gap/gap_story_undo.c  
+          gap/gap_story_undo.h  
+          gap/gap_story_undo_types.h  
+          gap/gap_story_vthumb.c  
+          gap/gap_story_vthumb.h  
+          gap/gap_video_index_creator.c  
+
+          images/gap-story-icon-blacksection.png  
+          images/gap-story-icon-section-main.png  
+          images/gap-story-icon-section-mask.png  
+          images/gap-story-icon-section.png  
+
+          libgapbase  
+          libgapbase/gap_val_file.c  
+          libgapbase/gap_val_file.h  
+          libgapbase/Makefile.am  
+
+
+
+        CHANGED FILES (checked and merged):
+        m-  merge was necessary and performed.
+        l-  use 1.1 copy from local latest
+        s-  use 1.1 copy from  from svn trunc latest
+
+
+        m-  ChangeLog  
+        m-  configure.in 
+        l-  Makefile.am  
+        l-  NEWS  
+        l-  README  
+
+        l-  docs/reference/txt/gap_gimprc_params.txt  
+        l-  docs/reference/txt/INTRODUCTION.txt  
+        l-  docs/reference/txt/plug-in-gap-storyboard-edit.txt  
+        l-  docs/reference/txt/STORYBOARD_FILE_DOC.txt  
+
+        l-  extern_libs/configure_options_ffmpeg.txt  
+        l-  extern_libs/ffmpeg.tar.gz  
+        l-  extern_libs/Makefile.am  
+        l-  extern_libs/README_extern_libs  
+
+        l-  gap/gap_arr_dialog.c  
+        l-  gap/gap_arr_dialog.h  
+        m-  gap/gap_bluebox.c  
+        s-  gap/gap-dup-continue.scm  
+        l-  gap/gap_file_util.c  
+        l-  gap/gap_file_util.h  
+        l-  gap/gap_filter_codegen.c  
+        l-  gap/gap_filter_foreach.c  
+        l-  gap/gap_filter.h  
+        l-  gap/gap_filter_iterators.c  
+        l-  gap/gap_filter_pdb.c  
+        l-  gap/gap_filter_pdb.h  
+        l-  gap/gap_fmac_main.c  
+        m-  gap/gap_layer_copy.c  
+        l-  gap/gap_lib.c  
+        l-  gap/gap_lib.h  
+        l-  gap/gap_mod_layer.c  
+        l-  gap/gap_mod_layer_dialog.c  
+        l-  gap/gap_mod_layer.h  
+        l-  gap/gap_morph_dialog.c  
+        l-  gap/gap_morph_exec.c  
+        m-  gap/gap_mov_dialog.c  
+        m-  gap/gap_mov_render.c  
+        l-  gap/gap_navigator_dialog.c  
+        l-  gap/gap_pdb_calls.c  
+        m-  gap/gap_player_dialog.c  
+        l-  gap/gap_player_main.c  
+        l-  gap/gap_player_main.h  
+        s-  gap/gap_pview_da.c  
+        l-  gap/gap_range_ops.c  
+        l-  gap/gap_split.c  
+        l-  gap/gap_story_att_trans_dlg.c  
+        m-  gap/gap_story_dialog.c  
+        l-  gap/gap_story_dialog.h  
+        l-  gap/gap_story_file.c  
+        l-  gap/gap_story_file.h  
+        l-  gap/gap_story_main.c  
+        l-  gap/gap_story_main.h  
+        m-  gap/gap_story_properties.c  
+        l-  gap/gap_story_render_audio.c  
+        l-  gap/gap_story_render_processor.c  
+        l-  gap/gap_story_render_processor.h  
+        l-  gap/gap_story_render_types.h  
+        l-  gap/gap_story_syntax.c  
+        l-  gap/gap_story_syntax.h  
+        l-  gap/gap_vex_dialog.c  
+        l-  gap/gap_vin.c  
+        l-  gap/gap_vin.h  
+        l-  gap/gap_wr_color_curve.c  
+        l-  gap/gap_wr_color_huesat.c  
+        l-  gap/gap_wr_color_levels.c  
+        l-  gap/gimplastvaldesc.h  
+        l-  gap/Makefile.am  
+        s-  gap/sel-to-anim-img.scm  
+        l-  gap/TESTPROT_iter_ALT  
+
+
+        l-  gap/iter_ALT/gen/plug_in_alpha2color_iter_ALT.inc  
+        l-  gap/iter_ALT/gen/plug_in_blinds_iter_ALT.inc  
+        l-  gap/iter_ALT/gen/plug_in_borderaverage_iter_ALT.inc  
+        l-  gap/iter_ALT/gen/plug_in_checkerboard_iter_ALT.inc  
+        l-  gap/iter_ALT/gen/plug_in_CML_explorer_iter_ALT.inc  
+        l-  gap/iter_ALT/gen/plug_in_colorify_iter_ALT.inc  
+        l-  gap/iter_ALT/gen/plug_in_color_map_iter_ALT.inc  
+        l-  gap/iter_ALT/gen/plug_in_cubism_iter_ALT.inc  
+        l-  gap/iter_ALT/gen/plug_in_destripe_iter_ALT.inc  
+        l-  gap/iter_ALT/gen/plug_in_diffraction_iter_ALT.inc  
+        l-  gap/iter_ALT/gen/plug_in_displace_iter_ALT.inc  
+        l-  gap/iter_ALT/gen/plug_in_edge_iter_ALT.inc  
+        l-  gap/iter_ALT/gen/plug_in_engrave_iter_ALT.inc  
+        l-  gap/iter_ALT/gen/plug_in_flarefx_iter_ALT.inc  
+        l-  gap/iter_ALT/gen/plug_in_fractal_trace_iter_ALT.inc  
+        l-  gap/iter_ALT/gen/plug_in_gauss_iir2_iter_ALT.inc  
+        l-  gap/iter_ALT/gen/plug_in_gauss_iir_iter_ALT.inc  
+        l-  gap/iter_ALT/gen/plug_in_gauss_rle2_iter_ALT.inc  
+        l-  gap/iter_ALT/gen/plug_in_gauss_rle_iter_ALT.inc  
+        l-  gap/iter_ALT/gen/plug_in_gfig_iter_ALT.inc  
+        l-  gap/iter_ALT/gen/plug_in_glasstile_iter_ALT.inc  
+        l-  gap/iter_ALT/gen/plug_in_grid_iter_ALT.inc  
+        l-  gap/iter_ALT/gen/plug_in_jigsaw_iter_ALT.inc  
+        l-  gap/iter_ALT/gen/plug_in_mblur_iter_ALT.inc  
+        l-  gap/iter_ALT/gen/plug_in_mosaic_iter_ALT.inc  
+        l-  gap/iter_ALT/gen/plug_in_newsprint_iter_ALT.inc  
+        l-  gap/iter_ALT/gen/plug_in_noisify_iter_ALT.inc  
+        l-  gap/iter_ALT/gen/plug_in_pixelize_iter_ALT.inc  
+        l-  gap/iter_ALT/gen/plug_in_randomize_hurl_iter_ALT.inc  
+        l-  gap/iter_ALT/gen/plug_in_randomize_pick_iter_ALT.inc  
+        l-  gap/iter_ALT/gen/plug_in_randomize_slur_iter_ALT.inc  
+        l-  gap/iter_ALT/gen/plug_in_ripple_iter_ALT.inc  
+        l-  gap/iter_ALT/gen/plug_in_rotate_iter_ALT.inc  
+        l-  gap/iter_ALT/gen/plug_in_scatter_hsv_iter_ALT.inc  
+        l-  gap/iter_ALT/gen/plug_in_sharpen_iter_ALT.inc  
+        l-  gap/iter_ALT/gen/plug_in_shift_iter_ALT.inc  
+        l-  gap/iter_ALT/gen/plug_in_spread_iter_ALT.inc  
+        l-  gap/iter_ALT/gen/plug_in_video_iter_ALT.inc  
+        l-  gap/iter_ALT/gen/plug_in_vpropagate_iter_ALT.inc  
+        l-  gap/iter_ALT/gen/plug_in_waves_iter_ALT.inc  
+        l-  gap/iter_ALT/gen/plug_in_whirl_pinch_iter_ALT.inc  
+        l-  gap/iter_ALT/gen/plug_in_wind_iter_ALT.inc  
+        l-  gap/iter_ALT/mod/plug_in_alienmap2_iter_ALT.inc  
+        l-  gap/iter_ALT/mod/plug_in_alienmap_iter_ALT.inc  
+        l-  gap/iter_ALT/mod/plug_in_apply_canvas_iter_ALT.inc  
+        l-  gap/iter_ALT/mod/plug_in_applylens_iter_ALT.inc  
+        l-  gap/iter_ALT/mod/plug_in_blur_iter_ALT.inc  
+        l-  gap/iter_ALT/mod/plug_in_bump_map_iter_ALT.inc  
+        l-  gap/iter_ALT/mod/plug_in_cartoon_iter_ALT.inc  
+        l-  gap/iter_ALT/mod/plug_in_colors_channel_mixer_iter_ALT.inc  
+        l-  gap/iter_ALT/mod/plug_in_colortoalpha_iter_ALT.inc  
+        l-  gap/iter_ALT/mod/plug_in_convmatrix_iter_ALT.inc  
+        l-  gap/iter_ALT/mod/plug_in_deinterlace_iter_ALT.inc  
+        l-  gap/iter_ALT/mod/plug_in_depth_merge_iter_ALT.inc  
+        l-  gap/iter_ALT/mod/plug_in_despeckle_iter_ALT.inc  
+        l-  gap/iter_ALT/mod/plug_in_dog_iter_ALT.inc  
+        l-  gap/iter_ALT/mod/plug_in_emboss_iter_ALT.inc  
+        l-  gap/iter_ALT/mod/plug_in_exchange_iter_ALT.inc  
+        l-  gap/iter_ALT/mod/plug_in_flame_iter_ALT.inc  
+        l-  gap/iter_ALT/mod/plug_in_gauss_iter_ALT.inc  
+        l-  gap/iter_ALT/mod/plug_in_gimpressionist_iter_ALT.inc  
+        l-  gap/iter_ALT/mod/plug_in_illusion_iter_ALT.inc  
+        l-  gap/iter_ALT/mod/plug_in_lic_iter_ALT.inc  
+        l-  gap/iter_ALT/mod/plug_in_lighting_iter_ALT.inc  
+        l-  gap/iter_ALT/mod/plug_in_make_seamless_iter_ALT.inc  
+        l-  gap/iter_ALT/mod/plug_in_map_object_iter_ALT.inc  
+        l-  gap/iter_ALT/mod/plug_in_max_rgb_iter_ALT.inc  
+        l-  gap/iter_ALT/mod/plug_in_maze_iter_ALT.inc  
+        l-  gap/iter_ALT/mod/plug_in_neon_iter_ALT.inc  
+        l-  gap/iter_ALT/mod/plug_in_nlfilt_iter_ALT.inc  
+        l-  gap/iter_ALT/mod/plug_in_normalize_iter_ALT.inc  
+        l-  gap/iter_ALT/mod/plug_in_nova_iter_ALT.inc  
+        l-  gap/iter_ALT/mod/plug_in_oilify_iter_ALT.inc  
+        l-  gap/iter_ALT/mod/plug_in_pagecurl_iter_ALT.inc  
+        l-  gap/iter_ALT/mod/plug_in_papertile_iter_ALT.inc  
+        l-  gap/iter_ALT/mod/plug_in_photocopy_iter_ALT.inc  
+        l-  gap/iter_ALT/mod/plug_in_plasma_iter_ALT.inc  
+        l-  gap/iter_ALT/mod/plug_in_polar_coords_iter_ALT.inc  
+        l-  gap/iter_ALT/mod/plug_in_retinex_iter_ALT.inc  
+        l-  gap/iter_ALT/mod/plug_in_sample_colorize_iter_ALT.inc  
+        l-  gap/iter_ALT/mod/plug_in_sel_gauss_iter_ALT.inc  
+        l-  gap/iter_ALT/mod/plug_in_sinus_iter_ALT.inc  
+        l-  gap/iter_ALT/mod/plug_in_small_tiles_iter_ALT.inc  
+        l-  gap/iter_ALT/mod/plug_in_sobel_iter_ALT.inc  
+        l-  gap/iter_ALT/mod/plug_in_softglow_iter_ALT.inc  
+        l-  gap/iter_ALT/mod/plug_in_solid_noise_iter_ALT.inc  
+        l-  gap/iter_ALT/mod/plug_in_sparkle_iter_ALT.inc  
+        l-  gap/iter_ALT/mod/plug_in_Twist_iter_ALT.inc  
+        l-  gap/iter_ALT/mod/plug_in_unsharp_mask_iter_ALT.inc  
+        l-  gap/iter_ALT/mod/plug_in_vinvert_iter_ALT.inc  
+        l-  gap/iter_ALT/old/plug_in_anamorphose_iter_ALT.inc  
+        l-  gap/iter_ALT/old/plug_in_blur2_iter_ALT.inc  
+        l-  gap/iter_ALT/old/plug_in_CentralReflection_iter_ALT.inc  
+        l-  gap/iter_ALT/old/plug_in_colorify_iter_ALT.inc  
+        l-  gap/iter_ALT/old/plug_in_encript_iter_ALT.inc  
+        l-  gap/iter_ALT/old/plug_in_figures_iter_ALT.inc  
+        l-  gap/iter_ALT/old/plug_in_gflare_iter_ALT.inc  
+        l-  gap/iter_ALT/old/plug_in_holes_iter_ALT.inc  
+        l-  gap/iter_ALT/old/plug_in_julia_iter_ALT.inc  
+        l-  gap/iter_ALT/old/plug_in_magic_eye_iter_ALT.inc  
+        l-  gap/iter_ALT/old/plug_in_mandelbrot_iter_ALT.inc  
+        l-  gap/iter_ALT/old/plug_in_randomize_iter_ALT.inc  
+        l-  gap/iter_ALT/old/plug_in_refract_iter_ALT.inc  
+        l-  gap/iter_ALT/old/plug_in_struc_iter_ALT.inc  
+        l-  gap/iter_ALT/old/plug_in_tileit_iter_ALT.inc  
+        l-  gap/iter_ALT/old/plug_in_universal_filter_iter_ALT.inc  
+        l-  gap/iter_ALT/old/plug_in_warp_iter_ALT.inc  
+
+        l-  images/Makefile.am  
+
+        m-  libgapvidapi/gap_vid_api.c  
+        l-  libgapvidapi/gap_vid_api_ffmpeg.c  
+        l-  libgapvidapi/gap_vid_api_gimp.c  
+        l-  libgapvidapi/gap_vid_api.h  
+        l-  libgapvidapi/gap_vid_api_mpeg3.c  
+        l-  libgapvidapi/gap_vid_api_quicktime.c  
+        l-  libgapvidapi/gap_vid_api_vidindex.c  
+        l-  libgapvidapi/Makefile.am  
+
+        l-  libgapvidutil/gap_gvetypes.h  
+        l-  libgapvidutil/Makefile.am  
+
+        s-  po/ar.po  
+        s-  po/bg.po  
+        s-  po/ca.po  
+        s-  po/ChangeLog  
+        s-  po/en_GB.po  
+        s-  po/es.po  
+        s-  po/fi.po  
+        s-  po/fr.po  
+        s-  po/it.po  
+        s-  po/ne.po  
+        l- po/POTFILES.in  
+        s-  po/pt_BR.po  
+        s-  po/ru.po  
+        s-  po/sl.po  
+        s-  po/sv.po  
+
+        l-  vid_common/gap_cme_callbacks.c  
+        l-  vid_common/gap_cme_gui.c  
+        l-  vid_common/gap_cme_main.c  
+        l-  vid_common/gap_cme_main.h  
+        l-  vid_common/Makefile.am  
+
+        m-  vid_enc_avi/gap_enc_avi_main.c  
+        l-  vid_enc_avi/gap_enc_avi_main.h  
+        l-  vid_enc_avi/Makefile.am  
+
+        m-  vid_enc_ffmpeg/gap_enc_ffmpeg_main.c  
+        l-  vid_enc_ffmpeg/gap_enc_ffmpeg_main.h  
+        l-  vid_enc_ffmpeg/gap_enc_ffmpeg_par.c  
+        l-  vid_enc_ffmpeg/Makefile.am  
+
+        l-  vid_enc_single/gap_enc_singleframes_main.c  
+        l-  vid_enc_single/Makefile.am  
+    
+    Here comes the detailed List of the changes:
+    
+    (2008-03-22)
+    - Storyboard Dialog feature (CTRL-DoubleClick) additional invokes external image viewer
+      (work only for clip types image frame...)
+
+      gimprc: 
+      (video_external_image_viewer "eog")
+
+    (2008-01-05)
+    - modify frames support to expand layer to image size 
+      (applied patch #488653)
+
+    - fixed bug #505001 (replaced calls to deprecated gimp_path_* procedures)
+    * gap/gap_mov_dialog.c
+
+    * gap/gap_mod_layer_dialog.c
+    * gap/gap_mod_layer.c
+    * gap/gap_mod_layer.h
+
+    (2008-01-01)
+    - ffmpeg encoding crash at close (when calling url_fclose for the encoded video file)
+      ==> workaround uses a private version of url_fclose (my_url_fclose)
+
+    - ffmpeg encoding bug with recent version produces corrupted result.
+      (tested with codecs: MPEG1 and MPG2)
+
+       prints out the error message:
+          [mpeg @ 0x83d8bf4]buffer underflow i=0 bufi=14756 size=38114
+
+
+    ffmpeg encoder use  1 as deniominator (where possible) when setup the AVRational struct.
+
+    * vid_enc_ffmpeg/gap_enc_ffmpeg_main.c
+    * extern_libs/README_extern_libs
+    * extern_libs/ffmpeg.tar.gz  # updated to svn snaphot from 2007.12.20
+
+    (2007-12-01)
+    - bugfix video api ffmpeg (prefere_native_seek yes) was se in the .analyze file
+      but vindex was used in seek operations.
+
+     * libgapvidapi/gap_vid_api_ffmpeg.c
+
+    (2007-12-01)
+    - bugfix in modify frames when  using a filter appply function:
+       works, but causes GIMP error messages:
+            a calling error occurred while trying to run: "gimp-image-delete"
+
+       now calling gimp_image_delete before gimp_display_delete (gap_mod_layer.c)
+       and modify frames works without displaying this error message.
+
+    - continue update of _Iterator_ALT procedures for gimp-2.4
+      changes the following iterators:
+
+    - bugixes related to animated filtercalls.
+    The gimp-2.4.x release has renamed all plug ins to match Canonical identifier names.
+
+      * Canonical identifiers are e.g. expected by the PDB for procedure
+      * and parameter names. Every character of the input string that is
+      * not either '-', 'a-z', 'A-Z' or '0-9' will be replaced by a '-'.
+
+    canonicalized identifiers are now used in gimp_set_data, gimp_get_data procedures
+    and in PDB procedure names.
+    conversion is done via
+
+       gimp_canonicalize_identifier.
+
+    (this replaces all underscore characters to minus character)
+
+    the GIMP-GAP Iterator stuff was broken because GIMP-GAP name conventions
+    did not match canonical names and many last value buffer structures
+    changed since gimp-2.2.x.
+    Now changed all names related to Iterator stuff
+    to make things work again with GIMP-2.4.0.
+
+    Note that there is no longer backward compatibility with older releases,
+    that do not operate with canonical names. (most plug ins also
+    changed the structure of their last values buffer.
+    (many plug ins had a boolean preview flag in this buffer that was
+     removed with gimp-2.4.0)
+
+
+    configure.in                 # updated required gimp version to 2.4.0
+
+    gap/gap_filter_pdb.c
+    gap/gap_filter.h
+    gap/gap_filter_foreach.c
+    gap/gap_filter_iterators.c
+    gap/gap_fmac_base.c
+    gap/gap_fmac_main.c
+    gap/gap_mod_layer.c
+    gap/gap_wr_color_curve.c
+    gap/gap_wr_color_hue_saturation.c
+    gap/gap_wr_color_levels.c
+    gap/gimplastvaldesc.h
+
+    gap/TESTPROT_iter_ALT
+    gap/iter_ALT/gen/*.inc
+    gap/iter_ALT/mod/*.inc
+    gap/iter_ALT/old/*.inc
+
+
+    (2007-11-28)
+    startet update of _Iterator_ALT procedures for gimp-2.4
+    all of them must follow the new naming style (underscore changed to minus character).
+
+    * gap/gap_filter.h
+    * gap/gap_filter_pdb.c
+    * gap/gap_filter_iterators.c
+
+    * gap/iter_ALT/mod/plug_in_map_object_iter_ALT.inc
+
+
+
+    (2007-11-24)
+     added progress dialog to video index creation plug-in,
+     now supports QUICK, SMART and FULLSCANN modes.
+
+     bugifx: video index creation plug-in plug-in was greyed out if no image opened 
+      ==> registrate with NULL as PLUG_IN_IMAGE_TYPES, because this plugin works without any image.
+
+    * gap/gap_video_index_creator.c
+
+    (2007-11-20) Wolfgang Hofer <hof@gimp.org>
+    video index creation now performs timecode stepsize checks, and updates the video analyze file
+    if necessary. (e.g. if critical steps are detected)
+
+    * gap_vid_api_ffmpeg.c
+
+
+    (2007-11-18)
+    fix attempt for crash in storyboard when video thumbnail prefetch is busy.
+    caused by concurrent video fetch operations that occured 
+    because the prefetch code calls g_main_context_iteration to keep GUI alive.
+    ==> current solution automatically cancelles the video thumbnail prefetch
+        if another GUI activity requires access to a video thumbnail.
+
+    !!!! sometimes still CRASHING (at open clip properties window)
+    ==> dont open properties window if gva_lock set
+
+
+     * gap/gap_story_dialog.c
+     * gap/gap_story_dialog.h
+     * gap/gap_story_vthumb.c
+
+
+    (2007-11-11)
+    merged changes from svn into local development.
+    ( gimp_show_help_button )
+
+    * gap/gap_arr_dialog.c
+    * gap/gap_dbbrowser_utils.c
+    * gap/gap_fmac_main.c
+    * gap/gap_mov_dialog.c
+    * gap/gap_onion_dialog.c
+    * gap/gap_resi_dialog.c
+
+
+    (2007-11-03)
+    update libavcodec/libavformat to recent ffmpeg libraries
+      - configure option canged from: --enable-xvid  to: --enable-libxvid
+
+    - 2.4 bugfix: GAP_LIB goto frame crashes on non-xcf frames
+        caused by gap_lib.c::p_lib_save_named_image2
+        attempt to g_free drawable fails with gimp-2.4:
+
+            GimpDrawable *l_drawable;
+
+            l_drawable = gimp_drawable_get(layer_id);
+            g_free(l_drawable);                            // crash with invalid pointer exception.
+
+          ==> for correct operation shall use
+              gimp_drawable_detach(l_drawable);
+
+              but in this case it is not necessary to call gimp_drawable_get at all.
+              changed the code to operate on the gint32 drawable_id.
+
+    - 2.4 bugfix: Master Videoencoder does not recognize the registered encoder plug-ins.
+       ==> gimp-2.4 gimp_procedural_db_query does not accept the same wildcard as gimp-2.2
+           (underscore characters are no longer found via wildcard)
+
+       changed GAP_WILDCARD_VIDEO_ENCODERS  and use minus character for the all the encoder plug ins.
+       from   "^plug_in_gap_enc_.*" 
+       to     "^plug-in-gap-enc-.*"
+
+
+    - gimprc key for tooltips changed in gimp-2.4
+      use one common procedure gap_lib_check_tooltips that uses the 2.4 variant.
+
+      value_string = gimp_gimprc_query("show-tool-tips");  // 2.2
+      value_string = gimp_gimprc_query("show-tooltips");   // 2.4
+
+    * extern_libs/ffmpeg.tar.gz        (update to snapshot 2007.10.31)
+    * extern_libs/README_extern_libs
+    * configure.in
+    * gap/gap_arr_dialog.c
+    * gap/gap_lib.c
+    * gap/gap_filter_pdb.c 
+    * gap/gap_pdb_calls.c
+    * gap/gap_navigator_dialog.c
+    * gap/gap_morph_dialog.c
+    * gap/gap_story_att_trans_dlg.c
+
+
+    * libgapvidutil/gap_gvetypes.h
+    * docs/reference/txt/INTRODUCTION.txt
+
+    (2007-10-28)
+    Started testing based on gimp-2.4.0
+     - tooltips are NOT active, even if enabled in GIMP preferences!
+      value_string = gimp_gimprc_query("show-tool-tips");  // 2.2
+      value_string = gimp_gimprc_query("show-tooltips");   // 2.4
+
+      is there a solution working both in gimp2.2. and gimp2.4 ?
+
+     - bugfix in Gap Playback dialog: 
+        Calls with invalid image_id were done at click on preview widget to create a gimp-image.
+          gimp-image-set-resolution
+          gimp-image-set-unit
+
+        ==> gap_vid_api.c::GVA_image_set_aspect. must set aspect on image_id 
+           (and not on gvahand->image_id as was implemented before)
+
+     - annoying warning "No audiosupport .." if wavplay is not installed on each Player start
+       the warning is now deferred until 1st attempt to play an audiofile. 
+
+    * libgapvidapi/gap_vid_api.c
+    * gap/gap_player_dialog.c
+
+
+
+    (2007-10-21)
+    - Storyboard Playback button for cliplist and storyboard
+      changed normal click and SHIFT-click behaviour.
+
+      old:
+         normal:     play all clips of current track,
+         SHIFT:      play selected clips of current track
+         CTRL:       play composite video, all clips of all tracks
+         CTRL_SHIFT: play composite video, only selected clips.
+                     (if the user did not make useful selections
+                      the result did not produce useful results)
+
+      new:
+         normal:     play selected clips of current track
+                     (if nothing is selected play all clips)
+
+                     This is the most frequent use case of playback
+                     and shall not require a modifier key.
+
+         SHIFT:      play all clips of current track
+         CTRL:       play composite video, only selected clips of current track
+                     (automatic select and playback frames in all other
+                     tracks
+         CTRL_SHIFT: play composite video, all clips of all tracks.
+
+
+      - Storyboard undo/redo support
+      - Storyboard debug features triggerd via file
+         (the file has constant name: GAP_DEBUG_STORYBOARD
+         and is searched in the gimp_directory.
+
+    * gap/Makefile.am
+    * gap/gap_story_dialog.c
+    * gap/gap_story_undo.c [.h]             # new files
+    * gap/gap_story_undo_types.h            # new files
+
+    (2007-10-13)
+    - created icon symbol for storyboard section.
+    - Storyboard added section properties (popup) dialog
+      that handles creation, update and delete of sub-sections.
+
+    * images/Makefile.am
+    * images/gap-story-icon-blacksection.png  # new file
+    * images/gap-story-icon-section.png       # new file
+    * images/gap-story-icon-section-main.png  # new file
+    * images/gap-story-icon-section-mask.png  # new file
+    * gap/Makefile.am
+    * gap/gap_story_vthumb.c [.h]             # new files
+
+    (2007-10-06)
+    Storyboard dialog: thumbnail rendering support for clip types
+    section and anim-image, based on the storyboard render processor.
+
+
+    * gap/Makefile.am
+    * gap/gap_story_section_properties.c [.h]   # new files
+
+    (2007-09-29)
+      - fixed showstopper bugs in the storyboard render processor engine
+        (internal bugs in the new section based features)
+      - first successful storyboard rendering test using sub sections.
+      - selection mapping for playback of composite video.
+        the new concept keeps all clips in all tracks of the relevant section
+        in the duplicate that is passed to the player, and provides
+        a mapping of the selected frame ranges.
+        The player uses this mapping to pick only framenumbers that
+        are mapped to selected clips.
+        (The old approach did include only selected clips in the duplicate
+        but this is not sufficient if there is more than one track present.
+        Different selections in multiple tracks often leads 
+        to unwanted displacements between the tracks
+        depending and produces other results
+        as the rendering of the finally output video will do, and the user
+        would expect).
+
+
+     * gap/gap_story_render_processor.c [.h]
+     * gap/gap_story_file.c [.h]
+     * gap/gap_story_dialog.c
+     * gap/gap_player_dialog.c
+
+     (2007-09-25)
+     storyboard support to save/load edit_settings
+     includes current value of active_section, video track and page
+     (e.g. scroll position)
+
+     (2007-09-19)
+     Continued coding for Storyboard section support. (not yet finished)
+
+     * gap/gap_story_att_trans_dlg.c
+     * gap/gap_story_dialog.c
+     * gap/gap_story_dialog.h
+     * gap/gap_story_file.c
+     * gap/gap_story_file.h
+     * gap/gap_story_main.c
+     * gap/gap_story_main.h
+     * gap/gap_story_properties.c
+     * gap/gap_story_properties.h
+     * gap/gap_story_render_audio.c
+     * gap/gap_story_render_audio.h
+     * gap/gap_story_render_processor.c
+     * gap/gap_story_render_processor.h
+     * gap/gap_story_render_types.h
+     * gap/gap_story_syntax.c
+     * gap/gap_story_syntax.h
+
+     (2007-09-08)
+     - bugfix STORYBOARD parser.
+       did reject legal duration value 0 on attribut records
+       VID_ZOOM and VID_MOVE
+     - bugfix: gap_cme_callbacks.cprocedure on_cme__spinbutton_framerate_changed
+       no longer cast framerate to integer !
+       This error poped up because
+       recent versions of libavcodec dont accept framerates, that do
+       not exactly match the supported standard values.
+       therefore an additional fix was required in the ffmpeg encoder
+       to guarantee exactly the expected rates of the codecs
+       for some common used framerates.
+       (59.94 ==>  60000 / 1001
+        29.97 ==>  30000 / 1001
+        23.98 ==>  24000 / 1001)
+
+       (caused videos with 29.97 fps fail to encode for some codecs,
+       other codecs just used the unwanted truncated value of 29.0)
+
+     - new value "ask-always"  for gimprc parmeter (video-index-creation )
+       ask-always provides the old behaviour of the setting "ask".
+       the default value "ask" no longer asks the user to create a videoindex in case
+       where native seek works, and the videoindex is not required.
+       (asking in those situation is rather annoying, especially when working
+       with the storyboard dialog)
+
+     - STORYBOARD dialog layout: prepare for new feature that introuces
+       sections. 
+       - added combo box to select section MAIN, Mask (still without functionality)
+       - hide the rowpage spinbutton (Row x of n) to get space for the
+         new section name combo box. Note that rowpage spinbutton is redundant information,
+         since there is already a vscale widget for scrolling and visualize
+         the current position.
+
+     * gap/gap_story_file.c
+     * gap/gap_story_main.h
+     * gap/gap_story_dialog.c
+     * gap/gap_arr_dialog.c
+     * docs/reference/txt/gap_gimprc_params.txt
+
+     * vid_enc_ffmpeg/gap_enc_ffmpeg_main.c
+     * vid_common/gap_cme_callbacks.c
+
+    (2007-09-05)
+    - New storyboard feature allows arrange video tracks
+      at inverse order e.g video track 1 can appear in backround
+      or as foreground (on top of layerstack in the composite frame,
+      this is default for compatibility with older storyboard files.)
+
+     * docs/reference/txt/STORYBOARD_FILE_DOC.txt
+     * gap/gap_story_syntax.c [.h]
+     * gap/gap_story_file.c [.h]
+     * gap/gap_story_render_processor.c
+     * gap/gap_story_dialog.c
+
+     (2007-05-17)
+     detection of external libs for ffmpeg (liba52 and x264)
+     if those libs are installed configure ffmpeg accordingly.
+     (added configure options to explicite disable both libs)
+
+     * configure.in
+
+    (2007-05-12)
+    - continued refactoring libbase
+    - removed key/value procedures from gap_vin.c[.h] and
+      use common key/value procedures of the new gap_val_file.h
+      module.
+    - gimprc prameter (video-gva-libavformat-video-analyse-persistent "yes")
+
+
+     * */Makefile.am        # (changed all Makefiles)
+     * gap/gap_vin.c [.h]
+     * libgapvidapi/gap_vid_api_ffmpeg.c
+     * libgapvidapi/gap_vid_api_vidindex.c
+
+
+    (2007-05-08)
+    - started key/value file refactoring (created libbase)
+
+     * libgapbase                       # new dir
+     * libgapbase/Makefile.am           # new file
+     * libgapbase/gap_val_file.c        # new file
+     * libgapbase/gap_val_file.h        # new file
+
+     * Makefile.am
+     * configure.in
+
+
+     (2007-04-28)
+     ffmpeg native seek
+     - support for videos that include negative timecode steps.
+         * example:
+         * video timcode sequence with negative stepsizes may look like this:
+         *   seek_framenumber:000556; seek_timecode:45555; stepsize:1;
+         *   seek_framenumber:000557; seek_timecode:49306; stepsize:3751; 
+         *   seek_framenumber:000558; seek_timecode:45557; stepsize:-3749;
+         *   seek_framenumber:000559; seek_timecode:45558; stepsize:1;
+
+     * libgapvidapi/gap_vid_api_ffmpeg.c
+
+
+    (2007-04-21)
+     bugfix storyboard processor crashed
+     if the last frame of a video shall be fetched for rendering.
+     when the ffmpeg API wrappers are used.
+
+     ==> gap_vid_api_ffmpeg.c::p_seek_private
+         old: constraint l_frame_pos to gvahand->total_frames -1
+         new: constraint l_frame_pos to gvahand->total_frames.
+
+         must allow full number of frames, because this is the upper
+         limit for the seek position.
+         The seek position indicates what frame number will be read
+         with the next sequential read. The wrong constraint was responsible
+         for positioning one frame less than required.
+         then the processor performed the read operation with
+         intention to read the last frame (but got last-1)
+         the following processing could not find the required
+         framenumber of the last frame and lead to the crash.
+
+
+     * libgapvidapi/gap_vid_api_ffmpeg.c
+     * libgapvidapi/gap_vid_api.c
+
+
+     (2007-04-21)
+     AVI encoder: removed old unused GUI dialog code variant.
+
+     * vid_enc_avi/gap_enc_avi_main.c
+
+
+     (2007-04-14)
+     bugfixes on ffmpeg native seek
+     - gap player: must reset cancel request before trigger self test.
+     - ffmpeg native seek: added procedure p_clear_inbuf_and_vid_packet
+       must clear the old input buffer content after seek
+       otherwise following read operation sometimes crashes at call of avcodec_decode_video
+       because the input buffer may still point to an old (now invalid) packet.
+
+     * NEWS
+     * gap/gap_player_dialog.c
+     * libgapvidapi/gap_vid_api_ffmpeg.c
+
+
+     (2007-04-13)
+     (Applied patch to fix Bug #427487)
+     * gap/gap_mod_layer_dialog.c
+
+
+     (2007-04-10)
+     added Video API procedure GVA_check_seek_support
+     based on this procedure the caller gets information if
+     fast random access is possible with or without creating
+     a video index (or not possible at all).
+
+     This information is now presented in the video index creation
+     dialog. This dialog only comes up in case where gimprc setting is
+       (video-index-creation "ask")
+     that is also the default if nothing is configured at all.
+
+     Changes for configuration:
+       (video-index-creation "yes")
+
+       the video index creation is NOT done if native seek works
+       or if seek does not work at all and video index would be useless.
+
+     * gap/gap_arr_dialog.c [.h]
+     * gap/gap_story_dialog.c
+     * gap/gap_player_dialog.c:
+
+     * libgapvidapi/gap_vid_api.c [.h]
+     * libgapvidapi/gap_vid_api_ffmpeg.c
+     * libgapvidapi/gap_vid_api_gimp.c
+     * libgapvidapi/gap_vid_api_mpeg3.c
+     * libgapvidapi/gap_vid_api_quicktime.x
+
+
+     (2007-04-04)
+     fixed wrong checks for CR character  (was \a, correct is \r)
+     * gap/gap_file_util.c
+     * gap/gap_story_file.c
+
+
+     (2007-04-03)
+     new plug-in for explicite video index creation.
+     <Toolbox>/Xtns/Video Index Creation...
+
+     ffmpeg timecode logging for internal analysis of videofiles.
+
+     logging is triggered at video index creation
+     if gimprc parameter (video-libavformat-timecodelog "1")
+     it creates a logfile with same name as the videoindex + ".timelog"
+
+     The gimprc parameter video-libavformat-timecodelog
+     defaults to "0" where no .timelog file is written.
+     *.timelog files are useful for developers 
+     to analyze and verify native timcode based
+     seek operations. *.timelog files contain timecodes and stepsize differences
+     for each frame of the analyzed video and CRITICAL warnings where
+     variable or non-plausible timecodes were detected.
+
+
+     * libgapvidapi/gap_vid_api_ffmpeg.c
+     * gap/Makefile.am
+     * gap/gap_video_index_creator.c          # new file
+
+    (2007-03-17)
+     new gimprc parameter video-libavformat-seek-gopsize 
+     to control usage of native seek via libavformat.
+
+     * libgapvidapi/gap_vid_api_ffmpeg.c
+     * docs/reference/txt/gap_gimprc_params.txt
+
+     ==> bugs:
+     - for videos with fixed duration for all frames.
+       positioning sometimes not exact.
+       (differs by 1 sometimes after backwards positioning
+        and after EOF situation)
+
+        file: NUMs....mpg  
+        player position: frame 221  shows frame Nr 220!
+
+        probably Player BUG, because Log messages says that
+        positioning to 220 is required !
+        (positioning was done with slider, maybe a rounding error
+        caused display of wrong number in the spinbutton ?)
+
+
+        AVFORMAT: av_seek_frame retcode: 0 seek_pos_microsecs:810000 frame_pos:220
+        [mpeg1video @ 0x84a589c]end mismatch left=4824 6EEA2F
+        [mpeg1video @ 0x84a589c]concealing 1350 DC, 1350 AC, 1350 MV errors
+        AVFORMAT: (0) debug read frame timecode: 810000 (target_timecode:821250, stepsize:3750 (3750))
+        AVFORMAT: (1) debug read frame timecode: 813750 (target_timecode:821250, stepsize:3750 (3750))
+        AVFORMAT: (2) debug read frame timecode: 817500 (target_timecode:821250, stepsize:3750 (3750))
+        AVFORMAT: (3) debug read frame timecode: 821250 (target_timecode:821250, stepsize:3750 (3750))
+
+
+     - sometimes crash 
+
+
+     - how to detect videos with individual frame durations ?
+       (without scanning the full videofile)
+       allow operate with average frame duration ?
+
+       videofile: /home/tmp_hof/TEST.MPG  (has individual frame durations!)
+
+
+     TODO:
+     write regression tests to verify positioning.
+     (shall be configuable with llist of videofiles,
+     and perform seek ops  with and without native seek!
+
+
+     gap_vid_api_ffmpeg.c:764: warning: `img_convert' is deprecated 
+      (declared at /home/hof/gimp_cvs/unstable/gap-ffmpeg/g   In file included from gap_vid_api.c:726:
+     gap_vid_api_ffmpeg.c: In function `p_read_audio_packets':
+     gap_vid_api_ffmpeg.c:2446: warning: `avcodec_decode_audio' is deprecated 
+      (declared at /home/hof/gimp_cvs/unstable/gap-ffmpeg/gimp-gap-ffmpeg/extern_libs/ffmpeg/libavcodec/avcodec.h:2714)
+
+
+     (2007-03-15)
+     - attempt fixed bug for non-interactive call of plug_in_wr_curves
+       (expects 4 paramsm but did check for at least 5)
+
+
+     test with scrip-fu console:
+     (plug-in-wr-curves 1 1 1 "/windows/vol1/testdata_gap_storyboard/test.curve") 
+
+     Error: PDB call of gimp_curves_explicit failed status:0
+     Error: PDB call of gimp_curves_explicit failed status:0
+     Error: PDB call of gimp_curves_explicit failed status:0
+     Error: PDB call of gimp_curves_explicit failed status:0
+
+
+     * gap/gap_wr_color_curve.c
+
+    (2007-03-14)
+     use libavformat native seek for positioning videostream.
+     use probe read to detect timecode offset of 1.st frame
+     and stepsize for one frame.
+
+     ==> still buggy, 
+        - MPEG files sometimes deliver trash 
+          (maybe keyframe detection does not work properly
+          and seek takes us to P or B frame position ?
+
+          .VOB file semmd to deliver clean frames.
+        - tuning to deliver exact position required.
+        - vex plugin (seems to use incorrect aspect ratio on 16:9 .VOB files
+           1,42222)
+        - seek after EOF results in endless loop.
+
+     * libgapvidapi/gap_vid_api_ffmpeg.c
+
+
+     (2007-03-14)
+     fix for bug#417524 (frames to image for indexed frames)
+     * gap/gap_range_ops.c
+
+     (2007-03-11)
+     libavformat, libavcodec NEW: libavutil
+
+     * configure.in
+     * extern_libs/Makefile.am
+     * libgapvidapi/gap_vid_api_ffmpeg.c
+     * vid_enc_ffmpeg/gap_enc_ffmpeg_main.c
+
+     compile with recent ffmpeg OK, read test (using video extract) passed OK.
+
+     (2007-03-06) Started upgrade to recent ffmpeg
+      --------------------------------------------
+
+     replaced ffmpeg tarball with ffmpeg-export-snapshot-2007.03.06.tar   
+     made configure updates to allow compile with new ffmpeg
+
+     - configure.in: handle #comments in configure_options_ffmpeg.txt files
+
+     WARNING: this ffmpeg tarball came without liba52 !
+     therefore no ac3 available (result: NO AUDIO support for DVD videos)
+
+     * configure.in
+     * extern_libs/ffmpeg.tar.gz   (now SVN snapshot-2007.03.06)
+     * extern_libs/configure_options_ffmpeg.txt
+
+     currently COMPILE ERRORs
+     (update in gap sources still missing)
+
+      gap_vid_api_ffmpeg.c: In function `p_wrapper_ffmpeg_seek_frame':
+      gap_vid_api_ffmpeg.c:916: warning: implicit declaration of function `round'
+      gap_vid_api_ffmpeg.c: In function `p_ff_open_input':
+      gap_vid_api_ffmpeg.c:1710: warning: comparison between signed and unsigned
+      gap_vid_api_ffmpeg.c:1712: warning: assignment from incompatible pointer type
+      gap_vid_api_ffmpeg.c:1781: error: incompatible types in assignment
+      gap_vid_api_ffmpeg.c:1794: error: structure has no member named `frame_rate'
+      gap_vid_api_ffmpeg.c:1797: error: structure has no member named `frame_rate'
+      gap_vid_api_ffmpeg.c:1797: error: structure has no member named `frame_rate_base'
+      gap_vid_api_ffmpeg.c:1798: error: structure has no member named `frame_rate_base'
+      gap_vid_api_ffmpeg.c:1802: error: structure has no member named `frame_rate_base'
+      In file included from gap_vid_api.c:726:
+      gap_vid_api_ffmpeg.c: In function `p_read_audio_packets':
+      gap_vid_api_ffmpeg.c:2270: warning: `avcodec_decode_audio' is deprecated (declared at /home/hof/gimp_cvs/unstable/gap-ffmpeg/gimp-gap-ffmpeg-update-branch/extern_libs/ffmpeg/libavcodec/avcodec.h:2714)
+
+
+
+     (2006-12-19)
+     Storyboard FEATURE: support applying filtermacro on 
+           processed video clips with varying values.
+
+     Clip Properties dialog:
+
+      - spinbutton to enter macro steps to define duration in frames
+        (how long it takes to fade from master macro values
+         to alternate macro values)
+        Values > 1 enable filter apply with varying values.
+
+      - label that indicates presence of the alternate macro file
+        and wheter it is active (ON) or turned off by stepsize 1 (OFF)
+
+
+        Alternate macro files are automatically detected via name convention
+        via the keyword .VARYING (as suffix or before the extension)
+
+
+          New
+	  * gap_fmac_name.c [.h]        # newly created files
+	  * gap_fmac_base.c [.h]        # newly created files
+	  * gap_fmac_varying_main.c     # newly created file
+
+          Changed:
+          * docs/reference/txt/STORYBOARD_FILE_DOC.txt
+	  * po/POTFILES.in
+
+          * gap/Makefile.am
+          * gap/gap_story_file.c
+          * gap/gap_story_file.h
+          * gap/gap_story_properties.c.txt
+          * gap/gap_story_render_processor.c
+          * gap/gap_story_render_types.h
+          * gap/gap_story_syntax.c
+          * gap/gap_filter_pdb.c [.h]
+          * gap/gap_fmac_main.c
+
+       (2006-12-09)
+       Storyboard: added ClipTarget togglebutton
+       For selecting the clip target (ON: storyboard, OFF cliplist)
+       when creating a new clip via player feature "add selected range" as clip. 
+       For assotiation the clip target toggle button uses the same icon
+       as the corresponding button in the (integrated) playback window.
+
+       * gap/gap_story_dialog.c
+       * gap/gap_story_main.c [.h]
+
+       (2006-12-03)
+       Storyboard: speed up video thumbnail creation (minimize open/frame seek times)
+       Testfile with 503 storyboard records of ty VID_PLAY_MOVIE
+       after  optimize: 1 min 40sec
+       before optimize: 1 min 27sec
+
+       new storyboard dialog properties flag to "Force Aspect"
+        gimprc parameter: (video-storyboard-force-aspect-playback "yes")
+        ON:  force display of all clips to proportions defined in Storyboard properties.
+        OFF: display clips at their native proportions
+
+       * gap/gap_story_dialog.c
+       * gap/gap_story_file.c [.h]
+       * gap/gap_story_main.c [.h]
+
+       * gap/gap_player_dialog.c
+       * gap/gap_vex_main.c
+       * docs/reference/txt/gap_gimprc_params.txt
+
+
+
+       (2006-11-20)
+       Storyboard: extend selection (SHIFT click) now respects the vtrack number.
+
+       * gap/gap_story_dialog.c
+       * gap/gap_story_file.c [.h]
+
+       (2006-08-31)
+	  - bugfix original tone track generation created pause
+            instead of the original tone for clips with duration of one frame.
+       * gap/gap_story_file.c
+
+       (2006-08-24)
+       - bugfix: videoindex was slow for videos with variable GOP size.
+         (stepsize for ffmpeg is calculated via guess of the GOP,
+         but index entries may dffer in step size depending if the
+         video is encoded with constant or variable GOP size.
+         the calculation of the first index to use works for constant
+         stepsize, but requires adjusting the picked index
+         (the already existing adjustment only checked if
+         the frame position is too big, A further adjustment
+         was added that checks if the picked index uses a frame number that
+         is much too small and would cause too much full frame read).
+
+       * libgapvidapi/gap_vid_api_vidindex.c
+       * libgapvidapi/gap_vid_api_ffmpeg.c
+
+       (2006-08-10)
+       - storyboard editor show number of frames.
+
+           *gap/gap_story_dialog.c [.h]
+
+       (2006-07-16)
+       - storyboard saving aspect used wrong record key word VID_MASTER_SIZE
+       - parse storyboard attributes allow duration 0..n
+         (the check for duration >= 1 is not ok, because the editor
+         allows creating 0 duration)
+
+
 2008-02-14  Sven Neumann  <sven@gimp.org>
 
 	Merged from gap-2-4:

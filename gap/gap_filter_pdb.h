@@ -55,5 +55,12 @@ int gap_filt_pdb_constraint_proc_sel1(gchar *proc_name, gint32 image_id);
 int gap_filt_pdb_constraint_proc_sel2(gchar *proc_name, gint32 image_id);
 int gap_filt_pdb_constraint_proc(gchar *proc_name, gint32 image_id);
 
+gboolean        gap_filter_iterator_call(const char *iteratorname
+                        , gint32      total_steps
+                        , gdouble     current_step
+                        , const char *plugin_name
+                        , gint32      plugin_data_len
+                        );
+
 
 #endif

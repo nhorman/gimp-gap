@@ -29,8 +29,8 @@ gint p_plug_in_universal_filter_iter_ALT(GimpRunMode run_mode, gint32 total_step
       return -1;  /* ERROR */ 
     }
 
-    gimp_get_data("plug_in_universal_filter_ITER_FROM", g_plugin_data_from); 
-    gimp_get_data("plug_in_universal_filter_ITER_TO",   g_plugin_data_to); 
+    gimp_get_data("plug-in-universal-filter-ITER-FROM", g_plugin_data_from); 
+    gimp_get_data("plug-in-universal-filter-ITER-TO",   g_plugin_data_to); 
 
     buf_from = (t_plug_in_universal_filter_Vals *)&g_plugin_data_from[0]; 
     buf_to   = (t_plug_in_universal_filter_Vals *)&g_plugin_data_to[0]; 
@@ -49,7 +49,7 @@ gint p_plug_in_universal_filter_iter_ALT(GimpRunMode run_mode, gint32 total_step
     p_delta_long(&buf.norm, buf_from->norm, buf_to->norm, total_steps, current_step);
     p_delta_long(&buf.bias, buf_from->bias, buf_to->bias, total_steps, current_step);
 
-    gimp_set_data("plug_in_universal_filter", &buf, sizeof(buf)); 
+    gimp_set_data("plug-in-universal-filter", &buf, sizeof(buf)); 
 
     return 0; /* OK */
 }

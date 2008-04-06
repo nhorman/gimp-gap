@@ -40,6 +40,7 @@
 #include <libgimp/gimpui.h>
 
 #include "gap_story_main.h"
+#include "gap_story_undo.h"
 #include "gap_story_dialog.h"
 #include "gap_story_file.h"
 #include "gap_story_properties.h"
@@ -52,6 +53,8 @@
 #include "gap_vin.h"
 #include "gap_timeconv.h"
 #include "gap_thumbnail.h"
+#include "gap_fmac_base.h"
+#include "gap_story_vthumb.h"
 
 
 #include "gap-intl.h"
@@ -99,6 +102,8 @@ static void     p_pw_prop_response(GtkWidget *widget
                        , gint       response_id
                        , GapStbPropWidget *pw
                        );
+static void     p_pw_push_undo_and_set_unsaved_changes(GapStbPropWidget *pw);
+
 static void     p_pw_propagate_mask_attribute_changes(GapStbPropWidget *pw);
 static void     p_pw_propagate_mask_name_changes(GapStbPropWidget *pw
                        , const char *mask_name_old
@@ -129,6 +134,7 @@ static gboolean p_pw_preview_events_cb (GtkWidget *widget
 static gboolean p_pw_mask_preview_events_cb (GtkWidget *widget
                        , GdkEvent  *event
                        , GapStbPropWidget *pw);
+static gboolean p_toggle_clip_type_elem (GapStbPropWidget *pw);
 static gboolean p_pw_icontype_preview_events_cb (GtkWidget *widget
                        , GdkEvent  *event
                        , GapStbPropWidget *pw);
@@ -155,6 +161,7 @@ static void     p_radio_delace_even_callback(GtkWidget *widget, GapStbPropWidget
 static void     p_delace_spinbutton_cb(GtkObject *obj, GapStbPropWidget *pw);
 static void     p_maskstep_density_spinbutton_cb(GtkObject *obj, GapStbPropWidget *pw);
 static void     p_step_density_spinbutton_cb(GtkObject *obj, GapStbPropWidget *pw);
+static void     p_fmac_steps_spinbutton_cb(GtkObject *obj, GapStbPropWidget *pw);
 
 static void     p_radio_flip_update(GapStbPropWidget *pw, gint32 flip_request);
 static void     p_radio_flip_none_callback(GtkWidget *widget, GapStbPropWidget *pw);
@@ -171,6 +178,7 @@ static void     on_clip_elements_dropped_as_mask_ref (GtkWidget        *widget,
                    guint             time);
 static void     p_pw_dialog_init_dnd(GapStbPropWidget *pw);
 
+static void         p_pw_check_fmac_sensitivity(GapStbPropWidget *pw);
 static GtkWidget *  p_pw_create_clip_pv_container(GapStbPropWidget *pw);
 static GtkWidget *  p_pw_create_mask_pv_container(GapStbPropWidget *pw);
 static GtkWidget *  p_pw_create_icontype_pv_container(GapStbPropWidget *pw);
@@ -194,7 +202,16 @@ p_pw_prop_reset_all(GapStbPropWidget *pw)
   mask_name_old = NULL;
   if(pw->stb_elem_refptr)
   {
+    gap_stb_undo_push_clip(pw->tabw
+        , GAP_STB_FEATURE_PROPERTIES_CLIP
+        , pw->stb_elem_refptr->story_id
+        );
+
     pw->stb_refptr->unsaved_changes = TRUE;
+    if(pw->stb_refptr->active_section)
+    {
+      pw->stb_refptr->active_section->version++;
+    }
     if(pw->stb_elem_refptr->mask_name)
     {
       mask_name_old = g_strdup(pw->stb_elem_refptr->mask_name);
@@ -324,6 +341,10 @@ p_pw_prop_response(GtkWidget *widget
       {
         gboolean all_scenes;
 
+        if(pw->stb_refptr->active_section != NULL)
+        {
+          pw->stb_refptr->active_section->version++;
+        }
         pw->stb_refptr->unsaved_changes = TRUE;
         pw->scene_detection_busy = TRUE;
         all_scenes = FALSE;
@@ -383,6 +404,37 @@ p_pw_prop_response(GtkWidget *widget
       break;
   }
 }  /* end p_pw_prop_response */
+
+
+/* --------------------------------------
+ * p_pw_push_undo_and_set_unsaved_changes
+ * --------------------------------------
+ * this procedure is called in most cases when
+ * a clip property has changed.
+ * (note that the Undo push implementation filter out
+ * multiple clip property changes t the same object in sequence)
+ */
+static void
+p_pw_push_undo_and_set_unsaved_changes(GapStbPropWidget *pw)
+{
+  if(pw != NULL)
+  {
+    if((pw->stb_elem_refptr != NULL) && (pw->stb_refptr != NULL))
+    {
+      gap_stb_undo_push_clip(pw->tabw
+          , GAP_STB_FEATURE_PROPERTIES_CLIP
+          , pw->stb_elem_refptr->story_id
+          );
+
+      pw->stb_refptr->unsaved_changes = TRUE;
+      if(pw->stb_refptr->active_section != NULL)
+      {
+        pw->stb_refptr->active_section->version++;
+      }
+    
+    }
+  }
+}  /* end p_pw_push_undo_and_set_unsaved_changes */
 
 /* --------------------------------------
  * p_pw_propagate_mask_attribute_changes
@@ -646,8 +698,9 @@ p_pw_auto_scene_split(GapStbPropWidget *pw, gboolean all_scenes)
   num_diff = 0;
   if(stb_elem->record_type == GAP_STBREC_VID_MOVIE)
   {
-    prev_th_data = gap_story_dlg_fetch_vthumb(sgpp
-              ,stb_elem->orig_filename
+    prev_th_data = gap_story_vthumb_fetch_thdata(sgpp
+              ,pw->stb_refptr
+              ,stb_elem
               ,stb_elem->from_frame
               ,stb_elem->seltrack
               ,p_pw_get_preferred_decoder(pw)
@@ -694,6 +747,9 @@ p_pw_auto_scene_split(GapStbPropWidget *pw, gboolean all_scenes)
   l_1st_th_height = l_th_height;
   l_1st_th_bpp    = l_th_bpp;
 
+  gap_stb_undo_group_begin((GapStbTabWidgets *)pw->tabw);
+  gap_stb_undo_push((GapStbTabWidgets *)pw->tabw, GAP_STB_FEATURE_SCENE_SPLITTING);
+
   while(TRUE)
   {
     framenr++;
@@ -706,8 +762,9 @@ p_pw_auto_scene_split(GapStbPropWidget *pw, gboolean all_scenes)
      */
     if(stb_elem->record_type == GAP_STBREC_VID_MOVIE)
     {
-      th_data = gap_story_dlg_fetch_vthumb_no_store(sgpp
-              ,stb_elem->orig_filename
+      th_data = gap_story_vthumb_fetch_thdata_no_store(sgpp
+              ,pw->stb_refptr
+              ,stb_elem
               ,framenr
               ,stb_elem->seltrack
               ,p_pw_get_preferred_decoder(pw)
@@ -761,6 +818,8 @@ p_pw_auto_scene_split(GapStbPropWidget *pw, gboolean all_scenes)
        * we have no current frame of same size as prev. frame
        */
       stb_elem->to_frame = framenr -1;
+      
+      gap_stb_undo_group_end((GapStbTabWidgets *)pw->tabw);
       return;
     }
 
@@ -825,6 +884,7 @@ p_pw_auto_scene_split(GapStbPropWidget *pw, gboolean all_scenes)
       stb_elem->to_frame = framenr -1;
       if(!all_scenes)
       {
+        gap_stb_undo_group_end((GapStbTabWidgets *)pw->tabw);
         return;
       }
       else
@@ -834,6 +894,7 @@ p_pw_auto_scene_split(GapStbPropWidget *pw, gboolean all_scenes)
         if((framenr >= framenr_max)
         || (pw->close_flag))
         {
+          gap_stb_undo_group_end((GapStbTabWidgets *)pw->tabw);
           return;
         }
 
@@ -864,7 +925,7 @@ p_pw_auto_scene_split(GapStbPropWidget *pw, gboolean all_scenes)
         {
            if(gap_debug) printf("AUTO SCENE ADD VTHUMB:\n");
            drop_th_data = FALSE;
-           gap_story_dlg_add_vthumb(sgpp
+           gap_story_vthumb_add_vthumb(sgpp
                                    ,framenr
                                    ,th_data
                                    ,l_th_width
@@ -1006,13 +1067,17 @@ p_pv_pview_render_immediate (GapStbPropWidget *pw
    l_th_width = 128;
    l_th_height = 128;
 
-   if(stb_elem_refptr->record_type == GAP_STBREC_VID_MOVIE)
+   if((stb_elem_refptr->record_type == GAP_STBREC_VID_MOVIE)
+   || (stb_elem_refptr->record_type == GAP_STBREC_VID_SECTION)
+   || (stb_elem_refptr->record_type == GAP_STBREC_VID_ANIMIMAGE)
+   )
    {
      guchar *l_th_data;
      /* if(gap_debug) printf("RENDER: p_pv_pview_render_immediate MOVIE Thumbnail\n"); */
 
-     l_th_data = gap_story_dlg_fetch_vthumb(pw->sgpp
-              ,stb_elem_refptr->orig_filename
+     l_th_data = gap_story_vthumb_fetch_thdata(pw->sgpp
+              ,pw->stb_refptr
+              ,stb_elem_refptr
               ,stb_elem_refptr->from_frame
               ,stb_elem_refptr->seltrack
               ,p_pw_get_preferred_decoder(pw)
@@ -1177,6 +1242,11 @@ p_pw_timer_go_job(GapStbPropWidget *pw)
           {
             if (pw->go_job_framenr >= 0)
             {
+              gap_stb_undo_push_clip(pw->tabw
+               , GAP_STB_FEATURE_PROPERTIES_CLIP
+               , pw->stb_elem_refptr->story_id
+               );
+
               pw->stb_elem_refptr->from_frame = pw->go_job_framenr;
               p_pv_pview_render_immediate(pw, pw->stb_elem_refptr, pw->pv_ptr);
 
@@ -1249,7 +1319,15 @@ p_pw_preview_events_cb (GtkWidget *widget
       && (!sgpp->gva_lock)
       && (pw->go_timertag < 0))
       {
-        gap_story_pw_single_clip_playback(pw);
+        if((pw->stb_elem_refptr->record_type == GAP_STBREC_VID_SECTION)
+        || (pw->stb_elem_refptr->record_type == GAP_STBREC_VID_BLACKSECTION))
+        {
+          gap_story_pw_composite_playback(pw);
+        }
+        else
+        {
+          gap_story_pw_single_clip_playback(pw);
+        }
       }
       return FALSE;
       break;
@@ -1336,6 +1414,83 @@ p_pw_mask_preview_events_cb (GtkWidget *widget
   return FALSE;
 }       /* end  p_pw_mask_preview_events_cb */
 
+
+/* -----------------------------------
+ * p_toggle_clip_type_elem
+ * -----------------------------------
+ * return TRUE if type was toggled
+ *        FALSE if toggle was refused.
+ */
+static gboolean
+p_toggle_clip_type_elem (GapStbPropWidget *pw)
+{
+  GapStoryBoard *stb;
+  GapStoryElem *stb_elem;
+  
+  stb = pw->stb_refptr;
+  stb_elem = pw->stb_elem_refptr;
+
+  gap_stb_undo_push_clip(pw->tabw
+        , GAP_STB_FEATURE_PROPERTIES_CLIP
+        , pw->stb_elem_refptr->story_id
+        );
+  
+  if(stb_elem->record_type == GAP_STBREC_VID_SECTION)
+  {
+    stb_elem->record_type = GAP_STBREC_VID_BLACKSECTION;
+    return (TRUE);
+  }
+
+  if(stb_elem->record_type == GAP_STBREC_VID_BLACKSECTION)
+  {
+    GapStorySection *main_section;
+    main_section = gap_story_find_main_section(stb);
+    
+    if (stb->active_section == main_section)
+    {
+      stb_elem->record_type = GAP_STBREC_VID_SECTION;
+      return (TRUE);
+    }
+    return (FALSE);
+  }
+
+  if(stb_elem->record_type == GAP_STBREC_VID_IMAGE)
+  {
+    stb_elem->record_type = GAP_STBREC_VID_ANIMIMAGE;
+    p_pw_check_ainfo_range(pw, pw->stb_elem_refptr->orig_filename);
+    return (TRUE);
+  }
+
+  if(stb_elem->record_type == GAP_STBREC_VID_FRAMES)
+  {
+    stb_elem->record_type = GAP_STBREC_VID_IMAGE;
+    p_pw_check_ainfo_range(pw, pw->stb_elem_refptr->orig_filename);
+    return (TRUE);
+  }
+
+  if(stb_elem->record_type == GAP_STBREC_VID_ANIMIMAGE)
+  {
+    stb_elem->record_type = GAP_STBREC_VID_IMAGE;
+    if(pw->stb_elem_refptr->orig_filename)
+    {
+      char *filename;
+      filename = g_strdup(pw->stb_elem_refptr->orig_filename);
+      gap_story_upd_elem_from_filename(stb_elem, filename);
+      g_free(filename);
+      if(stb_elem->record_type == GAP_STBREC_VID_UNKNOWN)
+      {
+        stb_elem->record_type = GAP_STBREC_VID_IMAGE;
+      }
+    }
+    p_pw_check_ainfo_range(pw, pw->stb_elem_refptr->orig_filename);
+    return (TRUE);
+  }
+
+
+  return (FALSE);
+  
+}  /* end p_toggle_clip_type_elem */
+
 /* ---------------------------------
  * p_pw_icontype_preview_events_cb
  * ---------------------------------
@@ -1366,8 +1521,15 @@ p_pw_icontype_preview_events_cb (GtkWidget *widget
       && (!sgpp->gva_lock)
       && (pw->go_timertag < 0))
       {
-        printf("TODO: change clip/mask type is not implemented yet\n");
+        gboolean was_toggled;
+        
+        was_toggled = p_toggle_clip_type_elem (pw);
         gap_story_dlg_render_default_icon(pw->stb_elem_refptr, pw->typ_icon_pv_ptr);
+        if (was_toggled == TRUE)
+        {
+          pw->stb_refptr->unsaved_changes = TRUE;
+          p_pw_update_properties(pw);
+        }
       }
       return FALSE;
       break;
@@ -1441,10 +1603,14 @@ p_pw_check_ainfo_range(GapStbPropWidget *pw, char *filename)
   {
     if(pw->stb_elem_refptr->record_type == GAP_STBREC_VID_MOVIE)
     {
-      GapStoryVideoElem *velem;
+      GapStoryVTResurceElem *velem;
 
-      if(gap_debug) printf("PROP AINFO CHECK --> GAP_STBREC_VID_MOVIE\n");
-      velem = gap_story_dlg_get_velem(pw->sgpp
+      if(gap_debug)
+      {
+        printf("PROP AINFO CHECK --> GAP_STBREC_VID_MOVIE\n");
+      }
+      
+      velem = gap_story_vthumb_get_velem_movie(pw->sgpp
                            ,pw->stb_elem_refptr->orig_filename
                            ,pw->stb_elem_refptr->seltrack
                            ,p_pw_get_preferred_decoder(pw)
@@ -1453,6 +1619,33 @@ p_pw_check_ainfo_range(GapStbPropWidget *pw, char *filename)
       {
         l_upper = velem->total_frames;
       }
+    } 
+    else
+    {
+      if((pw->stb_elem_refptr->record_type == GAP_STBREC_VID_ANIMIMAGE)
+      || (pw->stb_elem_refptr->record_type == GAP_STBREC_VID_SECTION))
+      {
+        GapStoryVTResurceElem *velem;
+
+        if(gap_debug)
+        {
+          printf("PROP AINFO CHECK --> GAP_STBREC_VID_SECTION, ANIM-IMAGE\n");
+        }
+
+        velem = gap_story_vthumb_get_velem_no_movie(pw->sgpp
+                             ,pw->stb_refptr
+                             ,pw->stb_elem_refptr
+                             );
+        if(velem)
+        {
+          l_upper = velem->total_frames;
+          if(pw->stb_elem_refptr->record_type == GAP_STBREC_VID_ANIMIMAGE)
+          {
+            l_lower = 0;
+            l_upper--;
+          }
+        }
+      } 
     }
   }
 
@@ -1509,6 +1702,8 @@ p_pw_mask_name_entry_update_cb(GtkWidget *widget, GapStbPropWidget *pw)
     {
       if(strcmp(pw->stb_elem_refptr->mask_name, l_mask_name) != 0)
       {
+         p_pw_push_undo_and_set_unsaved_changes(pw);
+
          mask_name_old = g_strdup(pw->stb_elem_refptr->mask_name);
          g_free(pw->stb_elem_refptr->mask_name);
          pw->stb_elem_refptr->mask_name = g_strdup(l_mask_name);
@@ -1518,6 +1713,8 @@ p_pw_mask_name_entry_update_cb(GtkWidget *widget, GapStbPropWidget *pw)
     }
     else
     {
+      p_pw_push_undo_and_set_unsaved_changes(pw);
+      pw->stb_elem_refptr->mask_name = g_strdup(l_mask_name);
       p_pw_render_layermask(pw);
     }
   }
@@ -1539,7 +1736,7 @@ p_pw_filename_changed(const char *filename, GapStbPropWidget *pw)
   if(pw == NULL)  { return; }
   if(pw->stb_elem_refptr == NULL)  { return; }
 
-  pw->stb_refptr->unsaved_changes = TRUE;
+  p_pw_push_undo_and_set_unsaved_changes(pw);
 
   if(filename)
   {
@@ -1554,8 +1751,8 @@ p_pw_filename_changed(const char *filename, GapStbPropWidget *pw)
       g_free(l_filename);
     }
   }
+  
   gap_story_upd_elem_from_filename(pw->stb_elem_refptr, filename);
-
   p_pw_check_ainfo_range(pw, pw->stb_elem_refptr->orig_filename);
 
   /* update pw stuff */
@@ -1715,6 +1912,11 @@ p_pw_comment_entry_update_cb(GtkWidget *widget, GapStbPropWidget *pw)
     pw->stb_refptr->unsaved_changes = TRUE;
   }
 
+  gap_stb_undo_push_clip(pw->tabw
+          , GAP_STB_FEATURE_PROPERTIES_CLIP
+          , pw->stb_elem_refptr->story_id
+          );
+
   if(pw->stb_elem_refptr->comment == NULL)
   {
     pw->stb_elem_refptr->comment = gap_story_new_elem(GAP_STBREC_VID_COMMENT);
@@ -1742,7 +1944,7 @@ p_pw_fmac_entry_update_cb(GtkWidget *widget, GapStbPropWidget *pw)
   if(pw->stb_elem_refptr == NULL) { return; }
   if(pw->stb_refptr)
   {
-    pw->stb_refptr->unsaved_changes = TRUE;
+    p_pw_push_undo_and_set_unsaved_changes(pw);
   }
 
   if(pw->stb_elem_refptr->filtermacro_file)
@@ -1751,6 +1953,9 @@ p_pw_fmac_entry_update_cb(GtkWidget *widget, GapStbPropWidget *pw)
   }
 
   pw->stb_elem_refptr->filtermacro_file = g_strdup(gtk_entry_get_text(GTK_ENTRY(widget)));
+
+  p_pw_check_fmac_sensitivity(pw);
+  
 }  /* end p_pw_fmac_entry_update_cb */
 
 
@@ -1799,12 +2004,22 @@ p_pw_update_info_labels(GapStbPropWidget *pw)
       l_mov_sensitive = TRUE;
       gtk_label_set_text ( GTK_LABEL(pw->cliptype_label), _("MOVIE"));
       break;
+    case GAP_STBREC_VID_SECTION:
+      l_sensitive = TRUE;
+      gtk_label_set_text ( GTK_LABEL(pw->cliptype_label), _("SECTION"));
+      break;
+    case GAP_STBREC_VID_BLACKSECTION:
+      l_sensitive = TRUE;
+      gtk_label_set_text ( GTK_LABEL(pw->cliptype_label), _("BLACKSECTION"));
+      break;
     case GAP_STBREC_VID_COMMENT:
       gtk_label_set_text ( GTK_LABEL(pw->cliptype_label), _("COMMENT"));
       break;
     default:
       gtk_label_set_text ( GTK_LABEL(pw->cliptype_label), _("** UNKNOWN **"));
   }
+
+  gap_story_dlg_render_default_icon(pw->stb_elem_refptr, pw->typ_icon_pv_ptr);
 
   /* record_type dependent sensitivity */
   gtk_widget_set_sensitive(pw->pingpong_toggle, l_sensitive);
@@ -1967,8 +2182,9 @@ p_pw_gint32_adjustment_callback(GtkObject *obj, gint32 *val)
       if(gap_debug) printf("gint32_adjustment_callback: old_val:%d val:%d\n", (int)*val ,(int)l_val );
       if(l_val != *val)
       {
+        p_pw_push_undo_and_set_unsaved_changes(pw);
+
         *val = l_val;
-        pw->stb_refptr->unsaved_changes = TRUE;
         p_pw_update_properties(pw);
       }
     }
@@ -1988,7 +2204,7 @@ p_pw_pingpong_toggle_update_callback(GtkWidget *widget, GapStbPropWidget *pw)
   {
     if(pw->stb_elem_refptr)
     {
-      pw->stb_refptr->unsaved_changes = TRUE;
+      p_pw_push_undo_and_set_unsaved_changes(pw);
 
       if (GTK_TOGGLE_BUTTON (widget)->active)
       {
@@ -2003,9 +2219,9 @@ p_pw_pingpong_toggle_update_callback(GtkWidget *widget, GapStbPropWidget *pw)
   }
 }  /* end p_pw_pingpong_toggle_update_callback */
 
-/* ------------------------------------
+/* ---------------------------------------
  * p_pw_mask_enable_toggle_update_callback
- * ------------------------------------
+ * ---------------------------------------
  */
 static void
 p_pw_mask_enable_toggle_update_callback(GtkWidget *widget, GapStbPropWidget *pw)
@@ -2014,7 +2230,8 @@ p_pw_mask_enable_toggle_update_callback(GtkWidget *widget, GapStbPropWidget *pw)
   {
     if(pw->stb_elem_refptr)
     {
-      pw->stb_refptr->unsaved_changes = TRUE;
+      p_pw_push_undo_and_set_unsaved_changes(pw);
+
 
       if (GTK_TOGGLE_BUTTON (widget)->active)
       {
@@ -2030,7 +2247,6 @@ p_pw_mask_enable_toggle_update_callback(GtkWidget *widget, GapStbPropWidget *pw)
 }  /* end p_pw_mask_enable_toggle_update_callback */
 
 
-
 /* ---------------------------------
  * p_radio_mask_anchor_clip_callback
  * ---------------------------------
@@ -2043,6 +2259,7 @@ p_radio_mask_anchor_clip_callback(GtkWidget *widget, GapStbPropWidget *pw)
     pw->mask_anchor = GAP_MSK_ANCHOR_CLIP;
     if(pw->stb_elem_refptr)
     {
+      p_pw_push_undo_and_set_unsaved_changes(pw);
       pw->stb_elem_refptr->mask_anchor = pw->mask_anchor;
     }
   }
@@ -2061,6 +2278,7 @@ p_radio_mask_anchor_master_callback(GtkWidget *widget, GapStbPropWidget *pw)
     pw->mask_anchor = GAP_MSK_ANCHOR_MASTER;
     if(pw->stb_elem_refptr)
     {
+      p_pw_push_undo_and_set_unsaved_changes(pw);
       pw->stb_elem_refptr->mask_anchor = pw->mask_anchor;
     }
   }
@@ -2076,6 +2294,7 @@ p_radio_delace_none_callback(GtkWidget *widget, GapStbPropWidget *pw)
 {
   if((pw) && (GTK_TOGGLE_BUTTON (widget)->active))
   {
+    p_pw_push_undo_and_set_unsaved_changes(pw);
     pw->delace_mode = 0;
     gtk_widget_set_sensitive(pw->pw_spinbutton_delace, FALSE);
     if(pw->stb_elem_refptr)
@@ -2094,6 +2313,7 @@ p_radio_delace_odd_callback(GtkWidget *widget, GapStbPropWidget *pw)
 {
   if((pw) && (GTK_TOGGLE_BUTTON (widget)->active))
   {
+    p_pw_push_undo_and_set_unsaved_changes(pw);
     pw->delace_mode = 1;
     gtk_widget_set_sensitive(pw->pw_spinbutton_delace, TRUE);
     if(pw->stb_elem_refptr)
@@ -2112,6 +2332,7 @@ p_radio_delace_even_callback(GtkWidget *widget, GapStbPropWidget *pw)
 {
   if((pw) && (GTK_TOGGLE_BUTTON (widget)->active))
   {
+    p_pw_push_undo_and_set_unsaved_changes(pw);
     pw->delace_mode = 2;
     gtk_widget_set_sensitive(pw->pw_spinbutton_delace, TRUE);
     if(pw->stb_elem_refptr)
@@ -2133,6 +2354,7 @@ p_delace_spinbutton_cb(GtkObject *obj, GapStbPropWidget *pw)
     pw->delace_threshold = (GTK_ADJUSTMENT(pw->pw_spinbutton_delace_adj)->value);
     if(pw->stb_elem_refptr)
     {
+      p_pw_push_undo_and_set_unsaved_changes(pw);
       pw->stb_elem_refptr->delace = pw->delace_mode + CLAMP(pw->delace_threshold, 0.0, 0.999999);
     }
   }
@@ -2154,14 +2376,16 @@ p_step_density_spinbutton_cb(GtkObject *obj, GapStbPropWidget *pw)
     {
       if(pw->stb_elem_refptr->step_density != l_val)
       {
+        p_pw_push_undo_and_set_unsaved_changes(pw);
         pw->stb_elem_refptr->step_density = l_val;
         gap_story_elem_calculate_nframes(pw->stb_elem_refptr);
-        pw->stb_refptr->unsaved_changes = TRUE;
+
         p_pw_update_properties(pw);
       }
     }
   }
 }  /* end p_step_density_spinbutton_cb */
+
 
 
 /* ---------------------------------
@@ -2179,8 +2403,9 @@ p_maskstep_density_spinbutton_cb(GtkObject *obj, GapStbPropWidget *pw)
     {
       if(pw->stb_elem_refptr->mask_stepsize != l_val)
       {
+        p_pw_push_undo_and_set_unsaved_changes(pw);
         pw->stb_elem_refptr->mask_stepsize = l_val;
-        pw->stb_refptr->unsaved_changes = TRUE;
+
         p_pw_update_properties(pw);
       }
     }
@@ -2188,6 +2413,31 @@ p_maskstep_density_spinbutton_cb(GtkObject *obj, GapStbPropWidget *pw)
 }  /* end p_maskstep_density_spinbutton_cb */
 
 
+
+/* -------------------------------
+ * p_fmac_steps_spinbutton_cb
+ * -------------------------------
+ */
+static void
+p_fmac_steps_spinbutton_cb(GtkObject *obj, GapStbPropWidget *pw)
+{
+  gint32 l_val;
+  if(pw)
+  {
+    l_val = (GTK_ADJUSTMENT(pw->pw_spinbutton_fmac_steps_adj)->value);
+    if(pw->stb_elem_refptr)
+    {
+      if(pw->stb_elem_refptr->fmac_total_steps != l_val)
+      {
+        p_pw_push_undo_and_set_unsaved_changes(pw);
+        pw->stb_elem_refptr->fmac_total_steps = l_val;
+
+        p_pw_check_fmac_sensitivity(pw);
+
+      }
+    }
+  }
+}  /* end p_fmac_steps_spinbutton_cb */
 
 
 /* ---------------------------------
@@ -2202,6 +2452,7 @@ p_radio_flip_update(GapStbPropWidget *pw, gint32 flip_request)
     pw->flip_request = flip_request;
     if(pw->stb_elem_refptr)
     {
+      p_pw_push_undo_and_set_unsaved_changes(pw);
       pw->stb_elem_refptr->flip_request = pw->flip_request;
       p_pw_update_properties(pw);
       p_pw_propagate_mask_attribute_changes(pw);
@@ -2264,9 +2515,9 @@ p_radio_flip_both_callback(GtkWidget *widget, GapStbPropWidget *pw)
 
 
 
-/* ---------------------------------
+/* ------------------------------------
  * on_clip_elements_dropped_as_mask_ref
- * ---------------------------------
+ * ------------------------------------
  * signal handler called when a frame widget (containing a mask definition or videoclip)
  * was dropped onto a property widget.
  *
@@ -2358,6 +2609,9 @@ on_clip_elements_dropped_as_mask_ref (GtkWidget        *widget,
 	  gchar *mask_name_new;
 	  
 	  GapStoryElem *known_maskdef_elem;
+	  
+	  
+	  p_pw_push_undo_and_set_unsaved_changes(pw);
 	  
 	  mask_name_new = NULL;
 	  known_maskdef_elem = gap_story_find_maskdef_equal_to_ref_elem(pw->stb_refptr
@@ -2459,6 +2713,79 @@ p_pw_dialog_init_dnd(GapStbPropWidget *pw)
 }  /* end p_pw_dialog_init_dnd */
 
 
+/* -------------------------------
+ * p_pw_check_fmac_sensitivity
+ * -------------------------------
+ * - set sensitivity for the filtermacro steps spinbutton.
+ *   It is sensitive if both filtermacro_file and an 
+ *   implicite alternative filtermacro_file (MACRO2) are existent and valid.
+ *   In this case filter apply with varying values can be used
+ *   by entering a value > 1 into the filtermacro steps spinbutton.
+ *
+ * - The presence of the alternative filtermacro_file is also
+ *   displayed in the label pw_label_alternate_fmac_file
+ *   via shortened version of the alternat filtermacro filename.
+ * - This label is set to space if no valid alternate filtermacro_file
+ *   is available. This label also indicates if MACRO2 is active
+ *   or not active by adding Suffix "(ON)" or "(OFF)"
+ */
+static void
+p_pw_check_fmac_sensitivity(GapStbPropWidget *pw)
+{
+  gboolean sensitive;
+  char *alt_fmac_name;
+  char *lbl_text;
+  
+    
+  sensitive = FALSE;
+  lbl_text = NULL;
+  if(pw->stb_elem_refptr)
+  {
+    if(pw->stb_elem_refptr->filtermacro_file)
+    {
+       if(gap_fmac_chk_filtermacro_file(pw->stb_elem_refptr->filtermacro_file))
+       {
+         alt_fmac_name = gap_fmac_get_alternate_name(pw->stb_elem_refptr->filtermacro_file);
+         if (alt_fmac_name)
+         {
+           if(gap_fmac_chk_filtermacro_file(alt_fmac_name))
+           {
+             sensitive = TRUE;
+             if(pw->stb_elem_refptr->fmac_total_steps > 1)
+             {
+               lbl_text = gap_lib_shorten_filename(_("Filtermacro2: ")   /* prefix */
+                                     ,alt_fmac_name   /* filenamepart */
+                                     ,_(" (ON)")      /* suffix */
+                                     ,90              /* max_chars */
+                                     );
+             }
+             else
+             {
+               lbl_text = gap_lib_shorten_filename(_("Filtermacro2: ")   /* prefix */
+                                     ,alt_fmac_name   /* filenamepart */
+                                     ,_(" (OFF)")     /* suffix */
+                                     ,90              /* max_chars */
+                                     );
+             }
+                        
+           }
+         }
+       }
+    }
+  }
+
+  if (lbl_text == NULL)
+  {
+    lbl_text = g_strdup(" ");
+  }
+  
+  gtk_label_set_text ( GTK_LABEL(pw->pw_label_alternate_fmac_file), lbl_text );
+  gtk_widget_set_sensitive(pw->pw_spinbutton_fmac_steps, sensitive);
+  p_pw_update_properties(pw);
+
+  g_free(lbl_text);
+
+}  /* end p_pw_check_fmac_sensitivity */
 
 
 /* -------------------------------
@@ -2903,10 +3230,14 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
   l_lower_limit = 0.0;
   if(pw->stb_elem_refptr)
   {
-    if(pw->stb_elem_refptr->record_type == GAP_STBREC_VID_MOVIE)
+    switch(pw->stb_elem_refptr->record_type)
     {
-      /* movies always start at frame 1 */
-      l_lower_limit = 1.0;
+      case GAP_STBREC_VID_MOVIE:
+      case GAP_STBREC_VID_SECTION:
+      case GAP_STBREC_VID_BLACKSECTION:
+        /* movies and section always start at frame 1 */
+        l_lower_limit = 1.0;
+        break;
     }
   }
     
@@ -2971,7 +3302,7 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
   adj = gimp_scale_entry_new (GTK_TABLE (table_ptr), 0, row++,
                             _("Loops:"), PW_SCALE_WIDTH, PW_SPIN_BUTTON_WIDTH,
                             pw->stb_elem_refptr->nloop,
-                            1.0, 1000.0,  /* lower/upper */
+                            1.0, 100000.0,  /* lower/upper */
                             1.0, 10.0,      /* step, page */
                             0,              /* digits */
                             TRUE,           /* constrain */
@@ -3042,7 +3373,7 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
                             0.125, 8.0,     /* lower/upper unconstrained */
                             _("Stepsize density. Use 1.0 for normal 1:1 frame by frame steps. "
                               "a value of 0.5 shows each input frame 2 times. "
-                              "a value of 2.0 shows only every 2.nd input frame"), NULL);
+                              "a value of 2.0 shows only every 2nd input frame"), NULL);
   pw->pw_spinbutton_step_density_adj = adj;
   g_object_set_data(G_OBJECT(adj), "pw", pw);
   g_signal_connect (adj, "value_changed",
@@ -3297,9 +3628,8 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
   }
   else
   {
-    gimp_help_set_help_data(entry, _("Reference to a layermask definition clip.\n"
-                                     "Layermasks are used to control opacity. "
-                                     "Track 0 is used for definitions of layermask clips.")
+    gimp_help_set_help_data(entry, _("Reference to a layermask definition clip in the Mask section.\n"
+                                     "Layermasks are used to control opacity.")
                                      , NULL);
   }
   gtk_table_attach_defaults (GTK_TABLE(table), entry, 1, 2, row, row+1);
@@ -3452,6 +3782,85 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
 
   row++;
 
+  /* the filtermacro label */
+  label = gtk_label_new (_("Filtermacro:"));
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+  gtk_table_attach_defaults (GTK_TABLE(table), label, 0, 1, row, row+1);
+  gtk_widget_show (label);
+
+
+
+  /* the filtermacro entry */
+  entry = gtk_entry_new ();
+  gtk_widget_set_size_request(entry, PW_ENTRY_WIDTH, -1);
+  if(pw->stb_elem_refptr)
+  {
+    if(pw->stb_elem_refptr->filtermacro_file)
+    {
+      gtk_entry_set_text(GTK_ENTRY(entry), pw->stb_elem_refptr->filtermacro_file);
+    }
+  }
+
+  // TODO layout ??
+  //gtk_table_attach_defaults (GTK_TABLE(table), entry, 1, 4, row, row+1);
+
+  gtk_table_attach_defaults (GTK_TABLE(table), entry, 1, 2, row, row+1);
+  g_signal_connect(G_OBJECT(entry), "changed",
+                     G_CALLBACK(p_pw_fmac_entry_update_cb),
+                     pw);
+  gtk_widget_show (entry);
+  gimp_help_set_help_data (entry, _("filter macro to be performed when frames "
+                                    "of this clips are rendered. "
+                                    "A 2nd macrofile is implicite referenced by naming convetion "
+                                    "via the keyword .VARYING (as suffix or before the extension)")
+                                           , NULL);
+  pw->fmac_entry = entry;
+
+
+  /* fmac_total_steps threshold spinbutton */
+  {
+    GtkWidget *spinbutton;
+    gint32   initial_value;
+    
+    initial_value = 1;
+    if(pw->stb_elem_refptr)
+    {
+      initial_value = pw->stb_elem_refptr->fmac_total_steps;
+    }
+
+    pw->pw_spinbutton_fmac_steps_adj = gtk_adjustment_new (initial_value
+                                           , 1.0
+                                           , 999999.0
+                                           , 1.0, 10.0, 0.0);
+    spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (pw->pw_spinbutton_fmac_steps_adj), 1.0, 0);
+    pw->pw_spinbutton_fmac_steps = spinbutton;
+    gtk_widget_set_size_request (spinbutton, PW_SPIN_BUTTON_WIDTH, -1);
+    gtk_widget_show (spinbutton);
+    gtk_table_attach_defaults (GTK_TABLE(table), spinbutton, 2, 3, row, row+1);
+
+    gimp_help_set_help_data (spinbutton, _("Steps for macro applying with varying values: "
+                                           "(1 for apply with const values)")
+                                           , NULL);
+    g_signal_connect (G_OBJECT (pw->pw_spinbutton_fmac_steps_adj), "value_changed",
+                      G_CALLBACK (p_fmac_steps_spinbutton_cb),
+                      pw);
+  }
+
+  row++;
+
+  /* the alternate filtermacro_file label */
+  label = gtk_label_new ("");
+  pw->pw_label_alternate_fmac_file = label;
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+  gtk_table_attach_defaults (GTK_TABLE(table), label, 0, 4, row, row+1);
+  gtk_widget_show (label);
+  
+  p_pw_check_fmac_sensitivity(pw);
+  
+
+  row++;
+
+
   /* the comment label */
   label = gtk_label_new (_("Comment:"));
   gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
@@ -3480,40 +3889,11 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
   pw->comment_entry = entry;
 
 
-
-  row++;
-
-  /* the filtermacro label */
-  label = gtk_label_new (_("Filtermacro:"));
-  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
-  gtk_table_attach_defaults (GTK_TABLE(table), label, 0, 1, row, row+1);
-  gtk_widget_show (label);
-
-
-
-  /* the filtermacro entry */
-  entry = gtk_entry_new ();
-  gtk_widget_set_size_request(entry, PW_ENTRY_WIDTH, -1);
-  if(pw->stb_elem_refptr)
-  {
-    if(pw->stb_elem_refptr->filtermacro_file)
-    {
-      gtk_entry_set_text(GTK_ENTRY(entry), pw->stb_elem_refptr->filtermacro_file);
-    }
-  }
-  gtk_table_attach_defaults (GTK_TABLE(table), entry, 1, 4, row, row+1);
-  g_signal_connect(G_OBJECT(entry), "changed",
-                     G_CALLBACK(p_pw_fmac_entry_update_cb),
-                     pw);
-  gtk_widget_show (entry);
-  pw->fmac_entry = entry;
-
-
-
-
   if(pw->stb_elem_refptr)
   {
     if((pw->stb_elem_refptr->record_type == GAP_STBREC_VID_FRAMES)
+    || (pw->stb_elem_refptr->record_type == GAP_STBREC_VID_ANIMIMAGE)
+    || (pw->stb_elem_refptr->record_type == GAP_STBREC_VID_SECTION)
     || (pw->stb_elem_refptr->record_type == GAP_STBREC_VID_MOVIE))
     {
       /* for framerange clips constraint from / to spinbuttons */
@@ -3530,9 +3910,9 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
   return(dlg);
 }  /* end gap_story_pw_properties_dialog */
 
-/* -------------------------------
+/* -------------------------------------
  * gap_story_stb_elem_properties_dialog
- * -------------------------------
+ * -------------------------------------
  */
 void
 gap_story_stb_elem_properties_dialog ( GapStbTabWidgets *tabw

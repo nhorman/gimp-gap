@@ -10,7 +10,7 @@
  *  - selection and execution of the desired videoencoder Plug-In.
  *
  * videoencoder plug-ins are registered in the gimp-PDB like any other plug-in
- * but have special names (starting with the prefix: plug_in_gap_enc_ )
+ * but have special names (starting with the prefix: plug-in-gap-enc- )
  * and must provide an API (PDB-procedures) for query their name and other properties.
  * (the Master uses this API to identify all available videoencoders dynamically at runtime)
  */

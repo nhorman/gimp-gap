@@ -635,7 +635,8 @@ p_range_to_multilayer_dialog(GapAnimInfo *ainfo_ptr,
 	       gint32 *sel_invert, char *sel_pattern,
 	       gint32 *selection_mode)
 {
-  static GapArrArg  argv[12];
+  static GapArrArg  argv[13];
+  int argc;
 
   static char *radio_args[4] = { N_("Expand as necessary"),
                                  N_("Clipped to image"),
@@ -786,10 +787,17 @@ p_range_to_multilayer_dialog(GapAnimInfo *ainfo_ptr,
   gap_arr_arg_init(&argv[11], GAP_ARR_WGT_HELP_BUTTON);
   argv[11].help_id = GAP_HELP_ID_TO_MULTILAYER;
 
+  argc = 12;
+  if (gimp_image_base_type(ainfo_ptr->image_id) == GIMP_INDEXED)
+  {
+    gap_arr_arg_init(&argv[12], GAP_ARR_WGT_LABEL);
+    argv[12].label_txt = _("You are using INDEXED frames. please note that the result will be an RGB image");
+    argc = 13;
+  }
 
   if(0 != gap_lib_chk_framerange(ainfo_ptr))   return -1;
 
-  if(TRUE == gap_arr_ok_cancel_dialog(title, hline, 12, argv))
+  if(TRUE == gap_arr_ok_cancel_dialog(title, hline, argc, argv))
   {   *range_from   = (long)(argv[0].int_ret);
       *range_to     = (long)(argv[1].int_ret);
       *framrate     = (long)(argv[3].int_ret);
@@ -873,6 +881,11 @@ p_frames_to_multilayer(GapAnimInfo *ainfo_ptr,
   l_width  = gimp_image_width(ainfo_ptr->image_id);
   l_height = gimp_image_height(ainfo_ptr->image_id);
   l_type   = gimp_image_base_type(ainfo_ptr->image_id);
+  
+  if (l_type == GIMP_INDEXED)
+  {
+    l_type = GIMP_RGB;
+  }
 
   l_new_image_id = gimp_image_new(l_width, l_height,l_type);
   l_visible = TRUE;   /* only the 1.st layer should be visible */
@@ -960,6 +973,16 @@ p_frames_to_multilayer(GapAnimInfo *ainfo_ptr,
        goto error;
 
     gimp_image_undo_disable(l_tmp_image_id);
+    if (gimp_image_base_type(l_tmp_image_id) == GIMP_INDEXED)
+    {
+      /* INDEXED frame images are converted to RGB
+       * - the resulting multilayer image has no loss in quality
+       *   (regardless if the frames have different palettes.)
+       * - some of the following processing steps would not
+       *   work with INDEXED images.
+       */
+      gimp_image_convert_rgb(l_tmp_image_id);
+    }
 
     /* get informations (id, visible, selected) about all layers */
     l_layli_ptr = gap_mod_alloc_layli(l_tmp_image_id, &l_sel_cnt, &l_nlayers,

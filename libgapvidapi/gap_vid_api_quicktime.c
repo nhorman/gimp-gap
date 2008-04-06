@@ -414,6 +414,7 @@ p_quicktime_new_dec_elem(void)
     dec_elem->fptr_seek_audio      = &p_wrapper_quicktime_seek_audio;
     dec_elem->fptr_get_audio       = &p_wrapper_quicktime_get_audio;
     dec_elem->fptr_count_frames    = &p_wrapper_quicktime_count_frames;
+    dec_elem->fptr_seek_support    = NULL;
     dec_elem->fptr_get_video_chunk = NULL; /* &p_wrapper_quicktime_get_video_chunk; */
     dec_elem->next = NULL;
   }

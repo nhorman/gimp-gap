@@ -123,7 +123,6 @@ gint32
 gap_layer_copy_to_image (gint32 dst_image_id, gint32 src_layer_id)
 {
   gint32 l_new_layer_id;
-  GimpDrawable *src_drawable;
   GimpImageType  l_src_type;
   gdouble        l_src_opacity;
   GimpLayerModeEffects  l_src_mode;
@@ -132,7 +131,6 @@ gap_layer_copy_to_image (gint32 dst_image_id, gint32 src_layer_id)
 
   /* create new layer in destination image */
   l_src_type    = gimp_drawable_type(src_layer_id);
-  src_drawable  = gimp_drawable_get (src_layer_id);
   l_src_opacity = gimp_layer_get_opacity(src_layer_id);
   l_src_mode    = gimp_layer_get_mode(src_layer_id);
 
@@ -174,8 +172,6 @@ gap_layer_copy_to_image (gint32 dst_image_id, gint32 src_layer_id)
   /* add the copied layer to  destination dst_image_id (0 == on top of layerstack) */
   gimp_image_add_layer(dst_image_id, l_new_layer_id, 0);
   gimp_layer_set_offsets(l_new_layer_id, l_src_offset_x, l_src_offset_y);
-
-  gimp_drawable_detach (src_drawable);
 
   return l_new_layer_id; /* all done OK */
 
@@ -239,8 +235,8 @@ gap_layer_copy_content (gint32 dst_drawable_id, gint32 src_drawable_id)
            ,(int)dst_drawable->height
            ,(int)dst_drawable->bpp
 	   );
-    gimp_drawable_detach (src_drawable);
-    gimp_drawable_detach (dst_drawable);
+    gimp_drawable_detach(src_drawable);
+    gimp_drawable_detach(dst_drawable);
     return FALSE;
   }
 
@@ -263,9 +259,9 @@ gap_layer_copy_content (gint32 dst_drawable_id, gint32 src_drawable_id)
       p_copy_rgn_render_region (&srcPR, &dstPR);
   }
 
-  gimp_drawable_detach (src_drawable);
-  gimp_drawable_detach (dst_drawable);
-
+  gimp_drawable_flush (dst_drawable);
+  gimp_drawable_detach(src_drawable);
+  gimp_drawable_detach(dst_drawable);
   return TRUE;
 }  /* end gap_layer_copy_content */
 
@@ -350,8 +346,8 @@ gap_layer_copy_picked_channel (gint32 dst_drawable_id,  guint dst_channel_pick
            ,(int)dst_drawable->height
            ,(int)dst_drawable->bpp
 	   );
-    gimp_drawable_detach (src_drawable);
-    gimp_drawable_detach (dst_drawable);
+    gimp_drawable_detach(src_drawable);
+    gimp_drawable_detach(dst_drawable);
     return FALSE;
   }
 
@@ -415,8 +411,8 @@ gap_layer_copy_picked_channel (gint32 dst_drawable_id,  guint dst_channel_pick
   }
   gimp_drawable_update (dst_drawable_id, x1, y1, (x2 - x1), (y2 - y1));
 
-  gimp_drawable_detach (src_drawable);
-  gimp_drawable_detach (dst_drawable);
+  gimp_drawable_detach(src_drawable);
+  gimp_drawable_detach(dst_drawable);
 
   return TRUE;
 }  /* end gap_layer_copy_picked_channel */
@@ -489,8 +485,11 @@ gap_layer_new_from_buffer(gint32 image_id
                            ,width
 			   ,height
                            );
+
     /*  update the processed region  */
-    gimp_drawable_detach (dst_drawable);
+    gimp_drawable_flush (dst_drawable);
+    gimp_drawable_detach(dst_drawable);
+
   }
   
   return(layer_id);

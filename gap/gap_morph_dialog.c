@@ -503,9 +503,10 @@ p_generate_outline_shape_workpoints(GapMorphGUIParams *mgup)
   }
   gimp_pixel_fetcher_destroy (src_pixfet);
   gimp_pixel_fetcher_destroy (dst_pixfet);
+  
+  gimp_drawable_detach(src_drawable);
+  gimp_drawable_detach(dst_drawable);
 
-  gimp_drawable_detach (src_drawable);
-  gimp_drawable_detach (dst_drawable);
 
 }  /* end p_generate_outline_shape_workpoints */
 
@@ -517,31 +518,31 @@ static void
 p_add_4corner_workpoints(GapMorphGUIParams *mgup)
 {
   GapMorphWorkPoint *wp;
-  GimpDrawable *dst_drawable;
-  GimpDrawable *src_drawable;
+  gint32        dst_drawable_id;
+  gint32        src_drawable_id;
   gdouble sx[4];
   gdouble sy[4];
   gdouble dx[4];
   gdouble dy[4];
   gint ii;
 
-  src_drawable = gimp_drawable_get (mgup->mgpp->osrc_layer_id);
-  dst_drawable = gimp_drawable_get (mgup->mgpp->fdst_layer_id);
+  src_drawable_id = mgup->mgpp->osrc_layer_id;
+  dst_drawable_id = mgup->mgpp->fdst_layer_id;
 
-  sx[0] = src_drawable->width  -1;
-  sy[0] = src_drawable->height -1;
-  dx[0] = dst_drawable->width  -1;
-  dy[0] = dst_drawable->height -1;
+  sx[0] = gimp_drawable_width(src_drawable_id) -1;
+  sy[0] = gimp_drawable_height(src_drawable_id) -1;
+  dx[0] = gimp_drawable_width(dst_drawable_id) -1;
+  dy[0] = gimp_drawable_height(dst_drawable_id) -1;
 
-  sx[1] = src_drawable->width  -1;
+  sx[1] = gimp_drawable_width(src_drawable_id)  -1;
   sy[1] = 0;
-  dx[1] = dst_drawable->width  -1;
+  dx[1] = gimp_drawable_width(dst_drawable_id)  -1;
   dy[1] = 0;
 
   sx[2] = 0;
-  sy[2] = src_drawable->height -1;
+  sy[2] = gimp_drawable_height(src_drawable_id) -1;
   dx[2] = 0;
-  dy[2] = dst_drawable->height -1;
+  dy[2] = gimp_drawable_height(dst_drawable_id) -1;
 
   sx[3] = 0;
   sy[3] = 0;
@@ -555,9 +556,6 @@ p_add_4corner_workpoints(GapMorphGUIParams *mgup)
     wp->next = mgup->mgpp->master_wp_list;
     mgup->mgpp->master_wp_list = wp;
   }
-
-  gimp_drawable_detach (src_drawable);
-  gimp_drawable_detach (dst_drawable);
 
 }  /* end p_add_4corner_workpoints */
 
@@ -1894,6 +1892,10 @@ p_render_zoomed_pview(GapMorphSubWin  *swp)
 			      ,height
                               );
       g_free(buf_ptr);
+      
+      gimp_drawable_detach(dst_drawable);
+      gimp_drawable_detach(src_drawable);
+      
     }
 
     /* render the preview (this includes scaling to preview size) */
@@ -1902,9 +1904,6 @@ p_render_zoomed_pview(GapMorphSubWin  *swp)
 
     p_draw_workpoints(swp);
     p_hvscale_adj_set_limits(swp);
-
-    gimp_drawable_detach (src_drawable);
-    gimp_drawable_detach (dst_drawable);
   }
 }  /* end p_render_zoomed_pview */
 
@@ -3494,7 +3493,9 @@ gap_morph_create_dialog(GapMorphGUIParams *mgup)
   mgup->src_win.layer_id_ptr = NULL;
   mgup->dst_win.layer_id_ptr = NULL;
   gimp_rgb_set(&mgup->pointcolor, 0.1, 1.0, 0.1); /* startup with GREEN pointcolor */
+  gimp_rgb_set_alpha(&mgup->pointcolor, 1.0);
   gimp_rgb_set(&mgup->curr_pointcolor, 1.0, 1.0, 0.1); /* startup with YELLOW color */
+  gimp_rgb_set_alpha(&mgup->curr_pointcolor, 1.0);
   mgup->old_src_layer_width  = 0;
   mgup->old_src_layer_height = 0;
   mgup->old_dst_layer_width  = 0;
@@ -3817,6 +3818,7 @@ gap_morph_create_dialog(GapMorphGUIParams *mgup)
 				  25, 12,                     /* WIDTH, HEIGHT, */
 				  &mgup->pointcolor,
 				  GIMP_COLOR_AREA_FLAT);
+
   gtk_table_attach(GTK_TABLE(table), color_button, 2, 3, row, row+1
                     , 0, 0, 4, 0);
   gtk_widget_show (color_button);

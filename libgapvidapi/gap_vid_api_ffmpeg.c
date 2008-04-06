@@ -3,6 +3,12 @@
  * GAP Video read API implementation of libavformat/lbavcodec (also known as FFMPEG)
  * based wrappers to read various videofile formats
  *
+ * 2007.11.04   update to ffmpeg svn snapshot 2007.10.31
+ *                bugfix: selftest sometimes did not detect variable timecodes.
+ * 2007.04.04   update to ffmpeg svn snapshot 2007.04.04,
+ *               droped support for older ffmpeg versions
+ * 2007.03.21   support fmpeg native timecode based seek
+ * 2007.03.12   update to ffmpeg svn snapshot 2007.03.12,
  * 2005.02.05   update to ffmpeg-0.4.9 (basically works now)
  * 2004.10.24   workaround initial frameread and reopen for detection of yuv_buff_pix_fmt
  *              of the active codec. (works only after the 1.st frame was read) 
@@ -21,15 +27,27 @@
  */
 #ifdef ENABLE_GVA_LIBAVFORMAT
 #include "avformat.h"
-
-#if FFMPEG_VERSION_INT ==  0x000408
-#define HAVE_OLD_FFMPEG_0408
-#else
-#undef  HAVE_OLD_FFMPEG_0408
-#endif
+#include "stdlib.h"
+#include "gap_val_file.h"
 
 
-//#define HAVE_OLD_FFMPEG_0408
+#define READSTEPS_PROBE_TIMECODE 32
+
+#define DEFAULT_NAT_SEEK_GOPSIZE 24
+#define MAX_NAT_SEEK_GOPSIZE 8192
+
+/* some defines to enable theme specific debug printf's
+ * those defines are currently not configurable.
+ */
+
+#undef  GAP_DEBUG_FF_NATIVE_SEEK
+/* #define GAP_DEBUG_FF_NATIVE_SEEK */
+
+
+
+#define MAX_TRIES_NATIVE_SEEK 3
+#define GIMPRC_PERSISTENT_ANALYSE "video-gva-libavformat-video-analyse-persistent"
+#define ANALYSE_DEFAULT TRUE
 
 /* -------------------------
  * API READ extension FFMPEG
@@ -45,6 +63,7 @@
 #define GVA_SAMPLES_BUFFER_SIZE  2400000
 
 #define GVA_FFMPEG_DECODER_NAME "libavformat"
+
 
 /* structure with FFMPEG specific file and codec handle pointers */
 typedef struct t_GVA_ffmpeg
@@ -108,12 +127,46 @@ typedef struct t_GVA_ffmpeg
  int             vid_codec_id;
  int             aud_codec_id;
  gboolean        key_frame_detection_works;
+ gboolean        timecode_proberead_done;
+ gint64          timecode_offset_frame1;     /* dts timecode offset of the 1st frame (value -1 for not known) */
+ gint32          timecode_step_avg;          /* average timecode step per frame (value -1 for not known)  */
+ gint32          timecode_step_abs_min;      /* absolute value of smallest detected stepsize  */
+ gint32          timecode_steps_sum;         /* average timecode step per frame (value -1 for not known)  */
+ gint32          count_timecode_steps;
+ gint32          timecode_steps[READSTEPS_PROBE_TIMECODE];
+ gint32          video_libavformat_seek_gopsize;    /* gimprc parameter controls native seek 0==DISABLE */
+ gint32          native_timecode_seek_failcount;    /* increased when expected timecode cant be found (seek after EOF is not counted) */
+ gint64          eof_timecode;                      /* timecode after the last frame */
+ gboolean        self_test_detected_seek_bug;
+ gint32          max_tries_native_seek;
+ gint32          readsteps_probe_timecode;
+ gint32          timestamp;                         /* videofile last modification utc time */
+
+ gboolean        prefere_native_seek;               /* prefere native seek if both vindex and native seek available */
+ gboolean        all_timecodes_verified;
+ gboolean        critical_timecodesteps_found;
 } t_GVA_ffmpeg;
 
 
 static void      p_ffmpeg_vid_reopen_read(t_GVA_ffmpeg *handle, t_GVA_Handle *gvahand);
 static void      p_ffmpeg_aud_reopen_read(t_GVA_ffmpeg *handle, t_GVA_Handle *gvahand);
 static gboolean  p_ff_open_input(char *filename, t_GVA_Handle *gvahand, t_GVA_ffmpeg*  handle, gboolean vid_open);
+static void      p_set_aspect_ratio(t_GVA_Handle *gvahand, t_GVA_ffmpeg*  handle);
+
+static void      p_reset_proberead_results(t_GVA_ffmpeg*  handle);
+static gboolean  p_seek_timecode_reliability_self_test(t_GVA_Handle *gvahand);
+static void      p_detect_total_frames_via_native_seek(t_GVA_Handle *gvahand);
+static void      p_inc_native_timecode_seek_failcount(t_GVA_Handle *gvahand);
+static void      p_clear_inbuf_and_vid_packet(t_GVA_ffmpeg *handle);
+
+static t_GVA_RetCode p_seek_private(t_GVA_Handle *gvahand
+                               , gdouble pos
+                               , t_GVA_PosUnit pos_unit
+                               );
+
+static t_GVA_RetCode p_seek_native_timcode_based(t_GVA_Handle *gvahand
+                              , gint32 target_frame);
+
 
 static gint32    p_pick_channel( t_GVA_ffmpeg *handle
                                , t_GVA_Handle *gvahand
@@ -129,13 +182,39 @@ static int       p_read_audio_packets(t_GVA_ffmpeg *handle
 static void      p_vindex_add_url_offest(t_GVA_Handle *gvahand
                          , t_GVA_ffmpeg *handle
                          , t_GVA_Videoindex *vindex
-			 , gint32 seek_nr
-			 , gint64 url_offset
-			 , guint16 frame_length
-			 , guint16 checksum
-			 );
+                         , gint32 seek_nr
+                         , gint64 url_offset
+                         , guint16 frame_length
+                         , guint16 checksum
+                         );
 static guint16  p_gva_checksum(AVPicture *picture_yuv, gint32 height);
 static t_GVA_RetCode p_wrapper_ffmpeg_get_next_frame(t_GVA_Handle *gvahand);
+
+static gint32   p_get_gimprc_int_value (const char *gimprc_option_name
+                    , gint32 default_value, gint32 min_value, gint32 max_value);
+static gboolean p_get_gimprc_gboolean_value (const char *gimprc_option_name
+                    , gboolean default_value);
+
+static FILE *  p_init_timecode_log(t_GVA_Handle   *copy_gvahand);
+static void    p_timecode_check_and_log(FILE *fp_timecode_log, gint32 framenr
+                             , t_GVA_ffmpeg *handle
+                             , t_GVA_ffmpeg *master_handle
+                             , t_GVA_Handle *gvahand);
+
+
+
+static void    p_set_analysefile_master_keywords(GapValKeyList *keylist
+                       , t_GVA_Handle *gvahand
+                       , gint32 count_timecode_steps);
+static void     p_save_video_analyse_results(t_GVA_Handle *gvahand);
+static gboolean p_get_video_analyse_results(t_GVA_Handle *gvahand);
+static char*    p_create_analysefile_name(t_GVA_Handle *gvahand);
+static gint32   p_timecode_to_frame_nr(t_GVA_ffmpeg *handle, int64_t timecode);
+static int64_t  p_frame_nr_to_timecode(t_GVA_ffmpeg *handle, gint32 frame_nr);
+static void     p_analyze_stepsize_pattern(gint max_idx, t_GVA_Handle *gvahand);
+static void     p_probe_timecode_offset(t_GVA_Handle *gvahand);
+
+
 
 /* -----------------------------
  * p_wrapper_ffmpeg_check_sig
@@ -244,7 +323,13 @@ p_wrapper_ffmpeg_open_read(char *filename, t_GVA_Handle *gvahand)
   handle->samples_buffer_size = 0;
   handle->samples_read = 0;
   handle->key_frame_detection_works = FALSE;  /* assume a Codec with non working detection */
+  
+  p_reset_proberead_results(handle);
 
+  handle->prefere_native_seek = FALSE;
+  handle->all_timecodes_verified = FALSE;
+  handle->critical_timecodesteps_found = FALSE;
+  
   /* open for the VIDEO part */
   if(FALSE == p_ff_open_input(filename, gvahand, handle, TRUE))
   {
@@ -316,7 +401,7 @@ p_wrapper_ffmpeg_open_read(char *filename, t_GVA_Handle *gvahand)
 
   handle->inbuf_len = 0;            /* start with empty buffer */
   handle->frame_len = 0;            /* start with empty buffer */
-  handle->inbuf_ptr = NULL;         /* start with empty buffer, after 1.st av_read_packet: pointer to pkt.data read pos */
+  handle->inbuf_ptr = NULL;         /* start with empty buffer, after 1.st av_read_frame: pointer to pkt.data read pos */
 
   /* yuv_buffer big enough for all supported PixelFormats
    * (the vid_codec_context->pix_fmt may change later (?)
@@ -327,7 +412,8 @@ p_wrapper_ffmpeg_open_read(char *filename, t_GVA_Handle *gvahand)
 
 
   /* total_frames and total_aud_samples are just a guess, based on framesize and filesize
-   * TODO: ??? howto findout exact value ?
+   * It seems that libavformat does not provide a method to get the exact value.
+   * (maybe due to the support of streaming where the size is not yet konwn at open time)
    */
   gvahand->total_frames = p_guess_total_frames(gvahand);
   gvahand->total_aud_samples = 0;
@@ -385,6 +471,7 @@ p_wrapper_ffmpeg_open_read(char *filename, t_GVA_Handle *gvahand)
       printf("INITIAL call p_wrapper_ffmpeg_get_next_frame\n");
     }
     p_wrapper_ffmpeg_get_next_frame(gvahand);
+    p_set_aspect_ratio(gvahand, handle);
 
     /* reset seek position */
     p_ffmpeg_vid_reopen_read(handle, gvahand);
@@ -418,8 +505,8 @@ p_wrapper_ffmpeg_open_read(char *filename, t_GVA_Handle *gvahand)
       if(gvahand->vindex->total_frames > 1)
       {
         /* we have a complete vindex and can
-	 * trust the total_frames in the vindex file
-	 */
+         * trust the total_frames in the vindex file
+         */
         gvahand->total_frames = gvahand->vindex->total_frames;
         gvahand->all_frames_counted = TRUE;
       }
@@ -433,8 +520,8 @@ p_wrapper_ffmpeg_open_read(char *filename, t_GVA_Handle *gvahand)
       if(gvahand->vindex->videoindex_filename)
       {
         printf("IDX: p_wrapper_ffmpeg_open_read: vindex->videoindex_filename %s\n"
-	      , gvahand->vindex->videoindex_filename
-	      );
+              , gvahand->vindex->videoindex_filename
+              );
       }
       else
       {
@@ -516,8 +603,7 @@ p_wrapper_ffmpeg_close(t_GVA_Handle *gvahand)
  * ----------------------------------
  * read one frame from the video_track (stream)
  * and decode the frame
- * TODO: when EOF reached: update total_frames and close the stream)
- *
+ * when EOF reached: update total_frames and close the stream)
  */
 static t_GVA_RetCode
 p_wrapper_ffmpeg_get_next_frame(t_GVA_Handle *gvahand)
@@ -572,40 +658,42 @@ p_wrapper_ffmpeg_get_next_frame(t_GVA_Handle *gvahand)
       && (l_url_offset < 0))
       {
         /* capture only if packet_buffer is empty
-	 * (the following av_read_packet call will read packages
-	 * from the packet_buffer if not empty, but reads from stream
-	 * on empty packet_buffer)
-	 */
+         * (the following av_read_frame call will read packages
+         * from the packet_buffer if not empty, but reads from stream
+         * on empty packet_buffer)
+         */
         l_url_offset = url_ftell(&handle->vid_input_context->pb);
-	if(l_url_offset != handle->prev_url_offset)
-	{
-	  handle->prev_prev_url_offset = handle->prev_url_offset;
+        if(l_url_offset != handle->prev_url_offset)
+        {
+          handle->prev_prev_url_offset = handle->prev_url_offset;
           handle->prev_url_offset = l_url_offset;
           handle->prev_pkt_count = l_pkt_count;
-	  l_pkt_count = 0;
-	}
+          l_pkt_count = 0;
+        }
       }
     
     
-      /* if (gap_debug) printf("p_wrapper_ffmpeg_get_next_frame: before av_read_packet\n"); */
+      /* if (gap_debug) printf("p_wrapper_ffmpeg_get_next_frame: before av_read_frame\n"); */
       /**
         * Read a packet from a media file
         * @param s media file handle
         * @param pkt is filled
         * @return 0 if OK. AVERROR_xxx(negative) if error.
         */
-#ifndef HAVE_OLD_FFMPEG_0408
       l_pktlen = av_read_frame(handle->vid_input_context, &handle->vid_pkt);
-#else
-      l_pktlen = av_read_packet(handle->vid_input_context, &handle->vid_pkt);
-#endif
       if(l_pktlen < 0)
       {
          /* EOF reached */
-         if (gap_debug) printf("p_wrapper_ffmpeg_get_next_frame: EOF reached (or read ERROR)\n");
+         if (gap_debug)
+         {
+           printf("p_wrapper_ffmpeg_get_next_frame: EOF reached (or read ERROR)\n");
+         }
 
-         gvahand->total_frames = gvahand->current_frame_nr;
-         gvahand->all_frames_counted = TRUE;
+         if (gvahand->all_frames_counted != TRUE)
+         {
+           gvahand->total_frames = gvahand->current_frame_nr;
+           gvahand->all_frames_counted = TRUE;
+         }
          if(handle->aud_stream_index >= 0)
          {
             /* calculate number of audio samples
@@ -613,6 +701,8 @@ p_wrapper_ffmpeg_get_next_frame(t_GVA_Handle *gvahand)
              */
             gvahand->total_aud_samples = (gint32)GVA_frame_2_samples(gvahand->framerate, gvahand->samplerate, gvahand->total_frames);
          }
+  
+         p_clear_inbuf_and_vid_packet(handle);
 
          l_rc = 1;
          break;
@@ -631,7 +721,6 @@ p_wrapper_ffmpeg_get_next_frame(t_GVA_Handle *gvahand)
          continue;
       }
 
-
       /* packet is part of the selected video stream, use that packet */
       handle->inbuf_ptr = handle->vid_pkt.data;
       handle->inbuf_len = handle->vid_pkt.size;
@@ -640,18 +729,16 @@ p_wrapper_ffmpeg_get_next_frame(t_GVA_Handle *gvahand)
       handle->frame_len += l_pkt_size;
       /*if(gap_debug)   printf("using Packet data:%d size:%d  handle->frame_len:%d\n"
        *                           ,(int)handle->vid_pkt.data
-       *			   ,(int)handle->vid_pkt.size
-       *			   ,(int)handle->frame_len
-       *			   );
+       *                           ,(int)handle->vid_pkt.size
+       *                           ,(int)handle->frame_len
+       *                           );
        */
        
     }
 
     /* if (gap_debug) printf("before avcodec_decode_video: inbuf_ptr:%d inbuf_len:%d\n", (int)handle->inbuf_ptr, (int)handle->inbuf_len); */
 
-#ifndef HAVE_OLD_FFMPEG_0408
     avcodec_get_frame_defaults(&handle->big_picture_yuv);
-#endif
 
     /* decode a frame. return -1 if error, otherwise return the number of
      * bytes used. If no frame could be decompressed, *got_picture_ptr is
@@ -663,27 +750,28 @@ p_wrapper_ffmpeg_get_next_frame(t_GVA_Handle *gvahand)
                                ,handle->inbuf_ptr
                                ,handle->inbuf_len
                                );
+
     /*if (gap_debug) printf("after avcodec_decode_video: l_len:%d got_pic:%d\n", (int)l_len, (int)l_got_picture);*/
 
     if(handle->yuv_buff_pix_fmt != handle->vid_codec_context->pix_fmt)
     {
       if(gap_debug)
       {
-	printf("$$ pix_fmt: old:%d new from codec:%d (PIX_FMT_YUV420P:%d PIX_FMT_YUV422P:%d)\n"
-	    , (int)handle->yuv_buff_pix_fmt
-	    , (int)handle->vid_codec_context->pix_fmt
-	    , (int)PIX_FMT_YUV420P
-	    , (int)PIX_FMT_YUV422P
-	    );
+        printf("$$ pix_fmt: old:%d new from codec:%d (PIX_FMT_YUV420P:%d PIX_FMT_YUV422P:%d)\n"
+            , (int)handle->yuv_buff_pix_fmt
+            , (int)handle->vid_codec_context->pix_fmt
+            , (int)PIX_FMT_YUV420P
+            , (int)PIX_FMT_YUV422P
+            );
       }
 
       handle->yuv_buff_pix_fmt = handle->vid_codec_context->pix_fmt;   /* PIX_FMT_YUV420P */
       avpicture_fill(handle->picture_yuv
-        	,handle->yuv_buffer
-        	,handle->yuv_buff_pix_fmt
-        	,gvahand->width
-        	,gvahand->height
-        	);
+                ,handle->yuv_buffer
+                ,handle->yuv_buff_pix_fmt
+                ,gvahand->width
+                ,gvahand->height
+                );
     } 
 
     if(l_len < 0)
@@ -724,12 +812,15 @@ p_wrapper_ffmpeg_get_next_frame(t_GVA_Handle *gvahand)
     
     handle->got_frame_length = l_frame_len;
     
-    if (gap_debug) printf("GOT PIC: current_seek_nr:%06d l_frame_len:%d got_pic:%d key:%d\n"
-		       , (int)gvahand->current_seek_nr
-		       , (int)l_frame_len
-		     , (int)l_got_picture
-		     , (int)handle->big_picture_yuv.key_frame
-		     );
+    if(gap_debug)
+    {
+      printf("GOT PIC: current_seek_nr:%06d l_frame_len:%d got_pic:%d key:%d\n"
+                       , (int)gvahand->current_seek_nr
+                       , (int)l_frame_len
+                     , (int)l_got_picture
+                     , (int)handle->big_picture_yuv.key_frame
+                     );
+    }
 
     if(handle->dummy_read == FALSE)
     {
@@ -741,7 +832,7 @@ p_wrapper_ffmpeg_get_next_frame(t_GVA_Handle *gvahand)
       l_rc = img_convert(handle->picture_rgb
                         , PIX_FMT_RGB24                      /* dst */
                         ,handle->picture_yuv
-			,handle->yuv_buff_pix_fmt            /* src */
+                        ,handle->yuv_buff_pix_fmt            /* src */
                         ,gvahand->width
                         ,gvahand->height
                         );
@@ -764,31 +855,31 @@ p_wrapper_ffmpeg_get_next_frame(t_GVA_Handle *gvahand)
       if(handle->key_frame_detection_works == FALSE)
       {
         if(l_url_seek_nr >= handle->prev_key_seek_nr + GVA_HIGH_GOP_LIMIT)
-	{
+        {
           /* some codecs do not deliver key_frame information even if all frames are stored
            * as keyframes.
            * this would result in empty videoindexes for videoreads using such codecs
-	   * and seek ops would be done as sequential reads as if we had no videoindexes at all.
+           * and seek ops would be done as sequential reads as if we had no videoindexes at all.
            * the GVA_HIGH_GOP_LIMIT  allows creation of videoindexes
            * to store offesets of frames that are NOT explicite marked as keyframes.
-	   * but never use non-keyframes for codecs with working key_frame detection.
-	   * (dont set GVA_HIGH_GOP_LIMIT lower than 100)
+           * but never use non-keyframes for codecs with working key_frame detection.
+           * (dont set GVA_HIGH_GOP_LIMIT lower than 100)
            */
           l_potential_index_frame = TRUE;
-	}
+        }
       }
     }
 
     if(gap_debug)
     {
       if( (gvahand->vindex) 
-	  && (handle->capture_offset)
-	  )
+          && (handle->capture_offset)
+          )
       {    
-	printf("KeyFrame: %d  works:%d\n"
-	  ,(int)handle->big_picture_yuv.key_frame
-	  ,(int)handle->key_frame_detection_works
-	  );
+        printf("KeyFrame: %d  works:%d\n"
+          ,(int)handle->big_picture_yuv.key_frame
+          ,(int)handle->key_frame_detection_works
+          );
       }
     }
 
@@ -800,49 +891,49 @@ p_wrapper_ffmpeg_get_next_frame(t_GVA_Handle *gvahand)
         l_checksum = p_gva_checksum(handle->picture_yuv, gvahand->height);
 
         /* the automatic GOP detection has a lower LIMIT of 24 frames
-	 * GOP values less than the limit can make the videoindex
-	 * slow, because the packet reads in libavformat are buffered,
-	 * and the index based search starting at the recorded seek offset (in the index)
-	 * may not find the wanted keyframe in the first Synchronisation Loop
-	 * if its 1.st packet starts before the recorded seek offset.
-	 * 24 frames shold be enough to catch an offest before the start of the wanted
-	 * packet.
-	 * Increasing the GVA_LOW_GOP_LIMIT would slow down the index based seek
-	 * ops.
-	 */
+         * GOP values less than the limit can make the videoindex
+         * slow, because the packet reads in libavformat are buffered,
+         * and the index based search starting at the recorded seek offset (in the index)
+         * may not find the wanted keyframe in the first Synchronisation Loop
+         * if its 1.st packet starts before the recorded seek offset.
+         * 24 frames shold be enough to catch an offest before the start of the wanted
+         * packet.
+         * Increasing the GVA_LOW_GOP_LIMIT would slow down the index based seek
+         * ops.
+         */
 
         /* printf("GUESS_GOP: prev_key_seek_nr:%d  l_url_seek_nr:%d\n"
-	 *       , (int)handle->prev_key_seek_nr
-	 *       , (int)l_url_seek_nr); 
-	 */
-	/* try to guess the GOP size (but use at least  GOPSIZE of 4 frames) */
-	if(l_url_seek_nr > handle->prev_key_seek_nr)
-	{
-	   gdouble l_gopsize;
-	   
-	   l_gopsize = l_url_seek_nr - handle->prev_key_seek_nr;
-	   if(handle->guess_gop_size == 0)
-	   {
-	     handle->guess_gop_size = l_gopsize;
-	   }
-	   else
-	   {
-	     handle->guess_gop_size = MAX(GVA_LOW_GOP_LIMIT, ((handle->guess_gop_size + l_gopsize) / 2));
-	   }
-	}
+         *       , (int)handle->prev_key_seek_nr
+         *       , (int)l_url_seek_nr); 
+         */
+        /* try to guess the GOP size (but use at least  GOPSIZE of 4 frames) */
+        if(l_url_seek_nr > handle->prev_key_seek_nr)
+        {
+           gdouble l_gopsize;
+           
+           l_gopsize = l_url_seek_nr - handle->prev_key_seek_nr;
+           if(handle->guess_gop_size == 0)
+           {
+             handle->guess_gop_size = l_gopsize;
+           }
+           else
+           {
+             handle->guess_gop_size = MAX(GVA_LOW_GOP_LIMIT, ((handle->guess_gop_size + l_gopsize) / 2));
+           }
+        }
         if(l_url_seek_nr >= handle->prev_key_seek_nr + GVA_LOW_GOP_LIMIT)
-	{
+        {
             handle->prev_key_url_offset = handle->prev_prev_url_offset;
             p_vindex_add_url_offest(gvahand
                          , handle
                          , gvahand->vindex
-			 , l_url_seek_nr
-			 , l_record_url_offset
-			 , (guint16)l_frame_len
-			 , l_checksum
-			 );
+                         , l_url_seek_nr
+                         , l_record_url_offset
+                         , (guint16)l_frame_len
+                         , l_checksum
+                         );
             handle->prev_key_seek_nr = l_url_seek_nr;
-	}
+        }
     }
     
     gvahand->current_frame_nr = gvahand->current_seek_nr;
@@ -853,8 +944,20 @@ p_wrapper_ffmpeg_get_next_frame(t_GVA_Handle *gvahand)
 
     /* if we found more frames, increase total_frames */
     gvahand->total_frames = MAX(gvahand->total_frames, gvahand->current_frame_nr);
+
+    if(gap_debug)
+    {
+      printf("AVFORMAT: get_next_frame timecode: %lld current_frame_nr:%d\n"
+                  , handle->vid_pkt.dts
+                  , gvahand->current_frame_nr
+                  );
+    }
+
     return(GVA_RET_OK);
+
   }
+
+
 
   if(l_rc == 1)  { return(GVA_RET_EOF); }
 
@@ -865,44 +968,484 @@ p_wrapper_ffmpeg_get_next_frame(t_GVA_Handle *gvahand)
 /* ------------------------------
  * p_wrapper_ffmpeg_seek_frame
  * ------------------------------
- *  TODO:
- *  - howto seek in avformat lib ?
- *    (AVInputFormat provides read_seek function ptr that should be used anyway in future.
- *     but today read_seek is not implemented for most of the formats.
- *     for those input formats with read_seek pointer == NULL we must emulate seek ops !!)
- *  - the current implementation emulates
- *    seek by pos-1 sequential read ops.
- *    seek back: must always reopen to reset stream position to start.
- *    this is very slow, creating a videoindex is recommanded for GUI-based applications
+ */
+t_GVA_RetCode
+p_wrapper_ffmpeg_seek_frame(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit pos_unit)
+{
+  t_GVA_ffmpeg*  master_handle;
+  
+  master_handle = (t_GVA_ffmpeg*)gvahand->decoder_handle;
+
+  if (master_handle->timecode_proberead_done != TRUE)
+  {
+    if(gvahand->vindex == NULL)
+    {
+      /* this video has no explicite gva index file.
+       * try if native timecode bases seek is supported and reliable.
+       */
+      p_seek_timecode_reliability_self_test(gvahand);
+    }
+    else
+    {
+      /* this video has a gva index file.
+       * but get analyse results (if availabe) that may contains the flag
+       * (prefere_native_seek yes)
+       * if this flag is set to yes we use native seek and ignore the valid videoindex.
+       */
+      if(p_get_gimprc_gboolean_value(GIMPRC_PERSISTENT_ANALYSE, ANALYSE_DEFAULT))
+      {
+        p_get_video_analyse_results(gvahand);
+      }
+    }
+  }
+
+  return (p_seek_private(gvahand, pos, pos_unit));
+}  /* end p_wrapper_ffmpeg_seek_frame */
+
+
+/* -------------------------------------
+ * p_reset_proberead_results
+ * -------------------------------------
+ */
+static void p_reset_proberead_results(t_GVA_ffmpeg*  handle)
+{
+  handle->timecode_proberead_done = FALSE;
+  handle->timecode_offset_frame1 = -1;
+  handle->timecode_step_avg = -1;
+  handle->timecode_step_abs_min = 0;
+  handle->timecode_steps_sum = -1;
+  handle->count_timecode_steps = 0;
+  handle->native_timecode_seek_failcount = 0;
+  handle->max_tries_native_seek = MAX_TRIES_NATIVE_SEEK;
+  handle->self_test_detected_seek_bug = FALSE;
+  handle->eof_timecode = AV_NOPTS_VALUE;
+  handle->video_libavformat_seek_gopsize
+    = p_get_gimprc_int_value("video-libavformat-seek-gopsize", DEFAULT_NAT_SEEK_GOPSIZE, 0, MAX_NAT_SEEK_GOPSIZE);
+}  /* end p_reset_proberead_results */ 
+
+
+/* -------------------------------------
+ * p_seek_timecode_reliability_self_test
+ * -------------------------------------
+ * this test analyzes the required settings
+ * for native timebased seek.
+ * further it tries to findout if this fast seek
+ * method works (e.g. is able to perform frame exact positioning
+ * that may fail for videofiles with variable frametiming
+ * or have read errors).
+ * Note that this check is no 100% guarantee but is able
+ * to detetect such videos fast in most cases.
+ *
+ * this test also includes fast detection of total_frames (via seek).
+ */
+static gboolean
+p_seek_timecode_reliability_self_test(t_GVA_Handle *gvahand)
+{
+  gdouble percent;
+  gint32 bck_total_frames;
+  t_GVA_ffmpeg*  master_handle;
+  int gap_debug_local;
+  gboolean persitent_analyse_available;
+  
+  
+  gap_debug_local = gap_debug;
+
+#ifdef GAP_DEBUG_FF_NATIVE_SEEK
+  gap_debug_local = 1;
+#endif /* GAP_DEBUG_FF_NATIVE_SEEK */
+
+  master_handle = (t_GVA_ffmpeg*)gvahand->decoder_handle;
+
+  persitent_analyse_available = FALSE;
+
+  if(p_get_gimprc_gboolean_value(GIMPRC_PERSISTENT_ANALYSE, ANALYSE_DEFAULT))
+  {
+    persitent_analyse_available =
+      p_get_video_analyse_results(gvahand);
+  }
+  
+  if(gap_debug_local)
+  {
+    printf("\n\n\n\n\n\n\n\n\n\n\n\n");
+    if (persitent_analyse_available)
+    {
+      printf("SKIP p_seek_timecode_reliability_self_test PERSISTENT analyse available for file:%s\n"
+        ,gvahand->filename
+        );
+    }
+    else
+    {
+      printf("STARTING p_seek_timecode_reliability_self_test with probereads on file:%s\n"
+        ,gvahand->filename
+        );
+    }
+  }
+  
+  if(persitent_analyse_available != TRUE)
+  {
+    bck_total_frames = gvahand->total_frames;  
+
+    gvahand->cancel_operation = FALSE;   /* reset cancel flag */
+    p_ffmpeg_vid_reopen_read(master_handle, gvahand);
+    p_reset_proberead_results(master_handle);
+    gvahand->current_frame_nr = 0;
+    gvahand->current_seek_nr = 1;
+    p_clear_inbuf_and_vid_packet(master_handle);
+
+    /* limit native seek attempts to only one loop while running the selftest 
+     */  
+    master_handle->max_tries_native_seek = 1;
+
+
+    /* perform some (few) sequential probe reads to analyze typical timecode
+     * offsets and stepsize for this videfile.
+     */
+    p_probe_timecode_offset(gvahand);
+
+    if ((master_handle->native_timecode_seek_failcount == 0)
+    && (master_handle->video_libavformat_seek_gopsize > 0))
+    {
+      if(gap_debug_local)
+      {
+        printf("\nCONTINUE p_seek_timecode_reliability_self_test step: detect total_frames\n");
+      }
+      p_detect_total_frames_via_native_seek(gvahand);
+      bck_total_frames = gvahand->total_frames;
+    }
+
+    if ((master_handle->native_timecode_seek_failcount == 0)
+    && (master_handle->video_libavformat_seek_gopsize > 0))
+    {
+      if(gap_debug_local)
+      {
+        printf("\nCONTINUE p_seek_timecode_reliability_self_test step: perform seek tests\n");
+      }
+
+      /* now perform some (few!) seek operations with native timecode based
+       * method and check if this method works reliable
+       */
+      for(percent = 0.9; percent > 0.1; percent-= 0.2)
+      {
+        gint32 framenr;
+        t_GVA_RetCode l_rc_rd;
+
+        framenr = gvahand->total_frames * percent;
+        l_rc_rd = p_seek_native_timcode_based(gvahand, framenr);
+
+        /* for releiable native seek both retcode and the
+         * seek failcount must be OK.
+         */
+        if ((master_handle->native_timecode_seek_failcount > 0)
+        || (l_rc_rd != GVA_RET_OK))
+        {
+          if (master_handle->native_timecode_seek_failcount == 0)
+          {
+            master_handle->self_test_detected_seek_bug = TRUE;
+            printf("\n################################\n");
+            printf("# ERROR on the video: %s\n", gvahand->filename);
+            printf("# seek does not work.\n");
+            printf("# possible reasons may be:\n");
+            printf("#  - libavformat or gimp-gap api bug or\n");
+            printf("#  - corrupted videofile\n");
+            printf("# only slow sequential read will deliver frames\n");
+            printf("#\n");
+            printf("# Developer note: while testing this happened only with some MPEG1 videos\n");
+            printf("# the bug seems to be a libavcodec/libavformat problem.\n");
+            printf("################################\n");
+
+          }
+
+          /* disable native timecode seek in case of failures */
+          master_handle->video_libavformat_seek_gopsize = 0;
+          gvahand->total_frames = bck_total_frames;
+          break;
+        }
+      }
+
+    }
+
+
+    if(gap_debug_local)
+    {
+      printf("\n\n");
+      printf("\nDONE p_seek_timecode_reliability_self_test failcount:%d video_libavformat_seek_gopsize:%d"
+        , (int)master_handle->native_timecode_seek_failcount
+        , (int)master_handle->video_libavformat_seek_gopsize
+        );
+      if (master_handle->video_libavformat_seek_gopsize > 0)
+      {
+        printf(" (NATIVE seek ENABLED)");
+      }
+      else
+      {
+        printf(" (NATIVE seek ** DISABLED **)");
+      }
+      printf(" for file:%s\n", gvahand->filename);
+      printf("\n\n\n\n\n");
+    }
+
+    if(p_get_gimprc_gboolean_value(GIMPRC_PERSISTENT_ANALYSE, ANALYSE_DEFAULT))
+    {
+      p_save_video_analyse_results(gvahand);
+      persitent_analyse_available = TRUE;
+    }
+    master_handle->max_tries_native_seek = MAX_TRIES_NATIVE_SEEK;
+
+    p_ffmpeg_vid_reopen_read(master_handle, gvahand);
+  }
+  return (persitent_analyse_available);
+}  /* end p_seek_timecode_reliability_self_test */
+
+
+/* -------------------------------------
+ * p_detect_total_frames_via_native_seek
+ * -------------------------------------
+ * findout total number of frames via native seek attempts
+ * using binary search method.
+ * further check if timecode based seek operates reliable
+ * (native_timecode_seek_failcount must be 0)
+ *
+ * unfortunately i dont found a way to check if frame read attempts
+ * failed due to read after EOF or failed due to errors.
+ * some (typical but not all MPEG1 encoded) vidofiles deliver errors
+ * when frames were read after any seek operations.
+ * In such a case detection of total_frames is not possible
+ * and furthermore native timecode based seek operations are not reliable
+ * and must be disabled.
+ *
+ * it seems that libavformat sets the current timecode 
+ * to timecode after last frame
+ * when seeking to positions after EOF (and in case of errors after native seek).
+ * This (undocumented ?) effect enables quick detection of the toatal_frames.
+ */
+static void
+p_detect_total_frames_via_native_seek(t_GVA_Handle *gvahand)
+{
+  gint32 frameNrLo;
+  gint32 frameNrHi;
+  gint32 frameNrMed;
+  gint32 totalGuess;
+  gint32 lastFrameNr;
+  gint32 totalPlausible;
+  gint32 totalDetected;
+  t_GVA_RetCode l_rc;
+  t_GVA_ffmpeg*  master_handle;
+  int gap_debug_local;
+  
+  gap_debug_local = gap_debug;
+
+#ifdef GAP_DEBUG_FF_NATIVE_SEEK
+  gap_debug_local = 1;
+#endif /* GAP_DEBUG_FF_NATIVE_SEEK */
+  
+  master_handle = (t_GVA_ffmpeg*)gvahand->decoder_handle;
+  master_handle->eof_timecode = AV_NOPTS_VALUE;
+  totalGuess = p_guess_total_frames(gvahand);
+  lastFrameNr = totalGuess;
+  
+  totalPlausible = MAX((totalGuess / 4), 256);
+  if(gap_debug_local)
+  {
+    printf("START: p_detect_total_frames_via_native_seek total_guess:%d\n"
+      , (int)totalGuess
+      );
+  }
+
+  /* first loop trys to seek after EOF until seek fails
+   * seek to 150 % until seek fails 
+   */
+  totalDetected = 0;
+  frameNrLo = 1;
+  frameNrHi = MAX(totalGuess, 256); /* start with guess value */
+  while(1==1)
+  {
+    gdouble increase;
+    increase = (gdouble)frameNrHi * 0.5;
+    frameNrHi = frameNrHi + increase;
+    l_rc = p_seek_native_timcode_based(gvahand, frameNrHi);
+    if (l_rc != GVA_RET_OK)
+    {
+      if ((master_handle->eof_timecode != AV_NOPTS_VALUE)
+      && (master_handle->eof_timecode > 0))
+      {
+        gdouble tolerance;
+        /* probably already got eof_timecode from libavformat
+         * therefore set Lo/Hi near that value to speed up the binary search.
+         */
+         lastFrameNr = p_timecode_to_frame_nr(master_handle, master_handle->eof_timecode) -1;
+         tolerance = 32;
+         frameNrLo = MAX(1, (lastFrameNr - tolerance));
+         frameNrHi = lastFrameNr + tolerance;
+         totalPlausible = frameNrLo;
+      }
+      break;
+    }
+    frameNrLo = MAX(frameNrLo, frameNrHi);
+  }
+
+  /* 2nd loop for binary search between Lo and Hi */
+  while(1==1)
+  {
+    gdouble delta;
+    
+    delta = (gdouble)(frameNrHi - frameNrLo) / 2.0;
+    frameNrMed = frameNrLo + delta;
+    if(gap_debug_local)
+    {
+      printf("Lo:%d Hi:%d Med:%d delta:%.3f\n"
+            ,(int)frameNrLo
+            ,(int)frameNrHi
+            ,(int)frameNrMed
+            ,(float)delta
+            );
+    }
+    if(delta < 1.0)
+    {
+       totalDetected = frameNrLo;
+       gvahand->all_frames_counted = TRUE;
+       break;
+    }
+
+    l_rc = p_seek_native_timcode_based(gvahand, frameNrMed);
+    if (master_handle->native_timecode_seek_failcount > 0)
+    {
+      /* disable native timecode seek */
+      master_handle->video_libavformat_seek_gopsize = 0;
+      break;
+    }
+    if (l_rc != GVA_RET_OK)
+    {
+      frameNrHi = MIN(frameNrMed, frameNrHi);
+    }
+    else
+    {
+      frameNrLo = MAX(frameNrMed, frameNrLo);
+    }
+
+  }
+  
+  if(totalDetected >= totalPlausible)
+  {
+    gvahand->total_frames = totalDetected;
+    gvahand->all_frames_counted = TRUE;
+  }
+  else
+  {
+    /* disable native timecode seek
+     * we typically get here for video files
+     * where libavformat reads after seek always fail.
+     */
+    master_handle->video_libavformat_seek_gopsize = 0;
+    gvahand->total_frames = lastFrameNr;
+    gvahand->all_frames_counted = FALSE;
+  }
+  
+  
+  if(gap_debug_local)
+  {
+    printf("END: p_detect_total_frames_via_native_seek plausiblity limit:%d detected:%d total_frames:%d \n"
+       , (int)totalPlausible
+       , (int)totalDetected
+       , (int)gvahand->total_frames
+       );
+  }
+}  /* end p_detect_total_frames_via_native_seek */
+
+
+
+/* ------------------------------------
+ * p_inc_native_timecode_seek_failcount
+ * ------------------------------------
+ */
+static void
+p_inc_native_timecode_seek_failcount(t_GVA_Handle *gvahand)
+{
+  t_GVA_ffmpeg*  master_handle;
+  
+  master_handle = (t_GVA_ffmpeg*)gvahand->decoder_handle; 
+  if (master_handle->native_timecode_seek_failcount <= 0)
+  {
+    printf("\n##############################\n");
+    printf("# WARNING video %s probably has variable frame timing\n"
+          , gvahand->filename
+          );
+    printf("#  positioning to exact framenumber is not guaranteed\n");
+    printf("#  you may create a videoindex to enable positioning to exact frame numbers\n");
+    printf("##############################\n");
+    
+  }
+  master_handle->native_timecode_seek_failcount++;
+}  /* end p_inc_native_timecode_seek_failcount */
+
+/* ------------------------------------
+ * p_clear_inbuf_and_vid_packet
+ * ------------------------------------
+ */
+static void
+p_clear_inbuf_and_vid_packet(t_GVA_ffmpeg *handle)
+{
+  av_free_packet(&handle->vid_pkt);
+  handle->vid_pkt.size = 0;             /* set empty packet status */
+  handle->vid_pkt.data = NULL;          /* set empty packet status */
+  handle->inbuf_len = 0;
+  handle->inbuf_ptr = NULL;
+}  /* end p_clear_inbuf_and_vid_packet */
+
+
+
+/* ------------------------------
+ * p_seek_private
+ * ------------------------------
+ * this procedure seeks to specified position.
+ * one of 3 alternative methods will be used.
+ *  - Native timebased seek via av_seek_frame
+ *     This method is fastest, but may not be available for some videofile formats.
+ *     This method may deliver
+ *     wrong results in case the video has unrelible timecode,
+ *     or has frames with individual duration, or streams with
+ *     different framerates.
+ *     Note that GAP usually works framenumber oriented, therefore
+ *     native timebased seeking may delvier wrong results, depending on the videofile.
+ *     native seek by timestamps can be generally disabled by setting gimprc parameter
+ *     (video-libavformat-seek-gopsize "0")
+ *     Note that native seek will also be disabled automatically, if the self test
+ *     detects that native seek does not work properly on the current video.
  *
  *  - The videoindex is an external solution outside libavformat
- *    and enables faster seek in the videofile.
+ *    and enables seek in the videofile in case where native seek is not available.
+ *    The videoindex is slower than native but much faster than sequential reads.
  *    a videoindex has stored offsets of the keyframes
  *    that were optional created by the count_frames procedure.
- *    The indexed based seek modifies the libavformat internal straem seek position
+ *    The videoindex based seek modifies the libavformat internal straem seek position
  *    by an explicte call of url_fseek.
  *    The index also has information about the (compressed) frame length and a checksum.
  *    In the Sync Loop(s) we try to find exactly the frame that is described in the index.
  *    The postioning to last Group of pictures is done
  *    by sequential read. (it should contain at least one keyframe (I-frame)
  *    that enables clean decoding of the following P and B frames
+ *
+ *  - the fallback method emulates
+ *    seek by pos-1 sequential read ops.
+ *    seek backwards must always reopen to reset stream position to start.
+ *    this is very slow, creating a videoindex is recommanded for GUI-based applications
  *    
  */
 #define GVA_IDX_SYNC_STEPSIZE 1
-t_GVA_RetCode
-p_wrapper_ffmpeg_seek_frame(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit pos_unit)
+static t_GVA_RetCode
+p_seek_private(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit pos_unit)
 {
   t_GVA_ffmpeg *handle;
   t_GVA_RetCode l_rc_rd;
   gint32   l_frame_pos;
   gint32   l_url_frame_pos;
   gint32   l_readsteps;
-  int64_t  l_pts_pos_microsec;
   gdouble  l_progress_step;
   t_GVA_Videoindex    *vindex;
 
   handle = (t_GVA_ffmpeg *)gvahand->decoder_handle;
   vindex = gvahand->vindex;
+  
+  gvahand->cancel_operation = FALSE;   /* reset cancel flag */
 
   switch(pos_unit)
   {
@@ -911,7 +1454,6 @@ p_wrapper_ffmpeg_seek_frame(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit po
       break;
     case GVA_UPOS_SECS:
       l_frame_pos = (gint32)round(pos * gvahand->framerate);
-      l_pts_pos_microsec = (int64_t)(pos * 1000 * 1000);
       break;
     case GVA_UPOS_PRECENTAGE:
       /* is not reliable until all_frames_counted == TRUE */
@@ -921,30 +1463,69 @@ p_wrapper_ffmpeg_seek_frame(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit po
       l_frame_pos = (gint32)pos;
       break;
   }
-
-/*  if(handle->file_iformat->read_seek == NULL)
- * {
- *    printf("AVFORMAT: %s read_seek not implemented, (emulating SEEK)\n", handle->file_iformat->name);
- * }
- */
-
+  
+  if(gvahand->all_frames_counted)
+  {
+    /* in case total number of frames is exactly known
+     * constraint seek position
+     */
+    l_frame_pos = MIN(l_frame_pos, gvahand->total_frames);
+  }
+  
   gvahand->percentage_done = 0.0;
 
-  if(gap_debug)
+  //if(gap_debug)
   {
-    printf("p_wrapper_ffmpeg_seek_frame: start: l_frame_pos: %d cur_seek:%d cur_frame:%d\n"
+    printf("p_wrapper_ffmpeg_seek_frame: start: l_frame_pos: %d cur_seek:%d cur_frame:%d  (prefere_native:%d gopsize:%d)\n"
                            , (int)l_frame_pos
-			   , (int)gvahand->current_seek_nr
-			   , (int)gvahand->current_frame_nr
-			   );
+                           , (int)gvahand->current_seek_nr
+                           , (int)gvahand->current_frame_nr
+                           , (int)handle->prefere_native_seek
+                           , (int)handle->video_libavformat_seek_gopsize
+                           );
   }
+  
 
   handle->dummy_read = TRUE;
   l_url_frame_pos = 0;
-  if(vindex)
+
+  
+  /* check if we have a video index, if not try native timecode based seek
+   */
+  if((vindex == NULL) || (handle->prefere_native_seek))
+  {
+    /* try native av_seek_frame if enabled by gimprc configuration
+     * (native seek is disabled if video_libavformat_seek_gopsize == 0)
+     */
+    if (handle->video_libavformat_seek_gopsize > 0)
+    {
+      l_rc_rd = p_seek_native_timcode_based(gvahand, l_frame_pos);
+      if(l_rc_rd == GVA_RET_OK)
+      {
+        //if(gap_debug)
+        {
+          printf("NATIVE SEEK performed for videofile:%s\n"
+            , gvahand->filename
+            );
+        }
+        return (l_rc_rd);
+      }
+    }  
+  }
+
+  if(vindex != NULL)
   {
      gint64  seek_pos;
      gint32  l_idx;
+     
+     //if(gap_debug)
+     {
+       printf("VIDEO INDEX is available for videofile:%s\n"
+         , gvahand->filename
+         );
+     }
+     
+     
      if(vindex->tabsize_used < 1)
      {
        printf("SEEK: index is >>> EMPTY <<<: vindex->tabsize_used: %d cannot use index!\n", (int)vindex->tabsize_used);
@@ -955,147 +1536,185 @@ p_wrapper_ffmpeg_seek_frame(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit po
 
        /* make sure that table access limited to used tablesize
         * (this allows usage of incomplete indexes)
-	*/
+        */
        if(l_idx > vindex->tabsize_used -1)
        {
          if(gap_debug)
-	 {
-	   printf("SEEK: overflow l_idx: %d limit:%d\n"
-	                 , (int)l_idx
-			 , (int) vindex->tabsize_used -1
-			 );
+         {
+           printf("SEEK: overflow l_idx: %d limit:%d\n"
+                         , (int)l_idx
+                         , (int) vindex->tabsize_used -1
+                         );
          }
          l_idx = vindex->tabsize_used -1;
        }
+
+       /* lower index adjustment (dont start seek with positions much smaller than l_frame_pos) */ 
        if(l_idx > 0)
        {
-	 while(vindex->ofs_tab[l_idx].seek_nr >= l_frame_pos)
-	 {
-	   l_idx--;
-	   if(l_idx < 1)
-	   {
-	     break;
-	   }
-	 }
+         gint32 l_pos_min;
+         
+         l_pos_min = l_frame_pos - (MAX(64, (2* vindex->stepsize)));
+         
+         while(vindex->ofs_tab[l_idx].seek_nr < l_pos_min)
+         {
+           l_idx++;
+           if(gap_debug)
+           {
+             printf("SEEK: lower idx adjustment l_idx: %d l_pos_min:%d seek_nr[%d]:%d\n"
+                           , (int)l_idx
+                           , (int)l_pos_min
+                           , (int)vindex->ofs_tab[l_idx].seek_nr
+                           , (int)l_idx
+                           );
+           }
+           if(l_idx > vindex->tabsize_used -1)
+           {
+             break;
+           }
+         }
+       }
+       
+       /* upper index adjustment (dont start seek with positions already graeter than l_frame_pos)*/ 
+       if(l_idx > 0)
+       {
+         while(vindex->ofs_tab[l_idx].seek_nr >= l_frame_pos)
+         {
+           l_idx--;
+           if(gap_debug)
+           {
+             printf("SEEK: upper idx adjustment l_idx: %d l_frame_pos:%d seek_nr[%d]:%d\n\n"
+                           , (int)l_idx
+                           , (int)l_frame_pos
+                           , (int)vindex->ofs_tab[l_idx].seek_nr
+                           , (int)l_idx
+                           );
+           }
+           if(l_idx < 1)
+           {
+             break;
+           }
+         }
        }
        
        if(l_idx > 0)
        {
-	 l_readsteps = l_frame_pos - gvahand->current_seek_nr;
+         l_readsteps = l_frame_pos - gvahand->current_seek_nr;
          if((l_readsteps > vindex->stepsize)
          || (l_readsteps < 0))
-	 {
-	   gint32  l_synctries;
-	   gint32  l_nloops;
+         {
+           gint32  l_synctries;
+           gint32  l_nloops;
 
            l_nloops = 1;
            while(l_idx >= 0)
-	   {
-	     if(gap_debug)
-	     {
-	       printf("SEEK: USING_INDEX: ofs_tab[%d]: ofs64: %d seek_nr:%d flen:%d chk:%d NLOOPS:%d\n"
-	       , (int)l_idx
-	       , (int)vindex->ofs_tab[l_idx].uni.offset_gint64
-	       , (int)vindex->ofs_tab[l_idx].seek_nr
-	       , (int)vindex->ofs_tab[l_idx].frame_length
-	       , (int)vindex->ofs_tab[l_idx].checksum
-	       , (int)l_nloops
-	       );
-	     }
-	       
-	     l_synctries = 4 + (vindex->stepsize * GVA_IDX_SYNC_STEPSIZE);
+           {
+             if(gap_debug)
+             {
+               printf("SEEK: USING_INDEX: ofs_tab[%d]: ofs64: %d seek_nr:%d flen:%d chk:%d NLOOPS:%d\n"
+               , (int)l_idx
+               , (int)vindex->ofs_tab[l_idx].uni.offset_gint64
+               , (int)vindex->ofs_tab[l_idx].seek_nr
+               , (int)vindex->ofs_tab[l_idx].frame_length
+               , (int)vindex->ofs_tab[l_idx].checksum
+               , (int)l_nloops
+               );
+             }
+               
+             l_synctries = 4 + (vindex->stepsize * GVA_IDX_SYNC_STEPSIZE);
              /* SYNC READ loop
-	      * seek to offest found in the index table
-	      * then read until we are at the KEYFRAME that matches
-	      * in length and checksum with the one from th  index table
-	      */
+              * seek to offest found in the index table
+              * then read until we are at the KEYFRAME that matches
+              * in length and checksum with the one from th  index table
+              */
              p_ffmpeg_vid_reopen_read(handle, gvahand);
              seek_pos = vindex->ofs_tab[l_idx].uni.offset_gint64;
              url_fseek(&handle->vid_input_context->pb, seek_pos, SEEK_SET);
+             p_clear_inbuf_and_vid_packet(handle);
 
              gvahand->current_seek_nr = vindex->ofs_tab[vindex->tabsize_used].uni.offset_gint64;
 
              l_rc_rd = GVA_RET_OK;
              while((l_rc_rd == GVA_RET_OK)
-	     && (l_synctries > 0))
-	     {
+             && (l_synctries > 0))
+             {
                l_rc_rd = p_wrapper_ffmpeg_get_next_frame(gvahand);
 
-	      /*
-	       *   printf("SEEK_SYNC_LOOP: idx_frame_len:%d  got_frame_length:%d  Key:%d\n"
-	       *     , (int)vindex->ofs_tab[l_idx].frame_length
-	       *     , (int)handle->got_frame_length
-	       *     , (int)handle->big_picture_yuv.key_frame
-	       *     );
-	       */
-	       
- 	       if(vindex->ofs_tab[l_idx].frame_length == handle->got_frame_length)
-	       {
-		 guint16 l_checksum;
+              /*
+               *   printf("SEEK_SYNC_LOOP: idx_frame_len:%d  got_frame_length:%d  Key:%d\n"
+               *     , (int)vindex->ofs_tab[l_idx].frame_length
+               *     , (int)handle->got_frame_length
+               *     , (int)handle->big_picture_yuv.key_frame
+               *     );
+               */
+               
+               if(vindex->ofs_tab[l_idx].frame_length == handle->got_frame_length)
+               {
+                 guint16 l_checksum;
 
-		 l_checksum = p_gva_checksum(handle->picture_yuv, gvahand->height);
-		 if(l_checksum == vindex->ofs_tab[l_idx].checksum)
-		 {
-	           /* seems that we have found the wanted key frame */
-	           break;
-		 }
-		 else
-		 {
-		   if(gap_debug)
-		   {
-		     /* checksum missmatch is non critical
-		      * continue searching for an exactly matching frame
-		      */
-		     printf("SEEK_SYNC_LOOP: CHKSUM_MISSMATCH: CHECKSUM[%d]:%d  l_checksum:%d\n"
-		     , (int)l_idx
-		     , (int)vindex->ofs_tab[l_idx].checksum
-		     , (int)l_checksum
-		     );
-		   }
-		 }
+                 l_checksum = p_gva_checksum(handle->picture_yuv, gvahand->height);
+                 if(l_checksum == vindex->ofs_tab[l_idx].checksum)
+                 {
+                   /* seems that we have found the wanted key frame */
+                   break;
+                 }
+                 else
+                 {
+                   if(gap_debug)
+                   {
+                     /* checksum missmatch is non critical
+                      * continue searching for an exactly matching frame
+                      */
+                     printf("SEEK_SYNC_LOOP: CHKSUM_MISSMATCH: CHECKSUM[%d]:%d  l_checksum:%d\n"
+                     , (int)l_idx
+                     , (int)vindex->ofs_tab[l_idx].checksum
+                     , (int)l_checksum
+                     );
+                   }
+                 }
 
-	       }
-	       l_synctries--;
-	     }
-	     if(l_synctries <= 0)
-	     {
-	       /* index sync search failed, try with previous index in the table */
-	       if(l_idx < GVA_IDX_SYNC_STEPSIZE)
-	       {
-	         /* index sync search failed, must search slow from start */
+               }
+               l_synctries--;
+             }
+             if(l_synctries <= 0)
+             {
+               /* index sync search failed, try with previous index in the table */
+               if(l_idx < GVA_IDX_SYNC_STEPSIZE)
+               {
+                 /* index sync search failed, must search slow from start */
                  p_ffmpeg_vid_reopen_read(handle, gvahand);
- 	         gvahand->current_seek_nr = 1;
-	         l_url_frame_pos = 0;
-	       }
-	     }
-	     else
-	     {
+                 gvahand->current_seek_nr = 1;
+                 l_url_frame_pos = 0;
+               }
+             }
+             else
+             {
 
                l_url_frame_pos = 1 + vindex->ofs_tab[l_idx].seek_nr;
                if(gap_debug)
-	       {
-	         printf("SEEK: url_fseek seek_pos: %d  l_idx:%d l_url_frame_pos:%d\n"
-	                                , (int)seek_pos
-					, (int)l_idx
-					, (int)l_url_frame_pos
-					);
-	       }
+               {
+                 printf("SEEK: url_fseek seek_pos: %d  l_idx:%d l_url_frame_pos:%d\n"
+                                        , (int)seek_pos
+                                        , (int)l_idx
+                                        , (int)l_url_frame_pos
+                                        );
+               }
                gvahand->current_seek_nr = (gint32)l_url_frame_pos;
                l_readsteps = l_frame_pos - gvahand->current_seek_nr;
                if(gap_debug)
-	       {
-	         printf("SEEK: l_readsteps: %d\n", (int)l_readsteps);
-	       }
+               {
+                 printf("SEEK: l_readsteps: %d\n", (int)l_readsteps);
+               }
   
                break;  /* OK, we are now at read position of the wanted keyframe */
-	     }
+             }
 
-             /* try another search with previos index table entry */
-	     l_idx -= GVA_IDX_SYNC_STEPSIZE;
-	     l_nloops++;
-	   }
-	   
-	 }
+             /* try another search with previous index table entry */
+             l_idx -= GVA_IDX_SYNC_STEPSIZE;
+             l_nloops++;
+           }
+           
+         }
        }
      }
   }
@@ -1114,7 +1733,10 @@ p_wrapper_ffmpeg_seek_frame(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit po
     }
   }
 
-  if(gap_debug) printf("p_wrapper_ffmpeg_seek_frame: l_readsteps: %d\n", (int)l_readsteps);
+  if(gap_debug)
+  {
+    printf("p_wrapper_ffmpeg_seek_frame: l_readsteps: %d\n", (int)l_readsteps);
+  }
 
   l_progress_step =  1.0 / MAX((gdouble)l_readsteps, 1.0);
   l_rc_rd = GVA_RET_OK;
@@ -1146,9 +1768,9 @@ p_wrapper_ffmpeg_seek_frame(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit po
     {
        printf("p_wrapper_ffmpeg_seek_frame: SEEK OK: l_frame_pos: %d cur_seek:%d cur_frame:%d\n"
                             , (int)l_frame_pos
-			    , (int)gvahand->current_seek_nr
-			    , (int)gvahand->current_frame_nr
-			    );
+                            , (int)gvahand->current_seek_nr
+                            , (int)gvahand->current_frame_nr
+                            );
     }
 
     gvahand->current_seek_nr = (gint32)l_frame_pos;
@@ -1159,9 +1781,557 @@ p_wrapper_ffmpeg_seek_frame(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit po
   if(l_rc_rd == GVA_RET_EOF)  { return(GVA_RET_EOF); }
 
   return(GVA_RET_ERROR);
-}  /* end p_wrapper_ffmpeg_seek_frame */
+}  /* end p_seek_private */
 
 
+/* ------------------------------
+ * p_seek_native_timcode_based
+ * ------------------------------
+ * positioning of the video stream before target_frame position.
+ * 
+ * the native timecode based seek operates on
+ * timecode steps sample pattern that will be measured
+ * by some initial probereads (p_probe_timecode_offset).
+ * 
+ * Most Videofiles have either constant timing (stepsize equal for all frames)
+ * or use a repeating pattern of individual stepsizes within a group of pictures.
+ * In both cases this procedure can calculate the correct timecode that
+ * is required for frame exact postioning.
+ *
+ * Some videos use variable timecode all over the video. For scuh videos
+ * where no typical pattern can be detected, the native timecodebased seek
+ * is not possible.
+ * Some videoformats do not allow seek at all.
+ * (all attempts to read a frame after seek operations fail for
+ * those videofiles)
+ *
+ *
+ * returns GVA_RET_OK if positionig was successful
+ *         GVA_RET_ERROR if positioning failed
+ *         note: this procedure reopens the handle after errors
+ *         to allow clean sequential reads afterwards.
+ * futher results are stored in the decoder specific handle (part of gvahand)
+ *    handle->video_libavformat_seek_gopsize
+ *            (is automaticall increased when necessary)
+ *    handle->eof_timecode
+ *            (is set when detected the 1st time)
+ *    handle->handle->native_timecode_seek_failcount
+ *            (is increased when variable frametiming is detected
+ *             or when frame could be read but timcode overflow occured
+ *             at the last try with the highest pre_read setting)
+ */
+static t_GVA_RetCode
+p_seek_native_timcode_based(t_GVA_Handle *gvahand, gint32 target_frame)
+{
+  t_GVA_ffmpeg *handle;
+  t_GVA_RetCode l_retcode;
+  t_GVA_RetCode l_rc_rd;
+  gint32   l_readsteps;
+  gdouble  l_progress_step;
+  gint32   l_pre_read_frames;
+  gint     l_tries;
+  gboolean l_retry;
+
+#define NATIVE_SEEK_GOP_INCREASE 24
+
+
+  handle = (t_GVA_ffmpeg *)gvahand->decoder_handle;
+ 
+  l_retcode = GVA_RET_ERROR;
+  if (handle->video_libavformat_seek_gopsize <= 0)
+  {
+      return(l_retcode);
+  }
+  
+  l_retry = TRUE;
+  for(l_tries=0; l_tries < handle->max_tries_native_seek; l_tries++)
+  {
+    if (l_retry != TRUE)
+    {
+      return(l_retcode);
+    }
+
+    l_pre_read_frames =
+       MAX(4,
+          (handle->video_libavformat_seek_gopsize + (l_tries * NATIVE_SEEK_GOP_INCREASE))
+          );
+
+#ifdef GAP_DEBUG_FF_NATIVE_SEEK
+    {
+      printf("TRY (%d) native seek with l_pre_read_frames:%d total_frames:%d target:%d\n"
+        ,(int)l_tries
+        ,(int)l_pre_read_frames
+        ,(int)gvahand->total_frames
+        ,(int)target_frame
+        ); 
+    }
+#endif /* GAP_DEBUG_FF_NATIVE_SEEK */
+    
+
+
+    if (target_frame > l_pre_read_frames)
+    {
+      int      ret_av_seek_frame;
+      int      jj;
+      int64_t  l_seek_timecode;
+      gint32   seek_fnr;
+      gint32   seek_fnr2;
+      
+  
+      ret_av_seek_frame = -1;
+      p_probe_timecode_offset(gvahand);
+
+      /* determine seek timecode.
+       * this is done in 3 attempts and selects the smallest l_seek_timecode.
+       * (videos that have negative timecode steps
+       * may pick a timecode too high when using only one attempt.
+       * this can lead to seek after the wanted position or after EOF)
+       * example:
+       * video timcode sequence with negative stepsizes may look like this:
+       *   seek_fnr:000557; seek_timecode:49306;
+       *   seek_fnr:000558; seek_timecode:45557;
+       *   seek_fnr:000559; seek_timecode:45558;
+       *
+       * in this situation it is required to pick seek_timecode:45557;
+       */
+      seek_fnr = target_frame - l_pre_read_frames;
+      l_seek_timecode = p_frame_nr_to_timecode(handle, seek_fnr);
+      
+      seek_fnr2 = seek_fnr;
+      for(jj=0; jj < 2; jj++)
+      {
+        int64_t  l_seek_timecode2;
+        seek_fnr2++;
+        l_seek_timecode2 = p_frame_nr_to_timecode(handle, seek_fnr2);
+        if(l_seek_timecode2 < l_seek_timecode)
+        {
+          seek_fnr = seek_fnr2;
+          l_seek_timecode = l_seek_timecode2;
+        }
+      }
+
+      /* SEEK to preread position */
+      gvahand->current_frame_nr = 0;
+      gvahand->current_seek_nr = 1;
+      
+      if(1==1 /*l_tries == 0*/)
+      {
+        /* seek variant based on stream specific dts timecode
+         */
+        /* seek is done some (configurable number) frames less than wanted frame position.
+         * it shall deliver position of nearest key frame
+         * after seek, have to read/decode some few frames until
+         * wanted frame is reached 
+         * in some rare cases (some older mpeg files) libavformat positioning may take us
+         * to non-keyframes (even with AVSEEK_FLAG_BACKWARD set).
+         * therefore read/decode some frames (l_pre_read_frames) shall ensure that
+         * a keyframe is included, and enable proper decoding of the subsequent frames.
+         */
+        ret_av_seek_frame = av_seek_frame(handle->vid_input_context, handle->vid_stream_index
+                   , l_seek_timecode, AVSEEK_FLAG_BACKWARD);
+      }
+      else
+      {
+        /* seek variant based on global (not stream specific) pts timecode
+         */
+        int64_t  target_pts;
+        gdouble  secs;
+        
+        target_pts = 
+          av_rescale_q(l_seek_timecode, handle->vid_stream->time_base, AV_TIME_BASE_Q);
+
+        ret_av_seek_frame = av_seek_frame(handle->vid_input_context, -1
+                   , target_pts, AVSEEK_FLAG_BACKWARD);
+#ifdef GAP_DEBUG_FF_NATIVE_SEEK
+        printf("PTS-SEEK: framerate:%.3f target_pts:%lld l_seek_timecode:%lld seek_fnr:%d\n"
+           , gvahand->framerate
+           , target_pts
+           , l_seek_timecode
+           , (int)seek_fnr
+              );
+#endif /* GAP_DEBUG_FF_NATIVE_SEEK */
+      }
+
+    
+#ifdef GAP_DEBUG_FF_NATIVE_SEEK
+      if(1==0)
+      {
+        int64_t seek_target;
+        int64_t target_pts;
+        int64_t microsecs_start;
+        gdouble secs;
+        gdouble dframes;
+        gint32 seek_fnr;
+        
+        seek_fnr = target_frame - l_pre_read_frames;
+        secs = (gdouble)seek_fnr / gvahand->framerate;
+        target_pts = secs * AV_TIME_BASE;
+        microsecs_start = handle->vid_input_context->start_time * handle->vid_stream->time_base.num
+                          / handle->vid_stream->time_base.den;
+        
+        seek_target= av_rescale_q(target_pts, AV_TIME_BASE_Q, handle->vid_stream->time_base);
+        dframes = handle->vid_input_context->duration / (gdouble)AV_TIME_BASE * gvahand->framerate;
+
+        printf("VINFOt: framerate:%.3f target_pts:%lld seek_target:%lld mstart:%lld seek_timecode:%lld seek_fnr:%d\n"
+           , gvahand->framerate
+           , target_pts
+           , seek_target
+           , microsecs_start
+           , l_seek_timecode
+           , (int)seek_fnr
+           );
+        
+
+      }
+
+
+      if(gap_debug)
+      {
+        printf("AVFORMAT NATIVE-SEEK: av_seek_frame retcode: %d seek_timecode:%lld seek_frame:%ld (target frame_pos:%ld)\n"
+           , ret_av_seek_frame
+           , l_seek_timecode
+           , (long)(target_frame - l_pre_read_frames)
+           , (long)target_frame
+           );
+      }
+#endif /* GAP_DEBUG_FF_NATIVE_SEEK */
+      
+      /* clear inbuf and packet 
+       *(must remove old content after seek to enable clean reads)
+       */
+      p_clear_inbuf_and_vid_packet(handle);
+    
+      if (ret_av_seek_frame < 0)
+      {
+        printf("** ERROR AVFORMAT: av_seek_frame failed retcode: %d \n"
+               , ret_av_seek_frame);
+      }
+      else
+      {
+         int64_t  l_wanted_timecode;  /* timecode one frame before target */
+         int64_t  l_want_2_timecode;  /* timecode 2 frames before target */
+         int64_t  l_want_3_timecode;  /* timecode 3 frames before target */
+         int64_t  l_overflow_timecode;  /* timecode 2 frames after target */
+         int64_t  l_very_small_absdiff;
+         gint     l_ii;
+         gint     l_read_err_count;
+         int64_t  l_prev_timecode;
+         int64_t  l_pprev_timecode;
+         gchar    l_debug_msg[500];
+  
+         l_wanted_timecode = p_frame_nr_to_timecode(handle, target_frame -1);
+         l_want_2_timecode = p_frame_nr_to_timecode(handle, target_frame -2);
+         l_want_3_timecode = p_frame_nr_to_timecode(handle, target_frame -3);
+         l_overflow_timecode = MAX(l_wanted_timecode, p_frame_nr_to_timecode(handle, target_frame));
+         l_overflow_timecode = MAX(l_overflow_timecode, p_frame_nr_to_timecode(handle, target_frame +1));
+         l_overflow_timecode = MAX(l_overflow_timecode, p_frame_nr_to_timecode(handle, target_frame +2));
+         l_very_small_absdiff = CLAMP((handle->timecode_step_abs_min / 200), 0, 10);
+
+         l_prev_timecode = AV_NOPTS_VALUE;
+         l_pprev_timecode = AV_NOPTS_VALUE;
+         l_read_err_count = 0;
+         
+         l_progress_step =  1.0 / MAX((gdouble)l_pre_read_frames, 1.0);
+         gvahand->percentage_done = 0.0;
+         /* native seek has (hopefully) set stream position to the nearest keyframe 
+          * (before the wanted frame)
+          * ??? For some video formats the native seek may set position AFTER the wanted
+          *     frame in such a case it is worth to start a retry with larger
+          *     l_pre_read_frames value.
+          * now read/decode frames until wanted timecode position -1 is reached
+          * Note: use pkt->dts because pkt->pts can be AV_NOPTS_VALUE if the video format
+          * has B frames, so it is better to rely on pkt->dts
+          */
+         for (l_ii=0; l_ii <= MAX_NAT_SEEK_GOPSIZE; l_ii++)
+         {
+           int64_t l_curr_timecode;
+           t_GVA_RetCode l_rc_timeread;
+
+#ifdef GAP_DEBUG_FF_NATIVE_SEEK
+           if(gap_debug)
+           {
+             printf(" [%d.%02d] START progress/cancel handler\n"
+               , l_tries
+               , l_ii
+               );
+             fflush(stdout);
+           }
+#endif /* GAP_DEBUG_FF_NATIVE_SEEK */
+
+           /* progress and cancel handling */
+           gvahand->percentage_done = CLAMP(gvahand->percentage_done + l_progress_step, 0.0, 1.0);
+
+           if((l_ii % 3) == 0)
+           {
+             if(gvahand->do_gimp_progress) {  gimp_progress_update (gvahand->percentage_done); }
+             if((gvahand->fptr_progress_callback)
+             && (gvahand->progress_cb_user_data))
+             {
+               gvahand->cancel_operation = (*gvahand->fptr_progress_callback)(gvahand->percentage_done, gvahand->progress_cb_user_data);
+             }
+           }
+
+           if(gvahand->cancel_operation)
+           {
+              l_retcode = GVA_RET_ERROR;           /* cancel by user request reults in seek error */
+              l_retry = FALSE;                     /* no more attempts due to cancel */
+              gvahand->cancel_operation = FALSE;   /* reset cancel flag */
+              break;
+           }
+
+#ifdef GAP_DEBUG_FF_NATIVE_SEEK
+           if(gap_debug)
+           {
+             printf(" [%d.%02d] END   progress/cancel handler\n"
+               , l_tries
+               , l_ii
+               );
+             fflush(stdout);
+           }
+#endif /* GAP_DEBUG_FF_NATIVE_SEEK */
+
+           /* make a guess to set current_seek_nr while doing timebased frame serach loop */
+           gvahand->current_seek_nr = (gint32)target_frame -1;
+
+           /* READ FRAME from video stream at current position */
+           handle->dummy_read = TRUE;
+
+#ifdef GAP_DEBUG_FF_NATIVE_SEEK
+           if(gap_debug)
+           {
+             gint64 url_pos;
+             url_pos = url_ftell(&handle->vid_input_context->pb);
+             printf(" [%d.%02d] START nat-seek READ FRAME url_pos:%lld\n"
+                , l_tries
+                , l_ii
+                , url_pos
+                );
+             fflush(stdout);
+           }
+#endif /* GAP_DEBUG_FF_NATIVE_SEEK */
+           
+           l_rc_timeread = p_wrapper_ffmpeg_get_next_frame(gvahand);
+           l_curr_timecode = handle->vid_pkt.dts;
+
+#ifdef GAP_DEBUG_FF_NATIVE_SEEK
+           {
+             gint64 url_pos;
+             url_pos = url_ftell(&handle->vid_input_context->pb);
+             printf(" [%d.%02d] END   nat-seek READ FRAME url_pos:%lld curr_timecode:%lld rc:%d\n"
+                 , l_tries
+                 , l_ii
+                 , url_pos
+                 , l_curr_timecode
+                 , l_rc_timeread
+                 );
+             fflush(stdout);
+           }
+#endif /* GAP_DEBUG_FF_NATIVE_SEEK */
+           handle->dummy_read = FALSE;
+
+           if(l_rc_timeread != GVA_RET_OK)
+           {
+             gint32 l_fnr;
+           
+             l_fnr = p_timecode_to_frame_nr(handle, l_curr_timecode);
+             if(handle->eof_timecode == AV_NOPTS_VALUE)
+             {
+               handle->eof_timecode = l_curr_timecode;
+             }
+     
+             l_read_err_count++;
+
+#ifdef GAP_DEBUG_FF_NATIVE_SEEK
+             printf("** ERROR AVFORMAT: (%d) errcount:%d timbased seek failed to read frame after native seek rc:%d\n"
+                    " * target_frame:%ld cur_timecode:%lld, l_fnr:%ld, total_frames:%ld, all_counted:%d\n"
+                , l_ii
+                , l_read_err_count
+                , (int)l_rc_timeread
+                , target_frame
+                , l_curr_timecode
+                , l_fnr
+                , gvahand->total_frames
+                , (int)gvahand->all_frames_counted
+                );
+#endif /* GAP_DEBUG_FF_NATIVE_SEEK */
+             
+             if (1==1)  /* (l_read_err_count > 1) */
+             {
+               l_retry = FALSE;
+             }
+             else
+             {
+               l_pprev_timecode = l_prev_timecode;
+               l_prev_timecode = AV_NOPTS_VALUE;
+             }
+             break;
+             
+           }
+
+           l_debug_msg[0] = "\n";
+#ifdef GAP_DEBUG_FF_NATIVE_SEEK
+           {
+             g_snprintf(&l_debug_msg[0], sizeof(l_debug_msg)
+                  , "AVFORMAT: try(%d) readcount(%d) debug read frame timecode: %lld "
+                    "(wanted framenr:%d timecode:%lld)\n"
+                  , l_tries
+                  , l_ii
+                  , l_curr_timecode
+                  , target_frame -1
+                  , l_wanted_timecode
+                  );
+           }
+#endif /* GAP_DEBUG_FF_NATIVE_SEEK */
+
+           /* tolerant check if wanted timecode is reached
+            * it is sufficient if 2 out of the last 3 timecodes read do match.
+            */
+           {
+              gint match_count;
+              gint must_match;
+              gchar debug_match_string[4];
+              int64_t l_curr_absdiff;
+              int64_t l_prev_absdiff;
+              int64_t l_pprev_absdiff;
+
+              
+              match_count = 0;
+              must_match = 2;
+              debug_match_string[0] = '-';
+              debug_match_string[1] = '-';
+              debug_match_string[2] = '-';
+              debug_match_string[3] = '\0';
+              
+              l_curr_absdiff  = llabs(l_curr_timecode  - l_wanted_timecode);
+              l_prev_absdiff  = llabs(l_prev_timecode  - l_want_2_timecode);
+              l_pprev_absdiff = llabs(l_pprev_timecode - l_want_3_timecode);
+              
+              
+              if (l_curr_absdiff <= l_very_small_absdiff)
+              {
+                debug_match_string[0] = 'x';
+                match_count++;
+              }
+              if (l_prev_absdiff <= l_very_small_absdiff)
+              {
+                debug_match_string[1] = 'x';
+                match_count++;
+              }
+              if (l_pprev_absdiff <= l_very_small_absdiff)
+              {
+                debug_match_string[2] = 'x';
+                match_count++;
+              }
+
+#ifdef GAP_DEBUG_FF_NATIVE_SEEK
+              {
+                printf("    match_string:[%s]\n"
+                      , debug_match_string
+                      );
+                fflush(stdout);
+              }
+#endif /* GAP_DEBUG_FF_NATIVE_SEEK */
+            
+              if(match_count >= must_match)
+              {
+                /* set attributes of gvahand to refelect wanted seek position reached. */
+                gvahand->current_seek_nr = target_frame;
+                gvahand->current_frame_nr = target_frame -1;
+               
+                /* if this is not the first try ( l_tries > 0)
+                 * increase video_libavformat_seek_gopsize
+                 * to the value where we had success with.
+                 * (the next seek operation may be successful
+                 * in the first attempt based on this value)
+                 */
+                handle->video_libavformat_seek_gopsize +=
+                   (l_tries * NATIVE_SEEK_GOP_INCREASE);
+
+#ifdef GAP_DEBUG_FF_NATIVE_SEEK
+                {
+                  printf("%sABSDIFF: match_string:[%s] curr_absdiff: %lld prev_absdiff:%lld pprev_absdiff:%lld very_small:%d\n\n"
+                     , l_debug_msg
+                     , debug_match_string
+                     , l_curr_absdiff
+                     , l_prev_absdiff
+                     , l_pprev_absdiff
+                     , l_very_small_absdiff
+                     );
+                  printf("p_wrapper_ffmpeg_seek_frame: NATIVE SEEK OK: target_frame: %d cur_seek:%d cur_frame:%d seek_gopsize:%d\n"
+                     , (int)target_frame
+                     , (int)gvahand->current_seek_nr
+                     , (int)gvahand->current_frame_nr
+                     , (int)handle->video_libavformat_seek_gopsize
+                     );
+                }
+#endif /* GAP_DEBUG_FF_NATIVE_SEEK */
+                return (GVA_RET_OK);
+              }
+           } /* END of tolerant check if wanted timecode is reached */
+        
+
+           /* timecode overflow check */
+           if ((l_curr_timecode != AV_NOPTS_VALUE)
+           && (l_curr_timecode > l_overflow_timecode))
+           {
+               /* if the video has variable timing it is possible that
+                * the wanted timecode can not be found, in such a case we get an overflow
+                * when reading frames with higher timecode than the wanted timecode.
+                * (check for overflow compares timecode greater than 2 frames after the
+                *  wanted frame, because some videos have time code step patterns
+                *  that include negative stepsizes)
+                *
+                * The overflow may also happen on seek attempts after the last
+                * frame of the video.
+                */
+               if (l_tries >= handle->max_tries_native_seek -1)
+               {
+                 l_retry = FALSE;
+                 p_inc_native_timecode_seek_failcount(gvahand);
+               }
+               printf("%s**   Timecode OVERFLOW: curr: %lld oflow:%lld  prev:%lld pprev:%lld (wanted:%lld)\n"
+                  , l_debug_msg
+                  , l_curr_timecode
+                  , l_overflow_timecode
+                  , l_prev_timecode
+                  , l_pprev_timecode
+                  , l_wanted_timecode
+                  );
+               l_retcode = GVA_RET_ERROR;
+               break;
+           }
+         
+           l_pprev_timecode = l_prev_timecode;
+           l_prev_timecode = l_curr_timecode;
+         
+         
+         }
+
+      }
+      
+      if (l_retry != TRUE)
+      {
+        printf("** AVFORMAT: native seek failed (seek behind EOF, Seek Error, or Read error)\n");
+      }
+
+#ifdef GAP_DEBUG_FF_NATIVE_SEEK
+      {
+        printf("** now reopening (reset seek position for next try or alternative seek)\n");
+      }
+#endif /* GAP_DEBUG_FF_NATIVE_SEEK */
+
+      p_ffmpeg_vid_reopen_read(handle, gvahand);
+      handle = (t_GVA_ffmpeg *)gvahand->decoder_handle;
+      gvahand->current_frame_nr = 0;
+      gvahand->current_seek_nr = 1;
+    }
+
+
+  }  /* end for tries loop */
+
+  return (l_retcode);
+  
+}  /* end p_seek_native_timcode_based */
 
 
 /* ------------------------------
@@ -1294,6 +2464,7 @@ p_wrapper_ffmpeg_get_audio(t_GVA_Handle *gvahand
 }  /* end p_wrapper_ffmpeg_get_audio */
 
 
+
 /* ----------------------------------
  * p_wrapper_ffmpeg_count_frames
  * ----------------------------------
@@ -1305,17 +2476,26 @@ p_wrapper_ffmpeg_get_audio(t_GVA_Handle *gvahand
 t_GVA_RetCode
 p_wrapper_ffmpeg_count_frames(t_GVA_Handle *gvahand)
 {
+  t_GVA_ffmpeg*  master_handle;
   t_GVA_ffmpeg*  handle;
   t_GVA_RetCode  l_rc;
   t_GVA_Handle   *copy_gvahand;
   gint32         l_total_frames;
   t_GVA_Videoindex    *vindex;
+  gboolean persitent_analyse_available;
 
   if(gap_debug)
   {
     printf("p_wrapper_ffmpeg_count_frames: START\n");
   }
   gvahand->percentage_done = 0.0;
+  persitent_analyse_available = FALSE;
+
+  if(p_get_gimprc_gboolean_value(GIMPRC_PERSISTENT_ANALYSE, ANALYSE_DEFAULT))
+  {
+      persitent_analyse_available = p_seek_timecode_reliability_self_test(gvahand);
+      gvahand->percentage_done = 0.0;
+  }
 
   if(gvahand->vindex == NULL)
   {
@@ -1330,7 +2510,7 @@ p_wrapper_ffmpeg_count_frames(t_GVA_Handle *gvahand)
        /* we already have a valid videoindex that contains the real total number */
        if(gap_debug)
        {
-	 printf("p_wrapper_ffmpeg_count_frames: have already valid vindex\n");
+         printf("p_wrapper_ffmpeg_count_frames: have already valid vindex\n");
        }
        gvahand->total_frames = gvahand->vindex->total_frames;
        gvahand->all_frames_counted = TRUE;
@@ -1356,24 +2536,35 @@ p_wrapper_ffmpeg_count_frames(t_GVA_Handle *gvahand)
       vindex->track = gvahand->vid_track;
       if(vindex->ofs_tab)
       {
-	vindex->tabsize_allocated = GVA_VIDINDEXTAB_BLOCK_SIZE;
+        vindex->tabsize_allocated = GVA_VIDINDEXTAB_BLOCK_SIZE;
       }
     }
   }
 
   copy_gvahand = g_malloc0(sizeof(t_GVA_Handle));
-  if(gap_debug) printf("p_wrapper_ffmpeg_count_frames: ## before open ## handle:%s\n", gvahand->filename);
+  if(gap_debug)
+  {
+    printf("p_wrapper_ffmpeg_count_frames: ## before open ## handle:%s\n", gvahand->filename);
+  }
   p_wrapper_ffmpeg_open_read(gvahand->filename
                             ,copy_gvahand
                             );
-  if(gap_debug) printf("p_wrapper_ffmpeg_count_frames: after p_wrapper_ffmpeg_open_read\n");
+  if(gap_debug)
+  {
+    printf("p_wrapper_ffmpeg_count_frames: after p_wrapper_ffmpeg_open_read\n");
+  }
   copy_gvahand->current_frame_nr = 0;
   copy_gvahand->current_seek_nr = 1;
   copy_gvahand->vindex = vindex;
   handle = (t_GVA_ffmpeg*)copy_gvahand->decoder_handle;
+  master_handle = (t_GVA_ffmpeg*)gvahand->decoder_handle;
 
   if(handle)
   {
+    /* TIMCODE LOG INIT */
+    FILE *fp_timecode_log;
+    fp_timecode_log = p_init_timecode_log(gvahand);
+  
     if(vindex)
     {
       handle->capture_offset = TRUE;
@@ -1408,22 +2599,26 @@ p_wrapper_ffmpeg_count_frames(t_GVA_Handle *gvahand)
        }
        gvahand->frame_counter++;
        l_total_frames = MAX(l_total_frames, gvahand->frame_counter);
+       
+       
+       /* TIMCODE check and LOG WHILE COUNTING */
+       p_timecode_check_and_log(fp_timecode_log, gvahand->frame_counter, handle, master_handle, gvahand);
 
        if(gvahand->all_frames_counted)
        {
-         gvahand->percentage_done = (gdouble)l_total_frames / (gdouble)gvahand->frame_counter;
+         gvahand->percentage_done = CLAMP(((gdouble)gvahand->frame_counter / (gdouble)l_total_frames), 0.0, 1.0);
        }
        else
        {
          /* assume we have 5 % frames more to go than total_frames */
-         gvahand->percentage_done = (gdouble)gvahand->frame_counter / MAX(((gdouble)l_total_frames * 1.05),1);
+         gvahand->percentage_done = CLAMP(((gdouble)gvahand->frame_counter / MAX(((gdouble)l_total_frames * 1.05),1)), 0.0, 1.0);
          gvahand->total_frames = l_total_frames;
        }
 
        if(gvahand->do_gimp_progress) {  gimp_progress_update (gvahand->percentage_done); }
        if(gvahand->fptr_progress_callback)
        {
-	 gvahand->cancel_operation = (*gvahand->fptr_progress_callback)(gvahand->percentage_done, gvahand->progress_cb_user_data);
+         gvahand->cancel_operation = (*gvahand->fptr_progress_callback)(gvahand->percentage_done, gvahand->progress_cb_user_data);
        }
 
     }
@@ -1443,6 +2638,15 @@ p_wrapper_ffmpeg_count_frames(t_GVA_Handle *gvahand)
 
     /* close the extra handle (that was opened for counting only) */
     p_wrapper_ffmpeg_close(copy_gvahand);
+    
+    
+    /* TIMCODE LOG FINALLY */
+    if (fp_timecode_log)
+    {
+      fclose(fp_timecode_log);
+    }
+    
+    
   }
 
   g_free(copy_gvahand);
@@ -1464,27 +2668,70 @@ p_wrapper_ffmpeg_count_frames(t_GVA_Handle *gvahand)
        */
       vindex->total_frames = 0;
     }
+
     if(gap_debug)
     {
       printf("p_wrapper_ffmpeg_count_frames: before GVA_save_videoindex\n");
     }
     GVA_save_videoindex(vindex, gvahand->filename, GVA_FFMPEG_DECODER_NAME);
+  
+
+    if(gap_debug)
+    {
+      GVA_debug_print_videoindex(gvahand);
+    }
   }
 
   if(!gvahand->cancel_operation)
   {
      gvahand->total_frames = gvahand->frame_counter;
      gvahand->all_frames_counted = TRUE;
+     
+     master_handle->all_timecodes_verified = TRUE;
   }
   else
   {
      gvahand->total_frames = MAX(gvahand->total_frames, gvahand->frame_counter);
      gvahand->cancel_operation = FALSE;  /* reset cancel flag */
+     
      if(gap_debug)
      {
        printf("p_wrapper_ffmpeg_count_frames: RETURN ERROR\n");
      }
      return(GVA_RET_ERROR);
+  }
+
+  if ((master_handle->critical_timecodesteps_found == FALSE)
+  && (master_handle->all_timecodes_verified == TRUE))
+  {
+    // TODO: the video index creator plug-in may offer
+    // an option wheter prefere_native_seek set to TRUE or stay FALSE
+    // when all timecodesteps are verified as OK.
+    // on the other hand the faster native seek is to prefere
+    // at this point, where the full frame scan has verified all timecodes.
+    master_handle->prefere_native_seek = TRUE;
+  }
+
+  //if(gap_debug)
+  {
+    printf("VINDEX done, critical_timecodesteps_found:%d\n"
+           "             master_handle->all_timecodes_verified %d\n"
+           "             master_handle->prefere_native_seek %d\n"
+      , (int)master_handle->critical_timecodesteps_found
+      , (int)master_handle->all_timecodes_verified
+      , (int)master_handle->prefere_native_seek
+      );
+  }
+
+
+  if ((master_handle->critical_timecodesteps_found)
+  || (master_handle->all_timecodes_verified))
+  {
+    if(persitent_analyse_available)
+    {
+      /* update analyse result file */
+      p_save_video_analyse_results(gvahand);
+    }
   }
 
   if(gap_debug)
@@ -1495,6 +2742,40 @@ p_wrapper_ffmpeg_count_frames(t_GVA_Handle *gvahand)
   return(GVA_RET_OK);
 
 }  /* end p_wrapper_ffmpeg_count_frames */
+
+
+/* ----------------------------------
+ * p_wrapper_ffmpeg_seek_support
+ * ----------------------------------
+ * NOTE: if native seek is disabled via gimprc setting "video-libavformat-seek-gopsize" 0
+ * the self test is not performed (seek bugs are not detected in that case)
+ */
+t_GVA_SeekSupport
+p_wrapper_ffmpeg_seek_support(t_GVA_Handle *gvahand)
+{
+  t_GVA_ffmpeg*  master_handle;
+ 
+  master_handle = (t_GVA_ffmpeg*)gvahand->decoder_handle;
+
+  if ((master_handle->timecode_proberead_done != TRUE)
+  && (master_handle->video_libavformat_seek_gopsize > 0))
+  {
+    p_seek_timecode_reliability_self_test(gvahand);
+  }
+
+  if (master_handle->self_test_detected_seek_bug == TRUE)
+  {
+    return(GVA_SEEKSUPP_NONE);
+  }
+  
+  if (master_handle->video_libavformat_seek_gopsize > 0)
+  {
+    return(GVA_SEEKSUPP_NATIVE);
+  }
+
+  return(GVA_SEEKSUPP_VINDEX);
+  
+}  /* end p_wrapper_ffmpeg_seek_support */
 
 
 
@@ -1523,6 +2804,7 @@ p_ffmpeg_new_dec_elem(void)
     dec_elem->fptr_seek_audio      = &p_wrapper_ffmpeg_seek_audio;
     dec_elem->fptr_get_audio       = &p_wrapper_ffmpeg_get_audio;
     dec_elem->fptr_count_frames    = &p_wrapper_ffmpeg_count_frames;
+    dec_elem->fptr_seek_support    = &p_wrapper_ffmpeg_seek_support;
     dec_elem->fptr_get_video_chunk = NULL;  /* &p_wrapper_ffmpeg_get_video_chunk */
     dec_elem->next = NULL;
   }
@@ -1601,7 +2883,8 @@ p_ff_open_input(char *filename, t_GVA_Handle *gvahand, t_GVA_ffmpeg*  handle, gb
   AVCodecContext *acc;
   AVFormatContext *ic;
   AVInputFormat *iformat;
-  int err, ii, ret, rfps;
+  int err, ii, ret;
+  AVRational rfps;
 
   if(gap_debug) printf("p_ff_open_input: START  vid_open:%d\n", (int)vid_open);
 
@@ -1652,7 +2935,7 @@ p_ff_open_input(char *filename, t_GVA_Handle *gvahand, t_GVA_ffmpeg*  handle, gb
   gvahand->atracks = 0;
   for(ii=0; ii < ic->nb_streams; ii++)
   {
-    acc = &ic->streams[ii]->codec;
+    acc = ic->streams[ii]->codec;
 
     switch(acc->codec_type)
     {
@@ -1689,38 +2972,11 @@ p_ff_open_input(char *filename, t_GVA_Handle *gvahand, t_GVA_ffmpeg*  handle, gb
               }
               gvahand->height = acc->height;
               gvahand->width = acc->width;
-#ifdef HAVE_OLD_FFMPEG_0408	      
-	      gvahand->aspect_ratio = acc->aspect_ratio;
-#else
-	      gvahand->aspect_ratio = 0;
-	      switch(acc->dtg_active_format)
-	      {
-	        case FF_DTG_AFD_4_3:
-	        case FF_DTG_AFD_4_3_SP_14_9:
-	        case FF_DTG_AFD_SP_4_3:
-	          gvahand->aspect_ratio = 4.0 / 3.0;
-		  break;
-	        case FF_DTG_AFD_16_9:
-	        case FF_DTG_AFD_16_9_SP_14_9:
-	          gvahand->aspect_ratio = 16.0 / 9.0;
-		  break;
-	        case FF_DTG_AFD_14_9:
-	          gvahand->aspect_ratio = 14.0 / 9.0;
-		  break;
-	        case FF_DTG_AFD_SAME:
-		default:
-	          gvahand->aspect_ratio = av_q2d (acc->sample_aspect_ratio);
-		  break;
-	      }
-	      if(gap_debug)
-	      {
-	        printf("FF ASPECT: dtg_active_format:%d  num:%d den:%d\n"
-		      ,(int)acc->dtg_active_format
-		      ,(int)acc->sample_aspect_ratio.num
-		      ,(int)acc->sample_aspect_ratio.den
-		      );
-	      }
-#endif	      
+
+              /* Aspect Ratio handling */
+              p_set_aspect_ratio(gvahand, handle);
+              
+
               rfps = ic->streams[ii]->r_frame_rate;
               acc->workaround_bugs = FF_BUG_AUTODETECT;
               acc->error_resilience = 2;
@@ -1729,20 +2985,31 @@ p_ff_open_input(char *filename, t_GVA_Handle *gvahand, t_GVA_ffmpeg*  handle, gb
               /*
                * if(acc->codec->capabilities & CODEC_CAP_TRUNCATED)
                *   acc->flags|= CODEC_FLAG_TRUNCATED; 
-	       */
+               */
               if(/*acc->codec_id==CODEC_ID_MPEG4 || */acc->codec_id==CODEC_ID_MPEG1VIDEO)
               {
                   acc->flags|= CODEC_FLAG_TRUNCATED;
               }
-              if (acc->frame_rate != rfps)
+              
+              if(FALSE)
               {
-                  printf("\nSeems that stream %d comes from film source: %2.2f->%2.2f\n",
-                      ii, (float)acc->frame_rate / (float)acc->frame_rate_base,
-                      (float)rfps / (float)acc->frame_rate_base);
+                if ((acc->time_base.den != rfps.den)
+                || (acc->time_base.num != rfps.num))
+                {
+                    printf("\nSeems stream %d codec frame rate differs from container frame rate: %2.2f (%d/%d) -> %2.2f (%d/%d)\n"
+                         ,ii
+                         , (float)acc->time_base.den / acc->time_base.num
+                         , acc->time_base.den
+                         , acc->time_base.num
+                         , (float)rfps.den / rfps.num
+                         , rfps.den
+                         , rfps.num
+                         );
+                }
               }
 
               /* update the current frame rate to match the stream frame rate */
-              gvahand->framerate = (gdouble)rfps / (gdouble)acc->frame_rate_base;
+              gvahand->framerate = (gdouble)acc->time_base.den / (gdouble)acc->time_base.num;
             }
             break;
         default:
@@ -1835,6 +3102,102 @@ p_ff_open_input(char *filename, t_GVA_Handle *gvahand, t_GVA_ffmpeg*  handle, gb
   return(TRUE);
 }  /* end p_ff_open_input */
 
+/* -------------------------
+ * p_set_aspect_ratio
+ * -------------------------
+ */
+static void
+p_set_aspect_ratio(t_GVA_Handle *gvahand, t_GVA_ffmpeg*  handle)
+{
+  AVCodecContext *acc;
+  
+  acc = handle->vid_codec_context;
+  
+  gvahand->aspect_ratio = 0;
+  if (acc->sample_aspect_ratio.num == 0)
+  {
+      gvahand->aspect_ratio = 0;
+  }
+  else
+  {
+    if(gap_debug)
+    {
+      printf("ASPECT_RATIO: 1:1 as delivered via sample_aspect_ratio: %f w:%d h:%d\n"
+      , av_q2d(acc->sample_aspect_ratio)
+      ,acc->width
+      ,acc->height
+      );  
+    }
+      
+    /* the following variant (same as implementaed in ffplay.c)
+     * does not work correct. 
+     * (delivers aspect_ratio 2,370370 for 16:9 video testtfile
+     * but shall deliver 1.777777)
+     */             
+    //gvahand->aspect_ratio = av_q2d(acc->sample_aspect_ratio)
+    //    * (gdouble)acc->width / (gdouble)acc->height;
+
+    /* this variant does not work correct either, but will be used
+     * because the error is smaller.
+     * (delivers aspect_ratio 1,580247for 16:9 video testtfile
+     * but shall deliver 1.777777)
+     *
+     * TODO findout how to detect aspect reliable and exact...
+     */
+    gvahand->aspect_ratio = av_q2d(acc->sample_aspect_ratio);
+  }
+
+
+  /* default width / height
+   * is not USED, (it would hide the information, that the video
+   * has no explictie aspect_ratio that is represented by 0.0)
+   */ 
+  //if (gvahand->aspect_ratio <= 0.0)
+  //{
+  //    gvahand->aspect_ratio = (float)acc->width /
+  //        (float)acc->height;
+  //}
+
+
+  /* dtg_active_format: aspect information may be available in some cases.
+   * MPEG2(additional aspect ratio
+   * information only used in DVB MPEG-2 transport streams)
+   * 0 if not set.
+   */
+  switch(acc->dtg_active_format)
+  {
+    case FF_DTG_AFD_4_3:
+    case FF_DTG_AFD_4_3_SP_14_9:
+    case FF_DTG_AFD_SP_4_3:
+      gvahand->aspect_ratio = 4.0 / 3.0;
+      break;
+    case FF_DTG_AFD_16_9:
+    case FF_DTG_AFD_16_9_SP_14_9:
+      gvahand->aspect_ratio = 16.0 / 9.0;
+      break;
+    case FF_DTG_AFD_14_9:
+      gvahand->aspect_ratio = 14.0 / 9.0;
+      break;
+    case FF_DTG_AFD_SAME:
+    default:
+      break;
+  }
+
+
+  if(gap_debug)
+  {
+    printf("FF ASPECT: dtg_active_format:%d  num:%d den:%d\n"
+          ,(int)acc->dtg_active_format
+          ,(int)acc->sample_aspect_ratio.num
+          ,(int)acc->sample_aspect_ratio.den
+          );
+    printf("FF ASPECT: dtected aspect_ratio: %f\n"
+          ,(float)gvahand->aspect_ratio
+          );
+  }
+
+}  /* end p_set_aspect_ratio */
+
 
 
 /* ------------------------------
@@ -1864,10 +3227,14 @@ p_ffmpeg_vid_reopen_read(t_GVA_ffmpeg *handle, t_GVA_Handle *gvahand)
       handle->vid_input_context = NULL;
     }
 
+    if(handle->vid_pkt.data != NULL)
+    {
+      av_free_packet(&handle->vid_pkt);
+    }
     handle->vid_pkt.size = 0;             /* REstart with empty packet */
     handle->vid_pkt.data = NULL;          /* REstart with empty packet */
     handle->inbuf_len = 0;            /* start with empty buffer */
-    handle->inbuf_ptr = NULL;         /* start with empty buffer, after 1.st av_read_packet: pointer to pkt.data read pos */
+    handle->inbuf_ptr = NULL;         /* start with empty buffer, after 1.st av_read_frame: pointer to pkt.data read pos */
 
     /* RE-open for the VIDEO part */
     p_ff_open_input(gvahand->filename, gvahand, handle, TRUE);
@@ -1876,11 +3243,11 @@ p_ffmpeg_vid_reopen_read(t_GVA_ffmpeg *handle, t_GVA_Handle *gvahand)
     if(gap_debug)
     {
       printf("++## pix_fmt: keep:%d ignore from codec:%d (PIX_FMT_YUV420P:%d PIX_FMT_YUV422P:%d)\n"
-	  , (int)handle->yuv_buff_pix_fmt
-	  , (int)handle->vid_codec_context->pix_fmt
-	  , (int)PIX_FMT_YUV420P
-	  , (int)PIX_FMT_YUV422P
-	  );
+          , (int)handle->yuv_buff_pix_fmt
+          , (int)handle->vid_codec_context->pix_fmt
+          , (int)PIX_FMT_YUV420P
+          , (int)PIX_FMT_YUV422P
+          );
     }
 
 }  /* end p_ffmpeg_vid_reopen_read */
@@ -1917,7 +3284,7 @@ p_ffmpeg_aud_reopen_read(t_GVA_ffmpeg *handle, t_GVA_Handle *gvahand)
     handle->vid_pkt.size = 0;             /* REstart with empty packet */
     handle->vid_pkt.data = NULL;          /* REstart with empty packet */
     handle->inbuf_len = 0;            /* start with empty buffer */
-    handle->inbuf_ptr = NULL;         /* start with empty buffer, after 1.st av_read_packet: pointer to pkt.data read pos */
+    handle->inbuf_ptr = NULL;         /* start with empty buffer, after 1.st av_read_frame: pointer to pkt.data read pos */
 
     handle->samples_read = 0.0;
     handle->bf_idx = 0;
@@ -2165,14 +3532,14 @@ p_read_audio_packets( t_GVA_ffmpeg *handle, t_GVA_Handle *gvahand, gint32 max_sa
     /* if abuf is empty we must read the next packet */
     if((handle->abuf_len  < 1) || (handle->abuf_ptr == NULL))
     {
-      /*if (gap_debug) printf("p_read_audio_packets: before av_read_packet aud_input_context:%d\n", (int)handle->aud_input_context);*/
+      /*if (gap_debug) printf("p_read_audio_packets: before av_read_frame aud_input_context:%d\n", (int)handle->aud_input_context);*/
       /**
         * Read a packet from a media file
         * @param s media file handle
         * @param pkt is filled
         * @return 0 if OK. AVERROR_xxx if error.
         */
-      l_pktlen = av_read_packet(handle->aud_input_context, &handle->aud_pkt);
+      l_pktlen = av_read_frame(handle->aud_input_context, &handle->aud_pkt);
       if(l_pktlen < 0)
       {
          /* EOF reached */
@@ -2323,11 +3690,11 @@ static void
 p_vindex_add_url_offest(t_GVA_Handle *gvahand
                          , t_GVA_ffmpeg *handle
                          , t_GVA_Videoindex *vindex
-			 , gint32 seek_nr
-			 , gint64 url_offset
-			 , guint16 frame_length
-			 , guint16 checksum
-			 )
+                         , gint32 seek_nr
+                         , gint64 url_offset
+                         , guint16 frame_length
+                         , guint16 checksum
+                         )
 {
   static gint64 s_last_seek_nr;
   
@@ -2355,8 +3722,8 @@ p_vindex_add_url_offest(t_GVA_Handle *gvahand
       {
         printf("p_vindex_add_url_offest: REDIM:vindex->tabsize_allocated %d NEW:%d\n"
                           , (int)vindex->tabsize_allocated
-			  , (int)new_size
-			  );
+                          , (int)new_size
+                          );
       }
       old_ofs_tab = vindex->ofs_tab;
       memcpy(redim_ofs_tab, old_ofs_tab, (vindex->tabsize_allocated * sizeof(t_GVA_IndexElem)));
@@ -2376,12 +3743,12 @@ p_vindex_add_url_offest(t_GVA_Handle *gvahand
     if(gap_debug)
     {
       printf("p_vindex_add_url_offest: ofs_tab[%d]: ofs64: %d seek_nr:%d flen:%d chk:%d\n"
-		       , (int)vindex->tabsize_used
-		       , (int)vindex->ofs_tab[vindex->tabsize_used].uni.offset_gint64
-		       , (int)vindex->ofs_tab[vindex->tabsize_used].seek_nr
-		       , (int)vindex->ofs_tab[vindex->tabsize_used].frame_length
-		       , (int)vindex->ofs_tab[vindex->tabsize_used].checksum
-		       );
+                       , (int)vindex->tabsize_used
+                       , (int)vindex->ofs_tab[vindex->tabsize_used].uni.offset_gint64
+                       , (int)vindex->ofs_tab[vindex->tabsize_used].seek_nr
+                       , (int)vindex->ofs_tab[vindex->tabsize_used].frame_length
+                       , (int)vindex->ofs_tab[vindex->tabsize_used].checksum
+                       );
     }
     vindex->tabsize_used++;
   }
@@ -2421,6 +3788,769 @@ p_gva_checksum(AVPicture *picture_yuv, gint height)
   }
   return (l_checksum);
 }  /* end p_gva_checksum */
+
+
+/* -----------------------------------------
+ * p_get_gimprc_int_value
+ * -----------------------------------------
+ */
+static gint32
+p_get_gimprc_int_value (const char *gimprc_option_name
+   , gint32 default_value, gint32 min_value, gint32 max_value)
+{
+  char *value_string;
+  gint32 value;
+  
+  value = default_value;
+
+  value_string = gimp_gimprc_query(gimprc_option_name);
+  if(value_string)
+  {
+     value = atol(value_string);
+     g_free(value_string);
+  }  
+  
+  value = CLAMP(value, min_value, max_value);
+  if(gap_debug)
+  {
+    printf("GIMPRC parameter:%s  value:%d\n", gimprc_option_name, value);
+  }
+  return (value);
+  
+}  /* end p_get_gimprc_int_value */
+
+
+/* -----------------------------------------
+ * p_get_gimprc_gboolean_value
+ * -----------------------------------------
+ */
+static gboolean
+p_get_gimprc_gboolean_value (const char *gimprc_option_name
+   , gboolean default_value)
+{
+  char *value_string;
+  gboolean value;
+  
+  value = default_value;
+
+  value_string = gimp_gimprc_query(gimprc_option_name);
+  if(value_string)
+  {
+     if ((*value_string == 'y') || (*value_string == 'Y'))
+     {
+       value = TRUE;
+     }
+     else
+     {
+       value = FALSE;
+     }
+     g_free(value_string);
+  }  
+  
+  if(gap_debug)
+  {
+    printf("GIMPRC parameter:%s  value:%d\n", gimprc_option_name, value);
+  }
+  return (value);
+  
+}  /* end p_get_gimprc_gboolean_value */
+
+
+/* ----------------------------------
+ * p_init_timecode_log
+ * ----------------------------------
+ * if configured via gimprc parameter video-libavformat-timecodelog != 0
+ * for writing timecode log
+ * then open the logfile for writing and return filpointer to the logfile.
+ * ELSE return NULL pointer.
+ */
+static FILE *
+p_init_timecode_log(t_GVA_Handle   *gvahand)
+{
+  FILE *fp_timecode_log;
+  gint32 gimprc_timecode_log;
+  gchar *timecode_logfile_name;
+ 
+  gimprc_timecode_log
+    = p_get_gimprc_int_value("video-libavformat-timecodelog", 0, 0, 1);
+  fp_timecode_log = NULL;
+  timecode_logfile_name = g_strdup("\0");
+
+  if (gimprc_timecode_log != 0)
+  {
+    char *timecode_logfile_name;
+    char *vindex_file;
+    t_GVA_DecoderElem *dec_elem;
+
+    /* probe read required for calculation of expected timecodes in the log
+     */
+    p_probe_timecode_offset(gvahand);
+
+    dec_elem = (t_GVA_DecoderElem *)gvahand->dec_elem;
+    vindex_file = GVA_build_videoindex_filename(gvahand->filename
+                                               ,gvahand->vid_track +1
+                                               ,dec_elem->decoder_name
+                                               );
+
+    timecode_logfile_name = g_strdup_printf("%s.timelog", vindex_file);
+    g_free(vindex_file);
+    printf("TIMECODE log for video: %s\n  ==> will be created as file: %s\n"
+        , gvahand->filename
+        , timecode_logfile_name
+        );
+    fp_timecode_log = g_fopen(timecode_logfile_name, "w");
+    if(fp_timecode_log)
+    {
+      t_GVA_ffmpeg *master_handle;
+      master_handle = (t_GVA_ffmpeg *)gvahand->decoder_handle;
+     
+      fprintf(fp_timecode_log, "# TIMECODE log for video: %s\n"
+        , gvahand->filename
+        );
+      fprintf(fp_timecode_log, "# READSTEPS_PROBE_TIMECODE = %d\n"
+        , READSTEPS_PROBE_TIMECODE
+        );
+      fprintf(fp_timecode_log, "# timecode offset for frame1: %lld\n"
+        , master_handle->timecode_offset_frame1
+        );
+      fprintf(fp_timecode_log, "# count_timecode_steps:%d stepsizes summary:%d\n"
+        , (int)master_handle->count_timecode_steps
+        , (int)master_handle->timecode_steps_sum
+        );
+      fprintf(fp_timecode_log, "#\n");
+    }
+    g_free(timecode_logfile_name);
+  }
+  
+  return (fp_timecode_log);
+}  /* end p_init_timecode_log */
+
+
+
+/* ----------------------------------
+ * p_timecode_check_and_log
+ * ----------------------------------
+ * write log entry for current frame to timecode log file.
+ * the master_handle is used read only 
+ * (for converting framenr to timecode based on
+ * proberead statistical data)
+ */
+static void
+p_timecode_check_and_log(FILE *fp_timecode_log, gint32 framenr, t_GVA_ffmpeg *handle, t_GVA_ffmpeg *master_handle
+  , t_GVA_Handle *gvahand)
+{
+  static const char *ok_string = "";
+  static const char *err_string = "; # CRITICAL exp - dts difference > 10";
+  static int64_t old_pts = AV_NOPTS_VALUE;
+  static int64_t old_dts = 0;
+  const char *remark_ptr;
+  int64_t expected_dts;
+  int64_t diff_dts;
+
+  expected_dts = p_frame_nr_to_timecode(master_handle, framenr);
+  
+  if (abs(expected_dts - handle->vid_pkt.dts) > 10)
+  {
+    master_handle->critical_timecodesteps_found = TRUE;
+    handle->critical_timecodesteps_found = TRUE;
+    gvahand->critical_timecodesteps_found = TRUE;
+    remark_ptr = err_string;
+  }
+  else
+  {
+    remark_ptr = ok_string;
+  }
+  
+  if (fp_timecode_log == NULL)
+  {
+    return;
+  }
+
+  fprintf(fp_timecode_log, "num:%06d; exp:%lld; dts:%lld; dts-olddts:%lld; exp-dts:%lld"
+          , framenr
+          , expected_dts
+          , handle->vid_pkt.dts
+          , handle->vid_pkt.dts - old_dts
+          , expected_dts - handle->vid_pkt.dts
+          );
+
+  old_dts = handle->vid_pkt.dts;
+
+  if(handle->vid_pkt.pts != AV_NOPTS_VALUE)
+  {
+    fprintf(fp_timecode_log, "; pts:%lld; exp-pts:%lld; pts-dts:%lld"
+          , handle->vid_pkt.pts
+          , expected_dts - handle->vid_pkt.pts
+          , handle->vid_pkt.pts - handle->vid_pkt.dts
+          );
+          
+    if (old_pts != AV_NOPTS_VALUE)
+    {
+      fprintf(fp_timecode_log, "; pts-oldpts:%lld"
+          , handle->vid_pkt.pts - old_pts
+          );
+    }
+    old_pts = handle->vid_pkt.pts;
+  }
+  else
+  {
+    fprintf(fp_timecode_log, "; pts:NOPTS_VAL"
+          );
+          
+  }
+
+  fprintf(fp_timecode_log, "%s\n"
+          , remark_ptr
+          );
+
+}  /* end p_timecode_check_and_log */
+
+
+
+/* ----------------------------------
+ * p_set_analysefile_master_keywords
+ * ----------------------------------
+ */
+static void
+p_set_analysefile_master_keywords(GapValKeyList *keylist
+  , t_GVA_Handle *gvahand, gint32 count_timecode_steps)
+{
+   t_GVA_ffmpeg *master_handle;
+   master_handle = (t_GVA_ffmpeg *)gvahand->decoder_handle;
+   int ii;
+
+   gap_val_set_keyword(keylist, "(READSTEPS_PROBE_TIMECODE ", &master_handle->readsteps_probe_timecode, GAP_VAL_GINT32, 0, "\0");
+   gap_val_set_keyword(keylist, "(timestamp ", &master_handle->timestamp, GAP_VAL_GINT32, 0, "\0");
+   gap_val_set_keyword(keylist, "(video_libavformat_seek_gopsize ", &master_handle->video_libavformat_seek_gopsize, GAP_VAL_GINT32, 0, "\0");
+   gap_val_set_keyword(keylist, "(self_test_detected_seek_bug ", &master_handle->self_test_detected_seek_bug, GAP_VAL_GBOOLEAN, 0, "\0");
+   gap_val_set_keyword(keylist, "(timecode_proberead_done ", &master_handle->timecode_proberead_done, GAP_VAL_GBOOLEAN, 0, "\0");
+   gap_val_set_keyword(keylist, "(all_frames_counted ", &gvahand->all_frames_counted, GAP_VAL_GBOOLEAN, 0, "\0");
+   gap_val_set_keyword(keylist, "(total_frames ", &gvahand->total_frames, GAP_VAL_GINT32, 0, "\0");
+   gap_val_set_keyword(keylist, "(eof_timecode ", &master_handle->eof_timecode, GAP_VAL_GINT64, 0, "\0");
+   gap_val_set_keyword(keylist, "(timecode_step_avg ", &master_handle->timecode_step_avg, GAP_VAL_GINT32, 0, "\0");
+   gap_val_set_keyword(keylist, "(timecode_step_abs_min ", &master_handle->timecode_step_abs_min, GAP_VAL_GINT32, 0, "\0");
+   gap_val_set_keyword(keylist, "(timecode_offset_frame1 ", &master_handle->timecode_offset_frame1, GAP_VAL_GINT64, 0, "\0");
+   gap_val_set_keyword(keylist, "(timecode_steps_sum ", &master_handle->timecode_steps_sum, GAP_VAL_GINT32, 0, "\0");
+   gap_val_set_keyword(keylist, "(count_timecode_steps ", &master_handle->count_timecode_steps, GAP_VAL_GINT32, 0, "\0");
+
+   gap_val_set_keyword(keylist, "(prefere_native_seek ", &master_handle->prefere_native_seek, GAP_VAL_GBOOLEAN, 0, "\0");
+   gap_val_set_keyword(keylist, "(all_timecodes_verified ", &master_handle->all_timecodes_verified, GAP_VAL_GBOOLEAN, 0, "\0");
+   gap_val_set_keyword(keylist, "(critical_timecodesteps_found ", &master_handle->critical_timecodesteps_found, GAP_VAL_GBOOLEAN, 0, "\0");
+
+   for (ii=0; ii < count_timecode_steps; ii++)
+   {
+      char l_keyword[100];
+      g_snprintf(&l_keyword[0], sizeof(l_keyword), "(timecode_steps[%d] ", ii);
+      gap_val_set_keyword(keylist, &l_keyword[0], &master_handle->timecode_steps[ii], GAP_VAL_GINT32, 0, "\0");
+   }
+
+}  /* end p_set_analysefile_master_keywords */
+
+
+/* ----------------------------
+ * p_save_video_analyse_results
+ * ----------------------------
+ */
+static void
+p_save_video_analyse_results(t_GVA_Handle *gvahand)
+{
+  GapValKeyList *keylist;
+  t_GVA_ffmpeg *master_handle;
+  FILE *fp_analyse;
+  gint  ii;
+  char *analysefile_name;
+
+  master_handle = (t_GVA_ffmpeg *)gvahand->decoder_handle;
+  analysefile_name = p_create_analysefile_name(gvahand);
+  
+  /* current videofile timestamp */
+  master_handle->timestamp = GVA_file_get_mtime(gvahand->filename);
+  master_handle->readsteps_probe_timecode = READSTEPS_PROBE_TIMECODE;
+
+
+  fp_analyse = g_fopen(analysefile_name, "w");
+  if(fp_analyse)
+  {
+    /* overwrite file with header block (containing general comments on the video) */
+    fprintf(fp_analyse, "GVA_SEEK_SUPPORT_");
+
+    if (master_handle->self_test_detected_seek_bug == TRUE)
+    {
+        fprintf(fp_analyse, "NONE");
+    } 
+    else if (master_handle->video_libavformat_seek_gopsize > 0)
+    {
+        fprintf(fp_analyse, "NATIVE");
+    }
+    else
+    {
+        fprintf(fp_analyse, "VINDEX");
+    }
+    fprintf(fp_analyse, "\n");
+    fprintf(fp_analyse, "# GAP-FFMPEG video analyse results for file: %s\n"
+      , gvahand->filename
+      );
+
+    {
+        int64_t  duration;
+        int64_t  duration3;
+        int64_t  stt;
+        duration = master_handle->vid_input_context->duration;
+        duration3 =
+          av_rescale_q(duration, AV_TIME_BASE_Q, master_handle->vid_stream->time_base);
+                
+        stt = master_handle->vid_input_context->start_time;
+        /* scale stat_time from global AV_TIME_BASE to stream specific timecode */
+        stt =
+          av_rescale_q(stt, AV_TIME_BASE_Q, master_handle->vid_stream->time_base);
+
+        fprintf(fp_analyse
+           , "# VINFOs:\n"
+             "#  vid_stream->time_base num:%d den:%d\n"
+             "#  vid_input_context->start_time:%lld\n"
+             "#  vid_input_context->duration:%lld\n"
+             "#  (start+duration converted to frames:%d)\n"
+             "#  (eof_timecode converted to frames:%d)\n"
+             "#  (video-libavformat-seek-gopsize config:%d actual:%d)\n"
+           , master_handle->vid_stream->time_base.num
+           , master_handle->vid_stream->time_base.den
+           , master_handle->vid_input_context->start_time
+           , master_handle->vid_input_context->duration
+           , p_timecode_to_frame_nr(master_handle, stt+duration3)
+           , p_timecode_to_frame_nr(master_handle, master_handle->eof_timecode)
+           , p_get_gimprc_int_value("video-libavformat-seek-gopsize", DEFAULT_NAT_SEEK_GOPSIZE, 0, MAX_NAT_SEEK_GOPSIZE)
+           , master_handle->video_libavformat_seek_gopsize
+           );
+    }
+    fclose(fp_analyse);
+
+    keylist = gap_val_new_keylist();
+    
+    /* setup key/value descriptions */
+    p_set_analysefile_master_keywords(keylist, gvahand, master_handle->count_timecode_steps);
+
+    /* save key/value data */
+    gap_val_rewrite_file(keylist, analysefile_name
+        , NULL /* const char *hdr_text */
+        , ")"  /* const char *term_str */
+        );
+
+    gap_val_free_keylist(keylist);
+
+  }
+  g_free(analysefile_name);
+
+}  /* end p_save_video_analyse_results */
+
+
+/* ----------------------------
+ * p_get_video_analyse_results
+ * ----------------------------
+ * return
+ *   TRUE  persitent analyse results are availabe (caller can skip the selftest)
+ *   FALSE persitent analyse results are NOT availabe or no longer valid
+ *        (the caller must perform the selftest)
+ */
+static gboolean
+p_get_video_analyse_results(t_GVA_Handle *gvahand)
+{
+#define UNDEFINED_TIMECODE_STEP_VALUE -44444444
+  int scanned_items;
+  int min_expected_items;
+  GapValKeyList *keylist;
+  t_GVA_ffmpeg *master_handle;
+  char *analysefile_name;
+  gint32 curr_mtime;
+  gint ii;
+  gboolean ret;
+  
+  
+  analysefile_name = p_create_analysefile_name(gvahand);
+  master_handle = (t_GVA_ffmpeg *)gvahand->decoder_handle;
+  keylist = gap_val_new_keylist();
+  p_set_analysefile_master_keywords(keylist, gvahand, READSTEPS_PROBE_TIMECODE);
+  
+  /* init structures with some non-plausible values
+   * (will be overwritten on sucessful fetch)
+   */
+  for(ii=0; ii < READSTEPS_PROBE_TIMECODE; ii++)
+  {
+    master_handle->timecode_steps[ii] = UNDEFINED_TIMECODE_STEP_VALUE;
+  }
+  
+  min_expected_items = 10;
+  master_handle->count_timecode_steps = -1;
+  
+  scanned_items = gap_val_scann_filevalues(keylist, analysefile_name);
+  gap_val_free_keylist(keylist);
+  curr_mtime = GVA_file_get_mtime(gvahand->filename);
+
+  ret = TRUE;
+
+  /* check if we got plausible values from persitent storage that are still valid */
+  if ((scanned_items <  min_expected_items)
+  || (master_handle->count_timecode_steps <= 0)
+  || (master_handle->count_timecode_steps > READSTEPS_PROBE_TIMECODE)
+  || (p_equal_mtime(master_handle->timestamp, curr_mtime) != TRUE))
+  {
+    /* perform analyse */
+    ret = FALSE;
+  }
+
+  if (ret == TRUE)
+  {
+    if (master_handle->timecode_steps[master_handle->count_timecode_steps -1] == UNDEFINED_TIMECODE_STEP_VALUE)
+    {
+      ret = FALSE;
+    }
+  }
+
+  if(gap_debug)
+  {
+    printf("p_get_video_analyse_results:\n");
+    printf("  analysefile:%s"
+           " min_expected_items:%d  scanned_items:%d\n"
+           " master_handle->timestamp:%d  curr_mtime:%d\n"
+      ,analysefile_name
+      ,(int)min_expected_items
+      ,(int)scanned_items
+      ,(int)master_handle->timestamp
+      ,(int)curr_mtime
+      ); 
+  }  
+
+  g_free(analysefile_name);
+  return (ret);
+
+}  /* end p_get_video_analyse_results */
+
+
+/* ----------------------------
+ * p_create_analysefile_name
+ * ----------------------------
+ * the caller is responsible to g_free the returned string
+ */
+static char*
+p_create_analysefile_name(t_GVA_Handle *gvahand)
+{
+  char *vindex_name;
+  
+  vindex_name = p_build_gvaidx_filename(gvahand->filename
+                                       , gvahand->vid_track
+                                       , GVA_FFMPEG_DECODER_NAME
+                                       , "analyze");
+  return (vindex_name);
+}  /* end p_create_analysefile_name */
+
+/* ------------------------------
+ * p_timecode_to_frame_nr
+ * ------------------------------
+ */
+static gint32
+p_timecode_to_frame_nr(t_GVA_ffmpeg *handle, int64_t timecode)
+{
+  int64_t framenr;
+  int64_t steps;
+  int64_t l_timecode;
+  int64_t l_group_timecode;
+
+  framenr = 0;
+  l_group_timecode = 0;
+  l_timecode = timecode - handle->timecode_offset_frame1;
+
+  if (handle->timecode_steps_sum > 0)
+  {
+    int ii;
+
+    framenr = l_timecode / (int64_t)handle->timecode_steps_sum;
+    l_group_timecode = framenr * (int64_t)handle->timecode_steps_sum;
+    framenr *= handle->count_timecode_steps;
+
+    l_timecode -= l_group_timecode;
+
+    for(ii=0; ii < handle->count_timecode_steps; ii++)
+    {
+      if (l_timecode > 0)
+      {
+        framenr++;
+        l_timecode -= handle->timecode_steps[ii];
+      }
+    }
+  }
+
+  framenr++;
+
+  if(gap_debug)
+  {
+    printf("p_timecode_to_frame_nr: framenr:%lld  timecode:%lld offset_frame1:%lld  steps:%lld\n"
+         , framenr
+         , timecode
+         , handle->timecode_offset_frame1
+         , steps
+         );
+  }
+  return (framenr);
+}  /* end p_timecode_to_frame_nr */
+
+
+/* ------------------------------
+ * p_frame_nr_to_timecode
+ * ------------------------------
+ */
+static int64_t
+p_frame_nr_to_timecode(t_GVA_ffmpeg *handle, gint32 frame_nr)
+{
+  int64_t  timecode;
+
+  if ((handle->count_timecode_steps <= 1)
+  ||  (frame_nr <= 1))
+  {
+    /* videofile with constant frametiming */
+    timecode = (handle->timecode_offset_frame1
+          + ((int64_t)(frame_nr -1) * handle->timecode_steps[0])
+          );
+  }
+  else
+  {
+    int64_t  frame_groups;
+    int64_t  frame_idx;
+    int ii;
+    /* videofile with varying frametiming pattern (as detected by proberead)
+     * a typical example uses alternating frametiming of 3003, 4505
+     * with a pattern size value of 2 (handle->count_timecode_steps == 2)
+     *
+     * frame_nr   timecode  remarks
+     * 1.         100000    timecode_offset_frame1
+     * 2.         103003    (+3003)
+     * 3.         107508    (+4505)
+     * 4.         110511    (+3003)
+     * 5.         115016    (+4505)
+     */
+
+    frame_groups = (frame_nr -2) / handle->count_timecode_steps;
+    frame_idx = (frame_nr -2) % handle->count_timecode_steps;
+
+    timecode = handle->timecode_offset_frame1
+            + (frame_groups * (int64_t)handle->timecode_steps_sum);
+    for(ii=0; ii <= frame_idx; ii++)
+    {
+      timecode += handle->timecode_steps[ii];
+    }
+  }
+
+  if(gap_debug)
+  {
+    printf("FRAMENR %ld  to TIMECODE:%lld  offset for frame1:%lld step[0]:%d steps:%d steps_sum:%d\n"
+      , frame_nr
+      , timecode
+      , handle->timecode_offset_frame1
+      , (int)handle->timecode_steps[0]
+      , (int)handle->count_timecode_steps
+      , (int)handle->timecode_steps_sum
+      );
+  }
+  
+  return(timecode);
+
+}  /* end p_frame_nr_to_timecode */
+
+/* ------------------------------
+ * p_analyze_stepsize_pattern
+ * ------------------------------
+ * try to findout repeating stepsize pattern,
+ *  based on the timecode_steps[] array that must be already filled
+ *  up to max_idx elements.
+ * Result: set the count_timecode_steps
+ *
+ */
+static void
+p_analyze_stepsize_pattern(gint max_idx, t_GVA_Handle *gvahand)
+{
+  gint ii;
+  gint jj;
+  t_GVA_ffmpeg *master_handle;
+  int gap_debug_local;
+  
+  gap_debug_local = gap_debug;
+
+#ifdef GAP_DEBUG_FF_NATIVE_SEEK
+  gap_debug_local = 1;
+#endif /* GAP_DEBUG_FF_NATIVE_SEEK */
+
+  master_handle = (t_GVA_ffmpeg *)gvahand->decoder_handle;
+  master_handle->count_timecode_steps = 1;
+  ii=1;
+  while(ii < max_idx)
+  {
+    if(gap_debug)
+    {
+      printf("loop ii:%d\n", ii);
+    }
+    for(jj=0; jj < ii; jj++)
+    {
+      if ((ii + jj) >= max_idx)
+      {
+        break;
+      }
+      if(master_handle->timecode_steps[jj] != master_handle->timecode_steps[ii + jj])
+      {
+        master_handle->count_timecode_steps = ii + 1;
+        if(gap_debug)
+        {
+          printf("ii:%d  steps[jj: %d]:%d   steps[ii+jj: %d]:%d\n"
+           ,ii
+           ,jj
+           ,master_handle->timecode_steps[jj]
+           ,ii+jj
+           ,master_handle->timecode_steps[ii + jj]
+           );
+        }
+        break;
+      }
+    }
+    if((jj == ii) || (jj+ii == max_idx))
+    {
+      ii += jj;
+    }
+    else
+    {
+      ii++;
+    }
+  }
+
+  if (master_handle->count_timecode_steps == max_idx)
+  {
+    printf("WARNING: p_analyze_stepsize_pattern video:%s has individual frame timing\n"
+          , gvahand->filename
+          );
+    printf("   native timecode based seek will not find exact position by frame number\n");
+  }
+
+  master_handle->timecode_steps_sum = 0;
+  for(ii=0; ii < master_handle->count_timecode_steps; ii++)
+  {
+    master_handle->timecode_steps_sum += master_handle->timecode_steps[ii];
+  }
+
+
+  if(gap_debug_local)
+  {
+    printf("PROBEREAD: p_analyze_stepsize_pattern  video:%s max_idx.%d count_timecode_steps:%d sum:%d\n"
+          , gvahand->filename
+          , max_idx
+          , master_handle->count_timecode_steps
+          , master_handle->timecode_steps_sum
+          );
+  }
+
+}  /* end p_analyze_stepsize_pattern */
+
+
+
+/* ------------------------------
+ * p_probe_timecode_offset
+ * ------------------------------
+ * if timecode offset for the 1st frame and typical stepsize(s) are not yet known
+ * determine those values by probe reading some video frames (at least 2).
+ *
+ * Note that duration of frames may not be constant for all videofiles.
+ * for videos with very individual frame durations it is not possible
+ * to calculate correct timecode for a given frame number.
+ * Typically most (DVD) videos use individual frame timing 
+ * in cyclic pattern manner. This probe read analyzes the type of pattern
+ * and enables correct frame to timestamp conversion
+ * based on the measured resulting array timecode_steps[]
+ * (this is required for exact positioning via native seek operations)
+ *
+ * this procedure opens its own copy handle for the probe read
+ * (the stream position of the orignal gvahand are not affected)
+ * but writes the results of the probe read to the attributes
+ * of the master handle.
+ */
+static void
+p_probe_timecode_offset(t_GVA_Handle *master_gvahand)
+{
+  t_GVA_ffmpeg *master_handle;
+
+  master_handle = (t_GVA_ffmpeg *)master_gvahand->decoder_handle;
+
+
+  if (master_handle->timecode_proberead_done != TRUE)
+  {
+    gint l_readsteps;
+    t_GVA_RetCode l_rc_rd;
+    t_GVA_Handle   *copy_gvahand;
+    t_GVA_ffmpeg   *copy_handle;
+    gdouble avg_fstepsize;
+    int64_t prev_timecode;
+
+    master_handle->timecode_proberead_done = TRUE;
+    master_handle->timecode_step_abs_min = 99999999;
+    
+    /* calculate average timecode step per frame via framerate */
+    avg_fstepsize = 100000.0 / master_gvahand->framerate;
+    master_handle->timecode_steps[0] = avg_fstepsize;
+
+    if(gap_debug)
+    {
+      printf("p_probe_timecode_offset: %d Probe Reads to detect timecode offset\n"
+            , READSTEPS_PROBE_TIMECODE
+            );
+    }
+    
+    /* open an extra handle for the probe read */
+    copy_gvahand = g_malloc0(sizeof(t_GVA_Handle));
+    p_wrapper_ffmpeg_open_read(master_gvahand->filename
+                              , copy_gvahand
+                              );
+    copy_handle = (t_GVA_ffmpeg *)copy_gvahand->decoder_handle;
+    copy_gvahand->current_frame_nr = 0;
+    copy_gvahand->current_seek_nr = 1;
+    copy_gvahand->vindex = NULL;
+    copy_handle->dummy_read = TRUE;
+
+    l_rc_rd = p_wrapper_ffmpeg_get_next_frame(copy_gvahand);
+    master_handle->timecode_offset_frame1 = copy_handle->vid_pkt.dts;
+    prev_timecode = copy_handle->vid_pkt.dts;
+
+    l_readsteps = 0;
+    while(l_readsteps < READSTEPS_PROBE_TIMECODE)
+    {
+      l_rc_rd = p_wrapper_ffmpeg_get_next_frame(copy_gvahand);
+      if (l_rc_rd != GVA_RET_OK)
+      {
+        break;
+      }
+
+      master_handle->timecode_steps[l_readsteps] = copy_handle->vid_pkt.dts - prev_timecode;
+      master_handle->timecode_step_abs_min =
+         MIN(abs(master_handle->timecode_steps[l_readsteps])
+             , master_handle->timecode_step_abs_min);
+      l_readsteps++;
+      master_handle->timecode_step_avg = 
+             (copy_handle->vid_pkt.dts - master_handle->timecode_offset_frame1) / l_readsteps;
+
+      if(gap_debug)
+      {
+        printf("p_probe_timecode_offset: step: (%d) timecode offset: %lld, stepsize:%ld (avg_measured: %ld avg: %.3f)\n"
+          , (int)l_readsteps
+          , master_handle->timecode_offset_frame1
+          , master_handle->timecode_steps[l_readsteps -1]
+          , master_handle->timecode_step_avg
+          , (float)avg_fstepsize
+          );
+      }
+      prev_timecode = copy_handle->vid_pkt.dts;
+    }
+
+    /* close the extra handle (that was opened for counting only) */
+    p_wrapper_ffmpeg_close(copy_gvahand);
+    
+    p_analyze_stepsize_pattern(l_readsteps, master_gvahand);
+
+  }
+    
+}  /* end p_probe_timecode_offset */
 
 
 #endif  /* ENABLE_GVA_LIBAVFORMAT */

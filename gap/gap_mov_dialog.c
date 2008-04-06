@@ -315,8 +315,11 @@ static gint	   mov_path_prevw_preview_expose ( GtkWidget *widget, GdkEvent *even
 static gint	   mov_path_prevw_preview_events ( GtkWidget *widget, GdkEvent *event );
 static gint        p_chk_keyframes(t_mov_gui_stuff *mgp);
 
-static gdouble     mov_get_path_length (gint32 image_id);
-static void        mov_grab_bezier_path(t_mov_gui_stuff *mgp);
+static void        mov_grab_bezier_path(t_mov_gui_stuff *mgp
+                         , gint32 vectors_id
+                         , gint32 stroke_id
+                         , const char *vectorname
+                         );
 static void        mov_grab_anchorpoints_path(t_mov_gui_stuff *mgp
                                              ,gint num_path_point_details
 					     ,gdouble *points_details
@@ -1173,53 +1176,6 @@ p_copy_point(gint to_idx, gint from_idx)
 }
 
 
-/* ------------------------
- * mov_get_path_length
- * ------------------------
- * get length of the path by checking
- * koords in steps of 1 pixel length.
- * at end the gimp_path_get_point_at_dist procedure
- * will return zero values for x,y and slope
- */
-
-static gdouble
-mov_get_path_length (gint32 image_id)
-{
-  gint             x_point;
-  gint             y_point;
-  gdouble          max_distance;
-  gdouble          distance;
-  gdouble          slope;
-
-  if(gap_debug) printf("mov_get_path_length\n");
-
-  max_distance = 0.0;
-  for(distance = 0.0; distance < 90000; distance += 1)
-  {
-    x_point = gimp_path_get_point_at_dist (image_id
-                        	  , distance
-				  , &y_point
-				  , &slope
-				  );
-
-    if((x_point == 0)
-    && (y_point == 0)
-    && (slope == 0.0))
-    {
-      break;
-    }
-    max_distance = distance;
-  }
-
-  if(gap_debug)
-  {
-    printf("mov_get_path_length max_distance: %f\n", (float)max_distance);
-  }
-
-  return(max_distance);
-
-}  /* end mov_get_path_length */
-
 
 /* --------------------------
  * mov_grab_bezier_path
@@ -1231,19 +1187,16 @@ mov_get_path_length (gint32 image_id)
  * (but constrain to the maximum allowed number of contolpoints)
  */
 static void
-mov_grab_bezier_path(t_mov_gui_stuff *mgp)
+mov_grab_bezier_path(t_mov_gui_stuff *mgp, gint32 vectors_id, gint32 stroke_id, const char *vectorname)
 {
   gint32 image_id;
-  gint             x_point;
-  gint             y_point;
   gint             num_lines;
   gint             num_points;
   gdouble          max_distance;
   gdouble          distance;
-  gdouble          slope;
   gdouble          step_length;
+  gdouble          precision;
   gint             l_ii;
-
 
   image_id = mgp->ainfo_ptr->image_id;
   step_length = 1.0;
@@ -1252,35 +1205,62 @@ mov_grab_bezier_path(t_mov_gui_stuff *mgp)
   num_points = MIN((GAP_MOV_MAX_POINT-2), num_points);
   num_lines = num_points -1;
 
+  distance   = 0.0;
+  precision = 1.0;  /* shall give 1 pixel precision */
+
   if(num_lines > 0)
   {
-    max_distance = mov_get_path_length(image_id);
+    max_distance = gimp_vectors_stroke_get_length(vectors_id, stroke_id, precision);
     step_length = max_distance / ((gdouble)num_lines);
   }
 
-  distance   = 0.0;
 
   for(l_ii=0; l_ii < num_points ; l_ii++)
   {
-    x_point = gimp_path_get_point_at_dist (image_id
-                        	, distance
-				, &y_point
-				, &slope
-				);
+    gdouble  xdouble;
+    gdouble  ydouble;
+    gdouble  slope;
+    gboolean valid;
+    gboolean success;
+    
+
+    success = gimp_vectors_stroke_get_point_at_dist(vectors_id
+                                         , stroke_id
+                                         , distance
+                                         , precision
+                                         , &xdouble
+                                         , &ydouble
+                                         , &slope
+                                         , &valid
+                                         );
+
+
+    p_clear_one_point(l_ii);
+    pvals->point[l_ii].p_x = rint(xdouble);
+    pvals->point[l_ii].p_y = rint(ydouble);
+
     if(gap_debug)
     {
-      printf("PATH distance: %.3f, X:%03d Y: %03d slope:%.3f\n"
+      printf("PATH distance: %.3f, (%.4f / %.4f) X:%03d Y: %03d slope:%.3f valid:%d success:%d\n"
             , (float)distance
-	    , (int)x_point
-	    , (int)y_point
+	    , (float)xdouble
+	    , (float)ydouble
+	    , (int)pvals->point[l_ii].p_x
+	    , (int)pvals->point[l_ii].p_y
             , (float)slope
+            , (int)valid
+            , (int)success
 	    );
     }
 
+    if((!valid) || (!success))
+    {
+       /* stop because we already reached the end of the path.
+        * (distance in pixles is greater than number of the frames to handle)
+        */
+       return;
+    }
     pvals->point_idx_max = l_ii;
-    p_clear_one_point(l_ii);
-    pvals->point[l_ii].p_x = x_point;
-    pvals->point[l_ii].p_y = y_point;
 
     distance += step_length;
   }
@@ -1308,7 +1288,12 @@ mov_grab_anchorpoints_path(t_mov_gui_stuff *mgp,
     gint l_idx;
     gint    point_x;
     gint    point_y;
-    gint    point_type;
+#define GAP_BEZIER_CTRL1_X_INDEX  0
+#define GAP_BEZIER_CTRL1_Y_INDEX  1
+#define GAP_BEZIER_ANCHOR_X_INDEX 2
+#define GAP_BEZIER_ANCHOR_Y_INDEX 3
+#define GAP_BEZIER_CTRL2_X_INDEX  4
+#define GAP_BEZIER_CTRL12Y_INDEX  5
 
     point_x = 0;
     point_y = 0;
@@ -1326,17 +1311,24 @@ mov_grab_anchorpoints_path(t_mov_gui_stuff *mgp,
 	  );
       }
 
-      point_type = -44;    /* private marker for the last point that usually is delivered without type detail */
+     /* this implemenatation just fetches the bezier ancor points
+      * and ignores bezier control points
+      * Each Bezier segment endpoint (anchor, A) has two
+      * additional control points (C) associated. They are specified in the
+      * order CACCACCAC...
+      * where each point consists of 2 flaot values in order x y.
+      *
+      */
       switch (l_ti)
       {
-	case 0:  point_x = (gint)points_details[l_ii]; break;
-	case 1:  point_y = (gint)points_details[l_ii]; break;
-	case 2:  point_type = (gint)points_details[l_ii]; break;
+	case GAP_BEZIER_ANCHOR_X_INDEX:  point_x = (gint)points_details[l_ii]; break; 
+	case GAP_BEZIER_ANCHOR_Y_INDEX:  point_y = (gint)points_details[l_ii]; break;
+	default:  break;
       }
 
       l_ti++;
       l_ii++;
-      if((l_ti > 2) || (l_ii == num_path_point_details))
+      if((l_ti >= 6) || (l_ii == num_path_point_details))
       {
         if(gap_debug)
 	{
@@ -1345,29 +1337,19 @@ mov_grab_anchorpoints_path(t_mov_gui_stuff *mgp,
 
 	l_ti=0;
 
-	/* this implemenatation just fetches the BEZIER_ANCHOR points
-	 * and ignores BEZIER_CONTROL (type 2 points)
-	 * and ignores BEZIER_MOVE (type 3 points)
-	 */
-
-	if((point_type == 1)  /* 1 == BEZIER_ANCHOR */
-	|| (point_type == -44))
+        if(gap_debug)
 	{
-          if(gap_debug)
-	  {
-	    printf("x:%d y:%d: type:%d\n\n"
-	                         ,(int)point_x
-	                         ,(int)point_y
-	                         ,(int)point_type
-				 );
-	  }
-
-	  pvals->point_idx_max = l_idx;
-	  p_clear_one_point(l_idx);
-          pvals->point[l_idx].p_x = point_x;
-          pvals->point[l_idx].p_y = point_y;
-	  l_idx++;
+	  printf("ANCHOR x:%d y:%d\n\n"
+	                       ,(int)point_x
+	                       ,(int)point_y
+			       );
 	}
+
+	pvals->point_idx_max = l_idx;
+	p_clear_one_point(l_idx);
+        pvals->point[l_idx].p_x = point_x;
+        pvals->point[l_idx].p_y = point_y;
+	l_idx++;
       }
       if (l_ii >= num_path_point_details)
       {
@@ -1392,56 +1374,105 @@ mov_pgrab_callback (GtkWidget *widget,
 {
   t_mov_gui_stuff *mgp = data;
   gint32 image_id;
-  gchar *pathname;
+  gint32 vectors_id;
 
   if(gap_debug) printf("mov_pgrab_callback\n");
 
   /* get the image where MovePath was invoked from */
   image_id = mgp->ainfo_ptr->image_id;
 
-  pathname = gimp_path_get_current(image_id);
-  if(pathname)
+  vectors_id = gimp_image_get_active_vectors(image_id);
+  if(vectors_id >= 0)
   {
-    gint pathtype;
-    gint path_closed;
+    GimpVectorsStrokeType pathtype;
+    gboolean path_closed;
     gint num_path_point_details;
     gdouble *points_details;
+    gchar *vectorname;
+    gint  num_stroke_ids;
+    gint  *stroke_ids;
+
+    vectorname = gimp_vectors_get_name(vectors_id);
+
 
     points_details = NULL;
-    path_closed = -44;
+    num_path_point_details = 0;
 
     if(gap_debug)
     {
-      printf("pathname :%s\n", pathname);
+      printf("vectorname :%s\n", vectorname);
     }
-    pathtype = gimp_path_get_points(image_id
-                                   ,pathname
-				   ,&path_closed
-				   ,&num_path_point_details
-				   ,&points_details
-				   );
+    
+    stroke_ids = gimp_vectors_get_strokes(vectors_id, &num_stroke_ids);
 
     if(gap_debug)
     {
-      printf("pathtype:%d path_closed flag :%d\n"
+      printf("num_stroke_ids:%d\n"
+	    , (int)num_stroke_ids
+	    );
+    }
+    
+    if (num_stroke_ids < 1)
+    {
+      g_message(_("No stroke ids found in path:\n"
+	          "'%s'\n"
+		  "in the Image:\n"
+	          "'%s'")
+	      ,vectorname
+	      ,mgp->ainfo_ptr->old_filename
+	      );
+      return;
+    }
+
+    /* TODO how to handle path that has more than one stroke_id.
+     * the current implementation uses only the 1.st stroke_id
+     */
+
+
+    pathtype = gimp_vectors_stroke_get_points(vectors_id
+                                             , stroke_ids[0]
+                                             , &num_path_point_details
+                                             , &points_details
+                                             , &path_closed
+                                             );
+
+
+
+
+    if(gap_debug)
+    {
+      printf("pathtype:%d path_closed flag :%d num_points:%d num_stroke_ids:%d\n"
             , (int)pathtype
 	    , (int)path_closed
+	    , (int)num_path_point_details
+	    , (int)num_stroke_ids
 	    );
     }
 
-    if((pathtype != 1) || (path_closed == -44))
+    if(pathtype != GIMP_VECTORS_STROKE_TYPE_BEZIER)
     {
       g_message(_("Unsupported pathtype %d found in path:\n"
 	          "'%s'\n"
 		  "in the Image:\n"
 	          "'%s'")
 	      ,(int)pathtype
-	      ,pathname
+	      ,vectorname
 	      ,mgp->ainfo_ptr->old_filename
 	      );
       return;
     }
 
+    if(num_path_point_details < 1)
+    {
+      g_message(_("No controlpoints found in path:\n"
+	          "'%s'\n"
+		  "in the Image:\n"
+	          "'%s'")
+	      ,vectorname
+	      ,mgp->ainfo_ptr->old_filename
+	      );
+      return;
+    }
 
 
     if(bevent->state & GDK_SHIFT_MASK)
@@ -1450,7 +1481,7 @@ mov_pgrab_callback (GtkWidget *widget,
        * the path will be divided in n-parts to get
        * one controlpoint per handled frame.
        */
-      mov_grab_bezier_path(mgp);
+      mov_grab_bezier_path(mgp, vectors_id, stroke_ids[0], vectorname);
     }
     else
     {
@@ -1461,6 +1492,7 @@ mov_pgrab_callback (GtkWidget *widget,
     }
 
 
+    g_free(stroke_ids);
     g_free(points_details);
 
     pvals->point_idx = 0;
@@ -4185,6 +4217,7 @@ mov_path_prevw_create ( GimpDrawable *drawable, t_mov_gui_stuff *mgp, gboolean v
       GtkWidget      *color_button;
 
       gimp_rgb_set(&mgp->pathcolor, 1.0, 0.1, 0.1); /* startup with RED pathline color */
+      gimp_rgb_set_alpha(&mgp->pathcolor, 1.0);
       color_button = gimp_color_button_new (_("Pathline Color Picker"),
 				  25, 12,                     /* WIDTH, HEIGHT, */
 				  &mgp->pathcolor,

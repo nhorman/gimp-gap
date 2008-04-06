@@ -11,8 +11,8 @@ gint p_plug_in_photocopy_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdou
       gdouble  threshold;
       gdouble  pct_black;
       gdouble  pct_white;
-      gboolean  update_preview;
     } t_plug_in_photocopy_Vals; 
+
 
     t_plug_in_photocopy_Vals  buf, *buf_from, *buf_to; 
 
@@ -23,8 +23,8 @@ gint p_plug_in_photocopy_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdou
       return -1;  /* ERROR */ 
     }
 
-    gimp_get_data("plug_in_photocopy_ITER_FROM", g_plugin_data_from); 
-    gimp_get_data("plug_in_photocopy_ITER_TO",   g_plugin_data_to); 
+    gimp_get_data("plug-in-photocopy-ITER-FROM", g_plugin_data_from); 
+    gimp_get_data("plug-in-photocopy-ITER-TO",   g_plugin_data_to); 
 
     buf_from = (t_plug_in_photocopy_Vals *)&g_plugin_data_from[0]; 
     buf_to   = (t_plug_in_photocopy_Vals *)&g_plugin_data_to[0]; 
@@ -36,8 +36,7 @@ gint p_plug_in_photocopy_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdou
     p_delta_gdouble(&buf.pct_black, buf_from->pct_black, buf_to->pct_black, total_steps, current_step);
     p_delta_gdouble(&buf.pct_white, buf_from->pct_white, buf_to->pct_white, total_steps, current_step);
 
-    buf.update_preview = FALSE;
-    gimp_set_data("plug_in_photocopy", &buf, sizeof(buf)); 
+    gimp_set_data("plug-in-photocopy", &buf, sizeof(buf)); 
 
     return 0; /* OK */
 }

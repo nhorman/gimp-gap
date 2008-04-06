@@ -28,8 +28,8 @@ gint p_plug_in_refract_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdoubl
       return -1;  /* ERROR */ 
     }
 
-    gimp_get_data("plug_in_refract_ITER_FROM", &buf_from); 
-    gimp_get_data("plug_in_refract_ITER_TO",   &buf_to); 
+    gimp_get_data("plug-in-refract-ITER-FROM", &buf_from); 
+    gimp_get_data("plug-in-refract-ITER-TO",   &buf_to); 
     memcpy(&buf, &buf_from, sizeof(buf));
 
     p_delta_drawable(&buf.lens_id, buf_from.lens_id, buf_to.lens_id, total_steps, current_step);
@@ -44,7 +44,7 @@ gint p_plug_in_refract_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdoubl
     p_delta_long(&buf.xofs, buf_from.xofs, buf_to.xofs, total_steps, current_step);
     p_delta_long(&buf.yofs, buf_from.yofs, buf_to.yofs, total_steps, current_step);
 
-    gimp_set_data("plug_in_refract", &buf, sizeof(buf)); 
+    gimp_set_data("plug-in-refract", &buf, sizeof(buf)); 
 
     return 0; /* OK */
 }

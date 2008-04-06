@@ -38,7 +38,7 @@
 
 
 
-#define GAP_PLUGIN_NAME_SINGLEFRAMES_PARAMS     "extension_gap_encpar_singleframes"
+#define GAP_PLUGIN_NAME_SINGLEFRAMES_PARAMS     "extension-gap-encpar-singleframes"
 
 #include "gap_gvetypes.h"
 
@@ -69,7 +69,7 @@ gchar* p_build_format_from_framename(gchar *framename);
 /* Includes for extra LIBS */
 
 
-#define GAP_PLUGIN_NAME_SINGLEFRAMES_ENCODE     "plug_in_gap_enc_singleframes"
+#define GAP_PLUGIN_NAME_SINGLEFRAMES_ENCODE     "plug-in-gap-enc-singleframes"
 
 /* ------------------------
  * global gap DEBUG switch

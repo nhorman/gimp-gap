@@ -151,7 +151,7 @@ typedef enum
 #define GIMP_DDESC_END               "END"
 
 
-#define GIMP_PLUGIN_GAP_COMMON_ITER  "plug_in_gap_COMMON_ITERATOR"
+#define GIMP_PLUGIN_GAP_COMMON_ITER  "plug-in-gap-COMMON-ITERATOR"
 
 #define GIMP_ITER_TRUE  1
 #define GIMP_ITER_FALSE 0

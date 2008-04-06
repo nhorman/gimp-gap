@@ -28,15 +28,15 @@ gint p_plug_in_normalize_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdou
      *}
      */
      
-    gimp_get_data("plug_in_normalize_ITER_FROM", g_plugin_data_from); 
-    gimp_get_data("plug_in_normalize_ITER_TO",   g_plugin_data_to); 
+    gimp_get_data("plug-in-normalize-ITER-FROM", g_plugin_data_from); 
+    gimp_get_data("plug-in-normalize-ITER-TO",   g_plugin_data_to); 
 
     buf_from = (t_plug_in_normalize_Vals *)&g_plugin_data_from[0]; 
     buf_to   = (t_plug_in_normalize_Vals *)&g_plugin_data_to[0]; 
     memcpy(&buf, buf_from, sizeof(buf));
 
 
-    gimp_set_data("plug_in_normalize", &buf, sizeof(buf)); 
+    gimp_set_data("plug-in-normalize", &buf, sizeof(buf)); 
 
     return 0; /* OK */
 }
