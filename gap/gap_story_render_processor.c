@@ -4344,7 +4344,7 @@ p_prepare_RGB_image(gint32 image_id)
     g_free (l_layers_list);
   }
 
-  if(l_nlayers > 1 )
+  if((l_nlayers > 1 ) || (gimp_layer_get_mask (l_layer_id) >= 0))
   {
      if(gap_debug) printf("DEBUG: p_prepare_image merge layers tmp image\n");
 

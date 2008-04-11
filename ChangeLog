@@ -1,3 +1,9 @@
+2008-03-10 Wolfgang Hofer <hof@gimp.org>
+  - bugfix in storyboard processor: if processed image has only one layer with a layermask
+    the layermask was ignored at render processing.
+    
+  * gap/gap_story_render_processor.c
+
 2008-04-06  Wolfgang Hofer <hof@gimp.org>
 
     Lots of updates (merged in local development since 2006-07-16)
