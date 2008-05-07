@@ -1,3 +1,8 @@
+2008-05-7  Djihed Afifi <djihed@gmail.com> 
+
+	* ar.po: Added Arabic Translation.
+	* LINGUAS: Added ar.
+
 2008-04-07  Stéphane Raimbault  <stephane.raimbault@gmail.com>
 
 	* fr.po: Updated French translation by Raymond Ostertag and
