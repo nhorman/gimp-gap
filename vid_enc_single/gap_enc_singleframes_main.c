@@ -1,4 +1,4 @@
-/* gap_enc_main_singleframes.c
+/* gap_enc_singleframes_main.c
  *  by hof (Wolfgang Hofer)
  *
  * GAP ... Gimp Animation Plugins
@@ -38,12 +38,13 @@
 
 
 
-#define GAP_PLUGIN_NAME_SINGLEFRAMES_PARAMS     "extension_gap_encpar_singleframes"
+#define GAP_PLUGIN_NAME_SINGLEFRAMES_PARAMS     "extension-gap-encpar-singleframes"
 
 #include "gap_gvetypes.h"
 
 #include "gap_libgapvidutil.h"
 #include "gap_libgimpgap.h"
+
 
 /* Singleframe specific encoder params  */
 typedef struct {
@@ -69,7 +70,7 @@ gchar* p_build_format_from_framename(gchar *framename);
 /* Includes for extra LIBS */
 
 
-#define GAP_PLUGIN_NAME_SINGLEFRAMES_ENCODE     "plug_in_gap_enc_singleframes"
+#define GAP_PLUGIN_NAME_SINGLEFRAMES_ENCODE     "plug-in-gap-enc-singleframes"
 
 /* ------------------------
  * global gap DEBUG switch
@@ -725,10 +726,25 @@ p_singleframe_encode(GapGveSingleGlobalParams *gpp)
          g_free(l_msg);
        }
 
-       if(!gimp_file_save(l_save_runmode, l_tmp_image_id, l_layer_id, l_sav_name,  l_sav_name))
        {
-         g_message(_("** Save FAILED on file\n%s"), l_sav_name);
-         l_rc = -1;
+         gint32 l_sav_rc;
+
+         if(gap_debug)
+         {
+           printf("SINGLEFRAME mode:%d, image_id:%d save: %s l_sav_name\n"
+              ,(int)l_save_runmode
+              ,(int)l_tmp_image_id
+              ,l_sav_name
+              );
+         }
+
+         l_sav_rc = gap_lib_save_named_image(l_tmp_image_id, l_sav_name, l_save_runmode);
+         
+         if(l_sav_rc < 0)
+         {
+           g_message(_("** Save FAILED on file\n%s"), l_sav_name);
+           l_rc = -1;
+         }
        }
        g_free(l_sav_name);
     }
@@ -762,3 +778,14 @@ p_singleframe_encode(GapGveSingleGlobalParams *gpp)
 
   return l_rc;
 }  /* end p_singleframe_encode */
+
+
+
+
+
+
+
+
+
+//////////////////////
+

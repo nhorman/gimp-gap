@@ -1,4 +1,14 @@
 2008-05-18 Wolfgang Hofer <hof@gimp.org>
+- bugfix: #531735 enable undo after creating the animated preview image.
+- bugfix: save jpeg frames for the singleframes encoder must use gap specific
+          procedure gap_lib_save_named_image (direct call of gimp_file_save causes dialog
+          prompts on each handled frame because runmode with last values is uesed)
+
+ * gap/gap_mov_exec.c
+ * gap/gap_lib.c
+ * vid_enc_single/gap_enc_singleframes_main.c
+
+2008-05-18 Wolfgang Hofer <hof@gimp.org>
   - bugfix: save frames as jpeg was broken due to new behaviour of the file_jpeg_save plug in.
      run with last values opens dialog for each handled frame which is not acceptable
      for saving lots of frames.
