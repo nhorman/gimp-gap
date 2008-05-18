@@ -1,3 +1,17 @@
+2008-05-18 Wolfgang Hofer <hof@gimp.org>
+  - bugfix: save frames as jpeg was broken due to new behaviour of the file_jpeg_save plug in.
+     run with last values opens dialog for each handled frame which is not acceptable
+     for saving lots of frames.
+     The fix now uses the Non interactive save mode and the jpeg save values
+     that is stored as image parasite by the  file_jpeg_save plugin when saving
+     the 1st handled frame.
+
+  - bugfix: frames renumber start frame number maximum changed from 999999 to 99999999
+    (this is required if someone will use the maximum supported length of 8 digits for the framenumber part)
+  
+  * gap/gap_base_ops.c
+  * gap/gap_lib.c
+
 2008-03-10 Wolfgang Hofer <hof@gimp.org>
   - bugfix in storyboard processor: if processed image has only one layer with a layermask
     the layermask was ignored at render processing.

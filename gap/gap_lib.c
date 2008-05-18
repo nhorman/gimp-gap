@@ -134,6 +134,22 @@
 #include "gap_thumbnail.h"
 #include "gap_vin.h"
 
+typedef struct
+{
+  gdouble  quality;
+  gdouble  smoothing;
+  gboolean optimize;
+  gboolean progressive;
+  gboolean baseline;
+  gint     subsmp;
+  gint     restart;
+  gint     dct;
+  gboolean preview;
+  gboolean save_exif;
+  gboolean save_thumbnail;
+  gboolean save_xmp;
+  gboolean use_orig_quality;
+} GAPJpegSaveVals;
 
 extern      int gap_debug; /* ==0  ... dont print debug infos */
 
@@ -160,7 +176,15 @@ static void         p_do_active_layer_tracking(gint32 image_id
 
 static int          p_save_old_frame(GapAnimInfo *ainfo_ptr, GapVinVideoInfo *vin_ptr);
 static int          p_decide_save_as(gint32 image_id, const char *sav_name, const char *final_sav_name);
-static gint32       p_lib_save_named_image2(gint32 image_id, const char *sav_name, GimpRunMode run_mode, gboolean enable_thumbnailsave);
+static gint32       p_lib_save_jpg_non_interactive(gint32 image_id, gint32 l_drawable_id,
+                         const char *sav_name,
+                         const GAPJpegSaveVals *save_vals);
+static gint32       p_lib_save_named_image_1(gint32 image_id, const char *sav_name, GimpRunMode run_mode, gboolean enable_thumbnailsave
+                         , const char *l_basename
+                         , const char *l_extension
+                         );
+static gint32       p_lib_save_named_image2(gint32 image_id, const char *sav_name, GimpRunMode run_mode,
+                        gboolean enable_thumbnailsave, const GAPJpegSaveVals *jpg_save_vals);
 static char*        p_gzip (char *orig_name, char *new_name, char *zip);
 
 
@@ -1874,14 +1898,17 @@ p_decide_save_as(gint32 image_id, const char *sav_name, const char *final_sav_na
   gchar *l_ext;
   gchar *l_basename;
   long  l_number;
+  int   l_sav_rc;
 
   static GapArrButtonArg  l_argv[3];
   int               l_argc;
   int               l_save_as_mode;
   GimpRunMode      l_run_mode;
+    
 
    /* check if there are SAVE_AS_MODE settings (from privious calls within one gimp session) */
   l_save_as_mode = -1;
+  l_sav_rc = -1;
 
   l_extension = gap_lib_alloc_extension(final_sav_name);
   l_basename = gap_lib_alloc_basename(final_sav_name, &l_number);
@@ -1983,7 +2010,10 @@ p_decide_save_as(gint32 image_id, const char *sav_name, const char *final_sav_na
 
     g_free(l_key_gimprc);
 
-    if(gap_debug) printf("DEBUG: decide SAVE_AS_MODE %d\n", (int)l_save_as_mode);
+    if(gap_debug)
+    {
+      printf("DEBUG: decide SAVE_AS_MODE %d\n", (int)l_save_as_mode);
+    }
 
     l_run_mode = GIMP_RUN_INTERACTIVE;
   }
@@ -1994,25 +2024,33 @@ p_decide_save_as(gint32 image_id, const char *sav_name, const char *final_sav_na
 
   gimp_set_data (l_key_save_as_mode, &l_save_as_mode, sizeof(l_save_as_mode));
 
-  g_free(l_basename);
-  g_free(l_extension);
   g_free(l_key_save_as_mode);
 
   if(l_save_as_mode < 0)
   {
-    return -1;
+    l_sav_rc = -1;
   }
-
-  if(l_save_as_mode == 1)
+  else
   {
-      gimp_image_flatten (image_id);
+    if(l_save_as_mode == 1)
+    {
+        gimp_image_flatten (image_id);
+    }
+
+
+    l_sav_rc = p_lib_save_named_image_1(image_id
+                             , sav_name
+			     , l_run_mode
+			     , FALSE      /* do not enable_thumbnailsave */
+                             , l_basename
+                             , l_extension
+                             );
   }
 
-  return(p_lib_save_named_image2(image_id
-                           , sav_name
-			   , l_run_mode
-			   , FALSE      /* do not enable_thumbnailsave */
-			   ));
+  g_free(l_basename);
+  g_free(l_extension);
+
+  return l_sav_rc;
 }	/* end p_decide_save_as */
 
 /* ============================================================================
@@ -2050,6 +2088,214 @@ gap_lib_gap_check_save_needed(gint32 image_id)
 }  /* end gap_lib_gap_check_save_needed */
 
 
+/* ------------------------------------------
+ * p_lib_save_jpg_non_interactive
+ * ------------------------------------------
+ * this procedure handles NON-Interactive save of a frame
+ * in the lossy but widly spread JPEG fileformat.
+ * The quality settings have to be provided via jpg_save_parasite
+ * paramteter that has the structure GAPJpegSaveVals.
+ * NOTE: the structure GAPJpegSaveVals must match with
+ * the structure JpegSaveVals (as defined by the jpeg file save plugin
+ * in file jpeg-save.h of the GIMP distribution)
+ */
+static gint32
+p_lib_save_jpg_non_interactive(gint32 image_id, gint32 l_drawable_id, const char *sav_name,
+  const GAPJpegSaveVals *save_vals)
+{
+  gint32     l_rc;
+  gint       l_retvals;
+
+  l_rc   = FALSE;
+
+  //if(gap_debug)
+  {
+    printf("DEBUG: p_lib_save_jpg_non_interactive: '%s' imageId:%d, drawableID:%d\n"
+           "  jpg quality:%f\n"
+           "  jpg smoothing:%f\n"
+           "  jpg optimize:%d\n"
+           "  jpg progressive:%d\n"
+           "  jpg subsmp:%d\n"
+           "  jpg baseline:%d\n"
+           "  jpg restart:%d\n"
+           "  jpg dct:%d\n"
+         , sav_name
+         , (int)image_id
+         , (int)l_drawable_id
+         , (float)save_vals->quality
+         , (float)save_vals->smoothing
+         , (int)save_vals->optimize
+         , (int)save_vals->progressive
+         , (int)save_vals->subsmp
+         , (int)save_vals->baseline
+         , (int)save_vals->restart
+         , (int)save_vals->dct
+         );
+  }
+
+  /* save specified layer of current frame as jpg image
+   */
+  GimpParam *l_params;
+  l_params = gimp_run_procedure ("file_jpeg_save",
+			       &l_retvals,
+			       GIMP_PDB_INT32,    GIMP_RUN_NONINTERACTIVE,
+			       GIMP_PDB_IMAGE,    image_id,
+			       GIMP_PDB_DRAWABLE, l_drawable_id,
+			       GIMP_PDB_STRING, sav_name,
+			       GIMP_PDB_STRING, sav_name, /* raw name ? */
+                               GIMP_PDB_FLOAT,  save_vals->quality / 100.0,
+                               GIMP_PDB_FLOAT,  save_vals->smoothing,
+                               GIMP_PDB_INT32,  save_vals->optimize,
+                               GIMP_PDB_INT32,  save_vals->progressive,
+                               GIMP_PDB_STRING, "GIMP-GAP Frame",    /* comment */
+                               GIMP_PDB_INT32,  save_vals->subsmp,
+                               GIMP_PDB_INT32,  save_vals->baseline,
+                               GIMP_PDB_INT32,  save_vals->restart,
+                               GIMP_PDB_INT32,  save_vals->dct,
+			       GIMP_PDB_END);
+  if (l_params[0].data.d_status == GIMP_PDB_SUCCESS)
+  {
+     if(gap_debug)
+     {
+       printf("DEBUG: p_lib_save_jpg_non_interactive: GIMP_PDB_SUCCESS '%s\n"
+          ,sav_name
+          );
+     }
+     l_rc = TRUE;
+  }
+  gimp_destroy_params (l_params, l_retvals);
+  
+  return (l_rc);
+
+}  /* end p_lib_save_jpg_non_interactive */
+
+
+static gboolean
+p_extension_is_jpeg(const char *extension)
+{
+  if (extension != NULL)
+  {
+    const char *ext;
+    ext = extension;
+    if (*ext == '.')
+    {
+      ext++;
+    }
+    if ((*ext == 'j') || (*ext == 'J'))
+    {
+      ext++;
+      if ((*ext == 'p') || (*ext == 'P'))
+      {
+        return (TRUE);
+      }
+    }
+
+  }
+  return (FALSE);
+  
+}
+
+/* -------------------------------------
+ * p_lib_save_named_image_1
+ * -------------------------------------
+ * save non xcf frames/images.
+ * This procedure handles special case if frames have to be
+ * saved as JPEG files.
+ */
+static gint32
+p_lib_save_named_image_1(gint32 image_id, const char *sav_name, GimpRunMode run_mode, gboolean enable_thumbnailsave
+  , const char *l_basename
+  , const char *l_extension
+  )
+{
+  GAPJpegSaveVals   *jpg_save_vals;
+  gint32 l_sav_rc;
+  char *l_key_save_vals_jpg;
+  
+  
+  l_sav_rc = -1;
+  jpg_save_vals = NULL;
+  
+  l_key_save_vals_jpg = g_strdup_printf("GIMP_GAP_SAVE_VALS_JPG_%s%s"
+		       ,l_basename
+		       ,l_extension
+		       );
+
+  if(gap_debug)
+  {
+    printf("p_lib_save_named_image_1: runmode:%d  sav_name:%s\n .. l_key_save_vals_jpg:%s\n  .. base:%s\n  .. ext:%s\n"
+      ,run_mode
+      ,sav_name
+      ,l_key_save_vals_jpg
+      ,l_basename
+      ,l_extension
+      );
+  }
+
+  /* before non interactive save options check if we have already jpeg-save-options
+   * for the handled frames with the same basename and extension
+   */
+  if (run_mode != GIMP_RUN_INTERACTIVE)
+  {
+    int jpg_parsize;
+    
+    jpg_parsize = gimp_get_data_size(l_key_save_vals_jpg);
+    if(gap_debug)
+    {
+      printf("p_lib_save_named_image_1: jpg_parsize=%d\n"
+        ,jpg_parsize
+        );
+    }
+
+    if (jpg_parsize > 0)
+    {
+      jpg_save_vals = g_malloc(jpg_parsize);
+      gimp_get_data (l_key_save_vals_jpg, jpg_save_vals);
+      run_mode = GIMP_RUN_NONINTERACTIVE;
+    }
+  }
+
+  l_sav_rc = p_lib_save_named_image2(image_id
+                           , sav_name
+			   , run_mode
+			   , FALSE      /* do not enable_thumbnailsave */
+                           , jpg_save_vals
+			   );
+  if (jpg_save_vals != NULL)
+  {
+    g_free(jpg_save_vals);
+  }
+
+  /* check for jpeg specific save options after INTERACTIVE save operation
+   * (recent versions of JPEG save plugin shall store the save options
+   * in parasite data.)
+   */
+  if ((run_mode == GIMP_RUN_INTERACTIVE) && (p_extension_is_jpeg(l_extension)))
+  {
+    GimpParasite      *jpg_save_parasite;
+
+    jpg_save_parasite = gimp_image_parasite_find (image_id,
+                                      "jpeg-save-options");
+    if(gap_debug)
+    {
+      printf("DEBUG: jpg_save_parasite %d\n", (int)jpg_save_parasite);
+    }
+    if (jpg_save_parasite)
+    {
+      const GAPJpegSaveVals   *const_jpg_save_vals;
+      const_jpg_save_vals = gimp_parasite_data (jpg_save_parasite);
+      
+      /* store the jpeg save options for the handled frame basename and extension in this session */
+      gimp_set_data (l_key_save_vals_jpg, const_jpg_save_vals, sizeof(GAPJpegSaveVals));
+      gimp_parasite_free (jpg_save_parasite);
+    }
+  }
+  
+  g_free(l_key_save_vals_jpg);
+  
+  return (l_sav_rc);
+}  /* end p_lib_save_named_image_1 */
+
 /* ============================================================================
  * gap_lib_save_named_image / 2
  * ============================================================================
@@ -2057,7 +2303,8 @@ gap_lib_gap_check_save_needed(gint32 image_id)
  * gimp native XCF format.
  */
 static gint32
-p_lib_save_named_image2(gint32 image_id, const char *sav_name, GimpRunMode run_mode, gboolean enable_thumbnailsave)
+p_lib_save_named_image2(gint32 image_id, const char *sav_name, GimpRunMode run_mode, gboolean enable_thumbnailsave
+  ,const GAPJpegSaveVals *jpg_save_vals)
 {
   gint32      l_drawable_id;
   gint        l_nlayers;
@@ -2080,12 +2327,36 @@ p_lib_save_named_image2(gint32 image_id, const char *sav_name, GimpRunMode run_m
 
   l_drawable_id = l_layers_list[l_nlayers -1];  /* use the background layer */
 
-  l_rc = gimp_file_save(run_mode,
-                 image_id,
-		 l_drawable_id,
-		 sav_name,
-		 sav_name /* raw name ? */
-		 );
+  if ((jpg_save_vals != NULL) 
+  && (run_mode != GIMP_RUN_INTERACTIVE))
+  {
+    /* Special case: save JPG noninteractive
+     * Since GIMP-2.4.x jpeg file save plugin changed behaviour:
+     * when saved in GIMP_RUN_WITH_LAST_VALS mode it acts the same way
+     * as interactive mode (e.q. opens a dialog) 
+     * this behaviour is not acceptable when saving lots of frames.
+     * therefore GAP tries to figure out the jpeg save paramters that
+     * are available as parasite data, and perform a non interactive
+     * save operation.
+     * (This way the GIMP_GAP code gets a dependency to all future
+     * changes of JPEG file save parameter changes,
+     * but at least works for GIMP-2.4.x again)
+     */
+     l_rc = p_lib_save_jpg_non_interactive(image_id,
+                                    l_drawable_id,
+                                    sav_name,
+                                    jpg_save_vals
+                                    );
+  }
+  else
+  {
+    l_rc = gimp_file_save(run_mode,
+                   image_id,
+		   l_drawable_id,
+		   sav_name,
+		   sav_name /* raw name ? */
+		   );
+  }
 
 
   if(gap_debug)
@@ -2130,11 +2401,25 @@ p_lib_save_named_image2(gint32 image_id, const char *sav_name, GimpRunMode run_m
 gint32
 gap_lib_save_named_image(gint32 image_id, const char *sav_name, GimpRunMode run_mode)
 {
-  return(p_lib_save_named_image2(image_id
+  gchar *l_extension;
+  gchar *l_basename;
+  gint32 l_rc;
+  long  l_number;
+
+  l_extension = gap_lib_alloc_extension(sav_name);
+  l_basename = gap_lib_alloc_basename(sav_name, &l_number);
+
+  l_rc = p_lib_save_named_image_1(image_id
                             , sav_name
 			    , run_mode
 			    , TRUE      /* enable_thumbnailsave */
-			    ));
+                            , l_basename
+                            , l_extension
+			    );
+  g_free(l_extension);
+  g_free(l_basename);
+
+  return (l_rc);
 }
 
 
