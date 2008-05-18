@@ -48,6 +48,7 @@
 
 
 #define GAP_STB_MASK_SECTION_NAME  "Masks"
+#define GAP_STB_MAX_FRAMENR 99999999
 
 
 /* GapStoryRecordType enum values are superset of GapLibAinfoType

@@ -2108,7 +2108,7 @@ p_lib_save_jpg_non_interactive(gint32 image_id, gint32 l_drawable_id, const char
 
   l_rc   = FALSE;
 
-  //if(gap_debug)
+  if(gap_debug)
   {
     printf("DEBUG: p_lib_save_jpg_non_interactive: '%s' imageId:%d, drawableID:%d\n"
            "  jpg quality:%f\n"

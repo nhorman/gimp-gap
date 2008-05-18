@@ -1361,6 +1361,8 @@ gap_mov_exec_anim_preview(GapMovValues *pvals_orig, GapAnimInfo *ainfo_ptr, gint
     return(-1);
   }
 
+  gimp_image_undo_enable (l_mlayer_image_id);
+
   /* add a display for the animated preview multilayer image */
   gimp_display_new(l_mlayer_image_id);
 

@@ -685,7 +685,7 @@ p_pw_auto_scene_split(GapStbPropWidget *pw, gboolean all_scenes)
   || (all_scenes == FALSE))
   {
     /* allow search until end */
-    framenr_max =999999;
+    framenr_max = GAP_STB_MAX_FRAMENR;
   }
 
   drop_th_data = FALSE;
@@ -3245,11 +3245,11 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
   adj = gimp_scale_entry_new (GTK_TABLE (pw->master_table), 0, row++,
                               _("From:"), PW_SCALE_WIDTH, PW_SPIN_BUTTON_WIDTH,
                               pw->stb_elem_refptr->from_frame,
-                              l_lower_limit, 999999.0,  /* lower/upper */
+                              l_lower_limit, GAP_STB_MAX_FRAMENR,  /* lower/upper */
                               1.0, 10.0,      /* step, page */
                               0,              /* digits */
                               TRUE,           /* constrain */
-                              1.0, 999999.0,  /* lower/upper unconstrained */
+                              1.0, GAP_STB_MAX_FRAMENR,  /* lower/upper unconstrained */
                               _("framenumber of the first frame "
                                 "in the clip range"), NULL);
   pw->pw_spinbutton_from_adj = adj;
@@ -3274,11 +3274,11 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
   adj = gimp_scale_entry_new (GTK_TABLE (pw->master_table), 0, row++,
                               _("To:"), PW_SCALE_WIDTH, PW_SPIN_BUTTON_WIDTH,
                               pw->stb_elem_refptr->to_frame,
-                              l_lower_limit, 999999.0,  /* lower/upper */
+                              l_lower_limit, GAP_STB_MAX_FRAMENR,  /* lower/upper */
                               1.0, 10.0,      /* step, page */
                               0,              /* digits */
                               TRUE,           /* constrain */
-                              1.0, 999999.0,  /* lower/upper unconstrained */
+                              1.0, GAP_STB_MAX_FRAMENR,  /* lower/upper unconstrained */
                               _("framenumber of the last frame "
                                 "in the clip range"), NULL);
   pw->pw_spinbutton_to_adj = adj;

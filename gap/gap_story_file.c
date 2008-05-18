@@ -58,6 +58,7 @@ extern int gap_debug;  /* 1 == print debug infos , 0 dont print debug infos */
 #define MAX_CHARS_ERRORTEXT_GUI   50
 #define MAX_TOLERATED_UNPRINTABLE_CHARACTERS 500
 
+
   typedef enum
   {
     GAP_STB_DUPLICATE_ALL_ELEMS,
@@ -3560,8 +3561,8 @@ p_story_parse_line(GapStoryBoard *stb, char *longline
       stb_elem->orig_src_line = g_strdup(multi_lines);
 
       if(*l_track_ptr)    { stb_elem->track      = p_scan_gint32(l_track_ptr,   1, GAP_STB_MAX_VID_TRACKS, stb); }
-      if(*l_from_ptr)     { stb_elem->from_frame = p_scan_gint32(l_from_ptr,    0, 999999, stb); }
-      if(*l_to_ptr)       { stb_elem->to_frame   = p_scan_gint32(l_to_ptr,      0, 999999, stb); }
+      if(*l_from_ptr)     { stb_elem->from_frame = p_scan_gint32(l_from_ptr,    0, GAP_STB_MAX_FRAMENR, stb); }
+      if(*l_to_ptr)       { stb_elem->to_frame   = p_scan_gint32(l_to_ptr,      0, GAP_STB_MAX_FRAMENR, stb); }
       if(*l_basename_ptr) { p_flip_dir_separators(l_basename_ptr);
                             stb_elem->basename = g_strdup(l_basename_ptr);
                           }
@@ -3631,8 +3632,8 @@ p_story_parse_line(GapStoryBoard *stb, char *longline
       if(*l_filename_ptr) { p_flip_dir_separators(l_filename_ptr);
                             stb_elem->orig_filename = g_strdup(l_filename_ptr);
                           }
-      if(*l_from_ptr)     { stb_elem->from_frame = p_scan_gint32(l_from_ptr,    1, 999999, stb); }
-      if(*l_to_ptr)       { stb_elem->to_frame   = p_scan_gint32(l_to_ptr,      1, 999999, stb); }
+      if(*l_from_ptr)     { stb_elem->from_frame = p_scan_gint32(l_from_ptr,    1, GAP_STB_MAX_FRAMENR, stb); }
+      if(*l_to_ptr)       { stb_elem->to_frame   = p_scan_gint32(l_to_ptr,      1, GAP_STB_MAX_FRAMENR, stb); }
 
       if(*l_seltrack_ptr)   { stb_elem->seltrack     = p_scan_gint32(l_seltrack_ptr,  1, 999999, stb); }
       if(*l_exact_seek_ptr) { stb_elem->exact_seek   = p_scan_gint32(l_exact_seek_ptr,  0, 1, stb); }
@@ -3708,8 +3709,8 @@ p_story_parse_line(GapStoryBoard *stb, char *longline
       if(*l_track_ptr)    { stb_elem->track      = p_scan_gint32(l_track_ptr, 1, GAP_STB_MAX_VID_TRACKS, stb); }
       if(*l_section_ptr)  { stb_elem->orig_filename = g_strdup(l_section_ptr);
                           }
-      if(*l_from_ptr)     { stb_elem->from_frame = p_scan_gint32(l_from_ptr,    1, 999999, stb); }
-      if(*l_to_ptr)       { stb_elem->to_frame   = p_scan_gint32(l_to_ptr,      1, 999999, stb); }
+      if(*l_from_ptr)     { stb_elem->from_frame = p_scan_gint32(l_from_ptr,    1, GAP_STB_MAX_FRAMENR, stb); }
+      if(*l_to_ptr)       { stb_elem->to_frame   = p_scan_gint32(l_to_ptr,      1, GAP_STB_MAX_FRAMENR, stb); }
 
       p_assign_parsed_video_values(stb_elem, stb
           , l_nloops_ptr
@@ -3808,8 +3809,8 @@ p_story_parse_line(GapStoryBoard *stb, char *longline
       if(*l_filename_ptr) { p_flip_dir_separators(l_filename_ptr);
                             stb_elem->orig_filename = g_strdup(l_filename_ptr);
                           }
-      if(*l_from_ptr)     { stb_elem->from_frame = p_scan_gint32(l_from_ptr,    0, 999999, stb); }
-      if(*l_to_ptr)       { stb_elem->to_frame   = p_scan_gint32(l_to_ptr,      0, 999999, stb); }
+      if(*l_from_ptr)     { stb_elem->from_frame = p_scan_gint32(l_from_ptr,    0, GAP_STB_MAX_FRAMENR, stb); }
+      if(*l_to_ptr)       { stb_elem->to_frame   = p_scan_gint32(l_to_ptr,      0, GAP_STB_MAX_FRAMENR, stb); }
 
       p_assign_parsed_video_values(stb_elem, stb
           , l_nloops_ptr
@@ -3984,8 +3985,8 @@ p_story_parse_line(GapStoryBoard *stb, char *longline
        */
       l_framerate = stb->master_framerate;
 
-      if(*l_from_ptr)     { l_from_frame = p_scan_gint32(l_from_ptr,     0, 999999, stb); }
-      if(*l_to_ptr)       { l_to_frame   = p_scan_gint32(l_to_ptr,       0, 999999, stb); }
+      if(*l_from_ptr)     { l_from_frame = p_scan_gint32(l_from_ptr,     0, GAP_STB_MAX_FRAMENR, stb); }
+      if(*l_to_ptr)       { l_to_frame   = p_scan_gint32(l_to_ptr,       0, GAP_STB_MAX_FRAMENR, stb); }
       if(*l_frate_ptr)    { l_framerate  = p_scan_gdouble(l_frate_ptr,   1.0, 999.9, stb); }
 
       if(l_framerate < 1)
@@ -4074,8 +4075,8 @@ p_story_parse_line(GapStoryBoard *stb, char *longline
       stb_elem->orig_src_line = g_strdup(multi_lines);
 
       if(*l_mask_name_ptr) { stb_elem->mask_name = g_strdup(l_mask_name_ptr); }
-      if(*l_from_ptr)      { stb_elem->from_frame = p_scan_gint32(l_from_ptr,    0, 999999, stb); }
-      if(*l_to_ptr)        { stb_elem->to_frame   = p_scan_gint32(l_to_ptr,      0, 999999, stb); }
+      if(*l_from_ptr)      { stb_elem->from_frame = p_scan_gint32(l_from_ptr,    0, GAP_STB_MAX_FRAMENR, stb); }
+      if(*l_to_ptr)        { stb_elem->to_frame   = p_scan_gint32(l_to_ptr,      0, GAP_STB_MAX_FRAMENR, stb); }
       if(*l_basename_ptr)  { p_flip_dir_separators(l_basename_ptr);
                              stb_elem->basename = g_strdup(l_basename_ptr);
                            }
@@ -4126,8 +4127,8 @@ p_story_parse_line(GapStoryBoard *stb, char *longline
       if(*l_filename_ptr)   { p_flip_dir_separators(l_filename_ptr);
                               stb_elem->orig_filename = g_strdup(l_filename_ptr);
                             }
-      if(*l_from_ptr)       { stb_elem->from_frame = p_scan_gint32(l_from_ptr,    1, 999999, stb); }
-      if(*l_to_ptr)         { stb_elem->to_frame   = p_scan_gint32(l_to_ptr,      1, 999999, stb); }
+      if(*l_from_ptr)       { stb_elem->from_frame = p_scan_gint32(l_from_ptr,    1, GAP_STB_MAX_FRAMENR, stb); }
+      if(*l_to_ptr)         { stb_elem->to_frame   = p_scan_gint32(l_to_ptr,      1, GAP_STB_MAX_FRAMENR, stb); }
 
       if(*l_seltrack_ptr)   { stb_elem->seltrack     = p_scan_gint32(l_seltrack_ptr,  1, 999999, stb); }
       if(*l_exact_seek_ptr) { stb_elem->exact_seek   = p_scan_gint32(l_exact_seek_ptr,  0, 1, stb); }
@@ -4165,8 +4166,8 @@ p_story_parse_line(GapStoryBoard *stb, char *longline
       if(*l_filename_ptr)  { p_flip_dir_separators(l_filename_ptr);
                              stb_elem->orig_filename = g_strdup(l_filename_ptr);
                            }
-      if(*l_from_ptr)      { stb_elem->from_frame = p_scan_gint32(l_from_ptr,    0, 999999, stb); }
-      if(*l_to_ptr)        { stb_elem->to_frame   = p_scan_gint32(l_to_ptr,      0, 999999, stb); }
+      if(*l_from_ptr)      { stb_elem->from_frame = p_scan_gint32(l_from_ptr,    0, GAP_STB_MAX_FRAMENR, stb); }
+      if(*l_to_ptr)        { stb_elem->to_frame   = p_scan_gint32(l_to_ptr,      0, GAP_STB_MAX_FRAMENR, stb); }
 
       p_assign_parsed_flip_value(stb_elem, l_flip_ptr);
 
@@ -4193,8 +4194,8 @@ p_story_parse_line(GapStoryBoard *stb, char *longline
       stb_elem->orig_src_line = g_strdup(multi_lines);
 
       if(*l_mask_name_ptr)  { stb_elem->mask_name = g_strdup(l_mask_name_ptr); }
-      if(*l_from_ptr)       { stb_elem->from_frame = p_scan_gint32(l_from_ptr,    1, 999999, stb); }
-      if(*l_to_ptr)         { stb_elem->to_frame   = p_scan_gint32(l_to_ptr,      1, 999999, stb); }
+      if(*l_from_ptr)       { stb_elem->from_frame = p_scan_gint32(l_from_ptr,    1, GAP_STB_MAX_FRAMENR, stb); }
+      if(*l_to_ptr)         { stb_elem->to_frame   = p_scan_gint32(l_to_ptr,      1, GAP_STB_MAX_FRAMENR, stb); }
 
 
       stb_elem->nframes = ABS(stb_elem->from_frame - stb_elem->to_frame) + 1;
