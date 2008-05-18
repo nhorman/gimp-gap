@@ -1912,7 +1912,7 @@ p_renumber_dialog(GapAnimInfo *ainfo_ptr, long *start_frame_nr, long *digits)
   argv[0].label_txt = _("First Frame Number:");
   argv[0].constraint = TRUE;
   argv[0].int_min   = (gint)0;
-  argv[0].int_max   = (gint)999999;
+  argv[0].int_max   = (gint)99999999;
   argv[0].int_ret   = (gint)1;
   argv[0].help_txt  = _("New framenumber for the first frame");
 
