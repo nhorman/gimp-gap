@@ -610,7 +610,6 @@ gap_story_render_debug_print_audiorange_list(GapStoryRenderAudioRangeElem *aud_l
 /* ----------------------------------------------------
  * p_frame_backup_save
  * ----------------------------------------------------
- * set layer to unique color
  */
 static void
 p_frame_backup_save(  char *key
@@ -640,7 +639,7 @@ p_frame_backup_save(  char *key
     }
     else
     {
-      l_framename = gap_lib_alloc_fname(l_basename, master_frame_nr, ".jpg");
+      l_framename = gap_lib_alloc_fname(l_basename, master_frame_nr, ".png");
     }
 
     if(gap_debug) printf("Debug: Saving frame to  file: %s\n", l_framename);

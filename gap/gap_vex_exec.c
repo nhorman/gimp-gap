@@ -347,7 +347,12 @@ gap_vex_exe_extract_videorange(GapVexMainGlobalParams *gpp)
      }
 
 
-    /* check if we need an INTERACTIVE Dummy save to set defaults for further save calls */
+    /* check if we need an INTERACTIVE Dummy save to set default parameters
+     * for further frame save operation.
+     * The dummy save is done at begin of processing
+     * because the handling of the 1st frame may
+     * occure after a significant delay, caused by seeking in large videofiles.
+     */
     if((strcmp(gpp->val.extension, ".xcf") == 0)
     || (strcmp(gpp->val.extension, ".XCF") == 0))
     {
@@ -372,14 +377,22 @@ gap_vex_exe_extract_videorange(GapVexMainGlobalParams *gpp)
       gap_layer_clear_to_color(l_empty_layer_id, 0.0, 0.0, 0.0, 1.0);
 
       l_save_run_mode = GIMP_RUN_INTERACTIVE;  /* for the 1.st call of saving a non xcf frame */
-      l_dummyname = gimp_temp_name(gpp->val.extension);
+
+      /* must use same basename and extension for the dummyname
+       * because setup of jpeg save params for further non interactive save operation
+       * depend on a key that includes the same basename and extension. 
+       */
+      l_dummyname = gap_lib_alloc_fname6(&gpp->val.basename[0]
+                                        ,99999999
+                                        ,&gpp->val.extension[0]
+                                        ,8  /* use full 8 digits for the numberpart */
+                                        );
       gimp_image_set_filename(l_dummy_image_id, l_dummyname);
-      gimp_file_save(l_save_run_mode
-                         ,l_dummy_image_id
-                         ,l_empty_layer_id
-                         ,l_dummyname
-                         ,l_dummyname
-                         );
+      gap_lib_save_named_image(l_dummy_image_id
+                           , l_dummyname
+                           , l_save_run_mode
+                           );
+
       gap_image_delete_immediate(l_dummy_image_id);
       g_remove(l_dummyname);                       
       g_free(l_dummyname);       
@@ -499,12 +512,20 @@ gap_vex_exe_extract_videorange(GapVexMainGlobalParams *gpp)
                g_free(framename);       
                break;
            }
-           gimp_file_save(l_save_run_mode
-                         ,gvahand->image_id
-                         ,gvahand->layer_id
-                         ,framename
-                         ,framename
-                         );
+           else
+           {
+              gint32 l_sav_rc;
+              
+              l_sav_rc = gap_lib_save_named_image(gvahand->image_id
+                           , framename
+                           , l_save_run_mode
+                           );
+              if (l_sav_rc < 0)
+              {
+                g_message(_("failed to save file:\n'%s'"), framename);
+                break;
+              }
+           }
            g_free(framename);       
          }
        }
@@ -685,6 +706,7 @@ gap_vex_exe_extract_videorange(GapVexMainGlobalParams *gpp)
   
   if(gpp->val.image_ID >= 0)
   {
+    gimp_image_undo_enable(gpp->val.image_ID);
     gimp_display_new(gpp->val.image_ID);
     gimp_displays_flush();
     gvahand->image_id = -1;   /* prenvent API from deleting that image at close */

@@ -1,3 +1,17 @@
+2008-05-19 Wolfgang Hofer <hof@gimp.org>
+- bugfix: extract JPEG frames from videofile shall not pop up save dialog
+        on each handled frame.
+- bugfix:  #348456 enable undo for image extracted from a video.
+          (The video api now checks if undo is enabled
+          and makes only one call to disables undo when required)
+
+ * gap/gap_vex_exec.c:
+ * libgapvidapi/gap_vid_api.c
+
+- use png imagetype for storyboard render debug frame save feature
+
+ * gap/gap_story_render_processor.c
+
 2008-05-18 Wolfgang Hofer <hof@gimp.org>
  - storyboard now supports 8 digit framenumbers 
   (increased GAP_STB_MAX_FRAMENR from 999999 99999999)
