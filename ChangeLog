@@ -1,3 +1,13 @@
+2008-05-19 Wolfgang Hofer <hof@gimp.org>
+- bugfix: extract JPEG frames from videofile shall not pop up save dialog
+        on each handled frame.
+- bugfix:  #348456 enable undo for image extracted from a video.
+          (The video api now checks if undo is enabled
+          and makes only one call to disables undo when required)
+
+ * gap/gap_vex_exec.c:
+ * libgapvidapi/gap_vid_api.c
+
 2008-05-18 Wolfgang Hofer <hof@gimp.org>
 - bugfix: #531735 enable undo after creating the animated preview image.
 - bugfix: save jpeg frames for the singleframes encoder must use gap specific

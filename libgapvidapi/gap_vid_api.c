@@ -1899,7 +1899,10 @@ GVA_frame_to_gimp_layer_2(t_GVA_Handle *gvahand
      old_layer_id = -1;
   }
 
-  gimp_image_undo_disable(*image_id);
+  if (gimp_image_undo_is_enabled(*image_id))
+  {
+    gimp_image_undo_disable(*image_id);
+  }
 
   if(gvahand->framerate > 0)
   {
@@ -2029,8 +2032,10 @@ GVA_frame_to_gimp_layer_2(t_GVA_Handle *gvahand
   gimp_drawable_set_visible(l_new_layer_id, TRUE);
 
   /* clear undo stack */
-  gimp_image_undo_enable(*image_id);
-  gimp_image_undo_disable(*image_id);
+  if (gimp_image_undo_is_enabled(*image_id))
+  {
+    gimp_image_undo_disable(*image_id);
+  }
 
   /* debug code to display a copy of the image */
   /*
