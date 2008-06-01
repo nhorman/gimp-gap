@@ -14,7 +14,7 @@ msgstr ""
 "Project-Id-Version: gimp-gap.gap-2-4\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-05-20 07:35+0000\n"
-"PO-Revision-Date: 2008-05-31 11:18+0200\n"
+"PO-Revision-Date: 2008-06-01 14:11+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -765,9 +765,8 @@ msgid "Masterlayer"
 msgstr "Capa maestra"
 
 #: ../gap/gap_bluebox_main.c:180
-#, fuzzy
 msgid "Bluebox ..."
-msgstr "Bluebox"
+msgstr "Bluebox…"
 
 #. gimp_plugin_menu_branch_register("<Image>", "Video");
 #. Menu names
@@ -778,9 +777,8 @@ msgstr "Bluebox"
 #: ../gap/gap_morph_main.c:155 ../gap/gap_name2layer_main.c:177
 #: ../gap/gap_navigator_dialog.c:551 ../gap/gap_onion_main.c:205
 #: ../gap/gap_player_main.c:260 ../gap/gap_story_main.c:174
-#, fuzzy
 msgid "<Image>/Video/"
-msgstr "<Image>/Vídeo/Morph…"
+msgstr "<Image>/Vídeo/"
 
 # //R Mejorar
 #. the parameters button (invokes videoencoder specific GUI dialog)
@@ -1482,20 +1480,17 @@ msgid "Apply Varying"
 msgstr "Aplicar variando"
 
 #: ../gap/gap_filter_main.c:136
-#, fuzzy
 msgid "Filter all Layers..."
-msgstr "<Image>/Filtros/Filtrar todas las capas…"
+msgstr "Filtrar todas las capas…"
 
 #. ------------------ ALTernative Iterators ------------------------------
 #: ../gap/gap_filter_main.c:158 ../gap/gap_fmac_main.c:218
-#, fuzzy
 msgid "<Image>/Filters/"
-msgstr "<Image>/Filtros/Macro de filtrado…"
+msgstr "<Image>/Filtros/"
 
 #: ../gap/gap_fmac_main.c:212
-#, fuzzy
 msgid "Filtermacro..."
-msgstr "Macro de filtrado:"
+msgstr "Macro de filtrado…"
 
 #: ../gap/gap_fmac_main.c:501
 msgid "Select Filtercalls of Current GIMP Session"
@@ -1626,22 +1621,20 @@ msgstr ""
 "nombre del complemento: «%s»"
 
 #: ../gap/gap_frontends_main.c:149 ../gap/gap_frontends_main.c:162
-#, fuzzy
 msgid "MPlayer based extraction..."
-msgstr "Extracción basada en MPlayer"
+msgstr "Extracción basada en MPlayer…"
 
 #: ../gap/gap_frontends_main.c:176 ../gap/gap_frontends_main.c:189
-#, fuzzy
 msgid "XANIM based extraction..."
-msgstr "Extracción basada en MPlayer"
+msgstr "Extracción basada en XANIM…"
 
 #: ../gap/gap_frontends_main.c:201
 msgid "MPEG1..."
-msgstr "MPEG1..."
+msgstr "MPEG1…"
 
 #: ../gap/gap_frontends_main.c:214
 msgid "MPEG2..."
-msgstr "MPEG2..."
+msgstr "MPEG2…"
 
 #. Menu names
 #. gimp_plugin_menu_branch_register("<Image>", "Video");
@@ -1710,49 +1703,40 @@ msgstr ""
 "Bloqueando image_id:%d\n"
 
 #: ../gap/gap_main.c:700
-#, fuzzy
 msgid "Next Frame"
-msgstr "Fotograma"
+msgstr "Siguiente fotograma"
 
 #: ../gap/gap_main.c:712
-#, fuzzy
 msgid "Previous Frame"
-msgstr "Desde fotograma:"
+msgstr "Fotograma anterior"
 
 #: ../gap/gap_main.c:724
-#, fuzzy
 msgid "First Frame"
-msgstr "Número de fotograma de inicio:"
+msgstr "Primer fotograma"
 
 #: ../gap/gap_main.c:736
-#, fuzzy
 msgid "Last Frame"
-msgstr "Aplanar fotogramas"
+msgstr "Último fotograma"
 
 #: ../gap/gap_main.c:748
-#, fuzzy
 msgid "Any Frame..."
-msgstr "Extrayendo fotogramas   …"
+msgstr "Cualquier fotograma…"
 
 #: ../gap/gap_main.c:760
-#, fuzzy
 msgid "Delete Frames..."
-msgstr "<Image>/Vídeo/Borrar fotogramas…"
+msgstr "Borrar fotogramas…"
 
 #: ../gap/gap_main.c:772
-#, fuzzy
 msgid "Duplicate Frames..."
-msgstr "Duplicando fotogramas…"
+msgstr "Duplicar fotogramas…"
 
 #: ../gap/gap_main.c:789
-#, fuzzy
 msgid "Frames Density..."
-msgstr "Cambiar la densidad de los fotogramas"
+msgstr "Densidad de los fotogramas…"
 
 #: ../gap/gap_main.c:801
-#, fuzzy
 msgid "Exchange Frame..."
-msgstr "Intercambiar con fotograma"
+msgstr "Intercambiar fotograma…"
 
 #: ../gap/gap_main.c:813
 #, fuzzy
@@ -1760,24 +1744,20 @@ msgid "Move Path..."
 msgstr "Camino de movimiento"
 
 #: ../gap/gap_main.c:893
-#, fuzzy
 msgid "Frames to Image..."
-msgstr "Fotogramas a imagen"
+msgstr "Fotogramas a imagen…"
 
 #: ../gap/gap_main.c:905
-#, fuzzy
 msgid "Frames Flatten..."
-msgstr "<Image>/Vídeo/Aplanar fotogramas…"
+msgstr "Aplanar fotogramas…"
 
 #: ../gap/gap_main.c:917
-#, fuzzy
 msgid "Frames Layer Delete..."
-msgstr "<Image>/Vídeo/Borrar capas de fotogramas   …"
+msgstr "Borrar capas de fotogramas…"
 
 #: ../gap/gap_main.c:941
-#, fuzzy
 msgid "Frames Convert..."
-msgstr "<Image>/Vídeo/Convertir fotogramas"
+msgstr "Convertir fotogramas"
 
 #: ../gap/gap_main.c:953
 msgid "Frames Resize..."
@@ -1785,7 +1765,7 @@ msgstr "Redimensionar fotogramas…"
 
 #: ../gap/gap_main.c:965
 msgid "Frames Crop..."
-msgstr "Recorte de fotogramas..."
+msgstr "Recorte de fotogramas…"
 
 #: ../gap/gap_main.c:977
 msgid "Frames Scale..."
@@ -1793,11 +1773,11 @@ msgstr "Escalar fotogramas…"
 
 #: ../gap/gap_main.c:989
 msgid "Split Image to Frames..."
-msgstr "Dividir imagen en fotogramas..."
+msgstr "Dividir imagen en fotogramas…"
 
 #: ../gap/gap_main.c:1002
 msgid "Frame Sequence Shift..."
-msgstr "Desplazamiento de la secuencia de fotogramas..."
+msgstr "Desplazamiento de la secuencia de fotogramas…"
 
 #: ../gap/gap_main.c:1014
 #, fuzzy
@@ -4717,7 +4697,7 @@ msgstr ""
 
 #: ../gap/gap_onion_main.c:152
 msgid "Configuration..."
-msgstr "Configuración..."
+msgstr "Configuración…"
 
 #: ../gap/gap_onion_main.c:170
 msgid "Create or Replace"
@@ -5311,7 +5291,7 @@ msgstr ""
 
 #: ../gap/gap_player_main.c:250
 msgid "Playback..."
-msgstr "Reproducción..."
+msgstr "Reproducción…"
 
 #: ../gap/gap_range_ops.c:143
 msgid "New Width:"
@@ -6163,12 +6143,16 @@ msgid ""
 "scale height value for the first handled frame where 100 is 1:1, 50 is half, "
 "200 is double height"
 msgstr ""
+"escalar el valor de la altura para el primer fotograma manejado donde 100 es 1:1, 50 es "
+"la mitad, 200 es altura doble"
 
 #: ../gap/gap_story_att_trans_dlg.c:2303
 msgid ""
 "scale height value for the last handled frame where 100 is 1:1, 50 is half, "
 "200 is double height"
 msgstr ""
+"escalar el valor de la altura para el último fotograma manejado donde 100 es 1:1, 50 es la mitad, "
+"200 es altura doble"
 
 #. the comment label
 #. the Comment lable
@@ -6596,7 +6580,7 @@ msgstr "Propiedades principales"
 
 #: ../gap/gap_story_dialog.c:6693
 msgid "STORY_new.txt"
-msgstr ""
+msgstr "HISTORIA_nueva.txt"
 
 #: ../gap/gap_story_file.c:397 ../gap/gap_story_file.c:431
 msgid "internal error"
@@ -6663,7 +6647,7 @@ msgstr ""
 
 #: ../gap/gap_story_main.c:164
 msgid "Storyboard..."
-msgstr "Storyboard..."
+msgstr "Storyboard…"
 
 #: ../gap/gap_story_properties.c:431
 msgid "Automatic scene detection operates only on cliptypes MOVIE and FRAMES"
@@ -7188,7 +7172,7 @@ msgstr "No se puede abrir archivo %s"
 
 #: ../gap/gap_wr_color_curve.c:531
 msgid "CurvesFile..."
-msgstr "Archivo de curvas..."
+msgstr "Archivo de curvas…"
 
 #. Menu names
 #: ../gap/gap_wr_color_curve.c:554 ../gap/gap_wr_color_huesat.c:287
@@ -7220,7 +7204,7 @@ msgstr ""
 
 #: ../gap/gap_wr_color_huesat.c:263
 msgid "Hue-Saturation..."
-msgstr "Tono-Saturación..."
+msgstr "Tono-Saturación…"
 
 #. The dialog1 and main vbox
 #: ../gap/gap_wr_color_huesat.c:583
@@ -7281,7 +7265,7 @@ msgstr "Saturación:"
 
 #: ../gap/gap_wr_color_levels.c:272
 msgid "Levels..."
-msgstr "Niveles..."
+msgstr "Niveles…"
 
 #. The dialog1 and main vbox
 #: ../gap/gap_wr_color_levels.c:597
@@ -7324,7 +7308,7 @@ msgstr "Salida alta:"
 
 #: ../gap/gap_wr_opacity.c:138
 msgid "Set Layer Opacity..."
-msgstr "Establecer opacidad de la capa..."
+msgstr "Establecer opacidad de la capa…"
 
 #. Menu names
 #: ../gap/gap_wr_opacity.c:147
@@ -8472,13 +8456,15 @@ msgstr ""
 #. the vflip label
 #: ../vid_enc_avi/gap_enc_avi_gui.c:709
 msgid "Vertical flip:"
-msgstr ""
+msgstr "Giro vertical:"
 
 #: ../vid_enc_avi/gap_enc_avi_gui.c:730
 msgid ""
 "Check if you want to encode frames vertically flipped (suitable for playback "
 "on WinDVD player) or as is (suitable for gmplayer on linux)"
 msgstr ""
+"Compruebe si quiere codificar los fotogramas girados verticalmente (idóneo para "
+"su reproducción en el reproductor WinDVD) o como están (idóneo para gmplayer bajo Linux)"
 
 #. the notebook page for XVID Codec options
 #. -----------------------------------------
@@ -8717,7 +8703,7 @@ msgstr ""
 
 #: ../vid_enc_avi/gap_enc_avi_main.c:873
 msgid "AVI Video Encoding .."
-msgstr "Codificación de vídeo AVI ..."
+msgstr "Codificación de vídeo AVI …"
 
 #. the CODEC delivered a NULL buffer
 #. * there is something essential wrong (TERMINATE)
@@ -9818,7 +9804,7 @@ msgstr "Se añadió un falso fotograma negro"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:2882
 msgid "FFMPEG initializing for video encoding .."
-msgstr "Inicializando FFmpeg para codificación de vídeo..."
+msgstr "Inicializando FFmpeg para codificación de vídeo…"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:2998
 #, c-format
