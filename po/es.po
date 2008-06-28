@@ -14,7 +14,7 @@ msgstr ""
 "Project-Id-Version: gimp-gap.gap-2-4\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-05-20 07:35+0000\n"
-"PO-Revision-Date: 2008-06-01 14:11+0200\n"
+"PO-Revision-Date: 2008-06-28 12:31+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -1739,9 +1739,8 @@ msgid "Exchange Frame..."
 msgstr "Intercambiar fotograma…"
 
 #: ../gap/gap_main.c:813
-#, fuzzy
 msgid "Move Path..."
-msgstr "Camino de movimiento"
+msgstr "Mover ruta..."
 
 #: ../gap/gap_main.c:893
 msgid "Frames to Image..."
@@ -1785,19 +1784,16 @@ msgid "Frame Sequence Reverse..."
 msgstr "Fotograma una vez-invertido"
 
 #: ../gap/gap_main.c:1026
-#, fuzzy
 msgid "Frames Renumber..."
-msgstr "<Image>/Vídeo/Renumerar fotogramas…"
+msgstr "Renumerar fotogramas…"
 
 #: ../gap/gap_main.c:1038
-#, fuzzy
 msgid "Frames Modify..."
-msgstr "Modificar fotogramas"
+msgstr "Modificar fotogramas..."
 
 #: ../gap/gap_main.c:1128
-#, fuzzy
 msgid "<Image>/Video/Go To/"
-msgstr "<Image>/Vídeo/Ir a/Siguiente fotograma"
+msgstr "<Image>/Vídeo/Ir a/"
 
 #: ../gap/gap_mod_layer.c:130
 #, c-format
@@ -1825,6 +1821,8 @@ msgid ""
 "Modify Layers cancelled: first selected layer \"%s\"\n"
 "in last frame has no layermask"
 msgstr ""
+"Se canceló la modificación de capas: la primera capa seleccionada «%s»\n"
+"en el último fotograma no tiene máscara de capa"
 
 #: ../gap/gap_mod_layer.c:1233
 msgid "Modifying frames/layer(s)..."
@@ -1835,11 +1833,13 @@ msgid "No selected layer in start frame"
 msgstr "No hay capa seleccionada en el fotograma inicial"
 
 #: ../gap/gap_mod_layer.c:1337
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "first selected layer \"%s\"\n"
 "in start frame has no layermask"
-msgstr "No hay capa seleccionada en el fotograma inicial"
+msgstr ""
+"la primera capa seleccionada «%s»\n"
+"en el fotograma inicial no tiene máscara de capa"
 
 #: ../gap/gap_mod_layer_dialog.c:189
 msgid "New Layer Name"
@@ -1891,9 +1891,9 @@ msgid "set all selected layers unlinked"
 msgstr "Desvincular todas las capas seleccionadas"
 
 #: ../gap/gap_mod_layer_dialog.c:384
-#, fuzzy, c-format
+#, c-format
 msgid "Set layer(s) mode: %s"
-msgstr "Vincular capa(s)"
+msgstr "Establecer el modo de capa(s): %s"
 
 #: ../gap/gap_mod_layer_dialog.c:385
 #, c-format
@@ -2020,9 +2020,8 @@ msgid "Merge Layers"
 msgstr "Mezclar capas"
 
 #: ../gap/gap_mod_layer_dialog.c:582
-#, fuzzy
 msgid "Merge layer(s); expand as necessary"
-msgstr "Mezclar capa(s) expandiendo cuando se necesite"
+msgstr "Mezclar capa(s); expandiendo cuando se necesite"
 
 #: ../gap/gap_mod_layer_dialog.c:583
 msgid "merge selected layers and expand as necessary"
@@ -2082,13 +2081,12 @@ msgid "Selection invert"
 msgstr "Selección inversa"
 
 #: ../gap/gap_mod_layer_dialog.c:664
-#, fuzzy
 msgid "Selection from alpha channel (individual per frame)"
-msgstr "Cargar selección desde el canal (individualmente por fotograma)"
+msgstr "Selección desde el canal alfa (individual por fotograma)"
 
 #: ../gap/gap_mod_layer_dialog.c:670
 msgid "Save selection to channel (individual per frame)"
-msgstr "Guardar selección al canal (individualmente por fotograma)"
+msgstr "Guardar selección al canal (individual por fotograma)"
 
 #: ../gap/gap_mod_layer_dialog.c:676
 msgid "Load selection from channel (individual per frame)"
@@ -2128,9 +2126,8 @@ msgid "Add layermask from bw copy"
 msgstr "Añadir máscara de capa desde copia bn"
 
 #: ../gap/gap_mod_layer_dialog.c:745
-#, fuzzy
 msgid "Invert existing layermask"
-msgstr "Borrar máscara de capa"
+msgstr "Invertir la máscara de capa existente"
 
 #: ../gap/gap_mod_layer_dialog.c:751
 #, fuzzy
@@ -5959,6 +5956,8 @@ msgid ""
 "Reset to: defaults, use modifyer keys CTRL, ALT for alternative defaults. "
 "SHIFT resets to initial value"
 msgstr ""
+"Restablecer a: predeterminados, use el modificador de teclas CTRL, ALT para predeterminados alternativos. "
+"MAYÚS restablece al valor inicial"
 
 #. to label
 #: ../gap/gap_story_att_trans_dlg.c:1948
@@ -5967,11 +5966,11 @@ msgstr "Final:"
 
 #: ../gap/gap_story_att_trans_dlg.c:1994
 msgid "Copy this number of frames to all enabled rows"
-msgstr ""
+msgstr "Copiar este número de fotogramas a todas las filas activadas"
 
 #: ../gap/gap_story_att_trans_dlg.c:2021
 msgid "Number of frames (duration of transition from start to end value)"
-msgstr ""
+msgstr "Número de fotogramas (duración de la transición desde el principio al final del valor)"
 
 #: ../gap/gap_story_att_trans_dlg.c:2065 ../gap/gap_story_att_trans_dlg.c:2075
 msgid "Transition Attributes"
@@ -5996,7 +5995,7 @@ msgstr "Anchura"
 
 #: ../gap/gap_story_att_trans_dlg.c:2123
 msgid "scale width of frame to fit master width"
-msgstr ""
+msgstr "escalar la anchura de los fotogramas para ajustarse a la anchura maestra"
 
 #. the fit height check button
 #: ../gap/gap_story_att_trans_dlg.c:2134
@@ -6005,7 +6004,7 @@ msgstr "Altura"
 
 #: ../gap/gap_story_att_trans_dlg.c:2142
 msgid "scale height of frame to fit master height"
-msgstr ""
+msgstr "escalar la altura de los fotogramas para ajustarse a la altura maestra"
 
 #. the keep proportions check button
 #: ../gap/gap_story_att_trans_dlg.c:2153
@@ -6033,12 +6032,16 @@ msgid ""
 "opacity value for the first handled frame where 100 is fully opaque, 0 is "
 "fully transparent"
 msgstr ""
+"valor de opacidad para el primer fotograma manejado, donde 100 es completamente opaco y 0 "
+"es completamente transparente"
 
 #: ../gap/gap_story_att_trans_dlg.c:2198
 msgid ""
 "opacity value for the last handled framewhere 100 is fully opaque, 0 is "
 "fully transparent"
 msgstr ""
+"valor de opacidad para el último fotograma manejado, donde 100 es completamente opaco y 0 "
+"es completamente transparente"
 
 #: ../gap/gap_story_att_trans_dlg.c:2201 ../gap/gap_story_att_trans_dlg.c:2227
 #: ../gap/gap_story_att_trans_dlg.c:2254 ../gap/gap_story_att_trans_dlg.c:2280
@@ -6065,12 +6068,16 @@ msgid ""
 "move horizontal value for the first handled frame  where 0.0 is centered, "
 "100.0 is outside right, -100.0 is outside left)"
 msgstr ""
+"mover el valor horizontal para el primer fotograma manejado donde 0.0 es centrado, "
+"100.0 es totalmente a la derecha y -100.0 es totalmente a la izquierda)"
 
 #: ../gap/gap_story_att_trans_dlg.c:2224
 msgid ""
 "move horizontal value for the last handled frame  where 0.0 is centered, "
 "100.0 is outside right, -100.0 is outside left)"
 msgstr ""
+"mover el valor horizontal para el último fotograma manejado donde 0.0 es centrado, "
+"100.0 es totalmente a la derecha y -100.0 es totalmente a la izquierda)"
 
 #: ../gap/gap_story_att_trans_dlg.c:2234
 msgid "Move Y:"
@@ -7137,11 +7144,13 @@ msgid "Extracting Frames..."
 msgstr "Extrayendo fotogramas   …"
 
 #: ../gap/gap_vex_exec.c:525
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "failed to save file:\n"
 "'%s'"
-msgstr "No se puede abrir archivo %s"
+msgstr ""
+"falló al guardar el archivo:\n"
+"«%s»"
 
 #: ../gap/gap_vex_exec.c:623
 msgid "Seek Audio Position..."
