@@ -689,7 +689,12 @@ p_audio_filename_changed(GapPlayerMainGlobalParams *gpp)
   gpp->audio_samples    = samples;
 
   p_audio_print_labels(gpp);
-  p_audio_init(gpp);  /* tell ausioserver to go standby for this audiofile */
+
+  /* p_audio_init(gpp) must not be called here.
+   *  becuase it calls p_audio_startup_server and  this will recursive call
+   *  p_audio_filename_changed in an endless loop....
+   * For now the audio_init is done later on 1st attempt to start playback.
+   */
 
 #endif
   return;

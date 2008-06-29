@@ -1,3 +1,8 @@
+2008-06-29 Wolfgang Hofer <hof@gimp.org>
+  - fixed endless loop in the Player on attempt to enter a vaild audiofile name.
+  
+  * gap/gap_player_dialog.c
+
 2008-05-19 Wolfgang Hofer <hof@gimp.org>
 - bugfix: extract JPEG frames from videofile shall not pop up save dialog
         on each handled frame.
