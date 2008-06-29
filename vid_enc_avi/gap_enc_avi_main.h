@@ -38,10 +38,21 @@
 
 
 #define GAP_AVI_VIDCODEC_00_JPEG   0
-#define GAP_AVI_VIDCODEC_01_RAW    1
-#define GAP_AVI_VIDCODEC_02_XVID   2
-#define GAP_AVI_VIDCODEC_MAX_ELEMENTS   3
+#define GAP_AVI_VIDCODEC_01_MJPG   1
+#define GAP_AVI_VIDCODEC_02_PNG    2
+#define GAP_AVI_VIDCODEC_03_RAW    3
+#define GAP_AVI_VIDCODEC_04_XVID   4
+#define GAP_AVI_VIDCODEC_MAX_ELEMENTS   5
 
+/* names of the supported AVI Codecs */
+#define GAP_AVI_CODEC_RAW  "RAW "   /* refers to 4 byte code "RGB " */
+#define GAP_AVI_CODEC_RGB  "RGB "
+#define GAP_AVI_CODEC_JPEG "JPEG"
+#define GAP_AVI_CODEC_MJPG "MJPG"
+#define GAP_AVI_CODEC_PNG  "PNG "
+/* ??? not sure what to use for the correct 4cc codec names for xvid divx MPEG 4 */
+#define GAP_AVI_CODEC_XVID "XVID"
+#define GAP_AVI_CODEC_DIVX "div5"
 
 
 /* avi specific encoder params  */
@@ -50,7 +61,7 @@ typedef struct {
   gint32 APP0_marker;
 
   /* for the builtin "JPEG" CODEC */
-  gint32 dont_recode_frames;
+  gint32 jpeg_dont_recode_frames;
   gint32 jpeg_interlaced;
   gint32 jpeg_quality;         /* 0..100% */
   gint32 jpeg_odd_even;
@@ -61,6 +72,10 @@ typedef struct {
   /* for the "RGB " (== raw) CODEC */
   gint32 raw_vflip;
 
+  /* for the "PNG " CODEC */
+  gint32 png_dont_recode_frames;
+  gint32 png_interlaced;
+  gint32 png_compression;         /* 0..9 */
 } GapGveAviValues;
 
 typedef struct GapGveAviGlobalParams {   /* nick: gpp */
@@ -100,6 +115,11 @@ typedef struct GapGveAviGlobalParams {   /* nick: gpp */
   GtkObject *xvid_quality_spinbutton_adj;
   
   GtkWidget *raw_vflip_checkbutton;
+
+  GtkWidget *png_dont_recode_checkbutton;
+  GtkWidget *png_interlace_checkbutton;
+  GtkWidget *png_compression_spinbutton;
+  GtkObject *png_compression_spinbutton_adj;
 
 } GapGveAviGlobalParams;
 

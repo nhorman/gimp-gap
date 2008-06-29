@@ -8,6 +8,7 @@
 
 #include <glib/gstdio.h>
 
+
 /* XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX END fcache procedures */
 
 
@@ -310,12 +311,15 @@ GVA_util_check_mpg_frame_type(unsigned char *buffer, gint32 buf_size)
   gint     l_idx;
   gint     l_frame_type;
   unsigned l_picture_number;
+  gint32   l_max_check_size;
+  
+  l_max_check_size = buf_size;
   
   l_frame_type = GVA_MPGFRAME_UNKNOWN;
   l_picture_number = 0;
   code = 0;
   l_idx = 0;
-  while(l_idx < buf_size)
+  while(l_idx < l_max_check_size)
   {
     code <<= 8;
     code |= buffer[l_idx++];
@@ -394,14 +398,20 @@ GVA_util_fix_mpg_timecode(unsigned char *buffer
       second = code >> 13 & 0x3f;
       frame = code >> 7 & 0x3f;
 
-      if(gap_debug) printf("Timecode old: %02d:%02d:%02d:%02d ", hour, minute, second, frame);
+      if(gap_debug)
+      {
+        printf("Timecode old: %02d:%02d:%02d:%02d ", hour, minute, second, frame);
+      }
 
       if((hour == 0)
       && (minute == 0)
       && (second == 0)
       && (frame == 0))
       {
-        if(gap_debug) printf("\n");
+        if(gap_debug)
+        {
+          printf("\n");
+        }
       }
       else
       {
@@ -419,10 +429,183 @@ GVA_util_fix_mpg_timecode(unsigned char *buffer
 	buffer[l_idx + 2] = ((second & 0x7) << 5) | (frame >> 1);
 	buffer[l_idx + 3] = (code & 0x7f) | ((frame & 0x1) << 7);
 
-	if(gap_debug) printf("new: %02d:%02d:%02d:%02d\n", hour, minute, second, frame);
+	if(gap_debug)
+        {
+          printf("new: %02d:%02d:%02d:%02d\n", hour, minute, second, frame);
+        }
       }
 
       break;
     }
   }
 }  /* end GVA_util_fix_mpg_timecode */
+
+
+/* ----------------------------------------
+ * GVA_util_calculate_mpeg_frameheader_size
+ * ----------------------------------------
+ * scan the buffer for the 1st Mpeg picture start code.
+ * all information from start of the buffer inclusive the picuture header
+ * are considered as MPG header information.
+ * (TODO: )
+ *
+ * returns the size of frame/gop header or 0 if no header is present.
+ */
+gint32
+GVA_util_calculate_mpeg_frameheader_size(unsigned char *buffer
+                         ,gint32 buf_size
+                         )
+{
+  unsigned long code;
+  gint     l_idx;
+  gint     l_frame_type;
+  unsigned l_picture_number;
+  gint32   l_max_check_size;
+  gint32   l_hdr_size;
+  
+  l_max_check_size = buf_size;
+  
+  l_frame_type = GVA_MPGFRAME_UNKNOWN;
+  l_picture_number = 0;
+  l_hdr_size = 0;
+  code = 0;
+  l_idx = 0;
+  while(l_idx < l_max_check_size)
+  {
+    code <<= 8;
+    code |= buffer[l_idx++];
+    
+    if(code == GVA_MPGHDR_PICTURE_START_CODE)
+    {
+      /* found a picture start code
+       * get next 10 bits for picture_number
+       */
+      l_picture_number =(unsigned long)buffer[l_idx] << 2;
+      l_picture_number |= (unsigned long)((buffer[l_idx +1] >> 6) & 0x3);
+
+      /* get next 3 bits for frame_type information */
+      l_frame_type = ((buffer[l_idx +1] >> 3) & 0x7);
+      
+      l_hdr_size = l_idx + 2; // TODO dont know if there are more bytes in the picture header ???
+      break;
+    }
+  }
+  
+
+  if(gap_debug)
+  {
+    printf("GVA_util_calculate_mpeg_frameheader_size: %d  l_picture_number:%d frame_type:%d (1=I,2=P,3=B)\n"
+          ,(int)l_hdr_size
+          ,(int)l_picture_number
+          ,(int)l_frame_type
+	  );
+  }
+  
+  return(l_hdr_size);
+}  /* end GVA_util_calculate_mpeg_frameheader_size */
+
+
+/* ----------------------------------------
+ * GVA_util_check_jpg_picture
+ * ----------------------------------------
+ * scan the buffer for the 1st JPEG picture.
+ * This implementation checks for the jpeg typical "magic number"
+ *    ff d8 ff
+ * TODO: if libjpeg is available (#ifdef HAVE_??LIBJPG)
+ *       we colud try to a more sophisticated check
+ *       via jpeg_read_header from memory...
+ *       
+ * returns TRUE if the specified buffer contains a JPEG image.
+ */
+gboolean
+GVA_util_check_jpg_picture(unsigned char *buffer
+                         ,gint32 buf_size
+                         ,gint32 max_check_size
+                         ,gint32 *hdr_size
+                         )
+{
+  gint     l_idx;
+  gint32   l_max_check_size;
+  gboolean l_jpeg_magic_number_found;
+  
+  l_max_check_size = MAX(max_check_size, 1);
+  l_jpeg_magic_number_found = FALSE;
+  l_idx = 0;
+  while(l_idx < l_max_check_size)
+  {
+    /* check magic number */
+    if ((buffer[l_idx]    == 0xff) 
+    &&  (buffer[l_idx +1] == 0xd8)
+    &&  (buffer[l_idx +2] == 0xff))
+    {
+      *hdr_size = l_idx;
+      l_jpeg_magic_number_found = TRUE;
+      break;
+    }
+    l_idx++;
+  }
+  
+
+  if(gap_debug)
+  {
+    printf("GVA_util_check_jpg_magic_number: l_jpeg_magic_number_found:%d at idx:%d hdr_size:%d\n"
+          ,(int)l_jpeg_magic_number_found
+          ,(int)l_idx
+          ,(int)*hdr_size
+	  );
+  }
+  
+  return(l_jpeg_magic_number_found);
+}  /* end GVA_util_check_jpg_picture */
+
+
+/* ----------------------------------------
+ * GVA_util_check_png_picture
+ * ----------------------------------------
+ * scan the buffer for the 1st PNG picture.
+ * This implementation checks for the PNG typical "magic number"
+ *   89 50 4e 47  (.PNG)
+ *       
+ * returns TRUE if the specified buffer contains a PNG image.
+ */
+gboolean
+GVA_util_check_png_picture(unsigned char *buffer
+                         ,gint32 buf_size
+                         ,gint32 max_check_size
+                         ,gint32 *hdr_size
+                         )
+{
+  gint     l_idx;
+  gint32   l_max_check_size;
+  gboolean l_png_magic_number_found;
+  
+  l_max_check_size = MAX(max_check_size, 1);
+  l_png_magic_number_found = FALSE;
+  l_idx = 0;
+  while(l_idx < l_max_check_size)
+  {
+    /* check magic number */
+    if ((buffer[l_idx]    == 0x89) 
+    &&  (buffer[l_idx +1] == 0x50)    // 'P'
+    &&  (buffer[l_idx +2] == 0x4e)    // 'N'
+    &&  (buffer[l_idx +3] == 0x47))   // 'G'
+    {
+      *hdr_size = l_idx;
+      l_png_magic_number_found = TRUE;
+      break;
+    }
+    l_idx++;
+  }
+  
+
+  if(gap_debug)
+  {
+    printf("GVA_util_check_png_picture: l_png_magic_number_found:%d at idx:%d hdr_size:%d\n"
+          ,(int)l_png_magic_number_found
+          ,(int)l_idx
+          ,(int)*hdr_size
+	  );
+  }
+  
+  return(l_png_magic_number_found);
+}  /* end GVA_util_check_png_picture */

@@ -145,6 +145,10 @@ typedef struct t_GVA_ffmpeg
  gboolean        prefere_native_seek;               /* prefere native seek if both vindex and native seek available */
  gboolean        all_timecodes_verified;
  gboolean        critical_timecodesteps_found;
+ 
+ unsigned char *  chunk_ptr;
+ gint32           chunk_len;
+ 
 } t_GVA_ffmpeg;
 
 
@@ -214,6 +218,9 @@ static int64_t  p_frame_nr_to_timecode(t_GVA_ffmpeg *handle, gint32 frame_nr);
 static void     p_analyze_stepsize_pattern(gint max_idx, t_GVA_Handle *gvahand);
 static void     p_probe_timecode_offset(t_GVA_Handle *gvahand);
 
+static          t_GVA_RetCode   p_wrapper_ffmpeg_seek_frame(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit pos_unit);
+static          t_GVA_RetCode   p_wrapper_ffmpeg_get_next_frame(t_GVA_Handle *gvahand);
+static          t_GVA_RetCode   p_private_ffmpeg_get_next_frame(t_GVA_Handle *gvahand, gboolean do_copy_raw_chunk_data);
 
 
 /* -----------------------------
@@ -323,6 +330,9 @@ p_wrapper_ffmpeg_open_read(char *filename, t_GVA_Handle *gvahand)
   handle->samples_buffer_size = 0;
   handle->samples_read = 0;
   handle->key_frame_detection_works = FALSE;  /* assume a Codec with non working detection */
+  handle->chunk_len = 0;
+  handle->chunk_ptr = NULL;
+  
   
   p_reset_proberead_results(handle);
 
@@ -599,6 +609,151 @@ p_wrapper_ffmpeg_close(t_GVA_Handle *gvahand)
 
 
 /* ----------------------------------
+ * p_wrapper_ffmpeg_get_codec_name
+ * ----------------------------------
+ * read one frame as raw data from the video_track (stream)
+ * note that raw data is not yet decoded and contains
+ * videofileformat specific frame header information.
+ * this procedure is intended to 1:1 (lossless) copy of frames
+ */
+char *
+p_wrapper_ffmpeg_get_codec_name(t_GVA_Handle  *gvahand
+                             ,t_GVA_CodecType codec_type
+                             ,gint32 track_nr
+                             )
+{
+  t_GVA_ffmpeg *handle;
+
+  handle = (t_GVA_ffmpeg *)gvahand->decoder_handle;
+  if(handle == NULL)
+  {
+    if(gap_debug)
+    {
+      printf("p_wrapper_ffmpeg_get_codec_name  handle == NULL\n");
+    }
+    return(NULL);
+  }
+
+  if (codec_type == GVA_VIDEO_CODEC)
+  {
+    if(handle->vcodec)
+    {
+      if(gap_debug)
+      {
+        printf("p_wrapper_ffmpeg_get_codec_name  handle->vcodec == %s\n", handle->vcodec->name);
+      }
+      return(g_strdup(handle->vcodec->name));
+    }
+  }
+  
+  if (codec_type == GVA_AUDIO_CODEC)
+  {
+    if(handle->acodec)
+    {
+      if(gap_debug)
+      {
+        printf("p_wrapper_ffmpeg_get_codec_name  handle->acodec == %s\n", handle->acodec->name);
+      }
+      return(g_strdup(handle->acodec->name));
+    }
+  }
+
+  if(gap_debug)
+  {
+    printf("p_wrapper_ffmpeg_get_codec_name  codec is NULL\n");
+  }
+  return(NULL);
+
+}  /* end p_wrapper_ffmpeg_get_codec_name */
+
+
+/* ----------------------------------
+ * p_wrapper_ffmpeg_get_video_chunk
+ * ----------------------------------
+ * read one frame as raw data from the video_track (stream)
+ * note that raw data is not yet decoded and contains
+ * videofileformat specific frame header information.
+ * this procedure is intended to 1:1 (lossless) copy of frames
+ */
+t_GVA_RetCode
+p_wrapper_ffmpeg_get_video_chunk(t_GVA_Handle  *gvahand
+                            , gint32 frame_nr
+                            , unsigned char *chunk
+                            , gint32 *size
+                            , gint32 max_size)
+{
+  t_GVA_RetCode l_rc;
+  t_GVA_ffmpeg *handle;
+
+  if(frame_nr < 1)
+  {
+    /* illegal frame_nr (first frame starts at Nr 1 */
+    return(GVA_RET_ERROR);
+  }
+ 
+  handle = (t_GVA_ffmpeg *)gvahand->decoder_handle;
+  if(handle == NULL)
+  {
+    return(GVA_RET_ERROR);
+  }
+
+  /* check if current position is before the wanted frame */
+  if (frame_nr != gvahand->current_seek_nr)
+  {
+    gdouble pos;
+    
+    pos = frame_nr;
+    l_rc = p_wrapper_ffmpeg_seek_frame(gvahand, pos, GVA_UPOS_FRAMES);
+    if (l_rc != GVA_RET_OK)
+    {
+      return (l_rc);
+    }
+  }
+
+  
+  l_rc = p_private_ffmpeg_get_next_frame(gvahand, TRUE);
+  if(handle->chunk_len > max_size)
+  {
+    printf("CALLING ERROR p_wrapper_ffmpeg_get_video_chunk chunk_len:%d is greater than sepcified max_size:%d\n"
+      ,(int)handle->chunk_len
+      ,(int)max_size
+      );
+    return(GVA_RET_ERROR);
+  }
+  if(handle->chunk_ptr == NULL)
+  {
+    printf("CALLING ERROR p_wrapper_ffmpeg_get_video_chunk fetch raw frame failed, chunk_ptr is NULL\n");
+    return(GVA_RET_ERROR);
+  }
+  
+  if(gap_debug)
+  {
+    char *vcodec_name;
+    
+    vcodec_name = "NULL";
+    if(handle->vcodec)
+    {
+      if(handle->vcodec->name)
+      {
+        vcodec_name = handle->vcodec->name;
+      }
+    }
+
+    printf("p_wrapper_ffmpeg_get_video_chunk: chunk:%d chunk_ptr:%d, chunk_len:%d vcodec_name:%s\n"
+      ,(int)chunk
+      ,(int)handle->chunk_ptr
+      ,(int)handle->chunk_len
+      ,vcodec_name
+      );
+  }
+  
+  *size =  handle->chunk_len;
+  memcpy(chunk, handle->chunk_ptr, handle->chunk_len);
+  return (l_rc);
+}  /* end p_wrapper_ffmpeg_get_video_chunk */
+
+
+/* ----------------------------------
  * p_wrapper_ffmpeg_get_next_frame
  * ----------------------------------
  * read one frame from the video_track (stream)
@@ -607,6 +762,20 @@ p_wrapper_ffmpeg_close(t_GVA_Handle *gvahand)
  */
 static t_GVA_RetCode
 p_wrapper_ffmpeg_get_next_frame(t_GVA_Handle *gvahand)
+{
+  p_private_ffmpeg_get_next_frame(gvahand, FALSE);
+}  /* end  p_wrapper_ffmpeg_get_next_frame*/
+
+
+/* ----------------------------------
+ * p_private_ffmpeg_get_next_frame
+ * ----------------------------------
+ * read one frame from the video_track (stream)
+ * and decode the frame
+ * when EOF reached: update total_frames and close the stream)
+ */
+static t_GVA_RetCode
+p_private_ffmpeg_get_next_frame(t_GVA_Handle *gvahand, gboolean do_copy_raw_chunk_data)
 {
   t_GVA_ffmpeg *handle;
   int       l_got_picture;
@@ -736,7 +905,42 @@ p_wrapper_ffmpeg_get_next_frame(t_GVA_Handle *gvahand)
        
     }
 
-    /* if (gap_debug) printf("before avcodec_decode_video: inbuf_ptr:%d inbuf_len:%d\n", (int)handle->inbuf_ptr, (int)handle->inbuf_len); */
+    if (gap_debug)
+    {
+      printf("before avcodec_decode_video: inbuf_ptr:%d inbuf_len:%d\n",
+             (int)handle->inbuf_ptr,
+             (int)handle->inbuf_len);
+    }
+
+
+    /* --------- START potential CHUNK ----- */
+    /* make a copy of the raw data packages for one video frame.
+     * (we do not yet know if the raw data chunk is complete until
+     *  avcodec_decode_video the frame may
+     */
+    if (do_copy_raw_chunk_data == TRUE)
+    {
+      if (handle->chunk_ptr != NULL)
+      {
+        g_free(handle->chunk_ptr);
+        handle->chunk_ptr = NULL;
+        handle->chunk_len = 0;
+      }
+      handle->chunk_len = handle->inbuf_len;
+      if (handle->chunk_len > 0)
+      {
+        handle->chunk_ptr = g_malloc(handle->chunk_len);
+        memcpy(handle->chunk_ptr, handle->inbuf_ptr, handle->chunk_len);
+        if (gap_debug)
+        {
+          printf("copy potential raw chunk: chunk_ptr:%d chunk_len:%d\n",
+                 (int)handle->chunk_ptr,
+                 (int)handle->chunk_len);
+        }
+      }
+
+    }
+    /* --------- END potential CHUNK ----- */
 
     avcodec_get_frame_defaults(&handle->big_picture_yuv);
 
@@ -962,7 +1166,7 @@ p_wrapper_ffmpeg_get_next_frame(t_GVA_Handle *gvahand)
   if(l_rc == 1)  { return(GVA_RET_EOF); }
 
   return(GVA_RET_ERROR);
-}  /* end p_wrapper_ffmpeg_get_next_frame */
+}  /* end p_private_ffmpeg_get_next_frame */
 
 
 /* ------------------------------
@@ -1474,7 +1678,7 @@ p_seek_private(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit pos_unit)
   
   gvahand->percentage_done = 0.0;
 
-  //if(gap_debug)
+  if(gap_debug)
   {
     printf("p_wrapper_ffmpeg_seek_frame: start: l_frame_pos: %d cur_seek:%d cur_frame:%d  (prefere_native:%d gopsize:%d)\n"
                            , (int)l_frame_pos
@@ -1502,7 +1706,7 @@ p_seek_private(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit pos_unit)
       l_rc_rd = p_seek_native_timcode_based(gvahand, l_frame_pos);
       if(l_rc_rd == GVA_RET_OK)
       {
-        //if(gap_debug)
+        if(gap_debug)
         {
           printf("NATIVE SEEK performed for videofile:%s\n"
             , gvahand->filename
@@ -1518,7 +1722,7 @@ p_seek_private(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit pos_unit)
      gint64  seek_pos;
      gint32  l_idx;
      
-     //if(gap_debug)
+     if(gap_debug)
      {
        printf("VIDEO INDEX is available for videofile:%s\n"
          , gvahand->filename
@@ -2712,7 +2916,7 @@ p_wrapper_ffmpeg_count_frames(t_GVA_Handle *gvahand)
     master_handle->prefere_native_seek = TRUE;
   }
 
-  //if(gap_debug)
+  if(gap_debug)
   {
     printf("VINDEX done, critical_timecodesteps_found:%d\n"
            "             master_handle->all_timecodes_verified %d\n"
@@ -2805,7 +3009,8 @@ p_ffmpeg_new_dec_elem(void)
     dec_elem->fptr_get_audio       = &p_wrapper_ffmpeg_get_audio;
     dec_elem->fptr_count_frames    = &p_wrapper_ffmpeg_count_frames;
     dec_elem->fptr_seek_support    = &p_wrapper_ffmpeg_seek_support;
-    dec_elem->fptr_get_video_chunk = NULL;  /* &p_wrapper_ffmpeg_get_video_chunk */
+    dec_elem->fptr_get_video_chunk = &p_wrapper_ffmpeg_get_video_chunk;
+    dec_elem->fptr_get_codec_name  = &p_wrapper_ffmpeg_get_codec_name;
     dec_elem->next = NULL;
   }
 

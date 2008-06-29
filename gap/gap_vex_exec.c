@@ -59,151 +59,6 @@ p_gap_set_framerate(gint32 image_id, gdouble framerate)
 
 
 
-
-/* ---------------------
- * p_extract_audio
- * ---------------------
- * - extract audio and optional save to wav file
- */
-void
-p_extract_audio(GapVexMainGlobalParams *gpp,  t_GVA_Handle   *gvahand, gdouble samples_to_read,  gboolean wav_save)
-{
-#ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
-   int l_audio_channels;
-   int l_sample_rate;
-   long l_audio_samples;
-   unsigned short *left_ptr;
-   unsigned short *right_ptr;
-   unsigned short *l_lptr;
-   unsigned short *l_rptr;
-   long   l_to_read;
-   gint64 l_left_to_read;
-   long   l_block_read;
-   gdouble l_progress;
-   FILE  *fp_wav;
-
-   l_audio_channels = gvahand->audio_cannels;
-   l_sample_rate    = gvahand->samplerate;
-   l_audio_samples  = gvahand->total_aud_samples;
-
-   if(gap_debug)
-   {
-     printf("Channels:%d samplerate:%d samples:%d  samples_to_read: %.0f\n"
-          , (int)l_audio_channels
-          , (int)l_sample_rate
-          , (int)l_audio_samples
-          , (float)samples_to_read
-          );
-   }
-   
-  fp_wav = NULL;
-  if(wav_save) 
-  {
-    fp_wav = g_fopen(gpp->val.audiofile, "wb");
-  }
-  
-  if((fp_wav) || (!wav_save))
-  {
-     gint32 l_bytes_per_sample;
-     gint32 l_ii;
-
-     if(l_audio_channels == 1) { l_bytes_per_sample = 2;}  /* mono */
-     else                      { l_bytes_per_sample = 4;}  /* stereo */
-
-     if(wav_save) 
-     {
-       /* write the header */
-       gap_audio_wav_write_header(fp_wav
-                      , (gint32)samples_to_read
-                      , l_audio_channels            /* cannels 1 or 2 */
-                      , l_sample_rate
-                      , l_bytes_per_sample
-                      , 16                          /* 16 bit sample resolution */
-                      );
-    }
-    if(gap_debug) printf("samples_to_read:%d\n", (int)samples_to_read);
-
-    /* audio block read (blocksize covers playbacktime for 250 frames */
-    l_left_to_read = samples_to_read;
-    l_block_read = (double)(250.0) / (double)gvahand->framerate * (double)l_sample_rate;
-    l_to_read = MIN(l_left_to_read, l_block_read);
-
-    /* allocate audio buffers */
-    left_ptr = g_malloc0((sizeof(short) * l_block_read) + 16);
-    right_ptr = g_malloc0((sizeof(short) * l_block_read) + 16);
-
-    while(l_to_read > 0)
-    {
-       l_lptr = left_ptr;
-       l_rptr = right_ptr;
-       /* read the audio data of channel 0 (left or mono) */
-       GVA_get_audio(gvahand
-                 ,l_lptr                /* Pointer to pre-allocated buffer if int16's */
-                 ,1                     /* Channel to decode */
-                 ,(gdouble)l_to_read    /* Number of samples to decode */
-                 ,GVA_AMOD_CUR_AUDIO    /* read from current audio position (and advance) */
-                 );
-      if((l_audio_channels > 1) && (wav_save))
-      {
-         /* read the audio data of channel 2 (right)
-          * NOTE: GVA_get_audio has advanced the stream position,
-          *       so we have to set GVA_AMOD_REREAD to read from
-          *       the same startposition as for channel 1 (left).
-          */
-         GVA_get_audio(gvahand
-                   ,l_rptr                /* Pointer to pre-allocated buffer if int16's */
-                   ,2                     /* Channel to decode */
-                   ,l_to_read             /* Number of samples to decode */
-                   ,GVA_AMOD_REREAD       /* read from */
-                 );
-      }
-      l_left_to_read -= l_to_read;
-
-      if(wav_save) 
-      {
-        /* write 16 bit wave datasamples 
-         * sequence mono:    (lo, hi)
-         * sequence stereo:  (lo_left, hi_left, lo_right, hi_right)
-         */
-        for(l_ii=0; l_ii < l_to_read; l_ii++)
-        {
-           gap_audio_wav_write_gint16(fp_wav, *l_lptr);
-           l_lptr++;
-           if(l_audio_channels > 1)
-           {
-             gap_audio_wav_write_gint16(fp_wav, *l_rptr);
-             l_rptr++;
-           }
-         }
-      }
-
-
-      l_to_read = MIN(l_left_to_read, l_block_read);
-
-      /* calculate progress */
-      l_progress = (gdouble)(samples_to_read - l_left_to_read) / ((gdouble)samples_to_read + 1.0);
-      if(gap_debug) printf("l_progress:%f\n", (float)l_progress);
-      if (gpp->val.run_mode != GIMP_RUN_NONINTERACTIVE)
-      {
-        gimp_progress_update (l_progress);
-      }
-    }
-    if(wav_save) 
-    {
-      /* close wavfile */
-      fclose(fp_wav);
-    }
-
-    /* free audio buffers */
-    g_free(left_ptr);
-    g_free(right_ptr);
-  }
-#endif
-  return;
-}  /* end p_extract_audio */
-
-
-
 /* ------------------------------
  * gap_vex_exe_extract_videorange
  * ------------------------------
@@ -582,112 +437,40 @@ gap_vex_exe_extract_videorange(GapVexMainGlobalParams *gpp)
     }
   }
 
+
   /* ------ extract Audio ---------- */
   if((gvahand->atracks > 0)
   && (gpp->val.audiotrack > 0))
   {
      if (l_overwrite_mode_audio >= 0)
      {
-        gdouble l_samples_to_read;
-        gdouble l_extracted_frames;
+       gdouble l_extracted_frames;
+       gboolean do_progress;
+       
+       l_extracted_frames = framenumber - framenumber1;
+       
+       do_progress = TRUE;
+       if(gpp->val.run_mode != GIMP_RUN_NONINTERACTIVE)
+       {
+         do_progress = FALSE;
+       }
 
-        if(gap_debug) printf("EXTRACTING audio, writing to file %s\n", gpp->val.audiofile);
-
-        if (gpp->val.exact_seek != 0)
-        {
-          /* close and reopen to make sure that we start at begin */
-
-          gvahand->image_id = -1;   /* prenvent API from deleting that image at close */
-          GVA_close(gvahand);
-
-          /* --------- (RE)OPEN the videofile --------------- */
-          gvahand = GVA_open_read_pref(gpp->val.videoname
-                                   ,gpp->val.videotrack
-                                   ,gpp->val.audiotrack
-                                   ,gpp->val.preferred_decoder
-                                   , FALSE  /* use MMX if available (disable_mmx == FALSE) */
-                                   );
-          if(gvahand == NULL)
-          {
-             return;
-          }
-        }
-
-        if(gvahand->audio_cannels > 0)
-        {
-          /* seek needed only if extract starts not at pos 1 */
-          if(l_pos > 1)
-          {
-            if (gpp->val.run_mode != GIMP_RUN_NONINTERACTIVE)
-            {
-               gimp_progress_init (_("Seek Audio Position..."));
-            }
-
-            /* check for exact frame_seek */
-            if (gpp->val.exact_seek != 0)
-            {
-               gint32 l_seek_framenumber;
-               
-               
-               l_seek_framenumber = l_pos;
-               if(l_pos_unit == GVA_UPOS_PRECENTAGE)
-               {
-                 l_seek_framenumber = gvahand->total_frames * l_pos;
-               }
-               
-               l_samples_to_read = (gdouble)(l_seek_framenumber) 
-                                / (gdouble)gvahand->framerate * (gdouble)gvahand->samplerate;
-
-               /* extract just for exact positioning (without save to wav file) */
-               if(gap_debug) printf("extract just for exact positioning (without save to wav file)\n");
-               p_extract_audio(gpp, gvahand, l_samples_to_read,  FALSE);
-            }
-            else
-            {
-              /* audio pos 1 frame before video pos
-                * example: extract frame 1 upto 2
-                * results in audio range 0 upto 2
-                * this way we can get the audioduration of frame 1 
-                */
-               GVA_seek_audio(gvahand, l_pos -1, l_pos_unit);
-            }
-          }
-
-          if (gpp->val.run_mode != GIMP_RUN_NONINTERACTIVE)
-          {
-             gimp_progress_init (_("Extracting Audio..."));
-          }
-
-          l_extracted_frames = framenumber - framenumber1;
-          if(l_extracted_frames > 1)
-          {
-            l_samples_to_read = (gdouble)(l_extracted_frames +1.0)
-	                      / (gdouble)gvahand->framerate 
-			      * (gdouble)gvahand->samplerate;
-            if(gap_debug) printf("A: l_samples_to_read %.0f l_extracted_frames:%d\n"
-	                         , (float)l_samples_to_read
-				 ,(int)l_extracted_frames
-				 );
-          }
-          else
-          {
-            l_samples_to_read = (gdouble)(l_expected_frames +1.0) 
-	                      / (gdouble)gvahand->framerate 
-			      * (gdouble)gvahand->samplerate;
-            if(gap_debug) printf("B: l_samples_to_read %.0f l_extracted_frames:%d l_expected_frames:%d\n"
-	                        , (float)l_samples_to_read
-				,(int)l_extracted_frames
-				,(int)l_expected_frames
-				);
-          }
-
-          /* extract and save to wav file */
-          if(gap_debug) printf("extract (with save to wav file)\n");
-          p_extract_audio(gpp, gvahand, l_samples_to_read,  TRUE);
-        }
-        
+       gap_audio_extract_from_videofile(gpp->val.videoname
+             , gpp->val.audiotrack
+             , gpp->val.preferred_decoder
+             , gpp->val.exact_seek
+             , l_pos_unit
+             , l_pos
+             , l_extracted_frames
+             , l_expected_frames
+             , do_progress
+             , NULL         /* GtkWidget *progressBar  using NULL for gimp_progress */
+             , NULL         /* fptr_progress_callback */
+             , NULL         /* user_data */
+             );
      }
   }
+
 
   if((gpp->val.image_ID >= 0)
   && (gpp->val.multilayer == 0)

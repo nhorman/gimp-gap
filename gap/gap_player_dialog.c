@@ -707,7 +707,10 @@ p_audio_filename_changed(GapPlayerMainGlobalParams *gpp)
   u_long samples;			/* The number of samples in this file */
   u_long datastart;			/* The offset to the wav data */
 
-  if (gap_debug) printf("p_audio_filename_changed to:%s:\n", gpp->audio_filename);
+  if (gap_debug)
+  {
+    printf("p_audio_filename_changed to:%s:\n", gpp->audio_filename);
+  }
   p_audio_stop(gpp);
   gpp->audio_status = MIN(gpp->audio_status, GAP_PLAYER_MAIN_AUSTAT_SERVER_STARTED);
 
@@ -741,7 +744,12 @@ p_audio_filename_changed(GapPlayerMainGlobalParams *gpp)
   gpp->audio_samples    = samples;
 
   p_audio_print_labels(gpp);
-  p_audio_init(gpp);  /* tell ausioserver to go standby for this audiofile */
+
+  /* p_audio_init(gpp) must not be called here.
+   *  becuase it calls p_audio_startup_server and  this will recursive call
+   *  p_audio_filename_changed in an endless loop....
+   * For now the audio_init is done later on 1st attempt to start playback.
+   */
 
 #endif
   return;
@@ -844,7 +852,10 @@ p_audio_startup_server(GapPlayerMainGlobalParams *gpp)
   const char *cp;
   gboolean wavplay_server_found;
 
-  if (gap_debug) printf("p_audio_startup_server\n");
+  if (gap_debug)
+  {
+    printf("p_audio_startup_server\n");
+  }
 
   wavplay_server_found = FALSE;
 

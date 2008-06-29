@@ -1154,6 +1154,41 @@ p_gva_worker_get_video_chunk(t_GVA_Handle  *gvahand
 }  /* end p_gva_worker_get_video_chunk */
 
 
+/* ----------------------------
+ * p_gva_worker_get_codec_name
+ * ----------------------------
+ */
+static char *
+p_gva_worker_get_codec_name(t_GVA_Handle  *gvahand
+                            ,t_GVA_CodecType codec_type
+                            ,gint32 track_nr
+                            )
+{
+  char *codec_name;
+
+  codec_name = NULL;
+  if(gvahand)
+  {
+    t_GVA_DecoderElem *dec_elem;
+
+    dec_elem = (t_GVA_DecoderElem *)gvahand->dec_elem;
+
+    if(dec_elem)
+    {
+      if(dec_elem->fptr_get_codec_name == NULL)
+      {
+         printf("p_gva_worker_get_codec_name: Method not implemented in decoder %s\n", dec_elem->decoder_name);
+         return(NULL);
+      }
+      codec_name =  (*dec_elem->fptr_get_codec_name)(gvahand
+                                               , codec_type
+                                               , track_nr
+                                               );
+    }
+  }
+  return(codec_name);
+}  /* end p_gva_worker_get_codec_name */
+
 /* --------------------------
  * p_gva_worker_open_read
  * --------------------------
@@ -1522,6 +1557,42 @@ GVA_has_video_chunk_proc(t_GVA_Handle  *gvahand)
   if(gap_debug) printf("GVA_has_video_chunk_proc: END rc:%d\n", (int)l_rc);
 
   return(l_rc);
+}
+
+
+char *
+GVA_get_codec_name(t_GVA_Handle  *gvahand
+                  ,t_GVA_CodecType codec_type
+                  ,gint32 track_nr
+                  )
+{
+  char *codec_name;
+
+  if(gap_debug)
+  {
+    printf("GVA_get_video_chunk: START handle:%d, codec_type:%d track_nr:%d\n"
+                      , (int)gvahand
+                      , (int)codec_type
+                      , (int)track_nr
+                      );
+  }
+
+  codec_name = p_gva_worker_get_codec_name(gvahand, codec_type, track_nr);
+  //if(gap_debug)
+  {
+    printf("GVA_get_codec_name: END codec_name:");
+    if (codec_name)
+    {
+      printf("%s", codec_name);
+    }
+    else
+    {
+      printf("NULL");
+    }
+    printf("\n");
+  }
+
+  return(codec_name);
 }
 
 /* -------------------------------------------------------------------------

@@ -280,6 +280,11 @@ typedef struct t_GVA_Handle  /* nickname: gvahand */
   gboolean gva_thread_save;
 } t_GVA_Handle;
 
+typedef enum
+{
+  GVA_VIDEO_CODEC
+ ,GVA_AUDIO_CODEC
+} t_GVA_CodecType;
 
 /* Function Typedefs */
 typedef  gboolean       (*t_check_sig_fptr)(char *filename);
@@ -304,6 +309,10 @@ typedef  t_GVA_RetCode     (*t_get_video_chunk_fptr)(t_GVA_Handle *gvahand
                              ,gint32 max_size
                            );
 
+typedef  char *           (*t_get_codec_name_fptr)(t_GVA_Handle *gvahand
+                             ,t_GVA_CodecType codec_type
+                             ,gint32 track_nr
+                           );
 
 
 /* List Element Description for a Decoder */
@@ -325,6 +334,7 @@ typedef struct t_GVA_DecoderElem
   t_count_frames_fptr           fptr_count_frames;
   t_seek_support_fptr           fptr_seek_support;
   t_get_video_chunk_fptr        fptr_get_video_chunk;
+  t_get_codec_name_fptr         fptr_get_codec_name;
 } t_GVA_DecoderElem;
 
 
@@ -430,11 +440,30 @@ t_GVA_RetCode   GVA_get_video_chunk(t_GVA_Handle  *gvahand
                    , unsigned char *chunk
                    , gint32 *size
                    , gint32 max_size);
+
+char *         GVA_get_codec_name(t_GVA_Handle  *gvahand
+                   ,t_GVA_CodecType codec_type
+                   ,gint32 track_nr
+                   );
+
 gint           GVA_util_check_mpg_frame_type(unsigned char *buffer, gint32 buf_size);
 void           GVA_util_fix_mpg_timecode(unsigned char *buffer
                          ,gint32 buf_size
                          ,gdouble master_framerate
                          ,gint32  master_frame_nr
+                         );
+gint32         GVA_util_calculate_mpeg_frameheader_size(unsigned char *buffer
+                         ,gint32 buf_size
+                         );
+gboolean       GVA_util_check_jpg_picture(unsigned char *buffer
+                         ,gint32 buf_size
+                         ,gint32 max_check_size
+                         ,gint32 *hdr_size
+                         );
+gboolean       GVA_util_check_png_picture(unsigned char *buffer
+                         ,gint32 buf_size
+                         ,gint32 max_check_size
+                         ,gint32 *hdr_size
                          );
 
 #endif

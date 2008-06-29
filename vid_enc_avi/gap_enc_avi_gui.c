@@ -54,12 +54,12 @@
 
 #define GAP_ENC_AVI_RESPONSE_RESET 1
 
-
-
 static const char *gtab_avi_codecname[GAP_AVI_VIDCODEC_MAX_ELEMENTS]
-  = { "JPEG"
-    , "RAW "
-    , "XVID"
+  = { GAP_AVI_CODEC_JPEG
+    , GAP_AVI_CODEC_MJPG
+    , GAP_AVI_CODEC_PNG
+    , GAP_AVI_CODEC_RAW
+    , GAP_AVI_CODEC_XVID
     };
 
 
@@ -184,7 +184,7 @@ p_init_widget_values(GapGveAviGlobalParams *gpp)
 
   /* init checkbuttons */
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->jpg_dont_recode_checkbutton)
-                               , epp->dont_recode_frames);
+                               , epp->jpeg_dont_recode_frames);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->jpg_interlace_checkbutton)
                                , epp->jpeg_interlaced);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->jpg_odd_first_checkbutton)
@@ -214,35 +214,58 @@ p_init_widget_values(GapGveAviGlobalParams *gpp)
 static void
 p_set_codec_dependent_wgt_senistive(GapGveAviGlobalParams *gpp, gint32 idx)
 {
+  gboolean png_sensitive;
   gboolean jpeg_sensitive;
   gboolean xvid_sensitive;
+  gboolean raw_sensitive;
+  gint notebook_page_idx;
 
+  png_sensitive = TRUE;
   jpeg_sensitive = TRUE;
   xvid_sensitive = TRUE;
 
   switch(idx)
   {
     case GAP_AVI_VIDCODEC_00_JPEG:
+    case GAP_AVI_VIDCODEC_01_MJPG:
+      notebook_page_idx = GAP_AVI_VIDCODEC_00_JPEG;
+      png_sensitive = FALSE;
       jpeg_sensitive = TRUE;
       xvid_sensitive = FALSE;
+      raw_sensitive = FALSE;
       break;
-    case GAP_AVI_VIDCODEC_01_RAW:
+    case GAP_AVI_VIDCODEC_02_PNG:
+      notebook_page_idx = idx -1;
+      png_sensitive = TRUE;
       jpeg_sensitive = FALSE;
       xvid_sensitive = FALSE;
+      raw_sensitive = FALSE;
       break;
-    case GAP_AVI_VIDCODEC_02_XVID:
+    case GAP_AVI_VIDCODEC_03_RAW:
+      notebook_page_idx = idx -1;
+      png_sensitive = FALSE;
+      jpeg_sensitive = FALSE;
+      xvid_sensitive = FALSE;
+      raw_sensitive = TRUE;
+      break;
+    case GAP_AVI_VIDCODEC_04_XVID:
+      notebook_page_idx = idx -1;
+      png_sensitive = FALSE;
       jpeg_sensitive = FALSE;
       xvid_sensitive = TRUE;
+      raw_sensitive = FALSE;
       break;
     default:
-      idx = GAP_AVI_VIDCODEC_00_JPEG;
+      notebook_page_idx = GAP_AVI_VIDCODEC_00_JPEG;
+      png_sensitive = FALSE;
       jpeg_sensitive = TRUE;
       xvid_sensitive = FALSE;
+      raw_sensitive = FALSE;
       break;
   }
 
   if(gpp->notebook_main)
-    gtk_notebook_set_current_page(GTK_NOTEBOOK(gpp->notebook_main), idx);
+    gtk_notebook_set_current_page(GTK_NOTEBOOK(gpp->notebook_main), notebook_page_idx);
 
   if(gpp->jpg_dont_recode_checkbutton)
     gtk_widget_set_sensitive(gpp->jpg_dont_recode_checkbutton, jpeg_sensitive);
@@ -270,6 +293,16 @@ p_set_codec_dependent_wgt_senistive(GapGveAviGlobalParams *gpp, gint32 idx)
     gtk_widget_set_sensitive(gpp->xvid_max_key_interval_spinbutton,  xvid_sensitive);
   if(gpp->xvid_quality_spinbutton)
     gtk_widget_set_sensitive(gpp->xvid_quality_spinbutton,           xvid_sensitive);
+
+  if(gpp->png_dont_recode_checkbutton)
+    gtk_widget_set_sensitive(gpp->png_dont_recode_checkbutton, png_sensitive);
+  if(gpp->png_interlace_checkbutton)
+    gtk_widget_set_sensitive(gpp->png_interlace_checkbutton,   png_sensitive);
+  if(gpp->png_compression_spinbutton)
+    gtk_widget_set_sensitive(gpp->png_compression_spinbutton,      png_sensitive);
+
+  if(gpp->raw_vflip_checkbutton)
+    gtk_widget_set_sensitive(gpp->raw_vflip_checkbutton, raw_sensitive);
 
 }  /* end p_set_codec_dependent_wgt_senistive  */
 
@@ -390,6 +423,7 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
   GapGveAviValues *epp;
   gint      master_row;
   gint      jpg_row;
+  gint      png_row;
   gint      xvid_row;
   gint      raw_row;
   GtkWidget *shell_window;
@@ -397,18 +431,20 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
   GtkWidget *frame_main;
   GtkWidget *notebook_main;
   GtkWidget *frame_jpg;
+  GtkWidget *frame_png;
   GtkWidget *frame_xvid;
   GtkWidget *frame_raw;
   GtkWidget *label;
   GtkWidget *table_master;
   GtkWidget *table_jpg;
+  GtkWidget *table_png;
   GtkWidget *table_xvid;
   GtkWidget *table_raw;
   GtkWidget *checkbutton;
   GtkWidget *spinbutton;
   GtkObject *adj;
   GtkWidget *combo_codec;
-
+  gint       notebook_page_idx;
 
   epp = &gpp->evl;
 
@@ -455,9 +491,11 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
 
   /* the Video CODEC combo */
   combo_codec = gimp_int_combo_box_new ("JPEG",   GAP_AVI_VIDCODEC_00_JPEG,
-                                        "RAW",    GAP_AVI_VIDCODEC_01_RAW,
+                                        "MJPG",   GAP_AVI_VIDCODEC_01_MJPG,
+                                        "PNG",    GAP_AVI_VIDCODEC_02_PNG,
+                                        "RAW",    GAP_AVI_VIDCODEC_03_RAW,
 #ifdef ENABLE_LIBXVIDCORE
-                                        "XVID",   GAP_AVI_VIDCODEC_02_XVID,
+                                        "XVID",   GAP_AVI_VIDCODEC_04_XVID,
 #endif
                                      NULL);
 
@@ -533,14 +571,16 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
 
   /* the notebook page for JPEG Codec options */
   /* ----------------------------------------- */
-  frame_jpg = gimp_frame_new (_("JPEG Codec Options"));
+  notebook_page_idx = 0;
+  frame_jpg = gimp_frame_new (_("JPEG / MJPG Codec Options"));
   gtk_widget_show (frame_jpg);
   gtk_container_add (GTK_CONTAINER (notebook_main), frame_jpg);
   gtk_container_set_border_width (GTK_CONTAINER (frame_jpg), 4);
 
   label = gtk_label_new (_("JPEG Options"));
   gtk_widget_show (label);
-  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook_main), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook_main), 0), label);
+  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook_main)
+      , gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook_main), notebook_page_idx), label);
 
 
   /* the table for the JPEG option widgets */
@@ -572,14 +612,11 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
                           , (gpointer)gpp);
         g_signal_connect (G_OBJECT (checkbutton), "toggled"
                    , G_CALLBACK (on_checkbutton_toggled)
-                   , &epp->dont_recode_frames);
+                   , &epp->jpeg_dont_recode_frames);
   gimp_help_set_help_data (checkbutton
                    , _("Don't recode the input JPEG frames."
-                       " This option is ignored when input is read from storyboard."
-                       " WARNING: works only if all input frames are JPEG pictures"
-                       " with matching size and YUV 4:2:2 encoding."
-                       " This option may produce an unusable video"
-                       " when other frames are provided as input.")
+                       " WARNING: This option may produce an unusable video"
+                       " when refered JPEG frames are not YUV 4:2:2 encoded.")
                    , NULL);
 
 
@@ -669,10 +706,123 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
                     , _("The quality setting of the encoded JPEG frames (100=best quality)")
                     , NULL);
 
+  /* the notebook page for PNG Codec options */
+  /* ----------------------------------------- */
+  notebook_page_idx++;
+  
+  frame_png = gimp_frame_new (_("PNG Codec Options"));
+  gtk_widget_show (frame_png);
+  gtk_container_add (GTK_CONTAINER (notebook_main), frame_png);
+  gtk_container_set_border_width (GTK_CONTAINER (frame_png), 4);
+
+  label = gtk_label_new (_("PNG Options"));
+  gtk_widget_show (label);
+  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook_main)
+      , gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook_main), notebook_page_idx), label);
+
+
+  /* the table for the JPEG option widgets */
+  table_png = gtk_table_new (4, 3, FALSE);
+  gtk_widget_show (table_png);
+  gtk_container_add (GTK_CONTAINER (frame_png), table_png);
+  gtk_container_set_border_width (GTK_CONTAINER (table_png), 5);
+  gtk_table_set_row_spacings (GTK_TABLE (table_png), 2);
+  gtk_table_set_col_spacings (GTK_TABLE (table_png), 2);
+
+  png_row = 0;
+
+  /* the dont recode label */
+  label = gtk_label_new (_("Dont Recode:"));
+  gtk_widget_show (label);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+  gtk_table_attach (GTK_TABLE (table_png), label, 0, 1, png_row, png_row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  /* the dont recode checkbutton */
+  checkbutton = gtk_check_button_new_with_label (" ");
+  gpp->png_dont_recode_checkbutton = checkbutton;
+  gtk_widget_show (checkbutton);
+  gtk_table_attach (GTK_TABLE (table_png), checkbutton, 1, 2, png_row, png_row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+        g_object_set_data (G_OBJECT (checkbutton), "gpp"
+                          , (gpointer)gpp);
+        g_signal_connect (G_OBJECT (checkbutton), "toggled"
+                   , G_CALLBACK (on_checkbutton_toggled)
+                   , &epp->png_dont_recode_frames);
+  gimp_help_set_help_data (checkbutton
+                   , _("Don't recode the input PNG frames when possible."
+                       " WARNING: This option may produce an unusable video")
+                   , NULL);
+
+
+  png_row++;
+
+  /* the interlace label */
+  label = gtk_label_new (_("Interlace:"));
+  gtk_widget_show (label);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+  gtk_table_attach (GTK_TABLE (table_png), label, 0, 1, png_row, png_row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+
+  /* the interlace checkbutton */
+  checkbutton = gtk_check_button_new_with_label (" ");
+  gpp->png_interlace_checkbutton = checkbutton;
+  gtk_widget_show (checkbutton);
+  gtk_table_attach (GTK_TABLE (table_png), checkbutton, 1, 2, png_row, png_row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+        g_object_set_data (G_OBJECT (checkbutton), "gpp"
+                          , (gpointer)gpp);
+        g_signal_connect (G_OBJECT (checkbutton), "toggled"
+                   , G_CALLBACK (on_checkbutton_toggled)
+                   , &epp->png_interlaced);
+  gimp_help_set_help_data (checkbutton
+                   , _("Generate interlaced PNGs")
+                   , NULL);
+
+
+  png_row++;
+
+
+  /* the png compression label */
+  label = gtk_label_new (_("Compression:"));
+  gtk_widget_show (label);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+  gtk_table_attach (GTK_TABLE (table_png), label, 0, 1, png_row, png_row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  /* the jpeg quality spinbutton */
+  adj = gtk_adjustment_new (epp->png_compression
+                           , 0, 9
+                           , 1, 10, 10);
+  gpp->png_compression_spinbutton_adj = adj;
+  spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
+  gpp->png_compression_spinbutton = spinbutton;
+  gtk_widget_show (spinbutton);
+  gtk_table_attach (GTK_TABLE (table_png), spinbutton, 1, 2, png_row, png_row+1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+        g_object_set_data (G_OBJECT (checkbutton), "gpp"
+                          , (gpointer)gpp);
+        g_signal_connect (G_OBJECT (adj), "value_changed"
+                         , G_CALLBACK (on_gint32_spinbutton_changed)
+                         , &epp->jpeg_quality);
+  gimp_help_set_help_data (spinbutton
+                    , _("The compression setting of the encoded PNG frames (9=best compression"
+                        "0=fastest)")
+                    , NULL);
+
 
 
   /* the notebook page for RAW Codec options */
   /* ----------------------------------------- */
+  notebook_page_idx++;
+  
   frame_raw = gimp_frame_new (_("RAW Codec Options"));
   gtk_widget_show (frame_raw);
   gtk_container_add (GTK_CONTAINER (notebook_main), frame_raw);
@@ -680,7 +830,8 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
 
   label = gtk_label_new (_("RAW Options"));
   gtk_widget_show (label);
-  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook_main), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook_main), 1), label);
+  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook_main)
+      , gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook_main), notebook_page_idx), label);
 
   /* the table for the RAW option widgets */
   table_raw = gtk_table_new (1, 3, FALSE);
@@ -737,6 +888,7 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
 
   /* the notebook page for XVID Codec options */
   /* ----------------------------------------- */
+  notebook_page_idx++;
   frame_xvid = gimp_frame_new (_("XVID Codec Options"));
   gtk_widget_show (frame_xvid);
   gtk_container_add (GTK_CONTAINER (notebook_main), frame_xvid);
@@ -744,7 +896,8 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
 
   label = gtk_label_new (_("XVID Options"));
   gtk_widget_show (label);
-  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook_main), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook_main), 2), label);
+  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook_main)
+       , gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook_main), notebook_page_idx), label);
 
 
   /* the table for the XVID option widgets */

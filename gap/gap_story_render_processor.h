@@ -65,8 +65,21 @@
 #define GAP_VID_ENC_SAVE_FLAT         "GAP_VID_ENC_SAVE_FLAT"
 #define GAP_VID_ENC_MONITOR           "GAP_VID_ENC_MONITOR"
 
+#define GAP_VID_CHCHK_FLAG_SIZE               1
+#define GAP_VID_CHCHK_FLAG_MPEG_INTEGRITY     2
+#define GAP_VID_CHCHK_FLAG_JPG                4
+#define GAP_VID_CHCHK_FLAG_VCODEC_NAME        8
+#define GAP_VID_CHCHK_FLAG_FULL_FRAME        16
+#define GAP_VID_CHCHK_FLAG_PNG               32
 
-
+/* codec name list element
+ */
+typedef struct GapCodecNameElem {
+  guchar *codec_name;
+  gint32 video_id;
+  
+  void  *next;
+}  GapCodecNameElem;
 
 /* --------------------------*/
 /* PROCEDURE DECLARATIONS    */
@@ -104,13 +117,17 @@ gboolean gap_story_render_fetch_composite_image_or_chunk(GapStoryRenderVidHandle
 
                     , gint32 *image_id        /* output: Id of the only layer in the composite image */
                     , gboolean dont_recode_flag                /* IN: TRUE try to fetch comressed chunk if possible */
-                    , char *vcodec_name                        /* IN: video_codec used in the calling encoder program */
+                    , GapCodecNameElem *vcodec_list            /* IN: list of video_codec names that are compatible to the calling encoder program */
                     , gboolean *force_keyframe                 /* OUT: the calling encoder should encode an I-Frame */
-                    , unsigned char *video_frame_chunk_data    /* OUT: */
-                    , gint32 *video_frame_chunk_size           /* OUT: */
-                    , gint32 video_frame_chunk_maxsize         /* IN: */
+                    , unsigned char *video_frame_chunk_data    /* OUT: copy of the already compressed video frame from source video */
+                    , gint32 *video_frame_chunk_size           /* OUT: total size of frame (may include a videoformat specific frameheader) */
+                    , gint32 video_frame_chunk_maxsize         /* IN: sizelimit (larger chunks are not fetched) */
                     , gdouble master_framerate
-                    , gint32  max_master_frame_nr   /* the number of frames that will be encode in total */
+                    , gint32  max_master_frame_nr   /* the number of frames that will be encoded in total */
+                    
+                    
+                    , gint32 *video_frame_chunk_hdr_size       /* OUT: size of videoformat specific frameheader (0 if has no hdr) */
+                    , gint32 check_flags                       /* IN: combination of GAP_VID_CHCHK_FLAG_* flag values */
                  );
 
 GapStoryRenderVidHandle *  gap_story_render_open_vid_handle_from_stb(

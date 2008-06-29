@@ -16,6 +16,7 @@ if GAP_VIDEOAPI_SUPPORT
 LIBGAPVIDUTIL=libgapvidutil
 VID_COMMON=vid_common
 VID_ENC_FFMPEG=vid_enc_ffmpeg
+VID_ENC_RAWFRAMES=vid_enc_rawframes
 VID_ENC_SINGLE=vid_enc_single
 VID_ENC_AVI=vid_enc_avi
 endif
@@ -26,6 +27,7 @@ SUBDIRS = libgapbase extern_libs images $(LIBWAVCLIENT) $(LIBGAPVIDAPI) gap po d
 	$(VID_COMMON)		\
 	$(VID_ENC_AVI) 		\
 	$(VID_ENC_FFMPEG) 	\
+	$(VID_ENC_RAWFRAMES) 	\
 	$(VID_ENC_SINGLE)
 
 EXTRA_DIST = \

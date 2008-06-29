@@ -44,6 +44,7 @@ gap/gap_story_main.c
 gap/gap_story_properties.c
 gap/gap_story_render_audio.c
 gap/gap_story_render_processor.c
+gap/gap_story_render_lossless.c
 gap/gap_story_section_properties.c
 gap/gap_story_vthumb.c
 gap/gap_vex_dialog.c

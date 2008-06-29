@@ -26,6 +26,8 @@ INCLUDES = \
 libgapvidutil_a_SOURCES = \
 	gap_gve_jpeg.c		\
 	gap_gve_jpeg.h		\
+	gap_gve_png.c		\
+	gap_gve_png.h		\
 	gap_gve_misc_util.c	\
 	gap_gve_misc_util.h	\
 	gap_gve_raw.c		\

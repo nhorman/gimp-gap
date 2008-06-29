@@ -237,6 +237,8 @@ gap_player_SOURCES = \
 	gap_player_dialog.h	\
 	gap_player_cache.c	\
 	gap_player_cache.h	\
+	gap_audio_extract.c	\
+	gap_audio_extract.h	\
 	gap_libgapstory.h	\
 	gap_libgimpgap.h	
 
@@ -266,6 +268,8 @@ gap_storyboard_SOURCES = \
 	gap_story_properties.h	\
 	gap_story_att_trans_dlg.c \
 	gap_story_att_trans_dlg.h \
+	gap_audio_extract.c	\
+	gap_audio_extract.h	\
 	gap_player_main.h	\
 	gap_player_dialog.c	\
 	gap_player_dialog.h	\
@@ -281,6 +285,8 @@ gap_video_extract_SOURCES = \
 	gap_vex_exec.h		\
 	gap_vex_dialog.c	\
 	gap_vex_dialog.h	\
+	gap_audio_extract.c	\
+	gap_audio_extract.h	\
 	gap_player_main.h	\
 	gap_player_dialog.c	\
 	gap_player_dialog.h	\
@@ -368,6 +374,7 @@ EXTRA_DIST = \
 	TESTPROT_iter_ALT					\
 	gimplastvaldesc.c					\
 	gimplastvaldesc.h					\
+	gap_story_render_lossless.c				\
 	iter_ALT/README_iter_subdirs				\
 	iter_ALT/gen/plug_in_CML_explorer_iter_ALT.inc		\
 	iter_ALT/gen/plug_in_alpha2color_iter_ALT.inc		\

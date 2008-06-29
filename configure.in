@@ -802,6 +802,7 @@ libgapvidutil/Makefile
 vid_common/Makefile
 vid_enc_avi/Makefile
 vid_enc_ffmpeg/Makefile
+vid_enc_rawframes/Makefile
 vid_enc_single/Makefile
 po/Makefile.in
 docs/Makefile

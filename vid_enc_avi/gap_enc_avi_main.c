@@ -43,13 +43,6 @@
 #include <libgimp/gimpui.h>
 
 
-/* names of the supported AVI Codecs */
-#define GAP_AVI_CODEC_RAW  "RAW "   /* refers to 4 byte code "RGB " */
-#define GAP_AVI_CODEC_RGB  "RGB "
-#define GAP_AVI_CODEC_JPEG "JPEG"
-/* ??? not sure what to use for the correct 4cc codec names for xvid divx MPEG 4 */
-#define GAP_AVI_CODEC_XVID "XVID"
-#define GAP_AVI_CODEC_DIVX "div5"
 
 
 
@@ -157,8 +150,8 @@ query ()
     {GIMP_PDB_INT32, "run_mode", "interactive, non-interactive"},
     {GIMP_PDB_STRING, "key_stdpar", "key to get standard video encoder params via gimp_get_data"},
     {GIMP_PDB_STRING, "codec_name", "identifier of the codec. one of the strings \"JPEG\", \"RGB\", \"DIVX\" "},
-    {GIMP_PDB_INT32, "dont_recode_frames", "=1: store the frames _directly_ into the AVI. "
-                                 "(works only for codec_name JPEG and input frames must be 4:2:2 JPEG !)"},
+    {GIMP_PDB_INT32, "jpeg_dont_recode_frames", "=1: store the frames _directly_ into the AVI where possible. "
+                                 "(works only for codec_name MJPG or JPEG and input frames must be 4:2:2 JPEG !)"},
     {GIMP_PDB_INT32, "jpeg_interlaced", "=1: store two JPEG frames, for the odd/even lines"},
     {GIMP_PDB_INT32, "jpeg_quality", "the quality of the coded jpegs (0 - 100%)"},
     {GIMP_PDB_INT32, "jpeg_odd_even", "if jpeg_interlaced: odd frames first ?"},
@@ -178,7 +171,12 @@ query ()
     {GIMP_PDB_INT32, "APP0_marker", "=1: write APP0 marker for each frame into the AVI. "
                                  "( The APP0 marker is evaluated by some Windows programs for AVIs)"},
 
-    {GIMP_PDB_INT32, "raw_vflip", "=1: flip vertically (only for codec_name RAW and RGB )"}
+    {GIMP_PDB_INT32, "raw_vflip", "=1: flip vertically (only for codec_name RAW and RGB )"},
+
+    {GIMP_PDB_INT32, "png_dont_recode_frames", "=1: store the frames _directly_ into the AVI where possible. "
+                                 "(works only for codec_name PNG )"},
+    {GIMP_PDB_INT32, "png_interlaced", "=1: interlaced png frames, 0= no interlace"},
+    {GIMP_PDB_INT32, "png_compression", "the compression of the coded pngs (0 - 9) where 9 is best and 0 is fast "}
   };
   static int nargs_avi_enc_par = sizeof(args_avi_enc_par) / sizeof(args_avi_enc_par[0]);
 
@@ -205,7 +203,7 @@ query ()
 
   gimp_install_procedure(GAP_PLUGIN_NAME_AVI_ENCODE,
                          _("avi video encoding for anim frames. Menu: @AVI@"),
-                         _("This plugin does fake video encoding of animframes."
+                         _("This plugin handles video encoding for the AVI videoformat."
                          " the (optional) audiodata must be a raw datafile(s) or .wav (RIFF WAVEfmt ) file(s)"
                          " .wav files can be mono (1) or stereo (2channels) audiodata must be 16bit uncompressed."
                          " IMPORTANT:  you should first call "
@@ -367,7 +365,7 @@ run (const gchar *name,          /* name of plugin */
              g_snprintf(epp->codec_name, sizeof(epp->codec_name), "%s", param[2+1].data.d_string);
            }
            l_ii = 2+2;
-           epp->dont_recode_frames = param[l_ii++].data.d_int32;
+           epp->jpeg_dont_recode_frames = param[l_ii++].data.d_int32;
            epp->jpeg_interlaced    = param[l_ii++].data.d_int32;
            epp->jpeg_quality       = param[l_ii++].data.d_int32;
            epp->jpeg_odd_even      = param[l_ii++].data.d_int32;
@@ -386,6 +384,10 @@ run (const gchar *name,          /* name of plugin */
            epp->APP0_marker                    = param[l_ii++].data.d_int32;
 
            epp->raw_vflip                      = param[l_ii++].data.d_int32;
+
+           epp->png_dont_recode_frames = param[l_ii++].data.d_int32;
+           epp->png_interlaced    = param[l_ii++].data.d_int32;
+           epp->png_compression   = param[l_ii++].data.d_int32;
 
         }
       }
@@ -541,8 +543,8 @@ gap_enc_avi_main_init_default_params(GapGveAviValues *epp)
 {
   if(gap_debug) printf("gap_enc_avi_main_init_default_params\n");
 
-  g_snprintf(epp->codec_name, sizeof(epp->codec_name), GAP_AVI_CODEC_JPEG);
-  epp->dont_recode_frames = 0;
+  g_snprintf(epp->codec_name, sizeof(epp->codec_name), GAP_AVI_CODEC_MJPG);
+  epp->jpeg_dont_recode_frames = 0;
   epp->jpeg_interlaced    = 0;
   epp->jpeg_quality       = 84;
   epp->jpeg_odd_even      = 0;
@@ -564,6 +566,20 @@ gap_enc_avi_main_init_default_params(GapGveAviValues *epp)
 
   epp->raw_vflip    = 1;
 }  /* end gap_enc_avi_main_init_default_params */
+
+
+gint32
+p_dimSizeOfRawFrame(GapGveAviGlobalParams *gpp)
+{
+  gint32 sizeOfRawFrame;
+
+  /* size of uncompressed RGBA frame + safety of 1000 bytes should be
+   * more than enough
+   */
+  sizeOfRawFrame = 1000 + (gpp->val.vid_width * gpp->val.vid_height * 4);
+  
+  return (sizeOfRawFrame);
+}  /* end p_dimSizeOfRawFrame */
 
 
 /* ============================================================================
@@ -603,6 +619,13 @@ p_avi_encode(GapGveAviGlobalParams *gpp)
   long  l_samples = 0;
 
   guchar *buffer; /* Holding misc. file contents */
+  unsigned char *l_video_chunk_ptr;
+  gint32         l_maxSizeOfRawFrame;
+  gint32         l_max_master_frame_nr;
+  gint32         l_cnt_encoded_frames;
+  gint32         l_cnt_reused_frames;
+  gint32         l_check_flags;
+  gint32         l_out_frame_nr;
 
   gint32 wavsize = 0; /* Data size of the wav file */
   long audio_margin = 8192; /* The audio chunk size */
@@ -611,6 +634,9 @@ p_avi_encode(GapGveAviGlobalParams *gpp)
   long frames_per_second_x100 = 2500;
   gdouble frames_per_second_x100f = 2500;
   char databuffer[300000]; /* For transferring audio data */
+  gint32   l_video_frame_chunk_size;
+  gint32   l_video_frame_chunk_hdr_size;
+  gboolean l_dont_recode_frames;
 
 #ifdef ENABLE_LIBXVIDCORE
   GapGveXvidControl      *xvid_control = NULL;
@@ -638,8 +664,19 @@ p_avi_encode(GapGveAviGlobalParams *gpp)
      printf("  codec_name:%s:\n", epp->codec_name);
   }
 
+  l_maxSizeOfRawFrame = p_dimSizeOfRawFrame(gpp);
+  l_video_chunk_ptr = g_malloc0(l_maxSizeOfRawFrame);
+
+  l_out_frame_nr = 0;
   l_rc = 0;
   l_layer_id = -1;
+  l_cnt_encoded_frames = 0;
+  l_cnt_reused_frames = 0;
+  l_tmp_image_id = -1;
+  l_check_flags = GAP_VID_CHCHK_FLAG_SIZE;
+  l_video_frame_chunk_size = 0;
+  l_video_frame_chunk_hdr_size = 0;
+  l_dont_recode_frames = FALSE;
 
   /* make list of frameranges */
   { gint32 l_total_framecount;
@@ -747,6 +784,8 @@ p_avi_encode(GapGveAviGlobalParams *gpp)
 #ifdef ENABLE_LIBXVIDCORE
   if ((strcmp(epp->codec_name, GAP_AVI_CODEC_RGB) != 0)
   && (strcmp(epp->codec_name, GAP_AVI_CODEC_RAW) != 0)
+  && (strcmp(epp->codec_name, GAP_AVI_CODEC_PNG) != 0)
+  && (strcmp(epp->codec_name, GAP_AVI_CODEC_MJPG) != 0)
   && (strcmp(epp->codec_name, GAP_AVI_CODEC_JPEG) != 0))
   {
     if(gap_debug) printf("INIT Encoder Instance (HANDLE) for XVID (OpenDivX)\n");
@@ -780,124 +819,109 @@ p_avi_encode(GapGveAviGlobalParams *gpp)
   }
   l_begin = gpp->val.range_from;
   l_end   = gpp->val.range_to;
+  l_max_master_frame_nr = abs(l_end - l_begin) + 1;
 
   l_cur_frame_nr = l_begin;
   while(l_rc >= 0)
   {
     if(l_cur_frame_nr == l_begin) /* setup things first if this is the first frame */
     {
-      /* (light) check if dont_recode_frames is possible */
-      if (epp->dont_recode_frames)
+      /* jpeg/mjpeg codec specific check flags setup */
+      if (epp->jpeg_dont_recode_frames)
       {
-        /* DONT_RECODE works only if:
-         *  - input is a series of JPEG frames all encoded with YUV 4:2:2
-         *  - framesize is same as videosize
-         *  - codec_name is "JPEG"
-         */
-        if(gpp->val.storyboard_file)
+        if ((strcmp(epp->codec_name, GAP_AVI_CODEC_JPEG) == 0)
+        ||  (strcmp(epp->codec_name, GAP_AVI_CODEC_MJPG) == 0))
         {
-          if(*gpp->val.storyboard_file != '\0')
-          {
-            /* storyboard returns image_id of a composite image. We MUST recode here !
-             */
-            epp->dont_recode_frames = FALSE;
-          }
+           l_check_flags |= (GAP_VID_CHCHK_FLAG_JPG | GAP_VID_CHCHK_FLAG_FULL_FRAME);
+           l_dont_recode_frames = TRUE;
         }
-
-        if (strcmp(epp->codec_name, GAP_AVI_CODEC_JPEG) != 0)
+      }
+      /* png codec specific check flags setup */
+      if (epp->png_dont_recode_frames)
+      {
+        if (strcmp(epp->codec_name, GAP_AVI_CODEC_PNG) == 0)
         {
-           /* must recode the frame other codecs than JPEG */
-           epp->dont_recode_frames = FALSE;
+           l_check_flags |= (GAP_VID_CHCHK_FLAG_PNG | GAP_VID_CHCHK_FLAG_FULL_FRAME);
+           l_dont_recode_frames = TRUE;
         }
-
-        if ((strcmp(gpp->ainfo.extension, ".jpg")  != 0)
-        &&  (strcmp(gpp->ainfo.extension, ".jpeg") != 0)
-        &&  (strcmp(gpp->ainfo.extension, ".JPG")  != 0)
-        &&  (strcmp(gpp->ainfo.extension, ".JPEG") != 0))
-        {
-             /* we MUST recode if frame is no JPG,
-              * (if image does not fit in size or is not JPG or is not YUV 4:2:2
-              *  there wold be the need of recoding too
-              *  but this code does just a 'light' check for extensions)
-              */
-              epp->dont_recode_frames = FALSE;
-        }
-
+      }
+      
+      //if(gap_debug)
+      {
+        printf("l_dont_recode_frames:%d\n", l_dont_recode_frames);
       }
     }     /* end setup of 1.st frame (l_cur_frame_nr == l_begin) */
 
 
-    /* must fetch the frame into gimp_image if we have to recode */
-    if (!epp->dont_recode_frames)
+    /* calling the frame fetcher */
     {
-      /* load the current frame image, and transform (flatten, convert to RGB, scale, macro, etc..) */
-      l_tmp_image_id = gap_gve_story_fetch_composite_image(l_vidhand
-                                             , l_cur_frame_nr
-                                             , (gint32)  gpp->val.vid_width
-                                             , (gint32)  gpp->val.vid_height
-                                             , gpp->val.filtermacro_file
-                                             , &l_layer_id           /* output */
-                                             );
-      if(l_tmp_image_id < 0)
+      gboolean l_fetch_ok;
+      gboolean l_force_keyframe;
+    
+      l_out_frame_nr++;
+
+
+      l_fetch_ok = gap_story_render_fetch_composite_image_or_chunk(l_vidhand
+                                           , l_cur_frame_nr
+                                           , (gint32)  gpp->val.vid_width
+                                           , (gint32)  gpp->val.vid_height
+                                           , gpp->val.filtermacro_file
+                                           , &l_layer_id           /* output */
+                                           , &l_tmp_image_id       /* output */
+                                           , l_dont_recode_frames                  /* dont_recode_flag */
+                                           , NULL                  /* GapCodecNameElem *vcodec_list NULL == no checks */
+                                           , &l_force_keyframe
+                                           , l_video_chunk_ptr
+                                           , &l_video_frame_chunk_size  /* actual chunk size (incl. header) */
+                                           , l_maxSizeOfRawFrame        /* IN max size */
+					   , gpp->val.framerate
+					   , l_max_master_frame_nr
+                                           , &l_video_frame_chunk_hdr_size
+                                           , l_check_flags
+                                           );
+      if(l_fetch_ok != TRUE)
       {
          l_rc = -1;
       }
     }
-
+    
+    
     /* this block is done foreach handled video frame */
     if(l_rc == 0)
     {
-      /* encode one VIDEO FRAME */
-      if (epp->dont_recode_frames)
+      if (l_video_frame_chunk_size > 0)
       {
-        char *l_frame_filename;
+        /* 1:1 lossless copy one VIDEO FRAME */
+        l_cnt_reused_frames++;
 
-
-        if(gap_debug) printf("DONT_RECODE_FRAMES packing input frame 1:1 into AVI\n");
-
-        /* the DONT_RECODE_FRAMES option is fast,
-         * - but works only if input is JPEG with size is same as videosize
-         * - of course there is no support for filtermacros and storyboard stuff
-         *   because the processing of gap_gve_story_fetch_composite_image is passed by in that case!
-         */
-        /* build the frame name */
-        /* Use the gap functions to generate the frame filename */
-        l_frame_filename = gap_lib_alloc_fname(gpp->ainfo.basename,
-                                        l_cur_frame_nr,
-                                        gpp->ainfo.extension);
-        /* can't find the frame ? */
-        if(l_frame_filename == NULL)
+        //if (gap_debug)
         {
-          l_rc = -1;
+          printf("DEBUG: 1:1 copy of frame %d (fetch as chunk OK) chunk_ptr:%d  chunk_size:%d chunk_hdr_size:%d\n"
+              , (int)l_cur_frame_nr
+              , (int)l_video_chunk_ptr
+              , (int)l_video_frame_chunk_size
+              , (int)l_video_frame_chunk_hdr_size
+              );
         }
-        else
-        {
-          l_FRAME_size = gap_file_get_filesize(l_frame_filename);
-          buffer = gap_file_load_file(l_frame_filename);
-          if (buffer == NULL)
-          {
-             printf("gap_avi: Failed opening encoded input frame %s.",
-                                       l_frame_filename);
-             l_rc = -1;
-          }
-          else
-          {
-            if (gap_debug) printf("gap_avi: Writing frame nr. %ld, size %d\n", l_cur_frame_nr, l_FRAME_size);
+        l_FRAME_size = l_video_frame_chunk_size - l_video_frame_chunk_hdr_size;
+        buffer = l_video_chunk_ptr + l_video_frame_chunk_hdr_size;
 
-            AVI_write_frame(l_avifile, buffer, l_FRAME_size, TRUE /* all frames are keyframe for JPEG codec */);
-          }
-        }
-        if(l_frame_filename)
-        {
-          g_free(l_frame_filename);
-        }
+        AVI_write_frame(l_avifile, buffer, l_FRAME_size, TRUE /* all frames are keyframe for JPEG codec */);
+
       }
       else
       {
+        /* encode one VIDEO FRAME */
         gint32 l_nn;
         int    l_keyframe;
         guchar *l_app0_buffer;
         gint32  l_app0_len;
+
+        l_cnt_encoded_frames++;
+        //if (gap_debug)
+        {
+	  printf("DEBUG: saving recoded frame %d (fetch as chunk FAILED)\n", (int)l_cur_frame_nr);
+        }
 
         l_keyframe = TRUE;  /* TRUE: keyframe is independent image (I frame or uncompressed)
                              * FALSE: for dependent frames (P and B frames)
@@ -925,11 +949,19 @@ p_avi_encode(GapGveAviGlobalParams *gpp)
           }
         }
 
-        if (strcmp(epp->codec_name, GAP_AVI_CODEC_JPEG) == 0)
+        if ((strcmp(epp->codec_name, GAP_AVI_CODEC_JPEG) == 0)
+        || (strcmp(epp->codec_name, GAP_AVI_CODEC_MJPG) == 0))
         {
           /* Compress the picture into a JPEG */
           buffer = gap_gve_jpeg_drawable_encode_jpeg(l_drawable, epp->jpeg_interlaced,
                                         &l_FRAME_size, epp->jpeg_quality, epp->jpeg_odd_even, FALSE, l_app0_buffer, l_app0_len);
+        }
+        else if ((strcmp(epp->codec_name, GAP_AVI_CODEC_JPEG) == 0)
+        || (strcmp(epp->codec_name, GAP_AVI_CODEC_MJPG) == 0))
+        {
+          /* Compress the picture into a PNG */
+          buffer = gap_gve_png_drawable_encode_png(l_drawable, epp->png_interlaced,
+                                        &l_FRAME_size, epp->png_compression, l_app0_buffer, l_app0_len);
         }
         else
         {
@@ -949,6 +981,10 @@ p_avi_encode(GapGveAviGlobalParams *gpp)
 	      l_vflip = TRUE;
 	    }
             buffer = gap_gve_raw_BGR_drawable_encode(l_drawable, &l_FRAME_size, l_vflip, l_app0_buffer, l_app0_len);
+          }
+          else if (strcmp(epp->codec_name, GAP_AVI_CODEC_PNG) == 0)
+          {
+            printf("PNG codec not implemented yet.\n");
           }
 #ifdef ENABLE_LIBXVIDCORE
           else
@@ -1068,5 +1104,11 @@ p_avi_encode(GapGveAviGlobalParams *gpp)
     gap_gve_story_close_vid_handle(l_vidhand);
   }
 
+  /* statistics */
+  printf("encoded       frames: %d\n", (int)l_cnt_encoded_frames);
+  printf("1:1 copied    frames: %d\n", (int)l_cnt_reused_frames);
+  printf("total handled frames: %d\n", (int)l_cnt_encoded_frames + l_cnt_reused_frames);
+
+  g_free(l_video_chunk_ptr);
   return l_rc;
 }    /* end p_avi_encode */

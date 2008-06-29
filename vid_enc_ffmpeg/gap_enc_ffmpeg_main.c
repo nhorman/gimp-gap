@@ -2935,17 +2935,142 @@ p_ffmpeg_close(t_ffmpeg_handle *ffh)
 
 }  /* end p_ffmpeg_close */
 
+/* ---------------------------
+ * p_add_vcodec_name
+ * ---------------------------
+ * add the specified name to as 1st element to the specified codec_list
+ * optional followed by all compatible video codecs that can be used for lossless video cut feature.
+ */
+static void
+p_add_vcodec_name(GapCodecNameElem **codec_list, const char *name)
+{
+  if(name)
+  {
+    GapCodecNameElem *codec_elem;
 
-/* ============================================================================
+    codec_elem = g_malloc0(sizeof(GapCodecNameElem));
+    if (codec_elem)
+    {
+      codec_elem->codec_name = g_strdup(name);
+      codec_elem->next = *codec_list;
+      *codec_list = codec_elem;
+    }
+  }
+}  /* end p_add_vcodec_name */
+
+
+/* ---------------------------
+ * p_setup_check_flags
+ * ---------------------------
+ * Set up check_flags (conditions for lossless video cut)
+ * and return a list of codec_names that shall be compatible to the
+ * selected codec (epp->vcodec_name) for encoding.
+ * NOTE:
+ *  the compatibility list is in experimental state,
+ *  (it is not based on format specifications)
+ *
+ */
+static   GapCodecNameElem *
+p_setup_check_flags(GapGveFFMpegValues *epp
+   , gint32 *check_flags  /* OUT */
+   )
+{
+  gint32 l_check_flags;
+  GapCodecNameElem *compatible_vcodec_list;
+
+
+  l_check_flags = GAP_VID_CHCHK_FLAG_SIZE;
+
+  compatible_vcodec_list = NULL;
+
+  if(strcmp(epp->vcodec_name, "mjpeg") == 0)
+  {
+    l_check_flags |= (GAP_VID_CHCHK_FLAG_JPG | GAP_VID_CHCHK_FLAG_FULL_FRAME);
+    p_add_vcodec_name(&compatible_vcodec_list, "JPEG");
+  }
+  else if(strcmp(epp->vcodec_name, "png") == 0)
+  {
+    l_check_flags |= (GAP_VID_CHCHK_FLAG_JPG | GAP_VID_CHCHK_FLAG_FULL_FRAME);
+    p_add_vcodec_name(&compatible_vcodec_list, "PNG");
+    p_add_vcodec_name(&compatible_vcodec_list, "PNG ");
+  }
+  else if(strcmp(epp->vcodec_name, "mpeg1video") == 0)
+  {
+    l_check_flags |= (GAP_VID_CHCHK_FLAG_MPEG_INTEGRITY | GAP_VID_CHCHK_FLAG_VCODEC_NAME);
+    p_add_vcodec_name(&compatible_vcodec_list, "mjpeg");
+  }
+  else if(strcmp(epp->vcodec_name, "mpeg2video") == 0)
+  {
+    l_check_flags |= (GAP_VID_CHCHK_FLAG_MPEG_INTEGRITY | GAP_VID_CHCHK_FLAG_VCODEC_NAME);
+    p_add_vcodec_name(&compatible_vcodec_list, "mpeg1video");
+    p_add_vcodec_name(&compatible_vcodec_list, "mpegvideo");
+    p_add_vcodec_name(&compatible_vcodec_list, "mjpeg");
+    p_add_vcodec_name(&compatible_vcodec_list, "JPEG");
+  }
+  else if(strcmp(epp->vcodec_name, "mpeg4") == 0)
+  {
+    l_check_flags |= (GAP_VID_CHCHK_FLAG_MPEG_INTEGRITY | GAP_VID_CHCHK_FLAG_VCODEC_NAME);
+    p_add_vcodec_name(&compatible_vcodec_list, "mpeg1video");
+    p_add_vcodec_name(&compatible_vcodec_list, "mpeg2video");
+    p_add_vcodec_name(&compatible_vcodec_list, "mpegvideo");
+    p_add_vcodec_name(&compatible_vcodec_list, "mjpeg");
+    p_add_vcodec_name(&compatible_vcodec_list, "JPEG");
+  }
+  else if(strcmp(epp->vcodec_name, "msmpeg4") == 0)
+  {
+    l_check_flags |= (GAP_VID_CHCHK_FLAG_MPEG_INTEGRITY | GAP_VID_CHCHK_FLAG_VCODEC_NAME);
+    p_add_vcodec_name(&compatible_vcodec_list, "mpeg1video");
+    p_add_vcodec_name(&compatible_vcodec_list, "mpeg2video");
+    p_add_vcodec_name(&compatible_vcodec_list, "mpegvideo");
+    p_add_vcodec_name(&compatible_vcodec_list, "mjpeg");
+    p_add_vcodec_name(&compatible_vcodec_list, "JPEG");
+  }
+  else if(strcmp(epp->vcodec_name, "msmpeg4v1") == 0)
+  {
+    l_check_flags |= (GAP_VID_CHCHK_FLAG_MPEG_INTEGRITY | GAP_VID_CHCHK_FLAG_VCODEC_NAME);
+    p_add_vcodec_name(&compatible_vcodec_list, "mpeg1video");
+    p_add_vcodec_name(&compatible_vcodec_list, "mpeg2video");
+    p_add_vcodec_name(&compatible_vcodec_list, "mpegvideo");
+    p_add_vcodec_name(&compatible_vcodec_list, "msmpeg4");
+    p_add_vcodec_name(&compatible_vcodec_list, "mjpeg");
+    p_add_vcodec_name(&compatible_vcodec_list, "JPEG");
+  }
+  else if(strcmp(epp->vcodec_name, "msmpeg4v2") == 0)
+  {
+    l_check_flags |= (GAP_VID_CHCHK_FLAG_MPEG_INTEGRITY | GAP_VID_CHCHK_FLAG_VCODEC_NAME);
+    p_add_vcodec_name(&compatible_vcodec_list, "mpeg1video");
+    p_add_vcodec_name(&compatible_vcodec_list, "mpeg2video");
+    p_add_vcodec_name(&compatible_vcodec_list, "mpegvideo");
+    p_add_vcodec_name(&compatible_vcodec_list, "msmpeg4");
+    p_add_vcodec_name(&compatible_vcodec_list, "msmpeg4v1");
+    p_add_vcodec_name(&compatible_vcodec_list, "mjpeg");
+    p_add_vcodec_name(&compatible_vcodec_list, "JPEG");
+  }
+  else
+  {
+    l_check_flags |= (GAP_VID_CHCHK_FLAG_VCODEC_NAME);
+  }
+
+
+  *check_flags = l_check_flags;
+  p_add_vcodec_name(&compatible_vcodec_list, epp->vcodec_name);
+
+
+  return (compatible_vcodec_list);
+}  /* end p_setup_check_flags */
+
+
+
+/* ---------------------------
  * p_ffmpeg_encode
+ * ---------------------------
  *    The main "productive" routine
  *    ffmpeg encoding of anim frames, based on ffmpeg lib (by Fabrice Bellard)
  *    Audio encoding is Optional.
  *    (wav_audiofile must be provided in that case)
  *
- * returns   value >= 0 if all went ok
+ * returns   value >= 0 if ok
  *           (or -1 on error)
- * ============================================================================
  */
 static gint
 p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
@@ -2964,9 +3089,10 @@ p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
   gint32        l_cnt_encoded_frames;
   gint32        l_cnt_reused_frames;
   gint          l_video_tracks = 0;
-
+  gint32        l_check_flags;
   t_awk_array   l_awk_arr;
   t_awk_array   *awp;
+  GapCodecNameElem    *l_vcodec_list;
 
 
   epp = &gpp->evl;
@@ -2974,6 +3100,9 @@ p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
   l_cnt_encoded_frames = 0;
   l_cnt_reused_frames = 0;
   p_init_audio_workdata(awp);
+  
+  l_check_flags = GAP_VID_CHCHK_FLAG_SIZE;
+  l_vcodec_list = p_setup_check_flags(epp, &l_check_flags);
 
   //if(gap_debug)
   {
@@ -3072,16 +3201,17 @@ p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
     gboolean l_fetch_ok;
     gboolean l_force_keyframe;
     gint32   l_video_frame_chunk_size;
+    gint32   l_video_frame_chunk_hdr_size;
 
     /* must fetch the frame into gimp_image  */
     /* load the current frame image, and transform (flatten, convert to RGB, scale, macro, etc..) */
 
     if(gap_debug)
     {
-      printf("\nFFenc: before gap_gve_story_fetch_composite_image_or_chunk\n");
+      printf("\nFFenc: before gap_story_render_fetch_composite_image_or_chunk\n");
     }
 
-    l_fetch_ok = gap_gve_story_fetch_composite_image_or_chunk(l_vidhand
+    l_fetch_ok = gap_story_render_fetch_composite_image_or_chunk(l_vidhand
                                            , l_cur_frame_nr
                                            , (gint32)  gpp->val.vid_width
                                            , (gint32)  gpp->val.vid_height
@@ -3089,18 +3219,20 @@ p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
                                            , &l_layer_id           /* output */
                                            , &l_tmp_image_id       /* output */
                                            , epp->dont_recode_flag
-                                           , epp->vcodec_name
+                                           , l_vcodec_list           /* list of compatible vcodec_names */
                                            , &l_force_keyframe
                                            , ffh->vst[0].video_buffer
                                            , &l_video_frame_chunk_size
                                            , ffh->vst[0].video_buffer_size    /* IN max size */
 					   , gpp->val.framerate
 					   , l_max_master_frame_nr
+                                           , &l_video_frame_chunk_hdr_size
+                                           , l_check_flags
                                            );
 
     //if(gap_debug)
     {
-      printf("\nFFenc: after gap_gve_story_fetch_composite_image_or_chunk image_id:%d layer_id:%d\n"
+      printf("\nFFenc: after gap_story_render_fetch_composite_image_or_chunk image_id:%d layer_id:%d\n"
         , (int)l_tmp_image_id 
         , (int) l_layer_id
         );

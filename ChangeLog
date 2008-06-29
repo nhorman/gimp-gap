@@ -1,3 +1,127 @@
+2008-06-29 Wolfgang Hofer <hof@gimp.org>
+   Merged in current locale development.
+
+   (2008-06-24 Wolfgang Hofer <hof@gimp.org>
+
+    - moved audio extract feature from gap_vex_exec.c to a new module 
+   gap_audio_extract.c [.h]
+   (this is the 1st refactoring step, required for a planed feature of the
+   player that shall provide original auditrack when playback refers to a videofile.
+
+  
+ 
+   (2008-06-22 Wolfgang Hofer <hof@gimp.org>)
+   - experimental AVI encoder support for png codec.
+
+   allows packing png frames into an AVI video fileformat.
+   (the dont_recode_flag can be used to significantly speed up operation
+    if the refered source frames are already PNGs in correct size)
+   
+   The PNG codec is based on the gimp-file-save-png plug-in.
+   and offers video encoding without loss of quality.
+   (such as RAW codec does, but PNG has lossless compression
+   and can be used to reduce storage resources where lossless
+   frames are required)
+
+   oops, PNG codec is not supported in mplayer when playback AVI
+   therefore the PNG encoded videofiles do not make sense today..
+   (the ffmpeg "png" codec name is only for access single frames
+   but cant be used when PNG frames are stored in the AVI container
+    (mplayer:
+     VIDEO:  [PNG ]  640x480  24bpp  1.000 fps  3620.9 kbps (442.0 kbyte/s)
+     Clip info:
+      Software: gimp-gap-2.5.0
+     ==========================================================================
+     Cannot find codec matching selected -vo and video format 0x20474E50.
+     Read DOCS/HTML/en/codecs.html!
+     ==========================================================================
+
+   TODO: disable the PNG encoder until some player supports it.
+
+   
+
+  
+   (2008-06-15 Wolfgang Hofer <hof@gimp.org>
+
+   Storyboard render processor: changed frame fetch procedure to
+   support fetching already compreessed frames from disc
+   and use this new feature in the AVI video encoder.
+   (now it is possible to do lossless encoding via storyboard
+   if no transitions are required. This allows fetching alread compressed
+   JPEG files both from image files and from MPEG I-frames)
+
+   My Olympus SP560UZ Digitalcamera can record AVI videos,
+   where each frame is a MJPG encoded jpeg image. GIMP-GAP now supports
+   lossless cut for such AVI videos.
+
+   Gap video api provides new procedure to query the codec name
+   (GVA_get_codec_name). This is used for lossless cut features
+   when the encoder enables the relevant check_flag
+     GAP_VID_CHCHK_FLAG_VCODEC_NAME 
+   Those checks shall help to avoid corrupt output videos
+   when the user tries to mix differnt video file resources
+   into one resulting output video in lossless mode
+   (e.g. with dont recode flag enabled)
+
+   TODO: check how the changes affected the lossless mpeg encoding
+         features (Those features were once developed based on
+         the libmpeg3 as decoder and libavformat as encoder engine
+         and were still in experimental state before this changes.
+
+
+  (2008-06-07) Wolfgang Hofer <hof@gimp.org> )
+
+  attempt to implemnet raw video chunk fetching support
+  for ffmpeg based video decoder.
+  (new procedure p_wrapper_ffmpeg_get_video_chunk)
+  this implementation builds the base for lossless video cut operations.
+  until now libmpeg3 was the only decoder with video chunk fetching support
+  (but libmpeg3 is old and unmaintained since years)
+  
+  
+
+  New experimental "rawframes" encoder.
+  The rawframes works similar to the single frames encoder
+  and "extracts" singleframes from a storyboard source,
+  The rawframes encoder writes the videoframes 1:1 as single files to disc
+  instead of encoding to one videofile. It is mainly intended for
+  extracting I Frames 1:1 from MPEG or AVI as JPEG files
+  where the decoding and reencoding process is skipped where possible
+  This results in fast and lossless extract of keyframes.
+
+
+  * Makefile.am
+  * configure.in
+  * vid_enc_rawframes                             # NEW dir
+  * vid_enc_rawframes/gap_enc_rawframes_main.c    # NEW file
+  * vid_enc_rawframes/Makefile.am                 # NEW file
+  * po/POTFILES.in
+  
+  * vid_enc_avi/gap_enc_avi_gui.c
+  * vid_enc_avi/gap_enc_avi_main.c [.h]
+  * vid_enc_ffmpeg/gap_enc_ffmpeg_main.c
+
+  * libgapvidutil/Makefile.am
+  * libgapvidutil/gap_gve_png.c[.h]               # NEW FILE
+  * libgapvidapi/gap_vid_api.h
+  * libgapvidapi/gap_vid_api_util.c
+  
+  * libgapvidapi/gap_vid_api.c [.h]
+  * libgapvidapi/gap_vid_api_util.c
+  * libgapvidapi/gap_vid_api_ffmpeg.c
+  * gap/Makefile.am
+  * gap/gap_story_render_processor.c [.h]
+  * gap/gap_story_render_lossless.c               # NEW FILE
+  * gap/gap_audio_extract.c [.h]                  # NEW FILES
+  * gap/gap_vex_exec.c
+
+
+
+2008-06-29 Wolfgang Hofer <hof@gimp.org>
+  - fixed endless loop in the Player on attempt to enter a vaild audiofile name.
+  
+  * gap/gap_player_dialog.c
+
 2008-05-19 Wolfgang Hofer <hof@gimp.org>
 - bugfix: extract JPEG frames from videofile shall not pop up save dialog
         on each handled frame.
