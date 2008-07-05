@@ -1,3 +1,18 @@
+2008-07-05 Wolfgang Hofer <hof@gimp.org>
+
+ - new feature: Player supports extracting audio track when playing clips
+   that refere to a videofile that has one or more audiotrack(s)
+
+ - video extract plugin: made auido extract work again. 
+  (bug caused by recent refactoring 2008-06-29)
+
+  * NEWS
+  * gap/gap_audio_extract.c [h]
+  * gap/gap_player_main.c [.h]
+  * gap/gap_player_dialog.c
+  * gap/gap_vex_exec.c
+  * libgapvidapi/gap_vid_api.h
+
 2008-06-29 Wolfgang Hofer <hof@gimp.org>
    Merged in current locale development.
 

@@ -62,8 +62,8 @@ gap_audio_extract_from_videofile(const char *videoname
    , gint        exact_seek
    , t_GVA_PosUnit  pos_unit
    , gdouble        pos
-   , gint32         extracted_frames
-   , gint32         expected_frames
+   , gdouble        extracted_frames
+   , gdouble        expected_frames
    , gboolean do_progress
    , GtkWidget *progressBar
    , t_GVA_progress_callback_fptr fptr_progress_callback

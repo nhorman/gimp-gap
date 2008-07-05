@@ -211,7 +211,17 @@ static GapPlayerMainGlobalParams global_params =
 , 1                  /* stb_in_track */
 ,-1                  /* stb_parttype */
 ,-1                  /* stb_unique_id */
-,NULL                /* stb_comp_vidhand */
+, NULL               /* stb_comp_vidhand */
+
+, FALSE               /* audio_auto_offset_by_framenr */
+, 1                   /* audio_otone_atrack */
+, NULL                /* GtkWidget *audio_auto_offset_by_framenr_checkbutton */
+, NULL                /* GtkWidget *audio_otone_extract_button */
+, NULL                /* GtkWidget *audio_otone_atrack_spinbutton */
+, NULL                /* GtkObject *audio_otone_atrack_spinbutton_adj */
+, NULL                /* GtkWidget *progress_bar_audio */
+, NULL                /* GtkWidget *audio_enable_checkbutton */
+
 };
 
 

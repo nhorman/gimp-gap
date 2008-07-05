@@ -89,7 +89,7 @@ gap_vex_exe_extract_videorange(GapVexMainGlobalParams *gpp)
 
   if(gap_debug)
   {
-      printf("RUN p_mpg_fetch_range with parameters:\n");
+      printf("RUN gap_vex_exe_extract_videorange with parameters:\n");
       printf("videoname    : %s\n", gpp->val.videoname);
       printf("begin_percent: %f\n", (float)gpp->val.begin_percent);
       printf("end_percent  : %f\n", (float)gpp->val.end_percent);
@@ -162,6 +162,7 @@ gap_vex_exe_extract_videorange(GapVexMainGlobalParams *gpp)
     l_pos_end  = (gpp->val.end_percent / 100.0);
     l_pos      = (gpp->val.begin_percent / 100.0);
     l_expected_frames = gvahand->total_frames * (l_pos_end - l_pos);
+
     framenumber1_delta = framenumber - (gvahand->total_frames * l_pos);
     if(gpp->val.basenum <= 0)
     {
@@ -456,6 +457,7 @@ gap_vex_exe_extract_videorange(GapVexMainGlobalParams *gpp)
        }
 
        gap_audio_extract_from_videofile(gpp->val.videoname
+             , gpp->val.audiofile
              , gpp->val.audiotrack
              , gpp->val.preferred_decoder
              , gpp->val.exact_seek

@@ -243,6 +243,18 @@ typedef struct GapPlayerMainGlobalParams {
   gint32 stb_unique_id;
   GapStoryRenderVidHandle *stb_comp_vidhand;
 
+  /* audio otone extract stuff */
+  gboolean  audio_auto_offset_by_framenr;
+  gint32    audio_otone_atrack;
+
+  GtkWidget *audio_auto_offset_by_framenr_checkbutton;
+  GtkWidget *audio_otone_extract_button;
+  GtkWidget *audio_otone_atrack_spinbutton;
+  GtkObject *audio_otone_atrack_spinbutton_adj;
+
+  GtkWidget *progress_bar_audio;
+  GtkWidget *audio_enable_checkbutton;
+
   
 } GapPlayerMainGlobalParams;
 

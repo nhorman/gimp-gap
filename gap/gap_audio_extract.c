@@ -103,6 +103,37 @@ p_do_progress(gdouble progressValue
 }  /* end p_do_progress */  
 
 
+/* ----------------------------------
+ * p_audio_extract_rewrite_wav_header
+ * ----------------------------------
+ *
+ */
+static void
+p_audio_extract_rewrite_wav_header(FILE *fp_wav
+  ,gint32  samples_written_to_file
+  ,int audio_channels
+  ,int sample_rate
+  ,gint32 bytes_per_sample
+  )
+{
+  if(fp_wav == NULL)
+  {
+    return;
+  }
+  fseek(fp_wav, 0, SEEK_SET);
+
+  /* re-write the header */
+  gap_audio_wav_write_header(fp_wav
+                      , samples_written_to_file
+                      , audio_channels            /* cannels 1 or 2 */
+                      , sample_rate
+                      , bytes_per_sample
+                      , 16                          /* 16 bit sample resolution */
+                      );
+
+}  /* end p_audio_extract_rewrite_wav_header */
+
+
 /* -------------------------
  * gap_audio_extract_as_wav
  * -------------------------
@@ -178,7 +209,10 @@ gap_audio_extract_as_wav(const char *audiofile
                       , 16                          /* 16 bit sample resolution */
                       );
     }
-    if(gap_debug) printf("samples_to_read:%d\n", (int)samples_to_read);
+    if(gap_debug) 
+    {
+      printf("samples_to_read:%d\n", (int)samples_to_read);
+    }
 
     /* audio block read (blocksize covers playbacktime for 250 frames */
     l_left_to_read = samples_to_read;
@@ -239,11 +273,28 @@ gap_audio_extract_as_wav(const char *audiofile
 
       /* calculate progress */
       l_progress = (gdouble)(samples_to_read - l_left_to_read) / ((gdouble)samples_to_read + 1.0);
-      if(gap_debug) printf("l_progress:%f\n", (float)l_progress);
+      if(gap_debug)
+      {
+        printf("l_progress:%f\n", (float)l_progress);
+      }
       
       p_do_progress(l_progress, do_progress, progressBar, gvahand, user_data);
       if(gvahand->cancel_operation)
       {
+        if(wav_save)
+        {
+          long l_samples_written_to_file;
+          
+          l_samples_written_to_file = samples_to_read - l_left_to_read;
+
+          /* rewrite header (to produce valid wave file in case we were cancelled) */
+          p_audio_extract_rewrite_wav_header(fp_wav
+             , l_samples_written_to_file
+             , l_audio_channels
+             , l_sample_rate
+             , l_bytes_per_sample
+             );
+        }
         printf("Audio extract was cancelled.\n");
         break;
       }
@@ -286,8 +337,8 @@ gap_audio_extract_from_videofile(const char *videoname
   , gint        exact_seek
   , t_GVA_PosUnit  pos_unit
   , gdouble        pos
-  , gint32         extracted_frames
-  , gint32         expected_frames
+  , gdouble        extracted_frames
+  , gdouble        expected_frames
   , gboolean do_progress
   , GtkWidget *progressBar
   , t_GVA_progress_callback_fptr fptr_progress_callback
