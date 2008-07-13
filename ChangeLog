@@ -1,3 +1,18 @@
+2008-07-13 Wolfgang Hofer <hof@gimp.org>
+
+- new feature: viedo extract supports generating transparency via bluebox
+
+- new feature Modify Frames create grayscale layer from
+   alpha channel, or layermask or mix of both
+ 
+    * gap/gap_layer_copy.c  [.h]
+    * gap/gap_mod_layer.c [.h]
+    * gap/gap_mod_layer_dialog.c [.h]
+    * gap/vex_main.c [.h]
+    * gap/vex_exec.c
+    * gap/gap_vek_dialog.c
+    * gap/Makefile.am
+
 2008-07-05 Wolfgang Hofer <hof@gimp.org>
 
  - new feature: Player supports extracting audio track when playing clips

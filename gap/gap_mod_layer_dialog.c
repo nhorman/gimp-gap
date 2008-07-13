@@ -74,16 +74,16 @@ static void p_func_optionmenu_callback  (GtkWidget     *wgt_item,
                            GapModFramesGlobalParams *gmop);
 static void p_make_func_menu_item(const char *title
                     , const char *tip_text
-		    , gint32 action_mode
-		    , GtkWidget *menu
-		    , GapModFramesGlobalParams *gmop
-		    );
+                    , gint32 action_mode
+                    , GtkWidget *menu
+                    , GapModFramesGlobalParams *gmop
+                    );
 
 static void p_make_func_menu_item_set_mode(const char *mode_name
-		    , gint32 action_mode
-		    , GtkWidget *menu
-		    , GapModFramesGlobalParams *gmop
-		    );
+                    , gint32 action_mode
+                    , GtkWidget *menu
+                    , GapModFramesGlobalParams *gmop
+                    );
 
 
 static void p_make_layer_attrinutes_submenu(GtkWidget *master_menu, GapModFramesGlobalParams *gmop);
@@ -119,13 +119,13 @@ p_mod_frames_response (GtkWidget *widget,
     default:
       if(gmop->shell)
       {
-	GtkWidget *l_shell;
+        GtkWidget *l_shell;
 
         l_shell = gmop->shell;
         gmop->shell = NULL;
 
         gtk_widget_destroy(l_shell);
-	gtk_main_quit();
+        gtk_main_quit();
       }
 
       break;
@@ -291,10 +291,10 @@ p_func_optionmenu_callback  (GtkWidget     *wgt_item,
 static void
 p_make_func_menu_item(const char *title
                     , const char *tip_text
-		    , gint32 action_mode
-		    , GtkWidget *menu
-		    , GapModFramesGlobalParams *gmop
-		    )
+                    , gint32 action_mode
+                    , GtkWidget *menu
+                    , GapModFramesGlobalParams *gmop
+                    )
 {
   GtkWidget *menu_item;
 
@@ -342,28 +342,28 @@ p_make_layer_attrinutes_submenu(GtkWidget *master_menu, GapModFramesGlobalParams
 
   p_make_func_menu_item(_("Set layer(s) visible")
                        ,_("set all selected layers visible")
-		       ,GAP_MOD_ACM_SET_VISIBLE
-		       ,sub_menu
-		       ,gmop
-		       );
+                       ,GAP_MOD_ACM_SET_VISIBLE
+                       ,sub_menu
+                       ,gmop
+                       );
   p_make_func_menu_item(_("Set layer(s) invisible")
                        ,_("set all selected layers invisible")
-		       ,GAP_MOD_ACM_SET_INVISIBLE
-		       ,sub_menu
-		       ,gmop
-		       );
+                       ,GAP_MOD_ACM_SET_INVISIBLE
+                       ,sub_menu
+                       ,gmop
+                       );
   p_make_func_menu_item(_("Set layer(s) linked")
                        ,_("set all selected layers linked")
-		       ,GAP_MOD_ACM_SET_LINKED
-		       ,sub_menu
-		       ,gmop
-		       );
+                       ,GAP_MOD_ACM_SET_LINKED
+                       ,sub_menu
+                       ,gmop
+                       );
   p_make_func_menu_item(_("Set layer(s) unlinked")
                        ,_("set all selected layers unlinked")
-		       ,GAP_MOD_ACM_SET_UNLINKED
-		       ,sub_menu
-		       ,gmop
-		       );
+                       ,GAP_MOD_ACM_SET_UNLINKED
+                       ,sub_menu
+                       ,gmop
+                       );
 
 }  /* end p_make_layer_attrinutes_submenu */
 
@@ -374,9 +374,9 @@ p_make_layer_attrinutes_submenu(GtkWidget *master_menu, GapModFramesGlobalParams
  */
 static void
 p_make_func_menu_item_set_mode(const char *mode_name
-		    , gint32 action_mode
-		    , GtkWidget *menu
-		    , GapModFramesGlobalParams *gmop)
+                    , gint32 action_mode
+                    , GtkWidget *menu
+                    , GapModFramesGlobalParams *gmop)
 {
   char *title;
   char *tip_text;
@@ -548,16 +548,16 @@ p_make_layer_stackpositions_submenu(GtkWidget *master_menu, GapModFramesGlobalPa
 
   p_make_func_menu_item(_("Raise layer(s)")
                        ,_("raise all selected layers")
-		       ,GAP_MOD_ACM_RAISE
-		       ,sub_menu
-		       ,gmop
-		       );
+                       ,GAP_MOD_ACM_RAISE
+                       ,sub_menu
+                       ,gmop
+                       );
   p_make_func_menu_item(_("Lower layer(s)")
                        ,_("lower all selected layers")
-		       ,GAP_MOD_ACM_LOWER
-		       ,sub_menu
-		       ,gmop
-		       );
+                       ,GAP_MOD_ACM_LOWER
+                       ,sub_menu
+                       ,gmop
+                       );
 }  /* end p_make_layer_stackpositions_submenu */
 
 
@@ -581,22 +581,22 @@ p_make_merge_layers_submenu(GtkWidget *master_menu, GapModFramesGlobalParams *gm
 
   p_make_func_menu_item(_("Merge layer(s); expand as necessary")
                        ,_("merge selected layers and expand as necessary")
-		       ,GAP_MOD_ACM_MERGE_EXPAND
-		       ,sub_menu
-		       ,gmop
-		       );
+                       ,GAP_MOD_ACM_MERGE_EXPAND
+                       ,sub_menu
+                       ,gmop
+                       );
   p_make_func_menu_item(_("Merge layer(s) clipped to image")
                        ,_("merge selected layers and clip to image")
-		       ,GAP_MOD_ACM_MERGE_IMG
-		       ,sub_menu
-		       ,gmop
-		       );
+                       ,GAP_MOD_ACM_MERGE_IMG
+                       ,sub_menu
+                       ,gmop
+                       );
   p_make_func_menu_item(_("Merge layer(s) clipped to bg-layer")
                        ,_("merge selected layers and clip to bg-layer")
-		       ,GAP_MOD_ACM_MERGE_BG
-		       ,sub_menu
-		       ,gmop
-		       );
+                       ,GAP_MOD_ACM_MERGE_BG
+                       ,sub_menu
+                       ,gmop
+                       );
 
 }  /* end p_make_merge_layers_submenu */
 
@@ -621,46 +621,46 @@ p_make_selection_submenu(GtkWidget *master_menu, GapModFramesGlobalParams *gmop)
 
   p_make_func_menu_item(_("Replace selection (source is the active frame)")
                        ,_("Replace Selection by Selection of the invoking Frame Image")
-		       ,GAP_MOD_ACM_SEL_REPLACE
-		       ,sub_menu
-		       ,gmop
-		       );
+                       ,GAP_MOD_ACM_SEL_REPLACE
+                       ,sub_menu
+                       ,gmop
+                       );
   p_make_func_menu_item(_("Add selection (source is the active frame)")
                        ,NULL
-		       ,GAP_MOD_ACM_SEL_ADD
-		       ,sub_menu
-		       ,gmop
-		       );
+                       ,GAP_MOD_ACM_SEL_ADD
+                       ,sub_menu
+                       ,gmop
+                       );
   p_make_func_menu_item(_("Subtract selection (source is the active frame)")
                        ,NULL
-		       ,GAP_MOD_ACM_SEL_SUBTRACT
-		       ,sub_menu
-		       ,gmop
-		       );
+                       ,GAP_MOD_ACM_SEL_SUBTRACT
+                       ,sub_menu
+                       ,gmop
+                       );
   p_make_func_menu_item(_("Intersect selection (source is the active frame)")
                        ,NULL
-		       ,GAP_MOD_ACM_SEL_INTERSECT
-		       ,sub_menu
-		       ,gmop
-		       );
+                       ,GAP_MOD_ACM_SEL_INTERSECT
+                       ,sub_menu
+                       ,gmop
+                       );
   p_make_func_menu_item(_("Selection none")
                        ,NULL
-		       ,GAP_MOD_ACM_SEL_NONE
-		       ,sub_menu
-		       ,gmop
-		       );
+                       ,GAP_MOD_ACM_SEL_NONE
+                       ,sub_menu
+                       ,gmop
+                       );
   p_make_func_menu_item(_("Selection all")
                        ,NULL
-		       ,GAP_MOD_ACM_SEL_ALL
-		       ,sub_menu
-		       ,gmop
-		       );
+                       ,GAP_MOD_ACM_SEL_ALL
+                       ,sub_menu
+                       ,gmop
+                       );
   p_make_func_menu_item(_("Selection invert")
                        ,NULL
-		       ,GAP_MOD_ACM_SEL_INVERT
-		       ,sub_menu
-		       ,gmop
-		       );
+                       ,GAP_MOD_ACM_SEL_INVERT
+                       ,sub_menu
+                       ,gmop
+                       );
   p_make_func_menu_item(_("Selection from alpha channel (individual per frame)")
                        ,NULL
                        ,GAP_MOD_ACM_SEL_ALPHA
@@ -669,22 +669,22 @@ p_make_selection_submenu(GtkWidget *master_menu, GapModFramesGlobalParams *gmop)
                        );
   p_make_func_menu_item(_("Save selection to channel (individual per frame)")
                        ,NULL
-		       ,GAP_MOD_ACM_SEL_SAVE
-		       ,sub_menu
-		       ,gmop
-		       );
+                       ,GAP_MOD_ACM_SEL_SAVE
+                       ,sub_menu
+                       ,gmop
+                       );
   p_make_func_menu_item(_("Load selection from channel (individual per frame)")
                        ,NULL
-		       ,GAP_MOD_ACM_SEL_LOAD
-		       ,sub_menu
-		       ,gmop
-		       );
+                       ,GAP_MOD_ACM_SEL_LOAD
+                       ,sub_menu
+                       ,gmop
+                       );
   p_make_func_menu_item(_("Delete channel (by name)")
                        ,NULL
-		       ,GAP_MOD_ACM_SEL_DELETE
-		       ,sub_menu
-		       ,gmop
-		       );
+                       ,GAP_MOD_ACM_SEL_DELETE
+                       ,sub_menu
+                       ,gmop
+                       );
 }  /* end p_make_selection_submenu */
 
 
@@ -708,40 +708,40 @@ p_make_layermask_submenu(GtkWidget *master_menu, GapModFramesGlobalParams *gmop)
 
   p_make_func_menu_item(_("Add white layermask (opaque)")
                        ,NULL
-		       ,GAP_MOD_ACM_LMASK_WHITE
-		       ,sub_menu
-		       ,gmop
-		       );
+                       ,GAP_MOD_ACM_LMASK_WHITE
+                       ,sub_menu
+                       ,gmop
+                       );
   p_make_func_menu_item(_("Add black layermask (transparent)")
                        ,NULL
-		       ,GAP_MOD_ACM_LMASK_BLACK
-		       ,sub_menu
-		       ,gmop
-		       );
+                       ,GAP_MOD_ACM_LMASK_BLACK
+                       ,sub_menu
+                       ,gmop
+                       );
   p_make_func_menu_item(_("Add layermask from alpha")
                        ,NULL
-		       ,GAP_MOD_ACM_LMASK_ALPHA
-		       ,sub_menu
-		       ,gmop
-		       );
+                       ,GAP_MOD_ACM_LMASK_ALPHA
+                       ,sub_menu
+                       ,gmop
+                       );
   p_make_func_menu_item(_("Add layermask transfer from alpha")
                        ,NULL
-		       ,GAP_MOD_ACM_LMASK_TALPHA
-		       ,sub_menu
-		       ,gmop
-		       );
+                       ,GAP_MOD_ACM_LMASK_TALPHA
+                       ,sub_menu
+                       ,gmop
+                       );
   p_make_func_menu_item(_("Add layermask from selection")
                        ,NULL
-		       ,GAP_MOD_ACM_LMASK_SEL
-		       ,sub_menu
-		       ,gmop
-		       );
+                       ,GAP_MOD_ACM_LMASK_SEL
+                       ,sub_menu
+                       ,gmop
+                       );
   p_make_func_menu_item(_("Add layermask from bw copy")
                        ,NULL
-		       ,GAP_MOD_ACM_LMASK_BWCOPY
-		       ,sub_menu
-		       ,gmop
-		       );
+                       ,GAP_MOD_ACM_LMASK_BWCOPY
+                       ,sub_menu
+                       ,gmop
+                       );
   p_make_func_menu_item(_("Invert existing layermask")
                        ,NULL
                        ,GAP_MOD_ACM_LMASK_INVERT
@@ -750,34 +750,54 @@ p_make_layermask_submenu(GtkWidget *master_menu, GapModFramesGlobalParams *gmop)
                        );
   p_make_func_menu_item(_("Apply filter on layermask")
                        ,NULL
-		       ,GAP_MOD_ACM_APPLY_FILTER_ON_LAYERMASK
-		       ,sub_menu
-		       ,gmop
-		       );
+                       ,GAP_MOD_ACM_APPLY_FILTER_ON_LAYERMASK
+                       ,sub_menu
+                       ,gmop
+                       );
   p_make_func_menu_item(_("Delete layermask")
                        ,NULL
-		       ,GAP_MOD_ACM_LMASK_DELETE
-		       ,sub_menu
-		       ,gmop
-		       );
+                       ,GAP_MOD_ACM_LMASK_DELETE
+                       ,sub_menu
+                       ,gmop
+                       );
   p_make_func_menu_item(_("Apply layermask")
                        ,NULL
-		       ,GAP_MOD_ACM_LMASK_APPLY
-		       ,sub_menu
-		       ,gmop
-		       );
+                       ,GAP_MOD_ACM_LMASK_APPLY
+                       ,sub_menu
+                       ,gmop
+                       );
   p_make_func_menu_item(_("Copy layermask from layer above")
                        ,NULL
-		       ,GAP_MOD_ACM_LMASK_COPY_FROM_UPPER_LMASK
-		       ,sub_menu
-		       ,gmop
-		       );
+                       ,GAP_MOD_ACM_LMASK_COPY_FROM_UPPER_LMASK
+                       ,sub_menu
+                       ,gmop
+                       );
   p_make_func_menu_item(_("Copy layermask from layer below")
                        ,NULL
-		       ,GAP_MOD_ACM_LMASK_COPY_FROM_LOWER_LMASK
-		       ,sub_menu
-		       ,gmop
-		       );
+                       ,GAP_MOD_ACM_LMASK_COPY_FROM_LOWER_LMASK
+                       ,sub_menu
+                       ,gmop
+                       );
+
+  p_make_func_menu_item(_("Create mask layer representing the opacity (alpha+layermask merged)")
+                       ,NULL
+                       ,GAP_MOD_ACM_CREATE_LAYER_FROM_OPACITY
+                       ,sub_menu
+                       ,gmop
+                       );
+  p_make_func_menu_item(_("Create mask layer as copy of the layermask (ignore alpha)")
+                       ,NULL
+                       ,GAP_MOD_ACM_CREATE_LAYER_FROM_LMASK
+                       ,sub_menu
+                       ,gmop
+                       );
+  p_make_func_menu_item(_("Create mask layer as copy of the alpha channel (ignore layermask)")
+                       ,NULL
+                       ,GAP_MOD_ACM_CREATE_LAYER_FROM_ALPHA
+                       ,sub_menu
+                       ,gmop
+                       );
+
 }  /* end p_make_layermask_submenu */
 
 
@@ -791,28 +811,28 @@ p_make_toplevel_menu_items(GtkWidget *master_menu, GapModFramesGlobalParams *gmo
   /* apply filter has no sub_menu */
   p_make_func_menu_item(_("Apply filter on layer(s)")
                        ,_("apply filter to all selected layers")
-		       ,GAP_MOD_ACM_APPLY_FILTER
-		       ,master_menu
-		       ,gmop
-		       );
+                       ,GAP_MOD_ACM_APPLY_FILTER
+                       ,master_menu
+                       ,gmop
+                       );
   p_make_func_menu_item(_("Duplicate layer(s)")
                        ,NULL
-		       ,GAP_MOD_ACM_DUPLICATE
-		       ,master_menu
-		       ,gmop
-		       );
+                       ,GAP_MOD_ACM_DUPLICATE
+                       ,master_menu
+                       ,gmop
+                       );
   p_make_func_menu_item(_("Delete layer(s)")
                        ,NULL
-		       ,GAP_MOD_ACM_DELETE
-		       ,master_menu
-		       ,gmop
-		       );
+                       ,GAP_MOD_ACM_DELETE
+                       ,master_menu
+                       ,gmop
+                       );
   p_make_func_menu_item(_("Rename layer(s)")
                        ,NULL
-		       ,GAP_MOD_ACM_RENAME
-		       ,master_menu
-		       ,gmop
-		       );
+                       ,GAP_MOD_ACM_RENAME
+                       ,master_menu
+                       ,gmop
+                       );
 
   p_make_func_menu_item(_("Resize layer(s) to image size")
                        ,_("Resize selected layer(s) to image size")
@@ -823,10 +843,10 @@ p_make_toplevel_menu_items(GtkWidget *master_menu, GapModFramesGlobalParams *gmo
 
   p_make_func_menu_item(_("Add alpha channel")
                        ,NULL
-		       ,GAP_MOD_ACM_ADD_ALPHA
-		       ,master_menu
-		       ,gmop
-		       );
+                       ,GAP_MOD_ACM_ADD_ALPHA
+                       ,master_menu
+                       ,gmop
+                       );
 }  /* end p_make_toplevel_menu_items */
 
 
@@ -887,7 +907,7 @@ p_layer_pattern_entry_update_cb(GtkWidget *widget, GapModFramesGlobalParams *gmo
 
   g_snprintf(gmop->sel_pattern, sizeof(gmop->sel_pattern), "%s"
             , gtk_entry_get_text(GTK_ENTRY(widget))
-	    );
+            );
 }  /* end p_layer_pattern_entry_update_cb */
 
 /* --------------------------
@@ -904,7 +924,7 @@ p_new_layername_entry_update_cb(GtkWidget *widget, GapModFramesGlobalParams *gmo
 
   g_snprintf(gmop->new_layername, sizeof(gmop->new_layername), "%s"
             , gtk_entry_get_text(GTK_ENTRY(widget))
-	    );
+            );
 }  /* end p_new_layername_entry_update_cb */
 
 
@@ -963,11 +983,11 @@ p_create_mod_frames_dialog(GapModFramesGlobalParams *gmop)
 
   dlg = gimp_dialog_new (_("Frames Modify"), GAP_MOD_FRAMES_PLUGIN_NAME,
                          NULL, 0,
-			 gimp_standard_help_func, GAP_MOD_FRAMES_HELP_ID,
+                         gimp_standard_help_func, GAP_MOD_FRAMES_HELP_ID,
 
-			 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-			 GTK_STOCK_OK,     GTK_RESPONSE_OK,
-			 NULL);
+                         GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+                         GTK_STOCK_OK,     GTK_RESPONSE_OK,
+                         NULL);
 
   gmop->shell = dlg;
 
@@ -1015,8 +1035,8 @@ p_create_mod_frames_dialog(GapModFramesGlobalParams *gmop)
 // as workaround dont show tooltip for the menu_bar at all:
 //  gimp_help_set_help_data (menu_bar
 //                          , _("Function to be performed on all selected layers "
-//			      "in all frames of the selected frame range")
-//			  , NULL);
+//                            "in all frames of the selected frame range")
+//                        , NULL);
 
 
   gtk_table_attach (GTK_TABLE(table), menu_bar, 0, 1, row, row+1
@@ -1071,12 +1091,12 @@ p_create_mod_frames_dialog(GapModFramesGlobalParams *gmop)
   gtk_table_attach (GTK_TABLE(table), entry, 1, 2, row, row+1
                     ,GTK_FILL|GTK_EXPAND , 0, 0, 0);
   g_signal_connect(G_OBJECT(entry), "changed",
-		   G_CALLBACK (p_new_layername_entry_update_cb),
-		   gmop);
+                   G_CALLBACK (p_new_layername_entry_update_cb),
+                   gmop);
   gimp_help_set_help_data(entry
                          , _("Name for all handled layers (or channels),\n"
                              "where the string '[######]' is replaced by the frame number.")
-		         , NULL);
+                         , NULL);
 
 
   /*  +++++++++++++++++++++++++  */
@@ -1103,17 +1123,17 @@ p_create_mod_frames_dialog(GapModFramesGlobalParams *gmop)
 
   l_radio_pressed = (gmop->sel_mode == GAP_MTCH_EQUAL);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radio_button),
-				   l_radio_pressed);
+                                   l_radio_pressed);
   gimp_help_set_help_data(radio_button
                          , _("Select all layers where layer name is equal to pattern")
-			 , NULL);
+                         , NULL);
 
   gtk_widget_show (radio_button);
   g_object_set_data (G_OBJECT (radio_button), RADIO_ITEM_INDEX_KEY
                      , GINT_TO_POINTER(GAP_MTCH_EQUAL));
   g_signal_connect ( G_OBJECT (radio_button), "toggled",
-		     G_CALLBACK (p_sel_mode_radio_callback),
-		     gmop);
+                     G_CALLBACK (p_sel_mode_radio_callback),
+                     gmop);
 
   /* the case sensitive  check_button */
   check_button = gtk_check_button_new_with_label (_("Case sensitive"));
@@ -1124,12 +1144,12 @@ p_create_mod_frames_dialog(GapModFramesGlobalParams *gmop)
                    ,(GtkAttachOptions) (0), 0, 0);
   gimp_help_set_help_data (check_button
                           , _("Lowercase and uppercase letters are considered as different")
-			  , NULL);
+                          , NULL);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (check_button)
-				, gmop->sel_case);
+                                , gmop->sel_case);
   g_signal_connect ( G_OBJECT (check_button), "toggled",
-		     G_CALLBACK (p_case_sensitive_toggled_callback),
-		     gmop);
+                     G_CALLBACK (p_case_sensitive_toggled_callback),
+                     gmop);
 
   row++;
 
@@ -1141,17 +1161,17 @@ p_create_mod_frames_dialog(GapModFramesGlobalParams *gmop)
 
   l_radio_pressed = (gmop->sel_mode == GAP_MTCH_START);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radio_button),
-				   l_radio_pressed);
+                                   l_radio_pressed);
   gimp_help_set_help_data(radio_button
                          , _("Select all layers where layer name starts with pattern")
-			 , NULL);
+                         , NULL);
 
   gtk_widget_show (radio_button);
   g_object_set_data (G_OBJECT (radio_button), RADIO_ITEM_INDEX_KEY
                      , GINT_TO_POINTER(GAP_MTCH_START));
   g_signal_connect ( G_OBJECT (radio_button), "toggled",
-		     G_CALLBACK (p_sel_mode_radio_callback),
-		     gmop);
+                     G_CALLBACK (p_sel_mode_radio_callback),
+                     gmop);
 
   /* the invert layer_selection  check_button */
   check_button = gtk_check_button_new_with_label (_("Invert Layer Selection"));
@@ -1162,12 +1182,12 @@ p_create_mod_frames_dialog(GapModFramesGlobalParams *gmop)
                     ,(GtkAttachOptions) (0), 0, 0);
   gimp_help_set_help_data (check_button
                           , _("Perform actions on all unselected layers")
-			  , NULL);
+                          , NULL);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (check_button)
-				, gmop->sel_invert);
+                                , gmop->sel_invert);
   g_signal_connect ( G_OBJECT (check_button), "toggled",
-		     G_CALLBACK (p_invert_selection_toggled_callback),
-		     gmop);
+                     G_CALLBACK (p_invert_selection_toggled_callback),
+                     gmop);
 
   row++;
 
@@ -1179,17 +1199,17 @@ p_create_mod_frames_dialog(GapModFramesGlobalParams *gmop)
 
   l_radio_pressed = (gmop->sel_mode == GAP_MTCH_END);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radio_button),
-				   l_radio_pressed);
+                                   l_radio_pressed);
   gimp_help_set_help_data(radio_button
                          , _("Select all layers where layer name ends up with pattern")
-			 , NULL);
+                         , NULL);
 
   gtk_widget_show (radio_button);
   g_object_set_data (G_OBJECT (radio_button), RADIO_ITEM_INDEX_KEY
                      , GINT_TO_POINTER(GAP_MTCH_END));
   g_signal_connect ( G_OBJECT (radio_button), "toggled",
-		     G_CALLBACK (p_sel_mode_radio_callback),
-		     gmop);
+                     G_CALLBACK (p_sel_mode_radio_callback),
+                     gmop);
 
   row++;
 
@@ -1201,17 +1221,17 @@ p_create_mod_frames_dialog(GapModFramesGlobalParams *gmop)
 
   l_radio_pressed = (gmop->sel_mode == GAP_MTCH_ANYWHERE);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radio_button),
-				   l_radio_pressed);
+                                   l_radio_pressed);
   gimp_help_set_help_data(radio_button
                          , _("Select all layers where layer name contains pattern")
-			 , NULL);
+                         , NULL);
 
   gtk_widget_show (radio_button);
   g_object_set_data (G_OBJECT (radio_button), RADIO_ITEM_INDEX_KEY
                      , GINT_TO_POINTER(GAP_MTCH_ANYWHERE));
   g_signal_connect ( G_OBJECT (radio_button), "toggled",
-		     G_CALLBACK (p_sel_mode_radio_callback),
-		     gmop);
+                     G_CALLBACK (p_sel_mode_radio_callback),
+                     gmop);
 
   row++;
 
@@ -1223,17 +1243,17 @@ p_create_mod_frames_dialog(GapModFramesGlobalParams *gmop)
 
   l_radio_pressed = (gmop->sel_mode == GAP_MTCH_NUMBERLIST);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radio_button),
-				   l_radio_pressed);
+                                   l_radio_pressed);
   gimp_help_set_help_data(radio_button
                          , _("Select layerstack positions where 0 is the top layer.\nExample: 0, 4-5, 8")
-			 , NULL);
+                         , NULL);
 
   gtk_widget_show (radio_button);
   g_object_set_data (G_OBJECT (radio_button), RADIO_ITEM_INDEX_KEY
                      , GINT_TO_POINTER(GAP_MTCH_NUMBERLIST));
   g_signal_connect ( G_OBJECT (radio_button), "toggled",
-		     G_CALLBACK (p_sel_mode_radio_callback),
-		     gmop);
+                     G_CALLBACK (p_sel_mode_radio_callback),
+                     gmop);
 
   row++;
 
@@ -1245,17 +1265,17 @@ p_create_mod_frames_dialog(GapModFramesGlobalParams *gmop)
 
   l_radio_pressed = (gmop->sel_mode == GAP_MTCH_INV_NUMBERLIST);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radio_button),
-				   l_radio_pressed);
+                                   l_radio_pressed);
   gimp_help_set_help_data(radio_button
                          , _("Select layerstack positions where 0 is the background layer.\nExample: 0, 4-5, 8")
-			 , NULL);
+                         , NULL);
 
   gtk_widget_show (radio_button);
   g_object_set_data (G_OBJECT (radio_button), RADIO_ITEM_INDEX_KEY
                      , GINT_TO_POINTER(GAP_MTCH_INV_NUMBERLIST));
   g_signal_connect ( G_OBJECT (radio_button), "toggled",
-		     G_CALLBACK (p_sel_mode_radio_callback),
-		     gmop);
+                     G_CALLBACK (p_sel_mode_radio_callback),
+                     gmop);
 
   row++;
 
@@ -1267,17 +1287,17 @@ p_create_mod_frames_dialog(GapModFramesGlobalParams *gmop)
 
   l_radio_pressed = (gmop->sel_mode == GAP_MTCH_ALL_VISIBLE);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radio_button),
-				   l_radio_pressed);
+                                   l_radio_pressed);
   gimp_help_set_help_data(radio_button
                          , _("Select all visible layers")
-			 , NULL);
+                         , NULL);
 
   gtk_widget_show (radio_button);
   g_object_set_data (G_OBJECT (radio_button), RADIO_ITEM_INDEX_KEY
                      , GINT_TO_POINTER(GAP_MTCH_ALL_VISIBLE));
   g_signal_connect ( G_OBJECT (radio_button), "toggled",
-		     G_CALLBACK (p_sel_mode_radio_callback),
-		     gmop);
+                     G_CALLBACK (p_sel_mode_radio_callback),
+                     gmop);
 
 
   row++;
@@ -1298,11 +1318,11 @@ p_create_mod_frames_dialog(GapModFramesGlobalParams *gmop)
   gtk_entry_set_text(GTK_ENTRY(entry), gmop->sel_pattern);
   gimp_help_set_help_data(entry
                          , _("String to identify layer names or layerstack position numbers. Example: 0,3-5")
-			 , NULL);
+                         , NULL);
   gtk_widget_show(entry);
   g_signal_connect(G_OBJECT(entry), "changed",
-		   G_CALLBACK (p_layer_pattern_entry_update_cb),
-		   gmop);
+                   G_CALLBACK (p_layer_pattern_entry_update_cb),
+                   gmop);
 
   gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
   gtk_box_pack_start (GTK_BOX (hbox), entry, TRUE, TRUE, 4);
@@ -1331,16 +1351,16 @@ p_create_mod_frames_dialog(GapModFramesGlobalParams *gmop)
 
   /* the from_frame scale entry */
   adj = gimp_scale_entry_new (GTK_TABLE (range_table), 0, row,
-			      _("From Frame:"), SCALE_WIDTH, SPIN_BUTTON_WIDTH,
-			      (gdouble)gmop->ainfo_ptr->first_frame_nr,
-			      (gdouble)gmop->ainfo_ptr->first_frame_nr,  /* lower */
-			      (gdouble)gmop->ainfo_ptr->last_frame_nr,   /* upper */
-			      1, 10,          /* step, page */
-			      0,              /* digits */
-			      TRUE,           /* constrain */
-			      (gdouble)gmop->ainfo_ptr->first_frame_nr,  /* lower unconstrained */
-			      (gdouble)gmop->ainfo_ptr->last_frame_nr,   /* upper unconstrained */
-			      _("First handled frame"), NULL);
+                              _("From Frame:"), SCALE_WIDTH, SPIN_BUTTON_WIDTH,
+                              (gdouble)gmop->ainfo_ptr->first_frame_nr,
+                              (gdouble)gmop->ainfo_ptr->first_frame_nr,  /* lower */
+                              (gdouble)gmop->ainfo_ptr->last_frame_nr,   /* upper */
+                              1, 10,          /* step, page */
+                              0,              /* digits */
+                              TRUE,           /* constrain */
+                              (gdouble)gmop->ainfo_ptr->first_frame_nr,  /* lower unconstrained */
+                              (gdouble)gmop->ainfo_ptr->last_frame_nr,   /* upper unconstrained */
+                              _("First handled frame"), NULL);
   gmop->frame_from_adj = adj;
   g_object_set_data(G_OBJECT(adj), "gmop", gmop);
   g_signal_connect (adj, "value_changed",
@@ -1353,16 +1373,16 @@ p_create_mod_frames_dialog(GapModFramesGlobalParams *gmop)
 
   /* the to_frame scale entry */
   adj = gimp_scale_entry_new (GTK_TABLE (range_table), 0, row,
-			      _("To Frame:"), SCALE_WIDTH, SPIN_BUTTON_WIDTH,
-			      (gdouble)gmop->ainfo_ptr->last_frame_nr,
-			      (gdouble)gmop->ainfo_ptr->first_frame_nr,  /* lower */
-			      (gdouble)gmop->ainfo_ptr->last_frame_nr,   /* upper */
-			      1, 10,          /* step, page */
-			      0,              /* digits */
-			      TRUE,           /* constrain */
-			      (gdouble)gmop->ainfo_ptr->first_frame_nr,  /* lower unconstrained */
-			      (gdouble)gmop->ainfo_ptr->last_frame_nr,   /* upper unconstrained */
-			      _("Last handled frame"), NULL);
+                              _("To Frame:"), SCALE_WIDTH, SPIN_BUTTON_WIDTH,
+                              (gdouble)gmop->ainfo_ptr->last_frame_nr,
+                              (gdouble)gmop->ainfo_ptr->first_frame_nr,  /* lower */
+                              (gdouble)gmop->ainfo_ptr->last_frame_nr,   /* upper */
+                              1, 10,          /* step, page */
+                              0,              /* digits */
+                              TRUE,           /* constrain */
+                              (gdouble)gmop->ainfo_ptr->first_frame_nr,  /* lower unconstrained */
+                              (gdouble)gmop->ainfo_ptr->last_frame_nr,   /* upper unconstrained */
+                              _("Last handled frame"), NULL);
   gmop->frame_to_adj = adj;
   g_object_set_data(G_OBJECT(adj), "gmop", gmop);
   g_signal_connect (adj, "value_changed",

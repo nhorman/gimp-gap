@@ -279,6 +279,8 @@ gap_storyboard_SOURCES = \
 	gap_libgimpgap.h	
 
 gap_video_extract_SOURCES = \
+	gap_bluebox.c		\
+	gap_bluebox.h		\
 	gap_vex_main.c		\
 	gap_vex_main.h		\
 	gap_vex_exec.c		\

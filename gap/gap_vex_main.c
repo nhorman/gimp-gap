@@ -114,6 +114,9 @@ query ()
     { GIMP_PDB_INT32, "deinterlace", "0: NO, 1: deinterlace odd rows only, 2: deinterlace even rows only, 3: deinterlace split into 2 frames where odd rows-frame is 1st, 4: deinterlace split into 2 frames where even rows-frame is 1st)" },
     { GIMP_PDB_FLOAT, "delace_threshold", "0.0 .. no interpolation, 1.0 smooth interpolation at deinterlacing" },
     { GIMP_PDB_INT32, "fn_digits", "1 <= fn_digits <= 8, number of digits to use in framenames (use 1 if you dont want leading zeroes) " },
+    { GIMP_PDB_INT32, "bluebox", "0: NO, 1: YES generate transparency by applying bluebox filter with last values" },
+    { GIMP_PDB_INT32, "graymask", "0: NO (extract frames 1:1), 1: YES extract generated transparency as gray mask" },
+    { GIMP_PDB_INT32, "layermask", "0: NO (bluebox shall generate aplha channel), 1: YES (bluebox shall generate layermask)" },
   };
   static GimpParamDef load_return_vals[] =
   {
@@ -146,6 +149,9 @@ query ()
     { GIMP_PDB_INT32, "deinterlace", "0: NO, 1: deinterlace odd rows only, 2: deinterlace even rows only, 3: deinterlace split into 2 frames where odd rows-frame is 1st, 4: deinterlace split into 2 frames where even rows-frame is 1st)" },
     { GIMP_PDB_FLOAT, "delace_threshold", "0.0 .. no interpolation, 1.0 smooth interpolation at deinterlacing" },
     { GIMP_PDB_INT32, "fn_digits", "1 <= fn_digits <= 8, number of digits to use in framenames (use 1 if you dont want leading zeroes) " },
+    { GIMP_PDB_INT32, "bluebox", "0: NO, 1: YES generate transparency by applying bluebox filter with last values" },
+    { GIMP_PDB_INT32, "graymask", "0: NO (extract frames 1:1), 1: YES extract generated transparency as gray mask" },
+    { GIMP_PDB_INT32, "layermask", "0: NO (bluebox shall generate aplha channel), 1: YES (bluebox shall generate layermask)" },
   };
   static int next_args = sizeof (ext_args) / sizeof (ext_args[0]);
 
@@ -244,6 +250,9 @@ run (const gchar *name,          /* name of plugin */
                       , (int)nparams );
 
 
+  gpp->val.generate_alpha_via_bluebox = FALSE;
+  gpp->val.extract_alpha_as_gray_frames = FALSE;
+  gpp->val.extract_with_layermask = FALSE;
 
   if(strcmp(name, GAP_VEX_PLUG_IN_NAME) == 0)
   {
@@ -281,7 +290,7 @@ run (const gchar *name,          /* name of plugin */
   if(gpp->val.run_mode == GIMP_RUN_NONINTERACTIVE)
   {
     /* ---------- get batch parameters  ----------*/
-    expected_params = l_par + 18;
+    expected_params = l_par + 21;
     if(nparams != expected_params)
     {
        printf("Calling Error wrong number of params %d (expected: %d)\n"
@@ -346,6 +355,10 @@ run (const gchar *name,          /* name of plugin */
     gpp->val.deinterlace   = param[l_par + 16].data.d_int32;
     gpp->val.delace_threshold   = param[l_par + 17].data.d_float;
     gpp->val.fn_digits     = param[l_par + 18].data.d_int32;
+
+    gpp->val.generate_alpha_via_bluebox     = param[l_par + 19].data.d_int32;
+    gpp->val.extract_alpha_as_gray_frames   = param[l_par + 20].data.d_int32;
+    gpp->val.extract_with_layermask         = param[l_par + 21].data.d_int32;
 
     gpp->val.run = TRUE;
   }

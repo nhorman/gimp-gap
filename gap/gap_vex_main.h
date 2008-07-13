@@ -110,6 +110,10 @@ typedef struct {
   /* current states of actual loaded (frame)image */
   gint32  image_ID;        /* -1 if there is no valid current image */
   GimpRunMode run_mode;
+  
+  gboolean generate_alpha_via_bluebox;
+  gboolean extract_alpha_as_gray_frames;
+  gboolean extract_with_layermask;
 } GapVexMainVal;
 
 
@@ -162,6 +166,10 @@ typedef struct {  /* nick: gpp */
   GtkWidget *mw__button_OK;
   GtkWidget *mw__begin_time_label;
   GtkWidget *mw__end_time_label;
+
+  GtkWidget *mw__checkbutton_generate_alpha_via_bluebox;
+  GtkWidget *mw__checkbutton_extract_alpha_as_gray_frames;
+  GtkWidget *mw__checkbutton_extract_with_layermask;
   
 } GapVexMainGlobalParams;
 

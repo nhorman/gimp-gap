@@ -39,43 +39,43 @@
 #define MAX_LAYERNAME 128
 
 /* action_mode values */
-#define	 GAP_MOD_ACM_SET_VISIBLE    0
-#define	 GAP_MOD_ACM_SET_INVISIBLE  1
-#define	 GAP_MOD_ACM_SET_LINKED	    2
-#define	 GAP_MOD_ACM_SET_UNLINKED   3
-#define	 GAP_MOD_ACM_RAISE          4
-#define	 GAP_MOD_ACM_LOWER          5
-#define	 GAP_MOD_ACM_MERGE_EXPAND   6
-#define	 GAP_MOD_ACM_MERGE_IMG      7
-#define	 GAP_MOD_ACM_MERGE_BG       8
-#define	 GAP_MOD_ACM_APPLY_FILTER   9
-#define	 GAP_MOD_ACM_DUPLICATE     10
-#define	 GAP_MOD_ACM_DELETE        11
-#define	 GAP_MOD_ACM_RENAME        12
+#define  GAP_MOD_ACM_SET_VISIBLE    0
+#define  GAP_MOD_ACM_SET_INVISIBLE  1
+#define  GAP_MOD_ACM_SET_LINKED     2
+#define  GAP_MOD_ACM_SET_UNLINKED   3
+#define  GAP_MOD_ACM_RAISE          4
+#define  GAP_MOD_ACM_LOWER          5
+#define  GAP_MOD_ACM_MERGE_EXPAND   6
+#define  GAP_MOD_ACM_MERGE_IMG      7
+#define  GAP_MOD_ACM_MERGE_BG       8
+#define  GAP_MOD_ACM_APPLY_FILTER   9
+#define  GAP_MOD_ACM_DUPLICATE     10
+#define  GAP_MOD_ACM_DELETE        11
+#define  GAP_MOD_ACM_RENAME        12
 
-#define	 GAP_MOD_ACM_SEL_REPLACE   13
-#define	 GAP_MOD_ACM_SEL_ADD       14
-#define	 GAP_MOD_ACM_SEL_SUBTRACT  15
-#define	 GAP_MOD_ACM_SEL_INTERSECT 16
-#define	 GAP_MOD_ACM_SEL_NONE      17
-#define	 GAP_MOD_ACM_SEL_ALL       18
-#define	 GAP_MOD_ACM_SEL_INVERT    19
-#define	 GAP_MOD_ACM_SEL_SAVE      20
-#define	 GAP_MOD_ACM_SEL_LOAD      21
-#define	 GAP_MOD_ACM_SEL_DELETE    22
+#define  GAP_MOD_ACM_SEL_REPLACE   13
+#define  GAP_MOD_ACM_SEL_ADD       14
+#define  GAP_MOD_ACM_SEL_SUBTRACT  15
+#define  GAP_MOD_ACM_SEL_INTERSECT 16
+#define  GAP_MOD_ACM_SEL_NONE      17
+#define  GAP_MOD_ACM_SEL_ALL       18
+#define  GAP_MOD_ACM_SEL_INVERT    19
+#define  GAP_MOD_ACM_SEL_SAVE      20
+#define  GAP_MOD_ACM_SEL_LOAD      21
+#define  GAP_MOD_ACM_SEL_DELETE    22
 
-#define	 GAP_MOD_ACM_ADD_ALPHA        23
-#define	 GAP_MOD_ACM_LMASK_WHITE      24
-#define	 GAP_MOD_ACM_LMASK_BLACK      25
-#define	 GAP_MOD_ACM_LMASK_ALPHA      26
-#define	 GAP_MOD_ACM_LMASK_TALPHA     27
-#define	 GAP_MOD_ACM_LMASK_SEL        28
-#define	 GAP_MOD_ACM_LMASK_BWCOPY     29
-#define	 GAP_MOD_ACM_LMASK_DELETE     30
-#define	 GAP_MOD_ACM_LMASK_APPLY      31
+#define  GAP_MOD_ACM_ADD_ALPHA        23
+#define  GAP_MOD_ACM_LMASK_WHITE      24
+#define  GAP_MOD_ACM_LMASK_BLACK      25
+#define  GAP_MOD_ACM_LMASK_ALPHA      26
+#define  GAP_MOD_ACM_LMASK_TALPHA     27
+#define  GAP_MOD_ACM_LMASK_SEL        28
+#define  GAP_MOD_ACM_LMASK_BWCOPY     29
+#define  GAP_MOD_ACM_LMASK_DELETE     30
+#define  GAP_MOD_ACM_LMASK_APPLY      31
 
-#define	 GAP_MOD_ACM_LMASK_COPY_FROM_UPPER_LMASK   32
-#define	 GAP_MOD_ACM_LMASK_COPY_FROM_LOWER_LMASK   33
+#define  GAP_MOD_ACM_LMASK_COPY_FROM_UPPER_LMASK   32
+#define  GAP_MOD_ACM_LMASK_COPY_FROM_LOWER_LMASK   33
 
 #define  GAP_MOD_ACM_LMASK_INVERT                  34
 
@@ -106,6 +106,10 @@
 #define  GAP_MOD_ACM_SEL_ALPHA                     58
 #define  GAP_MOD_ACM_RESIZE_TO_IMG                 59
 
+#define  GAP_MOD_ACM_CREATE_LAYER_FROM_OPACITY     60
+#define  GAP_MOD_ACM_CREATE_LAYER_FROM_LMASK       61
+#define  GAP_MOD_ACM_CREATE_LAYER_FROM_ALPHA       62
+
 typedef struct
 {
   gint32 layer_id;
@@ -114,10 +118,10 @@ typedef struct
 }  GapModLayliElem;
 
 GapModLayliElem *gap_mod_alloc_layli(gint32 image_id, gint32 *l_sel_cnt, gint *nlayers,
-        		   gint32 sel_mode,
-        		   gint32 sel_case,
-			   gint32 sel_invert,
-        		   char *sel_pattern );
+                           gint32 sel_mode,
+                           gint32 sel_case,
+                           gint32 sel_invert,
+                           char *sel_pattern );
 int  gap_mod_get_1st_selected (GapModLayliElem * layli_ptr, gint nlayers);
 
 gint gap_mod_layer(GimpRunMode run_mode, gint32 image_id,

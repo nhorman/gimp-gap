@@ -607,3 +607,214 @@ gap_layer_flip(gint32 layer_id, gint32 flip_request)
   
   return(layer_id);
 }  /* end gap_layer_flip */
+
+
+
+/* -----------------------------
+ * gap_layer_copy_paste_drawable
+ * -----------------------------
+ * copy specified dst_drawable into src_drawable using
+ * gimp copy paste procedures.
+ * The selection in the specified image will be removed
+ * (e.g. is ignored for copying)
+ * the caller shall specify image_id == -1 in case where selection
+ * shall be respected.
+ */
+void
+gap_layer_copy_paste_drawable(gint32 image_id, gint32 dst_drawable_id, gint32 src_drawable_id)
+{
+  gint32   l_fsel_layer_id;
+  
+  if (image_id >= 0)
+  {
+    gimp_selection_none(image_id);
+  }
+        gimp_edit_copy(src_drawable_id);
+  l_fsel_layer_id = gimp_edit_paste(dst_drawable_id, FALSE);
+  gimp_floating_sel_anchor(l_fsel_layer_id);
+}  /* end gap_layer_copy_paste_drawable */
+
+
+/* ---------------------------------
+ * gap_layer_get_stackposition
+ * ---------------------------------
+ * get stackposition index of the specified layer.
+ * return -1 if the layer is not part of the specified image
+ */
+gint32
+gap_layer_get_stackposition(gint32 image_id, gint32 ref_layer_id)
+{
+  gint          l_nlayers;
+  gint32       *l_layers_list;
+  gint32        l_idx;
+
+  l_layers_list = gimp_image_get_layers(image_id, &l_nlayers);
+  if(l_layers_list != NULL)
+  {
+    for(l_idx = 0; l_idx < l_nlayers; l_idx++)
+    {
+      if(l_layers_list[l_idx] == ref_layer_id)
+      {
+        g_free (l_layers_list);
+        return(l_idx);   
+      }
+    }
+    g_free (l_layers_list);
+  }
+
+  return (-1);
+  
+}  /* end gap_layer_get_stackposition */
+
+
+/* ------------------------
+ * gap_layer_make_duplicate
+ * ------------------------
+ *
+ */
+gint32
+gap_layer_make_duplicate(gint32 src_layer_id, gint32 image_id
+  , const char *name_prefix, const char *name_suffix)
+{  
+  gint32         l_new_layer_id;
+  gint32         l_stackposition;
+  const char    *l_suffix;
+  const char    *l_prefix;
+  char          *l_new_name;
+  char          *l_old_name;
+
+
+  /* make a copy of the layer  */
+  l_new_layer_id = gimp_layer_copy(src_layer_id);
+  
+  /* and add at stackposition above src_layer */
+  l_stackposition = gap_layer_get_stackposition(image_id, src_layer_id);
+  gimp_image_add_layer (image_id, l_new_layer_id, l_stackposition);
+
+  /* build name with optional prefix and/or suffix */  
+  l_suffix = "\0";
+  l_prefix = "\0";
+  if (name_suffix != NULL)
+  {
+    l_suffix = name_suffix;
+  }
+  if (name_prefix != NULL)
+  {
+    l_prefix = name_prefix;
+  }
+  l_old_name = gimp_drawable_get_name(src_layer_id);
+  
+  l_new_name = g_strdup_printf("%s%s%s", l_prefix, l_old_name, l_suffix);
+  
+  gimp_drawable_set_name(l_new_layer_id, l_new_name);
+  g_free(l_old_name);
+  g_free(l_new_name);
+  
+  return (l_new_layer_id);
+}  /* end gap_layer_make_duplicate */
+
+
+
+/* -----------------------------------------------
+ * gap_layer_create_layer_from_layermask
+ * -----------------------------------------------
+ * create a new layer as copy of the layermask of the
+ * specified src_layer_id.
+ * The name is built as copy of the src_layer_id's name
+ * with optional prefix and/or suffix.
+ * (specify NULL to omit name_prefix and/or name_suffix)
+ *
+ * the new layer is added to the image at top
+ * of layerstack
+ * or above the src_layer if src_layer is in the same image.
+ * 
+ * return the id of the newly created layer.
+ */
+gint32
+gap_layer_create_layer_from_layermask(gint32 src_layer_id
+  , gint32 image_id
+  , const char *name_prefix, const char *name_suffix)
+{
+  gboolean       l_has_already_layermask;
+  gint32         l_layermask_id;
+  gint32         l_new_layer_id;
+  gint32         l_new_layermask_id;
+
+  /* make a copy of the layer (but without the layermask) */
+  l_new_layer_id = gap_layer_make_duplicate(src_layer_id, image_id
+    , name_prefix, name_suffix);
+  l_new_layermask_id = gimp_layer_get_mask(l_new_layer_id);
+  if (l_new_layermask_id >= 0)
+  {
+    /* copy the layermask into the new layer */
+    gap_layer_copy_paste_drawable(image_id
+                           , l_new_layer_id      /* dst_drawable_id */
+                           , l_new_layermask_id  /* src_drawable_id */
+                           );
+    gimp_layer_remove_mask (l_new_layer_id, GIMP_MASK_DISCARD);
+  }
+  else
+  {
+    /* create white layer (in case no layermask was present) */
+    gap_layer_clear_to_color(l_new_layer_id
+                              ,1.0 /* red */
+                              ,1.0 /* green  */
+                              ,1.0 /* blue */
+                              ,1.0 /* alpha */
+                              );
+  }
+
+  return (l_new_layer_id);
+}  /* end gap_layer_create_layer_from_layermask */
+
+
+/* ---------------------------------
+ * gap_layer_create_layer_from_alpha
+ * ---------------------------------
+ *
+ */
+gint32
+gap_layer_create_layer_from_alpha(gint32 src_layer_id, gint32 image_id
+  , const char *name_prefix, const char *name_suffix
+  , gboolean applyExistingLayermask, gboolean useTransferAlpha)
+{
+  gint32         l_new_layer_id;
+  gint32         l_old_layermask_id;
+  gint32         l_new_layermask_id;
+
+  /* make a copy of the src_layer */
+  l_new_layer_id = gap_layer_make_duplicate(src_layer_id, image_id
+                           , name_prefix, name_suffix);
+  l_old_layermask_id = gimp_layer_get_mask(l_new_layer_id);
+
+  if (l_old_layermask_id >= 0)
+  {
+    /* handle already exiting layermask: apply or remove (e.g. ignore) */
+    if (applyExistingLayermask)
+    {
+       /* merge the already existing layermask into the alpha channel */
+       gimp_layer_remove_mask (l_new_layer_id, GIMP_MASK_APPLY);
+    }
+    else
+    {
+       gimp_layer_remove_mask (l_new_layer_id, GIMP_MASK_DISCARD);
+    }
+  }
+
+  /* create a new layermask from the alpha channel */
+  if (useTransferAlpha == TRUE)
+  {
+          l_new_layermask_id = gimp_layer_create_mask(l_new_layer_id, GIMP_ADD_ALPHA_TRANSFER_MASK);
+  }
+  else
+  {
+          l_new_layermask_id = gimp_layer_create_mask(l_new_layer_id, GIMP_ADD_ALPHA_MASK);
+  }
+
+
+  gimp_layer_add_mask(l_new_layer_id, l_new_layermask_id);
+  gap_layer_copy_paste_drawable(image_id, l_new_layer_id, l_new_layermask_id);
+  gimp_layer_remove_mask (l_new_layer_id, GIMP_MASK_DISCARD);
+  return (l_new_layer_id);
+
+}  /* end gap_layer_create_layer_from_alpha  */

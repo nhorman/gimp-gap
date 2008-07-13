@@ -33,7 +33,8 @@
 #include "gap_vex_exec.h"
 #include "gap_vex_dialog.h"
 #include "gap_audio_wav.h"
-
+#include "gap_audio_extract.h"
+#include "gap_bluebox.h"
 
 /* -------------------
  * p_gap_set_framerate
@@ -57,6 +58,107 @@ p_gap_set_framerate(gint32 image_id, gdouble framerate)
   g_free(l_params);                               
 }  /* end p_gap_set_framerate */
 
+
+/* --------------------
+ * p_vex_apply_bluebox
+ * --------------------
+ * apply bluebox settings on the specified layer
+ */
+static void
+p_vex_apply_bluebox(gint32 layer_id
+                  )
+{
+  GapBlueboxGlobalParams *bbp;
+  /* blubox parameters are not provided by the caller.
+   * in this case we init with default values and try to fetch
+   * values from previous bluebox filter runs
+   */
+  bbp = gap_bluebox_bbp_new(layer_id);;
+
+  if(bbp)
+  {
+    bbp->image_id = gimp_drawable_get_image(layer_id);
+    bbp->drawable_id = layer_id;
+    bbp->layer_id = layer_id;
+    bbp->run_mode = GIMP_RUN_NONINTERACTIVE;
+    bbp->run_flag = TRUE;
+
+    gap_bluebox_apply(bbp);
+  }
+}  /* end p_vex_apply_bluebox  */
+
+
+/* ----------------------
+ * p_frame_postprocessing
+ * ----------------------
+ * generate transpareny as alpha channel or layermask
+ * via bluebox effect (if requested)
+ */
+static void
+p_frame_postprocessing(t_GVA_Handle   *gvahand
+       ,GapVexMainGlobalParams *gpp)
+{
+  gint32 l_bbox_layer_id;
+  gint32 l_layermask_id;
+  
+  l_bbox_layer_id = gvahand->layer_id;
+  if (gpp->val.generate_alpha_via_bluebox == TRUE)
+  {
+    if ((gpp->val.extract_with_layermask == TRUE)
+    || (gpp->val.extract_with_layermask == TRUE))
+    {
+      l_bbox_layer_id = gimp_layer_copy(gvahand->layer_id);
+      gimp_image_add_layer(gvahand->image_id, l_bbox_layer_id, -1);
+
+      if(gap_debug)
+      {
+        printf("created bb_layer_id:%d\n", l_bbox_layer_id);
+      }
+      
+    }
+    if (!gimp_drawable_has_alpha(l_bbox_layer_id))
+    {
+      gimp_layer_add_alpha(l_bbox_layer_id);
+    }
+    p_vex_apply_bluebox(l_bbox_layer_id);
+  }
+
+  if (gimp_drawable_has_alpha(l_bbox_layer_id))
+  {
+    if (gpp->val.extract_alpha_as_gray_frames == TRUE)
+    {
+      l_layermask_id = gimp_layer_create_mask(l_bbox_layer_id, GIMP_ADD_ALPHA_MASK);
+      if(gap_debug)
+      {
+        printf("GRAY created layermask_id:%d\n", l_layermask_id);
+      }
+      gap_layer_copy_paste_drawable(gvahand->image_id, gvahand->layer_id, l_layermask_id);
+    } 
+    else if (gpp->val.extract_with_layermask == TRUE)
+    {
+      l_layermask_id = gimp_layer_create_mask(l_bbox_layer_id, GIMP_ADD_ALPHA_MASK);
+      if(gap_debug)
+      {
+        printf("LAYERMASK created layermask_id:%d\n", l_layermask_id);
+      }
+      gimp_layer_add_mask(gvahand->layer_id, l_layermask_id);
+    }
+
+    if (l_bbox_layer_id != gvahand->layer_id)
+    {
+      if(gap_debug)
+      {
+        printf("remove bb_layer_id:%d\n", l_bbox_layer_id);
+      }
+
+      /* remove the temporyry bluebox layer */
+      gimp_image_remove_layer(gvahand->image_id, l_bbox_layer_id);
+      //gimp_drawable_delete(l_bbox_layer_id);
+    }
+  }
+  
+
+}  /* end p_frame_postprocessing  */
 
 
 /* ------------------------------
@@ -87,6 +189,7 @@ gap_vex_exe_extract_videorange(GapVexMainGlobalParams *gpp)
 
   l_overwrite_mode_audio = 0;
 
+
   if(gap_debug)
   {
       printf("RUN gap_vex_exe_extract_videorange with parameters:\n");
@@ -110,6 +213,10 @@ gap_vex_exe_extract_videorange(GapVexMainGlobalParams *gpp)
       printf("exact_seek   : %d\n", (int)gpp->val.exact_seek);
       printf("deinterlace  : %d\n", (int)gpp->val.deinterlace);
       printf("delace_threshold: %f\n", (float)gpp->val.delace_threshold);
+
+      printf("generate_alpha_via_bluebox: %d\n", (int)gpp->val.generate_alpha_via_bluebox);
+      printf("extract_alpha_as_gray_frames: %d\n", (int)gpp->val.extract_alpha_as_gray_frames);
+      printf("extract_with_layermask: %d\n", (int)gpp->val.extract_with_layermask);
   }
 
   l_save_run_mode = GIMP_RUN_INTERACTIVE;  /* for the 1.st call of saving a non xcf frame */
@@ -371,11 +478,27 @@ gap_vex_exe_extract_videorange(GapVexMainGlobalParams *gpp)
            else
            {
               gint32 l_sav_rc;
+              gint32 l_sav_image_id;
               
-              l_sav_rc = gap_lib_save_named_image(gvahand->image_id
+              l_sav_image_id = gvahand->image_id;
+              
+              p_frame_postprocessing(gvahand, gpp);
+              if (gpp->val.extract_alpha_as_gray_frames == TRUE)
+              {
+                l_sav_image_id = gimp_image_duplicate(gvahand->image_id);
+                gimp_image_convert_grayscale(l_sav_image_id);
+              }
+
+              l_sav_rc = gap_lib_save_named_image(l_sav_image_id
                            , framename
                            , l_save_run_mode
                            );
+                           
+              if (l_sav_image_id != gvahand->image_id)
+              {
+                /* delete temporary grayscale image */
+                gap_image_delete_immediate(l_sav_image_id);
+              }
               if (l_sav_rc < 0)
               {
                 g_message(_("failed to save file:\n'%s'"), framename);
@@ -394,6 +517,7 @@ gap_vex_exe_extract_videorange(GapVexMainGlobalParams *gpp)
                                        ,delace[0]
                                        ,gpp->val.delace_threshold
                                        );
+         p_frame_postprocessing(gvahand, gpp);
          if(l_rc != GVA_RET_OK)
          {
            break;

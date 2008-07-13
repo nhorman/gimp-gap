@@ -1,4 +1,3 @@
-
 /* gap_mod_layer_dialog.h
  * 2004.11.11 hof (Wolfgang Hofer)
  *
