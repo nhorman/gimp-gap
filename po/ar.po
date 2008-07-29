@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Arabic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-04-18 09:25+0100\n"
+"POT-Creation-Date: 2008-07-29 02:03+0100\n"
 "PO-Revision-Date: 2008-04-19 20:01+0300\n"
 "Last-Translator: \n"
 "Language-Team: en_US <kde-i18n-doc@lists.kde.org>\n"
@@ -49,7 +49,7 @@ msgstr "الدليل '%s'  موجود حاليا."
 msgid "File '%s' already exists"
 msgstr "الملف '%s' موجود حاليا"
 
-#: ../gap/gap_arr_dialog.c:1810 ../gap/gap_vex_dialog.c:245
+#: ../gap/gap_arr_dialog.c:1810 ../gap/gap_vex_dialog.c:247
 #: ../vid_common/gap_cme_gui.c:2274
 msgid "Overwrite"
 msgstr "كتابة فوقية"
@@ -185,7 +185,7 @@ msgstr "خطاء تعذر فى القراءة من المقبس %s\n"
 #: ../gap/gap_base_ops.c:697 ../gap/gap_base_ops.c:704
 #: ../gap/gap_base_ops.c:711 ../gap/gap_base_ops.c:799
 #: ../gap/gap_base_ops.c:821 ../gap/gap_base_ops.c:912
-#: ../gap/gap_base_ops.c:920 ../gap/gap_base_ops.c:928 ../gap/gap_lib.c:3007
+#: ../gap/gap_base_ops.c:920 ../gap/gap_base_ops.c:928 ../gap/gap_lib.c:3292
 #, fuzzy, c-format
 msgid "Error: could not rename frame %ld to %ld"
 msgstr "خطاء تعذر اعادة التسمية %sالى %s%s\n"
@@ -222,7 +222,8 @@ msgstr "اذهب إلى قائمة العنوان"
 
 #: ../gap/gap_base_ops.c:1136
 #, c-format
-msgid "Frames %d - %d will be deleted. There will be no undo for this operation."
+msgid ""
+"Frames %d - %d will be deleted. There will be no undo for this operation."
 msgstr ""
 
 #. title_txt
@@ -244,7 +245,8 @@ msgstr "حذف الإطارات من %ld إلى (رقم)"
 
 #: ../gap/gap_base_ops.c:1194
 #, c-format
-msgid "Delete frames starting at current number %d up to this number (inclusive)"
+msgid ""
+"Delete frames starting at current number %d up to this number (inclusive)"
 msgstr ""
 
 #: ../gap/gap_base_ops.c:1275
@@ -280,11 +282,11 @@ msgstr "تغيير وحدة الصورة"
 #. the from_frame label
 #: ../gap/gap_base_ops.c:1332 ../gap/gap_base_ops.c:1486
 #: ../gap/gap_base_ops.c:1692 ../gap/gap_base_ops.c:1751
-#: ../gap/gap_decode_xanim.c:247 ../gap/gap_mod_layer_dialog.c:1334
+#: ../gap/gap_decode_xanim.c:247 ../gap/gap_mod_layer_dialog.c:1354
 #: ../gap/gap_mov_dialog.c:3478 ../gap/gap_mpege.c:301
 #: ../gap/gap_onion_dialog.c:914 ../gap/gap_range_ops.c:296
 #: ../gap/gap_range_ops.c:505 ../gap/gap_range_ops.c:700
-#: ../gap/gap_vex_dialog.c:2037 ../vid_common/gap_cme_gui.c:3307
+#: ../gap/gap_vex_dialog.c:2128 ../vid_common/gap_cme_gui.c:3307
 #, fuzzy
 msgid "From Frame:"
 msgstr "من الثيمة"
@@ -300,11 +302,11 @@ msgstr ""
 #. the to_frame label
 #: ../gap/gap_base_ops.c:1340 ../gap/gap_base_ops.c:1494
 #: ../gap/gap_base_ops.c:1700 ../gap/gap_base_ops.c:1759
-#: ../gap/gap_decode_xanim.c:257 ../gap/gap_mod_layer_dialog.c:1356
+#: ../gap/gap_decode_xanim.c:257 ../gap/gap_mod_layer_dialog.c:1376
 #: ../gap/gap_mov_dialog.c:3496 ../gap/gap_mpege.c:311
 #: ../gap/gap_onion_dialog.c:921 ../gap/gap_range_ops.c:306
 #: ../gap/gap_range_ops.c:513 ../gap/gap_range_ops.c:708
-#: ../gap/gap_vex_dialog.c:2093 ../vid_common/gap_cme_gui.c:3341
+#: ../gap/gap_vex_dialog.c:2184 ../vid_common/gap_cme_gui.c:3341
 #, fuzzy
 msgid "To Frame:"
 msgstr "إطار"
@@ -342,7 +344,7 @@ msgstr ""
 msgid "Change Frames Density"
 msgstr "تغيير وحدة الصورة"
 
-#: ../gap/gap_base_ops.c:1432 ../gap/gap_base_ops.c:1561 ../gap/gap_lib.c:1791
+#: ../gap/gap_base_ops.c:1432 ../gap/gap_base_ops.c:1561 ../gap/gap_lib.c:1815
 msgid ""
 "Operation cancelled.\n"
 "GAP video plug-ins only work with filenames\n"
@@ -383,7 +385,8 @@ msgstr "خادم إكستشينج %s"
 
 #: ../gap/gap_base_ops.c:1637
 #, c-format
-msgid "Exchange the current frame %d with the frame that has the number entered here"
+msgid ""
+"Exchange the current frame %d with the frame that has the number entered here"
 msgstr ""
 
 #: ../gap/gap_base_ops.c:1641
@@ -438,7 +441,7 @@ msgstr "عدد غير صحيح للقاعدة الحالية"
 
 #. the framenumber digits label
 #: ../gap/gap_base_ops.c:1920 ../gap/gap_split.c:301
-#: ../gap/gap_vex_dialog.c:2401
+#: ../gap/gap_vex_dialog.c:2493
 #, fuzzy
 msgid "Digits:"
 msgstr "خانات رقمية"
@@ -522,7 +525,8 @@ msgstr "الهدف:"
 #. constrain
 #. lowr/upper unconstrained
 #: ../gap/gap_bluebox.c:362
-msgid "Set alpha of affected pixel to target alpha where 0.0 is full transparent"
+msgid ""
+"Set alpha of affected pixel to target alpha where 0.0 is full transparent"
 msgstr ""
 
 #: ../gap/gap_bluebox.c:373
@@ -786,7 +790,7 @@ msgstr "مز_ج..."
 #: ../gap/gap_bluebox_main.c:187 ../gap/gap_main.c:1127
 #: ../gap/gap_morph_main.c:155 ../gap/gap_name2layer_main.c:177
 #: ../gap/gap_navigator_dialog.c:551 ../gap/gap_onion_main.c:205
-#: ../gap/gap_player_main.c:282 ../gap/gap_story_main.c:182
+#: ../gap/gap_player_main.c:292 ../gap/gap_story_main.c:182
 msgid "<Image>/Video/"
 msgstr "<Image>/Video/"
 
@@ -953,7 +957,7 @@ msgstr "عدد الإطارات لـGSM"
 
 #. the videotrack to label
 #: ../gap/gap_decode_mplayer.c:467 ../gap/gap_story_properties.c:3387
-#: ../gap/gap_vex_dialog.c:2150
+#: ../gap/gap_vex_dialog.c:2241
 msgid "Videotrack:"
 msgstr "مقطوعة الفيديو:"
 
@@ -961,8 +965,10 @@ msgstr "مقطوعة الفيديو:"
 msgid "Number of videotrack to extract. (0 == ignore video)"
 msgstr ""
 
+#. Sample Offset
 #. the audiotrack to label
-#: ../gap/gap_decode_mplayer.c:479 ../gap/gap_vex_dialog.c:2184
+#: ../gap/gap_decode_mplayer.c:479 ../gap/gap_player_dialog.c:6392
+#: ../gap/gap_vex_dialog.c:2275
 msgid "Audiotrack:"
 msgstr "مقطوعة الصوت"
 
@@ -1046,7 +1052,8 @@ msgid "Jpeg Progressive:"
 msgstr "بروكراسف روك"
 
 #: ../gap/gap_decode_mplayer.c:566
-msgid "Enable progressive jpeg encoding(is ignored when other formats are used)"
+msgid ""
+"Enable progressive jpeg encoding(is ignored when other formats are used)"
 msgstr ""
 
 #: ../gap/gap_decode_mplayer.c:572
@@ -1128,7 +1135,7 @@ msgid "Overwrite Frame"
 msgstr "نسق التنميق"
 
 #: ../gap/gap_decode_mplayer.c:694 ../gap/gap_decode_xanim.c:367
-#: ../gap/gap_range_ops.c:1455 ../gap/gap_vex_dialog.c:236
+#: ../gap/gap_range_ops.c:1455 ../gap/gap_vex_dialog.c:238
 #, fuzzy
 msgid "Overwrite All"
 msgstr "تنميق الملف؟"
@@ -1291,7 +1298,8 @@ msgstr "استخراج المقطوعات"
 msgid "Enable extraction of frames"
 msgstr "تفعيل المفاتيح ال_سريعة"
 
-#: ../gap/gap_decode_xanim.c:288
+#. create extract audio otone track button
+#: ../gap/gap_decode_xanim.c:288 ../gap/gap_player_dialog.c:6419
 #, fuzzy
 msgid "Extract Audio"
 msgstr "استخرج"
@@ -1303,7 +1311,8 @@ msgid ""
 msgstr ""
 
 #: ../gap/gap_decode_xanim.c:295
-msgid "Quality for resulting jpeg frames. (is ignored when other formats are used)"
+msgid ""
+"Quality for resulting jpeg frames. (is ignored when other formats are used)"
 msgstr ""
 
 #: ../gap/gap_decode_xanim.c:311
@@ -1437,12 +1446,12 @@ msgstr ""
 msgid "Select Filter for Animated Apply"
 msgstr "انتق عناصر من القائمة"
 
-#: ../gap/gap_filter_foreach.c:592 ../gap/gap_mod_layer.c:973
+#: ../gap/gap_filter_foreach.c:592 ../gap/gap_mod_layer.c:1007
 #, fuzzy
 msgid "Apply Constant"
 msgstr "ثابت"
 
-#: ../gap/gap_filter_foreach.c:593 ../gap/gap_mod_layer.c:974
+#: ../gap/gap_filter_foreach.c:593 ../gap/gap_mod_layer.c:1008
 #, fuzzy
 msgid "Apply Varying"
 msgstr "ظهور"
@@ -1541,7 +1550,7 @@ msgid "** File is not a filtermacro **"
 msgstr "%s ليس بملف إعدادات الملف الشخصي"
 
 #: ../gap/gap_fmac_main.c:895 ../gap/gap_onion_dialog.c:1366
-#: ../gap/gap_player_dialog.c:7154
+#: ../gap/gap_player_dialog.c:7760
 #, fuzzy
 msgid "Show help page"
 msgstr "اظهر الصفحة الأخيرة"
@@ -1584,7 +1593,7 @@ msgid ""
 "settings of the last call"
 msgstr ""
 
-#: ../gap/gap_fmac_main.c:955 ../gap/gap_player_dialog.c:7202
+#: ../gap/gap_fmac_main.c:955 ../gap/gap_player_dialog.c:7808
 #, fuzzy
 msgid "Close window"
 msgstr "اغلق النافذة"
@@ -1634,32 +1643,32 @@ msgid "<Image>/Video/Encode/"
 msgstr ""
 
 #. Menu names
-#: ../gap/gap_frontends_main.c:223 ../gap/gap_vex_main.c:195
+#: ../gap/gap_frontends_main.c:223 ../gap/gap_vex_main.c:201
 msgid "<Image>/Video/Split Video into Frames/"
 msgstr ""
 
-#: ../gap/gap_frontends_main.c:224 ../gap/gap_vex_main.c:196
+#: ../gap/gap_frontends_main.c:224 ../gap/gap_vex_main.c:202
 #, fuzzy
 msgid "<Toolbox>/Xtns/Split Video into Frames/"
 msgstr "<Toolbox>/Xtns/Script-Fu/نماذج"
 
-#: ../gap/gap_lib.c:1768
+#: ../gap/gap_lib.c:1792
 msgid ""
 "Operation cancelled.\n"
 "Current frame was changed while dialog was open."
 msgstr ""
 
-#: ../gap/gap_lib.c:1963
+#: ../gap/gap_lib.c:1990
 #, fuzzy
 msgid "Save Flattened"
 msgstr "احفظ ملف"
 
-#: ../gap/gap_lib.c:1965
+#: ../gap/gap_lib.c:1992
 #, fuzzy
 msgid "Save As Is"
 msgstr "ا_حفظ باسم"
 
-#: ../gap/gap_lib.c:1969
+#: ../gap/gap_lib.c:1996
 #, c-format
 msgid ""
 "You are using another file format than xcf.\n"
@@ -1671,7 +1680,7 @@ msgid ""
 "to your gimprc file."
 msgstr ""
 
-#: ../gap/gap_lib.c:1978
+#: ../gap/gap_lib.c:2005
 #, fuzzy
 msgid "Fileformat Warning"
 msgstr "معلومات الملف"
@@ -1802,33 +1811,39 @@ msgid ""
 "(for all selected layers)"
 msgstr ""
 
+#. name_prefix
+#: ../gap/gap_mod_layer.c:873 ../gap/gap_mod_layer.c:885
+#: ../gap/gap_mod_layer.c:897
+msgid "_msk"
+msgstr ""
+
 #. GAP-PDB-Browser Dialog
 #. ----------------------
-#: ../gap/gap_mod_layer.c:972
+#: ../gap/gap_mod_layer.c:1006
 msgid "Select Filter for Animated Apply on Frames"
 msgstr ""
 
-#: ../gap/gap_mod_layer.c:1123
+#: ../gap/gap_mod_layer.c:1157
 msgid "Modify Layers cancelled: No layer selected in last handled frame"
 msgstr ""
 
-#: ../gap/gap_mod_layer.c:1132
+#: ../gap/gap_mod_layer.c:1166
 #, c-format
 msgid ""
 "Modify Layers cancelled: first selected layer \"%s\"\n"
 "in last frame has no layermask"
 msgstr ""
 
-#: ../gap/gap_mod_layer.c:1233
+#: ../gap/gap_mod_layer.c:1267
 msgid "Modifying frames/layer(s)..."
 msgstr ""
 
-#: ../gap/gap_mod_layer.c:1325
+#: ../gap/gap_mod_layer.c:1359
 #, fuzzy
 msgid "No selected layer in start frame"
 msgstr "لا عنصر منتقى للحذف!"
 
-#: ../gap/gap_mod_layer.c:1337
+#: ../gap/gap_mod_layer.c:1371
 #, c-format
 msgid ""
 "first selected layer \"%s\"\n"
@@ -2187,48 +2202,60 @@ msgstr ""
 msgid "Copy layermask from layer below"
 msgstr ""
 
+#: ../gap/gap_mod_layer_dialog.c:782
+msgid "Create mask layer representing the opacity (alpha+layermask merged)"
+msgstr ""
+
+#: ../gap/gap_mod_layer_dialog.c:788
+msgid "Create mask layer as copy of the layermask (ignore alpha)"
+msgstr ""
+
+#: ../gap/gap_mod_layer_dialog.c:794
+msgid "Create mask layer as copy of the alpha channel (ignore layermask)"
+msgstr ""
+
 #. apply filter has no sub_menu
-#: ../gap/gap_mod_layer_dialog.c:792
+#: ../gap/gap_mod_layer_dialog.c:812
 #, fuzzy
 msgid "Apply filter on layer(s)"
 msgstr "ت_طبيق المرشحات"
 
-#: ../gap/gap_mod_layer_dialog.c:793
+#: ../gap/gap_mod_layer_dialog.c:813
 #, fuzzy
 msgid "apply filter to all selected layers"
 msgstr "تطبيق قواعد الترشيح على الرسائل المنتقاة"
 
-#: ../gap/gap_mod_layer_dialog.c:798
+#: ../gap/gap_mod_layer_dialog.c:818
 #, fuzzy
 msgid "Duplicate layer(s)"
 msgstr "مضاعفة الطبقة"
 
-#: ../gap/gap_mod_layer_dialog.c:804
+#: ../gap/gap_mod_layer_dialog.c:824
 #, fuzzy
 msgid "Delete layer(s)"
 msgstr "حذف الطبقة"
 
-#: ../gap/gap_mod_layer_dialog.c:810
+#: ../gap/gap_mod_layer_dialog.c:830
 #, fuzzy
 msgid "Rename layer(s)"
 msgstr "تغيير اسم الطبقة"
 
-#: ../gap/gap_mod_layer_dialog.c:817
+#: ../gap/gap_mod_layer_dialog.c:837
 #, fuzzy
 msgid "Resize layer(s) to image size"
 msgstr "قص إلى الصورة"
 
-#: ../gap/gap_mod_layer_dialog.c:818
+#: ../gap/gap_mod_layer_dialog.c:838
 #, fuzzy
 msgid "Resize selected layer(s) to image size"
 msgstr "عكس ترتيب الطبقات في الصورة"
 
-#: ../gap/gap_mod_layer_dialog.c:824
+#: ../gap/gap_mod_layer_dialog.c:844
 #, fuzzy
 msgid "Add alpha channel"
 msgstr "إضافة قناة ألفا"
 
-#: ../gap/gap_mod_layer_dialog.c:964
+#: ../gap/gap_mod_layer_dialog.c:984
 #, fuzzy
 msgid "Frames Modify"
 msgstr "الإطارات"
@@ -2236,24 +2263,24 @@ msgstr "الإطارات"
 #. +++++++++++++++++++++++++
 #. the function        frame
 #. +++++++++++++++++++++++++
-#: ../gap/gap_mod_layer_dialog.c:987
+#: ../gap/gap_mod_layer_dialog.c:1007
 msgid "Function"
 msgstr "الوظيفة"
 
 #. the Fuction label
 #. the toplevel menu_item (will be replaced on any selection)
-#: ../gap/gap_mod_layer_dialog.c:1001 ../gap/gap_mod_layer_dialog.c:1039
+#: ../gap/gap_mod_layer_dialog.c:1021 ../gap/gap_mod_layer_dialog.c:1059
 #, fuzzy
 msgid "Function:"
 msgstr "الوظيفة"
 
 #. the LayerName (or channel Name) label
-#: ../gap/gap_mod_layer_dialog.c:1059
+#: ../gap/gap_mod_layer_dialog.c:1079
 #, fuzzy
 msgid "Layer Name:"
 msgstr "اسم الطبقة"
 
-#: ../gap/gap_mod_layer_dialog.c:1077
+#: ../gap/gap_mod_layer_dialog.c:1097
 msgid ""
 "Name for all handled layers (or channels),\n"
 "where the string '[######]' is replaced by the frame number."
@@ -2262,120 +2289,121 @@ msgstr ""
 #. +++++++++++++++++++++++++
 #. the layer selection frame
 #. +++++++++++++++++++++++++
-#: ../gap/gap_mod_layer_dialog.c:1086 ../gap/gap_onion_dialog.c:1176
+#: ../gap/gap_mod_layer_dialog.c:1106 ../gap/gap_onion_dialog.c:1176
 #, fuzzy
 msgid "Layer Selection"
 msgstr "اختيار النموذج"
 
 #. the radio button "Pattern is equal to layer name"
 #. Layer select modes
-#: ../gap/gap_mod_layer_dialog.c:1099 ../gap/gap_range_ops.c:651
+#: ../gap/gap_mod_layer_dialog.c:1119 ../gap/gap_range_ops.c:651
 msgid "Pattern is equal to layer name"
 msgstr ""
 
-#: ../gap/gap_mod_layer_dialog.c:1108
+#: ../gap/gap_mod_layer_dialog.c:1128
 msgid "Select all layers where layer name is equal to pattern"
 msgstr ""
 
 #. the case sensitive  check_button
-#: ../gap/gap_mod_layer_dialog.c:1119 ../gap/gap_onion_dialog.c:1261
+#: ../gap/gap_mod_layer_dialog.c:1139 ../gap/gap_onion_dialog.c:1261
 #, fuzzy
 msgid "Case sensitive"
 msgstr "حساس لل_حالة"
 
-#: ../gap/gap_mod_layer_dialog.c:1126 ../gap/gap_range_ops.c:768
+#: ../gap/gap_mod_layer_dialog.c:1146 ../gap/gap_range_ops.c:768
 msgid "Lowercase and uppercase letters are considered as different"
 msgstr ""
 
 #. the radio button "Pattern is start of layer name"
-#: ../gap/gap_mod_layer_dialog.c:1137 ../gap/gap_range_ops.c:652
+#: ../gap/gap_mod_layer_dialog.c:1157 ../gap/gap_range_ops.c:652
 msgid "Pattern is start of layer name"
 msgstr ""
 
-#: ../gap/gap_mod_layer_dialog.c:1146
+#: ../gap/gap_mod_layer_dialog.c:1166
 msgid "Select all layers where layer name starts with pattern"
 msgstr ""
 
 #. the invert layer_selection  check_button
-#: ../gap/gap_mod_layer_dialog.c:1157
+#: ../gap/gap_mod_layer_dialog.c:1177
 #, fuzzy
 msgid "Invert Layer Selection"
 msgstr "عكس تحديد"
 
-#: ../gap/gap_mod_layer_dialog.c:1164
+#: ../gap/gap_mod_layer_dialog.c:1184
 #, fuzzy
 msgid "Perform actions on all unselected layers"
 msgstr "اعمل أفعال بحركات بالفأرة"
 
 #. the  radio button "Pattern is end of layer name"
-#: ../gap/gap_mod_layer_dialog.c:1175 ../gap/gap_range_ops.c:653
+#: ../gap/gap_mod_layer_dialog.c:1195 ../gap/gap_range_ops.c:653
 #, fuzzy
 msgid "Pattern is end of layer name"
 msgstr "اسم النموذج"
 
-#: ../gap/gap_mod_layer_dialog.c:1184
+#: ../gap/gap_mod_layer_dialog.c:1204
 msgid "Select all layers where layer name ends up with pattern"
 msgstr ""
 
 #. the  radio button "Pattern is a part of layer name"
-#: ../gap/gap_mod_layer_dialog.c:1197 ../gap/gap_range_ops.c:654
+#: ../gap/gap_mod_layer_dialog.c:1217 ../gap/gap_range_ops.c:654
 #, fuzzy
 msgid "Pattern is a part of layer name"
 msgstr "ادخل اسم طور"
 
-#: ../gap/gap_mod_layer_dialog.c:1206
+#: ../gap/gap_mod_layer_dialog.c:1226
 msgid "Select all layers where layer name contains pattern"
 msgstr ""
 
 #. the  radio button "Pattern is a list of layerstack numbers"
-#: ../gap/gap_mod_layer_dialog.c:1219 ../gap/gap_onion_dialog.c:1227
+#: ../gap/gap_mod_layer_dialog.c:1239 ../gap/gap_onion_dialog.c:1227
 #: ../gap/gap_range_ops.c:655
 msgid "Pattern is a list of layerstack numbers"
 msgstr ""
 
-#: ../gap/gap_mod_layer_dialog.c:1228 ../gap/gap_range_ops.c:663
+#: ../gap/gap_mod_layer_dialog.c:1248 ../gap/gap_range_ops.c:663
 msgid ""
 "Select layerstack positions where 0 is the top layer.\n"
 "Example: 0, 4-5, 8"
 msgstr ""
 
 #. the  radio button "Pattern is a list of reverse layerstack numbers"
-#: ../gap/gap_mod_layer_dialog.c:1241 ../gap/gap_onion_dialog.c:1228
+#: ../gap/gap_mod_layer_dialog.c:1261 ../gap/gap_onion_dialog.c:1228
 #: ../gap/gap_range_ops.c:656
 msgid "Pattern is a list of reverse layerstack numbers"
 msgstr ""
 
-#: ../gap/gap_mod_layer_dialog.c:1250 ../gap/gap_range_ops.c:664
+#: ../gap/gap_mod_layer_dialog.c:1270 ../gap/gap_range_ops.c:664
 msgid ""
 "Select layerstack positions where 0 is the background layer.\n"
 "Example: 0, 4-5, 8"
 msgstr ""
 
 #. the  radio button "All visible (ignore pattern)"
-#: ../gap/gap_mod_layer_dialog.c:1263 ../gap/gap_onion_dialog.c:1229
+#: ../gap/gap_mod_layer_dialog.c:1283 ../gap/gap_onion_dialog.c:1229
 #: ../gap/gap_range_ops.c:657
 msgid "All visible (ignore pattern)"
 msgstr ""
 
-#: ../gap/gap_mod_layer_dialog.c:1272 ../gap/gap_range_ops.c:665
+#: ../gap/gap_mod_layer_dialog.c:1292 ../gap/gap_range_ops.c:665
 #, fuzzy
 msgid "Select all visible layers"
 msgstr "إنتقاء جميع الرّسائل المرئيّة"
 
 #. the layer_pattern label
-#: ../gap/gap_mod_layer_dialog.c:1290 ../gap/gap_range_ops.c:758
+#: ../gap/gap_mod_layer_dialog.c:1310 ../gap/gap_range_ops.c:758
 #, fuzzy
 msgid "Layer Pattern:"
 msgstr "نمط النجوم"
 
-#: ../gap/gap_mod_layer_dialog.c:1300
-msgid "String to identify layer names or layerstack position numbers. Example: 0,3-5"
+#: ../gap/gap_mod_layer_dialog.c:1320
+msgid ""
+"String to identify layer names or layerstack position numbers. Example: 0,3-5"
 msgstr ""
 
 #. +++++++++++++++++++++++++
 #. the frame_range     frame
 #. +++++++++++++++++++++++++
-#: ../gap/gap_mod_layer_dialog.c:1321 ../gap/gap_onion_dialog.c:904
+#: ../gap/gap_mod_layer_dialog.c:1341 ../gap/gap_onion_dialog.c:904
 #, fuzzy
 msgid "Frame Range"
 msgstr "معدل الإطارات"
@@ -2387,7 +2415,7 @@ msgstr "معدل الإطارات"
 #. constrain
 #. lower unconstrained
 #. upper unconstrained
-#: ../gap/gap_mod_layer_dialog.c:1343 ../gap/gap_mpege.c:302
+#: ../gap/gap_mod_layer_dialog.c:1363 ../gap/gap_mpege.c:302
 #: ../gap/gap_onion_dialog.c:939 ../gap/gap_range_ops.c:297
 #: ../gap/gap_range_ops.c:506 ../gap/gap_range_ops.c:701
 #, fuzzy
@@ -2401,7 +2429,7 @@ msgstr "الاسم الأول"
 #. constrain
 #. lower unconstrained
 #. upper unconstrained
-#: ../gap/gap_mod_layer_dialog.c:1365 ../gap/gap_mpege.c:312
+#: ../gap/gap_mod_layer_dialog.c:1385 ../gap/gap_mpege.c:312
 #: ../gap/gap_onion_dialog.c:957 ../gap/gap_range_ops.c:307
 #: ../gap/gap_range_ops.c:514 ../gap/gap_range_ops.c:709
 #, fuzzy
@@ -2706,11 +2734,13 @@ msgid ""
 msgstr ""
 
 #: ../gap/gap_morph_dialog.c:3761
-msgid "Load morph workpoints from file. SHIFT-click: define filename of Pointset B"
+msgid ""
+"Load morph workpoints from file. SHIFT-click: define filename of Pointset B"
 msgstr ""
 
 #: ../gap/gap_morph_dialog.c:3773
-msgid "Save morph workpoints to file. SHIFT-click: define filename of Pointset B"
+msgid ""
+"Save morph workpoints to file. SHIFT-click: define filename of Pointset B"
 msgstr ""
 
 #. the tween_steps label
@@ -3002,7 +3032,7 @@ msgstr ""
 #. Paintmode combo (menu)
 #. the operating Mode label
 #: ../gap/gap_mov_dialog.c:2785 ../gap/gap_name2layer_main.c:444
-#: ../gap/gap_vex_dialog.c:2345 ../gap/gap_video_index_creator.c:942
+#: ../gap/gap_vex_dialog.c:2436 ../gap/gap_video_index_creator.c:942
 #: ../gap/gap_wr_opacity.c:340
 #, fuzzy
 msgid "Mode:"
@@ -3079,7 +3109,7 @@ msgstr ""
 #. Loop Stepmode combo
 #. the playback mode checkbuttons
 #. Loop Toggle
-#: ../gap/gap_mov_dialog.c:2868 ../gap/gap_player_dialog.c:6991
+#: ../gap/gap_mov_dialog.c:2868 ../gap/gap_player_dialog.c:7597
 #, fuzzy
 msgid "Loop"
 msgstr "مكررة"
@@ -3192,7 +3222,8 @@ msgid "Move Path Bluebox Keycolor"
 msgstr ""
 
 #: ../gap/gap_mov_dialog.c:3010
-msgid "Open dialog window to set parameters and keycolor for the bluebox filter"
+msgid ""
+"Open dialog window to set parameters and keycolor for the bluebox filter"
 msgstr ""
 
 #. toggle Tracelayer
@@ -3334,7 +3365,8 @@ msgid "Delete current controlpoint"
 msgstr "احذف الموقع الحالي"
 
 #: ../gap/gap_mov_dialog.c:3243
-msgid "Show previous controlpoint. Hold down the shift key to follow keyframes."
+msgid ""
+"Show previous controlpoint. Hold down the shift key to follow keyframes."
 msgstr ""
 
 #: ../gap/gap_mov_dialog.c:3256
@@ -3875,14 +3907,14 @@ msgstr "نسخ الرسائل إلى المجلّد %s"
 msgid "Generating animated preview..."
 msgstr "جاري توليد مفتاح خاص."
 
-#: ../gap/gap_mov_exec.c:1859
+#: ../gap/gap_mov_exec.c:1861
 #, c-format
 msgid ""
 "\n"
 "Error: Keyframe %d at point [%d] higher or equal than last handled frame"
 msgstr ""
 
-#: ../gap/gap_mov_exec.c:1867
+#: ../gap/gap_mov_exec.c:1869
 #, c-format
 msgid ""
 "\n"
@@ -3890,21 +3922,21 @@ msgid ""
 "for the previous controlpoints"
 msgstr ""
 
-#: ../gap/gap_mov_exec.c:1877
+#: ../gap/gap_mov_exec.c:1879
 #, c-format
 msgid ""
 "\n"
 "Error: Keyframe %d is not in sequence at point [%d]"
 msgstr ""
 
-#: ../gap/gap_mov_exec.c:1895
+#: ../gap/gap_mov_exec.c:1897
 #, c-format
 msgid ""
 "\n"
 "Error: controlpoint [%d] is out of handled framerange"
 msgstr ""
 
-#: ../gap/gap_mov_exec.c:1909
+#: ../gap/gap_mov_exec.c:1911
 #, c-format
 msgid ""
 "\n"
@@ -4430,7 +4462,7 @@ msgid "Select None"
 msgstr "لا تنتق _شيئاً"
 
 #. Video Length (frames)
-#: ../gap/gap_navigator_dialog.c:4240 ../gap/gap_player_dialog.c:5993
+#: ../gap/gap_navigator_dialog.c:4240 ../gap/gap_player_dialog.c:6599
 #, fuzzy
 msgid "Videoframes:"
 msgstr "ملفات الفيديو"
@@ -4572,7 +4604,8 @@ msgid "Ignore BG-layer(s):"
 msgstr ""
 
 #: ../gap/gap_onion_dialog.c:1209
-msgid "Exclude N background layers. Use 0 if you dont want to exclude any layer."
+msgid ""
+"Exclude N background layers. Use 0 if you dont want to exclude any layer."
 msgstr ""
 
 #: ../gap/gap_onion_dialog.c:1212
@@ -4686,7 +4719,8 @@ msgstr ""
 
 #: ../gap/gap_onion_dialog.c:1396
 #, fuzzy
-msgid "Remove all onionskin layers in all frames of the the selected frame range"
+msgid ""
+"Remove all onionskin layers in all frames of the the selected frame range"
 msgstr "إنتقاء جميع الرّسائل في نفس شعبة الرّسالة المنتقاة"
 
 #: ../gap/gap_onion_dialog.c:1405
@@ -4725,33 +4759,33 @@ msgid "Removing onionskin layers..."
 msgstr "يجري إزالة المجلّد %s"
 
 #. Format the message
-#: ../gap/gap_player_dialog.c:381
+#: ../gap/gap_player_dialog.c:402
 #, c-format
 msgid ""
 "Problem with audioplayback. The audiolib reported:\n"
 "%s"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:402
+#: ../gap/gap_player_dialog.c:423
 #, fuzzy
 msgid "Audiosource:"
 msgstr "قرص صوتي:"
 
-#: ../gap/gap_player_dialog.c:413
+#: ../gap/gap_player_dialog.c:434
 #, fuzzy
 msgid "Wavefile:"
 msgstr "ملفات Wave"
 
-#: ../gap/gap_player_dialog.c:415
+#: ../gap/gap_player_dialog.c:436
 msgid "Name of wavefile to create as copy in RIFF WAVE format"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:422
+#: ../gap/gap_player_dialog.c:443
 #, fuzzy
 msgid "Resample:"
 msgstr "نموذج سوبر"
 
-#: ../gap/gap_player_dialog.c:423
+#: ../gap/gap_player_dialog.c:444
 msgid ""
 "ON: Resample the copy at specified samplerate.\n"
 "OFF: Use original samplerate"
@@ -4759,26 +4793,26 @@ msgstr ""
 
 #. Audio Samplerate
 #. the Samplerate label
-#: ../gap/gap_player_dialog.c:431 ../gap/gap_player_dialog.c:5935
+#: ../gap/gap_player_dialog.c:452 ../gap/gap_player_dialog.c:6541
 #: ../gap/gap_story_dialog.c:8896 ../vid_common/gap_cme_gui.c:3082
 #, fuzzy
 msgid "Samplerate:"
 msgstr "نسبة التردد:"
 
-#: ../gap/gap_player_dialog.c:432
+#: ../gap/gap_player_dialog.c:453
 msgid "Target audio samplerate in samples/sec. Ignored if resample is off"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:453
+#: ../gap/gap_player_dialog.c:474
 msgid "Copy Audiofile as Wavefile"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:454 ../gap/gap_story_dialog.c:5067
+#: ../gap/gap_player_dialog.c:475 ../gap/gap_story_dialog.c:5067
 #: ../gap/gap_story_dialog.c:8536 ../gap/gap_story_dialog.c:8941
 msgid "Settings"
 msgstr "الإعدادات"
 
-#: ../gap/gap_player_dialog.c:547
+#: ../gap/gap_player_dialog.c:568
 msgid ""
 "Failure to start the wavplay server is fatal.\n"
 "Please check the executability of the 'wavplay' command.\n"
@@ -4786,32 +4820,32 @@ msgid ""
 "you can set the Environmentvariable WAVPLAYPATH before gimp startup\n"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:610
+#: ../gap/gap_player_dialog.c:631
 #, fuzzy
 msgid "Audio Delay"
 msgstr "قارئ الأقراص الصوتية"
 
-#: ../gap/gap_player_dialog.c:622
+#: ../gap/gap_player_dialog.c:643
 #, fuzzy
 msgid "Syncron"
 msgstr "زامن"
 
-#: ../gap/gap_player_dialog.c:626
+#: ../gap/gap_player_dialog.c:647
 #, fuzzy
 msgid "Audio Skipped"
 msgstr "الغيت "
 
-#: ../gap/gap_player_dialog.c:638
+#: ../gap/gap_player_dialog.c:659
 #, c-format
 msgid "%d (at %.4f frames/sec)"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:732
+#: ../gap/gap_player_dialog.c:756
 #, fuzzy, c-format
 msgid "Error at reading WAV header from file '%s'"
 msgstr "خطأ عند القراءة من الابن: %s."
 
-#: ../gap/gap_player_dialog.c:865
+#: ../gap/gap_player_dialog.c:1076
 #, c-format
 msgid ""
 "WARNING: your gimprc file configuration for the wavplay audio server\n"
@@ -4819,7 +4853,7 @@ msgid ""
 "the configured value for %s is: %s\n"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:886
+#: ../gap/gap_player_dialog.c:1097
 #, c-format
 msgid ""
 "WARNING: the environment variable %s\n"
@@ -4827,7 +4861,7 @@ msgid ""
 "the current value is: %s\n"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:922
+#: ../gap/gap_player_dialog.c:1133
 #, c-format
 msgid ""
 "No audiosupport available\n"
@@ -4839,74 +4873,101 @@ msgid ""
 msgstr ""
 
 #. filename prefix shortcut for storyboard single track playback for specified track number
-#: ../gap/gap_player_dialog.c:1750
+#: ../gap/gap_player_dialog.c:1961
 #, c-format
 msgid "STB:[%d]"
 msgstr ""
 
 #. filename prefix shortcut for storyboard in composite video playback mode
-#: ../gap/gap_player_dialog.c:1755
+#: ../gap/gap_player_dialog.c:1966
 msgid "STB:"
 msgstr ""
 
 #. shortname prefix to indicate that displayed filename is a single videofile
-#: ../gap/gap_player_dialog.c:1772
+#: ../gap/gap_player_dialog.c:1983
 msgid "VIDEO:"
 msgstr ""
 
 #. shortname prefix to indicate that displayed filename is basename of the frames
-#: ../gap/gap_player_dialog.c:1784
+#: ../gap/gap_player_dialog.c:1995
 #, fuzzy
 msgid "FRAMES:"
 msgstr "إطار"
 
 #. pending timer_go_job gets useless, since we start playback now
-#: ../gap/gap_player_dialog.c:1883 ../gap/gap_player_dialog.c:3799
+#: ../gap/gap_player_dialog.c:2094 ../gap/gap_player_dialog.c:4286
 msgid "Playing"
 msgstr "يجري التشغيل"
 
 #. the status value label
-#: ../gap/gap_player_dialog.c:1922 ../gap/gap_player_dialog.c:7090
+#: ../gap/gap_player_dialog.c:2133 ../gap/gap_player_dialog.c:7696
 msgid "Ready"
 msgstr "جاهز"
 
-#: ../gap/gap_player_dialog.c:2126
+#: ../gap/gap_player_dialog.c:2266
+#, fuzzy
+msgid "cheking audiotrack"
+msgstr "استبدّل _بـ: "
+
+#: ../gap/gap_player_dialog.c:2286
+msgid "extracted audio is up to date"
+msgstr ""
+
+#: ../gap/gap_player_dialog.c:2295
+#, fuzzy
+msgid "extracting audio"
+msgstr "استخرج إلى..."
+
+#: ../gap/gap_player_dialog.c:2326
+msgid "Audio Extract CANCELLED"
+msgstr ""
+
+#: ../gap/gap_player_dialog.c:2336 ../gap/gap_player_dialog.c:2347
+msgid "Audio Extract FAILED"
+msgstr ""
+
+#: ../gap/gap_player_dialog.c:2337 ../gap/gap_player_dialog.c:2348
+#, c-format
+msgid "Extract of audiotrack failed on videofile: %s"
+msgstr ""
+
+#: ../gap/gap_player_dialog.c:2613
 msgid "seek-selftest"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:2148 ../gap/gap_story_vthumb.c:301
+#: ../gap/gap_player_dialog.c:2635 ../gap/gap_story_vthumb.c:301
 #, fuzzy, c-format
 msgid "Creating Index"
 msgstr "وقت الإنشاء"
 
-#: ../gap/gap_player_dialog.c:2171
+#: ../gap/gap_player_dialog.c:2658
 #, c-format
 msgid ""
 "No videoindex available. Access is limited to (slow) sequential read on "
 "file: %s"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:2254 ../gap/gap_story_dialog.c:6430
+#: ../gap/gap_player_dialog.c:2741 ../gap/gap_story_dialog.c:6430
 #, fuzzy, c-format
 msgid "Videoseek"
 msgstr "فيديو"
 
-#: ../gap/gap_player_dialog.c:2807 ../gap/gap_player_dialog.c:3266
+#: ../gap/gap_player_dialog.c:3294 ../gap/gap_player_dialog.c:3753
 #: ../gap/gap_story_vthumb.c:359
 msgid "Canceled"
 msgstr "أُلغِيَ"
 
 #. printf("DROP (SKIP) frame\n");
-#: ../gap/gap_player_dialog.c:3782
+#: ../gap/gap_player_dialog.c:4269
 msgid "Skip"
 msgstr "تخطى"
 
-#: ../gap/gap_player_dialog.c:3811
+#: ../gap/gap_player_dialog.c:4298
 #, c-format
 msgid "Delay %.2f"
 msgstr "تأخير %.2f"
 
-#: ../gap/gap_player_dialog.c:5446
+#: ../gap/gap_player_dialog.c:5933
 #, c-format
 msgid ""
 "WARNING: Your gimprc file configuration for the audioconverter script\n"
@@ -4914,7 +4975,7 @@ msgid ""
 "the configured value for %s is: %s\n"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:5468
+#: ../gap/gap_player_dialog.c:5955
 #, c-format
 msgid ""
 "WARNING: The environment variable %s\n"
@@ -4922,67 +4983,75 @@ msgid ""
 "the current value is: %s\n"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:5487
+#: ../gap/gap_player_dialog.c:5974
 #, c-format
 msgid ""
 "ERROR: The external program for audioconversion is not executable.\n"
 "Filename: '%s'\n"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:5507
+#: ../gap/gap_player_dialog.c:5994
 #, fuzzy
 msgid "Creating audiofile - please wait"
 msgstr "جاري البحث بالاسم - رجاء الانتظار"
 
-#: ../gap/gap_player_dialog.c:5649
+#: ../gap/gap_player_dialog.c:6030
+msgid "external audioconverter FAILED."
+msgstr ""
+
+#: ../gap/gap_player_dialog.c:6031
+msgid "extern audioconverter FAILED"
+msgstr ""
+
+#: ../gap/gap_player_dialog.c:6177
 msgid "Select Audiofile"
 msgstr "انتقِ ملف صوت"
 
 #. audiofile label
 #. the output audiofile label
 #. the Audiofile label
-#: ../gap/gap_player_dialog.c:5721 ../gap/gap_vex_dialog.c:2548
+#: ../gap/gap_player_dialog.c:6250 ../gap/gap_vex_dialog.c:2684
 #: ../vid_common/gap_cme_gui.c:3021
 msgid "Audiofile:"
 msgstr "ملف صوتي:"
 
-#: ../gap/gap_player_dialog.c:5733
+#: ../gap/gap_player_dialog.c:6262
 msgid "Enter an audiofile. The file must be in RIFF WAVE fileformat."
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:5754
+#: ../gap/gap_player_dialog.c:6283
 #, fuzzy
 msgid "Open audiofile selection browser dialog window"
 msgstr "فتح نافذة استعراض الملفات"
 
 #. Volume
-#: ../gap/gap_player_dialog.c:5766 ../gap/gap_story_dialog.c:8912
+#: ../gap/gap_player_dialog.c:6295 ../gap/gap_story_dialog.c:8912
 msgid "Volume:"
 msgstr "الحجم:"
 
-#: ../gap/gap_player_dialog.c:5786
+#: ../gap/gap_player_dialog.c:6315
 #, fuzzy
 msgid "Audio Volume"
 msgstr "شدة الصوت"
 
 #. check button
-#: ../gap/gap_player_dialog.c:5792
+#: ../gap/gap_player_dialog.c:6321
 #, fuzzy
 msgid "Enable"
 msgstr "_تفعيل"
 
-#: ../gap/gap_player_dialog.c:5796
+#: ../gap/gap_player_dialog.c:6326
 msgid ""
 "ON: Play button plays video + audio.\n"
 "OFF: Play video silently"
 msgstr ""
 
 #. Sample Offset
-#: ../gap/gap_player_dialog.c:5806
+#: ../gap/gap_player_dialog.c:6336
 msgid "Offset:"
 msgstr "إزاحة:"
 
-#: ../gap/gap_player_dialog.c:5826
+#: ../gap/gap_player_dialog.c:6356
 msgid ""
 "Audio offset in frames at original video playback speed. A value of 0 starts "
 "audio and video at synchron time. A value of -10 will play frame 1 up to "
@@ -4991,311 +5060,337 @@ msgid ""
 "duration of 10 frames at original video playback speed."
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:5842
+#. check button
+#: ../gap/gap_player_dialog.c:6371
+msgid "original audio"
+msgstr ""
+
+#: ../gap/gap_player_dialog.c:6376
+msgid ""
+"ON: for video clip playback sync audio startposition according to original "
+"position in the referenced video. Use this option if the audiofile is an "
+"extracted audiotrack of the full referenced videofile\n"
+"OFF: do not sync audio with original position in the referenced videos. Use "
+"this for independent audiofile playback."
+msgstr ""
+
+#: ../gap/gap_player_dialog.c:6412
 #, fuzzy
-msgid "Reset offset and volume"
-msgstr "أعد الضبط وامسح"
+msgid "Audio Track"
+msgstr "مقطوعة الصوت"
+
+#: ../gap/gap_player_dialog.c:6422
+msgid ""
+"Extract Audio Track from videofile for the current videofile and use it for "
+"origial audiotrack playback"
+msgstr ""
 
 #. create wavfile button
-#: ../gap/gap_player_dialog.c:5853
+#: ../gap/gap_player_dialog.c:6436
 #, fuzzy
 msgid "Copy As Wavfile"
 msgstr "فشل نسخ القرص المدمج"
 
-#: ../gap/gap_player_dialog.c:5855
+#: ../gap/gap_player_dialog.c:6438
 msgid ""
 "Create a copy from audiofile as RIFF WAVE audiofile and use the copy for "
 "audio playback"
 msgstr ""
 
+#: ../gap/gap_player_dialog.c:6450
+#, fuzzy
+msgid "Reset offset and volume"
+msgstr "أعد الضبط وامسح"
+
 #. Audio Offset Length (mm:ss:msec)
-#: ../gap/gap_player_dialog.c:5876
+#: ../gap/gap_player_dialog.c:6482
 #, fuzzy
 msgid "Offsettime:"
 msgstr "إزاحة:"
 
 #. Total Audio Length (mm:ss:msec)
 #. the audio timing information labels
-#: ../gap/gap_player_dialog.c:5890 ../vid_common/gap_cme_gui.c:3252
+#: ../gap/gap_player_dialog.c:6496 ../vid_common/gap_cme_gui.c:3252
 #, fuzzy
 msgid "Audiotime:"
 msgstr "قرص صوتي:"
 
 #. Length (frames)
-#: ../gap/gap_player_dialog.c:5905
+#: ../gap/gap_player_dialog.c:6511
 #, fuzzy
 msgid "Audioframes:"
 msgstr "ملفات الصوت"
 
 #. Audiolength (Samples)
-#: ../gap/gap_player_dialog.c:5920
+#: ../gap/gap_player_dialog.c:6526
 #, fuzzy
 msgid "Samples:"
 msgstr "عينة"
 
 #. Audio Channels
-#: ../gap/gap_player_dialog.c:5949
+#: ../gap/gap_player_dialog.c:6555
 #, fuzzy
 msgid "Channels:"
 msgstr "القنوات"
 
 #. Bits per Audio Sample
-#: ../gap/gap_player_dialog.c:5963
+#: ../gap/gap_player_dialog.c:6569
 #, fuzzy
 msgid "Bits/Sample:"
 msgstr "بيتات لكل نموذج"
 
 #. Total Video Length (mm:ss:msec)
 #. the video timing information labels
-#: ../gap/gap_player_dialog.c:5978 ../vid_common/gap_cme_gui.c:3225
+#: ../gap/gap_player_dialog.c:6584 ../vid_common/gap_cme_gui.c:3225
 #, fuzzy
 msgid "Videotime:"
 msgstr "صورة الفيديو"
 
 #. Cahe size label
-#: ../gap/gap_player_dialog.c:6190
+#: ../gap/gap_player_dialog.c:6796
 #, fuzzy
 msgid "Cache Size (MB):"
 msgstr "الحجم الجديد (م.ب.):"
 
-#: ../gap/gap_player_dialog.c:6216
+#: ../gap/gap_player_dialog.c:6822
 msgid "Player frame cache maximum size in MB. Value 0 turns the cache off."
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:6225
+#: ../gap/gap_player_dialog.c:6831
 #, fuzzy
 msgid "Clear the frame cache"
 msgstr "مسح مجلد الذاكرة \n"
 
 #. Chache Status (number of frames currently in the cache)
-#: ../gap/gap_player_dialog.c:6236
+#: ../gap/gap_player_dialog.c:6842
 #, fuzzy
 msgid "Cached Frames:"
 msgstr "ألعاب الورق:"
 
 #. Layout Options label
-#: ../gap/gap_player_dialog.c:6261
+#: ../gap/gap_player_dialog.c:6867
 #, fuzzy
 msgid "Layout Options:"
 msgstr "خيارات التصميم"
 
 #. Show Go button array (configure to show/hide this optional positioning tool)
-#: ../gap/gap_player_dialog.c:6271
+#: ../gap/gap_player_dialog.c:6877
 #, fuzzy
 msgid "Show Button Array"
 msgstr "اظهر يوم واحد"
 
-#: ../gap/gap_player_dialog.c:6277
+#: ../gap/gap_player_dialog.c:6883
 msgid ""
 "ON: Show the go button array positioning tool.\n"
 "OFF: Hide the go button array."
 msgstr ""
 
 #. Show Position Scale (configure to show/hide this optional positioning tool)
-#: ../gap/gap_player_dialog.c:6290
+#: ../gap/gap_player_dialog.c:6896
 #, fuzzy
 msgid "Show Position Scale"
 msgstr "ضبط الموقع"
 
-#: ../gap/gap_player_dialog.c:6296
+#: ../gap/gap_player_dialog.c:6902
 msgid ""
 "ON: Show the position scale.\n"
 "OFF: Hide the position scale."
 msgstr ""
 
 #. Save Player Preferences label
-#: ../gap/gap_player_dialog.c:6309
+#: ../gap/gap_player_dialog.c:6915
 #, fuzzy
 msgid "Save Preferences:"
 msgstr "تفضيلات البحث"
 
-#: ../gap/gap_player_dialog.c:6321
+#: ../gap/gap_player_dialog.c:6927
 msgid "Save player cache and layout settings (as gimprc parameters)"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:6436
+#: ../gap/gap_player_dialog.c:7042
 msgid "Videoframe Playback"
 msgstr ""
 
 #. vid options TAB frame
 #. the video options notebook tab
-#: ../gap/gap_player_dialog.c:6451 ../vid_common/gap_cme_gui.c:2490
+#: ../gap/gap_player_dialog.c:7057 ../vid_common/gap_cme_gui.c:2490
 #, fuzzy
 msgid "Video Options"
 msgstr "خيارات القرص"
 
 #. configure options TAB frame
-#: ../gap/gap_player_dialog.c:6475
+#: ../gap/gap_player_dialog.c:7081
 #, fuzzy
 msgid "Preferences"
 msgstr "ت_فضيلات"
 
 #. audio options TAB frame
 #. the Audio Options notebook tab
-#: ../gap/gap_player_dialog.c:6491 ../vid_common/gap_cme_gui.c:2502
+#: ../gap/gap_player_dialog.c:7097 ../vid_common/gap_cme_gui.c:2502
 #, fuzzy
 msgid "Audio Options"
 msgstr "عمليات جمع"
 
-#: ../gap/gap_player_dialog.c:6584
-msgid "Click: go to frame, Ctrl-Click: set 'From Frame', Alt-Click: set 'To Frame'"
+#: ../gap/gap_player_dialog.c:7190
+msgid ""
+"Click: go to frame, Ctrl-Click: set 'From Frame', Alt-Click: set 'To Frame'"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:6657 ../gap/gap_player_dialog.c:6787
+#: ../gap/gap_player_dialog.c:7263 ../gap/gap_player_dialog.c:7393
 #, fuzzy
 msgid "The currently displayed frame number"
 msgstr "اسم الملف المنتقى حاليا"
 
-#: ../gap/gap_player_dialog.c:6737
+#: ../gap/gap_player_dialog.c:7343
 msgid ""
 "Click: Set current framenr as selection range start 'From Frame',\n"
 "SHIFT-Click: load this frame into the calling image"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:6748
+#: ../gap/gap_player_dialog.c:7354
 msgid "Set current framenr as selection range start 'From Frame'"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:6764
+#: ../gap/gap_player_dialog.c:7370
 msgid ""
 "Click: Set current framenr as selection range end 'To Frame',\n"
 "SHIFT-Click: load this frame into the calling image"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:6775
+#: ../gap/gap_player_dialog.c:7381
 msgid "Set current framenr as selection range end 'To Frame'"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:6815
+#: ../gap/gap_player_dialog.c:7421
 #, fuzzy
 msgid "Add range to cliplist"
 msgstr "أ_ضف إلى قائمة تشغيل"
 
-#: ../gap/gap_player_dialog.c:6819
+#: ../gap/gap_player_dialog.c:7425
 #, fuzzy
 msgid "Print range to stdout"
 msgstr "نطاق الطباعة"
 
-#: ../gap/gap_player_dialog.c:6838
+#: ../gap/gap_player_dialog.c:7444
 #, fuzzy
 msgid "Start framenumber of selection range"
 msgstr "عدد الصفحات المنقاة"
 
-#: ../gap/gap_player_dialog.c:6861
+#: ../gap/gap_player_dialog.c:7467
 msgid "Add inverse range to cliplist"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:6865
+#: ../gap/gap_player_dialog.c:7471
 #, fuzzy
 msgid "Print inverse range to stdout"
 msgstr "نمط لف السطور في الطباعة"
 
-#: ../gap/gap_player_dialog.c:6886
+#: ../gap/gap_player_dialog.c:7492
 #, fuzzy
 msgid "End framenumber of selection range"
 msgstr "عدد الصفحات المنقاة"
 
-#: ../gap/gap_player_dialog.c:6902
+#: ../gap/gap_player_dialog.c:7508
 msgid "Reset playback speed to original (or previous) value"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:6922
+#: ../gap/gap_player_dialog.c:7528
 msgid "Current playback speed (frames/sec)"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:6948
+#: ../gap/gap_player_dialog.c:7554
 msgid "Toggle size 128/256. <Shift> Set 1:1 full image size"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:6967
+#: ../gap/gap_player_dialog.c:7573
 #, fuzzy
 msgid "Video preview size (pixels)"
 msgstr "حجم الحدود (بالبكسل)"
 
-#: ../gap/gap_player_dialog.c:6997
+#: ../gap/gap_player_dialog.c:7603
 msgid ""
 "ON: Play in endless loop.\n"
 "OFF: Play only once"
 msgstr ""
 
 #. SelOnly Toggle (keep text short)
-#: ../gap/gap_player_dialog.c:7011
+#: ../gap/gap_player_dialog.c:7617
 #, fuzzy
 msgid "Selection only"
 msgstr "نموذج الانتقاء"
 
-#: ../gap/gap_player_dialog.c:7017
+#: ../gap/gap_player_dialog.c:7623
 msgid ""
 "ON: Play only frames within the selected range.\n"
 "OFF: Play all frames"
 msgstr ""
 
 #. PingPong Toggle (keep text short)
-#: ../gap/gap_player_dialog.c:7030
+#: ../gap/gap_player_dialog.c:7636
 #, fuzzy
 msgid "Ping pong"
 msgstr "باين سبريغس"
 
-#: ../gap/gap_player_dialog.c:7036
+#: ../gap/gap_player_dialog.c:7642
 msgid "ON: Play alternating forward/backward"
 msgstr ""
 
 #. UseThumbnails Toggle (keep text short)
-#: ../gap/gap_player_dialog.c:7049
+#: ../gap/gap_player_dialog.c:7655
 msgid "Thumbnails"
 msgstr "مُسْتعْرضة"
 
-#: ../gap/gap_player_dialog.c:7055
+#: ../gap/gap_player_dialog.c:7661
 msgid ""
 "ON: Use thumbnails when available.\n"
 "OFF: Read full sized frames"
 msgstr ""
 
 #. ExactTiming Toggle (keep text short)
-#: ../gap/gap_player_dialog.c:7070
+#: ../gap/gap_player_dialog.c:7676
 #, fuzzy
 msgid "Exact timing"
 msgstr "خروج"
 
-#: ../gap/gap_player_dialog.c:7076
+#: ../gap/gap_player_dialog.c:7682
 msgid ""
 "ON: Skip frames to hold exact timing.\n"
 "OFF: Disable frame skipping"
 msgstr ""
 
 #. the Cancel Videoindex Creation button (only visible while creating vindex)
-#: ../gap/gap_player_dialog.c:7134
+#: ../gap/gap_player_dialog.c:7740
 #, fuzzy
 msgid "Cancel Videoindex creation"
 msgstr "الغِ العمليّة"
 
-#: ../gap/gap_player_dialog.c:7138
+#: ../gap/gap_player_dialog.c:7744
 msgid ""
 "Cancel videoindex creation. Videoindex creation requires full scanning of "
 "the video but allows fast random access to frames afterwards. Without a "
 "videoindex, access is done by a very slow sequential read"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:7165
+#: ../gap/gap_player_dialog.c:7771
 msgid ""
 "Start playback. SHIFT: snapshot frames  in a multilayer image at original "
 "size CTRL: snapshot at preview size ALT: force creation of new snapshot image"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:7178
+#: ../gap/gap_player_dialog.c:7784
 msgid ""
 "Pause if playing (any mousebutton). Go to selection start/active/end (left/"
 "middle/right mousebutton) if not playing"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:7188
+#: ../gap/gap_player_dialog.c:7794
 msgid ""
 "Start reverse playback. SHIFT: snapshot frames  in a multilayer image at "
 "original size CTRL: snapshot at preview size ALT: force creation of new "
 "snapshot image"
 msgstr ""
 
-#: ../gap/gap_player_main.c:272
+#: ../gap/gap_player_main.c:282
 #, fuzzy
 msgid "Playback..."
 msgstr "العزف"
@@ -5480,7 +5575,7 @@ msgid "Convert to Indexed"
 msgstr "تحويل الصورة إلى مفهرسة"
 
 #. the basename label
-#: ../gap/gap_range_ops.c:523 ../gap/gap_vex_dialog.c:2368
+#: ../gap/gap_range_ops.c:523 ../gap/gap_vex_dialog.c:2460
 #, fuzzy
 msgid "Basename:"
 msgstr "اسم المستخدم: "
@@ -5493,7 +5588,7 @@ msgstr ""
 
 #. the extension label
 #: ../gap/gap_range_ops.c:530 ../gap/gap_split.c:268
-#: ../gap/gap_vex_dialog.c:2438
+#: ../gap/gap_vex_dialog.c:2574
 #, fuzzy
 msgid "Extension:"
 msgstr "امتدادات"
@@ -6586,11 +6681,13 @@ msgid "Cancel"
 msgstr "إلغي"
 
 #: ../gap/gap_story_dialog.c:8438 ../gap/gap_video_index_creator.c:1407
-msgid "Cancel video access if in progress and disable automatic videothumbnails"
+msgid ""
+"Cancel video access if in progress and disable automatic videothumbnails"
 msgstr ""
 
 #: ../gap/gap_story_dialog.c:8485
-msgid "Generate original tone audio track for all video clips in the storyboard"
+msgid ""
+"Generate original tone audio track for all video clips in the storyboard"
 msgstr ""
 
 #: ../gap/gap_story_dialog.c:8491
@@ -6705,7 +6802,8 @@ msgid "Track 1 on top:"
 msgstr ""
 
 #: ../gap/gap_story_dialog.c:8797
-msgid "ON: video track1 is Foregrond (on top). OFF: video track 1 is on Background."
+msgid ""
+"ON: video track1 is Foregrond (on top). OFF: video track 1 is on Background."
 msgstr ""
 
 #. the qdiff label
@@ -6723,7 +6821,7 @@ msgid ""
 msgstr ""
 
 #. the (preferred) Decoder label
-#: ../gap/gap_story_dialog.c:8878 ../gap/gap_vex_dialog.c:2220
+#: ../gap/gap_story_dialog.c:8878 ../gap/gap_vex_dialog.c:2311
 #: ../gap/gap_video_index_creator.c:916
 #, fuzzy
 msgid "Decoder:"
@@ -6759,52 +6857,52 @@ msgstr "خصائص الفئة"
 msgid "STORY_new.txt"
 msgstr ""
 
-#: ../gap/gap_story_file.c:538 ../gap/gap_story_file.c:583
+#: ../gap/gap_story_file.c:539 ../gap/gap_story_file.c:584
 msgid "internal error"
 msgstr "خطأ داخلي"
 
-#: ../gap/gap_story_file.c:1106
+#: ../gap/gap_story_file.c:1107
 #, c-format
 msgid "section_%02d"
 msgstr ""
 
-#: ../gap/gap_story_file.c:2647
+#: ../gap/gap_story_file.c:2648
 #, c-format
 msgid "illegal number: %s (valid range is %d upto %d)\n"
 msgstr ""
 
-#: ../gap/gap_story_file.c:2686
+#: ../gap/gap_story_file.c:2687
 #, c-format
 msgid "illegal number: %s (valid range is %.3f upto %.3f)"
 msgstr ""
 
-#: ../gap/gap_story_file.c:2728
+#: ../gap/gap_story_file.c:2729
 #, c-format
 msgid "illegal boolean value: %s (valid range is %s or %s)\n"
 msgstr ""
 
-#: ../gap/gap_story_file.c:3032
+#: ../gap/gap_story_file.c:3033
 #, fuzzy
 msgid "same parameter used more than once"
 msgstr "معاملات الأمر"
 
-#: ../gap/gap_story_file.c:3044
+#: ../gap/gap_story_file.c:3045
 msgid "conflict: positional parameter shadows named parameter"
 msgstr ""
 
-#: ../gap/gap_story_file.c:3092
+#: ../gap/gap_story_file.c:3093
 #, c-format
 msgid ""
 "Header not found!\n"
 "(line 1 must start with:  %s or %s"
 msgstr ""
 
-#: ../gap/gap_story_file.c:3440
+#: ../gap/gap_story_file.c:3441
 #, c-format
 msgid "illegal keyword: %s (expected keywords are: width, height, both, none"
 msgstr ""
 
-#: ../gap/gap_story_file.c:3467
+#: ../gap/gap_story_file.c:3468
 #, c-format
 msgid "illegal keyword: %s (expected keywords are: keep, change"
 msgstr ""
@@ -6814,12 +6912,12 @@ msgstr ""
 #. accept unsupported lines (with just a warning)
 #. * because the file has correct Header
 #.
-#: ../gap/gap_story_file.c:4252 ../gap/gap_story_file.c:4259
+#: ../gap/gap_story_file.c:4253 ../gap/gap_story_file.c:4260
 #, fuzzy
 msgid "Unsupported line was ignored"
 msgstr "منصّة غير مدعومة"
 
-#: ../gap/gap_story_file.c:4456
+#: ../gap/gap_story_file.c:4457
 #, c-format
 msgid ""
 "the passed filename %s has irrelevant content or could not be opened by the "
@@ -7051,7 +7149,7 @@ msgstr ""
 
 #. the Deinterlace Mode label
 #. the deinterlace Mode label
-#: ../gap/gap_story_properties.c:3405 ../gap/gap_vex_dialog.c:2502
+#: ../gap/gap_story_properties.c:3405 ../gap/gap_vex_dialog.c:2638
 #, fuzzy
 msgid "Deinterlace:"
 msgstr "حل الدمج"
@@ -7079,7 +7177,8 @@ msgid "Apply even-lines filter when reading videoframes"
 msgstr ""
 
 #: ../gap/gap_story_properties.c:3493
-msgid "deinterlacing threshold: 0.0 no interpolation 0.999 smooth interpolation"
+msgid ""
+"deinterlacing threshold: 0.0 no interpolation 0.999 smooth interpolation"
 msgstr ""
 
 #. the Transform (flip_request) label
@@ -7211,7 +7310,8 @@ msgid ""
 msgstr ""
 
 #: ../gap/gap_story_properties.c:3841
-msgid "Steps for macro applying with varying values: (1 for apply with const values)"
+msgid ""
+"Steps for macro applying with varying values: (1 for apply with const values)"
 msgstr ""
 
 #: ../gap/gap_story_render_audio.c:439
@@ -7270,27 +7370,27 @@ msgstr ""
 msgid "ready"
 msgstr "قراءة"
 
-#: ../gap/gap_story_render_processor.c:704
+#: ../gap/gap_story_render_processor.c:703
 #, c-format
 msgid "encoding_video_frame_%06d"
 msgstr ""
 
-#: ../gap/gap_story_render_processor.c:2727
+#: ../gap/gap_story_render_processor.c:2726
 #, c-format
 msgid "analyze line %d (out of %d)"
 msgstr ""
 
-#: ../gap/gap_story_render_processor.c:2869
+#: ../gap/gap_story_render_processor.c:2868
 #, fuzzy
 msgid "No Frames or Images found ...."
 msgstr "وزن الصورة..."
 
-#: ../gap/gap_story_render_processor.c:5547
+#: ../gap/gap_story_render_processor.c:4927
 #, fuzzy
 msgid "Seek Inputvideoframe..."
 msgstr "انتق ملفّ الوجهة"
 
-#: ../gap/gap_story_render_processor.c:5552
+#: ../gap/gap_story_render_processor.c:4932
 msgid "Continue Encoding..."
 msgstr ""
 
@@ -7374,42 +7474,42 @@ msgstr ""
 msgid "Creating Index (decoder: %s)"
 msgstr "إنشاء المجلّد `%s'"
 
-#: ../gap/gap_vex_dialog.c:234
+#: ../gap/gap_vex_dialog.c:236
 #, fuzzy
 msgid "Overwrite File"
 msgstr "تنميق الملف؟"
 
-#: ../gap/gap_vex_dialog.c:244
+#: ../gap/gap_vex_dialog.c:246
 #, fuzzy, c-format
 msgid "File: %s already exists"
 msgstr "الملف '%s'  موجود."
 
-#: ../gap/gap_vex_dialog.c:677 ../gap/gap_vex_dialog.c:680
+#: ../gap/gap_vex_dialog.c:687 ../gap/gap_vex_dialog.c:690
 #, fuzzy
 msgid "Set range to extract"
 msgstr "أرسِل رسالة للمراسَل"
 
-#: ../gap/gap_vex_dialog.c:805
+#: ../gap/gap_vex_dialog.c:815
 msgid "unknown"
 msgstr "مجهول"
 
-#: ../gap/gap_vex_dialog.c:1713
+#: ../gap/gap_vex_dialog.c:1803
 #, fuzzy
 msgid "Select input videofile"
 msgstr "انتق ملفّ الوجهة"
 
-#: ../gap/gap_vex_dialog.c:1751
+#: ../gap/gap_vex_dialog.c:1841
 #, fuzzy
 msgid "Select basename for frame(s)"
 msgstr "انتقِ اسم ملف للحفظ"
 
-#: ../gap/gap_vex_dialog.c:1789 ../vid_common/gap_cme_gui.c:2181
+#: ../gap/gap_vex_dialog.c:1879 ../vid_common/gap_cme_gui.c:2181
 #, fuzzy
 msgid "Select Audiofilename"
 msgstr "انتقِ ملفاً"
 
-#: ../gap/gap_vex_dialog.c:1932 ../gap/gap_vex_main.c:168
-#: ../gap/gap_vex_main.c:188
+#: ../gap/gap_vex_dialog.c:2023 ../gap/gap_vex_main.c:174
+#: ../gap/gap_vex_main.c:194
 #, fuzzy
 msgid "Extract Videorange"
 msgstr "استخرج هنا"
@@ -7417,7 +7517,7 @@ msgstr "استخرج هنا"
 #. gtk_container_set_border_width (GTK_CONTAINER (mw__vbox1), 5);
 #. XXXXXXXXXXX Player Frame  XXXXXXXXXXXX
 #. the player_frame
-#: ../gap/gap_vex_dialog.c:1962
+#: ../gap/gap_vex_dialog.c:2053
 #, fuzzy
 msgid "Select Videorange"
 msgstr "اختر الم_جال:"
@@ -7428,18 +7528,18 @@ msgstr "اختر الم_جال:"
 #.
 #. gtk_widget_show (mw__player_frame);
 #. not yet, show the widget later
-#: ../gap/gap_vex_dialog.c:1976
+#: ../gap/gap_vex_dialog.c:2067
 #, fuzzy
 msgid "Input Video selection"
 msgstr "_قص المنتقى"
 
 #. the videofile label
-#: ../gap/gap_vex_dialog.c:1995
+#: ../gap/gap_vex_dialog.c:2086
 #, fuzzy
 msgid "Videofilename:"
 msgstr "اسم الملف"
 
-#: ../gap/gap_vex_dialog.c:2013
+#: ../gap/gap_vex_dialog.c:2104
 msgid "Name of videofile (used as inputfile)"
 msgstr ""
 
@@ -7451,15 +7551,15 @@ msgstr ""
 #. the Storyboard filebrowser button
 #. the Audiofile filebrowser button
 #. the pass_logfile fileselector button
-#: ../gap/gap_vex_dialog.c:2017 ../gap/gap_vex_dialog.c:2388
-#: ../gap/gap_vex_dialog.c:2568 ../vid_common/gap_cme_gui.c:2566
+#: ../gap/gap_vex_dialog.c:2108 ../gap/gap_vex_dialog.c:2480
+#: ../gap/gap_vex_dialog.c:2704 ../vid_common/gap_cme_gui.c:2566
 #: ../vid_common/gap_cme_gui.c:2695 ../vid_common/gap_cme_gui.c:2731
 #: ../vid_common/gap_cme_gui.c:3047
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2987
 msgid "..."
 msgstr "..."
 
-#: ../gap/gap_vex_dialog.c:2024
+#: ../gap/gap_vex_dialog.c:2115
 #, fuzzy
 msgid "Select video using file browser"
 msgstr "انتق ملفّ الوجهة"
@@ -7467,65 +7567,65 @@ msgstr "انتق ملفّ الوجهة"
 #. MMX sometimes gives unusable results, and therefore is always OFF
 #. * checkbox is not needed any more..
 #.
-#: ../gap/gap_vex_dialog.c:2031
+#: ../gap/gap_vex_dialog.c:2122
 #, fuzzy
 msgid "Disable MMX"
 msgstr "عطّل"
 
-#: ../gap/gap_vex_dialog.c:2059
+#: ../gap/gap_vex_dialog.c:2150
 msgid "Frame number of 1.st frame to extract"
 msgstr ""
 
 #. the videorange button (that invokes the player for video range selection)
-#: ../gap/gap_vex_dialog.c:2077
+#: ../gap/gap_vex_dialog.c:2168
 #, fuzzy
 msgid "Video Range"
 msgstr "صورة الفيديو"
 
-#: ../gap/gap_vex_dialog.c:2085
+#: ../gap/gap_vex_dialog.c:2176
 msgid ""
 "Visual video range selection via videoplayer\n"
 "SHIFT: Open a separate player window"
 msgstr ""
 
-#: ../gap/gap_vex_dialog.c:2116
+#: ../gap/gap_vex_dialog.c:2207
 msgid ""
 "Frame number of last frame to extract. To extract all frames use a range "
 "from 1 to 999999. (Extract stops at the last available frame)"
 msgstr ""
 
 #. the videorange button (that invokes the player for video range selection in docked mode)
-#: ../gap/gap_vex_dialog.c:2137
+#: ../gap/gap_vex_dialog.c:2228
 #, fuzzy
 msgid "VideoRange"
 msgstr "صورة الفيديو"
 
-#: ../gap/gap_vex_dialog.c:2174
+#: ../gap/gap_vex_dialog.c:2265
 msgid "Videotrack number (0 == extract no frames)"
 msgstr ""
 
-#: ../gap/gap_vex_dialog.c:2208
+#: ../gap/gap_vex_dialog.c:2299
 msgid "Audiotrack number (0 == extract no audio)"
 msgstr ""
 
-#: ../gap/gap_vex_dialog.c:2237
+#: ../gap/gap_vex_dialog.c:2328
 msgid ""
 "leave empty or select your preferred decoder (libmpeg3, libavformat, "
 "quicktime4linux)"
 msgstr ""
 
-#: ../gap/gap_vex_dialog.c:2243
+#: ../gap/gap_vex_dialog.c:2334
 #, fuzzy
 msgid "(none, automatic)"
 msgstr "WPA آلي"
 
 #. the (Active) Decoder Label(s)
-#: ../gap/gap_vex_dialog.c:2267
+#: ../gap/gap_vex_dialog.c:2358
 #, fuzzy
 msgid "Active Decoder:"
 msgstr "الألوان النشطة"
 
-#: ../gap/gap_vex_dialog.c:2277 ../gap/gap_vex_dialog.c:2315
+#: ../gap/gap_vex_dialog.c:2368 ../gap/gap_vex_dialog.c:2406
 #, fuzzy
 msgid "****"
 msgstr "**لا شيء**"
@@ -7534,146 +7634,181 @@ msgstr "**لا شيء**"
 #. * (the videoapi delivers exact frame positions on most videos
 #. *  but sometimes is not exact when libmepg3 is used)
 #.
-#: ../gap/gap_vex_dialog.c:2290
+#: ../gap/gap_vex_dialog.c:2381
 #, fuzzy
 msgid "Exact Seek"
 msgstr "استخرج هنا"
 
-#: ../gap/gap_vex_dialog.c:2293
+#: ../gap/gap_vex_dialog.c:2384
 msgid ""
 "ON: emulate seek operations by sequential reads, even when videoindex is "
 "available"
 msgstr ""
 
 #. the Aspect Ratio Label(s)
-#: ../gap/gap_vex_dialog.c:2305
+#: ../gap/gap_vex_dialog.c:2396
 #, fuzzy
 msgid "Aspect Ratio:"
 msgstr "نسبة المظهر:"
 
 #. the output frame
-#: ../gap/gap_vex_dialog.c:2329 ../vid_common/gap_cme_gui.c:2540
+#: ../gap/gap_vex_dialog.c:2420 ../vid_common/gap_cme_gui.c:2540
 #, fuzzy
 msgid "Output"
 msgstr "الخ_رْج:"
 
 #. the multilayer checkbox (decide if extract writes to frames on disc or to one image)
-#: ../gap/gap_vex_dialog.c:2355
+#: ../gap/gap_vex_dialog.c:2446
 #, fuzzy
 msgid "Create only one multilayer Image"
 msgstr "إنشاء عرض جديد لهذه الصورة"
 
-#: ../gap/gap_vex_dialog.c:2361
+#: ../gap/gap_vex_dialog.c:2452
 msgid ""
 "On: extracted frames are stored in one multilayer image\n"
 "Off: extracted frames are written to frame files on disc"
 msgstr ""
 
-#: ../gap/gap_vex_dialog.c:2384
+#: ../gap/gap_vex_dialog.c:2476
 msgid "Basename for extracted frames (framenr and extension is added)"
 msgstr ""
 
-#: ../gap/gap_vex_dialog.c:2385
+#: ../gap/gap_vex_dialog.c:2477
 #, fuzzy
 msgid "frame_"
 msgstr "إطار"
 
-#: ../gap/gap_vex_dialog.c:2395
+#: ../gap/gap_vex_dialog.c:2487
 msgid "Use filebrowser to select basename for extracted frames"
 msgstr ""
 
-#: ../gap/gap_vex_dialog.c:2426
+#: ../gap/gap_vex_dialog.c:2518
 msgid ""
 "Digits to use for framenumber part in filenames (use 1 if you dont want "
 "leading zeroes)"
 msgstr ""
 
-#: ../gap/gap_vex_dialog.c:2459
+#. the graymask checkbutton
+#: ../gap/gap_vex_dialog.c:2529
+msgid "graymask"
+msgstr ""
+
+#: ../gap/gap_vex_dialog.c:2534
+msgid ""
+"On: extract grayscale mask (generated by bluebox)\n"
+"Off: extract color frames 1.1"
+msgstr ""
+
+#. the layermask checkbutton
+#: ../gap/gap_vex_dialog.c:2542
+#, fuzzy
+msgid "layermask"
+msgstr "تطبيق قناع طبقة"
+
+#: ../gap/gap_vex_dialog.c:2547
+msgid ""
+"On: bluebox shall generate transparency as layermask\n"
+"Off: bluebox shall generate transparency as alpha channel"
+msgstr ""
+
+#. the bluebox checkbutton
+#: ../gap/gap_vex_dialog.c:2555
+#, fuzzy
+msgid "bluebox"
+msgstr "أزرق"
+
+#: ../gap/gap_vex_dialog.c:2562
+msgid ""
+"On: add trasparency for extracted frames via blubox filter (using values of "
+"last run in this session)\n"
+"Off: extract frames 1.1"
+msgstr ""
+
+#: ../gap/gap_vex_dialog.c:2595
 msgid "Extension of extracted frames (.xcf, .jpg, .ppm)"
 msgstr ""
 
-#: ../gap/gap_vex_dialog.c:2460
+#: ../gap/gap_vex_dialog.c:2596
 msgid ".xcf"
 msgstr ""
 
 #. the framenumber for 1st frame label
-#: ../gap/gap_vex_dialog.c:2471
+#: ../gap/gap_vex_dialog.c:2607
 #, fuzzy
 msgid "Framenr 1:"
 msgstr "إطار"
 
-#: ../gap/gap_vex_dialog.c:2492
-msgid "Framenumber for 1st extracted frame (use 0 for keeping original framenumbers)"
+#: ../gap/gap_vex_dialog.c:2628
+msgid ""
+"Framenumber for 1st extracted frame (use 0 for keeping original framenumbers)"
 msgstr ""
 
-#: ../gap/gap_vex_dialog.c:2523
+#: ../gap/gap_vex_dialog.c:2659
 msgid "0.0 .. no interpolation, 1.0 smooth interpolation at deinterlacing"
 msgstr ""
 
-#: ../gap/gap_vex_dialog.c:2528
+#: ../gap/gap_vex_dialog.c:2664
 #, fuzzy
 msgid "no deinterlace"
 msgstr "حل الدمج"
 
-#: ../gap/gap_vex_dialog.c:2529
+#: ../gap/gap_vex_dialog.c:2665
 #, fuzzy
 msgid "deinterlace (odd lines only)"
 msgstr "أزح السطور المنتقاة"
 
-#: ../gap/gap_vex_dialog.c:2530
+#: ../gap/gap_vex_dialog.c:2666
 #, fuzzy
 msgid "deinterlace (even lines only)"
 msgstr "أحداث واجهة المستخدم"
 
-#: ../gap/gap_vex_dialog.c:2531
+#: ../gap/gap_vex_dialog.c:2667
 msgid "deinterlace frames x 2 (odd 1st)"
 msgstr ""
 
-#: ../gap/gap_vex_dialog.c:2532
+#: ../gap/gap_vex_dialog.c:2668
 msgid "deinterlace frames x 2 (even 1st)"
 msgstr ""
 
-#: ../gap/gap_vex_dialog.c:2543
+#: ../gap/gap_vex_dialog.c:2679
 msgid "Deinterlace splits each extracted frame in 2 frames"
 msgstr ""
 
-#: ../gap/gap_vex_dialog.c:2564
+#: ../gap/gap_vex_dialog.c:2700
 msgid "Name for extracted audio (audio is written in RIFF WAV format)"
 msgstr ""
 
-#: ../gap/gap_vex_dialog.c:2565
+#: ../gap/gap_vex_dialog.c:2701
 #, fuzzy
 msgid "frame.wav"
 msgstr "إطار"
 
-#: ../gap/gap_vex_dialog.c:2575
+#: ../gap/gap_vex_dialog.c:2711
 #, fuzzy
 msgid "Use filebrowser to select audiofilename"
 msgstr "اسم الملف المنتقى حاليا"
 
-#: ../gap/gap_vex_dialog.c:2581
+#: ../gap/gap_vex_dialog.c:2717
 #, fuzzy
 msgid "Start extraction"
 msgstr "ابدأ البحث"
 
-#: ../gap/gap_vex_exec.c:394
+#: ../gap/gap_vex_exec.c:370
 #, fuzzy
 msgid "Seek Frame Position..."
 msgstr "حذف الخيارات المحفوظة..."
 
-#: ../gap/gap_vex_exec.c:446
+#: ../gap/gap_vex_exec.c:422
 #, fuzzy
 msgid "Extracting Frames..."
 msgstr "جاري إستخراج المقطوعات"
 
-#: ../gap/gap_vex_exec.c:602
-msgid "Seek Audio Position..."
-msgstr ""
-
-#: ../gap/gap_vex_exec.c:637
-#, fuzzy
-msgid "Extracting Audio..."
-msgstr "استخرج إلى..."
+#: ../gap/gap_vex_exec.c:504
+#, fuzzy, c-format
+msgid ""
+"failed to save file:\n"
+"'%s'"
+msgstr "لا يمكن العثور على الملف %s"
 
 #: ../gap/gap_video_index_creator.c:207
 #, fuzzy
@@ -7837,11 +7972,11 @@ msgstr ""
 msgid "Creating video index %0.3f %%"
 msgstr "انشيء واحذف الملفات"
 
-#: ../gap/gap_vex_main.c:261
+#: ../gap/gap_vex_main.c:270
 msgid "MAIN_TST"
 msgstr ""
 
-#: ../gap/gap_vex_main.c:381
+#: ../gap/gap_vex_main.c:394
 msgid ""
 "Videoextract is not available because GIMP-GAP was configured and compiled "
 "with\n"
@@ -8853,91 +8988,87 @@ msgstr "خيارات الإرسال غير متوفرة."
 msgid "Call of Required Plugin %s failed"
 msgstr "فشل استدعاء الملحق المطلوب %s"
 
-#: ../vid_enc_avi/gap_enc_avi_gui.c:416
+#: ../vid_enc_avi/gap_enc_avi_gui.c:452
 #, fuzzy
 msgid "AVI Video Encode Parameters"
 msgstr "معطيات مركّبات"
 
 #. the Video CODEC label
 #. the video codec label
-#: ../vid_enc_avi/gap_enc_avi_gui.c:448
+#: ../vid_enc_avi/gap_enc_avi_gui.c:484
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1158
 #, fuzzy
 msgid "Video CODEC:"
 msgstr "قرص فيديو"
 
-#: ../vid_enc_avi/gap_enc_avi_gui.c:475
+#: ../vid_enc_avi/gap_enc_avi_gui.c:513
 msgid "Select video codec"
 msgstr "اختر مرماز الفيديو"
 
 #. the Audio CODEC label
 #. the audio codec label
-#: ../vid_enc_avi/gap_enc_avi_gui.c:481
+#: ../vid_enc_avi/gap_enc_avi_gui.c:519
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1181
 #, fuzzy
 msgid "Audio CODEC:"
 msgstr "قرص صوتي"
 
 #. the Audio CODEC label
-#: ../vid_enc_avi/gap_enc_avi_gui.c:489
+#: ../vid_enc_avi/gap_enc_avi_gui.c:527
 #, fuzzy
 msgid "RAW PCM"
 msgstr "RPM"
 
 #. the APP0 Marker label
-#: ../vid_enc_avi/gap_enc_avi_gui.c:499
+#: ../vid_enc_avi/gap_enc_avi_gui.c:537
 #, fuzzy
 msgid "APP0 Marker:"
 msgstr "تعليم"
 
-#: ../vid_enc_avi/gap_enc_avi_gui.c:519
+#: ../vid_enc_avi/gap_enc_avi_gui.c:557
 msgid ""
 "Write APP0 Marker for each encoded frame. (The APP0 marker is evaluated by "
 "some windows programs for AVIs)"
 msgstr ""
 
-#. the notebook page for JPEG Codec options
-#. -----------------------------------------
-#: ../vid_enc_avi/gap_enc_avi_gui.c:536
+#: ../vid_enc_avi/gap_enc_avi_gui.c:575
 #, fuzzy
-msgid "JPEG Codec Options"
+msgid "JPEG / MJPG Codec Options"
 msgstr "إتّصالات VPN"
 
-#: ../vid_enc_avi/gap_enc_avi_gui.c:541
+#: ../vid_enc_avi/gap_enc_avi_gui.c:580
 #, fuzzy
 msgid "JPEG Options"
 msgstr "خيارات PPP"
 
 #. the dont recode label
-#: ../vid_enc_avi/gap_enc_avi_gui.c:557
+#: ../vid_enc_avi/gap_enc_avi_gui.c:597 ../vid_enc_avi/gap_enc_avi_gui.c:735
 msgid "Dont Recode:"
 msgstr "لا تعد الترميز:"
 
-#: ../vid_enc_avi/gap_enc_avi_gui.c:577
+#: ../vid_enc_avi/gap_enc_avi_gui.c:617
 msgid ""
-"Don't recode the input JPEG frames. This option is ignored when input is "
-"read from storyboard. WARNING: works only if all input frames are JPEG "
-"pictures with matching size and YUV 4:2:2 encoding. This option may produce "
-"an unusable video when other frames are provided as input."
+"Don't recode the input JPEG frames. WARNING: This option may produce an "
+"unusable video when refered JPEG frames are not YUV 4:2:2 encoded."
 msgstr ""
 
 #. the interlace label
-#: ../vid_enc_avi/gap_enc_avi_gui.c:589
+#: ../vid_enc_avi/gap_enc_avi_gui.c:626 ../vid_enc_avi/gap_enc_avi_gui.c:763
 #, fuzzy
 msgid "Interlace:"
 msgstr "الواجهة:"
 
-#: ../vid_enc_avi/gap_enc_avi_gui.c:610
+#: ../vid_enc_avi/gap_enc_avi_gui.c:647
 msgid "Generate interlaced JPEGs (two frames for odd/even lines)"
 msgstr ""
 
 #. the odd frames first label
-#: ../vid_enc_avi/gap_enc_avi_gui.c:617
+#: ../vid_enc_avi/gap_enc_avi_gui.c:654
 #, fuzzy
 msgid "Odd Frames first:"
 msgstr "قائمة العناوين"
 
-#: ../vid_enc_avi/gap_enc_avi_gui.c:638
+#: ../vid_enc_avi/gap_enc_avi_gui.c:675
 msgid ""
 "Check if you want the odd frames to be coded first (only for interlaced "
 "JPEGs)"
@@ -8945,28 +9076,59 @@ msgstr ""
 
 #. the jpeg quality label
 #. the xvid quality label
-#: ../vid_enc_avi/gap_enc_avi_gui.c:645 ../vid_enc_avi/gap_enc_avi_gui.c:976
+#: ../vid_enc_avi/gap_enc_avi_gui.c:682 ../vid_enc_avi/gap_enc_avi_gui.c:1129
 msgid "Quality:"
 msgstr "الجودة:"
 
-#: ../vid_enc_avi/gap_enc_avi_gui.c:669
+#: ../vid_enc_avi/gap_enc_avi_gui.c:706
 msgid "The quality setting of the encoded JPEG frames (100=best quality)"
 msgstr ""
 
-#. the notebook page for RAW Codec options
-#. -----------------------------------------
-#: ../vid_enc_avi/gap_enc_avi_gui.c:676
+#: ../vid_enc_avi/gap_enc_avi_gui.c:713
+#, fuzzy
+msgid "PNG Codec Options"
+msgstr "إتّصالات VPN"
+
+#: ../vid_enc_avi/gap_enc_avi_gui.c:718
+#, fuzzy
+msgid "PNG Options"
+msgstr "خيارات PPP"
+
+#: ../vid_enc_avi/gap_enc_avi_gui.c:755
+msgid ""
+"Don't recode the input PNG frames when possible. WARNING: This option may "
+"produce an unusable video"
+msgstr ""
+
+#: ../vid_enc_avi/gap_enc_avi_gui.c:784
+#, fuzzy
+msgid "Generate interlaced PNGs"
+msgstr "إسم الواجهة"
+
+#. the png compression label
+#: ../vid_enc_avi/gap_enc_avi_gui.c:792
+#, fuzzy
+msgid "Compression:"
+msgstr "الضغط"
+
+#: ../vid_enc_avi/gap_enc_avi_gui.c:816
+msgid ""
+"The compression setting of the encoded PNG frames (9=best "
+"compression0=fastest)"
+msgstr ""
+
+#: ../vid_enc_avi/gap_enc_avi_gui.c:826
 #, fuzzy
 msgid "RAW Codec Options"
 msgstr "حمّل الخيارات"
 
-#: ../vid_enc_avi/gap_enc_avi_gui.c:681
+#: ../vid_enc_avi/gap_enc_avi_gui.c:831
 #, fuzzy
 msgid "RAW Options"
 msgstr "خيارات GPRS"
 
 #. the raw codec info label
-#: ../vid_enc_avi/gap_enc_avi_gui.c:696
+#: ../vid_enc_avi/gap_enc_avi_gui.c:847
 msgid ""
 "The RAW codec has no encoding options.\n"
 "The resulting videoframes will be\n"
@@ -8974,145 +9136,143 @@ msgid ""
 msgstr ""
 
 #. the vflip label
-#: ../vid_enc_avi/gap_enc_avi_gui.c:709
+#: ../vid_enc_avi/gap_enc_avi_gui.c:860
 #, fuzzy
 msgid "Vertical flip:"
 msgstr "رأسي:"
 
-#: ../vid_enc_avi/gap_enc_avi_gui.c:730
+#: ../vid_enc_avi/gap_enc_avi_gui.c:881
 msgid ""
 "Check if you want to encode frames vertically flipped (suitable for playback "
 "on WinDVD player) or as is (suitable for gmplayer on linux)"
 msgstr ""
 
-#. the notebook page for XVID Codec options
-#. -----------------------------------------
-#: ../vid_enc_avi/gap_enc_avi_gui.c:740
+#: ../vid_enc_avi/gap_enc_avi_gui.c:892
 #, fuzzy
 msgid "XVID Codec Options"
 msgstr "إتّصالات VPN"
 
-#: ../vid_enc_avi/gap_enc_avi_gui.c:745
+#: ../vid_enc_avi/gap_enc_avi_gui.c:897
 #, fuzzy
 msgid "XVID Options"
 msgstr "خيارات القرص"
 
 #. the xvid KBitrate label
-#: ../vid_enc_avi/gap_enc_avi_gui.c:761
+#: ../vid_enc_avi/gap_enc_avi_gui.c:914
 #, fuzzy
 msgid "KBitrate:"
 msgstr "معدّل بت:"
 
-#: ../vid_enc_avi/gap_enc_avi_gui.c:785
+#: ../vid_enc_avi/gap_enc_avi_gui.c:938
 msgid "Kilobitrate for XVID Codec (1 = 1000 Bit/sec) -1 for default"
 msgstr ""
 
 #. the xvid Reaction Delay label
-#: ../vid_enc_avi/gap_enc_avi_gui.c:792
+#: ../vid_enc_avi/gap_enc_avi_gui.c:945
 #, fuzzy
 msgid "Reaction Delay:"
 msgstr "تأخير المسح"
 
-#: ../vid_enc_avi/gap_enc_avi_gui.c:816
+#: ../vid_enc_avi/gap_enc_avi_gui.c:969
 msgid "reaction delay factor (-1 for default)"
 msgstr ""
 
 #. the xvid AVG Period label
-#: ../vid_enc_avi/gap_enc_avi_gui.c:823
+#: ../vid_enc_avi/gap_enc_avi_gui.c:976
 #, fuzzy
 msgid "AVG Period:"
 msgstr "الإصدارة:"
 
-#: ../vid_enc_avi/gap_enc_avi_gui.c:847
+#: ../vid_enc_avi/gap_enc_avi_gui.c:1000
 msgid "averaging period (-1 for default)"
 msgstr ""
 
 #. the xvid Buffer label
-#: ../vid_enc_avi/gap_enc_avi_gui.c:854
+#: ../vid_enc_avi/gap_enc_avi_gui.c:1007
 msgid "Buffer:"
 msgstr "ذاكرة وسيطة:"
 
-#: ../vid_enc_avi/gap_enc_avi_gui.c:878
+#: ../vid_enc_avi/gap_enc_avi_gui.c:1031
 msgid "Buffersize (-1 for default)"
 msgstr ""
 
 #. the xvid max_quantizer label
-#: ../vid_enc_avi/gap_enc_avi_gui.c:885
+#: ../vid_enc_avi/gap_enc_avi_gui.c:1038
 #, fuzzy
 msgid "Max Quantizer:"
 msgstr "الحجم الأقصى"
 
-#: ../vid_enc_avi/gap_enc_avi_gui.c:909
+#: ../vid_enc_avi/gap_enc_avi_gui.c:1062
 msgid "upper limit for quantize Range 1 == BEST Quality"
 msgstr ""
 
 #. the xvid min_quantizer label
-#: ../vid_enc_avi/gap_enc_avi_gui.c:915
+#: ../vid_enc_avi/gap_enc_avi_gui.c:1068
 #, fuzzy
 msgid "Min Quantizer:"
 msgstr "المشرفين:"
 
-#: ../vid_enc_avi/gap_enc_avi_gui.c:939
+#: ../vid_enc_avi/gap_enc_avi_gui.c:1092
 msgid "lower limit for quantize Range 1 == BEST Quality"
 msgstr ""
 
 #. the xvid max_key_interval label
-#: ../vid_enc_avi/gap_enc_avi_gui.c:946
+#: ../vid_enc_avi/gap_enc_avi_gui.c:1099
 #, fuzzy
 msgid "Key Interval:"
 msgstr "الفترة:"
 
-#: ../vid_enc_avi/gap_enc_avi_gui.c:970
+#: ../vid_enc_avi/gap_enc_avi_gui.c:1123
 msgid "max distance for keyframes (I-frames)"
 msgstr ""
 
-#: ../vid_enc_avi/gap_enc_avi_gui.c:1000
+#: ../vid_enc_avi/gap_enc_avi_gui.c:1153
 msgid "XVID codec algoritm presets where 0==low quality(fast) 6==best(slow)"
 msgstr ""
 
-#: ../vid_enc_avi/gap_enc_avi_main.c:207
+#: ../vid_enc_avi/gap_enc_avi_main.c:205
 msgid "avi video encoding for anim frames. Menu: @AVI@"
 msgstr ""
 
-#: ../vid_enc_avi/gap_enc_avi_main.c:208
+#: ../vid_enc_avi/gap_enc_avi_main.c:206
 msgid ""
-"This plugin does fake video encoding of animframes. the (optional) audiodata "
-"must be a raw datafile(s) or .wav (RIFF WAVEfmt ) file(s) .wav files can be "
-"mono (1) or stereo (2channels) audiodata must be 16bit uncompressed. "
-"IMPORTANT:  you should first call \""
+"This plugin handles video encoding for the AVI videoformat. the (optional) "
+"audiodata must be a raw datafile(s) or .wav (RIFF WAVEfmt ) file(s) .wav "
+"files can be mono (1) or stereo (2channels) audiodata must be 16bit "
+"uncompressed. IMPORTANT:  you should first call \""
 msgstr ""
 
-#: ../vid_enc_avi/gap_enc_avi_main.c:226
+#: ../vid_enc_avi/gap_enc_avi_main.c:224
 msgid "Set Parameters for GAP avi video encoder Plugins"
 msgstr ""
 
-#: ../vid_enc_avi/gap_enc_avi_main.c:227
+#: ../vid_enc_avi/gap_enc_avi_main.c:225
 msgid "This plugin sets avi specific video encoding parameters."
 msgstr ""
 
-#: ../vid_enc_avi/gap_enc_avi_main.c:240
+#: ../vid_enc_avi/gap_enc_avi_main.c:238
 msgid "Get GUI Parameters for GAP avi video encoder"
 msgstr ""
 
-#: ../vid_enc_avi/gap_enc_avi_main.c:241
+#: ../vid_enc_avi/gap_enc_avi_main.c:239
 msgid "This plugin returns avi encoder specific parameters."
 msgstr ""
 
-#: ../vid_enc_avi/gap_enc_avi_main.c:323
+#: ../vid_enc_avi/gap_enc_avi_main.c:321
 msgid ""
 "AVI Encoder\n"
 "writes RIFF AVI encoded videos\n"
 "and supports MPEG4 (XVID), JPEG or RAW (uncompressed)\n"
 msgstr ""
 
-#: ../vid_enc_avi/gap_enc_avi_main.c:670
+#: ../vid_enc_avi/gap_enc_avi_main.c:707
 msgid "AVI Video Encoding .."
 msgstr ""
 
 #. the CODEC delivered a NULL buffer
 #. * there is something essential wrong (TERMINATE)
 #.
-#: ../vid_enc_avi/gap_enc_avi_main.c:977
+#: ../vid_enc_avi/gap_enc_avi_main.c:1013
 #, c-format
 msgid "ERROR: GAP AVI encoder CODEC %s delivered empty buffer at frame %d"
 msgstr ""
@@ -10287,16 +10447,16 @@ msgstr "لم يمكن إنشاء '%s': %s"
 msgid "Black dummy frame was added"
 msgstr ""
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:3043
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:3172
 msgid "FFMPEG initializing for video encoding .."
 msgstr ""
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:3168
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:3300
 #, c-format
 msgid "FFMPEG lossless copy frame %d (%d)"
 msgstr ""
 
-#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:3175
+#: ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:3307
 #, c-format
 msgid "FFMPEG encoding frame %d (%d)"
 msgstr ""
@@ -10321,11 +10481,11 @@ msgstr "عدم انشاء قاريء مرمّزات GStreamer ل %s"
 msgid "Could not save ffmpeg video encoder parameterfile:'%s'%s"
 msgstr "لا يمكن تحويل ملف الحالة المحفوظ قديما جانبا '%s': %s"
 
-#: ../vid_enc_single/gap_enc_singleframes_main.c:178
+#: ../vid_enc_single/gap_enc_singleframes_main.c:179
 msgid "singleframes video encoding for anim frames. Menu: @SINGLEFRAMES@"
 msgstr ""
 
-#: ../vid_enc_single/gap_enc_singleframes_main.c:179
+#: ../vid_enc_single/gap_enc_singleframes_main.c:180
 msgid ""
 "This plugin has a video encoder API but writes a series of single frames "
 "instead of one videofile. the filetype of the output frames is derived from "
@@ -10335,23 +10495,23 @@ msgid ""
 "automatic if videofile has no number part) audiodata is ignored. A  call of\""
 msgstr ""
 
-#: ../vid_enc_single/gap_enc_singleframes_main.c:203
+#: ../vid_enc_single/gap_enc_singleframes_main.c:204
 msgid "Set Parameters for GAP singleframes video encoder Plugins"
 msgstr ""
 
-#: ../vid_enc_single/gap_enc_singleframes_main.c:204
+#: ../vid_enc_single/gap_enc_singleframes_main.c:205
 msgid "This plugin sets singleframes specific video encoding parameters."
 msgstr ""
 
-#: ../vid_enc_single/gap_enc_singleframes_main.c:217
+#: ../vid_enc_single/gap_enc_singleframes_main.c:218
 msgid "Get GUI Parameters for GAP singleframes video encoder"
 msgstr ""
 
-#: ../vid_enc_single/gap_enc_singleframes_main.c:218
+#: ../vid_enc_single/gap_enc_singleframes_main.c:219
 msgid "This plugin returns singleframes encoder specific parameters."
 msgstr ""
 
-#: ../vid_enc_single/gap_enc_singleframes_main.c:299
+#: ../vid_enc_single/gap_enc_singleframes_main.c:300
 msgid ""
 "The Singleframes Encoder\n"
 "writes single frames instead of one videofile\n"
@@ -10360,20 +10520,20 @@ msgid ""
 "video name plus 6-digit number + extension"
 msgstr ""
 
-#: ../vid_enc_single/gap_enc_singleframes_main.c:509
+#: ../vid_enc_single/gap_enc_singleframes_main.c:510
 msgid "the Singleframe Encoder has no encoder specific Parameters"
 msgstr ""
 
-#: ../vid_enc_single/gap_enc_singleframes_main.c:678
+#: ../vid_enc_single/gap_enc_singleframes_main.c:679
 msgid "Singleframes Video Encoding .."
 msgstr ""
 
-#: ../vid_enc_single/gap_enc_singleframes_main.c:723
+#: ../vid_enc_single/gap_enc_singleframes_main.c:724
 #, c-format
 msgid "SAVING: %s\n"
 msgstr "حفظ: %s\n"
 
-#: ../vid_enc_single/gap_enc_singleframes_main.c:730
+#: ../vid_enc_single/gap_enc_singleframes_main.c:745
 #, c-format
 msgid ""
 "** Save FAILED on file\n"
@@ -10381,6 +10541,10 @@ msgid ""
 msgstr ""
 "** فشل الحفظ في الملف\n"
 "%s"
+
+#, fuzzy
+#~ msgid "Extracting Audio..."
+#~ msgstr "استخرج إلى..."
 
 #, fuzzy
 #~ msgid "AVI encoding options"
@@ -10433,4 +10597,3 @@ msgstr ""
 #, fuzzy
 #~ msgid "APP0 Marker for each frame"
 #~ msgstr "اسأل لكل رسالة"
-
