@@ -1,3 +1,44 @@
+2008-07-31 Wolfgang Hofer <hof@gimp.org>
+
+- new feature: Persistent drawable id references.
+      Filtermacro supports persistent drawable_id mapping.
+      allows applying recorded filtermacro apply in another gimp session
+      when the recorded last values buffer data  has references
+      to drawable ids.
+
+      Example:
+      the filetermacro has recorded settings to apply the
+      plug_in_bump_map
+      
+      that has a reference to a drawable_id that shall be used as map
+      
+      The new feature creates a persistent mapping for this drawable_id in a file
+      named <filtermacro>.fmref with information about the imagefile and layer
+      
+      RESTRICTIONS:
+       The current implementation can NOT handle parallell processing of multiple filtermacros
+       because there is only ONE context that will be overwritten in case of concurrent calls.
+
+  
+    * NWES
+    * gap/Makefile.am
+    * gap/gap_fmac_base.c
+    * gap/gap_fmac_main.c
+    * gap/gap_filter_pdb.c [.h]
+    * gap/gap_filter_iterators.c
+    * gap/gap_player_main.c [.h]
+    * gap/gap_player_dialog.c
+   
+    * gap/gap_frame_fetcher.c [.h]            # NEW files
+    * gap/gap_fmac_context.c [h]              # NEW files
+    * gap/gap_drawable_vref_parasite.c [.h]   # NEW files
+    * gap/gap_story_render_processor.c
+    * gap/gap_story_dialog.c
+    * gap/gap_story_file.c
+    * gap/gap_story_vthumb.c
+    * gap/gap_story_render_types.h
+    * libgapvidutil/gap_gve_story.h
+
 2008-07-13 Wolfgang Hofer <hof@gimp.org>
 
 - new feature: viedo extract supports generating transparency via bluebox
