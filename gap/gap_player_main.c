@@ -222,6 +222,7 @@ static GapPlayerMainGlobalParams global_params =
 , NULL                /* GtkWidget *progress_bar_audio */
 , NULL                /* GtkWidget *audio_enable_checkbutton */
 
+, NULL                /* GapDrawableVideoRef  *dvref_ptr */
 };
 
 

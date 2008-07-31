@@ -40,6 +40,7 @@
 #include "gap_story_file.h"
 #include "gap_player_cache.h"
 #include "gap_story_render_types.h"
+#include "gap_drawable_vref_parasite.h"
 
 #ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
 #include "gap_vid_api.h"
@@ -255,6 +256,7 @@ typedef struct GapPlayerMainGlobalParams {
   GtkWidget *progress_bar_audio;
   GtkWidget *audio_enable_checkbutton;
 
+  GapDrawableVideoRef  *dvref_ptr;
   
 } GapPlayerMainGlobalParams;
 

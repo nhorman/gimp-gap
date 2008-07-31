@@ -65,6 +65,7 @@
 #include "gap_story_vthumb.h"
 #include "gap_story_section_properties.h"
 #include "gap_file_util.h"
+#include "gap_frame_fetcher.h"
 
 #include "images/gap-stock-pixbufs.h"
 
@@ -8450,8 +8451,19 @@ gap_storyboard_dialog(GapStbMainGlobalParams *sgpp)
   /* init player window */
   p_player_img_mode_cb(NULL, sgpp);
 
-  gtk_main ();
-  gdk_flush ();
+  {
+    gint32 ffetch_user_id;
+    
+    /* register for frame fetcher resources (image cache) 
+     */
+    ffetch_user_id = gap_frame_fetch_register_user("gap_storyboard_dialog");
+
+    gtk_main ();
+    gdk_flush ();
+
+    /* unregister (shall drop cached resources of the frame fetcher) */
+    gap_frame_fetch_unregister_user(ffetch_user_id);
+  }
 
 }  /* end gap_storyboard_dialog */
 

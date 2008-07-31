@@ -319,6 +319,8 @@ typedef struct GapStoryRenderVidHandle
   struct GapStoryRenderMaskDefElem *maskdef_elem;  /* list of mask definitions */
   gboolean   is_mask_handle;
 
+  gint32     ffetch_user_id;
+
 } GapStoryRenderVidHandle;  /* used for storyboard processing */
 
 

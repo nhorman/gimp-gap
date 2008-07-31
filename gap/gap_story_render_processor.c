@@ -111,8 +111,6 @@ static GapStoryRenderErrors * p_new_stb_error(void);
 static void     p_init_stb_error(GapStoryRenderErrors *sterr);
 static void     p_free_stb_error(GapStoryRenderErrors *sterr);
 static void     p_set_stb_error(GapStoryRenderErrors *sterr, char *errtext);
-static void     p_drop_image_cache_elem1(GapStoryRenderImageCache *imcache);
-static gint32   p_load_cache_image( char* filename);
 static void     p_find_min_max_vid_tracknumbers(GapStoryRenderFrameRangeElem *frn_list
                              , gint32 *lowest_tracknr
                              , gint32 *highest_tracknr
@@ -833,124 +831,6 @@ gap_story_render_set_stb_warning(GapStoryRenderErrors *sterr, char *warntext)
      sterr->warnline     = g_strdup(sterr->currline);
   }
 }  /* end gap_story_render_set_stb_warning */
-
-
-/* ----------------------------------------------------
- * p_drop_image_cache_elem1
- * ----------------------------------------------------
- */
-static void
-p_drop_image_cache_elem1(GapStoryRenderImageCache *imcache)
-{
-  GapStoryRenderImageCacheElem  *ic_ptr;
-
-  if(imcache)
-  {
-    ic_ptr = imcache->ic_list;
-    if(ic_ptr)
-    {
-      if(gap_debug) printf("p_drop_image_cache_elem1 delete:%s (image_id:%d)\n", ic_ptr->filename, (int)ic_ptr->image_id);
-      gap_image_delete_immediate(ic_ptr->image_id);
-      g_free(ic_ptr->filename);
-      imcache->ic_list = (GapStoryRenderImageCacheElem  *)ic_ptr->next;
-      g_free(ic_ptr);
-    }
-  }
-}  /* end p_drop_image_cache_elem1 */
-
-
-/* ----------------------------------------------------
- * gap_story_render_drop_image_cache
- * ----------------------------------------------------
- */
-void
-gap_story_render_drop_image_cache(void)
-{
-  GapStoryRenderImageCache *imcache;
-
-  if(gap_debug)  printf("gap_story_render_drop_image_cache START\n");
-  imcache = global_imcache;
-  if(imcache)
-  {
-    while(imcache->ic_list)
-    {
-      p_drop_image_cache_elem1(imcache);
-    }
-  }
-  if(gap_debug) printf("gap_story_render_drop_image_cache END\n");
-
-}  /* end gap_story_render_drop_image_cache */
-
-
-/* ----------------------------------------------------
- * p_load_cache_image
- * ----------------------------------------------------
- */
-static gint32
-p_load_cache_image( char* filename)
-{
-  gint32 l_idx;
-  gint32 l_image_id;
-  GapStoryRenderImageCacheElem  *ic_ptr;
-  GapStoryRenderImageCacheElem  *ic_last;
-  GapStoryRenderImageCacheElem  *ic_new;
-  GapStoryRenderImageCache  *imcache;
-
-  if(filename == NULL)
-  {
-    printf("p_load_cache_image: ** ERROR cant load filename == NULL!\n");
-    return -1;
-  }
-
-  if(global_imcache == NULL)
-  {
-    /* init the global_image cache */
-    global_imcache = g_malloc0(sizeof(GapStoryRenderImageCache));
-    global_imcache->ic_list = NULL;
-    global_imcache->max_img_cache = MAX_IMG_CACHE_ELEMENTS;
-  }
-
-  imcache = global_imcache;
-  ic_last = imcache->ic_list;
-
-  l_idx = 0;
-  for(ic_ptr = imcache->ic_list; ic_ptr != NULL; ic_ptr = (GapStoryRenderImageCacheElem *)ic_ptr->next)
-  {
-    l_idx++;
-    if(strcmp(filename, ic_ptr->filename) == 0)
-    {
-      /* image found in cache, can skip load */
-      return(ic_ptr->image_id);
-    }
-    ic_last = ic_ptr;
-  }
-
-  l_image_id = gap_lib_load_image(filename);
-  if(l_image_id >= 0)
-  {
-    ic_new = g_malloc0(sizeof(GapStoryRenderImageCacheElem));
-    ic_new->filename = g_strdup(filename);
-    ic_new->image_id = l_image_id;
-
-    if(imcache->ic_list == NULL)
-    {
-      imcache->ic_list = ic_new;   /* 1.st elem starts the list */
-    }
-    else
-    {
-      ic_last->next = (GapStoryRenderImageCacheElem *)ic_new;  /* add new elem at end of the cache list */
-    }
-
-    if(l_idx > imcache->max_img_cache)
-    {
-      /* chache list has more elements than desired,
-       * drop the 1.st (oldest) entry in the chache list
-       */
-      p_drop_image_cache_elem1(imcache);
-    }
-  }
-  return(l_image_id);
-}  /* end p_load_cache_image */
 
 
 
@@ -3167,6 +3047,8 @@ gap_story_render_close_vid_handle(GapStoryRenderVidHandle *vidhand)
    p_free_stb_error(vidhand->sterr);
    p_free_mask_definitions(vidhand);
 
+   /* unregister frame fetcher resource usage (e.g. the image cache) */
+   gap_frame_fetch_unregister_user(vidhand->ffetch_user_id);
    vidhand->section_list = NULL;
    vidhand->frn_list = NULL;
    vidhand->sterr = NULL;
@@ -3505,6 +3387,9 @@ p_open_video_handle_private(    gboolean ignore_audio
     vidhand->status_msg = NULL;
     vidhand->status_msg_len = 0;
   }
+
+  /* registrate as user of the frame fetcher resources (e.g. the image cache) */
+  vidhand->ffetch_user_id = gap_frame_fetch_register_user("gap_story_render_processor.p_open_video_handle_private");
 
   vidhand->frn_list = NULL;
   vidhand->preferred_decoder = NULL;
@@ -4762,7 +4647,13 @@ p_story_render_fetch_composite_image_private(GapStoryRenderVidHandle *vidhand
            {
              gint32 l_orig_image_id;
 
-             l_orig_image_id = p_load_cache_image(l_framename);
+             l_orig_image_id = gap_frame_fetch_orig_image(vidhand->ffetch_user_id
+                                   , l_framename            /* full filename of the image */
+                                   , TRUE /*  enable caching */
+                                  );
+
+             
+             
              gimp_selection_none(l_orig_image_id);
              if(l_frn_type == GAP_FRN_IMAGE)
              {

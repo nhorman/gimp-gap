@@ -94,7 +94,11 @@
 #include "gap_filter.h"
 #include "gap_filter_iterators.h"
 #include "gap_dbbrowser_utils.h"
-
+#include "gap_fmac_context.h"
+#include "gap_frame_fetcher.h"
+#include "gap_drawable_vref_parasite.h"
+#include "gap_lib.h"
+#include "gap/gap_layer_copy.h"
 
 
 static gchar *g_plugin_data_from = NULL;
@@ -178,6 +182,14 @@ typedef struct t_CML_PARAM
   gdouble mutation_dist;
 } t_CML_PARAM;
 
+static void                 p_delta_drawable_simple(gint32 *val, gint32 val_from, gint32 val_to
+                                 , gint32 total_steps, gdouble current_step);
+
+static gint32               p_capture_image_name_and_assign_pesistent_id(GapFmacContext *fmacContext
+                                  , gint32 drawable_id);
+static gboolean             p_iteration_by_pesistent_id(GapFmacContext *fmacContext
+                                  ,gint32 *val, gint32 val_from, gint32 val_to
+                                  , gint32 total_steps, gdouble current_step);
 
 /* ----------------------------------------------------------------------
  * iterator functions for basic datatypes
@@ -337,45 +349,479 @@ static void p_delta_gint_color(t_gint_color *val, t_gint_color *val_from, t_gint
        val->color[l_idx]  = val_from->color[l_idx] + delta;
     }
 }
-static void p_delta_drawable(gint32 *val, gint32 val_from, gint32 val_to, gint32 total_steps, gdouble current_step)
+
+
+/* ---------------------------
+ * p_delta_drawable
+ * ---------------------------
+ * the drawable iterator checks for current filtermacro context.
+ * if there is such a context, iteration tries to fetch the relvant drawable 
+ * via loading an image, or fetching a video frame.
+ * In this case, the drawables (gint32 val_from and val_to) are expected to refere
+ * to persistent Ids
+ * e.g. are >= GAP_FMCT_MIN_PERSISTENT_DRAWABLE_ID
+ * The image_ids of all fetched images are added to a list of last recent temp images
+ * this list has to be deleted at end of filtermacro processing. if the list contains
+ * more than NNNNN entries, the oldest entries are deleted at begin of a new fetch
+ * to make space for the next temporary image.
+ *
+ * if the record flag of the filtermacro context is set
+ * we do record identifying information about the the current drawable (*val)
+ * in the persistent_id_lookup_filename. The drawable id is therfore mapped into a persitent
+ * drawable_id that is unique in the persistent_id_lookup_file.
+ * (the 1st entry starts with GAP_FMCT_MIN_PERSISTENT_DRAWABLE_ID)
+ */
+void
+p_delta_drawable(gint32 *val, gint32 val_from, gint32 val_to, gint32 total_steps, gdouble current_step)
 {
+  gint            sizeFmacContext;
+
+  if(gap_debug)
+  {
+    printf("p_delta_drawable: START *val drawable_id:%d (from:%d  to:%d)\n"
+      ,(int)*val
+      ,(int)val_from
+      ,(int)val_to
+      );
+  }
+  
+  sizeFmacContext = gimp_get_data_size(GAP_FMAC_CONTEXT_KEYWORD);
+  
+  if(sizeFmacContext == sizeof(GapFmacContext))
+  {
+    GapFmacContext *fmacContext;
+    fmacContext = g_malloc0(sizeFmacContext);
+    if(fmacContext)
+    {
+      gimp_get_data(GAP_FMAC_CONTEXT_KEYWORD, fmacContext);
+
+      if(fmacContext->enabled == TRUE)
+      {
+        gboolean success;
+
+        gap_fmct_load_GapFmacContext(fmacContext);
+
+        /* check for record conditions */
+        if(fmacContext->recording_mode)
+        {
+          gint32 drawable_id;
+
+          drawable_id = *val;
+
+          /* calculate and assign the mapped persistent darawable_id */
+          *val = p_capture_image_name_and_assign_pesistent_id(fmacContext, drawable_id);
+
+          gap_fmct_free_GapFmacRefList(fmacContext);
+          g_free(fmacContext);
+          return;
+        }
+        success = p_iteration_by_pesistent_id(fmacContext, val, val_from, val_to, total_steps, current_step);
+        if (success)
+        {
+          gap_fmct_free_GapFmacRefList(fmacContext);
+          g_free(fmacContext);
+          return;
+        }
+      }
+      gap_fmct_free_GapFmacRefList(fmacContext);
+      g_free(fmacContext);
+    }
+
+  }
+   
+  /* simple iteration of layers if in the same image (without context) */
+  p_delta_drawable_simple(val, val_from, val_to, total_steps, current_step);
+  
+}  /* end p_delta_drawable */
+
+
+/* ---------------------------
+ * p_delta_drawable_simple
+ * ---------------------------
+ * simple iteration for drawable id (in case val_from and val_to both refere to
+ * the same image (that is already opened in the current gimp session)
+ */
+static void 
+p_delta_drawable_simple(gint32 *val, gint32 val_from, gint32 val_to, gint32 total_steps, gdouble current_step)
+{
+  gint    l_nlayers;
+  gint32 *l_layers_list;
+  gint32  l_tmp_image_id;
+  gint    l_idx, l_idx_from, l_idx_to;
+
+  if(gap_debug)
+  {
+    printf("p_delta_drawable_simple: START *val drawable_id:%d (from:%d  to:%d)\n"
+      ,(int)*val
+      ,(int)val_from
+      ,(int)val_to
+      );
+  }
+  if((val_from < 0) || (val_to < 0))
+  {
+    return;
+  }
+
+  l_tmp_image_id = gimp_drawable_get_image(val_from);
+
+  /* check if from and to values are both valid drawables within the same image */
+  if ((l_tmp_image_id > 0)
+  &&  (l_tmp_image_id = gimp_drawable_get_image(val_to)))
+  {
+     l_idx_from = -1;
+     l_idx_to   = -1;
+
+     /* check the layerstack index of from and to drawable */
+     l_layers_list = gimp_image_get_layers(l_tmp_image_id, &l_nlayers);
+     for (l_idx = l_nlayers -1; l_idx >= 0; l_idx--)
+     {
+        if( l_layers_list[l_idx] == val_from ) l_idx_from = l_idx;
+        if( l_layers_list[l_idx] == val_to )   l_idx_to   = l_idx;
+
+        if((l_idx_from != -1) && (l_idx_to != -1))
+        {
+          /* OK found both index values, iterate the index (proceed to next layer) */
+          p_delta_gint(&l_idx, l_idx_from, l_idx_to, total_steps, current_step);
+          *val = l_layers_list[l_idx];
+          break;
+        }
+     }
+     g_free (l_layers_list);
+  }
+}  /* end p_delta_drawable_simple */
+
+
+/* ------------------------------------
+ * p_drawable_is_alive
+ * ------------------------------------
+ * current implementation checks only for layers and layermasks.
+ * TODO check other drawable types such as channels ....
+ *
+ * return TRUE  if OK (drawable is still valid)
+ * return FALSE if drawable is NOT valid
+ */
+gboolean
+p_drawable_is_alive(gint32 drawable_id)
+{
+  gint32 *images;
+  gint    nimages;
+  gint    l_idi;
+  gboolean   l_found;
+
+  if(drawable_id < 0)
+  {
+     return FALSE;
+  }
+
+  images = gimp_image_list(&nimages);
+  l_idi = nimages -1;
+  l_found = FALSE;
+  while((l_idi >= 0) && images)
+  {
     gint    l_nlayers;
     gint32 *l_layers_list;
-    gint32  l_tmp_image_id;
-    gint    l_idx, l_idx_from, l_idx_to;
 
-    if((val_from < 0) || (val_to < 0))
+    l_layers_list = gimp_image_get_layers(images[l_idi], &l_nlayers);
+    if(l_layers_list != NULL)
     {
-      return;
+      gint    l_idx;
+      l_idx = l_nlayers;
+      for(l_idx = 0; l_idx < l_nlayers; l_idx++)
+      {
+         gint32  l_layer_id;
+         gint32  l_layermask_id;
+         
+         l_layer_id = l_layers_list[0];
+         if (l_layer_id == drawable_id)
+         {
+           l_found = TRUE;
+           break;
+         }
+         l_layermask_id = gimp_layer_get_mask(l_layer_id);
+         if (l_layermask_id == drawable_id)
+         {
+           l_found = TRUE;
+           break;
+         }
+      }
+      g_free (l_layers_list);
     }
-
-    l_tmp_image_id = gimp_drawable_get_image(val_from);
-
-    /* check if from and to values are both valid drawables within the same image */
-    if ((l_tmp_image_id > 0)
-    &&  (l_tmp_image_id = gimp_drawable_get_image(val_to)))
+    
+    if (l_found == TRUE)
     {
-       l_idx_from = -1;
-       l_idx_to   = -1;
+      break;
+    }
+    l_idi--;
+  }
 
-       /* check the layerstack index of from and to drawable */
-       l_layers_list = gimp_image_get_layers(l_tmp_image_id, &l_nlayers);
-       for (l_idx = l_nlayers -1; l_idx >= 0; l_idx--)
-       {
-          if( l_layers_list[l_idx] == val_from ) l_idx_from = l_idx;
-          if( l_layers_list[l_idx] == val_to )   l_idx_to   = l_idx;
+  if(images) g_free(images);
+  if(l_found)
+  {
+    return TRUE;  /* OK */
+  }
 
-          if((l_idx_from != -1) && (l_idx_to != -1))
+  if(gap_debug)
+  {
+    printf("p_drawable_is_alive: drawable_id %d is not VALID\n", (int)drawable_id);
+  }
+ 
+  return FALSE ;   /* INVALID image id */
+}  /* end p_drawable_is_alive */
+
+/* --------------------------------------------
+ * p_capture_image_name_and_assign_pesistent_id
+ * --------------------------------------------
+ * Capture the identifying information about the image, anim_frame or videofile name and layerstack index
+ *   (or frameposition) of the specified drawable_id.
+ * Note: videofilename and framenumber can be fetched from layer parasite data. 
+ *         (plus additional information prefered_decoder and seltrack)
+ *         parasite data shall be set when the player creates a snapshot of a video clip.
+ *         (click in the preview)
+ *         (Player option: enable videoname parasites.)
+ * assign a persistent id that is unique within a persistent_id_lookup_file.
+ * filtermacro context.
+ * returns the assigned persistent_drawable_id.
+ *         (In case no assigned persisten_drawable_id could be created
+ *          return the original drawable_id).
+ */
+static gint32
+p_capture_image_name_and_assign_pesistent_id(GapFmacContext *fmacContext, gint32 drawable_id)
+{
+  gint32 persistent_drawable_id;
+  gint32 image_id;
+  GapDrawableVideoRef *dvref;
+  GapLibAinfoType ainfo_type;
+  gint32 frame_nr;
+  gint32 stackposition;
+  gint32 track;
+  char   *filename;
+  
+  
+  if(gap_debug)
+  {
+    printf("p_capture_image_name_and_assign_pesistent_id: START_REC orignal_drawable_id:%d\n"
+      ,drawable_id
+      );
+  }
+
+  if(p_drawable_is_alive(drawable_id) != TRUE)
+  {
+    /* drawable is no longer valid and can not be mapped.
+     * This may happen if the layer was removed or the refered image was close
+     * in the time since the plugin has stored the last values buffer
+     * and the time when filtermacro starts recording filtercalls.
+     */
+    return(drawable_id);
+  }
+  
+  persistent_drawable_id = drawable_id;
+  filename = NULL;
+  
+  dvref = gap_dvref_get_drawable_video_reference_via_parasite(drawable_id);
+  if (dvref != NULL)
+  {
+    if(gap_debug)
+    {
+      printf("p_capture_image_name_and_assign_pesistent_id: VIDEO ref found for orignal_drawable_id:%d\n"
+        ,drawable_id
+        );
+    }
+    ainfo_type = GAP_AINFO_MOVIE;
+    frame_nr = dvref->para.framenr;    /* video frame number */
+    stackposition = -1;   /* stackposition not relevant for video */
+    track = dvref->para.seltrack;
+    filename = g_strdup(dvref->videofile);
+
+    gap_dvref_free(&dvref);
+  }
+  else
+  {
+    GapAnimInfo *l_ainfo_ptr;
+    
+    image_id = gimp_drawable_get_image(drawable_id);
+    filename = gimp_image_get_filename(image_id);
+    ainfo_type = GAP_AINFO_ANIMIMAGE;
+    stackposition = gap_layer_get_stackposition(image_id, drawable_id);
+    track = 1;
+    frame_nr = 1;
+
+    // here we could check gimp_image_is_dirty(image_id)
+    // to check for unsaved changes of the image.
+    // but the recording of a filtermacro can happen much later than
+    // the initial recording of the plugin's last values buffer.
+  
+    l_ainfo_ptr = gap_lib_alloc_ainfo(image_id, GIMP_RUN_NONINTERACTIVE);
+    if(l_ainfo_ptr != NULL)
+    {
+      ainfo_type = l_ainfo_ptr->ainfo_type;
+      frame_nr = l_ainfo_ptr->frame_nr;
+      track = -1;   /* video track (not relevant for frames and single images) */
+
+      gap_lib_free_ainfo(&l_ainfo_ptr);
+    }
+  }
+
+  if (filename != NULL)
+  {
+    persistent_drawable_id = gap_fmct_add_GapFmacRefEntry(ainfo_type
+                                 , frame_nr
+                                 , stackposition
+                                 , track
+                                 , drawable_id
+                                 , filename
+                                 , FALSE           /* force_id NO (e.g generate unique id) */
+                                 , fmacContext
+                                 );
+    g_free(filename);
+  }
+
+
+  if(gap_debug)
+  {
+    printf("p_capture_image_name_and_assign_pesistent_id: orignal_drawable_id:%d mapped_drawable_id:%d\n"
+      ,drawable_id
+      ,persistent_drawable_id
+      );
+  }
+
+  return (persistent_drawable_id);
+}  /* end p_capture_image_name_and_assign_pesistent_id */
+
+
+/* -------------------------------------
+ * p_iteration_by_pesistent_id
+ * -------------------------------------
+ * fetch frame image by persistent id,
+ * assign drawable and calculate iteration between
+ *   start_drawable_id
+ *   end_drawable_id
+ * o) check if both start_drawable_id and end_drawable_id 
+ *    are found in the persistent_id_lookup
+ *
+ *    o) if both refere to the same image filename and ainfo_type == GAP_AINFO_ANIMIMAGE
+ *       then open this image (if not already opened)
+ *       and calculate the drawable id according to current step
+ *       by iterating layerstack numbers.
+ *    o) if both refere to images, that are anim frames
+ *       with the same basename and extension
+ *       (for example:
+ *         anim_000001.xcf 
+ *         anim_000009.xcf
+ *       )
+ *       then iterate by framenumber (in the example this will be between 1 and 9)
+ *
+ *    o) filename references to videofiles are supported if ainfo_type == GAP_AINFO_MOVIE
+ *
+ * Note that each fetch of a persistent darawable (the fetched_layer_id) creates
+ * a temporary image in the frame fetcher (assotiated with fmacContext->ffetch_user_id)
+ * In this iterator we can not delete those temp. image(s) because they are required for
+ * processing in the corresponding filter plug-in.
+ * Therefore the master filtermacro processing has to do this clean up step after the
+ * filtercall has finished.
+ */
+static gboolean
+p_iteration_by_pesistent_id(GapFmacContext *fmacContext
+  ,gint32 *val, gint32 val_from, gint32 val_to, gint32 total_steps, gdouble current_step)
+{
+  GapFmacRefEntry *fmref_entry_from;
+
+  if(gap_debug)
+  {
+    printf("p_iteration_by_pesistent_id: START *val drawable_id:%d (from:%d  to:%d)\n"
+      ,(int)*val
+      ,(int)val_from
+      ,(int)val_to
+      );
+  }
+  
+  fmref_entry_from = gap_fmct_get_GapFmacRefEntry_by_persitent_id(fmacContext, val_from);
+  if (fmref_entry_from)
+  {
+    GapFmacRefEntry *fmref_entry_to;
+    
+    fmref_entry_to = gap_fmct_get_GapFmacRefEntry_by_persitent_id(fmacContext, val_to);
+    if (fmref_entry_to)
+    {
+      if ((strcmp(fmref_entry_from->filename, fmref_entry_to->filename) == 0)
+      && (fmref_entry_from->track == fmref_entry_to->track)
+      && (fmref_entry_from->ainfo_type == fmref_entry_to->ainfo_type))
+      {
+        gint32 fetched_layer_id;
+
+        fetched_layer_id = -1;
+
+        // TODO: what to do if mtime has changed ? (maybe print warning if this occurs the 1st time ?)
+        
+        if (fmref_entry_from->ainfo_type == GAP_AINFO_ANIMIMAGE)
+        {
+          /* iterate stackposition */
+          gint32 stackposition;
+          
+          stackposition = fmref_entry_from->stackposition;
+          p_delta_gint32(&stackposition, fmref_entry_from->stackposition, fmref_entry_to->stackposition
+                        ,total_steps, current_step);
+                        
+          fetched_layer_id = gap_frame_fetch_dup_image(fmacContext->ffetch_user_id
+                                    ,fmref_entry_from->filename   /* full filename of the image */
+                                    ,stackposition                /* pick layer by stackposition */
+                                    ,TRUE                         /* enable caching */
+                                    );
+        }
+        else
+        {
+          /* iterate frame_nr */
+          gint32 frame_nr;
+          
+          frame_nr = fmref_entry_from->frame_nr;
+          p_delta_gint32(&frame_nr, fmref_entry_from->frame_nr, fmref_entry_to->frame_nr
+                        ,total_steps, current_step);
+
+          if (fmref_entry_from->ainfo_type == GAP_AINFO_MOVIE)
           {
-            /* OK found both index values, iterate the index (proceed to next layer) */
-            p_delta_gint(&l_idx, l_idx_from, l_idx_to, total_steps, current_step);
-            *val = l_layers_list[l_idx];
-            break;
+            fetched_layer_id = gap_frame_fetch_dup_video(fmacContext->ffetch_user_id
+                                    ,fmref_entry_from->filename   /* full filename of a video */
+                                    ,frame_nr                     /* frame within the video (starting at 1) */
+                                    ,fmref_entry_from->track      /* videotrack */
+                                    , NULL                        /* char *prefered_decoder*/
+                                    );
           }
-       }
-       g_free (l_layers_list);
+          else
+          {
+            fetched_layer_id = gap_frame_fetch_dup_image(fmacContext->ffetch_user_id
+                                    ,fmref_entry_from->filename   /* full filename of the image */
+                                    ,-1                           /* 0 pick layer on top of stack, -1 merge visible layers */
+                                    ,TRUE                         /* enable caching */
+                                    );
+          }
+
+        }
+
+        *val = fetched_layer_id;
+        if(gap_debug)
+        {
+          printf("p_iteration_by_pesistent_id: SUCCESS drawable_id:%d (from:%d  to:%d)\n"
+            ,(int)*val
+            ,(int)val_from
+            ,(int)val_to
+            );
+        }
+        return (TRUE);
+      }
     }
-}
+  }
+
+  if(gap_debug)
+  {
+    printf("p_iteration_by_pesistent_id: FAILED *val drawable_id:%d (from:%d  to:%d)\n"
+      ,(int)*val
+      ,(int)val_from
+      ,(int)val_to
+      );
+  }
+  return (FALSE);
+}  /* end p_iteration_by_pesistent_id */
+
+
 static void
 p_delta_gintdrawable(gint *val, gint val_from, gint val_to, gint32 total_steps, gdouble current_step)
 {

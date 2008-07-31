@@ -478,7 +478,7 @@ p_filt_pdb_get_alternative_iterator_proc(char *plugin_name, gint *count)
  * and there is no individual Iterator Procedure.
  */
 char * 
-gap_filt_pdb_get_iterator_proc(char *plugin_name, gint *count)
+gap_filt_pdb_get_iterator_proc(const char *plugin_name, gint *count)
 {
   char      *l_plugin_iterator;
   char      *canonical_name;

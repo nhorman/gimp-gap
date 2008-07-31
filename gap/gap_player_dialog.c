@@ -111,6 +111,7 @@
 #include "gap_audio_extract.h"
 #include "gap_audio_extract.h"
 #include "gap_file_util.h"
+#include "gap_drawable_vref_parasite.h"
 
 #include "gap-intl.h"
 
@@ -1211,6 +1212,40 @@ p_mtrace_image_alive(GapPlayerMainGlobalParams *gpp
 
 
 /* ------------------------------
+ * p_conditional_attach_dvref
+ * ------------------------------
+ * check if there is a valid current videoreference.
+ * if yes attach the reference as (temporary) videoreferenc parasite
+ * to the specified drawable_id 
+ * (that is typically the layer in the mtrace image)
+ */
+static void
+p_conditional_attach_dvref(GapPlayerMainGlobalParams *gpp
+               ,gint32 drawable_id)
+{
+  if(gap_debug)
+  {
+    printf("MTRACE: mtrace_mode:%d (GAP_PLAYER_MTRACE_IMG_SIZE == %d) dvref\n"
+        ,(int)gpp->mtrace_mode
+        ,(int)GAP_PLAYER_MTRACE_IMG_SIZE
+        );
+    gap_dvref_debug_print_GapDrawableVideoRef(gpp->dvref_ptr);
+  }
+
+  if((gpp->mtrace_mode == GAP_PLAYER_MTRACE_IMG_SIZE)
+  && (gpp->dvref_ptr != NULL))
+  {
+    if(gpp->dvref_ptr->videofile != NULL)
+    {
+      if (gpp->dvref_ptr->videofile == gpp->gva_videofile)
+      {
+        gap_dvref_assign_videoref_parasites(gpp->dvref_ptr, drawable_id);
+      }
+    }
+  } 
+}  /* end p_conditional_attach_dvref */
+
+/* ------------------------------
  * p_mtrace_image
  * ------------------------------
  * add image as one composite layer
@@ -1229,6 +1264,15 @@ p_mtrace_image( GapPlayerMainGlobalParams *gpp
   gint32 src_layer_id;
   gint32 dst_layer_id;
   gint   l_src_offset_x, l_src_offset_y;    /* layeroffsets as they were in src_image */
+
+  if(gap_debug)
+  {
+      printf("MTRACE:p_mtrace_image START mtrace_mode:%d (GAP_PLAYER_MTRACE_IMG_SIZE == %d)\n"
+          ,(int)gpp->mtrace_mode
+          ,(int)GAP_PLAYER_MTRACE_IMG_SIZE
+          );
+      gap_dvref_debug_print_GapDrawableVideoRef(gpp->dvref_ptr);
+  }
 
   if(gpp->mtrace_mode != GAP_PLAYER_MTRACE_OFF)
   {
@@ -1262,6 +1306,8 @@ p_mtrace_image( GapPlayerMainGlobalParams *gpp
       l_src_offset_y = (gint32)(((gdouble)mtrace_height / (gdouble)height) * (gdouble)l_src_offset_y);
     }
     gimp_layer_set_offsets(dst_layer_id, l_src_offset_x, l_src_offset_y);
+    p_conditional_attach_dvref(gpp, dst_layer_id);
+
 
     {
       gchar *l_name;
@@ -1329,6 +1375,8 @@ p_mtrace_tmpbuf( GapPlayerMainGlobalParams *gpp
                           , 0  /* offset_x */
                           , 0  /* offset_y */
                           );
+
+    p_conditional_attach_dvref(gpp, dst_layer_id);
 
     {
       gchar *l_name;
@@ -2821,6 +2869,26 @@ p_fetch_videoframe(GapPlayerMainGlobalParams *gpp
       g_free(th_data);
       th_data = NULL;
     }
+    else if (gpp->dvref_ptr != NULL)
+    {
+      /* refresh current videofile reference 
+       * Note: the  dvref_ptr->videofile gets no COPY but only a rference to the current videofilename
+       *       this pointer can be reset to NULL any time (at p_display_frame)
+       *       but MUST NOT free up the refered name.
+       */
+      gpp->dvref_ptr->videofile = gpp->gva_videofile;
+      gpp->dvref_ptr->para.framenr = framenumber;
+      gpp->dvref_ptr->para.seltrack = seltrack;
+      g_snprintf(&gpp->dvref_ptr->para.preferred_decoder[0], sizeof(gpp->dvref_ptr->para.preferred_decoder), "%s"
+                , preferred_decoder
+                );
+      if(gap_debug)
+      {
+        printf("p_fetch_videoframe: dvref\n");
+        gap_dvref_debug_print_GapDrawableVideoRef(gpp->dvref_ptr);
+      }
+
+    }
   }
   else
   {
@@ -3649,6 +3717,11 @@ p_display_frame(GapPlayerMainGlobalParams *gpp, gint32 framenr)
   l_filename = NULL;
   framenr_is_the_active_image = FALSE;
   l_composite_image_id = -1;
+
+  if(gpp->dvref_ptr != NULL)
+  {
+    gpp->dvref_ptr->videofile = NULL;
+  }
 
   if(gpp->stb_ptr)
   {
@@ -4632,7 +4705,10 @@ on_vid_preview_button_press_event      (GtkWidget       *widget,
                                         GdkEventButton  *bevent,
                                         GapPlayerMainGlobalParams *gpp)
 {
-  /*if(gap_debug) printf("on_vid_preview_button_press_event: START\n"); */
+  if(gap_debug)
+  {
+    printf("on_vid_preview_button_press_event: START\n");
+  }
 
   if(gpp->mtrace_mode == GAP_PLAYER_MTRACE_OFF)
   {
@@ -8333,6 +8409,9 @@ gap_player_dlg_create(GapPlayerMainGlobalParams *gpp)
   gpp->in_timer_playback = FALSE;
   gpp->old_resize_width = 0;
   gpp->old_resize_height = 0;
+
+  gpp->dvref_ptr = g_new(GapDrawableVideoRef, 1);
+  gpp->dvref_ptr->videofile = NULL;
 
   p_create_player_window(gpp);
   p_set_frame_with_name_label(gpp);

@@ -332,7 +332,7 @@ gap_story_vthumb_open_videofile(GapStbMainGlobalParams *sgpp
     if((l_have_valid_vindex == FALSE)
     && (vindex_permission))
     {
-      //if(gap_debug)
+      if(gap_debug)
       {
         printf("STORY: DEBUG: create vidindex start\n");
       }
@@ -344,7 +344,7 @@ gap_story_vthumb_open_videofile(GapStbMainGlobalParams *sgpp
       sgpp->gvahand->create_vindex = TRUE;
       GVA_count_frames(sgpp->gvahand);
 
-      //if(gap_debug)
+      if(gap_debug)
       {
          printf("STORY: DEBUG: create vidindex done\n");
       }

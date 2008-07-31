@@ -49,7 +49,7 @@ int  gap_filt_pdb_save_xcf(gint32 image_id, char *sav_name);
 gint gap_filt_pdb_get_data(char *key);
 void gap_filt_pdb_set_data(char *key, gint plugin_data_len);
 gint gap_filt_pdb_procedure_available(char  *proc_name, GapFiltPdbProcType ptype);
-char * gap_filt_pdb_get_iterator_proc(char *plugin_name, gint *count);
+char * gap_filt_pdb_get_iterator_proc(const char *plugin_name, gint *count);
 
 int gap_filt_pdb_constraint_proc_sel1(gchar *proc_name, gint32 image_id);
 int gap_filt_pdb_constraint_proc_sel2(gchar *proc_name, gint32 image_id);

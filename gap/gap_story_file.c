@@ -4913,7 +4913,7 @@ p_story_save_header(GapStoryBoard *stb, FILE *fp)
      fprintf(fp, "%s           %s:\"%s\" %s:%d %s:%d\n"
          , GAP_STBKEY_EDIT_SETTINGS
          , l_parnam_tab.parname[1]
-         , (int)section_name
+         , section_name
          , l_parnam_tab.parname[2]
          , (int)l_track
          , l_parnam_tab.parname[3]

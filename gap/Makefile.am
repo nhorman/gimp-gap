@@ -70,8 +70,12 @@ libgimpgap_a_SOURCES = $(BASE_SOURCES)
 
 
 libgapstory_a_SOURCES = $(BASE_SOURCES)	\
+	gap_frame_fetcher.c		\
+	gap_frame_fetcher.h		\
 	gap_fmac_name.c		\
 	gap_fmac_name.h		\
+	gap_fmac_context.c	\
+	gap_fmac_context.h	\
 	gap_story_file.h		\
 	gap_story_file.c		\
 	gap_story_render_types.h	\
@@ -158,6 +162,12 @@ gap_filter_SOURCES = \
 	gap_filter_main.c	\
 	gap_filter_pdb.c	\
 	gap_filter_pdb.h	\
+	gap_drawable_vref_parasite.c	\
+	gap_drawable_vref_parasite.h	\
+	gap_fmac_context.c	\
+	gap_fmac_context.h	\
+	gap_frame_fetcher.c	\
+	gap_frame_fetcher.h	\
 	gap_lastvaldesc.c	\
 	gap_lastvaldesc.h	\
 	gap_libgimpgap.h	
@@ -170,11 +180,17 @@ gap_fmac_SOURCES = \
 	gap_filter_foreach.c	\
 	gap_filter_iterators.c	\
 	gap_filter_iterators.h	\
+	gap_drawable_vref_parasite.c	\
+	gap_drawable_vref_parasite.h	\
 	gap_fmac_main.c	\
 	gap_filter_pdb.c	\
 	gap_filter_pdb.h	\
+	gap_frame_fetcher.c	\
+	gap_frame_fetcher.h	\
 	gap_fmac_name.c		\
 	gap_fmac_name.h		\
+	gap_fmac_context.c	\
+	gap_fmac_context.h	\
 	gap_fmac_base.c		\
 	gap_fmac_base.h		\
 	gap_lastvaldesc.c	\
@@ -185,11 +201,17 @@ gap_fmac_varying_SOURCES = \
 	gap_filter.h		\
 	gap_filter_iterators.c	\
 	gap_filter_iterators.h	\
+	gap_drawable_vref_parasite.c	\
+	gap_drawable_vref_parasite.h	\
 	gap_fmac_varying_main.c	\
 	gap_filter_pdb.c	\
 	gap_filter_pdb.h	\
+	gap_frame_fetcher.c	\
+	gap_frame_fetcher.h	\
 	gap_fmac_name.c		\
 	gap_fmac_name.h		\
+	gap_fmac_context.c	\
+	gap_fmac_context.h	\
 	gap_fmac_base.c		\
 	gap_fmac_base.h		\
 	gap_lastvaldesc.c	\
@@ -239,6 +261,8 @@ gap_player_SOURCES = \
 	gap_player_cache.h	\
 	gap_audio_extract.c	\
 	gap_audio_extract.h	\
+	gap_drawable_vref_parasite.c	\
+	gap_drawable_vref_parasite.h	\
 	gap_libgapstory.h	\
 	gap_libgimpgap.h	
 
@@ -275,6 +299,8 @@ gap_storyboard_SOURCES = \
 	gap_player_dialog.h	\
 	gap_player_cache.c	\
 	gap_player_cache.h	\
+	gap_drawable_vref_parasite.c	\
+	gap_drawable_vref_parasite.h	\
 	gap_libgapstory.h	\
 	gap_libgimpgap.h	
 
@@ -294,6 +320,8 @@ gap_video_extract_SOURCES = \
 	gap_player_dialog.h	\
 	gap_player_cache.c	\
 	gap_player_cache.h	\
+	gap_drawable_vref_parasite.c	\
+	gap_drawable_vref_parasite.h	\
 	gap_libgapstory.h	\
 	gap_libgimpgap.h	
 
@@ -352,9 +380,9 @@ LDADD = $(GIMP_LIBS)
 
 gap_plugins_LDADD =          $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
 gap_bluebox_LDADD =          $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
-gap_filter_LDADD =           $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
-gap_fmac_LDADD =             $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
-gap_fmac_varying_LDADD =     $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
+gap_filter_LDADD =           $(GAPVIDEOAPI) $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
+gap_fmac_LDADD =             $(GAPVIDEOAPI) $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
+gap_fmac_varying_LDADD =     $(GAPVIDEOAPI) $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
 gap_frontends_LDADD =        $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
 gap_morph_LDADD =            $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
 gap_name2layer_LDADD =       $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)

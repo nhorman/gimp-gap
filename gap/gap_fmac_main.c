@@ -58,6 +58,7 @@
 #include "gap_fmac_base.h"
 #include "gap_dbbrowser_utils.h"
 #include "gap_lastvaldesc.h"
+#include "gap_fmac_context.h"
 
 /* revision history:
  * gimp   1.3.26b;  2004/02/29  hof: bugfix NONINTERACTIVE call did crash
@@ -129,6 +130,7 @@ static void  p_setbutton_sensitivity(fmac_globalparams_t *gpp);
 static gboolean  p_chk_filtermacro_file(const char *filtermacro_file);
 static void      p_print_and_free_msg(char *msg, GimpRunMode run_mode);
 static gchar *   p_get_gap_filter_data_string(const char *plugin_name);
+static gchar *   p_get_mapped_gap_filter_data_string(const char *plugin_name, const char *filtermacro_file);
 static gint      p_fmac_add_filter_to_file(const char *filtermacro_file, const char *plugin_name);
 static gint      p_fmac_add_filter(const char *filtermacro_file, gint32 image_id);
 static int       p_fmac_pdb_constraint_proc(gchar *proc_name, gint32 image_id);
@@ -398,7 +400,10 @@ p_get_gap_filter_data_string(const char *plugin_name)
   plugin_data = NULL;
 
 
-   if(gap_debug) printf("p_get_gap_lastfilter: plugin_name:%s:\n", plugin_name);
+   if(gap_debug)
+   {
+     printf("p_get_gap_filter_data_string: plugin_name:%s:\n", plugin_name);
+   }
 
    plugin_data_len = gimp_get_data_size (plugin_name);
    if (plugin_data_len > 0)
@@ -426,7 +431,10 @@ p_get_gap_filter_data_string(const char *plugin_name)
         l_str = g_strdup_printf("%s\n", l_str_tmp);
         g_free(l_str_tmp);
 
-        if (gap_debug) printf("p_get_gap_lastfilter: %s", l_str);
+        if (gap_debug)
+        {
+          printf("p_get_gap_filter_data_string: %s", l_str);
+        }
 
         data_string = l_str;
         g_free(plugin_data);
@@ -436,6 +444,121 @@ p_get_gap_filter_data_string(const char *plugin_name)
    return (data_string);
 
 }  /* end p_get_gap_filter_data_string */
+
+
+/* -----------------------------------
+ * p_get_mapped_gap_filter_data_string
+ * -----------------------------------
+ *   return a textstring with the plugin_name
+ *   and its values as textstring
+ *   that has format like this:
+ *      "plug_in_name" len hexbyte1 hexbyte2 .......\n
+ *   example:
+ *      "plug_in_sharpen"    4  0a 00 00 00
+ *
+ *
+ *  In case the plugin has at least one iterable drawable id within its last values parameters
+ *  those values are mapped to persistent_drawable_id's with the help of a special
+ *  iterator call with a filtermacro context and a corresponding .fmref file in recording mode.
+ *
+ * return data_string or  NULL pointer if nothing was found.
+ *        the returned data_string should be g_free'd by the caller (if it was not NULL)
+ * 
+ */
+static gchar *
+p_get_mapped_gap_filter_data_string(const char *plugin_name, const char *filtermacro_file)
+{
+  static char l_key_from[512];
+  static char l_key_to[512];
+  gint plugin_data_len;
+  guchar *plugin_data_bck;
+  gchar  *data_string;
+  const char *l_iteratorname;
+  gint l_count;
+
+
+  data_string = NULL;
+ 
+  if(plugin_name == NULL)
+  {
+    return (NULL);
+  }
+  plugin_data_len = gimp_get_data_size (plugin_name);
+
+  if(gap_debug)
+  {
+    printf("p_get_mapped_gap_filter_data_string: plugin_name:%s:  plugin_data_len:%d\n"
+       , plugin_name
+       , plugin_data_len
+       );
+  }
+
+  /* assign the matching Iterator PluginProcedures (if there is any) */
+  l_iteratorname = gap_filt_pdb_get_iterator_proc(plugin_name, &l_count);
+
+  if ((plugin_data_len > 0) && (l_iteratorname != NULL))
+  {
+    GapFmacContext theFmacContext;
+    GapFmacContext *fmacContext;
+
+    fmacContext = &theFmacContext;
+
+    if(gap_debug)
+    {
+      printf("p_get_mapped_gap_filter_data_string: l_iteratorname:%s:\n"
+         , l_iteratorname
+         );
+    }
+    gap_fmct_setup_GapFmacContext(fmacContext
+                                 , TRUE  /* recording_mode */
+                                 , filtermacro_file
+                                 );
+
+
+    /* retrieve the data (to backup original data) */
+    plugin_data_bck = g_malloc0(plugin_data_len);
+    gimp_get_data(plugin_name, plugin_data_bck);
+
+
+    /* Set FROM and TO buffers. 
+     * (in recording mode we use all the same data as the backup of the original buffer)
+     * those buffers are not relevant in recording mode, but are required
+     * for the iterator call interface.
+     */
+    g_snprintf(l_key_from, sizeof(l_key_from), "%s%s", plugin_name, GAP_ITER_TO_SUFFIX);
+    gimp_set_data(l_key_from, plugin_data_bck, plugin_data_len);
+
+    g_snprintf(l_key_to, sizeof(l_key_to), "%s%s", plugin_name, GAP_ITER_FROM_SUFFIX);
+    gimp_set_data(l_key_to, plugin_data_bck, plugin_data_len);
+
+    /* call the iterator in recording mode
+     * this triggers the mapping of drawable ids in the persistent .fmref file.
+     * (but only in case the called plugin has at least one an iterable drawable_id in its last_values paramters,
+     * otherwise the las values buffer shall not change by the iteratorcall,
+     * due to same settings for from and to values) 
+     */
+    gap_filter_iterator_call(l_iteratorname
+       , 1       /* total_steps */
+       , 1.0     /* current_step */
+       , plugin_name
+       , plugin_data_len
+       );
+
+    data_string = p_get_gap_filter_data_string(plugin_name);
+
+    /* restore original data from backup buffer */
+    gimp_set_data(plugin_name, plugin_data_bck, plugin_data_len);
+
+    g_free(plugin_data_bck);
+    
+    /* disable the sessionwide filtermacro context */
+    gap_fmct_disable_GapFmacContext();
+
+  }
+
+  return (data_string);
+
+}  /* end p_get_mapped_gap_filter_data_string */
 
 
 /* -------------------------
@@ -472,12 +595,12 @@ p_fmac_add_filter_to_file(const char *filtermacro_file, const char *plugin_name)
   {
     char *data_string;
     char *canonical_plugin_name;
-    
+
     canonical_plugin_name = gimp_canonicalize_identifier(plugin_name);
 
-    data_string = p_get_gap_filter_data_string(canonical_plugin_name);
+    data_string = p_get_mapped_gap_filter_data_string(canonical_plugin_name, filtermacro_file);
     g_free(canonical_plugin_name);
-    
+
     if(data_string)
     {
       fprintf(fp, "%s", data_string);

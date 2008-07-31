@@ -53,6 +53,8 @@
 #include "gap_filter_pdb.h"
 #include "gap_fmac_name.h"
 #include "gap_fmac_base.h"
+#include "gap_fmac_context.h"
+#include "gap_frame_fetcher.h"
 
 
 
@@ -61,6 +63,7 @@ extern      int gap_debug; /* ==0  ... dont print debug infos */
 typedef struct FMacElem {
  char       *filtername;
  gboolean    assigned_flag;
+ gboolean    varying_flag;
  char       *buffer_from;
  gint32      buffer_from_length;
  char       *buffer_to;
@@ -239,6 +242,12 @@ p_scan_fmac_line(GapValTextFileLines *txf_ptr, GimpRunMode run_mode, const char 
  * init the assigned_flag with FALSE for all elements that are added to the list.
  * Note that the order of elements in the list must match the order in the
  * filtermacro file.
+ * Furthermore assign the matching iteratorname (a name of
+ * an iterator plug-in that can handle the filter specific parameter value mix
+ * for the iterable parameter values and/or can do the mapping of persistent drawable id's
+ * in the last values buffer.
+ * the varying_flag is initilized with FALSE. 
+ *
  * returns root elem of the list or NULL if load failed.
  */
 static FMacElem *
@@ -280,6 +289,7 @@ p_build_fmac_list(const char *filtermacro_file, GimpRunMode run_mode)
     if (fmacLine)
     {
       FMacElem *fmac_elem;
+      gint l_count;
       
       /* create fmac_elem according to scanned fmac line */
       fmac_elem = g_malloc0(sizeof(FMacElem));
@@ -287,9 +297,15 @@ p_build_fmac_list(const char *filtermacro_file, GimpRunMode run_mode)
       fmac_elem->buffer_from  = g_malloc0(fmacLine->paramlength);
       fmac_elem->buffer_to    = g_malloc0(fmacLine->paramlength);
       fmac_elem->buffer_from_length = fmacLine->paramlength;
-      fmac_elem->iteratorname  = NULL;
       fmac_elem->assigned_flag = FALSE;
+      fmac_elem->varying_flag = FALSE;
       fmac_elem->next = NULL;
+      /* assign the matching Iterator PluginProcedure
+       * (if there is any)
+       */
+      fmac_elem->iteratorname = 
+         gap_filt_pdb_get_iterator_proc(fmac_elem->filtername
+                                       , &l_count);
       
       memcpy(fmac_elem->buffer_from , fmacLine->paramdata, fmacLine->paramlength);
       memcpy(fmac_elem->buffer_to , fmacLine->paramdata, fmacLine->paramlength);
@@ -334,10 +350,11 @@ p_build_fmac_list(const char *filtermacro_file, GimpRunMode run_mode)
  * read filters from the 2nd filtermacro file and merge
  * in the buffer_to values by overwriting already initialized
  * values where filtername matches and assigned_flag is not yet set.
- * Furthermore assign the matching iteratorname (a name of
- * an iterator plug-in that can handle the filter specific parameter value mix
- * for the iterable parameter values.
  * Note that all non-matching entries are ignored.
+ *
+ * the varying_flag is set to TRUE for those lines that have a matching line
+ * in the 2nd filtermacro file AND have an iterator 
+ * (that can do the plug-in specific mix of the parmetervakues)
  */
 gboolean
 p_merge_fmac_list(FMacElem *fmac_root, const char *filtermacro_file, GimpRunMode run_mode)
@@ -383,17 +400,14 @@ p_merge_fmac_list(FMacElem *fmac_root, const char *filtermacro_file, GimpRunMode
         {
           if (fmac_elem->buffer_from_length == fmacLine->paramlength)
           {
-            gint l_count;
             /* overwrite param data */
             memcpy(fmac_elem->buffer_to, fmacLine->paramdata, fmacLine->paramlength);
             fmac_elem->assigned_flag = TRUE;
 
-            /* assign the matching Iterator PluginProcedures
-             * (if there is any)
-             */
-            fmac_elem->iteratorname = 
-               gap_filt_pdb_get_iterator_proc(fmac_elem->filtername
-                                             , &l_count);
+            if(fmac_elem->iteratorname != NULL)
+            {
+              fmac_elem->varying_flag = TRUE;
+            }
 
           }
           else
@@ -496,11 +510,22 @@ p_fmac_execute_single_filter(GimpRunMode run_mode, gint32 image_id, gint32 drawa
 
     if(gap_debug)
     {
-      printf("p_fmac_execute_single_filter: VARYING APPLY iteratorname:%s\n  key_from:%s\n  key_to:%s\n"
+      if(fmac_elem->varying_flag == TRUE)
+      {
+        printf("p_fmac_execute_single_filter: VARYING APPLY iteratorname:%s\n  key_from:%s\n  key_to:%s\n"
              ,fmac_elem->iteratorname
              ,l_key_from
              ,l_key_to
              );
+      }
+      else
+      {
+        printf("p_fmac_execute_single_filter: MAPPING APPLY iteratorname:%s\n  key_from:%s\n  key_to:%s\n"
+             ,fmac_elem->iteratorname
+             ,l_key_from
+             ,l_key_to
+             );
+      }
     }
     
     /* the iterator call will set the last values buffer for the corresponding
@@ -535,7 +560,6 @@ p_fmac_execute_single_filter(GimpRunMode run_mode, gint32 image_id, gint32 drawa
     gint     l_exec_len;
     gint     l_ii;
 
-    /* make backup of last values buffer (if available) */
     l_exec_len = gimp_get_data_size(fmac_elem->filtername);
     
     printf("p_fmac_execute_single_filter: EXEC image:%d, drawable:%d filtername:%s len:%d\n"
@@ -626,6 +650,17 @@ p_fmac_execute(GimpRunMode run_mode, gint32 image_id, gint32 drawable_id
   if (fmac_root)
   {
     FMacElem *fmac_elem;
+    GapFmacContext theFmacContext;
+    GapFmacContext *fmacContext;
+
+    fmacContext = &theFmacContext;
+
+    gap_fmct_setup_GapFmacContext(fmacContext
+                                 , FALSE  /* no recording_mode  (e.g. apply mode) */
+                                 , filtermacro_file1
+                                 );
+
+
 
     if(filtermacro_file2 != NULL)
     {
@@ -638,7 +673,15 @@ p_fmac_execute(GimpRunMode run_mode, gint32 image_id, gint32 drawable_id
           , current_step
           , total_steps
           );
+      
+      /* intermediate cleanup of temporary image duplicates that may have been
+       * created while iterating persistent drawable ids (by iterator sub-procedur p_delta_drawable)
+       */
+      gap_frame_fetch_delete_list_of_duplicated_images(fmacContext->ffetch_user_id);
     }
+
+    /* disable the sessionwide filtermacro context */
+    gap_fmct_disable_GapFmacContext();
     
     //TODO p_free_fmac_list(fmac_root);  /* free the filtermacro processing list */
   }

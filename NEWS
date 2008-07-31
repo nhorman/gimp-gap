@@ -1,3 +1,33 @@
+Here is a short overview whats new in GIMP-GAP-2.5.0:
+-----------------------------------------------------
+(compared to gimp-gap release 2.4.0)
+
+- Player supports extracting audio track when playing clips
+  that refere to a videofile that has one or more audiotrack(s)
+
+- Filtermacro processing now supports mapping to 
+  persistent drawable id references.
+  This allows applying recorded filtermacros in another gimp session
+  in case the recorded last values buffer data contains references
+  to drawable ids.
+  such as the drawable for a bump map in the plug_in_bump_map,
+  or all the layers that were used to map on a quader in plug_in_map_object.
+ 
+  The persistent references can refer to anim frames (series of numbered
+  images), multilayer images, or videofiles.
+
+  Filtermacros can be applied with fixed or varying values
+  in Storyboard clips. For varying values 2 filtermacros 
+  are required to provide from and to values. Iteration of
+  persistent drawable ids is supported in case both refer to the
+  same image, anim frame series or the same videofile.
+
+- viedo extract supports generating transparency via bluebox effect.
+
+- Modify Frames now supports creation of grayscale layer from
+  alpha channel, or layermask or mix of both
+
+
 Here is a short overview whats new in GIMP-GAP-2.3.0:
 -----------------------------------------------------
 (compared to gimp-gap release 2.2.1)

@@ -45,6 +45,7 @@
 #include "gap_vid_api.h"
 #include "gap_story_file.h"
 #include "gap_story_render_processor.h"
+#include "gap_frame_fetcher.h"
 
 
 /* --------------------------*/
@@ -73,7 +74,7 @@
 
 #define gap_gve_story_debug_print_framerange_list           gap_story_render_debug_print_framerange_list
 #define gap_gve_story_debug_print_audiorange_list           gap_story_render_debug_print_audiorange_list
-#define gap_gve_story_drop_image_cache                      gap_story_render_drop_image_cache
+#define gap_gve_story_drop_image_cache                      gap_frame_fetch_drop_resources
 #define gap_gve_story_remove_tmp_audiofiles                 gap_story_render_remove_tmp_audiofiles
 #define gap_gve_story_drop_audio_cache                      gap_story_render_drop_audio_cache
 #define gap_gve_story_fetch_composite_image                 gap_story_render_fetch_composite_image
