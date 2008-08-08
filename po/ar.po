@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Arabic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-07-29 02:03+0100\n"
+"POT-Creation-Date: 2008-08-08 12:25+0100\n"
 "PO-Revision-Date: 2008-04-19 20:01+0300\n"
 "Last-Translator: \n"
 "Language-Team: en_US <kde-i18n-doc@lists.kde.org>\n"
@@ -790,7 +790,7 @@ msgstr "مز_ج..."
 #: ../gap/gap_bluebox_main.c:187 ../gap/gap_main.c:1127
 #: ../gap/gap_morph_main.c:155 ../gap/gap_name2layer_main.c:177
 #: ../gap/gap_navigator_dialog.c:551 ../gap/gap_onion_main.c:205
-#: ../gap/gap_player_main.c:292 ../gap/gap_story_main.c:182
+#: ../gap/gap_player_main.c:293 ../gap/gap_story_main.c:182
 msgid "<Image>/Video/"
 msgstr "<Image>/Video/"
 
@@ -967,7 +967,7 @@ msgstr ""
 
 #. Sample Offset
 #. the audiotrack to label
-#: ../gap/gap_decode_mplayer.c:479 ../gap/gap_player_dialog.c:6392
+#: ../gap/gap_decode_mplayer.c:479 ../gap/gap_player_dialog.c:6468
 #: ../gap/gap_vex_dialog.c:2275
 msgid "Audiotrack:"
 msgstr "مقطوعة الصوت"
@@ -1299,7 +1299,7 @@ msgid "Enable extraction of frames"
 msgstr "تفعيل المفاتيح ال_سريعة"
 
 #. create extract audio otone track button
-#: ../gap/gap_decode_xanim.c:288 ../gap/gap_player_dialog.c:6419
+#: ../gap/gap_decode_xanim.c:288 ../gap/gap_player_dialog.c:6495
 #, fuzzy
 msgid "Extract Audio"
 msgstr "استخرج"
@@ -1408,7 +1408,7 @@ msgid "Make backup of the image after each step"
 msgstr ""
 
 #: ../gap/gap_filter_foreach.c:138 ../gap/gap_mod_layer.c:107
-#: ../gap/gap_story_dialog.c:6157
+#: ../gap/gap_story_dialog.c:6158
 #, fuzzy
 msgid "Continue"
 msgstr "_مواصلة"
@@ -1462,22 +1462,22 @@ msgid "Filter all Layers..."
 msgstr "رشح بناءً على ال_قائمة البريدية..."
 
 #. ------------------ ALTernative Iterators ------------------------------
-#: ../gap/gap_filter_main.c:158 ../gap/gap_fmac_main.c:214
+#: ../gap/gap_filter_main.c:158 ../gap/gap_fmac_main.c:216
 #, fuzzy
 msgid "<Image>/Filters/"
 msgstr "مرشِّحات الرسائِل"
 
-#: ../gap/gap_fmac_base.c:202
+#: ../gap/gap_fmac_base.c:205
 #, c-format
 msgid "filtermacro_file: '%s' is corrupted, could not scan databytes"
 msgstr ""
 
-#: ../gap/gap_fmac_base.c:265 ../gap/gap_fmac_base.c:359
+#: ../gap/gap_fmac_base.c:274 ../gap/gap_fmac_base.c:376
 #, fuzzy, c-format
 msgid "file: %s is not a filtermacro file !"
 msgstr "%s ليس بملف إعدادات الملف الشخصي"
 
-#: ../gap/gap_fmac_base.c:450
+#: ../gap/gap_fmac_base.c:464
 #, c-format
 msgid ""
 "parameter data buffer for plug-in: '%s' differs in size\n"
@@ -1485,106 +1485,106 @@ msgid ""
 "recorded size: %d"
 msgstr ""
 
-#: ../gap/gap_fmac_main.c:208
+#: ../gap/gap_fmac_main.c:210
 #, fuzzy
 msgid "Filtermacro..."
 msgstr "_مرشّح..."
 
-#: ../gap/gap_fmac_main.c:507
+#: ../gap/gap_fmac_main.c:630
 msgid "Select Filtercalls of Current GIMP Session"
 msgstr ""
 
 #. dont use the 1.st action button at all
-#: ../gap/gap_fmac_main.c:509
+#: ../gap/gap_fmac_main.c:632
 #, fuzzy
 msgid "Add Filter"
 msgstr "أضف ملفات"
 
-#: ../gap/gap_fmac_main.c:564
+#: ../gap/gap_fmac_main.c:687
 #, fuzzy
 msgid "Filter Macro Script"
 msgstr "رشّح باعتبار المست_لمين"
 
 #. label
-#: ../gap/gap_fmac_main.c:588
+#: ../gap/gap_fmac_main.c:711
 msgid "Filename:"
 msgstr "اسم الملف:"
 
-#: ../gap/gap_fmac_main.c:600
+#: ../gap/gap_fmac_main.c:723
 #, fuzzy
 msgid "Name of the filtermacro scriptfile"
 msgstr "اسم الطابعة"
 
-#: ../gap/gap_fmac_main.c:610
+#: ../gap/gap_fmac_main.c:733
 msgid "Open filebrowser window to select a filename"
 msgstr ""
 
-#: ../gap/gap_fmac_main.c:637 ../gap/gap_video_index_creator.c:1288
+#: ../gap/gap_fmac_main.c:760 ../gap/gap_video_index_creator.c:1288
 #, fuzzy
 msgid "Nr"
 msgstr "N"
 
-#: ../gap/gap_fmac_main.c:643
+#: ../gap/gap_fmac_main.c:766
 #, fuzzy
 msgid "PDB Name"
 msgstr "باعتبار الإسم"
 
-#: ../gap/gap_fmac_main.c:649
+#: ../gap/gap_fmac_main.c:772
 #, fuzzy
 msgid "Menu Path"
 msgstr "نقل المسار"
 
-#: ../gap/gap_fmac_main.c:812
+#: ../gap/gap_fmac_main.c:935
 #, fuzzy
 msgid "** No menu path available **"
 msgstr "لا تتوفّر تلميحة"
 
-#: ../gap/gap_fmac_main.c:848 ../gap/gap_video_index_creator.c:1239
+#: ../gap/gap_fmac_main.c:971 ../gap/gap_video_index_creator.c:1239
 #, fuzzy
 msgid "** Empty **"
 msgstr "فارغ"
 
-#: ../gap/gap_fmac_main.c:857
+#: ../gap/gap_fmac_main.c:980
 #, fuzzy
 msgid "** File is not a filtermacro **"
 msgstr "%s ليس بملف إعدادات الملف الشخصي"
 
-#: ../gap/gap_fmac_main.c:895 ../gap/gap_onion_dialog.c:1366
-#: ../gap/gap_player_dialog.c:7760
+#: ../gap/gap_fmac_main.c:1018 ../gap/gap_onion_dialog.c:1366
+#: ../gap/gap_player_dialog.c:7836
 #, fuzzy
 msgid "Show help page"
 msgstr "اظهر الصفحة الأخيرة"
 
 #. Button Delete All
-#: ../gap/gap_fmac_main.c:905
+#: ../gap/gap_fmac_main.c:1028
 #, fuzzy
 msgid "Delete All"
 msgstr "ا_حذف الكل"
 
-#: ../gap/gap_fmac_main.c:909
+#: ../gap/gap_fmac_main.c:1032
 #, fuzzy
 msgid "Delete the filtermacro scriptfile"
 msgstr "احذف القسم المنتقى"
 
 #. Button Delete
 #. radio button DELETE
-#: ../gap/gap_fmac_main.c:918 ../gap/gap_morph_dialog.c:2997
+#: ../gap/gap_fmac_main.c:1041 ../gap/gap_morph_dialog.c:2997
 #: ../gap/gap_onion_main.c:185
 msgid "Delete"
 msgstr "حدف"
 
-#: ../gap/gap_fmac_main.c:922
+#: ../gap/gap_fmac_main.c:1045
 #, fuzzy
 msgid "Delete the selected filtercall"
 msgstr "احذف المجلد المنتقى"
 
 #. Button Add
-#: ../gap/gap_fmac_main.c:931
+#: ../gap/gap_fmac_main.c:1054
 #, fuzzy
 msgid "Add"
 msgstr "أ_ضف"
 
-#: ../gap/gap_fmac_main.c:935
+#: ../gap/gap_fmac_main.c:1058
 msgid ""
 "Open PDB-browser window to add a new filter to the filtermacro scriptfile.\n"
 "Important:\n"
@@ -1593,17 +1593,17 @@ msgid ""
 "settings of the last call"
 msgstr ""
 
-#: ../gap/gap_fmac_main.c:955 ../gap/gap_player_dialog.c:7808
+#: ../gap/gap_fmac_main.c:1078 ../gap/gap_player_dialog.c:7884
 #, fuzzy
 msgid "Close window"
 msgstr "اغلق النافذة"
 
-#: ../gap/gap_fmac_main.c:969
+#: ../gap/gap_fmac_main.c:1092
 #, fuzzy
 msgid "Apply filtermacro script on current drawable and close window"
 msgstr "احفظ الملف الحالي ثم غلق النافذة"
 
-#: ../gap/gap_fmac_main.c:1172
+#: ../gap/gap_fmac_main.c:1295
 #, fuzzy, c-format
 msgid ""
 "ERROR: Could not write filtermacro script\n"
@@ -1611,7 +1611,7 @@ msgid ""
 "%s"
 msgstr "خطاء تعذر فى الكتابة الى المقبس %s\n"
 
-#: ../gap/gap_fmac_main.c:1196
+#: ../gap/gap_fmac_main.c:1319
 #, fuzzy
 msgid "Select Filtermacro Scriptfile"
 msgstr "اختر ملفاً شخصياً:"
@@ -2895,7 +2895,7 @@ msgstr ""
 
 #. the Framerate lable
 #: ../gap/gap_mov_dialog.c:1050 ../gap/gap_mpege.c:320
-#: ../gap/gap_navigator_dialog.c:4255 ../gap/gap_story_dialog.c:8777
+#: ../gap/gap_navigator_dialog.c:4255 ../gap/gap_story_dialog.c:8789
 #: ../vid_common/gap_cme_gui.c:3442
 #, fuzzy
 msgid "Framerate:"
@@ -2919,7 +2919,7 @@ msgstr ""
 #. the Default button
 #: ../gap/gap_mov_dialog.c:1075 ../gap/gap_mpege.c:372
 #: ../gap/gap_name2layer_main.c:512 ../gap/gap_split.c:311
-#: ../gap/gap_story_dialog.c:5063 ../gap/gap_video_index_creator.c:966
+#: ../gap/gap_story_dialog.c:5064 ../gap/gap_video_index_creator.c:966
 #: ../gap/gap_wr_opacity.c:352 ../vid_common/gap_cme_gui.c:2978
 #, fuzzy
 msgid "Default"
@@ -3109,7 +3109,7 @@ msgstr ""
 #. Loop Stepmode combo
 #. the playback mode checkbuttons
 #. Loop Toggle
-#: ../gap/gap_mov_dialog.c:2868 ../gap/gap_player_dialog.c:7597
+#: ../gap/gap_mov_dialog.c:2868 ../gap/gap_player_dialog.c:7673
 #, fuzzy
 msgid "Loop"
 msgstr "مكررة"
@@ -3489,7 +3489,7 @@ msgstr ""
 #. Width Scale
 #. table col, row
 #. the width label
-#: ../gap/gap_mov_dialog.c:3601 ../gap/gap_story_dialog.c:8754
+#: ../gap/gap_mov_dialog.c:3601 ../gap/gap_story_dialog.c:8766
 #: ../vid_common/gap_cme_gui.c:3367
 msgid "Width:"
 msgstr "العرض:"
@@ -3509,7 +3509,7 @@ msgstr ""
 #. Height Scale
 #. table col, row
 #. the height label
-#: ../gap/gap_mov_dialog.c:3619 ../gap/gap_story_dialog.c:8765
+#: ../gap/gap_mov_dialog.c:3619 ../gap/gap_story_dialog.c:8777
 #: ../vid_common/gap_cme_gui.c:3416
 #, fuzzy
 msgid "Height:"
@@ -4462,7 +4462,7 @@ msgid "Select None"
 msgstr "لا تنتق _شيئاً"
 
 #. Video Length (frames)
-#: ../gap/gap_navigator_dialog.c:4240 ../gap/gap_player_dialog.c:6599
+#: ../gap/gap_navigator_dialog.c:4240 ../gap/gap_player_dialog.c:6675
 #, fuzzy
 msgid "Videoframes:"
 msgstr "ملفات الفيديو"
@@ -4759,33 +4759,33 @@ msgid "Removing onionskin layers..."
 msgstr "يجري إزالة المجلّد %s"
 
 #. Format the message
-#: ../gap/gap_player_dialog.c:402
+#: ../gap/gap_player_dialog.c:403
 #, c-format
 msgid ""
 "Problem with audioplayback. The audiolib reported:\n"
 "%s"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:423
+#: ../gap/gap_player_dialog.c:424
 #, fuzzy
 msgid "Audiosource:"
 msgstr "قرص صوتي:"
 
-#: ../gap/gap_player_dialog.c:434
+#: ../gap/gap_player_dialog.c:435
 #, fuzzy
 msgid "Wavefile:"
 msgstr "ملفات Wave"
 
-#: ../gap/gap_player_dialog.c:436
+#: ../gap/gap_player_dialog.c:437
 msgid "Name of wavefile to create as copy in RIFF WAVE format"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:443
+#: ../gap/gap_player_dialog.c:444
 #, fuzzy
 msgid "Resample:"
 msgstr "نموذج سوبر"
 
-#: ../gap/gap_player_dialog.c:444
+#: ../gap/gap_player_dialog.c:445
 msgid ""
 "ON: Resample the copy at specified samplerate.\n"
 "OFF: Use original samplerate"
@@ -4793,26 +4793,26 @@ msgstr ""
 
 #. Audio Samplerate
 #. the Samplerate label
-#: ../gap/gap_player_dialog.c:452 ../gap/gap_player_dialog.c:6541
-#: ../gap/gap_story_dialog.c:8896 ../vid_common/gap_cme_gui.c:3082
+#: ../gap/gap_player_dialog.c:453 ../gap/gap_player_dialog.c:6617
+#: ../gap/gap_story_dialog.c:8908 ../vid_common/gap_cme_gui.c:3082
 #, fuzzy
 msgid "Samplerate:"
 msgstr "نسبة التردد:"
 
-#: ../gap/gap_player_dialog.c:453
+#: ../gap/gap_player_dialog.c:454
 msgid "Target audio samplerate in samples/sec. Ignored if resample is off"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:474
+#: ../gap/gap_player_dialog.c:475
 msgid "Copy Audiofile as Wavefile"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:475 ../gap/gap_story_dialog.c:5067
-#: ../gap/gap_story_dialog.c:8536 ../gap/gap_story_dialog.c:8941
+#: ../gap/gap_player_dialog.c:476 ../gap/gap_story_dialog.c:5068
+#: ../gap/gap_story_dialog.c:8548 ../gap/gap_story_dialog.c:8953
 msgid "Settings"
 msgstr "الإعدادات"
 
-#: ../gap/gap_player_dialog.c:568
+#: ../gap/gap_player_dialog.c:569
 msgid ""
 "Failure to start the wavplay server is fatal.\n"
 "Please check the executability of the 'wavplay' command.\n"
@@ -4820,32 +4820,32 @@ msgid ""
 "you can set the Environmentvariable WAVPLAYPATH before gimp startup\n"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:631
+#: ../gap/gap_player_dialog.c:632
 #, fuzzy
 msgid "Audio Delay"
 msgstr "قارئ الأقراص الصوتية"
 
-#: ../gap/gap_player_dialog.c:643
+#: ../gap/gap_player_dialog.c:644
 #, fuzzy
 msgid "Syncron"
 msgstr "زامن"
 
-#: ../gap/gap_player_dialog.c:647
+#: ../gap/gap_player_dialog.c:648
 #, fuzzy
 msgid "Audio Skipped"
 msgstr "الغيت "
 
-#: ../gap/gap_player_dialog.c:659
+#: ../gap/gap_player_dialog.c:660
 #, c-format
 msgid "%d (at %.4f frames/sec)"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:756
+#: ../gap/gap_player_dialog.c:757
 #, fuzzy, c-format
 msgid "Error at reading WAV header from file '%s'"
 msgstr "خطأ عند القراءة من الابن: %s."
 
-#: ../gap/gap_player_dialog.c:1076
+#: ../gap/gap_player_dialog.c:1077
 #, c-format
 msgid ""
 "WARNING: your gimprc file configuration for the wavplay audio server\n"
@@ -4853,7 +4853,7 @@ msgid ""
 "the configured value for %s is: %s\n"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:1097
+#: ../gap/gap_player_dialog.c:1098
 #, c-format
 msgid ""
 "WARNING: the environment variable %s\n"
@@ -4861,7 +4861,7 @@ msgid ""
 "the current value is: %s\n"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:1133
+#: ../gap/gap_player_dialog.c:1134
 #, c-format
 msgid ""
 "No audiosupport available\n"
@@ -4873,101 +4873,101 @@ msgid ""
 msgstr ""
 
 #. filename prefix shortcut for storyboard single track playback for specified track number
-#: ../gap/gap_player_dialog.c:1961
+#: ../gap/gap_player_dialog.c:2009
 #, c-format
 msgid "STB:[%d]"
 msgstr ""
 
 #. filename prefix shortcut for storyboard in composite video playback mode
-#: ../gap/gap_player_dialog.c:1966
+#: ../gap/gap_player_dialog.c:2014
 msgid "STB:"
 msgstr ""
 
 #. shortname prefix to indicate that displayed filename is a single videofile
-#: ../gap/gap_player_dialog.c:1983
+#: ../gap/gap_player_dialog.c:2031
 msgid "VIDEO:"
 msgstr ""
 
 #. shortname prefix to indicate that displayed filename is basename of the frames
-#: ../gap/gap_player_dialog.c:1995
+#: ../gap/gap_player_dialog.c:2043
 #, fuzzy
 msgid "FRAMES:"
 msgstr "إطار"
 
 #. pending timer_go_job gets useless, since we start playback now
-#: ../gap/gap_player_dialog.c:2094 ../gap/gap_player_dialog.c:4286
+#: ../gap/gap_player_dialog.c:2142 ../gap/gap_player_dialog.c:4359
 msgid "Playing"
 msgstr "يجري التشغيل"
 
 #. the status value label
-#: ../gap/gap_player_dialog.c:2133 ../gap/gap_player_dialog.c:7696
+#: ../gap/gap_player_dialog.c:2181 ../gap/gap_player_dialog.c:7772
 msgid "Ready"
 msgstr "جاهز"
 
-#: ../gap/gap_player_dialog.c:2266
+#: ../gap/gap_player_dialog.c:2314
 #, fuzzy
 msgid "cheking audiotrack"
 msgstr "استبدّل _بـ: "
 
-#: ../gap/gap_player_dialog.c:2286
+#: ../gap/gap_player_dialog.c:2334
 msgid "extracted audio is up to date"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:2295
+#: ../gap/gap_player_dialog.c:2343
 #, fuzzy
 msgid "extracting audio"
 msgstr "استخرج إلى..."
 
-#: ../gap/gap_player_dialog.c:2326
+#: ../gap/gap_player_dialog.c:2374
 msgid "Audio Extract CANCELLED"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:2336 ../gap/gap_player_dialog.c:2347
+#: ../gap/gap_player_dialog.c:2384 ../gap/gap_player_dialog.c:2395
 msgid "Audio Extract FAILED"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:2337 ../gap/gap_player_dialog.c:2348
+#: ../gap/gap_player_dialog.c:2385 ../gap/gap_player_dialog.c:2396
 #, c-format
 msgid "Extract of audiotrack failed on videofile: %s"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:2613
+#: ../gap/gap_player_dialog.c:2661
 msgid "seek-selftest"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:2635 ../gap/gap_story_vthumb.c:301
+#: ../gap/gap_player_dialog.c:2683 ../gap/gap_story_vthumb.c:301
 #, fuzzy, c-format
 msgid "Creating Index"
 msgstr "وقت الإنشاء"
 
-#: ../gap/gap_player_dialog.c:2658
+#: ../gap/gap_player_dialog.c:2706
 #, c-format
 msgid ""
 "No videoindex available. Access is limited to (slow) sequential read on "
 "file: %s"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:2741 ../gap/gap_story_dialog.c:6430
+#: ../gap/gap_player_dialog.c:2789 ../gap/gap_story_dialog.c:6431
 #, fuzzy, c-format
 msgid "Videoseek"
 msgstr "فيديو"
 
-#: ../gap/gap_player_dialog.c:3294 ../gap/gap_player_dialog.c:3753
+#: ../gap/gap_player_dialog.c:3362 ../gap/gap_player_dialog.c:3826
 #: ../gap/gap_story_vthumb.c:359
 msgid "Canceled"
 msgstr "أُلغِيَ"
 
 #. printf("DROP (SKIP) frame\n");
-#: ../gap/gap_player_dialog.c:4269
+#: ../gap/gap_player_dialog.c:4342
 msgid "Skip"
 msgstr "تخطى"
 
-#: ../gap/gap_player_dialog.c:4298
+#: ../gap/gap_player_dialog.c:4371
 #, c-format
 msgid "Delay %.2f"
 msgstr "تأخير %.2f"
 
-#: ../gap/gap_player_dialog.c:5933
+#: ../gap/gap_player_dialog.c:6009
 #, c-format
 msgid ""
 "WARNING: Your gimprc file configuration for the audioconverter script\n"
@@ -4975,7 +4975,7 @@ msgid ""
 "the configured value for %s is: %s\n"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:5955
+#: ../gap/gap_player_dialog.c:6031
 #, c-format
 msgid ""
 "WARNING: The environment variable %s\n"
@@ -4983,75 +4983,75 @@ msgid ""
 "the current value is: %s\n"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:5974
+#: ../gap/gap_player_dialog.c:6050
 #, c-format
 msgid ""
 "ERROR: The external program for audioconversion is not executable.\n"
 "Filename: '%s'\n"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:5994
+#: ../gap/gap_player_dialog.c:6070
 #, fuzzy
 msgid "Creating audiofile - please wait"
 msgstr "جاري البحث بالاسم - رجاء الانتظار"
 
-#: ../gap/gap_player_dialog.c:6030
+#: ../gap/gap_player_dialog.c:6106
 msgid "external audioconverter FAILED."
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:6031
+#: ../gap/gap_player_dialog.c:6107
 msgid "extern audioconverter FAILED"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:6177
+#: ../gap/gap_player_dialog.c:6253
 msgid "Select Audiofile"
 msgstr "انتقِ ملف صوت"
 
 #. audiofile label
 #. the output audiofile label
 #. the Audiofile label
-#: ../gap/gap_player_dialog.c:6250 ../gap/gap_vex_dialog.c:2684
+#: ../gap/gap_player_dialog.c:6326 ../gap/gap_vex_dialog.c:2684
 #: ../vid_common/gap_cme_gui.c:3021
 msgid "Audiofile:"
 msgstr "ملف صوتي:"
 
-#: ../gap/gap_player_dialog.c:6262
+#: ../gap/gap_player_dialog.c:6338
 msgid "Enter an audiofile. The file must be in RIFF WAVE fileformat."
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:6283
+#: ../gap/gap_player_dialog.c:6359
 #, fuzzy
 msgid "Open audiofile selection browser dialog window"
 msgstr "فتح نافذة استعراض الملفات"
 
 #. Volume
-#: ../gap/gap_player_dialog.c:6295 ../gap/gap_story_dialog.c:8912
+#: ../gap/gap_player_dialog.c:6371 ../gap/gap_story_dialog.c:8924
 msgid "Volume:"
 msgstr "الحجم:"
 
-#: ../gap/gap_player_dialog.c:6315
+#: ../gap/gap_player_dialog.c:6391
 #, fuzzy
 msgid "Audio Volume"
 msgstr "شدة الصوت"
 
 #. check button
-#: ../gap/gap_player_dialog.c:6321
+#: ../gap/gap_player_dialog.c:6397
 #, fuzzy
 msgid "Enable"
 msgstr "_تفعيل"
 
-#: ../gap/gap_player_dialog.c:6326
+#: ../gap/gap_player_dialog.c:6402
 msgid ""
 "ON: Play button plays video + audio.\n"
 "OFF: Play video silently"
 msgstr ""
 
 #. Sample Offset
-#: ../gap/gap_player_dialog.c:6336
+#: ../gap/gap_player_dialog.c:6412
 msgid "Offset:"
 msgstr "إزاحة:"
 
-#: ../gap/gap_player_dialog.c:6356
+#: ../gap/gap_player_dialog.c:6432
 msgid ""
 "Audio offset in frames at original video playback speed. A value of 0 starts "
 "audio and video at synchron time. A value of -10 will play frame 1 up to "
@@ -5061,11 +5061,11 @@ msgid ""
 msgstr ""
 
 #. check button
-#: ../gap/gap_player_dialog.c:6371
+#: ../gap/gap_player_dialog.c:6447
 msgid "original audio"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:6376
+#: ../gap/gap_player_dialog.c:6452
 msgid ""
 "ON: for video clip playback sync audio startposition according to original "
 "position in the referenced video. Use this option if the audiofile is an "
@@ -5074,323 +5074,323 @@ msgid ""
 "this for independent audiofile playback."
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:6412
+#: ../gap/gap_player_dialog.c:6488
 #, fuzzy
 msgid "Audio Track"
 msgstr "مقطوعة الصوت"
 
-#: ../gap/gap_player_dialog.c:6422
+#: ../gap/gap_player_dialog.c:6498
 msgid ""
 "Extract Audio Track from videofile for the current videofile and use it for "
 "origial audiotrack playback"
 msgstr ""
 
 #. create wavfile button
-#: ../gap/gap_player_dialog.c:6436
+#: ../gap/gap_player_dialog.c:6512
 #, fuzzy
 msgid "Copy As Wavfile"
 msgstr "فشل نسخ القرص المدمج"
 
-#: ../gap/gap_player_dialog.c:6438
+#: ../gap/gap_player_dialog.c:6514
 msgid ""
 "Create a copy from audiofile as RIFF WAVE audiofile and use the copy for "
 "audio playback"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:6450
+#: ../gap/gap_player_dialog.c:6526
 #, fuzzy
 msgid "Reset offset and volume"
 msgstr "أعد الضبط وامسح"
 
 #. Audio Offset Length (mm:ss:msec)
-#: ../gap/gap_player_dialog.c:6482
+#: ../gap/gap_player_dialog.c:6558
 #, fuzzy
 msgid "Offsettime:"
 msgstr "إزاحة:"
 
 #. Total Audio Length (mm:ss:msec)
 #. the audio timing information labels
-#: ../gap/gap_player_dialog.c:6496 ../vid_common/gap_cme_gui.c:3252
+#: ../gap/gap_player_dialog.c:6572 ../vid_common/gap_cme_gui.c:3252
 #, fuzzy
 msgid "Audiotime:"
 msgstr "قرص صوتي:"
 
 #. Length (frames)
-#: ../gap/gap_player_dialog.c:6511
+#: ../gap/gap_player_dialog.c:6587
 #, fuzzy
 msgid "Audioframes:"
 msgstr "ملفات الصوت"
 
 #. Audiolength (Samples)
-#: ../gap/gap_player_dialog.c:6526
+#: ../gap/gap_player_dialog.c:6602
 #, fuzzy
 msgid "Samples:"
 msgstr "عينة"
 
 #. Audio Channels
-#: ../gap/gap_player_dialog.c:6555
+#: ../gap/gap_player_dialog.c:6631
 #, fuzzy
 msgid "Channels:"
 msgstr "القنوات"
 
 #. Bits per Audio Sample
-#: ../gap/gap_player_dialog.c:6569
+#: ../gap/gap_player_dialog.c:6645
 #, fuzzy
 msgid "Bits/Sample:"
 msgstr "بيتات لكل نموذج"
 
 #. Total Video Length (mm:ss:msec)
 #. the video timing information labels
-#: ../gap/gap_player_dialog.c:6584 ../vid_common/gap_cme_gui.c:3225
+#: ../gap/gap_player_dialog.c:6660 ../vid_common/gap_cme_gui.c:3225
 #, fuzzy
 msgid "Videotime:"
 msgstr "صورة الفيديو"
 
 #. Cahe size label
-#: ../gap/gap_player_dialog.c:6796
+#: ../gap/gap_player_dialog.c:6872
 #, fuzzy
 msgid "Cache Size (MB):"
 msgstr "الحجم الجديد (م.ب.):"
 
-#: ../gap/gap_player_dialog.c:6822
+#: ../gap/gap_player_dialog.c:6898
 msgid "Player frame cache maximum size in MB. Value 0 turns the cache off."
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:6831
+#: ../gap/gap_player_dialog.c:6907
 #, fuzzy
 msgid "Clear the frame cache"
 msgstr "مسح مجلد الذاكرة \n"
 
 #. Chache Status (number of frames currently in the cache)
-#: ../gap/gap_player_dialog.c:6842
+#: ../gap/gap_player_dialog.c:6918
 #, fuzzy
 msgid "Cached Frames:"
 msgstr "ألعاب الورق:"
 
 #. Layout Options label
-#: ../gap/gap_player_dialog.c:6867
+#: ../gap/gap_player_dialog.c:6943
 #, fuzzy
 msgid "Layout Options:"
 msgstr "خيارات التصميم"
 
 #. Show Go button array (configure to show/hide this optional positioning tool)
-#: ../gap/gap_player_dialog.c:6877
+#: ../gap/gap_player_dialog.c:6953
 #, fuzzy
 msgid "Show Button Array"
 msgstr "اظهر يوم واحد"
 
-#: ../gap/gap_player_dialog.c:6883
+#: ../gap/gap_player_dialog.c:6959
 msgid ""
 "ON: Show the go button array positioning tool.\n"
 "OFF: Hide the go button array."
 msgstr ""
 
 #. Show Position Scale (configure to show/hide this optional positioning tool)
-#: ../gap/gap_player_dialog.c:6896
+#: ../gap/gap_player_dialog.c:6972
 #, fuzzy
 msgid "Show Position Scale"
 msgstr "ضبط الموقع"
 
-#: ../gap/gap_player_dialog.c:6902
+#: ../gap/gap_player_dialog.c:6978
 msgid ""
 "ON: Show the position scale.\n"
 "OFF: Hide the position scale."
 msgstr ""
 
 #. Save Player Preferences label
-#: ../gap/gap_player_dialog.c:6915
+#: ../gap/gap_player_dialog.c:6991
 #, fuzzy
 msgid "Save Preferences:"
 msgstr "تفضيلات البحث"
 
-#: ../gap/gap_player_dialog.c:6927
+#: ../gap/gap_player_dialog.c:7003
 msgid "Save player cache and layout settings (as gimprc parameters)"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:7042
+#: ../gap/gap_player_dialog.c:7118
 msgid "Videoframe Playback"
 msgstr ""
 
 #. vid options TAB frame
 #. the video options notebook tab
-#: ../gap/gap_player_dialog.c:7057 ../vid_common/gap_cme_gui.c:2490
+#: ../gap/gap_player_dialog.c:7133 ../vid_common/gap_cme_gui.c:2490
 #, fuzzy
 msgid "Video Options"
 msgstr "خيارات القرص"
 
 #. configure options TAB frame
-#: ../gap/gap_player_dialog.c:7081
+#: ../gap/gap_player_dialog.c:7157
 #, fuzzy
 msgid "Preferences"
 msgstr "ت_فضيلات"
 
 #. audio options TAB frame
 #. the Audio Options notebook tab
-#: ../gap/gap_player_dialog.c:7097 ../vid_common/gap_cme_gui.c:2502
+#: ../gap/gap_player_dialog.c:7173 ../vid_common/gap_cme_gui.c:2502
 #, fuzzy
 msgid "Audio Options"
 msgstr "عمليات جمع"
 
-#: ../gap/gap_player_dialog.c:7190
+#: ../gap/gap_player_dialog.c:7266
 msgid ""
 "Click: go to frame, Ctrl-Click: set 'From Frame', Alt-Click: set 'To Frame'"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:7263 ../gap/gap_player_dialog.c:7393
+#: ../gap/gap_player_dialog.c:7339 ../gap/gap_player_dialog.c:7469
 #, fuzzy
 msgid "The currently displayed frame number"
 msgstr "اسم الملف المنتقى حاليا"
 
-#: ../gap/gap_player_dialog.c:7343
+#: ../gap/gap_player_dialog.c:7419
 msgid ""
 "Click: Set current framenr as selection range start 'From Frame',\n"
 "SHIFT-Click: load this frame into the calling image"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:7354
+#: ../gap/gap_player_dialog.c:7430
 msgid "Set current framenr as selection range start 'From Frame'"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:7370
+#: ../gap/gap_player_dialog.c:7446
 msgid ""
 "Click: Set current framenr as selection range end 'To Frame',\n"
 "SHIFT-Click: load this frame into the calling image"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:7381
+#: ../gap/gap_player_dialog.c:7457
 msgid "Set current framenr as selection range end 'To Frame'"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:7421
+#: ../gap/gap_player_dialog.c:7497
 #, fuzzy
 msgid "Add range to cliplist"
 msgstr "أ_ضف إلى قائمة تشغيل"
 
-#: ../gap/gap_player_dialog.c:7425
+#: ../gap/gap_player_dialog.c:7501
 #, fuzzy
 msgid "Print range to stdout"
 msgstr "نطاق الطباعة"
 
-#: ../gap/gap_player_dialog.c:7444
+#: ../gap/gap_player_dialog.c:7520
 #, fuzzy
 msgid "Start framenumber of selection range"
 msgstr "عدد الصفحات المنقاة"
 
-#: ../gap/gap_player_dialog.c:7467
+#: ../gap/gap_player_dialog.c:7543
 msgid "Add inverse range to cliplist"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:7471
+#: ../gap/gap_player_dialog.c:7547
 #, fuzzy
 msgid "Print inverse range to stdout"
 msgstr "نمط لف السطور في الطباعة"
 
-#: ../gap/gap_player_dialog.c:7492
+#: ../gap/gap_player_dialog.c:7568
 #, fuzzy
 msgid "End framenumber of selection range"
 msgstr "عدد الصفحات المنقاة"
 
-#: ../gap/gap_player_dialog.c:7508
+#: ../gap/gap_player_dialog.c:7584
 msgid "Reset playback speed to original (or previous) value"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:7528
+#: ../gap/gap_player_dialog.c:7604
 msgid "Current playback speed (frames/sec)"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:7554
+#: ../gap/gap_player_dialog.c:7630
 msgid "Toggle size 128/256. <Shift> Set 1:1 full image size"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:7573
+#: ../gap/gap_player_dialog.c:7649
 #, fuzzy
 msgid "Video preview size (pixels)"
 msgstr "حجم الحدود (بالبكسل)"
 
-#: ../gap/gap_player_dialog.c:7603
+#: ../gap/gap_player_dialog.c:7679
 msgid ""
 "ON: Play in endless loop.\n"
 "OFF: Play only once"
 msgstr ""
 
 #. SelOnly Toggle (keep text short)
-#: ../gap/gap_player_dialog.c:7617
+#: ../gap/gap_player_dialog.c:7693
 #, fuzzy
 msgid "Selection only"
 msgstr "نموذج الانتقاء"
 
-#: ../gap/gap_player_dialog.c:7623
+#: ../gap/gap_player_dialog.c:7699
 msgid ""
 "ON: Play only frames within the selected range.\n"
 "OFF: Play all frames"
 msgstr ""
 
 #. PingPong Toggle (keep text short)
-#: ../gap/gap_player_dialog.c:7636
+#: ../gap/gap_player_dialog.c:7712
 #, fuzzy
 msgid "Ping pong"
 msgstr "باين سبريغس"
 
-#: ../gap/gap_player_dialog.c:7642
+#: ../gap/gap_player_dialog.c:7718
 msgid "ON: Play alternating forward/backward"
 msgstr ""
 
 #. UseThumbnails Toggle (keep text short)
-#: ../gap/gap_player_dialog.c:7655
+#: ../gap/gap_player_dialog.c:7731
 msgid "Thumbnails"
 msgstr "مُسْتعْرضة"
 
-#: ../gap/gap_player_dialog.c:7661
+#: ../gap/gap_player_dialog.c:7737
 msgid ""
 "ON: Use thumbnails when available.\n"
 "OFF: Read full sized frames"
 msgstr ""
 
 #. ExactTiming Toggle (keep text short)
-#: ../gap/gap_player_dialog.c:7676
+#: ../gap/gap_player_dialog.c:7752
 #, fuzzy
 msgid "Exact timing"
 msgstr "خروج"
 
-#: ../gap/gap_player_dialog.c:7682
+#: ../gap/gap_player_dialog.c:7758
 msgid ""
 "ON: Skip frames to hold exact timing.\n"
 "OFF: Disable frame skipping"
 msgstr ""
 
 #. the Cancel Videoindex Creation button (only visible while creating vindex)
-#: ../gap/gap_player_dialog.c:7740
+#: ../gap/gap_player_dialog.c:7816
 #, fuzzy
 msgid "Cancel Videoindex creation"
 msgstr "الغِ العمليّة"
 
-#: ../gap/gap_player_dialog.c:7744
+#: ../gap/gap_player_dialog.c:7820
 msgid ""
 "Cancel videoindex creation. Videoindex creation requires full scanning of "
 "the video but allows fast random access to frames afterwards. Without a "
 "videoindex, access is done by a very slow sequential read"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:7771
+#: ../gap/gap_player_dialog.c:7847
 msgid ""
 "Start playback. SHIFT: snapshot frames  in a multilayer image at original "
 "size CTRL: snapshot at preview size ALT: force creation of new snapshot image"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:7784
+#: ../gap/gap_player_dialog.c:7860
 msgid ""
 "Pause if playing (any mousebutton). Go to selection start/active/end (left/"
 "middle/right mousebutton) if not playing"
 msgstr ""
 
-#: ../gap/gap_player_dialog.c:7794
+#: ../gap/gap_player_dialog.c:7870
 msgid ""
 "Start reverse playback. SHIFT: snapshot frames  in a multilayer image at "
 "original size CTRL: snapshot at preview size ALT: force creation of new "
 "snapshot image"
 msgstr ""
 
-#: ../gap/gap_player_main.c:282
+#: ../gap/gap_player_main.c:283
 #, fuzzy
 msgid "Playback..."
 msgstr "العزف"
@@ -5442,8 +5442,8 @@ msgstr ""
 msgid "Scale (original %dx%d)"
 msgstr ""
 
-#: ../gap/gap_range_ops.c:215 ../gap/gap_story_dialog.c:8526
-#: ../gap/gap_story_dialog.c:8928
+#: ../gap/gap_range_ops.c:215 ../gap/gap_story_dialog.c:8538
+#: ../gap/gap_story_dialog.c:8940
 #, fuzzy
 msgid "Reset"
 msgstr "إعادة ضب_ط"
@@ -6101,8 +6101,8 @@ msgid "Transition Attributes"
 msgstr "صفات القناة"
 
 #. the frame
-#: ../gap/gap_story_att_trans_dlg.c:2589 ../gap/gap_story_dialog.c:5861
-#: ../gap/gap_story_dialog.c:5940 ../gap/gap_story_dialog.c:6040
+#: ../gap/gap_story_att_trans_dlg.c:2589 ../gap/gap_story_dialog.c:5862
+#: ../gap/gap_story_dialog.c:5941 ../gap/gap_story_dialog.c:6041
 #: ../gap/gap_story_properties.c:3113
 #: ../gap/gap_story_section_properties.c:779
 msgid "Properties"
@@ -6306,148 +6306,148 @@ msgstr "ال_تعليق:"
 
 #. refuse player call while vthumb prefetch is busy
 #.
-#: ../gap/gap_story_dialog.c:1601
+#: ../gap/gap_story_dialog.c:1602
 msgid "playback was blocked (video file access is busy)"
 msgstr ""
 
-#: ../gap/gap_story_dialog.c:2165 ../gap/gap_story_dialog.c:2203
+#: ../gap/gap_story_dialog.c:2166 ../gap/gap_story_dialog.c:2204
 #, c-format
 msgid ""
 "** ERROR: Storyboard parser reported:\n"
 "%s\n"
 msgstr ""
 
-#: ../gap/gap_story_dialog.c:2923
+#: ../gap/gap_story_dialog.c:2924
 msgid "Load Storyboard"
 msgstr ""
 
-#: ../gap/gap_story_dialog.c:2927
+#: ../gap/gap_story_dialog.c:2928
 #, fuzzy
 msgid "Load Cliplist"
 msgstr "قائمة الأوامر"
 
-#: ../gap/gap_story_dialog.c:2965
+#: ../gap/gap_story_dialog.c:2966
 #, fuzzy
 msgid "Save Storyboard file"
 msgstr "حفظ ملف لوحة المفاتيح كـ"
 
-#: ../gap/gap_story_dialog.c:4547
+#: ../gap/gap_story_dialog.c:4548
 #, c-format
 msgid "UNDO %s"
 msgstr ""
 
-#: ../gap/gap_story_dialog.c:4552 ../gap/gap_story_dialog.c:7645
+#: ../gap/gap_story_dialog.c:4553 ../gap/gap_story_dialog.c:7646
 msgid "UNDO"
 msgstr ""
 
-#: ../gap/gap_story_dialog.c:4586
+#: ../gap/gap_story_dialog.c:4587
 #, c-format
 msgid "REDO %s"
 msgstr ""
 
-#: ../gap/gap_story_dialog.c:4591 ../gap/gap_story_dialog.c:7655
+#: ../gap/gap_story_dialog.c:4592 ../gap/gap_story_dialog.c:7656
 #, fuzzy
 msgid "REDO"
 msgstr "RAD"
 
-#: ../gap/gap_story_dialog.c:4960
+#: ../gap/gap_story_dialog.c:4961
 msgid "Global Layout Properties dialog already open"
 msgstr ""
 
-#: ../gap/gap_story_dialog.c:4967
+#: ../gap/gap_story_dialog.c:4968
 #, fuzzy
 msgid "large"
 msgstr "كبير"
 
-#: ../gap/gap_story_dialog.c:4968
+#: ../gap/gap_story_dialog.c:4969
 #, fuzzy
 msgid "medium"
 msgstr "متوسط"
 
-#: ../gap/gap_story_dialog.c:4969
+#: ../gap/gap_story_dialog.c:4970
 #, fuzzy
 msgid "small"
 msgstr "صغير"
 
-#: ../gap/gap_story_dialog.c:4974
+#: ../gap/gap_story_dialog.c:4975
 #, fuzzy
 msgid "Cliplist Layout:"
 msgstr "_نسق مُتَضَام"
 
-#: ../gap/gap_story_dialog.c:4979 ../gap/gap_story_dialog.c:5019
+#: ../gap/gap_story_dialog.c:4980 ../gap/gap_story_dialog.c:5020
 #, fuzzy
 msgid "Thumbnail Size:"
 msgstr "مُسْتعْرضة"
 
-#: ../gap/gap_story_dialog.c:4980
+#: ../gap/gap_story_dialog.c:4981
 msgid "Thumbnail size in the cliplist"
 msgstr ""
 
-#: ../gap/gap_story_dialog.c:4990 ../gap/gap_story_dialog.c:5030
+#: ../gap/gap_story_dialog.c:4991 ../gap/gap_story_dialog.c:5031
 msgid "Columns:"
 msgstr "أعمدة:"
 
-#: ../gap/gap_story_dialog.c:4991
+#: ../gap/gap_story_dialog.c:4992
 #, fuzzy
 msgid "columns in the cliplist"
 msgstr "اللون المستعمل في قائمة العناوين"
 
-#: ../gap/gap_story_dialog.c:5001 ../gap/gap_story_dialog.c:5041
+#: ../gap/gap_story_dialog.c:5002 ../gap/gap_story_dialog.c:5042
 #, fuzzy
 msgid "Rows:"
 msgstr "ص_فوف:"
 
-#: ../gap/gap_story_dialog.c:5002
+#: ../gap/gap_story_dialog.c:5003
 #, fuzzy
 msgid "rows in the cliplist"
 msgstr "ليس في آخر"
 
-#: ../gap/gap_story_dialog.c:5014
+#: ../gap/gap_story_dialog.c:5015
 #, fuzzy
 msgid "Storyboard Layout:"
 msgstr "مخطط لوحة المفاتيح"
 
-#: ../gap/gap_story_dialog.c:5020
+#: ../gap/gap_story_dialog.c:5021
 msgid "Thumbnail size in the storyboard list"
 msgstr ""
 
-#: ../gap/gap_story_dialog.c:5031
+#: ../gap/gap_story_dialog.c:5032
 #, fuzzy
 msgid "columns in the storyboard list"
 msgstr "اللون المستعمل في قائمة العناوين"
 
-#: ../gap/gap_story_dialog.c:5042
+#: ../gap/gap_story_dialog.c:5043
 #, fuzzy
 msgid "rows in the storyboard list"
 msgstr "صِل السطور المنتقاة"
 
-#: ../gap/gap_story_dialog.c:5053
+#: ../gap/gap_story_dialog.c:5054
 #, fuzzy
 msgid "Force Aspect:"
 msgstr "التأثير:"
 
-#: ../gap/gap_story_dialog.c:5054
+#: ../gap/gap_story_dialog.c:5055
 msgid ""
 "ON: player shows clips transformed to aspect setting from the Storyboard "
 "properties.OFF: player shows clips according to their original pixel sizes"
 msgstr ""
 
-#: ../gap/gap_story_dialog.c:5064
+#: ../gap/gap_story_dialog.c:5065
 msgid "Use the standard built in layout settings"
 msgstr ""
 
-#: ../gap/gap_story_dialog.c:5066
+#: ../gap/gap_story_dialog.c:5067
 #, fuzzy
 msgid "Global Layout Properties"
 msgstr "خصائص عالمية"
 
-#: ../gap/gap_story_dialog.c:5180
+#: ../gap/gap_story_dialog.c:5181
 msgid ""
 "GIMP-GAP is compiled without videoapi support. Therefore thumbnails for "
 "videoframes can not be displayed."
 msgstr ""
 
-#: ../gap/gap_story_dialog.c:5330
+#: ../gap/gap_story_dialog.c:5331
 #, fuzzy, c-format
 msgid ""
 "Failed to write cliplistfile\n"
@@ -6455,7 +6455,7 @@ msgid ""
 "%s"
 msgstr "فشلت كتابة الملف `%s': %s"
 
-#: ../gap/gap_story_dialog.c:5587
+#: ../gap/gap_story_dialog.c:5588
 #, fuzzy, c-format
 msgid ""
 "Failed to write storyboardfile\n"
@@ -6463,183 +6463,183 @@ msgid ""
 "%s"
 msgstr "فشلت كتابة الملف `%s': %s"
 
-#: ../gap/gap_story_dialog.c:5859
+#: ../gap/gap_story_dialog.c:5860
 msgid "Global"
 msgstr "شامل"
 
-#: ../gap/gap_story_dialog.c:5867
+#: ../gap/gap_story_dialog.c:5868
 #, fuzzy
 msgid "Videothumbnails"
 msgstr "لا أظافر إبهام"
 
-#: ../gap/gap_story_dialog.c:5875
+#: ../gap/gap_story_dialog.c:5876
 msgid "DEBUG: log to stdout"
 msgstr ""
 
-#: ../gap/gap_story_dialog.c:5895
+#: ../gap/gap_story_dialog.c:5896
 msgid "Help"
 msgstr "مساعدة"
 
 #. the clp_frame
-#: ../gap/gap_story_dialog.c:5910 ../gap/gap_story_dialog.c:8264
+#: ../gap/gap_story_dialog.c:5911 ../gap/gap_story_dialog.c:8265
 #, fuzzy
 msgid "Cliplist"
 msgstr "قائمة الرموز"
 
 #. XXXXXXXXXXX Player Frame  XXXXXXXXXXXX
 #. the player_frame
-#: ../gap/gap_story_dialog.c:5934 ../gap/gap_story_dialog.c:6034
-#: ../gap/gap_story_dialog.c:8315
+#: ../gap/gap_story_dialog.c:5935 ../gap/gap_story_dialog.c:6035
+#: ../gap/gap_story_dialog.c:8316
 msgid "Playback"
 msgstr "العزف"
 
-#: ../gap/gap_story_dialog.c:5946 ../gap/gap_story_dialog.c:6046
+#: ../gap/gap_story_dialog.c:5947 ../gap/gap_story_dialog.c:6047
 #, fuzzy
 msgid "Create Clip"
 msgstr "إنشاء"
 
-#: ../gap/gap_story_dialog.c:5952 ../gap/gap_story_dialog.c:6052
+#: ../gap/gap_story_dialog.c:5953 ../gap/gap_story_dialog.c:6053
 #, fuzzy
 msgid "Create Section Clip"
 msgstr "إنشاء"
 
-#: ../gap/gap_story_dialog.c:5958 ../gap/gap_story_dialog.c:6058
+#: ../gap/gap_story_dialog.c:5959 ../gap/gap_story_dialog.c:6059
 #, fuzzy
 msgid "Create Transition"
 msgstr "انشيء قسم جديد"
 
-#: ../gap/gap_story_dialog.c:5963 ../gap/gap_story_dialog.c:6063
+#: ../gap/gap_story_dialog.c:5964 ../gap/gap_story_dialog.c:6064
 #, fuzzy
 msgid "Toggle Unit"
 msgstr "تحول"
 
-#: ../gap/gap_story_dialog.c:5969 ../gap/gap_story_dialog.c:6069
+#: ../gap/gap_story_dialog.c:5970 ../gap/gap_story_dialog.c:6070
 #, fuzzy
 msgid "Add Audio Otone"
 msgstr "اضف زر مشع"
 
-#: ../gap/gap_story_dialog.c:5975 ../gap/gap_story_dialog.c:6075
+#: ../gap/gap_story_dialog.c:5976 ../gap/gap_story_dialog.c:6076
 #, fuzzy
 msgid "Encode"
 msgstr "الترميز إلى"
 
-#: ../gap/gap_story_dialog.c:6010
+#: ../gap/gap_story_dialog.c:6011
 #, fuzzy
 msgid "_Storyboard"
 msgstr "_4 لوحة المفاتيح"
 
-#: ../gap/gap_story_dialog.c:6129
+#: ../gap/gap_story_dialog.c:6130
 #, fuzzy, c-format
 msgid "Unsaved cliplist changes '%s'"
 msgstr "تراجع عن التغييرات السابقة"
 
-#: ../gap/gap_story_dialog.c:6141
+#: ../gap/gap_story_dialog.c:6142
 #, fuzzy, c-format
 msgid "Unsaved storyboard changes '%s'"
 msgstr "لا يمكن تحميل الملف '%s'."
 
-#: ../gap/gap_story_dialog.c:6153
+#: ../gap/gap_story_dialog.c:6154
 #, fuzzy
 msgid "Quit Storyboard"
 msgstr "_اخرج من تومبوي"
 
-#: ../gap/gap_story_dialog.c:6166 ../gap/gap_story_dialog.c:6167
+#: ../gap/gap_story_dialog.c:6167 ../gap/gap_story_dialog.c:6168
 #, fuzzy
 msgid "Storyboard unsaved changes"
 msgstr "له تغييرات غير محفوظة"
 
-#: ../gap/gap_story_dialog.c:6219
+#: ../gap/gap_story_dialog.c:6220
 #, fuzzy
 msgid "Storyboard:"
 msgstr "لوحة المفاتيح"
 
-#: ../gap/gap_story_dialog.c:6234 ../gap/gap_story_dialog.c:6263
+#: ../gap/gap_story_dialog.c:6235 ../gap/gap_story_dialog.c:6264
 msgid "(modified)"
 msgstr "(معدل)"
 
-#: ../gap/gap_story_dialog.c:6240
+#: ../gap/gap_story_dialog.c:6241
 #, fuzzy
 msgid "Cliplist:"
 msgstr "قائمة الرموز"
 
-#: ../gap/gap_story_dialog.c:6426
+#: ../gap/gap_story_dialog.c:6427
 #, c-format
 msgid "Videoseek (decoder: %s)"
 msgstr ""
 
-#: ../gap/gap_story_dialog.c:6561
+#: ../gap/gap_story_dialog.c:6562
 #, fuzzy
 msgid "videothumbnail cancelled"
 msgstr "أُلغيت العملية"
 
-#: ../gap/gap_story_dialog.c:6587
+#: ../gap/gap_story_dialog.c:6588
 #, c-format
 msgid "Fetching videothumbnail for clip: %d (out of %d)"
 msgstr ""
 
-#: ../gap/gap_story_dialog.c:7432 ../gap/gap_story_section_properties.c:637
+#: ../gap/gap_story_dialog.c:7433 ../gap/gap_story_section_properties.c:637
 msgid "MAIN"
 msgstr ""
 
-#: ../gap/gap_story_dialog.c:7435
+#: ../gap/gap_story_dialog.c:7436
 msgid "Masks"
 msgstr ""
 
-#: ../gap/gap_story_dialog.c:7550
+#: ../gap/gap_story_dialog.c:7551
 #, fuzzy
 msgid "Load storyboard file"
 msgstr "تحميل نص من ملف"
 
-#: ../gap/gap_story_dialog.c:7556
+#: ../gap/gap_story_dialog.c:7557
 #, fuzzy
 msgid "Load cliplist file"
 msgstr "حمِّل ملف"
 
-#: ../gap/gap_story_dialog.c:7571
+#: ../gap/gap_story_dialog.c:7572
 #, fuzzy
 msgid "Save storyboard to file"
 msgstr "حفظ ملف لوحة المفاتيح كـ"
 
-#: ../gap/gap_story_dialog.c:7580
+#: ../gap/gap_story_dialog.c:7581
 #, fuzzy
 msgid "Save cliplist to file"
 msgstr "احفظ قائمة تشغيل في ملف"
 
-#: ../gap/gap_story_dialog.c:7611
+#: ../gap/gap_story_dialog.c:7612
 msgid "Show Section properites window"
 msgstr ""
 
 #. Track label
-#: ../gap/gap_story_dialog.c:7616 ../gap/gap_video_index_creator.c:930
+#: ../gap/gap_story_dialog.c:7617 ../gap/gap_video_index_creator.c:930
 #, fuzzy
 msgid "Track:"
 msgstr "المقطوعة"
 
-#: ../gap/gap_story_dialog.c:7631
+#: ../gap/gap_story_dialog.c:7632
 msgid "Video Track Number (0 refers to mask definition track)"
 msgstr ""
 
-#: ../gap/gap_story_dialog.c:7667
+#: ../gap/gap_story_dialog.c:7668
 msgid "Cut a clip"
 msgstr ""
 
-#: ../gap/gap_story_dialog.c:7679
+#: ../gap/gap_story_dialog.c:7680
 #, fuzzy
 msgid "Copy a clip"
 msgstr "انسخ قرص"
 
-#: ../gap/gap_story_dialog.c:7691
+#: ../gap/gap_story_dialog.c:7692
 msgid "Paste a clip after last (selected) element"
 msgstr ""
 
-#: ../gap/gap_story_dialog.c:7703
+#: ../gap/gap_story_dialog.c:7704
 msgid ""
 "Create new clip\n"
 "(SHIFT create transition\n"
 "CTRL create section clip)"
 msgstr ""
 
-#: ../gap/gap_story_dialog.c:7717
+#: ../gap/gap_story_dialog.c:7718
 msgid ""
 "Play selected clips\n"
 "SHIFT: Playback all clips of current track.\n"
@@ -6648,91 +6648,91 @@ msgstr ""
 
 #. gtk_widget_show (entry);
 #. Row label
-#: ../gap/gap_story_dialog.c:7748
+#: ../gap/gap_story_dialog.c:7749
 #, fuzzy
 msgid "Row:"
 msgstr "صف"
 
-#: ../gap/gap_story_dialog.c:7762
+#: ../gap/gap_story_dialog.c:7763
 #, fuzzy
 msgid "Top rownumber"
 msgstr "عدد طويل جدا"
 
 #. of label
-#: ../gap/gap_story_dialog.c:7768
+#: ../gap/gap_story_dialog.c:7769
 #, fuzzy
 msgid "of:"
 msgstr "إلى:"
 
 #. the stb_frame
 #. radio button Storyboard input_mode
-#: ../gap/gap_story_dialog.c:8213 ../gap/gap_story_dialog.c:8331
+#: ../gap/gap_story_dialog.c:8214 ../gap/gap_story_dialog.c:8332
 #: ../vid_common/gap_cme_gui.c:2408
 #, fuzzy
 msgid "Storyboard"
 msgstr "لوحة المفاتيح"
 
-#: ../gap/gap_story_dialog.c:8404
+#: ../gap/gap_story_dialog.c:8405
 msgid "ON: clip target is storyboard (for clips created from playback range)."
 msgstr ""
 
-#: ../gap/gap_story_dialog.c:8434 ../vid_common/gap_cme_gui.c:2280
+#: ../gap/gap_story_dialog.c:8435 ../vid_common/gap_cme_gui.c:2280
 msgid "Cancel"
 msgstr "إلغي"
 
-#: ../gap/gap_story_dialog.c:8438 ../gap/gap_video_index_creator.c:1407
+#: ../gap/gap_story_dialog.c:8439 ../gap/gap_video_index_creator.c:1407
 msgid ""
 "Cancel video access if in progress and disable automatic videothumbnails"
 msgstr ""
 
-#: ../gap/gap_story_dialog.c:8485
+#: ../gap/gap_story_dialog.c:8497
 msgid ""
 "Generate original tone audio track for all video clips in the storyboard"
 msgstr ""
 
-#: ../gap/gap_story_dialog.c:8491
+#: ../gap/gap_story_dialog.c:8503
 #, fuzzy
 msgid "Input Audiotrack:"
 msgstr "جهاز الدخل:"
 
-#: ../gap/gap_story_dialog.c:8492
+#: ../gap/gap_story_dialog.c:8504
 msgid "select input audiotrack in the videofile(s)."
 msgstr ""
 
-#: ../gap/gap_story_dialog.c:8503
+#: ../gap/gap_story_dialog.c:8515
 #, fuzzy
 msgid "Output Audiotrack:"
 msgstr "_لوحة الخرْج:"
 
-#: ../gap/gap_story_dialog.c:8504
+#: ../gap/gap_story_dialog.c:8516
 msgid ""
 "output audiotrack to be generated in the storyboard file. The generated "
 "storyboard audiotrack will be a list of references to the audioparts in the "
 "input videos, corresponding to all used video clip references."
 msgstr ""
 
-#: ../gap/gap_story_dialog.c:8516
+#: ../gap/gap_story_dialog.c:8528
 #, fuzzy
 msgid "Replace Audiotrack:"
 msgstr "استبدّل _بـ: "
 
-#: ../gap/gap_story_dialog.c:8517
+#: ../gap/gap_story_dialog.c:8529
 msgid ""
 "ON: Allow replacing of already existing audio clip references  in the "
 "storyboard"
 msgstr ""
 
-#: ../gap/gap_story_dialog.c:8527
+#: ../gap/gap_story_dialog.c:8539
 #, fuzzy
 msgid "Reset parameters to default values"
 msgstr " تنضيد إلى القيم الافتراضية"
 
-#: ../gap/gap_story_dialog.c:8535
+#: ../gap/gap_story_dialog.c:8547
 #, fuzzy
 msgid "Generate Original Tone Audio"
 msgstr "ولِّد مفتاح فرعي جديد"
 
-#: ../gap/gap_story_dialog.c:8569
+#: ../gap/gap_story_dialog.c:8581
 #, c-format
 msgid ""
 "Original tone track was not created.\n"
@@ -6741,7 +6741,7 @@ msgid ""
 "Use another track number or allow replace at next try."
 msgstr ""
 
-#: ../gap/gap_story_dialog.c:8581
+#: ../gap/gap_story_dialog.c:8593
 #, c-format
 msgid ""
 "Original tone track was created with warnings.\n"
@@ -6751,68 +6751,68 @@ msgid ""
 "The generated audio is NOT synchronized with the video."
 msgstr ""
 
-#: ../gap/gap_story_dialog.c:8680
+#: ../gap/gap_story_dialog.c:8692
 #, fuzzy
 msgid "automatic"
 msgstr "_تلقائي"
 
-#: ../gap/gap_story_dialog.c:8681
+#: ../gap/gap_story_dialog.c:8693
 #, fuzzy
 msgid "none"
 msgstr "(لا شئ)"
 
 #. the section_name label
-#: ../gap/gap_story_dialog.c:8722 ../gap/gap_story_section_properties.c:849
+#: ../gap/gap_story_dialog.c:8734 ../gap/gap_story_section_properties.c:849
 #, fuzzy
 msgid "Name:"
 msgstr "الإ_سم:"
 
-#: ../gap/gap_story_dialog.c:8726
+#: ../gap/gap_story_dialog.c:8738
 #, fuzzy
 msgid "Name of the Storyboardfile"
 msgstr "اسم الطابعة"
 
-#: ../gap/gap_story_dialog.c:8732
+#: ../gap/gap_story_dialog.c:8744
 #, fuzzy
 msgid "Name of the Cliplistfile"
 msgstr "اسم الطابعة"
 
-#: ../gap/gap_story_dialog.c:8742 ../gap/gap_story_dialog.c:8746
+#: ../gap/gap_story_dialog.c:8754 ../gap/gap_story_dialog.c:8758
 #, fuzzy, c-format
 msgid "Name: %s"
 msgstr "الإسم: %s"
 
-#: ../gap/gap_story_dialog.c:8755
+#: ../gap/gap_story_dialog.c:8767
 #, fuzzy
 msgid "Master width of the resulting video in pixels"
 msgstr "عرض نافذة اللعب بالبكسل."
 
-#: ../gap/gap_story_dialog.c:8766
+#: ../gap/gap_story_dialog.c:8778
 #, fuzzy
 msgid "Master height of the resulting video in pixels)"
 msgstr "ارتفاع نافذة اللعب بالبكسل."
 
-#: ../gap/gap_story_dialog.c:8778
+#: ../gap/gap_story_dialog.c:8790
 #, fuzzy
 msgid "Framerate in frames/sec."
 msgstr "يجري تهيئة الرسالة"
 
-#: ../gap/gap_story_dialog.c:8796
+#: ../gap/gap_story_dialog.c:8808
 msgid "Track 1 on top:"
 msgstr ""
 
-#: ../gap/gap_story_dialog.c:8797
+#: ../gap/gap_story_dialog.c:8809
 msgid ""
 "ON: video track1 is Foregrond (on top). OFF: video track 1 is on Background."
 msgstr ""
 
 #. the qdiff label
-#: ../gap/gap_story_dialog.c:8835 ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1494
+#: ../gap/gap_story_dialog.c:8847 ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1494
 #, fuzzy
 msgid "Aspect:"
 msgstr "التأثير:"
 
-#: ../gap/gap_story_dialog.c:8836
+#: ../gap/gap_story_dialog.c:8848
 msgid ""
 "Select video frame aspect ratio; enter a string like \"4:3\" or \"16:9\" to "
 "specify the aspect. Enter none or leave empty if no special aspect shall be "
@@ -6821,39 +6821,39 @@ msgid ""
 msgstr ""
 
 #. the (preferred) Decoder label
-#: ../gap/gap_story_dialog.c:8878 ../gap/gap_vex_dialog.c:2311
+#: ../gap/gap_story_dialog.c:8890 ../gap/gap_vex_dialog.c:2311
 #: ../gap/gap_video_index_creator.c:916
 #, fuzzy
 msgid "Decoder:"
 msgstr "شفرة المقتاح:"
 
-#: ../gap/gap_story_dialog.c:8879
+#: ../gap/gap_story_dialog.c:8891
 msgid ""
 "Select preferred video decoder library, or leave empty for automatic "
 "selection.The decoder setting is only relevant if videoclips are used (but "
 "not for frames that are imagefiles)"
 msgstr ""
 
-#: ../gap/gap_story_dialog.c:8897
+#: ../gap/gap_story_dialog.c:8909
 msgid "Master audio samplerate for the resulting video in samples/sec."
 msgstr ""
 
-#: ../gap/gap_story_dialog.c:8913
+#: ../gap/gap_story_dialog.c:8925
 msgid "Master audio volume, where 1.0 keeps original volume"
 msgstr ""
 
 #. should use GIMP_STOCK_RESET if possible
-#: ../gap/gap_story_dialog.c:8929
+#: ../gap/gap_story_dialog.c:8941
 #, fuzzy
 msgid "Reset parameters to inital values"
 msgstr " تنضيد إلى القيم الافتراضية"
 
-#: ../gap/gap_story_dialog.c:8940
+#: ../gap/gap_story_dialog.c:8952
 #, fuzzy
 msgid "Master Properties"
 msgstr "خصائص الفئة"
 
-#: ../gap/gap_story_dialog.c:9377
+#: ../gap/gap_story_dialog.c:9389
 msgid "STORY_new.txt"
 msgstr ""
 
@@ -7370,27 +7370,27 @@ msgstr ""
 msgid "ready"
 msgstr "قراءة"
 
-#: ../gap/gap_story_render_processor.c:703
+#: ../gap/gap_story_render_processor.c:701
 #, c-format
 msgid "encoding_video_frame_%06d"
 msgstr ""
 
-#: ../gap/gap_story_render_processor.c:2726
+#: ../gap/gap_story_render_processor.c:2606
 #, c-format
 msgid "analyze line %d (out of %d)"
 msgstr ""
 
-#: ../gap/gap_story_render_processor.c:2868
+#: ../gap/gap_story_render_processor.c:2748
 #, fuzzy
 msgid "No Frames or Images found ...."
 msgstr "وزن الصورة..."
 
-#: ../gap/gap_story_render_processor.c:4927
+#: ../gap/gap_story_render_processor.c:4818
 #, fuzzy
 msgid "Seek Inputvideoframe..."
 msgstr "انتق ملفّ الوجهة"
 
-#: ../gap/gap_story_render_processor.c:4932
+#: ../gap/gap_story_render_processor.c:4823
 msgid "Continue Encoding..."
 msgstr ""
 
