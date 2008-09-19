@@ -1,13 +1,13 @@
-# gimp-plug-ins ko.po
 # Copyright (C) 1999 Free Software Foundation, Inc.
 # Sung-Hyun Nam <namsh@kldp.org>, 1999
+# Mr.Dust <like.a.dust@gmail.com>, 2008
 msgid ""
 msgstr ""
 "Project-Id-Version: gimp-plug-ins 1.1.10\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-06-16 04:08+0000\n"
-"PO-Revision-Date: 2008-07-13 10:57+0900\n"
-"Last-Translator: Choi Jihui <like.a.dust@gmail.com>\n"
+"PO-Revision-Date: 2008-07-22 03:43+0900\n"
+"Last-Translator: Mr.Dust <like.a.dust@gmail.com>\n"
 "Language-Team: Korean <like.a.dust@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -108,6 +108,10 @@ msgid ""
 "creating a video index is NOT recommanded\n"
 "(would not work)\n"
 msgstr ""
+"경고:\n"
+"이 비디오에서는 임의 위치를 사용할 수 없습니다.\n"
+"비디오 인덱스 생성은 권장되지 않습니다.\n"
+"(동작하지 않음)\n"
 
 #: ../gap/gap_arr_dialog.c:2096
 #, c-format
@@ -949,9 +953,8 @@ msgid "Frames:"
 msgstr "프레임:"
 
 #: ../gap/gap_decode_mplayer.c:456
-#, fuzzy
 msgid "Number of frames to extract"
-msgstr "프레임 인쇄하는 방식"
+msgstr "추출한 프레임 번호"
 
 #. the videotrack to label
 #: ../gap/gap_decode_mplayer.c:467
@@ -1001,7 +1004,6 @@ msgid "Image fileformat for the extracted video frames. (xcf is extracted as png
 msgstr ""
 
 #: ../gap/gap_decode_mplayer.c:522
-#, fuzzy
 msgid "Png Compression:"
 msgstr "PNG 압축 레벨:"
 
@@ -1019,27 +1021,24 @@ msgid "Quality for resulting jpeg frames where 100 is best quality (ignored when
 msgstr ""
 
 #: ../gap/gap_decode_mplayer.c:543
-#, fuzzy
 msgid "Jpeg Optimize:"
-msgstr "최적화(차이)(_O)"
+msgstr "Jpeg 최적화:"
 
 #: ../gap/gap_decode_mplayer.c:544
 msgid "optimization factor(is ignored when other formats are used)"
 msgstr ""
 
 #: ../gap/gap_decode_mplayer.c:554
-#, fuzzy
 msgid "Jpeg Smooth:"
-msgstr "가로로 부드럽게"
+msgstr "Jpeg 자연스러움:"
 
 #: ../gap/gap_decode_mplayer.c:555
 msgid "Smooth factor(is ignored when other formats are used)"
 msgstr ""
 
 #: ../gap/gap_decode_mplayer.c:565
-#, fuzzy
 msgid "Jpeg Progressive:"
-msgstr "연속 라운드"
+msgstr "Jpeg 점진적으로 표시:"
 
 #: ../gap/gap_decode_mplayer.c:566
 msgid "Enable progressive jpeg encoding(is ignored when other formats are used)"
@@ -1078,14 +1077,12 @@ msgid "Asynchronous"
 msgstr "비동기"
 
 #: ../gap/gap_decode_mplayer.c:598
-#, fuzzy
 msgid "Run the mplayer as asynchronous process"
-msgstr "참이면 인쇄 프로세스를 비동기로 동작하도록 합니다."
+msgstr "비동기 프로세스로 mplayer 를 구동합니다."
 
 #: ../gap/gap_decode_mplayer.c:604
-#, fuzzy
 msgid "MPlayer 1.0pre5:"
-msgstr "mplayer 정보"
+msgstr "MPlayer 1.0pre5:"
 
 #: ../gap/gap_decode_mplayer.c:605
 msgid ""
@@ -1106,14 +1103,14 @@ msgstr "프레임 범위 선택"
 
 #: ../gap/gap_decode_mplayer.c:650
 #: ../gap/gap_decode_mplayer.c:1495
-#, fuzzy, c-format
+#, c-format
 msgid "videofile %s not existent\n"
-msgstr "일반 파일이 아닙니다"
+msgstr "비디오파일 %s 가 존재하지 않습니다.\n"
 
 #: ../gap/gap_decode_mplayer.c:659
-#, fuzzy, c-format
+#, c-format
 msgid "Illegal starttime %s"
-msgstr "%s: 잘못된 옵션 -- %c\n"
+msgstr "잘못된 시작시각 %s"
 
 #: ../gap/gap_decode_mplayer.c:692
 #: ../gap/gap_decode_xanim.c:365
@@ -1125,9 +1122,8 @@ msgstr "프레임 덮어쓰기:"
 #: ../gap/gap_decode_xanim.c:367
 #: ../gap/gap_range_ops.c:1455
 #: ../gap/gap_vex_dialog.c:236
-#, fuzzy
 msgid "Overwrite All"
-msgstr "모든 페이지"
+msgstr "모두 덮어쓰기"
 
 #: ../gap/gap_decode_mplayer.c:703
 #: ../gap/gap_decode_xanim.c:376
@@ -1150,15 +1146,15 @@ msgstr ""
 
 #: ../gap/gap_decode_mplayer.c:1007
 #: ../gap/gap_decode_xanim.c:612
-#, fuzzy, c-format
+#, c-format
 msgid "failed to overwrite %s (check permissions ?)"
-msgstr "새 FileZilla 버전 확인 실패."
+msgstr "%s 덮어쓰기 실패(권한 확인을 하십시오)"
 
 #: ../gap/gap_decode_mplayer.c:1029
 #: ../gap/gap_decode_xanim.c:634
-#, fuzzy, c-format
+#, c-format
 msgid "failed to write %s (check permissions ?)"
-msgstr "파일 '%s' 쓰기 실패: fwrite() 실패: %s"
+msgstr "%s 쓰기 실패(권한 확인을 하십시오)"
 
 #: ../gap/gap_decode_mplayer.c:1073
 #, c-format
@@ -1178,9 +1174,9 @@ msgstr ""
 
 #. ERROR
 #: ../gap/gap_decode_mplayer.c:1120
-#, fuzzy, c-format
+#, c-format
 msgid "The mediaplayer executable file '%s' was not found."
-msgstr "파일 접근에 적당한 플러그 인을 찾을 수 없습니다"
+msgstr "미디어 플레이어로 실행가능한 파일 '%s' 를 찾을 수 없습니다."
 
 #: ../gap/gap_decode_mplayer.c:1485
 msgid "Exit, neither video nor audio track was selected"
@@ -1228,9 +1224,8 @@ msgid "Converting frames..."
 msgstr "프레임을 변환 중..."
 
 #: ../gap/gap_decode_xanim.c:138
-#, fuzzy
 msgid "Requirements to run the xanim based video split"
-msgstr "mplayer 기반의 비디오 분할이 필요합니다."
+msgstr "xanim 기반의 비디오 분할을 실행하기 위한 선조건"
 
 #: ../gap/gap_decode_xanim.c:150
 msgid ""
@@ -1283,9 +1278,8 @@ msgid "Enable extraction of frames"
 msgstr "프레임 추출 사용하기"
 
 #: ../gap/gap_decode_xanim.c:288
-#, fuzzy
 msgid "Extract Audio"
-msgstr "오디오 코덱"
+msgstr "오디오 추출"
 
 #: ../gap/gap_decode_xanim.c:289
 msgid "Enable extraction of audio to raw audiofile. (frame range limits are ignored for audio)"
@@ -1296,9 +1290,8 @@ msgid "Quality for resulting jpeg frames. (is ignored when other formats are use
 msgstr ""
 
 #: ../gap/gap_decode_xanim.c:311
-#, fuzzy
 msgid "Run asynchronously"
-msgstr "대화식으로 실행"
+msgstr "비동기적으로 실행"
 
 #: ../gap/gap_decode_xanim.c:312
 msgid "Run xanim asynchronously and delete unwanted frames (out of the specified range) while xanim is still running"
@@ -1330,9 +1323,9 @@ msgid "could not execute %s (check if xanim is installed)"
 msgstr ""
 
 #: ../gap/gap_decode_xanim.c:769
-#, fuzzy, c-format
+#, c-format
 msgid "%s does not look like xanim"
-msgstr "이것은 tar 아카이브처럼 보이지 않습니다"
+msgstr "%s 는 xanim 이 아닌 것 같습니다."
 
 #: ../gap/gap_decode_xanim.c:794
 #, c-format
@@ -1390,9 +1383,9 @@ msgid "Continue"
 msgstr "계속"
 
 #: ../gap/gap_filter_foreach.c:142
-#, fuzzy, c-format
+#, c-format
 msgid "Skip %d"
-msgstr "건너뛰기"
+msgstr "%d 건너뛰기"
 
 #: ../gap/gap_filter_foreach.c:161
 #: ../gap/gap_mod_layer.c:126
@@ -1453,9 +1446,9 @@ msgstr ""
 
 #: ../gap/gap_fmac_base.c:265
 #: ../gap/gap_fmac_base.c:359
-#, fuzzy, c-format
+#, c-format
 msgid "file: %s is not a filtermacro file !"
-msgstr "'%s' 는 DICOM 파일이 아닙니다."
+msgstr "파일: %s 는 필터매크로 파일이 아닙니다!"
 
 #: ../gap/gap_fmac_base.c:450
 #, c-format
@@ -1479,9 +1472,8 @@ msgid "Add Filter"
 msgstr "필터 추가"
 
 #: ../gap/gap_fmac_main.c:564
-#, fuzzy
 msgid "Filter Macro Script"
-msgstr "Script-Fu 콘솔"
+msgstr "필터 매크로 스크립트"
 
 #. label
 #: ../gap/gap_fmac_main.c:588
@@ -1489,9 +1481,8 @@ msgid "Filename:"
 msgstr "파일명:"
 
 #: ../gap/gap_fmac_main.c:600
-#, fuzzy
 msgid "Name of the filtermacro scriptfile"
-msgstr "잘못된 프로그램 이름: %s"
+msgstr "필터매크로 스크립트 파일명"
 
 #: ../gap/gap_fmac_main.c:610
 msgid "Open filebrowser window to select a filename"
@@ -1511,27 +1502,23 @@ msgid "Menu Path"
 msgstr "메뉴 경로"
 
 #: ../gap/gap_fmac_main.c:812
-#, fuzzy
 msgid "** No menu path available **"
-msgstr "인증 파일 경로가 유효하지 않습니다."
+msgstr "** 사용가능한 메뉴가 없습니다. **"
 
 #: ../gap/gap_fmac_main.c:848
 #: ../gap/gap_video_index_creator.c:1239
-#, fuzzy
 msgid "** Empty **"
-msgstr "(빈 파일)"
+msgstr "** 빈 파일 **"
 
 #: ../gap/gap_fmac_main.c:857
-#, fuzzy
 msgid "** File is not a filtermacro **"
-msgstr "'%s' 는 DICOM 파일이 아닙니다."
+msgstr "** 필터매크로 파일이 아닙니다. **"
 
 #: ../gap/gap_fmac_main.c:895
 #: ../gap/gap_onion_dialog.c:1366
 #: ../gap/gap_player_dialog.c:7154
-#, fuzzy
 msgid "Show help page"
-msgstr "다음 쪽 보기"
+msgstr "도움말 페이지 보기"
 
 #. Button Delete All
 #: ../gap/gap_fmac_main.c:905
@@ -1539,9 +1526,8 @@ msgid "Delete All"
 msgstr "모두 삭제"
 
 #: ../gap/gap_fmac_main.c:909
-#, fuzzy
 msgid "Delete the filtermacro scriptfile"
-msgstr "정말로 \"%s\" 파일을 지우시겠습니까?"
+msgstr "필터매크로 스크립트 파일 삭제하기"
 
 #. Button Delete
 #. radio button DELETE
@@ -1585,21 +1571,18 @@ msgid ""
 msgstr ""
 
 #: ../gap/gap_fmac_main.c:1196
-#, fuzzy
 msgid "Select Filtermacro Scriptfile"
-msgstr "포커스시 선택"
+msgstr "필터매크로 스크립트 파일 선택"
 
 #: ../gap/gap_frontends_main.c:149
 #: ../gap/gap_frontends_main.c:162
-#, fuzzy
 msgid "MPlayer based extraction..."
-msgstr "풀 수 없었습니다"
+msgstr "Mplayer 기반 추출..."
 
 #: ../gap/gap_frontends_main.c:176
 #: ../gap/gap_frontends_main.c:189
-#, fuzzy
 msgid "XANIM based extraction..."
-msgstr "풀 수 없었습니다"
+msgstr "XANIM 기반 추출..."
 
 #: ../gap/gap_frontends_main.c:201
 msgid "MPEG1..."
@@ -2068,9 +2051,8 @@ msgid "Load selection from channel (individual per frame)"
 msgstr ""
 
 #: ../gap/gap_mod_layer_dialog.c:682
-#, fuzzy
 msgid "Delete channel (by name)"
-msgstr "이름에 의한 젠 코드(Gen Code)"
+msgstr "채널 삭제하기(이름으로)"
 
 #. the LayerMask sub menu
 #: ../gap/gap_mod_layer_dialog.c:702
@@ -2086,18 +2068,16 @@ msgid "Add black layermask (transparent)"
 msgstr ""
 
 #: ../gap/gap_mod_layer_dialog.c:721
-#, fuzzy
 msgid "Add layermask from alpha"
-msgstr "배경에서 색상 더하기(_A)"
+msgstr "알파로부터 레이어마스크 추가"
 
 #: ../gap/gap_mod_layer_dialog.c:727
 msgid "Add layermask transfer from alpha"
 msgstr ""
 
 #: ../gap/gap_mod_layer_dialog.c:733
-#, fuzzy
 msgid "Add layermask from selection"
-msgstr "현재 선택에서 빼기"
+msgstr "선택으로부터 레이어마스크 추가"
 
 #: ../gap/gap_mod_layer_dialog.c:739
 msgid "Add layermask from bw copy"
@@ -2157,7 +2137,6 @@ msgid "Resize selected layer(s) to image size"
 msgstr ""
 
 #: ../gap/gap_mod_layer_dialog.c:824
-#, fuzzy
 msgid "Add alpha channel"
 msgstr "알파 채널 더하기"
 
@@ -2418,15 +2397,13 @@ msgid ""
 msgstr ""
 
 #: ../gap/gap_morph_dialog.c:3006
-#, fuzzy
 msgid "Click: delete next point"
-msgstr "조절점을 추가하려면 클릭하십시오."
+msgstr "클릭: 다음 포인트 삭제"
 
 #. radio button ZOOM
 #: ../gap/gap_morph_dialog.c:3019
-#, fuzzy
 msgid "Zoom"
-msgstr "확대"
+msgstr "확대/축소"
 
 #: ../gap/gap_morph_dialog.c:3028
 msgid ""
@@ -2458,9 +2435,8 @@ msgstr ""
 
 #. radio button WARP
 #: ../gap/gap_morph_dialog.c:3117
-#, fuzzy
 msgid "Warp"
-msgstr "왜곡되게"
+msgstr "왜곡(Warp)"
 
 #: ../gap/gap_morph_dialog.c:3126
 msgid "Render forward warp transitions only"
@@ -2530,9 +2506,8 @@ msgstr "현재 포인트의 수"
 
 #. the number_of_points label
 #: ../gap/gap_morph_dialog.c:3322
-#, fuzzy
 msgid "of total:"
-msgstr "전체"
+msgstr "전체:"
 
 #. the number_of_points label
 #: ../gap/gap_morph_dialog.c:3330
@@ -2548,7 +2523,6 @@ msgid "Source"
 msgstr "소스"
 
 #: ../gap/gap_morph_dialog.c:3568
-#, fuzzy
 msgid "Destination"
 msgstr "목표"
 
@@ -2572,9 +2546,8 @@ msgstr ""
 
 #. the show lines checkbutton
 #: ../gap/gap_morph_dialog.c:3634
-#, fuzzy
 msgid "Lines"
-msgstr "행"
+msgstr "줄"
 
 #: ../gap/gap_morph_dialog.c:3643
 msgid "Show movement vector lines in the destination preview"
@@ -2582,18 +2555,15 @@ msgstr ""
 
 #. Swap Windows Button
 #: ../gap/gap_morph_dialog.c:3648
-#, fuzzy
 msgid "Swap"
-msgstr ".h/.c 교환"
+msgstr "교환"
 
 #: ../gap/gap_morph_dialog.c:3652
-#, fuzzy
 msgid "Exchange source and destination"
-msgstr "C 헤더 파일과 소스 파일을 교환합니다"
+msgstr "원본과 대상을 교환합니다"
 
 #. the deform affect radius label
 #: ../gap/gap_morph_dialog.c:3663
-#, fuzzy
 msgid "Radius:"
 msgstr "반경:"
 
@@ -2607,9 +2577,8 @@ msgid "Intensity:"
 msgstr "농도:"
 
 #: ../gap/gap_morph_dialog.c:3718
-#, fuzzy
 msgid "Deform intensity."
-msgstr "섬유 장력"
+msgstr "농도 변경"
 
 #. the use_intensity checkbutton
 #: ../gap/gap_morph_dialog.c:3726
@@ -2657,9 +2626,8 @@ msgstr ""
 
 #. the currentcolor colorbutton
 #: ../gap/gap_morph_dialog.c:3837
-#, fuzzy
 msgid "Current Pointcolor"
-msgstr "현재 투명값"
+msgstr "현재 포인트색상"
 
 #: ../gap/gap_morph_dialog.c:3845
 msgid "Set color for the current morph workpoint"
@@ -2744,9 +2712,8 @@ msgid "Object on empty frames"
 msgstr "빈 프레임의 개체"
 
 #: ../gap/gap_mov_dialog.c:985
-#, fuzzy
 msgid "Object on one frame"
-msgstr "패널에서 오브젝트의 위치"
+msgstr "한 프레임의 개체"
 
 #: ../gap/gap_mov_dialog.c:986
 msgid "Exact object on frames"
@@ -2778,9 +2745,8 @@ msgid "Framerate to use in the animated preview in frames/sec"
 msgstr ""
 
 #: ../gap/gap_mov_dialog.c:1067
-#, fuzzy
 msgid "Copy to Video Buffer:"
-msgstr "선택한 픽셀을 이름있는 버퍼로 복사"
+msgstr "비디오 버퍼로 복사"
 
 #: ../gap/gap_mov_dialog.c:1068
 msgid "Save all single frames of animated preview to video buffer.(configured in gimprc by video-paste-dir and video-paste-basename)"
@@ -2795,9 +2761,8 @@ msgstr ""
 #: ../gap/gap_video_index_creator.c:966
 #: ../gap/gap_wr_opacity.c:352
 #: ../vid_common/gap_cme_gui.c:2978
-#, fuzzy
 msgid "Default"
-msgstr "기본"
+msgstr "기본값"
 
 #: ../gap/gap_mov_dialog.c:1076
 #: ../gap/gap_mpege.c:373
@@ -2847,11 +2812,13 @@ msgid ""
 msgstr ""
 
 #: ../gap/gap_mov_dialog.c:1504
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "No path found in the image:\n"
 "'%s'"
-msgstr "'%s'에서 선형 그라디언트를 찾을 수 없습니다."
+msgstr ""
+"이미지에서 경로를 찾을 수 없습니다.:\n"
+"'%s'"
 
 #: ../gap/gap_mov_dialog.c:1853
 msgid "Load Path Points from File"
@@ -2862,9 +2829,9 @@ msgid "Save Path Points to File"
 msgstr "경로 포인트를 파일로 저장"
 
 #: ../gap/gap_mov_dialog.c:2560
-#, fuzzy, c-format
+#, c-format
 msgid "Current Point: [ %3d ] of [ %3d ]"
-msgstr "검정색 점 보상(_B)"
+msgstr "현재 포인트: [ %3d ] of [ %3d ]"
 
 #: ../gap/gap_mov_dialog.c:2681
 #, c-format
@@ -2883,12 +2850,15 @@ msgid ""
 msgstr ""
 
 #: ../gap/gap_mov_dialog.c:2718
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Failed to write controlpointfile\n"
 "filename: '%s':\n"
 "%s"
-msgstr "파일 '%s' 쓰기 실패: fwrite() 실패: %s"
+msgstr ""
+"조절점파일 쓰기 실패\n"
+"파일명: '%s':\n"
+"%s"
 
 #. Source Layer menu
 #: ../gap/gap_mov_dialog.c:2764
@@ -2910,22 +2880,18 @@ msgid "Mode:"
 msgstr "모드:"
 
 #: ../gap/gap_mov_dialog.c:2798
-#, fuzzy
 msgid "Hard Light"
 msgstr "강한 빛"
 
 #: ../gap/gap_mov_dialog.c:2799
-#, fuzzy
 msgid "Soft Light"
 msgstr "부드러운 빛"
 
 #: ../gap/gap_mov_dialog.c:2800
-#, fuzzy
 msgid "Grain Extract"
-msgstr "질감 드러내기"
+msgstr "질감 추출하기"
 
 #: ../gap/gap_mov_dialog.c:2801
-#, fuzzy
 msgid "Grain Merge"
 msgstr "질감 합치기"
 
@@ -3063,9 +3029,8 @@ msgstr ""
 
 #. keycolor button
 #: ../gap/gap_mov_dialog.c:2994
-#, fuzzy
 msgid "Move Path Bluebox Keycolor"
-msgstr "경로 '%s'을(를) 자기 자신에게 복사 할 수 없습니다."
+msgstr "블루박스 키색상 경로를 이동"
 
 #: ../gap/gap_mov_dialog.c:3010
 msgid "Open dialog window to set parameters and keycolor for the bluebox filter"
@@ -3281,9 +3246,8 @@ msgstr "대상 프레임의 레이어스택에 원본 레이어를 삽입하는 
 
 #. toggle force visibility
 #: ../gap/gap_mov_dialog.c:3537
-#, fuzzy
 msgid "Force Visibility"
-msgstr "항목 표시 여부"
+msgstr "강제로 보이기"
 
 #: ../gap/gap_mov_dialog.c:3541
 msgid "Force visibility for all copied source layers"
@@ -3599,19 +3563,16 @@ msgid "Scale and Modify"
 msgstr "비율 조정과 수정"
 
 #: ../gap/gap_mov_dialog.c:4095
-#, fuzzy
 msgid "Perspective"
 msgstr "원근법"
 
 #: ../gap/gap_mov_dialog.c:4102
-#, fuzzy
 msgid "Selection Handling"
-msgstr "선택 있음"
+msgstr "선택 조절"
 
 #: ../gap/gap_mov_dialog.c:4221
-#, fuzzy
 msgid "Pathline Color Picker"
-msgstr "색상 추출 정보"
+msgstr "경로라인 색상 추출기"
 
 #: ../gap/gap_mov_dialog.c:4228
 msgid "Select the color that is used to draw pathlines in the preview"
@@ -3632,9 +3593,8 @@ msgid "Cursor"
 msgstr "커서"
 
 #: ../gap/gap_mov_dialog.c:4262
-#, fuzzy
 msgid "Show cursor crosslines"
-msgstr "커서 깜박임 시간"
+msgstr "커서의 십자선 보이기"
 
 #. toggle Show Grid
 #: ../gap/gap_mov_dialog.c:4273
@@ -3647,14 +3607,12 @@ msgstr ""
 
 #. toggle Instant Apply
 #: ../gap/gap_mov_dialog.c:4287
-#, fuzzy
 msgid "Instant Apply"
-msgstr "렌즈 적용(_L)..."
+msgstr "즉시 적용"
 
 #: ../gap/gap_mov_dialog.c:4291
-#, fuzzy
 msgid "Update the preview automatically"
-msgstr "데이타를 자동으로 업데이트합니다."
+msgstr "미리보기를 자동으로 업데이트합니다."
 
 #. the Preview Frame Number
 #. table col, row
@@ -3834,9 +3792,8 @@ msgid "GenParams"
 msgstr "젠(gen)파라미터"
 
 #: ../gap/gap_mpege.c:287
-#, fuzzy
 msgid "Gen + Encode"
-msgstr "젠(gen) MPEG_ENCODE 파라미터"
+msgstr "Gen + Encode"
 
 #: ../gap/gap_mpege.c:321
 msgid "Framerate in frames/second"
@@ -4050,29 +4007,24 @@ msgid "Fontsize:"
 msgstr ""
 
 #: ../gap/gap_name2layer_main.c:465
-#, fuzzy
 msgid "Fontsize in pixels"
-msgstr "구분자의 위치 (픽셀)"
+msgstr "글꼴크기 (픽셀)"
 
 #: ../gap/gap_name2layer_main.c:476
-#, fuzzy
 msgid "Position X-offset in pixels"
-msgstr "구분자의 위치 (픽셀)"
+msgstr "X 오프셋의 위치 (픽셀)"
 
 #: ../gap/gap_name2layer_main.c:487
-#, fuzzy
 msgid "Position Y-offset in pixels"
-msgstr "구분자의 위치 (픽셀)"
+msgstr "Y 오프셋의 위치 (픽셀)"
 
 #: ../gap/gap_name2layer_main.c:496
-#, fuzzy
 msgid "Antialias:"
-msgstr "부드럽게"
+msgstr "안티알리아스:"
 
 #: ../gap/gap_name2layer_main.c:497
-#, fuzzy
 msgid "Use antialias"
-msgstr "Xft 안티알리아싱"
+msgstr "안티알리아스 사용"
 
 #: ../gap/gap_name2layer_main.c:503
 msgid "Create Layer:"
@@ -4174,20 +4126,17 @@ msgstr ""
 
 #. the active layer tracking label
 #: ../gap/gap_navigator_dialog.c:3978
-#, fuzzy
 msgid "AL-Tracking:"
-msgstr "<b>상태 추적</b>"
+msgstr "AL-추적:"
 
 #. radio button active layer tracking OFF
 #: ../gap/gap_navigator_dialog.c:3988
-#, fuzzy
 msgid "OFF"
 msgstr "끔"
 
 #: ../gap/gap_navigator_dialog.c:4001
-#, fuzzy
 msgid "Disable active layer tracking"
-msgstr "현재 레이어의 테두리 그리기"
+msgstr "현재 레이어 추적 사용안함"
 
 #. radio button thres_mode HSV
 #: ../gap/gap_navigator_dialog.c:4011
@@ -4214,7 +4163,6 @@ msgstr "복사하기"
 
 #. menu_item cut
 #: ../gap/gap_navigator_dialog.c:4165
-#, fuzzy
 msgid "Cut"
 msgstr "잘라내기"
 
@@ -4235,9 +4183,8 @@ msgstr "교체하여 붙여넣기"
 
 #. menu_item copy
 #: ../gap/gap_navigator_dialog.c:4201
-#, fuzzy
 msgid "Clear Video Buffer"
-msgstr "비디오 모드 (프레임 버퍼용)"
+msgstr "비디오 버퍼 지우기"
 
 #. menu_item Select All
 #: ../gap/gap_navigator_dialog.c:4211
@@ -4264,15 +4211,13 @@ msgid "Timezoom:"
 msgstr ""
 
 #: ../gap/gap_navigator_dialog.c:4307
-#, fuzzy
 msgid "Show only every Nth frame"
-msgstr "이 창에서 이 프레임만 봅니다"
+msgstr "N번째 프레임만 보기"
 
 #. The main shell
 #: ../gap/gap_navigator_dialog.c:4418
-#, fuzzy
 msgid "Video Navigator"
-msgstr "비디오 무늬"
+msgstr "비디오 네비게이터"
 
 #. set layername
 #: ../gap/gap_onion_base.c:557
@@ -4281,9 +4226,8 @@ msgid "onionskin_%06d"
 msgstr ""
 
 #: ../gap/gap_onion_dialog.c:899
-#, fuzzy
 msgid "Onionskin Configuration"
-msgstr "자원 설정"
+msgstr "반투명 용지 설정"
 
 #: ../gap/gap_onion_dialog.c:964
 msgid "Onionskin Settings"
@@ -4294,19 +4238,16 @@ msgid "Reference Mode:"
 msgstr "참고 모드:"
 
 #: ../gap/gap_onion_dialog.c:992
-#, fuzzy
 msgid "Normal +1,+2,+3,+4,+5,+6"
-msgstr "보통"
+msgstr "일반 +1,+2,+3,+4,+5,+6"
 
 #: ../gap/gap_onion_dialog.c:993
-#, fuzzy
 msgid "Bidiriectional (single) +1,-2,+3,-4,+5,-6"
-msgstr "URL 한 개."
+msgstr "양방향성 (싱글) +1,-2,+3,-4,+5,-6"
 
 #: ../gap/gap_onion_dialog.c:994
-#, fuzzy
 msgid "Bidiriectional (double) +1,-1,+2,-2,+3,-3"
-msgstr "화살표 두 개"
+msgstr "양방향성 (더블) +1,-1,+2,-2,+3,-3"
 
 #: ../gap/gap_onion_dialog.c:1006
 msgid ""
@@ -4318,18 +4259,16 @@ msgid ""
 msgstr ""
 
 #: ../gap/gap_onion_dialog.c:1015
-#, fuzzy
 msgid "Onionskin Layers:"
-msgstr "모든 레이어"
+msgstr "불투명한 레이어:"
 
 #: ../gap/gap_onion_dialog.c:1040
 msgid "Number of onionskin layers to create in the handled frame."
 msgstr "조절된 프레임에 생성한 반투명한 레이어 수"
 
 #: ../gap/gap_onion_dialog.c:1045
-#, fuzzy
 msgid "Ascending Opacity"
-msgstr "배경 불투명도"
+msgstr "불투명도를 오름차순으로"
 
 #: ../gap/gap_onion_dialog.c:1051
 msgid ""
@@ -4346,18 +4285,16 @@ msgid "reference stepsize where -1 is previous frame, +1 is next frame. (stepseq
 msgstr ""
 
 #: ../gap/gap_onion_dialog.c:1083
-#, fuzzy
 msgid "Cyclic"
-msgstr "주기적인 범위 사용"
+msgstr "주기적인"
 
 #: ../gap/gap_onion_dialog.c:1089
 msgid "ON: Next frame of last is first and vice versa."
 msgstr ""
 
 #: ../gap/gap_onion_dialog.c:1094
-#, fuzzy
 msgid "Stackposition:"
-msgstr "레이어 순서"
+msgstr "스택포지션:"
 
 #: ../gap/gap_onion_dialog.c:1116
 msgid "Stackposition where to place onionskin layer(s)"
@@ -4443,41 +4380,37 @@ msgid "Select layernames by pattern (depends on mode and options)"
 msgstr ""
 
 #: ../gap/gap_onion_dialog.c:1299
-#, fuzzy, c-format
+#, c-format
 msgid "Set for: %s"
-msgstr "이 열을 확장 열로 사용합니다."
+msgstr "설정 : %s"
 
 #: ../gap/gap_onion_dialog.c:1309
 msgid "Set onionskin parameters for the current video"
 msgstr ""
 
 #: ../gap/gap_onion_dialog.c:1323
-#, fuzzy
 msgid "Auto create after load"
-msgstr "프리셋 자동 읽기 삭제"
+msgstr "불러온 후 자동 생성"
 
 #: ../gap/gap_onion_dialog.c:1326
 msgid "ON: Automatic creation/replacement of onionskin layer(s). Works on frame changes via 'VCR Navigator' and go to operations in the video menu -- but not on explicite load from the file menu."
 msgstr ""
 
 #: ../gap/gap_onion_dialog.c:1335
-#, fuzzy
 msgid "Auto delete before save"
-msgstr "이미지를 닫기 전에 '%s' 를 저장하시겠습니까?"
+msgstr "저장 후 자동 삭제"
 
 #: ../gap/gap_onion_dialog.c:1338
 msgid "ON: Automatic delete of onionskin layer(s). Works on framechanges via 'VCR Navigator' and go to operations in the video menu -- but not on explicite save from the file menu. Use this option if you dont want onionskin layers to appear in thumbnail files."
 msgstr ""
 
 #: ../gap/gap_onion_dialog.c:1374
-#, fuzzy
 msgid "Reset to default settings"
-msgstr "기본값으로 초기화"
+msgstr "기본 설정값으로 초기화"
 
 #: ../gap/gap_onion_dialog.c:1381
-#, fuzzy
 msgid "Close window without any action"
-msgstr "(이 창을 닫으려면 아무 글자나 입력하십시오.)\n"
+msgstr "아무 동작없이 창 닫기"
 
 #: ../gap/gap_onion_dialog.c:1388
 msgid ""
@@ -4494,16 +4427,14 @@ msgid "Create or replace onionskin layer(s) in all frames of the selected frame 
 msgstr "선택된 범위의 모든 프레임에 반투명한 레이어를 생성하거나 교체"
 
 #: ../gap/gap_onion_main.c:152
-#, fuzzy
 msgid "Configuration..."
-msgstr "설정"
+msgstr "설정..."
 
 #: ../gap/gap_onion_main.c:170
 msgid "Create or Replace"
 msgstr "생성 혹은 교체"
 
 #: ../gap/gap_onion_main.c:198
-#, fuzzy
 msgid "Toggle Visibility"
 msgstr "보임 여부 전환"
 
@@ -4512,14 +4443,12 @@ msgid "<Image>/Video/Onionskin/"
 msgstr "<Image>/비디오/반투명"
 
 #: ../gap/gap_onion_worker.c:367
-#, fuzzy
 msgid "Creating onionskin layers..."
-msgstr "CMYK 레이어서 생성중.."
+msgstr "불투명한 레이어 생성중.."
 
 #: ../gap/gap_onion_worker.c:371
-#, fuzzy
 msgid "Removing onionskin layers..."
-msgstr "보이는 레이어 합치기"
+msgstr "불투명한 레이어 제거 중..."
 
 #. Format the message
 #: ../gap/gap_player_dialog.c:381
@@ -4565,9 +4494,8 @@ msgid "Target audio samplerate in samples/sec. Ignored if resample is off"
 msgstr ""
 
 #: ../gap/gap_player_dialog.c:453
-#, fuzzy
 msgid "Copy Audiofile as Wavefile"
-msgstr "배경으로써 선택된 페이퍼의 텍스쳐 복사"
+msgstr "오디오파일을 웨이브파일로 복사"
 
 #: ../gap/gap_player_dialog.c:454
 #: ../gap/gap_story_dialog.c:5067
@@ -4585,18 +4513,16 @@ msgid ""
 msgstr ""
 
 #: ../gap/gap_player_dialog.c:610
-#, fuzzy
 msgid "Audio Delay"
-msgstr "--delay=<placeholder-1/>"
+msgstr "오디오 지연시간"
 
 #: ../gap/gap_player_dialog.c:622
 msgid "Syncron"
 msgstr "동기화"
 
 #: ../gap/gap_player_dialog.c:626
-#, fuzzy
 msgid "Audio Skipped"
-msgstr "오디오 코덱"
+msgstr "오디오 스킵"
 
 #: ../gap/gap_player_dialog.c:638
 #, c-format
@@ -4648,15 +4574,13 @@ msgstr ""
 
 #. shortname prefix to indicate that displayed filename is a single videofile
 #: ../gap/gap_player_dialog.c:1772
-#, fuzzy
 msgid "VIDEO:"
-msgstr "비디오형식"
+msgstr "비디오:"
 
 #. shortname prefix to indicate that displayed filename is basename of the frames
 #: ../gap/gap_player_dialog.c:1784
-#, fuzzy
 msgid "FRAMES:"
-msgstr "프레임"
+msgstr "프레임:"
 
 #. pending timer_go_job gets useless, since we start playback now
 #: ../gap/gap_player_dialog.c:1883
@@ -4667,20 +4591,18 @@ msgstr "재생"
 #. the status value label
 #: ../gap/gap_player_dialog.c:1922
 #: ../gap/gap_player_dialog.c:7090
-#, fuzzy
 msgid "Ready"
 msgstr "준비"
 
 #: ../gap/gap_player_dialog.c:2126
-#, fuzzy
 msgid "seek-selftest"
-msgstr "앞으로 이동"
+msgstr "찾기-자가테스트"
 
 #: ../gap/gap_player_dialog.c:2148
 #: ../gap/gap_story_vthumb.c:301
-#, fuzzy, c-format
+#, c-format
 msgid "Creating Index"
-msgstr "끝 인덱스"
+msgstr "인덱스 생성중"
 
 #: ../gap/gap_player_dialog.c:2171
 #, c-format
@@ -4705,9 +4627,9 @@ msgid "Skip"
 msgstr "건너뛰기"
 
 #: ../gap/gap_player_dialog.c:3811
-#, fuzzy, c-format
+#, c-format
 msgid "Delay %.2f"
-msgstr "%.2f GB"
+msgstr "지연시간 %.2f"
 
 #: ../gap/gap_player_dialog.c:5446
 #, c-format
@@ -4733,14 +4655,12 @@ msgid ""
 msgstr ""
 
 #: ../gap/gap_player_dialog.c:5507
-#, fuzzy
 msgid "Creating audiofile - please wait"
-msgstr "대셔 훈련중입니다... 잠시 기다리십시오"
+msgstr "오디오 파일 생성중 - 잠시 기다리십시오."
 
 #: ../gap/gap_player_dialog.c:5649
-#, fuzzy
 msgid "Select Audiofile"
-msgstr "여러 개 선택"
+msgstr "오디오파일 선택"
 
 #. audiofile label
 #. the output audiofile label
@@ -4766,13 +4686,11 @@ msgid "Volume:"
 msgstr "음량:"
 
 #: ../gap/gap_player_dialog.c:5786
-#, fuzzy
 msgid "Audio Volume"
 msgstr "오디오 볼륨"
 
 #. check button
 #: ../gap/gap_player_dialog.c:5792
-#, fuzzy
 msgid "Enable"
 msgstr "사용"
 
@@ -4792,15 +4710,13 @@ msgid "Audio offset in frames at original video playback speed. A value of 0 sta
 msgstr ""
 
 #: ../gap/gap_player_dialog.c:5842
-#, fuzzy
 msgid "Reset offset and volume"
-msgstr "도구 순서 및 보임 여부 초기화"
+msgstr "오프셋과 볼륨을 초기화"
 
 #. create wavfile button
 #: ../gap/gap_player_dialog.c:5853
-#, fuzzy
 msgid "Copy As Wavfile"
-msgstr "목록으로 표시"
+msgstr "Wav 파일로 복사하기"
 
 #: ../gap/gap_player_dialog.c:5855
 msgid "Create a copy from audiofile as RIFF WAVE audiofile and use the copy for audio playback"
@@ -4830,7 +4746,6 @@ msgstr "샘플:"
 
 #. Audio Channels
 #: ../gap/gap_player_dialog.c:5949
-#, fuzzy
 msgid "Channels:"
 msgstr "채널:"
 
@@ -4848,30 +4763,26 @@ msgstr "비디오시간:"
 
 #. Cahe size label
 #: ../gap/gap_player_dialog.c:6190
-#, fuzzy
 msgid "Cache Size (MB):"
-msgstr "디스크 캐시 크기, MB단위."
+msgstr "캐시 크기 (MB):"
 
 #: ../gap/gap_player_dialog.c:6216
 msgid "Player frame cache maximum size in MB. Value 0 turns the cache off."
 msgstr ""
 
 #: ../gap/gap_player_dialog.c:6225
-#, fuzzy
 msgid "Clear the frame cache"
-msgstr "열쇠글 임시 저장 비우기"
+msgstr "프레임 캐쉬 삭제"
 
 #. Chache Status (number of frames currently in the cache)
 #: ../gap/gap_player_dialog.c:6236
-#, fuzzy
 msgid "Cached Frames:"
-msgstr "중간 프레임"
+msgstr "캐쉬된 프레임:"
 
 #. Layout Options label
 #: ../gap/gap_player_dialog.c:6261
-#, fuzzy
 msgid "Layout Options:"
-msgstr "키 배치 옵션"
+msgstr "레이아웃 옵션:"
 
 #. Show Go button array (configure to show/hide this optional positioning tool)
 #: ../gap/gap_player_dialog.c:6271
@@ -7488,7 +7399,7 @@ msgstr "파일을 열 수 없습니다: %s\n"
 
 #: ../gap/gap_wr_color_curve.c:531
 msgid "CurvesFile..."
-msgstr "곡선파일..."
+msgstr "커브파일..."
 
 #. Menu names
 #: ../gap/gap_wr_color_curve.c:554
@@ -7499,17 +7410,17 @@ msgstr "<Image>/비디오/레이어/색상/"
 
 #: ../gap/gap_wr_color_curve.c:806
 msgid "Load color curve from file"
-msgstr "파일에서 색상 곡선 가져오기"
+msgstr "파일에서 색상 커브 가져오기"
 
 #. The dialog and main vbox
 #: ../gap/gap_wr_color_curve.c:900
 msgid "CurvesFile"
-msgstr "곡선파일"
+msgstr "커브파일"
 
 #. The Load button
 #: ../gap/gap_wr_color_curve.c:927
 msgid "Load Curve"
-msgstr "곡선 불러오기"
+msgstr "커브 불러오기"
 
 #: ../gap/gap_wr_color_curve.c:934
 msgid "Load curve from a GIMP curve file (that was saved with the GIMP's color curve tool)"
@@ -9514,7 +9425,7 @@ msgstr ""
 #. the Bufsize label
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2811
 msgid "Bufsize:"
-msgstr ""
+msgstr "버퍼크기:"
 
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:2827
 msgid "Set ratecontrol buffer size (in kbyte)"
