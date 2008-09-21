@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eu\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-09-09 17:15+0200\n"
-"PO-Revision-Date: 2008-09-09 17:37+0200\n"
+"POT-Creation-Date: 2008-09-21 17:00+0200\n"
+"PO-Revision-Date: 2008-09-21 17:17+0200\n"
 "Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@euskalgnu.org>\n"
 "Language-Team: Basque <itzulpena@euskalgnu.org>\n"
 "MIME-Version: 1.0\n"
@@ -105,6 +105,10 @@ msgid ""
 "creating a video index is NOT recommanded\n"
 "(would not work)\n"
 msgstr ""
+"ABISUA:\n"
+"ausazko posizioa ezinezkoa da bideo honetan.\n"
+"bideoaren indizea sortzea EZ DA GOMENDAGARRIA\n"
+"(ez luke funtzionatuko)\n"
 
 #: ../gap/gap_arr_dialog.c:2096
 #, c-format
@@ -115,6 +119,12 @@ msgid ""
 "but requires one initial full scann.\n"
 "(this will take a while).\n"
 msgstr ""
+"ARGIBIDEA:\n"
+"bideoaren indizea sortzea gomendatzen da.\n"
+"Horrela, fotogramak azkar eta ausazko moduan\n"
+"atzitzea gaitzen da, hala ere hasieran eskaneatze osoa\n"
+"eskatzen du.\n"
+"(denbora luzea har lezake).\n"
 
 #: ../gap/gap_arr_dialog.c:2102
 #, c-format
@@ -123,6 +133,11 @@ msgid ""
 "native fast and exact random positioning works for this video.\n"
 "video index is not required, and should be cancelled.\n"
 msgstr ""
+"INFORMAZIOA:\n"
+"jatorrizko atzipen azkarra eta ausazko posizioan\n"
+"jartzeak bideo honetan funtzionatzen du.\n"
+"Ez da bideoaren indizerik behar, eta bertan\n"
+"behera utzi beharko litzateke.\n"
 
 #: ../gap/gap_arr_dialog.c:2113 ../gap/gap_decode_xanim.c:237
 msgid "Video:"
@@ -1504,11 +1519,13 @@ msgstr "<Image>/Iragazkiak/"
 #, c-format
 msgid "filtermacro_file: '%s' is corrupted, could not scan databytes"
 msgstr ""
+"iragazki-makroa_fitxategia: '%s' hondatuta dago, ezin izan dira datu-byteak "
+"eskaneatu"
 
 #: ../gap/gap_fmac_base.c:274 ../gap/gap_fmac_base.c:376
-#, fuzzy, c-format
+#, c-format
 msgid "file: %s is not a filtermacro file !"
-msgstr "** Fitxategia ez da iragazki-makroa **"
+msgstr "fitxategia: '%s' fitxategia ez da iragazki-makroa."
 
 #: ../gap/gap_fmac_base.c:464
 #, c-format
@@ -1517,6 +1534,9 @@ msgid ""
 "actual size: %d\n"
 "recorded size: %d"
 msgstr ""
+"pluginaren para-etroaren datu-bufferra: '%s'(e)k tamaina desberdina du\n"
+"uneko tamaina: %d\n"
+"grabatutako tamaina: %d"
 
 #: ../gap/gap_fmac_main.c:210
 msgid "Filtermacro..."
@@ -1827,7 +1847,7 @@ msgstr ""
 #: ../gap/gap_mod_layer.c:873 ../gap/gap_mod_layer.c:885
 #: ../gap/gap_mod_layer.c:897
 msgid "_msk"
-msgstr ""
+msgstr "_msk"
 
 #. GAP-PDB-Browser Dialog
 #. ----------------------
@@ -2177,15 +2197,17 @@ msgstr "Kopiatu geruza-maskara beheko geruzetatik"
 
 #: ../gap/gap_mod_layer_dialog.c:782
 msgid "Create mask layer representing the opacity (alpha+layermask merged)"
-msgstr ""
+msgstr "Sortu geruza-maskara opakotasuna adierazteko (alfa + geruza-maskara batuta)"
 
 #: ../gap/gap_mod_layer_dialog.c:788
 msgid "Create mask layer as copy of the layermask (ignore alpha)"
-msgstr ""
+msgstr "Sortu geruza-maskara  geruza-maskararen kopia gisa (ezikusi egin alfari)"
 
 #: ../gap/gap_mod_layer_dialog.c:794
 msgid "Create mask layer as copy of the alpha channel (ignore layermask)"
 msgstr ""
+"Sortu geruza-maskara alfa kanalaren kopia gisa (ezikusi egin geruza-"
+"maskarari)"
 
 #. apply filter has no sub_menu
 #: ../gap/gap_mod_layer_dialog.c:812
@@ -2209,14 +2231,12 @@ msgid "Rename layer(s)"
 msgstr "Aldatu geruzen izena"
 
 #: ../gap/gap_mod_layer_dialog.c:837
-#, fuzzy
 msgid "Resize layer(s) to image size"
-msgstr "Batu geruza(k) irudiaren arabera moztuta"
+msgstr "Aldatu geruzen tamaina irudiaren tamainara"
 
 #: ../gap/gap_mod_layer_dialog.c:838
-#, fuzzy
 msgid "Resize selected layer(s) to image size"
-msgstr "hautatutako geruzak batzen ditu, eta irudiaren arabera moztu"
+msgstr "Aldatu hautatutako geruzen tamaina irudiaren tamainara"
 
 #: ../gap/gap_mod_layer_dialog.c:844
 msgid "Add alpha channel"
@@ -2904,14 +2924,14 @@ msgid "Generation of animated preview failed"
 msgstr "Ezin izan da aurrebista animatua sortu"
 
 #: ../gap/gap_mov_dialog.c:1417
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "No stroke ids found in path:\n"
 "'%s'\n"
 "in the Image:\n"
 "'%s'"
 msgstr ""
-"Onartzen ez den %d bide mota aurkitu da bide honetan:\n"
+"Ez da trazuaren IDrik  aurkitu da bide honetan:\n"
 "'%s'\n"
 "irudi honetan:\n"
 "'%s'"
@@ -2924,20 +2944,20 @@ msgid ""
 "in the Image:\n"
 "'%s'"
 msgstr ""
-"Onartzen ez den %d bide mota aurkitu da bide honetan:\n"
+"Onartzen ez den %d bide mota aurkitu bide honetan:\n"
 "'%s'\n"
 "irudi honetan:\n"
 "'%s'"
 
 #: ../gap/gap_mov_dialog.c:1467
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "No controlpoints found in path:\n"
 "'%s'\n"
 "in the Image:\n"
 "'%s'"
 msgstr ""
-"Onartzen ez den %d bide mota aurkitu da bide honetan:\n"
+"Ez da kontrol-punturik aurkitu aurkitu bide honetan:\n"
 "'%s'\n"
 "irudi honetan:\n"
 "'%s'"
@@ -4896,36 +4916,33 @@ msgid "Ready"
 msgstr "Prest"
 
 #: ../gap/gap_player_dialog.c:2314
-#, fuzzy
 msgid "cheking audiotrack"
-msgstr "audio-gailurren kontrola"
+msgstr "audio-pista egiaztatzen"
 
 #: ../gap/gap_player_dialog.c:2334
-#, fuzzy
 msgid "extracted audio is up to date"
-msgstr "audioa tmp audio-fitxategira ateratzen"
+msgstr "erauzitako audioa eguneratuta dago"
 
 #: ../gap/gap_player_dialog.c:2343
-#, fuzzy
 msgid "extracting audio"
-msgstr "Audioa ateratzen..."
+msgstr "audioa erauzten"
 
 #: ../gap/gap_player_dialog.c:2374
 msgid "Audio Extract CANCELLED"
-msgstr ""
+msgstr "Audioa erauztea BERTAN BEHERA UTZI DA"
 
 #: ../gap/gap_player_dialog.c:2384 ../gap/gap_player_dialog.c:2395
 msgid "Audio Extract FAILED"
-msgstr ""
+msgstr "Audioa erauzteak HUTS EGIN DU"
 
 #: ../gap/gap_player_dialog.c:2385 ../gap/gap_player_dialog.c:2396
-#, fuzzy, c-format
+#, c-format
 msgid "Extract of audiotrack failed on videofile: %s"
-msgstr "sarrerako audio-pista hautatzen du bideo-fitxategi(et)an."
+msgstr "Huts egin du audio-pista erauztean bideo-fitxategian: %s"
 
 #: ../gap/gap_player_dialog.c:2661
 msgid "seek-selftest"
-msgstr ""
+msgstr "bilaketa-proba"
 
 #: ../gap/gap_player_dialog.c:2683 ../gap/gap_story_vthumb.c:301
 #, c-format
@@ -4998,11 +5015,11 @@ msgstr "Audio-fitxategia sortzen - itxaron"
 
 #: ../gap/gap_player_dialog.c:6106
 msgid "external audioconverter FAILED."
-msgstr ""
+msgstr "kanpoko audio bihurtzaileak HUTS EGIN DU."
 
 #: ../gap/gap_player_dialog.c:6107
 msgid "extern audioconverter FAILED"
-msgstr ""
+msgstr "kanpoko audio bihurtzaileak HUTS EGIN DU"
 
 #: ../gap/gap_player_dialog.c:6253
 msgid "Select Audiofile"
@@ -5069,7 +5086,7 @@ msgstr ""
 #. check button
 #: ../gap/gap_player_dialog.c:6447
 msgid "original audio"
-msgstr ""
+msgstr "jatorrizko audioa"
 
 #: ../gap/gap_player_dialog.c:6452
 msgid ""
@@ -5079,20 +5096,24 @@ msgid ""
 "OFF: do not sync audio with original position in the referenced videos. Use "
 "this for independent audiofile playback."
 msgstr ""
+"AKTIBATUA: bideoaren klipa audioaren hasierako posizioarekin sinkronizatuta "
+"erreproduzitzeko (erreferentziatutako bideoaren hasierako posizioaren "
+"arabera). Erabili aukera hau audio-fitxategia erreferentziatutako bideo "
+"osoaren erauzitako audio-pista denean.DESAKTIBATUA: ez sinkronizatu audioa "
+"jatorrizko posizioarekin erreferentziatutako bideoetan. Erabili aukera hau "
+"audio-fitxategi independentea erreproduzitzeko."
 
 #: ../gap/gap_player_dialog.c:6488
-#, fuzzy
 msgid "Audio Track"
-msgstr "Audio-pista:"
+msgstr "Audio-pista"
 
 #: ../gap/gap_player_dialog.c:6498
-#, fuzzy
 msgid ""
 "Extract Audio Track from videofile for the current videofile and use it for "
 "origial audiotrack playback"
 msgstr ""
-"Sortu audio-fitxategiaren kopia RIFF WAVE audio-fitxategi gisa, eta erabili "
-"kopia hori audioa erreproduzitzeko"
+"Erauzi audio-pista bideo-fitxategitik uneko bideo-fitxategiarentzako eta "
+"erabili jatorrizko audio-pista erreproduzitzeko"
 
 #. create wavfile button
 #: ../gap/gap_player_dialog.c:6512
@@ -5805,6 +5826,8 @@ msgid ""
 "You are using INDEXED frames. please note that the result will be an RGB "
 "image"
 msgstr ""
+"INDEXATUTAKO fotogramak erabiltzen ari zara, jakin ezazu emaitza GBU irudia "
+"izango dela"
 
 #: ../gap/gap_range_ops.c:875
 msgid "Creating layer-animated image..."
@@ -6321,7 +6344,7 @@ msgstr "Iruzkina:"
 #.
 #: ../gap/gap_story_dialog.c:1602
 msgid "playback was blocked (video file access is busy)"
-msgstr ""
+msgstr "erreprodukzioa blokeatuta dago (bideo-fitxategia lanpetuta dago)"
 
 #: ../gap/gap_story_dialog.c:2166 ../gap/gap_story_dialog.c:2204
 #, c-format
@@ -6347,21 +6370,20 @@ msgstr "Gorde gidoi grafikoaren fitxategia"
 #: ../gap/gap_story_dialog.c:4548
 #, c-format
 msgid "UNDO %s"
-msgstr ""
+msgstr "DESEGIN %s"
 
 #: ../gap/gap_story_dialog.c:4553 ../gap/gap_story_dialog.c:7646
 msgid "UNDO"
-msgstr ""
+msgstr "DESEGIN"
 
 #: ../gap/gap_story_dialog.c:4587
 #, c-format
 msgid "REDO %s"
-msgstr ""
+msgstr "BERREGIN %s"
 
 #: ../gap/gap_story_dialog.c:4592 ../gap/gap_story_dialog.c:7656
-#, fuzzy
 msgid "REDO"
-msgstr "PREST"
+msgstr "BERREGIN"
 
 #: ../gap/gap_story_dialog.c:4961
 msgid "Global Layout Properties dialog already open"
@@ -6424,15 +6446,17 @@ msgid "rows in the storyboard list"
 msgstr "gidoi grafikoen zerrendako errenkadak"
 
 #: ../gap/gap_story_dialog.c:5054
-#, fuzzy
 msgid "Force Aspect:"
-msgstr "Itxura:"
+msgstr "Derrigortu itxura:"
 
 #: ../gap/gap_story_dialog.c:5055
 msgid ""
 "ON: player shows clips transformed to aspect setting from the Storyboard "
 "properties.OFF: player shows clips according to their original pixel sizes"
 msgstr ""
+"AKTIBATUA: gidoi grafikoaren propietateetako itxuraren ezarpenetara "
+"bihurtutako klipak erakusten ditu erreproduzitzaileak. DESAKTIBATUA: klipak "
+"haien jatorrizko pixel tamainekin bat erakusten ditu erreproduzitzaileak."
 
 #: ../gap/gap_story_dialog.c:5065
 msgid "Use the standard built in layout settings"
@@ -6482,7 +6506,7 @@ msgstr "Bideoaren koadro txikiak"
 
 #: ../gap/gap_story_dialog.c:5876
 msgid "DEBUG: log to stdout"
-msgstr ""
+msgstr "Arazketa: erregistroa irteera estandarrean"
 
 #: ../gap/gap_story_dialog.c:5896
 msgid "Help"
@@ -6505,9 +6529,8 @@ msgid "Create Clip"
 msgstr "Sortu klipa"
 
 #: ../gap/gap_story_dialog.c:5953 ../gap/gap_story_dialog.c:6053
-#, fuzzy
 msgid "Create Section Clip"
-msgstr "Sortu klipa"
+msgstr "Sortu atalaren klipa"
 
 #: ../gap/gap_story_dialog.c:5959 ../gap/gap_story_dialog.c:6059
 msgid "Create Transition"
@@ -6574,13 +6597,12 @@ msgid "Fetching videothumbnail for clip: %d (out of %d)"
 msgstr "Kliparentzat bideoaren koadro txikiak hartzen: %d / %d"
 
 #: ../gap/gap_story_dialog.c:7433 ../gap/gap_story_section_properties.c:637
-#, fuzzy
 msgid "MAIN"
-msgstr "NAGUSIA_TST"
+msgstr "NAGUSIA"
 
 #: ../gap/gap_story_dialog.c:7436
 msgid "Masks"
-msgstr ""
+msgstr "Maskarak"
 
 #: ../gap/gap_story_dialog.c:7551
 msgid "Load storyboard file"
@@ -6600,7 +6622,7 @@ msgstr "Gorde klip-zerrenda fitxategian"
 
 #: ../gap/gap_story_dialog.c:7612
 msgid "Show Section properites window"
-msgstr ""
+msgstr "Erakutsi atalaren propietateen leihoa"
 
 #. Track label
 #: ../gap/gap_story_dialog.c:7617 ../gap/gap_video_index_creator.c:930
@@ -6629,16 +6651,19 @@ msgid ""
 "(SHIFT create transition\n"
 "CTRL create section clip)"
 msgstr ""
+"Sortu klip berria\n"
+"Maius: trantsizioa sortzeko\n"
+"Ktrl: atalaren klipa sortzeko"
 
 #: ../gap/gap_story_dialog.c:7718
-#, fuzzy
 msgid ""
 "Play selected clips\n"
 "SHIFT: Playback all clips of current track.\n"
 "CTRL: Play composite video (all tracks)"
 msgstr ""
-"Erreproduzitu klip-zerrenda. Maius: erreproduzitu soilik hautatutako klipak "
-"Ktrl: erreproduzitu bideo konposatua"
+"Erreproduzitu hautatutako klipak\n"
+"Maius: erreproduzitu uneko pistaren klip guztiakKtrl: erreproduzitu bideo "
+"konposatua (pista guztiak)"
 
 #. gtk_widget_show (entry);
 #. Row label
@@ -6665,6 +6690,8 @@ msgstr "Gidoi grafikoa"
 #: ../gap/gap_story_dialog.c:8405
 msgid "ON: clip target is storyboard (for clips created from playback range)."
 msgstr ""
+"AKTIBATUA: helburuko klipa gidoi grafikoa da (erreprodukzio-barrutitik "
+"sortutako klipentzako)."
 
 #: ../gap/gap_story_dialog.c:8435 ../vid_common/gap_cme_gui.c:2280
 msgid "Cancel"
@@ -6673,6 +6700,8 @@ msgstr "Utzi"
 #: ../gap/gap_story_dialog.c:8439 ../gap/gap_video_index_creator.c:1407
 msgid "Cancel video access if in progress and disable automatic videothumbnails"
 msgstr ""
+"Bertan behera utzi bideoaren atzipena lanean ari bada, eta desgaitu bideoen "
+"koadro txikiak automatikoki"
 
 #: ../gap/gap_story_dialog.c:8497
 msgid "Generate original tone audio track for all video clips in the storyboard"
@@ -6791,14 +6820,13 @@ msgstr "Fotograma-tasa fotograma/segundotan"
 
 #: ../gap/gap_story_dialog.c:8808
 msgid "Track 1 on top:"
-msgstr ""
+msgstr "1. pista aurrean:"
 
 #: ../gap/gap_story_dialog.c:8809
-#, fuzzy
 msgid "ON: video track1 is Foregrond (on top). OFF: video track 1 is on Background."
 msgstr ""
-"AKTIBATUTA: 0 pilaren goiko aldea da (aurrean).\n"
-"DESAKTIBATUTA: 0 pilaren beheko aldea da (atzean)."
+"AKTIBATUTA: bideoaren 1. pista aurreko planoan dago (aurrean). "
+"DESAKTIBATUTA: bideoaren 1. pista atzeko planoan dago (atzean)."
 
 #. the qdiff label
 #: ../gap/gap_story_dialog.c:8847 ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:1494
@@ -6862,7 +6890,7 @@ msgstr "barne-errorea"
 #: ../gap/gap_story_file.c:1107
 #, c-format
 msgid "section_%02d"
-msgstr ""
+msgstr "atala_%02d"
 
 #: ../gap/gap_story_file.c:2648
 #, c-format
@@ -6875,9 +6903,9 @@ msgid "illegal number: %s (valid range is %.3f upto %.3f)"
 msgstr "kopuru baliogabea: %s (baliozko bitartea: %.3f(e)tik %.3f(e)ra)"
 
 #: ../gap/gap_story_file.c:2729
-#, fuzzy, c-format
+#, c-format
 msgid "illegal boolean value: %s (valid range is %s or %s)\n"
-msgstr "kopuru baliogabea: %s (baliozko bitartea: %d(e)tik %d(e)ra)\n"
+msgstr "balio boolear ilegala: %s (baliozko bitartea: %s(e)tik %s(e)ra)\n"
 
 #: ../gap/gap_story_file.c:3033
 msgid "same parameter used more than once"
@@ -6995,11 +7023,11 @@ msgstr "FILMA"
 
 #: ../gap/gap_story_properties.c:2009
 msgid "SECTION"
-msgstr ""
+msgstr "ATALA"
 
 #: ../gap/gap_story_properties.c:2013
 msgid "BLACKSECTION"
-msgstr ""
+msgstr "ATALBELTZA"
 
 #: ../gap/gap_story_properties.c:2016
 msgid "COMMENT"
@@ -7016,22 +7044,20 @@ msgid "%d (frames)"
 msgstr "%d (fotogramak)"
 
 #: ../gap/gap_story_properties.c:2756 ../gap/gap_story_properties.c:2764
-#, fuzzy
 msgid "Filtermacro2: "
-msgstr "Iragazki-makroa:"
+msgstr "Iragazki-makroa2: "
 
 #. prefix
 #. filenamepart
 #: ../gap/gap_story_properties.c:2758
 msgid " (ON)"
-msgstr ""
+msgstr " (AKTIBATUA)"
 
 #. prefix
 #. filenamepart
 #: ../gap/gap_story_properties.c:2766
-#, fuzzy
 msgid " (OFF)"
-msgstr "DESAKTIBATUTA"
+msgstr " (DESAKTIBATUTA)"
 
 #: ../gap/gap_story_properties.c:3056 ../gap/gap_story_properties.c:3066
 msgid "Mask Properties"
@@ -7128,7 +7154,6 @@ msgstr "Urrats-tamaina:"
 #. constrain
 #. lower/upper unconstrained
 #: ../gap/gap_story_properties.c:3374
-#, fuzzy
 msgid ""
 "Stepsize density. Use 1.0 for normal 1:1 frame by frame steps. a value of "
 "0.5 shows each input frame 2 times. a value of 2.0 shows only every 2nd "
@@ -7227,14 +7252,12 @@ msgid "Name of the layermask definition clip"
 msgstr "Geruza-markara definitzeko kliparen izena"
 
 #: ../gap/gap_story_properties.c:3631
-#, fuzzy
 msgid ""
 "Reference to a layermask definition clip in the Mask section.\n"
 "Layermasks are used to control opacity."
 msgstr ""
-"Geruza-maskaren definizio-kliparen erreferentzia.\n"
-"Opakutasuna kontrolatzeko erabiltzen dira geruza-maskarak. Geruza-maskaren "
-"klipak definitzeko erabiltzen da 0 pista."
+"Geruza-maskaren definizio-kliparen erreferentzia Maskara atalean.\n"
+"Opakutasuna kontrolatzeko erabiltzen dira geruza-maskarak."
 
 #. the mask enable check button
 #: ../gap/gap_story_properties.c:3652
@@ -7301,10 +7324,15 @@ msgid ""
 "macrofile is implicite referenced by naming convetion via the keyword ."
 "VARYING (as suffix or before the extension)"
 msgstr ""
+"iragazki-makroa klip honetako fotogramak errendatzean aplikatzeko. 2. makro-"
+"fitxategia inplizitoki erreferentziatuta teklatuaren bidez izendatuz. "
+"ALDAKORRA (atzizki gisa, edo luzapenaren aurretik) "
 
 #: ../gap/gap_story_properties.c:3841
 msgid "Steps for macro applying with varying values: (1 for apply with const values)"
 msgstr ""
+"Makroak balio aldakorrekin aplikatzeko urratsak. (1 balio konstanteekin "
+"aplikatzeko)"
 
 #: ../gap/gap_story_render_audio.c:439
 #, c-format
@@ -7386,41 +7414,39 @@ msgstr "Jarraitu kodetzen..."
 
 #: ../gap/gap_story_section_properties.c:247
 msgid "please enter a unique section name"
-msgstr ""
+msgstr "sartu atalaren izen esklusiboa"
 
 #: ../gap/gap_story_section_properties.c:301
-#, fuzzy
 msgid "MAIN Section"
-msgstr "Hautapena"
+msgstr "Atal NAGUSIA"
 
 #: ../gap/gap_story_section_properties.c:306
-#, fuzzy
 msgid "Mask Section"
-msgstr "Hautapena"
+msgstr "Maskararen atala"
 
 #: ../gap/gap_story_section_properties.c:310
-#, fuzzy
 msgid "Sub Section"
-msgstr "Hautapena"
+msgstr "Azpiatala"
 
 #: ../gap/gap_story_section_properties.c:314
 msgid "Unknown Section"
-msgstr ""
+msgstr "Atal ezezaguna"
 
 #: ../gap/gap_story_section_properties.c:435
 msgid ""
 "Could not delete current subsection because it is still used as Clip in the "
 "MAIN section"
 msgstr ""
+"Ezin izan da uneko azpiatala ezabatu, klip gisa erabiltzen ari baita atal "
+"NAGUSIAN."
 
 #: ../gap/gap_story_section_properties.c:640
 msgid "Clips of the MAIN section are rendered in the output video"
-msgstr ""
+msgstr "Atal NAGUSIKO klipak irteerako bideoan errendatzen dira"
 
 #: ../gap/gap_story_section_properties.c:643
-#, fuzzy
 msgid "Mask"
-msgstr "Maisua"
+msgstr "Maskara"
 
 #: ../gap/gap_story_section_properties.c:646
 msgid ""
@@ -7430,6 +7456,11 @@ msgid ""
 "makes the pixel fully transparent, all other colors in the mask result in "
 "more or less transparency depending on their brightness."
 msgstr ""
+"Maskara ataleko klipak esparru globala dute beste atal guztietan, eta "
+"maskara (animatu) gisa erants daitezke beste ataletako klipei gardentasuna "
+"gehitzeko. Maskarako pixel zuriak opakotasun osoa mantentzen dute, pixel "
+"beltzak erabat gardena izatea egiten dute. Maskarako beste koloreek "
+"gardentasun maila altuagoa edo baxuagoa ematen dute (distiraren arabera)."
 
 #: ../gap/gap_story_section_properties.c:657
 msgid ""
@@ -7437,27 +7468,27 @@ msgid ""
 "depends on  corresponding references in the MAIN section via clip type "
 "SECTION"
 msgstr ""
+"azpiatalak biltegi moduko zerbait dira. Klipak azpiataletan errendatzeak "
+"atal NAGUSIko erreferentzien araberako mendekotasuna dute (klip motaren "
+"ATALAren bidez)"
 
 #: ../gap/gap_story_section_properties.c:758
-#, fuzzy
 msgid "Section Properties"
-msgstr "Klipen propietateak"
+msgstr "Atalaren propietateak"
 
 #. the Section Type: label
 #: ../gap/gap_story_section_properties.c:794
-#, fuzzy
 msgid "Type:"
-msgstr "Maskara mota:"
+msgstr "Mota:"
 
 #: ../gap/gap_story_section_properties.c:872
-#, fuzzy
 msgid "Delete storyboard section"
-msgstr "Hautatu gidoi grafikoaren fitxategia"
+msgstr "Ezabatu gidoi grafikoaren atala"
 
 #. the info label
 #: ../gap/gap_story_section_properties.c:883
 msgid "Info:"
-msgstr ""
+msgstr "Informazioa:"
 
 #: ../gap/gap_story_vthumb.c:293
 #, c-format
@@ -7676,31 +7707,33 @@ msgstr ""
 #. the graymask checkbutton
 #: ../gap/gap_vex_dialog.c:2529
 msgid "graymask"
-msgstr ""
+msgstr "gris-maskara"
 
 #: ../gap/gap_vex_dialog.c:2534
 msgid ""
 "On: extract grayscale mask (generated by bluebox)\n"
 "Off: extract color frames 1.1"
 msgstr ""
+"Aktibatua: erauzi gris-maskara (bluebox-ek sortua)\n"
+"Desaktibatua: erauzi koloreen fotogramak 1.1"
 
 #. the layermask checkbutton
 #: ../gap/gap_vex_dialog.c:2542
-#, fuzzy
 msgid "layermask"
-msgstr "Aplikatu geruza-maskara"
+msgstr "geruza-maskara"
 
 #: ../gap/gap_vex_dialog.c:2547
 msgid ""
 "On: bluebox shall generate transparency as layermask\n"
 "Off: bluebox shall generate transparency as alpha channel"
 msgstr ""
+"Aktibatua: bluebox-ek gardentasuna sor dezake geruza-maskara gisa\n"
+"Desaktibatua: bluebox-ek gardentasuna sor dezake alfa kanal gisa"
 
 #. the bluebox checkbutton
 #: ../gap/gap_vex_dialog.c:2555
-#, fuzzy
 msgid "bluebox"
-msgstr "Bluebox"
+msgstr "bluebox"
 
 #: ../gap/gap_vex_dialog.c:2562
 msgid ""
@@ -7708,6 +7741,9 @@ msgid ""
 "last run in this session)\n"
 "Off: extract frames 1.1"
 msgstr ""
+"Aktibatua: gehitu gardentasuna erauzitako fotogramentzako bluebox iragazkia "
+"erabiliz (saio honetan azkenengoz exekutatutako balioak erabiliz)\n"
+"Desaktibatua: erauzi fotogramak 1.1"
 
 #: ../gap/gap_vex_dialog.c:2595
 msgid "Extension of extracted frames (.xcf, .jpg, .ppm)"
@@ -7783,52 +7819,52 @@ msgid "Extracting Frames..."
 msgstr "Fotogramak ateratzen..."
 
 #: ../gap/gap_vex_exec.c:504
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "failed to save file:\n"
 "'%s'"
-msgstr "Ezin da %s fitxategia ireki"
+msgstr ""
+"huts egin du fitxategia gordetzean:\n"
+"'%s'"
 
 #: ../gap/gap_video_index_creator.c:207
-#, fuzzy
 msgid "Video Index Creation..."
-msgstr "Bertan behera utzi bideo-indizea sortzea"
+msgstr "Bideo-indizearen sorrera..."
 
 #. Menu names
 #: ../gap/gap_video_index_creator.c:217
 msgid "<Toolbox>/Xtns/"
-msgstr ""
+msgstr "<Toolbox>/Hedap/"
 
 #: ../gap/gap_video_index_creator.c:467
 msgid "NO vindex created (QUICK)"
-msgstr ""
+msgstr "Ez da bideo-indizerik sortu (BIZKORRA)"
 
 #: ../gap/gap_video_index_creator.c:504
-#, fuzzy
 msgid "vindex already OK"
-msgstr "Fitxategia badago lehendik ere"
+msgstr "bideo-indizea ONGI dago"
 
 #: ../gap/gap_video_index_creator.c:529
 msgid "vindex created (FULLSCAN OK)"
-msgstr ""
+msgstr "bideo-indizea sortuta (ESKANEATZE OSOA ONGI)"
 
 #: ../gap/gap_video_index_creator.c:535
 #, c-format
 msgid "NO vindex created (SMART %.1f%% %d frames)"
-msgstr ""
+msgstr "Ez da bideo-indizerik sortu (AZKARRA: %% %.1f %d fotograma)"
 
 #: ../gap/gap_video_index_creator.c:620
 msgid "counting and checking videofiles"
-msgstr ""
+msgstr "bideo-fitxategiak zenbatzen eta egiaztatzen"
 
 #: ../gap/gap_video_index_creator.c:652 ../gap/gap_video_index_creator.c:703
 msgid "unprocessed"
-msgstr ""
+msgstr "prozesatu gabea"
 
 #: ../gap/gap_video_index_creator.c:803
 #, c-format
 msgid "  %s (%d of %d)"
-msgstr ""
+msgstr "  %s (%d / %d)"
 
 #: ../gap/gap_video_index_creator.c:884
 #, c-format
@@ -7839,6 +7875,12 @@ msgid ""
 "WARNING: positioning via native seek may not work 100% frame exact if "
 "critical timecode steps were not detected in the quick test)"
 msgstr ""
+"Baldintzako bideo-indizearen sorrera, denbora-kodearen probako irakurketa bizkorrean oinarrituta.\n"
+"Saltatu indizearen sorrera jatorrizko bilaketa posiblea dela badirudi.\n"
+"\n"
+"ABISUA: jatorrizko bilaketaren bidez posizio batean kokatzeak baliteke "
+"% 100ean fotograma zehatzean ez funtzionatzea (denboda-kode kritikoaren "
+"urratsak ez badirua detektatu proba bizkorrean)"
 
 #: ../gap/gap_video_index_creator.c:889
 #, c-format
@@ -7851,17 +7893,27 @@ msgid ""
 "WARNING: positioning via native seek may not work 100% frame exact if "
 "critical timecode steps were not detected in the probereads."
 msgstr ""
+"Baldintzako bideo-indizearen sorrera, zehaztutako fotogramen "
+"ehunekoaren probako irakurketan oinarrituta.\n"
+"Saltatu indizearen sorrera jatorrizko bilaketa posiblea dela badirudi, eta "
+"denbora-kode kritikoen urratsik ez bada detektatu probako irakurketan.\n"
+"\n"
+"ABISUA: jatorrizko bilaketaren bidez posizio batean kokatzeak baliteke "
+"% 100ean fotograma zehatzean ez funtzionatzea (denboda-kode kritikoaren "
+"urratsak ez badirua detektatu proba bizkorrean)"
 
 #: ../gap/gap_video_index_creator.c:895
 msgid ""
 "Create video index. Requires unconditional full scann of all frames.Native "
 "seek is enabled only in case all timecodes are OK."
 msgstr ""
+"Sortu bideo-indizea. Fotograma guztien baldintzarik gabeko eskaneatzea egitea "
+"eskatzen du. Jatorrizko bilaketa gaituta egongo da baldi eta "
+"denbora-kode guztiak ongi badaude."
 
 #: ../gap/gap_video_index_creator.c:904
-#, fuzzy
 msgid "Videofile:"
-msgstr "Bideoaren fitxategi-izena:"
+msgstr "Bideo-fitxategia:"
 
 #: ../gap/gap_video_index_creator.c:905
 msgid ""
@@ -7870,53 +7922,54 @@ msgid ""
 "create all videoindexes at once. a video index enables fast and exact "
 "positioning in the videofile."
 msgstr ""
+"Bideo-fitxategiaren izena harentzako bideo-indizea sortzeko. "
+"Bideo-fitxategien izenak (izen bat lerroko) dituen testu-fitxategi baten izena "
+"jar dezakezu aldi berean bideo-indize guztiak sortzeko. Bideo-indize batek "
+"bideo-fitxategi bateko posizioan azkar eta zehaztasunez kokatzea gaitzen du."
 
 #: ../gap/gap_video_index_creator.c:917
 msgid "Create video index based on the specified decoder library"
-msgstr ""
+msgstr "Sortu bideoaren indizea zehaztutako dekodetzailearen liburutegian oinarrituz"
 
 #: ../gap/gap_video_index_creator.c:931
-#, fuzzy
 msgid "Select video track"
-msgstr "Hautatu bideo-kodeka"
+msgstr "Hautatu bideo-pista"
 
 #: ../gap/gap_video_index_creator.c:943
-#, fuzzy
 msgid "operation mode"
-msgstr "Pintatzeko modua"
+msgstr "eragiketa modua"
 
 #: ../gap/gap_video_index_creator.c:953
 msgid "Percentage:"
-msgstr ""
+msgstr "Ehunekoa:"
 
 #: ../gap/gap_video_index_creator.c:954
 msgid ""
 "stop scann after percentage reached and no unplausible timecode was detected "
 "so far (only relevant in smart mode)"
 msgstr ""
+"gelditu eskaneatzea ehunekora iritsitakoan, eta ez bada denbora-koderik detektatu "
+"(modu azkarrean soilik egokia)"
 
 #: ../gap/gap_video_index_creator.c:972
-#, fuzzy
 msgid "Video Index Creation"
-msgstr "Bertan behera utzi bideo-indizea sortzea"
+msgstr "Bideo-indizea sortzea"
 
 #: ../gap/gap_video_index_creator.c:1116 ../gap/gap_video_index_creator.c:1196
-#, fuzzy
 msgid " ** no video **"
-msgstr "** ez dago erabilgarri **"
+msgstr "** ez dago bideorik **"
 
 #: ../gap/gap_video_index_creator.c:1122
 msgid "processing not finished"
-msgstr ""
+msgstr "prozesua ez da amaitu"
 
 #: ../gap/gap_video_index_creator.c:1202
 msgid "processing in progress"
-msgstr ""
+msgstr "prozesua lanean dago"
 
 #: ../gap/gap_video_index_creator.c:1294
-#, fuzzy
 msgid "videofile"
-msgstr "Bideoaren fitxategi-izena:"
+msgstr "bideo-fitxategia"
 
 #. the Status frame
 #: ../gap/gap_video_index_creator.c:1300 ../vid_common/gap_cme_gui.c:2578
@@ -7924,32 +7977,31 @@ msgid "Status"
 msgstr "Egoera"
 
 #: ../gap/gap_video_index_creator.c:1349
-#, fuzzy
 msgid "Video Index Creation Progress"
-msgstr "Bertan behera utzi bideo-indizea sortzea"
+msgstr "Bideo-indizea sortzearen progresioa"
 
 #: ../gap/gap_video_index_creator.c:1476
 msgid "processing cancelled"
-msgstr ""
+msgstr "prozesua bertan behera utzita"
 
 #: ../gap/gap_video_index_creator.c:1480
 msgid "processing finished"
-msgstr ""
+msgstr "prozesua amaituta"
 
 #: ../gap/gap_video_index_creator.c:1534
 #, c-format
 msgid "Quick check %0.3f %%"
-msgstr ""
+msgstr "Egiaztapen bizkorra %% %0.3f"
 
 #: ../gap/gap_video_index_creator.c:1545
 #, c-format
 msgid "Smart check %0.3f %% (of %0.3f %%)"
-msgstr ""
+msgstr "Egiaztapen azkarra %% %0.3f (/ %% %0.3f)"
 
 #: ../gap/gap_video_index_creator.c:1551
-#, fuzzy, c-format
+#, c-format
 msgid "Creating video index %0.3f %%"
-msgstr "Sortu bideo-indizeen fitxategia"
+msgstr "Bideo-indizea sortzen %% %.03f"
 
 #: ../gap/gap_vex_main.c:270
 msgid "MAIN_TST"
@@ -9072,9 +9124,8 @@ msgstr ""
 "batzuek APPO marka ebaluatzen dute AVIentzat)"
 
 #: ../vid_enc_avi/gap_enc_avi_gui.c:575
-#, fuzzy
 msgid "JPEG / MJPG Codec Options"
-msgstr "JPEG kodek-aukerak"
+msgstr "JPEG /MJPG kodek-aukerak"
 
 #: ../vid_enc_avi/gap_enc_avi_gui.c:580
 msgid "JPEG Options"
@@ -9090,6 +9141,9 @@ msgid ""
 "Don't recode the input JPEG frames. WARNING: This option may produce an "
 "unusable video when refered JPEG frames are not YUV 4:2:2 encoded."
 msgstr ""
+"Ez kodetu berriz sarrerako JPEG fotogramak aukera dagoenean. ABISUA: "
+"ondoriozko bideoa irakurtezina izan daiteke erreferentziatutako JPEG "
+"fotogramak ez daudenean YUV 4:2:2 kodeketarekin."
 
 #. the interlace label
 #: ../vid_enc_avi/gap_enc_avi_gui.c:626 ../vid_enc_avi/gap_enc_avi_gui.c:763
@@ -9124,41 +9178,35 @@ msgid "The quality setting of the encoded JPEG frames (100=best quality)"
 msgstr "JPEG fotograma kodetuen kalitate-ezarpena (100=kalitaterik onena)"
 
 #: ../vid_enc_avi/gap_enc_avi_gui.c:713
-#, fuzzy
 msgid "PNG Codec Options"
-msgstr "JPEG kodek-aukerak"
+msgstr "PNG kodek-aukerak"
 
 #: ../vid_enc_avi/gap_enc_avi_gui.c:718
-#, fuzzy
 msgid "PNG Options"
-msgstr "JPEG aukerak"
+msgstr "PNG aukerak"
 
 #: ../vid_enc_avi/gap_enc_avi_gui.c:755
-#, fuzzy
 msgid ""
 "Don't recode the input PNG frames when possible. WARNING: This option may "
 "produce an unusable video"
 msgstr ""
-"Ez kodetu berriz sarrerako JPEG fotogramak (4:2:2 JPEGekin soilik "
-"funtzionatzen du; ondoriozko bideoa irakurtezina izan daiteke)"
+"Ez kodetu berriz sarrerako PNG fotogramak aukera dagoenean. ABISUA: "
+"ondoriozko bideoa irakurtezina izan daiteke"
 
 #: ../vid_enc_avi/gap_enc_avi_gui.c:784
-#, fuzzy
 msgid "Generate interlaced PNGs"
-msgstr "Erabili me gurutzelarkatua"
+msgstr "Sortu PNG gurutzelarkatua"
 
 #. the png compression label
 #: ../vid_enc_avi/gap_enc_avi_gui.c:792
-#, fuzzy
 msgid "Compression:"
-msgstr "Png konpresioa:"
+msgstr "Konpresioa:"
 
 #: ../vid_enc_avi/gap_enc_avi_gui.c:816
-#, fuzzy
 msgid ""
 "The compression setting of the encoded PNG frames (9=best "
 "compression0=fastest)"
-msgstr "JPEG fotograma kodetuen kalitate-ezarpena (100=kalitaterik onena)"
+msgstr "PNG fotograma kodetuen kalitate-ezarpena (9=kalitaterik onena, 0=azkarrena)"
 
 #: ../vid_enc_avi/gap_enc_avi_gui.c:826
 msgid "RAW Codec Options"
@@ -9275,18 +9323,17 @@ msgid "avi video encoding for anim frames. Menu: @AVI@"
 msgstr "fotograma animatuentzako avi bideo-kodetzea. Menua: @AVI@"
 
 #: ../vid_enc_avi/gap_enc_avi_main.c:206
-#, fuzzy
 msgid ""
 "This plugin handles video encoding for the AVI videoformat. the (optional) "
 "audiodata must be a raw datafile(s) or .wav (RIFF WAVEfmt ) file(s) .wav "
 "files can be mono (1) or stereo (2channels) audiodata must be 16bit "
 "uncompressed. IMPORTANT:  you should first call \""
 msgstr ""
-"Fotograma animatuen bideo-kodetze faltsua egiten du plugin horrek. Audio-"
-"datuek (hautazkoa) formaturik gabeko datu-fitxategia(k) edo .wav (RIFF "
-"WAVEfmt) fitxategia(k) izan behar dute. Mono (kanal bat) edo estereo (bi "
-"kanal) izan daitezke .wav fitxategiak. Konprimitu gabeko audio-datuak 16 bit-"
-"ekoa izan behar du. GARRANTZITSUA:  aurretik honi deitu behar zaio: \""
+"Plugin honek AVI bideo-formatuaren bideo-kodeketa kudeatzen du. datuek "
+"(hautazkoa) formaturik gabeko datu-fitxategia(k) edo .wav (RIFF WAVEfmt) "
+"fitxategia(k) izan behar dute. Mono (kanal bat) edo estereo (bi kanal) izan "
+"daitezke .wav fitxategiak. Konprimitu gabeko audio-datuak 16 bit-ekoa izan "
+"behar du. GARRANTZITSUA:  aurretik honi deitu behar zaio: \""
 
 #: ../vid_enc_avi/gap_enc_avi_main.c:224
 msgid "Set Parameters for GAP avi video encoder Plugins"
