@@ -187,6 +187,7 @@ typedef struct GapStbPropWidget  /* nickname: pw */
   GtkWidget  *pw_flip_request_radio_button_arr[GAP_MAX_FLIP_REQUEST];
 
   /* for mask handling */
+  GtkWidget  *pw_mask_definition_name_label;
   gboolean   is_mask_definition;
   GtkWidget  *pw_mask_name_entry;
   GtkWidget  *pw_mask_enable_toggle;

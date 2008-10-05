@@ -859,7 +859,10 @@ p_extract_audiopart(t_GVA_Handle *gvahand
   gdouble samples_to_skip;
 
 
-  if(gap_debug) printf("p_extract_audiopart: START\n");
+  if(gap_debug)
+  {
+    printf("p_extract_audiopart: START\n");
+  }
   
   l_audio_channels = gvahand->audio_cannels;
   l_sample_rate    = gvahand->samplerate;
@@ -896,7 +899,10 @@ p_extract_audiopart(t_GVA_Handle *gvahand
                       , 16                          /* 16 bit sample resolution */
                       );
 
-      if(gap_debug) printf("samples_to_skip:%d\n", (int)samples_to_skip);
+      if(gap_debug)
+      {
+        printf("samples_to_skip:%d\n", (int)samples_to_skip);
+      }
       if(samples_to_skip > 0)
       {
         p_extract_audioblock(gvahand
@@ -907,7 +913,10 @@ p_extract_audiopart(t_GVA_Handle *gvahand
 			    ,vidhand
 			    );
       }
-      if(gap_debug) printf("samples_to_extract:%d\n", (int)samples_to_extract);
+      if(gap_debug)
+      {
+        printf("samples_to_extract:%d\n", (int)samples_to_extract);
+      }
 
       p_extract_audioblock(gvahand
 	                  ,fp_wav      /* now write to file */
@@ -923,7 +932,10 @@ p_extract_audiopart(t_GVA_Handle *gvahand
     }
   }
 
-  if(gap_debug) printf("p_extract_audiopart: END\n");
+  if(gap_debug)
+  {
+    printf("p_extract_audiopart: END\n");
+  }
 
 }  /* end p_extract_audiopart */
 
@@ -954,6 +966,7 @@ gap_story_render_audio_add_aud_list(GapStoryRenderVidHandle *vidhand, GapStoryRe
      {
        /* 1. element (or returned list) starts aud_list */
        vidhand->parsing_section->aud_list = aud_elem;
+       vidhand->aud_list = aud_elem;
      }
      else
      {
@@ -1006,8 +1019,8 @@ gap_story_render_audio_new_audiorange_element(GapStoryRenderAudioType  aud_type
 		      ,GapStoryRenderVidHandle *vidhand  /* for progress */
                       )
 {
-  GapStoryRenderAudioRangeElem *aud_elem;
   GapStoryRenderAudioRangeElem *aud_known;
+  GapStoryRenderAudioRangeElem *aud_elem;
   gboolean l_audscan_required;
 
 
@@ -1083,7 +1096,14 @@ gap_story_render_audio_new_audiorange_element(GapStoryRenderAudioType  aud_type
         return(NULL);
      }
 
-
+     if (known_aud_list == NULL)
+     {
+       if(gap_debug)
+       {
+         printf("gap_story_render_audio_new_audiorange_element: list of known audiofiles is empty (NULL)\n");
+       }
+     }
+     
      /* check the list for known audioranges
       * if audiofile is already known, we can skip the file scan
       * (that can save lot of time when the file must be converted or resampled)
@@ -1092,12 +1112,21 @@ gap_story_render_audio_new_audiorange_element(GapStoryRenderAudioType  aud_type
      {
         if(aud_known->audiofile)
         {
-          if(gap_debug) printf("gap_story_render_audio_new_audiorange_element: check known audiofile:%s\n", aud_known->audiofile);
+          if(gap_debug)
+          {
+            printf("gap_story_render_audio_new_audiorange_element: check known audio_id:%d audiofile:%s\n"
+               , aud_elem->audio_id
+               , aud_known->audiofile
+               );
+          }
 
           if((strcmp(aud_elem->audiofile, aud_known->audiofile) == 0)
           && (aud_elem->aud_type == aud_type))
           {
-            if(gap_debug)  printf("gap_story_render_audio_new_audiorange_element: Range is already known audiofile:%s\n", aud_known->audiofile);
+            if(gap_debug)
+            {
+              printf("gap_story_render_audio_new_audiorange_element: Range is already known audiofile:%s\n", aud_known->audiofile);
+            }
             aud_elem->tmp_audiofile     = g_strdup(aud_known->tmp_audiofile);
             aud_elem->samplerate        = aud_known->samplerate;
             aud_elem->channels          = aud_known->channels;
@@ -1108,6 +1137,15 @@ gap_story_render_audio_new_audiorange_element(GapStoryRenderAudioType  aud_type
 
             l_audscan_required = FALSE;
             break;
+          }
+        }
+        else
+        {
+          if(gap_debug)
+          {
+            printf("gap_story_render_audio_new_audiorange_element: check known audio_id:%d audiofile: is NULL\n"
+              ,aud_elem->audio_id
+              );
           }
         }
      }
@@ -1156,7 +1194,10 @@ gap_story_render_audio_new_audiorange_element(GapStoryRenderAudioType  aud_type
 		       /* audio part of the video is OK, extract 1:1 as wavfile */
 		       aud_elem->tmp_audiofile = gimp_temp_name("tmp.wav");
 
-		       if(gap_debug) printf("Extracting Audiopart as file:%s\n", aud_elem->tmp_audiofile);
+		       if(gap_debug)
+                       {
+                         printf("Extracting Audiopart as file:%s\n", aud_elem->tmp_audiofile);
+                       }
 		       p_extract_audiopart(gvahand
 					  , aud_elem->tmp_audiofile
 					  , min_play_sec
@@ -1179,7 +1220,13 @@ gap_story_render_audio_new_audiorange_element(GapStoryRenderAudioType  aud_type
 		       l_wavfilename = gimp_temp_name("tmp.wav");
 		       aud_elem->tmp_audiofile = gimp_temp_name("tmp.wav");
 
-		       if(gap_debug) printf("Resample Audiopart in file:%s outfile: %s\n", l_wavfilename, aud_elem->tmp_audiofile);
+		       if(gap_debug)
+                       {
+                         printf("Resample Audiopart in file:%s outfile: %s\n"
+                            , l_wavfilename
+                            , aud_elem->tmp_audiofile
+                            );
+                       }
 		       p_extract_audiopart(gvahand
 					  , l_wavfilename
 					  , min_play_sec
@@ -1198,6 +1245,13 @@ gap_story_render_audio_new_audiorange_element(GapStoryRenderAudioType  aud_type
 		       /* fake some dummy progress */
 		       *vidhand->progress = 0.05;
 
+		       if(gap_debug)
+                       {
+                         printf("calling externeal Resample program: %s %s\n"
+                            , util_sox
+                            , util_sox_options
+                            );
+                       }
 		       gap_story_sox_exec_resample(l_wavfilename
 				       ,aud_elem->tmp_audiofile
 				       ,master_samplerate
@@ -1382,6 +1436,10 @@ gap_story_render_audio_new_audiorange_element(GapStoryRenderAudioType  aud_type
                     l_errtxt = g_strdup_printf(_("cant use file:  %s as audioinput"), aud_elem->audiofile);
                     gap_story_render_set_stb_error(sterr, l_errtxt);
                     g_free(l_errtxt);
+                    if(gap_debug)
+                    {
+                      printf("gap_story_render_audio_new_audiorange_element CONVERSION FAILED.\n");
+                    }
                     return(NULL);
                   }
                }
@@ -1505,6 +1563,11 @@ gap_story_render_audio_create_composite_audiofile(GapStoryRenderVidHandle *vidha
   FILE   *l_fp;
   gboolean  l_retval;
 
+  if(gap_debug)
+  {
+    printf("gap_story_render_audio_create_composite_audiofile START comp_audiofile: %s\n"
+       , comp_audiofile);
+  }
   l_retval = FALSE;
   gap_story_render_audio_calculate_playtime(vidhand, &l_aud_total_sec);
 
@@ -1514,8 +1577,20 @@ gap_story_render_audio_create_composite_audiofile(GapStoryRenderVidHandle *vidha
   }
   *vidhand->progress = 0.0;
 
+  if(gap_debug)
+  {
+    printf("gap_story_render_audio_create_composite_audiofile CHECKING AUDIO PEAKS\n"
+       , comp_audiofile);
+  }
 
   p_check_audio_peaks(vidhand, l_aud_total_sec, &l_mix_scale);
+
+  if(gap_debug)
+  {
+    printf("gap_story_render_audio_create_composite_audiofile WRITE COMPOSITE AUDIO FILE\n"
+       , comp_audiofile);
+  }
+
   l_fp = g_fopen(comp_audiofile, "wb");
   if (l_fp)
   {
@@ -1540,13 +1615,24 @@ gap_story_render_audio_create_composite_audiofile(GapStoryRenderVidHandle *vidha
     p_mix_audio(l_fp, NULL, NULL, vidhand, l_aud_total_sec, &l_mix_scale);
 
     fclose(l_fp);
+    if(gap_debug)
+    {
+      printf("gap_story_render_audio_create_composite_audiofile COMPOSITE AUDIO FILE written OK file:%s\n"
+         , comp_audiofile);
+    }
     l_retval = TRUE;
   }
   else
   {
     char *l_errtext;
+
     l_errtext = g_strdup_printf(_("cant write audio to file: %s "), comp_audiofile);
     gap_story_render_set_stb_error(vidhand->sterr, l_errtext);
+
+    printf("gap_story_render_audio_create_composite_audiofile failed to write COMPOSITE AUDIO FILE file:%s\n  **ERROR: %s\n"
+         , comp_audiofile
+         , l_errtext
+         );
     g_free(l_errtext);
   }
 

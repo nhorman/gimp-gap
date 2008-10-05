@@ -1,3 +1,42 @@
+2008-10-05 Wolfgang Hofer <hof@gimp.org>
+
+- fixed BUG #523115 that sometimes caused a crash when splitting an image to frames.
+     (The procedure gap_lib.c:gap_lib_strdup_add_underscore
+      allocated a string for the result that was 1 character too short,
+      but the crash occured later in the g_free call
+
+   * gap/gap_lib.c
+
+- bugfix: in the Storyboard Mask definition dialog
+  Entering a mask name leads to crash while typing mask name
+  in case the partly typed name matches an already existing mask name.
+  
+  Now the mask_name is not automatically updated while typing.
+  The update is done later, when closing the dialog,
+  or on explicite request via the new button for explicite setting the mask name.
+  Furthermore the update checks for unique name and rejects a non-unique
+  name with an erro message.
+
+   * gap/gap_story_main.h
+   * gap/gap_story_properties.c
+
+- bugfix: Master Videoencoder dialog: create composite audio extract of multiple audio clips 
+  from the same video did extract from start playtime of 1st clip 
+  until end playtime of last clip refering the video file (OK)
+  but this was done foreach clip that makes processing slow and finally filled up my disk in a large
+  storyboard project.
+  (Bug was introduced with the storyboard section feature, 
+   and therefore not relevant for the stable branch)
+
+    * gap/gap_story_render_audio.c
+
+- player otone playback in storyboard file:
+  fixed offset calculation for the start sample
+  must use local samplerate of the refered video clip
+  (p_get_audio_relevant_FrameNr and p_audio_start_play)
+
+    * gap/gap_player_dialog.c
+
 2008-07-31 Wolfgang Hofer <hof@gimp.org>
 
 - new feature: Persistent drawable id references.

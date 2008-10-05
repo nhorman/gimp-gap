@@ -652,7 +652,7 @@ gap_lib_strdup_add_underscore(char *name)
   }
 
   l_len = strlen(name);
-  l_str = g_malloc(l_len+1);
+  l_str = g_malloc(l_len+2);
   strcpy(l_str, name);
   if(l_len > 0)
   {

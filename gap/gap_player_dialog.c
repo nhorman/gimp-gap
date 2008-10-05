@@ -833,6 +833,13 @@ p_get_audio_relevant_FrameNr(GapPlayerMainGlobalParams *gpp, gint32 framenr)
     }
   }
 
+  if(gap_debug)
+  {
+    printf("p_get_audio_relevant_FrameNr: framenr:%d localFrameNr:%d\n"
+      ,framenr
+      ,localFrameNr
+      );
+  }
 
   return (localFrameNr);
   
@@ -962,8 +969,8 @@ p_audio_start_play(GapPlayerMainGlobalParams *gpp)
   gdouble flt_samplerate;
   gint32 l_samplerate;
   gint32 l_samples;
-
-
+  gdouble l_referedClipSpeed;
+    
 
   /* if (gap_debug) printf("p_audio_start_play\n"); */
 
@@ -977,16 +984,22 @@ p_audio_start_play(GapPlayerMainGlobalParams *gpp)
 
   l_samples = gpp->audio_samples;
   l_samplerate = gpp->audio_samplerate;
+  l_referedClipSpeed = gpp->original_speed;
 
   if (gpp->audio_auto_offset_by_framenr == TRUE)
   {
     gint32 localFramenr;
+    if (gpp->gvahand)
+    {
+      l_referedClipSpeed = gpp->gvahand->framerate;
+      l_samplerate = gpp->gvahand->samplerate;
+    }
     
     localFramenr = p_get_audio_relevant_FrameNr(gpp, gpp->play_current_framenr);
     
     offset_start_sec = ( localFramenr
                      + gpp->audio_frame_offset
-                     ) / MAX(1, gpp->original_speed);
+                     ) / MAX(1, l_referedClipSpeed);
   }
   else
   {
@@ -997,11 +1010,26 @@ p_audio_start_play(GapPlayerMainGlobalParams *gpp)
   }
 
   offset_start_samples = offset_start_sec * l_samplerate;
-  if(gpp->original_speed > 0)
+  
+  if(gap_debug)
+  {
+    printf("p_audio_start_play  original_speed:%.3f refSpeed:%.3f audio_frame_offset:%d l_samples:%d l_samplerate:%d (gvahand:%d) offset_start_samples:%d\n\n"
+      ,gpp->original_speed
+      ,l_referedClipSpeed
+      ,gpp->audio_frame_offset
+      ,l_samples
+      ,l_samplerate
+      ,gpp->gvahand->samplerate
+      ,offset_start_samples
+      );
+  }
+  
+  
+  if(l_referedClipSpeed > 0)
   {
     /* use moidfied samplerate if video is not played at original speed
      */
-    flt_samplerate = l_samplerate * gpp->speed / gpp->original_speed;
+    flt_samplerate = l_samplerate * gpp->speed / l_referedClipSpeed;
   }
   else
   {

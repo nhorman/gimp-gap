@@ -139,6 +139,8 @@ static gboolean p_pw_icontype_preview_events_cb (GtkWidget *widget
                        , GdkEvent  *event
                        , GapStbPropWidget *pw);
 static void     p_pw_check_ainfo_range(GapStbPropWidget *pw, char *filename);
+static gboolean p_pw_mask_definition_name_update(GapStbPropWidget *pw);
+static void     p_pw_mask_name_update_button_pressed_cb(GtkWidget *widget, GapStbPropWidget *pw);
 static void     p_pw_mask_name_entry_update_cb(GtkWidget *widget, GapStbPropWidget *pw);
 static void     p_pw_filename_entry_update_cb(GtkWidget *widget, GapStbPropWidget *pw);
 static void     p_pw_filename_changed(const char *filename, GapStbPropWidget *pw);
@@ -381,6 +383,14 @@ p_pw_prop_response(GtkWidget *widget
         pw->close_flag = TRUE;
         return;
       }
+      
+      if(FALSE == p_pw_mask_definition_name_update(pw))
+      {
+        /* occurs if a non-unique mask definition name was entered.
+         */
+        return;
+      }
+      
       if(pw->pw_filesel)
       {
         p_filesel_pw_close_cb(pw->pw_filesel, pw);
@@ -455,6 +465,9 @@ p_pw_propagate_mask_attribute_changes(GapStbPropWidget *pw)
 /* ---------------------------------
  * p_pw_propagate_mask_name_changes
  * ---------------------------------
+ * this procedure is typically called to rename already existing
+ * mask_names of a mask definition property.
+ * In this case all references hav to be updated to use the new mask_name.
  */
 static void
 p_pw_propagate_mask_name_changes(GapStbPropWidget *pw
@@ -471,7 +484,7 @@ p_pw_propagate_mask_name_changes(GapStbPropWidget *pw
          gboolean updateOK;
          
          /* we have changed an already existing mask_name in a mask_definition
-          * element attributes.
+          * element attribute.
           * This requires update of all video track elements that are refering
           * to this mask definition.
           */
@@ -1683,6 +1696,116 @@ p_pw_filename_entry_update_cb(GtkWidget *widget, GapStbPropWidget *pw)
   p_pw_filename_changed(gtk_entry_get_text(GTK_ENTRY(widget)), pw);
 }  /* end p_pw_filename_entry_update_cb */
 
+/* ---------------------------------------
+ * p_pw_mask_definition_name_update
+ * ---------------------------------------
+ */
+static gboolean
+p_pw_mask_definition_name_update(GapStbPropWidget *pw)
+{
+  char *l_mask_name;
+  char *mask_name_old;
+  gboolean l_okFlag;
+
+  mask_name_old = NULL;
+  l_okFlag = TRUE;
+  
+  if (pw == NULL)
+  {
+    return (l_okFlag);
+  }
+  if (pw->pw_mask_name_entry == NULL)
+  {
+    return (l_okFlag);
+  }
+  
+  l_mask_name = g_strdup(gtk_entry_get_text(GTK_ENTRY(pw->pw_mask_name_entry)));
+  if(l_mask_name)
+  {
+    if(pw->stb_elem_refptr)
+    {
+      gboolean is_check_required;
+      GapStoryElem      *stb_elem_ref;
+      
+      is_check_required = TRUE; /* in case a new name or different name was entered */
+      stb_elem_ref = NULL;
+      
+      if(pw->stb_elem_refptr->mask_name)
+      {
+          if(strcmp(pw->stb_elem_refptr->mask_name, l_mask_name) == 0)
+          {
+            /* NO check if we have still the same mask:name */
+            is_check_required = FALSE;
+          }
+      }
+      
+      if (is_check_required)
+      {
+        /* check if there are already references to mask_name_new */
+        stb_elem_ref = gap_story_find_mask_reference_by_name(pw->stb_refptr, l_mask_name);
+      }
+      
+      if(stb_elem_ref)
+      {
+        l_okFlag = FALSE;
+        g_message(_("Error: the mask name:  \"%s\" is already in use\n"
+                    "please enter another name.")
+                    ,l_mask_name
+                  );
+      
+      }
+      else
+      {
+        if(pw->stb_elem_refptr->mask_name)
+        {
+          if(strcmp(pw->stb_elem_refptr->mask_name, l_mask_name) != 0)
+          {
+             p_pw_push_undo_and_set_unsaved_changes(pw);
+
+             mask_name_old = g_strdup(pw->stb_elem_refptr->mask_name);
+             g_free(pw->stb_elem_refptr->mask_name);
+             pw->stb_elem_refptr->mask_name = g_strdup(l_mask_name);
+             p_pw_propagate_mask_name_changes(pw, mask_name_old);
+             p_pw_update_properties(pw);
+          }
+        }
+        else
+        {
+          p_pw_push_undo_and_set_unsaved_changes(pw);
+          pw->stb_elem_refptr->mask_name = g_strdup(l_mask_name);
+          p_pw_render_layermask(pw);
+        }
+        
+        gtk_label_set_text ( GTK_LABEL(pw->pw_mask_definition_name_label)
+                           , pw->stb_elem_refptr->mask_name);
+        
+      }
+
+    }
+    g_free(l_mask_name);
+  }
+  if(mask_name_old)
+  {
+    g_free(mask_name_old);
+  }
+  return (l_okFlag);
+}  /* end p_pw_mask_definition_name_update */
+
+/* ---------------------------------------
+ * p_pw_mask_name_update_button_pressed_cb
+ * ---------------------------------------
+ * in case of mask definition
+ * the update of mask_name is handled via button to confirm the change.
+ * (because automatic updates while typing the name in the entry may lead to
+ * unwanted changes in case the first few characters typed match another
+ * already existing mask_name)
+ */
+static void
+p_pw_mask_name_update_button_pressed_cb(GtkWidget *widget, GapStbPropWidget *pw)
+{
+  p_pw_mask_definition_name_update(pw);
+}  /* end p_pw_mask_name_update_button_pressed_cb */
+
 
 /* --------------------------------
  * p_pw_mask_name_entry_update_cb
@@ -1692,36 +1815,47 @@ static void
 p_pw_mask_name_entry_update_cb(GtkWidget *widget, GapStbPropWidget *pw)
 {
   char *l_mask_name;
-  char *mask_name_old;
 
-  mask_name_old = NULL;
-  l_mask_name = g_strdup(gtk_entry_get_text(GTK_ENTRY(widget)));
-  if(pw->stb_elem_refptr)
+  if(pw == NULL)
   {
-    if(pw->stb_elem_refptr->mask_name)
-    {
-      if(strcmp(pw->stb_elem_refptr->mask_name, l_mask_name) != 0)
-      {
-         p_pw_push_undo_and_set_unsaved_changes(pw);
+    return;
+  }
+  if(pw->is_mask_definition)
+  {
+    /* ignore changes of the mask_name entry for mask definitions.
+     * (because automatic updates while typing the name in the entry may lead to
+     *  unwanted changes in case the first few characters typed do match another
+     *  already existing mask_name,
+     *  therfore the update is triggered explicitely via a button
+     *  see p_pw_mask_name_update_button_pressed_cb )
+     */
+    return;
+  }
 
-         mask_name_old = g_strdup(pw->stb_elem_refptr->mask_name);
-         g_free(pw->stb_elem_refptr->mask_name);
-         pw->stb_elem_refptr->mask_name = g_strdup(l_mask_name);
-         p_pw_propagate_mask_name_changes(pw, mask_name_old);
-         p_pw_update_properties(pw);
+  l_mask_name = g_strdup(gtk_entry_get_text(GTK_ENTRY(widget)));
+  if(l_mask_name)
+  {
+    if(pw->stb_elem_refptr)
+    {
+      if(pw->stb_elem_refptr->mask_name)
+      {
+        if(strcmp(pw->stb_elem_refptr->mask_name, l_mask_name) != 0)
+        {
+           p_pw_push_undo_and_set_unsaved_changes(pw);
+
+           g_free(pw->stb_elem_refptr->mask_name);
+           pw->stb_elem_refptr->mask_name = g_strdup(l_mask_name);
+           p_pw_update_properties(pw);
+        }
+      }
+      else
+      {
+        p_pw_push_undo_and_set_unsaved_changes(pw);
+        pw->stb_elem_refptr->mask_name = g_strdup(l_mask_name);
+        p_pw_render_layermask(pw);
       }
     }
-    else
-    {
-      p_pw_push_undo_and_set_unsaved_changes(pw);
-      pw->stb_elem_refptr->mask_name = g_strdup(l_mask_name);
-      p_pw_render_layermask(pw);
-    }
-  }
-  g_free(l_mask_name);
-  if(mask_name_old)
-  {
-    g_free(mask_name_old);
+    g_free(l_mask_name);
   }
 }  /* end p_pw_mask_name_entry_update_cb */
 
@@ -2134,7 +2268,7 @@ p_pw_update_framenr_labels(GapStbPropWidget *pw, gint32 framenr)
  * ---------------------------------
  * 1) update the info labels in the properties dialog window
  * 2) deferred update the storyboard table tabw in the master dialog window,
- *    where pw is atteched to.
+ *    where pw is attached to.
  *    (immediate reflect the change of properties in the corresponding table.)
  */
 static void
@@ -3605,11 +3739,26 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
 
   row++;
 
-  /* the mask_name label */
-  label = gtk_label_new (_("Mask Name:"));
-  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
-  gtk_table_attach_defaults (GTK_TABLE(table), label, 0, 1, row, row+1);
-  gtk_widget_show (label);
+  if(pw->is_mask_definition)
+  {
+    GtkWidget *button;
+    /* the mask_name label */
+    button = gtk_button_new_with_label(_("Mask Name:"));
+    gimp_help_set_help_data(button, _("Set the mask name"), NULL);
+    gtk_table_attach_defaults (GTK_TABLE(table), button, 0, 1, row, row+1);
+    gtk_widget_show (button);
+    g_signal_connect(G_OBJECT(button), "clicked",
+                   G_CALLBACK(p_pw_mask_name_update_button_pressed_cb),
+                   pw);
+  }
+  else
+  {
+    /* the mask_name label */
+    label = gtk_label_new (_("Mask Name:"));
+    gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+    gtk_table_attach_defaults (GTK_TABLE(table), label, 0, 1, row, row+1);
+    gtk_widget_show (label);
+  }
   
   /* the mask_name entry */
   entry = gtk_entry_new ();
@@ -3664,6 +3813,24 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
   g_signal_connect (G_OBJECT (check_button), "toggled",
                   G_CALLBACK (p_pw_mask_enable_toggle_update_callback),
                   pw);
+
+  /* the mask_definition_name label (only used for mask definition properties) */
+  label = gtk_label_new(" ");
+  pw->pw_mask_definition_name_label = label;
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+  if(pw->is_mask_definition)
+  {
+    if(pw->stb_elem_refptr)
+    {
+      if(pw->stb_elem_refptr->mask_name)
+      {
+        gtk_label_set_text ( GTK_LABEL(pw->pw_mask_definition_name_label)
+                           , pw->stb_elem_refptr->mask_name);
+      }
+    }
+    gtk_table_attach_defaults (GTK_TABLE(table), label, 2, 4, row, row+1);
+    gtk_widget_show (label);
+  }
 
 
   if(!pw->is_mask_definition)
