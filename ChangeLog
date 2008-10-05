@@ -1,3 +1,12 @@
+2008-10-05 Wolfgang Hofer <hof@gimp.org>
+
+- fixed BUG #523115 that sometimes caused a crash when splitting an image to frames.
+     (The procedure gap_lib.c:gap_lib_strdup_add_underscore
+      allocated a string for the result that was 1 character too short,
+      but the crash occured later in the g_free call
+
+   * gap/gap_lib.c
+
 2008-06-29 Wolfgang Hofer <hof@gimp.org>
   - fixed endless loop in the Player on attempt to enter a vaild audiofile name.
   
