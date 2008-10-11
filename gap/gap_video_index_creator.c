@@ -884,13 +884,13 @@ p_vindex_dialog(VindexValues *val_ptr)
   static char *mode_help[MODE_SIZE]    = { N_("Conditional video index creation, "
                                               " based on a few quick timcode probereads.\n"
                                               "Skip index creation if native seek seems possible\n"
-                                              "\nWARNING: positioning via native seek may not work 100% frame exact if critical "
+                                              "\nWARNING: positioning via native seek may not work exact in case critical "
                                               "timecode steps were not detected in the quick test)")
                                          , N_("Conditional video index creation, "
                                               "based on probereads for the specified percentage of frames.\n"
                                               "Skip index creation if native seek seems possible "
                                               "and no critical timecode steps are detected in the probereads so far.\n"
-                                              "\nWARNING: positioning via native seek may not work 100% frame exact if critical "
+                                              "\nWARNING: positioning via native seek may not work exact in case critical "
                                               "timecode steps were not detected in the probereads.")
                                          , N_("Create video index. Requires unconditional full scann of all frames."
                                               "Native seek is enabled only in case all timecodes are OK.")
