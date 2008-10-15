@@ -1,3 +1,10 @@
+2008-10-15 Wolfgang Hofer <hof@gimp.org>
+
+- changed the wrapper for rotate any angle functionality to support
+  animated fliter apply with varying value.
+
+   * gap/gap_wr_trans.c
+
 2008-10-12 Wolfgang Hofer <hof@gimp.org>
 
 - added wrapper for rotate any angle functionality.

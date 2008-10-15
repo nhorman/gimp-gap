@@ -121,9 +121,14 @@ MAIN ()
 static void query (void)
 {
 
+  static GimpLastvalDef lastvalsRotAny[] =
+  {
+    GIMP_LASTVALDEF_GDOUBLE          (GIMP_ITER_TRUE,  glob_vals.angle_deg,  "angle in degree"),
+  };
+
   static GimpLastvalDef lastvals[] =
   {
-    GIMP_LASTVALDEF_GINT32          (GIMP_ITER_FALSE,  glob_vals.angle_deg,  "angle in degree"),
+    GIMP_LASTVALDEF_GDOUBLE          (GIMP_ITER_FALSE,  glob_vals.angle_deg,  "dummy"),
   };
 
   gimp_plugin_domain_register (GETTEXT_PACKAGE, LOCALEDIR);
@@ -132,8 +137,8 @@ static void query (void)
   gimp_lastval_desc_register(PLUG_IN_NAME_ANY,
                              &glob_vals,
                              sizeof(glob_vals),
-                             G_N_ELEMENTS (lastvals),
-                             lastvals);
+                             G_N_ELEMENTS (lastvalsRotAny),
+                             lastvalsRotAny);
 
   gimp_lastval_desc_register(PLUG_IN_NAME_90,
                              &glob_vals,
