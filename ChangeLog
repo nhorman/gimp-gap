@@ -1,3 +1,63 @@
+2008-10-19 Wolfgang Hofer <hof@gimp.org>
+- fixed bug when closing clip properties dialog
+  (the check for non-unique mask definition name must be restricted to
+  mask-definition clips and MUST NOT run for other clips)
+  
+- STORYBOARD clip properties now supports deinterlace modes
+    Odd First
+    Even First
+  The new modes apply the deintelace filter (that builds a full frame
+  from the rows of one half-frame similar to the already existing Odd and Even modes)
+  but does switch to the oppsite half-frame in case non integer stepsize is used,
+  and the non-integer part of the resulting framenumber position is >= 0.5.
+  
+  Example:
+  Video clips (from DVD source) are typically interlaced frames.
+  One interlaced frame contains 2 half frames A and B
+  where A and B are shot in double speed than the specified framerate of the clip.
+  
+  framerate 25 fps
+  
+  frame 000001
+    +----------------+
+    |  half frame A  |  t = 0
+    +----------------+
+    |  half frame B  |  t = 1/50 sec
+    +----------------+
+
+
+  frame 000002
+    +----------------+
+    |  half frame A  |  t = 2/50 sec  (1/25 sec)
+    +----------------+
+    |  half frame B  |  t = 3/50 sec
+    +----------------+
+
+
+  a videoclip with stepsize 0.5 with deinterlace mode Odd fetches:
+  
+  frame 000001 (A)
+  frame 000001 (A)
+  frame 000002 (A)
+  frame 000002 (A)
+
+  a videoclip with stepsize 0.5 played with deinterlace mode Odd First will fetch:
+
+  frame 000001 (A)
+  frame 000001 (B)
+  frame 000002 (A)
+  frame 000002 (B)
+  
+  This gives smooth movement in half speed slow motion playback.
+    
+
+   * NEWS
+   * gap/gap_story_file.c
+   * gap/gap_story_render_processor.c
+   * gap/gap_story_properties.c
+   * gap/gap_story_main.h
+   * gap/gap_story_render_lossless.c
+
 2008-10-15 Wolfgang Hofer <hof@gimp.org>
 
 - changed the wrapper for rotate any angle functionality to support

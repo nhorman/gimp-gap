@@ -351,6 +351,7 @@ p_check_chunk_fetch_possible(GapStoryRenderVidHandle *vidhand
 
   gint32        l_localframe_index;
   gint32        l_local_stepcount;
+  gdouble       l_localframe_tween_rest;
   gboolean      l_keep_proportions;
   gboolean      l_fit_width;
   gboolean      l_fit_height;
@@ -384,6 +385,7 @@ p_check_chunk_fetch_possible(GapStoryRenderVidHandle *vidhand
                  , &l_trak_filtermacro_file
                  , &l_localframe_index   /* used for ANIMIMAGE and Videoframe Number, -1 for all other types */
                  , &l_local_stepcount
+                 , &l_localframe_tween_rest
                  , &l_keep_proportions
                  , &l_fit_width
                  , &l_fit_height

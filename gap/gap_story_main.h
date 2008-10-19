@@ -60,7 +60,7 @@ typedef gpointer t_GVA_Handle;
 
 /* max flip request and delace modes (for dimensions of radio button tables) */
 #define GAP_MAX_FLIP_REQUEST  4
-#define GAP_MAX_DELACE_MODES  3
+#define GAP_MAX_DELACE_MODES  5
 
 typedef enum
   {

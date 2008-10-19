@@ -5,6 +5,9 @@ Here is a short overview whats new in GIMP-GAP-2.5.0:
 - Player supports extracting audio track when playing clips
   that refere to a videofile that has one or more audiotrack(s)
 
+- Storyboard undo support
+- Storyboard clips support new deinterlace modes Odd First, Even First
+
 - Filtermacro processing now supports mapping to 
   persistent drawable id references.
   This allows applying recorded filtermacros in another gimp session
@@ -26,6 +29,10 @@ Here is a short overview whats new in GIMP-GAP-2.5.0:
 
 - Modify Frames now supports creation of grayscale layer from
   alpha channel, or layermask or mix of both
+
+- wrapper for rotate any angle.
+  (provides support for animated apply in "filter all layers"
+  or in fltermacros for rotation effects in storyboard clips)
 
 
 Here is a short overview whats new in GIMP-GAP-2.3.0:

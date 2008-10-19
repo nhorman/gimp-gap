@@ -160,6 +160,8 @@ static void     p_radio_mask_anchor_master_callback(GtkWidget *widget, GapStbPro
 static void     p_radio_delace_none_callback(GtkWidget *widget, GapStbPropWidget *pw);
 static void     p_radio_delace_odd_callback(GtkWidget *widget, GapStbPropWidget *pw);
 static void     p_radio_delace_even_callback(GtkWidget *widget, GapStbPropWidget *pw);
+static void     p_radio_delace_odd_first_callback(GtkWidget *widget, GapStbPropWidget *pw);
+static void     p_radio_delace_even_first_callback(GtkWidget *widget, GapStbPropWidget *pw);
 static void     p_delace_spinbutton_cb(GtkObject *obj, GapStbPropWidget *pw);
 static void     p_maskstep_density_spinbutton_cb(GtkObject *obj, GapStbPropWidget *pw);
 static void     p_step_density_spinbutton_cb(GtkObject *obj, GapStbPropWidget *pw);
@@ -384,11 +386,14 @@ p_pw_prop_response(GtkWidget *widget
         return;
       }
       
-      if(FALSE == p_pw_mask_definition_name_update(pw))
+      if (pw->is_mask_definition)
       {
-        /* occurs if a non-unique mask definition name was entered.
-         */
-        return;
+        if(FALSE == p_pw_mask_definition_name_update(pw))
+        {
+          /* occurs if a non-unique mask definition name was entered.
+           */
+          return;
+        }
       }
       
       if(pw->pw_filesel)
@@ -2476,6 +2481,45 @@ p_radio_delace_even_callback(GtkWidget *widget, GapStbPropWidget *pw)
   }
 }  /* end p_radio_delace_even_callback */
 
+
+/* ---------------------------------
+ * p_radio_delace_odd_first_callback
+ * ---------------------------------
+ */
+static void
+p_radio_delace_odd_first_callback(GtkWidget *widget, GapStbPropWidget *pw)
+{
+  if((pw) && (GTK_TOGGLE_BUTTON (widget)->active))
+  {
+    p_pw_push_undo_and_set_unsaved_changes(pw);
+    pw->delace_mode = 3;
+    gtk_widget_set_sensitive(pw->pw_spinbutton_delace, TRUE);
+    if(pw->stb_elem_refptr)
+    {
+      pw->stb_elem_refptr->delace = pw->delace_mode + CLAMP(pw->delace_threshold, 0.0, 0.999999);
+    }
+  }
+}  /* end p_radio_delace_odd_first_callback */
+
+/* ---------------------------------
+ * p_radio_delace_even_first_callback
+ * ---------------------------------
+ */
+static void
+p_radio_delace_even_first_callback(GtkWidget *widget, GapStbPropWidget *pw)
+{
+  if((pw) && (GTK_TOGGLE_BUTTON (widget)->active))
+  {
+    p_pw_push_undo_and_set_unsaved_changes(pw);
+    pw->delace_mode = 4;
+    gtk_widget_set_sensitive(pw->pw_spinbutton_delace, TRUE);
+    if(pw->stb_elem_refptr)
+    {
+      pw->stb_elem_refptr->delace = pw->delace_mode + CLAMP(pw->delace_threshold, 0.0, 0.999999);
+    }
+  }
+}  /* end p_radio_delace_even_first_callback */
+
 /* ---------------------------------
  * p_delace_spinbutton_cb
  * ---------------------------------
@@ -3604,6 +3648,46 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
     gtk_widget_show (radio_button);
     g_signal_connect ( G_OBJECT (radio_button), "toggled",
                        G_CALLBACK (p_radio_delace_even_callback),
+                       pw);
+
+
+
+
+
+    l_idx++;
+    /* radio button delace_mode odd */
+    radio_button = gtk_radio_button_new_with_label ( radio_group, _("Odd First") );
+    radio_group = gtk_radio_button_get_group ( GTK_RADIO_BUTTON (radio_button) );
+    gtk_table_attach ( GTK_TABLE (radio_table), radio_button, l_idx, l_idx+1
+                     , 0, 1, 0, 0, 0, 0);
+
+    pw->pw_delace_mode_radio_button_arr[3] = radio_button;
+    l_radio_pressed = (pw->delace_mode == 3);
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radio_button),
+                                     l_radio_pressed);
+    gimp_help_set_help_data(radio_button, _("Apply odd-lines, switch to even lines on tween position >= 0.5"), NULL);
+
+    gtk_widget_show (radio_button);
+    g_signal_connect ( G_OBJECT (radio_button), "toggled",
+                       G_CALLBACK (p_radio_delace_odd_first_callback),
+                       pw);
+
+    l_idx++;
+    /* radio button delace_mode even */
+    radio_button = gtk_radio_button_new_with_label ( radio_group, _("Even First") );
+    radio_group = gtk_radio_button_get_group ( GTK_RADIO_BUTTON (radio_button) );
+    gtk_table_attach ( GTK_TABLE (radio_table), radio_button, l_idx, l_idx+1
+                     , 0, 1, 0, 0, 0, 0);
+
+    pw->pw_delace_mode_radio_button_arr[4] = radio_button;
+    l_radio_pressed = (pw->delace_mode == 4);
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radio_button),
+                                     l_radio_pressed);
+    gimp_help_set_help_data(radio_button, _("Apply even-lines, switch to even lines on tween position >= 0.5"), NULL);
+
+    gtk_widget_show (radio_button);
+    g_signal_connect ( G_OBJECT (radio_button), "toggled",
+                       G_CALLBACK (p_radio_delace_even_first_callback),
                        pw);
 
     gtk_widget_show (radio_table);

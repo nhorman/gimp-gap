@@ -58,6 +58,7 @@ extern int gap_debug;  /* 1 == print debug infos , 0 dont print debug infos */
 #define MAX_CHARS_ERRORTEXT_GUI   50
 #define MAX_TOLERATED_UNPRINTABLE_CHARACTERS 500
 
+#define GAP_DELACE_MAX 5.0
 
   typedef enum
   {
@@ -3637,7 +3638,7 @@ p_story_parse_line(GapStoryBoard *stb, char *longline
 
       if(*l_seltrack_ptr)   { stb_elem->seltrack     = p_scan_gint32(l_seltrack_ptr,  1, 999999, stb); }
       if(*l_exact_seek_ptr) { stb_elem->exact_seek   = p_scan_gint32(l_exact_seek_ptr,  0, 1, stb); }
-      if(*l_delace_ptr)     { stb_elem->delace       = p_scan_gdouble(l_delace_ptr, 0.0, 3.0, stb); }
+      if(*l_delace_ptr)     { stb_elem->delace       = p_scan_gdouble(l_delace_ptr, 0.0, GAP_DELACE_MAX, stb); }
       if(*l_decoder_ptr)    { stb_elem->preferred_decoder = g_strdup(l_decoder_ptr);
                             }
 
@@ -4132,7 +4133,7 @@ p_story_parse_line(GapStoryBoard *stb, char *longline
 
       if(*l_seltrack_ptr)   { stb_elem->seltrack     = p_scan_gint32(l_seltrack_ptr,  1, 999999, stb); }
       if(*l_exact_seek_ptr) { stb_elem->exact_seek   = p_scan_gint32(l_exact_seek_ptr,  0, 1, stb); }
-      if(*l_delace_ptr)     { stb_elem->delace       = p_scan_gdouble(l_delace_ptr, 0.0, 3.0, stb); }
+      if(*l_delace_ptr)     { stb_elem->delace       = p_scan_gdouble(l_delace_ptr, 0.0, GAP_DELACE_MAX, stb); }
 
       if(*l_decoder_ptr)    { stb_elem->preferred_decoder = g_strdup(l_decoder_ptr);
                             }

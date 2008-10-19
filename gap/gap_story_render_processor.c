@@ -78,6 +78,7 @@
 #include "gap_story_render_audio.h"
 #include "gap_story_render_processor.h"
 #include "gap_fmac_name.h"
+#include "gap_frame_fetcher.h"
 
 /*************************************************************
  *         STORYBOARD FUNCTIONS                              *
@@ -141,6 +142,7 @@ static char *   p_fetch_framename   (GapStoryRenderFrameRangeElem *frn_list
                             , char **filtermacro_file
                             , gint32   *localframe_index  /* used only for ANIMIMAGE and videoclip, -1 for all other types */
                             , gint32   *local_stepcount   /* nth frame within this clip, starts with 0 */
+                            , gdouble  *localframe_tween_rest /* non-integer part of the position. value < 1.0 for tween fetching */
                             , gboolean *keep_proportions
                             , gboolean *fit_width
                             , gboolean *fit_height
@@ -313,6 +315,11 @@ static t_GVA_Handle * p_try_to_steal_gvahand(GapStoryRenderVidHandle *vidhand
                       , char *basename             /* the videofile name */
                       , gint32 exact_seek
                       );
+static void       p_split_delace_value(gdouble delace
+                      , gdouble localframe_tween_rest
+                      , gint32 *deinterlace_ptr
+                      , gdouble *threshold_ptr);
+
 static gint32     p_story_render_fetch_composite_image_private(GapStoryRenderVidHandle *vidhand
                     , gint32 master_frame_nr  /* starts at 1 */
                     , gint32  vid_width       /* desired Video Width in pixels */
@@ -1024,6 +1031,7 @@ p_fetch_framename(GapStoryRenderFrameRangeElem *frn_list
                  , char **filtermacro_file
                  , gint32   *localframe_index  /* starts at 1, used for ANIMIMAGE and VIDEOFILES, -1 for all other types */
                  , gint32   *local_stepcount   /* nth frame within this clip, starts with 0 */
+                 , gdouble  *localframe_tween_rest /* non-integer part of the position. value < 1.0 for tween fetching */
                  , gboolean *keep_proportions
                  , gboolean *fit_width
                  , gboolean *fit_height
@@ -1058,6 +1066,7 @@ p_fetch_framename(GapStoryRenderFrameRangeElem *frn_list
   *move_y  = 0.0;
   *localframe_index = -1;
   *local_stepcount = 0;
+  *localframe_tween_rest = 0.0;
   *frn_type = GAP_FRN_SILENCE;
   *keep_proportions = FALSE;
   *fit_width        = TRUE;
@@ -1089,6 +1098,23 @@ p_fetch_framename(GapStoryRenderFrameRangeElem *frn_list
 
         /* calculate framenumber local to the clip */
         l_fnr = (gint32)(frn_elem->frame_from + fnr);
+
+        {
+          gint32 fnrInt;
+          
+          fnrInt = fnr;  /* truncate to integer */
+          
+          *localframe_tween_rest = fnr - fnrInt;
+          
+          if(gap_debug)
+          {
+            printf("fnr:%.4f, fnrInt:%d localframe_tween_rest:%.4f\n"
+                     ,(float)fnr
+                     ,(int)fnrInt
+                     ,(float)*localframe_tween_rest
+                     );
+          }
+        }
 
         *local_stepcount = master_frame_nr - l_frame_group_count;
         *local_stepcount -= 1;
@@ -4517,6 +4543,74 @@ gap_story_render_fetch_composite_image(GapStoryRenderVidHandle *vidhand
 }  /* end gap_story_render_fetch_composite_image */
 
 
+/* ------------------------------------------------
+ * p_split_delace_value
+ * ------------------------------------------------
+ * split the specified delace value: 
+ *    integer part is deinterlace mode, 
+ *      (0 NO,
+ *       1 Odd,
+ *       2 Even,
+ *       3 Odd First,
+ *       4 Even first)
+ *    rest is the threshold value.
+ * The localframe_tween_rest is a positive value < 1.0.
+ * This is only relevant in case delace mode is 3 Odd First or 4 Even first.
+ * For clips with standard stepsize 1 localframe_tween_rest is always 0.
+ * In Clips with non-integer stepsize localframe_tween_rest referes
+ * between 2 framenumbers, where the value 0.5 is the middle.
+ * An Interlaced frame contains 2 half-frames where one half-frame is represented by
+ * the even, the other half-frame by the odd lines.
+ * 
+ * therfore localframe_tween_rest values >= 0.5 selects the other half-frame,
+ * in case the enable_interlace_tween_pick option is enabled.
+ *
+ * OUT: *deinterlace_ptr
+ *       0 NO,
+ *       1 Odd,
+ *       2 Even,
+ * OUT: *threshold_ptr  The threshold < 1.0 for smooth mix of 2 pixel rows.
+ */
+static void
+p_split_delace_value(gdouble delace, gdouble localframe_tween_rest, gint32 *deinterlace_ptr, gdouble *threshold_ptr)
+{
+  gint32 delace_int;
+
+  delace_int = delace;
+  *threshold_ptr = delace - (gdouble)delace_int;
+
+  switch (delace_int)
+  {
+    case 4:
+      *deinterlace_ptr = 2;
+      if (localframe_tween_rest >= 0.5)
+      {
+        *deinterlace_ptr = 1;
+      }
+      break;
+    case 3:
+      *deinterlace_ptr = 1;
+      if (localframe_tween_rest >= 0.5)
+      {
+        *deinterlace_ptr = 2;
+      }
+      break;
+    case 2:
+      *deinterlace_ptr = 2;
+      break;
+    case 1:
+      *deinterlace_ptr = 1;
+      break;
+    default:
+      *deinterlace_ptr = 0;
+      break;
+  }
+
+}  /* end p_split_delace_value */
+
+
+
+
 static gint32
 p_story_render_fetch_composite_image_private(GapStoryRenderVidHandle *vidhand
                     , gint32 master_frame_nr  /* starts at 1 */
@@ -4545,6 +4639,7 @@ p_story_render_fetch_composite_image_private(GapStoryRenderVidHandle *vidhand
   gint32       *l_layers_list;
   gint32        l_localframe_index;
   gint32        l_local_stepcount;
+  gdouble       l_localframe_tween_rest;
   gboolean      l_keep_proportions;
   gboolean      l_fit_width;
   gboolean      l_fit_height;
@@ -4555,7 +4650,7 @@ p_story_render_fetch_composite_image_private(GapStoryRenderVidHandle *vidhand
   gdouble l_blue_f;
   gdouble l_alpha_f;
 
-
+  l_localframe_tween_rest = 0.0;
   l_comp_image_id   = -1;
   l_tmp_image_id    = -1;
   l_layer_id        = -1;
@@ -4608,6 +4703,7 @@ p_story_render_fetch_composite_image_private(GapStoryRenderVidHandle *vidhand
                  , &l_trak_filtermacro_file
                  , &l_localframe_index   /* used only for ANIMIMAGE, SECTION and Videoframe Number, -1 for all other types */
                  , &l_local_stepcount    /* nth frame within this clip */
+                 , &l_localframe_tween_rest  /* non integer part of local position (in case stepsize != 1) */
                  , &l_keep_proportions
                  , &l_fit_width
                  , &l_fit_height
@@ -4772,8 +4868,12 @@ p_story_render_fetch_composite_image_private(GapStoryRenderVidHandle *vidhand
                   t_GVA_RetCode  l_fcr;
 
                   /* split delace value: integer part is deinterlace mode, rest is threshold */
-                  l_deinterlace = l_frn_elem->delace;
-                  l_threshold = l_frn_elem->delace - (gdouble)l_deinterlace;
+                  p_split_delace_value(l_frn_elem->delace
+                          , l_localframe_tween_rest
+                          , &l_deinterlace
+                          , &l_threshold
+                          );
+
 
                   /* set image and layer in the gvahand structure invalid,
                    * to force creation of a new image in the following call of  GVA_frame_to_gimp_layer
