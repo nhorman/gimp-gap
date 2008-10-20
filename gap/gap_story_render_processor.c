@@ -80,6 +80,32 @@
 #include "gap_fmac_name.h"
 #include "gap_frame_fetcher.h"
 
+/* data for the storyboard proceesor frame fetching
+ */
+typedef struct GapStbFetchData {   /* nick: gfd */
+  gint32        comp_image_id;
+  gint32        tmp_image_id;
+  gint32        layer_id;
+
+  gchar  *framename;
+  gdouble opacity;
+  gdouble scale_x;
+  gdouble scale_y;
+  gdouble move_x;
+  gdouble move_y;
+  GapStoryRenderFrameRangeElem *frn_elem;
+
+  gint32        localframe_index;
+  gint32        local_stepcount;
+  gdouble       localframe_tween_rest;
+  gboolean      keep_proportions;
+  gboolean      fit_width;
+  gboolean      fit_height;
+  GapStoryRenderFrameType   frn_type;
+  char            *trak_filtermacro_file;
+
+}  GapStbFetchData;
+
 /*************************************************************
  *         STORYBOARD FUNCTIONS                              *
  *************************************************************
@@ -91,7 +117,6 @@ extern int gap_debug;  /* 1 == print debug infos , 0 dont print debug infos */
 
 
 
-static GapStoryRenderImageCache *global_imcache = NULL;
 static gint32 global_monitor_image_id = -1;
 static gint32 global_monitor_display_id = -1;
 
@@ -320,6 +345,28 @@ static void       p_split_delace_value(gdouble delace
                       , gint32 *deinterlace_ptr
                       , gdouble *threshold_ptr);
 
+static void       p_stb_render_image_or_animimage(GapStbFetchData *gfd
+                      , GapStoryRenderVidHandle *vidhand
+                      , gint32 master_frame_nr);
+static void       p_stb_render_movie(GapStbFetchData *gfd
+                      , GapStoryRenderVidHandle *vidhand
+                      , gint32 master_frame_nr
+                      , gint32  vid_width, gint32  vid_height);
+static void       p_stb_render_section(GapStbFetchData *gfd
+                      , GapStoryRenderVidHandle *vidhand
+                      , gint32 master_frame_nr
+                      , gint32  vid_width, gint32  vid_height
+                      , const char *section_name);
+static void       p_stb_render_frame_images(GapStbFetchData *gfd, gint32 master_frame_nr);
+static void       p_stb_render_composite_image_postprocessing(GapStbFetchData *gfd
+                      , GapStoryRenderVidHandle *vidhand
+                      , gint32 master_frame_nr
+                      , gint32  vid_width, gint32  vid_height
+                      , char *filtermacro_file
+                      , const char *section_name
+                      );
+static void       p_stb_render_result_monitoring(GapStbFetchData *gfd, gint32 master_frame_nr);
+  
 static gint32     p_story_render_fetch_composite_image_private(GapStoryRenderVidHandle *vidhand
                     , gint32 master_frame_nr  /* starts at 1 */
                     , gint32  vid_width       /* desired Video Width in pixels */
@@ -4513,9 +4560,6 @@ gap_story_render_fetch_composite_vthumb(GapStoryRenderVidHandle *stb_comp_vidhan
  *
  * an (optional) filtermacro_file is performed on the
  * composite image.
- *  (filtermacros are not supported by the official GIMP-1.2.2
- *   you may need patched GIMP/GAP Sourcecode to use that feature)
- *
  *
  * (simple animations without a storyboard file
  *  are represented by a short storyboard framerange list that has
@@ -4611,6 +4655,475 @@ p_split_delace_value(gdouble delace, gdouble localframe_tween_rest, gint32 *dein
 
 
 
+
+
+/* -------------------------------------------------------------------
+ * p_stb_render_image_or_animimage (GAP_FRN_ANIMIMAGE or GAP_FRN_IMAGE
+ * -------------------------------------------------------------------
+ * fetch a single image or animimage
+ */
+static void
+p_stb_render_image_or_animimage(GapStbFetchData *gfd
+  , GapStoryRenderVidHandle *vidhand
+  , gint32 master_frame_nr)
+{
+  gint32        l_orig_image_id;
+  gint          l_nlayers;
+  gint32       *l_layers_list;
+
+  l_orig_image_id = gap_frame_fetch_orig_image(vidhand->ffetch_user_id
+                        , gfd->framename            /* full filename of the image */
+                        , TRUE /*  enable caching */
+                       );
+  
+  gimp_selection_none(l_orig_image_id);
+  if(gfd->frn_type == GAP_FRN_IMAGE)
+  {
+    gfd->layer_id = p_prepare_RGB_image(l_orig_image_id);
+    gfd->tmp_image_id = gimp_image_duplicate(l_orig_image_id);
+  }
+  else
+  {
+    /* GAP_FRN_ANIMIMAGE */
+    if(gap_debug)
+    {
+      printf("ANIM fetch  gfd->localframe_index: %d master:%d  from: %d to: %d\n"
+        ,(int)gfd->localframe_index
+        ,(int)master_frame_nr
+        ,(int)gfd->frn_elem->frame_from
+        ,(int)gfd->frn_elem->frame_to
+        );
+    }
+
+    gfd->tmp_image_id = p_create_unicolor_image(&gfd->layer_id
+                                            , gimp_image_width(l_orig_image_id)
+                                            , gimp_image_height(l_orig_image_id)
+                                            , 0.0, 0.0, 0.0, 0.0);
+    gimp_layer_add_alpha(gfd->layer_id);
+    l_layers_list = gimp_image_get_layers(l_orig_image_id, &l_nlayers);
+    if(l_layers_list != NULL)
+    {
+       if((gfd->localframe_index < l_nlayers)
+       && (gfd->localframe_index >= 0))
+       {
+          gint32 l_fsel_layer_id;
+
+          if(gap_debug)
+          {
+            printf("ANIM-IMG: layer_id: %d gimp_layer_get_apply_mask:%d\n"
+               ,(int)l_layers_list[gfd->localframe_index]
+               ,(int)gimp_layer_get_apply_mask(l_layers_list[gfd->localframe_index])
+               );
+          }
+
+
+          gimp_drawable_set_visible(l_layers_list[gfd->localframe_index], TRUE);
+          if (0 != gimp_layer_get_apply_mask(l_layers_list[gfd->localframe_index]))
+          {
+            /* the layer has an active mask, apply the mask now
+             * because copying from the layer ignores the mask
+             */
+            gimp_layer_remove_mask(l_layers_list[gfd->localframe_index], GIMP_MASK_APPLY);
+          }
+          gimp_layer_resize_to_image_size(l_layers_list[gfd->localframe_index]);
+          gimp_edit_copy(l_layers_list[gfd->localframe_index]);
+          l_fsel_layer_id = gimp_edit_paste(gfd->layer_id, FALSE);  /* FALSE paste clear selection */
+          gimp_floating_sel_anchor(l_fsel_layer_id);
+       }
+       g_free (l_layers_list);
+    }
+  }
+  
+}  /* end p_stb_render_image_or_animimage */
+
+
+/* -------------------------------------------
+ * p_stb_render_movie (GAP_FRN_MOVIE)
+ * -------------------------------------------
+ * fetch frame from a videofile (gfd->framename contains the videofile name) 
+ */
+static void
+p_stb_render_movie(GapStbFetchData *gfd
+  , GapStoryRenderVidHandle *vidhand
+  , gint32 master_frame_nr
+  , gint32  vid_width, gint32  vid_height)
+{
+  gfd->tmp_image_id = -1;
+
+  if(gfd->frn_elem->gvahand == NULL)
+  {
+     /* before we open a new GVA videohandle, lets check
+      * if another element has already opened this videofile,
+      * and reuse the already open gvahand handle if possible
+      */
+     gfd->frn_elem->gvahand = p_try_to_steal_gvahand(vidhand
+                                                 , master_frame_nr
+                                                 , gfd->frn_elem->basename
+                                                 , gfd->frn_elem->exact_seek
+                                                 );
+     if(gfd->frn_elem->gvahand == NULL)
+     {
+       if(vidhand->preferred_decoder)
+       {
+         gfd->frn_elem->gvahand = GVA_open_read_pref(gfd->framename
+                                , gfd->frn_elem->seltrack
+                                , 1 /* aud_track */
+                                , vidhand->preferred_decoder
+                                , FALSE  /* use MMX if available (disable_mmx == FALSE) */
+                                );
+       }
+       else
+       {
+         gfd->frn_elem->gvahand = GVA_open_read(gfd->framename
+                                           ,gfd->frn_elem->seltrack
+                                           ,1 /* aud_track */
+                                           );
+       }
+
+       if(gfd->frn_elem->gvahand)
+       {
+         GVA_set_fcache_size(gfd->frn_elem->gvahand, GAP_STB_RENDER_GVA_FRAMES_TO_KEEP_CACHED);
+
+         gfd->frn_elem->gvahand->do_gimp_progress = vidhand->do_gimp_progress;
+         if(gfd->frn_elem->exact_seek == 1)
+         {
+           /* configure the GVA Procedures for exact (but slow) seek emulaion */
+           gfd->frn_elem->gvahand->emulate_seek = TRUE;
+         }
+       }
+     }
+
+  }
+
+  if(gfd->frn_elem->gvahand)
+  {
+     gint32 l_deinterlace;
+     gdouble l_threshold;
+     t_GVA_RetCode  l_fcr;
+
+     /* split delace value: integer part is deinterlace mode, rest is threshold */
+     p_split_delace_value(gfd->frn_elem->delace
+             , gfd->localframe_tween_rest
+             , &l_deinterlace
+             , &l_threshold
+             );
+
+
+     /* set image and layer in the gvahand structure invalid,
+      * to force creation of a new image in the following call of  GVA_frame_to_gimp_layer
+      */
+     gfd->frn_elem->gvahand->image_id = -1;
+     gfd->frn_elem->gvahand->layer_id = -1;
+
+
+     /* attempt to read frame from the GVA API internal framecache */
+
+     /* printf("\nST: before  GVA_debug_print_fcache (2) #:%d\n", (int)gfd->localframe_index );
+      * GVA_debug_print_fcache(gfd->frn_elem->gvahand);
+      * printf("ST: before  GVA_frame_to_gimp_layer (2) attempt cache read  #:%d\n", (int)gfd->localframe_index );
+      */
+
+     l_fcr = GVA_frame_to_gimp_layer(gfd->frn_elem->gvahand
+                       , TRUE                 /* delete_mode */
+                       , gfd->localframe_index   /* framenumber */
+                       , l_deinterlace
+                       , l_threshold
+                       );
+
+     if (l_fcr != GVA_RET_OK)
+     {
+       /* if no success, we try explicite read that frame  */
+       if(gfd->frn_elem->gvahand->current_seek_nr != gfd->localframe_index)
+       {
+         if(((gfd->frn_elem->gvahand->current_seek_nr + GAP_STB_RENDER_GVA_FRAMES_TO_KEEP_CACHED) > gfd->localframe_index)
+         &&  (gfd->frn_elem->gvahand->current_seek_nr < gfd->localframe_index ) )
+         {
+           /* near forward seek is performed by dummyreads to fill up the framecache
+            */
+           while(gfd->frn_elem->gvahand->current_seek_nr < gfd->localframe_index)
+           {
+             GVA_get_next_frame(gfd->frn_elem->gvahand);
+           }
+         }
+         else
+         {
+           if(vidhand->do_gimp_progress)
+           {
+              gimp_progress_init(_("Seek Inputvideoframe..."));
+           }
+           GVA_seek_frame(gfd->frn_elem->gvahand, (gdouble)gfd->localframe_index, GVA_UPOS_FRAMES);
+           if(vidhand->do_gimp_progress)
+           {
+              gimp_progress_init(_("Continue Encoding..."));
+           }
+        }
+       }
+
+       if(GVA_get_next_frame(gfd->frn_elem->gvahand) == GVA_RET_OK)
+       {
+         GVA_frame_to_gimp_layer(gfd->frn_elem->gvahand
+                         , TRUE   /* delete_mode */
+                         , gfd->localframe_index   /* framenumber */
+                         , l_deinterlace
+                         , l_threshold
+                         );
+       }
+     }
+     /* take the newly created image from gvahand stucture */
+     gfd->tmp_image_id = gfd->frn_elem->gvahand->image_id;
+     gfd->frn_elem->gvahand->image_id = -1;
+     gfd->frn_elem->gvahand->layer_id = -1;
+  }
+}  /* end p_stb_render_movie */
+
+
+/* -------------------------------------------
+ * p_stb_render_section (GAP_FRN_SECTION)
+ * -------------------------------------------
+ * handle section rendering (via recursive call)
+ */
+static void
+p_stb_render_section(GapStbFetchData *gfd
+  , GapStoryRenderVidHandle *vidhand
+  , gint32 master_frame_nr
+  , gint32  vid_width, gint32  vid_height
+  , const char *section_name)
+{
+  gint32 sub_layer_id;
+  gint32 sub_master_frame_nr;
+  const char *sub_section_name;
+  gboolean orig_do_progress;
+  gdouble  orig_progress;
+
+  if(gap_debug)
+  {
+    printf("SUB-SECTION: before RECURSIVE call\n");
+  }
+  orig_do_progress = vidhand->do_gimp_progress;
+  orig_progress = *vidhand->progress;
+  vidhand->do_gimp_progress = FALSE;
+  sub_section_name = gfd->framename;
+  sub_master_frame_nr = gfd->localframe_index;
+  gfd->tmp_image_id =
+     p_story_render_fetch_composite_image_private(vidhand
+                                           , sub_master_frame_nr
+                                           , vid_width
+                                           , vid_height
+                                           , NULL /* filtrmacro_file */
+                                           , &sub_layer_id
+                                           , sub_section_name
+                                           );
+
+  if(gap_debug)
+  {
+    printf("SUB-SECTION: after RECURSIVE call\n");
+  }
+  /* The recursive call of p_story_render_fetch_composite_image_private
+   * has set frn_list and aud_list to a sub_section.
+   * therefore switch back to current section after the call.
+   * furthermore restore progress settings.
+   */
+  p_select_section_by_name(vidhand, section_name);
+  vidhand->do_gimp_progress = orig_do_progress;
+  *vidhand->progress = orig_progress;
+
+}  /* end p_stb_render_section */
+
+
+/* -------------------------------------------
+ * p_stb_render_frame_images (GAP_FRN_FRAMES)
+ * -------------------------------------------
+ * gfd->framename  is one single imagefile out of a series of numbered imagefiles.
+ * (note that the gfd->framename is already full qualified 
+ *  and includes path name, numberpart and extension)
+ */
+static void
+p_stb_render_frame_images(GapStbFetchData *gfd, gint32 master_frame_nr)
+{
+  if(gap_debug)
+  {
+    printf("FRAME fetch gfd->framename: %s\n    ===> master:%d  from: %d to: %d\n"
+      ,gfd->framename
+      ,(int)master_frame_nr
+      ,(int)gfd->frn_elem->frame_from
+      ,(int)gfd->frn_elem->frame_to
+      );
+  }
+  gfd->tmp_image_id = gap_lib_load_image(gfd->framename);
+
+}  /* end p_stb_render_frame_images */
+
+/* -------------------------------------------
+ * p_stb_render_composite_image_postprocessing
+ * -------------------------------------------
+ * perform postprocessing on the composite frame image.
+ * this includes 
+ *  - convert to gray (only when fetching masks)
+ *  - optional applying the global filtermacro
+ *  - check size and scale (if filtermacro has changed size of the composite image)
+ *  - check layers and flatten in case there is more than one layer
+ * The result is a single layer ( gfd->layer_id ) in the composite image.
+ */
+static void
+p_stb_render_composite_image_postprocessing(GapStbFetchData *gfd
+  , GapStoryRenderVidHandle *vidhand
+  , gint32 master_frame_nr
+  , gint32  vid_width, gint32  vid_height
+  , char *filtermacro_file
+  , const char *section_name
+  )
+{
+  gint          l_nlayers;
+  gint32       *l_layers_list;
+
+  if(gfd->comp_image_id  < 0)
+  {
+    /* none of the tracks had a frame image on this master_frame_nr position
+     * create a blank image (VID_SILENNCE)
+     */
+    gfd->comp_image_id = p_create_unicolor_image(&gfd->layer_id
+                         , vid_width
+                         , vid_height
+                         , 0.0
+                         , 0.0
+                         , 0.0
+                         , 1.0
+                         );
+  }
+
+  if(vidhand->is_mask_handle == TRUE)
+  {
+    /* we are running as mask fetcher,
+     * therefore convert to GRAY image
+     */
+    if(gimp_image_base_type(gfd->comp_image_id) != GIMP_GRAY)
+    {
+      gimp_image_convert_grayscale(gfd->comp_image_id);
+    }
+  }
+
+  /* debug: disabled code to display a copy of the image */
+  if(1==0)
+  {
+    p_debug_dup_image(gfd->comp_image_id);
+  }
+
+
+  /* check the layerstack
+   */
+  l_layers_list = gimp_image_get_layers(gfd->comp_image_id, &l_nlayers);
+  if(l_layers_list != NULL)
+  {
+    gfd->layer_id = l_layers_list[0];
+    g_free (l_layers_list);
+  }
+
+
+  if((vidhand->is_mask_handle != TRUE)
+  && (section_name == NULL))
+  {
+    /* debug feature: save the multilayer composite frame
+     * before it is passed to the filtermacro
+     * (always off for mask fetching)
+     */
+    p_frame_backup_save(  GAP_VID_ENC_SAVE_MULTILAYER
+                      , gfd->comp_image_id
+                      , gfd->layer_id
+                      , master_frame_nr
+                      , TRUE               /* can be multilayer */
+                      );
+  }
+
+  if((l_nlayers > 1 )
+  || (gimp_drawable_has_alpha(gfd->layer_id)))
+  {
+     if(gap_debug)
+     {
+      printf("DEBUG: p_stb_render_composite_image_postprocessing flatten Composite image\n");
+     }
+
+     /* flatten current frame image (reduce to single layer) */
+     gfd->layer_id = gimp_image_flatten (gfd->comp_image_id);
+  }
+
+
+  /* execute filtermacro (optional if supplied) */
+  p_exec_filtermacro(gfd->comp_image_id
+                    , gfd->layer_id
+                    , filtermacro_file
+                    , NULL /* have no 2nd filtermacro_file_to for varying parametersets */
+                    , 0.0  /* current_step */
+                    , 1    /* total_steps */
+                    );
+
+  /* check again size and scale image to desired Videosize if needed */
+  if ((gimp_image_width(gfd->comp_image_id) != vid_width)
+  ||  (gimp_image_height(gfd->comp_image_id) != vid_height) )
+  {
+     if(gap_debug) printf("DEBUG: p_story_render_fetch_composite_image_private: scaling tmp image\n");
+
+     gimp_image_scale(gfd->comp_image_id, vid_width, vid_height);
+  }
+
+  /* check again for layerstack (macro could have add more layers)
+   * or there might be an alpha channel
+   */
+  l_layers_list = gimp_image_get_layers(gfd->comp_image_id, &l_nlayers);
+  if(l_layers_list != NULL)
+  {
+    gfd->layer_id = l_layers_list[0];
+    g_free (l_layers_list);
+  }
+  if((l_nlayers > 1 )
+  || (gimp_drawable_has_alpha(gfd->layer_id)))
+  {
+     if(gap_debug) printf("DEBUG: p_story_render_fetch_composite_image_private  FINAL flatten Composite image\n");
+
+      /* flatten current frame image (reduce to single layer) */
+      gfd->layer_id = gimp_image_flatten (gfd->comp_image_id);
+  }
+
+}  /* end p_stb_render_composite_image_postprocessing */
+
+
+
+
+/* -------------------------------------------
+ * p_stb_render_result_monitoring
+ * -------------------------------------------
+ *
+ */
+static void
+p_stb_render_result_monitoring(GapStbFetchData *gfd, gint32 master_frame_nr)
+{
+  /* debug feature: save the flattened composite as jpg frame  before it is passed to the encoder */
+  p_frame_backup_save(  GAP_VID_ENC_SAVE_FLAT
+                     , gfd->comp_image_id
+                     , gfd->layer_id
+                     , master_frame_nr
+                     , FALSE               /* is no multilayer, use jpeg */
+                     );
+
+  /* debug feature: monitor composite image while encoding */
+  p_encoding_monitor(GAP_VID_ENC_MONITOR
+                     , gfd->comp_image_id
+                     , gfd->layer_id
+                     , master_frame_nr
+                     );
+
+}  /* end p_stb_render_result_monitoring */
+
+
+
+/* --------------------------------------------
+ * p_story_render_fetch_composite_image_private
+ * --------------------------------------------
+ * this procedure builds the composite image for the fram number specified by master_frame_nr.
+ * Therefore all videotracks of the storyboard (specified via an already opened handle vidhand)
+ * are fetched as layers. The track number is the layerstack index.
+ * optional filtermacro processing is done for the separate layers (clip specific filtermacre)
+ * and for the composite image (global filtermacro)
+ */
 static gint32
 p_story_render_fetch_composite_image_private(GapStoryRenderVidHandle *vidhand
                     , gint32 master_frame_nr  /* starts at 1 */
@@ -4621,39 +5134,23 @@ p_story_render_fetch_composite_image_private(GapStoryRenderVidHandle *vidhand
                     , const char *section_name  /* NULL for main section */
                  )
 {
+  GapStbFetchData gapStbFetchData;
+  GapStbFetchData *gfd;
+
   gint    l_track;
   gint32    l_track_min;
   gint32    l_track_max;
-  gchar  *l_framename;
-  gdouble l_opacity;
-  gdouble l_scale_x;
-  gdouble l_scale_y;
-  gdouble l_move_x;
-  gdouble l_move_y;
-  GapStoryRenderFrameRangeElem *l_frn_elem;
 
-  gint32        l_comp_image_id;
-  gint32        l_tmp_image_id;
-  gint32        l_layer_id;
-  gint          l_nlayers;
-  gint32       *l_layers_list;
-  gint32        l_localframe_index;
-  gint32        l_local_stepcount;
-  gdouble       l_localframe_tween_rest;
-  gboolean      l_keep_proportions;
-  gboolean      l_fit_width;
-  gboolean      l_fit_height;
-  GapStoryRenderFrameType   l_frn_type;
-  char            *l_trak_filtermacro_file;
   gdouble l_red_f;
   gdouble l_green_f;
   gdouble l_blue_f;
   gdouble l_alpha_f;
 
-  l_localframe_tween_rest = 0.0;
-  l_comp_image_id   = -1;
-  l_tmp_image_id    = -1;
-  l_layer_id        = -1;
+  gfd = &gapStbFetchData;
+  gfd->localframe_tween_rest = 0.0;
+  gfd->comp_image_id   = -1;
+  gfd->tmp_image_id    = -1;
+  gfd->layer_id        = -1;
   *layer_id         = -1;
 
   if(gap_debug)
@@ -4688,7 +5185,7 @@ p_story_render_fetch_composite_image_private(GapStoryRenderVidHandle *vidhand
     }
   }
 
-   p_find_min_max_vid_tracknumbers(vidhand->frn_list, &l_track_min, &l_track_max);
+  p_find_min_max_vid_tracknumbers(vidhand->frn_list, &l_track_min, &l_track_max);
 
 
   /* reverse order, has the effect, that track 0 is processed as last track
@@ -4696,35 +5193,35 @@ p_story_render_fetch_composite_image_private(GapStoryRenderVidHandle *vidhand
    */
   for(l_track = MIN(GAP_STB_MAX_VID_INTERNAL_TRACKS, l_track_max); l_track >= MAX(0, l_track_min); l_track--)
   {
-    l_framename = p_fetch_framename(vidhand->frn_list
+    gfd->framename = p_fetch_framename(vidhand->frn_list
                  , master_frame_nr /* starts at 1 */
                  , l_track
-                 , &l_frn_type
-                 , &l_trak_filtermacro_file
-                 , &l_localframe_index   /* used only for ANIMIMAGE, SECTION and Videoframe Number, -1 for all other types */
-                 , &l_local_stepcount    /* nth frame within this clip */
-                 , &l_localframe_tween_rest  /* non integer part of local position (in case stepsize != 1) */
-                 , &l_keep_proportions
-                 , &l_fit_width
-                 , &l_fit_height
+                 , &gfd->frn_type
+                 , &gfd->trak_filtermacro_file
+                 , &gfd->localframe_index   /* used only for ANIMIMAGE, SECTION and Videoframe Number, -1 for all other types */
+                 , &gfd->local_stepcount    /* nth frame within this clip */
+                 , &gfd->localframe_tween_rest  /* non integer part of local position (in case stepsize != 1) */
+                 , &gfd->keep_proportions
+                 , &gfd->fit_width
+                 , &gfd->fit_height
                  , &l_red_f
                  , &l_green_f
                  , &l_blue_f
                  , &l_alpha_f
-                 , &l_opacity       /* output opacity 0.0 upto 1.0 */
-                 , &l_scale_x       /* output 0.0 upto 10.0 where 1.0 is 1:1 */
-                 , &l_scale_y       /* output 0.0 upto 10.0 where 1.0 is 1:1 */
-                 , &l_move_x        /* output -1.0 upto 1.0 where 0.0 is centered */
-                 , &l_move_y        /* output -1.0 upto 1.0 where 0.0 is centered */
-                 , &l_frn_elem      /* output selected to the relevant framerange element */
+                 , &gfd->opacity       /* output opacity 0.0 upto 1.0 */
+                 , &gfd->scale_x       /* output 0.0 upto 10.0 where 1.0 is 1:1 */
+                 , &gfd->scale_y       /* output 0.0 upto 10.0 where 1.0 is 1:1 */
+                 , &gfd->move_x        /* output -1.0 upto 1.0 where 0.0 is centered */
+                 , &gfd->move_y        /* output -1.0 upto 1.0 where 0.0 is centered */
+                 , &gfd->frn_elem      /* output selected to the relevant framerange element */
                  );
 
 
-     if((l_framename) || (l_frn_type == GAP_FRN_COLOR))
+     if((gfd->framename) || (gfd->frn_type == GAP_FRN_COLOR))
      {
-       if(l_frn_type == GAP_FRN_COLOR)
+       if(gfd->frn_type == GAP_FRN_COLOR)
        {
-           l_tmp_image_id = p_create_unicolor_image(&l_layer_id
+           gfd->tmp_image_id = p_create_unicolor_image(&gfd->layer_id
                                                 , vid_width
                                                 , vid_height
                                                 , l_red_f
@@ -4736,318 +5233,79 @@ p_story_render_fetch_composite_image_private(GapStoryRenderVidHandle *vidhand
        }
        else
        {
-         if(l_framename)
+         if(gfd->framename)
          {
-           if((l_frn_type == GAP_FRN_ANIMIMAGE)
-           || (l_frn_type == GAP_FRN_IMAGE))
+           if((gfd->frn_type == GAP_FRN_ANIMIMAGE)
+           || (gfd->frn_type == GAP_FRN_IMAGE))
            {
-             gint32 l_orig_image_id;
-
-             l_orig_image_id = gap_frame_fetch_orig_image(vidhand->ffetch_user_id
-                                   , l_framename            /* full filename of the image */
-                                   , TRUE /*  enable caching */
-                                  );
-
-             
-             
-             gimp_selection_none(l_orig_image_id);
-             if(l_frn_type == GAP_FRN_IMAGE)
-             {
-               l_layer_id = p_prepare_RGB_image(l_orig_image_id);
-               l_tmp_image_id = gimp_image_duplicate(l_orig_image_id);
-             }
-             else
-             {
-               /* GAP_FRN_ANIMIMAGE */
-               if(gap_debug)
-               {
-                 printf("ANIM fetch  l_localframe_index: %d master:%d  from: %d to: %d\n"
-                   ,(int)l_localframe_index
-                   ,(int)master_frame_nr
-                   ,(int)l_frn_elem->frame_from
-                   ,(int)l_frn_elem->frame_to
-                   );
-               }
-
-               l_tmp_image_id = p_create_unicolor_image(&l_layer_id
-                                                       , gimp_image_width(l_orig_image_id)
-                                                       , gimp_image_height(l_orig_image_id)
-                                                       , 0.0, 0.0, 0.0, 0.0);
-               gimp_layer_add_alpha(l_layer_id);
-               l_layers_list = gimp_image_get_layers(l_orig_image_id, &l_nlayers);
-               if(l_layers_list != NULL)
-               {
-                  if((l_localframe_index < l_nlayers)
-                  && (l_localframe_index >= 0))
-                  {
-                     gint32 l_fsel_layer_id;
-
-                     if(gap_debug)
-                     {
-                       printf("ANIM-IMG: layer_id: %d gimp_layer_get_apply_mask:%d\n"
-                          ,(int)l_layers_list[l_localframe_index]
-                          ,(int)gimp_layer_get_apply_mask(l_layers_list[l_localframe_index])
-                          );
-                     }
-
-
-                     gimp_drawable_set_visible(l_layers_list[l_localframe_index], TRUE);
-                     if (0 != gimp_layer_get_apply_mask(l_layers_list[l_localframe_index]))
-                     {
-                       /* the layer has an active mask, apply the mask now
-                        * because copying from the layer ignores the mask
-                        */
-                       gimp_layer_remove_mask(l_layers_list[l_localframe_index], GIMP_MASK_APPLY);
-                     }
-                     gimp_layer_resize_to_image_size(l_layers_list[l_localframe_index]);
-                     gimp_edit_copy(l_layers_list[l_localframe_index]);
-                     l_fsel_layer_id = gimp_edit_paste(l_layer_id, FALSE);  /* FALSE paste clear selection */
-                     gimp_floating_sel_anchor(l_fsel_layer_id);
-                  }
-                  g_free (l_layers_list);
-               }
-             }
+             p_stb_render_image_or_animimage(gfd, vidhand, master_frame_nr);
            }
            else
            {
-             if(l_frn_type == GAP_FRN_MOVIE)
+             if(gfd->frn_type == GAP_FRN_MOVIE)
              {
-               l_tmp_image_id = -1;
-
-               /* fetch frame from a videofile (l_framename contains the videofile name) */
-               if(l_frn_elem->gvahand == NULL)
-               {
-                  /* before we open a new GVA videohandle, lets check
-                   * if another element has already opened this videofile,
-                   * and reuse the already open gvahand handle if possible
-                   */
-                  l_frn_elem->gvahand = p_try_to_steal_gvahand(vidhand
-                                                              , master_frame_nr
-                                                              , l_frn_elem->basename
-                                                              , l_frn_elem->exact_seek
-                                                              );
-                  if(l_frn_elem->gvahand == NULL)
-                  {
-                    if(vidhand->preferred_decoder)
-                    {
-                      l_frn_elem->gvahand = GVA_open_read_pref(l_framename
-                                             , l_frn_elem->seltrack
-                                             , 1 /* aud_track */
-                                             , vidhand->preferred_decoder
-                                             , FALSE  /* use MMX if available (disable_mmx == FALSE) */
-                                             );
-                    }
-                    else
-                    {
-                      l_frn_elem->gvahand = GVA_open_read(l_framename
-                                                        ,l_frn_elem->seltrack
-                                                        ,1 /* aud_track */
-                                                        );
-                    }
-
-                    if(l_frn_elem->gvahand)
-                    {
-                      GVA_set_fcache_size(l_frn_elem->gvahand, GAP_STB_RENDER_GVA_FRAMES_TO_KEEP_CACHED);
-
-                      l_frn_elem->gvahand->do_gimp_progress = vidhand->do_gimp_progress;
-                      if(l_frn_elem->exact_seek == 1)
-                      {
-                        /* configure the GVA Procedures for exact (but slow) seek emulaion */
-                        l_frn_elem->gvahand->emulate_seek = TRUE;
-                      }
-                    }
-                  }
-
-
-               }
-
-               if(l_frn_elem->gvahand)
-               {
-                  gint32 l_deinterlace;
-                  gdouble l_threshold;
-                  t_GVA_RetCode  l_fcr;
-
-                  /* split delace value: integer part is deinterlace mode, rest is threshold */
-                  p_split_delace_value(l_frn_elem->delace
-                          , l_localframe_tween_rest
-                          , &l_deinterlace
-                          , &l_threshold
-                          );
-
-
-                  /* set image and layer in the gvahand structure invalid,
-                   * to force creation of a new image in the following call of  GVA_frame_to_gimp_layer
-                   */
-                  l_frn_elem->gvahand->image_id = -1;
-                  l_frn_elem->gvahand->layer_id = -1;
-
-
-                  /* attempt to read frame from the GVA API internal framecache */
-
-                  /* printf("\nST: before  GVA_debug_print_fcache (2) #:%d\n", (int)l_localframe_index );
-                   * GVA_debug_print_fcache(l_frn_elem->gvahand);
-                   * printf("ST: before  GVA_frame_to_gimp_layer (2) attempt cache read  #:%d\n", (int)l_localframe_index );
-                   */
-
-                  l_fcr = GVA_frame_to_gimp_layer(l_frn_elem->gvahand
-                                    , TRUE                 /* delete_mode */
-                                    , l_localframe_index   /* framenumber */
-                                    , l_deinterlace
-                                    , l_threshold
-                                    );
-
-                  if (l_fcr != GVA_RET_OK)
-                  {
-                    /* if no success, we try explicite read that frame  */
-                    if(l_frn_elem->gvahand->current_seek_nr != l_localframe_index)
-                    {
-                      if(((l_frn_elem->gvahand->current_seek_nr + GAP_STB_RENDER_GVA_FRAMES_TO_KEEP_CACHED) > l_localframe_index)
-                      &&  (l_frn_elem->gvahand->current_seek_nr < l_localframe_index ) )
-                      {
-                        /* near forward seek is performed by dummyreads to fill up the framecache
-                         */
-                        while(l_frn_elem->gvahand->current_seek_nr < l_localframe_index)
-                        {
-                          GVA_get_next_frame(l_frn_elem->gvahand);
-                        }
-                      }
-                      else
-                      {
-                        if(vidhand->do_gimp_progress)
-                        {
-                           gimp_progress_init(_("Seek Inputvideoframe..."));
-                        }
-                        GVA_seek_frame(l_frn_elem->gvahand, (gdouble)l_localframe_index, GVA_UPOS_FRAMES);
-                        if(vidhand->do_gimp_progress)
-                        {
-                           gimp_progress_init(_("Continue Encoding..."));
-                        }
-                     }
-                    }
-
-                    if(GVA_get_next_frame(l_frn_elem->gvahand) == GVA_RET_OK)
-                    {
-                      GVA_frame_to_gimp_layer(l_frn_elem->gvahand
-                                      , TRUE   /* delete_mode */
-                                      , l_localframe_index   /* framenumber */
-                                      , l_deinterlace
-                                      , l_threshold
-                                      );
-                    }
-                  }
-                  /* take the newly created image from gvahand stucture */
-                  l_tmp_image_id = l_frn_elem->gvahand->image_id;
-                  l_frn_elem->gvahand->image_id = -1;
-                  l_frn_elem->gvahand->layer_id = -1;
-               }
+               p_stb_render_movie(gfd, vidhand, master_frame_nr, vid_width, vid_height);
              }
              else
              {
-               if(l_frn_type == GAP_FRN_SECTION)
+               if(gfd->frn_type == GAP_FRN_SECTION)
                {
-                 gint32 sub_layer_id;
-                 gint32 sub_master_frame_nr;
-                 const char *sub_section_name;
-                 gboolean orig_do_progress;
-                 gdouble  orig_progress;
-
-                 if(gap_debug)
-                 {
-                   printf("SUB-SECTION: before RECURSIVE call\n");
-                 }
-                 orig_do_progress = vidhand->do_gimp_progress;
-                 orig_progress = *vidhand->progress;
-                 vidhand->do_gimp_progress = FALSE;
-                 sub_section_name = l_framename;
-                 sub_master_frame_nr = l_localframe_index;
-                 l_tmp_image_id =
-                    p_story_render_fetch_composite_image_private(vidhand
-                                                          , sub_master_frame_nr
-                                                          , vid_width
-                                                          , vid_height
-                                                          , NULL /* filtrmacro_file */
-                                                          , &sub_layer_id
-                                                          , sub_section_name
-                                                          );
-
-                 if(gap_debug)
-                 {
-                   printf("SUB-SECTION: after RECURSIVE call\n");
-                 }
-                 /* The recursive call of p_story_render_fetch_composite_image_private
-                  * has set frn_list and aud_list to a sub_section.
-                  * therefore switch back to current section after the call.
-                  * furthermore restore progress settings.
-                  */
-                 p_select_section_by_name(vidhand, section_name);
-                 vidhand->do_gimp_progress = orig_do_progress;
-                 *vidhand->progress = orig_progress;
+                 p_stb_render_section(gfd, vidhand, master_frame_nr, vid_width, vid_height, section_name);
                }
                else
                {
-                 /* GAP_FRN_FRAMES
-                  * (l_framename  is one single imagefile out of a series of numbered imagefiles)
-                  */
-                 if(gap_debug)
-                 {
-                   printf("FRAME fetch l_framename: %s\n    ===> master:%d  from: %d to: %d\n"
-                     ,l_framename
-                     ,(int)master_frame_nr
-                     ,(int)l_frn_elem->frame_from
-                     ,(int)l_frn_elem->frame_to
-                     );
-                 }
-                 l_tmp_image_id = gap_lib_load_image(l_framename);
+                 /* GAP_FRN_FRAMES */
+                 p_stb_render_frame_images(gfd, master_frame_nr);
                }
              }
            }
-           g_free(l_framename);
-           if(l_tmp_image_id < 0)
+           g_free(gfd->framename);
+           if(gfd->tmp_image_id < 0)
            {
               return -1;
            }
-           l_layer_id = p_prepare_RGB_image(l_tmp_image_id);
+           gfd->layer_id = p_prepare_RGB_image(gfd->tmp_image_id);
          }
        }
 
 
-       if(gap_debug) printf("p_prepare_RGB_image returned layer_id: %d, tmp_image_id:%d\n", (int)l_layer_id, (int)l_tmp_image_id);
+       if(gap_debug) printf("p_prepare_RGB_image returned layer_id: %d, tmp_image_id:%d\n", (int)gfd->layer_id, (int)gfd->tmp_image_id);
 
-       if(l_comp_image_id  < 0)
+       if(gfd->comp_image_id  < 0)
        {
-         if((l_opacity == 1.0)
-         && (l_scale_x == 1.0)
-         && (l_scale_y == 1.0)
-         && (l_move_x == 0.0)
-         && (l_move_y == 0.0)
-         && (l_fit_width)
-         && (l_fit_height)
-         && (!l_keep_proportions)
-         && (l_frn_elem->flip_request == GAP_STB_FLIP_NONE)
-         && (l_frn_elem->mask_name == NULL)
-         && (l_trak_filtermacro_file == NULL)
-         && (l_frn_type != GAP_FRN_ANIMIMAGE)
+         if((gfd->opacity == 1.0)
+         && (gfd->scale_x == 1.0)
+         && (gfd->scale_y == 1.0)
+         && (gfd->move_x == 0.0)
+         && (gfd->move_y == 0.0)
+         && (gfd->fit_width)
+         && (gfd->fit_height)
+         && (!gfd->keep_proportions)
+         && (gfd->frn_elem->flip_request == GAP_STB_FLIP_NONE)
+         && (gfd->frn_elem->mask_name == NULL)
+         && (gfd->trak_filtermacro_file == NULL)
+         && (gfd->frn_type != GAP_FRN_ANIMIMAGE)
          )
          {
            /* because there are no transformations in the first handled track,
             * we can save time and directly use the loaded tmp image as base for the composite image
             */
-           l_comp_image_id = l_tmp_image_id;
+           gfd->comp_image_id = gfd->tmp_image_id;
 
 
            /* scale image to desired Videosize */
-           if ((gimp_image_width(l_comp_image_id) != vid_width)
-           ||  (gimp_image_height(l_comp_image_id) != vid_height) )
+           if ((gimp_image_width(gfd->comp_image_id) != vid_width)
+           ||  (gimp_image_height(gfd->comp_image_id) != vid_height) )
            {
               if(gap_debug) printf("DEBUG: p_story_render_fetch_composite_image_private scaling composite image\n");
-              gimp_image_scale(l_comp_image_id, vid_width, vid_height);
+              gimp_image_scale(gfd->comp_image_id, vid_width, vid_height);
            }
          }
          else
          {
            /* create empty backgound */
            gint32 l_empty_layer_id;
-           l_comp_image_id = p_create_unicolor_image(&l_empty_layer_id
+           gfd->comp_image_id = p_create_unicolor_image(&l_empty_layer_id
                                 , vid_width
                                 , vid_height
                                 , 0.0
@@ -5058,159 +5316,58 @@ p_story_render_fetch_composite_image_private(GapStoryRenderVidHandle *vidhand
          }
        }
 
-       if(l_tmp_image_id != l_comp_image_id)
+       if(gfd->tmp_image_id != gfd->comp_image_id)
        {
-         p_transform_and_add_layer(l_comp_image_id, l_tmp_image_id, l_layer_id
-                                  ,l_keep_proportions
-                                  ,l_fit_width
-                                  ,l_fit_height
-                                  ,l_opacity
-                                  ,l_scale_x
-                                  ,l_scale_y
-                                  ,l_move_x
-                                  ,l_move_y
-                                  ,l_trak_filtermacro_file
-                                  ,l_frn_elem->flip_request
-                                  ,l_frn_elem
+         p_transform_and_add_layer(gfd->comp_image_id, gfd->tmp_image_id, gfd->layer_id
+                                  ,gfd->keep_proportions
+                                  ,gfd->fit_width
+                                  ,gfd->fit_height
+                                  ,gfd->opacity
+                                  ,gfd->scale_x
+                                  ,gfd->scale_y
+                                  ,gfd->move_x
+                                  ,gfd->move_y
+                                  ,gfd->trak_filtermacro_file
+                                  ,gfd->frn_elem->flip_request
+                                  ,gfd->frn_elem
                                   ,vidhand
-                                  ,l_local_stepcount
+                                  ,gfd->local_stepcount
                                    );
-         gap_image_delete_immediate(l_tmp_image_id);
+         gap_image_delete_immediate(gfd->tmp_image_id);
        }
 
      }
   }       /* end for loop over all video tracks */
 
-  if(l_comp_image_id  < 0)
-  {
-    /* none of the tracks had a frame image on this master_frame_nr position
-     * create a blank image (VID_SILENNCE)
-     */
-    l_comp_image_id = p_create_unicolor_image(&l_layer_id
-                         , vid_width
-                         , vid_height
-                         , 0.0
-                         , 0.0
-                         , 0.0
-                         , 1.0
-                         );
-  }
 
-  /* debug: disabled code to display a copy of the image */
-  if(1==0)
-  {
-    p_debug_dup_image(l_comp_image_id);
-  }
+  p_stb_render_composite_image_postprocessing(gfd
+          , vidhand, master_frame_nr
+          , vid_width, vid_height
+          , filtermacro_file
+          , section_name
+          );
 
 
-  if(vidhand->is_mask_handle == TRUE)
-  {
-    /* we are running as mask fetcher,
-     * therefore convert to GRAY image
-     */
-    if(gimp_image_base_type(l_comp_image_id) != GIMP_GRAY)
-    {
-      gimp_image_convert_grayscale(l_comp_image_id);
-    }
-  }
 
-  /* check the layerstack
-   */
-  l_layers_list = gimp_image_get_layers(l_comp_image_id, &l_nlayers);
-  if(l_layers_list != NULL)
-  {
-    l_layer_id = l_layers_list[0];
-    g_free (l_layers_list);
-  }
-
+  *layer_id = gfd->layer_id;
 
   if((vidhand->is_mask_handle != TRUE)
   && (section_name == NULL))
   {
-    /* debug feature: save the multilayer composite frame
-     * before it is passed to the filtermacro
-     * (always off for mask fetching)
-     */
-    p_frame_backup_save(  GAP_VID_ENC_SAVE_MULTILAYER
-                      , l_comp_image_id
-                      , l_layer_id
-                      , master_frame_nr
-                      , TRUE               /* can be multilayer */
-                      );
+    p_stb_render_result_monitoring(gfd, master_frame_nr);
   }
 
-  if((l_nlayers > 1 )
-  || (gimp_drawable_has_alpha(l_layer_id)))
+  if(gap_debug)
   {
-     if(gap_debug) printf("DEBUG: p_story_render_fetch_composite_image_private flatten Composite image\n");
-
-     /* flatten current frame image (reduce to single layer) */
-     l_layer_id = gimp_image_flatten (l_comp_image_id);
+     printf("p_story_render_fetch_composite_image_private END  master_frame_nr:%d  image_id:%d layer_id:%d\n"
+           , (int)master_frame_nr
+           , (int)gfd->comp_image_id
+           , (int)*layer_id );
   }
 
-  /* execute filtermacro (optional if supplied) */
-  p_exec_filtermacro(l_comp_image_id
-                    , l_layer_id
-                    , filtermacro_file
-                    , NULL /* have no filtermacro_file_to for varying parametersets */
-                    , 0.0  /* current_step */
-                    , 1    /* total_steps */
-                    );
-  /* check again size and scale image to desired Videosize if needed */
-  if ((gimp_image_width(l_comp_image_id) != vid_width)
-  ||  (gimp_image_height(l_comp_image_id) != vid_height) )
-  {
-     if(gap_debug) printf("DEBUG: p_story_render_fetch_composite_image_private: scaling tmp image\n");
-
-     gimp_image_scale(l_comp_image_id, vid_width, vid_height);
-  }
-
-  /* check again for layerstack (macro could have add more layers)
-   * or there might be an alpha channel
-   */
-  l_layers_list = gimp_image_get_layers(l_comp_image_id, &l_nlayers);
-  if(l_layers_list != NULL)
-  {
-    l_layer_id = l_layers_list[0];
-    g_free (l_layers_list);
-  }
-  if((l_nlayers > 1 )
-  || (gimp_drawable_has_alpha(l_layer_id)))
-  {
-     if(gap_debug) printf("DEBUG: p_story_render_fetch_composite_image_private  FINAL flatten Composite image\n");
-
-      /* flatten current frame image (reduce to single layer) */
-      l_layer_id = gimp_image_flatten (l_comp_image_id);
-  }
-
-
-  *layer_id =l_layer_id;
-
-  if((vidhand->is_mask_handle != TRUE)
-  && (section_name == NULL))
-  {
-    /* debug feature: save the flattened composite as jpg frame  before it is passed to the encoder */
-    p_frame_backup_save(  GAP_VID_ENC_SAVE_FLAT
-                        , l_comp_image_id
-                        , l_layer_id
-                        , master_frame_nr
-                        , FALSE               /* is no multilayer, use jpeg */
-                        );
-
-    /* debug feature: monitor composite image while encoding */
-    p_encoding_monitor(GAP_VID_ENC_MONITOR
-                    , l_comp_image_id
-                    , l_layer_id
-                    , master_frame_nr
-                    );
-  }
-
-  if(gap_debug) printf("p_story_render_fetch_composite_image_private END  master_frame_nr:%d  image_id:%d layer_id:%d\n", (int)master_frame_nr, (int)l_comp_image_id, (int)*layer_id );
-
-  return(l_comp_image_id);
+  return(gfd->comp_image_id);
 
 } /* end p_story_render_fetch_composite_image_private */
-
 
 
 /* -------------------------------------------------------------------

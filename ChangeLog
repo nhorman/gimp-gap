@@ -1,3 +1,9 @@
+2008-10-20 Wolfgang Hofer <hof@gimp.org>
+
+- refactoring of procedure p_story_render_fetch_composite_image_private
+
+   * gap/gap_story_render_processor.c
+
 2008-10-19 Wolfgang Hofer <hof@gimp.org>
 - fixed bug when closing clip properties dialog
   (the check for non-unique mask definition name must be restricted to
