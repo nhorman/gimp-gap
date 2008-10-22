@@ -344,6 +344,7 @@ static void       p_split_delace_value(gdouble delace
                       , gdouble localframe_tween_rest
                       , gint32 *deinterlace_ptr
                       , gdouble *threshold_ptr);
+static void       p_conditional_delace_drawable(GapStbFetchData *gfd, gint32 drawable_id);
 
 static void       p_stb_render_image_or_animimage(GapStbFetchData *gfd
                       , GapStoryRenderVidHandle *vidhand
@@ -4653,6 +4654,37 @@ p_split_delace_value(gdouble delace, gdouble localframe_tween_rest, gint32 *dein
 }  /* end p_split_delace_value */
 
 
+/* -------------------------------------------------------------------
+ * p_conditional_delace_drawable 
+ * -------------------------------------------------------------------
+ * general deinterlace handling for frames, images an animimages
+ * (except cliptype movie)
+ */
+static void
+p_conditional_delace_drawable(GapStbFetchData *gfd, gint32 drawable_id)
+{
+  gint32  l_deinterlace;
+  gdouble l_threshold;
+
+  if(gfd->frn_type == GAP_FRN_MOVIE)
+  {
+    /* deinterlace for cliptype movie is already handled by the API at fetching.
+     */
+    return;
+  }
+
+  /* split delace value: integer part is deinterlace mode, rest is threshold */
+  p_split_delace_value(gfd->frn_elem->delace
+             , gfd->localframe_tween_rest
+             , &l_deinterlace
+             , &l_threshold
+             );
+  if (l_deinterlace != 0)
+  {
+    GVA_delace_drawable(drawable_id, l_deinterlace, l_threshold);
+  }
+
+}  /* end p_conditional_delace_drawable */
 
 
 
@@ -5265,6 +5297,7 @@ p_story_render_fetch_composite_image_private(GapStoryRenderVidHandle *vidhand
               return -1;
            }
            gfd->layer_id = p_prepare_RGB_image(gfd->tmp_image_id);
+           p_conditional_delace_drawable(gfd, gfd->layer_id);
          }
        }
 

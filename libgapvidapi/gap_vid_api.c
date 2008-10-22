@@ -1817,6 +1817,43 @@ p_mix_rows( gint32 width
 
 
 /* ------------------------------------
+ * p_calculate_mix_threshold
+ * ------------------------------------
+ */
+static gint32
+p_calculate_mix_threshold(gdouble threshold)
+{
+  gint32  l_threshold;
+  gint32  l_mix_threshold;
+
+  /* expand threshold range from 0.0-1.0  to 0 - MIX_MAX_THRESHOLD */
+  threshold = CLAMP(threshold, 0.0, 1.0);
+  l_threshold = (gdouble)MIX_MAX_THRESHOLD * (threshold * threshold * threshold);
+  l_mix_threshold = CLAMP((gint32)l_threshold, 0, MIX_MAX_THRESHOLD);
+}
+
+
+/* ------------------------------------
+ * p_calculate_interpolate_flag
+ * ------------------------------------
+ */
+static gint32
+p_calculate_interpolate_flag(gint32 deinterlace)
+{
+  gint32  l_interpolate_flag;
+ 
+  l_interpolate_flag = 0;
+  if (deinterlace == 1)
+  {
+    l_interpolate_flag = 1;
+  }
+  return l_interpolate_flag;  
+}
+
+
+
+
+/* ------------------------------------
  * GVA_delace_frame
  * ------------------------------------
  * create a deinterlaced copy of the current frame
@@ -1839,77 +1876,192 @@ GVA_delace_frame(t_GVA_Handle *gvahand
                 , gdouble threshold
 		)
 {
-    guchar *l_framedata_copy;
-    guchar *l_row_ptr_dest;
-    gint32  l_row;
-    gint32  l_interpolate_flag;
-    gint32  l_row_bytewidth;
-    gint32  l_threshold;
-    gint32  l_mix_threshold;
+  guchar *l_framedata_copy;
+  guchar *l_row_ptr_dest;
+  gint32  l_row;
+  gint32  l_interpolate_flag;
+  gint32  l_row_bytewidth;
+  gint32  l_mix_threshold;
 
-    if(gvahand->fc_row_pointers == NULL)
+  if(gvahand->fc_row_pointers == NULL)
+  {
+    return (NULL);
+  }
+  l_row_bytewidth = gvahand->width * gvahand->frame_bpp;
+  l_framedata_copy = g_malloc(l_row_bytewidth * gvahand->height);
+
+
+  l_interpolate_flag = p_calculate_interpolate_flag(deinterlace);
+  l_mix_threshold = p_calculate_mix_threshold(threshold);
+
+  l_row_ptr_dest = l_framedata_copy;
+  for(l_row = 0; l_row < gvahand->height; l_row++)
+  {
+    if ((l_row & 1) == l_interpolate_flag)
     {
-      return (NULL);
-    }
-    l_row_bytewidth = gvahand->width * gvahand->frame_bpp;
-    l_framedata_copy = g_malloc(l_row_bytewidth * gvahand->height);
-
-
-    l_interpolate_flag = 0;
-    if (deinterlace == 1)
-    {
-      l_interpolate_flag = 1;
-    }
-    
-    /* expand threshold range from 0.0-1.0  to 0 - MIX_MAX_THRESHOLD */
-    threshold = CLAMP(threshold, 0.0, 1.0);
-    l_threshold = (gdouble)MIX_MAX_THRESHOLD * (threshold * threshold * threshold);
-    l_mix_threshold = CLAMP((gint32)l_threshold, 0, MIX_MAX_THRESHOLD);
-
-    l_row_ptr_dest = l_framedata_copy;
-    for(l_row = 0; l_row < gvahand->height; l_row++)
-    {
-      if ((l_row & 1) == l_interpolate_flag)
+      if(l_row == 0)
       {
-        if(l_row == 0)
-        {
-           /* we have no prvious row, so we just copy the next row */
-           memcpy(l_row_ptr_dest, gvahand->fc_row_pointers[1],  l_row_bytewidth);
-        }
-        else
-        {
-          if(l_row == gvahand->height -1)
-          {
-            /* we have no next row, so we just copy the prvious row */
-            memcpy(l_row_ptr_dest, gvahand->fc_row_pointers[gvahand->height -2],  l_row_bytewidth);
-          }
-          else
-          {
-            /* we have both prev and next row within valid range
-             * and can calculate an interpolated row
-             */
-            p_mix_rows ( gvahand->width
-                         , gvahand->frame_bpp
-                         , l_row_bytewidth
-                         , l_mix_threshold
-                         , gvahand->fc_row_pointers[l_row -1]
-                         , gvahand->fc_row_pointers[l_row +1]
-                         , l_row_ptr_dest
-                         );
-          }
-        }
+         /* we have no prvious row, so we just copy the next row */
+         memcpy(l_row_ptr_dest, gvahand->fc_row_pointers[1],  l_row_bytewidth);
       }
       else
       {
-        /* copy original row */
-        memcpy(l_row_ptr_dest, gvahand->fc_row_pointers[l_row],  l_row_bytewidth);
+        if(l_row == gvahand->height -1)
+        {
+          /* we have no next row, so we just copy the prvious row */
+          memcpy(l_row_ptr_dest, gvahand->fc_row_pointers[gvahand->height -2],  l_row_bytewidth);
+        }
+        else
+        {
+          /* we have both prev and next row within valid range
+           * and can calculate an interpolated row
+           */
+          p_mix_rows ( gvahand->width
+                       , gvahand->frame_bpp
+                       , l_row_bytewidth
+                       , l_mix_threshold
+                       , gvahand->fc_row_pointers[l_row -1]
+                       , gvahand->fc_row_pointers[l_row +1]
+                       , l_row_ptr_dest
+                       );
+        }
       }
-      l_row_ptr_dest += l_row_bytewidth;
+    }
+    else
+    {
+      /* copy original row */
+      memcpy(l_row_ptr_dest, gvahand->fc_row_pointers[l_row],  l_row_bytewidth);
+    }
+    l_row_ptr_dest += l_row_bytewidth;
+
+  }
+
+  return(l_framedata_copy);
+}  /* end GVA_delace_frame */
+
+
+/* ------------------------------------
+ * p_gva_deinterlace_drawable
+ * ------------------------------------
+ */
+static void
+p_gva_deinterlace_drawable (GimpDrawable *drawable, gint32 deinterlace, gdouble threshold)
+{
+  GimpPixelRgn  srcPR, destPR;
+  guchar       *dest;
+  guchar       *dest_buffer = NULL;
+  guchar       *upper;
+  guchar       *lower;
+  gint          row, col;
+  gint          x, y;
+  gint          width, height;
+  gint          bytes;
+  gint x2, y2;
+  gint32  l_row_bytewidth;
+  gint32  l_interpolate_flag;
+  gint32  l_mix_threshold;
+
+
+  l_interpolate_flag = p_calculate_interpolate_flag(deinterlace);
+  l_mix_threshold = p_calculate_mix_threshold(threshold);
+
+  bytes = drawable->bpp;
+
+  gimp_drawable_mask_bounds (drawable->drawable_id, &x, &y, &x2, &y2);
+  width  = x2 - x;
+  height = y2 - y;
+  l_row_bytewidth = width * drawable->bpp;
+  dest = g_new (guchar, l_row_bytewidth);
+
+  gimp_pixel_rgn_init (&destPR, drawable, x, y, width, height, TRUE, TRUE);
+
+  gimp_pixel_rgn_init (&srcPR, drawable,
+                       x, MAX (y - 1, 0),
+                       width, MIN (height + 1, drawable->height),
+                       FALSE, FALSE);
+
+  /*  allocate buffers for upper and lower row  */
+  upper = g_new (guchar, l_row_bytewidth);
+  lower = g_new (guchar, l_row_bytewidth);
+
+  for (row = y; row < y + height; row++)
+  {
+    /*  Only do interpolation if the row:
+     *  (1) Isn't one we want to keep
+     *  (2) Has both an upper and a lower row
+     *  Otherwise, just duplicate the source row
+     */
+    if (((row & 1) == l_interpolate_flag) &&
+        (row - 1 >= 0) && (row + 1 < drawable->height))
+    {
+      gimp_pixel_rgn_get_row (&srcPR, upper, x, row - 1, width);
+      gimp_pixel_rgn_get_row (&srcPR, lower, x, row + 1, width);
+ 
+      p_mix_rows ( width
+                 , drawable->bpp
+                 , l_row_bytewidth
+                 , l_mix_threshold
+                 , upper
+                 , lower
+                 , dest
+                 );
 
     }
+    else
+    {
+      /* copy current row 1:1 */
+      gimp_pixel_rgn_get_row (&srcPR, dest, x, row, width);
+    }
 
-    return(l_framedata_copy);
-}  /* end GVA_delace_frame */
+    gimp_pixel_rgn_set_row (&destPR, dest, x, row, width);
+  }
+
+
+  /*  update the deinterlaced region  */
+  gimp_drawable_flush (drawable);
+  gimp_drawable_merge_shadow (drawable->drawable_id, TRUE);
+  gimp_drawable_update (drawable->drawable_id, x, y, width, height);
+
+  g_free (lower);
+  g_free (upper);
+  g_free (dest);
+
+}  /* end p_gva_deinterlace_drawable */
+
+
+
+/* ------------------------------------
+ * GVA_delace_drawable
+ * ------------------------------------
+ * deinterlaced the specified drawable.
+ *
+ * IN: drawable_id     the drawable to be deinterlaced.
+ * IN: do_scale  FALSE: deliver frame at original size (ignore bpp, width and height parameters)
+ *               TRUE: deliver frame at size specified by width, height, bpp
+ *                     scaling is done fast in low quality 
+ * IN: deinterlace   0: no deinterlace (NOP), 1 pick odd lines, 2 pick even lines
+ * IN: threshold     0.0 hard, 1.0 smooth interpolation at deinterlacing
+ *                   threshold is ignored if do_scaing == TRUE
+ *
+ */
+void
+GVA_delace_drawable(gint32 drawable_id
+                , gint32 deinterlace
+                , gdouble threshold
+		)
+{
+  GimpDrawable      *drawable;
+
+  if (deinterlace != 0)
+  {
+    drawable = gimp_drawable_get(drawable_id);
+    if (drawable)
+    {
+      p_gva_deinterlace_drawable (drawable, deinterlace, threshold);
+      gimp_drawable_detach(drawable);
+    }
+  }
+}  /* end GVA_delace_drawable */
 
 
 /* ------------------------------------

@@ -426,6 +426,11 @@ guchar *       GVA_delace_frame(t_GVA_Handle *gvahand
                 , gint32 deinterlace
                 , gdouble threshold
 		);
+
+void           GVA_delace_drawable(gint32 drawable_id
+                , gint32 deinterlace
+                , gdouble threshold
+		);
 		
 gint32          GVA_percent_2_frame(gint32 total_frames, gdouble percent);
 gdouble         GVA_frame_2_percent(gint32 total_frames, gdouble framenr);

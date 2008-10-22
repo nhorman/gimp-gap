@@ -1,3 +1,11 @@
+2008-10-22 Wolfgang Hofer <hof@gimp.org>
+
+- implemented deinterlace support for all storyboard clip types.
+  (previous version did only support cliptype GAP_FRN_MOVIE)
+
+   * libgapvidapi/gap_vid_api.c [.h]
+   * gap/gap_story_render_processor.c
+
 2008-10-20 Wolfgang Hofer <hof@gimp.org>
 
 - refactoring of procedure p_story_render_fetch_composite_image_private
