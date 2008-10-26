@@ -3653,7 +3653,7 @@ gap_story_dlg_pw_update_mask_references(GapStbTabWidgets *tabw)
 
   for(pw = tabw->pw; pw != NULL; pw = (GapStbPropWidget *)pw->next)
   {
-    if(pw->is_mask_definition)
+    if ((pw->is_mask_definition) || (pw->pw_prop_dialog == NULL))
     {
       continue;
     }
@@ -3662,19 +3662,11 @@ gap_story_dlg_pw_update_mask_references(GapStbTabWidgets *tabw)
     {
       if(pw->stb_elem_refptr->mask_name)
       {
-        char *l_mask_name;
-
-
         if(gap_debug)
         {
           printf("\n\n\n ## gap_story_dlg_pw_update_mask_references\n");
           gap_story_debug_print_elem(pw->stb_elem_refptr);
         }
-
-        l_mask_name = g_strdup(pw->stb_elem_refptr->mask_name);
-        gtk_entry_set_text(GTK_ENTRY(pw->pw_mask_name_entry)
-            , l_mask_name);
-        g_free(l_mask_name);
         gap_story_pw_trigger_refresh_properties(pw);
       }
     }

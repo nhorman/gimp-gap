@@ -189,7 +189,11 @@ typedef struct GapStbPropWidget  /* nickname: pw */
   /* for mask handling */
   GtkWidget  *pw_mask_definition_name_label;
   gboolean   is_mask_definition;
-  GtkWidget  *pw_mask_name_entry;
+  GtkWidget  *pw_mask_name_entry;      /* relevant to enter mask definition */
+  GtkWidget  *mask_name_combo;         /* selected mask_name reference */ 
+  gint32 mask_name_combo_elem_count;
+  GtkWidget  *mask_anchor_label;
+  GtkWidget  *pingpong_label;
   GtkWidget  *pw_mask_enable_toggle;
   GtkWidget  *pw_mask_anchor_radio_button_arr[2];
   GtkObject  *pw_spinbutton_mask_stepsize_adj;

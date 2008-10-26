@@ -1,3 +1,26 @@
+2008-10-26 Wolfgang Hofer <hof@gimp.org>
+
+- storyboard properties: replaced mask_name entry by a conbo box
+  (restricts mask reference selections to the list of available mask definitions)
+
+- fixed a bug that rendered unitialized data in the mask preview of the 
+  storyboard properties dialog when adding a mask to a clip
+  that had no mask when the dialog was created.
+  
+  Happens when the 1st rendering of the preview has a desaturation_request
+  and the widget is not realized yet (has no window pointer).
+  In this case nothing is rendered, but subsequent repaint uses
+  uninitialized data.
+
+- fixed a bug that caused crash on attempt to propagate changes
+  to already closed (dead) propery dialogs
+  (GapStbPropWidget)
+  
+   * gap/gap_story_main.h
+   * gap/gap_story_dialog.c
+   * gap/gap_story_properties.c [.h]
+   * gap/gap_story_att_trans_dlg.c
+
 2008-10-22 Wolfgang Hofer <hof@gimp.org>
 
 - implemented deinterlace support for all storyboard clip types.

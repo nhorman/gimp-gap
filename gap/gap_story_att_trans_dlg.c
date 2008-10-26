@@ -266,6 +266,8 @@ p_attw_prop_response(GtkWidget *widget
         }
         attw->go_timertag = -1;
         attw->attw_prop_dialog = NULL;
+        attw->stb_elem_refptr = NULL;
+        attw->stb_refptr = NULL;
         gtk_widget_destroy(dlg);
       }
       break;
@@ -2942,9 +2944,16 @@ gap_story_att_stb_elem_properties_dialog ( GapStbTabWidgets *tabw
   /* check if already open */
   for(attw=tabw->attw; attw!=NULL; attw=(GapStbAttrWidget *)attw->next)
   {
-    if(attw->stb_elem_refptr->story_id == stb_elem->story_id)
+    if ((attw->attw_prop_dialog == NULL) || (attw->stb_elem_refptr == NULL))
     {
-      if(attw->attw_prop_dialog)
+      /* we found a dead element (that is already closed)
+       * reuse that element to open a new clip properties dialog window
+       */
+      break;
+    }
+    else
+    {
+      if(attw->stb_elem_refptr->story_id == stb_elem->story_id)
       {
         /* Properties for the selected element already open
          * bring the window to front
@@ -2952,10 +2961,6 @@ gap_story_att_stb_elem_properties_dialog ( GapStbTabWidgets *tabw
         gtk_window_present(GTK_WINDOW(attw->attw_prop_dialog));
         return ;
       }
-      /* we found a dead element (that is already closed)
-       * reuse that element to open a new clip properties dialog window
-       */
-      break;
     }
   }
 
