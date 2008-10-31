@@ -1,3 +1,7 @@
+2008-10-31  Sven Neumann  <sven@gimp.org>
+
+	* autogen.sh: also support automake 1.10.
+
 2008-10-26 Wolfgang Hofer <hof@gimp.org>
 
 - storyboard properties: replaced mask_name entry by a conbo box
