@@ -1,5 +1,11 @@
 2008-10-31  Sven Neumann  <sven@gimp.org>
 
+	* gap/gap_dbbrowser_utils.c: removed redeclaration of
+	gimp_proc_view_new(). This function is in libgimp since GIMP 2.4.
+	Declaring it here breaks the build with GIMP 2.6.
+
+2008-10-31  Sven Neumann  <sven@gimp.org>
+
 	* autogen.sh: also support automake 1.10.
 
 2008-10-26 Wolfgang Hofer <hof@gimp.org>
