@@ -2485,15 +2485,6 @@ p_create_shell_window (GapCmeGlobalParams *gpp)
   gtk_widget_show (cme__vbox_main);
   gtk_box_pack_start (GTK_BOX (cme__dialog_vbox1), cme__vbox_main, TRUE, TRUE, 0);
 
-  /* the encoder status frame is hidden until encoding starts
-   * it will be added as notebook tab later, when encoding is active.
-   * (see callback p_switch_gui_to_running_encoder_state)
-   */
-  frame = p_create_encoder_status_frame(gpp);
-  gpp->cme__encoder_status_frame = frame;
-  gtk_container_set_border_width (GTK_CONTAINER (frame), 4);
-  gtk_widget_show (frame);
-  
 
   /* the notebook with encoding options */
   notebook = gtk_notebook_new ();
@@ -2550,6 +2541,17 @@ p_create_shell_window (GapCmeGlobalParams *gpp)
                              , gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), 3)
 			     , label);
 
+  /* add the Encoding notebook tab */
+  label = gtk_label_new (_("Encoding"));
+  gtk_widget_show (label);
+  frame = p_create_encoder_status_frame(gpp);
+  gpp->cme__encoder_status_frame = frame;
+  gtk_widget_show (frame);
+  gtk_container_add (GTK_CONTAINER (notebook), frame);
+  gtk_container_set_border_width (GTK_CONTAINER (frame), 4);
+  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook)
+                            , gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), 4)
+			    , label);
 
 
   /* the output frame */

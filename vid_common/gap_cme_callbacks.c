@@ -165,8 +165,7 @@ p_drop_chache_and_start_video_encoder(GapCmeGlobalParams *gpp)
  * p_switch_gui_to_running_encoder_state
  * ------------------------------------------
  * disable video output entry and all existing notebook tabs,
- * and add the ncoder status frame
- * as last tab to the notebook
+ * except the last one (the encoder status frame)
  * (that is updated while encoder thread is running via polling)
  * then establish the encoding state.
  */
@@ -186,26 +185,14 @@ p_switch_gui_to_running_encoder_state(GapCmeGlobalParams *gpp)
   notebook = gpp->cme__notebook;
 
   gtk_widget_show(frame);
-  
-  gtk_container_set_border_width (GTK_CONTAINER (gpp->cme__encoder_status_frame), 4);
-  gtk_widget_show(gpp->cme__encoder_status_frame);
-
   npages = gtk_notebook_get_n_pages(notebook);
-  for (idx = 0; idx < npages; idx++)
+  for (idx = 0; idx < npages -1; idx++)
   {
     gtk_widget_set_sensitive(gtk_notebook_get_nth_page(notebook, idx), FALSE);
   }
 
-  /* add the Encoding notebook tab */
-  label = gtk_label_new (_("Encoding"));
-  gtk_widget_show (label);
-  gtk_widget_show (frame);
-  gtk_container_add (GTK_CONTAINER (notebook), frame);
-  gtk_container_set_border_width (GTK_CONTAINER (frame), 4);
-  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook)
-                            , gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), npages)
-			    , label);
-  gtk_notebook_set_current_page (GTK_NOTEBOOK (notebook), npages);
+  /* show last tab (-1) of the notbook */
+  gtk_notebook_set_current_page (GTK_NOTEBOOK (notebook), -1);
 
   gpp->video_encoder_run_state =  GAP_CME_ENC_RUN_STATE_RUNNING;
 }  /* end p_switch_gui_to_running_encoder_state */
