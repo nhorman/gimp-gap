@@ -141,6 +141,7 @@ query ()
     {GIMP_PDB_INT32,  "input_mode", "0 ... image is one of the frames to encode, range_from/to params refere to numberpart of the other frameimages on disc. \n"
                                     "1 ... image is multilayer, range_from/to params refere to layer index. \n"
 				    "2 ... image is ignored, input is specified by storyboard_file parameter."},
+    {GIMP_PDB_INT32, "master_encoder_id", "id of the master encoder that called this plug-in (typically the pid)"},
   };
   static int nargs_avi_enc = sizeof(args_avi_enc) / sizeof(args_avi_enc[0]);
 
@@ -481,6 +482,8 @@ run (const gchar *name,          /* name of plugin */
         if (param[13].data.d_string[0] != '\0') { g_snprintf(gpp->val.filtermacro_file, sizeof(gpp->val.filtermacro_file), "%s", param[13].data.d_string); }
         if (param[14].data.d_string[0] != '\0') { g_snprintf(gpp->val.storyboard_file, sizeof(gpp->val.storyboard_file), "%s", param[14].data.d_string); }
         if (param[15].data.d_int32 >= 0) { gpp->val.input_mode   =    param[15].data.d_int32; }
+        
+        gpp->val.master_encoder_id = param[16].data.d_int32;
       }
 
       if (values[0].data.d_status == GIMP_PDB_SUCCESS)
@@ -637,6 +640,7 @@ p_avi_encode(GapGveAviGlobalParams *gpp)
   gint32   l_video_frame_chunk_size;
   gint32   l_video_frame_chunk_hdr_size;
   gboolean l_dont_recode_frames;
+  GapGveMasterEncoderStatus encStatus;
 
 #ifdef ENABLE_LIBXVIDCORE
   GapGveXvidControl      *xvid_control = NULL;
@@ -662,6 +666,7 @@ p_avi_encode(GapGveAviGlobalParams *gpp)
      printf("  input_mode: %d\n", gpp->val.input_mode);
 
      printf("  codec_name:%s:\n", epp->codec_name);
+     printf("  master_encoder_id:%d:\n", gpp->val.master_encoder_id);
   }
 
   l_maxSizeOfRawFrame = p_dimSizeOfRawFrame(gpp);
@@ -678,17 +683,20 @@ p_avi_encode(GapGveAviGlobalParams *gpp)
   l_video_frame_chunk_hdr_size = 0;
   l_dont_recode_frames = FALSE;
 
+
   /* make list of frameranges */
-  { gint32 l_total_framecount;
-  l_vidhand = gap_gve_story_open_vid_handle (gpp->val.input_mode
-                                       ,gpp->val.image_ID
-				       ,gpp->val.storyboard_file
-                                       ,gpp->ainfo.basename
-                                       ,gpp->ainfo.extension
-                                       ,gpp->val.range_from
-                                       ,gpp->val.range_to
-                                       ,&l_total_framecount
-                                       );
+  {
+    gint32 l_total_framecount;
+    l_vidhand = gap_gve_story_open_vid_handle (gpp->val.input_mode
+                                         ,gpp->val.image_ID
+				         ,gpp->val.storyboard_file
+                                         ,gpp->ainfo.basename
+                                         ,gpp->ainfo.extension
+                                         ,gpp->val.range_from
+                                         ,gpp->val.range_to
+                                         ,&l_total_framecount
+                                         );
+    l_vidhand->do_gimp_progress = FALSE;
   }
 
   /* TODO check for overwrite */
@@ -704,7 +712,10 @@ p_avi_encode(GapGveAviGlobalParams *gpp)
   l_percentage = 0.0;
   if(gpp->val.run_mode == GIMP_RUN_INTERACTIVE)
   {
-    gimp_progress_init(_("AVI Video Encoding .."));
+    gap_gve_misc_initGapGveMasterEncoderStatus(&encStatus
+       , gpp->val.master_encoder_id
+       , abs(gpp->val.range_to - gpp->val.range_from) + 1   /* total_frames */
+       );
   }
 
 
@@ -1066,10 +1077,23 @@ p_avi_encode(GapGveAviGlobalParams *gpp)
 
 
     l_percentage += l_percentage_step;
-    if(gap_debug) printf("PROGRESS: %f\n", (float) l_percentage);
+    if(gap_debug)
+    {
+      printf("PROGRESS: %f\n", (float) l_percentage);
+    }
     if(gpp->val.run_mode == GIMP_RUN_INTERACTIVE)
     {
-      gimp_progress_update (l_percentage);
+      encStatus.frames_processed++;
+      encStatus.frames_encoded = l_cnt_encoded_frames;
+      encStatus.frames_copied_lossless = l_cnt_reused_frames;
+
+      gap_gve_misc_do_master_encoder_progress(&encStatus);
+    }
+
+    /* terminate on cancel reqeuset (CANCEL button was pressed in the master encoder dialog) */
+    if(gap_gve_misc_is_master_encoder_cancel_request(&encStatus))
+    {
+       break;
     }
 
     /* advance to next frame */
@@ -1105,10 +1129,12 @@ p_avi_encode(GapGveAviGlobalParams *gpp)
   }
 
   /* statistics */
-  printf("encoded       frames: %d\n", (int)l_cnt_encoded_frames);
-  printf("1:1 copied    frames: %d\n", (int)l_cnt_reused_frames);
-  printf("total handled frames: %d\n", (int)l_cnt_encoded_frames + l_cnt_reused_frames);
-
+  if(gap_debug)
+  {
+    printf("encoded       frames: %d\n", (int)l_cnt_encoded_frames);
+    printf("1:1 copied    frames: %d\n", (int)l_cnt_reused_frames);
+    printf("total handled frames: %d\n", (int)l_cnt_encoded_frames + l_cnt_reused_frames);
+  }
   g_free(l_video_chunk_ptr);
   return l_rc;
 }    /* end p_avi_encode */

@@ -32,6 +32,10 @@
 
 #include "libgimp/gimp.h"
 
+#include <sys/types.h>
+#include <unistd.h>
+
+
 
 typedef struct GapGveEncAInfo {
    long         first_frame_nr;
@@ -43,6 +47,17 @@ typedef struct GapGveEncAInfo {
    gdouble      framerate;
 } GapGveEncAInfo;
 
+
+typedef struct GapGveMasterEncoderStatus {                     /* nick:  */
+ /* Status for monitoring video encoding progress */
+  gint32 master_encoder_id;  /* typically the PID */
+  gint32 total_frames;
+  gint32 frames_processed;
+  gint32 frames_encoded;
+  gint32 frames_copied_lossless;
+} GapGveMasterEncoderStatus;
+
+
 /* --------------------------*/
 /* PROCEDURE DECLARATIONS    */
 /* --------------------------*/
@@ -50,6 +65,13 @@ typedef struct GapGveEncAInfo {
 
 void        gap_gve_misc_get_ainfo(gint32 image_ID, GapGveEncAInfo *ainfo);
 
+void        gap_gve_misc_initGapGveMasterEncoderStatus(GapGveMasterEncoderStatus *encStatus
+                                 , gint32 master_encoder_id, gint32 total_frames);
+void        gap_gve_misc_do_master_encoder_progress(GapGveMasterEncoderStatus *encStatus);
+gboolean    gap_gve_misc_is_master_encoder_cancel_request(GapGveMasterEncoderStatus *encStatus);
+
+void        gap_gve_misc_get_master_encoder_progress(GapGveMasterEncoderStatus *encStatus);
+void        gap_gve_misc_set_master_encoder_cancel_request(GapGveMasterEncoderStatus *encStatus, gboolean cancelRequest);
 
 
 extern int gap_debug;

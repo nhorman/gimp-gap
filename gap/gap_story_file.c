@@ -4923,7 +4923,7 @@ p_story_save_header(GapStoryBoard *stb, FILE *fp)
    }
 
   /* print PREFERRED_DECODER */
-  if(stb->preferred_decoder > 0)
+  if(stb->preferred_decoder)
   {
     if(*stb->preferred_decoder != '\0')
     {

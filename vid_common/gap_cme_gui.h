@@ -63,6 +63,11 @@ GtkWidget*	gap_cme_gui_create_fsv__fileselection (GapCmeGlobalParams *gpp);
 GtkWidget*	gap_cme_gui_create_fsb__fileselection (GapCmeGlobalParams *gpp);
 GtkWidget*	gap_cme_gui_create_fsa__fileselection (GapCmeGlobalParams *gpp);
 
+void            gap_cme_gui_update_encoder_status(GapCmeGlobalParams *gpp);
+gint32          gap_cme_gui_start_video_encoder(GapCmeGlobalParams *gpp);
+gint32          gap_cme_gui_start_video_encoder_as_thread(GapCmeGlobalParams *gpp);
+
+
 
 gint32 gap_cme_gui_master_encoder_dialog(GapCmeGlobalParams *gpp);
 

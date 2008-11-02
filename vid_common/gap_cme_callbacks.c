@@ -41,6 +41,176 @@
 #include "gap_gve_story.h"
 #include "gap_cme_callbacks.h"
 
+static void            p_start_encoder_status_poll_timer(GapCmeGlobalParams *gpp);
+static void            p_remove_encoder_status_poll_timer(GapCmeGlobalParams *gpp);
+static gint32          p_drop_chache_and_start_video_encoder(GapCmeGlobalParams *gpp);
+static void            on_encoder_status_poll_timer(gpointer   user_data);
+
+
+static void
+p_start_encoder_status_poll_timer(GapCmeGlobalParams *gpp)
+{
+  if(gpp)
+  {
+    gpp->encoder_status_poll_timertag =
+       (gint32) g_timeout_add(250, (GSourceFunc) on_encoder_status_poll_timer, gpp);
+  }
+}
+static void
+p_remove_encoder_status_poll_timer(GapCmeGlobalParams *gpp)
+{
+  if(gpp)
+  {
+    if(gpp->encoder_status_poll_timertag >= 0)
+    {
+      g_source_remove(gpp->encoder_status_poll_timertag);
+      gpp->productive_encoder_timertag = -1;
+    }
+  }
+}
+
+static void
+on_encoder_status_poll_timer(gpointer   user_data)
+{
+  GapCmeGlobalParams *gpp;
+
+  if(gap_debug)
+  {
+    printf("\n on_encoder_status_poll_timer: START\n");
+  }
+
+  gpp = (GapCmeGlobalParams *)user_data;
+  
+  if(gpp)
+  {
+    p_remove_encoder_status_poll_timer(gpp);
+    gap_cme_gui_update_encoder_status(gpp);
+    
+    if(gpp->video_encoder_run_state == GAP_CME_ENC_RUN_STATE_RUNNING)
+    {
+      /* restart timer for next poll cycle */
+      p_start_encoder_status_poll_timer(gpp);
+    }
+  }
+  
+}  /* end on_encoder_status_poll_timer */
+
+static void
+on_productive_encoder_start(gpointer   user_data)
+{
+  GapCmeGlobalParams *gpp;
+
+  if(gap_debug)
+  {
+    printf("\n on_productive_encoder_start: START\n");
+  }
+
+  gpp = (GapCmeGlobalParams *)user_data;
+  
+  if(gpp)
+  {
+    if(gpp->productive_encoder_timertag >= 0)
+    {
+      if(gap_debug)
+      {
+        printf("MAIN on_productive_encoder_start remove productive_encoder_timertag:%d\n", (int)gpp->productive_encoder_timertag);
+      }
+      g_source_remove(gpp->productive_encoder_timertag);
+      gpp->productive_encoder_timertag = -1;
+    }
+
+    if(gap_debug)
+    {
+      printf("MAIN on_productive_encoder_start VIDEO ENCODER START ------------------\n");
+    }
+
+    gap_cme_gui_start_video_encoder_as_thread(gpp);
+
+
+    if(gap_debug)
+    {
+      printf("MAIN on_productive_encoder_start VIDEO ENCODER finished ------------------\n");
+    }
+    p_start_encoder_status_poll_timer(gpp);
+  }
+  
+}  /* end on_productive_encoder_start */
+
+/* ----------------------------------------
+ * p_drop_chache_and_start_video_encoder
+ * ----------------------------------------
+ */
+static gint32
+p_drop_chache_and_start_video_encoder(GapCmeGlobalParams *gpp)
+{
+  /* delete images in the cache
+   * (the cache may have been filled while parsing
+   * storyboard file in the common dialog
+   */
+  gap_gve_story_drop_image_cache();
+  if(gap_debug)
+  {
+    printf("MAIN after gap_gve_story_drop_image_cache ------------------\n");
+  }
+
+  /* start timer (encoder start after 800 millisecs) */
+  gpp->productive_encoder_timertag =
+    (gint32) g_timeout_add(800, (GSourceFunc) on_productive_encoder_start, gpp);
+
+
+}  /* end p_drop_chache_and_start_video_encoder */
+
+
+/* ------------------------------------------
+ * p_switch_gui_to_running_encoder_state
+ * ------------------------------------------
+ * disable video output entry and all existing notebook tabs,
+ * and add the ncoder status frame
+ * as last tab to the notebook
+ * (that is updated while encoder thread is running via polling)
+ * then establish the encoding state.
+ */
+static void
+p_switch_gui_to_running_encoder_state(GapCmeGlobalParams *gpp)
+{
+  GtkWidget *label;
+  GtkWidget *frame;
+  GtkWidget *notebook;
+  gint idx;
+  gint npages;
+ 
+  gtk_widget_set_sensitive(gpp->cme__entry_video, FALSE);
+  gtk_widget_set_sensitive(gpp->cme__button_video_filesel, FALSE);
+
+  frame = gpp->cme__encoder_status_frame;
+  notebook = gpp->cme__notebook;
+
+  gtk_widget_show(frame);
+  
+  gtk_container_set_border_width (GTK_CONTAINER (gpp->cme__encoder_status_frame), 4);
+  gtk_widget_show(gpp->cme__encoder_status_frame);
+
+  npages = gtk_notebook_get_n_pages(notebook);
+  for (idx = 0; idx < npages; idx++)
+  {
+    gtk_widget_set_sensitive(gtk_notebook_get_nth_page(notebook, idx), FALSE);
+  }
+
+  /* add the Encoding notebook tab */
+  label = gtk_label_new (_("Encoding"));
+  gtk_widget_show (label);
+  gtk_widget_show (frame);
+  gtk_container_add (GTK_CONTAINER (notebook), frame);
+  gtk_container_set_border_width (GTK_CONTAINER (frame), 4);
+  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook)
+                            , gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), npages)
+			    , label);
+  gtk_notebook_set_current_page (GTK_NOTEBOOK (notebook), npages);
+
+  gpp->video_encoder_run_state =  GAP_CME_ENC_RUN_STATE_RUNNING;
+}  /* end p_switch_gui_to_running_encoder_state */
+
+
 /* ------------------------------------------------------ */
 /* BEGIN callbacks                                        */
 /* ------------------------------------------------------ */
@@ -67,30 +237,53 @@ on_cme__response (GtkWidget *widget,
     case GTK_RESPONSE_OK:
       if(gpp)
       {
-        if(gpp->val.gui_proc_thread)
+        switch(gpp->video_encoder_run_state)
         {
-          if(gap_cme_gui_check_gui_thread_is_active(gpp)) return;
+          case GAP_CME_ENC_RUN_STATE_READY:
+            if(gpp->val.gui_proc_thread)
+            {
+              if(gap_cme_gui_check_gui_thread_is_active(gpp))
+              {
+                return;
+              }
+            }
+            if(gpp->ow__dialog_window != NULL)
+            {
+              /* Overwrite dialog is already open
+               * but the User pressed the OK button in the qte main dialog again.
+               */
+              gtk_window_present(GTK_WINDOW(gpp->ow__dialog_window));
+              return;
+            }
+            if(FALSE == gap_cme_gui_check_encode_OK (gpp))
+            {
+              return;  /* can not start, illegal parameter value combinations */
+            }
+            gpp->val.run = TRUE;
+            p_switch_gui_to_running_encoder_state(gpp);
+            p_drop_chache_and_start_video_encoder(gpp);
+            return;
+            break;
+          case GAP_CME_ENC_RUN_STATE_RUNNING:
+            return;  /* ignore further clicks on OK button while encoder is running */
+            break;
+          case GAP_CME_ENC_RUN_STATE_FINISHED:
+            /* close the master encoder window if OK button clicked after while encoder has finished */
+            break;
         }
-        if(gpp->ow__dialog_window != NULL)
-        {
-          /* Overwrite dialog is already open
-           * but the User pressed the OK button in the qte main dialog again.
-           */
-          gtk_window_present(GTK_WINDOW(gpp->ow__dialog_window));
-          return;
-        }
-        if(FALSE == gap_cme_gui_check_encode_OK (gpp))
-        {
-          return;  /* can not start, illegal parameter value combinations */
-        }
-        gpp->val.run = TRUE;
-      }
+      }  
+      
+
       /* now run into the default case, to close the shell_window (dont break) */
+      
     default:
       dialog = NULL;
       if(gpp)
       {
+        gap_gve_misc_set_master_encoder_cancel_request(&gpp->encStatus, TRUE);
+
         gap_cme_gui_remove_poll_timer(gpp);
+        p_remove_encoder_status_poll_timer(gpp);
         dialog = gpp->shell_window;
         if(dialog)
         {
@@ -99,6 +292,7 @@ on_cme__response (GtkWidget *widget,
         }
       }
       gtk_main_quit ();
+
       break;
   }
 }  /* end on_cme__response */
@@ -142,6 +336,9 @@ on_cme__combo_enocder  (GtkWidget     *widget,
                , l_ecp->menu_name
                , l_ecp->vid_enc_plugin);
      }
+
+    gtk_label_set_text(GTK_LABEL(gpp->cme__label_active_encoder_name), l_ecp->menu_name);
+
      /* copy the selected ecp record */
      memcpy(&gpp->val.ecp_sel, l_ecp, sizeof(GapGveEncList));
      gap_cme_gui_upd_wgt_sensitivity(gpp);

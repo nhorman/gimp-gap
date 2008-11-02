@@ -97,5 +97,128 @@ gap_gve_misc_get_ainfo(gint32 image_ID, GapGveEncAInfo *ainfo)
 
 
 
+/* ---------------------------------
+ * p_snprintf_master_encoder_progress_keyname
+ * ---------------------------------
+ *
+ */
+static void
+p_snprintf_master_encoder_progress_keyname(char *key, gint32 key_max_size, gint32 master_encoder_id)
+{
+  g_snprintf(key, key_max_size, "GAP_MASTER_ENCODER_PROGRESS_%d", (int)master_encoder_id);
+}
 
+static void
+p_snprintf_master_encoder_cancel_keyname(char *key, gint32 key_max_size, gint32 master_encoder_id)
+{
+  g_snprintf(key, key_max_size, "GAP_MASTER_ENCODER_CANCEL_%d", (int)master_encoder_id);
+}
+
+
+/* ------------------------------------------
+ * gap_gve_misc_initGapGveMasterEncoderStatus
+ * ---------................-----------------
+ * This pocedure is typically called at start of video encoding
+ */
+void
+gap_gve_misc_initGapGveMasterEncoderStatus(GapGveMasterEncoderStatus *encStatus
+   , gint32 master_encoder_id, gint32 total_frames)
+{
+  encStatus->master_encoder_id = master_encoder_id;
+  encStatus->total_frames = total_frames;
+  encStatus->frames_processed = 0;
+  encStatus->frames_encoded = 0;
+  encStatus->frames_copied_lossless = 0;
+//  encStatus->pidOfRunningEncoder = 0;
+
+  gap_gve_misc_do_master_encoder_progress(encStatus);
+}
+
+/* ----------------------------------------
+ * gap_gve_misc_do_master_encoder_progress
+ * ----------------------------------------
+ * This pocedure is typically called in video encoder plug-ins
+ * to report the current encoding status.
+ * (including the process id of the encoder plug-in)
+ */
+void
+gap_gve_misc_do_master_encoder_progress(GapGveMasterEncoderStatus *encStatus)
+{
+  char key[50];
+  
+  p_snprintf_master_encoder_progress_keyname(&key[0], sizeof(key), encStatus->master_encoder_id);
+  gimp_set_data(key, encStatus, sizeof(GapGveMasterEncoderStatus));
+}
+
+
+/* ---------------------------------------------
+ * gap_gve_misc_is_master_encoder_cancel_request
+ * ---------------------------------------------
+ * This pocedure is typically called in video encoder plug-ins
+ * to query for cancel request (Cancel button pressed in the master encoder)
+ */
+gboolean
+gap_gve_misc_is_master_encoder_cancel_request(GapGveMasterEncoderStatus *encStatus)
+{
+  char key[50];
+  gboolean cancelRequest;
+
+  cancelRequest = FALSE;
+  p_snprintf_master_encoder_cancel_keyname(&key[0], sizeof(key), encStatus->master_encoder_id);
+  if(gimp_get_data_size(key) == sizeof(gboolean))
+  {
+      gimp_get_data(key, &cancelRequest);
+  }
+  return (cancelRequest);
+}
+
+
+/* -----------------------------------------
+ * gap_gve_misc_get_master_encoder_progress
+ * -----------------------------------------
+ * This pocedure is typically called in the master encoder dialog
+ * to get the status of the running video encoder plug-in.
+ */
+void
+gap_gve_misc_get_master_encoder_progress(GapGveMasterEncoderStatus *encStatus)
+{
+  char key[50];
+  
+  p_snprintf_master_encoder_progress_keyname(&key[0], sizeof(key), encStatus->master_encoder_id);
+
+  if(gimp_get_data_size(key) == sizeof(GapGveMasterEncoderStatus))
+  {
+      if(gap_debug)
+      {
+        printf("p_gimp_get_data: key:%s\n", key);
+      }
+      gimp_get_data(key, encStatus);
+  }
+  else
+  {
+     if(gap_debug)
+     {
+       printf("ERROR: gimp_get_data key:%s failed\n", key);
+       printf("ERROR: gimp_get_data_size:%d  expected size:%d\n"
+             , (int)gimp_get_data_size(key)
+             , (int)sizeof(GapGveMasterEncoderStatus));
+     }
+  }
+}
+
+
+/* ----------------------------------------------
+ * gap_gve_misc_set_master_encoder_cancel_request
+ * ----------------------------------------------
+ * This pocedure is typically called in the master video encoder
+ * to request the already started video encoder plug-in to terminate.
+ */
+void
+gap_gve_misc_set_master_encoder_cancel_request(GapGveMasterEncoderStatus *encStatus, gboolean cancelRequest)
+{
+  char key[50];
+
+  p_snprintf_master_encoder_cancel_keyname(&key[0], sizeof(key), encStatus->master_encoder_id);
+  gimp_set_data(key, &cancelRequest, sizeof(gboolean));
+}
 

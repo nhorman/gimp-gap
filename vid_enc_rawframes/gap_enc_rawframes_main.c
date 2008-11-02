@@ -145,6 +145,7 @@ query ()
     {GIMP_PDB_INT32,  "input_mode", "0 ... image is one of the frames to encode, range_from/to params refere to numberpart of the other frameimages on disc. \n"
                                     "1 ... image is multilayer, range_from/to params refere to layer index. \n"
 				    "2 ... image is ignored, input is specified by storyboard_file parameter."},
+    {GIMP_PDB_INT32, "master_encoder_id", "id of the master encoder that called this plug-in (typically the pid)"},
   };
   static int nargs_raw_enc = sizeof(args_raw_enc) / sizeof(args_raw_enc[0]);
 
@@ -441,6 +442,8 @@ run (const gchar *name,          /* name of plugin */
         if (param[13].data.d_string[0] != '\0') { g_snprintf(gpp->val.filtermacro_file, sizeof(gpp->val.filtermacro_file), "%s", param[13].data.d_string); }
         if (param[14].data.d_string[0] != '\0') { g_snprintf(gpp->val.storyboard_file, sizeof(gpp->val.storyboard_file), "%s", param[14].data.d_string); }
         if (param[15].data.d_int32 >= 0) { gpp->val.input_mode   =    param[15].data.d_int32; }
+
+        gpp->val.master_encoder_id = param[16].data.d_int32;
       }
 
       if (values[0].data.d_status == GIMP_PDB_SUCCESS)
@@ -716,6 +719,7 @@ p_rawframe_encode(GapGveRawGlobalParams *gpp)
   gchar         *l_frame_fmt;      /* format string has one %d for the framenumber */
   gint32         l_out_frame_nr;
   GimpRunMode    l_save_runmode;
+  GapGveMasterEncoderStatus encStatus;
 
   //if(gap_debug)
   {
@@ -733,6 +737,7 @@ p_rawframe_encode(GapGveRawGlobalParams *gpp)
      printf("  image_ID: %d\n", (int)gpp->val.image_ID);
      printf("  storyboard_file: %s\n", gpp->val.storyboard_file);
      printf("  input_mode: %d\n", gpp->val.input_mode);
+     printf("  master_encoder_id:%d:\n", gpp->val.master_encoder_id);
   }
 
   l_maxSizeOfRawFrame = p_dimSizeOfRawFrame(gpp);
@@ -762,16 +767,18 @@ p_rawframe_encode(GapGveRawGlobalParams *gpp)
 
 
   /* make list of frameranges */
-  { gint32 l_total_framecount;
-  l_vidhand = gap_gve_story_open_vid_handle (gpp->val.input_mode
-                                       ,gpp->val.image_ID
-				       ,gpp->val.storyboard_file
-				       ,gpp->ainfo.basename
-                                       ,gpp->ainfo.extension
-                                       ,gpp->val.range_from
-                                       ,gpp->val.range_to
-                                       ,&l_total_framecount
-                                       );
+  {
+    gint32 l_total_framecount;
+    l_vidhand = gap_gve_story_open_vid_handle (gpp->val.input_mode
+                                         ,gpp->val.image_ID
+				         ,gpp->val.storyboard_file
+				         ,gpp->ainfo.basename
+                                         ,gpp->ainfo.extension
+                                         ,gpp->val.range_from
+                                         ,gpp->val.range_to
+                                         ,&l_total_framecount
+                                         );
+    l_vidhand->do_gimp_progress = FALSE;
   }
 
   /* TODO check for overwrite */
@@ -782,7 +789,10 @@ p_rawframe_encode(GapGveRawGlobalParams *gpp)
   l_percentage = 0.0;
   if(gpp->val.run_mode == GIMP_RUN_INTERACTIVE)
   {
-    gimp_progress_init(_("Rawframes Video Eextract .."));
+    gap_gve_misc_initGapGveMasterEncoderStatus(&encStatus
+       , gpp->val.master_encoder_id
+       , abs(gpp->val.range_to - gpp->val.range_from) + 1   /* total_frames */
+       );
   }
 
 
@@ -920,7 +930,17 @@ p_rawframe_encode(GapGveRawGlobalParams *gpp)
     if(gap_debug) printf("PROGRESS: %f\n", (float) l_percentage);
     if(gpp->val.run_mode == GIMP_RUN_INTERACTIVE)
     {
-      gimp_progress_update (l_percentage);
+      encStatus.frames_processed++;
+      encStatus.frames_encoded = l_cnt_encoded_frames;
+      encStatus.frames_copied_lossless = l_cnt_reused_frames;
+
+      gap_gve_misc_do_master_encoder_progress(&encStatus);
+    }
+
+    /* terminate on cancel reqeuset (CANCEL button was pressed in the master encoder dialog) */
+    if(gap_gve_misc_is_master_encoder_cancel_request(&encStatus))
+    {
+       break;
     }
 
     /* advance to next frame */
@@ -940,9 +960,12 @@ p_rawframe_encode(GapGveRawGlobalParams *gpp)
   }
 
   /* statistics */
-  printf("encoded       frames: %d\n", (int)l_cnt_encoded_frames);
-  printf("1:1 copied    frames: %d\n", (int)l_cnt_reused_frames);
-  printf("total handled frames: %d\n", (int)l_cnt_encoded_frames + l_cnt_reused_frames);
+  if(gap_debug)
+  {
+    printf("encoded       frames: %d\n", (int)l_cnt_encoded_frames);
+    printf("1:1 copied    frames: %d\n", (int)l_cnt_reused_frames);
+    printf("total handled frames: %d\n", (int)l_cnt_encoded_frames + l_cnt_reused_frames);
+  }
 
   return l_rc;
 }  /* end p_rawframe_encode */

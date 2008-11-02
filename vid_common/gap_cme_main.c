@@ -171,137 +171,8 @@ query ()
 }       /* end query */
 
 
-/* ----------------------------------------
- * p_call_encoder_procedure
- * ----------------------------------------
- */
-static gint
-p_call_encoder_procedure(GapCmeGlobalParams *gpp)
-{
-  GimpParam* l_params;
-  gint   l_retvals;
-  gint             l_nparams;
-  gint             l_nreturn_vals;
-  GimpPDBProcType   l_proc_type;
-  gchar            *l_proc_blurb;
-  gchar            *l_proc_help;
-  gchar            *l_proc_author;
-  gchar            *l_proc_copyright;
-  gchar            *l_proc_date;
-  GimpParamDef    *l_paramdef;
-  GimpParamDef    *l_return_vals;
-  char *l_msg;
-  gint  l_use_encoderspecific_params;
-  gint  l_rc;
-  gchar            *l_16bit_wav_file;
-  gint32           dummy_layer_id;
-
-  l_rc = -1;
-
-  l_use_encoderspecific_params = 0;  /* run with default values */
 
 
-  if(gpp->val.ecp_sel.vid_enc_plugin[0] == '\0')
-  {
-     printf("p_call_encoder_procedure: No encoder available (exit)\n");
-     return -1;
-  }
-
-  if(gpp->val.ecp_sel.gui_proc[0] != '\0')
-  {
-    l_use_encoderspecific_params = 1;  /* run with encoder specific values */
-  }
-
-  if(gap_debug)
-  {
-     printf("p_call_encoder_procedure %s: START\n", gpp->val.ecp_sel.vid_enc_plugin);
-     printf("  videoname: %s\n", gpp->val.videoname);
-     printf("  audioname1: %s\n", gpp->val.audioname1);
-     printf("  basename: %s\n", gpp->ainfo.basename);
-     printf("  extension: %s\n", gpp->ainfo.extension);
-     printf("  range_from: %d\n", (int)gpp->val.range_from);
-     printf("  range_to: %d\n", (int)gpp->val.range_to);
-     printf("  framerate: %f\n", (float)gpp->val.framerate);
-     printf("  samplerate: %d\n", (int)gpp->val.samplerate);
-     printf("  wav_samplerate: %d\n", (int)gpp->val.wav_samplerate1);
-     printf("  vid_width: %d\n", (int)gpp->val.vid_width);
-     printf("  vid_height: %d\n", (int)gpp->val.vid_height);
-     printf("  vid_format: %d\n", (int)gpp->val.vid_format);
-     printf("  image_ID: %d\n", (int)gpp->val.image_ID);
-     printf("  l_use_encoderspecific_params: %d\n", (int)l_use_encoderspecific_params);
-     printf("  filtermacro_file: %s\n", gpp->val.filtermacro_file);
-     printf("  storyboard_file: %s\n", gpp->val.storyboard_file);
-     printf("  input_mode: %d\n", gpp->val.input_mode);
-  }
-
-  if(FALSE == gimp_procedural_db_proc_info (gpp->val.ecp_sel.vid_enc_plugin,
-                          &l_proc_blurb,
-                          &l_proc_help,
-                          &l_proc_author,
-                          &l_proc_copyright,
-                          &l_proc_date,
-                          &l_proc_type,
-                          &l_nparams,
-                          &l_nreturn_vals,
-                          &l_paramdef,
-                          &l_return_vals))
-  {
-     l_msg = g_strdup_printf(_("Required Plugin %s not available"), gpp->val.ecp_sel.vid_enc_plugin);
-     if(gpp->val.run_mode == GIMP_RUN_INTERACTIVE)
-     {
-       g_message(l_msg);
-     }
-     g_free(l_msg);
-     return -1;
-  }
-
-  l_16bit_wav_file = &gpp->val.audioname1[0];
-  if(gpp->val.tmp_audfile[0] != '\0')
-  {
-     l_16bit_wav_file = &gpp->val.tmp_audfile[0];
-  }
-
-
-  /* generic call of GAP video encoder plugin */
-  dummy_layer_id = gap_image_get_any_layer(gpp->val.image_ID);
-  l_params = gimp_run_procedure (gpp->val.ecp_sel.vid_enc_plugin,
-                     &l_retvals,
-                     GIMP_PDB_INT32,  gpp->val.run_mode,
-                     GIMP_PDB_IMAGE,  gpp->val.image_ID,
-                     GIMP_PDB_DRAWABLE, dummy_layer_id,
-                     GIMP_PDB_STRING, gpp->val.videoname,
-                     GIMP_PDB_INT32,  gpp->val.range_from,
-                     GIMP_PDB_INT32,  gpp->val.range_to,
-                     GIMP_PDB_INT32,  gpp->val.vid_width,
-                     GIMP_PDB_INT32,  gpp->val.vid_height,
-                     GIMP_PDB_INT32,  gpp->val.vid_format,
-                     GIMP_PDB_FLOAT,  gpp->val.framerate,
-                     GIMP_PDB_INT32,  gpp->val.samplerate,
-                     GIMP_PDB_STRING, l_16bit_wav_file,
-                     GIMP_PDB_INT32,  l_use_encoderspecific_params,
-                     GIMP_PDB_STRING, gpp->val.filtermacro_file,
-                     GIMP_PDB_STRING, gpp->val.storyboard_file,
-                     GIMP_PDB_INT32,  gpp->val.input_mode,
-                     GIMP_PDB_END);
-  if(l_params[0].data.d_status == GIMP_PDB_SUCCESS)
-  {
-    l_rc = 0;
-  }
-  g_free(l_params);
-
-  if(l_rc < 0)
-  {
-     l_msg = g_strdup_printf(_("Call of Required Plugin %s failed"), gpp->val.ecp_sel.vid_enc_plugin);
-     if(gpp->val.run_mode == GIMP_RUN_INTERACTIVE)
-     {
-       g_message(l_msg);
-     }
-     g_free(l_msg);
-  }
-
-
-  return (l_rc);
-}  /* end p_call_encoder_procedure */
 
 /* ----------------------------------------
  * gap_cme_main_get_global_params
@@ -396,7 +267,10 @@ run (const gchar *name,          /* name of plugin */
 
       if (gpp->val.run_mode == GIMP_RUN_NONINTERACTIVE)
       {
-        if (n_params == GAP_VENC_NUM_STANDARD_PARAM)
+        /* the masterencoder is called without the master_encoder_id parameter
+         * (therefore its number of arguments is GAP_VENC_NUM_STANDARD_PARAM -1)
+         */
+        if (n_params >= GAP_VENC_NUM_STANDARD_PARAM -1)
         {
 	  l_copy_parameters = TRUE;
         }
@@ -409,7 +283,7 @@ run (const gchar *name,          /* name of plugin */
       {
 	if(gpp->val.run_mode == GIMP_RUN_INTERACTIVE)
 	{
-          if (n_params == GAP_VENC_NUM_STANDARD_PARAM)
+          if (n_params >= GAP_VENC_NUM_STANDARD_PARAM -1)
           {
 	    l_copy_parameters = TRUE;
 	  }
@@ -459,19 +333,18 @@ run (const gchar *name,          /* name of plugin */
          if(gpp->val.run_mode == GIMP_RUN_INTERACTIVE)
          {
             if(gap_debug) printf("MAIN before gap_cme_gui_master_encoder_dialog ------------------\n");
+            
+            /* note that the dialog alrady performs the encoding (as worker thread)
+             */
             l_rc = gap_cme_gui_master_encoder_dialog (gpp);
+            
+            
             if(gap_debug) printf("MAIN after gap_cme_gui_master_encoder_dialog ------------------\n");
 	    if(l_rc < 0)
 	    {
               values[0].data.d_status = GIMP_PDB_CANCEL;
 	    }
 
-            /* delete images in the cache
-             * (the cache may have been filled while parsing
-             * storyboard file in the common dialog
-             */
-             gap_gve_story_drop_image_cache();
-            if(gap_debug) printf("MAIN after gap_gve_story_drop_image_cache ------------------\n");
          }
          else
          {
@@ -480,65 +353,9 @@ run (const gchar *name,          /* name of plugin */
              * but in noninteractive modes we have to resample now.
              */
             l_rc =   gap_gve_sox_chk_and_resample(&gpp->val);
-         }
-
-
-         if (l_rc >= 0 )
-         {
-            char *l_tmpname;
-            gint32 l_tmp_image_id;
-
-            l_tmpname = NULL;
-            l_tmp_image_id = -1;
-
-            if((gpp->ainfo.last_frame_nr - gpp->ainfo.first_frame_nr == 0)
-            && (gpp->val.storyboard_file[0] == '\0'))
+            if (l_rc >= 0 )
             {
-              char *l_current_name;
-
-              if((strcmp(gpp->ainfo.extension, ".xcf") == 0)
-              || (strcmp(gpp->ainfo.extension, ".xjt") == 0))
-              {
-                /* for xcf and xjt just save without making a temp copy */
-                l_tmpname = gimp_image_get_filename(gpp->val.image_ID);
-              }
-              else
-              {
-                /* prepare encoder params to run the encoder on the (saved) duplicate of the image */
-                g_snprintf(gpp->ainfo.basename, sizeof(gpp->ainfo.basename), "%s", l_tmpname);
-
-                /* save a temporary copy of the image */
-                l_tmp_image_id = gimp_image_duplicate(gpp->val.image_ID);
-
-                /* l_tmpname = gimp_temp_name("xcf"); */
-                l_current_name = gimp_image_get_filename(gpp->val.image_ID);
-                l_tmpname = g_strdup_printf("%s_temp_copy.xcf", l_current_name);
-                gimp_image_set_filename (l_tmp_image_id, l_tmpname);
-                gpp->ainfo.extension[0] = '\0';
-                gpp->val.image_ID = l_tmp_image_id;
-                g_free(l_current_name);
-              }
-
-              gimp_file_save(GIMP_RUN_NONINTERACTIVE
-                            , gpp->val.image_ID
-                            , 1 /* dummy layer_id */
-                            ,l_tmpname
-                            ,l_tmpname
-                            );
-
-            }
-
-            /* ------------------------------------------- HERE WE GO, start Video Encoder ---- */
-            l_rc = p_call_encoder_procedure(gpp);
-
-            if(l_tmp_image_id >= 0)
-            {
-              gap_image_delete_immediate(l_tmp_image_id);
-              g_remove(l_tmpname);
-            }
-            if(l_tmpname)
-            {
-              g_free(l_tmpname);
+               l_rc = gap_cme_gui_start_video_encoder(gpp);
             }
          }
 
@@ -547,13 +364,6 @@ run (const gchar *name,          /* name of plugin */
            g_remove(gpp->val.tmp_audfile);
          }
 
-         /* is the encoder specific gui_thread still open ? */
-         if(gpp->val.gui_proc_thread != NULL)
-         {
-            /* wait until thread exits */
-            g_thread_join(gpp->val.gui_proc_thread);
-	    gpp->val.gui_proc_thread = NULL;
-         }
       }
   }
   else

@@ -134,6 +134,7 @@ static GtkWidget*      create_ow__dialog (GapCmeGlobalParams *gpp);
 static void            p_input_mode_radio_callback(GtkWidget *widget, GapCmeGlobalParams *gpp);
 static void            p_create_input_mode_widgets(GtkWidget *table, int row, int col, GapCmeGlobalParams *gpp);
 
+static GtkWidget*      p_create_encoder_status_frame (GapCmeGlobalParams *gpp);
 static GtkWidget*      p_create_encode_extras_frame (GapCmeGlobalParams *gpp);
 static GtkWidget*      p_create_audiotool_cfg_frame (GapCmeGlobalParams *gpp);
 static GtkWidget*      p_create_audio_options_frame (GapCmeGlobalParams *gpp);
@@ -142,6 +143,7 @@ static GtkWidget*      p_create_video_options_frame (GapCmeGlobalParams *gpp);
 static GtkWidget*      p_create_shell_window (GapCmeGlobalParams *gpp);
 
 static gint            p_overwrite_dialog(GapCmeGlobalParams *gpp, gchar *filename, gint overwrite_mode);
+static gint            p_call_encoder_procedure(GapCmeGlobalParams *gpp);
 
 /* ----------------------------------------
  * p_gap_message
@@ -192,6 +194,7 @@ gap_cme_gui_check_gui_thread_is_active(GapCmeGlobalParams *gpp)
    }
    return (FALSE);
 }  /* end gap_cme_gui_check_gui_thread_is_active */
+
 
 /* ----------------------------------------
  * gap_cme_gui_pdb_call_encoder_gui_plugin
@@ -2478,10 +2481,23 @@ p_create_shell_window (GapCmeGlobalParams *gpp)
   gtk_widget_show (cme__dialog_vbox1);
 
   cme__vbox_main = gtk_vbox_new (FALSE, 0);
+  gpp->cme__vbox_main = cme__vbox_main;
   gtk_widget_show (cme__vbox_main);
   gtk_box_pack_start (GTK_BOX (cme__dialog_vbox1), cme__vbox_main, TRUE, TRUE, 0);
 
+  /* the encoder status frame is hidden until encoding starts
+   * it will be added as notebook tab later, when encoding is active.
+   * (see callback p_switch_gui_to_running_encoder_state)
+   */
+  frame = p_create_encoder_status_frame(gpp);
+  gpp->cme__encoder_status_frame = frame;
+  gtk_container_set_border_width (GTK_CONTAINER (frame), 4);
+  gtk_widget_show (frame);
+  
+
+  /* the notebook with encoding options */
   notebook = gtk_notebook_new ();
+  gpp->cme__notebook = notebook;
   gtk_widget_show (notebook);
   gtk_box_pack_start (GTK_BOX (cme__vbox_main), notebook, TRUE, TRUE, 0);
 
@@ -2537,12 +2553,14 @@ p_create_shell_window (GapCmeGlobalParams *gpp)
 
 
   /* the output frame */
-  frame = gimp_frame_new (_("Output"));
-  gtk_widget_show (frame);
-  gtk_box_pack_start (GTK_BOX (cme__vbox_main), frame, TRUE, TRUE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (frame), 4);
 
   /* the hbox */
+  frame = gimp_frame_new (_("Output"));
+  gtk_widget_show (frame);
+  gtk_box_pack_start (GTK_BOX (cme__vbox_main), frame, FALSE /* expand*/, TRUE /* fill */, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (frame), 4);
+
+
   hbox = gtk_hbox_new (FALSE, 0);
   gtk_widget_show (hbox);
   gtk_container_add (GTK_CONTAINER (frame), hbox);
@@ -2563,7 +2581,9 @@ p_create_shell_window (GapCmeGlobalParams *gpp)
                       gpp);
 
   /* the (output) video filebrowser button */
+  
   button = gtk_button_new_with_label (_("..."));
+  gpp->cme__button_video_filesel = button;
   gtk_widget_show (button);
   gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 0);
   gtk_widget_set_size_request (button, 80, -1);
@@ -2571,7 +2591,6 @@ p_create_shell_window (GapCmeGlobalParams *gpp)
   g_signal_connect (G_OBJECT (button), "clicked",
                       G_CALLBACK (on_cme__button_video_clicked),
                       gpp);
-
 
 
   /* the Status frame */
@@ -2644,6 +2663,136 @@ p_overwrite_dialog(GapCmeGlobalParams *gpp, gchar *filename, gint overwrite_mode
 }  /* end p_overwrite_dialog */
 
 
+/* ----------------------------------------
+ * p_create_encoder_status_frame
+ * ----------------------------------------
+ */
+static GtkWidget*
+p_create_encoder_status_frame (GapCmeGlobalParams *gpp)
+{
+  GtkWidget *frame;
+  GtkWidget *table;
+  GtkWidget *label;
+  GtkObject *adj;
+  GtkWidget *spinbutton;
+  GtkWidget *combo;
+  GtkWidget *button;
+  GtkWidget *entry;
+  gint       row;
+
+  frame = gimp_frame_new (_("Video Encoder Status"));
+
+
+  table = gtk_table_new (4, 2, FALSE);
+  gtk_widget_show (table);
+  gtk_container_add (GTK_CONTAINER (frame), table);
+  gtk_table_set_row_spacings (GTK_TABLE (table), 2);
+  gtk_table_set_col_spacings (GTK_TABLE (table), 2);
+
+
+  row = 0;
+
+  label = gtk_label_new (_("Active Encoder:"));
+  gtk_widget_show (label);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+  gtk_table_attach (GTK_TABLE (table), label, 0, 1, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+
+  label = gtk_label_new ("#");
+  gpp->cme__label_active_encoder_name          = label;
+  gtk_widget_show (label);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+  gtk_table_attach (GTK_TABLE (table), label, 1, 2, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  row++;
+
+  label = gtk_label_new (" ");
+  gtk_widget_show (label);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+  gtk_table_attach (GTK_TABLE (table), label, 0, 1, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  row++;
+
+  label = gtk_label_new (_("Total Frames:"));
+  gtk_widget_show (label);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+  gtk_table_attach (GTK_TABLE (table), label, 0, 1, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+
+  label = gtk_label_new ("1");
+  gpp->cme__label_enc_stat_frames_total          = label;
+  gtk_widget_show (label);
+  gtk_misc_set_alignment (GTK_MISC (label), 1.0, 0.5);
+  gtk_table_attach (GTK_TABLE (table), label, 1, 2, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  row++;
+
+
+  label = gtk_label_new (_("Frames Done:"));
+  gtk_widget_show (label);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+  gtk_table_attach (GTK_TABLE (table), label, 0, 1, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+
+  label = gtk_label_new ("0");
+  gpp->cme__label_enc_stat_frames_done          = label;
+  gtk_widget_show (label);
+  gtk_misc_set_alignment (GTK_MISC (label), 1.0, 0.5);
+  gtk_table_attach (GTK_TABLE (table), label, 1, 2, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  row++;
+
+
+  label = gtk_label_new (_("Frames Encoded:"));
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+  gtk_widget_show (label);
+  gtk_table_attach (GTK_TABLE (table), label, 0, 1, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+
+  label = gtk_label_new ("0");
+  gpp->cme__label_enc_stat_frames_encoded          = label;
+  gtk_widget_show (label);
+  gtk_misc_set_alignment (GTK_MISC (label), 1.0, 0.5);
+  gtk_table_attach (GTK_TABLE (table), label, 1, 2, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  row++;
+
+
+  label = gtk_label_new (_("Frames Copied (lossless):"));
+  gtk_widget_show (label);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+  gtk_table_attach (GTK_TABLE (table), label, 0, 1, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+
+  label = gtk_label_new ("0");
+  gpp->cme__label_enc_stat_frames_copied_lossless          = label;
+  gtk_widget_show (label);
+  gtk_misc_set_alignment (GTK_MISC (label), 1.0, 0.5);
+  gtk_table_attach (GTK_TABLE (table), label, 1, 2, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  return(frame);
+}  /* end p_create_encoder_status_frame */
 
 /* ----------------------------------------
  * p_create_encode_extras_frame
@@ -3583,6 +3732,361 @@ p_create_video_options_frame (GapCmeGlobalParams *gpp)
 
 
 /* ----------------------------------------
+ * p_call_encoder_procedure
+ * ----------------------------------------
+ */
+static gint
+p_call_encoder_procedure(GapCmeGlobalParams *gpp)
+{
+  GimpParam* l_params;
+  gint   l_retvals;
+  gint             l_nparams;
+  gint             l_nreturn_vals;
+  GimpPDBProcType   l_proc_type;
+  gchar            *l_proc_blurb;
+  gchar            *l_proc_help;
+  gchar            *l_proc_author;
+  gchar            *l_proc_copyright;
+  gchar            *l_proc_date;
+  GimpParamDef    *l_paramdef;
+  GimpParamDef    *l_return_vals;
+  char *l_msg;
+  gint  l_use_encoderspecific_params;
+  gint  l_rc;
+  gchar            *l_16bit_wav_file;
+  gint32           dummy_layer_id;
+
+  l_rc = -1;
+
+  l_use_encoderspecific_params = 0;  /* run with default values */
+
+
+  if(gpp->val.ecp_sel.vid_enc_plugin[0] == '\0')
+  {
+     printf("p_call_encoder_procedure: No encoder available (exit)\n");
+     return -1;
+  }
+
+  if(gpp->val.ecp_sel.gui_proc[0] != '\0')
+  {
+    l_use_encoderspecific_params = 1;  /* run with encoder specific values */
+  }
+
+  if(gap_debug)
+  {
+     printf("p_call_encoder_procedure %s: START\n", gpp->val.ecp_sel.vid_enc_plugin);
+     printf("  videoname: %s\n", gpp->val.videoname);
+     printf("  audioname1: %s\n", gpp->val.audioname1);
+     printf("  basename: %s\n", gpp->ainfo.basename);
+     printf("  extension: %s\n", gpp->ainfo.extension);
+     printf("  range_from: %d\n", (int)gpp->val.range_from);
+     printf("  range_to: %d\n", (int)gpp->val.range_to);
+     printf("  framerate: %f\n", (float)gpp->val.framerate);
+     printf("  samplerate: %d\n", (int)gpp->val.samplerate);
+     printf("  wav_samplerate: %d\n", (int)gpp->val.wav_samplerate1);
+     printf("  vid_width: %d\n", (int)gpp->val.vid_width);
+     printf("  vid_height: %d\n", (int)gpp->val.vid_height);
+     printf("  vid_format: %d\n", (int)gpp->val.vid_format);
+     printf("  image_ID: %d\n", (int)gpp->val.image_ID);
+     printf("  l_use_encoderspecific_params: %d\n", (int)l_use_encoderspecific_params);
+     printf("  filtermacro_file: %s\n", gpp->val.filtermacro_file);
+     printf("  storyboard_file: %s\n", gpp->val.storyboard_file);
+     printf("  input_mode: %d\n", gpp->val.input_mode);
+  }
+
+  if(FALSE == gimp_procedural_db_proc_info (gpp->val.ecp_sel.vid_enc_plugin,
+                          &l_proc_blurb,
+                          &l_proc_help,
+                          &l_proc_author,
+                          &l_proc_copyright,
+                          &l_proc_date,
+                          &l_proc_type,
+                          &l_nparams,
+                          &l_nreturn_vals,
+                          &l_paramdef,
+                          &l_return_vals))
+  {
+     l_msg = g_strdup_printf(_("Required Plugin %s not available"), gpp->val.ecp_sel.vid_enc_plugin);
+     if(gpp->val.run_mode == GIMP_RUN_INTERACTIVE)
+     {
+       g_message(l_msg);
+     }
+     g_free(l_msg);
+     return -1;
+  }
+
+  l_16bit_wav_file = &gpp->val.audioname1[0];
+  if(gpp->val.tmp_audfile[0] != '\0')
+  {
+     l_16bit_wav_file = &gpp->val.tmp_audfile[0];
+  }
+
+
+  /* generic call of GAP video encoder plugin */
+  dummy_layer_id = gap_image_get_any_layer(gpp->val.image_ID);
+  l_params = gimp_run_procedure (gpp->val.ecp_sel.vid_enc_plugin,
+                     &l_retvals,
+                     GIMP_PDB_INT32,  gpp->val.run_mode,
+                     GIMP_PDB_IMAGE,  gpp->val.image_ID,
+                     GIMP_PDB_DRAWABLE, dummy_layer_id,
+                     GIMP_PDB_STRING, gpp->val.videoname,
+                     GIMP_PDB_INT32,  gpp->val.range_from,
+                     GIMP_PDB_INT32,  gpp->val.range_to,
+                     GIMP_PDB_INT32,  gpp->val.vid_width,
+                     GIMP_PDB_INT32,  gpp->val.vid_height,
+                     GIMP_PDB_INT32,  gpp->val.vid_format,
+                     GIMP_PDB_FLOAT,  gpp->val.framerate,
+                     GIMP_PDB_INT32,  gpp->val.samplerate,
+                     GIMP_PDB_STRING, l_16bit_wav_file,
+                     GIMP_PDB_INT32,  l_use_encoderspecific_params,
+                     GIMP_PDB_STRING, gpp->val.filtermacro_file,
+                     GIMP_PDB_STRING, gpp->val.storyboard_file,
+                     GIMP_PDB_INT32,  gpp->val.input_mode,
+                     GIMP_PDB_INT32,  gpp->encStatus.master_encoder_id,
+                     GIMP_PDB_END);
+  if(l_params[0].data.d_status == GIMP_PDB_SUCCESS)
+  {
+    l_rc = 0;
+  }
+  g_free(l_params);
+
+  if(l_rc < 0)
+  {
+     l_msg = g_strdup_printf(_("Call of Required Plugin %s failed"), gpp->val.ecp_sel.vid_enc_plugin);
+     if(gpp->val.run_mode == GIMP_RUN_INTERACTIVE)
+     {
+       g_message(l_msg);
+     }
+     g_free(l_msg);
+  }
+
+
+  return (l_rc);
+}  /* end p_call_encoder_procedure */
+
+
+
+static void
+p_set_label_to_numeric_value(GtkWidget *label, gint32 value)
+{
+  char buffer[100];
+  
+  if(label)
+  {
+    g_snprintf(&buffer[0], sizeof(buffer), "%d", value);
+    gtk_label_set_text(GTK_LABEL(label), &buffer[0]);
+  }
+}
+
+/* ----------------------------------------
+ * gap_cme_gui_update_encoder_status
+ * ----------------------------------------
+ * 
+ */
+void
+gap_cme_gui_update_encoder_status(GapCmeGlobalParams *gpp)
+{
+  if(gap_debug)
+  {
+    printf("  gap_cme_gui_update_encoder_status -- frames_processed:%d\n"
+      , gpp->encStatus.frames_processed
+      );
+  }
+
+  if (gpp)
+  {
+    GtkWidget  *pbar;
+    gap_gve_misc_get_master_encoder_progress(&gpp->encStatus);
+
+    gtk_widget_show(gpp->cme__encoder_status_frame);
+  
+    p_set_label_to_numeric_value(gpp->cme__label_enc_stat_frames_total, gpp->encStatus.total_frames);
+    p_set_label_to_numeric_value(gpp->cme__label_enc_stat_frames_done, gpp->encStatus.frames_processed);
+    p_set_label_to_numeric_value(gpp->cme__label_enc_stat_frames_encoded, gpp->encStatus.frames_encoded);
+    p_set_label_to_numeric_value(gpp->cme__label_enc_stat_frames_copied_lossless, gpp->encStatus.frames_copied_lossless);
+
+    pbar = gpp->cme__progressbar_status;
+    if(pbar)
+    {
+      gdouble l_progress;
+      char *l_msg;
+      
+      l_progress = CLAMP((gdouble)gpp->encStatus.frames_processed / (gdouble)(MAX(1.0, gpp->encStatus.total_frames))
+                      , 0.0, 1.0
+                      );
+      
+      gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR (pbar), l_progress);
+      l_msg = g_strdup_printf(_("Video encoding %d of %d frames done")
+                             , gpp->encStatus.frames_processed
+                             , gpp->encStatus.total_frames
+                             );
+      gtk_progress_bar_set_text(GTK_PROGRESS_BAR(pbar), l_msg);
+      g_free(l_msg);
+    }
+  }
+}
+
+
+/* ----------------------------------------
+ * gap_cme_gui_start_video_encoder
+ * ----------------------------------------
+ * start the selected video encoder plug-in
+ */
+gint32
+gap_cme_gui_start_video_encoder(GapCmeGlobalParams *gpp)
+{
+   gint32     l_rc;
+   char *l_tmpname;
+   gint32 l_tmp_image_id;
+
+   l_tmpname = NULL;
+   l_tmp_image_id = -1;
+
+   if((gpp->ainfo.last_frame_nr - gpp->ainfo.first_frame_nr == 0)
+   && (gpp->val.storyboard_file[0] == '\0'))
+   {
+     char *l_current_name;
+
+     if((strcmp(gpp->ainfo.extension, ".xcf") == 0)
+     || (strcmp(gpp->ainfo.extension, ".xjt") == 0))
+     {
+       /* for xcf and xjt just save without making a temp copy */
+       l_tmpname = gimp_image_get_filename(gpp->val.image_ID);
+     }
+     else
+     {
+       /* prepare encoder params to run the encoder on the (saved) duplicate of the image */
+       g_snprintf(gpp->ainfo.basename, sizeof(gpp->ainfo.basename), "%s", l_tmpname);
+
+       /* save a temporary copy of the image */
+       l_tmp_image_id = gimp_image_duplicate(gpp->val.image_ID);
+
+       /* l_tmpname = gimp_temp_name("xcf"); */
+       l_current_name = gimp_image_get_filename(gpp->val.image_ID);
+       l_tmpname = g_strdup_printf("%s_temp_copy.xcf", l_current_name);
+       gimp_image_set_filename (l_tmp_image_id, l_tmpname);
+       gpp->ainfo.extension[0] = '\0';
+       gpp->val.image_ID = l_tmp_image_id;
+       g_free(l_current_name);
+     }
+
+     gimp_file_save(GIMP_RUN_NONINTERACTIVE
+                   , gpp->val.image_ID
+                   , 1 /* dummy layer_id */
+                   ,l_tmpname
+                   ,l_tmpname
+                   );
+
+   }
+
+   gap_gve_misc_initGapGveMasterEncoderStatus(&gpp->encStatus
+       , getpid() /* master_encoder_id */
+       , abs(gpp->val.range_to - gpp->val.range_from) + 1   /* total_frames */
+       );
+
+   /* ------------------------------------------- HERE WE GO, start Video Encoder ---- */
+   l_rc = p_call_encoder_procedure(gpp);
+   gpp->video_encoder_run_state =  GAP_CME_ENC_RUN_STATE_FINISHED;
+
+   if(l_tmp_image_id >= 0)
+   {
+     gap_image_delete_immediate(l_tmp_image_id);
+     g_remove(l_tmpname);
+   }
+   if(l_tmpname)
+   {
+     g_free(l_tmpname);
+   }
+   
+   return (l_rc);
+}  /* end gap_cme_gui_start_video_encoder */
+
+
+/* ----------------------------------------
+ * gap_cme_encoder_worker_thread
+ * ----------------------------------------
+ */
+gpointer
+gap_cme_encoder_worker_thread(gpointer data)
+{
+  GapCmeGlobalParams *gpp;
+
+  gpp = (GapCmeGlobalParams *) data;
+
+  if(gap_debug)
+  {
+    printf("THREAD: gap_cme_encoder_worker_thread &gpp: %d\n", (int)gpp);
+  }
+
+  gap_cme_gui_start_video_encoder(gpp);
+  
+  if(gap_debug)
+  {
+    printf("THREAD gap_cme_encoder_worker_thread TERMINATING: %d\n", (int)gpp->val.gui_proc_thread);
+  }
+
+  gpp->productive_encoder_thread = NULL;
+
+  return (NULL);
+}  /* end gap_cme_encoder_worker_thread */
+
+
+/* ----------------------------------------
+ * gap_cme_gui_start_video_encoder
+ * ----------------------------------------
+ * start the selected video encoder plug-in
+ */
+gint32
+gap_cme_gui_start_video_encoder_as_thread(GapCmeGlobalParams *gpp)
+{
+  gboolean joinable;
+  if(gpp->ecp == NULL)
+  {
+    return -1;
+  }
+
+#ifdef GAP_USE_GTHREAD
+  if(gpp->productive_encoder_thread != NULL)
+  {
+    return -1;
+  }
+
+  /* start a thread for asynchron PDB call of the gui_ procedure
+   */
+  if(gap_debug)
+  {
+    printf("MASTER: Before g_thread_create encode video worker\n");
+  }
+
+  joinable = TRUE;
+  gpp->productive_encoder_thread =
+      g_thread_create((GThreadFunc)gap_cme_encoder_worker_thread
+                     , gpp  /* data */
+		     , joinable
+		     , NULL  /* GError **error (NULL dont report errors) */
+		     );
+
+  if(gap_debug)
+  {
+    printf("MASTER: After g_thread_create encode video worker\n");
+  }
+#else
+  /* if threads are not used simply call the procedure
+   * (the common GUI window is not refreshed until the called gui_proc ends)
+   */
+  gap_cme_encoder_worker_thread(gpp);
+
+#endif
+
+  return 0;
+}  /* end gap_cme_gui_start_video_encoder_as_thread */
+
+
+
+
+
+
+/* ----------------------------------------
  * gap_cme_gui_master_encoder_dialog
  * ----------------------------------------
  * common GUI dialog
@@ -3622,6 +4126,15 @@ gap_cme_gui_master_encoder_dialog(GapCmeGlobalParams *gpp)
 
 
   /* ---------- dialog ----------*/
+  gap_gve_misc_initGapGveMasterEncoderStatus(&gpp->encStatus
+       , getpid()  /* master_encoder_id */
+       , 1         /* total_frames */
+       );
+  gap_gve_misc_set_master_encoder_cancel_request(&gpp->encStatus, FALSE);
+  gpp->video_encoder_run_state = GAP_CME_ENC_RUN_STATE_READY;
+  gpp->productive_encoder_thread = NULL;
+  gpp->productive_encoder_timertag = -1;
+  gpp->encoder_status_poll_timertag = -1;
   gpp->storyboard_create_composite_audio = FALSE;
   gpp->fsv__fileselection = NULL;
   gpp->fsb__fileselection = NULL;
@@ -3656,6 +4169,20 @@ gap_cme_gui_master_encoder_dialog(GapCmeGlobalParams *gpp)
   if(gap_debug) printf("A F T E R gtk_main run:%d\n", (int)gpp->val.run);
 
   gpp->shell_window = NULL;
+
+  /* is the encoder specific gui_thread still open ? */
+  if(gpp->val.gui_proc_thread != NULL)
+  {
+     /* wait until thread exits */
+     g_thread_join(gpp->val.gui_proc_thread);
+     gpp->val.gui_proc_thread = NULL;
+  }
+  if(gpp->productive_encoder_thread != NULL)
+  {
+     /* wait until thread exits */
+     g_thread_join(gpp->productive_encoder_thread);
+     gpp->productive_encoder_thread = NULL;
+  }
 
   if(gpp->val.run)
   {

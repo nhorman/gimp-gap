@@ -33,6 +33,9 @@
 #include <config.h>
 #include "gap_gvetypes.h"
 
+#include <sys/types.h>
+#include <unistd.h>
+
 #define GAP_CME_PLUGIN_NAME_VID_ENCODE_MASTER    "plug-in-gap-vid-encode-master"
 #define GAP_CME_PLUGIN_HELP_ID_VID_ENCODE_MASTER "plug-in-gap-vid-encode-master"
 
@@ -81,7 +84,12 @@
 #define GAP_CME_STANDARD_SAMPLERATE_MAX_ELEMENTS  9
 
 
-
+typedef enum
+{
+   GAP_CME_ENC_RUN_STATE_READY       = 0
+ , GAP_CME_ENC_RUN_STATE_RUNNING     = 1
+ , GAP_CME_ENC_RUN_STATE_FINISHED    = 2 
+} GapCmeEncoderRunState;
 
 typedef struct GapCmeGlobalParams {                    /* nick: gpp */
   GapGveCommonValues   val;
@@ -110,6 +118,7 @@ typedef struct GapCmeGlobalParams {                    /* nick: gpp */
   GtkWidget *cme__entry_sox_options;
   GtkWidget *cme__entry_stb;
   GtkWidget *cme__entry_video;
+  GtkWidget *cme__button_video_filesel;
   GtkWidget *cme__label_aud0_time;
   GtkWidget *cme__label_aud1_info;
   GtkWidget *cme__label_aud1_time;
@@ -146,6 +155,22 @@ typedef struct GapCmeGlobalParams {                    /* nick: gpp */
   GtkObject *cme__spinbutton_framerate_adj;
   GtkObject *cme__spinbutton_samplerate_adj;
 
+
+  GtkWidget *cme__notebook;
+  GtkWidget *cme__encoder_status_frame;
+  GtkWidget *cme__vbox_main;
+  GtkWidget *cme__label_enc_stat_frames_total;
+  GtkWidget *cme__label_enc_stat_frames_done;
+  GtkWidget *cme__label_enc_stat_frames_encoded;
+  GtkWidget *cme__label_enc_stat_frames_copied_lossless;
+  GtkWidget *cme__label_active_encoder_name;
+
+  GapCmeEncoderRunState  video_encoder_run_state;
+  gint32 productive_encoder_timertag;
+  gint32 encoder_status_poll_timertag;
+  GThread    *productive_encoder_thread; 
+  GapGveMasterEncoderStatus encStatus;
+  
 } GapCmeGlobalParams;
 
 GapCmeGlobalParams * gap_cme_main_get_global_params(void);

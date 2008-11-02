@@ -51,7 +51,7 @@
 
 
 
-#define GAP_VENC_NUM_STANDARD_PARAM 16
+#define GAP_VENC_NUM_STANDARD_PARAM 17
 
 /* SYTEM (UNIX) includes */
 #include <stdlib.h>
@@ -133,6 +133,8 @@ typedef struct GapGveCommonValues {                     /* nick: cval */
   gchar   filtermacro_file[256];
   gchar   storyboard_file[256];
   gint32  storyboard_total_frames;
+
+  gint32  master_encoder_id;  
 } GapGveCommonValues;
 
 

@@ -377,6 +377,7 @@ query ()
     {GIMP_PDB_INT32,  "input_mode", "0 ... image is one of the frames to encode, range_from/to params refere to numberpart of the other frameimages on disc. \n"
                                     "1 ... image is multilayer, range_from/to params refere to layer index. \n"
 				    "2 ... image is ignored, input is specified by storyboard_file parameter."},
+    {GIMP_PDB_INT32, "master_encoder_id", "id of the master encoder that called this plug-in (typically the pid)"},
   };
   static int nargs_ffmpeg_enc = sizeof(args_ffmpeg_enc) / sizeof(args_ffmpeg_enc[0]);
 
@@ -699,6 +700,8 @@ run (const gchar      *name,
         if (param[13].data.d_string[0] != '\0') { g_snprintf(gpp->val.filtermacro_file, sizeof(gpp->val.filtermacro_file), "%s", param[13].data.d_string); }
         if (param[14].data.d_string[0] != '\0') { g_snprintf(gpp->val.storyboard_file, sizeof(gpp->val.storyboard_file), "%s", param[14].data.d_string); }
         if (param[15].data.d_int32 >= 0) { gpp->val.input_mode   =    param[15].data.d_int32; }
+
+        gpp->val.master_encoder_id = param[16].data.d_int32;
       }
 
       if (values[0].data.d_status == GIMP_PDB_SUCCESS)
@@ -3093,6 +3096,7 @@ p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
   t_awk_array   l_awk_arr;
   t_awk_array   *awp;
   GapCodecNameElem    *l_vcodec_list;
+  GapGveMasterEncoderStatus encStatus;
 
 
   epp = &gpp->evl;
@@ -3124,6 +3128,7 @@ p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
      printf("  acodec_name: %s\n", epp->acodec_name);
      printf("  vcodec_name: %s\n", epp->vcodec_name);
      printf("  format_name: %s\n", epp->format_name);
+     printf("  master_encoder_id:%d:\n", gpp->val.master_encoder_id);
   }
 
   l_rc = 0;
@@ -3143,6 +3148,7 @@ p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
                                        );
 
     l_video_tracks = 1;
+    l_vidhand->do_gimp_progress = FALSE;
   }
 
   /* TODO check for overwrite (in case we are called non-interactive) */
@@ -3169,7 +3175,10 @@ p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
   l_percentage = 0.0;
   if(gpp->val.run_mode == GIMP_RUN_INTERACTIVE)
   {
-    gimp_progress_init(_("FFMPEG initializing for video encoding .."));
+    gap_gve_misc_initGapGveMasterEncoderStatus(&encStatus
+       , gpp->val.master_encoder_id
+       , abs(gpp->val.range_to - gpp->val.range_from) + 1   /* total_frames */
+       );
   }
 
 
@@ -3290,28 +3299,23 @@ p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
 
 
     l_percentage += l_percentage_step;
-    if(gap_debug) printf("PROGRESS: %f\n", (float) l_percentage);
+    if(gap_debug)
+    {
+      printf("PROGRESS: %f\n", (float) l_percentage);
+    }
     if(gpp->val.run_mode == GIMP_RUN_INTERACTIVE)
     {
-      char *msg;
+      encStatus.frames_processed++;
+      encStatus.frames_encoded = l_cnt_encoded_frames;
+      encStatus.frames_copied_lossless = l_cnt_reused_frames;
 
-      if (l_video_frame_chunk_size > 0)
-      {
-        msg = g_strdup_printf(_("FFMPEG lossless copy frame %d (%d)")
-                           ,(int)l_cnt_encoded_frames + l_cnt_reused_frames
-                           ,(int)l_max_master_frame_nr
-			   );
-      }
-      else
-      {
-        msg = g_strdup_printf(_("FFMPEG encoding frame %d (%d)")
-                           ,(int)l_cnt_encoded_frames + l_cnt_reused_frames
-                           ,(int)l_max_master_frame_nr
-			   );
-      }
-      gimp_progress_init(msg);
-      g_free(msg);
-      gimp_progress_update (l_percentage);
+      gap_gve_misc_do_master_encoder_progress(&encStatus);
+    }
+
+    /* terminate on cancel reqeuset (CANCEL button was pressed in the master encoder dialog) */
+    if(gap_gve_misc_is_master_encoder_cancel_request(&encStatus))
+    {
+       break;
     }
 
     /* advance to next frame */
@@ -3358,9 +3362,12 @@ p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
   }
 
   /* statistics */
-  printf("encoded       frames: %d\n", (int)l_cnt_encoded_frames);
-  printf("1:1 copied    frames: %d\n", (int)l_cnt_reused_frames);
-  printf("total handled frames: %d\n", (int)l_cnt_encoded_frames + l_cnt_reused_frames);
-
+  if(gap_debug)
+  {
+    printf("encoded       frames: %d\n", (int)l_cnt_encoded_frames);
+    printf("1:1 copied    frames: %d\n", (int)l_cnt_reused_frames);
+    printf("total handled frames: %d\n", (int)l_cnt_encoded_frames + l_cnt_reused_frames);
+  }
+  
   return l_rc;
 }    /* end p_ffmpeg_encode */
