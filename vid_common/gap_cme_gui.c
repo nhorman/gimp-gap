@@ -3875,6 +3875,13 @@ p_set_label_to_numeric_value(GtkWidget *label, gint32 value)
   {
     char *buffer;
     buffer = g_strdup_printf("%d", value);
+    /* repeat the right alingnment of the label
+     * (without this workaround my gtk version 2.10.14 shows just
+     * the highest digit of the number, probably because the size at creation time
+     * was only one character)
+     * 
+     */
+    gtk_misc_set_alignment (GTK_MISC (label), 1.0, 0.5);
     gtk_label_set_text(GTK_LABEL(label), buffer);
     gtk_misc_set_alignment (GTK_MISC (label), 1.0, 0.5);
     g_free(buffer);
