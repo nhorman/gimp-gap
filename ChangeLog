@@ -1,3 +1,15 @@
+2008-11-08 Wolfgang Hofer <hof@gimp.org>
+
+- bugfix Master Video Encoder.
+  The "Encoder" page labels were not updated as expected.
+  The labels did show just the highest digit (FramesDone  8   when 817 frema done ..)
+  maybe this is a gtk problem, but the fix 
+  in procedure p_set_label_to_numeric_value 
+  now repeats the gtk_misc_set_alignment call
+  to force refresh the alignment when the value changes.
+  
+   * vid_common/gap_cme_gui.c
+
 2008-11-02 Wolfgang Hofer <hof@gimp.org>
 
 - bugfix Master Video Encoder. The "Encoder" page of the notebook widget

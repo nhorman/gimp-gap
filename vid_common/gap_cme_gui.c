@@ -3871,12 +3871,13 @@ p_call_encoder_procedure(GapCmeGlobalParams *gpp)
 static void
 p_set_label_to_numeric_value(GtkWidget *label, gint32 value)
 {
-  char buffer[100];
-  
   if(label)
   {
-    g_snprintf(&buffer[0], sizeof(buffer), "%d", value);
-    gtk_label_set_text(GTK_LABEL(label), &buffer[0]);
+    char *buffer;
+    buffer = g_strdup_printf("%d", value);
+    gtk_label_set_text(GTK_LABEL(label), buffer);
+    gtk_misc_set_alignment (GTK_MISC (label), 1.0, 0.5);
+    g_free(buffer);
   }
 }
 
