@@ -1,3 +1,8 @@
+2008-11-27  Sven Neumann  <sven@gimp.org>
+
+	* configure.in: define GIMP_DISABLE_DEPRECATED when compiling
+	against GIMP 2.4 or GIMP 2.6.
+
 2008-11-08 Wolfgang Hofer <hof@gimp.org>
 
 - fix for the bugfix (The "Encoder" page labels were not updated as expected.)

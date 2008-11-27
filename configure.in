@@ -780,7 +780,7 @@ if ! $PKG_CONFIG --atleast-version=1.13.0 pango; then
   CPPFLAGS="${CPPFLAGS} -DPANGO_DISABLE_DEPRECATED"
 fi
 
-if ! $PKG_CONFIG --atleast-version=2.3.9 gimp-2.0; then
+if ! $PKG_CONFIG --atleast-version=2.7.0 gimp-2.0; then
   CPPFLAGS="${CPPFLAGS} -DGIMP_DISABLE_DEPRECATED"
 fi
 
