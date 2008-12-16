@@ -515,6 +515,9 @@ GimpPlugInInfo PLUG_IN_INFO =
     {GIMP_PDB_STRING, "extension", "extension for the destination filetype (jpg, tif ...or any other gimp supported type)"},
     {GIMP_PDB_INT32, "only visible", "TRUE: Handle only visible layers, FALSE: Handle all layers and force visibility"},
     {GIMP_PDB_INT32, "digits", "Number of digits for the number part in the frames filenames"},
+    {GIMP_PDB_INT32, "copy_properties", "True: copy image properties (channels, paths, guides ...)"
+                                        " to all created frame images (algorithm based on gimp_image_duplicate)"
+                                        "False: copy only layers (faster)"},
   };
   static int nargs_split = G_N_ELEMENTS (args_split);
 
@@ -991,7 +994,6 @@ query ()
 			 GIMP_PLUGIN,
 			 nargs_split, nreturn_split,
 			 args_split, return_split);
-
 
   gimp_install_procedure(PLUGIN_NAME_GAP_SHIFT,
        "This plugin exchanges frame numbers in the given range. (discfile frame_0001.xcf is renamed to frame_0002.xcf, 2->3, 3->4 ... n->1)",
@@ -1910,6 +1912,7 @@ run (const gchar *name
   {
       gint32 l_digits;
       gint32 l_only_visible;
+      gint32 l_copy_properties;
 
       *nreturn_vals = nreturn_split +1;
       l_rc_image = -1;
@@ -1932,9 +1935,9 @@ run (const gchar *name
         no_alpha      = param[4].data.d_int32;
         l_only_visible= param[6].data.d_int32;
         l_digits      = param[7].data.d_int32;
-
+        l_copy_properties = param[8].data.d_int32;
         l_rc_image = gap_split_image(run_mode, image_id,
-                              inverse_order, no_alpha, l_extension, l_only_visible, l_digits);
+                              inverse_order, no_alpha, l_extension, l_only_visible, l_copy_properties, l_digits);
 
       }
       /* IMAGE ID is filled at end (same as in standard  return handling) */

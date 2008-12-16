@@ -1533,6 +1533,8 @@ gap_lib_alloc_ainfo(gint32 image_id, GimpRunMode run_mode)
    l_ainfo_ptr->last_frame_nr = -1;
    l_ainfo_ptr->frame_cnt = 0;
    l_ainfo_ptr->run_mode = run_mode;
+   l_ainfo_ptr->frame_nr_before_curr_frame_nr = -1;   /* -1 if no frame found before curr_frame_nr */
+   l_ainfo_ptr->frame_nr_after_curr_frame_nr = -1;    /* -1 if no frame found after curr_frame_nr */
 
 
    return(l_ainfo_ptr);
@@ -1647,12 +1649,29 @@ gap_lib_dir_ainfo(GapAnimInfo *ainfo_ptr)
                  ainfo_ptr->frame_cnt++;
 
 
-                 if(gap_debug) printf("DEBUG gap_lib_dir_ainfo:  %s NR=%ld\n", l_entry, l_nr);
+                 if(gap_debug)
+                 {
+                   printf("DEBUG gap_lib_dir_ainfo:  %s NR=%ld  Curr:%ld\n", l_entry, l_nr, ainfo_ptr->curr_frame_nr);
+                 }
 
                  if (l_nr > l_maxnr)
                     l_maxnr = l_nr;
                  if (l_nr < l_minnr)
                     l_minnr = l_nr;
+                 
+                 if ((l_nr < ainfo_ptr->curr_frame_nr) && (l_nr > ainfo_ptr->frame_nr_before_curr_frame_nr))
+                 {
+                   ainfo_ptr->frame_nr_before_curr_frame_nr = l_nr;
+                 }
+                 if (l_nr > ainfo_ptr->curr_frame_nr)
+                 {
+                   if ((ainfo_ptr->frame_nr_after_curr_frame_nr < 0)
+                   || (l_nr < ainfo_ptr->frame_nr_after_curr_frame_nr))
+                   {
+                     ainfo_ptr->frame_nr_after_curr_frame_nr = l_nr;
+                   }
+                 }
+
                }
 
                g_free(l_dummy);
@@ -2456,6 +2475,8 @@ gap_lib_save_named_frame(gint32 image_id, char *sav_name)
       );
     return -1;
   }
+  
+  gimp_image_set_filename(image_id, sav_name);
 
   if(0 == strcmp(l_ext, ".xcf"))
   {

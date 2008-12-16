@@ -1,3 +1,19 @@
+2008-12-16 Wolfgang Hofer <hof@gimp.org>
+
+- fixed split image to frames for indexed images, and
+  implemented feature to copy image properties such as channels,
+  pathes, guides etc..to all resulting frame images.
+  (#564330 and #564333
+
+- fixed a bug in gap_lib.c where saving of thumbnails failed in case the frame image
+  was created in one of the gap plug-ins and subsequent save operation had not
+  yet set the filename.
+
+   * gap/gap_main.c
+   * gap/gap_split.c [.h]
+   * gap/gap_lib_common_defs.h
+   * gap/gap_lib.c
+  
 2008-10-05 Wolfgang Hofer <hof@gimp.org>
 
 - fixed BUG #523115 that sometimes caused a crash when splitting an image to frames.
