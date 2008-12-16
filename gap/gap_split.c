@@ -80,7 +80,7 @@ extern      int gap_debug; /* ==0  ... dont print debug infos */
 static int
 p_split_image(GapAnimInfo *ainfo_ptr,
               char *new_extension,
-              gint invers, gint no_alpha, gint only_visible, gint digits)
+              gint invers, gint no_alpha, gint only_visible, gint copy_properties, gint digits)
 {
   GimpImageBaseType l_type;
   guint   l_width, l_height;
@@ -117,19 +117,36 @@ p_split_image(GapAnimInfo *ainfo_ptr,
   l_layers_list = gimp_image_get_layers(ainfo_ptr->image_id, &l_nlayers);
   if(l_layers_list != NULL)
   {
-    l_percentage_step = 1.0 / (l_nlayers);
+    gint32 l_max_framenumber;
 
-    l_framenumber = 1;
+    /* count number of relevant layers (to be written as frame images) */
+    l_max_framenumber = 0;
     for(l_idx = 0; l_idx < l_nlayers; l_idx++)
     {
-       if(l_new_image_id >= 0)
+       if(only_visible)
+       {
+          if (! gimp_drawable_get_visible(l_layers_list[l_idx]))
+          {
+             /* skip invisible layers in only_visible Mode */
+             continue;
+          }
+       }
+       l_max_framenumber++;
+    }    
+  
+    l_percentage_step = 1.0 / (l_nlayers);
+
+    l_framenumber = l_max_framenumber;
+    for(l_idx = 0; l_idx < l_nlayers; l_idx++)
+    {
+       if (l_new_image_id >= 0)
        {
           /* destroy the tmp image (it was saved to disk before) */
           gimp_image_delete(l_new_image_id);
           l_new_image_id = -1;
        }
 
-       if(invers == TRUE) l_layer_idx = l_idx;
+       if(invers != TRUE) l_layer_idx = l_idx;
        else               l_layer_idx = (l_nlayers - 1 ) - l_idx;
 
        l_src_layer_id = l_layers_list[l_layer_idx];
@@ -143,25 +160,68 @@ p_split_image(GapAnimInfo *ainfo_ptr,
           }
        }
 
-       /* create new image */
-       l_new_image_id =  gimp_image_new(l_width, l_height,l_type);
-       if(l_new_image_id < 0)
+       /* the implementation for duplicate mode is slow, but keeps all gimp image stuff
+        * (such as channels, path, guides, parasites and whatever
+        * will be added in future gimp versions....) in each copied frame.
+        */
+       if(copy_properties)
        {
-         l_rc = -1;
-         break;
+         gint    l_dup_idx;
+         gint    l_dup_nlayers;
+         gint32 *l_dup_layers_list;
+         
+         l_new_image_id = gimp_image_duplicate(ainfo_ptr->image_id);
+         l_cp_layer_id = -1;
+         l_dup_layers_list = gimp_image_get_layers(l_new_image_id, &l_dup_nlayers);
+         for(l_dup_idx = 0; l_dup_idx < l_dup_nlayers; l_dup_idx++)
+         {
+           if (l_dup_idx == l_layer_idx)
+           {
+             l_cp_layer_id = l_dup_layers_list[l_dup_idx];
+           }
+           else
+           {
+             gimp_image_remove_layer(l_new_image_id, l_dup_layers_list[l_dup_idx]);
+           }
+           
+         }
+         g_free (l_dup_layers_list);
        }
+       else
+       {
+         /* create new image */
+         l_new_image_id =  gimp_image_new(l_width, l_height,l_type);
+         if(l_new_image_id < 0)
+         {
+           l_rc = -1;
+           break;
+         }
+         
+         /* copy colormap in case of indexed image */
+         if (l_type == GIMP_INDEXED)
+         {
+           gint        l_ncolors;
+           guchar     *l_cmap;
+          
+           l_cmap = gimp_image_get_colormap(ainfo_ptr->image_id, &l_ncolors);
+           gimp_image_set_colormap(l_new_image_id, l_cmap, l_ncolors);
+           g_free(l_cmap);
 
-       /* copy the layer */
-       l_cp_layer_id = gap_layer_copy_to_dest_image(l_new_image_id,
+         }
+
+         /* copy the layer */
+         l_cp_layer_id = gap_layer_copy_to_dest_image(l_new_image_id,
                                      l_src_layer_id,
                                      100.0,   /* Opacity */
                                      0,       /* NORMAL */
                                      &l_src_offset_x,
                                      &l_src_offset_y);
-       /* add the copied layer to current destination image */
-        gimp_image_add_layer(l_new_image_id, l_cp_layer_id, 0);
-        gimp_layer_set_offsets(l_cp_layer_id, l_src_offset_x, l_src_offset_y);
-        gimp_drawable_set_visible(l_cp_layer_id, TRUE);
+         /* add the copied layer to current destination image */
+          gimp_image_add_layer(l_new_image_id, l_cp_layer_id, 0);
+          gimp_layer_set_offsets(l_cp_layer_id, l_src_offset_x, l_src_offset_y);
+          gimp_drawable_set_visible(l_cp_layer_id, TRUE);
+       }
+
 
        /* delete alpha channel ? */
        if (no_alpha == TRUE)
@@ -184,7 +244,7 @@ p_split_image(GapAnimInfo *ainfo_ptr,
                                   l_framenumber,       /* start at 1 (not at 0) */
                                   new_extension,
                                   digits);
-       l_framenumber++;
+       l_framenumber--;
        g_free(l_str);
        if(l_sav_name != NULL)
        {
@@ -196,8 +256,8 @@ p_split_image(GapAnimInfo *ainfo_ptr,
           if(l_rc < 0)
           {
             gap_arr_msg_win(ainfo_ptr->run_mode, _("Split Frames: Save operation failed.\n"
-					     "desired save plugin can't handle type\n"
-					     "or desired save plugin not available."));
+                                             "desired save plugin can't handle type\n"
+                                             "or desired save plugin not available."));
             break;
           }
 
@@ -219,6 +279,10 @@ p_split_image(GapAnimInfo *ainfo_ptr,
          gimp_progress_update (l_percentage);
        }
 
+       if (l_framenumber <= 0)
+       {
+         break;
+       }
 
     }
     g_free (l_layers_list);
@@ -226,7 +290,7 @@ p_split_image(GapAnimInfo *ainfo_ptr,
 
 
   return l_rc;
-}	/* end p_split_image */
+}       /* end p_split_image */
 
 
 /* ============================================================================
@@ -237,9 +301,10 @@ p_split_image(GapAnimInfo *ainfo_ptr,
  * ============================================================================
  */
 static long
-p_split_dialog(GapAnimInfo *ainfo_ptr, gint *inverse_order, gint *no_alpha, char *extension, gint len_ext, gint *only_visible, gint *digits)
+p_split_dialog(GapAnimInfo *ainfo_ptr, gint *inverse_order, gint *no_alpha, char *extension, gint len_ext
+    , gint *only_visible, gint *copy_properties, gint *digits)
 {
-  static GapArrArg  argv[8];
+  static GapArrArg  argv[9];
   gchar   *buf;
   gchar   *extptr;
   
@@ -253,13 +318,13 @@ p_split_dialog(GapAnimInfo *ainfo_ptr, gint *inverse_order, gint *no_alpha, char
   }
 
   buf = g_strdup_printf (_("Make a frame (diskfile) from each layer.\n"
-			   "Frames are named in the style:\n"
-			   "<basename><framenumber>.<extension>\n"
-			   "The first frame for the current case gets the name\n\n"
-			   "%s000001.%s\n")
-			 ,ainfo_ptr->basename
-			 ,extptr
-			 );
+                           "Frames are named in the style:\n"
+                           "<basename><framenumber>.<extension>\n"
+                           "The first frame for the current case gets the name\n\n"
+                           "%s000001.%s\n")
+                         ,ainfo_ptr->basename
+                         ,extptr
+                         );
 
   gap_arr_arg_init(&argv[0], GAP_ARR_WGT_LABEL);
   argv[0].label_txt = &buf[0];
@@ -296,33 +361,42 @@ p_split_dialog(GapAnimInfo *ainfo_ptr, gint *inverse_order, gint *no_alpha, char
   argv[4].has_default = TRUE;
   argv[4].int_default = 0;
 
-  gap_arr_arg_init(&argv[5], GAP_ARR_WGT_INT);
-  argv[5].constraint = TRUE;
-  argv[5].label_txt = _("Digits:");
-  argv[5].help_txt  = _("How many digits to use for the framenumber filename part");
-  argv[5].int_min   = (gint)1;
-  argv[5].int_max   = (gint)6;
-  argv[5].int_ret   = (gint)6;
-  argv[5].entry_width = 60;
+  gap_arr_arg_init(&argv[5], GAP_ARR_WGT_TOGGLE);
+  argv[5].label_txt = _("Copy properties:");
+  argv[5].help_txt  = _("ON: Copy all image properties (channels, pathes, guides) to all frame images.\n"
+                        "OFF: copy only layers without image properties to frame images");
+  argv[5].int_ret   = 0;
   argv[5].has_default = TRUE;
-  argv[5].int_default = 6;
+  argv[5].int_default = 0;
 
-  gap_arr_arg_init(&argv[6], GAP_ARR_WGT_DEFAULT_BUTTON);
-  argv[6].label_txt = _("Default");
-  argv[6].help_txt  = _("Reset all parameters to default values");
+  gap_arr_arg_init(&argv[6], GAP_ARR_WGT_INT);
+  argv[6].constraint = TRUE;
+  argv[6].label_txt = _("Digits:");
+  argv[6].help_txt  = _("How many digits to use for the framenumber filename part");
+  argv[6].int_min   = (gint)1;
+  argv[6].int_max   = (gint)6;
+  argv[6].int_ret   = (gint)6;
+  argv[6].entry_width = 60;
+  argv[6].has_default = TRUE;
+  argv[6].int_default = 6;
 
-  gap_arr_arg_init(&argv[7], GAP_ARR_WGT_HELP_BUTTON);
-  argv[7].help_id = GAP_HELP_ID_SPLIT;
+  gap_arr_arg_init(&argv[7], GAP_ARR_WGT_DEFAULT_BUTTON);
+  argv[7].label_txt = _("Default");
+  argv[7].help_txt  = _("Reset all parameters to default values");
+
+  gap_arr_arg_init(&argv[8], GAP_ARR_WGT_HELP_BUTTON);
+  argv[8].help_id = GAP_HELP_ID_SPLIT;
 
   if(TRUE == gap_arr_ok_cancel_dialog( _("Split Image into Frames"),
-			     _("Split Settings"),
-			     8, argv))
+                             _("Split Settings"),
+                             8, argv))
   {
     g_free (buf);
-    *inverse_order = argv[2].int_ret;
-    *no_alpha      = argv[3].int_ret;
-    *only_visible  = argv[4].int_ret;
-    *digits        = argv[5].int_ret;
+    *inverse_order   = argv[2].int_ret;
+    *no_alpha        = argv[3].int_ret;
+    *only_visible    = argv[4].int_ret;
+    *copy_properties = argv[5].int_ret;
+    *digits          = argv[6].int_ret;
     return 0;
   }
   else
@@ -330,7 +404,7 @@ p_split_dialog(GapAnimInfo *ainfo_ptr, gint *inverse_order, gint *no_alpha, char
     g_free (buf);
     return -1;
   }
-}		/* end p_split_dialog */
+}               /* end p_split_dialog */
 
 /* ============================================================================
  * gap_split_image
@@ -344,6 +418,7 @@ int gap_split_image(GimpRunMode run_mode,
                       gint32     no_alpha,
                       char      *extension,
                       gint32     only_visible,
+                      gint32     copy_properties,
                       gint32     digits
                       )
 
@@ -353,6 +428,7 @@ int gap_split_image(GimpRunMode run_mode,
   gint32  l_inverse_order;
   gint32  l_no_alpha;
   gint32  l_only_visible;
+  gint32  l_copy_properties;
   gint32  l_digits;
   char   *l_imagename;
 
@@ -380,8 +456,8 @@ int gap_split_image(GimpRunMode run_mode,
       {
          gap_arr_msg_win(run_mode,
            _("Operation cancelled.\n"
-	     "This image is already a video frame.\n"
-	     "Try again on a duplicate (Image/Duplicate)."));
+             "This image is already a video frame.\n"
+             "Try again on a duplicate (Image/Duplicate)."));
          return -1;
       }
       else
@@ -394,16 +470,18 @@ int gap_split_image(GimpRunMode run_mode,
                                  , &l_extension[0]
                                  , sizeof(l_extension)
                                  , &l_only_visible
+                                 , &l_copy_properties
                                  , &l_digits
                                  );
         }
         else
         {
            l_rc = 0;
-           l_inverse_order  =  inverse_order;
-           l_no_alpha       =  no_alpha;
-           l_only_visible   =  only_visible;
-           l_digits         =  digits;
+           l_inverse_order   =  inverse_order;
+           l_no_alpha        =  no_alpha;
+           l_only_visible    =  only_visible;
+           l_copy_properties =  copy_properties;
+           l_digits          =  digits;
            strncpy(l_extension, extension, sizeof(l_extension) -1);
            l_extension[sizeof(l_extension) -1] = '\0';
 
@@ -416,6 +494,7 @@ int gap_split_image(GimpRunMode run_mode,
                                l_inverse_order,
                                l_no_alpha,
                                l_only_visible,
+                               l_copy_properties,
                                l_digits
                                );
 
@@ -432,4 +511,4 @@ int gap_split_image(GimpRunMode run_mode,
   }
 
   return(l_rc);
-}	/* end   gap_split_image */
+}       /* end   gap_split_image */

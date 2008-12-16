@@ -79,6 +79,8 @@ typedef struct GapAnimInfo {
    long         curr_frame_nr; 
    long         first_frame_nr; 
    long         last_frame_nr;
+   long         frame_nr_before_curr_frame_nr;   /* -1 if no frame found before curr_frame_nr */
+   long         frame_nr_after_curr_frame_nr;    /* -1 if no frame found after curr_frame_nr */
    
    GapLibAinfoType  ainfo_type;
    gint32           seltrack;    /* input videotrack (used only for GAP_AINFO_MOVIE) */

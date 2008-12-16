@@ -42,6 +42,7 @@ int gap_split_image(GimpRunMode run_mode,
                              gint32     no_alpha,
                              char      *extension,
                              gint32     only_visible,
+                             gint32     copy_properties,
                              gint32     digits
                              );
 
