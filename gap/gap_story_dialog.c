@@ -8680,7 +8680,7 @@ p_parse_aspect_width_and_height(const char *buff, gint32 *aspect_width, gint32 *
 static void
 p_tabw_master_prop_dialog(GapStbTabWidgets *tabw, gboolean new_flag)
 {
-  GapArrArg  argv[11];
+  GapArrArg  argv[12];
   static char *radio_args[4]  = { N_("automatic"), "libmpeg3", "libavformat", "quicktime4linux" };
   static char *radio_aspect_args[3]  = { N_("none"), "4:3", "16:9"};
   gint   l_ii;
@@ -8701,6 +8701,8 @@ p_tabw_master_prop_dialog(GapStbTabWidgets *tabw, gboolean new_flag)
   gchar    buf_preferred_decoder[60];
   gchar    buf_aspect_string[40];
   gchar   *label_txt;
+  gchar    l_master_insert_area_format[GAP_STORY_MAX_STORYFILENAME_LEN];
+
   gboolean l_rc;
 
   stb_dst = p_tabw_get_stb_ptr (tabw);
@@ -8719,7 +8721,7 @@ p_tabw_master_prop_dialog(GapStbTabWidgets *tabw, gboolean new_flag)
   gap_story_get_master_pixelsize(stb_dst, &l_master_width, &l_master_height);
 
   label_txt = NULL;
-  l_ii = 0; l_ii_width = l_ii;
+  l_ii = 0;
   if(new_flag)
   {
     gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_FILESEL);
@@ -8928,6 +8930,25 @@ p_tabw_master_prop_dialog(GapStbTabWidgets *tabw, gboolean new_flag)
   argv[l_ii].flt_default = argv[l_ii].flt_ret;
 
   l_ii++;
+  l_master_insert_area_format[0] = '\0';
+  if (stb_dst->master_insert_area_format)
+  {
+    g_snprintf(&l_master_insert_area_format[0], sizeof(l_master_insert_area_format), "%s"
+            , stb_dst->master_insert_area_format
+            );
+  }
+  gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_FILESEL);
+  argv[l_ii].label_txt = _("AreaFormat:");
+  argv[l_ii].entry_width = 250;       /* pixel */
+  argv[l_ii].help_txt  = _("Format string for area replacement in movie clips. (e.g automatic logo insert)"
+                           "this string shall contain \%s as placeholder for the basename of a videoclip and "
+                           "optional \%06d as placeholder for the framenumber.");
+  argv[l_ii].text_buf_len = sizeof(l_master_insert_area_format);
+  argv[l_ii].text_buf_ret = &l_master_insert_area_format[0];
+
+
+
+  l_ii++;
   gap_arr_arg_init(&argv[l_ii], GAP_ARR_WGT_DEFAULT_BUTTON);
   argv[l_ii].label_txt =  _("Reset");                /* should use GIMP_STOCK_RESET if possible */
   argv[l_ii].help_txt  = _("Reset parameters to inital values");
@@ -8988,6 +9009,7 @@ p_tabw_master_prop_dialog(GapStbTabWidgets *tabw, gboolean new_flag)
        {
          if(strcmp(stb_dst->preferred_decoder, buf_preferred_decoder) != 0)
          {
+           stb_dst->unsaved_changes = TRUE;
            g_free(stb_dst->preferred_decoder);
            stb_dst->preferred_decoder = g_strdup(buf_preferred_decoder);
 
@@ -9000,6 +9022,7 @@ p_tabw_master_prop_dialog(GapStbTabWidgets *tabw, gboolean new_flag)
        }
        else
        {
+           stb_dst->unsaved_changes = TRUE;
            stb_dst->preferred_decoder = g_strdup(buf_preferred_decoder);
            gap_story_vthumb_close_videofile(sgpp);
        }
@@ -9008,12 +9031,42 @@ p_tabw_master_prop_dialog(GapStbTabWidgets *tabw, gboolean new_flag)
      {
        if(stb_dst->preferred_decoder)
        {
+         stb_dst->unsaved_changes = TRUE;
          g_free(stb_dst->preferred_decoder);
        }
        stb_dst->preferred_decoder = NULL;
      }
 
-     /* check for changes of master properties */
+
+     if (l_master_insert_area_format[0] != '\0')
+     {
+       if (stb_dst->master_insert_area_format)
+       {
+         if (strcmp(stb_dst->master_insert_area_format, &l_master_insert_area_format[0]) != 0)
+         {
+           stb_dst->unsaved_changes = TRUE;
+         }
+         g_free(stb_dst->master_insert_area_format);
+       }
+       else
+       {
+           stb_dst->unsaved_changes = TRUE;
+       }
+       stb_dst->master_insert_area_format = g_strdup(&l_master_insert_area_format[0]);
+     }
+     else
+     {
+       if (stb_dst->master_insert_area_format)
+       {
+         stb_dst->unsaved_changes = TRUE;
+         g_free(stb_dst->master_insert_area_format);
+         stb_dst->master_insert_area_format = NULL;
+       }
+     }
+
+
+
+     /* check for further changes of master properties */
      if((stb_dst->master_width        != stb_dup->master_width)
      || (stb_dst->master_height       != stb_dup->master_height)
      || (stb_dst->master_framerate    != stb_dup->master_framerate)

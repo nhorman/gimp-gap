@@ -34,6 +34,7 @@
 
 
 #include <gap_image.h>
+#include <gap_layer_copy.h>
 
 extern int gap_debug;
 
@@ -259,3 +260,164 @@ gap_image_get_any_layer(gint32 image_id)
   }
   return (l_layer_id);
 }  /* end gap_image_get_any_layer */
+
+
+ 
+/* ------------------------------------
+ * gap_image_merge_to_specified_layer
+ * ------------------------------------
+ * remove all other layers from the image except the specified layer_id
+ * (by removing other layers, make ref_layer_id visible and perform merging)
+ */
+gint32
+gap_image_merge_to_specified_layer(gint32 ref_layer_id, GimpMergeType mergemode)
+{
+  gint32  l_image_id;
+
+  l_image_id = gimp_drawable_get_image(ref_layer_id);
+  if(l_image_id >= 0)
+  {
+    gint32  l_idx;
+    gint    l_nlayers;
+    gint32 *l_layers_list;
+    
+    l_layers_list = gimp_image_get_layers(l_image_id, &l_nlayers);
+    if(l_layers_list != NULL)
+    {
+      for(l_idx = 0; l_idx < l_nlayers; l_idx++)
+      {
+        gboolean l_visible;
+        
+        if (l_layers_list[l_idx] == ref_layer_id)
+        {
+          gimp_drawable_set_visible(l_layers_list[l_idx], TRUE);
+        }
+        else
+        {
+          gimp_image_remove_layer(l_image_id, l_layers_list[l_idx]);
+        }
+      }
+      g_free (l_layers_list);
+      return (gap_image_merge_visible_layers(l_image_id, mergemode));
+    }
+  }
+  return (-1);
+
+}  /* end gap_image_merge_to_specified_layer */
+
+
+/* -------------------------------------------------------
+ * gap_image_set_selection_from_selection_or_drawable
+ * -------------------------------------------------------
+ * create a selection in the specified image_id.
+ * The selection is a scaled copy of the selection in another image,
+ * refered by ref_drawable_id, or a Grayscale copy of the specified ref_drawable_id
+ * (in case the refered image has no selection or the flag force_from_drawable is TRUE)
+ *
+ *  - operates on a duplicate of the image refered by ref_drawable_id.
+ *  - this duplicate is scaled to same size as specified image_id
+ *
+ * return TRUE in case the selection was successfully created .
+ */
+gboolean
+gap_image_set_selection_from_selection_or_drawable(gint32 image_id, gint32 ref_drawable_id
+  , gboolean force_from_drawable)
+{
+  gint32        l_aux_channel_id;
+  gint32        ref_image_id;
+  gint32        work_drawable_id;   /* the duplicate of the layer that is used as selction mask */
+  gint32        dup_image_id;
+  gboolean has_selection;
+  gboolean non_empty;
+  gint     x1, y1, x2, y2;
+
+  if ((image_id < 0) || (ref_drawable_id < 0))
+  {
+    return (FALSE);
+  }
+  ref_image_id = gimp_drawable_get_image(ref_drawable_id);
+
+  if (ref_image_id < 0)
+  {
+    printf("ref_drawable_id does not refere to a valid image layer_id:%d\n", (int)ref_drawable_id);
+    return (FALSE);
+  }
+
+
+
+  dup_image_id = gimp_image_duplicate(ref_image_id);
+  if (dup_image_id < 0)
+  {
+    printf("duplicating of image failed, refered souce image_id:%d\n", (int)ref_image_id);
+    return (FALSE);
+  }
+  /* clear undo stack */
+  if (gimp_image_undo_is_enabled(dup_image_id))
+  {
+    gimp_image_undo_disable(dup_image_id);
+  }
+
+  if ((gimp_image_width(image_id) != gimp_image_width(dup_image_id))
+  ||  (gimp_image_height(image_id) != gimp_image_height(dup_image_id)))
+  {
+     if(gap_debug)
+     {
+       printf("scaling tmp image_id: %d\n", (int)dup_image_id);
+     }
+     gimp_image_scale(dup_image_id, gimp_image_width(image_id), gimp_image_height(image_id));
+  }
+
+  has_selection  = gimp_selection_bounds(ref_image_id, &non_empty, &x1, &y1, &x2, &y2);
+  if ((has_selection) && (non_empty) && (force_from_drawable != TRUE))
+  {
+    /* use scaled copy of the already exisating selection in the refered image */
+    work_drawable_id = gimp_image_get_selection(dup_image_id);
+  }
+  else
+  {
+    gint32        active_layer_stackposition;
+
+    /* create selection as gray copy of the alt_selection layer */
+
+    active_layer_stackposition = gap_layer_get_stackposition(ref_image_id, ref_drawable_id);
+
+    if(gimp_image_base_type(dup_image_id) != GIMP_GRAY)
+    {
+       if(gap_debug)
+       {
+         printf("convert to GRAYSCALE tmp image_id: %d\n", (int)dup_image_id);
+       }
+       gimp_image_convert_grayscale(dup_image_id);
+    }
+    work_drawable_id = gap_layer_get_id_by_stackposition(dup_image_id, active_layer_stackposition);
+    gimp_layer_resize_to_image_size (work_drawable_id);
+  }
+
+  gimp_selection_all(image_id);
+  //l_sel_channel_id = gimp_image_get_selection(image_id);
+  l_aux_channel_id = gimp_selection_save(image_id);
+  
+  /* copy the work drawable (layer or channel) into the selection channel
+   * the work layer is a grayscale copy GRAY or GRAYA of the alt_selection layer
+   *  that is already scaled and resized to fit the size of the target image
+   * the work channel is the scaled selection of the image refred by ref_drawable_id
+   *
+   * copying is done into an auxiliary channel from where we regulary load the selection.
+   * this is done because subseqent queries of the selection boudaries will deliver
+   * full channel size rectangle after a direct copy into the selection.
+   */
+  gap_layer_copy_picked_channel (l_aux_channel_id  /* dst_drawable_id*/
+                              , 0                  /* dst_channel_pick */
+                              , work_drawable_id   /* src_drawable_id */
+                              , 0                  /* src_channel_pick */
+                              , FALSE              /* gboolean shadow */
+                              );
+
+  gimp_selection_load(l_aux_channel_id);
+  gimp_image_remove_channel(image_id, l_aux_channel_id);
+
+  gap_image_delete_immediate(dup_image_id);
+  return (TRUE);
+
+}  /* end gap_image_set_selection_from_selection_or_drawable */
+

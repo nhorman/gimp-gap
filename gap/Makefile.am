@@ -107,6 +107,7 @@ libexec_PROGRAMS = \
 	gap_wr_color_levels	\
 	gap_wr_color_huesat	\
 	gap_wr_trans		\
+	gap_wr_resynth		\
 	gap_wr_opacity
 
 gap_bluebox_SOURCES = \
@@ -236,6 +237,8 @@ gap_morph_SOURCES = \
 	gap_morph_exec.h	\
 	gap_morph_dialog.c	\
 	gap_morph_dialog.h	\
+	gap_morph_tween_dialog.c	\
+	gap_morph_tween_dialog.h	\
 	gap_mov_dialog.h	\
 	gap_mov_exec.h		\
 	gap_libgimpgap.h	
@@ -355,6 +358,12 @@ gap_wr_color_huesat_SOURCES = \
 	gap_wr_color_huesat.c	\
 	gap_libgimpgap.h
 
+gap_wr_resynth_SOURCES = \
+	gap_wr_resynth.c	\
+	gap_lastvaldesc.c	\
+	gap_lastvaldesc.h	\
+	gap_libgimpgap.h
+
 
 if OS_WIN32
 mwindows = -mwindows
@@ -397,6 +406,7 @@ gap_wr_trans_LDADD =         $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
 gap_wr_color_curve_LDADD =   $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
 gap_wr_color_levels_LDADD =  $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
 gap_wr_color_huesat_LDADD =  $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
+gap_wr_resynth_LDADD =       $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
 
 EXTRA_DIST = \
 	README							\

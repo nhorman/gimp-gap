@@ -667,6 +667,34 @@ gap_layer_get_stackposition(gint32 image_id, gint32 ref_layer_id)
 }  /* end gap_layer_get_stackposition */
 
 
+/* ---------------------------------
+ * gap_layer_get_id_by_stackposition
+ * ---------------------------------
+ * return -1 if the specified image has no layer at specified stackposition
+ */
+gint32
+gap_layer_get_id_by_stackposition(gint32 image_id, gint32 stackposition)
+{
+  gint          l_nlayers;
+  gint32       *l_layers_list;
+  gint32        l_layer_id;
+
+  l_layer_id = -1;
+  l_layers_list = gimp_image_get_layers(image_id, &l_nlayers);
+  if(l_layers_list != NULL)
+  {
+    if ((stackposition >= 0) && (stackposition < l_nlayers))
+    {
+      l_layer_id = l_layers_list[stackposition];
+    }
+    g_free (l_layers_list);
+  }
+
+  return (l_layer_id);
+
+}  /* end gap_layer_get_id_by_stackposition */
+
+
 /* ------------------------
  * gap_layer_make_duplicate
  * ------------------------
@@ -818,3 +846,4 @@ gap_layer_create_layer_from_alpha(gint32 src_layer_id, gint32 image_id
   return (l_new_layer_id);
 
 }  /* end gap_layer_create_layer_from_alpha  */
+

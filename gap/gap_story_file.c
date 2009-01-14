@@ -303,22 +303,26 @@ gap_story_debug_print_list(GapStoryBoard *stb)
     return;
   }
 
-  printf("master_type         : %d\n", (int)stb->master_type );
-  printf("master_width        : %d\n", (int)stb->master_width );
-  printf("master_height       : %d\n", (int)stb->master_height );
-  printf("master_framerate    : %f\n", (float)stb->master_framerate );
-  printf("master_aspect_ratio : %f (%d : %d)\n"
+  printf("master_type               : %d\n", (int)stb->master_type );
+  printf("master_width              : %d\n", (int)stb->master_width );
+  printf("master_height             : %d\n", (int)stb->master_height );
+  printf("master_framerate          : %f\n", (float)stb->master_framerate );
+  printf("master_aspect_ratio       : %f (%d : %d)\n"
             , (float)stb->master_aspect_ratio
             , (int)stb->master_aspect_width
             , (int)stb->master_aspect_height
             );
-  printf("master_1is_toplayer : %d\n", (int)stb->master_vtrack1_is_toplayer );
-  printf("layout_cols         : %d\n", (int)stb->layout_cols );
-  printf("layout_rows         : %d\n", (int)stb->layout_rows );
-  printf("layout_thumbsize    : %d\n", (int)stb->layout_thumbsize );
+  printf("master_1is_toplayer       : %d\n", (int)stb->master_vtrack1_is_toplayer );
+  if (stb->master_insert_area_format)
+  {
+    printf("master_insert_area_format :%s", stb->master_insert_area_format);
+  }
+  printf("layout_cols               : %d\n", (int)stb->layout_cols );
+  printf("layout_rows               : %d\n", (int)stb->layout_rows );
+  printf("layout_thumbsize          : %d\n", (int)stb->layout_thumbsize );
 
-  printf("stb_parttype        : %d\n", (int)stb->stb_parttype );
-  printf("stb_unique_id       : %d\n", (int)stb->stb_unique_id );
+  printf("stb_parttype              : %d\n", (int)stb->stb_parttype );
+  printf("stb_unique_id             : %d\n", (int)stb->stb_unique_id );
 
   GapStorySection *active_section;
   
@@ -618,6 +622,7 @@ gap_story_new_story_board(const char *filename)
     stb->master_aspect_ratio = 0.0;  /* 0.0 for none */
     stb->master_aspect_width = 0;
     stb->master_aspect_height = 0;
+    stb->master_insert_area_format = NULL;
 
     stb->layout_cols = -1;
     stb->layout_rows = -1;
@@ -1464,6 +1469,10 @@ gap_story_free_storyboard(GapStoryBoard **stb_ptr)
     if(stb->warnline)
     {
       g_free(stb->warnline);
+    }
+    if(stb->master_insert_area_format)
+    {
+      g_free(stb->master_insert_area_format);
     }
 
     /* Note: Dont try to g_free stb->currline
@@ -3144,6 +3153,15 @@ p_story_parse_line(GapStoryBoard *stb, char *longline
   if (strcmp(l_record_key, GAP_STBKEY_VID_PREFERRED_DECODER) == 0)
   {
       if(*l_wordval[1]) { stb->preferred_decoder = g_strdup(l_wordval[1]); }
+      goto cleanup;  /* master RECORD does not create frame range elements */
+  }
+  /* Master informations: GAP_STBKEY_VID_MASTER_INSERT_AREA */
+  if (strcmp(l_record_key, GAP_STBKEY_VID_MASTER_INSERT_AREA) == 0)
+  {
+      char *l_format_ptr   = l_wordval[1];
+      if(*l_format_ptr) {  p_flip_dir_separators(l_format_ptr);;
+                           stb->master_insert_area_format = g_strdup(l_format_ptr);
+                        }
       goto cleanup;  /* master RECORD does not create frame range elements */
   }
 
@@ -4934,6 +4952,21 @@ p_story_save_header(GapStoryBoard *stb, FILE *fp)
            , GAP_STBKEY_VID_PREFERRED_DECODER
            , l_parnam_tab.parname[1]
            , stb->preferred_decoder
+           );
+    }
+  }
+
+  if (stb->master_insert_area_format)
+  {
+    if(*stb->master_insert_area_format != '\0')
+    {
+      gap_stb_syntax_get_parname_tab(GAP_STBKEY_VID_MASTER_INSERT_AREA
+                                    ,&l_parnam_tab
+                                    );
+      fprintf(fp, "%s  %s:\"%s\"\n"
+           , GAP_STBKEY_VID_MASTER_INSERT_AREA
+           , l_parnam_tab.parname[1]
+           , stb->master_insert_area_format
            );
     }
   }
@@ -7082,6 +7115,10 @@ p_story_board_duplicate(GapStoryBoard *stb_ptr, GapStoryDuplicateMode dup_mode
   {
     stb_dup->preferred_decoder = g_strdup(stb_ptr->preferred_decoder);
   }
+  if(stb_ptr->master_insert_area_format)
+  {
+    stb_dup->master_insert_area_format = g_strdup(stb_ptr->master_insert_area_format);
+  }
 
   stb_dup->layout_cols = stb_ptr->layout_cols;
   stb_dup->layout_rows = stb_ptr->layout_rows;
@@ -7765,10 +7802,26 @@ gap_story_set_properties_like_sample_storyboard (GapStoryBoard *stb
       stb->master_samplerate  = stb_sample->master_samplerate;
       stb->master_volume      = stb_sample->master_volume;
       stb->unsaved_changes = TRUE;
+      if(stb->preferred_decoder)
+      {
+        g_free(stb->preferred_decoder);
+        stb->preferred_decoder  = NULL;
+      }
       if(stb_sample->preferred_decoder)
       {
         stb->preferred_decoder  = g_strdup(stb_sample->preferred_decoder);
       }
+      
+      if(stb->master_insert_area_format)
+      {
+        g_free(stb->master_insert_area_format);
+        stb->master_insert_area_format  = NULL;
+      }
+      if(stb_sample->master_insert_area_format)
+      {
+        stb->master_insert_area_format = g_strdup(stb_sample->master_insert_area_format);
+      }
+      
     }
   }
 }  /* end gap_story_set_properties_like_sample_storyboard */
@@ -9263,3 +9316,20 @@ gap_story_get_video_file_ref_list(GapStoryBoard *stb)
   }
   return (vref_list);
 }  /* end gap_story_get_video_file_ref_list */
+
+
+/* -------------------------------------
+ * gap_story_build_basename
+ * -------------------------------------
+ * return a duplicate of the basename part of the specified filename.
+ *        leading directory path and drive letter (for WinOS) is cut off
+ * the caller is responsible to g_free the returned string.
+ */
+char *
+gap_story_build_basename(const char *filename)
+{
+  char *basename;
+
+  basename = g_filename_display_basename(filename);
+  return(basename);
+}  /* end gap_story_build_basename */

@@ -5,6 +5,7 @@
  *  
  *  It holds a global image cache of temporary gimp images intended for
  *  read only access in various gimp-gap render processings.
+ *  (those cached images are marked with an image parasite)
  *  
  *  There are methods to get the temporary image 
  *  or to get a duplicate that has only one layer at imagesize.
@@ -13,19 +14,19 @@
  *  For videofiles it holds a cache of open videofile handles.
  *  (note that caching of videoframes is already available in the videohandle)
  *  
- *  The current implementation of the frame fetcher is NOT multithred save !
+ *  The current implementation of the frame fetcher is NOT multithread save !
  *  (the procedures may drop cached images that are still in use by a concurrent thread
- *  further the cache lists can be messe up if they are modified by concurrent threads
+ *  further the cache lists can be messed up if they are modified by concurrent threads
  *  at the same time.
  *
  *  Currently there is no support to keep track of cached images during the full length
- *  of a gimp session. This simple version of the frame fetcher is limited 
- *  to one main program (such as the storyboard or the filtermacro plug-in)
- *  and loses its information on exit of the main program.
+ *  of a gimp session. Therefore unregister of the last user does NOT drop all resources
+ *  
  *  (If there are still registrated users at exit time, the cached images are still
  *  loaded in the gimp session)
- *  TODO: a more sophisticated version of the frame fetcher may keep its information
- *        using the gimp_det_data feature or mark the cached images with a tattoo.
+ *
+ *  TODO: user registration shall be serialized and stored via gimp_set_data
+ *        to keep track over the entire gimp session.
  *
 
  *
@@ -85,10 +86,18 @@
 
 #include "gap_frame_fetcher.h"
 
-#define GAP_FFETCH_MAX_IMG_CACHE_ELEMENTS 12
+#define GAP_FFETCH_MAX_IMG_CACHE_ELEMENTS 18
 #define GAP_FFETCH_MAX_GVC_CACHE_ELEMENTS 6
 #define GAP_FFETCH_GVA_FRAMES_TO_KEEP_CACHED 36
 
+/* the lists of cached images and duplicates are implemented via GIMP image parasites,
+ * where images are simply loaded by GIMP without adding a display and marked with a non persistent parasite.
+ * the GAP_IMAGE_CACHE_PARASITE holds the modification timestamp (mtime) and full filename (inclusive terminating 0)
+ * the GAP_IMAGE_DUP_CACHE_PARASITE holds the gint32 ffetch_user_id
+ */
+
+#define GAP_IMAGE_CACHE_PARASITE "GAP-IMAGE-CACHE-PARASITE"
+#define GAP_IMAGE_DUP_CACHE_PARASITE "GAP-IMAGE-DUP-CACHE-PARASITE"
 
 
 typedef struct GapFFetchResourceUserElem
@@ -96,31 +105,6 @@ typedef struct GapFFetchResourceUserElem
    gint32  ffetch_user_id;
    void *next;
 } GapFFetchResourceUserElem;
-
-
-
-typedef struct GapFFetchDuplicatedImagesElem
-{
-   gint32  ffetch_user_id;
-   gint32  image_id;
-   void *next;
-} GapFFetchDuplicatedImagesElem;
-
-
-/* -------- types for the image cache  ------- */
-
-typedef struct GapFFetchImageCacheElem
-{
-   gint32  image_id;
-   char   *filename;
-   void *next;
-} GapFFetchImageCacheElem;
-
-typedef struct GapFFetchImageCache
-{
-  GapFFetchImageCacheElem *ic_list;
-  gint32            max_img_cache;  /* number of images to hold in the cache */
-} GapFFetchImageCache;
 
 
 /* -------- types for the video handle cache  ------- */
@@ -150,10 +134,6 @@ extern int gap_debug;  /* 1 == print debug infos , 0 dont print debug infos */
  *************************************************************
  */
 
-static GapFFetchDuplicatedImagesElem *global_duplicated_images = NULL;
-
-static GapFFetchImageCache *global_imcache = NULL;
-
 static GapFFetchGvahandCache *global_gvcache = NULL;
 
 static GapFFetchResourceUserElem *global_rsource_users = NULL;
@@ -163,7 +143,6 @@ static GapFFetchResourceUserElem *global_rsource_users = NULL;
  *************************************************************
  */
 static gint32         p_load_cache_image(const char* filename, gboolean addToCache);
-static void           p_drop_image_cache_elem1(GapFFetchImageCache *imcache);
 static void           p_drop_image_cache(void);
 #ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
 static void           p_drop_gvahand_cache_elem1(GapFFetchGvahandCache *gvcache);
@@ -176,32 +155,6 @@ static t_GVA_Handle*  p_ffetch_get_open_gvahand(const char* filename, gint32 sel
 static void           p_add_image_to_list_of_duplicated_images(gint32 image_id, gint32 ffetch_user_id);
 
 
-/* ----------------------------------------------------
- * p_find_img_cache_by_image_id
- * ----------------------------------------------------
- */
-static GapFFetchImageCacheElem  *
-p_find_img_cache_by_image_id(gint32 image_id)
-{
-  GapFFetchImageCacheElem  *ic_ptr;
-
-  if((global_imcache == NULL) || (image_id < 0))
-  {
-    return (NULL);
-  }
-
-  for(ic_ptr = global_imcache->ic_list; ic_ptr != NULL; ic_ptr = (GapFFetchImageCacheElem *)ic_ptr->next)
-  {
-    if(ic_ptr->image_id == image_id)
-    {
-      /* image found in cache */
-      return(ic_ptr);
-    }
-  }
-
-  return (NULL);
-}  /* end  p_find_img_cache_by_image_id */
-
 
 /* ----------------------------------------------------
  * p_load_cache_image
@@ -210,115 +163,155 @@ p_find_img_cache_by_image_id(gint32 image_id)
 static gint32
 p_load_cache_image(const char* filename, gboolean addToCache)
 {
-  gint32 l_idx;
   gint32 l_image_id;
-  GapFFetchImageCacheElem  *ic_ptr;
-  GapFFetchImageCacheElem  *ic_last;
-  GapFFetchImageCacheElem  *ic_new;
-  GapFFetchImageCache  *imcache;
   char *l_filename;
+
+  gint32 *images;
+  gint    nimages;
+  gint    l_idi;
+  gint    l_number_of_cached_images;
+  gint32  l_first_chached_image_id;
+  GimpParasite  *l_parasite;
+
 
   if(filename == NULL)
   {
-    printf("p_load_cache_image: ** ERROR cant load filename == NULL!\n");
+    printf("p_load_cache_image: ** ERROR cant load filename == NULL! pid:%d\n", (int)getpid());
     return -1;
   }
 
-  if(global_imcache == NULL)
+  l_image_id = -1;
+  l_first_chached_image_id = -1;
+  l_number_of_cached_images = 0;
+  images = gimp_image_list(&nimages);
+  for(l_idi=0; l_idi < nimages; l_idi++)
   {
-    /* init the global_image cache */
-    global_imcache = g_malloc0(sizeof(GapFFetchImageCache));
-    global_imcache->ic_list = NULL;
-    global_imcache->max_img_cache = GAP_FFETCH_MAX_IMG_CACHE_ELEMENTS;
-  }
+    l_parasite = gimp_image_parasite_find(images[l_idi], GAP_IMAGE_CACHE_PARASITE);
 
-  imcache = global_imcache;
-  ic_last = imcache->ic_list;
-
-  l_idx = 0;
-  for(ic_ptr = imcache->ic_list; ic_ptr != NULL; ic_ptr = (GapFFetchImageCacheElem *)ic_ptr->next)
-  {
-    l_idx++;
-    if(strcmp(filename, ic_ptr->filename) == 0)
+    if(l_parasite)
     {
-      if(gap_debug)
+      gint32 *mtime_ptr;
+      gchar  *filename_ptr;
+      
+      mtime_ptr = (gint32 *) l_parasite->data;
+      filename_ptr = (gchar *)&l_parasite->data[sizeof(gint32)];
+    
+      l_number_of_cached_images++;
+      if (l_first_chached_image_id < 0)
       {
-        printf("FrameFetcher: p_load_cache_image CACHE-HIT :%s (image_id:%d)\n"
-          , ic_ptr->filename, (int)ic_ptr->image_id);
+        l_first_chached_image_id = images[l_idi];
       }
-      /* image found in cache, can skip load */
-      return(ic_ptr->image_id);
+      
+      if(strcmp(filename, filename_ptr) == 0)
+      {
+        gint32 mtimefile;
+        
+        mtimefile = gap_file_get_mtime(filename);
+        if(mtimefile == *mtime_ptr)
+        {
+          /* image found in cache */
+          l_image_id = images[l_idi];
+        }
+        else
+        {
+          /* image found in cache, but has changed modification timestamp
+           * (delete from cache and reload)
+           */
+          if(gap_debug)
+          {
+            printf("FrameFetcher: DELETE because mtime changed : (image_id:%d) name:%s  mtimefile:%d mtimecache:%d  pid:%d\n"
+                  , (int)images[l_idi]
+                  , gimp_image_get_filename(images[l_idi])
+                  , (int)mtimefile
+                  , (int)*mtime_ptr
+                  , (int)getpid()
+                  );
+          }
+          gap_image_delete_immediate(images[l_idi]);
+        }
+        l_idi = nimages -1;  /* force break at next loop iteration */
+      }
+      gimp_parasite_free(l_parasite);
     }
-    ic_last = ic_ptr;
+  }
+  if(images)
+  {
+    g_free(images);
+  }
+  
+  if (l_image_id >= 0)
+  {
+    if(gap_debug)
+    {
+      printf("FrameFetcher: p_load_cache_image CACHE-HIT :%s (image_id:%d) pid:%d\n"
+            , filename, (int)l_image_id, (int)getpid());
+    }
+    return(l_image_id);
   }
 
   l_filename = g_strdup(filename);
   l_image_id = gap_lib_load_image(l_filename);
   if(gap_debug)
   {
-    printf("FrameFetcher: loaded imafe from disk:%s (image_id:%d)\n"
-      , l_filename, (int)l_image_id);
+    printf("FrameFetcher: loaded image from disk:%s (image_id:%d) pid:%d\n"
+      , l_filename, (int)l_image_id, (int)getpid());
   }
 
   if((l_image_id >= 0) && (addToCache == TRUE))
   {
-    ic_new = g_malloc0(sizeof(GapFFetchImageCacheElem));
-    ic_new->filename = l_filename;
-    ic_new->image_id = l_image_id;
-
-    if(imcache->ic_list == NULL)
+    guchar *parasite_data;
+    gint32  parasite_size;
+    gint32 *parasite_mtime_ptr;
+    gchar  *parasite_filename_ptr;
+    gint32  len_filename0;           /* filename length including the terminating 0 */
+  
+    if (l_number_of_cached_images > GAP_FFETCH_MAX_IMG_CACHE_ELEMENTS)
     {
-      imcache->ic_list = ic_new;   /* 1.st elem starts the list */
-    }
-    else
-    {
-      ic_last->next = (GapFFetchImageCacheElem *)ic_new;  /* add new elem at end of the cache list */
-    }
-
-    if(l_idx > imcache->max_img_cache)
-    {
-      /* chache list has more elements than desired,
-       * drop the 1.st (oldest) entry in the chache list
+      /* the image cache already has more elements than desired,
+       * drop the 1st cached image
        */
-      p_drop_image_cache_elem1(imcache);
-    }
-  }
-  else
-  {
-    g_free(l_filename);
-  }
-  return(l_image_id);
-}  /* end p_load_cache_image */
-
-
-/* ----------------------------------------------------
- * p_drop_image_cache_elem1
- * ----------------------------------------------------
- */
-static void
-p_drop_image_cache_elem1(GapFFetchImageCache *imcache)
-{
-  GapFFetchImageCacheElem  *ic_ptr;
-
-  if(imcache)
-  {
-    ic_ptr = imcache->ic_list;
-    if(ic_ptr)
-    {
       if(gap_debug)
       {
-        printf("p_drop_image_cache_elem1 delete:%s (image_id:%d)\n"
-          , ic_ptr->filename, (int)ic_ptr->image_id);
+        printf("FrameFetcher: DELETE because cache is full: (image_id:%d)  name:%s number_of_cached_images:%d pid:%d\n"
+              , (int)l_first_chached_image_id
+              , gimp_image_get_filename(images[l_idi])
+              , (int)l_number_of_cached_images
+              , (int)getpid()
+              );
       }
-      gap_image_delete_immediate(ic_ptr->image_id);
-      g_free(ic_ptr->filename);
-      imcache->ic_list = (GapFFetchImageCacheElem  *)ic_ptr->next;
-      g_free(ic_ptr);
+      gap_image_delete_immediate(l_first_chached_image_id);
     }
+
+    /* build parasite data including mtime and full filename with terminating 0 byte */
+    len_filename0 = strlen(filename) + 1;
+    parasite_size = sizeof(gint32) + len_filename0;  
+    parasite_data = g_malloc0(parasite_size);
+    parasite_mtime_ptr = (gint32 *)parasite_data;
+    parasite_filename_ptr = (gchar *)&parasite_data[sizeof(gint32)];
+    
+    *parasite_mtime_ptr = gap_file_get_mtime(filename);
+    memcpy(parasite_filename_ptr, filename, len_filename0);
+    
+    /* attach a parasite to mark the image as part of the gap image cache */
+    l_parasite = gimp_parasite_new(GAP_IMAGE_CACHE_PARASITE
+                                   ,0  /* GIMP_PARASITE_PERSISTENT  0 for non persistent */
+                                   ,parasite_size
+                                   ,parasite_data
+                                   );
+
+    if(l_parasite)
+    {
+      gimp_image_parasite_attach(l_image_id, l_parasite);
+      gimp_parasite_free(l_parasite);
+    }
+    g_free(parasite_data);
+
   }
-}  /* end p_drop_image_cache_elem1 */
 
+  g_free(l_filename);
 
+  return(l_image_id);
+}  /* end p_load_cache_image */
 
 /* ----------------------------------------------------
  * p_drop_image_cache
@@ -328,25 +321,54 @@ p_drop_image_cache_elem1(GapFFetchImageCache *imcache)
 static void
 p_drop_image_cache(void)
 {
-  GapFFetchImageCache *imcache;
-
+  gint32 *images;
+  gint    nimages;
+  gint    l_idi;
+  
   if(gap_debug)
   {
-    printf("p_drop_image_cache START\n");
+    printf("p_drop_image_cache START pid:%d\n", (int) getpid());
   }
-  imcache = global_imcache;
-  if(imcache)
+
+  images = gimp_image_list(&nimages);
+  for(l_idi=0; l_idi < nimages; l_idi++)
   {
-    while(imcache->ic_list)
+    GimpParasite  *l_parasite;
+  
+    l_parasite = gimp_image_parasite_find(images[l_idi], GAP_IMAGE_CACHE_PARASITE);
+
+    if(gap_debug)
     {
-      p_drop_image_cache_elem1(imcache);
+      printf("FrameFetcher: CHECK (image_id:%d) name:%s pid:%d\n"
+            , (int)images[l_idi]
+            , gimp_image_get_filename(images[l_idi])
+            , (int)getpid()
+            );
+    }
+
+    if(l_parasite)
+    {
+      if(gap_debug)
+      {
+        printf("FrameFetcher: DELETE (image_id:%d) name:%s pid:%d\n"
+              , (int)images[l_idi]
+              , gimp_image_get_filename(images[l_idi])
+              , (int)getpid()
+              );
+      }
+      /* delete image from the duplicates cache */
+      gap_image_delete_immediate(images[l_idi]);
+      gimp_parasite_free(l_parasite);
     }
   }
-  global_imcache = NULL;
+  if(images)
+  {
+    g_free(images);
+  }
 
   if(gap_debug)
   {
-    printf("p_drop_image_cache END\n");
+    printf("p_drop_image_cache END pid:%d\n", (int)getpid());
   }
 
 }  /* end p_drop_image_cache */
@@ -528,13 +550,20 @@ p_ffetch_get_open_gvahand(const char* filename, gint32 seltrack, const char *pre
 static void
 p_add_image_to_list_of_duplicated_images(gint32 image_id, gint32 ffetch_user_id)
 {
-  GapFFetchDuplicatedImagesElem *dupElem;
-  
-  dupElem = g_new(GapFFetchDuplicatedImagesElem, 1);
-  dupElem->next = global_duplicated_images;
-  dupElem->image_id = image_id;
-  dupElem->ffetch_user_id = ffetch_user_id;
-  global_duplicated_images = dupElem;
+  GimpParasite  *l_parasite;
+
+  /* attach a parasite to mark the image as part of the gap image duplicates cache */
+  l_parasite = gimp_parasite_new(GAP_IMAGE_DUP_CACHE_PARASITE
+                                 ,0  /* GIMP_PARASITE_PERSISTENT  0 for non persistent */
+                                 , sizeof(gint32)     /* size of parasite data */
+                                 ,&ffetch_user_id     /* parasite data */
+                                 );
+
+  if(l_parasite)
+  {
+    gimp_image_parasite_attach(image_id, l_parasite);
+    gimp_parasite_free(l_parasite);
+  }
 }   /* end p_add_image_to_list_of_duplicated_images */
 
 
@@ -547,35 +576,56 @@ p_add_image_to_list_of_duplicated_images(gint32 image_id, gint32 ffetch_user_id)
 void
 gap_frame_fetch_delete_list_of_duplicated_images(gint32 ffetch_user_id)
 {
-  GapFFetchDuplicatedImagesElem *dupElem;
-  GapFFetchDuplicatedImagesElem *nextDupElem;
+  gint32 *images;
+  gint    nimages;
+  gint    l_idi;
+
+  images = gimp_image_list(&nimages);
+  for(l_idi=0; l_idi < nimages; l_idi++)
+  {
+    GimpParasite  *l_parasite;
   
-  dupElem = global_duplicated_images;
-  while(dupElem)
-  {
-    nextDupElem = dupElem->next;
+    l_parasite = gimp_image_parasite_find(images[l_idi], GAP_IMAGE_DUP_CACHE_PARASITE);
 
-    if (((ffetch_user_id == dupElem->ffetch_user_id) || (ffetch_user_id < 0))
-    && (dupElem->image_id >= 0))
+    if(gap_debug)
     {
-      gap_image_delete_immediate(dupElem->image_id);
-      dupElem->image_id = -1;  /* set image invalid */
+      printf("FrameFetcher: check (image_id:%d) name:%s pid:%d\n"
+            , (int)images[l_idi]
+            , gimp_image_get_filename(images[l_idi])
+            , (int)getpid()
+            );
     }
 
-    if (ffetch_user_id < 0)
+    if(l_parasite)
     {
-      g_free(dupElem);
+      gint32 *ffetch_user_id_ptr;
+      
+      ffetch_user_id_ptr = (gint32 *) l_parasite->data;
+      if((*ffetch_user_id_ptr == ffetch_user_id) || (ffetch_user_id < 0))
+      {
+        if(gap_debug)
+        {
+          printf("FrameFetcher: DELETE duplicate %s (image_id:%d) user_id:%d (%d)  name:%s pid:%d\n"
+                , gimp_image_get_filename(images[l_idi])
+                , (int)images[l_idi]
+                , (int)ffetch_user_id
+                , (int)*ffetch_user_id_ptr
+                , gimp_image_get_filename(images[l_idi])
+                , (int)getpid()
+                );
+        }
+        /* delete image from the duplicates cache */
+        gap_image_delete_immediate(images[l_idi]);
+      }
+      gimp_parasite_free(l_parasite);
     }
-
-    dupElem = nextDupElem;
   }
-  if (ffetch_user_id < 0)
+  if(images)
   {
-    global_duplicated_images = NULL;
+    g_free(images);
   }
+
 }  /* end gap_frame_fetch_delete_list_of_duplicated_images */
-
-
 
 
 
@@ -616,6 +666,7 @@ gap_frame_fetch_dup_image(gint32 ffetch_user_id
   gint32 dup_image_id;
 
   resulting_layer = -1;
+  dup_image_id = -1;
   image_id = p_load_cache_image(filename, addToCache);
   if (image_id < 0)
   {
@@ -657,17 +708,22 @@ gap_frame_fetch_dup_image(gint32 ffetch_user_id
 
   if (addToCache != TRUE)
   {
-    GapFFetchImageCacheElem *ic_elem;
-    
-    ic_elem = p_find_img_cache_by_image_id(image_id);
-    
-    if (ic_elem == NULL)
+    GimpParasite  *l_parasite;
+
+    l_parasite = gimp_image_parasite_find(image_id, GAP_IMAGE_CACHE_PARASITE);
+
+    if(l_parasite)
+    {
+      gimp_parasite_free(l_parasite);
+    }
+    else
     {
       /* the original image is not cached
        * (delete it because the caller gets the preprocessed duplicate)
        */
       gap_image_delete_immediate(image_id);
     }
+    
   }
 
   return(resulting_layer);
@@ -791,7 +847,7 @@ gap_frame_fetch_register_user(const char *caller_name)
   
   for(usr_ptr = global_rsource_users; usr_ptr != NULL; usr_ptr = (GapFFetchResourceUserElem *)usr_ptr->next)
   {
-    printf("usr_ptr->ffetch_user_id: %d  usr_ptr:%d\n", usr_ptr->ffetch_user_id, usr_ptr);
+    /* printf("usr_ptr->ffetch_user_id: %d  usr_ptr:%d\n", usr_ptr->ffetch_user_id, usr_ptr); */
   
     if (usr_ptr->ffetch_user_id >= 0)
     {
@@ -814,10 +870,11 @@ gap_frame_fetch_register_user(const char *caller_name)
   
   if(gap_debug)
   {
-    printf("gap_frame_fetch_register_user: REGISTRATED ffetch_user_id:%d  caller_name:%s  new_usr_ptr:%d\n"
+    printf("gap_frame_fetch_register_user: REGISTRATED ffetch_user_id:%d  caller_name:%s  new_usr_ptr:%d pid:%d\n"
           , new_usr_ptr->ffetch_user_id
           , caller_name
-          , new_usr_ptr
+          , (int)&new_usr_ptr
+          , (int) getpid()
           );
   }
   return (max_ffetch_user_id);
@@ -832,7 +889,15 @@ gap_frame_fetch_register_user(const char *caller_name)
  *  cached images and videohandles are kept.
  *  until the last resource user calls this procedure.
  *  if there are no more registered users all
- *  cached resources and duplicates are dropped)
+ *  cached videohandle resources and temporary image duplicates are dropped)
+ * Current restriction:
+ *  the current implementation keeps user registration in global data
+ *  but filtermacros and storyboard processor typically are running in separate
+ *  processes an therefore each process has its own global data.
+ *  an empty list of users does not really indicate
+ *  that there are no more users (another process may still have users
+ *  of cached images)
+ *  therefore cached images are NOT dropped
  */
 void
 gap_frame_fetch_unregister_user(gint32 ffetch_user_id)
@@ -842,8 +907,9 @@ gap_frame_fetch_unregister_user(gint32 ffetch_user_id)
 
   if(gap_debug)
   {
-    printf("gap_frame_fetch_unregister_user: UNREGISTER ffetch_user_id:%d\n"
+    printf("gap_frame_fetch_unregister_user: UNREGISTER ffetch_user_id:%d pid:%d\n"
           , ffetch_user_id
+          , (int) getpid()
           );
   }
 
@@ -864,9 +930,10 @@ gap_frame_fetch_unregister_user(gint32 ffetch_user_id)
   {
     if(gap_debug)
     {
-      printf("gap_frame_fetch_unregister_user: no more resource users, DROP cached resources\n");
+      printf("gap_frame_fetch_unregister_user: no more resource users, DROP cached duplicates and video handles\n");
     }
-    gap_frame_fetch_drop_resources();    
+    gap_frame_fetch_delete_list_of_duplicated_images(-1);
+    p_drop_vidhandle_cache();
   }
 
 }  /* end gap_frame_fetch_unregister_user */

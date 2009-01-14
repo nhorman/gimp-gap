@@ -857,7 +857,7 @@ p_avi_encode(GapGveAviGlobalParams *gpp)
         }
       }
       
-      //if(gap_debug)
+      if(gap_debug)
       {
         printf("l_dont_recode_frames:%d\n", l_dont_recode_frames);
       }
@@ -905,7 +905,7 @@ p_avi_encode(GapGveAviGlobalParams *gpp)
         /* 1:1 lossless copy one VIDEO FRAME */
         l_cnt_reused_frames++;
 
-        //if (gap_debug)
+        if (gap_debug)
         {
           printf("DEBUG: 1:1 copy of frame %d (fetch as chunk OK) chunk_ptr:%d  chunk_size:%d chunk_hdr_size:%d\n"
               , (int)l_cur_frame_nr
@@ -929,7 +929,7 @@ p_avi_encode(GapGveAviGlobalParams *gpp)
         gint32  l_app0_len;
 
         l_cnt_encoded_frames++;
-        //if (gap_debug)
+        if (gap_debug)
         {
 	  printf("DEBUG: saving recoded frame %d (fetch as chunk FAILED)\n", (int)l_cur_frame_nr);
         }
@@ -967,8 +967,7 @@ p_avi_encode(GapGveAviGlobalParams *gpp)
           buffer = gap_gve_jpeg_drawable_encode_jpeg(l_drawable, epp->jpeg_interlaced,
                                         &l_FRAME_size, epp->jpeg_quality, epp->jpeg_odd_even, FALSE, l_app0_buffer, l_app0_len);
         }
-        else if ((strcmp(epp->codec_name, GAP_AVI_CODEC_JPEG) == 0)
-        || (strcmp(epp->codec_name, GAP_AVI_CODEC_MJPG) == 0))
+        else if (strcmp(epp->codec_name, GAP_AVI_CODEC_PNG) == 0)
         {
           /* Compress the picture into a PNG */
           buffer = gap_gve_png_drawable_encode_png(l_drawable, epp->png_interlaced,
@@ -992,10 +991,6 @@ p_avi_encode(GapGveAviGlobalParams *gpp)
 	      l_vflip = TRUE;
 	    }
             buffer = gap_gve_raw_BGR_drawable_encode(l_drawable, &l_FRAME_size, l_vflip, l_app0_buffer, l_app0_len);
-          }
-          else if (strcmp(epp->codec_name, GAP_AVI_CODEC_PNG) == 0)
-          {
-            printf("PNG codec not implemented yet.\n");
           }
 #ifdef ENABLE_LIBXVIDCORE
           else

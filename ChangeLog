@@ -1,3 +1,61 @@
+2009-01-14 Wolfgang Hofer <hof@gimp.org>
+
+- changed frame fetcher to use image parasites to mark cached images (and temporary duplicates)
+  the old implementation based on static global lists did not work for filtermacros
+  because the filtermacro that registers as cache user typically
+  runs in another process than the iterator (that is invoked from the called filter)
+  With the old implementation all images that were fetched via persistent drawable_id
+  in filtermacros were never deleted and filled up memory until gimp-swap fills up the disk
+  then caused no more space left on device errors.
+
+- bugfix Master Video Encoder.
+  Again the "Encoder" page labels were not updated as expected.
+  The labels did show just the highest digit (FramesDone  8   when 817 frame done ..)
+  the new fix already creates the label with placeholder for 6 digits. "######".
+  procedure p_set_label_to_numeric_value uses leading blanks
+
+- added storyboard feature "area replacement" via format string that provides
+   videoclip and framenumber specific logo inserts for all handled clips of type movie.
+   Framespecific area replacement can be used for individual fixes 
+   (provided as manual edited frame image) on some partly damaged frames
+ 
+- drawable iterator: additional checks for valid drawables
+
+- morph or fade can be used to create tweens (for missing frames in a framesequence)
+ 
+
+
+   * docs/reference/txt/plug-in-gap-storyboard-master-prop.txt  
+   * gap/gap_file_util.c  
+   * gap/gap_filter_iterators.c  
+   * gap/gap_frame_fetcher.c  
+   * gap/gap_image.c  
+   * gap/gap_image.h  
+   * gap/gap_layer_copy.c  
+   * gap/gap_layer_copy.h  
+   * gap/gap_morph_dialog.c  
+   * gap/gap_morph_dialog.h  
+   * gap/gap_morph_exec.c  
+   * gap/gap_morph_exec.h  
+   * gap/gap_morph_main.c  
+   * gap/gap_morph_main.h  
+   * gap/gap_story_dialog.c  
+   * gap/gap_story_file.c  
+   * gap/gap_story_file.h  
+   * gap/gap_story_main.h  
+   * gap/gap_story_properties.c  
+   * gap/gap_story_render_lossless.c  
+   * gap/gap_story_render_processor.c  
+   * gap/gap_story_render_types.h  
+   * gap/gap_story_syntax.c  
+   * gap/gap_story_syntax.h  
+   * gap/Makefile.am  
+   
+   NEW FILES:
+   * gap/gap_morph_tween_dialog.c  
+   * gap/gap_morph_tween_dialog.h  
+   * gap/gap_wr_resynth.c  
+  
 2008-12-16 Wolfgang Hofer <hof@gimp.org>
 
 - fixed split image to frames for indexed images, and

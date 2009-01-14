@@ -331,9 +331,12 @@ gap_file_get_mtime(const char *filename)
 {
   struct stat  l_stat;
 
-  if (0 == g_stat(filename, &l_stat))
+  if(filename != NULL)
   {
-    return(l_stat.st_mtime);
+    if (0 == g_stat(filename, &l_stat))
+    {
+      return(l_stat.st_mtime);
+    }
   }
   return(0);
   

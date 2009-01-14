@@ -153,6 +153,9 @@ static void     p_pw_filename_changed(const char *filename, GapStbPropWidget *pw
 static void     p_filesel_pw_ok_cb (GtkWidget *widget, GapStbPropWidget *pw);
 static void     p_filesel_pw_close_cb ( GtkWidget *widget, GapStbPropWidget *pw);
 static void     p_pw_filesel_button_cb ( GtkWidget *w, GapStbPropWidget *pw);
+static void     p_pw_fmac_filesel_pw_ok_cb (GtkWidget *widget, GapStbPropWidget *pw);
+static void     p_pw_fmac_filesel_pw_close_cb ( GtkWidget *widget, GapStbPropWidget *pw);
+static void     p_pw_fmac_filesel_button_cb ( GtkWidget *w, GapStbPropWidget *pw);
 static void     p_pw_comment_entry_update_cb(GtkWidget *widget, GapStbPropWidget *pw);
 static void     p_pw_fmac_entry_update_cb(GtkWidget *widget, GapStbPropWidget *pw);
 static void     p_pw_update_info_labels_and_cliptype_senstivity(GapStbPropWidget *pw);
@@ -939,12 +942,12 @@ p_pw_auto_scene_split(GapStbPropWidget *pw, gboolean all_scenes)
         stb_elem = stb_elem_new;
 
         if(gap_debug)
-	{
-	  printf("AUTO SCENE NEW_ELEM linked to list: drop:%d, video_id:%d\n"
-	       ,(int)drop_th_data
-	       ,(int)video_id
-	       );
-	}
+        {
+          printf("AUTO SCENE NEW_ELEM linked to list: drop:%d, video_id:%d\n"
+               ,(int)drop_th_data
+               ,(int)video_id
+               );
+        }
 
         if((stb_elem->record_type == GAP_STBREC_VID_MOVIE)
         && (drop_th_data)
@@ -1128,7 +1131,7 @@ p_pv_pview_render_immediate (GapStbPropWidget *pw
                     , l_th_bpp
                     , TRUE         /* allow_grab_src_data */
                     , stb_elem_refptr->flip_request
-		    , GAP_STB_FLIP_NONE  /* flip_status */
+                    , GAP_STB_FLIP_NONE  /* flip_status */
                     );
        if(!l_th_data_was_grabbed)
        {
@@ -1168,7 +1171,7 @@ p_pv_pview_render_immediate (GapStbPropWidget *pw
      gap_pview_render_f_from_pixbuf (pv_ptr
                                     , pixbuf
                                     , stb_elem_refptr->flip_request
-		                    , GAP_STB_FLIP_NONE  /* flip_status */
+                                    , GAP_STB_FLIP_NONE  /* flip_status */
                                     );
      g_object_unref(pixbuf);
    }
@@ -1194,7 +1197,7 @@ p_pv_pview_render_immediate (GapStbPropWidget *pw
         gap_pview_render_f_from_image (pv_ptr
                                     , l_image_id
                                     , stb_elem_refptr->flip_request
-		                    , GAP_STB_FLIP_NONE  /* flip_status */
+                                    , GAP_STB_FLIP_NONE  /* flip_status */
                                     );
 
         /* create thumbnail (to speed up acces next time) */
@@ -2359,6 +2362,106 @@ p_pw_filesel_button_cb ( GtkWidget *w
 
 /* ==================================================== END FILESEL stuff ======  */
 
+/* ==================================================== START FMAC FILESEL stuff ======  */
+/* --------------------------------
+ * p_pw_fmac_filesel_pw_ok_cb
+ * --------------------------------
+ */
+static void
+p_pw_fmac_filesel_pw_ok_cb (GtkWidget *widget
+                   ,GapStbPropWidget *pw)
+{
+  const gchar *fmacname;
+  gchar *dup_fmacname;
+
+  if(pw == NULL) return;
+  if(pw->pw_fmac_filesel == NULL) return;
+
+  dup_fmacname = NULL;
+  fmacname = gtk_file_selection_get_filename (GTK_FILE_SELECTION (pw->pw_fmac_filesel));
+  if(fmacname)
+  {
+    dup_fmacname = g_strdup(fmacname);
+  }
+
+  gtk_widget_destroy(GTK_WIDGET(pw->pw_fmac_filesel));
+
+  if(dup_fmacname)
+  {
+    gtk_entry_set_text(GTK_ENTRY(pw->fmac_entry), dup_fmacname);
+    g_free(dup_fmacname);
+  }
+
+  pw->pw_fmac_filesel = NULL;
+}  /* end p_pw_fmac_filesel_pw_ok_cb */
+
+
+/* -----------------------------
+ * p_pw_fmac_filesel_pw_close_cb
+ * -----------------------------
+ */
+static void
+p_pw_fmac_filesel_pw_close_cb ( GtkWidget *widget
+                      , GapStbPropWidget *pw)
+{
+  if(pw->pw_fmac_filesel == NULL) return;
+
+  gtk_widget_destroy(GTK_WIDGET(pw->pw_fmac_filesel));
+  pw->pw_fmac_filesel = NULL;   /* indicate that filesel is closed */
+
+}  /* end p_pw_fmac_filesel_pw_close_cb */
+
+
+
+/* -----------------------------
+ * p_pw_fmac_filesel_button_cb
+ * -----------------------------
+ */
+static void
+p_pw_fmac_filesel_button_cb ( GtkWidget *w
+                       , GapStbPropWidget *pw)
+{
+  GtkWidget *filesel = NULL;
+
+  if(pw->scene_detection_busy)
+  {
+     return;
+  }
+
+  if(pw->pw_fmac_filesel != NULL)
+  {
+     gtk_window_present(GTK_WINDOW(pw->pw_fmac_filesel));
+     return;   /* filesel is already open */
+  }
+  if(pw->stb_elem_refptr == NULL) { return; }
+
+  filesel = gtk_file_selection_new ( _("Set Filtermacro Filename"));
+  pw->pw_fmac_filesel = filesel;
+
+  gtk_window_set_position (GTK_WINDOW (filesel), GTK_WIN_POS_MOUSE);
+  g_signal_connect (GTK_FILE_SELECTION (filesel)->ok_button,
+                    "clicked", G_CALLBACK (p_pw_fmac_filesel_pw_ok_cb),
+                    pw);
+  g_signal_connect (GTK_FILE_SELECTION (filesel)->cancel_button,
+                    "clicked", G_CALLBACK (p_pw_fmac_filesel_pw_close_cb),
+                    pw);
+  g_signal_connect (filesel, "destroy",
+                    G_CALLBACK (p_pw_fmac_filesel_pw_close_cb),
+                    pw);
+
+
+  if(pw->stb_elem_refptr->filtermacro_file)
+  {
+    gtk_file_selection_set_filename (GTK_FILE_SELECTION (filesel),
+                                     pw->stb_elem_refptr->filtermacro_file);
+  }
+  gtk_widget_show (filesel);
+
+}  /* end p_pw_fmac_filesel_button_cb */
+
+
+/* ==================================================== END FMAC FILESEL stuff ======  */
+
 
 
 /* ----------------------------
@@ -3061,80 +3164,80 @@ on_clip_elements_dropped_as_mask_ref (GtkWidget        *widget,
   {
     case GAP_STB_TARGET_STORYBOARD_ELEM:
       {
-	GapStbFrameWidget **fw_drop_ptr;
+        GapStbFrameWidget **fw_drop_ptr;
 
-	fw_drop_ptr = (GapStbFrameWidget **)selection_data->data;
-	fw_drop = *fw_drop_ptr;
-	if(gap_debug)
-	{
+        fw_drop_ptr = (GapStbFrameWidget **)selection_data->data;
+        fw_drop = *fw_drop_ptr;
+        if(gap_debug)
+        {
           printf("on_clip_elements_dropped_as_mask_ref FW_DROP:%d\n", (int)fw_drop);
         }
-	if (fw_drop == NULL)
-	{
+        if (fw_drop == NULL)
+        {
           return;
-	}
-	tabw_src = (GapStbTabWidgets *)fw_drop->tabw;
-	if ((tabw_src == NULL)
-	|| ((tabw_src != sgpp->cll_widgets) && (tabw_src != sgpp->stb_widgets)))
-	{
+        }
+        tabw_src = (GapStbTabWidgets *)fw_drop->tabw;
+        if ((tabw_src == NULL)
+        || ((tabw_src != sgpp->cll_widgets) && (tabw_src != sgpp->stb_widgets)))
+        {
           /* if tabw of the droped frame widget
            * is not equal to one of stb_widgets or cll_widgets
            * assume that the sender was another application
            * which is not supported for drop type GAP_STB_TARGET_STORYBOARD_ELEM.
            */
           return;
-	}
+        }
 
-	if(fw_drop->stb_elem_refptr)
-	{
-	  gchar *mask_name_new;
-	  
-	  GapStoryElem *known_maskdef_elem;
-	  
-	  
-	  p_pw_push_undo_and_set_unsaved_changes(pw);
-	  
-	  mask_name_new = NULL;
-	  known_maskdef_elem = gap_story_find_maskdef_equal_to_ref_elem(pw->stb_refptr
-	                          , fw_drop->stb_elem_refptr);
+        if(fw_drop->stb_elem_refptr)
+        {
+          gchar *mask_name_new;
+          
+          GapStoryElem *known_maskdef_elem;
+          
+          
+          p_pw_push_undo_and_set_unsaved_changes(pw);
+          
+          mask_name_new = NULL;
+          known_maskdef_elem = gap_story_find_maskdef_equal_to_ref_elem(pw->stb_refptr
+                                  , fw_drop->stb_elem_refptr);
           if(known_maskdef_elem)
           {
             mask_name_new = g_strdup(known_maskdef_elem->mask_name);
           }
           else
           {
-	    GapStoryElem *stb_elem_dup;
+            GapStoryElem *stb_elem_dup;
             
-	    mask_name_new = gap_story_generate_unique_maskname(pw->stb_refptr);
+            mask_name_new = gap_story_generate_unique_maskname(pw->stb_refptr);
             /* implicite create a new mask definition from the dropped
              * clip and change properties of current pw to refere
              * to the newly created mask definition
              */
-	    stb_elem_dup = gap_story_elem_duplicate(fw_drop->stb_elem_refptr);
+            stb_elem_dup = gap_story_elem_duplicate(fw_drop->stb_elem_refptr);
             if(stb_elem_dup->mask_name)
             {
               g_free(stb_elem_dup->mask_name);
             }
             stb_elem_dup->mask_name = g_strdup(mask_name_new);
-	    stb_elem_dup->track = GAP_STB_MASK_TRACK_NUMBER;
-	    gap_story_list_append_elem(pw->stb_refptr, stb_elem_dup);
+            stb_elem_dup->track = GAP_STB_MASK_TRACK_NUMBER;
+            gap_story_list_append_elem(pw->stb_refptr, stb_elem_dup);
             pw->go_recreate_request = TRUE;
           }
-	  
-	  /* set mask reference */
-	  if(mask_name_new)
-	  {
-	    if(pw->stb_elem_refptr->mask_name)
-	    {
-	      g_free(pw->stb_elem_refptr->mask_name);
-	    }
-	    pw->stb_elem_refptr->mask_name = g_strdup(mask_name_new);
-	    gtk_entry_set_text(GTK_ENTRY(pw->pw_mask_name_entry), mask_name_new);
-	    g_free(mask_name_new);
+          
+          /* set mask reference */
+          if(mask_name_new)
+          {
+            if(pw->stb_elem_refptr->mask_name)
+            {
+              g_free(pw->stb_elem_refptr->mask_name);
+            }
+            pw->stb_elem_refptr->mask_name = g_strdup(mask_name_new);
+            gtk_entry_set_text(GTK_ENTRY(pw->pw_mask_name_entry), mask_name_new);
+            g_free(mask_name_new);
             p_pw_render_layermask(pw);
-	  }
-	  p_pw_update_properties(pw);
-	}
+          }
+          p_pw_update_properties(pw);
+        }
 
       }
       break;
@@ -3520,6 +3623,7 @@ p_pw_clear_widgets(GapStbPropWidget *pw)
   pw->dur_time_label = NULL;
   pw->pingpong_toggle = NULL;
   pw->comment_entry = NULL;
+  pw->pw_fmac_filesel = NULL;
   pw->fmac_entry = NULL;
   pw->pw_spinbutton_from_adj = NULL;
   pw->pw_spinbutton_to_adj = NULL;
@@ -4424,28 +4528,47 @@ gap_story_pw_properties_dialog (GapStbPropWidget *pw)
 
 
 
-  /* the filtermacro entry */
-  entry = gtk_entry_new ();
-  gtk_widget_set_size_request(entry, PW_ENTRY_WIDTH, -1);
-  if(pw->stb_elem_refptr)
+  /* filtermacro entry and filesel invoker button */
   {
-    if(pw->stb_elem_refptr->filtermacro_file)
-    {
-      gtk_entry_set_text(GTK_ENTRY(entry), pw->stb_elem_refptr->filtermacro_file);
-    }
-  }
+    GtkWidget *hbox_fmac;
+  
+    hbox_fmac = gtk_hbox_new (FALSE, 1);
+    gtk_widget_show (hbox_fmac);
+    gtk_table_attach_defaults (GTK_TABLE(table), hbox_fmac, 1, 2, row, row+1);
 
-  gtk_table_attach_defaults (GTK_TABLE(table), entry, 1, 2, row, row+1);
-  g_signal_connect(G_OBJECT(entry), "changed",
+    /* the filtermacro entry */
+    entry = gtk_entry_new ();
+    gtk_widget_set_size_request(entry, PW_ENTRY_WIDTH, -1);
+    if(pw->stb_elem_refptr)
+    {
+      if(pw->stb_elem_refptr->filtermacro_file)
+      {
+        gtk_entry_set_text(GTK_ENTRY(entry), pw->stb_elem_refptr->filtermacro_file);
+      }
+    }
+
+    gtk_box_pack_start (GTK_BOX (hbox_fmac), entry, TRUE, TRUE, 1);
+
+    g_signal_connect(G_OBJECT(entry), "changed",
                      G_CALLBACK(p_pw_fmac_entry_update_cb),
                      pw);
-  gtk_widget_show (entry);
-  gimp_help_set_help_data (entry, _("filter macro to be performed when frames "
+    gtk_widget_show (entry);
+    gimp_help_set_help_data (entry, _("filter macro to be performed when frames "
                                     "of this clips are rendered. "
                                     "A 2nd macrofile is implicite referenced by naming convetion "
                                     "via the keyword .VARYING (as suffix or before the extension)")
                                            , NULL);
-  pw->fmac_entry = entry;
+    pw->fmac_entry = entry;
+
+
+    /* the filesel invoker button */
+    button = gtk_button_new_with_label ("...");
+    gtk_box_pack_start (GTK_BOX (hbox_fmac), button, FALSE, FALSE, 1);
+    g_signal_connect(G_OBJECT(button), "clicked",
+                     G_CALLBACK(p_pw_fmac_filesel_button_cb),
+                     pw);
+    gtk_widget_show (button);
+  }
 
 
   /* fmac_total_steps threshold spinbutton */

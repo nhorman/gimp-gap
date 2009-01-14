@@ -31,6 +31,7 @@
 #include "libgimp/gimp.h"
 #include "gap_morph_main.h"
 #include "gap_morph_dialog.h"
+#include "gap_libgimpgap.h"
 
 void     gap_morph_exec_free_workpoint_list(GapMorphWorkPoint **wp_list);
 gboolean gap_moprh_exec_save_workpointfile(const char *filename
@@ -54,6 +55,8 @@ void    gap_morph_exec_get_warp_pick_koords(GapMorphWorkPoint *wp_list
 				      , gdouble *pick_y
                                       );
 gint32  gap_morph_execute(GapMorphGlobalParams *mgpp);
+gint32  gap_morph_render_one_tween(GapMorphGlobalParams *mgpp);
+gint32  gap_morph_render_frame_tweens(GapAnimInfo *ainfo_ptr, GapMorphGlobalParams *mgpp);
 
 #endif
 

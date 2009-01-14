@@ -721,7 +721,7 @@ p_rawframe_encode(GapGveRawGlobalParams *gpp)
   GimpRunMode    l_save_runmode;
   GapGveMasterEncoderStatus encStatus;
 
-  //if(gap_debug)
+  if(gap_debug)
   {
      printf("p_rawframe_encode: START\n");
      printf("  videoname: %s\n", gpp->val.videoname);
@@ -755,7 +755,7 @@ p_rawframe_encode(GapGveRawGlobalParams *gpp)
   if(p_is_videoname_jpeg(gpp->val.videoname) == TRUE)
   {
     l_check_flags += GAP_VID_CHCHK_FLAG_JPG;
-    //if(gap_debug)
+    if(gap_debug)
     {
       printf("check fetched chunks for JPEG frames activated\n");
     }
@@ -857,7 +857,7 @@ p_rawframe_encode(GapGveRawGlobalParams *gpp)
         gboolean l_saveOk;
         
         l_cnt_reused_frames++;
-        //if (gap_debug)
+        if (gap_debug)
         {
 	  printf("DEBUG: 1:1 copy of frame %d (fetch as chunk OK) chunk_ptr:%d  chunk_size:%d chunk_hdr_size:%d\n"
               , (int)l_cur_frame_nr
@@ -877,7 +877,7 @@ p_rawframe_encode(GapGveRawGlobalParams *gpp)
       else
       {
         l_cnt_encoded_frames++;
-        //if (gap_debug)
+        if (gap_debug)
         {
 	  printf("DEBUG: saving recoded frame %d (fetch as chunk FAILED)\n", (int)l_cur_frame_nr);
         }

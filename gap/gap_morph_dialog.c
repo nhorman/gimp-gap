@@ -187,7 +187,7 @@ static void         on_hvscale_changed_callback(GtkObject *obj, GapMorphSubWin *
 static void         on_show_lines_toggled_callback(GtkWidget *widget, GapMorphGUIParams *mgup);
 static void         on_use_quality_wp_selection_toggled_callback(GtkWidget *widget, GapMorphGUIParams *mgup);
 static void         on_use_gravity_toggled_callback(GtkWidget *widget, GapMorphGUIParams *mgup);
-static void         on_multiple_pointsets_toggled_callback(GtkWidget *widget, GapMorphGUIParams *mgup);
+static void         on_have_workpointsets_toggled_callback(GtkWidget *widget, GapMorphGUIParams *mgup);
 static void         on_create_tween_layers_toggled_callback(GtkWidget *widget, GapMorphGUIParams *mgup);
 
 static void         on_radio_op_mode_callback(GtkWidget *widget, gint32 op_mode);
@@ -229,7 +229,7 @@ p_morph_response(GtkWidget *w, gint response_id, GapMorphGUIParams *mgup)
       mgup->mgpp->use_quality_wp_selection = FALSE;
       mgup->mgpp->use_gravity = FALSE;
       mgup->mgpp->create_tween_layers = TRUE;
-      mgup->mgpp->multiple_pointsets = FALSE;
+      mgup->mgpp->have_workpointsets = FALSE;
       p_upd_widget_values(mgup);
       break;
     case GTK_RESPONSE_OK:
@@ -286,8 +286,8 @@ p_upd_widget_values(GapMorphGUIParams *mgup)
                                     , mgup->mgpp->use_gravity);
        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (mgup->create_tween_layers_checkbutton)
                                     , mgup->mgpp->create_tween_layers);
-       gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (mgup->multiple_pointsets_checkbutton)
-                                    , mgup->mgpp->multiple_pointsets);
+       gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (mgup->have_workpointsets_checkbutton)
+                                    , mgup->mgpp->have_workpointsets);
 
   }
 }  /* end p_upd_widget_values */
@@ -2822,17 +2822,17 @@ on_use_gravity_toggled_callback(GtkWidget *widget, GapMorphGUIParams *mgup)
 }  /* end on_use_gravity_toggled_callback */
 
 /* --------------------------------------
- * on_multiple_pointsets_toggled_callback
+ * on_have_workpointsets_toggled_callback
  * --------------------------------------
  */
 static void
-on_multiple_pointsets_toggled_callback(GtkWidget *widget, GapMorphGUIParams *mgup)
+on_have_workpointsets_toggled_callback(GtkWidget *widget, GapMorphGUIParams *mgup)
 {
   if(mgup)
   {
-    if(GTK_TOGGLE_BUTTON (mgup->multiple_pointsets_checkbutton)->active)
+    if(GTK_TOGGLE_BUTTON (mgup->have_workpointsets_checkbutton)->active)
     {
-      mgup->mgpp->multiple_pointsets = TRUE;
+      mgup->mgpp->have_workpointsets = TRUE;
       gtk_widget_show(mgup->workpoint_file_lower_label);
       gtk_widget_show(mgup->workpoint_file_upper_label);
       gtk_widget_show(mgup->workpoint_lower_label);
@@ -2840,14 +2840,14 @@ on_multiple_pointsets_toggled_callback(GtkWidget *widget, GapMorphGUIParams *mgu
     }
     else
     {
-      mgup->mgpp->multiple_pointsets = FALSE;
+      mgup->mgpp->have_workpointsets = FALSE;
       gtk_widget_hide(mgup->workpoint_file_lower_label);
       gtk_widget_hide(mgup->workpoint_file_upper_label);
       gtk_widget_hide(mgup->workpoint_lower_label);
       gtk_widget_hide(mgup->workpoint_upper_label);
     }
   }
-}  /* end on_multiple_pointsets_toggled_callback */
+}  /* end on_have_workpointsets_toggled_callback */
 
 
 /* ---------------------------------------
@@ -3878,15 +3878,15 @@ gap_morph_create_dialog(GapMorphGUIParams *mgup)
 
   /* the multiple pointsets checkbutton */
   checkbutton = gtk_check_button_new_with_label ( _("Multiple Pointsets"));
-  mgup->multiple_pointsets_checkbutton = checkbutton;
+  mgup->have_workpointsets_checkbutton = checkbutton;
 #ifdef GAP_MORPH_DEBUG_FEATURES
   gtk_widget_show (checkbutton);
 #endif
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbutton), mgup->mgpp->multiple_pointsets);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbutton), mgup->mgpp->have_workpointsets);
   gtk_table_attach( GTK_TABLE(table), checkbutton, 11, 13, row, row+1,
 		    GTK_FILL, 0, 0, 0 );
   g_signal_connect (checkbutton, "toggled",
-                    G_CALLBACK (on_multiple_pointsets_toggled_callback),
+                    G_CALLBACK (on_have_workpointsets_toggled_callback),
                     mgup);
   gimp_help_set_help_data(checkbutton,
                        _("ON: use 2 or more pointsets from file. "
@@ -3951,10 +3951,10 @@ gap_morph_create_dialog(GapMorphGUIParams *mgup)
   /*  Show the main container  */
   gtk_widget_show (main_vbox);
 
-  /* force multiple_pointsets callback to show/hide workpoint lables
+  /* force have_workpointsets callback to show/hide workpoint lables
    * (those labels are only visible when multiple pontsets are enabled
    */
-  on_multiple_pointsets_toggled_callback(mgup->multiple_pointsets_checkbutton, mgup);
+  on_have_workpointsets_toggled_callback(mgup->have_workpointsets_checkbutton, mgup);
   on_use_gravity_toggled_callback(mgup->use_gravity_checkbutton, mgup);
   on_use_quality_wp_selection_toggled_callback(mgup->use_quality_wp_selection_checkbutton, mgup);
 }  /* end gap_morph_create_dialog */

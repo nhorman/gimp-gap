@@ -291,6 +291,9 @@ typedef struct GapStoryRenderVidHandle
   GapStoryRenderAudioRangeElem    *aud_list;
   GapStoryRenderErrors            *sterr;
   char                         *preferred_decoder;
+  char                         *master_insert_area_format;    /* Format for logo replacement */
+  gboolean                      master_insert_area_format_has_videobasename;
+  gboolean                      master_insert_area_format_has_framenumber;
 
   /* master video settings found in the storyboard file */
   gdouble  master_framerate;

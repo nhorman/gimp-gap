@@ -79,6 +79,7 @@ gint32 gap_layer_flip(gint32 layer_id, gint32 flip_request);
 void   gap_layer_copy_paste_drawable(gint32 image_id, gint32 dst_drawable_id, gint32 src_drawable_id);
 
 gint32 gap_layer_get_stackposition(gint32 image_id, gint32 ref_layer_id);
+gint32 gap_layer_get_id_by_stackposition(gint32 image_id, gint32 stackposition);
 
 
 gint32  gap_layer_make_duplicate(gint32 src_layer_id, gint32 image_id

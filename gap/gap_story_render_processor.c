@@ -248,7 +248,8 @@ static void       p_vidclip_add(GapStoryRenderFrameRangeElem *frn_elem
 
 static void       p_clear_vattr_array(GapStoryRenderVTrackArray *vtarr);
 
-
+static gboolean   p_fmt_string_has_framenumber_format(const char *fmt_string);
+static gboolean   p_fmt_string_has_videobasename_format(const char *fmt_string);
 static void       p_storyboard_analyze(GapStoryBoard *stb
                       , gint32 *mainsection_frame_count
                       , GapStoryRenderVidHandle *vidhand
@@ -367,6 +368,17 @@ static void       p_stb_render_composite_image_postprocessing(GapStbFetchData *g
                       , const char *section_name
                       );
 static void       p_stb_render_result_monitoring(GapStbFetchData *gfd, gint32 master_frame_nr);
+
+
+static void       p_paste_logo_pattern(gint32 drawable_id
+                      , gint32 logo_pattern_id
+                      , gint32 offsetX
+                      , gint32 offsetY
+                      );
+
+static void       p_do_insert_area_processing(GapStbFetchData *gfd
+                      , GapStoryRenderVidHandle *vidhand);
+
   
 static gint32     p_story_render_fetch_composite_image_private(GapStoryRenderVidHandle *vidhand
                     , gint32 master_frame_nr  /* starts at 1 */
@@ -2127,6 +2139,86 @@ p_clear_vattr_array(GapStoryRenderVTrackArray *vtarr)
   }
 }  /* end p_clear_vattr_array */
 
+/* -------------------------------------
+ * p_fmt_string_has_framenumber_format
+ * -------------------------------------
+ * return true if the specified format string contains "%06d" (or "%02d" up to "%09d")
+ *        false if the format has no such numeric part for the framenumber.
+ *
+ */
+static gboolean
+p_fmt_string_has_framenumber_format(const char *fmt_string)
+{
+  const char *ptr;
+  gboolean l_found;
+  
+  l_found = FALSE;
+  ptr = fmt_string;
+  while(ptr)
+  {
+    if(ptr[0] == '\0')
+    {
+      break;
+    }
+    
+    if (ptr[0] == '%')
+    {
+      if(ptr[1] != '\0')
+      {
+        if(ptr[2] != '\0')
+        {
+          if(ptr[3] != '\0')
+          {
+            if((ptr[1] == '0') && (ptr[3] == 'd'))
+            {
+              if((ptr[2] >= '2') && (ptr[2] <= '9'))
+              {
+                l_found = TRUE;
+                break;
+              }
+            }
+          }
+        }
+      }
+    }
+    ptr++;
+  }
+  return (l_found);
+  
+}  /* end p_fmt_string_has_framenumber_format */
+
+/* -------------------------------------
+ * p_fmt_string_has_videobasename_format
+ * -------------------------------------
+ * return true if the specified format string contains "%s"
+ *        false if the format has no such videobasename placeholder part.
+ *
+ */
+static gboolean
+p_fmt_string_has_videobasename_format(const char *fmt_string)
+{
+  const char *ptr;
+  gboolean l_found;
+  
+  l_found = FALSE;
+  ptr = fmt_string;
+  while(ptr)
+  {
+    if(ptr[0] == '\0')
+    {
+      break;
+    }
+    
+    if ((ptr[0] == '%') && (ptr[1] == 's'))
+    {
+      l_found = TRUE;
+      break;
+    }
+    ptr++;
+  }
+  return (l_found);
+  
+}  /* end p_fmt_string_has_videobasename_format */
 
 /* ----------------------------------------------------
  * p_storyboard_analyze
@@ -2183,6 +2275,16 @@ p_storyboard_analyze(GapStoryBoard *stb
   if(stb->preferred_decoder)
   {
     vidhand->preferred_decoder = g_strdup(stb->preferred_decoder);
+  }
+
+  vidhand->master_insert_area_format = NULL;
+  if(stb->master_insert_area_format)
+  {
+    vidhand->master_insert_area_format = g_strdup(stb->master_insert_area_format);
+    vidhand->master_insert_area_format_has_framenumber =
+      p_fmt_string_has_framenumber_format(vidhand->master_insert_area_format);
+    vidhand->master_insert_area_format_has_videobasename =
+      p_fmt_string_has_videobasename_format(vidhand->master_insert_area_format);
   }
 
   if(stb->master_volume >= 0)
@@ -3467,6 +3569,10 @@ p_open_video_handle_private(    gboolean ignore_audio
 
   vidhand->frn_list = NULL;
   vidhand->preferred_decoder = NULL;
+  vidhand->master_insert_area_format = NULL;
+  vidhand->master_insert_area_format_has_videobasename = FALSE;
+  vidhand->master_insert_area_format_has_framenumber = FALSE;
+  
   vidhand->do_gimp_progress = do_gimp_progress;
   *vidhand->progress = 0.0;
   vidhand->sterr = p_new_stb_error();
@@ -4004,6 +4110,19 @@ p_exec_filtermacro(gint32 image_id, gint32 layer_id, const char *filtermacro_fil
                               , (int)total_steps
                               );
        }
+       
+       if(! gimp_drawable_has_alpha (layer_id))
+       {
+         /* some filtermacros do not work with layer that do not have an alpha channel
+          * and cause gimp to fail on attempt to call gimp_pixel_rgn_init
+          * with both dirty and shadow flag set to TRUE
+          * in this situation GIMP displays the error message
+          *    "expected tile ack and received: 5"
+          *    and causes the called plug-in to exit immediate without success
+          * Therfore always add an alpha channel before calling a filtermacro.
+          */
+          gimp_layer_add_alpha(layer_id);
+       }
 
        if((filtermacro_file_to == NULL)
        || (total_steps <= 1))
@@ -4109,8 +4228,6 @@ p_transform_and_add_layer( gint32 comp_image_id
     gap_story_render_debug_print_frame_elem(frn_elem, -77);
   }
 
-  layer_id = gap_layer_flip(layer_id, flip_request);
-
   /* execute input track specific  filtermacro (optional if supplied)
    * local_stepcount  (usually delivered by procedure p_fetch_framename)
    *  is used to define fmac_current_step
@@ -4123,6 +4240,16 @@ p_transform_and_add_layer( gint32 comp_image_id
                       , (gdouble)(local_stepcount) /* fmac_current_step */
                       , frn_elem->fmac_total_steps
                     );
+
+  if(gap_debug)
+  {
+    printf("p_transform_and_add_layer: FILTERMACRO DONE at layer_id: %d, tmp_image_id:%d\n"
+      , (int)layer_id
+      ,(int)tmp_image_id );
+  }
+
+  layer_id = gap_layer_flip(layer_id, flip_request);
+
 
   /* expand layer to tmp image size (before applying any scaling) */
   gimp_layer_resize_to_image_size(layer_id);
@@ -4455,7 +4582,7 @@ gap_story_convert_layer_to_RGB_thdata(gint32 layer_id, gint32 *RAW_size
      gimp_pixel_rgn_get_rect (&pixel_rgn, pixelrow_data
                               , 0
                               , l_src_row
-			      , drawable->width
+                              , drawable->width
                               , 1);
      for(l_idx=0;l_idx < l_rowstride; l_idx += drawable->bpp)
      {
@@ -5146,6 +5273,159 @@ p_stb_render_result_monitoring(GapStbFetchData *gfd, gint32 master_frame_nr)
 }  /* end p_stb_render_result_monitoring */
 
 
+/* ------------------------
+ * p_paste_logo_pattern
+ * ------------------------  
+ * replace logo area with the specified logo pattern
+ */
+static void
+p_paste_logo_pattern(gint32 drawable_id
+  , gint32 logo_pattern_id
+  , gint32 offsetX
+  , gint32 offsetY
+  )
+{
+  gint32        l_fsel_layer_id;
+  gint          l_src_offset_x;
+  gint          l_src_offset_y;
+  gint32        image_id;
+
+  image_id = gimp_drawable_get_image(drawable_id);
+  gimp_selection_all(gimp_drawable_get_image(logo_pattern_id));
+
+  /* findout the offsets of the replacement_pattern layer within the source Image */
+  gimp_drawable_offsets(logo_pattern_id, &l_src_offset_x, &l_src_offset_y );
+
+  gimp_edit_copy(logo_pattern_id);
+  l_fsel_layer_id = gimp_edit_paste(drawable_id, TRUE);  /* FALSE paste clear selection */
+  gimp_selection_none(gimp_drawable_get_image(logo_pattern_id));
+
+  if(gap_debug)
+  {
+    gint          l_fsel_offset_x;
+    gint          l_fsel_offset_y;
+
+    gimp_drawable_offsets(l_fsel_layer_id, &l_fsel_offset_x, &l_fsel_offset_y );
+
+    printf("p_paste_logo_pattern: l_src_offsets: (%d %d) fsel:(%d %d) final offsets: (%d %d) rep_id:%d\n"
+      ,(int)l_src_offset_x
+      ,(int)l_src_offset_y
+      ,(int)l_fsel_offset_x
+      ,(int)l_fsel_offset_y
+      ,(int)(offsetX + l_src_offset_x)
+      ,(int)(offsetY + l_src_offset_y)
+      ,(int)logo_pattern_id
+      );
+  }
+
+  gimp_layer_set_offsets(l_fsel_layer_id
+                        , offsetX + l_src_offset_x
+                        , offsetY + l_src_offset_y);
+  
+  gimp_floating_sel_anchor(l_fsel_layer_id);
+
+} /* end p_copy_and_paste_replacement_pattern */
+
+
+
+/* -------------------------------------
+ * p_do_insert_area_processing
+ * -------------------------------------
+ */
+static void
+p_do_insert_area_processing(GapStbFetchData *gfd
+  , GapStoryRenderVidHandle *vidhand)
+{
+  char *logo_imagename;
+  char *videofilename_without_path;
+  
+  
+  videofilename_without_path = gap_story_build_basename(gfd->framename);
+  
+  if (vidhand->master_insert_area_format_has_framenumber)
+  {
+    if (vidhand->master_insert_area_format_has_videobasename)
+    {
+      logo_imagename =
+         g_strdup_printf(vidhand->master_insert_area_format
+                       , videofilename_without_path
+                       , gfd->localframe_index   /* videoFrameNr */
+                       );
+    }
+    else
+    {
+      logo_imagename =
+         g_strdup_printf(vidhand->master_insert_area_format
+                       , gfd->localframe_index   /* videoFrameNr */
+                       );
+    }
+  }
+  else
+  {
+    if (vidhand->master_insert_area_format_has_videobasename)
+    {
+      logo_imagename =
+         g_strdup_printf(vidhand->master_insert_area_format
+                       , videofilename_without_path
+                       );
+    }
+    else
+    {
+      logo_imagename = g_strdup(vidhand->master_insert_area_format);
+    }
+  }
+
+  if(gap_debug)
+  {
+    printf("p_do_insert_area_processing: format:%s\n video:%s\n logo_imagename:%s\n"
+        , vidhand->master_insert_area_format
+        , videofilename_without_path
+        , logo_imagename
+        );
+  }
+
+
+  if(g_file_test(logo_imagename, G_FILE_TEST_EXISTS))
+  {
+    gint32 logo_image_id;
+    gint32 logo_layer_id;
+    
+    if (vidhand->master_insert_area_format_has_framenumber)
+    {
+      logo_image_id = gap_lib_load_image(logo_imagename);
+    }
+    else
+    {
+      /* use framefetcher cache in case all frames shall get the same logo */
+      logo_image_id = gap_frame_fetch_orig_image(vidhand->ffetch_user_id
+                            , logo_imagename
+                            , TRUE /*  enable caching */
+                           );
+    }
+    
+    if(logo_image_id < 0)
+    {
+      printf("p_do_insert_area_processing: ERROR could not load logo_imagename:%s\n", logo_imagename);
+      return;
+    }
+    
+    
+    gimp_selection_none(logo_image_id);
+    logo_layer_id = p_prepare_RGB_image(logo_image_id);
+
+    p_paste_logo_pattern(gfd->layer_id
+                         , logo_layer_id
+                         , 0, 0  /* offest_X, offset_Y */
+                         );
+    if (vidhand->master_insert_area_format_has_framenumber)
+    {
+      /* do not keep individual per frame logo images cached
+       */
+      gap_image_delete_immediate(logo_image_id);
+    }
+  }
+
+}  /* end p_do_insert_area_processing */
 
 /* --------------------------------------------
  * p_story_render_fetch_composite_image_private
@@ -5291,13 +5571,19 @@ p_story_render_fetch_composite_image_private(GapStoryRenderVidHandle *vidhand
                }
              }
            }
-           g_free(gfd->framename);
            if(gfd->tmp_image_id < 0)
            {
+              g_free(gfd->framename);
               return -1;
            }
            gfd->layer_id = p_prepare_RGB_image(gfd->tmp_image_id);
+           if((gfd->frn_type == GAP_FRN_MOVIE) && (vidhand->master_insert_area_format))
+           {
+             p_do_insert_area_processing(gfd, vidhand);
+           }
+           
            p_conditional_delace_drawable(gfd, gfd->layer_id);
+           g_free(gfd->framename);
          }
        }
 

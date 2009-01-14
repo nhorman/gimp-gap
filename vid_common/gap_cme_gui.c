@@ -2728,7 +2728,7 @@ p_create_encoder_status_frame (GapCmeGlobalParams *gpp)
                     (GtkAttachOptions) (0), 0, 0);
 
 
-  label = gtk_label_new ("1");
+  label = gtk_label_new ("######");
   gpp->cme__label_enc_stat_frames_total          = label;
   gtk_widget_show (label);
   gtk_misc_set_alignment (GTK_MISC (label), 1.0, 0.5);
@@ -2747,7 +2747,7 @@ p_create_encoder_status_frame (GapCmeGlobalParams *gpp)
                     (GtkAttachOptions) (0), 0, 0);
 
 
-  label = gtk_label_new ("0");
+  label = gtk_label_new ("######");
   gpp->cme__label_enc_stat_frames_done          = label;
   gtk_widget_show (label);
   gtk_misc_set_alignment (GTK_MISC (label), 1.0, 0.5);
@@ -2766,7 +2766,7 @@ p_create_encoder_status_frame (GapCmeGlobalParams *gpp)
                     (GtkAttachOptions) (0), 0, 0);
 
 
-  label = gtk_label_new ("0");
+  label = gtk_label_new ("######");
   gpp->cme__label_enc_stat_frames_encoded          = label;
   gtk_widget_show (label);
   gtk_misc_set_alignment (GTK_MISC (label), 1.0, 0.5);
@@ -2785,7 +2785,7 @@ p_create_encoder_status_frame (GapCmeGlobalParams *gpp)
                     (GtkAttachOptions) (0), 0, 0);
 
 
-  label = gtk_label_new ("0");
+  label = gtk_label_new ("######");
   gpp->cme__label_enc_stat_frames_copied_lossless          = label;
   gtk_widget_show (label);
   gtk_misc_set_alignment (GTK_MISC (label), 1.0, 0.5);
@@ -3874,7 +3874,7 @@ p_set_label_to_numeric_value(GtkWidget *label, gint32 value)
   if(label)
   {
     char *buffer;
-    buffer = g_strdup_printf("%d", value);
+    buffer = g_strdup_printf("%6d", value);
     /* repeat the right alingnment of the label
      * (without this workaround my gtk version 2.10.14 shows just
      * the highest digit of the number, probably because the size at creation time

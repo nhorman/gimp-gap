@@ -85,7 +85,7 @@ typedef struct GapMorphGlobalParams  { /* nickname: mgpp */
   char                workpoint_file_upper[GAP_MORPH_WORKPOINT_FILENAME_MAX_LENGTH];
 
   gboolean            create_tween_layers;       /* FALSE: operate on existing layers only */
-  gboolean            multiple_pointsets;        /* FALSE: use the default workpointset master_wp_list
+  gboolean            have_workpointsets;        /* FALSE: use the default workpointset master_wp_list
                                                   * TRUE: use lower_wp_list and upper_wp_list
 						  *       foreach handled frame the
 						  *       lower and upper list are fetched from 
@@ -102,7 +102,11 @@ typedef struct GapMorphGlobalParams  { /* nickname: mgpp */
   gdouble             master_progress;
   gdouble             layer_progress_step;
 
-
+  gdouble             tween_mix_factor;  /* 0.0 upto 1.0 wher 0.0 gives source layer 1.0 dest layer as resut */
+  gint32              range_from;
+  gint32              range_to;
+  gboolean            overwrite_flag;
+  gboolean            do_simple_fade;   /* bypass morph algortihm when renderiing tweens and use simple fade instead */
 } GapMorphGlobalParams;
 
 typedef struct GapMorphWarpCoreAPI  { /* nickname: wcap */

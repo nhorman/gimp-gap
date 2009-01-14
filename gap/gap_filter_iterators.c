@@ -434,63 +434,6 @@ p_delta_drawable(gint32 *val, gint32 val_from, gint32 val_to, gint32 total_steps
   
 }  /* end p_delta_drawable */
 
-
-/* ---------------------------
- * p_delta_drawable_simple
- * ---------------------------
- * simple iteration for drawable id (in case val_from and val_to both refere to
- * the same image (that is already opened in the current gimp session)
- */
-static void 
-p_delta_drawable_simple(gint32 *val, gint32 val_from, gint32 val_to, gint32 total_steps, gdouble current_step)
-{
-  gint    l_nlayers;
-  gint32 *l_layers_list;
-  gint32  l_tmp_image_id;
-  gint    l_idx, l_idx_from, l_idx_to;
-
-  if(gap_debug)
-  {
-    printf("p_delta_drawable_simple: START *val drawable_id:%d (from:%d  to:%d)\n"
-      ,(int)*val
-      ,(int)val_from
-      ,(int)val_to
-      );
-  }
-  if((val_from < 0) || (val_to < 0))
-  {
-    return;
-  }
-
-  l_tmp_image_id = gimp_drawable_get_image(val_from);
-
-  /* check if from and to values are both valid drawables within the same image */
-  if ((l_tmp_image_id > 0)
-  &&  (l_tmp_image_id = gimp_drawable_get_image(val_to)))
-  {
-     l_idx_from = -1;
-     l_idx_to   = -1;
-
-     /* check the layerstack index of from and to drawable */
-     l_layers_list = gimp_image_get_layers(l_tmp_image_id, &l_nlayers);
-     for (l_idx = l_nlayers -1; l_idx >= 0; l_idx--)
-     {
-        if( l_layers_list[l_idx] == val_from ) l_idx_from = l_idx;
-        if( l_layers_list[l_idx] == val_to )   l_idx_to   = l_idx;
-
-        if((l_idx_from != -1) && (l_idx_to != -1))
-        {
-          /* OK found both index values, iterate the index (proceed to next layer) */
-          p_delta_gint(&l_idx, l_idx_from, l_idx_to, total_steps, current_step);
-          *val = l_layers_list[l_idx];
-          break;
-        }
-     }
-     g_free (l_layers_list);
-  }
-}  /* end p_delta_drawable_simple */
-
-
 /* ------------------------------------
  * p_drawable_is_alive
  * ------------------------------------
@@ -567,6 +510,70 @@ p_drawable_is_alive(gint32 drawable_id)
  
   return FALSE ;   /* INVALID image id */
 }  /* end p_drawable_is_alive */
+
+
+/* ---------------------------
+ * p_delta_drawable_simple
+ * ---------------------------
+ * simple iteration for drawable id (in case val_from and val_to both refere to
+ * the same image (that is already opened in the current gimp session)
+ */
+static void 
+p_delta_drawable_simple(gint32 *val, gint32 val_from, gint32 val_to, gint32 total_steps, gdouble current_step)
+{
+  gint    l_nlayers;
+  gint32 *l_layers_list;
+  gint32  l_tmp_image_id;
+  gint    l_idx, l_idx_from, l_idx_to;
+
+  if(gap_debug)
+  {
+    printf("p_delta_drawable_simple: START *val drawable_id:%d (from:%d  to:%d)\n"
+      ,(int)*val
+      ,(int)val_from
+      ,(int)val_to
+      );
+  }
+  if((val_from < 0) || (val_to < 0))
+  {
+    return;
+  }
+  if(p_drawable_is_alive(val_from) != TRUE)
+  {
+    return;
+  }
+  if(p_drawable_is_alive(val_to) != TRUE)
+  {
+    return;
+  }
+  l_tmp_image_id = gimp_drawable_get_image(val_from);
+
+  /* check if from and to values are both valid drawables within the same image */
+  if ((l_tmp_image_id > 0)
+  &&  (l_tmp_image_id = gimp_drawable_get_image(val_to)))
+  {
+     l_idx_from = -1;
+     l_idx_to   = -1;
+
+     /* check the layerstack index of from and to drawable */
+     l_layers_list = gimp_image_get_layers(l_tmp_image_id, &l_nlayers);
+     for (l_idx = l_nlayers -1; l_idx >= 0; l_idx--)
+     {
+        if( l_layers_list[l_idx] == val_from ) l_idx_from = l_idx;
+        if( l_layers_list[l_idx] == val_to )   l_idx_to   = l_idx;
+
+        if((l_idx_from != -1) && (l_idx_to != -1))
+        {
+          /* OK found both index values, iterate the index (proceed to next layer) */
+          p_delta_gint(&l_idx, l_idx_from, l_idx_to, total_steps, current_step);
+          *val = l_layers_list[l_idx];
+          break;
+        }
+     }
+     g_free (l_layers_list);
+  }
+}  /* end p_delta_drawable_simple */
+
 
 /* --------------------------------------------
  * p_capture_image_name_and_assign_pesistent_id

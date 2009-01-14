@@ -71,7 +71,7 @@ typedef struct GapMorphGUIParams  { /* nickname: mgup */
 
   GtkObject  *num_shapepoints_adj;
   GtkWidget  *create_tween_layers_checkbutton;  
-  GtkWidget  *multiple_pointsets_checkbutton;  
+  GtkWidget  *have_workpointsets_checkbutton;  
 
   GapMorphSubWin src_win;
   GapMorphSubWin dst_win;

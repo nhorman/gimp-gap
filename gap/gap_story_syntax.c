@@ -280,6 +280,10 @@ p_create_syntax_list(void)
                ,"decoder"
                ,NULL
                );
+  p_add_keyword(GAP_STBKEY_VID_MASTER_INSERT_AREA
+               ,"format"
+               ,NULL
+               );
   p_add_keyword(GAP_STBKEY_MAIN_SECTION
                ,NULL
                );

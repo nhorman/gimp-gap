@@ -50,6 +50,10 @@ gint32    gap_image_new_of_samesize(gint32 old_image_id);
 gboolean  gap_image_is_alive(gint32 image_id);
 gint32    gap_image_get_any_layer(gint32 image_id);
 
+gint32    gap_image_merge_to_specified_layer(gint32 ref_layer_id, GimpMergeType mergemode);
+gboolean  gap_image_set_selection_from_selection_or_drawable(gint32 image_id, gint32 ref_drawable_id
+                              , gboolean force_from_drawable);
+
 
 #endif
 

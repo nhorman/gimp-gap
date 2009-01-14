@@ -276,7 +276,9 @@
 
      gboolean       unsaved_changes;
      GapStoryEditSettings *edit_settings;
-  }  GapStoryBoard;
+     
+     gchar         *master_insert_area_format;
+ }  GapStoryBoard;
 
  
   typedef struct GapStoryLocateRet {
@@ -472,5 +474,6 @@ GapStoryVideoFileRef * p_new_GapStoryVideoFileRef(const char *videofile
                           , const char *preferred_decoder
                           , gint32          max_ref_framenr);
 GapStoryVideoFileRef * gap_story_get_video_file_ref_list(GapStoryBoard *stb);
+char *                 gap_story_build_basename(const char *filename);
 
 #endif

@@ -603,7 +603,7 @@ p_check_and_open_video_handle(GapStoryRenderFrameRangeElem *frn_elem
  {
    FILE *fp;
    char *fname;
-   char *l_env;
+   const char *l_env;
    gint32 l_dump_chunk_frames;
 
    l_dump_chunk_frames = 0;
@@ -796,7 +796,7 @@ p_story_attempt_fetch_chunk(GapStoryRenderVidHandle *vidhand
           gint32 check_flags_result;
           gint32 check_flags_mask;
           gboolean is_mpeg_integrity_check_done;
-          const char *vcodec_name_chunk;
+          char *vcodec_name_chunk;
         
           vcodec_name_chunk = GVA_get_codec_name(l_frn_elem->gvahand
                                                  ,GVA_VIDEO_CODEC
