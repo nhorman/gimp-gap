@@ -1,5 +1,5 @@
 #define FLAME_NXFORMS 6
-#define FLAME_NVARS   7
+#define FLAME_NVARS   29
 
 typedef struct {
    double var[FLAME_NVARS];   /* normalized interp coefs between variations */

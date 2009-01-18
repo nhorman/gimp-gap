@@ -1,3 +1,41 @@
+2009-01-18 Wolfgang Hofer <hof@gimp.org>
+
+Started port to GIMP-2.6.4
+
+- FilterAllLayers basically works, but prints annoying error message:
+
+    Fehler beim Aufruf der Prozedur "gimp-procedural-db-proc-info":
+    Prozedur "plug-in-alienmap2-Iterator" wurde nicht gefunden
+  
+  Gap used gimp-procedural-db-proc-info to check if an procedure is available.
+  The implemented workaround mow queries the full list of all procedures,
+  and first checks the list before mking an attempt to query gimp-procedural-db-proc-info
+  
+  TODO [optional]: is there is a better way for a plugin to test if another PDB procedure is available
+  without causing Error messages if the searched name not exists ?
+
+- Filter all Layer compatibility test
+
+  fixed ERROR: p_plug_in_flame_iter_ALT  stored Data missmatch in size 8104 != 7048  
+         in iterator_ALT procedure (xform array size canged FLAME_NVARS   from 7 to 29)
+  fixed ERROR: p_plug_in_ripple_iter_ALT  stored Data missmatch in size 32 != 28 
+         in iterator_ALT procedure (added parameter gint          phase_shift;)
+
+  plug-in-wr-color-levels fails to load files that are saved with the curves tool of GIMP-2.6.4
+  the fileformat has canged, ... not yet fixed just warn that new format not yet supported.
+
+  TODO parser shall support both old "# GIMP Curves File"
+      and new format...              "# GIMP curves tool settings"
+  
+  
+  
+   * gap/TESTPROT_iter_ALT
+   * gap/gap_filter_pdb.c
+   * gap/gap_pdb_calls.c [.h]
+   * gap/gap_wr_color_curve.c
+   * gap/iter_ALT/mod/plug_in_flame_iter_ALT.inc
+   * gap/iter_ALT/gen/plug_in_ripple_iter_ALT.inc
+
 2009-01-14 Wolfgang Hofer <hof@gimp.org>
 
 - changed frame fetcher to use image parasites to mark cached images (and temporary duplicates)

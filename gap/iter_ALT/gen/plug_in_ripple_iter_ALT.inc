@@ -13,6 +13,7 @@ gint p_plug_in_ripple_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble
       gint          waveform;
       gboolean      antialias;
       gboolean      tile;
+      gint          phase_shift;
     } t_plug_in_ripple_Vals; 
 
     t_plug_in_ripple_Vals  buf, *buf_from, *buf_to; 
@@ -36,7 +37,7 @@ gint p_plug_in_ripple_iter_ALT(GimpRunMode run_mode, gint32 total_steps, gdouble
     p_delta_gint(&buf.orientation, buf_from->orientation, buf_to->orientation, total_steps, current_step);
     p_delta_gint(&buf.edges, buf_from->edges, buf_to->edges, total_steps, current_step);
     p_delta_gint(&buf.waveform, buf_from->waveform, buf_to->waveform, total_steps, current_step);
-
+    p_delta_gint(&buf.phase_shift, buf_from->phase_shift, buf_to->phase_shift, total_steps, current_step);
 
     gimp_set_data("plug-in-ripple", &buf, sizeof(buf)); 
 

@@ -76,6 +76,68 @@ p_status_to_string(int status)
 }  /* end p_status_to_string */
 
 
+/* check if procedure name is available in the PDB.
+ * this procedure reads all available pdb procedure names into static memory
+ * when called 1st time. and checks the specified name against the memory.
+ * Introduced with GIMP-2.6 that produces annoying Error messages on the GUI
+ * when a plug attempt to query information for an unknown name.
+ * This workaround help to avoid those error messages,
+ * but makes GAP filter all layer feature slower.
+ */
+gboolean
+gap_pdb_procedure_name_available (const gchar *search_name)
+{
+  static gboolean initialized = FALSE;
+
+  static gchar       **proc_list = NULL;
+  static gint          num_procs = 0;
+  int loop;
+  gboolean found;
+
+  found = FALSE;
+ 
+  if (!initialized)
+  {
+      /* query for all elements (only at 1.st call in this process)
+       *  if we apply the search string to gimp_plugins_query
+       *  we get no result, because the search will query MenuPath
+       *  and not for the realname of the plug-in)
+       */
+       // gimp_procedural_db_query
+      gimp_procedural_db_query (".*", ".*", ".*", ".*", ".*", ".*", ".*", 
+			        &num_procs, &proc_list);
+
+      initialized = TRUE;
+
+      if(gap_debug)
+      {
+        for (loop = 0; loop < num_procs; loop++)
+        {
+          printf("PDBname:%s\t\search_name:%s\n", proc_list[loop], search_name);
+        }
+      }
+
+  }
+
+  if (initialized)
+  {
+      for (loop = 0; loop < num_procs; loop++)
+      {
+        if(strcmp(search_name, proc_list[loop]) == 0)
+	{
+          found = TRUE;
+	  break;  /* stop at 1st match */
+        }
+     }
+  }
+
+  /* Dont Destroy, but Keep the Returned Parameters for the lifetime of this process */
+  /* gimp_destroy_params (return_vals, nreturn_vals); */
+
+  return (found);
+}  /* end gap_pdb_procedure_name_available */
+
+
 /* ============================================================================
  * gap_pdb_procedure_available
  *   if requested procedure is available in the PDB return the number of args

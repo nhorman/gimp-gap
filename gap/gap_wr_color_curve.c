@@ -326,6 +326,20 @@ curves_calculate_curve (CurvesDialog *cd)
 
 }
 
+static gboolean
+read_curves_from_file_gimp2_6_format (FILE *fp, wr_curves_val_t *cuvals, gchar *buf)
+{
+  if (strcmp (buf, "# GIMP curves tool settings\n") != 0)
+  {
+    return FALSE;
+  }
+  
+  // TODO parse new format 
+ 
+  g_message("GIMP-2.6 specific curves tool settings detected (BUT NOT YET SUPPORTED)");
+  return FALSE;
+  
+}
 
 static gboolean
 read_curves_from_file (FILE *fp, wr_curves_val_t *cuvals)
@@ -339,11 +353,17 @@ read_curves_from_file (FILE *fp, wr_curves_val_t *cuvals)
   CurvesDialog   *curves_dialog = &curves_dialog_struct;
 
   if (!fgets (buf, 50, fp))
+  {
     return FALSE;
-
+  }
+  
+  /* check old format used in GIMP-2.4.x and older GIMP releases */
   if (strcmp (buf, "# GIMP Curves File\n") != 0)
-    return FALSE;
-
+  {
+    /* check new format introduced with GIMP-2.6.x release */
+    return (read_curves_from_file_gimp2_6_format (fp, cuvals, buf));
+  }
+  
   for (i = 0; i < 5; i++)
   {
     for (j = 0; j < 17; j++)

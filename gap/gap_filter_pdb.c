@@ -59,6 +59,7 @@
 #include "gap_arr_dialog.h"
 #include "gap_filter.h"
 #include "gap_filter_pdb.h"
+#include "gap_pdb_calls.h"
 #include "gap_dbbrowser_utils.h"
 #include "gap_lib.h"
 
@@ -275,6 +276,14 @@ gap_filt_pdb_set_data(char *key, gint plugin_data_len)
 }  /* end gap_filt_pdb_set_data */
 
 
+
+
+
+
+
+
+
+
 /* --------------------------------
  * gap_filt_pdb_procedure_available
  * --------------------------------
@@ -302,6 +311,15 @@ gap_filt_pdb_procedure_available(char  *proc_name, GapFiltPdbProcType ptype)
   gint             l_rc;
 
   l_rc = 0;
+
+  if(gap_pdb_procedure_name_available (proc_name) != TRUE)
+  {
+     if(gap_debug)
+     {
+       printf("DEBUG: NOT found in PDB %s\n", proc_name);
+     }
+     return -1;
+  }
   
   /* Query the gimp application's procedural database
    *  regarding a particular procedure.

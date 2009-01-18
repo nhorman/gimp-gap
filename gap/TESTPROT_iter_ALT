@@ -11,13 +11,13 @@ Here is a result List of the "Animated Filtercall" Tests.
 ---------------------------------------------------
 Testresults
 --------------------------------------------------
-2007.12.01
+2009.01.18
 
-   TODO: check for new plug ins that were added to gimp-2.4
+   TODO: check for new plug ins that were added to gimp-2.6
    (and that are not yet in this List)
 
    Test with PDB-Procedures (Plugins) that came with
-   gimp release 2.4.2 
+   gimp release 2.6.4 
    Test also includes PDB-Procedures provided by GIMP-GAP itself
 
 
@@ -35,6 +35,8 @@ State: (Column1 test 2007.12.01, Column2 older testresult with gimp-2.2.x and ol
 State Procedure/Iterator_ALT ame               Testnotes
 ---------------------------------------------------------------------------
 
+
+
 ++     plug-in-alienmap2-iter-ALT
  :     plug-in-align-layers
  :     plug-in-animationoptimize
@@ -49,7 +51,7 @@ State Procedure/Iterator_ALT ame               Testnotes
 ++     plug-in-blinds-iter-ALT
 ++     plug-in-bluebox
 ##     plug-in-blur                              has no dialog but works fine with defaults.
-++     plug-in-borderaverage-iter-ALT            (?) runs, but produces no effect on the processed layers
+o+     plug-in-borderaverage-iter-ALT            (?) runs, but produces no effect on the processed layers
 ++     plug-in-bump-map-iter-ALT
  :     plug-in-bump-map-tiled
 ##     plug-in-c-astretch
@@ -59,17 +61,17 @@ State Procedure/Iterator_ALT ame               Testnotes
 ++     plug-in-cml-explorer-iter-ALT
 ##     plug-in-color-adjust
 ##     plug-in-color-enhance
-++     plug-in-color-map-iter-ALT
+oo     plug-in-color-map-iter-ALT
 ++     plug-in-colorify-iter-ALT
 ++     plug-in-colors-channel-mixer
 ++     plug-in-colortoalpha-iter-ALT
  :     plug-in-compose
 ++     plug-in-convmatrix-iter-ALT
 ++     plug-in-cubism-iter-ALT
-++     plug-in-curve-bend
+++     plug-in-curve-bend                       (curve-bend:8380): Gtk-WARNING **: GtkSpinButton: setting an adjustment with non-zero page size is deprecated
  :     plug-in-decompose
 ##     plug-in-deinterlace                       disabled the Iter_ALT proc (only const apply makes sense)
-++     plug-in-depth-merge-iter-ALT
+++     plug-in-depth-merge-iter-ALT              (gimp-2.6:8143): GLib-GObject-CRITICAL **: g_value_get_enum: assertion `G_VALUE_HOLDS_ENUM (value)' failed
 ++     plug-in-despeckle-iter-ALT
 ++     plug-in-destripe-iter-ALT
 ++     plug-in-diffraction-iter-ALT
@@ -123,7 +125,7 @@ State Procedure/Iterator_ALT ame               Testnotes
 ++     plug-in-nlfilt-iter-ALT	               (?) runs, but did not see any effect
 --     plug-in-noisify-iter-ALT                 noisify has 2 names and uses the 2.nd name "plug-in-rgb-noise"  "plug_in_scatter_rgb" to store is values.
                                                 (runs but does not open 2nd dialog even when varying requested ?)
--+     plug-in-hsv-noise                         register 2 names (old name plug-in-scatter-hsv)
+-o     plug-in-hsv-noise                         register 2 names (old name plug-in-scatter-hsv)
                                                 (runs but does not open 2nd dialog even when varying requested ?)
 
 ##     plug-in-normalize                        has no dialog, constant apply makes sense
@@ -133,7 +135,7 @@ State Procedure/Iterator_ALT ame               Testnotes
  :     plug-in-onionskin-del
  :     plug-in-onionskin-toggle-visibility
  (1)   plug-in-pagecurl-iter-ALT	               ERROR: creates a new layer
--+     plug-in-papertile-iter-ALT               FAILED with floating point exception
+-o     plug-in-papertile-iter-ALT               FAILED with floating point exception
 ++     plug-in-photocopy
 ++     plug-in-pixelize-iter-ALT
 ##     plug-in-pixelize2                        
@@ -172,10 +174,12 @@ State Procedure/Iterator_ALT ame               Testnotes
 ++     plug-in-whirl-pinch-iter-ALT
 ++     plug-in-wind-iter-ALT
 ++     plug-in-wr-color-levels
-++     plug-in-wr-curves
+o+(2)  plug-in-wr-curves                     - curves files are not compatible with gimp2.4 curves file
 ++     plug-in-wr-huesat
 ++     plug-in-wr-set-opacity
  :     plug-in-zealouscrop
+
+
 
 Additional notes:
 
@@ -190,6 +194,12 @@ Additional notes:
       From my point of view it does not make much sense
       in animations,
       because this plugin works with fixed curling amount.
+
+(2)   This plugin works with curves files of the old fileformat (written by GIMP-2.4)
+      but fails when GIMP curves tool settings of the GIMP-2.6 release are used
+      (the format has changed.
+      The curves tool supports both formats, but the GIMP-GAP specific wrapper
+      can oly read the old format so far...
 
 
 
@@ -211,44 +221,7 @@ plug_in_map_object old Testreport: (did not verfy that at the latest test)
       to the bg layer)
 
   - If you call MapObject a 2nd time in the same gimp session
-    gimp will crash if one of the drawables (that were used
+    gimp reports errors if one of the drawables (that were used
     in the 1.st call) has become invalid.
     
-    The BUG is in the GIMP-core Procedure(s)
-       gimp_layer_get_image_id
-       gimp_drawable_image_id
-       
-    (in older GIMP releases these Procedures did return -1
-     on invalid Ids, in Gimp 1.1.3 it comes to a crash
-     I hope that this Bug will be fixed in gimp 1.2)
-
-
-
-
-Old: (iterator procedures for Plug-Ins that once was part of gimp-releases
-      some of them are still available but got a new name)
-
-old (gimp-2.0)
-.     plug_in_alienmap_iter_ALT.inc
-
-
-older (gimp-1.2 and before)
-	   
-.     plug_in_CentralReflection_iter_ALT.inc
-.     plug_in_anamorphose_iter_ALT.inc
-.     plug_in_blur2_iter_ALT.inc
-.     plug_in_encript_iter_ALT.inc
-.     plug_in_figures_iter_ALT.inc
-.     plug_in_holes_iter_ALT.inc
-.     plug_in_julia_iter_ALT.inc
-.     plug_in_magic_eye_iter_ALT.inc
-.     plug_in_mandelbrot_iter_ALT.inc
-.     plug_in_randomize_iter_ALT.inc
-.     plug_in_refract_iter_ALT.inc
-.     plug_in_struc_iter_ALT.inc
-.     plug_in_tileit_iter_ALT.inc
-.     plug_in_universal_filter_iter_ALT.inc
-
-
-
 
