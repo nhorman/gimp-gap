@@ -6408,7 +6408,7 @@ p_new_audioframe(GapPlayerMainGlobalParams *gpp)
 		      1.0,   /* umax */
 		      0.01,  /* sstep */
 		      0.1,   /* pagestep */
-		      0.1,                 /* page_size */
+		      0.0,                 /* page_size */
 		      0.1,                 /* climb_rate */
 		      2                    /* digits */
                       );
@@ -6449,7 +6449,7 @@ p_new_audioframe(GapPlayerMainGlobalParams *gpp)
 		      500000,   /* umax */
 		      1.0,  /* sstep */
 		      100,   /* pagestep */
-		      100,                 /* page_size */
+		      0,                   /* page_size */
 		      1,                   /* climb_rate */
 		      0                    /* digits */
                       );
@@ -6505,7 +6505,7 @@ p_new_audioframe(GapPlayerMainGlobalParams *gpp)
                       10.0,  /* umax */
                       1.0,   /* sstep */
                       1.0,   /* pagestep */
-                      1.0,                 /* page_size */
+                      0.0,                 /* page_size */
                       1.0,                 /* climb_rate */
                       0                    /* digits */
                       );
@@ -6916,7 +6916,7 @@ p_new_configframe(GapPlayerMainGlobalParams *gpp)
 		     9000.0,   /* umax */
 		        1.0,  /* sstep */
 		       10.0,   /* pagestep */
-		       10.0,                 /* page_size */
+		       0.0,                  /* page_size */
 		       10.0,                 /* climb_rate */
 		        4                    /* digits */
                         );

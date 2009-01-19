@@ -174,7 +174,7 @@ oo     plug-in-color-map-iter-ALT
 ++     plug-in-whirl-pinch-iter-ALT
 ++     plug-in-wind-iter-ALT
 ++     plug-in-wr-color-levels
-o+(2)  plug-in-wr-curves                     - curves files are not compatible with gimp2.4 curves file
+++(2)  plug-in-wr-curves                     - curves files are not compatible with gimp2.4 curves file
 ++     plug-in-wr-huesat
 ++     plug-in-wr-set-opacity
  :     plug-in-zealouscrop
@@ -195,12 +195,11 @@ Additional notes:
       in animations,
       because this plugin works with fixed curling amount.
 
-(2)   This plugin works with curves files of the old fileformat (written by GIMP-2.4)
-      but fails when GIMP curves tool settings of the GIMP-2.6 release are used
-      (the format has changed.
-      The curves tool supports both formats, but the GIMP-GAP specific wrapper
-      can oly read the old format so far...
-
+(2)   This plugin works with curves files of the old fileformat (written by GIMP 1.2 up to 2.4)
+      and now also accepts the new fileformat introduced with GIMP curves tool settings of the GIMP-2.6 release.
+      The GIMP curves tool of the 2.6 release supports reading both formats.
+      The parser in the GIMP-GAP specific wrapper was updated to support
+      both fileformats too.
 
 
 plug_in_map_object old Testreport: (did not verfy that at the latest test)

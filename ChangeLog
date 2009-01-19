@@ -1,3 +1,15 @@
+2009-01-19 Wolfgang Hofer <hof@gimp.org>
+
+- wrapper for the curves tool now support both the old and new fileformat
+  for new color curves (saved with GIMP-1.2 upto GIMP-2.4 and GIMP-2.6)
+
+- fixed some (but not yet all) GtkWarnings about deprecated usage
+   (gap_player_dialog:4654): Gtk-WARNING **: GtkSpinButton: setting an adjustment with non-zero page size is deprecated
+
+   * gap/TESTPROT_iter_ALT
+   * gap/gap_player_dialog.c
+   * gap/gap_wr_color_curve.c
+
 2009-01-18 Wolfgang Hofer <hof@gimp.org>
 
 Started port to GIMP-2.6.4

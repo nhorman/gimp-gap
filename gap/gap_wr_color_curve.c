@@ -3,13 +3,13 @@
  *
  *  Wrapper Plugin for GIMP Curves tool
  *
- * Warning: This is just a QUICK HACK to enable
- *          Animated Filterapply in conjunction with the
- *          GIMP Curve Tool.
+ * This HACK enables
+ * Animated Filterapply in conjunction with the
+ * GIMP Curve Tool.
  *
  *  It provides a primitive Dialog Interface where you
- *  can load Curves (from Files saved by the Curve Tool)
- *  and Run The Curve Tool with these values as a Plugin on the current Drawable.
+ *  can load Curves (from Files saved by the Curve Tool of GIMP releases 1.2 up to GIMP-2.6)
+ *  and run The Curve Tool with these values as a Plugin on the current Drawable.
  *
  *  Further it has an Interface to 'Run_with_last_values'
  *  and an Iterator Procedure.
@@ -60,6 +60,7 @@
 #include <libgimp/gimpui.h>
 
 #include "gap_stock.h"
+#include "gap_file_util.h"
 
 #include "gap-intl.h"
 
@@ -99,7 +100,7 @@ typedef struct
 } wr_curves_val_t;
 
 
-/* The following Stuff for calculating the Curve
+/* The Stuff for calculating the Curve
  * was taken from gimp-1.1.17/app/curves.c
  * (and reduced for non-ineracive usage)
  */
@@ -135,18 +136,83 @@ struct _WrCurveDialog
 };
 
 
-WrCurveDialog *do_dialog (wr_curves_val_t *);
-static void   wr_curve_response (GtkWidget *widget,
-                 gint       response_id,
-                 WrCurveDialog *gpp);
+/* stuff to parse curves format introduced with GIMP-2.6 */
+
+#define TOKEN_SAMPLES "samples"
+#define TOKEN_CHANNEL "channel"
+#define TOKEN_CURVE   "curve"
+#define MAX_CHANNELS 5
+#define MAX_FILESIZE 800000
+
+typedef struct { /* nick cpc */
+  gchar *buffer;                  /* holds the complete file content without the header line */
+  gchar *ptr;                     /* (Do not g_free this) pointer to current parsing position in the buffer */
+  gint channel_index;             /* curent channel */
+  gint point_index;               /* current point in the current channel */ 
+  gboolean channel_found[MAX_CHANNELS];
+  gboolean samples_found[MAX_CHANNELS];
+  wr_curves_val_t *cuvals;        /* (Do not g_free this) reference */
+  
+} CurveParserContext;
+
+
+
+/* ============= stuff for curves format of GIMP-1.1 up to GIMP-2.4 release */
 static void   curves_CR_compose      (CRMatrix, CRMatrix, CRMatrix);
 static void   curves_plot_curve      (CurvesDialog *, int, int, int, int);
+static void   curves_calculate_curve (CurvesDialog *cd);
+
+static gboolean  read_curves_from_file (const char *filename, FILE *fp, wr_curves_val_t *cuvals);
+
+/* ============== stuff for curves format of GIMP-2.6 release */
+static CurveParserContext*    p_new_CurveParserContext(gint32 fileSize, FILE *fp, wr_curves_val_t *cuvals);
+static gint32                 p_read_gint32_value(CurveParserContext *cpc);
+static gdouble                p_read_gdouble_value(CurveParserContext *cpc);
+static void                   p_skip_whitespace(CurveParserContext *cpc);
+static void                   p_skip_until_opening_bracket(CurveParserContext *cpc);
+static void                   p_skip_until_closing_bracket(CurveParserContext *cpc);
+static void                   p_read_channel(CurveParserContext *cpc);
+static void                   p_read_samples(CurveParserContext *cpc);
+static void                   p_read_curve(CurveParserContext *cpc);
+
+static gboolean  p_read_curves_from_file_gimp2_6_format (const char *filename, FILE *fp, wr_curves_val_t *cuvals, gchar *buf);
+
+
+
+static int       p_load_curve(gchar *filename, wr_curves_val_t *cuvals);
+static void      p_delta_pointval_t (pointval_t  *val,
+                    pointval_t   val_from,
+                    pointval_t   val_to,
+                    gint32   total_steps,
+                    gdouble  current_step);
+
+static gint32    p_gimp_curves_explicit (gint32 drawable_id,
+                                       gint32 channel,
+                                       gint32 num_bytes,
+                                       gint8 *curve_points);
+static void      p_run_curves_tool(gint32 drawable_id, wr_curves_val_t *cuvals);
+
+
+/* stuff for the dialog */
+static void      p_filesel_close_cb (GtkWidget *widget, gpointer   data);
+static void      p_filesel_ok_callback (GtkWidget *widget, gpointer   data);
+static void      wr_curve_load_callback (GtkWidget *w,  WrCurveDialog *wcd);
+static void      text_entry_callback(GtkWidget *widget, WrCurveDialog *wcd);
+static void      wr_curve_response (GtkWidget *widget, gint response_id, WrCurveDialog *gpp);
+WrCurveDialog   *do_dialog (wr_curves_val_t *);
+
+
+/* required stuff for gimp-plug-ins */
 static void  query (void);
 static void  run(const gchar *name
            , gint nparams
            , const GimpParam *param
            , gint *nreturn_vals
            , GimpParam **return_vals);
+
+static gboolean  p_read_curves_from_file_gimp2_6_format (const char *filename, FILE *fp, wr_curves_val_t *cuvals, gchar *buf);
+
+
 
 /* Global Variables */
 GimpPlugInInfo PLUG_IN_INFO =
@@ -165,17 +231,20 @@ static CRMatrix CR_basis =
   {  0.0,  1.0,  0.0,  0.0 },
 };
 
+/* Global Variables */
+int gap_debug = 0;  /* 1 == print debug infos , 0 dont print debug infos */
 
 /* --------------
  * procedures
  * --------------
  */
 
+/* ============================ START curve calculation from GIMP-2.4 curves fileformat ====================== */
 
 static void
 curves_CR_compose (CRMatrix a,
-		   CRMatrix b,
-		   CRMatrix ab)
+                   CRMatrix b,
+                   CRMatrix ab)
 {
   gint i, j;
 
@@ -194,10 +263,10 @@ curves_CR_compose (CRMatrix a,
 
 static void
 curves_plot_curve (CurvesDialog *cd,
-		   gint          p1,
-		   gint          p2,
-		   gint          p3,
-		   gint          p4)
+                   gint          p1,
+                   gint          p2,
+                   gint          p3,
+                   gint          p4)
 {
   CRMatrix geometry;
   CRMatrix tmp1, tmp2;
@@ -277,14 +346,14 @@ curves_plot_curve (CurvesDialog *cd,
 
       /* if this point is different than the last one...then draw it */
       if ((lastx != newx) || (lasty != newy))
-	cd->curve[cd->channel][newx] = newy;
+        cd->curve[cd->channel][newx] = newy;
 
       lastx = newx;
       lasty = newy;
     }
 }
 
-void
+static void
 curves_calculate_curve (CurvesDialog *cd)
 {
   int i;
@@ -300,49 +369,39 @@ curves_calculate_curve (CurvesDialog *cd)
       /*  cycle through the curves  */
       num_pts = 0;
       for (i = 0; i < 17; i++)
-	if (cd->points[cd->channel][i][0] != -1)
-	  points[num_pts++] = i;
+        if (cd->points[cd->channel][i][0] != -1)
+          points[num_pts++] = i;
 
       /*  Initialize boundary curve points */
       if (num_pts != 0)
-	{
-	  for (i = 0; i < cd->points[cd->channel][points[0]][0]; i++)
-	    cd->curve[cd->channel][i] = cd->points[cd->channel][points[0]][1];
-	  for (i = cd->points[cd->channel][points[num_pts - 1]][0]; i < 256; i++)
-	    cd->curve[cd->channel][i] = cd->points[cd->channel][points[num_pts - 1]][1];
-	}
+        {
+          for (i = 0; i < cd->points[cd->channel][points[0]][0]; i++)
+            cd->curve[cd->channel][i] = cd->points[cd->channel][points[0]][1];
+          for (i = cd->points[cd->channel][points[num_pts - 1]][0]; i < 256; i++)
+            cd->curve[cd->channel][i] = cd->points[cd->channel][points[num_pts - 1]][1];
+        }
 
       for (i = 0; i < num_pts - 1; i++)
-	{
-	  p1 = (i == 0) ? points[i] : points[(i - 1)];
-	  p2 = points[i];
-	  p3 = points[(i + 1)];
-	  p4 = (i == (num_pts - 2)) ? points[(num_pts - 1)] : points[(i + 2)];
+        {
+          p1 = (i == 0) ? points[i] : points[(i - 1)];
+          p2 = points[i];
+          p3 = points[(i + 1)];
+          p4 = (i == (num_pts - 2)) ? points[(num_pts - 1)] : points[(i + 2)];
 
-	  curves_plot_curve (cd, p1, p2, p3, p4);
-	}
+          curves_plot_curve (cd, p1, p2, p3, p4);
+        }
       break;
     }
 
 }
 
-static gboolean
-read_curves_from_file_gimp2_6_format (FILE *fp, wr_curves_val_t *cuvals, gchar *buf)
-{
-  if (strcmp (buf, "# GIMP curves tool settings\n") != 0)
-  {
-    return FALSE;
-  }
-  
-  // TODO parse new format 
- 
-  g_message("GIMP-2.6 specific curves tool settings detected (BUT NOT YET SUPPORTED)");
-  return FALSE;
-  
-}
 
+/* ----------------------------------------
+ * read_curves_from_file
+ * ----------------------------------------
+ */
 static gboolean
-read_curves_from_file (FILE *fp, wr_curves_val_t *cuvals)
+read_curves_from_file (const char *filename, FILE *fp, wr_curves_val_t *cuvals)
 {
   gint i, j, fields;
   gchar buf[50];
@@ -361,30 +420,30 @@ read_curves_from_file (FILE *fp, wr_curves_val_t *cuvals)
   if (strcmp (buf, "# GIMP Curves File\n") != 0)
   {
     /* check new format introduced with GIMP-2.6.x release */
-    return (read_curves_from_file_gimp2_6_format (fp, cuvals, buf));
+    return (p_read_curves_from_file_gimp2_6_format (filename, fp, cuvals, buf));
   }
   
   for (i = 0; i < 5; i++)
   {
     for (j = 0; j < 17; j++)
-	{
-	  fields = fscanf (fp, "%d %d ", &index[i][j], &value[i][j]);
-	  if (fields != 2)
-	    {
-	      g_print ("fields != 2");
-	      return FALSE;
-	    }
-	}
+        {
+          fields = fscanf (fp, "%d %d ", &index[i][j], &value[i][j]);
+          if (fields != 2)
+            {
+              g_print ("fields != 2");
+              return FALSE;
+            }
+        }
   }
 
   for (i = 0; i < 5; i++)
   {
     curves_dialog->curve_type[i] = SMOOTH;
     for (j = 0; j < 17; j++)
-	{
-	  curves_dialog->points[i][j][0] = index[i][j];
-	  curves_dialog->points[i][j][1] = value[i][j];
-	}
+        {
+          curves_dialog->points[i][j][0] = index[i][j];
+          curves_dialog->points[i][j][1] = value[i][j];
+        }
   }
 
   /* this is ugly, but works ... */
@@ -395,7 +454,7 @@ read_curves_from_file (FILE *fp, wr_curves_val_t *cuvals)
       curves_calculate_curve (curves_dialog);
       for(j = 0; j < 256; j++)
       {
-	    cuvals->val_curve[i][j] = (pointval_t)curves_dialog->curve[i][j];
+            cuvals->val_curve[i][j] = (pointval_t)curves_dialog->curve[i][j];
       }
   }
   curves_dialog->channel = current_channel;
@@ -404,6 +463,447 @@ read_curves_from_file (FILE *fp, wr_curves_val_t *cuvals)
 }
 
 
+/* ============================ START parsing GIMP-2.6 curves file ====================== */
+ 
+
+
+
+/* ----------------------------------------
+ * p_new_CurveParserContext
+ * ----------------------------------------
+ * loads the Curve settings from the specified file,
+ * (starting at current position, (typically full content that follows the header line)
+ * and sts up a context for parsing.
+ */
+static CurveParserContext*
+p_new_CurveParserContext(gint32 fileSize, FILE *fp, wr_curves_val_t *cuvals)
+{
+  CurveParserContext *cpc;
+  gint ii;
+  
+  cpc = g_new(CurveParserContext, 1);
+  
+  cpc->buffer = (gchar *) g_malloc0(fileSize+1);
+
+  /* read all the rest of the file into buffer */
+  fread(cpc->buffer, 1, (size_t)fileSize, fp);
+  
+  cpc->ptr = cpc->buffer;
+  cpc->channel_index = 0;
+  cpc->point_index = 0;
+  cpc->cuvals = cuvals;
+  for(ii=0; ii < MAX_CHANNELS; ii++)
+  {
+    cpc->channel_found[ii] = FALSE;
+    cpc->samples_found[ii] = FALSE;
+  }
+  
+  return (cpc);
+  
+}  /* end p_new_CurveParserContext */
+
+
+/* ----------------------------------------
+ * p_read_gint32_value
+ * ----------------------------------------
+ * read integer value and advance scan ptr to char after the number
+ */
+static gint32
+p_read_gint32_value(CurveParserContext *cpc)
+{
+  gchar  *l_end_ptr;
+  long   l_num;
+
+  l_num = 0;
+  if(cpc->ptr)
+  {
+    if(*cpc->ptr != '\0')
+    {
+      l_end_ptr = cpc->ptr;
+      l_num = strtol(cpc->ptr, &l_end_ptr, 10);
+      if (cpc->ptr != l_end_ptr)
+      {
+         cpc->ptr = l_end_ptr;
+         return ((gint32)l_num);
+      }
+      printf("ERROR incompatible Curve settings, scan of int value failed\n");
+    }
+  }
+  return (l_num);
+}  /* end p_read_gint32_value */
+
+
+/* ----------------------------------------
+ * p_read_gdouble_value
+ * ----------------------------------------
+ * read doble value and advance scan ptr to char after the number
+ */
+static gdouble 
+p_read_gdouble_value(CurveParserContext *cpc)
+{
+  char   *l_end_ptr;
+  double  l_doubleValue;
+
+  l_doubleValue = 0.0;
+  if(cpc->ptr)
+  {
+    if(*cpc->ptr != '\0')
+    {
+      l_end_ptr = cpc->ptr;
+      l_doubleValue = g_ascii_strtod(cpc->ptr, &l_end_ptr);
+      if (cpc->ptr != l_end_ptr)
+      {
+         cpc->ptr = l_end_ptr;
+         return ((gdouble)l_doubleValue);
+      }
+      printf("ERROR incompatible Curve settings, scan of double value failed\n");
+    }
+
+  }
+  return (l_doubleValue);
+}  /* end p_read_gdouble_value */
+
+
+/* ----------------------------------------
+ * p_skip_whitespace
+ * ----------------------------------------
+ */
+static void
+p_skip_whitespace(CurveParserContext *cpc)
+{
+  while(*cpc->ptr != '\0')
+  {
+    switch (*cpc->ptr)
+    {
+      case ' ':
+      case '\t':
+      case '\r':
+      case '\n':
+        break;
+      case '#':
+        while (*cpc->ptr != '\n')
+        {
+          cpc->ptr++;
+          if (*cpc->ptr == '\0')
+          {
+            return;
+          }
+        }
+        break;
+      default:
+        return;
+        break;
+    }
+    cpc->ptr++;
+  }
+}  /* end p_skip_whitespace */
+
+
+/* ----------------------------------------
+ * p_skip_until_opening_bracket
+ * ----------------------------------------
+ * advance scan ptr to position after the next opening bracket
+ */
+static void
+p_skip_until_opening_bracket(CurveParserContext *cpc)
+{
+  while(*cpc->ptr != '\0')
+  {
+    if (*cpc->ptr == '(')
+    {
+      cpc->ptr++;
+      return;
+    }
+    cpc->ptr++;
+  }
+}  /* end p_skip_until_opening_bracket */
+
+
+/* ----------------------------------------
+ * p_skip_until_closing_bracket
+ * ----------------------------------------
+ * advance scan ptr to position after the closing bracket
+ */
+static void
+p_skip_until_closing_bracket(CurveParserContext *cpc)
+{
+  int countBr;
+  
+  countBr = 0;
+  
+  while(*cpc->ptr != '\0')
+  {
+    switch (*cpc->ptr)
+    {
+      case '(':
+        countBr++;
+        break;
+      case ')':
+        countBr--;
+        if (countBr < 0)
+        {
+          cpc->ptr++;
+          return;
+        }
+        break;
+    }
+    cpc->ptr++;
+  }
+  
+}  /* end p_skip_until_closing_bracket */
+
+
+/* ----------------------------------------
+ * p_read_channel
+ * ----------------------------------------
+ */
+static void
+p_read_channel(CurveParserContext *cpc)
+{
+  static const char *channel_name[] = {"value", "red", "green", "blue", "alpha" };
+  gint ii;
+  
+  cpc->ptr += strlen(TOKEN_CHANNEL);
+  p_skip_whitespace(cpc);
+  
+  for (ii = 0; ii < MAX_CHANNELS; ii++)
+  {
+    int lenChannelName;
+    
+    lenChannelName = strlen(channel_name[ii]);
+    if(strncmp(cpc->ptr, channel_name[ii], lenChannelName) == 0)
+    {
+      cpc->channel_index = ii;
+      cpc->channel_found[ii] = TRUE;
+      if(gap_debug)
+      {
+        printf("\nCHANNEL token %s index:%d\n", channel_name[ii], cpc->channel_index );
+      }
+    }
+  }
+
+  p_skip_until_closing_bracket(cpc);
+
+}  /* end p_read_channel */
+
+
+/* ----------------------------------------
+ * p_read_samples
+ * ----------------------------------------
+ * read the samples token followed by one integer and 256 double values
+ * set scan position after the closing bracket of the samples token.
+ */
+static void
+p_read_samples(CurveParserContext *cpc)
+{
+  gint32 intValue;
+  gdouble  doubleValue;
+  
+  cpc->ptr += strlen(TOKEN_SAMPLES);
+  p_skip_whitespace(cpc);
+
+  intValue = p_read_gint32_value(cpc);
+  cpc->point_index = 0;
+  while(*cpc->ptr != '\0')
+  {
+    p_skip_whitespace(cpc);
+    doubleValue = p_read_gdouble_value(cpc);
+    cpc->cuvals->val_curve[cpc->channel_index][cpc->point_index] = CLAMP0255 (ROUND (doubleValue * 255));
+    
+    if(gap_debug)
+    {
+      printf(" [%d] [%03d] %d  %f\n"
+        , (int) cpc->channel_index
+        , (int) cpc->point_index
+        , (int) cpc->cuvals->val_curve[cpc->channel_index][cpc->point_index]
+        , (float) doubleValue
+        );
+    }
+    
+    
+    cpc->point_index++;
+    
+    /* check if all sample points done */
+    if (cpc->point_index >= 256)
+    {
+      cpc->samples_found[cpc->channel_index] = TRUE;
+      p_skip_until_closing_bracket(cpc);
+      return;
+    }
+
+    if (*cpc->ptr == ')')
+    {
+      cpc->ptr++;
+      return;
+    }
+  }
+
+}  /* end p_read_samples */
+
+
+/* ----------------------------------------
+ * p_read_curve
+ * ----------------------------------------
+ * read curve description 
+ *  this implementation read only the expected 256 samples and ignores (e.g. skips) other parts
+ *  of the curve description
+ * the scan ptr is set to the character after the closing bracket.
+ */
+static void
+p_read_curve(CurveParserContext *cpc)
+{
+  cpc->ptr += strlen(TOKEN_CURVE);
+
+  while(*cpc->ptr != '\0')
+  {
+    p_skip_whitespace(cpc);
+    p_skip_until_opening_bracket(cpc);
+
+    if(gap_debug)
+    {
+      printf("\n\np_read_curve cpc->ptr:%100.100s\n", cpc->ptr);
+    }
+
+    if(strncmp(cpc->ptr, TOKEN_SAMPLES, strlen(TOKEN_SAMPLES)) == 0)
+    {
+       p_read_samples(cpc);
+    } 
+    else
+    {
+       /* ignore other tokens within the curve description */
+       p_skip_until_closing_bracket(cpc);
+    }
+    
+    /* check if closing bracket of the curves description is reached */
+    if (*cpc->ptr == ')')
+    {
+      cpc->ptr++;
+      return;
+    }
+  }
+
+}  /* end p_read_curve */
+
+
+/* ----------------------------------------
+ * p_read_curves_from_file_gimp2_6_format
+ * ----------------------------------------
+ * Parse curve points from file
+ * in the new # GIMP curves tool settings
+ * fileformat.
+ * Example content of such a file:
+ * ===============================
+ *     # GIMP curves tool settings
+ *     (time 0)
+ *     (channel value)
+ *     (curve
+ *         (curve-type smooth)
+ *         (n-points 17)
+ *         (points 34 0.000000 0.000000 -1.000000 -1.000000 ....
+ *         .... -1.000000 -1.000000 1.000000 1.000000)
+ *         (n-samples 256)
+ *         (samples 256 0.000000 0.003922 0.007843 0.011765 0.015686 .....
+ *          ...... 0.988235 0.992157 0.996078 1.000000))
+ *     (time 0)
+ *     (channel red)    (curve  ............)
+ *     (channel green)  (curve  ............)
+ *     (channel blue)   (curve  ............)
+ *     (channel alpha)  (curve  ............)
+ *
+ *
+ * opposite to the 2.4 format, there is no need to calculate the 256 points in the 2.6 format.
+ * that typically are already provides all 256 points for all 5 channels.
+ *
+ * RESTRICTIONS:
+ * ------------
+ * the parser is limited to read only the 256 sample points for the 5 channels
+ *   value, red, green, blue, alpha
+ * that are required for the non-interactive calls (see also: p_gimp_curves_explicit)
+ * all other tokens in the file are ignored. (even the n-samples token is ignored)
+ * load will fail in case the file does not contain the expected 256 sample points per channel.
+ */
+static gboolean
+p_read_curves_from_file_gimp2_6_format (const char *filename, FILE *fp, wr_curves_val_t *cuvals, gchar *buf)
+{
+  int ii;
+  gboolean success;
+  gint32     l_fileSize;
+  CurveParserContext *cpc;
+
+  if(gap_debug)
+  {
+    printf("START p_read_curves_from_file_gimp2_6_format\n");
+  }
+  
+
+  l_fileSize = gap_file_get_filesize(filename);
+  if (l_fileSize > MAX_FILESIZE)
+  {
+    printf("ERROR: file %s length %d is larger than plausible size %d\n"
+      , filename
+      , l_fileSize
+      , MAX_FILESIZE
+      );
+    return FALSE;
+  }
+  
+  if (strcmp (buf, "# GIMP curves tool settings\n") != 0)
+  {
+    printf("ERROR: file %s does not start with '%s'\n", "# GIMP curves tool settings");
+    return FALSE;
+  }
+  
+  success = TRUE;
+  cpc = p_new_CurveParserContext(l_fileSize, fp, cuvals);
+
+  while(*cpc->ptr != '\0')
+  {
+    p_skip_whitespace(cpc);
+    p_skip_until_opening_bracket(cpc);
+    if(gap_debug)
+    {
+      printf("\n\nCurves file cpc->ptr:%80.80s\n", cpc->ptr);
+    }
+
+    if(strncmp(cpc->ptr, TOKEN_CHANNEL, strlen(TOKEN_CHANNEL)) == 0)
+    {
+       p_read_channel(cpc);
+    } 
+    else if(strncmp(cpc->ptr, TOKEN_CURVE, strlen(TOKEN_CURVE)) == 0)
+    {
+       p_read_curve(cpc);
+    }
+    else
+    {
+       p_skip_until_closing_bracket(cpc);
+    }
+  }
+
+  /* check if samples for all channels have been loaded successfully */
+  for(ii=0; ii < MAX_CHANNELS; ii++)
+  {
+    if ((cpc->channel_found[ii] != TRUE) || (cpc->samples_found[ii] != TRUE))
+    {
+      success = FALSE;
+      break;
+    }
+  }
+  
+  g_free(cpc->buffer);
+  g_free(cpc);
+  
+  
+  return success;
+  
+}  /* end p_read_curves_from_file_gimp2_6_format */
+
+
+/* ----------------------------------------
+ * p_load_curve
+ * ----------------------------------------
+ * load curve from file, 
+ *  supports curve file formats of the gimp-2.4.x and gimp-2.6.x releases
+ */
 static int
 p_load_curve(gchar *filename, wr_curves_val_t *cuvals)
 {
@@ -413,15 +913,15 @@ p_load_curve(gchar *filename, wr_curves_val_t *cuvals)
 
   if (!fp)
   {
-	  g_message (_("Unable to open file %s"), filename);
-	  return -1;
+          g_message (_("Unable to open file %s"), filename);
+          return -1;
   }
 
-  if (!read_curves_from_file (fp, cuvals))
+  if (!read_curves_from_file (filename, fp, cuvals))
   {
-	  g_message (("Error in reading file %s"), filename);
-      fclose (fp);
-	  return -1;
+          g_message (("Error in reading file %s"), filename);
+          fclose (fp);
+          return -1;
   }
 
   fclose (fp);
@@ -429,15 +929,17 @@ p_load_curve(gchar *filename, wr_curves_val_t *cuvals)
 }
 
 
-/*
+/* ----------------------------------------
+ * p_delta_pointval_t
+ * ----------------------------------------
  * Delta Calculations for the iterator
  */
 static void
 p_delta_pointval_t (pointval_t  *val,
-		pointval_t   val_from,
-		pointval_t   val_to,
-		 gint32   total_steps,
-		 gdouble  current_step)
+                pointval_t   val_from,
+                pointval_t   val_to,
+                 gint32   total_steps,
+                 gdouble  current_step)
 {
     gdouble     delta;
 
@@ -448,17 +950,17 @@ p_delta_pointval_t (pointval_t  *val,
 }
 
 
-/* ============================================================================
+/* ----------------------------------------
  * p_gimp_curves_explicit
- *
- * ============================================================================
+ * ----------------------------------------
+ * PDB call of the curves feature of the gimp color curves tool
+ * for one channel.
  */
-
-gint32
+static gint32
 p_gimp_curves_explicit (gint32 drawable_id,
-		   gint32 channel,
-		   gint32 num_bytes,
-		   gint8 *curve_points)
+                   gint32 channel,
+                   gint32 num_bytes,
+                   gint8 *curve_points)
 {
    static char     *l_procname = "gimp_curves_explicit";
    GimpParam          *return_vals;
@@ -480,8 +982,15 @@ p_gimp_curves_explicit (gint32 drawable_id,
    gimp_destroy_params(return_vals, nreturn_vals);
    printf("Error: PDB call of %s failed status:%d\n", l_procname, (int)return_vals[0].data.d_status);
    return(-1);
-}	/* end p_gimp_curves_explicit */
+}       /* end p_gimp_curves_explicit */
 
+
+/* ----------------------------------------
+ * p_run_curves_tool
+ * ----------------------------------------
+ * run the curves feature of the gimp color curves tool
+ * for all channels
+ */
 static void
 p_run_curves_tool(gint32 drawable_id, wr_curves_val_t *cuvals)
 {
@@ -500,8 +1009,247 @@ p_run_curves_tool(gint32 drawable_id, wr_curves_val_t *cuvals)
   }
 }
 
+
+
+/*
+ * ===== START of DIALOG and callback stuff ===========
+ */
+
+/* ---------------------------------
+ * wr_curve_load_callback
+ * ---------------------------------
+ */
+static void
+p_filesel_close_cb (GtkWidget *widget,
+                    gpointer   data)
+{
+  WrCurveDialog *wcd;
+
+  wcd = (WrCurveDialog *) data;
+
+  if(wcd->filesel == NULL) return;
+
+  gtk_widget_destroy(GTK_WIDGET(wcd->filesel));
+  wcd->filesel = NULL;   /* now filesel is closed */
+}
+
+
+/* ---------------------------------
+ * wr_curve_load_callback
+ * ---------------------------------
+ */
+static void
+p_filesel_ok_callback (GtkWidget *widget,
+                         gpointer   data)
+{
+  WrCurveDialog *wcd;
+  wr_curves_val_t  cuvals;
+
+  wcd = (WrCurveDialog *) data;
+
+  if(wcd->filesel == NULL) return;
+
+  if(wcd->filename) g_free(wcd->filename);
+
+  wcd->filename = g_strdup(gtk_file_selection_get_filename (GTK_FILE_SELECTION (wcd->filesel)));
+  gtk_entry_set_text(GTK_ENTRY(wcd->entry), wcd->filename);
+
+  gtk_widget_destroy(GTK_WIDGET(wcd->filesel));
+  wcd->filesel = NULL;
+
+  /* try to read the file,
+   * (and make a g_message on errors)
+   */
+  p_load_curve(wcd->filename, &cuvals);
+}
+
+/* ---------------------------------
+ * wr_curve_load_callback
+ * ---------------------------------
+ */
+static void
+wr_curve_load_callback (GtkWidget *w,
+                      WrCurveDialog *wcd)
+{
+  GtkWidget *filesel;
+
+  if(wcd == NULL)
+  {
+    return;
+  }
+  if(wcd->filesel != NULL)
+  {
+     gtk_window_present(GTK_WINDOW(wcd->filesel));
+     return;   /* filesel is already open */
+  }
+  
+  filesel = gtk_file_selection_new ( _("Load color curve from file"));
+  wcd->filesel = filesel;
+
+  gtk_window_set_position (GTK_WINDOW (filesel), GTK_WIN_POS_MOUSE);
+  g_signal_connect (GTK_FILE_SELECTION (filesel)->ok_button,
+                    "clicked", (GtkSignalFunc) p_filesel_ok_callback,
+                    wcd);
+  g_signal_connect (GTK_FILE_SELECTION (filesel)->cancel_button,
+                      "clicked", (GtkSignalFunc) p_filesel_close_cb,
+                      wcd);
+  g_signal_connect (filesel, "destroy",
+                    (GtkSignalFunc) p_filesel_close_cb,
+                    wcd);
+  if(wcd->filename)
+  {
+    gtk_file_selection_set_filename (GTK_FILE_SELECTION (filesel),
+                                     wcd->filename);
+  }
+  gtk_widget_show (filesel);
+
+}
+
+/* ---------------------------------
+ * text_entry_callback
+ * ---------------------------------
+ */
+static void
+text_entry_callback(GtkWidget *widget, WrCurveDialog *wcd)
+{
+  if(wcd)
+  {
+    if(wcd->filename) g_free(wcd->filename);
+    wcd->filename = g_strdup(gtk_entry_get_text(GTK_ENTRY(widget)));
+  }
+}
+
+/* ---------------------------------
+ * wr_curve_response
+ * ---------------------------------
+ */
+static void
+wr_curve_response (GtkWidget *widget,
+                 gint       response_id,
+                 WrCurveDialog *wcd)
+{
+  GtkWidget *dialog;
+
+  switch (response_id)
+  {
+    case GTK_RESPONSE_OK:
+      if(wcd)
+      {
+        if (GTK_WIDGET_VISIBLE (wcd->shell))
+          gtk_widget_hide (wcd->shell);
+
+        wcd->run = TRUE;
+      }
+
+    default:
+      dialog = NULL;
+      if(wcd)
+      {
+        dialog = wcd->shell;
+        if(dialog)
+        {
+          wcd->shell = NULL;
+          gtk_widget_destroy (dialog);
+        }
+      }
+      gtk_main_quit ();
+      break;
+  }
+}  /* end wr_curve_response */
+
+
+
+WrCurveDialog *
+do_dialog (wr_curves_val_t *cuvals)
+{
+  WrCurveDialog *wcd;
+  GtkWidget *dialog;
+  GtkWidget  *vbox;
+  GtkWidget  *hbox;
+  GtkWidget  *button;
+  GtkWidget  *entry;
+
+
+  /* Init UI  */
+  gimp_ui_init ("wr_curves", FALSE);
+  gap_stock_init();
+
+
+  /*  The curve_bend dialog  */
+  wcd = g_malloc (sizeof (WrCurveDialog));
+  wcd->run = FALSE;
+  wcd->filesel = NULL;
+
+  /*  The dialog and main vbox  */
+  dialog = gimp_dialog_new (_("CurvesFile"), "curves_wrapper",
+                               NULL, 0,
+                               gimp_standard_help_func, PLUG_IN_HELP_ID,
+
+                               GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+                               GTK_STOCK_OK,     GTK_RESPONSE_OK,
+                               NULL);
+
+  wcd->shell = dialog;
+  g_signal_connect (G_OBJECT (dialog), "response",
+                    G_CALLBACK (wr_curve_response),
+                    wcd);
+
+  /* the vbox */
+  vbox = gtk_vbox_new (FALSE, 2);
+  gtk_container_set_border_width (GTK_CONTAINER (vbox), 2);
+  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox), vbox,
+                      TRUE, TRUE, 0);
+  gtk_widget_show (vbox);
+
+  /* the hbox */
+  hbox = gtk_hbox_new (FALSE, 2);
+  gtk_container_set_border_width (GTK_CONTAINER (vbox), 2);
+  gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, TRUE, 0);
+  gtk_widget_show (hbox);
+
+  /*  The Load button  */
+  button = gtk_button_new_with_label (_("Load Curve"));
+  gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 0);
+  g_signal_connect (G_OBJECT (button), "clicked",
+                    G_CALLBACK (wr_curve_load_callback),
+                    wcd);
+  gtk_widget_show (button);
+  gimp_help_set_help_data (button,
+                           _("Load curve from a GIMP curve file "
+                             "(that was saved with the GIMP's color curve tool)"),
+                           NULL);
+
+  /*  The filename entry */
+  entry = gtk_entry_new();
+  gtk_widget_set_size_request(entry, 350, -1);
+  gtk_entry_set_text(GTK_ENTRY(entry), "");
+  gtk_box_pack_start (GTK_BOX (hbox), entry, TRUE, TRUE, 0);
+  g_signal_connect(G_OBJECT(entry), "changed",
+                   G_CALLBACK (text_entry_callback),
+                   wcd);
+  gtk_widget_show (entry);
+  wcd->entry = entry;
+
+  gtk_widget_show (dialog);
+
+  gtk_main ();
+  gdk_flush ();
+
+
+  return wcd;
+}
+
+
+
+
 MAIN ()
 
+
+/* ----------------------------------------
+ * query
+ * ----------------------------------------
+ * register as PDB procedure (both the wrapper and iterator)
+ */
 static void
 query (void)
 {
@@ -537,13 +1285,13 @@ query (void)
   /* the actual installation of the bend plugin */
   gimp_install_procedure (PLUG_IN_NAME,
                           PLUG_IN_DESCRIPTION,
-  			 "This Plugin loads a # GIMP Curves File,"
-			 " that was saved by the GIMP 2.0pre1 Curves Tool"
-			 " then calculates the curves (256 points foreach channel val,r,g,b,a)"
-			 " and calls the Curve Tool via PDB interface with the calculated curve points"
-			 " It also stores the points, and offers a GIMP_RUN_WITH_LAST_VALUES"
-			 " Interface and an Iterator Procedure for animated calls"
-			 " of the Curves Tool with varying values"
+                         "This Plugin loads a # GIMP Curves File,"
+                         " that was saved by the GIMP 2.0pre1 Curves Tool"
+                         " then calculates the curves (256 points foreach channel val,r,g,b,a)"
+                         " and calls the Curve Tool via PDB interface with the calculated curve points"
+                         " It also stores the points, and offers a GIMP_RUN_WITH_LAST_VALUES"
+                         " Interface and an Iterator Procedure for animated calls"
+                         " of the Curves Tool with varying values"
                           ,
                           PLUG_IN_AUTHOR,
                           PLUG_IN_COPYRIGHT,
@@ -582,6 +1330,11 @@ query (void)
 }
 
 
+/* ----------------------------------------
+ * run
+ * ----------------------------------------
+ * the main entry point when the filter is started via the GIMP menu.
+ */
 
 static void  
 run(const gchar *name
@@ -648,14 +1401,14 @@ run(const gchar *name
           memcpy(&cval, &cval_from, sizeof(cval));
           for(l_idi = 0; l_idi < 5; l_idi++)
           {
-	     for(l_idx = 0; l_idx < 256; l_idx++)
-	     {
+             for(l_idx = 0; l_idx < 256; l_idx++)
+             {
                p_delta_pointval_t(&cval.val_curve[l_idi][l_idx],
                     cval_from.val_curve[l_idi][l_idx],
                     cval_to.val_curve[l_idi][l_idx],
                     total_steps, current_step);
              }
-	  }
+          }
           gimp_set_data(PLUG_IN_NAME, &cval, sizeof(cval));
        }
        else status = GIMP_PDB_CALLING_ERROR;
@@ -682,16 +1435,16 @@ run(const gchar *name
         /* Get information from the dialog */
         wcd = do_dialog(&l_cuvals);
         wcd->show_progress = TRUE;
-	if(wcd->filename == NULL)
-	{
+        if(wcd->filename == NULL)
+        {
            status = GIMP_PDB_EXECUTION_ERROR;
-	}
-	else
-	{
-	  if(p_load_curve(wcd->filename, &l_cuvals) < 0)
+        }
+        else
+        {
+          if(p_load_curve(wcd->filename, &l_cuvals) < 0)
           {
             status = GIMP_PDB_EXECUTION_ERROR;
-	  }
+          }
         }
         break;
 
@@ -735,16 +1488,16 @@ run(const gchar *name
      /* Run the main function */
      if(wcd->run)
      {
-	gimp_image_undo_group_start(l_image_id);
-	p_run_curves_tool(l_drawable_id, &l_cuvals);
+        gimp_image_undo_group_start(l_image_id);
+        p_run_curves_tool(l_drawable_id, &l_cuvals);
         l_handled_drawable_id = l_drawable_id;
-	gimp_image_undo_group_end(l_image_id);
+        gimp_image_undo_group_end(l_image_id);
 
-	/* Store variable states for next run */
-	if (run_mode == GIMP_RUN_INTERACTIVE)
-	{
-	  gimp_set_data(PLUG_IN_NAME, &l_cuvals, sizeof(l_cuvals));
-	}
+        /* Store variable states for next run */
+        if (run_mode == GIMP_RUN_INTERACTIVE)
+        {
+          gimp_set_data(PLUG_IN_NAME, &l_cuvals, sizeof(l_cuvals));
+        }
      }
      else
      {
@@ -761,216 +1514,4 @@ run(const gchar *name
   values[0].data.d_status = status;
   values[1].data.d_int32 = l_handled_drawable_id;   /* return the id of handled layer */
 
-}	/* end run */
-
-
-/*
- * DIALOG and callback stuff
- */
-
-static void
-p_filesel_close_cb (GtkWidget *widget,
-		    gpointer   data)
-{
-  WrCurveDialog *wcd;
-
-  wcd = (WrCurveDialog *) data;
-
-  if(wcd->filesel == NULL) return;
-
-  gtk_widget_destroy(GTK_WIDGET(wcd->filesel));
-  wcd->filesel = NULL;   /* now filesel is closed */
-}
-
-static void
-p_filesel_ok_callback (GtkWidget *widget,
-			 gpointer   data)
-{
-  WrCurveDialog *wcd;
-  wr_curves_val_t  cuvals;
-
-  wcd = (WrCurveDialog *) data;
-
-  if(wcd->filesel == NULL) return;
-
-  if(wcd->filename) g_free(wcd->filename);
-
-  wcd->filename = g_strdup(gtk_file_selection_get_filename (GTK_FILE_SELECTION (wcd->filesel)));
-  gtk_entry_set_text(GTK_ENTRY(wcd->entry), wcd->filename);
-
-  gtk_widget_destroy(GTK_WIDGET(wcd->filesel));
-  wcd->filesel = NULL;
-
-  /* try to read the file,
-   * (and make a g_message on errors)
-   */
-  p_load_curve(wcd->filename, &cuvals);
-}
-
-static void
-wr_curve_load_callback (GtkWidget *w,
-		      WrCurveDialog *wcd)
-{
-  GtkWidget *filesel;
-
-  if(wcd == NULL)
-  {
-    return;
-  }
-  if(wcd->filesel != NULL)
-  {
-     gtk_window_present(GTK_WINDOW(wcd->filesel));
-     return;   /* filesel is already open */
-  }
-  
-  filesel = gtk_file_selection_new ( _("Load color curve from file"));
-  wcd->filesel = filesel;
-
-  gtk_window_set_position (GTK_WINDOW (filesel), GTK_WIN_POS_MOUSE);
-  g_signal_connect (GTK_FILE_SELECTION (filesel)->ok_button,
-                    "clicked", (GtkSignalFunc) p_filesel_ok_callback,
-                    wcd);
-  g_signal_connect (GTK_FILE_SELECTION (filesel)->cancel_button,
-		      "clicked", (GtkSignalFunc) p_filesel_close_cb,
-		      wcd);
-  g_signal_connect (filesel, "destroy",
-                    (GtkSignalFunc) p_filesel_close_cb,
-                    wcd);
-  if(wcd->filename)
-  {
-    gtk_file_selection_set_filename (GTK_FILE_SELECTION (filesel),
-                                     wcd->filename);
-  }
-  gtk_widget_show (filesel);
-
-}
-
-static void
-text_entry_callback(GtkWidget *widget, WrCurveDialog *wcd)
-{
-  if(wcd)
-  {
-    if(wcd->filename) g_free(wcd->filename);
-    wcd->filename = g_strdup(gtk_entry_get_text(GTK_ENTRY(widget)));
-  }
-}
-
-/* ---------------------------------
- * wr_curve_response
- * ---------------------------------
- */
-static void
-wr_curve_response (GtkWidget *widget,
-                 gint       response_id,
-                 WrCurveDialog *wcd)
-{
-  GtkWidget *dialog;
-
-  switch (response_id)
-  {
-    case GTK_RESPONSE_OK:
-      if(wcd)
-      {
-	if (GTK_WIDGET_VISIBLE (wcd->shell))
-	  gtk_widget_hide (wcd->shell);
-
-	wcd->run = TRUE;
-      }
-
-    default:
-      dialog = NULL;
-      if(wcd)
-      {
-        dialog = wcd->shell;
-	if(dialog)
-	{
-          wcd->shell = NULL;
-          gtk_widget_destroy (dialog);
-	}
-      }
-      gtk_main_quit ();
-      break;
-  }
-}  /* end wr_curve_response */
-
-
-
-WrCurveDialog *
-do_dialog (wr_curves_val_t *cuvals)
-{
-  WrCurveDialog *wcd;
-  GtkWidget *dialog;
-  GtkWidget  *vbox;
-  GtkWidget  *hbox;
-  GtkWidget  *button;
-  GtkWidget  *entry;
-
-
-  /* Init UI  */
-  gimp_ui_init ("wr_curves", FALSE);
-  gap_stock_init();
-
-
-  /*  The curve_bend dialog  */
-  wcd = g_malloc (sizeof (WrCurveDialog));
-  wcd->run = FALSE;
-  wcd->filesel = NULL;
-
-  /*  The dialog and main vbox  */
-  dialog = gimp_dialog_new (_("CurvesFile"), "curves_wrapper",
-                               NULL, 0,
-			       gimp_standard_help_func, PLUG_IN_HELP_ID,
-
-                               GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-                               GTK_STOCK_OK,     GTK_RESPONSE_OK,
-                               NULL);
-
-  wcd->shell = dialog;
-  g_signal_connect (G_OBJECT (dialog), "response",
-                    G_CALLBACK (wr_curve_response),
-                    wcd);
-
-  /* the vbox */
-  vbox = gtk_vbox_new (FALSE, 2);
-  gtk_container_set_border_width (GTK_CONTAINER (vbox), 2);
-  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox), vbox,
-		      TRUE, TRUE, 0);
-  gtk_widget_show (vbox);
-
-  /* the hbox */
-  hbox = gtk_hbox_new (FALSE, 2);
-  gtk_container_set_border_width (GTK_CONTAINER (vbox), 2);
-  gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, TRUE, 0);
-  gtk_widget_show (hbox);
-
-  /*  The Load button  */
-  button = gtk_button_new_with_label (_("Load Curve"));
-  gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 0);
-  g_signal_connect (G_OBJECT (button), "clicked",
-		    G_CALLBACK (wr_curve_load_callback),
-		    wcd);
-  gtk_widget_show (button);
-  gimp_help_set_help_data (button,
-			   _("Load curve from a GIMP curve file "
-			     "(that was saved with the GIMP's color curve tool)"),
-			   NULL);
-
-  /*  The filename entry */
-  entry = gtk_entry_new();
-  gtk_widget_set_size_request(entry, 350, -1);
-  gtk_entry_set_text(GTK_ENTRY(entry), "");
-  gtk_box_pack_start (GTK_BOX (hbox), entry, TRUE, TRUE, 0);
-  g_signal_connect(G_OBJECT(entry), "changed",
-		   G_CALLBACK (text_entry_callback),
-		   wcd);
-  gtk_widget_show (entry);
-  wcd->entry = entry;
-
-  gtk_widget_show (dialog);
-
-  gtk_main ();
-  gdk_flush ();
-
-
-  return wcd;
-}
+}       /* end run */
