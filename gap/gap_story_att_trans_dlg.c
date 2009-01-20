@@ -299,7 +299,7 @@ p_attw_push_undo_and_set_unsaved_changes(GapStbAttrWidget *attw)
       {
         attw->stb_refptr->active_section->version++;
       }
-    
+
     }
   }
 }  /* end p_attw_push_undo_and_set_unsaved_changes */
@@ -320,7 +320,7 @@ p_attw_prop_reset_all(GapStbAttrWidget *attw)
     if(attw->stb_elem_refptr)
     {
       p_attw_push_undo_and_set_unsaved_changes(attw);
-      
+
       gap_story_elem_copy(attw->stb_elem_refptr, attw->stb_elem_bck);
 
       comment_set = FALSE;
@@ -352,8 +352,8 @@ p_attw_prop_reset_all(GapStbAttrWidget *attw)
       }
       gtk_adjustment_set_value(GTK_ADJUSTMENT(attw->spinbutton_overlap_dur_adj)
                                 , attw->stb_elem_refptr->att_overlap);
-      
-      
+
+
       gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (attw->fit_width_toggle)
              , attw->stb_elem_refptr->att_fit_width);
       gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (attw->fit_height_toggle)
@@ -368,7 +368,7 @@ p_attw_prop_reset_all(GapStbAttrWidget *attw)
 
 }  /* end p_attw_prop_reset_all */
 
- 
+
 /* ------------------------------
  * p_playback_effect_range
  * ------------------------------
@@ -418,7 +418,7 @@ p_attw_timer_job(GapStbAttrWidget *attw)
     {
       attw->timer_full_update_request = FALSE;
       p_update_full_preview_gfx(attw);
-      
+
       /* it would be sufficient to update the labels
        * of all clips displayed in the storyboard,
        * but we simply render everything
@@ -642,7 +642,7 @@ p_copy_duration_to_all(gint32 duration, GapStbAttrWidget *attw)
   if(attw)
   {
     gint ii;
-    
+
     p_attw_push_undo_and_set_unsaved_changes(attw);
     for(ii = 0; ii < GAP_STB_ATT_TYPES_ARRAY_MAX; ii++)
     {
@@ -784,7 +784,7 @@ p_attw_duration_adjustment_callback(GtkObject *obj, gint32 *val)
       {
         printf("gint32_adjustment_callback: obj:%d old_val:%d val:%d\n"
              ,(int)obj
-             ,(int)*val 
+             ,(int)*val
              ,(int)l_val
              );
       }
@@ -1420,7 +1420,7 @@ p_calculate_prefetch_visibility(GapStbAttrWidget *attw, gint img_idx)
       prefetch_visible = TRUE;
     }
   }
-  
+
   return (prefetch_visible);
 }  /* end p_calculate_prefetch_visibility */
 
@@ -1463,7 +1463,7 @@ p_render_gfx(GapStbAttrWidget *attw, gint img_idx)
       , LAYERSTACK_PREF
       , LAYERNAME_PREF
       );
-     
+
 
   p_calculate_render_attributes (attw
      , img_idx
@@ -1764,7 +1764,7 @@ p_orig_layer_frame_fetcher(GapStbAttrWidget *attw
        && (stb_ret->stb_elem))
        {
          gboolean is_up_to_date;
-         
+
          l_filename = gap_story_get_filename_from_elem_nr(stb_ret->stb_elem
                                                 , stb_ret->ret_framenr
                                                );
@@ -1825,7 +1825,7 @@ p_orig_layer_frame_fetcher(GapStbAttrWidget *attw
            if(l_layer_id > 0)
            {
               l_layer_id = gap_layer_flip(l_layer_id, stb_ret->stb_elem->flip_request);
-           
+
               linfo->layer_record_type = stb_ret->stb_elem->record_type;
               linfo->layer_local_framenr = 0;
               linfo->layer_seltrack = 1;
@@ -1895,14 +1895,14 @@ p_calc_and_set_display_framenr(GapStbAttrWidget *attw
    if(attw->stb_elem_refptr->att_overlap > 0)
    {
      l_prefetch_framenr = CLAMP((l_framenr - attw->stb_elem_refptr->att_overlap), 0, l_framenr_start);
-     
+
      if(l_prefetch_framenr > 0)
      {
        l_dsiplay_framenr = l_prefetch_framenr;
      }
    }
    p_update_framenr_labels(attw, img_idx, l_dsiplay_framenr);
-   
+
    return (l_dsiplay_framenr);
 }  /* end p_calc_and_set_display_framenr */
 
@@ -1922,7 +1922,7 @@ p_calc_and_set_display_framenr(GapStbAttrWidget *attw
  *
  * If the orig_layer is up to date the fetch is not performed.
  *
- * if overlapping is used (att_overap > 0) 
+ * if overlapping is used (att_overap > 0)
  * we prefetch a 2.nd original (the opre_layer) that shall be rendered
  * below the orig_layer. its position is current - att_overap
  *
@@ -1959,7 +1959,7 @@ p_create_or_replace_orig_and_opre_layer (GapStbAttrWidget *attw
    }
 
    p_calc_and_set_display_framenr(attw, img_idx, duration );
-   
+
    /* OPRE_LAYER (re)creation */
    if(l_prefetch_framenr > 0)
    {
@@ -1971,7 +1971,7 @@ p_create_or_replace_orig_and_opre_layer (GapStbAttrWidget *attw
                       ,&attw->gfx_tab[img_idx].opre_info       /* linfo */
                       );
    }
-   
+
    p_check_and_make_opre_default_layer(attw, img_idx);
 
 
@@ -2501,7 +2501,7 @@ p_create_and_attach_att_arr_widgets(const char *row_title
                            , 999999
                            , 1
                            , 10
-                           , 10
+                           , 0
                            );
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
   attw->att_rows[att_type_idx].spinbutton_dur_adj = adj;
@@ -2602,7 +2602,7 @@ gap_story_attw_properties_dialog (GapStbAttrWidget *attw)
 
   row = 0;
 
-  
+
   /* the fit size label  */
   label = gtk_label_new (_("FitSize:"));
   gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
@@ -2673,7 +2673,7 @@ gap_story_attw_properties_dialog (GapStbAttrWidget *attw)
     GtkObject *adj;
     GtkWidget *spinbutton;
     GtkWidget *button;
-    
+
     /* the overlap label (same row as FitSize) */
     label = gtk_label_new (_("Overlap:"));
     gtk_misc_set_alignment (GTK_MISC (label), 0.9, 0.5);
@@ -2699,7 +2699,7 @@ gap_story_attw_properties_dialog (GapStbAttrWidget *attw)
                              , 999999
                              , 1
                              , 10
-                             , 10
+                             , 0
                              );
     spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
     attw->spinbutton_overlap_dur_adj = adj;
@@ -2735,7 +2735,7 @@ gap_story_attw_properties_dialog (GapStbAttrWidget *attw)
       , 100.0    /* upper constraint for the from/to values */
       , 1.0      /* step increment   for the from/to values  */
       , 10.0     /* page increment   for the from/to values */
-      , 10.0     /* page size        for the from/to values */
+      , 0.0      /* page size        for the from/to values */
       , 0        /* digits for the from/to values */
       , _("ON: Enable opacity settings")
       , &attw->stb_elem_refptr->att_arr_enable[att_type_idx]
@@ -2761,7 +2761,7 @@ gap_story_attw_properties_dialog (GapStbAttrWidget *attw)
       ,  1000.0    /* upper constraint for the from/to values */
       , 1.0        /* step increment   for the from/to values  */
       , 10.0       /* page increment   for the from/to values */
-      , 10.0       /* page size        for the from/to values */
+      , 0.0        /* page size        for the from/to values */
       , 2          /* digits for the from/to values */
       , _("ON: Enable move horizontal settings")
       , &attw->stb_elem_refptr->att_arr_enable[att_type_idx]
@@ -2788,7 +2788,7 @@ gap_story_attw_properties_dialog (GapStbAttrWidget *attw)
       ,  1000.0    /* upper constraint for the from/to values */
       , 1.0        /* step increment   for the from/to values  */
       , 10.0       /* page increment   for the from/to values */
-      , 10.0       /* page size        for the from/to values */
+      , 0.0        /* page size        for the from/to values */
       , 2          /* digits for the from/to values */
       , _("ON: Enable move vertical settings")
       , &attw->stb_elem_refptr->att_arr_enable[att_type_idx]
@@ -2814,7 +2814,7 @@ gap_story_attw_properties_dialog (GapStbAttrWidget *attw)
       , 1000.0 /* upper constraint for the from/to values */
       , 1.0    /* step increment   for the from/to values  */
       , 10.0   /* page increment   for the from/to values */
-      , 10.0   /* page size        for the from/to values */
+      , 0.0    /* page size        for the from/to values */
       , 2      /* digits for the from/to values */
       , _("ON: Enable scale width settings")
       , &attw->stb_elem_refptr->att_arr_enable[att_type_idx]
@@ -2840,7 +2840,7 @@ gap_story_attw_properties_dialog (GapStbAttrWidget *attw)
       ,  1000.0    /* upper constraint for the from/to values */
       , 1.0        /* step increment   for the from/to values  */
       , 10.0       /* page increment   for the from/to values */
-      , 10.0       /* page size        for the from/to values */
+      , 0.0        /* page size        for the from/to values */
       , 2          /* digits for the from/to values */
       , _("ON: Enable scale height settings")
       , &attw->stb_elem_refptr->att_arr_enable[att_type_idx]

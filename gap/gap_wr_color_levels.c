@@ -303,7 +303,7 @@ query (void)
 }
 
 
-static void  
+static void
 run(const gchar *name
            , gint nparams
            , const GimpParam *param
@@ -596,7 +596,7 @@ do_dialog (wr_levels_val_t *cuvals)
   /*  The dialog1 and main vbox  */
   dialog1 = gimp_dialog_new (_("Color Levels"), "levels_wrapper",
                                NULL, 0,
-			       gimp_standard_help_func, PLUG_IN_HELP_ID, 
+			       gimp_standard_help_func, PLUG_IN_HELP_ID,
 
                                GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
                                GTK_STOCK_OK,     GTK_RESPONSE_OK,
@@ -713,21 +713,21 @@ do_dialog (wr_levels_val_t *cuvals)
 
 
   /* SPINBUTTONS */
-  spinbutton_low_input_adj = gtk_adjustment_new (0, 0, 255, 1, 10, 10);
+  spinbutton_low_input_adj = gtk_adjustment_new (0, 0, 255, 1, 10, 0);
   spinbutton_low_input = gtk_spin_button_new (GTK_ADJUSTMENT (spinbutton_low_input_adj), 1, 0);
   gtk_widget_show (spinbutton_low_input);
   gtk_table_attach (GTK_TABLE (table1), spinbutton_low_input, 1, 2, 1, 2,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  spinbutton_high_input_adj = gtk_adjustment_new (255, 0, 255, 1, 10, 10);
+  spinbutton_high_input_adj = gtk_adjustment_new (255, 0, 255, 1, 10, 0);
   spinbutton_high_input = gtk_spin_button_new (GTK_ADJUSTMENT (spinbutton_high_input_adj), 1, 0);
   gtk_widget_show (spinbutton_high_input);
   gtk_table_attach (GTK_TABLE (table1), spinbutton_high_input, 1, 2, 2, 3,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  spinbutton_gamma_adj = gtk_adjustment_new (1, 0.1, 10, 0.1, 1, 10);
+  spinbutton_gamma_adj = gtk_adjustment_new (1, 0.1, 10, 0.1, 1, 0);
   spinbutton_gamma = gtk_spin_button_new (GTK_ADJUSTMENT (spinbutton_gamma_adj), 0.1, 2);
   gtk_widget_show (spinbutton_gamma);
   gtk_table_attach (GTK_TABLE (table1), spinbutton_gamma, 1, 2, 3, 4,
@@ -735,14 +735,14 @@ do_dialog (wr_levels_val_t *cuvals)
                     (GtkAttachOptions) (0), 0, 0);
 
 
-  spinbutton_low_output_adj = gtk_adjustment_new (0, 0, 255, 1, 10, 10);
+  spinbutton_low_output_adj = gtk_adjustment_new (0, 0, 255, 1, 10, 0);
   spinbutton_low_output = gtk_spin_button_new (GTK_ADJUSTMENT (spinbutton_low_output_adj), 1, 0);
   gtk_widget_show (spinbutton_low_output);
   gtk_table_attach (GTK_TABLE (table1), spinbutton_low_output, 1, 2, 4, 5,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  spinbutton_high_output_adj = gtk_adjustment_new (255, 0, 255, 1, 10, 10);
+  spinbutton_high_output_adj = gtk_adjustment_new (255, 0, 255, 1, 10, 0);
   spinbutton_high_output = gtk_spin_button_new (GTK_ADJUSTMENT (spinbutton_high_output_adj), 1, 0);
   gtk_widget_show (spinbutton_high_output);
   gtk_table_attach (GTK_TABLE (table1), spinbutton_high_output, 1, 2, 5, 6,

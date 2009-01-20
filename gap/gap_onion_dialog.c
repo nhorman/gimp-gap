@@ -931,7 +931,7 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
                       99999.0,              /* umax */
                       1.0,                  /* sstep */
                       10.0,                /* pagestep */
-                      10.0,                 /* page_size */
+                      0.0,                 /* page_size */
                       1.0,                 /* climb_rate */
                       0                    /* digits */
                       );
@@ -949,7 +949,7 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
                       99999.0,              /* umax */
                       1.0,                  /* sstep */
                       10.0,                /* pagestep */
-                      10.0,                 /* page_size */
+                      0.0,                 /* page_size */
                       1.0,                 /* climb_rate */
                       0                    /* digits */
                       );
@@ -1028,7 +1028,7 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
                       20.0,                 /* umax */
                       1.0,                  /* sstep */
                       10.0,                 /* pagestep */
-                      10.0,                 /* page_size */
+                      0.0,                 /* page_size */
                       1.0,                 /* climb_rate */
                       0                    /* digits */
                       );
@@ -1067,7 +1067,7 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
                       100.0,                 /* umax */
                       1.0,                  /* sstep */
                       10.0,                 /* pagestep */
-                      10.0,                 /* page_size */
+                      0.0,                 /* page_size */
                       1.0,                 /* climb_rate */
                       0                    /* digits */
                       );
@@ -1104,7 +1104,7 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
                       500.0,                 /* umax */
                       1.0,                  /* sstep */
                       10.0,                 /* pagestep */
-                      10.0,                 /* page_size */
+                      0.0,                 /* page_size */
                       1.0,                 /* climb_rate */
                       0                    /* digits */
                       );
@@ -1140,7 +1140,7 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
                       100.0,                 /* umax */
                       1.0,                  /* sstep */
                       10.0,                 /* pagestep */
-                      10.0,                 /* page_size */
+                      0.0,                 /* page_size */
                       1.0,                 /* climb_rate */
                       1                    /* digits */
                       );
@@ -1158,7 +1158,7 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
                       100.0,                 /* umax */
                       1.0,                  /* sstep */
                       10.0,                 /* pagestep */
-                      10.0,                 /* page_size */
+                      0.0,                 /* page_size */
                       1.0,                 /* climb_rate */
                       1                    /* digits */
                       );
@@ -1197,7 +1197,7 @@ create_oni__dialog (GapOnionMainGlobalParams *gpp)
                       100.0,                 /* umax */
                       1.0,                  /* sstep */
                       10.0,                 /* pagestep */
-                      10.0,                 /* page_size */
+                      0.0,                 /* page_size */
                       1.0,                 /* climb_rate */
                       0                    /* digits */
                       );

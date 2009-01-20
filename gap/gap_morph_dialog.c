@@ -503,7 +503,7 @@ p_generate_outline_shape_workpoints(GapMorphGUIParams *mgup)
   }
   gimp_pixel_fetcher_destroy (src_pixfet);
   gimp_pixel_fetcher_destroy (dst_pixfet);
-  
+
   gimp_drawable_detach(src_drawable);
   gimp_drawable_detach(dst_drawable);
 
@@ -1892,10 +1892,10 @@ p_render_zoomed_pview(GapMorphSubWin  *swp)
 			      ,height
                               );
       g_free(buf_ptr);
-      
+
       gimp_drawable_detach(dst_drawable);
       gimp_drawable_detach(src_drawable);
-      
+
     }
 
     /* render the preview (this includes scaling to preview size) */
@@ -3703,7 +3703,7 @@ gap_morph_create_dialog(GapMorphGUIParams *mgup)
   adj = gtk_adjustment_new ( mgup->mgpp->gravity_intensity
                            , 1
                            , 5
-                           , .1, 1, 1);
+                           , .1, 1, 0);
   mgup->gravity_intensity_spinbutton_adj = adj;
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 2);
   mgup->gravity_intensity_spinbutton = spinbutton;

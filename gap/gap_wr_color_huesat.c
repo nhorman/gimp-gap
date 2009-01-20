@@ -296,7 +296,7 @@ query (void)
 
 
 
-static void 
+static void
 run(const gchar *name
            , gint nparams
            , const GimpParam *param
@@ -705,21 +705,21 @@ do_dialog (wr_huesat_val_t *cuvals)
                     (GtkAttachOptions) (0), 0, 0);
   gtk_misc_set_alignment (GTK_MISC (label4), 0, 0.5);
 
-  spinbutton_sat_adj = gtk_adjustment_new (0, -100, 100, 1, 10, 10);
+  spinbutton_sat_adj = gtk_adjustment_new (0, -100, 100, 1, 10, 0);
   spinbutton_sat = gtk_spin_button_new (GTK_ADJUSTMENT (spinbutton_sat_adj), 1, 0);
   gtk_widget_show (spinbutton_sat);
   gtk_table_attach (GTK_TABLE (table1), spinbutton_sat, 1, 2, 3, 4,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  spinbutton_light_adj = gtk_adjustment_new (0, -100, 100, 1, 10, 10);
+  spinbutton_light_adj = gtk_adjustment_new (0, -100, 100, 1, 10, 0);
   spinbutton_light = gtk_spin_button_new (GTK_ADJUSTMENT (spinbutton_light_adj), 1, 0);
   gtk_widget_show (spinbutton_light);
   gtk_table_attach (GTK_TABLE (table1), spinbutton_light, 1, 2, 2, 3,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  spinbutton_hue_adj = gtk_adjustment_new (0, -180, 180, 1, 10, 10);
+  spinbutton_hue_adj = gtk_adjustment_new (0, -180, 180, 1, 10, 0);
   spinbutton_hue = gtk_spin_button_new (GTK_ADJUSTMENT (spinbutton_hue_adj), 1, 0);
   gtk_widget_show (spinbutton_hue);
   gtk_table_attach (GTK_TABLE (table1), spinbutton_hue, 1, 2, 1, 2,

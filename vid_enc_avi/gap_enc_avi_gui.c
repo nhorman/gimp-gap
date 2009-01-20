@@ -689,7 +689,7 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
   /* the jpeg quality spinbutton */
   adj = gtk_adjustment_new (epp->jpeg_quality
                            , 0, 100
-                           , 1, 10, 10);
+                           , 1, 10, 0);
   gpp->jpg_quality_spinbutton_adj = adj;
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
   gpp->jpg_quality_spinbutton = spinbutton;
@@ -709,7 +709,7 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
   /* the notebook page for PNG Codec options */
   /* ----------------------------------------- */
   notebook_page_idx++;
-  
+
   frame_png = gimp_frame_new (_("PNG Codec Options"));
   gtk_widget_show (frame_png);
   gtk_container_add (GTK_CONTAINER (notebook_main), frame_png);
@@ -799,7 +799,7 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
   /* the jpeg quality spinbutton */
   adj = gtk_adjustment_new (epp->png_compression
                            , 0, 9
-                           , 1, 10, 10);
+                           , 1, 10, 0);
   gpp->png_compression_spinbutton_adj = adj;
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
   gpp->png_compression_spinbutton = spinbutton;
@@ -822,7 +822,7 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
   /* the notebook page for RAW Codec options */
   /* ----------------------------------------- */
   notebook_page_idx++;
-  
+
   frame_raw = gimp_frame_new (_("RAW Codec Options"));
   gtk_widget_show (frame_raw);
   gtk_container_add (GTK_CONTAINER (notebook_main), frame_raw);
@@ -921,7 +921,7 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
   /* the xvid KBitrate spinbutton */
   adj = gtk_adjustment_new (epp->xvid.rc_bitrate / 1000
                            , -1, 9999
-                           , 1, 10, 10);
+                           , 1, 10, 0);
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
   gpp->xvid_rc_kbitrate_spinbutton_adj = adj;
   gpp->xvid_rc_kbitrate_spinbutton = spinbutton;
@@ -952,7 +952,7 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
   /* the xvid Reaction Delay spinbutton */
   adj = gtk_adjustment_new (epp->xvid.rc_reaction_delay_factor
                            , -1, 100
-                           , 1, 10, 10);
+                           , 1, 10, 0);
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
   gpp->xvid_rc_reaction_delay_spinbutton_adj = adj;
   gpp->xvid_rc_reaction_delay_spinbutton = spinbutton;
@@ -983,7 +983,7 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
   /* the xvid AVG Period spinbutton */
   adj = gtk_adjustment_new (epp->xvid.rc_averaging_period
                            , -1, 1000
-                           , 1, 10, 10);
+                           , 1, 10, 0);
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
   gpp->xvid_rc_avg_period_spinbutton_adj = adj;
   gpp->xvid_rc_avg_period_spinbutton = spinbutton;
@@ -1014,7 +1014,7 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
   /* the xvid Buffer spinbutton */
   adj = gtk_adjustment_new (epp->xvid.rc_buffer
                            , -1, 100
-                           , 1, 10, 10);
+                           , 1, 10, 0);
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
   gpp->xvid_rc_buffer_spinbutton_adj = adj;
   gpp->xvid_rc_buffer_spinbutton = spinbutton;
@@ -1045,7 +1045,7 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
   /* the xvid max_quantizer spinbutton */
   adj = gtk_adjustment_new (epp->xvid.max_quantizer
                            , 1, 31
-                           , 1, 10, 10);
+                           , 1, 10, 0);
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
   gpp->xvid_max_quantizer_spinbutton_adj = adj;
   gpp->xvid_max_quantizer_spinbutton = spinbutton;
@@ -1075,7 +1075,7 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
   /* the xvid min_quantizer spinbutton */
   adj = gtk_adjustment_new (epp->xvid.min_quantizer
                            , 1, 31
-                           , 1, 10, 10);
+                           , 1, 10, 0);
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
   gpp->xvid_min_quantizer_spinbutton_adj = adj;
   gpp->xvid_min_quantizer_spinbutton = spinbutton;
@@ -1106,7 +1106,7 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
   /* the xvid max_key_interval spinbutton */
   adj = gtk_adjustment_new (epp->xvid.max_key_interval
                            , 1, 500
-                           , 1, 10, 10);
+                           , 1, 10, 0);
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
   gpp->xvid_max_key_interval_spinbutton_adj = adj;
   gpp->xvid_max_key_interval_spinbutton = spinbutton;
@@ -1136,7 +1136,7 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
   /* the xvid quality spinbutton */
   adj = gtk_adjustment_new (epp->xvid.quality_preset
                            , 0, 6
-                           , 1, 10, 10);
+                           , 1, 10, 0);
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
   gpp->xvid_quality_spinbutton_adj = adj;
   gpp->xvid_quality_spinbutton = spinbutton;

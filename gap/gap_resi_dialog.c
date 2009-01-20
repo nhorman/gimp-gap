@@ -26,7 +26,7 @@
 /* revision history
  * gimp    1.3.14a; 2003/05/25  hof: reincarnation of gap_resi_dialog, now uses GimpOffsetArea
  *                                   dialog code was inspired by gimp-core resize-dialog.c
- *                                   to give similar look and feel, 
+ *                                   to give similar look and feel,
  *                                   but without unit and resolution stuff.
  *                                   (videoframes are measured in pixels)
  * gimp    1.1.13b; 1999/12/04  hof: some cosmetic gtk fixes
@@ -34,10 +34,10 @@
  *                                   to same style as used in dialogs of the gimp 1.1.13 main dialogs
  * 0.96.00; 1998/07/01   hof: first release
  */
- 
+
 #include "config.h"
 
-/* SYTEM (UNIX) includes */ 
+/* SYTEM (UNIX) includes */
 #include <stdio.h>
 
 /* GIMP includes */
@@ -72,8 +72,8 @@ typedef struct
   gint32 offset_y;
   gdouble ratio_x;
   gdouble ratio_y;
-  
-  
+
+
   GtkWidget *dlg;
   gint run;
   GtkWidget *shell;
@@ -101,7 +101,7 @@ typedef struct
  * -----------------------------
  * IN: offset value
  * RETURN the offsetvalue CLAMped to the legal boundaries.
- * 
+ *
  * This procedures do also set lowr/upper limits for the
  * offset adjustment widgets
  */
@@ -110,11 +110,11 @@ p_resize_bound_off_x (GapResizePrivateType *res_private,
                     gint    off_x)
 {
   if( res_private->offset_x_adj == NULL) { return 0; }
-  
+
   if (res_private->orig_width <= res_private->width)
   {
     off_x = CLAMP (off_x, 0, (res_private->width - res_private->orig_width));
-    
+
     GTK_ADJUSTMENT(res_private->offset_x_adj)->lower = 0;
     GTK_ADJUSTMENT(res_private->offset_x_adj)->upper = res_private->width - res_private->orig_width;
   }
@@ -133,7 +133,7 @@ p_resize_bound_off_y (GapResizePrivateType *res_private,
                     gint    off_y)
 {
   if( res_private->offset_y_adj == NULL) { return 0; }
-  
+
   if (res_private->orig_height <= res_private->height)
   {
     off_y = CLAMP (off_y, 0, (res_private->height - res_private->orig_height));
@@ -253,7 +253,7 @@ p_res_reset_callback (GtkWidget *widget,
 
   res_private = (GapResizePrivateType *)data;
   if(res_private == NULL) {return;}
-  
+
   res_private->width = res_private->orig_width;
   res_private->height = res_private->orig_height;
   p_set_size_spinbuttons(res_private);
@@ -264,10 +264,10 @@ p_res_reset_callback (GtkWidget *widget,
     res_private->offset_x = 0;
     res_private->offset_y = 0;
     p_set_offset_spinbuttons(res_private);
-    gimp_offset_area_set_size (GIMP_OFFSET_AREA (res_private->offset_area), 
+    gimp_offset_area_set_size (GIMP_OFFSET_AREA (res_private->offset_area),
                                res_private->width, res_private->height);
     gimp_offset_area_set_offsets (GIMP_OFFSET_AREA (res_private->offset_area),
-                                  res_private->offset_x, res_private->offset_y); 
+                                  res_private->offset_x, res_private->offset_y);
   }
 }  /* end p_res_reset_callback */
 
@@ -287,15 +287,15 @@ p_size_update (GapResizePrivateType *res_private,
 
   res_private->ratio_x = ratio_x;
   res_private->ratio_y = ratio_y;
-  
+
   if(res_private->in_call) { return; }
 
   res_private->in_call = TRUE;
-  
+
 
   if (res_private->offset_area)
   {
-    gimp_offset_area_set_size (GIMP_OFFSET_AREA (res_private->offset_area), 
+    gimp_offset_area_set_size (GIMP_OFFSET_AREA (res_private->offset_area),
                                res_private->width, res_private->height);
     p_resize_bound_off_x(res_private, 0);
     p_resize_bound_off_y(res_private, 0);
@@ -303,9 +303,9 @@ p_size_update (GapResizePrivateType *res_private,
   }
 
   p_set_size_spinbuttons(res_private);
-  
+
   res_private->in_call = FALSE;
-  
+
 }  /* end p_size_update */
 
 
@@ -414,13 +414,13 @@ p_offset_update(GtkWidget *w, gpointer   data)
   ofs_y = GTK_ADJUSTMENT(res_private->offset_y_adj)->value;
 
   res_private->offset_x = p_resize_bound_off_x (res_private, RINT(ofs_x));
-    
+
   res_private->offset_y = p_resize_bound_off_y (res_private, RINT(ofs_y));
 
 
   gimp_offset_area_set_offsets (GIMP_OFFSET_AREA (res_private->offset_area)
                                  , res_private->offset_x
-                                 , res_private->offset_y); 
+                                 , res_private->offset_y);
 }  /* end p_offset_update */
 
 /* -----------------------------
@@ -440,10 +440,10 @@ p_offset_x_center_clicked(GtkWidget *w, gpointer   data)
                               (res_private->width - res_private->orig_width)  / 2);
 
   res_private->offset_x = off_x;
-  
+
   p_set_offset_spinbuttons(res_private);
   gimp_offset_area_set_offsets (GIMP_OFFSET_AREA (res_private->offset_area),
-                                  res_private->offset_x, res_private->offset_y); 
+                                  res_private->offset_x, res_private->offset_y);
 }  /* end p_offset_x_center_clicked */
 
 /* -----------------------------
@@ -463,10 +463,10 @@ p_offset_y_center_clicked(GtkWidget *w, gpointer   data)
                               (res_private->height - res_private->orig_height) / 2);
 
   res_private->offset_y = off_y;
-  
+
   p_set_offset_spinbuttons(res_private);
   gimp_offset_area_set_offsets (GIMP_OFFSET_AREA (res_private->offset_area),
-                                  res_private->offset_x, res_private->offset_y); 
+                                  res_private->offset_x, res_private->offset_y);
 }  /* end p_offset_y_center_clicked */
 
 
@@ -503,7 +503,7 @@ p_offset_area_offsets_changed (GtkWidget *offset_area,
   {
     res_private->offset_x = offset_x;
     res_private->offset_y = offset_y;
-  
+
     p_set_offset_spinbuttons(res_private);
   }
 }  /* end p_offset_area_offsets_changed */
@@ -538,14 +538,14 @@ p_orig_labels_update (GtkWidget *widget,
  * Resize dialog used for resize and cropping frames
  * based on the GimpOffsetArea widget
  */
- 
+
 gint
 gap_resi_dialog (gint32 image_id, GapRangeOpsAsiz asiz_mode, char *title_text,
-               long *size_x, long *size_y, 
+               long *size_x, long *size_y,
                long *offs_x, long *offs_y)
 {
   gint   l_run;
-  
+
   GapResizePrivateType *res_private;
   GtkWidget *hbbox;
   GtkWidget *button;
@@ -592,7 +592,7 @@ gap_resi_dialog (gint32 image_id, GapRangeOpsAsiz asiz_mode, char *title_text,
   l_max_image_height = GIMP_MAX_IMAGE_SIZE;
   l_max_ratio_x = (gdouble) GIMP_MAX_IMAGE_SIZE / (double) res_private->width;
   l_max_ratio_y = (gdouble) GIMP_MAX_IMAGE_SIZE / (double) res_private->height;
-  
+
   /* for CROP mode only: set sizelimit to original width/height */
   if(res_private->asiz_mode == GAP_ASIZ_CROP)
   {
@@ -708,10 +708,10 @@ gap_resi_dialog (gint32 image_id, GapRangeOpsAsiz asiz_mode, char *title_text,
 
   /* the spinbutton entry new_width */
   spinbutton = gimp_spin_button_new (&res_private->width_adj,
-                                     res_private->orig_width, 
-                                     GIMP_MIN_IMAGE_SIZE, 
-                                     l_max_image_width, 
-                                     1, 10, 1,
+                                     res_private->orig_width,
+                                     GIMP_MIN_IMAGE_SIZE,
+                                     l_max_image_width,
+                                     1, 10, 0,
                                      1, 2);
   gtk_entry_set_width_chars (GTK_ENTRY (spinbutton), SB_WIDTH);
 
@@ -726,10 +726,10 @@ gap_resi_dialog (gint32 image_id, GapRangeOpsAsiz asiz_mode, char *title_text,
 
   /* the spinbutton entry new_height */
   spinbutton = gimp_spin_button_new (&res_private->height_adj,
-                                     res_private->orig_height, 
+                                     res_private->orig_height,
                                      GIMP_MIN_IMAGE_SIZE,
-                                     l_max_image_height, 
-                                     1, 10, 1,
+                                     l_max_image_height,
+                                     1, 10, 0,
                                      1, 2);
   gtk_entry_set_width_chars (GTK_ENTRY (spinbutton), SB_WIDTH);
 
@@ -758,7 +758,7 @@ gap_resi_dialog (gint32 image_id, GapRangeOpsAsiz asiz_mode, char *title_text,
   gtk_table_attach (GTK_TABLE (table), label, 0, 1, 5, 6,
                     GTK_SHRINK | GTK_FILL, GTK_SHRINK | GTK_FILL, 0, 0);
   gtk_widget_show (label);
-  
+
   /*  a (2nd) table for the spinbuttons and the chainbutton  */
   abox = gtk_alignment_new (0.0, 0.5, 0.0, 1.0);
   table2 = gtk_table_new (2, 2, FALSE);
@@ -772,10 +772,10 @@ gap_resi_dialog (gint32 image_id, GapRangeOpsAsiz asiz_mode, char *title_text,
   /* the spinbutton entry X-scale ratio */
   spinbutton =
     gimp_spin_button_new (&res_private->ratio_x_adj,
-                          res_private->ratio_x, 
+                          res_private->ratio_x,
                           (double) GIMP_MIN_IMAGE_SIZE / (double) res_private->width,
                           (double) l_max_ratio_x,
-                          0.01, 0.1, 1,
+                          0.01, 0.1, 0,
                           0.01, 4);
   gtk_entry_set_width_chars (GTK_ENTRY (spinbutton), SB_WIDTH);
   gtk_table_attach_defaults (GTK_TABLE (table2), spinbutton, 0, 1, 0, 1);
@@ -784,14 +784,14 @@ gap_resi_dialog (gint32 image_id, GapRangeOpsAsiz asiz_mode, char *title_text,
   g_signal_connect (res_private->ratio_x_adj, "value_changed",
                     G_CALLBACK (p_ratio_callback),
                     res_private);
-                    
+
   /* the spinbutton entry Y-scale ratio */
   spinbutton =
     gimp_spin_button_new (&res_private->ratio_y_adj,
                           res_private->ratio_y,
                           (double) GIMP_MIN_IMAGE_SIZE / (double) res_private->height,
                           (double) l_max_ratio_y,
-                          0.01, 0.1, 1,
+                          0.01, 0.1, 0,
                           0.01, 4);
   gtk_entry_set_width_chars (GTK_ENTRY (spinbutton), SB_WIDTH);
   gtk_table_attach_defaults (GTK_TABLE (table2), spinbutton, 0, 1, 1, 2);
@@ -810,7 +810,7 @@ gap_resi_dialog (gint32 image_id, GapRangeOpsAsiz asiz_mode, char *title_text,
 
   gimp_help_set_help_data (GIMP_CHAIN_BUTTON (res_private->constrain)->button,
                            _("Constrain aspect ratio"), NULL);
-  
+
   /* the state of the contrain ratio chainbutton is checked in other callbacks (where needed)
    * there is no need for the chainbutton to have its own callback procedure
    */
@@ -835,33 +835,33 @@ gap_resi_dialog (gint32 image_id, GapRangeOpsAsiz asiz_mode, char *title_text,
 
     abox = gtk_alignment_new (0.5, 0.5, 0.0, 0.0);
     gtk_box_pack_start (GTK_BOX (vbox), abox, FALSE, FALSE, 0);
-  
+
     /*  a (3rd) table for the offset spinbuttons  */
     table3 = gtk_table_new (2, 3, FALSE);
     gtk_table_set_col_spacing (GTK_TABLE (table3), 0, 2);
     gtk_table_set_row_spacing (GTK_TABLE (table3), 0, 2);
-  
+
     /* gtk_container_add (GTK_CONTAINER (abox), table3); */
-    
+
     /* the x/y offest labels */
     label = gtk_label_new (_("X:"));
     gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
     gtk_table_attach (GTK_TABLE (table3), label, 0, 1, 0, 1,
                     GTK_SHRINK | GTK_FILL, GTK_SHRINK | GTK_FILL, 0, 0);
     gtk_widget_show (label);
-    
+
     label = gtk_label_new (_("Y:"));
     gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
     gtk_table_attach (GTK_TABLE (table3), label, 0, 1, 1, 2,
                     GTK_SHRINK | GTK_FILL, GTK_SHRINK | GTK_FILL, 0, 0);
     gtk_widget_show (label);
-    
+
     /* the spinbutton entry offset_x */
     spinbutton = gimp_spin_button_new (&res_private->offset_x_adj,
-                                         0, 
-                                         -GIMP_MAX_IMAGE_SIZE, 
-                                         GIMP_MAX_IMAGE_SIZE, 
-                                         1, 10, 1,
+                                         0,
+                                         -GIMP_MAX_IMAGE_SIZE,
+                                         GIMP_MAX_IMAGE_SIZE,
+                                         1, 10, 0,
                                          1, 2);
     gtk_entry_set_width_chars (GTK_ENTRY (spinbutton), SB_WIDTH);
     gtk_table_attach (GTK_TABLE (table3), spinbutton, 1, 2, 0, 1,
@@ -875,10 +875,10 @@ gap_resi_dialog (gint32 image_id, GapRangeOpsAsiz asiz_mode, char *title_text,
 
     /* the spinbutton entry offset_y */
     spinbutton = gimp_spin_button_new (&res_private->offset_y_adj,
-                                         0, 
-                                         -GIMP_MAX_IMAGE_SIZE, 
-                                         GIMP_MAX_IMAGE_SIZE, 
-                                         1, 10, 1,
+                                         0,
+                                         -GIMP_MAX_IMAGE_SIZE,
+                                         GIMP_MAX_IMAGE_SIZE,
+                                         1, 10, 0,
                                          1, 2);
     gtk_entry_set_width_chars (GTK_ENTRY (spinbutton), SB_WIDTH);
     gtk_table_attach (GTK_TABLE (table3), spinbutton, 1, 2, 1, 2,
@@ -999,7 +999,7 @@ gap_resi_dialog (gint32 image_id, GapRangeOpsAsiz asiz_mode, char *title_text,
      *offs_x  = - res_private->offset_x;
      *offs_y  = - res_private->offset_y;
   }
-  
+
   l_run = res_private->run;
   g_free(res_private);
   return (l_run);

@@ -1209,7 +1209,7 @@ p_create_basic_options_frame (GapGveFFMpegGlobalParams *gpp)
   gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 
   /* the audio bitrate spinbutton */
-  adj = gtk_adjustment_new (160, 0, 500, 10, 100, 100);
+  adj = gtk_adjustment_new (160, 0, 500, 10, 100, 0);
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
   gpp->ff_aud_bitrate_spinbutton_adj = adj;
   gpp->ff_aud_bitrate_spinbutton     = spinbutton;
@@ -1271,7 +1271,7 @@ p_create_basic_options_frame (GapGveFFMpegGlobalParams *gpp)
   gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 
   /* the video bitrate spinbutton */
-  adj = gtk_adjustment_new (1000, 0, 10000, 100, 1000, 1000);
+  adj = gtk_adjustment_new (1000, 0, 10000, 100, 1000, 0);
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
   gpp->ff_vid_bitrate_spinbutton_adj = adj;
   gpp->ff_vid_bitrate_spinbutton     = spinbutton;
@@ -1302,10 +1302,10 @@ p_create_basic_options_frame (GapGveFFMpegGlobalParams *gpp)
 
   /* the qscale spinbutton */
 #ifdef HAVE_OLD_FFMPEG_0408
-  adj = gtk_adjustment_new (0, 0, 31, 1, 10, 10);
+  adj = gtk_adjustment_new (0, 0, 31, 1, 10, 0);
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
 #else
-  adj = gtk_adjustment_new (0, 0, 255, 1, 10, 10);
+  adj = gtk_adjustment_new (0, 0, 255, 1, 10, 0);
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 2);
 #endif
   gpp->ff_qscale_spinbutton_adj = adj;
@@ -1336,7 +1336,7 @@ p_create_basic_options_frame (GapGveFFMpegGlobalParams *gpp)
 
 
   /* the qmin spinbutton */
-  adj = gtk_adjustment_new (1, 0, 31, 1, 10, 10);
+  adj = gtk_adjustment_new (1, 0, 31, 1, 10, 0);
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
   gpp->ff_qmin_spinbutton_adj = adj;
   gpp->ff_qmin_spinbutton     = spinbutton;
@@ -1364,7 +1364,7 @@ p_create_basic_options_frame (GapGveFFMpegGlobalParams *gpp)
   gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 
   /* the qmax spinbutton */
-  adj = gtk_adjustment_new (1, 0, 31, 1, 10, 10);
+  adj = gtk_adjustment_new (1, 0, 31, 1, 10, 0);
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
   gpp->ff_qmax_spinbutton_adj = adj;
   gpp->ff_qmax_spinbutton     = spinbutton;
@@ -1393,7 +1393,7 @@ p_create_basic_options_frame (GapGveFFMpegGlobalParams *gpp)
 
 
   /* the qdiff spinbutton */
-  adj = gtk_adjustment_new (3, 0, 100, 1, 10, 10);
+  adj = gtk_adjustment_new (3, 0, 100, 1, 10, 0);
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
   gpp->ff_qdiff_spinbutton_adj = adj;
   gpp->ff_qdiff_spinbutton     = spinbutton;
@@ -1446,7 +1446,7 @@ p_create_basic_options_frame (GapGveFFMpegGlobalParams *gpp)
 
 
   /* the GOP spinbutton */
-  adj = gtk_adjustment_new (12, 0, 512, 1, 10, 10);
+  adj = gtk_adjustment_new (12, 0, 512, 1, 10, 0);
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
   gpp->ff_gop_size_spinbutton_adj = adj;
   gpp->ff_gop_size_spinbutton     = spinbutton;
@@ -1473,7 +1473,7 @@ p_create_basic_options_frame (GapGveFFMpegGlobalParams *gpp)
 
 
   /* the B_frames spinbutton */
-  adj = gtk_adjustment_new (0, 0, (gdouble)FF_MAX_B_FRAMES, 1, 1, 1);
+  adj = gtk_adjustment_new (0, 0, (gdouble)FF_MAX_B_FRAMES, 1, 1, 0);
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
   gpp->ff_b_frames_spinbutton_adj = adj;
   gpp->ff_b_frames_spinbutton     = spinbutton;
@@ -2545,7 +2545,7 @@ p_create_expert_options_frame (GapGveFFMpegGlobalParams *gpp)
   gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 
   /* the qblur spinbutton */
-  adj = gtk_adjustment_new (0.5, 0, 100, 0.25, 10, 10);
+  adj = gtk_adjustment_new (0.5, 0, 100, 0.25, 10, 0);
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 2);
   gpp->ff_qblur_spinbutton_adj            = adj;
   gpp->ff_qblur_spinbutton                = spinbutton;
@@ -2574,7 +2574,7 @@ p_create_expert_options_frame (GapGveFFMpegGlobalParams *gpp)
   gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 
   /* the qcomp spinbutton */
-  adj = gtk_adjustment_new (0.5, 0, 100, 0.25, 10, 10);
+  adj = gtk_adjustment_new (0.5, 0, 100, 0.25, 10, 0);
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 2);
   gpp->ff_qcomp_spinbutton_adj            = adj;
   gpp->ff_qcomp_spinbutton                = spinbutton;
@@ -2600,7 +2600,7 @@ p_create_expert_options_frame (GapGveFFMpegGlobalParams *gpp)
   gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 
   /* the rc-init-cplx spinbutton */
-  adj = gtk_adjustment_new (1.25, 0, 100, 0.25, 10, 10);
+  adj = gtk_adjustment_new (1.25, 0, 100, 0.25, 10, 0);
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 2);
   gpp->ff_rc_init_cplx_spinbutton_adj     = adj;
   gpp->ff_rc_init_cplx_spinbutton         = spinbutton;
@@ -2627,7 +2627,7 @@ p_create_expert_options_frame (GapGveFFMpegGlobalParams *gpp)
   gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 
   /* the b-qfactor spinbutton */
-  adj = gtk_adjustment_new (1.25, -100, 100, 0.2, 10, 10);
+  adj = gtk_adjustment_new (1.25, -100, 100, 0.2, 10, 0);
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 2);
   gpp->ff_b_qfactor_spinbutton_adj        = adj;
   gpp->ff_b_qfactor_spinbutton            = spinbutton;
@@ -2653,7 +2653,7 @@ p_create_expert_options_frame (GapGveFFMpegGlobalParams *gpp)
   gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 
   /* the i-qfactor spinbutton */
-  adj = gtk_adjustment_new (-0.8, -100, 100, 0.2, 10, 10);
+  adj = gtk_adjustment_new (-0.8, -100, 100, 0.2, 10, 0);
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 2);
   gpp->ff_i_qfactor_spinbutton_adj        = adj;
   gpp->ff_i_qfactor_spinbutton            = spinbutton;
@@ -2681,7 +2681,7 @@ p_create_expert_options_frame (GapGveFFMpegGlobalParams *gpp)
 
 
   /* the b-qoffset spinbutton */
-  adj = gtk_adjustment_new (1.25, 0, 100, 0.25, 10, 10);
+  adj = gtk_adjustment_new (1.25, 0, 100, 0.25, 10, 0);
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 2);
   gpp->ff_b_qoffset_spinbutton_adj        = adj;
   gpp->ff_b_qoffset_spinbutton            = spinbutton;
@@ -2707,7 +2707,7 @@ p_create_expert_options_frame (GapGveFFMpegGlobalParams *gpp)
   gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 
   /* the i-qoffset spinbutton */
-  adj = gtk_adjustment_new (0, 0, 100, 0.25, 10, 10);
+  adj = gtk_adjustment_new (0, 0, 100, 0.25, 10, 0);
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 2);
   gpp->ff_i_qoffset_spinbutton_adj        = adj;
   gpp->ff_i_qoffset_spinbutton            = spinbutton;
@@ -2734,7 +2734,7 @@ p_create_expert_options_frame (GapGveFFMpegGlobalParams *gpp)
   gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 
   /* the Bitrate Tolerance spinbutton */
-  adj = gtk_adjustment_new (4200, 0, 10000, 100, 1000, 10);
+  adj = gtk_adjustment_new (4200, 0, 10000, 100, 1000, 0);
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
   gpp->ff_bitrate_tol_spinbutton_adj      = adj;
   gpp->ff_bitrate_tol_spinbutton          = spinbutton;
@@ -2761,7 +2761,7 @@ p_create_expert_options_frame (GapGveFFMpegGlobalParams *gpp)
 
 
   /* the Maxrate Tolerance spinbutton */
-  adj = gtk_adjustment_new (0, 0, 10000, 100, 1000, 10);
+  adj = gtk_adjustment_new (0, 0, 10000, 100, 1000, 0);
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
   gpp->ff_maxrate_tol_spinbutton_adj      = adj;
   gpp->ff_maxrate_tol_spinbutton          = spinbutton;
@@ -2789,7 +2789,7 @@ p_create_expert_options_frame (GapGveFFMpegGlobalParams *gpp)
   gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 
   /* the Minrate Tolerance spinbutton */
-  adj = gtk_adjustment_new (0, 0, 10000, 100, 1000, 10);
+  adj = gtk_adjustment_new (0, 0, 10000, 100, 1000, 0);
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
   gpp->ff_minrate_tol_spinbutton_adj      = adj;
   gpp->ff_minrate_tol_spinbutton          = spinbutton;
@@ -2816,7 +2816,7 @@ p_create_expert_options_frame (GapGveFFMpegGlobalParams *gpp)
   gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 
   /* the Bufsize spinbutton */
-  adj = gtk_adjustment_new (0, 0, 10000, 100, 1000, 10);
+  adj = gtk_adjustment_new (0, 0, 10000, 100, 1000, 0);
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
   gpp->ff_bufsize_spinbutton_adj          = adj;
   gpp->ff_bufsize_spinbutton              = spinbutton;
@@ -2843,7 +2843,7 @@ p_create_expert_options_frame (GapGveFFMpegGlobalParams *gpp)
   gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 
   /* the strictness spinbutton */
-  adj = gtk_adjustment_new (1, 0, 100, 1, 10, 10);
+  adj = gtk_adjustment_new (1, 0, 100, 1, 10, 0);
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
   gpp->ff_strict_spinbutton_adj           = adj;
   gpp->ff_strict_spinbutton               = spinbutton;
@@ -2871,7 +2871,7 @@ p_create_expert_options_frame (GapGveFFMpegGlobalParams *gpp)
   gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 
   /* the mb-qmin spinbutton */
-  adj = gtk_adjustment_new (0, 0, 31, 1, 10, 10);
+  adj = gtk_adjustment_new (0, 0, 31, 1, 10, 0);
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
   gpp->ff_mb_qmin_spinbutton_adj          = adj;
   gpp->ff_mb_qmin_spinbutton              = spinbutton;
@@ -2898,7 +2898,7 @@ p_create_expert_options_frame (GapGveFFMpegGlobalParams *gpp)
   gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 
   /* the mb-qmax spinbutton */
-  adj = gtk_adjustment_new (31, 0, 31, 1, 10, 10);
+  adj = gtk_adjustment_new (31, 0, 31, 1, 10, 0);
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
   gpp->ff_mb_qmax_spinbutton_adj          = adj;
   gpp->ff_mb_qmax_spinbutton              = spinbutton;
@@ -3020,7 +3020,7 @@ p_create_2pass_options_frame (GapGveFFMpegGlobalParams *gpp)
   gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 
   /* the video bitrate spinbutton */
-  adj = gtk_adjustment_new (0, 0, 1000000, 100, 1000, 1000);
+  adj = gtk_adjustment_new (0, 0, 1000000, 100, 1000, 0);
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
   gpp->ff_mux_rate_adj = adj;
   gpp->ff_mux_rate_spinbutton     = spinbutton;
@@ -3052,7 +3052,7 @@ p_create_2pass_options_frame (GapGveFFMpegGlobalParams *gpp)
   gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 
   /* the video bitrate spinbutton */
-  adj = gtk_adjustment_new (0, 0, 32000, 100, 1000, 1000);
+  adj = gtk_adjustment_new (0, 0, 32000, 100, 1000, 0);
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
   gpp->ff_mux_packet_size_adj = adj;
   gpp->ff_mux_packet_size_spinbutton     = spinbutton;
@@ -3086,7 +3086,7 @@ p_create_2pass_options_frame (GapGveFFMpegGlobalParams *gpp)
   gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 
   /* the video bitrate spinbutton */
-  adj = gtk_adjustment_new (0.0, 0.0, 100.0, 0.01, 0.1, 0.1);
+  adj = gtk_adjustment_new (0.0, 0.0, 100.0, 0.01, 0.1, 0.0);
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 3);
   gpp->ff_mux_preload_adj = adj;
   gpp->ff_mux_preload_spinbutton     = spinbutton;
@@ -3119,7 +3119,7 @@ p_create_2pass_options_frame (GapGveFFMpegGlobalParams *gpp)
   gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 
   /* the video bitrate spinbutton */
-  adj = gtk_adjustment_new (0.0, 0.0, 100.0, 0.01, 0.1, 0.1);
+  adj = gtk_adjustment_new (0.0, 0.0, 100.0, 0.01, 0.1, 0.0);
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 3);
   gpp->ff_mux_max_delay_adj = adj;
   gpp->ff_mux_max_delay_spinbutton     = spinbutton;

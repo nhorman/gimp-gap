@@ -1,3 +1,34 @@
+2009-01-20 Wolfgang Hofer <hof@gimp.org>
+
+
+- fixed Gtk warnings about non zero page size in all GIMP-GAP dialogs
+  Gtk-WARNING **: GtkSpinButton: setting an adjustment with non-zero page size is deprecated
+
+    * gap/gap_morph_dialog.c
+    * gap/gap_onion_dialog.c
+    * gap/gap_player_dialog.c
+    * gap/gap_resi_dialog.c
+    * gap/gap_story_att_trans_dlg.c
+    * gap/gap_story_dialog.c
+    * gap/gap_vex_dialog.c
+    * gap/gap_wr_color_huesat.c
+    * gap/gap_wr_color_levels.c
+    
+    * vid_common/gap_cme_gui.c
+    * vid_enc_avi/gap_enc_avi_gui.c
+    * vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c
+
+- fixed bugs in the curves tool wrapper
+  that called curves tool on non-relevant histogram channels
+  (now check for alpha channel, and type rgb or gray)
+  fixed processing order of channels.
+  
+  with the old order the results were different to the GIMP color curves tool
+  for rgb images in case when both value and color r/g/b modifications
+  are applyed)
+
+    * gap/gap_wr_color_curve.c
+
 2009-01-19 Wolfgang Hofer <hof@gimp.org>
 
 - wrapper for the curves tool now support both the old and new fileformat

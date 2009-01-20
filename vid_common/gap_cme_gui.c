@@ -430,9 +430,9 @@ pdb_find_video_encoders(void)
   for (j = 0; j < num_procs; j++)
   {
      gboolean l_has_proc_info;
-     
+
      i = (num_procs -1) - j;
-     
+
      l_has_proc_info = gimp_procedural_db_proc_info (proc_list[i],
                              &l_proc_blurb,
                              &l_proc_help,
@@ -444,7 +444,7 @@ pdb_find_video_encoders(void)
                              &l_nreturn_vals,
                              &l_paramdef,
                              &l_return_vals);
-    
+
      if(gap_debug)
      {
        printf("pdb_find_video_encoders: check proc:%s  has_proc_info:%d\n"
@@ -763,7 +763,7 @@ p_get_range_and_type (GapCmeGlobalParams *gpp, gint32 *lower, gint32 *upper, Gap
 
 {
   gint32 l_frame_cnt;
-  
+
  /* Range limits for widgets "cme__spinbutton_from" and "cme__spinbutton_to"
   * If there is just one frame, we operate on layers
   */
@@ -2583,7 +2583,7 @@ p_create_shell_window (GapCmeGlobalParams *gpp)
                       gpp);
 
   /* the (output) video filebrowser button */
-  
+
   button = gtk_button_new_with_label (_("..."));
   gpp->cme__button_video_filesel = button;
   gtk_widget_show (button);
@@ -3239,7 +3239,7 @@ p_create_audio_options_frame (GapCmeGlobalParams *gpp)
 
 
   /* the Samplerate spinbutton */
-  adj = gtk_adjustment_new (44100, 1000, 100000, 10, 100, 1000);
+  adj = gtk_adjustment_new (44100, 1000, 100000, 10, 100, 0);
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
   gpp->cme__spinbutton_samplerate_adj   = adj;
   gpp->cme__spinbutton_samplerate       = spinbutton;
@@ -3465,7 +3465,7 @@ p_create_video_options_frame (GapCmeGlobalParams *gpp)
 
 
   /* the from_frame spinbutton */
-  adj = gtk_adjustment_new (1, 0, 100000, 1, 10, 10);
+  adj = gtk_adjustment_new (1, 0, 100000, 1, 10, 0);
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
   gpp->cme__spinbutton_from_adj         = adj;
   gpp->cme__spinbutton_from             = spinbutton;
@@ -3498,7 +3498,7 @@ p_create_video_options_frame (GapCmeGlobalParams *gpp)
                     (GtkAttachOptions) (0), 0, 0);
 
   /* the to_frame spinbutton */
-  adj = gtk_adjustment_new (1, 0, 100000, 1, 10, 10);
+  adj = gtk_adjustment_new (1, 0, 100000, 1, 10, 0);
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
   gpp->cme__spinbutton_to_adj           = adj;
   gpp->cme__spinbutton_to               = spinbutton;
@@ -3524,7 +3524,7 @@ p_create_video_options_frame (GapCmeGlobalParams *gpp)
 
 
   /* the width spinbutton */
-  adj = gtk_adjustment_new (10, 10, 10000, 1, 10, 10);
+  adj = gtk_adjustment_new (10, 10, 10000, 1, 10, 0);
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
   gpp->cme__spinbutton_width_adj        = adj;
   gpp->cme__spinbutton_width            = spinbutton;
@@ -3572,7 +3572,7 @@ p_create_video_options_frame (GapCmeGlobalParams *gpp)
                     (GtkAttachOptions) (0), 0, 0);
 
   /* the height spinbutton */
-  adj = gtk_adjustment_new (10, 10, 10000, 1, 10, 10);
+  adj = gtk_adjustment_new (10, 10, 10000, 1, 10, 0);
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
   gpp->cme__spinbutton_height_adj       = adj;
   gpp->cme__spinbutton_height           = spinbutton;
@@ -3599,7 +3599,7 @@ p_create_video_options_frame (GapCmeGlobalParams *gpp)
 
 
   /* the framerate spinbutton */
-  adj = gtk_adjustment_new (24, 1, 100, 0.1, 1, 10);
+  adj = gtk_adjustment_new (24, 1, 100, 0.1, 1, 0);
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 2);
   gpp->cme__spinbutton_framerate_adj    = adj;
   gpp->cme__spinbutton_framerate        = spinbutton;
@@ -3879,7 +3879,7 @@ p_set_label_to_numeric_value(GtkWidget *label, gint32 value)
      * (without this workaround my gtk version 2.10.14 shows just
      * the highest digit of the number, probably because the size at creation time
      * was only one character)
-     * 
+     *
      */
     gtk_misc_set_alignment (GTK_MISC (label), 1.0, 0.5);
     gtk_label_set_text(GTK_LABEL(label), buffer);
@@ -3891,7 +3891,7 @@ p_set_label_to_numeric_value(GtkWidget *label, gint32 value)
 /* ----------------------------------------
  * gap_cme_gui_update_encoder_status
  * ----------------------------------------
- * 
+ *
  */
 void
 gap_cme_gui_update_encoder_status(GapCmeGlobalParams *gpp)
@@ -3909,7 +3909,7 @@ gap_cme_gui_update_encoder_status(GapCmeGlobalParams *gpp)
     gap_gve_misc_get_master_encoder_progress(&gpp->encStatus);
 
     gtk_widget_show(gpp->cme__encoder_status_frame);
-  
+
     p_set_label_to_numeric_value(gpp->cme__label_enc_stat_frames_total, gpp->encStatus.total_frames);
     p_set_label_to_numeric_value(gpp->cme__label_enc_stat_frames_done, gpp->encStatus.frames_processed);
     p_set_label_to_numeric_value(gpp->cme__label_enc_stat_frames_encoded, gpp->encStatus.frames_encoded);
@@ -3920,11 +3920,11 @@ gap_cme_gui_update_encoder_status(GapCmeGlobalParams *gpp)
     {
       gdouble l_progress;
       char *l_msg;
-      
+
       l_progress = CLAMP((gdouble)gpp->encStatus.frames_processed / (gdouble)(MAX(1.0, gpp->encStatus.total_frames))
                       , 0.0, 1.0
                       );
-      
+
       gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR (pbar), l_progress);
       l_msg = g_strdup_printf(_("Video encoding %d of %d frames done")
                              , gpp->encStatus.frames_processed
@@ -4007,7 +4007,7 @@ gap_cme_gui_start_video_encoder(GapCmeGlobalParams *gpp)
    {
      g_free(l_tmpname);
    }
-   
+
    return (l_rc);
 }  /* end gap_cme_gui_start_video_encoder */
 
@@ -4029,7 +4029,7 @@ gap_cme_encoder_worker_thread(gpointer data)
   }
 
   gap_cme_gui_start_video_encoder(gpp);
-  
+
   if(gap_debug)
   {
     printf("THREAD gap_cme_encoder_worker_thread TERMINATING: %d\n", (int)gpp->val.gui_proc_thread);

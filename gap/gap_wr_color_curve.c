@@ -989,23 +989,65 @@ p_gimp_curves_explicit (gint32 drawable_id,
  * p_run_curves_tool
  * ----------------------------------------
  * run the curves feature of the gimp color curves tool
- * for all channels
+ * for all relevant histogram channels
  */
 static void
 p_run_curves_tool(gint32 drawable_id, wr_curves_val_t *cuvals)
 {
   gint32  l_idx;
   gint32  l_channel;
+  gint32  l_channel_histogram;
   gint8 curve_points[256];
 
-  for(l_channel=0; l_channel < 5; l_channel++)
+  for(l_channel=4; l_channel >= 0; l_channel--)
   {
+     gboolean isChannelRelevant;
+     
      for(l_idx=0; l_idx < 256; l_idx++)
      {
        /* curve_points[l_idx] = (gint8)ROUND(cuvals->val_curve[l_channel][l_idx]); */
        curve_points[l_idx] = (gint8)cuvals->val_curve[l_channel][l_idx];
      }
-     p_gimp_curves_explicit(drawable_id, l_channel, 256, curve_points);
+     
+     l_channel_histogram = l_channel;
+     isChannelRelevant = FALSE;
+     
+     switch (l_channel)
+     {
+       case 0:   /* HISTOGRAM-VALUE */
+         if (gimp_drawable_is_gray(drawable_id))
+         {
+           isChannelRelevant = TRUE;
+         }
+         else if (gimp_drawable_is_rgb(drawable_id))
+         {
+           isChannelRelevant = TRUE;
+         }
+         break;
+       case 1:   /* HISTOGRAM-RED   */
+       case 2:   /* HISTOGRAM-GREEN */
+       case 3:   /* HISTOGRAM-BLUE  */
+         if (gimp_drawable_is_rgb(drawable_id))
+         {
+           isChannelRelevant = TRUE;
+         }
+         break;
+       case 4:   /* HISTOGRAM-ALPHA */
+         if (gimp_drawable_has_alpha(drawable_id))
+         {
+           isChannelRelevant = TRUE;
+         }
+         break;
+       default:
+         isChannelRelevant = FALSE;
+         break;
+     
+     }
+     
+     if (isChannelRelevant)
+     {
+       p_gimp_curves_explicit(drawable_id, l_channel_histogram, 256, curve_points);
+     }
   }
 }
 
