@@ -60,6 +60,7 @@ char *       gap_lib_shorten_filename(const char *prefix
 			,const char *suffix
 			,gint32 max_chars
 			);
+char *       gap_lib_dup_filename_and_replace_extension_by_underscore(const char *filename);
 int          gap_lib_file_exists(const char *fname);
 char*        gap_lib_searchpath_for_exefile(const char *exefile, const char *path);
 int          gap_lib_file_copy(char *fname, char *fname_copy);

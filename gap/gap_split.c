@@ -68,6 +68,39 @@ extern      int gap_debug; /* ==0  ... dont print debug infos */
 
 #define GAP_HELP_ID_SPLIT           "plug-in-gap-split"
 
+/* ------------------------------
+ * p_overwrite_dialog
+ * ------------------------------
+ */
+static gint
+p_overwrite_dialog(char *filename, gint overwrite_mode)
+{
+  static  GapArrButtonArg  l_argv[3];
+  static  GapArrArg  argv[1];
+
+  if(g_file_test(filename, G_FILE_TEST_EXISTS))
+  {
+    if (overwrite_mode < 1)
+    {
+       l_argv[0].but_txt  = _("Overwrite Frame");
+       l_argv[0].but_val  = 0;
+       l_argv[1].but_txt  = _("Overwrite All");
+       l_argv[1].but_val  = 1;
+       l_argv[2].but_txt  = GTK_STOCK_CANCEL;
+       l_argv[2].but_val  = -1;
+
+       gap_arr_arg_init(&argv[0], GAP_ARR_WGT_LABEL);
+       argv[0].label_txt = filename;
+
+       return(gap_arr_std_dialog ( _("GAP Question"),
+                                   _("File already exists"),
+                                   1, argv,
+                                   3, l_argv, -1));
+    }
+  }
+  return (overwrite_mode);
+}  /* end p_overwrite_dialog */
+
 
 /* ============================================================================
  * p_split_image
@@ -98,11 +131,13 @@ p_split_image(GapAnimInfo *ainfo_ptr,
   int     l_idx;
   int     l_framenumber;
   long    l_layer_idx;
+  gint    l_overwrite_mode;
 
   if(gap_debug) printf("DEBUG: p_split_image inv:%d no_alpha:%d ext:%s\n", (int)invers, (int)no_alpha, new_extension);
   l_rc = -1;
   l_percentage = 0.0;
   l_run_mode  = ainfo_ptr->run_mode;
+  l_overwrite_mode = 0;
   if(ainfo_ptr->run_mode == GIMP_RUN_INTERACTIVE)
   {
     gimp_progress_init( _("Splitting image into frames..."));
@@ -239,25 +274,76 @@ p_split_image(GapAnimInfo *ainfo_ptr,
 
 
        /* build the name for output image */
-       l_str = gap_lib_strdup_add_underscore(ainfo_ptr->basename);
+       l_str = gap_lib_dup_filename_and_replace_extension_by_underscore(ainfo_ptr->old_filename);
        l_sav_name = gap_lib_alloc_fname6(l_str,
                                   l_framenumber,       /* start at 1 (not at 0) */
                                   new_extension,
                                   digits);
        l_framenumber--;
        g_free(l_str);
+
+
+
+
+
+
        if(l_sav_name != NULL)
        {
-         /* save with selected save procedure
-          * (regardless if image was flattened or not)
-          */
-          l_rc = gap_lib_save_named_image(l_new_image_id, l_sav_name, l_run_mode);
+          gboolean writePermission;
+          
+          writePermission = TRUE;
+          /* check overwrite if Destination frame already exsts */
+          l_overwrite_mode = p_overwrite_dialog(l_sav_name, l_overwrite_mode);
+          
+          if(gap_debug)
+          {
+            printf("l_overwrite_mode:%d  file:%s\n", l_overwrite_mode, l_sav_name);
+          }
+          
+          if (l_overwrite_mode < 0)
+          {
+            if(gap_debug)
+            {
+                 printf("overwrite of file:%s was cancelled\n", l_sav_name);
+            }
+            writePermission = FALSE;
+          }
+          else
+          {
+             g_remove(l_sav_name);
+             if(g_file_test(l_sav_name, G_FILE_TEST_EXISTS))
+             {
+               char *errMsg;
+               
+               errMsg = g_strdup_printf(_("failed to overwrite %s (check permissions ?)")
+                                      , l_sav_name);
+               g_message(errMsg);
+               g_free(errMsg);
+               writePermission = FALSE;
+             }
+          }
+
+
+          if(writePermission == TRUE)
+          {
+           /* save with selected save procedure
+            * (regardless if image was flattened or not)
+            */
+            l_rc = gap_lib_save_named_image(l_new_image_id, l_sav_name, l_run_mode);
+            if(l_rc < 0)
+            {
+              gap_arr_msg_win(ainfo_ptr->run_mode, _("Split Frames: Save operation failed.\n"
+                                               "desired save plugin can't handle type\n"
+                                               "or desired save plugin not available."));
+            }
+          }
+          else
+          {
+            l_rc = -1;
+          }
 
           if(l_rc < 0)
           {
-            gap_arr_msg_win(ainfo_ptr->run_mode, _("Split Frames: Save operation failed.\n"
-                                             "desired save plugin can't handle type\n"
-                                             "or desired save plugin not available."));
             break;
           }
 
@@ -307,7 +393,8 @@ p_split_dialog(GapAnimInfo *ainfo_ptr, gint *inverse_order, gint *no_alpha, char
   static GapArrArg  argv[9];
   gchar   *buf;
   gchar   *extptr;
-  
+  gchar   *baseName;
+
   extptr = extension;
   if(extptr)
   {
@@ -317,14 +404,18 @@ p_split_dialog(GapAnimInfo *ainfo_ptr, gint *inverse_order, gint *no_alpha, char
     }
   }
 
+  baseName = gap_lib_dup_filename_and_replace_extension_by_underscore(ainfo_ptr->old_filename);
+
   buf = g_strdup_printf (_("Make a frame (diskfile) from each layer.\n"
                            "Frames are named in the style:\n"
                            "<basename><framenumber>.<extension>\n"
                            "The first frame for the current case gets the name\n\n"
                            "%s000001.%s\n")
-                         ,ainfo_ptr->basename
+                         ,baseName
                          ,extptr
                          );
+
+  g_free(baseName);
 
   gap_arr_arg_init(&argv[0], GAP_ARR_WGT_LABEL);
   argv[0].label_txt = &buf[0];
@@ -386,6 +477,7 @@ p_split_dialog(GapAnimInfo *ainfo_ptr, gint *inverse_order, gint *no_alpha, char
 
   gap_arr_arg_init(&argv[8], GAP_ARR_WGT_HELP_BUTTON);
   argv[8].help_id = GAP_HELP_ID_SPLIT;
+
 
   if(TRUE == gap_arr_ok_cancel_dialog( _("Split Image into Frames"),
                              _("Split Settings"),
@@ -449,63 +541,51 @@ int gap_split_image(GimpRunMode run_mode,
   ainfo_ptr = gap_lib_alloc_ainfo(image_id, run_mode);
   if(ainfo_ptr != NULL)
   {
-    if (0 == gap_lib_dir_ainfo(ainfo_ptr))
+    if(run_mode == GIMP_RUN_INTERACTIVE)
     {
-      if((ainfo_ptr->frame_cnt != 0)
-      && (l_imagename != NULL))
-      {
-         gap_arr_msg_win(run_mode,
-           _("Operation cancelled.\n"
-             "This image is already a video frame.\n"
-             "Try again on a duplicate (Image/Duplicate)."));
-         return -1;
-      }
-      else
-      {
-        if(run_mode == GIMP_RUN_INTERACTIVE)
-        {
-           l_rc = p_split_dialog (ainfo_ptr
-                                 , &l_inverse_order
-                                 , &l_no_alpha
-                                 , &l_extension[0]
-                                 , sizeof(l_extension)
-                                 , &l_only_visible
-                                 , &l_copy_properties
-                                 , &l_digits
-                                 );
-        }
-        else
-        {
-           l_rc = 0;
-           l_inverse_order   =  inverse_order;
-           l_no_alpha        =  no_alpha;
-           l_only_visible    =  only_visible;
-           l_copy_properties =  copy_properties;
-           l_digits          =  digits;
-           strncpy(l_extension, extension, sizeof(l_extension) -1);
-           l_extension[sizeof(l_extension) -1] = '\0';
+       l_rc = p_split_dialog (ainfo_ptr
+                             , &l_inverse_order
+                             , &l_no_alpha
+                             , &l_extension[0]
+                             , sizeof(l_extension)
+                             , &l_only_visible
+                             , &l_copy_properties
+                             , &l_digits
+                             );
+    }
+    else
+    {
+       l_rc = 0;
+       l_inverse_order   =  inverse_order;
+       l_no_alpha        =  no_alpha;
+       l_only_visible    =  only_visible;
+       l_copy_properties =  copy_properties;
+       l_digits          =  digits;
+       strncpy(l_extension, extension, sizeof(l_extension) -1);
+       l_extension[sizeof(l_extension) -1] = '\0';
 
-        }
+    }
 
-        if(l_rc >= 0)
-        {
-           l_new_image_id = p_split_image(ainfo_ptr,
-                               l_extension,
-                               l_inverse_order,
-                               l_no_alpha,
-                               l_only_visible,
-                               l_copy_properties,
-                               l_digits
-                               );
+    if(l_rc >= 0)
+    {
+       l_new_image_id = p_split_image(ainfo_ptr,
+                           l_extension,
+                           l_inverse_order,
+                           l_no_alpha,
+                           l_only_visible,
+                           l_copy_properties,
+                           l_digits
+                           );
 
-           /* create a display for the new created image
-            * (it is the first or the last frame of the
-            *  new created animation sequence)
-            */
-           gimp_display_new(l_new_image_id);
-           l_rc = l_new_image_id;
-        }
-      }
+       if (l_new_image_id >= 0)
+       {
+         /* create a display for the new created image
+          * (it is the first or the last frame of the
+          *  new created animation sequence)
+          */
+         gimp_display_new(l_new_image_id);
+       }
+       l_rc = l_new_image_id;
     }
     gap_lib_free_ainfo(&ainfo_ptr);
   }

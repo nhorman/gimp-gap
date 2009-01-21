@@ -635,11 +635,11 @@ gap_lib_shorten_filename(const char *prefix
 }  /* end gap_lib_shorten_filename */			
 
 
-/* ============================================================================
- * p_strdup_*_underscore
- *   duplicate string and if last char is no underscore add one at end.
- *   duplicate string and delete last char if it is the underscore
- * ============================================================================
+/* -----------------------------
+ * gap_lib_strdup_add_underscore
+ * -----------------------------
+ * duplicates the specifed string and if last character is no underscore add one at end.
+ * the caller is responsible to g_free the result after usage.
  */
 char *
 gap_lib_strdup_add_underscore(char *name)
@@ -666,6 +666,13 @@ gap_lib_strdup_add_underscore(char *name)
   return(l_str);
 }
 
+/* -----------------------------
+ * gap_lib_strdup_del_underscore
+ * -----------------------------
+ * duplicates the specifed string and delete the last character
+ * if it is the underscore
+ * the caller is responsible to g_free the result after usage.
+ */
 char *
 gap_lib_strdup_del_underscore(char *name)
 {
@@ -688,6 +695,52 @@ gap_lib_strdup_del_underscore(char *name)
   }
   return(l_str);
 }
+
+
+/* --------------------------------------------------------
+ * gap_lib_dup_filename_and_replace_extension_by_underscore
+ * --------------------------------------------------------
+ * returns a duplicate of the specified filename where the extension
+ * (.xcf .jpg ...) is cut off and rplaced by the underscore character.
+ * example: filename = "image_000001.xcf"
+ *          returns    "image_000001_"
+ *
+ * the caller is responsible to g_free the result after usage.
+ */
+char *
+gap_lib_dup_filename_and_replace_extension_by_underscore(const char *filename)
+{
+  int l_len;
+  int l_idx;
+  char *l_str;
+  char *l_nameWithUnderscore;
+
+  if(filename == NULL)
+  {
+    return (g_strdup("_"));
+  }
+
+  l_len = strlen(filename);
+  l_str = g_strdup(filename);
+
+  /* cut off the trailing .extension */
+  for(l_idx = l_len -1; l_idx >= 0; l_idx--)
+  {
+    if (l_str[l_idx] == '.')
+    {
+      l_str[l_idx] = '\0';
+      break;
+    }
+  }
+
+  /* add underscore (if not already there) */
+  l_nameWithUnderscore = gap_lib_strdup_add_underscore(l_str);
+  
+  g_free(l_str);
+  
+  return (l_nameWithUnderscore);
+
+}  /* end gap_lib_dup_filename_and_replace_extension_by_underscore */
 
 
 /* ============================================================================
