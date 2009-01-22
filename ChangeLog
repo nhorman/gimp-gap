@@ -1,3 +1,12 @@
+2009.01.22 Wolfgang Hofer <hof@gimp.org>
+
+- added support run with last values for Split Image to frames feature.
+  this fixes the  GIMP Message  Execution error for procedure 'gimp-file-save'
+  as reported in #568143
+
+  * gap/gap_split.c
+
+
 2009-01-21 Wolfgang Hofer <hof@gimp.org>
 
 - removed restriction in split image feature as suggested in bugreport #568143

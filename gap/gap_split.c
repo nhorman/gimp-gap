@@ -64,6 +64,21 @@
 #include "gap_lib.h"
 #include "gap_arr_dialog.h"
 
+
+#define PLUGIN_NAME_GAP_SPLIT                "plug_in_gap_split"
+
+typedef struct
+{
+  gint32     inverse_order;
+  gint32     no_alpha;
+  gint32     only_visible;
+  gint32     copy_properties;
+  gint32     digits;
+
+  char       extension[32];
+} split_vals_t;
+
+
 extern      int gap_debug; /* ==0  ... dont print debug infos */
 
 #define GAP_HELP_ID_SPLIT           "plug-in-gap-split"
@@ -102,18 +117,18 @@ p_overwrite_dialog(char *filename, gint overwrite_mode)
 }  /* end p_overwrite_dialog */
 
 
-/* ============================================================================
+/* --------------------
  * p_split_image
+ * --------------------
+ * splits a multilayer image into frames, where each selected layer
+ * produces a resulting frame.
  *
  * returns   value >= 0 if all is ok  return the image_id of
  *                      the new created image (the last handled video frame)
  *           (or -1 on error)
- * ============================================================================
  */
 static int
-p_split_image(GapAnimInfo *ainfo_ptr,
-              char *new_extension,
-              gint invers, gint no_alpha, gint only_visible, gint copy_properties, gint digits)
+p_split_image(GapAnimInfo *ainfo_ptr, split_vals_t *valPtr)
 {
   GimpImageBaseType l_type;
   guint   l_width, l_height;
@@ -133,7 +148,17 @@ p_split_image(GapAnimInfo *ainfo_ptr,
   long    l_layer_idx;
   gint    l_overwrite_mode;
 
-  if(gap_debug) printf("DEBUG: p_split_image inv:%d no_alpha:%d ext:%s\n", (int)invers, (int)no_alpha, new_extension);
+  if(gap_debug)
+  {
+    printf("DEBUG: p_split_image inverse_order:%d no_alpha:%d only_visible:%d copy_properties:%d digits:%d ext:%s\n"
+         , (int)valPtr->inverse_order
+         , (int)valPtr->no_alpha
+         , (int)valPtr->only_visible
+         , (int)valPtr->copy_properties
+         , (int)valPtr->digits
+         , valPtr->extension
+         );
+  }
   l_rc = -1;
   l_percentage = 0.0;
   l_run_mode  = ainfo_ptr->run_mode;
@@ -158,7 +183,7 @@ p_split_image(GapAnimInfo *ainfo_ptr,
     l_max_framenumber = 0;
     for(l_idx = 0; l_idx < l_nlayers; l_idx++)
     {
-       if(only_visible)
+       if(valPtr->only_visible)
        {
           if (! gimp_drawable_get_visible(l_layers_list[l_idx]))
           {
@@ -181,12 +206,12 @@ p_split_image(GapAnimInfo *ainfo_ptr,
           l_new_image_id = -1;
        }
 
-       if(invers != TRUE) l_layer_idx = l_idx;
-       else               l_layer_idx = (l_nlayers - 1 ) - l_idx;
+       if(valPtr->inverse_order != TRUE) l_layer_idx = l_idx;
+       else                              l_layer_idx = (l_nlayers - 1 ) - l_idx;
 
        l_src_layer_id = l_layers_list[l_layer_idx];
 
-       if(only_visible)
+       if(valPtr->only_visible)
        {
           if (! gimp_drawable_get_visible(l_src_layer_id))
           {
@@ -199,7 +224,7 @@ p_split_image(GapAnimInfo *ainfo_ptr,
         * (such as channels, path, guides, parasites and whatever
         * will be added in future gimp versions....) in each copied frame.
         */
-       if(copy_properties)
+       if(valPtr->copy_properties)
        {
          gint    l_dup_idx;
          gint    l_dup_nlayers;
@@ -259,7 +284,7 @@ p_split_image(GapAnimInfo *ainfo_ptr,
 
 
        /* delete alpha channel ? */
-       if (no_alpha == TRUE)
+       if (valPtr->no_alpha == TRUE)
        {
            /* add a dummy layer (flatten needs at least 2 layers) */
            l_cp_layer_id = gimp_layer_new(l_new_image_id, "dummy",
@@ -277,14 +302,10 @@ p_split_image(GapAnimInfo *ainfo_ptr,
        l_str = gap_lib_dup_filename_and_replace_extension_by_underscore(ainfo_ptr->old_filename);
        l_sav_name = gap_lib_alloc_fname6(l_str,
                                   l_framenumber,       /* start at 1 (not at 0) */
-                                  new_extension,
-                                  digits);
+                                  valPtr->extension,
+                                  valPtr->digits);
        l_framenumber--;
        g_free(l_str);
-
-
-
-
 
 
        if(l_sav_name != NULL)
@@ -376,26 +397,26 @@ p_split_image(GapAnimInfo *ainfo_ptr,
 
 
   return l_rc;
-}       /* end p_split_image */
+}  /* end p_split_image */
 
 
-/* ============================================================================
+
+/* -------------------
  * p_split_dialog
+ * -------------------
  *
- *   return  0 (OK)
- *          or  -1 in case of Error or cancel
- * ============================================================================
+ * return  0 (OK)
+ *    or  -1 in case of Error or cancel
  */
 static long
-p_split_dialog(GapAnimInfo *ainfo_ptr, gint *inverse_order, gint *no_alpha, char *extension, gint len_ext
-    , gint *only_visible, gint *copy_properties, gint *digits)
+p_split_dialog(GapAnimInfo *ainfo_ptr, split_vals_t *valPtr)
 {
   static GapArrArg  argv[9];
   gchar   *buf;
   gchar   *extptr;
   gchar   *baseName;
 
-  extptr = extension;
+  extptr = &valPtr->extension[0];
   if(extptr)
   {
     if(*extptr == '.')
@@ -423,8 +444,8 @@ p_split_dialog(GapAnimInfo *ainfo_ptr, gint *inverse_order, gint *no_alpha, char
   gap_arr_arg_init(&argv[1], GAP_ARR_WGT_TEXT);
   argv[1].label_txt = _("Extension:");
   argv[1].help_txt  = _("Extension of resulting frames. The extension is also used to define fileformat.");
-  argv[1].text_buf_len = len_ext;
-  argv[1].text_buf_ret = extension;
+  argv[1].text_buf_len = sizeof(valPtr->extension);
+  argv[1].text_buf_ret = valPtr->extension;
   argv[1].has_default = TRUE;
   argv[1].text_buf_default = ".xcf";
 
@@ -432,7 +453,7 @@ p_split_dialog(GapAnimInfo *ainfo_ptr, gint *inverse_order, gint *no_alpha, char
   argv[2].label_txt = _("Inverse Order:");
   argv[2].help_txt  = _("ON: Start with frame 000001 at top layer.\n"
                         "OFF: Start with frame 000001 at background layer.");
-  argv[2].int_ret   = 0;
+  argv[2].int_ret   = valPtr->inverse_order;
   argv[2].has_default = TRUE;
   argv[2].int_default = 0;
 
@@ -440,7 +461,7 @@ p_split_dialog(GapAnimInfo *ainfo_ptr, gint *inverse_order, gint *no_alpha, char
   argv[3].label_txt = _("Flatten:");
   argv[3].help_txt  = _("ON: Remove alpha channel in resulting frames. Transparent parts are filled with the background color.\n"
                         "OFF: Layers in the resulting frames keep their alpha channel.");
-  argv[3].int_ret   = 0;
+  argv[3].int_ret   = valPtr->no_alpha;
   argv[3].has_default = TRUE;
   argv[3].int_default = 0;
 
@@ -448,7 +469,7 @@ p_split_dialog(GapAnimInfo *ainfo_ptr, gint *inverse_order, gint *no_alpha, char
   argv[4].label_txt = _("Only Visible:");
   argv[4].help_txt  = _("ON: Handle only visible layers.\n"
                         "OFF: handle all layers and force visibiblity");
-  argv[4].int_ret   = 0;
+  argv[4].int_ret   = valPtr->only_visible;
   argv[4].has_default = TRUE;
   argv[4].int_default = 0;
 
@@ -456,7 +477,7 @@ p_split_dialog(GapAnimInfo *ainfo_ptr, gint *inverse_order, gint *no_alpha, char
   argv[5].label_txt = _("Copy properties:");
   argv[5].help_txt  = _("ON: Copy all image properties (channels, pathes, guides) to all frame images.\n"
                         "OFF: copy only layers without image properties to frame images");
-  argv[5].int_ret   = 0;
+  argv[5].int_ret   = valPtr->copy_properties;
   argv[5].has_default = TRUE;
   argv[5].int_default = 0;
 
@@ -466,7 +487,7 @@ p_split_dialog(GapAnimInfo *ainfo_ptr, gint *inverse_order, gint *no_alpha, char
   argv[6].help_txt  = _("How many digits to use for the framenumber filename part");
   argv[6].int_min   = (gint)1;
   argv[6].int_max   = (gint)6;
-  argv[6].int_ret   = (gint)6;
+  argv[6].int_ret   = (gint)valPtr->digits;
   argv[6].entry_width = 60;
   argv[6].has_default = TRUE;
   argv[6].int_default = 6;
@@ -484,11 +505,11 @@ p_split_dialog(GapAnimInfo *ainfo_ptr, gint *inverse_order, gint *no_alpha, char
                              8, argv))
   {
     g_free (buf);
-    *inverse_order   = argv[2].int_ret;
-    *no_alpha        = argv[3].int_ret;
-    *only_visible    = argv[4].int_ret;
-    *copy_properties = argv[5].int_ret;
-    *digits          = argv[6].int_ret;
+    valPtr->inverse_order   = argv[2].int_ret;
+    valPtr->no_alpha        = argv[3].int_ret;
+    valPtr->only_visible    = argv[4].int_ret;
+    valPtr->copy_properties = argv[5].int_ret;
+    valPtr->digits          = argv[6].int_ret;
     return 0;
   }
   else
@@ -496,13 +517,14 @@ p_split_dialog(GapAnimInfo *ainfo_ptr, gint *inverse_order, gint *no_alpha, char
     g_free (buf);
     return -1;
   }
-}               /* end p_split_dialog */
+}  /* end p_split_dialog */
 
-/* ============================================================================
+
+/* ----------------
  * gap_split_image
- *    Split one (multilayer) image into video frames
- *    one frame per layer.
- * ============================================================================
+ * ----------------
+ * Split one (multilayer) image into video frames
+ * one frame per layer.
  */
 int gap_split_image(GimpRunMode run_mode,
                       gint32     image_id,
@@ -517,20 +539,23 @@ int gap_split_image(GimpRunMode run_mode,
 {
   gint32  l_new_image_id;
   gint32  l_rc;
-  gint32  l_inverse_order;
-  gint32  l_no_alpha;
-  gint32  l_only_visible;
-  gint32  l_copy_properties;
-  gint32  l_digits;
+
   char   *l_imagename;
-
+  
+  split_vals_t l_splitVals;
+  split_vals_t *valPtr;
   GapAnimInfo *ainfo_ptr;
-  char l_extension[32];
-
-  strcpy(l_extension, ".xcf");
 
   l_rc = -1;
-
+  if(gap_debug)
+  {
+    printf("START: gap_split_image run_mod:%d, image_id:%d\n"
+      ,(int) run_mode
+      ,(int) image_id
+      );
+  }
+  valPtr = &l_splitVals;
+  
   /* force a default name without framenumber part for unnamed images */
   l_imagename = gimp_image_get_filename(image_id);
   if(l_imagename == NULL)
@@ -541,44 +566,56 @@ int gap_split_image(GimpRunMode run_mode,
   ainfo_ptr = gap_lib_alloc_ainfo(image_id, run_mode);
   if(ainfo_ptr != NULL)
   {
+    valPtr->extension[0] = '\0';
+      
+    /* Possibly retrieve data from a previous run */
+    gimp_get_data (PLUGIN_NAME_GAP_SPLIT, &l_splitVals);
+      
+    if (l_splitVals.extension[0] == '\0')
+    {
+      /* use default values 
+       * (because there are no useful values of a previous run in the same session)
+       */
+      strcpy(&valPtr->extension[0], ".xcf");
+      valPtr->inverse_order   = 0;
+      valPtr->no_alpha        = 0;
+      valPtr->only_visible    = 0;
+      valPtr->copy_properties = 0;
+      valPtr->digits = 6;
+    }
+
     if(run_mode == GIMP_RUN_INTERACTIVE)
     {
-       l_rc = p_split_dialog (ainfo_ptr
-                             , &l_inverse_order
-                             , &l_no_alpha
-                             , &l_extension[0]
-                             , sizeof(l_extension)
-                             , &l_only_visible
-                             , &l_copy_properties
-                             , &l_digits
-                             );
+       l_rc = p_split_dialog (ainfo_ptr, valPtr);
     }
-    else
+    else if(run_mode == GIMP_RUN_NONINTERACTIVE)
     {
        l_rc = 0;
-       l_inverse_order   =  inverse_order;
-       l_no_alpha        =  no_alpha;
-       l_only_visible    =  only_visible;
-       l_copy_properties =  copy_properties;
-       l_digits          =  digits;
-       strncpy(l_extension, extension, sizeof(l_extension) -1);
-       l_extension[sizeof(l_extension) -1] = '\0';
-
+       valPtr->inverse_order   =  inverse_order;
+       valPtr->no_alpha        =  no_alpha;
+       valPtr->only_visible    =  only_visible;
+       valPtr->copy_properties =  copy_properties;
+       valPtr->digits          =  digits;
+       strncpy(&valPtr->extension[0], extension, sizeof(valPtr->extension) -1);
+       valPtr->extension[sizeof(valPtr->extension) -1] = '\0';
+    }
+    else if (run_mode == GIMP_RUN_WITH_LAST_VALS)
+    {
+       l_rc = 0;
     }
 
     if(l_rc >= 0)
     {
-       l_new_image_id = p_split_image(ainfo_ptr,
-                           l_extension,
-                           l_inverse_order,
-                           l_no_alpha,
-                           l_only_visible,
-                           l_copy_properties,
-                           l_digits
-                           );
+       l_new_image_id = p_split_image(ainfo_ptr, valPtr);
 
        if (l_new_image_id >= 0)
        {
+         /* Store values for next run */
+         if (run_mode == GIMP_RUN_INTERACTIVE)
+         {
+           gimp_set_data(PLUGIN_NAME_GAP_SPLIT, &l_splitVals, sizeof(l_splitVals));
+         }
+
          /* create a display for the new created image
           * (it is the first or the last frame of the
           *  new created animation sequence)
