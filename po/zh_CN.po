@@ -1,5 +1,5 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR Free Software Foundation, Inc.
+# zh_CN translation of gimp-std-plugins.
+# Copyright (C) 2009 Free Software Foundation, Inc.
 # Xie Yuheng <phycommusyee@263.net>, 2001.
 #
 msgid ""
@@ -7,12 +7,12 @@ msgstr ""
 "Project-Id-Version: gimp-std-plugins\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-10-12 04:19+0000\n"
-"PO-Revision-Date: 2001-11-03 21:00+0800\n"
+"PO-Revision-Date: 2009-01-26 00:25+0800\n"
 "Last-Translator: Xie Yuheng <phycommusyee@263.net>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
+"Content-Transfer-Encoding: 8bit"
 
 #. Button  to invoke fontbrowser
 #: ../gap/gap_arr_dialog.c:544
@@ -114,7 +114,7 @@ msgid ""
 msgstr ""
 "提示：\n"
 "您需要创建为这个此视频一个索引。\n"
-"这将使您可以快速进行随机的祯访问。\n"
+"这将使您可以快速进行随机的帧访问。\n"
 "但是您需要一次用于初始化的完整视频扫描\n"
 "(这将花费一些时间)\n"
 
@@ -180,7 +180,7 @@ msgstr ""
 #: ../gap/gap_base_ops.c:236 ../gap/gap_base_ops.c:291
 #, c-format
 msgid "Error: could not rename frame %d to %d"
-msgstr "错误：无法将祯 %d 重命名为 %d"
+msgstr "错误：无法将帧 %d 重命名为 %d"
 
 #: ../gap/gap_base_ops.c:213
 msgid "Density duplicating frames..."
@@ -551,9 +551,8 @@ msgid "Grow selection in pixels (use negative values for shrink)"
 msgstr ""
 
 #: ../gap/gap_bluebox.c:427
-#, fuzzy
 msgid "Automatic Preview:"
-msgstr "预览"
+msgstr "自动预览"
 
 #: ../gap/gap_bluebox.c:438
 msgid "ON: Keep preview image up to date"
@@ -562,7 +561,6 @@ msgstr ""
 #. button
 #. the preview frame
 #: ../gap/gap_bluebox.c:447 ../gap/gap_mov_dialog.c:4123
-#, fuzzy
 msgid "Preview"
 msgstr "预览"
 
@@ -571,9 +569,8 @@ msgid "Show preview as separate image"
 msgstr ""
 
 #: ../gap/gap_bluebox.c:458
-#, fuzzy
 msgid "Previewsize:"
-msgstr "预览"
+msgstr "预览尺寸："
 
 #. lower/upper
 #. step, page
@@ -733,16 +730,15 @@ msgid "BlueboxPreview.xcf"
 msgstr ""
 
 #: ../gap/gap_bluebox.c:1593
-#, fuzzy
 msgid "Previewlayer"
-msgstr "预览"
+msgstr "预览图层"
 
 #. at 1.st call create a mastercopy of the original layer
 #. * and scale to preview size
 #.
 #: ../gap/gap_bluebox.c:1622
 msgid "Masterlayer"
-msgstr ""
+msgstr "主图层"
 
 #: ../gap/gap_bluebox_main.c:180
 msgid "Bluebox ..."
@@ -758,41 +754,40 @@ msgstr ""
 #: ../gap/gap_navigator_dialog.c:551 ../gap/gap_onion_main.c:205
 #: ../gap/gap_player_main.c:293 ../gap/gap_story_main.c:182
 msgid "<Image>/Video/"
-msgstr ""
+msgstr "<Image>/视频/"
 
 #. the parameters button (invokes videoencoder specific GUI dialog)
 #: ../gap/gap_dbbrowser_utils.c:240 ../vid_common/gap_cme_gui.c:3539
-#, fuzzy
 msgid "Parameters"
 msgstr "参数"
 
 #: ../gap/gap_dbbrowser_utils.c:253
 msgid "Return Values"
-msgstr ""
+msgstr "返回值"
 
 #: ../gap/gap_dbbrowser_utils.c:266
 msgid "Additional Information"
-msgstr ""
+msgstr "附加信息"
 
 #. the Author lable
 #: ../gap/gap_dbbrowser_utils.c:305
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3195
 msgid "Author:"
-msgstr ""
+msgstr "作者："
 
 #: ../gap/gap_dbbrowser_utils.c:316
 msgid "Date:"
-msgstr ""
+msgstr "日期："
 
 #. the Copyright lable
 #: ../gap/gap_dbbrowser_utils.c:327
 #: ../vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c:3217
 msgid "Copyright:"
-msgstr ""
+msgstr "版权："
 
 #: ../gap/gap_dbbrowser_utils.c:483
 msgid "_Search:"
-msgstr ""
+msgstr "搜索(_S)："
 
 #: ../gap/gap_dbbrowser_utils.c:579
 msgid "Gen Code by name"
@@ -801,7 +796,7 @@ msgstr ""
 #. Button Search by Name
 #: ../gap/gap_dbbrowser_utils.c:593
 msgid "Search by Name"
-msgstr ""
+msgstr "按名称搜索"
 
 #. Button Search by Blurb
 #: ../gap/gap_dbbrowser_utils.c:603
@@ -811,15 +806,15 @@ msgstr ""
 #. Button Search by Menupath
 #: ../gap/gap_dbbrowser_utils.c:613
 msgid "Search by Menu Path"
-msgstr ""
+msgstr "按菜单路径搜索"
 
 #: ../gap/gap_dbbrowser_utils.c:731
 msgid "** not available **"
-msgstr ""
+msgstr "** 不可用 **"
 
 #: ../gap/gap_dbbrowser_utils.c:927
 msgid "Searching by name - please wait"
-msgstr ""
+msgstr "正在按名称搜索 - 请稍候"
 
 #: ../gap/gap_dbbrowser_utils.c:950
 msgid "Searching by blurb - please wait"
@@ -827,41 +822,43 @@ msgstr ""
 
 #: ../gap/gap_dbbrowser_utils.c:962
 msgid "Searching by menupath - please wait"
-msgstr ""
+msgstr "正在按菜单路径搜索 - 请稍候"
 
 #: ../gap/gap_dbbrowser_utils.c:966
 msgid "Searching - please wait"
-msgstr ""
+msgstr "正在搜索 - 请稍候"
 
 #: ../gap/gap_dbbrowser_utils.c:1065
 msgid "No matches"
-msgstr ""
+msgstr "无匹配项"
 
 #: ../gap/gap_dbbrowser_utils.c:1122
 msgid "Internal GIMP procedure"
-msgstr ""
+msgstr "GIMP 内部过程"
 
 #: ../gap/gap_dbbrowser_utils.c:1123
 msgid "GIMP Plug-In"
-msgstr ""
+msgstr "GIMP 插件"
 
 #: ../gap/gap_dbbrowser_utils.c:1124
 msgid "GIMP Extension"
-msgstr ""
+msgstr "GIMP 扩展"
 
 #: ../gap/gap_dbbrowser_utils.c:1125
 msgid "Temporary Procedure"
-msgstr ""
+msgstr "临时过程"
 
 #: ../gap/gap_decode_mplayer.c:224
 msgid "Requirements to run the mplayer based video split"
-msgstr ""
+msgstr "需要执行基于 MPlayer 的视频分割"
 
 #: ../gap/gap_decode_mplayer.c:236
 msgid ""
 "mplayer 1.0 must be installed somewhere in your PATH\n"
 "you can get mplayer exporting edition at:\n"
 msgstr ""
+"在您的环境变量 (PATH) 中必须安装 Mplayer 1.0\n"
+"您可以在以下位置获得 MPlayer 导出版：\n"
 
 #: ../gap/gap_decode_mplayer.c:255
 msgid ""
@@ -869,18 +866,21 @@ msgid ""
 "you have to set environment variable GAP_MPLAYER_PROG\n"
 "to your mplayer program and restart gimp"
 msgstr ""
+"如果 MPlayer 不在您的环境变量 (PATH) 中或者没有命名为 mplayer\n"
+"您必须为此设置您的环境变量 GAP_MPLAYER_PROG\n"
+"并重新起动 GIMP"
 
 #: ../gap/gap_decode_mplayer.c:266
 msgid "An error occurred while trying to call mplayer:"
-msgstr ""
+msgstr "调用 MPlayer 过程中出现错误："
 
 #: ../gap/gap_decode_mplayer.c:286
 msgid "mplayer Information"
-msgstr ""
+msgstr "MPlayer 信息"
 
 #: ../gap/gap_decode_mplayer.c:427
 msgid "Input Video:"
-msgstr ""
+msgstr "输入视频："
 
 #: ../gap/gap_decode_mplayer.c:428
 msgid ""
@@ -900,9 +900,8 @@ msgstr ""
 #. Frames Overlap duration button
 #: ../gap/gap_decode_mplayer.c:455 ../gap/gap_story_att_trans_dlg.c:2483
 #: ../gap/gap_story_att_trans_dlg.c:2683
-#, fuzzy
 msgid "Frames:"
-msgstr "分形名字："
+msgstr "帧："
 
 #: ../gap/gap_decode_mplayer.c:456
 msgid "Number of frames to extract"
@@ -940,9 +939,8 @@ msgid ""
 msgstr ""
 
 #: ../gap/gap_decode_mplayer.c:502 ../gap/gap_decode_xanim.c:267
-#, fuzzy
 msgid "Framenames:"
-msgstr "分形名字："
+msgstr "帧名称："
 
 #: ../gap/gap_decode_mplayer.c:503 ../gap/gap_decode_xanim.c:268
 msgid ""
@@ -951,9 +949,8 @@ msgid ""
 msgstr ""
 
 #: ../gap/gap_decode_mplayer.c:512
-#, fuzzy
 msgid "Format:"
-msgstr "分形名字："
+msgstr "格式："
 
 #: ../gap/gap_decode_mplayer.c:513
 msgid ""
@@ -1015,9 +1012,8 @@ msgid "Enable baseline jpeg encoding(is ignored when other formats are used)"
 msgstr ""
 
 #: ../gap/gap_decode_mplayer.c:584
-#, fuzzy
 msgid "Silent"
-msgstr "复位"
+msgstr "静音"
 
 #: ../gap/gap_decode_mplayer.c:585
 msgid ""
@@ -1054,9 +1050,8 @@ msgid ""
 msgstr ""
 
 #: ../gap/gap_decode_mplayer.c:616
-#, fuzzy
 msgid "MPlayer based extraction"
-msgstr "反转"
+msgstr "基于 Mplayer 的解码"
 
 #: ../gap/gap_decode_mplayer.c:617 ../gap/gap_decode_xanim.c:326
 #: ../gap/gap_range_ops.c:1709
@@ -1144,14 +1139,12 @@ msgid ""
 msgstr ""
 
 #: ../gap/gap_decode_mplayer.c:1556 ../gap/gap_decode_xanim.c:1133
-#, fuzzy
 msgid "Extracting frames..."
-msgstr "编辑分形名字"
+msgstr "正在解码帧…"
 
 #: ../gap/gap_decode_mplayer.c:1560
-#, fuzzy
 msgid "Extracting audio..."
-msgstr "编辑分形名字"
+msgstr "正在解压音频…"
 
 #: ../gap/gap_decode_mplayer.c:1578
 #, c-format
@@ -1159,6 +1152,8 @@ msgid ""
 "could not start mplayer process\n"
 "(program=%s)"
 msgstr ""
+"无法启动 mplayer 进程\n"
+"(program=%s"
 
 #: ../gap/gap_decode_mplayer.c:1606
 #, c-format
@@ -1166,17 +1161,16 @@ msgid ""
 "can't find any extracted frames,\n"
 "mplayer has failed or was cancelled"
 msgstr ""
+"无法找到"
 
 #: ../gap/gap_decode_mplayer.c:1632 ../gap/gap_decode_xanim.c:1198
-#, fuzzy
 msgid "Renaming frames..."
-msgstr "绘制分形..."
+msgstr "重命名帧..."
 
 #: ../gap/gap_decode_mplayer.c:1642 ../gap/gap_decode_xanim.c:1203
 #: ../gap/gap_range_ops.c:1326
-#, fuzzy
 msgid "Converting frames..."
-msgstr "绘制分形..."
+msgstr "转换帧..."
 
 #: ../gap/gap_decode_xanim.c:138
 msgid "Requirements to run the xanim based video split"
@@ -1230,14 +1224,12 @@ msgid ""
 msgstr ""
 
 #: ../gap/gap_decode_xanim.c:283
-#, fuzzy
 msgid "Extract Frames"
-msgstr "编辑分形名字"
+msgstr "解码帧"
 
 #: ../gap/gap_decode_xanim.c:284
-#, fuzzy
 msgid "Enable extraction of frames"
-msgstr "编辑分形名字"
+msgstr "启用帧解码"
 
 #. create extract audio otone track button
 #: ../gap/gap_decode_xanim.c:288 ../gap/gap_player_dialog.c:6523
@@ -1346,9 +1338,8 @@ msgstr ""
 
 #: ../gap/gap_filter_foreach.c:138 ../gap/gap_mod_layer.c:107
 #: ../gap/gap_story_dialog.c:6158
-#, fuzzy
 msgid "Continue"
-msgstr "余弦"
+msgstr "继续"
 
 #: ../gap/gap_filter_foreach.c:142
 #, c-format
@@ -1396,9 +1387,8 @@ msgstr "<Image>/滤镜/绘制/图案/分形探索器..."
 
 #. ------------------ ALTernative Iterators ------------------------------
 #: ../gap/gap_filter_main.c:158 ../gap/gap_fmac_main.c:216
-#, fuzzy
 msgid "<Image>/Filters/"
-msgstr "<Image>/滤镜/绘制/图案/分形探索器..."
+msgstr "<Image>/滤镜/"
 
 #: ../gap/gap_fmac_base.c:205
 #, c-format
@@ -1438,9 +1428,8 @@ msgstr ""
 
 #. label
 #: ../gap/gap_fmac_main.c:711
-#, fuzzy
 msgid "Filename:"
-msgstr "分形名字："
+msgstr "文件名："
 
 #: ../gap/gap_fmac_main.c:723
 msgid "Name of the filtermacro scriptfile"
@@ -1554,15 +1543,13 @@ msgstr ""
 #. gimp_plugin_menu_branch_register("<Image>", "Video");
 #. gimp_plugin_menu_branch_register("<Image>/Video", "Encode");
 #: ../gap/gap_frontends_main.c:222 ../vid_common/gap_cme_main.c:169
-#, fuzzy
 msgid "<Image>/Video/Encode/"
-msgstr "<Image>/滤镜/绘制/图案/分形探索器..."
+msgstr "<Image>/视频/编码"
 
 #. Menu names
 #: ../gap/gap_frontends_main.c:223 ../gap/gap_vex_main.c:201
-#, fuzzy
 msgid "<Image>/Video/Split Video into Frames/"
-msgstr "<Image>/滤镜/绘制/图案/分形探索器..."
+msgstr "<Image>/食品/分割视频为帧/"
 
 #: ../gap/gap_frontends_main.c:224 ../gap/gap_vex_main.c:202
 msgid "<Toolbox>/Xtns/Split Video into Frames/"
@@ -1573,6 +1560,8 @@ msgid ""
 "Operation cancelled.\n"
 "Current frame was changed while dialog was open."
 msgstr ""
+"操作已终止。\n"
+"当前帧在对话打开时已被修改。"
 
 #: ../gap/gap_lib.c:1990
 msgid "Save Flattened"
@@ -1580,7 +1569,7 @@ msgstr ""
 
 #: ../gap/gap_lib.c:1992
 msgid "Save As Is"
-msgstr ""
+msgstr "另存为"
 
 #: ../gap/gap_lib.c:1996
 #, c-format
@@ -1596,7 +1585,7 @@ msgstr ""
 
 #: ../gap/gap_lib.c:2005
 msgid "Fileformat Warning"
-msgstr ""
+msgstr "文件格式警告"
 
 #: ../gap/gap_lock.c:135
 #, c-format
@@ -1607,39 +1596,32 @@ msgid ""
 msgstr ""
 
 #: ../gap/gap_main.c:700
-#, fuzzy
 msgid "Next Frame"
-msgstr "编辑分形名字"
+msgstr "下一帧"
 
 #: ../gap/gap_main.c:712
-#, fuzzy
 msgid "Previous Frame"
-msgstr "编辑分形名字"
+msgstr "上一帧"
 
 #: ../gap/gap_main.c:724
-#, fuzzy
 msgid "First Frame"
-msgstr "编辑分形名字"
+msgstr "首帧"
 
 #: ../gap/gap_main.c:736
-#, fuzzy
 msgid "Last Frame"
-msgstr "编辑分形名字"
+msgstr "末帧"
 
 #: ../gap/gap_main.c:748
-#, fuzzy
 msgid "Any Frame..."
-msgstr "绘制分形..."
+msgstr "任意帧…"
 
 #: ../gap/gap_main.c:760
-#, fuzzy
 msgid "Delete Frames..."
-msgstr "绘制分形..."
+msgstr "删除帧…"
 
 #: ../gap/gap_main.c:772
-#, fuzzy
 msgid "Duplicate Frames..."
-msgstr "删除当前选中的分形"
+msgstr "复制帧…"
 
 #: ../gap/gap_main.c:789
 msgid "Frames Density..."
@@ -1651,26 +1633,24 @@ msgid "Exchange Frame..."
 msgstr "编辑分形名字"
 
 #: ../gap/gap_main.c:813
-#, fuzzy
 msgid "Move Path..."
-msgstr "实时预览"
+msgstr "移动路径…"
 
 #: ../gap/gap_main.c:893
 msgid "Frames to Image..."
-msgstr ""
+msgstr "帧转储为图像…"
 
 #: ../gap/gap_main.c:905
 msgid "Frames Flatten..."
 msgstr ""
 
 #: ../gap/gap_main.c:917
-#, fuzzy
 msgid "Frames Layer Delete..."
-msgstr "<Image>/滤镜/绘制/图案/分形探索器..."
+msgstr ""
 
 #: ../gap/gap_main.c:941
 msgid "Frames Convert..."
-msgstr ""
+msgstr "转换帧…"
 
 #: ../gap/gap_main.c:953
 msgid "Frames Resize..."
@@ -1685,9 +1665,8 @@ msgid "Frames Scale..."
 msgstr ""
 
 #: ../gap/gap_main.c:989
-#, fuzzy
 msgid "Split Image to Frames..."
-msgstr "绘制分形..."
+msgstr "分割图像到帧…"
 
 #: ../gap/gap_main.c:1002
 msgid "Frame Sequence Shift..."
@@ -1699,15 +1678,15 @@ msgstr ""
 
 #: ../gap/gap_main.c:1026
 msgid "Frames Renumber..."
-msgstr ""
+msgstr "排序帧…"
 
 #: ../gap/gap_main.c:1038
 msgid "Frames Modify..."
-msgstr ""
+msgstr "修改帧…"
 
 #: ../gap/gap_main.c:1128
 msgid "<Image>/Video/Go To/"
-msgstr ""
+msgstr "<Image>/视频/转到/"
 
 #: ../gap/gap_mod_layer.c:130
 #, c-format
@@ -1824,7 +1803,7 @@ msgstr ""
 
 #: ../gap/gap_mod_layer_dialog.c:415 ../gap/gap_mov_dialog.c:2790
 msgid "Normal"
-msgstr ""
+msgstr "正常"
 
 #: ../gap/gap_mod_layer_dialog.c:420 ../gap/gap_mov_dialog.c:2791
 msgid "Dissolve"
@@ -1884,7 +1863,7 @@ msgstr ""
 
 #: ../gap/gap_mod_layer_dialog.c:492
 msgid "Color erase"
-msgstr ""
+msgstr "清除颜色"
 
 #: ../gap/gap_mod_layer_dialog.c:497
 msgid "Grain extract"
@@ -1896,7 +1875,7 @@ msgstr ""
 
 #: ../gap/gap_mod_layer_dialog.c:507 ../gap/gap_mov_dialog.c:2807
 msgid "Hue"
-msgstr ""
+msgstr "透明度"
 
 #: ../gap/gap_mod_layer_dialog.c:512 ../gap/gap_mov_dialog.c:2808
 msgid "Saturation"
@@ -1904,7 +1883,7 @@ msgstr ""
 
 #: ../gap/gap_mod_layer_dialog.c:517 ../gap/gap_mov_dialog.c:2809
 msgid "Color"
-msgstr ""
+msgstr "颜色"
 
 #: ../gap/gap_mod_layer_dialog.c:522 ../gap/gap_mov_dialog.c:2810
 msgid "Value"
@@ -1965,9 +1944,8 @@ msgstr ""
 
 #. the Selection sub menu
 #: ../gap/gap_mod_layer_dialog.c:615
-#, fuzzy
 msgid "Selection"
-msgstr "反转"
+msgstr "选区"
 
 #: ../gap/gap_mod_layer_dialog.c:622
 msgid "Replace selection (source is the active frame)"
@@ -1990,14 +1968,12 @@ msgid "Intersect selection (source is the active frame)"
 msgstr ""
 
 #: ../gap/gap_mod_layer_dialog.c:646
-#, fuzzy
 msgid "Selection none"
-msgstr "反转"
+msgstr "清楚选择"
 
 #: ../gap/gap_mod_layer_dialog.c:652
-#, fuzzy
 msgid "Selection all"
-msgstr "反转"
+msgstr "全部选择"
 
 #: ../gap/gap_mod_layer_dialog.c:658
 msgid "Selection invert"
@@ -2017,7 +1993,7 @@ msgstr ""
 
 #: ../gap/gap_mod_layer_dialog.c:682
 msgid "Delete channel (by name)"
-msgstr ""
+msgstr "删除通道 (按名称)"
 
 #. the LayerMask sub menu
 #: ../gap/gap_mod_layer_dialog.c:702
