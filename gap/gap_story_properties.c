@@ -1178,8 +1178,15 @@ p_pv_pview_render_immediate (GapStbPropWidget *pw
    else
    {
       gint32  l_image_id;
+      
+      l_image_id = -1;
+      
+      if((stb_elem_refptr->record_type != GAP_STBREC_VID_MOVIE)
+      && (stb_elem_refptr->record_type != GAP_STBREC_VID_SECTION))
+      {
+        l_image_id = gap_lib_load_image(l_frame_filename);
+      }
 
-      l_image_id = gap_lib_load_image(l_frame_filename);
 
       if (l_image_id < 0)
       {

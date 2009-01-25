@@ -43,6 +43,7 @@
 
 #include "gap_gve_misc_util.h"
 
+
 /*************************************************************
  *          TOOL FUNCTIONS                                   *
  *************************************************************/
@@ -98,32 +99,89 @@ gap_gve_misc_get_ainfo(gint32 image_ID, GapGveEncAInfo *ainfo)
 
 
 /* ---------------------------------
- * p_snprintf_master_encoder_progress_keyname
+ * p_gap_build_enc_status_filename
  * ---------------------------------
- *
+ * build the filename that is used for communication
+ * the encoder status between the GIMP-GAP master videoencoder and the
+ * video encoder plug-in (that typically runs in a separate process)
  */
-static void
-p_snprintf_master_encoder_progress_keyname(char *key, gint32 key_max_size, gint32 master_encoder_id)
+static char *
+p_gap_build_enc_status_filename(gint32 master_encoder_id)
 {
-  g_snprintf(key, key_max_size, "GAP_MASTER_ENCODER_PROGRESS_%d", (int)master_encoder_id);
-}
+   char *filename;
+   char *buf;
+   
+   buf = g_strdup_printf("gap_master_videoencoder_progress_%d", master_encoder_id);
+   
+   filename = g_build_filename(gimp_directory(), buf, NULL);
 
-static void
-p_snprintf_master_encoder_cancel_keyname(char *key, gint32 key_max_size, gint32 master_encoder_id)
+   g_free(buf);
+   return (filename);
+}  /* end p_gap_build_enc_status_filename */
+
+
+/* ---------------------------------------
+ * p_gap_build_enc_cancel_request_filename
+ * ---------------------------------------
+ * build the filename that is used to indicate cancel a running video encoder process.
+ * (if this file exists cancel request is TRUE)
+ */
+static char *
+p_gap_build_enc_cancel_request_filename(gint32 master_encoder_id)
 {
-  g_snprintf(key, key_max_size, "GAP_MASTER_ENCODER_CANCEL_%d", (int)master_encoder_id);
-}
+   char *filename;
+   char *buf;
+   
+   buf = g_strdup_printf("gap_master_videoencoder_cancel_%d", master_encoder_id);
+   
+   filename = g_build_filename(gimp_directory(), buf, NULL);
+
+   g_free(buf);
+   return (filename);
+}  /* end p_gap_build_enc_cancel_request_filename */
+
+
+
+/* ---------------------------------------
+ * gap_gve_misc_cleanup_GapGveMasterEncoder
+ * ---------------------------------------
+ * cleanup (remove communication files)
+ * typically called by the master videoencoder when encoding has finished.
+ */
+void
+gap_gve_misc_cleanup_GapGveMasterEncoder(gint32 master_encoder_id)
+{
+   char *filename;
+   
+   filename = p_gap_build_enc_cancel_request_filename(master_encoder_id);
+
+   if(g_file_test(filename, G_FILE_TEST_EXISTS))
+   {
+     g_remove(filename);
+   }
+   g_free(filename);
+
+   filename = p_gap_build_enc_status_filename(master_encoder_id);
+   if(g_file_test(filename, G_FILE_TEST_EXISTS))
+   {
+     g_remove(filename);
+   }
+   g_free(filename);
+
+}  /* end gap_gve_misc_cleanup_GapGveMasterEncoder */
 
 
 /* ------------------------------------------
  * gap_gve_misc_initGapGveMasterEncoderStatus
- * ---------................-----------------
+ * ------------------------------------------
  * This pocedure is typically called at start of video encoding
  */
 void
 gap_gve_misc_initGapGveMasterEncoderStatus(GapGveMasterEncoderStatus *encStatus
    , gint32 master_encoder_id, gint32 total_frames)
 {
+  gap_gve_misc_cleanup_GapGveMasterEncoder(master_encoder_id);
+
   encStatus->master_encoder_id = master_encoder_id;
   encStatus->total_frames = total_frames;
   encStatus->frames_processed = 0;
@@ -132,6 +190,100 @@ gap_gve_misc_initGapGveMasterEncoderStatus(GapGveMasterEncoderStatus *encStatus
 //  encStatus->pidOfRunningEncoder = 0;
 
   gap_gve_misc_do_master_encoder_progress(encStatus);
+}
+
+
+/* ------------------------------------------
+ * p_write_encoder_status
+ * ------------------------------------------
+ * write current encoder status to binary file
+ * (the file is used for communication between the encoder process
+ * and the master videoencoder GUI process)
+ */
+static void
+p_write_encoder_status(GapGveMasterEncoderStatus *encStatus)
+{
+  FILE *fp;
+  char *filename;
+   
+  filename = p_gap_build_enc_status_filename(encStatus->master_encoder_id);
+
+  if(gap_debug)
+  {
+     printf("p_write_encoder_status:  frames_processed:%d, PID:%d  filename:%s\n"
+        , (int) encStatus->frames_processed
+        , (int) getpid()
+        , filename
+        );
+  }
+
+
+  fp = fopen(filename, "wb");
+  if(fp)
+  {
+    fwrite(encStatus, sizeof(GapGveMasterEncoderStatus), 1, fp);
+    fclose(fp);
+  }
+  g_free(filename);
+}
+
+/* ------------------------------------------
+ * p_read_encoder_status
+ * ------------------------------------------
+ * read current encoder status from binary file
+ * (the file is used for communication between the encoder process
+ * and the master videoencoder GUI process)
+ */
+static void
+p_read_encoder_status(GapGveMasterEncoderStatus *encStatus)
+{
+  FILE *fp;
+  char *filename;
+  gint32 master_encoder_id;
+  
+  master_encoder_id = encStatus->master_encoder_id;
+  filename = p_gap_build_enc_status_filename(master_encoder_id);
+
+  fp = fopen(filename, "rb");
+  if(fp)
+  {
+    GapGveMasterEncoderStatus encBuffer;
+    
+    fread(&encBuffer, sizeof(GapGveMasterEncoderStatus), 1, fp);
+    fclose(fp);
+    
+    if(master_encoder_id == encBuffer.master_encoder_id)
+    {
+      memcpy(encStatus, &encBuffer,  sizeof(GapGveMasterEncoderStatus));
+    }
+    else
+    {
+       printf("p_read_encoder_status:  ERROR unexpected contetent in communication  filename:%s\n   PID:%d  id expected: %d but found: %d\n"
+          , filename
+          , (int) getpid()
+          , (int) master_encoder_id
+          , (int) encBuffer.master_encoder_id
+          );
+    }
+
+    if(gap_debug)
+    {
+       printf("p_read_encoder_status:  frames_processed:%d, PID:%d  filename:%s\n"
+          , (int) encStatus->frames_processed
+          , (int) getpid()
+          , filename
+          );
+    }
+  }
+  else
+  {
+       printf("p_read_encoder_status:  ERROR cold not open communication  filename:%s PID:%d\n"
+          , filename
+          , (int) getpid()
+          );
+  }
+  
+  g_free(filename);
 }
 
 /* ----------------------------------------
@@ -144,10 +296,7 @@ gap_gve_misc_initGapGveMasterEncoderStatus(GapGveMasterEncoderStatus *encStatus
 void
 gap_gve_misc_do_master_encoder_progress(GapGveMasterEncoderStatus *encStatus)
 {
-  char key[50];
-  
-  p_snprintf_master_encoder_progress_keyname(&key[0], sizeof(key), encStatus->master_encoder_id);
-  gimp_set_data(key, encStatus, sizeof(GapGveMasterEncoderStatus));
+  p_write_encoder_status(encStatus);
 }
 
 
@@ -160,15 +309,18 @@ gap_gve_misc_do_master_encoder_progress(GapGveMasterEncoderStatus *encStatus)
 gboolean
 gap_gve_misc_is_master_encoder_cancel_request(GapGveMasterEncoderStatus *encStatus)
 {
-  char key[50];
   gboolean cancelRequest;
-
+  char *filename;
+   
   cancelRequest = FALSE;
-  p_snprintf_master_encoder_cancel_keyname(&key[0], sizeof(key), encStatus->master_encoder_id);
-  if(gimp_get_data_size(key) == sizeof(gboolean))
+  filename = p_gap_build_enc_cancel_request_filename(encStatus->master_encoder_id);
+
+  if(g_file_test(filename, G_FILE_TEST_EXISTS))
   {
-      gimp_get_data(key, &cancelRequest);
+    cancelRequest = TRUE;
   }
+
+  g_free(filename);
   return (cancelRequest);
 }
 
@@ -182,28 +334,8 @@ gap_gve_misc_is_master_encoder_cancel_request(GapGveMasterEncoderStatus *encStat
 void
 gap_gve_misc_get_master_encoder_progress(GapGveMasterEncoderStatus *encStatus)
 {
-  char key[50];
-  
-  p_snprintf_master_encoder_progress_keyname(&key[0], sizeof(key), encStatus->master_encoder_id);
-
-  if(gimp_get_data_size(key) == sizeof(GapGveMasterEncoderStatus))
-  {
-      if(gap_debug)
-      {
-        printf("p_gimp_get_data: key:%s\n", key);
-      }
-      gimp_get_data(key, encStatus);
-  }
-  else
-  {
-     if(gap_debug)
-     {
-       printf("ERROR: gimp_get_data key:%s failed\n", key);
-       printf("ERROR: gimp_get_data_size:%d  expected size:%d\n"
-             , (int)gimp_get_data_size(key)
-             , (int)sizeof(GapGveMasterEncoderStatus));
-     }
-  }
+  p_read_encoder_status(encStatus);
+  return;
 }
 
 
@@ -212,13 +344,23 @@ gap_gve_misc_get_master_encoder_progress(GapGveMasterEncoderStatus *encStatus)
  * ----------------------------------------------
  * This pocedure is typically called in the master video encoder
  * to request the already started video encoder plug-in to terminate.
+ * (the request is indicated by creating a file with a special name,
+ * its content is just comment and not relevant)
  */
 void
 gap_gve_misc_set_master_encoder_cancel_request(GapGveMasterEncoderStatus *encStatus, gboolean cancelRequest)
 {
-  char key[50];
+  FILE *fp;
+  char *filename;
+   
+  filename = p_gap_build_enc_cancel_request_filename(encStatus->master_encoder_id);
 
-  p_snprintf_master_encoder_cancel_keyname(&key[0], sizeof(key), encStatus->master_encoder_id);
-  gimp_set_data(key, &cancelRequest, sizeof(gboolean));
+  fp = fopen(filename, "w");
+  if(fp)
+  {
+    fprintf(fp, "GAP videoencoder CANCEL requested\n");
+    fclose(fp);
+  }
+  g_free(filename);
 }
 

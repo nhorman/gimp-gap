@@ -35,6 +35,7 @@
 
 #include <sys/types.h>
 #include <unistd.h>
+#include <time.h>
 
 #define GAP_CME_PLUGIN_NAME_VID_ENCODE_MASTER    "plug-in-gap-vid-encode-master"
 #define GAP_CME_PLUGIN_HELP_ID_VID_ENCODE_MASTER "plug-in-gap-vid-encode-master"
@@ -164,12 +165,14 @@ typedef struct GapCmeGlobalParams {                    /* nick: gpp */
   GtkWidget *cme__label_enc_stat_frames_encoded;
   GtkWidget *cme__label_enc_stat_frames_copied_lossless;
   GtkWidget *cme__label_active_encoder_name;
+  GtkWidget *cme__label_enc_time_elapsed;
 
   GapCmeEncoderRunState  video_encoder_run_state;
   gint32 productive_encoder_timertag;
   gint32 encoder_status_poll_timertag;
   GThread    *productive_encoder_thread; 
   GapGveMasterEncoderStatus encStatus;
+  time_t     encoder_started_on_utc_seconds;
   
 } GapCmeGlobalParams;
 

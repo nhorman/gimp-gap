@@ -1,3 +1,42 @@
+2009-01-25 Wolfgang Hofer <hof@gimp.org>
+ 
+- fixed Storyboard single clip playback of cliptype GAP_STBREC_VID_IMAGE.
+   The playback did missinterpret the single image as animframe in case the image has a number part
+   and showed non-relevant frames according to the from / to parameters in the internal clip datastructure
+   that should be ignored for single image.
+
+- fixed minor memory leak in  gap/gap_story_file.c::gap_story_filename_is_videofile_by_ext
+
+- fixed Storyboard thumbnail rendering, where clip of type movie caused GIMP-2.6 error message
+  that complains about unknown filetype.
+    "Fehler beim Ausführen der Prozedur »gimp-file-load«:
+    Unbekannter Dateityp"
+  This was triggered when thumbnails for clips of type movie (*.mpg, *.avi ....)
+  are to be rendered from full "image" as fallback strategy in case no thumbnail is available,
+  but such fallback does only make sense for frames and single images that can be loaded as
+  image by the gimp core.
+  For movies and sections we must use the relevant default icon in this case. 
+  (the typically situation when videothumbnail is disabled)
+
+
+- bugfix: master videoencoder dialog does NOT update encoder status progress while encoding.
+  Using gimp_set_data gimp_get_data as communication channel between master encoder dialog plugin 
+  and the video encoder plug in (running in another process) does no longer work
+  with GIMP-2.6, because the master encoder call to gimp_get_data now blocks
+  until the encoder exits.
+  Now using a binary file to communicate the encoder status and cancel requests,
+  this allows to keep the master encoder GUI progress page active while 
+  the encoder process is running
+ 
+  * gap/gap_story_dialog.c
+  * gap/gap_story_file.c
+  * gap/gap_story_properties.c
+
+  * vid_common/gap_cme_main.c [.h]
+  * vid_common/gap_cmegui.c
+  * vid_common/gap_cme_callbacks.c
+  * libgapvidutil/gap_gve_misc_util.c [.h]
+
 2009.01.22 Wolfgang Hofer <hof@gimp.org>
 
 - added support run with last values for Split Image to frames feature.

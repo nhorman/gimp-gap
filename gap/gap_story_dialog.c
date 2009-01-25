@@ -118,6 +118,7 @@ typedef void (*GapStbMenuCallbackFptr)(GtkWidget *widget, GapStbMainGlobalParams
 static char *   p_get_gapdebug_storyboard_config_file();
 static gboolean p_is_debug_menu_enabled(void);
 static gboolean p_is_debug_feature_item_enabled(const char *debug_item);
+static void     p_get_begin_and_end_for_single_clip_playback(gint32 *begin_frame, gint32 *end_frame, GapStoryElem *stb_elem);
 
 
 static void     on_stb_elem_drag_begin (GtkWidget        *widget,
@@ -515,6 +516,32 @@ p_is_debug_feature_item_enabled(const char *debug_item)
   return(enable);
 
 }  /* end p_is_debug_feature_item_enabled */
+
+
+
+
+/* ---------------------------------------------
+ * p_get_begin_and_end_for_single_clip_playback
+ * ---------------------------------------------
+ */
+static void
+p_get_begin_and_end_for_single_clip_playback(gint32 *begin_frame, gint32 *end_frame, GapStoryElem *stb_elem)
+{
+  *begin_frame = stb_elem->from_frame;
+  *end_frame = stb_elem->to_frame;
+ 
+  if(stb_elem->record_type == GAP_STBREC_VID_IMAGE)
+  {
+    char *l_basename;
+    long l_number;
+    
+    l_basename = gap_lib_alloc_basename(stb_elem->orig_filename, &l_number);
+    g_free(l_basename);
+    *begin_frame = l_number;
+    *end_frame = l_number;
+    
+  }
+}    /* end p_get_begin_and_end_for_single_clip_playback */
 
 
 
@@ -1308,13 +1335,30 @@ p_frame_widget_render (GapStbFrameWidget *fw)
    {
       gint32  l_image_id;
 
-      l_image_id = gap_lib_load_image(fw->frame_filename);
+      l_image_id = -1;
+
+      /* skip attempt to render thubnail from full image in case cliptype is a movie
+       * (attempts to load movie filetyes unsupported by the gimp core do result in annoying
+       * GIMP error messages since GIMP-2.6.x, and do not make sense anyway.)
+       */
+      if((fw->stb_elem_refptr->record_type != GAP_STBREC_VID_MOVIE)
+      && (fw->stb_elem_refptr->record_type != GAP_STBREC_VID_SECTION))
+      {
+        if(gap_debug)
+        {
+          printf("p_frame_widget_render: call gap_lib_load_image to get THUMBNAIL for:%s\n", fw->frame_filename);
+        }
+        l_image_id = gap_lib_load_image(fw->frame_filename);
+      }
 
       if (l_image_id < 0)
       {
         /* could not read the image
          */
-        if(gap_debug) printf("p_frame_widget_render: fetch failed, using DEFAULT_ICON\n");
+        if(gap_debug)
+        {
+          printf("p_frame_widget_render: fetch failed, using DEFAULT_ICON\n");
+        }
         gap_story_dlg_render_default_icon(fw->stb_elem_refptr, fw->pv_ptr);
       }
       else
@@ -1617,7 +1661,7 @@ p_story_call_player(GapStbMainGlobalParams *sgpp
       player_stb_in_track = -1;  /* force composite playback in the player */
     }
 
-    //if(gap_debug)
+    if(gap_debug)
     {
        printf("\n\n\n\n\n\n\n\n\np_story_call_player:"
          " play_all:%d stb_composite:%d stb_in_track:%d begin:%d end:%d\n"
@@ -1676,7 +1720,7 @@ p_story_call_player(GapStbMainGlobalParams *sgpp
                stb->active_section
              , MAX(1, stb_in_track));
 
-        //if(gap_debug)
+        if(gap_debug)
         {
           gap_story_debug_print_mapping(stb_dup->mapping);
           fflush(stdout);
@@ -2442,7 +2486,7 @@ p_cancel_button_cb (GtkWidget *w,
                     GapStbMainGlobalParams *sgpp)
 {
 
-  //if(gap_debug)
+  if(gap_debug)
   {
     if(w != NULL)
     {
@@ -3205,7 +3249,10 @@ p_cliptarget_togglebutton_toggled_cb (GtkToggleButton *togglebutton
 {
  GapStbMainGlobalParams *sgpp;
 
- if(gap_debug) printf("CB: p_cliptarget_togglebutton_toggled_cb: %d\n", (int)togglebutton);
+ if(gap_debug)
+ {
+   printf("CB: p_cliptarget_togglebutton_toggled_cb: %d\n", (int)togglebutton);
+ }
 
  if(clip_target_ptr)
  {
@@ -3242,10 +3289,17 @@ gap_story_pw_single_clip_playback(GapStbPropWidget *pw)
   tabw = (GapStbTabWidgets *)pw->tabw;
   sgpp = pw->sgpp;
 
+  if(gap_debug)
+  {
+    printf("CALLING Player from clip properties\n");
+  }
+
   if((tabw) && (sgpp))
   {
     gint32 imagewidth;
     gint32 imageheight;
+    gint32 l_begin_frame;
+    gint32 l_end_frame;
 
     imagewidth = tabw->thumb_width;
     imageheight = tabw->thumb_height;
@@ -3259,6 +3313,7 @@ gap_story_pw_single_clip_playback(GapStbPropWidget *pw)
     }
 
 
+    p_get_begin_and_end_for_single_clip_playback(&l_begin_frame, &l_end_frame, pw->stb_elem_refptr);
     imagename = gap_story_get_filename_from_elem(pw->stb_elem_refptr);
     p_story_call_player(pw->sgpp
                      ,NULL             /* No storyboard pointer */
@@ -3267,8 +3322,8 @@ gap_story_pw_single_clip_playback(GapStbPropWidget *pw)
                      ,imageheight
                      ,aspect_ratio
                      ,-1            /* image_id (unused in imagename based playback mode) */
-                     ,pw->stb_elem_refptr->from_frame      /* play from */
-                     ,pw->stb_elem_refptr->to_frame        /* play until */
+                     ,l_begin_frame      /* play from */
+                     ,l_end_frame        /* play until */
                      ,TRUE      /* play all */
                      ,pw->stb_elem_refptr->seltrack
                      ,pw->stb_elem_refptr->delace
@@ -3432,6 +3487,7 @@ p_single_clip_playback(GapStbFrameWidget *fw)
   tabw = (GapStbTabWidgets *)fw->tabw;
   sgpp = fw->sgpp;
 
+
   if((tabw) && (sgpp))
   {
     if(fw->stb_elem_refptr)
@@ -3442,6 +3498,10 @@ p_single_clip_playback(GapStbFrameWidget *fw)
         gint32 imageheight;
         gdouble aspect_ratio;
 
+        if(gap_debug)
+        {
+          printf("CALLING Player from single clip\n");
+        }
 
         imagewidth = tabw->thumb_width;
         imageheight = tabw->thumb_height;
@@ -3487,7 +3547,24 @@ p_single_clip_playback(GapStbFrameWidget *fw)
         }
         else
         {
+          gint32 l_begin_frame;
+          gint32 l_end_frame;
+          
+          p_get_begin_and_end_for_single_clip_playback(&l_begin_frame, &l_end_frame, fw->stb_elem_refptr);
           imagename = gap_story_get_filename_from_elem(fw->stb_elem_refptr);
+ 
+          if(gap_debug)
+          {
+            printf("CALLING Player from single clip imagename:%s\n  from:%d (%d) to:%d (%d) type:%d\n  orig_filename:%s\n\n"
+                , imagename
+                ,(int)fw->stb_elem_refptr->from_frame
+                ,(int)l_begin_frame
+                ,(int)fw->stb_elem_refptr->to_frame 
+                ,(int)l_end_frame
+                ,(int)fw->stb_elem_refptr->record_type
+                , fw->stb_elem_refptr->orig_filename
+                );
+          }
           p_story_call_player(fw->sgpp
                            ,NULL             /* No storyboard pointer */
                            ,imagename
@@ -3495,8 +3572,8 @@ p_single_clip_playback(GapStbFrameWidget *fw)
                            ,imageheight
                            ,aspect_ratio
                            ,-1            /* image_id (unused in imagename based playback mode) */
-                           ,fw->stb_elem_refptr->from_frame      /* play from */
-                           ,fw->stb_elem_refptr->to_frame        /* play until */
+                           ,l_begin_frame      /* play from */
+                           ,l_end_frame        /* play until */
                            ,TRUE                                 /* play all */
                            ,fw->stb_elem_refptr->seltrack
                            ,fw->stb_elem_refptr->delace
@@ -6518,7 +6595,7 @@ p_prefetch_vthumbs (GapStbMainGlobalParams *sgpp, GapStoryBoard *stb)
     return;
   }
 
-  //if(gap_debug)
+  if(gap_debug)
   {
     printf("p_prefetch_vthumbs : stb: %d\n"
        ,(int)stb
@@ -6554,7 +6631,7 @@ p_prefetch_vthumbs (GapStbMainGlobalParams *sgpp, GapStoryBoard *stb)
                                      _("videothumbnail cancelled"));
             gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(sgpp->progress_bar_master), 0);
           }
-          //if(gap_debug)
+          if(gap_debug)
           {
             printf("p_prefetch_vthumbs : (1) videothumbnail cancelled: cancel_video_api: %d auto_vthumb_refresh_canceled:%d auto_vthumb:%d\n"
                ,(int)sgpp->cancel_video_api
@@ -6593,7 +6670,7 @@ p_prefetch_vthumbs (GapStbMainGlobalParams *sgpp, GapStoryBoard *stb)
             */
            if (sgpp->vthumb_prefetch_in_progress != GAP_VTHUMB_PREFETCH_IN_PROGRESS)
            {
-             //if(gap_debug)
+             if(gap_debug)
              {
                printf("p_prefetch_vthumbs: prefetch PROGRESS interrupt occured\n");
              }
@@ -6610,7 +6687,7 @@ p_prefetch_vthumbs (GapStbMainGlobalParams *sgpp, GapStoryBoard *stb)
     }
   }
 
-  //if(gap_debug)
+  if(gap_debug)
   {
     printf("p_prefetch_vthumbs : Loop done\n");
   }
@@ -6674,7 +6751,7 @@ p_optimized_prefetch_vthumbs (GapStbMainGlobalParams *sgpp)
   static gboolean refreshRequired = FALSE;
 
 
-  //if(gap_debug)
+  if(gap_debug)
   {
     printf("p_optimized_prefetch_vthumbs\n");
   }
@@ -6707,7 +6784,7 @@ p_optimized_prefetch_vthumbs (GapStbMainGlobalParams *sgpp)
           option_restart = TRUE;
 
 
-          //if(gap_debug)
+          if(gap_debug)
           {
             printf("p_optimized_prefetch_vthumbs  vthumb_prefetch_in_progress"
                    " (0 NOTACTIVE, 1 PROGRESS, 2 RESTART, 3 CANCEL) value:%d\n"

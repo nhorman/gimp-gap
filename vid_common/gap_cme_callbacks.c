@@ -30,6 +30,8 @@
 
 #include <config.h>
 
+#include <time.h>
+
 #include <glib/gstdio.h>
 
 #include <gtk/gtk.h>
@@ -185,16 +187,20 @@ p_switch_gui_to_running_encoder_state(GapCmeGlobalParams *gpp)
   notebook = gpp->cme__notebook;
 
   gtk_widget_show(frame);
-  npages = gtk_notebook_get_n_pages(notebook);
+  npages = gtk_notebook_get_n_pages(GTK_NOTEBOOK (notebook));
   for (idx = 0; idx < npages -1; idx++)
   {
-    gtk_widget_set_sensitive(gtk_notebook_get_nth_page(notebook, idx), FALSE);
+    gtk_widget_set_sensitive(gtk_notebook_get_nth_page(GTK_NOTEBOOK (notebook), idx), FALSE);
   }
+
+  /* store encoder start time */
+  gpp->encoder_started_on_utc_seconds = time(NULL);
 
   /* show last tab (-1) of the notbook */
   gtk_notebook_set_current_page (GTK_NOTEBOOK (notebook), -1);
 
   gpp->video_encoder_run_state =  GAP_CME_ENC_RUN_STATE_RUNNING;
+
 }  /* end p_switch_gui_to_running_encoder_state */
 
 
@@ -277,8 +283,14 @@ on_cme__response (GtkWidget *widget,
           gpp->shell_window = NULL;
           gtk_widget_destroy (dialog);
         }
+
+        gtk_main_quit ();
+
       }
-      gtk_main_quit ();
+      else
+      {
+        gtk_main_quit ();
+      }
 
       break;
   }

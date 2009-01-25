@@ -72,7 +72,7 @@ gboolean    gap_gve_misc_is_master_encoder_cancel_request(GapGveMasterEncoderSta
 
 void        gap_gve_misc_get_master_encoder_progress(GapGveMasterEncoderStatus *encStatus);
 void        gap_gve_misc_set_master_encoder_cancel_request(GapGveMasterEncoderStatus *encStatus, gboolean cancelRequest);
-
+void        gap_gve_misc_cleanup_GapGveMasterEncoder(gint32 master_encoder_id);
 
 extern int gap_debug;
 

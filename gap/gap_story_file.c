@@ -1133,10 +1133,14 @@ gboolean
 gap_story_filename_is_videofile_by_ext(const char *filename)
 {
   char  *l_ext;
-
-  l_ext = gap_lib_alloc_extension(filename);
-  if(l_ext)
+  char  *l_extension;
+  gboolean l_isKnownMovie;
+  
+  l_isKnownMovie = FALSE;
+  l_extension = gap_lib_alloc_extension(filename);
+  if(l_extension)
   {
+    l_ext = l_extension;
     if(*l_ext == '.')
     {
       l_ext++;
@@ -1163,10 +1167,11 @@ gap_story_filename_is_videofile_by_ext(const char *filename)
     ||  (strcmp(l_ext, "ASF") == 0)
     )
     {
-      return (TRUE);
+      l_isKnownMovie = TRUE;
     }
+    g_free(l_extension);
   }
-  return(FALSE);
+  return(l_isKnownMovie);
 }  /* end gap_story_filename_is_videofile_by_ext */
 
 /* --------------------------------

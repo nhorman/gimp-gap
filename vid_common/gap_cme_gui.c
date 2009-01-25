@@ -2793,6 +2793,25 @@ p_create_encoder_status_frame (GapCmeGlobalParams *gpp)
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
+  row++;
+
+
+  label = gtk_label_new (_("Encoding Time Elapsed:"));
+  gtk_widget_show (label);
+  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+  gtk_table_attach (GTK_TABLE (table), label, 0, 1, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+
+  label = gtk_label_new ("######");
+  gpp->cme__label_enc_time_elapsed          = label;
+  gtk_widget_show (label);
+  gtk_misc_set_alignment (GTK_MISC (label), 1.0, 0.5);
+  gtk_table_attach (GTK_TABLE (table), label, 1, 2, row, row+1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
   return(frame);
 }  /* end p_create_encoder_status_frame */
 
@@ -3851,7 +3870,13 @@ p_call_encoder_procedure(GapCmeGlobalParams *gpp)
     l_rc = 0;
   }
   g_free(l_params);
-
+  
+  if(gap_debug)
+  {
+     printf("p_call_encoder_procedure %s: DONE\n", gpp->val.ecp_sel.vid_enc_plugin);
+  }
+  
+  
   if(l_rc < 0)
   {
      l_msg = g_strdup_printf(_("Call of Required Plugin %s failed"), gpp->val.ecp_sel.vid_enc_plugin);
@@ -3891,7 +3916,11 @@ p_set_label_to_numeric_value(GtkWidget *label, gint32 value)
 /* ----------------------------------------
  * gap_cme_gui_update_encoder_status
  * ----------------------------------------
- *
+ * called via polling timer while the encoder plug-in
+ * is running (as separete process).
+ * The displyed information is sent by the running encoder process
+ * and received here (in the master videoencoder GUI process)
+ * via procedure gap_gve_misc_get_master_encoder_progress
  */
 void
 gap_cme_gui_update_encoder_status(GapCmeGlobalParams *gpp)
@@ -3906,6 +3935,8 @@ gap_cme_gui_update_encoder_status(GapCmeGlobalParams *gpp)
   if (gpp)
   {
     GtkWidget  *pbar;
+    GtkWidget *label;
+    
     gap_gve_misc_get_master_encoder_progress(&gpp->encStatus);
 
     gtk_widget_show(gpp->cme__encoder_status_frame);
@@ -3914,6 +3945,28 @@ gap_cme_gui_update_encoder_status(GapCmeGlobalParams *gpp)
     p_set_label_to_numeric_value(gpp->cme__label_enc_stat_frames_done, gpp->encStatus.frames_processed);
     p_set_label_to_numeric_value(gpp->cme__label_enc_stat_frames_encoded, gpp->encStatus.frames_encoded);
     p_set_label_to_numeric_value(gpp->cme__label_enc_stat_frames_copied_lossless, gpp->encStatus.frames_copied_lossless);
+    
+        
+    label = gpp->cme__label_enc_time_elapsed;
+    if((label != NULL)
+    && (gpp->video_encoder_run_state ==  GAP_CME_ENC_RUN_STATE_RUNNING))
+    {
+      time_t l_currentUtcTimeInSecs;
+      gint32 l_secsElapsed;
+      char *buffer;
+
+      l_currentUtcTimeInSecs = time(NULL);
+      l_secsElapsed = l_currentUtcTimeInSecs - gpp->encoder_started_on_utc_seconds;
+      
+      buffer = g_strdup_printf("%d:%02d:%02d"
+                              , (int)l_secsElapsed / 3600
+                              , (int)(l_secsElapsed / 60) % 60
+                              , (int)l_secsElapsed % 60
+                              );
+      gtk_label_set_text(GTK_LABEL(label), buffer);
+      g_free(buffer);
+    }
+    
 
     pbar = gpp->cme__progressbar_status;
     if(pbar)
@@ -3933,8 +3986,22 @@ gap_cme_gui_update_encoder_status(GapCmeGlobalParams *gpp)
       gtk_progress_bar_set_text(GTK_PROGRESS_BAR(pbar), l_msg);
       g_free(l_msg);
     }
+//    if (gpp->video_encoder_run_state ==  GAP_CME_ENC_RUN_STATE_RUNNING)
+//    {
+//      /* detect if encoder has finished (required for asynchron calls since GIMP-2.6)  */
+//      if(gpp->encStatus.frames_processed >= gpp->encStatus.total_frames)
+//      {
+//        if(gap_debug)
+//        {
+//          printf("  gap_cme_gui_update_encoder_status -- detected encoder FINISHED via progress\n"
+//            , gpp->encStatus.frames_processed
+//            );
+//        }
+//        gpp->video_encoder_run_state =  GAP_CME_ENC_RUN_STATE_FINISHED;
+//      }
+//    }
   }
-}
+}  /* end gap_cme_gui_update_encoder_status */
 
 
 /* ----------------------------------------
@@ -3952,6 +4019,9 @@ gap_cme_gui_start_video_encoder(GapCmeGlobalParams *gpp)
    l_tmpname = NULL;
    l_tmp_image_id = -1;
 
+   /* cheks for encoding a multilayer image as video
+    * (this may require save of a temporary imge before we can start the encoder plugin)
+    */
    if((gpp->ainfo.last_frame_nr - gpp->ainfo.first_frame_nr == 0)
    && (gpp->val.storyboard_file[0] == '\0'))
    {
@@ -3994,8 +4064,13 @@ gap_cme_gui_start_video_encoder(GapCmeGlobalParams *gpp)
        , abs(gpp->val.range_to - gpp->val.range_from) + 1   /* total_frames */
        );
 
-   /* ------------------------------------------- HERE WE GO, start Video Encoder ---- */
+   /* ------------------------------------------- HERE WE GO, start the selected Video Encoder ----
+    * the encoder will run as separate process, started by the GIMP core.
+    * note that any further calls of GIMP core procedures .. from another thread ...
+    * will be blocked by the GIMP core while the encoder process is running.
+    */
    l_rc = p_call_encoder_procedure(gpp);
+   
    gpp->video_encoder_run_state =  GAP_CME_ENC_RUN_STATE_FINISHED;
 
    if(l_tmp_image_id >= 0)
@@ -4003,6 +4078,8 @@ gap_cme_gui_start_video_encoder(GapCmeGlobalParams *gpp)
      gap_image_delete_immediate(l_tmp_image_id);
      g_remove(l_tmpname);
    }
+
+
    if(l_tmpname)
    {
      g_free(l_tmpname);
