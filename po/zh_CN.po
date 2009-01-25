@@ -17,7 +17,7 @@ msgstr ""
 #. Button  to invoke fontbrowser
 #: ../gap/gap_arr_dialog.c:544
 msgid "Font Browser"
-msgstr ""
+msgstr "字体浏览器"
 
 #. parameter settings
 #: ../gap/gap_arr_dialog.c:1294
@@ -30,40 +30,40 @@ msgstr ""
 
 #: ../gap/gap_arr_dialog.c:1653
 msgid "Press Button"
-msgstr ""
+msgstr "点击按钮"
 
 #: ../gap/gap_arr_dialog.c:1654
 msgid "Select"
-msgstr ""
+msgstr "选择"
 
 #: ../gap/gap_arr_dialog.c:1804
 #, c-format
 msgid "Directory '%s' already exists"
-msgstr ""
+msgstr "目录“%s”已存在"
 
 #: ../gap/gap_arr_dialog.c:1809
 #, c-format
 msgid "File '%s' already exists"
-msgstr ""
+msgstr "文件“%s”已存在"
 
 #: ../gap/gap_arr_dialog.c:1810 ../gap/gap_vex_dialog.c:247
 #: ../vid_common/gap_cme_gui.c:2274
 msgid "Overwrite"
-msgstr ""
+msgstr "覆盖"
 
 #: ../gap/gap_arr_dialog.c:1821 ../gap/gap_decode_mplayer.c:702
 #: ../gap/gap_decode_xanim.c:375 ../gap/gap_range_ops.c:1460
 msgid "GAP Question"
-msgstr ""
+msgstr "GAP 问题"
 
 #: ../gap/gap_arr_dialog.c:1822
 msgid "File Overwrite Warning"
-msgstr ""
+msgstr "文件覆盖警告"
 
 #: ../gap/gap_arr_dialog.c:1907
 #, c-format
 msgid "ERROR: could not create directory:'%s'%s"
-msgstr ""
+msgstr "错误：无法创建目录：“%s”%s"
 
 #: ../gap/gap_arr_dialog.c:1960
 #, c-format
@@ -72,6 +72,9 @@ msgid ""
 "file: '%s'\n"
 "%s"
 msgstr ""
+"错误：写入视频索引失败\n"
+"文件：“%s”\n"
+"%s"
 
 #: ../gap/gap_arr_dialog.c:2065
 #, c-format
@@ -84,6 +87,12 @@ msgid ""
 "your gimprc file:\n"
 "%s"
 msgstr ""
+"您要创建一个视频索引文件么？\n"
+"\n"
+"如果您希望 GIMP-GAP 自动创建视频索引\n"
+"当需要时也不再显示此对话\n"
+"则在您的 gimprc 文件中加入以下内容：\n"
+"%s"
 
 #: ../gap/gap_arr_dialog.c:2091
 #, c-format
@@ -103,6 +112,11 @@ msgid ""
 "but requires one initial full scann.\n"
 "(this will take a while).\n"
 msgstr ""
+"提示：\n"
+"您需要创建为这个此视频一个索引。\n"
+"这将使您可以快速进行随机的祯访问。\n"
+"但是您需要一次用于初始化的完整视频扫描\n"
+"(这将花费一些时间)\n"
 
 #: ../gap/gap_arr_dialog.c:2102
 #, c-format
@@ -114,20 +128,20 @@ msgstr ""
 
 #: ../gap/gap_arr_dialog.c:2113 ../gap/gap_decode_xanim.c:237
 msgid "Video:"
-msgstr ""
+msgstr "视频："
 
 #: ../gap/gap_arr_dialog.c:2122
 msgid "Index:"
-msgstr ""
+msgstr "索引："
 
 #: ../gap/gap_arr_dialog.c:2127
 msgid "Create Videoindex file"
-msgstr ""
+msgstr "创建视频索引文件"
 
 #: ../gap/gap_audio_wav.c:101
 #, c-format
 msgid "Problem while writing audiofile: %s"
-msgstr ""
+msgstr "写入音频文件出错： %s"
 
 #: ../gap/gap_audio_wav.c:613 ../vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:1318
 #, c-format
@@ -145,6 +159,9 @@ msgid ""
 "contains too many audio-input tracks\n"
 "(only %d tracks are used, the rest are ignored)."
 msgstr ""
+"文件： %s\n"
+"包含了太多的音频输入轨迹"
+"(只有 %d 个音轨被使用，其余的已忽略)。"
 
 #: ../gap/gap_audio_wav.c:641
 #, c-format
@@ -163,7 +180,7 @@ msgstr ""
 #: ../gap/gap_base_ops.c:236 ../gap/gap_base_ops.c:291
 #, c-format
 msgid "Error: could not rename frame %d to %d"
-msgstr ""
+msgstr "错误：无法将祯 %d 重命名为 %d"
 
 #: ../gap/gap_base_ops.c:213
 msgid "Density duplicating frames..."
