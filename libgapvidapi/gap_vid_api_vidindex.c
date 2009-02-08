@@ -14,6 +14,7 @@
  * 2004.03.06   hof created
  *
  */
+
 static char *   p_build_videoindex_filename(const char *filename, gint32 track, const char *decoder_name);
 static gboolean p_equal_mtime(time_t mtime_idx, time_t mtime_file);
 
@@ -251,8 +252,86 @@ GVA_free_videoindex(t_GVA_Videoindex **in_vindex)
 
 
 /* ----------------------------------
+ * p_debug_print_videoindex
+ * ----------------------------------
+ */
+static void
+p_debug_print_videoindex(t_GVA_Videoindex *vindex)
+{
+  printf("\n");
+  printf("GVA_debug_print_videoindex: START\n");
+  if(vindex)
+  {
+    gint l_idx;
+    
+    printf("GVA_VIDEOINDEX dump START");
+    
+    printf("\n\videoindex_filename:%s\n", vindex->videoindex_filename);
+    printf(" MTIM:  vindex->hdr.val_mtim:%s\n TYPE:  vindex->hdr.val_type:%s\n"
+                   , vindex->hdr.val_mtim
+                   , vindex->hdr.val_type
+                   );
+
+    
+    printf("TYPE:");
+    switch(vindex->tabtype)
+    {
+      case GVA_IDX_TT_WITHOUT_TIMECODE_GDOUBLE:
+        printf("gdouble");
+        break;
+      case GVA_IDX_TT_WITHOUT_TIMECODE_GINT64:
+        printf("gint64");
+        break;
+      case GVA_IDX_TT_GDOUBLE:
+        printf("GDOUBLE");
+        break;
+      case GVA_IDX_TT_GINT64:
+        printf("GINT64");
+        break;
+      default:
+        printf("undefined");
+        break;
+    }
+    printf("\n");
+    printf("STEP:");
+    printf("%d\n", (int)vindex->stepsize);
+    printf("SIZE:");
+    printf("%d\n", (int)vindex->tabsize_used);
+    printf("TRAK:");
+    printf("%d\n", (int)vindex->track);
+    printf("FTOT:");
+    printf("%d\n", (int)vindex->total_frames);
+    printf("DECO:");
+    printf("%15s\n", vindex->hdr.val_deco);
+    printf("MTIM:");
+    printf("%ld\n", (long)vindex->mtime);
+    printf("FILE:%s\n\n", vindex->videofile_uri);
+    
+    for(l_idx=0; l_idx < vindex->tabsize_used; l_idx++)
+    {
+      printf("VINDEX: ofs_tab[%d]: ofs64: %lld seek_nr:%d flen:%d chk:%d dts:%lld\n"
+	       , (int)l_idx
+	       , vindex->ofs_tab[l_idx].uni.offset_gint64
+	       , (int)vindex->ofs_tab[l_idx].seek_nr
+	       , (int)vindex->ofs_tab[l_idx].frame_length
+	       , (int)vindex->ofs_tab[l_idx].checksum
+	       , vindex->ofs_tab[l_idx].timecode_dts
+	       );
+    }
+  }
+  
+  printf("GVA_debug_print_videoindex: END\n\n");
+
+}  /* end p_debug_print_videoindex */
+
+
+/* ----------------------------------
  * GVA_load_videoindex
  * ----------------------------------
+ * load videoindex from file
+ * note that the old fileformat without dts timecode is supported for backwards compatibility.
+ * the old format used lowercase type names "gint64" "gdouble" 
+ * the new format uses uppercase "GINT64" "GDOUBLE" 
  */
 t_GVA_Videoindex *
 GVA_load_videoindex(const char *filename, gint32 track, const char *decoder_name)
@@ -330,13 +409,21 @@ GVA_load_videoindex(const char *filename, gint32 track, const char *decoder_name
 	    }
 
             vindex->tabtype = GVA_IDX_TT_UNDEFINED;
-            if(strcmp(vindex->hdr.val_type, "gdouble") == 0)
+            if(strcmp(vindex->hdr.val_type, "GINT64") == 0)
+            {
+              vindex->tabtype = GVA_IDX_TT_GINT64;
+            }
+            else if(strcmp(vindex->hdr.val_type, "GDOUBLE") == 0)
             {
               vindex->tabtype = GVA_IDX_TT_GDOUBLE;
             }
-            if(strcmp(vindex->hdr.val_type, "gint64") == 0)
+            else if(strcmp(vindex->hdr.val_type, "gint64") == 0)
             {
-              vindex->tabtype = GVA_IDX_TT_GINT64;
+              vindex->tabtype = GVA_IDX_TT_WITHOUT_TIMECODE_GINT64;
+            }
+            else if(strcmp(vindex->hdr.val_type, "gdouble") == 0)
+            {
+              vindex->tabtype = GVA_IDX_TT_WITHOUT_TIMECODE_GDOUBLE;
             }
 
 
@@ -344,26 +431,56 @@ GVA_load_videoindex(const char *filename, gint32 track, const char *decoder_name
 	    rd_size = -1;
             switch(vindex->tabtype)
             {
+              case GVA_IDX_TT_WITHOUT_TIMECODE_GINT64:    /* old format */
+              case GVA_IDX_TT_WITHOUT_TIMECODE_GDOUBLE:   /* old format */
+               
+               delete_flag = TRUE;
+               
+                //rd_size = sizeof(t_GVA_IndexElem) * vindex->tabsize_used;
+                //if(rd_size > 0)
+                //{
+                //  vindex->ofs_tab = g_new(t_GVA_IndexElem, vindex->tabsize_used);
+                //  if(vindex->ofs_tab)
+                //  {
+                //    int ii;
+                //    t_GVA_IndexElemWithoutTimecode *oldIndexformatTab;
+                //  
+                //    oldIndexformatTab = g_new(t_GVA_IndexElemWithoutTimecode, vindex->tabsize_used);
+                //     rd_len = fread(oldIndexformatTab, 1, rd_size, fp);
+                //    
+                //   /* migration loop to convert from old index format */
+                //   for(ii=0; ii < vindex->tabsize_used; ii++)
+                //   {
+                //      vindex->ofs_tab[ii].timecode_dts       = AV_NOPTS_VALUE;
+                //      vindex->ofs_tab[ii].uni.offset_gint64  = oldIndexformatTab[ii].uni.offset_gint64;
+                //      vindex->ofs_tab[ii].seek_nr            = oldIndexformatTab[ii].seek_nr;
+                //      vindex->ofs_tab[ii].frame_length       = oldIndexformatTab[ii].frame_length;
+                //      vindex->ofs_tab[ii].checksum           = oldIndexformatTab[ii].checksum;
+                //    }
+                //  }
+                //}
+                break;
               case GVA_IDX_TT_GINT64:
               case GVA_IDX_TT_GDOUBLE:
-		rd_size = sizeof(t_GVA_IndexElem) * vindex->tabsize_used;
-		if(rd_size > 0)
-		{
-        	  vindex->ofs_tab = g_new(t_GVA_IndexElem, vindex->tabsize_used);
-        	  if(vindex->ofs_tab)
-        	  {
-        	    rd_len = fread(vindex->ofs_tab, 1, rd_size, fp);
-        	  }
-		}
-        	break;
+                rd_size = sizeof(t_GVA_IndexElem) * vindex->tabsize_used;
+                if(rd_size > 0)
+                {
+                  vindex->ofs_tab = g_new(t_GVA_IndexElem, vindex->tabsize_used);
+                  if(vindex->ofs_tab)
+                  {
+                    rd_len = fread(vindex->ofs_tab, 1, rd_size, fp);
+                  }
+                }
+                break;
               default:
-        	break;
+                break;
             }
             if(rd_len == rd_size)
             {
               success = TRUE;
               if(gap_debug) 
               {
+                p_debug_print_videoindex(vindex);
                 printf("GVA_load_videoindex  SUCCESS\n");
               }
             }
@@ -418,6 +535,8 @@ GVA_load_videoindex(const char *filename, gint32 track, const char *decoder_name
 /* ----------------------------------
  * GVA_save_videoindex
  * ----------------------------------
+ * save videoindex to fileformat
+ * (always save the new format with dts timecode)
  */
 gboolean
 GVA_save_videoindex(t_GVA_Videoindex *vindex, const char *filename, const char *decoder_name)
@@ -452,11 +571,13 @@ GVA_save_videoindex(t_GVA_Videoindex *vindex, const char *filename, const char *
   switch(vindex->tabtype)
   {
     case GVA_IDX_TT_GDOUBLE:
-      g_snprintf(vindex->hdr.val_type, sizeof(vindex->hdr.val_type), "gdouble");
+    case GVA_IDX_TT_WITHOUT_TIMECODE_GDOUBLE:
+      g_snprintf(vindex->hdr.val_type, sizeof(vindex->hdr.val_type), "GDOUBLE");
       break;
     case GVA_IDX_TT_GINT64:
+    case GVA_IDX_TT_WITHOUT_TIMECODE_GINT64:
     case GVA_IDX_TT_UNDEFINED:
-      g_snprintf(vindex->hdr.val_type, sizeof(vindex->hdr.val_type), "gint64");
+      g_snprintf(vindex->hdr.val_type, sizeof(vindex->hdr.val_type), "GINT64");
       break;
   }
   g_snprintf(vindex->hdr.key_step, sizeof(vindex->hdr.key_step), "STEP");
@@ -527,51 +648,6 @@ GVA_debug_print_videoindex(t_GVA_Handle *gvahand)
   t_GVA_Videoindex    *vindex;
   
   vindex = gvahand->vindex;
-  printf("\n");
-  printf("GVA_debug_print_videoindex: START\n");
-  if(vindex)
-  {
-    gint l_idx;
-    
-    printf("GVA_VIDEOINDEX dump START");
-    printf("TYPE:");
-    switch(vindex->tabtype)
-    {
-      case GVA_IDX_TT_GDOUBLE:
-        printf("gdouble");
-        break;
-      case GVA_IDX_TT_GINT64:
-      case GVA_IDX_TT_UNDEFINED:
-        printf("gint64");
-        break;
-    }
-    printf("\n");
-    printf("STEP:");
-    printf("%d\n", (int)vindex->stepsize);
-    printf("SIZE:");
-    printf("%d\n", (int)vindex->tabsize_used);
-    printf("TRAK:");
-    printf("%d\n", (int)vindex->track);
-    printf("FTOT:");
-    printf("%d\n", (int)vindex->total_frames);
-    printf("DECO:");
-    printf("%15s\n", vindex->hdr.val_deco);
-    printf("MTIM:");
-    printf("%ld\n", (long)vindex->mtime);
-    printf("FILE:%s\n\n", vindex->videofile_uri);
-    
-    for(l_idx=0; l_idx < vindex->tabsize_used; l_idx++)
-    {
-      printf("VINDEX: ofs_tab[%d]: ofs64: %d seek_nr:%d flen:%d chk:%d\n"
-	       , (int)l_idx
-	       , (int)vindex->ofs_tab[l_idx].uni.offset_gint64
-	       , (int)vindex->ofs_tab[l_idx].seek_nr
-	       , (int)vindex->ofs_tab[l_idx].frame_length
-	       , (int)vindex->ofs_tab[l_idx].checksum
-	       );
-    }
-  }
-  
-  printf("GVA_debug_print_videoindex: END\n\n");
-  
+  p_debug_print_videoindex(vindex);
+
 }  /* end GVA_debug_print_videoindex */

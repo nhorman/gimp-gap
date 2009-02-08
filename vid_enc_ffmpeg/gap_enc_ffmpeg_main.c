@@ -45,6 +45,7 @@
  */
 
 /* revision history:
+ * version 2.1.0a;  2009.02.07   hof: update to ffmpeg snapshot 2009.01.31 (removed support for older ffmpeg versions)
  * version 2.1.0a;  2005.07.16   hof: base support for encoding of multiple tracks
  *                                    video is still limited to 1 track
  *                                    multiple audio tracks are possible
@@ -55,7 +56,6 @@
  *                                    changed presets (are still a wild guess)
  * version 2.1.0a;  2004.11.02   hof: added patch from pippin (allows compile with FFMPEG-0.4.0.9pre1)
  *                               support for the incompatible older (stable) FFMPEG 0.4.8 version is available
- *                               via precompiler checks HAVE_OLD_FFMPEG_0408
  * version 2.1.0a;  2004.06.10   hof: removed deinterlace option
  *                               delace was not implemented in the encoder module
  *                               and probably will never be implemented here for reasons a) and b)
@@ -92,6 +92,9 @@
 #define DEFAULT_PASS_LOGFILENAME "ffmpeg2pass"
 #define MAX_AUDIO_PACKET_SIZE 16384
 
+#ifndef DEFAULT_FRAME_RATE_BASE
+#define DEFAULT_FRAME_RATE_BASE 1001000
+#endif
 
 /* define some Constant values
  * (needed just in case we are compiling with older ffmpeg releases)
@@ -195,7 +198,6 @@ typedef struct t_ffmpeg_handle
  int frame_bottomBand;
  int frame_leftBand;
  int frame_rightBand;
- int frame_rate;
  int video_bit_rate;
  int video_bit_rate_tolerance;
  float video_qscale;
@@ -225,7 +227,7 @@ typedef struct t_ffmpeg_handle
  int umv;
  int use_4mv;
  int workaround_bugs;
- int error_resilience;
+ int error_recognition;
  int error_concealment;
  int dct_algo;
  int idct_algo;
@@ -255,7 +257,8 @@ typedef struct t_ffmpeg_handle
  char *pass_logfilename;
  int audio_stream_copy;
  int video_stream_copy;
- int64_t frame_duration_pts;
+ gdouble pts_stepsize_per_frame;
+ gint32 encode_frame_nr;          /* number of frame to encode always starts at 1 and inc by one (base for monotone timecode calculation) */
 
 } t_ffmpeg_handle;
 
@@ -280,6 +283,11 @@ static void run(const gchar *name
 	      , const GimpParam *param
               , gint *nreturn_vals
 	      , GimpParam **return_vals);
+
+
+static void   p_debug_print_dump_AVCodecContext(AVCodecContext *codecContext);
+
+
 static void   p_gimp_get_data(const char *key, void *buffer, gint expected_size);
 static void   p_ffmpeg_init_default_params(GapGveFFMpegValues *epp);
 
@@ -300,6 +308,9 @@ static void              p_sound_precalculations(t_ffmpeg_handle *ffh
 static void              p_process_audio_frame(t_ffmpeg_handle *ffh, t_awk_array *awp);
 static void              p_close_audio_input_files(t_awk_array *awp);
 static void              p_open_audio_input_files(t_awk_array *awp, GapGveFFMpegGlobalParams *gpp);
+
+static gint64            p_calculate_current_timecode(t_ffmpeg_handle *ffh);
+static void              p_set_timebase_from_framerate(AVRational *time_base, gdouble framerate);
 
 static void              p_ffmpeg_open_init(t_ffmpeg_handle *ffh, GapGveFFMpegGlobalParams *gpp);
 static gboolean          p_init_video_codec(t_ffmpeg_handle *ffh
@@ -730,6 +741,224 @@ run (const gchar      *name,
 }       /* end run */
 
 
+/* ---------------------------------------
+ * p_debug_print_dump_AVCodecContext
+ * ---------------------------------------
+ * dump values of all (200 !!) parameters
+ * of the codec context to stdout
+ */
+static void
+p_debug_print_dump_AVCodecContext(AVCodecContext *codecContext)
+{
+  printf("AVCodecContext Settings START\n");
+  
+  printf("(av_class (ptr AVClass*)      %d)\n", (int)    codecContext->av_class);
+  printf("(bit_rate                     %d)\n", (int)    codecContext->bit_rate);
+  printf("(bit_rate_tolerance           %d)\n", (int)    codecContext->bit_rate_tolerance);
+  printf("(flags                        %d)\n", (int)    codecContext->flags);
+  printf("(sub_id                       %d)\n", (int)    codecContext->sub_id);
+  printf("(me_method                    %d)\n", (int)    codecContext->me_method);
+  printf("(extradata (ptr uint8)        %d)\n", (int)    codecContext->extradata);
+  printf("(extradata_size               %d)\n", (int)    codecContext->extradata_size);
+  printf("(time_base.num                %d)\n", (int)    codecContext->time_base.num);
+  printf("(time_base.den                %d)\n", (int)    codecContext->time_base.den);
+  printf("(width                        %d)\n", (int)    codecContext->width);
+  printf("(height                       %d)\n", (int)    codecContext->height);
+  printf("(gop_size                     %d)\n", (int)    codecContext->gop_size);
+  printf("(pix_fmt                      %d)\n", (int)    codecContext->pix_fmt);
+  printf("(rate_emu                     %d)\n", (int)    codecContext->rate_emu);
+  printf("(draw_horiz_band (fptr)       %d)\n", (int)    codecContext->draw_horiz_band);
+  printf("(sample_rate                  %d)\n", (int)    codecContext->sample_rate);
+  printf("(channels                     %d)\n", (int)    codecContext->channels);
+  printf("(sample_fmt                   %d)\n", (int)    codecContext->sample_fmt);
+  printf("(frame_size    (tabu)         %d)\n", (int)    codecContext->frame_size);
+  printf("(frame_number  (tabu)         %d)\n", (int)    codecContext->frame_number);
+  printf("(real_pict_num (tabu)         %d)\n", (int)    codecContext->real_pict_num);
+  printf("(delay                        %d)\n", (int)    codecContext->delay);
+  printf("(qcompress                    %f)\n", (float)  codecContext->qcompress);
+  printf("(qblur                        %f)\n", (float)  codecContext->qblur);
+  printf("(qmin                         %d)\n", (int)    codecContext->qmin);
+  printf("(qmax                         %d)\n", (int)    codecContext->qmax);
+  printf("(max_qdiff                    %d)\n", (int)    codecContext->max_qdiff);
+  printf("(max_b_frames                 %d)\n", (int)    codecContext->max_b_frames);
+  printf("(b_quant_factor               %f)\n", (float)  codecContext->b_quant_factor);
+  printf("(rc_strategy                  %d)\n", (int)    codecContext->rc_strategy);
+  printf("(b_frame_strategy             %d)\n", (int)    codecContext->b_frame_strategy);
+  printf("(hurry_up                     %d)\n", (int)    codecContext->hurry_up);
+  printf("(codec (AVCodec *)            %d)\n", (int)    codecContext->codec);
+  printf("(priv_data (void *)           %d)\n", (int)    codecContext->priv_data);
+  printf("(rtp_payload_size             %d)\n", (int)    codecContext->rtp_payload_size);
+  printf("(rtp_callback (fptr)          %d)\n", (int)    codecContext->rtp_callback);
+  printf("(mv_bits                      %d)\n", (int)    codecContext->mv_bits);
+  printf("(header_bits                  %d)\n", (int)    codecContext->header_bits);
+  printf("(i_tex_bits                   %d)\n", (int)    codecContext->i_tex_bits);
+  printf("(p_tex_bits                   %d)\n", (int)    codecContext->p_tex_bits);
+  printf("(i_count                      %d)\n", (int)    codecContext->i_count);
+  printf("(p_count                      %d)\n", (int)    codecContext->p_count);
+  printf("(skip_count                   %d)\n", (int)    codecContext->skip_count);
+  printf("(misc_bits                    %d)\n", (int)    codecContext->misc_bits);
+  printf("(frame_bits                   %d)\n", (int)    codecContext->frame_bits);
+  printf("(opaque (void *)              %d)\n", (int)    codecContext->opaque);
+  printf("(codec_name                   %s)\n", (int)    &codecContext->codec_name[0]);
+  printf("(codec_type                   %d)\n", (int)    codecContext->codec_type);
+  printf("(codec_id                     %d)\n", (int)    codecContext->codec_id);
+  printf("(codec_tag (fourcc)           %d)\n", (int)    codecContext->codec_tag);
+  printf("(workaround_bugs              %d)\n", (int)    codecContext->workaround_bugs);
+  printf("(luma_elim_threshold          %d)\n", (int)    codecContext->luma_elim_threshold);
+  printf("(chroma_elim_threshold        %d)\n", (int)    codecContext->chroma_elim_threshold);
+  printf("(strict_std_compliance        %d)\n", (int)    codecContext->strict_std_compliance);
+  printf("(b_quant_offset               %f)\n", (float)  codecContext->b_quant_offset);
+  printf("(error_recognition            %d)\n", (int)    codecContext->error_recognition);
+  printf("(get_buffer  (fptr)           %d)\n", (int)    codecContext->get_buffer);
+  printf("(release_buffer (fptr)        %d)\n", (int)    codecContext->release_buffer);
+  printf("(has_b_frames                 %d)\n", (int)    codecContext->has_b_frames);
+  printf("(block_align                  %d)\n", (int)    codecContext->block_align);
+  printf("(parse_only                   %d)\n", (int)    codecContext->parse_only);
+  printf("(mpeg_quant                   %d)\n", (int)    codecContext->mpeg_quant);
+  printf("(stats_out (char*)            %d)\n", (int)    codecContext->stats_out);
+  printf("(stats_in (char*)             %d)\n", (int)    codecContext->stats_in);
+  printf("(rc_qsquish                   %f)\n", (float)  codecContext->rc_qsquish);
+  printf("(rc_qmod_amp                  %f)\n", (float)  codecContext->rc_qmod_amp);
+  printf("(rc_qmod_freq                 %d)\n", (int)    codecContext->rc_qmod_freq);
+  printf("(rc_override (RcOverride*)    %d)\n", (int)    codecContext->rc_override);
+  printf("(rc_override_count            %d)\n", (int)    codecContext->rc_override_count);
+  printf("(rc_eq (char *)               %d)\n", (int)    codecContext->rc_eq);
+  printf("(rc_max_rate                  %d)\n", (int)    codecContext->rc_max_rate);
+  printf("(rc_min_rate                  %d)\n", (int)    codecContext->rc_min_rate);
+  printf("(rc_buffer_size               %d)\n", (int)    codecContext->rc_buffer_size);
+  printf("(rc_buffer_aggressivity       %f)\n", (float)  codecContext->rc_buffer_aggressivity);
+  printf("(i_quant_factor               %f)\n", (float)  codecContext->i_quant_factor);
+  printf("(i_quant_offset               %f)\n", (float)  codecContext->i_quant_offset);
+  printf("(rc_initial_cplx              %f)\n", (float)  codecContext->rc_initial_cplx);
+  printf("(dct_algo                     %d)\n", (int)    codecContext->dct_algo);
+  printf("(lumi_masking                 %f)\n", (float)  codecContext->lumi_masking);
+  printf("(temporal_cplx_masking        %f)\n", (float)  codecContext->temporal_cplx_masking);
+  printf("(spatial_cplx_masking         %f)\n", (float)  codecContext->spatial_cplx_masking);
+  printf("(p_masking                    %f)\n", (float)  codecContext->p_masking);
+  printf("(dark_masking                 %f)\n", (float)  codecContext->dark_masking);
+  printf("(idct_algo                    %d)\n", (int)    codecContext->idct_algo);
+  printf("(slice_count                  %d)\n", (int)    codecContext->slice_count);
+  printf("(slice_offset (int *)         %d)\n", (int)    codecContext->slice_offset);
+  printf("(error_concealment            %d)\n", (int)    codecContext->error_concealment);
+  printf("(dsp_mask                     %d)\n", (int)    codecContext->dsp_mask);
+  printf("(bits_per_coded_sample        %d)\n", (int)    codecContext->bits_per_coded_sample);
+  printf("(prediction_method            %d)\n", (int)    codecContext->prediction_method);
+  printf("(sample_aspect_ratio.num      %d)\n", (int)    codecContext->sample_aspect_ratio.num);
+  printf("(sample_aspect_ratio.den      %d)\n", (int)    codecContext->sample_aspect_ratio.den);
+  printf("(coded_frame (AVFrame*)       %d)\n", (int)    codecContext->coded_frame);
+  printf("(debug                        %d)\n", (int)    codecContext->debug);
+  printf("(debug_mv                     %d)\n", (int)    codecContext->debug_mv);
+  printf("(error[0]                     %lld)\n",        codecContext->error[0]);
+  printf("(error[1]                     %lld)\n",        codecContext->error[1]);
+  printf("(error[2]                     %lld)\n",        codecContext->error[2]);
+  printf("(error[3]                     %lld)\n",        codecContext->error[3]);
+  printf("(mb_qmin                      %d)\n", (int)    codecContext->mb_qmin);
+  printf("(mb_qmax                      %d)\n", (int)    codecContext->mb_qmax);
+  printf("(me_cmp                       %d)\n", (int)    codecContext->me_cmp);
+  printf("(me_sub_cmp                   %d)\n", (int)    codecContext->me_sub_cmp);
+  printf("(mb_cmp                       %d)\n", (int)    codecContext->mb_cmp);
+  printf("(ildct_cmp                    %d)\n", (int)    codecContext->ildct_cmp);
+  printf("(dia_size                     %d)\n", (int)    codecContext->dia_size);
+  printf("(last_predictor_count         %d)\n", (int)    codecContext->last_predictor_count);
+  printf("(pre_me                       %d)\n", (int)    codecContext->pre_me);
+  printf("(me_pre_cmp                   %d)\n", (int)    codecContext->me_pre_cmp);
+  printf("(pre_dia_size                 %d)\n", (int)    codecContext->pre_dia_size);
+  printf("(me_subpel_quality            %d)\n", (int)    codecContext->me_subpel_quality);
+  printf("(get_format (fptr)            %d)\n", (int)    codecContext->get_format);
+  printf("(dtg_active_format            %d)\n", (int)    codecContext->dtg_active_format);
+  printf("(me_range                     %d)\n", (int)    codecContext->me_range);
+  printf("(intra_quant_bias             %d)\n", (int)    codecContext->intra_quant_bias);
+  printf("(inter_quant_bias             %d)\n", (int)    codecContext->inter_quant_bias);
+  printf("(color_table_id               %d)\n", (int)    codecContext->color_table_id);
+  printf("(internal_buffer_count        %d)\n", (int)    codecContext->internal_buffer_count);
+  printf("(internal_buffer (void*)      %d)\n", (int)    codecContext->internal_buffer);
+  printf("(global_quality               %d)\n", (int)    codecContext->global_quality);
+  printf("(coder_type                   %d)\n", (int)    codecContext->coder_type);
+  printf("(context_model                %d)\n", (int)    codecContext->context_model);
+  printf("(slice_flags                  %d)\n", (int)    codecContext->slice_flags);
+  printf("(xvmc_acceleration            %d)\n", (int)    codecContext->xvmc_acceleration);
+  printf("(mb_decision                  %d)\n", (int)    codecContext->mb_decision);
+  printf("(intra_matrix (uint16_t*)     %d)\n", (int)    codecContext->intra_matrix);
+  printf("(inter_matrix (uint16_t*)     %d)\n", (int)    codecContext->inter_matrix);
+  printf("(stream_codec_tag             %d)\n", (int)    codecContext->stream_codec_tag);
+  printf("(scenechange_threshold        %d)\n", (int)    codecContext->scenechange_threshold);
+  printf("(lmin                         %d)\n", (int)    codecContext->lmin);
+  printf("(lmax                         %d)\n", (int)    codecContext->lmax);
+  printf("(palctrl (AVPaletteControl*)  %d)\n", (int)    codecContext->palctrl);
+  printf("(noise_reduction              %d)\n", (int)    codecContext->noise_reduction);
+  printf("(reget_buffer (fptr)          %d)\n", (int)    codecContext->reget_buffer);
+  printf("(rc_initial_buffer_occupancy  %d)\n", (int)    codecContext->rc_initial_buffer_occupancy);
+  printf("(inter_threshold              %d)\n", (int)    codecContext->inter_threshold);
+  printf("(flags2                       %d)\n", (int)    codecContext->flags2);
+  printf("(error_rate                   %d)\n", (int)    codecContext->error_rate);
+  printf("(antialias_algo               %d)\n", (int)    codecContext->antialias_algo);
+  printf("(quantizer_noise_shaping      %d)\n", (int)    codecContext->quantizer_noise_shaping);
+  printf("(thread_count                 %d)\n", (int)    codecContext->thread_count);
+  printf("(execute (fptr)               %d)\n", (int)    codecContext->execute);
+  printf("(thread_opaque (void*)        %d)\n", (int)    codecContext->thread_opaque);
+  printf("(me_threshold                 %d)\n", (int)    codecContext->me_threshold);
+  printf("(mb_threshold                 %d)\n", (int)    codecContext->mb_threshold);
+  printf("(intra_dc_precision           %d)\n", (int)    codecContext->intra_dc_precision);
+  printf("(nsse_weight                  %d)\n", (int)    codecContext->nsse_weight);
+  printf("(skip_top                     %d)\n", (int)    codecContext->skip_top);
+  printf("(skip_bottom                  %d)\n", (int)    codecContext->skip_bottom);
+  printf("(profile                      %d)\n", (int)    codecContext->profile);
+  printf("(level                        %d)\n", (int)    codecContext->level);
+  printf("(lowres                       %d)\n", (int)    codecContext->lowres);
+  printf("(coded_width                  %d)\n", (int)    codecContext->coded_width);
+  printf("(coded_height                 %d)\n", (int)    codecContext->coded_height);
+  printf("(frame_skip_threshold         %d)\n", (int)    codecContext->frame_skip_threshold);
+  printf("(frame_skip_factor            %d)\n", (int)    codecContext->frame_skip_factor);
+  printf("(frame_skip_exp               %d)\n", (int)    codecContext->frame_skip_exp);
+  printf("(frame_skip_cmp               %d)\n", (int)    codecContext->frame_skip_cmp);
+  printf("(border_masking               %f)\n", (float)  codecContext->border_masking);
+  printf("(mb_lmin                      %d)\n", (int)    codecContext->mb_lmin);
+  printf("(mb_lmax                      %d)\n", (int)    codecContext->mb_lmax);
+  printf("(me_penalty_compensation      %d)\n", (int)    codecContext->me_penalty_compensation);
+  printf("(skip_loop_filter             %d)\n", (int)    codecContext->skip_loop_filter);
+  printf("(skip_idct                    %d)\n", (int)    codecContext->skip_idct);
+  printf("(skip_frame                   %d)\n", (int)    codecContext->skip_frame);
+  printf("(bidir_refine                 %d)\n", (int)    codecContext->bidir_refine);
+  printf("(brd_scale                    %d)\n", (int)    codecContext->brd_scale);
+  printf("(crf                          %f)\n", (float)  codecContext->crf);
+  printf("(cqp                          %d)\n", (int)    codecContext->cqp);
+  printf("(keyint_min                   %d)\n", (int)    codecContext->keyint_min);
+  printf("(refs                         %d)\n", (int)    codecContext->refs);
+  printf("(chromaoffset                 %d)\n", (int)    codecContext->chromaoffset);
+  printf("(bframebias                   %d)\n", (int)    codecContext->bframebias);
+  printf("(trellis                      %d)\n", (int)    codecContext->trellis);
+  printf("(complexityblur               %f)\n", (float)  codecContext->complexityblur);
+  printf("(deblockalpha                 %d)\n", (int)    codecContext->deblockalpha);
+  printf("(deblockbeta                  %d)\n", (int)    codecContext->deblockbeta);
+  printf("(partitions                   %d)\n", (int)    codecContext->partitions);
+  printf("(directpred                   %d)\n", (int)    codecContext->directpred);
+  printf("(cutoff                       %d)\n", (int)    codecContext->cutoff);
+  printf("(scenechange_factor           %d)\n", (int)    codecContext->scenechange_factor);
+  printf("(mv0_threshold                %d)\n", (int)    codecContext->mv0_threshold);
+  printf("(b_sensitivity                %d)\n", (int)    codecContext->b_sensitivity);
+  printf("(compression_level            %d)\n", (int)    codecContext->compression_level);
+  printf("(use_lpc                      %d)\n", (int)    codecContext->use_lpc);
+  printf("(lpc_coeff_precision          %d)\n", (int)    codecContext->lpc_coeff_precision);
+  printf("(min_prediction_order         %d)\n", (int)    codecContext->min_prediction_order);
+  printf("(max_prediction_order         %d)\n", (int)    codecContext->max_prediction_order);
+  printf("(prediction_order_method      %d)\n", (int)    codecContext->prediction_order_method);
+  printf("(min_partition_order          %d)\n", (int)    codecContext->min_partition_order);
+  printf("(max_partition_order          %d)\n", (int)    codecContext->max_partition_order);
+  printf("(timecode_frame_start         %lld)\n",        codecContext->timecode_frame_start);
+  printf("(drc_scale                    %f)\n", (float)  codecContext->drc_scale);
+  printf("(reordered_opaque             %lld)\n",        codecContext->reordered_opaque);
+  printf("(bits_per_raw_sample          %d)\n", (int)    codecContext->bits_per_raw_sample);
+  printf("(channel_layout               %lld)\n",        codecContext->channel_layout);
+  printf("(request_channel_layout       %lld)\n",        codecContext->request_channel_layout);
+  printf("(rc_max_available_vbv_use     %f)\n", (float)  codecContext->rc_max_available_vbv_use);
+  printf("(rc_min_vbv_overflow_use      %f)\n", (float)  codecContext->rc_min_vbv_overflow_use);
+
+  printf("AVCodecContext Settings END\n");
+
+}  /* end p_debug_print_dump_AVCodecContext */
+
+
+
 /* --------------------------------
  * p_gimp_get_data
  * --------------------------------
@@ -787,7 +1016,6 @@ gap_enc_ffmpeg_main_init_preset_params(GapGveFFMpegValues *epp, gint preset_idx)
   static gint32 tab_gop_size[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]          =  {    12,       12,       96,      12,         18,       12,       18,	 18,	   18 };
   static gint32 tab_intra[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]             =  {     0,        0,        0,  	0,          0,        0,	0,	  0,	    0 };
 
-//static float  tab_qscale[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]            =  {     2,        1,        6,  	2,          0,        1,	1,	  1,	    2 };
   static float  tab_qscale[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]            =  {     2,        1,        6,  	2,          1,        1,	1,	  1,	    2 };
 
   static gint32 tab_qmin[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]              =  {     2,        2,        8,  	2,          2,        2,	2,	  2,	    2 };
@@ -1346,10 +1574,80 @@ p_open_audio_input_files(t_awk_array *awp, GapGveFFMpegGlobalParams *gpp)
 
 }  /* end p_open_audio_input_files */
 
+/* -----------------------------
+ * p_calculate_current_timecode
+ * -----------------------------
+ * returns the timecode for the current frame
+ */
+static gint64
+p_calculate_current_timecode(t_ffmpeg_handle *ffh)
+{
+  gdouble dblTimecode;
+  gint64  timecode64;
+  
+  /*
+   * gdouble seconds;
+   * seconds = (ffh->encode_frame_nr  / gpp->val.framerate);
+   */
+
+  dblTimecode = ffh->encode_frame_nr * ffh->pts_stepsize_per_frame;
+  timecode64 = dblTimecode;
+  
+  return (timecode64);
+}
 
 
+/* -----------------------------
+ * p_set_timebase_from_framerate
+ * -----------------------------
+ * set the specified framerate (frames per second)
+ * in the ffmpeg typical AVRational struct.
+ *
+ * 25 frames per second shall be encoded ad num = 1, den = 25
+ * typedef struct AVRational{
+ *     int num;  numerator
+ *     int den;  denominator
+ * } AVRational;
+ */
+static void
+p_set_timebase_from_framerate(AVRational *time_base, gdouble framerate)
+{
+  gdouble truncatedFramerate;
 
+  time_base->num = 1;
+  time_base->den = framerate;
 
+  truncatedFramerate = time_base->den;
+  if((framerate - truncatedFramerate) != 0.0)
+  {
+    time_base->num = DEFAULT_FRAME_RATE_BASE;
+    time_base->den = framerate * DEFAULT_FRAME_RATE_BASE;
+  }
+
+  /* due to rounding errors, some typical framerates would be
+   * rejected by newer libavcodec encoders.
+   * therefore adjust those values to exact expected values of the codecs.
+   */
+  if ((framerate > 59.90) && (framerate < 59.99))
+  {
+    time_base->num = 1001;
+    time_base->den = 60000;
+  
+  }
+  if ((framerate > 29.90) && (framerate < 29.99))
+  {
+    time_base->num = 1001;
+    time_base->den = 30000;
+  
+  }
+  if ((framerate > 23.90) && (framerate < 23.99))
+  {
+    time_base->num = 1001;
+    time_base->den = 24000;
+  
+  }
+
+}  /* end p_set_timebase_from_framerate */
 
 
 /* ------------------
@@ -1394,6 +1692,23 @@ p_ffmpeg_open_init(t_ffmpeg_handle *ffh, GapGveFFMpegGlobalParams *gpp)
     ffh->ast[ii].audio_buffer = NULL;
     ffh->ast[ii].audio_buffer_size = 0;
   }
+  
+  {
+    AVRational l_time_base;
+    
+    p_set_timebase_from_framerate(&l_time_base, gpp->val.framerate);
+    ffh->pts_stepsize_per_frame = l_time_base.num;
+
+    //if(gap_debug)
+    {
+      printf("p_ffmpeg_open_init  time_base: num:%d den:%d  pts_stepsize_per_frame:%.4f\n"
+        ,(int)l_time_base.num
+        ,(int)l_time_base.den
+        ,(float)ffh->pts_stepsize_per_frame
+        );
+    }
+  }
+
 
   /* initialize common things */
   ffh->frame_width                  = (int)gpp->val.vid_width;
@@ -1402,8 +1717,7 @@ p_ffmpeg_open_init(t_ffmpeg_handle *ffh, GapGveFFMpegGlobalParams *gpp)
   ffh->frame_bottomBand             = 0;
   ffh->frame_leftBand               = 0;
   ffh->frame_rightBand              = 0;
-  ffh->frame_duration_pts           = (1.0 / gpp->val.framerate) * AV_TIME_BASE;
-  ffh->frame_rate                   = gpp->val.framerate * DEFAULT_FRAME_RATE_BASE;
+  ffh->encode_frame_nr              = 0;
   ffh->video_bit_rate               = epp->video_bitrate * 1000;
   ffh->video_bit_rate_tolerance     = epp->bitrate_tol * 1000;
   ffh->video_qscale                 = epp->qscale;
@@ -1433,8 +1747,8 @@ p_ffmpeg_open_init(t_ffmpeg_handle *ffh, GapGveFFMpegGlobalParams *gpp)
   ffh->umv                          = epp->umv;
   ffh->use_4mv                      = epp->mv4;
   ffh->workaround_bugs              = FF_BUG_AUTODETECT;
-  ffh->error_resilience             = 2;
-  ffh->error_concealment            = 3;
+  ffh->error_recognition            = FF_ER_COMPLIANT;
+  ffh->error_concealment            = FF_EC_DEBLOCK;
   ffh->dct_algo                     = epp->dct_algo;
   ffh->idct_algo                    = epp->idct_algo;
   ffh->strict                       = epp->strict;
@@ -1467,65 +1781,13 @@ p_ffmpeg_open_init(t_ffmpeg_handle *ffh, GapGveFFMpegGlobalParams *gpp)
 }  /* end p_ffmpeg_open_init */
 
 
-/* -----------------------------
- * p_set_timebase_from_framerate
- * -----------------------------
- * set the specified framerate (frames per second)
- * in the ffmpeg typical AVRational struct.
- *
- * 25 frames per second shall be encoded ad num = 25, den = 1
- * typedef struct AVRational{
- *     int num; ///< numerator
- *     int den; ///< denominator
- * } AVRational;
- */
-static void
-p_set_timebase_from_framerate(AVRational *time_base, gdouble framerate)
-{
-  gdouble truncatedFramerate;
-
-  time_base->num = 1;
-  time_base->den = framerate;
-
-  truncatedFramerate = time_base->den;
-  if((framerate - truncatedFramerate) != 0.0)
-  {
-    time_base->num = DEFAULT_FRAME_RATE_BASE;
-    time_base->den = framerate * DEFAULT_FRAME_RATE_BASE;
-  }
-
-
-
-  /* due to rounding errors, some typical framerates would be
-   * rejected by newer libavcodec encoders.
-   * therefore adjust those values to exact expected values of the codecs.
-   */
-  if ((framerate > 59.90) && (framerate < 59.99))
-  {
-    time_base->num = 1001;
-    time_base->den = 60000;
-  
-  }
-  if ((framerate > 29.90) && (framerate < 29.99))
-  {
-    time_base->num = 1001;
-    time_base->den = 30000;
-  
-  }
-  if ((framerate > 23.90) && (framerate < 23.99))
-  {
-    time_base->num = 1001;
-    time_base->den = 24000;
-  
-  }
-
-}  /* end p_set_timebase_from_framerate */
 
 /* ------------------
  * p_init_video_codec
  * ------------------
- * init settings for the video codec
- * (just prepare for opening, but dont open yet)
+ * add stream for stream index ii (ii=0 for the 1st video stream)
+ * and init settings for the video codec to be used for encoding frames in the stream
+ * (just prepare the video codec for opening, but dont open yet)
  */
 static gboolean
 p_init_video_codec(t_ffmpeg_handle *ffh
@@ -1556,19 +1818,11 @@ p_init_video_codec(t_ffmpeg_handle *ffh
 
   /* set stream 0 (video stream) */
 
-#ifdef HAVE_OLD_FFMPEG_0408
-  ffh->output_context->nb_streams += 1;  /* number of streams */
-  ffh->vst[ii].vid_stream = g_malloc0(sizeof(AVStream));
-  avcodec_get_context_defaults(&ffh->vst[ii].vid_stream->codec);
-  ffh->vst[ii].vid_stream->index = ii;
-  ffh->vst[ii].vid_stream->id = ii;        /* XXXx ? dont know how to init this ? = or ii ? */
-  ffh->output_context->streams[ii] = ffh->vst[ii].vid_stream;
-#else
   ffh->vst[ii].vid_stream = av_new_stream(ffh->output_context, ii /* vid_stream_index */ );
 
   if(gap_debug)
   {
-    printf("p_ffmpeg_open ffh->vst[%d].vid_stream: %d   ffh->output_context->streams[%d]: %d nb_streams:%d\n"
+    printf("p_init_video_codec ffh->vst[%d].vid_stream: %d   ffh->output_context->streams[%d]: %d nb_streams:%d\n"
       ,(int)ii
       ,(int)ffh->vst[ii].vid_stream
       ,(int)ii
@@ -1576,17 +1830,20 @@ p_init_video_codec(t_ffmpeg_handle *ffh
       ,(int)ffh->output_context->nb_streams
       );
   }
-#endif
 
 
-  /* set Video codec context */
+  /* set Video codec context in the video stream array (vst) */
   ffh->vst[ii].vid_codec_context = ffh->vst[ii].vid_stream->codec;
+
 
   /* some formats need to know about the coded_frame
    * and get the information from the AVCodecContext coded_frame Pointer
+   * 2009.01.31 Not sure if this is still required in recent ffmpeg versions,
+   * the coded_frame pointer seems to be dynamically allocated
+   * (in avcodec_open and avcodec_encode_video calls)
    */
-  if(gap_debug) printf("(B) ffh->vst[ii].vid_codec_context:%d\n", (int)ffh->vst[ii].vid_codec_context);
   ffh->vst[ii].vid_codec_context->coded_frame = ffh->vst[ii].big_picture_codec;
+
 
   video_enc = ffh->vst[ii].vid_codec_context;
 
@@ -1597,22 +1854,30 @@ p_init_video_codec(t_ffmpeg_handle *ffh
   video_enc->bit_rate_tolerance = epp->bitrate_tol * 1000;
 
   p_set_timebase_from_framerate(&video_enc->time_base, gpp->val.framerate);
+      
+  video_enc->width = gpp->val.vid_width;
+  video_enc->height = gpp->val.vid_height;
 
   //if (gap_debug)
   {
-    printf("VCODEC:  time_base.num :%d  time_base.den:%d    float:%f\n"
-           "            AV_TIME_BASE: %d  DEFAULT_FRAME_RATE_BASE: %d\n"
+    printf("VCODEC: id:%d (%s) time_base.num :%d  time_base.den:%d    float:%f\n"
+           "            DEFAULT_FRAME_RATE_BASE: %d\n"
+      , video_enc->codec_id
+      , epp->vcodec_name
       , video_enc->time_base.num
       , video_enc->time_base.den
       , (float)gpp->val.framerate
-      , (int)AV_TIME_BASE
       , (int)DEFAULT_FRAME_RATE_BASE
       );
+
+    /* dump all parameters (standard values reprsenting ffmpeg internal defaults) to stdout */
+    p_debug_print_dump_AVCodecContext(video_enc);
   }
 
 
-  video_enc->width = gpp->val.vid_width;
-  video_enc->height = gpp->val.vid_height;
+
+  video_enc->pix_fmt = PIX_FMT_YUV420P;     /* PIX_FMT_YUV444P;  PIX_FMT_YUV420P;  PIX_FMT_BGR24;  PIX_FMT_RGB24; */
+
 
   if(!strcmp(epp->format_name, "mp4")
   || !strcmp(epp->format_name, "mov")
@@ -1621,33 +1886,25 @@ p_init_video_codec(t_ffmpeg_handle *ffh
     video_enc->flags |= CODEC_FLAG_GLOBAL_HEADER;
   }
 
-
-#ifdef HAVE_OLD_FFMPEG_0408
-  if(epp->qscale)
+  /* mb_decision changed in ffmpeg-0.4.8
+   *  0: FF_MB_DECISION_SIMPLE
+   *  1: FF_MB_DECISION_BITS
+   *  2: FF_MB_DECISION_RD
+   */
+  video_enc->mb_decision = epp->mb_decision;
+  if (video_enc->codec_id == CODEC_ID_MPEG1VIDEO)
   {
-    video_enc->flags |= CODEC_FLAG_QSCALE;
-    ffh->vst[ii].vid_stream->quality = epp->qscale;   /* video_enc->quality = epp->qscale; */
+        /* Needed to avoid using macroblocks in which some coeffs overflow.
+           This does not happen with normal video, it just happens here as
+           the motion of the chroma plane does not match the luma plane. */
+        video_enc->mb_decision=2;
   }
-
-  video_enc->aspect_ratio = 0;
-  if(epp->set_aspect_ratio)
-  {
-    if(epp->factor_aspect_ratio == 0.0)
-    {
-      video_enc->aspect_ratio = (gdouble)gpp->val.vid_width
-                              / (gdouble)(MAX(1,gpp->val.vid_height));
-    }
-    else
-    {
-      video_enc->aspect_ratio = epp->factor_aspect_ratio;
-    }
-  }
-#else
 
   if(epp->qscale)
   {
     video_enc->flags |= CODEC_FLAG_QSCALE;
     ffh->vst[ii].vid_stream->quality = FF_QP2LAMBDA * epp->qscale;   /* video_enc->quality = epp->qscale; */
+    video_enc->global_quality =  FF_QP2LAMBDA * epp->qscale;         /* 2009.01.31 must init global_quality to avoid crash */
   }
 
 
@@ -1682,12 +1939,21 @@ p_init_video_codec(t_ffmpeg_handle *ffh
      */
     l_dbl = l_aspect_factor * (gdouble)gpp->val.vid_height / (gdouble)MAX(1,gpp->val.vid_width);
 
-    video_enc->sample_aspect_ratio = av_d2q(l_dbl, 255);
-
-    if(gap_debug)
+    //if(gap_debug)
     {
-      printf("ASPECT ratio (w/h): %f av_d2q NUM:%d  DEN:%d\n"
+      printf("ASPECT ratio DEFAULT setting: NUM:%d  DEN:%d\n"
+	    ,(int)video_enc->sample_aspect_ratio.num
+            ,(int)video_enc->sample_aspect_ratio.den
+	    );
+    }
+    video_enc->sample_aspect_ratio = av_d2q(l_dbl, 255);
+    ffh->vst[ii].vid_stream->sample_aspect_ratio = video_enc->sample_aspect_ratio;  /* 2009.01.31 must init stream sample_aspect_ratio to avoid crash */
+
+    //if(gap_debug)
+    {
+      printf("ASPECT ratio (w/h): %f l_dbl:%f av_d2q NUM:%d  DEN:%d\n"
             ,(float)l_aspect_factor
+            ,(float)l_dbl
 	    ,(int)video_enc->sample_aspect_ratio.num
             ,(int)video_enc->sample_aspect_ratio.den
 	    );
@@ -1710,7 +1976,6 @@ p_init_video_codec(t_ffmpeg_handle *ffh
   video_enc->temporal_cplx_masking   = epp->tcplx_mask;
   video_enc->p_masking               = epp->p_mask;
   video_enc->quantizer_noise_shaping = epp->qns;
-#endif
 
   if(!epp->intra)  { video_enc->gop_size = epp->gop_size;  }
   else             { video_enc->gop_size = 0;              }
@@ -1730,20 +1995,12 @@ p_init_video_codec(t_ffmpeg_handle *ffh
     video_enc->flags |= CODEC_FLAG_BITEXACT;
   }
 
-  /* mb_decision changed in ffmpeg-0.4.8
-   *  0: FF_MB_DECISION_SIMPLE
-   *  1: FF_MB_DECISION_BITS
-   *  2: FF_MB_DECISION_RD
-   */
-  video_enc->mb_decision = epp->mb_decision;
 
   if(epp->umv)
   {
      video_enc->flags |= CODEC_FLAG_H263P_UMV;
   }
 
-#ifdef HAVE_OLD_FFMPEG_0408
-#else
   if (epp->use_ss)
   {
     video_enc->flags |= CODEC_FLAG_H263P_SLICE_STRUCT;
@@ -1769,7 +2026,7 @@ p_init_video_codec(t_ffmpeg_handle *ffh
   }
   if (epp->use_trell)
   {
-    video_enc->flags |= CODEC_FLAG_TRELLIS_QUANT;
+    /// video_enc->flags |= CODEC_FLAG_TRELLIS_QUANT;  /// this flag is no longer supported (TODO remove all occurances)
   }
   if (epp->use_mv0)
   {
@@ -1787,7 +2044,6 @@ p_init_video_codec(t_ffmpeg_handle *ffh
   {
     video_enc->flags |= CODEC_FLAG_CLOSED_GOP;
   }
-#ifdef HAVE_FULL_FFMPEG
   if (epp->strict_gop)
   {
     video_enc->flags2 |= CODEC_FLAG2_STRICT_GOP;
@@ -1796,7 +2052,6 @@ p_init_video_codec(t_ffmpeg_handle *ffh
   {
     video_enc->flags2 |= CODEC_FLAG2_NO_OUTPUT;
   }
-#endif
   if (epp->use_qpel)
   {
     video_enc->flags |= CODEC_FLAG_QPEL;
@@ -1817,20 +2072,16 @@ p_init_video_codec(t_ffmpeg_handle *ffh
   {
     video_enc->flags |= CODEC_FLAG_INTERLACED_ME;
   }
-#endif
 
 
   if(epp->aic)
   {
-     video_enc->flags |= CODEC_FLAG_H263P_AIC;
+     video_enc->flags |= CODEC_FLAG_AC_PRED;   /// old flag no longer supported CODEC_FLAG_H263P_AIC 
   }
 
   if (epp->mv4)
   {
       /* video_enc->flags |= CODEC_FLAG_HQ; */  /* CODEC_FLAG_HQ no longer supported in ffmpeg-0.4.8  */
-#ifdef HAVE_OLD_FFMPEG_0408
-      video_enc->mb_decision = FF_MB_DECISION_BITS; /* FIXME remove */
-#endif
       video_enc->flags |= CODEC_FLAG_4MV;
   }
 
@@ -1870,7 +2121,7 @@ p_init_video_codec(t_ffmpeg_handle *ffh
         break;
     }
   }
-
+  
   video_enc->qmin      = epp->qmin;
   video_enc->qmax      = epp->qmax;
   video_enc->max_qdiff = epp->qdiff;
@@ -1895,8 +2146,6 @@ p_init_video_codec(t_ffmpeg_handle *ffh
   video_enc->mb_qmin                = epp->mb_qmin;
   video_enc->mb_qmax                = epp->mb_qmax;
 
-#ifdef HAVE_OLD_FFMPEG_0408
-#else
   video_enc->rc_initial_buffer_occupancy = video_enc->rc_buffer_size * 3/4;
   video_enc->lmin                   = epp->video_lmin;
   video_enc->lmax                   = epp->video_lmax;
@@ -1927,7 +2176,6 @@ p_init_video_codec(t_ffmpeg_handle *ffh
   video_enc->nsse_weight            = epp->nsse_weight;
   video_enc->me_subpel_quality      = epp->subpel_quality;
 
-#ifdef HAVE_FULL_FFMPEG
   video_enc->mb_lmin                = epp->video_mb_lmin;
   video_enc->mb_lmax                = epp->video_mb_lmax;
   video_enc->profile                = epp->video_profile;
@@ -1936,20 +2184,15 @@ p_init_video_codec(t_ffmpeg_handle *ffh
   video_enc->frame_skip_factor      = epp->frame_skip_factor;
   video_enc->frame_skip_exp         = epp->frame_skip_exp;
   video_enc->frame_skip_cmp         = epp->frame_skip_cmp;
-#endif
-
-#endif
 
   if(epp->packet_size)
   {
-      video_enc->rtp_mode           = 1;
       video_enc->rtp_payload_size   = epp->packet_size;
   }
 
   if (epp->psnr) {  video_enc->flags |= CODEC_FLAG_PSNR; }
 
   video_enc->me_method = epp->motion_estimation;
-  video_enc->pix_fmt = PIX_FMT_YUV420P;     /* PIX_FMT_YUV444P;  PIX_FMT_YUV420P;  PIX_FMT_BGR24;  PIX_FMT_RGB24; */
 
 
   if (epp->title[0] != '\0')
@@ -2052,6 +2295,7 @@ p_init_video_codec(t_ffmpeg_handle *ffh
 
 
   return (TRUE); /* OK */
+  
 }  /* end p_init_video_codec */
 
 
@@ -2096,16 +2340,7 @@ p_init_and_open_audio_codec(t_ffmpeg_handle *ffh
         ast_index = ffh->max_vst + ii;
 
         /* set stream 1 (audio stream) */
-#ifdef HAVE_OLD_FFMPEG_0408
-        ffh->output_context->nb_streams += 1;  /* number of streams */
-        ffh->ast[ii].aud_stream = g_malloc0(sizeof(AVStream));
-        avcodec_get_context_defaults(&ffh->ast[ii].aud_stream->codec);
-        ffh->ast[ii].aud_stream->index = ast_index;
-        ffh->ast[ii].aud_stream->id = ast_index;        /* XXXx ? dont know how to init this ? */
-        ffh->output_context->streams[ast_index] = ffh->ast[ii].aud_stream;
-#else
         ffh->ast[ii].aud_stream = av_new_stream(ffh->output_context, ast_index /* aud_stream_index */ );
-#endif
         ffh->ast[ii].aud_codec_context = ffh->ast[ii].aud_stream->codec;
 
         /* set codec context */
@@ -2134,13 +2369,9 @@ p_init_and_open_audio_codec(t_ffmpeg_handle *ffh
           ffh->ast[ii].aud_codec = NULL;
         }
 
-#ifdef HAVE_OLD_FFMPEG_0408
-#else
         /* the following options were added after ffmpeg 0.4.8 */
         audio_enc->thread_count = 1;
         audio_enc->strict_std_compliance = epp->strict;
-#endif
-
 
       }
     }
@@ -2203,7 +2434,7 @@ p_ffmpeg_open(GapGveFFMpegGlobalParams *gpp
      return(NULL);
   }
 
-  if(gap_debug)
+  //if(gap_debug)
   {
     printf("AVOutputFormat ffh->file_oformat opened\n");
     printf("  name: %s\n", ffh->file_oformat->name);
@@ -2220,13 +2451,9 @@ p_ffmpeg_open(GapGveFFMpegGlobalParams *gpp
   }
 
 
-#ifdef HAVE_OLD_FFMPEG_0408
-  ffh->output_context = g_malloc0(sizeof(AVFormatContext));
-#else
   ffh->output_context = av_alloc_format_context();
-#endif
   ffh->output_context->oformat = ffh->file_oformat;
-  strcpy(ffh->output_context->filename, &gpp->val.videoname[0]);
+  g_snprintf(ffh->output_context->filename, sizeof(ffh->output_context->filename), "%s", &gpp->val.videoname[0]);
 
 
   ffh->output_context->nb_streams = 0;  /* number of streams */
@@ -2260,6 +2487,8 @@ p_ffmpeg_open(GapGveFFMpegGlobalParams *gpp
 	       ,g_strerror (l_errno) );
     return(NULL);
   }
+
+
 
   /* open video codec(s) */
   for (ii=0; ii < ffh->max_vst; ii++)
@@ -2380,12 +2609,11 @@ p_ffmpeg_open(GapGveFFMpegGlobalParams *gpp
   }
 
 
-#ifdef HAVE_FULL_FFMPEG
-    ffh->output_context->packet_size = epp->mux_packet_size;
-    ffh->output_context->mux_rate    = epp->mux_rate;
-    ffh->output_context->preload     = (int)(epp->mux_preload*AV_TIME_BASE);
-    ffh->output_context->max_delay   = (int)(epp->mux_max_delay*AV_TIME_BASE);
-#endif
+
+  ffh->output_context->packet_size = epp->mux_packet_size;
+  ffh->output_context->mux_rate    = epp->mux_rate;
+  ffh->output_context->preload     = (int)(epp->mux_preload*AV_TIME_BASE);
+  ffh->output_context->max_delay   = (int)(epp->mux_max_delay*AV_TIME_BASE);
 
   if(gap_debug)
   {
@@ -2400,6 +2628,8 @@ p_ffmpeg_open(GapGveFFMpegGlobalParams *gpp
 /* --------------------------
  * p_ffmpeg_write_frame_chunk
  * --------------------------
+ * write videoframe chunk 1:1 to the mediafile as packet.
+ * (typically used for lossless video cut to copy already encoded frames)
  */
 static int
 p_ffmpeg_write_frame_chunk(t_ffmpeg_handle *ffh, gint32 encoded_size, gint vid_track)
@@ -2494,16 +2724,26 @@ p_ffmpeg_write_frame_chunk(t_ffmpeg_handle *ffh, gint32 encoded_size, gint vid_t
 
       if(gap_debug)
       {
-        printf("CHUNK picture_number: enc_dummy_size:%d  frame_type:%d pic_number: %d %d PTS:%d\n"
+        printf("CHUNK picture_number: enc_dummy_size:%d  frame_type:%d pic_number: %d %d PTS:%lld\n"
 	      , (int)encoded_dummy_size
 	      , (int)chunk_frame_type
 	      , (int)ffh->vst[ii].vid_codec_context->coded_frame->coded_picture_number
 	      , (int)ffh->vst[ii].vid_codec_context->coded_frame->display_picture_number
-	      , (int)ffh->vst[ii].vid_codec_context->coded_frame->pts
+	      , ffh->vst[ii].vid_codec_context->coded_frame->pts
 	      );
       }
 
-      pkt.pts = ffh->vst[ii].vid_codec_context->coded_frame->pts;
+      ///// pkt.pts = ffh->vst[ii].vid_codec_context->coded_frame->pts;  // OLD
+      {
+        AVCodecContext *c;
+        
+        c = ffh->vst[ii].vid_codec_context;
+        if (c->coded_frame->pts != AV_NOPTS_VALUE)
+        {
+          pkt.pts= av_rescale_q(c->coded_frame->pts, c->time_base, ffh->vst[ii].vid_stream->time_base);
+        }
+      }
+      
       pkt.dts = AV_NOPTS_VALUE;  /* let av_write_frame calculate the decompression timestamp */
       pkt.stream_index = ffh->vst[ii].video_stream_index;
       pkt.data = ffh->vst[ii].video_buffer;
@@ -2522,6 +2762,8 @@ p_ffmpeg_write_frame_chunk(t_ffmpeg_handle *ffh, gint32 encoded_size, gint vid_t
 /* --------------------
  * p_ffmpeg_write_frame
  * --------------------
+ * encode one videoframe using the selected codec and write
+ * the encoded frame to the mediafile as packet.
  */
 static int
 p_ffmpeg_write_frame(t_ffmpeg_handle *ffh, gboolean force_keyframe, gint vid_track)
@@ -2544,7 +2786,11 @@ p_ffmpeg_write_frame(t_ffmpeg_handle *ffh, gboolean force_keyframe, gint vid_tra
 
      codec = ffh->vst[ii].vid_codec_context->codec;
 
-     printf("p_ffmpeg_write_frame: START codec: %d track:%d\n", (int)codec, (int)vid_track);
+     printf("p_ffmpeg_write_frame: START codec: %d track:%d frame_nr:%d\n"
+           , (int)codec
+           , (int)vid_track
+           , (int)ffh->encode_frame_nr
+           );
      printf("\n-------------------------\n");
      printf("name: %s\n", codec->name);
      printf("type: %d\n", codec->type);
@@ -2567,7 +2813,10 @@ p_ffmpeg_write_frame(t_ffmpeg_handle *ffh, gboolean force_keyframe, gint vid_tra
 
   if(ffh->vst[ii].vid_codec_context->pix_fmt == PIX_FMT_YUV420P)
   {
-    if(gap_debug) printf("USE YUV420 (no pix_fmt convert needed)\n");
+    if(gap_debug)
+    {
+      printf("USE YUV420 (no pix_fmt convert needed)\n");
+    }
 
     /* most of the codecs wants YUV420
       * (we can use the picture in ffh->vst[ii].yuv420_buffer without pix_fmt conversion
@@ -2613,7 +2862,12 @@ p_ffmpeg_write_frame(t_ffmpeg_handle *ffh, gboolean force_keyframe, gint vid_tra
      * (same as AVPicture but with additional members at the end)
      */
 
-    if(gap_debug) printf("before img_convert  pix_fmt: %d  (YUV420:%d)\n", (int)ffh->vst[ii].vid_codec_context->pix_fmt, (int)PIX_FMT_YUV420P);
+    if(gap_debug)
+    {
+      printf("before img_convert  pix_fmt: %d  (YUV420:%d)\n"
+        , (int)ffh->vst[ii].vid_codec_context->pix_fmt
+        , (int)PIX_FMT_YUV420P);
+    }
 
     /* convert to pix_fmt needed by the codec */
     img_convert(picture_codec, ffh->vst[ii].vid_codec_context->pix_fmt  /* dst */
@@ -2645,9 +2899,15 @@ p_ffmpeg_write_frame(t_ffmpeg_handle *ffh, gboolean force_keyframe, gint vid_tra
     ffh->vst[ii].big_picture_codec->key_frame = 0;
   }
 
+
   if(ffh->output_context)
   {
-    if(gap_debug)  printf("before avcodec_encode_video\n");
+    if(gap_debug)
+    {
+      printf("before avcodec_encode_video  big_picture_codec:%d\n"
+         ,(int)ffh->vst[ii].big_picture_codec
+         );
+    }
 
     encoded_size = avcodec_encode_video(ffh->vst[ii].vid_codec_context
                            ,ffh->vst[ii].video_buffer, ffh->vst[ii].video_buffer_size
@@ -2657,26 +2917,60 @@ p_ffmpeg_write_frame(t_ffmpeg_handle *ffh, gboolean force_keyframe, gint vid_tra
     /* if zero size, it means the image was buffered */
     if(encoded_size != 0)
     {
-      if(gap_debug)
-      {
-        printf("before av_write_frame  encoded_size:%d\n", (int)encoded_size );
-      }
       {
 	AVPacket pkt;
+        AVCodecContext *c;
+
 	av_init_packet (&pkt);
+        c = ffh->vst[ii].vid_codec_context;
 
-	if(gap_debug)
+
+	///// pkt.pts = ffh->vst[ii].vid_codec_context->coded_frame->pts; // OLD
+        
+        if (c->coded_frame->pts != AV_NOPTS_VALUE)
+        {
+          pkt.pts= av_rescale_q(c->coded_frame->pts, c->time_base, ffh->vst[ii].vid_stream->time_base);
+        }
+        
+//        if ((pkt.pts == 0) || (pkt.pts == AV_NOPTS_VALUE))
+//        {
+//          /* WORKAROND calculate pts timecode for the current frame
+//           * because the codec did not deliver a valid timecode 
+//           */
+//          pkt.pts = p_calculate_current_timecode(ffh);
+//        }
+
+        
+	if(c->coded_frame->key_frame)
 	{
-          printf("before av_write_frame  encoded_size:%d\n", (int)encoded_size );
+          pkt.flags |= PKT_FLAG_KEY;
 	}
-
-	pkt.pts = ffh->vst[ii].vid_codec_context->coded_frame->pts;
+        
 	pkt.stream_index = ffh->vst[ii].video_stream_index;
 	pkt.data = ffh->vst[ii].video_buffer;
 	pkt.size = encoded_size;
-	if(ffh->vst[ii].vid_codec_context->coded_frame->key_frame)
+
+	if(gap_debug)
 	{
-          pkt.flags |= PKT_FLAG_KEY;
+          AVStream *st;
+          
+          st = ffh->output_context->streams[pkt.stream_index];
+
+          printf("before av_write_frame video encoded_size:%d\n"
+                " pkt.stream_index:%d pkt.pts:%lld dts:%lld coded_frame->pts:%lld  c->time_base:%d den:%d\n"
+                " st->pts.num:%lld, st->pts.den:%lld st->pts.val:%lld\n"
+             , (int)encoded_size
+             , pkt.stream_index
+             , pkt.pts
+             , pkt.dts
+             , c->coded_frame->pts
+             , c->time_base.num
+             , c->time_base.den
+             ,st->pts.num
+             ,st->pts.den
+             ,st->pts.val
+             );
+             
 	}
 	ret = av_write_frame(ffh->output_context, &pkt);
 
@@ -2735,17 +3029,47 @@ p_ffmpeg_write_audioframe(t_ffmpeg_handle *ffh, guchar *audio_buf, int frame_byt
 
     {
       AVPacket pkt;
+      AVCodecContext *c;
+
       av_init_packet (&pkt);
+      c = ffh->ast[ii].aud_codec_context;
 
-      if(gap_debug)  printf("before av_write_frame  encoded_size:%d\n", (int)encoded_size );
 
-      pkt.pts = ffh->ast[ii].aud_codec_context->coded_frame->pts;
+//      pkt.pts = ffh->ast[ii].aud_codec_context->coded_frame->pts;  // OLD
+      
+      if (c->coded_frame->pts != AV_NOPTS_VALUE)
+      {
+        pkt.pts= av_rescale_q(c->coded_frame->pts, c->time_base, ffh->ast[ii].aud_stream->time_base);
+      }
+
+//      if ((pkt.pts == 0) || (pkt.pts == AV_NOPTS_VALUE))
+//      {
+//        /* calculate pts timecode for the current frame
+//         * because the codec did not deliver a valid timecode 
+//         */
+//        pkt.pts = p_calculate_current_timecode(ffh);
+//      }
+      
+      
       pkt.stream_index = ffh->ast[ii].audio_stream_index;
       pkt.data = ffh->ast[ii].audio_buffer;
       pkt.size = encoded_size;
+      
+      if(gap_debug)
+      {
+        printf("before av_write_frame audio  encoded_size:%d pkt.pts:%lld dts:%lld\n"
+          , (int)encoded_size
+          , pkt.pts
+          , pkt.dts
+          );
+      }
+      
       ret = av_write_frame(ffh->output_context, &pkt);
 
-      if(gap_debug)  printf("after av_write_frame  encoded_size:%d\n", (int)encoded_size );
+      if(gap_debug)
+      {
+        printf("after av_write_frame audio encoded_size:%d\n", (int)encoded_size );
+      }
     }
   }
   return(ret);
@@ -2761,6 +3085,7 @@ p_ffmpeg_write_audioframe(t_ffmpeg_handle *ffh, guchar *audio_buf, int frame_byt
  * my private copy of (libavformat/aviobuf.c url_fclose)
  * just skips the crashing step "av_free(s);"  that frees up the ByteIOContext itself
  * (free(): invalid pointer: 0x0859f3b0)
+ * The workaround is still required in ffmpeg snapshot from 2009.01.31
  */
 int 
 my_url_fclose(ByteIOContext *s)
@@ -2787,7 +3112,7 @@ p_ffmpeg_close(t_ffmpeg_handle *ffh)
 {
   gint ii;
 
-  //if(gap_debug)
+  if(gap_debug)
   {
     printf("free big_picture_codec\n");
   }
@@ -2800,7 +3125,7 @@ p_ffmpeg_close(t_ffmpeg_handle *ffh)
       ffh->vst[ii].big_picture_codec = NULL;
     }
   }
-  //if(gap_debug)
+  if(gap_debug)
   {
     printf("Closing VIDEO stuff\n");
   }
@@ -2809,7 +3134,7 @@ p_ffmpeg_close(t_ffmpeg_handle *ffh)
   {
     /* write the trailer if needed and close file */
     av_write_trailer(ffh->output_context);
-    //if(gap_debug)
+    if(gap_debug)
     {
       printf("after av_write_trailer\n");
     }
@@ -2819,12 +3144,12 @@ p_ffmpeg_close(t_ffmpeg_handle *ffh)
   {
     if(ffh->vst[ii].vid_codec_context)
     {
-      //if(gap_debug)
+      if(gap_debug)
       {
         printf("[%d] before avcodec_close\n", ii);
       }
       avcodec_close(ffh->vst[ii].vid_codec_context);
-      //if(gap_debug)
+      if(gap_debug)
       {
         printf("[%d] after avcodec_close\n", ii);
       }
@@ -2841,52 +3166,52 @@ p_ffmpeg_close(t_ffmpeg_handle *ffh)
 
     if(ffh->vst[ii].video_buffer)
     {
-       //if(gap_debug)
+       if(gap_debug)
        {
          printf("[%d] before g_free video_buffer\n", ii);
        }
        g_free(ffh->vst[ii].video_buffer);
        ffh->vst[ii].video_buffer = NULL;
-       //if(gap_debug)
+       if(gap_debug)
        {
          printf("[%d] after g_free video_buffer\n", ii);
        }
     }
     if(ffh->vst[ii].video_dummy_buffer)
     {
-       //if(gap_debug)
+       if(gap_debug)
        {
          printf("[%d] before g_free video_dummy_buffer\n", ii);
        }
        g_free(ffh->vst[ii].video_dummy_buffer);
        ffh->vst[ii].video_dummy_buffer = NULL;
-       //if(gap_debug)
+       if(gap_debug)
        {
          printf("[%d] after g_free video_dummy_buffer\n", ii);
        }
     }
     if(ffh->vst[ii].yuv420_buffer)
     {
-       //if(gap_debug)
+       if(gap_debug)
        {
          printf("[%d] before g_free yuv420_buffer\n", ii);
        }
        g_free(ffh->vst[ii].yuv420_buffer);
        ffh->vst[ii].yuv420_buffer = NULL;
-       //if(gap_debug)
+       if(gap_debug)
        {
          printf("[%d] after g_free yuv420_buffer\n", ii);
        }
     }
     if(ffh->vst[ii].yuv420_dummy_buffer)
     {
-       //if(gap_debug)
+       if(gap_debug)
        {
          printf("[%d] before g_free yuv420_dummy_buffer\n", ii);
        }
        g_free(ffh->vst[ii].yuv420_dummy_buffer);
        ffh->vst[ii].yuv420_dummy_buffer = NULL;
-       //if(gap_debug)
+       if(gap_debug)
        {
          printf("[%d] after g_free yuv420_dummy_buffer\n", ii);
        }
@@ -2894,7 +3219,7 @@ p_ffmpeg_close(t_ffmpeg_handle *ffh)
 
   }
  
-  //if(gap_debug)
+  if(gap_debug)
   {
     printf("Closing AUDIO stuff\n");
   }
@@ -2919,12 +3244,13 @@ p_ffmpeg_close(t_ffmpeg_handle *ffh)
   {
     if (!(ffh->output_context->oformat->flags & AVFMT_NOFILE))
     {
-      //if(gap_debug)
+      if(gap_debug)
       {
         printf("before url_fclose\n");
       }
       my_url_fclose(&ffh->output_context->pb);
-      //if(gap_debug)
+      
+      if(gap_debug)
       {
         printf("after url_fclose\n");
       }
@@ -3205,6 +3531,7 @@ p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
   l_max_master_frame_nr = abs(l_end - l_begin) + 1;
 
   l_cur_frame_nr = l_begin;
+  ffh->encode_frame_nr = 1;
   while(l_rc >= 0)
   {
     gboolean l_fetch_ok;
@@ -3239,7 +3566,7 @@ p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
                                            , l_check_flags
                                            );
 
-    //if(gap_debug)
+    if(gap_debug)
     {
       printf("\nFFenc: after gap_story_render_fetch_composite_image_or_chunk image_id:%d layer_id:%d\n"
         , (int)l_tmp_image_id 
@@ -3267,7 +3594,7 @@ p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
         l_cnt_encoded_frames++;
         l_drawable = gimp_drawable_get (l_layer_id);
 
-	//if (gap_debug)
+	if (gap_debug)
 	{
 	  printf("DEBUG: %s encoding frame %d\n"
 	        , epp->vcodec_name
@@ -3324,30 +3651,31 @@ p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
        break;
     }
     l_cur_frame_nr += l_step;
+    ffh->encode_frame_nr++;
 
   }  /* end loop foreach frame */
 
   if(ffh != NULL)
   {
-    //if(gap_debug)
+    if(gap_debug)
     {
       printf("before: p_ffmpeg_close\n");
     }
     p_ffmpeg_close(ffh);
-    //if(gap_debug)
+    if(gap_debug)
     {
       printf("after: p_ffmpeg_close\n");
     }
     g_free(ffh);
   }
 
-  //if(gap_debug)
+  if(gap_debug)
   {
     printf("before: p_close_audio_input_files\n");
   }
 
   p_close_audio_input_files(awp);
-  //if(gap_debug)
+  if(gap_debug)
   {
     printf("after: p_close_audio_input_files\n");
   }

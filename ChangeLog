@@ -1,3 +1,216 @@
+2009-02-08 Wolfgang Hofer <hof@gimp.org>
+
+- Updated external libs
+
+  * configure.in
+
+  * extern_libs/Makefile.am
+  * extern_libs/README_extern_libs
+  * extern_libs/configure_options_ffmpeg.txt
+  * extern_libs/ffmpeg.tar.gz
+  * extern_libs/libmpeg3.tar.gz
+
+  * vid_enc_ffmpeg/gap_enc_ffmpeg_main.c [.h]
+  * vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c 
+
+  * libgapvidapi/gap_vid_api.h 
+  * libgapvidapi/gap_vid_api_ffmpeg.c
+  * libgapvidapi/gap_vid_api_vidindex.c
+  * libgapvidapi/gap_vid_api_mpeg3.c
+  * libgapvidapi/gap_vid_api_mpeg3toc.c
+
+
+- PORTING GIMP-GAP to use recent libmpeg3-1.8
+
+   - configure.in:  disabled check if the compiler is able to handle the libmpeg3
+     Note that this check once was introduced because old libmpeg3-1.5.4 did not compile
+     with recent gcc compiler version.
+     the libmpeg3-1.8 did compile fine on my openSuse 11.1 system that has gcc --version
+
+       gcc (SUSE Linux) 4.3.2 [gcc-4_3-branch revision 141291]
+
+
+   - mpeg3_open and mpeg3_open_copy have an additional parameter  int *error_return
+     (returns 0 if OK, errorcode on failure)
+ 
+   - toc file format has changed
+     now GIMP-GAP uses new procedures
+      mpeg3_start_toc 
+      mpeg3_do_toc
+      mpeg3_stop_toc
+      
+     to create video indexes compatible for libmpeg3-1.8 format
+     
+
+  - procedure mpeg3_set_mmx was removed since libmpeg3-1.8
+      /// mpeg3_set_mmx(handle->main_handle, FALSE);
+
+
+
+
+
+- PORTING GIMP-GAP to use recent ffmpeg-export-snapshot.2009.01.31.tar.bz2
+
+
+  ======= Compile issuses ===================  
+
+  - pointer to first_avcodec no longer public.
+    iterate through codecs now can be done with av_codec_next
+      for(codec = av_codec_next(NULL); codec != NULL; codec = av_codec_next(codec)) { ...}
+
+     acc->error_resilience = 2;  ==> acc->error_recognition = FF_ER_COMPLIANT
+
+     added explicite configurarion for normal compliance behaviour
+     acc->strict_std_compliance = FF_COMPLIANCE_NORMAL;
+
+  - linker complains about missing avcodec_decode_audio 
+    ==> therfore use the new procedure avcodec_decode_audio2
+        instead.
+        (requires data_size initialized and must be >= AVCODEC_MAX_AUDIO_FRAME_SIZE:192000
+        if not the call will fail and print a message like this:
+        [mp2 @ 0x99a5800]buffer smaller than AVCODEC_MAX_AUDIO_FRAME_SIZE
+        )
+        
+        
+  - constant for DEFAULT_FRAME_RATE_BASE no longer available
+
+    some codec flags no longer supported:
+
+     CODEC_FLAG_TRELLIS_QUANT  remove this
+     CODEC_FLAG_H263P_AIC      has same   value as CODEC_FLAG_AC_PRED
+
+  - AVCodecContext has no member named rtp_mode
+
+  - removed support for OLD ffmpeg releases. 
+    ( #define HAVE_OLD_FFMPEG_0408 and HAVE_FULL_FFMPEG)
+  
+
+
+  ======= CONFIGURE / BUILD  issuses ===================  
+
+  -  ## TODO  ffmpeg no longer supports the configure option --enable-liba52bin
+    ==> commented out --enable-liba52bin (remove from configure.in may follow when
+        update to ffmpeg is proofed stable.
+        
+  - ## TODO  ffmpeg requires at least BUILD >= 65 for the option --enable-libx264
+     ==> disables the option --enable-libx264 until the check
+         for condition x264.h "X264_BUILD >= 65" works.
+
+  - added  -I$FFMPEG_DIR because ffmpeg libraries
+    changed include style to add the subdirectory
+      OLD: #include "avformat.h"
+      NEW: #include "libavformat/avformat.h"
+
+  - ffmpeg libs are not built automatically
+    make target  "lib" no longer available.
+    ==> now simple make 
+       (default target all) builds all ffmpeg libs and programs
+
+  - ffmpeg libs require linking with libbz2 (at least the codec matroskadec want bz2)
+    libbz2 was autotomatically detected by the ffmpeg configure script,
+    but GIMP-GAP configure must also check for libbz2 and add -lbz2
+    to the ffmpeg linker options.
+
+
+  ======= Functional issuses ENCODE ===================  
+
+  - ffmpeg based vide encoder crash  in av_write_frame 
+    (crash occurs both for audio frame and video frame encoding)
+    encoder pts is 0, dts is AV_NOPTS_VALUE
+    
+    ==> recent ffmpeg requires additional initialisations to run properly.
+    
+    gap_enc_ffmpeg_main.c  :: p_init_video_codec
+
+
+    if(epp->qscale)
+    {
+      video_enc->flags |= CODEC_FLAG_QSCALE;
+      ffh->vst[ii].vid_stream->quality = FF_QP2LAMBDA * epp->qscale;   /* video_enc->quality = epp->qscale; */
+      video_enc->global_quality =  FF_QP2LAMBDA * epp->qscale;      // ### 2009.01.31 must init global_quality to avoid crash
+    }
+
+    video_enc->sample_aspect_ratio = av_d2q(l_dbl, 255);
+    ffh->vst[ii].vid_stream->sample_aspect_ratio = video_enc->sample_aspect_ratio;  /* 2009.01.31 must init stream sample_aspect_ratio to avoid crash */
+
+  - support nev values for already existing parameters.
+    - support new motion estimation algorithm methods
+       7 (hex), 8 (umh), 9 (iter), 10 (tesa) [7, 8, 10 are x264 specific, 9 is snow specific]
+
+    - support new idct algorithm methods
+                                  _("12 vp3"),             GAP_GVE_FFMPEG_IDCT_ALGO_12_VP3,
+                                  _("13 ipp"),             GAP_GVE_FFMPEG_IDCT_ALGO_13_IPP,
+                                  _("14 xvidmmx"),         GAP_GVE_FFMPEG_IDCT_ALGO_14_XVIDMMX,
+                                  _("15 cavs"),            GAP_GVE_FFMPEG_IDCT_ALGO_15_CAVS,
+                                  _("16 simplearmv5te"),   GAP_GVE_FFMPEG_IDCT_ALGO_16_SIMPLEARMV5TE,
+                                  _("17 simplearmv6"),     GAP_GVE_FFMPEG_IDCT_ALGO_17_SIMPLEARMV6,
+                                  _("18 simplevis"),       GAP_GVE_FFMPEG_IDCT_ALGO_18_SIMPLEVIS,
+                                  _("19 wmv2"),            GAP_GVE_FFMPEG_IDCT_ALGO_19_WMV2,
+                                  _("20 faan"),            GAP_GVE_FFMPEG_IDCT_ALGO_20_FAAN,
+                                  _("21 ea"),              GAP_GVE_FFMPEG_IDCT_ALGO_21_EA,
+                                  _("22 simpleneon"),      GAP_GVE_FFMPEG_IDCT_ALGO_22_SIMPLENEON,
+                                  _("23 simplealpha"),      GAP_GVE_FFMPEG_IDCT_ALGO_23_SIMPLEALPHA,
+
+ 
+  ======= Functional issuses DECODE ===================  
+ 
+  - video index based seek does not work with recent ffmpeg versions.
+
+    ==> AVFormatContext
+    pb is now a pointer to ByteIOContext
+
+    OLD:  url_ftell(&handle->vid_input_context->pb);
+    NEW:  url_ftell(handle->vid_input_context->pb);
+
+    video index code was updated.
+    the new format for video indexes records dts timecodes and allows positioning
+    based on DTS timecodes
+    using libavformat av_seek_frame, but only if valid DTS timecodes are detected.
+    Otherwise the video index uses byte positions (based on url_ftell / url-fseek,
+    similar to the old GIMP-GAP video index implementation) as fallback solution.
+
+    old video index files are no longer supported.
+    (In my test i already implemented code for the migration, but this does not work
+    because decoding delivers slightly different colors for the decoded frames
+    and this results in differnt checksums as in older ffmpeg release that was used
+    at creation time of the video index. So i found out that migration is NOT POSSIBLE)
+    
+    - fixed bug:
+    frame length is just stored with 16 lower bits in the videoindex
+    compare must also use just 16 lower bits
+    (changed type and name of 
+     old: gint32   handle->got_frame_length
+     new: guint16  handle->got_frame_length16
+    to point out that only 16 bits are used)
+    
+    - byte position based seek takes us to one frame after the wanted frame
+      recording of video index byte offset now compensates this effect
+      by recording offests of the 14. frames before the wanted frames
+
+
+  -  native seek fails on some videos
+     old ffmpeg version constantly delivered dts timecodes for all frames in all my test videos.
+
+     unfortunately recent ffmpeg dts timecode detection now fails for some videos.
+     (tested with .VOB files from DVD)
+     this change breaks the GIMP-GAP native seek feature whenever this problem occures...
+
+     == > the new libgapvidapi/gap_vid_api_ffmpeg.c code now checks
+     while proberead for valid dts timecodes, and disables native seek
+     if no valid dts timecodes can be detected.
+
+     (and creating a video index for those videos is recommanded)
+
+
+  - dts timecodes are sometimes not exact and may differ 
+    ==> now allow tolerance of +-2
+        (see gap_vid_api_ffmpeg.c::p_areTimecodesEqualWithTolerance)
+      
+
+ 
+
+
+ 
 2009-01-25 Wolfgang Hofer <hof@gimp.org>
  
 - fixed Storyboard single clip playback of cliptype GAP_STBREC_VID_IMAGE.

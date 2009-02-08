@@ -44,17 +44,17 @@ if BUILD_FFMPEG_LIBS
 $(x_ffmpeg_libavformat):
 	echo "cd $(FFMPEG_DIR)"; \
 	cd $(FFMPEG_DIR);\
-	make lib
+	make
 
 $(x_ffmpeg_libavcodec):
 	echo "cd $(FFMPEG_DIR)"; \
 	cd $(FFMPEG_DIR);\
-	make lib
+	make
 
 $(x_ffmpeg_libavutil):
 	echo "cd $(FFMPEG_DIR)"; \
 	cd $(FFMPEG_DIR);\
-	make lib
+	make
 
 endif
 

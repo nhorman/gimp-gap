@@ -161,7 +161,9 @@ typedef struct t_GVA_VideoindexHdr
 
 typedef enum
 {
-  GVA_IDX_TT_GINT64
+  GVA_IDX_TT_WITHOUT_TIMECODE_GINT64     /* only used in old format */
+ ,GVA_IDX_TT_WITHOUT_TIMECODE_GDOUBLE    /* only used in old format */
+ ,GVA_IDX_TT_GINT64
  ,GVA_IDX_TT_GDOUBLE
  ,GVA_IDX_TT_UNDEFINED
 } t_GVA_IndexTabType;
@@ -172,6 +174,15 @@ typedef union
   gdouble             offset_gdouble;
 } t_GVA_UnionElem;
 
+typedef struct t_GVA_IndexElemWithoutTimecode   /* old format */
+{
+  gint32  seek_nr;
+  guint16 frame_length;
+  guint16 checksum;
+
+  t_GVA_UnionElem uni;
+} t_GVA_IndexElemWithoutTimecode;
+
 typedef struct t_GVA_IndexElem
 {
   gint32  seek_nr;
@@ -179,6 +190,7 @@ typedef struct t_GVA_IndexElem
   guint16 checksum;
 
   t_GVA_UnionElem uni;
+  gint64 timecode_dts;
 } t_GVA_IndexElem;
 
 typedef struct t_GVA_Videoindex  /* nick: vindex */

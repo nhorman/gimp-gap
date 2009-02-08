@@ -3,18 +3,12 @@ as sourcecode for convenient static linking.
 
 CURRENT FFMPEG version is:
 
-- ffmpeg-export-snapshot-2007.10.31.tar.bz2
+- ffmpeg-export-snapshot.2009.01.31.tar.bz2
 
-   Note: liba52 is no longer included in recent SVN snapshots
-   
-       ./configure --enable-shared --enable-static --disable-mmx --enable-gpl --enable-liba52
-
-       results in ERROR: liba52 not found
-       (older releases had liba52 subdirectory in libavcodec)
        
+CURRENT LIBMPEG3 version is:
        
-       
-- libmpeg3-1.5.4
+- libmpeg3-1.8
 
 The gimp-gap project does NOT maintain the sourcecode for those libs !
 Bugs related to those libraries are never fixed here.
@@ -35,43 +29,27 @@ many MPEG based fileformats, both for read and write access
  "FFMPEG" in the Master Videoencoder dialog).
 		    
 You can get ffmpeg at:
-    http://ffmpeg.sourceforge.net
-
-
-GIMP-GAP was developed and tested with several ffmpeg versions.
-The code still should compile and run with following versions:
-
-   ==> BUG_001: read after seek fails on most MPEG1 videos
-                (test with old gimp-gap and ffmpeg-CVS-2005.04.08
-                shows the same problem !!)
-
-
- - ffmpeg-export-snapshot-2008.01.13.tar.bz2  NOT USABLE BREAKS video index compatibility
- - ffmpeg-export-snapshot-2007.12.20.tar.bz2  NOT USABLE BREAKS video index compatibility
- - ffmpeg-export-snapshot-2007.10.31.tar.bz2
-  
-       the option --enable-x264 was renamed to --enable-libx264
-
- - ffmpeg-export-snapshot-2007.05.15.tar.bz2
- - ffmpeg-export-snapshot-2007.04.20.tar.bz2                  BUG_001
- - ffmpeg-export-snapshot-2007.04.04.tar.bz2 (Revision 8608)  BUG_001
- - ffmpeg-export-snapshot-2007.03.06.tar.bz2                  BUG_001
-
-
+    http://www.ffmpeg.org/
+    or http://ffmpeg.mplayerhq.hu/download.html
+    (old http://ffmpeg.sourceforge.net)
 
    
-It is recommanded to use the ffmpeg tarball that is included in
+It is highly recommanded to use the ffmpeg tarball that is included in
 this GIMP-GAP distribution. 
 
   The ongoing ffmpeg development sometimes introduces incompatible changes
   that would require changes and extension in the GIMP-GAP 
-  modules to enable compile together with GIMP-GAP and much testing
-  to check if the new ffmpeg version will work. 
+  modules to enable compile together with GIMP-GAP.
+  A succsessful build is no guarantee that GIMP-GAP
+  will work with a new ffmpeg version.
+  Typically it requires much testing and some knowledge
+  of bothe GIMP-GAP and ffmpeg internals to get new ffmpeg versions
+  working. 
   
   Therefore i decided to include an ffmpeg  SVN snaphot
-  that was tested with GIMP-GAP during April/May and November 2007
+  that was tested with GIMP-GAP during Jan/Feb 2009
 
-  new ffmpeg SVN snapshots
+  newer ffmpeg SVN snapshots
   may or may not compile, link and run with this GIMP-GAP release.
 
 
@@ -88,7 +66,32 @@ and move the extracted sourcecode directory to
 NOTE: Older ffmpeg versions that once worked with older GIMP-GAP
 releases definitly will NOT compile / work with this GIMP-GAP release.
 
-   GIMP-GAP has dropped support for the follwing old ffmpeg versions: 
+GIMP-GAP has dropped support for the follwing old ffmpeg versions: 
+
+   ==> BUG_003: Fails to detect DTS tmecode on some .VOB files
+                no native seek possible
+                (test with old gimp-gap and ffmpeg-export-snapshot-2008.01.13
+                shows the same problem !!)
+   ==> BUG_002: BREAKS video index compatibility based un url_ftell/url_fseek operations.
+                (test with old gimp-gap and ffmpeg-export-snapshot-2008.01.13
+                shows the same problem !!)
+   ==> BUG_001: read after seek fails on most MPEG1 videos
+                (test with old gimp-gap and ffmpeg-CVS-2005.04.08
+                shows the same problem !!)
+
+
+
+   ffmpeg-export-snapshot-2008.01.13.tar.bz2  BUG_002
+   ffmpeg-export-snapshot-2007.12.20.tar.bz2  BUG_002  breaks video index compatibility
+   ffmpeg-export-snapshot-2007.10.31.tar.bz2
+  
+       the option --enable-x264 was renamed to --enable-libx264
+
+   ffmpeg-export-snapshot-2007.05.15.tar.bz2
+   ffmpeg-export-snapshot-2007.04.20.tar.bz2                  BUG_001
+   ffmpeg-export-snapshot-2007.04.04.tar.bz2 (Revision 8608)  BUG_001
+   ffmpeg-export-snapshot-2007.03.06.tar.bz2                  BUG_001
+
    ffmpeg-CVS-2005.04.08  (Support dropped)
    ffmpeg-CVS-2005.03.02  (Support dropped)
    ffmpeg-0.4.9pre1       (latest, but outdated official release is NOT SUPPORTED)
@@ -105,16 +108,19 @@ GIMP-GAP uses the library libmpeg3 for decoding MPEG videos.
 With libmpeg3 access to VCD and DVD is supported. 
 This includes read access to .vob and .ifo files.
 
-GIMP-GAP was developed and tested with libmpeg3-1.5.4
+GIMP-GAP was tested with libmpeg3-1.8
 The sourcecode of this libmpeg3 version is included in the GIMP-GAP
 distribution as tarball.
 
 You can get libmpeg3 at:
-  http://www.heroinewarrior.com/download.php3
+  http:/prdownloads.sourceforge.net/heroines/libmpeg3-1.8-src.tar.bz2
+  old: http://www.heroinewarrior.com/download.php3
 
 
-Note: the original has no installation support,
-it is recommanded to use the libmpeg3 tarball that is included in
-this GIMP-GAP distribution.
+Notes:
+- it is recommanded to use the libmpeg3 tarball that is included in
+  this GIMP-GAP distribution.
 
+- older GIMP-GAP versions had included libmpeg3-1.5.4,
+  this version is no longer supported.
 

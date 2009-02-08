@@ -80,6 +80,7 @@ p_mpeg3_sig_workaround_fork(const char *filename)
      mpeg3_t *tmp_handle;
      gint     l_rc;
      char    *l_filename;
+     int      l_error_return;
 
      /* here we are in the forked child process
       * where we install our own signal handlers
@@ -92,15 +93,19 @@ p_mpeg3_sig_workaround_fork(const char *filename)
      signal(SIGFPE,  p_mpeg3_sig_handler);
 
      if(gap_debug) printf("GVA_MP3: CILD process before mpeg3_open\n");
-     tmp_handle = mpeg3_open(l_filename);
+     tmp_handle = mpeg3_open(l_filename, &l_error_return);
      if(gap_debug) printf("GVA_MP3: CILD process after mpeg3_open\n");
      if(tmp_handle)
      {
        if(gap_debug) printf("GVA_MP3: CILD process before mpeg3_close\n");
        mpeg3_close(tmp_handle);  /* this call causes the crash (sometimes) */ 
        if(gap_debug) printf("GVA_MP3: CILD process after mpeg3_close\n");
-       l_rc = GVA_PROCESS_EXIT_OK;  /* retcode for OK */
-     }
+       
+       if (l_error_return == 0)
+       {
+          l_rc = GVA_PROCESS_EXIT_OK;  /* retcode for OK */
+       }
+      }
      g_free(l_filename);
      exit (l_rc);
   }
@@ -295,19 +300,28 @@ p_wrapper_mpeg3_open_read(char *in_filename, t_GVA_Handle *gvahand)
    */
   for(repeat_count = 0; repeat_count < 3; repeat_count++)
   {
-    handle->main_handle = mpeg3_open(filename);
+    int      l_error_return;
+ 
+    handle->main_handle = mpeg3_open(filename, &l_error_return);
 
-//printf("GVA: oooooo OPEN handle->main_handle:%d\n", (int)handle->main_handle);
+    //if(gap_debug)
+    {
+      printf("GVA: libmpeg3 OPEN handle->main_handle:%d l_error_return:%d\n"
+            , (int)handle->main_handle
+            , (int)l_error_return
+            );
+    }
 
-    if(handle->main_handle)
+    if((handle->main_handle) && (l_error_return == 0))
     {
       gvahand->decoder_handle = (void *)handle;
       gvahand->frame_bpp = 3;
 
       /* never use MMX, it sometimes delivers trashed frames
        * and has no advantages on modern CPU's at all
+       * procedure mpeg3_set_mmx was removed since libmpeg3-1.8
        */
-      mpeg3_set_mmx(handle->main_handle, FALSE);
+      /// mpeg3_set_mmx(handle->main_handle, FALSE);
 
       if(mpeg3_has_video(handle->main_handle))
       {
@@ -928,6 +942,7 @@ p_wrapper_mpeg3_get_video_chunk(t_GVA_Handle  *gvahand
   long     l_size;
   unsigned long code;
   unsigned char *buffer;
+  int      l_error_return;
 
   if(frame_nr < 1)
   {
@@ -956,8 +971,8 @@ p_wrapper_mpeg3_get_video_chunk(t_GVA_Handle  *gvahand
 
   if(handle->raw_handle == NULL)
   { 
-     handle->raw_handle = mpeg3_open_copy(gvahand->filename, handle->main_handle);
-     if(handle->raw_handle == NULL)
+     handle->raw_handle = mpeg3_open_copy(gvahand->filename, handle->main_handle, &l_error_return);
+     if((handle->raw_handle == NULL) || (l_error_return != 0))
      {
        return(GVA_RET_ERROR);
      }
@@ -1119,6 +1134,7 @@ p_mpeg3_emulate_seek(mpeg3_t*  handle, gint32 seekto_frame, t_GVA_Handle *gvahan
   char *dummy_y;
   char *dummy_u;
   char *dummy_v;
+  int   l_error_return;
 
   l_rc = 0;
   l_dirty_reads = 0;
@@ -1134,12 +1150,12 @@ p_mpeg3_emulate_seek(mpeg3_t*  handle, gint32 seekto_frame, t_GVA_Handle *gvahan
     /* printf(" ++ 1 ++ p_mpeg3_emulate_seek before mpeg3_open_copy  %s\n", gvahand->filename); */
 
     /* bakward seek: reopen needed */
-    seek_handle = mpeg3_open_copy(gvahand->filename, handle);
+    seek_handle = mpeg3_open_copy(gvahand->filename, handle, &l_error_return);
     /* printf(" ++ 2 ++ p_mpeg3_emulate_seek after mpeg3_open_copy  %s\n", gvahand->filename); */
 
     decoder_handle = (t_GVA_mpeg3*)gvahand->decoder_handle;
 
-    if(seek_handle)
+    if((seek_handle) && (l_error_return == 0))
     {
       /* printf(" ++ 3 ++ p_mpeg3_emulate_seek before mpeg3_close\n"); */
       mpeg3_close(decoder_handle->main_handle);
@@ -1299,6 +1315,7 @@ p_mpeg3_gopseek(mpeg3_t*  handle, gint32 seekto_frame, t_GVA_Handle *gvahand)
   gdouble l_progress_step;
   mpeg3_t*  seek_handle;
   t_GVA_mpeg3*  decoder_handle;
+  int      l_error_return;
 
   l_rc = 0;
   l_gopseek = MAX((seekto_frame - GVA_GOPSEEKSIZE), 1);
@@ -1315,8 +1332,8 @@ p_mpeg3_gopseek(mpeg3_t*  handle, gint32 seekto_frame, t_GVA_Handle *gvahand)
   gvahand->percentage_done = 0.0001;
   if(l_gopseek == 1)
   {
-    seek_handle = mpeg3_open_copy(gvahand->filename, handle);
-    if(seek_handle)
+    seek_handle = mpeg3_open_copy(gvahand->filename, handle, &l_error_return);
+    if((seek_handle) && (l_error_return == 0))
     {
       decoder_handle = (t_GVA_mpeg3*)gvahand->decoder_handle;
       mpeg3_close(decoder_handle->main_handle);
