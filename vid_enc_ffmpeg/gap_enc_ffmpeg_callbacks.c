@@ -206,8 +206,6 @@ on_ff_gint32_checkbutton_toggled  (GtkToggleButton *checkbutton,
                                    gint32          *dest_value_ptr)
 {
   GapGveFFMpegGlobalParams *gpp;
-  gint32   l_true;
-  gint32   l_false;
   gboolean l_sensitive;
 
   if(gap_debug) printf("CB: on_ff_gdouble_spinbutton_changed widget: %d\n", (int)checkbutton);
@@ -218,9 +216,6 @@ on_ff_gint32_checkbutton_toggled  (GtkToggleButton *checkbutton,
     return; 
   }
 
-  l_true = TRUE;
-  l_false = FALSE;
-  
   gpp = g_object_get_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP);
   if(gpp)
   {
@@ -258,23 +253,15 @@ on_ff_gint32_checkbutton_toggled  (GtkToggleButton *checkbutton,
       }
     }
 
-    if((GtkWidget *)checkbutton ==  gpp->ff_pass_checkbutton)
-    {
-      if(gap_debug) printf("WGT is: gpp->ff_pass_checkbutton\n");
-      l_true  = 2;  /* if true number of passes is 2 */
-      l_false = 1;  /* if true number of passes is 1 */
-    }
   }
 
   if (checkbutton->active)
   {
-     *dest_value_ptr = l_true;
-     if(gap_debug) printf("TRUE represntation: %d\n", (int)l_true);
+     *dest_value_ptr = TRUE;
   }
   else
   {
-     *dest_value_ptr = l_false;
-     if(gap_debug) printf("FALSE represntation: %d\n", (int)l_false);
+     *dest_value_ptr = FALSE;
   }
 
 }  /* end on_ff_gint32_checkbutton_toggled */

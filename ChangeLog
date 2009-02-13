@@ -1,3 +1,68 @@
+2009-02-11 Wolfgang Hofer <hof@gimp.org>
+
+- configure now checks for old versions of ffmpeg and libmpeg3
+  in case old version is detected those directories are renamed by adding
+  the suffix -OLD and prints out an information message.
+  The check is useful for build from svn, because svn update
+  does not care for the "Derived" direcories ffmpeg and libmpeg3
+  (note that only the tarballs are under svn control)
+  fixes the "can not compile" part of #571444
+
+  TODO: fix build variants when configured with
+  --disable-videoapi-support
+  --disable-libavformat 
+  --disable-libmpeg3 
+
+- configure no longer builds old unix frontends for xanim, and old mpeg encoders
+  by default (this stuff is very old, build is still supported
+
+- frontend for mplayer based frame extract was moved to its own
+  main program (this frontend was successfully tested with MPlayer SVN-r28347)
+
+- added support for new ffmpeg encoder options. 
+  various parameters and codec flags tat are new in ffmpeg 2009.01.31
+  
+  Note that some of the new capabilities are not provided in the GUI.
+  this stuff needs ffmpeg expert knowledge (more than i have) and
+  can be used via a preset file that can be saved and loaded
+  from the GUI and allows full control for all encoder capabilities.
+  
+- added GUI support for new FFMPEG codec flags /flags2  
+
+- implemented support for 2-pass encoding in the FFMPEG based videoencoder
+  and in the GapGveMasterEncoderStatus (for update of the progress
+  in the master video encoder GUI)
+
+- Some of the GIMP-GAP dialogs have iconify and maximize
+  decoration, this is done by adding type hint for NORMAL window
+  for the window manager. 
+  gtk_window_set_type_hint (shell_window, GDK_WINDOW_TYPE_HINT_NORMAL);
+  
+  - Master Video Encoder
+  - Parameter Dialog for FFMPEG and AVI
+  - MovePath
+  - VideoExtract
+  - Morph
+  
+  * configure.in
+  * gap/Makefile.am
+  * gap/gap_frontends_main.c
+  * gap/gap_decode_mplayer_main.c   ## new file
+  * gap/gap_mov_dialog.c
+  * gap/gap_vex_dialog.c
+  * gap/gap_morph_dialog.c
+
+  * libgapvidutil/gap_gve_misc_util.c [.h]
+
+  * vid_common/gap_cme_gui.c
+  * vid_enc_avi/gap_enc_avi_gui.c
+ 
+  * vid_enc_ffmpeg/gap_enc_ffmpeg_main.c [.h]
+  * vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c
+  * vid_enc_ffmpeg/gap_enc_ffmpeg_par.c
+  * vid_enc_ffmpeg/gap_enc_ffmpeg_callbacks.c
+
+
 2009-02-08 Wolfgang Hofer <hof@gimp.org>
 
 - Updated external libs

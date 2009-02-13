@@ -458,6 +458,7 @@ p_create_shell_window (GapGveAviGlobalParams *gpp)
                          GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
                          GTK_STOCK_OK,     GTK_RESPONSE_OK,
                          NULL);
+  gtk_window_set_type_hint (shell_window, GDK_WINDOW_TYPE_HINT_NORMAL);
 
   g_signal_connect (G_OBJECT (shell_window), "response",
                     G_CALLBACK (on_avi_response),
@@ -1177,7 +1178,7 @@ gap_enc_avi_gui_dialog(GapGveAviGlobalParams *gpp)
 {
   if(gap_debug) printf("gap_enc_avi_gui_dialog: Start\n");
 
-  gimp_ui_init ("gap_video_extract", FALSE);
+  gimp_ui_init ("gap_enc_avi_params", FALSE);
   gap_stock_init();
 
   /* ---------- dialog ----------*/

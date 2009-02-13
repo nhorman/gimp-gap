@@ -86,6 +86,7 @@ static gint     p_init_gdouble_combo_actual_idx(GapGveFFMpegGlobalParams *gpp, G
 GtkWidget*      p_create_basic_options_frame (GapGveFFMpegGlobalParams *gpp);
 GtkWidget*      p_create_expert_algortihms_frame (GapGveFFMpegGlobalParams *gpp);
 GtkWidget*      p_create_expert_flags_frame (GapGveFFMpegGlobalParams *gpp);
+GtkWidget*      p_create_expert_flags2_frame (GapGveFFMpegGlobalParams *gpp);
 GtkWidget*      p_create_expert_options_frame (GapGveFFMpegGlobalParams *gpp);
 GtkWidget*      p_create_2pass_options_frame (GapGveFFMpegGlobalParams *gpp);
 GtkWidget*      p_create_file_comment_frame (GapGveFFMpegGlobalParams *gpp);
@@ -899,8 +900,6 @@ p_init_spinbuttons(GapGveFFMpegGlobalParams *gpp)
 static void
 p_init_vid_checkbuttons(GapGveFFMpegGlobalParams *gpp)
 {
-  gint32 flag;
-
   if(gpp->startup)
   {
     return;
@@ -921,8 +920,8 @@ p_init_vid_checkbuttons(GapGveFFMpegGlobalParams *gpp)
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_partitioning_checkbutton)
                                , gpp->evl.partitioning);
 
-  flag = (gpp->evl.pass == 2) ? TRUE : FALSE;
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_pass_checkbutton), flag);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_pass_checkbutton)
+                               , gpp->evl.twoPassFlag);
 
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_dont_recode_checkbutton)
                                , gpp->evl.dont_recode_flag);
@@ -940,8 +939,6 @@ p_init_vid_checkbuttons(GapGveFFMpegGlobalParams *gpp)
                                  , gpp->evl.do_interlace_me);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_use_aiv_checkbutton)
                                  , gpp->evl.use_aiv);
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_use_trell_checkbutton)
-                                 , gpp->evl.use_trell);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_use_obmc_checkbutton)
                                  , gpp->evl.use_obmc);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_use_qpel_checkbutton)
@@ -966,6 +963,53 @@ p_init_vid_checkbuttons(GapGveFFMpegGlobalParams *gpp)
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_no_output_checkbutton)
                                  , gpp->evl.no_output);
   }
+
+  /* new flags */
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_codec_FLAG_GMC_checkbutton)
+                               , gpp->evl.codec_FLAG_GMC);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_codec_FLAG_INPUT_PRESERVED_checkbutton)
+                               , gpp->evl.codec_FLAG_INPUT_PRESERVED);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_codec_FLAG_GRAY_checkbutton)
+                               , gpp->evl.codec_FLAG_GRAY);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_codec_FLAG_EMU_EDGE_checkbutton)
+                               , gpp->evl.codec_FLAG_EMU_EDGE);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_codec_FLAG_TRUNCATED_checkbutton)
+                               , gpp->evl.codec_FLAG_TRUNCATED);
+
+  /* new flags2 */
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_codec_FLAG2_FAST_checkbutton)
+                               , gpp->evl.codec_FLAG2_FAST);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_codec_FLAG2_LOCAL_HEADER_checkbutton)
+                               , gpp->evl.codec_FLAG2_LOCAL_HEADER);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_codec_FLAG2_BPYRAMID_checkbutton)
+                               , gpp->evl.codec_FLAG2_BPYRAMID);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_codec_FLAG2_WPRED_checkbutton)
+                               , gpp->evl.codec_FLAG2_WPRED);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_codec_FLAG2_MIXED_REFS_checkbutton)
+                               , gpp->evl.codec_FLAG2_MIXED_REFS);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_codec_FLAG2_8X8DCT_checkbutton)
+                               , gpp->evl.codec_FLAG2_8X8DCT);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_codec_FLAG2_FASTPSKIP_checkbutton)
+                               , gpp->evl.codec_FLAG2_FASTPSKIP);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_codec_FLAG2_AUD_checkbutton)
+                               , gpp->evl.codec_FLAG2_AUD);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_codec_FLAG2_BRDO_checkbutton)
+                               , gpp->evl.codec_FLAG2_BRDO);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_codec_FLAG2_INTRA_VLC_checkbutton)
+                               , gpp->evl.codec_FLAG2_INTRA_VLC);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_codec_FLAG2_MEMC_ONLY_checkbutton)
+                               , gpp->evl.codec_FLAG2_MEMC_ONLY);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_codec_FLAG2_DROP_FRAME_TIMECODE_checkbutton)
+                               , gpp->evl.codec_FLAG2_DROP_FRAME_TIMECODE);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_codec_FLAG2_SKIP_RD_checkbutton)
+                               , gpp->evl.codec_FLAG2_SKIP_RD);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_codec_FLAG2_CHUNKS_checkbutton)
+                               , gpp->evl.codec_FLAG2_CHUNKS);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_codec_FLAG2_NON_LINEAR_QUANT_checkbutton)
+                               , gpp->evl.codec_FLAG2_NON_LINEAR_QUANT);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gpp->ff_codec_FLAG2_BIT_RESERVOIR_checkbutton)
+                               , gpp->evl.codec_FLAG2_BIT_RESERVOIR);
+
 }   /* end p_init_vid_checkbuttons */
 
 /* --------------------------------
@@ -2048,14 +2092,6 @@ p_create_expert_flags_frame (GapGveFFMpegGlobalParams *gpp)
 
   row = 0;
 
-  /* Flags label */
-//  label = gtk_label_new (_("Flags:"));
-//  gtk_widget_show (label);
-//  gtk_table_attach (GTK_TABLE (table2), label, 0, 1, row, row+1,
-//                    (GtkAttachOptions) (GTK_FILL),
-//                    (GtkAttachOptions) (0), 0, 0);
-//  gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
-
   /* the (invisible) frame Flags container for the flag checkbuttons */
   flags_frame = gimp_frame_new (NULL);
   gtk_widget_show (flags_frame);
@@ -2297,7 +2333,6 @@ p_create_expert_flags_frame (GapGveFFMpegGlobalParams *gpp)
                       &gpp->evl.use_obmc);
 
 
-
     flags_row++;
 
     /* the quarter pel checkbutton */
@@ -2325,7 +2360,6 @@ p_create_expert_flags_frame (GapGveFFMpegGlobalParams *gpp)
     g_signal_connect (G_OBJECT (checkbutton), "toggled",
                       G_CALLBACK (on_ff_gint32_checkbutton_toggled),
                       &gpp->evl.use_loop);
-
 
     flags_row++;
 
@@ -2356,7 +2390,6 @@ p_create_expert_flags_frame (GapGveFFMpegGlobalParams *gpp)
     g_signal_connect (G_OBJECT (checkbutton), "toggled",
                       G_CALLBACK (on_ff_gint32_checkbutton_toggled),
                       &gpp->evl.use_cbprd);
-
 
     flags_row++;
 
@@ -2409,19 +2442,6 @@ p_create_expert_flags_frame (GapGveFFMpegGlobalParams *gpp)
 
     flags_row++;
 
-    /* the Use trell checkbutton */
-    checkbutton = gtk_check_button_new_with_label (_("Use trell"));
-    gpp->ff_use_trell_checkbutton = checkbutton;
-    gtk_widget_show (checkbutton);
-    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 0, 1, flags_row, flags_row+1,
-                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                      (GtkAttachOptions) (0), 0, 0);
-    gimp_help_set_help_data (checkbutton, _("Enable trellis quantization"), NULL);
-    g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
-    g_signal_connect (G_OBJECT (checkbutton), "toggled",
-                      G_CALLBACK (on_ff_gint32_checkbutton_toggled),
-                      &gpp->evl.use_trell);
-
 
   }  /* end flags_table */
 
@@ -2449,6 +2469,406 @@ p_create_expert_flags_frame (GapGveFFMpegGlobalParams *gpp)
 
   return(frame);
 }  /* end  p_create_expert_flags_frame */
+
+
+
+/* --------------------------------
+ * p_create_expert_flags2_frame
+ * --------------------------------
+ */
+GtkWidget*
+p_create_expert_flags2_frame (GapGveFFMpegGlobalParams *gpp)
+{
+  GtkWidget *frame;
+  GtkWidget *flags_frame;
+  GtkWidget *table2;
+  GtkWidget *label;
+  GtkWidget *checkbutton;
+
+  gint       row;
+
+  frame = gimp_frame_new (_("FFMpeg Expert Flags2"));
+
+  table2 = gtk_table_new (7, 3, FALSE);
+  gtk_widget_show (table2);
+  gtk_container_add (GTK_CONTAINER (frame), table2);
+  gtk_container_set_border_width (GTK_CONTAINER (table2), 2);
+  gtk_table_set_row_spacings (GTK_TABLE (table2), 4);
+  gtk_table_set_col_spacings (GTK_TABLE (table2), 4);
+
+  row = 0;
+
+  /* the (invisible) frame Flags container for the flag checkbuttons */
+  flags_frame = gimp_frame_new (NULL);
+  gtk_widget_show (flags_frame);
+  gtk_table_attach (GTK_TABLE (table2), flags_frame, 1, 2, row, row+1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+
+  /* the flags table */
+  {
+    int flags_row;
+    GtkWidget *flags_table;
+
+    flags_table = gtk_table_new (8, 2, FALSE);
+    gtk_widget_show (flags_table);
+    gtk_container_add (GTK_CONTAINER (flags_frame), flags_table);
+    gtk_container_set_border_width (GTK_CONTAINER (flags_table), 2);
+    gtk_table_set_row_spacings (GTK_TABLE (flags_table), 4);
+    gtk_table_set_col_spacings (GTK_TABLE (flags_table), 4);
+
+    flags_row = 0;
+
+    /* LABELS */
+    label = gtk_label_new (_("General flags2:"));
+    gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+    gtk_widget_show (label);
+    gtk_table_attach (GTK_TABLE (flags_table), label, 0, 1, flags_row, flags_row+1,
+                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                      (GtkAttachOptions) (0), 0, 0);
+
+    label = gtk_label_new (_("H264:"));
+    gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+    gtk_widget_show (label);
+    gtk_table_attach (GTK_TABLE (flags_table), label, 1, 2, flags_row, flags_row+1,
+                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                      (GtkAttachOptions) (0), 0, 0);
+
+
+
+
+    flags_row++;
+
+    /* CHECKBUTTONS */
+    /* the Fast checkbutton */
+    checkbutton = gtk_check_button_new_with_label (_("Fast Non-Compliant"));
+    gpp->ff_codec_FLAG2_FAST_checkbutton = checkbutton;
+    gtk_widget_show (checkbutton);
+    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 0, 1, flags_row, flags_row+1,
+                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                      (GtkAttachOptions) (0), 0, 0);
+    gimp_help_set_help_data (checkbutton, _("Allow non spec compliant speedup tricks"), NULL);
+    g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+    g_signal_connect (G_OBJECT (checkbutton), "toggled",
+                      G_CALLBACK (on_ff_gint32_checkbutton_toggled),
+                      &gpp->evl.codec_FLAG2_FAST);
+
+
+    /* the use_bpyramid checkbutton */
+    checkbutton = gtk_check_button_new_with_label (_("Bpyramid"));
+    gpp->ff_codec_FLAG2_BPYRAMID_checkbutton  = checkbutton;
+    gtk_widget_show (checkbutton);
+    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 1, 2, flags_row, flags_row+1,
+                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                      (GtkAttachOptions) (0), 0, 0);
+    gimp_help_set_help_data (checkbutton, _("allow B-frames to be used as references for predicting.(for H264 codec)"), NULL);
+    g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+    g_signal_connect (G_OBJECT (checkbutton), "toggled",
+                      G_CALLBACK (on_ff_gint32_checkbutton_toggled),
+                      &gpp->evl.codec_FLAG2_BPYRAMID);
+
+
+
+    flags_row++;
+
+    /* the use_local_header checkbutton */
+    checkbutton = gtk_check_button_new_with_label (_("Local Header"));
+    gpp->ff_codec_FLAG2_LOCAL_HEADER_checkbutton = checkbutton;
+    gtk_widget_show (checkbutton);
+    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 0, 1, flags_row, flags_row+1,
+                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                      (GtkAttachOptions) (0), 0, 0);
+    gimp_help_set_help_data (checkbutton, _("Place global headers at every keyframe instead of in extradata"), NULL);
+    g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+    g_signal_connect (G_OBJECT (checkbutton), "toggled",
+                      G_CALLBACK (on_ff_gint32_checkbutton_toggled),
+                      &gpp->evl.codec_FLAG2_LOCAL_HEADER);
+
+    /* the use_wpred checkbutton */
+    checkbutton = gtk_check_button_new_with_label (_("Weighted Biprediction"));
+    gpp->ff_codec_FLAG2_WPRED_checkbutton = checkbutton;
+    gtk_widget_show (checkbutton);
+    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 1, 2, flags_row, flags_row+1,
+                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                      (GtkAttachOptions) (0), 0, 0);
+    gimp_help_set_help_data (checkbutton, _("weighted biprediction for B-frames (for H264 codec)"), NULL);
+    g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+    g_signal_connect (G_OBJECT (checkbutton), "toggled",
+                      G_CALLBACK (on_ff_gint32_checkbutton_toggled),
+                      &gpp->evl.codec_FLAG2_WPRED);
+
+
+
+
+    flags_row++;
+
+    /* the use_brdo checkbutton */
+    checkbutton = gtk_check_button_new_with_label (_("B Rate Distortion"));
+    gpp->ff_codec_FLAG2_BRDO_checkbutton = checkbutton;
+    gtk_widget_show (checkbutton);
+    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 0, 1, flags_row, flags_row+1,
+                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                      (GtkAttachOptions) (0), 0, 0);
+    gimp_help_set_help_data (checkbutton, _("B-frame rate-distortion optimization"), NULL);
+    g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+    g_signal_connect (G_OBJECT (checkbutton), "toggled",
+                      G_CALLBACK (on_ff_gint32_checkbutton_toggled),
+                      &gpp->evl.codec_FLAG2_BRDO);
+
+
+
+
+    /* the use_mixed_refs checkbutton */
+    checkbutton = gtk_check_button_new_with_label (_("Mixed Refs"));
+    gpp->ff_codec_FLAG2_MIXED_REFS_checkbutton = checkbutton;
+    gtk_widget_show (checkbutton);
+    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 1, 2, flags_row, flags_row+1,
+                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                      (GtkAttachOptions) (0), 0, 0);
+    gimp_help_set_help_data (checkbutton, _("one reference per partition, as opposed to one reference per macroblock (for H264 codec)"), NULL);
+    g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+    g_signal_connect (G_OBJECT (checkbutton), "toggled",
+                      G_CALLBACK (on_ff_gint32_checkbutton_toggled),
+                      &gpp->evl.codec_FLAG2_MIXED_REFS);
+
+
+
+    flags_row++;
+
+    /* the use_ivlc checkbutton */
+    checkbutton = gtk_check_button_new_with_label (_("Intra VLC"));
+    gpp->ff_codec_FLAG2_INTRA_VLC_checkbutton = checkbutton;
+    gtk_widget_show (checkbutton);
+    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 0, 1, flags_row, flags_row+1,
+                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                      (GtkAttachOptions) (0), 0, 0);
+    gimp_help_set_help_data (checkbutton, _("Use MPEG-2 intra VLC table."), NULL);
+    g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+    g_signal_connect (G_OBJECT (checkbutton), "toggled",
+                      G_CALLBACK (on_ff_gint32_checkbutton_toggled),
+                      &gpp->evl.codec_FLAG2_INTRA_VLC);
+
+
+    /* the use_dct8x8 checkbutton */
+    checkbutton = gtk_check_button_new_with_label (_("Use AIV"));
+    gpp->ff_codec_FLAG2_8X8DCT_checkbutton = checkbutton;
+    gtk_widget_show (checkbutton);
+    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 1, 2, flags_row, flags_row+1,
+                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                      (GtkAttachOptions) (0), 0, 0);
+    gimp_help_set_help_data (checkbutton, _("high profile 8x8 transform (for H264 codec)"), NULL);
+    g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+    g_signal_connect (G_OBJECT (checkbutton), "toggled",
+                      G_CALLBACK (on_ff_gint32_checkbutton_toggled),
+                      &gpp->evl.codec_FLAG2_8X8DCT);
+
+
+    flags_row++;
+
+    /* the use_memc_only checkbutton */
+    checkbutton = gtk_check_button_new_with_label (_("Only ME/MC"));
+    gpp->ff_codec_FLAG2_MEMC_ONLY_checkbutton = checkbutton;
+    gtk_widget_show (checkbutton);
+    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 0, 1, flags_row, flags_row+1,
+                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                      (GtkAttachOptions) (0), 0, 0);
+    gimp_help_set_help_data (checkbutton, _("Only do ME/MC (I frames -> ref, P frame -> ME+MC)"), NULL);
+    g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+    g_signal_connect (G_OBJECT (checkbutton), "toggled",
+                      G_CALLBACK (on_ff_gint32_checkbutton_toggled),
+                      &gpp->evl.codec_FLAG2_MEMC_ONLY);
+
+
+    /* the use_fastpskip checkbutton */
+    checkbutton = gtk_check_button_new_with_label (_("Fast Pskip"));
+    gpp->ff_codec_FLAG2_FASTPSKIP_checkbutton = checkbutton;
+    gtk_widget_show (checkbutton);
+    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 1, 2, flags_row, flags_row+1,
+                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                      (GtkAttachOptions) (0), 0, 0);
+    gimp_help_set_help_data (checkbutton, _("fast pskip (for H264 codec)"), NULL);
+    g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+    g_signal_connect (G_OBJECT (checkbutton), "toggled",
+                      G_CALLBACK (on_ff_gint32_checkbutton_toggled),
+                      &gpp->evl.codec_FLAG2_FASTPSKIP);
+
+
+
+    flags_row++;
+
+    /* the use_drop_frame_timecode checkbutton */
+    checkbutton = gtk_check_button_new_with_label (_("DropFrame Timecode"));
+    gpp->ff_codec_FLAG2_DROP_FRAME_TIMECODE_checkbutton = checkbutton;
+    gtk_widget_show (checkbutton);
+    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 0, 1, flags_row, flags_row+1,
+                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                      (GtkAttachOptions) (0), 0, 0);
+    gimp_help_set_help_data (checkbutton, _("timecode is in drop frame format"), NULL);
+    g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+    g_signal_connect (G_OBJECT (checkbutton), "toggled",
+                      G_CALLBACK (on_ff_gint32_checkbutton_toggled),
+                      &gpp->evl.codec_FLAG2_DROP_FRAME_TIMECODE);
+
+    /* the use_aud checkbutton */
+    checkbutton = gtk_check_button_new_with_label (_("AccessUnit"));
+    gpp->ff_codec_FLAG2_AUD_checkbutton = checkbutton;
+    gtk_widget_show (checkbutton);
+    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 1, 2, flags_row, flags_row+1,
+                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                      (GtkAttachOptions) (0), 0, 0);
+    gimp_help_set_help_data (checkbutton, _("use access unit delimiters (for H264 codec)"), NULL);
+    g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+    g_signal_connect (G_OBJECT (checkbutton), "toggled",
+                      G_CALLBACK (on_ff_gint32_checkbutton_toggled),
+                      &gpp->evl.codec_FLAG2_AUD);
+
+
+    flags_row++;
+
+    /* the use_skip_rd checkbutton */
+    checkbutton = gtk_check_button_new_with_label (_("Use qprd"));
+    gpp->ff_codec_FLAG2_SKIP_RD_checkbutton = checkbutton;
+    gtk_widget_show (checkbutton);
+    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 0, 1, flags_row, flags_row+1,
+                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                      (GtkAttachOptions) (0), 0, 0);
+    gimp_help_set_help_data (checkbutton, _("RD optimal MB level residual skipping"), NULL);
+    g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+    g_signal_connect (G_OBJECT (checkbutton), "toggled",
+                      G_CALLBACK (on_ff_gint32_checkbutton_toggled),
+                      &gpp->evl.codec_FLAG2_SKIP_RD);
+
+    flags_row++;
+
+    /* the use_chunks checkbutton */
+    checkbutton = gtk_check_button_new_with_label (_("Use chunks"));
+    gpp->ff_codec_FLAG2_CHUNKS_checkbutton = checkbutton;
+    gtk_widget_show (checkbutton);
+    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 0, 1, flags_row, flags_row+1,
+                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                      (GtkAttachOptions) (0), 0, 0);
+    gimp_help_set_help_data (checkbutton, _("Input bitstream might be truncated at a packet boundaries instead of only at frame boundaries"), NULL);
+    g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+    g_signal_connect (G_OBJECT (checkbutton), "toggled",
+                      G_CALLBACK (on_ff_gint32_checkbutton_toggled),
+                      &gpp->evl.codec_FLAG2_CHUNKS);
+
+
+    flags_row++;
+
+    /* the use_non_linear_quant checkbutton */
+    checkbutton = gtk_check_button_new_with_label (_("Nonlinear Quant"));
+    gpp->ff_codec_FLAG2_NON_LINEAR_QUANT_checkbutton = checkbutton;
+    gtk_widget_show (checkbutton);
+    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 0, 1, flags_row, flags_row+1,
+                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                      (GtkAttachOptions) (0), 0, 0);
+    gimp_help_set_help_data (checkbutton, _("Use MPEG-2 nonlinear quantizer"), NULL);
+    g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+    g_signal_connect (G_OBJECT (checkbutton), "toggled",
+                      G_CALLBACK (on_ff_gint32_checkbutton_toggled),
+                      &gpp->evl.codec_FLAG2_NON_LINEAR_QUANT);
+
+    flags_row++;
+
+    /* the use_bit_reservoir checkbutton */
+    checkbutton = gtk_check_button_new_with_label (_("Bit Reservoir"));
+    gpp->ff_codec_FLAG2_BIT_RESERVOIR_checkbutton = checkbutton;
+    gtk_widget_show (checkbutton);
+    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 0, 1, flags_row, flags_row+1,
+                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                      (GtkAttachOptions) (0), 0, 0);
+    gimp_help_set_help_data (checkbutton, _("Use a bit reservoir when encoding if possible"), NULL);
+    g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+    g_signal_connect (G_OBJECT (checkbutton), "toggled",
+                      G_CALLBACK (on_ff_gint32_checkbutton_toggled),
+                      &gpp->evl.codec_FLAG2_BIT_RESERVOIR);
+
+
+
+    flags_row++;
+
+    /* the use_gmc checkbutton */
+    checkbutton = gtk_check_button_new_with_label (_("Use GMC"));
+    gpp->ff_codec_FLAG_GMC_checkbutton = checkbutton;
+    gtk_widget_show (checkbutton);
+    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 0, 1, flags_row, flags_row+1,
+                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                      (GtkAttachOptions) (0), 0, 0);
+    gimp_help_set_help_data (checkbutton, _("Use GMC"), NULL);
+    g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+    g_signal_connect (G_OBJECT (checkbutton), "toggled",
+                      G_CALLBACK (on_ff_gint32_checkbutton_toggled),
+                      &gpp->evl.codec_FLAG_GMC);
+
+    flags_row++;
+
+    /* the input_preserved checkbutton */
+    checkbutton = gtk_check_button_new_with_label (_("Input Preserved"));
+    gpp->ff_codec_FLAG_INPUT_PRESERVED_checkbutton = checkbutton;
+    gtk_widget_show (checkbutton);
+    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 0, 1, flags_row, flags_row+1,
+                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                      (GtkAttachOptions) (0), 0, 0);
+    gimp_help_set_help_data (checkbutton, _("Input Preserved"), NULL);
+    g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+    g_signal_connect (G_OBJECT (checkbutton), "toggled",
+                      G_CALLBACK (on_ff_gint32_checkbutton_toggled),
+                      &gpp->evl.codec_FLAG_INPUT_PRESERVED);
+
+    flags_row++;
+
+    /* the use_gray checkbutton */
+    checkbutton = gtk_check_button_new_with_label (_("Use Gray"));
+    gpp->ff_codec_FLAG_GRAY_checkbutton = checkbutton;
+    gtk_widget_show (checkbutton);
+    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 0, 1, flags_row, flags_row+1,
+                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                      (GtkAttachOptions) (0), 0, 0);
+    gimp_help_set_help_data (checkbutton, _("Only encode grayscale"), NULL);
+    g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+    g_signal_connect (G_OBJECT (checkbutton), "toggled",
+                      G_CALLBACK (on_ff_gint32_checkbutton_toggled),
+                      &gpp->evl.codec_FLAG_GRAY);
+
+
+    flags_row++;
+
+    /* the use_emu_edge checkbutton */
+    checkbutton = gtk_check_button_new_with_label (_("Emu Edges"));
+    gpp->ff_codec_FLAG_EMU_EDGE_checkbutton = checkbutton;
+    gtk_widget_show (checkbutton);
+    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 0, 1, flags_row, flags_row+1,
+                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                      (GtkAttachOptions) (0), 0, 0);
+    gimp_help_set_help_data (checkbutton, _("Dont draw edges"), NULL);
+    g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+    g_signal_connect (G_OBJECT (checkbutton), "toggled",
+                      G_CALLBACK (on_ff_gint32_checkbutton_toggled),
+                      &gpp->evl.codec_FLAG_EMU_EDGE);
+
+    flags_row++;
+
+    /* the use_truncated checkbutton */
+    checkbutton = gtk_check_button_new_with_label (_("Truncated"));
+    gpp->ff_codec_FLAG_TRUNCATED_checkbutton = checkbutton;
+    gtk_widget_show (checkbutton);
+    gtk_table_attach (GTK_TABLE (flags_table), checkbutton, 0, 1, flags_row, flags_row+1,
+                      (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                      (GtkAttachOptions) (0), 0, 0);
+    gimp_help_set_help_data (checkbutton, _("Input bitstream might be truncated at a random location instead of only at frame boundaries"), NULL);
+    g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
+    g_signal_connect (G_OBJECT (checkbutton), "toggled",
+                      G_CALLBACK (on_ff_gint32_checkbutton_toggled),
+                      &gpp->evl.codec_FLAG_TRUNCATED);
+
+    flags_row++;
+
+  }  /* end flags_table */
+
+
+  return(frame);
+}  /* end  p_create_expert_flags2_frame */
 
 
 
@@ -2488,7 +2908,7 @@ p_create_expert_options_frame (GapGveFFMpegGlobalParams *gpp)
   gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 
   /* the qblur spinbutton */
-  adj = gtk_adjustment_new (0.5, 0, 100, 0.25, 10, 0);
+  adj = gtk_adjustment_new (0.5, 0, 1.0, 0.01, 0.1, 0);
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 2);
   gpp->ff_qblur_spinbutton_adj            = adj;
   gpp->ff_qblur_spinbutton                = spinbutton;
@@ -2496,7 +2916,8 @@ p_create_expert_options_frame (GapGveFFMpegGlobalParams *gpp)
   gtk_table_attach (GTK_TABLE (table4), spinbutton, 1, 2, row, row+1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gimp_help_set_help_data (spinbutton, _("Video quantiser scale blur (VBR)"), NULL);
+  gimp_help_set_help_data (spinbutton, _("Video quantiser scale blur (VBR) "
+                                         "amount of qscale smoothing over time (0.0-1.0)"), NULL);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_ADJ, (gpointer)adj);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
   g_signal_connect (G_OBJECT (spinbutton), "changed",
@@ -2517,7 +2938,7 @@ p_create_expert_options_frame (GapGveFFMpegGlobalParams *gpp)
   gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 
   /* the qcomp spinbutton */
-  adj = gtk_adjustment_new (0.5, 0, 100, 0.25, 10, 0);
+  adj = gtk_adjustment_new (0.5, 0, 1.0, 0.01, 0.1, 0);
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 2);
   gpp->ff_qcomp_spinbutton_adj            = adj;
   gpp->ff_qcomp_spinbutton                = spinbutton;
@@ -2525,7 +2946,8 @@ p_create_expert_options_frame (GapGveFFMpegGlobalParams *gpp)
   gtk_table_attach (GTK_TABLE (table4), spinbutton, 1, 2, row, row+1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gimp_help_set_help_data (spinbutton, _("Video quantiser scale compression (VBR)"), NULL);
+  gimp_help_set_help_data (spinbutton, _("Video quantiser scale compression (VBR) "
+                                         "amount of qscale change between easy & hard scenes (0.0-1.0)"), NULL);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_ADJ, (gpointer)adj);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
   g_signal_connect (G_OBJECT (spinbutton), "changed",
@@ -2786,7 +3208,7 @@ p_create_expert_options_frame (GapGveFFMpegGlobalParams *gpp)
   gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
 
   /* the strictness spinbutton */
-  adj = gtk_adjustment_new (1, 0, 100, 1, 10, 0);
+  adj = gtk_adjustment_new (1, -2, 2, 1, 10, 0);
   spinbutton = gtk_spin_button_new (GTK_ADJUSTMENT (adj), 1, 0);
   gpp->ff_strict_spinbutton_adj           = adj;
   gpp->ff_strict_spinbutton               = spinbutton;
@@ -2900,7 +3322,7 @@ p_create_2pass_options_frame (GapGveFFMpegGlobalParams *gpp)
   g_object_set_data (G_OBJECT (checkbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
   g_signal_connect (G_OBJECT (checkbutton), "toggled",
                       G_CALLBACK (on_ff_gint32_checkbutton_toggled),
-                      &gpp->evl.pass);
+                      &gpp->evl.twoPassFlag);
 
   row++;
 
@@ -3297,7 +3719,6 @@ p_create_ffmpeg_dialog_shell (GapGveFFMpegGlobalParams *gpp)
   gpp->ff_use_obmc_checkbutton = NULL;
   gpp->ff_use_loop_checkbutton = NULL;
   gpp->ff_use_alt_scan_checkbutton = NULL;
-  gpp->ff_use_trell_checkbutton = NULL;
   gpp->ff_use_mv0_checkbutton = NULL;
   gpp->ff_do_normalize_aqp_checkbutton = NULL;
   gpp->ff_use_scan_offset_checkbutton = NULL;
@@ -3310,6 +3731,30 @@ p_create_ffmpeg_dialog_shell (GapGveFFMpegGlobalParams *gpp)
   gpp->ff_strict_gop_checkbutton = NULL;
   gpp->ff_no_output_checkbutton = NULL;
 
+  gpp->ff_codec_FLAG_GMC_checkbutton = NULL;
+  gpp->ff_codec_FLAG_INPUT_PRESERVED_checkbutton = NULL;
+  gpp->ff_codec_FLAG_GRAY_checkbutton = NULL;
+  gpp->ff_codec_FLAG_EMU_EDGE_checkbutton = NULL;
+  gpp->ff_codec_FLAG_TRUNCATED_checkbutton = NULL;
+  
+  gpp->ff_codec_FLAG2_FAST_checkbutton = NULL;
+  gpp->ff_codec_FLAG2_LOCAL_HEADER_checkbutton = NULL;
+  gpp->ff_codec_FLAG2_BPYRAMID_checkbutton = NULL;
+  gpp->ff_codec_FLAG2_WPRED_checkbutton = NULL;
+  gpp->ff_codec_FLAG2_MIXED_REFS_checkbutton = NULL;
+  gpp->ff_codec_FLAG2_8X8DCT_checkbutton = NULL;
+  gpp->ff_codec_FLAG2_FASTPSKIP_checkbutton = NULL;
+  gpp->ff_codec_FLAG2_AUD_checkbutton = NULL;
+  gpp->ff_codec_FLAG2_BRDO_checkbutton = NULL;
+  gpp->ff_codec_FLAG2_INTRA_VLC_checkbutton = NULL;
+  gpp->ff_codec_FLAG2_MEMC_ONLY_checkbutton = NULL;
+  gpp->ff_codec_FLAG2_DROP_FRAME_TIMECODE_checkbutton = NULL;
+  gpp->ff_codec_FLAG2_SKIP_RD_checkbutton = NULL;
+  gpp->ff_codec_FLAG2_CHUNKS_checkbutton = NULL;
+  gpp->ff_codec_FLAG2_NON_LINEAR_QUANT_checkbutton = NULL;
+  gpp->ff_codec_FLAG2_BIT_RESERVOIR_checkbutton = NULL;
+
+
   shell_window = gimp_dialog_new (_("FFMPEG Video Encode Parameters"),
                          GAP_PLUGIN_NAME_FFMPEG_PARAMS,
                          NULL, 0,
@@ -3320,6 +3765,7 @@ p_create_ffmpeg_dialog_shell (GapGveFFMpegGlobalParams *gpp)
                          GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
                          GTK_STOCK_OK,     GTK_RESPONSE_OK,
                          NULL);
+  gtk_window_set_type_hint (shell_window, GDK_WINDOW_TYPE_HINT_NORMAL);
 
   g_signal_connect (G_OBJECT (shell_window), "response",
                     G_CALLBACK (on_ff_response),
@@ -3464,6 +3910,22 @@ p_create_ffmpeg_dialog_shell (GapGveFFMpegGlobalParams *gpp)
   gtk_widget_show (nb1_label);
   gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook1), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook1), nb_page_nr), nb1_label);
 
+
+  nb_page_nr++;
+
+  /* the frame with expert_flags2 */
+  frame = p_create_expert_flags2_frame(gpp);
+  gtk_widget_show (frame);
+
+  gtk_container_add (GTK_CONTAINER (notebook1), frame);
+  gtk_container_set_border_width (GTK_CONTAINER (frame), 4);
+
+  /* the notebook page label for expert flags */
+  nb1_label = gtk_label_new (_("Expert Flags2"));
+  gtk_widget_show (nb1_label);
+  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook1), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook1), nb_page_nr), nb1_label);
+
+
   nb_page_nr++;
 
   /* the frame with expert_options */
@@ -3544,6 +4006,7 @@ gap_enc_ffgui_ffmpeg_encode_dialog(GapGveFFMpegGlobalParams *gpp)
   p_set_combo_box_callbacks(gpp);
   gap_enc_ffgui_init_main_dialog_widgets(gpp);
   gtk_widget_show (gpp->shell_window);
+  gtk_window_present(GTK_WINDOW(gpp->shell_window));
 
   gpp->val.run = 0;
   gtk_main ();

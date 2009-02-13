@@ -3473,6 +3473,7 @@ gap_morph_create_dialog(GapMorphGUIParams *mgup)
                          GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
                          GTK_STOCK_OK,     GTK_RESPONSE_OK,
                          NULL);
+  gtk_window_set_type_hint (dlg, GDK_WINDOW_TYPE_HINT_NORMAL);
 
   mgup->shell = dlg;
   mgup->src_win.startup_flag = TRUE;

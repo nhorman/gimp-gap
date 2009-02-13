@@ -10,6 +10,8 @@ if GAP_UNIX_FRONTENDS
 GAP_FRONTENDS = gap_frontends
 endif
 
+GAP_DECODE_MPLAYER_FRONTEND = gap_decode_mplayer
+
 if GAP_AUDIO_SUPPORT
 WAVPLAYCLIENT = $(top_builddir)/libwavplayclient/libwavplayclient.a
 endif
@@ -95,6 +97,7 @@ libexec_PROGRAMS = \
 	gap_fmac		\
 	gap_fmac_varying	\
 	$(GAP_FRONTENDS)	\
+	$(GAP_DECODE_MPLAYER_FRONTEND)	\
 	gap_morph		\
 	gap_name2layer		\
 	gap_navigator_dialog	\
@@ -220,13 +223,17 @@ gap_fmac_varying_SOURCES = \
 	gap_libgimpgap.h	
 
 gap_frontends_SOURCES = \
-	gap_decode_mplayer.c	\
-	gap_decode_mplayer.h	\
 	gap_decode_xanim.c	\
 	gap_decode_xanim.h	\
 	gap_frontends_main.c	\
 	gap_mpege.c		\
 	gap_mpege.h		\
+	gap_libgimpgap.h	
+
+gap_decode_mplayer_SOURCES = \
+	gap_decode_mplayer_main.c	\
+	gap_decode_mplayer.c	\
+	gap_decode_mplayer.h	\
 	gap_libgimpgap.h	
 
 #  gap_morph_SOURCES: gap_mov_exec.h should be removed when finished coding
@@ -393,6 +400,7 @@ gap_filter_LDADD =           $(GAPVIDEOAPI) $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_
 gap_fmac_LDADD =             $(GAPVIDEOAPI) $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
 gap_fmac_varying_LDADD =     $(GAPVIDEOAPI) $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
 gap_frontends_LDADD =        $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
+gap_decode_mplayer_LDADD =   $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
 gap_morph_LDADD =            $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
 gap_name2layer_LDADD =       $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
 gap_navigator_dialog_LDADD = $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)

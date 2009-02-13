@@ -11,7 +11,6 @@
 
 - RealVideo fileformat: Video+Audio encoding does not work. (unusable results) playback  blocks.
                         (Video only seems OK)
-- finish implementation of 2-pass handling
 */
 
 /* gap_enc_main_ffmpeg.c
@@ -194,69 +193,12 @@ typedef struct t_ffmpeg_handle
 
  int frame_width;
  int frame_height;
- int frame_topBand;
- int frame_bottomBand;
- int frame_leftBand;
- int frame_rightBand;
- int video_bit_rate;
- int video_bit_rate_tolerance;
- float video_qscale;
- int video_qmin;
- int video_qmax;
- int video_qdiff;
- float video_qblur;
- float video_qcomp;
- char *video_rc_override_string;
- char *video_rc_eq;
- int video_rc_buffer_size;
- float video_rc_buffer_aggressivity;
- int video_rc_max_rate;
- int video_rc_min_rate;
- float video_rc_initial_cplx;
- float video_b_qfactor;
- float video_b_qoffset;
- float video_i_qfactor;
- float video_i_qoffset;
- int me_method;
- int video_disable;
- int video_codec_id;
- int same_quality;
- int b_frames;
- int mb_decision;
- int aic;
- int umv;
- int use_4mv;
- int workaround_bugs;
- int error_recognition;
- int error_concealment;
- int dct_algo;
- int idct_algo;
- int strict;
- int mb_qmin;
- int mb_qmax;
- int use_part;
- int packet_size;
 
- int gop_size;
- int intra_only;
  int audio_bit_rate;
  int audio_codec_id;
 
- int64_t recording_time;
  int file_overwrite;
- char *str_title;
- char *str_author;
- char *str_copyright;
- char *str_comment;
- int do_benchmark;
- int do_hex_dump;
- int do_play;
- int do_psnr;
- int do_vstats;
- int do_pass;
- char *pass_logfilename;
- int audio_stream_copy;
- int video_stream_copy;
+
  gdouble pts_stepsize_per_frame;
  gint32 encode_frame_nr;          /* number of frame to encode always starts at 1 and inc by one (base for monotone timecode calculation) */
 
@@ -280,12 +222,13 @@ int global_nargs_ffmpeg_enc_par;
 static void query(void);
 static void run(const gchar *name
               , gint n_params
-	      , const GimpParam *param
+              , const GimpParam *param
               , gint *nreturn_vals
-	      , GimpParam **return_vals);
+              , GimpParam **return_vals);
 
 
 static void   p_debug_print_dump_AVCodecContext(AVCodecContext *codecContext);
+static void   p_set_flag(gint32 value_bool32, int *flag_ptr, int maskbit);
 
 
 static void   p_gimp_get_data(const char *key, void *buffer, gint expected_size);
@@ -293,18 +236,18 @@ static void   p_ffmpeg_init_default_params(GapGveFFMpegValues *epp);
 
 static void              p_init_audio_workdata(t_awk_array *awp);
 static void              p_open_inwav_and_buffers(t_awk_array *awp
-                        	      , const char *wavefile
-                        	      , gint ii
-				      , long sample_rate
-				      , long channels
-				      , long bytes_per_sample
-				      , long bits
-				      , long samples
-				      );
+                                      , const char *wavefile
+                                      , gint ii
+                                      , long sample_rate
+                                      , long channels
+                                      , long bytes_per_sample
+                                      , long bits
+                                      , long samples
+                                      );
 static void              p_sound_precalculations(t_ffmpeg_handle *ffh
-                		      , t_awk_array *awp
-                		      , GapGveFFMpegGlobalParams *gpp
-				      );
+                                      , t_awk_array *awp
+                                      , GapGveFFMpegGlobalParams *gpp
+                                      );
 static void              p_process_audio_frame(t_ffmpeg_handle *ffh, t_awk_array *awp);
 static void              p_close_audio_input_files(t_awk_array *awp);
 static void              p_open_audio_input_files(t_awk_array *awp, GapGveFFMpegGlobalParams *gpp);
@@ -314,18 +257,18 @@ static void              p_set_timebase_from_framerate(AVRational *time_base, gd
 
 static void              p_ffmpeg_open_init(t_ffmpeg_handle *ffh, GapGveFFMpegGlobalParams *gpp);
 static gboolean          p_init_video_codec(t_ffmpeg_handle *ffh
-        			      , gint ii
-        			      , GapGveFFMpegGlobalParams *gpp
-        			      , gint32 current_pass);
+                                      , gint ii
+                                      , GapGveFFMpegGlobalParams *gpp
+                                      , gint32 current_pass);
 
 static gboolean          p_init_and_open_audio_codec(t_ffmpeg_handle *ffh
-        			      , gint ii
-        			      , GapGveFFMpegGlobalParams *gpp
-        			      , long audio_samplerate
-        			      , long audio_channels);
+                                      , gint ii
+                                      , GapGveFFMpegGlobalParams *gpp
+                                      , long audio_samplerate
+                                      , long audio_channels);
 static t_ffmpeg_handle * p_ffmpeg_open(GapGveFFMpegGlobalParams *gpp
                                       , gint32 current_pass
-				      , t_awk_array *awp
+                                      , t_awk_array *awp
                                       , gint video_tracks
                                       );
 static int    p_ffmpeg_write_frame_chunk(t_ffmpeg_handle *ffh, gint32 encoded_size, gint vid_track);
@@ -373,12 +316,12 @@ query ()
     {GIMP_PDB_INT32, "samplerate", "audio samplerate in samples per seconds (is ignored .wav files are used)"},
     {GIMP_PDB_STRING, "audfile", "optional audiodata file .wav must contain uncompressed 16 bit samples."
                                  " pass empty string if no audiodata should be included."
-				 " optional you can pass a textfile as audiofile. this textfile must contain "
-				 " one filename of a .wav file per line and allows encoding of "
-				 " multiple audio tracks because each of the specified audiofiles "
-				 " is encoded as ist own audiostream (works only if the selected multimedia fileformat "
-				 " has multiple audio track support. For example multilingual MPEG2 .vob files "
-				 " do support multiple audio streams)"},
+                                 " optional you can pass a textfile as audiofile. this textfile must contain "
+                                 " one filename of a .wav file per line and allows encoding of "
+                                 " multiple audio tracks because each of the specified audiofiles "
+                                 " is encoded as ist own audiostream (works only if the selected multimedia fileformat "
+                                 " has multiple audio track support. For example multilingual MPEG2 .vob files "
+                                 " do support multiple audio streams)"},
     {GIMP_PDB_INT32, "use_rest", "0 == use default values for all encoder specific params, "
                                  "1 == use encoder specific params set by the parameter procedure:"
                                  GAP_PLUGIN_NAME_FFMPEG_PARAMS
@@ -387,7 +330,7 @@ query ()
     {GIMP_PDB_STRING, "storyboard_file", "textfile with list of one or more framesequences"},
     {GIMP_PDB_INT32,  "input_mode", "0 ... image is one of the frames to encode, range_from/to params refere to numberpart of the other frameimages on disc. \n"
                                     "1 ... image is multilayer, range_from/to params refere to layer index. \n"
-				    "2 ... image is ignored, input is specified by storyboard_file parameter."},
+                                    "2 ... image is ignored, input is specified by storyboard_file parameter."},
     {GIMP_PDB_INT32, "master_encoder_id", "id of the master encoder that called this plug-in (typically the pid)"},
   };
   static int nargs_ffmpeg_enc = sizeof(args_ffmpeg_enc) / sizeof(args_ffmpeg_enc[0]);
@@ -400,7 +343,7 @@ query ()
 
     {GIMP_PDB_STRING, "ffmpeg_encode_parameter_file", "name of an ffmpeg encoder parameter file."
                                                       " Such a file can be created via save button in the"
-						      " INTERACTIVE runmode"},
+                                                      " INTERACTIVE runmode"},
 
 
   };
@@ -450,8 +393,8 @@ query ()
   gimp_install_procedure(GAP_PLUGIN_NAME_FFMPEG_PARAMS,
                          _("Set Parameters for GAP ffmpeg video encoder Plugin"),
                          _("This plugin sets ffmpeg specific video encoding parameters."
-			   " Non-interactive callers must provide a parameterfile,"
-			   " Interactive calls provide a dialog window to specify and optionally save the parameters."),
+                           " Non-interactive callers must provide a parameterfile,"
+                           " Interactive calls provide a dialog window to specify and optionally save the parameters."),
                          "Wolfgang Hofer (hof@gimp.org)",
                          "Wolfgang Hofer",
                          GAP_VERSION_WITH_DATE,
@@ -598,22 +541,22 @@ run (const gchar      *name,
            if(param[2].data.d_string)
            {
              g_snprintf(gpp->ffpar_filename, sizeof(gpp->ffpar_filename), "%s", param[2].data.d_string);
-	     if(g_file_test(gpp->ffpar_filename, G_FILE_TEST_EXISTS))
-	     {
+             if(g_file_test(gpp->ffpar_filename, G_FILE_TEST_EXISTS))
+             {
                gap_ffpar_get(gpp->ffpar_filename, &gpp->evl);
                l_set_it = TRUE;
-	     }
-	     else
-	     {
+             }
+             else
+             {
                values[0].data.d_status = GIMP_PDB_EXECUTION_ERROR;
                l_set_it = FALSE;
-	     }
+             }
            }
-	   else
-	   {
+           else
+           {
              values[0].data.d_status = GIMP_PDB_EXECUTION_ERROR;
              l_set_it = FALSE;
-	   }
+           }
 
         }
       }
@@ -782,7 +725,7 @@ p_debug_print_dump_AVCodecContext(AVCodecContext *codecContext)
   printf("(max_qdiff                    %d)\n", (int)    codecContext->max_qdiff);
   printf("(max_b_frames                 %d)\n", (int)    codecContext->max_b_frames);
   printf("(b_quant_factor               %f)\n", (float)  codecContext->b_quant_factor);
-  printf("(rc_strategy                  %d)\n", (int)    codecContext->rc_strategy);
+  printf("(rc_strategy  (OBSOLETE)      %d)\n", (int)    codecContext->rc_strategy);
   printf("(b_frame_strategy             %d)\n", (int)    codecContext->b_frame_strategy);
   printf("(hurry_up                     %d)\n", (int)    codecContext->hurry_up);
   printf("(codec (AVCodec *)            %d)\n", (int)    codecContext->codec);
@@ -958,6 +901,18 @@ p_debug_print_dump_AVCodecContext(AVCodecContext *codecContext)
 }  /* end p_debug_print_dump_AVCodecContext */
 
 
+/* --------------------------------
+ * p_set_flag
+ * --------------------------------
+ */
+static void
+p_set_flag(gint32 value_bool32, int *flag_ptr, int maskbit)
+{
+  if(value_bool32)
+  {
+    *flag_ptr |= maskbit;
+  }
+}  /* end p_set_flag */
 
 /* --------------------------------
  * p_gimp_get_data
@@ -1003,66 +958,65 @@ void
 gap_enc_ffmpeg_main_init_preset_params(GapGveFFMpegValues *epp, gint preset_idx)
 {
   gint l_idx;
-  /*                                                                        DivX def      best       low   MS-def         VCD	MPGbest      SVCD 	DVD 	 Real */
-  static gint32 tab_ntsc_width[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]        =  {     0,        0,        0,  	0,        352,        0,      480,      720,	    0 };
-  static gint32 tab_ntsc_height[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  {     0,        0,        0,  	0,        240,        0,      480,      480,	    0 };
+  /*                                                                        DivX def      best       low   MS-def         VCD   MPGbest      SVCD       DVD      Real */
+  static gint32 tab_ntsc_width[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]        =  {     0,        0,        0,       0,        352,        0,      480,      720,        0 };
+  static gint32 tab_ntsc_height[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  {     0,        0,        0,       0,        240,        0,      480,      480,        0 };
 
-  static gint32 tab_pal_width[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]         =  {     0,        0,        0,  	0,        352,        0,      480,      720,	    0 };
-  static gint32 tab_pal_height[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]        =  {     0,        0,        0,  	0,        288,        0,      576,      576,	    0 };
+  static gint32 tab_pal_width[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]         =  {     0,        0,        0,       0,        352,        0,      480,      720,        0 };
+  static gint32 tab_pal_height[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]        =  {     0,        0,        0,       0,        288,        0,      576,      576,        0 };
 
-  static gint32 tab_pass[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]              =  {     1,        1,        1,  	1,          1,        1,	1,	  1,	    1 };
-  static gint32 tab_audio_bitrate[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]     =  {   160,      192,       96,     160,        224,      192,      224,	192,	  160 };
-  static gint32 tab_video_bitrate[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]     =  {   200,     1500,      150,     200,       1150,     6000,     2040,     6000,	 1200 };
-  static gint32 tab_gop_size[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]          =  {    12,       12,       96,      12,         18,       12,       18,	 18,	   18 };
-  static gint32 tab_intra[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]             =  {     0,        0,        0,  	0,          0,        0,	0,	  0,	    0 };
+  static gint32 tab_audio_bitrate[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]     =  {   160,      192,       96,     160,        224,      192,      224,      192,      160 };
+  static gint32 tab_video_bitrate[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]     =  {   200,     1500,      150,     200,       1150,     6000,     2040,     6000,     1200 };
+  static gint32 tab_gop_size[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]          =  {    12,       12,       96,      12,         18,       12,       18,       18,       18 };
+  static gint32 tab_intra[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]             =  {     0,        0,        0,       0,          0,        0,        0,        0,        0 };
 
-  static float  tab_qscale[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]            =  {     2,        1,        6,  	2,          1,        1,	1,	  1,	    2 };
+  static float  tab_qscale[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]            =  {     2,        1,        6,       2,          1,        1,        1,        1,        2 };
 
-  static gint32 tab_qmin[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]              =  {     2,        2,        8,  	2,          2,        2,	2,	  2,	    2 };
-  static gint32 tab_qmax[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]              =  {    31,        8,       31,      31,         31,        8,       16,	  8,	   31 };
-  static gint32 tab_qdiff[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]             =  {     3,        2,        9,  	3,          3,        2,	2,	  2,	    3 };
+  static gint32 tab_qmin[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]              =  {     2,        2,        8,       2,          2,        2,        2,        2,        2 };
+  static gint32 tab_qmax[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]              =  {    31,        8,       31,      31,         31,        8,       16,        8,       31 };
+  static gint32 tab_qdiff[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]             =  {     3,        2,        9,       3,          3,        2,        2,        2,        3 };
 
-  static float  tab_qblur[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]             =  {   0.5,       0.5,      0.5,    0.5,        0.5,      0.5,      0.5,	0.5,	  0.5 };
-  static float  tab_qcomp[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]             =  {   0.5,       0.5,      0.5,    0.5,        0.5,      0.5,      0.5,	0.5,	  0.5 };
-  static float  tab_rc_init_cplx[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]      =  {   0.0,       0.0,      0.0,    0.0,        0.0,      0.0,      0.0,	0.0,	  0.0 };
-  static float  tab_b_qfactor[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]         =  {  1.25,      1.25,     1.25,   1.25,       1.25,     1.25,     1.25,     1.25,	 1.25 };
-  static float  tab_i_qfactor[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]         =  {  -0.8,      -0.8,     -0.8,   -0.8,       -0.8,     -0.8,     -0.8,     -0.8,	 -0.8 };
-  static float  tab_b_qoffset[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]         =  {  1.25,      1.25,     1.25,   1.25,       1.25,     1.25,     1.25,     1.25,	 1.25 };
-  static float  tab_i_qoffset[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]         =  {   0.0,       0.0,      0.0,    0.0,        0.0,      0.0,      0.0,	0.0,	  0.0 };
+  static float  tab_qblur[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]             =  {   0.5,       0.5,      0.5,    0.5,        0.5,      0.5,      0.5,      0.5,      0.5 };
+  static float  tab_qcomp[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]             =  {   0.5,       0.5,      0.5,    0.5,        0.5,      0.5,      0.5,      0.5,      0.5 };
+  static float  tab_rc_init_cplx[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]      =  {   0.0,       0.0,      0.0,    0.0,        0.0,      0.0,      0.0,      0.0,      0.0 };
+  static float  tab_b_qfactor[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]         =  {  1.25,      1.25,     1.25,   1.25,       1.25,     1.25,     1.25,     1.25,     1.25 };
+  static float  tab_i_qfactor[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]         =  {  -0.8,      -0.8,     -0.8,   -0.8,       -0.8,     -0.8,     -0.8,     -0.8,     -0.8 };
+  static float  tab_b_qoffset[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]         =  {  1.25,      1.25,     1.25,   1.25,       1.25,     1.25,     1.25,     1.25,     1.25 };
+  static float  tab_i_qoffset[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]         =  {   0.0,       0.0,      0.0,    0.0,        0.0,      0.0,      0.0,      0.0,      0.0 };
 
-  static gint32 tab_bitrate_tol[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  {  4000,     6000,     2000,    4000,          0,     4000,     2000,     2000,	 5000 };
-  static gint32 tab_maxrate_tol[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  {     0,        0,        0,  	0,       1150,        0,     2516,     9000,	    0 };
-  static gint32 tab_minrate_tol[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  {     0,        0,        0,  	0,       1150,        0,	0,	  0,	    0 };
-  static gint32 tab_bufsize[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]           =  {     0,        0,        0,  	0,         40,        0,      224,	224,	    0 };
+  static gint32 tab_bitrate_tol[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  {  4000,     6000,     2000,    4000,          0,     4000,     2000,     2000,     5000 };
+  static gint32 tab_maxrate_tol[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  {     0,        0,        0,       0,       1150,        0,     2516,     9000,        0 };
+  static gint32 tab_minrate_tol[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  {     0,        0,        0,       0,       1150,        0,        0,        0,        0 };
+  static gint32 tab_bufsize[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]           =  {     0,        0,        0,       0,         40,        0,      224,      224,        0 };
 
-  static gint32 tab_motion_estimation[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS] =  {     5,        5,        5,  	5,          5,        5,	5,	  5,	    5 };
+  static gint32 tab_motion_estimation[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS] =  {     5,        5,        5,       5,          5,        5,        5,        5,        5 };
 
-  static gint32 tab_dct_algo[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]          =  {     0,        0,        0,  	0,          0,        0,	0,	  0,	    0 };
-  static gint32 tab_idct_algo[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]         =  {     0,        0,        0,  	0,          0,        0,	0,	  0,	    0 };
-  static gint32 tab_strict[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]            =  {     0,        0,        0,  	0,          0,        0,	0,	  0,	    0 };
-  static gint32 tab_mb_qmin[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]           =  {     2,        2,        8,  	2,          2,        2,	2,	  2,	    2 };
-  static gint32 tab_mb_qmax[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]           =  {    31,       18,       31,      31,         31,       18,       31,	 31,	   31 };
-  static gint32 tab_mb_decision[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  {     0,        0,        0,  	0,          0,        0,	0,	  0,	    0 };
-  static gint32 tab_aic[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]               =  {     0,        0,        0,  	0,          0,        0,	0,	  0,	    0 };
-  static gint32 tab_umv[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]               =  {     0,        0,        0,  	0,          0,        0,	0,	  0,	    0 };
+  static gint32 tab_dct_algo[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]          =  {     0,        0,        0,       0,          0,        0,        0,        0,        0 };
+  static gint32 tab_idct_algo[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]         =  {     0,        0,        0,       0,          0,        0,        0,        0,        0 };
+  static gint32 tab_strict[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]            =  {     0,        0,        0,       0,          0,        0,        0,        0,        0 };
+  static gint32 tab_mb_qmin[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]           =  {     2,        2,        8,       2,          2,        2,        2,        2,        2 };
+  static gint32 tab_mb_qmax[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]           =  {    31,       18,       31,      31,         31,       18,       31,       31,       31 };
+  static gint32 tab_mb_decision[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  {     0,        0,        0,       0,          0,        0,        0,        0,        0 };
+  static gint32 tab_aic[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]               =  {     0,        0,        0,       0,          0,        0,        0,        0,        0 };
+  static gint32 tab_umv[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]               =  {     0,        0,        0,       0,          0,        0,        0,        0,        0 };
 
-  static gint32 tab_b_frames[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]          =  {     2,        2,        4,  	0,          0,        0,	2,	  2,	    0 };
-  static gint32 tab_mv4[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]               =  {     0,        0,        0,  	0,          0,        0,	0,	  0,	    0 };
-  static gint32 tab_partitioning[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]      =  {     0,        0,        0,  	0,          0,        0,	0,	  0,	    0 };
-  static gint32 tab_packet_size[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  {     0,        0,        0,  	0,          0,        0,	0,	  0,	    0 };
-  static gint32 tab_bitexact[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]          =  {     0,        0,        0,  	0,          0,        0,	0,	  0,	    0 };
-  static gint32 tab_aspect[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]            =  {     1,        1,        1,  	1,          1,        1,	1,	  1,	    1 };
-  static gint32 tab_aspect_fact[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  {   0.0,      0.0,      0.0,     0.0,        0.0,      0.0,      0.0,	0.0,	  0.0 };
+  static gint32 tab_b_frames[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]          =  {     2,        2,        4,       0,          0,        0,        2,        2,        0 };
+  static gint32 tab_mv4[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]               =  {     0,        0,        0,       0,          0,        0,        0,        0,        0 };
+  static gint32 tab_partitioning[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]      =  {     0,        0,        0,       0,          0,        0,        0,        0,        0 };
+  static gint32 tab_packet_size[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  {     0,        0,        0,       0,          0,        0,        0,        0,        0 };
+  static gint32 tab_bitexact[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]          =  {     0,        0,        0,       0,          0,        0,        0,        0,        0 };
+  static gint32 tab_aspect[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]            =  {     1,        1,        1,       1,          1,        1,        1,        1,        1 };
+  static gint32 tab_aspect_fact[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  {   0.0,      0.0,      0.0,     0.0,        0.0,      0.0,      0.0,      0.0,      0.0 };
 
   static char*  tab_format_name[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  { "avi",    "avi",    "avi",     "avi",     "vcd",   "mpeg",   "svcd",    "vob",     "rm" };
   static char*  tab_vcodec_name[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  { "mpeg4", "mpeg4", "mpeg4", "msmpeg4", "mpeg1video", "mpeg1video", "mpeg2video", "mpeg2video", "rv10" };
   static char*  tab_acodec_name[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  { "mp2",     "mp2",   "mp2",     "mp2",      "mp2",    "mp2",    "mp2",   "ac3",    "ac3" };
 
-  static gint32 tab_mux_rate[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]          =  {     0,         0,     	0,	0,     1411200,       0,       0,   10080000,        0 };
-  static gint32 tab_mux_packet_size[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]   =  {     0,         0,     	0,	0,        2324,    2324,    2324,       2048,        0 };
+  static gint32 tab_mux_rate[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]          =  {     0,         0,        0,      0,     1411200,       0,       0,   10080000,        0 };
+  static gint32 tab_mux_packet_size[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]   =  {     0,         0,        0,      0,        2324,    2324,    2324,       2048,        0 };
   static float  tab_mux_preload[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  {   0.5,       0.5,      0.5,    0.5,        0.44,     0.5,     0.5,        0.5,      0.5 };
   static float  tab_mux_max_delay[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]     =  {   0.7,       0.7,      0.7,    0.7,         0.7,     0.7,     0.7,        0.7,      0.7 };
-  static gint32 tab_use_scann_offset[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]  =  {     0,         0,     	0,	0,           0,       0,       1,          0,        0 };
+  static gint32 tab_use_scann_offset[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]  =  {     0,         0,        0,      0,           0,       0,       1,          0,        0 };
 
 
   l_idx = CLAMP(preset_idx, 0, GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS -1);
@@ -1076,7 +1030,8 @@ gap_enc_ffmpeg_main_init_preset_params(GapGveFFMpegValues *epp, gint preset_idx)
   g_snprintf(epp->acodec_name, sizeof(epp->acodec_name), tab_acodec_name[l_idx]);   /* "mp2" */
 
 
-  epp->pass                = tab_pass[l_idx];
+  epp->pass_nr             = 1;
+  epp->twoPassFlag         = FALSE;
   epp->audio_bitrate       = tab_audio_bitrate[l_idx];   /* 160 kbit */
   epp->video_bitrate       = tab_video_bitrate[l_idx];   /* 5000 kbit */
   epp->gop_size            = tab_gop_size[l_idx];        /* 12 group of pictures size (frames) */
@@ -1143,7 +1098,6 @@ gap_enc_ffmpeg_main_init_preset_params(GapGveFFMpegValues *epp, gint preset_idx)
   epp->use_obmc                     = 0;
   epp->use_loop                     = 0;
   epp->use_alt_scan                 = 0;
-  epp->use_trell                    = 0;
   epp->use_mv0                      = 0;
   epp->do_normalize_aqp             = 0;
   epp->use_scan_offset              = tab_use_scann_offset[l_idx];
@@ -1193,6 +1147,79 @@ gap_enc_ffmpeg_main_init_preset_params(GapGveFFMpegValues *epp, gint preset_idx)
   epp->ntsc_height                  = tab_ntsc_height[l_idx];
   epp->pal_width                    = tab_pal_width[l_idx];
   epp->pal_height                   = tab_pal_height[l_idx];
+
+
+  /* new parms 2009.01.31 */
+  
+  epp->b_frame_strategy              = 0;
+  epp->workaround_bugs               = FF_BUG_AUTODETECT;
+  epp->error_recognition             = FF_ER_CAREFUL;
+  epp->mpeg_quant                    = 0;
+  epp->rc_qsquish                    = 0.0;   /* 0 = clip, 1 = use differentiable function */
+  epp->rc_qmod_amp                   = 0.0;
+  epp->rc_qmod_freq                  = 0;
+  epp->rc_eq[0]                      = '\0';  /* triggers use of use default equation */
+  epp->rc_buffer_aggressivity        = 1.0;
+  epp->dia_size                      = 0;
+  epp->last_predictor_count          = 0;
+  epp->pre_dia_size                  = 0;
+  epp->inter_threshold               = 0;
+  epp->border_masking                = 0.0;
+  epp->me_penalty_compensation       = 256;
+  epp->bidir_refine                  = 0;
+  epp->brd_scale                     = 0;
+  epp->crf                           = 0.0;
+  epp->cqp                           = -1;
+  epp->keyint_min                    = 25;   /* minimum GOP size */
+  epp->refs                          = 1;
+  epp->chromaoffset                  = 0;        
+  epp->bframebias                    = 0;
+  epp->trellis                       = 0;
+  epp->complexityblur                = 20.0;
+  epp->deblockalpha                  = 0;
+  epp->deblockbeta                   = 0;
+  epp->partitions                    = 0;
+  epp->directpred                    = 2;
+  epp->cutoff                        = 0;
+  epp->scenechange_factor            = 6;
+  epp->mv0_threshold                 = 256;
+  epp->b_sensitivity                 = 40;
+  epp->compression_level             = -1;
+  epp->use_lpc                       = -1;
+  epp->lpc_coeff_precision           = 0;
+  epp->min_prediction_order          = -1;
+  epp->max_prediction_order          = -1;
+  epp->prediction_order_method       = -1;
+  epp->min_partition_order           = -1;
+  epp->timecode_frame_start          = 0;
+  epp->bits_per_raw_sample           = 0;
+  epp->channel_layout                = 0;
+  epp->rc_max_available_vbv_use      = 1.0 / 3.0;
+  epp->rc_min_vbv_overflow_use       = 3.0;
+  
+  /* new flags/flags2 2009.01.31 */
+  epp->codec_FLAG_GMC                   = 0; /* 0: FALSE */
+  epp->codec_FLAG_INPUT_PRESERVED       = 0; /* 0: FALSE */
+  epp->codec_FLAG_GRAY                  = 0; /* 0: FALSE */
+  epp->codec_FLAG_EMU_EDGE              = 0; /* 0: FALSE */
+  epp->codec_FLAG_TRUNCATED             = 0; /* 0: FALSE */
+
+  epp->codec_FLAG2_FAST                 = 0; /* 0: FALSE */
+  epp->codec_FLAG2_LOCAL_HEADER         = 0; /* 0: FALSE */
+  epp->codec_FLAG2_BPYRAMID             = 0; /* 0: FALSE */
+  epp->codec_FLAG2_WPRED                = 0; /* 0: FALSE */
+  epp->codec_FLAG2_MIXED_REFS           = 0; /* 0: FALSE */
+  epp->codec_FLAG2_8X8DCT               = 0; /* 0: FALSE */
+  epp->codec_FLAG2_FASTPSKIP            = 0; /* 0: FALSE */
+  epp->codec_FLAG2_AUD                  = 0; /* 0: FALSE */
+  epp->codec_FLAG2_BRDO                 = 0; /* 0: FALSE */
+  epp->codec_FLAG2_INTRA_VLC            = 0; /* 0: FALSE */
+  epp->codec_FLAG2_MEMC_ONLY            = 0; /* 0: FALSE */
+  epp->codec_FLAG2_DROP_FRAME_TIMECODE  = 0; /* 0: FALSE */
+  epp->codec_FLAG2_SKIP_RD              = 0; /* 0: FALSE */
+  epp->codec_FLAG2_CHUNKS               = 0; /* 0: FALSE */
+  epp->codec_FLAG2_NON_LINEAR_QUANT     = 0; /* 0: FALSE */
+  epp->codec_FLAG2_BIT_RESERVOIR        = 0; /* 0: FALSE */
 
 }   /* end gap_enc_ffmpeg_main_init_preset_params */
 
@@ -1262,12 +1289,12 @@ static void
 p_open_inwav_and_buffers(t_awk_array *awp
                         , const char *wavefile
                         , gint ii
-			, long sample_rate
-			, long channels
-			, long bytes_per_sample
-			, long bits
-			, long samples
-			)
+                        , long sample_rate
+                        , long channels
+                        , long bytes_per_sample
+                        , long bits
+                        , long samples
+                        )
 {
   FILE *fp_inwav;
 
@@ -1480,13 +1507,13 @@ p_open_audio_input_files(t_awk_array *awp, GapGveFFMpegGlobalParams *gpp)
   {
     p_open_inwav_and_buffers(awp
                             , gpp->val.audioname1
-			    , ii
+                            , ii
                             , l_sample_rate
-			    , l_channels
-			    , l_bytes_per_sample
-			    , l_bits
-			    , l_samples
-			    );
+                            , l_channels
+                            , l_bytes_per_sample
+                            , l_bits
+                            , l_samples
+                            );
     awp->audio_tracks = 1;
   }
   else
@@ -1509,15 +1536,15 @@ p_open_audio_input_files(t_awk_array *awp, GapGveFFMpegGlobalParams *gpp)
       while(NULL != fgets(l_buf, sizeof(l_buf)-1, l_fp))
       {
         if((l_buf[0] == '#') || (l_buf[0] == '\n') || (l_buf[0] == '\0'))
-	{
-	  continue;  /* skip comment lines, and empty lines */
-	}
+        {
+          continue;  /* skip comment lines, and empty lines */
+        }
 
         l_buf[sizeof(l_buf) -1] = '\0';  /* make sure we have a terminated string */
         gap_file_chop_trailingspace_and_nl(&l_buf[0]);
 
-	if(ii < MAX_AUDIO_STREAMS)
-	{
+        if(ii < MAX_AUDIO_STREAMS)
+        {
           int    l_rc;
 
           awp->awk[ii].referred_wavfile = gap_file_make_abspath_filename(&l_buf[0], gpp->val.audioname1);
@@ -1533,39 +1560,39 @@ p_open_audio_input_files(t_awk_array *awp, GapGveFFMpegGlobalParams *gpp)
           {
             p_open_inwav_and_buffers(awp
                             , awp->awk[ii].referred_wavfile
-			    , ii
+                            , ii
                             , l_sample_rate
-			    , l_channels
-			    , l_bytes_per_sample
-			    , l_bits
-			    , l_samples
-			    );
+                            , l_channels
+                            , l_bytes_per_sample
+                            , l_bits
+                            , l_samples
+                            );
 
-	    ii++;
+            ii++;
             awp->audio_tracks = ii;
-	  }
-	  else
-	  {
+          }
+          else
+          {
             g_message(_("The file: %s\n"
-	              "has unexpect content that will be ignored.\n"
-		      "You should specify an audio file in RIFF WAVE fileformat,\n"
-		      "or a textfile containing filenames of such audio files")
-		     , gpp->val.audioname1
-		     );
-	    break;
-	  }
-	}
-	else
-	{
+                      "has unexpect content that will be ignored.\n"
+                      "You should specify an audio file in RIFF WAVE fileformat,\n"
+                      "or a textfile containing filenames of such audio files")
+                     , gpp->val.audioname1
+                     );
+            break;
+          }
+        }
+        else
+        {
           g_message(_("The file: %s\n"
-	              "contains too many audio-input tracks\n"
-		      "(only %d tracks are used, the rest are ignored).")
-		   , gpp->val.audioname1
-		   , (int) MAX_AUDIO_STREAMS
-		   );
-	  break;
-	}
-	l_buf[0] = '\0';
+                      "contains too many audio-input tracks\n"
+                      "(only %d tracks are used, the rest are ignored).")
+                   , gpp->val.audioname1
+                   , (int) MAX_AUDIO_STREAMS
+                   );
+          break;
+        }
+        l_buf[0] = '\0';
       }
 
       fclose(l_fp);
@@ -1699,7 +1726,7 @@ p_ffmpeg_open_init(t_ffmpeg_handle *ffh, GapGveFFMpegGlobalParams *gpp)
     p_set_timebase_from_framerate(&l_time_base, gpp->val.framerate);
     ffh->pts_stepsize_per_frame = l_time_base.num;
 
-    //if(gap_debug)
+    if(gap_debug)
     {
       printf("p_ffmpeg_open_init  time_base: num:%d den:%d  pts_stepsize_per_frame:%.4f\n"
         ,(int)l_time_base.num
@@ -1713,70 +1740,11 @@ p_ffmpeg_open_init(t_ffmpeg_handle *ffh, GapGveFFMpegGlobalParams *gpp)
   /* initialize common things */
   ffh->frame_width                  = (int)gpp->val.vid_width;
   ffh->frame_height                 = (int)gpp->val.vid_height;
-  ffh->frame_topBand                = 0;
-  ffh->frame_bottomBand             = 0;
-  ffh->frame_leftBand               = 0;
-  ffh->frame_rightBand              = 0;
-  ffh->encode_frame_nr              = 0;
-  ffh->video_bit_rate               = epp->video_bitrate * 1000;
-  ffh->video_bit_rate_tolerance     = epp->bitrate_tol * 1000;
-  ffh->video_qscale                 = epp->qscale;
-  ffh->video_qmin                   = epp->qmin;
-  ffh->video_qmax                   = epp->qmax;
-  ffh->video_qdiff                  = epp->qdiff;
-  ffh->video_qblur                  = (float)epp->qblur;
-  ffh->video_qcomp                  = (float)epp->qcomp;
-  ffh->video_rc_override_string     = NULL;
-  ffh->video_rc_eq                  =  "tex^qComp";
-  ffh->video_rc_buffer_size         = epp->bufsize;
-  ffh->video_rc_buffer_aggressivity = 1.0;
-  ffh->video_rc_max_rate            = epp->maxrate_tol * 1000;
-  ffh->video_rc_min_rate            = epp->minrate_tol * 1000;
-  ffh->video_rc_initial_cplx        = (float)epp->rc_init_cplx;
-  ffh->video_b_qfactor              = (float)epp->b_qfactor;
-  ffh->video_b_qoffset              = (float)epp->b_qoffset;
-  ffh->video_i_qfactor              = (float)epp->i_qfactor;
-  ffh->video_i_qoffset              = (float)epp->i_qoffset;
-  ffh->me_method                    = epp->motion_estimation;
-  ffh->video_disable                = 0;
-  ffh->video_codec_id               = CODEC_ID_NONE;
-  ffh->same_quality                 = 0;
-  ffh->b_frames                     = epp->b_frames;
-  ffh->mb_decision                  = epp->mb_decision;
-  ffh->aic                          = epp->aic;
-  ffh->umv                          = epp->umv;
-  ffh->use_4mv                      = epp->mv4;
-  ffh->workaround_bugs              = FF_BUG_AUTODETECT;
-  ffh->error_recognition            = FF_ER_COMPLIANT;
-  ffh->error_concealment            = FF_EC_DEBLOCK;
-  ffh->dct_algo                     = epp->dct_algo;
-  ffh->idct_algo                    = epp->idct_algo;
-  ffh->strict                       = epp->strict;
-  ffh->mb_qmin                      = epp->mb_qmin;
-  ffh->mb_qmax                      = epp->mb_qmax;
-  ffh->use_part                     = epp->partitioning;
-  ffh->packet_size                  = epp->packet_size;
 
-  ffh->gop_size                     = epp->gop_size;
-  ffh->intra_only                   = epp->intra;
   ffh->audio_bit_rate               = epp->audio_bitrate * 1000;     /* 64000; */
   ffh->audio_codec_id               = CODEC_ID_NONE;
 
-  ffh->recording_time               = 0;
   ffh->file_overwrite               = 0;
-  ffh->str_title = NULL;            if (epp->title[0] != '\0')     {ffh->str_title     = &epp->title[0];}
-  ffh->str_author = NULL;           if (epp->author[0] != '\0')    {ffh->str_author    = &epp->author[0];}
-  ffh->str_copyright = NULL;        if (epp->copyright[0] != '\0') {ffh->str_copyright = &epp->copyright[0];}
-  ffh->str_comment = NULL;          if (epp->comment[0] != '\0')   {ffh->str_comment   = &epp->comment[0];}
-  ffh->do_benchmark                 = epp->benchmark;
-  ffh->do_hex_dump                  = epp->hex_dump;
-  ffh->do_play                      = 0;
-  ffh->do_psnr                      = epp->psnr;
-  ffh->do_vstats                    = epp->vstats;
-  ffh->do_pass                      = 0;
-  ffh->pass_logfilename = NULL;     if (epp->passlogfile[0] != '\0')   {ffh->pass_logfilename   = &epp->passlogfile[0];}
-  ffh->audio_stream_copy            = 0;
-  ffh->video_stream_copy            = 0;
 
 }  /* end p_ffmpeg_open_init */
 
@@ -1858,7 +1826,7 @@ p_init_video_codec(t_ffmpeg_handle *ffh
   video_enc->width = gpp->val.vid_width;
   video_enc->height = gpp->val.vid_height;
 
-  //if (gap_debug)
+  if (gap_debug)
   {
     printf("VCODEC: id:%d (%s) time_base.num :%d  time_base.den:%d    float:%f\n"
            "            DEFAULT_FRAME_RATE_BASE: %d\n"
@@ -1939,24 +1907,24 @@ p_init_video_codec(t_ffmpeg_handle *ffh
      */
     l_dbl = l_aspect_factor * (gdouble)gpp->val.vid_height / (gdouble)MAX(1,gpp->val.vid_width);
 
-    //if(gap_debug)
+    if(gap_debug)
     {
       printf("ASPECT ratio DEFAULT setting: NUM:%d  DEN:%d\n"
-	    ,(int)video_enc->sample_aspect_ratio.num
+            ,(int)video_enc->sample_aspect_ratio.num
             ,(int)video_enc->sample_aspect_ratio.den
-	    );
+            );
     }
     video_enc->sample_aspect_ratio = av_d2q(l_dbl, 255);
     ffh->vst[ii].vid_stream->sample_aspect_ratio = video_enc->sample_aspect_ratio;  /* 2009.01.31 must init stream sample_aspect_ratio to avoid crash */
 
-    //if(gap_debug)
+    if(gap_debug)
     {
       printf("ASPECT ratio (w/h): %f l_dbl:%f av_d2q NUM:%d  DEN:%d\n"
             ,(float)l_aspect_factor
             ,(float)l_dbl
-	    ,(int)video_enc->sample_aspect_ratio.num
+            ,(int)video_enc->sample_aspect_ratio.num
             ,(int)video_enc->sample_aspect_ratio.den
-	    );
+            );
     }
 
   }
@@ -1980,115 +1948,53 @@ p_init_video_codec(t_ffmpeg_handle *ffh
   if(!epp->intra)  { video_enc->gop_size = epp->gop_size;  }
   else             { video_enc->gop_size = 0;              }
 
+  /* set codec flags */
+  p_set_flag(epp->bitexact,         &video_enc->flags, CODEC_FLAG_BITEXACT);
+  p_set_flag(epp->umv,              &video_enc->flags, CODEC_FLAG_H263P_UMV);
+  p_set_flag(epp->use_ss,           &video_enc->flags, CODEC_FLAG_H263P_SLICE_STRUCT);
+  p_set_flag(epp->use_aiv,          &video_enc->flags, CODEC_FLAG_H263P_AIV);
+  p_set_flag(epp->use_obmc,         &video_enc->flags, CODEC_FLAG_OBMC);
+  p_set_flag(epp->use_loop,         &video_enc->flags, CODEC_FLAG_LOOP_FILTER);
+  p_set_flag(epp->use_alt_scan,     &video_enc->flags, CODEC_FLAG_ALT_SCAN);
+  p_set_flag(epp->use_mv0,          &video_enc->flags, CODEC_FLAG_MV0);
+  p_set_flag(epp->do_normalize_aqp, &video_enc->flags, CODEC_FLAG_NORMALIZE_AQP);
+  p_set_flag(epp->use_scan_offset,  &video_enc->flags, CODEC_FLAG_SVCD_SCAN_OFFSET);
+  p_set_flag(epp->closed_gop,       &video_enc->flags, CODEC_FLAG_CLOSED_GOP);
+  p_set_flag(epp->use_qpel,         &video_enc->flags, CODEC_FLAG_QPEL);
+  p_set_flag(epp->use_qprd,         &video_enc->flags, CODEC_FLAG_QP_RD);
+  p_set_flag(epp->use_cbprd,        &video_enc->flags, CODEC_FLAG_CBP_RD);
+  p_set_flag(epp->do_interlace_dct, &video_enc->flags, CODEC_FLAG_INTERLACED_DCT);
+  p_set_flag(epp->do_interlace_me,  &video_enc->flags, CODEC_FLAG_INTERLACED_ME);
+  p_set_flag(epp->aic,              &video_enc->flags, CODEC_FLAG_AC_PRED);
+  p_set_flag(epp->mv4,              &video_enc->flags, CODEC_FLAG_4MV);
+  p_set_flag(epp->partitioning,     &video_enc->flags, CODEC_FLAG_PART);
 
-  /* CODEC_FLAG_HQ no longer supported in ffmpeg-0.4.8  */
-  /*
-   *  if(epp->hq_settings)
-   *  {
-   *     video_enc->flags |= CODEC_FLAG_HQ;
-   *  }
-   */
+  p_set_flag(epp->codec_FLAG_GMC,             &video_enc->flags, CODEC_FLAG_GMC);
+  p_set_flag(epp->codec_FLAG_INPUT_PRESERVED, &video_enc->flags, CODEC_FLAG_INPUT_PRESERVED);
+  p_set_flag(epp->codec_FLAG_GRAY,            &video_enc->flags, CODEC_FLAG_GRAY);
+  p_set_flag(epp->codec_FLAG_EMU_EDGE,        &video_enc->flags, CODEC_FLAG_EMU_EDGE);
+  p_set_flag(epp->codec_FLAG_TRUNCATED,       &video_enc->flags, CODEC_FLAG_TRUNCATED);
 
-  if(epp->bitexact)
-  {
-    /* only use bit exact algorithms (for codec testing) */
-    video_enc->flags |= CODEC_FLAG_BITEXACT;
-  }
+  /* set codec flags2 */
+  p_set_flag(epp->strict_gop,                      &video_enc->flags2, CODEC_FLAG2_STRICT_GOP);
+  p_set_flag(epp->no_output,                       &video_enc->flags2, CODEC_FLAG2_NO_OUTPUT);
+  p_set_flag(epp->codec_FLAG2_FAST,                &video_enc->flags2, CODEC_FLAG2_FAST);
+  p_set_flag(epp->codec_FLAG2_LOCAL_HEADER,        &video_enc->flags2, CODEC_FLAG2_LOCAL_HEADER);
+  p_set_flag(epp->codec_FLAG2_BPYRAMID,            &video_enc->flags2, CODEC_FLAG2_BPYRAMID);
+  p_set_flag(epp->codec_FLAG2_WPRED,               &video_enc->flags2, CODEC_FLAG2_WPRED);
+  p_set_flag(epp->codec_FLAG2_MIXED_REFS,          &video_enc->flags2, CODEC_FLAG2_MIXED_REFS);
+  p_set_flag(epp->codec_FLAG2_8X8DCT,              &video_enc->flags2, CODEC_FLAG2_8X8DCT);
+  p_set_flag(epp->codec_FLAG2_FASTPSKIP,           &video_enc->flags2, CODEC_FLAG2_FASTPSKIP);
+  p_set_flag(epp->codec_FLAG2_AUD,                 &video_enc->flags2, CODEC_FLAG2_AUD);
+  p_set_flag(epp->codec_FLAG2_BRDO,                &video_enc->flags2, CODEC_FLAG2_BRDO);
+  p_set_flag(epp->codec_FLAG2_INTRA_VLC,           &video_enc->flags2, CODEC_FLAG2_INTRA_VLC);
+  p_set_flag(epp->codec_FLAG2_MEMC_ONLY,           &video_enc->flags2, CODEC_FLAG2_MEMC_ONLY);
+  p_set_flag(epp->codec_FLAG2_DROP_FRAME_TIMECODE, &video_enc->flags2, CODEC_FLAG2_DROP_FRAME_TIMECODE);
+  p_set_flag(epp->codec_FLAG2_SKIP_RD,             &video_enc->flags2, CODEC_FLAG2_SKIP_RD);
+  p_set_flag(epp->codec_FLAG2_CHUNKS,              &video_enc->flags2, CODEC_FLAG2_CHUNKS);
+  p_set_flag(epp->codec_FLAG2_NON_LINEAR_QUANT,    &video_enc->flags2, CODEC_FLAG2_NON_LINEAR_QUANT);
+  p_set_flag(epp->codec_FLAG2_BIT_RESERVOIR,       &video_enc->flags2, CODEC_FLAG2_BIT_RESERVOIR);
 
-
-  if(epp->umv)
-  {
-     video_enc->flags |= CODEC_FLAG_H263P_UMV;
-  }
-
-  if (epp->use_ss)
-  {
-    video_enc->flags |= CODEC_FLAG_H263P_SLICE_STRUCT;
-  }
-
-  if (epp->use_aiv)
-  {
-    video_enc->flags |= CODEC_FLAG_H263P_AIV;
-  }
-
-  if (epp->use_obmc)
-  {
-      video_enc->flags |= CODEC_FLAG_OBMC;
-  }
-  if (epp->use_loop)
-  {
-      video_enc->flags |= CODEC_FLAG_LOOP_FILTER;
-  }
-
-  if (epp->use_alt_scan)
-  {
-    video_enc->flags |= CODEC_FLAG_ALT_SCAN;
-  }
-  if (epp->use_trell)
-  {
-    /// video_enc->flags |= CODEC_FLAG_TRELLIS_QUANT;  /// this flag is no longer supported (TODO remove all occurances)
-  }
-  if (epp->use_mv0)
-  {
-    video_enc->flags |= CODEC_FLAG_MV0;
-  }
-  if (epp->do_normalize_aqp)
-  {
-    video_enc->flags |= CODEC_FLAG_NORMALIZE_AQP;
-  }
-  if (epp->use_scan_offset)
-  {
-    video_enc->flags |= CODEC_FLAG_SVCD_SCAN_OFFSET;
-  }
-  if (epp->closed_gop)
-  {
-    video_enc->flags |= CODEC_FLAG_CLOSED_GOP;
-  }
-  if (epp->strict_gop)
-  {
-    video_enc->flags2 |= CODEC_FLAG2_STRICT_GOP;
-  }
-  if (epp->no_output)
-  {
-    video_enc->flags2 |= CODEC_FLAG2_NO_OUTPUT;
-  }
-  if (epp->use_qpel)
-  {
-    video_enc->flags |= CODEC_FLAG_QPEL;
-  }
-  if (epp->use_qprd)
-  {
-    video_enc->flags |= CODEC_FLAG_QP_RD;
-  }
-  if (epp->use_cbprd)
-  {
-    video_enc->flags |= CODEC_FLAG_CBP_RD;
-  }
-  if (epp->do_interlace_dct)
-  {
-    video_enc->flags |= CODEC_FLAG_INTERLACED_DCT;
-  }
-  if (epp->do_interlace_me)
-  {
-    video_enc->flags |= CODEC_FLAG_INTERLACED_ME;
-  }
-
-
-  if(epp->aic)
-  {
-     video_enc->flags |= CODEC_FLAG_AC_PRED;   /// old flag no longer supported CODEC_FLAG_H263P_AIC 
-  }
-
-  if (epp->mv4)
-  {
-      /* video_enc->flags |= CODEC_FLAG_HQ; */  /* CODEC_FLAG_HQ no longer supported in ffmpeg-0.4.8  */
-      video_enc->flags |= CODEC_FLAG_4MV;
-  }
-
-  if(epp->partitioning)
-  {
-      video_enc->flags |= CODEC_FLAG_PART;
-  }
 
   if ((epp->b_frames > 0) && (!epp->intra))
   {
@@ -2105,19 +2011,18 @@ p_init_video_codec(t_ffmpeg_handle *ffh
       case CODEC_ID_MSMPEG4V1:
       case CODEC_ID_MSMPEG4V2:
       case CODEC_ID_MSMPEG4V3:
-	if(gpp->val.run_mode == GIMP_RUN_NONINTERACTIVE)
-	{
+        if(gpp->val.run_mode == GIMP_RUN_NONINTERACTIVE)
+        {
           printf("\n### Warning: B frames encoding not supported by selected codec. (option ignored)\n");
-	}
-	else
-	{
+        }
+        else
+        {
           g_message("Warning: B frames encoding not supported by selected codec. (option ignored)\n");
-	}
+        }
         break;
       default:
-	video_enc->max_b_frames = epp->b_frames;
-	video_enc->b_frame_strategy = 0;
-	video_enc->b_quant_factor = 2.0;
+        video_enc->max_b_frames = epp->b_frames;
+        video_enc->b_frame_strategy = epp->b_frame_strategy;  /* default 0 */
         break;
     }
   }
@@ -2127,13 +2032,22 @@ p_init_video_codec(t_ffmpeg_handle *ffh
   video_enc->max_qdiff = epp->qdiff;
   video_enc->qblur     = (float)epp->qblur;
   video_enc->qcompress = (float)epp->qcomp;
-  video_enc->rc_eq     = "tex^qComp";
+  if (epp->rc_eq[0] != '\0')
+  {
+    video_enc->rc_eq     = &epp->rc_eq[0];
+  }
+  else
+  {
+    /* use default rate control equation */
+    video_enc->rc_eq     = "tex^qComp";
+  }
 
   video_enc->rc_override_count      =0;
+  video_enc->inter_threshold        = epp->inter_threshold;
   video_enc->rc_max_rate            = epp->maxrate_tol * 1000;
   video_enc->rc_min_rate            = epp->minrate_tol * 1000;
   video_enc->rc_buffer_size         = epp->bufsize * 8*1024;
-  video_enc->rc_buffer_aggressivity = 1.0;
+  video_enc->rc_buffer_aggressivity = (float)epp->rc_buffer_aggressivity;
   video_enc->rc_initial_cplx        = (float)epp->rc_init_cplx;
   video_enc->i_quant_factor         = (float)epp->i_qfactor;
   video_enc->b_quant_factor         = (float)epp->b_qfactor;
@@ -2142,6 +2056,11 @@ p_init_video_codec(t_ffmpeg_handle *ffh
   video_enc->dct_algo               = epp->dct_algo;
   video_enc->idct_algo              = epp->idct_algo;
   video_enc->strict_std_compliance  = epp->strict;
+  video_enc->workaround_bugs        = epp->workaround_bugs;
+  video_enc->error_recognition      = epp->error_recognition;
+  video_enc->mpeg_quant             = epp->mpeg_quant;
+  
+  
   video_enc->debug                  = 0;
   video_enc->mb_qmin                = epp->mb_qmin;
   video_enc->mb_qmax                = epp->mb_qmax;
@@ -2149,7 +2068,11 @@ p_init_video_codec(t_ffmpeg_handle *ffh
   video_enc->rc_initial_buffer_occupancy = video_enc->rc_buffer_size * 3/4;
   video_enc->lmin                   = epp->video_lmin;
   video_enc->lmax                   = epp->video_lmax;
-  video_enc->rc_qsquish             = 1.0;  //experimental, (can be removed)
+  video_enc->rc_qsquish             = epp->rc_qsquish;
+  video_enc->rc_qmod_amp            = epp->rc_qmod_amp;
+  video_enc->rc_qmod_freq           = epp->rc_qmod_freq;
+  
+  
   video_enc->luma_elim_threshold    = epp->video_lelim;
   video_enc->chroma_elim_threshold  = epp->video_celim;
 
@@ -2175,15 +2098,52 @@ p_init_video_codec(t_ffmpeg_handle *ffh
 
   video_enc->nsse_weight            = epp->nsse_weight;
   video_enc->me_subpel_quality      = epp->subpel_quality;
+  
+  video_enc->dia_size               = epp->dia_size;
+  video_enc->last_predictor_count   = epp->last_predictor_count;
+  video_enc->pre_dia_size           = epp->pre_dia_size;
 
-  video_enc->mb_lmin                = epp->video_mb_lmin;
-  video_enc->mb_lmax                = epp->video_mb_lmax;
-  video_enc->profile                = epp->video_profile;
-  video_enc->level                  = epp->video_level;
-  video_enc->frame_skip_threshold   = epp->frame_skip_threshold;
-  video_enc->frame_skip_factor      = epp->frame_skip_factor;
-  video_enc->frame_skip_exp         = epp->frame_skip_exp;
-  video_enc->frame_skip_cmp         = epp->frame_skip_cmp;
+
+  video_enc->mb_lmin                  = epp->video_mb_lmin;
+  video_enc->mb_lmax                  = epp->video_mb_lmax;
+  video_enc->profile                  = epp->video_profile;
+  video_enc->level                    = epp->video_level;
+  video_enc->frame_skip_threshold     = epp->frame_skip_threshold;
+  video_enc->frame_skip_factor        = epp->frame_skip_factor;
+  video_enc->frame_skip_exp           = epp->frame_skip_exp;
+  video_enc->frame_skip_cmp           = epp->frame_skip_cmp;
+  video_enc->border_masking           = (float)epp->border_masking;
+  video_enc->me_penalty_compensation  = epp->me_penalty_compensation;
+  video_enc->bidir_refine             = epp->bidir_refine;
+  video_enc->brd_scale                = epp->brd_scale;
+  video_enc->crf                      = (float)epp->crf;
+  video_enc->cqp                      = epp->cqp;
+  video_enc->keyint_min               = epp->keyint_min;
+  video_enc->refs                     = epp->refs;
+  video_enc->chromaoffset             = epp->chromaoffset;        
+  video_enc->bframebias               = epp->bframebias;
+  video_enc->trellis                  = epp->trellis;
+  video_enc->complexityblur           = (float) epp->complexityblur;
+  video_enc->deblockalpha             = epp->deblockalpha;
+  video_enc->deblockbeta              = epp->deblockbeta;
+  video_enc->partitions               = epp->partitions;
+  video_enc->directpred               = epp->directpred;
+  video_enc->scenechange_factor       = epp->scenechange_factor;
+  video_enc->mv0_threshold            = epp->mv0_threshold;
+  video_enc->b_sensitivity            = epp->b_sensitivity;
+  video_enc->compression_level        = epp->compression_level;
+  video_enc->use_lpc                  = epp->use_lpc;
+  video_enc->lpc_coeff_precision      = epp->lpc_coeff_precision;
+  video_enc->min_prediction_order     = epp->min_prediction_order;
+  video_enc->max_prediction_order     = epp->max_prediction_order;
+  video_enc->prediction_order_method  = epp->prediction_order_method;
+  video_enc->min_partition_order      = epp->min_partition_order;
+  video_enc->timecode_frame_start     = epp->timecode_frame_start;
+  video_enc->bits_per_raw_sample      = epp->bits_per_raw_sample;
+  video_enc->rc_max_available_vbv_use = (float)epp->rc_max_available_vbv_use;
+  video_enc->rc_min_vbv_overflow_use  = (float)epp->rc_min_vbv_overflow_use;
+
+
 
   if(epp->packet_size)
   {
@@ -2241,18 +2201,18 @@ p_init_video_codec(t_ffmpeg_handle *ffh
           l_errno = errno;
           if (!fp)
           {
-	      if(gpp->val.run_mode == GIMP_RUN_NONINTERACTIVE)
-	      {
+              if(gpp->val.run_mode == GIMP_RUN_NONINTERACTIVE)
+              {
                 perror(logfilename);
-	      }
-	      else
-	      {
-		g_message(_("Could not create pass logfile:"
-			   "'%s'"
-			   "%s")
-			   ,logfilename
-			   ,g_strerror (l_errno) );
-	      }
+              }
+              else
+              {
+                g_message(_("Could not create pass logfile:"
+                           "'%s'"
+                           "%s")
+                           ,logfilename
+                           ,g_strerror (l_errno) );
+              }
               return(FALSE);  /* error */
           }
           ffh->vst[ii].passlog_fp = fp;
@@ -2264,18 +2224,18 @@ p_init_video_codec(t_ffmpeg_handle *ffh
           l_errno = errno;
           if (!fp)
           {
-	      if(gpp->val.run_mode == GIMP_RUN_NONINTERACTIVE)
-	      {
+              if(gpp->val.run_mode == GIMP_RUN_NONINTERACTIVE)
+              {
                 perror(logfilename);
-	      }
-	      else
-	      {
-		g_message(_("Could not open pass logfile:"
-			   "'%s'"
-			   "%s")
-			   ,logfilename
-			   ,g_strerror (l_errno) );
-	      }
+              }
+              else
+              {
+                g_message(_("Could not open pass logfile:"
+                           "'%s'"
+                           "%s")
+                           ,logfilename
+                           ,g_strerror (l_errno) );
+              }
               return(FALSE);  /* error */
           }
           fseek(fp, 0, SEEK_END);
@@ -2358,21 +2318,25 @@ p_init_and_open_audio_codec(t_ffmpeg_handle *ffh
         /* open audio codec */
         if (avcodec_open(ffh->ast[ii].aud_codec_context, ffh->ast[ii].aud_codec) < 0)
         {
-	  if(gpp->val.run_mode == GIMP_RUN_NONINTERACTIVE)
-	  {
+          if(gpp->val.run_mode == GIMP_RUN_NONINTERACTIVE)
+          {
             printf("could not avcodec_open audio-codec: %s\n", epp->acodec_name);
-	  }
-	  else
-	  {
-	    g_message("could not open audio codec: %s\n", epp->acodec_name);
-	  }
+          }
+          else
+          {
+            g_message("could not open audio codec: %s\n", epp->acodec_name);
+          }
           ffh->ast[ii].aud_codec = NULL;
         }
 
         /* the following options were added after ffmpeg 0.4.8 */
-        audio_enc->thread_count = 1;
+        audio_enc->thread_count = epp->thread_count;
         audio_enc->strict_std_compliance = epp->strict;
-
+        audio_enc->workaround_bugs       = epp->workaround_bugs;
+        audio_enc->error_recognition     = epp->error_recognition;
+        audio_enc->cutoff                = epp->cutoff;
+        audio_enc->channel_layout        = epp->channel_layout;
+        
       }
     }
   }
@@ -2391,9 +2355,9 @@ p_init_and_open_audio_codec(t_ffmpeg_handle *ffh
 static t_ffmpeg_handle *
 p_ffmpeg_open(GapGveFFMpegGlobalParams *gpp
              , gint32 current_pass
-	     , t_awk_array *awp
+             , t_awk_array *awp
              , gint video_tracks
-	     )
+             )
 {
   t_ffmpeg_handle *ffh;
   GapGveFFMpegValues   *epp;
@@ -2434,7 +2398,7 @@ p_ffmpeg_open(GapGveFFMpegGlobalParams *gpp
      return(NULL);
   }
 
-  //if(gap_debug)
+  if(gap_debug)
   {
     printf("AVOutputFormat ffh->file_oformat opened\n");
     printf("  name: %s\n", ffh->file_oformat->name);
@@ -2481,10 +2445,10 @@ p_ffmpeg_open(GapGveFFMpegGlobalParams *gpp
 
     l_errno = errno;
     g_message(_("Could not create videofile:"
-	       "'%s'"
-	       "%s")
-	       ,gpp->val.videoname
-	       ,g_strerror (l_errno) );
+               "'%s'"
+               "%s")
+               ,gpp->val.videoname
+               ,g_strerror (l_errno) );
     return(NULL);
   }
 
@@ -2514,10 +2478,10 @@ p_ffmpeg_open(GapGveFFMpegGlobalParams *gpp
     gboolean codec_ok;
     codec_ok = p_init_and_open_audio_codec(ffh
                                          , ii
-					 , gpp
-					 , awp->awk[ii].sample_rate
-					 , awp->awk[ii].channels
-					 );
+                                         , gpp
+                                         , awp->awk[ii].sample_rate
+                                         , awp->awk[ii].channels
+                                         );
     if(!codec_ok)
     {
       g_free(ffh);
@@ -2673,46 +2637,46 @@ p_ffmpeg_write_frame_chunk(t_ffmpeg_handle *ffh, gint32 encoded_size, gint vid_t
        *   find a faster way to fix PTS
        */
       {
-	AVFrame   *big_picture_yuv;
-	AVPicture *picture_yuv;
-	AVPicture *picture_codec;
+        AVFrame   *big_picture_yuv;
+        AVPicture *picture_yuv;
+        AVPicture *picture_codec;
 
-	/* picture to feed the codec */
-	picture_codec = (AVPicture *)ffh->vst[ii].big_picture_codec;
+        /* picture to feed the codec */
+        picture_codec = (AVPicture *)ffh->vst[ii].big_picture_codec;
 
-	/* source picture (YUV420) */
-	big_picture_yuv = avcodec_alloc_frame();
-	picture_yuv = (AVPicture *)big_picture_yuv;
+        /* source picture (YUV420) */
+        big_picture_yuv = avcodec_alloc_frame();
+        picture_yuv = (AVPicture *)big_picture_yuv;
 
-	/* Feed the encoder with a (black) dummy frame
+        /* Feed the encoder with a (black) dummy frame
          */
-	avpicture_fill(picture_codec
+        avpicture_fill(picture_codec
                       ,ffh->vst[ii].yuv420_dummy_buffer
                       ,PIX_FMT_YUV420P          /* PIX_FMT_RGB24, PIX_FMT_RGBA32, PIX_FMT_BGRA32 */
                       ,ffh->frame_width
                       ,ffh->frame_height
                       );
 
-	ffh->vst[ii].big_picture_codec->quality = ffh->vst[ii].vid_stream->quality;
-	ffh->vst[ii].big_picture_codec->key_frame = 1;
+        ffh->vst[ii].big_picture_codec->quality = ffh->vst[ii].vid_stream->quality;
+        ffh->vst[ii].big_picture_codec->key_frame = 1;
 
         encoded_dummy_size = avcodec_encode_video(ffh->vst[ii].vid_codec_context
                                ,ffh->vst[ii].video_dummy_buffer, ffh->vst[ii].video_dummy_buffer_size
                                ,ffh->vst[ii].big_picture_codec);
 
-	g_free(big_picture_yuv);
+        g_free(big_picture_yuv);
       }
 
       if(encoded_dummy_size == 0)
       {
         /* on size 0 the encoder has buffered the dummy frame.
-	 * this unwanted frame might be added when there is a next non-dummy frame
-	 * to encode and to write. (dont know if there is a chance to clear
-	 * the encoder's internal buffer in this case.)
-	 * in my tests this case did not happen yet....
-	 * .. but display a warning to find out in further test
-	 */
-	 g_message(_("Black dummy frame was added"));
+         * this unwanted frame might be added when there is a next non-dummy frame
+         * to encode and to write. (dont know if there is a chance to clear
+         * the encoder's internal buffer in this case.)
+         * in my tests this case did not happen yet....
+         * .. but display a warning to find out in further test
+         */
+         g_message(_("Black dummy frame was added"));
       }
 
       chunk_frame_type = GVA_util_check_mpg_frame_type(ffh->vst[ii].video_buffer, encoded_size);
@@ -2725,12 +2689,12 @@ p_ffmpeg_write_frame_chunk(t_ffmpeg_handle *ffh, gint32 encoded_size, gint vid_t
       if(gap_debug)
       {
         printf("CHUNK picture_number: enc_dummy_size:%d  frame_type:%d pic_number: %d %d PTS:%lld\n"
-	      , (int)encoded_dummy_size
-	      , (int)chunk_frame_type
-	      , (int)ffh->vst[ii].vid_codec_context->coded_frame->coded_picture_number
-	      , (int)ffh->vst[ii].vid_codec_context->coded_frame->display_picture_number
-	      , ffh->vst[ii].vid_codec_context->coded_frame->pts
-	      );
+              , (int)encoded_dummy_size
+              , (int)chunk_frame_type
+              , (int)ffh->vst[ii].vid_codec_context->coded_frame->coded_picture_number
+              , (int)ffh->vst[ii].vid_codec_context->coded_frame->display_picture_number
+              , ffh->vst[ii].vid_codec_context->coded_frame->pts
+              );
       }
 
       ///// pkt.pts = ffh->vst[ii].vid_codec_context->coded_frame->pts;  // OLD
@@ -2837,8 +2801,8 @@ p_ffmpeg_write_frame(t_ffmpeg_handle *ffh, gboolean force_keyframe, gint vid_tra
     {
       printf("HAVE TO convert  pix_fmt: %d\n (PIX_FMT_YUV420P %d)"
             , (int)ffh->vst[ii].vid_codec_context->pix_fmt
-	    , (int)PIX_FMT_YUV420P
-	    );
+            , (int)PIX_FMT_YUV420P
+            );
     }
 
 
@@ -2918,14 +2882,14 @@ p_ffmpeg_write_frame(t_ffmpeg_handle *ffh, gboolean force_keyframe, gint vid_tra
     if(encoded_size != 0)
     {
       {
-	AVPacket pkt;
+        AVPacket pkt;
         AVCodecContext *c;
 
-	av_init_packet (&pkt);
+        av_init_packet (&pkt);
         c = ffh->vst[ii].vid_codec_context;
 
 
-	///// pkt.pts = ffh->vst[ii].vid_codec_context->coded_frame->pts; // OLD
+        ///// pkt.pts = ffh->vst[ii].vid_codec_context->coded_frame->pts; // OLD
         
         if (c->coded_frame->pts != AV_NOPTS_VALUE)
         {
@@ -2941,17 +2905,17 @@ p_ffmpeg_write_frame(t_ffmpeg_handle *ffh, gboolean force_keyframe, gint vid_tra
 //        }
 
         
-	if(c->coded_frame->key_frame)
-	{
+        if(c->coded_frame->key_frame)
+        {
           pkt.flags |= PKT_FLAG_KEY;
-	}
+        }
         
-	pkt.stream_index = ffh->vst[ii].video_stream_index;
-	pkt.data = ffh->vst[ii].video_buffer;
-	pkt.size = encoded_size;
+        pkt.stream_index = ffh->vst[ii].video_stream_index;
+        pkt.data = ffh->vst[ii].video_buffer;
+        pkt.size = encoded_size;
 
-	if(gap_debug)
-	{
+        if(gap_debug)
+        {
           AVStream *st;
           
           st = ffh->output_context->streams[pkt.stream_index];
@@ -2971,13 +2935,13 @@ p_ffmpeg_write_frame(t_ffmpeg_handle *ffh, gboolean force_keyframe, gint vid_tra
              ,st->pts.val
              );
              
-	}
-	ret = av_write_frame(ffh->output_context, &pkt);
+        }
+        ret = av_write_frame(ffh->output_context, &pkt);
 
-	if(gap_debug)
-	{
-	  printf("after av_write_frame  encoded_size:%d\n", (int)encoded_size );
-	}
+        if(gap_debug)
+        {
+          printf("after av_write_frame  encoded_size:%d\n", (int)encoded_size );
+        }
       }
     }
   }
@@ -3390,8 +3354,9 @@ p_setup_check_flags(GapGveFFMpegValues *epp
 
 
 
+
 /* ---------------------------
- * p_ffmpeg_encode
+ * p_ffmpeg_encode_pass
  * ---------------------------
  *    The main "productive" routine
  *    ffmpeg encoding of anim frames, based on ffmpeg lib (by Fabrice Bellard)
@@ -3402,7 +3367,7 @@ p_setup_check_flags(GapGveFFMpegValues *epp
  *           (or -1 on error)
  */
 static gint
-p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
+p_ffmpeg_encode_pass(GapGveFFMpegGlobalParams *gpp, gint32 current_pass, GapGveMasterEncoderStatus *encStatusPtr)
 {
   GapGveFFMpegValues   *epp = NULL;
   t_ffmpeg_handle     *ffh = NULL;
@@ -3412,7 +3377,6 @@ p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
   GimpDrawable *l_drawable = NULL;
   long          l_cur_frame_nr;
   long          l_step, l_begin, l_end;
-  gdouble       l_percentage, l_percentage_step;
   int           l_rc;
   gint32        l_max_master_frame_nr;
   gint32        l_cnt_encoded_frames;
@@ -3422,11 +3386,14 @@ p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
   t_awk_array   l_awk_arr;
   t_awk_array   *awp;
   GapCodecNameElem    *l_vcodec_list;
-  GapGveMasterEncoderStatus encStatus;
 
 
   epp = &gpp->evl;
   awp = &l_awk_arr;
+
+  encStatusPtr->current_pass = current_pass;
+  encStatusPtr->frames_processed = 0;
+
   l_cnt_encoded_frames = 0;
   l_cnt_reused_frames = 0;
   p_init_audio_workdata(awp);
@@ -3437,6 +3404,7 @@ p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
   //if(gap_debug)
   {
      printf("p_ffmpeg_encode: START\n");
+     printf("  current_pass: %d (twoPassFlag:%d)\n", current_pass, epp->twoPassFlag);
      printf("  videoname: %s\n", gpp->val.videoname);
      printf("  audioname1: %s\n", gpp->val.audioname1);
      printf("  basename: %s\n", gpp->ainfo.basename);
@@ -3457,6 +3425,8 @@ p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
      printf("  master_encoder_id:%d:\n", gpp->val.master_encoder_id);
   }
 
+
+
   l_rc = 0;
   l_layer_id = -1;
 
@@ -3465,8 +3435,8 @@ p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
     gint32 l_total_framecount;
     l_vidhand = gap_gve_story_open_vid_handle (gpp->val.input_mode
                                        ,gpp->val.image_ID
-				       ,gpp->val.storyboard_file
-				       ,gpp->ainfo.basename
+                                       ,gpp->val.storyboard_file
+                                       ,gpp->ainfo.basename
                                        ,gpp->ainfo.extension
                                        ,gpp->val.range_from
                                        ,gpp->val.range_to
@@ -3477,8 +3447,9 @@ p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
     l_vidhand->do_gimp_progress = FALSE;
   }
 
-  /* TODO check for overwrite (in case we are called non-interactive) */
-
+  /* TODO check for overwrite (in case we are called non-interactive)
+   * overwrite check shall be done only if (current_pass < 2) 
+   */
 
   if (gap_debug) printf("Creating ffmpeg file.\n");
 
@@ -3490,22 +3461,13 @@ p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
   /* OPEN the video file for write (create)
    *  successful open returns initialized FFMPEG handle structure
    */
-  ffh = p_ffmpeg_open(gpp, 0, awp, l_video_tracks);
+  ffh = p_ffmpeg_open(gpp, current_pass, awp, l_video_tracks);
   if(ffh == NULL)
   {
     p_close_audio_input_files(awp);
     return(-1);     /* FFMPEG open Failed */
   }
 
-
-  l_percentage = 0.0;
-  if(gpp->val.run_mode == GIMP_RUN_INTERACTIVE)
-  {
-    gap_gve_misc_initGapGveMasterEncoderStatus(&encStatus
-       , gpp->val.master_encoder_id
-       , abs(gpp->val.range_to - gpp->val.range_from) + 1   /* total_frames */
-       );
-  }
 
 
   /* Calculations for encoding the sound */
@@ -3518,13 +3480,10 @@ p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
   if(gpp->val.range_from > gpp->val.range_to)
   {
     l_step  = -1;     /* operate in descending (reverse) order */
-    l_percentage_step = 1.0 / ((1.0 + gpp->val.range_from) - gpp->val.range_to);
-
   }
   else
   {
     l_step  = 1;      /* operate in ascending order */
-    l_percentage_step = 1.0 / ((1.0 + gpp->val.range_to) - gpp->val.range_from);
   }
   l_begin = gpp->val.range_from;
   l_end   = gpp->val.range_to;
@@ -3560,8 +3519,8 @@ p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
                                            , ffh->vst[0].video_buffer
                                            , &l_video_frame_chunk_size
                                            , ffh->vst[0].video_buffer_size    /* IN max size */
-					   , gpp->val.framerate
-					   , l_max_master_frame_nr
+                                           , gpp->val.framerate
+                                           , l_max_master_frame_nr
                                            , &l_video_frame_chunk_hdr_size
                                            , l_check_flags
                                            );
@@ -3582,9 +3541,9 @@ p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
       {
         l_cnt_reused_frames++;
         if (gap_debug)
-	{
-	  printf("DEBUG: 1:1 copy of frame %d\n", (int)l_cur_frame_nr);
-	}
+        {
+          printf("DEBUG: 1:1 copy of frame %d\n", (int)l_cur_frame_nr);
+        }
 
         /* dont recode, just copy video chunk to output videofile */
         p_ffmpeg_write_frame_chunk(ffh, l_video_frame_chunk_size, 0 /* vid_track */);
@@ -3594,13 +3553,13 @@ p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
         l_cnt_encoded_frames++;
         l_drawable = gimp_drawable_get (l_layer_id);
 
-	if (gap_debug)
-	{
-	  printf("DEBUG: %s encoding frame %d\n"
-	        , epp->vcodec_name
-		, (int)l_cur_frame_nr
-		);
-	}
+        if (gap_debug)
+        {
+          printf("DEBUG: %s encoding frame %d\n"
+                , epp->vcodec_name
+                , (int)l_cur_frame_nr
+                );
+        }
 
 
         /* fill the yuv420_buffer with current frame image data */
@@ -3625,22 +3584,17 @@ p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
     }
 
 
-    l_percentage += l_percentage_step;
-    if(gap_debug)
-    {
-      printf("PROGRESS: %f\n", (float) l_percentage);
-    }
     if(gpp->val.run_mode == GIMP_RUN_INTERACTIVE)
     {
-      encStatus.frames_processed++;
-      encStatus.frames_encoded = l_cnt_encoded_frames;
-      encStatus.frames_copied_lossless = l_cnt_reused_frames;
+      encStatusPtr->frames_processed++;
+      encStatusPtr->frames_encoded = l_cnt_encoded_frames;
+      encStatusPtr->frames_copied_lossless = l_cnt_reused_frames;
 
-      gap_gve_misc_do_master_encoder_progress(&encStatus);
+      gap_gve_misc_do_master_encoder_progress(encStatusPtr);
     }
 
     /* terminate on cancel reqeuset (CANCEL button was pressed in the master encoder dialog) */
-    if(gap_gve_misc_is_master_encoder_cancel_request(&encStatus))
+    if(gap_gve_misc_is_master_encoder_cancel_request(encStatusPtr))
     {
        break;
     }
@@ -3692,10 +3646,63 @@ p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
   /* statistics */
   if(gap_debug)
   {
+    printf("current_pass          %d\n", (int)current_pass);
     printf("encoded       frames: %d\n", (int)l_cnt_encoded_frames);
     printf("1:1 copied    frames: %d\n", (int)l_cnt_reused_frames);
     printf("total handled frames: %d\n", (int)l_cnt_encoded_frames + l_cnt_reused_frames);
   }
   
+  return l_rc;
+}    /* end p_ffmpeg_encode_pass */
+
+
+/* ---------------------------
+ * p_ffmpeg_encode
+ * ---------------------------
+ *    The main "productive" routine
+ *    ffmpeg encoding of anim frames, based on ffmpeg lib (by Fabrice Bellard)
+ *    Audio encoding is Optional.
+ *    (wav_audiofile must be provided in that case)
+ *
+ * returns   value >= 0 if ok
+ *           (or -1 on error)
+ */
+static gint
+p_ffmpeg_encode(GapGveFFMpegGlobalParams *gpp)
+{
+  GapGveFFMpegValues   *epp = NULL;
+  gint32        l_current_pass = 0;  /* 0 for standard encoding, for 2-pass encoding loop from 1 to 2 */
+  gint l_rc;
+  GapGveMasterEncoderStatus encStatus;
+  GapGveMasterEncoderStatus *encStatusPtr;
+
+  epp = &gpp->evl;
+  encStatusPtr = &encStatus;
+
+  if(gpp->val.run_mode == GIMP_RUN_INTERACTIVE)
+  {
+    gap_gve_misc_initGapGveMasterEncoderStatus(encStatusPtr
+       , gpp->val.master_encoder_id
+       , abs(gpp->val.range_to - gpp->val.range_from) + 1   /* total_frames */
+       );
+  }
+
+
+  if (epp->twoPassFlag == TRUE)
+  {
+    l_current_pass = 1;
+    l_rc = p_ffmpeg_encode_pass(gpp, l_current_pass, encStatusPtr);
+    if (l_rc >= 0)
+    {
+      l_current_pass = 2;
+      l_rc = p_ffmpeg_encode_pass(gpp, l_current_pass, encStatusPtr);
+    }
+  }
+  else
+  {
+    l_current_pass = 0;
+    l_rc = p_ffmpeg_encode_pass(gpp, l_current_pass, encStatusPtr);
+  }
+
   return l_rc;
 }    /* end p_ffmpeg_encode */

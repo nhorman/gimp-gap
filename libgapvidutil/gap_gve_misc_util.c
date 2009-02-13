@@ -187,6 +187,7 @@ gap_gve_misc_initGapGveMasterEncoderStatus(GapGveMasterEncoderStatus *encStatus
   encStatus->frames_processed = 0;
   encStatus->frames_encoded = 0;
   encStatus->frames_copied_lossless = 0;
+  encStatus->current_pass = 0;
 //  encStatus->pidOfRunningEncoder = 0;
 
   gap_gve_misc_do_master_encoder_progress(encStatus);

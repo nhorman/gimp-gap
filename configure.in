@@ -99,25 +99,24 @@ AM_CONDITIONAL(OS_WIN32, test "$os_win32" = "yes")
 dnl Test for unix-frontends
 dnl -----------------------
 AC_ARG_ENABLE(unixfrontends,
-              [  --disable-unix-frontends     don't build with UNIX specific frontends for mplayer, xanim and mpeg encoders])
-  dnl disable unix frontends per default on win32 systems (unless explicte specified yes)
-  if test "x$enable_unix_frontends" != "xyes"; then
+              [  --enable-unix-frontends     build with UNIX specific frontends for OLD programs xanim and mpeg encoders])
+  if test "x$enable_unix_frontends" = "xyes"; then
+
+    dnl disable unix frontends per default on win32 systems (unless explicte specified yes)
     if test "x$os_win32" = "xyes"; then
        enable_unix_frontends=no
+       frontends_warning="
+WARNING: the --enable-unix-frontends is ignored on  Windows build
+"
+    else
+       frontends_warning="
+gimp-gap is configured with Linux/UNIX specific frontends for OLD  xanim
+and OLD mpeg encoders.
+"
     fi
-  fi
 
-  if test "x$enable_unix_frontends" != "xno"; then
-    frontends_warning="
-gimp-gap is configured with Linux/UNIX specific frontends for mplayer, xanim
-and mpeg encoders. Non Linux/UNIX users should run configure with
-the --disable-unix-frontends option.
-"
   else
-    frontends_warning="
-The Linux/UNIX specific frontends for mplayer, xanim and mpeg encoders will
-not be built. This is OK for non Linux/UNIX users.
-"
+     enable_unix_frontends=no
   fi
 
 AM_CONDITIONAL(GAP_UNIX_FRONTENDS, test "x$enable_unix_frontends" != "xno")
@@ -305,10 +304,27 @@ dnl assume ffmpeg libs build "no" (in case disabled)
 build_ffmpeg_libs_yesno="no"
 
 
+moved_old_ffmpeg_warn=""
 AC_ARG_ENABLE(libavformat,
               [  --disable-libavformat        don't build with libavformat/libavcodec/libavutil])
   if test "x$enable_libavformat" != "xno"; then
     dnl
+
+    dnl check if old version off ffmpeg is already there 
+    dnl (typically for already existing svn build after 1st svn update to new version)
+
+    FF_FILE_AVCODEC_H="$FFMPEG_DIR/libavcodec/avcodec.h"
+
+    if test -f "$FF_FILE_AVCODEC_H"; then
+      if  grep '#define LIBAVCODEC_VERSION      51.47.2' $FF_FILE_AVCODEC_H >/dev/null; then
+        mv "$FFMPEG_DIR" "$FFMPEG_DIR-OLD"
+        echo "** UPDATE of ffmpeg forced, moving $FFMPEG_DIR  to $FFMPEG_DIR-OLD"
+        moved_old_ffmpeg_warn="
+INFORMATION: old ffmpeg was moved to $FFMPEG_DIR-OLD
+(you may delete the old ffmpeg directory)
+"
+      fi
+    fi
 
     AC_DEFINE(ENABLE_GVA_LIBAVFORMAT, 1,
               [Define to 1 to enable compile and link with libavformat])
@@ -651,6 +667,28 @@ dnl   fi
     dnl requirement in its configuration script.
     dnl
 
+    dnl check if old version off ffmpeg is already there 
+    dnl (typically for already existing svn build after 1st svn update to new version)
+
+    LIBMPEG3_PRIVATE_H="$LMPEG3_DIR/mpeg3private.h"
+
+    if test -f "$LIBMPEG3_PRIVATE_H"; then
+      if  grep '#define MPEG3_MAJOR   1' $LIBMPEG3_PRIVATE_H >/dev/null; then
+        if  grep '#define MPEG3_MINOR   5' $LIBMPEG3_PRIVATE_H >/dev/null; then
+         if  grep '#define MPEG3_RELEASE 4' $LIBMPEG3_PRIVATE_H >/dev/null; then
+           mv "$LMPEG3_DIR" "$LMPEG3_DIR-OLD"
+           echo "** UPDATE of libmpeg3 forced, moving $LMPEG3_DIR  to $LMPEG3_DIR-OLD"
+           moved_old_libmpeg3_warn="
+INFORMATION: old libmpeg3 was moved to  $LMPEG3_DIR-OLD
+(you may delete the old libmpeg3 directory)
+"
+          fi
+        fi
+      fi
+    fi
+
+
+
     if test "x$pthread_err" != "x"; then
       enable_libmpeg3="no"
       vid_mpeg3_warning="
@@ -820,9 +858,15 @@ AC_SUBST(GTHREAD_LIBS)
 
 
 dnl Test for audiosupport
+dnl audiosupport currently is based on wavplay that is available on UNIX systems
+dnl (the wavplay client does not compile on Windows)
 dnl ------------------------
 AC_ARG_ENABLE(audiosupport,
               [  --disable-audio-support      don't build with audio support])
+  if test "x$os_win32" = "xyes"; then
+     enable_audio_support=no
+  fi
+
   if test "x$enable_audio_support" != "xno"; then
     AC_CHECK_PROG(WAVPLAY_SERVER, wavplay, yes, no)
       if test $WAVPLAY_SERVER = no; then
@@ -930,4 +974,4 @@ docs/reference/Makefile
 docs/reference/txt/Makefile
 ])
 
-AC_MSG_RESULT($frontends_warning $audio_warning $videoapi_warning $vid_ffmpeg_warning $vid_mpeg3_warning $vid_quicktime_warning $vid_xvidcore_warning)
+AC_MSG_RESULT($frontends_warning $audio_warning $videoapi_warning $moved_old_ffmpeg_warn $moved_old_libmpeg3_warn $vid_ffmpeg_warning $vid_mpeg3_warning $vid_quicktime_warning $vid_xvidcore_warning)

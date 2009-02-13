@@ -610,6 +610,7 @@ mov_dialog ( GimpDrawable *drawable, t_mov_gui_stuff *mgp,
 #endif
   /* dialog */
   dlg = gtk_dialog_new ();
+  gtk_window_set_type_hint (dlg, GDK_WINDOW_TYPE_HINT_NORMAL);
   mgp->shell = dlg;
   mgp->first_nr = first_nr;
   mgp->last_nr = last_nr;

@@ -173,7 +173,7 @@
 
 
 
-/* ffmpeg specific encoder params */
+/* GapGveFFMpegValues ffmpeg specific encoder params */
 typedef struct {
   char    current_vid_extension[80];
 
@@ -186,7 +186,8 @@ typedef struct {
   char    copyright[40];
   char    comment[80];
   char    passlogfile[512];
-  gint32  pass;
+  gint32  pass_nr;
+  gint32  twoPassFlag;
 
   gint32  audio_bitrate;
   gint32  video_bitrate;
@@ -253,7 +254,6 @@ typedef struct {
   gint32 use_obmc;
   gint32 use_loop;
   gint32 use_alt_scan;
-  gint32 use_trell;
   gint32 use_mv0;
   gint32 do_normalize_aqp;
   gint32 use_scan_offset;
@@ -306,6 +306,77 @@ typedef struct {
   gint32  ntsc_height;
   gint32  pal_width;
   gint32  pal_height;
+
+  /* new parms 2009.01.31 */
+  
+  gint32  b_frame_strategy;
+  gint32  workaround_bugs;
+  gint32  error_recognition;
+  gint32  mpeg_quant;
+  gdouble rc_qsquish;
+  gdouble rc_qmod_amp;
+  gint32  rc_qmod_freq;
+  char    rc_eq[60];
+  gdouble rc_buffer_aggressivity;
+  gint32  dia_size;
+  gint32  last_predictor_count;
+  gint32  pre_dia_size;
+  gint32  inter_threshold;
+  gdouble border_masking;
+  gint32  me_penalty_compensation;
+  gint32  bidir_refine;
+  gint32  brd_scale;
+  gdouble crf;
+  gint32  cqp;
+  gint32  keyint_min;
+  gint32  refs;
+  gint32  chromaoffset;        
+  gint32  bframebias;
+  gint32  trellis;
+  gdouble complexityblur;
+  gint32  deblockalpha;
+  gint32  deblockbeta;
+  gint32  partitions;
+  gint32  directpred;
+  gint32  cutoff;
+  gint32  scenechange_factor;
+  gint32  mv0_threshold;
+  gint32  b_sensitivity;
+  gint32  compression_level;
+  gint32  use_lpc;
+  gint32  lpc_coeff_precision;
+  gint32  min_prediction_order;
+  gint32  max_prediction_order;
+  gint32  prediction_order_method;
+  gint32  min_partition_order;
+  gint64  timecode_frame_start;
+  gint64  bits_per_raw_sample;
+  gint64  channel_layout;
+  gdouble rc_max_available_vbv_use;
+  gdouble rc_min_vbv_overflow_use;
+
+  gint32 codec_FLAG_GMC;
+  gint32 codec_FLAG_INPUT_PRESERVED;
+  gint32 codec_FLAG_GRAY;
+  gint32 codec_FLAG_EMU_EDGE;
+  gint32 codec_FLAG_TRUNCATED;
+
+  gint32 codec_FLAG2_FAST;
+  gint32 codec_FLAG2_LOCAL_HEADER;
+  gint32 codec_FLAG2_BPYRAMID;
+  gint32 codec_FLAG2_WPRED;
+  gint32 codec_FLAG2_MIXED_REFS;
+  gint32 codec_FLAG2_8X8DCT;
+  gint32 codec_FLAG2_FASTPSKIP;
+  gint32 codec_FLAG2_AUD;
+  gint32 codec_FLAG2_BRDO;
+  gint32 codec_FLAG2_INTRA_VLC;
+  gint32 codec_FLAG2_MEMC_ONLY;
+  gint32 codec_FLAG2_DROP_FRAME_TIMECODE;
+  gint32 codec_FLAG2_SKIP_RD;
+  gint32 codec_FLAG2_CHUNKS;
+  gint32 codec_FLAG2_NON_LINEAR_QUANT;
+  gint32 codec_FLAG2_BIT_RESERVOIR;
 
 } GapGveFFMpegValues;
 
@@ -388,7 +459,6 @@ typedef struct GapGveFFMpegGlobalParams {   /* nick: gpp */
   GtkWidget *ff_use_obmc_checkbutton;
   GtkWidget *ff_use_loop_checkbutton;
   GtkWidget *ff_use_alt_scan_checkbutton;
-  GtkWidget *ff_use_trell_checkbutton;
   GtkWidget *ff_use_mv0_checkbutton;
   GtkWidget *ff_do_normalize_aqp_checkbutton;
   GtkWidget *ff_use_scan_offset_checkbutton;
@@ -400,6 +470,34 @@ typedef struct GapGveFFMpegGlobalParams {   /* nick: gpp */
   GtkWidget *ff_do_interlace_me_checkbutton;
   GtkWidget *ff_strict_gop_checkbutton;
   GtkWidget *ff_no_output_checkbutton;
+
+
+  GtkWidget *ff_codec_FLAG_GMC_checkbutton;
+  GtkWidget *ff_codec_FLAG_INPUT_PRESERVED_checkbutton;
+  GtkWidget *ff_codec_FLAG_GRAY_checkbutton;
+  GtkWidget *ff_codec_FLAG_EMU_EDGE_checkbutton;
+  GtkWidget *ff_codec_FLAG_TRUNCATED_checkbutton;
+
+  GtkWidget *ff_codec_FLAG2_FAST_checkbutton;
+  GtkWidget *ff_codec_FLAG2_LOCAL_HEADER_checkbutton;
+  GtkWidget *ff_codec_FLAG2_BPYRAMID_checkbutton;
+  GtkWidget *ff_codec_FLAG2_WPRED_checkbutton;
+  GtkWidget *ff_codec_FLAG2_MIXED_REFS_checkbutton;
+  GtkWidget *ff_codec_FLAG2_8X8DCT_checkbutton;
+  GtkWidget *ff_codec_FLAG2_FASTPSKIP_checkbutton;
+  GtkWidget *ff_codec_FLAG2_AUD_checkbutton;
+  GtkWidget *ff_codec_FLAG2_BRDO_checkbutton;
+  GtkWidget *ff_codec_FLAG2_INTRA_VLC_checkbutton;
+  GtkWidget *ff_codec_FLAG2_MEMC_ONLY_checkbutton;
+  GtkWidget *ff_codec_FLAG2_DROP_FRAME_TIMECODE_checkbutton;
+  GtkWidget *ff_codec_FLAG2_SKIP_RD_checkbutton;
+  GtkWidget *ff_codec_FLAG2_CHUNKS_checkbutton;
+  GtkWidget *ff_codec_FLAG2_NON_LINEAR_QUANT_checkbutton;
+  GtkWidget *ff_codec_FLAG2_BIT_RESERVOIR_checkbutton;
+
+
+
+
 
   GtkWidget *ff_mux_rate_spinbutton;
   GtkWidget *ff_mux_packet_size_spinbutton;

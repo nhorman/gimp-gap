@@ -2028,6 +2028,7 @@ gap_vex_dlg_create_mw__main_window (GapVexMainGlobalParams *gpp)
 			 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 			 GTK_STOCK_OK,     GTK_RESPONSE_OK,
 			 NULL);
+  gtk_window_set_type_hint (mw__main_window, GDK_WINDOW_TYPE_HINT_NORMAL);
 
   g_signal_connect (G_OBJECT (mw__main_window), "response",
                     G_CALLBACK (on_mw_response),

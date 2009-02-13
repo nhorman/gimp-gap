@@ -827,6 +827,10 @@ p_print_time_label( GtkLabel *lbl, gint32   tmsec)
   gint32   tmin;
   gchar    txt[20];
 
+  if(lbl == NULL)
+  {
+    return;
+  }
 
   tms = tmsec % 1000;
   tsec = (tmsec / 1000) % 60;
@@ -865,6 +869,10 @@ p_update_aud_info (GapCmeGlobalParams *gpp
   int         l_rc;
   gint32      tmsec;        /* audioplaytime in milli secs */
 
+  if ((lbl_info == NULL) || (lbl_time == NULL) || (lbl_time0))
+  {
+    return 0;
+  }
   if(*audioname == '\0')
   {
      p_print_time_label(lbl_time, 0);
@@ -971,9 +979,16 @@ gap_cme_gui_upd_vid_extension (GapCmeGlobalParams *gpp)
  videoname = g_strdup_printf("%s%s", l_vid, &gpp->val.ecp_sel.video_extension[0]);
  g_snprintf(gpp->val.videoname, sizeof(gpp->val.videoname), "%s", videoname);
 
- gtk_entry_set_text(GTK_ENTRY(gpp->cme__entry_video), videoname);
- gtk_label_set_text(GTK_LABEL(gpp->cme__short_description)
+ if(gpp->cme__entry_video != NULL)
+ {
+   gtk_entry_set_text(GTK_ENTRY(gpp->cme__entry_video), videoname);
+ }
+ 
+ if(gpp->cme__short_description != NULL)
+ {
+   gtk_label_set_text(GTK_LABEL(gpp->cme__short_description)
                   , &gpp->val.ecp_sel.short_description[0]);
+ }
 
  g_free(l_vid);
  g_free(videoname);
@@ -1049,26 +1064,33 @@ gap_cme_gui_update_aud_labels (GapCmeGlobalParams *gpp)
   lbl_info_tmp = GTK_LABEL(gpp->cme__label_aud_tmp_info);
   lbl_tmp_audfile = GTK_LABEL(gpp->cme__label_tmp_audfile);
 
-  gtk_label_set_text(lbl_info, " ");
-
-  gpp->val.wav_samplerate1  =
-  p_update_aud_info(gpp, lbl_info, lbl_time, lbl_time0, gpp->val.audioname1);
-
-
-  gtk_label_set_text(lbl_time_tmp, " ");
-  gtk_label_set_text(lbl_info_tmp, " ");
-  gtk_label_set_text(lbl_tmp_audfile, " ");
-
-  if(gpp->val.tmp_audfile[0] != '\0')
+  if ((lbl_info != NULL)
+  &&  (lbl_time != NULL)
+  &&  (lbl_time0 != NULL)
+  &&  (lbl_time_tmp != NULL)
+  &&  (lbl_info_tmp != NULL)
+  &&  (lbl_tmp_audfile != NULL))
   {
-    if(g_file_test(gpp->val.tmp_audfile, G_FILE_TEST_EXISTS))
-    {
-       gpp->val.wav_samplerate_tmp =
-       p_update_aud_info(gpp, lbl_info_tmp, lbl_time_tmp, lbl_time0, gpp->val.tmp_audfile);
-       gtk_label_set_text(lbl_tmp_audfile, gpp->val.tmp_audfile);
-   }
-  }
+    gtk_label_set_text(lbl_info, " ");
 
+    gpp->val.wav_samplerate1  =
+    p_update_aud_info(gpp, lbl_info, lbl_time, lbl_time0, gpp->val.audioname1);
+ 
+
+    gtk_label_set_text(lbl_time_tmp, " ");
+    gtk_label_set_text(lbl_info_tmp, " ");
+    gtk_label_set_text(lbl_tmp_audfile, " ");
+
+    if(gpp->val.tmp_audfile[0] != '\0')
+    {
+      if(g_file_test(gpp->val.tmp_audfile, G_FILE_TEST_EXISTS))
+      {
+         gpp->val.wav_samplerate_tmp =
+         p_update_aud_info(gpp, lbl_info_tmp, lbl_time_tmp, lbl_time0, gpp->val.tmp_audfile);
+         gtk_label_set_text(lbl_tmp_audfile, gpp->val.tmp_audfile);
+      }
+    }
+  }
   gap_cme_gui_upd_wgt_sensitivity (gpp);
 }  /* end gap_cme_gui_update_aud_labels */
 
@@ -1137,10 +1159,16 @@ gap_cme_gui_util_sox_widgets (GapCmeGlobalParams *gpp)
   if(gap_debug) printf("gap_cme_gui_util_sox_widgets\n");
 
   entry = GTK_ENTRY(gpp->cme__entry_sox);
-  gtk_entry_set_text(entry, gpp->val.util_sox);
+  if(entry != NULL)
+  {
+    gtk_entry_set_text(entry, gpp->val.util_sox);
+  }
 
   entry = GTK_ENTRY(gpp->cme__entry_sox_options);
-  gtk_entry_set_text(entry, gpp->val.util_sox_options);
+  if(entry != NULL)
+  {
+    gtk_entry_set_text(entry, gpp->val.util_sox_options);
+  }
 }  /* end gap_cme_gui_util_sox_widgets */
 
 
@@ -1216,13 +1244,19 @@ p_range_widgets_set_limits(GapCmeGlobalParams *gpp
   }
 
   /* label changes dependent from rangetype "From Frame", "From Layer" or "From Storyframe" */
-  lbl_text = g_strdup_printf(_("From %s:"),  range_text);
-  gtk_label_set_text(GTK_LABEL(gpp->cme__label_from), lbl_text);
-  g_free(lbl_text);
+  if(gpp->cme__label_from != NULL)
+  {
+    lbl_text = g_strdup_printf(_("From %s:"),  range_text);
+    gtk_label_set_text(GTK_LABEL(gpp->cme__label_from), lbl_text);
+    g_free(lbl_text);
+  }
 
-  lbl_text = g_strdup_printf(_("To %s:"),  range_text);
-  gtk_label_set_text(GTK_LABEL(gpp->cme__label_to), lbl_text);
-  g_free(lbl_text);
+  if(gpp->cme__label_to != NULL)
+  {
+    lbl_text = g_strdup_printf(_("To %s:"),  range_text);
+    gtk_label_set_text(GTK_LABEL(gpp->cme__label_to), lbl_text);
+    g_free(lbl_text);
+  }
 
   g_free(range_text);
 
@@ -1266,9 +1300,18 @@ p_init_shell_window_widgets (GapCmeGlobalParams *gpp)
  gtk_adjustment_set_value(GTK_ADJUSTMENT(gpp->cme__spinbutton_height_adj)
                          , (gfloat)gpp->val.vid_height);
 
- gtk_entry_set_text(GTK_ENTRY(gpp->cme__entry_video), gpp->val.videoname);
- gtk_entry_set_text(GTK_ENTRY(gpp->cme__entry_audio1), gpp->val.audioname1);
- gtk_entry_set_text(GTK_ENTRY(gpp->cme__entry_mac), gpp->val.filtermacro_file);
+ if(gpp->cme__entry_video != NULL)
+ {
+   gtk_entry_set_text(GTK_ENTRY(gpp->cme__entry_video), gpp->val.videoname);
+ }
+ if(gpp->cme__entry_audio1 != NULL)
+ {
+   gtk_entry_set_text(GTK_ENTRY(gpp->cme__entry_audio1), gpp->val.audioname1);
+ }
+ if (gpp->cme__entry_mac != NULL)
+ {
+   gtk_entry_set_text(GTK_ENTRY(gpp->cme__entry_mac), gpp->val.filtermacro_file);
+ }
 
  gap_cme_gui_update_aud_labels (gpp);
  gap_cme_gui_update_vid_labels (gpp);
@@ -1293,7 +1336,10 @@ p_status_progress(GapCmeGlobalParams *gpp, t_global_stb *gstb)
    */
 
   status_lbl = gpp->cme__label_status;
-  if(status_lbl) gtk_label_set_text(GTK_LABEL(status_lbl), gstb->status_msg);
+  if(status_lbl)
+  {
+    gtk_label_set_text(GTK_LABEL(status_lbl), gstb->status_msg);
+  }
 
   pbar = gpp->cme__progressbar_status;
   if(pbar)
@@ -2471,7 +2517,8 @@ p_create_shell_window (GapCmeGlobalParams *gpp)
                          GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
                          GTK_STOCK_OK,     GTK_RESPONSE_OK,
                          NULL);
-
+  gtk_window_set_type_hint (shell_window, GDK_WINDOW_TYPE_HINT_NORMAL);
+  
   g_signal_connect (G_OBJECT (shell_window), "response",
                     G_CALLBACK (on_cme__response),
                     gpp);
@@ -3896,7 +3943,7 @@ p_call_encoder_procedure(GapCmeGlobalParams *gpp)
 static void
 p_set_label_to_numeric_value(GtkWidget *label, gint32 value)
 {
-  if(label)
+  if(label != NULL)
   {
     char *buffer;
     buffer = g_strdup_printf("%6d", value);
@@ -3974,15 +4021,48 @@ gap_cme_gui_update_encoder_status(GapCmeGlobalParams *gpp)
       gdouble l_progress;
       char *l_msg;
 
-      l_progress = CLAMP((gdouble)gpp->encStatus.frames_processed / (gdouble)(MAX(1.0, gpp->encStatus.total_frames))
-                      , 0.0, 1.0
+      switch (gpp->encStatus.current_pass)
+      {
+        case 1:
+          l_progress = CLAMP(
+                       (gdouble)gpp->encStatus.frames_processed 
+                        / (gdouble)(MAX(1.0, 2.0 * gpp->encStatus.total_frames))
+                      , 0.0
+                      , 1.0
                       );
-
-      gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR (pbar), l_progress);
-      l_msg = g_strdup_printf(_("Video encoding %d of %d frames done")
+          l_msg = g_strdup_printf(_("Video encoding %d of %d frames done, PASS 1 of 2")
                              , gpp->encStatus.frames_processed
                              , gpp->encStatus.total_frames
                              );
+          break;
+        case 2:
+          l_progress = CLAMP(
+                     (gdouble)(gpp->encStatus.frames_processed + gpp->encStatus.total_frames)
+                      / (gdouble)(MAX(1.0, 2.0 * gpp->encStatus.total_frames))
+                      , 0.0
+                      , 1.0
+                      );
+          l_msg = g_strdup_printf(_("Video encoding %d of %d frames done, PASS 2 of 2")
+                             , gpp->encStatus.frames_processed
+                             , gpp->encStatus.total_frames
+                             );
+          break;
+        default: 
+          /* current_pass is 0 for single pass encoders */
+          l_progress = CLAMP(
+                      (gdouble)gpp->encStatus.frames_processed
+                      / (gdouble)(MAX(1.0, gpp->encStatus.total_frames))
+                      , 0.0
+                      , 1.0
+                      );
+          l_msg = g_strdup_printf(_("Video encoding %d of %d frames done")
+                             , gpp->encStatus.frames_processed
+                             , gpp->encStatus.total_frames
+                             );
+          break;
+      }
+
+      gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR (pbar), l_progress);
       gtk_progress_bar_set_text(GTK_PROGRESS_BAR(pbar), l_msg);
       g_free(l_msg);
     }
@@ -4201,7 +4281,7 @@ gap_cme_gui_master_encoder_dialog(GapCmeGlobalParams *gpp)
   gstb->total_stroyboard_frames = 0;
   gstb->aud_total_sec = 0.0;
 
-  gimp_ui_init ("gap_video_extract", FALSE);
+  gimp_ui_init ("gap_master_video_encoder", FALSE);
   gap_stock_init();
 
   l_rangetype = gpp->val.input_mode;
@@ -4238,10 +4318,11 @@ gap_cme_gui_master_encoder_dialog(GapCmeGlobalParams *gpp)
 
   p_init_shell_window_widgets(gpp);
   gtk_widget_show (gpp->shell_window);
-
+  
   if(l_rangetype == GAP_RNGTYPE_STORYBOARD)
   {
-    if(gpp->val.storyboard_file[0] != '\0')
+    if((gpp->val.storyboard_file[0] != '\0')
+    && (gpp->cme__entry_stb != NULL))
     {
       gtk_entry_set_text(GTK_ENTRY(gpp->cme__entry_stb), gpp->val.storyboard_file);
     }

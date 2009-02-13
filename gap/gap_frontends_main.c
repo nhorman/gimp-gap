@@ -42,6 +42,10 @@
  */
 
 /* revision history:
+ * gimp    2.6.4;   2009/02/12  hof: moved gap_decode_mplayer to its own main program.
+ *                                   because all the other frontends are OLD and
+ *                                   will NO LONGER be installed per default but only on explicite
+ *                                   configuration request.
  * gimp    2.1.0;   2004/12/06  hof: added gap_decode_mplayer
  * gimp    1.1.29b; 2000/11/25  hof: use gap lock procedures, update e-mail adress + main version
  * gimp    1.1.11b; 1999/11/20  hof: added gap_decode_xanim, fixed typo in mpeg encoder menu path
@@ -63,7 +67,6 @@
 #include "gap_lib.h"
 #include "gap_mpege.h"
 #include "gap_decode_xanim.h"
-#include "gap_decode_mplayer.h"
 #include "gap_arr_dialog.h"
 #include "gap_lock.h"
 
@@ -103,18 +106,6 @@ MAIN ()
 static void
 query ()
 {
-  static GimpParamDef args_mplayer[] =
-  {
-    {GIMP_PDB_INT32, "run_mode", "Interactive"},
-    {GIMP_PDB_IMAGE, "image", "(unused)"},
-    {GIMP_PDB_DRAWABLE, "drawable", "(unused)"},
-  };
-
-  static GimpParamDef args_mplayer_ext[] =
-  {
-    {GIMP_PDB_INT32, "run_mode", "Interactive"},
-  };
-
   static GimpParamDef args_xanim[] =
   {
     {GIMP_PDB_INT32, "run_mode", "Interactive"},
@@ -138,32 +129,6 @@ query ()
   static int nreturn_vals = 0;
 
   gimp_plugin_domain_register (GETTEXT_PACKAGE, LOCALEDIR);
-
-  gimp_install_procedure(GAP_MPLAYER_PLUGIN_NAME,
-			 "This plugin calls mplayer to split any video to video frames. "
-			 "MPlayer 1.0 must be installed on your system.",
-			 "",
-			 "Wolfgang Hofer (hof@gimp.org)",
-			 "Wolfgang Hofer",
-			 GAP_VERSION_WITH_DATE,
-			 N_("MPlayer based extraction..."),
-			 NULL,
-			 GIMP_PLUGIN,
-			 G_N_ELEMENTS (args_mplayer), nreturn_vals,
-			 args_mplayer, return_vals);
-
-  gimp_install_procedure(GAP_MPLAYER_PLUGIN_NAME_TOOLBOX,
-			 "This plugin calls mplayer to split any video to video frames. "
-			 "MPlayer 1.0 must be installed on your system.",
-			 "",
-			 "Wolfgang Hofer (hof@gimp.org)",
-			 "Wolfgang Hofer",
-			 GAP_VERSION_WITH_DATE,
-			 N_("MPlayer based extraction..."),
-			 NULL,
-			 GIMP_PLUGIN,
-			 G_N_ELEMENTS (args_mplayer_ext), nreturn_vals,
-			 args_mplayer_ext, return_vals);
 
 
   gimp_install_procedure(GAP_XANIM_PLUGIN_NAME,
@@ -231,12 +196,10 @@ query ()
     //gimp_plugin_menu_branch_register("<Toolbox>/Video", "Encode");
     //gimp_plugin_menu_branch_register("<Toolbox>/Video", "Split Video into Frames");
 
-    gimp_plugin_menu_register (GAP_MPLAYER_PLUGIN_NAME, menupath_image_video_split);
     gimp_plugin_menu_register (GAP_XANIM_PLUGIN_NAME, menupath_image_video_split);
     gimp_plugin_menu_register (GAP_MPEG_ENCODE_PLUGIN_NAME, menupath_image_video_encode);
     gimp_plugin_menu_register (GAP_MPEG2_ENCODE_PLUGIN_NAME, menupath_image_video_encode);
 
-    gimp_plugin_menu_register (GAP_MPLAYER_PLUGIN_NAME_TOOLBOX, menupath_toolbox_video_split);
     gimp_plugin_menu_register (GAP_XANIM_PLUGIN_NAME_TOOLBOX, menupath_toolbox_video_split);
   }
 
@@ -301,57 +264,7 @@ static void run(const gchar *name
     gap_lock_set_lock(lock_image_id);
   }
   
-  if ((strcmp (name, GAP_MPLAYER_PLUGIN_NAME) == 0)
-  ||  (strcmp (name, GAP_MPLAYER_PLUGIN_NAME_TOOLBOX) == 0))
-  {
-      GapMPlayerParams mplayer_gpp;
-      GapMPlayerParams *gpp;
-      
-      /* only the INTERACTIVE runmode is supported, 
-       * extracting frames in batch mode can be done outside the gimp
-       * (mplayer has excellent commandline support)
-       */
-      if (run_mode == GIMP_RUN_NONINTERACTIVE)
-      {
-          status = GIMP_PDB_CALLING_ERROR;
-      }
-
-      if (status == GIMP_PDB_SUCCESS)
-      {
-        gpp = &mplayer_gpp;
-	
-	/* setup default values (for the 1.st call per session) */
-        gpp->video_filename[0] = '\0';
-        gpp->audio_filename[0] = '\0';
-	gpp->number_of_frames  = 100;
-	gpp->vtrack            = 1;
-	gpp->atrack            = 1;
-	gpp->png_compression   = 0;
-	gpp->jpg_quality       = 86;
-	gpp->jpg_optimize      = 100;
-	gpp->jpg_smooth        = 0;
-	gpp->jpg_progressive   = FALSE;
-	gpp->jpg_baseline      = TRUE;
-        gpp->start_hour        = 0;
-        gpp->start_minute      = 0;
-        gpp->start_second      = 0;
-
-	gpp->img_format        = MPENC_JPEG;
-	gpp->silent            = FALSE;
-	gpp->autoload          = TRUE;
-	gpp->run_mplayer_asynchron = TRUE;
-	
-        g_snprintf(gpp->basename, sizeof(gpp->basename), "frame_");
-
-	gimp_get_data(GAP_MPLAYER_PLUGIN_NAME, gpp);
-        mplayer_gpp.run_mode = run_mode;
-	
-        l_rc = gap_mplayer_decode(gpp);
-	
-	gimp_set_data(GAP_MPLAYER_PLUGIN_NAME, gpp, sizeof(mplayer_gpp));
-      }
-  }
-  else if ((strcmp (name, GAP_XANIM_PLUGIN_NAME) == 0)
+  if ((strcmp (name, GAP_XANIM_PLUGIN_NAME) == 0)
   ||  (strcmp (name, GAP_XANIM_PLUGIN_NAME_TOOLBOX) == 0))
   {
       if (run_mode == GIMP_RUN_NONINTERACTIVE)
