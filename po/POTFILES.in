@@ -7,6 +7,7 @@ gap/gap_base_ops.c
 gap/gap_bluebox.c
 gap/gap_bluebox_main.c
 gap/gap_dbbrowser_utils.c
+gap/gap_decode_mplayer_main.c
 gap/gap_decode_mplayer.c
 gap/gap_decode_xanim.c
 gap/gap_filter_foreach.c

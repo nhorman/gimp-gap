@@ -862,7 +862,8 @@ p_frames_to_multilayer(GapAnimInfo *ainfo_ptr,
   gboolean   l_clear_selected_area;
   gint32 calling_image_id;
   gint32 calling_frame_nr;
-
+  gdouble    l_xresoulution, l_yresoulution;
+  gint32     l_unit;
 
   calling_image_id = ainfo_ptr->image_id;
   calling_frame_nr = ainfo_ptr->curr_frame_nr;
@@ -877,17 +878,23 @@ p_frames_to_multilayer(GapAnimInfo *ainfo_ptr,
 
   l_tmp_layer_id = -1;
 
-  /* get info about the image (size and type is common to all frames) */
+  /* get info about the image (size type and resolution is common to all frames) */
   l_width  = gimp_image_width(ainfo_ptr->image_id);
   l_height = gimp_image_height(ainfo_ptr->image_id);
   l_type   = gimp_image_base_type(ainfo_ptr->image_id);
+  l_unit   = gimp_image_get_unit(ainfo_ptr->image_id);
+  gimp_image_get_resolution(ainfo_ptr->image_id, &l_xresoulution, &l_yresoulution);
   
+ 
   if (l_type == GIMP_INDEXED)
   {
     l_type = GIMP_RGB;
   }
 
   l_new_image_id = gimp_image_new(l_width, l_height,l_type);
+  gimp_image_set_resolution(l_new_image_id, l_xresoulution, l_yresoulution);
+  gimp_image_set_unit(l_new_image_id, l_unit);
+  
   l_visible = TRUE;   /* only the 1.st layer should be visible */
 
   l_clear_selected_area = FALSE;

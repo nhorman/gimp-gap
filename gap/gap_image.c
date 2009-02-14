@@ -158,13 +158,20 @@ gap_image_new_with_layer_of_samesize(gint32 old_image_id, gint32 *layer_id)
   guint       l_width;
   guint       l_height;
   gint32      new_image_id;
+  gdouble     l_xresoulution, l_yresoulution;
+  gint32     l_unit;
+
   
   /* create empty image  */
   l_width  = gimp_image_width(old_image_id);
   l_height = gimp_image_height(old_image_id);
   l_type   = gimp_image_base_type(old_image_id);
+  l_unit   = gimp_image_get_unit(old_image_id);
+  gimp_image_get_resolution(old_image_id, &l_xresoulution, &l_yresoulution);
 
   new_image_id = gimp_image_new(l_width, l_height,l_type);
+  gimp_image_set_resolution(new_image_id, l_xresoulution, l_yresoulution);
+  gimp_image_set_unit(new_image_id, l_unit);
   
   if(layer_id)
   {

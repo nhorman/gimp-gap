@@ -215,7 +215,7 @@ run (const gchar *name,          /* name of plugin */
       if (nparams == global_number_in_args)
       {
           glob_vals.opacity     = (gdouble) param[3].data.d_float;
-          glob_vals.mode        = (gint32)  param[3].data.d_int32;
+          glob_vals.mode        = (gint32)  param[4].data.d_int32;
       }
       else
       {

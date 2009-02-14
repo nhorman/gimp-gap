@@ -320,6 +320,13 @@ run(const gchar *name
   /* Get the runmode from the in-parameters */
   GimpRunMode run_mode = param[0].data.d_int32;
 
+
+  if(gap_debug)
+  {
+    printf("START plug-in-wr-color-levels\n");
+  }
+
+
   /* status variable, use it to check for errors in invocation usualy only
      during non-interactive calling */
   GimpPDBStatusType status = GIMP_PDB_SUCCESS;
@@ -417,11 +424,11 @@ run(const gchar *name
            wcd->show_progress = FALSE;
 
            l_cuvals.channel  = param[3].data.d_int32;
-           l_cuvals.low_input  = param[3].data.d_int32;
-           l_cuvals.high_input  = param[3].data.d_int32;
-           l_cuvals.gamma = param[4].data.d_float;
-           l_cuvals.low_output  = param[3].data.d_int32;
-           l_cuvals.high_output  = param[3].data.d_int32;
+           l_cuvals.low_input  = param[4].data.d_int32;
+           l_cuvals.high_input  = param[5].data.d_int32;
+           l_cuvals.gamma = param[6].data.d_float;
+           l_cuvals.low_output  = param[7].data.d_int32;
+           l_cuvals.high_output  = param[8].data.d_int32;
         }
         else
         {

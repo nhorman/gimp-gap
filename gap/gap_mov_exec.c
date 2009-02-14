@@ -1184,6 +1184,8 @@ gap_mov_exec_anim_preview(GapMovValues *pvals_orig, GapAnimInfo *ainfo_ptr, gint
   gint        l_nlayers;
   gint32     *l_src_layers;
   gint        l_rc;
+  gdouble    l_xresoulution, l_yresoulution;
+  gint32     l_unit;
 
   l_mov_ptr = &apv_mov_data;
   l_pvals = &apv_mov_vals;
@@ -1289,8 +1291,12 @@ gap_mov_exec_anim_preview(GapMovValues *pvals_orig, GapAnimInfo *ainfo_ptr, gint
   l_width  = (gimp_image_width(ainfo_ptr->image_id) * l_pvals->apv_scalex) / 100;
   l_height = (gimp_image_height(ainfo_ptr->image_id) * l_pvals->apv_scaley) / 100;
   l_type   = gimp_image_base_type(ainfo_ptr->image_id);
+  l_unit   = gimp_image_get_unit(ainfo_ptr->image_id);
+  gimp_image_get_resolution(ainfo_ptr->image_id, &l_xresoulution, &l_yresoulution);
 
   l_mlayer_image_id = gimp_image_new(l_width, l_height,l_type);
+  gimp_image_set_resolution(l_mlayer_image_id, l_xresoulution, l_yresoulution);
+  gimp_image_set_unit(l_mlayer_image_id, l_unit);
   gimp_image_undo_disable (l_mlayer_image_id);
 
   l_pvals->apv_mlayer_image = l_mlayer_image_id;
@@ -1309,6 +1315,7 @@ gap_mov_exec_anim_preview(GapMovValues *pvals_orig, GapAnimInfo *ainfo_ptr, gint
     case GAP_APV_QUICK:
       /* use an empty dummy frame for all frames */
       l_tmp_frame_id = gimp_image_new(l_width, l_height,l_type);
+      gimp_image_set_resolution(l_tmp_frame_id, l_xresoulution, l_yresoulution);
       gimp_image_undo_disable (l_tmp_frame_id);
       break;
     case GAP_APV_ONE_FRAME:

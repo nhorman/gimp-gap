@@ -147,6 +147,8 @@ p_split_image(GapAnimInfo *ainfo_ptr, split_vals_t *valPtr)
   int     l_framenumber;
   long    l_layer_idx;
   gint    l_overwrite_mode;
+  gdouble l_xresoulution, l_yresoulution;
+  gint32  l_unit;
 
   if(gap_debug)
   {
@@ -173,6 +175,8 @@ p_split_image(GapAnimInfo *ainfo_ptr, split_vals_t *valPtr)
   l_width  = gimp_image_width(ainfo_ptr->image_id);
   l_height = gimp_image_height(ainfo_ptr->image_id);
   l_type = gimp_image_base_type(ainfo_ptr->image_id);
+  l_unit = gimp_image_get_unit(ainfo_ptr->image_id);
+  gimp_image_get_resolution(ainfo_ptr->image_id, &l_xresoulution, &l_yresoulution);
 
   l_layers_list = gimp_image_get_layers(ainfo_ptr->image_id, &l_nlayers);
   if(l_layers_list != NULL)
@@ -251,6 +255,9 @@ p_split_image(GapAnimInfo *ainfo_ptr, split_vals_t *valPtr)
        {
          /* create new image */
          l_new_image_id =  gimp_image_new(l_width, l_height,l_type);
+         gimp_image_set_resolution(l_new_image_id, l_xresoulution, l_yresoulution);
+         gimp_image_set_unit(l_new_image_id, l_unit);
+
          if(l_new_image_id < 0)
          {
            l_rc = -1;

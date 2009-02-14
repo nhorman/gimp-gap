@@ -690,12 +690,20 @@ gap_frame_fetch_dup_image(gint32 ffetch_user_id
       if (stackpos < l_nlayers)
       {
         gint32 src_layer_id;
+        gdouble    l_xresoulution, l_yresoulution;
+        gint32     l_unit;
 
         src_layer_id = l_layers_list[stackpos];
         dup_image_id = gimp_image_new (gimp_image_width(image_id)
                                      , gimp_image_height(image_id)
                                      , gimp_image_base_type(image_id)
                                      );
+        gimp_image_get_resolution(image_id, &l_xresoulution, &l_yresoulution);
+        gimp_image_set_resolution(dup_image_id, l_xresoulution, l_yresoulution);
+
+        l_unit = gimp_image_get_unit(image_id);
+        gimp_image_set_unit(dup_image_id, l_unit);
+        
         resulting_layer = gap_layer_copy_to_image (dup_image_id, src_layer_id);
       }
       

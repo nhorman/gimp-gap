@@ -777,7 +777,14 @@ p_guess_total_frames(t_GVA_Handle *gvahand)
  * p_register_all_decoders
  * ---------------------------
  * build the GVA_global_decoder_list
- * with one element for each available decoder
+ * with one element for each available decoder.
+ *
+ * in case the caller does not specifiy a prefered_decoder
+ * the order of registered decoders is relevant, because
+ * the 1st one that can handle the video is picked at open.
+ *
+ * This is typical the last one that is added to begin of the list
+ * (currently ffmpeg)
  */
 static void
 p_register_all_decoders(void)
@@ -805,9 +812,8 @@ p_register_all_decoders(void)
   }
 #endif
 
-#ifdef ENABLE_GVA_LIBAVFORMAT
-  p_ffmpeg_init();
-  dec_elem = p_ffmpeg_new_dec_elem();
+#ifdef ENABLE_GVA_LIBMPEG3
+  dec_elem = p_mpeg3_new_dec_elem();
   if(dec_elem)
   {
      dec_elem->next = GVA_global_decoder_list;
@@ -815,8 +821,9 @@ p_register_all_decoders(void)
   }
 #endif
 
-#ifdef ENABLE_GVA_LIBMPEG3
-  dec_elem = p_mpeg3_new_dec_elem();
+#ifdef ENABLE_GVA_LIBAVFORMAT
+  p_ffmpeg_init();
+  dec_elem = p_ffmpeg_new_dec_elem();
   if(dec_elem)
   {
      dec_elem->next = GVA_global_decoder_list;
@@ -2067,6 +2074,13 @@ GVA_delace_drawable(gint32 drawable_id
 /* ------------------------------------
  * GVA_image_set_aspect
  * ------------------------------------
+ * if aspect_ratio is known convert the aspect
+ * to image X and Y resolution in DPI 
+ * this allows GIMP to scale the display to correct aspect
+ * when View option "Dot for Dot" is turned off.
+ * Note that the resolution is just a guess based on typical 
+ * monitor resolution in DPI. 
+ * (videos usually have no DPI resoulution information, just aspect ratio)
  */
 void
 GVA_image_set_aspect(t_GVA_Handle *gvahand, gint32 image_id)
@@ -2076,15 +2090,28 @@ GVA_image_set_aspect(t_GVA_Handle *gvahand, gint32 image_id)
   {
     gdouble xresolution;
     gdouble yresolution;
+    gdouble xresolutionMoni;
+    gdouble yresolutionMoni;
     gdouble asymetric;
 
     asymetric = ((gdouble)gvahand->width / (gdouble)gvahand->height)
               / gvahand->aspect_ratio;
 
-    yresolution = 72.0;
+    gimp_get_monitor_resolution(&xresolutionMoni, &yresolutionMoni);
+    
+    if (yresolutionMoni > 0)
+    {
+       yresolution = yresolutionMoni;
+    }
+    else
+    {
+       yresolution = 72.0;
+    }
     xresolution = yresolution * asymetric;
 
-    /* set resolution in DPI according to aspect ratio */
+    /* set resolution in DPI according to aspect ratio
+     * assuming a typical monitor resolution
+     */
     gimp_image_set_unit (image_id, GIMP_UNIT_INCH);
     gimp_image_set_resolution (image_id, xresolution, yresolution);
 

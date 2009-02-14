@@ -3529,58 +3529,49 @@ p_ff_open_input(char *filename, t_GVA_Handle *gvahand, t_GVA_ffmpeg*  handle, gb
 /* -------------------------
  * p_set_aspect_ratio
  * -------------------------
+ * set the gvahand->aspect_ratio variable to aspect ratio
+ * typical values are
+ * 1.777777  For 16:9 video 
+ * 1.333333  For 4:3  video
+ * 
+ * Note that the gvahand->aspect_ratio variable describes the ratio
+ * for the full image (and not the ratio of a single pixel)
+ *
+ * (code is based on example ffplay.c)
  */
 static void
 p_set_aspect_ratio(t_GVA_Handle *gvahand, t_GVA_ffmpeg*  handle)
 {
-  AVCodecContext *acc;
-  
-  acc = handle->vid_codec_context;
-  
-  gvahand->aspect_ratio = 0;
-  if (acc->sample_aspect_ratio.num == 0)
-  {
-      gvahand->aspect_ratio = 0;
-  }
-  else
-  {
-    if(gap_debug)
-    {
-      printf("ASPECT_RATIO: 1:1 as delivered via sample_aspect_ratio: %f w:%d h:%d\n"
-      , av_q2d(acc->sample_aspect_ratio)
-      ,acc->width
-      ,acc->height
-      );  
-    }
-      
-    /* the following variant (same as implementaed in ffplay.c)
-     * does not work correct. 
-     * (delivers aspect_ratio 2,370370 for 16:9 video testtfile
-     * but shall deliver 1.777777)
-     */             
-    //gvahand->aspect_ratio = av_q2d(acc->sample_aspect_ratio)
-    //    * (gdouble)acc->width / (gdouble)acc->height;
+  AVStream *video_st;
+ 
+  video_st = handle->vid_stream;
+  gvahand->aspect_ratio = 0.0;
 
-    /* this variant does not work correct either, but will be used
-     * because the error is smaller.
-     * (delivers aspect_ratio 1,580247for 16:9 video testtfile
-     * but shall deliver 1.777777)
-     *
-     * TODO findout how to detect aspect reliable and exact...
-     */
-    gvahand->aspect_ratio = av_q2d(acc->sample_aspect_ratio);
+  if (video_st->sample_aspect_ratio.num)
+  {
+    gvahand->aspect_ratio = av_q2d(video_st->sample_aspect_ratio);
+  }
+  else if (video_st->codec->sample_aspect_ratio.num)
+  {
+    gvahand->aspect_ratio = av_q2d(video_st->codec->sample_aspect_ratio);
+  }
+
+  if (gvahand->aspect_ratio <= 0.0)
+  {
+     gvahand->aspect_ratio = 1.0;
+  }
+  
+  if(gvahand->aspect_ratio != 0.0)
+  {
+     gvahand->aspect_ratio *= (gdouble)video_st->codec->width / video_st->codec->height;
   }
 
 
-  /* default width / height
-   * is not USED, (it would hide the information, that the video
-   * has no explictie aspect_ratio that is represented by 0.0)
-   */ 
-  //if (gvahand->aspect_ratio <= 0.0)
-  //{
-  //    gvahand->aspect_ratio = (float)acc->width /
-  //        (float)acc->height;
-  //}
+#if 0
+  if(gap_debug)
+  {
+    printf("#if 0  dtg_active_format=%d\n", video_st->codec->dtg_active_format);
+  }
 
 
   /* dtg_active_format: aspect information may be available in some cases.
@@ -3588,32 +3579,39 @@ p_set_aspect_ratio(t_GVA_Handle *gvahand, t_GVA_ffmpeg*  handle)
    * information only used in DVB MPEG-2 transport streams)
    * 0 if not set.
    */
-  switch(acc->dtg_active_format)
+  switch(video_st->codec->dtg_active_format)
   {
-    case FF_DTG_AFD_4_3:
-    case FF_DTG_AFD_4_3_SP_14_9:
-    case FF_DTG_AFD_SP_4_3:
-      gvahand->aspect_ratio = 4.0 / 3.0;
-      break;
-    case FF_DTG_AFD_16_9:
-    case FF_DTG_AFD_16_9_SP_14_9:
-      gvahand->aspect_ratio = 16.0 / 9.0;
-      break;
-    case FF_DTG_AFD_14_9:
-      gvahand->aspect_ratio = 14.0 / 9.0;
-      break;
+     case FF_DTG_AFD_4_3:
+         gvahand->aspect_ratio = 4.0 / 3.0;
+         break;
+     case FF_DTG_AFD_16_9:
+         gvahand->aspect_ratio = 16.0 / 9.0;
+         break;
+     case FF_DTG_AFD_14_9:
+         gvahand->aspect_ratio = 14.0 / 9.0;
+         break;
+     case FF_DTG_AFD_4_3_SP_14_9:
+         gvahand->aspect_ratio = 14.0 / 9.0;
+         break;
+     case FF_DTG_AFD_16_9_SP_14_9:
+         gvahand->aspect_ratio = 14.0 / 9.0;
+         break;
+     case FF_DTG_AFD_SP_4_3:
+         gvahand->aspect_ratio = 4.0 / 3.0;
+         break;
     case FF_DTG_AFD_SAME:
     default:
       break;
   }
+#endif
 
 
   if(gap_debug)
   {
     printf("FF ASPECT: dtg_active_format:%d  num:%d den:%d\n"
-          ,(int)acc->dtg_active_format
-          ,(int)acc->sample_aspect_ratio.num
-          ,(int)acc->sample_aspect_ratio.den
+          ,(int)video_st->codec->dtg_active_format
+          ,(int)video_st->codec->sample_aspect_ratio.num
+          ,(int)video_st->codec->sample_aspect_ratio.den
           );
     printf("FF ASPECT: dtected aspect_ratio: %f\n"
           ,(float)gvahand->aspect_ratio
@@ -4700,7 +4698,6 @@ static gint32
 p_timecode_to_frame_nr(t_GVA_ffmpeg *handle, int64_t timecode)
 {
   int64_t framenr;
-  int64_t steps;
   int64_t l_timecode;
   int64_t l_group_timecode;
 
@@ -4732,11 +4729,10 @@ p_timecode_to_frame_nr(t_GVA_ffmpeg *handle, int64_t timecode)
 
   if(gap_debug)
   {
-    printf("p_timecode_to_frame_nr: framenr:%lld  timecode:%lld offset_frame1:%lld  steps:%lld\n"
+    printf("p_timecode_to_frame_nr: framenr:%lld  timecode:%lld offset_frame1:%lld\n"
          , framenr
          , timecode
          , handle->timecode_offset_frame1
-         , steps
          );
   }
   return (framenr);

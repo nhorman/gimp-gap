@@ -2088,6 +2088,7 @@ p_mix_layers (gint32  curr_image_id
                                , GIMP_NORMAL_MODE
                                );
   }
+  
 
   gimp_image_add_layer(curr_image_id, dst_layer_id, 0);
 
@@ -2095,6 +2096,17 @@ p_mix_layers (gint32  curr_image_id
   dst_drawable = gimp_drawable_get (dst_layer_id);
   if(dst_drawable == NULL)                   { return (-1); }
 
+  if(gap_debug)
+  {
+    printf("p_mix_layers dst_layer_id: %d bpp:%d  top_layer_id:%d bpp:%d  bg_layer_id:%d bpp:%d\n"
+      ,(int)dst_layer_id
+      ,(int)dst_drawable->bpp
+      ,(int)top_layer_id
+      ,(int)top_drawable->bpp
+      ,(int)bg_layer_id
+      ,(int)bg_drawable->bpp
+      );
+  }
 
 
   
@@ -2287,13 +2299,21 @@ p_create_morph_tween_frame(gint32 total_steps
    }
 
    dst_drawable = gimp_drawable_get (dst_layer_id);
-   
-   /* create the tween frame image */
-   curr_image_id = gimp_image_new(curr_width, curr_height, GIMP_RGB);
+
+   if(gap_debug)
+   {
+     printf("p_create_morph_tween_frame dst_layer_id:%d, bpp:%d\n"
+        ,(int)dst_layer_id
+        ,(int)dst_drawable->bpp
+        );
+   }   
 
    /* add empty BG layer */
    if(dst_drawable->bpp < 3)
    {
+     /* create the tween frame image */
+     curr_image_id = gimp_image_new(curr_width, curr_height, GIMP_GRAY);
+
      bg_layer_id = gimp_layer_new(curr_image_id, "bg_morph_layer"
                                , curr_width
                                , curr_height
@@ -2304,6 +2324,8 @@ p_create_morph_tween_frame(gint32 total_steps
    }
    else
    {
+     /* create the tween frame image */
+     curr_image_id = gimp_image_new(curr_width, curr_height, GIMP_RGB);
      bg_layer_id = gimp_layer_new(curr_image_id, "bg_morph_layer"
                                , curr_width
                                , curr_height
@@ -2320,13 +2342,26 @@ p_create_morph_tween_frame(gint32 total_steps
                                 ,(gdouble)0.0
                                 ,(gdouble)100.0
                                 );
-   top_layer_id = gimp_layer_new(curr_image_id, "top_morph_layer"
+   if(dst_drawable->bpp < 3)
+   {
+     top_layer_id = gimp_layer_new(curr_image_id, "top_morph_layer"
+                               , curr_width
+                               , curr_height
+                               , GIMP_GRAYA_IMAGE
+                               , curr_opacity
+                               , GIMP_NORMAL_MODE
+                               );
+   }
+   else
+   {
+     top_layer_id = gimp_layer_new(curr_image_id, "top_morph_layer"
                                , curr_width
                                , curr_height
                                , GIMP_RGBA_IMAGE
                                , curr_opacity
                                , GIMP_NORMAL_MODE
                                );
+   }
    gimp_image_add_layer(curr_image_id, top_layer_id, 0);
 
 

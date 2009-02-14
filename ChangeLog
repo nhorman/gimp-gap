@@ -1,5 +1,45 @@
-2009-02-11 Wolfgang Hofer <hof@gimp.org>
+2009-02-14 Wolfgang Hofer <hof@gimp.org>
 
+- fixed Bug #571428 'frames to image' now transfer DPI settings to new image.
+  GIMP-GAP now generally transfers DPI resolution settings whenever new images
+  are created based on an already existing image.
+
+- fixed aspect detection in videoapi for ffmpeg based decoder
+  Note:
+  libmpeg3 based encoder still did not detect aspect values
+  in my tests, this bug of old libmpeg3-1.5.4 version 
+  is not yet fixed with libmpeg3-1.8
+
+- fixed Bug #499553  plug-in-wr-color-levels does not work in NON-INTERACTIVE runmode
+  (the parameters were fetched from wrong parameter indexes
+  similar bug fixed for plug_in_wr_set_opacity)
+
+- fixed #516819  Morph now works for for greyscale images.
+
+- videoapi changed order of registered decoders
+   ffmpeg based decoder shall be picked if compile with
+   ffmpeg is enabled and no prefered decoder is selected.
+   (the old order picked libmpeg3)
+
+- added new gap/gap_decode_mplayer_main.c to POTFILES.in
+  
+  * po/POTFILES.in
+  * gap/gap_range_ops.c
+  * gap/gap_frame_fetcher.c
+  * gap/gap_image.c
+  * gap/gap_mov_exec.c
+  * gap/gap_split.c
+  
+  * gap/gap_wr_color_levels.c
+  * gap/gap_wr_opacity.c
+
+  * gap/gap_morph_exec.c
+
+  * libgapvidapi/gap_vid_api.c
+  * libgapvidapi/gap_vid_api_ffmpeg.c
+
+
+2009-02-11 Wolfgang Hofer <hof@gimp.org>
 - configure now checks for old versions of ffmpeg and libmpeg3
   in case old version is detected those directories are renamed by adding
   the suffix -OLD and prints out an information message.
