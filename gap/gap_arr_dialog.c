@@ -1279,7 +1279,15 @@ gint gap_arr_std_dialog(const char *title_txt,
   arrint_ptr->dlg = gtk_dialog_new ();
   g_object_set_data (G_OBJECT (arrint_ptr->dlg), GAP_ARR_INTERFACE_PTR, (gpointer)arrint_ptr);
   gtk_window_set_title (GTK_WINDOW (arrint_ptr->dlg), title_txt);
-  gtk_window_set_position (GTK_WINDOW (arrint_ptr->dlg), GTK_WIN_POS_MOUSE);
+
+  // hof: on my Gnome windowmanger (openSUSE 11.11) pop ups created with gtk_dialog_new
+  // often open BEHIND other windows.
+  //
+  // As workaround i commented out placing the pop up on mouse position
+  // (because this would completeley hide the popup behind the other window
+  // when the popup is smaller)
+  
+  // gtk_window_set_position (GTK_WINDOW (arrint_ptr->dlg), GTK_WIN_POS_MOUSE);
   g_signal_connect (G_OBJECT (arrint_ptr->dlg), "destroy",
 		    G_CALLBACK (arr_close_callback),
 		    NULL);
@@ -1833,23 +1841,16 @@ gap_arr_overwrite_file_dialog(const char *filename)
 }  /* end gap_arr_overwrite_file_dialog */
 
 
-/* ============================================================================
+/* ----------------------------
  * gap_arr_msg_win
- *   print a message both to stdout
- *   and to a dialog window with OK button (only when run INTERACTIVE)
- * ============================================================================
+ * ----------------------------
+ *  print a message both to stdout
+ *  and to the gimp image window (only when run INTERACTIVE)
+ *
  */
-
 void
 gap_arr_msg_win(GimpRunMode run_mode, const char *msg)
 {
-  static GapArrButtonArg  l_argv[1];
-  int               l_argc;  
-  
-  l_argv[0].but_txt  = GTK_STOCK_OK;
-  l_argv[0].but_val  = 0;
-  l_argc             = 1;
-
   if(msg)
   {
     if(*msg)
@@ -1864,6 +1865,43 @@ gap_arr_msg_win(GimpRunMode run_mode, const char *msg)
   }
 }    /* end  gap_arr_msg_win */
 
+/* ----------------------------
+ * gap_arr_msg_popup
+ * ----------------------------
+ *  print a message both to stdout
+ *  and to a popup dialog window with OK button (only when run INTERACTIVE)
+ *
+ */
+void gap_arr_msg_popup(GimpRunMode run_mode, const char *msg)
+{
+  static GapArrButtonArg  b_argv[1];
+  static GapArrArg  argv[1];
+
+  b_argv[1].but_txt  = GTK_STOCK_OK;
+  b_argv[1].but_val  = TRUE;
+
+  gap_arr_arg_init(&argv[0], GAP_ARR_WGT_LABEL);
+  argv[0].label_txt = msg;
+  
+
+  if(msg)
+  {
+    if(*msg)
+    {
+       printf("%s\n", msg);
+
+       if(run_mode == GIMP_RUN_INTERACTIVE)
+       {
+         gap_arr_std_dialog ( _("GAP Message")
+                            ,""
+                            ,G_N_ELEMENTS(argv),   argv
+                            ,G_N_ELEMENTS(b_argv), b_argv
+                            ,-1  /* default value is Cancel */
+                            );
+       }
+    }
+  }
+}    /* end gap_arr_msg_popup  */
 
 /* --------------------------------------
  * p_mkdir_from_file_if_not_exists

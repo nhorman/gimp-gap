@@ -508,10 +508,7 @@ p_singleframe_init_default_params(GapGveSingleValues *epp)
 gint
 p_singleframe_encode_dialog(GapGveSingleGlobalParams *gpp)
 {
-  if(gpp->val.run_mode == GIMP_RUN_INTERACTIVE)
-  {
-    g_message(_("the Singleframe Encoder has no encoder specific Parameters"));
-  }
+  gap_arr_msg_popup(GIMP_RUN_INTERACTIVE, _("the Singleframe Encoder has no encoder specific Parameters"));
   return 0;
 }  /* end p_singleframe_encode_dialog */
 

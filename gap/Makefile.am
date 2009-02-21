@@ -19,6 +19,8 @@ endif
 if GAP_VIDEOAPI_SUPPORT
 GAPVIDEOAPI = $(top_builddir)/libgapvidapi/libgapvidapi.a  $(GAPVIDEOAPI_EXTLIBS)
 INC_GAPVIDEOAPI = -I$(top_srcdir)/libgapvidapi $(GAPVIDEOAPI_EXTINCS)
+GAP_VIDEO_EXTRACT = gap_video_extract
+GAP_VIDEO_INDEX = gap_video_index
 endif
 
 LIBGAPBASE  = $(top_builddir)/libgapbase/libgapbase.a
@@ -104,8 +106,8 @@ libexec_PROGRAMS = \
 	gap_player		\
 	gap_onion		\
 	gap_storyboard		\
-	gap_video_extract	\
-	gap_video_index		\
+	$(GAP_VIDEO_EXTRACT)	\
+	$(GAP_VIDEO_INDEX)	\
 	gap_wr_color_curve	\
 	gap_wr_color_levels	\
 	gap_wr_color_huesat	\
@@ -404,11 +406,11 @@ gap_decode_mplayer_LDADD =   $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
 gap_morph_LDADD =            $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
 gap_name2layer_LDADD =       $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
 gap_navigator_dialog_LDADD = $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
-gap_player_LDADD =           $(GAPVIDEOAPI) $(LIBGAPBASE) $(WAVPLAYCLIENT) ${LIBGAPSTORY} $(GIMP_LIBS)
+gap_player_LDADD =           $(GAPVIDEOAPI) $(WAVPLAYCLIENT) ${LIBGAPSTORY} $(LIBGAPBASE) $(GIMP_LIBS)
 gap_onion_LDADD =            $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
-gap_storyboard_LDADD =       $(GAPVIDEOAPI) $(LIBGAPBASE) $(WAVPLAYCLIENT) ${LIBGAPSTORY} $(GIMP_LIBS)
-gap_video_extract_LDADD =    $(GAPVIDEOAPI) $(LIBGAPBASE) $(WAVPLAYCLIENT) ${LIBGAPSTORY} $(GIMP_LIBS)
-gap_video_index_LDADD =      $(GAPVIDEOAPI) $(LIBGAPBASE) $(LIBGAPSTORY)  $(GIMP_LIBS)
+gap_storyboard_LDADD =       $(GAPVIDEOAPI) $(WAVPLAYCLIENT) ${LIBGAPSTORY} $(LIBGAPBASE) $(GIMP_LIBS)
+gap_video_extract_LDADD =    $(GAPVIDEOAPI) $(WAVPLAYCLIENT) ${LIBGAPSTORY} $(LIBGAPBASE) $(GIMP_LIBS)
+gap_video_index_LDADD =      $(GAPVIDEOAPI) $(LIBGAPSTORY) $(LIBGAPBASE)  $(GIMP_LIBS)
 gap_wr_opacity_LDADD =       $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
 gap_wr_trans_LDADD =         $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)
 gap_wr_color_curve_LDADD =   $(LIBGIMPGAP)  $(LIBGAPBASE) $(GIMP_LIBS)

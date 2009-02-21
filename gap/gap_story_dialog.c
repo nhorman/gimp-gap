@@ -1790,7 +1790,6 @@ p_story_call_player(GapStbMainGlobalParams *sgpp
     }
   }
 
-
   if(sgpp->plp)
   {
     if(sgpp->plp->stb_ptr)
@@ -1815,7 +1814,10 @@ p_story_call_player(GapStbMainGlobalParams *sgpp
 
   if(sgpp->plp == NULL)
   {
-    if(gap_debug) printf("p_story_call_player: 1.st start\n");
+    if(gap_debug)
+    {
+      printf("p_story_call_player: 1.st start\n");
+    }
 
     /* 1. START mode */
     sgpp->plp = (GapPlayerMainGlobalParams *)g_malloc0(sizeof(GapPlayerMainGlobalParams));
@@ -1875,7 +1877,10 @@ p_story_call_player(GapStbMainGlobalParams *sgpp
   }
   else
   {
-    if(gap_debug) printf("p_story_call_player: RE start\n");
+    if(gap_debug)
+    {
+      printf("p_story_call_player: RE start\n");
+    }
 
     sgpp->plp->aspect_ratio = aspect_ratio;
 
@@ -2433,20 +2438,20 @@ p_player_img_mode_cb (GtkWidget *w,
   gint32 imagewidth;
   gint32 imageheight;
   long   framenr;
-  char  *basename;
-  char  *imagename;
 
 
 
   imagewidth = gimp_image_width(sgpp->image_id);
   imageheight = gimp_image_height(sgpp->image_id);
-  imagename = gimp_image_get_filename(sgpp->image_id);
 
-  basename = gap_lib_alloc_basename(imagename, &framenr);
-
-  if(basename)
+  if(gap_debug)
   {
-    p_story_call_player(sgpp
+    printf("p_player_img_mode_cb: init player from image:id:%d\n"
+       , sgpp->image_id
+       );
+  }
+
+  p_story_call_player(sgpp
                      ,NULL              /* Play Normal mode without storyboard */
                      ,NULL              /* no imagename mode */
                      ,imagewidth
@@ -2464,15 +2469,6 @@ p_player_img_mode_cb (GtkWidget *w,
                      ,1                /* stb_in_track (not relevant here) */
                      ,FALSE            /* stb_composite (not relevant here) */
                      );
-    g_free(basename);
-  }
-
-  if(imagename)
-  {
-    g_free(imagename);
-  }
-
-
 }  /* end p_player_img_mode_cb */
 
 
@@ -8179,31 +8175,6 @@ gap_storyboard_dialog(GapStbMainGlobalParams *sgpp)
   /* Init UI  */
   gimp_ui_init ("storyboard", FALSE);
   gap_stock_init();
-
-  /* workaround:
-   *  the current implementation of the STORYBOARD dialog
-   *  crashes if the invoker image is not a numbered anim frame. (dont know why)
-   *  The following workaround checks for anim frame to avoid the crash
-   *  but both crash and this check should be removed in the future.
-   */
-  {
-    GapAnimInfo *ainfo_ptr;
-    int chk_rc;
-
-    ainfo_ptr = gap_lib_alloc_ainfo(sgpp->image_id, sgpp->run_mode);
-    gap_lib_dir_ainfo(ainfo_ptr);
-
-    if(ainfo_ptr != NULL)
-    {
-       chk_rc = gap_lib_chk_framerange(ainfo_ptr);
-       gap_lib_free_ainfo(&ainfo_ptr);
-
-       if(0 != chk_rc)
-       {
-         return;
-       }
-    }
-  }
 
   /*  The Storyboard dialog  */
   sgpp->run = FALSE;

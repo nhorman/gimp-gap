@@ -80,7 +80,6 @@
 #include "gap_libgimpgap.h"
 #include "gap_lib_common_defs.h"
 #include "gap_file_util.h"
-#include "gap_vid_api.h"
 #include "gap_layer_copy.h"
 //#include "gap_fmac_name.h"
 
@@ -376,8 +375,6 @@ p_drop_image_cache(void)
 
 
 #ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
-
-
 /* ----------------------------------------------------
  * p_drop_gvahand_cache_elem1
  * ----------------------------------------------------
@@ -405,8 +402,10 @@ p_drop_gvahand_cache_elem1(GapFFetchGvahandCache *gvcache)
     }
   }
 }  /* end p_drop_gvahand_cache_elem1 */
+#endif
 
 
+#ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
 /* ----------------------------------------------------
  * p_drop_vidhandle_cache
  * ----------------------------------------------------
@@ -437,10 +436,12 @@ p_drop_vidhandle_cache(void)
   
 
 }  /* end p_drop_vidhandle_cache */
+#endif
 
 
 
 
+#ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
 /* ----------------------------------------------------
  * p_ffetch_get_open_gvahand
  * ----------------------------------------------------
@@ -537,7 +538,6 @@ p_ffetch_get_open_gvahand(const char* filename, gint32 seltrack, const char *pre
   }
   return(l_gvahand);
 }  /* end p_ffetch_get_open_gvahand */
-
 #endif
 
 /* -----------------------------------------
@@ -833,7 +833,9 @@ gap_frame_fetch_drop_resources()
   gap_frame_fetch_delete_list_of_duplicated_images(-1);
 
   p_drop_image_cache();
+#ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
   p_drop_vidhandle_cache();
+#endif
 }  /* end gap_frame_fetch_drop_resources */
 
 
@@ -941,7 +943,9 @@ gap_frame_fetch_unregister_user(gint32 ffetch_user_id)
       printf("gap_frame_fetch_unregister_user: no more resource users, DROP cached duplicates and video handles\n");
     }
     gap_frame_fetch_delete_list_of_duplicated_images(-1);
+#ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
     p_drop_vidhandle_cache();
+#endif
   }
 
 }  /* end gap_frame_fetch_unregister_user */

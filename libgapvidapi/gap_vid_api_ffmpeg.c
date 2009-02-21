@@ -551,7 +551,9 @@ p_wrapper_ffmpeg_open_read(char *filename, t_GVA_Handle *gvahand)
       if(gvahand->vindex->videoindex_filename)
       {
         printf("IDX: p_wrapper_ffmpeg_open_read: vindex->videoindex_filename %s\n"
+               "  vindex->total_frames:%d\n"
               , gvahand->vindex->videoindex_filename
+              , gvahand->vindex->total_frames
               );
       }
       else
@@ -938,11 +940,16 @@ p_private_ffmpeg_get_next_frame(t_GVA_Handle *gvahand, gboolean do_copy_raw_chun
          /* EOF reached */
          if (gap_debug)
          {
-           printf("p_wrapper_ffmpeg_get_next_frame: EOF reached (or read ERROR)\n");
+           printf("p_wrapper_ffmpeg_get_next_frame: EOF reached (or read ERROR)"
+                  "  (old)total_frames:%d current_frame_nr:%d all_frames_counted:%d\n"
+              ,(int) gvahand->total_frames
+              ,(int) gvahand->current_frame_nr
+              ,(int) gvahand->all_frames_counted
+              );
          }
          l_record_url_offset = -1;
          
-         if (gvahand->all_frames_counted != TRUE)
+         if (!gvahand->all_frames_counted)
          {
            gvahand->total_frames = gvahand->current_frame_nr;
            gvahand->all_frames_counted = TRUE;
@@ -1841,11 +1848,15 @@ p_seek_private(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit pos_unit)
   {
      gint64  seek_pos;
      gint32  l_idx;
-     
+     gint32  l_extra_tries_at_end;
+
+     l_extra_tries_at_end = 0;
+
      if(gap_debug)
      {
-       printf("VIDEO INDEX is available for videofile:%s\n"
+       printf("VIDEO INDEX is available for videofile:%s vindex->tabsize_used:%d\n"
          , gvahand->filename
+         , (int)vindex->tabsize_used
          );
      }
      
@@ -1860,6 +1871,8 @@ p_seek_private(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit pos_unit)
 
        /* make sure that table access limited to used tablesize
         * (this allows usage of incomplete indexes)
+        * Note that the last index entry is not used,
+        * because positioning after the last keyframe does not work properly
         */
        if(l_idx > vindex->tabsize_used -1)
        {
@@ -1963,7 +1976,7 @@ p_seek_private(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit pos_unit)
                );
              }
              
-             l_synctries = 4 + MAX_PREV_OFFSET +(vindex->stepsize * GVA_IDX_SYNC_STEPSIZE);
+             l_synctries = 4 + MAX_PREV_OFFSET + (vindex->stepsize * GVA_IDX_SYNC_STEPSIZE) + l_extra_tries_at_end;
 
              /* SYNC READ loop
               * seek to offest found in the index table
@@ -2025,6 +2038,17 @@ p_seek_private(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit pos_unit)
                l_potentialCanditate = FALSE;
                l_rc_rd = p_wrapper_ffmpeg_get_next_frame(gvahand);
 
+               if(l_rc_rd != GVA_RET_OK)
+               {
+                 l_extra_tries_at_end += vindex->stepsize;
+                 l_synctries = -1;
+                 if(gap_debug)
+                 {
+                   printf("EOF or ERROR while SEEK_SYNC_LOOP l_extra_tries_at_end:%d\n", (int)l_extra_tries_at_end);
+                 }
+                 break;
+               }
+//
 //               printf("SEEK_SYNC_LOOP: idx_frame_len:%d  got_frame_length16:%d  Key:%d dts:%lld\n"
 //                    , (int)vindex->ofs_tab[l_idx_target].frame_length
 //                    , (int)handle->got_frame_length16
@@ -2591,6 +2615,7 @@ p_seek_native_timcode_based(t_GVA_Handle *gvahand, gint32 target_frame)
            }
 
            l_debug_msg[0] = "\n";
+           l_debug_msg[1] = "\0";
 #ifdef GAP_DEBUG_FF_NATIVE_SEEK
            {
              g_snprintf(&l_debug_msg[0], sizeof(l_debug_msg)
@@ -2711,7 +2736,9 @@ p_seek_native_timcode_based(t_GVA_Handle *gvahand, gint32 target_frame)
                  l_retry = FALSE;
                  p_inc_native_timecode_seek_failcount(gvahand);
                }
-               printf("%s**   Timecode OVERFLOW: curr: %lld oflow:%lld  prev:%lld pprev:%lld (wanted:%lld)\n"
+               if(gap_debug)
+               {
+                 printf("%s**   Timecode OVERFLOW: curr: %lld oflow:%lld  prev:%lld pprev:%lld (wanted:%lld)\n"
                   , l_debug_msg
                   , l_curr_timecode
                   , l_overflow_timecode
@@ -2719,6 +2746,7 @@ p_seek_native_timcode_based(t_GVA_Handle *gvahand, gint32 target_frame)
                   , l_pprev_timecode
                   , l_wanted_timecode
                   );
+               }
                l_retcode = GVA_RET_ERROR;
                break;
            }
@@ -3139,9 +3167,17 @@ p_wrapper_ffmpeg_count_frames(t_GVA_Handle *gvahand)
     printf("VINDEX done, critical_timecodesteps_found:%d\n"
            "             master_handle->all_timecodes_verified %d\n"
            "             master_handle->prefere_native_seek %d\n"
+           "             gvahand->frame_counter: %d\n"
+           "             gvahand->all_frames_counted: %d\n"
+           "             gvahand->cancel_operation: %d\n"
+           "             gvahand->total_frames: %d\n"
       , (int)master_handle->critical_timecodesteps_found
       , (int)master_handle->all_timecodes_verified
       , (int)master_handle->prefere_native_seek
+      , (int)gvahand->frame_counter
+      , (int)gvahand->all_frames_counted
+      , (int)gvahand->cancel_operation
+      , (int)gvahand->total_frames
       );
   }
 

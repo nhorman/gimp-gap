@@ -72,7 +72,6 @@
 #include "gap_file_util.h"
 #include "gap_audio_util.h"
 #include "gap_audio_wav.h"
-#include "gap_vid_api.h"
 #include "gap_story_file.h"
 #include "gap_layer_copy.h"
 #include "gap_story_render_audio.h"
@@ -2955,7 +2954,9 @@ p_free_framerange_list(GapStoryRenderFrameRangeElem * frn_list)
     if(frn_elem->ext)               { g_free(frn_elem->ext);}
     if(frn_elem->filtermacro_file)  { g_free(frn_elem->filtermacro_file);}
 
+#ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
     if(frn_elem->gvahand)           { GVA_close(frn_elem->gvahand);}
+#endif
 
     frn_next = (GapStoryRenderFrameRangeElem *)frn_elem->next;
     g_free(frn_elem);
@@ -4470,6 +4471,7 @@ p_try_to_steal_gvahand(GapStoryRenderVidHandle *vidhand
 {
   GapStoryRenderFrameRangeElem *frn_elem;
   t_GVA_Handle *gvahand;
+#ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
 
   for (frn_elem = vidhand->frn_list; frn_elem != NULL; frn_elem = (GapStoryRenderFrameRangeElem *)frn_elem->next)
   {
@@ -4486,6 +4488,7 @@ p_try_to_steal_gvahand(GapStoryRenderVidHandle *vidhand
       }
     }
   }
+#endif
   return(NULL);  /* nothing found to steal from, return NULL */
 
 } /* end p_try_to_steal_gvahand */
@@ -4806,11 +4809,12 @@ p_conditional_delace_drawable(GapStbFetchData *gfd, gint32 drawable_id)
              , &l_deinterlace
              , &l_threshold
              );
+#ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
   if (l_deinterlace != 0)
   {
     GVA_delace_drawable(drawable_id, l_deinterlace, l_threshold);
   }
-
+#endif
 }  /* end p_conditional_delace_drawable */
 
 
@@ -4908,6 +4912,8 @@ p_stb_render_movie(GapStbFetchData *gfd
   , gint32  vid_width, gint32  vid_height)
 {
   gfd->tmp_image_id = -1;
+
+#ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
 
   if(gfd->frn_elem->gvahand == NULL)
   {
@@ -5033,6 +5039,7 @@ p_stb_render_movie(GapStbFetchData *gfd
      gfd->frn_elem->gvahand->image_id = -1;
      gfd->frn_elem->gvahand->layer_id = -1;
   }
+#endif
 }  /* end p_stb_render_movie */
 
 

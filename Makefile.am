@@ -8,17 +8,23 @@ if GAP_VIDEOAPI_SUPPORT
 LIBGAPVIDAPI=libgapvidapi
 endif
 
-# todo: videoencoders depend on different libs
-#       but all of them use the GAP_VIDEOAPI_SUPPORT
-#       for storyboard based encoding
-#       compilation should depend primary on those other libs
-if GAP_VIDEOAPI_SUPPORT
+# note: videoencoders all use GAP_VIDEOAPI_SUPPORT
+#       for storyboard based encoding, but this is optional
+#       The storyboard processor can be configured without GAP_VIDEOAPI_SUPPORT
+#       with the restiriction that cliptype MOVIE is not supported in that case.
+#       therefore compilation of the video encoders no longer depends on GAP_VIDEOAPI_SUPPORT
+### if GAP_VIDEOAPI_SUPPORT
 LIBGAPVIDUTIL=libgapvidutil
 VID_COMMON=vid_common
-VID_ENC_FFMPEG=vid_enc_ffmpeg
 VID_ENC_RAWFRAMES=vid_enc_rawframes
 VID_ENC_SINGLE=vid_enc_single
 VID_ENC_AVI=vid_enc_avi
+##  endif
+
+# the ffmpeg based video encoder depends on ENABLE_GVA_LIBAVFORMAT_SUPPORT
+# and is not bulit when disabled.
+if ENABLE_GVA_LIBAVFORMAT_SUPPORT
+VID_ENC_FFMPEG=vid_enc_ffmpeg
 endif
 
 

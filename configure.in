@@ -137,31 +137,6 @@ AC_ARG_ENABLE(ff_libbz2,
   fi
 
 
-dnl ### checks for liba52 (once was required for ffmpeg dvd audio support)
-dnl ### recent ffmpeg no longer supports linking with liba52 (now wants libfaac libfaad libmp3lame)
-dnl ### will be reoved in future (when update to recent ffmpeg has proofed stable)
-dnl
-dnl the check result does not matter unless libavformat is linked or built later on.
-FF_LIBA52=""
-a52_warn=""
-AC_ARG_ENABLE(ff_liba52,
-              [  --disable-ff-liba52          configure libavformat without liba52 disables DVD audio support])
-  if test "x$enable_ff_liba52" != "xno"; then
-    AC_CHECK_LIB(a52, a52_init,
-        [AC_CHECK_HEADER(a52dec/a52.h,
-          FF_LIBA52="-la52",
-          a52_warn="$NEW_LINE ** a52 header file (a52.h) not found (there will be no DVD audio support)")],
-      a52_warn="a52 library (liba52) not found (there will be no DVD audio support)")    
-  fi
-dnl
-dnl old libavformat could be configured to link liba52.a statical --enable-liba52 
-dnl   or dynamical --enable-liba52bin  (open liba52.so.0 at runtime )
-dnl currently only the  --enable-liba52bin option is handled automatically.
-dnl
-dnl NOTE: if only the static library liba52.a is installed, and the dynamical liba52.so.0 is missing 
-dnl       the detection via AC_CHECK_LIB macro fails.
-dnl 
-
 dnl ## libmp3lame lame/lame.h lame_init -lmp3lame -lm
 
 dnl check for libmp3lame library (useful for ffmpeg audio MP3 support)
@@ -217,8 +192,11 @@ dnl
 
 
 dnl check for x264 library (additional for ffmpeg video codec support)
-dnl ### TODO check are no longer sufficient for recent ffmeg 2009.01.31.
+dnl ### TODO check are no longer sufficient for recent ffmpeg 2009.01.31.
 dnl ### check shall verify the condition "X264_BUILD >= 65
+dnl ### Note that the missing check it is not critical, since ffmpeg configure script has such a check
+dnl ###      and turns off x264 support when older versions are detected, and prints an error like this:
+dnl ###          ERROR: libx264 version must be >= 0.65.
 dnl the check result does not matter unless libavformat is linked or built later on.
 FF_LIBX264=""
 x264_warn=""
@@ -233,11 +211,20 @@ AC_ARG_ENABLE(ff_libx264,
   fi
 
 
-dnl ### TODO remove the next 2 lines when checks for recent libx264 are fixed.
-FF_LIBX264=""
-x264_warn=" WARNING checks for libx264 ar not up to date, ffmpeg is configured without libx264"
-
+dnl check for xvid library (additional for ffmpeg open xvid video codec support)
+dnl the check result does not matter unless libavformat is linked or built later on.
+xvid_warn=""
 FF_LIBXVID=""
+AC_ARG_ENABLE(ff_libxvid,
+              [  --disable-ff-libxvid         configure libavformat without optional open source variant of xvid video codec])
+  if test "x$enable_ff_libxvid" != "xno"; then
+    AC_CHECK_LIB(xvidcore, xvid_global,
+      [AC_CHECK_HEADER(xvid.h,
+          FF_LIBXVID="-lxvidcore",
+          xvid_warn="$NEW_LINE xvid header file (xvid.h) not found (not critical, but no open xvid video codec support)")],
+      xvid_warn="$NEW_LINE xvid library (libxvidcore) not found (not critical, but no open xvid video codec support)")   
+  fi
+
 
 
 dnl Test for videoapisupport
@@ -360,18 +347,18 @@ INFORMATION: old ffmpeg was moved to $FFMPEG_DIR-OLD
       FFMPEG_LIBAVCODEC_A="$FFMPEG_DIR/libavcodec/${LIBPREF}avcodec${LIBSUF}"
       FFMPEG_LIBAVUTIL_A="$FFMPEG_DIR/libavutil/${LIBPREF}avutil${LIBSUF}"
       dnl
-      dnl ffmpeg can be configured to use external codec libs liba52, x264, xvid ....
+      dnl ffmpeg can be configured to use external codec libs x264, xvid ....
       dnl options for ffmpeg ext libs configuration will be passed to ffmpeg/configure
       dnl if some of those libs are installed (and not explicitly disabled)
 
-      FFMPEG_EXTLIBS="$FF_LIBA52 $FF_LIBX264 $FF_LIBXVID $FF_BZIP2 $FF_LIBMP3LAME $FF_LIBFAAC $FF_LIBFAAD"
+      FFMPEG_EXTLIBS="$FF_LIBX264 $FF_LIBXVID $FF_BZIP2 $FF_LIBMP3LAME $FF_LIBFAAC $FF_LIBFAAD"
 
       GAP_VLIBS_FFMPEG=" $FFMPEG_LIBAVFORMAT_A $FFMPEG_LIBAVCODEC_A $FFMPEG_LIBAVUTIL_A $FFMPEG_EXTLIBS"
       GAP_VINCS_FFMPEG=" -I$FFMPEG_DIR -I$FFMPEG_DIR/libavcodec -I$FFMPEG_DIR/libavformat -I$FFMPEG_DIR/libavutil "
 
       vid_ffmpeg_warning="
           $x264_warn
-          $a52_warn 
+          $xvid_warn
           $ffbz2_warn 
           $mp3lame_warn 
           $faac_warn 
@@ -392,16 +379,6 @@ INFORMATION: old ffmpeg was moved to $FFMPEG_DIR-OLD
       	 FFMPEG_CONFIGURE_OPTIONS="$FFMPEG_CONFIGURE_OPTIONS --disable-bzlib"
       fi
 
-      dnl ### TODO recent ffmpeg no longer supports the option ---enable-liba52bin
-      dnl but now wants other audio libraries --enable-libmp3lame --enable-libfaac --enable-libfaad
-      dnl if test "x$FF_LIBA52" != "x"; then
-         dnl libavformat can be configured to link liba52.a statical --enable-liba52 
-         dnl   or dynamical --enable-liba52bin  (open liba52.so.0 at runtime )
-         dnl   2007.05.17 test with dynamically linked liba52.so.0 did not work properly.
-         dnl              (link ok, but audio extracting test delivered trashed wav file
-      	 dnl FFMPEG_CONFIGURE_OPTIONS="$FFMPEG_CONFIGURE_OPTIONS --enable-liba52bin"
-      dnl fi
-
       dnl configure ffmpeg with optional audio libraries --enable-libmp3lame --enable-libfaac --enable-libfaad
       if test "x$FF_LIBMP3LAME" != "x"; then
       	 FFMPEG_CONFIGURE_OPTIONS="$FFMPEG_CONFIGURE_OPTIONS --enable-libmp3lame"
@@ -414,9 +391,14 @@ INFORMATION: old ffmpeg was moved to $FFMPEG_DIR-OLD
       fi
 
       dnl configure ffmpeg libx264 usage (for optional H.264 codec support via libx264)
-      dnl if test "x$FF_LIBX264" != "x"; then
-      	 dnl FFMPEG_CONFIGURE_OPTIONS="$FFMPEG_CONFIGURE_OPTIONS --enable-libfaac"
-      dnl fi
+      if test "x$FF_LIBX264" != "x"; then
+      	 FFMPEG_CONFIGURE_OPTIONS="$FFMPEG_CONFIGURE_OPTIONS --enable-libx264"
+      fi
+
+      dnl configure ffmpeg libxvid usage (for optional open xvid codec support via libxvid)
+      if test "x$FF_LIBXVID" != "x"; then
+      	 FFMPEG_CONFIGURE_OPTIONS="$FFMPEG_CONFIGURE_OPTIONS --enable-libxvid"
+      fi
       
 
       echo "================================="
@@ -462,12 +444,6 @@ $FFMPEG_DIR
 gimp-gap is configured without libavformat
    This reduces the number of supported videoformats both for read and write
    access. libavformat, libavcodec and libavutil are part of $FFMPEG_DIRNAME.
- 
-Warning: checks for libavformat, libavcodec and libavutil are not implemented yet.
-You can get ffmpeg at:
-    http://www.ffmpeg.org/
-    or http://ffmpeg.mplayerhq.hu/download.html
-    (old http://ffmpeg.sourceforge.net)
 "
         GAP_VLIBS_FFMPEG=" "
         GAP_VINCS_FFMPEG=" "
@@ -480,13 +456,13 @@ dnl Test for video libmpeg3
 dnl ------------------------
 dnl libmpeg3 is used in one of the decoder implementations in the GAP
 dnl Video API (GVA) as far as i know this lib is available only on
-dnl UNIX systems dnl the current gimp-gap includes the libmpeg3-1.5.4
+dnl UNIX systems dnl the current gimp-gap includes the libmpeg3-1.8
 dnl as (unmaintained) sourcetree and calls the libmpeg3 configure
 dnl script.  The generated Makefile will call the libmpeg3 original
 dnl Makefile to build the library libmpeg3.a linking with gimp-gap
 dnl modules is now done statically.
 dnl
-REQ_LIBMPEG3_VERSION="1.5.4"
+REQ_LIBMPEG3_VERSION="1.8"
 
 
 dnl where to find the libmpeg3 sourcedir
@@ -649,7 +625,7 @@ dnl   fi
   if test "x$enable_libmpeg3" != "xno"; then
     dnl
     dnl the original tarball from http:www.heroinewarrior.com of
-    dnl libmpeg3-1.5.4 comes without installation help for the library
+    dnl libmpeg3-1.8 comes without installation help for the library
     dnl and its headers.  but (some ?) LINUX distributors provide
     dnl installation rpm packages for libmpeg3
     dnl
@@ -659,7 +635,7 @@ dnl   fi
     dnl the current debian) disable CSS decryption.
     dnl
     dnl one solution to face those problems is to get the tarball with
-    dnl the full sourcetree of the libmpeg3-1.5.4 library configure
+    dnl the full sourcetree of the libmpeg3-1.8 library configure
     dnl and make the libmpeg3 from sourcetree and then link statically
     dnl by specifying the option --with-libmpeg3srcdir.
     dnl
@@ -791,7 +767,7 @@ AC_ARG_ENABLE(libxvidcore,
               [  --disable-libxvidcore        don't build with libxvidcore])
   if test "x$enable_libxvidcore" != "xno"; then
     dnl
-    dnl check for libxvidcore 1.0.0
+    dnl check for libxvidcore
     dnl
     xvid_err=""
     AC_CHECK_LIB(xvidcore, xvid_encore,

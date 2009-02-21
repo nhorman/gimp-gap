@@ -691,11 +691,19 @@ p_replace_combo_encodername(GapCmeGlobalParams *gpp)
                                 GIMP_INT_STORE_LABEL, l_ecp->menu_name,
                                 -1);
 
+#ifdef ENABLE_GVA_LIBAVFORMAT
      /* set FFMPEG as default encoder (if this encoder is installed) */
      if(strcmp(l_ecp->vid_enc_plugin, GAP_PLUGIN_NAME_FFMPEG_ENCODE) == 0)
      {
          l_active_menu_nr = l_ecp->menu_nr;
      }
+#else
+     /* set AVI as default encoder (if this encoder is installed) */
+     if(strcmp(l_ecp->vid_enc_plugin, GAP_PLUGIN_NAME_AVI_ENCODE) == 0)
+     {
+         l_active_menu_nr = l_ecp->menu_nr;
+     }
+#endif
      l_ecp =  (GapGveEncList *)l_ecp->next;
      l_idx++;
   }

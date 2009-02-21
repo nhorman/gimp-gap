@@ -37,7 +37,16 @@
 #include "gap_audio_util.h"
 #include "gap_audio_wav.h"
 #include "gap_story_sox.h"
+
+#ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
 #include "gap_vid_api.h"
+#else
+#ifndef GAP_STUBTYPE_GVA_HANDLE
+typedef gpointer t_GVA_Handle;
+#define GAP_STUBTYPE_GVA_HANDLE
+#endif
+#endif
+
 #include "gap_story_file.h"
 #include "gap_layer_copy.h"
 #include "gap_story_render_processor.h"
@@ -104,6 +113,7 @@ static void     p_check_audio_peaks(GapStoryRenderVidHandle *vidhand
                  ,gdouble *mix_scale         /* OUT */
                  );
 
+#ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
 static void     p_extract_audioblock(t_GVA_Handle *gvahand
                 		     , FILE  *fp_wav
                 		     , gdouble samples_to_extract
@@ -117,7 +127,7 @@ static void     p_extract_audiopart(t_GVA_Handle *gvahand
                                    , gdouble max_play_sec
 				   , GapStoryRenderVidHandle *vidhand  /* for progress */
                                    );
-
+#endif
 
 
 
@@ -724,6 +734,7 @@ p_check_audio_peaks(GapStoryRenderVidHandle *vidhand
 
 
 
+#ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
 /* ----------------------------------------------------
  * p_extract_audioblock
  * ----------------------------------------------------
@@ -750,6 +761,7 @@ p_extract_audioblock(t_GVA_Handle *gvahand
 
 
   if(gap_debug) printf("p_extract_audioblock samples_to_extract:%d\n", (int)samples_to_extract);
+
 
   /* audio block read (blocksize covers playbacktime for 250 frames */
   l_left_to_read = (long)samples_to_extract;
@@ -832,11 +844,14 @@ p_extract_audioblock(t_GVA_Handle *gvahand
   g_free(left_ptr);
   g_free(right_ptr);
 
+
   if(gap_debug) printf("p_extract_audioblock: END\n");
 
 }  /* end p_extract_audioblock */
+#endif
 
 
+#ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
 /* ----------------------------------------------------
  * p_extract_audiopart
  * ----------------------------------------------------
@@ -939,6 +954,7 @@ p_extract_audiopart(t_GVA_Handle *gvahand
 
 }  /* end p_extract_audiopart */
 
+#endif
 
 
 
@@ -1151,6 +1167,7 @@ gap_story_render_audio_new_audiorange_element(GapStoryRenderAudioType  aud_type
      }
      if(l_audscan_required)
      {
+#ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
         if(aud_type == GAP_AUT_MOVIE)
         {
            t_GVA_Handle *gvahand;
@@ -1327,6 +1344,8 @@ gap_story_render_audio_new_audiorange_element(GapStoryRenderAudioType  aud_type
                g_free(l_errtxt);
            }
         }
+#endif
+        
         if(aud_type == GAP_AUT_AUDIOFILE)
         {
           if(g_file_test(aud_elem->audiofile, G_FILE_TEST_EXISTS))

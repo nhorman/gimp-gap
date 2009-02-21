@@ -29,6 +29,8 @@
  * 2008.06.11  hof  - created (moved stuff from the former gap_gve_story_render_processor to this  new module)
  */
 
+#ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
+
 /* ----------------------------------------------------
  * p_debug_print_vcodec_missmatch
  * ----------------------------------------------------
@@ -1093,6 +1095,7 @@ p_story_attempt_fetch_chunk(GapStoryRenderVidHandle *vidhand
 } /* end p_story_attempt_fetch_chunk */
 
 
+#endif
 
 
 /* ----------------------------------------------------
@@ -1188,6 +1191,9 @@ gap_story_render_fetch_composite_image_or_chunk(GapStoryRenderVidHandle *vidhand
 
   l_videofile = NULL;     /* NULL: also used as flag for "MUST fetch regular uncompressed frame" */
 
+
+#ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
+
   if(filtermacro_file)
   {
      if(*filtermacro_file != '\0')
@@ -1241,6 +1247,7 @@ gap_story_render_fetch_composite_image_or_chunk(GapStoryRenderVidHandle *vidhand
   }
   last_videofile = l_videofile;
 
+#endif
 
   if(l_videofile != NULL)
   {

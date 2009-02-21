@@ -36,7 +36,7 @@
 #define _GAP_FRAME_FETCHER_H
 
 #include "libgimp/gimp.h"
-#include "libgimp/gimp.h"
+
 #ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
 #include "gap_vid_api.h"
 #else

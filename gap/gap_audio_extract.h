@@ -16,8 +16,22 @@
 #include "libgimp/gimp.h"
 
 /* GAP includes */
+
+
+#ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
 #include "gap_vid_api.h"
+#else
+#ifndef GAP_STUBTYPE_GVA_HANDLE
+typedef gpointer t_GVA_Handle;
+#define GAP_STUBTYPE_GVA_HANDLE
+#endif
+#endif
+
+
 #include "gap-intl.h"
+
+
+#ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
 
 /* -------------------------
  * gap_audio_extract_as_wav
@@ -70,4 +84,5 @@ gap_audio_extract_from_videofile(const char *videoname
    , gpointer user_data
    );
 
+#endif          /*   GAP_ENABLE_VIDEOAPI_SUPPORT */
 #endif          /* end  GAP_AUDIO_EXTRACT_H */

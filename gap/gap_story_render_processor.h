@@ -32,7 +32,16 @@
 #define GAP_STORY_RENDER_PROCESSOR_H
 
 #include "libgimp/gimp.h"
+
+#ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
 #include "gap_vid_api.h"
+#else
+#ifndef GAP_STUBTYPE_GVA_HANDLE
+typedef gpointer t_GVA_Handle;
+#define GAP_STUBTYPE_GVA_HANDLE
+#endif
+#endif
+
 #include "gap_story_file.h"
 #include "gap_lib_common_defs.h"
 #include "gap_story_render_types.h"

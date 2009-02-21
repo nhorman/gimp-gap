@@ -382,20 +382,27 @@ p_check_videofile(const char *filename, gint32 seltrack
 {
   t_GVA_Handle  *gvahand;
 
+  /* first check the filename for known video extensions (.avi, .mpeg ...)
+   * before attempt to open as video.
+   * Note that the check_sig call of the gap_vid_api_gimp.c API implementation
+   * allows access to anim frames via the videoapi.
+   * But it does not make sense to detect anim frame images as video here, where
+   * video index creation makes no sense and therefore is not supported.
+   */
 
-  gvahand =  GVA_open_read_pref(filename
+  if(gap_story_filename_is_videofile_by_ext(filename))
+  {
+    gvahand =  GVA_open_read_pref(filename
                                   , seltrack
                                   , 1 /* aud_track */
                                   , preferred_decoder
                                   , FALSE  /* use MMX if available (disable_mmx == FALSE) */
                                   );
-
-
-
-  if(gvahand)
-  {
-    GVA_close(gvahand);
-    return(TRUE);
+    if(gvahand)
+    {
+      GVA_close(gvahand);
+      return(TRUE);
+    }
   }
 
   return(FALSE);

@@ -36,7 +36,6 @@
 
 
 /* GAP includes */
-#include "gap_vid_api.h"
 #include "gap_audio_util.h"
 #include "gap_audio_wav.h"
 #include "gap_audio_extract.h"
@@ -47,6 +46,7 @@ extern      int gap_debug; /* ==0  ... dont print debug infos */
 
 
 
+#ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
 /* ---------------------
  * p_init_progress
  * ---------------------
@@ -70,8 +70,10 @@ p_init_progress(const char *progressText
     }
   }
 }  /* end p_init_progress */  
+#endif
 
 
+#ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
 /* ---------------------
  * p_do_progress
  * ---------------------
@@ -101,8 +103,10 @@ p_do_progress(gdouble progressValue
   }
 
 }  /* end p_do_progress */  
+#endif
 
 
+#ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
 /* ----------------------------------
  * p_audio_extract_rewrite_wav_header
  * ----------------------------------
@@ -132,8 +136,9 @@ p_audio_extract_rewrite_wav_header(FILE *fp_wav
                       );
 
 }  /* end p_audio_extract_rewrite_wav_header */
+#endif
 
-
+#ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
 /* -------------------------
  * gap_audio_extract_as_wav
  * -------------------------
@@ -156,7 +161,6 @@ gap_audio_extract_as_wav(const char *audiofile
    ,  gpointer user_data
    )
 {
-#ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
    int l_audio_channels;
    int l_sample_rate;
    long l_audio_samples;
@@ -310,11 +314,12 @@ gap_audio_extract_as_wav(const char *audiofile
     g_free(left_ptr);
     g_free(right_ptr);
   }
-#endif
   return;
 }  /* end gap_audio_extract_as_wav */
+#endif
 
 
+#ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
 /* ---------------------------------
  * gap_audio_extract_from_videofile
  * ---------------------------------
@@ -345,7 +350,6 @@ gap_audio_extract_from_videofile(const char *videoname
   , gpointer user_data
   )
 {
-#ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
   t_GVA_Handle   *gvahand;
 
   /* --------- OPEN the videofile --------------- */
@@ -482,6 +486,6 @@ gap_audio_extract_from_videofile(const char *videoname
         
      }
   }
-#endif
   return;
 }  /* end gap_audio_extract_from_videofile */
+#endif

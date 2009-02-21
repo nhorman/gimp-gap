@@ -517,10 +517,7 @@ p_rawframe_init_default_params(GapGveRawValues *epp)
 gint
 p_rawframe_encode_dialog(GapGveRawGlobalParams *gpp)
 {
-  if(gpp->val.run_mode == GIMP_RUN_INTERACTIVE)
-  {
-    g_message(_("the rawframe Encoder has no encoder specific Parameters"));
-  }
+  gap_arr_msg_popup(GIMP_RUN_INTERACTIVE, _("the rawframe Encoder has no encoder specific Parameters"));
   return 0;
 }  /* end p_rawframe_encode_dialog */
 

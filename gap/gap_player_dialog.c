@@ -377,6 +377,7 @@ static const char*  p_get_default_tmp_otone_audiofilename();
 static char *       p_build_otone_audiofilename(const char *videofilename, gint32 atrack, const char *suffix);
 static gboolean     p_check_otone_workfile_up_to_date(const char *videofilename, const char *audiofilename,
                               gint32 l_extract_audiotrack);
+static void         p_update_ainfo_for_videofile(GapPlayerMainGlobalParams *gpp);
 
 
 /* -----------------------------
@@ -941,10 +942,12 @@ p_check_otone_workfile_up_to_date(const char *videofilename, const char *audiofi
     return(FALSE);
   }
 
+#ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
   if (GVA_file_get_mtime(l_audiofilename) < GVA_file_get_mtime(videofilename))
   {
     return(FALSE);
   }
+#endif
 
   return (TRUE);
 
@@ -989,11 +992,13 @@ p_audio_start_play(GapPlayerMainGlobalParams *gpp)
   if (gpp->audio_auto_offset_by_framenr == TRUE)
   {
     gint32 localFramenr;
+#ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
     if (gpp->gvahand)
     {
       l_referedClipSpeed = gpp->gvahand->framerate;
       l_samplerate = gpp->gvahand->samplerate;
     }
+#endif
     
     localFramenr = p_get_audio_relevant_FrameNr(gpp, gpp->play_current_framenr);
     
@@ -1011,6 +1016,7 @@ p_audio_start_play(GapPlayerMainGlobalParams *gpp)
 
   offset_start_samples = offset_start_sec * l_samplerate;
   
+#ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
   if(gap_debug)
   {
     printf("p_audio_start_play  original_speed:%.3f refSpeed:%.3f audio_frame_offset:%d l_samples:%d l_samplerate:%d (gvahand:%d) offset_start_samples:%d\n\n"
@@ -1023,6 +1029,7 @@ p_audio_start_play(GapPlayerMainGlobalParams *gpp)
       ,offset_start_samples
       );
   }
+#endif
   
   
   if(l_referedClipSpeed > 0)
@@ -1549,6 +1556,60 @@ p_printout_range(GapPlayerMainGlobalParams *gpp, gboolean inverse, gboolean prin
 
 
 /* --------------------------------
+ * p_update_ainfo_for_videofile
+ * --------------------------------
+ * typical called after creation of a videoindex
+ * to update the total_frames information
+ * (that may have changed from the guess value to
+ * an exact value when all frames were counted)
+ */
+static void
+p_update_ainfo_for_videofile(GapPlayerMainGlobalParams *gpp)
+{
+  GapAnimInfo   *ainfo_ptr;
+
+  if(gpp == NULL)
+  {
+    return;
+  }
+
+#ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
+  if(gap_debug)
+  {
+    printf("p_update_ainfo_for_videofile  gpp->ainfo_ptr:%d gpp->gvahand:%d\n"
+      , (int)gpp->ainfo_ptr
+      , (int)gpp->gvahand
+      );
+  }
+
+  ainfo_ptr = gpp->ainfo_ptr;
+  if ((ainfo_ptr == NULL) || (gpp->gvahand == NULL))
+  {
+    return;
+  }
+
+
+  if(ainfo_ptr->ainfo_type == GAP_AINFO_MOVIE)
+  {
+    if(gpp->gvahand->all_frames_counted)
+    {
+      if(gap_debug)
+      {
+        printf("p_update_ainfo_for_videofile  ainfo_ptr->frame_cnt:%d gpp->gvahand->total_frames:%d\n"
+          , (int)ainfo_ptr->frame_cnt
+          , (int)gpp->gvahand->total_frames
+          );
+      }
+      ainfo_ptr->frame_cnt = gpp->gvahand->total_frames;
+      ainfo_ptr->last_frame_nr = gpp->gvahand->total_frames;
+    }
+   }
+#endif
+
+}  /* end p_update_ainfo_for_videofile*/
+
+
+/* --------------------------------
  * p_alloc_ainfo_for_videofile
  * --------------------------------
  * get anim information from filename for videofiles
@@ -1658,12 +1719,18 @@ p_alloc_ainfo_for_videofile(GapPlayerMainGlobalParams *gpp
  * -----------------------------
  * get anim information from imagename or image_id
  * NO operation when Player is in storyboard mode
+ * when called with a negative image_id
+ * then assume that gpp->imagename refers to a videofile
+ * and try to allocate anim info from videofile.
  */
 static void
 p_reload_ainfo_ptr(GapPlayerMainGlobalParams *gpp, gint32 image_id)
 {
-  gpp->image_id = image_id;
+  gboolean l_hasImagename;
 
+  gpp->image_id = image_id;
+  l_hasImagename = FALSE;
+  
   if(gpp->stb_ptr)    { return; }
   if(gpp->ainfo_ptr)  { gap_lib_free_ainfo(&gpp->ainfo_ptr); }
 
@@ -1680,10 +1747,19 @@ p_reload_ainfo_ptr(GapPlayerMainGlobalParams *gpp, gint32 image_id)
       return;
     }
     gpp->ainfo_ptr = gap_lib_alloc_ainfo_from_name(gpp->imagename, gpp->run_mode);
+    l_hasImagename = TRUE;
   }
   else
   {
-    /* normal mode */
+    char  *imagename;
+
+    imagename = gimp_image_get_filename(image_id);
+    if (imagename)
+    {
+      l_hasImagename = TRUE;
+      g_free(imagename);
+    }
+    /* normal mode using anim frames or single image */
     gpp->ainfo_ptr = gap_lib_alloc_ainfo(gpp->image_id, gpp->run_mode);
   }
 
@@ -1705,7 +1781,7 @@ p_reload_ainfo_ptr(GapPlayerMainGlobalParams *gpp, gint32 image_id)
       gpp->ainfo_ptr->height = gpp->imageheight;
     }
 
-    if(gpp->ainfo_ptr->frame_cnt != 0)
+    if((gpp->ainfo_ptr->frame_cnt != 0) && (l_hasImagename == TRUE))
     {
       GapVinVideoInfo *vin_ptr;
 
@@ -1751,27 +1827,30 @@ p_reload_ainfo_ptr(GapPlayerMainGlobalParams *gpp, gint32 image_id)
       gpp->ainfo_ptr->first_frame_nr = 1;
       gpp->ainfo_ptr->last_frame_nr = 1;
       gpp->original_speed = 24.0;
+      
     }
   }
 
 }  /* end p_reload_ainfo_ptr */
 
 
-/* -----------------------------
+/* --------------------------------
  * p_update_ainfo_dependent_widgets
- * -----------------------------
+ * --------------------------------
  */
 static void
 p_update_ainfo_dependent_widgets(GapPlayerMainGlobalParams *gpp)
 {
   gdouble l_lower;
   gdouble l_upper;
+  gdouble l_value;
 
   if(gpp == NULL) { return; }
   if(gpp->ainfo_ptr == NULL) { return; }
 
   l_lower = (gdouble)gpp->ainfo_ptr->first_frame_nr;
   l_upper = (gdouble)gpp->ainfo_ptr->last_frame_nr;
+
 
   GTK_ADJUSTMENT(gpp->from_spinbutton_adj)->lower = l_lower;
   GTK_ADJUSTMENT(gpp->from_spinbutton_adj)->upper = l_upper;
@@ -1787,11 +1866,21 @@ p_update_ainfo_dependent_widgets(GapPlayerMainGlobalParams *gpp)
                           , (gfloat) CLAMP(GTK_ADJUSTMENT(gpp->to_spinbutton_adj)->value, l_lower, l_upper)
                           );
 
+  l_value = CLAMP(GTK_ADJUSTMENT(gpp->framenr_spinbutton_adj)->value, l_lower, l_upper);
+
+  if(gap_debug)
+  {
+    printf("## tmp p_update_ainfo_dependent_widgets adj l_value:%.2f  l_lower:%.2f  l_upper:%.2f\n"
+        ,(float)l_value
+        ,(float)l_lower
+        ,(float)l_upper
+        );
+  }
+
   GTK_ADJUSTMENT(gpp->framenr_spinbutton_adj)->lower = l_lower;
   GTK_ADJUSTMENT(gpp->framenr_spinbutton_adj)->upper = l_upper;
-  gtk_adjustment_set_value( GTK_ADJUSTMENT(gpp->framenr_spinbutton_adj)
-                          , (gfloat)CLAMP(GTK_ADJUSTMENT(gpp->framenr_spinbutton_adj)->value, l_lower, l_upper)
-                          );
+  gtk_adjustment_set_value( GTK_ADJUSTMENT(gpp->framenr_spinbutton_adj), l_value);
+
 }  /* end p_update_ainfo_dependent_widgets */
 
 
@@ -2294,6 +2383,7 @@ on_audio_otone_extract_button_clicked (GtkButton       *button,
                                GapPlayerMainGlobalParams *gpp)
 {
 #ifdef GAP_ENABLE_AUDIO_SUPPORT
+#ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
   gboolean    l_otone_is_up_to_date;
   gint32      l_extract_audiotrack;
   gint32      l_begin_frame_nr;
@@ -2467,7 +2557,8 @@ cleanup:
   if(l_audiofilename)        { g_free(l_audiofilename); }
   if(l_audiofilename_cancel) { g_free(l_audiofilename_cancel);}
 
-#endif
+#endif  /* GAP_ENABLE_VIDEOAPI_SUPPORT */
+#endif  /* GAP_ENABLE_VIDEOAPI_SUPPORT */
 }  /* end on_audio_otone_extract_button_clicked */
 
 
@@ -2584,26 +2675,24 @@ p_close_videofile(GapPlayerMainGlobalParams *gpp)
 }  /* end p_close_videofile */
 
 
+
 /* --------------------------------
- * p_open_videofile
+ * p_reopen_videofile
  * --------------------------------
  */
 static void
-p_open_videofile(GapPlayerMainGlobalParams *gpp
+p_reopen_videofile(GapPlayerMainGlobalParams *gpp
                 , char *filename
                 , gint32 seltrack
                 , gdouble delace
                 , const char *preferred_decoder
                 )
 {
-#ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
-  char *vindex_file;
   const char *l_preferred_decoder;
-  gboolean    l_have_valid_vindex;
+
+#ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
 
   p_close_videofile(gpp);
-  vindex_file = NULL;
-  l_have_valid_vindex = FALSE;
 
   /* use global preferred_decoder setting per default */
   l_preferred_decoder = gpp->preferred_decoder;
@@ -2641,6 +2730,13 @@ p_open_videofile(GapPlayerMainGlobalParams *gpp
     gpp->gvahand->progress_cb_user_data = gpp;
     gpp->gvahand->fptr_progress_callback = p_vid_progress_callback;
 
+    if(gap_debug)
+    {
+      printf("## p_reopen_videofile gpp->gvahand->total_frames:%d\n"
+          ,(int)gpp->gvahand->total_frames
+          );
+    }
+
     /* printf("PLAYER: open fptr_progress_callback FPTR:%d\n"
      *       , (int)gpp->gvahand->fptr_progress_callback);
      */
@@ -2657,10 +2753,6 @@ p_open_videofile(GapPlayerMainGlobalParams *gpp
       if(dec_elem->decoder_name)
       {
         gpp->progress_bar_idle_txt = g_strdup(dec_elem->decoder_name);
-        vindex_file = GVA_build_videoindex_filename(gpp->gva_videofile
-                                             ,1  /* track */
-                                             ,dec_elem->decoder_name
-                                             );
       }
       else
       {
@@ -2668,6 +2760,54 @@ p_open_videofile(GapPlayerMainGlobalParams *gpp
       }
     }
 
+  }
+#endif
+}  /* end p_reopen_videofile */
+
+
+
+/* --------------------------------
+ * p_open_videofile
+ * --------------------------------
+ * open videofile handle
+ * with checks for video index creation.
+ * in case where video index creation is recommanded
+ * this is done after asking the user for permission.
+ */
+static void
+p_open_videofile(GapPlayerMainGlobalParams *gpp
+                , char *filename
+                , gint32 seltrack
+                , gdouble delace
+                , const char *preferred_decoder
+                )
+{
+  char *vindex_file;
+  gboolean    l_have_valid_vindex;
+  l_have_valid_vindex = FALSE;
+
+#ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
+
+  p_reopen_videofile(gpp, filename, seltrack, delace, preferred_decoder);
+
+  vindex_file = NULL;
+
+  if(gpp->gvahand)
+  {
+    /* set decoder name as progress idle text */
+    {
+      t_GVA_DecoderElem *dec_elem;
+
+      dec_elem = (t_GVA_DecoderElem *)gpp->gvahand->dec_elem;
+      if(dec_elem->decoder_name)
+      {
+        vindex_file = GVA_build_videoindex_filename(gpp->gva_videofile
+                                             ,1  /* track */
+                                             ,dec_elem->decoder_name
+                                             );
+      }
+    }
+    
     if(gpp->gvahand->vindex)
     {
       if(gpp->gvahand->vindex->total_frames > 0)
@@ -2729,7 +2869,14 @@ p_open_videofile(GapPlayerMainGlobalParams *gpp
 
         if(!gpp->cancel_video_api)
         {
-          if(gpp->gvahand->vindex == NULL)
+          if(gpp->gvahand->vindex != NULL)
+          {
+            p_update_ainfo_for_videofile(gpp);
+            p_update_ainfo_dependent_widgets(gpp);
+
+            p_reopen_videofile(gpp, filename, seltrack, delace, preferred_decoder);
+          }
+          else
           {
             g_message(_("No videoindex available. "
                         "Access is limited to (slow) sequential read "
@@ -2751,7 +2898,7 @@ p_open_videofile(GapPlayerMainGlobalParams *gpp
   }
 /* printf("PLAYER: open END\n"); */
 #endif
-
+  
 }  /* end p_open_videofile */
 
 
@@ -2930,6 +3077,13 @@ p_fetch_videoframe(GapPlayerMainGlobalParams *gpp
     {
       if((gpp->imagename) && (gpp->gvahand->all_frames_counted))
       {
+        if(gap_debug)
+        {
+          printf("p_fetch_videoframe  CALL p_update_ainfo_dependent_widgets ainfo_ptr->frame_cnt:%d gpp->gvahand->total_frames:%d\n"
+            , (int)gpp->ainfo_ptr->frame_cnt
+            , (int)gpp->gvahand->total_frames
+            );
+        }
         gpp->ainfo_ptr->frame_cnt = gpp->gvahand->total_frames;
         gpp->ainfo_ptr->last_frame_nr = gpp->gvahand->total_frames;
         p_update_ainfo_dependent_widgets(gpp);
@@ -8362,6 +8516,7 @@ gap_player_dlg_create(GapPlayerMainGlobalParams *gpp)
   }
   else
   {
+
     if(gpp->imagename)
     {
       p_reload_ainfo_ptr(gpp, -1);
@@ -8378,9 +8533,12 @@ gap_player_dlg_create(GapPlayerMainGlobalParams *gpp)
         return;
       }
 
-      if(0 != gap_lib_chk_framerange(gpp->ainfo_ptr))
+      if (gpp->standalone_mode == TRUE)
       {
-        return;
+        if(0 != gap_lib_chk_framerange(gpp->ainfo_ptr))
+        {
+          return;
+        }
       }
     }
   }
