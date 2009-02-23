@@ -308,7 +308,8 @@ run (const gchar *name,          /* name of plugin */
       }
       else if (strcmp (param_name, GAP_VENC_PAR_GUI_PROC) == 0)
       {
-        values[1].data.d_string = g_strdup(GAP_PLUGIN_NAME_SINGLEFRAMES_PARAMS);
+        //values[1].data.d_string = g_strdup(GAP_PLUGIN_NAME_SINGLEFRAMES_PARAMS);
+        values[1].data.d_string = g_strdup("\0");
       }
       else
       {
@@ -746,7 +747,7 @@ p_singleframe_encode(GapGveSingleGlobalParams *gpp)
          }
 
          l_sav_rc = gap_lib_save_named_image(l_tmp_image_id, l_sav_name, l_save_runmode);
-         
+
          if(l_sav_rc < 0)
          {
            g_message(_("** Save FAILED on file\n%s"), l_sav_name);

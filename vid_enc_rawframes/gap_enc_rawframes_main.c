@@ -317,7 +317,14 @@ run (const gchar *name,          /* name of plugin */
       }
       else if (strcmp (param_name, GAP_VENC_PAR_GUI_PROC) == 0)
       {
-        values[1].data.d_string = g_strdup(GAP_PLUGIN_NAME_RAWFRAMES_PARAMS);
+        //values[1].data.d_string = g_strdup(GAP_PLUGIN_NAME_RAWFRAMES_PARAMS);
+        /* the rawframes encoder has no encoder specific parameters.
+         * deliver empty string for the parameter GUI procedure
+         * in this case the master video encoder disables the button for
+         * invoking encoder specific parameter dialog.
+         * The currently implemented dialog is just a dummy popup
+         */
+        values[1].data.d_string = g_strdup("\0");
       }
       else
       {
@@ -628,10 +635,10 @@ p_save_chunk_as_frame(const char *filename,  unsigned char *video_chunk, gint32 
   FILE   *fp;
   char   *dataPtr;
   gint32  dataSize;
-  
+
   dataSize = video_frame_chunk_size - header_length;
   dataPtr = video_chunk + header_length;
-  
+
   fp = fopen(filename, "w");
   if (fp)
   {
@@ -654,7 +661,7 @@ p_dimSizeOfRawFrame(GapGveRawGlobalParams *gpp)
    * more than enough
    */
   sizeOfRawFrame = 1000 + (gpp->val.vid_width * gpp->val.vid_height * 4);
-  
+
   return (sizeOfRawFrame);
 }  /* end p_dimSizeOfRawFrame */
 
@@ -665,8 +672,8 @@ p_is_videoname_jpeg(const char *videoname)
   const char *ext;
   gint len;
   gint idx;
-  
- 
+
+
   ext = videoname;
   if (ext == NULL)
   {
@@ -683,12 +690,12 @@ p_is_videoname_jpeg(const char *videoname)
       break;
     }
   }
-  
+
   if (strcmp(ext, "jpg") == 0)  { return (TRUE); }
   if (strcmp(ext, "JPG") == 0)  { return (TRUE); }
   if (strcmp(ext, "jpeg") == 0)  { return (TRUE); }
   if (strcmp(ext, "JPEG") == 0)  { return (TRUE); }
-  
+
   return (FALSE);
 }
 
@@ -739,7 +746,7 @@ p_rawframe_encode(GapGveRawGlobalParams *gpp)
 
   l_maxSizeOfRawFrame = p_dimSizeOfRawFrame(gpp);
   l_video_chunk_ptr = g_malloc0(l_maxSizeOfRawFrame);
-  
+
 
   l_out_frame_nr = 0;
   l_rc = 0;
@@ -748,7 +755,7 @@ p_rawframe_encode(GapGveRawGlobalParams *gpp)
   l_cnt_reused_frames = 0;
   l_tmp_image_id = -1;
   l_check_flags = GAP_VID_CHCHK_FLAG_SIZE;
-  
+
   if(p_is_videoname_jpeg(gpp->val.videoname) == TRUE)
   {
     l_check_flags += GAP_VID_CHCHK_FLAG_JPG;
@@ -816,7 +823,7 @@ p_rawframe_encode(GapGveRawGlobalParams *gpp)
     gboolean l_force_keyframe;
     gint32   l_video_frame_chunk_size;
     gint32   l_video_frame_chunk_hdr_size;
-    
+
     l_out_frame_nr++;
 
 
@@ -852,7 +859,7 @@ p_rawframe_encode(GapGveRawGlobalParams *gpp)
       if (l_video_frame_chunk_size > 0)
       {
         gboolean l_saveOk;
-        
+
         l_cnt_reused_frames++;
         if (gap_debug)
         {
@@ -878,7 +885,7 @@ p_rawframe_encode(GapGveRawGlobalParams *gpp)
         {
 	  printf("DEBUG: saving recoded frame %d (fetch as chunk FAILED)\n", (int)l_cur_frame_nr);
         }
-        
+
         if(gpp->val.run_mode == GIMP_RUN_INTERACTIVE)
         {
           char *l_msg;
@@ -911,7 +918,7 @@ p_rawframe_encode(GapGveRawGlobalParams *gpp)
         {
           return -1;
         }
-        
+
       }
       g_free(l_sav_name);
     }
