@@ -1,3 +1,18 @@
+2009-02-25 Wolfgang Hofer <hof@gimp.org>
+
+- fix bug in Storyboard dialog: when clip is added via player 
+  there was no undo possible for that step.
+
+- fixed menu text #538419
+
+- wrapper for 3rd party plug-in resynthesizer 
+  now uses gap_pdb_procedure_name_available for the check.
+  (this avoids the gimp-2.6 typical warning pop up that complains
+  about calling gimp_procedural_db_proc_info on non-intalled plug-ins)
+
+  * gap/gap_story_dialog.c
+  * gap/gap_wr_resynth.c
+
 2009-02-23 Wolfgang Hofer <hof@gimp.org>
 
 - Singleframes and rawframes encoder have no parameter dialog.

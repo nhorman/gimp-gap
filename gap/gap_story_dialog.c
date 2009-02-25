@@ -1487,6 +1487,9 @@ p_story_set_range_cb(GapPlayerAddClip *plac_ptr)
         stb_elem = gap_story_new_elem(GAP_STBREC_VID_UNKNOWN);
         if(stb_elem)
         {
+          gap_stb_undo_group_begin(tabw);
+          gap_stb_undo_push(tabw, GAP_STB_FEATURE_CREATE_CLIP);
+
           gap_story_upd_elem_from_filename(stb_elem, plac_ptr->ainfo_ptr->old_filename);
           stb_elem->track = tabw->vtrack;
           stb_elem->from_frame = plac_ptr->range_from;
@@ -1515,6 +1518,7 @@ p_story_set_range_cb(GapPlayerAddClip *plac_ptr)
                                  ,sgpp
                                  );
           p_render_all_frame_widgets(tabw);
+          gap_stb_undo_group_end(tabw);
         }
       }
     }
@@ -6032,7 +6036,7 @@ p_make_menu_cliplist(GapStbMainGlobalParams *sgpp, GtkWidget *menu_bar)
                           );
 
    sgpp->menu_item_cll_audio_otone =
-   p_make_item_with_label(file_menu, _("Add Audio Otone")
+   p_make_item_with_label(file_menu, _("Add Original Audio Track")
                           , p_menu_cll_audio_otone_cb
                           , sgpp
                           );
@@ -6132,7 +6136,7 @@ p_make_menu_storyboard(GapStbMainGlobalParams *sgpp, GtkWidget *menu_bar)
                           );
 
    sgpp->menu_item_stb_audio_otone =
-   p_make_item_with_label(file_menu, _("Add Audio Otone")
+   p_make_item_with_label(file_menu, _("Add Original Audio Track")
                           , p_menu_stb_audio_otone_cb
                           , sgpp
                           );

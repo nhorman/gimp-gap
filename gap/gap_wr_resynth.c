@@ -400,13 +400,12 @@ p_dialog (TransValues *val_ptr, gint32 drawable_id)
   gboolean   run;
   gboolean   isResynthesizerInstalled;
 
-  gint nparams_resynth;
-  gint nparams_resynth_s;
+  gboolean foundResynth;
+  gboolean foundResynthS;
 
-
-  nparams_resynth_s = gap_pdb_procedure_available(PLUG_IN_RESYNTHESIZER_WITH_SEED);
-  nparams_resynth = gap_pdb_procedure_available(PLUG_IN_RESYNTHESIZER);
-  isResynthesizerInstalled = ((nparams_resynth_s >= 0) || (nparams_resynth >= 0));
+  foundResynthS = gap_pdb_procedure_name_available(PLUG_IN_RESYNTHESIZER_WITH_SEED);
+  foundResynth = gap_pdb_procedure_name_available(PLUG_IN_RESYNTHESIZER);
+  isResynthesizerInstalled = ((foundResynthS) || (foundResynth));
   val_ptr->alt_selection = -1;
 
   gimp_ui_init (PLUG_IN_BINARY, TRUE);
@@ -458,7 +457,8 @@ p_dialog (TransValues *val_ptr, gint32 drawable_id)
   row = 0;
   if (isResynthesizerInstalled != TRUE)
   {
-    label = gtk_label_new (_("The Resynthesizer plug-in is required for this operation but is not installed"
+    label = gtk_label_new (_("The Resynthesizer plug-in is required for this operation\n"
+                             "But this 3rd party plug-in is not installed\n"
                              "Resynthesizer is available at the gimp plug-in registry"));
     gtk_misc_set_alignment (GTK_MISC (label), 0.5, 0.5);
     gtk_table_attach (GTK_TABLE (table), label, 0, 2, row, row + 1,
@@ -467,48 +467,51 @@ p_dialog (TransValues *val_ptr, gint32 drawable_id)
 
     row++;
   }
-  adj = gimp_scale_entry_new (GTK_TABLE (table), 0, row,
-                              _("Border Radius:"), SCALE_WIDTH, 7,
-                              val_ptr->corpus_border_radius, 0.0, 1000.0, 1.0, 10.0, 0,
-                              TRUE, 0, 0,
-                              NULL, NULL);
-  g_signal_connect (adj, "value-changed",
-                    G_CALLBACK (gimp_int_adjustment_update),
-                    &val_ptr->corpus_border_radius);
-
-  row++;
-
-  if (nparams_resynth_s > 0)
+  else
   {
     adj = gimp_scale_entry_new (GTK_TABLE (table), 0, row,
-                              _("Seed:"), SCALE_WIDTH, 7,
-                              val_ptr->seed, -1.0, 10000.0, 1.0, 10.0, 0,
-                              TRUE, 0, 0,
-                              NULL, NULL);
+                                _("Border Radius:"), SCALE_WIDTH, 7,
+                                val_ptr->corpus_border_radius, 0.0, 1000.0, 1.0, 10.0, 0,
+                                TRUE, 0, 0,
+                                NULL, NULL);
     g_signal_connect (adj, "value-changed",
-                    G_CALLBACK (gimp_int_adjustment_update),
-                    &val_ptr->seed);
+                      G_CALLBACK (gimp_int_adjustment_update),
+                      &val_ptr->corpus_border_radius);
 
     row++;
+
+    if (foundResynthS)
+    {
+      adj = gimp_scale_entry_new (GTK_TABLE (table), 0, row,
+                                _("Seed:"), SCALE_WIDTH, 7,
+                                val_ptr->seed, -1.0, 10000.0, 1.0, 10.0, 0,
+                                TRUE, 0, 0,
+                                NULL, NULL);
+      g_signal_connect (adj, "value-changed",
+                      G_CALLBACK (gimp_int_adjustment_update),
+                      &val_ptr->seed);
+
+      row++;
+    }
+
+    /* layer combo_box (alt_selection) */
+    label = gtk_label_new (_("Set Selection:"));
+    gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+    gtk_table_attach (GTK_TABLE (table), label, 0, 1, row, row + 1,
+                      GTK_FILL, GTK_FILL, 4, 0);
+    gtk_widget_show (label);
+
+    /* layer combo_box (Sample from where to pick the alternative selection */
+    combo = gimp_layer_combo_box_new (p_selectionConstraintFunc, NULL);
+
+    gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (combo), drawable_id,
+                                G_CALLBACK (p_selectionComboCallback),
+                                NULL);
+
+    gtk_table_attach (GTK_TABLE (table), combo, 1, 3, row, row + 1,
+                      GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+    gtk_widget_show (combo);
   }
-
-  /* layer combo_box (alt_selection) */
-  label = gtk_label_new (_("Set Selection:"));
-  gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
-  gtk_table_attach (GTK_TABLE (table), label, 0, 1, row, row + 1,
-                    GTK_FILL, GTK_FILL, 4, 0);
-  gtk_widget_show (label);
-
-  /* layer combo_box (Sample from where to pick the alternative selection */
-  combo = gimp_layer_combo_box_new (p_selectionConstraintFunc, NULL);
-
-  gimp_int_combo_box_connect (GIMP_INT_COMBO_BOX (combo), drawable_id,
-                              G_CALLBACK (p_selectionComboCallback),
-                              NULL);
-
-  gtk_table_attach (GTK_TABLE (table), combo, 1, 3, row, row + 1,
-                    GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
-  gtk_widget_show (combo);
 
   /* Done */
 
@@ -535,11 +538,12 @@ p_pdb_call_resynthesizer(gint32 image_id, gint32 layer_id, gint32 corpus_layer_i
    GimpParam       *return_vals;
    int              nreturn_vals;
    gint             nparams_resynth_s;
+   gboolean         foundResynthS;
 
-   nparams_resynth_s = gap_pdb_procedure_available(PLUG_IN_RESYNTHESIZER_WITH_SEED);
-   if (nparams_resynth_s >= 0)
+   l_called_proc = PLUG_IN_RESYNTHESIZER_WITH_SEED;
+   foundResynthS = gap_pdb_procedure_name_available(l_called_proc);
+   if (foundResynthS)
    {
-         l_called_proc = PLUG_IN_RESYNTHESIZER_WITH_SEED;
      return_vals = gimp_run_procedure (l_called_proc,
                                  &nreturn_vals,
                                  GIMP_PDB_INT32,     GIMP_RUN_NONINTERACTIVE,
@@ -560,7 +564,18 @@ p_pdb_call_resynthesizer(gint32 image_id, gint32 layer_id, gint32 corpus_layer_i
    }
    else
    {
-         l_called_proc = PLUG_IN_RESYNTHESIZER;
+     gboolean         foundResynth;
+     
+     l_called_proc = PLUG_IN_RESYNTHESIZER;
+     foundResynth = gap_pdb_procedure_name_available(l_called_proc);
+     
+     if(!foundResynth)
+     {
+       printf("GAP: Error: PDB %s PDB plug-in is NOT installed\n"
+          , l_called_proc
+          );
+       return(FALSE);
+     }
      return_vals = gimp_run_procedure (l_called_proc,
                                  &nreturn_vals,
                                  GIMP_PDB_INT32,     GIMP_RUN_NONINTERACTIVE,
