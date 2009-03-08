@@ -15,6 +15,11 @@ INCLUDES = \
 
 
 libgapbase_a_SOURCES = \
-	gap_val_file.c	\
+	gap_libgapbase.h	\
+	gap_base.c		\
+	gap_base.h		\
+	gap_file_util.c		\
+	gap_file_util.h		\
+	gap_val_file.c		\
 	gap_val_file.h
 
