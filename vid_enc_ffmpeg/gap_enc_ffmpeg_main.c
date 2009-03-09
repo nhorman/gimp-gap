@@ -3401,7 +3401,7 @@ p_ffmpeg_encode_pass(GapGveFFMpegGlobalParams *gpp, gint32 current_pass, GapGveM
   l_check_flags = GAP_VID_CHCHK_FLAG_SIZE;
   l_vcodec_list = p_setup_check_flags(epp, &l_check_flags);
 
-  //if(gap_debug)
+  if(gap_debug)
   {
      printf("p_ffmpeg_encode: START\n");
      printf("  current_pass: %d (twoPassFlag:%d)\n", current_pass, epp->twoPassFlag);

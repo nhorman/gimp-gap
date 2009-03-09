@@ -43,6 +43,7 @@
 #include <libgimp/gimp.h>
 #include <libgimp/gimpui.h>
 
+#include "gap_libgapbase.h"
 #include <gap_match.h>
 #include <gap_lib.h>
 #include <gap_layer_copy.h>
@@ -69,7 +70,7 @@ gap_onion_base_mark_as_onionlayer(gint32 layer_id)
   if(gap_debug) printf("gap_onion_base_mark_as_onionlayer: START\n");
 
   l_parasite_data = g_malloc(sizeof(GapOnionBaseParasite_data));
-  l_parasite_data->timestamp = time(0);
+  l_parasite_data->timestamp = gap_base_get_current_time();
   l_parasite_data->tattoo = gimp_drawable_get_tattoo(layer_id);
   if(gap_debug) printf("gap_onion_base_mark_as_onionlayer: tattoo is: %d\n", (int)l_parasite_data->tattoo);
 

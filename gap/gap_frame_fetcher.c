@@ -77,9 +77,9 @@
 #include "libgimp/gimp.h"
 
 
+#include "gap_libgapbase.h"
 #include "gap_libgimpgap.h"
 #include "gap_lib_common_defs.h"
-#include "gap_file_util.h"
 #include "gap_layer_copy.h"
 //#include "gap_fmac_name.h"
 
@@ -175,7 +175,7 @@ p_load_cache_image(const char* filename, gboolean addToCache)
 
   if(filename == NULL)
   {
-    printf("p_load_cache_image: ** ERROR cant load filename == NULL! pid:%d\n", (int)getpid());
+    printf("p_load_cache_image: ** ERROR cant load filename == NULL! pid:%d\n", (int)gap_base_getpid());
     return -1;
   }
 
@@ -223,7 +223,7 @@ p_load_cache_image(const char* filename, gboolean addToCache)
                   , gimp_image_get_filename(images[l_idi])
                   , (int)mtimefile
                   , (int)*mtime_ptr
-                  , (int)getpid()
+                  , (int)gap_base_getpid()
                   );
           }
           gap_image_delete_immediate(images[l_idi]);
@@ -243,7 +243,7 @@ p_load_cache_image(const char* filename, gboolean addToCache)
     if(gap_debug)
     {
       printf("FrameFetcher: p_load_cache_image CACHE-HIT :%s (image_id:%d) pid:%d\n"
-            , filename, (int)l_image_id, (int)getpid());
+            , filename, (int)l_image_id, (int)gap_base_getpid());
     }
     return(l_image_id);
   }
@@ -253,7 +253,7 @@ p_load_cache_image(const char* filename, gboolean addToCache)
   if(gap_debug)
   {
     printf("FrameFetcher: loaded image from disk:%s (image_id:%d) pid:%d\n"
-      , l_filename, (int)l_image_id, (int)getpid());
+      , l_filename, (int)l_image_id, (int)gap_base_getpid());
   }
 
   if((l_image_id >= 0) && (addToCache == TRUE))
@@ -275,7 +275,7 @@ p_load_cache_image(const char* filename, gboolean addToCache)
               , (int)l_first_chached_image_id
               , gimp_image_get_filename(images[l_idi])
               , (int)l_number_of_cached_images
-              , (int)getpid()
+              , (int)gap_base_getpid()
               );
       }
       gap_image_delete_immediate(l_first_chached_image_id);
@@ -326,7 +326,7 @@ p_drop_image_cache(void)
   
   if(gap_debug)
   {
-    printf("p_drop_image_cache START pid:%d\n", (int) getpid());
+    printf("p_drop_image_cache START pid:%d\n", (int) gap_base_getpid());
   }
 
   images = gimp_image_list(&nimages);
@@ -341,7 +341,7 @@ p_drop_image_cache(void)
       printf("FrameFetcher: CHECK (image_id:%d) name:%s pid:%d\n"
             , (int)images[l_idi]
             , gimp_image_get_filename(images[l_idi])
-            , (int)getpid()
+            , (int)gap_base_getpid()
             );
     }
 
@@ -352,7 +352,7 @@ p_drop_image_cache(void)
         printf("FrameFetcher: DELETE (image_id:%d) name:%s pid:%d\n"
               , (int)images[l_idi]
               , gimp_image_get_filename(images[l_idi])
-              , (int)getpid()
+              , (int)gap_base_getpid()
               );
       }
       /* delete image from the duplicates cache */
@@ -367,7 +367,7 @@ p_drop_image_cache(void)
 
   if(gap_debug)
   {
-    printf("p_drop_image_cache END pid:%d\n", (int)getpid());
+    printf("p_drop_image_cache END pid:%d\n", (int)gap_base_getpid());
   }
 
 }  /* end p_drop_image_cache */
@@ -515,7 +515,7 @@ p_ffetch_get_open_gvahand(const char* filename, gint32 seltrack, const char *pre
     gvc_new = g_malloc0(sizeof(GapFFetchGvahandCacheElem));
     gvc_new->filename = g_strdup(filename);
     gvc_new->seltrack = seltrack;
-    gvc_new->mtime = GVA_file_get_mtime(filename);
+    gvc_new->mtime = gap_file_get_mtime(filename);
     gvc_new->gvahand = l_gvahand;
 
     if(gvcache->gvc_list == NULL)
@@ -592,7 +592,7 @@ gap_frame_fetch_delete_list_of_duplicated_images(gint32 ffetch_user_id)
       printf("FrameFetcher: check (image_id:%d) name:%s pid:%d\n"
             , (int)images[l_idi]
             , gimp_image_get_filename(images[l_idi])
-            , (int)getpid()
+            , (int)gap_base_getpid()
             );
     }
 
@@ -611,7 +611,7 @@ gap_frame_fetch_delete_list_of_duplicated_images(gint32 ffetch_user_id)
                 , (int)ffetch_user_id
                 , (int)*ffetch_user_id_ptr
                 , gimp_image_get_filename(images[l_idi])
-                , (int)getpid()
+                , (int)gap_base_getpid()
                 );
         }
         /* delete image from the duplicates cache */
@@ -884,7 +884,7 @@ gap_frame_fetch_register_user(const char *caller_name)
           , new_usr_ptr->ffetch_user_id
           , caller_name
           , (int)&new_usr_ptr
-          , (int) getpid()
+          , (int) gap_base_getpid()
           );
   }
   return (max_ffetch_user_id);
@@ -919,7 +919,7 @@ gap_frame_fetch_unregister_user(gint32 ffetch_user_id)
   {
     printf("gap_frame_fetch_unregister_user: UNREGISTER ffetch_user_id:%d pid:%d\n"
           , ffetch_user_id
-          , (int) getpid()
+          , (int) gap_base_getpid()
           );
   }
 

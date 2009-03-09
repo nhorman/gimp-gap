@@ -57,6 +57,7 @@
 
 #include "gap-intl.h"
 
+#include "gap_libgapbase.h"
 #include "gap_cme_main.h"
 #include "gap_cme_gui.h"
 #include "gap_cme_callbacks.h"
@@ -3996,31 +3997,12 @@ gap_cme_gui_update_encoder_status(GapCmeGlobalParams *gpp)
 
     gtk_widget_show(gpp->cme__encoder_status_frame);
 
+ 
     p_set_label_to_numeric_value(gpp->cme__label_enc_stat_frames_total, gpp->encStatus.total_frames);
     p_set_label_to_numeric_value(gpp->cme__label_enc_stat_frames_done, gpp->encStatus.frames_processed);
     p_set_label_to_numeric_value(gpp->cme__label_enc_stat_frames_encoded, gpp->encStatus.frames_encoded);
     p_set_label_to_numeric_value(gpp->cme__label_enc_stat_frames_copied_lossless, gpp->encStatus.frames_copied_lossless);
     
-        
-    label = gpp->cme__label_enc_time_elapsed;
-    if((label != NULL)
-    && (gpp->video_encoder_run_state ==  GAP_CME_ENC_RUN_STATE_RUNNING))
-    {
-      time_t l_currentUtcTimeInSecs;
-      gint32 l_secsElapsed;
-      char *buffer;
-
-      l_currentUtcTimeInSecs = time(NULL);
-      l_secsElapsed = l_currentUtcTimeInSecs - gpp->encoder_started_on_utc_seconds;
-      
-      buffer = g_strdup_printf("%d:%02d:%02d"
-                              , (int)l_secsElapsed / 3600
-                              , (int)(l_secsElapsed / 60) % 60
-                              , (int)l_secsElapsed % 60
-                              );
-      gtk_label_set_text(GTK_LABEL(label), buffer);
-      g_free(buffer);
-    }
     
 
     pbar = gpp->cme__progressbar_status;
@@ -4028,7 +4010,7 @@ gap_cme_gui_update_encoder_status(GapCmeGlobalParams *gpp)
     {
       gdouble l_progress;
       char *l_msg;
-
+      
       switch (gpp->encStatus.current_pass)
       {
         case 1:
@@ -4073,7 +4055,43 @@ gap_cme_gui_update_encoder_status(GapCmeGlobalParams *gpp)
       gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR (pbar), l_progress);
       gtk_progress_bar_set_text(GTK_PROGRESS_BAR(pbar), l_msg);
       g_free(l_msg);
+
+      if (gpp->encStatus.pidOfRunningEncoder != 0)
+      {
+        if (!gap_base_is_pid_alive(gpp->encStatus.pidOfRunningEncoder))
+        {
+          if (gpp->video_encoder_run_state ==  GAP_CME_ENC_RUN_STATE_RUNNING)
+          {
+            gpp->video_encoder_run_state =  GAP_CME_ENC_RUN_STATE_FINISHED;
+          }
+          gtk_progress_bar_set_text(GTK_PROGRESS_BAR(pbar), _("ENCODER process has terminated"));
+          return;
+        }
+      }
     }
+
+
+    label = gpp->cme__label_enc_time_elapsed;
+    if((label != NULL)
+    && (gpp->video_encoder_run_state ==  GAP_CME_ENC_RUN_STATE_RUNNING))
+    {
+      time_t l_currentUtcTimeInSecs;
+      gint32 l_secsElapsed;
+      char *buffer;
+
+      l_currentUtcTimeInSecs = time(NULL);
+      l_secsElapsed = l_currentUtcTimeInSecs - gpp->encoder_started_on_utc_seconds;
+      
+      buffer = g_strdup_printf("%d:%02d:%02d"
+                              , (int)l_secsElapsed / 3600
+                              , (int)(l_secsElapsed / 60) % 60
+                              , (int)l_secsElapsed % 60
+                              );
+      gtk_label_set_text(GTK_LABEL(label), buffer);
+      g_free(buffer);
+    }
+
+
 //    if (gpp->video_encoder_run_state ==  GAP_CME_ENC_RUN_STATE_RUNNING)
 //    {
 //      /* detect if encoder has finished (required for asynchron calls since GIMP-2.6)  */
@@ -4148,7 +4166,7 @@ gap_cme_gui_start_video_encoder(GapCmeGlobalParams *gpp)
    }
 
    gap_gve_misc_initGapGveMasterEncoderStatus(&gpp->encStatus
-       , getpid() /* master_encoder_id */
+       , gap_base_getpid() /* master_encoder_id */
        , abs(gpp->val.range_to - gpp->val.range_from) + 1   /* total_frames */
        );
 
@@ -4302,7 +4320,7 @@ gap_cme_gui_master_encoder_dialog(GapCmeGlobalParams *gpp)
 
   /* ---------- dialog ----------*/
   gap_gve_misc_initGapGveMasterEncoderStatus(&gpp->encStatus
-       , getpid()  /* master_encoder_id */
+       , gap_base_getpid()  /* master_encoder_id */
        , 1         /* total_frames */
        );
   gap_gve_misc_set_master_encoder_cancel_request(&gpp->encStatus, FALSE);

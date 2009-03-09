@@ -63,6 +63,7 @@
 #include "libgimp/gimp.h"
 
 /* GAP includes */
+#include "gap_libgapbase.h"
 #include "gap_lib.h"
 #include "gap_arr_dialog.h"
 #include "gap_mpege.h"
@@ -287,7 +288,7 @@ int p_mpege_dialog(GapAnimInfo *ainfo_ptr, t_mpg_par *mp_ptr, GapMpegEncoderType
     b_argv[2].but_txt  = _("Gen + Encode");
     b_argv[2].but_val  = 1;
 
-  l_str = gap_lib_strdup_del_underscore(ainfo_ptr->basename);
+  l_str = gap_base_strdup_del_underscore(ainfo_ptr->basename);
   g_snprintf (l_outfile, MBUF_SIZE, "%s.mpg", l_str);
   g_snprintf (l_parfile, MBUF_SIZE, "%s.par_mpg", l_str);
   g_snprintf (l_startscript, MBUF_SIZE, "%s.sh", l_str);

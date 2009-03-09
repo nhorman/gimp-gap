@@ -51,10 +51,10 @@
 
 #include "gap-intl.h"
 
+#include "gap_libgapbase.h"
 #include "gap_cme_main.h"
 #include "gap_cme_gui.h"
 
-#include "gap_file_util.h"
 #include "gap_gve_sox.h"
 #include "gap_gve_story.h"
 #include "gap_libgimpgap.h"
@@ -337,8 +337,7 @@ run (const gchar *name,          /* name of plugin */
                printf("MAIN before gap_cme_gui_master_encoder_dialog ------------------\n");
             }
             
-            /* note that the dialog alrady performs the encoding (as worker thread)
-        */
+            /* note that the dialog alrady performs the encoding (as worker thread) */
             l_rc = gap_cme_gui_master_encoder_dialog (gpp);
             
             
@@ -373,31 +372,31 @@ run (const gchar *name,          /* name of plugin */
       }
 
       /* wait 8 seconds to give the encoder process a chance to exit 
-    * (and/or accept a possible cancel request)
-    */
+       * (and/or accept a possible cancel request)
+       */
       sleep(8);
 
       if(gap_debug)
       {
-             printf("MAIN cleanup ------------------\n");
+        printf("MAIN cleanup ------------------\n");
       }
 
       /* clean up removes the communication file and the cancel request file (if there is any)
-    * note that this shall happen after the encoder process has exited.
-    * (otherwise the files used for communication may be created again after the
-    * following cleanup
-    */
+       * note that this shall happen after the encoder process has exited.
+       * (otherwise the files used for communication may be created again after the
+       * following cleanup
+       */
       gap_gve_misc_cleanup_GapGveMasterEncoder(gpp->encStatus.master_encoder_id);
-
   }
   else
   {
       values[0].data.d_status = GIMP_PDB_CALLING_ERROR;
   }
 
- if((l_rc < 0) && (values[0].data.d_status == GIMP_PDB_SUCCESS))
- {
+
+  if((l_rc < 0) && (values[0].data.d_status == GIMP_PDB_SUCCESS))
+  {
     values[0].data.d_status = GIMP_PDB_EXECUTION_ERROR;
- }
+  }
 
 }  /* end run */

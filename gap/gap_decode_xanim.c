@@ -95,10 +95,10 @@
 #define GAP_XANIM_HELP_ID  "plug-in-gap-xanim-decode"
 
 /* GAP includes */
+#include "gap_libgapbase.h"
 #include "gap_lib.h"
 #include "gap_arr_dialog.h"
 #include "gap_decode_xanim.h"
-#include "gap_file_util.h"
 
 extern      int gap_debug; /* ==0  ... dont print debug infos */
 

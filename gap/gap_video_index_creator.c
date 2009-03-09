@@ -37,6 +37,7 @@
 #include <libgimp/gimp.h>
 #include <libgimp/gimpui.h>
 
+#include "gap_libgapbase.h"
 #include "gap_arr_dialog.h"
 #include "gap_story_file.h"
 #include "gap_story_syntax.h"
@@ -411,6 +412,27 @@ p_check_videofile(const char *filename, gint32 seltrack
 
 
 /* --------------------------------
+ * p_is_valid_vindex_available
+ * --------------------------------
+ */
+static gboolean
+p_is_valid_vindex_available(t_GVA_Handle  *gvahand)
+{
+  gboolean    l_have_valid_vindex;
+
+  l_have_valid_vindex = FALSE;
+  if(gvahand->vindex)
+  {
+    if(gvahand->vindex->total_frames > 0)
+    {
+      l_have_valid_vindex = TRUE;
+    }
+  }
+  
+  return (l_have_valid_vindex);
+}
+
+/* --------------------------------
  * p_create_video_index
  * --------------------------------
  * check if specified filename is a videofile and if there is
@@ -493,13 +515,7 @@ p_create_video_index(const char *filename, gint32 seltrack
       }
     }
 
-    if(gvahand->vindex)
-    {
-      if(gvahand->vindex->total_frames > 0)
-      {
-        l_have_valid_vindex = TRUE;
-      }
-    }
+    l_have_valid_vindex = p_is_valid_vindex_available(gvahand);
 
     if (vindex_file == NULL)
     {
@@ -528,21 +544,38 @@ p_create_video_index(const char *filename, gint32 seltrack
       }
 
       gvahand->create_vindex = TRUE;
-      GVA_count_frames(gvahand);
+      GVA_count_frames(gvahand);      /* here we CRREATE the vindex */
 
       if ((vipp->cancel_video_api != TRUE)
-      && (gvahand->vindex))
+      && (TRUE == p_is_valid_vindex_available(gvahand)))
       {
         p_set_vref_userdata(vipp->vref, _("vindex created (FULLSCAN OK)"));
       }
       else
       {
         char *usrdata;
-        
-        usrdata = g_strdup_printf(_("NO vindex created (SMART %.1f%% %d frames)")
-                                 ,(float)vipp->breakPercentage
-                                 ,(int)vipp->breakFrames
-                                 );
+        if (vipp->val_ptr->mode == SMART_MODE)
+        {
+          if(g_file_test(vindex_file, G_FILE_TEST_EXISTS))
+          {
+            if(gap_debug)
+            {
+              printf("DELETE uncomplete vindex:%s\n", vindex_file);
+            }
+            g_remove(vindex_file);
+          }
+
+          usrdata = g_strdup_printf(_("NO vindex created (SMART %.1f%% %d frames)")
+                                   ,(float)vipp->breakPercentage
+                                   ,(int)vipp->breakFrames
+                                   );
+        }
+        else
+        {
+          usrdata = g_strdup_printf(_("incomplete vindex created (%d frames)")
+                                   ,(int)gvahand->frame_counter
+                                   );
+        }
         p_set_vref_userdata(vipp->vref, usrdata);
         g_free(usrdata);
       }
@@ -813,7 +846,7 @@ p_make_all_video_index(const char *filename, gint32 seltrack
          ,(int)vipp->numberOfVideos
          );
 
-      message = gap_lib_shorten_filename(NULL   /* prefix */
+      message = gap_base_shorten_filename(NULL   /* prefix */
                         ,vref->videofile        /* filenamepart */
                         ,suffix                 /* suffix */
                         ,90                     /* l_max_chars */
@@ -1113,7 +1146,7 @@ p_print_vref_list (GapVideoIndexCreatorProgressParams *vipp, GapStoryVideoFileRe
      gchar *processing_status;
 
      label = g_strdup_printf("%3d.", (int)count_elem +1);
-     video_filename = gap_lib_shorten_filename(NULL   /* prefix */
+     video_filename = gap_base_shorten_filename(NULL   /* prefix */
                         ,vref->videofile        /* filenamepart */
                         ,NULL                   /* suffix */
                         ,90                     /* l_max_chars */
@@ -1193,7 +1226,7 @@ p_tree_fill (GapVideoIndexCreatorProgressParams *vipp, GapStoryVideoFileRef  *vr
 
      label = g_strdup_printf("%3d.", (int)count_elem +1);
      numtxt = g_strdup_printf("%d", (int)count_elem);
-     video_filename = gap_lib_shorten_filename(NULL   /* prefix */
+     video_filename = gap_base_shorten_filename(NULL   /* prefix */
                         ,vref->videofile        /* filenamepart */
                         ,NULL                   /* suffix */
                         ,90                     /* l_max_chars */

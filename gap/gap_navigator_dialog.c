@@ -117,6 +117,7 @@
 #include <libgimp/gimp.h>
 #include <libgimp/gimpui.h>
 
+#include "gap_libgapbase.h"
 #include "gap_stock.h"
 #include "gap_timeconv.h"
 
@@ -600,13 +601,12 @@ run(const gchar *name
   {
     gimp_get_data(PLUGIN_NAME, &l_navid_pid);
 
+    /* note that the check gap_base_is_pid_alive implementation does not work on WINDOWS
+     */
 #ifndef G_OS_WIN32
     if(l_navid_pid != 0)
     {
-       /* kill  with signal 0 checks only if the process is alive (no signal is sent)
-        *       returns 0 if alive, 1 if no process with given pid found.
-        */
-      if (0 == kill(l_navid_pid, 0))
+      if (gap_base_is_pid_alive(l_navid_pid))
       {
          gap_arr_msg_win(GIMP_RUN_INTERACTIVE, _("Cant open two or more video navigator windows."));
          l_rc = -1;
@@ -618,7 +618,7 @@ run(const gchar *name
   if(l_rc == 0)
   {
     /* set pid data when navigator is running */
-    l_navid_pid = getpid();
+    l_navid_pid = gap_base_getpid();
     gimp_set_data(PLUGIN_NAME, &l_navid_pid, sizeof(pid_t));
     if (strcmp (name, PLUGIN_NAME) == 0)
     {
@@ -1237,7 +1237,7 @@ navi_reload_ainfo(gint32 image_id)
      * (this table is updated automatically by gap_goto and other gap procedures
      *  to inform the navigator dialog about changes of the active image_id)
      */
-    l_pid = getpid();
+    l_pid = gap_base_getpid();
     l_new_image_id = gap_navat_get_active_image(image_id, l_pid);
     if(l_new_image_id >= 0)
     {
@@ -1455,7 +1455,7 @@ navi_dialog_tooltips(void)
 {
   if(naviD == NULL) { return; }
 
-  naviD->tooltip_on = gap_lib_check_tooltips(&naviD->tooltip_on);
+  naviD->tooltip_on = gap_base_check_tooltips(&naviD->tooltip_on);
 
 }  /* end navi_dialog_tooltips */
 

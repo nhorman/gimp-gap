@@ -49,7 +49,7 @@
 
 /* MAX_PREV_OFFSET defines how to record defered url_offest frames of previous frames for byte positions in video index
  * in tests the byte based seek takes us to n frames after the wanted frame. Therefore video index creation
- * tries to comensate this by recording the offsets of the nth pervious frame.
+ * tries to compensate this by recording the offsets of the nth pervious frame.
  *
  * tuning: values 1 upto 12 did not compensate enough.
  * this resulted in more than 1 SYNC LOOP when positioning vio byte position and makes video index slower.
@@ -201,11 +201,6 @@ static void      p_vindex_add_url_offest(t_GVA_Handle *gvahand
                          );
 static guint16  p_gva_checksum(AVPicture *picture_yuv, gint32 height);
 static t_GVA_RetCode p_wrapper_ffmpeg_get_next_frame(t_GVA_Handle *gvahand);
-
-static gint32   p_get_gimprc_int_value (const char *gimprc_option_name
-                    , gint32 default_value, gint32 min_value, gint32 max_value);
-static gboolean p_get_gimprc_gboolean_value (const char *gimprc_option_name
-                    , gboolean default_value);
 
 static FILE *  p_init_timecode_log(t_GVA_Handle   *copy_gvahand);
 static void    p_timecode_check_and_log(FILE *fp_timecode_log, gint32 framenr
@@ -1011,7 +1006,8 @@ p_private_ffmpeg_get_next_frame(t_GVA_Handle *gvahand, gboolean do_copy_raw_chun
     /* --------- START potential CHUNK ----- */
     /* make a copy of the raw data packages for one video frame.
      * (we do not yet know if the raw data chunk is complete until
-     *  avcodec_decode_video the frame may
+     *  avcodec_decode_video indicates a complete frame by setting the
+     *  got_picture flag to TRUE)
      */
     if (do_copy_raw_chunk_data == TRUE)
     {
@@ -1322,7 +1318,7 @@ p_wrapper_ffmpeg_seek_frame(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit po
        * (prefere_native_seek yes)
        * if this flag is set to yes we use native seek and ignore the valid videoindex.
        */
-      if(p_get_gimprc_gboolean_value(GIMPRC_PERSISTENT_ANALYSE, ANALYSE_DEFAULT))
+      if(gap_base_get_gimprc_gboolean_value(GIMPRC_PERSISTENT_ANALYSE, ANALYSE_DEFAULT))
       {
         p_get_video_analyse_results(gvahand);
       }
@@ -1350,7 +1346,7 @@ static void p_reset_proberead_results(t_GVA_ffmpeg*  handle)
   handle->self_test_detected_seek_bug = FALSE;
   handle->eof_timecode = AV_NOPTS_VALUE;
   handle->video_libavformat_seek_gopsize
-    = p_get_gimprc_int_value("video-libavformat-seek-gopsize", DEFAULT_NAT_SEEK_GOPSIZE, 0, MAX_NAT_SEEK_GOPSIZE);
+    = gap_base_get_gimprc_int_value("video-libavformat-seek-gopsize", DEFAULT_NAT_SEEK_GOPSIZE, 0, MAX_NAT_SEEK_GOPSIZE);
 }  /* end p_reset_proberead_results */ 
 
 
@@ -1388,7 +1384,7 @@ p_seek_timecode_reliability_self_test(t_GVA_Handle *gvahand)
 
   persitent_analyse_available = FALSE;
 
-  if(p_get_gimprc_gboolean_value(GIMPRC_PERSISTENT_ANALYSE, ANALYSE_DEFAULT))
+  if(gap_base_get_gimprc_gboolean_value(GIMPRC_PERSISTENT_ANALYSE, ANALYSE_DEFAULT))
   {
     persitent_analyse_available =
       p_get_video_analyse_results(gvahand);
@@ -1514,7 +1510,7 @@ p_seek_timecode_reliability_self_test(t_GVA_Handle *gvahand)
       printf("\n\n\n\n\n");
     }
 
-    if(p_get_gimprc_gboolean_value(GIMPRC_PERSISTENT_ANALYSE, ANALYSE_DEFAULT))
+    if(gap_base_get_gimprc_gboolean_value(GIMPRC_PERSISTENT_ANALYSE, ANALYSE_DEFAULT))
     {
       p_save_video_analyse_results(gvahand);
       persitent_analyse_available = TRUE;
@@ -1656,6 +1652,15 @@ p_detect_total_frames_via_native_seek(t_GVA_Handle *gvahand)
   
   if(totalDetected >= totalPlausible)
   {
+    l_rc = p_seek_native_timcode_based(gvahand, totalDetected);
+    if (l_rc == GVA_RET_OK)
+    {
+      l_rc = p_wrapper_ffmpeg_get_next_frame(gvahand);
+    }
+    if (l_rc != GVA_RET_OK)
+    {
+      totalDetected--;
+    }
     gvahand->total_frames = totalDetected;
     gvahand->all_frames_counted = TRUE;
   }
@@ -1748,20 +1753,64 @@ p_clear_inbuf_and_vid_packet(t_GVA_ffmpeg *handle)
  *    a videoindex has stored offsets of the keyframes
  *    that were optional created by the count_frames procedure.
  *    The videoindex based seek modifies the libavformat internal straem seek position
- *    by an explicte call of url_fseek.
+ *    by an explicte call seek call (either to byte position or to timecode target)
  *    The index also has information about the (compressed) frame length and a checksum.
- *    In the Sync Loop(s) we try to find exactly the frame that is described in the index.
+ *    In the inner Sync Loop(s) we try to find exactly the frame that is described in the index.
+ *    The outer Loop (l_nloops) repeats the sync loop attempt by using a lower seek offset
+ *    from the previous video index entry and uses more read operations (l_synctries)
+ *    trying to find the target frame. (This is necessary because byte oriented
+ *    seek operations do not work exact and may position the video stream 
+ *    AFTER the target frame.
+ *    
  *    The postioning to last Group of pictures is done
- *    by sequential read. (it should contain at least one keyframe (I-frame)
+ *    by sequential read (l_readsteps). it should contain at least one keyframe (I-frame)
  *    that enables clean decoding of the following P and B frames
+ *
+ *                        video index table                              inner (synctries) and outer loop 
+ *
+ *                       |-------------------------------------------|
+ *                       | [10] seek_nr:000100  offset: len16:  DTS: |    
+ *                       |-------------------------------------------|
+ *
+ *
+ *                                                                                     (only in case 1st attempt failed
+ *                                                                                      to seek the video stream
+ *                                                                                      to exact target position)
+ *                       |-------------------------------------------|                 l_nloops = 2
+ *                       | [11] seek_nr:000110  offset: len16:  DTS: |                      |  1  l_synctries             
+ *                       |-------------------------------------------|                      |  2
+ *                                                                                          |  3
+ *                                                                                          |  4
+ *                                                                                          |  5
+ *                                                                                          |  6
+ *                                                                                          |  7
+ *                                                                                          |  8
+ *                                                                                          |  9
+ *                       |-------------------------------------------|  l_nloops = 1        |  10    
+ *  l_idx_target ------> | [12] seek_nr:000120  offset: len16:  DTS: |   |  1 l_synctries   |  11
+ *                       |-------------------------------------------|   |  2               |  12
+ *                                                                       |  3               |  13 
+ *                                                                       |  4               |  14 
+ *                                                                       |  5               |  15 
+ *                                                                       |  6               |  16 
+ *                                                                       |  7               |  17 
+ *                                                                       |  8               |  18 
+ *                       |-------------------------------------------|   |  9               |  19
+ *  l_idx_too_far -----> | [13] seek_nr:000130  offset: len16:  DTS: |   V  10              V  20 
+ *                       |-------------------------------------------|
+ *                                  
  *
  *  - the fallback method emulates
  *    seek by pos-1 sequential read ops.
  *    seek backwards must always reopen to reset stream position to start.
  *    this is very slow, creating a videoindex is recommanded for GUI-based applications
- *    
+ *
+ *    seek operation to the start (the first few frames) always use sequential read
+ *
+ *                 
  */
 #define GVA_IDX_SYNC_STEPSIZE 1
+#define GVA_FRAME_NEAR_START 24
 static t_GVA_RetCode
 p_seek_private(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit pos_unit)
 {
@@ -1770,7 +1819,9 @@ p_seek_private(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit pos_unit)
   gint32   l_frame_pos;
   gint32   l_url_frame_pos;
   gint32   l_readsteps;
+  gint32   l_summary_read_ops;
   gdouble  l_progress_step;
+  gboolean l_vindex_is_usable;
   t_GVA_Videoindex    *vindex;
 
   handle = (t_GVA_ffmpeg *)gvahand->decoder_handle;
@@ -1807,53 +1858,96 @@ p_seek_private(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit pos_unit)
 
   if(gap_debug)
   {
-    printf("p_wrapper_ffmpeg_seek_frame: start: l_frame_pos: %d cur_seek:%d cur_frame:%d  (prefere_native:%d gopsize:%d)\n"
+    printf("p_wrapper_ffmpeg_seek_frame: start: l_frame_pos: %d cur_seek:%d cur_frame:%d  (prefere_native:%d gopsize:%d) video:%s\n"
                            , (int)l_frame_pos
                            , (int)gvahand->current_seek_nr
                            , (int)gvahand->current_frame_nr
                            , (int)handle->prefere_native_seek
                            , (int)handle->video_libavformat_seek_gopsize
+                           , gvahand->filename
                            );
   }
   
 
   handle->dummy_read = TRUE;
   l_url_frame_pos = 0;
+  l_vindex_is_usable = FALSE;
+  l_summary_read_ops = 0;
+
+  if(l_frame_pos > GVA_FRAME_NEAR_START)
+  {
+    /* check if we have a usable video index */
+    if(vindex != NULL)
+    {
+       if(vindex->tabsize_used > 0)
+       {
+         gint32   l_max_seek;  /* seek to frames above this numer via video index will be slow */
+
+         l_max_seek = vindex->ofs_tab[vindex->tabsize_used-1].seek_nr + (2 * vindex->stepsize);
+         if(l_frame_pos <= l_max_seek)
+         {
+           l_vindex_is_usable = TRUE;
+           if(gap_debug)
+           {
+              printf("VINDEX flag l_vindex_is_usable is TRUE l_max_seek:%d (vindex->tabsize_used:%d)\n"
+                   , (int)l_max_seek
+                   , (int)vindex->tabsize_used
+                   );
+           }
+         }
+         else
+         {
+            if(gap_debug)
+            {
+              p_debug_print_videoindex(vindex);
+            }
+            printf("WARNING VINDEX flag l_vindex_is_usable is FALSE, the video Index is NOT COMPLETE ! for video:%s\n"
+                   " l_frame_pos:%d l_max_seek:%d (vindex->tabsize_used:%d) total_frames:%d\n"
+                   , gvahand->filename
+                   , (int)l_frame_pos
+                   , (int)l_max_seek
+                   , (int)vindex->tabsize_used
+                   , (int)gvahand->total_frames
+                   );
+         }
+       }
+    }
 
   
-  /* check if we have a video index, if not try native timecode based seek
-   */
-  if((vindex == NULL) || (handle->prefere_native_seek))
-  {
-    /* try native av_seek_frame if enabled by gimprc configuration
-     * (native seek is disabled if video_libavformat_seek_gopsize == 0)
+    /* check conditions and try native timecode based seek if conditions permit native seek.
      */
-    if (handle->video_libavformat_seek_gopsize > 0)
+    if((l_vindex_is_usable != TRUE) || (handle->prefere_native_seek))
     {
-      l_rc_rd = p_seek_native_timcode_based(gvahand, l_frame_pos);
-      if(l_rc_rd == GVA_RET_OK)
+      /* try native av_seek_frame if enabled by gimprc configuration
+       * (native seek is disabled if video_libavformat_seek_gopsize == 0)
+       */
+      if (handle->video_libavformat_seek_gopsize > 0)
       {
-        if(gap_debug)
+        l_rc_rd = p_seek_native_timcode_based(gvahand, l_frame_pos);
+        if(l_rc_rd == GVA_RET_OK)
         {
-          printf("NATIVE SEEK performed for videofile:%s\n"
-            , gvahand->filename
-            );
+          if(gap_debug)
+          {
+            printf("NATIVE SEEK performed for videofile:%s\n"
+              , gvahand->filename
+              );
+          }
+          return (l_rc_rd);
         }
-        return (l_rc_rd);
-      }
-    }  
+      }  
+    }    
+    
   }
 
-  if(vindex != NULL)
+  /* use video index where possible */
+  if((vindex != NULL) && (l_frame_pos > GVA_FRAME_NEAR_START))
   {
      gint64  seek_pos;
      gint32  l_idx;
-     gint32  l_extra_tries_at_end;
-
-     l_extra_tries_at_end = 0;
 
      if(gap_debug)
      {
+       //p_debug_print_videoindex(vindex);
        printf("VIDEO INDEX is available for videofile:%s vindex->tabsize_used:%d\n"
          , gvahand->filename
          , (int)vindex->tabsize_used
@@ -1896,6 +1990,14 @@ p_seek_private(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit pos_unit)
          while(vindex->ofs_tab[l_idx].seek_nr < l_pos_min)
          {
            l_idx++;
+           if(l_idx > vindex->tabsize_used -1)
+           {
+             l_idx = vindex->tabsize_used -1;
+             printf("WARNING: videoindex is NOT complete ! Seek to frame numers > seek_nr:%d will be VERY SLOW!\n"
+                           , (int)vindex->ofs_tab[l_idx].seek_nr
+                           );
+             break;
+           }
            if(gap_debug)
            {
              printf("SEEK: lower idx adjustment l_idx: %d l_pos_min:%d seek_nr[%d]:%d\n"
@@ -1904,10 +2006,6 @@ p_seek_private(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit pos_unit)
                            , (int)vindex->ofs_tab[l_idx].seek_nr
                            , (int)l_idx
                            );
-           }
-           if(l_idx > vindex->tabsize_used -1)
-           {
-             break;
            }
          }
        }
@@ -1937,15 +2035,32 @@ p_seek_private(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit pos_unit)
        if(l_idx > 0)
        {
          gint32  l_idx_target;
+         gint32  l_idx_too_far;    /* next index position after the target
+                                    * when this position is reached we are already too far
+                                    * and must retry with a lower position at next attempt
+                                    */
+         gboolean l_target_found;
 
+         l_target_found = FALSE;
          l_idx_target = l_idx;
+         l_idx_too_far = l_idx_target + 1;
+         if (l_idx_too_far > vindex->tabsize_used -1)
+         {
+           l_idx_too_far = -1;  /* mark as invalid */
+         }
          
          l_readsteps = l_frame_pos - gvahand->current_seek_nr;
          if((l_readsteps > vindex->stepsize)
          || (l_readsteps < 0))
          {
-           gint32  l_synctries;
-           gint32  l_nloops;
+           gint32  l_nloops;     /* number of seek attempts with different recorded videoindex entries 
+                                  * (outer loop)
+                                  */
+           gint32  l_synctries;  /* number of frame read attempts until
+                                  * the frame read from video stream matches
+                                  * the ident data of the recorded frame in the videoindex[l_idx]
+                                  * (inner loop counter)
+                                  */
 
            l_nloops = 1;
            while((l_idx >= 0) && (l_nloops < 12))
@@ -1976,7 +2091,7 @@ p_seek_private(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit pos_unit)
                );
              }
              
-             l_synctries = 4 + MAX_PREV_OFFSET + (vindex->stepsize * GVA_IDX_SYNC_STEPSIZE) + l_extra_tries_at_end;
+             l_synctries = 4 + MAX_PREV_OFFSET + (vindex->stepsize * GVA_IDX_SYNC_STEPSIZE * l_nloops);
 
              /* SYNC READ loop
               * seek to offest found in the index table
@@ -2029,25 +2144,24 @@ p_seek_private(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit pos_unit)
 
              gvahand->current_seek_nr = vindex->ofs_tab[vindex->tabsize_used].uni.offset_gint64;
 
-             l_rc_rd = GVA_RET_OK;
-             while((l_rc_rd == GVA_RET_OK)
-             && (l_synctries > 0))
+             while(l_synctries > 0)
              {
                gboolean l_potentialCanditate;
                
                l_potentialCanditate = FALSE;
                l_rc_rd = p_wrapper_ffmpeg_get_next_frame(gvahand);
+               l_summary_read_ops++;
 
                if(l_rc_rd != GVA_RET_OK)
                {
-                 l_extra_tries_at_end += vindex->stepsize;
                  l_synctries = -1;
                  if(gap_debug)
                  {
-                   printf("EOF or ERROR while SEEK_SYNC_LOOP l_extra_tries_at_end:%d\n", (int)l_extra_tries_at_end);
+                   printf("EOF or ERROR while SEEK_SYNC_LOOP\n");
                  }
                  break;
                }
+
 //
 //               printf("SEEK_SYNC_LOOP: idx_frame_len:%d  got_frame_length16:%d  Key:%d dts:%lld\n"
 //                    , (int)vindex->ofs_tab[l_idx_target].frame_length
@@ -2064,14 +2178,14 @@ p_seek_private(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit pos_unit)
                   * (an additional length check would fail in this situation due to the buggy
                   * length information)
                   */
-                 if(TRUE == p_areTimecodesEqualWithTolerance(vindex->ofs_tab[l_idx].timecode_dts, handle->vid_pkt.dts))
+                 if(TRUE == p_areTimecodesEqualWithTolerance(vindex->ofs_tab[l_idx_target].timecode_dts, handle->vid_pkt.dts))
                  {
                    l_potentialCanditate = TRUE;
                  }
                }
                else
                {
-                 /* handling for old index formats without timecode */
+                 /* handling for index without usable timecode */
                  if(vindex->ofs_tab[l_idx_target].frame_length == handle->got_frame_length16)
                  {
                    l_potentialCanditate = TRUE;
@@ -2086,15 +2200,44 @@ p_seek_private(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit pos_unit)
                  if(l_checksum == vindex->ofs_tab[l_idx_target].checksum)
                  {
                    /* we have found the wanted (key) frame */
+                   l_target_found = TRUE;
+                   break;
+                 }
+                 else if ((vindex->ofs_tab[l_idx_target].timecode_dts != AV_NOPTS_VALUE)
+                      &&  (TRUE == p_areTimecodesEqualWithTolerance(vindex->ofs_tab[l_idx_target].timecode_dts, handle->vid_pkt.dts)))
+                 {
+                   /* ignore the checksum missmatch when DTS timecode is matching
+                    */
+                   if(gap_debug)
+                   {
+                     printf("SEEK_SYNC_LOOP: CHKSUM_MISSMATCH: CHECKSUM[%d]:%d  l_checksum:%d but DTS equal:%lld \n"
+                     , (int)l_idx_target
+                     , (int)vindex->ofs_tab[l_idx_target].checksum
+                     , (int)l_checksum
+                     , handle->vid_pkt.dts
+                     );
+                   }
+                   l_target_found = TRUE;
                    break;
                  }
                  else
                  {
+                   /* checksum missmatch is non critical in most cases.
+                    * a) there may be frames where the packed length is equal to the
+                    *    wanted frame (NOT CRITICAL)
+                    * b) after seek to a non-keyframe and subsequent reads
+                    *    the resulting frame may be the wanted frame but is corrupted
+                    *    (due to some missing delta information that was not yet read)
+                    *    in this case the frame delivers wrong checksum. (CRITICAL)
+                    * this code assumes case a) and
+                    * continues searching for an exactly matching frame
+                    * but also respects case b) in the next outer loop attempt.
+                    * (with l_nloops == 2 where we start from a lower seek position)
+                    * this shall increase the chance to perfectly decode the frame
+                    * and deliver the correct checksum.
+                    */
                    if(gap_debug)
                    {
-                     /* checksum missmatch is non critical
-                      * continue searching for an exactly matching frame
-                      */
                      printf("SEEK_SYNC_LOOP: CHKSUM_MISSMATCH: CHECKSUM[%d]:%d  l_checksum:%d\n"
                      , (int)l_idx_target
                      , (int)vindex->ofs_tab[l_idx_target].checksum
@@ -2103,12 +2246,34 @@ p_seek_private(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit pos_unit)
                    }
                  }
                }
+               else
+               {
+                  if (l_idx_too_far > 0)  /* check for valid index */
+                  {
+                    /* Check if we are already AFTER the wanted position */
+                    if(vindex->ofs_tab[l_idx_too_far].frame_length == handle->got_frame_length16)
+                    {
+                      guint16 l_checksum;
+
+                      l_checksum = p_gva_checksum(handle->picture_yuv, gvahand->height);
+                      if(l_checksum == vindex->ofs_tab[l_idx_too_far].checksum)
+                      {
+                        l_synctries = -1;
+                        if(gap_debug)
+                        {
+                          printf("SEEK_SYNC_LOOP position is already after wanted target\n");
+                        }
+                        break;
+                      }
+                    }
+                  }
+               }
                
                l_synctries--;
              }                     /* end while */
              
              
-             if(l_synctries <= 0)
+             if(l_target_found != TRUE)
              {
                /* index sync search failed, try with previous index in the table */
                if(l_idx < GVA_IDX_SYNC_STEPSIZE)
@@ -2132,14 +2297,14 @@ p_seek_private(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit pos_unit)
                                         , (int)l_url_frame_pos
                                         );
                }
-               gvahand->current_seek_nr = (gint32)l_url_frame_pos;
+               gvahand->current_seek_nr = l_url_frame_pos;
                l_readsteps = l_frame_pos - gvahand->current_seek_nr;
                if(gap_debug)
                {
-                 printf("SEEK: l_readsteps: %d\n", (int)l_readsteps);
+                 printf("SEEK: sync loop success remaining l_readsteps: %d\n", (int)l_readsteps);
                }
   
-               break;  /* OK, we are now at read position of the wanted keyframe */
+               break;  /* OK, escape from outer loop, we are now at read position of the wanted keyframe */
              }
 
              if(l_dts_timecode_usable == TRUE)
@@ -2158,6 +2323,18 @@ p_seek_private(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit pos_unit)
                l_idx -= GVA_IDX_SYNC_STEPSIZE;
              }
              l_nloops++;
+           }                 /* end outer loop (l_nloops) */
+           
+           if (l_target_found != TRUE)
+           {
+             p_ffmpeg_vid_reopen_read(handle, gvahand);
+             gvahand->current_seek_nr = 1;
+             l_url_frame_pos = 0;
+             if(gap_debug)
+             {
+                printf("SEEK: target frame not found, fallback to slow sequential read from begin\n");
+             }
+             
            }
            
          }
@@ -2165,16 +2342,22 @@ p_seek_private(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit pos_unit)
      }
   }
   
+  
+  /* fallback to sequential read */
+
   if(l_url_frame_pos == 0)
   {
     /* emulate seek with N steps of read ops */
-    if(l_frame_pos < gvahand->current_seek_nr)
+    if((l_frame_pos < gvahand->current_seek_nr)   /* position backwards ? */
+    || (gvahand->current_seek_nr < 0))            /* inplausible current position ? */ 
     {
+      /* reopen and read from start */
       p_ffmpeg_vid_reopen_read(handle, gvahand);
       l_readsteps = l_frame_pos -1;
     }
     else
     {
+      /* continue read from current position */
       l_readsteps = l_frame_pos - gvahand->current_seek_nr;
     }
   }
@@ -2190,6 +2373,7 @@ p_seek_private(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit pos_unit)
   &&    (l_rc_rd == GVA_RET_OK))
   {
     l_rc_rd = p_wrapper_ffmpeg_get_next_frame(gvahand);
+    l_summary_read_ops++;
     gvahand->percentage_done = CLAMP(gvahand->percentage_done + l_progress_step, 0.0, 1.0);
 
     if(gvahand->do_gimp_progress) {  gimp_progress_update (gvahand->percentage_done); }
@@ -2212,10 +2396,12 @@ p_seek_private(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit pos_unit)
   {
     if(gap_debug)
     {
-       printf("p_wrapper_ffmpeg_seek_frame: SEEK OK: l_frame_pos: %d cur_seek:%d cur_frame:%d\n"
+       printf("p_wrapper_ffmpeg_seek_frame: SEEK OK: l_frame_pos: %d cur_seek:%d cur_frame:%d l_summary_read_ops:%d video:%s\n"
                             , (int)l_frame_pos
                             , (int)gvahand->current_seek_nr
                             , (int)gvahand->current_frame_nr
+                            , (int)l_summary_read_ops
+                            , gvahand->filename
                             );
     }
 
@@ -2244,7 +2430,7 @@ p_seek_private(t_GVA_Handle *gvahand, gdouble pos, t_GVA_PosUnit pos_unit)
  * In both cases this procedure can calculate the correct timecode that
  * is required for frame exact postioning.
  *
- * Some videos use variable timecode all over the video. For scuh videos
+ * Some videos use variable timecode all over the video. For such videos
  * where no typical pattern can be detected, the native timecodebased seek
  * is not possible.
  * Some videoformats do not allow seek at all.
@@ -2279,7 +2465,7 @@ p_seek_native_timcode_based(t_GVA_Handle *gvahand, gint32 target_frame)
   gboolean l_retry;
 
 #define NATIVE_SEEK_GOP_INCREASE 24
-
+#define NATIVE_SEEK_EXTRA_PREREADS_NEAR_END 22
 
   handle = (t_GVA_ffmpeg *)gvahand->decoder_handle;
  
@@ -2941,7 +3127,7 @@ p_wrapper_ffmpeg_count_frames(t_GVA_Handle *gvahand)
   gvahand->percentage_done = 0.0;
   persitent_analyse_available = FALSE;
 
-  if(p_get_gimprc_gboolean_value(GIMPRC_PERSISTENT_ANALYSE, ANALYSE_DEFAULT))
+  if(gap_base_get_gimprc_gboolean_value(GIMPRC_PERSISTENT_ANALYSE, ANALYSE_DEFAULT))
   {
       persitent_analyse_available = p_seek_timecode_reliability_self_test(gvahand);
       gvahand->percentage_done = 0.0;
@@ -4274,71 +4460,6 @@ p_gva_checksum(AVPicture *picture_yuv, gint height)
 }  /* end p_gva_checksum */
 
 
-/* -----------------------------------------
- * p_get_gimprc_int_value
- * -----------------------------------------
- */
-static gint32
-p_get_gimprc_int_value (const char *gimprc_option_name
-   , gint32 default_value, gint32 min_value, gint32 max_value)
-{
-  char *value_string;
-  gint32 value;
-  
-  value = default_value;
-
-  value_string = gimp_gimprc_query(gimprc_option_name);
-  if(value_string)
-  {
-     value = atol(value_string);
-     g_free(value_string);
-  }  
-  
-  value = CLAMP(value, min_value, max_value);
-  if(gap_debug)
-  {
-    printf("GIMPRC parameter:%s  value:%d\n", gimprc_option_name, value);
-  }
-  return (value);
-  
-}  /* end p_get_gimprc_int_value */
-
-
-/* -----------------------------------------
- * p_get_gimprc_gboolean_value
- * -----------------------------------------
- */
-static gboolean
-p_get_gimprc_gboolean_value (const char *gimprc_option_name
-   , gboolean default_value)
-{
-  char *value_string;
-  gboolean value;
-  
-  value = default_value;
-
-  value_string = gimp_gimprc_query(gimprc_option_name);
-  if(value_string)
-  {
-     if ((*value_string == 'y') || (*value_string == 'Y'))
-     {
-       value = TRUE;
-     }
-     else
-     {
-       value = FALSE;
-     }
-     g_free(value_string);
-  }  
-  
-  if(gap_debug)
-  {
-    printf("GIMPRC parameter:%s  value:%d\n", gimprc_option_name, value);
-  }
-  return (value);
-  
-}  /* end p_get_gimprc_gboolean_value */
-
 
 /* ----------------------------------
  * p_init_timecode_log
@@ -4356,7 +4477,7 @@ p_init_timecode_log(t_GVA_Handle   *gvahand)
   gchar *timecode_logfile_name;
  
   gimprc_timecode_log
-    = p_get_gimprc_int_value("video-libavformat-timecodelog", 0, 0, 1);
+    = gap_base_get_gimprc_int_value("video-libavformat-timecodelog", 0, 0, 1);
   fp_timecode_log = NULL;
   timecode_logfile_name = g_strdup("\0");
 
@@ -4548,7 +4669,7 @@ p_save_video_analyse_results(t_GVA_Handle *gvahand)
   analysefile_name = p_create_analysefile_name(gvahand);
   
   /* current videofile timestamp */
-  master_handle->timestamp = GVA_file_get_mtime(gvahand->filename);
+  master_handle->timestamp = gap_file_get_mtime(gvahand->filename);
   master_handle->readsteps_probe_timecode = READSTEPS_PROBE_TIMECODE;
 
 
@@ -4602,7 +4723,7 @@ p_save_video_analyse_results(t_GVA_Handle *gvahand)
            , master_handle->vid_input_context->duration
            , p_timecode_to_frame_nr(master_handle, stt+duration3)
            , p_timecode_to_frame_nr(master_handle, master_handle->eof_timecode)
-           , p_get_gimprc_int_value("video-libavformat-seek-gopsize", DEFAULT_NAT_SEEK_GOPSIZE, 0, MAX_NAT_SEEK_GOPSIZE)
+           , gap_base_get_gimprc_int_value("video-libavformat-seek-gopsize", DEFAULT_NAT_SEEK_GOPSIZE, 0, MAX_NAT_SEEK_GOPSIZE)
            , master_handle->video_libavformat_seek_gopsize
            );
     }
@@ -4667,7 +4788,7 @@ p_get_video_analyse_results(t_GVA_Handle *gvahand)
   
   scanned_items = gap_val_scann_filevalues(keylist, analysefile_name);
   gap_val_free_keylist(keylist);
-  curr_mtime = GVA_file_get_mtime(gvahand->filename);
+  curr_mtime = gap_file_get_mtime(gvahand->filename);
 
   ret = TRUE;
 

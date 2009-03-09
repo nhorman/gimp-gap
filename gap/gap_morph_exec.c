@@ -52,6 +52,7 @@
 #include "libgimp/gimp.h"
 
 /* GAP includes */
+#include "gap_libgapbase.h"
 #include "gap-intl.h"
 #include "gap_image.h"
 #include "gap_morph_main.h"
@@ -250,13 +251,13 @@ gap_moprh_exec_save_workpointfile(const char *filename
                   ,(int)mgup->mgpp->tween_steps
                   );
     fprintf(l_fp, "AFFECT-RADIUS:");
-    gap_lib_fprintf_gdouble(l_fp, mgup->mgpp->affect_radius, 4, 2, " ");
+    gap_base_fprintf_gdouble(l_fp, mgup->mgpp->affect_radius, 4, 2, " ");
     fprintf(l_fp, " # pixels\n");
 
     fprintf(l_fp, "INTENSITY:");
     if(mgup->mgpp->use_gravity)
     {
-      gap_lib_fprintf_gdouble(l_fp, mgup->mgpp->gravity_intensity, 2, 3, " ");
+      gap_base_fprintf_gdouble(l_fp, mgup->mgpp->gravity_intensity, 2, 3, " ");
       fprintf(l_fp, "\n");
     }
     else
@@ -292,10 +293,10 @@ gap_moprh_exec_save_workpointfile(const char *filename
     for(wp = mgup->mgpp->master_wp_list; wp != NULL; wp = (GapMorphWorkPoint *)wp->next)
     {
       fprintf(l_fp, "WP: ");
-      gap_lib_fprintf_gdouble(l_fp, wp->osrc_x, 4, 3, " ");
-      gap_lib_fprintf_gdouble(l_fp, wp->osrc_y, 4, 3, " ");
-      gap_lib_fprintf_gdouble(l_fp, wp->fdst_x, 4, 3, " ");
-      gap_lib_fprintf_gdouble(l_fp, wp->fdst_y, 4, 3, " ");
+      gap_base_fprintf_gdouble(l_fp, wp->osrc_x, 4, 3, " ");
+      gap_base_fprintf_gdouble(l_fp, wp->osrc_y, 4, 3, " ");
+      gap_base_fprintf_gdouble(l_fp, wp->fdst_x, 4, 3, " ");
+      gap_base_fprintf_gdouble(l_fp, wp->fdst_y, 4, 3, " ");
 
       fprintf(l_fp, "\n");   /* terminate the output line */
     }
@@ -387,7 +388,7 @@ p_load_workpointfile(const char *filename
          if(strncmp(l_ptr, "LAYER-SIZES:", l_len) == 0)
          {
            l_ptr += l_len;
-           l_cnt = gap_lib_sscan_flt_numbers(l_ptr, &l_farr[0], MAX_NUMVALUES_PER_LINE);
+           l_cnt = gap_base_sscan_flt_numbers(l_ptr, &l_farr[0], MAX_NUMVALUES_PER_LINE);
            if(l_cnt >= 4)
            {
              src_scale_x =  MAX(1,src_layer_width)  / MAX(1,l_farr[0]);
@@ -408,7 +409,7 @@ p_load_workpointfile(const char *filename
          if(strncmp(l_ptr, "TWEEN-STEPS:", l_len) == 0)
          {
            l_ptr += l_len;
-           l_cnt = gap_lib_sscan_flt_numbers(l_ptr, &l_farr[0], MAX_NUMVALUES_PER_LINE);
+           l_cnt = gap_base_sscan_flt_numbers(l_ptr, &l_farr[0], MAX_NUMVALUES_PER_LINE);
            if(l_cnt >= 1)
            {
              *tween_steps = MAX(1,l_farr[0]);
@@ -426,7 +427,7 @@ p_load_workpointfile(const char *filename
          if(strncmp(l_ptr, "AFFECT-RADIUS:", l_len) == 0)
          {
            l_ptr += l_len;
-           l_cnt = gap_lib_sscan_flt_numbers(l_ptr, &l_farr[0], MAX_NUMVALUES_PER_LINE);
+           l_cnt = gap_base_sscan_flt_numbers(l_ptr, &l_farr[0], MAX_NUMVALUES_PER_LINE);
            if(l_cnt >= 1)
            {
              *affect_radius = MAX(0,l_farr[0]);
@@ -444,7 +445,7 @@ p_load_workpointfile(const char *filename
          if(strncmp(l_ptr, "INTENSITY:", l_len) == 0)
          {
            l_ptr += l_len;
-           l_cnt = gap_lib_sscan_flt_numbers(l_ptr, &l_farr[0], MAX_NUMVALUES_PER_LINE);
+           l_cnt = gap_base_sscan_flt_numbers(l_ptr, &l_farr[0], MAX_NUMVALUES_PER_LINE);
            if(l_cnt >= 1)
            {
              *gravity_intensity = MAX(0,l_farr[0]);
@@ -466,7 +467,7 @@ p_load_workpointfile(const char *filename
          if(strncmp(l_ptr, "QUALITY-WP-SELECT:", l_len) == 0)
          {
            l_ptr += l_len;
-           l_cnt = gap_lib_sscan_flt_numbers(l_ptr, &l_farr[0], MAX_NUMVALUES_PER_LINE);
+           l_cnt = gap_base_sscan_flt_numbers(l_ptr, &l_farr[0], MAX_NUMVALUES_PER_LINE);
            if(l_cnt >= 1)
            {
 	     *use_quality_wp_selection = FALSE;
@@ -488,7 +489,7 @@ p_load_workpointfile(const char *filename
          if(strncmp(l_ptr, "WP:", l_len) == 0)
          {
            l_ptr += l_len;
-           l_cnt = gap_lib_sscan_flt_numbers(l_ptr, &l_farr[0], MAX_NUMVALUES_PER_LINE);
+           l_cnt = gap_base_sscan_flt_numbers(l_ptr, &l_farr[0], MAX_NUMVALUES_PER_LINE);
            if(l_cnt >= 4)
            {
              wp = g_new(GapMorphWorkPoint, 1);

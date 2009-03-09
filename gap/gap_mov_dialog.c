@@ -113,6 +113,7 @@
 #include "libgimp/gimpui.h"
 
 /* GAP includes */
+#include "gap_libgapbase.h"
 #include "gap_layer_copy.h"
 #include "gap_lib.h"
 #include "gap_image.h"
@@ -459,7 +460,7 @@ long      gap_mov_dlg_move_dialog    (GapMovData *mov_ptr)
 
   pvals = mov_ptr->val_ptr;
 
-  l_str = gap_lib_strdup_del_underscore(mov_ptr->dst_ainfo_ptr->basename);
+  l_str = gap_base_strdup_del_underscore(mov_ptr->dst_ainfo_ptr->basename);
   mgp->pointfile_name  = g_strdup_printf("%s.path_points", l_str);
   g_free(l_str);
 

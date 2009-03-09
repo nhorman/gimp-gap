@@ -37,7 +37,7 @@
  * 1.1.29a; 2000/11/23   hof: gap locking (changed to procedures and placed here)
  * 1.1.20a; 2000/04/25   hof: new: gap_lib_get_video_paste_name p_clear_video_paste
  * 1.1.14a; 2000/01/02   hof: new: gap_lib_get_frame_nr
- * 1.1.8a;  1999/08/31   hof: new: gap_lib_strdup_del_underscore and gap_lib_strdup_add_underscore
+ * 1.1.8a;  1999/08/31   hof: new: gap_lib_strdup_del_underscore and gap_lib(base)_strdup_add_underscore
  * 0.99.00; 1999/03/15   hof: prepared for win/dos filename conventions
  * 0.96.02; 1998/08/05   hof: extended gap_dup (duplicate range instead of singele frame)
  *                            added gap_shift (framesequence shift)
@@ -55,12 +55,6 @@
 
 
 /* procedures used in other gap*.c files */
-char *       gap_lib_shorten_filename(const char *prefix
-                        ,const char *filename
-			,const char *suffix
-			,gint32 max_chars
-			);
-char *       gap_lib_dup_filename_and_replace_extension_by_underscore(const char *filename);
 int          gap_lib_file_exists(const char *fname);
 char*        gap_lib_searchpath_for_exefile(const char *exefile, const char *path);
 int          gap_lib_file_copy(char *fname, char *fname_copy);
@@ -81,8 +75,6 @@ char*  gap_lib_alloc_fname_fixed_digits(char *basename, long nr, char *extension
 char*  gap_lib_alloc_fname(char *basename, long nr, char *extension);
 char*  gap_lib_alloc_fname6(char *basename, long nr, char *extension, long default_digits);
 gboolean gap_lib_exists_frame_nr(GapAnimInfo *ainfo_ptr, long nr, long *l_has_digits);
-char*  gap_lib_strdup_add_underscore(char *name);
-char*  gap_lib_strdup_del_underscore(char *name);
 
 long  gap_lib_get_frame_nr(gint32 image_id);
 long  gap_lib_get_frame_nr_from_name(char *fname);
@@ -94,8 +86,6 @@ gint32 gap_vid_edit_clear(void);
 gint32 gap_vid_edit_framecount(void);
 gint   gap_vid_edit_copy(GimpRunMode run_mode, gint32 image_id, long range_from, long range_to);
 gint32 gap_vid_edit_paste(GimpRunMode run_mode, gint32 image_id, long paste_mode);
-gint32 gap_lib_getpid(void);
-gint   gap_lib_pid_is_alive(gint32 pid);
 
 gboolean gap_lib_gap_check_save_needed(gint32 image_id);
 
@@ -103,9 +93,6 @@ int      gap_lib_rename_frame(GapAnimInfo *ainfo_ptr, long from_nr, long to_nr);
 int      gap_lib_delete_frame(GapAnimInfo *ainfo_ptr, long nr);
 gint32   gap_lib_replace_image(GapAnimInfo *ainfo_ptr);
 
-void     gap_lib_fprintf_gdouble(FILE *fp, gdouble value, gint digits, gint precision_digits, const char *pfx);
-gint     gap_lib_sscan_flt_numbers(gchar *buf, gdouble *farr, gint farr_max);
-gboolean gap_lib_check_tooltips(gboolean *old_state);
 
 #endif
 

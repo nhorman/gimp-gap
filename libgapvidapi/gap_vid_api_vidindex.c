@@ -196,6 +196,7 @@ GVA_build_video_toc_filename(const char *filename, const char *decoder_name)
   return(toc_file);
 }  /* end GVA_build_video_toc_filename */
 
+
 /* ----------------------------------
  * GVA_new_videoindex
  * ----------------------------------
@@ -210,12 +211,13 @@ GVA_new_videoindex(void)
   {
     vindex->tabtype = GVA_IDX_TT_GINT64;
     vindex->videoindex_filename = NULL;
-    vindex->tocfile = NULL;
     vindex->videofile_uri = NULL;
+    vindex->tocfile = NULL;
     vindex->stepsize = GVA_VIDINDEXTAB_DEFAULT_STEPSIZE;
     vindex->tabsize_used = 0;
     vindex->tabsize_allocated = 0;
     vindex->track = 1;
+    vindex->total_frames = 0;
     vindex->mtime = 0;        /* is set later when saved to file */
     vindex->ofs_tab = NULL;
   }
@@ -223,6 +225,8 @@ GVA_new_videoindex(void)
   return(vindex);
   
 }  /* end GVA_new_videoindex */
+
+
 
 
 /* ----------------------------------
@@ -390,7 +394,7 @@ GVA_load_videoindex(const char *filename, gint32 track, const char *decoder_name
                , vindex->hdr.val_mtim);
           }
 
-	  l_mtime = GVA_file_get_mtime(filename);
+	  l_mtime = gap_file_get_mtime(filename);
 	  if(p_equal_mtime(l_mtime, vindex->mtime) == TRUE)
 	  {
             l_flen = atol(vindex->hdr.val_flen);
@@ -558,7 +562,7 @@ GVA_save_videoindex(t_GVA_Videoindex *vindex, const char *filename, const char *
     return (FALSE);
   }
   
-  vindex->mtime = GVA_file_get_mtime(filename);
+  vindex->mtime = gap_file_get_mtime(filename);
 
   /* use one or 2 extra bytes for one or 2 terminating \0 characters
    * (l_flen must be even number)

@@ -50,7 +50,7 @@
 #include "gap_gvetypes.h"
 
 
-#include "gap_file_util.h"
+#include "gap_libgapbase.h"
 #include "gap_libgimpgap.h"
 #include "gap_audio_wav.h"
 #include "gap_arr_dialog.h"    /* for the GUI provisorium */

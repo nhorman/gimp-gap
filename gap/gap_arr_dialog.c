@@ -100,9 +100,9 @@
 #include "libgimp/gimpui.h"
 
 /* private includes */
+#include "gap_libgapbase.h"
 #include "gap_arr_dialog.h"
 #include "gap_stock.h"
-#include "gap_file_util.h"
 #include "gap-intl.h"
 
 /* default alignment for labels 0.0 == left, 1.0 == right */

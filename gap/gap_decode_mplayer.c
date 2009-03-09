@@ -188,10 +188,10 @@
 
 
 /* GAP includes */
+#include "gap_libgapbase.h"
 #include "gap_lib.h"
 #include "gap_arr_dialog.h"
 #include "gap_decode_mplayer.h"
-#include "gap_file_util.h"
 
 extern      int gap_debug; /* ==0  ... dont print debug infos */
 
@@ -788,7 +788,7 @@ p_init_mplayer_working_dir(GapMPlayerParams *gpp)
 
 
   /* include process id of the current process in the temp dir name */
-  l_pid = getpid();
+  l_pid = gap_base_getpid();
   g_snprintf(tmp_dir, sizeof(tmp_dir), "tmp_mplayer_frames.%d", (int)l_pid);
 
   if((gpp->basename[0] != '\0')
@@ -1143,10 +1143,7 @@ p_poll(GapMPlayerParams *gpp, pid_t mplayer_pid, char *ext)
   if(gap_debug) printf("poll started on mplayer pid: %d\n", (int)mplayer_pid);
 
 
-  /* kill  with signal 0 checks only if the process is alive (no signal is sent)
-   *       returns 0 if alive, 1 if no process with given pid found.
-   */
-  while (0 == kill(mplayer_pid, 0))
+  while (gap_base_is_pid_alive(mplayer_pid))
   {
     usleep(100000);  /* sleep 1 second, and let mplayer write some frames */
 

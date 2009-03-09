@@ -244,22 +244,6 @@ GVA_md5_string(char *name, const char *uri)
   }  
 }  /* end GVA_md5_string */
 
-/* --------------------------------
- * GVA_file_get_mtime
- * --------------------------------
- */
-gint32
-GVA_file_get_mtime(const char *filename)
-{
-  struct stat  l_stat;
-
-  if (0 == g_stat(filename, &l_stat))
-  {
-    return(l_stat.st_mtime);
-  }
-  return(0);
-  
-}  /* end GVA_file_get_mtime */
 
 /* --------------------------------
  * GVA_filename_to_uri

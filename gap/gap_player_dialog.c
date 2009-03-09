@@ -93,6 +93,7 @@
 #include <libgimp/gimp.h>
 #include <libgimp/gimpui.h>
 
+#include "gap_libgapbase.h"
 #include "gap_player_main.h"
 #include "gap_player_dialog.h"
 #include "gap_pdb_calls.h"
@@ -110,7 +111,6 @@
 #include "gap_onion_base.h"
 #include "gap_audio_extract.h"
 #include "gap_audio_extract.h"
-#include "gap_file_util.h"
 #include "gap_drawable_vref_parasite.h"
 
 #include "gap-intl.h"
@@ -387,7 +387,7 @@ static void         p_update_ainfo_for_videofile(GapPlayerMainGlobalParams *gpp)
 static void
 p_check_tooltips(void)
 {
-  gap_lib_check_tooltips(NULL);
+  gap_base_check_tooltips(NULL);
 }  /* end p_check_tooltips */
 
 
@@ -942,12 +942,10 @@ p_check_otone_workfile_up_to_date(const char *videofilename, const char *audiofi
     return(FALSE);
   }
 
-#ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
-  if (GVA_file_get_mtime(l_audiofilename) < GVA_file_get_mtime(videofilename))
+  if (gap_file_get_mtime(l_audiofilename) < gap_file_get_mtime(videofilename))
   {
     return(FALSE);
   }
-#endif
 
   return (TRUE);
 
@@ -2131,7 +2129,7 @@ p_set_frame_with_name_label(GapPlayerMainGlobalParams *gpp)
       l_prefix = g_strdup(_("STB:"));
     }
     /* shortname prefix to indicate that displayed filename is from type storyboard file */
-    frame_title = gap_lib_shorten_filename(l_prefix    /* prefix short for storyboard */
+    frame_title = gap_base_shorten_filename(l_prefix    /* prefix short for storyboard */
                         ,gpp->stb_ptr->storyboardfile  /* filenamepart */
                         ,NULL                          /* suffix */
                         ,MAX_CHARS
@@ -2145,7 +2143,7 @@ p_set_frame_with_name_label(GapPlayerMainGlobalParams *gpp)
       if(gpp->ainfo_ptr->ainfo_type == GAP_AINFO_MOVIE)
       {
         /* shortname prefix to indicate that displayed filename is a single videofile */
-        frame_title = gap_lib_shorten_filename(_("VIDEO:")   /* prefix short for storyboard */
+        frame_title = gap_base_shorten_filename(_("VIDEO:")   /* prefix short for storyboard */
                         ,gpp->ainfo_ptr->basename            /* filenamepart */
                         ,NULL                                /* suffix */
                         ,MAX_CHARS
@@ -2157,7 +2155,7 @@ p_set_frame_with_name_label(GapPlayerMainGlobalParams *gpp)
   if(frame_title == NULL)
   {
       /* shortname prefix to indicate that displayed filename is basename of the frames */
-      frame_title = gap_lib_shorten_filename(_("FRAMES:")    /* prefix short for storyboard */
+      frame_title = gap_base_shorten_filename(_("FRAMES:")    /* prefix short for storyboard */
                         ,gpp->ainfo_ptr->basename            /* filenamepart */
                         ,NULL                                /* suffix */
                         ,MAX_CHARS

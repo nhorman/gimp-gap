@@ -32,8 +32,8 @@
 #include "libgimp/gimp.h"
 
 
+#include "gap_libgapbase.h"
 #include "gap_libgimpgap.h"
-#include "gap_file_util.h"
 #include "gap_audio_util.h"
 #include "gap_audio_wav.h"
 #include "gap_story_sox.h"

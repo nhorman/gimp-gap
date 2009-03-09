@@ -18,10 +18,10 @@
 
 #include <glib/gstdio.h>
 
+#include "gap_libgapbase.h"
 #include "libgimp/gimp.h"
 #include "gap-intl.h"
 #include "gap_audio_wav.h"
-#include "gap_file_util.h"
 
 extern int gap_debug;
 

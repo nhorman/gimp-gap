@@ -95,9 +95,9 @@
 #include <libgimp/gimp.h>
 #include <libgimp/gimpui.h>
 
+#include "gap_libgapbase.h"
 #include "gap_player_main.h"
 #include "gap_player_dialog.h"
-#include "gap_file_util.h"
 
 
 #include "gap-intl.h"
@@ -131,7 +131,6 @@ static GapPlayerCacheAdmin *global_pca_ptr = NULL;
 static GapPlayerCacheAdmin* p_get_admin_ptr(void);
 static void      p_debug_printf_cache_list(GapPlayerCacheAdmin *admin_ptr);
 static void      p_debug_printf_cdata(GapPlayerCacheData *cdata);
-static gint32    p_get_mtime(const gchar *filename);
 
 static void      p_player_cache_shrink(GapPlayerCacheAdmin *admin_ptr, gint32 new_bytesize);
 static void      p_player_cache_remove_oldest_frame(GapPlayerCacheAdmin *admin_ptr);
@@ -422,25 +421,6 @@ gap_player_cache_set_gimprc_bytesize(gint32 bytesize)
 
 }  /* end gap_player_cache_set_gimprc_bytesize */
 
-
-
-/* ------------------------------
- * p_get_mtime
- * ------------------------------
- */
-static gint32
-p_get_mtime(const gchar *filename)
-{
-  struct stat  l_stat;
-  
-  if (0 == g_stat(filename, &l_stat))
-  {
-    return(l_stat.st_mtime);
-  }
-  
-  return (0);
-  
-}  /* end p_get_mtime */
 
 
 /* ------------------------------
@@ -952,7 +932,7 @@ gap_player_cache_new_movie_key(const char *filename
 
   abs_filename = gap_file_build_absolute_filename(filename);
   ckey = g_strdup_printf("[@MOVIE]:%d:%s:%06d:%d:%1.3f"
-               , (int)p_get_mtime(filename)
+               , (int)gap_file_get_mtime(filename)
                , abs_filename
                , (int)framenr
                , (int)seltrack
@@ -976,7 +956,7 @@ gap_player_cache_new_image_key(const char *filename)
 
   abs_filename = gap_file_build_absolute_filename(filename);
   ckey = g_strdup_printf("[@IMAGE]:%d:%s"
-               , (int)p_get_mtime(filename)
+               , (int)gap_file_get_mtime(filename)
                , abs_filename
                );
   g_free(abs_filename);

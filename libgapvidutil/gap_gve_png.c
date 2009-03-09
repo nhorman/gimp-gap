@@ -45,9 +45,11 @@
 #include "libgimp/gimp.h"
 
 /* GAP includes */
-#include "gap_file_util.h"
+#include "gap_libgapbase.h"
 
 #include "gtk/gtk.h"
+
+extern int gap_debug;
 
 /* --------------------------------
  * p_save_as_tmp_png_file
@@ -62,7 +64,7 @@ p_save_as_tmp_png_file(const char *filename, gint32 image_id, gint32 drawable_id
    GimpParam          *return_vals;
    int              nreturn_vals;
 
-   //if(gap_debug)
+   if(gap_debug)
    {
      printf("GAP: PNG encode via call of %s on filename: %s, image_id:%d, drawable_id:%d %s\n"
             , l_called_proc

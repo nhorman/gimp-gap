@@ -45,11 +45,11 @@
 #include <libgimp/gimpui.h>
 #include <gdk/gdkkeysyms.h>
 
+#include "gap_libgapbase.h"
 #include "gap_story_main.h"
 #include "gap_story_dialog.h"
 #include "gap_story_file.h"
 #include "gap_arr_dialog.h"
-#include "gap_file_util.h"
 #include "gap_story_render_processor.h"
 
 #include "gap_story_vthumb.h"

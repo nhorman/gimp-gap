@@ -41,6 +41,7 @@
 #include "libgimp/gimp.h"
 
 
+#include "gap_libgapbase.h"
 #include "gap_gve_misc_util.h"
 
 
@@ -141,15 +142,137 @@ p_gap_build_enc_cancel_request_filename(gint32 master_encoder_id)
 }  /* end p_gap_build_enc_cancel_request_filename */
 
 
+/* -----------------------------------------------
+ * p_get_number_at_end_of_string
+ * -----------------------------------------------
+ * return number at end of the specified string
+ * return -1 in case the string does not end with a number
+ */
+static gint32
+p_get_number_at_end_of_string(const char *name)
+{
+  gint32 number;
+  
+  number = -1;
+  if (name)
+  {
+     gint32 idx;
+     
+     idx = strlen(name) -1;
+     while(idx >= 0)
+     {
+       if((name[idx] >= '0') && (name[idx] <= '9'))
+       {
+         number = atol(&name[idx]);
+       }
+       else
+       {
+         break;
+       }
+       idx--;
+     }
+  }
+  
+  return (number);
+}  /* end p_get_number_at_end_of_string */
+
+
+/* -----------------------------------------------
+ * p_gap_delete_old_communication_files
+ * -----------------------------------------------
+ * delete older communication files (if there are any)
+ * this kind of cleanup tries to remove old comminication files
+ * that may be still there
+ * if a previous call to the master video encoder crashed or was killed.
+ */
+static void
+p_gap_delete_old_communication_files()
+{
+   GDir          *l_dirp;
+   const gchar   *l_entry;
+   const char    *l_directory;
+
+#define SECONDS_OF_ONE_HOUR 3600
+
+   l_directory  = gimp_directory();
+   l_dirp = g_dir_open( l_directory, 0, NULL );
+   if(l_dirp)
+   {
+     gint32  l_ref_mtime;
+
+     l_ref_mtime = gap_base_get_current_time();
+     
+     while ( (l_entry = g_dir_read_name( l_dirp )) != NULL )
+     {
+        if(gap_debug)
+        {
+          printf("delete_old_communication_files: l_entry:%s\n", l_entry);
+        }
+        if (strncmp(l_entry, "gap_master_videoencoder_", strlen("gap_master_videoencoder_")) == 0)
+        {
+           char *l_filename;
+           gint32  l_mtime;
+           gint32  l_diff_time;
+           gint32  l_pid;
+           gint32  l_delete_flag;
+           
+           l_delete_flag = FALSE;
+           l_filename = g_build_filename(l_directory, l_entry, NULL);
+           l_pid = p_get_number_at_end_of_string(l_entry);
+           l_mtime = gap_file_get_mtime(l_filename);
+           l_diff_time = l_ref_mtime - l_mtime;
+           
+           if(l_pid >= 0)
+           {
+             /* note: detection of a not-running process works only on unix systems */
+             if(!gap_base_is_pid_alive(l_pid))
+             {
+               l_delete_flag = TRUE;   /* delete commounication files immediate when refered process is not running */
+             }
+             else
+             {
+               /* assume old communication file when it did not change in the last hour
+                * (for NON unix operating systems)
+                */
+               if (l_diff_time > SECONDS_OF_ONE_HOUR)
+               {
+                 l_delete_flag = TRUE;   /* delete commounication files immediate when refered process is not running */
+               }
+             }
+           }
+           
+           if (l_delete_flag == TRUE)
+           {
+             if(gap_debug)
+             {
+               printf("DELETE file: %s  l_ref_mtime:%d l_mtime:%d  diff:%d  l_pid:%d\n"
+                   , l_filename
+                   , (int)l_ref_mtime
+                   , (int)l_mtime
+                   , (int)l_diff_time
+                   , (int)l_pid
+                   );
+             }
+             g_remove(l_filename);
+           }
+           g_free(l_filename);
+           
+        }
+     }
+     g_dir_close( l_dirp );
+     
+   }
+   
+}  /* end p_gap_delete_old_communication_files */
 
 /* ---------------------------------------
- * gap_gve_misc_cleanup_GapGveMasterEncoder
+ * p_private_cleanup_GapGveMasterEncoder
  * ---------------------------------------
  * cleanup (remove communication files)
  * typically called by the master videoencoder when encoding has finished.
  */
-void
-gap_gve_misc_cleanup_GapGveMasterEncoder(gint32 master_encoder_id)
+static void
+p_private_cleanup_GapGveMasterEncoder(gint32 master_encoder_id)
 {
    char *filename;
    
@@ -167,9 +290,22 @@ gap_gve_misc_cleanup_GapGveMasterEncoder(gint32 master_encoder_id)
      g_remove(filename);
    }
    g_free(filename);
+   
+}  /* end p_private_cleanup_GapGveMasterEncoder */
 
+/* ---------------------------------------
+ * gap_gve_misc_cleanup_GapGveMasterEncoder
+ * ---------------------------------------
+ * cleanup (remove communication files)
+ * typically called by the master videoencoder when encoding has finished.
+ */
+void
+gap_gve_misc_cleanup_GapGveMasterEncoder(gint32 master_encoder_id)
+{
+   p_private_cleanup_GapGveMasterEncoder(master_encoder_id);
+   p_gap_delete_old_communication_files();
+   
 }  /* end gap_gve_misc_cleanup_GapGveMasterEncoder */
-
 
 /* ------------------------------------------
  * gap_gve_misc_initGapGveMasterEncoderStatus
@@ -180,7 +316,7 @@ void
 gap_gve_misc_initGapGveMasterEncoderStatus(GapGveMasterEncoderStatus *encStatus
    , gint32 master_encoder_id, gint32 total_frames)
 {
-  gap_gve_misc_cleanup_GapGveMasterEncoder(master_encoder_id);
+  p_private_cleanup_GapGveMasterEncoder(master_encoder_id);
 
   encStatus->master_encoder_id = master_encoder_id;
   encStatus->total_frames = total_frames;
@@ -188,7 +324,7 @@ gap_gve_misc_initGapGveMasterEncoderStatus(GapGveMasterEncoderStatus *encStatus
   encStatus->frames_encoded = 0;
   encStatus->frames_copied_lossless = 0;
   encStatus->current_pass = 0;
-//  encStatus->pidOfRunningEncoder = 0;
+  encStatus->pidOfRunningEncoder = 0;
 
   gap_gve_misc_do_master_encoder_progress(encStatus);
 }
@@ -213,7 +349,7 @@ p_write_encoder_status(GapGveMasterEncoderStatus *encStatus)
   {
      printf("p_write_encoder_status:  frames_processed:%d, PID:%d  filename:%s\n"
         , (int) encStatus->frames_processed
-        , (int) getpid()
+        , (int) gap_base_getpid()
         , filename
         );
   }
@@ -261,7 +397,7 @@ p_read_encoder_status(GapGveMasterEncoderStatus *encStatus)
     {
        printf("p_read_encoder_status:  ERROR unexpected contetent in communication  filename:%s\n   PID:%d  id expected: %d but found: %d\n"
           , filename
-          , (int) getpid()
+          , (int) gap_base_getpid()
           , (int) master_encoder_id
           , (int) encBuffer.master_encoder_id
           );
@@ -271,7 +407,7 @@ p_read_encoder_status(GapGveMasterEncoderStatus *encStatus)
     {
        printf("p_read_encoder_status:  frames_processed:%d, PID:%d  filename:%s\n"
           , (int) encStatus->frames_processed
-          , (int) getpid()
+          , (int) gap_base_getpid()
           , filename
           );
     }
@@ -280,7 +416,7 @@ p_read_encoder_status(GapGveMasterEncoderStatus *encStatus)
   {
        printf("p_read_encoder_status:  ERROR cold not open communication  filename:%s PID:%d\n"
           , filename
-          , (int) getpid()
+          , (int) gap_base_getpid()
           );
   }
   
@@ -297,7 +433,11 @@ p_read_encoder_status(GapGveMasterEncoderStatus *encStatus)
 void
 gap_gve_misc_do_master_encoder_progress(GapGveMasterEncoderStatus *encStatus)
 {
-  p_write_encoder_status(encStatus);
+  if(encStatus)
+  {
+    encStatus->pidOfRunningEncoder = gap_base_getpid();
+    p_write_encoder_status(encStatus);
+  }
 }
 
 

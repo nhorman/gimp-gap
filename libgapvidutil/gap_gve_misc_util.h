@@ -56,6 +56,7 @@ typedef struct GapGveMasterEncoderStatus {                     /* nick:  */
   gint32 frames_encoded;
   gint32 frames_copied_lossless;
   gint32 current_pass;          /* 0 for single pass encoders, 1 or 2 for two-pass encoder */
+  gint32 pidOfRunningEncoder;   /* 0 if not yet known */
 } GapGveMasterEncoderStatus;
 
 

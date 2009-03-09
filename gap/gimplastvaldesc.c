@@ -58,7 +58,7 @@
    */
 #include "gimplastvaldesc.h"   
 #endif
-
+#include "gap_libgapbase.h"
 
 typedef struct GimpLastvalTokenTabType
 {
@@ -285,7 +285,7 @@ gimp_lastval_desc_update(void)
         return;
      }
   }
-  l_timestamp = time(0);
+  l_timestamp = gap_base_get_current_time();
   gimp_set_data(TIMESTAMP_DESCFILE_CHECKED, &l_timestamp, sizeof(l_timestamp));
   
   p_init_token_table();

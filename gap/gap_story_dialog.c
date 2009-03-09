@@ -47,6 +47,7 @@
 #include <libgimp/gimpui.h>
 #include <gdk/gdkkeysyms.h>
 
+#include "gap_libgapbase.h"
 #include "gap_story_main.h"
 #include "gap_story_undo.h"
 #include "gap_story_dialog.h"
@@ -64,7 +65,6 @@
 #include "gap_story_att_trans_dlg.h"
 #include "gap_story_vthumb.h"
 #include "gap_story_section_properties.h"
-#include "gap_file_util.h"
 #include "gap_frame_fetcher.h"
 
 #include "images/gap-stock-pixbufs.h"
@@ -394,10 +394,6 @@ static GtkWidget *  p_create_button_bar(GapStbTabWidgets *tabw
                    );
 
 GtkWidget *    p_gtk_button_new_from_stock_icon(const char *stock_id);
-static gint32  p_get_gimprc_int_value (const char *gimprc_option_name
-                       , gint32 default_value, gint32 min_value, gint32 max_value);
-static gboolean p_get_gimprc_gboolean_value (const char *gimprc_option_name
-                       , gboolean default_value);
 
 static gint32  p_get_gimprc_preview_size(const char *gimprc_option_name);
 static void    p_save_gimprc_preview_size(const char *gimprc_option_name, gint32 preview_size);
@@ -4843,7 +4839,7 @@ p_widget_sensibility (GapStbMainGlobalParams *sgpp)
 
   p_undo_redo_sensibility(sgpp);
 
-  gap_lib_check_tooltips(NULL);
+  gap_base_check_tooltips(NULL);
 
 }  /* end p_widget_sensibility */
 
@@ -6334,7 +6330,7 @@ p_tabw_update_frame_label_and_rowpage_limits (GapStbTabWidgets *tabw, GapStbMain
         }
       }
     }
-    l_txt = gap_lib_shorten_filename(l_hdr_txt  /* prefix */
+    l_txt = gap_base_shorten_filename(l_hdr_txt  /* prefix */
                         ,l_fil_txt              /* filenamepart */
                         ,l_mod_txt              /* suffix */
                         ,l_max_chars
@@ -7537,7 +7533,7 @@ p_set_strings_for_section_combo(GapStbTabWidgets *tabw)
               index_of_active_item = index;
             }
 
-            l_txt = gap_lib_shorten_filename(NULL  /* prefix */
+            l_txt = gap_base_shorten_filename(NULL  /* prefix */
                         ,section->section_name     /* filenamepart */
                         ,NULL                      /* suffix */
                         ,12                        /* max_chars */
@@ -7906,57 +7902,6 @@ GtkWidget * p_gtk_button_new_from_stock_icon(const char *stock_id)
 
 
 
-/* -----------------------------------------
- * p_get_gimprc_int_value
- * -----------------------------------------
- */
-static gint32
-p_get_gimprc_int_value (const char *gimprc_option_name
-   , gint32 default_value, gint32 min_value, gint32 max_value)
-{
-  char *value_string;
-  gint32 value;
-
-  value = default_value;
-
-  value_string = gimp_gimprc_query(gimprc_option_name);
-  if(value_string)
-  {
-     value = atol(value_string);
-     g_free(value_string);
-  }
-  return (CLAMP(value, min_value, max_value));
-
-}  /* end p_get_gimprc_int_value */
-
-
-/* -----------------------------------------
- * p_get_gimprc_gboolean_value
- * -----------------------------------------
- */
-static gboolean
-p_get_gimprc_gboolean_value (const char *gimprc_option_name
-   , gboolean default_value)
-{
-  char *value_string;
-  gboolean value;
-
-  value = default_value;
-
-  value_string = gimp_gimprc_query(gimprc_option_name);
-  if(value_string)
-  {
-     value = FALSE;
-     if((*value_string == 'y') || (*value_string == 'Y'))
-     {
-       value = FALSE;
-     }
-     g_free(value_string);
-  }
-  return (value);
-
-}  /* end p_get_gimprc_gboolean_value */
-
 /* ---------------------------------
  * p_get_gimprc_preview_size
  * ---------------------------------
@@ -8101,30 +8046,30 @@ static void
 p_get_gimprc_layout_settings(GapStbMainGlobalParams *sgpp)
 {
   sgpp->cll_thumbsize = p_get_gimprc_preview_size("video-cliplist-thumbnail_size");
-  sgpp->cll_cols = p_get_gimprc_int_value("video-cliplist-columns"
+  sgpp->cll_cols = gap_base_get_gimprc_int_value("video-cliplist-columns"
                     , sgpp->cll_cols
                     , CLL_MIN_COL
                     , CLL_MAX_COL
                     );
-  sgpp->cll_rows = p_get_gimprc_int_value("video-cliplist-rows"
+  sgpp->cll_rows = gap_base_get_gimprc_int_value("video-cliplist-rows"
                     , sgpp->cll_rows
                     , CLL_MIN_ROW
                     , CLL_MAX_ROW
                     );
 
   sgpp->stb_thumbsize = p_get_gimprc_preview_size("video-storyboard-thumbnail_size");
-  sgpp->stb_cols = p_get_gimprc_int_value("video-storyboard-columns"
+  sgpp->stb_cols = gap_base_get_gimprc_int_value("video-storyboard-columns"
                     , sgpp->stb_cols
                     , STB_MIN_COL
                     , STB_MAX_COL
                     );
-  sgpp->stb_rows = p_get_gimprc_int_value("video-storyboard-rows"
+  sgpp->stb_rows = gap_base_get_gimprc_int_value("video-storyboard-rows"
                     , sgpp->stb_rows
                     , STB_MIN_ROW
                     , STB_MAX_ROW
                     );
 
-  sgpp->force_stb_aspect = p_get_gimprc_gboolean_value("video-storyboard-force-aspect-playback"
+  sgpp->force_stb_aspect = gap_base_get_gimprc_gboolean_value("video-storyboard-force-aspect-playback"
                     , sgpp->force_stb_aspect
                     );
 

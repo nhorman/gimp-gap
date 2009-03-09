@@ -39,6 +39,7 @@
 #include <libgimp/gimp.h>
 #include <libgimp/gimpui.h>
 
+#include "gap_libgapbase.h"
 #include "gap_story_main.h"
 #include "gap_story_undo.h"
 #include "gap_story_dialog.h"
@@ -2089,7 +2090,7 @@ p_pw_set_strings_for_mask_name_combo(GapStbPropWidget *pw)
              }
            }
 
-           l_txt = gap_lib_shorten_filename(NULL  /* prefix */
+           l_txt = gap_base_shorten_filename(NULL  /* prefix */
                        ,stb_elem->mask_name       /* filenamepart */
                        ,NULL                      /* suffix */
                        ,32                        /* max_chars */
@@ -2112,7 +2113,7 @@ p_pw_set_strings_for_mask_name_combo(GapStbPropWidget *pw)
      * indicate invalid name by prefix "# " and add it as last entry to the combo box
      */
     index_of_active_item = index;
-    l_txt = gap_lib_shorten_filename("# "  /* prefix */
+    l_txt = gap_base_shorten_filename("# "  /* prefix */
                 ,curr_mask_name            /* filenamepart */
                 ,NULL                      /* suffix */
                 ,32                        /* max_chars */
@@ -3344,7 +3345,7 @@ p_pw_check_fmac_sensitivity(GapStbPropWidget *pw)
              sensitive = TRUE;
              if(pw->stb_elem_refptr->fmac_total_steps > 1)
              {
-               lbl_text = gap_lib_shorten_filename(_("Filtermacro2: ")   /* prefix */
+               lbl_text = gap_base_shorten_filename(_("Filtermacro2: ")   /* prefix */
                                      ,alt_fmac_name   /* filenamepart */
                                      ,_(" (ON)")      /* suffix */
                                      ,90              /* max_chars */
@@ -3352,7 +3353,7 @@ p_pw_check_fmac_sensitivity(GapStbPropWidget *pw)
              }
              else
              {
-               lbl_text = gap_lib_shorten_filename(_("Filtermacro2: ")   /* prefix */
+               lbl_text = gap_base_shorten_filename(_("Filtermacro2: ")   /* prefix */
                                      ,alt_fmac_name   /* filenamepart */
                                      ,_(" (OFF)")     /* suffix */
                                      ,90              /* max_chars */

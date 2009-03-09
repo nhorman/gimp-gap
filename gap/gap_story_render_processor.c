@@ -67,9 +67,9 @@
 #include "libgimp/gimp.h"
 
 
+#include "gap_libgapbase.h"
 #include "gap_libgimpgap.h"
 #include "gap_lib_common_defs.h"
-#include "gap_file_util.h"
 #include "gap_audio_util.h"
 #include "gap_audio_wav.h"
 #include "gap_story_file.h"
@@ -335,6 +335,13 @@ static gint32     p_transform_and_add_layer( gint32 comp_image_id
 static gint32     p_create_unicolor_image(gint32 *layer_id, gint32 width , gint32 height
                        , gdouble r_f, gdouble g_f, gdouble b_f, gdouble a_f);
 static gint32     p_prepare_RGB_image(gint32 image_id);
+
+static void       p_limit_open_videohandles(GapStoryRenderVidHandle *vidhand
+                      , gint32 master_frame_nr
+                      , gint32 currently_open_videohandles
+                      );
+
+
 static t_GVA_Handle * p_try_to_steal_gvahand(GapStoryRenderVidHandle *vidhand
                       , gint32 master_frame_nr
                       , char *basename             /* the videofile name */
@@ -4284,13 +4291,16 @@ p_transform_and_add_layer( gint32 comp_image_id
   if ((gimp_image_width(tmp_image_id) != calculated->width)
   ||  (gimp_image_height(tmp_image_id) != calculated->height) )
   {
-    if(gap_debug) printf("DEBUG: p_transform_and_add_layer scaling layer from %dx%d to %dx%d\n"
+    if(gap_debug)
+    {
+      printf("DEBUG: p_transform_and_add_layer scaling layer from %dx%d to %dx%d\n"
                             , (int)gimp_image_width(tmp_image_id)
                             , (int)gimp_image_height(tmp_image_id)
                             , (int)calculated->width
                             , (int)calculated->height
                             );
 
+    }
     gimp_layer_scale(layer_id, calculated->width, calculated->height
                     , FALSE  /* FALSE: centered at image TRUE: centered local on layer */
                     );
@@ -4453,6 +4463,76 @@ p_prepare_RGB_image(gint32 image_id)
 } /* end p_prepare_RGB_image */
 
 /* ----------------------------------------------------
+ * p_limit_open_videohandles
+ * ----------------------------------------------------
+ * if the number of currently_open_videohandles exceeds a limit,
+ * then try to close the handle(s) until the number is below the limit.
+ * (but do not close handles that are involved in fetching the current master_frame_nr)
+ *
+ * This kind of garbage collection is useful for storyboards that are using many
+ * different videofile references and would run into memory and other resource problems
+ * when all handles are kept open until the end of rendering process.
+ * (note that each video handle has its own frame cache)
+ */
+static void
+p_limit_open_videohandles(GapStoryRenderVidHandle *vidhand
+                      , gint32 master_frame_nr
+                      , gint32 currently_open_videohandles
+                      )
+{
+#ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
+#define GAP_STB_DEFAULT_MAX_OPEN_VIDEOFILES 12
+  GapStoryRenderFrameRangeElem *frn_elem;
+  gint32 l_count_open_videohandles;
+  gint32 l_max_open_videohandles;
+
+
+  l_max_open_videohandles = gap_base_get_gimprc_int_value("video-storyboard-max-open-videofiles"
+                                                        , GAP_STB_DEFAULT_MAX_OPEN_VIDEOFILES
+                                                        , 2
+                                                        , 100
+                                                        );
+  l_count_open_videohandles = currently_open_videohandles;
+  
+  if (l_count_open_videohandles <= l_max_open_videohandles)
+  {
+    /* we are below the limit, nothing left to do in that case */
+    return;
+  }
+  
+  for (frn_elem = vidhand->frn_list; frn_elem != NULL; frn_elem = (GapStoryRenderFrameRangeElem *)frn_elem->next)
+  {
+    if((frn_elem->last_master_frame_access < master_frame_nr)
+    && (frn_elem->gvahand != NULL))
+    {
+       if(gap_debug)
+       {
+         printf("too many open videofiles %d detected (limit:%d) at master_frame_nr:%d\n"
+                " CLOSING GVA handle for video read access %s\n"
+            , (int)l_count_open_videohandles
+            , (int)l_max_open_videohandles
+            , (int)master_frame_nr
+            , frn_elem->basename
+            );
+       }
+       GVA_close(frn_elem->gvahand);
+       frn_elem->gvahand = NULL;
+       l_count_open_videohandles--;
+
+       if (l_count_open_videohandles <= l_max_open_videohandles)
+       {
+         return;
+       }
+       
+    }
+  }
+#endif
+  return;
+
+} /* end p_limit_open_videohandles */
+
+
+/* ----------------------------------------------------
  * p_try_to_steal_gvahand
  * ----------------------------------------------------
  * try to steal an alread open GVA handle for video read from another
@@ -4469,25 +4549,38 @@ p_try_to_steal_gvahand(GapStoryRenderVidHandle *vidhand
                       , gint32 exact_seek
                       )
 {
-  GapStoryRenderFrameRangeElem *frn_elem;
-  t_GVA_Handle *gvahand;
 #ifdef GAP_ENABLE_VIDEOAPI_SUPPORT
+  GapStoryRenderFrameRangeElem *frn_elem;
+  gint32 l_count_open_videohandles;
 
+  l_count_open_videohandles = 0;
   for (frn_elem = vidhand->frn_list; frn_elem != NULL; frn_elem = (GapStoryRenderFrameRangeElem *)frn_elem->next)
   {
+    if (frn_elem->gvahand != NULL)
+    {
+      l_count_open_videohandles++;
+    }
     if((frn_elem->exact_seek == exact_seek)
     && (frn_elem->last_master_frame_access < master_frame_nr)
     && (frn_elem->gvahand != NULL))
     {
       if(strcmp(frn_elem->basename, basename) == 0)
       {
-         if(gap_debug) printf("(RE)using an already open GVA handle for video read access %s\n", frn_elem->basename);
+         t_GVA_Handle *gvahand;
+
+         if(gap_debug)
+         {
+           printf("(RE)using an already open GVA handle for video read access %s\n"
+                  , frn_elem->basename
+                  );
+         }
          gvahand = frn_elem->gvahand;
          frn_elem->gvahand = NULL;   /* steal from this element */
          return(gvahand);
       }
     }
   }
+  p_limit_open_videohandles(vidhand, master_frame_nr, l_count_open_videohandles);
 #endif
   return(NULL);  /* nothing found to steal from, return NULL */
 
@@ -5580,6 +5673,12 @@ p_story_render_fetch_composite_image_private(GapStoryRenderVidHandle *vidhand
            }
            if(gfd->tmp_image_id < 0)
            {
+              printf("\n** ERROR fetching master_frame_nr:%d, from framename:%s Current CLIP was:\n"
+                 , (int)master_frame_nr
+                 , (int)gfd->framename
+                 );
+              gap_story_render_debug_print_frame_elem(gfd->frn_elem, -1);
+              printf("\n** storyboard render processing failed\n");
               g_free(gfd->framename);
               return -1;
            }
@@ -5595,7 +5694,13 @@ p_story_render_fetch_composite_image_private(GapStoryRenderVidHandle *vidhand
        }
 
 
-       if(gap_debug) printf("p_prepare_RGB_image returned layer_id: %d, tmp_image_id:%d\n", (int)gfd->layer_id, (int)gfd->tmp_image_id);
+       if(gap_debug)
+       {
+         printf("p_prepare_RGB_image returned layer_id: %d, tmp_image_id:%d\n"
+            , (int)gfd->layer_id
+            , (int)gfd->tmp_image_id
+            );
+       }         
 
        if(gfd->comp_image_id  < 0)
        {

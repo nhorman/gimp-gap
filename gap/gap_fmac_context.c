@@ -38,9 +38,9 @@
 #include <glib/gstdio.h>
 
 /* GAP includes */
+#include "gap_libgapbase.h"
 #include "gap_fmac_context.h"
 #include "gap_frame_fetcher.h"
-#include "gap_file_util.h"
 #include "gap_val_file.h"
 
 

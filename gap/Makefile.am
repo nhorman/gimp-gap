@@ -40,8 +40,6 @@ BASE_SOURCES = \
 	gap_audio_util.h	\
 	gap_audio_wav.c		\
 	gap_audio_wav.h		\
-	gap_file_util.c		\
-	gap_file_util.h		\
 	gap_image.c		\
 	gap_image.h		\
 	gap_layer_copy.c	\

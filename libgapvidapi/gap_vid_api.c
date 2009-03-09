@@ -1585,7 +1585,7 @@ GVA_get_codec_name(t_GVA_Handle  *gvahand
   }
 
   codec_name = p_gva_worker_get_codec_name(gvahand, codec_type, track_nr);
-  //if(gap_debug)
+  if(gap_debug)
   {
     printf("GVA_get_codec_name: END codec_name:");
     if (codec_name)

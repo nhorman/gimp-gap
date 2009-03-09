@@ -59,8 +59,8 @@
 #include <libgimp/gimp.h>
 #include <libgimp/gimpui.h>
 
+#include "gap_libgapbase.h"
 #include "gap_stock.h"
-#include "gap_file_util.h"
 
 #include "gap-intl.h"
 

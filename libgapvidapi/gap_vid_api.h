@@ -483,7 +483,6 @@ gboolean       GVA_util_check_png_picture(unsigned char *buffer
                          ,gint32 *hdr_size
                          );
 void           GVA_md5_string(char *name, const char *uri);
-gint32         GVA_file_get_mtime(const char *filename);
 gchar*         GVA_filename_to_uri(const char *filename);
 
 #endif

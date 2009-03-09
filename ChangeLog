@@ -1,3 +1,174 @@
+2009-03-09 Wolfgang Hofer <hof@gimp.org>
+
+- check in of the missing changes.
+  (The commit for Rev 818 2009.03.08 was not performed on toplevel directory,
+   therefore most of the changes were not transfered to SVN.
+
+  * gap/Makefile.am
+  * gap/gap_arr_dialog.c
+  * gap/gap_audio_wav.c
+  * gap/gap_decode_mplayer.c
+  * gap/gap_decode_xanim.c
+  * gap/gap_file_util.c [.h]           # are now empty
+  * gap/gap_fmac_context.c
+  * gap/gap_frame_fetcher.c
+  * gap/gap_lib.c [.h]
+  * gap/gap_libgimpgap.h
+  * gap/gap_lock.c
+  * gap/gap_morph_exec.c
+  * gap/gap_mov_dialog.c
+  * gap/gap_mov_exec.c
+  * gap/gap_mpege.c
+  * gap/gap_navigator_dialog.c
+  * gap/gap_onion_base.c
+  * gap/gap_player_cache.c
+  * gap/gap_player_dialog.c
+  * gap/gap_split.c
+  * gap/gap_story_dialog.c
+  * gap/gap_story_file.c
+  * gap/gap_story_properties.c
+  * gap/gap_story_render_audio.c
+  * gap/gap_story_vthumb.c
+  * gap/gap_video_index_creator.c
+  * gap/gap_wr_color_curve.c
+  * gap/gimplastvaldesc.c 
+ 
+  * libgapvidapi/gap_vid_api.c [.h]
+  * libgapvidapi/gap_vid_api_ffmpeg.c
+  * libgapvidapi/gap_vid_api_mpeg3.c
+  * libgapvidapi/gap_vid_api_util.c
+  * libgapvidapi/vid_api_vidindex.c
+  
+  * libgapvidutil/gap_gve_misc_util.c [.h]
+  * libgapvidutil/gap_gve_png.c
+
+  * vid_common/gap_cme_gui.c
+  * vid_common/gap_cme_main.c
+
+  * vid_enc_avi/gap_enc_avi_main.c
+  * vid_enc_ffmpeg/gap_enc_ffmpeg_main.c
+
+  * docs/reference/txt/gap_gimprc_params.txt
+
+2009-03-08 Wolfgang Hofer <hof@gimp.org>
+
+- support limit for the number of open videohandles while storybboard processing.
+  to avoid running out of memory and resources in case the storyboard has references to
+  many different videofiles.
+  the limit can be configured via the newly added gimprc parameter:
+   
+    (video-storyboard-max-open-videofiles 12)
+  
+- fixed a bug in the total_frames detection via libavformat based native seek
+  that delivered one frame too much on most videos.
+  (procedure: p_detect_total_frames_via_native_seek)
+  
+- videoindex based seek sometimes used slow sequential search (in rare cases)
+  even if a complete video index was available.
+  tests showed that the wanted frame could not be identified due to wrong checksum.
+  This can occure if there are delta references to a frame in the video stream
+  that is before the seek position.
+  Note that the checksum is built based on the already decoded frame that may be
+  incomplete in this case.
+  
+  ==> the applied fix tolerates a checksum missmatch if
+  both length and timecode can be used to identify the target frame.
+  if the target frame can not be identified that way, the next attempt
+  starts from a smaller seek position and increases the number of sync read operations
+  this shall lead to clean decoding and correct checksum calculation of the wanted frame
+  
+
+- fixed libavformat video index based seek in case the video index is NOT complete.
+  (may occure if video index creation was cancelled by the user)
+  now 1st try native seek in case where seek to the target frame number would require the missing
+  part of the videoindex.
+  fallback to very slow sequential read is only done if native seek is not possible either.
+
+- video index creation tool now deletes incomplete video indexes when created
+  in SMART_MODE for check purpose only.
+
+- fixed missing initialisation of total_frames. (procedure GVA_new_videoindex)
+
+-  master video encoder now checks if encoder process is still alive
+   and reports termination of the encoder process in the progress bar message.
+   "ENCODER process terminated"
+   (this feature is only available on UNIX platforms)
+
+- cleanup for old communication files used in the master video encoder
+  in case encoding crashed or was killed in a previous session.
+  (gap_gve_misc_util.c. p_gap_delete_old_communication_files)
+
+- refactoring removed some code duplicates,
+  and moved central procedures for common use in all gap modules
+  from gap_lib.c to new module gap_base.c
+      NEW name                                                      OLD name
+      ==========================================================================================
+      gap_base_shorten_filename                                      gap_lib_shorten_filename
+      gap_base_strdup_add_underscore                                 gap_lib_strdup_add_underscore
+      gap_base_strdup_del_underscore                                 gap_lib_strdup_del_underscore
+      gap_base_dup_filename_and_replace_extension_by_underscore      gap_lib_dup_filename_and_replace_extension_by_underscore
+      gap_base_fprintf_gdouble                                       gap_lib_fprintf_gdouble
+      gap_base_sscan_flt_numbers                                     gap_lib_sscan_flt_numbers
+      gap_base_check_tooltips                                        gap_lib_check_tooltips
+      gap_base_get_gimprc_int_value                                  gap_lib_get_gimprc_int_value
+      gap_base_get_gimprc_gboolean_value                             gap_lib_get_gimprc_gboolean_value
+      gap_base_getpid                                                gap_lib_getpid
+      gap_base_is_pid_alive                                          gap_lib_is_pid_alive
+      gap_file_get_mtime
+
+  * libgapbase/Makefile.am
+  * libgapbase/gap_libgapbase.h        # NEW file
+  * libgapbase/gap_base.c [.h]         # NEW files
+  * libgapbase/gap_file_util.c [.h]    # NEW files (moved from gap directory)
+
+  * gap/Makefile.am
+  * gap/gap_arr_dialog.c
+  * gap/gap_audio_wav.c
+  * gap/gap_decode_mplayer.c
+  * gap/gap_decode_xanim.c
+  * gap/gap_file_util.c [.h]           # are now empty
+  * gap/gap_fmac_context.c
+  * gap/gap_frame_fetcher.c
+  * gap/gap_lib.c [.h]
+  * gap/gap_libgimpgap.h
+  * gap/gap_lock.c
+  * gap/gap_morph_exec.c
+  * gap/gap_mov_dialog.c
+  * gap/gap_mov_exec.c
+  * gap/gap_mpege.c
+  * gap/gap_navigator_dialog.c
+  * gap/gap_onion_base.c
+  * gap/gap_player_cache.c
+  * gap/gap_player_dialog.c
+  * gap/gap_split.c
+  * gap/gap_story_dialog.c
+  * gap/gap_story_file.c
+  * gap/gap_story_properties.c
+  * gap/gap_story_render_audio.c
+  * gap/gap_story_render_processor.c
+  * gap/gap_story_vthumb.c
+  * gap/gap_video_index_creator.c
+  * gap/gap_wr_color_curve.c
+  * gap/gimplastvaldesc.c 
+ 
+  * libgapvidapi/gap_vid_api.c [.h]
+  * libgapvidapi/gap_vid_api_ffmpeg.c
+  * libgapvidapi/gap_vid_api_mpeg3.c
+  * libgapvidapi/gap_vid_api_util.c
+  * libgapvidapi/vid_api_vidindex.c
+  
+  * libgapvidutil/gap_gve_misc_util.c [.h]
+  * libgapvidutil/gap_gve_png.c
+
+  * vid_common/gap_cme_gui.c
+  * vid_common/gap_cme_main.c
+
+  * vid_enc_avi/gap_enc_avi_main.c
+  * vid_enc_ffmpeg/gap_enc_ffmpeg_main.c
+
+  * docs/reference/txt/gap_gimprc_params.txt
+
+
 2009-02-25 Wolfgang Hofer <hof@gimp.org>
 
 - fix bug in Storyboard dialog: when clip is added via player 

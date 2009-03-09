@@ -41,12 +41,12 @@
 
 #include <libgimp/gimp.h>
 
+#include "gap_libgapbase.h"
 #include "gap_story_syntax.h"
 #include "gap_story_main.h"
 #include "gap_story_file.h"
 #include "gap_lib.h"
 #include "gap_val_file.h"
-#include "gap_file_util.h"
 
 
 #include "gap-intl.h"

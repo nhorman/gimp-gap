@@ -51,6 +51,7 @@
 #include "libgimp/gimp.h"
 
 /* GAP includes */
+#include "gap_libgapbase.h"
 #include "gap_lock.h"
 
 extern      int gap_debug; /* ==0  ... dont print debug infos */
@@ -63,41 +64,6 @@ typedef struct t_gap_lockdata
     gint32   pid;
 } t_gap_lockdata;
 
-static gint32
-gap_lib_getpid(void)
-{
-#ifndef G_OS_WIN32
-  /* for UNIX */
-  return ((gint32)getpid());
-#else
-  /* hof: dont know how to getpid on windows */
-  return 0;
-#endif
-}
-
-static gint 
-gap_lib_pid_is_alive(gint32 pid)
-{
-#ifndef G_OS_WIN32
-  /* for UNIX */
-
-  /* kill  with signal 0 checks only if the process is alive (no signal is sent)
-   *       returns 0 if alive, 1 if no process with given pid found.
-   */
-  if (0 == kill(pid, 0))
-  {
-    return(TRUE);
-  }
-  return (FALSE);
-#else
-  /* hof: dont know how to check on Windows
-   *      assume that process is always alive
-   *      (therefore on Windows locks will not be cleared 
-   *       automatically after crashes of the locking process)
-   */
-  return(TRUE);
-#endif
-}
 
 
 /* ============================================================================
@@ -128,7 +94,7 @@ gap_lock_check_for_lock(gint32 image_id, GimpRunMode run_mode)
     {
       if(l_locktab[l_idx].image_id == image_id)
       {
-         if(gap_lib_pid_is_alive(l_locktab[l_idx].pid))
+         if(gap_base_is_pid_alive(l_locktab[l_idx].pid))
          {
            if(run_mode == GIMP_RUN_INTERACTIVE)
            {
@@ -183,7 +149,7 @@ gap_lock_set_lock(gint32 image_id)
     for(l_idx=0; l_idx < l_nlocks_old; l_idx++)
     {
       if((l_locktab[l_idx].image_id < 0)
-      || (!gap_lib_pid_is_alive(l_locktab[l_idx].pid)))
+      || (!gap_base_is_pid_alive(l_locktab[l_idx].pid)))
       {
          l_nlocks--;      /* empty record found, dont need the extra record */
          break; 
@@ -199,7 +165,7 @@ gap_lock_set_lock(gint32 image_id)
   }
 
   l_locktab[l_idx].image_id = image_id;
-  l_locktab[l_idx].pid      = gap_lib_getpid();
+  l_locktab[l_idx].pid      = gap_base_getpid();
 
   gimp_set_data(GAP_LOCKTABLE_KEY, l_locktab, l_nlocks * sizeof(t_gap_lockdata));
 

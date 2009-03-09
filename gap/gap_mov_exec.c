@@ -63,6 +63,7 @@
 #include "libgimp/gimp.h"
 
 /* GAP includes */
+#include "gap_libgapbase.h"
 #include "gap-intl.h"
 #include "gap_layer_copy.h"
 #include "gap_lib.h"
@@ -1441,11 +1442,11 @@ gap_mov_exec_gap_save_pointfile(char *filename, GapMovValues *pvals)
                     , (int)pvals->point[l_idx].p_x
                     , (int)pvals->point[l_idx].p_y
                     );
-      gap_lib_fprintf_gdouble(l_fp, pvals->point[l_idx].w_resize, 3, 3, " ");
-      gap_lib_fprintf_gdouble(l_fp, pvals->point[l_idx].h_resize, 3, 3, " ");
-      gap_lib_fprintf_gdouble(l_fp, pvals->point[l_idx].opacity,  3, 3, " ");
-      gap_lib_fprintf_gdouble(l_fp, pvals->point[l_idx].rotation, 3, 3, " ");
-      gap_lib_fprintf_gdouble(l_fp, pvals->point[l_idx].sel_feather_radius, 3, 3, " ");
+      gap_base_fprintf_gdouble(l_fp, pvals->point[l_idx].w_resize, 3, 3, " ");
+      gap_base_fprintf_gdouble(l_fp, pvals->point[l_idx].h_resize, 3, 3, " ");
+      gap_base_fprintf_gdouble(l_fp, pvals->point[l_idx].opacity,  3, 3, " ");
+      gap_base_fprintf_gdouble(l_fp, pvals->point[l_idx].rotation, 3, 3, " ");
+      gap_base_fprintf_gdouble(l_fp, pvals->point[l_idx].sel_feather_radius, 3, 3, " ");
 
       num_optional_params = 0;
 
@@ -1474,17 +1475,17 @@ gap_mov_exec_gap_save_pointfile(char *filename, GapMovValues *pvals)
       if(num_optional_params >= 8)
       {
         fprintf(l_fp, " ");
-        gap_lib_fprintf_gdouble(l_fp, pvals->point[l_idx].ttlx, 2, 3, " ");
-        gap_lib_fprintf_gdouble(l_fp, pvals->point[l_idx].ttly, 2, 3, " ");
+        gap_base_fprintf_gdouble(l_fp, pvals->point[l_idx].ttlx, 2, 3, " ");
+        gap_base_fprintf_gdouble(l_fp, pvals->point[l_idx].ttly, 2, 3, " ");
         fprintf(l_fp, " ");
-        gap_lib_fprintf_gdouble(l_fp, pvals->point[l_idx].ttrx, 2, 3, " ");
-        gap_lib_fprintf_gdouble(l_fp, pvals->point[l_idx].ttry, 2, 3, " ");
+        gap_base_fprintf_gdouble(l_fp, pvals->point[l_idx].ttrx, 2, 3, " ");
+        gap_base_fprintf_gdouble(l_fp, pvals->point[l_idx].ttry, 2, 3, " ");
         fprintf(l_fp, " ");
-        gap_lib_fprintf_gdouble(l_fp, pvals->point[l_idx].tblx, 2, 3, " ");
-        gap_lib_fprintf_gdouble(l_fp, pvals->point[l_idx].tbly, 2, 3, " ");
+        gap_base_fprintf_gdouble(l_fp, pvals->point[l_idx].tblx, 2, 3, " ");
+        gap_base_fprintf_gdouble(l_fp, pvals->point[l_idx].tbly, 2, 3, " ");
         fprintf(l_fp, " ");
-        gap_lib_fprintf_gdouble(l_fp, pvals->point[l_idx].tbrx, 2, 3, " ");
-        gap_lib_fprintf_gdouble(l_fp, pvals->point[l_idx].tbry, 2, 3, " ");
+        gap_base_fprintf_gdouble(l_fp, pvals->point[l_idx].tbrx, 2, 3, " ");
+        gap_base_fprintf_gdouble(l_fp, pvals->point[l_idx].tbry, 2, 3, " ");
       }
 
       /* conditional write keyframe */
@@ -1545,7 +1546,7 @@ gap_mov_exec_gap_load_pointfile(char *filename, GapMovValues *pvals)
        /* check if line empty or comment only (starts with '#') */
        if((*l_ptr != '#') && (*l_ptr != '\n') && (*l_ptr != '\0'))
        {
-         l_cnt = gap_lib_sscan_flt_numbers(l_ptr, &l_farr[0], MAX_NUMVALUES_PER_LINE);
+         l_cnt = gap_base_sscan_flt_numbers(l_ptr, &l_farr[0], MAX_NUMVALUES_PER_LINE);
 	 l_i1 = (gint)l_farr[0];
 	 l_i2 = (gint)l_farr[1];
          if(l_idx == -1)

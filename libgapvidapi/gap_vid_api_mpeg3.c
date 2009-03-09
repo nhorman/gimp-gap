@@ -304,7 +304,7 @@ p_wrapper_mpeg3_open_read(char *in_filename, t_GVA_Handle *gvahand)
  
     handle->main_handle = mpeg3_open(filename, &l_error_return);
 
-    //if(gap_debug)
+    if(gap_debug)
     {
       printf("GVA: libmpeg3 OPEN handle->main_handle:%d l_error_return:%d\n"
             , (int)handle->main_handle

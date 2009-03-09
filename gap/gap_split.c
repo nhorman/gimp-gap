@@ -60,6 +60,7 @@
 #include "libgimp/gimp.h"
 
 /* GAP includes */
+#include "gap_libgapbase.h"
 #include "gap_layer_copy.h"
 #include "gap_lib.h"
 #include "gap_arr_dialog.h"
@@ -306,7 +307,7 @@ p_split_image(GapAnimInfo *ainfo_ptr, split_vals_t *valPtr)
 
 
        /* build the name for output image */
-       l_str = gap_lib_dup_filename_and_replace_extension_by_underscore(ainfo_ptr->old_filename);
+       l_str = gap_base_dup_filename_and_replace_extension_by_underscore(ainfo_ptr->old_filename);
        l_sav_name = gap_lib_alloc_fname6(l_str,
                                   l_framenumber,       /* start at 1 (not at 0) */
                                   valPtr->extension,
@@ -432,7 +433,7 @@ p_split_dialog(GapAnimInfo *ainfo_ptr, split_vals_t *valPtr)
     }
   }
 
-  baseName = gap_lib_dup_filename_and_replace_extension_by_underscore(ainfo_ptr->old_filename);
+  baseName = gap_base_dup_filename_and_replace_extension_by_underscore(ainfo_ptr->old_filename);
 
   buf = g_strdup_printf (_("Make a frame (diskfile) from each layer.\n"
                            "Frames are named in the style:\n"

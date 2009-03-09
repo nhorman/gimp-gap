@@ -166,9 +166,25 @@ If you edit gimprc files by hand, you must do this before you startup GIMP.
 # if turned off plaback clips according to their original pixelsize.
 (video-storyboard-force-aspect-playback "yes")
 
+# maximal number of open videofiles for storyboard render
+# processor. The storyboard processor typically keeps more than
+# one videofile open when processing multiple input video clip
+# references within a storyboard. This is done for performance reasons.
+# But if there are too many open videofiles this may lead to
+# run out of memory and other resources. Therefore the number
+# of simultaneous open videofiles is limited to a default
+# of 12.
+# If you have less than 1GB of memory, you may use a smaller
+# value (minimum is 2) when you are running out of memory
+# while storyboard processing.
+# You still are able to process storyboards with many different
+# videoclips but this will be slower because there will be more
+# open, seek and close operations required with a smaller limit.
+(video-storyboard-max-open-videofiles 12)
+
 
 # the video-libavformat-seek-gopsize parameter
-# enables native (fast) seek operations in the ffmeg (libavformat) 
+# enables native (fast) seek operations in the ffmpeg (libavformat) 
 # video read access api.
 # values <= 0 disables native seek operations.
 # values > 4 define how many frames shall be sequentially read
@@ -190,8 +206,9 @@ If you edit gimprc files by hand, you must do this before you startup GIMP.
 # per frame. For frame exact operation on such (rare) videofiles
 # you should disable native seek by setting the video-libavformat-seek-gopsize
 # parameter to 0 and let gimp-gap create a videoindex.
-# (videoindex creation requires in initial full scann of the video,
-# but offers exact positioning. positioning via vidoeindex is slower than native seek)
+# (videoindex creation requires an initial full scann of the video,
+# but offers exact positioning.
+# positioning via vidoeindex is slower than native seek)
 # 
 # an internal default value of 8 is used if no other value is configured.
 # (this should be OK for most videofiles, if you work with mpeg2 dvd stuff
