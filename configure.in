@@ -499,6 +499,9 @@ libmpeg3_info_msg="
    
 "
 
+
+libmpeg3_dependencies_ok="yes"
+
 dnl check for pthread library (required for libmpeg3)
 dnl the check result does not matter unless libmpeg3 is linked or built later on.
 pthread_err=""
@@ -507,6 +510,23 @@ AC_CHECK_LIB(pthread, pthread_create,
           GAP_PTHREAD_LIB=" -lpthread",
           pthread_err="pthread header file (pthread.h) not found")],
 	pthread_err="pthread library (libpthread) not found")
+
+if test "x$pthread_err" != "x"; then
+   libmpeg3_dependencies_ok="no"
+fi
+
+
+dnl check for the nasm assembler program (required for build of libmpeg3)
+dnl the check result does not matter unless libmpeg3 is linked or built later on.
+nasm_err=""
+AC_CHECK_PROG(HAVE_NASM_ASSEMBLER, nasm, yes, no)
+if test "x$HAVE_NASM_ASSEMBLER" = "xno"; then
+   nasm_err=" the nasm assembler (required to build libmpeg3) was not found. nasm is available at nasm.sourceforge.net "
+   libmpeg3_dependencies_ok="no"
+fi
+
+
+
 
 
 AC_ARG_ENABLE(libmpeg3,
@@ -528,6 +548,7 @@ if test "x$with_preinstalled_libmpeg3" != "x"; then
     vid_mpeg3_warning="
 ** WARNING: cant build with libmpeg3 (libmpeg3 depends on pthread library)
 $pthread_err
+$nasm_err
 $libmpeg3_info_msg
 "
   fi
@@ -665,11 +686,12 @@ INFORMATION: old libmpeg3 was moved to  $LMPEG3_DIR-OLD
 
 
 
-    if test "x$pthread_err" != "x"; then
+    if test "x$libmpeg3_dependencies_ok" != "xyes"; then
       enable_libmpeg3="no"
       vid_mpeg3_warning="
-** WARNING: cant build with libmpeg3 (libmpeg3 depends on pthread library)
+** WARNING: cant build with libmpeg3 (libmpeg3 depends on pthread library and the nasm assembler)
 $pthread_err
+$nasm_err
 $libmpeg3_info_msg
 "
 

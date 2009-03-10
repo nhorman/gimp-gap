@@ -1,3 +1,11 @@
+2009-03-10 Wolfgang Hofer <hof@gimp.org>
+
+- added checks for nasm assembler in the configure.in script
+  and disable build with libmpeg3 in case nasm is not installed
+  (relevant for #144650)
+
+ * configure.in
+
 2009-03-09 Wolfgang Hofer <hof@gimp.org>
 
 - check in of the missing changes.
