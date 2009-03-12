@@ -30,7 +30,7 @@
 #include "libgimp/gimp.h"
 
 #define GAP_STORY_SOX_DEFAULT_UTIL_SOX           "sox"
-#define GAP_STORY_SOX_DEFAULT_UTIL_SOX_OPTIONS   " \"$IN\"  -w -r $RATE \"$OUT\" resample "
+#define GAP_STORY_SOX_DEFAULT_UTIL_SOX_OPTIONS   " \"$IN\"  -t wav  \"$OUT\" rate -h $RATE "
 
 void   gap_story_sox_exec_resample(char *in_audiofile
                       ,char *out_audiofile

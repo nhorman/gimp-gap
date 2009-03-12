@@ -1,3 +1,65 @@
+2009-03-12 Wolfgang Hofer <hof@gimp.org>
+
+- attempt to fix #558730 (Mac OS X specific issue ?)
+  dont know why the wrapper to set layer opacity fails in the query procedure on Mac OS X
+  the reported Gimp assertion message
+  
+	(gap_wr_opacity:1754): LibGimp-CRITICAL **: gimp_install_procedure: assertion
+	`(n_return_vals == 0 && return_vals == NULL) || (n_return_vals > 0 &&
+	return_vals != NULL)' failed
+  
+  and 
+	GIMP-Error: Plug-in "gap_wr_opacity"
+	(/opt/local/lib/gimp/2.0/plug-ins/gap_wr_opacity)
+	attempted to register the menu item "<Image>/Video/Layer/" for the procedure
+	"plug-in-wr-set-opacity".
+	It has however not installed that procedure.  This is not allowed.
+  
+  both do NOT occure in my Linux development environment. 
+  Therefore the following changes are are just a guess without guarantee for succes..
+  
+  - register with a return value 
+    (now returns id of the handled drawable as most plug-ins do)
+  
+  - register with new-stlyed name (old name had underscore characters)
+     #define PLUG_IN_NAME        "plug-in-wr-set-opacity"
+ 
+  - register in the new submenu "<Image>/Video/Layer/Attributes"
+    (all other wrappers that seems to work also
+    do register in submenus)
+
+- the default options for the external audio resample tool sox
+  have changed because new sox version(s) do no longer 
+  support -w to specify the wav fileformat
+  and the resample option is marked as deprecated.
+  
+  note that the options for the external sound converter utilitiy
+  can be set in the master video encoder dialog
+  and via gimprc parameter (video_encode_com_util_sox_options )
+  so it is still possible to use older sox version(s).
+
+  value for older sox versions was
+    "$IN"  -w -r $RATE "$OUT" resample 
+ 
+  new default value for sox v14.1.0v
+    
+    "$IN" -t wav $RATE "$OUT" " rate -h $RATE
+   
+   
+- optimized videoapi procedure GVA_fetch_frame_to_buffer
+  seek to very near framenumber target now is done as loop
+  of sequential read that is faster than seek in this special case.
+  (for better playback performance of video clips with stepsize != 1)
+
+  * libgapvidapi/gap_vid_api.c
+  * gap/gap_story_render_audio.c
+  * gap/gap_story_sox.c [.h]
+  * libwavplayclient/audioconvert_to_wav.sh
+
+  * gap/gap_wr_opacity.c
+  * gap/gap_wr_resynth.c
+  
+  
 2009-03-10 Wolfgang Hofer <hof@gimp.org>
 
 - added checks for nasm assembler in the configure.in script

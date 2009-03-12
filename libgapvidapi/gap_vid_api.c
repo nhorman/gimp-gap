@@ -2784,12 +2784,39 @@ GVA_fetch_frame_to_buffer(t_GVA_Handle *gvahand
 
   if(frame_data == NULL)
   {
-    if(framenumber != gvahand->current_frame_nr +1)
+    gint32 l_delta;
+    gint32 l_readsteps;
+    
+    l_readsteps = 1;
+    l_delta = framenumber - gvahand->current_frame_nr;
+    l_rc = GVA_RET_OK;
+
+    if((l_delta >= 1) && (l_delta <= 10))
+    {
+      /* target framenumber is very near to the current_frame_nr
+       * in this case positioning via sequential read is faster than seek
+       */
+      l_readsteps = l_delta;
+    }
+    else
     {
       l_rc = GVA_seek_frame(gvahand, framenumber, GVA_UPOS_FRAMES);
     }
 
-    l_rc = GVA_get_next_frame(gvahand);
+    while ((l_readsteps > 0) && (l_rc == GVA_RET_OK))
+    {
+      l_rc = GVA_get_next_frame(gvahand);
+      if(gap_debug)
+      {
+        printf("GVA_fetch_frame_to_buffer: l_readsteps:%d framenumber;%d curr:%d l_rc:%d\n"
+          , (int)l_readsteps
+          , (int)framenumber
+          , (int)gvahand->current_frame_nr
+          , (int)l_rc
+          );
+      }
+      l_readsteps--;
+    }
 
     if(l_rc == GVA_RET_OK)
     {

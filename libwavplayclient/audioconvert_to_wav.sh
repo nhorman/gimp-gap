@@ -127,9 +127,9 @@ fi
 
 if [ "x$RESAMPLE_RATE" = "x" ]
 then 
-  $SOX  "$IN_FILE"  -w  "$OUT_FILE"
+  $SOX  "$IN_FILE"  -t wav  "$OUT_FILE"
 else
-  $SOX  "$IN_FILE"  -w -r $RESAMPLE_RATE "$OUT_FILE" resample
+  $SOX  "$IN_FILE"  -t wav  "$OUT_FILE" rate -h $RESAMPLE_RATE
 fi
 
 if [ -s "$OUT_FILE" ]
@@ -145,7 +145,7 @@ then
 else
    TMP_WAV="${IN_FILE}.tmp_mp3_to.wav"
    $LAME  --decode "$IN_FILE" "$TMP_WAV"
-   $SOX  "$TMP_WAV"  -w -r $RESAMPLE_RATE "$OUT_FILE" resample
+   $SOX  "$TMP_WAV"  -t wav "$OUT_FILE" rate -h $RESAMPLE_RATE
    rm -f "$TMP_WAV"
 fi
 

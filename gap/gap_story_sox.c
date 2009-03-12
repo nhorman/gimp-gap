@@ -28,6 +28,8 @@
 #include "gap-intl.h"
 
 
+extern int gap_debug;  /* 1 == print debug infos , 0 dont print debug infos */
+
 /* --------------------------------
  * gap_story_sox_exec_resample
  * --------------------------------
@@ -62,6 +64,12 @@ gap_story_sox_exec_resample(char *in_audiofile
            , util_sox
            , util_sox_options
 	   );
+
+  if(gap_debug)
+  {
+    printf("Execute resample CMD:%s\n", l_cmd);
+  }
+
   system(l_cmd);
   g_free(l_cmd);
 }  /* end gap_story_sox_exec_resample */

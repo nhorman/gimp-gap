@@ -42,7 +42,7 @@
 #include "gap-intl.h"
 
 /* Defines */
-#define PLUG_IN_NAME        "plug_in_wr_set_opacity"
+#define PLUG_IN_NAME        "plug-in-wr-set-opacity"
 #define PLUG_IN_PRINT_NAME  "Name to Layer"
 #define PLUG_IN_IMAGE_TYPES "RGB*, INDEXED*, GRAY*"
 #define PLUG_IN_AUTHOR      "Wolfgang Hofer (hof@gimp.org)"
@@ -97,9 +97,12 @@ static GimpParamDef in_args[] = {
                   { GIMP_PDB_INT32,    "mode", "0..set opacity, 1..ADD opacity to old opacity value, 2..subtract opacity from old opacity value, 3..multiply"},
   };
 
+static GimpParamDef return_vals[] = {
+    { GIMP_PDB_DRAWABLE, "the_drawable", "the handled drawable" }
+};
 
 static gint global_number_in_args = G_N_ELEMENTS (in_args);
-static gint global_number_out_args = 0;
+static gint global_number_out_args = G_N_ELEMENTS (return_vals);
 
 
 /* Functions */
@@ -141,15 +144,15 @@ static void query (void)
                           global_number_in_args,
                           global_number_out_args,
                           in_args,
-                          NULL);
+                          return_vals);
   {
     /* Menu names */
-    const char *menupath_image_video_layer = N_("<Image>/Video/Layer/");
+    const char *menupath_image_video_layer_attr = N_("<Image>/Video/Layer/Attributes/");
 
     //gimp_plugin_menu_branch_register("<Image>", "Video");
     //gimp_plugin_menu_branch_register("<Image>/Video", "Layer");
 
-    gimp_plugin_menu_register (PLUG_IN_NAME, menupath_image_video_layer);
+    gimp_plugin_menu_register (PLUG_IN_NAME, menupath_image_video_layer_attr);
   }
 
 }  /* end query */
@@ -190,7 +193,7 @@ run (const gchar *name,          /* name of plugin */
   values[0].data.d_status = status;
   values[1].type = GIMP_PDB_DRAWABLE;
   values[1].data.d_drawable = -1;
-  *nreturn_vals = 1;
+  *nreturn_vals = 2;
   *return_vals = values;
 
 
@@ -331,6 +334,7 @@ p_opa_dialog(void)
   argv[ii].flt_min   = 0.0;
   argv[ii].flt_max   = 100.0;
   argv[ii].flt_ret   = (gint)glob_vals.opacity;
+  argv[ii].flt_step  =  1.0;
   argv[ii].entry_width = 80;
   argv[ii].has_default = TRUE;
   argv[ii].flt_default = 100.0;

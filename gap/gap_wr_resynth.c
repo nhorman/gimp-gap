@@ -46,7 +46,7 @@
 #include "gap-intl.h"
 
 /***** Macro definitions  *****/
-#define PLUG_IN_PROC        "plug_in_wr_resynth"
+#define PLUG_IN_PROC        "plug-in-wr-resynth"
 #define PLUG_IN_VERSION     "0.16"
 #define PLUG_IN_AUTHOR      "Wolfgang Hofer (hof@gimp.org)"
 #define PLUG_IN_COPYRIGHT   "Wolfgang Hofer"
@@ -117,9 +117,12 @@ static GimpParamDef in_args[] = {
     { GIMP_PDB_INT32,    "seed",                 "seed for random numbers (use -1 to init with current time)"     }
   };
 
+static GimpParamDef return_vals[] = {
+    { GIMP_PDB_DRAWABLE, "the_drawable", "the handled drawable" }
+};
 
 static gint global_number_in_args = G_N_ELEMENTS (in_args);
-static gint global_number_out_args = 0;
+static gint global_number_out_args = G_N_ELEMENTS (return_vals);
 
 /* Global Variables */
 int gap_debug = 0;  /* 1 == print debug infos , 0 dont print debug infos */
@@ -173,7 +176,7 @@ query (void)
                           "RGB*, GRAY*",
                           GIMP_PLUGIN,
                           global_number_in_args, global_number_out_args,
-                          in_args, NULL);
+                          in_args, return_vals);
 
   {
     /* Menu names */
@@ -222,7 +225,7 @@ run (const gchar *name,          /* name of plugin */
   values[0].data.d_status = status;
   values[1].type = GIMP_PDB_DRAWABLE;
   values[1].data.d_drawable = -1;
-  *nreturn_vals = 1;
+  *nreturn_vals = 2;
   *return_vals = values;
 
 

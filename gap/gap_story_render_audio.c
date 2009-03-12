@@ -634,6 +634,8 @@ p_mix_audio(FILE *fp                  /* IN: NULL: dont write to file */
   l_peak_posr = 0.0;
   l_peak_negl = 0.0;
   l_peak_negr = 0.0;
+  l_sample_left = 0.0;
+  l_sample_right = 0.0;
 
   l_master_scale = vidhand->master_volume;
 
@@ -1571,6 +1573,8 @@ gap_story_render_audio_calculate_playtime(GapStoryRenderVidHandle *vidhand, gdou
 /* -------------------------------------------------
  * gap_story_render_audio_create_composite_audiofile
  * -------------------------------------------------
+ * create the composite audio as mix of all audio channels
+ * and write result to file in WAV format.
  */
 gboolean
 gap_story_render_audio_create_composite_audiofile(GapStoryRenderVidHandle *vidhand
@@ -1598,7 +1602,7 @@ gap_story_render_audio_create_composite_audiofile(GapStoryRenderVidHandle *vidha
 
   if(gap_debug)
   {
-    printf("gap_story_render_audio_create_composite_audiofile CHECKING AUDIO PEAKS\n"
+    printf("gap_story_render_audio_create_composite_audiofile CHECKING AUDIO PEAKS %s\n"
        , comp_audiofile);
   }
 
@@ -1606,7 +1610,7 @@ gap_story_render_audio_create_composite_audiofile(GapStoryRenderVidHandle *vidha
 
   if(gap_debug)
   {
-    printf("gap_story_render_audio_create_composite_audiofile WRITE COMPOSITE AUDIO FILE\n"
+    printf("gap_story_render_audio_create_composite_audiofile WRITE COMPOSITE AUDIO FILE %s\n"
        , comp_audiofile);
   }
 
