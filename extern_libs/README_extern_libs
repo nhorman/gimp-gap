@@ -3,9 +3,8 @@ as sourcecode for convenient static linking.
 
 CURRENT FFMPEG version is:
 
-- ffmpeg-export-snapshot.2009.01.31.tar.bz2
+- ffmpeg-0.5.tar.bz2
 
-       
 CURRENT LIBMPEG3 version is:
        
 - libmpeg3-1.8
@@ -43,11 +42,11 @@ this GIMP-GAP distribution.
   A succsessful build is no guarantee that GIMP-GAP
   will work with a new ffmpeg version.
   Typically it requires much testing and some knowledge
-  of bothe GIMP-GAP and ffmpeg internals to get new ffmpeg versions
+  of both GIMP-GAP and ffmpeg internals to get new ffmpeg versions
   working. 
   
-  Therefore i decided to include an ffmpeg  SVN snaphot
-  that was tested with GIMP-GAP during Jan/Feb 2009
+  Therefore i decided to include the snapshot of the ffmpeg sourcetree.
+  that was tested with GIMP-GAP during Mar. 2009
 
   newer ffmpeg SVN snapshots
   may or may not compile, link and run with this GIMP-GAP release.
@@ -64,33 +63,22 @@ and move the extracted sourcecode directory to
    <GIMP-GAP-sourcedir>/extern_libs/ffmpeg
 
 NOTE: Older ffmpeg versions that once worked with older GIMP-GAP
-releases definitly will NOT compile / work with this GIMP-GAP release.
+  releases definitly will NOT compile / work with this GIMP-GAP release.
 
-GIMP-GAP has dropped support for the follwing old ffmpeg versions: 
-
-   ==> BUG_003: Fails to detect DTS tmecode on some .VOB files
-                no native seek possible
-                (test with old gimp-gap and ffmpeg-export-snapshot-2008.01.13
-                shows the same problem !!)
-   ==> BUG_002: BREAKS video index compatibility based un url_ftell/url_fseek operations.
-                (test with old gimp-gap and ffmpeg-export-snapshot-2008.01.13
-                shows the same problem !!)
-   ==> BUG_001: read after seek fails on most MPEG1 videos
-                (test with old gimp-gap and ffmpeg-CVS-2005.04.08
-                shows the same problem !!)
+  GIMP-GAP has dropped support for the follwing old ffmpeg versions: 
 
 
-
-   ffmpeg-export-snapshot-2008.01.13.tar.bz2  BUG_002
-   ffmpeg-export-snapshot-2007.12.20.tar.bz2  BUG_002  breaks video index compatibility
+   ffmpeg-export-snapshot.2009.01.31.tar.bz2
+   ffmpeg-export-snapshot-2008.01.13.tar.bz2
+   ffmpeg-export-snapshot-2007.12.20.tar.bz2
    ffmpeg-export-snapshot-2007.10.31.tar.bz2
   
        the option --enable-x264 was renamed to --enable-libx264
 
    ffmpeg-export-snapshot-2007.05.15.tar.bz2
-   ffmpeg-export-snapshot-2007.04.20.tar.bz2                  BUG_001
-   ffmpeg-export-snapshot-2007.04.04.tar.bz2 (Revision 8608)  BUG_001
-   ffmpeg-export-snapshot-2007.03.06.tar.bz2                  BUG_001
+   ffmpeg-export-snapshot-2007.04.20.tar.bz2
+   ffmpeg-export-snapshot-2007.04.04.tar.bz2 (Revision 8608)
+   ffmpeg-export-snapshot-2007.03.06.tar.bz2
 
    ffmpeg-CVS-2005.04.08  (Support dropped)
    ffmpeg-CVS-2005.03.02  (Support dropped)

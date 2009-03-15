@@ -259,6 +259,63 @@ p_set_master_keywords(GapValKeyList *keylist, GapGveFFMpegValues *epp)
 
 
 /* --------------------------
+ * p_debug_printf_parameters
+ * --------------------------
+ */
+static void
+p_debug_printf_parameters(GapGveFFMpegValues *epp)
+{
+  printf("format_name  %s\n", epp->format_name);
+  printf("vcodec_name  %s\n", epp->vcodec_name);
+  printf("acodec_name  %s\n", epp->acodec_name);
+  printf("title  %s\n", epp->title);
+  printf("author  %s\n", epp->author);
+  printf("copyright  %s\n", epp->copyright);
+  printf("comment  %s\n", epp->comment);
+  printf("passlogfile  %s\n", epp->passlogfile);
+
+  printf("pass_nr  %d\n", (int)epp->pass_nr);
+  printf("audio_bitrate  %d\n", (int)epp->audio_bitrate);
+  printf("video_bitrate  %d\n", (int)epp->video_bitrate);
+  printf("gop_size  %d\n", (int)epp->gop_size);
+  printf("intra  %d\n", (int)epp->intra);
+  printf("qscale  %f\n", (float)epp->qscale);
+  printf("qmin  %d\n", (int)epp->qmin);
+  printf("qmax  %d\n", (int)epp->qmax);
+  printf("qdiff  %d\n", (int)epp->qdiff);
+  printf("qblur  %f\n", (float)epp->qblur);
+  printf("qcomp  %f\n", (float)epp->qcomp);
+  printf("rc_init_cplx  %f\n", (float)epp->rc_init_cplx);
+  printf("b_qfactor  %f\n", (float)epp->b_qfactor);
+  printf("i_qfactor  %f\n", (float)epp->i_qfactor);
+  printf("b_qoffset  %f\n", (float)epp->b_qoffset);
+  printf("i_qoffset  %f\n", (float)epp->i_qoffset);
+  printf("bitrate_tol  %d\n", (int)epp->bitrate_tol);
+  printf("maxrate_tol  %d\n", (int)epp->maxrate_tol);
+  printf("minrate_tol  %d\n", (int)epp->minrate_tol);
+  printf("bufsize  %d\n", (int)epp->bufsize);
+  printf("motion_estimation  %d\n", (int)epp->motion_estimation);
+  printf("dct_algo  %d\n", (int)epp->dct_algo);
+  printf("idct_algo  %d\n", (int)epp->idct_algo);
+  printf("strict  %d\n", (int)epp->strict);
+  printf("mb_qmin  %d\n", (int)epp->mb_qmin);
+  printf("mb_qmax  %d\n", (int)epp->mb_qmax);
+  printf("mb_decision  %d\n", (int)epp->mb_decision);
+  printf("aic  %d\n", (int)epp->aic);
+  printf("umv  %d\n", (int)epp->umv);
+  printf("b_frames  %d\n", (int)epp->b_frames);
+  printf("mv4  %d\n", (int)epp->mv4);
+  printf("partitioning  %d\n", (int)epp->partitioning);
+  printf("packet_size  %d\n", (int)epp->packet_size);
+  printf("bitexact  %d\n", (int)epp->bitexact);
+  printf("set_aspect_ratio  %d\n", (int)epp->set_aspect_ratio);
+  printf("dont_recode_flag  %d\n", (int)epp->dont_recode_flag);
+  printf("factor_aspect_ratio  %f\n", (float)epp->factor_aspect_ratio);
+
+}  /* end  p_debug_printf_parameters */
+
+
+/* --------------------------
  * gap_ffpar_get
  * --------------------------
  * get parameters from ffmpeg videoencoder parameter file.
@@ -297,52 +354,7 @@ gap_ffpar_get(const char *filename, GapGveFFMpegValues *epp)
   if(gap_debug)
   {
     printf("gap_ffpar_get: params loaded: epp:%d\n", (int)epp);
-    printf("format_name  %s\n", epp->format_name);
-    printf("vcodec_name  %s\n", epp->vcodec_name);
-    printf("acodec_name  %s\n", epp->acodec_name);
-    printf("title  %s\n", epp->title);
-    printf("author  %s\n", epp->author);
-    printf("copyright  %s\n", epp->copyright);
-    printf("comment  %s\n", epp->comment);
-    printf("passlogfile  %s\n", epp->passlogfile);
-
-    printf("pass_nr  %d\n", (int)epp->pass_nr);
-    printf("audio_bitrate  %d\n", (int)epp->audio_bitrate);
-    printf("video_bitrate  %d\n", (int)epp->video_bitrate);
-    printf("gop_size  %d\n", (int)epp->gop_size);
-    printf("intra  %d\n", (int)epp->intra);
-    printf("qscale  %f\n", (float)epp->qscale);
-    printf("qmin  %d\n", (int)epp->qmin);
-    printf("qmax  %d\n", (int)epp->qmax);
-    printf("qdiff  %d\n", (int)epp->qdiff);
-    printf("qblur  %f\n", (float)epp->qblur);
-    printf("qcomp  %f\n", (float)epp->qcomp);
-    printf("rc_init_cplx  %f\n", (float)epp->rc_init_cplx);
-    printf("b_qfactor  %f\n", (float)epp->b_qfactor);
-    printf("i_qfactor  %f\n", (float)epp->i_qfactor);
-    printf("b_qoffset  %f\n", (float)epp->b_qoffset);
-    printf("i_qoffset  %f\n", (float)epp->i_qoffset);
-    printf("bitrate_tol  %d\n", (int)epp->bitrate_tol);
-    printf("maxrate_tol  %d\n", (int)epp->maxrate_tol);
-    printf("minrate_tol  %d\n", (int)epp->minrate_tol);
-    printf("bufsize  %d\n", (int)epp->bufsize);
-    printf("motion_estimation  %d\n", (int)epp->motion_estimation);
-    printf("dct_algo  %d\n", (int)epp->dct_algo);
-    printf("idct_algo  %d\n", (int)epp->idct_algo);
-    printf("strict  %d\n", (int)epp->strict);
-    printf("mb_qmin  %d\n", (int)epp->mb_qmin);
-    printf("mb_qmax  %d\n", (int)epp->mb_qmax);
-    printf("mb_decision  %d\n", (int)epp->mb_decision);
-    printf("aic  %d\n", (int)epp->aic);
-    printf("umv  %d\n", (int)epp->umv);
-    printf("b_frames  %d\n", (int)epp->b_frames);
-    printf("mv4  %d\n", (int)epp->mv4);
-    printf("partitioning  %d\n", (int)epp->partitioning);
-    printf("packet_size  %d\n", (int)epp->packet_size);
-    printf("bitexact  %d\n", (int)epp->bitexact);
-    printf("set_aspect_ratio  %d\n", (int)epp->set_aspect_ratio);
-    printf("dont_recode_flag  %d\n", (int)epp->dont_recode_flag);
-    printf("factor_aspect_ratio  %f\n", (float)epp->factor_aspect_ratio);
+    p_debug_printf_parameters(epp);
   }
 }  /* end gap_ffpar_get */
 
@@ -364,6 +376,12 @@ gap_ffpar_set(const char *filename, GapGveFFMpegValues *epp)
     epp->pass_nr = 2;
   }
   keylist = gap_val_new_keylist();
+
+  if(gap_debug)
+  {
+    printf("gap_ffpar_set: now saving parameters: epp:%d to file:%s\n", (int)epp, filename);
+    p_debug_printf_parameters(epp);
+  }
 
   p_set_master_keywords(keylist, epp);
   l_rc = gap_val_rewrite_file(keylist

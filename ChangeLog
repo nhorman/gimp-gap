@@ -1,3 +1,52 @@
+2009-03-15 Wolfgang Hofer <hof@gimp.org>
+
+- update to ffmpeg release ffmpeg-0.5
+  now a stable ffmpeg release 0.5 is available
+  i decided to update gimp-gap after repeating read and write tests 
+  that showed same behaviour as the ffmpeg snapshot from Jan 2009.
+
+  ffmpeg-0.5 has deprecated some procedures/attributes that were used
+  in GIMP-GAP.
+  therefore i replace following deprecated FFMPEG API usages:
+
+  - av_alloc_format_context   procedure is deprecated, using avformat_alloc_context() instead. 
+
+  - use procedure av_metadata_set for setting author, comment, copyright and title
+    instead of filling the deprecated attributes in the   AVFormatContext structure
+
+       
+- changed the bitrate_tol value in the MPEG1 VCD preset from 0 to 1150 kbit
+   (because ffpeg-0.5 crashes with message
+   "bitrate tolerance too small for bitrate"
+   when value 0 is used for encoding)
+
+- fixed bug when saving ffmpeg encoder presets to file
+   the value showed in the dialog did not always match the saved value in the file.
+   (only in case when parameters were entered via keyboard)
+   
+   ==> must connect the callbacks for spinbutton widgets on signal "value_changed"
+       (the signal "changed" works only in case the value was changed via mouse clicks
+       on the spinbutton)
+
+- configure.in added checks for both older ffmpeg versions
+  (to force update of those derived directory after svn update)
+
+- fixed bug in master video encoder. audiotime and audio labels are now
+  updated in the dialog widgets when audiofile in WAV format is entered
+  in the Audio Options.
+  (procedure p_update_aud_info)
+   
+  * configure.in
+  * extern_libs/README_extern_libs
+  * extern_libs/ffmpeg.tar.gz
+
+  * vid_enc_ffmpeg/gap_enc_ffmpeg_main.c
+  * vid_enc_ffmpeg/gap_enc_ffmpeg_par.c
+  * vid_enc_ffmpeg/gap_enc_ffmpeg_gui.c
+  * vid_enc_ffmpeg/gap_enc_ffmpeg_callbacks.c
+
+  * vid_common/gap_cme_gui.c
+
 2009-03-12 Wolfgang Hofer <hof@gimp.org>
 
 - attempt to fix #558730 (Mac OS X specific issue ?)

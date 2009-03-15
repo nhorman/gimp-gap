@@ -984,7 +984,7 @@ gap_enc_ffmpeg_main_init_preset_params(GapGveFFMpegValues *epp, gint preset_idx)
   static float  tab_b_qoffset[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]         =  {  1.25,      1.25,     1.25,   1.25,       1.25,     1.25,     1.25,     1.25,     1.25 };
   static float  tab_i_qoffset[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]         =  {   0.0,       0.0,      0.0,    0.0,        0.0,      0.0,      0.0,      0.0,      0.0 };
 
-  static gint32 tab_bitrate_tol[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  {  4000,     6000,     2000,    4000,          0,     4000,     2000,     2000,     5000 };
+  static gint32 tab_bitrate_tol[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  {  4000,     6000,     2000,    4000,       1150,     4000,     2000,     2000,     5000 };
   static gint32 tab_maxrate_tol[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  {     0,        0,        0,       0,       1150,        0,     2516,     9000,        0 };
   static gint32 tab_minrate_tol[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]       =  {     0,        0,        0,       0,       1150,        0,        0,        0,        0 };
   static gint32 tab_bufsize[GAP_GVE_FFMPEG_PRESET_MAX_ELEMENTS]           =  {     0,        0,        0,       0,         40,        0,      224,      224,        0 };
@@ -2157,19 +2157,19 @@ p_init_video_codec(t_ffmpeg_handle *ffh
 
   if (epp->title[0] != '\0')
   {
-    g_snprintf(ffh->output_context->title, sizeof(ffh->output_context->title), "%s", &epp->title[0]);
+      av_metadata_set(&ffh->output_context->metadata, "title",  &epp->title[0]);
   }
   if (epp->author[0] != '\0')
   {
-    g_snprintf(ffh->output_context->author, sizeof(ffh->output_context->author), "%s", &epp->author[0]);
+      av_metadata_set(&ffh->output_context->metadata, "author",  &epp->author[0]);
   }
   if (epp->copyright[0] != '\0')
   {
-    g_snprintf(ffh->output_context->copyright, sizeof(ffh->output_context->copyright), "%s", &epp->copyright[0]);
+      av_metadata_set(&ffh->output_context->metadata, "copyright",  &epp->copyright[0]);
   }
   if (epp->comment[0] != '\0')
   {
-    g_snprintf(ffh->output_context->comment, sizeof(ffh->output_context->comment), "%s", &epp->comment[0]);
+      av_metadata_set(&ffh->output_context->metadata, "comment",  &epp->comment[0]);
   }
 
 
@@ -2415,7 +2415,7 @@ p_ffmpeg_open(GapGveFFMpegGlobalParams *gpp
   }
 
 
-  ffh->output_context = av_alloc_format_context();
+  ffh->output_context = avformat_alloc_context();
   ffh->output_context->oformat = ffh->file_oformat;
   g_snprintf(ffh->output_context->filename, sizeof(ffh->output_context->filename), "%s", &gpp->val.videoname[0]);
 

@@ -877,13 +877,39 @@ p_update_aud_info (GapCmeGlobalParams *gpp
   long        valid_playlist_references;
   int         l_rc;
   gint32      tmsec;        /* audioplaytime in milli secs */
+  gboolean    l_audioname_empty;
 
-  if ((lbl_info == NULL) || (lbl_time == NULL) || (lbl_time0))
+  if(gap_debug)
+  {
+    printf("p_update_aud_info: START lbl_info:%d lbl_time:%d lbl_time0:%d\n"
+       ,(int)lbl_info
+       ,(int)lbl_time
+       ,(int)lbl_time0
+       );
+  }
+
+  if ((lbl_info == NULL) || (lbl_time == NULL) || (lbl_time0 == NULL))
   {
     return 0;
   }
-  if(*audioname == '\0')
+  
+  l_audioname_empty = TRUE;
+  if(audioname != NULL)
   {
+    if(*audioname != '\0')
+    {
+      l_audioname_empty = FALSE;
+    }
+  }
+  
+  
+  if(l_audioname_empty == TRUE)
+  {
+     if(gap_debug)
+     {
+       printf("p_update_aud_info: audioname is null or empty\n");
+     }
+
      p_print_time_label(lbl_time, 0);
      p_print_time_label(lbl_time0, 0);
      return 0;
@@ -898,6 +924,13 @@ p_update_aud_info (GapCmeGlobalParams *gpp
   samplerate = 0;
   disp_samplerate = gpp->val.samplerate;
   g_snprintf(txt, sizeof(txt), " ");
+
+  if(gap_debug)
+  {
+    printf("p_update_aud_info: audioname %s\n", audioname);
+  }
+
+
   if(g_file_test(audioname, G_FILE_TEST_EXISTS))
   {
      tmsec = 0;
@@ -914,6 +947,13 @@ p_update_aud_info (GapCmeGlobalParams *gpp
 		     , gpp->val.samplerate          /* desired_samplerate */
 		     );
 
+     if(gap_debug)
+     {
+       printf("p_update_aud_info: l_rc:%d all_playlist_references:%d\n"
+         ,(int)l_rc
+         ,(int)all_playlist_references
+         );
+     }
 
      if((l_rc == 0)
      || (all_playlist_references >0))

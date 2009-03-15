@@ -139,7 +139,10 @@ on_ff_gint32_spinbutton_changed  (GtkWidget *widget,
   GtkAdjustment *adj;
   gint32         value;
 
-  if(gap_debug) printf("CB: on_ff_gint32_spinbutton_changed widget: %d\n", (int)widget);
+  if(gap_debug)
+  {
+    printf("CB: on_ff_gint32_spinbutton_changed widget: %d\n", (int)widget);
+  }
   if((dest_value_ptr == NULL) || (widget == NULL))
   { 
     return; 
@@ -150,7 +153,10 @@ on_ff_gint32_spinbutton_changed  (GtkWidget *widget,
   {
     value = (gint32) gtk_adjustment_get_value(GTK_ADJUSTMENT(adj));
     
-    if(gap_debug) printf("spin value: %d\n", (int)value );
+    if(gap_debug)
+    {
+      printf("spin value: %d\n", (int)value );
+    }
 
     if(value != *dest_value_ptr)
     {
@@ -171,7 +177,10 @@ on_ff_gdouble_spinbutton_changed  (GtkWidget *widget,
   GtkAdjustment *adj;
   gdouble        value;
 
-  if(gap_debug) printf("CB: on_ff_gdouble_spinbutton_changed widget: %d\n", (int)widget);
+  if(gap_debug)
+  {
+    printf("CB: on_ff_gdouble_spinbutton_changed widget: %d\n", (int)widget);
+  }
 
   if((dest_value_ptr == NULL) || (widget == NULL))
   { 
@@ -183,7 +192,10 @@ on_ff_gdouble_spinbutton_changed  (GtkWidget *widget,
   {
     value = (gdouble) gtk_adjustment_get_value(GTK_ADJUSTMENT(adj));
     
-    if(gap_debug) printf("spin value: %f\n", (float)value );
+    if(gap_debug)
+    {
+      printf("spin value: %f\n", (float)value );
+    }
 
     if(value != *dest_value_ptr)
     {

@@ -297,20 +297,37 @@ AC_ARG_ENABLE(libavformat,
   if test "x$enable_libavformat" != "xno"; then
     dnl
 
-    dnl check if old version off ffmpeg is already there 
-    dnl (typically for already existing svn build after 1st svn update to new version)
+    dnl check if old ffmpeg version(s) that were once part of GIMP-GAP are still there .
+    dnl typically for SVN users after an svn update. note that ffmpeg source tree
+    dnl is not under svn control and is derived from the tarball.
 
     FF_FILE_AVCODEC_H="$FFMPEG_DIR/libavcodec/avcodec.h"
+    FF_FILE_AVFORMAT_H="$FFMPEG_DIR/libavformat/avformat.h"
 
+    echo "checking $FF_FILE_AVCODEC_H for old content"
+    
+    ffmpeg_dir_is_old="no"
     if test -f "$FF_FILE_AVCODEC_H"; then
       if  grep '#define LIBAVCODEC_VERSION      51.47.2' $FF_FILE_AVCODEC_H >/dev/null; then
+        ffmpeg_dir_is_old="yes"
+      fi
+    fi
+    echo "checking files $FF_FILE_AVFORMAT_H for old content"
+    if test -f "$FF_FILE_AVFORMAT_H"; then
+      if  grep 'avformat_alloc_context' $FF_FILE_AVFORMAT_H >/dev/null; then
+        echo "checking ffmpeg/libavformat/avformat.h supports avformat_alloc_context (OK)"
+      else
+        ffmpeg_dir_is_old="yes"
+      fi
+    fi
+    
+    if eval "test x$ffmpeg_dir_is_old = xyes"; then
         mv "$FFMPEG_DIR" "$FFMPEG_DIR-OLD"
         echo "** UPDATE of ffmpeg forced, moving $FFMPEG_DIR  to $FFMPEG_DIR-OLD"
         moved_old_ffmpeg_warn="
 INFORMATION: old ffmpeg was moved to $FFMPEG_DIR-OLD
 (you may delete the old ffmpeg directory)
 "
-      fi
     fi
 
     AC_DEFINE(ENABLE_GVA_LIBAVFORMAT, 1,

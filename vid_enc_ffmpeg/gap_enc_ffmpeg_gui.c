@@ -1264,7 +1264,7 @@ p_create_basic_options_frame (GapGveFFMpegGlobalParams *gpp)
   gimp_help_set_help_data (spinbutton, _("Audio bitrate in kBit/sec"), NULL);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_ADJ, (gpointer)adj);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
-  g_signal_connect (G_OBJECT (spinbutton), "changed",
+  g_signal_connect (G_OBJECT (spinbutton), "value_changed",
                       G_CALLBACK (on_ff_gint32_spinbutton_changed),
                       &gpp->evl.audio_bitrate);
 
@@ -1327,7 +1327,7 @@ p_create_basic_options_frame (GapGveFFMpegGlobalParams *gpp)
   gimp_help_set_help_data (spinbutton, _("Video bitrate kBit/sec"), NULL);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_ADJ, (gpointer)adj);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
-  g_signal_connect (G_OBJECT (spinbutton), "changed",
+  g_signal_connect (G_OBJECT (spinbutton), "value_changed",
                       G_CALLBACK (on_ff_gint32_spinbutton_changed),
                       &gpp->evl.video_bitrate);
 
@@ -1357,7 +1357,7 @@ p_create_basic_options_frame (GapGveFFMpegGlobalParams *gpp)
   gimp_help_set_help_data (spinbutton, _("Use fixed video quantiser scale (VBR) (0=const bitrate)"), NULL);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_ADJ, (gpointer)adj);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
-  g_signal_connect (G_OBJECT (spinbutton), "changed",
+  g_signal_connect (G_OBJECT (spinbutton), "value_changed",
                       G_CALLBACK (on_ff_gdouble_spinbutton_changed),
                       &gpp->evl.qscale);
 
@@ -1387,7 +1387,7 @@ p_create_basic_options_frame (GapGveFFMpegGlobalParams *gpp)
   gimp_help_set_help_data (spinbutton, _("min video quantiser scale (VBR)"), NULL);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_ADJ, (gpointer)adj);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
-  g_signal_connect (G_OBJECT (spinbutton), "changed",
+  g_signal_connect (G_OBJECT (spinbutton), "value_changed",
                       G_CALLBACK (on_ff_gint32_spinbutton_changed),
                       &gpp->evl.qmin);
 
@@ -1415,7 +1415,7 @@ p_create_basic_options_frame (GapGveFFMpegGlobalParams *gpp)
   gimp_help_set_help_data (spinbutton, _("max video quantiser scale (VBR)"), NULL);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_ADJ, (gpointer)adj);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
-  g_signal_connect (G_OBJECT (spinbutton), "changed",
+  g_signal_connect (G_OBJECT (spinbutton), "value_changed",
                       G_CALLBACK (on_ff_gint32_spinbutton_changed),
                       &gpp->evl.qmax);
 
@@ -1444,7 +1444,7 @@ p_create_basic_options_frame (GapGveFFMpegGlobalParams *gpp)
   gimp_help_set_help_data (spinbutton, _("max difference between the quantiser scale (VBR)"), NULL);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_ADJ, (gpointer)adj);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
-  g_signal_connect (G_OBJECT (spinbutton), "changed",
+  g_signal_connect (G_OBJECT (spinbutton), "value_changed",
                       G_CALLBACK (on_ff_gint32_spinbutton_changed),
                       &gpp->evl.qdiff);
 
@@ -1496,7 +1496,7 @@ p_create_basic_options_frame (GapGveFFMpegGlobalParams *gpp)
   gimp_help_set_help_data (spinbutton, _("Group of picture size"), NULL);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_ADJ, (gpointer)adj);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
-  g_signal_connect (G_OBJECT (spinbutton), "changed",
+  g_signal_connect (G_OBJECT (spinbutton), "value_changed",
                     G_CALLBACK (on_ff_gint32_spinbutton_changed),
                     &gpp->evl.gop_size);
 
@@ -1523,7 +1523,7 @@ p_create_basic_options_frame (GapGveFFMpegGlobalParams *gpp)
   gimp_help_set_help_data (spinbutton, _("Max number of B-frames in sequence"), NULL);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_ADJ, (gpointer)adj);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
-  g_signal_connect (G_OBJECT (spinbutton), "changed",
+  g_signal_connect (G_OBJECT (spinbutton), "value_changed",
                     G_CALLBACK (on_ff_gint32_spinbutton_changed),
                     &gpp->evl.b_frames);
 
@@ -2920,7 +2920,7 @@ p_create_expert_options_frame (GapGveFFMpegGlobalParams *gpp)
                                          "amount of qscale smoothing over time (0.0-1.0)"), NULL);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_ADJ, (gpointer)adj);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
-  g_signal_connect (G_OBJECT (spinbutton), "changed",
+  g_signal_connect (G_OBJECT (spinbutton), "value_changed",
                       G_CALLBACK (on_ff_gdouble_spinbutton_changed),
                       &gpp->evl.qblur);
 
@@ -2950,7 +2950,7 @@ p_create_expert_options_frame (GapGveFFMpegGlobalParams *gpp)
                                          "amount of qscale change between easy & hard scenes (0.0-1.0)"), NULL);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_ADJ, (gpointer)adj);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
-  g_signal_connect (G_OBJECT (spinbutton), "changed",
+  g_signal_connect (G_OBJECT (spinbutton), "value_changed",
                       G_CALLBACK (on_ff_gdouble_spinbutton_changed),
                       &gpp->evl.qcomp);
 
@@ -2976,7 +2976,7 @@ p_create_expert_options_frame (GapGveFFMpegGlobalParams *gpp)
   gimp_help_set_help_data (spinbutton, _("Initial complexity for 1-pass encoding"), NULL);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_ADJ, (gpointer)adj);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
-  g_signal_connect (G_OBJECT (spinbutton), "changed",
+  g_signal_connect (G_OBJECT (spinbutton), "value_changed",
                       G_CALLBACK (on_ff_gdouble_spinbutton_changed),
                       &gpp->evl.rc_init_cplx);
 
@@ -3003,7 +3003,7 @@ p_create_expert_options_frame (GapGveFFMpegGlobalParams *gpp)
   gimp_help_set_help_data (spinbutton, _("qp factor between p and b frames"), NULL);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_ADJ, (gpointer)adj);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
-  g_signal_connect (G_OBJECT (spinbutton), "changed",
+  g_signal_connect (G_OBJECT (spinbutton), "value_changed",
                       G_CALLBACK (on_ff_gdouble_spinbutton_changed),
                       &gpp->evl.b_qfactor);
 
@@ -3029,7 +3029,7 @@ p_create_expert_options_frame (GapGveFFMpegGlobalParams *gpp)
   gimp_help_set_help_data (spinbutton, _("qp factor between p and i frames"), NULL);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_ADJ, (gpointer)adj);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
-  g_signal_connect (G_OBJECT (spinbutton), "changed",
+  g_signal_connect (G_OBJECT (spinbutton), "value_changed",
                       G_CALLBACK (on_ff_gdouble_spinbutton_changed),
                       &gpp->evl.i_qfactor);
 
@@ -3057,7 +3057,7 @@ p_create_expert_options_frame (GapGveFFMpegGlobalParams *gpp)
   gimp_help_set_help_data (spinbutton, _("qp offset between p and b frames"), NULL);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_ADJ, (gpointer)adj);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
-  g_signal_connect (G_OBJECT (spinbutton), "changed",
+  g_signal_connect (G_OBJECT (spinbutton), "value_changed",
                       G_CALLBACK (on_ff_gdouble_spinbutton_changed),
                       &gpp->evl.b_qoffset);
 
@@ -3083,7 +3083,7 @@ p_create_expert_options_frame (GapGveFFMpegGlobalParams *gpp)
   gimp_help_set_help_data (spinbutton, _("qp offset between p and i frames"), NULL);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_ADJ, (gpointer)adj);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
-  g_signal_connect (G_OBJECT (spinbutton), "changed",
+  g_signal_connect (G_OBJECT (spinbutton), "value_changed",
                       G_CALLBACK (on_ff_gdouble_spinbutton_changed),
                       &gpp->evl.i_qoffset);
 
@@ -3110,7 +3110,7 @@ p_create_expert_options_frame (GapGveFFMpegGlobalParams *gpp)
   gimp_help_set_help_data (spinbutton, _("Set video bitrate tolerance (in kbit/s)"), NULL);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_ADJ, (gpointer)adj);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
-  g_signal_connect (G_OBJECT (spinbutton), "changed",
+  g_signal_connect (G_OBJECT (spinbutton), "value_changed",
                       G_CALLBACK (on_ff_gint32_spinbutton_changed),
                       &gpp->evl.bitrate_tol);
 
@@ -3137,7 +3137,7 @@ p_create_expert_options_frame (GapGveFFMpegGlobalParams *gpp)
   gimp_help_set_help_data (spinbutton, _("Set max video bitrate tolerance (in kbit/s)"), NULL);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_ADJ, (gpointer)adj);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
-  g_signal_connect (G_OBJECT (spinbutton), "changed",
+  g_signal_connect (G_OBJECT (spinbutton), "value_changed",
                       G_CALLBACK (on_ff_gint32_spinbutton_changed),
                       &gpp->evl.maxrate_tol);
 
@@ -3165,7 +3165,7 @@ p_create_expert_options_frame (GapGveFFMpegGlobalParams *gpp)
   gimp_help_set_help_data (spinbutton, _("Set min video bitrate tolerance (in kbit/s)"), NULL);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_ADJ, (gpointer)adj);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
-  g_signal_connect (G_OBJECT (spinbutton), "changed",
+  g_signal_connect (G_OBJECT (spinbutton), "value_changed",
                       G_CALLBACK (on_ff_gint32_spinbutton_changed),
                       &gpp->evl.minrate_tol);
 
@@ -3192,7 +3192,7 @@ p_create_expert_options_frame (GapGveFFMpegGlobalParams *gpp)
   gimp_help_set_help_data (spinbutton, _("Set ratecontrol buffer size (in kbyte)"), NULL);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_ADJ, (gpointer)adj);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
-  g_signal_connect (G_OBJECT (spinbutton), "changed",
+  g_signal_connect (G_OBJECT (spinbutton), "value_changed",
                       G_CALLBACK (on_ff_gint32_spinbutton_changed),
                       &gpp->evl.bufsize);
 
@@ -3219,7 +3219,7 @@ p_create_expert_options_frame (GapGveFFMpegGlobalParams *gpp)
   gimp_help_set_help_data (spinbutton, _("How strictly to follow the standards"), NULL);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_ADJ, (gpointer)adj);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
-  g_signal_connect (G_OBJECT (spinbutton), "changed",
+  g_signal_connect (G_OBJECT (spinbutton), "value_changed",
                       G_CALLBACK (on_ff_gint32_spinbutton_changed),
                       &gpp->evl.strict);
 
@@ -3247,7 +3247,7 @@ p_create_expert_options_frame (GapGveFFMpegGlobalParams *gpp)
   gimp_help_set_help_data (spinbutton, _("Min macroblock quantiser scale (VBR)"), NULL);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_ADJ, (gpointer)adj);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
-  g_signal_connect (G_OBJECT (spinbutton), "changed",
+  g_signal_connect (G_OBJECT (spinbutton), "value_changed",
                       G_CALLBACK (on_ff_gint32_spinbutton_changed),
                       &gpp->evl.mb_qmin);
 
@@ -3274,7 +3274,7 @@ p_create_expert_options_frame (GapGveFFMpegGlobalParams *gpp)
   gimp_help_set_help_data (spinbutton, _("Max macroblock quantiser scale (VBR)"), NULL);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_ADJ, (gpointer)adj);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
-  g_signal_connect (G_OBJECT (spinbutton), "changed",
+  g_signal_connect (G_OBJECT (spinbutton), "value_changed",
                       G_CALLBACK (on_ff_gint32_spinbutton_changed),
                       &gpp->evl.mb_qmax);
 
@@ -3395,7 +3395,7 @@ p_create_2pass_options_frame (GapGveFFMpegGlobalParams *gpp)
   gimp_help_set_help_data (spinbutton, _("Multiplexer rate Bit/sec"), NULL);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_ADJ, (gpointer)adj);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
-  g_signal_connect (G_OBJECT (spinbutton), "changed",
+  g_signal_connect (G_OBJECT (spinbutton), "value_changed",
                       G_CALLBACK (on_ff_gint32_spinbutton_changed),
                       &gpp->evl.mux_rate);
 
@@ -3423,7 +3423,7 @@ p_create_2pass_options_frame (GapGveFFMpegGlobalParams *gpp)
   gimp_help_set_help_data (spinbutton, _("Multiplexer packet size"), NULL);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_ADJ, (gpointer)adj);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
-  g_signal_connect (G_OBJECT (spinbutton), "changed",
+  g_signal_connect (G_OBJECT (spinbutton), "value_changed",
                       G_CALLBACK (on_ff_gint32_spinbutton_changed),
                       &gpp->evl.mux_packet_size);
 
@@ -3453,7 +3453,7 @@ p_create_2pass_options_frame (GapGveFFMpegGlobalParams *gpp)
   gimp_help_set_help_data (spinbutton, _("Set the initial demux-decode delay (seconds)"), NULL);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_ADJ, (gpointer)adj);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
-  g_signal_connect (G_OBJECT (spinbutton), "changed",
+  g_signal_connect (G_OBJECT (spinbutton), "value_changed",
                       G_CALLBACK (on_ff_gdouble_spinbutton_changed),
                       &gpp->evl.mux_preload);
 
@@ -3482,7 +3482,7 @@ p_create_2pass_options_frame (GapGveFFMpegGlobalParams *gpp)
   gimp_help_set_help_data (spinbutton, _("Set the maximum demux-decode delay (seconds)"), NULL);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_ADJ, (gpointer)adj);
   g_object_set_data (G_OBJECT (spinbutton), GAP_ENC_FFGUI_GPP, (gpointer)gpp);
-  g_signal_connect (G_OBJECT (spinbutton), "changed",
+  g_signal_connect (G_OBJECT (spinbutton), "value_changed",
                       G_CALLBACK (on_ff_gdouble_spinbutton_changed),
                       &gpp->evl.mux_max_delay);
 
