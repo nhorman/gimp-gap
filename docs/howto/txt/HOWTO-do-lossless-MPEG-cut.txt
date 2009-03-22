@@ -14,9 +14,6 @@ with:
 
 --enable-videoapi-support
 --enable-libavformat 
---enable-libmpeg3
-
-the required libraries must also be installed on your system.
 
 
 
@@ -24,32 +21,28 @@ Create a STORYBOARD file, with an editor or with the
 Storyboard dialog, containing the desired clips of your videofiles.
 
 Lossless encoding becomes possible if the STORYBOARD file uses only
-one videotrack and the input clip(s) are MPEG ecoded videos
+one videotrack and the input clip(s) are MPEG or MJPEG ecoded videos
 in the same size as defined in the VID_MASTER_SIZE record
-Further there should be no transformations
-(such as ZOOM, MOVE operations) and no MACRO executions
-on the clips that are to encode.
+Further the processed clips must not have any transformations
+(such as ZOOM, MOVE operations and MACRO executions).
 
-Another requirement is that you set libmpeg3 as your
-preferred video decoder:
-
-
--------------------------- begin STORYBOARD example -----------------
-STORYBOARDFILE
-VID_PREFERRED_DECODER  libmpeg3
-VID_MASTER_SIZE        width:720 height:576
-VID_MASTER_FRAMERATE   frames_per_sec:25
-
-VID_PLAY_MOVIE      track:1 file:"/dos/data2/shrek/vob_files/vts_01_0.ifo" from:000030 to:000050 mode:normal nloops:1 seltrack:1 exactseek:1 deinterlace:0.0 stepsize:1
+Another requirement is that both decoder and encoder
+supports handling of frames as compressed video chunk data.
+Currently the libmpeg3 and libavformat based decoders
+support this feature (by implementing the procedure
+GVA_get_video_chunk)
+The encoders FFMPEG and AVI1 support handling of
+compressed video chunk data when the parameter "Dont Recode Flag"
+is set.
 
 
--------------------------- end STORYBOARD example -----------------
+a) lossless MPEG1 / MPEG2 cut
+=============================
 
-
-Then call the Master Encoder to encode your STORYBOARD file 
+Use the Master Encoder to encode your STORYBOARD file 
 (Menu: Video->Encode->Master Encoder)
 
-You must select the FFMPEG Encoder
+Select the FFMPEG Encoder
 and set its Parameters like this:
 
   Select an MPEG video codec that matches your input video(s)
@@ -62,7 +55,7 @@ and set its Parameters like this:
 
   
 The Dont Recode Flag in the GIMP-GAP FFMPEG encoder
-will try to copy frames 1:1 from input video clips
+forces copying of frames 1:1 from input video clips
 where possible, and does call the FFMPEG encoder engine
 for all the other frames.
 
@@ -81,6 +74,24 @@ If the quality settings for the FFMEG encoder are different
 from th quality of the input videoclip(s) this will be
 visible especially at those points, where the encoder
 switches from encoding engine to 1:1 copy mode.
+
+
+
+b) lossless MJPG cut
+====================
+
+Lossless cut for MJPEG encoded videos is supported
+by the AVI1 encoder.
+
+Set the "Dont Recode Flag" in the JPEG-Options of the AVI1 encoder
+and select "MJPG" as Video CODEC. 
+to trigger the lossless cut feature of the AVI1 encoder.
+
+Lossless 1:1 copy of frames is possible if the input clips are JPEG images
+or MJPEG encoded videos (typically JPEG images packed into an AVI file). 
+
+The lossless MJPEG cut was tested with MJEG encoded AVI videoclips produced
+with the OLYMPUS SP560UZ digital camera.
 
 
 

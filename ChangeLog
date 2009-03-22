@@ -1,3 +1,10 @@
+2009-03-22 Wolfgang Hofer <hof@gimp.org>
+
+- updated news.
+
+  * NEWS
+  * docs/howto/txt/HOWTO-do-lossless-MPEG-cut.txt
+  
 2009-03-15 Wolfgang Hofer <hof@gimp.org>
 
 - update to ffmpeg release ffmpeg-0.5
@@ -37,6 +44,7 @@
   (procedure p_update_aud_info)
    
   * configure.in
+  * vid_enc_ffmpeg/gap_enc_ffmpeg_main.c:
   * extern_libs/README_extern_libs
   * extern_libs/ffmpeg.tar.gz
 

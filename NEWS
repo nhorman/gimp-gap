@@ -2,11 +2,16 @@ Here is a short overview whats new in GIMP-GAP-2.5.0:
 -----------------------------------------------------
 (compared to gimp-gap release 2.4.0)
 
+- Storyboard undo support
+- Storyboard section support. complex scenes can be described within subsections
+  where each subsection can arrange multiple clips in multiple individual video tracks.
+
+- Storyboard clips support new deinterlace modes Odd First, Even First
+
 - Player supports extracting audio track when playing clips
   that refere to a videofile that has one or more audiotrack(s)
-
-- Storyboard undo support
-- Storyboard clips support new deinterlace modes Odd First, Even First
+  (the extracted audio can be used for audioplayback
+  if audiosupport is enabled and wavplay is installed)
 
 - Filtermacro processing now supports mapping to 
   persistent drawable id references.
@@ -25,14 +30,32 @@ Here is a short overview whats new in GIMP-GAP-2.5.0:
   persistent drawable ids is supported in case both refer to the
   same image, anim frame series or the same videofile.
 
-- viedo extract supports generating transparency via bluebox effect.
+- video extract supports generating transparency via bluebox effect.
+
+- the master video encoder dialog now stays open while the encoder
+  process is running and shows encoding progress (with Cancel option)
+
+- lossless frame extract and videocut for MJPEG encoded videoclips
+  is supported by the storyboard processor and in the
+  AVI1, FFMPEG and RAWFRAMES encoders (via dont recode flag)
+
+- frontends for old external video encoders and the old xanim based
+  frame extract plug-in are not bulit per default.
 
 - Modify Frames now supports creation of grayscale layer from
   alpha channel, or layermask or mix of both
 
-- wrapper for rotate any angle.
+- added wrapper for rotate any angle.
   (provides support for animated apply in "filter all layers"
   or in fltermacros for rotation effects in storyboard clips)
+
+- added wrapper for the resynthesizer
+  (provides support for animated apply of the 3rd party plug-in resynthesizer)
+
+- external libs for vidoe read and write access
+  were updated to ffmpeg-0.5 and libmpeg3-1.8
+
+- bugfixes and updates for the use with GIMP-2.6.x releases.(see ChangeLog for details)
 
 
 Here is a short overview whats new in GIMP-GAP-2.3.0:
