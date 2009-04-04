@@ -74,14 +74,33 @@ case x"$target" in
 esac
 AC_MSG_RESULT([$target_or_host])
 
+dnl prefix and suffix of librarynames (for win32 environment)
+dnl notes:
+dnl older gimp-gap releases automatically used .lib suffix (MSVC style) when build runs in MinGW
+dnl Win32 environment. (see notes on bug #324854 reported 2005.12.23 for details)
+dnl Now i have setup a MinGW build environment based on gcc where
+dnl ffmpeg-0.5 libraries are built in unix typical stlye ending with extension .a
+dnl i added the configure option --enable-win32libnames to support
+dnl old behaviour (but build with MSVC is not tested and not fully supported and probably may fail)
+
+MINGW_LIBPREF="lib"
+MINGW_LIBSUF=".a"
+
+AC_ARG_ENABLE(win32libnames,
+              [  --enable-win32libnames     use MSVC style for library extension .lib instead of .a on MinGW environment])
+  if test "x$enable_win32libnames" = "xyes"; then
+    MINGW_LIBPREF=""
+    MINGW_LIBSUF=".lib"
+  fi
+  
 
 AC_MSG_CHECKING([for native Win32])
 case "$target_or_host" in
   *-*-mingw*)
     os_win32=yes
     PATHSEP=';'
-    LIBPREF=""
-    LIBSUF=".lib"
+    LIBPREF="$MINGW_LIBPREF"
+    LIBSUF="$MINGW_LIBSUF"
     ;;
   *)
     os_win32=no
@@ -363,15 +382,19 @@ INFORMATION: old ffmpeg was moved to $FFMPEG_DIR-OLD
       FFMPEG_LIBAVFORMAT_A="$FFMPEG_DIR/libavformat/${LIBPREF}avformat${LIBSUF}"
       FFMPEG_LIBAVCODEC_A="$FFMPEG_DIR/libavcodec/${LIBPREF}avcodec${LIBSUF}"
       FFMPEG_LIBAVUTIL_A="$FFMPEG_DIR/libavutil/${LIBPREF}avutil${LIBSUF}"
+      FFMPEG_LIBAVDEVICE_A="$FFMPEG_DIR/libavdevice/${LIBPREF}avdevice${LIBSUF}"
       dnl
       dnl ffmpeg can be configured to use external codec libs x264, xvid ....
       dnl options for ffmpeg ext libs configuration will be passed to ffmpeg/configure
       dnl if some of those libs are installed (and not explicitly disabled)
-
+      
       FFMPEG_EXTLIBS="$FF_LIBX264 $FF_LIBXVID $FF_BZIP2 $FF_LIBMP3LAME $FF_LIBFAAC $FF_LIBFAAD"
+      if  test "x$os_win32" = "xyes"; then
+        FFMPEG_EXTLIBS="$FFMPEG_EXTLIBS -lws2_32"
+      fi
 
-      GAP_VLIBS_FFMPEG=" $FFMPEG_LIBAVFORMAT_A $FFMPEG_LIBAVCODEC_A $FFMPEG_LIBAVUTIL_A $FFMPEG_EXTLIBS"
-      GAP_VINCS_FFMPEG=" -I$FFMPEG_DIR -I$FFMPEG_DIR/libavcodec -I$FFMPEG_DIR/libavformat -I$FFMPEG_DIR/libavutil "
+      GAP_VLIBS_FFMPEG="  $FFMPEG_LIBAVDEVICE_A $FFMPEG_LIBAVFORMAT_A $FFMPEG_LIBAVCODEC_A $FFMPEG_LIBAVUTIL_A $FFMPEG_EXTLIBS "
+      GAP_VINCS_FFMPEG=" -I$FFMPEG_DIR -I$FFMPEG_DIR/libavcodec -I$FFMPEG_DIR/libavformat -I$FFMPEG_DIR/libavutil -I$FFMPEG_DIR/libavdevice "
 
       vid_ffmpeg_warning="
           $x264_warn
@@ -417,6 +440,13 @@ INFORMATION: old ffmpeg was moved to $FFMPEG_DIR-OLD
       	 FFMPEG_CONFIGURE_OPTIONS="$FFMPEG_CONFIGURE_OPTIONS --enable-libxvid"
       fi
       
+      if  test "x$os_win32" = "xyes"; then
+         dnl here we could check for required win32 api version on MonGW Win32 Systems.
+         dnl for now always disable devices on MinGW (that requires latest win32 api to compile)
+         dnl disabling devices is not critical since GIMP-GAP does not use ffmpeg features that
+         dnl require other access than plain videofile io.
+      	 FFMPEG_CONFIGURE_OPTIONS="$FFMPEG_CONFIGURE_OPTIONS --disable-devices"
+      fi
 
       echo "================================="
       echo "Calling FFMPEG configure script options: $FFMPEG_CONFIGURE_OPTIONS"
@@ -424,11 +454,18 @@ INFORMATION: old ffmpeg was moved to $FFMPEG_DIR-OLD
       
       cd "$FFMPEG_DIR"
       ./configure $FFMPEG_CONFIGURE_OPTIONS
+      FF_CONFIGURE_RETCODE=$?
       cd "$pwd_dir"
       
       echo "================================="
       echo "FFMPEG configure script done options: $FFMPEG_CONFIGURE_OPTIONS"
+      echo "FFMPEG configure retcode: $FF_CONFIGURE_RETCODE"
       echo "================================="
+
+      if test "$FF_CONFIGURE_RETCODE" != "0"; then
+         vid_ffmpeg_warning="ffmpeg configure script FAILED (--disable-libavformat was activated due to this ERROR)"
+         build_ffmpeg_libs_yesno="no"
+      fi
       
       dnl
       dnl
@@ -570,7 +607,7 @@ $libmpeg3_info_msg
 "
   fi
   
-  if test "$xenable_libmpeg3" != "no"; then
+  if test "x$enable_libmpeg3" != "xno"; then
 
 
     if test -f "$with_preinstalled_libmpeg3"; then
@@ -595,7 +632,7 @@ if test "x$with_preinstalled_libmpeg3incdir" != "x"; then
 "
   
   fi;
-  if test "$xenable_libmpeg3" != "no"; then
+  if test "x$enable_libmpeg3" != "xno"; then
     if test -f "$with_preinstalled_libmpeg3incdir/libmpeg3.h"; then
       if test -d "$with_preinstalled_libmpeg3incdir/audio"; then
 	:

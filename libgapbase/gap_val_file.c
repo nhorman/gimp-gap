@@ -182,7 +182,6 @@ gap_val_load_textfile(const char *filename)
   GapValTextFileLines *txf_ptr_prev;
   GapValTextFileLines *txf_ptr_root;
   char         l_buf[4000];
-  int   l_len;
   int   line_nr;
   
   line_nr = 0;
@@ -194,7 +193,6 @@ gap_val_load_textfile(const char *filename)
     while(NULL != fgets(l_buf, 4000-1, l_fp))
     {
       line_nr++;
-      l_len = strlen("(framerate ");
       txf_ptr = g_malloc0(sizeof(GapValTextFileLines));
       txf_ptr->line = g_strdup(l_buf);
       txf_ptr->line_nr=line_nr;
@@ -248,7 +246,7 @@ p_write_keylist_value(FILE *fp, GapValKeyList *keyptr, const char *term_str)
         fprintf(fp, "%s%d%s %s\n"
                , keyptr->keyword   /* "(keyword " */
                , (int)*val_ptr          /* value */
-	       , term_ptr
+               , term_ptr
                , keyptr->comment
                );
       }
@@ -256,14 +254,19 @@ p_write_keylist_value(FILE *fp, GapValKeyList *keyptr, const char *term_str)
     case GAP_VAL_GINT64:
       {
         gint64 *val_ptr;
-      
+        char   *l_str;
+
+
         val_ptr = (gint64 *)keyptr->val_ptr;
-        fprintf(fp, "%s%lld%s %s\n"
+        l_str = g_strdup_printf("%s%lld%s %s"
                , keyptr->keyword   /* "(keyword " */
                , *val_ptr          /* value */
-	       , term_ptr
+	           , term_ptr
                , keyptr->comment
                );
+        fprintf(fp, "%s\n", l_str);
+        g_free(l_str);
+
       }
       break;
     case GAP_VAL_GDOUBLE:
@@ -281,7 +284,7 @@ p_write_keylist_value(FILE *fp, GapValKeyList *keyptr, const char *term_str)
         fprintf(fp, "%s%s%s %s\n"
                , keyptr->keyword   /* "(keyword " */
                , l_dbl_str         /* value */
-	       , term_ptr
+               , term_ptr
                , keyptr->comment
                );
       }
@@ -295,7 +298,7 @@ p_write_keylist_value(FILE *fp, GapValKeyList *keyptr, const char *term_str)
         {
           fprintf(fp, "%syes%s %s\n"
                , keyptr->keyword   /* "(keyword " */
-	       , term_ptr
+               , term_ptr
                , keyptr->comment
                );
         }
@@ -303,7 +306,7 @@ p_write_keylist_value(FILE *fp, GapValKeyList *keyptr, const char *term_str)
         {
           fprintf(fp, "%sno%s %s\n"
                , keyptr->keyword   /* "(keyword " */
-	       , term_ptr
+               , term_ptr
                , keyptr->comment
                );
         }
@@ -318,7 +321,7 @@ p_write_keylist_value(FILE *fp, GapValKeyList *keyptr, const char *term_str)
         {
           fprintf(fp, "%syes%s %s\n"
                , keyptr->keyword   /* "(keyword " */
-	       , term_ptr
+               , term_ptr
                , keyptr->comment
                );
         }
@@ -328,7 +331,7 @@ p_write_keylist_value(FILE *fp, GapValKeyList *keyptr, const char *term_str)
           {
             fprintf(fp, "%sno%s %s\n"
                , keyptr->keyword   /* "(keyword " */
-	       , term_ptr
+               , term_ptr
                , keyptr->comment
                );
           }
@@ -337,11 +340,11 @@ p_write_keylist_value(FILE *fp, GapValKeyList *keyptr, const char *term_str)
             fprintf(fp, "%s%d%s %s\n"
                , keyptr->keyword   /* "(keyword " */
                , (int)*val_ptr     /* value */
-	       , term_ptr
+               , term_ptr
                , keyptr->comment
                );
           }
-	    }
+            }
       }
       break;
     case GAP_VAL_STRING:
@@ -373,7 +376,7 @@ p_write_keylist_value(FILE *fp, GapValKeyList *keyptr, const char *term_str)
         }
                
         fprintf(fp, "\"%s %s\n"
-	       , term_ptr
+               , term_ptr
                , keyptr->comment
                );
         
@@ -411,6 +414,11 @@ gap_val_rewrite_file(GapValKeyList *keylist, const char *filename, const char *h
   int   l_len;
    
   l_rc = -1;
+
+  for(keyptr=keylist; keyptr != NULL; keyptr = (GapValKeyList*)keyptr->next)
+  {
+     keyptr->done_flag = FALSE;
+  }   /* end for keylist loop */
 
   if(filename)
   {
@@ -463,11 +471,11 @@ gap_val_rewrite_file(GapValKeyList *keylist, const char *filename, const char *h
          }
          else
          {
-	   if(hdr_text)
-	   {
+           if(hdr_text)
+           {
              /* write header if file was empty or not existent */
              fprintf(l_fp, "%s\n", hdr_text);
-	   }
+           }
          }
          
          /* write the unhandled key/values (where key was not found in the file before) */
@@ -516,7 +524,7 @@ gap_val_scann_filevalues(GapValKeyList *keylist, const char *filename)
              l_len = strlen(keyptr->keyword);
              if(strncmp(txf_ptr->line, keyptr->keyword, l_len) == 0)
              {
-	       l_cnt_keys++;
+               l_cnt_keys++;
                switch(keyptr->dataype)
                {
                  case GAP_VAL_GINT32:
@@ -582,7 +590,7 @@ gap_val_scann_filevalues(GapValKeyList *keylist, const char *filename)
                         {
                           *val_ptr = atol(&txf_ptr->line[l_len]);
                         }
-		      }
+                      }
                    }
                    break;
                  case GAP_VAL_STRING:
@@ -592,13 +600,13 @@ gap_val_scann_filevalues(GapValKeyList *keylist, const char *filename)
                       gint32   l_idx;
                       
                       val_ptr = (gchar *)keyptr->val_ptr;
-		      while(txf_ptr->line[l_len] == ' ')
-		      {
-		        l_len++;  /* skip spaces between keyword and starting quote */
-		      }
+                      while(txf_ptr->line[l_len] == ' ')
+                      {
+                        l_len++;  /* skip spaces between keyword and starting quote */
+                      }
                       if(txf_ptr->line[l_len] == '"')
                       {
-		        l_len++;  /* skip starting quote */
+                        l_len++;  /* skip starting quote */
                         esc_flag = FALSE;
                         for(l_idx=0; l_idx < MIN(4000-l_len, keyptr->len); l_idx++)
                         {

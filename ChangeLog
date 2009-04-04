@@ -1,3 +1,28 @@
+2009-04-04 Wolfgang Hofer <hof@gimp.org>
+
+- changes to the configure script for build in MinGW Environment
+  for Win32 systems.
+
+- fixed bug in the configure --disable-libmpeg3 
+  changes for build on MinGW environment on Win32 systems
+
+- replaced usage of sleep (that was not available on MinGW) by usleep
+
+- fixed handling of gint64 datatype in gap basic key/value file in MinGW environment.
+
+     gint64 bigval = 1778;
+     printf ("%lld", bigval);
+       
+         output on LINUX: 1778
+         output on Win32: 1778(null)
+
+     the fix uses g_strdup_printf which handles %lld correct in both environments.       
+     (relevant for persiting ffmpeg based video analyse and parameter files)
+   
+  * configure.in
+  * vid_common/gap_cme_main.c
+  * libgapbase/gap_val_file.c
+
 2009-03-22 Wolfgang Hofer <hof@gimp.org>
 
 - updated news.

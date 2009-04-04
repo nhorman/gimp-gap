@@ -374,7 +374,7 @@ run (const gchar *name,          /* name of plugin */
       /* wait 8 seconds to give the encoder process a chance to exit 
        * (and/or accept a possible cancel request)
        */
-      sleep(8);
+      usleep(800000);
 
       if(gap_debug)
       {
